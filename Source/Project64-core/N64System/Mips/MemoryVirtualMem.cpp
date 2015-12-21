@@ -15,6 +15,7 @@
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/Recompiler/x86CodeLog.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
+#include <Project64-core/ExceptionHandler.h>
 #include <Windows.h>
 
 uint32_t RegModValue;
@@ -2389,7 +2390,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
     g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
     return EXCEPTION_EXECUTE_HANDLER;
-}
+    }
 
 bool CMipsMemoryVM::LB_NonMemory(uint32_t PAddr, uint32_t* Value, bool /*SignExtend*/)
 {
@@ -2430,9 +2431,9 @@ bool CMipsMemoryVM::LB_NonMemory(uint32_t PAddr, uint32_t* Value, bool /*SignExt
         {
             *Value = 0;
             return false;
-        }
-#endif
     }
+#endif
+}
     //	switch (PAddr & 0xFFF00000)
     //{
     //	default:
@@ -2536,7 +2537,7 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t PAddr, uint8_t Value)
             g_Notify->DisplayError(L"FrameBufferWrite");
             if (FrameBufferWrite) { FrameBufferWrite(PAddr, 1); }
             break;
-        }
+    }
 #endif
         if (PAddr < RdramSize())
         {
@@ -2548,7 +2549,7 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t PAddr, uint8_t Value)
         break;
     default:
         return false;
-    }
+}
 
     return true;
 }
@@ -2576,7 +2577,7 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
             //VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_NOACCESS, &OldProtect);
             g_Notify->DisplayError(L"PAddr = %x", PAddr);
             break;
-        }
+    }
 #endif
         if (PAddr < RdramSize())
         {
@@ -2588,7 +2589,7 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
         break;
     default:
         return false;
-    }
+}
 
     return true;
 }
@@ -2608,15 +2609,15 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             {
                 uint32_t OldProtect;
                 VirtualProtect(ROM, RomFileSize, PAGE_NOACCESS, &OldProtect);
-            }
+        }
 #endif
             //LogMessage("%X: Wrote To Rom %08X from %08X",PROGRAM_COUNTER,Value,PAddr);
-        }
+    }
         else
         {
             return false;
         }
-    }
+}
 
     switch (PAddr & 0xFFF00000)
     {
@@ -2638,7 +2639,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             g_Notify->DisplayError(L"FrameBufferWrite %X", PAddr);
             if (FrameBufferWrite) { FrameBufferWrite(PAddr, 4); }
             break;
-        }
+    }
 #endif
         if (PAddr < RdramSize())
         {
@@ -2660,89 +2661,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             Write32SPRegisters();
         }
         break;
-    case 0x04100000:
-        switch (PAddr)
-        {
-        case 0x04100000:
-            g_Reg->DPC_START_REG = Value;
-            g_Reg->DPC_CURRENT_REG = Value;
-            break;
-        case 0x04100004:
-            g_Reg->DPC_END_REG = Value;
-            if (g_Plugins->Gfx()->ProcessRDPList)
-            {
-                g_Plugins->Gfx()->ProcessRDPList();
-            }
-            break;
-            //case 0x04100008: g_Reg->DPC_CURRENT_REG = Value; break;
-        case 0x0410000C:
-            if ((Value & DPC_CLR_XBUS_DMEM_DMA) != 0)
-            {
-                g_Reg->DPC_STATUS_REG &= ~DPC_STATUS_XBUS_DMEM_DMA;
-            }
-            if ((Value & DPC_SET_XBUS_DMEM_DMA) != 0)
-            {
-                g_Reg->DPC_STATUS_REG |= DPC_STATUS_XBUS_DMEM_DMA;
-            }
-            if ((Value & DPC_CLR_FREEZE) != 0)
-            {
-                g_Reg->DPC_STATUS_REG &= ~DPC_STATUS_FREEZE;
-            }
-            if ((Value & DPC_SET_FREEZE) != 0)
-            {
-                g_Reg->DPC_STATUS_REG |= DPC_STATUS_FREEZE;
-            }
-            if ((Value & DPC_CLR_FLUSH) != 0)
-            {
-                g_Reg->DPC_STATUS_REG &= ~DPC_STATUS_FLUSH;
-            }
-            if ((Value & DPC_SET_FLUSH) != 0)
-            {
-                g_Reg->DPC_STATUS_REG |= DPC_STATUS_FLUSH;
-            }
-            if ((Value & DPC_CLR_FREEZE) != 0)
-            {
-                if ((g_Reg->SP_STATUS_REG & SP_STATUS_HALT) == 0)
-                {
-                    if ((g_Reg->SP_STATUS_REG & SP_STATUS_BROKE) == 0)
-                    {
-                        try
-                        {
-                            g_System->RunRSP();
-                        }
-                        catch (...)
-                        {
-                            g_Notify->BreakPoint(__FILE__, __LINE__);
-                        }
-                    }
-                }
-            }
-#ifdef legacycode
-            if (ShowUnhandledMemory)
-            {
-                //if ( ( Value & DPC_CLR_TMEM_CTR ) != 0)
-                //{
-                //	g_Notify->DisplayError(L"RSP: DPC_STATUS_REG: DPC_CLR_TMEM_CTR");
-                //}
-                //if ( ( Value & DPC_CLR_PIPE_CTR ) != 0)
-                //{
-                //	g_Notify->DisplayError(L"RSP: DPC_STATUS_REG: DPC_CLR_PIPE_CTR");
-                //}
-                //if ( ( Value & DPC_CLR_CMD_CTR ) != 0)
-                //{
-                //	g_Notify->DisplayError(L"RSP: DPC_STATUS_REG: DPC_CLR_CMD_CTR");
-                //}
-                //if ( ( Value & DPC_CLR_CLOCK_CTR ) != 0)
-                //{
-                //	g_Notify->DisplayError(L"RSP: DPC_STATUS_REG: DPC_CLR_CLOCK_CTR");
-                //}
-            }
-#endif
-            break;
-        default:
-            return false;
-        }
-        break;
+    case 0x04100000: Write32DPCommandRegisters(); break;
     case 0x04300000:
         switch (PAddr)
         {
@@ -2852,7 +2771,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             if (g_Reg->VI_ORIGIN_REG > 0x280)
             {
                 SetFrameBuffer(g_Reg->VI_ORIGIN_REG, (uint32_t)(VI_WIDTH_REG * (VI_WIDTH_REG *.75)));
-            }
+        }
 #endif
             g_Reg->VI_ORIGIN_REG = (Value & 0xFFFFFF);
             //if (UpdateScreen != NULL )
@@ -5538,9 +5457,9 @@ void CMipsMemoryVM::Load32Rom(void)
         {
             uint32_t OldProtect;
             VirtualProtect(ROM, RomFileSize, PAGE_READONLY, &OldProtect);
-        }
-#endif
     }
+#endif
+}
     else if ((m_MemLookupAddress & 0xFFFFFFF) < g_MMU->m_RomSize)
     {
         m_MemLookupValue.UW[0] = *(uint32_t *)&g_MMU->m_Rom[(m_MemLookupAddress & 0xFFFFFFF)];
@@ -5680,7 +5599,7 @@ void CMipsMemoryVM::Write32SPRegisters(void)
         if ((m_MemLookupValue.UW[0] & SP_CLR_SIG5) != 0)
         {
             g_Reg->SP_STATUS_REG &= ~SP_STATUS_SIG5;
-    }
+        }
         if ((m_MemLookupValue.UW[0] & SP_SET_SIG5) != 0)
         {
             g_Reg->SP_STATUS_REG |= SP_STATUS_SIG5;
@@ -5729,5 +5648,93 @@ void CMipsMemoryVM::Write32SPRegisters(void)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
+    }
 }
+
+void CMipsMemoryVM::Write32DPCommandRegisters(void)
+{
+    switch ((m_MemLookupAddress & 0xFFFFFFF))
+    {
+    case 0x04100000:
+        g_Reg->DPC_START_REG = m_MemLookupValue.UW[0];
+        g_Reg->DPC_CURRENT_REG = m_MemLookupValue.UW[0];
+        break;
+    case 0x04100004:
+        g_Reg->DPC_END_REG = m_MemLookupValue.UW[0];
+        if (g_Plugins->Gfx()->ProcessRDPList)
+        {
+            g_Plugins->Gfx()->ProcessRDPList();
+        }
+        break;
+        //case 0x04100008: g_Reg->DPC_CURRENT_REG = Value; break;
+    case 0x0410000C:
+        if ((m_MemLookupValue.UW[0] & DPC_CLR_XBUS_DMEM_DMA) != 0)
+        {
+            g_Reg->DPC_STATUS_REG &= ~DPC_STATUS_XBUS_DMEM_DMA;
+        }
+        if ((m_MemLookupValue.UW[0] & DPC_SET_XBUS_DMEM_DMA) != 0)
+        {
+            g_Reg->DPC_STATUS_REG |= DPC_STATUS_XBUS_DMEM_DMA;
+        }
+        if ((m_MemLookupValue.UW[0] & DPC_CLR_FREEZE) != 0)
+        {
+            g_Reg->DPC_STATUS_REG &= ~DPC_STATUS_FREEZE;
+        }
+        if ((m_MemLookupValue.UW[0] & DPC_SET_FREEZE) != 0)
+        {
+            g_Reg->DPC_STATUS_REG |= DPC_STATUS_FREEZE;
+        }
+        if ((m_MemLookupValue.UW[0] & DPC_CLR_FLUSH) != 0)
+        {
+            g_Reg->DPC_STATUS_REG &= ~DPC_STATUS_FLUSH;
+        }
+        if ((m_MemLookupValue.UW[0] & DPC_SET_FLUSH) != 0)
+        {
+            g_Reg->DPC_STATUS_REG |= DPC_STATUS_FLUSH;
+        }
+        if ((m_MemLookupValue.UW[0] & DPC_CLR_FREEZE) != 0)
+        {
+            if ((g_Reg->SP_STATUS_REG & SP_STATUS_HALT) == 0)
+            {
+                if ((g_Reg->SP_STATUS_REG & SP_STATUS_BROKE) == 0)
+                {
+                    __except_try()
+                    {
+                        g_System->RunRSP();
+                    }
+                    __except_catch()
+                    {
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
+                    }
+                }
+            }
+        }
+#ifdef legacycode
+        if (ShowUnhandledMemory)
+        {
+            //if ( ( m_MemLookupValue.UW[0] & DPC_CLR_TMEM_CTR ) != 0)
+            //{
+            //	g_Notify->DisplayError(L"RSP: DPC_STATUS_REG: DPC_CLR_TMEM_CTR");
+            //}
+            //if ( ( m_MemLookupValue.UW[0] & DPC_CLR_PIPE_CTR ) != 0)
+            //{
+            //	g_Notify->DisplayError(L"RSP: DPC_STATUS_REG: DPC_CLR_PIPE_CTR");
+            //}
+            //if ( ( m_MemLookupValue.UW[0] & DPC_CLR_CMD_CTR ) != 0)
+            //{
+            //	g_Notify->DisplayError(L"RSP: DPC_STATUS_REG: DPC_CLR_CMD_CTR");
+            //}
+            //if ( ( m_MemLookupValue.UW[0] & DPC_CLR_CLOCK_CTR ) != 0)
+            //{
+            //	g_Notify->DisplayError(L"RSP: DPC_STATUS_REG: DPC_CLR_CLOCK_CTR");
+            //}
+        }
+#endif
+        break;
+    default:
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
 }
