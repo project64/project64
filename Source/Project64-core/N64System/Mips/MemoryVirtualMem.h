@@ -197,6 +197,7 @@ private:
     static void Load32Rom(void);
 
     static void Write32RDRAMRegisters(void);
+    static void Write32SPRegisters(void);
 
     CMipsMemory_CallBack * const m_CBClass;
 
