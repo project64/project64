@@ -2531,39 +2531,8 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         *Value = m_MemLookupValue.UW[0];
         break;
     case 0x04500000:
-        switch (PAddr)
-        {
-        case 0x04500004:
-            if (g_System->bFixedAudio())
-            {
-                *Value = g_Audio->GetLength();
-            }
-            else
-            {
-                if (g_Plugins->Audio()->AiReadLength != NULL)
-                {
-                    *Value = g_Plugins->Audio()->AiReadLength();
-                }
-                else
-                {
-                    *Value = 0;
-                }
-            }
-            break;
-        case 0x0450000C:
-            if (g_System->bFixedAudio())
-            {
-                *Value = g_Audio->GetStatus();
-            }
-            else
-            {
-                *Value = g_Reg->AI_STATUS_REG;
-            }
-            break;
-        default:
-            *Value = 0;
-            return false;
-        }
+        Load32AudioInterface();
+        *Value = m_MemLookupValue.UW[0];
         break;
     case 0x04600000:
         switch (PAddr)
@@ -2725,7 +2694,7 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
             //VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_NOACCESS, &OldProtect);
             g_Notify->DisplayError(L"PAddr = %x", PAddr);
             break;
-        }
+    }
 #endif
         if (PAddr < RdramSize())
         {
@@ -2737,7 +2706,7 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
         break;
     default:
         return false;
-    }
+}
 
     return true;
 }
@@ -2757,7 +2726,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             }
 #endif
             //LogMessage("%X: Wrote To Rom %08X from %08X",PROGRAM_COUNTER,Value,PAddr);
-        }
+}
         else
         {
             return false;
@@ -3078,7 +3047,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
                 g_Reg->MI_INTR_REG &= ~MI_INTR_DP;
                 g_Reg->m_GfxIntrReg &= ~MI_INTR_DP;
                 g_Reg->CheckInterrupts();
-            }
+        }
             if ((Value & MI_CLR_RDRAM) != 0)
             {
                 g_Reg->MI_MODE_REG &= ~MI_MODE_RDRAM;
@@ -3354,10 +3323,10 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     default:
         return false;
         break;
-    }
+        }
 
     return true;
-}
+    }
 
 void CMipsMemoryVM::UpdateHalfLine()
 {
@@ -5664,6 +5633,46 @@ void CMipsMemoryVM::Load32VideoInterface(void)
     case 0x0440002C: m_MemLookupValue.UW[0] = g_Reg->VI_V_BURST_REG; break;
     case 0x04400030: m_MemLookupValue.UW[0] = g_Reg->VI_X_SCALE_REG; break;
     case 0x04400034: m_MemLookupValue.UW[0] = g_Reg->VI_Y_SCALE_REG; break;
+    default:
+        m_MemLookupValue.UW[0] = 0;
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+}
+
+void CMipsMemoryVM::Load32AudioInterface(void)
+{
+    switch (m_MemLookupAddress & 0x1FFFFFFF)
+    {
+    case 0x04500004:
+        if (g_System->bFixedAudio())
+        {
+            m_MemLookupValue.UW[0] = g_Audio->GetLength();
+        }
+        else
+        {
+            if (g_Plugins->Audio()->AiReadLength != NULL)
+            {
+                m_MemLookupValue.UW[0] = g_Plugins->Audio()->AiReadLength();
+            }
+            else
+            {
+                m_MemLookupValue.UW[0] = 0;
+            }
+        }
+        break;
+    case 0x0450000C:
+        if (g_System->bFixedAudio())
+        {
+            m_MemLookupValue.UW[0] = g_Audio->GetStatus();
+        }
+        else
+        {
+            m_MemLookupValue.UW[0] = g_Reg->AI_STATUS_REG;
+        }
+        break;
     default:
         m_MemLookupValue.UW[0] = 0;
         if (bHaveDebugger())
