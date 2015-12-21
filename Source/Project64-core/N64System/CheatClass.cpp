@@ -210,7 +210,7 @@ uint16_t ConvertXP64Value(uint16_t Value)
     return tmpValue;
 }
 
-void CCheats::ApplyCheats(CMipsMemory * MMU)
+void CCheats::ApplyCheats(CMipsMemoryVM * MMU)
 {
     for (size_t CurrentCheat = 0; CurrentCheat < m_Codes.size(); CurrentCheat++)
     {
@@ -222,7 +222,7 @@ void CCheats::ApplyCheats(CMipsMemory * MMU)
     }
 }
 
-void CCheats::ApplyGSButton(CMipsMemory * MMU)
+void CCheats::ApplyGSButton(CMipsMemoryVM * MMU)
 {
     uint32_t Address;
     for (size_t CurrentCheat = 0; CurrentCheat < m_Codes.size(); CurrentCheat++)
@@ -333,7 +333,7 @@ bool CCheats::IsValid16BitCode(const char * CheatString)
     return true;
 }
 
-int CCheats::ApplyCheatEntry(CMipsMemory * MMU, const CODES & CodeEntry, int CurrentEntry, bool Execute)
+int CCheats::ApplyCheatEntry(CMipsMemoryVM * MMU, const CODES & CodeEntry, int CurrentEntry, bool Execute)
 {
     if (CurrentEntry < 0 || CurrentEntry >= (int)CodeEntry.size())
     {

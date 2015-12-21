@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-#include "MemoryClass.h"
+#include "MemoryVirtualMem.h"
 #include "TranslateVaddr.h"
 #include <Project64-core/N64System/Recompiler/RecompilerOps.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>
@@ -17,6 +17,12 @@
 #include <Project64-core/N64System/Mips/FlashRam.h>
 #include <Project64-core/N64System/Mips/Sram.h>
 #include <Project64-core/N64System/Mips/Dma.h>
+
+__interface CMipsMemory_CallBack
+{
+    //Protected memory has been written to, returns true if that memory has been unprotected
+    virtual bool WriteToProtectedMemory(uint32_t Address, int32_t length) = 0;
+};
 
 /*
 * 64-bit Windows exception recovery facilities will expect to interact with
@@ -50,7 +56,6 @@
  */
 
 class CMipsMemoryVM :
-    public CMipsMemory,
     public CTransVaddr,
     private CRecompilerOps,
     private R4300iOp,

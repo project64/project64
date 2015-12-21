@@ -37,7 +37,7 @@
 #include <Project64-core/N64System/Mips/TranslateVaddr.h>
 #include <Project64-core/N64System/Mips/TLBClass.h>
 #include <Project64-core/N64System/Mips/MemoryLabelsClass.h>
-#include <Project64-core/N64System/Mips/MemoryClass.h>
+#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/Audio.h>
 #include <Project64-core/N64System/Mips/SystemTiming.h>
 #include <Project64-core/N64System/Mips/SystemEvents.h>

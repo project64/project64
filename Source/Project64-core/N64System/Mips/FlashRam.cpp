@@ -11,7 +11,7 @@
 #include "stdafx.h"
 #include "FlashRam.h"
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/Mips/MemoryClass.h>
+#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Common/path.h>
 #include <Windows.h>
 

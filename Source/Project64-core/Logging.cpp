@@ -13,7 +13,7 @@
 #include <Common/path.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/TranslateVaddr.h>
-#include <Project64-core/N64System/Mips/MemoryClass.h>
+#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/N64RomClass.h>
 
 CFile * CLogging::m_hLogFile = NULL;

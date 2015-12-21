@@ -21,8 +21,8 @@ extern CN64System    * g_SyncSystem;
 class CRecompiler;
 extern CRecompiler   * g_Recompiler;
 
-__interface CMipsMemory;
-extern CMipsMemory   * g_MMU; //Memory of the n64
+class CMipsMemoryVM;
+extern CMipsMemoryVM * g_MMU; //Memory of the n64
 
 class CTLB;
 extern CTLB          * g_TLB; //TLB Unit

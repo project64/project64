@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 #include "N64RomClass.h"
-#include <Project64-core/N64System/Mips/MemoryClass.h>
+#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/Plugins/PluginClass.h>
 
 class CCheats
@@ -25,8 +25,8 @@ public:
         MaxGSEntries = 100,
     };
 
-    void ApplyCheats(CMipsMemory * MMU);
-    void ApplyGSButton(CMipsMemory * MMU);
+    void ApplyCheats(CMipsMemoryVM * MMU);
+    void ApplyGSButton(CMipsMemoryVM * MMU);
     void LoadCheats(bool DisableSelected, CPlugins * Plugins);
 
     static bool IsValid16BitCode(const char * CheatString);
@@ -47,5 +47,5 @@ private:
     CODES_ARRAY   m_Codes;
 
     bool LoadCode(int32_t CheatNo, const char * CheatString);
-    int32_t ApplyCheatEntry(CMipsMemory * MMU, const CODES & CodeEntry, int32_t CurrentEntry, bool Execute);
+    int32_t ApplyCheatEntry(CMipsMemoryVM * MMU, const CODES & CodeEntry, int32_t CurrentEntry, bool Execute);
 };

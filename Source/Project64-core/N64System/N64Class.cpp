@@ -569,7 +569,7 @@ bool CN64System::SetActiveSystem(bool bActive)
     return bRes;
 }
 
-void CN64System::InitRegisters(bool bPostPif, CMipsMemory & MMU)
+void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
 {
     m_Reg.Reset();
 

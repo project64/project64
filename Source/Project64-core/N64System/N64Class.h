@@ -19,7 +19,7 @@
 #include <Project64-core/Logging.h>
 
 #include "Mips/SystemEvents.h"
-#include "Mips/MemoryClass.h"
+#include "Mips/MemoryVirtualMem.h"
 #include "Mips/TLBClass.h"
 #include "Mips/Audio.h"
 #include "Mips/SystemTiming.h"
@@ -118,7 +118,7 @@ private:
     void   DumpSyncErrors(CN64System * SecondCPU);
     void   StartEmulation2(bool NewThread);
     bool   SetActiveSystem(bool bActive = true);
-    void   InitRegisters(bool bPostPif, CMipsMemory & MMU);
+    void   InitRegisters(bool bPostPif, CMipsMemoryVM & MMU);
     void    DisplayRSPListCount();
 
     //CPU Methods
