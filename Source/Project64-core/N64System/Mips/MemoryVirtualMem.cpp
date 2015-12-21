@@ -2547,29 +2547,12 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         *Value = m_MemLookupValue.UW[0];
         break;
     case 0x05000000:
-        *Value = PAddr & 0xFFFF;
-        *Value = (*Value << 16) | *Value;
-        return false;
+        Load32CartridgeDomain2Address1();
+        *Value = m_MemLookupValue.UW[0];
+        break;
     case 0x08000000:
-        if (g_System->m_SaveUsing == SaveChip_Auto)
-        {
-            g_System->m_SaveUsing = SaveChip_FlashRam;
-        }
-        if (g_System->m_SaveUsing == SaveChip_Sram)
-        {
-            //Load Sram
-            uint8_t tmp[4] = "";
-            DmaFromSram(tmp, PAddr - 0x08000000, 4);
-            *Value = tmp[3] << 24 | tmp[2] << 16 | tmp[1] << 8 | tmp[0];
-            return true;
-        }
-        else if (g_System->m_SaveUsing != SaveChip_FlashRam)
-        {
-            *Value = PAddr & 0xFFFF;
-            *Value = (*Value << 16) | *Value;
-            return false;
-        }
-        *Value = ReadFromFlashStatus(PAddr);
+        Load32CartridgeDomain2Address2();
+        *Value = m_MemLookupValue.UW[0];
         break;
     case 0x1FC00000:
         if (PAddr < 0x1FC007C0)
@@ -2636,10 +2619,10 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t PAddr, uint8_t Value)
         break;
     default:
         return false;
-        }
+    }
 
     return true;
-    }
+}
 
 bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
 {
@@ -2676,10 +2659,10 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
         break;
     default:
         return false;
-        }
+    }
 
     return true;
-    }
+}
 
 bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
 {
@@ -3079,7 +3062,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             break;
         default:
             return false;
-            }
+        }
         break;
     case 0x04400000:
         switch (PAddr)
@@ -3293,10 +3276,10 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     default:
         return false;
         break;
-        }
+    }
 
     return true;
-        }
+}
 
 void CMipsMemoryVM::UpdateHalfLine()
 {
@@ -5706,5 +5689,43 @@ void CMipsMemoryVM::Load32SerialInterface(void)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
+    }
+}
+
+void CMipsMemoryVM::Load32CartridgeDomain2Address1(void)
+{
+    m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
+    m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
+    if (bHaveDebugger())
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+}
+
+void CMipsMemoryVM::Load32CartridgeDomain2Address2(void)
+{
+    if (g_System->m_SaveUsing == SaveChip_Auto)
+    {
+        g_System->m_SaveUsing = SaveChip_FlashRam;
+    }
+    if (g_System->m_SaveUsing == SaveChip_Sram)
+    {
+        //Load Sram
+        uint8_t tmp[4] = "";
+        g_MMU->DmaFromSram(tmp, (m_MemLookupAddress & 0x1FFFFFFF) - 0x08000000, 4);
+        m_MemLookupValue.UW[0] = tmp[3] << 24 | tmp[2] << 16 | tmp[1] << 8 | tmp[0];
+    }
+    else if (g_System->m_SaveUsing != SaveChip_FlashRam)
+    {
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
+        m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
+    }
+    else
+    {
+        m_MemLookupValue.UW[0] = g_MMU->ReadFromFlashStatus(m_MemLookupAddress & 0x1FFFFFFF);
     }
 }
