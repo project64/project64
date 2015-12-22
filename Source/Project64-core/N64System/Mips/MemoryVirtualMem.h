@@ -203,6 +203,7 @@ private:
     static void Write32VideoInterface(void);
     static void Write32AudioInterface(void);
     static void Write32PeripheralInterface(void);
+    static void Write32RDRAMInterface(void);
 
     CMipsMemory_CallBack * const m_CBClass;
 

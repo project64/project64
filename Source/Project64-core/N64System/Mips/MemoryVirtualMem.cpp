@@ -2666,21 +2666,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     case 0x04400000: Write32VideoInterface(); break;
     case 0x04500000: Write32AudioInterface(); break;
     case 0x04600000: Write32PeripheralInterface(); break;
-    case 0x04700000:
-        switch (PAddr)
-        {
-        case 0x04700000: g_Reg->RI_MODE_REG = Value; break;
-        case 0x04700004: g_Reg->RI_CONFIG_REG = Value; break;
-        case 0x04700008: g_Reg->RI_CURRENT_LOAD_REG = Value; break;
-        case 0x0470000C: g_Reg->RI_SELECT_REG = Value; break;
-        case 0x04700010: g_Reg->RI_REFRESH_REG = Value; break;
-        case 0x04700014: g_Reg->RI_LATENCY_REG = Value; break;
-        case 0x04700018: g_Reg->RI_RERROR_REG = Value; break;
-        case 0x0470001C: g_Reg->RI_WERROR_REG = Value; break;
-        default:
-            return false;
-        }
-        break;
+    case 0x04700000: Write32RDRAMInterface(); break;
     case 0x04800000:
         switch (PAddr)
         {
@@ -5755,6 +5741,26 @@ void CMipsMemoryVM::Write32PeripheralInterface(void)
     case 0x04600028: g_Reg->PI_BSD_DOM2_PWD_REG = (m_MemLookupValue.UW[0] & 0xFF); break;
     case 0x0460002C: g_Reg->PI_BSD_DOM2_PGS_REG = (m_MemLookupValue.UW[0] & 0xFF); break;
     case 0x04600030: g_Reg->PI_BSD_DOM2_RLS_REG = (m_MemLookupValue.UW[0] & 0xFF); break;
+    default:
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+}
+
+void CMipsMemoryVM::Write32RDRAMInterface(void)
+{
+    switch (m_MemLookupAddress & 0xFFFFFFF)
+    {
+    case 0x04700000: g_Reg->RI_MODE_REG = m_MemLookupValue.UW[0]; break;
+    case 0x04700004: g_Reg->RI_CONFIG_REG = m_MemLookupValue.UW[0]; break;
+    case 0x04700008: g_Reg->RI_CURRENT_LOAD_REG = m_MemLookupValue.UW[0]; break;
+    case 0x0470000C: g_Reg->RI_SELECT_REG = m_MemLookupValue.UW[0]; break;
+    case 0x04700010: g_Reg->RI_REFRESH_REG = m_MemLookupValue.UW[0]; break;
+    case 0x04700014: g_Reg->RI_LATENCY_REG = m_MemLookupValue.UW[0]; break;
+    case 0x04700018: g_Reg->RI_RERROR_REG = m_MemLookupValue.UW[0]; break;
+    case 0x0470001C: g_Reg->RI_WERROR_REG = m_MemLookupValue.UW[0]; break;
     default:
         if (bHaveDebugger())
         {
