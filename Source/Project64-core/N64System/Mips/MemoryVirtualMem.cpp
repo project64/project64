@@ -2663,60 +2663,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
         break;
     case 0x04100000: Write32DPCommandRegisters(); break;
     case 0x04300000: Write32MIPSInterface(); break;
-    case 0x04400000:
-        switch (PAddr)
-        {
-        case 0x04400000:
-            if (g_Reg->VI_STATUS_REG != Value)
-            {
-                g_Reg->VI_STATUS_REG = Value;
-                if (g_Plugins->Gfx()->ViStatusChanged != NULL)
-                {
-                    g_Plugins->Gfx()->ViStatusChanged();
-                }
-            }
-            break;
-        case 0x04400004:
-#ifdef CFB_READ
-            if (g_Reg->VI_ORIGIN_REG > 0x280)
-            {
-                SetFrameBuffer(g_Reg->VI_ORIGIN_REG, (uint32_t)(VI_WIDTH_REG * (VI_WIDTH_REG *.75)));
-            }
-#endif
-            g_Reg->VI_ORIGIN_REG = (Value & 0xFFFFFF);
-            //if (UpdateScreen != NULL )
-            //{
-            //	UpdateScreen();
-            //}
-            break;
-        case 0x04400008:
-            if (g_Reg->VI_WIDTH_REG != Value)
-            {
-                g_Reg->VI_WIDTH_REG = Value;
-                if (g_Plugins->Gfx()->ViWidthChanged != NULL)
-                {
-                    g_Plugins->Gfx()->ViWidthChanged();
-                }
-            }
-            break;
-        case 0x0440000C: g_Reg->VI_INTR_REG = Value; break;
-        case 0x04400010:
-            g_Reg->MI_INTR_REG &= ~MI_INTR_VI;
-            g_Reg->CheckInterrupts();
-            break;
-        case 0x04400014: g_Reg->VI_BURST_REG = Value; break;
-        case 0x04400018: g_Reg->VI_V_SYNC_REG = Value; break;
-        case 0x0440001C: g_Reg->VI_H_SYNC_REG = Value; break;
-        case 0x04400020: g_Reg->VI_LEAP_REG = Value; break;
-        case 0x04400024: g_Reg->VI_H_START_REG = Value; break;
-        case 0x04400028: g_Reg->VI_V_START_REG = Value; break;
-        case 0x0440002C: g_Reg->VI_V_BURST_REG = Value; break;
-        case 0x04400030: g_Reg->VI_X_SCALE_REG = Value; break;
-        case 0x04400034: g_Reg->VI_Y_SCALE_REG = Value; break;
-        default:
-            return false;
-        }
-        break;
+    case 0x04400000: Write32VideoInterface(); break;
     case 0x04500000:
         switch (PAddr)
         {
@@ -5737,6 +5684,65 @@ void CMipsMemoryVM::Write32MIPSInterface(void)
             g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_DP;
         }
         break;
+    default:
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+}
+
+void CMipsMemoryVM::Write32VideoInterface(void)
+{
+    switch ((m_MemLookupAddress & 0xFFFFFFF))
+    {
+    case 0x04400000:
+        if (g_Reg->VI_STATUS_REG != m_MemLookupValue.UW[0])
+        {
+            g_Reg->VI_STATUS_REG = m_MemLookupValue.UW[0];
+            if (g_Plugins->Gfx()->ViStatusChanged != NULL)
+            {
+                g_Plugins->Gfx()->ViStatusChanged();
+            }
+        }
+        break;
+    case 0x04400004:
+#ifdef CFB_READ
+        if (g_Reg->VI_ORIGIN_REG > 0x280)
+        {
+            SetFrameBuffer(g_Reg->VI_ORIGIN_REG, (uint32_t)(VI_WIDTH_REG * (VI_WIDTH_REG *.75)));
+        }
+#endif
+        g_Reg->VI_ORIGIN_REG = (m_MemLookupValue.UW[0] & 0xFFFFFF);
+        //if (UpdateScreen != NULL )
+        //{
+        //	UpdateScreen();
+        //}
+        break;
+    case 0x04400008:
+        if (g_Reg->VI_WIDTH_REG != m_MemLookupValue.UW[0])
+        {
+            g_Reg->VI_WIDTH_REG = m_MemLookupValue.UW[0];
+            if (g_Plugins->Gfx()->ViWidthChanged != NULL)
+            {
+                g_Plugins->Gfx()->ViWidthChanged();
+            }
+        }
+        break;
+    case 0x0440000C: g_Reg->VI_INTR_REG = m_MemLookupValue.UW[0]; break;
+    case 0x04400010:
+        g_Reg->MI_INTR_REG &= ~MI_INTR_VI;
+        g_Reg->CheckInterrupts();
+        break;
+    case 0x04400014: g_Reg->VI_BURST_REG = m_MemLookupValue.UW[0]; break;
+    case 0x04400018: g_Reg->VI_V_SYNC_REG = m_MemLookupValue.UW[0]; break;
+    case 0x0440001C: g_Reg->VI_H_SYNC_REG = m_MemLookupValue.UW[0]; break;
+    case 0x04400020: g_Reg->VI_LEAP_REG = m_MemLookupValue.UW[0]; break;
+    case 0x04400024: g_Reg->VI_H_START_REG = m_MemLookupValue.UW[0]; break;
+    case 0x04400028: g_Reg->VI_V_START_REG = m_MemLookupValue.UW[0]; break;
+    case 0x0440002C: g_Reg->VI_V_BURST_REG = m_MemLookupValue.UW[0]; break;
+    case 0x04400030: g_Reg->VI_X_SCALE_REG = m_MemLookupValue.UW[0]; break;
+    case 0x04400034: g_Reg->VI_Y_SCALE_REG = m_MemLookupValue.UW[0]; break;
     default:
         if (bHaveDebugger())
         {
