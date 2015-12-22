@@ -2664,44 +2664,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     case 0x04100000: Write32DPCommandRegisters(); break;
     case 0x04300000: Write32MIPSInterface(); break;
     case 0x04400000: Write32VideoInterface(); break;
-    case 0x04500000:
-        switch (PAddr)
-        {
-        case 0x04500000: g_Reg->AI_DRAM_ADDR_REG = Value; break;
-        case 0x04500004:
-            g_Reg->AI_LEN_REG = Value;
-            if (g_System->bFixedAudio())
-            {
-                g_Audio->LenChanged();
-            }
-            else
-            {
-                if (g_Plugins->Audio()->AiLenChanged != NULL)
-                {
-                    g_Plugins->Audio()->AiLenChanged();
-                }
-            }
-            break;
-        case 0x04500008: g_Reg->AI_CONTROL_REG = (Value & 1); break;
-        case 0x0450000C:
-            /* Clear Interrupt */;
-            g_Reg->MI_INTR_REG &= ~MI_INTR_AI;
-            g_Reg->m_AudioIntrReg &= ~MI_INTR_AI;
-            g_Reg->CheckInterrupts();
-            break;
-        case 0x04500010:
-            g_Reg->AI_DACRATE_REG = Value;
-            g_Plugins->Audio()->DacrateChanged(g_System->SystemType());
-            if (g_System->bFixedAudio())
-            {
-                g_Audio->SetFrequency(Value, g_System->SystemType());
-            }
-            break;
-        case 0x04500014:  g_Reg->AI_BITRATE_REG = Value; break;
-        default:
-            return false;
-        }
-        break;
+    case 0x04500000: Write32AudioInterface(); break;
     case 0x04600000:
         switch (PAddr)
         {
@@ -5743,6 +5706,49 @@ void CMipsMemoryVM::Write32VideoInterface(void)
     case 0x0440002C: g_Reg->VI_V_BURST_REG = m_MemLookupValue.UW[0]; break;
     case 0x04400030: g_Reg->VI_X_SCALE_REG = m_MemLookupValue.UW[0]; break;
     case 0x04400034: g_Reg->VI_Y_SCALE_REG = m_MemLookupValue.UW[0]; break;
+    default:
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+}
+
+void CMipsMemoryVM::Write32AudioInterface(void)
+{
+    switch (m_MemLookupAddress & 0xFFFFFFF)
+    {
+    case 0x04500000: g_Reg->AI_DRAM_ADDR_REG = m_MemLookupValue.UW[0]; break;
+    case 0x04500004:
+        g_Reg->AI_LEN_REG = m_MemLookupValue.UW[0];
+        if (g_System->bFixedAudio())
+        {
+            g_Audio->LenChanged();
+        }
+        else
+        {
+            if (g_Plugins->Audio()->AiLenChanged != NULL)
+            {
+                g_Plugins->Audio()->AiLenChanged();
+            }
+        }
+        break;
+    case 0x04500008: g_Reg->AI_CONTROL_REG = (m_MemLookupValue.UW[0] & 1); break;
+    case 0x0450000C:
+        /* Clear Interrupt */;
+        g_Reg->MI_INTR_REG &= ~MI_INTR_AI;
+        g_Reg->m_AudioIntrReg &= ~MI_INTR_AI;
+        g_Reg->CheckInterrupts();
+        break;
+    case 0x04500010:
+        g_Reg->AI_DACRATE_REG = m_MemLookupValue.UW[0];
+        g_Plugins->Audio()->DacrateChanged(g_System->SystemType());
+        if (g_System->bFixedAudio())
+        {
+            g_Audio->SetFrequency(m_MemLookupValue.UW[0], g_System->SystemType());
+        }
+        break;
+    case 0x04500014:  g_Reg->AI_BITRATE_REG = m_MemLookupValue.UW[0]; break;
     default:
         if (bHaveDebugger())
         {
