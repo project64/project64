@@ -35,7 +35,7 @@ public:
     struct TIMER_DETAILS
     {
         bool    Active;
-        __int64 CyclesToTimer;
+        int64_t CyclesToTimer;
     };
 
 public:

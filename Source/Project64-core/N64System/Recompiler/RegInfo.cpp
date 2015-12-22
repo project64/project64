@@ -11,6 +11,9 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64Class.h>
+
+#include <stdio.h>
+#include <string.h>
 #include "RegInfo.h"
 #include "RecompilerClass.h"
 #include "x86CodeLog.h"

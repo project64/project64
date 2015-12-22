@@ -31,6 +31,6 @@ private:
 
 	enum { NoOfFrames = 7 };
 
-	__int64 m_Frequency, m_Frames[NoOfFrames], m_LastFrame;
+    int64_t m_Frequency, m_Frames[NoOfFrames], m_LastFrame;
 	int m_CurrentFrame;
 };

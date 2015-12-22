@@ -15,6 +15,8 @@
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/N64Class.h>
+
+#include <stdio.h>
 #include "RecompilerClass.h"
 #include "RecompilerOps.h"
 #include "CodeSection.h"

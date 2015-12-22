@@ -55,12 +55,12 @@ void CSystemTimer::SetTimer(TimerType Type, uint32_t Cycles, bool bRelative)
         }
         else
         {
-            m_TimerDetatils[Type].CyclesToTimer = (__int64)Cycles - (__int64)m_NextTimer;  //replace the new cycles
+            m_TimerDetatils[Type].CyclesToTimer = (int64_t)Cycles - (int64_t)m_NextTimer;  //replace the new cycles
         }
     }
     else
     {
-        m_TimerDetatils[Type].CyclesToTimer = (__int64)Cycles - (__int64)m_NextTimer;  //replace the new cycles
+        m_TimerDetatils[Type].CyclesToTimer = (int64_t)Cycles - (int64_t)m_NextTimer;  //replace the new cycles
     }
     FixTimers();
 }
@@ -76,7 +76,7 @@ uint32_t CSystemTimer::GetTimer(TimerType Type)
     {
         return 0;
     }
-    __int64 CyclesToTimer = m_TimerDetatils[Type].CyclesToTimer + m_NextTimer;
+    int64_t CyclesToTimer = m_TimerDetatils[Type].CyclesToTimer + m_NextTimer;
     if (CyclesToTimer < 0)
     {
         return 0;

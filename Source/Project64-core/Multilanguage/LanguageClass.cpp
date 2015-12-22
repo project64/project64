@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include <stdio.h>
 #include <Common/stdtypes.h>
 #include <Common/path.h>
 
