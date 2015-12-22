@@ -2668,34 +2668,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     case 0x04600000: Write32PeripheralInterface(); break;
     case 0x04700000: Write32RDRAMInterface(); break;
     case 0x04800000: Write32SerialInterface(); break;
-    case 0x08000000:
-        if (g_System->m_SaveUsing == SaveChip_Sram)
-        {
-            //Store Sram
-            uint8_t tmp[4] = "";
-            tmp[0] = 0xFF & (Value);
-            tmp[1] = 0xFF & (Value >> 8);
-            tmp[2] = 0xFF & (Value >> 16);
-            tmp[3] = 0xFF & (Value >> 24);
-            DmaFromSram(tmp, PAddr - 0x08000000, 4);
-            return true;
-        }
-        if (PAddr != 0x08010000)
-        {
-            return false;
-        }
-        if (g_System->m_SaveUsing == SaveChip_Auto)
-        {
-            g_System->m_SaveUsing = SaveChip_FlashRam;
-        }
-        if (g_System->m_SaveUsing != SaveChip_FlashRam)
-        {
-            return true;
-        }
-
-        WriteToFlashCommand(Value);
-        return true;
-        break;
+    case 0x08000000: Write32CartridgeDomain2Address2(); break;
     case 0x1FC00000:
         if (PAddr < 0x1FC007C0)
         {
@@ -5772,5 +5745,35 @@ void CMipsMemoryVM::Write32SerialInterface(void)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
+    }
+}
+
+void CMipsMemoryVM::Write32CartridgeDomain2Address2(void)
+{
+    if (g_System->m_SaveUsing == SaveChip_Sram)
+    {
+        //Store Sram
+        uint8_t tmp[4] = "";
+        tmp[0] = 0xFF & (m_MemLookupValue.UW[0]);
+        tmp[1] = 0xFF & (m_MemLookupValue.UW[0] >> 8);
+        tmp[2] = 0xFF & (m_MemLookupValue.UW[0] >> 16);
+        tmp[3] = 0xFF & (m_MemLookupValue.UW[0] >> 24);
+        g_MMU->DmaFromSram(tmp, (m_MemLookupAddress & 0x1FFFFFFF) - 0x08000000, 4);
+        return;
+    }
+    if ((m_MemLookupAddress & 0x1FFFFFFF) != 0x08010000)
+    {
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+    if (g_System->m_SaveUsing == SaveChip_Auto)
+    {
+        g_System->m_SaveUsing = SaveChip_FlashRam;
+    }
+    if (g_System->m_SaveUsing == SaveChip_FlashRam)
+    {
+        g_MMU->WriteToFlashCommand(m_MemLookupValue.UW[0]);
     }
 }
