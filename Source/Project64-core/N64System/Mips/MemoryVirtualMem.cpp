@@ -2669,23 +2669,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     case 0x04700000: Write32RDRAMInterface(); break;
     case 0x04800000: Write32SerialInterface(); break;
     case 0x08000000: Write32CartridgeDomain2Address2(); break;
-    case 0x1FC00000:
-        if (PAddr < 0x1FC007C0)
-        {
-            return false;
-        }
-        else if (PAddr < 0x1FC00800)
-        {
-            Value = swap32by8(Value);
-            *(uint32_t *)(&m_PifRam[PAddr - 0x1FC007C0]) = Value;
-            if (PAddr == 0x1FC007FC)
-            {
-                PifRamWrite();
-            }
-            return true;
-        }
-        return false;
-        break;
+    case 0x1FC00000: Write32PifRam(); break;
     default:
         return false;
         break;
@@ -5775,5 +5759,25 @@ void CMipsMemoryVM::Write32CartridgeDomain2Address2(void)
     if (g_System->m_SaveUsing == SaveChip_FlashRam)
     {
         g_MMU->WriteToFlashCommand(m_MemLookupValue.UW[0]);
+    }
+}
+
+void CMipsMemoryVM::Write32PifRam(void)
+{
+    if ((m_MemLookupAddress & 0x1FFFFFFF) < 0x1FC007C0)
+    {
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+    else if ((m_MemLookupAddress & 0x1FFFFFFF) < 0x1FC00800)
+    {
+        uint32_t Value = swap32by8(m_MemLookupValue.UW[0]);
+        *(uint32_t *)(&g_MMU->m_PifRam[(m_MemLookupAddress & 0x1FFFFFFF) - 0x1FC007C0]) = Value;
+        if ((m_MemLookupAddress & 0x1FFFFFFF) == 0x1FC007FC)
+        {
+            g_MMU->PifRamWrite();
+        }
     }
 }

@@ -206,6 +206,7 @@ private:
     static void Write32RDRAMInterface(void);
     static void Write32SerialInterface(void);
     static void Write32CartridgeDomain2Address2(void);
+    static void Write32PifRam(void);
 
     CMipsMemory_CallBack * const m_CBClass;
 
