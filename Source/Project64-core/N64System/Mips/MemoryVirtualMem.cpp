@@ -2390,7 +2390,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
     g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
     return EXCEPTION_EXECUTE_HANDLER;
-    }
+}
 
 bool CMipsMemoryVM::LB_NonMemory(uint32_t PAddr, uint32_t* Value, bool /*SignExtend*/)
 {
@@ -2431,9 +2431,9 @@ bool CMipsMemoryVM::LB_NonMemory(uint32_t PAddr, uint32_t* Value, bool /*SignExt
         {
             *Value = 0;
             return false;
-    }
+        }
 #endif
-}
+    }
     //	switch (PAddr & 0xFFF00000)
     //{
     //	default:
@@ -2537,7 +2537,7 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t PAddr, uint8_t Value)
             g_Notify->DisplayError(L"FrameBufferWrite");
             if (FrameBufferWrite) { FrameBufferWrite(PAddr, 1); }
             break;
-    }
+        }
 #endif
         if (PAddr < RdramSize())
         {
@@ -2549,7 +2549,7 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t PAddr, uint8_t Value)
         break;
     default:
         return false;
-}
+    }
 
     return true;
 }
@@ -2577,7 +2577,7 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
             //VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_NOACCESS, &OldProtect);
             g_Notify->DisplayError(L"PAddr = %x", PAddr);
             break;
-    }
+        }
 #endif
         if (PAddr < RdramSize())
         {
@@ -2589,7 +2589,7 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
         break;
     default:
         return false;
-}
+    }
 
     return true;
 }
@@ -2609,15 +2609,15 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             {
                 uint32_t OldProtect;
                 VirtualProtect(ROM, RomFileSize, PAGE_NOACCESS, &OldProtect);
-        }
+            }
 #endif
             //LogMessage("%X: Wrote To Rom %08X from %08X",PROGRAM_COUNTER,Value,PAddr);
-    }
+        }
         else
         {
             return false;
         }
-}
+    }
 
     switch (PAddr & 0xFFF00000)
     {
@@ -2639,7 +2639,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             g_Notify->DisplayError(L"FrameBufferWrite %X", PAddr);
             if (FrameBufferWrite) { FrameBufferWrite(PAddr, 4); }
             break;
-    }
+        }
 #endif
         if (PAddr < RdramSize())
         {
@@ -2662,97 +2662,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
         }
         break;
     case 0x04100000: Write32DPCommandRegisters(); break;
-    case 0x04300000:
-        switch (PAddr)
-        {
-        case 0x04300000:
-            g_Reg->MI_MODE_REG &= ~0x7F;
-            g_Reg->MI_MODE_REG |= (Value & 0x7F);
-            if ((Value & MI_CLR_INIT) != 0)
-            {
-                g_Reg->MI_MODE_REG &= ~MI_MODE_INIT;
-            }
-            if ((Value & MI_SET_INIT) != 0)
-            {
-                g_Reg->MI_MODE_REG |= MI_MODE_INIT;
-            }
-            if ((Value & MI_CLR_EBUS) != 0)
-            {
-                g_Reg->MI_MODE_REG &= ~MI_MODE_EBUS;
-            }
-            if ((Value & MI_SET_EBUS) != 0)
-            {
-                g_Reg->MI_MODE_REG |= MI_MODE_EBUS;
-            }
-            if ((Value & MI_CLR_DP_INTR) != 0)
-            {
-                g_Reg->MI_INTR_REG &= ~MI_INTR_DP;
-                g_Reg->m_GfxIntrReg &= ~MI_INTR_DP;
-                g_Reg->CheckInterrupts();
-            }
-            if ((Value & MI_CLR_RDRAM) != 0)
-            {
-                g_Reg->MI_MODE_REG &= ~MI_MODE_RDRAM;
-            }
-            if ((Value & MI_SET_RDRAM) != 0)
-            {
-                g_Reg->MI_MODE_REG |= MI_MODE_RDRAM;
-            }
-            break;
-        case 0x0430000C:
-            if ((Value & MI_INTR_MASK_CLR_SP) != 0)
-            {
-                g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SP;
-            }
-            if ((Value & MI_INTR_MASK_SET_SP) != 0)
-            {
-                g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SP;
-            }
-            if ((Value & MI_INTR_MASK_CLR_SI) != 0)
-            {
-                g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SI;
-            }
-            if ((Value & MI_INTR_MASK_SET_SI) != 0)
-            {
-                g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SI;
-            }
-            if ((Value & MI_INTR_MASK_CLR_AI) != 0)
-            {
-                g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_AI;
-            }
-            if ((Value & MI_INTR_MASK_SET_AI) != 0)
-            {
-                g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_AI;
-            }
-            if ((Value & MI_INTR_MASK_CLR_VI) != 0)
-            {
-                g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_VI;
-            }
-            if ((Value & MI_INTR_MASK_SET_VI) != 0)
-            {
-                g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_VI;
-            }
-            if ((Value & MI_INTR_MASK_CLR_PI) != 0)
-            {
-                g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_PI;
-            }
-            if ((Value & MI_INTR_MASK_SET_PI) != 0)
-            {
-                g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_PI;
-            }
-            if ((Value & MI_INTR_MASK_CLR_DP) != 0)
-            {
-                g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_DP;
-            }
-            if ((Value & MI_INTR_MASK_SET_DP) != 0)
-            {
-                g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_DP;
-            }
-            break;
-        default:
-            return false;
-        }
-        break;
+    case 0x04300000: Write32MIPSInterface(); break;
     case 0x04400000:
         switch (PAddr)
         {
@@ -2771,7 +2681,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             if (g_Reg->VI_ORIGIN_REG > 0x280)
             {
                 SetFrameBuffer(g_Reg->VI_ORIGIN_REG, (uint32_t)(VI_WIDTH_REG * (VI_WIDTH_REG *.75)));
-        }
+            }
 #endif
             g_Reg->VI_ORIGIN_REG = (Value & 0xFFFFFF);
             //if (UpdateScreen != NULL )
@@ -5457,9 +5367,9 @@ void CMipsMemoryVM::Load32Rom(void)
         {
             uint32_t OldProtect;
             VirtualProtect(ROM, RomFileSize, PAGE_READONLY, &OldProtect);
-    }
+        }
 #endif
-}
+    }
     else if ((m_MemLookupAddress & 0xFFFFFFF) < g_MMU->m_RomSize)
     {
         m_MemLookupValue.UW[0] = *(uint32_t *)&g_MMU->m_Rom[(m_MemLookupAddress & 0xFFFFFFF)];
@@ -5730,6 +5640,102 @@ void CMipsMemoryVM::Write32DPCommandRegisters(void)
             //}
         }
 #endif
+        break;
+    default:
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+}
+
+void CMipsMemoryVM::Write32MIPSInterface(void)
+{
+    switch ((m_MemLookupAddress & 0xFFFFFFF))
+    {
+    case 0x04300000:
+        g_Reg->MI_MODE_REG &= ~0x7F;
+        g_Reg->MI_MODE_REG |= (m_MemLookupValue.UW[0] & 0x7F);
+        if ((m_MemLookupValue.UW[0] & MI_CLR_INIT) != 0)
+        {
+            g_Reg->MI_MODE_REG &= ~MI_MODE_INIT;
+        }
+        if ((m_MemLookupValue.UW[0] & MI_SET_INIT) != 0)
+        {
+            g_Reg->MI_MODE_REG |= MI_MODE_INIT;
+        }
+        if ((m_MemLookupValue.UW[0] & MI_CLR_EBUS) != 0)
+        {
+            g_Reg->MI_MODE_REG &= ~MI_MODE_EBUS;
+        }
+        if ((m_MemLookupValue.UW[0] & MI_SET_EBUS) != 0)
+        {
+            g_Reg->MI_MODE_REG |= MI_MODE_EBUS;
+        }
+        if ((m_MemLookupValue.UW[0] & MI_CLR_DP_INTR) != 0)
+        {
+            g_Reg->MI_INTR_REG &= ~MI_INTR_DP;
+            g_Reg->m_GfxIntrReg &= ~MI_INTR_DP;
+            g_Reg->CheckInterrupts();
+        }
+        if ((m_MemLookupValue.UW[0] & MI_CLR_RDRAM) != 0)
+        {
+            g_Reg->MI_MODE_REG &= ~MI_MODE_RDRAM;
+        }
+        if ((m_MemLookupValue.UW[0] & MI_SET_RDRAM) != 0)
+        {
+            g_Reg->MI_MODE_REG |= MI_MODE_RDRAM;
+        }
+        break;
+    case 0x0430000C:
+        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_CLR_SP) != 0)
+        {
+            g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SP;
+        }
+        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_SET_SP) != 0)
+        {
+            g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SP;
+        }
+        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_CLR_SI) != 0)
+        {
+            g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_SI;
+        }
+        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_SET_SI) != 0)
+        {
+            g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_SI;
+        }
+        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_CLR_AI) != 0)
+        {
+            g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_AI;
+        }
+        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_SET_AI) != 0)
+        {
+            g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_AI;
+        }
+        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_CLR_VI) != 0)
+        {
+            g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_VI;
+        }
+        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_SET_VI) != 0)
+        {
+            g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_VI;
+        }
+        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_CLR_PI) != 0)
+        {
+            g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_PI;
+        }
+        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_SET_PI) != 0)
+        {
+            g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_PI;
+        }
+        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_CLR_DP) != 0)
+        {
+            g_Reg->MI_INTR_MASK_REG &= ~MI_INTR_MASK_DP;
+        }
+        if ((m_MemLookupValue.UW[0] & MI_INTR_MASK_SET_DP) != 0)
+        {
+            g_Reg->MI_INTR_MASK_REG |= MI_INTR_MASK_DP;
+        }
         break;
     default:
         if (bHaveDebugger())

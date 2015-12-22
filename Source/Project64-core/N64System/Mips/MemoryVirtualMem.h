@@ -199,6 +199,7 @@ private:
     static void Write32RDRAMRegisters(void);
     static void Write32SPRegisters(void);
     static void Write32DPCommandRegisters(void);
+    static void Write32MIPSInterface(void);
 
     CMipsMemory_CallBack * const m_CBClass;
 
