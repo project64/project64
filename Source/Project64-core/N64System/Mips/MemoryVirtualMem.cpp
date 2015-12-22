@@ -2667,27 +2667,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
     case 0x04500000: Write32AudioInterface(); break;
     case 0x04600000: Write32PeripheralInterface(); break;
     case 0x04700000: Write32RDRAMInterface(); break;
-    case 0x04800000:
-        switch (PAddr)
-        {
-        case 0x04800000: g_Reg->SI_DRAM_ADDR_REG = Value; break;
-        case 0x04800004:
-            g_Reg->SI_PIF_ADDR_RD64B_REG = Value;
-            SI_DMA_READ();
-            break;
-        case 0x04800010:
-            g_Reg->SI_PIF_ADDR_WR64B_REG = Value;
-            SI_DMA_WRITE();
-            break;
-        case 0x04800018:
-            g_Reg->MI_INTR_REG &= ~MI_INTR_SI;
-            g_Reg->SI_STATUS_REG &= ~SI_STATUS_INTERRUPT;
-            g_Reg->CheckInterrupts();
-            break;
-        default:
-            return false;
-        }
-        break;
+    case 0x04800000: Write32SerialInterface(); break;
     case 0x08000000:
         if (g_System->m_SaveUsing == SaveChip_Sram)
         {
@@ -5761,6 +5741,32 @@ void CMipsMemoryVM::Write32RDRAMInterface(void)
     case 0x04700014: g_Reg->RI_LATENCY_REG = m_MemLookupValue.UW[0]; break;
     case 0x04700018: g_Reg->RI_RERROR_REG = m_MemLookupValue.UW[0]; break;
     case 0x0470001C: g_Reg->RI_WERROR_REG = m_MemLookupValue.UW[0]; break;
+    default:
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+}
+
+void CMipsMemoryVM::Write32SerialInterface(void)
+{
+    switch (m_MemLookupAddress & 0xFFFFFFF)
+    {
+    case 0x04800000: g_Reg->SI_DRAM_ADDR_REG = m_MemLookupValue.UW[0]; break;
+    case 0x04800004:
+        g_Reg->SI_PIF_ADDR_RD64B_REG = m_MemLookupValue.UW[0];
+        g_MMU->SI_DMA_READ();
+        break;
+    case 0x04800010:
+        g_Reg->SI_PIF_ADDR_WR64B_REG = m_MemLookupValue.UW[0];
+        g_MMU->SI_DMA_WRITE();
+        break;
+    case 0x04800018:
+        g_Reg->MI_INTR_REG &= ~MI_INTR_SI;
+        g_Reg->SI_STATUS_REG &= ~SI_STATUS_INTERRUPT;
+        g_Reg->CheckInterrupts();
+        break;
     default:
         if (bHaveDebugger())
         {
