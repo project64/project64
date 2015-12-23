@@ -1506,7 +1506,7 @@ void CCodeSection::AddParent(CCodeSection * Parent)
         }
         else
         {
-            g_Notify->DisplayError(L"How are these sections joined?????");
+            g_Notify->DisplayError("How are these sections joined?????");
         }
         m_RegWorkingSet = m_RegEnter;
     }
