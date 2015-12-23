@@ -152,6 +152,7 @@ class CRomBrowser
     CIniFile             * m_ExtIniFile;
     CIniFile             * m_ZipIniFile;
     bool                   m_AllowSelectionLastRom;
+    static std::wstring    m_UnknownGoodName;
 
     void  AddFileNameToList(strlist & FileList, const stdstr & Directory, CPath & File);
     void  AddRomToList(const char * RomLocation, const char * lpLastRom);

@@ -3,6 +3,8 @@
 #include <commctrl.h>
 #include <shlobj.h>
 
+std::wstring CRomBrowser::m_UnknownGoodName;
+
 CRomBrowser::CRomBrowser(HWND & MainWindow, HWND & StatusWindow) :
 m_MainWindow(MainWindow),
 m_StatusWindow(StatusWindow),
@@ -1323,11 +1325,18 @@ int32_t CALLBACK CRomBrowser::RomList_CompareItems(uint32_t lParam1, uint32_t lP
     ROM_INFO * pRomInfo2 = &_this->m_RomInfo[SortFieldInfo->KeyAscend ? lParam2 : lParam1];
     int32_t result;
 
+    const wchar_t * GoodName1 = NULL, *GoodName2 = NULL;
+    if (SortFieldInfo->Key == RB_GoodName)
+    {
+        GoodName1 = wcscmp(L"#340#", pRomInfo1->GoodName) != 0 ? pRomInfo1->GoodName : m_UnknownGoodName.c_str();
+        GoodName2 = wcscmp(L"#340#", pRomInfo2->GoodName) != 0 ? pRomInfo2->GoodName : m_UnknownGoodName.c_str();
+    }
+
     switch (SortFieldInfo->Key)
     {
     case RB_FileName: result = (int32_t)lstrcmpi(pRomInfo1->FileName, pRomInfo2->FileName); break;
     case RB_InternalName: result = (int32_t)lstrcmpiW(pRomInfo1->InternalName, pRomInfo2->InternalName); break;
-    case RB_GoodName: result = (int32_t)lstrcmpiW(pRomInfo1->GoodName, pRomInfo2->GoodName); break;
+    case RB_GoodName: result = (int32_t)lstrcmpiW(GoodName1, GoodName2); break;
     case RB_Status: result = (int32_t)lstrcmpiW(pRomInfo1->Status, pRomInfo2->Status); break;
     case RB_RomSize: result = (int32_t)pRomInfo1->RomSize - (int32_t)pRomInfo2->RomSize; break;
     case RB_CoreNotes: result = (int32_t)lstrcmpiW(pRomInfo1->CoreNotes, pRomInfo2->CoreNotes); break;
@@ -1547,6 +1556,7 @@ void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
 void CRomBrowser::RomList_SortList(void)
 {
     SORT_FIELD SortFieldInfo;
+    m_UnknownGoodName = wGS(RB_NOT_GOOD_FILE);
 
     for (int32_t count = NoOfSortKeys; count >= 0; count--)
     {
