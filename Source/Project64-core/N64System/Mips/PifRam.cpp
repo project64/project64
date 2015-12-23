@@ -145,7 +145,7 @@ void CPifRam::PifRamRead()
             {
                 if (bShowPifRamErrors())
                 {
-                    g_Notify->DisplayError(stdstr_f("Unknown Command in PifRamRead(%X)", m_PifRam[CurPos]).ToUTF16().c_str());
+                    g_Notify->DisplayError(stdstr_f("Unknown Command in PifRamRead(%X)", m_PifRam[CurPos]).c_str());
                 }
                 CurPos = 0x40;
             }
@@ -210,7 +210,7 @@ void CPifRam::PifRamWrite()
         default:
             if (bShowPifRamErrors())
             {
-                g_Notify->DisplayError(stdstr_f("Unkown PifRam control: %d", m_PifRam[0x3F]).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f("Unkown PifRam control: %d", m_PifRam[0x3F]).c_str());
             }
         }
         return;
@@ -255,7 +255,7 @@ void CPifRam::PifRamWrite()
                 {
                     if (bShowPifRamErrors())
                     {
-                        g_Notify->DisplayError(L"Command on channel 5?");
+                        g_Notify->DisplayError("Command on channel 5?");
                     }
                 }
                 CurPos += m_PifRam[CurPos] + (m_PifRam[CurPos + 1] & 0x3F) + 1;
@@ -265,7 +265,7 @@ void CPifRam::PifRamWrite()
             {
                 if (bShowPifRamErrors())
                 {
-                    g_Notify->DisplayError(stdstr_f("Unknown Command in PifRamWrite(%X)", m_PifRam[CurPos]).ToUTF16().c_str());
+                    g_Notify->DisplayError(stdstr_f("Unknown Command in PifRamWrite(%X)", m_PifRam[CurPos]).c_str());
                 }
                 CurPos = 0x40;
             }
@@ -289,7 +289,7 @@ void CPifRam::SI_DMA_READ()
     {
         if (bShowPifRamErrors())
         {
-            g_Notify->DisplayError(__FUNCTIONW__ L"\nSI_DRAM_ADDR_REG not in RDRam space");
+            g_Notify->DisplayError(__FUNCTION__ "\nSI_DRAM_ADDR_REG not in RDRam space");
         }
         return;
     }
@@ -375,7 +375,7 @@ void CPifRam::SI_DMA_WRITE()
     {
         if (bShowPifRamErrors())
         {
-            g_Notify->DisplayError(L"SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
+            g_Notify->DisplayError("SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
         }
         return;
     }
@@ -471,11 +471,11 @@ void CPifRam::ProcessControllerCommand(int Control, uint8_t * Command)
         {
             if (Command[0] != 1)
             {
-                g_Notify->DisplayError(L"What am I meant to do with this Controller Command");
+                g_Notify->DisplayError("What am I meant to do with this Controller Command");
             }
             if (Command[1] != 3)
             {
-                g_Notify->DisplayError(L"What am I meant to do with this Controller Command");
+                g_Notify->DisplayError("What am I meant to do with this Controller Command");
             }
         }
         if (Controllers[Control].Present == true)
@@ -502,11 +502,11 @@ void CPifRam::ProcessControllerCommand(int Control, uint8_t * Command)
         {
             if (Command[0] != 1)
             {
-                g_Notify->DisplayError(L"What am I meant to do with this Controller Command");
+                g_Notify->DisplayError("What am I meant to do with this Controller Command");
             }
             if (Command[1] != 4)
             {
-                g_Notify->DisplayError(L"What am I meant to do with this Controller Command");
+                g_Notify->DisplayError("What am I meant to do with this Controller Command");
             }
         }
         if (Controllers[Control].Present == false)
@@ -523,11 +523,11 @@ void CPifRam::ProcessControllerCommand(int Control, uint8_t * Command)
         {
             if (Command[0] != 3)
             {
-                g_Notify->DisplayError(L"What am I meant to do with this Controller Command");
+                g_Notify->DisplayError("What am I meant to do with this Controller Command");
             }
             if (Command[1] != 33)
             {
-                g_Notify->DisplayError(L"What am I meant to do with this Controller Command");
+                g_Notify->DisplayError("What am I meant to do with this Controller Command");
             }
         }
         if (Controllers[Control].Present == true)
@@ -565,11 +565,11 @@ void CPifRam::ProcessControllerCommand(int Control, uint8_t * Command)
         {
             if (Command[0] != 35)
             {
-                g_Notify->DisplayError(L"What am I meant to do with this Controller Command");
+                g_Notify->DisplayError("What am I meant to do with this Controller Command");
             }
             if (Command[1] != 1)
             {
-                g_Notify->DisplayError(L"What am I meant to do with this Controller Command");
+                g_Notify->DisplayError("What am I meant to do with this Controller Command");
             }
         }
         if (Controllers[Control].Present == true)
@@ -599,7 +599,7 @@ void CPifRam::ProcessControllerCommand(int Control, uint8_t * Command)
     default:
         if (bShowPifRamErrors())
         {
-            g_Notify->DisplayError(stdstr_f("Unknown ControllerCommand %d", Command[2]).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f("Unknown ControllerCommand %d", Command[2]).c_str());
         }
     }
 }
@@ -614,8 +614,8 @@ void CPifRam::ReadControllerCommand(int Control, uint8_t * Command) {
         {
             if (bShowPifRamErrors())
             {
-                if (Command[0] != 1) { g_Notify->DisplayError(L"What am I meant to do with this Controller Command"); }
-                if (Command[1] != 4) { g_Notify->DisplayError(L"What am I meant to do with this Controller Command"); }
+                if (Command[0] != 1) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
+                if (Command[1] != 4) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
             }
 
             const uint32_t buttons = g_BaseSystem->GetButtons(Control);

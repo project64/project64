@@ -178,7 +178,7 @@ class CRomBrowser
     bool  GetRomFileNames(strlist & FileList, const CPath & BaseDirectory, const stdstr & Directory, bool InWatchThread);
     MD5   RomListHash(strlist & FileList);
 
-    static void  __stdcall NotificationCB(LPCWSTR Status, CRomBrowser * _this);
+    static void NotificationCB(const char * Status, CRomBrowser * _this);
 
     //Watch Directory Changed function
     HANDLE m_WatchThread, m_WatchStopEvent;

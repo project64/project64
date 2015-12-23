@@ -159,7 +159,7 @@ bool CCheatsUI::CheatChanged(HWND hDlg)
     {
         return false;
     }
-    int Result = MessageBoxW(hDlg, GS(CHEAT_CHANGED_MSG), GS(CHEAT_CHANGED_TITLE), MB_YESNOCANCEL);
+    int Result = MessageBoxW(hDlg, wGS(CHEAT_CHANGED_MSG).c_str(), wGS(CHEAT_CHANGED_TITLE).c_str(), MB_YESNOCANCEL);
     if (Result == IDCANCEL)
     {
         return true;
@@ -188,15 +188,15 @@ int CALLBACK CCheatsUI::CheatAddProc(HWND hDlg, uint32_t uMsg, uint32_t wParam, 
         CCheatsUI   * _this = (CCheatsUI *)lParam;
         SetProp(hDlg, "Class", _this);
 
-        SetWindowTextW(hDlg, GS(CHEAT_ADDCHEAT_FRAME));
-        SetWindowTextW(GetDlgItem(hDlg, IDC_NAME), GS(CHEAT_ADDCHEAT_NAME));
-        SetWindowTextW(GetDlgItem(hDlg, IDC_CODE), GS(CHEAT_ADDCHEAT_CODE));
-        SetWindowTextW(GetDlgItem(hDlg, IDC_LABEL_OPTIONS), GS(CHEAT_ADDCHEAT_OPT));
-        SetWindowTextW(GetDlgItem(hDlg, IDC_CODE_DES), GS(CHEAT_ADDCHEAT_CODEDES));
-        SetWindowTextW(GetDlgItem(hDlg, IDC_LABEL_OPTIONS_FORMAT), GS(CHEAT_ADDCHEAT_OPTDES));
-        SetWindowTextW(GetDlgItem(hDlg, IDC_CHEATNOTES), GS(CHEAT_ADDCHEAT_NOTES));
-        SetWindowTextW(GetDlgItem(hDlg, IDC_NEWCHEAT), GS(CHEAT_ADDCHEAT_NEW));
-        SetWindowTextW(GetDlgItem(hDlg, IDC_ADD), GS(CHEAT_ADDCHEAT_ADD));
+        SetWindowTextW(hDlg, wGS(CHEAT_ADDCHEAT_FRAME).c_str());
+        SetWindowTextW(GetDlgItem(hDlg, IDC_NAME), wGS(CHEAT_ADDCHEAT_NAME).c_str());
+        SetWindowTextW(GetDlgItem(hDlg, IDC_CODE), wGS(CHEAT_ADDCHEAT_CODE).c_str());
+        SetWindowTextW(GetDlgItem(hDlg, IDC_LABEL_OPTIONS), wGS(CHEAT_ADDCHEAT_OPT).c_str());
+        SetWindowTextW(GetDlgItem(hDlg, IDC_CODE_DES), wGS(CHEAT_ADDCHEAT_CODEDES).c_str());
+        SetWindowTextW(GetDlgItem(hDlg, IDC_LABEL_OPTIONS_FORMAT), wGS(CHEAT_ADDCHEAT_OPTDES).c_str());
+        SetWindowTextW(GetDlgItem(hDlg, IDC_CHEATNOTES), wGS(CHEAT_ADDCHEAT_NOTES).c_str());
+        SetWindowTextW(GetDlgItem(hDlg, IDC_NEWCHEAT), wGS(CHEAT_ADDCHEAT_NEW).c_str());
+        SetWindowTextW(GetDlgItem(hDlg, IDC_ADD), wGS(CHEAT_ADDCHEAT_ADD).c_str());
         SetProp(hDlg, "validcodes", false);
         _this->RecordCheatValues(hDlg);
     }
@@ -341,7 +341,7 @@ int CALLBACK CCheatsUI::CheatAddProc(HWND hDlg, uint32_t uMsg, uint32_t wParam, 
             SetDlgItemText(hDlg, IDC_NOTES, "");
             EnableWindow(GetDlgItem(hDlg, IDC_ADD), false);
             EnableWindow(GetDlgItem(hDlg, IDC_CHEAT_OPTIONS), false);
-            SetDlgItemTextW(hDlg, IDC_ADD, GS(CHEAT_ADDNEW));
+            SetDlgItemTextW(hDlg, IDC_ADD, wGS(CHEAT_ADDNEW).c_str());
             _this->RecordCheatValues(hDlg);
         }
         break;
@@ -428,7 +428,7 @@ int CALLBACK CCheatsUI::CheatAddProc(HWND hDlg, uint32_t uMsg, uint32_t wParam, 
         SetDlgItemText(hDlg, IDC_NOTES, CheatNotesStr.c_str());
 
         SendMessage(hDlg, WM_COMMAND, MAKELPARAM(IDC_CHEAT_CODES, EN_CHANGE), (LPARAM)GetDlgItem(hDlg, IDC_CHEAT_CODES));
-        SetDlgItemTextW(hDlg, IDC_ADD, GS(CHEAT_EDITCHEAT_UPDATE));
+        SetDlgItemTextW(hDlg, IDC_ADD, wGS(CHEAT_EDITCHEAT_UPDATE).c_str());
 
         _this->RecordCheatValues(hDlg);
     }
@@ -452,9 +452,9 @@ int CALLBACK CCheatsUI::CheatListProc(HWND hDlg, uint32_t uMsg, uint32_t wParam,
         RECT rcList;
         RECT rcButton;
 
-        SetWindowTextW(GetDlgItem(hDlg, IDC_CHEATSFRAME), GS(CHEAT_LIST_FRAME));
-        SetWindowTextW(GetDlgItem(hDlg, IDC_NOTESFRAME), GS(CHEAT_NOTES_FRAME));
-        SetWindowTextW(GetDlgItem(hDlg, IDC_UNMARK), GS(CHEAT_MARK_NONE));
+        SetWindowTextW(GetDlgItem(hDlg, IDC_CHEATSFRAME), wGS(CHEAT_LIST_FRAME).c_str());
+        SetWindowTextW(GetDlgItem(hDlg, IDC_NOTESFRAME), wGS(CHEAT_NOTES_FRAME).c_str());
+        SetWindowTextW(GetDlgItem(hDlg, IDC_UNMARK), wGS(CHEAT_MARK_NONE).c_str());
 
         GetWindowRect(GetDlgItem(hDlg, IDC_CHEATSFRAME), &rcList);
         GetWindowRect(GetDlgItem(hDlg, IDC_UNMARK), &rcButton);
@@ -491,7 +491,7 @@ int CALLBACK CCheatsUI::CheatListProc(HWND hDlg, uint32_t uMsg, uint32_t wParam,
         {
             TVITEM item;
 
-            int Response = MessageBoxW(hDlg, GS(MSG_DEL_SURE), GS(MSG_DEL_TITLE), MB_YESNO | MB_ICONQUESTION);
+            int Response = MessageBoxW(hDlg, wGS(MSG_DEL_SURE).c_str(), wGS(MSG_DEL_TITLE).c_str(), MB_YESNO | MB_ICONQUESTION);
             if (Response != IDYES) { break; }
 
             //Delete selected cheat
@@ -546,7 +546,7 @@ int CALLBACK CCheatsUI::CheatListProc(HWND hDlg, uint32_t uMsg, uint32_t wParam,
 
             GetCursorPos(&Mouse);
 
-            MenuSetText(hPopupMenu, 0, GS(CHEAT_DELETE), NULL);
+            MenuSetText(hPopupMenu, 0, wGS(CHEAT_DELETE).c_str(), NULL);
 
             if (_this->m_hSelectedItem != NULL &&
                 TreeView_GetChild(_this->m_hCheatTree, _this->m_hSelectedItem) == NULL)
@@ -731,10 +731,10 @@ int CALLBACK CCheatsUI::CheatsCodeExProc(HWND hDlg, uint32_t uMsg, uint32_t wPar
         stdstr CheatName = _this->GetCheatName(item.lParam, false);
 
         //Set up language support for dialog
-        SetWindowTextW(hDlg, GS(CHEAT_CODE_EXT_TITLE));
-        SetDlgItemTextW(hDlg, IDC_NOTE, GS(CHEAT_CODE_EXT_TXT));
-        SetDlgItemTextW(hDlg, IDOK, GS(CHEAT_OK));
-        SetDlgItemTextW(hDlg, IDCANCEL, GS(CHEAT_CANCEL));
+        SetWindowTextW(hDlg, wGS(CHEAT_CODE_EXT_TITLE).c_str());
+        SetDlgItemTextW(hDlg, IDC_NOTE, wGS(CHEAT_CODE_EXT_TXT).c_str());
+        SetDlgItemTextW(hDlg, IDOK, wGS(CHEAT_OK).c_str());
+        SetDlgItemTextW(hDlg, IDCANCEL, wGS(CHEAT_CANCEL).c_str());
         SetDlgItemText(hDlg, IDC_CHEAT_NAME, CheatName.c_str());
 
         //Read through and add all options to the list box
@@ -821,10 +821,10 @@ int CALLBACK CCheatsUI::CheatsCodeQuantProc(HWND hDlg, uint32_t uMsg, uint32_t w
         stdstr Value(g_Settings->LoadStringIndex(Cheat_Extension, item.lParam));
 
         //Set up language support for dialog
-        SetWindowTextW(hDlg, GS(CHEAT_CODE_EXT_TITLE));
-        SetDlgItemTextW(hDlg, IDC_DIGITAL_TEXT, GS(CHEAT_CHOOSE_VALUE));
-        SetDlgItemTextW(hDlg, IDC_VALUE_TEXT, GS(CHEAT_VALUE));
-        SetDlgItemTextW(hDlg, IDC_NOTES_TEXT, GS(CHEAT_NOTES));
+        SetWindowTextW(hDlg, wGS(CHEAT_CODE_EXT_TITLE).c_str());
+        SetDlgItemTextW(hDlg, IDC_DIGITAL_TEXT, wGS(CHEAT_CHOOSE_VALUE).c_str());
+        SetDlgItemTextW(hDlg, IDC_VALUE_TEXT, wGS(CHEAT_VALUE).c_str());
+        SetDlgItemTextW(hDlg, IDC_NOTES_TEXT, wGS(CHEAT_NOTES).c_str());
         SetDlgItemText(hDlg, IDC_NOTES, RangeNote.c_str());
         SetDlgItemText(hDlg, IDC_CHEAT_NAME, CheatName.c_str());
         SetDlgItemText(hDlg, IDC_VALUE, Value.c_str());
@@ -935,7 +935,7 @@ int CALLBACK CCheatsUI::ManageCheatsProc(HWND hDlg, uint32_t uMsg, uint32_t wPar
         WndPlac.length = sizeof(WndPlac);
         GetWindowPlacement(hDlg, &WndPlac);
 
-        SetWindowTextW(hDlg, GS(CHEAT_TITLE));
+        SetWindowTextW(hDlg, wGS(CHEAT_TITLE).c_str());
         _this->m_hSelectCheat = CreateDialogParamW(GetModuleHandle(NULL), MAKEINTRESOURCEW(IDD_Cheats_List), hDlg, (DLGPROC)CheatListProc, (LPARAM)_this);
         SetWindowPos(_this->m_hSelectCheat, HWND_TOP, 5, 8, 0, 0, SWP_NOSIZE);
         ShowWindow(_this->m_hSelectCheat, SW_SHOW);

@@ -28,20 +28,20 @@ public:
     void WindowMode(void) const;
 
     //Error Messages
-    virtual void DisplayError(const wchar_t * Message) const;
+    virtual void DisplayError(const char * Message) const;
     virtual void DisplayError(LanguageStringID StringID) const;
 
-    virtual void FatalError(const wchar_t * Message) const;
+    virtual void FatalError(const char * Message) const;
     virtual void FatalError(LanguageStringID StringID) const;
 
     //User Feedback
-    virtual void DisplayMessage(int DisplayTime, const wchar_t * Message) const;
+    virtual void DisplayMessage(int DisplayTime, const char * Message) const;
     virtual void DisplayMessage(int DisplayTime, LanguageStringID StringID) const;
 
-    virtual void DisplayMessage2(const wchar_t * Message) const;
+    virtual void DisplayMessage2(const char * Message) const;
 
     // Ask a Yes/No Question to the user, yes = true, no = false
-    virtual bool AskYesNoQuestion(const wchar_t * Question) const;
+    virtual bool AskYesNoQuestion(const char * Question) const;
 
     virtual void BreakPoint(const char * FileName, int32_t LineNumber);
 

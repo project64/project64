@@ -48,7 +48,7 @@ void CFramePerSecond::Reset(bool ClearDisplay)
     }
     if (ClearDisplay)
     {
-        g_Notify->DisplayMessage2(L"");
+        g_Notify->DisplayMessage2("");
         return;
     }
 
@@ -81,7 +81,7 @@ void CFramePerSecond::DisplayViCounter(uint32_t FrameRate)
     {
         if (FrameRate != 0)
         {
-            g_Notify->DisplayMessage2(stdstr_f("VI/s: %d.00", FrameRate).ToUTF16().c_str());
+            g_Notify->DisplayMessage2(stdstr_f("VI/s: %d.00", FrameRate).c_str());
         }
         else
         {
@@ -94,11 +94,11 @@ void CFramePerSecond::DisplayViCounter(uint32_t FrameRate)
                 {
                     Total += m_Frames[count];
                 }
-                g_Notify->DisplayMessage2(stdstr_f("VI/s: %.2f", m_Frequency / ((double)Total / (NoOfFrames << 3))).ToUTF16().c_str());
+                g_Notify->DisplayMessage2(stdstr_f("VI/s: %.2f", m_Frequency / ((double)Total / (NoOfFrames << 3))).c_str());
             }
             else
             {
-                g_Notify->DisplayMessage2(L"VI/s: -.--");
+                g_Notify->DisplayMessage2("VI/s: -.--");
             }
         }
     }
@@ -124,11 +124,11 @@ void CFramePerSecond::DisplayViCounter(uint32_t FrameRate)
             }
             else
             {
-                g_Notify->DisplayMessage2(L"");
+                g_Notify->DisplayMessage2("");
                 return;
             }
         }
-        g_Notify->DisplayMessage2(stdstr_f("%.1f %%", Percent * 100).ToUTF16().c_str());
+        g_Notify->DisplayMessage2(stdstr_f("%.1f %%", Percent * 100).c_str());
     }
 }
 
@@ -168,7 +168,7 @@ void CFramePerSecond::DisplayDlCounter(uint32_t FrameRate)
     }
     if (FrameRate != 0)
     {
-        g_Notify->DisplayMessage2(stdstr_f("DL/s: %d.00", FrameRate).ToUTF16().c_str());
+        g_Notify->DisplayMessage2(stdstr_f("DL/s: %d.00", FrameRate).c_str());
     }
     else
     {
@@ -181,11 +181,11 @@ void CFramePerSecond::DisplayDlCounter(uint32_t FrameRate)
             {
                 Total += m_Frames[count];
             }
-            g_Notify->DisplayMessage2(stdstr_f("DL/s: %.1f", m_Frequency / ((double)Total / (NoOfFrames << 2))).ToUTF16().c_str());
+            g_Notify->DisplayMessage2(stdstr_f("DL/s: %.1f", m_Frequency / ((double)Total / (NoOfFrames << 2))).c_str());
         }
         else
         {
-            g_Notify->DisplayMessage2(L"DL/s: -.--");
+            g_Notify->DisplayMessage2("DL/s: -.--");
         }
     }
 }

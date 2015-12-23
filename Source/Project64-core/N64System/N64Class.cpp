@@ -267,13 +267,13 @@ bool CN64System::EmulationStarting(void * hThread, uint32_t ThreadId)
         }
         catch (...)
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ ": Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ ": Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).c_str());
         }
     }
     else
     {
         WriteTrace(TraceN64System, TraceError, "SetActiveSystem failed");
-        g_Notify->DisplayError(__FUNCTIONW__ L": Failed to Initialize N64 System");
+        g_Notify->DisplayError(__FUNCTION__ ": Failed to Initialize N64 System");
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
         bRes = false;
     }
@@ -306,7 +306,7 @@ void CN64System::StartEmulation2(bool NewThread)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
-            g_Notify->DisplayMessage(5, L"Copy Plugins");
+            g_Notify->DisplayMessage(5, "Copy Plugins");
             g_Plugins->CopyPlugins(g_Settings->LoadStringVal(Directory_PluginSync));
             m_SyncPlugins = new CPlugins(g_Settings->LoadStringVal(Directory_PluginSync));
             m_SyncPlugins->SetRenderWindows(g_Plugins->SyncWindow(), NULL);
@@ -356,8 +356,8 @@ void  CN64System::StartEmulation(bool NewThread)
     }
     __except (g_MMU->MemoryFilter(GetExceptionCode(), GetExceptionInformation()))
     {
-        wchar_t message[400];
-        swprintf(message, sizeof(message), L"Exception caught\nFile: %s\nLine: %d", __FILEW__, __LINE__);
+        char message[400];
+        sprintf(message, "Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__);
         g_Notify->DisplayError(message);
     }
 }
@@ -1232,7 +1232,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         }
     }
 
-    g_Notify->DisplayError(L"Sync Error");
+    g_Notify->DisplayError("Sync Error");
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
@@ -1387,11 +1387,11 @@ bool CN64System::SaveState()
     }
     m_Reg.MI_INTR_REG = MiInterReg;
     g_Settings->SaveString(GameRunning_InstantSaveFile, "");
-    std::wstring SaveMessage = g_Lang->GetString(MSG_SAVED_STATE);
+    std::string SaveMessage = g_Lang->GetString(MSG_SAVED_STATE);
 
     CPath SavedFileName(FileName);
 
-    g_Notify->DisplayMessage(5, stdwstr_f(L"%ws %ws", SaveMessage.c_str(), stdstr(SavedFileName.GetNameExtension()).ToUTF16().c_str()).c_str());
+    g_Notify->DisplayMessage(5, stdstr_f("%s %s", SaveMessage.c_str(), stdstr(SavedFileName.GetNameExtension()).c_str()).c_str());
     //Notify().RefreshMenu();
     WriteTrace(TraceN64System, TraceDebug, "Done");
     return true;
@@ -1504,11 +1504,12 @@ bool CN64System::LoadState(const char * FileName)
                 if (memcmp(LoadHeader, g_Rom->GetRomAddress(), 0x40) != 0)
                 {
                     //if (inFullScreen) { return false; }
-                    int result = MessageBoxW(NULL, GS(MSG_SAVE_STATE_HEADER), GS(MSG_MSGBOX_TITLE),
-                        MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2);
+                    int result = MessageBoxW(NULL, wGS(MSG_SAVE_STATE_HEADER).c_str(), wGS(MSG_MSGBOX_TITLE).c_str(), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2);
 
                     if (result == IDNO)
+                    {
                         return false;
+                    }
                 }
                 Reset(false, true);
 
@@ -1557,7 +1558,7 @@ bool CN64System::LoadState(const char * FileName)
             OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
         if (hSaveFile == INVALID_HANDLE_VALUE)
         {
-            g_Notify->DisplayMessage(5, stdwstr_f(L"%ws %ws", GS(MSG_UNABLED_LOAD_STATE), FileNameStr.ToUTF16().c_str()).c_str());
+            g_Notify->DisplayMessage(5, stdstr_f("%s %s", GS(MSG_UNABLED_LOAD_STATE), FileNameStr.c_str()).c_str());
             return false;
         }
 
@@ -1565,7 +1566,9 @@ bool CN64System::LoadState(const char * FileName)
         DWORD dwRead;
         ReadFile(hSaveFile, &Value, sizeof(Value), &dwRead, NULL);
         if (Value != 0x23D8A6C8)
+        {
             return false;
+        }
 
         ReadFile(hSaveFile, &SaveRDRAMSize, sizeof(SaveRDRAMSize), &dwRead, NULL);
         //Check header
@@ -1574,7 +1577,7 @@ bool CN64System::LoadState(const char * FileName)
         if (memcmp(LoadHeader, g_Rom->GetRomAddress(), 0x40) != 0)
         {
             //if (inFullScreen) { return false; }
-            int result = MessageBoxW(NULL, GS(MSG_SAVE_STATE_HEADER), GS(MSG_MSGBOX_TITLE), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2);
+            int result = MessageBoxW(NULL, wGS(MSG_SAVE_STATE_HEADER).c_str(), wGS(MSG_MSGBOX_TITLE).c_str(), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2);
 
             if (result == IDNO)
             {
@@ -1686,15 +1689,15 @@ bool CN64System::LoadState(const char * FileName)
         }
     }
     WriteTrace(TraceN64System, TraceDebug, "13");
-    std::wstring LoadMsg = g_Lang->GetString(MSG_LOADED_STATE);
-    g_Notify->DisplayMessage(5, stdwstr_f(L"%ws %ws", LoadMsg.c_str(), stdstr(CPath(FileNameStr).GetNameExtension()).ToUTF16().c_str()).c_str());
+    std::string LoadMsg = g_Lang->GetString(MSG_LOADED_STATE);
+    g_Notify->DisplayMessage(5, stdstr_f("%s %s", LoadMsg.c_str(), stdstr(CPath(FileNameStr).GetNameExtension()).c_str()).c_str());
     WriteTrace(TraceN64System, TraceDebug, "Done");
     return true;
 }
 
 void CN64System::DisplayRSPListCount()
 {
-    g_Notify->DisplayMessage(0, stdstr_f("Dlist: %d   Alist: %d   Unknown: %d", m_DlistCount, m_AlistCount, m_UnknownCount).ToUTF16().c_str());
+    g_Notify->DisplayMessage(0, stdstr_f("Dlist: %d   Alist: %d   Unknown: %d", m_DlistCount, m_AlistCount, m_UnknownCount).c_str());
 }
 
 void CN64System::RunRSP()
@@ -1757,7 +1760,7 @@ void CN64System::RunRSP()
             __except (g_MMU->MemoryFilter(GetExceptionCode(), GetExceptionInformation()))
             {
                 WriteTrace(TraceRSP, TraceError, "exception generated");
-                g_Notify->FatalError(__FUNCTIONW__ L"\nUnknown memory action\n\nEmulation stop");
+                g_Notify->FatalError(__FUNCTION__ "\nUnknown memory action\n\nEmulation stop");
             }
 
             if (Task == 1 && bDelayDP() && ((m_Reg.m_GfxIntrReg & MI_INTR_DP) != 0))

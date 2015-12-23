@@ -21,19 +21,19 @@ CGameRecompilePage::CGameRecompilePage(HWND hParent, const RECT & rcDispay)
     }
 
     //Set the text for all gui Items
-    SetDlgItemTextW(m_hWnd, IDC_CPU_TYPE_TEXT, GS(ROM_CPU_STYLE));
-    SetDlgItemTextW(m_hWnd, IDC_FUNCFIND_TEXT, GS(ROM_FUNC_FIND));
+    SetDlgItemTextW(m_hWnd, IDC_CPU_TYPE_TEXT, wGS(ROM_CPU_STYLE).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_FUNCFIND_TEXT, wGS(ROM_FUNC_FIND).c_str());
 
-    SetDlgItemTextW(m_hWnd, IDC_ROM_REGCACHE, GS(ROM_REG_CACHE));
-    SetDlgItemTextW(m_hWnd, IDC_BLOCK_LINKING, GS(ADVANCE_ABL));
-    SetDlgItemTextW(m_hWnd, IDC_ROM_FASTSP, GS(ROM_FAST_SP));
+    SetDlgItemTextW(m_hWnd, IDC_ROM_REGCACHE, wGS(ROM_REG_CACHE).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_BLOCK_LINKING, wGS(ADVANCE_ABL).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_ROM_FASTSP, wGS(ROM_FAST_SP).c_str());
 
-    SetDlgItemTextW(m_hWnd, IDC_SMM_FRAME, GS(ADVANCE_SMCM));
-    SetDlgItemTextW(m_hWnd, IDC_SMM_CACHE, GS(ADVANCE_SMM_CACHE));
-    SetDlgItemTextW(m_hWnd, IDC_SMM_DMA, GS(ADVANCE_SMM_PIDMA));
-    SetDlgItemTextW(m_hWnd, IDC_SMM_VALIDATE, GS(ADVANCE_SMM_VALIDATE));
-    SetDlgItemTextW(m_hWnd, IDC_SMM_TLB, GS(ADVANCE_SMM_TLB));
-    SetDlgItemTextW(m_hWnd, IDC_SMM_PROTECT, GS(ADVANCE_SMM_PROTECT));
+    SetDlgItemTextW(m_hWnd, IDC_SMM_FRAME, wGS(ADVANCE_SMCM).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_SMM_CACHE, wGS(ADVANCE_SMM_CACHE).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_SMM_DMA, wGS(ADVANCE_SMM_PIDMA).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_SMM_VALIDATE, wGS(ADVANCE_SMM_VALIDATE).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_SMM_TLB, wGS(ADVANCE_SMM_TLB).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_SMM_PROTECT, wGS(ADVANCE_SMM_PROTECT).c_str());
 
     m_SelfModGroup.Attach(GetDlgItem(IDC_SMM_FRAME));
 
@@ -52,20 +52,20 @@ CGameRecompilePage::CGameRecompilePage(HWND hParent, const RECT & rcDispay)
     ComboBox = AddModComboBox(GetDlgItem(IDC_CPU_TYPE), Game_CpuType);
     if (ComboBox)
     {
-        ComboBox->AddItemW(GS(CORE_RECOMPILER), CPU_Recompiler);
-        ComboBox->AddItemW(GS(CORE_INTERPTER), CPU_Interpreter);
+        ComboBox->AddItemW(wGS(CORE_RECOMPILER).c_str(), CPU_Recompiler);
+        ComboBox->AddItemW(wGS(CORE_INTERPTER).c_str(), CPU_Interpreter);
         if (g_Settings->LoadBool(Debugger_Enabled))
         {
-            ComboBox->AddItemW(GS(CORE_SYNC), CPU_SyncCores);
+            ComboBox->AddItemW(wGS(CORE_SYNC).c_str(), CPU_SyncCores);
         }
     }
 
     ComboBox = AddModComboBox(GetDlgItem(IDC_FUNCFIND), Game_FuncLookupMode);
     if (ComboBox)
     {
-        ComboBox->AddItemW(GS(FLM_PLOOKUP), FuncFind_PhysicalLookup);
-        ComboBox->AddItemW(GS(FLM_VLOOKUP), FuncFind_VirtualLookup);
-        //ComboBox->AddItem(GS(FLM_CHANGEMEM), FuncFind_ChangeMemory);
+        ComboBox->AddItemW(wGS(FLM_PLOOKUP).c_str(), FuncFind_PhysicalLookup);
+        ComboBox->AddItemW(wGS(FLM_VLOOKUP).c_str(), FuncFind_VirtualLookup);
+        //ComboBox->AddItem(wGS(FLM_CHANGEMEM).c_str(), FuncFind_ChangeMemory);
     }
     UpdatePageSettings();
 }

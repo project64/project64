@@ -21,18 +21,18 @@ CGamePluginPage::CGamePluginPage(HWND hParent, const RECT & rcDispay)
     }
 
     //Set the text for all gui Items
-    SetDlgItemTextW(m_hWnd, RSP_ABOUT, GS(PLUG_ABOUT));
-    SetDlgItemTextW(m_hWnd, GFX_ABOUT, GS(PLUG_ABOUT));
-    SetDlgItemTextW(m_hWnd, AUDIO_ABOUT, GS(PLUG_ABOUT));
-    SetDlgItemTextW(m_hWnd, CONT_ABOUT, GS(PLUG_ABOUT));
+    SetDlgItemTextW(m_hWnd, RSP_ABOUT, wGS(PLUG_ABOUT).c_str());
+    SetDlgItemTextW(m_hWnd, GFX_ABOUT, wGS(PLUG_ABOUT).c_str());
+    SetDlgItemTextW(m_hWnd, AUDIO_ABOUT, wGS(PLUG_ABOUT).c_str());
+    SetDlgItemTextW(m_hWnd, CONT_ABOUT, wGS(PLUG_ABOUT).c_str());
 
-    SetDlgItemTextW(m_hWnd, IDC_RSP_NAME, GS(PLUG_RSP));
-    SetDlgItemTextW(m_hWnd, IDC_GFX_NAME, GS(PLUG_GFX));
-    SetDlgItemTextW(m_hWnd, IDC_AUDIO_NAME, GS(PLUG_AUDIO));
-    SetDlgItemTextW(m_hWnd, IDC_CONT_NAME, GS(PLUG_CTRL));
+    SetDlgItemTextW(m_hWnd, IDC_RSP_NAME, wGS(PLUG_RSP).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_GFX_NAME, wGS(PLUG_GFX).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_AUDIO_NAME, wGS(PLUG_AUDIO).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_CONT_NAME, wGS(PLUG_CTRL).c_str());
 
-    SetDlgItemTextW(m_hWnd, IDC_HLE_GFX, GS(PLUG_HLE_GFX));
-    SetDlgItemTextW(m_hWnd, IDC_HLE_AUDIO, GS(PLUG_HLE_AUDIO));
+    SetDlgItemTextW(m_hWnd, IDC_HLE_GFX, wGS(PLUG_HLE_GFX).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_HLE_AUDIO, wGS(PLUG_HLE_AUDIO).c_str());
 
     m_GfxGroup.Attach(GetDlgItem(IDC_GFX_NAME));
     m_AudioGroup.Attach(GetDlgItem(IDC_AUDIO_NAME));
@@ -61,7 +61,7 @@ void CGamePluginPage::AddPlugins(int ListId, SettingID Type, PLUGIN_TYPE PluginT
     {
         ComboBox->SetDefault(NULL);
     }
-    ComboBox->AddItemW(GS(PLUG_DEFAULT), NULL);
+    ComboBox->AddItemW(wGS(PLUG_DEFAULT).c_str(), NULL);
 
     for (int i = 0, n = m_PluginList.GetPluginCount(); i < n; i++)
     {
@@ -312,7 +312,7 @@ void CGamePluginPage::HleGfxChanged(UINT /*Code*/, int id, HWND /*ctl*/)
         }
         if ((Button->GetCheck() & BST_CHECKED) == 0)
         {
-            int res = MessageBoxW(m_hWnd, GS(MSG_SET_LLE_GFX_MSG), GS(MSG_SET_LLE_GFX_TITLE), MB_YESNO | MB_ICONWARNING);
+            int res = MessageBoxW(m_hWnd, wGS(MSG_SET_LLE_GFX_MSG).c_str(), wGS(MSG_SET_LLE_GFX_TITLE).c_str(), MB_YESNO | MB_ICONWARNING);
             if (res != IDYES)
             {
                 Button->SetCheck(BST_CHECKED);
@@ -336,7 +336,7 @@ void CGamePluginPage::HleAudioChanged(UINT /*Code*/, int id, HWND /*ctl*/)
         }
         if ((Button->GetCheck() & BST_CHECKED) != 0)
         {
-            int res = MessageBoxW(m_hWnd, GS(MSG_SET_HLE_AUD_MSG), GS(MSG_SET_HLE_AUD_TITLE), MB_ICONWARNING | MB_YESNO);
+            int res = MessageBoxW(m_hWnd, wGS(MSG_SET_HLE_AUD_MSG).c_str(), wGS(MSG_SET_HLE_AUD_TITLE).c_str(), MB_ICONWARNING | MB_YESNO);
             if (res != IDYES)
             {
                 Button->SetCheck(BST_UNCHECKED);

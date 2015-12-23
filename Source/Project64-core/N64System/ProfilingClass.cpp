@@ -110,7 +110,7 @@ void CProfiling::ShowCPU_Usage() {
         (float)(((double)CPU / (double)TotalTime) * 100), '%',
         (float)(((double)Dlist / (double)TotalTime) * 100), '%',
         (float)(((double)Alist / (double)TotalTime) * 100), '%',
-        (float)(((double)Idle / (double)TotalTime) * 100), '%').ToUTF16().c_str());
+        (float)(((double)Idle / (double)TotalTime) * 100), '%').c_str());
 
     ResetCounters();
 }

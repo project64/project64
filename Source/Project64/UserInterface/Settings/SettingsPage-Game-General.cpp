@@ -21,21 +21,21 @@ CGameGeneralPage::CGameGeneralPage(HWND hParent, const RECT & rcDispay)
     }
 
     //Set the text for all gui Items
-    SetDlgItemTextW(m_hWnd, IDC_GOOD_NAME_TEXT, GS(RB_GOODNAME));
+    SetDlgItemTextW(m_hWnd, IDC_GOOD_NAME_TEXT, wGS(RB_GOODNAME).c_str());
 
-    SetDlgItemTextW(m_hWnd, IDC_MEMORY_SIZE_TEXT, GS(ROM_MEM_SIZE));
-    SetDlgItemTextW(m_hWnd, IDC_SAVE_TYPE_TEXT, GS(ROM_SAVE_TYPE));
-    SetDlgItemTextW(m_hWnd, IDC_COUNTFACT_TEXT, GS(ROM_COUNTER_FACTOR));
-    SetDlgItemTextW(m_hWnd, IDC_VIREFESH_TEXT, GS(ROM_VIREFRESH));
-    SetDlgItemTextW(m_hWnd, IDC_COUNTPERBYTE_TEXT, GS(ROM_COUNTPERBYTE));
+    SetDlgItemTextW(m_hWnd, IDC_MEMORY_SIZE_TEXT, wGS(ROM_MEM_SIZE).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_SAVE_TYPE_TEXT, wGS(ROM_SAVE_TYPE).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_COUNTFACT_TEXT, wGS(ROM_COUNTER_FACTOR).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_VIREFESH_TEXT, wGS(ROM_VIREFRESH).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_COUNTPERBYTE_TEXT, wGS(ROM_COUNTPERBYTE).c_str());
 
-    SetDlgItemTextW(m_hWnd, IDC_ROM_32BIT, GS(ROM_32BIT));
-    SetDlgItemTextW(m_hWnd, IDC_ROM_FIXEDAUDIO, GS(ROM_FIXED_AUDIO));
-    SetDlgItemTextW(m_hWnd, IDC_DELAY_DP, GS(ROM_DELAY_DP));
-    SetDlgItemTextW(m_hWnd, IDC_SYNC_AUDIO, GS(ROM_SYNC_AUDIO));
-    SetDlgItemTextW(m_hWnd, IDC_USE_TLB, GS(ROM_USE_TLB));
-    SetDlgItemTextW(m_hWnd, IDC_DELAY_SI, GS(ROM_DELAY_SI));
-    SetDlgItemTextW(m_hWnd, IDC_AUDIO_SIGNAL, GS(ROM_AUDIO_SIGNAL));
+    SetDlgItemTextW(m_hWnd, IDC_ROM_32BIT, wGS(ROM_32BIT).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_ROM_FIXEDAUDIO, wGS(ROM_FIXED_AUDIO).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_DELAY_DP, wGS(ROM_DELAY_DP).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_SYNC_AUDIO, wGS(ROM_SYNC_AUDIO).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_USE_TLB, wGS(ROM_USE_TLB).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_DELAY_SI, wGS(ROM_DELAY_SI).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_AUDIO_SIGNAL, wGS(ROM_AUDIO_SIGNAL).c_str());
 
     AddModCheckBox(GetDlgItem(IDC_ROM_32BIT), Game_32Bit);
     AddModCheckBox(GetDlgItem(IDC_SYNC_AUDIO), Game_SyncViaAudio);
@@ -50,31 +50,31 @@ CGameGeneralPage::CGameGeneralPage(HWND hParent, const RECT & rcDispay)
     if (ComboBox)
     {
         ComboBox->SetTextField(GetDlgItem(IDC_MEMORY_SIZE_TEXT));
-        ComboBox->AddItemW(GS(RDRAM_4MB), 0x400000);
-        ComboBox->AddItemW(GS(RDRAM_8MB), 0x800000);
+        ComboBox->AddItemW(wGS(RDRAM_4MB).c_str(), 0x400000);
+        ComboBox->AddItemW(wGS(RDRAM_8MB).c_str(), 0x800000);
     }
 
     ComboBox = AddModComboBox(GetDlgItem(IDC_SAVE_TYPE), Game_SaveChip);
     if (ComboBox)
     {
         ComboBox->SetTextField(GetDlgItem(IDC_SAVE_TYPE_TEXT));
-        ComboBox->AddItemW(GS(SAVE_FIRST_USED), (WPARAM)SaveChip_Auto);
-        ComboBox->AddItemW(GS(SAVE_4K_EEPROM), SaveChip_Eeprom_4K);
-        ComboBox->AddItemW(GS(SAVE_16K_EEPROM), SaveChip_Eeprom_16K);
-        ComboBox->AddItemW(GS(SAVE_SRAM), SaveChip_Sram);
-        ComboBox->AddItemW(GS(SAVE_FLASHRAM), SaveChip_FlashRam);
+        ComboBox->AddItemW(wGS(SAVE_FIRST_USED).c_str(), (WPARAM)SaveChip_Auto);
+        ComboBox->AddItemW(wGS(SAVE_4K_EEPROM).c_str(), SaveChip_Eeprom_4K);
+        ComboBox->AddItemW(wGS(SAVE_16K_EEPROM).c_str(), SaveChip_Eeprom_16K);
+        ComboBox->AddItemW(wGS(SAVE_SRAM).c_str(), SaveChip_Sram);
+        ComboBox->AddItemW(wGS(SAVE_FLASHRAM).c_str(), SaveChip_FlashRam);
     }
 
     ComboBox = AddModComboBox(GetDlgItem(IDC_COUNTFACT), Game_CounterFactor);
     if (ComboBox)
     {
         ComboBox->SetTextField(GetDlgItem(IDC_COUNTFACT_TEXT));
-        ComboBox->AddItemW(GS(NUMBER_1), 1);
-        ComboBox->AddItemW(GS(NUMBER_2), 2);
-        ComboBox->AddItemW(GS(NUMBER_3), 3);
-        ComboBox->AddItemW(GS(NUMBER_4), 4);
-        ComboBox->AddItemW(GS(NUMBER_5), 5);
-        ComboBox->AddItemW(GS(NUMBER_6), 6);
+        ComboBox->AddItemW(wGS(NUMBER_1).c_str(), 1);
+        ComboBox->AddItemW(wGS(NUMBER_2).c_str(), 2);
+        ComboBox->AddItemW(wGS(NUMBER_3).c_str(), 3);
+        ComboBox->AddItemW(wGS(NUMBER_4).c_str(), 4);
+        ComboBox->AddItemW(wGS(NUMBER_5).c_str(), 5);
+        ComboBox->AddItemW(wGS(NUMBER_6).c_str(), 6);
     }
 
     SetDlgItemText(IDC_GOOD_NAME, g_Settings->LoadStringVal(Game_GoodName).c_str());

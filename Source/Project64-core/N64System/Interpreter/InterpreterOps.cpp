@@ -64,7 +64,7 @@ const int32_t   R4300iOp::LWR_SHIFT[4] = { 24, 16, 8, 0 };
     m_NextInstruction = JUMP;\
     m_JumpToLocation = (*_PROGRAM_COUNTER);\
     return;\
-                        }
+    }
 
 #define TLB_READ_EXCEPTION(Address) \
     g_Reg->DoTLBReadMiss(m_NextInstruction == JUMP,Address);\
@@ -1021,7 +1021,7 @@ void R4300iOp::LDL()
         g_Notify->BreakPoint(__FILE__, __LINE__);
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
         return;
     }
@@ -1048,7 +1048,7 @@ void R4300iOp::LDR()
         g_Notify->BreakPoint(__FILE__, __LINE__);
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
         return;
     }
@@ -1064,7 +1064,7 @@ void R4300iOp::LB()
     {
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
         TLB_READ_EXCEPTION(Address);
     }
@@ -1085,7 +1085,7 @@ void R4300iOp::LH()
     {
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
         TLB_READ_EXCEPTION(Address);
     }
@@ -1107,7 +1107,7 @@ void R4300iOp::LWL()
         g_Notify->BreakPoint(__FILE__, __LINE__);
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
         return;
     }
@@ -1133,7 +1133,7 @@ void R4300iOp::LW()
     {
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
         TLB_READ_EXCEPTION(Address);
     }
@@ -1150,7 +1150,7 @@ void R4300iOp::LBU()
     {
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
         TLB_READ_EXCEPTION(Address);
     }
@@ -1171,7 +1171,7 @@ void R4300iOp::LHU()
     {
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
         TLB_READ_EXCEPTION(Address);
     }
@@ -1193,7 +1193,7 @@ void R4300iOp::LWR()
         g_Notify->BreakPoint(__FILE__, __LINE__);
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
         return;
     }
@@ -1214,7 +1214,7 @@ void R4300iOp::LWU()
     {
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
         TLB_READ_EXCEPTION(Address);
     }
@@ -1235,7 +1235,7 @@ void R4300iOp::SB()
         }
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
     }
 }
@@ -1255,7 +1255,7 @@ void R4300iOp::SH()
         }
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
     }
 }
@@ -1275,7 +1275,7 @@ void R4300iOp::SWL()
         }
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
         return;
     }
@@ -1291,7 +1291,7 @@ void R4300iOp::SWL()
         }
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
     }
 }
@@ -1315,7 +1315,7 @@ void R4300iOp::SW()
         }
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
     }
 }
@@ -1346,7 +1346,7 @@ void R4300iOp::SDL()
         }
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
         return;
     }
@@ -1362,7 +1362,7 @@ void R4300iOp::SDL()
         }
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
     }
 }
@@ -1394,7 +1394,7 @@ void R4300iOp::SDR()
         }
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
         return;
     }
@@ -1410,7 +1410,7 @@ void R4300iOp::SDR()
         }
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
     }
 }
@@ -1430,7 +1430,7 @@ void R4300iOp::SWR()
         }
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
         return;
     }
@@ -1446,7 +1446,7 @@ void R4300iOp::SWR()
         }
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
     }
 }
@@ -1472,7 +1472,7 @@ void R4300iOp::LL()
     {
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
         TLB_READ_EXCEPTION(Address);
     }
@@ -1495,7 +1495,7 @@ void R4300iOp::LWC1()
     {
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
         TLB_READ_EXCEPTION(Address);
     }
@@ -1516,7 +1516,7 @@ void R4300iOp::SC()
             g_Notify->BreakPoint(__FILE__, __LINE__);
             if (bShowTLBMisses())
             {
-                g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
             }
         }
     }
@@ -1538,7 +1538,7 @@ void R4300iOp::LD()
         }
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
         return;
     }
@@ -1567,7 +1567,7 @@ void R4300iOp::LDC1()
         }
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
     }
 }
@@ -1589,7 +1589,7 @@ void R4300iOp::SWC1()
         }
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
     }
 }
@@ -1611,7 +1611,7 @@ void R4300iOp::SDC1()
         }
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
     }
 }
@@ -1631,7 +1631,7 @@ void R4300iOp::SD()
         }
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
         }
     }
 }
@@ -1759,7 +1759,7 @@ void R4300iOp::SPECIAL_DIV()
     {
         if (bShowDivByZero())
         {
-            g_Notify->DisplayError(L"DIV by 0 ???");
+            g_Notify->DisplayError("DIV by 0 ???");
         }
         _RegLO->DW = 0;
         _RegHI->DW = 0;
@@ -1777,7 +1777,7 @@ void R4300iOp::SPECIAL_DIVU()
     {
         if (bShowDivByZero())
         {
-            g_Notify->DisplayError(L"DIVU by 0 ???");
+            g_Notify->DisplayError("DIVU by 0 ???");
         }
         _RegLO->DW = 0;
         _RegHI->DW = 0;
@@ -1823,7 +1823,7 @@ void R4300iOp::SPECIAL_DDIV()
     {
         if (bHaveDebugger())
         {
-            g_Notify->DisplayError(L"DDIV by 0 ???");
+            g_Notify->DisplayError("DDIV by 0 ???");
         }
     }
 }
@@ -1839,7 +1839,7 @@ void R4300iOp::SPECIAL_DDIVU()
     {
         if (bHaveDebugger())
         {
-            g_Notify->DisplayError(L"DDIVU by 0 ???");
+            g_Notify->DisplayError("DDIVU by 0 ???");
         }
     }
 }
@@ -1938,7 +1938,7 @@ void R4300iOp::SPECIAL_TEQ()
 {
     if (_GPR[m_Opcode.rs].DW == _GPR[m_Opcode.rt].DW && bHaveDebugger())
     {
-        g_Notify->DisplayError(L"Should trap this ???");
+        g_Notify->DisplayError("Should trap this ???");
     }
 }
 
@@ -2168,7 +2168,7 @@ void R4300iOp::COP0_MT()
         }
         if ((_CP0[m_Opcode.rd] & 0x18) != 0 && bHaveDebugger())
         {
-            g_Notify->DisplayError(L"Left kernel mode ??");
+            g_Notify->DisplayError("Left kernel mode ??");
         }
         g_Reg->CheckInterrupts();
         break;
@@ -2176,7 +2176,7 @@ void R4300iOp::COP0_MT()
         _CP0[m_Opcode.rd] &= 0xFFFFCFF;
         if ((_GPR[m_Opcode.rt].UW[0] & 0x300) != 0 && bHaveDebugger())
         {
-            g_Notify->DisplayError(L"Set IP0 or IP1");
+            g_Notify->DisplayError("Set IP0 or IP1");
         }
         break;
     default:
@@ -2259,7 +2259,7 @@ void R4300iOp::COP1_CF()
         {
             if (bHaveDebugger())
             {
-                g_Notify->DisplayError(L"CFC1 what register are you writing to ?");
+                g_Notify->DisplayError("CFC1 what register are you writing to ?");
             }
             return;
         }
@@ -2294,7 +2294,7 @@ void R4300iOp::COP1_CT()
         }
     if (bHaveDebugger())
     {
-        g_Notify->DisplayError(L"CTC1 what register are you writing to ?");
+        g_Notify->DisplayError("CTC1 what register are you writing to ?");
     }
 }
 
@@ -2554,7 +2554,7 @@ void R4300iOp::COP1_S_CMP()
     {
         if (bHaveDebugger())
         {
-            g_Notify->DisplayError(__FUNCTIONW__ L": Nan ?");
+            g_Notify->DisplayError(__FUNCTION__ ": Nan ?");
         }
         less = false;
         equal = false;
@@ -2563,7 +2563,7 @@ void R4300iOp::COP1_S_CMP()
         {
             if (bHaveDebugger())
             {
-                g_Notify->DisplayError(stdstr_f("Signal InvalidOperationException\nin r4300i_COP1_S_CMP\n%X  %ff\n%X  %ff", Temp0, Temp0, Temp1, Temp1).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f("Signal InvalidOperationException\nin r4300i_COP1_S_CMP\n%X  %ff\n%X  %ff", Temp0, Temp0, Temp1, Temp1).c_str());
             }
         }
     }
@@ -2765,7 +2765,7 @@ void R4300iOp::COP1_D_CMP()
     {
         if (bHaveDebugger())
         {
-            g_Notify->DisplayError(__FUNCTIONW__ L": Nan ?");
+            g_Notify->DisplayError(__FUNCTION__ ": Nan ?");
         }
         less = false;
         equal = false;
@@ -2774,7 +2774,7 @@ void R4300iOp::COP1_D_CMP()
         {
             if (bHaveDebugger())
             {
-                g_Notify->DisplayError(L"Signal InvalidOperationException\nin " __FUNCTIONW__);
+                g_Notify->DisplayError("Signal InvalidOperationException\nin " __FUNCTION__);
             }
         }
     }
@@ -2832,7 +2832,7 @@ void R4300iOp::COP1_L_CVT_D()
 void R4300iOp::UnknownOpcode()
 {
     g_Notify->DisplayError(stdstr_f("%s: %08X\n%s\n\nStopping Emulation !", GS(MSG_UNHANDLED_OP), (*_PROGRAM_COUNTER),
-        R4300iOpcodeName(m_Opcode.Hex, (*_PROGRAM_COUNTER))).ToUTF16().c_str());
+        R4300iOpcodeName(m_Opcode.Hex, (*_PROGRAM_COUNTER))).c_str());
     g_System->m_EndEmulation = true;
 
     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -2841,12 +2841,12 @@ void R4300iOp::UnknownOpcode()
     {
         int32_t response;
 
-        strcat(Message,"\n\nDo you wish to enter the debugger ?");
+        strcat(Message, "\n\nDo you wish to enter the debugger ?");
 
-        response = MessageBox(NULL,Message,GS(MSG_MSGBOX_TITLE), MB_YESNO | MB_ICONERROR );
+        response = MessageBox(NULL, Message, GS(MSG_MSGBOX_TITLE), MB_YESNO | MB_ICONERROR);
         if (response == IDYES)
         {
-            Enter_R4300i_Commands_Window ();
+            Enter_R4300i_Commands_Window();
         }
         ExitThread(0);
     }

@@ -46,11 +46,11 @@ m_InUpdateSettings(false)
     m_TextureSelected.Attach(GetDlgItem(IDC_TEXTURE_OTHER));
 
     //Set Text language for the dialog box
-    ::SetWindowTextW(m_PluginGroup.m_hWnd, GS(DIR_PLUGIN));
-    ::SetWindowTextW(m_AutoSaveGroup.m_hWnd, GS(DIR_AUTO_SAVE));
-    ::SetWindowTextW(m_InstantSaveGroup.m_hWnd, GS(DIR_INSTANT_SAVE));
-    ::SetWindowTextW(m_ScreenShotGroup.m_hWnd, GS(DIR_SCREEN_SHOT));
-    ::SetWindowTextW(m_TextureGroup.m_hWnd, GS(DIR_TEXTURE));
+    ::SetWindowTextW(m_PluginGroup.m_hWnd, wGS(DIR_PLUGIN).c_str());
+    ::SetWindowTextW(m_AutoSaveGroup.m_hWnd, wGS(DIR_AUTO_SAVE).c_str());
+    ::SetWindowTextW(m_InstantSaveGroup.m_hWnd, wGS(DIR_INSTANT_SAVE).c_str());
+    ::SetWindowTextW(m_ScreenShotGroup.m_hWnd, wGS(DIR_SCREEN_SHOT).c_str());
+    ::SetWindowTextW(m_TextureGroup.m_hWnd, wGS(DIR_TEXTURE).c_str());
 
     UpdatePageSettings();
 }
@@ -78,11 +78,11 @@ void COptionsDirectoriesPage::SelectDirectory(LanguageStringID Title, CModifiedE
     BROWSEINFOW bi;
 
     stdstr InitialDir = EditBox.GetWindowText();
-
+    std::wstring wTitle = wGS(Title);
     bi.hwndOwner = m_hWnd;
     bi.pidlRoot = NULL;
     bi.pszDisplayName = Buffer;
-    bi.lpszTitle = GS(Title);
+    bi.lpszTitle = wTitle.c_str();
     bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
     bi.lpfn = (BFFCALLBACK)SelectDirCallBack;
     bi.lParam = (DWORD)InitialDir.c_str();

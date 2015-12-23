@@ -86,7 +86,7 @@ bool CN64Rom::AllocateAndLoadN64Image(const char * FileLoc, bool LoadBootCodeOnl
         TotalRead += dwRead;
 
         //Show Message of how much % wise of the rom has been loaded
-        g_Notify->DisplayMessage(0, stdstr_f("%s: %.2f%c", GS(MSG_LOADED), ((float)TotalRead / (float)RomFileSize) * 100.0f, '%').ToUTF16().c_str());
+        g_Notify->DisplayMessage(0, stdstr_f("%s: %.2f%c", GS(MSG_LOADED), ((float)TotalRead / (float)RomFileSize) * 100.0f, '%').c_str());
     }
     dwRead = TotalRead;
 
@@ -182,7 +182,7 @@ bool CN64Rom::AllocateAndLoadZipImage(const char * FileLoc, bool LoadBootCodeOnl
                 TotalRead += dwRead;
 
                 //Show Message of how much % wise of the rom has been loaded
-                g_Notify->DisplayMessage(5, stdstr_f("%s: %.2f%c", GS(MSG_LOADED), ((float)TotalRead / (float)RomFileSize) * 100.0f, '%').ToUTF16().c_str());
+                g_Notify->DisplayMessage(5, stdstr_f("%s: %.2f%c", GS(MSG_LOADED), ((float)TotalRead / (float)RomFileSize) * 100.0f, '%').c_str());
             }
             dwRead = TotalRead + 4;
 
@@ -191,7 +191,7 @@ bool CN64Rom::AllocateAndLoadZipImage(const char * FileLoc, bool LoadBootCodeOnl
                 VirtualFree(Image, 0, MEM_RELEASE);
                 unzCloseCurrentFile(file);
                 SetError(MSG_FAIL_ZIP);
-                g_Notify->DisplayMessage(1, L"");
+                g_Notify->DisplayMessage(1, "");
                 break;
             }
 
@@ -207,7 +207,7 @@ bool CN64Rom::AllocateAndLoadZipImage(const char * FileLoc, bool LoadBootCodeOnl
             //Protect the memory so that it can not be written to.
             DWORD OldProtect;
             VirtualProtect(m_ROMImage, m_RomFileSize, PAGE_READONLY, &OldProtect);
-            g_Notify->DisplayMessage(1, L"");
+            g_Notify->DisplayMessage(1, "");
         }
         unzCloseCurrentFile(file);
 
@@ -252,7 +252,7 @@ void CN64Rom::ByteSwapRom()
         break;
     case 0x80371240: break;
     default:
-        g_Notify->DisplayError(stdstr_f("ByteSwapRom: %X", m_ROMImage[0]).ToUTF16().c_str());
+        g_Notify->DisplayError(stdstr_f("ByteSwapRom: %X", m_ROMImage[0]).c_str());
     }
 }
 
@@ -282,7 +282,7 @@ void CN64Rom::CalculateCicChip()
     default:
         if (bHaveDebugger())
         {
-            g_Notify->DisplayError(stdstr_f("Unknown CIC checksum:\n%I64X.", CRC).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f("Unknown CIC checksum:\n%I64X.", CRC).c_str());
         }
         m_CicChip = CIC_UNKNOWN; break;
     }
@@ -390,9 +390,9 @@ bool CN64Rom::IsValidRomImage(uint8_t Test[4])
     return false;
 }
 
-void CN64Rom::NotificationCB(LPCWSTR Status, CN64Rom * /*_this*/)
+void CN64Rom::NotificationCB(const char * Status, CN64Rom * /*_this*/)
 {
-    g_Notify->DisplayMessage(5, stdstr_f("%s", Status).ToUTF16().c_str());
+    g_Notify->DisplayMessage(5, stdstr_f("%s", Status).c_str());
 }
 
 bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)

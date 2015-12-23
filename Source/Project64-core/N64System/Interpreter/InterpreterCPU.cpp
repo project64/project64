@@ -32,7 +32,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
 
     if (!g_MMU->LW_VAddr(PC + 4, Command.Hex))
     {
-        //g_Notify->DisplayError(L"Failed to load word 2");
+        //g_Notify->DisplayError("Failed to load word 2");
         //ExitThread(0);
         return true;
     }
@@ -96,7 +96,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
         default:
             if (g_Settings->LoadBool(Debugger_Enabled))
             {
-                g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?", R4300iOpcodeName(Command.Hex, PC + 4), PC).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?", R4300iOpcodeName(Command.Hex, PC + 4), PC).c_str());
             }
             return true;
         }
@@ -127,7 +127,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
                 default:
                     if (g_Settings->LoadBool(Debugger_Enabled))
                     {
-                        g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?\n6", R4300iOpcodeName(Command.Hex, PC + 4), PC).ToUTF16().c_str());
+                        g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?\n6", R4300iOpcodeName(Command.Hex, PC + 4), PC).c_str());
                     }
                     return true;
                 }
@@ -136,7 +136,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
             {
                 if (g_Settings->LoadBool(Debugger_Enabled))
                 {
-                    g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?\n7", R4300iOpcodeName(Command.Hex, PC + 4), PC).ToUTF16().c_str());
+                    g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?\n7", R4300iOpcodeName(Command.Hex, PC + 4), PC).c_str());
                 }
                 return true;
             }
@@ -165,7 +165,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
         default:
             if (g_Settings->LoadBool(Debugger_Enabled))
             {
-                g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?", R4300iOpcodeName(Command.Hex, PC + 4), PC).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?", R4300iOpcodeName(Command.Hex, PC + 4), PC).c_str());
             }
             return true;
         }
@@ -213,7 +213,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
     default:
         if (g_Settings->LoadBool(Debugger_Enabled))
         {
-            g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?", R4300iOpcodeName(Command.Hex, PC + 4), PC).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?", R4300iOpcodeName(Command.Hex, PC + 4), PC).c_str());
         }
         return true;
     }

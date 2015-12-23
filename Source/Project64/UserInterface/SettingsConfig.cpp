@@ -63,7 +63,7 @@ bool CSettingConfig::UpdateAdvanced(bool AdvancedMode, HTREEITEM hItem)
         }
         if (AdvancedMode && Page == m_GeneralOptionsPage)
         {
-            m_PagesTreeList.InsertItemW(TVIF_TEXT | TVIF_PARAM, GS(m_AdvancedPage->PageTitle()), 0, 0, 0, 0, (ULONG)m_AdvancedPage, hItem, TVI_FIRST);
+            m_PagesTreeList.InsertItemW(TVIF_TEXT | TVIF_PARAM, wGS(m_AdvancedPage->PageTitle()).c_str(), 0, 0, 0, 0, (ULONG)m_AdvancedPage, hItem, TVI_FIRST);
             return true;
         }
         if (UpdateAdvanced(AdvancedMode, m_PagesTreeList.GetChildItem(hItem)))
@@ -91,11 +91,11 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     CConfigSettingSection * SettingsSection;
 
     //Set the text for all gui Items
-    SetDlgItemTextW(m_hWnd, IDC_RESET_PAGE, GS(BOTTOM_RESET_PAGE));
-    SetDlgItemTextW(m_hWnd, IDC_RESET_ALL, GS(BOTTOM_RESET_ALL));
-    SetDlgItemTextW(m_hWnd, IDOK, GS(CHEAT_OK));
-    SetDlgItemTextW(m_hWnd, IDCANCEL, GS(CHEAT_CANCEL));
-    SetDlgItemTextW(m_hWnd, IDAPPLY, GS(BOTTOM_APPLY));
+    SetDlgItemTextW(m_hWnd, IDC_RESET_PAGE, wGS(BOTTOM_RESET_PAGE).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_RESET_ALL, wGS(BOTTOM_RESET_ALL).c_str());
+    SetDlgItemTextW(m_hWnd, IDOK, wGS(CHEAT_OK).c_str());
+    SetDlgItemTextW(m_hWnd, IDCANCEL, wGS(CHEAT_CANCEL).c_str());
+    SetDlgItemTextW(m_hWnd, IDAPPLY, wGS(BOTTOM_APPLY).c_str());
 
     if (m_GameConfig)
     {
@@ -115,12 +115,12 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
             SetWindowText(stdstr_f("%ws ** RDB Edit Mode **", GS(OPTIONS_TITLE)).c_str());
         }
         else {
-            ::SetWindowTextW(m_hWnd, GS(OPTIONS_TITLE));
+            ::SetWindowTextW(m_hWnd, wGS(OPTIONS_TITLE).c_str());
         }
 
         if (g_Settings->LoadBool(Setting_PluginPageFirst))
         {
-            SettingsSection = new CConfigSettingSection(GS(TAB_PLUGIN));
+            SettingsSection = new CConfigSettingSection(wGS(TAB_PLUGIN).c_str());
             SettingsSection->AddPage(new COptionPluginPage(this->m_hWnd, rcSettingInfo));
             m_Sections.push_back(SettingsSection);
         }
@@ -128,23 +128,23 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         m_GeneralOptionsPage = new CGeneralOptionsPage(this, this->m_hWnd, rcSettingInfo);
         m_AdvancedPage = new CAdvancedOptionsPage(this->m_hWnd, rcSettingInfo);
 
-        SettingsSection = new CConfigSettingSection(GS(TAB_OPTIONS));
+        SettingsSection = new CConfigSettingSection(wGS(TAB_OPTIONS).c_str());
         SettingsSection->AddPage(m_GeneralOptionsPage);
         SettingsSection->AddPage(m_AdvancedPage);
         SettingsSection->AddPage(new COptionsDirectoriesPage(this->m_hWnd, rcSettingInfo));
         m_Sections.push_back(SettingsSection);
 
-        SettingsSection = new CConfigSettingSection(GS(TAB_ROMSELECTION));
+        SettingsSection = new CConfigSettingSection(wGS(TAB_ROMSELECTION).c_str());
         SettingsSection->AddPage(new COptionsGameBrowserPage(this->m_hWnd, rcSettingInfo));
         m_Sections.push_back(SettingsSection);
 
-        SettingsSection = new CConfigSettingSection(GS(TAB_SHORTCUTS));
+        SettingsSection = new CConfigSettingSection(wGS(TAB_SHORTCUTS).c_str());
         SettingsSection->AddPage(new COptionsShortCutsPage(this->m_hWnd, rcSettingInfo));
         m_Sections.push_back(SettingsSection);
 
         if (!g_Settings->LoadBool(Setting_PluginPageFirst))
         {
-            SettingsSection = new CConfigSettingSection(GS(TAB_PLUGIN));
+            SettingsSection = new CConfigSettingSection(wGS(TAB_PLUGIN).c_str());
             SettingsSection->AddPage(new COptionPluginPage(this->m_hWnd, rcSettingInfo));
             m_Sections.push_back(SettingsSection);
         }
@@ -190,7 +190,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
             {
                 continue;
             }
-            m_PagesTreeList.InsertItemW(TVIF_TEXT | TVIF_PARAM, GS(Page->PageTitle()), 0, 0, 0, 0, (ULONG)Page, hSectionItem, TVI_LAST);
+            m_PagesTreeList.InsertItemW(TVIF_TEXT | TVIF_PARAM, wGS(Page->PageTitle()).c_str(), 0, 0, 0, 0, (ULONG)Page, hSectionItem, TVI_LAST);
         }
         if (bFirstItem && hSectionItem != NULL)
         {

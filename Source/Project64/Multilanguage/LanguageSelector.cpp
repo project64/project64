@@ -40,7 +40,7 @@ LRESULT CALLBACK CLanguageSelector::LangSelectProc(HWND hDlg, UINT uMsg, WPARAM 
         for (LanguageList::iterator Language = LangList.begin(); Language != LangList.end(); Language++)
         {
             int index = SendMessageW(GetDlgItem(hDlg, IDC_LANG_SEL), CB_ADDSTRING, 0, (WPARAM)Language->LanguageName.c_str());
-            if (_wcsicmp(Language->LanguageName.c_str(), L"English") == 0)
+            if (_stricmp(Language->LanguageName.c_str(), "English") == 0)
             {
                 SendMessage(GetDlgItem(hDlg, IDC_LANG_SEL), CB_SETCURSEL, index, 0);
             }
@@ -144,7 +144,7 @@ LRESULT CALLBACK CLanguageSelector::LangSelectProc(HWND hDlg, UINT uMsg, WPARAM 
                 {
                     wchar_t String[255];
                     SendMessageW(GetDlgItem(hDlg, IDC_LANG_SEL), CB_GETLBTEXT, Index, (LPARAM)String);
-                    g_Lang->SetLanguage(String);
+                    g_Lang->SetLanguage(stdstr().FromUTF16(String).c_str());
                 }
             }
 

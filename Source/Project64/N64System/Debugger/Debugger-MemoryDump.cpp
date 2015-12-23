@@ -90,7 +90,7 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
         GetDlgItemText(IDC_FILENAME, FileName, sizeof(FileName));
         if (strlen(FileName) == 0)
         {
-            g_Notify->DisplayError(L"Please Choose target file");
+            g_Notify->DisplayError("Please Choose target file");
             ::SetFocus(GetDlgItem(IDC_FILENAME));
             return false;
         }
@@ -132,7 +132,7 @@ bool CDumpMemory::DumpMemory(LPCSTR FileName, DumpFormat Format, DWORD StartPC, 
         CLog LogFile;
         if (!LogFile.Open(FileName))
         {
-            g_Notify->DisplayError(stdstr_f("Failed to open\n%s", FileName).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f("Failed to open\n%s", FileName).c_str());
             return false;
         }
         LogFile.SetFlush(false);

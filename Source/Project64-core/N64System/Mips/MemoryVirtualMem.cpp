@@ -608,7 +608,7 @@ void CMipsMemoryVM::Compile_LB(x86Reg Reg, uint32_t VAddr, bool SignExtend)
         CPU_Message("Compile_LB\nFailed to translate address %08X", VAddr);
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address %08X", VAddr).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address %08X", VAddr).c_str());
         }
         return;
     }
@@ -638,7 +638,7 @@ void CMipsMemoryVM::Compile_LB(x86Reg Reg, uint32_t VAddr, bool SignExtend)
         MoveConstToX86reg(0, Reg);
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to compile address: %08X", VAddr).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to compile address: %08X", VAddr).c_str());
         }
     }
 }
@@ -679,7 +679,7 @@ void  CMipsMemoryVM::Compile_LH(x86Reg Reg, uint32_t VAddr, bool SignExtend)
         CPU_Message("Compile_LH\nFailed to translate address %08X", VAddr);
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address %08X", VAddr).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address %08X", VAddr).c_str());
         }
         return;
     }
@@ -709,7 +709,7 @@ void  CMipsMemoryVM::Compile_LH(x86Reg Reg, uint32_t VAddr, bool SignExtend)
         MoveConstToX86reg(0, Reg);
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to compile address: %08X", VAddr).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to compile address: %08X", VAddr).c_str());
         }
     }
 }
@@ -776,7 +776,7 @@ void  CMipsMemoryVM::Compile_LW(x86Reg Reg, uint32_t VAddr)
                 MoveConstToX86reg(0, Reg);
                 if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
                 {
-                    g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).ToUTF16().c_str());
+                    g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).c_str());
                 }
             }
             break;
@@ -801,7 +801,7 @@ void  CMipsMemoryVM::Compile_LW(x86Reg Reg, uint32_t VAddr)
             case 0x0430000C: MoveVariableToX86reg(&g_Reg->MI_INTR_MASK_REG, "MI_INTR_MASK_REG", Reg); break;
             default:
                 MoveConstToX86reg(0, Reg);
-                if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).ToUTF16().c_str()); }
+                if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).c_str()); }
             }
             break;
         case 0x04400000:
@@ -821,7 +821,7 @@ void  CMipsMemoryVM::Compile_LW(x86Reg Reg, uint32_t VAddr)
                 MoveConstToX86reg(0, Reg);
                 if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
                 {
-                    g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).ToUTF16().c_str());
+                    g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).c_str());
                 }
             }
             break;
@@ -876,7 +876,7 @@ void  CMipsMemoryVM::Compile_LW(x86Reg Reg, uint32_t VAddr)
                 MoveConstToX86reg(0, Reg);
                 if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
                 {
-                    g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).ToUTF16().c_str());
+                    g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).c_str());
                 }
             }
             break;
@@ -896,7 +896,7 @@ void  CMipsMemoryVM::Compile_LW(x86Reg Reg, uint32_t VAddr)
                 MoveConstToX86reg(0, Reg);
                 if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
                 {
-                    g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).ToUTF16().c_str());
+                    g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).c_str());
                 }
             }
             break;
@@ -909,7 +909,7 @@ void  CMipsMemoryVM::Compile_LW(x86Reg Reg, uint32_t VAddr)
                 MoveConstToX86reg(0, Reg);
                 if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
                 {
-                    g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).ToUTF16().c_str());
+                    g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).c_str());
                 }
             }
             break;
@@ -921,7 +921,7 @@ void  CMipsMemoryVM::Compile_LW(x86Reg Reg, uint32_t VAddr)
                 MoveConstToX86reg(0, Reg);
                 if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
                 {
-                    g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).ToUTF16().c_str());
+                    g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).c_str());
                 }
             }
             break;
@@ -942,7 +942,7 @@ void  CMipsMemoryVM::Compile_LW(x86Reg Reg, uint32_t VAddr)
                 if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
                 {
                     CPU_Message(__FUNCTION__ "\nFailed to translate address: %08X", VAddr);
-                    g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).ToUTF16().c_str());
+                    g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).c_str());
                 }
             }
         }
@@ -970,7 +970,7 @@ void  CMipsMemoryVM::Compile_SB_Const(uint8_t Value, uint32_t VAddr)
     if (!TranslateVaddr(VAddr, PAddr))
     {
         CPU_Message("Compile_SB\nFailed to translate address: %08X", VAddr);
-        if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).ToUTF16().c_str()); }
+        if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).c_str()); }
         return;
     }
 
@@ -990,7 +990,7 @@ void  CMipsMemoryVM::Compile_SB_Const(uint8_t Value, uint32_t VAddr)
     default:
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %02X in %08X?", Value, VAddr).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %02X in %08X?", Value, VAddr).c_str());
         }
     }
 }
@@ -1020,7 +1020,7 @@ void  CMipsMemoryVM::Compile_SB_Register(x86Reg Reg, uint32_t VAddr)
         CPU_Message("Compile_SB\nFailed to translate address: %08X", VAddr);
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).c_str());
         }
         return;
     }
@@ -1041,7 +1041,7 @@ void  CMipsMemoryVM::Compile_SB_Register(x86Reg Reg, uint32_t VAddr)
     default:
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).c_str());
         }
     }
 }
@@ -1068,7 +1068,7 @@ void  CMipsMemoryVM::Compile_SH_Const(uint16_t Value, uint32_t VAddr)
         CPU_Message("Compile_SH\nFailed to translate address: %08X", VAddr);
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).c_str());
         }
         return;
     }
@@ -1089,7 +1089,7 @@ void  CMipsMemoryVM::Compile_SH_Const(uint16_t Value, uint32_t VAddr)
     default:
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %04X in %08X?", Value, VAddr).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %04X in %08X?", Value, VAddr).c_str());
         }
     }
 }
@@ -1118,7 +1118,7 @@ void CMipsMemoryVM::Compile_SH_Register(x86Reg Reg, uint32_t VAddr)
         CPU_Message("Compile_SH\nFailed to translate address: %08X", VAddr);
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).c_str());
         }
         return;
     }
@@ -1139,7 +1139,7 @@ void CMipsMemoryVM::Compile_SH_Register(x86Reg Reg, uint32_t VAddr)
     default:
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", PAddr).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", PAddr).c_str());
         }
     }
 }
@@ -1168,7 +1168,7 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
         CPU_Message("Compile_SW\nFailed to translate address: %08X", VAddr);
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).c_str());
         }
         return;
     }
@@ -1208,7 +1208,7 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
         default:
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).c_str());
             }
         }
         break;
@@ -1249,7 +1249,7 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
         default:
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).c_str());
             }
         }
         break;
@@ -1267,7 +1267,7 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
         default:
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).c_str());
             }
         }
         break;
@@ -1385,7 +1385,7 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
         default:
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).c_str());
             }
         }
         break;
@@ -1443,7 +1443,7 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
         default:
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).c_str());
             }
         }
         break;
@@ -1486,7 +1486,7 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
             MoveConstToVariable(Value, PAddr + m_RDRAM, VarName);
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).c_str());
             }
         }
         break;
@@ -1526,7 +1526,7 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
         default:
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).c_str());
             }
         }
         break;
@@ -1540,7 +1540,7 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
         default:
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).c_str());
             }
         }
         break;
@@ -1579,7 +1579,7 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
         default:
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).c_str());
             }
         }
         break;
@@ -1600,7 +1600,7 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
     default:
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store %08X in %08X?", Value, VAddr).c_str());
         }
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true);
@@ -1641,7 +1641,7 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
         CPU_Message("Compile_SW_Register\nFailed to translate address: %08X", VAddr);
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nFailed to translate address: %08X", VAddr).c_str());
         }
         return;
     }
@@ -1703,7 +1703,7 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
                 CPU_Message("    Should be moving %s in to %08X ?!?", x86_Name(Reg), VAddr);
                 if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
                 {
-                    g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).ToUTF16().c_str());
+                    g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).c_str());
                 }
             }
         }
@@ -1741,7 +1741,7 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
             CPU_Message("    Should be moving %s in to %08X ?!?", x86_Name(Reg), VAddr);
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).c_str());
             }
         }
         break;
@@ -1802,7 +1802,7 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
             CPU_Message("    Should be moving %s in to %08X ?!?", x86_Name(Reg), VAddr);
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).c_str());
             }
         }
         break;
@@ -1848,7 +1848,7 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
             MoveX86regToVariable(Reg, PAddr + m_RDRAM, VarName);
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).c_str());
             }
         }
         break;
@@ -1874,7 +1874,7 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
         case 0x04600010:
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).c_str());
             }
             AndConstToVariable((uint32_t)~MI_INTR_PI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
             BeforeCallDirect(m_RegWorkingSet);
@@ -1902,7 +1902,7 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
             CPU_Message("    Should be moving %s in to %08X ?!?", x86_Name(Reg), VAddr);
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).c_str());
             }
         }
         break;
@@ -1913,7 +1913,7 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
         default:
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).c_str());
             }
         }
         break;
@@ -1946,7 +1946,7 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
         default:
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).c_str());
             }
         }
         break;
@@ -1958,7 +1958,7 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
         CPU_Message("    Should be moving %s in to %08X ?!?", x86_Name(Reg), VAddr);
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\ntrying to store in %08X?", VAddr).c_str());
         }
     }
 }
@@ -2195,7 +2195,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
                 {
                     g_Notify->DisplayError(stdstr_f("Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %08X",
                         (char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-                        (uint8_t *)lpEP->ContextRecord->Eip).ToUTF16().c_str());
+                        (uint8_t *)lpEP->ContextRecord->Eip).c_str());
                 }
             }
             lpEP->ContextRecord->Eip = (uint32_t)ReadPos;
@@ -2207,7 +2207,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
                 {
                     g_Notify->DisplayError(stdstr_f("Failed to load half word\n\nMIPS Address: %08X\nX86 Address: %08X",
                         (char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-                        (uint8_t *)lpEP->ContextRecord->Eip).ToUTF16().c_str());
+                        (uint8_t *)lpEP->ContextRecord->Eip).c_str());
                 }
             }
             lpEP->ContextRecord->Eip = (uint32_t)ReadPos;
@@ -2219,7 +2219,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
                 {
                     g_Notify->DisplayError(stdstr_f("Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %08X",
                         (char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-                        (uint8_t *)lpEP->ContextRecord->Eip).ToUTF16().c_str());
+                        (uint8_t *)lpEP->ContextRecord->Eip).c_str());
                 }
             }
             lpEP->ContextRecord->Eip = (uint32_t)ReadPos;
@@ -2231,7 +2231,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
                 {
                     g_Notify->DisplayError(stdstr_f("Failed to load half word\n\nMIPS Address: %08X\nX86 Address: %08X",
                         (char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-                        (uint8_t *)lpEP->ContextRecord->Eip).ToUTF16().c_str());
+                        (uint8_t *)lpEP->ContextRecord->Eip).c_str());
                 }
             }
             lpEP->ContextRecord->Eip = (uint32_t)ReadPos;
@@ -2254,7 +2254,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
                 {
                     g_Notify->DisplayError(stdstr_f("Failed to half word\n\nMIPS Address: %08X\nX86 Address: %08X",
                         (char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-                        (uint8_t *)lpEP->ContextRecord->Eip).ToUTF16().c_str());
+                        (uint8_t *)lpEP->ContextRecord->Eip).c_str());
                 }
             }
             lpEP->ContextRecord->Eip = (uint32_t)ReadPos;
@@ -2265,7 +2265,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
                 if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
                 {
                     g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress,
-                        (uint8_t *)lpEP->ContextRecord->Eip).ToUTF16().c_str());
+                        (uint8_t *)lpEP->ContextRecord->Eip).c_str());
                 }
             }
             lpEP->ContextRecord->Eip = (uint32_t)ReadPos;
@@ -2283,7 +2283,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
                 if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
                 {
                     g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress,
-                        (uint8_t *)lpEP->ContextRecord->Eip).ToUTF16().c_str());
+                        (uint8_t *)lpEP->ContextRecord->Eip).c_str());
                 }
             }
             lpEP->ContextRecord->Eip = (uint32_t)(ReadPos + 2);
@@ -2303,7 +2303,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
             {
                 g_Notify->DisplayError(stdstr_f("Failed to store byte\n\nMIPS Address: %08X\nX86 Address: %08X",
                     (char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-                    (uint8_t *)lpEP->ContextRecord->Eip).ToUTF16().c_str());
+                    (uint8_t *)lpEP->ContextRecord->Eip).c_str());
             }
         }
         lpEP->ContextRecord->Eip = (uint32_t)ReadPos;
@@ -2315,7 +2315,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
             {
                 g_Notify->DisplayError(stdstr_f("Failed to load byte\n\nMIPS Address: %08X\nX86 Address: %08X",
                     (char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-                    (uint8_t *)lpEP->ContextRecord->Eip).ToUTF16().c_str());
+                    (uint8_t *)lpEP->ContextRecord->Eip).c_str());
             }
         }
         lpEP->ContextRecord->Eip = (uint32_t)ReadPos;
@@ -2327,7 +2327,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
             {
                 g_Notify->DisplayError(stdstr_f("Failed to load word\n\nMIPS Address: %08X\nX86 Address: %08X",
                     (char *)exRec.ExceptionInformation[1] - (char *)m_RDRAM,
-                    (uint8_t *)lpEP->ContextRecord->Eip).ToUTF16().c_str());
+                    (uint8_t *)lpEP->ContextRecord->Eip).c_str());
             }
         }
         lpEP->ContextRecord->Eip = (uint32_t)ReadPos;
@@ -2338,7 +2338,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
             if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
             {
                 g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress,
-                    (uint8_t *)lpEP->ContextRecord->Eip).ToUTF16().c_str());
+                    (uint8_t *)lpEP->ContextRecord->Eip).c_str());
             }
         }
         lpEP->ContextRecord->Eip = (uint32_t)ReadPos;
@@ -2357,7 +2357,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
             if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
             {
                 g_Notify->DisplayError(stdstr_f("Failed to store byte\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress,
-                    (uint8_t *)lpEP->ContextRecord->Eip).ToUTF16().c_str());
+                    (uint8_t *)lpEP->ContextRecord->Eip).c_str());
             }
         }
         lpEP->ContextRecord->Eip = (uint32_t)(ReadPos + 1);
@@ -2376,7 +2376,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
             if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
             {
                 g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress,
-                    (uint8_t *)lpEP->ContextRecord->Eip).ToUTF16().c_str());
+                    (uint8_t *)lpEP->ContextRecord->Eip).c_str());
             }
         }
         lpEP->ContextRecord->Eip = (uint32_t)(ReadPos + 4);
@@ -2534,7 +2534,7 @@ bool CMipsMemoryVM::SB_NonMemory(uint32_t PAddr, uint8_t Value)
             VirtualProtect(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, PAGE_READWRITE, &OldProtect);
             *(uint8_t *)(m_RDRAM + PAddr) = Value;
             VirtualProtect(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, OldProtect, &OldProtect);
-            g_Notify->DisplayError(L"FrameBufferWrite");
+            g_Notify->DisplayError("FrameBufferWrite");
             if (FrameBufferWrite) { FrameBufferWrite(PAddr, 1); }
             break;
         }
@@ -2575,7 +2575,7 @@ bool CMipsMemoryVM::SH_NonMemory(uint32_t PAddr, uint16_t Value)
             if (FrameBufferWrite) { FrameBufferWrite(PAddr & ~0xFFF, 2); }
             //*(uint16_t *)(m_RDRAM+PAddr) = 0xFFFF;
             //VirtualProtect(m_RDRAM+(PAddr & ~0xFFF),0xFFC,PAGE_NOACCESS, &OldProtect);
-            g_Notify->DisplayError(L"PAddr = %x", PAddr);
+            g_Notify->DisplayError("PAddr = %x", PAddr);
             break;
         }
 #endif
@@ -2636,7 +2636,7 @@ bool CMipsMemoryVM::SW_NonMemory(uint32_t PAddr, uint32_t Value)
             VirtualProtect(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, PAGE_READWRITE, &OldProtect);
             *(uint32_t *)(m_RDRAM + PAddr) = Value;
             VirtualProtect(m_RDRAM + (PAddr & ~0xFFF), 0xFFC, OldProtect, &OldProtect);
-            g_Notify->DisplayError(L"FrameBufferWrite %X", PAddr);
+            g_Notify->DisplayError("FrameBufferWrite %X", PAddr);
             if (FrameBufferWrite) { FrameBufferWrite(PAddr, 4); }
             break;
         }
@@ -4725,7 +4725,7 @@ void CMipsMemoryVM::ChangeSpStatus()
     }
     if ((RegModValue & SP_SET_INTR) != 0 && bHaveDebugger())
     {
-        g_Notify->DisplayError(L"SP_SET_INTR");
+        g_Notify->DisplayError("SP_SET_INTR");
     }
     if ((RegModValue & SP_CLR_SSTEP) != 0)
     {
@@ -5246,7 +5246,7 @@ void CMipsMemoryVM::Write32SPRegisters(void)
         }
         if ((m_MemLookupValue.UW[0] & SP_SET_INTR) != 0)
         {
-            g_Notify->DisplayError(L"SP_SET_INTR");
+            g_Notify->DisplayError("SP_SET_INTR");
         }
         if ((m_MemLookupValue.UW[0] & SP_CLR_SSTEP) != 0)
         {
@@ -5422,19 +5422,19 @@ void CMipsMemoryVM::Write32DPCommandRegisters(void)
         {
             //if ( ( m_MemLookupValue.UW[0] & DPC_CLR_TMEM_CTR ) != 0)
             //{
-            //	g_Notify->DisplayError(L"RSP: DPC_STATUS_REG: DPC_CLR_TMEM_CTR");
+            //	g_Notify->DisplayError("RSP: DPC_STATUS_REG: DPC_CLR_TMEM_CTR");
             //}
             //if ( ( m_MemLookupValue.UW[0] & DPC_CLR_PIPE_CTR ) != 0)
             //{
-            //	g_Notify->DisplayError(L"RSP: DPC_STATUS_REG: DPC_CLR_PIPE_CTR");
+            //	g_Notify->DisplayError("RSP: DPC_STATUS_REG: DPC_CLR_PIPE_CTR");
             //}
             //if ( ( m_MemLookupValue.UW[0] & DPC_CLR_CMD_CTR ) != 0)
             //{
-            //	g_Notify->DisplayError(L"RSP: DPC_STATUS_REG: DPC_CLR_CMD_CTR");
+            //	g_Notify->DisplayError("RSP: DPC_STATUS_REG: DPC_CLR_CMD_CTR");
             //}
             //if ( ( m_MemLookupValue.UW[0] & DPC_CLR_CLOCK_CTR ) != 0)
             //{
-            //	g_Notify->DisplayError(L"RSP: DPC_STATUS_REG: DPC_CLR_CLOCK_CTR");
+            //	g_Notify->DisplayError("RSP: DPC_STATUS_REG: DPC_CLR_CLOCK_CTR");
             //}
         }
 #endif
@@ -5662,7 +5662,7 @@ void CMipsMemoryVM::Write32PeripheralInterface(void)
     case 0x04600010:
         //if ((Value & PI_SET_RESET) != 0 )
         //{
-        //	g_Notify->DisplayError(L"reset Controller");
+        //	g_Notify->DisplayError("reset Controller");
         //}
         if ((m_MemLookupValue.UW[0] & PI_CLR_INTR) != 0)
         {

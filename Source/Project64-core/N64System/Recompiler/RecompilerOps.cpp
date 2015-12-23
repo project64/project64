@@ -94,7 +94,7 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
             }
             break;
             default:
-                if (bHaveDebugger()) { g_Notify->DisplayError(L"Unknown branch type"); }
+                if (bHaveDebugger()) { g_Notify->DisplayError("Unknown branch type"); }
             }
         }
         else
@@ -360,7 +360,7 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
     {
         if (bHaveDebugger())
         {
-            g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction).c_str());
         }
     }
 }
@@ -509,7 +509,7 @@ void CRecompilerOps::Compile_BranchLikely(BranchFunction CompareFunc, bool Link)
     }
     else if (bHaveDebugger())
     {
-        g_Notify->DisplayError(stdstr_f("WTF\n\nBranchLikely\nNextInstruction = %X", m_NextInstruction).ToUTF16().c_str());
+        g_Notify->DisplayError(stdstr_f("WTF\n\nBranchLikely\nNextInstruction = %X", m_NextInstruction).c_str());
     }
 }
 
@@ -1812,7 +1812,7 @@ void CRecompilerOps::J()
     }
     else if (bHaveDebugger())
     {
-        g_Notify->DisplayError(stdstr_f("WTF\n\nJ\nNextInstruction = %X", m_NextInstruction).ToUTF16().c_str());
+        g_Notify->DisplayError(stdstr_f("WTF\n\nJ\nNextInstruction = %X", m_NextInstruction).c_str());
     }
 }
 
@@ -2354,7 +2354,7 @@ void CRecompilerOps::CACHE()
     default:
         if (bHaveDebugger())
         {
-            g_Notify->DisplayError(stdstr_f("cache: %d", m_Opcode.rt).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f("cache: %d", m_Opcode.rt).c_str());
         }
     }
 }
@@ -2633,7 +2633,7 @@ void CRecompilerOps::SPECIAL_JR()
     }
     else if (bHaveDebugger())
     {
-        g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction).ToUTF16().c_str());
+        g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction).c_str());
     }
 }
 
@@ -2716,7 +2716,7 @@ void CRecompilerOps::SPECIAL_JALR()
     }
     else if (bHaveDebugger())
     {
-        g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction).ToUTF16().c_str());
+        g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction).c_str());
     }
 }
 
@@ -3210,40 +3210,40 @@ void CRecompilerOps::SPECIAL_DMULTU()
 #ifdef toremove
     /* _RegLO->UDW = (uint64)_GPR[m_Opcode.rs].UW[0] * (uint64)_GPR[m_Opcode.rt].UW[0]; */
     X86Protected(x86_EDX) = true;
-    Map_TempReg(x86_EAX,m_Opcode.rs,false);
+    Map_TempReg(x86_EAX, m_Opcode.rs, false);
     X86Protected(x86_EDX) = false;
-    Map_TempReg(x86_EDX,m_Opcode.rt,false);
+    Map_TempReg(x86_EDX, m_Opcode.rt, false);
 
     MulX86reg(x86_EDX);
     MoveX86regToVariable(x86_EAX, &_RegLO->UW[0], "_RegLO->UW[0]");
     MoveX86regToVariable(x86_EDX, &_RegLO->UW[1], "_RegLO->UW[1]");
 
     /* _RegHI->UDW = (uint64)_GPR[m_Opcode.rs].UW[1] * (uint64)_GPR[m_Opcode.rt].UW[1]; */
-    Map_TempReg(x86_EAX,m_Opcode.rs,true);
-    Map_TempReg(x86_EDX,m_Opcode.rt,true);
+    Map_TempReg(x86_EAX, m_Opcode.rs, true);
+    Map_TempReg(x86_EDX, m_Opcode.rt, true);
 
     MulX86reg(x86_EDX);
     MoveX86regToVariable(x86_EAX, &_RegHI->UW[0], "_RegHI->UW[0]");
     MoveX86regToVariable(x86_EDX, &_RegHI->UW[1], "_RegHI->UW[1]");
 
     /* Tmp[0].UDW = (uint64)_GPR[m_Opcode.rs].UW[1] * (uint64)_GPR[m_Opcode.rt].UW[0]; */
-    Map_TempReg(x86_EAX,m_Opcode.rs,true);
-    Map_TempReg(x86_EDX,m_Opcode.rt,false);
+    Map_TempReg(x86_EAX, m_Opcode.rs, true);
+    Map_TempReg(x86_EDX, m_Opcode.rt, false);
 
-    Map_TempReg(x86_EBX,-1,false);
-    Map_TempReg(x86_ECX,-1,false);
+    Map_TempReg(x86_EBX, -1, false);
+    Map_TempReg(x86_ECX, -1, false);
 
     MulX86reg(x86_EDX);
     MoveX86RegToX86Reg(x86_EAX, x86_EBX); /* EDX:EAX -> ECX:EBX */
     MoveX86RegToX86Reg(x86_EDX, x86_ECX);
 
     /* Tmp[1].UDW = (uint64)_GPR[m_Opcode.rs].UW[0] * (uint64)_GPR[m_Opcode.rt].UW[1]; */
-    Map_TempReg(x86_EAX,m_Opcode.rs,false);
-    Map_TempReg(x86_EDX,m_Opcode.rt,true);
+    Map_TempReg(x86_EAX, m_Opcode.rs, false);
+    Map_TempReg(x86_EDX, m_Opcode.rt, true);
 
     MulX86reg(x86_EDX);
-    Map_TempReg(x86_ESI,-1,false);
-    Map_TempReg(x86_EDI,-1,false);
+    Map_TempReg(x86_ESI, -1, false);
+    Map_TempReg(x86_EDI, -1, false);
     MoveX86RegToX86Reg(x86_EAX, x86_ESI); /* EDX:EAX -> EDI:ESI */
     MoveX86RegToX86Reg(x86_EDX, x86_EDI);
 
@@ -3881,7 +3881,7 @@ void CRecompilerOps::SPECIAL_XOR()
 
             if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs))
             {
-                if (bHaveDebugger()) { g_Notify->DisplayError(L"XOR 1"); }
+                if (bHaveDebugger()) { g_Notify->DisplayError("XOR 1"); }
                 CRecompilerOps::UnknownOpcode();
             }
             else
@@ -4199,7 +4199,7 @@ void CRecompilerOps::SPECIAL_SLT()
         {
             if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs))
             {
-                g_Notify->DisplayError(L"1");
+                g_Notify->DisplayError("1");
                 CRecompilerOps::UnknownOpcode();
             }
             else
@@ -4515,7 +4515,7 @@ void CRecompilerOps::SPECIAL_SLTU()
         {
             if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs))
             {
-                g_Notify->DisplayError(L"1");
+                g_Notify->DisplayError("1");
                 CRecompilerOps::UnknownOpcode();
             }
             else
@@ -5470,7 +5470,7 @@ void CRecompilerOps::COP0_MT()
         if (IsConst(m_Opcode.rt))
         {
             AndConstToVariable(0xFFFFCFF, &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
-            if ((GetMipsRegLo(m_Opcode.rt) & 0x300) != 0 && bHaveDebugger()){ g_Notify->DisplayError(L"Set IP0 or IP1"); }
+            if ((GetMipsRegLo(m_Opcode.rt) & 0x300) != 0 && bHaveDebugger()){ g_Notify->DisplayError("Set IP0 or IP1"); }
         }
         else
         {

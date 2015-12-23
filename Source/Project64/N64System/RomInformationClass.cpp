@@ -55,21 +55,21 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam) {
 
         LONG_PTR originalWndProc = GetWindowLongPtrW(hDlg, GWLP_WNDPROC);
         SetWindowLongPtrW(hDlg, GWLP_WNDPROC, (LONG_PTR)DefWindowProcW);
-        SetWindowTextW(hDlg, GS(INFO_TITLE));
+        SetWindowTextW(hDlg, wGS(INFO_TITLE).c_str());
         SetWindowLongPtrW(hDlg, GWLP_WNDPROC, originalWndProc);
 
-        SetDlgItemTextW(hDlg, IDC_ROM_NAME, GS(INFO_ROM_NAME_TEXT));
-        SetDlgItemTextW(hDlg, IDC_FILE_NAME, GS(INFO_FILE_NAME_TEXT));
-        SetDlgItemTextW(hDlg, IDC_LOCATION, GS(INFO_LOCATION_TEXT));
-        SetDlgItemTextW(hDlg, IDC_ROM_MD5, GS(INFO_MD5_TEXT));
-        SetDlgItemTextW(hDlg, IDC_ROM_SIZE, GS(INFO_SIZE_TEXT));
-        SetDlgItemTextW(hDlg, IDC_CART_ID, GS(INFO_CART_ID_TEXT));
-        SetDlgItemTextW(hDlg, IDC_MANUFACTURER, GS(INFO_MANUFACTURER_TEXT));
-        SetDlgItemTextW(hDlg, IDC_COUNTRY, GS(INFO_COUNTRY_TEXT));
-        SetDlgItemTextW(hDlg, IDC_CRC1, GS(INFO_CRC1_TEXT));
-        SetDlgItemTextW(hDlg, IDC_CRC2, GS(INFO_CRC2_TEXT));
-        SetDlgItemTextW(hDlg, IDC_CIC_CHIP, GS(INFO_CIC_CHIP_TEXT));
-        SetDlgItemTextW(hDlg, IDC_CLOSE_BUTTON, GS(BOTTOM_CLOSE));
+        SetDlgItemTextW(hDlg, IDC_ROM_NAME, wGS(INFO_ROM_NAME_TEXT).c_str());
+        SetDlgItemTextW(hDlg, IDC_FILE_NAME, wGS(INFO_FILE_NAME_TEXT).c_str());
+        SetDlgItemTextW(hDlg, IDC_LOCATION, wGS(INFO_LOCATION_TEXT).c_str());
+        SetDlgItemTextW(hDlg, IDC_ROM_MD5, wGS(INFO_MD5_TEXT).c_str());
+        SetDlgItemTextW(hDlg, IDC_ROM_SIZE, wGS(INFO_SIZE_TEXT).c_str());
+        SetDlgItemTextW(hDlg, IDC_CART_ID, wGS(INFO_CART_ID_TEXT).c_str());
+        SetDlgItemTextW(hDlg, IDC_MANUFACTURER, wGS(INFO_MANUFACTURER_TEXT).c_str());
+        SetDlgItemTextW(hDlg, IDC_COUNTRY, wGS(INFO_COUNTRY_TEXT).c_str());
+        SetDlgItemTextW(hDlg, IDC_CRC1, wGS(INFO_CRC1_TEXT).c_str());
+        SetDlgItemTextW(hDlg, IDC_CRC2, wGS(INFO_CRC2_TEXT).c_str());
+        SetDlgItemTextW(hDlg, IDC_CIC_CHIP, wGS(INFO_CIC_CHIP_TEXT).c_str());
+        SetDlgItemTextW(hDlg, IDC_CLOSE_BUTTON, wGS(BOTTOM_CLOSE).c_str());
 
         SetDlgItemTextW(hDlg, IDC_INFO_ROMNAME, _this->m_pRomInfo->GetRomName().ToUTF16(stdstr::CODEPAGE_932).c_str());
 

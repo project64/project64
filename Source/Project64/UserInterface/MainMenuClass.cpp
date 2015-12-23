@@ -371,7 +371,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         if (g_Settings->LoadBool(UserInterface_ShowCPUPer))
         {
             g_Settings->SaveBool(UserInterface_ShowCPUPer, false);
-            g_Notify->DisplayMessage(0, L"");
+            g_Notify->DisplayMessage(0, "");
         }
         else
         {
@@ -400,11 +400,11 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         g_Settings->SaveBool(Debugger_ShowPifErrors, !g_Settings->LoadBool(Debugger_ShowPifErrors));
         break;
     case ID_DEBUG_SHOW_DLIST_COUNT:
-        g_Notify->DisplayMessage(0, L"");
+        g_Notify->DisplayMessage(0, "");
         g_Settings->SaveBool(Debugger_ShowDListAListCount, !g_Settings->LoadBool(Debugger_ShowDListAListCount));
         break;
     case ID_DEBUG_SHOW_RECOMP_MEM_SIZE:
-        g_Notify->DisplayMessage(0, L"");
+        g_Notify->DisplayMessage(0, "");
         g_Settings->SaveBool(Debugger_ShowRecompMemSize, !g_Settings->LoadBool(Debugger_ShowRecompMemSize));
         break;
     case ID_DEBUG_SHOW_DIV_BY_ZERO:
@@ -453,7 +453,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUGGER_INTERRUPT_PI: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_PI); break;
     case ID_DEBUGGER_INTERRUPT_DP: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_DP); break;
     case ID_CURRENT_SAVE_DEFAULT:
-        g_Notify->DisplayMessage(3, stdwstr_f(GS(MENU_SLOT_SAVE), GetSaveSlotString(MenuID - ID_CURRENT_SAVE_DEFAULT).c_str()).c_str());
+        g_Notify->DisplayMessage(3, stdstr_f(GS(MENU_SLOT_SAVE), GetSaveSlotString(MenuID - ID_CURRENT_SAVE_DEFAULT).c_str()).c_str());
         g_Settings->SaveDword(Game_CurrentSaveState, (DWORD)(MenuID - ID_CURRENT_SAVE_DEFAULT));
         break;
     case ID_CURRENT_SAVE_1:
@@ -466,7 +466,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_CURRENT_SAVE_8:
     case ID_CURRENT_SAVE_9:
     case ID_CURRENT_SAVE_10:
-        g_Notify->DisplayMessage(3, stdwstr_f(GS(MENU_SLOT_SAVE), GetSaveSlotString((MenuID - ID_CURRENT_SAVE_1) + 1).c_str()).c_str());
+        g_Notify->DisplayMessage(3, stdstr_f(GS(MENU_SLOT_SAVE), GetSaveSlotString((MenuID - ID_CURRENT_SAVE_1) + 1).c_str()).c_str());
         g_Settings->SaveDword(Game_CurrentSaveState, (DWORD)((MenuID - ID_CURRENT_SAVE_1) + 1));
         break;
     case ID_HELP_SUPPORTFORUM: ShellExecute(NULL, "open", "http://forum.pj64-emu.com/", NULL, NULL, SW_SHOWMAXIMIZED); break;
@@ -510,7 +510,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             menuinfo.cch = sizeof(String);
             GetMenuItemInfoW((HMENU)m_MenuHandle, MenuID, FALSE, &menuinfo);
 
-            g_Lang->SetLanguage(String);
+            g_Lang->SetLanguage(stdstr().FromUTF16(String).c_str());
             m_Gui->ResetRomBrowserColomuns();
             break;
         }
@@ -546,7 +546,7 @@ stdstr CMainMenu::GetFileLastMod(stdstr FileName)
 
 std::wstring CMainMenu::GetSaveSlotString(int Slot)
 {
-    std::wstring SlotName;
+    stdstr SlotName;
     switch (Slot)
     {
     case 0: SlotName = GS(MENU_SLOT_DEFAULT); break;
@@ -562,7 +562,7 @@ std::wstring CMainMenu::GetSaveSlotString(int Slot)
     case 10: SlotName = GS(MENU_SLOT_10); break;
     }
 
-    if (!g_Settings->LoadBool(GameRunning_CPU_Running)) { return SlotName; }
+    if (!g_Settings->LoadBool(GameRunning_CPU_Running)) { return SlotName.ToUTF16(); }
 
     stdstr LastSaveTime;
 
@@ -613,8 +613,8 @@ std::wstring CMainMenu::GetSaveSlotString(int Slot)
             LastSaveTime = GetFileLastMod(FileName);
         }
     }
-    SlotName += LastSaveTime.ToUTF16();
-    return SlotName;
+    SlotName += LastSaveTime;
+    return SlotName.ToUTF16();
 }
 
 void CMainMenu::FillOutMenu(HMENU hMenu)
@@ -643,7 +643,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     int Offset = 0;
     for (LanguageList::iterator Language = LangList.begin(); Language != LangList.end(); Language++)
     {
-        Item.Reset(ID_LANG_START + Offset++, EMPTY_STRING, EMPTY_STDSTR, NULL, Language->LanguageName.c_str());
+        Item.Reset(ID_LANG_START + Offset++, EMPTY_STRING, EMPTY_STDSTR, NULL, stdstr(Language->LanguageName).ToUTF16().c_str());
         if (g_Lang->IsCurrentLang(*Language))
         {
             Item.SetItemTicked(true);
