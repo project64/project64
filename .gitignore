@@ -224,16 +224,9 @@ App_Data/*.ldf
 *.gz
 *.bzip
 *.bz2
-*.xz
-*.lzma
-*.iso
-*.img
-*.ccd
-*.nrg
 
 # Compiled binaries
 
-*.jar
 *.com
 
 # Inno Setup temporary/backup files
