@@ -217,6 +217,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\UserInterface\RomInformationClass.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\UserInterface\SettingsConfig.cpp"
 					>
 				</File>
@@ -310,14 +314,6 @@
 				>
 				<File
 					RelativePath=".\Multilanguage\LanguageSelector.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="N64 System Source"
-				>
-				<File
-					RelativePath=".\N64System\RomInformationClass.cpp"
 					>
 				</File>
 			</Filter>
@@ -447,6 +443,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\UserInterface\RomInformationClass.h"
+					>
+				</File>
+				<File
 					RelativePath=".\UserInterface\SettingsConfig.h"
 					>
 				</File>
@@ -528,14 +528,6 @@
 				>
 				<File
 					RelativePath=".\Multilanguage\LanguageSelector.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="N64 System Headers"
-				>
-				<File
-					RelativePath=".\N64System\RomInformationClass.h"
 					>
 				</File>
 			</Filter>

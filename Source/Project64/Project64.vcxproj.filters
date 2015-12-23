@@ -150,11 +150,11 @@
     <ClCompile Include="Settings\NotificationSettings.cpp">
       <Filter>Source Files\Settings Files</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\RomInformationClass.cpp">
-      <Filter>Source Files\User Interface Source</Filter>
-    </ClCompile>
     <ClCompile Include="Multilanguage\LanguageSelector.cpp">
       <Filter>Source Files\Multilanguage Source</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\RomInformationClass.cpp">
+      <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -277,6 +277,9 @@
     </ClInclude>
     <ClInclude Include="WTLApp.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\RomInformationClass.h">
+      <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

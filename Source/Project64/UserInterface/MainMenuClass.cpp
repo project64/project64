@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "RomInformationClass.h"
 
 #include <windows.h>
 #include <commdlg.h>

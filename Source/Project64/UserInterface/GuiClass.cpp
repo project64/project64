@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include "RomInformationClass.h"
 
 #include <commctrl.h>
 #include <Project64-core/Settings/SettingType/SettingsType-Application.h>
