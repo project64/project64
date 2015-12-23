@@ -60,6 +60,10 @@ public:
     bool operator != (const CSystemTimer& rSystemTimer) const;
 
 private:
+    CSystemTimer(void);                           // Disable default constructor
+    CSystemTimer(const CSystemTimer&);            // Disable copy constructor
+    CSystemTimer& operator=(const CSystemTimer&); // Disable assignment
+
     TIMER_DETAILS m_TimerDetatils[MaxTimer];
     int           m_LastUpdate; //Timer at last update
     int         & m_NextTimer;
