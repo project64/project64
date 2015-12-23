@@ -10,18 +10,18 @@
 ****************************************************************************/
 #pragma once
 
-class RomInformation 
+class RomInformation
 {
-	bool const    m_DeleteRomInfo;
-	stdstr  const m_FileName;
-	CN64Rom *     m_pRomInfo;
+    bool const    m_DeleteRomInfo;
+    stdstr  const m_FileName;
+    CN64Rom *     m_pRomInfo;
 
-	friend DWORD CALLBACK RomInfoProc ( HWND, DWORD, DWORD, DWORD );
+    friend DWORD CALLBACK RomInfoProc(HWND, DWORD, DWORD, DWORD);
 
 public:
-	RomInformation(const char* RomFile);
-	RomInformation(CN64Rom* RomInfo);
-	~RomInformation();
-	
-	void DisplayInformation(HWND hParent) const;
+    RomInformation(const char* RomFile);
+    RomInformation(CN64Rom* RomInfo);
+    ~RomInformation();
+
+    void DisplayInformation(HWND hParent) const;
 };
