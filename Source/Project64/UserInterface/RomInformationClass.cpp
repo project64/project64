@@ -18,7 +18,8 @@ m_pRomInfo(NULL)
 {
     if (m_FileName.length() == 0)  { return; }
     m_pRomInfo = new CN64Rom;
-    if (!m_pRomInfo->LoadN64Image(m_FileName.c_str())) {
+    if (!m_pRomInfo->LoadN64Image(m_FileName.c_str()))
+    {
         delete m_pRomInfo;
         m_pRomInfo = NULL;
         return;
@@ -39,25 +40,24 @@ RomInformation::~RomInformation()
 }
 
 #include <windows.h>
-void RomInformation::DisplayInformation(HWND hParent) const {
+void RomInformation::DisplayInformation(HWND hParent) const
+{
     if (m_FileName.length() == 0) { return; }
 
-    DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Rom_Information),
-        (HWND)hParent, (DLGPROC)RomInfoProc, (DWORD)this);
+    DialogBoxParamW(GetModuleHandle(NULL), MAKEINTRESOURCEW(IDD_Rom_Information), hParent, (DLGPROC)RomInfoProc, (DWORD)this);
 }
 
-DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam) {
-    switch (uMsg) {
+DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
+{
+    switch (uMsg)
+    {
     case WM_INITDIALOG:
     {
         //record class for future usage
         SetProp(hDlg, "this", (RomInformation *)lParam);
         RomInformation * _this = (RomInformation *)lParam;
 
-        LONG_PTR originalWndProc = GetWindowLongPtrW(hDlg, GWLP_WNDPROC);
-        SetWindowLongPtrW(hDlg, GWLP_WNDPROC, (LONG_PTR)DefWindowProcW);
         SetWindowTextW(hDlg, wGS(INFO_TITLE).c_str());
-        SetWindowLongPtrW(hDlg, GWLP_WNDPROC, originalWndProc);
 
         SetDlgItemTextW(hDlg, IDC_ROM_NAME, wGS(INFO_ROM_NAME_TEXT).c_str());
         SetDlgItemTextW(hDlg, IDC_FILE_NAME, wGS(INFO_FILE_NAME_TEXT).c_str());
@@ -74,73 +74,57 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam) {
 
         SetDlgItemTextW(hDlg, IDC_INFO_ROMNAME, _this->m_pRomInfo->GetRomName().ToUTF16(stdstr::CODEPAGE_932).c_str());
 
-        char path[_MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
-        _splitpath(_this->m_pRomInfo->GetFileName().c_str(), drive, dir, fname, ext);
-        _makepath(path, drive, dir, "", "");
+        SetDlgItemTextW(hDlg, IDC_INFO_FILENAME, stdstr(CPath(_this->m_pRomInfo->GetFileName()).GetNameExtension()).ToUTF16().c_str());
+        SetDlgItemTextW(hDlg, IDC_INFO_LOCATION, stdstr(CPath(_this->m_pRomInfo->GetFileName()).GetDriveDirectory()).ToUTF16().c_str());
 
-        SetDlgItemText(hDlg, IDC_INFO_FILENAME, stdstr_f("%s%s", fname, ext).c_str());
-        SetDlgItemText(hDlg, IDC_INFO_LOCATION, path);
-
-        SetDlgItemText(hDlg, IDC_INFO_MD5, _this->m_pRomInfo->GetRomMD5().c_str());
-
-        char String[255] = " ";
-        sprintf(&String[1], "%.1f MBit", (float)_this->m_pRomInfo->GetRomSize() / 0x20000);
-        SetDlgItemText(hDlg, IDC_INFO_ROMSIZE, String);
+        SetDlgItemTextW(hDlg, IDC_INFO_MD5, _this->m_pRomInfo->GetRomMD5().ToUTF16().c_str());
+        SetDlgItemTextW(hDlg, IDC_INFO_ROMSIZE, stdstr_f("%.1f MBit", (float)_this->m_pRomInfo->GetRomSize() / 0x20000).ToUTF16().c_str());
 
         BYTE * RomHeader = _this->m_pRomInfo->GetRomAddress();
-        String[1] = RomHeader[0x3F];
-        String[2] = RomHeader[0x3E];
-        String[3] = '\0';
-        SetDlgItemText(hDlg, IDC_INFO_CARTID, String);
+        SetDlgItemTextW(hDlg, IDC_INFO_CARTID, stdstr_f("%c%c", RomHeader[0x3F], RomHeader[0x3E]).ToUTF16().c_str());
 
-        switch (RomHeader[0x38]) {
-        case 'N': SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, " Nintendo"); break;
-        case 0:   SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, " None"); break;
-        default:  SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, " (Unknown)"); break;
+        switch (RomHeader[0x38])
+        {
+        case 'N': SetDlgItemTextW(hDlg, IDC_INFO_MANUFACTURER, L"Nintendo"); break;
+        case 0:   SetDlgItemTextW(hDlg, IDC_INFO_MANUFACTURER, L"None"); break;
+        default:  SetDlgItemTextW(hDlg, IDC_INFO_MANUFACTURER, L"(Unknown)"); break;
         }
 
-        switch (RomHeader[0x3D]) {
-        case NTSC_BETA: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, " Beta"); break;
-        case X_NTSC:    SetDlgItemText(hDlg, IDC_INFO_COUNTRY, " NTSC"); break;
-        case Germany:   SetDlgItemText(hDlg, IDC_INFO_COUNTRY, " Germany"); break;
-        case USA:       SetDlgItemText(hDlg, IDC_INFO_COUNTRY, " America"); break;
-        case french:    SetDlgItemText(hDlg, IDC_INFO_COUNTRY, " France"); break;
-        case Italian:   SetDlgItemText(hDlg, IDC_INFO_COUNTRY, " Italy"); break;
-        case Japan:     SetDlgItemText(hDlg, IDC_INFO_COUNTRY, " Japan"); break;
-        case Europe:    SetDlgItemText(hDlg, IDC_INFO_COUNTRY, " Europe"); break;
-        case Spanish:   SetDlgItemText(hDlg, IDC_INFO_COUNTRY, " Spain"); break;
-        case Australia: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, " Australia"); break;
-        case X_PAL:     SetDlgItemText(hDlg, IDC_INFO_COUNTRY, " PAL"); break;
-        case Y_PAL:     SetDlgItemText(hDlg, IDC_INFO_COUNTRY, " PAL"); break;
-        case 0: SetDlgItemText(hDlg, IDC_INFO_COUNTRY, " None"); break;
+        switch (RomHeader[0x3D])
+        {
+        case NTSC_BETA: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Beta"); break;
+        case X_NTSC:    SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"NTSC"); break;
+        case Germany:   SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Germany"); break;
+        case USA:       SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"America"); break;
+        case french:    SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"France"); break;
+        case Italian:   SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Italy"); break;
+        case Japan:     SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Japan"); break;
+        case Europe:    SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Europe"); break;
+        case Spanish:   SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Spain"); break;
+        case Australia: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"Australia"); break;
+        case X_PAL:     SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
+        case Y_PAL:     SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"PAL"); break;
+        case 0: SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, L"None"); break;
         default:
-            sprintf(&String[1], " Unknown %c (%02X)", RomHeader[0x3D], RomHeader[0x3D]);
-            SetDlgItemText(hDlg, IDC_INFO_COUNTRY, String);
+            SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, stdstr_f(" Unknown %c (%02X)", RomHeader[0x3D], RomHeader[0x3D]).ToUTF16().c_str());
         }
+        SetDlgItemTextW(hDlg, IDC_INFO_CRC1, stdstr_f("0x%08X", *(uint32_t *)(RomHeader + 0x10)).ToUTF16().c_str());
+        SetDlgItemTextW(hDlg, IDC_INFO_CRC2, stdstr_f("0x%08X", *(DWORD *)(RomHeader + 0x14)).ToUTF16().c_str());
 
-        sprintf(&String[1], "0x%08X", *(DWORD *)(RomHeader + 0x10));
-        SetDlgItemText(hDlg, IDC_INFO_CRC1, String);
-
-        sprintf(&String[1], "0x%08X", *(DWORD *)(RomHeader + 0x14));
-        SetDlgItemText(hDlg, IDC_INFO_CRC2, String);
-
-        if (_this->m_pRomInfo->CicChipID() == CIC_UNKNOWN) {
-            sprintf(&String[1], "Unknown");
+        std::wstring CicChip;
+        switch (_this->m_pRomInfo->CicChipID())
+        {
+        case CIC_UNKNOWN: CicChip = L"Unknown"; break;
+        case CIC_NUS_8303: CicChip = L"CIC-NUS-8303"; break;
+        case CIC_NUS_5167: CicChip = L"CIC-NUS-5167"; break;
+        default: CicChip = stdstr_f("CIC-NUS-610%d", _this->m_pRomInfo->CicChipID()).ToUTF16(); break;
         }
-        else if (_this->m_pRomInfo->CicChipID() == CIC_NUS_8303) {
-            sprintf(&String[1], "CIC-NUS-8303");
-        }
-        else if (_this->m_pRomInfo->CicChipID() == CIC_NUS_5167) {
-            sprintf(&String[1], "CIC-NUS-5167");
-        }
-        else {
-            sprintf(&String[1], "CIC-NUS-610%d", _this->m_pRomInfo->CicChipID());
-        }
-        SetDlgItemText(hDlg, IDC_INFO_CIC, String);
+        SetDlgItemTextW(hDlg, IDC_INFO_CIC, CicChip.c_str());
     }
     break;
     case WM_COMMAND:
-        switch (LOWORD(wParam)) {
+        switch (LOWORD(wParam))
+        {
         case IDCANCEL:
             RemoveProp(hDlg, "this");
             EndDialog(hDlg, 0);
