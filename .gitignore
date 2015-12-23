@@ -157,65 +157,6 @@ ipch/
 *.vsp
 *.vspx
 
-# Guidance Automation Toolkit
-
-*.gpState
-
-# ReSharper is a .NET coding add-in
-
-_ReSharper*/
-*.[Rr]e[Ss]harper
-
-# TeamCity is a build add-in
-
-_TeamCity*
-
-# DotCover is a code coverage tool
-
-*.dotCover
-
-# NCrunch
-
-*.ncrunch*
-.*crunch*.local.xml
-
-# InstallShield output folder
-
-[Ee]xpress/
-
-# DocProject is a documentation generator add-in
-
-DocProject/buildhelp/
-DocProject/Help/*.HxT
-DocProject/Help/*.HxC
-DocProject/Help/*.hhc
-DocProject/Help/*.hhk
-DocProject/Help/*.hhp
-DocProject/Help/Html2
-DocProject/Help/html
-
-# Click-Once directory
-
-publish/
-
-# Publish Web Output
-
-*.Publish.xml
-*.pubxml
-
-# NuGet packages directory
-# TODO: If you have NuGet package restore enabled, uncomment the next line
-#packages/
-
-# Windows Azure Build Output
-
-csx
-*.build.csdef
-
-# Windows Store application package directory
-
-AppPackages/
-
 # Others
 
 sql/
@@ -229,12 +170,8 @@ ClientBin/
 *.pfx
 *.publishsettings
 
-# RIA/Silverlight projects
-
-Generated_Code/
-
-# Backup and report files from converting an old project file to a newer
-# Visual Studio version. Backup files are not needed, because we have git ;-)
+# Backup and report files from converting an older project file to a newer
+# Visual Studio version
 
 _UpgradeReport_Files/
 Backup*/
@@ -277,17 +214,6 @@ App_Data/*.ldf
 
 *.tmp
 *.bak
-
-# Microsoft Office temporary files
-
-~$*.doc*
-~$*.xls*
-*.xlk
-~$*.ppt*
-
-# LibreOffice locks
-
-.~lock.*#
 
 # Compressed and packed data
 
