@@ -112,7 +112,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
     {
         if (g_Settings->LoadBool(Setting_RdbEditor))
         {
-            ::SetWindowTextW(m_hWnd, stdwstr_f(L"%ws ** RDB Edit Mode **", wGS(OPTIONS_TITLE).c_str() ).c_str());
+            SetWindowTextW(m_hWnd, stdstr_f("%s ** RDB Edit Mode **", GS(OPTIONS_TITLE)).ToUTF16().c_str());
         }
         else
         {
