@@ -17,7 +17,7 @@ CLanguageSelector::CLanguageSelector()
 
 void CLanguageSelector::Select(void)
 {
-    DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Lang_Select), NULL, (DLGPROC)LangSelectProc, (LPARAM)this);
+    DialogBoxParamW(GetModuleHandle(NULL), MAKEINTRESOURCEW(IDD_Lang_Select), NULL, (DLGPROC)LangSelectProc, (LPARAM)this);
 }
 
 LRESULT CALLBACK CLanguageSelector::LangSelectProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -39,7 +39,7 @@ LRESULT CALLBACK CLanguageSelector::LangSelectProc(HWND hDlg, UINT uMsg, WPARAM 
         }
         for (LanguageList::iterator Language = LangList.begin(); Language != LangList.end(); Language++)
         {
-            int index = SendMessageW(GetDlgItem(hDlg, IDC_LANG_SEL), CB_ADDSTRING, 0, (WPARAM)Language->LanguageName.c_str());
+            int index = SendMessageW(GetDlgItem(hDlg, IDC_LANG_SEL), CB_ADDSTRING, 0, (WPARAM)stdstr(Language->LanguageName).ToUTF16().c_str());
             if (_stricmp(Language->LanguageName.c_str(), "English") == 0)
             {
                 SendMessage(GetDlgItem(hDlg, IDC_LANG_SEL), CB_SETCURSEL, index, 0);
@@ -57,23 +57,7 @@ LRESULT CALLBACK CLanguageSelector::LangSelectProc(HWND hDlg, UINT uMsg, WPARAM 
         BITMAP bmTL;
         GetObject(hbmpBackgroundTop, sizeof(BITMAP), &bmTL);
 
-        hTextFont = ::CreateFont
-            (
-            18,
-            0,
-            0,
-            0,
-            FW_NORMAL,
-            0,
-            0,
-            0,
-            DEFAULT_CHARSET,
-            OUT_DEFAULT_PRECIS,
-            CLIP_DEFAULT_PRECIS,
-            PROOF_QUALITY,
-            DEFAULT_PITCH | FF_DONTCARE,
-            "Arial"
-            );
+        hTextFont = ::CreateFont(18, 0, 0, 0, FW_NORMAL, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial");
         SendDlgItemMessage(hDlg, IDC_SELECT_LANG, WM_SETFONT, (WPARAM)hTextFont, TRUE);
     }
     break;
