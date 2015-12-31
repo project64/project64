@@ -5156,6 +5156,8 @@ void CMipsMemoryVM::Load32PifRam(void)
 
 void CMipsMemoryVM::Load32Rom(void)
 {
+    uint32_t MemAddress = m_MemLookupAddress & 0x03FFFFFF;
+
     if (g_MMU->m_RomWrittenTo)
     {
         m_MemLookupValue.UW[0] = g_MMU->m_RomWroteValue;
@@ -5168,18 +5170,39 @@ void CMipsMemoryVM::Load32Rom(void)
         }
 #endif
     }
-    else if ((m_MemLookupAddress & 0xFFFFFFF) < g_MMU->m_RomSize)
+    else if (MemAddress < g_MMU->m_RomSize)
     {
-        m_MemLookupValue.UW[0] = *(uint32_t *)&g_MMU->m_Rom[(m_MemLookupAddress & 0xFFFFFFF)];
+        m_MemLookupValue.UW[0] = *(uint32_t *)&g_MMU->m_Rom[MemAddress];
     }
-    else
+    //File size < m_MemLookupAddress (Over Dump)
+    else if ((MemAddress >= 0x00400000) && (MemAddress < (g_MMU->m_RomSize + 0x00400000)))
     {
-        m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
+        //Mirror ROM
+        m_MemLookupValue.UW[0] = *(uint32_t *)&g_MMU->m_Rom[(MemAddress & 0x003FFFFF)];
+    }
+    else if ((MemAddress >= 0x02000000) && (MemAddress < (g_MMU->m_RomSize + 0x02000000)))
+    {
+        //Mirror ROM
+        m_MemLookupValue.UW[0] = *(uint32_t *)&g_MMU->m_Rom[(MemAddress & 0x00FFFFFF)];
+    }
+    else if ((MemAddress >= 0x02400000) && (MemAddress < (g_MMU->m_RomSize + 0x02400000)))
+	{
+        //Mirror ROM
+        m_MemLookupValue.UW[0] = *(uint32_t *)&g_MMU->m_Rom[(MemAddress & 0x003FFFFF)];
+    }
+    else if ((g_MMU->m_RomSize >= 0x02800000) && (MemAddress >= 0x02800000) && (MemAddress < 0x04FFFFFF))
+    {
+        //Mirror ROM
+        m_MemLookupValue.UW[0] = *(uint32_t *)&g_MMU->m_Rom[(MemAddress & 0x027FFFFF)];
+    }
+	else
+    {
+        m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFC;
         m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
-        if (bHaveDebugger())
+        /*if (bHaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
+        }*/
     }
 }
 
