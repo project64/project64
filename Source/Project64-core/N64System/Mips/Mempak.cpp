@@ -14,11 +14,11 @@
 #include <Windows.h>
 
 static uint8_t Mempaks[4][0x8000];
-HANDLE hMempakFile[4];
+void * hMempakFile[4];
 
 void Mempak::Close()
 {
-    for (int i = 0; i < 4; i++)
+    for (int32_t i = 0; i < 4; i++)
     {
         if (hMempakFile[i])
         {
@@ -28,7 +28,7 @@ void Mempak::Close()
     }
 }
 
-void LoadMempak(int Control)
+void LoadMempak(int32_t Control)
 {
     CPath FileName;
     DWORD dwRead;
@@ -72,7 +72,7 @@ void LoadMempak(int Control)
 
         memcpy(&Mempaks[Control][0], Initialize, 0x110);
 
-        for (int count = 0x110; count < 0x8000; count += 2)
+        for (int32_t count = 0x110; count < 0x8000; count += 2)
         {
             Mempaks[Control][count] = 0x00;
             Mempaks[Control][count + 1] = 0x03;
@@ -100,10 +100,10 @@ void LoadMempak(int Control)
 
 uint8_t Mempak::CalculateCrc(uint8_t * DataToCrc)
 {
-    DWORD Count;
-    DWORD XorTap;
+    uint32_t Count;
+    uint32_t XorTap;
 
-    int Length;
+    int32_t Length;
     uint8_t CRC = 0;
 
     for (Count = 0; Count < 0x21; Count++)
@@ -131,9 +131,9 @@ uint8_t Mempak::CalculateCrc(uint8_t * DataToCrc)
     return CRC;
 }
 
-void Mempak::ReadFrom(int Control, uint8_t * command)
+void Mempak::ReadFrom(int32_t Control, uint8_t * command)
 {
-    DWORD address = (command[3] << 8) | (command[4] & 0xE0);
+    uint32_t address = (command[3] << 8) | (command[4] & 0xE0);
 
     if (address < 0x8000)
     {
@@ -150,7 +150,7 @@ void Mempak::ReadFrom(int Control, uint8_t * command)
     }
 }
 
-void Mempak::WriteTo(int Control, uint8_t * command)
+void Mempak::WriteTo(int32_t Control, uint8_t * command)
 {
     DWORD dwWritten;
     uint32_t address = (command[3] << 8) | (command[4] & 0xE0);
