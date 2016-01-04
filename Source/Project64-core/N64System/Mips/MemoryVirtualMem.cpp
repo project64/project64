@@ -26,13 +26,12 @@ uint32_t CMipsMemoryVM::m_MemLookupAddress = 0;
 MIPS_DWORD CMipsMemoryVM::m_MemLookupValue;
 bool CMipsMemoryVM::m_MemLookupValid = true;
 
-CMipsMemoryVM::CMipsMemoryVM(CMipsMemory_CallBack * CallBack, bool SavesReadOnly) :
+CMipsMemoryVM::CMipsMemoryVM(bool SavesReadOnly) :
 
 CPifRam(SavesReadOnly),
 CFlashram(SavesReadOnly),
 CSram(SavesReadOnly),
 CDMA(*this, *this),
-m_CBClass(CallBack),
 m_RomMapped(false),
 m_Rom(NULL),
 m_RomSize(0),

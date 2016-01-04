@@ -34,7 +34,7 @@ m_SaveUsing((SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip)),
 m_Plugins(Plugins),
 m_SyncCPU(NULL),
 m_SyncPlugins(NULL),
-m_MMU_VM(this, SavesReadOnly),
+m_MMU_VM(SavesReadOnly),
 m_TLB(this),
 m_Reg(this, this),
 m_Recomp(NULL),
@@ -1910,19 +1910,6 @@ void CN64System::RefreshScreen()
         m_Cheats.ApplyCheats(g_MMU);
     }
     //	if (bProfiling)    { m_Profile.StartTimer(ProfilingAddr != Timer_None ? ProfilingAddr : Timer_R4300); }
-}
-
-bool CN64System::WriteToProtectedMemory(uint32_t Address, int length)
-{
-    WriteTrace(TraceN64System, TraceDebug, "Address: %X Len: %d", Address, length);
-    if (m_Recomp)
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-#ifdef tofix
-        return m_Recomp->ClearRecompCode_Phys(Address, length, CRecompiler::Remove_ProtectedMem);
-#endif
-    }
-    return false;
 }
 
 void CN64System::TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly)
