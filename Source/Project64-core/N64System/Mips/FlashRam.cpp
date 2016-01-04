@@ -34,7 +34,7 @@ CFlashram::~CFlashram()
     }
 }
 
-void CFlashram::DmaFromFlashram(uint8_t * dest, int StartOffset, int len)
+void CFlashram::DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len)
 {
     uint8_t FlipBuffer[0x10000];
     uint32_t count;
@@ -70,12 +70,12 @@ void CFlashram::DmaFromFlashram(uint8_t * dest, int StartOffset, int len)
         SetFilePointer(m_hFile, StartOffset, NULL, FILE_BEGIN);
         DWORD dwRead;
         ReadFile(m_hFile, FlipBuffer, len, &dwRead, NULL);
-        for (count = dwRead; (int)count < len; count++)
+        for (count = dwRead; (int32_t)count < len; count++)
         {
             FlipBuffer[count] = 0xFF;
         }
 
-        for (count = 0; (int)count < len; count += 4)
+        for (count = 0; (int32_t)count < len; count += 4)
         {
             register uint32_t eax;
 
@@ -103,7 +103,7 @@ void CFlashram::DmaFromFlashram(uint8_t * dest, int StartOffset, int len)
     }
 }
 
-void CFlashram::DmaToFlashram(uint8_t * Source, int StartOffset, int len)
+void CFlashram::DmaToFlashram(uint8_t * Source, int32_t StartOffset, int32_t len)
 {
     switch (m_FlashFlag)
     {
