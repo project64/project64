@@ -7,7 +7,7 @@ typedef const char *     LPCSTR;
 #include "7zip.h"
 #include <Common/StdString.h>
 
-C7zip::C7zip(LPCSTR FileName) :
+C7zip::C7zip (const char * FileName) :
 m_FileSize(0),
 m_CurrentFile(-1),
 m_blockIndex(0xFFFFFFFF),

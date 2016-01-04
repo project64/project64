@@ -18,7 +18,7 @@ class C7zip
 {
 public:
 
-    C7zip(LPCSTR FileName);
+    C7zip(const char * FileName);
     ~C7zip();
 
     typedef void (*LP7ZNOTIFICATION)(const char * Status, void * CBInfo);
