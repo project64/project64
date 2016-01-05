@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "ProfilingClass.h"
+#include <Project64-core/N64System/ProfilingClass.h>
 #include <Common/LogClass.h>
 
 enum { MAX_FRAMES = 13 };

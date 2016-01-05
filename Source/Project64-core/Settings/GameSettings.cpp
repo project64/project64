@@ -11,7 +11,7 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64Class.h>
-#include "GameSettings.h"
+#include <Project64-core/Settings/GameSettings.h>
 
 bool  CGameSettings::m_bSMM_StoreInstruc;
 bool  CGameSettings::m_bSMM_Protect;
