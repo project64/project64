@@ -73,8 +73,8 @@ public:
 	std::string GetNameExtension(void) const;
 	void   GetExtension(std::string& rExtension) const;
 	std::string GetExtension(void) const;
-	void   GetCurrentDirectory(std::string& rDrive) const;
-	std::string GetCurrentDirectory(void) const;
+	void   GetLastDirectory(std::string& rDrive) const;
+	std::string GetLastDirectory(void) const;
 	void GetFullyQualified(std::string& rFullyQualified) const;
 	void GetComponents(std::string* pDrive = NULL,
                        std::string* pDirectory =NULL, 

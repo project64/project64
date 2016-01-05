@@ -1,8 +1,9 @@
 #include "stdafx.h"
+#include <windows.h>
 
 SyncEvent::SyncEvent(bool bManualReset)
 {
-    m_Event = CreateEvent(NULL, bManualReset, FALSE, NULL);
+    m_Event = CreateEvent(NULL, bManualReset, false, NULL);
 }
 
 SyncEvent::~SyncEvent()

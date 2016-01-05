@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <windows.h>
 
 typedef std::map<uint32_t, stdstr> ModuleNameMap;
 

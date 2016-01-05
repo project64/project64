@@ -527,7 +527,7 @@ bool CRomBrowser::GetRomFileNames(strlist & FileList, const CPath & BaseDirector
         {
             if (g_Settings->LoadDword(RomBrowser_Recursive))
             {
-                stdstr CurrentDir = Directory + SearchPath.GetCurrentDirectory() + "\\";
+                stdstr CurrentDir = Directory + SearchPath.GetLastDirectory() + "\\";
                 GetRomFileNames(FileList, BaseDirectory, CurrentDir, InWatchThread);
             }
         }
@@ -597,7 +597,7 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
         {
             if (g_Settings->LoadDword(RomBrowser_Recursive))
             {
-                stdstr CurrentDir = Directory + SearchPath.GetCurrentDirectory() + "\\";
+                stdstr CurrentDir = Directory + SearchPath.GetLastDirectory() + "\\";
                 FillRomList(FileList, BaseDirectory, CurrentDir, lpLastRom);
             }
             continue;

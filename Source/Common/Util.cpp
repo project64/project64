@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Util.h"
+#include <windows.h>
 #include <Tlhelp32.h>
 
 void pjutil::Sleep(uint32_t timeout)
