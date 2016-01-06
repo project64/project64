@@ -102,12 +102,12 @@ public:
     void SetControl(CControl_Plugin const * const Plugin);
     void UpdateKeys(void);
 
-    void(__cdecl *WM_KeyDown)       (uint32_t wParam, uint32_t lParam);
-    void(__cdecl *WM_KeyUp)         (uint32_t wParam, uint32_t lParam);
-    void(__cdecl *RumbleCommand)	(int32_t Control, int32_t bRumble);
-    void(__cdecl *GetKeys)          (int32_t Control, BUTTONS * Keys);
-    void(__cdecl *ReadController)   (int32_t Control, uint8_t * Command);
-    void(__cdecl *ControllerCommand)(int32_t Control, uint8_t * Command);
+    void(CALL *WM_KeyDown)          (uint32_t wParam, uint32_t lParam);
+    void(CALL *WM_KeyUp)            (uint32_t wParam, uint32_t lParam);
+    void(CALL *RumbleCommand)       (int32_t Control, int32_t bRumble);
+    void(CALL *GetKeys)             (int32_t Control, BUTTONS * Keys);
+    void(CALL *ReadController)      (int32_t Control, uint8_t * Command);
+    void(CALL *ControllerCommand)   (int32_t Control, uint8_t * Command);
 
     inline CCONTROL const * Controller(int32_t control) { return m_Controllers[control]; }
     inline CONTROL * PluginControllers(void) { return m_PluginControllers; }
