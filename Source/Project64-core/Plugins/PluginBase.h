@@ -14,6 +14,12 @@
 #include <Project64-core/TraceModulesProject64.h>
 #include "PluginClass.h"
 
+#if defined(_WIN32)
+#define CALL        __cdecl
+#else
+#define CALL
+#endif
+
 class CPlugin :
     private CDebugSettings
 {
@@ -33,8 +39,8 @@ public:
     void GameReset();
     void Close();
 
-    void(__cdecl *DllAbout)  (void * hWnd);
-    void(__cdecl *DllConfig) (void * hParent);
+    void(CALL *DllAbout)  (void * hWnd);
+    void(CALL *DllConfig) (void * hParent);
 
     static bool ValidPluginVersion(PLUGIN_INFO & PluginInfo);
 
@@ -46,13 +52,13 @@ protected:
     virtual PLUGIN_TYPE type() = 0;
     virtual bool LoadFunctions(void) = 0;
 
-    void(__cdecl *CloseDLL)		(void);
-    void(__cdecl *RomOpen)			(void);
-    void(__cdecl *RomClosed)	    (void);
-    void(__cdecl *PluginOpened)(void);
-    void(__cdecl *SetSettingInfo)	(PLUGIN_SETTINGS  *);
-    void(__cdecl *SetSettingInfo2)	(PLUGIN_SETTINGS2 *);
-    void(__cdecl *SetSettingInfo3)	(PLUGIN_SETTINGS3 *);
+    void(CALL *CloseDLL)            (void);
+    void(CALL *RomOpen)             (void);
+    void(CALL *RomClosed)           (void);
+    void(CALL *PluginOpened)(void);
+    void(CALL *SetSettingInfo)      (PLUGIN_SETTINGS  *);
+    void(CALL *SetSettingInfo2)     (PLUGIN_SETTINGS2 *);
+    void(CALL *SetSettingInfo3)     (PLUGIN_SETTINGS3 *);
 
     void * m_hDll;
     bool   m_Initialized, m_RomOpen;

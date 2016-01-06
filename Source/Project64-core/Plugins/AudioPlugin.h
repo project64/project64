@@ -20,9 +20,9 @@ public:
     void DacrateChanged(SYSTEM_TYPE Type);
     bool Initiate(CN64System * System, RenderWindow * Window);
 
-    void(__cdecl *AiLenChanged)(void);
-    uint32_t(__cdecl *AiReadLength)(void);
-    void(__cdecl *ProcessAList)(void);
+    void(CALL *AiLenChanged)(void);
+    uint32_t(CALL *AiReadLength)(void);
+    void(CALL *ProcessAList)(void);
 
 private:
     CAudioPlugin(const CAudioPlugin&);				// Disable copy constructor
@@ -37,8 +37,8 @@ private:
     bool LoadFunctions(void);
     void UnloadPluginDetails(void);
 
-    void(__cdecl *AiUpdate)		(int32_t Wait);
-    void(__cdecl *AiDacrateChanged)(SYSTEM_TYPE Type);
+    void(CALL *AiUpdate)        (int32_t Wait);
+    void(CALL *AiDacrateChanged)(SYSTEM_TYPE Type);
 
     // Function used in a thread for using audio
     static void AudioThread(CAudioPlugin * _this);
