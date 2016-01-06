@@ -64,8 +64,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDL2", "Source\3rdParty\sdl
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-core", "Source\Project64-core\Project64-core.vcxproj", "{00C7B43A-DED7-4DF0-B072-9A5783EF866D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RSP-hle", "Source\RSP-hle\RSP-hle.vcxproj", "{B6D45C01-0067-48E6-9FC3-29329D6A5ACA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -223,12 +221,6 @@ Global
 		{00C7B43A-DED7-4DF0-B072-9A5783EF866D}.Release|Win32.Build.0 = Release|Win32
 		{00C7B43A-DED7-4DF0-B072-9A5783EF866D}.Release|x64.ActiveCfg = Release|x64
 		{00C7B43A-DED7-4DF0-B072-9A5783EF866D}.Release|x64.Build.0 = Release|x64
-		{B6D45C01-0067-48E6-9FC3-29329D6A5ACA}.Debug|Win32.ActiveCfg = Debug|Win32
-		{B6D45C01-0067-48E6-9FC3-29329D6A5ACA}.Debug|Win32.Build.0 = Debug|Win32
-		{B6D45C01-0067-48E6-9FC3-29329D6A5ACA}.Debug|x64.ActiveCfg = Debug|Win32
-		{B6D45C01-0067-48E6-9FC3-29329D6A5ACA}.Release|Win32.ActiveCfg = Release|Win32
-		{B6D45C01-0067-48E6-9FC3-29329D6A5ACA}.Release|Win32.Build.0 = Release|Win32
-		{B6D45C01-0067-48E6-9FC3-29329D6A5ACA}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
