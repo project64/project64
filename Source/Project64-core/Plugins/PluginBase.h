@@ -14,6 +14,17 @@
 #include <Project64-core/TraceModulesProject64.h>
 #include "PluginClass.h"
 
+/*
+ * Usage of Win32-specific `__cdecl' seems limited to just the plugin files.
+ *
+ * If we really do need specific call conventions, maybe have a #define CALL.
+ * Otherwise, it'd be best to just delete this macro and all uses of __cdecl.
+ */
+#ifndef _WIN32
+#define __cdecl
+/* dummy definition to pre-process this Win32-ism as blank garbage */
+#endif
+
 class CPlugin :
     private CDebugSettings
 {
