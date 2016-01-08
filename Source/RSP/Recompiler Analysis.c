@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -648,13 +648,16 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 			case RSP_LSC2_RV:
 				break;
 
-			case RSP_LSC2_HV:
 			case RSP_LSC2_QV:
 			case RSP_LSC2_BV:
 			case RSP_LSC2_LV:
-			case RSP_LSC2_UV:
-			case RSP_LSC2_PV:
 			case RSP_LSC2_TV:			
+				break;
+				
+			case RSP_LSC2_PV:
+			case RSP_LSC2_UV:
+			case RSP_LSC2_HV:
+				if (DestReg == RspOp.rt) { return FALSE; }
 				break;
 
 			default:
@@ -675,9 +678,25 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 			case RSP_LSC2_HV:
 			case RSP_LSC2_FV:
 			case RSP_LSC2_WV:
-			case RSP_LSC2_TV:
 				if (DestReg == RspOp.rt) { return TRUE; }
 				break;
+				
+			case RSP_LSC2_TV:
+				if (8 <= 32 - RspOp.rt) {
+					if (DestReg >= RspOp.rt && DestReg <= RspOp.rt + 7) {
+						return TRUE;
+					}
+				} else {
+					int length = 32 - RspOp.rt, count, del = RspOp.del >> 1, vect = RspOp.rt;
+					for (count = 0; count < length; count++) {
+						if (DestReg == vect + del) {
+							return TRUE;
+						}
+						del = (del + 1) & 7;
+					}
+				}
+				break;
+				
 			default:
 				CompilerWarning("Unkown opcode in WriteToVectorDest\n%s",RSPOpcodeName(RspOp.Hex,PC));
 				return TRUE;

@@ -28,9 +28,6 @@
 #ifndef _XINPUTCONTROLLER_H
 #define _XINPUTCONTROLLER_H
 
-//code from http://msdn.microsoft.com/en-us/library/ee417014(VS.85).aspx
-#include <wbemidl.h>
-#include <oleauto.h>
 //#include <wmsstd.h> <-- only needed for SAFE_RELEASE(x)
 
 /* fixes undefined FILE, etc. type errors in MSVC 2010 build -- cxd4 */

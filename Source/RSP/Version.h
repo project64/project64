@@ -1,5 +1,5 @@
 /*
-* RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+* RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
 *
 * (c) Copyright 2001 jabo (jabo@emulation64.com) and
 * zilmar (zilmar@emulation64.com)
@@ -30,7 +30,7 @@
 #define VERSION_MAJOR               1
 #define VERSION_MINOR               7
 #define VERSION_REVISION            0
-#define VERSION_BUILD               13
+#define VERSION_BUILD               9999
 
 #define VER_FILE_DESCRIPTION_STR    "RSP emulation Plugin"
 #define VER_FILE_VERSION            VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_BUILD

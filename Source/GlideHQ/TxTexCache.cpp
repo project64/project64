@@ -33,6 +33,7 @@
 #include <zlib/zlib.h>
 #include <string>
 #include <Common/path.h>
+#include <common/StdString.h>
 
 TxTexCache::~TxTexCache()
 {
@@ -45,7 +46,7 @@ TxTexCache::~TxTexCache()
 
     int config = _options & (FILTER_MASK|ENHANCEMENT_MASK|COMPRESS_TEX|COMPRESSION_MASK|FORCE16BPP_TEX|GZ_TEXCACHE);
 
-    TxCache::save(stdstr(cachepath).ToUTF16().c_str(), filename.c_str(), config);
+	TxCache::save(stdstr((std::string &)cachepath).ToUTF16().c_str(), filename.c_str(), config);
   }
 #endif
 }
@@ -66,7 +67,7 @@ TxTexCache::TxTexCache(int options, int cachesize, const wchar_t *path, const wc
     cachepath.AppendDirectory("cache");
     int config = _options & (FILTER_MASK|ENHANCEMENT_MASK|COMPRESS_TEX|COMPRESSION_MASK|FORCE16BPP_TEX|GZ_TEXCACHE);
 
-    TxCache::load(stdstr(cachepath).ToUTF16().c_str(), filename.c_str(), config);
+	TxCache::load(stdstr((std::string &)cachepath).ToUTF16().c_str(), filename.c_str(), config);
   }
 #endif
 }

@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4BC6906B-213E-40D7-9FC7-1A93E228393D}</ProjectGuid>
+    <RootNamespace>WTL</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)PropertySheets\Platform.$(Configuration).props" />
+  </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ItemGroup>
+    <ClInclude Include="atlapp.h" />
+    <ClInclude Include="atlcrack.h" />
+    <ClInclude Include="atlctrls.h" />
+    <ClInclude Include="atlctrlw.h" />
+    <ClInclude Include="atlctrlx.h" />
+    <ClInclude Include="atlddx.h" />
+    <ClInclude Include="atldlgs.h" />
+    <ClInclude Include="atlfind.h" />
+    <ClInclude Include="atlframe.h" />
+    <ClInclude Include="atlgdi.h" />
+    <ClInclude Include="atlmisc.h" />
+    <ClInclude Include="atlprint.h" />
+    <ClInclude Include="atlres.h" />
+    <ClInclude Include="atlresce.h" />
+    <ClInclude Include="atlscrl.h" />
+    <ClInclude Include="atlsplit.h" />
+    <ClInclude Include="atltheme.h" />
+    <ClInclude Include="atluser.h" />
+    <ClInclude Include="atlwince.h" />
+    <ClInclude Include="atlwinx.h" />
+  </ItemGroup>
+</Project>

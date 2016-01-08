@@ -45,7 +45,7 @@
 //
 //****************************************************************
 
-#include "Gfx #1.3.h"
+#include "Gfx_1.3.h"
 #include "rdp.h"
 #include "DepthBufferRender.h"
 
@@ -85,9 +85,21 @@ static int right_height, left_height;
 static int right_x, right_dxdy, left_x, left_dxdy;
 static int left_z, left_dzdy;
 
-extern int imul16(int x, int y);
-extern int imul14(int x, int y);
-extern int idiv16(int x, int y);
+__inline int imul16(int x, int y)        // (x * y) >> 16
+{
+    return ((int64_t)x * (int64_t)y) >> 16;
+}
+
+__inline int imul14(int x, int y)        // (x * y) >> 14
+{
+    return ((int64_t)x * (int64_t)y) >> 14;
+}
+
+__inline int idiv16(int x, int y)        // (x << 16) / y
+{
+    x = ((int64_t)x << 16) / (int64_t)y;
+    return x;
+}
 
 __inline int iceil(int x)
 {
@@ -95,7 +107,7 @@ __inline int iceil(int x)
   return (x >> 16);
 }
 
-void RightSection(void)
+static void RightSection(void)
 {
   // Walk backwards trough the vertex array
   

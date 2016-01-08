@@ -265,7 +265,7 @@
 #620#  "Gebruik de eerst gebruikte save"
 #621#  "4kbit EEPROM"
 #622#  "16kbit EEPROM"
-#623#  "32kbytes SRAM"
+#623#  "SRAM"
 #624#  "Flashram"
 
 //Shell Integration Tab

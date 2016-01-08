@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -71,7 +71,7 @@ void SP_DMA_READ (void)
 	{
 		for (i = 0 ; i < Length; i++)
 		{
-			*(BYTE *)(((DWORD)Dest + j * Length + i) ^ 3) = *(BYTE *)(((DWORD)Source + j * Skip + i) ^ 3);
+			*(uint8_t *)(((size_t)Dest + j * Length + i) ^ 3) = *(uint8_t *)(((size_t)Source + j * Skip + i) ^ 3);
 		}
 	}
 #else
@@ -90,7 +90,7 @@ void SP_DMA_READ (void)
 		{
 			for (i = 0 ; i < Length; i++)
 			{
-				*(BYTE *)(((DWORD)Dest + i) ^ 3) = *(BYTE *)(((DWORD)Source + i) ^ 3);
+				*(uint8_t *)(((size_t)Dest + i) ^ 3) = *(uint8_t *)(((size_t)Source + i) ^ 3);
 			}
 			Source += Skip;
 			Dest += Length;
@@ -138,7 +138,7 @@ void SP_DMA_WRITE (void)
 	{
 		for (i = 0 ; i < Length; i++)
 		{
-			*(BYTE *)(((DWORD)Dest + j * Skip + i) ^ 3) = *(BYTE *)(((DWORD)Source + j * Length + i) ^ 3);
+			*(uint8_t *)(((size_t)Dest + j * Skip + i) ^ 3) = *(uint8_t *)(((size_t)Source + j * Length + i) ^ 3);
 		}
 	}
 #else
@@ -157,7 +157,7 @@ void SP_DMA_WRITE (void)
 		{
 			for (i = 0 ; i < Length; i++)
 			{
-				*(BYTE *)(((DWORD)Dest + i) ^ 3) = *(BYTE *)(((DWORD)Source + i) ^ 3);
+				*(uint8_t *)(((size_t)Dest + i) ^ 3) = *(uint8_t *)(((size_t)Source + i) ^ 3);
 			}
 			Source += Length;
 			Dest += Skip;

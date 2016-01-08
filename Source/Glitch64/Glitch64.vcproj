@@ -37,7 +37,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="inc"
+				AdditionalIncludeDirectories="&quot;$(Root)Source/3rdParty/sdl/include&quot;;inc"
 				UsePrecompiledHeader="0"
 			/>
 			<Tool
@@ -91,7 +91,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="inc"
+				AdditionalIncludeDirectories="&quot;$(Root)Source/3rdParty/sdl/include&quot;;inc"
 				UsePrecompiledHeader="0"
 			/>
 			<Tool
@@ -136,7 +136,7 @@
 				>
 			</File>
 			<File
-				RelativePath="main.h"
+				RelativePath=".\glitchmain.h"
 				>
 			</File>
 		</Filter>
@@ -145,23 +145,19 @@
 			Filter="*.cpp"
 			>
 			<File
-				RelativePath="combiner.cpp"
+				RelativePath=".\OGLcombiner.cpp"
 				>
 			</File>
 			<File
-				RelativePath="geometry.cpp"
+				RelativePath=".\OGLgeometry.cpp"
 				>
 			</File>
 			<File
-				RelativePath="main.cpp"
+				RelativePath=".\OGLglitchmain.cpp"
 				>
 			</File>
 			<File
-				RelativePath="textures.cpp"
-				>
-			</File>
-			<File
-				RelativePath="vram.cpp"
+				RelativePath=".\OGLtextures.cpp"
 				>
 			</File>
 		</Filter>

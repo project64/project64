@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -46,7 +46,7 @@ void AdcConstToX86reg				( BYTE Constant, int x86reg );
 void AdcConstToVariable				( void *Variable, char *VariableName, BYTE Constant );
 void AdcConstHalfToVariable			( void *Variable, char *VariableName, BYTE Constant );
 void AddConstToVariable				( DWORD Const, void *Variable, char *VariableName );
-void AddConstToX86Reg				( int x86Reg, DWORD Const );
+void AddConstToX86Reg				( int x86Reg, size_t Const );
 void AddVariableToX86reg			( int x86reg, void * Variable, char * VariableName );
 void AddX86regToVariable			( int x86reg, void * Variable, char * VariableName );
 void AddX86regHalfToVariable		( int x86reg, void * Variable, char * VariableName );
@@ -59,6 +59,7 @@ void AndX86RegToVariable			( void * Variable, char * VariableName, int x86Reg );
 void AndX86RegToX86Reg				( int Destination, int Source );
 void AndX86RegHalfToX86RegHalf		( int Destination, int Source );
 void X86BreakPoint                  ( LPCSTR FileName, int LineNumber );
+void BsrX86RegToX86Reg              ( int Destination, int Source );
 void Call_Direct					( void * FunctAddress, char * FunctName );
 void Call_Indirect					( void * FunctAddress, char * FunctName );
 void CondMoveEqual					( int Destination, int Source );
@@ -104,7 +105,7 @@ void JneLabel32						( char * Label, DWORD Value );
 void JnsLabel8						( char * Label, BYTE Value );
 void JnsLabel32						( char * Label, DWORD Value );
 void JsLabel32						( char * Label, DWORD Value );
-void LeaSourceAndOffset				( int x86DestReg, int x86SourceReg, int offset );
+void LeaSourceAndOffset				( int x86DestReg, int x86SourceReg, size_t offset );
 void MoveConstByteToN64Mem			( BYTE Const, int AddrReg );
 void MoveConstHalfToN64Mem			( WORD Const, int AddrReg );
 void MoveConstByteToVariable		( BYTE Const,void *Variable, char *VariableName );
@@ -113,7 +114,7 @@ void MoveConstToN64Mem				( DWORD Const, int AddrReg );
 void MoveConstToN64MemDisp			( DWORD Const, int AddrReg, BYTE Disp );
 void MoveConstToVariable			( DWORD Const, void *Variable, char *VariableName );
 void MoveConstToX86reg				( DWORD Const, int x86reg );
-void MoveOffsetToX86reg				( DWORD Const, char * VariableName, int x86reg );
+void MoveOffsetToX86reg				( size_t Const, char * VariableName, int x86reg );
 void MoveX86regByteToX86regPointer	( int Source, int AddrReg );
 void MoveX86regHalfToX86regPointer	( int Source, int AddrReg );
 void MoveX86regHalfToX86regPointerDisp ( int Source, int AddrReg, BYTE Disp);
@@ -141,11 +142,13 @@ void MoveSxX86RegHalfToX86Reg		( int Source, int Destination );
 void MoveSxX86RegPtrDispToX86RegHalf( int AddrReg, BYTE Disp, int Destination );
 void MoveSxN64MemToX86regByte		( int x86reg, int AddrReg );
 void MoveSxN64MemToX86regHalf		( int x86reg, int AddrReg );
+void MoveSxVariableToX86regByte		( void *Variable, char *VariableName, int x86reg );
 void MoveSxVariableToX86regHalf		( void *Variable, char *VariableName, int x86reg );
 void MoveZxX86RegHalfToX86Reg		( int Source, int Destination );
 void MoveZxX86RegPtrDispToX86RegHalf( int AddrReg, BYTE Disp, int Destination );
 void MoveZxN64MemToX86regByte		( int x86reg, int AddrReg );
 void MoveZxN64MemToX86regHalf		( int x86reg, int AddrReg );
+void MoveZxVariableToX86regByte		( void *Variable, char *VariableName, int x86reg );
 void MoveZxVariableToX86regHalf		( void *Variable, char *VariableName, int x86reg );
 void MulX86reg						( int x86reg );
 void NegateX86reg					( int x86reg );

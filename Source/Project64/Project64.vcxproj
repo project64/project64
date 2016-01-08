@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -22,291 +22,114 @@
     <ProjectGuid>{7E534C8E-1ACE-4A88-8807-39A11ED4DA18}</ProjectGuid>
     <RootNamespace>Project64</RootNamespace>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v120_xp</PlatformToolset>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)PropertySheets\Win32.$(Configuration).props" />
+    <Import Project="$(SolutionDir)PropertySheets\Platform.$(Configuration).props" />
   </ImportGroup>
-  <PropertyGroup>
-    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
-  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ItemDefinitionGroup>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <MinimumRequiredVersion Condition="'$(Platform)'=='Win32'">5.01</MinimumRequiredVersion>
+      <MinimumRequiredVersion Condition="'$(Platform)'=='x64'">5.02</MinimumRequiredVersion>
+      <StackReserveSize>1</StackReserveSize>
+      <DataExecutionPrevention>false</DataExecutionPrevention>
+    </Link>
+    <Manifest Condition="'$(PlatformToolset)'!='v90'">
+      <EnableDPIAwareness>true</EnableDPIAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="N64 System\Mips\Rumblepak.cpp" />
-    <ClCompile Include="Plugins\Plugin Base.cpp" />
+    <ClCompile Include="Multilanguage\LanguageSelector.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger-MemoryDump.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger-MemorySearch.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger-TLB.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger-ViewMemory.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger.cpp" />
+    <ClCompile Include="Plugins\PluginList.cpp" />
+    <ClCompile Include="Settings\GuiSettings.cpp" />
+    <ClCompile Include="Settings\NotificationSettings.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Settings\Debug Settings.cpp" />
-    <ClCompile Include="Settings\Game Settings.cpp" />
-    <ClCompile Include="Settings\Gui Settings.cpp" />
-    <ClCompile Include="Settings\N64System Settings.cpp" />
-    <ClCompile Include="Settings\Notification Settings.cpp" />
-    <ClCompile Include="Settings\Recompiler Settings.cpp" />
-    <ClCompile Include="Settings\Settings Class.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-Application.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-ApplicationIndex.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-ApplicationPath.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-Cheats.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-GameSetting.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-GameSettingIndex.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-RDBCpuType.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-RDBOnOff.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-RDBRamSize.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-RDBSaveChip.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-RDBYesNo.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-RelativePath.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-RomDatabase.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-RomDatabaseIndex.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-RomDatabaseSetting.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-SelectedDirectory.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-TempBool.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-TempNumber.cpp" />
-    <ClCompile Include="Settings\SettingType\SettingsType-TempString.cpp" />
-    <ClCompile Include="User Interface\Frame Per Second Class.cpp" />
-    <ClCompile Include="User Interface\Gui Class.cpp" />
-    <ClCompile Include="User Interface\Main Menu Class.cpp" />
-    <ClCompile Include="User Interface\Menu Class.cpp" />
-    <ClCompile Include="User Interface\MenuShortCuts.cpp" />
-    <ClCompile Include="User Interface\Notification Class.cpp" />
-    <ClCompile Include="User Interface\Rom Browser Class.cpp" />
-    <ClCompile Include="User Interface\Settings Config.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Advanced Options.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Directories.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Game - General.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Game - Plugin.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Game - Recompiler.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Game - Status.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Game Browser.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Keyboard Shortcuts.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Options.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page - Plugin.cpp" />
-    <ClCompile Include="User Interface\Settings\Settings Page.cpp" />
-    <ClCompile Include="User Interface\WTL Controls\ModifiedEditBox.cpp" />
-    <ClCompile Include="User Interface\WTL Controls\PartialGroupBox.cpp" />
-    <ClCompile Include="N64 System\Debugger\Debugger - Memory Dump.cpp" />
-    <ClCompile Include="N64 System\Debugger\Debugger - Memory Search.cpp" />
-    <ClCompile Include="N64 System\Debugger\Debugger - TLB.cpp" />
-    <ClCompile Include="N64 System\Debugger\Debugger - View Memory.cpp" />
-    <ClCompile Include="N64 System\Debugger\Debugger.cpp" />
-    <ClCompile Include="Multilanguage\Language Class.cpp" />
-    <ClCompile Include="N64 System\Cheat Class.cpp" />
-    <ClCompile Include="N64 System\N64 Class.cpp" />
-    <ClCompile Include="N64 System\N64 Rom Class.cpp" />
-    <ClCompile Include="N64 System\Profiling Class.cpp" />
-    <ClCompile Include="N64 System\Rom Information Class.cpp" />
-    <ClCompile Include="N64 System\Speed Limitor Class.cpp" />
-    <ClCompile Include="N64 System\System Globals.cpp" />
-    <ClCompile Include="N64 System\Mips\Audio.cpp" />
-    <ClCompile Include="N64 System\Mips\Dma.cpp" />
-    <ClCompile Include="N64 System\Mips\Eeprom.cpp" />
-    <ClCompile Include="N64 System\Mips\FlashRam.cpp" />
-    <ClCompile Include="N64 System\Mips\Memory Labels Class.cpp" />
-    <ClCompile Include="N64 System\Mips\Memory Virtual Mem.cpp" />
-    <ClCompile Include="N64 System\Mips\Mempak.cpp" />
-    <ClCompile Include="N64 System\Mips\Pif Ram.cpp" />
-    <ClCompile Include="N64 System\Mips\Register Class.cpp" />
-    <ClCompile Include="N64 System\Mips\Sram.cpp" />
-    <ClCompile Include="N64 System\Mips\System Events.cpp" />
-    <ClCompile Include="N64 System\Mips\System Timing.cpp" />
-    <ClCompile Include="N64 System\Mips\TLB class.cpp" />
-    <ClCompile Include="N64 System\C Core\Logging.cpp" />
-    <ClCompile Include="N64 System\C Core\r4300i Commands.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Code Block.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Code Section.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Function Info.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Function Map Class.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Loop Analysis.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Recompiler Class.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Recompiler Memory.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Recompiler Ops.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Reg Info.cpp" />
-    <ClCompile Include="N64 System\Recompiler\Section Info.cpp" />
-    <ClCompile Include="N64 System\Recompiler\x86CodeLog.cpp" />
-    <ClCompile Include="N64 System\Recompiler\X86ops.cpp" />
-    <ClCompile Include="N64 System\Interpreter\Interpreter CPU.cpp" />
-    <ClCompile Include="N64 System\Interpreter\Interpreter Ops 32.cpp" />
-    <ClCompile Include="N64 System\Interpreter\Interpreter Ops.cpp" />
-    <ClCompile Include="Plugins\Audio Plugin.cpp" />
-    <ClCompile Include="Plugins\Controller Plugin.cpp" />
-    <ClCompile Include="Plugins\GFX plugin.cpp" />
-    <ClCompile Include="Plugins\Plugin Class.cpp" />
-    <ClCompile Include="Plugins\Plugin List.cpp" />
-    <ClCompile Include="Plugins\RSP Plugin.cpp" />
-    <ClCompile Include="3rd Party\7zip.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\3rd Party\zlib\contrib\minizip\unzip.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\3rd Party\zlib\contrib\minizip\zip.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="UserInterface\CheatClassUI.cpp" />
+    <ClCompile Include="UserInterface\GuiClass.cpp" />
+    <ClCompile Include="UserInterface\LoggingUI.cpp" />
+    <ClCompile Include="UserInterface\MainMenuClass.cpp" />
+    <ClCompile Include="UserInterface\MenuClass.cpp" />
+    <ClCompile Include="UserInterface\MenuShortCuts.cpp" />
+    <ClCompile Include="UserInterface\NotificationClass.cpp" />
+    <ClCompile Include="UserInterface\RomBrowserClass.cpp" />
+    <ClCompile Include="UserInterface\RomInformationClass.cpp" />
+    <ClCompile Include="UserInterface\SettingsConfig.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-AdvancedOptions.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Directories.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Game-General.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Game-Plugin.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Game-Recompiler.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Game-Status.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-GameBrowser.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-KeyboardShortcuts.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Options.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Plugin.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage.cpp" />
+    <ClCompile Include="UserInterface\WTLControls\ModifiedEditBox.cpp" />
+    <ClCompile Include="UserInterface\WTLControls\PartialGroupBox.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="User Interface\Bitmaps\AboutScreenBottom.bmp" />
-    <Image Include="User Interface\Bitmaps\AboutScreenMiddle.bmp" />
-    <Image Include="User Interface\Bitmaps\AboutScreenTop.bmp" />
-    <Image Include="User Interface\Bitmaps\CloseNormal.bmp" />
-    <Image Include="User Interface\Bitmaps\LangOK.bmp" />
-    <Image Include="User Interface\Bitmaps\LangOK_down.bmp" />
-    <Image Include="User Interface\Icons\left.ico" />
-    <Image Include="User Interface\Bitmaps\ListItems.bmp" />
-    <Image Include="User Interface\Icons\PJ64.ICO" />
-    <Image Include="User Interface\Icons\right.ico" />
-    <Image Include="User Interface\Bitmaps\tri-state.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="User Interface\Icons\divider.cur" />
-    <None Include="User Interface\Icons\hand.cur" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="User Interface\UI Resources.rc">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">User Interface;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">User Interface;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">User Interface;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">User Interface;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Multilanguage.h" />
-    <ClInclude Include="N64 System.h" />
-    <ClInclude Include="N64 System\Mips\Rumblepak.h" />
-    <ClInclude Include="Plugin.h" />
-    <ClInclude Include="Plugins\Plugin Base.h" />
-    <ClInclude Include="Settings.h" />
+    <ClInclude Include="Multilanguage\LanguageSelector.h" />
+    <ClInclude Include="N64System.h" />
+    <ClInclude Include="N64System\Debugger\DebugDialog.h" />
+    <ClInclude Include="N64System\Debugger\Debugger-MemoryDump.h" />
+    <ClInclude Include="N64System\Debugger\Debugger-MemorySearch.h" />
+    <ClInclude Include="N64System\Debugger\Debugger-TLB.h" />
+    <ClInclude Include="N64System\Debugger\Debugger-ViewMemory.h" />
+    <ClInclude Include="N64System\Debugger\debugger.h" />
+    <ClInclude Include="N64System\Debugger\DebuggerUI.h" />
+    <ClInclude Include="N64System\RomInformationClass.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="User Interface.h" />
-    <ClInclude Include="Version.h" />
-    <ClInclude Include="WTL App.h" />
-    <ClInclude Include="Settings\Debug Settings.h" />
-    <ClInclude Include="Settings\Game Settings.h" />
-    <ClInclude Include="Settings\Gui Settings.h" />
-    <ClInclude Include="Settings\N64System Settings.h" />
-    <ClInclude Include="Settings\Notification Settings.h" />
-    <ClInclude Include="Settings\Recompiler Settings.h" />
-    <ClInclude Include="Settings\Settings Class.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-Application.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-ApplicationIndex.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-ApplicationPath.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-Base.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-Cheats.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-GameSetting.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-GameSettingIndex.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-RDBCpuType.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-RDBOnOff.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-RDBRamSize.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-RDBSaveChip.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-RDBYesNo.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-RelativePath.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-RomDatabase.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-RomDatabaseIndex.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-RomDatabaseSetting.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-SelectedDirectory.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-TempBool.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-TempNumber.h" />
-    <ClInclude Include="Settings\SettingType\SettingsType-TempString.h" />
-    <ClInclude Include="User Interface\Frame Per Second Class.h" />
-    <ClInclude Include="User Interface\Gui Class.h" />
-    <ClInclude Include="User Interface\Main Menu Class.h" />
-    <ClInclude Include="User Interface\Menu Class.h" />
-    <ClInclude Include="User Interface\MenuShortCuts.h" />
-    <ClInclude Include="User Interface\Notification Class.h" />
-    <ClInclude Include="User Interface\resource.h" />
-    <ClInclude Include="User Interface\Rom Browser.h" />
-    <ClInclude Include="User Interface\Settings\Settings Page - Advanced Options.h" />
-    <ClInclude Include="User Interface\Settings\Settings Page - Directories.h" />
-    <ClInclude Include="User Interface\Settings\Settings Page - Game - General.h" />
-    <ClInclude Include="User Interface\Settings\Settings Page - Game - Plugin.h" />
-    <ClInclude Include="User Interface\Settings\Settings Page - Game - Recompiler.h" />
-    <ClInclude Include="User Interface\Settings\Settings Page - Game - Status.h" />
-    <ClInclude Include="User Interface\Settings\Settings Page - Game Browser.h" />
-    <ClInclude Include="User Interface\Settings\Settings Page - Keyboard Shortcuts.h" />
-    <ClInclude Include="User Interface\Settings\Settings Page - Options.h" />
-    <ClInclude Include="User Interface\Settings\Settings Page - Plugin.h" />
-    <ClInclude Include="User Interface\Settings\Settings Page.h" />
-    <ClInclude Include="User Interface\WTL Controls\ModifiedCheckBox.h" />
-    <ClInclude Include="User Interface\WTL Controls\ModifiedComboBox.h" />
-    <ClInclude Include="User Interface\WTL Controls\ModifiedEditBox.h" />
-    <ClInclude Include="User Interface\WTL Controls\numberctrl.h" />
-    <ClInclude Include="User Interface\WTL Controls\PartialGroupBox.h" />
-    <ClInclude Include="Multilanguage\Language Class.h" />
-    <ClInclude Include="N64 System\Cheat Class.h" />
-    <ClInclude Include="N64 System\N64 Class.h" />
-    <ClInclude Include="N64 System\N64 Rom Class.h" />
-    <ClInclude Include="N64 System\N64 Types.h" />
-    <ClInclude Include="N64 System\Profiling Class.h" />
-    <ClInclude Include="N64 System\Rom Information Class.h" />
-    <ClInclude Include="N64 System\Speed Limitor Class.h" />
-    <ClInclude Include="N64 System\System Globals.h" />
-    <ClInclude Include="N64 System\Types.h" />
-    <ClInclude Include="N64 System\Mips\Audio.h" />
-    <ClInclude Include="N64 System\Mips\Dma.h" />
-    <ClInclude Include="N64 System\Mips\Eeprom.h" />
-    <ClInclude Include="N64 System\Mips\FlashRam.h" />
-    <ClInclude Include="N64 System\Mips\Memory Class.h" />
-    <ClInclude Include="N64 System\Mips\Memory Labels Class.h" />
-    <ClInclude Include="N64 System\Mips\Memory Virtual Mem.h" />
-    <ClInclude Include="N64 System\Mips\Mempak.H" />
-    <ClInclude Include="N64 System\Mips\OpCode.h" />
-    <ClInclude Include="N64 System\Mips\Pif Ram.h" />
-    <ClInclude Include="N64 System\Mips\Register Class.h" />
-    <ClInclude Include="N64 System\Mips\Sram.h" />
-    <ClInclude Include="N64 System\Mips\System Events.h" />
-    <ClInclude Include="N64 System\Mips\System Timing.h" />
-    <ClInclude Include="N64 System\Mips\TLB Class.h" />
-    <ClInclude Include="N64 System\Mips\TranslateVaddr.h" />
-    <ClInclude Include="N64 System\C Core\Logging.h" />
-    <ClInclude Include="N64 System\C Core\r4300i Commands.h" />
-    <ClInclude Include="N64 System\Debugger\Debugger - Memory Dump.h" />
-    <ClInclude Include="N64 System\Debugger\Debugger - Memory Search.h" />
-    <ClInclude Include="N64 System\Debugger\Debugger - TLB.h" />
-    <ClInclude Include="N64 System\Debugger\Debugger - View Memory.h" />
-    <ClInclude Include="N64 System\Debugger\debugger.h" />
-    <ClInclude Include="N64 System\Recompiler\Code Block.h" />
-    <ClInclude Include="N64 System\Recompiler\Code Section.h" />
-    <ClInclude Include="N64 System\Recompiler\Delay Slot Map Class.h" />
-    <ClInclude Include="N64 System\Recompiler\Exit Info.h" />
-    <ClInclude Include="N64 System\Recompiler\Function Info.h" />
-    <ClInclude Include="N64 System\Recompiler\Function Map Class.h" />
-    <ClInclude Include="N64 System\Recompiler\Jump Info.h" />
-    <ClInclude Include="N64 System\Recompiler\Loop Analysis.h" />
-    <ClInclude Include="N64 System\Recompiler\Recompiler Class.h" />
-    <ClInclude Include="N64 System\Recompiler\Recompiler Memory.h" />
-    <ClInclude Include="N64 System\Recompiler\Recompiler Ops.h" />
-    <ClInclude Include="N64 System\Recompiler\Reg Info.h" />
-    <ClInclude Include="N64 System\Recompiler\Section Info.h" />
-    <ClInclude Include="N64 System\Recompiler\x86CodeLog.h" />
-    <ClInclude Include="N64 System\Recompiler\X86ops.h" />
-    <ClInclude Include="N64 System\Interpreter\Interpreter CPU.h" />
-    <ClInclude Include="N64 System\Interpreter\Interpreter Ops 32.h" />
-    <ClInclude Include="N64 System\Interpreter\Interpreter Ops.h" />
-    <ClInclude Include="Plugins\Audio Plugin.h" />
-    <ClInclude Include="Plugins\Controller Plugin.h" />
-    <ClInclude Include="Plugins\GFX plugin.h" />
-    <ClInclude Include="Plugins\Plugin Class.h" />
-    <ClInclude Include="Plugins\Plugin List.h" />
-    <ClInclude Include="Plugins\RSP Plugin.h" />
-    <ClInclude Include="3rd Party\7zip.h" />
-    <ClInclude Include="3rd Party\zip.h" />
-    <ClInclude Include="..\3rd Party\zlib\zconf.h" />
-    <ClInclude Include="..\3rd Party\zlib\zlib.h" />
-    <ClInclude Include="..\3rd Party\zlib\contrib\minizip\unzip.h" />
-    <ClInclude Include="..\3rd Party\zlib\contrib\minizip\zip.h" />
+    <ClInclude Include="Support.h" />
+    <ClInclude Include="UserInterface.h" />
+    <ClInclude Include="UserInterface\CheatClassUI.h" />
+    <ClInclude Include="UserInterface\GuiClass.h" />
+    <ClInclude Include="UserInterface\LoggingUI.h" />
+    <ClInclude Include="UserInterface\MainMenuClass.h" />
+    <ClInclude Include="UserInterface\MenuClass.h" />
+    <ClInclude Include="UserInterface\MenuShortCuts.h" />
+    <ClInclude Include="UserInterface\NotificationClass.h" />
+    <ClInclude Include="UserInterface\resource.h" />
+    <ClInclude Include="UserInterface\RomBrowser.h" />
+    <ClInclude Include="UserInterface\RomInformationClass.h" />
+    <ClInclude Include="UserInterface\SettingsConfig.h" />
+    <ClInclude Include="UserInterface\Settings\SettingsPage-AdvancedOptions.h" />
+    <ClInclude Include="UserInterface\Settings\SettingsPage-Directories.h" />
+    <ClInclude Include="UserInterface\Settings\SettingsPage-Game-General.h" />
+    <ClInclude Include="UserInterface\Settings\SettingsPage-Game-Plugin.h" />
+    <ClInclude Include="UserInterface\Settings\SettingsPage-Game-Recompiler.h" />
+    <ClInclude Include="UserInterface\Settings\SettingsPage-Game-Status.h" />
+    <ClInclude Include="UserInterface\Settings\SettingsPage-GameBrowser.h" />
+    <ClInclude Include="UserInterface\Settings\SettingsPage-KeyboardShortcuts.h" />
+    <ClInclude Include="UserInterface\Settings\SettingsPage-Options.h" />
+    <ClInclude Include="UserInterface\Settings\SettingsPage-Plugin.h" />
+    <ClInclude Include="UserInterface\Settings\SettingsPage.h" />
+    <ClInclude Include="UserInterface\WTLControls\ModifiedCheckBox.h" />
+    <ClInclude Include="UserInterface\WTLControls\ModifiedComboBox.h" />
+    <ClInclude Include="UserInterface\WTLControls\ModifiedEditBox.h" />
+    <ClInclude Include="UserInterface\WTLControls\numberctrl.h" />
+    <ClInclude Include="UserInterface\WTLControls\PartialGroupBox.h" />
+    <ClInclude Include="WTLApp.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\3rd Party\7zip\7zip.vcxproj">
+    <ProjectReference Include="..\3rdParty\7zip\7zip.vcxproj">
       <Project>{3326e128-33af-422c-bb7c-67cc6b915610}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\3rd Party\zlib\zlib.vcxproj">
+    <ProjectReference Include="..\3rdParty\zlib\zlib.vcxproj">
       <Project>{731bd205-2826-4631-b7af-117658e88dbc}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
@@ -314,8 +137,18 @@
       <Project>{b4a4b994-9111-42b1-93c2-6f1ca8bc4421}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\Project64-core\Project64-core.vcxproj">
+      <Project>{00c7b43a-ded7-4df0-b072-9a5783ef866d}</Project>
+    </ProjectReference>
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ItemGroup>
+    <None Include="res\divider.cur" />
+    <None Include="res\hand.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\ListItems.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="UserInterface\UIResources.rc" />
+  </ItemGroup>
 </Project>

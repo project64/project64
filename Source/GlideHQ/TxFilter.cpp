@@ -21,15 +21,15 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef WIN32
+#ifdef _WIN32
 #pragma warning(disable: 4786)
 #endif
 
 #include <common/path.h>
+#include <common/StdString.h>
 #include "TxFilter.h"
 #include "TextureFilters.h"
 #include "TxDbg.h"
-#include "bldno.h"
 
 void TxFilter::clear()
 {
@@ -83,6 +83,11 @@ TxFilter::TxFilter(int maxwidth, int maxheight, int maxbpp, int options,
   /* shamelessness :P this first call to the debug output message creates
    * a file in the executable directory. */
   INFO(0, L"------------------------------------------------------------------\n");
+#ifdef GHQCHK
+  INFO(0, L" GlideHQ Hires Texture Checker 1.02.00.%d\n", 0);
+#else
+  INFO(0, L" GlideHQ version 1.02.00.%d\n", 0);
+#endif
   INFO(0, L" Copyright (C) 2010  Hiroshi Morii   All Rights Reserved\n");
   INFO(0, L"    email   : koolsmoky(at)users.sourceforge.net\n");
   INFO(0, L"    website : http://www.3dfxzone.it/koolsmoky\n");
@@ -609,15 +614,15 @@ TxFilter::dmptx(uint8 *src, int width, int height, int rowStridePixel, uint16 gf
     /* create directories */
 	tmpbuf.AppendDirectory("texture_dump");
 
-	if (!tmpbuf.DirectoryExists() && !tmpbuf.CreateDirectory())
+	if (!tmpbuf.DirectoryExists() && !tmpbuf.DirectoryCreate())
       return 0;
 
 	tmpbuf.AppendDirectory(stdstr().FromUTF16(_ident.c_str()).c_str());
-	if (!tmpbuf.DirectoryExists() && !tmpbuf.CreateDirectory())
+	if (!tmpbuf.DirectoryExists() && !tmpbuf.DirectoryCreate())
 		return 0;
 
 	tmpbuf.AppendDirectory("GlideHQ");
-	if (!tmpbuf.DirectoryExists() && !tmpbuf.CreateDirectory())
+	if (!tmpbuf.DirectoryExists() && !tmpbuf.DirectoryCreate())
 		return 0;
 
     if ((n64fmt >> 8) == 0x2) {
@@ -625,7 +630,7 @@ TxFilter::dmptx(uint8 *src, int width, int height, int rowStridePixel, uint16 gf
     } else {
       tmpbuf.SetNameExtension(stdstr_f("%ls#%08X#%01X#%01X_all.png",_ident.c_str(),(uint32)(r_crc64 & 0xffffffff),(n64fmt >> 8),(n64fmt & 0xf)).c_str());
     }
-#ifdef WIN32
+#ifdef _WIN32
     if ((fp = fopen(tmpbuf, "wb")) != NULL) {
 #else
     char cbuf[MAX_PATH];

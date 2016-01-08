@@ -42,7 +42,7 @@
 //
 //****************************************************************
 
-#include "Gfx #1.3.h"
+#include "Gfx_1.3.h"
 #include "TexBuffer.h"
 #include "CRC.h"
 
@@ -293,7 +293,7 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
             grRenderBuffer( GR_BUFFER_BACKBUFFER );
             rdp.texbufs[i].count--;
             if (j < rdp.texbufs[i].count)
-              memcpy(&(rdp.texbufs[i].images[j]), &(rdp.texbufs[i].images[j+1]), sizeof(TBUFF_COLOR_IMAGE)*(rdp.texbufs[i].count-j));
+              memmove(&(rdp.texbufs[i].images[j]), &(rdp.texbufs[i].images[j+1]), sizeof(TBUFF_COLOR_IMAGE)*(rdp.texbufs[i].count-j));
           }
         }
       }
@@ -705,12 +705,7 @@ int FindTextureBuffer(wxUint32 addr, wxUint16 width)
         if (rdp.tbuff_tex->crc == 0)
         {
           rdp.tbuff_tex->crc = CalcCRC(rdp.tbuff_tex);
-          bCorrect =
-            (width == 1)
-         || (rdp.tbuff_tex->width == width)
-         || (   (rdp.tbuff_tex->width > 320)
-             && (rdp.tbuff_tex->width == (wxUint32)width*2)
-          );
+          bCorrect = width == 1 || rdp.tbuff_tex->width == width || (rdp.tbuff_tex->width > 320 && rdp.tbuff_tex->width == width*2);
         }
         else
           bCorrect = rdp.tbuff_tex->crc == CalcCRC(rdp.tbuff_tex);
@@ -727,7 +722,7 @@ int FindTextureBuffer(wxUint32 addr, wxUint16 width)
         {
           rdp.texbufs[index].count--;
           if (j < rdp.texbufs[index].count)
-            memcpy(&(rdp.texbufs[index].images[j]), &(rdp.texbufs[index].images[j+1]), sizeof(TBUFF_COLOR_IMAGE)*(rdp.texbufs[index].count-j));
+            memmove(&(rdp.texbufs[index].images[j]), &(rdp.texbufs[index].images[j+1]), sizeof(TBUFF_COLOR_IMAGE)*(rdp.texbufs[index].count-j));
         }
       }
     }
