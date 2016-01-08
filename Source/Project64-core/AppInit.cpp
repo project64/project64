@@ -179,7 +179,7 @@ void AppInit(CNotification * Notify)
     }
     catch (...)
     {
-        g_Notify->DisplayError(stdstr_f("Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).ToUTF16().c_str());
+        g_Notify->DisplayError(stdstr_f("Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).c_str());
     }
 }
 

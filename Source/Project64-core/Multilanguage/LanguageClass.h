@@ -16,13 +16,13 @@
 #include <list>     //stl list
 #include <Common/stdtypes.h>
 
-typedef std::map<int32_t, std::wstring, std::less<int32_t> > LANG_STRINGS;
-typedef LANG_STRINGS::value_type               LANG_STR;
+typedef std::map<int32_t, std::string, std::less<int32_t> > LANG_STRINGS;
+typedef LANG_STRINGS::value_type LANG_STR;
 
 struct LanguageFile
 {
     std::string Filename;
-    std::wstring LanguageName;
+    std::string LanguageName;
 };
 
 typedef std::list<LanguageFile> LanguageList;
@@ -32,9 +32,9 @@ class CLanguage
 public:
     CLanguage();
 
-    const std::wstring & GetString(LanguageStringID StringID);
+    const std::string & GetString(LanguageStringID StringID);
     LanguageList & GetLangList(void);
-    void SetLanguage(const wchar_t * LanguageName);
+    void SetLanguage(const char * LanguageName);
     bool LoadCurrentStrings(void);
     bool IsCurrentLang(LanguageFile & File);
     bool IsLanguageLoaded(void) const { return m_LanguageLoaded; }
@@ -43,13 +43,13 @@ private:
     CLanguage(const CLanguage&);				// Disable copy constructor
     CLanguage& operator=(const CLanguage&);		// Disable assignment
 
-    std::wstring m_SelectedLanguage;
-    const std::wstring m_emptyString;
+    std::string m_SelectedLanguage;
+    const std::string m_emptyString;
 
     LANG_STRINGS m_CurrentStrings, m_DefaultStrings;
     LanguageList m_LanguageList;
 
-    std::wstring GetLangString(const char * FileName, LanguageStringID ID);
+    std::string GetLangString(const char * FileName, LanguageStringID ID);
     LANG_STR GetNextLangString(void * OpenFile);
     void LoadDefaultStrings(void);
 
@@ -58,7 +58,9 @@ private:
 
 extern CLanguage * g_Lang;
 
-inline const wchar_t * GS(LanguageStringID StringID)
+const std::wstring wGS(LanguageStringID StringID);
+
+inline const char * GS(LanguageStringID StringID)
 {
     return g_Lang->GetString(StringID).c_str();
 }

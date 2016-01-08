@@ -1,5 +1,5 @@
 #include "stdafx.h"
-
+#include <windows.h>
 #include <TChar.H>
 
 CIniFileBase::CIniFileBase(CFileBase & FileObject, LPCTSTR FileName) :

@@ -18,12 +18,6 @@
 #include <Project64-core/N64System/Mips/Sram.h>
 #include <Project64-core/N64System/Mips/Dma.h>
 
-__interface CMipsMemory_CallBack
-{
-    //Protected memory has been written to, returns true if that memory has been unprotected
-    virtual bool WriteToProtectedMemory(uint32_t Address, int32_t length) = 0;
-};
-
 /*
 * 64-bit Windows exception recovery facilities will expect to interact with
 * the 64-bit registers of the Intel architecture (e.g., rax instead of eax).
@@ -65,7 +59,7 @@ class CMipsMemoryVM :
     private CDMA
 {
 public:
-    CMipsMemoryVM(CMipsMemory_CallBack * CallBack, bool SavesReadOnly);
+    CMipsMemoryVM(bool SavesReadOnly);
     ~CMipsMemoryVM();
 
     static void ReserveMemory();
@@ -207,8 +201,6 @@ private:
     static void Write32SerialInterface(void);
     static void Write32CartridgeDomain2Address2(void);
     static void Write32PifRam(void);
-
-    CMipsMemory_CallBack * const m_CBClass;
 
     //Memory Locations
     static uint8_t   * m_Reserve1, *m_Reserve2;

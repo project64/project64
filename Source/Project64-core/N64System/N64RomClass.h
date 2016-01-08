@@ -32,7 +32,7 @@ class CN64Rom :
     bool   AllocateAndLoadZipImage(const char * FileLoc, bool LoadBootCodeOnly);
     void   ByteSwapRom();
     void   SetError(LanguageStringID ErrorMsg);
-    static void  __stdcall NotificationCB(const wchar_t * Status, CN64Rom * _this);
+    static void NotificationCB(const char * Status, CN64Rom * _this);
     void   CalculateCicChip();
     void   CalculateRomCrc();
 

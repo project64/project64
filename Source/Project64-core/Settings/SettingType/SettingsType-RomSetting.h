@@ -36,6 +36,5 @@ private:
     const SettingID    m_DefaultSetting;
 
     static CIniFile *  m_SettingsIniFile;
-    static bool        m_UseRegistry;
     stdstr             m_SectionIdent;
 };

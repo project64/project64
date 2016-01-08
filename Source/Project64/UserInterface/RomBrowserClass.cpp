@@ -3,6 +3,8 @@
 #include <commctrl.h>
 #include <shlobj.h>
 
+std::wstring CRomBrowser::m_UnknownGoodName;
+
 CRomBrowser::CRomBrowser(HWND & MainWindow, HWND & StatusWindow) :
 m_MainWindow(MainWindow),
 m_StatusWindow(StatusWindow),
@@ -525,7 +527,7 @@ bool CRomBrowser::GetRomFileNames(strlist & FileList, const CPath & BaseDirector
         {
             if (g_Settings->LoadDword(RomBrowser_Recursive))
             {
-                stdstr CurrentDir = Directory + SearchPath.GetCurrentDirectory() + "\\";
+                stdstr CurrentDir = Directory + SearchPath.GetLastDirectory() + "\\";
                 GetRomFileNames(FileList, BaseDirectory, CurrentDir, InWatchThread);
             }
         }
@@ -537,7 +539,7 @@ bool CRomBrowser::GetRomFileNames(strlist & FileList, const CPath & BaseDirector
     return true;
 }
 
-void CRomBrowser::NotificationCB(LPCWSTR Status, CRomBrowser * /*_this*/)
+void CRomBrowser::NotificationCB(const char * Status, CRomBrowser * /*_this*/)
 {
     g_Notify->DisplayMessage(5, Status);
 }
@@ -595,7 +597,7 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
         {
             if (g_Settings->LoadDword(RomBrowser_Recursive))
             {
-                stdstr CurrentDir = Directory + SearchPath.GetCurrentDirectory() + "\\";
+                stdstr CurrentDir = Directory + SearchPath.GetLastDirectory() + "\\";
                 FillRomList(FileList, BaseDirectory, CurrentDir, lpLastRom);
             }
             continue;
@@ -1121,7 +1123,7 @@ void CRomBrowser::ResetRomBrowserColomuns(void)
 
         m_FieldType[Coloumn] = m_Fields[index].ID();
         lvColumn.cx = m_Fields[index].ColWidth();
-        wcsncpy(szString, GS(m_Fields[index].LangID()), sizeof(szString) / sizeof(szString[0]));
+        wcsncpy(szString, wGS(m_Fields[index].LangID()).c_str(), sizeof(szString) / sizeof(szString[0]));
         SendMessage(m_hRomList, LVM_INSERTCOLUMNW, (WPARAM)(int32_t)(Coloumn), (LPARAM)(const LV_COLUMNW *)(&lvColumn));
     }
 }
@@ -1223,7 +1225,7 @@ bool CRomBrowser::RomListDrawItem(int32_t idCtrl, uint32_t lParam)
     std::wstring text = String;
     if (wcscmp(L"#340#", text.c_str()) == 0)
     {
-        text = GS(RB_NOT_GOOD_FILE);
+        text = wGS(RB_NOT_GOOD_FILE);
     }
 
     DrawTextW(ditem->hDC, text.c_str(), text.length(), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_WORD_ELLIPSIS);
@@ -1244,7 +1246,7 @@ bool CRomBrowser::RomListDrawItem(int32_t idCtrl, uint32_t lParam)
         text = String;
         if (wcscmp(L"#340#", text.c_str()) == 0)
         {
-            text = GS(RB_NOT_GOOD_FILE);
+            text = wGS(RB_NOT_GOOD_FILE);
         }
         DrawTextW(ditem->hDC, text.c_str(), text.length(), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_WORD_ELLIPSIS);
     }
@@ -1323,11 +1325,18 @@ int32_t CALLBACK CRomBrowser::RomList_CompareItems(uint32_t lParam1, uint32_t lP
     ROM_INFO * pRomInfo2 = &_this->m_RomInfo[SortFieldInfo->KeyAscend ? lParam2 : lParam1];
     int32_t result;
 
+    const wchar_t * GoodName1 = NULL, *GoodName2 = NULL;
+    if (SortFieldInfo->Key == RB_GoodName)
+    {
+        GoodName1 = wcscmp(L"#340#", pRomInfo1->GoodName) != 0 ? pRomInfo1->GoodName : m_UnknownGoodName.c_str();
+        GoodName2 = wcscmp(L"#340#", pRomInfo2->GoodName) != 0 ? pRomInfo2->GoodName : m_UnknownGoodName.c_str();
+    }
+
     switch (SortFieldInfo->Key)
     {
     case RB_FileName: result = (int32_t)lstrcmpi(pRomInfo1->FileName, pRomInfo2->FileName); break;
     case RB_InternalName: result = (int32_t)lstrcmpiW(pRomInfo1->InternalName, pRomInfo2->InternalName); break;
-    case RB_GoodName: result = (int32_t)lstrcmpiW(pRomInfo1->GoodName, pRomInfo2->GoodName); break;
+    case RB_GoodName: result = (int32_t)lstrcmpiW(GoodName1, GoodName2); break;
     case RB_Status: result = (int32_t)lstrcmpiW(pRomInfo1->Status, pRomInfo2->Status); break;
     case RB_RomSize: result = (int32_t)pRomInfo1->RomSize - (int32_t)pRomInfo2->RomSize; break;
     case RB_CoreNotes: result = (int32_t)lstrcmpiW(pRomInfo1->CoreNotes, pRomInfo2->CoreNotes); break;
@@ -1493,13 +1502,13 @@ void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
     HMENU hPopupMenu = (HMENU)GetSubMenu(hMenu, 0);
 
     //Fix up menu
-    MenuSetText(hPopupMenu, 0, GS(POPUP_PLAY), NULL);
-    MenuSetText(hPopupMenu, 2, GS(MENU_REFRESH), NULL);
-    MenuSetText(hPopupMenu, 3, GS(MENU_CHOOSE_ROM), NULL);
-    MenuSetText(hPopupMenu, 5, GS(POPUP_INFO), NULL);
-    MenuSetText(hPopupMenu, 6, GS(POPUP_GFX_PLUGIN), NULL);
-    MenuSetText(hPopupMenu, 8, GS(POPUP_SETTINGS), NULL);
-    MenuSetText(hPopupMenu, 9, GS(POPUP_CHEATS), NULL);
+    MenuSetText(hPopupMenu, 0, wGS(POPUP_PLAY).c_str(), NULL);
+    MenuSetText(hPopupMenu, 2, wGS(MENU_REFRESH).c_str(), NULL);
+    MenuSetText(hPopupMenu, 3, wGS(MENU_CHOOSE_ROM).c_str(), NULL);
+    MenuSetText(hPopupMenu, 5, wGS(POPUP_INFO).c_str(), NULL);
+    MenuSetText(hPopupMenu, 6, wGS(POPUP_GFX_PLUGIN).c_str(), NULL);
+    MenuSetText(hPopupMenu, 8, wGS(POPUP_SETTINGS).c_str(), NULL);
+    MenuSetText(hPopupMenu, 9, wGS(POPUP_CHEATS).c_str(), NULL);
 
     if (m_SelectedRom.size() == 0)
     {
@@ -1526,7 +1535,7 @@ void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
             if (GfxMenu)
             {
                 MENUITEMINFO lpmii;
-                InsertMenuW(hPopupMenu, 6, MF_POPUP | MF_BYPOSITION, (uint32_t)GfxMenu, GS(POPUP_GFX_PLUGIN));
+                InsertMenuW(hPopupMenu, 6, MF_POPUP | MF_BYPOSITION, (uint32_t)GfxMenu, wGS(POPUP_GFX_PLUGIN).c_str());
                 lpmii.cbSize = sizeof(MENUITEMINFO);
                 lpmii.fMask = MIIM_STATE;
                 lpmii.fState = 0;
@@ -1547,6 +1556,7 @@ void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
 void CRomBrowser::RomList_SortList(void)
 {
     SORT_FIELD SortFieldInfo;
+    m_UnknownGoodName = wGS(RB_NOT_GOOD_FILE);
 
     for (int32_t count = NoOfSortKeys; count >= 0; count--)
     {
@@ -1642,7 +1652,7 @@ int32_t CALLBACK CRomBrowser::SelectRomDirCallBack(HWND hwnd, uint32_t uMsg, uin
         if (lpData)
         {
             SendMessage(hwnd, BFFM_SETSELECTION, TRUE, lpData);
-            SetWindowTextW(hwnd, GS(DIR_SELECT_ROM));
+            SetWindowTextW(hwnd, wGS(DIR_SELECT_ROM).c_str());
         }
         break;
     }
@@ -1655,12 +1665,14 @@ void CRomBrowser::SelectRomDir(void)
     LPITEMIDLIST pidl;
     BROWSEINFOW bi;
 
+    std::wstring title = wGS(SELECT_ROM_DIR);
+
     WriteTrace(TraceUserInterface, TraceDebug, "1");
     stdstr RomDir = g_Settings->LoadStringVal(Directory_Game);
     bi.hwndOwner = m_MainWindow;
     bi.pidlRoot = NULL;
     bi.pszDisplayName = SelectedDir;
-    bi.lpszTitle = GS(SELECT_ROM_DIR);
+    bi.lpszTitle = title.c_str();
     bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS;
     bi.lpfn = (BFFCALLBACK)SelectRomDirCallBack;
     bi.lParam = (uint32_t)RomDir.c_str();

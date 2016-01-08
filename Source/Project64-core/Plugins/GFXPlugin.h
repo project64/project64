@@ -18,34 +18,34 @@ class CGfxPlugin : public CPlugin
         /* Menu */
         /* Items should have an ID between 5101 and 5200 */
         void * hGFXMenu;
-        void(__cdecl *ProcessMenuItem) (int32_t ID);
+        void(CALL *ProcessMenuItem)(int32_t ID);
 
         /* Break Points */
         int32_t UseBPoints;
         char BPPanelName[20];
-        void(__cdecl *Add_BPoint)      (void);
-        void(__cdecl *CreateBPPanel)   (void * hDlg, void * rcBox);
-        void(__cdecl *HideBPPanel)     (void);
-        void(__cdecl *PaintBPPanel)    (void * ps);
-        void(__cdecl *ShowBPPanel)     (void);
-        void(__cdecl *RefreshBpoints)  (void * hList);
-        void(__cdecl *RemoveBpoint)    (void * hList, int32_t index);
-        void(__cdecl *RemoveAllBpoint) (void);
+        void(CALL *Add_BPoint)      (void);
+        void(CALL *CreateBPPanel)   (void * hDlg, void * rcBox);
+        void(CALL *HideBPPanel)     (void);
+        void(CALL *PaintBPPanel)    (void * ps);
+        void(CALL *ShowBPPanel)     (void);
+        void(CALL *RefreshBpoints)  (void * hList);
+        void(CALL *RemoveBpoint)    (void * hList, int32_t index);
+        void(CALL *RemoveAllBpoint) (void);
 
         /* GFX command Window */
-        void(__cdecl *Enter_GFX_Commands_Window) (void);
+        void(CALL *Enter_GFX_Commands_Window)(void);
     } GFXDEBUG_INFO;
 
     typedef struct
     {
-        void(__cdecl *UpdateBreakPoints)(void);
-        void(__cdecl *UpdateMemory)(void);
-        void(__cdecl *UpdateR4300iRegisters)(void);
-        void(__cdecl *Enter_BPoint_Window)(void);
-        void(__cdecl *Enter_R4300i_Commands_Window)(void);
-        void(__cdecl *Enter_R4300i_Register_Window)(void);
-        void(__cdecl *Enter_RSP_Commands_Window) (void);
-        void(__cdecl *Enter_Memory_Window)(void);
+        void(CALL *UpdateBreakPoints)(void);
+        void(CALL *UpdateMemory)(void);
+        void(CALL *UpdateR4300iRegisters)(void);
+        void(CALL *Enter_BPoint_Window)(void);
+        void(CALL *Enter_R4300i_Commands_Window)(void);
+        void(CALL *Enter_R4300i_Register_Window)(void);
+        void(CALL *Enter_RSP_Commands_Window)(void);
+        void(CALL *Enter_Memory_Window)(void);
     } DEBUG_INFO;
 
 public:
@@ -55,22 +55,22 @@ public:
     bool LoadFunctions(void);
     bool Initiate(CN64System * System, RenderWindow * Window);
 
-    void(__cdecl *CaptureScreen)      (const char *);
-    void(__cdecl *ChangeWindow)       (void);
-    void(__cdecl *DrawScreen)         (void);
-    void(__cdecl *DrawStatus)         (const char * lpString, int32_t RightAlign);
-    void(__cdecl *MoveScreen)         (int32_t xpos, int32_t ypos);
-    void(__cdecl *ProcessDList)       (void);
-    void(__cdecl *ProcessRDPList)     (void);
-    void(__cdecl *ShowCFB)			   (void);
-    void(__cdecl *UpdateScreen)       (void);
-    void(__cdecl *ViStatusChanged)    (void);
-    void(__cdecl *ViWidthChanged)     (void);
-    void(__cdecl *SoftReset)          (void);
+    void(CALL *CaptureScreen)   (const char *);
+    void(CALL *ChangeWindow)    (void);
+    void(CALL *DrawScreen)      (void);
+    void(CALL *DrawStatus)      (const char * lpString, int32_t RightAlign);
+    void(CALL *MoveScreen)      (int32_t xpos, int32_t ypos);
+    void(CALL *ProcessDList)    (void);
+    void(CALL *ProcessRDPList)  (void);
+    void(CALL *ShowCFB)         (void);
+    void(CALL *UpdateScreen)    (void);
+    void(CALL *ViStatusChanged) (void);
+    void(CALL *ViWidthChanged)  (void);
+    void(CALL *SoftReset)       (void);
 
     //Rom Browser
-    void *(__cdecl * GetRomBrowserMenu)  (void); /* Items should have an ID between 4101 and 4200 */
-    void(__cdecl * OnRomBrowserMenuItem) (int32_t MenuID, void * hParent, uint8_t * HEADER);
+    void *(CALL * GetRomBrowserMenu)(void); /* Items should have an ID between 4101 and 4200 */
+    void(CALL * OnRomBrowserMenuItem)(int32_t MenuID, void * hParent, uint8_t * HEADER);
 
     void * GetDebugMenu(void) { return m_GFXDebug.hGFXMenu; }
     void ProcessMenuItem(int32_t id);
@@ -87,12 +87,12 @@ private:
 
     GFXDEBUG_INFO m_GFXDebug;
 
-    void(__cdecl *GetDebugInfo)	(GFXDEBUG_INFO * GFXDebugInfo);
-    void(__cdecl *InitiateDebugger)(DEBUG_INFO DebugInfo);
+    void(CALL *GetDebugInfo)    (GFXDEBUG_INFO * GFXDebugInfo);
+    void(CALL *InitiateDebugger)(DEBUG_INFO DebugInfo);
 
-    static void __cdecl DummyDrawScreen(void) {}
-    static void __cdecl DummyMoveScreen(int32_t /*xpos*/, int32_t /*ypos*/) {}
-    static void __cdecl DummyViStatusChanged(void) {}
-    static void __cdecl DummyViWidthChanged(void) {}
-    static void __cdecl DummySoftReset(void) {}
+    static void CALL DummyDrawScreen(void) {}
+    static void CALL DummyMoveScreen(int32_t /*xpos*/, int32_t /*ypos*/) {}
+    static void CALL DummyViStatusChanged(void) {}
+    static void CALL DummyViWidthChanged(void) {}
+    static void CALL DummySoftReset(void) {}
 };

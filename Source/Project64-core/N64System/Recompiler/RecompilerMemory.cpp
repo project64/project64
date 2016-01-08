@@ -91,5 +91,5 @@ void CRecompMemory::ShowMemUsed()
 
     uint32_t TotalAvaliable = m_RecompSize / 0x100000;
 
-    g_Notify->DisplayMessage(0, stdstr_f("Memory used: %d mb %-3d kb %-3d bytes     Total Available: %d mb", MB, KB, Size, TotalAvaliable).ToUTF16().c_str());
+    g_Notify->DisplayMessage(0, stdstr_f("Memory used: %d mb %-3d kb %-3d bytes     Total Available: %d mb", MB, KB, Size, TotalAvaliable).c_str());
 }

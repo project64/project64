@@ -243,8 +243,8 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef legacycode
                 if (m_Command.Hex == 0x00000001) { break; }
-                g_Notify->DisplayError(L"Unhandled R4300i OpCode in FillSectionInfo 5\n%s",
-                    R4300iOpcodeName(m_Command.Hex,m_PC));
+                g_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo 5\n%s",
+                    R4300iOpcodeName(m_Command.Hex, m_PC));
 #endif
                 m_NextInstruction = END_BLOCK;
                 m_PC -= 4;
@@ -312,12 +312,12 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef legacycode
                 m_Reg.GetMipsRegLo(31) = m_PC + 8;
-                m_Reg.SetMipsRegState(31,CRegInfo::STATE_CONST_32_SIGN);
+                m_Reg.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
                 Section->m_Cont.TargetPC = m_PC + 8;
                 Section->m_Jump.TargetPC = m_PC + ((int16_t)m_Command.offset << 2) + 4;
                 if (m_PC == Section->m_Jump.TargetPC)
                 {
-                    if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,0))
+                    if (!DelaySlotEffectsCompare(m_PC, m_Command.rs, 0))
                     {
                         Section->m_Jump.PermLoop = true;
                     }
@@ -334,17 +334,18 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                     if (m_Reg.Is32Bit(m_Command.rs))
                     {
                         Value = m_Reg.GetMipsRegLo_S(m_Command.rs);
-                    } else {
+                    }
+                    else {
                         Value = m_Reg.GetMipsReg_S(m_Command.rs);
                     }
                     if (Value >= 0)
                     {
                         m_Reg.GetMipsRegLo(31) = m_PC + 8;
-                        m_Reg.SetMipsRegState(31,CRegInfo::STATE_CONST_32_SIGN);
+                        m_Reg.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
                         Section->m_Jump.TargetPC = m_PC + ((int16_t)m_Command.offset << 2) + 4;
                         if (m_PC == Section->m_Jump.TargetPC)
                         {
-                            if (!DelaySlotEffectsCompare(m_PC,31,0))
+                            if (!DelaySlotEffectsCompare(m_PC, 31, 0))
                             {
                                 Section->m_Jump.PermLoop = true;
                             }
@@ -354,12 +355,12 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 }
 
                 m_Reg.GetMipsRegLo(31) = m_PC + 8;
-                m_Reg.SetMipsRegState(31,CRegInfo::STATE_CONST_32_SIGN);
+                m_Reg.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
                 Section->m_Cont.TargetPC = m_PC + 8;
                 Section->m_Jump.TargetPC = m_PC + ((int16_t)m_Command.offset << 2) + 4;
                 if (m_PC == Section->m_Jump.TargetPC)
                 {
-                    if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,0))
+                    if (!DelaySlotEffectsCompare(m_PC, m_Command.rs, 0))
                     {
                         Section->m_Jump.PermLoop = true;
                     }
@@ -370,8 +371,8 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef legacycode
                 if (m_Command.Hex == 0x0407000D) { break; }
-                g_Notify->DisplayError(L"Unhandled R4300i OpCode in FillSectionInfo 4\n%s",
-                    R4300iOpcodeName(m_Command.Hex,m_PC));
+                g_Notify->DisplayError("Unhandled R4300i OpCode in FillSectionInfo 4\n%s",
+                    R4300iOpcodeName(m_Command.Hex, m_PC));
                 m_NextInstruction = END_BLOCK;
                 m_PC -= 4;
 #endif
@@ -382,11 +383,11 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
 #ifdef legacycode
             m_NextInstruction = DELAY_SLOT;
             m_Reg.GetMipsRegLo(31) = m_PC + 8;
-            m_Reg.SetMipsRegState(31,CRegInfo::STATE_CONST_32_SIGN);
+            m_Reg.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
             Section->m_Jump.TargetPC = (m_PC & 0xF0000000) + (m_Command.target << 2);
             if (m_PC == Section->m_Jump.TargetPC)
             {
-                if (!DelaySlotEffectsCompare(m_PC,31,0))
+                if (!DelaySlotEffectsCompare(m_PC, 31, 0))
                 {
                     Section->m_Jump.PermLoop = true;
                 }
@@ -546,14 +547,14 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                     case R4300i_COP0_CO_TLBP: break;
                     case R4300i_COP0_CO_ERET: m_NextInstruction = END_BLOCK; break;
                     default:
-                        g_Notify->DisplayError(stdstr_f("Unhandled R4300i OpCode in FillSectionInfo\n%s", R4300iOpcodeName(m_Command.Hex, m_PC)).ToUTF16().c_str());
+                        g_Notify->DisplayError(stdstr_f("Unhandled R4300i OpCode in FillSectionInfo\n%s", R4300iOpcodeName(m_Command.Hex, m_PC)).c_str());
                         m_NextInstruction = END_BLOCK;
                         m_PC -= 4;
                     }
                 }
                 else
                 {
-                    g_Notify->DisplayError(stdstr_f("Unhandled R4300i OpCode in FillSectionInfo 3\n%s", R4300iOpcodeName(m_Command.Hex, m_PC)).ToUTF16().c_str());
+                    g_Notify->DisplayError(stdstr_f("Unhandled R4300i OpCode in FillSectionInfo 3\n%s", R4300iOpcodeName(m_Command.Hex, m_PC)).c_str());
                     m_NextInstruction = END_BLOCK;
                     m_PC -= 4;
                 }
@@ -585,7 +586,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef legacycode
-                        if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,m_Command.rt))
+                        if (!DelaySlotEffectsCompare(m_PC, m_Command.rs, m_Command.rt))
                         {
                             if (!Section->m_Jump.PermLoop)
                             {
@@ -614,7 +615,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef legacycode
-                        if (!DelaySlotEffectsCompare(m_PC,m_Command.rs,m_Command.rt)) {
+                        if (!DelaySlotEffectsCompare(m_PC, m_Command.rs, m_Command.rt)) {
                             Section->m_Jump.PermLoop = true;
                         }
 #endif
@@ -631,7 +632,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
             case R4300i_COP1_W: break;
             case R4300i_COP1_L: break;
             default:
-                g_Notify->DisplayError(stdstr_f("Unhandled R4300i OpCode in FillSectionInfo 2\n%s", R4300iOpcodeName(m_Command.Hex, m_PC)).ToUTF16().c_str());
+                g_Notify->DisplayError(stdstr_f("Unhandled R4300i OpCode in FillSectionInfo 2\n%s", R4300iOpcodeName(m_Command.Hex, m_PC)).c_str());
                 m_NextInstruction = END_BLOCK;
                 m_PC -= 4;
             }
@@ -731,7 +732,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
             if (m_Command.Hex == 0xF1F3F5F7) { break; }
             if (m_Command.Hex == 0xC1200000) { break; }
             if (m_Command.Hex == 0x4C5A5353) { break; }
-            g_Notify->DisplayError(stdstr_f("Unhandled R4300i OpCode in FillSectionInfo 1\n%s\n%X", R4300iOpcodeName(m_Command.Hex, m_PC), m_Command.Hex).ToUTF16().c_str());
+            g_Notify->DisplayError(stdstr_f("Unhandled R4300i OpCode in FillSectionInfo 1\n%s\n%X", R4300iOpcodeName(m_Command.Hex, m_PC), m_Command.Hex).c_str());
         }
 
         CPU_Message("  %s state: %X value: %X", CRegName::GPR[5], m_Reg.GetMipsRegState(5), m_Reg.GetMipsRegLo(5));
@@ -953,7 +954,7 @@ void LoopAnalysis::SPECIAL_JALR()
     g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef legacycode
     m_Reg.GetMipsRegLo(m_Command.rd) = m_PC + 8;
-    m_Reg.SetMipsRegState(m_Command.rd,CRegInfo::STATE_CONST_32_SIGN);
+    m_Reg.SetMipsRegState(m_Command.rd, CRegInfo::STATE_CONST_32_SIGN);
     if (m_Reg.IsConst(m_Command.rs)) {
         Section->m_Jump.TargetPC = m_Reg.GetMipsRegLo(m_Command.rs);
     }

@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 
-#include "../Settings/GameSettings.h"
+#include <Project64-core/Settings/GameSettings.h>
 
 class CSpeedLimiter :
     private CGameSettings

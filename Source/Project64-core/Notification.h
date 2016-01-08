@@ -10,19 +10,19 @@ __interface CNotification
 {
 public:
     //Error Messages
-    virtual void DisplayError(const wchar_t * Message) const = 0;
+    virtual void DisplayError(const char * Message) const = 0;
     virtual void DisplayError(LanguageStringID StringID) const = 0;
 
-    virtual void FatalError(const wchar_t * Message) const = 0;
+    virtual void FatalError(const char * Message) const = 0;
     virtual void FatalError(LanguageStringID StringID) const = 0;
 
     //User Feedback
-    virtual void DisplayMessage(int DisplayTime, const wchar_t * Message) const = 0;
+    virtual void DisplayMessage(int DisplayTime, const char * Message) const = 0;
     virtual void DisplayMessage(int DisplayTime, LanguageStringID StringID) const = 0;
-    virtual void DisplayMessage2(const wchar_t * Message) const = 0;
+    virtual void DisplayMessage2(const char * Message) const = 0;
 
     // Ask a Yes/No Question to the user, yes = true, no = false
-    virtual bool AskYesNoQuestion(const wchar_t * Question) const = 0;
+    virtual bool AskYesNoQuestion(const char * Question) const = 0;
 
     virtual void BreakPoint(const char * FileName, int32_t LineNumber) = 0;
 

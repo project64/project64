@@ -12,6 +12,7 @@
 
 #include <Common/SyncEvent.h>
 #include <Project64-core/Settings/N64SystemSettings.h>
+#include <Project64-core/N64System/ProfilingClass.h>
 #include <Project64-core/N64System/Recompiler/RecompilerClass.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/Settings/DebugSettings.h>
@@ -23,7 +24,6 @@
 #include "Mips/TLBClass.h"
 #include "Mips/Audio.h"
 #include "Mips/SystemTiming.h"
-#include "ProfilingClass.h"
 #include "CheatClass.h"
 #include "FramePerSecondClass.h"
 #include "SpeedLimiterClass.h"
@@ -40,7 +40,6 @@ class CRecompiler;
 
 class CN64System :
     public CLogging,
-    public CMipsMemory_CallBack,
     public CTLB_CB,
     private CSystemEvents,
     protected CN64SystemSettings,
@@ -129,17 +128,14 @@ private:
     //Mark information saying that the CPU has stopped
     void   CpuStopped();
 
-    //Function in CMipsMemory_CallBack
-    virtual bool WriteToProtectedMemory(uint32_t Address, int32_t length);
-
     //Functions in CTLB_CB
     void TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly);
     void TLB_Unmaped(uint32_t VAddr, uint32_t Len);
     void TLB_Changed();
 
     CPlugins      * const m_Plugins;  //The plugin container
-    CN64System    * m_SyncCPU;
     CPlugins      * m_SyncPlugins;
+    CN64System    * m_SyncCPU;
     CMipsMemoryVM   m_MMU_VM;   //Memory of the n64
     CTLB            m_TLB;
     CRegisters      m_Reg;

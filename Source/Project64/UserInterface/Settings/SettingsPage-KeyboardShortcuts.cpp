@@ -20,14 +20,14 @@ m_EnableReset(false)
         return;
     }
 
-    SetDlgItemTextW(m_hWnd, IDC_S_CPU_STATE, GS(ACCEL_CPUSTATE_TITLE));
-    SetDlgItemTextW(m_hWnd, IDC_MENU_ITEM_TEXT, GS(ACCEL_MENUITEM_TITLE));
-    SetDlgItemTextW(m_hWnd, IDC_S_CURRENT_KEYS, GS(ACCEL_CURRENTKEYS_TITLE));
-    SetDlgItemTextW(m_hWnd, IDC_S_SELECT_SHORT, GS(ACCEL_SELKEY_TITLE));
-    SetDlgItemTextW(m_hWnd, IDC_S_CURRENT_ASSIGN, GS(ACCEL_ASSIGNEDTO_TITLE));
-    SetDlgItemTextW(m_hWnd, IDC_ASSIGN, GS(ACCEL_ASSIGN_BTN));
-    SetDlgItemTextW(m_hWnd, IDC_REMOVE, GS(ACCEL_REMOVE_BTN));
-    SetDlgItemTextW(m_hWnd, IDC_KEY_PROMPT, GS(ACCEL_DETECTKEY));
+    SetDlgItemTextW(m_hWnd, IDC_S_CPU_STATE, wGS(ACCEL_CPUSTATE_TITLE).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_MENU_ITEM_TEXT, wGS(ACCEL_MENUITEM_TITLE).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_S_CURRENT_KEYS, wGS(ACCEL_CURRENTKEYS_TITLE).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_S_SELECT_SHORT, wGS(ACCEL_SELKEY_TITLE).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_S_CURRENT_ASSIGN, wGS(ACCEL_ASSIGNEDTO_TITLE).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_ASSIGN, wGS(ACCEL_ASSIGN_BTN).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_REMOVE, wGS(ACCEL_REMOVE_BTN).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_KEY_PROMPT, wGS(ACCEL_DETECTKEY).c_str());
 
     m_CreateNewShortCut.AttachToDlgItem(m_hWnd, IDC_S_SELECT_SHORT);
     m_CpuState.Attach(GetDlgItem(IDC_C_CPU_STATE));
@@ -37,9 +37,9 @@ m_EnableReset(false)
 
     m_MenuItems.ModifyStyle(0, TVS_SHOWSELALWAYS);
 
-    m_CpuState.SetItemData(m_CpuState.AddStringW(GS(ACCEL_CPUSTATE_1)), CMenuShortCutKey::GAME_NOT_RUNNING);
-    m_CpuState.SetItemData(m_CpuState.AddStringW(GS(ACCEL_CPUSTATE_3)), CMenuShortCutKey::GAME_RUNNING_WINDOW);
-    m_CpuState.SetItemData(m_CpuState.AddStringW(GS(ACCEL_CPUSTATE_4)), CMenuShortCutKey::GAME_RUNNING_FULLSCREEN);
+    m_CpuState.SetItemData(m_CpuState.AddStringW(wGS(ACCEL_CPUSTATE_1).c_str()), CMenuShortCutKey::GAME_NOT_RUNNING);
+    m_CpuState.SetItemData(m_CpuState.AddStringW(wGS(ACCEL_CPUSTATE_3).c_str()), CMenuShortCutKey::GAME_RUNNING_WINDOW);
+    m_CpuState.SetItemData(m_CpuState.AddStringW(wGS(ACCEL_CPUSTATE_4).c_str()), CMenuShortCutKey::GAME_RUNNING_FULLSCREEN);
     m_CpuState.SetCurSel(0);
 
     int VirtualKeyListSize;
@@ -99,10 +99,10 @@ void COptionsShortCutsPage::OnCpuStateChanged(UINT /*Code*/, int /*id*/, HWND /*
 
         if (hParent == NULL)
         {
-            hParent = m_MenuItems.InsertItemW(TVIF_TEXT | TVIF_PARAM, GS(Item->second.Section()), 0, 0, 0, 0, Item->second.Section(), TVI_ROOT, TVI_LAST);
+            hParent = m_MenuItems.InsertItemW(TVIF_TEXT | TVIF_PARAM, wGS(Item->second.Section()).c_str(), 0, 0, 0, 0, Item->second.Section(), TVI_ROOT, TVI_LAST);
         }
 
-        wstring str = GS(Item->second.Title());
+        wstring str = wGS(Item->second.Title());
         std::wstring::size_type pos = str.find(L"&");
         while (pos != std::wstring::npos)
         {
@@ -229,8 +229,7 @@ void COptionsShortCutsPage::OnShortCutChanged(UINT /*Code*/, int /*id*/, HWND /*
 
     ACCESS_MODE AccessLevel = (ACCESS_MODE)m_CpuState.GetItemData(m_CpuState.GetCurSel());
 
-    stdstr str;
-    str.FromUTF16(GS(m_ShortCuts.GetMenuItemName(key, bCtrl, bAlt, bShift, AccessLevel)));
+    stdstr str = GS(m_ShortCuts.GetMenuItemName(key, bCtrl, bAlt, bShift, AccessLevel));
     if (str.length() > 0)
     {
         str.resize(std::remove(str.begin(), str.end(), '&') - str.begin());

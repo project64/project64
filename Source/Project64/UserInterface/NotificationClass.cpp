@@ -53,13 +53,11 @@ void CNotificationImp::DisplayError(LanguageStringID StringID) const
     DisplayError(g_Lang->GetString(StringID).c_str());
 }
 
-void CNotificationImp::DisplayError(const wchar_t * Message) const
+void CNotificationImp::DisplayError(const char * Message) const
 {
     if (this == NULL) { return; }
 
-    stdstr TraceMessage;
-    TraceMessage.FromUTF16(Message);
-    WriteTrace(TraceUserInterface, TraceError, TraceMessage.c_str());
+    WriteTrace(TraceUserInterface, TraceError, Message);
     WindowMode();
 
     HWND Parent = NULL;
@@ -67,7 +65,7 @@ void CNotificationImp::DisplayError(const wchar_t * Message) const
     {
         Parent = reinterpret_cast<HWND>(m_hWnd->GetWindowHandle());
     }
-    MessageBoxW(Parent, Message, GS(MSG_MSGBOX_TITLE), MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
+    MessageBoxW(Parent, stdstr(Message).ToUTF16().c_str(), wGS(MSG_MSGBOX_TITLE).c_str(), MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
 }
 
 void CNotificationImp::DisplayMessage(int DisplayTime, LanguageStringID StringID) const
@@ -75,7 +73,7 @@ void CNotificationImp::DisplayMessage(int DisplayTime, LanguageStringID StringID
     DisplayMessage(DisplayTime, g_Lang->GetString(StringID).c_str());
 }
 
-void CNotificationImp::DisplayMessage(int DisplayTime, const wchar_t * Message) const
+void CNotificationImp::DisplayMessage(int DisplayTime, const char * Message) const
 {
     if (!m_hWnd) { return; }
 
@@ -101,30 +99,28 @@ void CNotificationImp::DisplayMessage(int DisplayTime, const wchar_t * Message) 
         if (m_gfxPlugin && m_gfxPlugin->DrawStatus)
         {
             WriteTrace(TraceGFXPlugin, TraceDebug, "DrawStatus - Starting");
-            stdstr PluginMessage;
-            PluginMessage.FromUTF16(Message);
-            m_gfxPlugin->DrawStatus(PluginMessage.c_str(), FALSE);
+            m_gfxPlugin->DrawStatus(Message, FALSE);
             WriteTrace(TraceGFXPlugin, TraceDebug, "DrawStatus - Done");
         }
     }
     else
     {
-        m_hWnd->SetStatusText(0, Message);
+        m_hWnd->SetStatusText(0, stdstr(Message).ToUTF16().c_str());
     }
 }
 
-void CNotificationImp::DisplayMessage2(const wchar_t * Message) const
+void CNotificationImp::DisplayMessage2(const char * Message) const
 {
     if (!m_hWnd) { return; }
 
-    m_hWnd->SetStatusText(1, Message);
+    m_hWnd->SetStatusText(1, stdstr(Message).ToUTF16().c_str());
 }
 
-bool CNotificationImp::AskYesNoQuestion(const wchar_t * Question) const
+bool CNotificationImp::AskYesNoQuestion(const char * Question) const
 {
     if (this == NULL) { return false; }
 
-    WriteTrace(TraceUserInterface, TraceError, stdstr().FromUTF16(Question).c_str());
+    WriteTrace(TraceUserInterface, TraceError, Question);
     WindowMode();
 
     HWND Parent = NULL;
@@ -132,7 +128,7 @@ bool CNotificationImp::AskYesNoQuestion(const wchar_t * Question) const
     {
         Parent = reinterpret_cast<HWND>(m_hWnd->GetWindowHandle());
     }
-    int result = MessageBoxW(Parent, Question, GS(MSG_MSGBOX_TITLE), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2 | MB_SETFOREGROUND);
+    int result = MessageBoxW(Parent, stdstr(Question).ToUTF16().c_str(), wGS(MSG_MSGBOX_TITLE).c_str(), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2 | MB_SETFOREGROUND);
     return result == IDYES;
 }
 
@@ -146,13 +142,14 @@ void CNotificationImp::FatalError(LanguageStringID StringID) const
     FatalError(g_Lang->GetString(StringID).c_str());
 }
 
-void CNotificationImp::FatalError(const wchar_t * Message) const
+void CNotificationImp::FatalError(const char  * Message) const
 {
+    WriteTrace(TraceUserInterface, TraceError, Message);
     WindowMode();
 
     HWND Parent = NULL;
     if (m_hWnd) { Parent = reinterpret_cast<HWND>(m_hWnd->GetWindowHandle()); }
-    MessageBoxW(Parent, Message, L"Error", MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
+    MessageBoxW(Parent, stdstr(Message).ToUTF16().c_str(), L"Error", MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
     ExitThread(0);
 }
 
@@ -254,7 +251,7 @@ void CNotificationImp::BreakPoint(const char * FileName, int LineNumber)
 {
     if (g_Settings->LoadBool(Debugger_Enabled))
     {
-        DisplayError(stdstr_f("Break point found at\n%s\n%d", FileName, LineNumber).ToUTF16().c_str());
+        DisplayError(stdstr_f("Break point found at\n%s\n%d", FileName, LineNumber).c_str());
         if (IsDebuggerPresent() != 0)
         {
             DebugBreak();
@@ -266,7 +263,7 @@ void CNotificationImp::BreakPoint(const char * FileName, int LineNumber)
     }
     else
     {
-        DisplayError(L"Fatal Error: Stopping emulation");
+        DisplayError("Fatal Error: Stopping emulation");
         g_BaseSystem->CloseCpu();
     }
 }

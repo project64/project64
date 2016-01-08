@@ -1,10 +1,8 @@
 #pragma warning(disable:4786)
 
 #include <map>
-#include <windows.h>
 #include <stdio.h>
 #include <stdarg.h>
-#include <string.h>
 
 #include "MemTest.h"
 #include "StdString.h"

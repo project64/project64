@@ -5015,6 +5015,7 @@ Internal Name=Rayman 2
 Status=Compatible
 Plugin Note=[video] errors:lum colour (see GameFAQ)
 RDRAM Size=8
+Counter Factor=1
 
 [F3C5BF9B-160F33E2-C:45]
 Good Name=Rayman 2 - The Great Escape (U) (M5)
@@ -5023,6 +5024,7 @@ Status=Compatible
 Plugin Note=[video] errors:lum colour (see GameFAQ)
 Culling=1
 RDRAM Size=8
+Counter Factor=1
 
 [3918834A-15B50C29-C:45]
 Good Name=Razor Freestyle Scooter (U)

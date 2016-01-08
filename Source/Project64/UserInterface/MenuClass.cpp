@@ -15,7 +15,7 @@ bool CBaseMenu::AddMenu(HMENU hMenu, MenuItemList Items)
     {
         ItemID = MenuItem->ID();
         uFlags = MF_STRING;
-        Text = g_Lang->GetString(MenuItem->Title()).c_str();
+        Text = wGS(MenuItem->Title());
 
         if (MenuItem->Title() == EMPTY_STRING && MenuItem->ManualString().length() > 0)
         {

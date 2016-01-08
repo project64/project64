@@ -385,7 +385,7 @@ std::string CPath::GetExtension(void) const
 //-------------------------------------------------------------
 // Task    : Get current directory
 //-------------------------------------------------------------
-void CPath::GetCurrentDirectory(std::string& rDirectory) const
+void CPath::GetLastDirectory(std::string& rDirectory) const
 {
 	std::string Directory;
 
@@ -394,18 +394,19 @@ void CPath::GetCurrentDirectory(std::string& rDirectory) const
 	GetDirectory(Directory);	
 	StripTrailingBackslash(Directory);
 	if(Directory.empty())
+	{
 		return;
+	}
 	
-    std::string::size_type nDelimiter =Directory.rfind(DIRECTORY_DELIMITER);
-	
-	rDirectory =Directory.substr(nDelimiter);
+    std::string::size_type nDelimiter = Directory.rfind(DIRECTORY_DELIMITER);
+	rDirectory = Directory.substr(nDelimiter);
 	StripLeadingBackslash(rDirectory);
 }   
 
-std::string CPath::GetCurrentDirectory(void) const
+std::string CPath::GetLastDirectory(void) const
 {
 	std::string rDirecotry;
-	GetCurrentDirectory(rDirecotry);
+	GetLastDirectory(rDirecotry);
 	return rDirecotry;
 }   
 

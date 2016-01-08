@@ -40,6 +40,7 @@
    */
 
 #include "stdafx.h"
+#include <windows.h>
 
 // MD5 simple initialization method
 MD5::MD5()

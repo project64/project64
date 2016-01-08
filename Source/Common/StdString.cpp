@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include <malloc.h>
 #include <algorithm>
+#include "StdString.h"
+#include <windows.h>
 
 stdstr::stdstr()
 {
@@ -131,7 +133,8 @@ stdstr & stdstr::TrimLeft(const char * chars2remove)
         {
             erase(0, pos);
         }
-        else {
+        else
+        {
             erase(begin(), end()); // make empty
         }
     }
@@ -147,7 +150,8 @@ stdstr & stdstr::TrimRight(const char * chars2remove)
         {
             erase(pos + 1);
         }
-        else {
+        else
+        {
             erase(begin(), end()); // make empty
         }
     }
@@ -181,6 +185,7 @@ stdstr & stdstr::Trim(const char * chars2remove)
     return *this;
 }
 
+#ifdef _WIN32
 stdstr & stdstr::FromUTF16(const wchar_t * UTF16Source, bool * bSuccess)
 {
     bool bConverted = false;
@@ -192,7 +197,7 @@ stdstr & stdstr::FromUTF16(const wchar_t * UTF16Source, bool * bSuccess)
     }
     else if (wcslen(UTF16Source) > 0)
     {
-        DWORD nNeeded = WideCharToMultiByte(CP_UTF8, 0, UTF16Source, -1, NULL, 0, NULL, NULL);
+        uint32_t nNeeded = WideCharToMultiByte(CODEPAGE_UTF8, 0, UTF16Source, -1, NULL, 0, NULL, NULL);
         if (nNeeded > 0)
         {
             char * buf = (char *)alloca(nNeeded + 1);
@@ -200,7 +205,7 @@ stdstr & stdstr::FromUTF16(const wchar_t * UTF16Source, bool * bSuccess)
             {
                 memset(buf, 0, nNeeded + 1);
 
-                nNeeded = WideCharToMultiByte(CP_UTF8, 0, UTF16Source, -1, buf, nNeeded, NULL, NULL);
+                nNeeded = WideCharToMultiByte(CODEPAGE_UTF8, 0, UTF16Source, -1, buf, nNeeded, NULL, NULL);
                 if (nNeeded)
                 {
                     *this = buf;
@@ -216,7 +221,7 @@ stdstr & stdstr::FromUTF16(const wchar_t * UTF16Source, bool * bSuccess)
     return *this;
 }
 
-std::wstring stdstr::ToUTF16(UINT CodePage, bool * bSuccess)
+std::wstring stdstr::ToUTF16(unsigned int CodePage, bool * bSuccess)
 {
     bool bConverted = false;
     std::wstring res;
@@ -242,4 +247,13 @@ std::wstring stdstr::ToUTF16(UINT CodePage, bool * bSuccess)
         *bSuccess = bConverted;
     }
     return res;
+}
+#endif
+
+stdstr_f::stdstr_f(const char * strFormat, ...)
+{ 
+	va_list args;
+	va_start(args, strFormat);
+	ArgFormat(strFormat,args);
+	va_end(args);
 }

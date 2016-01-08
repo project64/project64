@@ -10,27 +10,27 @@
 ****************************************************************************/
 #pragma once
 
-class CFramePerSecond 
+class CFramePerSecond
 {
 public:
-         CFramePerSecond ( void );
-        ~CFramePerSecond ( void );
+    CFramePerSecond(void);
+    ~CFramePerSecond(void);
 
-	void Reset           ( bool ClearDisplay );
+    void Reset(bool ClearDisplay);
 
-	void UpdateDlCounter  ( void );
-	void UpdateViCounter  ( void );
-    void DisplayDlCounter ( uint32_t FrameRate );
-    void DisplayViCounter ( uint32_t FrameRate );
+    void UpdateDlCounter(void);
+    void UpdateViCounter(void);
+    void DisplayDlCounter(uint32_t FrameRate);
+    void DisplayViCounter(uint32_t FrameRate);
 
 private:
-	static void FrameRateTypeChanged(CFramePerSecond * _this);
-	static void ScreenHertzChanged(CFramePerSecond * _this);
+    static void FrameRateTypeChanged(CFramePerSecond * _this);
+    static void ScreenHertzChanged(CFramePerSecond * _this);
 
-	int  m_iFrameRateType, m_ScreenHertz;
+    int  m_iFrameRateType, m_ScreenHertz;
 
-	enum { NoOfFrames = 7 };
+    enum { NoOfFrames = 7 };
 
     int64_t m_Frequency, m_Frames[NoOfFrames], m_LastFrame;
-	int m_CurrentFrame;
+    int m_CurrentFrame;
 };

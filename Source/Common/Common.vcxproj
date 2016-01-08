@@ -39,6 +39,7 @@
     <ClCompile Include="md5.cpp" />
     <ClCompile Include="MemTest.cpp" />
     <ClCompile Include="path.cpp" />
+    <ClCompile Include="Platform.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -55,6 +56,7 @@
     <ClInclude Include="md5.h" />
     <ClInclude Include="MemTest.h" />
     <ClInclude Include="path.h" />
+    <ClInclude Include="Platform.h" />
     <ClInclude Include="SmartPointer.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StdString.h" />
