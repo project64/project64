@@ -63,8 +63,8 @@ CMemList::~CMemList()
     size_t ItemsLeft = MemList.size();
     if (ItemsLeft > 0)
     {
-        TCHAR path_buffer[_MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR];
-        TCHAR fname[_MAX_FNAME], ext[_MAX_EXT], LogFileName[_MAX_PATH];
+		char path_buffer[_MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR];
+		char fname[_MAX_FNAME], ext[_MAX_EXT], LogFileName[_MAX_PATH];
 
         memset(path_buffer, 0, sizeof(path_buffer));
         memset(drive, 0, sizeof(drive));
@@ -94,7 +94,7 @@ CMemList::~CMemList()
             {
                 if (GetLastError() == ERROR_SHARING_VIOLATION)
                 {
-                    char Msg[3000];
+					TCHAR Msg[3000];
                     sprintf(Msg, "%s\nCan not be opened for writing please close app using this file\n\nTry Again ?", LogFileName);
                     int Result = MessageBox(NULL, Msg, "Memory Leak", MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_SERVICE_NOTIFICATION);
                     if (Result == IDNO)
