@@ -2,6 +2,7 @@
 #ifdef _WIN32
 #include <io.h>
 #define USE_WINDOWS_API
+#include <Windows.h>
 #else
 #include <unistd.h>
 #endif
@@ -20,17 +21,17 @@
 
 CFile::CFile() :
 #ifdef USE_WINDOWS_API
-    m_hFile(INVALID_HANDLE_VALUE),
+m_hFile(INVALID_HANDLE_VALUE),
 #else
-    m_hFile(NULL),
+m_hFile(NULL),
 #endif
-    m_bCloseOnDelete(false)
+m_bCloseOnDelete(false)
 {
 }
 
 CFile::CFile(void * hFile) :
-    m_hFile(hFile),
-    m_bCloseOnDelete(true)
+m_hFile(hFile),
+m_bCloseOnDelete(true)
 {
     if (hFile == 0)
     {
@@ -40,11 +41,11 @@ CFile::CFile(void * hFile) :
 
 CFile::CFile(const char * lpszFileName, uint32_t nOpenFlags) :
 #ifdef USE_WINDOWS_API
-    m_hFile(INVALID_HANDLE_VALUE),
+m_hFile(INVALID_HANDLE_VALUE),
 #else
-    m_hFile(NULL),
+m_hFile(NULL),
 #endif
-    m_bCloseOnDelete(true)
+m_bCloseOnDelete(true)
 {
     Open(lpszFileName, nOpenFlags);
 }
@@ -58,7 +59,7 @@ CFile::~CFile()
 #endif
     {
         Close();
-    }
+}
 }
 
 bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
@@ -87,7 +88,7 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
         dwAccess = GENERIC_WRITE;
         break;
     case modeReadWrite:
-        dwAccess = GENERIC_READ|GENERIC_WRITE;
+        dwAccess = GENERIC_READ | GENERIC_WRITE;
         break;
     default:
         _ASSERTE(false);
@@ -126,10 +127,10 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
 
     if ((nOpenFlags & CFileBase::modeCreate) != CFileBase::modeCreate)
     {
-		printf("Checking if %s exists\n",lpszFileName);
-		if (!CPath(lpszFileName).Exists())
+        printf("Checking if %s exists\n",lpszFileName);
+        if (!CPath(lpszFileName).Exists())
         {
-			printf("%s does not exists\n",lpszFileName);
+            printf("%s does not exists\n",lpszFileName);
             return false;
         }
     }
@@ -154,7 +155,7 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
     if ((nOpenFlags & CFileBase::modeWrite) == CFileBase::modeWrite ||
         (nOpenFlags & CFileBase::modeReadWrite) == CFileBase::modeReadWrite)
     {
-		printf("tryinng to open %s (rb+)\n",lpszFileName);
+        printf("tryinng to open %s (rb+)\n",lpszFileName);
         m_hFile = fopen(lpszFileName, "rb+");
         if (m_hFile != NULL)
         {
@@ -163,7 +164,7 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
     }
     else if ((nOpenFlags & CFileBase::modeRead) == CFileBase::modeRead)
     {
-		printf("tryinng to open %s (rb)\n",lpszFileName);
+        printf("tryinng to open %s (rb)\n",lpszFileName);
         m_hFile = fopen(lpszFileName, "rb");
         if (m_hFile != NULL)
         {
@@ -199,17 +200,17 @@ bool CFile::Close()
     return bError;
 }
 
-uint32_t CFile::SeekToEnd ( void )
+uint32_t CFile::SeekToEnd(void)
 {
     return Seek(0, CFile::end);
 }
 
-void CFile::SeekToBegin ( void )
+void CFile::SeekToBegin(void)
 {
     Seek(0, CFile::begin);
 }
 
-bool CFile::IsOpen( void ) const
+bool CFile::IsOpen(void) const
 {
 #ifdef USE_WINDOWS_API
     return m_hFile != INVALID_HANDLE_VALUE;
@@ -284,7 +285,7 @@ int32_t CFile::Seek(int32_t lOff, SeekPosition nFrom)
 {
 #ifdef USE_WINDOWS_API
     ULONG dwNew = ::SetFilePointer(m_hFile, lOff, NULL, (ULONG)nFrom);
-    if (dwNew  == (ULONG)-1)
+    if (dwNew == (ULONG)-1)
     {
         return -1;
     }
@@ -331,9 +332,9 @@ uint32_t CFile::GetLength() const
 #ifdef USE_WINDOWS_API
     return GetFileSize(m_hFile, 0);
 #else
-	uint32_t pos = GetPosition();
+    uint32_t pos = GetPosition();
     fseek((FILE *)m_hFile, 0, SEEK_END);
-	uint32_t FileSize = GetPosition();
+    uint32_t FileSize = GetPosition();
     fseek((FILE *)m_hFile, (int32_t)pos, SEEK_SET);
     return FileSize;
 #endif

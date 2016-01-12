@@ -1,4 +1,7 @@
 #include "stdafx.h"
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
 typedef std::map<uint32_t, stdstr> ModuleNameMap;
 
@@ -192,17 +195,17 @@ void CTraceFileLog::Write(uint32_t module, uint8_t severity, const char * /*file
     if (!m_hLogFile.IsOpen()) { return; }
 
 #ifdef _WIN32
-	SYSTEMTIME sysTime;
+    SYSTEMTIME sysTime;
     ::GetLocalTime(&sysTime);
     stdstr_f timestamp("%04d/%02d/%02d %02d:%02d:%02d.%03d %05d,", sysTime.wYear, sysTime.wMonth, sysTime.wDay, sysTime.wHour, sysTime.wMinute, sysTime.wSecond, sysTime.wMilliseconds, GetCurrentThreadId());
 #else
     time_t ltime;
     ltime=time(&ltime);
 
-	struct tm result={0};
+    struct tm result={0};
     localtime_r(&ltime, &result);
 
-	struct timeval curTime;
+    struct timeval curTime;
     gettimeofday(&curTime, NULL);
     int milliseconds = curTime.tv_usec / 1000;
 
