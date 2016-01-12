@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include <malloc.h>
 #include <algorithm>
-#include "StdString.h"
-#include <windows.h>
 
 stdstr::stdstr()
 {
@@ -251,9 +249,24 @@ std::wstring stdstr::ToUTF16(unsigned int CodePage, bool * bSuccess)
 #endif
 
 stdstr_f::stdstr_f(const char * strFormat, ...)
-{ 
+{
+    va_list args;
+    va_start(args, strFormat);
+    ArgFormat(strFormat, args);
+    va_end(args);
+}
+
+#ifdef _WIN32
+stdwstr_f::stdwstr_f(const wchar_t * strFormat, ...)
+{
 	va_list args;
 	va_start(args, strFormat);
-	ArgFormat(strFormat,args);
+
+	wchar_t Msg[1000];
+	_vsnwprintf(Msg, sizeof(Msg) - 1, strFormat, args);
+
 	va_end(args);
+
+	this->assign(Msg);
 }
+#endif

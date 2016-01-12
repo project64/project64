@@ -52,22 +52,13 @@ public:
 	stdstr_f(const char * strFormat, ...);
 };
 
+#ifdef _WIN32
 class stdwstr_f : public std::wstring
 {
 public:
-    stdwstr_f(const wchar_t * strFormat, ...)
-    {
-        va_list args;
-        va_start(args, strFormat);
-
-        wchar_t Msg[1000];
-        _vsnwprintf(Msg, sizeof(Msg) - 1, strFormat, args);
-
-        va_end(args);
-
-        this->assign(Msg);
-    }
+	stdwstr_f(const wchar_t * strFormat, ... );
 };
+#endif
 
 typedef std::list<stdstr>   strlist;
 typedef strlist::iterator   strlist_iter;
