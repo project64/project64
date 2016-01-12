@@ -16,41 +16,7 @@
 #include <Project64-core/Multilanguage.h>
 #include <Project64-core/Settings/SettingsClass.h>
 
-typedef unsigned char    BYTE;
-typedef unsigned short   WORD;
-typedef unsigned long    DWORD;
-typedef unsigned __int64 QWORD;
-typedef void *           HANDLE;
-typedef const char *     LPCSTR;
-
-struct RECT_STRUCT
-{
-	long left;
-	long top;
-	long right;
-	long bottom;
-};
-
-struct WINDOWS_PAINTSTRUCT
-{
-	HDC         hdc;
-	int         fErase;
-	RECT_STRUCT rcPaint;
-	int         fRestore;
-	int         fIncUpdate;
-	BYTE        rgbReserved[32];
-};
-
-#define CALLBACK    __stdcall
-
-class CN64System;
-
-#ifndef BYPASS_WINDOWS_GUI
-#define WINDOWS_UI
-// Remove this to test compilation outside of the Windows ATL environment.
-#endif
-
-#include <WTLApp.h>
+#include "WTLApp.h"
 #include "UserInterface/MenuShortCuts.h"
 #include "UserInterface/RomBrowser.h"
 #include "UserInterface/GuiClass.h"
