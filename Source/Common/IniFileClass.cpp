@@ -1,8 +1,7 @@
 #include "stdafx.h"
-#include <windows.h>
-#include <TChar.H>
+#include <stdlib.h>
 
-CIniFileBase::CIniFileBase(CFileBase & FileObject, LPCTSTR FileName) :
+CIniFileBase::CIniFileBase(CFileBase & FileObject, const char * FileName) :
 m_lastSectionSearch(0),
 m_CurrentSectionFilePos(0),
 m_LineFeed("\r\n"),
@@ -32,7 +31,7 @@ void CIniFileBase::fInsertSpaces(int Pos, int NoOfSpaces)
 
     if (NoOfSpaces > 0)
     {
-        stdstr_f SpaceBuffer(_T("%*c"), NoOfSpaces, ' ');
+        stdstr_f SpaceBuffer("%*c", NoOfSpaces, ' ');
 
         do {
             SizeToRead = end - Pos;
@@ -46,7 +45,7 @@ void CIniFileBase::fInsertSpaces(int Pos, int NoOfSpaces)
                 m_File.Seek(WritePos, CFileBase::begin);
                 end = WritePos;
 
-                m_File.Write(SpaceBuffer.c_str(), (ULONG)SpaceBuffer.length());
+                m_File.Write(SpaceBuffer.c_str(), (uint32_t)SpaceBuffer.length());
                 m_File.Write(Data, result);
                 m_File.Seek(WritePos, CFileBase::begin);
             }
@@ -69,8 +68,8 @@ void CIniFileBase::fInsertSpaces(int Pos, int NoOfSpaces)
         } while (SizeToRead > 0);
 
         m_File.Seek(WritePos, CFileBase::begin);
-        stdstr_f SpaceBuffer(_T("%*c"), (NoOfSpaces * -1), ' ');
-        m_File.Write(SpaceBuffer.c_str(), (ULONG)SpaceBuffer.length());
+        stdstr_f SpaceBuffer("%*c", (NoOfSpaces * -1), ' ');
+        m_File.Write(SpaceBuffer.c_str(), (uint32_t)SpaceBuffer.length());
 
         m_File.Seek(WritePos, CFileBase::begin);
         m_File.SetEndOfFile();
@@ -258,7 +257,7 @@ void CIniFileBase::SaveCurrentSection(void)
     m_File.Flush();
 }
 
-bool CIniFileBase::MoveToSectionNameData(LPCSTR lpSectionName, bool ChangeCurrentSection)
+bool CIniFileBase::MoveToSectionNameData(const char * lpSectionName, bool ChangeCurrentSection)
 {
     if (strcmp(lpSectionName, m_CurrentSection.c_str()) == 0)
     {
@@ -290,7 +289,7 @@ bool CIniFileBase::MoveToSectionNameData(LPCSTR lpSectionName, bool ChangeCurren
         m_File.Seek(m_lastSectionSearch, CFileBase::begin);
 
         //long Fpos;
-        BYTE pUTF8[3];
+        uint8_t pUTF8[3];
         pUTF8[0] = 0xef;
         pUTF8[1] = 0xbb;
         pUTF8[2] = 0xbf;
@@ -452,7 +451,7 @@ bool CIniFileBase::IsFileOpen(void)
     return m_File.IsOpen();
 }
 
-bool CIniFileBase::DeleteSection(LPCTSTR lpSectionName)
+bool CIniFileBase::DeleteSection(const char * lpSectionName)
 {
     stdstr_f strSection("[%s]", lpSectionName);
 
@@ -491,7 +490,7 @@ bool CIniFileBase::DeleteSection(LPCTSTR lpSectionName)
     }
 
     m_File.Seek(m_CurrentSectionFilePos,CFileBase::begin);
-    m_File.Write(strNewData.c_str(), (ULONG)strlen(strNewData.c_str()));
+    m_File.Write(strNewData.c_str(), (uint32_t)strlen(strNewData.c_str()));
     m_File.Flush();
     m_File.SetEndOfFile();
     }
@@ -516,7 +515,7 @@ bool CIniFileBase::DeleteSection(LPCTSTR lpSectionName)
     return true;
 }
 
-bool CIniFileBase::GetString(LPCSTR lpSectionName, LPCSTR lpKeyName, LPCSTR lpDefault, stdstr & Value)
+bool CIniFileBase::GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault, stdstr & Value)
 {
     CGuard Guard(m_CS);
 
@@ -538,7 +537,7 @@ bool CIniFileBase::GetString(LPCSTR lpSectionName, LPCSTR lpKeyName, LPCSTR lpDe
     return false;
 }
 
-stdstr CIniFileBase::GetString(LPCSTR lpSectionName, LPCSTR lpKeyName, LPCSTR lpDefault)
+stdstr CIniFileBase::GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault)
 {
     stdstr Value;
     GetString(lpSectionName, lpKeyName, lpDefault, Value);
@@ -583,13 +582,13 @@ stdstr CIniFileBase::GetString  ( LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCW
 
 #endif
 
-uint32_t CIniFileBase::GetString(LPCTSTR lpSectionName, LPCTSTR lpKeyName, LPCTSTR lpDefault, LPTSTR lpReturnedString, uint32_t nSize)
+uint32_t CIniFileBase::GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault, char * lpReturnedString, uint32_t nSize)
 {
     CGuard Guard(m_CS);
 
     std::string strSection;
 
-    if (lpSectionName == NULL || _tcslen(lpSectionName) == 0)
+    if (lpSectionName == NULL || strlen(lpSectionName) == 0)
     {
         strSection = "default";
     }
@@ -603,25 +602,25 @@ uint32_t CIniFileBase::GetString(LPCTSTR lpSectionName, LPCTSTR lpKeyName, LPCTS
         KeyValueList::iterator iter = m_CurrentSectionData.find(lpKeyName);
         if (iter != m_CurrentSectionData.end())
         {
-            _tcsncpy(lpReturnedString, iter->second.c_str(), nSize - 1);
+            strncpy(lpReturnedString, iter->second.c_str(), nSize - 1);
             lpReturnedString[nSize - 1] = 0;
-            return (ULONG)_tcslen(lpReturnedString);
+            return (uint32_t)strlen(lpReturnedString);
         }
     }
-    _tcsncpy(lpReturnedString, lpDefault, nSize - 1);
+    strncpy(lpReturnedString, lpDefault, nSize - 1);
     lpReturnedString[nSize - 1] = 0;
-    return (ULONG)_tcslen(lpReturnedString);
+    return (uint32_t)strlen(lpReturnedString);
 }
 
 #ifdef _UNICODE
-ULONG CIniFileBase::GetNumber ( LPCWSTR lpSectionName, LPCWSTR lpKeyName, ULONG nDefault )
+uint32_t CIniFileBase::GetNumber ( LPCWSTR lpSectionName, LPCWSTR lpKeyName, uint32_t nDefault )
 {
-    ULONG Value;
+    uint32_t Value;
     GetNumber(lpSectionName,lpKeyName,nDefault,Value);
     return Value;
 }
 
-bool CIniFileBase::GetNumber ( LPCWSTR lpSectionName, LPCWSTR lpKeyName, ULONG nDefault, ULONG & Value )
+bool CIniFileBase::GetNumber ( LPCWSTR lpSectionName, LPCWSTR lpKeyName, uint32_t nDefault, uint32_t & Value )
 {
     std::string strSection;
 
@@ -637,14 +636,14 @@ bool CIniFileBase::GetNumber ( LPCWSTR lpSectionName, LPCWSTR lpKeyName, ULONG n
 }
 #endif
 
-uint32_t CIniFileBase::GetNumber(LPCSTR lpSectionName, LPCSTR lpKeyName, uint32_t nDefault)
+uint32_t CIniFileBase::GetNumber(const char * lpSectionName, const char * lpKeyName, uint32_t nDefault)
 {
     uint32_t Value;
     GetNumber(lpSectionName, lpKeyName, nDefault, Value);
     return Value;
 }
 
-bool CIniFileBase::GetNumber(LPCSTR lpSectionName, LPCSTR lpKeyName, uint32_t nDefault, uint32_t & Value)
+bool CIniFileBase::GetNumber(const char * lpSectionName, const char * lpKeyName, uint32_t nDefault, uint32_t & Value)
 {
     CGuard Guard(m_CS);
 
@@ -667,7 +666,7 @@ bool CIniFileBase::GetNumber(LPCSTR lpSectionName, LPCSTR lpKeyName, uint32_t nD
     return false;
 }
 
-void  CIniFileBase::SaveString(LPCTSTR lpSectionName, LPCTSTR lpKeyName, LPCTSTR lpString)
+void  CIniFileBase::SaveString(const char * lpSectionName, const char * lpKeyName, const char * lpString)
 {
     CGuard Guard(m_CS);
     if (!m_File.IsOpen())
@@ -683,7 +682,7 @@ void  CIniFileBase::SaveString(LPCTSTR lpSectionName, LPCTSTR lpKeyName, LPCTSTR
     }
     std::string strSection;
 
-    if (lpSectionName == NULL || _tcslen(lpSectionName) == 0)
+    if (lpSectionName == NULL || strlen(lpSectionName) == 0)
     {
         strSection = "default";
     }
@@ -731,10 +730,10 @@ void  CIniFileBase::SaveString(LPCTSTR lpSectionName, LPCTSTR lpKeyName, LPCTSTR
     }
 }
 
-void CIniFileBase::SaveNumber(LPCTSTR lpSectionName, LPCTSTR lpKeyName, uint32_t Value)
+void CIniFileBase::SaveNumber(const char * lpSectionName, const char * lpKeyName, uint32_t Value)
 {
     //translate the string to an ascii version and save as text
-    SaveString(lpSectionName, lpKeyName, stdstr_f(_T("%d"), Value).c_str());
+    SaveString(lpSectionName, lpKeyName, stdstr_f("%d", Value).c_str());
 }
 
 void CIniFileBase::FlushChanges(void)
@@ -752,7 +751,7 @@ void CIniFileBase::SetAutoFlush(bool AutoFlush)
     }
 }
 
-void CIniFileBase::GetKeyList(LPCTSTR lpSectionName, strlist &List)
+void CIniFileBase::GetKeyList(const char * lpSectionName, strlist &List)
 {
     List.clear();
 
@@ -762,7 +761,7 @@ void CIniFileBase::GetKeyList(LPCTSTR lpSectionName, strlist &List)
         return;
     }
 
-    if (lpSectionName == NULL || _tcslen(lpSectionName) == 0)
+    if (lpSectionName == NULL || strlen(lpSectionName) == 0)
     {
         lpSectionName = "default";
     }
@@ -776,7 +775,7 @@ void CIniFileBase::GetKeyList(LPCTSTR lpSectionName, strlist &List)
     }
 }
 
-void CIniFileBase::GetKeyValueData(LPCTSTR lpSectionName, KeyValueData & List)
+void CIniFileBase::GetKeyValueData(const char * lpSectionName, KeyValueData & List)
 {
     CGuard Guard(m_CS);
     if (!m_File.IsOpen())
@@ -786,7 +785,7 @@ void CIniFileBase::GetKeyValueData(LPCTSTR lpSectionName, KeyValueData & List)
 
     std::string strSection;
 
-    if (lpSectionName == NULL || _tcslen(lpSectionName) == 0)
+    if (lpSectionName == NULL || strlen(lpSectionName) == 0)
     {
         strSection = "default";
     }
@@ -848,7 +847,7 @@ void CIniFileBase::GetVectorOfSections(SectionList & sections)
     }
 
     {
-        stdstr_f DoesNotExist(_T("DoesNotExist%d%d%d"), rand(), rand(), rand());
+        stdstr_f DoesNotExist("DoesNotExist%d%d%d", rand(), rand(), rand());
         MoveToSectionNameData(DoesNotExist.c_str(), false);
     }
 

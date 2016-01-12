@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Platform.h"
 #include "FileClass.h"
 #include "CriticalSection.h"
 #include "StdString.h"
