@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include <windows.h>
+#include "Platform.h"
 #include <stdio.h>
 #include <stdarg.h>
 
@@ -23,11 +23,6 @@ bool CLog::Open( const char * FileName, LOG_OPEN_MODE mode /* = Log_New  */)
 	}
 
 	CPath File(FileName);
-	if (File.IsRelative())
-	{
-		File = CPath(CPath::MODULE_DIRECTORY,FileName);
-	}
-
 	if (m_hLogFile.IsOpen())
 	{
 		m_hLogFile.Close();
@@ -42,16 +37,6 @@ bool CLog::Open( const char * FileName, LOG_OPEN_MODE mode /* = Log_New  */)
 	}
 	m_FileName = (const char *)File;
 	m_hLogFile.Seek(0,mode == Log_Append ? CFile::end : CFile::begin);
-
-#ifdef _UNICODE
-	if (m_hLogFile.GetLength() == 0)
-	{
-		WORD wUNICODE = 0xFEFF;
-
-		m_hLogFile.Write(&wUNICODE, 2);
-	}
-#endif	 
-
 	return true;
 }
 
@@ -75,52 +60,27 @@ void CLog::LogArgs(const char * Message, va_list & args )
 {
 	if (!m_hLogFile.IsOpen()) { return; }
 
-#ifdef _UNICODE
-	wchar_t* buffer = NULL;
 	try
 	{
-
-		int nlen = _vscwprintf( Message, args ) // _vscprintf doesn't count
-			+ 1; // terminating '\0'
-		buffer = new wchar_t[nlen];
-		vswprintf( buffer, Message , args );
-		Log(buffer);
-		delete [] buffer;
-		buffer = NULL;
-	}
-	catch(...)
-	{
-		Log(L"Invalid message format");
-	}
-
-	if (buffer)
-		delete [] buffer;
-#else
-	char* buffer = NULL;
-	try
-	{
-
-		char Msg[800];
-		_vsnprintf( Msg, sizeof(Msg) - 5, Message, args );
-		Msg[sizeof(Msg) - 5] = 0;
-		Log(Msg);
+		size_t nlen = _vscprintf(Message, args) + 1;
+		char * Msg = (char *)alloca(nlen * sizeof(char));
+		Msg[nlen - 1] = 0;
+		if (Msg != NULL)
+		{
+			vsprintf(Msg, Message, args);
+			Log(Msg);
+		}
 	}
 	catch(...)
 	{
 		Log("Invalid message format");
 	}
-
-	if (buffer)
-	{
-		delete [] buffer;
-	}
-#endif
 }
 
 void CLog::Log( const char * Message )
 {
 	if (!m_hLogFile.IsOpen()) { return; }
-	m_hLogFile.Write(Message,(uint32_t)strlen(Message)*sizeof(TCHAR));
+	m_hLogFile.Write(Message,(uint32_t)strlen(Message)*sizeof(char));
 	if (m_FlushOnWrite)
 	{
 		m_hLogFile.Flush();
@@ -148,7 +108,7 @@ void CLog::Log( const char * Message )
 			uint32_t NextEnter = 0, dwRead = 0;
 			do 
 			{
-				BYTE Data[300];
+				uint8_t Data[300];
 				uint32_t dwRead;
 
 				dwRead = m_hLogFile.Read(Data,sizeof(Data));
@@ -189,7 +149,7 @@ void CLog::Log( const char * Message )
 
 				if (!m_hLogFile.Write(Data,dwRead))
 				{
-					//BreakPoint(__FILEW__,__LINE__);
+					//BreakPoint(__FILE__,__LINE__);
 					break;
 				}
 
