@@ -11,6 +11,10 @@ enum TraceSeverity
     TraceVerbose = 0x00000006,
 };
 
+#ifndef _MSC_VER
+#define __interface struct
+#endif
+
 __interface CTraceModule
 {
     virtual void Write(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char * Message) = 0;

@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include <windows.h>
 
 typedef std::map<uint32_t, stdstr> ModuleNameMap;
 
@@ -192,9 +191,23 @@ void CTraceFileLog::Write(uint32_t module, uint8_t severity, const char * /*file
 {
     if (!m_hLogFile.IsOpen()) { return; }
 
-    SYSTEMTIME sysTime;
+#ifdef _WIN32
+	SYSTEMTIME sysTime;
     ::GetLocalTime(&sysTime);
     stdstr_f timestamp("%04d/%02d/%02d %02d:%02d:%02d.%03d %05d,", sysTime.wYear, sysTime.wMonth, sysTime.wDay, sysTime.wHour, sysTime.wMinute, sysTime.wSecond, sysTime.wMilliseconds, GetCurrentThreadId());
+#else
+    time_t ltime;
+    ltime=time(&ltime);
+
+	struct tm result={0};
+    localtime_r(&ltime, &result);
+
+	struct timeval curTime;
+    gettimeofday(&curTime, NULL);
+    int milliseconds = curTime.tv_usec / 1000;
+
+    stdstr_f timestamp("%04d/%02d/%02d %02d:%02d:%02d.%03d %05d,", result.tm_year+1900, result.tm_mon+1, result.tm_mday, result.tm_hour, result.tm_min, result.tm_sec, milliseconds, GetCurrentThreadId());
+#endif
 
     m_hLogFile.Log(timestamp.c_str());
     m_hLogFile.Log(TraceSeverity(severity));
