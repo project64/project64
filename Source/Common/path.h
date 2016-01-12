@@ -60,7 +60,7 @@ public:
     bool   operator == (const CPath& rPath) const;
     bool   operator != (const CPath& rPath) const;
     operator const char *() const;
-    operator std::string &() { return m_strPath; }
+    operator const std::string &() { return m_strPath; }
 
     //Get path components
     void   GetDriveDirectory(std::string & rDriveDirectory) const;
@@ -73,14 +73,10 @@ public:
     std::string GetNameExtension(void) const;
     void   GetExtension(std::string& rExtension) const;
     std::string GetExtension(void) const;
-    void   GetLastDirectory(std::string& rDrive) const;
+    void   GetLastDirectory(std::string& rDirectory) const;
     std::string GetLastDirectory(void) const;
     void GetFullyQualified(std::string& rFullyQualified) const;
-    void GetComponents(std::string* pDrive = NULL,
-        std::string* pDirectory = NULL,
-        std::string* pName = NULL,
-        std::string* pExtension = NULL) const;
-
+	void GetComponents(std::string* pDrive = NULL, std::string* pDirectory = NULL, std::string* pName = NULL, std::string* pExtension = NULL) const;
     //Get other state
     bool IsEmpty() const { return m_strPath.empty(); }
     bool IsRelative() const;
@@ -96,11 +92,7 @@ public:
     void SetExtension(int iExtension);
     void AppendDirectory(const char * lpszSubDirectory);
     void UpDirectory(std::string* pLastDirectory = NULL);
-    void SetComponents(const char * lpszDrive,
-        const char * lpszDirectory,
-        const char * lpszName,
-        const char * lpszExtension);
-
+	void SetComponents(const char * lpszDrive, const char * lpszDirectory, const char * lpszName, const char * lpszExtension);
     //Set whole path
     void Empty()		{ m_strPath.erase(); }
     void CurrentDirectory();
