@@ -11,8 +11,10 @@ enum TraceSeverity
     TraceVerbose = 0x00000006,
 };
 
-#ifndef _WIN32
-#define __interface struct
+#if defined(_WIN32)
+#include <objbase.h>
+#else
+#define __interface     struct
 #endif
 
 __interface CTraceModule
