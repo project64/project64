@@ -16,6 +16,8 @@
 #include <Project64-core/N64System/Recompiler/x86CodeLog.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
 #include <Project64-core/ExceptionHandler.h>
+
+#include <stdio.h>
 #include <Common/MemoryManagement.h>
 
 uint32_t RegModValue;
