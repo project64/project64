@@ -289,7 +289,10 @@ void CPifRam::SI_DMA_READ()
     {
         if (bShowPifRamErrors())
         {
-            g_Notify->DisplayError(__FUNCTION__ "\nSI_DRAM_ADDR_REG not in RDRam space");
+            g_Notify->DisplayError(
+                __FUNCTION__ \
+                "\nSI_DRAM_ADDR_REG not in RDRam space"
+            );
         }
         return;
     }
