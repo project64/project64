@@ -291,6 +291,9 @@
     <ClCompile Include="Multilanguage\LanguageClass.cpp">
       <Filter>Source Files\Multilanguage</Filter>
     </ClCompile>
+    <ClCompile Include="MemoryExceptionFilter.cpp">
+      <Filter>Source Files\N64 System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

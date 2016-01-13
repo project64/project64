@@ -318,6 +318,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\MemoryExceptionFilter.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\N64System\N64Class.cpp"
 					>
 				</File>
