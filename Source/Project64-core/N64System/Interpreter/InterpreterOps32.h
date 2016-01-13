@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 
-#include "InterpreterOps.h"
+#include <Project64-core/N64System/Interpreter/InterpreterOps.h>
 
 class R4300iOp32 :
     public R4300iOp
