@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #ifdef _WIN32
 #include <Windows.h>
+#else
+#include <sys/time.h>
 #endif
 
 typedef std::map<uint32_t, stdstr> ModuleNameMap;
