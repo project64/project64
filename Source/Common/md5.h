@@ -41,6 +41,8 @@ documentation and/or software.
 
 #pragma once
 
+#include <string.h>
+#include <stdio.h>
 #include <string>
 #include <functional>
 #include "path.h"
