@@ -9,17 +9,17 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include <Common/MemoryManagement.h>
 #include <Project64-core/N64System/Mips/Dma.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64RomClass.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <Project64-core/N64System/N64Class.h>
-#include <Windows.h>
 
 CDMA::CDMA(CFlashram & FlashRam, CSram & Sram) :
-m_FlashRam(FlashRam),
-m_Sram(Sram)
+    m_FlashRam(FlashRam),
+    m_Sram(Sram)
 {
 }
 
@@ -74,9 +74,7 @@ void CDMA::PI_DMA_READ()
         uint8_t * ROM = g_Rom->GetRomAddress();
         uint8_t * RDRAM = g_MMU->Rdram();
 
-        DWORD OldProtect;
-        VirtualProtect(ROM, g_Rom->GetRomSize(), PAGE_READWRITE, &OldProtect);
-
+		ProtectMemory(ROM, g_Rom->GetRomSize(), MEM_READWRITE);
         g_Reg->PI_CART_ADDR_REG -= 0x10000000;
         if (g_Reg->PI_CART_ADDR_REG + PI_RD_LEN_REG < g_Rom->GetRomSize())
         {
@@ -106,7 +104,7 @@ void CDMA::PI_DMA_READ()
             g_Recompiler->ClearRecompCode_Phys(g_Reg->PI_DRAM_ADDR_REG, g_Reg->PI_WR_LEN_REG, CRecompiler::Remove_DMA);
         }
 
-        VirtualProtect(ROM, g_Rom->GetRomSize(), PAGE_READONLY, &OldProtect);
+		ProtectMemory(ROM, g_Rom->GetRomSize(), MEM_READONLY);
 
         g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         g_Reg->MI_INTR_REG |= MI_INTR_PI;
@@ -299,7 +297,7 @@ void CDMA::SP_DMA_READ()
     {
         if (bHaveDebugger())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nSP_DRAM_ADDR_REG not in RDRam space : % 08X", g_Reg->SP_DRAM_ADDR_REG).c_str());
+            g_Notify->DisplayError(stdstr_f("%s\nSP_DRAM_ADDR_REG not in RDRam space : % 08X", __FUNCTION__, g_Reg->SP_DRAM_ADDR_REG).c_str());
         }
         g_Reg->SP_DMA_BUSY_REG = 0;
         g_Reg->SP_STATUS_REG &= ~SP_STATUS_DMA_BUSY;
@@ -310,7 +308,7 @@ void CDMA::SP_DMA_READ()
     {
         if (bHaveDebugger())
         {
-            g_Notify->DisplayError(__FUNCTION__ "\nCould not fit copy in memory segment");
+            g_Notify->DisplayError(stdstr_f("%s\nCould not fit copy in memory segment",__FUNCTION__).c_str());
         }
         return;
     }
@@ -341,7 +339,7 @@ void CDMA::SP_DMA_WRITE()
     {
         if (bHaveDebugger())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nSP_DRAM_ADDR_REG not in RDRam space : % 08X", g_Reg->SP_DRAM_ADDR_REG).c_str());
+            g_Notify->DisplayError(stdstr_f("%s\nSP_DRAM_ADDR_REG not in RDRam space : %08X", __FUNCTION__, g_Reg->SP_DRAM_ADDR_REG).c_str());
         }
         return;
     }
