@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include <string.h>
 #include <Project64-core/N64System/ProfilingClass.h>
 #include <Common/LogClass.h>
 
