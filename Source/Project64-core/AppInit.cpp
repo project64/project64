@@ -1,7 +1,9 @@
 #include "stdafx.h"
+#include <string.h>
 #include <Common/path.h>
 #include <Common/Trace.h>
 #include <Common/Util.h>
+
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Plugins/PluginClass.h>
