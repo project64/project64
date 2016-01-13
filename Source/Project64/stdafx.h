@@ -17,15 +17,13 @@
 
 #include <common/MemTest.h>
 #include <common/CriticalSection.h>
-#include <windows.h>
-#include <exception>
 #include <shellapi.h>
-#include <Project64-core\Multilanguage.h>
+#include <Project64-core/Multilanguage.h>
 #include "UserInterface.h"
 #include "N64System.h"
-#include <Project64-core\Plugin.h>
+#include <Project64-core/Plugin.h>
 #include "Support.h"
-#include <Project64-core\Version.h>
+#include <Project64-core/Version.h>
 #include <windows.h>
 #include <mmsystem.h>
 #include <Aclapi.h>
