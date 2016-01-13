@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-#include "ExitInfo.h"
+#include <Project64-core/N64System/Recompiler/ExitInfo.h>
 
 struct CJumpInfo
 {

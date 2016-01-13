@@ -1,4 +1,3 @@
-SysEvent_ChangingFullScreen
 /****************************************************************************
 *                                                                           *
 * Project64 - A Nintendo 64 emulator.                                      *
@@ -10,7 +9,7 @@ SysEvent_ChangingFullScreen
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "SystemEvents.h"
+#include <Project64-core/N64System/Mips/SystemEvents.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64Class.h>
 

@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-#include "MemoryVirtualMem.h"
+#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include "TranslateVaddr.h"
 #include <Project64-core/N64System/Recompiler/RecompilerOps.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>

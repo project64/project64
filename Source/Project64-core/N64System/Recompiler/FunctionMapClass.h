@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-#include "FunctionInfo.h"
+#include <Project64-core/N64System/Recompiler/FunctionInfo.h>
 
 class CFunctionMap
 {

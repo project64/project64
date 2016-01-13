@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "Dma.h"
+#include <Project64-core/N64System/Mips/Dma.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64RomClass.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>

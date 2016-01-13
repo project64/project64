@@ -9,9 +9,10 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "RecompilerMemory.h"
+#include <Project64-core/N64System/Recompiler/RecompilerMemory.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Recompiler/RecompilerClass.h>
+#include <Common/MemoryManagement.h>
 #include <Windows.h>
 
 CRecompMemory::CRecompMemory() :

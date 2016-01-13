@@ -10,6 +10,7 @@
 ****************************************************************************/
 #pragma once
 
+#include <Common/Platform.h>
 #include <Project64-core/N64System/N64Types.h>
 #include <Project64-core/Settings/DebugSettings.h>
 #include <Project64-core/Settings/GameSettings.h>

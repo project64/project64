@@ -14,12 +14,11 @@
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
+#include <Project64-core/N64System/Recompiler/RecompilerClass.h>
+#include <Project64-core/N64System/Recompiler/CodeSection.h>
+#include <Project64-core/N64System/Recompiler/RecompilerOps.h>
 #include <Project64-core/N64System/N64Class.h>
-
 #include <stdio.h>
-#include "RecompilerClass.h"
-#include "RecompilerOps.h"
-#include "CodeSection.h"
 #include "x86CodeLog.h"
 
 CCodeSection * CRecompilerOps::m_Section = NULL;

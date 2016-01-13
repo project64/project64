@@ -10,9 +10,9 @@
 ****************************************************************************/
 #pragma once
 #include <Common/md5.h>
-#include "RecompilerOps.h"
-#include "ExitInfo.h"
-#include "CodeSection.h"
+#include <Project64-core/N64System/Recompiler/RecompilerOps.h>
+#include <Project64-core/N64System/Recompiler/ExitInfo.h>
+#include <Project64-core/N64System/Recompiler/CodeSection.h>
 
 class CCodeBlock :
     private CRecompilerOps

@@ -11,8 +11,8 @@
 #pragma once
 #include <Project64-core/Settings/RecompilerSettings.h>
 #include <Project64-core/N64System/Recompiler/FunctionMapClass.h>
+#include <Project64-core/N64System/Recompiler/RecompilerMemory.h>
 #include <Project64-core/N64System/ProfilingClass.h>
-#include "RecompilerMemory.h"
 
 class CRecompiler :
     protected CDebugSettings,

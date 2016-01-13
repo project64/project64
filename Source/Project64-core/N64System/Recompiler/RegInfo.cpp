@@ -11,11 +11,11 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64Class.h>
+#include <Project64-core/N64System/Recompiler/RecompilerClass.h>
+#include <Project64-core/N64System/Recompiler/RegInfo.h>
 
 #include <stdio.h>
 #include <string.h>
-#include "RegInfo.h"
-#include "RecompilerClass.h"
 #include "x86CodeLog.h"
 
 uint32_t CRegInfo::m_fpuControl = 0;

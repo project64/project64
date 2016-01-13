@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "CodeSection.h"
+#include <Project64-core/N64System/Recompiler/CodeSection.h>
 #include <Project64-core/N64System/Mips/OpCode.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
@@ -19,6 +19,7 @@
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/Recompiler/LoopAnalysis.h>
 #include <Project64-core/N64System/Recompiler/SectionInfo.h>
+#include <Project64-core/ExceptionHandler.h>
 #include <Windows.h>
 
 void InPermLoop();

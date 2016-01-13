@@ -10,8 +10,7 @@
 ****************************************************************************/
 #include "stdafx.h"
 #include <string.h>
-#include "RegisterClass.h"
-
+#include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Logging.h>

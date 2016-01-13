@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-#include "CodeBlock.h"
+#include <Project64-core/N64System/Recompiler/CodeBlock.h>
 
 class CCompiledFunc
 {
