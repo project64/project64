@@ -723,7 +723,9 @@ bool CLanguage::IsCurrentLang(LanguageFile & File)
     return false;
 }
 
+#ifdef _WIN32
 const std::wstring wGS(LanguageStringID StringID)
 {
     return stdstr(g_Lang->GetString(StringID)).ToUTF16();
 }
+#endif
