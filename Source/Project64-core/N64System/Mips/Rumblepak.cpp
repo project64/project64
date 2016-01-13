@@ -9,7 +9,9 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include <string.h>
 #include "Rumblepak.h"
+
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Plugins/PluginClass.h>
 #include <Project64-core/Plugins/ControllerPlugin.h>
