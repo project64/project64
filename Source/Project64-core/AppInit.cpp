@@ -6,10 +6,14 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Plugins/PluginClass.h>
 #include <Project64-core/N64System/N64RomClass.h>
+#include "Settings/SettingType/SettingsType-Application.h"
 
-void FixDirectories(void);
+static void FixDirectories(void);
 
+#ifdef _WIN32
 static void IncreaseThreadPriority(void);
+#endif
+
 static CTraceFileLog * g_LogFile = NULL;
 
 void LogFlushChanged(CTraceFileLog * LogFile)
@@ -144,30 +148,80 @@ void TraceDone(void)
     if (g_LogFile) { delete g_LogFile; g_LogFile = NULL; }
 }
 
-void AppInit(CNotification * Notify)
+const char * AppName ( void )
+{
+	static stdstr_f ApplicationName("Project64 %s", VER_FILE_VERSION_STR);
+	return ApplicationName.c_str();
+}
+
+static bool ParseCommand(int32_t argc, char **argv)
+{
+    if (argc == 1)
+    {
+        return true;
+    }
+    for (int32_t i = 1; i < argc; i++)
+    {
+        int32_t ArgsLeft = argc - i - 1;
+        if (strcmp(argv[i], "--basedir") == 0 && ArgsLeft >= 1)
+        {
+            g_Settings->SaveString(Cmd_BaseDirectory, argv[i + 1]);
+			CSettingTypeApplication::Initialize(AppName());
+			i++;
+        }
+        else if (strcmp(argv[i], "--help") == 0)
+        {
+            g_Settings->SaveBool(Cmd_ShowHelp, true);
+            return false;
+        }
+        else if (ArgsLeft == 0 && argv[i][0] != '-')
+        {
+            g_Settings->SaveString(Cmd_RomFile, &(argv[i][0]));
+            return true;
+        }
+        else
+        {
+            //WriteTraceF(TraceError, __FUNCTION__ ": unrecognized command-line parameter '%s'", argv[i]);
+        }
+    }
+    return false;
+}
+
+bool AppInit(CNotification * Notify, int argc, char **argv)
 {
     try
     {
         g_Notify = Notify;
         InitializeLog();
-
-        stdstr_f AppName("Project64 %s", VER_FILE_VERSION_STR);
-        IncreaseThreadPriority();
-
+		if (Notify == NULL)
+		{
+			WriteTrace(TraceAppInit, TraceError, "No Notification class passed");
+			return false;
+		}
         g_Settings = new CSettings;
-        g_Settings->Initialize(AppName.c_str());
+        g_Settings->Initialize(AppName());
 
+        if (!ParseCommand(argc, argv))
+        {
+            return false;
+        }
+
+#ifdef _WIN32
         if (g_Settings->LoadBool(Setting_CheckEmuRunning) &&
             pjutil::TerminatedExistingExe())
         {
             delete g_Settings;
             g_Settings = new CSettings;
-            g_Settings->Initialize(AppName.c_str());
+            g_Settings->Initialize(AppName());
         }
+#endif
 
         SetupTrace();
-        CMipsMemoryVM::ReserveMemory();
         FixDirectories();
+#ifdef _WIN32
+        CMipsMemoryVM::ReserveMemory();
+        IncreaseThreadPriority();
+#endif
 
         //Create the plugin container
         WriteTrace(TraceAppInit, TraceInfo, "Create Plugins");
@@ -176,10 +230,14 @@ void AppInit(CNotification * Notify)
         g_Lang = new CLanguage();
         g_Lang->LoadCurrentStrings();
         g_Notify->AppInitDone();
+		WriteTrace(TraceAppInit, TraceDebug, "Initialized Successfully");
+		return true;
     }
     catch (...)
     {
         g_Notify->DisplayError(stdstr_f("Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).c_str());
+		WriteTrace(TraceAppInit, TraceError, "Exception caught, Init was not successfull");
+		return false;
     }
 }
 
@@ -216,8 +274,10 @@ void FixDirectories(void)
     if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
 }
 
+#ifdef _WIN32
 #include <windows.h>
 void IncreaseThreadPriority(void)
 {
     SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);
 }
+#endif

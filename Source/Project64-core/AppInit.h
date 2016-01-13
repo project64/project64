@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Project64/UserInterface/NotificationClass.h>
+#include <Project64-core/Notification.h>
 
-void AppInit(CNotification * Notify);
+bool AppInit(CNotification * Notify, int argc, char **argv);
 void AppCleanup(void);

@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 
-#include "SettingType/SettingsType-Base.h"
+#include <Project64-core/Settings/SettingType/SettingsType-Base.h>
 
 enum SettingDataType
 {
@@ -60,8 +60,8 @@ public:
     uint32_t LoadDwordIndex ( SettingID Type, int32_t index );
     bool   LoadDwordIndex   ( SettingID Type, int32_t index, uint32_t & Value );
     stdstr LoadStringVal    ( SettingID Type );
-    bool   LoadStringVal    (SettingID Type, stdstr & Value);
-    bool   LoadStringVal    (SettingID Type, char * Buffer, int32_t BufferSize );
+    bool   LoadStringVal    ( SettingID Type, stdstr & Value );
+    bool   LoadStringVal    ( SettingID Type, char * Buffer, int32_t BufferSize );
     stdstr LoadStringIndex  ( SettingID Type, int32_t index );
     bool   LoadStringIndex  ( SettingID Type, int32_t index, stdstr & Value );
     bool   LoadStringIndex  ( SettingID Type, int32_t index, char * Buffer, int32_t BufferSize );

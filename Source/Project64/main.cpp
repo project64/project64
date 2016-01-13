@@ -7,7 +7,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     try
     {
         CoInitialize(NULL);
-        AppInit(&Notify());
+        AppInit(&Notify(), __argc, __argv);
         if (!g_Lang->IsLanguageLoaded())
         {
             CLanguageSelector().Select();
@@ -20,11 +20,10 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         g_Plugins->SetRenderWindows(&MainWindow, &HiddenWindow);
         Notify().SetMainWindow(&MainWindow);
 
-        if (__argc > 1)
+        if (g_Settings->LoadStringVal(Cmd_RomFile).length() > 0)
         {
-            WriteTrace(TraceUserInterface, TraceDebug, "Cmd line found \"%s\"", __argv[1]);
             MainWindow.Show(true);	//Show the main window
-            CN64System::RunFileImage(__argv[1]);
+            CN64System::RunFileImage(g_Settings->LoadStringVal(Cmd_RomFile).c_str());
         }
         else
         {

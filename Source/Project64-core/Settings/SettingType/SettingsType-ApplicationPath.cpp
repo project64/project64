@@ -35,7 +35,7 @@ bool CSettingTypeApplicationPath::Load ( int Index, stdstr & Value ) const
 			FullFilePath.SetNameExtension(RelativePath.GetNameExtension().c_str());
 			FullFilePath.AppendDirectory(RelativePath.GetDirectory().c_str());
 
-			Value = (std::string &)FullFilePath;
+            Value = (const std::string &)FullFilePath;
 		}
 	}
 	return bRes;

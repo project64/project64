@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Multilanguage.h"
+#include <Project64-core/Multilanguage.h>
 
 #ifndef _MSC_VER
 #define __interface struct

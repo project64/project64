@@ -573,7 +573,7 @@ LanguageList & CLanguage::GetLangList(void)
         {
             LanguageFile File; //We temporally store the values in here to added to the list
 
-            File.Filename = (std::string &)LanguageFiles;
+            File.Filename = (const std::string &)LanguageFiles;
             File.LanguageName = GetLangString(LanguageFiles, LANGUAGE_NAME);
 
             if (File.LanguageName.length() == 0)

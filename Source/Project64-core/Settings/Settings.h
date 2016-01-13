@@ -24,6 +24,11 @@ enum SettingID
     //information - temp keys
     Info_ShortCutsChanged,
 
+    //Command Settings
+    Cmd_BaseDirectory,
+    Cmd_RomFile,
+    Cmd_ShowHelp,
+
     //Support Files
     SupportFile_Settings,
     SupportFile_SettingsDefault,
