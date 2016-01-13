@@ -62,7 +62,7 @@ bool LoopAnalysis::SetupRegisterForLoop()
     {
         return false;
     }
-    CPU_Message(__FUNCTION__ ": Section ID: %d Test: %X", m_EnterSection->m_SectionID, m_Test);
+    CPU_Message("%s: Section ID: %d Test: %X", __FUNCTION__, m_EnterSection->m_SectionID, m_Test);
     if (!CheckLoopRegisterUsage(m_EnterSection))
     {
         return false;
@@ -83,7 +83,7 @@ bool LoopAnalysis::SetupEnterSection(CCodeSection * Section, bool & bChanged, bo
     bSkipedSection = false;
     if (Section->m_ParentSection.empty()) { g_Notify->BreakPoint(__FILE__, __LINE__); return true; }
 
-    CPU_Message(__FUNCTION__ ": Block EnterPC: %X Section ID %d Test: %X Section Test: %X CompiledLocation: %X", m_BlockInfo->VAddrEnter(), Section->m_SectionID, m_Test, Section->m_Test, Section->m_CompiledLocation);
+    CPU_Message("%s: Block EnterPC: %X Section ID %d Test: %X Section Test: %X CompiledLocation: %X", __FUNCTION__, m_BlockInfo->VAddrEnter(), Section->m_SectionID, m_Test, Section->m_Test, Section->m_CompiledLocation);
 
     bool bFirstParent = true;
     CRegInfo RegEnter;
@@ -91,10 +91,10 @@ bool LoopAnalysis::SetupEnterSection(CCodeSection * Section, bool & bChanged, bo
     {
         CCodeSection * Parent = *iter;
 
-        CPU_Message(__FUNCTION__ ": Parent Section ID %d Test: %X Section Test: %X CompiledLocation: %X", Parent->m_SectionID, m_Test, Parent->m_Test, Parent->m_CompiledLocation);
+        CPU_Message("%s: Parent Section ID %d Test: %X Section Test: %X CompiledLocation: %X", __FUNCTION__, Parent->m_SectionID, m_Test, Parent->m_Test, Parent->m_CompiledLocation);
         if (Parent->m_Test != m_Test && (m_EnterSection != Section || Parent->m_CompiledLocation == NULL) && Parent->m_InLoop)
         {
-            CPU_Message(__FUNCTION__ ": Ignore Parent Section ID %d Test: %X  Section Test: %X CompiledLocation: %X", Parent->m_SectionID, m_Test, Parent->m_Test, Parent->m_CompiledLocation);
+            CPU_Message("%s: Ignore Parent Section ID %d Test: %X  Section Test: %X CompiledLocation: %X", __FUNCTION__, Parent->m_SectionID, m_Test, Parent->m_Test, Parent->m_CompiledLocation);
             bSkipedSection = true;
             continue;
         }
@@ -153,7 +153,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
     if (Section == NULL) { return true; }
     if (!Section->m_InLoop) { return true; }
 
-    CPU_Message(__FUNCTION__ ": Section %d Block PC: 0x%X", Section->m_SectionID, m_BlockInfo->VAddrEnter());
+    CPU_Message("%s: Section %d Block PC: 0x%X", __FUNCTION__, Section->m_SectionID, m_BlockInfo->VAddrEnter());
 
     bool bChanged = false, bSkipedSection = false;
     if (Section == m_EnterSection && Section->m_Test == m_Test)
@@ -169,7 +169,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
         return true;
     }
 
-    CPU_Message(__FUNCTION__ ": Set Section %d test to %X from %X", Section->m_SectionID, m_Test, Section->m_Test);
+    CPU_Message("%s: Set Section %d test to %X from %X", __FUNCTION__, Section->m_SectionID, m_Test, Section->m_Test);
     Section->m_Test = m_Test;
     m_PC = Section->m_EnterPC;
 
@@ -817,13 +817,13 @@ bool LoopAnalysis::SyncRegState(CRegInfo & RegSet, const CRegInfo& SyncReg)
     {
         if (RegSet.GetMipsRegState(x) != SyncReg.GetMipsRegState(x))
         {
-            CPU_Message(__FUNCTION__ ": Clear state %s RegEnter State: %X Jump Reg State: %X", CRegName::GPR[x], RegSet.GetMipsRegState(x), SyncReg.GetMipsRegState(x));
+            CPU_Message("%s: Clear state %s RegEnter State: %X Jump Reg State: %X", __FUNCTION__, CRegName::GPR[x], RegSet.GetMipsRegState(x), SyncReg.GetMipsRegState(x));
             RegSet.SetMipsRegState(x, CRegInfo::STATE_MODIFIED);
             bChanged = true;
         }
         else if (RegSet.IsConst(x) && RegSet.Is32Bit(x) && RegSet.GetMipsRegLo(x) != SyncReg.GetMipsRegLo(x))
         {
-            CPU_Message(__FUNCTION__ ": Clear state %s RegEnter State: %X Jump Reg State: %X", CRegName::GPR[x], RegSet.GetMipsRegState(x), SyncReg.GetMipsRegState(x));
+            CPU_Message("%s: Clear state %s RegEnter State: %X Jump Reg State: %X", __FUNCTION__, CRegName::GPR[x], RegSet.GetMipsRegState(x), SyncReg.GetMipsRegState(x));
             RegSet.SetMipsRegState(x, CRegInfo::STATE_MODIFIED);
             bChanged = true;
         }
