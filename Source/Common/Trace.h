@@ -11,7 +11,7 @@ enum TraceSeverity
     TraceVerbose = 0x00000006,
 };
 
-#ifndef _MSC_VER
+#ifndef _WIN32
 #define __interface struct
 #endif
 
