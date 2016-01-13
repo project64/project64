@@ -18,14 +18,14 @@
 
 char CommandName[100];
 
-char * LabelName(uint32_t Address)
+static const char * LabelName(uint32_t Address)
 {
     static char strLabelName[100];
     sprintf(strLabelName, "0x%08X", Address);
     return strLabelName;
 }
 
-char * R4300iSpecialName(uint32_t OpCode, uint32_t /*PC*/)
+static const char * R4300iSpecialName(uint32_t OpCode, uint32_t /*PC*/)
 {
     OPCODE command;
     command.Hex = OpCode;
@@ -228,7 +228,7 @@ char * R4300iSpecialName(uint32_t OpCode, uint32_t /*PC*/)
     return CommandName;
 }
 
-char * R4300iRegImmName(uint32_t OpCode, uint32_t PC)
+static const char * R4300iRegImmName(uint32_t OpCode, uint32_t PC)
 {
     OPCODE command;
     command.Hex = OpCode;
@@ -236,23 +236,23 @@ char * R4300iRegImmName(uint32_t OpCode, uint32_t PC)
     switch (command.rt)
     {
     case R4300i_REGIMM_BLTZ:
-        sprintf(CommandName, "bltz\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((short)command.offset << 2) + 4));
+        sprintf(CommandName, "bltz\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((int16_t)command.offset << 2) + 4));
         break;
     case R4300i_REGIMM_BGEZ:
         if (command.rs == 0)
         {
-            sprintf(CommandName, "b\t%s", LabelName(PC + ((short)command.offset << 2) + 4));
+            sprintf(CommandName, "b\t%s", LabelName(PC + ((int16_t)command.offset << 2) + 4));
         }
         else
         {
-            sprintf(CommandName, "bgez\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((short)command.offset << 2) + 4));
+            sprintf(CommandName, "bgez\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((int16_t)command.offset << 2) + 4));
         }
         break;
     case R4300i_REGIMM_BLTZL:
-        sprintf(CommandName, "bltzl\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((short)command.offset << 2) + 4));
+        sprintf(CommandName, "bltzl\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((int16_t)command.offset << 2) + 4));
         break;
     case R4300i_REGIMM_BGEZL:
-        sprintf(CommandName, "bgezl\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((short)command.offset << 2) + 4));
+        sprintf(CommandName, "bgezl\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((int16_t)command.offset << 2) + 4));
         break;
     case R4300i_REGIMM_TGEI:
         sprintf(CommandName, "tgei\t%s, 0x%X", CRegName::GPR[command.rs], command.immediate);
@@ -273,23 +273,23 @@ char * R4300iRegImmName(uint32_t OpCode, uint32_t PC)
         sprintf(CommandName, "tnei\t%s, 0x%X", CRegName::GPR[command.rs], command.immediate);
         break;
     case R4300i_REGIMM_BLTZAL:
-        sprintf(CommandName, "bltzal\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((short)command.offset << 2) + 4));
+        sprintf(CommandName, "bltzal\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((int16_t)command.offset << 2) + 4));
         break;
     case R4300i_REGIMM_BGEZAL:
         if (command.rs == 0)
         {
-            sprintf(CommandName, "bal\t%s", LabelName(PC + ((short)command.offset << 2) + 4));
+            sprintf(CommandName, "bal\t%s", LabelName(PC + ((int16_t)command.offset << 2) + 4));
         }
         else
         {
-            sprintf(CommandName, "bgezal\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((short)command.offset << 2) + 4));
+            sprintf(CommandName, "bgezal\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((int16_t)command.offset << 2) + 4));
         }
         break;
     case R4300i_REGIMM_BLTZALL:
-        sprintf(CommandName, "bltzall\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((short)command.offset << 2) + 4));
+        sprintf(CommandName, "bltzall\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((int16_t)command.offset << 2) + 4));
         break;
     case R4300i_REGIMM_BGEZALL:
-        sprintf(CommandName, "bgezall\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((short)command.offset << 2) + 4));
+        sprintf(CommandName, "bgezall\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((int16_t)command.offset << 2) + 4));
         break;
     default:
         sprintf(CommandName, "Unknown\t%02X %02X %02X %02X",
@@ -298,7 +298,7 @@ char * R4300iRegImmName(uint32_t OpCode, uint32_t PC)
     return CommandName;
 }
 
-char * R4300iCop1Name(uint32_t OpCode, uint32_t PC)
+static const char * R4300iCop1Name(uint32_t OpCode, uint32_t PC)
 {
     OPCODE command;
     command.Hex = OpCode;
@@ -327,16 +327,16 @@ char * R4300iCop1Name(uint32_t OpCode, uint32_t PC)
         switch (command.ft)
         {
         case R4300i_COP1_BC_BCF:
-            sprintf(CommandName, "BC1F\t%s", LabelName(PC + ((short)command.offset << 2) + 4));
+            sprintf(CommandName, "BC1F\t%s", LabelName(PC + ((int16_t)command.offset << 2) + 4));
             break;
         case R4300i_COP1_BC_BCT:
-            sprintf(CommandName, "BC1T\t%s", LabelName(PC + ((short)command.offset << 2) + 4));
+            sprintf(CommandName, "BC1T\t%s", LabelName(PC + ((int16_t)command.offset << 2) + 4));
             break;
         case R4300i_COP1_BC_BCFL:
-            sprintf(CommandName, "BC1FL\t%s", LabelName(PC + ((short)command.offset << 2) + 4));
+            sprintf(CommandName, "BC1FL\t%s", LabelName(PC + ((int16_t)command.offset << 2) + 4));
             break;
         case R4300i_COP1_BC_BCTL:
-            sprintf(CommandName, "BC1TL\t%s", LabelName(PC + ((short)command.offset << 2) + 4));
+            sprintf(CommandName, "BC1TL\t%s", LabelName(PC + ((int16_t)command.offset << 2) + 4));
             break;
         default:
             sprintf(CommandName, "Unknown Cop1\t%02X %02X %02X %02X",
@@ -531,36 +531,36 @@ const char * R4300iOpcodeName(uint32_t OpCode, uint32_t PC)
     case R4300i_BEQ:
         if (command.rs == 0 && command.rt == 0)
         {
-            sprintf(CommandName, "b\t%s", LabelName(PC + ((short)command.offset << 2) + 4));
+            sprintf(CommandName, "b\t%s", LabelName(PC + ((int16_t)command.offset << 2) + 4));
         }
         else if (command.rs == 0 || command.rt == 0)
         {
             sprintf(CommandName, "beqz\t%s, %s", CRegName::GPR[command.rs == 0 ? command.rt : command.rs],
-                LabelName(PC + ((short)command.offset << 2) + 4));
+                LabelName(PC + ((int16_t)command.offset << 2) + 4));
         }
         else
         {
             sprintf(CommandName, "beq\t%s, %s, %s", CRegName::GPR[command.rs], CRegName::GPR[command.rt],
-                LabelName(PC + ((short)command.offset << 2) + 4));
+                LabelName(PC + ((int16_t)command.offset << 2) + 4));
         }
         break;
     case R4300i_BNE:
         if ((command.rs == 0) ^ (command.rt == 0))
         {
             sprintf(CommandName, "bnez\t%s, %s", CRegName::GPR[command.rs == 0 ? command.rt : command.rs],
-                LabelName(PC + ((short)command.offset << 2) + 4));
+                LabelName(PC + ((int16_t)command.offset << 2) + 4));
         }
         else
         {
             sprintf(CommandName, "bne\t%s, %s, %s", CRegName::GPR[command.rs], CRegName::GPR[command.rt],
-                LabelName(PC + ((short)command.offset << 2) + 4));
+                LabelName(PC + ((int16_t)command.offset << 2) + 4));
         }
         break;
     case R4300i_BLEZ:
-        sprintf(CommandName, "blez\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((short)command.offset << 2) + 4));
+        sprintf(CommandName, "blez\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((int16_t)command.offset << 2) + 4));
         break;
     case R4300i_BGTZ:
-        sprintf(CommandName, "bgtz\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((short)command.offset << 2) + 4));
+        sprintf(CommandName, "bgtz\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((int16_t)command.offset << 2) + 4));
         break;
     case R4300i_ADDI:
         sprintf(CommandName, "addi\t%s, %s, 0x%X", CRegName::GPR[command.rt], CRegName::GPR[command.rs], command.immediate);
@@ -623,36 +623,36 @@ const char * R4300iOpcodeName(uint32_t OpCode, uint32_t PC)
     case R4300i_BEQL:
         if (command.rs == command.rt)
         {
-            sprintf(CommandName, "b\t%s", LabelName(PC + ((short)command.offset << 2) + 4));
+            sprintf(CommandName, "b\t%s", LabelName(PC + ((int16_t)command.offset << 2) + 4));
         }
         else if ((command.rs == 0) ^ (command.rt == 0))
         {
             sprintf(CommandName, "beqzl\t%s, %s", CRegName::GPR[command.rs == 0 ? command.rt : command.rs],
-                LabelName(PC + ((short)command.offset << 2) + 4));
+                LabelName(PC + ((int16_t)command.offset << 2) + 4));
         }
         else
         {
             sprintf(CommandName, "beql\t%s, %s, %s", CRegName::GPR[command.rs], CRegName::GPR[command.rt],
-                LabelName(PC + ((short)command.offset << 2) + 4));
+                LabelName(PC + ((int16_t)command.offset << 2) + 4));
         }
         break;
     case R4300i_BNEL:
         if ((command.rs == 0) ^ (command.rt == 0))
         {
             sprintf(CommandName, "bnezl\t%s, %s", CRegName::GPR[command.rs == 0 ? command.rt : command.rs],
-                LabelName(PC + ((short)command.offset << 2) + 4));
+                LabelName(PC + ((int16_t)command.offset << 2) + 4));
         }
         else
         {
             sprintf(CommandName, "bnel\t%s, %s, %s", CRegName::GPR[command.rs], CRegName::GPR[command.rt],
-                LabelName(PC + ((short)command.offset << 2) + 4));
+                LabelName(PC + ((int16_t)command.offset << 2) + 4));
         }
         break;
     case R4300i_BLEZL:
-        sprintf(CommandName, "blezl\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((short)command.offset << 2) + 4));
+        sprintf(CommandName, "blezl\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((int16_t)command.offset << 2) + 4));
         break;
     case R4300i_BGTZL:
-        sprintf(CommandName, "bgtzl\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((short)command.offset << 2) + 4));
+        sprintf(CommandName, "bgtzl\t%s, %s", CRegName::GPR[command.rs], LabelName(PC + ((int16_t)command.offset << 2) + 4));
         break;
     case R4300i_DADDI:
         sprintf(CommandName, "daddi\t%s, %s, 0x%X", CRegName::GPR[command.rt], CRegName::GPR[command.rs], command.immediate);
