@@ -146,6 +146,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MemoryManagement.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\MemTest.cpp"
 				>
 			</File>
@@ -212,6 +216,10 @@
 			</File>
 			<File
 				RelativePath=".\md5.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MemoryManagement.h"
 				>
 			</File>
 			<File
