@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include <Common/stdtypes.h>
 #include <Common/StdString.h>
 #include <Common/Trace.h>
