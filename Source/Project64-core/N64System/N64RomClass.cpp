@@ -617,10 +617,9 @@ void CN64Rom::UnallocateRomImage()
 {
     m_RomFile.Close();
 
-    //if this value is still set then the image was not created a map
-    //file but created with VirtualAllocate
     if (m_ROMImageBase)
     {
+        ProtectMemory(m_ROMImage, m_RomFileSize, MEM_READWRITE);
         delete[] m_ROMImageBase;
         m_ROMImageBase = NULL;
     }
