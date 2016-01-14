@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include <string.h>
+
 #include <Common/path.h>
 #include <Common/Trace.h>
 #include <Common/Util.h>
