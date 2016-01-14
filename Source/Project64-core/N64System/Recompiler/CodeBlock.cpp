@@ -140,7 +140,7 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
             }
             if (SplitSection->m_EndPC >= TargetPC)
             {
-                CPU_Message(__FUNCTION__ ": Split Section: %d with section: %d",SplitSection->m_SectionID, Section->m_SectionID);
+                CPU_Message("%s: Split Section: %d with section: %d", __FUNCTION__, SplitSection->m_SectionID, Section->m_SectionID);
                 CCodeSection * BaseSection = Section;
                 BaseSection->m_EndPC = SplitSection->m_EndPC;
                 BaseSection->SetJumpAddress(SplitSection->m_Jump.JumpPC, SplitSection->m_Jump.TargetPC,SplitSection->m_Jump.PermLoop);
@@ -232,7 +232,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 
         if (EndBlock)
         {
-            CPU_Message(__FUNCTION__ ": End Block");
+            CPU_Message("%s: End Block", __FUNCTION__);
             CurrentSection->m_EndSection = true;
             // find other sections that need compiling
             break;
@@ -240,7 +240,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 
         if (ContinuePC != (uint32_t)-1)
         {
-            CPU_Message(__FUNCTION__ ": SetContinueAddress TestPC = %X ContinuePC = %X",TestPC,ContinuePC);
+            CPU_Message("%s: SetContinueAddress TestPC = %X ContinuePC = %X", __FUNCTION__,TestPC,ContinuePC);
             CurrentSection->SetContinueAddress(TestPC, ContinuePC);
             if (!SetSection(CurrentSection->m_ContinueSection, CurrentSection, ContinuePC,true,TestPC))
             {
@@ -250,7 +250,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 
         if (LikelyBranch)
         {
-            CPU_Message(__FUNCTION__ ": SetJumpAddress TestPC = %X Target = %X",TestPC,TestPC + 4);
+            CPU_Message("%s: SetJumpAddress TestPC = %X Target = %X", __FUNCTION__,TestPC,TestPC + 4);
             CurrentSection->SetJumpAddress(TestPC, TestPC + 4,false);
             if (SetSection(CurrentSection->m_JumpSection, CurrentSection, TestPC + 4,false,TestPC))
             {
@@ -273,7 +273,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
                 JumpSection->m_EndPC = TestPC + 4;
                 if (BranchEndBlock)
                 {
-                    CPU_Message(__FUNCTION__ ": Jump End Block");
+                    CPU_Message("%s: Jump End Block", __FUNCTION__);
                     JumpSection->m_EndSection = true;
                     TargetPC = (uint32_t)-1;
                 }
@@ -291,7 +291,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
         }
         else if (TargetPC != ((uint32_t)-1))
         {
-            CPU_Message(__FUNCTION__ ": SetJumpAddress TestPC = %X Target = %X",TestPC,TargetPC);
+            CPU_Message("%s: SetJumpAddress TestPC = %X Target = %X", __FUNCTION__,TestPC,TargetPC);
             CurrentSection->SetJumpAddress(TestPC, TargetPC,PermLoop);
             if (PermLoop || !SetSection(CurrentSection->m_JumpSection, CurrentSection, TargetPC,true,TestPC))
             {
