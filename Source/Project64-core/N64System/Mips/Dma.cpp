@@ -9,7 +9,6 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include <string.h>
 #include <Common/MemoryManagement.h>
 
 #include <Project64-core/N64System/Mips/Dma.h>

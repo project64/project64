@@ -10,7 +10,6 @@
 ****************************************************************************/
 #include "stdafx.h"
 #include <stdio.h>
-#include <string.h>
 
 #include <Project64-core/N64System/Mips/PifRam.h>
 #include <Project64-core/N64System/SystemGlobals.h>
