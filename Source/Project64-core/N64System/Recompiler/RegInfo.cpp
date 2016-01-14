@@ -1116,7 +1116,10 @@ void CRegInfo::UnMap_FPR(int32_t Reg, bool WriteBackValue)
                 fpuStoreQwordFromX86Reg(&StackTopPos(), TempReg, true);
                 break;
             default:
-                if (bHaveDebugger()) { g_Notify->DisplayError(stdstr_f(__FUNCTION__ "\nUnknown format to load %d", m_x86fpu_State[StackTopPos()]).c_str()); }
+                if (bHaveDebugger())
+                {
+                    g_Notify->DisplayError(stdstr_f("%s\nUnknown format to load %d", __FUNCTION__, m_x86fpu_State[StackTopPos()]).c_str());
+                }
             }
             SetX86Protected(TempReg, false);
             FpuRoundingModel(RegPos) = RoundDefault;
@@ -1140,7 +1143,10 @@ void CRegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
 {
     if (Reg == 0)
     {
-        if (bHaveDebugger()) { g_Notify->DisplayError(__FUNCTION__ "\n\nWhy are you trying to unmap reg 0"); }
+        if (bHaveDebugger())
+        {
+            g_Notify->DisplayError(stdstr_f("%s\n\nWhy are you trying to unmap reg 0", __FUNCTION__).c_str());
+        }
         return;
     }
 
@@ -1438,7 +1444,7 @@ void CRegInfo::WriteBackRegisters()
             SetMipsRegState(count, CRegInfo::STATE_UNKNOWN);
             break;
         default:
-            CPU_Message(__FUNCTION__ ": Unknown State: %d reg %d (%s)", GetMipsRegState(count), count, CRegName::GPR[count]);
+            CPU_Message("%s: Unknown State: %d reg %d (%s)", __FUNCTION__, GetMipsRegState(count), count, CRegName::GPR[count]);
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
