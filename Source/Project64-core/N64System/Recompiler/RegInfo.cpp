@@ -1145,11 +1145,7 @@ void CRegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
     {
         if (bHaveDebugger())
         {
-            g_Notify->DisplayError(
-                __FUNCTION__ \
-                "\n\n" \
-                "Why are you trying to unmap reg 0"
-            );
+            g_Notify->DisplayError(stdstr_f("%s\n\nWhy are you trying to unmap reg 0", __FUNCTION__).c_str());
         }
         return;
     }
