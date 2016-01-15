@@ -182,13 +182,13 @@ void CPifRam::PifRamWrite()
             {
                 ResponseValue = (ResponseValue << 8) | ((Response[(z - 1) * 2] << 4) + Response[(z - 1) * 2 + 1]);
             }
-            std::memcpy(&m_PifRam[48], &ResponseValue, sizeof(uint64_t));
+            memcpy(&m_PifRam[48], &ResponseValue, sizeof(uint64_t));
             ResponseValue = 0;
             for (int z = 7; z > 0; z--)
             {
                 ResponseValue = (ResponseValue << 8) | ((Response[((z + 8) - 1) * 2] << 4) + Response[((z + 8) - 1) * 2 + 1]);
             }
-            std::memcpy(&m_PifRam[56], &ResponseValue, sizeof(uint64_t));
+            memcpy(&m_PifRam[56], &ResponseValue, sizeof(uint64_t));
         }
         break;
         case 0x08:
@@ -618,7 +618,7 @@ void CPifRam::ReadControllerCommand(int Control, uint8_t * Command) {
             }
 
             const uint32_t buttons = g_BaseSystem->GetButtons(Control);
-            std::memcpy(&Command[3], &buttons, sizeof(uint32_t));
+            memcpy(&Command[3], &buttons, sizeof(uint32_t));
         }
         break;
     case 0x02: //read from controller pack
