@@ -7076,6 +7076,7 @@ Status=Issues (plugin)
 Core Note=high system requirement
 Plugin Note=[video] errors:various [audio] bad
 32bit=No
+AudioResetOnLoad=Yes
 Fixed Audio=0
 HLE GFX=No
 
