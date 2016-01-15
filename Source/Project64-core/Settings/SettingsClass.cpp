@@ -178,7 +178,7 @@ void CSettings::AddHowToHandleSetting()
     AddHandler(Rdb_GameCheatFix, new CSettingTypeRomDatabaseIndex("Cheat", "", ""));
     AddHandler(Rdb_GameCheatFixPlugin, new CSettingTypeRomDatabaseIndex("CheatPlugin", "", ""));
     AddHandler(Rdb_ViRefreshRate, new CSettingTypeRomDatabase("ViRefresh", 1500));
-    AddHandler(Rdb_AiCountPerBytes, new CSettingTypeRomDatabase("AiCountPerBytes", 400));
+    AddHandler(Rdb_AiCountPerBytes, new CSettingTypeRomDatabase("AiCountPerBytes", 0));
     AddHandler(Rdb_AudioResetOnLoad, new CSettingTypeRDBYesNo("AudioResetOnLoad", false));
     AddHandler(Rdb_AllowROMWrites, new CSettingTypeRDBYesNo("AllowROMWrites", false));
     AddHandler(Rdb_CRC_Recalc, new CSettingTypeRDBYesNo("CRC-Recalc", false));
