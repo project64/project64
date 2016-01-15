@@ -5669,7 +5669,9 @@ Status=Issues (plugin)
 Core Note=high system requirement
 Plugin Note=[video] errors:various [audio] bad
 32bit=No
+AudioResetOnLoad=Yes
 HLE GFX=No
+Fixed Audio=0
 RDRAM Size=8
 
 [F4646B69-C5751095-C:4A]
@@ -7063,6 +7065,8 @@ Status=Issues (plugin)
 Core Note=high system requirement
 Plugin Note=[video] errors:various [audio] bad
 32bit=No
+AudioResetOnLoad=Yes
+Fixed Audio=0
 HLE GFX=No
 
 [308DFEC8-CE2EB5F6-C:45]
@@ -7072,6 +7076,7 @@ Status=Issues (plugin)
 Core Note=high system requirement
 Plugin Note=[video] errors:various [audio] bad
 32bit=No
+Fixed Audio=0
 HLE GFX=No
 
 [2D21C57B-8FE4C58C-C:50]
