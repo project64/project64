@@ -10,21 +10,20 @@
 ****************************************************************************/
 #include "stdafx.h"
 #include "PluginBase.h"
-#include <Windows.h>
 
 CPlugin::CPlugin() :
-DllAbout(NULL),
-DllConfig(NULL),
-CloseDLL(NULL),
-RomOpen(NULL),
-RomClosed(NULL),
-PluginOpened(NULL),
-SetSettingInfo(NULL),
-SetSettingInfo2(NULL),
-SetSettingInfo3(NULL),
-m_hDll(NULL),
-m_Initialized(false),
-m_RomOpen(false)
+    DllAbout(NULL),
+    DllConfig(NULL),
+    CloseDLL(NULL),
+    RomOpen(NULL),
+    RomClosed(NULL),
+    PluginOpened(NULL),
+    SetSettingInfo(NULL),
+    SetSettingInfo2(NULL),
+    SetSettingInfo3(NULL),
+    m_LibHandle(NULL),
+    m_Initialized(false),
+    m_RomOpen(false)
 {
     memset(&m_PluginInfo, 0, sizeof(m_PluginInfo));
 }
@@ -37,31 +36,21 @@ CPlugin::~CPlugin()
 bool CPlugin::Load(const char * FileName)
 {
     // Already loaded, so unload first.
-    if (m_hDll != NULL)
+    if (m_LibHandle != NULL)
     {
         UnloadPlugin();
     }
 
     // Try to load the plugin DLL
     //Try to load the DLL library
-    if (bHaveDebugger())
-    {
-        m_hDll = LoadLibrary(FileName);
-    }
-    else
-    {
-        UINT LastErrorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
-        m_hDll = LoadLibrary(FileName);
-        SetErrorMode(LastErrorMode);
-    }
-
-    if (m_hDll == NULL)
+    m_LibHandle = pjutil::DynLibOpen(FileName, bHaveDebugger());
+    if (m_LibHandle == NULL)
     {
         return false;
     }
 
     // Get DLL information
-    void(__cdecl *GetDllInfo) (PLUGIN_INFO * PluginInfo);
+    void(CALL *GetDllInfo) (PLUGIN_INFO * PluginInfo);
     LoadFunction(GetDllInfo);
     if (GetDllInfo == NULL) { return false; }
 
@@ -69,14 +58,14 @@ bool CPlugin::Load(const char * FileName)
     if (!ValidPluginVersion(m_PluginInfo)) { return false; }
     if (m_PluginInfo.Type != type()) { return false; }
 
-    CloseDLL = (void(__cdecl *)(void)) GetProcAddress((HMODULE)m_hDll, "CloseDLL");
-    RomOpen = (void(__cdecl *)(void)) GetProcAddress((HMODULE)m_hDll, "RomOpen");
-    RomClosed = (void(__cdecl *)(void)) GetProcAddress((HMODULE)m_hDll, "RomClosed");
-    PluginOpened = (void(__cdecl *)(void)) GetProcAddress((HMODULE)m_hDll, "PluginLoaded");
-    DllConfig = (void(__cdecl *)(void *)) GetProcAddress((HMODULE)m_hDll, "DllConfig");
-    DllAbout = (void(__cdecl *)(void *)) GetProcAddress((HMODULE)m_hDll, "DllAbout");
+    LoadFunction(CloseDLL);
+    LoadFunction(RomOpen);
+    LoadFunction(RomClosed);
+    _LoadFunction("PluginLoaded", PluginOpened);
+    LoadFunction(DllConfig);
+    LoadFunction(DllAbout);
 
-    SetSettingInfo3 = (void(__cdecl *)(PLUGIN_SETTINGS3 *))GetProcAddress((HMODULE)m_hDll, "SetSettingInfo3");
+    LoadFunction(SetSettingInfo3);
     if (SetSettingInfo3)
     {
         PLUGIN_SETTINGS3 info;
@@ -84,7 +73,7 @@ bool CPlugin::Load(const char * FileName)
         SetSettingInfo3(&info);
     }
 
-    SetSettingInfo2 = (void(__cdecl *)(PLUGIN_SETTINGS2 *))GetProcAddress((HMODULE)m_hDll, "SetSettingInfo2");
+    LoadFunction(SetSettingInfo2);
     if (SetSettingInfo2)
     {
         PLUGIN_SETTINGS2 info;
@@ -92,7 +81,7 @@ bool CPlugin::Load(const char * FileName)
         SetSettingInfo2(&info);
     }
 
-    SetSettingInfo = (void(__cdecl *)(PLUGIN_SETTINGS *))GetProcAddress((HMODULE)m_hDll, "SetSettingInfo");
+    LoadFunction(SetSettingInfo);
     if (SetSettingInfo)
     {
         PLUGIN_SETTINGS info;
@@ -114,7 +103,9 @@ bool CPlugin::Load(const char * FileName)
     }
 
     if (RomClosed == NULL)
+    {
         return false;
+    }
 
     if (!LoadFunctions())
     {
@@ -150,7 +141,9 @@ void CPlugin::RomOpened()
 void CPlugin::RomClose()
 {
     if (!m_RomOpen)
+    {
         return;
+    }
 
     WriteTrace(PluginTraceType(), TraceDebug, "Before Rom Close");
     RomClosed();
@@ -186,11 +179,11 @@ void CPlugin::UnloadPlugin()
 {
     WriteTrace(PluginTraceType(), TraceDebug, "(%s): unloading", PluginType());
     memset(&m_PluginInfo, 0, sizeof(m_PluginInfo));
-    if (m_hDll != NULL)
+    if (m_LibHandle != NULL)
     {
         UnloadPluginDetails();
-        FreeLibrary((HMODULE)m_hDll);
-        m_hDll = NULL;
+        pjutil::DynLibClose(m_LibHandle);
+        m_LibHandle = NULL;
     }
 
     DllAbout = NULL;
@@ -256,5 +249,5 @@ bool CPlugin::ValidPluginVersion(PLUGIN_INFO & PluginInfo)
         if (PluginInfo.Version == 0x0102) { return true; }
         break;
     }
-    return FALSE;
+    return false;
 }

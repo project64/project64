@@ -89,6 +89,7 @@ public:
     //Get Window Handle
     void * GetWindowHandle(void) const { return m_hMainWindow; }
     void * GetStatusBar(void) const { return m_hStatusWnd; }
+    void * GetModuleInstance(void) const;
 
 private:
     CMainGui(void);					// Disable default constructor

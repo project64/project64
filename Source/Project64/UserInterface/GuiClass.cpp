@@ -24,14 +24,14 @@ LRESULT CALLBACK MainGui_Proc(HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD lP
 extern BOOL set_about_field(HWND hDlg, int nIDDlgItem, const wchar_t * config_string, const wchar_t * language_string);
 
 CMainGui::CMainGui(bool bMainWindow, const char * WindowTitle) :
-CRomBrowser(m_hMainWindow, m_hStatusWnd),
-m_ThreadId(GetCurrentThreadId()),
-m_bMainWindow(bMainWindow),
-m_Created(false),
-m_AttachingMenu(false),
-m_MakingVisible(false),
-m_ResetPlugins(false),
-m_ResetInfo(NULL)
+    CRomBrowser(m_hMainWindow, m_hStatusWnd),
+    m_ThreadId(GetCurrentThreadId()),
+    m_bMainWindow(bMainWindow),
+    m_Created(false),
+    m_AttachingMenu(false),
+    m_MakingVisible(false),
+    m_ResetPlugins(false),
+    m_ResetInfo(NULL)
 {
     m_Menu = NULL;
 
@@ -271,6 +271,11 @@ void CMainGui::ChangeWinSize(long width, long height)
     AdjustWindowRectEx(&rc1, GetWindowLong(m_hMainWindow, GWL_STYLE), GetMenu(m_hMainWindow) != NULL, GetWindowLong(m_hMainWindow, GWL_EXSTYLE));
 
     MoveWindow(m_hMainWindow, wndpl.rcNormalPosition.left, wndpl.rcNormalPosition.top, rc1.right - rc1.left, rc1.bottom - rc1.top, TRUE);
+}
+
+void * CMainGui::GetModuleInstance(void) const
+{
+    return GetModuleHandle(NULL);
 }
 
 void CMainGui::AboutBox(void)

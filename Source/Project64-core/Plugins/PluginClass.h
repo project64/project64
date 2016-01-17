@@ -90,6 +90,7 @@ __interface RenderWindow
     virtual bool ResetPluginsInUiThread(CPlugins * plugins, CN64System * System) = 0;
     virtual void * GetWindowHandle(void) const = 0;
     virtual void * GetStatusBar(void) const = 0;
+    virtual void * GetModuleInstance(void) const = 0;
 };
 
 class CPlugins :

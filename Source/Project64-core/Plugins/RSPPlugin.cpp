@@ -15,16 +15,15 @@
 #include "RSPPlugin.h"
 #include "GFXPlugin.h"
 #include "AudioPlugin.h"
-#include <Windows.h>
 
 void DummyFunc1(int a) { a += 1; }
 
 CRSP_Plugin::CRSP_Plugin(void) :
-DoRspCycles(NULL),
-EnableDebugging(NULL),
-m_CycleCount(0),
-GetDebugInfo(NULL),
-InitiateDebugger(NULL)
+    DoRspCycles(NULL),
+    EnableDebugging(NULL),
+    m_CycleCount(0),
+    GetDebugInfo(NULL),
+    InitiateDebugger(NULL)
 {
     memset(&m_RSPDebug, 0, sizeof(m_RSPDebug));
 }
@@ -38,7 +37,7 @@ CRSP_Plugin::~CRSP_Plugin()
 bool CRSP_Plugin::LoadFunctions(void)
 {
     // Find entries for functions in DLL
-    void(__cdecl *InitiateRSP)(void);
+    void(CALL *InitiateRSP)(void);
     LoadFunction(InitiateRSP);
     LoadFunction(DoRspCycles);
     _LoadFunction("GetRspDebugInfo", GetDebugInfo);
@@ -59,8 +58,9 @@ bool CRSP_Plugin::LoadFunctions(void)
 
     // Get debug info if able
     if (GetDebugInfo != NULL)
+    {
         GetDebugInfo(&m_RSPDebug);
-
+    }
     return true;
 }
 
@@ -73,7 +73,7 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
 
     typedef struct
     {
-        HINSTANCE hInst;
+        void * hInst;
         int MemoryBswaped;    /* If this is set to TRUE, then the memory has been pre
                               bswap on a dword (32 bits) boundry */
         uint8_t * RDRAM;
@@ -101,21 +101,21 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
         uint32_t * DPC__PIPEBUSY_REG;
         uint32_t * DPC__TMEM_REG;
 
-        void(__cdecl *CheckInterrupts)(void);
-        void(__cdecl *ProcessDlist)(void);
-        void(__cdecl *ProcessAlist)(void);
-        void(__cdecl *ProcessRdpList)(void);
-        void(__cdecl *ShowCFB)(void);
+        void(CALL *CheckInterrupts)(void);
+        void(CALL *ProcessDlist)(void);
+        void(CALL *ProcessAlist)(void);
+        void(CALL *ProcessRdpList)(void);
+        void(CALL *ShowCFB)(void);
     } RSP_INFO_1_1;
 
     RSP_INFO_1_1 Info = { 0 };
 
-    Info.hInst = GetModuleHandle(NULL);
+    Info.hInst = Plugins->MainWindow()->GetModuleInstance();
     Info.CheckInterrupts = DummyCheckInterrupts;
     Info.MemoryBswaped = (System == NULL); // only true when the system's not yet loaded
 
     //Get Function from DLL
-    void(__cdecl *InitiateRSP)    (RSP_INFO_1_1 Audio_Info, uint32_t * Cycles);
+    void(CALL *InitiateRSP) (RSP_INFO_1_1 Audio_Info, uint32_t * Cycles);
     LoadFunction(InitiateRSP);
     if (InitiateRSP == NULL) { return false; }
 
@@ -193,10 +193,10 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
     InitiateRSP(Info, &m_CycleCount);
     m_Initialized = true;
 
-    //jabo had a bug so I call CreateThread so his dllmain gets called again
-    DWORD ThreadID;
-    HANDLE hthread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)DummyFunction, NULL, 0, &ThreadID);
-    CloseHandle(hthread);
+#ifdef _WIN32
+	//jabo had a bug so I call CreateThread so his dllmain gets called again
+    pjutil::DynLibCallDllMain();
+#endif
     return m_Initialized;
 }
 
