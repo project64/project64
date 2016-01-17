@@ -65,10 +65,10 @@ static SRes Lzma2Dec_GetOldProps(Byte prop, Byte *props)
     return SZ_ERROR_UNSUPPORTED;
   dicSize = (prop == 40) ? 0xFFFFFFFF : LZMA2_DIC_SIZE_FROM_PROP(prop);
   props[0] = (Byte)LZMA2_LCLP_MAX;
-  props[1] = (Byte)(dicSize);
-  props[2] = (Byte)(dicSize >> 8);
-  props[3] = (Byte)(dicSize >> 16);
-  props[4] = (Byte)(dicSize >> 24);
+  props[1] = (Byte)((dicSize)& 0xFF);
+  props[2] = (Byte)((dicSize >> 8) & 0xFF);
+  props[3] = (Byte)((dicSize >> 16) & 0xFF);
+  props[4] = (Byte)((dicSize >> 24) & 0xFF);
   return SZ_OK;
 }
 
