@@ -2250,6 +2250,7 @@ wrap_big_tex=1
 Good Name=Nintama Rantarou 64 Game Gallery (J)
 Internal Name=NINTAMAGAMEGALLERY64
 depthmode=0
+fb_smart=0
 force_microcheck=1
 
 [8A97A197-272DF6C1-C:50]
