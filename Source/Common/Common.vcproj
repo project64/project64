@@ -158,6 +158,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Platform.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -228,6 +232,10 @@
 			</File>
 			<File
 				RelativePath=".\path.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Platform.h"
 				>
 			</File>
 			<File
