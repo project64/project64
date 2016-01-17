@@ -160,8 +160,12 @@ void CRegInfo::FixRoundModel(FPU_ROUND RoundMethod)
 
     if (RoundMethod == RoundDefault)
     {
+        static const unsigned int msRound[4] = { _RC_NEAR, _RC_CHOP, _RC_UP, _RC_DOWN };
+
         x86Reg RoundReg = Map_TempReg(x86_Any, -1, false);
         MoveVariableToX86reg(&g_Reg->m_RoundingModel, "m_RoundingModel", RoundReg);
+        MoveVariableDispToX86Reg((void *)&msRound[0], "msRound", RoundReg, RoundReg, Multip_x4);
+
         ShiftLeftSignImmed(RoundReg, 2);
         OrX86RegToX86Reg(reg, RoundReg);
         SetX86Protected(RoundReg, false);
