@@ -633,12 +633,14 @@ Good Name=Castlevania - Legacy of Darkness (E) (M3)
 Internal Name=CASTLEVANIA2
 depthmode=0
 fb_clear=1
+old_style_adither=1
 
 [1CC06338-87388926-C:45]
 Good Name=Castlevania - Legacy of Darkness (U)
 Internal Name=CASTLEVANIA2
 depthmode=0
 fb_clear=1
+old_style_adither=1
 
 [DCCF2134-9DD63578-C:50]
 Good Name=Centre Court Tennis (E)
