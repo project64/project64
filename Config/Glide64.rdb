@@ -263,12 +263,14 @@ Good Name=Akumajou Dracula Mokushiroku - Real Action Adventure (J)
 Internal Name=DRACULA MOKUSHIROKU
 depthmode=0
 fb_clear=1
+old_style_adither=1
 
 [A5533106-B9F25E5B-C:4A]
 Good Name=Akumajou Dracula Mokushiroku Gaiden - Legend of Cornell (J)
 Internal Name=DRACULA MOKUSHIROKU2
 depthmode=0
 fb_clear=1
+old_style_adither=1
 
 [D9EDD54D-6BB8E274-C:50]
 Good Name=All-Star Baseball '99 (E)
