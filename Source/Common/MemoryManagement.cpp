@@ -16,6 +16,20 @@ static bool TranslateFromMemProtect(MEM_PROTECTION memProtection, int & OsMemPro
     return true;
 }
 
+static bool TranslateToMemProtect(int OsMemProtection, MEM_PROTECTION & memProtection)
+{
+    switch (OsMemProtection)
+    {
+    case PAGE_NOACCESS: memProtection = MEM_NOACCESS; break;
+    case PAGE_READONLY: memProtection = MEM_READONLY; break;
+    case PAGE_READWRITE: memProtection = MEM_READWRITE; break;
+    case PAGE_EXECUTE_READWRITE: memProtection = MEM_EXECUTE_READWRITE; break;
+    default:
+        return false;
+    }
+    return true;
+}
+
 void* AllocateAddressSpace(size_t size)
 {
     return VirtualAlloc(NULL, size, MEM_RESERVE | MEM_TOP_DOWN, PAGE_NOACCESS);
@@ -53,6 +67,10 @@ bool ProtectMemory(void* addr, size_t size, MEM_PROTECTION memProtection, MEM_PR
     BOOL res = VirtualProtect(addr, size, OsMemProtection, &OldOsProtect);
     if (OldProtect != NULL)
     {
+        if (!TranslateToMemProtect(OldOsProtect, *OldProtect))
+        {
+            return NULL;
+        }
     }
     return res != 0;
 }
