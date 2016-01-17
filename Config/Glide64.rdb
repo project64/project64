@@ -263,12 +263,14 @@ Good Name=Akumajou Dracula Mokushiroku - Real Action Adventure (J)
 Internal Name=DRACULA MOKUSHIROKU
 depthmode=0
 fb_clear=1
+old_style_adither=1
 
 [A5533106-B9F25E5B-C:4A]
 Good Name=Akumajou Dracula Mokushiroku Gaiden - Legend of Cornell (J)
 Internal Name=DRACULA MOKUSHIROKU2
 depthmode=0
 fb_clear=1
+old_style_adither=1
 
 [D9EDD54D-6BB8E274-C:50]
 Good Name=All-Star Baseball '99 (E)
@@ -633,12 +635,14 @@ Good Name=Castlevania - Legacy of Darkness (E) (M3)
 Internal Name=CASTLEVANIA2
 depthmode=0
 fb_clear=1
+old_style_adither=1
 
 [1CC06338-87388926-C:45]
 Good Name=Castlevania - Legacy of Darkness (U)
 Internal Name=CASTLEVANIA2
 depthmode=0
 fb_clear=1
+old_style_adither=1
 
 [DCCF2134-9DD63578-C:50]
 Good Name=Centre Court Tennis (E)
@@ -2250,6 +2254,7 @@ wrap_big_tex=1
 Good Name=Nintama Rantarou 64 Game Gallery (J)
 Internal Name=NINTAMAGAMEGALLERY64
 depthmode=0
+fb_smart=0
 force_microcheck=1
 
 [8A97A197-272DF6C1-C:50]
@@ -3162,7 +3167,7 @@ Good Name=Super Mario 64 (E) (M3)
 Internal Name=SUPER MARIO 64
 depth_bias=32
 depthmode=1
-filtering=1
+filtering=0
 lodmode=1
 
 [4EAA3D0E-74757C24-C:4A]
@@ -3170,7 +3175,7 @@ Good Name=Super Mario 64 (J)
 Internal Name=SUPER MARIO 64
 depth_bias=32
 depthmode=1
-filtering=1
+filtering=0
 lodmode=1
 
 [635A2BFF-8B022326-C:45]
@@ -3178,7 +3183,7 @@ Good Name=Super Mario 64 (U)
 Internal Name=SUPER MARIO 64
 depth_bias=32
 depthmode=1
-filtering=1
+filtering=0
 lodmode=1
 
 [D6FBA4A8-6326AA2C-C:4A]
@@ -3186,7 +3191,7 @@ Good Name=Super Mario 64 - Shindou Edition (J)
 Internal Name=SUPERMARIO64
 depth_bias=32
 depthmode=1
-filtering=1
+filtering=0
 lodmode=1
 
 [66572080-28E348E1-C:4A]

@@ -2038,14 +2038,14 @@ void newSwapBuffers()
       }
     }
     //hotkeys
-    if (CheckKeyPressed(G64_VK_BACK, 0x0001))
-    {
-      hotkey_info.hk_filtering = 100;
-      if (settings.filtering < 2)
-        settings.filtering++;
-      else
-        settings.filtering = 0;
-    }
+    //if (CheckKeyPressed(G64_VK_BACK, 0x0001))
+    //{
+      //hotkey_info.hk_filtering = 100;
+      //if (settings.filtering < 2)
+        //settings.filtering++;
+      //else
+        //settings.filtering = 0;
+    //}
     if ((abs((int)(frame_count - curframe)) > 3 ) && CheckKeyPressed(G64_VK_ALT, 0x8000))  //alt +
     {
       if (CheckKeyPressed(G64_VK_B, 0x8000))  //b
