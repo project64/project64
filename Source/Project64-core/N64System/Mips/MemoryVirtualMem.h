@@ -185,6 +185,8 @@ private:
     static void Load32PeripheralInterface(void);
     static void Load32RDRAMInterface(void);
     static void Load32SerialInterface(void);
+    static void Load32CartridgeDomain1Address1(void);
+    static void Load32CartridgeDomain1Address3(void);
     static void Load32CartridgeDomain2Address1(void);
     static void Load32CartridgeDomain2Address2(void);
     static void Load32PifRam(void);
