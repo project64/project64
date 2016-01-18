@@ -838,7 +838,7 @@ void  CMipsMemoryVM::Compile_LW(x86Reg Reg, uint32_t VAddr)
                     if (g_Plugins->Audio()->AiReadLength != NULL)
                     {
                         BeforeCallDirect(m_RegWorkingSet);
-                        Call_Direct(g_Plugins->Audio()->AiReadLength, "AiReadLength");
+                        Call_Direct((void *)g_Plugins->Audio()->AiReadLength, "AiReadLength");
                         MoveX86regToVariable(x86_EAX, &m_TempValue, "m_TempValue");
                         AfterCallDirect(m_RegWorkingSet);
                         MoveVariableToX86reg(&m_TempValue, "m_TempValue", Reg);
@@ -1392,7 +1392,7 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
                 Jump = m_RecompPos - 1;
                 MoveConstToVariable(Value, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
                 BeforeCallDirect(m_RegWorkingSet);
-                Call_Direct(g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
+                Call_Direct((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
                 AfterCallDirect(m_RegWorkingSet);
                 CPU_Message("");
                 CPU_Message("      Continue:");
@@ -1408,7 +1408,7 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
                 Jump = m_RecompPos - 1;
                 MoveConstToVariable(Value, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
                 BeforeCallDirect(m_RegWorkingSet);
-                Call_Direct(g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
+                Call_Direct((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
                 AfterCallDirect(m_RegWorkingSet);
                 CPU_Message("");
                 CPU_Message("      Continue:");
@@ -1454,7 +1454,7 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
             }
             else
             {
-                Call_Direct(g_Plugins->Audio()->AiLenChanged, "AiLenChanged");
+                Call_Direct((void *)g_Plugins->Audio()->AiLenChanged, "AiLenChanged");
             }
             AfterCallDirect(m_RegWorkingSet);
             break;
@@ -1747,7 +1747,7 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
                 Jump = m_RecompPos - 1;
                 MoveX86regToVariable(Reg, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
                 BeforeCallDirect(m_RegWorkingSet);
-                Call_Direct(g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
+                Call_Direct((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
                 AfterCallDirect(m_RegWorkingSet);
                 CPU_Message("");
                 CPU_Message("      Continue:");
@@ -1766,7 +1766,7 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
                 Jump = m_RecompPos - 1;
                 MoveX86regToVariable(Reg, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
                 BeforeCallDirect(m_RegWorkingSet);
-                Call_Direct(g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
+                Call_Direct((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
                 AfterCallDirect(m_RegWorkingSet);
                 CPU_Message("");
                 CPU_Message("      Continue:");
@@ -1814,7 +1814,7 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
             }
             else
             {
-                Call_Direct(g_Plugins->Audio()->AiLenChanged, "g_Plugins->Audio()->LenChanged");
+                Call_Direct((void *)g_Plugins->Audio()->AiLenChanged, "g_Plugins->Audio()->LenChanged");
             }
             AfterCallDirect(m_RegWorkingSet);
             break;
@@ -4259,8 +4259,8 @@ void CMipsMemoryVM::TLB_Unmaped(uint32_t Vaddr, uint32_t Len)
     for (count = Vaddr; count < End; count += 0x1000)
     {
         size_t Index = count >> 12;
-        m_TLB_ReadMap[Index] = NULL;
-        m_TLB_WriteMap[Index] = NULL;
+        m_TLB_ReadMap[Index] = 0;
+        m_TLB_WriteMap[Index] = 0;
     }
 }
 
