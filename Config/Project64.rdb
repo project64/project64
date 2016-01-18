@@ -2605,6 +2605,7 @@ RDRAM Size=8
 RSP-JumpTableSize=3584
 SMM-FUNC=0
 SMM-PI DMA=0
+SMM-Protect=1
 SMM-TLB=0
 ViRefresh=1800
 
@@ -2624,6 +2625,7 @@ RDRAM Size=8
 RSP-JumpTableSize=3584
 SMM-FUNC=0
 SMM-PI DMA=0
+SMM-Protect=1
 SMM-TLB=0
 ViRefresh=2050
 
@@ -4085,6 +4087,7 @@ Good Name=Nuclear Strike 64 (E) (M2)
 Internal Name=NUCLEARSTRIKE64
 Status=Compatible
 Core Note=high system requirement
+Linking=Off
 RDRAM Size=8
 
 [8F50B845-D729D22F-C:44]
@@ -4092,6 +4095,7 @@ Good Name=Nuclear Strike 64 (G)
 Internal Name=NUCLEARSTRIKE64
 Status=Compatible
 Core Note=high system requirement
+Linking=Off
 RDRAM Size=8
 
 [4998DDBB-F7B7AEBC-C:45]
@@ -4099,6 +4103,7 @@ Good Name=Nuclear Strike 64 (U)
 Internal Name=NUCLEARSTRIKE64
 Status=Compatible
 Core Note=high system requirement
+Linking=Off
 RDRAM Size=8
 
 [D83BB920-CC406416-C:4A]
