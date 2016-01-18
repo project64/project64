@@ -2391,12 +2391,14 @@ useless_is_useless=1
 Good Name=PGA European Tour (E) (M5)
 Internal Name=PGA European Tour
 buff_clear=0
+fb_read_always=1
 swapmode=0
 
 [B54CE881-BCCB6126-C:45]
 Good Name=PGA European Tour (U)
 Internal Name=PGA European Tour
 buff_clear=0
+fb_read_always=1
 swapmode=0
 
 [1AA05AD5-46F52D80-C:50]
