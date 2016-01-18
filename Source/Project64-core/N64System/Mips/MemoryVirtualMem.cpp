@@ -194,6 +194,33 @@ bool CMipsMemoryVM::Initialize()
         m_Rom = g_Rom->GetRomAddress();
         m_RomSize = g_Rom->GetRomSize();
     }
+
+    //64DD IPL
+    if (g_DDRom != NULL)
+    {
+        if (g_Settings->LoadBool(Game_LoadRomToMemory))
+        {
+            m_DDRomMapped = true;
+            m_DDRom = m_RDRAM + 0x06000000;
+            m_DDRomSize = g_DDRom->GetRomSize();
+            if (CommitMemory(m_DDRom, g_DDRom->GetRomSize(), MEM_READWRITE) == NULL)
+            {
+                WriteTrace(TraceN64System, TraceError, "Failed to Allocate Rom (Size: 0x%X)", g_DDRom->GetRomSize());
+                FreeMemory();
+                return false;
+            }
+            memcpy(m_DDRom, g_DDRom->GetRomAddress(), g_DDRom->GetRomSize());
+
+            ::ProtectMemory(m_DDRom, g_DDRom->GetRomSize(), MEM_READONLY);
+        }
+        else
+        {
+            m_DDRomMapped = false;
+            m_DDRom = g_DDRom->GetRomAddress();
+            m_DDRomSize = g_DDRom->GetRomSize();
+        }
+    }
+    
     CPifRam::Reset();
 
     m_TLB_ReadMap = new size_t[0x100000];
@@ -925,6 +952,12 @@ void  CMipsMemoryVM::Compile_LW(x86Reg Reg, uint32_t VAddr)
             if ((PAddr & 0xF0000000) == 0x10000000 && (PAddr - 0x10000000) < m_RomSize)
             {
                 // read from rom
+                sprintf(VarName, "m_RDRAM + %X", PAddr);
+                MoveVariableToX86reg(PAddr + m_RDRAM, VarName, Reg);
+            }
+            else if ((PAddr & 0xFF000000) == 0x06000000 && (PAddr - 0x06000000) < m_DDRomSize)
+            {
+                // read from ddrom
                 sprintf(VarName, "m_RDRAM + %X", PAddr);
                 MoveVariableToX86reg(PAddr + m_RDRAM, VarName, Reg);
             }
@@ -4682,8 +4715,16 @@ void CMipsMemoryVM::Load32SerialInterface(void)
 
 void CMipsMemoryVM::Load32CartridgeDomain1Address1(void)
 {
-    m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
-    m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
+    //64DD IPL ROM
+    if (g_DDRom != NULL && (m_MemLookupAddress & 0xFFFFFF) < g_MMU->m_DDRomSize)
+    {
+        m_MemLookupValue.UW[0] = *(uint32_t *)&g_MMU->m_DDRom[(m_MemLookupAddress & 0xFFFFFF)];
+    }
+    else
+    {
+        m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
+        m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
+    }
 }
 
 void CMipsMemoryVM::Load32CartridgeDomain1Address3(void)
