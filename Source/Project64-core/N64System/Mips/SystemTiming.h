@@ -39,7 +39,7 @@ public:
     };
 
 public:
-    CSystemTimer(int & NextTimer);
+    CSystemTimer(int32_t & NextTimer);
     void      SetTimer(TimerType Type, uint32_t Cycles, bool bRelative);
     uint32_t  GetTimer(TimerType Type);
     void      StopTimer(TimerType Type);
@@ -65,8 +65,8 @@ private:
     CSystemTimer& operator=(const CSystemTimer&); // Disable assignment
 
     TIMER_DETAILS m_TimerDetatils[MaxTimer];
-    int           m_LastUpdate; //Timer at last update
-    int         & m_NextTimer;
+    int32_t       m_LastUpdate; //Timer at last update
+    int32_t     & m_NextTimer;
     TimerType     m_Current;
     bool          m_inFixTimer;
 
