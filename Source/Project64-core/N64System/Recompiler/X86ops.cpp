@@ -11,7 +11,7 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
-#include "X86ops.h"
+#include <Project64-core/N64System/Recompiler/X86ops.h>
 #include "x86CodeLog.h"
 
 #define PUTDST8(dest,value)  (*((uint8_t *)(dest))=(uint8_t)(value)); dest += 1;
@@ -211,7 +211,7 @@ void CX86Ops::X86BreakPoint(const char * FileName, int LineNumber)
     Pushad();
     PushImm32(stdstr_f("%d", LineNumber).c_str(), LineNumber);
     PushImm32(FileName, (uint32_t)FileName);
-    Call_Direct(BreakPointNotification, "BreakPointNotification");
+    Call_Direct((void *)BreakPointNotification, "BreakPointNotification");
     AddConstToX86Reg(x86_ESP, 8);
     Popad();
 }

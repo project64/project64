@@ -21,7 +21,7 @@
 
 uint32_t CRegInfo::m_fpuControl = 0;
 
-char *Format_Name[] = { "Unknown", "dword", "qword", "float", "double" };
+const char *Format_Name[] = { "Unknown", "dword", "qword", "float", "double" };
 
 CRegInfo::CRegInfo() :
 m_CycleCount(0),
@@ -531,7 +531,7 @@ CX86Ops::x86Reg CRegInfo::UnMap_8BitTempReg()
     for (count = 0; count < 10; count++)
     {
         if (!Is8BitReg((x86Reg)count)) { continue; }
-        if (GetMipsRegState((x86Reg)count) == Temp_Mapped)
+        if (GetX86Mapped((x86Reg)count) == Temp_Mapped)
         {
             if (GetX86Protected((x86Reg)count) == false)
             {
