@@ -216,6 +216,11 @@ private:
     bool          m_RomWrittenTo;
     uint32_t      m_RomWroteValue;
 
+    //DDRom Information
+    bool          m_DDRomMapped;
+    uint8_t *     m_DDRom;
+    uint32_t      m_DDRomSize;
+
     //Current Half line
     void UpdateHalfLine();
     uint32_t         m_HalfLine;
