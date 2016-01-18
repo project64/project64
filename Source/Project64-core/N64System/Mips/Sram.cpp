@@ -52,7 +52,7 @@ bool CSram::LoadSram()
     return true;
 }
 
-void CSram::DmaFromSram(uint8_t * dest, int StartOffset, int len)
+void CSram::DmaFromSram(uint8_t * dest, int32_t StartOffset, int32_t len)
 {
     DWORD dwRead;
     uint32_t i;
@@ -133,7 +133,7 @@ void CSram::DmaFromSram(uint8_t * dest, int StartOffset, int len)
     }
 }
 
-void CSram::DmaToSram(uint8_t * Source, int StartOffset, int len)
+void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len)
 {
     DWORD dwWritten;
     uint32_t i;
