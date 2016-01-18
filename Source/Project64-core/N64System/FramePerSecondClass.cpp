@@ -11,7 +11,9 @@
 #include "stdafx.h"
 #include "FramePerSecondClass.h"
 #include <Project64-core/N64System/N64Types.h>
+#ifdef _WIN32
 #include <Windows.h>
+#endif
 
 CFramePerSecond::CFramePerSecond()
 {
@@ -25,9 +27,11 @@ CFramePerSecond::CFramePerSecond()
         m_ScreenHertz = 60;
     }
 
+#ifdef _WIN32
     LARGE_INTEGER Freq;
     QueryPerformanceFrequency(&Freq);
     m_Frequency = Freq.QuadPart;
+#endif
     Reset(true);
 }
 
@@ -48,7 +52,9 @@ void CFramePerSecond::Reset(bool ClearDisplay)
     }
     if (ClearDisplay)
     {
+#ifdef _WIN32
         g_Notify->DisplayMessage2("");
+#endif
         return;
     }
 
@@ -60,6 +66,7 @@ void CFramePerSecond::Reset(bool ClearDisplay)
 
 void CFramePerSecond::UpdateViCounter(void)
 {
+#ifdef _WIN32
     if (m_iFrameRateType != FR_VIs && m_iFrameRateType != FR_PERCENT)
     {
         return;
@@ -73,10 +80,12 @@ void CFramePerSecond::UpdateViCounter(void)
         DisplayViCounter(0);
     }
     m_CurrentFrame += 1;
+#endif
 }
 
 void CFramePerSecond::DisplayViCounter(uint32_t FrameRate)
 {
+#ifdef _WIN32
     if (m_iFrameRateType == FR_VIs)
     {
         if (FrameRate != 0)
@@ -87,7 +96,7 @@ void CFramePerSecond::DisplayViCounter(uint32_t FrameRate)
         {
             if (m_CurrentFrame > (NoOfFrames << 3))
             {
-                __int64 Total;
+                int64_t Total;
 
                 Total = 0;
                 for (int count = 0; count < NoOfFrames; count++)
@@ -113,7 +122,7 @@ void CFramePerSecond::DisplayViCounter(uint32_t FrameRate)
         {
             if (m_CurrentFrame > (NoOfFrames << 3))
             {
-                __int64 Total;
+                int64_t Total;
 
                 Total = 0;
                 for (int count = 0; count < NoOfFrames; count++)
@@ -130,6 +139,7 @@ void CFramePerSecond::DisplayViCounter(uint32_t FrameRate)
         }
         g_Notify->DisplayMessage2(stdstr_f("%.1f %%", Percent * 100).c_str());
     }
+#endif
 }
 
 void CFramePerSecond::FrameRateTypeChanged(CFramePerSecond * _this)
@@ -146,6 +156,7 @@ void CFramePerSecond::ScreenHertzChanged(CFramePerSecond * _this)
 
 void CFramePerSecond::UpdateDlCounter(void)
 {
+#ifdef _WIN32
     if (m_iFrameRateType != FR_DLs)
     {
         return;
@@ -158,10 +169,12 @@ void CFramePerSecond::UpdateDlCounter(void)
         DisplayDlCounter(0);
     }
     m_CurrentFrame += 1;
+#endif
 }
 
 void CFramePerSecond::DisplayDlCounter(uint32_t FrameRate)
 {
+#ifdef _WIN32
     if (m_iFrameRateType != FR_DLs)
     {
         return;
@@ -174,7 +187,7 @@ void CFramePerSecond::DisplayDlCounter(uint32_t FrameRate)
     {
         if (m_CurrentFrame > (NoOfFrames << 2))
         {
-            __int64 Total;
+            int64_t Total;
 
             Total = 0;
             for (int count = 0; count < NoOfFrames; count++)
@@ -188,4 +201,5 @@ void CFramePerSecond::DisplayDlCounter(uint32_t FrameRate)
             g_Notify->DisplayMessage2("DL/s: -.--");
         }
     }
+#endif
 }
