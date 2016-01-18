@@ -4,22 +4,23 @@
 #ifdef _WIN32
 #include <Windows.h>
 #endif
+
 stdstr::stdstr()
 {
 }
 
 stdstr::stdstr(const std::string & str) :
-std::string(str)
+    std::string(str)
 {
 }
 
 stdstr::stdstr(const stdstr & str) :
-std::string((const std::string &)str)
+    std::string((const std::string &)str)
 {
 }
 
 stdstr::stdstr(const char * str) :
-std::string(str ? str : "")
+    std::string(str ? str : "")
 {
 }
 
