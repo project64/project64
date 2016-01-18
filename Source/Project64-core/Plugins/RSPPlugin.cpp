@@ -14,7 +14,7 @@
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include "RSPPlugin.h"
 #include "GFXPlugin.h"
-#include "AudioPlugin.h"
+#include <Project64-core/Plugins/AudioPlugin.h>
 
 void DummyFunc1(int a) { a += 1; }
 

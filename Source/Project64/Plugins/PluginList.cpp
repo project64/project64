@@ -85,8 +85,8 @@ void CPluginList::AddPluginFromDir(CPath Dir)
                 continue;
             }
 
-            void(__cdecl *GetDllInfo) (PLUGIN_INFO * PluginInfo);
-            GetDllInfo = (void(__cdecl *)(PLUGIN_INFO *))GetProcAddress(hLib, "GetDllInfo");
+            void(CALL *GetDllInfo) (PLUGIN_INFO * PluginInfo);
+            GetDllInfo = (void(CALL *)(PLUGIN_INFO *))GetProcAddress(hLib, "GetDllInfo");
             if (GetDllInfo == NULL)
             {
                 continue;

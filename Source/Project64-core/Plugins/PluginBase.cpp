@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "PluginBase.h"
+#include <Project64-core/Plugins/PluginBase.h>
 
 CPlugin::CPlugin() :
     DllAbout(NULL),

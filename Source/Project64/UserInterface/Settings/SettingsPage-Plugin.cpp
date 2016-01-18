@@ -118,8 +118,8 @@ void COptionPluginPage::ShowAboutButton(int id)
     }
 
     //Get DLL about
-    void(__cdecl *DllAbout) (HWND hWnd);
-    DllAbout = (void(__cdecl *)(HWND))GetProcAddress(hLib, "DllAbout");
+    void(CALL *DllAbout) (HWND hWnd);
+    DllAbout = (void(CALL *)(HWND))GetProcAddress(hLib, "DllAbout");
 
     //call the function from the dll
     DllAbout(m_hWnd);

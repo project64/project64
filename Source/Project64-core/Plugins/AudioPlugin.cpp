@@ -14,7 +14,7 @@
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <Project64-core/N64System/N64Class.h>
-#include "AudioPlugin.h"
+#include <Project64-core/Plugins/AudioPlugin.h>
 #ifdef _WIN32
 #include <Windows.h>
 #endif
@@ -64,8 +64,8 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
 {
     struct AUDIO_INFO
     {
-        HWND hwnd;
-        HINSTANCE hinst;
+        void * hwnd;
+        void * hinst;
 
         int32_t MemoryBswaped;    // If this is set to TRUE, then the memory has been pre
 
@@ -97,9 +97,9 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
 
     AUDIO_INFO Info = { 0 };
 
-    Info.hwnd = (HWND)Window->GetWindowHandle();
-    Info.hinst = GetModuleHandle(NULL);
-    Info.MemoryBswaped = TRUE;
+    Info.hwnd = Window ? Window->GetWindowHandle() : NULL;
+    Info.hinst =  Window ? Window->GetModuleInstance() : NULL;;
+    Info.MemoryBswaped = true;
     Info.CheckInterrupts = DummyCheckInterrupts;
 
     // We are initializing the plugin before any rom is loaded so we do not have any correct
@@ -167,13 +167,15 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
 
 void CAudioPlugin::UnloadPluginDetails(void)
 {
+#ifdef _WIN32
     if (m_hAudioThread)
     {
         WriteTrace(TraceAudioPlugin, TraceDebug, "Terminate Audio Thread");
         TerminateThread(m_hAudioThread, 0);
         m_hAudioThread = NULL;
     }
-    AiDacrateChanged = NULL;
+#endif
+	AiDacrateChanged = NULL;
     AiLenChanged = NULL;
     AiReadLength = NULL;
     AiUpdate = NULL;
@@ -190,6 +192,7 @@ void CAudioPlugin::DacrateChanged(SYSTEM_TYPE Type)
     AiDacrateChanged(Type);
 }
 
+#ifdef _WIN32
 void CAudioPlugin::AudioThread(CAudioPlugin * _this)
 {
     SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
@@ -202,3 +205,4 @@ void CAudioPlugin::AudioThread(CAudioPlugin * _this)
         _this->AiUpdate(true);
     }
 }
+#endif
