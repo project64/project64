@@ -2750,7 +2750,9 @@ force_quad3d=1
 Good Name=Pro Mahjong Tsuwamono 64 - Jansou Battle ni Chousen (J)
 Internal Name=TSUWAMONO64
 depthmode=0
+fb_smart=0 //disabling FB is a horrible hack
 force_microcheck=1
+
 
 //================  Q  ================
 [16931D74-65DC6D34-C:50]
