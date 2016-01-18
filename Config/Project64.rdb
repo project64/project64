@@ -2605,6 +2605,7 @@ RDRAM Size=8
 RSP-JumpTableSize=3584
 SMM-FUNC=0
 SMM-PI DMA=0
+SMM-Protect=1
 SMM-TLB=0
 ViRefresh=1800
 
@@ -2624,6 +2625,7 @@ RDRAM Size=8
 RSP-JumpTableSize=3584
 SMM-FUNC=0
 SMM-PI DMA=0
+SMM-Protect=1
 SMM-TLB=0
 ViRefresh=2050
 
