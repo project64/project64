@@ -4876,7 +4876,7 @@ void CRecompilerOps::SPECIAL_DADDU()
         if (IsConst(source2))
         {
             AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegLo(source2));
-            AddConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegHi(source2));
+            AdcConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegHi(source2));
         }
         else if (IsMapped(source2))
         {
