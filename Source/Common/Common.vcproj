@@ -267,6 +267,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\TraceModulesCommon.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Util.h"
 				>
 			</File>
