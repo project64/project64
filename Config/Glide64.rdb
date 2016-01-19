@@ -2272,6 +2272,13 @@ Good Name=Nuclear Strike 64 (U)
 Internal Name=NUCLEARSTRIKE64
 buff_clear=0
 
+[D83BB920-CC406416-C:4A]
+Good Name=Nushi Duri 64 (J) (V1.0)
+buff_clear=1
+depthmode=0
+force_microcheck=1
+wrap_big_tex=0
+
 [C5F1DE79-5D4BEB6E-C:4A]
 Good Name=Nushi Duri 64 (J) (V1.1)
 Internal Name=Ç¼ÂÞØ64
