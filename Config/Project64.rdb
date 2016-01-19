@@ -3916,18 +3916,21 @@ ViRefresh=2200
 Good Name=Nuclear Strike 64 (E) (M2)
 Internal Name=NUCLEARSTRIKE64
 Status=Compatible
+Linking=Off
 RDRAM Size=8
 
 [8F50B845-D729D22F-C:44]
 Good Name=Nuclear Strike 64 (G)
 Internal Name=NUCLEARSTRIKE64
 Status=Compatible
+Linking=Off
 RDRAM Size=8
 
 [4998DDBB-F7B7AEBC-C:45]
 Good Name=Nuclear Strike 64 (U)
 Internal Name=NUCLEARSTRIKE64
 Status=Compatible
+Linking=Off
 RDRAM Size=8
 
 [D83BB920-CC406416-C:4A]
