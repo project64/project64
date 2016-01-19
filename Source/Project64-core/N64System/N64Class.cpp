@@ -212,6 +212,12 @@ bool CN64System::RunFileImage(const char * FileLoc)
     WriteTrace(TraceN64System, TraceDebug, "Loading \"%s\"", FileLoc);
     if (g_Rom->LoadN64Image(FileLoc))
     {
+        if (g_Rom->CicChipID() == CIC_NUS_8303)
+        {
+            //64DD IPL
+            g_DDRom = g_Rom;
+        }
+
         g_System->RefreshGameSettings();
 
         g_Settings->SaveString(Game_File, FileLoc);

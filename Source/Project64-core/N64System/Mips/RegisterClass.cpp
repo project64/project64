@@ -60,7 +60,7 @@ float        ** CSystemRegisters::_FPR_S;
 double       ** CSystemRegisters::_FPR_D;
 uint32_t      * CSystemRegisters::_FPCR = NULL;
 uint32_t      * CSystemRegisters::_LLBit = NULL;
-ROUNDING_MODE * CSystemRegisters::_RoundingModel = NULL;
+int32_t       * CSystemRegisters::_RoundingModel = NULL;
 
 CP0registers::CP0registers(uint32_t * _CP0) :
 INDEX_REGISTER(_CP0[0]),
@@ -240,7 +240,7 @@ void CRegisters::Reset()
     memset(m_FPCR, 0, sizeof(m_FPCR));
     m_HI.DW = 0;
     m_LO.DW = 0;
-    m_RoundingModel = ROUND_NEAR;
+    m_RoundingModel = FE_TONEAREST;
 
     m_LLBit = 0;
 

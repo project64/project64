@@ -11,10 +11,11 @@
 #include "stdafx.h"
 #include "SpeedLimiterClass.h"
 #include <Common/Util.h>
+#ifdef _WIN32
 #include <Windows.h>
 #include <Mmsystem.h>
-
 #pragma comment(lib, "winmm.lib")
+#endif
 
 CSpeedLimiter::CSpeedLimiter()
 {
@@ -24,19 +25,23 @@ CSpeedLimiter::CSpeedLimiter()
     m_BaseSpeed = 60;
     m_Ratio = 1000.0F / (float)m_Speed;
 
+#ifdef _WIN32
     TIMECAPS Caps;
     timeGetDevCaps(&Caps, sizeof(Caps));
     if (timeBeginPeriod(Caps.wPeriodMin) == TIMERR_NOCANDO)
     {
         g_Notify->DisplayError("Error during timer begin");
     }
+#endif
 }
 
 CSpeedLimiter::~CSpeedLimiter()
 {
+#ifdef _WIN32
     TIMECAPS Caps;
     timeGetDevCaps(&Caps, sizeof(Caps));
     timeEndPeriod(Caps.wPeriodMin);
+#endif
 }
 
 void CSpeedLimiter::SetHertz(uint32_t Hertz)
@@ -50,11 +55,14 @@ void CSpeedLimiter::FixSpeedRatio()
 {
     m_Ratio = 1000.0f / static_cast<double>(m_Speed);
     m_Frames = 0;
+#ifdef _WIN32
     m_LastTime = timeGetTime();
+#endif
 }
 
 bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
 {
+#ifdef _WIN32
     m_Frames += 1;
     uint32_t CurrentTime = timeGetTime();
 
@@ -85,6 +93,9 @@ bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
     {
         return false;
     }
+#else
+    return false;
+#endif
 }
 
 void CSpeedLimiter::IncreaseSpeed()

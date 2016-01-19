@@ -16,11 +16,12 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <float.h>
 #include "x86CodeLog.h"
 
 uint32_t CRegInfo::m_fpuControl = 0;
 
-char *Format_Name[] = { "Unknown", "dword", "qword", "float", "double" };
+const char *Format_Name[] = { "Unknown", "dword", "qword", "float", "double" };
 
 CRegInfo::CRegInfo() :
 m_CycleCount(0),
@@ -160,8 +161,12 @@ void CRegInfo::FixRoundModel(FPU_ROUND RoundMethod)
 
     if (RoundMethod == RoundDefault)
     {
+        static const unsigned int msRound[4] = { _RC_NEAR, _RC_CHOP, _RC_UP, _RC_DOWN };
+
         x86Reg RoundReg = Map_TempReg(x86_Any, -1, false);
         MoveVariableToX86reg(&g_Reg->m_RoundingModel, "m_RoundingModel", RoundReg);
+        MoveVariableDispToX86Reg((void *)&msRound[0], "msRound", RoundReg, RoundReg, Multip_x4);
+
         ShiftLeftSignImmed(RoundReg, 2);
         OrX86RegToX86Reg(reg, RoundReg);
         SetX86Protected(RoundReg, false);
@@ -526,7 +531,7 @@ CX86Ops::x86Reg CRegInfo::UnMap_8BitTempReg()
     for (count = 0; count < 10; count++)
     {
         if (!Is8BitReg((x86Reg)count)) { continue; }
-        if (GetMipsRegState((x86Reg)count) == Temp_Mapped)
+        if (GetX86Mapped((x86Reg)count) == Temp_Mapped)
         {
             if (GetX86Protected((x86Reg)count) == false)
             {

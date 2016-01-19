@@ -24,13 +24,16 @@ public:
     void DisplayViCounter(uint32_t FrameRate);
 
 private:
+    CFramePerSecond(const CFramePerSecond&);            // Disable copy constructor
+    CFramePerSecond& operator=(const CFramePerSecond&); // Disable assignment
+
     static void FrameRateTypeChanged(CFramePerSecond * _this);
     static void ScreenHertzChanged(CFramePerSecond * _this);
 
-    int  m_iFrameRateType, m_ScreenHertz;
+    int32_t  m_iFrameRateType, m_ScreenHertz;
 
     enum { NoOfFrames = 7 };
 
     int64_t m_Frequency, m_Frames[NoOfFrames], m_LastFrame;
-    int m_CurrentFrame;
+    int32_t m_CurrentFrame;
 };

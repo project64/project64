@@ -127,8 +127,6 @@ bool CN64Rom::AllocateAndLoadN64Image(const char * FileLoc, bool LoadBootCodeOnl
     ByteSwapRom();
 
     //Protect the memory so that it can not be written to.
-    DWORD OldProtect;
-    VirtualProtect(m_ROMImage, m_RomFileSize, PAGE_READONLY, &OldProtect);
     ProtectMemory(m_ROMImage, m_RomFileSize, MEM_READONLY);
     return true;
 }

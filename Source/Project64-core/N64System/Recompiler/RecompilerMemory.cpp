@@ -13,7 +13,6 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Recompiler/RecompilerClass.h>
 #include <Common/MemoryManagement.h>
-#include <Windows.h>
 
 CRecompMemory::CRecompMemory() :
 m_RecompCode(NULL),
@@ -26,7 +25,7 @@ CRecompMemory::~CRecompMemory()
 {
     if (m_RecompCode)
     {
-        VirtualFree(m_RecompCode, 0, MEM_RELEASE);
+		FreeAddressSpace(m_RecompCode,MaxCompileBufferSize + 4);
         m_RecompCode = NULL;
     }
     m_RecompPos = NULL;
@@ -34,7 +33,7 @@ CRecompMemory::~CRecompMemory()
 
 bool CRecompMemory::AllocateMemory()
 {
-    uint8_t * RecompCodeBase = (uint8_t *)VirtualAlloc(NULL, MaxCompileBufferSize + 4, MEM_RESERVE | MEM_TOP_DOWN, PAGE_EXECUTE_READWRITE);
+    uint8_t * RecompCodeBase = (uint8_t *)AllocateAddressSpace(MaxCompileBufferSize + 4);
     if (RecompCodeBase == NULL)
     {
         WriteTrace(TraceRecompiler, TraceError, "failed to allocate RecompCodeBase");
@@ -42,11 +41,11 @@ bool CRecompMemory::AllocateMemory()
         return false;
     }
 
-    m_RecompCode = (uint8_t *)VirtualAlloc(RecompCodeBase, InitialCompileBufferSize, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+    m_RecompCode = (uint8_t *)CommitMemory(RecompCodeBase, InitialCompileBufferSize, MEM_EXECUTE_READWRITE);
     if (m_RecompCode == NULL)
     {
         WriteTrace(TraceRecompiler, TraceError, "failed to commit initial buffer");
-        VirtualFree(RecompCodeBase, 0, MEM_RELEASE);
+		FreeAddressSpace(RecompCodeBase,MaxCompileBufferSize + 4);
         g_Notify->DisplayError(MSG_MEM_ALLOC_ERROR);
         return false;
     }
@@ -68,7 +67,7 @@ void CRecompMemory::CheckRecompMem()
         g_Recompiler->ResetRecompCode(true);
         return;
     }
-    LPVOID MemAddr = VirtualAlloc(m_RecompCode + m_RecompSize, IncreaseCompileBufferSize, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+    void * MemAddr = CommitMemory(m_RecompCode + m_RecompSize, IncreaseCompileBufferSize, MEM_EXECUTE_READWRITE);
     if (MemAddr == NULL)
     {
         WriteTrace(TraceRecompiler, TraceError, "failed to increase buffer");

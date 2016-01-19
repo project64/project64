@@ -482,14 +482,6 @@ enum
     SI_STATUS_INTERRUPT	=	0x1000,
 };
 
-enum ROUNDING_MODE
-{
-    ROUND_NEAR = 0x00000000, // _RC_NEAR
-    ROUND_DOWN = 0x00000100, // _RC_DOWN
-    ROUND_UP   = 0x00000200, // _RC_UP
-    ROUND_CHOP = 0x00000300, // _RC_CHOP
-};
-
 class CRegName
 {
 public:
@@ -514,7 +506,7 @@ protected:
     static double       ** _FPR_D;
     static uint32_t      * _FPCR;
     static uint32_t      * _LLBit;
-    static ROUNDING_MODE * _RoundingModel;
+    static int32_t       * _RoundingModel;
 };
 
 class CN64System;
@@ -549,7 +541,7 @@ public:
 
     //Floating point registers/information
     uint32_t        m_FPCR[32];
-    ROUNDING_MODE   m_RoundingModel;
+    int32_t         m_RoundingModel;
     MIPS_DWORD      m_FPR[32];
     float         * m_FPR_S[32];
     double        * m_FPR_D[32];

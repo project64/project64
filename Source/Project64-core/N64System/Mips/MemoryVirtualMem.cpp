@@ -194,6 +194,33 @@ bool CMipsMemoryVM::Initialize()
         m_Rom = g_Rom->GetRomAddress();
         m_RomSize = g_Rom->GetRomSize();
     }
+
+    //64DD IPL
+    if (g_DDRom != NULL)
+    {
+        if (g_Settings->LoadBool(Game_LoadRomToMemory))
+        {
+            m_DDRomMapped = true;
+            m_DDRom = m_RDRAM + 0x06000000;
+            m_DDRomSize = g_DDRom->GetRomSize();
+            if (CommitMemory(m_DDRom, g_DDRom->GetRomSize(), MEM_READWRITE) == NULL)
+            {
+                WriteTrace(TraceN64System, TraceError, "Failed to Allocate Rom (Size: 0x%X)", g_DDRom->GetRomSize());
+                FreeMemory();
+                return false;
+            }
+            memcpy(m_DDRom, g_DDRom->GetRomAddress(), g_DDRom->GetRomSize());
+
+            ::ProtectMemory(m_DDRom, g_DDRom->GetRomSize(), MEM_READONLY);
+        }
+        else
+        {
+            m_DDRomMapped = false;
+            m_DDRom = g_DDRom->GetRomAddress();
+            m_DDRomSize = g_DDRom->GetRomSize();
+        }
+    }
+    
     CPifRam::Reset();
 
     m_TLB_ReadMap = new size_t[0x100000];
@@ -838,7 +865,7 @@ void  CMipsMemoryVM::Compile_LW(x86Reg Reg, uint32_t VAddr)
                     if (g_Plugins->Audio()->AiReadLength != NULL)
                     {
                         BeforeCallDirect(m_RegWorkingSet);
-                        Call_Direct(g_Plugins->Audio()->AiReadLength, "AiReadLength");
+                        Call_Direct((void *)g_Plugins->Audio()->AiReadLength, "AiReadLength");
                         MoveX86regToVariable(x86_EAX, &m_TempValue, "m_TempValue");
                         AfterCallDirect(m_RegWorkingSet);
                         MoveVariableToX86reg(&m_TempValue, "m_TempValue", Reg);
@@ -925,6 +952,12 @@ void  CMipsMemoryVM::Compile_LW(x86Reg Reg, uint32_t VAddr)
             if ((PAddr & 0xF0000000) == 0x10000000 && (PAddr - 0x10000000) < m_RomSize)
             {
                 // read from rom
+                sprintf(VarName, "m_RDRAM + %X", PAddr);
+                MoveVariableToX86reg(PAddr + m_RDRAM, VarName, Reg);
+            }
+            else if ((PAddr & 0xFF000000) == 0x06000000 && (PAddr - 0x06000000) < m_DDRomSize)
+            {
+                // read from ddrom
                 sprintf(VarName, "m_RDRAM + %X", PAddr);
                 MoveVariableToX86reg(PAddr + m_RDRAM, VarName, Reg);
             }
@@ -1392,7 +1425,7 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
                 Jump = m_RecompPos - 1;
                 MoveConstToVariable(Value, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
                 BeforeCallDirect(m_RegWorkingSet);
-                Call_Direct(g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
+                Call_Direct((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
                 AfterCallDirect(m_RegWorkingSet);
                 CPU_Message("");
                 CPU_Message("      Continue:");
@@ -1408,7 +1441,7 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
                 Jump = m_RecompPos - 1;
                 MoveConstToVariable(Value, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
                 BeforeCallDirect(m_RegWorkingSet);
-                Call_Direct(g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
+                Call_Direct((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
                 AfterCallDirect(m_RegWorkingSet);
                 CPU_Message("");
                 CPU_Message("      Continue:");
@@ -1454,7 +1487,7 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
             }
             else
             {
-                Call_Direct(g_Plugins->Audio()->AiLenChanged, "AiLenChanged");
+                Call_Direct((void *)g_Plugins->Audio()->AiLenChanged, "AiLenChanged");
             }
             AfterCallDirect(m_RegWorkingSet);
             break;
@@ -1747,7 +1780,7 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
                 Jump = m_RecompPos - 1;
                 MoveX86regToVariable(Reg, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
                 BeforeCallDirect(m_RegWorkingSet);
-                Call_Direct(g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
+                Call_Direct((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
                 AfterCallDirect(m_RegWorkingSet);
                 CPU_Message("");
                 CPU_Message("      Continue:");
@@ -1766,7 +1799,7 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
                 Jump = m_RecompPos - 1;
                 MoveX86regToVariable(Reg, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
                 BeforeCallDirect(m_RegWorkingSet);
-                Call_Direct(g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
+                Call_Direct((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
                 AfterCallDirect(m_RegWorkingSet);
                 CPU_Message("");
                 CPU_Message("      Continue:");
@@ -1814,7 +1847,7 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
             }
             else
             {
-                Call_Direct(g_Plugins->Audio()->AiLenChanged, "g_Plugins->Audio()->LenChanged");
+                Call_Direct((void *)g_Plugins->Audio()->AiLenChanged, "g_Plugins->Audio()->LenChanged");
             }
             AfterCallDirect(m_RegWorkingSet);
             break;
@@ -2106,8 +2139,10 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         case 0x04700000: Load32RDRAMInterface(); break;
         case 0x04800000: Load32SerialInterface(); break;
         case 0x05000000: Load32CartridgeDomain2Address1(); break;
+        case 0x06000000: Load32CartridgeDomain1Address1(); break;
         case 0x08000000: Load32CartridgeDomain2Address2(); break;
         case 0x1FC00000: Load32PifRam(); break;
+        case 0x1FF00000: Load32CartridgeDomain1Address3(); break;
         default:
             if (bHaveDebugger())
             {
@@ -4257,8 +4292,8 @@ void CMipsMemoryVM::TLB_Unmaped(uint32_t Vaddr, uint32_t Len)
     for (count = Vaddr; count < End; count += 0x1000)
     {
         size_t Index = count >> 12;
-        m_TLB_ReadMap[Index] = NULL;
-        m_TLB_WriteMap[Index] = NULL;
+        m_TLB_ReadMap[Index] = 0;
+        m_TLB_WriteMap[Index] = 0;
     }
 }
 
@@ -4678,6 +4713,26 @@ void CMipsMemoryVM::Load32SerialInterface(void)
     }
 }
 
+void CMipsMemoryVM::Load32CartridgeDomain1Address1(void)
+{
+    //64DD IPL ROM
+    if (g_DDRom != NULL && (m_MemLookupAddress & 0xFFFFFF) < g_MMU->m_DDRomSize)
+    {
+        m_MemLookupValue.UW[0] = *(uint32_t *)&g_MMU->m_DDRom[(m_MemLookupAddress & 0xFFFFFF)];
+    }
+    else
+    {
+        m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
+        m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
+    }
+}
+
+void CMipsMemoryVM::Load32CartridgeDomain1Address3(void)
+{
+    m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
+    m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
+}
+
 void CMipsMemoryVM::Load32CartridgeDomain2Address1(void)
 {
     m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
@@ -4765,10 +4820,6 @@ void CMipsMemoryVM::Load32Rom(void)
     {
         m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
         m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
-        if (bHaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
     }
 }
 

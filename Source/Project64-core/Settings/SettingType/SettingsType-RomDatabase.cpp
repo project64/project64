@@ -65,12 +65,14 @@ void CSettingTypeRomDatabase::Initialize( void )
     m_GlideIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_Glide64RDB).c_str());
 
     g_Settings->RegisterChangeCB(Game_IniKey,NULL,GameChanged);
+    g_Settings->RegisterChangeCB(Cmd_BaseDirectory,NULL,BaseDirChanged);
 
     m_SectionIdent = new stdstr(g_Settings->LoadStringVal(Game_IniKey));
 }
 
 void CSettingTypeRomDatabase::CleanUp( void )
 {
+    g_Settings->UnregisterChangeCB(Cmd_BaseDirectory,NULL,BaseDirChanged);
     g_Settings->UnregisterChangeCB(Game_IniKey,NULL,GameChanged);
     if (m_SettingsIniFile)
     {
@@ -87,6 +89,22 @@ void CSettingTypeRomDatabase::CleanUp( void )
         delete m_SectionIdent;
         m_SectionIdent = NULL;
     }
+}
+
+void CSettingTypeRomDatabase::BaseDirChanged ( void * /*Data */ )
+{
+    if (m_SettingsIniFile)
+    {
+        delete m_SettingsIniFile;
+        m_SettingsIniFile = NULL;
+    }
+    if (m_GlideIniFile)
+    {
+        delete m_GlideIniFile;
+        m_GlideIniFile = NULL;
+    }
+    m_SettingsIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
+    m_GlideIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_Glide64RDB).c_str());
 }
 
 void CSettingTypeRomDatabase::GameChanged ( void * /*Data */ )
@@ -195,7 +213,7 @@ void CSettingTypeRomDatabase::Save ( int /*Index*/, bool Value )
     }
     if (m_DeleteOnDefault)
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        g_Notify->BreakPoint(__FILE__,__LINE__);
     }
     if (m_GlideSetting)
     {

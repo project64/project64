@@ -263,12 +263,14 @@ Good Name=Akumajou Dracula Mokushiroku - Real Action Adventure (J)
 Internal Name=DRACULA MOKUSHIROKU
 depthmode=0
 fb_clear=1
+old_style_adither=1
 
 [A5533106-B9F25E5B-C:4A]
 Good Name=Akumajou Dracula Mokushiroku Gaiden - Legend of Cornell (J)
 Internal Name=DRACULA MOKUSHIROKU2
 depthmode=0
 fb_clear=1
+old_style_adither=1
 
 [D9EDD54D-6BB8E274-C:50]
 Good Name=All-Star Baseball '99 (E)
@@ -633,12 +635,14 @@ Good Name=Castlevania - Legacy of Darkness (E) (M3)
 Internal Name=CASTLEVANIA2
 depthmode=0
 fb_clear=1
+old_style_adither=1
 
 [1CC06338-87388926-C:45]
 Good Name=Castlevania - Legacy of Darkness (U)
 Internal Name=CASTLEVANIA2
 depthmode=0
 fb_clear=1
+old_style_adither=1
 
 [DCCF2134-9DD63578-C:50]
 Good Name=Centre Court Tennis (E)
@@ -2250,6 +2254,7 @@ wrap_big_tex=1
 Good Name=Nintama Rantarou 64 Game Gallery (J)
 Internal Name=NINTAMAGAMEGALLERY64
 depthmode=0
+fb_smart=0
 force_microcheck=1
 
 [8A97A197-272DF6C1-C:50]
@@ -2381,6 +2386,20 @@ fb_render=1
 filtering=1
 optimize_texrect=0
 useless_is_useless=1
+
+[EE08C602-6BC2D5A6-C:50]
+Good Name=PGA European Tour (E) (M5)
+Internal Name=PGA European Tour
+buff_clear=0
+fb_read_always=1
+swapmode=0
+
+[B54CE881-BCCB6126-C:45]
+Good Name=PGA European Tour (U)
+Internal Name=PGA European Tour
+buff_clear=0
+fb_read_always=1
+swapmode=0
 
 [1AA05AD5-46F52D80-C:50]
 Good Name=Pilotwings 64 (E) (M3)
@@ -2745,7 +2764,9 @@ force_quad3d=1
 Good Name=Pro Mahjong Tsuwamono 64 - Jansou Battle ni Chousen (J)
 Internal Name=TSUWAMONO64
 depthmode=0
+fb_smart=0 //disabling FB is a horrible hack
 force_microcheck=1
+
 
 //================  Q  ================
 [16931D74-65DC6D34-C:50]
@@ -3162,7 +3183,7 @@ Good Name=Super Mario 64 (E) (M3)
 Internal Name=SUPER MARIO 64
 depth_bias=32
 depthmode=1
-filtering=1
+filtering=0
 lodmode=1
 
 [4EAA3D0E-74757C24-C:4A]
@@ -3170,7 +3191,7 @@ Good Name=Super Mario 64 (J)
 Internal Name=SUPER MARIO 64
 depth_bias=32
 depthmode=1
-filtering=1
+filtering=0
 lodmode=1
 
 [635A2BFF-8B022326-C:45]
@@ -3178,7 +3199,7 @@ Good Name=Super Mario 64 (U)
 Internal Name=SUPER MARIO 64
 depth_bias=32
 depthmode=1
-filtering=1
+filtering=0
 lodmode=1
 
 [D6FBA4A8-6326AA2C-C:4A]
@@ -3186,7 +3207,7 @@ Good Name=Super Mario 64 - Shindou Edition (J)
 Internal Name=SUPERMARIO64
 depth_bias=32
 depthmode=1
-filtering=1
+filtering=0
 lodmode=1
 
 [66572080-28E348E1-C:4A]
@@ -3757,29 +3778,37 @@ depthmode=1
 Good Name=Waialae Country Club - True Golf Classics (E) (M4) (V1.0)
 Internal Name=Waialae Country Club
 depthmode=0
-fb_smart=0
+fb_smart=1
 wrap_big_tex=1
 
 [0C5057AD-046E126E-C:50]
 Good Name=Waialae Country Club - True Golf Classics (E) (M4) (V1.1)
 Internal Name=Waialae Country Club
 depthmode=0
-fb_smart=0
+fb_smart=1
 wrap_big_tex=1
 
 [8066D58A-C3DECAC1-C:45]
 Good Name=Waialae Country Club - True Golf Classics (U) (V1.0)
 Internal Name=Waialae Country Club
 depthmode=0
-fb_smart=0
+fb_smart=1
 wrap_big_tex=1
 
 [DD318CE2-B73798BA-C:45]
 Good Name=Waialae Country Club - True Golf Classics (U) (V1.1)
 Internal Name=Waialae Country Club
 depthmode=0
-fb_smart=0
+fb_smart=1
 wrap_big_tex=1
+
+[D715CC70-271CF5D6-C:50]
+Good Name=War Gods (E)
+filtering=2
+
+[F7FE28F6-C3F2ACC3-C:45]
+Good Name=War Gods (U)
+filtering=2
 
 [650EFA96-30DDF9A7-C:50]
 Good Name=Wave Race 64 (E) (M2)
@@ -4000,3 +4029,6 @@ buff_clear=0
 force_microcheck=1
 swapmode=0
 
+[37955E65-C6F2B7B3-C:0]
+Good Name=Tamiya Racing 64 (Unreleased)
+force_microcheck=1
