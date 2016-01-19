@@ -720,6 +720,7 @@ Cheat3="Have\All Difficulties",E95E2008 585A
 Cheat4="Have\All Tracks",E95E2014 1050
 Cheat5="Have\All Boards",E95E201C 595B,E95E201A 504F
 Cheat1="Low Timer",E85E1FFC 595A,E85E1FFA 595A
+Cheat6="exhalatio audio hack",81052760 AD99
 
 //----
 
@@ -9369,6 +9370,10 @@ Cheat12="Have Shotgun",E8878B88 5959
 
 //----
 
+[E688A5B8-B14B3F18-C:50]
+Good Name=Twisted Edge Extreme Snowboarding (E)
+Cheat1="exhalatio audio hack",81051960 AD99
+
 [BBC99D32-117DAA80-C:45]
 Name=Twisted Edge Extreme Snowboarding (U)
 Cheat0="Max\50000 Stunt Points",E95E8010 1CAA
@@ -9377,6 +9382,7 @@ Cheat3="Have\All Difficulties",E95E8048 585A
 Cheat4="Have\All Tracks",E95E8054 1050
 Cheat5="Have\All Boards",E95E7D5C 595B,E95E7D5A 504F
 Cheat1="Low Timer",E86AEC51 595A,E86AE957 595A
+Cheat6="exhalatio audio hack",81051840 AD99
 
 //----
 
