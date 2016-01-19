@@ -592,6 +592,10 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
     m_Reg.CONFIG_REGISTER = 0x0006E463;
     m_Reg.STATUS_REGISTER = 0x34000000;
 
+    //64DD Registers
+    m_Reg.ASIC_STATUS = DD_STATUS_RST_STATE;
+    m_Reg.ASIC_ID_REG = 0x00030000;
+
     //m_Reg.REVISION_REGISTER   = 0x00000511;
     m_Reg.FixFpuLocations();
 
