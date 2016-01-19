@@ -201,6 +201,7 @@ private:
     static void Write32PeripheralInterface(void);
     static void Write32RDRAMInterface(void);
     static void Write32SerialInterface(void);
+    static void Write32CartridgeDomain2Address1(void);
     static void Write32CartridgeDomain2Address2(void);
     static void Write32PifRam(void);
 
