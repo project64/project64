@@ -34,6 +34,7 @@ void CDMA::OnFirstDMA()
     {
     case CIC_NUS_6101:  offset = +0x0318; break;
     case CIC_NUS_5167:  offset = +0x0318; break;
+    case CIC_NUS_8303:  offset = +0x0318; break;
     case CIC_UNKNOWN:
     case CIC_NUS_6102:  offset = +0x0318; break;
     case CIC_NUS_6103:  offset = +0x0318; break;
@@ -75,7 +76,7 @@ void CDMA::PI_DMA_READ()
         uint8_t * ROM = g_Rom->GetRomAddress();
         uint8_t * RDRAM = g_MMU->Rdram();
 
-		ProtectMemory(ROM, g_Rom->GetRomSize(), MEM_READWRITE);
+        ProtectMemory(ROM, g_Rom->GetRomSize(), MEM_READWRITE);
         g_Reg->PI_CART_ADDR_REG -= 0x10000000;
         if (g_Reg->PI_CART_ADDR_REG + PI_RD_LEN_REG < g_Rom->GetRomSize())
         {
@@ -105,7 +106,7 @@ void CDMA::PI_DMA_READ()
             g_Recompiler->ClearRecompCode_Phys(g_Reg->PI_DRAM_ADDR_REG, g_Reg->PI_WR_LEN_REG, CRecompiler::Remove_DMA);
         }
 
-		ProtectMemory(ROM, g_Rom->GetRomSize(), MEM_READONLY);
+        ProtectMemory(ROM, g_Rom->GetRomSize(), MEM_READONLY);
 
         g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         g_Reg->MI_INTR_REG |= MI_INTR_PI;
@@ -178,6 +179,75 @@ void CDMA::PI_DMA_WRITE()
         g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         g_Reg->MI_INTR_REG |= MI_INTR_PI;
         g_Reg->CheckInterrupts();
+        return;
+    }
+
+    //64DD IPL ROM
+    if (g_Reg->PI_CART_ADDR_REG >= 0x06000000 && g_Reg->PI_CART_ADDR_REG <= 0x063FFFFF)
+    {
+        uint32_t i;
+
+#ifdef legacycode
+#ifdef ROM_IN_MAPSPACE
+        if (WrittenToRom)
+        {
+            uint32_t OldProtect;
+            VirtualProtect(ROM, m_RomFileSize, PAGE_READONLY, &OldProtect);
+        }
+#endif
+#endif
+
+        uint8_t * ROM = g_DDRom->GetRomAddress();
+        uint8_t * RDRAM = g_MMU->Rdram();
+        g_Reg->PI_CART_ADDR_REG -= 0x06000000;
+        if (g_Reg->PI_CART_ADDR_REG + PI_WR_LEN_REG < g_DDRom->GetRomSize())
+        {
+            for (i = 0; i < PI_WR_LEN_REG; i++)
+            {
+                *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = *(ROM + ((g_Reg->PI_CART_ADDR_REG + i) ^ 3));
+            }
+        }
+        else if (g_Reg->PI_CART_ADDR_REG >= g_DDRom->GetRomSize())
+        {
+            uint32_t cart = g_Reg->PI_CART_ADDR_REG - g_DDRom->GetRomSize();
+            while (cart >= g_DDRom->GetRomSize())
+            {
+                cart -= g_DDRom->GetRomSize();
+            }
+            for (i = 0; i < PI_WR_LEN_REG; i++)
+            {
+                *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = *(ROM + ((cart + i) ^ 3));
+            }
+        }
+        else
+        {
+            uint32_t Len;
+            Len = g_DDRom->GetRomSize() - g_Reg->PI_CART_ADDR_REG;
+            for (i = 0; i < Len; i++)
+            {
+                *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = *(ROM + ((g_Reg->PI_CART_ADDR_REG + i) ^ 3));
+            }
+            for (i = Len; i < PI_WR_LEN_REG - Len; i++)
+            {
+                *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = 0;
+            }
+        }
+        g_Reg->PI_CART_ADDR_REG += 0x06000000;
+
+        if (!g_System->DmaUsed())
+        {
+            g_System->SetDmaUsed(true);
+            OnFirstDMA();
+        }
+        if (g_Recompiler && g_System->bSMM_PIDMA())
+        {
+            g_Recompiler->ClearRecompCode_Phys(g_Reg->PI_DRAM_ADDR_REG, g_Reg->PI_WR_LEN_REG, CRecompiler::Remove_DMA);
+        }
+        g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+        g_Reg->MI_INTR_REG |= MI_INTR_PI;
+        g_Reg->CheckInterrupts();
+        //ChangeTimer(PiTimer,(int32_t)(PI_WR_LEN_REG * 8.9) + 50);
+        //ChangeTimer(PiTimer,(int32_t)(PI_WR_LEN_REG * 8.9));
         return;
     }
 

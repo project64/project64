@@ -35,6 +35,7 @@ extern CPlugins      * g_Plugins;
 
 class CN64Rom;
 extern CN64Rom       * g_Rom;      //The current rom that this system is executing.. it can only execute one file at the time
+extern CN64Rom       * g_DDRom;    //64DD IPL ROM
 
 class CAudio;
 extern CAudio        * g_Audio;

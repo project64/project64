@@ -67,6 +67,7 @@ enum SettingID
     Setting_LanguageDir,
     Setting_LanguageDirDefault,
     Setting_CurrentLanguage,
+    Setting_EnableDisk,
 
     //RDB TLB Settings
     Rdb_GoodName,

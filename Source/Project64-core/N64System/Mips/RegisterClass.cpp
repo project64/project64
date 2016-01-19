@@ -60,7 +60,7 @@ float        ** CSystemRegisters::_FPR_S;
 double       ** CSystemRegisters::_FPR_D;
 uint32_t      * CSystemRegisters::_FPCR = NULL;
 uint32_t      * CSystemRegisters::_LLBit = NULL;
-ROUNDING_MODE * CSystemRegisters::_RoundingModel = NULL;
+int32_t       * CSystemRegisters::_RoundingModel = NULL;
 
 CP0registers::CP0registers(uint32_t * _CP0) :
 INDEX_REGISTER(_CP0[0]),
@@ -213,6 +213,32 @@ SI_STATUS_REG(SerialInterface[3])
 {
 }
 
+Disk_InterfaceReg::Disk_InterfaceReg(uint32_t * DiskInterface) :
+ASIC_DATA(DiskInterface[0]),
+ASIC_MISC_REG(DiskInterface[1]),
+ASIC_STATUS(DiskInterface[2]),
+ASIC_CUR_TK(DiskInterface[3]),
+ASIC_BM_STATUS(DiskInterface[4]),
+ASIC_ERR_SECTOR(DiskInterface[5]),
+ASIC_SEQ_STATUS(DiskInterface[6]),
+ASIC_CUR_SECTOR(DiskInterface[7]),
+ASIC_HARD_RESET(DiskInterface[8]),
+ASIC_C1_S0(DiskInterface[9]),
+ASIC_HOST_SECBYTE(DiskInterface[10]),
+ASIC_C1_S2(DiskInterface[11]),
+ASIC_SEC_BYTE(DiskInterface[12]),
+ASIC_C1_S4(DiskInterface[13]),
+ASIC_C1_S6(DiskInterface[14]),
+ASIC_CUR_ADDR(DiskInterface[15]),
+ASIC_ID_REG(DiskInterface[16]),
+ASIC_TEST_REG(DiskInterface[17]),
+ASIC_TEST_PIN_SEL(DiskInterface[18]),
+ASIC_CMD(DiskInterface[19]),
+ASIC_BM_CTL(DiskInterface[20]),
+ASIC_SEQ_CTL(DiskInterface[21])
+{
+}
+
 CRegisters::CRegisters(CN64System * System, CSystemEvents * SystemEvents) :
 CP0registers(m_CP0),
 Rdram_InterfaceReg(m_RDRAM_Registers),
@@ -224,6 +250,7 @@ RDRAMInt_InterfaceReg(m_RDRAM_Interface),
 SigProcessor_InterfaceReg(m_SigProcessor_Interface),
 DisplayControlReg(m_Display_ControlReg),
 Serial_InterfaceReg(m_SerialInterface),
+Disk_InterfaceReg(m_DiskInterface),
 m_System(System),
 m_SystemEvents(SystemEvents)
 {
@@ -240,7 +267,7 @@ void CRegisters::Reset()
     memset(m_FPCR, 0, sizeof(m_FPCR));
     m_HI.DW = 0;
     m_LO.DW = 0;
-    m_RoundingModel = ROUND_NEAR;
+    m_RoundingModel = FE_TONEAREST;
 
     m_LLBit = 0;
 
@@ -254,6 +281,7 @@ void CRegisters::Reset()
     memset(m_SigProcessor_Interface, 0, sizeof(m_SigProcessor_Interface));
     memset(m_Peripheral_Interface, 0, sizeof(m_Peripheral_Interface));
     memset(m_SerialInterface, 0, sizeof(m_SerialInterface));
+    memset(m_DiskInterface, 0, sizeof(m_DiskInterface));
 
     m_AudioIntrReg = 0;
     m_GfxIntrReg = 0;

@@ -14,16 +14,18 @@
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <Project64-core/N64System/N64Class.h>
-#include "AudioPlugin.h"
+#include <Project64-core/Plugins/AudioPlugin.h>
+#ifdef _WIN32
 #include <Windows.h>
+#endif
 
 CAudioPlugin::CAudioPlugin() :
-AiLenChanged(NULL),
-AiReadLength(NULL),
-ProcessAList(NULL),
-m_hAudioThread(NULL),
-AiUpdate(NULL),
-AiDacrateChanged(NULL)
+    AiLenChanged(NULL),
+    AiReadLength(NULL),
+    ProcessAList(NULL),
+    m_hAudioThread(NULL),
+    AiUpdate(NULL),
+    AiDacrateChanged(NULL)
 {
 }
 
@@ -36,7 +38,7 @@ CAudioPlugin::~CAudioPlugin()
 bool CAudioPlugin::LoadFunctions(void)
 {
     // Find entries for functions in DLL
-    void(__cdecl *InitiateAudio)     (void);
+    void(CALL *InitiateAudio)(void);
     LoadFunction(InitiateAudio);
     LoadFunction(AiDacrateChanged);
     LoadFunction(AiLenChanged);
@@ -62,8 +64,8 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
 {
     struct AUDIO_INFO
     {
-        HWND hwnd;
-        HINSTANCE hinst;
+        void * hwnd;
+        void * hinst;
 
         int32_t MemoryBswaped;    // If this is set to TRUE, then the memory has been pre
 
@@ -85,19 +87,19 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
         uint32_t * AI__DACRATE_REG;
         uint32_t * AI__BITRATE_REG;
 
-        void(__cdecl *CheckInterrupts)(void);
+        void(CALL *CheckInterrupts)(void);
     };
 
     //Get Function from DLL
-    int32_t(__cdecl *InitiateAudio)(AUDIO_INFO Audio_Info);
+    int32_t(CALL *InitiateAudio)(AUDIO_INFO Audio_Info);
     LoadFunction(InitiateAudio);
     if (InitiateAudio == NULL) { return false; }
 
     AUDIO_INFO Info = { 0 };
 
-    Info.hwnd = (HWND)Window->GetWindowHandle();
-    Info.hinst = GetModuleHandle(NULL);
-    Info.MemoryBswaped = TRUE;
+    Info.hwnd = Window ? Window->GetWindowHandle() : NULL;
+    Info.hinst =  Window ? Window->GetModuleInstance() : NULL;;
+    Info.MemoryBswaped = true;
     Info.CheckInterrupts = DummyCheckInterrupts;
 
     // We are initializing the plugin before any rom is loaded so we do not have any correct
@@ -137,10 +139,9 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
 
     m_Initialized = InitiateAudio(Info) != 0;
 
-    //jabo had a bug so I call CreateThread so his dllmain gets called again
-    DWORD ThreadID;
-    HANDLE hthread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)DummyFunction, NULL, 0, &ThreadID);
-    CloseHandle(hthread);
+#ifdef _WIN32
+	//jabo had a bug so I call CreateThread so his dllmain gets called again
+    pjutil::DynLibCallDllMain();
 
     if (System != NULL)
     {
@@ -151,6 +152,7 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
                 WriteTrace(TraceAudioPlugin, TraceDebug, "Terminate Audio Thread");
                 TerminateThread(m_hAudioThread, 0);
             }
+			DWORD ThreadID;
             m_hAudioThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)this, 0, &ThreadID);
         }
 
@@ -159,18 +161,21 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
             DacrateChanged(System->SystemType());
         }
     }
+#endif
     return m_Initialized;
 }
 
 void CAudioPlugin::UnloadPluginDetails(void)
 {
+#ifdef _WIN32
     if (m_hAudioThread)
     {
         WriteTrace(TraceAudioPlugin, TraceDebug, "Terminate Audio Thread");
         TerminateThread(m_hAudioThread, 0);
         m_hAudioThread = NULL;
     }
-    AiDacrateChanged = NULL;
+#endif
+	AiDacrateChanged = NULL;
     AiLenChanged = NULL;
     AiReadLength = NULL;
     AiUpdate = NULL;
@@ -187,6 +192,7 @@ void CAudioPlugin::DacrateChanged(SYSTEM_TYPE Type)
     AiDacrateChanged(Type);
 }
 
+#ifdef _WIN32
 void CAudioPlugin::AudioThread(CAudioPlugin * _this)
 {
     SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
@@ -199,3 +205,4 @@ void CAudioPlugin::AudioThread(CAudioPlugin * _this)
         _this->AiUpdate(true);
     }
 }
+#endif

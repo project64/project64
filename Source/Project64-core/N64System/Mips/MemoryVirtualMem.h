@@ -185,6 +185,8 @@ private:
     static void Load32PeripheralInterface(void);
     static void Load32RDRAMInterface(void);
     static void Load32SerialInterface(void);
+    static void Load32CartridgeDomain1Address1(void);
+    static void Load32CartridgeDomain1Address3(void);
     static void Load32CartridgeDomain2Address1(void);
     static void Load32CartridgeDomain2Address2(void);
     static void Load32PifRam(void);
@@ -199,6 +201,7 @@ private:
     static void Write32PeripheralInterface(void);
     static void Write32RDRAMInterface(void);
     static void Write32SerialInterface(void);
+    static void Write32CartridgeDomain2Address1(void);
     static void Write32CartridgeDomain2Address2(void);
     static void Write32PifRam(void);
 
@@ -213,6 +216,11 @@ private:
     uint32_t      m_RomSize;
     bool          m_RomWrittenTo;
     uint32_t      m_RomWroteValue;
+
+    //DDRom Information
+    bool          m_DDRomMapped;
+    uint8_t *     m_DDRom;
+    uint32_t      m_DDRomSize;
 
     //Current Half line
     void UpdateHalfLine();

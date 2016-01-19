@@ -21,8 +21,8 @@
 #include <Project64-core/N64System/Mips/Mempak.H>
 #include <Project64-core/Logging.h>
 
-int   CPifRamSettings::m_RefCount = 0;
-bool  CPifRamSettings::m_bShowPifRamErrors = false;
+int32_t CPifRamSettings::m_RefCount = 0;
+bool CPifRamSettings::m_bShowPifRamErrors = false;
 
 CPifRamSettings::CPifRamSettings()
 {
@@ -64,7 +64,7 @@ void CPifRam::Reset()
     memset(m_PifRom, 0, sizeof(m_PifRom));
 }
 
-void CPifRam::n64_cic_nus_6105(char challenge[], char respone[], int length)
+void CPifRam::n64_cic_nus_6105(char challenge[], char respone[], int32_t length)
 {
     static char lut0[0x10] = {
         0x4, 0x7, 0xA, 0x7, 0xE, 0x5, 0xE, 0x1,
@@ -75,7 +75,7 @@ void CPifRam::n64_cic_nus_6105(char challenge[], char respone[], int length)
         0xC, 0x9, 0x8, 0x5, 0x6, 0x3, 0xC, 0x9
     };
     char key, *lut;
-    int i, sgn, mag, mod;
+    int32_t i, sgn, mag, mod;
 
     for (key = 0xB, lut = lut0, i = 0; i < length; i++)
     {
@@ -105,8 +105,8 @@ void CPifRam::PifRamRead()
 
     CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
 
-    int Channel = 0;
-    for (int CurPos = 0; CurPos < 0x40; CurPos++)
+    int32_t Channel = 0;
+    for (int32_t CurPos = 0; CurPos < 0x40; CurPos++)
     {
         switch (m_PifRam[CurPos])
         {
@@ -160,7 +160,7 @@ void CPifRam::PifRamRead()
 void CPifRam::PifRamWrite()
 {
     CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
-    int Channel = 0, CurPos;
+    int32_t Channel = 0, CurPos;
 
     if (m_PifRam[0x3F] > 0x1)
     {
@@ -168,29 +168,29 @@ void CPifRam::PifRamWrite()
         {
         case 0x02:
             // format the 'challenge' message into 30 nibbles for X-Scale's CIC code
-        {
-            char Challenge[30], Response[30];
-            for (int i = 0; i < 15; i++)
             {
-                Challenge[i * 2] = (m_PifRam[48 + i] >> 4) & 0x0f;
-                Challenge[i * 2 + 1] = m_PifRam[48 + i] & 0x0f;
+                char Challenge[30], Response[30];
+                for (int32_t i = 0; i < 15; i++)
+                {
+                    Challenge[i * 2] = (m_PifRam[48 + i] >> 4) & 0x0f;
+                    Challenge[i * 2 + 1] = m_PifRam[48 + i] & 0x0f;
+                }
+                n64_cic_nus_6105(Challenge, Response, CHALLENGE_LENGTH - 2);
+                uint64_t ResponseValue = 0;
+                m_PifRam[46] = m_PifRam[47] = 0x00;
+                for (int32_t z = 8; z > 0; z--)
+                {
+                    ResponseValue = (ResponseValue << 8) | ((Response[(z - 1) * 2] << 4) + Response[(z - 1) * 2 + 1]);
+                }
+                memcpy(&m_PifRam[48], &ResponseValue, sizeof(uint64_t));
+                ResponseValue = 0;
+                for (int32_t z = 7; z > 0; z--)
+                {
+                    ResponseValue = (ResponseValue << 8) | ((Response[((z + 8) - 1) * 2] << 4) + Response[((z + 8) - 1) * 2 + 1]);
+                }
+                memcpy(&m_PifRam[56], &ResponseValue, sizeof(uint64_t));
             }
-            n64_cic_nus_6105(Challenge, Response, CHALLENGE_LENGTH - 2);
-            uint64_t ResponseValue = 0;
-            m_PifRam[46] = m_PifRam[47] = 0x00;
-            for (int z = 8; z > 0; z--)
-            {
-                ResponseValue = (ResponseValue << 8) | ((Response[(z - 1) * 2] << 4) + Response[(z - 1) * 2 + 1]);
-            }
-            memcpy(&m_PifRam[48], &ResponseValue, sizeof(uint64_t));
-            ResponseValue = 0;
-            for (int z = 7; z > 0; z--)
-            {
-                ResponseValue = (ResponseValue << 8) | ((Response[((z + 8) - 1) * 2] << 4) + Response[((z + 8) - 1) * 2 + 1]);
-            }
-            memcpy(&m_PifRam[56], &ResponseValue, sizeof(uint64_t));
-        }
-        break;
+            break;
         case 0x08:
             m_PifRam[0x3F] = 0;
             g_Reg->MI_INTR_REG |= MI_INTR_SI;
@@ -327,8 +327,8 @@ void CPifRam::SI_DMA_READ()
         {
             if ((count % 4) == 0)
             {
-                sprintf(HexData, "\0");
-                sprintf(AsciiData, "\0");
+				HexData[0] = '\0';
+				AsciiData[0] = '\0';
             }
             sprintf(Addon, "%02X %02X %02X %02X",
                 m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
@@ -414,8 +414,8 @@ void CPifRam::SI_DMA_WRITE()
         {
             if ((count % 4) == 0)
             {
-                sprintf(HexData, "\0");
-                sprintf(AsciiData, "\0");
+				HexData[0] = '\0';
+				AsciiData[0] = '\0';
             }
             sprintf(Addon, "%02X %02X %02X %02X",
                 m_PifRam[(count << 2) + 0], m_PifRam[(count << 2) + 1],
@@ -454,7 +454,7 @@ void CPifRam::SI_DMA_WRITE()
     }
 }
 
-void CPifRam::ProcessControllerCommand(int Control, uint8_t * Command)
+void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
 {
     CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
 
@@ -603,7 +603,8 @@ void CPifRam::ProcessControllerCommand(int Control, uint8_t * Command)
     }
 }
 
-void CPifRam::ReadControllerCommand(int Control, uint8_t * Command) {
+void CPifRam::ReadControllerCommand(int32_t Control, uint8_t * Command)
+{
     CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
 
     switch (Command[2])
@@ -642,11 +643,11 @@ void CPifRam::ReadControllerCommand(int Control, uint8_t * Command) {
     }
 }
 
-void CPifRam::LogControllerPakData(char * Description)
+void CPifRam::LogControllerPakData(const char * Description)
 {
     uint8_t * PIF_Ram = g_MMU->PifRam();
 
-    int count, count2;
+    int32_t count, count2;
     char HexData[100], AsciiData[100], Addon[20];
     LogMessage("\t%s:", Description);
     LogMessage("\t------------------------------");
@@ -654,8 +655,8 @@ void CPifRam::LogControllerPakData(char * Description)
     {
         if ((count % 4) == 0)
         {
-            sprintf(HexData, "\0");
-            sprintf(AsciiData, "\0");
+			HexData[0] = '\0';
+			AsciiData[0] = '\0';
         }
         sprintf(Addon, "%02X %02X %02X %02X",
             PIF_Ram[(count << 2) + 0], PIF_Ram[(count << 2) + 1],

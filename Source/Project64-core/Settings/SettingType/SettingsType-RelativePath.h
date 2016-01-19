@@ -10,15 +10,13 @@
 ****************************************************************************/
 #pragma once
 #include <Common/path.h>
-#include "SettingsType-Base.h"
+#include <Project64-core/Settings/SettingType/SettingsType-Base.h>
 
 class CSettingTypeRelativePath :
     public CSettingType
 {
-    CPath m_FileName;
-
 public:
-    CSettingTypeRelativePath(const char * Path, const char * FileName);
+    CSettingTypeRelativePath(const char * Directory, const char * FileName);
     ~CSettingTypeRelativePath();
 
     bool        IndexBasedSetting ( void ) const { return false; }
@@ -47,4 +45,11 @@ private:
     CSettingTypeRelativePath(void);                                         // Disable default constructor
     CSettingTypeRelativePath(const CSettingTypeRelativePath&);              // Disable copy constructor
     CSettingTypeRelativePath& operator=(const CSettingTypeRelativePath&);   // Disable assignment
+
+    static void RefreshSettings(void * _this);
+    void BuildPath ( void );
+
+    std::string m_FullPath;
+    std::string m_Directory;
+    std::string m_FileName;
 };

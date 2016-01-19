@@ -158,6 +158,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Platform.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -231,6 +235,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Platform.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SmartPointer.h"
 				>
 			</File>
@@ -256,6 +264,10 @@
 			</File>
 			<File
 				RelativePath=".\TraceDefs.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TraceModulesCommon.h"
 				>
 			</File>
 			<File

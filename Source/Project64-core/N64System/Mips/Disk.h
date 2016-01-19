@@ -9,10 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#include "stdafx.h"
 
-class Rumblepak
-{
-public:
-    static void ReadFrom(uint8_t * command);
-    static void WriteTo(int32_t Control, uint8_t * command);
-};
+void DiskCommand(void);
+void DiskReset(void);
+void DiskBMControl(void);

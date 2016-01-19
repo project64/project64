@@ -46,6 +46,7 @@
     <ClCompile Include="N64System\Interpreter\InterpreterOps.cpp" />
     <ClCompile Include="N64System\Interpreter\InterpreterOps32.cpp" />
     <ClCompile Include="N64System\Mips\Audio.cpp" />
+    <ClCompile Include="N64System\Mips\Disk.cpp" />
     <ClCompile Include="N64System\Mips\Dma.cpp" />
     <ClCompile Include="N64System\Mips\Eeprom.cpp" />
     <ClCompile Include="N64System\Mips\FlashRam.cpp" />
@@ -129,6 +130,7 @@
     <ClInclude Include="N64System\Interpreter\InterpreterOps32.h" />
     <ClInclude Include="N64System\Interpreter\InterpreterOps.h" />
     <ClInclude Include="N64System\Mips\Audio.h" />
+    <ClInclude Include="N64System\Mips\Disk.h" />
     <ClInclude Include="N64System\Mips\Dma.h" />
     <ClInclude Include="N64System\Mips\Eeprom.h" />
     <ClInclude Include="N64System\Mips\FlashRam.h" />

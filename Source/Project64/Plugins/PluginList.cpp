@@ -54,7 +54,8 @@ void CPluginList::AddPluginFromDir(CPath Dir)
     Dir.SetNameExtension("*.*");
     if (Dir.FindFirst(_A_SUBDIR))
     {
-        do {
+        do
+        {
             AddPluginFromDir(Dir);
         } while (Dir.FindNext());
         Dir.UpDirectory();
@@ -64,7 +65,8 @@ void CPluginList::AddPluginFromDir(CPath Dir)
     if (Dir.FindFirst())
     {
         HMODULE hLib = NULL;
-        do {
+        do
+        {
             if (hLib)
             {
                 FreeLibrary(hLib);
@@ -83,8 +85,8 @@ void CPluginList::AddPluginFromDir(CPath Dir)
                 continue;
             }
 
-            void(__cdecl *GetDllInfo) (PLUGIN_INFO * PluginInfo);
-            GetDllInfo = (void(__cdecl *)(PLUGIN_INFO *))GetProcAddress(hLib, "GetDllInfo");
+            void(CALL *GetDllInfo) (PLUGIN_INFO * PluginInfo);
+            GetDllInfo = (void(CALL *)(PLUGIN_INFO *))GetProcAddress(hLib, "GetDllInfo");
             if (GetDllInfo == NULL)
             {
                 continue;

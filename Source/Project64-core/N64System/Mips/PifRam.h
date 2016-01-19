@@ -29,7 +29,7 @@ private:
 
     static bool m_bShowPifRamErrors;
 
-    static int  m_RefCount;
+    static int32_t m_RefCount;
 };
 
 class CPifRam :
@@ -54,9 +54,13 @@ protected:
     uint8_t m_PifRam[0x40];
 
 private:
-#define CHALLENGE_LENGTH 0x20
-    void ProcessControllerCommand(int Control, uint8_t * Command);
-    void ReadControllerCommand(int Control, uint8_t * Command);
-    void LogControllerPakData(char * Description);
-    void n64_cic_nus_6105(char challenge[], char response[], int length);
+    CPifRam();                          // Disable default constructor
+    CPifRam(const CPifRam&);            // Disable copy constructor
+    CPifRam& operator=(const CPifRam&); // Disable assignment
+
+    enum { CHALLENGE_LENGTH = 0x20 };
+    void ProcessControllerCommand(int32_t Control, uint8_t * Command);
+    void ReadControllerCommand(int32_t Control, uint8_t * Command);
+    void LogControllerPakData(const char * Description);
+    void n64_cic_nus_6105(char challenge[], char response[], int32_t length);
 };

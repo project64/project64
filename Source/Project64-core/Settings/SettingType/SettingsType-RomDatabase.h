@@ -11,7 +11,7 @@
 #pragma once
 
 #include <Common/IniFileClass.h>
-#include "SettingsType-Base.h"
+#include <Project64-core/Settings/SettingType/SettingsType-Base.h>
 
 class CSettingTypeRomDatabase :
     public CSettingType
@@ -51,6 +51,7 @@ public:
 
 protected:
     static void GameChanged ( void * /*Data */ );
+    static void BaseDirChanged ( void * /*Data */ );
 
     static bool IsGlideSetting (const char * Name);
     static const char * StripNameSection (const char * Name);
