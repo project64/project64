@@ -18,6 +18,7 @@
 bool dd_write;
 bool dd_reset_hold;
 uint32_t dd_track_offset, dd_zone;
+uint32_t dd_start_block, dd_current;
 
 uint8_t dd_buffer[0x100];
 
@@ -61,11 +62,13 @@ void DiskCommand()
     case 0x00010000:
         //Seek Read
         g_Reg->ASIC_CUR_TK = g_Reg->ASIC_DATA | 0x60000000;
+        DiskSetOffset();
         dd_write = false;
         break;
     case 0x00020000:
         //Seek Write
         g_Reg->ASIC_CUR_TK = g_Reg->ASIC_DATA | 0x60000000;
+        DiskSetOffset();
         dd_write = true;
         break;
     case 0x00080000:
@@ -98,16 +101,18 @@ void DiskReset(void)
 void DiskBMControl(void)
 {
     g_Reg->ASIC_CUR_SECTOR = g_Reg->ASIC_BM_CTL & 0x00FF0000;
-    /*
+    
     if ((g_Reg->ASIC_CUR_SECTOR >> 16) == 0x00)
     {
-
+        dd_start_block = 0;
+        dd_current = 0;
     }
     else if ((g_Reg->ASIC_CUR_SECTOR >> 16) == 0x5A)
     {
-
+        dd_start_block = 1;
+        dd_current = 0;
     }
-    */
+    
     if (g_Reg->ASIC_BM_CTL & DD_BM_CTL_BLK_TRANS)
         g_Reg->ASIC_BM_STATUS |= DD_BM_STATUS_BLOCK;
 
@@ -123,6 +128,8 @@ void DiskBMControl(void)
         g_Reg->ASIC_STATUS &= ~(DD_STATUS_BM_INT | DD_STATUS_BM_ERR | DD_STATUS_DATA_RQ | DD_STATUS_C2_XFER);
         g_Reg->ASIC_BM_STATUS = 0;
         g_Reg->ASIC_CUR_SECTOR = 0;
+        dd_start_block = 0;
+        dd_current = 0;
     }
 
     if (!(g_Reg->ASIC_STATUS & DD_STATUS_MECHA_INT) && !(g_Reg->ASIC_STATUS & DD_STATUS_BM_INT))
@@ -139,11 +146,7 @@ void DiskGapSectorCheck()
 {
     if (g_Reg->ASIC_STATUS & DD_STATUS_BM_INT)
     {
-        uint16_t testsector = (uint16_t)(g_Reg->ASIC_CUR_SECTOR >> 16);
-        if (testsector >= 0x5A)
-            testsector -= 0x5A;
-
-        if (SECTORS_PER_BLOCK < testsector)
+        if (SECTORS_PER_BLOCK < dd_current)
         {
             g_Reg->ASIC_STATUS &= ~DD_STATUS_BM_INT;
             g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP3;
@@ -156,40 +159,44 @@ void DiskBMUpdate()
 {
     if (!(g_Reg->ASIC_BM_STATUS & DD_BM_STATUS_RUNNING))
         return;
-
+    /*
     uint16_t testsector = (uint16_t)(g_Reg->ASIC_CUR_SECTOR >> 16);
     if (testsector >= 0x5A)
         testsector -= 0x5A;
-
+    */
     if (dd_write)
     {
         //Write Data
-        if (testsector == 0)
+        if (dd_current == 0)
         {
-            g_Reg->ASIC_CUR_SECTOR += 0x00010000;
+            dd_current += 1;
+            //g_Reg->ASIC_CUR_SECTOR += 0x00010000;
             g_Reg->ASIC_STATUS |= DD_STATUS_DATA_RQ;
         }
-        else if (testsector < SECTORS_PER_BLOCK)
+        else if (dd_current < SECTORS_PER_BLOCK)
         {
             DiskBMWrite();
-            g_Reg->ASIC_CUR_SECTOR += 0x00010000;
+            dd_current += 1;
+            //g_Reg->ASIC_CUR_SECTOR += 0x00010000;
             g_Reg->ASIC_STATUS |= DD_STATUS_DATA_RQ;
         }
-        else if (testsector < SECTORS_PER_BLOCK + 1)
+        else if (dd_current < SECTORS_PER_BLOCK + 1)
         {
             if (g_Reg->ASIC_BM_STATUS & DD_BM_STATUS_BLOCK)
             {
                 DiskBMWrite();
-                g_Reg->ASIC_CUR_SECTOR += 0x00010000;
-                if (g_Reg->ASIC_CUR_SECTOR >> 16 >= 0xB4)
-                    g_Reg->ASIC_CUR_SECTOR = 0x00010000;
+                dd_current += 1;
+                //g_Reg->ASIC_CUR_SECTOR += 0x00010000;
+                dd_start_block = 1 - dd_start_block;
+                dd_current = 1;
                 g_Reg->ASIC_BM_STATUS &= ~DD_BM_STATUS_BLOCK;
                 g_Reg->ASIC_STATUS |= DD_STATUS_DATA_RQ;
             }
             else
             {
                 DiskBMWrite();
-                g_Reg->ASIC_CUR_SECTOR += 0x00010000;
+                dd_current += 1;
+                //g_Reg->ASIC_CUR_SECTOR += 0x00010000;
                 g_Reg->ASIC_BM_STATUS &= ~DD_BM_STATUS_RUNNING;
             }
         }
@@ -207,25 +214,27 @@ void DiskBMUpdate()
             g_Reg->ASIC_STATUS &= ~DD_STATUS_DATA_RQ;
             g_Reg->ASIC_BM_STATUS |= DD_BM_STATUS_MICRO;
         }
-        else if (testsector == 0)
+        else if (dd_current == 0)
         {
             DiskBMRead();
-            g_Reg->ASIC_CUR_SECTOR += 0x00010000;
+            dd_current += 1;
+            //g_Reg->ASIC_CUR_SECTOR += 0x00010000;
             g_Reg->ASIC_STATUS |= DD_STATUS_DATA_RQ;
         }
-        else if (testsector < SECTORS_PER_BLOCK + 4)
+        else if (dd_current < SECTORS_PER_BLOCK + 4)
         {
             //READ C2 (00!)
-            g_Reg->ASIC_CUR_SECTOR += 0x00010000;
-            if ((g_Reg->ASIC_CUR_SECTOR >> 16) == SECTORS_PER_BLOCK + 4)
+            dd_current += 1;
+            //g_Reg->ASIC_CUR_SECTOR += 0x00010000;
+            if (dd_current == SECTORS_PER_BLOCK + 4)
                 g_Reg->ASIC_STATUS |= DD_STATUS_C2_XFER;
         }
-        else if (testsector == SECTORS_PER_BLOCK + 4)
+        else if (dd_current == SECTORS_PER_BLOCK + 4)
         {
             if (g_Reg->ASIC_BM_STATUS & DD_BM_STATUS_BLOCK)
             {
-                if (g_Reg->ASIC_CUR_SECTOR >> 16 >= 0xB4)
-                    g_Reg->ASIC_CUR_SECTOR = 0x00000000;
+                dd_start_block = 1 - dd_start_block;
+                dd_current = 0;
                 g_Reg->ASIC_BM_STATUS &= ~DD_BM_STATUS_BLOCK;
             }
             else
@@ -242,41 +251,34 @@ void DiskBMUpdate()
 
 void DiskBMRead()
 {
-    uint8_t * sector;
-    sector = (uint8_t*)g_Disk->GetDiskAddress();
+    uint32_t sector = 0;
+    //sector = (uint8_t*)g_Disk->GetDiskAddress();
     sector += dd_track_offset;
-    uint16_t block = 0;
-    if (g_Reg->ASIC_CUR_SECTOR >= 0x005A0000)
-        block = 1;
-    sector += block * SECTORS_PER_BLOCK * ddZoneSecSize[dd_zone];
-    uint16_t block2 = (uint16_t)(g_Reg->ASIC_CUR_SECTOR >> 16);
-    if (block2 >= 0x5A)
-        block -= 0x5A;
-    sector += block * ((g_Reg->ASIC_SEC_BYTE >> 16) + 1);
+    sector += dd_start_block * SECTORS_PER_BLOCK * ddZoneSecSize[dd_zone];
+    sector += (dd_current) * ((g_Reg->ASIC_SEC_BYTE >> 16) + 1);
 
+    g_Disk->SetDiskAddressBuffer(sector);
+
+    /*
     for (int i = 0; i < ((g_Reg->ASIC_SEC_BYTE >> 16) + 1) / 4; i++)
     {
         dd_buffer[i] = sector[(i * 4 + 0)] << 24 | sector[(i * 4 + 1)] << 16 |
             sector[(i * 4 + 2)] << 8 | sector[(i * 4 + 3)];
     }
-
+    */
     return;
 }
 
 void DiskBMWrite()
 {
-    uint8_t * sector;
-    sector = (uint8_t*)g_Disk->GetDiskAddress();
+    uint32_t sector = 0;
+    //sector = (uint8_t*)g_Disk->GetDiskAddress();
     sector += dd_track_offset;
-    uint16_t block = 0;
-    if (g_Reg->ASIC_CUR_SECTOR >= 0x005A0000)
-        block = 1;
-    sector += block * SECTORS_PER_BLOCK * ddZoneSecSize[dd_zone];
-    uint16_t block2 = (uint16_t)(g_Reg->ASIC_CUR_SECTOR >> 16);
-    if (block2 >= 0x5A)
-        block -= 0x5A;
-    sector += block * ((g_Reg->ASIC_SEC_BYTE >> 16) + 1);
+    sector += dd_start_block * SECTORS_PER_BLOCK * ddZoneSecSize[dd_zone];
+    sector += (dd_current - 1) * ((g_Reg->ASIC_SEC_BYTE >> 16) + 1);
 
+    g_Disk->SetDiskAddressBuffer(sector);
+    /*
     for (int i = 0; i < ddZoneSecSize[dd_zone] / 4; i++)
     {
         sector[i * 4 + 0] = (dd_buffer[i] >> 24) & 0xFF;
@@ -284,7 +286,7 @@ void DiskBMWrite()
         sector[i * 4 + 2] = (dd_buffer[i] >> 8) & 0xFF;
         sector[i * 4 + 3] = (dd_buffer[i] >> 0) & 0xFF;
     }
-
+    */
     return;
 }
 

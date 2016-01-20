@@ -24,6 +24,7 @@ void DiskSetOffset(void);
 extern bool dd_write;
 extern bool dd_reset_hold;
 extern uint32_t dd_track_offset, dd_zone;
+extern uint32_t dd_start_block, dd_current;
 
 extern uint8_t dd_buffer[0x100];
 

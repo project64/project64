@@ -18,7 +18,8 @@
 CN64Disk::CN64Disk() :
 m_DiskImage(NULL),
 m_DiskImageBase(NULL),
-m_ErrorMsg(EMPTY_STRING)
+m_ErrorMsg(EMPTY_STRING),
+m_DiskBufAddress(0)
 {
 }
 

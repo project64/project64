@@ -17,6 +17,7 @@
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <Project64-core/N64System/Mips/Disk.h>
+#include <Project64-core/N64System/N64DiskClass.h>
 #include <Project64-core/N64System/N64Class.h>
 
 CDMA::CDMA(CFlashram & FlashRam, CSram & Sram) :
@@ -85,9 +86,10 @@ void CDMA::PI_DMA_READ()
         //64DD User Sector
         uint32_t i;
         uint8_t * RDRAM = g_MMU->Rdram();
+        uint8_t * DISK = g_Disk->GetDiskAddressBuffer();
         for (i = 0; i < PI_RD_LEN_REG; i++)
         {
-            dd_buffer[i ^ 3] = * (RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3));
+            *(DISK + (i ^ 3)) = *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3));
         }
         g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         g_Reg->MI_INTR_REG |= MI_INTR_PI;
@@ -238,9 +240,10 @@ void CDMA::PI_DMA_WRITE()
         //64DD User Sector
         uint32_t i;
         uint8_t * RDRAM = g_MMU->Rdram();
+        uint8_t * DISK = g_Disk->GetDiskAddressBuffer();
         for (i = 0; i < PI_WR_LEN_REG; i++)
         {
-            *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = dd_buffer[i ^ 3];
+            *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = *(DISK + (i ^ 3));
         }
         g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         g_Reg->MI_INTR_REG |= MI_INTR_PI;

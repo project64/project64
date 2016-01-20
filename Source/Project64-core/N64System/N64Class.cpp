@@ -217,17 +217,18 @@ bool CN64System::RunFileImage(const char * FileLoc)
         {
             //64DD IPL
             g_DDRom = g_Rom;
+        }
 
-            if (g_Disk == NULL)
-            {
-                g_Disk = new CN64Disk();
-            }
+        if (g_Disk == NULL)
+        {
+            g_Disk = new CN64Disk();
+        }
 
-            if (!g_Disk->LoadDiskImage(g_Settings->LoadStringVal(SupportFile_DiskTest).c_str()));
-            {
-                delete g_Disk;
-                g_Disk = NULL;
-            }
+        if (!g_Disk->LoadDiskImage(g_Settings->LoadStringVal(SupportFile_DiskTest).c_str()))
+        {
+            g_Notify->DisplayError(g_Disk->GetError());
+            delete g_Disk;
+            g_Disk = NULL;
         }
 
         g_System->RefreshGameSettings();

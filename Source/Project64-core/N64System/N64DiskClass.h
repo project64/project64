@@ -20,7 +20,11 @@ public:
     bool    LoadDiskImage(const char * FileLoc);
     static bool IsValidDiskImage(uint8_t Test[4]);
     uint8_t *  GetDiskAddress() { return m_DiskImage; }
+    uint8_t *  GetDiskAddressBuffer() { return m_DiskImage + m_DiskBufAddress; }
+    void    SetDiskAddressBuffer(uint32_t address) { m_DiskBufAddress = address; }
     void    UnallocateDiskImage();
+
+    LanguageStringID GetError() const { return m_ErrorMsg; }
 
 private:
     bool   AllocateDiskImage(uint32_t DiskFileSize);
@@ -36,6 +40,7 @@ private:
     uint8_t * m_DiskImage;
     uint8_t * m_DiskImageBase;
     uint32_t m_DiskFileSize;
+    uint32_t m_DiskBufAddress;
     LanguageStringID m_ErrorMsg;
     stdstr m_FileName, m_DiskIdent;
 };
