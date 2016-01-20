@@ -174,7 +174,7 @@ extern "C" {
     extern wxDateTime fps_last;
     extern wxDateTime fps_next;
     extern float		  fps;
-    extern wxUint32	  fps_count;
+    extern uint32_t	  fps_count;
 #endif
 
     // rdram mask at 0x400000 bytes (bah, not right for majora's mask)
@@ -183,8 +183,8 @@ extern "C" {
 #define WMASK	0x3FFFFF
 #define DMASK	0x1FFFFF
 
-    extern wxUint32 update_screen_count;
-    extern wxUint32 resolutions[0x18][2];
+    extern uint32_t update_screen_count;
+    extern uint32_t resolutions[0x18][2];
 
     int CheckKeyPressed(int key, int mask);
 
@@ -289,7 +289,7 @@ extern "C" {
 
     // The highest 8 bits are the segment # (1-16), and the lower 24 bits are the offset to
     // add to it.
-    __inline wxUint32 segoffset(wxUint32 so)
+    __inline uint32_t segoffset(uint32_t so)
     {
         return (rdp.segment[(so >> 24) & 0x0f] + (so&BMASK))&BMASK;
     }
@@ -333,31 +333,31 @@ extern "C" {
         wxUint8 * DMEM;
         wxUint8 * IMEM;
 
-        wxUint32 * MI_INTR_REG;
+        uint32_t * MI_INTR_REG;
 
-        wxUint32 * DPC_START_REG;
-        wxUint32 * DPC_END_REG;
-        wxUint32 * DPC_CURRENT_REG;
-        wxUint32 * DPC_STATUS_REG;
-        wxUint32 * DPC_CLOCK_REG;
-        wxUint32 * DPC_BUFBUSY_REG;
-        wxUint32 * DPC_PIPEBUSY_REG;
-        wxUint32 * DPC_TMEM_REG;
+        uint32_t * DPC_START_REG;
+        uint32_t * DPC_END_REG;
+        uint32_t * DPC_CURRENT_REG;
+        uint32_t * DPC_STATUS_REG;
+        uint32_t * DPC_CLOCK_REG;
+        uint32_t * DPC_BUFBUSY_REG;
+        uint32_t * DPC_PIPEBUSY_REG;
+        uint32_t * DPC_TMEM_REG;
 
-        wxUint32 * VI_STATUS_REG;
-        wxUint32 * VI_ORIGIN_REG;
-        wxUint32 * VI_WIDTH_REG;
-        wxUint32 * VI_INTR_REG;
-        wxUint32 * VI_V_CURRENT_LINE_REG;
-        wxUint32 * VI_TIMING_REG;
-        wxUint32 * VI_V_SYNC_REG;
-        wxUint32 * VI_H_SYNC_REG;
-        wxUint32 * VI_LEAP_REG;
-        wxUint32 * VI_H_START_REG;
-        wxUint32 * VI_V_START_REG;
-        wxUint32 * VI_V_BURST_REG;
-        wxUint32 * VI_X_SCALE_REG;
-        wxUint32 * VI_Y_SCALE_REG;
+        uint32_t * VI_STATUS_REG;
+        uint32_t * VI_ORIGIN_REG;
+        uint32_t * VI_WIDTH_REG;
+        uint32_t * VI_INTR_REG;
+        uint32_t * VI_V_CURRENT_LINE_REG;
+        uint32_t * VI_TIMING_REG;
+        uint32_t * VI_V_SYNC_REG;
+        uint32_t * VI_H_SYNC_REG;
+        uint32_t * VI_LEAP_REG;
+        uint32_t * VI_H_START_REG;
+        uint32_t * VI_V_START_REG;
+        uint32_t * VI_V_BURST_REG;
+        uint32_t * VI_X_SCALE_REG;
+        uint32_t * VI_Y_SCALE_REG;
 
         void(*CheckInterrupts)(void);
     } GFX_INFO;
@@ -596,16 +596,16 @@ extern "C" {
       frame buffer has been modified by CPU at the given address.
       input:    addr		rdram address
       val			val
-      size		1 = wxUint8, 2 = wxUint16, 4 = wxUint32
+      size		1 = wxUint8, 2 = wxUint16, 4 = uint32_t
       output:   none
       *******************************************************************/
-    EXPORT void CALL FBWrite(wxUint32, wxUint32);
+    EXPORT void CALL FBWrite(uint32_t, uint32_t);
 
     typedef struct
     {
-        wxUint32 addr;
-        wxUint32 val;
-        wxUint32 size;				// 1 = wxUint8, 2 = wxUint16, 4=wxUint32
+        uint32_t addr;
+        uint32_t val;
+        uint32_t size;				// 1 = wxUint8, 2 = wxUint16, 4=uint32_t
     } FrameBufferModifyEntry;
 
     /******************************************************************
@@ -616,7 +616,7 @@ extern "C" {
       size = size of the plist, max = 1024
       output:   none
       *******************************************************************/
-    EXPORT void CALL FBWList(FrameBufferModifyEntry *plist, wxUint32 size);
+    EXPORT void CALL FBWList(FrameBufferModifyEntry *plist, uint32_t size);
 
     /******************************************************************
       Function: FrameBufferRead
@@ -630,10 +630,10 @@ extern "C" {
       is read within the same 4KB range
       input:    addr		rdram address
       val			val
-      size		1 = wxUint8, 2 = wxUint16, 4 = wxUint32
+      size		1 = wxUint8, 2 = wxUint16, 4 = uint32_t
       output:   none
       *******************************************************************/
-    EXPORT void CALL FBRead(wxUint32 addr);
+    EXPORT void CALL FBRead(uint32_t addr);
 
     /************************************************************************
     Function: FBGetFrameBufferInfo
