@@ -61,6 +61,7 @@
     <ClCompile Include="N64System\Mips\SystemTiming.cpp" />
     <ClCompile Include="N64System\Mips\TLBclass.cpp" />
     <ClCompile Include="N64System\N64Class.cpp" />
+    <ClCompile Include="N64System\N64DiskClass.cpp" />
     <ClCompile Include="N64System\N64RomClass.cpp" />
     <ClCompile Include="N64System\ProfilingClass.cpp" />
     <ClCompile Include="N64System\Recompiler\CodeBlock.cpp" />
@@ -148,6 +149,7 @@
     <ClInclude Include="N64System\Mips\TLBClass.h" />
     <ClInclude Include="N64System\Mips\TranslateVaddr.h" />
     <ClInclude Include="N64System\N64Class.h" />
+    <ClInclude Include="N64System\N64DiskClass.h" />
     <ClInclude Include="N64System\N64RomClass.h" />
     <ClInclude Include="N64System\N64Types.h" />
     <ClInclude Include="N64System\ProfilingClass.h" />

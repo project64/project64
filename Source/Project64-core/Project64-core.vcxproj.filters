@@ -297,6 +297,9 @@
     <ClCompile Include="N64System\Mips\Disk.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
+    <ClCompile Include="N64System\N64DiskClass.cpp">
+      <Filter>Source Files\N64 System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -577,6 +580,9 @@
     </ClInclude>
     <ClInclude Include="N64System\Mips\Disk.h">
       <Filter>Header Files\N64 System\Mips</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\N64DiskClass.h">
+      <Filter>Header Files\N64 System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

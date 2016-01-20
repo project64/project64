@@ -9,7 +9,33 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#include <Common/stdtypes.h>
 
-void DiskCommand(void);
-void DiskReset(void);
-void DiskBMControl(void);
+class CN64Disk
+{
+public:
+	CN64Disk();
+	~CN64Disk();
+
+	bool    LoadDiskImage(const char * FileLoc);
+	static bool IsValidRomImage(uint8_t Test[4]);
+	uint8_t *  GetDiskAddress() { return m_DiskImage; }
+	void    UnallocateRomImage();
+
+private:
+	bool   AllocateDiskImage(uint32_t DiskFileSize);
+	bool   AllocateAndLoadDiskImage(const char * FileLoc);
+	void   ByteSwapDisk();
+	void   SetError(LanguageStringID ErrorMsg);
+
+	//constant values
+	enum { ReadFromRomSection = 0x400000 };
+
+	//class variables
+	CFile m_DiskFile;
+	uint8_t * m_DiskImage;
+	uint8_t * m_DiskImageBase;
+	uint32_t m_DiskFileSize;
+	LanguageStringID m_ErrorMsg;
+	stdstr m_FileName, m_DiskIdent;
+};
