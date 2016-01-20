@@ -75,7 +75,7 @@ typedef struct
   uint32_t tex, tmu0_func, tmu0_fac, tmu0_invert, tmu1_func, tmu1_fac, tmu1_invert;
   uint32_t tmu0_a_func, tmu0_a_fac, tmu0_a_invert, tmu1_a_func, tmu1_a_fac, tmu1_a_invert;
   int   dc0_lodbias, dc1_lodbias;
-  wxUint8  dc0_detailscale, dc1_detailscale;
+  uint8_t  dc0_detailscale, dc1_detailscale;
   float dc0_detailmax, dc1_detailmax;
   float lodbias0, lodbias1;
   uint32_t abf1, abf2;
@@ -101,8 +101,8 @@ typedef struct
   GRCONSTANTCOLORVALUEEXT grConstantColorValueExt;
   uint32_t tex_ccolor;  
   int combine_ext;
-  wxUint8 cmb_ext_use;
-  wxUint8 tex_cmb_ext_use;
+  uint8_t cmb_ext_use;
+  uint8_t tex_cmb_ext_use;
   uint32_t shade_mod_hash;  
 } COMBINE;
 

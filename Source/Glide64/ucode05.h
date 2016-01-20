@@ -56,17 +56,17 @@ static void uc5_matrix ()
   // Use segment offset to get the address
   uint32_t addr = dma_offset_mtx + (segoffset(rdp.cmd1) & BMASK);
 
-  wxUint8 n = (wxUint8)((rdp.cmd0 >> 16) & 0xF);
-  wxUint8 multiply;
+  uint8_t n = (uint8_t)((rdp.cmd0 >> 16) & 0xF);
+  uint8_t multiply;
 
   if (n == 0) //DKR
   {
-    n = (wxUint8)((rdp.cmd0 >> 22) & 0x3);
+    n = (uint8_t)((rdp.cmd0 >> 22) & 0x3);
     multiply = 0;
   }
   else //JF
   {
-    multiply = (wxUint8)((rdp.cmd0 >> 23) & 0x1);
+    multiply = (uint8_t)((rdp.cmd0 >> 23) & 0x1);
   }
 
   cur_mtx = n;
@@ -173,10 +173,10 @@ static void uc5_vertex ()
     if (v->w < 0.1f) v->scr_off |= 16;
     if (fabs(v->z_w) > 1.0) v->scr_off |= 32;
 
-    v->r = ((wxUint8*)gfx.RDRAM)[(addr+start + 6)^3];
-    v->g = ((wxUint8*)gfx.RDRAM)[(addr+start + 7)^3];
-    v->b = ((wxUint8*)gfx.RDRAM)[(addr+start + 8)^3];
-    v->a = ((wxUint8*)gfx.RDRAM)[(addr+start + 9)^3];
+    v->r = ((uint8_t*)gfx.RDRAM)[(addr+start + 6)^3];
+    v->g = ((uint8_t*)gfx.RDRAM)[(addr+start + 7)^3];
+    v->b = ((uint8_t*)gfx.RDRAM)[(addr+start + 8)^3];
+    v->a = ((uint8_t*)gfx.RDRAM)[(addr+start + 9)^3];
     CalculateFog (v);
 
 #ifdef EXTREME_LOGGING

@@ -333,8 +333,8 @@ void ReadSettings ()
 	settings.scr_res_x = settings.res_x = resolutions[settings.res_data][0];
 	settings.scr_res_y = settings.res_y = resolutions[settings.res_data][1];
 	settings.vsync = GetSetting(Set_vsync);
-	settings.ssformat = (wxUint8)GetSetting(Set_ssformat);
-	settings.show_fps = (wxUint8)GetSetting(Set_ShowFps);
+	settings.ssformat = (uint8_t)GetSetting(Set_ssformat);
+	settings.show_fps = (uint8_t)GetSetting(Set_ShowFps);
 	settings.clock = GetSetting(Set_clock);
 	settings.clock_24_hr = GetSetting(Set_clock_24_hr);
 	settings.advanced_options = Set_basic_mode ? !GetSystemSetting(Set_basic_mode) : 0;
@@ -380,10 +380,10 @@ void ReadSettings ()
 	memset(texture_dir,0,sizeof(texture_dir));
 	GetSystemSettingSz(Set_texture_dir,texture_dir,sizeof(texture_dir));
 	settings.texture_dir = texture_dir;
-	settings.ghq_fltr = (wxUint8)GetSetting(Set_ghq_fltr);
-	settings.ghq_cmpr = (wxUint8)GetSetting(Set_ghq_cmpr);
-	settings.ghq_enht = (wxUint8)GetSetting(Set_ghq_enht);
-	settings.ghq_hirs = (wxUint8)GetSetting(Set_ghq_hirs);
+	settings.ghq_fltr = (uint8_t)GetSetting(Set_ghq_fltr);
+	settings.ghq_cmpr = (uint8_t)GetSetting(Set_ghq_cmpr);
+	settings.ghq_enht = (uint8_t)GetSetting(Set_ghq_enht);
+	settings.ghq_hirs = (uint8_t)GetSetting(Set_ghq_hirs);
 	settings.ghq_enht_cmpr = GetSetting(Set_ghq_enht_cmpr);
 	settings.ghq_enht_tile = GetSetting(Set_ghq_enht_tile);
 	settings.ghq_enht_f16bpp = GetSetting(Set_ghq_enht_f16bpp);
@@ -717,7 +717,7 @@ void guLoadTextures ()
   uint32_t cur;
 
   // ** Font texture **
-  wxUint8 *tex8 = (wxUint8*)malloc(256*64);
+  uint8_t *tex8 = (uint8_t*)malloc(256*64);
 
   fontTex.smallLodLog2 = fontTex.largeLodLog2 = GR_LOD_LOG2_256;
   fontTex.aspectRatioLog2 = GR_ASPECT_LOG2_4x1;
@@ -1223,8 +1223,8 @@ void CALL ReadScreen(void **dest, int *width, int *height)
 {
   *width = settings.res_x;
   *height = settings.res_y;
-  wxUint8 * buff = (wxUint8*)malloc(settings.res_x * settings.res_y * 3);
-  wxUint8 * line = buff;
+  uint8_t * buff = (uint8_t*)malloc(settings.res_x * settings.res_y * 3);
+  uint8_t * line = buff;
   *dest = (void*)buff;
 
   if (!fullscreen)
@@ -1254,19 +1254,19 @@ void CALL ReadScreen(void **dest, int *width, int *height)
     uint32_t offset_src=info.strideInBytes*(settings.scr_res_y-1);
 
     // Copy the screen
-    wxUint8 r, g, b;
+    uint8_t r, g, b;
     if (info.writeMode == GR_LFBWRITEMODE_8888)
     {
       uint32_t col;
       for (uint32_t y=0; y<settings.res_y; y++)
       {
-        uint32_t *ptr = (uint32_t*)((wxUint8*)info.lfbPtr + offset_src);
+        uint32_t *ptr = (uint32_t*)((uint8_t*)info.lfbPtr + offset_src);
         for (uint32_t x=0; x<settings.res_x; x++)
         {
           col = *(ptr++);
-          r = (wxUint8)((col >> 16) & 0xFF);
-          g = (wxUint8)((col >> 8) & 0xFF);
-          b = (wxUint8)(col & 0xFF);
+          r = (uint8_t)((col >> 16) & 0xFF);
+          g = (uint8_t)((col >> 8) & 0xFF);
+          b = (uint8_t)(col & 0xFF);
           line[x*3] = b;
           line[x*3+1] = g;
           line[x*3+2] = r;
@@ -1280,13 +1280,13 @@ void CALL ReadScreen(void **dest, int *width, int *height)
       wxUint16 col;
       for (uint32_t y=0; y<settings.res_y; y++)
       {
-        wxUint16 *ptr = (wxUint16*)((wxUint8*)info.lfbPtr + offset_src);
+        wxUint16 *ptr = (wxUint16*)((uint8_t*)info.lfbPtr + offset_src);
         for (uint32_t x=0; x<settings.res_x; x++)
         {
           col = *(ptr++);
-          r = (wxUint8)((float)(col >> 11) / 31.0f * 255.0f);
-          g = (wxUint8)((float)((col >> 5) & 0x3F) / 63.0f * 255.0f);
-          b = (wxUint8)((float)(col & 0x1F) / 31.0f * 255.0f);
+          r = (uint8_t)((float)(col >> 11) / 31.0f * 255.0f);
+          g = (uint8_t)((float)((col >> 5) & 0x3F) / 63.0f * 255.0f);
+          b = (uint8_t)((float)(col & 0x1F) / 31.0f * 255.0f);
           line[x*3] = b;
           line[x*3+1] = g;
           line[x*3+2] = r;
@@ -1471,8 +1471,8 @@ void CALL GetDllInfo ( PLUGIN_INFO * PluginInfo )
 
   // If DLL supports memory these memory options then set them to TRUE or FALSE
   //  if it does not support it
-  PluginInfo->NormalMemory = FALSE;  // a normal wxUint8 array
-  PluginInfo->MemoryBswaped = TRUE; // a normal wxUint8 array where the memory has been pre
+  PluginInfo->NormalMemory = FALSE;  // a normal uint8_t array
+  PluginInfo->MemoryBswaped = TRUE; // a normal uint8_t array where the memory has been pre
   // bswap on a dword (32 bits) boundry
 }
 
@@ -2143,7 +2143,7 @@ void newSwapBuffers()
       FXFALSE,
       &info))
     {
-      wxUint8 *ssimg = (wxUint8*)malloc(image_width * image_height * 3); // will be free in wxImage destructor
+      uint8_t *ssimg = (uint8_t*)malloc(image_width * image_height * 3); // will be free in wxImage destructor
       int sspos = 0;
       uint32_t offset_src = info.strideInBytes * offset_y;
 
@@ -2153,14 +2153,14 @@ void newSwapBuffers()
         uint32_t col;
         for (uint32_t y = 0; y < image_height; y++)
         {
-          uint32_t *ptr = (uint32_t*)((wxUint8*)info.lfbPtr + offset_src);
+          uint32_t *ptr = (uint32_t*)((uint8_t*)info.lfbPtr + offset_src);
           ptr += offset_x;
           for (uint32_t x = 0; x < image_width; x++)
           {
             col = *(ptr++);
-            ssimg[sspos++] = (wxUint8)((col >> 16) & 0xFF);
-            ssimg[sspos++] = (wxUint8)((col >> 8) & 0xFF);
-            ssimg[sspos++] = (wxUint8)(col & 0xFF);
+            ssimg[sspos++] = (uint8_t)((col >> 16) & 0xFF);
+            ssimg[sspos++] = (uint8_t)((col >> 8) & 0xFF);
+            ssimg[sspos++] = (uint8_t)(col & 0xFF);
           }
           offset_src += info.strideInBytes;
         }
@@ -2170,14 +2170,14 @@ void newSwapBuffers()
         wxUint16 col;
         for (uint32_t y = 0; y < image_height; y++)
         {
-          wxUint16 *ptr = (wxUint16*)((wxUint8*)info.lfbPtr + offset_src);
+          wxUint16 *ptr = (wxUint16*)((uint8_t*)info.lfbPtr + offset_src);
           ptr += offset_x;
           for (uint32_t x = 0; x < image_width; x++)
           {
             col = *(ptr++);
-            ssimg[sspos++] = (wxUint8)((float)(col >> 11) / 31.0f * 255.0f);
-            ssimg[sspos++] = (wxUint8)((float)((col >> 5) & 0x3F) / 63.0f * 255.0f);
-            ssimg[sspos++] = (wxUint8)((float)(col & 0x1F) / 31.0f * 255.0f);
+            ssimg[sspos++] = (uint8_t)((float)(col >> 11) / 31.0f * 255.0f);
+            ssimg[sspos++] = (uint8_t)((float)((col >> 5) & 0x3F) / 63.0f * 255.0f);
+            ssimg[sspos++] = (uint8_t)((float)(col & 0x1F) / 31.0f * 255.0f);
           }
           offset_src += info.strideInBytes;
         }
@@ -2194,7 +2194,7 @@ void newSwapBuffers()
   if (_debugger.capture)
   {
     // Allocate the screen
-    _debugger.screen = new wxUint8 [(settings.res_x*settings.res_y) << 1];
+    _debugger.screen = new uint8_t [(settings.res_x*settings.res_y) << 1];
 
     // Lock the backbuffer (already rendered)
     GrLfbInfo_t info;
@@ -2213,22 +2213,22 @@ void newSwapBuffers()
     {
       if (info.writeMode == GR_LFBWRITEMODE_8888)
       {
-        uint32_t *src = (uint32_t*)((wxUint8*)info.lfbPtr + offset_src);
+        uint32_t *src = (uint32_t*)((uint8_t*)info.lfbPtr + offset_src);
         wxUint16 *dst = (wxUint16*)(_debugger.screen + offset_dst);
-        wxUint8 r, g, b;
+        uint8_t r, g, b;
         uint32_t col;
         for (unsigned int x = 0; x < settings.res_x; x++)
         {
           col = src[x];
-          r = (wxUint8)((col >> 19) & 0x1F);
-          g = (wxUint8)((col >> 10) & 0x3F);
-          b = (wxUint8)((col >> 3)  & 0x1F);
+          r = (uint8_t)((col >> 19) & 0x1F);
+          g = (uint8_t)((col >> 10) & 0x3F);
+          b = (uint8_t)((col >> 3)  & 0x1F);
           dst[x] = (r<<11)|(g<<5)|b;
         }
       }
       else
       {
-        memcpy (_debugger.screen + offset_dst, (wxUint8*)info.lfbPtr + offset_src, settings.res_x << 1);
+        memcpy (_debugger.screen + offset_dst, (uint8_t*)info.lfbPtr + offset_src, settings.res_x << 1);
       }
       offset_dst += settings.res_x << 1;
       offset_src += info.strideInBytes;

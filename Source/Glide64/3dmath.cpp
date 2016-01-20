@@ -67,9 +67,9 @@ void calc_light (VERTEX *v)
   if (color[1] > 1.0f) color[1] = 1.0f;
   if (color[2] > 1.0f) color[2] = 1.0f;
   
-  v->r = (wxUint8)(color[0]*255.0f);
-  v->g = (wxUint8)(color[1]*255.0f);
-  v->b = (wxUint8)(color[2]*255.0f);
+  v->r = (uint8_t)(color[0]*255.0f);
+  v->g = (uint8_t)(color[1]*255.0f);
+  v->b = (uint8_t)(color[2]*255.0f);
 }
 
 //*

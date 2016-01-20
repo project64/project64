@@ -94,7 +94,7 @@ static void uc8_vertex ()
 		v->ou   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 4)^1];
 		v->ov   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 5)^1];
         v->uv_scaled = 0;
-		v->a    = ((wxUint8*)gfx.RDRAM)[(addr+i + 15)^3];
+		v->a    = ((uint8_t*)gfx.RDRAM)[(addr+i + 15)^3];
 
 #ifdef EXTREME_LOGGING
 		FRDP ("before v%d - x: %f, y: %f, z: %f\n", i>>4, x, y, z);
@@ -125,9 +125,9 @@ static void uc8_vertex ()
 		if (v->y > v->w) v->scr_off |= 8;
 		if (v->w < 0.1f) v->scr_off |= 16;
 		///*
-		v->r = ((wxUint8*)gfx.RDRAM)[(addr+i + 12)^3];
-		v->g = ((wxUint8*)gfx.RDRAM)[(addr+i + 13)^3];
-		v->b = ((wxUint8*)gfx.RDRAM)[(addr+i + 14)^3];
+		v->r = ((uint8_t*)gfx.RDRAM)[(addr+i + 12)^3];
+		v->g = ((uint8_t*)gfx.RDRAM)[(addr+i + 13)^3];
+		v->b = ((uint8_t*)gfx.RDRAM)[(addr+i + 14)^3];
 #ifdef EXTREME_LOGGING
 		FRDP ("r: %02lx, g: %02lx, b: %02lx, a: %02lx\n", v->r, v->g, v->b, v->a);
 #endif
@@ -223,9 +223,9 @@ static void uc8_vertex ()
 			if (color[0] > 1.0f) color[0] = 1.0f;
 			if (color[1] > 1.0f) color[1] = 1.0f;
 			if (color[2] > 1.0f) color[2] = 1.0f;
-			v->r = (wxUint8)(((float)v->r)*color[0]);
-			v->g = (wxUint8)(((float)v->g)*color[1]);
-			v->b = (wxUint8)(((float)v->b)*color[2]);
+			v->r = (uint8_t)(((float)v->r)*color[0]);
+			v->g = (uint8_t)(((float)v->g)*color[1]);
+			v->b = (uint8_t)(((float)v->b)*color[2]);
 #ifdef EXTREME_LOGGING
 		FRDP("color after light: r: 0x%02lx, g: 0x%02lx, b: 0x%02lx\n", v->r, v->g, v->b);
 #endif
@@ -235,7 +235,7 @@ static void uc8_vertex ()
 
 static void uc8_moveword ()
 {
-	wxUint8 index = (wxUint8)((rdp.cmd0 >> 16) & 0xFF);
+	uint8_t index = (uint8_t)((rdp.cmd0 >> 16) & 0xFF);
 	wxUint16 offset = (wxUint16)(rdp.cmd0 & 0xFFFF);
 	uint32_t data = rdp.cmd1;
 
@@ -287,7 +287,7 @@ static void uc8_moveword ()
 
 	case 0x10:  // moveword coord mod
 		{
-			wxUint8 n = offset >> 2;
+			uint8_t n = offset >> 2;
 
 			FRDP ("coord mod:%d, %08lx\n", n, data);
 			if (rdp.cmd0&8)
@@ -385,7 +385,7 @@ static void uc8_movemem ()
               return;
             }
             n -= 2;
-			wxUint8 col = gfx.RDRAM[(addr+0)^3];
+			uint8_t col = gfx.RDRAM[(addr+0)^3];
 			rdp.light[n].r = (float)col / 255.0f;
 			rdp.light[n].nonblack = col;
 			col = gfx.RDRAM[(addr+1)^3];

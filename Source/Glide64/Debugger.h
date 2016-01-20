@@ -44,15 +44,15 @@
 typedef struct TEX_INFO_t
 {
 	uint32_t cur_cache[2];	// Current cache #
-	wxUint8 format;
-	wxUint8 size;
+	uint8_t format;
+	uint8_t size;
 	uint32_t width, height;
 	wxUint16 line, wid;
-	wxUint8 palette;
-	wxUint8 clamp_s, clamp_t;
-	wxUint8 mirror_s, mirror_t;
-	wxUint8 mask_s, mask_t;
-	wxUint8 shift_s, shift_t;
+	uint8_t palette;
+	uint8_t clamp_s, clamp_t;
+	uint8_t mirror_s, mirror_t;
+	uint8_t mask_s, mask_t;
+	uint8_t shift_s, shift_t;
 	wxUint16 ul_s, ul_t, lr_s, lr_t;
 	wxUint16 t_ul_s, t_ul_t, t_lr_s, t_lr_t;
 	float scale_s, scale_t;
@@ -64,7 +64,7 @@ typedef struct TRI_INFO_t
 	uint32_t	nv;			// Number of vertices
 	VERTEX	*v;			// Vertices (2d screen coords) of the triangle, used to outline
 	uint32_t	cycle1, cycle2, cycle_mode;	// Combine mode at the time of rendering
-	wxUint8	uncombined;	// which is uncombined: 0x01=color 0x02=alpha 0x03=both
+	uint8_t	uncombined;	// which is uncombined: 0x01=color 0x02=alpha 0x03=both
 	uint32_t	geom_mode;	// geometry mode flags
 	uint32_t	othermode_h;	// setothermode_h flags
 	uint32_t	othermode_l;	// setothermode_l flags
@@ -98,7 +98,7 @@ typedef struct DEBUGGER_t
 	uint32_t tex_sel;
 
 	// CAPTURE INFORMATION
-	wxUint8 *screen;		// Screen capture
+	uint8_t *screen;		// Screen capture
 	TRI_INFO *tri_list;	// Triangle information list
 	TRI_INFO *tri_last;	// Last in the list (first in)
 

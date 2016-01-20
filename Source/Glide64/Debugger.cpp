@@ -984,7 +984,7 @@ void output (float x, float y, int scale, const char *fmt, ...)
   vsprintf(out_buf, fmt, ap);
   va_end(ap);
 
-  wxUint8 c,r;
+  uint8_t c,r;
   for (uint32_t i=0; i<strlen(out_buf); i++)
   {
     c = ((out_buf[i]-32) & 0x1F) * 8;//<< 3;

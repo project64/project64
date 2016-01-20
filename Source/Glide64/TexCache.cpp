@@ -48,10 +48,10 @@
 
 void LoadTex (int id, int tmu);
 
-wxUint8 tex1[1024*1024*4];		// temporary texture
-wxUint8 tex2[1024*1024*4];
-wxUint8 *texture;
-wxUint8 *texture_buffer = tex1;
+uint8_t tex1[1024*1024*4];		// temporary texture
+uint8_t tex2[1024*1024*4];
+uint8_t *texture;
+uint8_t *texture_buffer = tex1;
 
 #include "TexLoad.h"	// texture loading functions, ONLY INCLUDE IN THIS FILE!!!
 #include "MiClWr32b.h"
@@ -86,7 +86,7 @@ int tex_found[2][MAX_TMU];
 typedef struct HIRESTEX_t {
   int width, height;
   wxUint16 format;
-  wxUint8 *data;
+  uint8_t *data;
 } HIRESTEX;
 #endif
 
@@ -1300,7 +1300,7 @@ void LoadTex (int id, int tmu)
   if (settings.ghq_use)
   {
     int bpl;
-    wxUint8* addr = (wxUint8*)(gfx.RDRAM+rdp.addr[rdp.tiles[td].t_mem]);
+    uint8_t* addr = (uint8_t*)(gfx.RDRAM+rdp.addr[rdp.tiles[td].t_mem]);
     int tile_width  = texinfo[id].width;
     int tile_height = texinfo[id].height;
     LOAD_TILE_INFO &info = rdp.load_info[rdp.tiles[td].t_mem];
@@ -1332,17 +1332,17 @@ void LoadTex (int id, int tmu)
       }
     }
 
-    //    wxUint8* addr = (wxUint8*)(gfx.RDRAM+rdp.addr[rdp.tiles[td].t_mem] + (rdp.tiles[td].ul_t * bpl) + (((rdp.tiles[td].ul_s<<rdp.tiles[td].size)+1)>>1));
-    wxUint8 * paladdr = 0;
+    //    uint8_t* addr = (uint8_t*)(gfx.RDRAM+rdp.addr[rdp.tiles[td].t_mem] + (rdp.tiles[td].ul_t * bpl) + (((rdp.tiles[td].ul_s<<rdp.tiles[td].size)+1)>>1));
+    uint8_t * paladdr = 0;
     wxUint16 * palette = 0;
     if ((rdp.tiles[td].size < 2) && (rdp.tlut_mode || rdp.tiles[td].format == 2))
     {
       if (rdp.tiles[td].size == 1)
-        paladdr = (wxUint8*)(rdp.pal_8_rice);
+        paladdr = (uint8_t*)(rdp.pal_8_rice);
       else if (settings.ghq_hirs_altcrc)
-        paladdr = (wxUint8*)(rdp.pal_8_rice + (rdp.tiles[td].palette << 5));
+        paladdr = (uint8_t*)(rdp.pal_8_rice + (rdp.tiles[td].palette << 5));
       else
-        paladdr = (wxUint8*)(rdp.pal_8_rice + (rdp.tiles[td].palette << 4));
+        paladdr = (uint8_t*)(rdp.pal_8_rice + (rdp.tiles[td].palette << 4));
       palette = (rdp.pal_8 + (rdp.tiles[td].palette << 4));
     }
 
@@ -1681,7 +1681,7 @@ void LoadTex (int id, int tmu)
           }
           else
           {
-            texture = (wxUint8 *)ghqTexInfo.data;
+            texture = (uint8_t *)ghqTexInfo.data;
             lod = ghqTexInfo.largeLodLog2;
             int splits = cache->splits;
             if (ghqTexInfo.is_hires_tex)

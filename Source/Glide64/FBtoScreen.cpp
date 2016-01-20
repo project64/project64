@@ -158,19 +158,19 @@ static void DrawRE2Video256(FB_TO_SCREEN_INFO & fb_info)
   wxUint16 * tex = (wxUint16*)texture_buffer;
   wxUint16 * dst = tex;
   uint32_t col;
-  wxUint8 r, g, b;
+  uint8_t r, g, b;
   fb_info.height = min(256, fb_info.height);
   for (uint32_t h = 0; h < fb_info.height; h++)
   {
     for (uint32_t w = 0; w < 256; w++)
     {
       col = *(src++);
-      r = (wxUint8)((col >> 24)&0xFF);
-      r = (wxUint8)((float)r / 255.0f * 31.0f);
-      g = (wxUint8)((col >> 16)&0xFF);
-      g = (wxUint8)((float)g / 255.0f * 63.0f);
-      b = (wxUint8)((col >>  8)&0xFF);
-      b = (wxUint8)((float)b / 255.0f * 31.0f);
+      r = (uint8_t)((col >> 24)&0xFF);
+      r = (uint8_t)((float)r / 255.0f * 31.0f);
+      g = (uint8_t)((col >> 16)&0xFF);
+      g = (uint8_t)((float)g / 255.0f * 63.0f);
+      b = (uint8_t)((col >>  8)&0xFF);
+      b = (uint8_t)((float)b / 255.0f * 31.0f);
       *(dst++) = (r << 11) | (g << 5) | b;
     }
     src += (fb_info.width - 256);
@@ -200,7 +200,7 @@ static void DrawFrameBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
   uint32_t width = fb_info.lr_x - fb_info.ul_x + 1;
   uint32_t height = fb_info.lr_y - fb_info.ul_y + 1;
   GrTexInfo t_info;
-  wxUint8 * image = gfx.RDRAM+fb_info.addr;
+  uint8_t * image = gfx.RDRAM+fb_info.addr;
   uint32_t width256 = ((width-1) >> 8) + 1;
   uint32_t height256 = ((height-1) >> 8) + 1;
   t_info.smallLodLog2 = t_info.largeLodLog2 = GR_LOD_LOG2_256;
@@ -221,7 +221,7 @@ static void DrawFrameBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
   uint32_t idx;
   uint32_t bound = BMASK+1-fb_info.addr;
   bound = fb_info.size == 2 ? bound >> 1 : bound >> 2;
-  wxUint8 r, g, b, a;
+  uint8_t r, g, b, a;
   uint32_t cur_width, cur_height, cur_tail;
   uint32_t tex_adr = voodoo.tex_min_addr[tmu]+voodoo.tmem_ptr[tmu];
   if ((voodoo.tmem_ptr[tmu] < TEXMEM_2MB_EDGE) && (voodoo.tmem_ptr[tmu]+tex_size*width256*height256 > TEXMEM_2MB_EDGE))
@@ -261,12 +261,12 @@ static void DrawFrameBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
             if (idx >= bound)
               break;
             c32 = src32[idx];
-            r = (wxUint8)((c32 >> 24)&0xFF);
-            r = (wxUint8)((float)r / 255.0f * 31.0f);
-            g = (wxUint8)((c32 >> 16)&0xFF);
-            g = (wxUint8)((float)g / 255.0f * 63.0f);
-            b = (wxUint8)((c32 >>  8)&0xFF);
-            b = (wxUint8)((float)b / 255.0f * 31.0f);
+            r = (uint8_t)((c32 >> 24)&0xFF);
+            r = (uint8_t)((float)r / 255.0f * 31.0f);
+            g = (uint8_t)((c32 >> 16)&0xFF);
+            g = (uint8_t)((float)g / 255.0f * 63.0f);
+            b = (uint8_t)((c32 >>  8)&0xFF);
+            b = (uint8_t)((float)b / 255.0f * 31.0f);
             a = (c32&0xFF) ? 1 : 0;
             *(dst++) = (a<<15) | (r << 10) | (g << 5) | b;
           }
@@ -316,7 +316,7 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
   }
   FRDP("DrawFrameBufferToScreen. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx\n", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
   GrTexInfo t_info;
-  wxUint8 * image = gfx.RDRAM+fb_info.addr;
+  uint8_t * image = gfx.RDRAM+fb_info.addr;
   uint32_t texwidth;
   float scale;
   if (width <= 256)
@@ -434,7 +434,7 @@ static void DrawDepthBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
   uint32_t width = fb_info.lr_x - fb_info.ul_x + 1;
   uint32_t height = fb_info.lr_y - fb_info.ul_y + 1;
   GrTexInfo t_info;
-  wxUint8 * image = gfx.RDRAM+fb_info.addr;
+  uint8_t * image = gfx.RDRAM+fb_info.addr;
   uint32_t width256 = ((width-1) >> 8) + 1;
   uint32_t height256 = ((height-1) >> 8) + 1;
   t_info.smallLodLog2 = t_info.largeLodLog2 = GR_LOD_LOG2_256;
@@ -585,7 +585,7 @@ void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
   }
   FRDP("DrawDepthBufferToScreen. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx\n", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
   GrTexInfo t_info;
-  wxUint8 * image = gfx.RDRAM+fb_info.addr;
+  uint8_t * image = gfx.RDRAM+fb_info.addr;
   uint32_t texwidth;
   float scale;
   if (width <= 256)

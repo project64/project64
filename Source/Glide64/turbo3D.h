@@ -65,10 +65,10 @@ struct t3dGlobState {
 struct t3dState {
     uint32_t	renderState;	/* render state */
     uint32_t	textureState;	/* texture state */
-    wxUint8	flag;
-    wxUint8	triCount;	/* how many tris? */
-    wxUint8	vtxV0;		/* where to load verts? */
-    wxUint8	vtxCount;	/* how many verts? */
+    uint8_t	flag;
+    uint8_t	triCount;	/* how many tris? */
+    uint8_t	vtxV0;		/* where to load verts? */
+    uint8_t	vtxCount;	/* how many verts? */
     uint32_t	rdpCmds;	/* ptr (segment address) to RDP DL */
     uint32_t	othermode0;
     uint32_t	othermode1;
@@ -76,7 +76,7 @@ struct t3dState {
 
 
 struct t3dTriN{
-   wxUint8	flag, v2, v1, v0;	/* flag is which one for flat shade */
+   uint8_t	flag, v2, v1, v0;	/* flag is which one for flat shade */
 };
 
 
@@ -153,10 +153,10 @@ static void t3d_vertex(uint32_t addr, uint32_t v0, uint32_t n)
       v->ou   = 2.0f * (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 4)^1];
       v->ov   = 2.0f * (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 5)^1];
       v->uv_scaled = 0;
-      v->r = ((wxUint8*)gfx.RDRAM)[(addr+i + 12)^3];
-      v->g = ((wxUint8*)gfx.RDRAM)[(addr+i + 13)^3];
-      v->b = ((wxUint8*)gfx.RDRAM)[(addr+i + 14)^3];
-      v->a    = ((wxUint8*)gfx.RDRAM)[(addr+i + 15)^3];
+      v->r = ((uint8_t*)gfx.RDRAM)[(addr+i + 12)^3];
+      v->g = ((uint8_t*)gfx.RDRAM)[(addr+i + 13)^3];
+      v->b = ((uint8_t*)gfx.RDRAM)[(addr+i + 14)^3];
+      v->a    = ((uint8_t*)gfx.RDRAM)[(addr+i + 15)^3];
 
       v->x = x*rdp.combined[0][0] + y*rdp.combined[1][0] + z*rdp.combined[2][0] + rdp.combined[3][0];
       v->y = x*rdp.combined[0][1] + y*rdp.combined[1][1] + z*rdp.combined[2][1] + rdp.combined[3][1];

@@ -95,7 +95,7 @@ static int Calc_invw (int w) {
   return Result.W;
 }
 
-static void uc9_draw_object (wxUint8 * addr, uint32_t type)
+static void uc9_draw_object (uint8_t * addr, uint32_t type)
 {
   uint32_t textured, vnum, vsize;
   switch (type) {
@@ -184,7 +184,7 @@ static void uc9_draw_object (wxUint8 * addr, uint32_t type)
 static uint32_t uc9_load_object (uint32_t zHeader, uint32_t * rdpcmds)
 {
   uint32_t type = zHeader & 7;
-  wxUint8 * addr = gfx.RDRAM + (zHeader&0xFFFFFFF8);
+  uint8_t * addr = gfx.RDRAM + (zHeader&0xFFFFFFF8);
   switch (type) {
     case 1: //sh tri
     case 3: //sh quad
@@ -274,18 +274,18 @@ static void uc9_fmlight ()
     break;
   }
 
-  rdp.light[rdp.num_lights].r = (float)(((wxUint8*)gfx.DMEM)[(a+0)^3]) / 255.0f;
-  rdp.light[rdp.num_lights].g = (float)(((wxUint8*)gfx.DMEM)[(a+1)^3]) / 255.0f;
-  rdp.light[rdp.num_lights].b = (float)(((wxUint8*)gfx.DMEM)[(a+2)^3]) / 255.0f;
+  rdp.light[rdp.num_lights].r = (float)(((uint8_t*)gfx.DMEM)[(a+0)^3]) / 255.0f;
+  rdp.light[rdp.num_lights].g = (float)(((uint8_t*)gfx.DMEM)[(a+1)^3]) / 255.0f;
+  rdp.light[rdp.num_lights].b = (float)(((uint8_t*)gfx.DMEM)[(a+2)^3]) / 255.0f;
   rdp.light[rdp.num_lights].a = 1.0f;
   FRDP ("ambient light: r: %.3f, g: %.3f, b: %.3f\n", rdp.light[rdp.num_lights].r, rdp.light[rdp.num_lights].g, rdp.light[rdp.num_lights].b);
   a += 8;
   uint32_t i;
   for (i = 0; i < rdp.num_lights; i++)
   {
-    rdp.light[i].r = (float)(((wxUint8*)gfx.DMEM)[(a+0)^3]) / 255.0f;
-    rdp.light[i].g = (float)(((wxUint8*)gfx.DMEM)[(a+1)^3]) / 255.0f;
-    rdp.light[i].b = (float)(((wxUint8*)gfx.DMEM)[(a+2)^3]) / 255.0f;
+    rdp.light[i].r = (float)(((uint8_t*)gfx.DMEM)[(a+0)^3]) / 255.0f;
+    rdp.light[i].g = (float)(((uint8_t*)gfx.DMEM)[(a+1)^3]) / 255.0f;
+    rdp.light[i].b = (float)(((uint8_t*)gfx.DMEM)[(a+2)^3]) / 255.0f;
     rdp.light[i].a = 1.0f;
     rdp.light[i].dir_x = (float)(((char*)gfx.DMEM)[(a+8)^3]) / 127.0f;
     rdp.light[i].dir_y = (float)(((char*)gfx.DMEM)[(a+9)^3]) / 127.0f;
@@ -341,9 +341,9 @@ static void uc9_light ()
     v.a = 0xFF;
     if (use_material)
     {
-      v.r = (wxUint8)(((uint32_t)v.r * gfx.DMEM[(csrs++)^3])>>8);
-      v.g = (wxUint8)(((uint32_t)v.g * gfx.DMEM[(csrs++)^3])>>8);
-      v.b = (wxUint8)(((uint32_t)v.b * gfx.DMEM[(csrs++)^3])>>8);
+      v.r = (uint8_t)(((uint32_t)v.r * gfx.DMEM[(csrs++)^3])>>8);
+      v.g = (uint8_t)(((uint32_t)v.g * gfx.DMEM[(csrs++)^3])>>8);
+      v.b = (uint8_t)(((uint32_t)v.b * gfx.DMEM[(csrs++)^3])>>8);
       v.a = gfx.DMEM[(csrs++)^3];
     }
     gfx.DMEM[(cdest++)^3] = v.r;
@@ -471,8 +471,8 @@ typedef struct  {
   short yi;
   short xi;
   short wi;
-  wxUint8 fog;
-  wxUint8 cc;
+  uint8_t fog;
+  uint8_t cc;
 } zSortVDest;
 
 static void uc9_mult_mpmtx ()
@@ -513,7 +513,7 @@ static void uc9_mult_mpmtx ()
       int fog = (int)(z / w * rdp.fog_multiplier + rdp.fog_offset);
       if (fog > 255)
         fog = 255;
-      v.fog = (fog >= 0) ? (wxUint8)fog : 0;
+      v.fog = (fog >= 0) ? (uint8_t)fog : 0;
     }
 
     v.cc = 0;

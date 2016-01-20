@@ -677,7 +677,7 @@ static uint32_t CalcCRC(TBUFF_COLOR_IMAGE * pTCI)
     result = *((uint32_t*)(gfx.RDRAM + pTCI->addr + (pTCI->end_addr-pTCI->addr)/2));
   else if (settings.fb_crc_mode == SETTINGS::fbcrcSafe)
   {
-    wxUint8 * pSrc = gfx.RDRAM + pTCI->addr;
+    uint8_t * pSrc = gfx.RDRAM + pTCI->addr;
     const uint32_t nSize = pTCI->end_addr-pTCI->addr;
     result = CRC32(0xFFFFFFFF, pSrc, 32);
     result = CRC32(result, pSrc + (nSize>>1), 32);
@@ -695,7 +695,7 @@ int FindTextureBuffer(uint32_t addr, wxUint16 width)
   uint32_t shift = 0;
   for (int i = 0; i < voodoo.num_tmu && !found; i++)
   {
-    wxUint8 index = rdp.cur_tex_buf^i;
+    uint8_t index = rdp.cur_tex_buf^i;
     for (int j = 0; j < rdp.texbufs[index].count && !found; j++)
     {
       rdp.tbuff_tex = &(rdp.texbufs[index].images[j]);

@@ -75,9 +75,9 @@ static void calc_point_light (VERTEX *v, float * vpos)
   if (color[1] > 1.0f) color[1] = 1.0f;
   if (color[2] > 1.0f) color[2] = 1.0f;
 
-  v->r = (wxUint8)(color[0]*255.0f);
-  v->g = (wxUint8)(color[1]*255.0f);
-  v->b = (wxUint8)(color[2]*255.0f);
+  v->r = (uint8_t)(color[0]*255.0f);
+  v->g = (uint8_t)(color[1]*255.0f);
+  v->b = (uint8_t)(color[2]*255.0f);
 }
 
 static void uc6_obj_rectangle();
@@ -141,7 +141,7 @@ static void uc2_vertex ()
     v->ou   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 4)^1];
     v->ov   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 5)^1];
     v->uv_scaled = 0;
-    v->a    = ((wxUint8*)gfx.RDRAM)[(addr+i + 15)^3];
+    v->a    = ((uint8_t*)gfx.RDRAM)[(addr+i + 15)^3];
 
     v->x = x*rdp.combined[0][0] + y*rdp.combined[1][0] + z*rdp.combined[2][0] + rdp.combined[3][0];
     v->y = x*rdp.combined[0][1] + y*rdp.combined[1][1] + z*rdp.combined[2][1] + rdp.combined[3][1];
@@ -206,9 +206,9 @@ static void uc2_vertex ()
     }
     else
     {
-      v->r = ((wxUint8*)gfx.RDRAM)[(addr+i + 12)^3];
-      v->g = ((wxUint8*)gfx.RDRAM)[(addr+i + 13)^3];
-      v->b = ((wxUint8*)gfx.RDRAM)[(addr+i + 14)^3];
+      v->r = ((uint8_t*)gfx.RDRAM)[(addr+i + 12)^3];
+      v->g = ((uint8_t*)gfx.RDRAM)[(addr+i + 13)^3];
+      v->b = ((uint8_t*)gfx.RDRAM)[(addr+i + 14)^3];
     }
 #ifdef EXTREME_LOGGING
     FRDP ("v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f, f: %f, z_w: %f, r=%d, g=%d, b=%d, a=%d\n", i>>4, v->x, v->y, v->z, v->w, v->ou*rdp.tiles[rdp.cur_tile].s_scale, v->ov*rdp.tiles[rdp.cur_tile].t_scale, v->f, v->z_w, v->r, v->g, v->b, v->a);
@@ -219,7 +219,7 @@ static void uc2_vertex ()
 
 static void uc2_modifyvtx ()
 {
-  wxUint8 where = (wxUint8)((rdp.cmd0 >> 16) & 0xFF);
+  uint8_t where = (uint8_t)((rdp.cmd0 >> 16) & 0xFF);
   wxUint16 vtx = (wxUint16)((rdp.cmd0 >> 1) & 0xFFFF);
 
   FRDP ("uc2:modifyvtx: vtx: %d, where: 0x%02lx, val: %08lx - ", vtx, where, rdp.cmd1);
@@ -495,7 +495,7 @@ static void uc2_matrix ()
   DECLAREALIGN16VAR(m[4][4]);
   load_matrix(m, segoffset(rdp.cmd1));
 
-  wxUint8 command = (wxUint8)((rdp.cmd0 ^ 1) & 0xFF);
+  uint8_t command = (uint8_t)((rdp.cmd0 ^ 1) & 0xFF);
   switch (command)
   {
   case 0: // modelview mul nopush
@@ -553,7 +553,7 @@ static void uc2_matrix ()
 
 static void uc2_moveword ()
 {
-  wxUint8 index = (wxUint8)((rdp.cmd0 >> 16) & 0xFF);
+  uint8_t index = (uint8_t)((rdp.cmd0 >> 16) & 0xFF);
   wxUint16 offset = (wxUint16)(rdp.cmd0 & 0xFFFF);
   uint32_t data = rdp.cmd1;
 
@@ -730,7 +730,7 @@ static void uc2_movemem ()
       if (n > 7) return;
 
       // Get the data
-      wxUint8 col = gfx.RDRAM[(addr+0)^3];
+      uint8_t col = gfx.RDRAM[(addr+0)^3];
       rdp.light[n].r = (float)col / 255.0f;
       rdp.light[n].nonblack = col;
       col = gfx.RDRAM[(addr+1)^3];

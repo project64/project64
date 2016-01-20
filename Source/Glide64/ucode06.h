@@ -125,11 +125,11 @@ typedef struct DRAWIMAGE_t {
   wxUint16 imageW;
   wxUint16 imageH;
   uint32_t imagePtr;
-  wxUint8 imageFmt;
-  wxUint8 imageSiz;
+  uint8_t imageFmt;
+  uint8_t imageSiz;
   wxUint16 imagePal;
-  wxUint8 flipX;
-  wxUint8 flipY;
+  uint8_t flipX;
+  uint8_t flipY;
   float scaleX;
   float scaleY;
 } DRAWIMAGE;
@@ -144,10 +144,10 @@ typedef struct DRAWOBJECT_t {
 
   wxUint16  imageStride;
   wxUint16  imageAdrs;
-  wxUint8  imageFmt;
-  wxUint8  imageSiz;
-  wxUint8  imagePal;
-  wxUint8  imageFlags;
+  uint8_t  imageFmt;
+  uint8_t  imageSiz;
+  uint8_t  imagePal;
+  uint8_t  imageFlags;
 } DRAWOBJECT;
 
 void DrawHiresDepthImage (const DRAWIMAGE & d)
@@ -425,7 +425,7 @@ void DrawImage (DRAWIMAGE & d)
   tile->size = d.imageSiz;             // 16-bit
   tile->line = line;
   tile->t_mem = 0;
-  tile->palette = (wxUint8)d.imagePal;
+  tile->palette = (uint8_t)d.imagePal;
   tile->clamp_t = 1;
   tile->mirror_t = 0;
   tile->mask_t = 0;
@@ -729,11 +729,11 @@ static void uc6_read_background_data (DRAWIMAGE & d, bool bReadScale)
   d.frameH      = ((wxUint16 *)gfx.RDRAM)[(addr+7)^1] >> 2;             // 7
 
   d.imagePtr    = segoffset(((uint32_t*)gfx.RDRAM)[(addr+8)>>1]);       // 8,9
-  d.imageFmt    = ((wxUint8 *)gfx.RDRAM)[(((addr+11)<<1)+0)^3]; // 11
-  d.imageSiz    = ((wxUint8 *)gfx.RDRAM)[(((addr+11)<<1)+1)^3]; // |
+  d.imageFmt    = ((uint8_t *)gfx.RDRAM)[(((addr+11)<<1)+0)^3]; // 11
+  d.imageSiz    = ((uint8_t *)gfx.RDRAM)[(((addr+11)<<1)+1)^3]; // |
   d.imagePal    = ((wxUint16 *)gfx.RDRAM)[(addr+12)^1]; // 12
   wxUint16 imageFlip = ((wxUint16 *)gfx.RDRAM)[(addr+13)^1];    // 13;
-  d.flipX       = (wxUint8)imageFlip&0x01;
+  d.flipX       = (uint8_t)imageFlip&0x01;
 
   if (bReadScale)
   {
@@ -851,10 +851,10 @@ static void draw_split_triangle(VERTEX **vtx)
           rdp.vtxbuf[index].u0 = 0.5f;
           rdp.vtxbuf[index].v0 = v1->v0 + (v2->v0 - v1->v0) * percent +
             rdp.cur_cache[0]->c_scl_y * cur_256 * rdp.cur_cache[0]->splitheight;
-          rdp.vtxbuf[index].b = (wxUint8)(v1->b + (v2->b - v1->b) * percent);
-          rdp.vtxbuf[index].g = (wxUint8)(v1->g + (v2->g - v1->g) * percent);
-          rdp.vtxbuf[index].r = (wxUint8)(v1->r + (v2->r - v1->r) * percent);
-          rdp.vtxbuf[index++].a = (wxUint8)(v1->a + (v2->a - v1->a) * percent);
+          rdp.vtxbuf[index].b = (uint8_t)(v1->b + (v2->b - v1->b) * percent);
+          rdp.vtxbuf[index].g = (uint8_t)(v1->g + (v2->g - v1->g) * percent);
+          rdp.vtxbuf[index].r = (uint8_t)(v1->r + (v2->r - v1->r) * percent);
+          rdp.vtxbuf[index++].a = (uint8_t)(v1->a + (v2->a - v1->a) * percent);
         }
       }
       else
@@ -870,10 +870,10 @@ static void draw_split_triangle(VERTEX **vtx)
           rdp.vtxbuf[index].u0 = 0.5f;
           rdp.vtxbuf[index].v0 = v2->v0 + (v1->v0 - v2->v0) * percent +
             rdp.cur_cache[0]->c_scl_y * cur_256 * rdp.cur_cache[0]->splitheight;
-          rdp.vtxbuf[index].b = (wxUint8)(v2->b + (v1->b - v2->b) * percent);
-          rdp.vtxbuf[index].g = (wxUint8)(v2->g + (v1->g - v2->g) * percent);
-          rdp.vtxbuf[index].r = (wxUint8)(v2->r + (v1->r - v2->r) * percent);
-          rdp.vtxbuf[index++].a = (wxUint8)(v2->a + (v1->a - v2->a) * percent);
+          rdp.vtxbuf[index].b = (uint8_t)(v2->b + (v1->b - v2->b) * percent);
+          rdp.vtxbuf[index].g = (uint8_t)(v2->g + (v1->g - v2->g) * percent);
+          rdp.vtxbuf[index].r = (uint8_t)(v2->r + (v1->r - v2->r) * percent);
+          rdp.vtxbuf[index++].a = (uint8_t)(v2->a + (v1->a - v2->a) * percent);
 
           // Save the in point
           rdp.vtxbuf[index] = *v2;
@@ -913,10 +913,10 @@ static void draw_split_triangle(VERTEX **vtx)
           rdp.vtxbuf[index].q = 1;
           rdp.vtxbuf[index].u0 = 255.5f;
           rdp.vtxbuf[index].v0 = v1->v0 + (v2->v0 - v1->v0) * percent;
-          rdp.vtxbuf[index].b = (wxUint8)(v1->b + (v2->b - v1->b) * percent);
-          rdp.vtxbuf[index].g = (wxUint8)(v1->g + (v2->g - v1->g) * percent);
-          rdp.vtxbuf[index].r = (wxUint8)(v1->r + (v2->r - v1->r) * percent);
-          rdp.vtxbuf[index++].a = (wxUint8)(v1->a + (v2->a - v1->a) * percent);
+          rdp.vtxbuf[index].b = (uint8_t)(v1->b + (v2->b - v1->b) * percent);
+          rdp.vtxbuf[index].g = (uint8_t)(v1->g + (v2->g - v1->g) * percent);
+          rdp.vtxbuf[index].r = (uint8_t)(v1->r + (v2->r - v1->r) * percent);
+          rdp.vtxbuf[index++].a = (uint8_t)(v1->a + (v2->a - v1->a) * percent);
         }
       }
       else
@@ -931,10 +931,10 @@ static void draw_split_triangle(VERTEX **vtx)
           rdp.vtxbuf[index].q = 1;
           rdp.vtxbuf[index].u0 = 255.5f;
           rdp.vtxbuf[index].v0 = v2->v0 + (v1->v0 - v2->v0) * percent;
-          rdp.vtxbuf[index].b = (wxUint8)(v2->b + (v1->b - v2->b) * percent);
-          rdp.vtxbuf[index].g = (wxUint8)(v2->g + (v1->g - v2->g) * percent);
-          rdp.vtxbuf[index].r = (wxUint8)(v2->r + (v1->r - v2->r) * percent);
-          rdp.vtxbuf[index++].a = (wxUint8)(v2->a + (v1->a - v2->a) * percent);
+          rdp.vtxbuf[index].b = (uint8_t)(v2->b + (v1->b - v2->b) * percent);
+          rdp.vtxbuf[index].g = (uint8_t)(v2->g + (v1->g - v2->g) * percent);
+          rdp.vtxbuf[index].r = (uint8_t)(v2->r + (v1->r - v2->r) * percent);
+          rdp.vtxbuf[index++].a = (uint8_t)(v2->a + (v1->a - v2->a) * percent);
 
           // Save the in point
           rdp.vtxbuf[index++] = *v2;
@@ -1008,10 +1008,10 @@ static void uc6_read_object_data (DRAWOBJECT & d)
 
   d.imageStride = ((wxUint16 *)gfx.RDRAM)[(addr+8)^1];                  // 8
   d.imageAdrs           = ((wxUint16 *)gfx.RDRAM)[(addr+9)^1];                  // 9
-  d.imageFmt             = ((wxUint8 *)gfx.RDRAM)[(((addr+10)<<1)+0)^3]; // 10
-  d.imageSiz             = ((wxUint8 *)gfx.RDRAM)[(((addr+10)<<1)+1)^3]; // |
-  d.imagePal             = ((wxUint8 *)gfx.RDRAM)[(((addr+10)<<1)+2)^3]; // 11
-  d.imageFlags   = ((wxUint8 *)gfx.RDRAM)[(((addr+10)<<1)+3)^3]; // |
+  d.imageFmt             = ((uint8_t *)gfx.RDRAM)[(((addr+10)<<1)+0)^3]; // 10
+  d.imageSiz             = ((uint8_t *)gfx.RDRAM)[(((addr+10)<<1)+1)^3]; // |
+  d.imagePal             = ((uint8_t *)gfx.RDRAM)[(((addr+10)<<1)+2)^3]; // 11
+  d.imageFlags   = ((uint8_t *)gfx.RDRAM)[(((addr+10)<<1)+3)^3]; // |
 
   if (d.imageW < 0)
     d.imageW = (short)rdp.scissor_o.lr_x - (short)d.objX - d.imageW;
@@ -1223,7 +1223,7 @@ static void uc6_obj_rendermode ()
   RDP_E ("uc6:obj_rendermode\n");
 }
 
-static wxUint16 uc6_yuv_to_rgba(wxUint8 y, wxUint8 u, wxUint8 v)
+static wxUint16 uc6_yuv_to_rgba(uint8_t y, uint8_t u, uint8_t v)
 {
   float r = y + (1.370705f * (v-128));
   float g = y - (0.698001f * (v-128)) - (0.337633f * (u-128));
@@ -1270,10 +1270,10 @@ static void uc6_DrawYUVImageToFrameBuffer(wxUint16 ul_x, wxUint16 ul_y, wxUint16
       uint32_t t = *(mb++); //each uint32_t contains 2 pixels
       if ((h < height) && (w < width)) //clipping. texture image may be larger than color image
       {
-        wxUint8 y0 = (wxUint8)t&0xFF;
-        wxUint8 v  = (wxUint8)(t>>8)&0xFF;
-        wxUint8 y1 = (wxUint8)(t>>16)&0xFF;
-        wxUint8 u  = (wxUint8)(t>>24)&0xFF;
+        uint8_t y0 = (uint8_t)t&0xFF;
+        uint8_t v  = (uint8_t)(t>>8)&0xFF;
+        uint8_t y1 = (uint8_t)(t>>16)&0xFF;
+        uint8_t u  = (uint8_t)(t>>24)&0xFF;
         *(dst++) = uc6_yuv_to_rgba(y0, u, v);
         *(dst++) = uc6_yuv_to_rgba(y1, u, v);
       }
@@ -1476,8 +1476,8 @@ void uc6_sprite2d ()
   wxUint16 stride = (((wxUint16 *)gfx.RDRAM)[(addr+4)^1]);      // 4
   d.imageW      = (((wxUint16 *)gfx.RDRAM)[(addr+5)^1]);        // 5
   d.imageH      = (((wxUint16 *)gfx.RDRAM)[(addr+6)^1]);        // 6
-  d.imageFmt    = ((wxUint8 *)gfx.RDRAM)[(((addr+7)<<1)+0)^3];  // 7
-  d.imageSiz    = ((wxUint8 *)gfx.RDRAM)[(((addr+7)<<1)+1)^3];  // |
+  d.imageFmt    = ((uint8_t *)gfx.RDRAM)[(((addr+7)<<1)+0)^3];  // 7
+  d.imageSiz    = ((uint8_t *)gfx.RDRAM)[(((addr+7)<<1)+1)^3];  // |
   d.imagePal    = 0;
   d.imageX      = (((wxUint16 *)gfx.RDRAM)[(addr+8)^1]);        // 8
   d.imageY      = (((wxUint16 *)gfx.RDRAM)[(addr+9)^1]);        // 9
@@ -1518,8 +1518,8 @@ void uc6_sprite2d ()
       //need to find, for which game this hack was made
       //if( (cmd1&0xFFFF) < 0x100 )
       //  d.scaleY = d.scaleX;
-      d.flipX = (wxUint8)((cmd0>>8)&0xFF);
-      d.flipY = (wxUint8)(cmd0&0xFF);
+      d.flipX = (uint8_t)((cmd0>>8)&0xFF);
+      d.flipY = (uint8_t)(cmd0&0xFF);
 
       a = rdp.pc[rdp.pc_i] & BMASK;
       rdp.pc[rdp.pc_i] = (a+8) & BMASK;

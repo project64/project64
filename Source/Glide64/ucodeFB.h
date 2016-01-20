@@ -66,8 +66,8 @@ static void fb_bg_copy ()
     return;
 
   uint32_t addr = segoffset(rdp.cmd1) >> 1;
-  wxUint8 imageFmt	= ((wxUint8 *)gfx.RDRAM)[(((addr+11)<<1)+0)^3];
-  wxUint8 imageSiz	= ((wxUint8 *)gfx.RDRAM)[(((addr+11)<<1)+1)^3];
+  uint8_t imageFmt	= ((uint8_t *)gfx.RDRAM)[(((addr+11)<<1)+0)^3];
+  uint8_t imageSiz	= ((uint8_t *)gfx.RDRAM)[(((addr+11)<<1)+1)^3];
   uint32_t imagePtr	= segoffset(((uint32_t*)gfx.RDRAM)[(addr+8)>>1]);
   FRDP ("fb_bg_copy. fmt: %d, size: %d, imagePtr %08lx, main_ci: %08lx, cur_ci: %08lx \n", imageFmt, imageSiz, imagePtr, rdp.main_ci, rdp.frame_buffers[rdp.ci_count-1].addr);
 

@@ -182,15 +182,15 @@ void apply_shade_mods (VERTEX *v)
       if (col[0] < 0.0f) col[0] = 0.0f;
       if (col[1] < 0.0f) col[1] = 0.0f;
       if (col[2] < 0.0f) col[2] = 0.0f;
-      v->r = (wxUint8)(255.0f * col[0]);
-      v->g = (wxUint8)(255.0f * col[1]);
-      v->b = (wxUint8)(255.0f * col[2]);
+      v->r = (uint8_t)(255.0f * col[0]);
+      v->g = (uint8_t)(255.0f * col[1]);
+      v->b = (uint8_t)(255.0f * col[2]);
     }
     if (mod & CMB_A_SET)
     {
       if (col[3] > 1.0f) col[3] = 1.0f;
       if (col[3] < 0.0f) col[3] = 0.0f;
-      v->a = (wxUint8)(255.0f * col[3]);
+      v->a = (uint8_t)(255.0f * col[3]);
     }
     if (mod & CMB_SETSHADE_SHADEALPHA)
     {
@@ -199,9 +199,9 @@ void apply_shade_mods (VERTEX *v)
     if (mod & CMB_MULT_OWN_ALPHA)
     {
       float percent = v->a / 255.0f;
-      v->r = (wxUint8)(v->r * percent);
-      v->g = (wxUint8)(v->g * percent);
-      v->b = (wxUint8)(v->b * percent);
+      v->r = (uint8_t)(v->r * percent);
+      v->g = (uint8_t)(v->g * percent);
+      v->b = (uint8_t)(v->b * percent);
     }
     if (mod & CMB_MULT)
     {
@@ -211,15 +211,15 @@ void apply_shade_mods (VERTEX *v)
       if (col[0] < 0.0f) col[0] = 0.0f;
       if (col[1] < 0.0f) col[1] = 0.0f;
       if (col[2] < 0.0f) col[2] = 0.0f;
-      v->r = (wxUint8)(v->r * col[0]);
-      v->g = (wxUint8)(v->g * col[1]);
-      v->b = (wxUint8)(v->b * col[2]);
+      v->r = (uint8_t)(v->r * col[0]);
+      v->g = (uint8_t)(v->g * col[1]);
+      v->b = (uint8_t)(v->b * col[2]);
     }
     if (mod & CMB_A_MULT)
     {
       if (col[3] > 1.0f) col[3] = 1.0f;
       if (col[3] < 0.0f) col[3] = 0.0f;
-      v->a = (wxUint8)(v->a * col[3]);
+      v->a = (uint8_t)(v->a * col[3]);
     }
     if (mod & CMB_SUB)
     {
@@ -229,15 +229,15 @@ void apply_shade_mods (VERTEX *v)
       if (r < 0) r = 0;
       if (g < 0) g = 0;
       if (b < 0) b = 0;
-      v->r = (wxUint8)r;
-      v->g = (wxUint8)g;
-      v->b = (wxUint8)b;
+      v->r = (uint8_t)r;
+      v->g = (uint8_t)g;
+      v->b = (uint8_t)b;
     }
     if (mod & CMB_A_SUB)
     {
 		    int a = v->a - (int)(255.0f * rdp.coladd[3]);
         if (a < 0) a = 0;
-        v->a = (wxUint8)a;
+        v->a = (uint8_t)a;
     }
     if (mod & CMB_ADD)
     {
@@ -247,35 +247,35 @@ void apply_shade_mods (VERTEX *v)
       if (r > 255) r = 255;
       if (g > 255) g = 255;
       if (b > 255) b = 255;
-      v->r = (wxUint8)r;
-      v->g = (wxUint8)g;
-      v->b = (wxUint8)b;
+      v->r = (uint8_t)r;
+      v->g = (uint8_t)g;
+      v->b = (uint8_t)b;
     }
     if (mod & CMB_A_ADD)
     {
 		    int a = v->a + (int)(255.0f * rdp.coladd[3]);
         if (a > 255) a = 255;
-        v->a = (wxUint8)a;
+        v->a = (uint8_t)a;
     }
     if (mod & CMB_COL_SUB_OWN)
     {
-      int r = (wxUint8)(255.0f * rdp.coladd[0]) - v->r;
-      int g = (wxUint8)(255.0f * rdp.coladd[1]) - v->g;
-      int b = (wxUint8)(255.0f * rdp.coladd[2]) - v->b;
+      int r = (uint8_t)(255.0f * rdp.coladd[0]) - v->r;
+      int g = (uint8_t)(255.0f * rdp.coladd[1]) - v->g;
+      int b = (uint8_t)(255.0f * rdp.coladd[2]) - v->b;
       if (r < 0) r = 0;
       if (g < 0) g = 0;
       if (b < 0) b = 0;
-      v->r = (wxUint8)r;
-      v->g = (wxUint8)g;
-      v->b = (wxUint8)b;
+      v->r = (uint8_t)r;
+      v->g = (uint8_t)g;
+      v->b = (uint8_t)b;
     }
     v->shade_mod = cmb.shade_mod_hash;
   }
   if (rdp.cmb_flags_2 & CMB_INTER)
   {
-    v->r = (wxUint8)(rdp.col_2[0] * rdp.shade_factor * 255.0f + v->r * (1.0f - rdp.shade_factor));
-    v->g = (wxUint8)(rdp.col_2[1] * rdp.shade_factor * 255.0f + v->g * (1.0f - rdp.shade_factor));
-    v->b = (wxUint8)(rdp.col_2[2] * rdp.shade_factor * 255.0f + v->b * (1.0f - rdp.shade_factor));
+    v->r = (uint8_t)(rdp.col_2[0] * rdp.shade_factor * 255.0f + v->r * (1.0f - rdp.shade_factor));
+    v->g = (uint8_t)(rdp.col_2[1] * rdp.shade_factor * 255.0f + v->g * (1.0f - rdp.shade_factor));
+    v->b = (uint8_t)(rdp.col_2[2] * rdp.shade_factor * 255.0f + v->b * (1.0f - rdp.shade_factor));
     v->shade_mod = cmb.shade_mod_hash;
   }
 }
@@ -351,10 +351,10 @@ void draw_tri (VERTEX **vtx, wxUint16 linew)
 #ifdef EXTREME_LOGGING
             FRDP(" * Prim shaded %08lx\n", rdp.prim_color);
 #endif
-            v->a = (wxUint8)(rdp.prim_color & 0xFF);
-            v->b = (wxUint8)((rdp.prim_color >> 8) & 0xFF);
-            v->g = (wxUint8)((rdp.prim_color >> 16) & 0xFF);
-            v->r = (wxUint8)((rdp.prim_color >> 24) & 0xFF);
+            v->a = (uint8_t)(rdp.prim_color & 0xFF);
+            v->b = (uint8_t)((rdp.prim_color >> 8) & 0xFF);
+            v->g = (uint8_t)((rdp.prim_color >> 16) & 0xFF);
+            v->r = (uint8_t)((rdp.prim_color >> 24) & 0xFF);
           }
         }
       }
@@ -535,10 +535,10 @@ void draw_tri (VERTEX **vtx, wxUint16 linew)
               cur_256 * rdp.cur_cache[0]->splitheight;
             rdp.vtxbuf[index].u1 = v1->u1 + (v2->u1 - v1->u1) * percent;
             rdp.vtxbuf[index].v1 = v1->v1 + (v2->v1 - v1->v1) * percent;
-            rdp.vtxbuf[index].b = (wxUint8)(v1->b + (v2->b - v1->b) * percent);
-            rdp.vtxbuf[index].g = (wxUint8)(v1->g + (v2->g - v1->g) * percent);
-            rdp.vtxbuf[index].r = (wxUint8)(v1->r + (v2->r - v1->r) * percent);
-            rdp.vtxbuf[index++].a = (wxUint8)(v1->a + (v2->a - v1->a) * percent);
+            rdp.vtxbuf[index].b = (uint8_t)(v1->b + (v2->b - v1->b) * percent);
+            rdp.vtxbuf[index].g = (uint8_t)(v1->g + (v2->g - v1->g) * percent);
+            rdp.vtxbuf[index].r = (uint8_t)(v1->r + (v2->r - v1->r) * percent);
+            rdp.vtxbuf[index++].a = (uint8_t)(v1->a + (v2->a - v1->a) * percent);
           }
         }
         else
@@ -557,10 +557,10 @@ void draw_tri (VERTEX **vtx, wxUint16 linew)
               cur_256 * rdp.cur_cache[0]->splitheight;
             rdp.vtxbuf[index].u1 = v2->u1 + (v1->u1 - v2->u1) * percent;
             rdp.vtxbuf[index].v1 = v2->v1 + (v1->v1 - v2->v1) * percent;
-            rdp.vtxbuf[index].b = (wxUint8)(v2->b + (v1->b - v2->b) * percent);
-            rdp.vtxbuf[index].g = (wxUint8)(v2->g + (v1->g - v2->g) * percent);
-            rdp.vtxbuf[index].r = (wxUint8)(v2->r + (v1->r - v2->r) * percent);
-            rdp.vtxbuf[index++].a = (wxUint8)(v2->a + (v1->a - v2->a) * percent);
+            rdp.vtxbuf[index].b = (uint8_t)(v2->b + (v1->b - v2->b) * percent);
+            rdp.vtxbuf[index].g = (uint8_t)(v2->g + (v1->g - v2->g) * percent);
+            rdp.vtxbuf[index].r = (uint8_t)(v2->r + (v1->r - v2->r) * percent);
+            rdp.vtxbuf[index++].a = (uint8_t)(v2->a + (v1->a - v2->a) * percent);
 
             // Save the in point
             rdp.vtxbuf[index] = *v2;
@@ -604,10 +604,10 @@ void draw_tri (VERTEX **vtx, wxUint16 linew)
             rdp.vtxbuf[index].v0 = v1->v0 + (v2->v0 - v1->v0) * percent;
             rdp.vtxbuf[index].u1 = v1->u1 + (v2->u1 - v1->u1) * percent;
             rdp.vtxbuf[index].v1 = v1->v1 + (v2->v1 - v1->v1) * percent;
-            rdp.vtxbuf[index].b = (wxUint8)(v1->b + (v2->b - v1->b) * percent);
-            rdp.vtxbuf[index].g = (wxUint8)(v1->g + (v2->g - v1->g) * percent);
-            rdp.vtxbuf[index].r = (wxUint8)(v1->r + (v2->r - v1->r) * percent);
-            rdp.vtxbuf[index].a = (wxUint8)(v1->a + (v2->a - v1->a) * percent);
+            rdp.vtxbuf[index].b = (uint8_t)(v1->b + (v2->b - v1->b) * percent);
+            rdp.vtxbuf[index].g = (uint8_t)(v1->g + (v2->g - v1->g) * percent);
+            rdp.vtxbuf[index].r = (uint8_t)(v1->r + (v2->r - v1->r) * percent);
+            rdp.vtxbuf[index].a = (uint8_t)(v1->a + (v2->a - v1->a) * percent);
             rdp.vtxbuf[index++].not_zclipped = 0;
           }
         }
@@ -626,10 +626,10 @@ void draw_tri (VERTEX **vtx, wxUint16 linew)
             rdp.vtxbuf[index].v0 = v2->v0 + (v1->v0 - v2->v0) * percent;
             rdp.vtxbuf[index].u1 = v2->u1 + (v1->u1 - v2->u1) * percent;
             rdp.vtxbuf[index].v1 = v2->v1 + (v1->v1 - v2->v1) * percent;
-            rdp.vtxbuf[index].b = (wxUint8)(v2->b + (v1->b - v2->b) * percent);
-            rdp.vtxbuf[index].g = (wxUint8)(v2->g + (v1->g - v2->g) * percent);
-            rdp.vtxbuf[index].r = (wxUint8)(v2->r + (v1->r - v2->r) * percent);
-            rdp.vtxbuf[index].a = (wxUint8)(v2->a + (v1->a - v2->a) * percent);
+            rdp.vtxbuf[index].b = (uint8_t)(v2->b + (v1->b - v2->b) * percent);
+            rdp.vtxbuf[index].g = (uint8_t)(v2->g + (v1->g - v2->g) * percent);
+            rdp.vtxbuf[index].r = (uint8_t)(v2->r + (v1->r - v2->r) * percent);
+            rdp.vtxbuf[index].a = (uint8_t)(v2->a + (v1->a - v2->a) * percent);
             rdp.vtxbuf[index++].not_zclipped = 0;
 
             // Save the in point
@@ -667,10 +667,10 @@ void draw_tri (VERTEX **vtx, wxUint16 linew)
 //*
 static void InterpolateColors(VERTEX & va, VERTEX & vb, VERTEX & res, float percent)
 {
-  res.b = (wxUint8)interp2p(va.b, vb.b, percent);
-  res.g = (wxUint8)interp2p(va.g, vb.g, percent);;
-  res.r = (wxUint8)interp2p(va.r, vb.r, percent);;
-  res.a = (wxUint8)interp2p(va.a, vb.a, percent);;
+  res.b = (uint8_t)interp2p(va.b, vb.b, percent);
+  res.g = (uint8_t)interp2p(va.g, vb.g, percent);;
+  res.r = (uint8_t)interp2p(va.r, vb.r, percent);;
+  res.a = (uint8_t)interp2p(va.a, vb.a, percent);;
   res.f = interp2p(va.f, vb.f, percent);;
 }
 //*/
@@ -759,7 +759,7 @@ void do_triangle_stuff (wxUint16 linew, int old_interpolate) // what else?? do t
 
   float maxZ = (rdp.zsrc != 1) ? rdp.view_trans[2] + rdp.view_scale[2] : rdp.prim_depth;
 
-  wxUint8 no_clip = 2;
+  uint8_t no_clip = 2;
   for (i=0; i<rdp.n_global; i++)
   {
     if (rdp.vtxbuf[i].not_zclipped)// && rdp.zsrc != 1)
@@ -837,9 +837,9 @@ void do_triangle_stuff_2 (wxUint16 linew)
   render_tri (linew, TRUE);
 }
 
-__inline wxUint8 real_to_char(double x)
+__inline uint8_t real_to_char(double x)
 {
-  return (wxUint8)(((int)floor(x+0.5))&0xFF);
+  return (uint8_t)(((int)floor(x+0.5))&0xFF);
 }
 
 //*
@@ -1878,14 +1878,14 @@ void update ()
     FRDP (" |- render_mode_changed force_blend - %08lx\n", rdp.othermode_l&0xFFFF0000);
     rdp.render_mode_changed &= 0x0000FFFF;
 
-    rdp.fbl_a0 = (wxUint8)((rdp.othermode_l>>30)&0x3);
-    rdp.fbl_b0 = (wxUint8)((rdp.othermode_l>>26)&0x3);
-    rdp.fbl_c0 = (wxUint8)((rdp.othermode_l>>22)&0x3);
-    rdp.fbl_d0 = (wxUint8)((rdp.othermode_l>>18)&0x3);
-    rdp.fbl_a1 = (wxUint8)((rdp.othermode_l>>28)&0x3);
-    rdp.fbl_b1 = (wxUint8)((rdp.othermode_l>>24)&0x3);
-    rdp.fbl_c1 = (wxUint8)((rdp.othermode_l>>20)&0x3);
-    rdp.fbl_d1 = (wxUint8)((rdp.othermode_l>>16)&0x3);
+    rdp.fbl_a0 = (uint8_t)((rdp.othermode_l>>30)&0x3);
+    rdp.fbl_b0 = (uint8_t)((rdp.othermode_l>>26)&0x3);
+    rdp.fbl_c0 = (uint8_t)((rdp.othermode_l>>22)&0x3);
+    rdp.fbl_d0 = (uint8_t)((rdp.othermode_l>>18)&0x3);
+    rdp.fbl_a1 = (uint8_t)((rdp.othermode_l>>28)&0x3);
+    rdp.fbl_b1 = (uint8_t)((rdp.othermode_l>>24)&0x3);
+    rdp.fbl_c1 = (uint8_t)((rdp.othermode_l>>20)&0x3);
+    rdp.fbl_d1 = (uint8_t)((rdp.othermode_l>>16)&0x3);
 
     rdp.update |= UPDATE_COMBINE;
   }
@@ -1977,7 +1977,7 @@ void update ()
       //      if (rdp.acmp == 1 && !(rdp.othermode_l & 0x00002000) && (rdp.blend_color&0xFF))
       if (rdp.acmp == 1 && !(rdp.othermode_l & 0x00002000) && (!(rdp.othermode_l & 0x00004000) || (rdp.blend_color&0xFF)))
       {
-        wxUint8 reference = (wxUint8)(rdp.blend_color&0xFF);
+        uint8_t reference = (uint8_t)(rdp.blend_color&0xFF);
         grAlphaTestFunction (reference ? GR_CMP_GEQUAL : GR_CMP_GREATER);
         grAlphaTestReferenceValue (reference);
         FRDP (" |- alpha compare: blend: %02lx\n", reference);
@@ -1997,7 +1997,7 @@ void update ()
             grAlphaTestFunction (GR_CMP_GREATER);
             if (rdp.acmp == 3)
             {
-              grAlphaTestReferenceValue ((wxUint8)(rdp.blend_color&0xFF));
+              grAlphaTestReferenceValue ((uint8_t)(rdp.blend_color&0xFF));
               FRDP (" |- alpha compare: blend: %02lx\n", rdp.blend_color&0xFF);
             }
             else

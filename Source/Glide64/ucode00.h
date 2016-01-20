@@ -92,7 +92,7 @@ static void rsp_vertex(int v0, int n)
     v->ou = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 4)^1];
     v->ov = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 5)^1];
     v->uv_scaled = 0;
-    v->a    = ((wxUint8*)gfx.RDRAM)[(addr+i + 15)^3];
+    v->a    = ((uint8_t*)gfx.RDRAM)[(addr+i + 15)^3];
 
     v->x = x*rdp.combined[0][0] + y*rdp.combined[1][0] + z*rdp.combined[2][0] + rdp.combined[3][0];
     v->y = x*rdp.combined[0][1] + y*rdp.combined[1][1] + z*rdp.combined[2][1] + rdp.combined[3][1];
@@ -137,9 +137,9 @@ static void rsp_vertex(int v0, int n)
     }
     else
     {
-      v->r = ((wxUint8*)gfx.RDRAM)[(addr+i + 12)^3];
-      v->g = ((wxUint8*)gfx.RDRAM)[(addr+i + 13)^3];
-      v->b = ((wxUint8*)gfx.RDRAM)[(addr+i + 14)^3];
+      v->r = ((uint8_t*)gfx.RDRAM)[(addr+i + 12)^3];
+      v->g = ((uint8_t*)gfx.RDRAM)[(addr+i + 13)^3];
+      v->b = ((uint8_t*)gfx.RDRAM)[(addr+i + 14)^3];
     }
 #ifdef EXTREME_LOGGING
     FRDP ("v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f, f: %f, z_w: %f, r=%d, g=%d, b=%d, a=%d\n", i>>4, v->x, v->y, v->z, v->w, v->ou*rdp.tiles[rdp.cur_tile].s_scale, v->ov*rdp.tiles[rdp.cur_tile].t_scale, v->f, v->z_w, v->r, v->g, v->b, v->a);
@@ -295,7 +295,7 @@ static void uc0_matrix()
 
   // Use segment offset to get the address
   uint32_t addr = segoffset(rdp.cmd1) & 0x00FFFFFF;
-  wxUint8 command = (wxUint8)((rdp.cmd0 >> 16) & 0xFF);
+  uint8_t command = (uint8_t)((rdp.cmd0 >> 16) & 0xFF);
 
   DECLAREALIGN16VAR(m[4][4]);
   load_matrix(m, addr);
@@ -438,9 +438,9 @@ static void uc0_movemem()
     a = segoffset(rdp.cmd1) & 0x00ffffff;
 
     // Get the data
-    rdp.light[i].r = (float)(((wxUint8*)gfx.RDRAM)[(a+0)^3]) / 255.0f;
-    rdp.light[i].g = (float)(((wxUint8*)gfx.RDRAM)[(a+1)^3]) / 255.0f;
-    rdp.light[i].b = (float)(((wxUint8*)gfx.RDRAM)[(a+2)^3]) / 255.0f;
+    rdp.light[i].r = (float)(((uint8_t*)gfx.RDRAM)[(a+0)^3]) / 255.0f;
+    rdp.light[i].g = (float)(((uint8_t*)gfx.RDRAM)[(a+1)^3]) / 255.0f;
+    rdp.light[i].b = (float)(((uint8_t*)gfx.RDRAM)[(a+2)^3]) / 255.0f;
     rdp.light[i].a = 1.0f;
     // ** Thanks to Icepir8 for pointing this out **
     // Lighting must be signed byte instead of byte
@@ -586,8 +586,8 @@ static void uc0_enddl()
 
 static void uc0_culldl()
 {
-  wxUint8 vStart = (wxUint8)((rdp.cmd0 & 0x00FFFFFF) / 40) & 0xF;
-  wxUint8 vEnd = (wxUint8)(rdp.cmd1 / 40) & 0x0F;
+  uint8_t vStart = (uint8_t)((rdp.cmd0 & 0x00FFFFFF) / 40) & 0xF;
+  uint8_t vEnd = (uint8_t)(rdp.cmd1 / 40) & 0x0F;
   uint32_t cond = 0;
   VERTEX *v;
 
@@ -640,7 +640,7 @@ static void uc0_popmatrix()
 
 static void uc6_obj_sprite ();
 
-static void uc0_modifyvtx(wxUint8 where, wxUint16 vtx, uint32_t val)
+static void uc0_modifyvtx(uint8_t where, wxUint16 vtx, uint32_t val)
 {
   VERTEX *v = &rdp.vtx[vtx];
 
@@ -651,10 +651,10 @@ static void uc0_modifyvtx(wxUint8 where, wxUint16 vtx, uint32_t val)
     break;
 
   case 0x10:    // RGBA
-    v->r = (wxUint8)(val >> 24);
-    v->g = (wxUint8)((val >> 16) & 0xFF);
-    v->b = (wxUint8)((val >> 8) & 0xFF);
-    v->a = (wxUint8)(val & 0xFF);
+    v->r = (uint8_t)(val >> 24);
+    v->g = (uint8_t)((val >> 16) & 0xFF);
+    v->b = (uint8_t)((val >> 8) & 0xFF);
+    v->a = (uint8_t)(val & 0xFF);
     v->shade_mod = 0;
 
     FRDP ("RGBA: %d, %d, %d, %d\n", v->r, v->g, v->b, v->a);
@@ -775,7 +775,7 @@ static void uc0_moveword()
     {
       wxUint16 val = (wxUint16)((rdp.cmd0 >> 8) & 0xFFFF);
       wxUint16 vtx = val / 40;
-      wxUint8 where = val%40;
+      uint8_t where = val%40;
       uc0_modifyvtx(where, vtx, rdp.cmd1);
       FRDP ("uc0:modifyvtx: vtx: %d, where: 0x%02lx, val: %08lx - ", vtx, where, rdp.cmd1);
     }
@@ -873,13 +873,13 @@ static void uc0_setothermode_h()
 
   if (mask & 0x0000C000)  // tlut mode
   {
-    rdp.tlut_mode = (wxUint8)((rdp.othermode_h & 0x0000C000) >> 14);
+    rdp.tlut_mode = (uint8_t)((rdp.othermode_h & 0x0000C000) >> 14);
     FRDP ("tlut mode: %s\n", str_tlut[rdp.tlut_mode]);
   }
 
   if (mask & 0x00300000)  // cycle type
   {
-    rdp.cycle_mode = (wxUint8)((rdp.othermode_h & 0x00300000) >> 20);
+    rdp.cycle_mode = (uint8_t)((rdp.othermode_h & 0x00300000) >> 20);
     rdp.update |= UPDATE_ZBUF_ENABLED;
     FRDP ("cycletype: %d\n", rdp.cycle_mode);
   }

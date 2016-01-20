@@ -134,7 +134,7 @@ static void uc7_vertex ()
     if (v->y > v->w) v->scr_off |= 8;
     if (v->w < 0.1f) v->scr_off |= 16;
 
-	wxUint8 *color = &gfx.RDRAM[pd_col_addr + (vertex->idx & 0xff)];
+	uint8_t *color = &gfx.RDRAM[pd_col_addr + (vertex->idx & 0xff)];
 
     v->a = color[0];
 	CalculateFog (v);

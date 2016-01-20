@@ -196,7 +196,7 @@ uint32_t Load16bIA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int li
 // Size: 2, Format: 1
 //
 
-wxUint16 yuv_to_rgb565(wxUint8 y, wxUint8 u, wxUint8 v)
+wxUint16 yuv_to_rgb565(uint8_t y, uint8_t u, uint8_t v)
 {
   //*
   float r = y + (1.370705f * (v-128));
@@ -244,10 +244,10 @@ uint32_t Load16bYUV (wxUIntPtr dst, wxUIntPtr /*src*/, int /*wid_64*/, int /*hei
   for (i = 0; i < 128; i++)
   {
     uint32_t t = mb[i]; //each uint32_t contains 2 pixels
-    wxUint8 y1 = (wxUint8)t&0xFF;
-    wxUint8 v  = (wxUint8)(t>>8)&0xFF;
-    wxUint8 y0 = (wxUint8)(t>>16)&0xFF;
-    wxUint8 u  = (wxUint8)(t>>24)&0xFF;
+    uint8_t y1 = (uint8_t)t&0xFF;
+    uint8_t v  = (uint8_t)(t>>8)&0xFF;
+    uint8_t y0 = (uint8_t)(t>>16)&0xFF;
+    uint8_t u  = (uint8_t)(t>>24)&0xFF;
     wxUint16 c = yuv_to_rgb565(y0, u, v);
     *(tex++) = c;
     c = yuv_to_rgb565(y1, u, v);

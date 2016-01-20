@@ -664,20 +664,20 @@ COMBINE cmb;
 #define CC(color) cmb.ccolor=(color)&0xFFFFFF00
 #define CC_BYTE(byte) { cmb.ccolor=(byte<<8)|(byte<<16)|(byte<<24); }
 #define CC_C1MULC2(color1, color2) { \
-  cmb.ccolor=(wxUint8)( ((color1 & 0xFF000000) >> 24) * (((color2 & 0xFF000000) >> 24) /255.0f) ) <<  24 | \
-  (wxUint8)( ((color1 & 0x00FF0000) >> 16) * (((color2 & 0x00FF0000) >> 16) /255.0f) ) <<  16 | \
-  (wxUint8)( ((color1 & 0x0000FF00) >>  8) * (((color2 & 0x0000FF00) >>  8) /255.0f) ) <<   8 ; \
+  cmb.ccolor=(uint8_t)( ((color1 & 0xFF000000) >> 24) * (((color2 & 0xFF000000) >> 24) /255.0f) ) <<  24 | \
+  (uint8_t)( ((color1 & 0x00FF0000) >> 16) * (((color2 & 0x00FF0000) >> 16) /255.0f) ) <<  16 | \
+  (uint8_t)( ((color1 & 0x0000FF00) >>  8) * (((color2 & 0x0000FF00) >>  8) /255.0f) ) <<   8 ; \
 }
 #define CC_C1SUBC2(color1, color2) { \
-  cmb.ccolor=(wxUint8)( max(0, (int)((color1 & 0xFF000000) >> 24) - (int)((color2 & 0xFF000000) >> 24)) ) << 24 | \
-  (wxUint8)( max(0, (int)((color1 & 0x00FF0000) >> 16) - (int)((color2 & 0x00FF0000) >> 16)) ) << 16 | \
-  (wxUint8)( max(0, (int)((color1 & 0x0000FF00) >>  8) - (int)((color2 & 0x0000FF00) >>  8)) ) <<  8 ; \
+  cmb.ccolor=(uint8_t)( max(0, (int)((color1 & 0xFF000000) >> 24) - (int)((color2 & 0xFF000000) >> 24)) ) << 24 | \
+  (uint8_t)( max(0, (int)((color1 & 0x00FF0000) >> 16) - (int)((color2 & 0x00FF0000) >> 16)) ) << 16 | \
+  (uint8_t)( max(0, (int)((color1 & 0x0000FF00) >>  8) - (int)((color2 & 0x0000FF00) >>  8)) ) <<  8 ; \
 }
 #define CC_COLMULBYTE(color, byte) { \
     float factor = byte/255.0f; \
-    cmb.ccolor = (wxUint8)( ((color & 0xFF000000) >> 24) * factor ) <<  24 | \
-      (wxUint8)( ((color & 0x00FF0000) >> 16) * factor ) <<  16 | \
-      (wxUint8)( ((color & 0x0000FF00) >>  8) * factor ) <<   8 ; \
+    cmb.ccolor = (uint8_t)( ((color & 0xFF000000) >> 24) * factor ) <<  24 | \
+      (uint8_t)( ((color & 0x00FF0000) >> 16) * factor ) <<  16 | \
+      (uint8_t)( ((color & 0x0000FF00) >>  8) * factor ) <<   8 ; \
 }
 #define CC_PRIM() CC(rdp.prim_color)
 #define CC_ENV() CC(rdp.env_color)
@@ -1098,7 +1098,7 @@ static void cc__t1_inter_t0_using_enva__mul_prim ()
     GR_COMBINE_LOCAL_CONSTANT,
     GR_COMBINE_OTHER_TEXTURE);
   CC_PRIM ();
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T1_INTER_T0_USING_FACTOR (factor);
 }
 
@@ -1447,7 +1447,7 @@ static void cc__t1_inter_t0_using_enva__mul_shade ()
     GR_COMBINE_FACTOR_LOCAL,
     GR_COMBINE_LOCAL_ITERATED,
     GR_COMBINE_OTHER_TEXTURE);
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T1_INTER_T0_USING_FACTOR (factor);
 }
 
@@ -2174,7 +2174,7 @@ static void cc__t0_inter_t1_using_enva__sub_env () //Aded by Gonetz
     GR_COMBINE_LOCAL_CONSTANT,
     GR_COMBINE_OTHER_TEXTURE);
   CC_ENV ();
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -2276,12 +2276,12 @@ static void cc_t0_add_env_mul_k5 ()
     GR_COMBINE_LOCAL_CONSTANT,
     GR_COMBINE_OTHER_TEXTURE);
   float scale = rdp.K5 / 255.0f;
-  wxUint8 r = (wxUint8)(rdp.env_color >> 24) & 0xFF;
-  r = (wxUint8)(r*scale);
-  wxUint8 g = (wxUint8)(rdp.env_color >> 16) & 0xFF;
-  g = (wxUint8)(g*scale);
-  wxUint8 b = (wxUint8)(rdp.env_color >>  8) & 0xFF;
-  b = (wxUint8)(b*scale);
+  uint8_t r = (uint8_t)(rdp.env_color >> 24) & 0xFF;
+  r = (uint8_t)(r*scale);
+  uint8_t g = (uint8_t)(rdp.env_color >> 16) & 0xFF;
+  g = (uint8_t)(g*scale);
+  uint8_t b = (uint8_t)(rdp.env_color >>  8) & 0xFF;
+  b = (uint8_t)(b*scale);
   CC((r<<24)|(g<<16)|(b<<8));
   USE_T0 ();
 }
@@ -2703,7 +2703,7 @@ static void cc__t0_inter_t1_using_enva__mul_shade_add_prim ()
     GR_COMBINE_LOCAL_CONSTANT,
     GR_COMBINE_OTHER_ITERATED);
   CC_PRIM ();
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -2714,7 +2714,7 @@ static void cc__t0_inter_t1_using_enva__mul_shade_add_env ()
     GR_COMBINE_LOCAL_CONSTANT,
     GR_COMBINE_OTHER_ITERATED);
   CC_ENV ();
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -3802,12 +3802,12 @@ static void cc_t0_mul_prima_mul_shade_add_prim_mul_one_sub_prima ()  //Aded by G
     GR_COMBINE_OTHER_ITERATED);
   MULSHADE_PRIMA ();
   USE_T0 ();
-  wxUint8 fac = 255 - (wxUint8)(rdp.prim_color&0xFF);
+  uint8_t fac = 255 - (uint8_t)(rdp.prim_color&0xFF);
   float col[3];
   col[0] = (float)((rdp.prim_color & 0xFF000000) >> 24) / 255.0f;
   col[1] = (float)((rdp.prim_color & 0x00FF0000) >> 16) / 255.0f;
   col[2] = (float)((rdp.prim_color & 0x0000FF00) >> 8) / 255.0f;
-  CC ( ((wxUint8)(col[0]*fac))<<24 | ((wxUint8)(col[1]*fac))<<16 | ((wxUint8)(col[2]*fac))<<8 | fac );
+  CC ( ((uint8_t)(col[0]*fac))<<24 | ((uint8_t)(col[1]*fac))<<16 | ((uint8_t)(col[2]*fac))<<8 | fac );
 }
 
 // ** A*(1-B)+C **
@@ -4090,7 +4090,7 @@ static void cc__t0_inter_t1_using_enva__sub_shade_mul_prim ()
       GR_COMBINE_OTHER_TEXTURE);
     MULSHADE_PRIM ();
   }
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -4574,7 +4574,7 @@ static void cc__t1_inter_t0_using_enva__sub_prim_mul_prima_add_prim ()  //Aded b
     GR_COMBINE_OTHER_TEXTURE);
   CC_PRIM ();
   CA_PRIM ();
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T1_INTER_T0_USING_FACTOR (factor);
 }
 
@@ -5101,7 +5101,7 @@ static void cc_one_sub__t0_inter_t1_using_enva__mul_prim_add__t0_inter_t1_using_
     GR_COMBINE_LOCAL_CONSTANT,
     GR_COMBINE_OTHER_TEXTURE);
   CC_PRIM ();
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
   //(1-t)*prim+t == (1-prim)*t+prim
 }
@@ -5398,7 +5398,7 @@ static void cc_one_sub_prim_mul__t0_inter_t1_using_enva__add_prim ()
     GR_COMBINE_OTHER_CONSTANT);
   CC_1SUBPRIM ();
   SETSHADE_PRIM ();
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -5962,12 +5962,12 @@ static void cc__prim_sub_env_mul_t0_add_env__mul_primlod ()
     GR_COMBINE_LOCAL_ITERATED,
     GR_COMBINE_OTHER_CONSTANT);
   float factor = (float)rdp.prim_lodfrac / 255.0f;
-  wxUint8 r = (wxUint8)((rdp.prim_color >> 24) & 0xFF);
-  r = (wxUint8)((float)r * factor);
-  wxUint8 g = (wxUint8)((rdp.prim_color >> 16) & 0xFF);
-  g = (wxUint8)((float)g * factor);
-  wxUint8 b = (wxUint8)((rdp.prim_color >>  8) & 0xFF);
-  b = (wxUint8)((float)b * factor);
+  uint8_t r = (uint8_t)((rdp.prim_color >> 24) & 0xFF);
+  r = (uint8_t)((float)r * factor);
+  uint8_t g = (uint8_t)((rdp.prim_color >> 16) & 0xFF);
+  g = (uint8_t)((float)g * factor);
+  uint8_t b = (uint8_t)((rdp.prim_color >>  8) & 0xFF);
+  b = (uint8_t)((float)b * factor);
   CC ((r<<24) | (g<<16) | (b<<8));
   SETSHADE_ENV ();
   MULSHADE_PRIMLOD ();
@@ -5981,12 +5981,12 @@ static void cc__prim_sub_env_mul_t0_add_env__mul_k5 ()
     GR_COMBINE_LOCAL_ITERATED,
     GR_COMBINE_OTHER_CONSTANT);
   float factor = (float)rdp.K5 / 255.0f;
-  wxUint8 r = (wxUint8)((rdp.prim_color >> 24) & 0xFF);
-  r = (wxUint8)((float)r * factor);
-  wxUint8 g = (wxUint8)((rdp.prim_color >> 16) & 0xFF);
-  g = (wxUint8)((float)g * factor);
-  wxUint8 b = (wxUint8)((rdp.prim_color >>  8) & 0xFF);
-  b = (wxUint8)((float)b * factor);
+  uint8_t r = (uint8_t)((rdp.prim_color >> 24) & 0xFF);
+  r = (uint8_t)((float)r * factor);
+  uint8_t g = (uint8_t)((rdp.prim_color >> 16) & 0xFF);
+  g = (uint8_t)((float)g * factor);
+  uint8_t b = (uint8_t)((rdp.prim_color >>  8) & 0xFF);
+  b = (uint8_t)((float)b * factor);
   CC ((r<<24) | (g<<16) | (b<<8));
   SETSHADE_ENV ();
   MULSHADE_K5 ();
@@ -6282,7 +6282,7 @@ static void cc_prim_sub_env_mul__t0_inter_t1_using_enva_alpha__add_env ()
     GR_COMBINE_OTHER_CONSTANT);
   CC_PRIM ();
   SETSHADE_ENV ();
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
   A_T0_INTER_T1_USING_FACTOR (factor);
 }
@@ -6402,7 +6402,7 @@ static void cc_prim_sub_env_mul__t0_inter_t1_using_prima__add_env ()
     GR_COMBINE_OTHER_ITERATED);
   CC_ENV ();
   SETSHADE_PRIM ();
-  wxUint8 factor = (wxUint8)(rdp.prim_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.prim_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -6415,7 +6415,7 @@ static void cc_prim_sub_env_mul__t1_inter_t0_using_prima__add_env ()
     GR_COMBINE_OTHER_ITERATED);
   CC_ENV ();
   SETSHADE_PRIM ();
-  wxUint8 factor = (wxUint8)(rdp.prim_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.prim_color&0xFF);
   T1_INTER_T0_USING_FACTOR (factor);
 }
 
@@ -6427,7 +6427,7 @@ static void cc_prim_sub_env_mul__t0_inter_t1_using_enva__add_env ()
     GR_COMBINE_OTHER_ITERATED);
   CC_ENV ();
   SETSHADE_PRIM ();
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -6439,7 +6439,7 @@ static void cc_prim_sub_center_mul__t0_inter_t1_using_enva__add_env ()
     GR_COMBINE_OTHER_CONSTANT);
   CC_C1SUBC2 (rdp.prim_color, rdp.CENTER);
   SETSHADE_ENV ();
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -6451,7 +6451,7 @@ static void cc_prim_sub_env_mul__t1_inter_t0_using_enva__add_env ()
     GR_COMBINE_OTHER_ITERATED);
   CC_ENV ();
   SETSHADE_PRIM ();
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T1_INTER_T0_USING_FACTOR (factor);
 }
 
@@ -6768,7 +6768,7 @@ static void cc_prim_sub_shade_mul__t0_inter_t1_using_enva__add_shade ()
     GR_COMBINE_LOCAL_ITERATED,
     GR_COMBINE_OTHER_CONSTANT);
   CC_PRIM ();
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -7032,7 +7032,7 @@ static void cc_env_sub_prim_mul__t0_inter_t1_using_prima__add_prim ()
     GR_COMBINE_OTHER_CONSTANT);
   CC_ENV ();
   SETSHADE_PRIM ();
-  wxUint8 factor = (wxUint8)(rdp.prim_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.prim_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -7445,7 +7445,7 @@ static void cc_t0_inter_t1_using_prima ()
     GR_COMBINE_FACTOR_ONE,
     GR_COMBINE_LOCAL_NONE,
     GR_COMBINE_OTHER_TEXTURE);
-  wxUint8 factor = (wxUint8)(rdp.prim_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.prim_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -7455,7 +7455,7 @@ static void cc_t1_inter_t0_using_prima ()
     GR_COMBINE_FACTOR_ONE,
     GR_COMBINE_LOCAL_NONE,
     GR_COMBINE_OTHER_TEXTURE);
-  wxUint8 factor = (wxUint8)(rdp.prim_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.prim_color&0xFF);
   T1_INTER_T0_USING_FACTOR (factor);
 }
 
@@ -7483,7 +7483,7 @@ static void cc_t0_inter_t1_using_enva ()
     GR_COMBINE_FACTOR_ONE,
     GR_COMBINE_LOCAL_NONE,
     GR_COMBINE_OTHER_TEXTURE);
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -7938,7 +7938,7 @@ static void cc__t0_inter_t1_using_prima__mul_prim ()
     GR_COMBINE_FACTOR_LOCAL,
     GR_COMBINE_LOCAL_CONSTANT,
     GR_COMBINE_OTHER_TEXTURE);
-  wxUint8 factor = (wxUint8)(rdp.prim_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.prim_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
   CC_PRIM ();
 }
@@ -7950,7 +7950,7 @@ static void cc__t1_inter_t0_using_prima__mul_prim ()
     GR_COMBINE_FACTOR_LOCAL,
     GR_COMBINE_LOCAL_CONSTANT,
     GR_COMBINE_OTHER_TEXTURE);
-  wxUint8 factor = (wxUint8)(rdp.prim_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.prim_color&0xFF);
   T1_INTER_T0_USING_FACTOR (factor);
   CC_PRIM ();
 }
@@ -7972,7 +7972,7 @@ static void cc__t0_inter_t1_using_prima__mul_shade ()
     GR_COMBINE_FACTOR_LOCAL,
     GR_COMBINE_LOCAL_ITERATED,
     GR_COMBINE_OTHER_TEXTURE);
-  wxUint8 factor = (wxUint8)(rdp.prim_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.prim_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -7983,7 +7983,7 @@ static void cc__t1_inter_t0_using_prima__mul_shade ()
     GR_COMBINE_FACTOR_LOCAL,
     GR_COMBINE_LOCAL_ITERATED,
     GR_COMBINE_OTHER_TEXTURE);
-  wxUint8 factor = (wxUint8)(rdp.prim_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.prim_color&0xFF);
   T1_INTER_T0_USING_FACTOR (factor);
 }
 
@@ -8002,7 +8002,7 @@ static void cc__t0_inter_t1_using_enva__mul_shade ()
     GR_COMBINE_FACTOR_LOCAL,
     GR_COMBINE_LOCAL_ITERATED,
     GR_COMBINE_OTHER_TEXTURE);
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -8013,7 +8013,7 @@ static void cc__t0_inter_t1_using_enva__mul_prim ()
     GR_COMBINE_LOCAL_CONSTANT,
     GR_COMBINE_OTHER_TEXTURE);
   CC_PRIM ();
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -8025,7 +8025,7 @@ static void cc__t0_inter_t1_using_enva__mul_env ()
     GR_COMBINE_LOCAL_CONSTANT,
     GR_COMBINE_OTHER_TEXTURE);
   CC_ENV ();
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -8518,7 +8518,7 @@ static void cc_prim_sub__prim_sub_t0_mul_prima__mul_shade ()
       GR_COMBINE_OTHER_TEXTURE);
     MOD_0 (TMOD_COL_INTER_TEX_USING_COL1);
     MOD_0_COL (rdp.prim_color & 0xFFFFFF00);
-    wxUint8 prima = (wxUint8)(rdp.prim_color&0xFF);
+    uint8_t prima = (uint8_t)(rdp.prim_color&0xFF);
     MOD_0_COL1 ((prima<<24)|(prima<<16)|(prima<<8));
     USE_T0 ();
   }
@@ -8561,9 +8561,9 @@ static void cc__prim_inter_one_using_env__mul_shade ()
     GR_COMBINE_OTHER_CONSTANT);
   CC_1SUBPRIM ();
   CC_C1MULC2 (cmb.ccolor, rdp.env_color);
-  cmb.ccolor=(wxUint8)( min(255, (int)((cmb.ccolor & 0xFF000000) >> 24) + (int)((rdp.prim_color & 0xFF000000) >> 24)) ) << 24 |
-  (wxUint8)( min(255, (int)((cmb.ccolor & 0x00FF0000) >> 16) + (int)((rdp.prim_color & 0x00FF0000) >> 16)) ) << 16 |
-  (wxUint8)( min(255, (int)((cmb.ccolor & 0x0000FF00) >>  8) + (int)((rdp.prim_color & 0x0000FF00) >>  8)) ) <<  8 ;
+  cmb.ccolor=(uint8_t)( min(255, (int)((cmb.ccolor & 0xFF000000) >> 24) + (int)((rdp.prim_color & 0xFF000000) >> 24)) ) << 24 |
+  (uint8_t)( min(255, (int)((cmb.ccolor & 0x00FF0000) >> 16) + (int)((rdp.prim_color & 0x00FF0000) >> 16)) ) << 16 |
+  (uint8_t)( min(255, (int)((cmb.ccolor & 0x0000FF00) >>  8) + (int)((rdp.prim_color & 0x0000FF00) >>  8)) ) <<  8 ;
 }
 
 static void cc__env_inter_prim_using_t0a__mul_t0 ()
@@ -9253,7 +9253,7 @@ static void ac__t1_sub_t0_mul_enva_add_t1__mul_prim ()
   }
   else
   {
-    wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+    uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
     A_T0_INTER_T1_USING_FACTOR (factor);
   }
 }
@@ -9832,7 +9832,7 @@ static void ac__t0_inter_t1_using_enva__mul_prim_add_env ()
     GR_COMBINE_OTHER_ITERATED);
   SETSHADE_A_PRIM ();
   CA_ENV ();
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   A_T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -11100,7 +11100,7 @@ static void ac_t0_inter_t1_using_prima ()
     GR_COMBINE_FACTOR_ONE,
     GR_COMBINE_LOCAL_NONE,
     GR_COMBINE_OTHER_TEXTURE);
-  wxUint8 factor = (wxUint8)(rdp.prim_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.prim_color&0xFF);
   A_T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -11110,7 +11110,7 @@ static void ac_t1_inter_t0_using_prima ()
     GR_COMBINE_FACTOR_ONE,
     GR_COMBINE_LOCAL_NONE,
     GR_COMBINE_OTHER_TEXTURE);
-  wxUint8 factor = (wxUint8)(rdp.prim_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.prim_color&0xFF);
   A_T1_INTER_T0_USING_FACTOR (factor);
 }
 
@@ -11129,7 +11129,7 @@ static void ac_t0_inter_t1_using_enva ()
     GR_COMBINE_FACTOR_ONE,
     GR_COMBINE_LOCAL_NONE,
     GR_COMBINE_OTHER_TEXTURE);
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   A_T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -11139,7 +11139,7 @@ static void ac_t1_inter_t0_using_enva ()
     GR_COMBINE_FACTOR_ONE,
     GR_COMBINE_LOCAL_NONE,
     GR_COMBINE_OTHER_TEXTURE);
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   A_T1_INTER_T0_USING_FACTOR (factor);
 }
 
@@ -11257,7 +11257,7 @@ static void ac__t0_inter_t1_using_prima__mul_env ()
     GR_COMBINE_LOCAL_CONSTANT,
     GR_COMBINE_OTHER_TEXTURE);
   CA_ENV ();
-  wxUint8 factor = (wxUint8)(rdp.prim_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.prim_color&0xFF);
   A_T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -11289,7 +11289,7 @@ static void ac__t1_inter_t0_using_prima__mul_env ()
     GR_COMBINE_LOCAL_CONSTANT,
     GR_COMBINE_OTHER_TEXTURE);
   CA_ENV ();
-  wxUint8 factor = (wxUint8)(rdp.prim_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.prim_color&0xFF);
   A_T1_INTER_T0_USING_FACTOR (factor);
 }
 
@@ -11300,7 +11300,7 @@ static void ac__t0_inter_t1_using_prima__mul_shade ()
     GR_COMBINE_FACTOR_LOCAL,
     GR_COMBINE_LOCAL_ITERATED,
     GR_COMBINE_OTHER_TEXTURE);
-  wxUint8 factor = (wxUint8)(rdp.prim_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.prim_color&0xFF);
   A_T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -11310,7 +11310,7 @@ static void ac__t1_inter_t0_using_prima__mul_shade ()
     GR_COMBINE_FACTOR_LOCAL,
     GR_COMBINE_LOCAL_ITERATED,
     GR_COMBINE_OTHER_TEXTURE);
-  wxUint8 factor = (wxUint8)(rdp.prim_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.prim_color&0xFF);
   A_T1_INTER_T0_USING_FACTOR (factor);
 }
 
@@ -11321,7 +11321,7 @@ static void ac__t0_inter_t1_using_enva__mul_prim ()
     GR_COMBINE_LOCAL_CONSTANT,
     GR_COMBINE_OTHER_TEXTURE);
   CA_PRIM ();
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   A_T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -11348,7 +11348,7 @@ static void ac__env_sub_one_mul_t1_add_t0__mul_prim ()
   }
   else
   {
-    wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+    uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
     A_T0_INTER_T1_USING_FACTOR (factor);
   }
 }
@@ -11360,7 +11360,7 @@ static void ac__t0_inter_t1_using_enva__mul_primlod ()
     GR_COMBINE_LOCAL_CONSTANT,
     GR_COMBINE_OTHER_TEXTURE);
   CA_PRIMLOD ();
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   A_T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -11482,7 +11482,7 @@ static void ac__t0_inter_t1_using_enva__mul_shade ()
     GR_COMBINE_FACTOR_LOCAL,
     GR_COMBINE_LOCAL_ITERATED,
     GR_COMBINE_OTHER_TEXTURE);
-  wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+  uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
   A_T0_INTER_T1_USING_FACTOR (factor);
 }
 
@@ -11609,7 +11609,7 @@ static void ac__t1_sub_one_mul_enva_add_t0__mul_shade ()
   }
   else
   {
-    wxUint8 factor = (wxUint8)(rdp.env_color&0xFF);
+    uint8_t factor = (uint8_t)(rdp.env_color&0xFF);
     A_T0_INTER_T1_USING_FACTOR (factor);
   }
 }
