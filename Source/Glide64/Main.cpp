@@ -1833,8 +1833,6 @@ void drawViRegBG()
     }
 }
 
-void drawNoFullscreenMessage();
-
 static void DrawFrameBuffer()
 {
     if (to_fullscreen)

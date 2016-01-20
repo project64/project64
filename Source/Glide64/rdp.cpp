@@ -357,62 +357,6 @@ void microcheck()
     }
 }
 
-#ifdef __WINDOWS__
-static void GetClientSize(int * width, int * height)
-{
-#ifdef __WINDOWS__
-    RECT win_rect;
-    GetClientRect(gfx.hWnd, &win_rect);
-    *width = win_rect.right;
-    *height = win_rect.bottom;
-#else
-    GFXWindow->GetClientSize(width, height);
-#endif
-}
-#endif
-
-void drawNoFullscreenMessage()
-{
-    //need to find, how to do it on non-windows OS
-    //the code below will compile on any OS
-    //but it works only on windows, because
-    //I don't know, how to initialize GFXWindow on other OS
-#ifdef __WINDOWS__
-    LOG("drawNoFullscreenMessage ()\n");
-    if (rdp.window_changed)
-    {
-        rdp.window_changed = FALSE;
-        int width, height;
-        GetClientSize(&width, &height);
-
-        wxClientDC dc(GFXWindow);
-        dc.SetBrush(*wxMEDIUM_GREY_BRUSH);
-        dc.SetTextForeground(*wxWHITE);
-        dc.SetBackgroundMode(wxTRANSPARENT);
-        dc.DrawRectangle(0, 0, width, height);
-
-        wxCoord w, h;
-        wxString text = wxT("Glide64");
-        dc.GetTextExtent(text, &w, &h);
-        wxCoord x = (width - w) / 2;
-        wxCoord y = height / 2 - h * 4;
-        dc.DrawText(text, x, y);
-
-        text = wxT("Gfx cannot be drawn in windowed mode");
-        dc.GetTextExtent(text, &w, &h);
-        x = (width - w) / 2;
-        y = height / 2 - h;
-        dc.DrawText(text, x, y);
-
-        text = wxT("Press Alt+Enter to switch to fullscreen");
-        dc.GetTextExtent(text, &w, &h);
-        x = (width - w) / 2;
-        y = (height - h) / 2 + h * 2;
-        dc.DrawText(text, x, y);
-    }
-#endif
-}
-
 static uint32_t d_ul_x, d_ul_y, d_lr_x, d_lr_y;
 
 static void DrawPartFrameBufferToScreen()
