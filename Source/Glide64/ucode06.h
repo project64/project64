@@ -246,7 +246,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
 
 void DrawDepthImage(const DRAWIMAGE & d)
 {
-    if (!fullscreen || !fb_depth_render_enabled)
+    if (!fb_depth_render_enabled)
         return;
     if (d.imageH > d.imageW)
         return;
@@ -442,16 +442,13 @@ void DrawImage(DRAWIMAGE & d)
     if (rdp.cycle_mode == 2)
         rdp.allow_combine = 0;
 
-    if (fullscreen)
-    {
-        if (rdp.ci_width == 512 && !no_dlist)
-            grClipWindow(0, 0, settings.scr_res_x, settings.scr_res_y);
-        else if (d.scaleX == 1.0f && d.scaleY == 1.0f)
-            grClipWindow(rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
-        else
-            grClipWindow(rdp.scissor.ul_x, rdp.scissor.ul_y, min(rdp.scissor.lr_x, (uint32_t)((d.frameX + d.imageW / d.scaleX + 0.5f)*rdp.scale_x)), min(rdp.scissor.lr_y, (uint32_t)((d.frameY + d.imageH / d.scaleY + 0.5f)*rdp.scale_y)));
-        rdp.update |= UPDATE_SCISSOR;
-    }
+    if (rdp.ci_width == 512 && !no_dlist)
+        grClipWindow(0, 0, settings.scr_res_x, settings.scr_res_y);
+    else if (d.scaleX == 1.0f && d.scaleY == 1.0f)
+        grClipWindow(rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
+    else
+        grClipWindow(rdp.scissor.ul_x, rdp.scissor.ul_y, min(rdp.scissor.lr_x, (uint32_t)((d.frameX + d.imageW / d.scaleX + 0.5f)*rdp.scale_x)), min(rdp.scissor.lr_y, (uint32_t)((d.frameY + d.imageH / d.scaleY + 0.5f)*rdp.scale_y)));
+    rdp.update |= UPDATE_SCISSOR;
 
     // Texture ()
     rdp.cur_tile = 0;
@@ -548,8 +545,7 @@ void DrawImage(DRAWIMAGE & d)
                     apply_shade_mods(&(v[s]));
                 ConvertCoordsConvert(v, 4);
 
-                if (fullscreen)
-                    grDrawVertexArrayContiguous(GR_TRIANGLE_STRIP, 4, v, sizeof(VERTEX));
+                grDrawVertexArrayContiguous(GR_TRIANGLE_STRIP, 4, v, sizeof(VERTEX));
 
                 if (_debugger.capture)
                 {
@@ -605,8 +601,6 @@ void DrawImage(DRAWIMAGE & d)
 
 void DrawHiresImage(DRAWIMAGE & d, int screensize = FALSE)
 {
-    if (!fullscreen)
-        return;
     TBUFF_COLOR_IMAGE *tbuff_tex = rdp.tbuff_tex;
     if (rdp.motionblur)
         rdp.tbuff_tex = &(rdp.texbufs[rdp.cur_tex_buf ^ 1].images[0]);
@@ -985,7 +979,7 @@ static void uc6_draw_polygons(VERTEX v[4])
     }
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_VIEWPORT;
 
-    if (fullscreen && settings.fog && (rdp.flags & FOG_ENABLED))
+    if (settings.fog && (rdp.flags & FOG_ENABLED))
     {
         grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
     }
@@ -1698,7 +1692,7 @@ void uc6_sprite2d()
             }
             rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_VIEWPORT;
 
-            if (fullscreen && settings.fog && (rdp.flags & FOG_ENABLED))
+            if (settings.fog && (rdp.flags & FOG_ENABLED))
             {
                 grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
             }

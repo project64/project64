@@ -170,7 +170,7 @@ wxNotebook(parent, id, pos, size, 0)
 #ifdef TEXTURE_FILTER
     if (settings.texenh_options)
     {
-        if (!fullscreen)
+        if (!GfxInitDone)
         {
             grGlideInit();
             grSstSelect(settings.card_id);
@@ -184,7 +184,7 @@ wxNotebook(parent, id, pos, size, 0)
             voodoo.sup_32bit_tex = TRUE;
         else
             voodoo.sup_32bit_tex = FALSE;
-        if (!fullscreen)
+        if (!GfxInitDone)
             grGlideShutdown();
 
         TexturePanel = new wxPanel(this, wxID_ANY);
@@ -923,7 +923,7 @@ void ConfigNotebook::SaveSettings()
             }
             else
                 WriteSettings(false);
-}
+        }
         else
             WriteSettings(is_advanced_changed != 0);
     }

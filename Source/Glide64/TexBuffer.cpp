@@ -210,7 +210,6 @@ static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
 int OpenTextureBuffer(COLOR_IMAGE & cimage)
 {
     FRDP("OpenTextureBuffer. cur_tex_buf: %d, addr: %08lx, width: %d, height: %d", rdp.cur_tex_buf, cimage.addr, cimage.width, cimage.height);
-    if (!fullscreen) return FALSE;
 
     int found = FALSE, search = TRUE;
     TBUFF_COLOR_IMAGE *texbuf = 0;
@@ -419,7 +418,7 @@ static GrTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
 
 int CloseTextureBuffer(int draw)
 {
-    if (!fullscreen || !rdp.cur_image)
+    if (!rdp.cur_image)
     {
         LRDP("CloseTextureBuffer KO\n");
         return FALSE;
@@ -471,8 +470,6 @@ int CloseTextureBuffer(int draw)
 
 int CopyTextureBuffer(COLOR_IMAGE & fb_from, COLOR_IMAGE & fb_to)
 {
-    if (!fullscreen)
-        return FALSE;
     FRDP("CopyTextureBuffer from %08x to %08x\n", fb_from.addr, fb_to.addr);
     if (rdp.cur_image)
     {
@@ -537,8 +534,6 @@ int CopyTextureBuffer(COLOR_IMAGE & fb_from, COLOR_IMAGE & fb_to)
 
 int CopyDepthBuffer()
 {
-    if (!fullscreen)
-        return FALSE;
     LRDP("CopyDepthBuffer. ");
     float bound = 1024.0f;
     GrLOD_t LOD = GR_LOD_LOG2_1024;
@@ -592,7 +587,7 @@ int CopyDepthBuffer()
 
 int SwapTextureBuffer()
 {
-    if (!fullscreen || !rdp.tbuff_tex)
+    if (!rdp.tbuff_tex)
         return FALSE;
     LRDP("SwapTextureBuffer.");
     COLOR_IMAGE ci;

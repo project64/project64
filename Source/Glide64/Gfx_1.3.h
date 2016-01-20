@@ -273,7 +273,7 @@ extern "C" {
     __inline void FRDP_E(const char * /*fmt*/, ...) {}
 #endif
 
-    extern int fullscreen;
+    extern int GfxInitDone;
     extern int romopen;
     extern int to_fullscreen;
     extern int debugging;

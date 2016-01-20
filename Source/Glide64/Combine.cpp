@@ -15574,12 +15574,9 @@ void Combine()
     if (cmb.cmb_ext_use || cmb.tex_cmb_ext_use)
     {
         //have to draw something to allow use of standard combine functions
-        if (fullscreen)
-        {
-            VERTEX v;
-            memset(&v, 0, sizeof(v));
-            grDrawPoint(&v);
-        }
+        VERTEX v;
+        memset(&v, 0, sizeof(v));
+        grDrawPoint(&v);
         cmb.cmb_ext_use = 0;
         cmb.tex_cmb_ext_use = 0;
     }
@@ -15737,61 +15734,58 @@ void Combine()
     //*/
     rdp.tex = cmb.tex;
 
-    if (fullscreen)
+    TBUFF_COLOR_IMAGE * aTBuff[2] = { 0, 0 };
+    if (rdp.aTBuffTex[0])
+        aTBuff[rdp.aTBuffTex[0]->tile] = rdp.aTBuffTex[0];
+    if (rdp.aTBuffTex[1])
+        aTBuff[rdp.aTBuffTex[1]->tile] = rdp.aTBuffTex[1];
+    if (cmb.tex && (aTBuff[0] || aTBuff[1]))
     {
-        TBUFF_COLOR_IMAGE * aTBuff[2] = { 0, 0 };
-        if (rdp.aTBuffTex[0])
-            aTBuff[rdp.aTBuffTex[0]->tile] = rdp.aTBuffTex[0];
-        if (rdp.aTBuffTex[1])
-            aTBuff[rdp.aTBuffTex[1]->tile] = rdp.aTBuffTex[1];
-        if (cmb.tex && (aTBuff[0] || aTBuff[1]))
+        if (aTBuff[0] && (settings.frame_buffer&fb_read_alpha))
         {
-            if (aTBuff[0] && (settings.frame_buffer&fb_read_alpha))
-            {
-                if ((settings.hacks&hack_PMario) && aTBuff[0]->width == rdp.ci_width)
-                    ;
-                else
-                {
-                    grChromakeyValue(0);
-                    grChromakeyMode(GR_CHROMAKEY_ENABLE);
-                }
-            }
+            if ((settings.hacks&hack_PMario) && aTBuff[0]->width == rdp.ci_width)
+                ;
             else
-                grChromakeyMode(GR_CHROMAKEY_DISABLE);
-
-            if (aTBuff[0] && aTBuff[0]->info.format == GR_TEXFMT_ALPHA_INTENSITY_88)
             {
-                if (cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_COLOR)
-                {
-                    if (cmb.t0c_ext_a == GR_CMBX_LOCAL_TEXTURE_RGB)
-                        cmb.t0c_ext_a = GR_CMBX_LOCAL_TEXTURE_ALPHA;
-                    if (cmb.t0c_ext_b == GR_CMBX_LOCAL_TEXTURE_RGB)
-                        cmb.t0c_ext_b = GR_CMBX_LOCAL_TEXTURE_ALPHA;
-                    if (cmb.t0c_ext_c == GR_CMBX_LOCAL_TEXTURE_RGB)
-                        cmb.t0c_ext_c = GR_CMBX_LOCAL_TEXTURE_ALPHA;
-                }
-                else
-                    cmb.tmu0_func = GR_COMBINE_FUNCTION_LOCAL_ALPHA;
-            }
-
-            if (aTBuff[1] && aTBuff[1]->info.format == GR_TEXFMT_ALPHA_INTENSITY_88)
-            {
-                if (cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_COLOR)
-                {
-                    if (cmb.t1c_ext_a == GR_CMBX_LOCAL_TEXTURE_RGB)
-                        cmb.t1c_ext_a = GR_CMBX_LOCAL_TEXTURE_ALPHA;
-                    if (cmb.t1c_ext_b == GR_CMBX_LOCAL_TEXTURE_RGB)
-                        cmb.t1c_ext_b = GR_CMBX_LOCAL_TEXTURE_ALPHA;
-                    if (cmb.t1c_ext_c == GR_CMBX_LOCAL_TEXTURE_RGB)
-                        cmb.t1c_ext_c = GR_CMBX_LOCAL_TEXTURE_ALPHA;
-                }
-                else
-                    cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL_ALPHA;
+                grChromakeyValue(0);
+                grChromakeyMode(GR_CHROMAKEY_ENABLE);
             }
         }
         else
             grChromakeyMode(GR_CHROMAKEY_DISABLE);
+
+        if (aTBuff[0] && aTBuff[0]->info.format == GR_TEXFMT_ALPHA_INTENSITY_88)
+        {
+            if (cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_COLOR)
+            {
+                if (cmb.t0c_ext_a == GR_CMBX_LOCAL_TEXTURE_RGB)
+                    cmb.t0c_ext_a = GR_CMBX_LOCAL_TEXTURE_ALPHA;
+                if (cmb.t0c_ext_b == GR_CMBX_LOCAL_TEXTURE_RGB)
+                    cmb.t0c_ext_b = GR_CMBX_LOCAL_TEXTURE_ALPHA;
+                if (cmb.t0c_ext_c == GR_CMBX_LOCAL_TEXTURE_RGB)
+                    cmb.t0c_ext_c = GR_CMBX_LOCAL_TEXTURE_ALPHA;
+            }
+            else
+                cmb.tmu0_func = GR_COMBINE_FUNCTION_LOCAL_ALPHA;
+        }
+
+        if (aTBuff[1] && aTBuff[1]->info.format == GR_TEXFMT_ALPHA_INTENSITY_88)
+        {
+            if (cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_COLOR)
+            {
+                if (cmb.t1c_ext_a == GR_CMBX_LOCAL_TEXTURE_RGB)
+                    cmb.t1c_ext_a = GR_CMBX_LOCAL_TEXTURE_ALPHA;
+                if (cmb.t1c_ext_b == GR_CMBX_LOCAL_TEXTURE_RGB)
+                    cmb.t1c_ext_b = GR_CMBX_LOCAL_TEXTURE_ALPHA;
+                if (cmb.t1c_ext_c == GR_CMBX_LOCAL_TEXTURE_RGB)
+                    cmb.t1c_ext_c = GR_CMBX_LOCAL_TEXTURE_ALPHA;
+            }
+            else
+                cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL_ALPHA;
+        }
     }
+    else
+        grChromakeyMode(GR_CHROMAKEY_DISABLE);
     cmb.shade_mod_hash = (rdp.cmb_flags + rdp.cmb_flags_2) * (rdp.prim_color + rdp.env_color + rdp.K5);
 
     LRDP(" | + Combine end\n");

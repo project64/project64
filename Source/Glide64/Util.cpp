@@ -1620,83 +1620,80 @@ static void render_tri(uint16_t linew, int old_interpolate)
     }
     }
     */
-    if (fullscreen)
+    if (settings.wireframe)
     {
-        if (settings.wireframe)
+        SetWireframeCol();
+        for (i = 0; i < n; i++)
         {
-            SetWireframeCol();
-            for (i = 0; i < n; i++)
-            {
-                j = i + 1;
-                if (j == n) j = 0;
-                grDrawLine(&rdp.vtxbuf[i], &rdp.vtxbuf[j]);
-            }
+            j = i + 1;
+            if (j == n) j = 0;
+            grDrawLine(&rdp.vtxbuf[i], &rdp.vtxbuf[j]);
         }
-        else
+    }
+    else
+    {
+        //      VERTEX ** pv = rdp.vtx_buffer?(vtx_list2):(vtx_list1);
+        //      for (int k = 0; k < n; k ++)
+        //			FRDP ("DRAW[%d]: v.x = %f, v.y = %f, v.z = %f, v.u = %f, v.v = %f\n", k, pv[k]->x, pv[k]->y, pv[k]->z, pv[k]->coord[rdp.t0<<1], pv[k]->coord[(rdp.t0<<1)+1]);
+        //        pv[k]->y = settings.res_y - pv[k]->y;
+
+        if (linew > 0)
         {
-            //      VERTEX ** pv = rdp.vtx_buffer?(vtx_list2):(vtx_list1);
-            //      for (int k = 0; k < n; k ++)
-            //			FRDP ("DRAW[%d]: v.x = %f, v.y = %f, v.z = %f, v.u = %f, v.v = %f\n", k, pv[k]->x, pv[k]->y, pv[k]->z, pv[k]->coord[rdp.t0<<1], pv[k]->coord[(rdp.t0<<1)+1]);
-            //        pv[k]->y = settings.res_y - pv[k]->y;
-
-            if (linew > 0)
+            VERTEX *V0 = &rdp.vtxbuf[0];
+            VERTEX *V1 = &rdp.vtxbuf[1];
+            if (fabs(V0->x - V1->x) < 0.01 && fabs(V0->y - V1->y) < 0.01)
+                V1 = &rdp.vtxbuf[2];
+            V0->z = ScaleZ(V0->z);
+            V1->z = ScaleZ(V1->z);
+            VERTEX v[4];
+            v[0] = *V0;
+            v[1] = *V0;
+            v[2] = *V1;
+            v[3] = *V1;
+            float width = linew * 0.25f;
+            if (fabs(V0->y - V1->y) < 0.0001)
             {
-                VERTEX *V0 = &rdp.vtxbuf[0];
-                VERTEX *V1 = &rdp.vtxbuf[1];
-                if (fabs(V0->x - V1->x) < 0.01 && fabs(V0->y - V1->y) < 0.01)
-                    V1 = &rdp.vtxbuf[2];
-                V0->z = ScaleZ(V0->z);
-                V1->z = ScaleZ(V1->z);
-                VERTEX v[4];
-                v[0] = *V0;
-                v[1] = *V0;
-                v[2] = *V1;
-                v[3] = *V1;
-                float width = linew * 0.25f;
-                if (fabs(V0->y - V1->y) < 0.0001)
-                {
-                    v[0].x = v[1].x = V0->x;
-                    v[2].x = v[3].x = V1->x;
+                v[0].x = v[1].x = V0->x;
+                v[2].x = v[3].x = V1->x;
 
-                    width *= rdp.scale_y;
-                    v[0].y = v[2].y = V0->y - width;
-                    v[1].y = v[3].y = V0->y + width;
-                }
-                else if (fabs(V0->x - V1->x) < 0.0001)
-                {
-                    v[0].y = v[1].y = V0->y;
-                    v[2].y = v[3].y = V1->y;
+                width *= rdp.scale_y;
+                v[0].y = v[2].y = V0->y - width;
+                v[1].y = v[3].y = V0->y + width;
+            }
+            else if (fabs(V0->x - V1->x) < 0.0001)
+            {
+                v[0].y = v[1].y = V0->y;
+                v[2].y = v[3].y = V1->y;
 
-                    width *= rdp.scale_x;
-                    v[0].x = v[2].x = V0->x - width;
-                    v[1].x = v[3].x = V0->x + width;
-                }
-                else
-                {
-                    float dx = V1->x - V0->x;
-                    float dy = V1->y - V0->y;
-                    float len = sqrtf(dx*dx + dy*dy);
-                    float wx = dy * width * rdp.scale_x / len;
-                    float wy = dx * width * rdp.scale_y / len;
-                    v[0].x = V0->x + wx;
-                    v[0].y = V0->y - wy;
-                    v[1].x = V0->x - wx;
-                    v[1].y = V0->y + wy;
-                    v[2].x = V1->x + wx;
-                    v[2].y = V1->y - wy;
-                    v[3].x = V1->x - wx;
-                    v[3].y = V1->y + wy;
-                }
-                grDrawTriangle(&v[0], &v[1], &v[2]);
-                grDrawTriangle(&v[1], &v[2], &v[3]);
+                width *= rdp.scale_x;
+                v[0].x = v[2].x = V0->x - width;
+                v[1].x = v[3].x = V0->x + width;
             }
             else
             {
-                DepthBuffer(rdp.vtxbuf, n);
-                if ((rdp.rm & 0xC10) == 0xC10)
-                    grDepthBiasLevel(-deltaZ);
-                grDrawVertexArray(GR_TRIANGLE_FAN, n, rdp.vtx_buffer ? (&vtx_list2) : (&vtx_list1));
+                float dx = V1->x - V0->x;
+                float dy = V1->y - V0->y;
+                float len = sqrtf(dx*dx + dy*dy);
+                float wx = dy * width * rdp.scale_x / len;
+                float wy = dx * width * rdp.scale_y / len;
+                v[0].x = V0->x + wx;
+                v[0].y = V0->y - wy;
+                v[1].x = V0->x - wx;
+                v[1].y = V0->y + wy;
+                v[2].x = V1->x + wx;
+                v[2].y = V1->y - wy;
+                v[3].x = V1->x - wx;
+                v[3].y = V1->y + wy;
             }
+            grDrawTriangle(&v[0], &v[1], &v[2]);
+            grDrawTriangle(&v[1], &v[2], &v[3]);
+        }
+        else
+        {
+            DepthBuffer(rdp.vtxbuf, n);
+            if ((rdp.rm & 0xC10) == 0xC10)
+                grDepthBiasLevel(-deltaZ);
+            grDrawVertexArray(GR_TRIANGLE_FAN, n, rdp.vtx_buffer ? (&vtx_list2) : (&vtx_list1));
         }
     }
 
@@ -1792,10 +1789,8 @@ void update_scissor()
         //grClipWindow specifies the hardware clipping window. Any pixels outside the clipping window are rejected.
         //Values are inclusive for minimum x and y values and exclusive for maximum x and y values.
         //    grClipWindow (rdp.scissor.ul_x?rdp.scissor.ul_x+1:0, rdp.scissor.ul_y?rdp.scissor.ul_y+1:0, rdp.scissor.lr_x, rdp.scissor.lr_y);
-        if (fullscreen)
-            grClipWindow(rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
-        FRDP(" |- scissor - (%d, %d) -> (%d, %d)\n", rdp.scissor.ul_x, rdp.scissor.ul_y,
-            rdp.scissor.lr_x, rdp.scissor.lr_y);
+        grClipWindow(rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
+        FRDP(" |- scissor - (%d, %d) -> (%d, %d)\n", rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
     }
 }
 
@@ -1910,220 +1905,216 @@ void update()
             rdp.update ^= UPDATE_TEXTURE;
     }
 
-    if (fullscreen)
+    // Z buffer
+    if (rdp.update & UPDATE_ZBUF_ENABLED)
     {
-        // Z buffer
-        if (rdp.update & UPDATE_ZBUF_ENABLED)
+        // already logged above
+        rdp.update ^= UPDATE_ZBUF_ENABLED;
+
+        if (((rdp.flags & ZBUF_ENABLED) || rdp.zsrc == 1) && rdp.cycle_mode < 2)
         {
-            // already logged above
-            rdp.update ^= UPDATE_ZBUF_ENABLED;
-
-            if (((rdp.flags & ZBUF_ENABLED) || rdp.zsrc == 1) && rdp.cycle_mode < 2)
+            if (rdp.flags & ZBUF_COMPARE)
             {
-                if (rdp.flags & ZBUF_COMPARE)
-                {
-                    switch ((rdp.rm & 0xC00) >> 10) {
-                    case 0:
-                        grDepthBiasLevel(0);
-                        grDepthBufferFunction(settings.zmode_compare_less ? GR_CMP_LESS : GR_CMP_LEQUAL);
-                        break;
-                    case 1:
-                        grDepthBiasLevel(-4);
-                        grDepthBufferFunction(settings.zmode_compare_less ? GR_CMP_LESS : GR_CMP_LEQUAL);
-                        break;
-                    case 2:
-                        grDepthBiasLevel(settings.ucode == 7 ? -4 : 0);
-                        grDepthBufferFunction(GR_CMP_LESS);
-                        break;
-                    case 3:
-                        // will be set dynamically per polygon
-                        //grDepthBiasLevel(-deltaZ);
-                        grDepthBufferFunction(GR_CMP_LEQUAL);
-                        break;
-                    }
-                }
-                else
-                {
+                switch ((rdp.rm & 0xC00) >> 10) {
+                case 0:
                     grDepthBiasLevel(0);
-                    grDepthBufferFunction(GR_CMP_ALWAYS);
+                    grDepthBufferFunction(settings.zmode_compare_less ? GR_CMP_LESS : GR_CMP_LEQUAL);
+                    break;
+                case 1:
+                    grDepthBiasLevel(-4);
+                    grDepthBufferFunction(settings.zmode_compare_less ? GR_CMP_LESS : GR_CMP_LEQUAL);
+                    break;
+                case 2:
+                    grDepthBiasLevel(settings.ucode == 7 ? -4 : 0);
+                    grDepthBufferFunction(GR_CMP_LESS);
+                    break;
+                case 3:
+                    // will be set dynamically per polygon
+                    //grDepthBiasLevel(-deltaZ);
+                    grDepthBufferFunction(GR_CMP_LEQUAL);
+                    break;
                 }
-
-                if (rdp.flags & ZBUF_UPDATE)
-                    grDepthMask(FXTRUE);
-                else
-                    grDepthMask(FXFALSE);
             }
             else
             {
                 grDepthBiasLevel(0);
                 grDepthBufferFunction(GR_CMP_ALWAYS);
+            }
+
+            if (rdp.flags & ZBUF_UPDATE)
+                grDepthMask(FXTRUE);
+            else
                 grDepthMask(FXFALSE);
-            }
         }
-
-        // Alpha compare
-        if (rdp.update & UPDATE_ALPHA_COMPARE)
+        else
         {
-            // already logged above
-            rdp.update ^= UPDATE_ALPHA_COMPARE;
+            grDepthBiasLevel(0);
+            grDepthBufferFunction(GR_CMP_ALWAYS);
+            grDepthMask(FXFALSE);
+        }
+    }
 
-            //	  if (rdp.acmp == 1 && !(rdp.othermode_l & 0x00002000) && !force_full_alpha)
-            //      if (rdp.acmp == 1 && !(rdp.othermode_l & 0x00002000) && (rdp.blend_color&0xFF))
-            if (rdp.acmp == 1 && !(rdp.othermode_l & 0x00002000) && (!(rdp.othermode_l & 0x00004000) || (rdp.blend_color & 0xFF)))
+    // Alpha compare
+    if (rdp.update & UPDATE_ALPHA_COMPARE)
+    {
+        // already logged above
+        rdp.update ^= UPDATE_ALPHA_COMPARE;
+
+        //	  if (rdp.acmp == 1 && !(rdp.othermode_l & 0x00002000) && !force_full_alpha)
+        //      if (rdp.acmp == 1 && !(rdp.othermode_l & 0x00002000) && (rdp.blend_color&0xFF))
+        if (rdp.acmp == 1 && !(rdp.othermode_l & 0x00002000) && (!(rdp.othermode_l & 0x00004000) || (rdp.blend_color & 0xFF)))
+        {
+            uint8_t reference = (uint8_t)(rdp.blend_color & 0xFF);
+            grAlphaTestFunction(reference ? GR_CMP_GEQUAL : GR_CMP_GREATER);
+            grAlphaTestReferenceValue(reference);
+            FRDP(" |- alpha compare: blend: %02lx\n", reference);
+        }
+        else
+        {
+            if (rdp.flags & ALPHA_COMPARE)
             {
-                uint8_t reference = (uint8_t)(rdp.blend_color & 0xFF);
-                grAlphaTestFunction(reference ? GR_CMP_GEQUAL : GR_CMP_GREATER);
-                grAlphaTestReferenceValue(reference);
-                FRDP(" |- alpha compare: blend: %02lx\n", reference);
-            }
-            else
-            {
-                if (rdp.flags & ALPHA_COMPARE)
+                if ((rdp.othermode_l & 0x5000) != 0x5000)
                 {
-                    if ((rdp.othermode_l & 0x5000) != 0x5000)
-                    {
-                        grAlphaTestFunction(GR_CMP_GEQUAL);
-                        grAlphaTestReferenceValue(0x20);//0xA0);
-                        LRDP(" |- alpha compare: 0x20\n");
-                    }
-                    else
-                    {
-                        grAlphaTestFunction(GR_CMP_GREATER);
-                        if (rdp.acmp == 3)
-                        {
-                            grAlphaTestReferenceValue((uint8_t)(rdp.blend_color & 0xFF));
-                            FRDP(" |- alpha compare: blend: %02lx\n", rdp.blend_color & 0xFF);
-                        }
-                        else
-                        {
-                            grAlphaTestReferenceValue(0x00);
-                            LRDP(" |- alpha compare: 0x00\n");
-                        }
-                    }
+                    grAlphaTestFunction(GR_CMP_GEQUAL);
+                    grAlphaTestReferenceValue(0x20);//0xA0);
+                    LRDP(" |- alpha compare: 0x20\n");
                 }
                 else
                 {
-                    grAlphaTestFunction(GR_CMP_ALWAYS);
-                    LRDP(" |- alpha compare: none\n");
-                }
-            }
-            if (rdp.acmp == 3 && rdp.cycle_mode < 2)
-            {
-                if (grStippleModeExt != 0)
-                {
-                    if (settings.old_style_adither || rdp.alpha_dither_mode != 3) {
-                        LRDP(" |- alpha compare: dither\n");
-                        grStippleModeExt(settings.stipple_mode);
+                    grAlphaTestFunction(GR_CMP_GREATER);
+                    if (rdp.acmp == 3)
+                    {
+                        grAlphaTestReferenceValue((uint8_t)(rdp.blend_color & 0xFF));
+                        FRDP(" |- alpha compare: blend: %02lx\n", rdp.blend_color & 0xFF);
                     }
                     else
-                        grStippleModeExt(GR_STIPPLE_DISABLE);
+                    {
+                        grAlphaTestReferenceValue(0x00);
+                        LRDP(" |- alpha compare: 0x00\n");
+                    }
                 }
             }
             else
             {
-                if (grStippleModeExt)
-                {
-                    //LRDP (" |- alpha compare: dither disabled\n");
+                grAlphaTestFunction(GR_CMP_ALWAYS);
+                LRDP(" |- alpha compare: none\n");
+            }
+        }
+        if (rdp.acmp == 3 && rdp.cycle_mode < 2)
+        {
+            if (grStippleModeExt != 0)
+            {
+                if (settings.old_style_adither || rdp.alpha_dither_mode != 3) {
+                    LRDP(" |- alpha compare: dither\n");
+                    grStippleModeExt(settings.stipple_mode);
+                }
+                else
                     grStippleModeExt(GR_STIPPLE_DISABLE);
-                }
             }
         }
-        // Cull mode (leave this in for z-clipped triangles)
-        if (rdp.update & UPDATE_CULL_MODE)
+        else
         {
-            rdp.update ^= UPDATE_CULL_MODE;
-            uint32_t mode = (rdp.flags & CULLMASK) >> CULLSHIFT;
-            FRDP(" |- cull_mode - mode: %s\n", str_cull[mode]);
-            switch (mode)
+            if (grStippleModeExt)
             {
-            case 0: // cull none
-            case 3: // cull both
-                grCullMode(GR_CULL_DISABLE);
-                break;
-            case 1: // cull front
-                //        grCullMode(GR_CULL_POSITIVE);
-                grCullMode(GR_CULL_NEGATIVE);
-                break;
-            case 2: // cull back
-                //        grCullMode (GR_CULL_NEGATIVE);
-                grCullMode(GR_CULL_POSITIVE);
-                break;
+                //LRDP (" |- alpha compare: dither disabled\n");
+                grStippleModeExt(GR_STIPPLE_DISABLE);
             }
         }
-
-        //Added by Gonetz.
-        if (settings.fog && (rdp.update & UPDATE_FOG_ENABLED))
+    }
+    // Cull mode (leave this in for z-clipped triangles)
+    if (rdp.update & UPDATE_CULL_MODE)
+    {
+        rdp.update ^= UPDATE_CULL_MODE;
+        uint32_t mode = (rdp.flags & CULLMASK) >> CULLSHIFT;
+        FRDP(" |- cull_mode - mode: %s\n", str_cull[mode]);
+        switch (mode)
         {
-            rdp.update ^= UPDATE_FOG_ENABLED;
+        case 0: // cull none
+        case 3: // cull both
+            grCullMode(GR_CULL_DISABLE);
+            break;
+        case 1: // cull front
+            //        grCullMode(GR_CULL_POSITIVE);
+            grCullMode(GR_CULL_NEGATIVE);
+            break;
+        case 2: // cull back
+            //        grCullMode (GR_CULL_NEGATIVE);
+            grCullMode(GR_CULL_POSITIVE);
+            break;
+        }
+    }
 
-            uint16_t blender = (uint16_t)(rdp.othermode_l >> 16);
-            if (rdp.flags & FOG_ENABLED)
-            {
-                rdp_blender_setting &bl = *(rdp_blender_setting*)(&(blender));
-                if ((rdp.fog_multiplier > 0) && (bl.c1_m1a == 3 || bl.c1_m2a == 3 || bl.c2_m1a == 3 || bl.c2_m2a == 3))
-                {
-                    grFogColorValue(rdp.fog_color);
-                    grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
-                    rdp.fog_mode = RDP::fog_enabled;
-                    LRDP("fog enabled \n");
-                }
-                else
-                {
-                    LRDP("fog disabled in blender\n");
-                    rdp.fog_mode = RDP::fog_disabled;
-                    grFogMode(GR_FOG_DISABLE);
-                }
-            }
-            else if (blender == 0xc410 || blender == 0xc411 || blender == 0xf500)
+    //Added by Gonetz.
+    if (settings.fog && (rdp.update & UPDATE_FOG_ENABLED))
+    {
+        rdp.update ^= UPDATE_FOG_ENABLED;
+
+        uint16_t blender = (uint16_t)(rdp.othermode_l >> 16);
+        if (rdp.flags & FOG_ENABLED)
+        {
+            rdp_blender_setting &bl = *(rdp_blender_setting*)(&(blender));
+            if ((rdp.fog_multiplier > 0) && (bl.c1_m1a == 3 || bl.c1_m2a == 3 || bl.c2_m1a == 3 || bl.c2_m2a == 3))
             {
                 grFogColorValue(rdp.fog_color);
                 grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
-                rdp.fog_mode = RDP::fog_blend;
-                LRDP("fog blend \n");
-            }
-            else if (blender == 0x04d1)
-            {
-                grFogColorValue(rdp.fog_color);
-                grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
-                rdp.fog_mode = RDP::fog_blend_inverse;
-                LRDP("fog blend \n");
+                rdp.fog_mode = RDP::fog_enabled;
+                LRDP("fog enabled \n");
             }
             else
             {
-                LRDP("fog disabled\n");
+                LRDP("fog disabled in blender\n");
                 rdp.fog_mode = RDP::fog_disabled;
                 grFogMode(GR_FOG_DISABLE);
             }
+        }
+        else if (blender == 0xc410 || blender == 0xc411 || blender == 0xf500)
+        {
+            grFogColorValue(rdp.fog_color);
+            grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
+            rdp.fog_mode = RDP::fog_blend;
+            LRDP("fog blend \n");
+        }
+        else if (blender == 0x04d1)
+        {
+            grFogColorValue(rdp.fog_color);
+            grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
+            rdp.fog_mode = RDP::fog_blend_inverse;
+            LRDP("fog blend \n");
+        }
+        else
+        {
+            LRDP("fog disabled\n");
+            rdp.fog_mode = RDP::fog_disabled;
+            grFogMode(GR_FOG_DISABLE);
         }
     }
 
     if (rdp.update & UPDATE_VIEWPORT)
     {
         rdp.update ^= UPDATE_VIEWPORT;
-        if (fullscreen)
+        float scale_x = (float)fabs(rdp.view_scale[0]);
+        float scale_y = (float)fabs(rdp.view_scale[1]);
+
+        rdp.clip_min_x = max((rdp.view_trans[0] - scale_x + rdp.offset_x) / rdp.clip_ratio, 0.0f);
+        rdp.clip_min_y = max((rdp.view_trans[1] - scale_y + rdp.offset_y) / rdp.clip_ratio, 0.0f);
+        rdp.clip_max_x = min((rdp.view_trans[0] + scale_x + rdp.offset_x) * rdp.clip_ratio, settings.res_x);
+        rdp.clip_max_y = min((rdp.view_trans[1] + scale_y + rdp.offset_y) * rdp.clip_ratio, settings.res_y);
+
+        FRDP(" |- viewport - (%d, %d, %d, %d)\n", (uint32_t)rdp.clip_min_x, (uint32_t)rdp.clip_min_y, (uint32_t)rdp.clip_max_x, (uint32_t)rdp.clip_max_y);
+        if (!rdp.scissor_set)
         {
-            float scale_x = (float)fabs(rdp.view_scale[0]);
-            float scale_y = (float)fabs(rdp.view_scale[1]);
-
-            rdp.clip_min_x = max((rdp.view_trans[0] - scale_x + rdp.offset_x) / rdp.clip_ratio, 0.0f);
-            rdp.clip_min_y = max((rdp.view_trans[1] - scale_y + rdp.offset_y) / rdp.clip_ratio, 0.0f);
-            rdp.clip_max_x = min((rdp.view_trans[0] + scale_x + rdp.offset_x) * rdp.clip_ratio, settings.res_x);
-            rdp.clip_max_y = min((rdp.view_trans[1] + scale_y + rdp.offset_y) * rdp.clip_ratio, settings.res_y);
-
-            FRDP(" |- viewport - (%d, %d, %d, %d)\n", (uint32_t)rdp.clip_min_x, (uint32_t)rdp.clip_min_y, (uint32_t)rdp.clip_max_x, (uint32_t)rdp.clip_max_y);
-            if (!rdp.scissor_set)
-            {
-                rdp.scissor.ul_x = (uint32_t)rdp.clip_min_x;
-                rdp.scissor.lr_x = (uint32_t)rdp.clip_max_x;
-                rdp.scissor.ul_y = (uint32_t)rdp.clip_min_y;
-                rdp.scissor.lr_y = (uint32_t)rdp.clip_max_y;
-                grClipWindow(rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
-            }
+            rdp.scissor.ul_x = (uint32_t)rdp.clip_min_x;
+            rdp.scissor.lr_x = (uint32_t)rdp.clip_max_x;
+            rdp.scissor.ul_y = (uint32_t)rdp.clip_min_y;
+            rdp.scissor.lr_y = (uint32_t)rdp.clip_max_y;
+            grClipWindow(rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
         }
     }
 
     if (rdp.update & UPDATE_SCISSOR)
+    {
         update_scissor();
+    }
 
     LRDP(" + update end\n");
 }
