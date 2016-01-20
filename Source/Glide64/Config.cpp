@@ -1070,7 +1070,6 @@ output:   none
 void CALL DllConfig(HWND hParent)
 {
     LOG("DllConfig ()\n");
-    mutexProcessDList->Lock();
     ReadSettings();
 
     if (romopen)
@@ -1138,7 +1137,6 @@ void CloseConfig()
     //  hostWindow->UnsubclassWin();
     hostWindow->SetHWND(NULL);
 #endif
-    mutexProcessDList->Unlock();
 }
 
 AboutDialog::AboutDialog(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long /*style*/) :

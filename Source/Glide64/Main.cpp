@@ -1149,8 +1149,6 @@ IMPLEMENT_APP_NO_MAIN(wxDLLApp)
 
 bool wxDLLApp::OnInit()
 {
-    if (mutexProcessDList == NULL)
-        mutexProcessDList = new wxMutex(wxMUTEX_DEFAULT);
     wxImage::AddHandler(new wxPNGHandler);
     wxImage::AddHandler(new wxJPEGHandler);
     PluginPath();
@@ -1160,11 +1158,6 @@ bool wxDLLApp::OnInit()
 void wxDLLApp::CleanUp()
 {
     wxApp::CleanUp();
-    if (mutexProcessDList)
-    {
-        delete mutexProcessDList;
-        mutexProcessDList = NULL;
-    }
     if (GFXWindow)
     {
         GFXWindow->SetHWND(NULL);

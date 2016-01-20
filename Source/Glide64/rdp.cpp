@@ -592,15 +592,6 @@ int depth_buffer_fog;
 
 EXPORT void CALL ProcessDList(void)
 {
-    SoftLocker lock(mutexProcessDList);
-    if (!lock.IsOk()) //mutex is busy
-    {
-        // Set an interrupt to allow the game to continue
-        *gfx.MI_INTR_REG |= 0x20;
-        gfx.CheckInterrupts();
-        return;
-    }
-
     no_dlist = false;
     update_screen_count = 0;
     ChangeSize();
@@ -794,7 +785,7 @@ EXPORT void CALL ProcessDList(void)
         if (fullscreen)
         {
             ReleaseGfx ();
-            rdp_reset ();
+            rdp_reset();
 #ifdef TEXTURE_FILTER
             if (settings.ghq_use)
             {
@@ -4137,15 +4128,6 @@ void CALL ProcessRDPList(void)
 {
     LOG("ProcessRDPList ()\n");
     LRDP("ProcessRDPList ()\n");
-
-    SoftLocker lock(mutexProcessDList);
-    if (!lock.IsOk()) //mutex is busy
-    {
-        // Set an interrupt to allow the game to continue
-        *gfx.MI_INTR_REG |= 0x20;
-        gfx.CheckInterrupts();
-        return;
-    }
 
     uint32_t i;
     uint32_t cmd, length, cmd_length;

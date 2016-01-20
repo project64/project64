@@ -282,7 +282,6 @@ extern "C" {
     extern int ev_fullscreen;
 
     extern int exception;
-    extern wxMutex *mutexProcessDList;
 
     int InitGfx();
     void ReleaseGfx();
