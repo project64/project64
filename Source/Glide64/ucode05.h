@@ -40,8 +40,8 @@
 int cur_mtx = 0;
 int billboarding = 0;
 int vtx_last = 0;
-wxUint32 dma_offset_mtx = 0;
-wxUint32 dma_offset_vtx = 0;
+uint32_t dma_offset_mtx = 0;
+uint32_t dma_offset_vtx = 0;
 
 static void uc5_dma_offsets ()
 {
@@ -54,7 +54,7 @@ static void uc5_dma_offsets ()
 static void uc5_matrix ()
 {
   // Use segment offset to get the address
-  wxUint32 addr = dma_offset_mtx + (segoffset(rdp.cmd1) & BMASK);
+  uint32_t addr = dma_offset_mtx + (segoffset(rdp.cmd1) & BMASK);
 
   wxUint8 n = (wxUint8)((rdp.cmd0 >> 16) & 0xF);
   wxUint8 multiply;
@@ -106,7 +106,7 @@ static void uc5_matrix ()
 
 static void uc5_vertex ()
 {
-  wxUint32 addr = dma_offset_vtx + (segoffset(rdp.cmd1) & BMASK);
+  uint32_t addr = dma_offset_vtx + (segoffset(rdp.cmd1) & BMASK);
 
   // | cccc cccc 1111 1??? 0000 0002 2222 2222 | cmd1 = address |
   // c = vtx command
@@ -199,7 +199,7 @@ static void uc5_tridma ()
   // 2 = method #2 of getting count
   // 0 = unused
 
-  wxUint32 addr = segoffset(rdp.cmd1) & BMASK;
+  uint32_t addr = segoffset(rdp.cmd1) & BMASK;
   int num = (rdp.cmd0 & 0xFFF0) >> 4;
   //int num = ((rdp.cmd0 & 0x00F00000) >> 20) + 1;  // same thing!
   FRDP("uc5:tridma #%d - addr: %08lx, count: %d\n", rdp.tri_n, addr, num);
@@ -264,7 +264,7 @@ static void uc5_tridma ()
 
 static void uc5_dl_in_mem ()
 {
-  wxUint32 addr = segoffset(rdp.cmd1) & BMASK;
+  uint32_t addr = segoffset(rdp.cmd1) & BMASK;
   int count = (rdp.cmd0 & 0x00FF0000) >> 16;
   FRDP ("uc5:dl_in_mem - addr: %08lx, count: %d\n", addr, count);
 

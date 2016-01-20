@@ -115,12 +115,12 @@ int64 perf_next;
 wxDateTime fps_last;
 wxDateTime fps_next;
 float      fps = 0.0f;
-wxUint32   fps_count = 0;
+uint32_t   fps_count = 0;
 
-wxUint32   vi_count = 0;
+uint32_t   vi_count = 0;
 float      vi = 0.0f;
 
-wxUint32   region = 0;
+uint32_t   region = 0;
 
 float      ntsc_percent = 0.0f;
 float      pal_percent = 0.0f;
@@ -128,7 +128,7 @@ float      pal_percent = 0.0f;
 #endif
 
 // Resolutions, MUST be in the correct order (SST1VID.H)
-wxUint32 resolutions[0x18][2] = {
+uint32_t resolutions[0x18][2] = {
   { 320, 200 },
   { 320, 240 },
   { 400, 256 },
@@ -175,10 +175,10 @@ VOODOO voodoo = {0, 0, 0, 0,
 
 GrTexInfo fontTex;
 GrTexInfo cursorTex;
-wxUint32   offset_font = 0;
-wxUint32   offset_cursor = 0;
-wxUint32   offset_textures = 0;
-wxUint32   offset_texbuf1 = 0;
+uint32_t   offset_font = 0;
+uint32_t   offset_cursor = 0;
+uint32_t   offset_textures = 0;
+uint32_t   offset_texbuf1 = 0;
 
 int    capture_screen = 0;
 wxString capture_path;
@@ -211,25 +211,25 @@ void _ChangeSize ()
 //  float res_scl_x = (float)settings.res_x / 320.0f;
   float res_scl_y = (float)settings.res_y / 240.0f;
 
-  wxUint32 scale_x = *gfx.VI_X_SCALE_REG & 0xFFF;
+  uint32_t scale_x = *gfx.VI_X_SCALE_REG & 0xFFF;
   if (!scale_x) return;
-  wxUint32 scale_y = *gfx.VI_Y_SCALE_REG & 0xFFF;
+  uint32_t scale_y = *gfx.VI_Y_SCALE_REG & 0xFFF;
   if (!scale_y) return;
 
   float fscale_x = (float)scale_x / 1024.0f;
   float fscale_y = (float)scale_y / 2048.0f;
 
-  wxUint32 dwHStartReg = *gfx.VI_H_START_REG;
-  wxUint32 dwVStartReg = *gfx.VI_V_START_REG;
+  uint32_t dwHStartReg = *gfx.VI_H_START_REG;
+  uint32_t dwVStartReg = *gfx.VI_V_START_REG;
 
-  wxUint32 hstart = dwHStartReg >> 16;
-  wxUint32 hend = dwHStartReg & 0xFFFF;
+  uint32_t hstart = dwHStartReg >> 16;
+  uint32_t hend = dwHStartReg & 0xFFFF;
 
   // dunno... but sometimes this happens
   if (hend == hstart) hend = (int)(*gfx.VI_WIDTH_REG / fscale_x);
 
-  wxUint32 vstart = dwVStartReg >> 16;
-  wxUint32 vend = dwVStartReg & 0xFFFF;
+  uint32_t vstart = dwVStartReg >> 16;
+  uint32_t vend = dwVStartReg & 0xFFFF;
 
   rdp.vi_width = (hend - hstart) * fscale_x;
   rdp.vi_height = (vend - vstart) * fscale_y * 1.0126582f;
@@ -257,13 +257,13 @@ void _ChangeSize ()
   //rdp.offset_x = 0;
   //  rdp.offset_y = 0;
   rdp.offset_y = ((float)settings.res_y - rdp.vi_height * rdp.scale_y) * 0.5f;
-  if (((wxUint32)rdp.vi_width <= (*gfx.VI_WIDTH_REG)/2) && (rdp.vi_width > rdp.vi_height))
+  if (((uint32_t)rdp.vi_width <= (*gfx.VI_WIDTH_REG)/2) && (rdp.vi_width > rdp.vi_height))
     rdp.scale_y *= 0.5f;
 
   rdp.scissor_o.ul_x = 0;
   rdp.scissor_o.ul_y = 0;
-  rdp.scissor_o.lr_x = (wxUint32)rdp.vi_width;
-  rdp.scissor_o.lr_y = (wxUint32)rdp.vi_height;
+  rdp.scissor_o.lr_x = (uint32_t)rdp.vi_width;
+  rdp.scissor_o.lr_y = (uint32_t)rdp.vi_height;
 
   rdp.update |= UPDATE_VIEWPORT | UPDATE_SCISSOR;
 }
@@ -280,19 +280,19 @@ void ChangeSize ()
   case 0: //4:3
     if (settings.scr_res_x >= settings.scr_res_y * 4.0f / 3.0f) {
       settings.res_y = settings.scr_res_y;
-      settings.res_x = (wxUint32)(settings.res_y * 4.0f / 3.0f);
+      settings.res_x = (uint32_t)(settings.res_y * 4.0f / 3.0f);
     } else {
       settings.res_x = settings.scr_res_x;
-      settings.res_y = (wxUint32)(settings.res_x / 4.0f * 3.0f);
+      settings.res_y = (uint32_t)(settings.res_x / 4.0f * 3.0f);
     }
     break;
   case 1: //16:9
     if (settings.scr_res_x >= settings.scr_res_y * 16.0f / 9.0f) {
       settings.res_y = settings.scr_res_y;
-      settings.res_x = (wxUint32)(settings.res_y * 16.0f / 9.0f);
+      settings.res_x = (uint32_t)(settings.res_y * 16.0f / 9.0f);
     } else {
       settings.res_x = settings.scr_res_x;
-      settings.res_y = (wxUint32)(settings.res_x / 16.0f * 9.0f);
+      settings.res_y = (uint32_t)(settings.res_x / 16.0f * 9.0f);
     }
     break;
   default: //stretch or original
@@ -302,8 +302,8 @@ void ChangeSize ()
   _ChangeSize ();
   rdp.offset_x = (settings.scr_res_x - settings.res_x) / 2.0f;
   float offset_y = (settings.scr_res_y - settings.res_y) / 2.0f;
-  settings.res_x += (wxUint32)rdp.offset_x;
-  settings.res_y += (wxUint32)offset_y;
+  settings.res_x += (uint32_t)rdp.offset_x;
+  settings.res_y += (uint32_t)offset_y;
   rdp.offset_y += offset_y;
   if (settings.aspectmode == 3) // original
   {
@@ -328,7 +328,7 @@ void UseUnregisteredSetting (int /*SettingID*/)
 void ReadSettings ()
 {
 	settings.card_id = GetSetting(Set_CardId);
-	settings.res_data = (wxUint32)GetSetting(Set_Resolution);
+	settings.res_data = (uint32_t)GetSetting(Set_Resolution);
 	if (settings.res_data >= 24) settings.res_data = 12;
 	settings.scr_res_x = settings.res_x = resolutions[settings.res_data][0];
 	settings.scr_res_y = settings.res_y = resolutions[settings.res_data][1];
@@ -484,7 +484,7 @@ void ReadSpecialSettings (const char * name)
   settings.pal230 = GetSetting(Set_pal230) == 1 ? 1 : 0;
   settings.stipple_mode = GetSetting(Set_stipple_mode);
   int stipple_pattern = GetSetting(Set_stipple_pattern);
-  settings.stipple_pattern = stipple_pattern > 0 ? (wxUint32)stipple_pattern : 0x3E0F83E0;
+  settings.stipple_pattern = stipple_pattern > 0 ? (uint32_t)stipple_pattern : 0x3E0F83E0;
   settings.force_microcheck = GetSetting(Set_force_microcheck);
   settings.force_quad3d = GetSetting(Set_force_quad3d);
   settings.clip_zmin = GetSetting(Set_clip_zmin);
@@ -528,7 +528,7 @@ void ReadSpecialSettings (const char * name)
     int resolution = GetSetting(Set_Resolution);
     if (resolution >= 0)
     {
-      settings.res_data = (wxUint32)resolution;
+      settings.res_data = (uint32_t)resolution;
       if (settings.res_data >= 0x18) settings.res_data = 12;
       settings.scr_res_x = settings.res_x = resolutions[settings.res_data][0];
       settings.scr_res_y = settings.res_y = resolutions[settings.res_data][1];
@@ -713,8 +713,8 @@ void guLoadTextures ()
     }
 
 #include "font.h"
-  wxUint32 *data = (wxUint32*)font;
-  wxUint32 cur;
+  uint32_t *data = (uint32_t*)font;
+  uint32_t cur;
 
   // ** Font texture **
   wxUint8 *tex8 = (wxUint8*)malloc(256*64);
@@ -725,7 +725,7 @@ void guLoadTextures ()
   fontTex.data = tex8;
 
   // Decompression: [1-bit inverse alpha --> 8-bit alpha]
-  wxUint32 i,b;
+  uint32_t i,b;
   for (i=0; i<0x200; i++)
   {
     // cur = ~*(data++), byteswapped
@@ -755,7 +755,7 @@ void guLoadTextures ()
 
   // ** Cursor texture **
 #include "cursor.h"
-  data = (wxUint32*)cursor;
+  data = (uint32_t*)cursor;
 
   wxUint16 *tex16 = (wxUint16*)malloc(32*32*2);
 
@@ -874,10 +874,10 @@ int InitGfx ()
   }
   //*/
 
-  wxUint32 res_data = settings.res_data;
+  uint32_t res_data = settings.res_data;
   if (ev_fullscreen)
   {
-        wxUint32 _width, _height = 0;
+        uint32_t _width, _height = 0;
         settings.res_data = grWrapperFullScreenResolutionExt((FxU32*)&_width, (FxU32*)&_height);
         settings.scr_res_x = settings.res_x = _width;
         settings.scr_res_y = settings.res_y = _height;
@@ -1229,9 +1229,9 @@ void CALL ReadScreen(void **dest, int *width, int *height)
 
   if (!fullscreen)
   {
-    for (wxUint32 y=0; y<settings.res_y; y++)
+    for (uint32_t y=0; y<settings.res_y; y++)
     {
-      for (wxUint32 x=0; x<settings.res_x; x++)
+      for (uint32_t x=0; x<settings.res_x; x++)
       {
         line[x*3] = 0x20;
         line[x*3+1] = 0x7f;
@@ -1251,17 +1251,17 @@ void CALL ReadScreen(void **dest, int *width, int *height)
     FXFALSE,
     &info))
   {
-    wxUint32 offset_src=info.strideInBytes*(settings.scr_res_y-1);
+    uint32_t offset_src=info.strideInBytes*(settings.scr_res_y-1);
 
     // Copy the screen
     wxUint8 r, g, b;
     if (info.writeMode == GR_LFBWRITEMODE_8888)
     {
-      wxUint32 col;
-      for (wxUint32 y=0; y<settings.res_y; y++)
+      uint32_t col;
+      for (uint32_t y=0; y<settings.res_y; y++)
       {
-        wxUint32 *ptr = (wxUint32*)((wxUint8*)info.lfbPtr + offset_src);
-        for (wxUint32 x=0; x<settings.res_x; x++)
+        uint32_t *ptr = (uint32_t*)((wxUint8*)info.lfbPtr + offset_src);
+        for (uint32_t x=0; x<settings.res_x; x++)
         {
           col = *(ptr++);
           r = (wxUint8)((col >> 16) & 0xFF);
@@ -1278,10 +1278,10 @@ void CALL ReadScreen(void **dest, int *width, int *height)
     else
     {
       wxUint16 col;
-      for (wxUint32 y=0; y<settings.res_y; y++)
+      for (uint32_t y=0; y<settings.res_y; y++)
       {
         wxUint16 *ptr = (wxUint16*)((wxUint8*)info.lfbPtr + offset_src);
-        for (wxUint32 x=0; x<settings.res_x; x++)
+        for (uint32_t x=0; x<settings.res_x; x++)
         {
           col = *(ptr++);
           r = (wxUint8)((float)(col >> 11) / 31.0f * 255.0f);
@@ -1688,7 +1688,7 @@ void CALL RomClosed (void)
 
 static void CheckDRAMSize()
 {
-  wxUint32 test;
+  uint32_t test;
   GLIDE64_TRY
   {
     test = gfx.RDRAM[0x007FFFFF] + 1;
@@ -1819,10 +1819,10 @@ void CALL ShowCFB (void)
 void drawViRegBG()
 {
   LRDP("drawViRegBG\n");
-  const wxUint32 VIwidth = *gfx.VI_WIDTH_REG;
+  const uint32_t VIwidth = *gfx.VI_WIDTH_REG;
   FB_TO_SCREEN_INFO fb_info;
   fb_info.width  = VIwidth;
-  fb_info.height = (wxUint32)rdp.vi_height;
+  fb_info.height = (uint32_t)rdp.vi_height;
   if (fb_info.height == 0)
   {
     LRDP("Image height = 0 - skipping\n");
@@ -1831,7 +1831,7 @@ void drawViRegBG()
   fb_info.ul_x = 0;
 
   fb_info.lr_x = VIwidth - 1;
-  //  fb_info.lr_x = (wxUint32)rdp.vi_width - 1;
+  //  fb_info.lr_x = (uint32_t)rdp.vi_width - 1;
   fb_info.ul_y = 0;
   fb_info.lr_y = fb_info.height - 1;
   fb_info.opaque = 1;
@@ -1876,7 +1876,7 @@ set
 input:    none
 output:   none
 *******************************************************************/
-wxUint32 update_screen_count = 0;
+uint32_t update_screen_count = 0;
 void CALL UpdateScreen (void)
 {
 #ifdef LOG_KEY
@@ -1890,7 +1890,7 @@ void CALL UpdateScreen (void)
   LOG (out_buf);
   LRDP(out_buf);
 
-  wxUint32 width = (*gfx.VI_WIDTH_REG) << 1;
+  uint32_t width = (*gfx.VI_WIDTH_REG) << 1;
   if (fullscreen && (*gfx.VI_ORIGIN_REG  > width))
     update_screen_count++;
 
@@ -1914,7 +1914,7 @@ void CALL UpdateScreen (void)
   }
 #endif
   //*
-  wxUint32 limit = (settings.hacks&hack_Lego) ? 15 : 30;
+  uint32_t limit = (settings.hacks&hack_Lego) ? 15 : 30;
   if ((settings.frame_buffer&fb_cpu_write_hack) && (update_screen_count > limit) && (rdp.last_bg == 0))
   {
     LRDP("DirectCPUWrite hack!\n");
@@ -1946,7 +1946,7 @@ void CALL UpdateScreen (void)
 
 static void DrawWholeFrameBufferToScreen()
 {
-  static wxUint32 toScreenCI = 0;
+  static uint32_t toScreenCI = 0;
   if (rdp.ci_width < 200)
     return;
   if (rdp.cimg == toScreenCI)
@@ -1983,7 +1983,7 @@ static void GetGammaTable()
   }
 }
 
-wxUint32 curframe = 0;
+uint32_t curframe = 0;
 void newSwapBuffers()
 {
   if (!rdp.updatescreen)
@@ -2129,10 +2129,10 @@ void newSwapBuffers()
         break;
     }
 
-    const wxUint32 offset_x = (wxUint32)rdp.offset_x;
-    const wxUint32 offset_y = (wxUint32)rdp.offset_y;
-    const wxUint32 image_width = settings.scr_res_x - offset_x*2;
-    const wxUint32 image_height = settings.scr_res_y - offset_y*2;
+    const uint32_t offset_x = (uint32_t)rdp.offset_x;
+    const uint32_t offset_y = (uint32_t)rdp.offset_y;
+    const uint32_t image_width = settings.scr_res_x - offset_x*2;
+    const uint32_t image_height = settings.scr_res_y - offset_y*2;
 
     GrLfbInfo_t info;
     info.size = sizeof(GrLfbInfo_t);
@@ -2145,17 +2145,17 @@ void newSwapBuffers()
     {
       wxUint8 *ssimg = (wxUint8*)malloc(image_width * image_height * 3); // will be free in wxImage destructor
       int sspos = 0;
-      wxUint32 offset_src = info.strideInBytes * offset_y;
+      uint32_t offset_src = info.strideInBytes * offset_y;
 
       // Copy the screen
       if (info.writeMode == GR_LFBWRITEMODE_8888)
       {
-        wxUint32 col;
-        for (wxUint32 y = 0; y < image_height; y++)
+        uint32_t col;
+        for (uint32_t y = 0; y < image_height; y++)
         {
-          wxUint32 *ptr = (wxUint32*)((wxUint8*)info.lfbPtr + offset_src);
+          uint32_t *ptr = (uint32_t*)((wxUint8*)info.lfbPtr + offset_src);
           ptr += offset_x;
-          for (wxUint32 x = 0; x < image_width; x++)
+          for (uint32_t x = 0; x < image_width; x++)
           {
             col = *(ptr++);
             ssimg[sspos++] = (wxUint8)((col >> 16) & 0xFF);
@@ -2168,11 +2168,11 @@ void newSwapBuffers()
       else
       {
         wxUint16 col;
-        for (wxUint32 y = 0; y < image_height; y++)
+        for (uint32_t y = 0; y < image_height; y++)
         {
           wxUint16 *ptr = (wxUint16*)((wxUint8*)info.lfbPtr + offset_src);
           ptr += offset_x;
-          for (wxUint32 x = 0; x < image_width; x++)
+          for (uint32_t x = 0; x < image_width; x++)
           {
             col = *(ptr++);
             ssimg[sspos++] = (wxUint8)((float)(col >> 11) / 31.0f * 255.0f);
@@ -2206,17 +2206,17 @@ void newSwapBuffers()
       FXFALSE,
       &info));
 
-    wxUint32 offset_src=0, offset_dst=0;
+    uint32_t offset_src=0, offset_dst=0;
 
     // Copy the screen
-    for (wxUint32 y=0; y<settings.res_y; y++)
+    for (uint32_t y=0; y<settings.res_y; y++)
     {
       if (info.writeMode == GR_LFBWRITEMODE_8888)
       {
-        wxUint32 *src = (wxUint32*)((wxUint8*)info.lfbPtr + offset_src);
+        uint32_t *src = (uint32_t*)((wxUint8*)info.lfbPtr + offset_src);
         wxUint16 *dst = (wxUint16*)(_debugger.screen + offset_dst);
         wxUint8 r, g, b;
-        wxUint32 col;
+        uint32_t col;
         for (unsigned int x = 0; x < settings.res_x; x++)
         {
           col = src[x];
@@ -2317,8 +2317,8 @@ void newSwapBuffers()
         debugging = 1;
 
         // Recalculate screen size, don't resize screen
-        settings.res_x = (wxUint32)(settings.scr_res_x * 0.625f);
-        settings.res_y = (wxUint32)(settings.scr_res_y * 0.625f);
+        settings.res_x = (uint32_t)(settings.scr_res_x * 0.625f);
+        settings.res_y = (uint32_t)(settings.scr_res_y * 0.625f);
 
         ChangeSize ();
       }

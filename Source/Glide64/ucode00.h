@@ -51,7 +51,7 @@
 
 static void rsp_vertex(int v0, int n)
 {
-  wxUint32 addr = segoffset(rdp.cmd1) & 0x00FFFFFF;
+  uint32_t addr = segoffset(rdp.cmd1) & 0x00FFFFFF;
   int i;
   float x, y, z;
 
@@ -73,7 +73,7 @@ static void rsp_vertex(int v0, int n)
     rdp.update ^= UPDATE_LIGHTS;
 
     // Calculate light vectors
-    for (wxUint32 l=0; l<rdp.num_lights; l++)
+    for (uint32_t l=0; l<rdp.num_lights; l++)
     {
       InverseTransformVector(&rdp.light[l].dir_x, rdp.light_vector[l], rdp.model);
       NormalizeVector (rdp.light_vector[l]);
@@ -270,7 +270,7 @@ void projection_mul (float m[4][4])
   rdp.update |= UPDATE_MULT_MAT;
 }
 
-void load_matrix (float m[4][4], wxUint32 addr)
+void load_matrix (float m[4][4], uint32_t addr)
 {
   FRDP ("matrix - addr: %08lx\n", addr);
   int x,y;  // matrix index
@@ -294,7 +294,7 @@ static void uc0_matrix()
   LRDP("uc0:matrix ");
 
   // Use segment offset to get the address
-  wxUint32 addr = segoffset(rdp.cmd1) & 0x00FFFFFF;
+  uint32_t addr = segoffset(rdp.cmd1) & 0x00FFFFFF;
   wxUint8 command = (wxUint8)((rdp.cmd0 >> 16) & 0xFF);
 
   DECLAREALIGN16VAR(m[4][4]);
@@ -363,7 +363,7 @@ static void uc0_movemem()
 {
   LRDP("uc0:movemem ");
 
-  wxUint32 i,a;
+  uint32_t i,a;
 
   // Check the command
   switch ((rdp.cmd0 >> 16) & 0xFF)
@@ -462,7 +462,7 @@ static void uc0_movemem()
       // do not update the combined matrix!
       rdp.update &= ~UPDATE_MULT_MAT;
 
-      wxUint32 addr = segoffset(rdp.cmd1) & 0x00FFFFFF;
+      uint32_t addr = segoffset(rdp.cmd1) & 0x00FFFFFF;
       load_matrix(rdp.combined, addr);
 
       addr = rdp.pc[rdp.pc_i] & BMASK;
@@ -504,12 +504,12 @@ static void uc0_movemem()
 //
 static void uc0_displaylist()
 {
-  wxUint32 addr = segoffset(rdp.cmd1) & 0x00FFFFFF;
+  uint32_t addr = segoffset(rdp.cmd1) & 0x00FFFFFF;
 
   // This fixes partially Gauntlet: Legends
   if (addr == rdp.pc[rdp.pc_i] - 8) { LRDP("display list not executed!\n"); return; }
 
-  wxUint32 push = (rdp.cmd0 >> 16) & 0xFF; // push the old location?
+  uint32_t push = (rdp.cmd0 >> 16) & 0xFF; // push the old location?
 
   FRDP("uc0:displaylist: %08lx, push:%s", addr, push?"no":"yes");
   FRDP(" (seg %d, offset %08lx)\n", (rdp.cmd1>>24)&0x0F, rdp.cmd1&0x00FFFFFF);
@@ -588,7 +588,7 @@ static void uc0_culldl()
 {
   wxUint8 vStart = (wxUint8)((rdp.cmd0 & 0x00FFFFFF) / 40) & 0xF;
   wxUint8 vEnd = (wxUint8)(rdp.cmd1 / 40) & 0x0F;
-  wxUint32 cond = 0;
+  uint32_t cond = 0;
   VERTEX *v;
 
   FRDP("uc0:culldl start: %d, end: %d\n", vStart, vEnd);
@@ -621,7 +621,7 @@ static void uc0_popmatrix()
 {
   LRDP("uc0:popmatrix\n");
 
-  wxUint32 param = rdp.cmd1;
+  uint32_t param = rdp.cmd1;
 
   switch (param)
   {
@@ -640,7 +640,7 @@ static void uc0_popmatrix()
 
 static void uc6_obj_sprite ();
 
-static void uc0_modifyvtx(wxUint8 where, wxUint16 vtx, wxUint32 val)
+static void uc0_modifyvtx(wxUint8 where, wxUint16 vtx, uint32_t val)
 {
   VERTEX *v = &rdp.vtx[vtx];
 
@@ -796,7 +796,7 @@ static void uc0_texture()
   int tile = (rdp.cmd0 >> 8) & 0x07;
   if (tile == 7 && (settings.hacks&hack_Supercross)) tile = 0; //fix for supercross 2000
   rdp.mipmap_level = (rdp.cmd0 >> 11) & 0x07;
-  wxUint32 on = (rdp.cmd0 & 0xFF);
+  uint32_t on = (rdp.cmd0 & 0xFF);
   rdp.cur_tile = tile;
 
   if (on)
@@ -842,7 +842,7 @@ static void uc0_setothermode_h()
     len = rdp.cmd0 & 0xFF;
   }
 
-  wxUint32 mask = 0;
+  uint32_t mask = 0;
   int i = len;
   for (; i; i--)
     mask = (mask << 1) | 1;
@@ -860,7 +860,7 @@ static void uc0_setothermode_h()
 
   if (mask & 0x000000C0)  // rgb dither mode
   {
-    wxUint32 dither_mode = (rdp.othermode_h >> 6) & 0x3;
+    uint32_t dither_mode = (rdp.othermode_h >> 6) & 0x3;
     FRDP ("rgb dither mode: %s\n", str_dither[dither_mode]);
   }
 
@@ -897,7 +897,7 @@ static void uc0_setothermode_h()
     FRDP ("Persp_en: %d\n", rdp.Persp_en);
   }
 
-  wxUint32 unk = mask & 0x0FFC60F0F;
+  uint32_t unk = mask & 0x0FFC60F0F;
   if (unk)  // unknown portions, LARGE
   {
     FRDP ("UNKNOWN PORTIONS: shift: %d, len: %d, unknowns: %08lx\n", shift, len, unk);
@@ -921,7 +921,7 @@ static void uc0_setothermode_l()
     shift = (rdp.cmd0 >> 8) & 0xFF;
   }
 
-  wxUint32 mask = 0;
+  uint32_t mask = 0;
   int i = len;
   for (; i; i--)
     mask = (mask << 1) | 1;
@@ -1044,8 +1044,8 @@ static void uc0_cleargeometrymode()
 
 static void uc0_line3d()
 {
-  wxUint32 v0 = ((rdp.cmd1 >> 16) & 0xff) / 10;
-  wxUint32 v1 = ((rdp.cmd1 >>  8) & 0xff) / 10;
+  uint32_t v0 = ((rdp.cmd1 >> 16) & 0xff) / 10;
+  uint32_t v1 = ((rdp.cmd1 >>  8) & 0xff) / 10;
   wxUint16 width = (wxUint16)(rdp.cmd1 & 0xFF) + 3;
 
   VERTEX *v[3] = {
@@ -1053,7 +1053,7 @@ static void uc0_line3d()
     &rdp.vtx[v0],
     &rdp.vtx[v0]
   };
-  wxUint32 cull_mode = (rdp.flags & CULLMASK) >> CULLSHIFT;
+  uint32_t cull_mode = (rdp.flags & CULLMASK) >> CULLSHIFT;
   rdp.flags |= CULLMASK;
   rdp.update |= UPDATE_CULL_MODE;
   rsp_tri1(v, width);

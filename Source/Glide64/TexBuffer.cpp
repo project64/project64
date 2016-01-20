@@ -65,7 +65,7 @@ static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
   wxUint16 max_size = max((wxUint16)texbuf.scr_width, (wxUint16)texbuf.scr_height);
   if (max_size > voodoo.max_tex_size) //texture size is too large
     return 0;
-  wxUint32 tex_size;
+  uint32_t tex_size;
   //calculate LOD
   switch ((max_size-1) >> 6)
   {
@@ -154,13 +154,13 @@ static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
 
   FRDP("\nAllocateTextureBuffer. width: %d, height: %d, scr_width: %f, scr_height: %f, vi_width: %f, vi_height:%f, scale_x: %f, scale_y: %f, lr_u: %f, lr_v: %f, u_scale: %f, v_scale: %f\n", texbuf.width, texbuf.height, texbuf.scr_width, texbuf.scr_height, rdp.vi_width, rdp.vi_height, rdp.scale_x, rdp.scale_y, texbuf.lr_u, texbuf.lr_v, texbuf.u_scale, texbuf.v_scale);
 
-  wxUint32 required = grTexCalcMemRequired(texbuf.info.smallLodLog2, texbuf.info.largeLodLog2,
+  uint32_t required = grTexCalcMemRequired(texbuf.info.smallLodLog2, texbuf.info.largeLodLog2,
     texbuf.info.aspectRatioLog2, texbuf.info.format);
   //find free space
   for (int i = 0; i < voodoo.num_tmu; i++)
   {
-    wxUint32 available = 0;
-    wxUint32 top = 0;
+    uint32_t available = 0;
+    uint32_t top = 0;
     if (rdp.texbufs[i].count)
     {
       TBUFF_COLOR_IMAGE & t = rdp.texbufs[i].images[rdp.texbufs[i].count - 1];
@@ -214,10 +214,10 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
 
   int found = FALSE, search = TRUE;
   TBUFF_COLOR_IMAGE *texbuf = 0;
-  wxUint32 addr = cimage.addr;
+  uint32_t addr = cimage.addr;
   if ((settings.hacks&hack_Banjo2) && cimage.status == ci_copy_self)
     addr = rdp.frame_buffers[rdp.copy_ci_index].addr;
-  wxUint32 end_addr = addr + ((cimage.width*cimage.height)<<cimage.size>>1);
+  uint32_t end_addr = addr + ((cimage.width*cimage.height)<<cimage.size>>1);
   if (rdp.motionblur)
   {
 //    if (cimage.format != 0)
@@ -668,17 +668,17 @@ int SwapTextureBuffer()
   return TRUE;
 }
 
-static wxUint32 CalcCRC(TBUFF_COLOR_IMAGE * pTCI)
+static uint32_t CalcCRC(TBUFF_COLOR_IMAGE * pTCI)
 {
-  wxUint32 result = 0;
+  uint32_t result = 0;
   if ((settings.frame_buffer&fb_ref) > 0)
     pTCI->crc = 0; //Since fb content changes each frame, crc check is meaningless.
   else if (settings.fb_crc_mode == SETTINGS::fbcrcFast)
-    result = *((wxUint32*)(gfx.RDRAM + pTCI->addr + (pTCI->end_addr-pTCI->addr)/2));
+    result = *((uint32_t*)(gfx.RDRAM + pTCI->addr + (pTCI->end_addr-pTCI->addr)/2));
   else if (settings.fb_crc_mode == SETTINGS::fbcrcSafe)
   {
     wxUint8 * pSrc = gfx.RDRAM + pTCI->addr;
-    const wxUint32 nSize = pTCI->end_addr-pTCI->addr;
+    const uint32_t nSize = pTCI->end_addr-pTCI->addr;
     result = CRC32(0xFFFFFFFF, pSrc, 32);
     result = CRC32(result, pSrc + (nSize>>1), 32);
     result = CRC32(result, pSrc + nSize - 32, 32);
@@ -686,13 +686,13 @@ static wxUint32 CalcCRC(TBUFF_COLOR_IMAGE * pTCI)
   return result;
 }
 
-int FindTextureBuffer(wxUint32 addr, wxUint16 width)
+int FindTextureBuffer(uint32_t addr, wxUint16 width)
 {
   if (rdp.skip_drawing)
     return FALSE;
   FRDP("FindTextureBuffer. addr: %08lx, width: %d, scale_x: %f\n", addr, width, rdp.scale_x);
   int found = FALSE;
-  wxUint32 shift = 0;
+  uint32_t shift = 0;
   for (int i = 0; i < voodoo.num_tmu && !found; i++)
   {
     wxUint8 index = rdp.cur_tex_buf^i;

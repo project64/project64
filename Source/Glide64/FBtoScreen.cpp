@@ -47,7 +47,7 @@
 #include "FBtoScreen.h"
 #include "TexCache.h"
 
-static int SetupFBtoScreenCombiner(wxUint32 texture_size, wxUint32 opaque)
+static int SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaque)
 {
   int tmu;
   if (voodoo.tmem_ptr[GR_TMU0]+texture_size < voodoo.tex_max_addr[0])
@@ -150,19 +150,19 @@ static void DrawRE2Video(FB_TO_SCREEN_INFO & fb_info, float scale)
 static void DrawRE2Video256(FB_TO_SCREEN_INFO & fb_info)
 {
   FRDP("DrawRE2Video256. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx\n", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
-  wxUint32 * src = (wxUint32*)(gfx.RDRAM+fb_info.addr);
+  uint32_t * src = (uint32_t*)(gfx.RDRAM+fb_info.addr);
   GrTexInfo t_info;
   t_info.smallLodLog2 = GR_LOD_LOG2_256;
   t_info.largeLodLog2 = GR_LOD_LOG2_256;
   t_info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
   wxUint16 * tex = (wxUint16*)texture_buffer;
   wxUint16 * dst = tex;
-  wxUint32 col;
+  uint32_t col;
   wxUint8 r, g, b;
   fb_info.height = min(256, fb_info.height);
-  for (wxUint32 h = 0; h < fb_info.height; h++)
+  for (uint32_t h = 0; h < fb_info.height; h++)
   {
-    for (wxUint32 w = 0; w < 256; w++)
+    for (uint32_t w = 0; w < 256; w++)
     {
       col = *(src++);
       r = (wxUint8)((col >> 24)&0xFF);
@@ -197,40 +197,40 @@ static void DrawFrameBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
     return;
   }
   FRDP("DrawFrameBufferToScreen256. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx\n", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
-  wxUint32 width = fb_info.lr_x - fb_info.ul_x + 1;
-  wxUint32 height = fb_info.lr_y - fb_info.ul_y + 1;
+  uint32_t width = fb_info.lr_x - fb_info.ul_x + 1;
+  uint32_t height = fb_info.lr_y - fb_info.ul_y + 1;
   GrTexInfo t_info;
   wxUint8 * image = gfx.RDRAM+fb_info.addr;
-  wxUint32 width256 = ((width-1) >> 8) + 1;
-  wxUint32 height256 = ((height-1) >> 8) + 1;
+  uint32_t width256 = ((width-1) >> 8) + 1;
+  uint32_t height256 = ((height-1) >> 8) + 1;
   t_info.smallLodLog2 = t_info.largeLodLog2 = GR_LOD_LOG2_256;
   t_info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
   t_info.format = GR_TEXFMT_ARGB_1555;
   wxUint16 * tex = (wxUint16*)texture_buffer;
   t_info.data = tex;
-  wxUint32 tex_size = grTexTextureMemRequired (GR_MIPMAPLEVELMASK_BOTH, &t_info);
+  uint32_t tex_size = grTexTextureMemRequired (GR_MIPMAPLEVELMASK_BOTH, &t_info);
   int tmu = SetupFBtoScreenCombiner(tex_size*width256*height256, fb_info.opaque);
   wxUint16 * src = (wxUint16*)image;
   src += fb_info.ul_x + fb_info.ul_y * fb_info.width;
-  wxUint32 * src32 = (wxUint32*)image;
+  uint32_t * src32 = (uint32_t*)image;
   src32 += fb_info.ul_x + fb_info.ul_y * fb_info.width;
-  wxUint32 w_tail = width%256;
-  wxUint32 h_tail = height%256;
+  uint32_t w_tail = width%256;
+  uint32_t h_tail = height%256;
   wxUint16 c;
-  wxUint32 c32;
-  wxUint32 idx;
-  wxUint32 bound = BMASK+1-fb_info.addr;
+  uint32_t c32;
+  uint32_t idx;
+  uint32_t bound = BMASK+1-fb_info.addr;
   bound = fb_info.size == 2 ? bound >> 1 : bound >> 2;
   wxUint8 r, g, b, a;
-  wxUint32 cur_width, cur_height, cur_tail;
-  wxUint32 tex_adr = voodoo.tex_min_addr[tmu]+voodoo.tmem_ptr[tmu];
+  uint32_t cur_width, cur_height, cur_tail;
+  uint32_t tex_adr = voodoo.tex_min_addr[tmu]+voodoo.tmem_ptr[tmu];
   if ((voodoo.tmem_ptr[tmu] < TEXMEM_2MB_EDGE) && (voodoo.tmem_ptr[tmu]+tex_size*width256*height256 > TEXMEM_2MB_EDGE))
   {
     tex_adr = TEXMEM_2MB_EDGE;
   }
-  for (wxUint32 h = 0; h < height256; h++)
+  for (uint32_t h = 0; h < height256; h++)
   {
-    for (wxUint32 w = 0; w < width256; w++)
+    for (uint32_t w = 0; w < width256; w++)
     {
       cur_width = (256*(w+1) < width) ? 256 : w_tail;
       cur_height = (256*(h+1) < height) ? 256 : h_tail;
@@ -238,9 +238,9 @@ static void DrawFrameBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
       wxUint16 * dst = tex;
       if (fb_info.size == 2)
       {
-        for (wxUint32 y=0; y < cur_height; y++)
+        for (uint32_t y=0; y < cur_height; y++)
         {
-          for (wxUint32 x=0; x < cur_width; x++)
+          for (uint32_t x=0; x < cur_width; x++)
           {
             idx = (x+256*w+(y+256*h)*fb_info.width)^1;
             if (idx >= bound)
@@ -253,9 +253,9 @@ static void DrawFrameBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
       }
       else
       {
-        for (wxUint32 y=0; y < cur_height; y++)
+        for (uint32_t y=0; y < cur_height; y++)
         {
-          for (wxUint32 x=0; x < cur_width; x++)
+          for (uint32_t x=0; x < cur_width; x++)
           {
             idx = (x+256*w+(y+256*h)*fb_info.width);
             if (idx >= bound)
@@ -306,10 +306,10 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
 {
   if (fb_info.width < 200 || fb_info.size < 2)
     return false;
-  wxUint32 width = fb_info.lr_x - fb_info.ul_x + 1;
-  wxUint32 height = fb_info.lr_y - fb_info.ul_y + 1;
-  wxUint32 max_size = min(voodoo.max_tex_size, 512);
-  if (width > (wxUint32)max_size || height > (wxUint32)max_size)
+  uint32_t width = fb_info.lr_x - fb_info.ul_x + 1;
+  uint32_t height = fb_info.lr_y - fb_info.ul_y + 1;
+  uint32_t max_size = min(voodoo.max_tex_size, 512);
+  if (width > (uint32_t)max_size || height > (uint32_t)max_size)
   {
     DrawFrameBufferToScreen256(fb_info);
     return true;
@@ -317,7 +317,7 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
   FRDP("DrawFrameBufferToScreen. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx\n", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
   GrTexInfo t_info;
   wxUint8 * image = gfx.RDRAM+fb_info.addr;
-  wxUint32 texwidth;
+  uint32_t texwidth;
   float scale;
   if (width <= 256)
   {
@@ -348,12 +348,12 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
     wxUint16 * src = (wxUint16*)image;
     src += fb_info.ul_x + fb_info.ul_y * fb_info.width;
     wxUint16 c;
-    wxUint32 idx;
-    const wxUint32 bound = (BMASK+1-fb_info.addr) >> 1;
+    uint32_t idx;
+    const uint32_t bound = (BMASK+1-fb_info.addr) >> 1;
     bool empty = true;
-    for (wxUint32 y=0; y < height; y++)
+    for (uint32_t y=0; y < height; y++)
     {
-      for (wxUint32 x=0; x < width; x++)
+      for (uint32_t x=0; x < width; x++)
       {
         idx = (x+y*fb_info.width)^1;
         if (idx >= bound)
@@ -371,16 +371,16 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
   }
   else
   {
-    wxUint32 * tex = (wxUint32*)texture_buffer;
-    wxUint32 * dst = tex;
-    wxUint32 * src = (wxUint32*)image;
+    uint32_t * tex = (uint32_t*)texture_buffer;
+    uint32_t * dst = tex;
+    uint32_t * src = (uint32_t*)image;
     src += fb_info.ul_x + fb_info.ul_y * fb_info.width;
-    wxUint32 col;
-    wxUint32 idx;
-    const wxUint32 bound = (BMASK+1-fb_info.addr) >> 2;
-    for (wxUint32 y=0; y < height; y++)
+    uint32_t col;
+    uint32_t idx;
+    const uint32_t bound = (BMASK+1-fb_info.addr) >> 2;
+    for (uint32_t y=0; y < height; y++)
     {
-      for (wxUint32 x=0; x < width; x++)
+      for (uint32_t x=0; x < width; x++)
       {
         idx = x+y*fb_info.width;
         if (idx >= bound)
@@ -431,18 +431,18 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
 static void DrawDepthBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
 {
   FRDP("DrawDepthBufferToScreen256. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx\n", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
-  wxUint32 width = fb_info.lr_x - fb_info.ul_x + 1;
-  wxUint32 height = fb_info.lr_y - fb_info.ul_y + 1;
+  uint32_t width = fb_info.lr_x - fb_info.ul_x + 1;
+  uint32_t height = fb_info.lr_y - fb_info.ul_y + 1;
   GrTexInfo t_info;
   wxUint8 * image = gfx.RDRAM+fb_info.addr;
-  wxUint32 width256 = ((width-1) >> 8) + 1;
-  wxUint32 height256 = ((height-1) >> 8) + 1;
+  uint32_t width256 = ((width-1) >> 8) + 1;
+  uint32_t height256 = ((height-1) >> 8) + 1;
   t_info.smallLodLog2 = t_info.largeLodLog2 = GR_LOD_LOG2_256;
   t_info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
   t_info.format = GR_TEXFMT_ALPHA_INTENSITY_88;
   wxUint16 * tex = (wxUint16*)texture_buffer;
   t_info.data = tex;
-  wxUint32 tex_size = grTexTextureMemRequired (GR_MIPMAPLEVELMASK_BOTH, &t_info);
+  uint32_t tex_size = grTexTextureMemRequired (GR_MIPMAPLEVELMASK_BOTH, &t_info);
   int tmu = SetupFBtoScreenCombiner(tex_size*width256*height256, fb_info.opaque);
   grConstantColorValue (rdp.fog_color);
   grColorCombine (GR_COMBINE_FUNCTION_SCALE_OTHER,
@@ -452,25 +452,25 @@ static void DrawDepthBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
     FXFALSE);
   wxUint16 * src = (wxUint16*)image;
   src += fb_info.ul_x + fb_info.ul_y * fb_info.width;
-  wxUint32 w_tail = width%256;
-  wxUint32 h_tail = height%256;
-  wxUint32 cur_width, cur_height, cur_tail;
-  wxUint32 tex_adr = voodoo.tex_min_addr[tmu]+voodoo.tmem_ptr[tmu];
+  uint32_t w_tail = width%256;
+  uint32_t h_tail = height%256;
+  uint32_t cur_width, cur_height, cur_tail;
+  uint32_t tex_adr = voodoo.tex_min_addr[tmu]+voodoo.tmem_ptr[tmu];
   if ((voodoo.tmem_ptr[tmu] < TEXMEM_2MB_EDGE) && (voodoo.tmem_ptr[tmu]+tex_size*width256*height256 > TEXMEM_2MB_EDGE))
   {
     tex_adr = TEXMEM_2MB_EDGE;
   }
-  for (wxUint32 h = 0; h < height256; h++)
+  for (uint32_t h = 0; h < height256; h++)
   {
-    for (wxUint32 w = 0; w < width256; w++)
+    for (uint32_t w = 0; w < width256; w++)
     {
       cur_width = (256*(w+1) < width) ? 256 : w_tail;
       cur_height = (256*(h+1) < height) ? 256 : h_tail;
       cur_tail = 256 - cur_width;
       wxUint16 * dst = tex;
-      for (wxUint32 y=0; y < cur_height; y++)
+      for (uint32_t y=0; y < cur_height; y++)
       {
-        for (wxUint32 x=0; x < cur_width; x++)
+        for (uint32_t x=0; x < cur_width; x++)
         {
           *(dst++) = rdp.pal_8[src[(x+256*w+(y+256*h)*fb_info.width)^1]>>8];
         }
@@ -571,9 +571,9 @@ static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
 
 void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
 {
-  wxUint32 width = fb_info.lr_x - fb_info.ul_x + 1;
-  wxUint32 height = fb_info.lr_y - fb_info.ul_y + 1;
-  if (width > (wxUint32)voodoo.max_tex_size || height > (wxUint32)voodoo.max_tex_size || width > 512)
+  uint32_t width = fb_info.lr_x - fb_info.ul_x + 1;
+  uint32_t height = fb_info.lr_y - fb_info.ul_y + 1;
+  if (width > (uint32_t)voodoo.max_tex_size || height > (uint32_t)voodoo.max_tex_size || width > 512)
   {
     DrawDepthBufferToScreen256(fb_info);
     return;
@@ -586,7 +586,7 @@ void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
   FRDP("DrawDepthBufferToScreen. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx\n", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
   GrTexInfo t_info;
   wxUint8 * image = gfx.RDRAM+fb_info.addr;
-  wxUint32 texwidth;
+  uint32_t texwidth;
   float scale;
   if (width <= 256)
   {
@@ -614,9 +614,9 @@ void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
   wxUint16 * dst = tex;
   wxUint16 * src = (wxUint16*)image;
   src += fb_info.ul_x + fb_info.ul_y * fb_info.width;
-  for (wxUint32 y=0; y < height; y++)
+  for (uint32_t y=0; y < height; y++)
   {
-    for (wxUint32 x=0; x < width; x++)
+    for (uint32_t x=0; x < width; x++)
     {
       *(dst++) = rdp.pal_8[src[(x+y*fb_info.width)^1]>>8];
     }

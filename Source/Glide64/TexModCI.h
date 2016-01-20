@@ -37,7 +37,7 @@
 //
 //****************************************************************
 
-static void mod_tex_inter_color_using_factor_CI (wxUint32 color, wxUint32 factor)
+static void mod_tex_inter_color_using_factor_CI (uint32_t color, uint32_t factor)
 {
 	float percent = factor / 255.0f;
 	float percent_i = 1 - percent;
@@ -66,7 +66,7 @@ static void mod_tex_inter_color_using_factor_CI (wxUint32 color, wxUint32 factor
 	}
 }
 
-static void mod_tex_inter_col_using_col1_CI (wxUint32 color0, wxUint32 color1)
+static void mod_tex_inter_col_using_col1_CI (uint32_t color0, uint32_t color1)
 {
 	wxUint8 cr, cg, cb;
 	wxUint16 col;
@@ -100,7 +100,7 @@ static void mod_tex_inter_col_using_col1_CI (wxUint32 color0, wxUint32 color1)
 	}
 }
 
-static void mod_full_color_sub_tex_CI (wxUint32 color)
+static void mod_full_color_sub_tex_CI (uint32_t color)
 {
 	wxUint8 cr, cg, cb, ca;
 	wxUint16 col;
@@ -129,9 +129,9 @@ static void mod_full_color_sub_tex_CI (wxUint32 color)
 	}
 }
 
-static void mod_col_inter_col1_using_tex_CI (wxUint32 color0, wxUint32 color1)
+static void mod_col_inter_col1_using_tex_CI (uint32_t color0, uint32_t color1)
 {
-	wxUint32 cr0, cg0, cb0, cr1, cg1, cb1;
+	uint32_t cr0, cg0, cb0, cr1, cg1, cb1;
 	wxUint16 col;
 	wxUint8 a, r, g, b;
 	float percent_r, percent_g, percent_b;
@@ -162,7 +162,7 @@ static void mod_col_inter_col1_using_tex_CI (wxUint32 color0, wxUint32 color1)
 
 
 
-static void mod_tex_sub_col_mul_fac_add_tex_CI (wxUint32 color, wxUint32 factor)
+static void mod_tex_sub_col_mul_fac_add_tex_CI (uint32_t color, uint32_t factor)
 {
 	float percent = factor / 255.0f;
 	wxUint8 cr, cg, cb, a;
@@ -196,7 +196,7 @@ static void mod_tex_sub_col_mul_fac_add_tex_CI (wxUint32 color, wxUint32 factor)
 	}
 }
 
-static void mod_tex_scale_col_add_col_CI (wxUint32 color0, wxUint32 color1)
+static void mod_tex_scale_col_add_col_CI (uint32_t color0, uint32_t color1)
 {
 	wxUint8 cr, cg, cb;
 	wxUint16 col;
@@ -226,7 +226,7 @@ static void mod_tex_scale_col_add_col_CI (wxUint32 color0, wxUint32 color1)
 	}
 }
 
-static void mod_tex_add_col_CI (wxUint32 color)
+static void mod_tex_add_col_CI (uint32_t color)
 {
 	wxUint8 cr, cg, cb;
 	wxUint16 col;
@@ -253,7 +253,7 @@ static void mod_tex_add_col_CI (wxUint32 color)
 	}
 }
 
-static void mod_tex_sub_col_CI (wxUint32 color)
+static void mod_tex_sub_col_CI (uint32_t color)
 {
 	wxUint8 cr, cg, cb;
 	wxUint16 col;
@@ -280,7 +280,7 @@ static void mod_tex_sub_col_CI (wxUint32 color)
 	}
 }
 
-static void mod_tex_sub_col_mul_fac_CI (wxUint32 color, wxUint32 factor)
+static void mod_tex_sub_col_mul_fac_CI (uint32_t color, uint32_t factor)
 {
 	float percent = factor / 255.0f;
 	wxUint8 cr, cg, cb;
@@ -316,7 +316,7 @@ static void mod_tex_sub_col_mul_fac_CI (wxUint32 color, wxUint32 factor)
 	}
 }
 
-static void mod_col_inter_tex_using_col1_CI (wxUint32 color0, wxUint32 color1)
+static void mod_col_inter_tex_using_col1_CI (uint32_t color0, uint32_t color1)
 {
 	wxUint8 cr, cg, cb;
 	wxUint16 col;
@@ -350,7 +350,7 @@ static void mod_col_inter_tex_using_col1_CI (wxUint32 color0, wxUint32 color1)
 	}
 }
 
-static void mod_tex_inter_col_using_texa_CI (wxUint32 color)
+static void mod_tex_inter_col_using_texa_CI (uint32_t color)
 {
 	wxUint8 a, r, g, b;
 
@@ -367,7 +367,7 @@ static void mod_tex_inter_col_using_texa_CI (wxUint32 color)
 	}
 }
 
-static void mod_tex_mul_col_CI (wxUint32 color)
+static void mod_tex_mul_col_CI (uint32_t color)
 {
 	wxUint8 a, r, g, b;
 	wxUint16 col;
@@ -391,7 +391,7 @@ static void mod_tex_mul_col_CI (wxUint32 color)
 	}
 }
 
-static void ModifyPalette(wxUint32 mod, wxUint32 modcolor, wxUint32 modcolor1, wxUint32 modfactor)
+static void ModifyPalette(uint32_t mod, uint32_t modcolor, uint32_t modcolor1, uint32_t modfactor)
 {
 		switch (mod)
 		{

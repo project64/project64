@@ -51,7 +51,7 @@ void calc_light (VERTEX *v)
 {
   float light_intensity = 0.0f;
   register float color[3] = {rdp.light[rdp.num_lights].r, rdp.light[rdp.num_lights].g, rdp.light[rdp.num_lights].b};
-  for (wxUint32 l=0; l<rdp.num_lights; l++)
+  for (uint32_t l=0; l<rdp.num_lights; l++)
   {
     light_intensity = DotProduct (rdp.light_vector[l], v->vec);
     

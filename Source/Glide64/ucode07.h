@@ -43,7 +43,7 @@
 // Bugs fixed with help from glN64 sources. Thanks, Orkin!
 //****************************************************************
 
-wxUint32 pd_col_addr = 0;
+uint32_t pd_col_addr = 0;
 
 static void uc7_colorbase ()
 {
@@ -79,15 +79,15 @@ static void uc7_vertex ()
     rdp.update ^= UPDATE_LIGHTS;
     
     // Calculate light vectors
-    for (wxUint32 l=0; l<rdp.num_lights; l++)
+    for (uint32_t l=0; l<rdp.num_lights; l++)
     {
 	  InverseTransformVector(&rdp.light[l].dir_x, rdp.light_vector[l], rdp.model);
       NormalizeVector (rdp.light_vector[l]);
     }
   }
 
-  wxUint32 addr = segoffset(rdp.cmd1);
-  wxUint32 v0, i, n;
+  uint32_t addr = segoffset(rdp.cmd1);
+  uint32_t v0, i, n;
   float x, y, z;
 
   rdp.v0 = v0 = (rdp.cmd0 & 0x0F0000) >> 16;

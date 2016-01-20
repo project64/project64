@@ -65,7 +65,7 @@ void util_init ()
   }
 }
 
-static wxUint32 u_cull_mode = 0;
+static uint32_t u_cull_mode = 0;
 
 //software backface culling. Gonetz
 // mega modifications by Dave2001
@@ -164,15 +164,15 @@ int cull_tri(VERTEX **v) // type changed to VERTEX** [Dave2001]
 void apply_shade_mods (VERTEX *v)
 {
   float col[4];
-  wxUint32 mod;
+  uint32_t mod;
   memcpy (col, rdp.col, 16);
 
   if (rdp.cmb_flags)
   {
     if (v->shade_mod == 0)
-      v->color_backup = *(wxUint32*)(&(v->b));
+      v->color_backup = *(uint32_t*)(&(v->b));
     else
-      *(wxUint32*)(&(v->b)) = v->color_backup;
+      *(uint32_t*)(&(v->b)) = v->color_backup;
     mod = rdp.cmb_flags;
     if (mod & CMB_SET)
     {
@@ -1791,10 +1791,10 @@ void update_scissor ()
     rdp.update ^= UPDATE_SCISSOR;
 
     // KILL the floating point error with 0.01f
-    rdp.scissor.ul_x = (wxUint32)max(min((rdp.scissor_o.ul_x * rdp.scale_x + rdp.offset_x + 0.01f),settings.res_x),0);
-    rdp.scissor.lr_x = (wxUint32)max(min((rdp.scissor_o.lr_x * rdp.scale_x + rdp.offset_x + 0.01f),settings.res_x),0);
-    rdp.scissor.ul_y = (wxUint32)max(min((rdp.scissor_o.ul_y * rdp.scale_y + rdp.offset_y + 0.01f),settings.res_y),0);
-    rdp.scissor.lr_y = (wxUint32)max(min((rdp.scissor_o.lr_y * rdp.scale_y + rdp.offset_y + 0.01f),settings.res_y),0);
+    rdp.scissor.ul_x = (uint32_t)max(min((rdp.scissor_o.ul_x * rdp.scale_x + rdp.offset_x + 0.01f),settings.res_x),0);
+    rdp.scissor.lr_x = (uint32_t)max(min((rdp.scissor_o.lr_x * rdp.scale_x + rdp.offset_x + 0.01f),settings.res_x),0);
+    rdp.scissor.ul_y = (uint32_t)max(min((rdp.scissor_o.ul_y * rdp.scale_y + rdp.offset_y + 0.01f),settings.res_y),0);
+    rdp.scissor.lr_y = (uint32_t)max(min((rdp.scissor_o.lr_y * rdp.scale_y + rdp.offset_y + 0.01f),settings.res_y),0);
     //grClipWindow specifies the hardware clipping window. Any pixels outside the clipping window are rejected.
     //Values are inclusive for minimum x and y values and exclusive for maximum x and y values.
 //    grClipWindow (rdp.scissor.ul_x?rdp.scissor.ul_x+1:0, rdp.scissor.ul_y?rdp.scissor.ul_y+1:0, rdp.scissor.lr_x, rdp.scissor.lr_y);
@@ -2038,7 +2038,7 @@ void update ()
     if (rdp.update & UPDATE_CULL_MODE)
     {
       rdp.update ^= UPDATE_CULL_MODE;
-      wxUint32 mode = (rdp.flags & CULLMASK) >> CULLSHIFT;
+      uint32_t mode = (rdp.flags & CULLMASK) >> CULLSHIFT;
       FRDP (" |- cull_mode - mode: %s\n", str_cull[mode]);
       switch (mode)
       {
@@ -2116,13 +2116,13 @@ void update ()
       rdp.clip_max_x = min((rdp.view_trans[0] + scale_x + rdp.offset_x) * rdp.clip_ratio, settings.res_x);
       rdp.clip_max_y = min((rdp.view_trans[1] + scale_y + rdp.offset_y) * rdp.clip_ratio, settings.res_y);
 
-      FRDP (" |- viewport - (%d, %d, %d, %d)\n", (wxUint32)rdp.clip_min_x, (wxUint32)rdp.clip_min_y, (wxUint32)rdp.clip_max_x, (wxUint32)rdp.clip_max_y);
+      FRDP (" |- viewport - (%d, %d, %d, %d)\n", (uint32_t)rdp.clip_min_x, (uint32_t)rdp.clip_min_y, (uint32_t)rdp.clip_max_x, (uint32_t)rdp.clip_max_y);
       if (!rdp.scissor_set)
       {
-        rdp.scissor.ul_x = (wxUint32)rdp.clip_min_x;
-        rdp.scissor.lr_x = (wxUint32)rdp.clip_max_x;
-        rdp.scissor.ul_y = (wxUint32)rdp.clip_min_y;
-        rdp.scissor.lr_y = (wxUint32)rdp.clip_max_y;
+        rdp.scissor.ul_x = (uint32_t)rdp.clip_min_x;
+        rdp.scissor.lr_x = (uint32_t)rdp.clip_max_x;
+        rdp.scissor.ul_y = (uint32_t)rdp.clip_min_y;
+        rdp.scissor.lr_y = (uint32_t)rdp.clip_max_y;
         grClipWindow (rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
       }
     }

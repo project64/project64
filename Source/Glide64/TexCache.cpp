@@ -71,8 +71,8 @@ typedef struct TEXINFO_t {
   int mask_width, mask_height;
   int width, height;
   int wid_64, line;
-  wxUint32 crc;
-  wxUint32 flags;
+  uint32_t crc;
+  uint32_t flags;
   int splits, splitheight;
 #ifdef TEXTURE_FILTER
   uint64 ricecrc;
@@ -94,7 +94,7 @@ typedef struct HIRESTEX_t {
 // List functions
 
 typedef struct NODE_t {
-  wxUint32	crc;
+  uint32_t	crc;
   wxUIntPtr	data;
   int		tmu;
   int		number;
@@ -103,7 +103,7 @@ typedef struct NODE_t {
 
 NODE *cachelut[65536];
 
-void AddToList (NODE **list, wxUint32 crc, wxUIntPtr data, int tmu, int number)
+void AddToList (NODE **list, uint32_t crc, wxUIntPtr data, int tmu, int number)
 {
   NODE *node = new NODE;
   node->crc = crc;
@@ -357,7 +357,7 @@ void GetTexInfo (int id, int tile)
   line = rdp.tiles[tile].line;
   if (rdp.tiles[tile].size == 3)
     line <<= 1;
-  wxUint32 crc = 0;
+  uint32_t crc = 0;
   if (settings.fast_crc)
   {
     line = (line - wid_64) << 3;
@@ -380,7 +380,7 @@ void GetTexInfo (int id, int tile)
   {
     crc = 0xFFFFFFFF;
     wxUIntPtr addr = wxPtrToUInt(rdp.tmem) + (rdp.tiles[tile].t_mem<<3);
-    wxUint32 line2 = max(line,1);
+    uint32_t line2 = max(line,1);
     if (rdp.tiles[tile].size < 3)
     {
       line2 <<= 3;
@@ -416,7 +416,7 @@ void GetTexInfo (int id, int tile)
 
   FRDP ("Done.  CRC is: %08lx.\n", crc);
 
-  wxUint32 flags = (rdp.tiles[tile].clamp_s << 23) | (rdp.tiles[tile].mirror_s << 22) |
+  uint32_t flags = (rdp.tiles[tile].clamp_s << 23) | (rdp.tiles[tile].mirror_s << 22) |
     (rdp.tiles[tile].mask_s << 18) | (rdp.tiles[tile].clamp_t << 17) |
     (rdp.tiles[tile].mirror_t << 16) | (rdp.tiles[tile].mask_t << 12);
 
@@ -441,7 +441,7 @@ void GetTexInfo (int id, int tile)
   if (rdp.noise == RDP::noise_texture)
     return;
 
-  wxUint32 mod, modcolor, modcolor1, modcolor2, modfactor;
+  uint32_t mod, modcolor, modcolor1, modcolor2, modfactor;
   if (id == 0)
   {
     mod = cmb.mod_0;
@@ -460,7 +460,7 @@ void GetTexInfo (int id, int tile)
   }
 
   NODE *node = cachelut[crc>>16];
-  wxUint32 mod_mask = (rdp.tiles[tile].format == 2)?0xFFFFFFFF:0xF0F0F0F0;
+  uint32_t mod_mask = (rdp.tiles[tile].format == 2)?0xFFFFFFFF:0xF0F0F0F0;
   while (node)
   {
     if (node->crc == crc)
@@ -913,7 +913,7 @@ void TexCache ()
 
       if (rdp.cur_cache[i])
       {
-        wxUint32 mode_s, mode_t;
+        uint32_t mode_s, mode_t;
         int clamp_s, clamp_t;
         if (rdp.force_wrap && !rdp.texrecting)
         {
@@ -971,15 +971,15 @@ void TexCache ()
 
 #ifdef TEXTURE_FILTER
 /** cite from RiceVideo */
-inline wxUint32 CalculateDXT(wxUint32 txl2words)
+inline uint32_t CalculateDXT(uint32_t txl2words)
 {
   if( txl2words == 0 ) return 1;
   else return (2048+txl2words-1)/txl2words;
 }
 
-wxUint32 sizeBytes[4] = {0,1,2,4};
+uint32_t sizeBytes[4] = {0,1,2,4};
 
-inline wxUint32 Txl2Words(wxUint32 width, wxUint32 size)
+inline uint32_t Txl2Words(uint32_t width, uint32_t size)
 {
   if( size == 0 )
     return max(1, width/16);
@@ -987,7 +987,7 @@ inline wxUint32 Txl2Words(wxUint32 width, wxUint32 size)
     return max(1, width*sizeBytes[size]/8);
 }
 
-inline wxUint32 ReverseDXT(wxUint32 val, wxUint32 /*lrs*/, wxUint32 width, wxUint32 size)
+inline uint32_t ReverseDXT(uint32_t val, uint32_t /*lrs*/, uint32_t width, uint32_t size)
 {
   if( val == 0x800 ) return 1;
 
@@ -999,7 +999,7 @@ inline wxUint32 ReverseDXT(wxUint32 val, wxUint32 /*lrs*/, wxUint32 width, wxUin
 
   for( int i=low; i<=high; i++ )
   {
-    if( Txl2Words(width, size) == (wxUint32)i )
+    if( Txl2Words(width, size) == (uint32_t)i )
       return i;
   }
 
@@ -1076,8 +1076,8 @@ void LoadTex (int id, int tmu)
   cache->t_info.format = GR_TEXFMT_ARGB_1555;
 
   // Calculate lod and aspect
-  wxUint32 size_x = rdp.tiles[td].width;
-  wxUint32 size_y = rdp.tiles[td].height;
+  uint32_t size_x = rdp.tiles[td].width;
+  uint32_t size_y = rdp.tiles[td].height;
 
   // make size_x and size_y both powers of two
   if (!voodoo.sup_large_tex)
@@ -1103,7 +1103,7 @@ void LoadTex (int id, int tmu)
 
   // Calculate the maximum size
   int size_max = max (size_x, size_y);
-  wxUint32 real_x=size_max, real_y=size_max;
+  uint32_t real_x=size_max, real_y=size_max;
   switch (size_max)
   {
   case 1:
@@ -1238,7 +1238,7 @@ void LoadTex (int id, int tmu)
   else cache->c_scl_y = 0.0f;
   // **
 
-  wxUint32 mod, modcolor, modcolor1, modcolor2, modfactor;
+  uint32_t mod, modcolor, modcolor1, modcolor2, modfactor;
   if (id == 0)
   {
     mod = cmb.mod_0;
@@ -1279,7 +1279,7 @@ void LoadTex (int id, int tmu)
     }
   }
 
-  wxUint32 result = 0;	// keep =0 so it doesn't mess up on the first split
+  uint32_t result = 0;	// keep =0 so it doesn't mess up on the first split
 
   texture = tex1;
 
@@ -1296,7 +1296,7 @@ void LoadTex (int id, int tmu)
 #ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
   GHQTexInfo ghqTexInfo;
   memset(&ghqTexInfo, 0, sizeof(GHQTexInfo));
-  wxUint32 g64_crc = cache->crc;
+  uint32_t g64_crc = cache->crc;
   if (settings.ghq_use)
   {
     int bpl;
@@ -1325,7 +1325,7 @@ void LoadTex (int id, int tmu)
       else if (info.dxt == 0)
         bpl = rdp.tiles[td].line << 3;
       else {
-        wxUint32 dxt = info.dxt;
+        uint32_t dxt = info.dxt;
         if (dxt > 1)
           dxt = ReverseDXT(dxt, info.tile_width, texinfo[id].width, rdp.tiles[td].size);
         bpl = dxt << 3;
@@ -1356,7 +1356,7 @@ void LoadTex (int id, int tmu)
     g64_crc = CRC32( g64_crc, &cache->mod_factor, 4 );
 
     cache->ricecrc = ext_ghq_checksum(addr, tile_width, tile_height, (unsigned short)(rdp.tiles[td].format << 8 | rdp.tiles[td].size), bpl, paladdr);
-    FRDP("CI RICE CRC. format: %d, size: %d, CRC: %08lx, PalCRC: %08lx\n", rdp.tiles[td].format, rdp.tiles[td].size, (wxUint32)(cache->ricecrc&0xFFFFFFFF), (wxUint32)(cache->ricecrc>>32));
+    FRDP("CI RICE CRC. format: %d, size: %d, CRC: %08lx, PalCRC: %08lx\n", rdp.tiles[td].format, rdp.tiles[td].size, (uint32_t)(cache->ricecrc&0xFFFFFFFF), (uint32_t)(cache->ricecrc>>32));
     if (ext_ghq_hirestex((uint64)g64_crc, cache->ricecrc, palette, &ghqTexInfo))
     {
       cache->is_hires_tex = ghqTexInfo.is_hires_tex;
@@ -1390,7 +1390,7 @@ void LoadTex (int id, int tmu)
         (wxPtrToUInt(texture)+start_dst, wxPtrToUInt(rdp.tmem)+(rdp.tiles[td].t_mem<<3)+start_src,
           texinfo[id].wid_64, texinfo[id].height, texinfo[id].line, real_x, td);
 
-        wxUint32 size = HIWORD(result);
+        uint32_t size = HIWORD(result);
         // clamp so that it looks somewhat ok when wrapping
         if (size == 1)
           Clamp16bT ((texture)+start_dst, texinfo[id].height, real_x, cache->splitheight);
@@ -1407,7 +1407,7 @@ void LoadTex (int id, int tmu)
       (wxPtrToUInt(texture), wxPtrToUInt(rdp.tmem)+(rdp.tiles[td].t_mem<<3),
         texinfo[id].wid_64, texinfo[id].height, texinfo[id].line, real_x, td);
 
-      wxUint32 size = HIWORD(result);
+      uint32_t size = HIWORD(result);
 
       int min_x, min_y;
       if (rdp.tiles[td].mask_s != 0)
@@ -1796,7 +1796,7 @@ void LoadTex (int id, int tmu)
       t_info->largeLodLog2 = lod;
       t_info->aspectRatioLog2 = aspect;
 
-      wxUint32 texture_size = grTexTextureMemRequired (GR_MIPMAPLEVELMASK_BOTH, t_info);
+      uint32_t texture_size = grTexTextureMemRequired (GR_MIPMAPLEVELMASK_BOTH, t_info);
 
       // Check for 2mb boundary
       // Hiroshi Morii <koolsmoky@users.sourceforge.net> required only for V1,Rush, and V2
@@ -1821,7 +1821,7 @@ void LoadTex (int id, int tmu)
         // DON'T CONTINUE (already done)
       }
 
-      wxUint32 tex_addr = GetTexAddr(tmu, texture_size);
+      uint32_t tex_addr = GetTexAddr(tmu, texture_size);
       grTexDownloadMipMap (tmu,
         tex_addr,
         GR_MIPMAPLEVELMASK_BOTH,

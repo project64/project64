@@ -166,7 +166,7 @@ static inline void load16bIA(uint8_t *src, uint8_t *dst, int wid_64, int height,
 // Size: 2, Format: 0
 //
 
-wxUint32 Load16bRGBA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int /*tile*/)
+uint32_t Load16bRGBA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int /*tile*/)
 {
   if (wid_64 < 1) wid_64 = 1;
   if (height < 1) height = 1;
@@ -181,7 +181,7 @@ wxUint32 Load16bRGBA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int 
 // Size: 2, Format: 3
 //
 
-wxUint32 Load16bIA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int /*tile*/)
+uint32_t Load16bIA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int /*tile*/)
 {
   if (wid_64 < 1) wid_64 = 1;
   if (height < 1) height = 1;
@@ -218,13 +218,13 @@ wxUint16 yuv_to_rgb565(wxUint8 y, wxUint8 u, wxUint8 v)
   return c;
   //*/
   /*
-  const wxUint32 c = y - 16;
-  const wxUint32 d = u - 128;
-  const wxUint32 e = v - 128;
+  const uint32_t c = y - 16;
+  const uint32_t d = u - 128;
+  const uint32_t e = v - 128;
 
-  wxUint32 r =  (298 * c           + 409 * e + 128) & 0xf800;
-  wxUint32 g = ((298 * c - 100 * d - 208 * e + 128) >> 5) & 0x7e0;
-  wxUint32 b = ((298 * c + 516 * d           + 128) >> 11) & 0x1f;
+  uint32_t r =  (298 * c           + 409 * e + 128) & 0xf800;
+  uint32_t g = ((298 * c - 100 * d - 208 * e + 128) >> 5) & 0x7e0;
+  uint32_t b = ((298 * c + 516 * d           + 128) >> 11) & 0x1f;
 
   WORD texel = (WORD)(r | g | b);
 
@@ -236,14 +236,14 @@ wxUint16 yuv_to_rgb565(wxUint8 y, wxUint8 u, wxUint8 v)
 // Size: 2, Format: 1
 //
 
-wxUint32 Load16bYUV (wxUIntPtr dst, wxUIntPtr /*src*/, int /*wid_64*/, int /*height*/, int /*line*/, int /*real_width*/, int tile)
+uint32_t Load16bYUV (wxUIntPtr dst, wxUIntPtr /*src*/, int /*wid_64*/, int /*height*/, int /*line*/, int /*real_width*/, int tile)
 {
-  wxUint32 * mb = (wxUint32*)(gfx.RDRAM+rdp.addr[rdp.tiles[tile].t_mem]); //pointer to the macro block
+  uint32_t * mb = (uint32_t*)(gfx.RDRAM+rdp.addr[rdp.tiles[tile].t_mem]); //pointer to the macro block
   wxUint16 * tex = (wxUint16*)dst;
   wxUint16 i;
   for (i = 0; i < 128; i++)
   {
-    wxUint32 t = mb[i]; //each wxUint32 contains 2 pixels
+    uint32_t t = mb[i]; //each uint32_t contains 2 pixels
     wxUint8 y1 = (wxUint8)t&0xFF;
     wxUint8 v  = (wxUint8)(t>>8)&0xFF;
     wxUint8 y0 = (wxUint8)(t>>16)&0xFF;

@@ -46,10 +46,10 @@
 struct t3dGlobState {
   wxUint16		pad0;
   wxUint16		perspNorm;
-  wxUint32		flag;
-  wxUint32		othermode0;
-  wxUint32		othermode1;
-  wxUint32		segBases[16];
+  uint32_t		flag;
+  uint32_t		othermode0;
+  uint32_t		othermode1;
+  uint32_t		segBases[16];
   /* the viewport to use */
   short     vsacle1;
   short     vsacle0;
@@ -59,19 +59,19 @@ struct t3dGlobState {
   short     vtrans0;
   short     vtrans3;
   short     vtrans2;
-  wxUint32  rdpCmds;
+  uint32_t  rdpCmds;
 };
 
 struct t3dState {
-    wxUint32	renderState;	/* render state */
-    wxUint32	textureState;	/* texture state */
+    uint32_t	renderState;	/* render state */
+    uint32_t	textureState;	/* texture state */
     wxUint8	flag;
     wxUint8	triCount;	/* how many tris? */
     wxUint8	vtxV0;		/* where to load verts? */
     wxUint8	vtxCount;	/* how many verts? */
-    wxUint32	rdpCmds;	/* ptr (segment address) to RDP DL */
-    wxUint32	othermode0;
-    wxUint32	othermode1;
+    uint32_t	rdpCmds;	/* ptr (segment address) to RDP DL */
+    uint32_t	othermode0;
+    uint32_t	othermode1;
 };
 
 
@@ -80,29 +80,29 @@ struct t3dTriN{
 };
 
 
-static void t3dProcessRDP(wxUint32 a)
+static void t3dProcessRDP(uint32_t a)
 {
   if (a)
   {
     rdp.LLE = 1;
-    rdp.cmd0 = ((wxUint32*)gfx.RDRAM)[a++];
-    rdp.cmd1 = ((wxUint32*)gfx.RDRAM)[a++];
+    rdp.cmd0 = ((uint32_t*)gfx.RDRAM)[a++];
+    rdp.cmd1 = ((uint32_t*)gfx.RDRAM)[a++];
     while (rdp.cmd0 + rdp.cmd1) {
       gfx_instruction[0][rdp.cmd0>>24] ();
-      rdp.cmd0 = ((wxUint32*)gfx.RDRAM)[a++];
-      rdp.cmd1 = ((wxUint32*)gfx.RDRAM)[a++];
-      wxUint32 cmd = rdp.cmd0>>24;
+      rdp.cmd0 = ((uint32_t*)gfx.RDRAM)[a++];
+      rdp.cmd1 = ((uint32_t*)gfx.RDRAM)[a++];
+      uint32_t cmd = rdp.cmd0>>24;
       if (cmd == 0xE4 || cmd == 0xE5)
       {
-        rdp.cmd2 = ((wxUint32*)gfx.RDRAM)[a++];
-        rdp.cmd3 = ((wxUint32*)gfx.RDRAM)[a++];
+        rdp.cmd2 = ((uint32_t*)gfx.RDRAM)[a++];
+        rdp.cmd3 = ((uint32_t*)gfx.RDRAM)[a++];
       }
     }
     rdp.LLE = 0;
   }
 }
 
-static void t3dLoadGlobState(wxUint32 pgstate)
+static void t3dLoadGlobState(uint32_t pgstate)
 {
   t3dGlobState *gstate = (t3dGlobState*)&gfx.RDRAM[segoffset(pgstate)];
   FRDP ("Global state. pad0: %04lx, perspNorm: %04lx, flag: %08lx\n", gstate->pad0, gstate->perspNorm, gstate->flag);
@@ -135,7 +135,7 @@ static void t3dLoadGlobState(wxUint32 pgstate)
   t3dProcessRDP(segoffset(gstate->rdpCmds) >> 2);
 }
 
-static void t3d_vertex(wxUint32 addr, wxUint32 v0, wxUint32 n)
+static void t3d_vertex(uint32_t addr, uint32_t v0, uint32_t n)
 {
     float x, y, z;
 
@@ -143,7 +143,7 @@ static void t3d_vertex(wxUint32 addr, wxUint32 v0, wxUint32 n)
     rdp.vn = n; // Number of vertices to copy
     n <<= 4;
 
-    for (wxUint32 i=0; i < n; i+=16)
+    for (uint32_t i=0; i < n; i+=16)
     {
       VERTEX *v = &rdp.vtx[v0 + (i>>4)];
       x   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 0)^1];
@@ -185,7 +185,7 @@ static void t3d_vertex(wxUint32 addr, wxUint32 v0, wxUint32 n)
     }
 }
 
-static void t3dLoadObject(wxUint32 pstate, wxUint32 pvtx, wxUint32 ptri)
+static void t3dLoadObject(uint32_t pstate, uint32_t pvtx, uint32_t ptri)
 {
   LRDP("Loading Turbo3D object\n");
   t3dState *ostate = (t3dState*)&gfx.RDRAM[segoffset(pstate)];
@@ -210,7 +210,7 @@ static void t3dLoadObject(wxUint32 pstate, wxUint32 pvtx, wxUint32 ptri)
 
   if (!(ostate->flag&1)) //load matrix
   {
-    wxUint32 addr = segoffset(pstate+sizeof(t3dState)) & BMASK;
+    uint32_t addr = segoffset(pstate+sizeof(t3dState)) & BMASK;
     load_matrix(rdp.combined, addr);
 #ifdef EXTREME_LOGGING
       FRDP ("{%f,%f,%f,%f}\n", rdp.combined[0][0], rdp.combined[0][1], rdp.combined[0][2], rdp.combined[0][3]);
@@ -230,7 +230,7 @@ static void t3dLoadObject(wxUint32 pstate, wxUint32 pvtx, wxUint32 ptri)
   if (ptri)
   {
     update ();
-    wxUint32 a = segoffset(ptri);
+    uint32_t a = segoffset(ptri);
     for (int t=0; t < ostate->triCount; t++)
     {
       t3dTriN * tri = (t3dTriN*)&gfx.RDRAM[a];
@@ -252,13 +252,13 @@ static void Turbo3D()
 {
   LRDP("Start Turbo3D microcode\n");
   settings.ucode = ucode_Fast3D;
-  wxUint32 a = 0, pgstate = 0, pstate = 0, pvtx = 0, ptri = 0;
+  uint32_t a = 0, pgstate = 0, pstate = 0, pvtx = 0, ptri = 0;
   do {
     a = rdp.pc[rdp.pc_i] & BMASK;
-    pgstate = ((wxUint32*)gfx.RDRAM)[a>>2];
-    pstate = ((wxUint32*)gfx.RDRAM)[(a>>2)+1];
-    pvtx = ((wxUint32*)gfx.RDRAM)[(a>>2)+2];
-    ptri = ((wxUint32*)gfx.RDRAM)[(a>>2)+3];
+    pgstate = ((uint32_t*)gfx.RDRAM)[a>>2];
+    pstate = ((uint32_t*)gfx.RDRAM)[(a>>2)+1];
+    pvtx = ((uint32_t*)gfx.RDRAM)[(a>>2)+2];
+    ptri = ((uint32_t*)gfx.RDRAM)[(a>>2)+3];
     FRDP("GlobalState: %08lx, Object: %08lx, Vertices: %08lx, Triangles: %08lx\n", pgstate, pstate, pvtx, ptri);
     if (!pstate)
     {

@@ -41,7 +41,7 @@
 //
 //****************************************************************
 
-wxUint32 uc8_normale_addr = 0;
+uint32_t uc8_normale_addr = 0;
 float uc8_coord_mod[16];
 
 static void uc8_vertex ()
@@ -52,7 +52,7 @@ static void uc8_vertex ()
     	MulMatrices(rdp.model, rdp.proj, rdp.combined);
 	}
 
-	wxUint32 addr = segoffset(rdp.cmd1);
+	uint32_t addr = segoffset(rdp.cmd1);
 	int v0, i, n;
 	float x, y, z;
 
@@ -74,7 +74,7 @@ static void uc8_vertex ()
 		rdp.update ^= UPDATE_LIGHTS;
 
 		// Calculate light vectors
-		for (wxUint32 l=0; l<rdp.num_lights; l++)
+		for (uint32_t l=0; l<rdp.num_lights; l++)
 		{
 			InverseTransformVector(&rdp.light[l].dir_x, rdp.light_vector[l], rdp.model);
 			NormalizeVector (rdp.light_vector[l]);
@@ -134,7 +134,7 @@ static void uc8_vertex ()
 
 		if ((rdp.geom_mode & 0x00020000))
 		{
-			wxUint32 shift = v0 << 1;
+			uint32_t shift = v0 << 1;
 			v->vec[0] = ((char*)gfx.RDRAM)[(uc8_normale_addr + (i>>3) + shift + 0)^3];
 			v->vec[1] = ((char*)gfx.RDRAM)[(uc8_normale_addr + (i>>3) + shift + 1)^3];
 			v->vec[2] = (char)(v->flags&0xff);
@@ -158,7 +158,7 @@ static void uc8_vertex ()
 			float color[3] = {rdp.light[rdp.num_lights].r, rdp.light[rdp.num_lights].g, rdp.light[rdp.num_lights].b};
 			FRDP("ambient light. r: %f, g: %f, b: %f\n", color[0], color[1], color[2]);
 			float light_intensity = 0.0f;
-			wxUint32 l;
+			uint32_t l;
 			if (rdp.geom_mode & 0x00400000)
 			{
 				NormalizeVector (v->vec);
@@ -237,7 +237,7 @@ static void uc8_moveword ()
 {
 	wxUint8 index = (wxUint8)((rdp.cmd0 >> 16) & 0xFF);
 	wxUint16 offset = (wxUint16)(rdp.cmd0 & 0xFFFF);
-	wxUint32 data = rdp.cmd1;
+	uint32_t data = rdp.cmd1;
 
 	FRDP ("uc8:moveword ");
 
@@ -292,8 +292,8 @@ static void uc8_moveword ()
 			FRDP ("coord mod:%d, %08lx\n", n, data);
 			if (rdp.cmd0&8)
 				return;
-			wxUint32 idx = (rdp.cmd0>>1)&3;
-			wxUint32 pos = rdp.cmd0&0x30;
+			uint32_t idx = (rdp.cmd0>>1)&3;
+			uint32_t pos = rdp.cmd0&0x30;
 			if (pos == 0)
 			{
 				uc8_coord_mod[0+idx] = (short)(rdp.cmd1>>16);
@@ -334,7 +334,7 @@ static void uc8_moveword ()
 static void uc8_movemem ()
 {
 	int idx = rdp.cmd0 & 0xFF;
-	wxUint32 addr = segoffset(rdp.cmd1);
+	uint32_t addr = segoffset(rdp.cmd1);
 	int ofs = (rdp.cmd0 >> 5) & 0x3FFF;
 
 	FRDP ("uc8:movemem ofs:%d ", ofs);
@@ -343,7 +343,7 @@ static void uc8_movemem ()
 	{
 	case 8:   // VIEWPORT
 		{
-			wxUint32 a = addr >> 1;
+			uint32_t a = addr >> 1;
 			short scale_x = ((short*)gfx.RDRAM)[(a+0)^1] >> 2;
 			short scale_y = ((short*)gfx.RDRAM)[(a+1)^1] >> 2;
 			short scale_z = ((short*)gfx.RDRAM)[(a+2)^1];
@@ -399,7 +399,7 @@ static void uc8_movemem ()
 			rdp.light[n].dir_y = (float)(((char*)gfx.RDRAM)[(addr+9)^3]) / 127.0f;
 			rdp.light[n].dir_z = (float)(((char*)gfx.RDRAM)[(addr+10)^3]) / 127.0f;
 			// **
-			wxUint32 a = addr >> 1;
+			uint32_t a = addr >> 1;
 			rdp.light[n].x = (float)(((short*)gfx.RDRAM)[(a+16)^1]);
 			rdp.light[n].y = (float)(((short*)gfx.RDRAM)[(a+17)^1]);
 			rdp.light[n].z = (float)(((short*)gfx.RDRAM)[(a+18)^1]);
@@ -435,7 +435,7 @@ static void uc8_movemem ()
 				char y = ((char*)gfx.RDRAM)[uc8_normale_addr + ((i<<1) + 1)^3];
 				FRDP("#%d x = %d, y = %d\n", i, x, y);
 			}
-			wxUint32 a = uc8_normale_addr >> 1;
+			uint32_t a = uc8_normale_addr >> 1;
 			for (i = 0; i < 32; i++)
 			{
 				FRDP ("n[%d] = 0x%04lx \n", i, ((wxUint16*)gfx.RDRAM)[(a+i)^1]);

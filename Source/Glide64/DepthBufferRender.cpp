@@ -58,15 +58,15 @@ void ZLUT_init()
   zLUT = new wxUint16[0x40000];
   for(int i=0; i<0x40000; i++)
   {
-    wxUint32 exponent = 0;
-    wxUint32 testbit = 1 << 17;
+    uint32_t exponent = 0;
+    uint32_t testbit = 1 << 17;
     while((i & testbit) && (exponent < 7))
     {
       exponent++;
       testbit = 1 << (17 - exponent);
     }
     
-    wxUint32 mantissa = (i >> (6 - (6 < exponent ? 6 : exponent))) & 0x7ff;
+    uint32_t mantissa = (i >> (6 - (6 < exponent ? 6 : exponent))) & 0x7ff;
     zLUT[i] = (wxUint16)(((exponent << 11) | mantissa) << 2);
   }
 }

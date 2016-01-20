@@ -44,10 +44,10 @@
 #define FASTSEARCH  // Enable fast combine mode searching algorithm
 
 float percent_org, percent, r, g, b;
-wxUint32 lod_frac;
+uint32_t lod_frac;
 
-wxUint32 cc_lookup[257];
-wxUint32 ac_lookup[257];
+uint32_t cc_lookup[257];
+uint32_t ac_lookup[257];
 COMBINE cmb;
 
 //****************************************************************
@@ -796,8 +796,8 @@ COMBINE cmb;
 #define CA_ENV() CA(rdp.env_color)
 #define CA_INVPRIM() cmb.ccolor|=0xFF-(rdp.prim_color&0xFF)
 #define CA_INVENV() cmb.ccolor|=0xFF-(rdp.env_color&0xFF)
-#define CA_ENV1MPRIM() cmb.ccolor|= (wxUint32)(((rdp.env_color&0xFF)/255.0f) * (((~(rdp.prim_color&0xFF)) & 0xff)/255.0f) * 255.0f);
-#define CA_PRIMENV() cmb.ccolor |= (wxUint32)(((rdp.env_color&0xFF)/255.0f) * ((rdp.prim_color&0xFF)/255.0f) * 255.0f);
+#define CA_ENV1MPRIM() cmb.ccolor|= (uint32_t)(((rdp.env_color&0xFF)/255.0f) * (((~(rdp.prim_color&0xFF)) & 0xff)/255.0f) * 255.0f);
+#define CA_PRIMENV() cmb.ccolor |= (uint32_t)(((rdp.env_color&0xFF)/255.0f) * ((rdp.prim_color&0xFF)/255.0f) * 255.0f);
 #define CA_PRIMLOD() cmb.ccolor |= rdp.prim_lodfrac;
 #define CA_PRIM_MUL_PRIMLOD() cmb.ccolor |= (int)(((rdp.prim_color&0xFF) * rdp.prim_lodfrac) / 255.0f);
 #define CA_ENV_MUL_PRIMLOD() cmb.ccolor |= (int)(((rdp.env_color&0xFF) * rdp.prim_lodfrac) / 255.0f);
@@ -876,7 +876,7 @@ static void cc_t0 ()
 {
   if ((rdp.othermode_l & 0x4000) && (rdp.cycle_mode < 2))
   {
-    wxUint32 blend_mode = (rdp.othermode_l >> 16);
+    uint32_t blend_mode = (rdp.othermode_l >> 16);
     if (blend_mode == 0xa500)
     {
       CCMB (GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
@@ -884,9 +884,9 @@ static void cc_t0 ()
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
       float fog = (rdp.fog_color&0xFF)/255.0f;
-      wxUint32 R = (wxUint32)(((rdp.blend_color>>24)&0xFF)*fog);
-      wxUint32 G = (wxUint32)(((rdp.blend_color>>16)&0xFF)*fog);
-      wxUint32 B = (wxUint32)(((rdp.blend_color>> 8)&0xFF)*fog);
+      uint32_t R = (uint32_t)(((rdp.blend_color>>24)&0xFF)*fog);
+      uint32_t G = (uint32_t)(((rdp.blend_color>>16)&0xFF)*fog);
+      uint32_t B = (uint32_t)(((rdp.blend_color>> 8)&0xFF)*fog);
       CC((R<<24)|(G<<16)|(B<<8));
     }
     else if (blend_mode == 0x55f0) //cmem*afog + cfog*1ma
@@ -961,7 +961,7 @@ CCMB (GR_COMBINE_FUNCTION_SCALE_OTHER,
 GR_COMBINE_FACTOR_ONE,
 GR_COMBINE_LOCAL_NONE,
 GR_COMBINE_OTHER_TEXTURE);
-wxUint32 col1 = (rdp.K5<<24) | (rdp.K5<<16) | (rdp.K5<<8);
+uint32_t col1 = (rdp.K5<<24) | (rdp.K5<<16) | (rdp.K5<<8);
 MOD_0 (TMOD_COL_INTER_TEX_USING_COL1);
 MOD_0_COL (rdp.env_color & 0xFFFFFF00);
 MOD_0_COL1 (col1 & 0xFFFFFF00);
@@ -1380,7 +1380,7 @@ static void cc__t0_mul_shade__add__t1_mul_shade ()
 
 static void cc__t0_mul_prim__inter_env_using_enva ()
 {
-  wxUint32 enva  = rdp.env_color&0xFF;
+  uint32_t enva  = rdp.env_color&0xFF;
   if (enva == 0xFF)
     cc_env ();
   else if (enva == 0)
@@ -1926,16 +1926,16 @@ static void cc__prim_inter_env_using_enva__mul_shade ()
 {
   const float ea = ((float)(rdp.env_color&0xFF)) / 255.0f;
   const float ea_i = 1.0f - ea;
-  wxUint32 pr = (rdp.prim_color >> 24)&0xFF;
-  wxUint32 pg = (rdp.prim_color >> 16)&0xFF;
-  wxUint32 pb = (rdp.prim_color >>  8)&0xFF;
-  wxUint32 er = (rdp.env_color >> 24)&0xFF;
-  wxUint32 eg = (rdp.env_color >> 16)&0xFF;
-  wxUint32 eb = (rdp.env_color >>  8)&0xFF;
-  wxUint32 r = min(255, (wxUint32)(er*ea + pr*ea_i));
-  wxUint32 g = min(255, (wxUint32)(eg*ea + pg*ea_i));
-  wxUint32 b = min(255, (wxUint32)(eb*ea + pb*ea_i));
-  wxUint32 col = (r << 24) | (g << 16) | (b << 8) | 0xFF;
+  uint32_t pr = (rdp.prim_color >> 24)&0xFF;
+  uint32_t pg = (rdp.prim_color >> 16)&0xFF;
+  uint32_t pb = (rdp.prim_color >>  8)&0xFF;
+  uint32_t er = (rdp.env_color >> 24)&0xFF;
+  uint32_t eg = (rdp.env_color >> 16)&0xFF;
+  uint32_t eb = (rdp.env_color >>  8)&0xFF;
+  uint32_t r = min(255, (uint32_t)(er*ea + pr*ea_i));
+  uint32_t g = min(255, (uint32_t)(eg*ea + pg*ea_i));
+  uint32_t b = min(255, (uint32_t)(eb*ea + pb*ea_i));
+  uint32_t col = (r << 24) | (g << 16) | (b << 8) | 0xFF;
   CCMB (GR_COMBINE_FUNCTION_SCALE_OTHER,
     GR_COMBINE_FACTOR_LOCAL,
     GR_COMBINE_LOCAL_ITERATED,
@@ -3123,7 +3123,7 @@ static void cc__t0_add_primlod__mul_shade_add_env ()
       GR_COMBINE_FACTOR_TEXTURE_RGB,
       GR_COMBINE_LOCAL_CONSTANT,
       GR_COMBINE_OTHER_ITERATED);
-    wxUint32 color = (lod_frac<<24) | (lod_frac<<16) | (lod_frac<<8);
+    uint32_t color = (lod_frac<<24) | (lod_frac<<16) | (lod_frac<<8);
     MOD_0 (TMOD_TEX_ADD_COL);
     MOD_0_COL (color & 0xFFFFFF00);
     CC_ENV ();
@@ -4035,7 +4035,7 @@ static void cc__t0_mul_prima_add_t0__sub_center_mul_scale ()
       GR_CMBX_LOCAL_TEXTURE_RGB, GR_FUNC_MODE_ZERO,
       GR_CMBX_TMU_CCOLOR, 0,
       GR_CMBX_B, 0);
-    wxUint32 prima = rdp.prim_color&0xFF;
+    uint32_t prima = rdp.prim_color&0xFF;
     cmb.tex_ccolor = (prima<<24)|(prima<<16)|(prima<<8)|prima;
     cmb.tex |= 1;
     CCMBEXT(GR_CMBX_TEXTURE_RGB, GR_FUNC_MODE_X,
@@ -4776,7 +4776,7 @@ static void cc_t0_sub_k4_mul_k5_add_t0 ()  //Aded by Gonetz
       GR_CMBX_TEXTURE_RGB, GR_FUNC_MODE_X,
       GR_CMBX_CONSTANT_COLOR, 0,
       GR_CMBX_B, 0);
-    wxUint32 temp = rdp.prim_lodfrac;
+    uint32_t temp = rdp.prim_lodfrac;
     rdp.prim_lodfrac = rdp.K4;
     SETSHADE_PRIMLOD ();
     rdp.prim_lodfrac = temp;
@@ -4852,7 +4852,7 @@ static void cc_t0_sub_env_mul_prima_add_env ()  //Aded by Gonetz
   {
     MOD_0 (TMOD_COL_INTER_TEX_USING_COL1);
     MOD_0_COL (rdp.env_color & 0xFFFFFF00);
-    wxUint32 prima = rdp.prim_color & 0xFF;
+    uint32_t prima = rdp.prim_color & 0xFF;
     MOD_0_COL1 ((prima<<24)|(prima|16)|(prima<<8));
     USE_T0 ();
   }
@@ -6314,7 +6314,7 @@ static void cc__env_inter_prim_using_t0__sub_shade_mul_t0a_add_shade ()
       GR_CMBX_B, 0);
     cmb.tex_ccolor = rdp.env_color;
     cmb.tex |= 1;
-    wxUint32 pse = (rdp.prim_color>>24) - (rdp.env_color>>24);
+    uint32_t pse = (rdp.prim_color>>24) - (rdp.env_color>>24);
     percent = (float)(pse) / 255.0f;
     cmb.dc0_detailmax = cmb.dc1_detailmax = percent;
   }
@@ -7422,7 +7422,7 @@ static void cc_shade_sub_env_mul_k5_add_prim ()
     GR_COMBINE_LOCAL_CONSTANT,
     GR_COMBINE_OTHER_ITERATED);
   SUBSHADE_ENV ();
-  wxUint32 temp = rdp.prim_color;
+  uint32_t temp = rdp.prim_color;
   rdp.prim_color = rdp.K5;
   MULSHADE_PRIMA ();
   rdp.prim_color = temp;
@@ -8419,7 +8419,7 @@ static void cc__prim_inter_t0_using_env__mul_shade ()
       GR_CMBX_CONSTANT_COLOR, GR_FUNC_MODE_X,
       GR_CMBX_ITRGB, 0,
       GR_CMBX_ZERO, 0);
-    wxUint32 onesubenv = ~rdp.env_color;
+    uint32_t onesubenv = ~rdp.env_color;
     CC_C1MULC2(rdp.prim_color, onesubenv);
   }
   else
@@ -8657,7 +8657,7 @@ static void cc__env_inter_t0_using_prima__mul_shade ()
     GR_COMBINE_OTHER_TEXTURE);
   MOD_0 (TMOD_COL_INTER_TEX_USING_COL1);
   MOD_0_COL (rdp.env_color & 0xFFFFFF00);
-  wxUint32 prima = rdp.prim_color & 0xFF;
+  uint32_t prima = rdp.prim_color & 0xFF;
   MOD_0_COL1 ((prima<<24)|(prima|16)|(prima<<8));
   USE_T0 ();
 }
@@ -8683,7 +8683,7 @@ static void cc_shade_mul_shadea ()
 static void cc__t0_mul_shade__inter_env_using_enva ()
 {
   // (t0-0)*shade+0, (env-cmb)*env_a+cmb    ** INC **
-  wxUint32 enva  = rdp.env_color&0xFF;
+  uint32_t enva  = rdp.env_color&0xFF;
   if (enva == 0xFF)
     cc_env ();
   else if (enva == 0)
@@ -8786,7 +8786,7 @@ static void ac_t0 ()
 {
   if ((rdp.othermode_l & 0x4000) && (rdp.cycle_mode < 2))
   {
-    wxUint32 blend_mode = (rdp.othermode_l >> 16);
+    uint32_t blend_mode = (rdp.othermode_l >> 16);
     if (blend_mode == 0x0550)
     {
       ACMB (GR_COMBINE_FUNCTION_SCALE_OTHER,
@@ -9275,7 +9275,7 @@ static void ac__t1_sub_t0_mul_primlod__mul_env_add_prim ()
       GR_CMBX_LOCAL_TEXTURE_ALPHA, GR_FUNC_MODE_NEGATIVE_X,
       GR_CMBX_TMU_CALPHA, 0,
       GR_CMBX_ZERO, 0);
-    cmb.tex_ccolor = (cmb.tex_ccolor&0xFFFFFF00) | (wxUint32)((float)(rdp.env_color&0xFF)*(float)rdp.prim_lodfrac/255.0f);
+    cmb.tex_ccolor = (cmb.tex_ccolor&0xFFFFFF00) | (uint32_t)((float)(rdp.env_color&0xFF)*(float)rdp.prim_lodfrac/255.0f);
   }
   else
   {
@@ -10260,7 +10260,7 @@ static void ac_t0_mul_primlod_mul_prim () //Aded by Gonetz
     GR_COMBINE_FACTOR_LOCAL,
     GR_COMBINE_LOCAL_CONSTANT,
     GR_COMBINE_OTHER_TEXTURE);
-  cmb.ccolor |= (wxUint32)(lod_frac * (rdp.prim_color&0xFF) / 255);
+  cmb.ccolor |= (uint32_t)(lod_frac * (rdp.prim_color&0xFF) / 255);
   A_USE_T0 ();
 }
 
@@ -11648,7 +11648,7 @@ static void ac_one_sub_t0_mul_primshade ()
 
 typedef void (*cmb_func)();
 typedef struct {
-  wxUint32 key;
+  uint32_t key;
   cmb_func func;
 } COMBINER;
 
@@ -15554,7 +15554,7 @@ void Combine ()
 
   rdp.noise = RDP::noise_none;
 
-  wxUint32 found = TRUE;
+  uint32_t found = TRUE;
 
   rdp.col[0] = rdp.col[1] = rdp.col[2] = rdp.col[3] =
     rdp.coladd[0] = rdp.coladd[1] = rdp.coladd[2] = rdp.coladd[3] = 1.0f;
@@ -15587,8 +15587,8 @@ void Combine ()
     cmb.tex_cmb_ext_use = 0;
   }
 
-  wxUint32 cmb_mode_c = (rdp.cycle1 << 16) | (rdp.cycle2 & 0xFFFF);
-  wxUint32 cmb_mode_a = (rdp.cycle1 & 0x0FFF0000) | ((rdp.cycle2 >> 16) & 0x00000FFF);
+  uint32_t cmb_mode_c = (rdp.cycle1 << 16) | (rdp.cycle2 & 0xFFFF);
+  uint32_t cmb_mode_a = (rdp.cycle1 & 0x0FFF0000) | ((rdp.cycle2 >> 16) & 0x00000FFF);
 
   cmb.abf1 = GR_BLEND_SRC_ALPHA;
   cmb.abf2 = GR_BLEND_ONE_MINUS_SRC_ALPHA;
@@ -15596,7 +15596,7 @@ void Combine ()
 #ifdef FASTSEARCH
   // Fast, ordered search
   int current=0x7FFFFFFF, last;
-  wxUint32 actual_combine, current_combine, color_combine, alpha_combine;
+  uint32_t actual_combine, current_combine, color_combine, alpha_combine;
   int left, right;
 
   actual_combine = current_combine = cmb_mode_c;
@@ -15803,7 +15803,7 @@ void Combine ()
 
 void CombineBlender ()
 {
-  wxUint32 blendmode = rdp.othermode_l >> 16;
+  uint32_t blendmode = rdp.othermode_l >> 16;
   // Check force-blending
   if ((rdp.othermode_l & 0x4000) && (rdp.cycle_mode < 2))
   {
@@ -15857,9 +15857,9 @@ void CombineBlender ()
 
       float percent = (rdp.fog_color & 0xFF) / 255.0f;
       cmb.ccolor =
-      ((wxUint32)(((cmb.ccolor >> 24) & 0xFF) * (1.0f-percent) + ((rdp.fog_color>>24) & 0xFF) * percent) << 24) |
-      ((wxUint32)(((cmb.ccolor >> 16) & 0xFF) * (1.0f-percent) + ((rdp.fog_color>>16) & 0xFF) * percent) << 16) |
-      ((wxUint32)(((cmb.ccolor >> 8) & 0xFF) * (1.0f-percent) + ((rdp.fog_color>>8) & 0xFF) * percent) << 8) |
+      ((uint32_t)(((cmb.ccolor >> 24) & 0xFF) * (1.0f-percent) + ((rdp.fog_color>>24) & 0xFF) * percent) << 24) |
+      ((uint32_t)(((cmb.ccolor >> 16) & 0xFF) * (1.0f-percent) + ((rdp.fog_color>>16) & 0xFF) * percent) << 16) |
+      ((uint32_t)(((cmb.ccolor >> 8) & 0xFF) * (1.0f-percent) + ((rdp.fog_color>>8) & 0xFF) * percent) << 8) |
       (cmb.ccolor & 0xFF);
 
       rdp.col[0] = rdp.col[0] * (1.0f-percent) + ((rdp.fog_color>>24) & 0xFF) / 255.0f * percent;
@@ -15872,7 +15872,7 @@ void CombineBlender ()
     case 0xf550: //clr_fog * a_fog + clr_mem * (1-a)
       A_BLEND (GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA);
       {
-        wxUint32 prim = rdp.prim_color;
+        uint32_t prim = rdp.prim_color;
         rdp.prim_color = rdp.fog_color;
         cc_prim();
         ac_prim();
@@ -15885,7 +15885,7 @@ void CombineBlender ()
       A_BLEND (GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA);
       if (rdp.cycle_mode == 1 && rdp.cycle2 != 0x01ff1fff)
       {
-        wxUint32 prim = rdp.prim_color;
+        uint32_t prim = rdp.prim_color;
         rdp.prim_color = rdp.fog_color;
         ac_prim();
         rdp.prim_color = prim;
@@ -15894,7 +15894,7 @@ void CombineBlender ()
 
     case 0xc912: //40 winks, clr_in * a_fog + clr_mem * 1
       {
-        wxUint32 prim = rdp.prim_color;
+        uint32_t prim = rdp.prim_color;
         rdp.prim_color = rdp.fog_color;
         ac_prim();
         rdp.prim_color = prim;
@@ -15920,9 +15920,9 @@ void CombineBlender ()
 
   float percent = (rdp.fog_color & 0xFF) / 255.0f;
   cmb.ccolor =
-  ((wxUint32)(((cmb.ccolor >> 24) & 0xFF) * (1.0f-percent) + ((rdp.fog_color>>24) & 0xFF) * percent) << 24) |
-  ((wxUint32)(((cmb.ccolor >> 16) & 0xFF) * (1.0f-percent) + ((rdp.fog_color>>16) & 0xFF) * percent) << 16) |
-  ((wxUint32)(((cmb.ccolor >> 8) & 0xFF) * (1.0f-percent) + ((rdp.fog_color>>8) & 0xFF) * percent) << 8) |
+  ((uint32_t)(((cmb.ccolor >> 24) & 0xFF) * (1.0f-percent) + ((rdp.fog_color>>24) & 0xFF) * percent) << 24) |
+  ((uint32_t)(((cmb.ccolor >> 16) & 0xFF) * (1.0f-percent) + ((rdp.fog_color>>16) & 0xFF) * percent) << 16) |
+  ((uint32_t)(((cmb.ccolor >> 8) & 0xFF) * (1.0f-percent) + ((rdp.fog_color>>8) & 0xFF) * percent) << 8) |
   (cmb.ccolor & 0xFF);
 
   rdp.col[0] = rdp.col[0] * (1.0f-percent) + ((rdp.fog_color>>24) & 0xFF) / 255.0f * percent;
@@ -16013,7 +16013,7 @@ void InitCombine ()
 
 void ColorCombinerToExtension ()
 {
-  wxUint32 ext_local, ext_local_a, ext_other, ext_other_a;
+  uint32_t ext_local, ext_local_a, ext_other, ext_other_a;
 
   switch (cmb.c_loc)
   {
@@ -16202,7 +16202,7 @@ void ColorCombinerToExtension ()
 
 void AlphaCombinerToExtension ()
 {
-  wxUint32 ext_local, ext_other;
+  uint32_t ext_local, ext_other;
   switch (cmb.a_loc)
   {
   case GR_COMBINE_LOCAL_ITERATED:
@@ -16340,9 +16340,9 @@ void AlphaCombinerToExtension ()
 
 void TexColorCombinerToExtension (GrChipID_t tmu)
 {
-  wxUint32 tc_ext_a, tc_ext_a_mode, tc_ext_b, tc_ext_b_mode, tc_ext_c, tc_ext_d;
+  uint32_t tc_ext_a, tc_ext_a_mode, tc_ext_b, tc_ext_b_mode, tc_ext_c, tc_ext_d;
   int  tc_ext_c_invert, tc_ext_d_invert;
-  wxUint32 tmu_func, tmu_fac;
+  uint32_t tmu_func, tmu_fac;
 
   if (tmu == GR_TMU0)
   {
@@ -16539,9 +16539,9 @@ void TexColorCombinerToExtension (GrChipID_t tmu)
 
 void TexAlphaCombinerToExtension (GrChipID_t tmu)
 {
-  wxUint32 ta_ext_a, ta_ext_a_mode, ta_ext_b, ta_ext_b_mode, ta_ext_c, ta_ext_d;
+  uint32_t ta_ext_a, ta_ext_a_mode, ta_ext_b, ta_ext_b_mode, ta_ext_c, ta_ext_d;
   int  ta_ext_c_invert, ta_ext_d_invert;
-  wxUint32 tmu_a_func, tmu_a_fac;
+  uint32_t tmu_a_func, tmu_a_fac;
 
   if (tmu == GR_TMU0)
   {
