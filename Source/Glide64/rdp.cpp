@@ -1989,8 +1989,8 @@ static void rdp_loadblock()
 
     // lr_s specifies number of 64-bit words to copy
     // 10.2 format
-    uint16_t ul_s = (uint16_t)(rdp.cmd0 >> 14) & 0x3FF;
-    uint16_t ul_t = (uint16_t)(rdp.cmd0 >> 2) & 0x3FF;
+    uint16_t ul_s = (uint16_t)((rdp.cmd0 >> 14) & 0x3FF);
+    uint16_t ul_t = (uint16_t)((rdp.cmd0 >> 2) & 0x3FF);
 
     rdp.tiles[tile].ul_s = ul_s;
     rdp.tiles[tile].ul_t = ul_t;
