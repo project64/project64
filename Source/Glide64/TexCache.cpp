@@ -501,6 +501,7 @@ void GetTexInfo(int id, int tile)
 
 int ChooseBestTmu(int tmu1, int tmu2)
 {
+    if (!GfxInitDone) return tmu1;
     if (voodoo.tex_UMA) return 0;
 
     if (tmu1 >= voodoo.num_tmu) return tmu2;
@@ -732,91 +733,94 @@ void TexCache()
     rdp.t1 = tmu_1;
 
     // SET the combiner
-    if (rdp.allow_combine)
+    if (GfxInitDone)
     {
-        // Now actually combine
-        if (cmb.cmb_ext_use)
+        if (rdp.allow_combine)
         {
-            LRDP(" | | | |- combiner extension\n");
-            if (!(cmb.cmb_ext_use & COMBINE_EXT_COLOR))
-                ColorCombinerToExtension();
-            if (!(cmb.cmb_ext_use & COMBINE_EXT_ALPHA))
-                AlphaCombinerToExtension();
-            cmb.grColorCombineExt(cmb.c_ext_a, cmb.c_ext_a_mode,
-                cmb.c_ext_b, cmb.c_ext_b_mode,
-                cmb.c_ext_c, cmb.c_ext_c_invert,
-                cmb.c_ext_d, cmb.c_ext_d_invert, 0, 0);
-            cmb.grAlphaCombineExt(cmb.a_ext_a, cmb.a_ext_a_mode,
-                cmb.a_ext_b, cmb.a_ext_b_mode,
-                cmb.a_ext_c, cmb.a_ext_c_invert,
-                cmb.a_ext_d, cmb.a_ext_d_invert, 0, 0);
+            // Now actually combine
+            if (cmb.cmb_ext_use)
+            {
+                LRDP(" | | | |- combiner extension\n");
+                if (!(cmb.cmb_ext_use & COMBINE_EXT_COLOR))
+                    ColorCombinerToExtension();
+                if (!(cmb.cmb_ext_use & COMBINE_EXT_ALPHA))
+                    AlphaCombinerToExtension();
+                cmb.grColorCombineExt(cmb.c_ext_a, cmb.c_ext_a_mode,
+                    cmb.c_ext_b, cmb.c_ext_b_mode,
+                    cmb.c_ext_c, cmb.c_ext_c_invert,
+                    cmb.c_ext_d, cmb.c_ext_d_invert, 0, 0);
+                cmb.grAlphaCombineExt(cmb.a_ext_a, cmb.a_ext_a_mode,
+                    cmb.a_ext_b, cmb.a_ext_b_mode,
+                    cmb.a_ext_c, cmb.a_ext_c_invert,
+                    cmb.a_ext_d, cmb.a_ext_d_invert, 0, 0);
+            }
+            else
+            {
+                grColorCombine(cmb.c_fnc, cmb.c_fac, cmb.c_loc, cmb.c_oth, FXFALSE);
+                grAlphaCombine(cmb.a_fnc, cmb.a_fac, cmb.a_loc, cmb.a_oth, FXFALSE);
+            }
+            grConstantColorValue(cmb.ccolor);
+            grAlphaBlendFunction(cmb.abf1, cmb.abf2, GR_BLEND_ZERO, GR_BLEND_ZERO);
+            if (!rdp.tex) //nothing more to do
+                return;
         }
-        else
-        {
-            grColorCombine(cmb.c_fnc, cmb.c_fac, cmb.c_loc, cmb.c_oth, FXFALSE);
-            grAlphaCombine(cmb.a_fnc, cmb.a_fac, cmb.a_loc, cmb.a_oth, FXFALSE);
-        }
-        grConstantColorValue(cmb.ccolor);
-        grAlphaBlendFunction(cmb.abf1, cmb.abf2, GR_BLEND_ZERO, GR_BLEND_ZERO);
-        if (!rdp.tex) //nothing more to do
-            return;
-    }
 
-    if (tmu_1 < voodoo.num_tmu)
-    {
-        if (cmb.tex_cmb_ext_use)
+        if (tmu_1 < voodoo.num_tmu)
         {
-            LRDP(" | | | |- combiner extension tmu1\n");
-            if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_COLOR))
-                TexColorCombinerToExtension(GR_TMU1);
-            if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_ALPHA))
-                TexAlphaCombinerToExtension(GR_TMU1);
-            cmb.grTexColorCombineExt(tmu_1, cmb.t1c_ext_a, cmb.t1c_ext_a_mode,
-                cmb.t1c_ext_b, cmb.t1c_ext_b_mode,
-                cmb.t1c_ext_c, cmb.t1c_ext_c_invert,
-                cmb.t1c_ext_d, cmb.t1c_ext_d_invert, 0, 0);
-            cmb.grTexAlphaCombineExt(tmu_1, cmb.t1a_ext_a, cmb.t1a_ext_a_mode,
-                cmb.t1a_ext_b, cmb.t1a_ext_b_mode,
-                cmb.t1a_ext_c, cmb.t1a_ext_c_invert,
-                cmb.t1a_ext_d, cmb.t1a_ext_d_invert, 0, 0);
-            cmb.grConstantColorValueExt(tmu_1, cmb.tex_ccolor);
+            if (cmb.tex_cmb_ext_use)
+            {
+                LRDP(" | | | |- combiner extension tmu1\n");
+                if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_COLOR))
+                    TexColorCombinerToExtension(GR_TMU1);
+                if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_ALPHA))
+                    TexAlphaCombinerToExtension(GR_TMU1);
+                cmb.grTexColorCombineExt(tmu_1, cmb.t1c_ext_a, cmb.t1c_ext_a_mode,
+                    cmb.t1c_ext_b, cmb.t1c_ext_b_mode,
+                    cmb.t1c_ext_c, cmb.t1c_ext_c_invert,
+                    cmb.t1c_ext_d, cmb.t1c_ext_d_invert, 0, 0);
+                cmb.grTexAlphaCombineExt(tmu_1, cmb.t1a_ext_a, cmb.t1a_ext_a_mode,
+                    cmb.t1a_ext_b, cmb.t1a_ext_b_mode,
+                    cmb.t1a_ext_c, cmb.t1a_ext_c_invert,
+                    cmb.t1a_ext_d, cmb.t1a_ext_d_invert, 0, 0);
+                cmb.grConstantColorValueExt(tmu_1, cmb.tex_ccolor);
+            }
+            else
+            {
+                grTexCombine(tmu_1, cmb.tmu1_func, cmb.tmu1_fac, cmb.tmu1_a_func, cmb.tmu1_a_fac, cmb.tmu1_invert, cmb.tmu1_a_invert);
+                if (cmb.combine_ext)
+                    cmb.grConstantColorValueExt(tmu_1, 0);
+            }
+            grTexDetailControl(tmu_1, cmb.dc1_lodbias, cmb.dc1_detailscale, cmb.dc1_detailmax);
+            grTexLodBiasValue(tmu_1, cmb.lodbias1);
         }
-        else
+        if (tmu_0 < voodoo.num_tmu)
         {
-            grTexCombine(tmu_1, cmb.tmu1_func, cmb.tmu1_fac, cmb.tmu1_a_func, cmb.tmu1_a_fac, cmb.tmu1_invert, cmb.tmu1_a_invert);
-            if (cmb.combine_ext)
-                cmb.grConstantColorValueExt(tmu_1, 0);
+            if (cmb.tex_cmb_ext_use)
+            {
+                LRDP(" | | | |- combiner extension tmu0\n");
+                if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_COLOR))
+                    TexColorCombinerToExtension(GR_TMU0);
+                if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_ALPHA))
+                    TexAlphaCombinerToExtension(GR_TMU0);
+                cmb.grTexColorCombineExt(tmu_0, cmb.t0c_ext_a, cmb.t0c_ext_a_mode,
+                    cmb.t0c_ext_b, cmb.t0c_ext_b_mode,
+                    cmb.t0c_ext_c, cmb.t0c_ext_c_invert,
+                    cmb.t0c_ext_d, cmb.t0c_ext_d_invert, 0, 0);
+                cmb.grTexAlphaCombineExt(tmu_0, cmb.t0a_ext_a, cmb.t0a_ext_a_mode,
+                    cmb.t0a_ext_b, cmb.t0a_ext_b_mode,
+                    cmb.t0a_ext_c, cmb.t0a_ext_c_invert,
+                    cmb.t0a_ext_d, cmb.t0a_ext_d_invert, 0, 0);
+                cmb.grConstantColorValueExt(tmu_0, cmb.tex_ccolor);
+            }
+            else
+            {
+                grTexCombine(tmu_0, cmb.tmu0_func, cmb.tmu0_fac, cmb.tmu0_a_func, cmb.tmu0_a_fac, cmb.tmu0_invert, cmb.tmu0_a_invert);
+                if (cmb.combine_ext)
+                    cmb.grConstantColorValueExt(tmu_0, 0);
+            }
+            grTexDetailControl(tmu_0, cmb.dc0_lodbias, cmb.dc0_detailscale, cmb.dc0_detailmax);
+            grTexLodBiasValue(tmu_0, cmb.lodbias0);
         }
-        grTexDetailControl(tmu_1, cmb.dc1_lodbias, cmb.dc1_detailscale, cmb.dc1_detailmax);
-        grTexLodBiasValue(tmu_1, cmb.lodbias1);
-    }
-    if (tmu_0 < voodoo.num_tmu)
-    {
-        if (cmb.tex_cmb_ext_use)
-        {
-            LRDP(" | | | |- combiner extension tmu0\n");
-            if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_COLOR))
-                TexColorCombinerToExtension(GR_TMU0);
-            if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_ALPHA))
-                TexAlphaCombinerToExtension(GR_TMU0);
-            cmb.grTexColorCombineExt(tmu_0, cmb.t0c_ext_a, cmb.t0c_ext_a_mode,
-                cmb.t0c_ext_b, cmb.t0c_ext_b_mode,
-                cmb.t0c_ext_c, cmb.t0c_ext_c_invert,
-                cmb.t0c_ext_d, cmb.t0c_ext_d_invert, 0, 0);
-            cmb.grTexAlphaCombineExt(tmu_0, cmb.t0a_ext_a, cmb.t0a_ext_a_mode,
-                cmb.t0a_ext_b, cmb.t0a_ext_b_mode,
-                cmb.t0a_ext_c, cmb.t0a_ext_c_invert,
-                cmb.t0a_ext_d, cmb.t0a_ext_d_invert, 0, 0);
-            cmb.grConstantColorValueExt(tmu_0, cmb.tex_ccolor);
-        }
-        else
-        {
-            grTexCombine(tmu_0, cmb.tmu0_func, cmb.tmu0_fac, cmb.tmu0_a_func, cmb.tmu0_a_fac, cmb.tmu0_invert, cmb.tmu0_a_invert);
-            if (cmb.combine_ext)
-                cmb.grConstantColorValueExt(tmu_0, 0);
-        }
-        grTexDetailControl(tmu_0, cmb.dc0_lodbias, cmb.dc0_detailscale, cmb.dc0_detailmax);
-        grTexLodBiasValue(tmu_0, cmb.lodbias0);
     }
 
     if ((rdp.tex & 1) && tmu_0 < voodoo.num_tmu)
@@ -824,22 +828,28 @@ void TexCache()
         if (aTBuff[0] && aTBuff[0]->cache)
         {
             LRDP(" | |- Hires tex T0 found in cache.\n");
-            rdp.cur_cache[0] = aTBuff[0]->cache;
-            rdp.cur_cache[0]->last_used = frame_count;
-            rdp.cur_cache[0]->uses = rdp.debug_n;
+            if (GfxInitDone)
+            {
+                rdp.cur_cache[0] = aTBuff[0]->cache;
+                rdp.cur_cache[0]->last_used = frame_count;
+                rdp.cur_cache[0]->uses = rdp.debug_n;
+            }
         }
         else if (tex_found[0][tmu_0] != -1)
         {
             LRDP(" | |- T0 found in cache.\n");
-            CACHE_LUT *cache = voodoo.tex_UMA ? &rdp.cache[0][tex_found[0][0]] : &rdp.cache[tmu_0][tex_found[0][tmu_0]];
-            rdp.cur_cache_n[0] = tex_found[0][tmu_0];
-            rdp.cur_cache[0] = cache;
-            rdp.cur_cache[0]->last_used = frame_count;
-            rdp.cur_cache[0]->uses = rdp.debug_n;
-            grTexSource(tmu_0,
-                (voodoo.tex_min_addr[tmu_0] + cache->tmem_addr),
-                GR_MIPMAPLEVELMASK_BOTH,
-                &cache->t_info);
+            if (GfxInitDone)
+            {
+                CACHE_LUT *cache = voodoo.tex_UMA ? &rdp.cache[0][tex_found[0][0]] : &rdp.cache[tmu_0][tex_found[0][tmu_0]];
+                rdp.cur_cache_n[0] = tex_found[0][tmu_0];
+                rdp.cur_cache[0] = cache;
+                rdp.cur_cache[0]->last_used = frame_count;
+                rdp.cur_cache[0]->uses = rdp.debug_n;
+                grTexSource(tmu_0,
+                    (voodoo.tex_min_addr[tmu_0] + cache->tmem_addr),
+                    GR_MIPMAPLEVELMASK_BOTH,
+                    &cache->t_info);
+            }
         }
         else
             LoadTex(0, tmu_0);
@@ -849,101 +859,110 @@ void TexCache()
         if (aTBuff[1] && aTBuff[1]->cache)
         {
             LRDP(" | |- Hires tex T1 found in cache.\n");
-            rdp.cur_cache[1] = aTBuff[1]->cache;
-            rdp.cur_cache[1]->last_used = frame_count;
-            rdp.cur_cache[1]->uses = rdp.debug_n;
+            if (GfxInitDone)
+            {
+                rdp.cur_cache[1] = aTBuff[1]->cache;
+                rdp.cur_cache[1]->last_used = frame_count;
+                rdp.cur_cache[1]->uses = rdp.debug_n;
+            }
         }
         else if (tex_found[1][tmu_1] != -1)
         {
             LRDP(" | |- T1 found in cache.\n");
-            CACHE_LUT *cache = voodoo.tex_UMA ? &rdp.cache[0][tex_found[1][0]] : &rdp.cache[tmu_1][tex_found[1][tmu_1]];
-            rdp.cur_cache_n[1] = tex_found[1][tmu_1];
-            rdp.cur_cache[1] = cache;
-            rdp.cur_cache[1]->last_used = frame_count;
-            rdp.cur_cache[1]->uses = rdp.debug_n;
-            grTexSource(tmu_1,
-                (voodoo.tex_min_addr[tmu_1] + cache->tmem_addr),
-                GR_MIPMAPLEVELMASK_BOTH,
-                &cache->t_info);
+            if (GfxInitDone)
+            {
+                CACHE_LUT *cache = voodoo.tex_UMA ? &rdp.cache[0][tex_found[1][0]] : &rdp.cache[tmu_1][tex_found[1][tmu_1]];
+                rdp.cur_cache_n[1] = tex_found[1][tmu_1];
+                rdp.cur_cache[1] = cache;
+                rdp.cur_cache[1]->last_used = frame_count;
+                rdp.cur_cache[1]->uses = rdp.debug_n;
+                grTexSource(tmu_1,
+                    (voodoo.tex_min_addr[tmu_1] + cache->tmem_addr),
+                    GR_MIPMAPLEVELMASK_BOTH,
+                    &cache->t_info);
+            }
         }
         else
             LoadTex(1, tmu_1);
     }
 
-    int tmu_v[2];
-
-    tmu_v[0] = tmu_0;
-    tmu_v[1] = tmu_1;
-    for (int i = 0; i < 2; i++)
+    if (GfxInitDone)
     {
-        const int tmu = tmu_v[i];
+        int tmu_v[2];
 
-        if (tmu >= voodoo.num_tmu) continue;
-
-        int tile = rdp.cur_tile + i;
-
-        if (settings.filtering == 0)
+        tmu_v[0] = tmu_0;
+        tmu_v[1] = tmu_1;
+        for (int i = 0; i < 2; i++)
         {
-            int filter = (rdp.filter_mode != 2) ? GR_TEXTUREFILTER_POINT_SAMPLED : GR_TEXTUREFILTER_BILINEAR;
-            grTexFilterMode(tmu, filter, filter);
-        }
-        else
-        {
-            int filter = (settings.filtering == 1) ? GR_TEXTUREFILTER_BILINEAR : GR_TEXTUREFILTER_POINT_SAMPLED;
-            grTexFilterMode(tmu, filter, filter);
-        }
+            const int tmu = tmu_v[i];
 
-        if (rdp.cur_cache[i])
-        {
-            uint32_t mode_s, mode_t;
-            int clamp_s, clamp_t;
-            if (rdp.force_wrap && !rdp.texrecting)
+            if (tmu >= voodoo.num_tmu) continue;
+
+            int tile = rdp.cur_tile + i;
+
+            if (settings.filtering == 0)
             {
-                clamp_s = rdp.tiles[tile].clamp_s && rdp.tiles[tile].lr_s - rdp.tiles[tile].ul_s < 256;
-                clamp_t = rdp.tiles[tile].clamp_t && rdp.tiles[tile].lr_t - rdp.tiles[tile].ul_t < 256;
+                int filter = (rdp.filter_mode != 2) ? GR_TEXTUREFILTER_POINT_SAMPLED : GR_TEXTUREFILTER_BILINEAR;
+                grTexFilterMode(tmu, filter, filter);
             }
             else
             {
-                clamp_s = (rdp.tiles[tile].clamp_s || rdp.tiles[tile].mask_s == 0) &&
-                    rdp.tiles[tile].lr_s - rdp.tiles[tile].ul_s < 256;
-                clamp_t = (rdp.tiles[tile].clamp_t || rdp.tiles[tile].mask_t == 0) &&
-                    rdp.tiles[tile].lr_t - rdp.tiles[tile].ul_t < 256;
+                int filter = (settings.filtering == 1) ? GR_TEXTUREFILTER_BILINEAR : GR_TEXTUREFILTER_POINT_SAMPLED;
+                grTexFilterMode(tmu, filter, filter);
             }
 
-            if (rdp.cur_cache[i]->f_mirror_s)
-                mode_s = GR_TEXTURECLAMP_MIRROR_EXT;
-            else if (rdp.cur_cache[i]->f_wrap_s)
-                mode_s = GR_TEXTURECLAMP_WRAP;
-            else if (clamp_s)
-                mode_s = GR_TEXTURECLAMP_CLAMP;
-            else
+            if (rdp.cur_cache[i])
             {
-                if (rdp.tiles[tile].mirror_s && voodoo.sup_mirroring)
+                uint32_t mode_s, mode_t;
+                int clamp_s, clamp_t;
+                if (rdp.force_wrap && !rdp.texrecting)
+                {
+                    clamp_s = rdp.tiles[tile].clamp_s && rdp.tiles[tile].lr_s - rdp.tiles[tile].ul_s < 256;
+                    clamp_t = rdp.tiles[tile].clamp_t && rdp.tiles[tile].lr_t - rdp.tiles[tile].ul_t < 256;
+                }
+                else
+                {
+                    clamp_s = (rdp.tiles[tile].clamp_s || rdp.tiles[tile].mask_s == 0) &&
+                        rdp.tiles[tile].lr_s - rdp.tiles[tile].ul_s < 256;
+                    clamp_t = (rdp.tiles[tile].clamp_t || rdp.tiles[tile].mask_t == 0) &&
+                        rdp.tiles[tile].lr_t - rdp.tiles[tile].ul_t < 256;
+                }
+
+                if (rdp.cur_cache[i]->f_mirror_s)
                     mode_s = GR_TEXTURECLAMP_MIRROR_EXT;
-                else
+                else if (rdp.cur_cache[i]->f_wrap_s)
                     mode_s = GR_TEXTURECLAMP_WRAP;
-            }
-
-            if (rdp.cur_cache[i]->f_mirror_t)
-                mode_t = GR_TEXTURECLAMP_MIRROR_EXT;
-            else if (rdp.cur_cache[i]->f_wrap_t)
-                mode_t = GR_TEXTURECLAMP_WRAP;
-            else if (clamp_t)
-                mode_t = GR_TEXTURECLAMP_CLAMP;
-            else
-            {
-                if (rdp.tiles[tile].mirror_t && voodoo.sup_mirroring)
-                    mode_t = GR_TEXTURECLAMP_MIRROR_EXT;
+                else if (clamp_s)
+                    mode_s = GR_TEXTURECLAMP_CLAMP;
                 else
-                    mode_t = GR_TEXTURECLAMP_WRAP;
-            }
+                {
+                    if (rdp.tiles[tile].mirror_s && voodoo.sup_mirroring)
+                        mode_s = GR_TEXTURECLAMP_MIRROR_EXT;
+                    else
+                        mode_s = GR_TEXTURECLAMP_WRAP;
+                }
 
-            grTexClampMode(tmu,
-                mode_s,
-                mode_t);
+                if (rdp.cur_cache[i]->f_mirror_t)
+                    mode_t = GR_TEXTURECLAMP_MIRROR_EXT;
+                else if (rdp.cur_cache[i]->f_wrap_t)
+                    mode_t = GR_TEXTURECLAMP_WRAP;
+                else if (clamp_t)
+                    mode_t = GR_TEXTURECLAMP_CLAMP;
+                else
+                {
+                    if (rdp.tiles[tile].mirror_t && voodoo.sup_mirroring)
+                        mode_t = GR_TEXTURECLAMP_MIRROR_EXT;
+                    else
+                        mode_t = GR_TEXTURECLAMP_WRAP;
+                }
+
+                grTexClampMode(tmu,
+                    mode_s,
+                    mode_t);
+            }
+            if (aTBuff[i] && (rdp.tex&(i + 1)))
+                SelectTBuffTex(aTBuff[i]);
         }
-        if (aTBuff[i] && (rdp.tex&(i + 1)))
-            SelectTBuffTex(aTBuff[i]);
     }
 
     LRDP(" | +- TexCache End\n");
@@ -1604,162 +1623,165 @@ void LoadTex(int id, int tmu)
     cache->lod = lod;
     cache->aspect = aspect;
 
-#ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
-    if (settings.ghq_use)
+    if (GfxInitDone)
     {
-        if (!ghqTexInfo.data && ghq_dmptex_toggle_key) {
-            unsigned char *tmpbuf = (unsigned char*)texture;
-            int tmpwidth = real_x;
-            if (texinfo[id].splits > 1) {
-                int dstpixoffset, srcpixoffset;
-                int shift;
-                switch (LOWORD(result) & 0x7fff) { // XXX is there a better way of determining the pixel color depth?
-                case GR_TEXFMT_ARGB_8888:
-                    shift = 3;
-                    break;
-                case GR_TEXFMT_ALPHA_INTENSITY_44:
-                case GR_TEXFMT_ALPHA_8:
-                    shift = 0;
-                    break;
-                default:
-                    shift = 1;
-                }
-                tmpwidth = texinfo[id].real_image_width;
-                tmpbuf = (unsigned char*)malloc((256 * 256) << 3); // XXX performance overhead
-                for (int i = 0; i < cache->splitheight; i++) {
-                    dstpixoffset = texinfo[id].real_image_width * i;
-                    srcpixoffset = 256 * i;
-                    for (int k = 0; k < texinfo[id].splits; k++) {
-                        memcpy(tmpbuf + (dstpixoffset << shift), texture + (srcpixoffset << shift), (256 << shift));
-                        dstpixoffset += 256;
-                        srcpixoffset += (256 * cache->splitheight);
-                    }
-                }
-            }
-            ext_ghq_dmptx(tmpbuf, (int)texinfo[id].real_image_width, (int)texinfo[id].real_image_height, (int)tmpwidth, (unsigned short)LOWORD(result), (unsigned short)((cache->format << 8) | (cache->size)), cache->ricecrc);
-            if (tmpbuf != texture && tmpbuf) {
-                free(tmpbuf);
-            }
-        }
-
-        if (!ghqTexInfo.data)
-            if (!settings.ghq_enht_nobg || !rdp.texrecting || (texinfo[id].splits == 1 && texinfo[id].width <= 256))
-                ext_ghq_txfilter((unsigned char*)texture, (int)real_x, (int)real_y, LOWORD(result), (uint64)g64_crc, &ghqTexInfo);
-
-        if (ghqTexInfo.data)
+#ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
+        if (settings.ghq_use)
         {
-            if (ghqTexInfo.aspectRatioLog2 < GR_ASPECT_LOG2_1x8 ||
-                ghqTexInfo.aspectRatioLog2 > GR_ASPECT_LOG2_8x1 ||
-                ghqTexInfo.largeLodLog2 > GR_LOD_LOG2_2048 ||
-                ghqTexInfo.largeLodLog2 < GR_LOD_LOG2_1)
-            {
-                /* invalid dimensions */
+            if (!ghqTexInfo.data && ghq_dmptex_toggle_key) {
+                unsigned char *tmpbuf = (unsigned char*)texture;
+                int tmpwidth = real_x;
+                if (texinfo[id].splits > 1) {
+                    int dstpixoffset, srcpixoffset;
+                    int shift;
+                    switch (LOWORD(result) & 0x7fff) { // XXX is there a better way of determining the pixel color depth?
+                    case GR_TEXFMT_ARGB_8888:
+                        shift = 3;
+                        break;
+                    case GR_TEXFMT_ALPHA_INTENSITY_44:
+                    case GR_TEXFMT_ALPHA_8:
+                        shift = 0;
+                        break;
+                    default:
+                        shift = 1;
+                    }
+                    tmpwidth = texinfo[id].real_image_width;
+                    tmpbuf = (unsigned char*)malloc((256 * 256) << 3); // XXX performance overhead
+                    for (int i = 0; i < cache->splitheight; i++) {
+                        dstpixoffset = texinfo[id].real_image_width * i;
+                        srcpixoffset = 256 * i;
+                        for (int k = 0; k < texinfo[id].splits; k++) {
+                            memcpy(tmpbuf + (dstpixoffset << shift), texture + (srcpixoffset << shift), (256 << shift));
+                            dstpixoffset += 256;
+                            srcpixoffset += (256 * cache->splitheight);
+                        }
+                    }
+                }
+                ext_ghq_dmptx(tmpbuf, (int)texinfo[id].real_image_width, (int)texinfo[id].real_image_height, (int)tmpwidth, (unsigned short)LOWORD(result), (unsigned short)((cache->format << 8) | (cache->size)), cache->ricecrc);
+                if (tmpbuf != texture && tmpbuf) {
+                    free(tmpbuf);
+                }
             }
-            else
+
+            if (!ghqTexInfo.data)
+                if (!settings.ghq_enht_nobg || !rdp.texrecting || (texinfo[id].splits == 1 && texinfo[id].width <= 256))
+                    ext_ghq_txfilter((unsigned char*)texture, (int)real_x, (int)real_y, LOWORD(result), (uint64)g64_crc, &ghqTexInfo);
+
+            if (ghqTexInfo.data)
             {
-                texture = (uint8_t *)ghqTexInfo.data;
-                lod = ghqTexInfo.largeLodLog2;
-                int splits = cache->splits;
-                if (ghqTexInfo.is_hires_tex)
+                if (ghqTexInfo.aspectRatioLog2 < GR_ASPECT_LOG2_1x8 ||
+                    ghqTexInfo.aspectRatioLog2 > GR_ASPECT_LOG2_8x1 ||
+                    ghqTexInfo.largeLodLog2 > GR_LOD_LOG2_2048 ||
+                    ghqTexInfo.largeLodLog2 < GR_LOD_LOG2_1)
                 {
-                    if (ghqTexInfo.tiles/*ghqTexInfo.untiled_width > max_tex_size*/)
-                    {
-                        cache->scale = 1.0f;
-                        cache->c_off = 0.5f;
-                        cache->splits = ghqTexInfo.tiles;//((hirestex.width-1)>>8)+1;
-                        cache->splitheight = ghqTexInfo.untiled_height;
-                        cache->scale_x = 1.0f;
-                        cache->scale_y = float(ghqTexInfo.untiled_height*ghqTexInfo.tiles) / float(ghqTexInfo.width);//*sy;
-                        if (splits == 1)
-                        {
-                            int shift;
-                            for (shift = 9; (1 << shift) < ghqTexInfo.untiled_width; shift++);
-                            float mult = float(1 << shift >> 8);
-                            cache->c_scl_x *= mult;
-                            cache->c_scl_y *= mult;
-                        }
-                        else
-                        {
-                            int tile_width = rdp.tiles[td].width;
-                            if (rdp.timg.set_by == 1)
-                                tile_width = rdp.load_info[rdp.tiles[td].t_mem].tex_width;
-                            float mult = float(ghqTexInfo.untiled_width / tile_width);
-                            cache->c_scl_x *= mult;
-                            cache->c_scl_y *= mult;
-                        }
-                    }
-                    else
-                    {
-                        cache->scale = 256.0f / float(1 << lod);
-                        cache->c_off = cache->scale * 0.5f;
-                        cache->splits = 1;
-                        if (aspect != ghqTexInfo.aspectRatioLog2)
-                        {
-                            float mscale = float(1 << abs(aspect - ghqTexInfo.aspectRatioLog2));
-                            if (abs(aspect) > abs(ghqTexInfo.aspectRatioLog2))
-                            {
-                                cache->c_scl_y *= mscale;
-                                cache->c_scl_x *= mscale;
-                            }
-                            /*
-                            else
-                            {
-                            if (rdp.tiles[td].mirror_s && sup_mirroring)
-                            cache->f_mirror_s = TRUE;
-                            if (rdp.tiles[td].mirror_t && sup_mirroring)
-                            cache->f_mirror_t = TRUE;
-                            //cache->c_scl_y /= mscale;
-                            //cache->c_scl_x /= mscale;
-                            }
-                            */
-                            if (ghqTexInfo.aspectRatioLog2 >= 0)
-                            {
-                                cache->scale_x = 1.0f;
-                                cache->scale_y = 1.0f / float(1 << ghqTexInfo.aspectRatioLog2);
-                            }
-                            else
-                            {
-                                cache->scale_y = 1.0f;
-                                cache->scale_x = 1.0f / float(1 << (-ghqTexInfo.aspectRatioLog2));
-                            }
-                        }
-                        else if (splits > 1)
-                        {
-                            cache->c_scl_x /= splits;
-                            cache->c_scl_y /= splits;
-                        }
-                    }
-                    if (voodoo.sup_mirroring)
-                    {
-                        if (rdp.tiles[td].mirror_s && texinfo[id].tile_width == 2 * texinfo[id].width)
-                            cache->f_mirror_s = TRUE;
-                        else if (texinfo[id].tile_width >= 2 * texinfo[id].width)
-                            cache->f_wrap_s = TRUE;
-                        if (rdp.tiles[td].mirror_t && texinfo[id].tile_height == 2 * texinfo[id].height)
-                            cache->f_mirror_t = TRUE;
-                        else if (texinfo[id].tile_height >= 2 * texinfo[id].height)
-                            cache->f_wrap_t = TRUE;
-                        if (cache->f_mirror_s && cache->f_mirror_t)
-                        {
-                            cache->c_scl_x *= 2.0f;
-                            cache->c_scl_y *= 2.0f;
-                        }
-                    }
-                    aspect = ghqTexInfo.aspectRatioLog2;
-                    cache->lod = lod;
-                    cache->aspect = aspect;
+                    /* invalid dimensions */
                 }
                 else
                 {
-                    //cache->scale = 256.0f / float(1<<lod);
-                    cache->c_off = 128.0f / float(1 << lod);
+                    texture = (uint8_t *)ghqTexInfo.data;
+                    lod = ghqTexInfo.largeLodLog2;
+                    int splits = cache->splits;
+                    if (ghqTexInfo.is_hires_tex)
+                    {
+                        if (ghqTexInfo.tiles/*ghqTexInfo.untiled_width > max_tex_size*/)
+                        {
+                            cache->scale = 1.0f;
+                            cache->c_off = 0.5f;
+                            cache->splits = ghqTexInfo.tiles;//((hirestex.width-1)>>8)+1;
+                            cache->splitheight = ghqTexInfo.untiled_height;
+                            cache->scale_x = 1.0f;
+                            cache->scale_y = float(ghqTexInfo.untiled_height*ghqTexInfo.tiles) / float(ghqTexInfo.width);//*sy;
+                            if (splits == 1)
+                            {
+                                int shift;
+                                for (shift = 9; (1 << shift) < ghqTexInfo.untiled_width; shift++);
+                                float mult = float(1 << shift >> 8);
+                                cache->c_scl_x *= mult;
+                                cache->c_scl_y *= mult;
+                            }
+                            else
+                            {
+                                int tile_width = rdp.tiles[td].width;
+                                if (rdp.timg.set_by == 1)
+                                    tile_width = rdp.load_info[rdp.tiles[td].t_mem].tex_width;
+                                float mult = float(ghqTexInfo.untiled_width / tile_width);
+                                cache->c_scl_x *= mult;
+                                cache->c_scl_y *= mult;
+                            }
+                        }
+                        else
+                        {
+                            cache->scale = 256.0f / float(1 << lod);
+                            cache->c_off = cache->scale * 0.5f;
+                            cache->splits = 1;
+                            if (aspect != ghqTexInfo.aspectRatioLog2)
+                            {
+                                float mscale = float(1 << abs(aspect - ghqTexInfo.aspectRatioLog2));
+                                if (abs(aspect) > abs(ghqTexInfo.aspectRatioLog2))
+                                {
+                                    cache->c_scl_y *= mscale;
+                                    cache->c_scl_x *= mscale;
+                                }
+                                /*
+                                else
+                                {
+                                if (rdp.tiles[td].mirror_s && sup_mirroring)
+                                cache->f_mirror_s = TRUE;
+                                if (rdp.tiles[td].mirror_t && sup_mirroring)
+                                cache->f_mirror_t = TRUE;
+                                //cache->c_scl_y /= mscale;
+                                //cache->c_scl_x /= mscale;
+                                }
+                                */
+                                if (ghqTexInfo.aspectRatioLog2 >= 0)
+                                {
+                                    cache->scale_x = 1.0f;
+                                    cache->scale_y = 1.0f / float(1 << ghqTexInfo.aspectRatioLog2);
+                                }
+                                else
+                                {
+                                    cache->scale_y = 1.0f;
+                                    cache->scale_x = 1.0f / float(1 << (-ghqTexInfo.aspectRatioLog2));
+                                }
+                            }
+                            else if (splits > 1)
+                            {
+                                cache->c_scl_x /= splits;
+                                cache->c_scl_y /= splits;
+                            }
+                        }
+                        if (voodoo.sup_mirroring)
+                        {
+                            if (rdp.tiles[td].mirror_s && texinfo[id].tile_width == 2 * texinfo[id].width)
+                                cache->f_mirror_s = TRUE;
+                            else if (texinfo[id].tile_width >= 2 * texinfo[id].width)
+                                cache->f_wrap_s = TRUE;
+                            if (rdp.tiles[td].mirror_t && texinfo[id].tile_height == 2 * texinfo[id].height)
+                                cache->f_mirror_t = TRUE;
+                            else if (texinfo[id].tile_height >= 2 * texinfo[id].height)
+                                cache->f_wrap_t = TRUE;
+                            if (cache->f_mirror_s && cache->f_mirror_t)
+                            {
+                                cache->c_scl_x *= 2.0f;
+                                cache->c_scl_y *= 2.0f;
+                            }
+                        }
+                        aspect = ghqTexInfo.aspectRatioLog2;
+                        cache->lod = lod;
+                        cache->aspect = aspect;
+                    }
+                    else
+                    {
+                        //cache->scale = 256.0f / float(1<<lod);
+                        cache->c_off = 128.0f / float(1 << lod);
+                    }
+                    real_x = ghqTexInfo.width;
+                    real_y = ghqTexInfo.height;
+                    result = (1 << 16) | ghqTexInfo.format;
+                    cache->t_info.format = ghqTexInfo.format;
+                    cache->realwidth = real_x;
+                    cache->realheight = real_y;
                 }
-                real_x = ghqTexInfo.width;
-                real_y = ghqTexInfo.height;
-                result = (1 << 16) | ghqTexInfo.format;
-                cache->t_info.format = ghqTexInfo.format;
-                cache->realwidth = real_x;
-                cache->realheight = real_y;
             }
         }
 #endif
