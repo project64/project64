@@ -88,7 +88,7 @@ static void rsp_vertex(int v0, int n)
     x   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 0)^1];
     y   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 1)^1];
     z   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 2)^1];
-    v->flags  = ((wxUint16*)gfx.RDRAM)[(((addr+i) >> 1) + 3)^1];
+    v->flags  = ((uint16_t*)gfx.RDRAM)[(((addr+i) >> 1) + 3)^1];
     v->ou = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 4)^1];
     v->ov = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 5)^1];
     v->uv_scaled = 0;
@@ -148,7 +148,7 @@ static void rsp_vertex(int v0, int n)
   }
 }
 
-static void rsp_tri1(VERTEX **v, wxUint16 linew = 0)
+static void rsp_tri1(VERTEX **v, uint16_t linew = 0)
 {
   if (cull_tri(v))
     rdp.tri_n ++;
@@ -275,7 +275,7 @@ void load_matrix (float m[4][4], uint32_t addr)
   FRDP ("matrix - addr: %08lx\n", addr);
   int x,y;  // matrix index
   addr >>= 1;
-  wxUint16 * src = (wxUint16*)gfx.RDRAM;
+  uint16_t * src = (uint16_t*)gfx.RDRAM;
   for (x=0; x<16; x+=4) { // Adding 4 instead of one, just to remove mult. later
     for (y=0; y<4; y++) {
       m[x>>2][y] = (float)(
@@ -594,7 +594,7 @@ static void uc0_culldl()
   FRDP("uc0:culldl start: %d, end: %d\n", vStart, vEnd);
 
   if (vEnd < vStart) return;
-  for (wxUint16 i=vStart; i<=vEnd; i++)
+  for (uint16_t i=vStart; i<=vEnd; i++)
   {
     v = &rdp.vtx[i];
     // Check if completely off the screen (quick frustrum clipping for 90 FOV)
@@ -640,7 +640,7 @@ static void uc0_popmatrix()
 
 static void uc6_obj_sprite ();
 
-static void uc0_modifyvtx(uint8_t where, wxUint16 vtx, uint32_t val)
+static void uc0_modifyvtx(uint8_t where, uint16_t vtx, uint32_t val)
 {
   VERTEX *v = &rdp.vtx[vtx];
 
@@ -773,8 +773,8 @@ static void uc0_moveword()
 
   case 0x0c:
     {
-      wxUint16 val = (wxUint16)((rdp.cmd0 >> 8) & 0xFFFF);
-      wxUint16 vtx = val / 40;
+      uint16_t val = (uint16_t)((rdp.cmd0 >> 8) & 0xFFFF);
+      uint16_t vtx = val / 40;
       uint8_t where = val%40;
       uc0_modifyvtx(where, vtx, rdp.cmd1);
       FRDP ("uc0:modifyvtx: vtx: %d, where: 0x%02lx, val: %08lx - ", vtx, where, rdp.cmd1);
@@ -801,8 +801,8 @@ static void uc0_texture()
 
   if (on)
   {
-    wxUint16 s = (wxUint16)((rdp.cmd1 >> 16) & 0xFFFF);
-    wxUint16 t = (wxUint16)(rdp.cmd1 & 0xFFFF);
+    uint16_t s = (uint16_t)((rdp.cmd1 >> 16) & 0xFFFF);
+    uint16_t t = (uint16_t)(rdp.cmd1 & 0xFFFF);
 
     TILE *tmp_tile = &rdp.tiles[tile];
     tmp_tile->on = 1;
@@ -1046,7 +1046,7 @@ static void uc0_line3d()
 {
   uint32_t v0 = ((rdp.cmd1 >> 16) & 0xff) / 10;
   uint32_t v1 = ((rdp.cmd1 >>  8) & 0xff) / 10;
-  wxUint16 width = (wxUint16)(rdp.cmd1 & 0xFF) + 3;
+  uint16_t width = (uint16_t)(rdp.cmd1 & 0xFF) + 3;
 
   VERTEX *v[3] = {
     &rdp.vtx[v1],

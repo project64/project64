@@ -85,7 +85,7 @@ int tex_found[2][MAX_TMU];
 #ifdef TEXTURE_FILTER
 typedef struct HIRESTEX_t {
   int width, height;
-  wxUint16 format;
+  uint16_t format;
   uint8_t *data;
 } HIRESTEX;
 #endif
@@ -1256,7 +1256,7 @@ void LoadTex (int id, int tmu)
     modfactor = cmb.modfactor_1;
   }
 
-  wxUint16 tmp_pal[256];
+  uint16_t tmp_pal[256];
   int modifyPalette = (mod && (cache->format == 2) && (rdp.tlut_mode == 2));
 
   if (modifyPalette)
@@ -1334,7 +1334,7 @@ void LoadTex (int id, int tmu)
 
     //    uint8_t* addr = (uint8_t*)(gfx.RDRAM+rdp.addr[rdp.tiles[td].t_mem] + (rdp.tiles[td].ul_t * bpl) + (((rdp.tiles[td].ul_s<<rdp.tiles[td].size)+1)>>1));
     uint8_t * paladdr = 0;
-    wxUint16 * palette = 0;
+    uint16_t * palette = 0;
     if ((rdp.tiles[td].size < 2) && (rdp.tlut_mode || rdp.tiles[td].format == 2))
     {
       if (rdp.tiles[td].size == 1)
@@ -1551,67 +1551,67 @@ void LoadTex (int id, int tmu)
       switch (mod)
       {
       case TMOD_TEX_INTER_COLOR_USING_FACTOR:
-        mod_tex_inter_color_using_factor ((wxUint16*)texture, size, modcolor, modfactor);
+        mod_tex_inter_color_using_factor ((uint16_t*)texture, size, modcolor, modfactor);
         break;
       case TMOD_TEX_INTER_COL_USING_COL1:
-        mod_tex_inter_col_using_col1 ((wxUint16*)texture, size, modcolor, modcolor1);
+        mod_tex_inter_col_using_col1 ((uint16_t*)texture, size, modcolor, modcolor1);
         break;
       case TMOD_FULL_COLOR_SUB_TEX:
-        mod_full_color_sub_tex ((wxUint16*)texture, size, modcolor);
+        mod_full_color_sub_tex ((uint16_t*)texture, size, modcolor);
         break;
       case TMOD_COL_INTER_COL1_USING_TEX:
-        mod_col_inter_col1_using_tex ((wxUint16*)texture, size, modcolor, modcolor1);
+        mod_col_inter_col1_using_tex ((uint16_t*)texture, size, modcolor, modcolor1);
         break;
       case TMOD_COL_INTER_COL1_USING_TEXA:
-        mod_col_inter_col1_using_texa ((wxUint16*)texture, size, modcolor, modcolor1);
+        mod_col_inter_col1_using_texa ((uint16_t*)texture, size, modcolor, modcolor1);
         break;
       case TMOD_COL_INTER_COL1_USING_TEXA__MUL_TEX:
-        mod_col_inter_col1_using_texa__mul_tex ((wxUint16*)texture, size, modcolor, modcolor1);
+        mod_col_inter_col1_using_texa__mul_tex ((uint16_t*)texture, size, modcolor, modcolor1);
         break;
       case TMOD_COL_INTER_TEX_USING_TEXA:
-        mod_col_inter_tex_using_texa ((wxUint16*)texture, size, modcolor);
+        mod_col_inter_tex_using_texa ((uint16_t*)texture, size, modcolor);
         break;
       case TMOD_COL2_INTER__COL_INTER_COL1_USING_TEX__USING_TEXA:
-        mod_col2_inter__col_inter_col1_using_tex__using_texa ((wxUint16*)texture, size, modcolor, modcolor1, modcolor2);
+        mod_col2_inter__col_inter_col1_using_tex__using_texa ((uint16_t*)texture, size, modcolor, modcolor1, modcolor2);
         break;
       case TMOD_TEX_SCALE_FAC_ADD_FAC:
-        mod_tex_scale_fac_add_fac ((wxUint16*)texture, size, modfactor);
+        mod_tex_scale_fac_add_fac ((uint16_t*)texture, size, modfactor);
         break;
       case TMOD_TEX_SUB_COL_MUL_FAC_ADD_TEX:
-        mod_tex_sub_col_mul_fac_add_tex ((wxUint16*)texture, size, modcolor, modfactor);
+        mod_tex_sub_col_mul_fac_add_tex ((uint16_t*)texture, size, modcolor, modfactor);
         break;
       case TMOD_TEX_SCALE_COL_ADD_COL:
-        mod_tex_scale_col_add_col ((wxUint16*)texture, size, modcolor, modcolor1);
+        mod_tex_scale_col_add_col ((uint16_t*)texture, size, modcolor, modcolor1);
         break;
       case TMOD_TEX_ADD_COL:
-        mod_tex_add_col ((wxUint16*)texture, size, modcolor);
+        mod_tex_add_col ((uint16_t*)texture, size, modcolor);
         break;
       case TMOD_TEX_SUB_COL:
-        mod_tex_sub_col ((wxUint16*)texture, size, modcolor);
+        mod_tex_sub_col ((uint16_t*)texture, size, modcolor);
         break;
       case TMOD_TEX_SUB_COL_MUL_FAC:
-        mod_tex_sub_col_mul_fac ((wxUint16*)texture, size, modcolor, modfactor);
+        mod_tex_sub_col_mul_fac ((uint16_t*)texture, size, modcolor, modfactor);
         break;
       case TMOD_COL_INTER_TEX_USING_COL1:
-        mod_col_inter_tex_using_col1 ((wxUint16*)texture, size, modcolor, modcolor1);
+        mod_col_inter_tex_using_col1 ((uint16_t*)texture, size, modcolor, modcolor1);
         break;
       case TMOD_COL_MUL_TEXA_ADD_TEX:
-        mod_col_mul_texa_add_tex((wxUint16*)texture, size, modcolor);
+        mod_col_mul_texa_add_tex((uint16_t*)texture, size, modcolor);
         break;
       case TMOD_COL_INTER_TEX_USING_TEX:
-        mod_col_inter_tex_using_tex ((wxUint16*)texture, size, modcolor);
+        mod_col_inter_tex_using_tex ((uint16_t*)texture, size, modcolor);
         break;
       case TMOD_TEX_INTER_NOISE_USING_COL:
-        mod_tex_inter_noise_using_col ((wxUint16*)texture, size, modcolor);
+        mod_tex_inter_noise_using_col ((uint16_t*)texture, size, modcolor);
         break;
       case TMOD_TEX_INTER_COL_USING_TEXA:
-        mod_tex_inter_col_using_texa ((wxUint16*)texture, size, modcolor);
+        mod_tex_inter_col_using_texa ((uint16_t*)texture, size, modcolor);
         break;
       case TMOD_TEX_MUL_COL:
-        mod_tex_mul_col ((wxUint16*)texture, size, modcolor);
+        mod_tex_mul_col ((uint16_t*)texture, size, modcolor);
         break;
       case TMOD_TEX_SCALE_FAC_ADD_COL:
-        mod_tex_scale_fac_add_col ((wxUint16*)texture, size, modcolor, modfactor);
+        mod_tex_scale_fac_add_col ((uint16_t*)texture, size, modcolor, modfactor);
         break;
       default:
         ;

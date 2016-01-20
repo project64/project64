@@ -46,14 +46,14 @@
 uint32_t Load32bRGBA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
 {
   if (height < 1) height = 1;
-  const wxUint16 *tmem16 = (wxUint16*)rdp.tmem;
+  const uint16_t *tmem16 = (uint16_t*)rdp.tmem;
   const uint32_t tbase = (src - (wxUIntPtr)rdp.tmem) >> 1;
   const uint32_t width = max(1, wid_64 << 1);
   const int ext = real_width - width;
   line = width + (line>>2);
   uint32_t s, t, c;
   uint32_t * tex = (uint32_t*)dst;
-  wxUint16 rg, ba;
+  uint16_t rg, ba;
   for (t = 0; t < (uint32_t)height; t++)
   {
     uint32_t tline = tbase + line * t;
@@ -75,8 +75,8 @@ uint32_t Load32bRGBA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int 
     //convert to ARGB_4444
     const uint32_t tex_size = real_width * height;
     tex = (uint32_t *)dst;
-    wxUint16 *tex16 = (wxUint16*)dst;
-    wxUint16 a, r, g, b;
+    uint16_t *tex16 = (uint16_t*)dst;
+    uint16_t a, r, g, b;
     for (uint32_t i = 0; i < tex_size; i++) {
       c = tex[i];
       a = (c >> 28) & 0xF;
@@ -100,7 +100,7 @@ void LoadTile32b (uint32_t tile, uint32_t ul_s, uint32_t ul_t, uint32_t width, u
   const uint32_t tbase = rdp.tiles[tile].t_mem << 2;
   const uint32_t addr = rdp.timg.addr >> 2;
   const uint32_t* src = (const uint32_t*)gfx.RDRAM;
-  wxUint16 *tmem16 = (wxUint16*)rdp.tmem;
+  uint16_t *tmem16 = (uint16_t*)rdp.tmem;
   uint32_t c, ptr, tline, s, xorval;
 
   for (uint32_t j = 0; j < height; j++)
@@ -130,7 +130,7 @@ void LoadBlock32b(uint32_t tile, uint32_t ul_s, uint32_t ul_t, uint32_t lr_s, ui
   const uint32_t slindwords = ul_s;
   const uint32_t line = rdp.tiles[tile].line << 2;
 
-  wxUint16 *tmem16 = (wxUint16*)rdp.tmem;
+  uint16_t *tmem16 = (uint16_t*)rdp.tmem;
   uint32_t addr = rdp.timg.addr >> 2;
   uint32_t width = (lr_s - ul_s + 1) << 2;
   if (width & 7)

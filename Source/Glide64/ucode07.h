@@ -56,7 +56,7 @@ typedef struct
 {
 	short y;
 	short x;
-	wxUint16 idx;
+	uint16_t idx;
 
 	short z;
 

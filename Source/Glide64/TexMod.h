@@ -37,12 +37,12 @@
 //
 //****************************************************************
 
-static void mod_tex_inter_color_using_factor (wxUint16 *dst, int size, uint32_t color, uint32_t factor)
+static void mod_tex_inter_color_using_factor (uint16_t *dst, int size, uint32_t color, uint32_t factor)
 {
 	float percent = factor / 255.0f;
 	float percent_i = 1 - percent;
 	uint32_t cr, cg, cb;
-	wxUint16 col, a;
+	uint16_t col, a;
 	uint8_t r, g, b;
 
 	cr = (color >> 12) & 0xF;
@@ -60,10 +60,10 @@ static void mod_tex_inter_color_using_factor (wxUint16 *dst, int size, uint32_t 
 	}
 }
 
-static void mod_tex_inter_col_using_col1 (wxUint16 *dst, int size, uint32_t color0, uint32_t color1)
+static void mod_tex_inter_col_using_col1 (uint16_t *dst, int size, uint32_t color0, uint32_t color1)
 {
 	uint32_t cr, cg, cb;
-	wxUint16 col, a;
+	uint16_t col, a;
 	uint8_t r, g, b;
 
 	float percent_r = ((color1 >> 12) & 0xF) / 15.0f;
@@ -88,10 +88,10 @@ static void mod_tex_inter_col_using_col1 (wxUint16 *dst, int size, uint32_t colo
 	}
 }
 
-static void mod_full_color_sub_tex (wxUint16 *dst, int size, uint32_t color)
+static void mod_full_color_sub_tex (uint16_t *dst, int size, uint32_t color)
 {
 	uint32_t cr, cg, cb, ca;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t a, r, g, b;
 
 	cr = (color >> 12) & 0xF;
@@ -110,12 +110,12 @@ static void mod_full_color_sub_tex (wxUint16 *dst, int size, uint32_t color)
 	}
 }
 
-static void mod_col_inter_col1_using_tex (wxUint16 *dst, int size, uint32_t color0, uint32_t color1)
+static void mod_col_inter_col1_using_tex (uint16_t *dst, int size, uint32_t color0, uint32_t color1)
 {
 	uint32_t cr0, cg0, cb0, cr1, cg1, cb1;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t r, g, b;
-	wxUint16 a;
+	uint16_t a;
 	float percent_r, percent_g, percent_b;
 
 	cr0 = (color0 >> 12) & 0xF;
@@ -139,12 +139,12 @@ static void mod_col_inter_col1_using_tex (wxUint16 *dst, int size, uint32_t colo
 	}
 }
 
-static void mod_col_inter_col1_using_texa (wxUint16 *dst, int size, uint32_t color0, uint32_t color1)
+static void mod_col_inter_col1_using_texa (uint16_t *dst, int size, uint32_t color0, uint32_t color1)
 {
 	uint32_t cr0, cg0, cb0, cr1, cg1, cb1;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t r, g, b;
-	wxUint16 a;
+	uint16_t a;
 	float percent, percent_i;
 
 	cr0 = (color0 >> 12) & 0xF;
@@ -167,12 +167,12 @@ static void mod_col_inter_col1_using_texa (wxUint16 *dst, int size, uint32_t col
 	}
 }
 
-static void mod_col_inter_col1_using_texa__mul_tex (wxUint16 *dst, int size, uint32_t color0, uint32_t color1)
+static void mod_col_inter_col1_using_texa__mul_tex (uint16_t *dst, int size, uint32_t color0, uint32_t color1)
 {
 	uint32_t cr0, cg0, cb0, cr1, cg1, cb1;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t r, g, b;
-	wxUint16 a;
+	uint16_t a;
 	float percent, percent_i;
 
 	cr0 = (color0 >> 12) & 0xF;
@@ -195,12 +195,12 @@ static void mod_col_inter_col1_using_texa__mul_tex (wxUint16 *dst, int size, uin
 	}
 }
 
-static void mod_col_inter_tex_using_tex (wxUint16 *dst, int size, uint32_t color)
+static void mod_col_inter_tex_using_tex (uint16_t *dst, int size, uint32_t color)
 {
 	uint32_t cr, cg, cb;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t r, g, b;
-	wxUint16 a;
+	uint16_t a;
 	float percent_r, percent_g, percent_b;
 
 	cr = (color >> 12) & 0xF;
@@ -221,12 +221,12 @@ static void mod_col_inter_tex_using_tex (wxUint16 *dst, int size, uint32_t color
 	}
 }
 
-static void mod_col_inter_tex_using_texa (wxUint16 *dst, int size, uint32_t color)
+static void mod_col_inter_tex_using_texa (uint16_t *dst, int size, uint32_t color)
 {
 	uint32_t cr, cg, cb;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t r, g, b;
-	wxUint16 a;
+	uint16_t a;
 	float percent, percent_i;
 
 	cr = (color >> 12) & 0xF;
@@ -246,14 +246,14 @@ static void mod_col_inter_tex_using_texa (wxUint16 *dst, int size, uint32_t colo
 	}
 }
 
-static void mod_col2_inter__col_inter_col1_using_tex__using_texa (wxUint16 *dst, int size,
+static void mod_col2_inter__col_inter_col1_using_tex__using_texa (uint16_t *dst, int size,
 																  uint32_t color0, uint32_t color1,
 																  uint32_t color2)
 {
 	uint32_t cr0, cg0, cb0, cr1, cg1, cb1, cr2, cg2, cb2;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t r, g, b;
-	wxUint16 a;
+	uint16_t a;
 	float percent_r, percent_g, percent_b, percent_a;
 
 	cr0 = (color0 >> 12) & 0xF;
@@ -281,10 +281,10 @@ static void mod_col2_inter__col_inter_col1_using_tex__using_texa (wxUint16 *dst,
 	}
 }
 
-static void mod_tex_scale_fac_add_fac (wxUint16 *dst, int size, uint32_t factor)
+static void mod_tex_scale_fac_add_fac (uint16_t *dst, int size, uint32_t factor)
 {
 	float percent = factor / 255.0f;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t a;
 	float base_a = (1.0f - percent) * 15.0f;
 
@@ -296,11 +296,11 @@ static void mod_tex_scale_fac_add_fac (wxUint16 *dst, int size, uint32_t factor)
 	}
 }
 
-static void mod_tex_sub_col_mul_fac_add_tex (wxUint16 *dst, int size, uint32_t color, uint32_t factor)
+static void mod_tex_sub_col_mul_fac_add_tex (uint16_t *dst, int size, uint32_t color, uint32_t factor)
 {
 	float percent = factor / 255.0f;
 	uint32_t cr, cg, cb;
-	wxUint16 col, a;
+	uint16_t col, a;
 	float r, g, b;
 
 	cr = (color >> 12) & 0xF;
@@ -324,16 +324,16 @@ static void mod_tex_sub_col_mul_fac_add_tex (wxUint16 *dst, int size, uint32_t c
 		if (b > 15.0f) b = 15.0f;
 		if (b < 0.0f) b = 0.0f;
 
-		*(dst++) = a | ((wxUint16)r << 8) | ((wxUint16)g << 4) | (wxUint16)b;
+		*(dst++) = a | ((uint16_t)r << 8) | ((uint16_t)g << 4) | (uint16_t)b;
 	}
 }
 
-static void mod_tex_scale_col_add_col (wxUint16 *dst, int size, uint32_t color0, uint32_t color1)
+static void mod_tex_scale_col_add_col (uint16_t *dst, int size, uint32_t color0, uint32_t color1)
 {
 	uint32_t cr0, cg0, cb0, cr1, cg1, cb1;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t r, g, b;
-	wxUint16 a;
+	uint16_t a;
 	float percent_r, percent_g, percent_b;
 
 	cr0 = (color0 >> 12) & 0xF;
@@ -357,10 +357,10 @@ static void mod_tex_scale_col_add_col (wxUint16 *dst, int size, uint32_t color0,
 	}
 }
 
-static void mod_tex_add_col (wxUint16 *dst, int size, uint32_t color)
+static void mod_tex_add_col (uint16_t *dst, int size, uint32_t color)
 {
 	uint32_t cr, cg, cb;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t a, r, g, b;
 
 	cr = (color >> 12) & 0xF;
@@ -379,12 +379,12 @@ static void mod_tex_add_col (wxUint16 *dst, int size, uint32_t color)
 	}
 }
 
-static void mod_col_mul_texa_add_tex (wxUint16 *dst, int size, uint32_t color)
+static void mod_col_mul_texa_add_tex (uint16_t *dst, int size, uint32_t color)
 {
 	uint32_t cr, cg, cb;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t r, g, b;
-	wxUint16 a;
+	uint16_t a;
 	float factor;
 
 	cr = (color >> 12) & 0xF;
@@ -403,10 +403,10 @@ static void mod_col_mul_texa_add_tex (wxUint16 *dst, int size, uint32_t color)
 	}
 }
 
-static void mod_tex_sub_col (wxUint16 *dst, int size, uint32_t color)
+static void mod_tex_sub_col (uint16_t *dst, int size, uint32_t color)
 {
 	int cr, cg, cb;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t a, r, g, b;
 
 	cr = (color >> 12) & 0xF;
@@ -424,11 +424,11 @@ static void mod_tex_sub_col (wxUint16 *dst, int size, uint32_t color)
 	}
 }
 
-static void mod_tex_sub_col_mul_fac (wxUint16 *dst, int size, uint32_t color, uint32_t factor)
+static void mod_tex_sub_col_mul_fac (uint16_t *dst, int size, uint32_t color, uint32_t factor)
 {
 	float percent = factor / 255.0f;
 	uint32_t cr, cg, cb;
-	wxUint16 col, a;
+	uint16_t col, a;
 	float r, g, b;
 
 	cr = (color >> 12) & 0xF;
@@ -452,14 +452,14 @@ static void mod_tex_sub_col_mul_fac (wxUint16 *dst, int size, uint32_t color, ui
 		if (b > 15.0f) b = 15.0f;
 		if (b < 0.0f) b = 0.0f;
 
-		*(dst++) = (a << 12) | ((wxUint16)r << 8) | ((wxUint16)g << 4) | (wxUint16)b;
+		*(dst++) = (a << 12) | ((uint16_t)r << 8) | ((uint16_t)g << 4) | (uint16_t)b;
 	}
 }
 
-static void mod_col_inter_tex_using_col1 (wxUint16 *dst, int size, uint32_t color0, uint32_t color1)
+static void mod_col_inter_tex_using_col1 (uint16_t *dst, int size, uint32_t color0, uint32_t color1)
 {
 	uint32_t cr, cg, cb;
-	wxUint16 col, a;
+	uint16_t col, a;
 	uint8_t r, g, b;
 
 	float percent_r = ((color1 >> 12) & 0xF) / 15.0f;
@@ -484,9 +484,9 @@ static void mod_col_inter_tex_using_col1 (wxUint16 *dst, int size, uint32_t colo
 	}
 }
 
-static void mod_tex_inter_noise_using_col (wxUint16 *dst, int size, uint32_t color)
+static void mod_tex_inter_noise_using_col (uint16_t *dst, int size, uint32_t color)
 {
-	wxUint16 col, a;
+	uint16_t col, a;
 	uint8_t r, g, b, noise;
 
 	float percent_r = ((color >> 12) & 0xF) / 15.0f;
@@ -508,12 +508,12 @@ static void mod_tex_inter_noise_using_col (wxUint16 *dst, int size, uint32_t col
 	}
 }
 
-static void mod_tex_inter_col_using_texa (wxUint16 *dst, int size, uint32_t color)
+static void mod_tex_inter_col_using_texa (uint16_t *dst, int size, uint32_t color)
 {
 	uint32_t cr, cg, cb;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t r, g, b;
-	wxUint16 a;
+	uint16_t a;
 	float percent, percent_i;
 
 	cr = (color >> 12) & 0xF;
@@ -533,12 +533,12 @@ static void mod_tex_inter_col_using_texa (wxUint16 *dst, int size, uint32_t colo
 	}
 }
 
-static void mod_tex_mul_col (wxUint16 *dst, int size, uint32_t color)
+static void mod_tex_mul_col (uint16_t *dst, int size, uint32_t color)
 {
 	float cr, cg, cb;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t r, g, b;
-	wxUint16 a;
+	uint16_t a;
 
 	cr = (float)((color >> 12) & 0xF)/16.0f;
 	cg = (float)((color >> 8) & 0xF)/16.0f;
@@ -555,11 +555,11 @@ static void mod_tex_mul_col (wxUint16 *dst, int size, uint32_t color)
 	}
 }
 
-static void mod_tex_scale_fac_add_col (wxUint16 *dst, int size, uint32_t color, uint32_t factor)
+static void mod_tex_scale_fac_add_col (uint16_t *dst, int size, uint32_t color, uint32_t factor)
 {
 	float percent = factor / 255.0f;
 	uint32_t cr, cg, cb;
-	wxUint16 col;
+	uint16_t col;
 	float r, g, b;
 
 	cr = (color >> 12) & 0xF;

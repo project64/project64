@@ -118,16 +118,16 @@ void uc6_sprite2d ();
 typedef struct DRAWIMAGE_t {
   float frameX;
   float frameY;
-  wxUint16 frameW;
-  wxUint16 frameH;
-  wxUint16 imageX;
-  wxUint16 imageY;
-  wxUint16 imageW;
-  wxUint16 imageH;
+  uint16_t frameW;
+  uint16_t frameH;
+  uint16_t imageX;
+  uint16_t imageY;
+  uint16_t imageW;
+  uint16_t imageH;
   uint32_t imagePtr;
   uint8_t imageFmt;
   uint8_t imageSiz;
-  wxUint16 imagePal;
+  uint16_t imagePal;
   uint8_t flipX;
   uint8_t flipY;
   float scaleX;
@@ -142,8 +142,8 @@ typedef struct DRAWOBJECT_t {
   short imageW;
   short imageH;
 
-  wxUint16  imageStride;
-  wxUint16  imageAdrs;
+  uint16_t  imageStride;
+  uint16_t  imageAdrs;
   uint8_t  imageFmt;
   uint8_t  imageSiz;
   uint8_t  imagePal;
@@ -152,9 +152,9 @@ typedef struct DRAWOBJECT_t {
 
 void DrawHiresDepthImage (const DRAWIMAGE & d)
 {
-  wxUint16 * src = (wxUint16*)(gfx.RDRAM+d.imagePtr);
-  wxUint16 image[512*512];
-  wxUint16 * dst = image;
+  uint16_t * src = (uint16_t*)(gfx.RDRAM+d.imagePtr);
+  uint16_t image[512*512];
+  uint16_t * dst = image;
   for (int h = 0; h < d.imageH; h++)
   {
     for (int w = 0; w < d.imageW; w++)
@@ -265,8 +265,8 @@ void DrawDepthImage (const DRAWIMAGE & d)
   int src_height = d.imageH;
   int dst_width = min(int(src_width*scale_x_dst), (int)settings.scr_res_x);
   int dst_height = min(int(src_height*scale_y_dst), (int)settings.scr_res_y);
-  wxUint16 * src = (wxUint16*)(gfx.RDRAM+d.imagePtr);
-  wxUint16 * dst = new wxUint16[dst_width*dst_height];
+  uint16_t * src = (uint16_t*)(gfx.RDRAM+d.imagePtr);
+  uint16_t * dst = new uint16_t[dst_width*dst_height];
   for (int y=0; y < dst_height; y++)
   {
     for (int x=0; x < dst_width; x++)
@@ -345,7 +345,7 @@ void DrawImage (DRAWIMAGE & d)
 
   if (rdp.ci_width == 512 && !no_dlist) //RE2
   {
-    wxUint16 width = (wxUint16)(*gfx.VI_WIDTH_REG & 0xFFF);
+    uint16_t width = (uint16_t)(*gfx.VI_WIDTH_REG & 0xFFF);
     d.frameH = d.imageH = (d.frameW*d.frameH)/width;
     d.frameW = d.imageW = width;
     if (rdp.zimg == rdp.cimg)
@@ -370,9 +370,9 @@ void DrawImage (DRAWIMAGE & d)
   else
   {
     if ( (d.frameX > 0) && (d.frameW == rdp.ci_width) )
-      d.frameW -= (wxUint16)(2.0f*d.frameX);
+      d.frameW -= (uint16_t)(2.0f*d.frameX);
     if ( (d.frameY > 0) && (d.frameH == rdp.ci_height) )
-      d.frameH -= (wxUint16)(2.0f*d.frameY);
+      d.frameH -= (uint16_t)(2.0f*d.frameY);
   }
 
   int ul_u = (int)d.imageX;
@@ -628,9 +628,9 @@ void DrawHiresImage(DRAWIMAGE & d, int screensize = FALSE)
   if (!(settings.hacks&hack_PPL))
   {
     if ( (d.frameX > 0) && (d.frameW == rdp.ci_width) )
-      d.frameW -= (wxUint16)(2.0f*d.frameX);
+      d.frameW -= (uint16_t)(2.0f*d.frameX);
     if ( (d.frameY > 0) && (d.frameH == rdp.ci_height) )
-      d.frameH -= (wxUint16)(2.0f*d.frameY);
+      d.frameH -= (uint16_t)(2.0f*d.frameY);
   }
 
   float ul_x, ul_y, ul_u, ul_v, lr_x, lr_y, lr_u, lr_v;
@@ -718,21 +718,21 @@ static void uc6_read_background_data (DRAWIMAGE & d, bool bReadScale)
 {
   uint32_t addr = segoffset(rdp.cmd1) >> 1;
 
-  d.imageX      = (((wxUint16 *)gfx.RDRAM)[(addr+0)^1] >> 5);   // 0
-  d.imageW      = (((wxUint16 *)gfx.RDRAM)[(addr+1)^1] >> 2);   // 1
+  d.imageX      = (((uint16_t *)gfx.RDRAM)[(addr+0)^1] >> 5);   // 0
+  d.imageW      = (((uint16_t *)gfx.RDRAM)[(addr+1)^1] >> 2);   // 1
   d.frameX      = ((short*)gfx.RDRAM)[(addr+2)^1] / 4.0f;       // 2
-  d.frameW      = ((wxUint16 *)gfx.RDRAM)[(addr+3)^1] >> 2;             // 3
+  d.frameW      = ((uint16_t *)gfx.RDRAM)[(addr+3)^1] >> 2;             // 3
 
-  d.imageY      = (((wxUint16 *)gfx.RDRAM)[(addr+4)^1] >> 5);   // 4
-  d.imageH      = (((wxUint16 *)gfx.RDRAM)[(addr+5)^1] >> 2);   // 5
+  d.imageY      = (((uint16_t *)gfx.RDRAM)[(addr+4)^1] >> 5);   // 4
+  d.imageH      = (((uint16_t *)gfx.RDRAM)[(addr+5)^1] >> 2);   // 5
   d.frameY      = ((short*)gfx.RDRAM)[(addr+6)^1] / 4.0f;       // 6
-  d.frameH      = ((wxUint16 *)gfx.RDRAM)[(addr+7)^1] >> 2;             // 7
+  d.frameH      = ((uint16_t *)gfx.RDRAM)[(addr+7)^1] >> 2;             // 7
 
   d.imagePtr    = segoffset(((uint32_t*)gfx.RDRAM)[(addr+8)>>1]);       // 8,9
   d.imageFmt    = ((uint8_t *)gfx.RDRAM)[(((addr+11)<<1)+0)^3]; // 11
   d.imageSiz    = ((uint8_t *)gfx.RDRAM)[(((addr+11)<<1)+1)^3]; // |
-  d.imagePal    = ((wxUint16 *)gfx.RDRAM)[(addr+12)^1]; // 12
-  wxUint16 imageFlip = ((wxUint16 *)gfx.RDRAM)[(addr+13)^1];    // 13;
+  d.imagePal    = ((uint16_t *)gfx.RDRAM)[(addr+12)^1]; // 12
+  uint16_t imageFlip = ((uint16_t *)gfx.RDRAM)[(addr+13)^1];    // 13;
   d.flipX       = (uint8_t)imageFlip&0x01;
 
   if (bReadScale)
@@ -1000,14 +1000,14 @@ static void uc6_read_object_data (DRAWOBJECT & d)
   uint32_t addr = segoffset(rdp.cmd1) >> 1;
 
   d.objX            = ((short*)gfx.RDRAM)[(addr+0)^1] / 4.0f;               // 0
-  d.scaleW  = ((wxUint16 *)gfx.RDRAM)[(addr+1)^1] / 1024.0f;        // 1
+  d.scaleW  = ((uint16_t *)gfx.RDRAM)[(addr+1)^1] / 1024.0f;        // 1
   d.imageW  = ((short*)gfx.RDRAM)[(addr+2)^1] >> 5;                 // 2, 3 is padding
   d.objY            = ((short*)gfx.RDRAM)[(addr+4)^1] / 4.0f;               // 4
-  d.scaleH  = ((wxUint16 *)gfx.RDRAM)[(addr+5)^1] / 1024.0f;        // 5
+  d.scaleH  = ((uint16_t *)gfx.RDRAM)[(addr+5)^1] / 1024.0f;        // 5
   d.imageH  = ((short*)gfx.RDRAM)[(addr+6)^1] >> 5;                 // 6, 7 is padding
 
-  d.imageStride = ((wxUint16 *)gfx.RDRAM)[(addr+8)^1];                  // 8
-  d.imageAdrs           = ((wxUint16 *)gfx.RDRAM)[(addr+9)^1];                  // 9
+  d.imageStride = ((uint16_t *)gfx.RDRAM)[(addr+8)^1];                  // 8
+  d.imageAdrs           = ((uint16_t *)gfx.RDRAM)[(addr+9)^1];                  // 9
   d.imageFmt             = ((uint8_t *)gfx.RDRAM)[(((addr+10)<<1)+0)^3]; // 10
   d.imageSiz             = ((uint8_t *)gfx.RDRAM)[(((addr+10)<<1)+1)^3]; // |
   d.imagePal             = ((uint8_t *)gfx.RDRAM)[(((addr+10)<<1)+2)^3]; // 11
@@ -1194,8 +1194,8 @@ static void uc6_obj_movemem ()
     mat_2d.D = ((int*)gfx.RDRAM)[(addr+6)>>1] / 65536.0f;
     mat_2d.X = ((short*)gfx.RDRAM)[(addr+8)^1] / 4.0f;
     mat_2d.Y = ((short*)gfx.RDRAM)[(addr+9)^1] / 4.0f;
-    mat_2d.BaseScaleX = ((wxUint16*)gfx.RDRAM)[(addr+10)^1] / 1024.0f;
-    mat_2d.BaseScaleY = ((wxUint16*)gfx.RDRAM)[(addr+11)^1] / 1024.0f;
+    mat_2d.BaseScaleX = ((uint16_t*)gfx.RDRAM)[(addr+10)^1] / 1024.0f;
+    mat_2d.BaseScaleY = ((uint16_t*)gfx.RDRAM)[(addr+11)^1] / 1024.0f;
 
     FRDP ("mat_2d\nA: %f, B: %f, c: %f, D: %f\nX: %f, Y: %f\nBaseScaleX: %f, BaseScaleY: %f\n",
       mat_2d.A, mat_2d.B, mat_2d.C, mat_2d.D, mat_2d.X, mat_2d.Y, mat_2d.BaseScaleX, mat_2d.BaseScaleY);
@@ -1203,8 +1203,8 @@ static void uc6_obj_movemem ()
   else if (index == 2) {        // movemem submatrix
     mat_2d.X = ((short*)gfx.RDRAM)[(addr+0)^1] / 4.0f;
     mat_2d.Y = ((short*)gfx.RDRAM)[(addr+1)^1] / 4.0f;
-    mat_2d.BaseScaleX = ((wxUint16*)gfx.RDRAM)[(addr+2)^1] / 1024.0f;
-    mat_2d.BaseScaleY = ((wxUint16*)gfx.RDRAM)[(addr+3)^1] / 1024.0f;
+    mat_2d.BaseScaleX = ((uint16_t*)gfx.RDRAM)[(addr+2)^1] / 1024.0f;
+    mat_2d.BaseScaleY = ((uint16_t*)gfx.RDRAM)[(addr+3)^1] / 1024.0f;
 
     FRDP ("submatrix\nX: %f, Y: %f\nBaseScaleX: %f, BaseScaleY: %f\n",
       mat_2d.X, mat_2d.Y, mat_2d.BaseScaleX, mat_2d.BaseScaleY);
@@ -1223,7 +1223,7 @@ static void uc6_obj_rendermode ()
   RDP_E ("uc6:obj_rendermode\n");
 }
 
-static wxUint16 uc6_yuv_to_rgba(uint8_t y, uint8_t u, uint8_t v)
+static uint16_t uc6_yuv_to_rgba(uint8_t y, uint8_t u, uint8_t v)
 {
   float r = y + (1.370705f * (v-128));
   float g = y - (0.698001f * (v-128)) - (0.337633f * (u-128));
@@ -1239,13 +1239,13 @@ static wxUint16 uc6_yuv_to_rgba(uint8_t y, uint8_t u, uint8_t v)
   if (g < 0) g = 0;
   if (b < 0) b = 0;
 
-  wxUint16 c = (wxUint16)(((wxUint16)(r) << 11) |
-    ((wxUint16)(g) << 6) |
-    ((wxUint16)(b) << 1) | 1);
+  uint16_t c = (uint16_t)(((uint16_t)(r) << 11) |
+    ((uint16_t)(g) << 6) |
+    ((uint16_t)(b) << 1) | 1);
   return c;
 }
 
-static void uc6_DrawYUVImageToFrameBuffer(wxUint16 ul_x, wxUint16 ul_y, wxUint16 lr_x, wxUint16 lr_y)
+static void uc6_DrawYUVImageToFrameBuffer(uint16_t ul_x, uint16_t ul_y, uint16_t lr_x, uint16_t lr_y)
 {
   FRDP ("uc6:DrawYUVImageToFrameBuffer ul_x%d, ul_y%d, lr_x%d, lr_y%d\n", ul_x, ul_y, lr_x, lr_y);
   uint32_t ci_width = rdp.ci_width;
@@ -1260,12 +1260,12 @@ static void uc6_DrawYUVImageToFrameBuffer(wxUint16 ul_x, wxUint16 ul_y, wxUint16
   if (lr_y > ci_height)
     height = ci_height - ul_y;
   uint32_t * mb = (uint32_t*)(gfx.RDRAM+rdp.timg.addr); //pointer to the first macro block
-  wxUint16 * dst = (wxUint16*)(gfx.RDRAM+rdp.cimg);
+  uint16_t * dst = (uint16_t*)(gfx.RDRAM+rdp.cimg);
   dst += ul_x + ul_y * ci_width;
   //yuv macro block contains 16x16 texture. we need to put it in the proper place inside cimg
-  for (wxUint16 h = 0; h < 16; h++)
+  for (uint16_t h = 0; h < 16; h++)
   {
-    for (wxUint16 w = 0; w < 16; w+=2)
+    for (uint16_t w = 0; w < 16; w+=2)
     {
       uint32_t t = *(mb++); //each uint32_t contains 2 pixels
       if ((h < height) && (w < width)) //clipping. texture image may be larger than color image
@@ -1294,7 +1294,7 @@ static void uc6_obj_rectangle_r ()
     float lr_x = (d.objX + d.imageW/d.scaleW)/mat_2d.BaseScaleX + mat_2d.X;
     float ul_y = d.objY/mat_2d.BaseScaleY + mat_2d.Y;
     float lr_y = (d.objY + d.imageH/d.scaleH)/mat_2d.BaseScaleY + mat_2d.Y;
-    uc6_DrawYUVImageToFrameBuffer((wxUint16)ul_x, (wxUint16)ul_y, (wxUint16)lr_x, (wxUint16)lr_y);
+    uc6_DrawYUVImageToFrameBuffer((uint16_t)ul_x, (uint16_t)ul_y, (uint16_t)lr_x, (uint16_t)lr_y);
     rdp.tri_n += 2;
     return;
   }
@@ -1364,17 +1364,17 @@ static void uc6_obj_loadtxtr ()
 
   if (type == 0x00000030) {     // TLUT
     uint32_t image              = segoffset(((uint32_t*)gfx.RDRAM)[(addr + 2) >> 1]);   // 2, 3
-    wxUint16  phead             = ((wxUint16 *)gfx.RDRAM)[(addr + 4) ^ 1] - 256;        // 4
-    wxUint16  pnum              = ((wxUint16 *)gfx.RDRAM)[(addr + 5) ^ 1] + 1;          // 5
+    uint16_t  phead             = ((uint16_t *)gfx.RDRAM)[(addr + 4) ^ 1] - 256;        // 4
+    uint16_t  pnum              = ((uint16_t *)gfx.RDRAM)[(addr + 5) ^ 1] + 1;          // 5
 
     FRDP ("palette addr: %08lx, start: %d, num: %d\n", image, phead, pnum);
     load_palette (image, phead, pnum);
   }
   else if (type == 0x00001033) {        // TxtrBlock
     uint32_t image              = segoffset(((uint32_t*)gfx.RDRAM)[(addr + 2) >> 1]);   // 2, 3
-    wxUint16  tmem              = ((wxUint16 *)gfx.RDRAM)[(addr + 4) ^ 1];      // 4
-    wxUint16  tsize             = ((wxUint16 *)gfx.RDRAM)[(addr + 5) ^ 1];      // 5
-    wxUint16  tline             = ((wxUint16 *)gfx.RDRAM)[(addr + 6) ^ 1];      // 6
+    uint16_t  tmem              = ((uint16_t *)gfx.RDRAM)[(addr + 4) ^ 1];      // 4
+    uint16_t  tsize             = ((uint16_t *)gfx.RDRAM)[(addr + 5) ^ 1];      // 5
+    uint16_t  tline             = ((uint16_t *)gfx.RDRAM)[(addr + 6) ^ 1];      // 6
 
     FRDP ("addr: %08lx, tmem: %08lx, size: %d\n", image, tmem, tsize);
     rdp.timg.addr = image;
@@ -1390,9 +1390,9 @@ static void uc6_obj_loadtxtr ()
   else if (type == 0x00fc1034)
   {
     uint32_t image              = segoffset(((uint32_t*)gfx.RDRAM)[(addr + 2) >> 1]);   // 2, 3
-    wxUint16  tmem              = ((wxUint16 *)gfx.RDRAM)[(addr + 4) ^ 1];      // 4
-    wxUint16  twidth    = ((wxUint16 *)gfx.RDRAM)[(addr + 5) ^ 1];      // 5
-    wxUint16  theight   = ((wxUint16 *)gfx.RDRAM)[(addr + 6) ^ 1];      // 6
+    uint16_t  tmem              = ((uint16_t *)gfx.RDRAM)[(addr + 4) ^ 1];      // 4
+    uint16_t  twidth    = ((uint16_t *)gfx.RDRAM)[(addr + 5) ^ 1];      // 5
+    uint16_t  theight   = ((uint16_t *)gfx.RDRAM)[(addr + 6) ^ 1];      // 6
 
     FRDP ("tile addr: %08lx, tmem: %08lx, twidth: %d, theight: %d\n", image, tmem, twidth, theight);
 
@@ -1473,14 +1473,14 @@ void uc6_sprite2d ()
   DRAWIMAGE d;
 
   d.imagePtr    = segoffset(((uint32_t*)gfx.RDRAM)[(addr+0)>>1]);       // 0,1
-  wxUint16 stride = (((wxUint16 *)gfx.RDRAM)[(addr+4)^1]);      // 4
-  d.imageW      = (((wxUint16 *)gfx.RDRAM)[(addr+5)^1]);        // 5
-  d.imageH      = (((wxUint16 *)gfx.RDRAM)[(addr+6)^1]);        // 6
+  uint16_t stride = (((uint16_t *)gfx.RDRAM)[(addr+4)^1]);      // 4
+  d.imageW      = (((uint16_t *)gfx.RDRAM)[(addr+5)^1]);        // 5
+  d.imageH      = (((uint16_t *)gfx.RDRAM)[(addr+6)^1]);        // 6
   d.imageFmt    = ((uint8_t *)gfx.RDRAM)[(((addr+7)<<1)+0)^3];  // 7
   d.imageSiz    = ((uint8_t *)gfx.RDRAM)[(((addr+7)<<1)+1)^3];  // |
   d.imagePal    = 0;
-  d.imageX      = (((wxUint16 *)gfx.RDRAM)[(addr+8)^1]);        // 8
-  d.imageY      = (((wxUint16 *)gfx.RDRAM)[(addr+9)^1]);        // 9
+  d.imageX      = (((uint16_t *)gfx.RDRAM)[(addr+8)^1]);        // 8
+  d.imageY      = (((uint16_t *)gfx.RDRAM)[(addr+9)^1]);        // 9
   uint32_t tlut         = ((uint32_t*)gfx.RDRAM)[(addr + 2) >> 1];      // 2, 3
   //low-level implementation of sprite2d apparently calls setothermode command to set tlut mode
   //However, description of sprite2d microcode just says that
@@ -1531,8 +1531,8 @@ void uc6_sprite2d ()
 
       d.frameX  = ((short)((cmd1>>16)&0xFFFF)) / 4.0f;
       d.frameY  = ((short)(cmd1&0xFFFF)) / 4.0f;
-      d.frameW    = (wxUint16) (d.imageW / d.scaleX);
-      d.frameH    = (wxUint16) (d.imageH / d.scaleY);
+      d.frameW    = (uint16_t) (d.imageW / d.scaleX);
+      d.frameH    = (uint16_t) (d.imageH / d.scaleY);
       if (settings.hacks&hack_WCWnitro)
       {
         int scaleY = (int)d.scaleY;
@@ -1565,7 +1565,7 @@ void uc6_sprite2d ()
     }
     else
     {
-      wxUint16 line = d.imageW;
+      uint16_t line = d.imageW;
       if (line & 7) line += 8;  // round up
       line >>= 3;
       if (d.imageSiz == 0)

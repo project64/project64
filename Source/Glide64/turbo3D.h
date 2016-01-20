@@ -44,8 +44,8 @@
 /******************Turbo3D microcode*************************/
 
 struct t3dGlobState {
-  wxUint16		pad0;
-  wxUint16		perspNorm;
+  uint16_t		pad0;
+  uint16_t		perspNorm;
   uint32_t		flag;
   uint32_t		othermode0;
   uint32_t		othermode1;
@@ -149,7 +149,7 @@ static void t3d_vertex(uint32_t addr, uint32_t v0, uint32_t n)
       x   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 0)^1];
       y   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 1)^1];
       z   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 2)^1];
-      v->flags  = ((wxUint16*)gfx.RDRAM)[(((addr+i) >> 1) + 3)^1];
+      v->flags  = ((uint16_t*)gfx.RDRAM)[(((addr+i) >> 1) + 3)^1];
       v->ou   = 2.0f * (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 4)^1];
       v->ov   = 2.0f * (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 5)^1];
       v->uv_scaled = 0;

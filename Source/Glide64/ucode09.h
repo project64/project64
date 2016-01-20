@@ -59,7 +59,7 @@ static int Calc_invw (int w) {
 	wxInt32		  W;
 	uint32_t	  UW;
 	wxInt16			HW[2];
-	wxUint16		UHW[2];
+	uint16_t		UHW[2];
   } Result;
 	Result.W = w;
 	if (Result.UW == 0) {

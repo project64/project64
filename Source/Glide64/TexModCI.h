@@ -42,7 +42,7 @@ static void mod_tex_inter_color_using_factor_CI (uint32_t color, uint32_t factor
 	float percent = factor / 255.0f;
 	float percent_i = 1 - percent;
 	uint8_t cr, cg, cb;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t a, r, g, b;
 
 	cr = (uint8_t)((color >> 24) & 0xFF);
@@ -59,17 +59,17 @@ static void mod_tex_inter_color_using_factor_CI (uint32_t color, uint32_t factor
 		r = (uint8_t)(min(255, percent_i * r + percent * cr));
 		g = (uint8_t)(min(255, percent_i * g + percent * cg));
 		b = (uint8_t)(min(255, percent_i * b + percent * cb));
-        rdp.pal_8[i] = (wxUint16)(((wxUint16)(r >> 3) << 11) |
-		          ((wxUint16)(g >> 3) << 6) |
-		          ((wxUint16)(b >> 3) << 1) |
-				  ((wxUint16)(a ) << 0));
+        rdp.pal_8[i] = (uint16_t)(((uint16_t)(r >> 3) << 11) |
+		          ((uint16_t)(g >> 3) << 6) |
+		          ((uint16_t)(b >> 3) << 1) |
+				  ((uint16_t)(a ) << 0));
 	}
 }
 
 static void mod_tex_inter_col_using_col1_CI (uint32_t color0, uint32_t color1)
 {
 	uint8_t cr, cg, cb;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t a, r, g, b;
 
 	float percent_r = ((color1 >> 24) & 0xFF) / 255.0f;
@@ -93,17 +93,17 @@ static void mod_tex_inter_col_using_col1_CI (uint32_t color0, uint32_t color1)
 		r = (uint8_t)(min(255, percent_r_i * r + percent_r * cr));
 		g = (uint8_t)(min(255, percent_g_i * g + percent_g * cg));
 		b = (uint8_t)(min(255, percent_b_i * b + percent_b * cb));
-        rdp.pal_8[i] = (wxUint16)(((wxUint16)(r >> 3) << 11) |
-		          ((wxUint16)(g >> 3) << 6) |
-		          ((wxUint16)(b >> 3) << 1) |
-				  ((wxUint16)(a ) << 0));
+        rdp.pal_8[i] = (uint16_t)(((uint16_t)(r >> 3) << 11) |
+		          ((uint16_t)(g >> 3) << 6) |
+		          ((uint16_t)(b >> 3) << 1) |
+				  ((uint16_t)(a ) << 0));
 	}
 }
 
 static void mod_full_color_sub_tex_CI (uint32_t color)
 {
 	uint8_t cr, cg, cb, ca;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t a, r, g, b;
 
 	cr = (uint8_t)((color >> 24) & 0xFF);
@@ -122,17 +122,17 @@ static void mod_full_color_sub_tex_CI (uint32_t color)
 		r = max(0, cr - r);
 		g = max(0, cg - g);
 		b = max(0, cb - b);
-        rdp.pal_8[i] = (wxUint16)(((wxUint16)(r >> 3) << 11) |
-		          ((wxUint16)(g >> 3) << 6) |
-		          ((wxUint16)(b >> 3) << 1) |
-				  ((wxUint16)(a ) << 0));
+        rdp.pal_8[i] = (uint16_t)(((uint16_t)(r >> 3) << 11) |
+		          ((uint16_t)(g >> 3) << 6) |
+		          ((uint16_t)(b >> 3) << 1) |
+				  ((uint16_t)(a ) << 0));
 	}
 }
 
 static void mod_col_inter_col1_using_tex_CI (uint32_t color0, uint32_t color1)
 {
 	uint32_t cr0, cg0, cb0, cr1, cg1, cb1;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t a, r, g, b;
 	float percent_r, percent_g, percent_b;
 
@@ -153,10 +153,10 @@ static void mod_col_inter_col1_using_tex_CI (uint32_t color0, uint32_t color1)
 		r = (uint8_t)(min((1.0f-percent_r) * cr0 + percent_r * cr1, 255));
 		g = (uint8_t)(min((1.0f-percent_g) * cg0 + percent_g * cg1, 255));
 		b = (uint8_t)(min((1.0f-percent_b) * cb0 + percent_b * cb1, 255));
-        rdp.pal_8[i] = (wxUint16)(((wxUint16)(r >> 3) << 11) |
-		          ((wxUint16)(g >> 3) << 6) |
-		          ((wxUint16)(b >> 3) << 1) |
-				  ((wxUint16)(a ) << 0));
+        rdp.pal_8[i] = (uint16_t)(((uint16_t)(r >> 3) << 11) |
+		          ((uint16_t)(g >> 3) << 6) |
+		          ((uint16_t)(b >> 3) << 1) |
+				  ((uint16_t)(a ) << 0));
 	}
 }
 
@@ -166,7 +166,7 @@ static void mod_tex_sub_col_mul_fac_add_tex_CI (uint32_t color, uint32_t factor)
 {
 	float percent = factor / 255.0f;
 	uint8_t cr, cg, cb, a;
-	wxUint16 col;
+	uint16_t col;
 	float r, g, b;
 
 	cr = (uint8_t)((color >> 24) & 0xFF);
@@ -189,17 +189,17 @@ static void mod_tex_sub_col_mul_fac_add_tex_CI (uint32_t color, uint32_t factor)
 		b = (b - cb) * percent + b;
 		if (b > 255.0f) g = 255.0f;
 		if (b < 0.0f) b = 0.0f;
-        rdp.pal_8[i] = (wxUint16)(((wxUint16)((uint8_t)(r) >> 3) << 11) |
-		          ((wxUint16)((uint8_t)(g) >> 3) << 6) |
-		          ((wxUint16)((uint8_t)(b) >> 3) << 1) |
-				  (wxUint16)(a) );
+        rdp.pal_8[i] = (uint16_t)(((uint16_t)((uint8_t)(r) >> 3) << 11) |
+		          ((uint16_t)((uint8_t)(g) >> 3) << 6) |
+		          ((uint16_t)((uint8_t)(b) >> 3) << 1) |
+				  (uint16_t)(a) );
 	}
 }
 
 static void mod_tex_scale_col_add_col_CI (uint32_t color0, uint32_t color1)
 {
 	uint8_t cr, cg, cb;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t a, r, g, b;
 
 	float percent_r = ((color0 >> 24) & 0xFF) / 255.0f;
@@ -219,17 +219,17 @@ static void mod_tex_scale_col_add_col_CI (uint32_t color0, uint32_t color1)
 		r = (uint8_t)(min(255, percent_r * r + cr));
 		g = (uint8_t)(min(255, percent_g * g + cg));
 		b = (uint8_t)(min(255, percent_b * b + cb));
-        rdp.pal_8[i] = (wxUint16)(((wxUint16)(r >> 3) << 11) |
-		          ((wxUint16)(g >> 3) << 6) |
-		          ((wxUint16)(b >> 3) << 1) |
-				  ((wxUint16)(a ) << 0));
+        rdp.pal_8[i] = (uint16_t)(((uint16_t)(r >> 3) << 11) |
+		          ((uint16_t)(g >> 3) << 6) |
+		          ((uint16_t)(b >> 3) << 1) |
+				  ((uint16_t)(a ) << 0));
 	}
 }
 
 static void mod_tex_add_col_CI (uint32_t color)
 {
 	uint8_t cr, cg, cb;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t a, r, g, b;
 
 	cr = (uint8_t)((color >> 24) & 0xFF);
@@ -246,17 +246,17 @@ static void mod_tex_add_col_CI (uint32_t color)
 		r = min(cr + r, 255);
 		g = min(cg + g, 255);
 		b = min(cb + b, 255);
-        rdp.pal_8[i] = (wxUint16)(((wxUint16)(r >> 3) << 11) |
-		          ((wxUint16)(g >> 3) << 6) |
-		          ((wxUint16)(b >> 3) << 1) |
-				  ((wxUint16)(a ) << 0));
+        rdp.pal_8[i] = (uint16_t)(((uint16_t)(r >> 3) << 11) |
+		          ((uint16_t)(g >> 3) << 6) |
+		          ((uint16_t)(b >> 3) << 1) |
+				  ((uint16_t)(a ) << 0));
 	}
 }
 
 static void mod_tex_sub_col_CI (uint32_t color)
 {
 	uint8_t cr, cg, cb;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t a, r, g, b;
 
 	cr = (uint8_t)((color >> 24) & 0xFF);
@@ -273,10 +273,10 @@ static void mod_tex_sub_col_CI (uint32_t color)
 		r = max(r - cr, 0);
 		g = max(g - cg, 0);
 		b = max(b - cb, 0);
-        rdp.pal_8[i] = (wxUint16)(((wxUint16)(r >> 3) << 11) |
-		          ((wxUint16)(g >> 3) << 6) |
-		          ((wxUint16)(b >> 3) << 1) |
-				  ((wxUint16)(a ) << 0));
+        rdp.pal_8[i] = (uint16_t)(((uint16_t)(r >> 3) << 11) |
+		          ((uint16_t)(g >> 3) << 6) |
+		          ((uint16_t)(b >> 3) << 1) |
+				  ((uint16_t)(a ) << 0));
 	}
 }
 
@@ -284,7 +284,7 @@ static void mod_tex_sub_col_mul_fac_CI (uint32_t color, uint32_t factor)
 {
 	float percent = factor / 255.0f;
 	uint8_t cr, cg, cb;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t a;
 	float r, g, b;
 
@@ -309,17 +309,17 @@ static void mod_tex_sub_col_mul_fac_CI (uint32_t color, uint32_t factor)
 		if (b > 255.0f) g = 255.0f;
 		if (b < 0.0f) b = 0.0f;
 
-        rdp.pal_8[i] = (wxUint16)(((wxUint16)((uint8_t)(r) >> 3) << 11) |
-		          ((wxUint16)((uint8_t)(g) >> 3) << 6) |
-		          ((wxUint16)((uint8_t)(b) >> 3) << 1) |
-				  (wxUint16)(a) );
+        rdp.pal_8[i] = (uint16_t)(((uint16_t)((uint8_t)(r) >> 3) << 11) |
+		          ((uint16_t)((uint8_t)(g) >> 3) << 6) |
+		          ((uint16_t)((uint8_t)(b) >> 3) << 1) |
+				  (uint16_t)(a) );
 	}
 }
 
 static void mod_col_inter_tex_using_col1_CI (uint32_t color0, uint32_t color1)
 {
 	uint8_t cr, cg, cb;
-	wxUint16 col;
+	uint16_t col;
 	uint8_t a, r, g, b;
 
 	float percent_r = ((color1 >> 24) & 0xFF) / 255.0f;
@@ -343,10 +343,10 @@ static void mod_col_inter_tex_using_col1_CI (uint32_t color0, uint32_t color1)
 		r = (uint8_t)(min(255, percent_r * r + percent_r_i * cr));
 		g = (uint8_t)(min(255, percent_g * g + percent_g_i * cg));
 		b = (uint8_t)(min(255, percent_b * b + percent_b_i * cb));
-        rdp.pal_8[i] = (wxUint16)(((wxUint16)(r >> 3) << 11) |
-		          ((wxUint16)(g >> 3) << 6) |
-		          ((wxUint16)(b >> 3) << 1) |
-				  ((wxUint16)(a ) << 0));
+        rdp.pal_8[i] = (uint16_t)(((uint16_t)(r >> 3) << 11) |
+		          ((uint16_t)(g >> 3) << 6) |
+		          ((uint16_t)(b >> 3) << 1) |
+				  ((uint16_t)(a ) << 0));
 	}
 }
 
@@ -358,7 +358,7 @@ static void mod_tex_inter_col_using_texa_CI (uint32_t color)
     g = (uint8_t)((float)((color >> 16) & 0xFF) / 255.0f * 31.0f);
     b = (uint8_t)((float)((color >> 8)  & 0xFF) / 255.0f * 31.0f);
     a = (color&0xFF) ? 1 : 0;
-    wxUint16 col16 = (wxUint16)((r<<11)|(g<<6)|(b<<1)|a);
+    uint16_t col16 = (uint16_t)((r<<11)|(g<<6)|(b<<1)|a);
 
 	for (int i=0; i<256; i++)
 	{
@@ -370,7 +370,7 @@ static void mod_tex_inter_col_using_texa_CI (uint32_t color)
 static void mod_tex_mul_col_CI (uint32_t color)
 {
 	uint8_t a, r, g, b;
-	wxUint16 col;
+	uint16_t col;
 	float cr, cg, cb;
 
 	cr = (float)((color >> 24) & 0xFF) / 255.0f;
@@ -384,10 +384,10 @@ static void mod_tex_mul_col_CI (uint32_t color)
 		r = (uint8_t)((float)((col&0xF800) >> 11) * cr);
         g = (uint8_t)((float)((col&0x07C0) >> 6) * cg);
         b = (uint8_t)((float)((col&0x003E) >> 1) * cb);
-        rdp.pal_8[i] = (wxUint16)(((wxUint16)(r >> 3) << 11) |
-		          ((wxUint16)(g >> 3) << 6) |
-		          ((wxUint16)(b >> 3) << 1) |
-				  ((wxUint16)(a ) << 0));
+        rdp.pal_8[i] = (uint16_t)(((uint16_t)(r >> 3) << 11) |
+		          ((uint16_t)(g >> 3) << 6) |
+		          ((uint16_t)(b >> 3) << 1) |
+				  ((uint16_t)(a ) << 0));
 	}
 }
 

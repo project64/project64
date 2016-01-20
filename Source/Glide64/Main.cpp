@@ -757,7 +757,7 @@ void guLoadTextures ()
 #include "cursor.h"
   data = (uint32_t*)cursor;
 
-  wxUint16 *tex16 = (wxUint16*)malloc(32*32*2);
+  uint16_t *tex16 = (uint16_t*)malloc(32*32*2);
 
   cursorTex.smallLodLog2 = cursorTex.largeLodLog2 = GR_LOD_LOG2_32;
   cursorTex.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
@@ -768,8 +768,8 @@ void guLoadTextures ()
   for (i=0; i<0x200; i++)
   {
     cur = *(data++);
-    *(tex16++) = (wxUint16)(((cur&0x000000FF)<<8)|((cur&0x0000FF00)>>8));
-    *(tex16++) = (wxUint16)(((cur&0x00FF0000)>>8)|((cur&0xFF000000)>>24));
+    *(tex16++) = (uint16_t)(((cur&0x000000FF)<<8)|((cur&0x0000FF00)>>8));
+    *(tex16++) = (uint16_t)(((cur&0x00FF0000)>>8)|((cur&0xFF000000)>>24));
   }
 
   grTexDownloadMipMap (GR_TMU0,
@@ -1277,10 +1277,10 @@ void CALL ReadScreen(void **dest, int *width, int *height)
     }
     else
     {
-      wxUint16 col;
+      uint16_t col;
       for (uint32_t y=0; y<settings.res_y; y++)
       {
-        wxUint16 *ptr = (wxUint16*)((uint8_t*)info.lfbPtr + offset_src);
+        uint16_t *ptr = (uint16_t*)((uint8_t*)info.lfbPtr + offset_src);
         for (uint32_t x=0; x<settings.res_x; x++)
         {
           col = *(ptr++);
@@ -1723,7 +1723,7 @@ void CALL RomOpen (void)
   rdp_reset ();
 
   // Get the country code & translate to NTSC(0) or PAL(1)
-  wxUint16 code = ((wxUint16*)gfx.HEADER)[0x1F^1];
+  uint16_t code = ((uint16_t*)gfx.HEADER)[0x1F^1];
 
   if (code == 0x4400) region = 1; // Germany (PAL)
   if (code == 0x4500) region = 0; // USA (NTSC)
@@ -2167,10 +2167,10 @@ void newSwapBuffers()
       }
       else
       {
-        wxUint16 col;
+        uint16_t col;
         for (uint32_t y = 0; y < image_height; y++)
         {
-          wxUint16 *ptr = (wxUint16*)((uint8_t*)info.lfbPtr + offset_src);
+          uint16_t *ptr = (uint16_t*)((uint8_t*)info.lfbPtr + offset_src);
           ptr += offset_x;
           for (uint32_t x = 0; x < image_width; x++)
           {
@@ -2214,7 +2214,7 @@ void newSwapBuffers()
       if (info.writeMode == GR_LFBWRITEMODE_8888)
       {
         uint32_t *src = (uint32_t*)((uint8_t*)info.lfbPtr + offset_src);
-        wxUint16 *dst = (wxUint16*)(_debugger.screen + offset_dst);
+        uint16_t *dst = (uint16_t*)(_debugger.screen + offset_dst);
         uint8_t r, g, b;
         uint32_t col;
         for (unsigned int x = 0; x < settings.res_x; x++)

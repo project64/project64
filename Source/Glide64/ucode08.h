@@ -90,7 +90,7 @@ static void uc8_vertex ()
 		x   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 0)^1];
 		y   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 1)^1];
 		z   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 2)^1];
-		v->flags  = ((wxUint16*)gfx.RDRAM)[(((addr+i) >> 1) + 3)^1];
+		v->flags  = ((uint16_t*)gfx.RDRAM)[(((addr+i) >> 1) + 3)^1];
 		v->ou   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 4)^1];
 		v->ov   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 5)^1];
         v->uv_scaled = 0;
@@ -236,7 +236,7 @@ static void uc8_vertex ()
 static void uc8_moveword ()
 {
 	uint8_t index = (uint8_t)((rdp.cmd0 >> 16) & 0xFF);
-	wxUint16 offset = (wxUint16)(rdp.cmd0 & 0xFFFF);
+	uint16_t offset = (uint16_t)(rdp.cmd0 & 0xFFFF);
 	uint32_t data = rdp.cmd1;
 
 	FRDP ("uc8:moveword ");
@@ -417,7 +417,7 @@ static void uc8_movemem ()
 #ifdef EXTREME_LOGGING
 			for (int t=0; t < 24; t++)
 			{
-				FRDP ("light[%d] = 0x%04lx \n", t, ((wxUint16*)gfx.RDRAM)[(a+t)^1]);
+				FRDP ("light[%d] = 0x%04lx \n", t, ((uint16_t*)gfx.RDRAM)[(a+t)^1]);
 			}
 #endif
 		}
@@ -438,7 +438,7 @@ static void uc8_movemem ()
 			uint32_t a = uc8_normale_addr >> 1;
 			for (i = 0; i < 32; i++)
 			{
-				FRDP ("n[%d] = 0x%04lx \n", i, ((wxUint16*)gfx.RDRAM)[(a+i)^1]);
+				FRDP ("n[%d] = 0x%04lx \n", i, ((uint16_t*)gfx.RDRAM)[(a+i)^1]);
 			}
 #endif
 		}

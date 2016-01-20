@@ -49,13 +49,13 @@
 #include "rdp.h"
 #include "DepthBufferRender.h"
 
-wxUint16 * zLUT = 0;
+uint16_t * zLUT = 0;
 
 void ZLUT_init()
 {
   if (zLUT)
     return;
-  zLUT = new wxUint16[0x40000];
+  zLUT = new uint16_t[0x40000];
   for(int i=0; i<0x40000; i++)
   {
     uint32_t exponent = 0;
@@ -67,7 +67,7 @@ void ZLUT_init()
     }
     
     uint32_t mantissa = (i >> (6 - (6 < exponent ? 6 : exponent))) & 0x7ff;
-    zLUT[i] = (wxUint16)(((exponent << 11) | mantissa) << 2);
+    zLUT[i] = (uint16_t)(((exponent << 11) | mantissa) << 2);
   }
 }
 
@@ -242,7 +242,7 @@ void Rasterize(vertexi * vtx, int vertices, int dzdx)
     LeftSection();
   } while(left_height <= 0);
   
-  wxUint16 * destptr = (wxUint16*)(gfx.RDRAM+rdp.zimg);
+  uint16_t * destptr = (uint16_t*)(gfx.RDRAM+rdp.zimg);
   int y1 = iceil(min_y);
   if (y1 >= (int)rdp.scissor_o.lr_y) return;
   int shift;
@@ -267,7 +267,7 @@ void Rasterize(vertexi * vtx, int vertices, int dzdx)
       //draw to depth buffer
       int trueZ;
       int idx;
-      wxUint16 encodedZ;
+      uint16_t encodedZ;
       for (int x = 0; x < width; x++)
       {
         trueZ = z/8192;

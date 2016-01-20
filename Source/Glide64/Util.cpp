@@ -284,7 +284,7 @@ static int dzdx = 0;
 static int deltaZ = 0;
 VERTEX **org_vtx;
 
-void draw_tri (VERTEX **vtx, wxUint16 linew)
+void draw_tri (VERTEX **vtx, uint16_t linew)
 {
   deltaZ = dzdx = 0;
   if (linew == 0 && (fb_depth_render_enabled || (rdp.rm & 0xC00) == 0xC00))
@@ -748,9 +748,9 @@ static void clip_w (int interpolate_colors)
   rdp.n_global = index;
 }
 
-static void render_tri (wxUint16 linew, int old_interpolate);
+static void render_tri (uint16_t linew, int old_interpolate);
 
-void do_triangle_stuff (wxUint16 linew, int old_interpolate) // what else?? do the triangle stuff :P (to keep from writing code twice)
+void do_triangle_stuff (uint16_t linew, int old_interpolate) // what else?? do the triangle stuff :P (to keep from writing code twice)
 {
   int i;
 
@@ -821,7 +821,7 @@ void do_triangle_stuff (wxUint16 linew, int old_interpolate) // what else?? do t
   render_tri (linew, old_interpolate);
 }
 
-void do_triangle_stuff_2 (wxUint16 linew)
+void do_triangle_stuff_2 (uint16_t linew)
 {
   rdp.clip = 0;
 
@@ -1488,7 +1488,7 @@ void clip_tri(int interpolate_colors)
   rdp.n_global = n;
 }
 
-static void render_tri (wxUint16 linew, int old_interpolate)
+static void render_tri (uint16_t linew, int old_interpolate)
 {
   if (rdp.clip)
     clip_tri(old_interpolate);
@@ -2062,7 +2062,7 @@ void update ()
     {
       rdp.update ^= UPDATE_FOG_ENABLED;
 
-      wxUint16 blender = (wxUint16)(rdp.othermode_l >> 16);
+      uint16_t blender = (uint16_t)(rdp.othermode_l >> 16);
       if (rdp.flags & FOG_ENABLED)
       {
         rdp_blender_setting &bl = *(rdp_blender_setting*)(&(blender));

@@ -62,7 +62,7 @@ static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
   texbuf.scr_height = height * rdp.scale_y;
 //  texbuf.scr_height = texbuf.height * rdp.scale_y;
 
-  wxUint16 max_size = max((wxUint16)texbuf.scr_width, (wxUint16)texbuf.scr_height);
+  uint16_t max_size = max((uint16_t)texbuf.scr_width, (uint16_t)texbuf.scr_height);
   if (max_size > voodoo.max_tex_size) //texture size is too large
     return 0;
   uint32_t tex_size;
@@ -268,7 +268,7 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
           //texbuf->height = cimage.height;
           //texbuf->end_addr = end_addr;
           texbuf->drawn = FALSE;
-          texbuf->format = (wxUint16)cimage.format;
+          texbuf->format = (uint16_t)cimage.format;
           if ((cimage.format != 0))
             texbuf->info.format = GR_TEXFMT_ALPHA_INTENSITY_88;
           else
@@ -482,7 +482,7 @@ int CopyTextureBuffer(COLOR_IMAGE & fb_from, COLOR_IMAGE & fb_to)
       return CloseTextureBuffer(TRUE);
     rdp.tbuff_tex = rdp.cur_image;
   }
-  else if (!FindTextureBuffer(fb_from.addr, (wxUint16)fb_from.width))
+  else if (!FindTextureBuffer(fb_from.addr, (uint16_t)fb_from.width))
   {
     LRDP("Can't find 'from' buffer.\n");
     return FALSE;
@@ -686,7 +686,7 @@ static uint32_t CalcCRC(TBUFF_COLOR_IMAGE * pTCI)
   return result;
 }
 
-int FindTextureBuffer(uint32_t addr, wxUint16 width)
+int FindTextureBuffer(uint32_t addr, uint16_t width)
 {
   if (rdp.skip_drawing)
     return FALSE;

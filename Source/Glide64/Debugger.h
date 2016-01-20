@@ -47,14 +47,14 @@ typedef struct TEX_INFO_t
 	uint8_t format;
 	uint8_t size;
 	uint32_t width, height;
-	wxUint16 line, wid;
+	uint16_t line, wid;
 	uint8_t palette;
 	uint8_t clamp_s, clamp_t;
 	uint8_t mirror_s, mirror_t;
 	uint8_t mask_s, mask_t;
 	uint8_t shift_s, shift_t;
-	wxUint16 ul_s, ul_t, lr_s, lr_t;
-	wxUint16 t_ul_s, t_ul_t, t_lr_s, t_lr_t;
+	uint16_t ul_s, ul_t, lr_s, lr_t;
+	uint16_t t_ul_s, t_ul_t, t_lr_s, t_lr_t;
 	float scale_s, scale_t;
 	int tmu;
 } TEX_INFO;

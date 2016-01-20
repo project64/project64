@@ -196,7 +196,7 @@ uint32_t Load16bIA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int li
 // Size: 2, Format: 1
 //
 
-wxUint16 yuv_to_rgb565(uint8_t y, uint8_t u, uint8_t v)
+uint16_t yuv_to_rgb565(uint8_t y, uint8_t u, uint8_t v)
 {
   //*
   float r = y + (1.370705f * (v-128));
@@ -212,9 +212,9 @@ wxUint16 yuv_to_rgb565(uint8_t y, uint8_t u, uint8_t v)
   if (r < 0) r = 0;
   if (g < 0) g = 0;
   if (b < 0) b = 0;
-  wxUint16 c = (wxUint16)(((wxUint16)(r) << 11) |
-    ((wxUint16)(g) << 5) |
-    (wxUint16)(b) );
+  uint16_t c = (uint16_t)(((uint16_t)(r) << 11) |
+    ((uint16_t)(g) << 5) |
+    (uint16_t)(b) );
   return c;
   //*/
   /*
@@ -239,8 +239,8 @@ wxUint16 yuv_to_rgb565(uint8_t y, uint8_t u, uint8_t v)
 uint32_t Load16bYUV (wxUIntPtr dst, wxUIntPtr /*src*/, int /*wid_64*/, int /*height*/, int /*line*/, int /*real_width*/, int tile)
 {
   uint32_t * mb = (uint32_t*)(gfx.RDRAM+rdp.addr[rdp.tiles[tile].t_mem]); //pointer to the macro block
-  wxUint16 * tex = (wxUint16*)dst;
-  wxUint16 i;
+  uint16_t * tex = (uint16_t*)dst;
+  uint16_t i;
   for (i = 0; i < 128; i++)
   {
     uint32_t t = mb[i]; //each uint32_t contains 2 pixels
@@ -248,7 +248,7 @@ uint32_t Load16bYUV (wxUIntPtr dst, wxUIntPtr /*src*/, int /*wid_64*/, int /*hei
     uint8_t v  = (uint8_t)(t>>8)&0xFF;
     uint8_t y0 = (uint8_t)(t>>16)&0xFF;
     uint8_t u  = (uint8_t)(t>>24)&0xFF;
-    wxUint16 c = yuv_to_rgb565(y0, u, v);
+    uint16_t c = yuv_to_rgb565(y0, u, v);
     *(tex++) = c;
     c = yuv_to_rgb565(y1, u, v);
     *(tex++) = c;

@@ -45,12 +45,12 @@
 #define NOT_TMU2	0x02
 
 void util_init ();
-void render_tri (wxUint16 linew = 0);
+void render_tri (uint16_t linew = 0);
 
 int cull_tri (VERTEX **v);
-void draw_tri (VERTEX **v, wxUint16 linew = 0);
-void do_triangle_stuff (wxUint16 linew = 0, int old_interpolate = TRUE);
-void do_triangle_stuff_2 (wxUint16 linew = 0);
+void draw_tri (VERTEX **v, uint16_t linew = 0);
+void do_triangle_stuff (uint16_t linew = 0, int old_interpolate = TRUE);
+void do_triangle_stuff_2 (uint16_t linew = 0);
 void add_tri (VERTEX *v, int n, int type);
 void apply_shade_mods (VERTEX *v);
 

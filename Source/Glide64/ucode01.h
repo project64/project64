@@ -106,7 +106,7 @@ static void uc1_line3d()
 {
   if (!settings.force_quad3d && ((rdp.cmd1&0xFF000000) == 0) && ((rdp.cmd0&0x00FFFFFF) == 0))
   {
-    wxUint16 width = (wxUint16)(rdp.cmd1&0xFF) + 3;
+    uint16_t width = (uint16_t)(rdp.cmd1&0xFF) + 3;
     
     FRDP("uc1:line3d width: %d #%d, #%d - %d, %d\n", width, rdp.tri_n, rdp.tri_n+1,
       (rdp.cmd1 >> 17) & 0x7F,

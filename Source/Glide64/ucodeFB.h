@@ -73,8 +73,8 @@ static void fb_bg_copy ()
 
   if (status == ci_main)
   {
-    wxUint16 frameW	= ((wxUint16 *)gfx.RDRAM)[(addr+3)^1] >> 2;
-    wxUint16 frameH	= ((wxUint16 *)gfx.RDRAM)[(addr+7)^1] >> 2;
+    uint16_t frameW	= ((uint16_t *)gfx.RDRAM)[(addr+3)^1] >> 2;
+    uint16_t frameH	= ((uint16_t *)gfx.RDRAM)[(addr+7)^1] >> 2;
     if ( (frameW == rdp.frame_buffers[rdp.ci_count-1].width) && (frameH == rdp.frame_buffers[rdp.ci_count-1].height) )
       rdp.main_ci_bg = imagePtr;
   }
