@@ -2394,6 +2394,16 @@ filtering=1
 optimize_texrect=0
 useless_is_useless=1
 
+[766309EA-3F64A369-C:45]
+Good Name=Perfect Dark XBLA Mp3 (1.0)
+decrease_fillrect_edge=1
+depthmode=1
+fb_clear=1
+fb_render=1
+filtering=1
+optimize_texrect=0
+useless_is_useless=1
+
 [EE08C602-6BC2D5A6-C:50]
 Good Name=PGA European Tour (E) (M5)
 Internal Name=PGA European Tour
@@ -2802,6 +2812,7 @@ Internal Name=QUAKE II
 Good Name=Quest 64 (U)
 Internal Name=Quest 64
 depthmode=1
+filtering=2
 
 //================  R  ================
 [2877AC2D-C3DC139A-C:44]
@@ -3874,6 +3885,12 @@ swapmode=2
 [E43C9765-05B1C1BE-C:4A]
 Good Name=Wonder Project J2 - Corlo no Mori no Josette (J)
 Internal Name=WONDER PROJECT J2
+buff_clear=0
+depthmode=0
+swapmode=0
+
+[4F1E88F7-4A5A3F96-C:4A]
+Good Name=Wonder Project J2 [T]
 buff_clear=0
 depthmode=0
 swapmode=0
