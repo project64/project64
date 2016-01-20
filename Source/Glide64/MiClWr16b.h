@@ -36,7 +36,7 @@
 // * Do NOT send me the whole project or file that you modified.  Take out your modified code sections, and tell me where to put them.  If people sent the whole thing, I would have many different versions, but no idea how to combine them all.
 //
 //****************************************************************
-#include <common/stdtypes.h>
+#include <Common/stdtypes.h>
 #include <string.h>
 typedef uint32_t wxUint32;
 

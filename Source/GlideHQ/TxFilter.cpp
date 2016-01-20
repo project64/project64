@@ -25,8 +25,8 @@
 #pragma warning(disable: 4786)
 #endif
 
-#include <common/path.h>
-#include <common/StdString.h>
+#include <Common/path.h>
+#include <Common/StdString.h>
 #include "TxFilter.h"
 #include "TextureFilters.h"
 #include "TxDbg.h"
