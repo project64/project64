@@ -4827,7 +4827,12 @@ void CMipsMemoryVM::Load32CartridgeDomain2Address1(void)
         {
         case 0x05000500: m_MemLookupValue.UW[0] = g_Reg->ASIC_DATA; break;
         case 0x05000504: m_MemLookupValue.UW[0] = g_Reg->ASIC_MISC_REG; break;
-        case 0x05000508: m_MemLookupValue.UW[0] = g_Reg->ASIC_STATUS; break;
+        case 0x05000508:
+            if (g_Disk != NULL)
+                g_Reg->ASIC_STATUS |= DD_STATUS_DISK_PRES;
+            m_MemLookupValue.UW[0] = g_Reg->ASIC_STATUS;
+            DiskGapSectorCheck();
+            break;
         case 0x0500050C: m_MemLookupValue.UW[0] = g_Reg->ASIC_CUR_TK; break;
         case 0x05000510: m_MemLookupValue.UW[0] = g_Reg->ASIC_BM_STATUS; break;
         case 0x05000514: m_MemLookupValue.UW[0] = g_Reg->ASIC_ERR_SECTOR; break;

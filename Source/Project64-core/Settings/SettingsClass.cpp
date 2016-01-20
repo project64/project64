@@ -114,6 +114,8 @@ void CSettings::AddHowToHandleSetting()
     AddHandler(SupportFile_7zipCache, new CSettingTypeApplicationPath("", "7zipCache", SupportFile_7zipCacheDefault));
     AddHandler(SupportFile_7zipCacheDefault, new CSettingTypeRelativePath("Config", "Project64.zcache"));
 
+    AddHandler(SupportFile_DiskTest, new CSettingTypeRelativePath("Config", "DMPJ.ndd"));
+
     //AddHandler(SyncPluginDir,   new CSettingTypeRelativePath("SyncPlugin",""));
 
     //Settings location

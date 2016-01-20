@@ -16,6 +16,7 @@
 #include <Project64-core/N64System/Mips/Mempak.H>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
+#include <Project64-core/N64System/N64DiskClass.h>
 #include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/Logging.h>
 #include <Project64-core/Debugger.h>
@@ -216,6 +217,17 @@ bool CN64System::RunFileImage(const char * FileLoc)
         {
             //64DD IPL
             g_DDRom = g_Rom;
+
+            if (g_Disk == NULL)
+            {
+                g_Disk = new CN64Disk();
+            }
+
+            if (!g_Disk->LoadDiskImage(g_Settings->LoadStringVal(SupportFile_DiskTest).c_str()));
+            {
+                delete g_Disk;
+                g_Disk = NULL;
+            }
         }
 
         g_System->RefreshGameSettings();

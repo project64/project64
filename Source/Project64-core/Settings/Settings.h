@@ -48,6 +48,8 @@ enum SettingID
     SupportFile_RomListCacheDefault,
     SupportFile_7zipCache,
     SupportFile_7zipCacheDefault,
+    //64DD TEST
+    SupportFile_DiskTest,
 
     //Settings
     Setting_ApplicationName,
