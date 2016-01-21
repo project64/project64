@@ -6082,6 +6082,7 @@ Good Name=Top Gear Rally (E)
 Internal Name=TOP GEAR RALLY
 Status=Issues (mixed)
 Core Note=bad sound
+Plugin Note=[Glide64] car dust, windscreen reflection
 32bit=No
 
 [0E596247-753D4B8B-C:4A]
@@ -6089,6 +6090,7 @@ Good Name=Top Gear Rally (J)
 Internal Name=TOP GEAR RALLY
 Status=Issues (mixed)
 Core Note=bad sound
+Plugin Note=[Glide64] car dust, windscreen reflection
 32bit=No
 
 [62269B3D-FE11B1E8-C:45]
@@ -6096,6 +6098,7 @@ Good Name=Top Gear Rally (U)
 Internal Name=TOP GEAR RALLY
 Status=Issues (mixed)
 Core Note=bad sound
+Plugin Note=[Glide64] car dust, windscreen reflection
 32bit=No
 
 [BEBAB677-51B0B5E4-C:50]
