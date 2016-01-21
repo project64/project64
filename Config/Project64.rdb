@@ -3269,8 +3269,9 @@ Primary Frame Buffer=1
 [9A9890AC-F0C313DF-C:4A]
 Good Name=Mario no Photopi (J)
 Internal Name=ÏØµÉÌ«ÄËß°
-Status=Needs RSP plugin
-Plugin Note=[rsp] needs semaphore lock
+Status=Issues (plugin)
+Plugin Note=[video] HLE not supported; errors:various
+HLE GFX=No
 
 [9C663069-80F24A80-C:50]
 Good Name=Mario Party (E) (M3)
