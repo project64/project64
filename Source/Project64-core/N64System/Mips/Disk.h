@@ -8,6 +8,7 @@
 * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
 *                                                                           *
 ****************************************************************************/
+// Based from MAME's N64DD driver code by Happy_
 #pragma once
 
 #include <Common/stdtypes.h>
@@ -25,8 +26,6 @@ extern bool dd_write;
 extern bool dd_reset_hold;
 extern uint32_t dd_track_offset, dd_zone;
 extern uint32_t dd_start_block, dd_current;
-
-extern uint8_t dd_buffer[0x100];
 
 const uint32_t ddZoneSecSize[16] = { 232, 216, 208, 192, 176, 160, 144, 128,
                                    216, 208, 192, 176, 160, 144, 128, 112 };

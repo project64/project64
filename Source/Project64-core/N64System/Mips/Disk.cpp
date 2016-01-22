@@ -8,6 +8,7 @@
 * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
 *                                                                           *
 ****************************************************************************/
+// Based from MAME's N64DD driver code by Happy_
 #pragma once
 #include "stdafx.h"
 #include "Disk.h"
@@ -19,8 +20,6 @@ bool dd_write;
 bool dd_reset_hold;
 uint32_t dd_track_offset, dd_zone;
 uint32_t dd_start_block, dd_current;
-
-uint8_t dd_buffer[0x100];
 
 void DiskCommand()
 {
@@ -149,7 +148,8 @@ void DiskGapSectorCheck()
         if (SECTORS_PER_BLOCK < dd_current)
         {
             g_Reg->ASIC_STATUS &= ~DD_STATUS_BM_INT;
-            g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP3;
+            if (!(g_Reg->ASIC_STATUS & DD_STATUS_MECHA_INT) && !(g_Reg->ASIC_STATUS & DD_STATUS_BM_INT))
+                g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP3;
             DiskBMUpdate();
         }
     }
@@ -214,7 +214,7 @@ void DiskBMUpdate()
             g_Reg->ASIC_STATUS &= ~DD_STATUS_DATA_RQ;
             g_Reg->ASIC_BM_STATUS |= DD_BM_STATUS_MICRO;
         }
-        else if (dd_current == 0)
+        else if (dd_current < SECTORS_PER_BLOCK)
         {
             DiskBMRead();
             dd_current += 1;

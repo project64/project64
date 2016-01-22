@@ -77,7 +77,7 @@ void CDMA::PI_DMA_READ()
         //64DD C2 Sectors (don't care)
         g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         g_Reg->MI_INTR_REG |= MI_INTR_PI;
-        DiskBMUpdate();
+        g_Reg->CheckInterrupts();
         return;
     }
 
@@ -93,7 +93,7 @@ void CDMA::PI_DMA_READ()
         }
         g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         g_Reg->MI_INTR_REG |= MI_INTR_PI;
-        DiskBMUpdate();
+        g_Reg->CheckInterrupts();
         return;
     }
 
