@@ -12,6 +12,7 @@
 #include <Project64-core/N64System/Mips/SystemTiming.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Project64-core/N64System/Mips/Disk.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/3rdParty/zip.h>
 
@@ -204,6 +205,13 @@ void CSystemTimer::TimerDone()
     case CSystemTimer::PiTimer:
         g_SystemTimer->StopTimer(CSystemTimer::PiTimer);
         g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+        g_Reg->MI_INTR_REG |= MI_INTR_PI;
+        g_Reg->CheckInterrupts();
+        break;
+    case CSystemTimer::DDPiTimer:
+        g_SystemTimer->StopTimer(CSystemTimer::DDPiTimer);
+        g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+        DiskBMUpdate();
         g_Reg->MI_INTR_REG |= MI_INTR_PI;
         g_Reg->CheckInterrupts();
         break;

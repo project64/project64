@@ -5412,7 +5412,21 @@ void CMipsMemoryVM::Write32PeripheralInterface(void)
     switch (m_MemLookupAddress & 0xFFFFFFF)
     {
     case 0x04600000: g_Reg->PI_DRAM_ADDR_REG = m_MemLookupValue.UW[0]; break;
-    case 0x04600004: g_Reg->PI_CART_ADDR_REG = m_MemLookupValue.UW[0]; break;
+    case 0x04600004:
+        g_Reg->PI_CART_ADDR_REG = m_MemLookupValue.UW[0];
+        if (g_Reg->PI_CART_ADDR_REG == 0x05000000)
+        {
+            g_Reg->ASIC_STATUS &= ~(DD_STATUS_BM_INT | DD_STATUS_BM_ERR | DD_STATUS_C2_XFER);
+            g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP3;
+            g_Reg->CheckInterrupts();
+        }
+        else if (g_Reg->PI_CART_ADDR_REG == 0x05000400)
+        {
+            g_Reg->ASIC_STATUS &= ~(DD_STATUS_BM_INT | DD_STATUS_BM_ERR | DD_STATUS_DATA_RQ);
+            g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP3;
+            g_Reg->CheckInterrupts();
+        }
+        break;
     case 0x04600008:
         g_Reg->PI_RD_LEN_REG = m_MemLookupValue.UW[0];
         g_MMU->PI_DMA_READ();

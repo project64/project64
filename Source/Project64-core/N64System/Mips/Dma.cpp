@@ -75,9 +75,7 @@ void CDMA::PI_DMA_READ()
     if (g_Reg->PI_CART_ADDR_REG >= 0x05000000 && g_Reg->PI_CART_ADDR_REG <= 0x050003FF)
     {
         //64DD C2 Sectors (don't care)
-        g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-        g_Reg->MI_INTR_REG |= MI_INTR_PI;
-        g_Reg->CheckInterrupts();
+        g_SystemTimer->SetTimer(g_SystemTimer->DDPiTimer, (PI_RD_LEN_REG * 63) / 25, false);
         return;
     }
 
@@ -91,9 +89,7 @@ void CDMA::PI_DMA_READ()
         {
             *(DISK + (i ^ 3)) = *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3));
         }
-        g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-        g_Reg->MI_INTR_REG |= MI_INTR_PI;
-        g_Reg->CheckInterrupts();
+        g_SystemTimer->SetTimer(g_SystemTimer->DDPiTimer, (PI_RD_LEN_REG * 63) / 25, false);
         return;
     }
 
@@ -229,9 +225,9 @@ void CDMA::PI_DMA_WRITE()
         {
             *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = 0;
         }
-        g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-        g_Reg->MI_INTR_REG |= MI_INTR_PI;
-        g_Reg->CheckInterrupts();
+
+        //Timer is needed for Track Read
+        g_SystemTimer->SetTimer(g_SystemTimer->DDPiTimer, (PI_WR_LEN_REG * 63) / 25, false);
         return;
     }
 
@@ -245,9 +241,9 @@ void CDMA::PI_DMA_WRITE()
         {
             *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = *(DISK + (i ^ 3));
         }
-        g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-        g_Reg->MI_INTR_REG |= MI_INTR_PI;
-        g_Reg->CheckInterrupts();
+
+        //Timer is needed for Track Read
+        g_SystemTimer->SetTimer(g_SystemTimer->DDPiTimer, (PI_WR_LEN_REG * 63) / 25, false);
         return;
     }
 
