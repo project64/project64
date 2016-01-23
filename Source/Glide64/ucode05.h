@@ -40,8 +40,8 @@
 int cur_mtx = 0;
 int billboarding = 0;
 int vtx_last = 0;
-wxUint32 dma_offset_mtx = 0;
-wxUint32 dma_offset_vtx = 0;
+uint32_t dma_offset_mtx = 0;
+uint32_t dma_offset_vtx = 0;
 
 static void uc5_dma_offsets ()
 {
@@ -54,19 +54,19 @@ static void uc5_dma_offsets ()
 static void uc5_matrix ()
 {
   // Use segment offset to get the address
-  wxUint32 addr = dma_offset_mtx + (segoffset(rdp.cmd1) & BMASK);
+  uint32_t addr = dma_offset_mtx + (segoffset(rdp.cmd1) & BMASK);
 
-  wxUint8 n = (wxUint8)((rdp.cmd0 >> 16) & 0xF);
-  wxUint8 multiply;
+  uint8_t n = (uint8_t)((rdp.cmd0 >> 16) & 0xF);
+  uint8_t multiply;
 
   if (n == 0) //DKR
   {
-    n = (wxUint8)((rdp.cmd0 >> 22) & 0x3);
+    n = (uint8_t)((rdp.cmd0 >> 22) & 0x3);
     multiply = 0;
   }
   else //JF
   {
-    multiply = (wxUint8)((rdp.cmd0 >> 23) & 0x1);
+    multiply = (uint8_t)((rdp.cmd0 >> 23) & 0x1);
   }
 
   cur_mtx = n;
@@ -106,7 +106,7 @@ static void uc5_matrix ()
 
 static void uc5_vertex ()
 {
-  wxUint32 addr = dma_offset_vtx + (segoffset(rdp.cmd1) & BMASK);
+  uint32_t addr = dma_offset_vtx + (segoffset(rdp.cmd1) & BMASK);
 
   // | cccc cccc 1111 1??? 0000 0002 2222 2222 | cmd1 = address |
   // c = vtx command
@@ -173,10 +173,10 @@ static void uc5_vertex ()
     if (v->w < 0.1f) v->scr_off |= 16;
     if (fabs(v->z_w) > 1.0) v->scr_off |= 32;
 
-    v->r = ((wxUint8*)gfx.RDRAM)[(addr+start + 6)^3];
-    v->g = ((wxUint8*)gfx.RDRAM)[(addr+start + 7)^3];
-    v->b = ((wxUint8*)gfx.RDRAM)[(addr+start + 8)^3];
-    v->a = ((wxUint8*)gfx.RDRAM)[(addr+start + 9)^3];
+    v->r = ((uint8_t*)gfx.RDRAM)[(addr+start + 6)^3];
+    v->g = ((uint8_t*)gfx.RDRAM)[(addr+start + 7)^3];
+    v->b = ((uint8_t*)gfx.RDRAM)[(addr+start + 8)^3];
+    v->a = ((uint8_t*)gfx.RDRAM)[(addr+start + 9)^3];
     CalculateFog (v);
 
 #ifdef EXTREME_LOGGING
@@ -199,7 +199,7 @@ static void uc5_tridma ()
   // 2 = method #2 of getting count
   // 0 = unused
 
-  wxUint32 addr = segoffset(rdp.cmd1) & BMASK;
+  uint32_t addr = segoffset(rdp.cmd1) & BMASK;
   int num = (rdp.cmd0 & 0xFFF0) >> 4;
   //int num = ((rdp.cmd0 & 0x00F00000) >> 20) + 1;  // same thing!
   FRDP("uc5:tridma #%d - addr: %08lx, count: %d\n", rdp.tri_n, addr, num);
@@ -264,7 +264,7 @@ static void uc5_tridma ()
 
 static void uc5_dl_in_mem ()
 {
-  wxUint32 addr = segoffset(rdp.cmd1) & BMASK;
+  uint32_t addr = segoffset(rdp.cmd1) & BMASK;
   int count = (rdp.cmd0 & 0x00FF0000) >> 16;
   FRDP ("uc5:dl_in_mem - addr: %08lx, count: %d\n", addr, count);
 

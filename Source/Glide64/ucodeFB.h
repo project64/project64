@@ -65,16 +65,16 @@ static void fb_bg_copy ()
   if ( (status == ci_copy) )
     return;
 
-  wxUint32 addr = segoffset(rdp.cmd1) >> 1;
-  wxUint8 imageFmt	= ((wxUint8 *)gfx.RDRAM)[(((addr+11)<<1)+0)^3];
-  wxUint8 imageSiz	= ((wxUint8 *)gfx.RDRAM)[(((addr+11)<<1)+1)^3];
-  wxUint32 imagePtr	= segoffset(((wxUint32*)gfx.RDRAM)[(addr+8)>>1]);
+  uint32_t addr = segoffset(rdp.cmd1) >> 1;
+  uint8_t imageFmt	= ((uint8_t *)gfx.RDRAM)[(((addr+11)<<1)+0)^3];
+  uint8_t imageSiz	= ((uint8_t *)gfx.RDRAM)[(((addr+11)<<1)+1)^3];
+  uint32_t imagePtr	= segoffset(((uint32_t*)gfx.RDRAM)[(addr+8)>>1]);
   FRDP ("fb_bg_copy. fmt: %d, size: %d, imagePtr %08lx, main_ci: %08lx, cur_ci: %08lx \n", imageFmt, imageSiz, imagePtr, rdp.main_ci, rdp.frame_buffers[rdp.ci_count-1].addr);
 
   if (status == ci_main)
   {
-    wxUint16 frameW	= ((wxUint16 *)gfx.RDRAM)[(addr+3)^1] >> 2;
-    wxUint16 frameH	= ((wxUint16 *)gfx.RDRAM)[(addr+7)^1] >> 2;
+    uint16_t frameW	= ((uint16_t *)gfx.RDRAM)[(addr+3)^1] >> 2;
+    uint16_t frameH	= ((uint16_t *)gfx.RDRAM)[(addr+7)^1] >> 2;
     if ( (frameW == rdp.frame_buffers[rdp.ci_count-1].width) && (frameH == rdp.frame_buffers[rdp.ci_count-1].height) )
       rdp.main_ci_bg = imagePtr;
   }
@@ -112,13 +112,13 @@ static void fb_bg_copy ()
 
 static void fb_setscissor()
 {
-  rdp.scissor_o.lr_y = (wxUint32)(((rdp.cmd1 & 0x00000FFF) >> 2));
+  rdp.scissor_o.lr_y = (uint32_t)(((rdp.cmd1 & 0x00000FFF) >> 2));
   if (rdp.ci_count)
   {
-    rdp.scissor_o.ul_x = (wxUint32)(((rdp.cmd0 & 0x00FFF000) >> 14));
-    rdp.scissor_o.lr_x = (wxUint32)(((rdp.cmd1 & 0x00FFF000) >> 14));
+    rdp.scissor_o.ul_x = (uint32_t)(((rdp.cmd0 & 0x00FFF000) >> 14));
+    rdp.scissor_o.lr_x = (uint32_t)(((rdp.cmd1 & 0x00FFF000) >> 14));
     COLOR_IMAGE & cur_fb = rdp.frame_buffers[rdp.ci_count-1];
-    if (rdp.scissor_o.lr_x - rdp.scissor_o.ul_x > (wxUint32)(cur_fb.width >> 1))
+    if (rdp.scissor_o.lr_x - rdp.scissor_o.ul_x > (uint32_t)(cur_fb.width >> 1))
     {
       if (cur_fb.height == 0 || (cur_fb.width >= rdp.scissor_o.lr_x-1 && cur_fb.width <= rdp.scissor_o.lr_x+1))
         cur_fb.height = rdp.scissor_o.lr_y;
@@ -131,7 +131,7 @@ static void fb_uc2_movemem()
 {
   if ((rdp.cmd0 & 0xFF) == 8)
   {
-    wxUint32 a = segoffset(rdp.cmd1) >> 1;
+    uint32_t a = segoffset(rdp.cmd1) >> 1;
     short scale_x = ((short*)gfx.RDRAM)[(a+0)^1] >> 2;
     short trans_x = ((short*)gfx.RDRAM)[(a+4)^1] >> 2;
     COLOR_IMAGE & cur_fb = rdp.frame_buffers[rdp.ci_count-1];
@@ -139,7 +139,7 @@ static void fb_uc2_movemem()
     {
       short scale_y = ((short*)gfx.RDRAM)[(a+1)^1] >> 2;
       short trans_y = ((short*)gfx.RDRAM)[(a+5)^1] >> 2;
-      wxUint32 height = scale_y + trans_y;
+      uint32_t height = scale_y + trans_y;
       if (height < rdp.scissor_o.lr_y)
         cur_fb.height = height;
     }
@@ -156,7 +156,7 @@ static void fb_rect()
   int diff = abs((int)rdp.frame_buffers[rdp.ci_count-1].width - width);
   if (diff < 4)
   {
-    wxUint32 lr_y = min(rdp.scissor_o.lr_y, (rdp.cmd0 & 0xFFF) >> 2);
+    uint32_t lr_y = min(rdp.scissor_o.lr_y, (rdp.cmd0 & 0xFFF) >> 2);
     if (rdp.frame_buffers[rdp.ci_count-1].height < lr_y)
     {
       FRDP("fb_rect. ul_x: %d, lr_x: %d, fb_height: %d -> %d\n", ul_x, lr_x, rdp.frame_buffers[rdp.ci_count-1].height, lr_y);
@@ -181,7 +181,7 @@ static void fb_settextureimage()
   if (((rdp.cmd0 >> 19) & 0x03) >= 2)  //check that texture is 16/32bit
   {
     int tex_format = ((rdp.cmd0 >> 21) & 0x07);
-    wxUint32 addr = segoffset(rdp.cmd1);
+    uint32_t addr = segoffset(rdp.cmd1);
     if ( tex_format == 0 )
     {
       FRDP ("fb_settextureimage. fmt: %d, size: %d, imagePtr %08lx, main_ci: %08lx, cur_ci: %08lx \n", ((rdp.cmd0 >> 21) & 0x07), ((rdp.cmd0 >> 19) & 0x03), addr, rdp.main_ci, rdp.frame_buffers[rdp.ci_count-1].addr);
@@ -419,7 +419,7 @@ static void fb_setcolorimage()
     {
       rdp.frame_buffers[rdp.ci_count-1].status = ci_useless;
       /*
-      wxUint32 addr = rdp.frame_buffers[rdp.ci_count-1].addr;
+      uint32_t addr = rdp.frame_buffers[rdp.ci_count-1].addr;
       for (int i = 0; i < rdp.ci_count - 1; i++)
       {
       if (rdp.frame_buffers[i].addr == addr)

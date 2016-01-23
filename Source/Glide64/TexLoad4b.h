@@ -590,7 +590,7 @@ static inline void load4bI(uint8_t *src, uint8_t *dst, int wid_64, int height, i
 //****************************************************************
 // Size: 0, Format: 2
 
-wxUint32 Load4bCI (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
+uint32_t Load4bCI (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
 {
   if (wid_64 < 1) wid_64 = 1;
   if (height < 1) height = 1;
@@ -622,7 +622,7 @@ wxUint32 Load4bCI (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int lin
 //
 // ** BY GUGAMAN **
 
-wxUint32 Load4bIA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
+uint32_t Load4bIA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
 {
   if (rdp.tlut_mode != 0)
     return Load4bCI (dst, src, wid_64, height, line, real_width, tile);
@@ -637,7 +637,7 @@ wxUint32 Load4bIA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int lin
 //****************************************************************
 // Size: 0, Format: 4
 
-wxUint32 Load4bI (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
+uint32_t Load4bI (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
 {
   if (rdp.tlut_mode != 0)
     return Load4bCI (dst, src, wid_64, height, line, real_width, tile);
@@ -653,7 +653,7 @@ wxUint32 Load4bI (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line
 //****************************************************************
 // Size: 0, Format: 0
 
-wxUint32 Load4bSelect (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
+uint32_t Load4bSelect (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
 {
   if (rdp.tlut_mode == 0)
     return Load4bI (dst, src, wid_64, height, line, real_width, tile);

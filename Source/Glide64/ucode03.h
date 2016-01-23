@@ -44,7 +44,7 @@
 static void uc3_vertex()
 {
   int v0 = ((rdp.cmd0 >> 16) & 0xFF)/5;      // Current vertex
-  int n = (wxUint16)((rdp.cmd0&0xFFFF) + 1)/0x210;    // Number to copy
+  int n = (uint16_t)((rdp.cmd0&0xFFFF) + 1)/0x210;    // Number to copy
 
   if (v0 >= 32)
     v0 = 31;

@@ -50,6 +50,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Gfx_1.3.h" />
     <ClInclude Include="turbo3D.h" />
     <ClInclude Include="ucode.h" />
     <ClInclude Include="ucode00.h" />

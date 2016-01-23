@@ -43,24 +43,24 @@
 // Load 32bit RGBA texture
 // Based on sources of angrylion's software plugin.
 //
-wxUint32 Load32bRGBA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
+uint32_t Load32bRGBA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
 {
   if (height < 1) height = 1;
-  const wxUint16 *tmem16 = (wxUint16*)rdp.tmem;
-  const wxUint32 tbase = (src - (wxUIntPtr)rdp.tmem) >> 1;
-  const wxUint32 width = max(1, wid_64 << 1);
+  const uint16_t *tmem16 = (uint16_t*)rdp.tmem;
+  const uint32_t tbase = (src - (wxUIntPtr)rdp.tmem) >> 1;
+  const uint32_t width = max(1, wid_64 << 1);
   const int ext = real_width - width;
   line = width + (line>>2);
-  wxUint32 s, t, c;
-  wxUint32 * tex = (wxUint32*)dst;
-  wxUint16 rg, ba;
-  for (t = 0; t < (wxUint32)height; t++)
+  uint32_t s, t, c;
+  uint32_t * tex = (uint32_t*)dst;
+  uint16_t rg, ba;
+  for (t = 0; t < (uint32_t)height; t++)
   {
-    wxUint32 tline = tbase + line * t;
-    wxUint32 xorval = (t & 1) ? 3 : 1;
+    uint32_t tline = tbase + line * t;
+    uint32_t xorval = (t & 1) ? 3 : 1;
     for (s = 0; s < width; s++)
     {
-      wxUint32 taddr = ((tline + s) ^ xorval) & 0x3ff;
+      uint32_t taddr = ((tline + s) ^ xorval) & 0x3ff;
       rg = tmem16[taddr];
       ba = tmem16[taddr|0x400];
       c = ((ba&0xFF)<<24) | (rg << 8) | (ba>>8);
@@ -69,15 +69,15 @@ wxUint32 Load32bRGBA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int 
     tex += ext;
   }
   int id = tile - rdp.cur_tile;
-  wxUint32 mod = (id == 0) ? cmb.mod_0 : cmb.mod_1;
+  uint32_t mod = (id == 0) ? cmb.mod_0 : cmb.mod_1;
   if (mod || !voodoo.sup_32bit_tex)
   {
     //convert to ARGB_4444
-    const wxUint32 tex_size = real_width * height;
-    tex = (wxUint32 *)dst;
-    wxUint16 *tex16 = (wxUint16*)dst;
-    wxUint16 a, r, g, b;
-    for (wxUint32 i = 0; i < tex_size; i++) {
+    const uint32_t tex_size = real_width * height;
+    tex = (uint32_t *)dst;
+    uint16_t *tex16 = (uint16_t*)dst;
+    uint16_t a, r, g, b;
+    for (uint32_t i = 0; i < tex_size; i++) {
       c = tex[i];
       a = (c >> 28) & 0xF;
       r = (c >> 20) & 0xF;
@@ -94,21 +94,21 @@ wxUint32 Load32bRGBA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int 
 // LoadTile for 32bit RGBA texture
 // Based on sources of angrylion's software plugin.
 //
-void LoadTile32b (wxUint32 tile, wxUint32 ul_s, wxUint32 ul_t, wxUint32 width, wxUint32 height)
+void LoadTile32b (uint32_t tile, uint32_t ul_s, uint32_t ul_t, uint32_t width, uint32_t height)
 {
-  const wxUint32 line = rdp.tiles[tile].line << 2;
-  const wxUint32 tbase = rdp.tiles[tile].t_mem << 2;
-  const wxUint32 addr = rdp.timg.addr >> 2;
-  const wxUint32* src = (const wxUint32*)gfx.RDRAM;
-  wxUint16 *tmem16 = (wxUint16*)rdp.tmem;
-  wxUint32 c, ptr, tline, s, xorval;
+  const uint32_t line = rdp.tiles[tile].line << 2;
+  const uint32_t tbase = rdp.tiles[tile].t_mem << 2;
+  const uint32_t addr = rdp.timg.addr >> 2;
+  const uint32_t* src = (const uint32_t*)gfx.RDRAM;
+  uint16_t *tmem16 = (uint16_t*)rdp.tmem;
+  uint32_t c, ptr, tline, s, xorval;
 
-  for (wxUint32 j = 0; j < height; j++)
+  for (uint32_t j = 0; j < height; j++)
   {
     tline = tbase + line * j;
     s = ((j + ul_t) * rdp.timg.width) + ul_s;
     xorval = (j & 1) ? 3 : 1;				
-    for (wxUint32 i = 0; i < width; i++)
+    for (uint32_t i = 0; i < width; i++)
     {
       c = src[addr + s + i];
       ptr = ((tline + i) ^ xorval) & 0x3ff;
@@ -122,30 +122,30 @@ void LoadTile32b (wxUint32 tile, wxUint32 ul_s, wxUint32 ul_t, wxUint32 width, w
 // LoadBlock for 32bit RGBA texture
 // Based on sources of angrylion's software plugin.
 //
-void LoadBlock32b(wxUint32 tile, wxUint32 ul_s, wxUint32 ul_t, wxUint32 lr_s, wxUint32 dxt)
+void LoadBlock32b(uint32_t tile, uint32_t ul_s, uint32_t ul_t, uint32_t lr_s, uint32_t dxt)
 {
-  const wxUint32 * src = (const wxUint32*)gfx.RDRAM;
-  const wxUint32 tb = rdp.tiles[tile].t_mem << 2;
-  const wxUint32 tiwindwords = rdp.timg.width;
-  const wxUint32 slindwords = ul_s;
-  const wxUint32 line = rdp.tiles[tile].line << 2;
+  const uint32_t * src = (const uint32_t*)gfx.RDRAM;
+  const uint32_t tb = rdp.tiles[tile].t_mem << 2;
+  const uint32_t tiwindwords = rdp.timg.width;
+  const uint32_t slindwords = ul_s;
+  const uint32_t line = rdp.tiles[tile].line << 2;
 
-  wxUint16 *tmem16 = (wxUint16*)rdp.tmem;
-  wxUint32 addr = rdp.timg.addr >> 2;
-  wxUint32 width = (lr_s - ul_s + 1) << 2;
+  uint16_t *tmem16 = (uint16_t*)rdp.tmem;
+  uint32_t addr = rdp.timg.addr >> 2;
+  uint32_t width = (lr_s - ul_s + 1) << 2;
   if (width & 7)
     width = (width & (~7)) + 8;
 
   if (dxt != 0)
   {
-    wxUint32 j= 0;
-    wxUint32 t = 0;
-    wxUint32 oldt = 0;
-    wxUint32 ptr;
+    uint32_t j= 0;
+    uint32_t t = 0;
+    uint32_t oldt = 0;
+    uint32_t ptr;
 
     addr += (ul_t * tiwindwords) + slindwords;
-    wxUint32 c = 0;
-    for (wxUint32 i = 0; i < width; i += 2)
+    uint32_t c = 0;
+    for (uint32_t i = 0; i < width; i += 2)
     {
       oldt = t;
       t = ((j >> 11) & 1) ? 3 : 1;
@@ -165,8 +165,8 @@ void LoadBlock32b(wxUint32 tile, wxUint32 ul_s, wxUint32 ul_t, wxUint32 lr_s, wx
   else
   {
     addr += (ul_t * tiwindwords) + slindwords;
-    wxUint32 c, ptr;
-    for (wxUint32 i = 0; i < width; i ++)
+    uint32_t c, ptr;
+    for (uint32_t i = 0; i < width; i ++)
     {
       ptr = ((tb + i) ^ 1) & 0x3ff;
       c = src[addr + i];

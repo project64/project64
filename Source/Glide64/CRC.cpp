@@ -88,9 +88,9 @@ unsigned int CRC32( unsigned int crc, void *buffer, unsigned int count )
 //*/
 
 /*
-wxUint32 CRC_Calculate( wxUint32 crc, void *buffer, wxUint32 count )
+uint32_t CRC_Calculate( uint32_t crc, void *buffer, uint32_t count )
 {
-  wxUint32 Crc32=crc;
+  uint32_t Crc32=crc;
   __asm {
 			mov	esi, buffer
 			mov	ecx, count

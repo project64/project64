@@ -41,7 +41,7 @@ static void calc_point_light (VERTEX *v, float * vpos)
 {
   float light_intensity = 0.0f;
   register float color[3] = {rdp.light[rdp.num_lights].r, rdp.light[rdp.num_lights].g, rdp.light[rdp.num_lights].b};
-  for (wxUint32 l=0; l<rdp.num_lights; l++)
+  for (uint32_t l=0; l<rdp.num_lights; l++)
   {
     if (rdp.light[l].nonblack)
     {
@@ -75,9 +75,9 @@ static void calc_point_light (VERTEX *v, float * vpos)
   if (color[1] > 1.0f) color[1] = 1.0f;
   if (color[2] > 1.0f) color[2] = 1.0f;
 
-  v->r = (wxUint8)(color[0]*255.0f);
-  v->g = (wxUint8)(color[1]*255.0f);
-  v->b = (wxUint8)(color[2]*255.0f);
+  v->r = (uint8_t)(color[0]*255.0f);
+  v->g = (uint8_t)(color[1]*255.0f);
+  v->b = (uint8_t)(color[2]*255.0f);
 }
 
 static void uc6_obj_rectangle();
@@ -102,14 +102,14 @@ static void uc2_vertex ()
     rdp.update ^= UPDATE_LIGHTS;
 
     // Calculate light vectors
-    for (wxUint32 l=0; l<rdp.num_lights; l++)
+    for (uint32_t l=0; l<rdp.num_lights; l++)
     {
       InverseTransformVector(&rdp.light[l].dir_x, rdp.light_vector[l], rdp.model);
       NormalizeVector (rdp.light_vector[l]);
     }
   }
 
-  wxUint32 addr = segoffset(rdp.cmd1);
+  uint32_t addr = segoffset(rdp.cmd1);
   int v0, i, n;
   float x, y, z;
 
@@ -125,7 +125,7 @@ static void uc2_vertex ()
     return;
   }
 
-  wxUint32 geom_mode = rdp.geom_mode;
+  uint32_t geom_mode = rdp.geom_mode;
   if ((settings.hacks&hack_Fzero) && (rdp.geom_mode & 0x40000))
   {
     if (((short*)gfx.RDRAM)[(((addr) >> 1) + 4)^1] || ((short*)gfx.RDRAM)[(((addr) >> 1) + 5)^1])
@@ -137,11 +137,11 @@ static void uc2_vertex ()
     x   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 0)^1];
     y   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 1)^1];
     z   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 2)^1];
-    v->flags  = ((wxUint16*)gfx.RDRAM)[(((addr+i) >> 1) + 3)^1];
+    v->flags  = ((uint16_t*)gfx.RDRAM)[(((addr+i) >> 1) + 3)^1];
     v->ou   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 4)^1];
     v->ov   = (float)((short*)gfx.RDRAM)[(((addr+i) >> 1) + 5)^1];
     v->uv_scaled = 0;
-    v->a    = ((wxUint8*)gfx.RDRAM)[(addr+i + 15)^3];
+    v->a    = ((uint8_t*)gfx.RDRAM)[(addr+i + 15)^3];
 
     v->x = x*rdp.combined[0][0] + y*rdp.combined[1][0] + z*rdp.combined[2][0] + rdp.combined[3][0];
     v->y = x*rdp.combined[0][1] + y*rdp.combined[1][1] + z*rdp.combined[2][1] + rdp.combined[3][1];
@@ -206,9 +206,9 @@ static void uc2_vertex ()
     }
     else
     {
-      v->r = ((wxUint8*)gfx.RDRAM)[(addr+i + 12)^3];
-      v->g = ((wxUint8*)gfx.RDRAM)[(addr+i + 13)^3];
-      v->b = ((wxUint8*)gfx.RDRAM)[(addr+i + 14)^3];
+      v->r = ((uint8_t*)gfx.RDRAM)[(addr+i + 12)^3];
+      v->g = ((uint8_t*)gfx.RDRAM)[(addr+i + 13)^3];
+      v->b = ((uint8_t*)gfx.RDRAM)[(addr+i + 14)^3];
     }
 #ifdef EXTREME_LOGGING
     FRDP ("v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f, f: %f, z_w: %f, r=%d, g=%d, b=%d, a=%d\n", i>>4, v->x, v->y, v->z, v->w, v->ou*rdp.tiles[rdp.cur_tile].s_scale, v->ov*rdp.tiles[rdp.cur_tile].t_scale, v->f, v->z_w, v->r, v->g, v->b, v->a);
@@ -219,8 +219,8 @@ static void uc2_vertex ()
 
 static void uc2_modifyvtx ()
 {
-  wxUint8 where = (wxUint8)((rdp.cmd0 >> 16) & 0xFF);
-  wxUint16 vtx = (wxUint16)((rdp.cmd0 >> 1) & 0xFFFF);
+  uint8_t where = (uint8_t)((rdp.cmd0 >> 16) & 0xFF);
+  uint16_t vtx = (uint16_t)((rdp.cmd0 >> 1) & 0xFFFF);
 
   FRDP ("uc2:modifyvtx: vtx: %d, where: 0x%02lx, val: %08lx - ", vtx, where, rdp.cmd1);
   uc0_modifyvtx(where, vtx, rdp.cmd1);
@@ -228,13 +228,13 @@ static void uc2_modifyvtx ()
 
 static void uc2_culldl ()
 {
-  wxUint16 vStart = (wxUint16)(rdp.cmd0 & 0xFFFF) >> 1;
-  wxUint16 vEnd = (wxUint16)(rdp.cmd1 & 0xFFFF) >> 1;
-  wxUint32 cond = 0;
+  uint16_t vStart = (uint16_t)(rdp.cmd0 & 0xFFFF) >> 1;
+  uint16_t vEnd = (uint16_t)(rdp.cmd1 & 0xFFFF) >> 1;
+  uint32_t cond = 0;
   FRDP ("uc2:culldl start: %d, end: %d\n", vStart, vEnd);
 
   if (vEnd < vStart) return;
-  for (wxUint16 i=vStart; i<=vEnd; i++)
+  for (uint16_t i=vStart; i<=vEnd; i++)
   {
   /*
   VERTEX v = &rdp.vtx[i];
@@ -303,7 +303,7 @@ static void uc2_quad ()
 {
   if ((rdp.cmd0 & 0x00FFFFFF) == 0x2F)
   {
-    wxUint32 command = rdp.cmd0>>24;
+    uint32_t command = rdp.cmd0>>24;
     if (command == 0x6)
     {
       uc6_obj_ldtx_sprite ();
@@ -361,8 +361,8 @@ static void uc2_line3d ()
         &rdp.vtx[(rdp.cmd0 >> 9) & 0x7F],
         &rdp.vtx[(rdp.cmd0 >> 9) & 0x7F]
     };
-    wxUint16 width = (wxUint16)(rdp.cmd0 + 3)&0xFF;
-    wxUint32 cull_mode = (rdp.flags & CULLMASK) >> CULLSHIFT;
+    uint16_t width = (uint16_t)(rdp.cmd0 + 3)&0xFF;
+    uint32_t cull_mode = (rdp.flags & CULLMASK) >> CULLSHIFT;
     rdp.flags |= CULLMASK;
     rdp.update |= UPDATE_CULL_MODE;
     rsp_tri1(v, width);
@@ -398,10 +398,10 @@ static void uc2_pop_matrix ()
 static void uc2_geom_mode ()
 {
   // Switch around some things
-  wxUint32 clr_mode = (rdp.cmd0 & 0x00DFC9FF) |
+  uint32_t clr_mode = (rdp.cmd0 & 0x00DFC9FF) |
     ((rdp.cmd0 & 0x00000600) << 3) |
     ((rdp.cmd0 & 0x00200000) >> 12) | 0xFF000000;
-  wxUint32 set_mode = (rdp.cmd1 & 0xFFDFC9FF) |
+  uint32_t set_mode = (rdp.cmd1 & 0xFFDFC9FF) |
     ((rdp.cmd1 & 0x00000600) << 3) |
     ((rdp.cmd1 & 0x00200000) >> 12);
 
@@ -495,7 +495,7 @@ static void uc2_matrix ()
   DECLAREALIGN16VAR(m[4][4]);
   load_matrix(m, segoffset(rdp.cmd1));
 
-  wxUint8 command = (wxUint8)((rdp.cmd0 ^ 1) & 0xFF);
+  uint8_t command = (uint8_t)((rdp.cmd0 ^ 1) & 0xFF);
   switch (command)
   {
   case 0: // modelview mul nopush
@@ -553,9 +553,9 @@ static void uc2_matrix ()
 
 static void uc2_moveword ()
 {
-  wxUint8 index = (wxUint8)((rdp.cmd0 >> 16) & 0xFF);
-  wxUint16 offset = (wxUint16)(rdp.cmd0 & 0xFFFF);
-  wxUint32 data = rdp.cmd1;
+  uint8_t index = (uint8_t)((rdp.cmd0 >> 16) & 0xFF);
+  uint16_t offset = (uint16_t)(rdp.cmd0 & 0xFFFF);
+  uint32_t data = rdp.cmd1;
 
   FRDP ("uc2:moveword ");
 
@@ -670,7 +670,7 @@ static void uc6_obj_movemem ();
 static void uc2_movemem ()
 {
   int idx = rdp.cmd0 & 0xFF;
-  wxUint32 addr = segoffset(rdp.cmd1);
+  uint32_t addr = segoffset(rdp.cmd1);
   int ofs = (rdp.cmd0 >> 5) & 0x7F8;
 
   FRDP ("uc2:movemem ofs:%d ", ofs);
@@ -684,7 +684,7 @@ static void uc2_movemem ()
 
   case 8:   // VIEWPORT
     {
-      wxUint32 a = addr >> 1;
+      uint32_t a = addr >> 1;
       short scale_x = ((short*)gfx.RDRAM)[(a+0)^1] >> 2;
       short scale_y = ((short*)gfx.RDRAM)[(a+1)^1] >> 2;
       short scale_z = ((short*)gfx.RDRAM)[(a+2)^1];
@@ -730,7 +730,7 @@ static void uc2_movemem ()
       if (n > 7) return;
 
       // Get the data
-      wxUint8 col = gfx.RDRAM[(addr+0)^3];
+      uint8_t col = gfx.RDRAM[(addr+0)^3];
       rdp.light[n].r = (float)col / 255.0f;
       rdp.light[n].nonblack = col;
       col = gfx.RDRAM[(addr+1)^3];
@@ -745,7 +745,7 @@ static void uc2_movemem ()
       rdp.light[n].dir_x = (float)(((char*)gfx.RDRAM)[(addr+8)^3]) / 127.0f;
       rdp.light[n].dir_y = (float)(((char*)gfx.RDRAM)[(addr+9)^3]) / 127.0f;
       rdp.light[n].dir_z = (float)(((char*)gfx.RDRAM)[(addr+10)^3]) / 127.0f;
-      wxUint32 a = addr >> 1;
+      uint32_t a = addr >> 1;
       rdp.light[n].x = (float)(((short*)gfx.RDRAM)[(a+4)^1]);
       rdp.light[n].y = (float)(((short*)gfx.RDRAM)[(a+5)^1]);
       rdp.light[n].z = (float)(((short*)gfx.RDRAM)[(a+6)^1]);
@@ -795,7 +795,7 @@ static void uc2_rdphalf_2 ()
 
 static void uc2_dlist_cnt ()
 {
-  wxUint32 addr = segoffset(rdp.cmd1) & BMASK;
+  uint32_t addr = segoffset(rdp.cmd1) & BMASK;
   int count = rdp.cmd0 & 0x000000FF;
   FRDP ("dl_count - addr: %08lx, count: %d\n", addr, count);
   if (addr == 0)

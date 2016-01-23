@@ -198,10 +198,10 @@ void debug_cacheviewer ()
   // Draw texture memory
   for (i=0; i<4; i++)
   {
-    for (wxUint32 x=0; x<16; x++)
+    for (uint32_t x=0; x<16; x++)
     {
-      wxUint32 y = i+_debugger.tex_scroll;
-      if (x+y*16 >= (wxUint32)rdp.n_cached[_debugger.tmu]) break;
+      uint32_t y = i+_debugger.tex_scroll;
+      if (x+y*16 >= (uint32_t)rdp.n_cached[_debugger.tmu]) break;
       CACHE_LUT * cache = voodoo.tex_UMA?rdp.cache[0]:rdp.cache[_debugger.tmu];
 
       VERTEX v[4] = {
@@ -237,7 +237,7 @@ void debug_cacheviewer ()
 
 void debug_capture ()
 {
-  wxUint32 i,j;
+  uint32_t i,j;
 
   if (_debugger.tri_list == NULL) goto END;
   _debugger.tri_sel = _debugger.tri_list;
@@ -313,8 +313,8 @@ void debug_capture ()
       else
       {
         // on a texture
-        _debugger.tex_sel = (((wxUint32)((pt.y-SY(512))/SY(64))+_debugger.tex_scroll)*16) +
-          (wxUint32)(pt.x/SX(64));
+        _debugger.tex_sel = (((uint32_t)((pt.y-SY(512))/SY(64))+_debugger.tex_scroll)*16) +
+          (uint32_t)(pt.x/SX(64));
       }
     }
 
@@ -324,8 +324,8 @@ void debug_capture ()
 
     // Copy the screen capture back to the screen:
     grLfbWriteRegion(GR_BUFFER_BACKBUFFER,
-      (wxUint32)rdp.offset_x,
-      (wxUint32)rdp.offset_y,
+      (uint32_t)rdp.offset_x,
+      (uint32_t)rdp.offset_y,
       GR_LFB_SRC_FMT_565,
       settings.res_x,
       settings.res_y,
@@ -403,8 +403,8 @@ void debug_capture ()
     }
 
     // and the selected texture
-    wxUint32 t_y = ((_debugger.tex_sel & 0xFFFFFFF0) >> 4) - _debugger.tex_scroll;
-    wxUint32 t_x = _debugger.tex_sel & 0xF;
+    uint32_t t_y = ((_debugger.tex_sel & 0xFFFFFFF0) >> 4) - _debugger.tex_scroll;
+    uint32_t t_x = _debugger.tex_sel & 0xF;
     VERTEX vt[4] = {
       { SX(t_x*64.0f), SY(512+64.0f*t_y), 1, 1 },
       { SX(t_x*64.0f+64.0f), SY(512+64.0f*t_y), 1, 1 },
@@ -615,7 +615,7 @@ void debug_capture ()
     }
     if (_debugger.page == PAGE_OTHERMODE_L && _debugger.tri_sel)
     {
-      wxUint32 othermode_l = _debugger.tri_sel->othermode_l;
+      uint32_t othermode_l = _debugger.tri_sel->othermode_l;
       COL_CATEGORY ();
       OUTPUT ("OTHERMODE_L: %08lx", othermode_l);
       OUTPUT_ ("AC_NONE", (othermode_l & 3) == 0);
@@ -655,7 +655,7 @@ void debug_capture ()
     }
     if (_debugger.page == PAGE_OTHERMODE_H && _debugger.tri_sel)
     {
-      wxUint32 othermode_h = _debugger.tri_sel->othermode_h;
+      uint32_t othermode_h = _debugger.tri_sel->othermode_h;
       COL_CATEGORY ();
       OUTPUT ("OTHERMODE_H: %08lx", othermode_h);
       OUTPUT_ ("CK_NONE", (othermode_h & 0x100) == 0);
@@ -726,7 +726,7 @@ void debug_capture ()
         OUTPUT1 ("v[%d].a: %d", j, _debugger.tri_sel->v[j].a);
       }
     }
-    if (_debugger.page == PAGE_TEX_INFO && _debugger.tex_sel < (wxUint32)rdp.n_cached[_debugger.tmu])
+    if (_debugger.page == PAGE_TEX_INFO && _debugger.tex_sel < (uint32_t)rdp.n_cached[_debugger.tmu])
     {
       COL_CATEGORY();
       OUTPUT ("CACHE (page 0)", 0);
@@ -756,9 +756,9 @@ void debug_capture ()
       output(800,(float)i,1,"crc: %08lx", cache[_debugger.tex_sel].crc);
       i-=16;
 #ifdef TEXTURE_FILTER
-      output(800,(float)i,1,"RiceCrc: %08lx", (wxUint32)(rdp.cache[_debugger.tmu][_debugger.tex_sel].ricecrc&0xFFFFFFFF));
+      output(800,(float)i,1,"RiceCrc: %08lx", (uint32_t)(rdp.cache[_debugger.tmu][_debugger.tex_sel].ricecrc&0xFFFFFFFF));
       i-=16;
-      output(800,(float)i,1,"RicePalCrc: %08lx", (wxUint32)(rdp.cache[_debugger.tmu][_debugger.tex_sel].ricecrc>>32));
+      output(800,(float)i,1,"RicePalCrc: %08lx", (uint32_t)(rdp.cache[_debugger.tmu][_debugger.tex_sel].ricecrc>>32));
       i-=16;
 #endif
       output(800,(float)i,1,"flags: %08lx", cache[_debugger.tex_sel].flags);
@@ -984,8 +984,8 @@ void output (float x, float y, int scale, const char *fmt, ...)
   vsprintf(out_buf, fmt, ap);
   va_end(ap);
 
-  wxUint8 c,r;
-  for (wxUint32 i=0; i<strlen(out_buf); i++)
+  uint8_t c,r;
+  for (uint32_t i=0; i<strlen(out_buf); i++)
   {
     c = ((out_buf[i]-32) & 0x1F) * 8;//<< 3;
     r = (((out_buf[i]-32) & 0xE0) >> 5) * 16;//<< 4;

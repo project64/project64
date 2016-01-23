@@ -800,11 +800,13 @@ fix_tex_coord=16
 [7ED67CD4-B4415E6D-C:50]
 Good Name=Dark Rift (E)
 Internal Name=DARK RIFT
+fb_smart=0
 force_microcheck=1
 
 [A4A52B58-23759841-C:45]
 Good Name=Dark Rift (U)
 Internal Name=DARK RIFT
+fb_smart=0
 force_microcheck=1
 
 [F5363349-DBF9D21B-C:45]

@@ -365,6 +365,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\N64System\Mips\Disk.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\N64System\Mips\Dma.cpp"
 						>
 					</File>
@@ -533,6 +537,10 @@
 				>
 				<File
 					RelativePath=".\N64System\CheatClass.h"
+					>
+				</File>
+				<File
+					RelativePath=".\N64System\Mips\Disk.h"
 					>
 				</File>
 				<File

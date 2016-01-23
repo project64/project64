@@ -57,9 +57,9 @@ static int Calc_invw (int w) {
 	int count, neg;
   union {
 	wxInt32		  W;
-	wxUint32	  UW;
+	uint32_t	  UW;
 	wxInt16			HW[2];
-	wxUint16		UHW[2];
+	uint16_t		UHW[2];
   } Result;
 	Result.W = w;
 	if (Result.UW == 0) {
@@ -95,9 +95,9 @@ static int Calc_invw (int w) {
   return Result.W;
 }
 
-static void uc9_draw_object (wxUint8 * addr, wxUint32 type)
+static void uc9_draw_object (uint8_t * addr, uint32_t type)
 {
-  wxUint32 textured, vnum, vsize;
+  uint32_t textured, vnum, vsize;
   switch (type) {
     case 0: //null
       textured = vnum = vsize = 0;
@@ -128,7 +128,7 @@ static void uc9_draw_object (wxUint8 * addr, wxUint32 type)
       break;
   }
   VERTEX vtx[4];
-  for (wxUint32 i = 0; i < vnum; i++)
+  for (uint32_t i = 0; i < vnum; i++)
   {
     VERTEX &v = vtx[i];
     v.sx = zSortRdp.scale_x * ((short*)addr)[0^1];
@@ -181,15 +181,15 @@ static void uc9_draw_object (wxUint8 * addr, wxUint32 type)
   }
 }
 
-static wxUint32 uc9_load_object (wxUint32 zHeader, wxUint32 * rdpcmds)
+static uint32_t uc9_load_object (uint32_t zHeader, uint32_t * rdpcmds)
 {
-  wxUint32 type = zHeader & 7;
-  wxUint8 * addr = gfx.RDRAM + (zHeader&0xFFFFFFF8);
+  uint32_t type = zHeader & 7;
+  uint8_t * addr = gfx.RDRAM + (zHeader&0xFFFFFFF8);
   switch (type) {
     case 1: //sh tri
     case 3: //sh quad
       {
-        rdp.cmd1 = ((wxUint32*)addr)[1];
+        rdp.cmd1 = ((uint32_t*)addr)[1];
         if (rdp.cmd1 != rdpcmds[0])
         {
           rdpcmds[0] = rdp.cmd1;
@@ -203,19 +203,19 @@ static wxUint32 uc9_load_object (wxUint32 zHeader, wxUint32 * rdpcmds)
     case 2: //tx tri
     case 4: //tx quad
       {
-        rdp.cmd1 = ((wxUint32*)addr)[1];
+        rdp.cmd1 = ((uint32_t*)addr)[1];
         if (rdp.cmd1 != rdpcmds[0])
         {
           rdpcmds[0] = rdp.cmd1;
           uc9_rpdcmd ();
         }
-        rdp.cmd1 = ((wxUint32*)addr)[2];
+        rdp.cmd1 = ((uint32_t*)addr)[2];
         if (rdp.cmd1 != rdpcmds[1])
         {
           uc9_rpdcmd ();
           rdpcmds[1] = rdp.cmd1;
         }
-        rdp.cmd1 = ((wxUint32*)addr)[3];
+        rdp.cmd1 = ((uint32_t*)addr)[3];
         if (rdp.cmd1 != rdpcmds[2])
         {
           uc9_rpdcmd ();
@@ -229,15 +229,15 @@ static wxUint32 uc9_load_object (wxUint32 zHeader, wxUint32 * rdpcmds)
       }
       break;
   }
-  return segoffset(((wxUint32*)addr)[0]);
+  return segoffset(((uint32_t*)addr)[0]);
 }
 
 static void uc9_object ()
 {
   LRDP("uc9:object\n");
-  wxUint32 rdpcmds[3] = {0, 0, 0};
-  wxUint32 cmd1 = rdp.cmd1;
-  wxUint32 zHeader = segoffset(rdp.cmd0);
+  uint32_t rdpcmds[3] = {0, 0, 0};
+  uint32_t cmd1 = rdp.cmd1;
+  uint32_t zHeader = segoffset(rdp.cmd0);
   while (zHeader)
     zHeader = uc9_load_object(zHeader, rdpcmds);
   zHeader = segoffset(cmd1);
@@ -254,7 +254,7 @@ static void uc9_fmlight ()
 {
   int mid = rdp.cmd0&0xFF;
   rdp.num_lights = 1 + ((rdp.cmd1>>12)&0xFF);
-  wxUint32 a = -1024 + (rdp.cmd1&0xFFF);
+  uint32_t a = -1024 + (rdp.cmd1&0xFFF);
   FRDP ("uc9:fmlight matrix: %d, num: %d, dmem: %04lx\n", mid, rdp.num_lights, a);
 
   M44 *m = NULL;
@@ -274,18 +274,18 @@ static void uc9_fmlight ()
     break;
   }
 
-  rdp.light[rdp.num_lights].r = (float)(((wxUint8*)gfx.DMEM)[(a+0)^3]) / 255.0f;
-  rdp.light[rdp.num_lights].g = (float)(((wxUint8*)gfx.DMEM)[(a+1)^3]) / 255.0f;
-  rdp.light[rdp.num_lights].b = (float)(((wxUint8*)gfx.DMEM)[(a+2)^3]) / 255.0f;
+  rdp.light[rdp.num_lights].r = (float)(((uint8_t*)gfx.DMEM)[(a+0)^3]) / 255.0f;
+  rdp.light[rdp.num_lights].g = (float)(((uint8_t*)gfx.DMEM)[(a+1)^3]) / 255.0f;
+  rdp.light[rdp.num_lights].b = (float)(((uint8_t*)gfx.DMEM)[(a+2)^3]) / 255.0f;
   rdp.light[rdp.num_lights].a = 1.0f;
   FRDP ("ambient light: r: %.3f, g: %.3f, b: %.3f\n", rdp.light[rdp.num_lights].r, rdp.light[rdp.num_lights].g, rdp.light[rdp.num_lights].b);
   a += 8;
-  wxUint32 i;
+  uint32_t i;
   for (i = 0; i < rdp.num_lights; i++)
   {
-    rdp.light[i].r = (float)(((wxUint8*)gfx.DMEM)[(a+0)^3]) / 255.0f;
-    rdp.light[i].g = (float)(((wxUint8*)gfx.DMEM)[(a+1)^3]) / 255.0f;
-    rdp.light[i].b = (float)(((wxUint8*)gfx.DMEM)[(a+2)^3]) / 255.0f;
+    rdp.light[i].r = (float)(((uint8_t*)gfx.DMEM)[(a+0)^3]) / 255.0f;
+    rdp.light[i].g = (float)(((uint8_t*)gfx.DMEM)[(a+1)^3]) / 255.0f;
+    rdp.light[i].b = (float)(((uint8_t*)gfx.DMEM)[(a+2)^3]) / 255.0f;
     rdp.light[i].a = 1.0f;
     rdp.light[i].dir_x = (float)(((char*)gfx.DMEM)[(a+8)^3]) / 127.0f;
     rdp.light[i].dir_y = (float)(((char*)gfx.DMEM)[(a+9)^3]) / 127.0f;
@@ -320,16 +320,16 @@ static void uc9_fmlight ()
 
 static void uc9_light ()
 {
-  wxUint32 csrs = -1024 + ((rdp.cmd0>>12)&0xFFF);
-  wxUint32 nsrs = -1024 + (rdp.cmd0&0xFFF);
-  wxUint32 num = 1 + ((rdp.cmd1>>24)&0xFF);
-  wxUint32 cdest = -1024 + ((rdp.cmd1>>12)&0xFFF);
-  wxUint32 tdest = -1024 + (rdp.cmd1&0xFFF);
+  uint32_t csrs = -1024 + ((rdp.cmd0>>12)&0xFFF);
+  uint32_t nsrs = -1024 + (rdp.cmd0&0xFFF);
+  uint32_t num = 1 + ((rdp.cmd1>>24)&0xFF);
+  uint32_t cdest = -1024 + ((rdp.cmd1>>12)&0xFFF);
+  uint32_t tdest = -1024 + (rdp.cmd1&0xFFF);
   int use_material = (csrs != 0x0ff0);
   tdest >>= 1;
   FRDP ("uc9:light n: %d, colsrs: %04lx, normales: %04lx, coldst: %04lx, texdst: %04lx\n", num, csrs, nsrs, cdest, tdest);
   VERTEX v;
-  for (wxUint32 i = 0; i < num; i++)
+  for (uint32_t i = 0; i < num; i++)
   {
     v.vec[0] = ((char*)gfx.DMEM)[(nsrs++)^3];
     v.vec[1] = ((char*)gfx.DMEM)[(nsrs++)^3];
@@ -341,9 +341,9 @@ static void uc9_light ()
     v.a = 0xFF;
     if (use_material)
     {
-      v.r = (wxUint8)(((wxUint32)v.r * gfx.DMEM[(csrs++)^3])>>8);
-      v.g = (wxUint8)(((wxUint32)v.g * gfx.DMEM[(csrs++)^3])>>8);
-      v.b = (wxUint8)(((wxUint32)v.b * gfx.DMEM[(csrs++)^3])>>8);
+      v.r = (uint8_t)(((uint32_t)v.r * gfx.DMEM[(csrs++)^3])>>8);
+      v.g = (uint8_t)(((uint32_t)v.g * gfx.DMEM[(csrs++)^3])>>8);
+      v.b = (uint8_t)(((uint32_t)v.b * gfx.DMEM[(csrs++)^3])>>8);
       v.a = gfx.DMEM[(csrs++)^3];
     }
     gfx.DMEM[(cdest++)^3] = v.r;
@@ -392,9 +392,9 @@ static void uc9_mtxcat ()
   LRDP("uc9:mtxcat ");
   M44 *s = NULL;
   M44 *t = NULL;
-  wxUint32 S = rdp.cmd0&0xF;
-  wxUint32 T = (rdp.cmd1>>16)&0xF;
-  wxUint32 D = rdp.cmd1&0xF;
+  uint32_t S = rdp.cmd0&0xF;
+  uint32_t T = (rdp.cmd1>>16)&0xF;
+  uint32_t D = rdp.cmd1&0xF;
   switch (S) {
   case 4:
     s = (M44*)rdp.model;
@@ -471,8 +471,8 @@ typedef struct  {
   short yi;
   short xi;
   short wi;
-  wxUint8 fog;
-  wxUint8 cc;
+  uint8_t fog;
+  uint8_t cc;
 } zSortVDest;
 
 static void uc9_mult_mpmtx ()
@@ -513,7 +513,7 @@ static void uc9_mult_mpmtx ()
       int fog = (int)(z / w * rdp.fog_multiplier + rdp.fog_offset);
       if (fog > 255)
         fog = 255;
-      v.fog = (fog >= 0) ? (wxUint8)fog : 0;
+      v.fog = (fog >= 0) ? (uint8_t)fog : 0;
     }
 
     v.cc = 0;
@@ -558,7 +558,7 @@ void uc9_movemem ()
   int len = (1 + ((rdp.cmd0>>15)&0x1ff))<<3;
   FRDP ("uc9:movemem ofs: %d, len: %d. ", ofs, len);
   int flag = rdp.cmd0 & 0x01;
-  wxUint32 addr = segoffset(rdp.cmd1);
+  uint32_t addr = segoffset(rdp.cmd1);
   switch (idx)
   {
 
@@ -622,7 +622,7 @@ void uc9_movemem ()
 
   case 12:   // VIEWPORT
     {
-      wxUint32 a = addr >> 1;
+      uint32_t a = addr >> 1;
       short scale_x = ((short*)gfx.RDRAM)[(a+0)^1] >> 2;
       short scale_y = ((short*)gfx.RDRAM)[(a+1)^1] >> 2;
       short scale_z = ((short*)gfx.RDRAM)[(a+2)^1];

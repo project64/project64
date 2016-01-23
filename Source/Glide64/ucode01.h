@@ -106,7 +106,7 @@ static void uc1_line3d()
 {
   if (!settings.force_quad3d && ((rdp.cmd1&0xFF000000) == 0) && ((rdp.cmd0&0x00FFFFFF) == 0))
   {
-    wxUint16 width = (wxUint16)(rdp.cmd1&0xFF) + 3;
+    uint16_t width = (uint16_t)(rdp.cmd1&0xFF) + 3;
     
     FRDP("uc1:line3d width: %d #%d, #%d - %d, %d\n", width, rdp.tri_n, rdp.tri_n+1,
       (rdp.cmd1 >> 17) & 0x7F,
@@ -117,7 +117,7 @@ static void uc1_line3d()
         &rdp.vtx[(rdp.cmd1 >> 9) & 0x7F],
         &rdp.vtx[(rdp.cmd1 >> 9) & 0x7F]
     };
-    wxUint32 cull_mode = (rdp.flags & CULLMASK) >> CULLSHIFT;
+    uint32_t cull_mode = (rdp.flags & CULLMASK) >> CULLSHIFT;
     rdp.flags |= CULLMASK;
     rdp.update |= UPDATE_CULL_MODE;
     rsp_tri1(v, width);
@@ -142,7 +142,7 @@ static void uc1_line3d()
   }
 }
 
-wxUint32 branch_dl = 0;
+uint32_t branch_dl = 0;
 
 static void uc1_rdphalf_1()
 {
@@ -153,9 +153,9 @@ static void uc1_rdphalf_1()
 
 static void uc1_branch_z()
 {
-  wxUint32 addr = segoffset(branch_dl);
+  uint32_t addr = segoffset(branch_dl);
   FRDP ("uc1:branch_less_z, addr: %08lx\n", addr);
-  wxUint32 vtx = (rdp.cmd0 & 0xFFF) >> 1;
+  uint32_t vtx = (rdp.cmd0 & 0xFFF) >> 1;
   if( fabs(rdp.vtx[vtx].z) <= (rdp.cmd1/*&0xFFFF*/) )
   {
     rdp.pc[rdp.pc_i] = addr;

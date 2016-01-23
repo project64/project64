@@ -99,24 +99,24 @@ extern "C" {
 
 #define _ENDUSER_RELEASE_
 
-//********
-// Logging
+    //********
+    // Logging
 
-// ********************************
-// ** TAKE OUT BEFORE RELEASE!!! **
-//#define LOGGING			// log of spec functions called
-//#define LOG_KEY			// says "Key!!!" in the log when space bar is pressed
+    // ********************************
+    // ** TAKE OUT BEFORE RELEASE!!! **
+    //#define LOGGING			// log of spec functions called
+    //#define LOG_KEY			// says "Key!!!" in the log when space bar is pressed
 
-//#define LOG_UCODE
+    //#define LOG_UCODE
 
-//#define ALTTAB_FIX
+    //#define ALTTAB_FIX
 
-//#define EXTREME_LOGGING		// lots of logging
-							//  note that some of these things are inserted/removed
-							//  from within the code & may not be changed by this define.
+    //#define EXTREME_LOGGING		// lots of logging
+    //  note that some of these things are inserted/removed
+    //  from within the code & may not be changed by this define.
 
-//#define TLUT_LOGGING		// log every entry of the TLUT?
-// ********************************
+    //#define TLUT_LOGGING		// log every entry of the TLUT?
+    // ********************************
 
 #define FPS					// fps counter able? (not enabled necessarily)
 
@@ -125,40 +125,39 @@ extern "C" {
 
 #define LOG_COMMANDS		// log the whole 64-bit command as (0x........, 0x........)
 
-//#define CATCH_EXCEPTIONS	// catch exceptions so it doesn't freeze and will report
-							// "The gfx plugin has caused an exception" instead.
+    //#define CATCH_EXCEPTIONS	// catch exceptions so it doesn't freeze and will report
+    // "The gfx plugin has caused an exception" instead.
 
 #define FLUSH				// flush the file buffer. slower logging, but makes sure
-							//  the command is logged before continuing (in case of
-							//  crash or exception, the log will not be cut short)
+    //  the command is logged before continuing (in case of
+    //  crash or exception, the log will not be cut short)
 #ifndef _ENDUSER_RELEASE_
 #define RDP_LOGGING			// Allow logging (will not log unless checked, but allows the option)
-							//  Logging functions will not be compiled if this is not present.
-//#define RDP_ERROR_LOG
+    //  Logging functions will not be compiled if this is not present.
+    //#define RDP_ERROR_LOG
 #endif
 
 #define FPS_FRAMES	10		// Number of frames in which to make an FPS count
 
-//#define SHOW_FULL_TEXVIEWER	// shows the entire contents of the texture in the cache viewer,
-								// usually used to debug clamping issues.
+    //#define SHOW_FULL_TEXVIEWER	// shows the entire contents of the texture in the cache viewer,
+    // usually used to debug clamping issues.
 
-
-// Usually enabled
+    // Usually enabled
 #define LARGE_TEXTURE_HANDLING	// allow large-textured objects to be split?
 
 #ifdef ALTTAB_FIX
-extern HHOOK hhkLowLevelKybd;
-extern LRESULT CALLBACK LowLevelKeyboardProc(int nCode,
-   WPARAM wParam, LPARAM lParam);
+    extern HHOOK hhkLowLevelKybd;
+    extern LRESULT CALLBACK LowLevelKeyboardProc(int nCode,
+        WPARAM wParam, LPARAM lParam);
 #endif
 
-// Simulations
-//#define SIMULATE_VOODOO1
-//#define SIMULATE_BANSHEE
-//********
+    // Simulations
+    //#define SIMULATE_VOODOO1
+    //#define SIMULATE_BANSHEE
+    //********
 
 #ifdef EXT_LOGGING
-extern std::ofstream extlog;
+    extern std::ofstream extlog;
 #define EXT(x) extlog.open("ext.txt",std::ios::app); extlog << x; extlog.close();
 #else
 #define EXT(x)
@@ -172,40 +171,39 @@ extern std::ofstream extlog;
 #define COLORED_DEBUGGER	// ;) pretty colors
 
 #ifdef FPS
-extern wxDateTime fps_last;
-extern wxDateTime fps_next;
-extern float		  fps;
-extern wxUint32	  fps_count;
+    extern wxDateTime fps_last;
+    extern wxDateTime fps_next;
+    extern float		  fps;
+    extern uint32_t	  fps_count;
 #endif
 
-// rdram mask at 0x400000 bytes (bah, not right for majora's mask)
-//#define BMASK	0x7FFFFF
-extern unsigned int BMASK;
+    // rdram mask at 0x400000 bytes (bah, not right for majora's mask)
+    //#define BMASK	0x7FFFFF
+    extern unsigned int BMASK;
 #define WMASK	0x3FFFFF
 #define DMASK	0x1FFFFF
 
-extern wxUint32 update_screen_count;
-extern wxUint32 resolutions[0x18][2];
+    extern uint32_t update_screen_count;
+    extern uint32_t resolutions[0x18][2];
 
-int CheckKeyPressed(int key, int mask);
+    int CheckKeyPressed(int key, int mask);
 
-//#define PERFORMANCE
+    //#define PERFORMANCE
 #ifdef PERFORMANCE
-extern int64 perf_cur;
-extern int64 perf_next;
+    extern int64 perf_cur;
+    extern int64 perf_next;
 #endif
 
 #ifdef LOGGING
-extern std::ofstream loga;
+    extern std::ofstream loga;
 #define LOG(x) loga.open("glide64_log.txt",std::ios::app); loga << x; loga.flush(); loga.close();
 #else
 #define LOG(x)
 #endif
 
-
 #ifdef RDP_LOGGING
-extern int log_open;
-extern std::ofstream rdp_log;
+    extern int log_open;
+    extern std::ofstream rdp_log;
 #define OPEN_RDP_LOG() EXT("OPEN_RDP_LOG ()\n"); if (settings.logging && !log_open) { rdp_log.open ("rdp.txt"); log_open=TRUE; }
 #define CLOSE_RDP_LOG() EXT("CLOSE_RDP_LOG ()\n"); if (settings.logging && log_open) { rdp_log.close (); log_open=FALSE; }
 
@@ -221,10 +219,9 @@ extern std::ofstream rdp_log;
 #define LRDP(x)
 #endif
 
-
 #ifdef RDP_ERROR_LOG
-extern int elog_open;
-extern std::ofstream rdp_err;
+    extern int elog_open;
+    extern std::ofstream rdp_err;
 #define OPEN_RDP_E_LOG() EXT("OPEN_RDP_E_LOG ()\n"); if (settings.elogging && !elog_open) { rdp_err.open ("rdp_e.txt"); elog_open=TRUE; }
 #define CLOSE_RDP_E_LOG() EXT("CLOSE_RDP_LOG ()\n"); if (settings.elogging && elog_open) { rdp_err.close (); elog_open=FALSE; }
 #define RDP_E(x) if (settings.elogging) { FRDP_E (x); }
@@ -235,69 +232,68 @@ extern std::ofstream rdp_err;
 #endif
 
 #ifdef RDP_LOGGING
-__inline void FRDP (const char *fmt, ...)
-{
-	if (!settings.logging || !log_open) return;
+    __inline void FRDP(const char *fmt, ...)
+    {
+        if (!settings.logging || !log_open) return;
 
 #ifdef LOGNOTKEY
-	if (CheckKeyPressed(LOGKEY,0x8000)) return;
+        if (CheckKeyPressed(LOGKEY, 0x8000)) return;
 #endif
 
-	va_list ap;
-	va_start(ap, fmt);
-	vsprintf(out_buf, fmt, ap);
-	LRDP (out_buf);
-	va_end(ap);
-}
+        va_list ap;
+        va_start(ap, fmt);
+        vsprintf(out_buf, fmt, ap);
+        LRDP(out_buf);
+        va_end(ap);
+    }
 #else
-__inline void FRDP (const char * /*fmt*/, ...) {}
+    __inline void FRDP(const char * /*fmt*/, ...) {}
 #endif
 
 #ifdef RDP_ERROR_LOG
-__inline void FRDP_E (const char *fmt, ...)
-{
-	if (!settings.elogging || !elog_open) return;
+    __inline void FRDP_E(const char *fmt, ...)
+    {
+        if (!settings.elogging || !elog_open) return;
 
 #ifdef LOGNOTKEY
-	if (CheckKeyPressed(LOGKEY,0x8000)) return;
+        if (CheckKeyPressed(LOGKEY, 0x8000)) return;
 #endif
 
-	sprintf (out_buf, "%08lx: (%08lx, %08lx) ", rdp.pc[rdp.pc_i]-8, rdp.cmd0, rdp.cmd1);
-	rdp_err << out_buf;
+        sprintf(out_buf, "%08lx: (%08lx, %08lx) ", rdp.pc[rdp.pc_i] - 8, rdp.cmd0, rdp.cmd1);
+        rdp_err << out_buf;
 
-	va_list ap2;
-	va_start(ap2, fmt);
-	vsprintf(out_buf, fmt, ap2);
-	rdp_err << out_buf;
-	rdp_err.flush();
-	va_end(ap2);
-}
+        va_list ap2;
+        va_start(ap2, fmt);
+        vsprintf(out_buf, fmt, ap2);
+        rdp_err << out_buf;
+        rdp_err.flush();
+        va_end(ap2);
+    }
 #else
-__inline void FRDP_E (const char * /*fmt*/, ...) {}
+    __inline void FRDP_E(const char * /*fmt*/, ...) {}
 #endif
 
-extern int fullscreen;
-extern int romopen;
-extern int to_fullscreen;
-extern int debugging;
+    extern int GfxInitDone;
+    extern int romopen;
+    extern int to_fullscreen;
+    extern int debugging;
 
-extern int evoodoo;
-extern int ev_fullscreen;
+    extern int evoodoo;
+    extern int ev_fullscreen;
 
-extern int exception;
-extern wxMutex *mutexProcessDList;
+    extern int exception;
 
-int InitGfx ();
-void ReleaseGfx ();
+    int InitGfx();
+    void ReleaseGfx();
 
-// The highest 8 bits are the segment # (1-16), and the lower 24 bits are the offset to
-// add to it.
-__inline wxUint32 segoffset (wxUint32 so)
-{
-	return (rdp.segment[(so>>24)&0x0f] + (so&BMASK))&BMASK;
-}
+    // The highest 8 bits are the segment # (1-16), and the lower 24 bits are the offset to
+    // add to it.
+    __inline uint32_t segoffset(uint32_t so)
+    {
+        return (rdp.segment[(so >> 24) & 0x0f] + (so&BMASK))&BMASK;
+    }
 
-/* Plugin types */
+    /* Plugin types */
 #define PLUGIN_TYPE_GFX				2
 
 #ifdef __WINDOWS__
@@ -308,104 +304,101 @@ __inline wxUint32 segoffset (wxUint32 so)
 #define CALL
 #endif
 
-/***** Structures *****/
-typedef struct {
-	wxUint16 Version;        /* Set to 0x0103 */
-	wxUint16 Type;           /* Set to PLUGIN_TYPE_GFX */
-	char Name[100];      /* Name of the DLL */
+    /***** Structures *****/
+    typedef struct {
+        wxUint16 Version;        /* Set to 0x0103 */
+        wxUint16 Type;           /* Set to PLUGIN_TYPE_GFX */
+        char Name[100];      /* Name of the DLL */
 
-	/* If DLL supports memory these memory options then set them to TRUE or FALSE
-	   if it does not support it */
-	int NormalMemory;    /* a normal wxUint8 array */
-	int MemoryBswaped;  /* a normal wxUint8 array where the memory has been pre
-	                          bswap on a dword (32 bits) boundry */
-} PLUGIN_INFO;
+        /* If DLL supports memory these memory options then set them to TRUE or FALSE
+           if it does not support it */
+        int NormalMemory;    /* a normal wxUint8 array */
+        int MemoryBswaped;  /* a normal wxUint8 array where the memory has been pre
+                                  bswap on a dword (32 bits) boundry */
+    } PLUGIN_INFO;
 
-typedef struct {
-	HWND hWnd;			/* Render window */
-	HWND hStatusBar;    /* if render window does not have a status bar then this is NULL */
+    typedef struct {
+        HWND hWnd;			/* Render window */
+        HWND hStatusBar;    /* if render window does not have a status bar then this is NULL */
 
-	int MemoryBswaped;    // If this is set to TRUE, then the memory has been pre
-	                       //   bswap on a dword (32 bits) boundry
-						   //	eg. the first 8 bytes are stored like this:
-	                       //        4 3 2 1   8 7 6 5
+        int MemoryBswaped;    // If this is set to TRUE, then the memory has been pre
+        //   bswap on a dword (32 bits) boundry
+        //	eg. the first 8 bytes are stored like this:
+        //        4 3 2 1   8 7 6 5
 
-	wxUint8 * HEADER;	// This is the rom header (first 40h bytes of the rom
-					// This will be in the same memory format as the rest of the memory.
-	wxUint8 * RDRAM;
-	wxUint8 * DMEM;
-	wxUint8 * IMEM;
+        wxUint8 * HEADER;	// This is the rom header (first 40h bytes of the rom
+        // This will be in the same memory format as the rest of the memory.
+        wxUint8 * RDRAM;
+        wxUint8 * DMEM;
+        wxUint8 * IMEM;
 
-	wxUint32 * MI_INTR_REG;
+        uint32_t * MI_INTR_REG;
 
-	wxUint32 * DPC_START_REG;
-	wxUint32 * DPC_END_REG;
-	wxUint32 * DPC_CURRENT_REG;
-	wxUint32 * DPC_STATUS_REG;
-	wxUint32 * DPC_CLOCK_REG;
-	wxUint32 * DPC_BUFBUSY_REG;
-	wxUint32 * DPC_PIPEBUSY_REG;
-	wxUint32 * DPC_TMEM_REG;
+        uint32_t * DPC_START_REG;
+        uint32_t * DPC_END_REG;
+        uint32_t * DPC_CURRENT_REG;
+        uint32_t * DPC_STATUS_REG;
+        uint32_t * DPC_CLOCK_REG;
+        uint32_t * DPC_BUFBUSY_REG;
+        uint32_t * DPC_PIPEBUSY_REG;
+        uint32_t * DPC_TMEM_REG;
 
-	wxUint32 * VI_STATUS_REG;
-	wxUint32 * VI_ORIGIN_REG;
-	wxUint32 * VI_WIDTH_REG;
-	wxUint32 * VI_INTR_REG;
-	wxUint32 * VI_V_CURRENT_LINE_REG;
-	wxUint32 * VI_TIMING_REG;
-	wxUint32 * VI_V_SYNC_REG;
-	wxUint32 * VI_H_SYNC_REG;
-	wxUint32 * VI_LEAP_REG;
-	wxUint32 * VI_H_START_REG;
-	wxUint32 * VI_V_START_REG;
-	wxUint32 * VI_V_BURST_REG;
-	wxUint32 * VI_X_SCALE_REG;
-	wxUint32 * VI_Y_SCALE_REG;
+        uint32_t * VI_STATUS_REG;
+        uint32_t * VI_ORIGIN_REG;
+        uint32_t * VI_WIDTH_REG;
+        uint32_t * VI_INTR_REG;
+        uint32_t * VI_V_CURRENT_LINE_REG;
+        uint32_t * VI_TIMING_REG;
+        uint32_t * VI_V_SYNC_REG;
+        uint32_t * VI_H_SYNC_REG;
+        uint32_t * VI_LEAP_REG;
+        uint32_t * VI_H_START_REG;
+        uint32_t * VI_V_START_REG;
+        uint32_t * VI_V_BURST_REG;
+        uint32_t * VI_X_SCALE_REG;
+        uint32_t * VI_Y_SCALE_REG;
 
-	void (*CheckInterrupts)( void );
-} GFX_INFO;
+        void(*CheckInterrupts)(void);
+    } GFX_INFO;
 
-extern GFX_INFO gfx;
-extern wxWindow * GFXWindow;
-extern bool no_dlist;
+    extern GFX_INFO gfx;
+    extern wxWindow * GFXWindow;
+    extern bool no_dlist;
 
+    typedef void (FX_CALL *GRCOLORCOMBINEEXT) (GrCCUColor_t     a,
+        GrCombineMode_t  a_mode,
+        GrCCUColor_t     b,
+        GrCombineMode_t  b_mode,
+        GrCCUColor_t     c,
+        FxBool           c_invert,
+        GrCCUColor_t     d,
+        FxBool           d_invert,
+        FxU32            shift,
+        FxBool           invert);
 
+    typedef void (FX_CALL *GRTEXCOLORCOMBINEEXT) (GrChipID_t       tmu,
+        GrTCCUColor_t    a,
+        GrCombineMode_t  a_mode,
+        GrTCCUColor_t    b,
+        GrCombineMode_t  b_mode,
+        GrTCCUColor_t    c,
+        FxBool           c_invert,
+        GrTCCUColor_t    d,
+        FxBool           d_invert,
+        FxU32            shift,
+        FxBool           invert);
 
-typedef void (FX_CALL *GRCOLORCOMBINEEXT) (GrCCUColor_t     a,
-                                        GrCombineMode_t  a_mode,
-                                        GrCCUColor_t     b,
-                                        GrCombineMode_t  b_mode,
-                                        GrCCUColor_t     c,
-                                        FxBool           c_invert,
-                                        GrCCUColor_t     d,
-                                        FxBool           d_invert,
-                                        FxU32            shift,
-                                        FxBool           invert) ;
+    typedef void (FX_CALL *GRCONSTANTCOLORVALUEEXT)
+        (GrChipID_t       tmu,
+        GrColor_t        value);
 
-typedef void (FX_CALL *GRTEXCOLORCOMBINEEXT) (GrChipID_t       tmu,
-                                           GrTCCUColor_t    a,
-                                           GrCombineMode_t  a_mode,
-                                           GrTCCUColor_t    b,
-                                           GrCombineMode_t  b_mode,
-                                           GrTCCUColor_t    c,
-                                           FxBool           c_invert,
-                                           GrTCCUColor_t    d,
-                                           FxBool           d_invert,
-                                           FxU32            shift,
-                                           FxBool           invert);
+    typedef void (FX_CALL *GRSTIPPLE)(FxI32 mode);
 
-typedef void (FX_CALL *GRCONSTANTCOLORVALUEEXT)
-          (GrChipID_t       tmu,
-           GrColor_t        value);
+    typedef int(*GETTEXADDR)(int tmu, int texsize);
 
-typedef void (FX_CALL *GRSTIPPLE)( FxI32 mode) ;
-
-
-typedef int (*GETTEXADDR)(int tmu, int texsize);
-
-extern GRSTIPPLE            grStippleModeExt;
-extern GRSTIPPLE            grStipplePatternExt;
-extern GETTEXADDR           GetTexAddr;
+    extern GRSTIPPLE            grStippleModeExt;
+    extern GRSTIPPLE            grStipplePatternExt;
+    extern GETTEXADDR           GetTexAddr;
 
 #ifndef GR_STIPPLE_DISABLE
 #define GR_STIPPLE_DISABLE	0x0
@@ -413,259 +406,257 @@ extern GETTEXADDR           GetTexAddr;
 #define GR_STIPPLE_ROTATE	0x2
 #endif
 
-void ReadSettings ();
-void ReadSpecialSettings (const char * name);
-void WriteSettings (bool saveEmulationSettings = false);
+    void ReadSettings();
+    void ReadSpecialSettings(const char * name);
+    void WriteSettings(bool saveEmulationSettings = false);
 
-/******************************************************************
-  Function: CaptureScreen
-  Purpose:  This function dumps the current frame to a file
-  input:    pointer to the directory to save the file to
-  output:   none
-*******************************************************************/
-EXPORT void CALL CaptureScreen ( char * Directory );
+    /******************************************************************
+      Function: CaptureScreen
+      Purpose:  This function dumps the current frame to a file
+      input:    pointer to the directory to save the file to
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL CaptureScreen(char * Directory);
 
-/******************************************************************
-  Function: ChangeWindow
-  Purpose:  to change the window between fullscreen and window
-            mode. If the window was in fullscreen this should
-			change the screen to window mode and vice vesa.
-  input:    none
-  output:   none
-*******************************************************************/
-EXPORT void CALL ChangeWindow (void);
+    /******************************************************************
+      Function: ChangeWindow
+      Purpose:  to change the window between fullscreen and window
+      mode. If the window was in fullscreen this should
+      change the screen to window mode and vice vesa.
+      input:    none
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL ChangeWindow(void);
 
-/******************************************************************
-  Function: CloseDLL
-  Purpose:  This function is called when the emulator is closing
-            down allowing the dll to de-initialise.
-  input:    none
-  output:   none
-*******************************************************************/
-EXPORT void CALL CloseDLL (void);
+    /******************************************************************
+      Function: CloseDLL
+      Purpose:  This function is called when the emulator is closing
+      down allowing the dll to de-initialise.
+      input:    none
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL CloseDLL(void);
 
-/******************************************************************
-  Function: DllAbout
-  Purpose:  This function is optional function that is provided
-            to give further information about the DLL.
-  input:    a handle to the window that calls this function
-  output:   none
-*******************************************************************/
-EXPORT void CALL DllAbout ( HWND hParent );
+    /******************************************************************
+      Function: DllAbout
+      Purpose:  This function is optional function that is provided
+      to give further information about the DLL.
+      input:    a handle to the window that calls this function
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL DllAbout(HWND hParent);
 
-/******************************************************************
-  Function: DllConfig
-  Purpose:  This function is optional function that is provided
-            to allow the user to configure the dll
-  input:    a handle to the window that calls this function
-  output:   none
-*******************************************************************/
-EXPORT void CALL DllConfig ( HWND hParent );
+    /******************************************************************
+      Function: DllConfig
+      Purpose:  This function is optional function that is provided
+      to allow the user to configure the dll
+      input:    a handle to the window that calls this function
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL DllConfig(HWND hParent);
 
-/******************************************************************
-  Function: DllTest
-  Purpose:  This function is optional function that is provided
-            to allow the user to test the dll
-  input:    a handle to the window that calls this function
-  output:   none
-*******************************************************************/
-EXPORT void CALL DllTest ( HWND hParent );
+    /******************************************************************
+      Function: DllTest
+      Purpose:  This function is optional function that is provided
+      to allow the user to test the dll
+      input:    a handle to the window that calls this function
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL DllTest(HWND hParent);
 
+    EXPORT void CALL ReadScreen(void **dest, int *width, int *height);
 
-EXPORT void CALL ReadScreen(void **dest, int *width, int *height);
+    /******************************************************************
+      Function: DrawScreen
+      Purpose:  This function is called when the emulator receives a
+      WM_PAINT message. This allows the gfx to fit in when
+      it is being used in the desktop.
+      input:    none
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL DrawScreen(void);
 
-/******************************************************************
-  Function: DrawScreen
-  Purpose:  This function is called when the emulator receives a
-            WM_PAINT message. This allows the gfx to fit in when
-			it is being used in the desktop.
-  input:    none
-  output:   none
-*******************************************************************/
-EXPORT void CALL DrawScreen (void);
+    /******************************************************************
+      Function: GetDllInfo
+      Purpose:  This function allows the emulator to gather information
+      about the dll by filling in the PluginInfo structure.
+      input:    a pointer to a PLUGIN_INFO stucture that needs to be
+      filled by the function. (see def above)
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL GetDllInfo(PLUGIN_INFO * PluginInfo);
 
-/******************************************************************
-  Function: GetDllInfo
-  Purpose:  This function allows the emulator to gather information
-            about the dll by filling in the PluginInfo structure.
-  input:    a pointer to a PLUGIN_INFO stucture that needs to be
-            filled by the function. (see def above)
-  output:   none
-*******************************************************************/
-EXPORT void CALL GetDllInfo ( PLUGIN_INFO * PluginInfo );
+    /******************************************************************
+      Function: InitiateGFX
+      Purpose:  This function is called when the DLL is started to give
+      information from the emulator that the n64 graphics
+      uses. This is not called from the emulation thread.
+      Input:    Gfx_Info is passed to this function which is defined
+      above.
+      Output:   TRUE on success
+      FALSE on failure to initialise
 
-/******************************************************************
-  Function: InitiateGFX
-  Purpose:  This function is called when the DLL is started to give
-            information from the emulator that the n64 graphics
-			uses. This is not called from the emulation thread.
-  Input:    Gfx_Info is passed to this function which is defined
-            above.
-  Output:   TRUE on success
-            FALSE on failure to initialise
+      ** note on interrupts **:
+      To generate an interrupt set the appropriate bit in MI_INTR_REG
+      and then call the function CheckInterrupts to tell the emulator
+      that there is a waiting interrupt.
+      *******************************************************************/
+    EXPORT int CALL InitiateGFX(GFX_INFO Gfx_Info);
 
-  ** note on interrupts **:
-  To generate an interrupt set the appropriate bit in MI_INTR_REG
-  and then call the function CheckInterrupts to tell the emulator
-  that there is a waiting interrupt.
-*******************************************************************/
-EXPORT int CALL InitiateGFX (GFX_INFO Gfx_Info);
+    /******************************************************************
+      Function: MoveScreen
+      Purpose:  This function is called in response to the emulator
+      receiving a WM_MOVE passing the xpos and ypos passed
+      from that message.
+      input:    xpos - the x-coordinate of the upper-left corner of the
+      client area of the window.
+      ypos - y-coordinate of the upper-left corner of the
+      client area of the window.
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL MoveScreen(int xpos, int ypos);
 
-/******************************************************************
-  Function: MoveScreen
-  Purpose:  This function is called in response to the emulator
-            receiving a WM_MOVE passing the xpos and ypos passed
-			from that message.
-  input:    xpos - the x-coordinate of the upper-left corner of the
-            client area of the window.
-			ypos - y-coordinate of the upper-left corner of the
-			client area of the window.
-  output:   none
-*******************************************************************/
-EXPORT void CALL MoveScreen (int xpos, int ypos);
+    /******************************************************************
+      Function: ProcessDList
+      Purpose:  This function is called when there is a Dlist to be
+      processed. (High level GFX list)
+      input:    none
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL ProcessDList(void);
 
-/******************************************************************
-  Function: ProcessDList
-  Purpose:  This function is called when there is a Dlist to be
-            processed. (High level GFX list)
-  input:    none
-  output:   none
-*******************************************************************/
-EXPORT void CALL ProcessDList(void);
+    /******************************************************************
+      Function: ProcessRDPList
+      Purpose:  This function is called when there is a Dlist to be
+      processed. (Low level GFX list)
+      input:    none
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL ProcessRDPList(void);
 
-/******************************************************************
-  Function: ProcessRDPList
-  Purpose:  This function is called when there is a Dlist to be
-            processed. (Low level GFX list)
-  input:    none
-  output:   none
-*******************************************************************/
-EXPORT void CALL ProcessRDPList(void);
+    /******************************************************************
+      Function: RomClosed
+      Purpose:  This function is called when a rom is closed.
+      input:    none
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL RomClosed(void);
 
-/******************************************************************
-  Function: RomClosed
-  Purpose:  This function is called when a rom is closed.
-  input:    none
-  output:   none
-*******************************************************************/
-EXPORT void CALL RomClosed (void);
+    /******************************************************************
+      Function: RomOpen
+      Purpose:  This function is called when a rom is open. (from the
+      emulation thread)
+      input:    none
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL RomOpen(void);
 
-/******************************************************************
-  Function: RomOpen
-  Purpose:  This function is called when a rom is open. (from the
-            emulation thread)
-  input:    none
-  output:   none
-*******************************************************************/
-EXPORT void CALL RomOpen (void);
+    /******************************************************************
+      Function: ShowCFB
+      Purpose:  Useally once Dlists are started being displayed, cfb is
+      ignored. This function tells the dll to start displaying
+      them again.
+      input:    none
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL ShowCFB(void);
 
-/******************************************************************
-  Function: ShowCFB
-  Purpose:  Useally once Dlists are started being displayed, cfb is
-            ignored. This function tells the dll to start displaying
-			them again.
-  input:    none
-  output:   none
-*******************************************************************/
-EXPORT void CALL ShowCFB (void);
+    /******************************************************************
+      Function: UpdateScreen
+      Purpose:  This function is called in response to a vsync of the
+      screen were the VI bit in MI_INTR_REG has already been
+      set
+      input:    none
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL UpdateScreen(void);
 
-/******************************************************************
-  Function: UpdateScreen
-  Purpose:  This function is called in response to a vsync of the
-            screen were the VI bit in MI_INTR_REG has already been
-			set
-  input:    none
-  output:   none
-*******************************************************************/
-EXPORT void CALL UpdateScreen (void);
+    /******************************************************************
+      Function: ViStatusChanged
+      Purpose:  This function is called to notify the dll that the
+      ViStatus registers value has been changed.
+      input:    none
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL ViStatusChanged(void);
 
-/******************************************************************
-  Function: ViStatusChanged
-  Purpose:  This function is called to notify the dll that the
-            ViStatus registers value has been changed.
-  input:    none
-  output:   none
-*******************************************************************/
-EXPORT void CALL ViStatusChanged (void);
+    /******************************************************************
+      Function: ViWidthChanged
+      Purpose:  This function is called to notify the dll that the
+      ViWidth registers value has been changed.
+      input:    none
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL ViWidthChanged(void);
 
-/******************************************************************
-  Function: ViWidthChanged
-  Purpose:  This function is called to notify the dll that the
-            ViWidth registers value has been changed.
-  input:    none
-  output:   none
-*******************************************************************/
-EXPORT void CALL ViWidthChanged (void);
+    /******************************************************************
+      Function: FrameBufferWrite
+      Purpose:  This function is called to notify the dll that the
+      frame buffer has been modified by CPU at the given address.
+      input:    addr		rdram address
+      val			val
+      size		1 = wxUint8, 2 = wxUint16, 4 = uint32_t
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL FBWrite(uint32_t, uint32_t);
 
+    typedef struct
+    {
+        uint32_t addr;
+        uint32_t val;
+        uint32_t size;				// 1 = wxUint8, 2 = wxUint16, 4=uint32_t
+    } FrameBufferModifyEntry;
 
-/******************************************************************
-  Function: FrameBufferWrite
-  Purpose:  This function is called to notify the dll that the
-            frame buffer has been modified by CPU at the given address.
-  input:    addr		rdram address
-			val			val
-			size		1 = wxUint8, 2 = wxUint16, 4 = wxUint32
-  output:   none
-*******************************************************************/
-EXPORT void CALL FBWrite(wxUint32, wxUint32);
+    /******************************************************************
+      Function: FrameBufferWriteList
+      Purpose:  This function is called to notify the dll that the
+      frame buffer has been modified by CPU at the given address.
+      input:    FrameBufferModifyEntry *plist
+      size = size of the plist, max = 1024
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL FBWList(FrameBufferModifyEntry *plist, uint32_t size);
 
-typedef struct
-{
-	wxUint32 addr;
-	wxUint32 val;
-	wxUint32 size;				// 1 = wxUint8, 2 = wxUint16, 4=wxUint32
-} FrameBufferModifyEntry;
+    /******************************************************************
+      Function: FrameBufferRead
+      Purpose:  This function is called to notify the dll that the
+      frame buffer memory is beening read at the given address.
+      DLL should copy content from its render buffer to the frame buffer
+      in N64 RDRAM
+      DLL is responsible to maintain its own frame buffer memory addr list
+      DLL should copy 4KB block content back to RDRAM frame buffer.
+      Emulator should not call this function again if other memory
+      is read within the same 4KB range
+      input:    addr		rdram address
+      val			val
+      size		1 = wxUint8, 2 = wxUint16, 4 = uint32_t
+      output:   none
+      *******************************************************************/
+    EXPORT void CALL FBRead(uint32_t addr);
 
-/******************************************************************
-  Function: FrameBufferWriteList
-  Purpose:  This function is called to notify the dll that the
-            frame buffer has been modified by CPU at the given address.
-  input:    FrameBufferModifyEntry *plist
-			size = size of the plist, max = 1024
-  output:   none
-*******************************************************************/
-EXPORT void CALL FBWList(FrameBufferModifyEntry *plist, wxUint32 size);
+    /************************************************************************
+    Function: FBGetFrameBufferInfo
+    Purpose:  This function is called by the emulator core to retrieve depth
+    buffer information from the video plugin in order to be able
+    to notify the video plugin about CPU depth buffer read/write
+    operations
 
-/******************************************************************
-  Function: FrameBufferRead
-  Purpose:  This function is called to notify the dll that the
-            frame buffer memory is beening read at the given address.
-			DLL should copy content from its render buffer to the frame buffer
-			in N64 RDRAM
-			DLL is responsible to maintain its own frame buffer memory addr list
-			DLL should copy 4KB block content back to RDRAM frame buffer.
-			Emulator should not call this function again if other memory
-			is read within the same 4KB range
-  input:    addr		rdram address
-			val			val
-			size		1 = wxUint8, 2 = wxUint16, 4 = wxUint32
-  output:   none
-*******************************************************************/
-EXPORT void CALL FBRead(wxUint32 addr);
+    size:
+    = 1		byte
+    = 2		word (16 bit) <-- this is N64 default depth buffer format
+    = 4		dword (32 bit)
 
-/************************************************************************
-Function: FBGetFrameBufferInfo
-Purpose:  This function is called by the emulator core to retrieve depth
-buffer information from the video plugin in order to be able
-to notify the video plugin about CPU depth buffer read/write
-operations
+    when depth buffer information is not available yet, set all values
+    in the FrameBufferInfo structure to 0
 
-size:
-= 1		byte
-= 2		word (16 bit) <-- this is N64 default depth buffer format
-= 4		dword (32 bit)
+    input:    FrameBufferInfo *pinfo
+    pinfo is pointed to a FrameBufferInfo structure which to be
+    filled in by this function
+    output:   Values are return in the FrameBufferInfo structure
+    ************************************************************************/
+    EXPORT void CALL FBGetFrameBufferInfo(void *pinfo);
 
-when depth buffer information is not available yet, set all values
-in the FrameBufferInfo structure to 0
-
-input:    FrameBufferInfo *pinfo
-pinfo is pointed to a FrameBufferInfo structure which to be
-filled in by this function
-output:   Values are return in the FrameBufferInfo structure
-************************************************************************/
-EXPORT void CALL FBGetFrameBufferInfo(void *pinfo);
-
-EXPORT void CALL PluginLoaded (void);
+    EXPORT void CALL PluginLoaded(void);
 
 #if defined(__cplusplus)
 }

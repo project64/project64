@@ -43,7 +43,7 @@
 // Bugs fixed with help from glN64 sources. Thanks, Orkin!
 //****************************************************************
 
-wxUint32 pd_col_addr = 0;
+uint32_t pd_col_addr = 0;
 
 static void uc7_colorbase ()
 {
@@ -56,7 +56,7 @@ typedef struct
 {
 	short y;
 	short x;
-	wxUint16 idx;
+	uint16_t idx;
 
 	short z;
 
@@ -79,15 +79,15 @@ static void uc7_vertex ()
     rdp.update ^= UPDATE_LIGHTS;
     
     // Calculate light vectors
-    for (wxUint32 l=0; l<rdp.num_lights; l++)
+    for (uint32_t l=0; l<rdp.num_lights; l++)
     {
 	  InverseTransformVector(&rdp.light[l].dir_x, rdp.light_vector[l], rdp.model);
       NormalizeVector (rdp.light_vector[l]);
     }
   }
 
-  wxUint32 addr = segoffset(rdp.cmd1);
-  wxUint32 v0, i, n;
+  uint32_t addr = segoffset(rdp.cmd1);
+  uint32_t v0, i, n;
   float x, y, z;
 
   rdp.v0 = v0 = (rdp.cmd0 & 0x0F0000) >> 16;
@@ -134,7 +134,7 @@ static void uc7_vertex ()
     if (v->y > v->w) v->scr_off |= 8;
     if (v->w < 0.1f) v->scr_off |= 16;
 
-	wxUint8 *color = &gfx.RDRAM[pd_col_addr + (vertex->idx & 0xff)];
+	uint8_t *color = &gfx.RDRAM[pd_col_addr + (vertex->idx & 0xff)];
 
     v->a = color[0];
 	CalculateFog (v);

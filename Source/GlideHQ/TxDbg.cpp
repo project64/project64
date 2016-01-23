@@ -26,7 +26,7 @@
 #include "TxDbg.h"
 #include <string.h>
 #include <stdarg.h>
-#include <common/StdString.h>
+#include <Common/StdString.h>
 #include <Common/path.h>
 
 TxDbg::TxDbg()

@@ -131,12 +131,12 @@ static inline void clamp32bS(uint8_t *tex, uint8_t *constant, int height, int li
 //****************************************************************
 // 32-bit Horizontal Mirror
 
-void Mirror32bS (unsigned char * tex, wxUint32 mask, wxUint32 max_width, wxUint32 real_width, wxUint32 height)
+void Mirror32bS (unsigned char * tex, uint32_t mask, uint32_t max_width, uint32_t real_width, uint32_t height)
 {
 	if (mask == 0) return;
 
-	wxUint32 mask_width = (1 << mask);
-	wxUint32 mask_mask = (mask_width-1) << 2;
+	uint32_t mask_width = (1 << mask);
+	uint32_t mask_mask = (mask_width-1) << 2;
 	if (mask_width >= max_width) return;
 	int count = max_width - mask_width;
 	if (count <= 0) return;
@@ -150,12 +150,12 @@ void Mirror32bS (unsigned char * tex, wxUint32 mask, wxUint32 max_width, wxUint3
 //****************************************************************
 // 32-bit Horizontal Wrap 
 
-void Wrap32bS (unsigned char * tex, wxUint32 mask, wxUint32 max_width, wxUint32 real_width, wxUint32 height)
+void Wrap32bS (unsigned char * tex, uint32_t mask, uint32_t max_width, uint32_t real_width, uint32_t height)
 {
 	if (mask == 0) return;
 
-	wxUint32 mask_width = (1 << mask);
-	wxUint32 mask_mask = (mask_width-1);
+	uint32_t mask_width = (1 << mask);
+	uint32_t mask_mask = (mask_width-1);
 	if (mask_width >= max_width) return;
 	int count = (max_width - mask_width);
 	if (count <= 0) return;
@@ -169,7 +169,7 @@ void Wrap32bS (unsigned char * tex, wxUint32 mask, wxUint32 max_width, wxUint32 
 //****************************************************************
 // 32-bit Horizontal Clamp
 
-void Clamp32bS (unsigned char * tex, wxUint32 width, wxUint32 clamp_to, wxUint32 real_width, wxUint32 real_height)
+void Clamp32bS (unsigned char * tex, uint32_t width, uint32_t clamp_to, uint32_t real_width, uint32_t real_height)
 {
 	if (real_width <= width) return;
 
@@ -186,18 +186,18 @@ void Clamp32bS (unsigned char * tex, wxUint32 width, wxUint32 clamp_to, wxUint32
 //****************************************************************
 // 32-bit Vertical Mirror
 
-void Mirror32bT (unsigned char * tex, wxUint32 mask, wxUint32 max_height, wxUint32 real_width)
+void Mirror32bT (unsigned char * tex, uint32_t mask, uint32_t max_height, uint32_t real_width)
 {
 	if (mask == 0) return;
 
-	wxUint32 mask_height = (1 << mask);
-	wxUint32 mask_mask = mask_height-1;
+	uint32_t mask_height = (1 << mask);
+	uint32_t mask_mask = mask_height-1;
 	if (max_height <= mask_height) return;
 	int line_full = real_width << 2;
 
 	unsigned char *dst = tex + mask_height * line_full;
 
-	for (wxUint32 y=mask_height; y<max_height; y++)
+	for (uint32_t y=mask_height; y<max_height; y++)
 	{
 		if (y & mask_height)
 		{
@@ -217,18 +217,18 @@ void Mirror32bT (unsigned char * tex, wxUint32 mask, wxUint32 max_height, wxUint
 //****************************************************************
 // 32-bit Vertical Wrap
 
-void Wrap32bT (unsigned char * tex, wxUint32 mask, wxUint32 max_height, wxUint32 real_width)
+void Wrap32bT (unsigned char * tex, uint32_t mask, uint32_t max_height, uint32_t real_width)
 {
 	if (mask == 0) return;
 
-	wxUint32 mask_height = (1 << mask);
-	wxUint32 mask_mask = mask_height-1;
+	uint32_t mask_height = (1 << mask);
+	uint32_t mask_mask = mask_height-1;
 	if (max_height <= mask_height) return;
   int line_full = real_width << 2;
 
 	unsigned char *dst = tex + mask_height * line_full;
 
-	for (wxUint32 y=mask_height; y<max_height; y++)
+	for (uint32_t y=mask_height; y<max_height; y++)
 	{
 		// not mirrored
 		memcpy ((void*)dst, (void*)(tex + (y & mask_mask) * (line_full>>2)), (line_full>>2));
@@ -240,13 +240,13 @@ void Wrap32bT (unsigned char * tex, wxUint32 mask, wxUint32 max_height, wxUint32
 //****************************************************************
 // 32-bit Vertical Clamp
 
-void Clamp32bT (unsigned char * tex, wxUint32 height, wxUint32 real_width, wxUint32 clamp_to)
+void Clamp32bT (unsigned char * tex, uint32_t height, uint32_t real_width, uint32_t clamp_to)
 {
 	int line_full = real_width << 2;
 	unsigned char *dst = tex + height * line_full;
 	unsigned char *const_line = dst - line_full;
 
-	for (wxUint32 y=height; y<clamp_to; y++)
+	for (uint32_t y=height; y<clamp_to; y++)
 	{
 		memcpy ((void*)dst, (void*)const_line, line_full);
 		dst += line_full;
