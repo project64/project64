@@ -305,9 +305,10 @@ extern "C" {
 #endif
 
     /***** Structures *****/
-    typedef struct {
-        wxUint16 Version;        /* Set to 0x0103 */
-        wxUint16 Type;           /* Set to PLUGIN_TYPE_GFX */
+    typedef struct
+    {
+        uint16_t Version;        /* Set to 0x0103 */
+        uint16_t Type;           /* Set to PLUGIN_TYPE_GFX */
         char Name[100];      /* Name of the DLL */
 
         /* If DLL supports memory these memory options then set them to TRUE or FALSE
@@ -595,7 +596,7 @@ extern "C" {
       frame buffer has been modified by CPU at the given address.
       input:    addr		rdram address
       val			val
-      size		1 = wxUint8, 2 = wxUint16, 4 = uint32_t
+      size		1 = wxUint8, 2 = uint16_t, 4 = uint32_t
       output:   none
       *******************************************************************/
     EXPORT void CALL FBWrite(uint32_t, uint32_t);
@@ -604,7 +605,7 @@ extern "C" {
     {
         uint32_t addr;
         uint32_t val;
-        uint32_t size;				// 1 = wxUint8, 2 = wxUint16, 4=uint32_t
+        uint32_t size;				// 1 = wxUint8, 2 = uint16_t, 4=uint32_t
     } FrameBufferModifyEntry;
 
     /******************************************************************
@@ -629,7 +630,7 @@ extern "C" {
       is read within the same 4KB range
       input:    addr		rdram address
       val			val
-      size		1 = wxUint8, 2 = wxUint16, 4 = uint32_t
+      size		1 = wxUint8, 2 = uint16_t, 4 = uint32_t
       output:   none
       *******************************************************************/
     EXPORT void CALL FBRead(uint32_t addr);
