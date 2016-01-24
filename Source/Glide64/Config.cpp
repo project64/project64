@@ -47,6 +47,8 @@
 #include "Gfx_1.3.h"
 #include "DepthBufferRender.h"
 #include "Config.h"
+
+#ifdef _WIN32
 #include <wx/file.h>
 #include <wx/dir.h>
 // begin wxGlade: ::extracode
@@ -1260,28 +1262,14 @@ void CALL DllAbout(HWND hParent)
     hostWindow = NULL;
 #endif
 }
+#endif
 
 void general_setting(short setting_ID, const char * name, unsigned int value)
 {
-    RegisterSetting(
-        setting_ID,
-        Data_DWORD_General,
-        name,
-        NULL,
-        value,
-        NULL
-        );
-    return;
+    RegisterSetting(setting_ID, Data_DWORD_General, name, NULL, value, NULL);
 }
+
 void game_setting(short setting_ID, const char * name, unsigned int value)
 {
-    RegisterSetting(
-        setting_ID,
-        Data_DWORD_Game,
-        name,
-        NULL,
-        value,
-        NULL
-        );
-    return;
+    RegisterSetting(setting_ID, Data_DWORD_Game, name, NULL, value, NULL);
 }
