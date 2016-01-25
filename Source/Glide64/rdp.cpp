@@ -542,33 +542,6 @@ void GoToFullScreen()
 #endif
 }
 
-class SoftLocker
-{
-public:
-    // lock the mutex in the ctor
-    SoftLocker(wxMutex* mutex)
-        : _isOk(false), _mutex(mutex)
-    {
-        _isOk = (_mutex->TryLock() == wxMUTEX_NO_ERROR);
-    }
-
-    // returns true if mutex was successfully locked in ctor
-    bool IsOk() const
-    {
-        return _isOk;
-    }
-
-    // unlock the mutex in dtor
-    ~SoftLocker()
-    {
-        if (IsOk()) _mutex->Unlock();
-    }
-
-private:
-    bool     _isOk;
-    wxMutex* _mutex;
-};
-
 /******************************************************************
 Function: ProcessDList
 Purpose:  This function is called when there is a Dlist to be
@@ -600,7 +573,7 @@ EXPORT void CALL ProcessDList(void)
     {
         hhkLowLevelKybd = SetWindowsHookEx(WH_KEYBOARD_LL,
             LowLevelKeyboardProc, hInstance, 0);
-    }
+}
 #endif
 
     LOG("ProcessDList ()\n");
@@ -802,7 +775,7 @@ EXPORT void CALL ProcessDList(void)
             to_fullscreen = TRUE;
         }
         return;
-    }
+        }
 #endif
 
     if (fb_emulation_enabled)
@@ -825,7 +798,7 @@ EXPORT void CALL ProcessDList(void)
         CI_SET = FALSE;
     }
     LRDP("ProcessDList end\n");
-}
+    }
 
 // undef - undefined instruction, always ignore
 static void undef()
