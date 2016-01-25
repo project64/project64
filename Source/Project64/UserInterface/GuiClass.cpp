@@ -980,7 +980,9 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
         switch (LOWORD(wParam)) {
         case ID_POPUPMENU_PLAYGAME: g_BaseSystem->RunFileImage(_this->CurrentedSelectedRom()); break;
         case ID_POPUPMENU_PLAYGAMEWITHDISK:
-            if (!g_BaseSystem->RunFileImageIPL(g_Settings->LoadStringVal(File_DiskIPLPath).c_str()))
+        {
+            stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
+            if ((IPLROM.length() <= 0) || (!g_BaseSystem->RunFileImageIPL(IPLROM.c_str())))
             {
                 // Open DDROM
                 OPENFILENAME openfilename;
@@ -1006,8 +1008,8 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                     openfilename.lpstrFilter = "N64DD Disk Image (*.ndd)\0*.ndd\0All files (*.*)\0*.*\0";
                     if (GetOpenFileName(&openfilename))
                     {
-                        g_BaseSystem->RunDiskImage(FileName);
-                        g_BaseSystem->RunFileImage(_this->CurrentedSelectedRom());
+                        if (g_BaseSystem->RunDiskImage(FileName))
+                            g_BaseSystem->RunFileImage(_this->CurrentedSelectedRom());
                     }
                 }
             }
@@ -1032,11 +1034,12 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
 
                 if (GetOpenFileName(&openfilename))
                 {
-                    g_BaseSystem->RunDiskImage(FileName);
-                    g_BaseSystem->RunFileImage(_this->CurrentedSelectedRom());
+                    if (g_BaseSystem->RunDiskImage(FileName))
+                        g_BaseSystem->RunFileImage(_this->CurrentedSelectedRom());
                 }
             }
-            break;
+        }
+        break;
         case ID_POPUPMENU_ROMDIRECTORY:   _this->SelectRomDir(); break;
         case ID_POPUPMENU_REFRESHROMLIST: _this->RefreshRomBrowser(); break;
         case ID_POPUPMENU_ROMINFORMATION:

@@ -63,6 +63,7 @@ enum LanguageStringID{
     MENU_RECENT_ROM = 107,
     MENU_RECENT_DIR = 108,
     MENU_EXIT = 109,
+    MENU_DISK = 110,
 
     //System Menu
     MENU_SYSTEM = 120,
@@ -125,7 +126,7 @@ enum LanguageStringID{
     POPUP_SETTINGS = 212,
     POPUP_CHEATS = 213,
     POPUP_GFX_PLUGIN = 214,
-	POPUP_PLAYDISK = 215,
+    POPUP_PLAYDISK = 215,
 
     //selecting save slot
     SAVE_SLOT_DEFAULT = 220,
