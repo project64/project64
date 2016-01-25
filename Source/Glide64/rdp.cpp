@@ -37,8 +37,8 @@
 //
 //****************************************************************
 
+#include <math.h>
 #include "Gfx_1.3.h"
-#include <wx/confbase.h>
 #include "3dmath.h"
 #include "Util.h"
 #include "Debugger.h"
@@ -332,8 +332,10 @@ void microcheck()
         settings.ucode = GetSetting(Set_ucode);
 
         ReleaseGfx();
+#ifdef _WIN32
         MessageBox(gfx.hWnd, stdstr_f("Error: uCode crc not found in INI, using currently selected uCode\n\n%08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
 
+#endif
         ucode_error_report = FALSE; // don't report any more ucode errors from this game
     }
     else if (uc == -1 && ucode_error_report)
@@ -341,7 +343,9 @@ void microcheck()
         settings.ucode = GetSetting(Set_ucode);
 
         ReleaseGfx();
+#ifdef _WIN32
         MessageBox(gfx.hWnd, stdstr_f("Error: Unsupported uCode!\n\ncrc: %08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
+#endif
 
         ucode_error_report = FALSE; // don't report any more ucode errors from this game
     }
