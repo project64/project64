@@ -50,7 +50,7 @@
 #include <Common/StdString.h>
 
 const int NumOfFormats = 3;
-SCREEN_SHOT_FORMAT ScreenShotFormats[NumOfFormats] = { { wxT("BMP"), wxT("bmp"), wxBITMAP_TYPE_BMP }, { wxT("PNG"), wxT("png"), wxBITMAP_TYPE_PNG }, { wxT("JPEG"), wxT("jpeg"), wxBITMAP_TYPE_JPEG } };
+SCREEN_SHOT_FORMAT ScreenShotFormats[NumOfFormats] = { { "BMP", "bmp", wxBITMAP_TYPE_BMP }, { "PNG", "png", wxBITMAP_TYPE_PNG }, { "JPEG", "jpeg", wxBITMAP_TYPE_JPEG } };
 
 const char *ACmp[] = { "NONE", "THRESHOLD", "UNKNOWN", "DITHER" };
 
@@ -318,7 +318,7 @@ void microcheck()
 
     FRDP("ucode = %08lx\n", uc_crc);
 
-    RegisterSetting(Set_ucodeLookup, Data_DWORD_RDB_Setting, stdstr_f(wxT("%08lx"), uc_crc).c_str(), "ucode", (unsigned int)-2, NULL);
+    RegisterSetting(Set_ucodeLookup, Data_DWORD_RDB_Setting, stdstr_f("%08lx", uc_crc).c_str(), "ucode", (unsigned int)-2, NULL);
     int uc = GetSetting(Set_ucodeLookup);
 
     if (uc == -2 && ucode_error_report)
@@ -326,7 +326,7 @@ void microcheck()
         settings.ucode = GetSetting(Set_ucode);
 
         ReleaseGfx();
-		MessageBox(gfx.hWnd, stdstr_f("Error: uCode crc not found in INI, using currently selected uCode\n\n%08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(gfx.hWnd, stdstr_f("Error: uCode crc not found in INI, using currently selected uCode\n\n%08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
 
         ucode_error_report = FALSE; // don't report any more ucode errors from this game
     }
@@ -335,7 +335,7 @@ void microcheck()
         settings.ucode = GetSetting(Set_ucode);
 
         ReleaseGfx();
-		MessageBox(gfx.hWnd, stdstr_f("Error: Unsupported uCode!\n\ncrc: %08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(gfx.hWnd, stdstr_f("Error: Unsupported uCode!\n\ncrc: %08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
 
         ucode_error_report = FALSE; // don't report any more ucode errors from this game
     }
@@ -600,7 +600,7 @@ EXPORT void CALL ProcessDList(void)
     {
         hhkLowLevelKybd = SetWindowsHookEx(WH_KEYBOARD_LL,
             LowLevelKeyboardProc, hInstance, 0);
-}
+    }
 #endif
 
     LOG("ProcessDList ()\n");
@@ -802,7 +802,7 @@ EXPORT void CALL ProcessDList(void)
             to_fullscreen = TRUE;
         }
         return;
-        }
+    }
 #endif
 
     if (fb_emulation_enabled)
@@ -825,7 +825,7 @@ EXPORT void CALL ProcessDList(void)
         CI_SET = FALSE;
     }
     LRDP("ProcessDList end\n");
-    }
+}
 
 // undef - undefined instruction, always ignore
 static void undef()

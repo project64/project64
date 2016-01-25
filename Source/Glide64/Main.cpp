@@ -192,7 +192,7 @@ static void PluginPath()
     for (size_t n = 0; n < count; ++n)
     {
         const wxDynamicLibraryDetails& details = dlls[n];
-        if (details.GetName().Find(wxT("Glide64")) != wxNOT_FOUND)
+        if (details.GetName().Find("Glide64") != wxNOT_FOUND)
         {
             wxFileName libname(details.GetPath());
             pluginPath = libname.GetPath();
@@ -1386,7 +1386,7 @@ void CALL CloseDLL(void)
     {
         ext_ghq_shutdown();
         settings.ghq_use = 0;
-}
+    }
 #endif
     ReleaseGfx();
     ZLUT_release();
@@ -1983,11 +1983,11 @@ void newSwapBuffers()
     {
         if (settings.clock_24_hr)
         {
-            output(956.0f, 0, 1, (char*)wxDateTime::Now().Format(wxT("%H:%M:%S")).char_str(), 0);
+            output(956.0f, 0, 1, (char*)wxDateTime::Now().Format("%H:%M:%S").char_str(), 0);
         }
         else
         {
-            output(930.0f, 0, 1, (char*)wxDateTime::Now().Format(wxT("%I:%M:%S %p")).char_str(), 0);
+            output(930.0f, 0, 1, (char*)wxDateTime::Now().Format("%I:%M:%S %p").char_str(), 0);
         }
     }
     //hotkeys
@@ -2065,18 +2065,18 @@ void newSwapBuffers()
             wxMkdir(capture_path);
         wxString path;
         wxString romName = rdp.RomName;
-        romName.Replace(wxT(" "), wxT("_"), true);
-        romName.Replace(wxT(":"), wxT(";"), true);
+        romName.Replace(" ", "_", true);
+        romName.Replace(":", ";", true);
 
         for (int i = 1;; i++)
         {
             path = capture_path;
-            path += wxT("Glide64_");
+            path += "Glide64_";
             path += romName;
-            path += wxT("_");
+            path += "_";
             if (i < 10)
-                path += wxT("0");
-            path << i << wxT(".") << ScreenShotFormats[settings.ssformat].extension;
+                path += "0";
+            path << i << "." << ScreenShotFormats[settings.ssformat].extension;
             if (!wxFileName::FileExists(path))
                 break;
         }

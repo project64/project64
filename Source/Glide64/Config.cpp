@@ -71,36 +71,36 @@ wxNotebook(parent, id, pos, size, 0)
     WrapperFBOptionsSizer_staticbox = new wxStaticBox(BasicSettingsPanel, -1, _("Frame buffer emulation"));
     lblResolution = new wxStaticText(BasicSettingsPanel, wxID_ANY, _("Windowed or\n3dfx card resolution:"));
     const wxString cmbResolution_choices[] = {
-        wxT("320x200"),
-        wxT("320x240"),
-        wxT("400x256"),
-        wxT("512x384"),
-        wxT("640x200"),
-        wxT("640x350"),
-        wxT("640x400"),
-        wxT("640x480"),
-        wxT("800x600"),
-        wxT("960x720"),
-        wxT("856x480"),
-        wxT("512x256"),
-        wxT("1024x768"),
-        wxT("1280x1024"),
-        wxT("1600x1200"),
-        wxT("400x300"),
-        wxT("1152x864"),
-        wxT("1280x960"),
-        wxT("1600x1024"),
-        wxT("1792x1344"),
-        wxT("1856x1392"),
-        wxT("1920x1440"),
-        wxT("2048x1536"),
-        wxT("2048x2048")
+        "320x200",
+        "320x240",
+        "400x256",
+        "512x384",
+        "640x200",
+        "640x350",
+        "640x400",
+        "640x480",
+        "800x600",
+        "960x720",
+        "856x480",
+        "512x256",
+        "1024x768",
+        "1280x1024",
+        "1600x1200",
+        "400x300",
+        "1152x864",
+        "1280x960",
+        "1600x1024",
+        "1792x1344",
+        "1856x1392",
+        "1920x1440",
+        "2048x1536",
+        "2048x2048"
     };
-    cmbResolution = new wxComboBox(BasicSettingsPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 24, cmbResolution_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
+    cmbResolution = new wxComboBox(BasicSettingsPanel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, 24, cmbResolution_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
     cbxVSync = new wxCheckBox(BasicSettingsPanel, wxID_ANY, _("Vertical sync"));
     cbxTextureSettings = new wxCheckBox(BasicSettingsPanel, wxID_ANY, _("Show texture enhancement options"));
     lblScreenShotFormat = new wxStaticText(BasicSettingsPanel, wxID_ANY, _("Screenshot format:"));
-    cmbScreenShotFormat = new wxComboBox(BasicSettingsPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
+    cmbScreenShotFormat = new wxComboBox(BasicSettingsPanel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
 
     cbxFPS = new wxCheckBox(BasicSettingsPanel, wxID_ANY, _("FPS counter"));
     cbxVIS = new wxCheckBox(BasicSettingsPanel, wxID_ANY, _("VI/s counter"));
@@ -110,11 +110,11 @@ wxNotebook(parent, id, pos, size, 0)
     cbxTextTransparent = new wxCheckBox(BasicSettingsPanel, wxID_ANY, _("Transparent text background"));
     lblFSResolution = new wxStaticText(BasicSettingsPanel, wxID_ANY, _("Full screen\nresolution:"));
     const wxString *cmbFSResolution_choices = NULL;
-    cmbFSResolution = new wxComboBox(BasicSettingsPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0, cmbFSResolution_choices, wxCB_DROPDOWN | wxCB_READONLY);
+    cmbFSResolution = new wxComboBox(BasicSettingsPanel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, 0, cmbFSResolution_choices, wxCB_DROPDOWN | wxCB_READONLY);
     cbxAnisotropic = new wxCheckBox(BasicSettingsPanel, wxID_ANY, _("Anisotropic filtering"));
     cbxVRAM = new wxCheckBox(BasicSettingsPanel, wxID_VRAM, _("Autodetect "));
     lblVRAM = new wxStaticText(BasicSettingsPanel, wxID_ANY, _("VRAM size"));
-    spinVRAM = new wxSpinCtrl(BasicSettingsPanel, wxID_ANY, wxT("128"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS | wxTE_CENTRE, 32, 2000);
+    spinVRAM = new wxSpinCtrl(BasicSettingsPanel, wxID_ANY, "128", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS | wxTE_CENTRE, 32, 2000);
     lblMb = new wxStaticText(BasicSettingsPanel, wxID_ANY, _("Mb"));
     cbxFBO = new wxCheckBox(BasicSettingsPanel, wxID_ANY, _("Use frame buffer objects"));
 
@@ -135,21 +135,21 @@ wxNotebook(parent, id, pos, size, 0)
             _("Force Bilinear"),
             _("Force Point-sampled")
         };
-        cmbFiltering = new wxComboBox(EmuSettingsPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 3, cmbFiltering_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
+        cmbFiltering = new wxComboBox(EmuSettingsPanel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, 3, cmbFiltering_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
         lbBufferSwap = new wxStaticText(EmuSettingsPanel, wxID_ANY, _("Buffer swapping method:"));
         const wxString cmbBufferSwap_choices[] = {
             _("Old"),
             _("New"),
             _("Hybrid")
         };
-        cmbBufferSwap = new wxComboBox(EmuSettingsPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 3, cmbBufferSwap_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
+        cmbBufferSwap = new wxComboBox(EmuSettingsPanel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, 3, cmbBufferSwap_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
         lblLOD = new wxStaticText(EmuSettingsPanel, wxID_ANY, _("LOD calculation:"));
         const wxString cmbLOD_choices[] = {
             _("off"),
             _("fast"),
             _("precise")
         };
-        cmbLOD = new wxComboBox(EmuSettingsPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 3, cmbLOD_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
+        cmbLOD = new wxComboBox(EmuSettingsPanel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, 3, cmbLOD_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
         lblAspect = new wxStaticText(EmuSettingsPanel, wxID_ANY, _("Aspect ratio:"));
         const wxString cmbAspect_choices[] = {
             _("4:3 (default)"),
@@ -157,7 +157,7 @@ wxNotebook(parent, id, pos, size, 0)
             _("Stretch"),
             _("Original")
         };
-        cmbAspect = new wxComboBox(EmuSettingsPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 4, cmbAspect_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
+        cmbAspect = new wxComboBox(EmuSettingsPanel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, 4, cmbAspect_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
         cbxFog = new wxCheckBox(EmuSettingsPanel, wxID_ANY, _("Fog"));
         cbxBuffer = new wxCheckBox(EmuSettingsPanel, wxID_ANY, _("Buffer clear on every frame"));
         cbxFBEnable = new wxCheckBox(EmuSettingsPanel, wxID_FBEnable, _("Enable frame buffer emulation"));
@@ -206,22 +206,22 @@ wxNotebook(parent, id, pos, size, 0)
             _("Sharp filtering 1"),
             _("Sharp filtering 2")
         };
-        cmbEnhFilter = new wxComboBox(TexturePanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 7, cmbEnhFilter_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
+        cmbEnhFilter = new wxComboBox(TexturePanel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, 7, cmbEnhFilter_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
         lblEnhancement = new wxStaticText(TexturePanel, wxID_ANY, _("Enhancement"));
         const wxString cmbEnhEnhancement_choices[] = {
             _("None"),
             _("Store"),
-            wxT("X2"),
-            wxT("X2SAI"),
-            wxT("HQ2X"),
-            wxT("HQ2XS"),
-            wxT("LQ2X"),
-            wxT("LQ2XS"),
-            wxT("HQ4X")
+            "X2",
+            "X2SAI",
+            "HQ2X",
+            "HQ2XS",
+            "LQ2X",
+            "LQ2XS",
+            "HQ4X"
         };
-        cmbEnhEnhancement = new wxComboBox(TexturePanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 9, cmbEnhEnhancement_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
+        cmbEnhEnhancement = new wxComboBox(TexturePanel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, 9, cmbEnhEnhancement_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
         lblTexCache = new wxStaticText(TexturePanel, wxID_ANY, _("Texture cache"));
-        spinEnhCacheSize = new wxSpinCtrl(TexturePanel, wxID_ANY, wxT("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 300);
+        spinEnhCacheSize = new wxSpinCtrl(TexturePanel, wxID_ANY, "0", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 300);
         lblTexCacheMB = new wxStaticText(TexturePanel, wxID_ANY, _("Mbytes"));
         cbxEnhIgnoreBG = new wxCheckBox(TexturePanel, wxID_ANY, _("Ignore Backgrounds"));
         cbxEnhTexCompression = new wxCheckBox(TexturePanel, wxID_ANY, _("Apply texture compression"));
@@ -231,7 +231,7 @@ wxNotebook(parent, id, pos, size, 0)
             _("None"),
             _("Rice format")
         };
-        cmbHrsFormat = new wxComboBox(TexturePanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 2, cmbHrsFormat_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
+        cmbHrsFormat = new wxComboBox(TexturePanel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, 2, cmbHrsFormat_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
         cbxHrsTile = new wxCheckBox(TexturePanel, wxID_ANY, _("Tile textures"));
         cbxHrsForce16 = new wxCheckBox(TexturePanel, wxID_ANY, _("Force 16bpp textures"));
         cbxHrsAltCRC = new wxCheckBox(TexturePanel, wxID_ANY, _("Alternative CRC calculation"));
@@ -241,10 +241,10 @@ wxNotebook(parent, id, pos, size, 0)
         cbxHrsTexEdit = new wxCheckBox(TexturePanel, wxID_TexEdit, _("Texture dumping/editing mode"));
         lblTexCompression = new wxStaticText(TexturePanel, wxID_ANY, _("Texture compression method"));
         const wxString cmbTextureCompression_choices[] = {
-            wxT("S3TC"),
-            wxT("FXT1")
+            "S3TC",
+            "FXT1"
         };
-        cmbTextureCompression = new wxComboBox(TexturePanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, evoodoo ? 1 : 2, cmbTextureCompression_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
+        cmbTextureCompression = new wxComboBox(TexturePanel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, evoodoo ? 1 : 2, cmbTextureCompression_choices, wxCB_DROPDOWN | wxCB_DROPDOWN | wxCB_READONLY);
         cbxSaveTexCache = new wxCheckBox(TexturePanel, wxID_ANY, _("Save texture cache to hard disk"));
         btnPerformance = new wxButton(TexturePanel, wxID_Performance, _("Best performance"));
         btnQuality = new wxButton(TexturePanel, wxID_Quality, _("Best texture quality"));
@@ -258,24 +258,24 @@ wxNotebook(parent, id, pos, size, 0)
     cbxAutoUcode = new wxCheckBox(DebugPanel, wxID_ANY, _("Autodetect Microcode"));
     lblForceUcode = new wxStaticText(DebugPanel, wxID_ANY, _("Force Microcode:"));
     const wxString cmbForceUcode_choices[] = {
-        wxT("0: RSP SW 2.0X (ex. Mario)"),
-        wxT("1: F3DEX 1.XX (ex. Star Fox)"),
-        wxT("2: F3DEX 2.XX (ex. Zelda OOT)"),
-        wxT("3: RSP SW 2.0D EXT (ex. Waverace)"),
-        wxT("4: RSP SW 2.0D EXT (ex. Shadows of the Empire)"),
-        wxT("5: RSP SW 2.0 (ex. Diddy Kong Racing)"),
-        wxT("6: S2DEX 1.XX (ex. Yoshi's Story)"),
-        wxT("7: RSP SW PD Perfect Dark"),
-        wxT("8: F3DEXBG 2.08 Conker's Bad Fur Day")
+        "0: RSP SW 2.0X (ex. Mario)",
+        "1: F3DEX 1.XX (ex. Star Fox)",
+        "2: F3DEX 2.XX (ex. Zelda OOT)",
+        "3: RSP SW 2.0D EXT (ex. Waverace)",
+        "4: RSP SW 2.0D EXT (ex. Shadows of the Empire)",
+        "5: RSP SW 2.0 (ex. Diddy Kong Racing)",
+        "6: S2DEX 1.XX (ex. Yoshi's Story)",
+        "7: RSP SW PD Perfect Dark",
+        "8: F3DEXBG 2.08 Conker's Bad Fur Day"
     };
-    cmbForceUcode = new wxComboBox(DebugPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 9, cmbForceUcode_choices, wxCB_DROPDOWN|wxCB_DROPDOWN|wxCB_READONLY);
+    cmbForceUcode = new wxComboBox(DebugPanel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, 9, cmbForceUcode_choices, wxCB_DROPDOWN|wxCB_DROPDOWN|wxCB_READONLY);
     cbxWireframe = new wxCheckBox(DebugPanel, wxID_ANY, _("Wireframe using:"));
     const wxString cmbWireframe_choices[] = {
         _("Original colors"),
         _("Vertex colors"),
         _("Red only")
     };
-    cmbWireframe = new wxComboBox(DebugPanel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 3, cmbWireframe_choices, wxCB_DROPDOWN|wxCB_DROPDOWN|wxCB_READONLY);
+    cmbWireframe = new wxComboBox(DebugPanel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, 3, cmbWireframe_choices, wxCB_DROPDOWN|wxCB_DROPDOWN|wxCB_READONLY);
     cbxLog = new wxCheckBox(DebugPanel, wxID_ANY, _("Log to rdp.txt (SLOW)"));
     cbxCombRed = new wxCheckBox(DebugPanel, wxID_ANY, _("Unknown combiners as red"));
     cbxLogClear = new wxCheckBox(DebugPanel, wxID_ANY, _("Log clear every frame"));
@@ -318,7 +318,7 @@ void ConfigNotebook::OnClickVRAM(wxCommandEvent &event)
         lblMb->Enable(enable);
     }
     //      event.Skip();
-    //      wxLogDebug(wxT("Event handler (ConfigNotebook::FrameBufferOnClick) not implemented yet")); //notify the user that he hasn't implemented the event handler yet
+    //      wxLogDebug("Event handler (ConfigNotebook::FrameBufferOnClick) not implemented yet"); //notify the user that he hasn't implemented the event handler yet
 }
 
 void ConfigNotebook::OnClickFB(wxCommandEvent &event)
@@ -326,7 +326,7 @@ void ConfigNotebook::OnClickFB(wxCommandEvent &event)
     if (event.GetEventObject() == cbxFBEnable)
         cbxFBHWFBE->Enable(cbxFBEnable->GetValue());
     //    event.Skip();
-    //    wxLogDebug(wxT("Event handler (ConfigNotebook::FrameBufferOnClick) not implemented yet")); //notify the user that he hasn't implemented the event handler yet
+    //    wxLogDebug("Event handler (ConfigNotebook::FrameBufferOnClick) not implemented yet"); //notify the user that he hasn't implemented the event handler yet
 }
 
 #ifdef TEXTURE_FILTER
@@ -354,7 +354,7 @@ void ConfigNotebook::onPerformace(wxCommandEvent & /*event*/)
         cbxHrsForce16->SetValue(true);
     }
     //    event.Skip();
-    //    wxLogDebug(wxT("Event handler (ConfigNotebook::onPerformace) not implemented yet")); //notify the user that he hasn't implemented the event handler yet
+    //    wxLogDebug("Event handler (ConfigNotebook::onPerformace) not implemented yet"); //notify the user that he hasn't implemented the event handler yet
 }
 
 void ConfigNotebook::onQuality(wxCommandEvent & /*event*/)
@@ -377,7 +377,7 @@ void ConfigNotebook::onQuality(wxCommandEvent & /*event*/)
         cbxHrsForce16->SetValue(true);
     }
     //    event.Skip();
-    //    wxLogDebug(wxT("Event handler (ConfigNotebook::onQuality) not implemented yet")); //notify the user that he hasn't implemented the event handler yet
+    //    wxLogDebug("Event handler (ConfigNotebook::onQuality) not implemented yet"); //notify the user that he hasn't implemented the event handler yet
 }
 
 void ConfigNotebook::OnClickTexEdit(wxCommandEvent &event)
@@ -392,7 +392,7 @@ void ConfigNotebook::OnClickTexEdit(wxCommandEvent &event)
             cbxHrsAltCRC->SetValue(false);
     }
     //    event.Skip();
-    //    wxLogDebug(wxT("Event handler (ConfigNotebook::FrameBufferOnClick) not implemented yet")); //notify the user that he hasn't implemented the event handler yet
+    //    wxLogDebug("Event handler (ConfigNotebook::FrameBufferOnClick) not implemented yet"); //notify the user that he hasn't implemented the event handler yet
 }
 #endif //TEXTURE_FILTER
 
@@ -400,13 +400,13 @@ void ConfigNotebook::OnClickTexEdit(wxCommandEvent &event)
 void ConfigNotebook::onPageChanged(wxNotebookEvent &event)
 {
 event.Skip();
-wxLogDebug(wxT("Event handler (ConfigNotebook::onPageChanged) not implemented yet")); //notify the user that he hasn't implemented the event handler yet
+wxLogDebug("Event handler (ConfigNotebook::onPageChanged) not implemented yet"); //notify the user that he hasn't implemented the event handler yet
 }
 
 void ConfigNotebook::onPageChanging(wxNotebookEvent &event)
 {
 event.Skip();
-wxLogDebug(wxT("Event handler (ConfigNotebook::onPageChanging) not implemented yet")); //notify the user that he hasn't implemented the event handler yet
+wxLogDebug("Event handler (ConfigNotebook::onPageChanging) not implemented yet"); //notify the user that he hasn't implemented the event handler yet
 }
 */
 
@@ -960,13 +960,13 @@ END_EVENT_TABLE();
 void Glide64ConfigDialog::onPageChanged(wxNotebookEvent &event)
 {
 event.Skip();
-wxLogDebug(wxT("Event handler (Glide64ConfigDialog::onPageChanged) not implemented yet")); //notify the user that he hasn't implemented the event handler yet
+wxLogDebug("Event handler (Glide64ConfigDialog::onPageChanged) not implemented yet"); //notify the user that he hasn't implemented the event handler yet
 }
 
 void Glide64ConfigDialog::onPageChanging(wxNotebookEvent &event)
 {
 event.Skip();
-wxLogDebug(wxT("Event handler (Glide64ConfigDialog::onPageChanging) not implemented yet")); //notify the user that he hasn't implemented the event handler yet
+wxLogDebug("Event handler (Glide64ConfigDialog::onPageChanging) not implemented yet"); //notify the user that he hasn't implemented the event handler yet
 }
 */
 void CloseConfig();
@@ -975,7 +975,7 @@ void Glide64ConfigDialog::OnClose(wxCloseEvent& event)
 {
     event.Skip();
     CloseConfig();
-    //    wxLogDebug(wxT("Event handler (MyDialog::OnCancel) not implemented yet")); //notify the user that he hasn't implemented the event handler yet
+    //    wxLogDebug("Event handler (MyDialog::OnCancel) not implemented yet"); //notify the user that he hasn't implemented the event handler yet
 }
 
 void Glide64ConfigDialog::OnOK(wxCommandEvent &event)
@@ -983,14 +983,14 @@ void Glide64ConfigDialog::OnOK(wxCommandEvent &event)
     Config->SaveSettings();
     event.Skip();
     CloseConfig();
-    //    wxLogDebug(wxT("Event handler (Glide64ConfigDialog::OnOK) not implemented yet")); //notify the user that he hasn't implemented the event handler yet
+    //    wxLogDebug("Event handler (Glide64ConfigDialog::OnOK) not implemented yet"); //notify the user that he hasn't implemented the event handler yet
 }
 
 void Glide64ConfigDialog::OnCancel(wxCommandEvent &event)
 {
     event.Skip();
     CloseConfig();
-    //    wxLogDebug(wxT("Event handler (Glide64ConfigDialog::OnCancel) not implemented yet")); //notify the user that he hasn't implemented the event handler yet
+    //    wxLogDebug("Event handler (Glide64ConfigDialog::OnCancel) not implemented yet"); //notify the user that he hasn't implemented the event handler yet
 }
 
 // wxGlade: add Glide64ConfigDialog event handlers
@@ -1195,28 +1195,28 @@ void AboutDialog::do_layout()
     sizer_1->Add(sizer_13, 1, wxEXPAND, 0);
     wxStaticText* label_5 = new wxStaticText(this, wxID_ANY, _("Glitch64 (the wrapper) authors:"));
     sizer_1->Add(label_5, 0, wxBOTTOM | wxALIGN_CENTER_HORIZONTAL, 10);
-    wxStaticText* label_6 = new wxStaticText(this, wxID_ANY, wxT("hacktarux"));
+    wxStaticText* label_6 = new wxStaticText(this, wxID_ANY, "hacktarux");
     sizer_6->Add(label_6, 0, 0, 0);
     sizer_5->Add(sizer_6, 1, wxEXPAND, 0);
-    wxStaticText* label_7 = new wxStaticText(this, wxID_ANY, wxT("mudlord"));
+    wxStaticText* label_7 = new wxStaticText(this, wxID_ANY, "mudlord");
     sizer_7->Add(label_7, 0, 0, 0);
     sizer_5->Add(sizer_7, 1, wxEXPAND, 0);
     sizer_1->Add(sizer_5, 0, wxEXPAND, 0);
-    wxStaticText* label_8 = new wxStaticText(this, wxID_ANY, wxT("ziggy"));
+    wxStaticText* label_8 = new wxStaticText(this, wxID_ANY, "ziggy");
     sizer_9->Add(label_8, 0, 0, 0);
     sizer_8->Add(sizer_9, 1, wxEXPAND, 0);
-    wxStaticText* label_9 = new wxStaticText(this, wxID_ANY, wxT("Hiroshi 'KoolSmoky' Morii"));
+    wxStaticText* label_9 = new wxStaticText(this, wxID_ANY, "Hiroshi 'KoolSmoky' Morii");
     sizer_10->Add(label_9, 0, 0, 0);
     sizer_8->Add(sizer_10, 1, wxEXPAND, 0);
     sizer_1->Add(sizer_8, 0, wxEXPAND, 0);
     wxStaticText* label_10 = new wxStaticText(this, wxID_ANY, _("GlideHQ author:"));
     sizer_11->Add(label_10, 0, wxLEFT | wxALIGN_CENTER_VERTICAL, 10);
-    wxStaticText* label_11 = new wxStaticText(this, wxID_ANY, wxT("Hiroshi 'KoolSmoky' Morii"));
+    wxStaticText* label_11 = new wxStaticText(this, wxID_ANY, "Hiroshi 'KoolSmoky' Morii");
     sizer_11->Add(label_11, 0, wxALIGN_CENTER_VERTICAL, 0);
     sizer_1->Add(sizer_11, 1, wxEXPAND, 0);
     wxStaticText* label_12 = new wxStaticText(this, wxID_ANY, _("beta tester:"));
     sizer_12->Add(label_12, 0, wxLEFT | wxALIGN_CENTER_VERTICAL, 10);
-    wxStaticText* label_13 = new wxStaticText(this, wxID_ANY, wxT("olivieryuyu"));
+    wxStaticText* label_13 = new wxStaticText(this, wxID_ANY, "olivieryuyu");
     sizer_12->Add(label_13, 0, wxALIGN_CENTER_VERTICAL, 0);
     sizer_1->Add(sizer_12, 1, wxEXPAND, 0);
     wxStaticText* label_14 = new wxStaticText(this, wxID_ANY, _("special thanks to:\n Orkin, Rice, Daniel Borca, Legend.\nThanks to EmuXHaven for hosting my site:\nhttp://glide64.emuxhaven.net\n"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
