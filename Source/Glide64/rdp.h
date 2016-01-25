@@ -181,10 +181,16 @@ typedef struct {
 } LOAD_TILE_INFO;
 #endif
 
+enum rdpBitmapType
+{
+    rdpBITMAP_TYPE_INVALID,          // should be == 0 for compatibility!
+    rdpBITMAP_TYPE_PNG,
+};
+
 typedef struct {
-    const wxChar * format;
-    const wxChar * extension;
-    wxBitmapType type;
+    const char * format;
+    const char * extension;
+    rdpBitmapType type;
 } SCREEN_SHOT_FORMAT;
 
 extern const int NumOfFormats;
@@ -770,7 +776,7 @@ struct RDP : public RDP_Base
     COLOR_IMAGE *frame_buffers; //[NUMTEXBUF+2]
     TEXTURE_BUFFER texbufs[2];
 
-    wxString RomName;
+    char RomName[21];
 
     RDP();
     ~RDP();
@@ -831,13 +837,6 @@ extern const char *CIStatus[];
 #define FBL_D_1 2
 #define FBL_D_0 3
 
-/*
- * taken straight from MSVC <windef.h> in case of other compilers
- *
- * Careful!  These macros can sabotage std::max and std::min from <vector>.
- * The only solution is to include <vector> first, before <windef.h> or
- * before defining the below macros (or just don't use <windows.h>).
- */
 #ifndef maxval
 #define maxval(a, b)       (((a) > (b)) ? (a) : (b))
 #endif
