@@ -58,7 +58,7 @@ static int Calc_invw(int w) {
     union {
         int32_t		  W;
         uint32_t	  UW;
-        wxInt16			HW[2];
+        int16_t			HW[2];
         uint16_t		UHW[2];
     } Result;
     Result.W = w;
@@ -465,7 +465,7 @@ static void uc9_mtxcat()
     FRDP("{%f,%f,%f,%f}\n", rdp.combined[2][0], rdp.combined[2][1], rdp.combined[2][2], rdp.combined[2][3]);
     FRDP("{%f,%f,%f,%f}\n", rdp.combined[3][0], rdp.combined[3][1], rdp.combined[3][2], rdp.combined[3][3]);
 #endif
-    }
+}
 
 typedef struct  {
     short sy;
@@ -615,7 +615,7 @@ void uc9_movemem()
         FRDP("{%f,%f,%f,%f}\n", rdp.proj[2][0], rdp.proj[2][1], rdp.proj[2][2], rdp.proj[2][3]);
         FRDP("{%f,%f,%f,%f}\n", rdp.proj[3][0], rdp.proj[3][1], rdp.proj[3][2], rdp.proj[3][3]);
 #endif
-        }
+    }
     break;
 
     case 10:
@@ -668,7 +668,7 @@ void uc9_movemem()
     default:
         FRDP("** UNKNOWN %d\n", idx);
     }
-    }
+}
 
 static void uc9_setscissor()
 {
