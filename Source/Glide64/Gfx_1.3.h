@@ -66,6 +66,7 @@ the plugin
 
 #include <stdio.h>
 #include <fstream>
+#include <stdlib.h>
 #include <stddef.h>		// offsetof
 #include <glide.h>
 #include <Common/MemTest.h>
@@ -82,10 +83,6 @@ typedef unsigned char boolean;
 #else
 #define GLIDE64_TRY try
 #define GLIDE64_CATCH catch (...)
-#endif
-
-#ifndef _WIN32
-typedef void* HWND;
 #endif
 
 #ifndef TEXTURE_FILTER
