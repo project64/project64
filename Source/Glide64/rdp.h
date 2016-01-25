@@ -801,7 +801,6 @@ extern uint32_t   offset_texbuf1;
 
 extern int	ucode_error_report;
 
-extern wxString pluginPath;
 extern wxString iniPath;
 
 // RDP functions
