@@ -902,7 +902,7 @@ int InitGfx()
 
     /*if (fb_hwfbe_enabled)
     {
-    gfx_context = grSstWinOpenExt (wxPtrToUInt(gfx.hWnd),
+    gfx_context = grSstWinOpenExt (uintptr_t(gfx.hWnd),
     res_data,
     GR_REFRESH_60Hz,
     GR_COLORFORMAT_RGBA,

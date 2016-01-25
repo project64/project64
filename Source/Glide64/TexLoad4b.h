@@ -604,7 +604,7 @@ uint32_t Load4bCI (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int lin
     return /*(0 << 16) | */GR_TEXFMT_ALPHA_INTENSITY_44;
   }
 
-  wxUIntPtr pal = wxPtrToUInt(rdp.pal_8 + (rdp.tiles[tile].palette << 4));
+  wxUIntPtr pal = uintptr_t(rdp.pal_8 + (rdp.tiles[tile].palette << 4));
   if (rdp.tlut_mode == 2)
   {
     ext <<= 1;

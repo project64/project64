@@ -379,7 +379,7 @@ void GetTexInfo(int id, int tile)
     else
     {
         crc = 0xFFFFFFFF;
-        wxUIntPtr addr = wxPtrToUInt(rdp.tmem) + (rdp.tiles[tile].t_mem << 3);
+        wxUIntPtr addr = uintptr_t(rdp.tmem) + (rdp.tiles[tile].t_mem << 3);
         uint32_t line2 = maxval(line, 1);
         if (rdp.tiles[tile].size < 3)
         {
@@ -1069,7 +1069,7 @@ void LoadTex(int id, int tmu)
 #endif
 
     // Add this cache to the list
-    AddToList(&cachelut[cache->crc >> 16], cache->crc, wxPtrToUInt(cache), tmu, rdp.n_cached[tmu]);
+    AddToList(&cachelut[cache->crc >> 16], cache->crc, uintptr_t(cache), tmu, rdp.n_cached[tmu]);
 
     // temporary
     cache->t_info.format = GR_TEXFMT_ARGB_1555;
@@ -1385,7 +1385,7 @@ void LoadTex(int id, int tmu)
                     start_src >>= 1;
 
                 result = load_table[rdp.tiles[td].size][rdp.tiles[td].format]
-                    (wxPtrToUInt(texture) + start_dst, wxPtrToUInt(rdp.tmem) + (rdp.tiles[td].t_mem << 3) + start_src,
+                    (uintptr_t(texture) + start_dst, uintptr_t(rdp.tmem) + (rdp.tiles[td].t_mem << 3) + start_src,
                     texinfo[id].wid_64, texinfo[id].height, texinfo[id].line, real_x, td);
 
                 uint32_t size = HIWORD(result);
@@ -1402,7 +1402,7 @@ void LoadTex(int id, int tmu)
         else
         {
             result = load_table[rdp.tiles[td].size][rdp.tiles[td].format]
-                (wxPtrToUInt(texture), wxPtrToUInt(rdp.tmem) + (rdp.tiles[td].t_mem << 3),
+                (uintptr_t(texture), uintptr_t(rdp.tmem) + (rdp.tiles[td].t_mem << 3),
                 texinfo[id].wid_64, texinfo[id].height, texinfo[id].line, real_x, td);
 
             uint32_t size = HIWORD(result);
