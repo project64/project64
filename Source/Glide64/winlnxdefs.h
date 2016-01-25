@@ -23,32 +23,6 @@
 #ifndef WINLNXDEFS_H
 #define WINLNXDEFS_H
 
-#define wxNO_GL_LIB
-#define wxNO_HTML_LIB
-#define wxNO_ADV_LIB
-#define wxNO_ZLIB_LIB
-#define wxNO_TIFF_LIB
-#define wxNO_EXPAT_LIB
-#define wxNO_REGEX_LIB
-#define wxNO_XML_LIB
-#define wxNO_NET_LIB
-#define wxNO_QA_LIB
-#define wxNO_XRC_LIB
-#define wxNO_AUI_LIB
-#define wxNO_PROPGRID_LIB
-#define wxNO_RIBBON_LIB
-#define wxNO_RICHTEXT_LIB
-#define wxNO_MEDIA_LIB
-#define wxNO_STC_LIB
-
-
-#include <wx/wx.h>
-#include <wx/dynlib.h>
-#include <wx/filename.h>
-#include <wx/datetime.h>
-
-#define TRUE 1
-#define FALSE 0
 
 #include <Common/stdtypes.h>
 
