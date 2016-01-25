@@ -336,9 +336,9 @@ void microcheck()
 
         ReleaseGfx();
 #ifdef _WIN32
-        MessageBox(gfx.hWnd, stdstr_f("Error: uCode crc not found in INI, using currently selected uCode\n\n%08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
-
+        MessageBox(gfx.hWnd, stdstr_f("Error: uCode crc not found in INI, using currently selected uCode\n\n%08lx", uc_crc).c_str(), NULL, MB_OK | MB_ICONEXCLAMATION);
 #endif
+
         ucode_error_report = FALSE; // don't report any more ucode errors from this game
     }
     else if (uc == -1 && ucode_error_report)
@@ -347,7 +347,7 @@ void microcheck()
 
         ReleaseGfx();
 #ifdef _WIN32
-        MessageBox(gfx.hWnd, stdstr_f("Error: Unsupported uCode!\n\ncrc: %08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(gfx.hWnd, stdstr_f("Error: Unsupported uCode!\n\ncrc: %08lx", uc_crc).c_str(), NULL, MB_OK | MB_ICONEXCLAMATION);
 #endif
 
         ucode_error_report = FALSE; // don't report any more ucode errors from this game
