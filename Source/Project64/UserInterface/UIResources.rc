@@ -895,6 +895,7 @@ BEGIN
     POPUP "PopupMenu"
     BEGIN
         MENUITEM "Play Game",                   ID_POPUPMENU_PLAYGAME
+        MENUITEM "Play Game with Disk",         ID_POPUPMENU_PLAYGAMEWITHDISK
         MENUITEM SEPARATOR
         MENUITEM "Refresh Rom List",            ID_POPUPMENU_REFRESHROMLIST
         MENUITEM "Choose Rom Directory...",     ID_POPUPMENU_ROMDIRECTORY

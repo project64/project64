@@ -125,6 +125,7 @@ enum LanguageStringID{
     POPUP_SETTINGS = 212,
     POPUP_CHEATS = 213,
     POPUP_GFX_PLUGIN = 214,
+	POPUP_PLAYDISK = 215,
 
     //selecting save slot
     SAVE_SLOT_DEFAULT = 220,

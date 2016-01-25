@@ -1502,21 +1502,23 @@ void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
 
     //Fix up menu
     MenuSetText(hPopupMenu, 0, wGS(POPUP_PLAY).c_str(), NULL);
-    MenuSetText(hPopupMenu, 2, wGS(MENU_REFRESH).c_str(), NULL);
-    MenuSetText(hPopupMenu, 3, wGS(MENU_CHOOSE_ROM).c_str(), NULL);
-    MenuSetText(hPopupMenu, 5, wGS(POPUP_INFO).c_str(), NULL);
-    MenuSetText(hPopupMenu, 6, wGS(POPUP_GFX_PLUGIN).c_str(), NULL);
-    MenuSetText(hPopupMenu, 8, wGS(POPUP_SETTINGS).c_str(), NULL);
-    MenuSetText(hPopupMenu, 9, wGS(POPUP_CHEATS).c_str(), NULL);
+    MenuSetText(hPopupMenu, 1, wGS(POPUP_PLAYDISK).c_str(), NULL);
+    MenuSetText(hPopupMenu, 3, wGS(MENU_REFRESH).c_str(), NULL);
+    MenuSetText(hPopupMenu, 4, wGS(MENU_CHOOSE_ROM).c_str(), NULL);
+    MenuSetText(hPopupMenu, 6, wGS(POPUP_INFO).c_str(), NULL);
+    MenuSetText(hPopupMenu, 7, wGS(POPUP_GFX_PLUGIN).c_str(), NULL);
+    MenuSetText(hPopupMenu, 9, wGS(POPUP_SETTINGS).c_str(), NULL);
+    MenuSetText(hPopupMenu, 10, wGS(POPUP_CHEATS).c_str(), NULL);
 
     if (m_SelectedRom.size() == 0)
     {
+        DeleteMenu(hPopupMenu, 10, MF_BYPOSITION);
         DeleteMenu(hPopupMenu, 9, MF_BYPOSITION);
         DeleteMenu(hPopupMenu, 8, MF_BYPOSITION);
         DeleteMenu(hPopupMenu, 7, MF_BYPOSITION);
         DeleteMenu(hPopupMenu, 6, MF_BYPOSITION);
         DeleteMenu(hPopupMenu, 5, MF_BYPOSITION);
-        DeleteMenu(hPopupMenu, 4, MF_BYPOSITION);
+        DeleteMenu(hPopupMenu, 2, MF_BYPOSITION);
         DeleteMenu(hPopupMenu, 1, MF_BYPOSITION);
         DeleteMenu(hPopupMenu, 0, MF_BYPOSITION);
     }
@@ -1524,17 +1526,17 @@ void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
     {
         bool inBasicMode = g_Settings->LoadDword(UserInterface_BasicMode) != 0;
         bool CheatsRemembered = g_Settings->LoadDword(Setting_RememberCheats) != 0;
-        if (!CheatsRemembered) { DeleteMenu(hPopupMenu, 9, MF_BYPOSITION); }
-        if (inBasicMode) { DeleteMenu(hPopupMenu, 8, MF_BYPOSITION); }
-        if (inBasicMode && !CheatsRemembered) { DeleteMenu(hPopupMenu, 7, MF_BYPOSITION); }
-        DeleteMenu(hPopupMenu, 6, MF_BYPOSITION);
+        if (!CheatsRemembered) { DeleteMenu(hPopupMenu, 10, MF_BYPOSITION); }
+        if (inBasicMode) { DeleteMenu(hPopupMenu, 9, MF_BYPOSITION); }
+        if (inBasicMode && !CheatsRemembered) { DeleteMenu(hPopupMenu, 8, MF_BYPOSITION); }
+        DeleteMenu(hPopupMenu, 7, MF_BYPOSITION);
         if (!inBasicMode && g_Plugins && g_Plugins->Gfx() && g_Plugins->Gfx()->GetRomBrowserMenu != NULL)
         {
             HMENU GfxMenu = (HMENU)g_Plugins->Gfx()->GetRomBrowserMenu();
             if (GfxMenu)
             {
                 MENUITEMINFO lpmii;
-                InsertMenuW(hPopupMenu, 6, MF_POPUP | MF_BYPOSITION, (uint32_t)GfxMenu, wGS(POPUP_GFX_PLUGIN).c_str());
+                InsertMenuW(hPopupMenu, 7, MF_POPUP | MF_BYPOSITION, (uint32_t)GfxMenu, wGS(POPUP_GFX_PLUGIN).c_str());
                 lpmii.cbSize = sizeof(MENUITEMINFO);
                 lpmii.fMask = MIIM_STATE;
                 lpmii.fState = 0;

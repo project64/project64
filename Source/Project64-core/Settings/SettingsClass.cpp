@@ -114,8 +114,6 @@ void CSettings::AddHowToHandleSetting()
     AddHandler(SupportFile_7zipCache, new CSettingTypeApplicationPath("", "7zipCache", SupportFile_7zipCacheDefault));
     AddHandler(SupportFile_7zipCacheDefault, new CSettingTypeRelativePath("Config", "Project64.zcache"));
 
-    AddHandler(SupportFile_DiskTest, new CSettingTypeRelativePath("Config", "DMPJ.ndd"));
-
     //AddHandler(SyncPluginDir,   new CSettingTypeRelativePath("SyncPlugin",""));
 
     //Settings location
@@ -311,6 +309,7 @@ void CSettings::AddHowToHandleSetting()
 
     AddHandler(File_RecentGameFileCount, new CSettingTypeApplication("", "Remembered Rom Files", (uint32_t)10));
     AddHandler(File_RecentGameFileIndex, new CSettingTypeApplicationIndex("Recent File", "Recent Rom", Default_None));
+    AddHandler(File_DiskIPLPath, new CSettingTypeApplicationPath("", "Disk IPL ROM Path", Default_None));
 
     AddHandler(Debugger_Enabled, new CSettingTypeApplication("Debugger", "Debugger", false));
     AddHandler(Debugger_ShowTLBMisses, new CSettingTypeApplication("Debugger", "Show TLB Misses", false));

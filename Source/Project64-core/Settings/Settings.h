@@ -48,8 +48,6 @@ enum SettingID
     SupportFile_RomListCacheDefault,
     SupportFile_7zipCache,
     SupportFile_7zipCacheDefault,
-    //64DD TEST
-    SupportFile_DiskTest,
 
     //Settings
     Setting_ApplicationName,
@@ -226,6 +224,7 @@ enum SettingID
     //File Info
     File_RecentGameFileCount,
     File_RecentGameFileIndex,
+    File_DiskIPLPath,
 
     //Debugger
     Debugger_Enabled,
