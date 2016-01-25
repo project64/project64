@@ -126,42 +126,42 @@ extern uint32_t frame_count; // frame counter
 // Vertex structure
 typedef struct
 {
-  float x, y, z, q;
-  float u0, v0, u1, v1;
-  float coord[4];
-  float w;
-  uint16_t  flags;
+    float x, y, z, q;
+    float u0, v0, u1, v1;
+    float coord[4];
+    float w;
+    uint16_t  flags;
 
-  uint8_t  b;  // These values are arranged like this so that *(uint32_t*)(VERTEX+?) is
-  uint8_t  g;  // ARGB format that glide can use.
-  uint8_t  r;
-  uint8_t  a;
+    uint8_t  b;  // These values are arranged like this so that *(uint32_t*)(VERTEX+?) is
+    uint8_t  g;  // ARGB format that glide can use.
+    uint8_t  r;
+    uint8_t  a;
 
-  float f; //fog
+    float f; //fog
 
-  float vec[3]; // normal vector
+    float vec[3]; // normal vector
 
-  float sx, sy, sz;
-  float x_w, y_w, z_w, u0_w, v0_w, u1_w, v1_w, oow;
-  uint8_t  not_zclipped;
-  uint8_t  screen_translated;
-  uint8_t  uv_scaled;
-  uint32_t uv_calculated;  // like crc
-  uint32_t shade_mod;
-  uint32_t color_backup;
+    float sx, sy, sz;
+    float x_w, y_w, z_w, u0_w, v0_w, u1_w, v1_w, oow;
+    uint8_t  not_zclipped;
+    uint8_t  screen_translated;
+    uint8_t  uv_scaled;
+    uint32_t uv_calculated;  // like crc
+    uint32_t shade_mod;
+    uint32_t color_backup;
 
-  float ou, ov;
+    float ou, ov;
 
-  int   number;   // way to identify it
-  int   scr_off, z_off; // off the screen?
+    int   number;   // way to identify it
+    int   scr_off, z_off; // off the screen?
 } VERTEX;
 
 // Clipping (scissors)
 typedef struct {
-  uint32_t ul_x;
-  uint32_t ul_y;
-  uint32_t lr_x;
-  uint32_t lr_y;
+    uint32_t ul_x;
+    uint32_t ul_y;
+    uint32_t lr_x;
+    uint32_t lr_y;
 } SCISSOR;
 
 #ifdef TEXTURE_FILTER
@@ -171,615 +171,614 @@ extern uint32_t texcmpr[];
 extern uint32_t texhirs[];
 
 typedef struct {
-  uint16_t tile_ul_s;
-  uint16_t tile_ul_t;
-  uint16_t tile_width;
-  uint16_t tile_height;
-  uint16_t tex_width;
-  uint16_t tex_size;
-  uint32_t dxt;
+    uint16_t tile_ul_s;
+    uint16_t tile_ul_t;
+    uint16_t tile_width;
+    uint16_t tile_height;
+    uint16_t tex_width;
+    uint16_t tex_size;
+    uint32_t dxt;
 } LOAD_TILE_INFO;
 #endif
 
 typedef struct {
-  const wxChar * format;
-  const wxChar * extension;
-  wxBitmapType type;
+    const wxChar * format;
+    const wxChar * extension;
+    wxBitmapType type;
 } SCREEN_SHOT_FORMAT;
 
 extern const int NumOfFormats;
 extern SCREEN_SHOT_FORMAT ScreenShotFormats[];
 
 typedef struct {
-  int card_id;
+    int card_id;
 
-  uint32_t res_x, scr_res_x;
-  uint32_t res_y, scr_res_y;
-  uint32_t res_data, res_data_org;
+    uint32_t res_x, scr_res_x;
+    uint32_t res_y, scr_res_y;
+    uint32_t res_data, res_data_org;
 
-  int advanced_options;
-  int texenh_options;
-  int ssformat;
-  int vsync;
+    int advanced_options;
+    int texenh_options;
+    int ssformat;
+    int vsync;
 
-  int show_fps;
-  int clock;
-  int clock_24_hr;
+    int show_fps;
+    int clock;
+    int clock_24_hr;
 
-  int filtering;
-  int fog;
-  int buff_clear;
-  int swapmode;
-  int lodmode;
-  int aspectmode;
-  int use_hotkeys;
+    int filtering;
+    int fog;
+    int buff_clear;
+    int swapmode;
+    int lodmode;
+    int aspectmode;
+    int use_hotkeys;
 
-  //Frame buffer emulation options
-  #define  fb_emulation            (1<<0)   //frame buffer emulation
-  #define  fb_hwfbe                (1<<1)   //hardware frame buffer emualtion
-  #define  fb_motionblur           (1<<2)   //emulate motion blur
-  #define  fb_ref                  (1<<3)   //read every frame
-  #define  fb_read_alpha           (1<<4)   //read alpha
-  #define  fb_hwfbe_buf_clear      (1<<5)   //clear auxiliary texture frame buffers
-  #define  fb_depth_render         (1<<6)   //enable software depth render
-  #define  fb_optimize_texrect     (1<<7)   //fast texrect rendering with hwfbe
-  #define  fb_ignore_aux_copy      (1<<8)   //do not copy auxiliary frame buffers
-  #define  fb_useless_is_useless   (1<<10)  //
-  #define  fb_get_info             (1<<11)  //get frame buffer info
-  #define  fb_read_back_to_screen  (1<<12)  //render N64 frame buffer to screen
-  #define  fb_read_back_to_screen2 (1<<13)  //render N64 frame buffer to screen
-  #define  fb_cpu_write_hack       (1<<14)  //show images writed directly by CPU
+    //Frame buffer emulation options
+#define  fb_emulation            (1<<0)   //frame buffer emulation
+#define  fb_hwfbe                (1<<1)   //hardware frame buffer emualtion
+#define  fb_motionblur           (1<<2)   //emulate motion blur
+#define  fb_ref                  (1<<3)   //read every frame
+#define  fb_read_alpha           (1<<4)   //read alpha
+#define  fb_hwfbe_buf_clear      (1<<5)   //clear auxiliary texture frame buffers
+#define  fb_depth_render         (1<<6)   //enable software depth render
+#define  fb_optimize_texrect     (1<<7)   //fast texrect rendering with hwfbe
+#define  fb_ignore_aux_copy      (1<<8)   //do not copy auxiliary frame buffers
+#define  fb_useless_is_useless   (1<<10)  //
+#define  fb_get_info             (1<<11)  //get frame buffer info
+#define  fb_read_back_to_screen  (1<<12)  //render N64 frame buffer to screen
+#define  fb_read_back_to_screen2 (1<<13)  //render N64 frame buffer to screen
+#define  fb_cpu_write_hack       (1<<14)  //show images writed directly by CPU
 
-  #define fb_emulation_enabled ((settings.frame_buffer&fb_emulation)>0)
-  #define fb_hwfbe_enabled ((settings.frame_buffer&(fb_emulation|fb_hwfbe))==(fb_emulation|fb_hwfbe))
-  #define fb_depth_render_enabled ((settings.frame_buffer&fb_depth_render)>0)
+#define fb_emulation_enabled ((settings.frame_buffer&fb_emulation)>0)
+#define fb_hwfbe_enabled ((settings.frame_buffer&(fb_emulation|fb_hwfbe))==(fb_emulation|fb_hwfbe))
+#define fb_depth_render_enabled ((settings.frame_buffer&fb_depth_render)>0)
 
-  uint32_t frame_buffer;
-  enum FBCRCMODE {
-    fbcrcNone = 0,
-    fbcrcFast = 1,
-    fbcrcSafe = 2} fb_crc_mode;
+    uint32_t frame_buffer;
+    enum FBCRCMODE {
+        fbcrcNone = 0,
+        fbcrcFast = 1,
+        fbcrcSafe = 2
+    } fb_crc_mode;
 
 #ifdef TEXTURE_FILTER
-  //Texture filtering options
-  std::string texture_dir;
-  int ghq_fltr;
-  int ghq_enht;
-  int ghq_cmpr;
-  int ghq_hirs;
-  int ghq_use;
-  int ghq_enht_cmpr;
-  int ghq_enht_tile;
-  int ghq_enht_f16bpp;
-  int ghq_enht_gz;
-  int ghq_enht_nobg;
-  int ghq_hirs_cmpr;
-  int ghq_hirs_tile;
-  int ghq_hirs_f16bpp;
-  int ghq_hirs_gz;
-  int ghq_hirs_altcrc;
-  int ghq_cache_save;
-  int ghq_cache_size;
-  int ghq_hirs_let_texartists_fly;
-  int ghq_hirs_dump;
+    //Texture filtering options
+    std::string texture_dir;
+    int ghq_fltr;
+    int ghq_enht;
+    int ghq_cmpr;
+    int ghq_hirs;
+    int ghq_use;
+    int ghq_enht_cmpr;
+    int ghq_enht_tile;
+    int ghq_enht_f16bpp;
+    int ghq_enht_gz;
+    int ghq_enht_nobg;
+    int ghq_hirs_cmpr;
+    int ghq_hirs_tile;
+    int ghq_hirs_f16bpp;
+    int ghq_hirs_gz;
+    int ghq_hirs_altcrc;
+    int ghq_cache_save;
+    int ghq_cache_size;
+    int ghq_hirs_let_texartists_fly;
+    int ghq_hirs_dump;
 #endif
 
-  //Debug
-  int autodetect_ucode;
-  int ucode;
-  int logging;
-  int elogging;
-  int log_clear;
-  int run_in_window;
-  int filter_cache;
-  int unk_as_red;
-  int log_unk;
-  int unk_clear;
-  int wireframe;
-  int wfmode;
+    //Debug
+    int autodetect_ucode;
+    int ucode;
+    int logging;
+    int elogging;
+    int log_clear;
+    int run_in_window;
+    int filter_cache;
+    int unk_as_red;
+    int log_unk;
+    int unk_clear;
+    int wireframe;
+    int wfmode;
 
-  // Special fixes
-  int offset_x, offset_y;
-  int scale_x, scale_y;
-  int fast_crc;
-  int alt_tex_size;
-  int use_sts1_only;
-  int flame_corona; //hack for zeldas flame's corona
-  int increase_texrect_edge; // add 1 to lower right corner coordinates of texrect
-  int decrease_fillrect_edge; // sub 1 from lower right corner coordinates of fillrect
-  int texture_correction; // enable perspective texture correction emulation. is on by default
-  int stipple_mode;  //used for dithered alpha emulation
-  uint32_t stipple_pattern; //used for dithered alpha emulation
-  int force_microcheck; //check microcode each frame, for mixed F3DEX-S2DEX games
-  int force_quad3d; //force 0xb5 command to be quad, not line 3d
-  int clip_zmin; //enable near z clipping
-  int clip_zmax; //enable far plane clipping;
-  int adjust_aspect; //adjust screen aspect for wide screen mode
-  int force_calc_sphere; //use spheric mapping only, Ridge Racer 64
-  int pal230;    //set special scale for PAL games
-  int correct_viewport; //correct viewport values
-  int zmode_compare_less; //force GR_CMP_LESS for zmode=0 (opaque)and zmode=1 (interpenetrating)
-  int old_style_adither; //apply alpha dither regardless of alpha_dither_mode
-  int n64_z_scale; //scale vertex z value before writing to depth buffer, as N64 does.
+    // Special fixes
+    int offset_x, offset_y;
+    int scale_x, scale_y;
+    int fast_crc;
+    int alt_tex_size;
+    int use_sts1_only;
+    int flame_corona; //hack for zeldas flame's corona
+    int increase_texrect_edge; // add 1 to lower right corner coordinates of texrect
+    int decrease_fillrect_edge; // sub 1 from lower right corner coordinates of fillrect
+    int texture_correction; // enable perspective texture correction emulation. is on by default
+    int stipple_mode;  //used for dithered alpha emulation
+    uint32_t stipple_pattern; //used for dithered alpha emulation
+    int force_microcheck; //check microcode each frame, for mixed F3DEX-S2DEX games
+    int force_quad3d; //force 0xb5 command to be quad, not line 3d
+    int clip_zmin; //enable near z clipping
+    int clip_zmax; //enable far plane clipping;
+    int adjust_aspect; //adjust screen aspect for wide screen mode
+    int force_calc_sphere; //use spheric mapping only, Ridge Racer 64
+    int pal230;    //set special scale for PAL games
+    int correct_viewport; //correct viewport values
+    int zmode_compare_less; //force GR_CMP_LESS for zmode=0 (opaque)and zmode=1 (interpenetrating)
+    int old_style_adither; //apply alpha dither regardless of alpha_dither_mode
+    int n64_z_scale; //scale vertex z value before writing to depth buffer, as N64 does.
 
-  //Special game hacks
-  #define  hack_ASB         (1<<0)   //All-Star Baseball games
-  #define  hack_Banjo2      (1<<1)   //Banjo Tooie
-  #define  hack_BAR         (1<<2)   //Beetle Adventure Racing
-  #define  hack_Chopper     (1<<3)   //Chopper Attack
-  #define  hack_Diddy       (1<<4)   //diddy kong racing
-  #define  hack_Fifa98      (1<<5)   //FIFA - Road to World Cup 98
-  #define  hack_Fzero       (1<<6)   //F-Zero
-  #define  hack_GoldenEye   (1<<7)   //Golden Eye
-  #define  hack_Hyperbike   (1<<8)   //Top Gear Hyper Bike
-  #define  hack_ISS64       (1<<9)   //International Superstar Soccer 64
-  #define  hack_KI          (1<<10)  //Killer Instinct
-  #define  hack_Knockout    (1<<11)  //Knockout Kings 2000
-  #define  hack_Lego        (1<<12)  //LEGO Racers
-  #define  hack_MK64        (1<<13)  //Mario Kart
-  #define  hack_Megaman     (1<<14)  //Megaman64
-  #define  hack_Makers      (1<<15)  //Mischief-makers
-  #define  hack_WCWnitro    (1<<16)  //WCW Nitro
-  #define  hack_Ogre64      (1<<17)  //Ogre Battle 64
-  #define  hack_Pilotwings  (1<<18)  //Pilotwings
-  #define  hack_PMario      (1<<19)  //Paper Mario
-  #define  hack_PPL         (1<<20)  //pokemon puzzle league requires many special fixes
-  #define  hack_RE2         (1<<21)  //Resident Evil 2
-  #define  hack_Starcraft   (1<<22)  //StarCraft64
-  #define  hack_Supercross  (1<<23)  //Supercross 2000
-  #define  hack_TGR         (1<<24)  //Top Gear Rally
-  #define  hack_TGR2        (1<<25)  //Top Gear Rally 2
-  #define  hack_Tonic       (1<<26)  //tonic trouble
-  #define  hack_Yoshi       (1<<27)  //Yoshi Story
-  #define  hack_Zelda       (1<<28)  //zeldas hacks
-  #define  hack_OoT         (1<<29)  //zelda OoT hacks
-  uint32_t hacks;
+    //Special game hacks
+#define  hack_ASB         (1<<0)   //All-Star Baseball games
+#define  hack_Banjo2      (1<<1)   //Banjo Tooie
+#define  hack_BAR         (1<<2)   //Beetle Adventure Racing
+#define  hack_Chopper     (1<<3)   //Chopper Attack
+#define  hack_Diddy       (1<<4)   //diddy kong racing
+#define  hack_Fifa98      (1<<5)   //FIFA - Road to World Cup 98
+#define  hack_Fzero       (1<<6)   //F-Zero
+#define  hack_GoldenEye   (1<<7)   //Golden Eye
+#define  hack_Hyperbike   (1<<8)   //Top Gear Hyper Bike
+#define  hack_ISS64       (1<<9)   //International Superstar Soccer 64
+#define  hack_KI          (1<<10)  //Killer Instinct
+#define  hack_Knockout    (1<<11)  //Knockout Kings 2000
+#define  hack_Lego        (1<<12)  //LEGO Racers
+#define  hack_MK64        (1<<13)  //Mario Kart
+#define  hack_Megaman     (1<<14)  //Megaman64
+#define  hack_Makers      (1<<15)  //Mischief-makers
+#define  hack_WCWnitro    (1<<16)  //WCW Nitro
+#define  hack_Ogre64      (1<<17)  //Ogre Battle 64
+#define  hack_Pilotwings  (1<<18)  //Pilotwings
+#define  hack_PMario      (1<<19)  //Paper Mario
+#define  hack_PPL         (1<<20)  //pokemon puzzle league requires many special fixes
+#define  hack_RE2         (1<<21)  //Resident Evil 2
+#define  hack_Starcraft   (1<<22)  //StarCraft64
+#define  hack_Supercross  (1<<23)  //Supercross 2000
+#define  hack_TGR         (1<<24)  //Top Gear Rally
+#define  hack_TGR2        (1<<25)  //Top Gear Rally 2
+#define  hack_Tonic       (1<<26)  //tonic trouble
+#define  hack_Yoshi       (1<<27)  //Yoshi Story
+#define  hack_Zelda       (1<<28)  //zeldas hacks
+#define  hack_OoT         (1<<29)  //zelda OoT hacks
+    uint32_t hacks;
 
-  //wrapper settings
-  int wrpResolution;
-  int wrpVRAM;
-  int wrpFBO;
-  int wrpAnisotropic;
-
+    //wrapper settings
+    int wrpResolution;
+    int wrpVRAM;
+    int wrpFBO;
+    int wrpAnisotropic;
 } SETTINGS;
 
 typedef struct
 {
-  uint8_t hk_ref;
-  uint8_t hk_motionblur;
-  uint8_t hk_filtering;
+    uint8_t hk_ref;
+    uint8_t hk_motionblur;
+    uint8_t hk_filtering;
 } HOTKEY_INFO;
 
 typedef struct
 {
-  int num_tmu;
-  int max_tex_size;
-  int sup_large_tex;
-  int sup_mirroring;
-  int sup_32bit_tex;
-  int has_2mb_tex_boundary;
-  int tex_UMA;
-  int gamma_correction;
-  FxI32 gamma_table_size;
-  FxU32 *gamma_table_r;
-  FxU32 *gamma_table_g;
-  FxU32 *gamma_table_b;
-  uint32_t tmem_ptr[MAX_TMU];
-  uint32_t tex_min_addr[MAX_TMU];
-  uint32_t tex_max_addr[MAX_TMU];
+    int num_tmu;
+    int max_tex_size;
+    int sup_large_tex;
+    int sup_mirroring;
+    int sup_32bit_tex;
+    int has_2mb_tex_boundary;
+    int tex_UMA;
+    int gamma_correction;
+    FxI32 gamma_table_size;
+    FxU32 *gamma_table_r;
+    FxU32 *gamma_table_g;
+    FxU32 *gamma_table_b;
+    uint32_t tmem_ptr[MAX_TMU];
+    uint32_t tex_min_addr[MAX_TMU];
+    uint32_t tex_max_addr[MAX_TMU];
 } VOODOO;
 
 // This structure is what is passed in by rdp:settextureimage
 typedef struct {
-  uint8_t format;  // format: ARGB, IA, ...
-  uint8_t size;    // size: 4,8,16, or 32 bit
-  uint16_t width;   // used in settextureimage
-  uint32_t addr;   // address in RDRAM to load the texture from
-  int set_by;  // 0-loadblock 1-loadtile
+    uint8_t format;  // format: ARGB, IA, ...
+    uint8_t size;    // size: 4,8,16, or 32 bit
+    uint16_t width;   // used in settextureimage
+    uint32_t addr;   // address in RDRAM to load the texture from
+    int set_by;  // 0-loadblock 1-loadtile
 } TEXTURE_IMAGE;
 
 // This structure is a tile descriptor (as used by rdp:settile and rdp:settilesize)
 typedef struct
 {
-  // rdp:settile
-  uint8_t format;  // format: ARGB, IA, ...
-  uint8_t size;    // size: 4,8,16, or 32 bit
-  uint16_t line;    // size of one row (x axis) in 64 bit words
-  uint16_t t_mem;   // location in texture memory (in 64 bit words, max 512 (4MB))
-  uint8_t palette; // palette # to use
-  uint8_t clamp_t; // clamp or wrap (y axis)?
-  uint8_t mirror_t;  // mirroring on (y axis)?
-  uint8_t mask_t;  // mask to wrap around (ex: 5 would wrap around 32) (y axis)
-  uint8_t shift_t; // ??? (scaling)
-  uint8_t clamp_s; // clamp or wrap (x axis)?
-  uint8_t mirror_s;  // mirroring on (x axis)?
-  uint8_t mask_s;  // mask to wrap around (x axis)
-  uint8_t shift_s; // ??? (scaling)
+    // rdp:settile
+    uint8_t format;  // format: ARGB, IA, ...
+    uint8_t size;    // size: 4,8,16, or 32 bit
+    uint16_t line;    // size of one row (x axis) in 64 bit words
+    uint16_t t_mem;   // location in texture memory (in 64 bit words, max 512 (4MB))
+    uint8_t palette; // palette # to use
+    uint8_t clamp_t; // clamp or wrap (y axis)?
+    uint8_t mirror_t;  // mirroring on (y axis)?
+    uint8_t mask_t;  // mask to wrap around (ex: 5 would wrap around 32) (y axis)
+    uint8_t shift_t; // ??? (scaling)
+    uint8_t clamp_s; // clamp or wrap (x axis)?
+    uint8_t mirror_s;  // mirroring on (x axis)?
+    uint8_t mask_s;  // mask to wrap around (x axis)
+    uint8_t shift_s; // ??? (scaling)
 
     // rdp:settilesize
-  uint16_t ul_s;    // upper left s coordinate
-  uint16_t ul_t;    // upper left t coordinate
-  uint16_t lr_s;    // lower right s coordinate
-  uint16_t lr_t;    // lower right t coordinate
+    uint16_t ul_s;    // upper left s coordinate
+    uint16_t ul_t;    // upper left t coordinate
+    uint16_t lr_s;    // lower right s coordinate
+    uint16_t lr_t;    // lower right t coordinate
 
-  float f_ul_s;
-  float f_ul_t;
+    float f_ul_s;
+    float f_ul_t;
 
-  // these are set by loadtile
-  uint16_t t_ul_s;    // upper left s coordinate
-  uint16_t t_ul_t;    // upper left t coordinate
-  uint16_t t_lr_s;    // lower right s coordinate
-  uint16_t t_lr_t;    // lower right t coordinate
+    // these are set by loadtile
+    uint16_t t_ul_s;    // upper left s coordinate
+    uint16_t t_ul_t;    // upper left t coordinate
+    uint16_t t_lr_s;    // lower right s coordinate
+    uint16_t t_lr_t;    // lower right t coordinate
 
-  uint32_t width;
-  uint32_t height;
+    uint32_t width;
+    uint32_t height;
 
-  // uc0:texture
-  uint8_t on;
-  float s_scale;
-  float t_scale;
+    // uc0:texture
+    uint8_t on;
+    float s_scale;
+    float t_scale;
 
-  uint16_t org_s_scale;
-  uint16_t org_t_scale;
+    uint16_t org_s_scale;
+    uint16_t org_t_scale;
 } TILE;
 
 // This structure forms the lookup table for cached textures
 typedef struct {
-  uint32_t addr;     // address in RDRAM
-  uint32_t crc;      // CRC check
-  uint32_t palette;    // Palette #
-  uint32_t width;    // width
-  uint32_t height;   // height
-  uint32_t format;   // format
-  uint32_t size;     // size
-  uint32_t last_used;  // what frame # was this texture last used (used for replacing)
+    uint32_t addr;     // address in RDRAM
+    uint32_t crc;      // CRC check
+    uint32_t palette;    // Palette #
+    uint32_t width;    // width
+    uint32_t height;   // height
+    uint32_t format;   // format
+    uint32_t size;     // size
+    uint32_t last_used;  // what frame # was this texture last used (used for replacing)
 
-  uint32_t line;
+    uint32_t line;
 
-  uint32_t flags;    // clamp/wrap/mirror flags
+    uint32_t flags;    // clamp/wrap/mirror flags
 
-  uint32_t realwidth;  // width of actual texture
-  uint32_t realheight; // height of actual texture
-  uint32_t lod;
-  uint32_t aspect;
+    uint32_t realwidth;  // width of actual texture
+    uint32_t realheight; // height of actual texture
+    uint32_t lod;
+    uint32_t aspect;
 
-  uint8_t set_by;
-  uint8_t texrecting;
+    uint8_t set_by;
+    uint8_t texrecting;
 
-  int f_mirror_s;
-  int f_mirror_t;
-  int f_wrap_s;
-  int f_wrap_t;
+    int f_mirror_s;
+    int f_mirror_t;
+    int f_wrap_s;
+    int f_wrap_t;
 
-  float scale_x;    // texture scaling
-  float scale_y;
-  float scale;    // general scale to 256
+    float scale_x;    // texture scaling
+    float scale_y;
+    float scale;    // general scale to 256
 
-  GrTexInfo t_info; // texture info (glide)
-  uint32_t tmem_addr;  // addres in texture memory (glide)
+    GrTexInfo t_info; // texture info (glide)
+    uint32_t tmem_addr;  // addres in texture memory (glide)
 
-  int uses;   // 1 triangle that uses this texture
+    int uses;   // 1 triangle that uses this texture
 
-  int splits;   // number of splits
-  int splitheight;
+    int splits;   // number of splits
+    int splitheight;
 
-  float c_off;  // ul center texel offset (both x and y)
-  float c_scl_x;  // scale to lower-right center-texel x
-  float c_scl_y;  // scale to lower-right center-texel y
+    float c_off;  // ul center texel offset (both x and y)
+    float c_scl_x;  // scale to lower-right center-texel x
+    float c_scl_y;  // scale to lower-right center-texel y
 
-  uint32_t mod, mod_color, mod_color1, mod_color2, mod_factor;
+    uint32_t mod, mod_color, mod_color1, mod_color2, mod_factor;
 #ifdef TEXTURE_FILTER
-  uint64 ricecrc;
-  int is_hires_tex;
+    uint64 ricecrc;
+    int is_hires_tex;
 #endif
 } CACHE_LUT;
 
 // Lights
 typedef struct {
-  float r, g, b, a;       // color
-  float dir_x, dir_y, dir_z;  // direction towards the light source
-  float x, y, z, w;  // light position
-  float ca, la, qa;
-  uint32_t nonblack;
-  uint32_t nonzero;
+    float r, g, b, a;       // color
+    float dir_x, dir_y, dir_z;  // direction towards the light source
+    float x, y, z, w;  // light position
+    float ca, la, qa;
+    uint32_t nonblack;
+    uint32_t nonzero;
 } LIGHT;
 
 typedef enum {
-  ci_main,      //0, main color image
-  ci_zimg,      //1, depth image
-  ci_unknown,   //2, status is unknown
-  ci_useless,   //3, status is unclear
-  ci_old_copy,  //4, auxiliary color image, copy of last color image from previous frame
-  ci_copy,      //5, auxiliary color image, copy of previous color image
-  ci_copy_self, //6, main color image, it's content will be used to draw into itself
-  ci_zcopy,     //7, auxiliary color image, copy of depth image
-  ci_aux,       //8, auxiliary color image
-  ci_aux_copy   //9, auxiliary color image, partial copy of previous color image
+    ci_main,      //0, main color image
+    ci_zimg,      //1, depth image
+    ci_unknown,   //2, status is unknown
+    ci_useless,   //3, status is unclear
+    ci_old_copy,  //4, auxiliary color image, copy of last color image from previous frame
+    ci_copy,      //5, auxiliary color image, copy of previous color image
+    ci_copy_self, //6, main color image, it's content will be used to draw into itself
+    ci_zcopy,     //7, auxiliary color image, copy of depth image
+    ci_aux,       //8, auxiliary color image
+    ci_aux_copy   //9, auxiliary color image, partial copy of previous color image
 } CI_STATUS;
 
 // Frame buffers
 typedef struct
 {
-	uint32_t addr;   //color image address
-	uint8_t format;
-	uint8_t size;
-	uint16_t width;
-	uint16_t height;
-	CI_STATUS status;
-	int   changed;
+    uint32_t addr;   //color image address
+    uint8_t format;
+    uint8_t size;
+    uint16_t width;
+    uint16_t height;
+    CI_STATUS status;
+    int   changed;
 } COLOR_IMAGE;
 
 typedef struct
 {
-  GrChipID_t tmu;
-	uint32_t addr;  //address of color image
-	uint32_t end_addr;
-	uint32_t tex_addr; //address in video memory
-	uint32_t width;    //width of color image
-	uint32_t height;   //height of color image
-	uint8_t  format;   //format of color image
-	uint8_t  size;   //format of color image
-	uint8_t  clear;  //flag. texture buffer must be cleared
-	uint8_t  drawn;  //flag. if equal to 1, this image was already drawn in current frame
-	uint32_t crc; //checksum of the color image
-	float scr_width; //width of rendered image
-	float scr_height; //height of rendered image
-	uint32_t tex_width;  //width of texture buffer
-	uint32_t tex_height; //height of texture buffer
-	int   tile;     //
-	uint16_t  tile_uls; //shift from left bound of the texture
-	uint16_t  tile_ult; //shift from top of the texture
-	uint32_t v_shift; //shift from top of the texture
-	uint32_t u_shift; //shift from left of the texture
-	float lr_u;
-	float lr_v;
-	float u_scale; //used to map vertex u,v coordinates into hires texture
-	float v_scale; //used to map vertex u,v coordinates into hires texture
-	CACHE_LUT * cache; //pointer to texture cache item
-	GrTexInfo info;
-  uint16_t t_mem;
+    GrChipID_t tmu;
+    uint32_t addr;  //address of color image
+    uint32_t end_addr;
+    uint32_t tex_addr; //address in video memory
+    uint32_t width;    //width of color image
+    uint32_t height;   //height of color image
+    uint8_t  format;   //format of color image
+    uint8_t  size;   //format of color image
+    uint8_t  clear;  //flag. texture buffer must be cleared
+    uint8_t  drawn;  //flag. if equal to 1, this image was already drawn in current frame
+    uint32_t crc; //checksum of the color image
+    float scr_width; //width of rendered image
+    float scr_height; //height of rendered image
+    uint32_t tex_width;  //width of texture buffer
+    uint32_t tex_height; //height of texture buffer
+    int   tile;     //
+    uint16_t  tile_uls; //shift from left bound of the texture
+    uint16_t  tile_ult; //shift from top of the texture
+    uint32_t v_shift; //shift from top of the texture
+    uint32_t u_shift; //shift from left of the texture
+    float lr_u;
+    float lr_v;
+    float u_scale; //used to map vertex u,v coordinates into hires texture
+    float v_scale; //used to map vertex u,v coordinates into hires texture
+    CACHE_LUT * cache; //pointer to texture cache item
+    GrTexInfo info;
+    uint16_t t_mem;
 } TBUFF_COLOR_IMAGE;
 
 typedef struct
 {
-	GrChipID_t tmu;
-	uint32_t begin; //start of the block in video memory
-	uint32_t end;   //end of the block in video memory
-	uint8_t count;  //number of allocated texture buffers
-	int clear_allowed; //stack of buffers can be cleared
-	TBUFF_COLOR_IMAGE images[256];
+    GrChipID_t tmu;
+    uint32_t begin; //start of the block in video memory
+    uint32_t end;   //end of the block in video memory
+    uint8_t count;  //number of allocated texture buffers
+    int clear_allowed; //stack of buffers can be cleared
+    TBUFF_COLOR_IMAGE images[256];
 } TEXTURE_BUFFER;
 
 #define NUMTEXBUF 92
 
 struct RDP_Base{
-  float vi_width;
-  float vi_height;
+    float vi_width;
+    float vi_height;
 
-  int window_changed;
+    int window_changed;
 
-  float offset_x, offset_y, offset_x_bak, offset_y_bak;
+    float offset_x, offset_y, offset_x_bak, offset_y_bak;
 
-  float scale_x, scale_1024, scale_x_bak;
-  float scale_y, scale_768, scale_y_bak;
+    float scale_x, scale_1024, scale_x_bak;
+    float scale_y, scale_768, scale_y_bak;
 
-  float view_scale[3];
-  float view_trans[3];
-  float clip_min_x, clip_max_x, clip_min_y, clip_max_y;
-  float clip_ratio;
+    float view_scale[3];
+    float view_trans[3];
+    float clip_min_x, clip_max_x, clip_min_y, clip_max_y;
+    float clip_ratio;
 
-  int updatescreen;
+    int updatescreen;
 
-  uint32_t tri_n;  // triangle counter
-  uint32_t debug_n;
+    uint32_t tri_n;  // triangle counter
+    uint32_t debug_n;
 
-  // Program counter
-  uint32_t pc[10]; // DList PC stack
-  uint32_t pc_i;   // current PC index in the stack
-  int dl_count; // number of instructions before returning
-  int LLE;
+    // Program counter
+    uint32_t pc[10]; // DList PC stack
+    uint32_t pc_i;   // current PC index in the stack
+    int dl_count; // number of instructions before returning
+    int LLE;
 
-  // Segments
-  uint32_t segment[16];  // Segment pointer
+    // Segments
+    uint32_t segment[16];  // Segment pointer
 
-  // Marks the end of DList execution (done in uc?:enddl)
-  int halt;
+    // Marks the end of DList execution (done in uc?:enddl)
+    int halt;
 
-  // Next command
-  uint32_t cmd0;
-  uint32_t cmd1;
-  uint32_t cmd2;
-  uint32_t cmd3;
+    // Next command
+    uint32_t cmd0;
+    uint32_t cmd1;
+    uint32_t cmd2;
+    uint32_t cmd3;
 
-  // Clipping
-  SCISSOR scissor_o;
-  SCISSOR scissor;
-  int scissor_set;
+    // Clipping
+    SCISSOR scissor_o;
+    SCISSOR scissor;
+    int scissor_set;
 
-  // Colors
-  uint32_t fog_color;
-  uint32_t fill_color;
-  uint32_t prim_color;
-  uint32_t blend_color;
-  uint32_t env_color;
-  uint32_t SCALE;
-  uint32_t CENTER;
-  uint32_t prim_lodmin, prim_lodfrac;
-  uint16_t prim_depth;
-  uint16_t prim_dz;
-  uint8_t K4;
-  uint8_t K5;
-  enum {
-  noise_none,
-  noise_combine,
-  noise_texture
-  } noise;
+    // Colors
+    uint32_t fog_color;
+    uint32_t fill_color;
+    uint32_t prim_color;
+    uint32_t blend_color;
+    uint32_t env_color;
+    uint32_t SCALE;
+    uint32_t CENTER;
+    uint32_t prim_lodmin, prim_lodfrac;
+    uint16_t prim_depth;
+    uint16_t prim_dz;
+    uint8_t K4;
+    uint8_t K5;
+    enum {
+        noise_none,
+        noise_combine,
+        noise_texture
+    } noise;
 
-  float col[4];   // color multiplier
-  float coladd[4];  // color add/subtract
-  float shade_factor;
+    float col[4];   // color multiplier
+    float coladd[4];  // color add/subtract
+    float shade_factor;
 
-  float col_2[4];
+    float col_2[4];
 
-  uint32_t cmb_flags, cmb_flags_2;
+    uint32_t cmb_flags, cmb_flags_2;
 
-  // othermode_l flags
-  int acmp; // 0 = none, 1 = threshold, 2 = dither
-  int zsrc; // 0 = pixel, 1 = prim
-  uint8_t alpha_dither_mode;
+    // othermode_l flags
+    int acmp; // 0 = none, 1 = threshold, 2 = dither
+    int zsrc; // 0 = pixel, 1 = prim
+    uint8_t alpha_dither_mode;
 
-  // Matrices
+    // Matrices
 #pragma warning(push)
 #pragma warning(disable:4324) //structure was padded due to __declspec(align())
-  DECLAREALIGN16VAR(model[4][4]);
+    DECLAREALIGN16VAR(model[4][4]);
 #pragma warning(pop)
-  DECLAREALIGN16VAR(proj[4][4]);
-  DECLAREALIGN16VAR(combined[4][4]);
-  DECLAREALIGN16VAR(dkrproj[3][4][4]);
+    DECLAREALIGN16VAR(proj[4][4]);
+    DECLAREALIGN16VAR(combined[4][4]);
+    DECLAREALIGN16VAR(dkrproj[3][4][4]);
 
-  DECLAREALIGN16VAR(model_stack[32][4][4]);  // 32 deep, will warn if overflow
-  int model_i;          // index in the model matrix stack
-  int model_stack_size;
+    DECLAREALIGN16VAR(model_stack[32][4][4]);  // 32 deep, will warn if overflow
+    int model_i;          // index in the model matrix stack
+    int model_stack_size;
 
-  // Textures
-  TEXTURE_IMAGE timg;       // 1 for each tmem address
-  TILE tiles[8];          // 8 tile descriptors
-  uint8_t tmem[4096];        // 4k tmem
-  uint32_t addr[512];        // 512 addresses (used to determine address loaded from)
+    // Textures
+    TEXTURE_IMAGE timg;       // 1 for each tmem address
+    TILE tiles[8];          // 8 tile descriptors
+    uint8_t tmem[4096];        // 4k tmem
+    uint32_t addr[512];        // 512 addresses (used to determine address loaded from)
 #ifdef TEXTURE_FILTER
-  LOAD_TILE_INFO load_info[512];    // 512 addresses. inforamation about tile loading.
+    LOAD_TILE_INFO load_info[512];    // 512 addresses. inforamation about tile loading.
 #endif
 
-  int     cur_tile;   // current tile
-  int     mipmap_level;
-  int     last_tile;   // last tile set
-  int     last_tile_size;   // last tile size set
+    int     cur_tile;   // current tile
+    int     mipmap_level;
+    int     last_tile;   // last tile set
+    int     last_tile_size;   // last tile size set
 
-  int     t0, t1;
-  int     best_tex; // if no 2-tmus, which texture? (0 or 1)
-  int     tex;
-  int     filter_mode;
+    int     t0, t1;
+    int     best_tex; // if no 2-tmus, which texture? (0 or 1)
+    int     tex;
+    int     filter_mode;
 
-  // Texture palette
-  uint16_t pal_8[256];
-  uint32_t pal_8_crc[16];
-  uint32_t pal_256_crc;
-  uint8_t tlut_mode;
-  int LOD_en;
-  int Persp_en;
-  int persp_supported;
-  int force_wrap;
+    // Texture palette
+    uint16_t pal_8[256];
+    uint32_t pal_8_crc[16];
+    uint32_t pal_256_crc;
+    uint8_t tlut_mode;
+    int LOD_en;
+    int Persp_en;
+    int persp_supported;
+    int force_wrap;
 #ifdef TEXTURE_FILTER
-  uint16_t pal_8_rice[512];
+    uint16_t pal_8_rice[512];
 #endif
 
-  // Lighting
-  uint32_t num_lights;
-  LIGHT light[12];
-  float light_vector[12][3];
-  float lookat[2][3];
-  int  use_lookat;
+    // Lighting
+    uint32_t num_lights;
+    LIGHT light[12];
+    float light_vector[12][3];
+    float lookat[2][3];
+    int  use_lookat;
 
-  // Combine modes
-  uint32_t cycle1, cycle2, cycle_mode;
-  uint8_t c_a0, c_b0, c_c0, c_d0, c_Aa0, c_Ab0, c_Ac0, c_Ad0;
-  uint8_t c_a1, c_b1, c_c1, c_d1, c_Aa1, c_Ab1, c_Ac1, c_Ad1;
+    // Combine modes
+    uint32_t cycle1, cycle2, cycle_mode;
+    uint8_t c_a0, c_b0, c_c0, c_d0, c_Aa0, c_Ab0, c_Ac0, c_Ad0;
+    uint8_t c_a1, c_b1, c_c1, c_d1, c_Aa1, c_Ab1, c_Ac1, c_Ad1;
 
-  uint8_t fbl_a0, fbl_b0, fbl_c0, fbl_d0;
-  uint8_t fbl_a1, fbl_b1, fbl_c1, fbl_d1;
+    uint8_t fbl_a0, fbl_b0, fbl_c0, fbl_d0;
+    uint8_t fbl_a1, fbl_b1, fbl_c1, fbl_d1;
 
-  uint8_t uncombined;  // which is uncombined: 0x01=color 0x02=alpha 0x03=both
+    uint8_t uncombined;  // which is uncombined: 0x01=color 0x02=alpha 0x03=both
 
-//  float YUV_C0, YUV_C1, YUV_C2, YUV_C3, YUV_C4; //YUV textures conversion coefficients
+    //  float YUV_C0, YUV_C1, YUV_C2, YUV_C3, YUV_C4; //YUV textures conversion coefficients
 
-  // What needs updating
-  uint32_t update;
-  uint32_t flags;
+    // What needs updating
+    uint32_t update;
+    uint32_t flags;
 
-  int first;
+    int first;
 
-  uint32_t tex_ctr;    // incremented every time textures are updated
+    uint32_t tex_ctr;    // incremented every time textures are updated
 
-  int allow_combine; // allow combine updating?
+    int allow_combine; // allow combine updating?
 
-  int s2dex_tex_loaded;
-  uint16_t bg_image_height;
+    int s2dex_tex_loaded;
+    uint16_t bg_image_height;
 
-  // Debug stuff
-  uint32_t rm; // use othermode_l instead, this just as a check for changes
-  uint32_t render_mode_changed;
-  uint32_t geom_mode;
+    // Debug stuff
+    uint32_t rm; // use othermode_l instead, this just as a check for changes
+    uint32_t render_mode_changed;
+    uint32_t geom_mode;
 
-  uint32_t othermode_h;
-  uint32_t othermode_l;
+    uint32_t othermode_h;
+    uint32_t othermode_l;
 
-  // used to check if in texrect while loading texture
-  uint8_t texrecting;
+    // used to check if in texrect while loading texture
+    uint8_t texrecting;
 
-  //frame buffer related slots. Added by Gonetz
-  uint32_t cimg, ocimg, zimg, tmpzimg, vi_org_reg;
-  COLOR_IMAGE maincimg[2];
-  uint32_t last_drawn_ci_addr;
-  uint32_t main_ci, main_ci_end, main_ci_bg, main_ci_last_tex_addr, zimg_end, last_bg;
-  uint32_t ci_width, ci_height, ci_size, ci_end;
-  uint32_t zi_width;
-  int zi_lrx, zi_lry;
-  uint8_t  ci_count, num_of_ci, main_ci_index, copy_ci_index, copy_zi_index;
-  int swap_ci_index, black_ci_index;
-  uint32_t ci_upper_bound, ci_lower_bound;
-  int  motionblur, fb_drawn, fb_drawn_front, read_previous_ci, read_whole_frame;
-  CI_STATUS ci_status;
-  TBUFF_COLOR_IMAGE * cur_image;  //image currently being drawn
-  TBUFF_COLOR_IMAGE * tbuff_tex;  //image, which corresponds to currently selected texture
-  TBUFF_COLOR_IMAGE * aTBuffTex[2]; 
-  uint8_t  cur_tex_buf;
-  uint8_t  acc_tex_buf;
-  int skip_drawing; //rendering is not required. used for frame buffer emulation
+    //frame buffer related slots. Added by Gonetz
+    uint32_t cimg, ocimg, zimg, tmpzimg, vi_org_reg;
+    COLOR_IMAGE maincimg[2];
+    uint32_t last_drawn_ci_addr;
+    uint32_t main_ci, main_ci_end, main_ci_bg, main_ci_last_tex_addr, zimg_end, last_bg;
+    uint32_t ci_width, ci_height, ci_size, ci_end;
+    uint32_t zi_width;
+    int zi_lrx, zi_lry;
+    uint8_t  ci_count, num_of_ci, main_ci_index, copy_ci_index, copy_zi_index;
+    int swap_ci_index, black_ci_index;
+    uint32_t ci_upper_bound, ci_lower_bound;
+    int  motionblur, fb_drawn, fb_drawn_front, read_previous_ci, read_whole_frame;
+    CI_STATUS ci_status;
+    TBUFF_COLOR_IMAGE * cur_image;  //image currently being drawn
+    TBUFF_COLOR_IMAGE * tbuff_tex;  //image, which corresponds to currently selected texture
+    TBUFF_COLOR_IMAGE * aTBuffTex[2];
+    uint8_t  cur_tex_buf;
+    uint8_t  acc_tex_buf;
+    int skip_drawing; //rendering is not required. used for frame buffer emulation
 
-  //fog related slots. Added by Gonetz
-  float fog_multiplier, fog_offset;
-  enum {
-    fog_disabled,
-    fog_enabled,
-    fog_blend,
-    fog_blend_inverse
+    //fog related slots. Added by Gonetz
+    float fog_multiplier, fog_offset;
+    enum {
+        fog_disabled,
+        fog_enabled,
+        fog_blend,
+        fog_blend_inverse
     }
-  fog_mode;
+    fog_mode;
 };
 
 struct RDP : public RDP_Base
 {
-  // Clipping
-  int clip;     // clipping flags
-  VERTEX *vtx1; //[256] copy vertex buffer #1 (used for clipping)
-  VERTEX *vtx2; //[256] copy vertex buffer #2
-  VERTEX *vtxbuf;   // current vertex buffer (reset to vtx, used to determine current vertex buffer)
-  VERTEX *vtxbuf2;
-  int n_global;   // Used to pass the number of vertices from clip_z to clip_tri
-  int vtx_buffer;
+    // Clipping
+    int clip;     // clipping flags
+    VERTEX *vtx1; //[256] copy vertex buffer #1 (used for clipping)
+    VERTEX *vtx2; //[256] copy vertex buffer #2
+    VERTEX *vtxbuf;   // current vertex buffer (reset to vtx, used to determine current vertex buffer)
+    VERTEX *vtxbuf2;
+    int n_global;   // Used to pass the number of vertices from clip_z to clip_tri
+    int vtx_buffer;
 
-  CACHE_LUT *cache[MAX_TMU]; //[MAX_CACHE]
-  CACHE_LUT *cur_cache[MAX_TMU];
-  uint32_t   cur_cache_n[MAX_TMU];
-  int     n_cached[MAX_TMU];
+    CACHE_LUT *cache[MAX_TMU]; //[MAX_CACHE]
+    CACHE_LUT *cur_cache[MAX_TMU];
+    uint32_t   cur_cache_n[MAX_TMU];
+    int     n_cached[MAX_TMU];
 
-  // Vertices
-  VERTEX *vtx; //[MAX_VTX]
-  int v0, vn;
+    // Vertices
+    VERTEX *vtx; //[MAX_VTX]
+    int v0, vn;
 
-  COLOR_IMAGE *frame_buffers; //[NUMTEXBUF+2]
-  TEXTURE_BUFFER texbufs[2];
+    COLOR_IMAGE *frame_buffers; //[NUMTEXBUF+2]
+    TEXTURE_BUFFER texbufs[2];
 
-  wxString RomName;
+    wxString RomName;
 
-  RDP();
-  ~RDP();
-  void Reset();
+    RDP();
+    ~RDP();
+    void Reset();
 };
 
-
-void SetWireframeCol ();
-void ChangeSize ();
+void SetWireframeCol();
+void ChangeSize();
 void GoToFullScreen();
 
 extern RDP rdp;
@@ -800,7 +799,7 @@ extern wxString pluginPath;
 extern wxString iniPath;
 
 // RDP functions
-void rdp_reset ();
+void rdp_reset();
 
 extern const char *ACmp[];
 extern const char *Mode0[];
@@ -860,67 +859,67 @@ extern const char *CIStatus[];
 #endif
 
 // Convert from u0/v0/u1/v1 to the real coordinates without regard to tmu
-__inline void ConvertCoordsKeep (VERTEX *v, int n)
+__inline void ConvertCoordsKeep(VERTEX *v, int n)
 {
-  for (int i=0; i<n; i++)
-  {
-    v[i].uc(0) = v[i].u0;
-    v[i].vc(0) = v[i].v0;
-    v[i].uc(1) = v[i].u1;
-    v[i].vc(1) = v[i].v1;
-  }
+    for (int i = 0; i < n; i++)
+    {
+        v[i].uc(0) = v[i].u0;
+        v[i].vc(0) = v[i].v0;
+        v[i].uc(1) = v[i].u1;
+        v[i].vc(1) = v[i].v1;
+    }
 }
 
 // Convert from u0/v0/u1/v1 to the real coordinates based on the tmu they are on
-__inline void ConvertCoordsConvert (VERTEX *v, int n)
+__inline void ConvertCoordsConvert(VERTEX *v, int n)
 {
-  for (int i=0; i<n; i++)
-  {
-    v[i].uc(rdp.t0) = v[i].u0;
-    v[i].vc(rdp.t0) = v[i].v0;
-    v[i].uc(rdp.t1) = v[i].u1;
-    v[i].vc(rdp.t1) = v[i].v1;
-  }
+    for (int i = 0; i < n; i++)
+    {
+        v[i].uc(rdp.t0) = v[i].u0;
+        v[i].vc(rdp.t0) = v[i].v0;
+        v[i].uc(rdp.t1) = v[i].u1;
+        v[i].vc(rdp.t1) = v[i].v1;
+    }
 }
 
-__inline void AllowShadeMods (VERTEX *v, int n)
+__inline void AllowShadeMods(VERTEX *v, int n)
 {
-  for (int i=0; i<n; i++)
-  {
-    v[i].shade_mod = 0;
-  }
+    for (int i = 0; i < n; i++)
+    {
+        v[i].shade_mod = 0;
+    }
 }
 
-__inline void AddOffset (VERTEX *v, int n)
+__inline void AddOffset(VERTEX *v, int n)
 {
-  for (int i=0; i<n; i++)
-  {
-    v[i].x += rdp.offset_x;
-    v[i].y += rdp.offset_y;
-  }
+    for (int i = 0; i < n; i++)
+    {
+        v[i].x += rdp.offset_x;
+        v[i].y += rdp.offset_y;
+    }
 }
 
-__inline void CalculateFog (VERTEX *v)
+__inline void CalculateFog(VERTEX *v)
 {
-  if (rdp.flags & FOG_ENABLED)
-  {
-    if (v->w < 0.0f)
-      v->f = 0.0f;
+    if (rdp.flags & FOG_ENABLED)
+    {
+        if (v->w < 0.0f)
+            v->f = 0.0f;
+        else
+            v->f = minval(255.0f, maxval(0.0f, v->z_w * rdp.fog_multiplier + rdp.fog_offset));
+        v->a = (uint8_t)v->f;
+    }
     else
-      v->f = minval(255.0f, maxval(0.0f, v->z_w * rdp.fog_multiplier + rdp.fog_offset));
-    v->a = (uint8_t)v->f;
-  }
-  else
-  {
-    v->f = 1.0f;
-  }
+    {
+        v->f = 1.0f;
+    }
 }
 
 void newSwapBuffers();
 extern int SwapOK;
 
 // ** utility functions
-void load_palette (uint32_t addr, uint16_t start, uint16_t count);
+void load_palette(uint32_t addr, uint16_t start, uint16_t count);
 void setTBufTex(uint16_t t_mem, uint32_t cnt);
 
 #endif  // ifndef RDP_H
