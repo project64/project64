@@ -1100,7 +1100,7 @@ int InitGfx()
                 options,
                 settings.ghq_cache_size * 1024 * 1024, // cache texture to system memory
                 stdstr(settings.texture_dir).ToUTF16().c_str(),
-                rdp.RomName.wchar_str(), // name of ROM. must be no longer than 256 characters
+                rdp.RomName, // name of ROM. must be no longer than 256 characters
                 DisplayLoadProgress);
         }
     }
@@ -1731,15 +1731,16 @@ void CALL RomOpen(void)
 
     // remove all trailing spaces
     while (name[strlen(name) - 1] == ' ')
+    {
         name[strlen(name) - 1] = 0;
+    }
 
-    wxString strRomName = wxString::FromAscii(name);
-    if (settings.ghq_use && strRomName != rdp.RomName)
+    if (settings.ghq_use && strcmp(rdp.RomName, name) != 0)
     {
         ext_ghq_shutdown();
         settings.ghq_use = 0;
     }
-    rdp.RomName = strRomName;
+    strcpy(rdp.RomName, name);
     ReadSpecialSettings(name);
     ClearCache();
 
