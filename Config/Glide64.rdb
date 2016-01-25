@@ -3033,6 +3033,7 @@ Internal Name=Sin and Punishment
 depthmode=1
 fb_clear=1
 filtering=1
+old_style_adither=1
 
 [C2751D1A-F8C19BFF-C:50]
 Good Name=Snowboard Kids 2 (E)
@@ -3737,6 +3738,7 @@ Internal Name=TSUMI TO BATSU
 depthmode=1
 fb_clear=1
 filtering=1
+old_style_adither=1
 
 [E688A5B8-B14B3F18-C:50]
 Good Name=Twisted Edge Extreme Snowboarding (E)
