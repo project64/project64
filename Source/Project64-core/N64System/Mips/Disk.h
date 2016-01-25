@@ -21,6 +21,7 @@ void DiskBMUpdate(void);
 void DiskBMRead(void);
 void DiskBMWrite(void);
 void DiskSetOffset(void);
+void DiskDMACheck(void);
 
 extern bool dd_write;
 extern bool dd_reset_hold;

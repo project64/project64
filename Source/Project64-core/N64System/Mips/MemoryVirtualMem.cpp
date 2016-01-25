@@ -959,7 +959,12 @@ void  CMipsMemoryVM::Compile_LW(x86Reg Reg, uint32_t VAddr)
                 {
                 case 0x05000500: MoveVariableToX86reg(&g_Reg->ASIC_DATA, "ASIC_DATA", Reg); break;
                 case 0x05000504: MoveVariableToX86reg(&g_Reg->ASIC_MISC_REG, "ASIC_MISC_REG", Reg); break;
-                case 0x05000508: MoveVariableToX86reg(&g_Reg->ASIC_STATUS, "ASIC_STATUS", Reg); break;
+                case 0x05000508:
+                    MoveVariableToX86reg(&g_Reg->ASIC_STATUS, "ASIC_STATUS", Reg);
+                    BeforeCallDirect(m_RegWorkingSet);
+                    Call_Direct(AddressOf(&DiskGapSectorCheck), "DiskGapSectorCheck");
+                    AfterCallDirect(m_RegWorkingSet);
+                    break;
                 case 0x0500050C: MoveVariableToX86reg(&g_Reg->ASIC_CUR_TK, "ASIC_CUR_TK", Reg); break;
                 case 0x05000510: MoveVariableToX86reg(&g_Reg->ASIC_BM_STATUS, "ASIC_BM_STATUS", Reg); break;
                 case 0x05000514: MoveVariableToX86reg(&g_Reg->ASIC_ERR_SECTOR, "ASIC_ERR_SECTOR", Reg); break;
@@ -1922,7 +1927,15 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
         switch (PAddr)
         {
         case 0x04600000: MoveX86regToVariable(Reg, &g_Reg->PI_DRAM_ADDR_REG, "PI_DRAM_ADDR_REG"); break;
-        case 0x04600004: MoveX86regToVariable(Reg, &g_Reg->PI_CART_ADDR_REG, "PI_CART_ADDR_REG"); break;
+        case 0x04600004:
+            MoveX86regToVariable(Reg, &g_Reg->PI_CART_ADDR_REG, "PI_CART_ADDR_REG");
+            if (g_Settings->LoadBool(Setting_EnableDisk))
+            {
+                BeforeCallDirect(m_RegWorkingSet);
+                Call_Direct(AddressOf(&DiskDMACheck), "DiskDMACheck");
+                AfterCallDirect(m_RegWorkingSet);
+            }
+            break;
         case 0x04600008:
             MoveX86regToVariable(Reg, &g_Reg->PI_RD_LEN_REG, "PI_RD_LEN_REG");
             BeforeCallDirect(m_RegWorkingSet);
@@ -4828,8 +4841,6 @@ void CMipsMemoryVM::Load32CartridgeDomain2Address1(void)
         case 0x05000500: m_MemLookupValue.UW[0] = g_Reg->ASIC_DATA; break;
         case 0x05000504: m_MemLookupValue.UW[0] = g_Reg->ASIC_MISC_REG; break;
         case 0x05000508:
-            if (g_Disk != NULL)
-                g_Reg->ASIC_STATUS |= DD_STATUS_DISK_PRES;
             m_MemLookupValue.UW[0] = g_Reg->ASIC_STATUS;
             DiskGapSectorCheck();
             break;
@@ -5414,18 +5425,8 @@ void CMipsMemoryVM::Write32PeripheralInterface(void)
     case 0x04600000: g_Reg->PI_DRAM_ADDR_REG = m_MemLookupValue.UW[0]; break;
     case 0x04600004:
         g_Reg->PI_CART_ADDR_REG = m_MemLookupValue.UW[0];
-        if (g_Reg->PI_CART_ADDR_REG == 0x05000000)
-        {
-            g_Reg->ASIC_STATUS &= ~(DD_STATUS_BM_INT | DD_STATUS_BM_ERR | DD_STATUS_C2_XFER);
-            g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP3;
-            g_Reg->CheckInterrupts();
-        }
-        else if (g_Reg->PI_CART_ADDR_REG == 0x05000400)
-        {
-            g_Reg->ASIC_STATUS &= ~(DD_STATUS_BM_INT | DD_STATUS_BM_ERR | DD_STATUS_DATA_RQ);
-            g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP3;
-            g_Reg->CheckInterrupts();
-        }
+        if (g_Settings->LoadBool(Setting_EnableDisk))
+            DiskDMACheck();
         break;
     case 0x04600008:
         g_Reg->PI_RD_LEN_REG = m_MemLookupValue.UW[0];

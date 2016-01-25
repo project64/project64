@@ -24,6 +24,9 @@ uint32_t dd_start_block, dd_current;
 
 void DiskCommand()
 {
+    if (g_Disk != NULL)
+        g_Reg->ASIC_STATUS |= DD_STATUS_DISK_PRES;
+
     //ASIC_CMD_STATUS - Commands
     uint32_t cmd = g_Reg->ASIC_CMD;
 
@@ -161,12 +164,7 @@ void DiskBMUpdate()
     if (dd_write)
     {
         //Write Data
-        if (dd_current == 0)
-        {
-            dd_current += 1;
-            g_Reg->ASIC_STATUS |= DD_STATUS_DATA_RQ;
-        }
-        else if (dd_current < SECTORS_PER_BLOCK)
+        if (dd_current < SECTORS_PER_BLOCK)
         {
             DiskBMWrite();
             dd_current += 1;
@@ -176,16 +174,15 @@ void DiskBMUpdate()
         {
             if (g_Reg->ASIC_BM_STATUS & DD_BM_STATUS_BLOCK)
             {
+                dd_start_block = 1 - dd_start_block;
+                dd_current = 0;
                 DiskBMWrite();
                 dd_current += 1;
-                dd_start_block = 1 - dd_start_block;
-                dd_current = 1;
                 g_Reg->ASIC_BM_STATUS &= ~DD_BM_STATUS_BLOCK;
                 g_Reg->ASIC_STATUS |= DD_STATUS_DATA_RQ;
             }
             else
             {
-                DiskBMWrite();
                 dd_current += 1;
                 g_Reg->ASIC_BM_STATUS &= ~DD_BM_STATUS_RUNNING;
             }
@@ -253,8 +250,8 @@ void DiskBMWrite()
     uint32_t sector = 0;
     sector += dd_track_offset;
     sector += dd_start_block * SECTORS_PER_BLOCK * ddZoneSecSize[dd_zone];
-    sector += (dd_current - 1) * (((g_Reg->ASIC_HOST_SECBYTE & 0x00FF0000) >> 16) + 1);
-    WriteTrace(TraceN64System, TraceDebug, "WRITE Block %d Sector %02X - %08X", ((g_Reg->ASIC_CUR_TK & 0x0FFF0000) >> 15) | dd_start_block, dd_current - 1, sector);
+    sector += (dd_current) * (((g_Reg->ASIC_HOST_SECBYTE & 0x00FF0000) >> 16) + 1);
+    WriteTrace(TraceN64System, TraceDebug, "WRITE Block %d Sector %02X - %08X", ((g_Reg->ASIC_CUR_TK & 0x0FFF0000) >> 15) | dd_start_block, dd_current, sector);
     g_Disk->SetDiskAddressBuffer(sector);
     return;
 }
@@ -307,4 +304,20 @@ void DiskSetOffset()
     }
 
     dd_track_offset = ddStartOffset[dd_zone] + tr_off * ddZoneSecSize[dd_zone] * SECTORS_PER_BLOCK * BLOCKS_PER_TRACK;
+}
+
+void DiskDMACheck(void)
+{
+    if (g_Reg->PI_CART_ADDR_REG == 0x05000000)
+    {
+        g_Reg->ASIC_STATUS &= ~(DD_STATUS_BM_INT | DD_STATUS_BM_ERR | DD_STATUS_C2_XFER);
+        g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP3;
+        g_Reg->CheckInterrupts();
+    }
+    else if (g_Reg->PI_CART_ADDR_REG == 0x05000400)
+    {
+        g_Reg->ASIC_STATUS &= ~(DD_STATUS_BM_INT | DD_STATUS_BM_ERR | DD_STATUS_DATA_RQ);
+        g_Reg->FAKE_CAUSE_REGISTER &= ~CAUSE_IP3;
+        g_Reg->CheckInterrupts();
+    }
 }
