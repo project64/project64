@@ -95,7 +95,7 @@ typedef struct HIRESTEX_t {
 
 typedef struct NODE_t {
     uint32_t	crc;
-    wxUIntPtr	data;
+    uintptr_t	data;
     int		tmu;
     int		number;
     NODE_t	*pNext;
@@ -103,7 +103,7 @@ typedef struct NODE_t {
 
 NODE *cachelut[65536];
 
-void AddToList(NODE **list, uint32_t crc, wxUIntPtr data, int tmu, int number)
+void AddToList(NODE **list, uint32_t crc, uintptr_t data, int tmu, int number)
 {
     NODE *node = new NODE;
     node->crc = crc;
@@ -379,7 +379,7 @@ void GetTexInfo(int id, int tile)
     else
     {
         crc = 0xFFFFFFFF;
-        wxUIntPtr addr = uintptr_t(rdp.tmem) + (rdp.tiles[tile].t_mem << 3);
+        uintptr_t addr = uintptr_t(rdp.tmem) + (rdp.tiles[tile].t_mem << 3);
         uint32_t line2 = maxval(line, 1);
         if (rdp.tiles[tile].size < 3)
         {
@@ -980,10 +980,7 @@ uint32_t sizeBytes[4] = { 0, 1, 2, 4 };
 
 inline uint32_t Txl2Words(uint32_t width, uint32_t size)
 {
-    if (size == 0)
-        return maxval(1, width / 16);
-    else
-        return maxval(1, width*sizeBytes[size] / 8);
+    return size == 0 ? maxval(1, width / 16) : maxval(1, width*sizeBytes[size] / 8);
 }
 
 inline uint32_t ReverseDXT(uint32_t val, uint32_t /*lrs*/, uint32_t width, uint32_t size)

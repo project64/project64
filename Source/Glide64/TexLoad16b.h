@@ -159,7 +159,7 @@ static inline void load16bIA(uint8_t *src, uint8_t *dst, int wid_64, int height,
 // Size: 2, Format: 0
 //
 
-uint32_t Load16bRGBA(wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int /*tile*/)
+uint32_t Load16bRGBA(uintptr_t dst, uintptr_t src, int wid_64, int height, int line, int real_width, int /*tile*/)
 {
     if (wid_64 < 1) wid_64 = 1;
     if (height < 1) height = 1;
@@ -174,7 +174,7 @@ uint32_t Load16bRGBA(wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int l
 // Size: 2, Format: 3
 //
 
-uint32_t Load16bIA(wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int /*tile*/)
+uint32_t Load16bIA(uintptr_t dst, uintptr_t src, int wid_64, int height, int line, int real_width, int /*tile*/)
 {
     if (wid_64 < 1) wid_64 = 1;
     if (height < 1) height = 1;
@@ -229,7 +229,7 @@ uint16_t yuv_to_rgb565(uint8_t y, uint8_t u, uint8_t v)
 // Size: 2, Format: 1
 //
 
-uint32_t Load16bYUV(wxUIntPtr dst, wxUIntPtr /*src*/, int /*wid_64*/, int /*height*/, int /*line*/, int /*real_width*/, int tile)
+uint32_t Load16bYUV(uintptr_t dst, uintptr_t /*src*/, int /*wid_64*/, int /*height*/, int /*line*/, int /*real_width*/, int tile)
 {
     uint32_t * mb = (uint32_t*)(gfx.RDRAM + rdp.addr[rdp.tiles[tile].t_mem]); //pointer to the macro block
     uint16_t * tex = (uint16_t*)dst;

@@ -373,7 +373,7 @@ static inline void load8bI(uint8_t *src, uint8_t *dst, int wid_64, int height, i
 // Size: 1, Format: 2
 //
 
-uint32_t Load8bCI (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int /*tile*/)
+uint32_t Load8bCI (uintptr_t dst, uintptr_t src, int wid_64, int height, int line, int real_width, int /*tile*/)
 {
   if (wid_64 < 1) wid_64 = 1;
   if (height < 1) height = 1;
@@ -401,7 +401,7 @@ uint32_t Load8bCI (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int lin
 // Size: 1, Format: 3
 //
 
-uint32_t Load8bIA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
+uint32_t Load8bIA (uintptr_t dst, uintptr_t src, int wid_64, int height, int line, int real_width, int tile)
 {
   if (rdp.tlut_mode != 0)
     return Load8bCI (dst, src, wid_64, height, line, real_width, tile);
@@ -417,7 +417,7 @@ uint32_t Load8bIA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int lin
 // Size: 1, Format: 4
 //
 
-uint32_t Load8bI (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
+uint32_t Load8bI (uintptr_t dst, uintptr_t src, int wid_64, int height, int line, int real_width, int tile)
 {
   if (rdp.tlut_mode != 0)
     return Load8bCI (dst, src, wid_64, height, line, real_width, tile);

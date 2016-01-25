@@ -590,7 +590,7 @@ static inline void load4bI(uint8_t *src, uint8_t *dst, int wid_64, int height, i
 //****************************************************************
 // Size: 0, Format: 2
 
-uint32_t Load4bCI (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
+uint32_t Load4bCI(uintptr_t dst, uintptr_t src, int wid_64, int height, int line, int real_width, int tile)
 {
   if (wid_64 < 1) wid_64 = 1;
   if (height < 1) height = 1;
@@ -604,7 +604,7 @@ uint32_t Load4bCI (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int lin
     return /*(0 << 16) | */GR_TEXFMT_ALPHA_INTENSITY_44;
   }
 
-  wxUIntPtr pal = uintptr_t(rdp.pal_8 + (rdp.tiles[tile].palette << 4));
+  uintptr_t pal = uintptr_t(rdp.pal_8 + (rdp.tiles[tile].palette << 4));
   if (rdp.tlut_mode == 2)
   {
     ext <<= 1;
@@ -622,7 +622,7 @@ uint32_t Load4bCI (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int lin
 //
 // ** BY GUGAMAN **
 
-uint32_t Load4bIA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
+uint32_t Load4bIA(uintptr_t dst, uintptr_t src, int wid_64, int height, int line, int real_width, int tile)
 {
   if (rdp.tlut_mode != 0)
     return Load4bCI (dst, src, wid_64, height, line, real_width, tile);
@@ -637,7 +637,7 @@ uint32_t Load4bIA (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int lin
 //****************************************************************
 // Size: 0, Format: 4
 
-uint32_t Load4bI (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
+uint32_t Load4bI(uintptr_t dst, uintptr_t src, int wid_64, int height, int line, int real_width, int tile)
 {
   if (rdp.tlut_mode != 0)
     return Load4bCI (dst, src, wid_64, height, line, real_width, tile);
@@ -653,7 +653,7 @@ uint32_t Load4bI (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line
 //****************************************************************
 // Size: 0, Format: 0
 
-uint32_t Load4bSelect (wxUIntPtr dst, wxUIntPtr src, int wid_64, int height, int line, int real_width, int tile)
+uint32_t Load4bSelect(uintptr_t dst, uintptr_t src, int wid_64, int height, int line, int real_width, int tile)
 {
   if (rdp.tlut_mode == 0)
     return Load4bI (dst, src, wid_64, height, line, real_width, tile);

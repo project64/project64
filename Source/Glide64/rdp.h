@@ -801,8 +801,6 @@ extern uint32_t   offset_texbuf1;
 
 extern int	ucode_error_report;
 
-extern wxString iniPath;
-
 // RDP functions
 void rdp_reset();
 
