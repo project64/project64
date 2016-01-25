@@ -296,11 +296,11 @@ extern "C" {
     /* Plugin types */
 #define PLUGIN_TYPE_GFX				2
 
-#ifdef __WINDOWS__
-#define EXPORT					__declspec(dllexport)
-#define CALL						_cdecl
+#ifdef _WIN32
+#define EXPORT      extern "C" __declspec(dllexport)
+#define CALL        __cdecl
 #else
-#define EXPORT					extern
+#define EXPORT      __attribute__((visibility("default")))
 #define CALL
 #endif
 
