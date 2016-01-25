@@ -2585,6 +2585,7 @@ Plugin Note=[video] slow
 Good Name=J.League Live 64 (J)
 Internal Name=J LEAGUE LIVE 64
 Status=Compatible
+32bit=No
 
 [E8D29DA0-15E61D94-C:4A]
 Good Name=J.League Tactics Soccer (J) (V1.0)
