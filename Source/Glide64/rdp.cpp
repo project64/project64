@@ -1118,8 +1118,8 @@ static void rdp_texrect()
     //
     //integer representation of texture coordinate.
     //needed to detect and avoid overflow after shifting
-    wxInt32 off_x_i = (rdp.cmd2 >> 16) & 0xFFFF;
-    wxInt32 off_y_i = rdp.cmd2 & 0xFFFF;
+    int32_t off_x_i = (rdp.cmd2 >> 16) & 0xFFFF;
+    int32_t off_y_i = rdp.cmd2 & 0xFFFF;
     float dsdx = (float)((short)((rdp.cmd3 & 0xFFFF0000) >> 16)) / 1024.0f;
     float dtdy = (float)((short)(rdp.cmd3 & 0x0000FFFF)) / 1024.0f;
     if (off_x_i & 0x8000) //check for sign bit
@@ -2338,10 +2338,10 @@ static void rdp_fillrect()
         rdp.scissor.lr_y);
 
     // KILL the floating point error with 0.01f
-    wxInt32 s_ul_x = (uint32_t)minval(maxval(ul_x * rdp.scale_x + rdp.offset_x + 0.01f, rdp.scissor.ul_x), rdp.scissor.lr_x);
-    wxInt32 s_lr_x = (uint32_t)minval(maxval(lr_x * rdp.scale_x + rdp.offset_x + 0.01f, rdp.scissor.ul_x), rdp.scissor.lr_x);
-    wxInt32 s_ul_y = (uint32_t)minval(maxval(ul_y * rdp.scale_y + rdp.offset_y + 0.01f, rdp.scissor.ul_y), rdp.scissor.lr_y);
-    wxInt32 s_lr_y = (uint32_t)minval(maxval(lr_y * rdp.scale_y + rdp.offset_y + 0.01f, rdp.scissor.ul_y), rdp.scissor.lr_y);
+    int32_t s_ul_x = (uint32_t)minval(maxval(ul_x * rdp.scale_x + rdp.offset_x + 0.01f, rdp.scissor.ul_x), rdp.scissor.lr_x);
+    int32_t s_lr_x = (uint32_t)minval(maxval(lr_x * rdp.scale_x + rdp.offset_x + 0.01f, rdp.scissor.ul_x), rdp.scissor.lr_x);
+    int32_t s_ul_y = (uint32_t)minval(maxval(ul_y * rdp.scale_y + rdp.offset_y + 0.01f, rdp.scissor.ul_y), rdp.scissor.lr_y);
+    int32_t s_lr_y = (uint32_t)minval(maxval(lr_y * rdp.scale_y + rdp.offset_y + 0.01f, rdp.scissor.ul_y), rdp.scissor.lr_y);
 
     if (s_lr_x < 0) s_lr_x = 0;
     if (s_lr_y < 0) s_lr_y = 0;
@@ -3518,9 +3518,9 @@ void lle_triangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
     int drde = 0, dgde = 0, dbde = 0, dade = 0, dzde = 0, dsde = 0, dtde = 0, dwde = 0;
     int flip = (w1 & 0x800000) ? 1 : 0;
 
-    wxInt32 yl, ym, yh;
-    wxInt32 xl, xm, xh;
-    wxInt32 dxldy, dxhdy, dxmdy;
+    int32_t yl, ym, yh;
+    int32_t xl, xm, xh;
+    int32_t dxldy, dxhdy, dxmdy;
     uint32_t w3, w4, w5, w6, w7, w8;
 
     uint32_t * shade_base = rdp_cmd + 8;
@@ -3547,12 +3547,12 @@ void lle_triangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
     yl = (w1 & 0x3fff);
     ym = ((w2 >> 16) & 0x3fff);
     yh = ((w2 >> 0) & 0x3fff);
-    xl = (wxInt32)(w3);
-    xh = (wxInt32)(w5);
-    xm = (wxInt32)(w7);
-    dxldy = (wxInt32)(w4);
-    dxhdy = (wxInt32)(w6);
-    dxmdy = (wxInt32)(w8);
+    xl = (int32_t)(w3);
+    xh = (int32_t)(w5);
+    xm = (int32_t)(w7);
+    dxldy = (int32_t)(w4);
+    dxhdy = (int32_t)(w6);
+    dxmdy = (int32_t)(w8);
 
     if (yl & (0x800 << 2)) yl |= 0xfffff000 << 2;
     if (ym & (0x800 << 2)) ym |= 0xfffff000 << 2;

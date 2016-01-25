@@ -279,7 +279,7 @@ void load_matrix (float m[4][4], uint32_t addr)
   for (x=0; x<16; x+=4) { // Adding 4 instead of one, just to remove mult. later
     for (y=0; y<4; y++) {
       m[x>>2][y] = (float)(
-        (((wxInt32)src[(addr+x+y)^1]) << 16) |
+        (((int32_t)src[(addr+x+y)^1]) << 16) |
         src[(addr+x+y+16)^1]
         ) / 65536.0f;
     }

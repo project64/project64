@@ -56,7 +56,7 @@ struct ZSORTRDP {
 static int Calc_invw (int w) {
 	int count, neg;
   union {
-	wxInt32		  W;
+	int32_t		  W;
 	uint32_t	  UW;
 	wxInt16			HW[2];
 	uint16_t		UHW[2];
