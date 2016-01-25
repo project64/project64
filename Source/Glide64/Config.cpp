@@ -49,12 +49,14 @@
 #include "Config.h"
 
 #ifdef _WIN32
+#include <Common/CriticalSection.h>
 #include <wx/file.h>
 #include <wx/dir.h>
 // begin wxGlade: ::extracode
 // end wxGlade
 
 short Set_basic_mode = 0, Set_texture_dir = 0;
+extern CriticalSection * g_ProcessDListCS;
 
 ConfigNotebook::ConfigNotebook(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long /*style*/) :
 wxNotebook(parent, id, pos, size, 0)
@@ -1072,6 +1074,8 @@ output:   none
 void CALL DllConfig(HWND hParent)
 {
     LOG("DllConfig ()\n");
+#ifdef _WIN32
+    CGuard guard(*g_ProcessDListCS);
     ReadSettings();
 
     if (romopen)
@@ -1089,7 +1093,6 @@ void CALL DllConfig(HWND hParent)
             settings.ghq_use = 0;
         }
 #endif
-        //wxThread::Sleep(1000);
     }
     else
     {
@@ -1110,18 +1113,9 @@ void CALL DllConfig(HWND hParent)
     Glide64Config->ShowModal();
     delete hostWindow;
     hostWindow = NULL;
+#endif
 }
 
-/*#ifndef _DEBUG
-//#if 1
-#ifndef  __GNUG__
-void wxStringData::Free()
-{
-free(this);
-}
-#endif
-#endif
-*/
 void CloseConfig()
 {
     if (romopen)

@@ -41,6 +41,7 @@
 #include "Gfx_1.3.h"
 #include "Version.h"
 #include <Settings/Settings.h>
+#include <Common/CriticalSection.h>
 
 #include <wx/fileconf.h>
 #include <wx/wfstream.h>
@@ -1184,8 +1185,9 @@ int DllUnload(void)
     return TRUE;
 }
 
-#ifdef __WINDOWS__
+#ifdef _WIN32
 void wxSetInstance(HINSTANCE hInstance);
+CriticalSection * g_ProcessDListCS = NULL;
 
 extern "C" int WINAPI DllMain(HINSTANCE hinst,
     DWORD fdwReason,
@@ -1197,11 +1199,19 @@ extern "C" int WINAPI DllMain(HINSTANCE hinst,
     if (fdwReason == DLL_PROCESS_ATTACH)
     {
         hinstDLL = hinst;
+        if (g_ProcessDListCS == NULL)
+        {
+            g_ProcessDListCS = new CriticalSection();
+        }
         wxSetInstance(hinstDLL);
         return DllLoad();
     }
     else if (fdwReason == DLL_PROCESS_DETACH)
     {
+        if (g_ProcessDListCS)
+        {
+            delete g_ProcessDListCS;
+        }
         return DllUnload();
     }
     return TRUE;

@@ -49,6 +49,12 @@
 #include "CRC.h"
 #include <Common/StdString.h>
 
+#ifdef _WIN32
+#include <Common/CriticalSection.h>
+
+extern CriticalSection * g_ProcessDListCS;
+#endif
+
 const int NumOfFormats = 3;
 SCREEN_SHOT_FORMAT ScreenShotFormats[NumOfFormats] = { { "BMP", "bmp", wxBITMAP_TYPE_BMP }, { "PNG", "png", wxBITMAP_TYPE_PNG }, { "JPEG", "jpeg", wxBITMAP_TYPE_JPEG } };
 
@@ -564,6 +570,9 @@ int depth_buffer_fog;
 
 EXPORT void CALL ProcessDList(void)
 {
+#ifdef _WIN32
+    CGuard guard(*g_ProcessDListCS);
+#endif
     no_dlist = false;
     update_screen_count = 0;
     ChangeSize();
@@ -4102,6 +4111,9 @@ output:   none
 *******************************************************************/
 void CALL ProcessRDPList(void)
 {
+#ifdef _WIN32
+    CGuard guard(*g_ProcessDListCS);
+#endif
     LOG("ProcessRDPList ()\n");
     LRDP("ProcessRDPList ()\n");
 
