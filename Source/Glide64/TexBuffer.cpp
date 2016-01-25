@@ -55,14 +55,14 @@ static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
     texbuf.height = cimage.height;
     texbuf.format = cimage.format;
     texbuf.size = cimage.size;
-    texbuf.scr_width = min(cimage.width * rdp.scale_x, settings.scr_res_x);
-    float height = min(rdp.vi_height, cimage.height);
+    texbuf.scr_width = minval(cimage.width * rdp.scale_x, settings.scr_res_x);
+    float height = minval(rdp.vi_height, cimage.height);
     if (cimage.status == ci_copy_self || (cimage.status == ci_copy && cimage.width == rdp.frame_buffers[rdp.main_ci_index].width))
         height = rdp.vi_height;
     texbuf.scr_height = height * rdp.scale_y;
     //  texbuf.scr_height = texbuf.height * rdp.scale_y;
 
-    uint16_t max_size = max((uint16_t)texbuf.scr_width, (uint16_t)texbuf.scr_height);
+    uint16_t max_size = maxval((uint16_t)texbuf.scr_width, (uint16_t)texbuf.scr_height);
     if (max_size > voodoo.max_tex_size) //texture size is too large
         return 0;
     uint32_t tex_size;

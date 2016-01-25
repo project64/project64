@@ -802,7 +802,7 @@ void DisplayLoadProgress(const wchar_t *format, ...)
     float x;
     set_message_combiner();
     output(382, 380, 1, "LOADING TEXTURES. PLEASE WAIT...");
-    int len = min((int)strlen(buf) * 8, 1024);
+    int len = minval((int)strlen(buf) * 8, 1024);
     x = (1024 - len) / 2.0f;
     output(x, 360, 1, buf);
     grBufferSwap(0);

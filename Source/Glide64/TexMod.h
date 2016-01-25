@@ -132,9 +132,9 @@ static void mod_col_inter_col1_using_tex (uint16_t *dst, int size, uint32_t colo
 		percent_r = ((col >> 8) & 0xF) / 15.0f;
 		percent_g = ((col >> 4) & 0xF) / 15.0f;
 		percent_b = (col & 0xF) / 15.0f;
-		r = min(15, (uint8_t)((1.0f-percent_r) * cr0 + percent_r * cr1 + 0.0001f));
-		g = min(15, (uint8_t)((1.0f-percent_g) * cg0 + percent_g * cg1 + 0.0001f));
-		b = min(15, (uint8_t)((1.0f-percent_b) * cb0 + percent_b * cb1 + 0.0001f));
+		r = minval(15, (uint8_t)((1.0f-percent_r) * cr0 + percent_r * cr1 + 0.0001f));
+		g = minval(15, (uint8_t)((1.0f-percent_g) * cg0 + percent_g * cg1 + 0.0001f));
+		b = minval(15, (uint8_t)((1.0f-percent_b) * cb0 + percent_b * cb1 + 0.0001f));
 		*(dst++) = a | (r << 8) | (g << 4) | b;
 	}
 }
@@ -312,15 +312,15 @@ static void mod_tex_sub_col_mul_fac_add_tex (uint16_t *dst, int size, uint32_t c
 		col = *dst;
 		a = col & 0xF000;
 		r = (float)((col >> 8) & 0xF);
-		r = /*max(*/(r - cr) * percent/*, 0.0f)*/ + r;
+		r = /*maxval(*/(r - cr) * percent/*, 0.0f)*/ + r;
 		if (r > 15.0f) r = 15.0f;
 		if (r < 0.0f) r = 0.0f;
 		g = (float)((col >> 4) & 0xF);
-		g = /*max(*/(g - cg) * percent/*, 0.0f)*/ + g;
+		g = /*maxval(*/(g - cg) * percent/*, 0.0f)*/ + g;
 		if (g > 15.0f) g = 15.0f;
 		if (g < 0.0f) g = 0.0f;
 		b = (float)(col & 0xF);
-		b = /*max(*/(b - cb) * percent/*, 0.0f)*/ + b;
+		b = /*maxval(*/(b - cb) * percent/*, 0.0f)*/ + b;
 		if (b > 15.0f) b = 15.0f;
 		if (b < 0.0f) b = 0.0f;
 
@@ -350,9 +350,9 @@ static void mod_tex_scale_col_add_col (uint16_t *dst, int size, uint32_t color0,
 		percent_r = ((col >> 8) & 0xF) / 15.0f;
 		percent_g = ((col >> 4) & 0xF) / 15.0f;
 		percent_b = (col & 0xF) / 15.0f;
-		r = min(15, (uint8_t)(percent_r * cr0 + cr1 + 0.0001f));
-		g = min(15, (uint8_t)(percent_g * cg0 + cg1 + 0.0001f));
-		b = min(15, (uint8_t)(percent_b * cb0 + cb1 + 0.0001f));
+		r = minval(15, (uint8_t)(percent_r * cr0 + cr1 + 0.0001f));
+		g = minval(15, (uint8_t)(percent_g * cg0 + cg1 + 0.0001f));
+		b = minval(15, (uint8_t)(percent_b * cb0 + cb1 + 0.0001f));
 		*(dst++) = a | (r << 8) | (g << 4) | b;
 	}
 }
@@ -417,9 +417,9 @@ static void mod_tex_sub_col (uint16_t *dst, int size, uint32_t color)
 	{
 		col = *dst;
 		a = (uint8_t)(col & 0xF000);
-		r = (uint8_t)max((((col >> 8) & 0xF) - cr), 0);
-		g = (uint8_t)max((((col >> 4) & 0xF) - cg), 0);
-		b = (uint8_t)max(((col & 0xF) - cb), 0);
+		r = (uint8_t)maxval((((col >> 8) & 0xF) - cr), 0);
+		g = (uint8_t)maxval((((col >> 4) & 0xF) - cg), 0);
+		b = (uint8_t)maxval(((col & 0xF) - cb), 0);
 		*(dst++) = (a << 12) | (r << 8) | (g << 4) | b;
 	}
 }

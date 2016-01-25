@@ -56,9 +56,9 @@ static void mod_tex_inter_color_using_factor_CI (uint32_t color, uint32_t factor
 		r = (uint8_t)((float)((col&0xF800) >> 11) / 31.0f * 255.0f);
         g = (uint8_t)((float)((col&0x07C0) >> 6) / 31.0f * 255.0f);
         b = (uint8_t)((float)((col&0x003E) >> 1) / 31.0f * 255.0f);
-		r = (uint8_t)(min(255, percent_i * r + percent * cr));
-		g = (uint8_t)(min(255, percent_i * g + percent * cg));
-		b = (uint8_t)(min(255, percent_i * b + percent * cb));
+		r = (uint8_t)(minval(255, percent_i * r + percent * cr));
+		g = (uint8_t)(minval(255, percent_i * g + percent * cg));
+		b = (uint8_t)(minval(255, percent_i * b + percent * cb));
         rdp.pal_8[i] = (uint16_t)(((uint16_t)(r >> 3) << 11) |
 		          ((uint16_t)(g >> 3) << 6) |
 		          ((uint16_t)(b >> 3) << 1) |
@@ -90,9 +90,9 @@ static void mod_tex_inter_col_using_col1_CI (uint32_t color0, uint32_t color1)
 		r = (uint8_t)((float)((col&0xF800) >> 11) / 31.0f * 255.0f);
         g = (uint8_t)((float)((col&0x07C0) >> 6) / 31.0f * 255.0f);
         b = (uint8_t)((float)((col&0x003E) >> 1) / 31.0f * 255.0f);
-		r = (uint8_t)(min(255, percent_r_i * r + percent_r * cr));
-		g = (uint8_t)(min(255, percent_g_i * g + percent_g * cg));
-		b = (uint8_t)(min(255, percent_b_i * b + percent_b * cb));
+		r = (uint8_t)(minval(255, percent_r_i * r + percent_r * cr));
+		g = (uint8_t)(minval(255, percent_g_i * g + percent_g * cg));
+		b = (uint8_t)(minval(255, percent_b_i * b + percent_b * cb));
         rdp.pal_8[i] = (uint16_t)(((uint16_t)(r >> 3) << 11) |
 		          ((uint16_t)(g >> 3) << 6) |
 		          ((uint16_t)(b >> 3) << 1) |
@@ -118,10 +118,10 @@ static void mod_full_color_sub_tex_CI (uint32_t color)
 		r = (uint8_t)((float)((col&0xF800) >> 11) / 31.0f * 255.0f);
         g = (uint8_t)((float)((col&0x07C0) >> 6) / 31.0f * 255.0f);
         b = (uint8_t)((float)((col&0x003E) >> 1) / 31.0f * 255.0f);
-		a = max(0, ca - a);
-		r = max(0, cr - r);
-		g = max(0, cg - g);
-		b = max(0, cb - b);
+		a = maxval(0, ca - a);
+		r = maxval(0, cr - r);
+		g = maxval(0, cg - g);
+		b = maxval(0, cb - b);
         rdp.pal_8[i] = (uint16_t)(((uint16_t)(r >> 3) << 11) |
 		          ((uint16_t)(g >> 3) << 6) |
 		          ((uint16_t)(b >> 3) << 1) |
@@ -150,9 +150,9 @@ static void mod_col_inter_col1_using_tex_CI (uint32_t color0, uint32_t color1)
 		percent_r = ((col&0xF800) >> 11) / 31.0f;
 		percent_g = ((col&0x07C0) >> 6) / 31.0f;
 		percent_b = ((col&0x003E) >> 1) / 31.0f;
-		r = (uint8_t)(min((1.0f-percent_r) * cr0 + percent_r * cr1, 255));
-		g = (uint8_t)(min((1.0f-percent_g) * cg0 + percent_g * cg1, 255));
-		b = (uint8_t)(min((1.0f-percent_b) * cb0 + percent_b * cb1, 255));
+		r = (uint8_t)(minval((1.0f-percent_r) * cr0 + percent_r * cr1, 255));
+		g = (uint8_t)(minval((1.0f-percent_g) * cg0 + percent_g * cg1, 255));
+		b = (uint8_t)(minval((1.0f-percent_b) * cb0 + percent_b * cb1, 255));
         rdp.pal_8[i] = (uint16_t)(((uint16_t)(r >> 3) << 11) |
 		          ((uint16_t)(g >> 3) << 6) |
 		          ((uint16_t)(b >> 3) << 1) |
@@ -216,9 +216,9 @@ static void mod_tex_scale_col_add_col_CI (uint32_t color0, uint32_t color1)
 		r = (uint8_t)((float)((col&0xF800) >> 11) / 31.0f * 255.0f);
         g = (uint8_t)((float)((col&0x07C0) >> 6) / 31.0f * 255.0f);
         b = (uint8_t)((float)((col&0x003E) >> 1) / 31.0f * 255.0f);
-		r = (uint8_t)(min(255, percent_r * r + cr));
-		g = (uint8_t)(min(255, percent_g * g + cg));
-		b = (uint8_t)(min(255, percent_b * b + cb));
+		r = (uint8_t)(minval(255, percent_r * r + cr));
+		g = (uint8_t)(minval(255, percent_g * g + cg));
+		b = (uint8_t)(minval(255, percent_b * b + cb));
         rdp.pal_8[i] = (uint16_t)(((uint16_t)(r >> 3) << 11) |
 		          ((uint16_t)(g >> 3) << 6) |
 		          ((uint16_t)(b >> 3) << 1) |
@@ -243,9 +243,9 @@ static void mod_tex_add_col_CI (uint32_t color)
 		r = (uint8_t)((float)((col&0xF800) >> 11) / 31.0f * 255.0f);
         g = (uint8_t)((float)((col&0x07C0) >> 6) / 31.0f * 255.0f);
         b = (uint8_t)((float)((col&0x003E) >> 1) / 31.0f * 255.0f);
-		r = min(cr + r, 255);
-		g = min(cg + g, 255);
-		b = min(cb + b, 255);
+		r = minval(cr + r, 255);
+		g = minval(cg + g, 255);
+		b = minval(cb + b, 255);
         rdp.pal_8[i] = (uint16_t)(((uint16_t)(r >> 3) << 11) |
 		          ((uint16_t)(g >> 3) << 6) |
 		          ((uint16_t)(b >> 3) << 1) |
@@ -270,9 +270,9 @@ static void mod_tex_sub_col_CI (uint32_t color)
 		r = (uint8_t)((float)((col&0xF800) >> 11) / 31.0f * 255.0f);
         g = (uint8_t)((float)((col&0x07C0) >> 6) / 31.0f * 255.0f);
         b = (uint8_t)((float)((col&0x003E) >> 1) / 31.0f * 255.0f);
-		r = max(r - cr, 0);
-		g = max(g - cg, 0);
-		b = max(b - cb, 0);
+		r = maxval(r - cr, 0);
+		g = maxval(g - cg, 0);
+		b = maxval(b - cb, 0);
         rdp.pal_8[i] = (uint16_t)(((uint16_t)(r >> 3) << 11) |
 		          ((uint16_t)(g >> 3) << 6) |
 		          ((uint16_t)(b >> 3) << 1) |
@@ -340,9 +340,9 @@ static void mod_col_inter_tex_using_col1_CI (uint32_t color0, uint32_t color1)
 		r = (uint8_t)((float)((col&0xF800) >> 11) / 31.0f * 255.0f);
         g = (uint8_t)((float)((col&0x07C0) >> 6) / 31.0f * 255.0f);
         b = (uint8_t)((float)((col&0x003E) >> 1) / 31.0f * 255.0f);
-		r = (uint8_t)(min(255, percent_r * r + percent_r_i * cr));
-		g = (uint8_t)(min(255, percent_g * g + percent_g_i * cg));
-		b = (uint8_t)(min(255, percent_b * b + percent_b_i * cb));
+		r = (uint8_t)(minval(255, percent_r * r + percent_r_i * cr));
+		g = (uint8_t)(minval(255, percent_g * g + percent_g_i * cg));
+		b = (uint8_t)(minval(255, percent_b * b + percent_b_i * cb));
         rdp.pal_8[i] = (uint16_t)(((uint16_t)(r >> 3) << 11) |
 		          ((uint16_t)(g >> 3) << 6) |
 		          ((uint16_t)(b >> 3) << 1) |

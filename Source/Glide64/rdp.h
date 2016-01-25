@@ -839,11 +839,11 @@ extern const char *CIStatus[];
  * The only solution is to include <vector> first, before <windef.h> or
  * before defining the below macros (or just don't use <windows.h>).
  */
-#ifndef max
-#define max(a, b)       (((a) > (b)) ? (a) : (b))
+#ifndef maxval
+#define maxval(a, b)       (((a) > (b)) ? (a) : (b))
 #endif
-#ifndef min
-#define min(a, b)       (((a) < (b)) ? (a) : (b))
+#ifndef minval
+#define minval(a, b)       (((a) < (b)) ? (a) : (b))
 #endif
 
 #ifndef TRUE
@@ -907,7 +907,7 @@ __inline void CalculateFog (VERTEX *v)
     if (v->w < 0.0f)
       v->f = 0.0f;
     else
-      v->f = min(255.0f, max(0.0f, v->z_w * rdp.fog_multiplier + rdp.fog_offset));
+      v->f = minval(255.0f, maxval(0.0f, v->z_w * rdp.fog_multiplier + rdp.fog_offset));
     v->a = (uint8_t)v->f;
   }
   else

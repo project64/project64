@@ -479,8 +479,8 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
         }
         else
         {
-            float scale_x = (settings.scr_res_x - rdp.offset_x*2.0f) / max(width, rdp.vi_width);
-            float scale_y = (settings.scr_res_y - rdp.offset_y*2.0f) / max(height, rdp.vi_height);
+            float scale_x = (settings.scr_res_x - rdp.offset_x*2.0f) / maxval(width, rdp.vi_width);
+            float scale_y = (settings.scr_res_y - rdp.offset_y*2.0f) / maxval(height, rdp.vi_height);
 
             FRDP("width: %d, height: %d, ul_y: %d, lr_y: %d, scale_x: %f, scale_y: %f, ci_width: %d, ci_height: %d\n", width, height, rdp.ci_upper_bound, rdp.ci_lower_bound, scale_x, scale_y, rdp.ci_width, rdp.ci_height);
             GrLfbInfo_t info;
@@ -582,7 +582,7 @@ EXPORT void CALL ProcessDList(void)
     {
         hhkLowLevelKybd = SetWindowsHookEx(WH_KEYBOARD_LL,
             LowLevelKeyboardProc, hInstance, 0);
-}
+    }
 #endif
 
     LOG("ProcessDList ()\n");
@@ -642,7 +642,7 @@ EXPORT void CALL ProcessDList(void)
 
     rdp.model_i = 0; // 0 matrices so far in stack
     //stack_size can be less then 32! Important for Silicon Vally. Thanks Orkin!
-    rdp.model_stack_size = min(32, (*(uint32_t*)(gfx.DMEM + 0x0FE4)) >> 6);
+    rdp.model_stack_size = minval(32, (*(uint32_t*)(gfx.DMEM + 0x0FE4)) >> 6);
     if (rdp.model_stack_size == 0)
         rdp.model_stack_size = 32;
     rdp.Persp_en = TRUE;
@@ -784,7 +784,7 @@ EXPORT void CALL ProcessDList(void)
             to_fullscreen = TRUE;
         }
         return;
-        }
+    }
 #endif
 
     if (fb_emulation_enabled)
@@ -807,7 +807,7 @@ EXPORT void CALL ProcessDList(void)
         CI_SET = FALSE;
     }
     LRDP("ProcessDList end\n");
-    }
+}
 
 // undef - undefined instruction, always ignore
 static void undef()
@@ -995,17 +995,17 @@ static void rdp_texrect()
     float ul_x, ul_y, lr_x, lr_y;
     if (rdp.cycle_mode == 2)
     {
-        ul_x = max(0.0f, (short)((rdp.cmd1 & 0x00FFF000) >> 14));
-        ul_y = max(0.0f, (short)((rdp.cmd1 & 0x00000FFF) >> 2));
-        lr_x = max(0.0f, (short)((rdp.cmd0 & 0x00FFF000) >> 14));
-        lr_y = max(0.0f, (short)((rdp.cmd0 & 0x00000FFF) >> 2));
+        ul_x = maxval(0.0f, (short)((rdp.cmd1 & 0x00FFF000) >> 14));
+        ul_y = maxval(0.0f, (short)((rdp.cmd1 & 0x00000FFF) >> 2));
+        lr_x = maxval(0.0f, (short)((rdp.cmd0 & 0x00FFF000) >> 14));
+        lr_y = maxval(0.0f, (short)((rdp.cmd0 & 0x00000FFF) >> 2));
     }
     else
     {
-        ul_x = max(0.0f, ((short)((rdp.cmd1 & 0x00FFF000) >> 12)) / 4.0f);
-        ul_y = max(0.0f, ((short)(rdp.cmd1 & 0x00000FFF)) / 4.0f);
-        lr_x = max(0.0f, ((short)((rdp.cmd0 & 0x00FFF000) >> 12)) / 4.0f);
-        lr_y = max(0.0f, ((short)(rdp.cmd0 & 0x00000FFF)) / 4.0f);
+        ul_x = maxval(0.0f, ((short)((rdp.cmd1 & 0x00FFF000) >> 12)) / 4.0f);
+        ul_y = maxval(0.0f, ((short)(rdp.cmd1 & 0x00000FFF)) / 4.0f);
+        lr_x = maxval(0.0f, ((short)((rdp.cmd0 & 0x00FFF000) >> 12)) / 4.0f);
+        lr_y = maxval(0.0f, ((short)(rdp.cmd0 & 0x00000FFF)) / 4.0f);
     }
 
     if (ul_x >= lr_x)
@@ -1420,9 +1420,9 @@ static void rdp_texrect()
     {
         float fog;
         if (rdp.fog_mode == RDP::fog_blend)
-            fog = 1.0f / max(1, rdp.fog_color & 0xFF);
+            fog = 1.0f / maxval(1, rdp.fog_color & 0xFF);
         else
-            fog = 1.0f / max(1, (~rdp.fog_color) & 0xFF);
+            fog = 1.0f / maxval(1, (~rdp.fog_color) & 0xFF);
         for (i = 0; i < n_vertices; i++)
         {
             vptr[i].f = fog;
@@ -1531,10 +1531,10 @@ static void rdp_setconvert()
 static void rdp_setscissor()
 {
     // clipper resolution is 320x240, scale based on computer resolution
-    rdp.scissor_o.ul_x = /*min(*/(uint32_t)(((rdp.cmd0 & 0x00FFF000) >> 14))/*, 320)*/;
-    rdp.scissor_o.ul_y = /*min(*/(uint32_t)(((rdp.cmd0 & 0x00000FFF) >> 2))/*, 240)*/;
-    rdp.scissor_o.lr_x = /*min(*/(uint32_t)(((rdp.cmd1 & 0x00FFF000) >> 14))/*, 320)*/;
-    rdp.scissor_o.lr_y = /*min(*/(uint32_t)(((rdp.cmd1 & 0x00000FFF) >> 2))/*, 240)*/;
+    rdp.scissor_o.ul_x = /*minval(*/(uint32_t)(((rdp.cmd0 & 0x00FFF000) >> 14))/*, 320)*/;
+    rdp.scissor_o.ul_y = /*minval(*/(uint32_t)(((rdp.cmd0 & 0x00000FFF) >> 2))/*, 240)*/;
+    rdp.scissor_o.lr_x = /*minval(*/(uint32_t)(((rdp.cmd1 & 0x00FFF000) >> 14))/*, 320)*/;
+    rdp.scissor_o.lr_y = /*minval(*/(uint32_t)(((rdp.cmd1 & 0x00000FFF) >> 2))/*, 240)*/;
 
     rdp.ci_upper_bound = rdp.scissor_o.ul_y;
     rdp.ci_lower_bound = rdp.scissor_o.lr_y;
@@ -2145,8 +2145,8 @@ static void rdp_loadtile()
     LOAD_TILE_INFO &info = rdp.load_info[rdp.tiles[tile].t_mem];
     info.tile_ul_s = ul_s;
     info.tile_ul_t = ul_t;
-    info.tile_width = (rdp.tiles[tile].mask_s ? min((uint16_t)width, 1 << rdp.tiles[tile].mask_s) : (uint16_t)width);
-    info.tile_height = (rdp.tiles[tile].mask_t ? min((uint16_t)height, 1 << rdp.tiles[tile].mask_t) : (uint16_t)height);
+    info.tile_width = (rdp.tiles[tile].mask_s ? minval((uint16_t)width, 1 << rdp.tiles[tile].mask_s) : (uint16_t)width);
+    info.tile_height = (rdp.tiles[tile].mask_t ? minval((uint16_t)height, 1 << rdp.tiles[tile].mask_t) : (uint16_t)height);
     if (settings.hacks&hack_MK64) {
         if (info.tile_width % 2)
             info.tile_width--;
@@ -2275,10 +2275,10 @@ static void rdp_fillrect()
         }
         //if (settings.frame_buffer&fb_depth_clear)
         {
-            ul_x = min(max(ul_x, rdp.scissor_o.ul_x), rdp.scissor_o.lr_x);
-            lr_x = min(max(lr_x, rdp.scissor_o.ul_x), rdp.scissor_o.lr_x);
-            ul_y = min(max(ul_y, rdp.scissor_o.ul_y), rdp.scissor_o.lr_y);
-            lr_y = min(max(lr_y, rdp.scissor_o.ul_y), rdp.scissor_o.lr_y);
+            ul_x = minval(maxval(ul_x, rdp.scissor_o.ul_x), rdp.scissor_o.lr_x);
+            lr_x = minval(maxval(lr_x, rdp.scissor_o.ul_x), rdp.scissor_o.lr_x);
+            ul_y = minval(maxval(ul_y, rdp.scissor_o.ul_y), rdp.scissor_o.lr_y);
+            lr_y = minval(maxval(lr_y, rdp.scissor_o.ul_y), rdp.scissor_o.lr_y);
             uint32_t zi_width_in_dwords = rdp.ci_width >> 1;
             ul_x >>= 1;
             lr_x >>= 1;
@@ -2334,10 +2334,10 @@ static void rdp_fillrect()
         rdp.scissor.lr_y);
 
     // KILL the floating point error with 0.01f
-    wxInt32 s_ul_x = (uint32_t)min(max(ul_x * rdp.scale_x + rdp.offset_x + 0.01f, rdp.scissor.ul_x), rdp.scissor.lr_x);
-    wxInt32 s_lr_x = (uint32_t)min(max(lr_x * rdp.scale_x + rdp.offset_x + 0.01f, rdp.scissor.ul_x), rdp.scissor.lr_x);
-    wxInt32 s_ul_y = (uint32_t)min(max(ul_y * rdp.scale_y + rdp.offset_y + 0.01f, rdp.scissor.ul_y), rdp.scissor.lr_y);
-    wxInt32 s_lr_y = (uint32_t)min(max(lr_y * rdp.scale_y + rdp.offset_y + 0.01f, rdp.scissor.ul_y), rdp.scissor.lr_y);
+    wxInt32 s_ul_x = (uint32_t)minval(maxval(ul_x * rdp.scale_x + rdp.offset_x + 0.01f, rdp.scissor.ul_x), rdp.scissor.lr_x);
+    wxInt32 s_lr_x = (uint32_t)minval(maxval(lr_x * rdp.scale_x + rdp.offset_x + 0.01f, rdp.scissor.ul_x), rdp.scissor.lr_x);
+    wxInt32 s_ul_y = (uint32_t)minval(maxval(ul_y * rdp.scale_y + rdp.offset_y + 0.01f, rdp.scissor.ul_y), rdp.scissor.lr_y);
+    wxInt32 s_lr_y = (uint32_t)minval(maxval(lr_y * rdp.scale_y + rdp.offset_y + 0.01f, rdp.scissor.ul_y), rdp.scissor.lr_y);
 
     if (s_lr_x < 0) s_lr_x = 0;
     if (s_lr_y < 0) s_lr_y = 0;
@@ -2495,7 +2495,7 @@ static void rdp_setprimcolor()
 {
     rdp.prim_color = rdp.cmd1;
     rdp.prim_lodmin = (rdp.cmd0 >> 8) & 0xFF;
-    rdp.prim_lodfrac = max(rdp.cmd0 & 0xFF, rdp.prim_lodmin);
+    rdp.prim_lodfrac = maxval(rdp.cmd0 & 0xFF, rdp.prim_lodmin);
     rdp.update |= UPDATE_COMBINE;
 
     FRDP("setprimcolor: %08lx, lodmin: %d, lodfrac: %d\n", rdp.cmd1, rdp.prim_lodmin,
@@ -2925,7 +2925,7 @@ static void rdp_setcolorimage()
     if (rdp.zimg == rdp.cimg)
     {
         rdp.zi_width = rdp.ci_width;
-        //    int zi_height = min((int)rdp.zi_width*3/4, (int)rdp.vi_height);
+        //    int zi_height = minval((int)rdp.zi_width*3/4, (int)rdp.vi_height);
         //    rdp.zi_words = rdp.zi_width * zi_height;
     }
     uint32_t format = (rdp.cmd0 >> 21) & 0x7;
@@ -3202,10 +3202,10 @@ EXPORT void CALL FBWrite(uint32_t addr, uint32_t /*size*/)
     uint32_t shift_l = (a - rdp.cimg) >> 1;
     uint32_t shift_r = shift_l + 2;
 
-    d_ul_x = min(d_ul_x, shift_l%rdp.ci_width);
-    d_ul_y = min(d_ul_y, shift_l / rdp.ci_width);
-    d_lr_x = max(d_lr_x, shift_r%rdp.ci_width);
-    d_lr_y = max(d_lr_y, shift_r / rdp.ci_width);
+    d_ul_x = minval(d_ul_x, shift_l%rdp.ci_width);
+    d_ul_y = minval(d_ul_y, shift_l / rdp.ci_width);
+    d_lr_x = maxval(d_lr_x, shift_r%rdp.ci_width);
+    d_lr_y = maxval(d_lr_y, shift_r / rdp.ci_width);
 }
 
 /************************************************************************
