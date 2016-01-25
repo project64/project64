@@ -4875,8 +4875,16 @@ void CRecompilerOps::SPECIAL_DADDU()
         Map_GPR_64bit(m_Opcode.rd, source1);
         if (IsConst(source2))
         {
-            AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegLo(source2));
-            AdcConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegHi(source2));
+			DWORD LoReg = GetMipsRegLo(source2);
+			AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), LoReg);
+			if(LoReg != 0)
+			{
+				AdcConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegHi(source2));
+			}
+			else
+			{
+				AddConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegHi(source2));
+			}
         }
         else if (IsMapped(source2))
         {
