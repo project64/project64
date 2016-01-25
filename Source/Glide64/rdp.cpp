@@ -326,7 +326,7 @@ void microcheck()
         settings.ucode = GetSetting(Set_ucode);
 
         ReleaseGfx();
-        wxMessageBox(stdstr_f("Error: uCode crc not found in INI, using currently selected uCode\n\n%08lx", uc_crc).c_str(), "Error", wxOK | wxICON_EXCLAMATION, GFXWindow);
+		MessageBox(gfx.hWnd, stdstr_f("Error: uCode crc not found in INI, using currently selected uCode\n\n%08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
 
         ucode_error_report = FALSE; // don't report any more ucode errors from this game
     }
@@ -335,7 +335,7 @@ void microcheck()
         settings.ucode = GetSetting(Set_ucode);
 
         ReleaseGfx();
-        wxMessageBox(stdstr_f("Error: Unsupported uCode!\n\ncrc: %08lx", uc_crc).c_str(), "Error", wxOK | wxICON_EXCLAMATION, GFXWindow);
+		MessageBox(gfx.hWnd, stdstr_f("Error: Unsupported uCode!\n\ncrc: %08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
 
         ucode_error_report = FALSE; // don't report any more ucode errors from this game
     }
@@ -793,10 +793,14 @@ EXPORT void CALL ProcessDList(void)
             }
 #endif
         }
-        if (wxMessageBox(_T("The GFX plugin caused an exception and has been disabled.\nWould you like to turn it back on and attempt to continue?"), _T("Glide64 Exception"), wxYES_NO|wxICON_EXCLAMATION, GFXWindow) == wxNO)
+        if (MessageBox(gfx.hWnd, "The GFX plugin caused an exception and has been disabled.\nWould you like to turn it back on and attempt to continue?","Glide64 Exception", MB_YESNO|MB_ICONEXCLAMATION) == MB_NO)
+        {
             exception = TRUE;
+        }
         else
+        {
             to_fullscreen = TRUE;
+        }
         return;
         }
 #endif

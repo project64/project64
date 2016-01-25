@@ -77,7 +77,6 @@ std::ofstream rdp_err;
 #endif
 
 GFX_INFO gfx;
-wxWindow * GFXWindow = NULL;
 
 int to_fullscreen = FALSE;
 int GfxInitDone = FALSE;
@@ -1158,12 +1157,6 @@ bool wxDLLApp::OnInit()
 void wxDLLApp::CleanUp()
 {
     wxApp::CleanUp();
-    if (GFXWindow)
-    {
-        GFXWindow->SetHWND(NULL);
-        delete GFXWindow;
-        GFXWindow = NULL;
-    }
 }
 
 #ifndef __WINDOWS__
@@ -1209,8 +1202,6 @@ extern "C" int WINAPI DllMain(HINSTANCE hinst,
     }
     else if (fdwReason == DLL_PROCESS_DETACH)
     {
-        if (GFXWindow != NULL)
-            GFXWindow->SetHWND(NULL);
         return DllUnload();
     }
     return TRUE;
@@ -1395,7 +1386,7 @@ void CALL CloseDLL(void)
     {
         ext_ghq_shutdown();
         settings.ghq_use = 0;
-    }
+}
 #endif
     ReleaseGfx();
     ZLUT_release();
@@ -1496,11 +1487,6 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     debug_init();    // Initialize debugger
 
     gfx = Gfx_Info;
-#ifdef __WINDOWS__
-    if (GFXWindow == NULL)
-        GFXWindow = new wxWindow();
-    GFXWindow->SetHWND(gfx.hWnd);
-#endif
 
 #ifdef WINPROC_OVERRIDE
     // [H.Morii] inject our own winproc so that "alt-enter to fullscreen"

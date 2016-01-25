@@ -364,7 +364,6 @@ extern "C" {
     } GFX_INFO;
 
     extern GFX_INFO gfx;
-    extern wxWindow * GFXWindow;
     extern bool no_dlist;
 
     typedef void (FX_CALL *GRCOLORCOMBINEEXT) (GrCCUColor_t     a,
