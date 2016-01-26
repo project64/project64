@@ -8,6 +8,7 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Plugins/PluginClass.h>
 #include <Project64-core/N64System/N64RomClass.h>
+#include <Project64-core/N64System/N64DiskClass.h>
 #include "Settings/SettingType/SettingsType-Application.h"
 
 static void FixDirectories(void);
@@ -152,8 +153,8 @@ void TraceDone(void)
 
 const char * AppName ( void )
 {
-	static stdstr_f ApplicationName("Project64 %s", VER_FILE_VERSION_STR);
-	return ApplicationName.c_str();
+    static stdstr_f ApplicationName("Project64 %s", VER_FILE_VERSION_STR);
+    return ApplicationName.c_str();
 }
 
 static bool ParseCommand(int32_t argc, char **argv)
@@ -168,8 +169,8 @@ static bool ParseCommand(int32_t argc, char **argv)
         if (strcmp(argv[i], "--basedir") == 0 && ArgsLeft >= 1)
         {
             g_Settings->SaveString(Cmd_BaseDirectory, argv[i + 1]);
-			CSettingTypeApplication::Initialize(AppName());
-			i++;
+            CSettingTypeApplication::Initialize(AppName());
+            i++;
         }
         else if (strcmp(argv[i], "--help") == 0)
         {
@@ -195,11 +196,11 @@ bool AppInit(CNotification * Notify, int argc, char **argv)
     {
         g_Notify = Notify;
         InitializeLog();
-		if (Notify == NULL)
-		{
-			WriteTrace(TraceAppInit, TraceError, "No Notification class passed");
-			return false;
-		}
+        if (Notify == NULL)
+        {
+            WriteTrace(TraceAppInit, TraceError, "No Notification class passed");
+            return false;
+        }
         g_Settings = new CSettings;
         g_Settings->Initialize(AppName());
 
@@ -232,14 +233,14 @@ bool AppInit(CNotification * Notify, int argc, char **argv)
         g_Lang = new CLanguage();
         g_Lang->LoadCurrentStrings();
         g_Notify->AppInitDone();
-		WriteTrace(TraceAppInit, TraceDebug, "Initialized Successfully");
-		return true;
+        WriteTrace(TraceAppInit, TraceDebug, "Initialized Successfully");
+        return true;
     }
     catch (...)
     {
         g_Notify->DisplayError(stdstr_f("Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).c_str());
-		WriteTrace(TraceAppInit, TraceError, "Exception caught, Init was not successfull");
-		return false;
+        WriteTrace(TraceAppInit, TraceError, "Exception caught, Init was not successfull");
+        return false;
     }
 }
 
@@ -249,6 +250,8 @@ void AppCleanup(void)
     CleanupTrace();
 
     if (g_Rom)      { delete g_Rom; g_Rom = NULL; }
+    if (g_DDRom)      { delete g_DDRom; g_DDRom = NULL; }
+    if (g_Disk)      { delete g_Disk; g_Disk = NULL; }
     if (g_Plugins)  { delete g_Plugins; g_Plugins = NULL; }
     if (g_Settings) { delete g_Settings; g_Settings = NULL; }
     if (g_Lang)     { delete g_Lang; g_Lang = NULL; }

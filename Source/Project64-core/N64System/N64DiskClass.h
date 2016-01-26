@@ -31,9 +31,10 @@ private:
     bool   AllocateAndLoadDiskImage(const char * FileLoc);
     void   ByteSwapDisk();
     void   SetError(LanguageStringID ErrorMsg);
+    void   ConvertDiskFormat();
 
     //constant values
-    enum { ReadFromRomSection = 0x400000 };
+    enum { ReadFromRomSection = 0x400000, MameFormatSize = 0x0435B0C0, SDKFormatSize = 0x03DEC800 };
 
     //class variables
     CFile m_DiskFile;
@@ -43,4 +44,13 @@ private:
     uint32_t m_DiskBufAddress;
     LanguageStringID m_ErrorMsg;
     stdstr m_FileName, m_DiskIdent;
+
+    //disk convert
+    #define SECTORS_PER_BLOCK	85
+    #define BLOCKS_PER_TRACK	2
+
+    #define BLOCKSIZE(_zone) ZoneSecSize[_zone] * SECTORS_PER_BLOCK
+    #define TRACKSIZE(_zone) BLOCKSIZE(_zone) * BLOCKS_PER_TRACK
+    #define ZONESIZE(_zone) TRACKSIZE(_zone) * ZoneTracks[_zone]
+    #define VZONESIZE(_zone) TRACKSIZE(_zone) * (ZoneTracks[_zone] - 0xC)
 };

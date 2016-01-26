@@ -189,6 +189,7 @@ void CN64System::ExternalEvent(SystemEvent action)
 bool CN64System::RunFileImage(const char * FileLoc)
 {
     CloseSystem();
+    g_Settings->SaveBool(Setting_EnableDisk, false);
     if (g_Settings->LoadBool(GameRunning_LoadingInProgress))
     {
         return false;
@@ -218,6 +219,11 @@ bool CN64System::RunFileImage(const char * FileLoc)
             //64DD IPL
             g_DDRom = g_Rom;
             g_Settings->SaveString(File_DiskIPLPath, FileLoc);
+        }
+
+        if (g_DDRom != NULL)
+        {
+            g_Settings->SaveBool(Setting_EnableDisk, true);
         }
 
         g_System->RefreshGameSettings();

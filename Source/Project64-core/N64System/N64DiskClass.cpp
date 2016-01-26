@@ -97,40 +97,69 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
     uint32_t DiskFileSize = m_DiskFile.GetLength();
     WriteTrace(TraceN64System, TraceDebug, "Successfully Opened, size: 0x%X", DiskFileSize);
 
-    if (!AllocateDiskImage(DiskFileSize))
+    //Check Disk File Format
+    if (DiskFileSize == MameFormatSize)
     {
-        m_DiskFile.Close();
-        return false;
-    }
+        //If Disk is MAME Format (size is constant, it should be the same for every file), then continue
+        WriteTrace(TraceN64System, TraceDebug, "Disk File is MAME Format", );
 
-    //Load the n64 disk to the allocated memory
-    g_Notify->DisplayMessage(5, MSG_LOADING);
-    m_DiskFile.SeekToBegin();
+        if (!AllocateDiskImage(DiskFileSize))
+        {
+            m_DiskFile.Close();
+            return false;
+        }
 
-    uint32_t count, TotalRead = 0;
-    for (count = 0; count < (int)DiskFileSize; count += ReadFromRomSection)
-    {
-        uint32_t dwToRead = DiskFileSize - count;
-        if (dwToRead > ReadFromRomSection) { dwToRead = ReadFromRomSection; }
+        //Load the n64 disk to the allocated memory
+        g_Notify->DisplayMessage(5, MSG_LOADING);
+        m_DiskFile.SeekToBegin();
 
-        if (m_DiskFile.Read(&m_DiskImage[count], dwToRead) != dwToRead)
+        uint32_t count, TotalRead = 0;
+        for (count = 0; count < (int)DiskFileSize; count += ReadFromRomSection)
+        {
+            uint32_t dwToRead = DiskFileSize - count;
+            if (dwToRead > ReadFromRomSection) { dwToRead = ReadFromRomSection; }
+
+            if (m_DiskFile.Read(&m_DiskImage[count], dwToRead) != dwToRead)
+            {
+                m_DiskFile.Close();
+                SetError(MSG_FAIL_IMAGE);
+                WriteTrace(TraceN64System, TraceError, "Failed to read file (TotalRead: 0x%X)", TotalRead);
+                return false;
+            }
+            TotalRead += dwToRead;
+
+            //Show Message of how much % wise of the rom has been loaded
+            g_Notify->DisplayMessage(0, stdstr_f("%s: %.2f%c", GS(MSG_LOADED), ((float)TotalRead / (float)DiskFileSize) * 100.0f, '%').c_str());
+        }
+
+        if (DiskFileSize != TotalRead)
         {
             m_DiskFile.Close();
             SetError(MSG_FAIL_IMAGE);
-            WriteTrace(TraceN64System, TraceError, "Failed to read file (TotalRead: 0x%X)", TotalRead);
+            WriteTrace(TraceN64System, TraceError, "Expected to read: 0x%X, read: 0x%X", TotalRead, DiskFileSize);
             return false;
         }
-        TotalRead += dwToRead;
-
-        //Show Message of how much % wise of the rom has been loaded
-        g_Notify->DisplayMessage(0, stdstr_f("%s: %.2f%c", GS(MSG_LOADED), ((float)TotalRead / (float)DiskFileSize) * 100.0f, '%').c_str());
     }
-
-    if (DiskFileSize != TotalRead)
+    else if (DiskFileSize == SDKFormatSize)
     {
+        //If Disk is SDK format (made with SDK based dumpers like LuigiBlood's, or Nintendo's, size is also constant)
+        //We need to convert it.
+        g_Notify->DisplayMessage(5, MSG_LOADING);
+
+        //Allocate supported size
+        if (!AllocateDiskImage(MameFormatSize))
+        {
+            m_DiskFile.Close();
+            return false;
+        }
+
+        ConvertDiskFormat();
+    }
+    else
+    {
+        //Else the disk file is invalid
         m_DiskFile.Close();
-        SetError(MSG_FAIL_IMAGE);
-        WriteTrace(TraceN64System, TraceError, "Expected to read: 0x%X, read: 0x%X", TotalRead, DiskFileSize);
+        WriteTrace(TraceN64System, TraceError, "Disk File is invalid, unexpected size");
         return false;
     }
 
@@ -180,4 +209,149 @@ void CN64Disk::UnallocateDiskImage()
         m_DiskImageBase = NULL;
     }
     m_DiskImage = NULL;
+}
+
+void CN64Disk::ConvertDiskFormat()
+{
+    //Original code by Happy_
+    m_DiskFile.SeekToBegin();
+
+    const uint32_t ZoneSecSize[16] = { 232, 216, 208, 192, 176, 160, 144, 128,
+        216, 208, 192, 176, 160, 144, 128, 112 };
+    const uint32_t ZoneTracks[16] = { 158, 158, 149, 149, 149, 149, 149, 114,
+        158, 158, 149, 149, 149, 149, 149, 114 };
+    const uint32_t DiskTypeZones[7][16] = {
+        { 0, 1, 2, 9, 8, 3, 4, 5, 6, 7, 15, 14, 13, 12, 11, 10 },
+        { 0, 1, 2, 3, 10, 9, 8, 4, 5, 6, 7, 15, 14, 13, 12, 11 },
+        { 0, 1, 2, 3, 4, 11, 10, 9, 8, 5, 6, 7, 15, 14, 13, 12 },
+        { 0, 1, 2, 3, 4, 5, 12, 11, 10, 9, 8, 6, 7, 15, 14, 13 },
+        { 0, 1, 2, 3, 4, 5, 6, 13, 12, 11, 10, 9, 8, 7, 15, 14 },
+        { 0, 1, 2, 3, 4, 5, 6, 7, 14, 13, 12, 11, 10, 9, 8, 15 },
+        { 0, 1, 2, 3, 4, 5, 6, 7, 15, 14, 13, 12, 11, 10, 9, 8 }
+    };
+    const uint32_t RevDiskTypeZones[7][16] = {
+        { 0, 1, 2, 5, 6, 7, 8, 9, 4, 3, 15, 14, 13, 12, 11, 10 },
+        { 0, 1, 2, 3, 7, 8, 9, 10, 6, 5, 4, 15, 14, 13, 12, 11 },
+        { 0, 1, 2, 3, 4, 9, 10, 11, 8, 7, 6, 5, 15, 14, 13, 12 },
+        { 0, 1, 2, 3, 4, 5, 11, 12, 10, 9, 8, 7, 6, 15, 14, 13 },
+        { 0, 1, 2, 3, 4, 5, 6, 13, 12, 11, 10, 9, 8, 7, 15, 14 },
+        { 0, 1, 2, 3, 4, 5, 6, 7, 14, 13, 12, 11, 10, 9, 8, 15 },
+        { 0, 1, 2, 3, 4, 5, 6, 7, 15, 14, 13, 12, 11, 10, 9, 8 }
+    };
+    const uint32_t StartBlock[7][16] = {
+        { 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1 },
+        { 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0 },
+        { 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1 },
+        { 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0 },
+        { 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1 },
+        { 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0 },
+        { 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1 }
+    };
+
+    uint32_t disktype = 0;
+    uint32_t zone, track = 0;
+    int32_t atrack = 0;
+    int32_t block = 0;
+    uint8_t SystemData[0xE8];
+    uint8_t BlockData0[0x100 * SECTORS_PER_BLOCK];
+    uint8_t BlockData1[0x100 * SECTORS_PER_BLOCK];
+    uint32_t InOffset, OutOffset = 0;
+    uint32_t InStart[16];
+    uint32_t OutStart[16];
+
+    InStart[0] = 0;
+    OutStart[0] = 0;
+
+    //Read System Area
+    m_DiskFile.Read(&SystemData, 0xE8);
+
+    disktype = SystemData[5] & 0xF;
+
+    //Prepare Input Offsets
+    for (zone = 1; zone < 16; zone++)
+    {
+        InStart[zone] = InStart[zone - 1] +
+            VZONESIZE(DiskTypeZones[disktype][zone - 1]);
+    }
+
+    //Prepare Output Offsets
+    for (zone = 1; zone < 16; zone++)
+    {
+        OutStart[zone] = OutStart[zone - 1] + ZONESIZE(zone - 1);
+    }
+
+    //Copy Head 0
+    for (zone = 0; zone < 8; zone++)
+    {
+        OutOffset = OutStart[zone];
+        InOffset = InStart[RevDiskTypeZones[disktype][zone]];
+        m_DiskFile.Seek(InOffset, CFileBase::SeekPosition::begin);
+        block = StartBlock[disktype][zone];
+        atrack = 0;
+        for (track = 0; track < ZoneTracks[zone]; track++)
+        {
+            if (track == SystemData[0x20 + zone * 0xC + atrack])
+            {
+                memset((void *)(&BlockData0), 0, BLOCKSIZE(zone));
+                memset((void *)(&BlockData1), 0, BLOCKSIZE(zone));
+                atrack += 1;
+            }
+            else
+            {
+                if ((block % 2) == 1)
+                {
+                    m_DiskFile.Read(&BlockData1, BLOCKSIZE(zone));
+                    m_DiskFile.Read(&BlockData0, BLOCKSIZE(zone));
+                }
+                else
+                {
+                    m_DiskFile.Read(&BlockData0, BLOCKSIZE(zone));
+                    m_DiskFile.Read(&BlockData1, BLOCKSIZE(zone));
+                }
+                block = 1 - block;
+            }
+            memcpy(m_DiskImage + OutOffset, &BlockData0, BLOCKSIZE(zone));
+            OutOffset += BLOCKSIZE(zone);
+            memcpy(m_DiskImage + OutOffset, &BlockData1, BLOCKSIZE(zone));
+            OutOffset += BLOCKSIZE(zone);
+        }
+    }
+
+    //Copy Head 1
+    for (zone = 8; zone < 16; zone++)
+    {
+        //OutOffset = OutStart[zone];
+        InOffset = InStart[RevDiskTypeZones[disktype][zone]];
+        m_DiskFile.Seek(InOffset, CFileBase::SeekPosition::begin);
+        block = StartBlock[disktype][zone];
+        atrack = 0xB;
+        for (track = 1; track < ZoneTracks[zone] + 1; track++)
+        {
+            if ((ZoneTracks[zone] - track) == SystemData[0x20 + (zone)* 0xC + atrack])
+            {
+                memset((void *)(&BlockData0), 0, BLOCKSIZE(zone));
+                memset((void *)(&BlockData1), 0, BLOCKSIZE(zone));
+                atrack -= 1;
+            }
+            else
+            {
+                if ((block % 2) == 1)
+                {
+                    m_DiskFile.Read(&BlockData1, BLOCKSIZE(zone));
+                    m_DiskFile.Read(&BlockData0, BLOCKSIZE(zone));
+                }
+                else
+                {
+                    m_DiskFile.Read(&BlockData0, BLOCKSIZE(zone));
+                    m_DiskFile.Read(&BlockData1, BLOCKSIZE(zone));
+                }
+                block = 1 - block;
+            }
+            OutOffset = OutStart[zone] + (ZoneTracks[zone] - track) * TRACKSIZE(zone);
+            memcpy(m_DiskImage + OutOffset, &BlockData0, BLOCKSIZE(zone));
+            OutOffset += BLOCKSIZE(zone);
+            memcpy(m_DiskImage + OutOffset, &BlockData1, BLOCKSIZE(zone));
+            OutOffset += BLOCKSIZE(zone);
+        }
+    }
 }

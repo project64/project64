@@ -119,13 +119,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         stdstr File = ChooseFileToOpen(hWnd);
         if (File.length() > 0)
         {
-            stdstr Test = File.substr(File.length() - 3, 4);
-            Test.ToLower();
-            if (!Test.compare(".ndd"))
-            {
-                g_BaseSystem->RunFileImage(File.c_str());
-            }
-            else
+            if (!g_BaseSystem->RunFileImage(File.c_str()))
             {
                 // Open Disk
                 if (g_BaseSystem->RunDiskImage(File.c_str()))
@@ -136,12 +130,10 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
                         // Open DDROM
                         OPENFILENAME openfilename;
                         char FileName[_MAX_PATH], Directory[_MAX_PATH];
-
                         memset(&FileName, 0, sizeof(FileName));
                         memset(&openfilename, 0, sizeof(openfilename));
 
                         strcpy(Directory, g_Settings->LoadStringVal(Directory_Game).c_str());
-
                         openfilename.lStructSize = sizeof(openfilename);
                         openfilename.hwndOwner = (HWND)hWnd;
                         openfilename.lpstrFilter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
@@ -155,12 +147,9 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
                             g_BaseSystem->RunFileImage(FileName);
                         }
                     }
-                    else
-                    {
-                        g_BaseSystem->RunFileImage(IPLROM.c_str());
-                    }
                 }
             }
+            
         }
     }
     break;
