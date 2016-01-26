@@ -1896,9 +1896,9 @@ ViRefresh=2504
 [C3F19159-65D2BC5A-C:45]
 Good Name=FIFA Soccer 64 (U) (M3)
 Internal Name=FIFA Soccer 64
-Status=Broken (core)
-Core Note=No sound, unhandled opcode; use older PJ64
+Status=Compatible
 32bit=No
+ViRefresh=2504
 
 [AEEF2F45-F97E30F1-C:45]
 Good Name=Fighter Destiny 2 (U)
