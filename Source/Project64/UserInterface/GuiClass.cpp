@@ -1142,7 +1142,14 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
         DragQueryFile(hDrop, 0, filename, sizeof(filename));
         DragFinish(hDrop);
 
-        if (!CN64System::RunFileImage(filename))
+        stdstr ext = CPath(filename).GetExtension();
+        if (!(_stricmp(ext.c_str(), "ndd") == 0))
+        {
+            delete g_DDRom;
+            g_DDRom = NULL;
+            CN64System::RunFileImage(filename);
+        }
+        else
         {
             // Open Disk
             if (CN64System::RunDiskImage(filename))

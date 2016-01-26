@@ -1472,6 +1472,10 @@ void CRomBrowser::RomList_OpenRom(uint32_t /*pnmh*/)
 
     if (!pRomInfo) { return; }
     m_StopRefresh = true;
+
+    delete g_DDRom;
+    g_DDRom = NULL;
+
     CN64System::RunFileImage(pRomInfo->szFullFileName);
 }
 

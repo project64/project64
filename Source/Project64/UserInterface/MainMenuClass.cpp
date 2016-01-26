@@ -119,7 +119,14 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         stdstr File = ChooseFileToOpen(hWnd);
         if (File.length() > 0)
         {
-            if (!g_BaseSystem->RunFileImage(File.c_str()))
+            stdstr ext = CPath(File).GetExtension();
+            if (!(_stricmp(ext.c_str(), "ndd") == 0))
+            {
+                delete g_DDRom;
+                g_DDRom = NULL;
+                g_BaseSystem->RunFileImage(File.c_str());
+            }
+            else
             {
                 // Open Disk
                 if (g_BaseSystem->RunDiskImage(File.c_str()))
