@@ -326,6 +326,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\N64System\N64DiskClass.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\N64System\N64RomClass.cpp"
 					>
 				</File>
@@ -549,6 +553,10 @@
 				</File>
 				<File
 					RelativePath=".\N64System\N64Class.h"
+					>
+				</File>
+				<File
+					RelativePath=".\N64System\N64DiskClass.h"
 					>
 				</File>
 				<File
