@@ -6186,6 +6186,7 @@ Status=Compatible
 Good Name=Triple Play 2000 (U)
 Internal Name=TRIPLE PLAY 2000
 Status=Compatible
+32bit=No
 Counter Factor=1
 
 [B6BC0FB0-E3812198-C:4A]
