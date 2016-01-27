@@ -30,7 +30,7 @@
 #include "SettingType/SettingsType-TempString.h"
 #include "SettingType/SettingsType-TempNumber.h"
 #include "SettingType/SettingsType-TempBool.h"
-#include "SettingsClass.h"
+#include <Project64-core/Settings/SettingsClass.h>
 #include <Project64-core/N64System/N64Types.h>
 #include <Common/Trace.h>
 
@@ -82,6 +82,8 @@ void CSettings::AddHandler(SettingID TypeID, CSettingType * Handler)
 
 void CSettings::AddHowToHandleSetting()
 {
+    WriteTrace(TraceAppInit, TraceDebug, "Start");
+
     //information - temp keys
     AddHandler(Info_ShortCutsChanged, new CSettingTypeTempBool(false));
 
@@ -153,11 +155,7 @@ void CSettings::AddHowToHandleSetting()
     AddHandler(Rdb_Status, new CSettingTypeRomDatabase("Status", "Unknown"));
     AddHandler(Rdb_NotesCore, new CSettingTypeRomDatabase("Core Note", ""));
     AddHandler(Rdb_NotesPlugin, new CSettingTypeRomDatabase("Plugin Note", ""));
-#ifdef _DEBUG
     AddHandler(Rdb_FixedAudio, new CSettingTypeRomDatabase("Fixed Audio", true));
-#else
-    AddHandler(Rdb_FixedAudio, new CSettingTypeRomDatabase("Fixed Audio", true));
-#endif
     AddHandler(Rdb_SyncViaAudio, new CSettingTypeRomDatabase("Sync Audio", false));
     AddHandler(Rdb_RspAudioSignal, new CSettingTypeRDBYesNo("Audio Signal", false));
     AddHandler(Rdb_TLB_VAddrStart, new CSettingTypeRomDatabase("TLB: Vaddr Start", 0));
@@ -392,6 +390,8 @@ void CSettings::AddHowToHandleSetting()
     AddHandler(Cheat_Options, new CSettingTypeCheats("_O"));
     AddHandler(Cheat_Range, new CSettingTypeCheats("_R"));
     AddHandler(Cheat_RangeNotes, new CSettingTypeCheats("_RN"));
+
+    WriteTrace(TraceAppInit, TraceDebug, "Done");
 }
 
 uint32_t CSettings::FindSetting(CSettings * _this, const char * Name)
@@ -598,6 +598,7 @@ void CSettings::RegisterSetting(CSettings * _this, SettingID ID, SettingID Defau
 
 bool CSettings::Initialize(const char * AppName)
 {
+    WriteTrace(TraceAppInit, TraceDebug, "Start");
     AddHowToHandleSetting();
     CSettingTypeApplication::Initialize(AppName);
     CSettingTypeRomDatabase::Initialize();
@@ -605,6 +606,7 @@ bool CSettings::Initialize(const char * AppName)
     CSettingTypeCheats::Initialize();
 
     g_Settings->SaveString(Setting_ApplicationName, AppName);
+    WriteTrace(TraceAppInit, TraceDebug, "Done");
     return true;
 }
 
