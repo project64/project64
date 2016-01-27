@@ -161,7 +161,13 @@ void CRegInfo::FixRoundModel(FPU_ROUND RoundMethod)
 
     if (RoundMethod == RoundDefault)
     {
-        static const unsigned int msRound[4] = { _RC_NEAR, _RC_CHOP, _RC_UP, _RC_DOWN };
+        static const unsigned int msRound[4] = 
+		{
+			0x00000000, //_RC_NEAR
+			0x00000300, //_RC_CHOP
+			0x00000200, //_RC_UP
+			0x00000100, //_RC_DOWN 
+		};
 
         x86Reg RoundReg = Map_TempReg(x86_Any, -1, false);
         MoveVariableToX86reg(&g_Reg->m_RoundingModel, "m_RoundingModel", RoundReg);
