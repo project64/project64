@@ -63,7 +63,7 @@ BOOL IsXInputDevice( const GUID* pGuidProductFromDirectInput );
 //defines
 #define N64_ANALOG_MAX 127
 #define XC_ANALOG_MAX 32767
-#define BUTTON_ANALOG_VALUE 107
+#define BUTTON_ANALOG_VALUE 60
 
 //enums
 namespace N64_BUTTONS

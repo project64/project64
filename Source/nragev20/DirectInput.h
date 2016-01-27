@@ -56,7 +56,7 @@ HRESULT WriteAdaptoidPak( LPDIRECTINPUTDEVICE8 lpDirectInputDevice, DWORD addr, 
 #define MINAXISVALUE	-32767
 #define MAXAXISVALUE	32767
 #define ZEROVALUE		0
-#define THRESHOLD		90
+#define THRESHOLD		50
 #define RANGERELATIVE	(MAXAXISVALUE - ZEROVALUE + 1)
 #define ABSTHRESHOLD	(RANGERELATIVE * THRESHOLD / 100)
 		// plus or minus this many 1/100 degrees counts as GetJoyPadPOV being pressed
