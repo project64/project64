@@ -31,5 +31,5 @@ private:
 
     uint8_t m_EEPROM[0x800];
     bool    m_ReadOnly;
-    void *  m_hFile;
+    CFile   m_File;
 };
