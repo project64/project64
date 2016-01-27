@@ -281,7 +281,7 @@ void CInterpreterCPU::ExecuteCPU()
     uint32_t CountPerOp = g_System->CountPerOp();
     int32_t & NextTimer = *g_NextTimer;
 
-    __try
+    __except_try()
     {
         while (!Done)
         {
@@ -293,11 +293,11 @@ void CInterpreterCPU::ExecuteCPU()
             }
 
             /* if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER < 0x80380000)
-               {
-               WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER));
-               // WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
-               // WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
-               } */
+            {
+            WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER));
+            // WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
+            // WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
+            } */
             m_R4300i_Opcode[Opcode.op]();
             NextTimer -= CountPerOp;
 
@@ -346,7 +346,7 @@ void CInterpreterCPU::ExecuteCPU()
             }
         }
     }
-    __except (g_MMU->MemoryFilter(GetExceptionCode(), GetExceptionInformation()))
+    __except_catch()
     {
         g_Notify->FatalError(GS(MSG_UNKNOWN_MEM_ACTION));
     }
@@ -362,7 +362,7 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
     const int32_t & DoSomething = g_SystemEvents->DoSomething();
     uint32_t CountPerOp = g_System->CountPerOp();
 
-    __try
+    __except_try()
     {
         while (!Done)
         {
@@ -416,24 +416,24 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
                     PROGRAM_COUNTER += 4;
                     break;
                 case JUMP:
-                {
-                    bool CheckTimer = (JumpToLocation < PROGRAM_COUNTER || TestTimer);
-                    PROGRAM_COUNTER = JumpToLocation;
-                    R4300iOp::m_NextInstruction = NORMAL;
-                    if (CheckTimer)
                     {
-                        TestTimer = false;
-                        if (*g_NextTimer < 0)
+                        bool CheckTimer = (JumpToLocation < PROGRAM_COUNTER || TestTimer);
+                        PROGRAM_COUNTER = JumpToLocation;
+                        R4300iOp::m_NextInstruction = NORMAL;
+                        if (CheckTimer)
                         {
-                            g_SystemTimer->TimerDone();
-                        }
-                        if (DoSomething)
-                        {
-                            g_SystemEvents->ExecuteEvents();
+                            TestTimer = false;
+                            if (*g_NextTimer < 0)
+                            {
+                                g_SystemTimer->TimerDone();
+                            }
+                            if (DoSomething)
+                            {
+                                g_SystemEvents->ExecuteEvents();
+                            }
                         }
                     }
-                }
-                break;
+                    break;
                 case PERMLOOP_DELAY_DONE:
                     PROGRAM_COUNTER = JumpToLocation;
                     R4300iOp::m_NextInstruction = NORMAL;
@@ -455,7 +455,7 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
             }
         }
     }
-    __except (g_MMU->MemoryFilter(GetExceptionCode(), GetExceptionInformation()))
+    __except_catch()
     {
         g_Notify->FatalError(GS(MSG_UNKNOWN_MEM_ACTION));
     }

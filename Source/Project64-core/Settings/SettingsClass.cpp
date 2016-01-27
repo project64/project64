@@ -10,6 +10,7 @@
 ****************************************************************************/
 #include "stdafx.h"
 
+#include <Common/Platform.h>
 #include "SettingType/SettingsType-Application.h"
 #include "SettingType/SettingsType-ApplicationPath.h"
 #include "SettingType/SettingsType-ApplicationIndex.h"
@@ -30,7 +31,7 @@
 #include "SettingType/SettingsType-TempNumber.h"
 #include "SettingType/SettingsType-TempBool.h"
 #include "SettingsClass.h"
-#include "N64System/N64Types.h"
+#include <Project64-core/N64System/N64Types.h>
 #include <Common/Trace.h>
 
 CSettings * g_Settings = NULL;
@@ -66,7 +67,7 @@ CSettings::~CSettings()
 
 void CSettings::AddHandler(SettingID TypeID, CSettingType * Handler)
 {
-    SETTING_MAP::_Pairib res = m_SettingInfo.insert(SETTING_MAP::value_type(TypeID, Handler));
+    std::pair<SETTING_MAP::iterator, bool> res = m_SettingInfo.insert(SETTING_MAP::value_type(TypeID, Handler));
     if (!res.second)
     {
         delete res.first->second;
@@ -83,6 +84,15 @@ void CSettings::AddHowToHandleSetting()
 {
     //information - temp keys
     AddHandler(Info_ShortCutsChanged, new CSettingTypeTempBool(false));
+
+    //Command Settings
+#ifdef _WIN32
+    AddHandler(Cmd_BaseDirectory, new CSettingTypeTempString(CPath(CPath::MODULE_DIRECTORY)));
+#else
+    AddHandler(Cmd_BaseDirectory, new CSettingTypeTempString(""));
+#endif
+    AddHandler(Cmd_ShowHelp, new CSettingTypeTempBool(false));
+    AddHandler(Cmd_RomFile, new CSettingTypeTempString(""));
 
     //Support Files
     AddHandler(SupportFile_Settings, new CSettingTypeApplicationPath("", "ConfigFile", SupportFile_SettingsDefault));
@@ -122,6 +132,7 @@ void CSettings::AddHowToHandleSetting()
 
     AddHandler(Setting_RememberCheats, new CSettingTypeApplication("", "Remember Cheats", (uint32_t)false));
     AddHandler(Setting_CurrentLanguage, new CSettingTypeApplication("", "Current Language", ""));
+    AddHandler(Setting_EnableDisk, new CSettingTypeApplication("", "Enable Disk", (uint32_t)false));
     AddHandler(Setting_LanguageDirDefault, new CSettingTypeRelativePath("Lang", ""));
     AddHandler(Setting_LanguageDir, new CSettingTypeApplicationPath("Directory", "Lang", Setting_LanguageDirDefault));
 
@@ -145,9 +156,9 @@ void CSettings::AddHowToHandleSetting()
 #ifdef _DEBUG
     AddHandler(Rdb_FixedAudio, new CSettingTypeRomDatabase("Fixed Audio", true));
 #else
-    AddHandler(Rdb_FixedAudio, new CSettingTypeRomDatabase("Fixed Audio", false));
+    AddHandler(Rdb_FixedAudio, new CSettingTypeRomDatabase("Fixed Audio", true));
 #endif
-    AddHandler(Rdb_SyncViaAudio, new CSettingTypeRomDatabase("Sync Audio", true));
+    AddHandler(Rdb_SyncViaAudio, new CSettingTypeRomDatabase("Sync Audio", false));
     AddHandler(Rdb_RspAudioSignal, new CSettingTypeRDBYesNo("Audio Signal", false));
     AddHandler(Rdb_TLB_VAddrStart, new CSettingTypeRomDatabase("TLB: Vaddr Start", 0));
     AddHandler(Rdb_TLB_VAddrLen, new CSettingTypeRomDatabase("TLB: Vaddr Len", 0));
@@ -168,7 +179,7 @@ void CSettings::AddHowToHandleSetting()
     AddHandler(Rdb_GameCheatFix, new CSettingTypeRomDatabaseIndex("Cheat", "", ""));
     AddHandler(Rdb_GameCheatFixPlugin, new CSettingTypeRomDatabaseIndex("CheatPlugin", "", ""));
     AddHandler(Rdb_ViRefreshRate, new CSettingTypeRomDatabase("ViRefresh", 1500));
-    AddHandler(Rdb_AiCountPerBytes, new CSettingTypeRomDatabase("AiCountPerBytes", 400));
+    AddHandler(Rdb_AiCountPerBytes, new CSettingTypeRomDatabase("AiCountPerBytes", 0));
     AddHandler(Rdb_AudioResetOnLoad, new CSettingTypeRDBYesNo("AudioResetOnLoad", false));
     AddHandler(Rdb_AllowROMWrites, new CSettingTypeRDBYesNo("AllowROMWrites", false));
     AddHandler(Rdb_CRC_Recalc, new CSettingTypeRDBYesNo("CRC-Recalc", false));
@@ -664,7 +675,7 @@ bool CSettings::LoadDword(SettingID Type, uint32_t & Value)
     {
         //if not found do nothing
         UnknownSetting(Type);
-        return 0;
+        return false;
     }
     if (FindInfo->second->IndexBasedSetting())
     {
@@ -907,7 +918,7 @@ void CSettings::LoadDefaultString(SettingID /*Type*/, char * /*Buffer*/, int /*B
 stdstr CSettings::LoadDefaultStringIndex(SettingID /*Type*/, int /*index*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
+    return "";
 }
 
 void CSettings::LoadDefaultStringIndex(SettingID /*Type*/, int /*index*/, stdstr & /*Value*/)
@@ -1028,7 +1039,7 @@ void CSettings::SaveString(SettingID Type, const char * Buffer)
         //if not found do nothing
         UnknownSetting(Type);
     }
-    if (FindInfo->second->IndexBasedSetting())
+    else if (FindInfo->second->IndexBasedSetting())
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }

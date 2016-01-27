@@ -16,8 +16,8 @@ public:
     CSram(bool ReadOnly);
     ~CSram();
 
-    void DmaFromSram(uint8_t * dest, int StartOffset, int len);
-    void DmaToSram(uint8_t * Source, int StartOffset, int len);
+    void DmaFromSram(uint8_t * dest, int32_t StartOffset, int32_t len);
+    void DmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len);
 
 private:
     bool LoadSram();

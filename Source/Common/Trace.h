@@ -11,6 +11,12 @@ enum TraceSeverity
     TraceVerbose = 0x00000006,
 };
 
+#if defined(_WIN32)
+#include <objbase.h>
+#else
+#define __interface     struct
+#endif
+
 __interface CTraceModule
 {
     virtual void Write(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char * Message) = 0;

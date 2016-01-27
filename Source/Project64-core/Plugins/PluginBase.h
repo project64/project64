@@ -12,7 +12,8 @@
 
 #include <Project64-core/Settings/DebugSettings.h>
 #include <Project64-core/TraceModulesProject64.h>
-#include "PluginClass.h"
+#include <Project64-core/Plugins/PluginClass.h>
+#include <Common/Util.h>
 
 #if defined(_WIN32)
 #define CALL        __cdecl
@@ -60,17 +61,18 @@ protected:
     void(CALL *SetSettingInfo2)     (PLUGIN_SETTINGS2 *);
     void(CALL *SetSettingInfo3)     (PLUGIN_SETTINGS3 *);
 
-    void * m_hDll;
-    bool   m_Initialized, m_RomOpen;
+    pjutil::DynLibHandle m_LibHandle;
+    bool m_Initialized, m_RomOpen;
     PLUGIN_INFO m_PluginInfo;
 
     // Loads a function pointer from the currently loaded DLL
-    template <typename T>
-    void _LoadFunction(const char * szFunctionName, T & functionPointer) {
-        functionPointer = (T)GetProcAddress((HMODULE)m_hDll, szFunctionName);
+    void _LoadFunctionVoid(const char * szFunctionName, void ** functionPointer)
+    {
+        *functionPointer = pjutil::DynLibGetProc(m_LibHandle, szFunctionName);
     }
 
     // Simple wrapper around _LoadFunction() to avoid having to specify the same two arguments
     // i.e. _LoadFunction("CloseDLL", CloseDLL);
-#define LoadFunction(functionName) _LoadFunction(#functionName, functionName)
+#define LoadFunction(functionName) _LoadFunctionVoid(#functionName, (void **)&functionName)
+#define _LoadFunction(functionName,function) _LoadFunctionVoid(functionName, (void **)&function)
 };

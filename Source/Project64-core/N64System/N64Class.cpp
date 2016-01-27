@@ -212,6 +212,12 @@ bool CN64System::RunFileImage(const char * FileLoc)
     WriteTrace(TraceN64System, TraceDebug, "Loading \"%s\"", FileLoc);
     if (g_Rom->LoadN64Image(FileLoc))
     {
+        if (g_Rom->CicChipID() == CIC_NUS_8303)
+        {
+            //64DD IPL
+            g_DDRom = g_Rom;
+        }
+
         g_System->RefreshGameSettings();
 
         g_Settings->SaveString(Game_File, FileLoc);
@@ -585,6 +591,10 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
     m_Reg.ERROREPC_REGISTER = 0xFFFFFFFF;
     m_Reg.CONFIG_REGISTER = 0x0006E463;
     m_Reg.STATUS_REGISTER = 0x34000000;
+
+    //64DD Registers
+    m_Reg.ASIC_STATUS = DD_STATUS_RST_STATE;
+    m_Reg.ASIC_ID_REG = 0x00030000;
 
     //m_Reg.REVISION_REGISTER   = 0x00000511;
     m_Reg.FixFpuLocations();

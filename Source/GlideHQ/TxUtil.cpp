@@ -26,7 +26,7 @@
 #include <zlib/zlib.h>
 #include <malloc.h>
 #include <stdlib.h>
-#include <common/stdtypes.h>
+#include <Common/stdtypes.h>
 
 
 /*

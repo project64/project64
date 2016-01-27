@@ -7,7 +7,7 @@ typedef const char *     LPCSTR;
 #include "7zip.h"
 #include <Common/StdString.h>
 
-C7zip::C7zip (const char * FileName) :
+C7zip::C7zip(const char * FileName) :
 m_FileSize(0),
 m_CurrentFile(-1),
 m_blockIndex(0xFFFFFFFF),
@@ -129,7 +129,7 @@ bool C7zip::GetFile(int index, Byte * Data, size_t DataLen)
 
     char Msg[200];
     std::wstring FileName = FileNameIndex(index);
-    _snprintf(Msg, sizeof(Msg) / sizeof(Msg[0]), "extracting %s", stdstr().FromUTF16(FileName.c_str()));
+    _snprintf(Msg, sizeof(Msg) / sizeof(Msg[0]), "extracting %s", stdstr().FromUTF16(FileName.c_str()).c_str());
     m_NotfyCallback(Msg, m_NotfyCallbackInfo);
 
     SRes res = SzArEx_Extract(m_db, &m_archiveLookStream.s, index,

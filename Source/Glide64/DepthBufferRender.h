@@ -51,7 +51,7 @@ struct vertexi
     int z;         // z value in 16:16 bit fixed point
 };
 
-extern wxUint16 * zLUT;
+extern uint16_t * zLUT;
 void ZLUT_init();
 void ZLUT_release();
 

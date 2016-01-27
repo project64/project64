@@ -9,7 +9,6 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include <string.h>
 #include "CheatClass.h"
 
 #include <Project64-core/Settings/SettingType/SettingsType-Cheats.h>

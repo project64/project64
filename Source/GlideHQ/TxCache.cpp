@@ -29,7 +29,7 @@
 #include "TxDbg.h"
 #include <zlib/zlib.h>
 #include <Common/path.h>
-#include <common/StdString.h>
+#include <Common/StdString.h>
 
 TxCache::~TxCache()
 {

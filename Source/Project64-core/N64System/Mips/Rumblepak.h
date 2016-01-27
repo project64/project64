@@ -14,5 +14,5 @@ class Rumblepak
 {
 public:
     static void ReadFrom(uint8_t * command);
-	static void WriteTo(int Control, uint8_t * command);
+    static void WriteTo(int32_t Control, uint8_t * command);
 };

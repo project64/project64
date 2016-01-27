@@ -51,7 +51,7 @@ void calc_light (VERTEX *v)
 {
   float light_intensity = 0.0f;
   register float color[3] = {rdp.light[rdp.num_lights].r, rdp.light[rdp.num_lights].g, rdp.light[rdp.num_lights].b};
-  for (wxUint32 l=0; l<rdp.num_lights; l++)
+  for (uint32_t l=0; l<rdp.num_lights; l++)
   {
     light_intensity = DotProduct (rdp.light_vector[l], v->vec);
     
@@ -67,9 +67,9 @@ void calc_light (VERTEX *v)
   if (color[1] > 1.0f) color[1] = 1.0f;
   if (color[2] > 1.0f) color[2] = 1.0f;
   
-  v->r = (wxUint8)(color[0]*255.0f);
-  v->g = (wxUint8)(color[1]*255.0f);
-  v->b = (wxUint8)(color[2]*255.0f);
+  v->r = (uint8_t)(color[0]*255.0f);
+  v->g = (uint8_t)(color[1]*255.0f);
+  v->b = (uint8_t)(color[2]*255.0f);
 }
 
 //*
@@ -125,8 +125,8 @@ void calc_sphere (VERTEX *v)
   int s_scale, t_scale;
   if (settings.hacks&hack_Chopper)
   {
-    s_scale = min(rdp.tiles[rdp.cur_tile].org_s_scale >> 6, rdp.tiles[rdp.cur_tile].lr_s);
-    t_scale = min(rdp.tiles[rdp.cur_tile].org_t_scale >> 6, rdp.tiles[rdp.cur_tile].lr_t);
+    s_scale = minval(rdp.tiles[rdp.cur_tile].org_s_scale >> 6, rdp.tiles[rdp.cur_tile].lr_s);
+    t_scale = minval(rdp.tiles[rdp.cur_tile].org_t_scale >> 6, rdp.tiles[rdp.cur_tile].lr_t);
   }
   else
   {

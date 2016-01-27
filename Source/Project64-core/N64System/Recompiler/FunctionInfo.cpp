@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "FunctionInfo.h"
+#include <Project64-core/N64System/Recompiler/FunctionInfo.h>
 
 CCompiledFunc::CCompiledFunc( const CCodeBlock & CodeBlock ) :
     m_EnterPC(CodeBlock.VAddrEnter()),

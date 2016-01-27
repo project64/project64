@@ -9,12 +9,12 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "RecompilerClass.h"
+#include <Project64-core/N64System/Recompiler/RecompilerClass.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Recompiler/x86CodeLog.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
-#include <Objbase.h>
+#include <Project64-core/ExceptionHandler.h>
 
 CRecompiler::CRecompiler(CRegisters & Registers, CProfiling & Profile, bool & EndEmulation) :
 m_Registers(Registers),
@@ -35,7 +35,6 @@ CRecompiler::~CRecompiler()
 
 void CRecompiler::Run()
 {
-    CoInitialize(NULL);
     if (bLogX86Code())
     {
         Start_x86_Log();
@@ -56,7 +55,7 @@ void CRecompiler::Run()
 #ifdef legacycode
     *g_MemoryStack = (uint32_t)(RDRAM+(_GPR[29].W[0] & 0x1FFFFFFF));
 #endif
-    __try
+    __except_try()
     {
         if (g_System->LookUpMode() == FuncFind_VirtualLookup)
         {
@@ -99,7 +98,7 @@ void CRecompiler::Run()
             }
         }
     }
-    __except (g_MMU->MemoryFilter(GetExceptionCode(), GetExceptionInformation()))
+	__except_catch()
     {
         g_Notify->DisplayError(MSG_UNKNOWN_MEM_ACTION);
     }
@@ -944,7 +943,7 @@ CCompiledFunc * CRecompiler::CompilerCode()
     }
 
     CCompiledFunc * Func = new CCompiledFunc(CodeBlock);
-    CCompiledFuncList::_Pairib ret = m_Functions.insert(CCompiledFuncList::value_type(Func->EnterPC(), Func));
+	std::pair<CCompiledFuncList::iterator, bool> ret = m_Functions.insert(CCompiledFuncList::value_type(Func->EnterPC(), Func));
     if (ret.second == false)
     {
         Func->SetNext(ret.first->second->Next());
@@ -1047,7 +1046,7 @@ void CRecompiler::ResetMemoryStackPos()
     }
     if (m_Registers.m_GPR[29].UW[0] == 0)
     {
-        m_MemoryStack = NULL;
+        m_MemoryStack = 0;
         return;
     }
 

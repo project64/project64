@@ -10,6 +10,7 @@
 ****************************************************************************/
 #pragma once
 
+#include <Common/Platform.h>
 #include <Project64-core/N64System/N64Types.h>
 #include <Project64-core/Settings/DebugSettings.h>
 #include <Project64-core/Settings/GameSettings.h>
@@ -481,12 +482,70 @@ enum
     SI_STATUS_INTERRUPT	=	0x1000,
 };
 
-enum ROUNDING_MODE
+//Disk Interface
+class Disk_InterfaceReg
 {
-    ROUND_NEAR = 0x00000000, // _RC_NEAR
-    ROUND_DOWN = 0x00000100, // _RC_DOWN
-    ROUND_UP   = 0x00000200, // _RC_UP
-    ROUND_CHOP = 0x00000300, // _RC_CHOP
+protected:
+    Disk_InterfaceReg (uint32_t * Disk_Interface);
+
+public:
+    uint32_t & ASIC_DATA;
+    uint32_t & ASIC_MISC_REG;
+    uint32_t & ASIC_STATUS;
+    uint32_t & ASIC_CMD;
+    uint32_t & ASIC_CUR_TK;
+    uint32_t & ASIC_BM_STATUS;
+    uint32_t & ASIC_BM_CTL;
+    uint32_t & ASIC_ERR_SECTOR;
+    uint32_t & ASIC_SEQ_STATUS;
+    uint32_t & ASIC_SEQ_CTL;
+    uint32_t & ASIC_CUR_SECTOR;
+    uint32_t & ASIC_HARD_RESET;
+    uint32_t & ASIC_C1_S0;
+    uint32_t & ASIC_HOST_SECBYTE;
+    uint32_t & ASIC_C1_S2;
+    uint32_t & ASIC_SEC_BYTE;
+    uint32_t & ASIC_C1_S4;
+    uint32_t & ASIC_C1_S6;
+    uint32_t & ASIC_CUR_ADDR;
+    uint32_t & ASIC_ID_REG;
+    uint32_t & ASIC_TEST_REG;
+    uint32_t & ASIC_TEST_PIN_SEL;
+
+private:
+    Disk_InterfaceReg();										// Disable default constructor
+    Disk_InterfaceReg(const Disk_InterfaceReg&);			// Disable copy constructor
+    Disk_InterfaceReg& operator=(const Disk_InterfaceReg&);	// Disable assignment
+};
+
+//Disk Interface Flags
+enum
+{
+    DD_STATUS_DATA_RQ    =	0x40000000,
+    DD_STATUS_C2_XFER    =	0x10000000,
+    DD_STATUS_BM_ERR     =	0x08000000,
+    DD_STATUS_BM_INT     =	0x04000000,
+    DD_STATUS_MECHA_INT  =	0x02000000,
+    DD_STATUS_DISK_PRES  =	0x01000000,
+    DD_STATUS_BUSY_STATE =	0x00800000,
+    DD_STATUS_RST_STATE  =	0x00400000,
+    DD_STATUS_MTR_N_SPIN =	0x00100000,
+    DD_STATUS_HEAD_RTRCT =	0x00080000,
+    DD_STATUS_WR_PR_ERR  =	0x00040000,
+    DD_STATUS_MECHA_ERR  =	0x00020000,
+    DD_STATUS_DISK_CHNG  =	0x00010000,
+
+    DD_BM_STATUS_RUNNING =	0x80000000,
+    DD_BM_STATUS_ERROR   =	0x04000000,
+    DD_BM_STATUS_MICRO   =	0x02000000,
+    DD_BM_STATUS_BLOCK   =	0x01000000,
+
+    DD_BM_CTL_START      =	0x80000000,
+    DD_BM_CTL_MNGRMODE   =	0x40000000,
+    DD_BM_CTL_INTMASK    =	0x20000000,
+    DD_BM_CTL_RESET      =	0x10000000,
+    DD_BM_CTL_BLK_TRANS  =	0x02000000,
+    DD_BM_CTL_MECHA_RST  =	0x01000000
 };
 
 class CRegName
@@ -513,7 +572,7 @@ protected:
     static double       ** _FPR_D;
     static uint32_t      * _FPCR;
     static uint32_t      * _LLBit;
-    static ROUNDING_MODE * _RoundingModel;
+    static int32_t       * _RoundingModel;
 };
 
 class CN64System;
@@ -533,7 +592,8 @@ class CRegisters :
     public RDRAMInt_InterfaceReg,
     public SigProcessor_InterfaceReg,
     public DisplayControlReg,
-    public Serial_InterfaceReg
+    public Serial_InterfaceReg,
+    public Disk_InterfaceReg
 {
 public:
     CRegisters(CN64System * System, CSystemEvents * SystemEvents);
@@ -548,7 +608,7 @@ public:
 
     //Floating point registers/information
     uint32_t        m_FPCR[32];
-    ROUNDING_MODE   m_RoundingModel;
+    int32_t         m_RoundingModel;
     MIPS_DWORD      m_FPR[32];
     float         * m_FPR_S[32];
     double        * m_FPR_D[32];
@@ -563,6 +623,7 @@ public:
     uint32_t           m_Peripheral_Interface[13];
     uint32_t           m_RDRAM_Interface[8];
     uint32_t           m_SerialInterface[4];
+    uint32_t           m_DiskInterface[22];
     uint32_t           m_AudioIntrReg;
     uint32_t           m_GfxIntrReg;
     uint32_t           m_RspIntrReg;

@@ -55,6 +55,6 @@ int CopyDepthBuffer();
 
 int SwapTextureBuffer();
 
-int FindTextureBuffer(wxUint32 addr, wxUint16 width);
+int FindTextureBuffer(uint32_t addr, uint16_t width);
 
 #endif  // ifndef TEXBUFFER

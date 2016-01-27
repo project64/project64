@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 
-#include "SettingsType-Base.h"
+#include <Project64-core/Settings/SettingType/SettingsType-Base.h>
 
 class CSettingTypeTempBool :
     public CSettingType

@@ -146,11 +146,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MemoryManagement.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\MemTest.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\path.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Platform.cpp"
 				>
 			</File>
 			<File
@@ -215,11 +223,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MemoryManagement.h"
+				>
+			</File>
+			<File
 				RelativePath=".\MemTest.h"
 				>
 			</File>
 			<File
 				RelativePath=".\path.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Platform.h"
 				>
 			</File>
 			<File
@@ -248,6 +264,10 @@
 			</File>
 			<File
 				RelativePath=".\TraceDefs.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TraceModulesCommon.h"
 				>
 			</File>
 			<File

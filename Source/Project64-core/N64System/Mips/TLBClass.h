@@ -11,7 +11,7 @@
 #pragma once
 
 #include <Common/LogClass.h>
-#include "RegisterClass.h"
+#include <Project64-core/N64System/Mips/RegisterClass.h>
 
 class CDebugTlb;
 

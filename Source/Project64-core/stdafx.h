@@ -1,9 +1,11 @@
+#include <string.h>
+
 #include <Common/stdtypes.h>
 #include <Common/StdString.h>
 #include <Common/Trace.h>
 
-#include "Multilanguage.h"
-#include "Notification.h"
+#include <Project64-core/Multilanguage.h>
+#include <Project64-core/Notification.h>
 #include "Version.h"
 #include "Settings/SettingsClass.h"
-#include "TraceModulesProject64.h"
+#include <Project64-core/TraceModulesProject64.h>

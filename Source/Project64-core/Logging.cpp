@@ -9,9 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "Logging.h"
+#include <Project64-core/Logging.h>
 
-#include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <Common/path.h>
@@ -615,7 +614,7 @@ void CLogging::StartLog(void)
         return;
     }
 
-    CPath LogFile(CPath::MODULE_DIRECTORY);
+    CPath LogFile(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(),"");
     LogFile.AppendDirectory("Logs");
     LogFile.SetNameExtension("cpudebug.log");
 

@@ -24,6 +24,11 @@ enum SettingID
     //information - temp keys
     Info_ShortCutsChanged,
 
+    //Command Settings
+    Cmd_BaseDirectory,
+    Cmd_RomFile,
+    Cmd_ShowHelp,
+
     //Support Files
     SupportFile_Settings,
     SupportFile_SettingsDefault,
@@ -62,6 +67,7 @@ enum SettingID
     Setting_LanguageDir,
     Setting_LanguageDirDefault,
     Setting_CurrentLanguage,
+    Setting_EnableDisk,
 
     //RDB TLB Settings
     Rdb_GoodName,

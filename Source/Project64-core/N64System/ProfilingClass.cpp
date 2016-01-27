@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include <stdio.h>
+
 #include <Project64-core/N64System/ProfilingClass.h>
 #include <Common/LogClass.h>
 
@@ -31,11 +33,11 @@ SPECIAL_TIMERS CProfiling::StartTimer(SPECIAL_TIMERS Address)
     uint32_t HiValue, LoValue;
     _asm
     {
-        pushad
-            rdtsc
-            mov HiValue, edx
-            mov LoValue, eax
-            popad
+        pushad;
+        rdtsc;
+        mov HiValue, edx;
+        mov LoValue, eax;
+        popad;
     }
     m_StartTimeHi = HiValue;
     m_StartTimeLo = LoValue;
@@ -45,18 +47,19 @@ SPECIAL_TIMERS CProfiling::StartTimer(SPECIAL_TIMERS Address)
     return OldTimerAddr;
 }
 
-SPECIAL_TIMERS CProfiling::StopTimer() {
+SPECIAL_TIMERS CProfiling::StopTimer()
+{
     uint32_t HiValue, LoValue;
 
     if (m_CurrentTimerAddr == Timer_None) { return m_CurrentTimerAddr; }
 
 #ifdef _M_IX86
     _asm {
-        pushad
-            rdtsc
-            mov HiValue, edx
-            mov LoValue, eax
-            popad
+        pushad;
+        rdtsc;
+        mov HiValue, edx;
+        mov LoValue, eax;
+        popad;
     }
 #else
     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -79,7 +82,8 @@ SPECIAL_TIMERS CProfiling::StopTimer() {
     return OldTimerAddr;
 }
 
-void CProfiling::ShowCPU_Usage() {
+void CProfiling::ShowCPU_Usage()
+{
     int64_t TotalTime, CPU = 0, Alist = 0, Dlist = 0, Idle = 0;
     PROFILE_ENRTY Entry;
 
@@ -115,16 +119,19 @@ void CProfiling::ShowCPU_Usage() {
     ResetCounters();
 }
 
-void CProfiling::ResetCounters() {
+void CProfiling::ResetCounters()
+{
     m_Entries.clear();
 }
 
-struct TIMER_NAME {
+struct TIMER_NAME
+{
     SPECIAL_TIMERS Timer;
-    char * Name;
+    const char * Name;
 };
 
-void CProfiling::GenerateLog() {
+void CProfiling::GenerateLog()
+{
     stdstr LogFileName;
     {
         CLog Log;
@@ -133,20 +140,25 @@ void CProfiling::GenerateLog() {
 
         //Get the total time
         int64_t TotalTime = 0;
-        for (PROFILE_ENRTY itemTime = m_Entries.begin(); itemTime != m_Entries.end(); itemTime++) {
+        for (PROFILE_ENRTY itemTime = m_Entries.begin(); itemTime != m_Entries.end(); itemTime++)
+        {
             TotalTime += itemTime->second;
         }
 
         //Create a sortable list of items
         std::vector<PROFILE_VALUE *> ItemList;
-        for (PROFILE_ENRTY Entry = m_Entries.begin(); Entry != m_Entries.end(); Entry++) {
+        for (PROFILE_ENRTY Entry = m_Entries.begin(); Entry != m_Entries.end(); Entry++)
+        {
             ItemList.push_back(&(*Entry));
         }
 
         //sort the list with a basic bubble sort
-        for (size_t OuterPass = 0; OuterPass < (ItemList.size() - 1); OuterPass++) {
-            for (size_t InnerPass = 0; InnerPass < (ItemList.size() - 1); InnerPass++) {
-                if (ItemList[InnerPass]->second < ItemList[InnerPass + 1]->second) {
+        for (size_t OuterPass = 0; OuterPass < (ItemList.size() - 1); OuterPass++)
+        {
+            for (size_t InnerPass = 0; InnerPass < (ItemList.size() - 1); InnerPass++)
+            {
+                if (ItemList[InnerPass]->second < ItemList[InnerPass + 1]->second)
+                {
                     PROFILE_VALUE * TempPtr = ItemList[InnerPass];
                     ItemList[InnerPass] = ItemList[InnerPass + 1];
                     ItemList[InnerPass + 1] = TempPtr;
@@ -154,7 +166,8 @@ void CProfiling::GenerateLog() {
             }
         }
 
-        TIMER_NAME TimerNames[] = {
+        TIMER_NAME TimerNames[] =
+        {
             { Timer_R4300, "R4300" },
             { Timer_RSP_Dlist, "RSP: Dlist" },
             { Timer_RSP_Alist, "RSP: Alist" },
@@ -170,13 +183,16 @@ void CProfiling::GenerateLog() {
             { Timer_CompileDone, "Timer_CompileDone" },
         };
 
-        for (size_t count = 0; count < ItemList.size(); count++) {
+        for (size_t count = 0; count < ItemList.size(); count++)
+        {
             char Buffer[255];
             double CpuUsage = ((double)ItemList[count]->second / (double)TotalTime) * 100;
             if (CpuUsage <= 0.2) { continue; }
             sprintf(Buffer, "Func 0x%08X", ItemList[count]->first);
-            for (int NameID = 0; NameID < (sizeof(TimerNames) / sizeof(TIMER_NAME)); NameID++) {
-                if (ItemList[count]->first == TimerNames[NameID].Timer) {
+            for (int NameID = 0; NameID < (sizeof(TimerNames) / sizeof(TIMER_NAME)); NameID++)
+            {
+                if (ItemList[count]->first == TimerNames[NameID].Timer)
+                {
                     strcpy(Buffer, TimerNames[NameID].Name);
                     break;
                 }

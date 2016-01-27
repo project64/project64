@@ -37,7 +37,7 @@
 //
 //****************************************************************
 //
-// CRC32 calculation functions 
+// CRC32 calculation functions
 //
 // Created by Gonetz, 2004
 //
@@ -45,4 +45,4 @@
 
 void CRC_BuildTable();
 
-unsigned int CRC32( unsigned int crc, void *buffer, unsigned int count );
+unsigned int CRC32(unsigned int crc, void *buffer, unsigned int count);

@@ -60,8 +60,8 @@
 #include "TxDbg.h"
 #include <zlib/zlib.h>
 #include <string>
-#include <common/path.h>
-#include <common/StdString.h>
+#include <Common/path.h>
+#include <Common/StdString.h>
 #include <io.h>
 
 TxHiResCache::~TxHiResCache()

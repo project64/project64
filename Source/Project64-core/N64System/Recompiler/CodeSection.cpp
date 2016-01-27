@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "CodeSection.h"
+#include <Project64-core/N64System/Recompiler/CodeSection.h>
 #include <Project64-core/N64System/Mips/OpCode.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
@@ -19,7 +19,7 @@
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/Recompiler/LoopAnalysis.h>
 #include <Project64-core/N64System/Recompiler/SectionInfo.h>
-#include <Windows.h>
+#include <Project64-core/ExceptionHandler.h>
 
 void InPermLoop();
 
@@ -30,7 +30,9 @@ static bool DelaySlotEffectsJump(uint32_t JumpPC)
     OPCODE Command;
 
     if (!g_MMU->LW_VAddr(JumpPC, Command.Hex))
+	{
         return true;
+	}
 
     switch (Command.op)
     {
@@ -71,29 +73,29 @@ static bool DelaySlotEffectsJump(uint32_t JumpPC)
             case R4300i_COP1_BC_BCT:
             case R4300i_COP1_BC_BCFL:
             case R4300i_COP1_BC_BCTL:
-            {
-                bool EffectDelaySlot = false;
-                OPCODE NewCommand;
-
-                if (!g_MMU->LW_VAddr(JumpPC + 4, NewCommand.Hex))
                 {
-                    return true;
-                }
+                    bool EffectDelaySlot = false;
+                    OPCODE NewCommand;
 
-                if (NewCommand.op == R4300i_CP1)
-                {
-                    if (NewCommand.fmt == R4300i_COP1_S && (NewCommand.funct & 0x30) == 0x30)
+                    if (!g_MMU->LW_VAddr(JumpPC + 4, NewCommand.Hex))
                     {
-                        EffectDelaySlot = true;
+                        return true;
                     }
-                    if (NewCommand.fmt == R4300i_COP1_D && (NewCommand.funct & 0x30) == 0x30)
+
+                    if (NewCommand.op == R4300i_CP1)
                     {
-                        EffectDelaySlot = true;
+                        if (NewCommand.fmt == R4300i_COP1_S && (NewCommand.funct & 0x30) == 0x30)
+                        {
+                            EffectDelaySlot = true;
+                        }
+                        if (NewCommand.fmt == R4300i_COP1_D && (NewCommand.funct & 0x30) == 0x30)
+                        {
+                            EffectDelaySlot = true;
+                        }
                     }
+                    return EffectDelaySlot;
                 }
-                return EffectDelaySlot;
-            }
-            break;
+                break;
             }
             break;
         }
@@ -108,21 +110,21 @@ static bool DelaySlotEffectsJump(uint32_t JumpPC)
 }
 
 CCodeSection::CCodeSection(CCodeBlock * CodeBlock, uint32_t EnterPC, uint32_t ID, bool LinkAllowed) :
-m_BlockInfo(CodeBlock),
-m_SectionID(ID),
-m_EnterPC(EnterPC),
-m_EndPC((uint32_t)-1),
-m_ContinueSection(NULL),
-m_JumpSection(NULL),
-m_EndSection(false),
-m_LinkAllowed(LinkAllowed),
-m_Test(0),
-m_Test2(0),
-m_CompiledLocation(NULL),
-m_InLoop(false),
-m_DelaySlot(false)
+    m_BlockInfo(CodeBlock),
+    m_SectionID(ID),
+    m_EnterPC(EnterPC),
+    m_EndPC((uint32_t)-1),
+    m_ContinueSection(NULL),
+    m_JumpSection(NULL),
+    m_EndSection(false),
+    m_LinkAllowed(LinkAllowed),
+    m_Test(0),
+    m_Test2(0),
+    m_CompiledLocation(NULL),
+    m_InLoop(false),
+    m_DelaySlot(false)
 {
-    CPU_Message(__FUNCTION__ ": ID %d EnterPC 0x%08X", ID, EnterPC);
+    CPU_Message("%s: ID %d EnterPC 0x%08X", __FUNCTION__, ID, EnterPC);
 }
 
 CCodeSection::~CCodeSection()
@@ -297,34 +299,34 @@ void CCodeSection::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &Exi
         ExitCodeBlock();
         break;
     case CExitInfo::DoSysCall:
-    {
-        bool bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
-        PushImm32(bDelay ? "true" : "false", bDelay);
-        MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
-        Call_Direct(AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
-        if (g_SyncSystem)
         {
-            MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
-            Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+            bool bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
+            PushImm32(bDelay ? "true" : "false", bDelay);
+            MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
+            Call_Direct(AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
+            if (g_SyncSystem)
+            {
+                MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
+                Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+            }
+            ExitCodeBlock();
         }
-        ExitCodeBlock();
-    }
-    break;
+        break;
     case CExitInfo::COP1_Unuseable:
-    {
-        bool bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
-        PushImm32("1", 1);
-        PushImm32(bDelay ? "true" : "false", bDelay);
-        MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
-        Call_Direct(AddressOf(&CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
-        if (g_SyncSystem)
         {
-            MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
-            Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+            bool bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
+            PushImm32("1", 1);
+            PushImm32(bDelay ? "true" : "false", bDelay);
+            MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
+            Call_Direct(AddressOf(&CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
+            if (g_SyncSystem)
+            {
+                MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
+                Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+            }
+            ExitCodeBlock();
         }
-        ExitCodeBlock();
-    }
-    break;
+        break;
     case CExitInfo::ExitResetRecompCode:
         g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef legacycode
@@ -801,137 +803,137 @@ void CCodeSection::SyncRegState(const CRegInfo & SyncTo)
         {
         case CRegInfo::STATE_UNKNOWN: UnMap_GPR(i, true);  break;
         case CRegInfo::STATE_MAPPED_64:
-        {
-            x86Reg Reg = SyncTo.GetMipsRegMapLo(i);
-            x86Reg x86RegHi = SyncTo.GetMipsRegMapHi(i);
-            UnMap_X86reg(Reg);
-            UnMap_X86reg(x86RegHi);
-            switch (GetMipsRegState(i))
             {
-            case CRegInfo::STATE_UNKNOWN:
-                MoveVariableToX86reg(&_GPR[i].UW[0], CRegName::GPR_Lo[i], Reg);
-                MoveVariableToX86reg(&_GPR[i].UW[1], CRegName::GPR_Hi[i], x86RegHi);
-                break;
-            case CRegInfo::STATE_MAPPED_64:
-                MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
-                MoveX86RegToX86Reg(GetMipsRegMapHi(i), x86RegHi);
-                m_RegWorkingSet.SetX86Mapped(GetMipsRegMapHi(i), CRegInfo::NotMapped);
-                break;
-            case CRegInfo::STATE_MAPPED_32_SIGN:
-                MoveX86RegToX86Reg(GetMipsRegMapLo(i), x86RegHi);
-                ShiftRightSignImmed(x86RegHi, 31);
-                MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
-                break;
-            case CRegInfo::STATE_MAPPED_32_ZERO:
-                XorX86RegToX86Reg(x86RegHi, x86RegHi);
-                MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
-                break;
-            case CRegInfo::STATE_CONST_64:
-                MoveConstToX86reg(GetMipsRegHi(i), x86RegHi);
-                MoveConstToX86reg(GetMipsRegLo(i), Reg);
-                break;
-            case CRegInfo::STATE_CONST_32_SIGN:
-                MoveConstToX86reg(GetMipsRegLo_S(i) >> 31, x86RegHi);
-                MoveConstToX86reg(GetMipsRegLo(i), Reg);
-                break;
-            default:
-                CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d", GetMipsRegState(i));
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-                continue;
+                x86Reg Reg = SyncTo.GetMipsRegMapLo(i);
+                x86Reg x86RegHi = SyncTo.GetMipsRegMapHi(i);
+                UnMap_X86reg(Reg);
+                UnMap_X86reg(x86RegHi);
+                switch (GetMipsRegState(i))
+                {
+                case CRegInfo::STATE_UNKNOWN:
+                    MoveVariableToX86reg(&_GPR[i].UW[0], CRegName::GPR_Lo[i], Reg);
+                    MoveVariableToX86reg(&_GPR[i].UW[1], CRegName::GPR_Hi[i], x86RegHi);
+                    break;
+                case CRegInfo::STATE_MAPPED_64:
+                    MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
+                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    MoveX86RegToX86Reg(GetMipsRegMapHi(i), x86RegHi);
+                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapHi(i), CRegInfo::NotMapped);
+                    break;
+                case CRegInfo::STATE_MAPPED_32_SIGN:
+                    MoveX86RegToX86Reg(GetMipsRegMapLo(i), x86RegHi);
+                    ShiftRightSignImmed(x86RegHi, 31);
+                    MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
+                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    break;
+                case CRegInfo::STATE_MAPPED_32_ZERO:
+                    XorX86RegToX86Reg(x86RegHi, x86RegHi);
+                    MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
+                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    break;
+                case CRegInfo::STATE_CONST_64:
+                    MoveConstToX86reg(GetMipsRegHi(i), x86RegHi);
+                    MoveConstToX86reg(GetMipsRegLo(i), Reg);
+                    break;
+                case CRegInfo::STATE_CONST_32_SIGN:
+                    MoveConstToX86reg(GetMipsRegLo_S(i) >> 31, x86RegHi);
+                    MoveConstToX86reg(GetMipsRegLo(i), Reg);
+                    break;
+                default:
+                    CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d", GetMipsRegState(i));
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                    continue;
+                }
+                m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
+                m_RegWorkingSet.SetMipsRegMapHi(i, x86RegHi);
+                m_RegWorkingSet.SetMipsRegState(i, CRegInfo::STATE_MAPPED_64);
+                m_RegWorkingSet.SetX86Mapped(Reg, CRegInfo::GPR_Mapped);
+                m_RegWorkingSet.SetX86Mapped(x86RegHi, CRegInfo::GPR_Mapped);
+                m_RegWorkingSet.SetX86MapOrder(Reg, 1);
+                m_RegWorkingSet.SetX86MapOrder(x86RegHi, 1);
             }
-            m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
-            m_RegWorkingSet.SetMipsRegMapHi(i, x86RegHi);
-            m_RegWorkingSet.SetMipsRegState(i, CRegInfo::STATE_MAPPED_64);
-            m_RegWorkingSet.SetX86Mapped(Reg, CRegInfo::GPR_Mapped);
-            m_RegWorkingSet.SetX86Mapped(x86RegHi, CRegInfo::GPR_Mapped);
-            m_RegWorkingSet.SetX86MapOrder(Reg, 1);
-            m_RegWorkingSet.SetX86MapOrder(x86RegHi, 1);
-        }
-        break;
+            break;
         case CRegInfo::STATE_MAPPED_32_SIGN:
-        {
-            x86Reg Reg = SyncTo.GetMipsRegMapLo(i);
-            UnMap_X86reg(Reg);
-            switch (GetMipsRegState(i))
             {
-            case CRegInfo::STATE_UNKNOWN: MoveVariableToX86reg(&_GPR[i].UW[0], CRegName::GPR_Lo[i], Reg); break;
-            case CRegInfo::STATE_CONST_32_SIGN: MoveConstToX86reg(GetMipsRegLo(i), Reg); break;
-            case CRegInfo::STATE_MAPPED_32_SIGN:
-                MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
-                break;
-            case CRegInfo::STATE_MAPPED_32_ZERO:
-                if (GetMipsRegMapLo(i) != Reg)
+                x86Reg Reg = SyncTo.GetMipsRegMapLo(i);
+                UnMap_X86reg(Reg);
+                switch (GetMipsRegState(i))
                 {
+                case CRegInfo::STATE_UNKNOWN: MoveVariableToX86reg(&_GPR[i].UW[0], CRegName::GPR_Lo[i], Reg); break;
+                case CRegInfo::STATE_CONST_32_SIGN: MoveConstToX86reg(GetMipsRegLo(i), Reg); break;
+                case CRegInfo::STATE_MAPPED_32_SIGN:
                     MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
                     m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    break;
+                case CRegInfo::STATE_MAPPED_32_ZERO:
+                    if (GetMipsRegMapLo(i) != Reg)
+                    {
+                        MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
+                        m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    }
+                    break;
+                case CRegInfo::STATE_MAPPED_64:
+                    MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
+                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    m_RegWorkingSet.SetX86Mapped(GetMipsRegMapHi(i), CRegInfo::NotMapped);
+                    break;
+                case CRegInfo::STATE_CONST_64:
+                    CPU_Message("hi %X\nLo %X", GetMipsRegHi(i), GetMipsRegLo(i));
+                default:
+                    CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_SIGN\n%d", GetMipsRegState(i));
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
-                break;
-            case CRegInfo::STATE_MAPPED_64:
-                MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
-                m_RegWorkingSet.SetX86Mapped(GetMipsRegMapHi(i), CRegInfo::NotMapped);
-                break;
-            case CRegInfo::STATE_CONST_64:
-                CPU_Message("hi %X\nLo %X", GetMipsRegHi(i), GetMipsRegLo(i));
-            default:
-                CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_SIGN\n%d", GetMipsRegState(i));
-                g_Notify->BreakPoint(__FILE__, __LINE__);
+                m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
+                m_RegWorkingSet.SetMipsRegState(i, CRegInfo::STATE_MAPPED_32_SIGN);
+                m_RegWorkingSet.SetX86Mapped(Reg, CRegInfo::GPR_Mapped);
+                m_RegWorkingSet.SetX86MapOrder(Reg, 1);
             }
-            m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
-            m_RegWorkingSet.SetMipsRegState(i, CRegInfo::STATE_MAPPED_32_SIGN);
-            m_RegWorkingSet.SetX86Mapped(Reg, CRegInfo::GPR_Mapped);
-            m_RegWorkingSet.SetX86MapOrder(Reg, 1);
-        }
-        break;
+            break;
         case CRegInfo::STATE_MAPPED_32_ZERO:
-        {
-            x86Reg Reg = SyncTo.GetMipsRegMapLo(i);
-            UnMap_X86reg(Reg);
-            switch (GetMipsRegState(i))
             {
-            case CRegInfo::STATE_MAPPED_64:
-            case CRegInfo::STATE_UNKNOWN:
-                MoveVariableToX86reg(&_GPR[i].UW[0], CRegName::GPR_Lo[i], Reg);
-                break;
-            case CRegInfo::STATE_MAPPED_32_ZERO:
-                MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
-                m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
-                break;
-            case CRegInfo::STATE_MAPPED_32_SIGN:
-                if (g_System->b32BitCore())
+                x86Reg Reg = SyncTo.GetMipsRegMapLo(i);
+                UnMap_X86reg(Reg);
+                switch (GetMipsRegState(i))
                 {
+                case CRegInfo::STATE_MAPPED_64:
+                case CRegInfo::STATE_UNKNOWN:
+                    MoveVariableToX86reg(&_GPR[i].UW[0], CRegName::GPR_Lo[i], Reg);
+                    break;
+                case CRegInfo::STATE_MAPPED_32_ZERO:
                     MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
                     m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
-                }
-                else
-                {
+                    break;
+                case CRegInfo::STATE_MAPPED_32_SIGN:
+                    if (g_System->b32BitCore())
+                    {
+                        MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
+                        m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                    }
+                    else
+                    {
+                        CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d", GetMipsRegState(i));
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
+                    }
+                    break;
+                case CRegInfo::STATE_CONST_32_SIGN:
+                    if (!g_System->b32BitCore() && GetMipsRegLo_S(i) < 0)
+                    {
+                        CPU_Message("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
+                        CPU_Message("%s: %X", CRegName::GPR[i], GetMipsRegLo_S(i));
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
+                    }
+                    MoveConstToX86reg(GetMipsRegLo(i), Reg);
+                    break;
+                default:
                     CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d", GetMipsRegState(i));
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
-                break;
-            case CRegInfo::STATE_CONST_32_SIGN:
-                if (!g_System->b32BitCore() && GetMipsRegLo_S(i) < 0)
-                {
-                    CPU_Message("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
-                    CPU_Message("%s: %X", CRegName::GPR[i], GetMipsRegLo_S(i));
-                    g_Notify->BreakPoint(__FILE__, __LINE__);
-                }
-                MoveConstToX86reg(GetMipsRegLo(i), Reg);
-                break;
-            default:
-                CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d", GetMipsRegState(i));
-                g_Notify->BreakPoint(__FILE__, __LINE__);
+                m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
+                m_RegWorkingSet.SetMipsRegState(i, SyncTo.GetMipsRegState(i));
+                m_RegWorkingSet.SetX86Mapped(Reg, CRegInfo::GPR_Mapped);
+                m_RegWorkingSet.SetX86MapOrder(Reg, 1);
             }
-            m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
-            m_RegWorkingSet.SetMipsRegState(i, SyncTo.GetMipsRegState(i));
-            m_RegWorkingSet.SetX86Mapped(Reg, CRegInfo::GPR_Mapped);
-            m_RegWorkingSet.SetX86MapOrder(Reg, 1);
-        }
-        break;
+            break;
         default:
             CPU_Message("%d - %d reg: %s (%d)", SyncTo.GetMipsRegState(i), GetMipsRegState(i), CRegName::GPR[i], i);
             g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -1034,14 +1036,14 @@ bool CCodeSection::GenerateX86Code(uint32_t Test)
 
     do
     {
-        __try
+        __except_try()
         {
             if (!g_MMU->LW_VAddr(m_CompilePC, m_Opcode.Hex))
             {
                 g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
             }
         }
-        __except (g_MMU->MemoryFilter(GetExceptionCode(), GetExceptionInformation()))
+        __except_catch()
         {
             g_Notify->FatalError(GS(MSG_UNKNOWN_MEM_ACTION));
         }
@@ -1658,7 +1660,7 @@ void CCodeSection::UnlinkParent(CCodeSection * Parent, bool ContinueSection)
         return;
     }
 
-    CPU_Message(__FUNCTION__ ": Section %d Parent: %d ContinueSection = %s", m_SectionID, Parent->m_SectionID, ContinueSection ? "Yes" : "No");
+    CPU_Message("%s: Section %d Parent: %d ContinueSection = %s", __FUNCTION__, m_SectionID, Parent->m_SectionID, ContinueSection ? "Yes" : "No");
     if (Parent->m_ContinueSection == this && Parent->m_JumpSection == this)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);

@@ -9,10 +9,9 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "FunctionMapClass.h"
+#include <Project64-core/N64System/Recompiler/FunctionMapClass.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64Class.h>
-#include <Windows.h>
 
 CFunctionMap::CFunctionMap() :
 m_JumpTable(NULL),
@@ -29,14 +28,14 @@ bool CFunctionMap::AllocateMemory()
 {
     if (g_System->LookUpMode() == FuncFind_VirtualLookup && m_FunctionTable == NULL)
     {
-        m_FunctionTable = (PCCompiledFunc_TABLE *)VirtualAlloc(NULL, 0xFFFFF * sizeof(CCompiledFunc *), MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+        m_FunctionTable = new PCCompiledFunc_TABLE[0x100000];
         if (m_FunctionTable == NULL)
         {
             WriteTrace(TraceRecompiler, TraceError, "failed to allocate function table");
             g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
             return false;
         }
-        memset(m_FunctionTable, 0, 0xFFFFF * sizeof(CCompiledFunc *));
+        memset(m_FunctionTable, 0, 0x100000 * sizeof(PCCompiledFunc_TABLE));
     }
     if (g_System->LookUpMode() == FuncFind_PhysicalLookup && m_JumpTable == NULL)
     {
@@ -63,7 +62,7 @@ void CFunctionMap::CleanBuffers()
                 delete m_FunctionTable[i];
             }
         }
-        VirtualFree(m_FunctionTable, 0, MEM_RELEASE);
+		delete [] m_FunctionTable;
         m_FunctionTable = NULL;
     }
     if (m_JumpTable)

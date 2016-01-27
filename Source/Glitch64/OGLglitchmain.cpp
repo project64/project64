@@ -26,7 +26,7 @@
  * `GetSystemSetting` and `FindSystemSettingId` from Project64 debugger
  * used only in DisplayError when OpenGL extension loading fails on WGL
  */
-#include "../Settings/Settings.h"
+#include <Settings/Settings.h>
 
 struct ResolutionInfo
 {

@@ -9,13 +9,13 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "SystemTiming.h"
+#include <Project64-core/N64System/Mips/SystemTiming.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/3rdParty/zip.h>
 
-CSystemTimer::CSystemTimer(int & NextTimer) :
+CSystemTimer::CSystemTimer( int32_t & NextTimer ) :
 m_NextTimer(NextTimer),
 m_inFixTimer(false)
 {

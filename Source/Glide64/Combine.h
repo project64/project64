@@ -69,41 +69,41 @@
 
 typedef struct
 {
-  wxUint32 ccolor;  // constant color to set at the end, color and alpha
-  wxUint32 c_fnc, c_fac, c_loc, c_oth;  // grColorCombine flags
-  wxUint32 a_fnc, a_fac, a_loc, a_oth;  // grAlphaCombine flags
-  wxUint32 tex, tmu0_func, tmu0_fac, tmu0_invert, tmu1_func, tmu1_fac, tmu1_invert;
-  wxUint32 tmu0_a_func, tmu0_a_fac, tmu0_a_invert, tmu1_a_func, tmu1_a_fac, tmu1_a_invert;
+  uint32_t ccolor;  // constant color to set at the end, color and alpha
+  uint32_t c_fnc, c_fac, c_loc, c_oth;  // grColorCombine flags
+  uint32_t a_fnc, a_fac, a_loc, a_oth;  // grAlphaCombine flags
+  uint32_t tex, tmu0_func, tmu0_fac, tmu0_invert, tmu1_func, tmu1_fac, tmu1_invert;
+  uint32_t tmu0_a_func, tmu0_a_fac, tmu0_a_invert, tmu1_a_func, tmu1_a_fac, tmu1_a_invert;
   int   dc0_lodbias, dc1_lodbias;
-  wxUint8  dc0_detailscale, dc1_detailscale;
+  uint8_t  dc0_detailscale, dc1_detailscale;
   float dc0_detailmax, dc1_detailmax;
   float lodbias0, lodbias1;
-  wxUint32 abf1, abf2;
-  wxUint32 mod_0, modcolor_0, modcolor1_0, modcolor2_0, modfactor_0;
-  wxUint32 mod_1, modcolor_1, modcolor1_1, modcolor2_1, modfactor_1;
+  uint32_t abf1, abf2;
+  uint32_t mod_0, modcolor_0, modcolor1_0, modcolor2_0, modfactor_0;
+  uint32_t mod_1, modcolor_1, modcolor1_1, modcolor2_1, modfactor_1;
   //combine extensions
-  wxUint32 c_ext_a, c_ext_a_mode, c_ext_b, c_ext_b_mode, c_ext_c, c_ext_d;
+  uint32_t c_ext_a, c_ext_a_mode, c_ext_b, c_ext_b_mode, c_ext_c, c_ext_d;
   int  c_ext_c_invert, c_ext_d_invert;
-  wxUint32 a_ext_a, a_ext_a_mode, a_ext_b, a_ext_b_mode, a_ext_c, a_ext_d;
+  uint32_t a_ext_a, a_ext_a_mode, a_ext_b, a_ext_b_mode, a_ext_c, a_ext_d;
   int  a_ext_c_invert, a_ext_d_invert;
-  wxUint32 t0c_ext_a, t0c_ext_a_mode, t0c_ext_b, t0c_ext_b_mode, t0c_ext_c, t0c_ext_d;
+  uint32_t t0c_ext_a, t0c_ext_a_mode, t0c_ext_b, t0c_ext_b_mode, t0c_ext_c, t0c_ext_d;
   int  t0c_ext_c_invert, t0c_ext_d_invert;
-  wxUint32 t0a_ext_a, t0a_ext_a_mode, t0a_ext_b, t0a_ext_b_mode, t0a_ext_c, t0a_ext_d;
+  uint32_t t0a_ext_a, t0a_ext_a_mode, t0a_ext_b, t0a_ext_b_mode, t0a_ext_c, t0a_ext_d;
   int  t0a_ext_c_invert, t0a_ext_d_invert;
-  wxUint32 t1c_ext_a, t1c_ext_a_mode, t1c_ext_b, t1c_ext_b_mode, t1c_ext_c, t1c_ext_d;
+  uint32_t t1c_ext_a, t1c_ext_a_mode, t1c_ext_b, t1c_ext_b_mode, t1c_ext_c, t1c_ext_d;
   int  t1c_ext_c_invert, t1c_ext_d_invert;
-  wxUint32 t1a_ext_a, t1a_ext_a_mode, t1a_ext_b, t1a_ext_b_mode, t1a_ext_c, t1a_ext_d;
+  uint32_t t1a_ext_a, t1a_ext_a_mode, t1a_ext_b, t1a_ext_b_mode, t1a_ext_c, t1a_ext_d;
   int  t1a_ext_c_invert, t1a_ext_d_invert;
   GRCOLORCOMBINEEXT    grColorCombineExt;
   GRCOLORCOMBINEEXT    grAlphaCombineExt;
   GRTEXCOLORCOMBINEEXT grTexColorCombineExt;
   GRTEXCOLORCOMBINEEXT grTexAlphaCombineExt;
   GRCONSTANTCOLORVALUEEXT grConstantColorValueExt;
-  wxUint32 tex_ccolor;  
+  uint32_t tex_ccolor;  
   int combine_ext;
-  wxUint8 cmb_ext_use;
-  wxUint8 tex_cmb_ext_use;
-  wxUint32 shade_mod_hash;  
+  uint8_t cmb_ext_use;
+  uint8_t tex_cmb_ext_use;
+  uint32_t shade_mod_hash;  
 } COMBINE;
 
 extern COMBINE cmb;

@@ -199,11 +199,7 @@ void CNotificationImp::RefreshMenu(void)
 {
     if (m_hWnd == NULL) { return; }
 
-#if defined(WINDOWS_UI)
     m_hWnd->RefreshMenu();
-#else
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-#endif
 }
 
 void CNotificationImp::HideRomBrowser(void)
@@ -227,11 +223,7 @@ void CNotificationImp::BringToTop(void)
 {
     if (m_hWnd == NULL) { return; }
 
-#if defined(WINDOWS_UI)
     m_hWnd->BringToTop();
-#else
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-#endif
 }
 
 void CNotificationImp::ChangeFullScreen(void) const
@@ -258,12 +250,18 @@ void CNotificationImp::BreakPoint(const char * FileName, int LineNumber)
         }
         else
         {
-            g_BaseSystem->CloseCpu();
+            if (g_BaseSystem) 
+			{
+				g_BaseSystem->CloseCpu();
+			}
         }
     }
     else
     {
         DisplayError("Fatal Error: Stopping emulation");
-        g_BaseSystem->CloseCpu();
+		if (g_BaseSystem) 
+		{
+			g_BaseSystem->CloseCpu();
+		}
     }
 }

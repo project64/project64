@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-#include "X86ops.h"
+#include <Project64-core/N64System/Recompiler/X86ops.h>
 
 class CRecompMemory :
     protected CX86Ops

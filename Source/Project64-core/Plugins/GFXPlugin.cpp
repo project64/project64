@@ -14,25 +14,24 @@
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include "GFXPlugin.h"
-#include <Windows.h>
 
 CGfxPlugin::CGfxPlugin() :
-CaptureScreen(NULL),
-ChangeWindow(NULL),
-DrawScreen(NULL),
-DrawStatus(NULL),
-MoveScreen(NULL),
-ProcessDList(NULL),
-ProcessRDPList(NULL),
-ShowCFB(NULL),
-UpdateScreen(NULL),
-ViStatusChanged(NULL),
-ViWidthChanged(NULL),
-SoftReset(NULL),
-GetRomBrowserMenu(NULL),
-OnRomBrowserMenuItem(NULL),
-GetDebugInfo(NULL),
-InitiateDebugger(NULL)
+    CaptureScreen(NULL),
+    ChangeWindow(NULL),
+    DrawScreen(NULL),
+    DrawStatus(NULL),
+    MoveScreen(NULL),
+    ProcessDList(NULL),
+    ProcessRDPList(NULL),
+    ShowCFB(NULL),
+    UpdateScreen(NULL),
+    ViStatusChanged(NULL),
+    ViWidthChanged(NULL),
+    SoftReset(NULL),
+    GetRomBrowserMenu(NULL),
+    OnRomBrowserMenuItem(NULL),
+    GetDebugInfo(NULL),
+    InitiateDebugger(NULL)
 {
     memset(&m_GFXDebug, 0, sizeof(m_GFXDebug));
 }
@@ -46,7 +45,7 @@ CGfxPlugin::~CGfxPlugin()
 bool CGfxPlugin::LoadFunctions(void)
 {
     // Find entries for functions in DLL
-    int32_t(__cdecl *InitiateGFX) (void * Gfx_Info);
+    int32_t(CALL *InitiateGFX) (void * Gfx_Info);
     LoadFunction(InitiateGFX);
     LoadFunction(ChangeWindow);
     LoadFunction(DrawScreen);
@@ -94,8 +93,9 @@ bool CGfxPlugin::LoadFunctions(void)
     }
 
     if (GetDebugInfo != NULL)
+    {
         GetDebugInfo(&m_GFXDebug);
-
+    }
     return true;
 }
 
@@ -108,8 +108,8 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 
     typedef struct
     {
-        HWND hWnd;			/* Render window */
-        HWND hStatusBar;    /* if render window does not have a status bar then this is NULL */
+        void * hWnd;			/* Render window */
+        void * hStatusBar;    /* if render window does not have a status bar then this is NULL */
 
         int32_t MemoryBswaped;    // If this is set to TRUE, then the memory has been pre
         //   bswap on a dword (32 bits) boundry
@@ -148,19 +148,19 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
         uint32_t * VI__X_SCALE_REG;
         uint32_t * VI__Y_SCALE_REG;
 
-        void(__cdecl *CheckInterrupts)(void);
+        void(CALL *CheckInterrupts)(void);
     } GFX_INFO;
 
     //Get Function from DLL
-    int32_t(__cdecl *InitiateGFX)(GFX_INFO Gfx_Info);
-    InitiateGFX = (int32_t(__cdecl *)(GFX_INFO))GetProcAddress((HMODULE)m_hDll, "InitiateGFX");
+    int32_t(CALL *InitiateGFX)(GFX_INFO Gfx_Info);
+    _LoadFunction("InitiateGFX",InitiateGFX);
     if (InitiateGFX == NULL) { return false; }
 
     GFX_INFO Info = { 0 };
 
-    Info.MemoryBswaped = TRUE;
-    Info.hWnd = (HWND)Window->GetWindowHandle();
-    Info.hStatusBar = (HWND)Window->GetStatusBar();
+    Info.MemoryBswaped = true;
+    Info.hWnd = Window->GetWindowHandle();
+    Info.hStatusBar = Window->GetStatusBar();
     Info.CheckInterrupts = DummyCheckInterrupts;
 
     // We are initializing the plugin before any rom is loaded so we do not have any correct
@@ -224,20 +224,20 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 
     m_Initialized = InitiateGFX(Info) != 0;
 
-    //jabo had a bug so I call CreateThread so his dllmain gets called again
-    DWORD ThreadID;
-    HANDLE hthread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)DummyFunction, NULL, 0, &ThreadID);
-    CloseHandle(hthread);
+#ifdef _WIN32
+	//jabo had a bug so I call CreateThread so his dllmain gets called again
+    pjutil::DynLibCallDllMain();
+#endif
 
     return m_Initialized;
 }
 
 void CGfxPlugin::UnloadPluginDetails(void)
 {
-    if (m_hDll != NULL)
+    if (m_LibHandle != NULL)
     {
-        FreeLibrary((HMODULE)m_hDll);
-        m_hDll = NULL;
+        pjutil::DynLibClose(m_LibHandle);
+        m_LibHandle = NULL;
     }
     memset(&m_GFXDebug, 0, sizeof(m_GFXDebug));
 

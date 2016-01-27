@@ -459,8 +459,7 @@ bool CRomBrowser::FillRomInfo(ROM_INFO * pRomInfo)
         }
         else
         {
-            char drive[_MAX_DRIVE], dir[_MAX_DIR], ext[_MAX_EXT];
-            _splitpath(pRomInfo->szFullFileName, drive, dir, pRomInfo->FileName, ext);
+            strncpy(pRomInfo->FileName, CPath(pRomInfo->szFullFileName).GetNameExtension().c_str(), sizeof(pRomInfo->FileName) / sizeof(pRomInfo->FileName[0]));
         }
         if (m_Fields[RB_InternalName].Pos() >= 0)
         {
@@ -1576,9 +1575,9 @@ void CRomBrowser::RomList_SortList(void)
 }
 
 /*
- * 	SaveRomList - save all the rom information about the current roms in the rom brower
- *                to a cache file, so it is quick to reload the information
- */
+* 	SaveRomList - save all the rom information about the current roms in the rom brower
+*                to a cache file, so it is quick to reload the information
+*/
 void CRomBrowser::SaveRomList(strlist & FileList)
 {
     MD5 ListHash = RomListHash(FileList);

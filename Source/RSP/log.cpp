@@ -26,7 +26,7 @@
 
 #include <stdio.h>
 #include <windows.h>
-#include <common/StdString.h>
+#include <Common/StdString.h>
 #include <Common/FileClass.h>
 #include <Common/LogClass.h>
 #include <Common/path.h>

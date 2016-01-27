@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-#include "PluginBase.h"
+#include <Project64-core/Plugins/PluginBase.h>
 
 class CRSP_Plugin : public CPlugin
 {

@@ -13,10 +13,10 @@
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <Project64-core/N64System/Mips/OpCode.h>
 #include <Project64-core/N64System/Recompiler/RegInfo.h>
+#include <Project64-core/N64System/Recompiler/X86ops.h>
 #include <Project64-core/Settings/DebugSettings.h>
 #include <Project64-core/Settings/N64SystemSettings.h>
 #include <Project64-core/Settings/RecompilerSettings.h>
-#include "X86ops.h"
 
 class CCodeSection;
 

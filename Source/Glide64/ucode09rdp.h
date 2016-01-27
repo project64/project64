@@ -41,30 +41,30 @@
 //
 //****************************************************************
 
-void uc9_rpdcmd ()
+void uc9_rpdcmd()
 {
-  wxUint32 a = segoffset(rdp.cmd1) >> 2;
-  FRDP ("uc9:rdpcmd addr: %08lx\n", a);
-  if (a)
-  {
-    rdp.LLE = 1;
-    wxUint32 cmd = 0;
-    while(1) 
+    uint32_t a = segoffset(rdp.cmd1) >> 2;
+    FRDP("uc9:rdpcmd addr: %08lx\n", a);
+    if (a)
     {
-      rdp.cmd0 = ((wxUint32*)gfx.RDRAM)[a++];   
-      cmd = rdp.cmd0>>24; 
-      if (cmd == 0xDF)
-        break;
-      rdp.cmd1 = ((wxUint32*)gfx.RDRAM)[a++]; 
-      if (cmd == 0xE4 || cmd == 0xE5)
-      {
-        a++;
-        rdp.cmd2 = ((wxUint32*)gfx.RDRAM)[a++]; 
-        a++;
-        rdp.cmd3 = ((wxUint32*)gfx.RDRAM)[a++];
-      }
-      gfx_instruction[ucode_zSort][cmd] ();
-    };
-    rdp.LLE = 0;
-  }
+        rdp.LLE = 1;
+        uint32_t cmd = 0;
+        while (1)
+        {
+            rdp.cmd0 = ((uint32_t*)gfx.RDRAM)[a++];
+            cmd = rdp.cmd0 >> 24;
+            if (cmd == 0xDF)
+                break;
+            rdp.cmd1 = ((uint32_t*)gfx.RDRAM)[a++];
+            if (cmd == 0xE4 || cmd == 0xE5)
+            {
+                a++;
+                rdp.cmd2 = ((uint32_t*)gfx.RDRAM)[a++];
+                a++;
+                rdp.cmd3 = ((uint32_t*)gfx.RDRAM)[a++];
+            }
+            gfx_instruction[ucode_zSort][cmd]();
+        };
+        rdp.LLE = 0;
+    }
 }

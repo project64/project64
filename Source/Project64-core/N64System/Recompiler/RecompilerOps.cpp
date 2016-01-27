@@ -14,12 +14,11 @@
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
+#include <Project64-core/N64System/Recompiler/RecompilerClass.h>
+#include <Project64-core/N64System/Recompiler/CodeSection.h>
+#include <Project64-core/N64System/Recompiler/RecompilerOps.h>
 #include <Project64-core/N64System/N64Class.h>
-
 #include <stdio.h>
-#include "RecompilerClass.h"
-#include "RecompilerOps.h"
-#include "CodeSection.h"
 #include "x86CodeLog.h"
 
 CCodeSection * CRecompilerOps::m_Section = NULL;
@@ -2301,7 +2300,7 @@ void CRecompilerOps::DADDIU()
 
     BeforeCallDirect(m_RegWorkingSet);
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
-    Call_Direct(R4300iOp::DADDIU, "R4300iOp::DADDIU");
+    Call_Direct((void *)R4300iOp::DADDIU, "R4300iOp::DADDIU");
     AfterCallDirect(m_RegWorkingSet);
 }
 
@@ -3192,7 +3191,7 @@ void CRecompilerOps::SPECIAL_DMULT()
 
     BeforeCallDirect(m_RegWorkingSet);
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
-    Call_Direct(R4300iOp::SPECIAL_DMULT, "R4300iOp::SPECIAL_DMULT");
+    Call_Direct((void *)R4300iOp::SPECIAL_DMULT, "R4300iOp::SPECIAL_DMULT");
     AfterCallDirect(m_RegWorkingSet);
 }
 
@@ -3204,7 +3203,7 @@ void CRecompilerOps::SPECIAL_DMULTU()
     UnMap_GPR(m_Opcode.rt, true);
     BeforeCallDirect(m_RegWorkingSet);
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
-    Call_Direct(R4300iOp::SPECIAL_DMULTU, "R4300iOp::SPECIAL_DMULTU");
+    Call_Direct((void *)R4300iOp::SPECIAL_DMULTU, "R4300iOp::SPECIAL_DMULTU");
     AfterCallDirect(m_RegWorkingSet);
 
 #ifdef toremove
@@ -3283,7 +3282,7 @@ void CRecompilerOps::SPECIAL_DDIV()
     UnMap_GPR(m_Opcode.rt, true);
     BeforeCallDirect(m_RegWorkingSet);
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
-    Call_Direct(R4300iOp::SPECIAL_DDIV, "R4300iOp::SPECIAL_DDIV");
+    Call_Direct((void *)R4300iOp::SPECIAL_DDIV, "R4300iOp::SPECIAL_DDIV");
     AfterCallDirect(m_RegWorkingSet);
 }
 
@@ -3295,7 +3294,7 @@ void CRecompilerOps::SPECIAL_DDIVU()
     UnMap_GPR(m_Opcode.rt, true);
     BeforeCallDirect(m_RegWorkingSet);
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
-    Call_Direct(R4300iOp::SPECIAL_DDIVU, "R4300iOp::SPECIAL_DDIVU");
+    Call_Direct((void *)R4300iOp::SPECIAL_DDIVU, "R4300iOp::SPECIAL_DDIVU");
     AfterCallDirect(m_RegWorkingSet);
 }
 
@@ -4876,8 +4875,16 @@ void CRecompilerOps::SPECIAL_DADDU()
         Map_GPR_64bit(m_Opcode.rd, source1);
         if (IsConst(source2))
         {
-            AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegLo(source2));
-            AddConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegHi(source2));
+			DWORD LoReg = GetMipsRegLo(source2);
+			AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), LoReg);
+			if(LoReg != 0)
+			{
+				AdcConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegHi(source2));
+			}
+			else
+			{
+				AddConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegHi(source2));
+			}
         }
         else if (IsMapped(source2))
         {
@@ -5564,7 +5571,7 @@ void CRecompilerOps::COP0_CO_ERET(void)
     CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     m_RegWorkingSet.WriteBackRegisters();
-    Call_Direct(compiler_COP0_CO_ERET, "compiler_COP0_CO_ERET");
+    Call_Direct((void *)compiler_COP0_CO_ERET, "compiler_COP0_CO_ERET");
 
     UpdateCounters(m_RegWorkingSet, true, true);
     m_Section->CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
@@ -5574,11 +5581,12 @@ void CRecompilerOps::COP0_CO_ERET(void)
 /************************** FPU Options **************************/
 void CRecompilerOps::ChangeDefaultRoundingModel()
 {
-    switch ((_FPCR[31] & 3)) {
-    case 0: *_RoundingModel = ROUND_NEAR; break;
-    case 1: *_RoundingModel = ROUND_CHOP; break;
-    case 2: *_RoundingModel = ROUND_UP;   break;
-    case 3: *_RoundingModel = ROUND_DOWN; break;
+    switch ((_FPCR[31] & 3))
+    {
+    case 0: *_RoundingModel = FE_TONEAREST; break;
+    case 1: *_RoundingModel = FE_TOWARDZERO; break;
+    case 2: *_RoundingModel = FE_UPWARD;   break;
+    case 3: *_RoundingModel = FE_DOWNWARD; break;
     }
 }
 
@@ -5747,7 +5755,7 @@ void CRecompilerOps::COP1_CT()
         MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rt, false), &_FPCR[m_Opcode.fs], CRegName::FPR_Ctrl[m_Opcode.fs]);
     }
     BeforeCallDirect(m_RegWorkingSet);
-    Call_Direct(ChangeDefaultRoundingModel, "ChangeDefaultRoundingModel");
+    Call_Direct((void *)ChangeDefaultRoundingModel, "ChangeDefaultRoundingModel");
     AfterCallDirect(m_RegWorkingSet);
     m_RegWorkingSet.SetRoundingModel(CRegInfo::RoundUnknown);
 }
@@ -6579,7 +6587,7 @@ void CRecompilerOps::UnknownOpcode()
     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
 
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
-    Call_Direct(R4300iOp::UnknownOpcode, "R4300iOp::UnknownOpcode");
+    Call_Direct((void *)R4300iOp::UnknownOpcode, "R4300iOp::UnknownOpcode");
     Ret();
     if (m_NextInstruction == NORMAL) { m_NextInstruction = END_BLOCK; }
 }
@@ -6713,7 +6721,7 @@ void CRecompilerOps::OverflowDelaySlot(bool TestTimer)
     }
 
     PushImm32("g_System->CountPerOp()", g_System->CountPerOp());
-    Call_Direct(CInterpreterCPU::ExecuteOps, "CInterpreterCPU::ExecuteOps");
+    Call_Direct((void *)CInterpreterCPU::ExecuteOps, "CInterpreterCPU::ExecuteOps");
     AddConstToX86Reg(x86_ESP, 4);
 
     if (g_System->bFastSP() && g_Recompiler)

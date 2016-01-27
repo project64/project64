@@ -11,17 +11,17 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64Class.h>
+#include <Project64-core/Plugins/PluginClass.h>
 #include <Common/path.h>
-#include "PluginClass.h"
 
 CPlugins::CPlugins(const stdstr & PluginDir) :
-m_MainWindow(NULL),
-m_SyncWindow(NULL),
-m_PluginDir(PluginDir),
-m_Gfx(NULL),
-m_Audio(NULL),
-m_RSP(NULL),
-m_Control(NULL)
+    m_MainWindow(NULL),
+    m_SyncWindow(NULL),
+    m_PluginDir(PluginDir),
+    m_Gfx(NULL),
+    m_Audio(NULL),
+    m_RSP(NULL),
+    m_Control(NULL)
 {
     CreatePlugins();
     g_Settings->RegisterChangeCB(Plugin_RSP_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
@@ -288,7 +288,7 @@ bool CPlugins::Reset(CN64System * System)
     if (m_Gfx && bGfxChange)
     {
         WriteTrace(TraceGFXPlugin, TraceDebug, "Gfx Initiate Starting");
-        if (!m_Gfx->Initiate(System, m_MainWindow))   { return false; }
+        if (!m_Gfx->Initiate(System, m_MainWindow)) { return false; }
         WriteTrace(TraceGFXPlugin, TraceDebug, "Gfx Initiate Done");
     }
     if (m_Audio && bAudioChange)
@@ -306,7 +306,7 @@ bool CPlugins::Reset(CN64System * System)
     if (m_RSP && bRspChange)
     {
         WriteTrace(TraceRSPPlugin, TraceDebug, "RSP Initiate Starting");
-        if (!m_RSP->Initiate(this, System))   { return false; }
+        if (!m_RSP->Initiate(this, System)) { return false; }
         WriteTrace(TraceRSPPlugin, TraceDebug, "RSP Initiate Done");
     }
     WriteTrace(TracePlugins, TraceDebug, "Done");

@@ -40,10 +40,10 @@
 #ifndef TEXCACHE_H
 #define TEXCACHE_H
 
-void TexCacheInit ();
-void TexCache ();
-void ClearCache ();
+void TexCacheInit();
+void TexCache();
+void ClearCache();
 
-extern wxUint8 * texture_buffer;
+extern uint8_t * texture_buffer;
 
 #endif //TEXCACHE_H

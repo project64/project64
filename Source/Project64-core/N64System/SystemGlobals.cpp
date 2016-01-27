@@ -21,6 +21,7 @@ CRegisters    * g_Reg = NULL; //Current Register Set attacted to the g_MMU
 CNotification * g_Notify = NULL;
 CPlugins      * g_Plugins = NULL;
 CN64Rom       * g_Rom = NULL;      //The current rom that this system is executing.. it can only execute one file at the time
+CN64Rom       * g_DDRom = NULL;    //64DD IPL ROM
 CAudio        * g_Audio = NULL;
 CSystemTimer  * g_SystemTimer = NULL;
 CTransVaddr   * g_TransVaddr = NULL;

@@ -60,6 +60,13 @@ CSettingTypeApplication::~CSettingTypeApplication()
 
 void CSettingTypeApplication::Initialize( const char * /*AppName*/ )
 {
+	CPath BaseDir(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(),"");
+	if (!BaseDir.DirectoryExists())
+	{
+		printf("BaseDir does not exists, doing nothing");
+		return;
+	}
+
     stdstr SettingsFile, OrigSettingsFile;
 
     for (int i = 0; i < 100; i++)
@@ -77,7 +84,11 @@ void CSettingTypeApplication::Initialize( const char * /*AppName*/ )
         {
             delete m_SettingsIniFile;
         }
+#ifdef _WIN32
         CPath SettingsDir(CPath(SettingsFile).GetDriveDirectory(),"");
+#else
+		CPath SettingsDir(CPath(SettingsFile).GetDirectory(), "");
+#endif
         if (!SettingsDir.DirectoryExists())
         {
 			SettingsDir.DirectoryCreate();
@@ -123,7 +134,9 @@ bool CSettingTypeApplication::Load ( int /*Index*/, bool & Value ) const
         if (m_DefaultSetting == Default_Constant)
         {
             Value = m_DefaultValue != 0;
-        } else {
+        }
+        else 
+		{
             g_Settings->LoadBool(m_DefaultSetting,Value);
         }
     }
@@ -138,7 +151,9 @@ bool CSettingTypeApplication::Load ( int /*Index*/, uint32_t & Value ) const
         if (m_DefaultSetting == Default_Constant)
         {
             Value = m_DefaultValue;
-        } else {
+        }
+        else 
+		{
             g_Settings->LoadDword(m_DefaultSetting,Value);
         }
     }
@@ -168,20 +183,24 @@ void CSettingTypeApplication::LoadDefault ( int /*Index*/, bool & Value   ) cons
         if (m_DefaultSetting == Default_Constant)
         {
             Value = m_DefaultValue != 0;
-        } else {
+        }
+        else 
+		{
             g_Settings->LoadBool(m_DefaultSetting,Value);
         }
     }
 }
 
-void CSettingTypeApplication::LoadDefault ( int /*Index*/, uint32_t & Value  ) const
+void CSettingTypeApplication::LoadDefault(int /*Index*/, uint32_t & Value) const
 {
     if (m_DefaultSetting != Default_None)
     {
         if (m_DefaultSetting == Default_Constant)
         {
             Value = m_DefaultValue;
-        } else {
+        }
+        else 
+		{
             g_Settings->LoadDword(m_DefaultSetting,Value);
         }
     }
@@ -194,7 +213,9 @@ void CSettingTypeApplication::LoadDefault ( int /*Index*/, stdstr & Value ) cons
         if (m_DefaultSetting == Default_Constant)
         {
             Value = m_DefaultStr;
-        } else {
+        }
+        else 
+		{
             g_Settings->LoadStringVal(m_DefaultSetting,Value);
         }
     }

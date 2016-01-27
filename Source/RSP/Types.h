@@ -27,7 +27,7 @@
 #ifndef __Types_h
 #define __Types_h
 
-#include <common/stdtypes.h>
+#include <Common/stdtypes.h>
 
 /*
  * pointer to RSP operation code functions or "func"

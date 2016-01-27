@@ -31,7 +31,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
     m_NextInstruction = JUMP;\
     m_JumpToLocation = (*_PROGRAM_COUNTER);\
     return;\
-                }
+    }
 
 #define TLB_READ_EXCEPTION(Address) \
     g_Reg->DoTLBReadMiss(m_NextInstruction == JUMP,Address);\
@@ -895,7 +895,7 @@ void R4300iOp32::LB()
     {
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
+            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
         }
         TLB_READ_EXCEPTION(Address);
     }
@@ -916,7 +916,7 @@ void R4300iOp32::LH()
     {
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
+            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
         }
         TLB_READ_EXCEPTION(Address);
     }
@@ -937,7 +937,7 @@ void R4300iOp32::LWL()
     {
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
+            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
         }
         TLB_READ_EXCEPTION(Address);
         return;
@@ -964,7 +964,7 @@ void R4300iOp32::LW()
     {
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
+            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
         }
         TLB_READ_EXCEPTION(Address);
     }
@@ -981,7 +981,7 @@ void R4300iOp32::LBU()
     {
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
+            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
         }
         TLB_READ_EXCEPTION(Address);
     }
@@ -1002,7 +1002,7 @@ void R4300iOp32::LHU()
     {
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
+            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
         }
         TLB_READ_EXCEPTION(Address);
     }
@@ -1024,7 +1024,7 @@ void R4300iOp32::LWR()
         g_Notify->BreakPoint(__FILE__, __LINE__);
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
+            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
         }
         return;
     }
@@ -1045,7 +1045,7 @@ void R4300iOp32::LWU()
     {
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
+            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
         }
         TLB_READ_EXCEPTION(Address);
     }
@@ -1067,7 +1067,7 @@ void R4300iOp32::LL()
     {
         if (bShowTLBMisses())
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ " TLB: %X", Address).c_str());
+            g_Notify->DisplayError(stdstr_f("%s TLB: %X", __FUNCTION__, Address).c_str());
         }
         TLB_READ_EXCEPTION(Address);
     }

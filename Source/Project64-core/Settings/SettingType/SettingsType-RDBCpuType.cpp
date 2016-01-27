@@ -11,7 +11,7 @@
 #include "stdafx.h"
 #include "SettingsType-RomDatabase.h"
 #include "SettingsType-RDBCpuType.h"
-#include "../../N64System/N64Types.h"
+#include <Project64-core/N64System/N64Types.h>
 
 CSettingTypeRDBCpuType::CSettingTypeRDBCpuType(const char * Name, SettingID DefaultSetting ) :
     CSettingTypeRomDatabase(Name,DefaultSetting)

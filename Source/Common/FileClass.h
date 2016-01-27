@@ -5,7 +5,7 @@
 class CFileBase
 {
 public:
-    enum OpenFlags 
+    enum OpenFlags
     {
         modeRead =          0x0000,
         modeWrite =         0x0001,
@@ -20,23 +20,12 @@ public:
         modeNoTruncate =    0x2000,
     };
 
-    enum Attribute 
-    {
-        normal =    0x00,
-        readOnly =  0x01,
-        hidden =    0x02,
-        system =    0x04,
-        volume =    0x08,
-        directory = 0x10,
-        archive =   0x20
-    };
-
     enum SeekPosition { begin = 0x0, current = 0x1, end = 0x2 };
 
     virtual bool Open(const char * lpszFileName, uint32_t nOpenFlags ) = 0;
 
     virtual uint32_t GetPosition() const = 0;
-    virtual long Seek(long lOff, SeekPosition nFrom) = 0;
+    virtual int32_t Seek(int32_t lOff, SeekPosition nFrom) = 0;
     virtual bool SetLength(uint32_t dwNewLen) = 0;
     virtual uint32_t GetLength() const = 0;
 
@@ -74,7 +63,7 @@ public:
 
     // Overridables
     virtual uint32_t GetPosition() const;
-    virtual long Seek(long lOff, SeekPosition nFrom);
+    virtual int32_t Seek(int32_t lOff, SeekPosition nFrom);
     virtual bool SetLength(uint32_t dwNewLen);
     virtual uint32_t GetLength() const;
 
@@ -85,4 +74,8 @@ public:
     virtual bool Close();
     virtual bool IsOpen() const;
     virtual bool SetEndOfFile();
+
+private:
+    CFile(const CFile&);				// Disable copy constructor
+    CFile& operator=(const CFile&);		// Disable assignment
 };

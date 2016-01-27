@@ -1,4 +1,4 @@
-wxUint8 cursor[] = {127,
+uint8_t cursor[] = {127,
 255,
 127,
 255,

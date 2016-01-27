@@ -11,7 +11,7 @@
 #include "stdafx.h"
 #include "TLBClass.h"
 #include <Project64-core/N64System/SystemGlobals.h>
-#include "RegisterClass.h"
+#include <Project64-core/N64System/Mips/RegisterClass.h>
 
 CTLB::CTLB(CTLB_CB * CallBack) :
 m_CB(CallBack)
