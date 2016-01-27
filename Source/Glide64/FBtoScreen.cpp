@@ -159,7 +159,7 @@ static void DrawRE2Video256(FB_TO_SCREEN_INFO & fb_info)
   uint16_t * dst = tex;
   uint32_t col;
   uint8_t r, g, b;
-  fb_info.height = min(256, fb_info.height);
+  fb_info.height = minval(256, fb_info.height);
   for (uint32_t h = 0; h < fb_info.height; h++)
   {
     for (uint32_t w = 0; w < 256; w++)
@@ -308,7 +308,7 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
     return false;
   uint32_t width = fb_info.lr_x - fb_info.ul_x + 1;
   uint32_t height = fb_info.lr_y - fb_info.ul_y + 1;
-  uint32_t max_size = min(voodoo.max_tex_size, 512);
+  uint32_t max_size = minval(voodoo.max_tex_size, 512);
   if (width > (uint32_t)max_size || height > (uint32_t)max_size)
   {
     DrawFrameBufferToScreen256(fb_info);

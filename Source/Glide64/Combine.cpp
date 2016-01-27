@@ -669,9 +669,9 @@ COMBINE cmb;
   (uint8_t)( ((color1 & 0x0000FF00) >>  8) * (((color2 & 0x0000FF00) >>  8) /255.0f) ) <<   8 ; \
 }
 #define CC_C1SUBC2(color1, color2) { \
-  cmb.ccolor=(uint8_t)( max(0, (int)((color1 & 0xFF000000) >> 24) - (int)((color2 & 0xFF000000) >> 24)) ) << 24 | \
-  (uint8_t)( max(0, (int)((color1 & 0x00FF0000) >> 16) - (int)((color2 & 0x00FF0000) >> 16)) ) << 16 | \
-  (uint8_t)( max(0, (int)((color1 & 0x0000FF00) >>  8) - (int)((color2 & 0x0000FF00) >>  8)) ) <<  8 ; \
+  cmb.ccolor=(uint8_t)( maxval(0, (int)((color1 & 0xFF000000) >> 24) - (int)((color2 & 0xFF000000) >> 24)) ) << 24 | \
+  (uint8_t)( maxval(0, (int)((color1 & 0x00FF0000) >> 16) - (int)((color2 & 0x00FF0000) >> 16)) ) << 16 | \
+  (uint8_t)( maxval(0, (int)((color1 & 0x0000FF00) >>  8) - (int)((color2 & 0x0000FF00) >>  8)) ) <<  8 ; \
 }
 #define CC_COLMULBYTE(color, byte) { \
     float factor = byte/255.0f; \
@@ -705,9 +705,9 @@ COMBINE cmb;
   rdp.cmb_flags |= flag; \
 }
 #define XSHADEC1MC2(color1, color2, flag) { \
-  rdp.col[0] *= (float)( max(0, (int)((color1 & 0xFF000000) >> 24) - (int)((color2 & 0xFF000000) >> 24)) )/255.0f; \
-  rdp.col[1] *= (float)( max(0, (int)((color1 & 0x00FF0000) >> 16) - (int)((color2 & 0x00FF0000) >> 16)) )/255.0f; \
-  rdp.col[2] *= (float)( max(0, (int)((color1 & 0x0000FF00) >> 8)  - (int)((color2 & 0x0000FF00) >> 8)) )/255.0f; \
+  rdp.col[0] *= (float)( maxval(0, (int)((color1 & 0xFF000000) >> 24) - (int)((color2 & 0xFF000000) >> 24)) )/255.0f; \
+  rdp.col[1] *= (float)( maxval(0, (int)((color1 & 0x00FF0000) >> 16) - (int)((color2 & 0x00FF0000) >> 16)) )/255.0f; \
+  rdp.col[2] *= (float)( maxval(0, (int)((color1 & 0x0000FF00) >> 8)  - (int)((color2 & 0x0000FF00) >> 8)) )/255.0f; \
   rdp.cmb_flags |= flag; \
 }
 #define XSHADE_BYTE(byte, flag) { \
@@ -756,9 +756,9 @@ COMBINE cmb;
   rdp.cmb_flags |= flag; \
 }
 #define XSHADEC1MC2ADD(color1, color2, flag) { \
-  rdp.coladd[0] *= (float)( max(0, (int)((color1 & 0xFF000000) >> 24) - (int)((color2 & 0xFF000000) >> 24)) )/255.0f; \
-  rdp.coladd[1] *= (float)( max(0, (int)((color1 & 0x00FF0000) >> 16) - (int)((color2 & 0x00FF0000) >> 16)) )/255.0f; \
-  rdp.coladd[2] *= (float)( max(0, (int)((color1 & 0x0000FF00) >> 8)  - (int)((color2 & 0x0000FF00) >> 8)) )/255.0f; \
+  rdp.coladd[0] *= (float)( maxval(0, (int)((color1 & 0xFF000000) >> 24) - (int)((color2 & 0xFF000000) >> 24)) )/255.0f; \
+  rdp.coladd[1] *= (float)( maxval(0, (int)((color1 & 0x00FF0000) >> 16) - (int)((color2 & 0x00FF0000) >> 16)) )/255.0f; \
+  rdp.coladd[2] *= (float)( maxval(0, (int)((color1 & 0x0000FF00) >> 8)  - (int)((color2 & 0x0000FF00) >> 8)) )/255.0f; \
   rdp.cmb_flags |= flag; \
 }
 #define SUBSHADE_PRIM() XSHADEADD(rdp.prim_color, CMB_SUB)
@@ -811,7 +811,7 @@ COMBINE cmb;
   rdp.cmb_flags |= flag; \
 }
 #define XSHADEC1MC2_A(color1, color2, flag) { \
-  rdp.col[3] *= (float)( max(0, (int)(color1 & 0xFF) - (int)(color2 & 0xFF)) ) / 255.0f; \
+  rdp.col[3] *= (float)( maxval(0, (int)(color1 & 0xFF) - (int)(color2 & 0xFF)) ) / 255.0f; \
   rdp.cmb_flags |= flag; \
 }
 #define MULSHADE_A_PRIM() XSHADE_A(rdp.prim_color, CMB_A_MULT)
@@ -1931,9 +1931,9 @@ static void cc__prim_inter_env_using_enva__mul_shade()
     uint32_t er = (rdp.env_color >> 24) & 0xFF;
     uint32_t eg = (rdp.env_color >> 16) & 0xFF;
     uint32_t eb = (rdp.env_color >> 8) & 0xFF;
-    uint32_t r = min(255, (uint32_t)(er*ea + pr*ea_i));
-    uint32_t g = min(255, (uint32_t)(eg*ea + pg*ea_i));
-    uint32_t b = min(255, (uint32_t)(eb*ea + pb*ea_i));
+    uint32_t r = minval(255, (uint32_t)(er*ea + pr*ea_i));
+    uint32_t g = minval(255, (uint32_t)(eg*ea + pg*ea_i));
+    uint32_t b = minval(255, (uint32_t)(eb*ea + pb*ea_i));
     uint32_t col = (r << 24) | (g << 16) | (b << 8) | 0xFF;
     CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
@@ -8557,9 +8557,9 @@ static void cc__prim_inter_one_using_env__mul_shade()
         GR_COMBINE_OTHER_CONSTANT);
     CC_1SUBPRIM();
     CC_C1MULC2(cmb.ccolor, rdp.env_color);
-    cmb.ccolor = (uint8_t)(min(255, (int)((cmb.ccolor & 0xFF000000) >> 24) + (int)((rdp.prim_color & 0xFF000000) >> 24))) << 24 |
-        (uint8_t)(min(255, (int)((cmb.ccolor & 0x00FF0000) >> 16) + (int)((rdp.prim_color & 0x00FF0000) >> 16))) << 16 |
-        (uint8_t)(min(255, (int)((cmb.ccolor & 0x0000FF00) >> 8) + (int)((rdp.prim_color & 0x0000FF00) >> 8))) << 8;
+    cmb.ccolor = (uint8_t)(minval(255, (int)((cmb.ccolor & 0xFF000000) >> 24) + (int)((rdp.prim_color & 0xFF000000) >> 24))) << 24 |
+        (uint8_t)(minval(255, (int)((cmb.ccolor & 0x00FF0000) >> 16) + (int)((rdp.prim_color & 0x00FF0000) >> 16))) << 16 |
+        (uint8_t)(minval(255, (int)((cmb.ccolor & 0x0000FF00) >> 8) + (int)((rdp.prim_color & 0x0000FF00) >> 8))) << 8;
 }
 
 static void cc__env_inter_prim_using_t0a__mul_t0()

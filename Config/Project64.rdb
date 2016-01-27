@@ -292,7 +292,6 @@ Status=Compatible
 Good Name=AI Shougi 3 (J)
 Internal Name=AIｼｮｳｷﾞ3
 Status=Compatible
-Core Note=
 
 [2DC4FFCC-C8FF5A21-C:50]
 Good Name=Aidyn Chronicles - The First Mage (E)
@@ -866,7 +865,6 @@ Internal Name=Bust A Move 3 DX
 Status=Compatible
 
 [D5BDCD1D-393AFE43-C:50]
-Core Note=
 Good Name=Bust-A-Move 3 DX (E) (NTSC)
 internal Name=Bust-A-Move 3 DX
 Screenhertz=60
@@ -1262,13 +1260,13 @@ Save Type=16kbit Eeprom
 Good Name=CyberTiger (E)
 Internal Name=CyberTiger
 Status=Issues (core)
-Core Note=hangs exiting pause menu
+Core Note=Hangs exiting pause menu
 
 [E8FC8EA1-9F738391-C:45]
 Good Name=CyberTiger (U)
 Internal Name=CyberTiger
 Status=Issues (core)
-Core Note=hangs exiting pause menu
+Core Note=Hangs exiting pause menu
 
 //================  D  ================
 [7188F445-84410A68-C:4A]
@@ -1279,13 +1277,15 @@ Status=Compatible
 [7ED67CD4-B4415E6D-C:50]
 Good Name=Dark Rift (E)
 Internal Name=DARK RIFT
-Status=Compatible
+Status=Issues (plugin)
+Plugin Note=[video] slowdown
 Culling=1
 
 [A4A52B58-23759841-C:45]
 Good Name=Dark Rift (U)
 Internal Name=DARK RIFT
-Status=Compatible
+Status=Issues (plugin)
+Plugin Note=[video] slowdown
 Culling=1
 
 [F5363349-DBF9D21B-C:45]
@@ -1362,7 +1362,7 @@ Status=Compatible
 Good Name=Diddy Kong Racing (J)
 Internal Name=Diddy Kong Racing
 Status=Bad ROM?
-Core Note=use good dump
+Core Note=Use good dump
 32bit=No
 
 [53D440E7-7519B011-C:45]
@@ -1430,7 +1430,7 @@ Save Type=4kbit Eeprom
 Good Name=Donkey Kong 64 (E)
 Internal Name=DONKEY KONG 64
 Status=Compatible
-Core Note=Polygon Tearing
+Core Note=Polygon tearing
 Plugin Note=[Glide64] fairy bug; transitions
 32bit=No
 Counter Factor=1
@@ -1442,7 +1442,7 @@ Save Type=16kbit Eeprom
 Good Name=Donkey Kong 64 (J)
 Internal Name=DONKEY KONG 64
 Status=Compatible
-Core Note=Polygon Tearing
+Core Note=Polygon tearing
 Plugin Note=[Glide64] fairy bug; transitions
 32bit=No
 Counter Factor=1
@@ -1453,7 +1453,7 @@ Save Type=16kbit Eeprom
 Good Name=Donkey Kong 64 (U)
 Internal Name=DONKEY KONG 64
 Status=Compatible
-Core Note=Polygon Tearing
+Core Note=Polygon tearing
 Plugin Note=[Glide64] fairy bug; transitions
 32bit=No
 Counter Factor=1
@@ -1467,7 +1467,7 @@ Save Type=16kbit Eeprom
 Good Name=Donkey Kong 64 (U) (Kiosk Demo)
 Internal Name=D K DISPLAY
 Status=Compatible
-Core Note=Polygon Tearing
+Core Note=Polygon tearing
 32bit=No
 Counter Factor=1
 RDRAM Size=8
@@ -1891,16 +1891,16 @@ Status=Compatible
 [C3F19159-65D2BC5A-C:50]
 Good Name=FIFA Soccer 64 (E) (M3)
 Internal Name=FIFA Soccer 64
-Status=Broken (core)
-Core Note=no sound, unhandled opcode; use older PJ64
+Status=Compatible
 32bit=No
+ViRefresh=2504
 
 [C3F19159-65D2BC5A-C:45]
 Good Name=FIFA Soccer 64 (U) (M3)
 Internal Name=FIFA Soccer 64
-Status=Broken (core)
-Core Note=no sound, unhandled opcode; use older PJ64
+Status=Compatible
 32bit=No
+ViRefresh=2504
 
 [AEEF2F45-F97E30F1-C:45]
 Good Name=Fighter Destiny 2 (U)
@@ -1986,7 +1986,7 @@ Culling=1
 Good Name=Fushigi no Dungeon - Fuurai no Shiren 2 - Oni Shuurai! Shiren Jou! (J)
 Internal Name=F3 ﾌｳﾗｲﾉｼﾚﾝ2
 Status=Issues (Core)
-Core Note= constant SRAM use
+Core Note=Constant SRAM use
 Counter Factor=1
 32bit=No
 
@@ -2051,7 +2051,6 @@ RDRAM Size=8
 Good Name=Gauntlet Legends (U)
 Internal Name=GAUNTLET LEGENDS
 Status=Issues (mixed)
-Core Note=high system requirement
 Plugin Note=[Glide64] missing:various
 Culling=1
 RDRAM Size=8
@@ -2135,6 +2134,7 @@ Linking=Off
 Good Name=GoldenEye 007 (E)
 Internal Name=GOLDENEYE
 Status=Compatible
+Core Note=Intro too fast
 Plugin Note=[Glide64] frigate water bug
 32bit=No
 Clear Frame=2
@@ -2148,6 +2148,7 @@ SMM-TLB=0
 Good Name=GoldenEye 007 (J)
 Internal Name=GOLDENEYE
 Status=Compatible
+Core Note=Intro too fast
 Plugin Note=[Glide64] frigate water bug
 32bit=No
 Clear Frame=2
@@ -2161,6 +2162,7 @@ SMM-TLB=0
 Good Name=GoldenEye 007 (U)
 Internal Name=GOLDENEYE
 Status=Compatible
+Core Note=Intro too fast
 Plugin Note=[Glide64] frigate water bug
 32bit=No
 Clear Frame=2
@@ -2435,21 +2437,21 @@ Status=Compatible
 Good Name=Iggy's Reckin' Balls (E)
 Internal Name=Iggy's Reckin' Balls
 Status=Compatible
-Core Note=hang after race?
+Core Note=Hang after race?
 AudioResetOnLoad=Yes
 
 [E616B5BC-C9658B88-C:45]
 Good Name=Iggy's Reckin' Balls (U)
 Internal Name=Iggy's Reckin' Balls
 Status=Compatible
-Core Note=hang after race?
+Core Note=Hang after race?
 AudioResetOnLoad=Yes
 
 [69458B9E-FC95F936-C:4A]
 Good Name=Iggy-kun no Bura Bura Poyon (J)
 Internal Name=BURABURA POYON
 Status=Compatible
-Core Note=hang after race?
+Core Note=Hang after race?
 
 [8C138BE0-95700E46-C:45]
 Good Name=In-Fisherman Bass Hunter 64 (U)
@@ -2460,9 +2462,9 @@ Counter Factor=1
 [3A6F8C6B-2897BAEB-C:50]
 Good Name=Indiana Jones and the Infernal Machine (E) (Unreleased)
 Internal Name=Indiana Jones
-Status=Issues (mixed)
-Core Note=Recompiler Trading Post freeze.
-Plugin Note=[rsp] interpreter only
+Status=Only intro/part OK
+Core Note=Camera issue; can't play
+Plugin Note=[rsp] interpreter only [video] HLE not supported
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -2480,9 +2482,9 @@ ViRefresh=1800
 [AF9DCC15-1A723D88-C:45]
 Good Name=Indiana Jones and the Infernal Machine (U)
 Internal Name=Indiana Jones
-Status=Issues (mixed)
-Core Note=Recompiler Trading Post freeze.
-Plugin Note=[rsp] interpreter only
+Status=Only intro/part OK
+Core Note=Camera issue; can't play
+Plugin Note=[rsp] interpreter only [video] HLE not supported
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -2501,7 +2503,6 @@ ViRefresh=2050
 Good Name=Indy Racing 2000 (U)
 Internal Name=INDY RACING 2000
 Status=Compatible
-Core Note=high system requirement
 RDRAM Size=8
 
 [F41B6343-C10661E6-C:50]
@@ -2585,6 +2586,7 @@ Plugin Note=[video] slow
 Good Name=J.League Live 64 (J)
 Internal Name=J LEAGUE LIVE 64
 Status=Compatible
+32bit=No
 
 [E8D29DA0-15E61D94-C:4A]
 Good Name=J.League Tactics Soccer (J) (V1.0)
@@ -2869,8 +2871,8 @@ Clear Frame=2
 [519EA4E1-EB7584E8-C:4A]
 Good Name=King Hill 64 - Extreme Snowboarding (J)
 Internal Name=KING HILL 64
-Status=Issues (core)
-Core Note=no sound
+Status=Issues (mixed)
+Core Note=Bad sound
 Plugin Note=[Glide64] no fog
 32bit=No
 Culling=1
@@ -2897,28 +2899,28 @@ Culling=1
 Good Name=Knife Edge - Nose Gunner (E)
 Internal Name=KNIFE EDGE
 Status=Issues (core)
-Core Note=too fast
+Core Note=Runs too fast
 Culling=1
 
 [931AEF3F-EF196B90-C:4A]
 Good Name=Knife Edge - Nose Gunner (J)
 Internal Name=KNIFE EDGE
 Status=Issues (core)
-Core Note=too fast
+Core Note=Runs too fast
 Culling=1
 
 [FCE0D799-65316C54-C:45]
 Good Name=Knife Edge - Nose Gunner (U)
 Internal Name=KNIFE EDGE
 Status=Issues (core)
-Core Note=too fast
+Core Note=Runs too fast
 Culling=1
 
 [E3D6A795-2A1C5D3C-C:50]
 Good Name=Knockout Kings 2000 (E)
 Internal Name=Knockout Kings 2000
 Status=Compatible
-Core Note=unstable?
+Plugin Note=[Glide64] missing portraits
 
 [0894909C-DAD4D82D-C:45]
 Good Name=Knockout Kings 2000 (U)
@@ -2977,7 +2979,6 @@ RDRAM Size=8
 Good Name=Last Legion UX (J)
 Internal Name=LASTLEGION UX
 Status=Issues (plugin)
-Core Note=high system requirement
 Plugin Note=[video] HLE not supported
 HLE GFX=No
 RDRAM Size=8
@@ -3026,7 +3027,7 @@ ViRefresh=1400
 Good Name=Looney Tunes - Duck Dodgers (E) (M6)
 Internal Name=DAFFY DUCK STARRING
 Status=Compatible
-Core Note=incorrect speech timing
+Core Note=Incorrect speech timing
 RDRAM Size=8
 
 [2483F22B-136E025E-C:55]
@@ -3143,13 +3144,13 @@ Status=Compatible
 Good Name=Major League Baseball Featuring Ken Griffey Jr. (E)
 Internal Name=MLB FEATURING K G JR
 Status=Issues (plugin)
-Plugin Note=[video] Glide64 crashes
+Plugin Note=[video] Glide64 crashes; slow
 
 [80C1C05C-EA065EF4-C:45]
 Good Name=Major League Baseball Featuring Ken Griffey Jr. (U)
 Internal Name=MLB FEATURING K G JR
 Status=Issues (plugin)
-Plugin Note=[video] Glide64 crashes
+Plugin Note=[video] Glide64 crashes; slow
 
 [AB9EB27D-5F05605F-C:4A]
 Good Name=Mario Artist - Communication Kit (J) [CART HACK]
@@ -3268,8 +3269,9 @@ Primary Frame Buffer=1
 [9A9890AC-F0C313DF-C:4A]
 Good Name=Mario no Photopi (J)
 Internal Name=ÏØµÉÌ«ÄËß°
-Status=Needs RSP plugin
-Plugin Note=[rsp] needs semaphore lock
+Status=Issues (plugin)
+Plugin Note=[video] HLE not supported; errors:various
+HLE GFX=No
 
 [9C663069-80F24A80-C:50]
 Good Name=Mario Party (E) (M3)
@@ -3421,14 +3423,14 @@ RDRAM Size=8
 [E4B35E4C-1AC45CC9-C:45]
 Good Name=Midway's Greatest Arcade Hits Volume 1 (U)
 Internal Name=MGAH VOL1
-Status=Issues (Plugin)
+Status=Issues (plugin)
 Plugin Note=[Glide64] partial screens
 
 [09D53E16-3AB268B9-C:45]
 Good Name=Mike Piazza's Strike Zone (U)
 Internal Name=PIAZZA STRIKEZONE
-Status=Compatible
-Plugin Note=[Glide64] possible ucode issue
+Status=Issues (plugin)
+Plugin Note=[Glide64] ucode issue
 Culling=1
 
 [9A490D9D-8F013ADC-C:50]
@@ -3632,7 +3634,8 @@ RDRAM Size=8
 [DF331A18-5FD4E044-C:45]
 Good Name=NASCAR 2000 (U)
 Internal Name=NASCAR 2000
-Status=Compatible
+Status=Issues (plugin)
+Plugin Note=[Glide64] splitscreen broken
 32bit=No
 Clear Frame=2
 Counter Factor=1
@@ -3642,7 +3645,8 @@ RDRAM Size=8
 [AE4992C9-9253B253-C:50]
 Good Name=NASCAR 99 (E) (M3)
 Internal Name=NASCAR 99
-Status=Compatible
+Status=Issues (plugin)
+Plugin Note=[Glide64] splitscreen broken
 32bit=No
 Counter Factor=1
 Clear Frame=2
@@ -3902,7 +3906,8 @@ ViRefresh=2200
 [CD3C3CDF-317793FA-C:4A]
 Good Name=Nintama Rantarou 64 Game Gallery (J)
 Internal Name=NINTAMAGAMEGALLERY64
-Status=Compatible
+Status=Issues (plugin)
+Plugin Note=[Glide64] slow
 Counter Factor=1
 
 [67D20729-F696774C-C:4A]
@@ -3973,7 +3978,6 @@ Plugin Note=[Glide64] multiplayer flicker
 Good Name=Ogre Battle 64 - Person of Lordly Caliber (J) (V1.1)
 Internal Name=OgreBattle64
 Status=Compatible
-Core Note=ROM is bad? //check this
 32bit=No
 
 [E6419BC5-69011DE3-C:45]
@@ -4023,7 +4027,7 @@ Status=Compatible
 Good Name=O.D.T (Or Die Trying) (U) (M3) (Unreleased Final)
 Internal Name=O.D.T
 Status=Region issue (core)
-Core Note=hangs? unconfirmed
+Core Note=Hangs? unconfirmed
 
 //================  P  ================
 [74554B3B-F4AEBCB5-C:4A]
@@ -4171,8 +4175,8 @@ Status=Compatible
 [B54CE881-BCCB6126-C:45]
 Good Name=PGA European Tour (U)
 Internal Name=PGA European Tour
-Status=Issues (Plugin)
-Plugin Note=[Glide64] HUD buggy. Use (E) version
+Status=Issues (plugin)
+Plugin Note=[Glide64] HUD buggy; use (E) version
 
 [3F245305-FC0B74AA-C:4A]
 Good Name=Pikachu Genki Dechuu (J)
@@ -4231,7 +4235,7 @@ Status=Compatible
 [7BB18D40-83138559-C:55]
 Good Name=Pokemon Snap (A)
 Internal Name=POKEMON SNAP
-Status=Issues (Plugin)
+Status=Issues (plugin)
 Plugin Note= broken; needs accurate FB emu
 Cheat0=D1382D1C 802C,80382D0F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3C44 2881,811E3C44 2001,D11E3C46 0098,811E3C46 0001 //Make Picture selectable
@@ -4241,7 +4245,7 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 [4FF5976F-ACF559D8-C:50]
 Good Name=Pokemon Snap (E)
 Internal Name=POKEMON SNAP
-Status=Issues (Plugin)
+Status=Issues (plugin)
 Plugin Note= broken; needs accurate FB emu
 Cheat0=D1381BFC 802C,80381BEF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3824 2881,811E3824 2001,D11E3826 0098,811E3826 0001 //Make Picture selectable
@@ -4251,7 +4255,7 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 [BA6C293A-9FAFA338-C:46]
 Good Name=Pokemon Snap (F)
 Internal Name=POKEMON SNAP
-Status=Issues (Plugin)
+Status=Issues (plugin)
 Plugin Note= broken; needs accurate FB emu
 Cheat0=D1381BFC 802C,80381BEF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3744 2881,811E3744 2001,D11E3746 0098,811E3746 0001 //Make Picture selectable
@@ -4261,7 +4265,7 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 [5753720D-2A8A884D-C:44]
 Good Name=Pokemon Snap (G)
 Internal Name=POKEMON SNAP
-Status=Issues (Plugin)
+Status=Issues (plugin)
 Plugin Note= broken; needs accurate FB emu
 Cheat0=D1381BDC 802C,80381BCF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3744 2881,811E3744 2001,D11E3746 0098,811E3746 0001 //Make Picture selectable
@@ -4271,7 +4275,7 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 [C0C85046-61051B05-C:49]
 Good Name=Pokemon Snap (I)
 Internal Name=POKEMON SNAP
-Status=Issues (Plugin)
+Status=Issues (plugin)
 Plugin Note= broken; needs accurate FB emu
 Cheat0=D1381BFC 802C,80381BEF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3994 2881,811E3994 2001,D11E3996 0098,811E3996 0001 //Make Picture selectable
@@ -4281,7 +4285,7 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 [EC0F690D-32A7438C-C:4A]
 Good Name=Pokemon Snap (J) (V1.0)
 Internal Name=POKEMON SNAP
-Status=Issues (Plugin)
+Status=Issues (plugin)
 Plugin Note= broken; needs accurate FB emu
 Cheat0=D136D22C 802A,8036D21F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E1EC4 2881,811E1EC4 2001,D11E1EC6 0098,811E1EC6 0001 //Make Picture selectable
@@ -4291,7 +4295,7 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 [E0044E9E-CD659D0D-C:4A]
 Good Name=Pokemon Snap (J) (V1.1)
 Internal Name=POKEMON SNAP
-Status=Issues (Plugin)
+Status=Issues (plugin)
 Plugin Note= broken; needs accurate FB emu
 Cheat0=D136D22C 802A,8036D21F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E1EC4 2881,811E1EC4 2001,D11E1EC6 0098,811E1EC6 0001 //Make Picture selectable
@@ -4301,7 +4305,7 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 [817D286A-EF417416-C:53]
 Good Name=Pokemon Snap (S)
 Internal Name=POKEMON SNAP
-Status=Issues (Plugin)
+Status=Issues (plugin)
 Plugin Note= broken; needs accurate FB emu
 Cheat0=D1381BFC 802C,80381BEF 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E38C4 2881,811E38C4 2001,D11E38C6 0098,811E38C6 0001 //Make Picture selectable
@@ -4311,7 +4315,7 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 [CA12B547-71FA4EE4-C:45]
 Good Name=Pokemon Snap (U)
 Internal Name=POKEMON SNAP
-Status=Issues (Plugin)
+Status=Issues (plugin)
 Plugin Note= broken; needs accurate FB emu
 Cheat0=D1382D1C 802C,80382D0F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E3184 2881,811E3184 2001,D11E3186 0098,811E3186 0001 //Make Picture selectable
@@ -4321,7 +4325,7 @@ CheatPlugin1=Jabo's Direct3D8,Glide64 For PJ64
 [39119872-07722E9F-C:45]
 Good Name=Pokemon Snap Station (U)
 Internal Name=POKEMON SNAP
-Status=Issues (Plugin)
+Status=Issues (plugin)
 Plugin Note= broken; needs accurate FB emu
 Cheat0=D1382D1C 802C,80382D0F 0000 //Pass 1st Level and Controller Fix
 Cheat1=D11E30F4 2881,811E30F4 2001,D11E30F6 0098,811E30F6 0001 //Make Picture selectable
@@ -4672,7 +4676,7 @@ Status=Compatible
 Good Name=Rat Attack (E) (M6)
 Internal Name=RAT ATTACK
 Status=Issues (core)
-Core Note=hangs on MP theme select
+Core Note=Interpreter only for multi
 SMM-FUNC=0
 Use TLB=No
 
@@ -4680,7 +4684,7 @@ Use TLB=No
 Good Name=Rat Attack (U) (M6)
 Internal Name=RAT ATTACK
 Status=Issues (core)
-Core Note=hangs on MP theme select
+Core Note=Interpreter only for multi
 SMM-FUNC=0
 Use TLB=No
 
@@ -4906,7 +4910,6 @@ Status=Compatible
 Good Name=Saikyou Habu Shougi (J)
 Internal Name=»²·®³ÊÌÞ¼®³·Þ
 Status=Compatible
-Core Note=high system requirement
 Plugin Note=[video] HLE not supported
 HLE GFX=No
 RDRAM Size=8
@@ -5136,14 +5139,14 @@ RDRAM Size=8
 [C00CA948-8E60D34B-C:50]
 Good Name=South Park - Chef's Luv Shack (E)
 Internal Name=South Park Chef's Lu
-Status=Issues (Plugin)
+Status=Issues (plugin)
 Plugin Note=incorrect everything
 RDRAM Size=8
 
 [C00CA948-8E60D34B-C:45]
 Good Name=South Park - Chef's Luv Shack (U)
 Internal Name=South Park: Chef's L
-Status=Issues (Plugin)
+Status=Issues (plugin)
 Plugin Note=incorrect everything
 RDRAM Size=8
 
@@ -5161,7 +5164,8 @@ Culling=1
 [37463412-EAC5388D-C:4A]
 Good Name=Space Dynamites (J)
 Internal Name=SPACE DYNAMITES
-Status=Compatible
+Status=Issues (plugin)
+Plugin Note=[video] slowdown
 Culling=1
 RDRAM Size=8 //why does Japanese Dark Rift have 8MB enabled?
 
@@ -5261,7 +5265,7 @@ SMM-TLB=0
 Good Name=Star Wars - Rogue Squadron (E) (M3) (V1.0)
 Internal Name=Rogue Squadron
 Status=Broken (plugin)
-Plugin Note=[rsp] interpreter only [Glide64] not supported
+Plugin Note=[rsp] interpreter only [video] HLE not supported
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5273,7 +5277,7 @@ RSP-JumpTableSize=3584
 Good Name=Star Wars - Rogue Squadron (E) (M3) (V1.1)
 Internal Name=Rogue Squadron
 Status=Broken (plugin)
-Plugin Note=[rsp] interpreter only [Glide64] not supported
+Plugin Note=[rsp] interpreter only [video] HLE not supported
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5285,7 +5289,7 @@ RSP-JumpTableSize=3584
 Good Name=Star Wars - Rogue Squadron (U) (V1.0)
 Internal Name=Rogue Squadron
 Status=Broken (plugin)
-Plugin Note=[rsp] interpreter only [Glide64] not supported
+Plugin Note=[rsp] interpreter only [video] HLE not supported
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5297,7 +5301,7 @@ RSP-JumpTableSize=3584
 Good Name=Star Wars - Rogue Squadron (U) (V1.1)
 Internal Name=Rogue Squadron
 Status=Broken (plugin)
-Plugin Note=[rsp] interpreter only [Glide64] not supported
+Plugin Note=[rsp] interpreter only [video] HLE not supported
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5309,14 +5313,14 @@ RSP-JumpTableSize=3584
 Good Name=Star Wars - Shadows of the Empire (E)
 Internal Name=Shadow of the Empire
 Status=Compatible
-Core Note=swoop bike speed issue
+Core Note=Swoop bike speed issue
 RDRAM Size=8
 
 [264D7E5C-18874622-C:45]
 Good Name=Star Wars - Shadows of the Empire (U) (V1.0)
 Internal Name=Shadow of the Empire
 Status=Compatible
-Core Note=swoop bike speed issue
+Core Note=Swoop bike speed issue
 Clear Frame=1
 Culling=1
 RDRAM Size=8
@@ -5325,7 +5329,7 @@ RDRAM Size=8
 Good Name=Star Wars - Shadows of the Empire (U) (V1.1)
 Internal Name=Shadow of the Empire
 Status=Compatible
-Core Note=swoop bike speed issue
+Core Note=Swoop bike speed issue
 Clear Frame=1
 RDRAM Size=8
 
@@ -5333,7 +5337,7 @@ RDRAM Size=8
 Good Name=Star Wars - Shadows of the Empire (U) (V1.2)
 Internal Name=Shadow of the Empire
 Status=Compatible
-Core Note=swoop bike speed issue
+Core Note=Swoop bike speed issue
 Clear Frame=1
 RDRAM Size=8
 
@@ -5341,8 +5345,7 @@ RDRAM Size=8
 Good Name=Star Wars - Shutsugeki! Rogue Chuutai (J)
 Internal Name=rogue squadron
 Status=Broken (plugin)
-Core Note=high system requirement
-Plugin Note=[rsp] interpreter only [Glide64] not supported
+Plugin Note=[rsp] interpreter only [video] HLE not supported
 32bit=No
 HLE GFX=No
 RDRAM Size=8
@@ -5352,7 +5355,7 @@ RSP-JumpTableSize=3584
 Good Name=Star Wars - Teikoku no Kage (J)
 Internal Name=Shadow of the Empire
 Status=Compatible
-Core Note=swoop bike speed issue
+Core Note=Swoop bike speed issue
 Clear Frame=1
 Counter Factor=1
 RDRAM Size=8
@@ -5361,7 +5364,8 @@ RDRAM Size=8
 Good Name=Star Wars Episode I - Battle for Naboo (E)
 Internal Name=Battle for Naboo
 Status=Only intro/part OK
-Plugin Note=[rsp] interpreter only [video] not supported
+Core Note=Camera issue; can't play
+Plugin Note=[rsp] interpreter only [video] HLE not supported
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5373,7 +5377,8 @@ SMM-FUNC=0
 Good Name=Star Wars Episode I - Battle for Naboo (U)
 Internal Name=Battle for Naboo
 Status=Only intro/part OK
-Plugin Note=[rsp] interpreter only [video] not supported
+Core Note=Camera issue; can't play
+Plugin Note=[rsp] interpreter only [video] HLE not supported
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5464,7 +5469,7 @@ Status=Compatible
 Good Name=Stunt Racer 64 (U)
 Internal Name=Stunt Racer 64
 Status=Issues (plugin)
-Plugin Note=[Glide64] not supported [audio] bad
+Plugin Note=[video] HLE not supported [audio] needs audio plugin
 32bit=No
 AudioResetOnLoad=Yes
 HLE GFX=No
@@ -5619,14 +5624,14 @@ Plugin Note=[Glide64] bad numbers
 Good Name=Taz Express (E) (M6)
 Internal Name=Taz Express
 Status=Compatible
-Core Note=slow to start new game; text issue
+Core Note=Slow to start new game; text issue
 RDRAM Size=8
 
 [6C2C6C49-9BE5CA66-C:45]
 Good Name=Taz Express (U) (Unreleased)
 Internal Name=Taz Express
 Status=Compatible
-Core Note=slow to start new game; text issue
+Core Note=Slow to start new game; text issue
 RDRAM Size=8
 
 [D9042FBB-FCFF997C-C:46]
@@ -5645,14 +5650,12 @@ RDRAM Size=8
 Good Name=Tetrisphere (E)
 Internal Name=TETRISPHERE
 Status=Compatible
-Core Note=high system requirement
 Plugin Note=[video] slow in menus
 
 [3C1FDABE-02A4E0BA-C:45]
 Good Name=Tetrisphere (U)
 Internal Name=TETRISPHERE
 Status=Compatible
-Core Note=high system requirement
 Plugin Note=[video] slow in menus
 
 [F82DD377-8C3FB347-C:58]
@@ -6081,21 +6084,24 @@ RDRAM Size=8
 Good Name=Top Gear Rally (E)
 Internal Name=TOP GEAR RALLY
 Status=Issues (mixed)
-Core Note=bad sound
+Core Note=Bad sound
+Plugin Note=[Glide64] car dust, windscreen reflection
 32bit=No
 
 [0E596247-753D4B8B-C:4A]
 Good Name=Top Gear Rally (J)
 Internal Name=TOP GEAR RALLY
 Status=Issues (mixed)
-Core Note=bad sound
+Core Note=Bad sound
+Plugin Note=[Glide64] car dust, windscreen reflection
 32bit=No
 
 [62269B3D-FE11B1E8-C:45]
 Good Name=Top Gear Rally (U)
 Internal Name=TOP GEAR RALLY
 Status=Issues (mixed)
-Core Note=bad sound
+Core Note=Bad sound
+Plugin Note=[Glide64] car dust, windscreen reflection
 32bit=No
 
 [BEBAB677-51B0B5E4-C:50]
@@ -6358,8 +6364,8 @@ Cheat0=80000303 0001
 [E688A5B8-B14B3F18-C:50]
 Good Name=Twisted Edge Extreme Snowboarding (E)
 Internal Name=TWISTED EDGE
-Status=Issues (core)
-Core Note=no sound
+Status=Issues (mixed)
+Core Note=Bad sound
 Plugin Note=[video] no fog
 32bit=No
 Culling=1
@@ -6368,8 +6374,8 @@ RDRAM Size=8
 [BBC99D32-117DAA80-C:45]
 Good Name=Twisted Edge Extreme Snowboarding (U)
 Internal Name=TWISTED EDGE
-Status=Issues (core)
-Core Note=no sound
+Status=Issues (mixed)
+Core Note=Bad sound
 Plugin Note=[video] no fog
 32bit=No
 Culling=1
@@ -6380,7 +6386,7 @@ RDRAM Size=8
 Good Name=Ucchan Nanchan no Hono no Challenger - Denryuu Ira Ira Bou (J)
 Internal Name=ÃÞÝØ­³²×²×ÎÞ³
 Status=Compatible
-Core Note=unstable?
+Core Note=Unstable?
 Counter Factor=1
 Culling=1
 Delay SI=Yes
@@ -6615,7 +6621,6 @@ Status=Compatible
 Good Name=WCW Backstage Assault (U)
 Internal Name=WCW BACKSTAGE
 Status=Compatible
-Core Note=high system requirement
 
 [AA7B0658-9C96937B-C:50]
 Good Name=WCW Mayhem (E)
@@ -6642,21 +6647,18 @@ Culling=1
 Good Name=WCW vs. nWo - World Tour (E)
 Internal Name=WCWvs.NWO:World Tour
 Status=Compatible
-Core Note=high system requirement
 Clear Frame=1
 
 [2C3E19BD-5113EE5E-C:45]
 Good Name=WCW vs. nWo - World Tour (U) (V1.0)
 Internal Name=WCWvs.NWO:World Tour
 Status=Compatible
-Core Note=high system requirement
 Clear Frame=1
 
 [71BE60B9-1DDBFB3C-C:45]
 Good Name=WCW vs. nWo - World Tour (U) (V1.1)
 Internal Name=WCWvs.NWO:World Tour
 Status=Compatible
-Core Note=high system requirement
 Clear Frame=1
 
 [68E8A875-0CE7A486-C:50]
@@ -6731,7 +6733,7 @@ Plugin Note=[video] HLE square bug.
 Good Name=Wipeout 64 (E)
 Internal Name=Wipeout 64
 Status=Region issue (core)
-Core Note=broken version? use (U) ROM
+Core Note=Broken version? use (U) ROM
 Counter Factor=1
 Direct3D8-Direct3DPipe=1
 RDRAM Size=8
@@ -6749,12 +6751,12 @@ RDRAM Size=8
 Good Name=Wonder Project J2 - Corlo no Mori no Josette (J)
 Internal Name=WONDER PROJECT J2
 Status=Compatible
-Core Note=intro hang? skip to avoid
+Core Note=Intro hang? skip to avoid
 
 [4F1E88F7-4A5A3F96-C:4A]
 Good Name=Wonder Project J2 [T]
 Status=Compatible
-Core Note=intro hang? skip to avoid
+Core Note=Intro hang? skip to avoid
 
 [F9FC3090-FF014EC2-C:50]
 Good Name=World Cup 98 (E) (M8)
@@ -6774,7 +6776,7 @@ Reg Cache=No
 Good Name=World Driver Championship (E) (M5)
 Internal Name=WORLD DRIVER CHAMP
 Status=Issues (plugin)
-Plugin Note=[Glide64] HLE not supported [audio] bad
+Plugin Note=[video] HLE not supported [audio] needs audio plugin
 32bit=No
 AudioResetOnLoad=Yes
 Fixed Audio=0
@@ -6784,8 +6786,7 @@ HLE GFX=No
 Good Name=World Driver Championship (U)
 Internal Name=WORLD DRIVER CHAMP
 Status=Issues (plugin)
-Core Note=high system requirement
-Plugin Note=[Glide64] HLE not supported [audio] bad
+Plugin Note=[video] HLE not supported [audio] needs audio plugin
 32bit=No
 AudioResetOnLoad=Yes
 Fixed Audio=0
@@ -7100,25 +7101,25 @@ Status=Unknown
 Good Name=Berney Must Die! by Nop_ (POM '99) (PD)
 Internal Name=Berney must die!
 Status=Compatible
-Core Note=press start
+Core Note=Press start
 
 [713FDDD3-72D6A0EF-C:20]
 Good Name=Bike Race '98 V1.0 by NAN (PD)
 Internal Name=Bike Race by NaN
 Status=Issues (mixed)
-Core Note=unknown country error
+Core Note=Unknown country error
 
 [F4B64159-46FC16CF-C:20]
 Good Name=Bike Race '98 V1.2 by NAN (PD)
 Internal Name=Bike Race V1.2 NaN
 Status=Issues (mixed)
-Core Note=unknown country error
+Core Note=Unknown country error
 
 [C2B35C2F-5CD995A2-C:0]
 Good Name=Birthday Demo for Steve by Nep (PD)
 Internal Name=happy b-day Steve
 Status=Issues (mixed)
-Core Note=unknown country error
+Core Note=Unknown country error
 
 [2D15DC8C-D3BBDB52-C:0]
 Good Name=Boot Emu by Jovis (PD)
@@ -7136,13 +7137,13 @@ Use TLB=No
 Good Name=Chaos 89 Demo (PD)
 Internal Name=Ð*E
 Status=Issues (plugin)
-Core Note=unknown country error
+Core Note=Unknown country error
 
 [B484EB31-D44B1928-C:0]
 Good Name=Christmas Flame Demo (PD)
 Internal Name=Flame Demo 12/25/01
 Status=Issues (mixed)
-Core Note=slow
+Core Note=Slow
 
 [7739A454-A2F52A66-C:0]
 Good Name=Chrome Demo - Enhanced (PD)
@@ -7153,18 +7154,18 @@ Status=Compatible
 Good Name=Chrome Demo - Original (PD)
 Internal Name=Chrome demo
 Status=Compatible
-Core Note=unknown country error
+Core Note=Unknown country error
 
 [4B0313E2-65657446-C:0]
 Good Name=Cliffi's Little Intro by Cliffi (POM '99) (PD)
 Internal Name=pom-clif
-Core Note=unknown country error
+Core Note=Unknown country error
 
 [D2B908C8-E0E73A1D-C:0]
 Good Name=Congratulations Demo for SPLiT by Widget and Immo (PD)
 Internal Name=congrats split!
 Status=Compatible
-Core Note=unknown country error
+Core Note=Unknown country error
 
 [0E3ED77B-8E1C26FD-C:0]
 Good Name=Cube Demo (PD)
@@ -7175,7 +7176,6 @@ Status=Compatible
 Good Name=CZN Module Player (PD)
 Internal Name=CZN module player
 Status=Issues (mixed)
-Core Note=?
 
 [887C368D-D1663AA2-C:0]
 Good Name=Display List Ate My Mind Demo by Kid Stardust (PD)
@@ -7232,13 +7232,13 @@ Plugin Note=[audio] bad sound
 Good Name=Evek - V64jr Save Manager by WT_Riker (PD)
 Internal Name=OBS-Evek
 Status=Issues (core)
-Core Note=works only first time
+Core Note=Works only first time
 
 [3E5D6755-9AE4BD3B-C:20]
 Good Name=Explode Demo by NaN (PD)
 Internal Name=kaboom v0.9  NaN
 Status=Compatible
-Core Note=unknown country error
+Core Note=Unknown country error
 
 [8E248649-2E1CDE52-C:0]
 Good Name=Fire_Demo_by_Lac_(PD)
@@ -7255,7 +7255,7 @@ Status=Compatible
 Good Name=Fish Demo by NaN (PD)
 Internal Name=Fishy by NaN v0.3141
 Status=Compatible
-Core Note=unknown county error
+Core Note=Unknown county error
 
 [11C646E7-4D86C048-C:0]
 Good Name=Fogworld USA Demo (PD)
@@ -7295,7 +7295,7 @@ Plugin Note=[video]  fails@3rd screen
 [60D0A702-432236C6-C:50]
 Good Name=Game Boy Emulator + Super Mario 3 (PD)
 Internal Name=GameBooster 64 v1.1
-Core Note=gets to the booting screen
+Core Note=Gets to the booting screen
 
 [5D8B9226-47605A2A-C:50]
 Good Name=GBlator for CD64 (PD)
@@ -7305,12 +7305,12 @@ Status=Unsupported
 [5C1AAD1C-AF7BF297-C:45]
 Good Name=GBlator for NTSC Dr V64 (PD)
 Internal Name=Gblator NTSC Version
-Core Note=gets to the booting screen
+Core Note=Gets to the booting screen
 
 [5D0F8DD2-990BE538-C:50]
 Good Name=GBlator for PAL Dr V64 (PD)
 Internal Name=N64 GAMEBOY EM6V+4A
-Core Note=gets to the booting screen
+Core Note=Gets to the booting screen
 
 [2F67DC59-74AAD9F1-C:0]
 Good Name=Ghemor - CD64 Xfer & Save Util (CommsLink) by CrowTRobo (PD)
@@ -7332,7 +7332,7 @@ Status=Compatible
 [9856E53D-AF483207-C:0]
 Good Name=Hard Pom '99 Demo by TS_Garp (POM '99) (PD)
 Internal Name=Hard
-Core Note=slow
+Core Note=Slow
 
 [775AFA9C-0EB52EF6-C:45]
 Good Name=HardCoded by Iceage
@@ -7365,7 +7365,7 @@ Status=Only intro/part OK
 Good Name=JPEG Slideshow Viewer by Garth Elgar (PD)
 Internal Name=Jpeg Viewer
 Status=Issues (core)
-Core Note=works only first time
+Core Note=Works only first time
 
 [64709212-699BCF3B-C:0]
 Good Name=Kid Stardust Intro with Sound by Kid Stardust (PD)
@@ -7408,13 +7408,13 @@ Plugin Note=missing graphics
 Good Name=Manic Miner - Hidden Levels by RedboX (PD)
 Internal Name=Manic Miner 64
 Status=Issues (mixed)
-Core Note=too dark to see
+Core Note=Too dark to see
 
 [A47D4AD4-8BFA81F9-C:45]
 Good Name=Manic Miner by RedboX (PD)
 Internal Name=Manic Miner 64
 Status=Issues (mixed)
-Core Note=too dark to see
+Core Note=Too dark to see
 
 [A806749B-1F521F45-C:0]
 Good Name=MeeTING Demo by Renderman (PD)
@@ -7466,7 +7466,7 @@ Status=Issues (core)
 Good Name=Money Creates Taste Demo by Count0 (POM '99) (PD)
 Internal Name=MCT by WH
 Status=Compatible
-Core Note=wait to load
+Core Note=Wait to load
 
 [947A4B47-90BFECA6-C:0]
 Good Name=Mortal Kombat SRAM Loader (PD)
@@ -7501,52 +7501,42 @@ Status=Unsupported
 [15DB95D4-77BC52D8-C:45]
 Good Name=NBC First Intro by CALi (PD)
 Internal Name=h¼
-Core Note=slow
+Core Note=Slow
 
 [AB9F8D97-95EAA766-C:0]
 Good Name=NBC-LFC Kings of Porn Vol 01 (PD)
 Internal Name=Kings of Porn Vol 01
 Status=Issues (mixed)
-Core Note=?
-Plugin Note=?
 
 [DD95F49D-2A9B8893-C:0]
 Good Name=NBC-LFC Kings of Porn Vol 01 [a1} (PD)
 Internal Name=The Kings of Porn
 Status=Issues (mixed)
-Core Note=?
-Plugin Note=?
 
 [011F98B2-1E1C8263-C:0]
 Good Name=NBCG Special Edition (PD)
 Internal Name=NBCG Special Edition
 Status=Issues (mixed)
-Core Note=?
-Plugin Note=?
 
 [61A5FCEE-B59FD8D3-C:0]
 Good Name=NBCG's Kings of Porn Demo (PD)
 Internal Name=The Kings Of Porn
 Status=Issues (mixed)
-Core Note=?
-Plugin Note=?
 
 [15AA9AF2-FF33D333-C:0]
 Good Name=NBCG's Tag Gallery 01 by CALi (PD)
 Internal Name=NBCG TAG Gallery 01
 Status=Issues (mixed)
-Core Note=?
-Plugin Note=?
 
 [84067BAC-87FBA623-C:45]
 Good Name=NBCrew 2 Demo (PD)
 Internal Name=h¼
-Core Note=slow
+Core Note=Slow
 
 [3B18F4F7-82BFB2B3-C:45]
 Good Name=Neon64 First Public Beta Release by HCS (PD)
 Internal Name=Neon64 by HCS
-Core Note=slow
+Core Note=Slow
 
 [3B18F6F9-8C4BE567-C:45]
 Good Name=Neon64 First Public Beta Release V2 by HCS (PD)
@@ -7556,8 +7546,6 @@ Internal Name=Neon64 by HCS
 Good Name=Nintendo Family by CALi (PD)
 Internal Name=The Nintendo Family
 Status=Issues (mixed)
-Core Note=?
-Plugin Note=?
 
 [6B2AFCC7-EEB27A34-C:0]
 Good Name=Nintendo On My Mind Demo by Kid Stardust (PD)
@@ -7589,7 +7577,6 @@ Status=Compatible
 Good Name=Pamela Demo (padded) (PD)
 Internal Name=Pamela Demo Nr.1
 Status=Issues (plugin)
-Core Note=?
 
 [7D1727F1-6C6B83EB-C:0]
 Good Name=Pause Demo by RedboX (PD)
@@ -7600,13 +7587,12 @@ Status=Issues (plugin)
 Good Name=PC-Engine 64 Emulator (POM '99) (PD)
 Internal Name=PC-Engine 64
 Status=Issues (core)
-Core Note=slow in game
+Core Note=Slow in game
 
 [D072CFE7-CE134788-C:0]
 Good Name=Pip's Pong by Mr. Pips (PD)
 Internal Name=Pip's Pong by Mr. Pips (PD).v64
 Status=Issues (plugin)
-Core Note=?
 Plugin Note=[input] controller issue
 
 [D851B920-F3D6C0CE-C:0]
@@ -7722,7 +7708,7 @@ Status=Compatible
 [9D63C653-C26B460F-C:0]
 Good Name=POMbaer Demo by Kid Stardust (POM '99) (PD)
 Internal Name=POMBAER - TSF
-Core Note=slow
+Core Note=Slow
 
 [EDAFD3C0-39EF3599-C:0]
 Good Name=POMolizer Demo by Renderman (POM '99) (PD)
@@ -7753,13 +7739,12 @@ Status=Unsupported
 Good Name=RADWAR 2K Party Inv. Intro by Ayatolloh (PD)
 Internal Name=Live suxx!
 Status=Compatible
-Core Note=dark
+Core Note=Dark
 
 [75A0B893-4CA321B5-C:0]
 Good Name=Robotech - Crystal Dreams (U) (beta)
 Internal Name=Robotech - Crystal Dreams (PD)
 Status=Compatible
-Core Note=?
 
 [6FA4B821-29561690-C:0]
 Good Name=Rotating Demo USA by Rene (PD) [a1]
@@ -7898,8 +7883,6 @@ Status=Issues (plugin)
 Good Name=T-Shirt Demo by Neptune and Steve (POM '98) (PD)
 Internal Name=T-Shirt/CML+Antihero
 Status=Needs video plugin
-Core Note=?
-Plugin Note=?
 
 [81361532-2AEB643F-C:0]
 Good Name=Tetris Beta Demo by FusionMan (POM '98) (PD)
@@ -7923,7 +7906,7 @@ Core Note=[a1] not supported
 [93DA8551-D231E8AB-C:0]
 Good Name=The Corporation XMAS Demo '99 by TS_Garp (PD)
 Internal Name=TC Xmas Demo '99
-Core Note=slow
+Core Note=Slow
 
 [5ECE09AE-8230C82D-C:0]
 Good Name=Tom Demo (PD)
@@ -7949,8 +7932,6 @@ Status=Compatible
 Good Name=TRSI Intro by Ayatollah (POM '99) (PD)
 Internal Name=Live suxx!
 Status=Issues (plugin)
-Core Note=?
-Plugin Note=?
 
 [37B8F920-A58BB3EF-C:45]
 Good Name=Twintris by Twinsen (POM '98) (PD)
@@ -7966,37 +7947,32 @@ Status=Compatible
 Good Name=UltraMSX2 V1.0 (PD)
 Internal Name=ultraMSX2
 Status=Issues (mixed)
-Core Note=works only first time
-Plugin Note=?
+Core Note=Works only first time
 
 [504ABA0A-269AA7F4-C:0]
 Good Name=UltraMSX2 V1.0 (ROMS Inserted) (PD)
 Internal Name=ultraMSX2
 Status=Issues (mixed)
-Core Note=works only first time
-Plugin Note=?
+Core Note=Works only first time
 
 [F291B959-A24CBCAF-C:0]
 Good Name=UltraSMS V1.0 (PD)
 Internal Name=ultraSMS
 Status=Issues (mixed)
-Core Note=works only first time
-Plugin Note=?
+Core Note=Works only first time
 
 [EF623F50-ECBB509B-C:0]
 Good Name=Universal Bootemu V1.0 (PD)
 Internal Name=Universal Bootemu
 Status=Compatible
-Core Note=dark
-Plugin Note=?
+Core Note=Dark
 RDRAM Size=8
 
 [BB752DA7-30D8BEF4-C:0]
 Good Name=Universal Bootemu V1.1 (PD)
 Internal Name=¢r [xg
 Status=Compatible
-Core Note=dark
-Plugin Note=?
+Core Note=Dark
 RDRAM Size=8
 
 [5F44492A-18552A0A-C:0]
@@ -8058,8 +8034,6 @@ Status=Only intro/part OK
 Good Name=VNES64 Emulator V0.12 by Jean-Luc Picard (PD)
 Internal Name=JL_Picard vNES64 .12
 Status=Issues (plugin)
-Core Note=?
-Plugin Note=?
 
 [CA3BC095-9649860A-C:50]
 Good Name=Wet Dreams Can Beta Demo by Immo (POM '99) (PD)
@@ -8089,7 +8063,7 @@ Plugin Note=[video] fullscreen res issues; use 1.5.2 plugin
 Good Name=Y2K Demo by WT_Riker (PD)
 Internal Name=OBS-Y2KD
 Status=Issues (core)
-Core Note=slow
+Core Note=Slow
 
 [83D8A30C-8552C117-C:0]
 Good Name=Yoshi's Story BootEmu (PD)

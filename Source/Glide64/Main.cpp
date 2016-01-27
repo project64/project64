@@ -41,9 +41,10 @@
 #include "Gfx_1.3.h"
 #include "Version.h"
 #include <Settings/Settings.h>
+#include <Common/CriticalSection.h>
+#include <Common/path.h>
 
-#include <wx/fileconf.h>
-#include <wx/wfstream.h>
+#include "Config.h"
 #include "Util.h"
 #include "3dmath.h"
 #include "Debugger.h"
@@ -77,7 +78,6 @@ std::ofstream rdp_err;
 #endif
 
 GFX_INFO gfx;
-wxWindow * GFXWindow = NULL;
 
 int to_fullscreen = FALSE;
 int GfxInitDone = FALSE;
@@ -89,7 +89,7 @@ int exception = FALSE;
 int evoodoo = 0;
 int ev_fullscreen = 0;
 
-#ifdef __WINDOWS__
+#ifdef _WIN32
 #define WINPROC_OVERRIDE
 HINSTANCE hinstDLL = NULL;
 #endif
@@ -181,27 +181,7 @@ uint32_t   offset_textures = 0;
 uint32_t   offset_texbuf1 = 0;
 
 int    capture_screen = 0;
-wxString capture_path;
-
-wxString pluginPath;
-wxMutex *mutexProcessDList = NULL;
-
-static void PluginPath()
-{
-    wxDynamicLibraryDetailsArray dlls = wxDynamicLibrary::ListLoaded();
-    const size_t count = dlls.GetCount();
-    for (size_t n = 0; n < count; ++n)
-    {
-        const wxDynamicLibraryDetails& details = dlls[n];
-        if (details.GetName().Find(wxT("Glide64")) != wxNOT_FOUND)
-        {
-            wxFileName libname(details.GetPath());
-            pluginPath = libname.GetPath();
-            return;
-        }
-    }
-    pluginPath = wxGetCwd() + _T("/Plugin"); //if ListLoaded is not supported by OS use default path
-}
+std::string capture_path;
 
 void _ChangeSize()
 {
@@ -324,7 +304,9 @@ void ConfigWrapper()
 
 void UseUnregisteredSetting(int /*SettingID*/)
 {
+#ifdef _WIN32
     DebugBreak();
+#endif
 }
 
 void ReadSettings()
@@ -802,7 +784,7 @@ void DisplayLoadProgress(const wchar_t *format, ...)
     float x;
     set_message_combiner();
     output(382, 380, 1, "LOADING TEXTURES. PLEASE WAIT...");
-    int len = min((int)strlen(buf) * 8, 1024);
+    int len = minval((int)strlen(buf) * 8, 1024);
     x = (1024 - len) / 2.0f;
     output(x, 360, 1, buf);
     grBufferSwap(0);
@@ -902,7 +884,7 @@ int InitGfx()
 
     /*if (fb_hwfbe_enabled)
     {
-    gfx_context = grSstWinOpenExt (wxPtrToUInt(gfx.hWnd),
+    gfx_context = grSstWinOpenExt (uintptr_t(gfx.hWnd),
     res_data,
     GR_REFRESH_60Hz,
     GR_COLORFORMAT_RGBA,
@@ -922,7 +904,9 @@ int InitGfx()
 
     if (!gfx_context)
     {
-        wxMessageBox(_T("Error setting display mode"), _T("Error"), wxOK | wxICON_EXCLAMATION);
+#ifdef _WIN32
+        MessageBox(gfx.hWnd, "Error setting display mode", "Error", MB_OK | MB_ICONEXCLAMATION);
+#endif
         //    grSstWinClose (gfx_context);
         grGlideShutdown();
         return FALSE;
@@ -1100,7 +1084,7 @@ int InitGfx()
                 options,
                 settings.ghq_cache_size * 1024 * 1024, // cache texture to system memory
                 stdstr(settings.texture_dir).ToUTF16().c_str(),
-                rdp.RomName.wchar_str(), // name of ROM. must be no longer than 256 characters
+                rdp.RomName, // name of ROM. must be no longer than 256 characters
                 DisplayLoadProgress);
         }
     }
@@ -1151,19 +1135,12 @@ bool wxDLLApp::OnInit()
 {
     wxImage::AddHandler(new wxPNGHandler);
     wxImage::AddHandler(new wxJPEGHandler);
-    PluginPath();
     return true;
 }
 
 void wxDLLApp::CleanUp()
 {
     wxApp::CleanUp();
-    if (GFXWindow)
-    {
-        GFXWindow->SetHWND(NULL);
-        delete GFXWindow;
-        GFXWindow = NULL;
-    }
 }
 
 #ifndef __WINDOWS__
@@ -1191,12 +1168,11 @@ int DllUnload(void)
     return TRUE;
 }
 
-#ifdef __WINDOWS__
+#ifdef _WIN32
 void wxSetInstance(HINSTANCE hInstance);
+CriticalSection * g_ProcessDListCS = NULL;
 
-extern "C" int WINAPI DllMain(HINSTANCE hinst,
-    DWORD fdwReason,
-    LPVOID /*lpReserved*/)
+extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReserved*/)
 {
     sprintf(out_buf, "DllMain (%0p - %d)\n", hinst, fdwReason);
     LOG(out_buf);
@@ -1204,13 +1180,19 @@ extern "C" int WINAPI DllMain(HINSTANCE hinst,
     if (fdwReason == DLL_PROCESS_ATTACH)
     {
         hinstDLL = hinst;
+        if (g_ProcessDListCS == NULL)
+        {
+            g_ProcessDListCS = new CriticalSection();
+        }
         wxSetInstance(hinstDLL);
         return DllLoad();
     }
     else if (fdwReason == DLL_PROCESS_DETACH)
     {
-        if (GFXWindow != NULL)
-            GFXWindow->SetHWND(NULL);
+        if (g_ProcessDListCS)
+        {
+            delete g_ProcessDListCS;
+        }
         return DllUnload();
     }
     return TRUE;
@@ -1293,7 +1275,7 @@ output:   none
 EXPORT void CALL CaptureScreen(char * Directory)
 {
     capture_screen = 1;
-    capture_path = wxString::FromAscii(Directory);
+    capture_path = Directory;
 }
 
 /******************************************************************
@@ -1496,11 +1478,6 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     debug_init();    // Initialize debugger
 
     gfx = Gfx_Info;
-#ifdef __WINDOWS__
-    if (GFXWindow == NULL)
-        GFXWindow = new wxWindow();
-    GFXWindow->SetHWND(gfx.hWnd);
-#endif
 
 #ifdef WINPROC_OVERRIDE
     // [H.Morii] inject our own winproc so that "alt-enter to fullscreen"
@@ -1735,15 +1712,16 @@ void CALL RomOpen(void)
 
     // remove all trailing spaces
     while (name[strlen(name) - 1] == ' ')
+    {
         name[strlen(name) - 1] = 0;
+    }
 
-    wxString strRomName = wxString::FromAscii(name);
-    if (settings.ghq_use && strRomName != rdp.RomName)
+    if (settings.ghq_use && strcmp(rdp.RomName, name) != 0)
     {
         ext_ghq_shutdown();
         settings.ghq_use = 0;
     }
-    rdp.RomName = strRomName;
+    strcpy(rdp.RomName, name);
     ReadSpecialSettings(name);
     ClearCache();
 
@@ -1855,7 +1833,7 @@ void CALL UpdateScreen(void)
     }
 #endif
     char out_buf[128];
-    sprintf(out_buf, "UpdateScreen (). Origin: %08lx, Old origin: %08lx, width: %d\n", *gfx.VI_ORIGIN_REG, rdp.vi_org_reg, *gfx.VI_WIDTH_REG);
+    sprintf(out_buf, "UpdateScreen (). Origin: %08x, Old origin: %08x, width: %d\n", *gfx.VI_ORIGIN_REG, rdp.vi_org_reg, *gfx.VI_WIDTH_REG);
     LOG(out_buf);
     LRDP(out_buf);
 
@@ -1997,11 +1975,11 @@ void newSwapBuffers()
     {
         if (settings.clock_24_hr)
         {
-            output(956.0f, 0, 1, (char*)wxDateTime::Now().Format(wxT("%H:%M:%S")).char_str(), 0);
+            output(956.0f, 0, 1, (char*)wxDateTime::Now().Format("%H:%M:%S").char_str(), 0);
         }
         else
         {
-            output(930.0f, 0, 1, (char*)wxDateTime::Now().Format(wxT("%I:%M:%S %p")).char_str(), 0);
+            output(930.0f, 0, 1, (char*)wxDateTime::Now().Format("%I:%M:%S %p").char_str(), 0);
         }
     }
     //hotkeys
@@ -2073,26 +2051,27 @@ void newSwapBuffers()
 
     if (capture_screen)
     {
-        //char path[256];
-        // Make the directory if it doesn't exist
-        if (!wxDirExists(capture_path))
-            wxMkdir(capture_path);
-        wxString path;
-        wxString romName = rdp.RomName;
-        romName.Replace(wxT(" "), wxT("_"), true);
-        romName.Replace(wxT(":"), wxT(";"), true);
+        CPath path(capture_path);
+        if (!path.DirectoryExists())
+        {
+            path.DirectoryCreate();
+        }
+        stdstr romName = rdp.RomName;
+        romName.Replace(" ", "_");
+        romName.Replace(":", ";");
 
+        if (settings.ssformat > NumOfFormats)
+        {
+            settings.ssformat = 0;
+        }
         for (int i = 1;; i++)
         {
-            path = capture_path;
-            path += wxT("Glide64_");
-            path += romName;
-            path += wxT("_");
-            if (i < 10)
-                path += wxT("0");
-            path << i << wxT(".") << ScreenShotFormats[settings.ssformat].extension;
-            if (!wxFileName::FileExists(path))
+            stdstr_f filename("Glide64_%s_%s%d.%s", romName.c_str(), i < 10 ? "0" : "", i, ScreenShotFormats[settings.ssformat].extension);
+            path.SetNameExtension(filename.c_str());
+            if (!path.Exists())
+            {
                 break;
+            }
         }
 
         const uint32_t offset_x = (uint32_t)rdp.offset_x;
@@ -2102,12 +2081,7 @@ void newSwapBuffers()
 
         GrLfbInfo_t info;
         info.size = sizeof(GrLfbInfo_t);
-        if (grLfbLock(GR_LFB_READ_ONLY,
-            GR_BUFFER_BACKBUFFER,
-            GR_LFBWRITEMODE_565,
-            GR_ORIGIN_UPPER_LEFT,
-            FXFALSE,
-            &info))
+        if (grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_565, GR_ORIGIN_UPPER_LEFT, FXFALSE, &info))
         {
             uint8_t *ssimg = (uint8_t*)malloc(image_width * image_height * 3); // will be free in wxImage destructor
             int sspos = 0;
@@ -2151,7 +2125,8 @@ void newSwapBuffers()
             // Unlock the backbuffer
             grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
             wxImage screenshot(image_width, image_height, ssimg);
-            screenshot.SaveFile(path, ScreenShotFormats[settings.ssformat].type);
+            wxString wxPath((const char *)path);
+            screenshot.SaveFile(wxPath, ScreenShotFormats[settings.ssformat].type);
             capture_screen = 0;
         }
     }

@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include "Ext_TxFilter.h"
 
-extern "C" boolean txfilter_init(int maxwidth, int maxheight, int maxbpp, int options, int cachesize, const wchar_t *path, const wchar_t *ident, dispInfoFuncExt callback);
+extern "C" boolean txfilter_init(int maxwidth, int maxheight, int maxbpp, int options, int cachesize, const wchar_t *path, const char *ident, dispInfoFuncExt callback);
 extern "C" void txfilter_shutdown(void);
 extern "C" boolean txfilter(unsigned char *src, int srcwidth, int srcheight, unsigned short srcformat, uint64 g64crc, GHQTexInfo *info);
 extern "C" boolean txfilter_hirestex(uint64 g64crc, uint64 r_crc64, unsigned short *palette, GHQTexInfo *info);
@@ -35,43 +35,43 @@ extern "C" boolean txfilter_reloadhirestex();
 
 void ext_ghq_shutdown(void)
 {
-	txfilter_shutdown();
+    txfilter_shutdown();
 }
 
 boolean ext_ghq_init(int maxwidth, int maxheight, int maxbpp, int options, int cachesize,
-                     const wchar_t *path, const wchar_t *ident,
-                     dispInfoFuncExt callback)
+    const wchar_t *path, const char *ident,
+    dispInfoFuncExt callback)
 {
-	return txfilter_init(maxwidth, maxheight, maxbpp, options, cachesize, path, ident, callback);
+    return txfilter_init(maxwidth, maxheight, maxbpp, options, cachesize, path, ident, callback);
 }
 
 boolean ext_ghq_txfilter(unsigned char *src, int srcwidth, int srcheight, unsigned short srcformat,
-                                uint64 g64crc, GHQTexInfo *info)
+    uint64 g64crc, GHQTexInfo *info)
 {
-  return txfilter(src, srcwidth, srcheight, srcformat, g64crc, info);;
+    return txfilter(src, srcwidth, srcheight, srcformat, g64crc, info);;
 }
 
 boolean ext_ghq_hirestex(uint64 g64crc, uint64 r_crc64, unsigned short *palette, GHQTexInfo *info)
 {
-  boolean ret = txfilter_hirestex(g64crc, r_crc64, palette, info);
-  return ret;
+    boolean ret = txfilter_hirestex(g64crc, r_crc64, palette, info);
+    return ret;
 }
 
 uint64 ext_ghq_checksum(unsigned char *src, int width, int height, int size, int rowStride, unsigned char *palette)
 {
-  uint64 ret = txfilter_checksum(src, width, height, size, rowStride, palette);
-  return ret;
+    uint64 ret = txfilter_checksum(src, width, height, size, rowStride, palette);
+    return ret;
 }
 
 boolean ext_ghq_dmptx(unsigned char *src, int width, int height, int rowStridePixel, unsigned short gfmt, unsigned short n64fmt, uint64 r_crc64)
 {
-  boolean ret = txfilter_dmptx(src, width, height, rowStridePixel, gfmt, n64fmt, r_crc64);
-  return ret;
+    boolean ret = txfilter_dmptx(src, width, height, rowStridePixel, gfmt, n64fmt, r_crc64);
+    return ret;
 }
 
 boolean ext_ghq_reloadhirestex()
 {
-  boolean ret = txfilter_reloadhirestex();
+    boolean ret = txfilter_reloadhirestex();
 
-  return ret;
+    return ret;
 }

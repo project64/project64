@@ -37,8 +37,8 @@
 //
 //****************************************************************
 
+#include <math.h>
 #include "Gfx_1.3.h"
-#include <wx/confbase.h>
 #include "3dmath.h"
 #include "Util.h"
 #include "Debugger.h"
@@ -49,8 +49,17 @@
 #include "CRC.h"
 #include <Common/StdString.h>
 
-const int NumOfFormats = 3;
-SCREEN_SHOT_FORMAT ScreenShotFormats[NumOfFormats] = { { wxT("BMP"), wxT("bmp"), wxBITMAP_TYPE_BMP }, { wxT("PNG"), wxT("png"), wxBITMAP_TYPE_PNG }, { wxT("JPEG"), wxT("jpeg"), wxBITMAP_TYPE_JPEG } };
+#ifdef _WIN32
+#include <Common/CriticalSection.h>
+
+extern CriticalSection * g_ProcessDListCS;
+#endif
+
+const int NumOfFormats = 1;
+SCREEN_SHOT_FORMAT ScreenShotFormats[NumOfFormats] =
+{
+    { "PNG", "png", rdpBITMAP_TYPE_PNG},
+};
 
 const char *ACmp[] = { "NONE", "THRESHOLD", "UNKNOWN", "DITHER" };
 
@@ -318,7 +327,7 @@ void microcheck()
 
     FRDP("ucode = %08lx\n", uc_crc);
 
-    RegisterSetting(Set_ucodeLookup, Data_DWORD_RDB_Setting, stdstr_f(wxT("%08lx"), uc_crc).c_str(), "ucode", (unsigned int)-2, NULL);
+    RegisterSetting(Set_ucodeLookup, Data_DWORD_RDB_Setting, stdstr_f("%08lx", uc_crc).c_str(), "ucode", (unsigned int)-2, NULL);
     int uc = GetSetting(Set_ucodeLookup);
 
     if (uc == -2 && ucode_error_report)
@@ -326,8 +335,10 @@ void microcheck()
         settings.ucode = GetSetting(Set_ucode);
 
         ReleaseGfx();
-        wxMessageBox(stdstr_f("Error: uCode crc not found in INI, using currently selected uCode\n\n%08lx", uc_crc).c_str(), "Error", wxOK | wxICON_EXCLAMATION, GFXWindow);
+#ifdef _WIN32
+        MessageBox(gfx.hWnd, stdstr_f("Error: uCode crc not found in INI, using currently selected uCode\n\n%08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
 
+#endif
         ucode_error_report = FALSE; // don't report any more ucode errors from this game
     }
     else if (uc == -1 && ucode_error_report)
@@ -335,7 +346,9 @@ void microcheck()
         settings.ucode = GetSetting(Set_ucode);
 
         ReleaseGfx();
-        wxMessageBox(stdstr_f("Error: Unsupported uCode!\n\ncrc: %08lx", uc_crc).c_str(), "Error", wxOK | wxICON_EXCLAMATION, GFXWindow);
+#ifdef _WIN32
+        MessageBox(gfx.hWnd, stdstr_f("Error: Unsupported uCode!\n\ncrc: %08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
+#endif
 
         ucode_error_report = FALSE; // don't report any more ucode errors from this game
     }
@@ -473,8 +486,8 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
         }
         else
         {
-            float scale_x = (settings.scr_res_x - rdp.offset_x*2.0f) / max(width, rdp.vi_width);
-            float scale_y = (settings.scr_res_y - rdp.offset_y*2.0f) / max(height, rdp.vi_height);
+            float scale_x = (settings.scr_res_x - rdp.offset_x*2.0f) / maxval(width, rdp.vi_width);
+            float scale_y = (settings.scr_res_y - rdp.offset_y*2.0f) / maxval(height, rdp.vi_height);
 
             FRDP("width: %d, height: %d, ul_y: %d, lr_y: %d, scale_x: %f, scale_y: %f, ci_width: %d, ci_height: %d\n", width, height, rdp.ci_upper_bound, rdp.ci_lower_bound, scale_x, scale_y, rdp.ci_width, rdp.ci_height);
             GrLfbInfo_t info;
@@ -542,33 +555,6 @@ void GoToFullScreen()
 #endif
 }
 
-class SoftLocker
-{
-public:
-    // lock the mutex in the ctor
-    SoftLocker(wxMutex* mutex)
-        : _isOk(false), _mutex(mutex)
-    {
-        _isOk = (_mutex->TryLock() == wxMUTEX_NO_ERROR);
-    }
-
-    // returns true if mutex was successfully locked in ctor
-    bool IsOk() const
-    {
-        return _isOk;
-    }
-
-    // unlock the mutex in dtor
-    ~SoftLocker()
-    {
-        if (IsOk()) _mutex->Unlock();
-    }
-
-private:
-    bool     _isOk;
-    wxMutex* _mutex;
-};
-
 /******************************************************************
 Function: ProcessDList
 Purpose:  This function is called when there is a Dlist to be
@@ -591,6 +577,9 @@ int depth_buffer_fog;
 
 EXPORT void CALL ProcessDList(void)
 {
+#ifdef _WIN32
+    CGuard guard(*g_ProcessDListCS);
+#endif
     no_dlist = false;
     update_screen_count = 0;
     ChangeSize();
@@ -600,7 +589,7 @@ EXPORT void CALL ProcessDList(void)
     {
         hhkLowLevelKybd = SetWindowsHookEx(WH_KEYBOARD_LL,
             LowLevelKeyboardProc, hInstance, 0);
-}
+    }
 #endif
 
     LOG("ProcessDList ()\n");
@@ -660,7 +649,7 @@ EXPORT void CALL ProcessDList(void)
 
     rdp.model_i = 0; // 0 matrices so far in stack
     //stack_size can be less then 32! Important for Silicon Vally. Thanks Orkin!
-    rdp.model_stack_size = min(32, (*(uint32_t*)(gfx.DMEM + 0x0FE4)) >> 6);
+    rdp.model_stack_size = minval(32, (*(uint32_t*)(gfx.DMEM + 0x0FE4)) >> 6);
     if (rdp.model_stack_size == 0)
         rdp.model_stack_size = 32;
     rdp.Persp_en = TRUE;
@@ -793,12 +782,16 @@ EXPORT void CALL ProcessDList(void)
             }
 #endif
         }
-        if (wxMessageBox(_T("The GFX plugin caused an exception and has been disabled.\nWould you like to turn it back on and attempt to continue?"), _T("Glide64 Exception"), wxYES_NO|wxICON_EXCLAMATION, GFXWindow) == wxNO)
+        if (MessageBox(gfx.hWnd, "The GFX plugin caused an exception and has been disabled.\nWould you like to turn it back on and attempt to continue?","Glide64 Exception", MB_YESNO|MB_ICONEXCLAMATION) == MB_NO)
+        {
             exception = TRUE;
-        else
-            to_fullscreen = TRUE;
-        return;
         }
+        else
+        {
+            to_fullscreen = TRUE;
+        }
+        return;
+    }
 #endif
 
     if (fb_emulation_enabled)
@@ -821,7 +814,7 @@ EXPORT void CALL ProcessDList(void)
         CI_SET = FALSE;
     }
     LRDP("ProcessDList end\n");
-    }
+}
 
 // undef - undefined instruction, always ignore
 static void undef()
@@ -1009,17 +1002,17 @@ static void rdp_texrect()
     float ul_x, ul_y, lr_x, lr_y;
     if (rdp.cycle_mode == 2)
     {
-        ul_x = max(0.0f, (short)((rdp.cmd1 & 0x00FFF000) >> 14));
-        ul_y = max(0.0f, (short)((rdp.cmd1 & 0x00000FFF) >> 2));
-        lr_x = max(0.0f, (short)((rdp.cmd0 & 0x00FFF000) >> 14));
-        lr_y = max(0.0f, (short)((rdp.cmd0 & 0x00000FFF) >> 2));
+        ul_x = maxval(0.0f, (short)((rdp.cmd1 & 0x00FFF000) >> 14));
+        ul_y = maxval(0.0f, (short)((rdp.cmd1 & 0x00000FFF) >> 2));
+        lr_x = maxval(0.0f, (short)((rdp.cmd0 & 0x00FFF000) >> 14));
+        lr_y = maxval(0.0f, (short)((rdp.cmd0 & 0x00000FFF) >> 2));
     }
     else
     {
-        ul_x = max(0.0f, ((short)((rdp.cmd1 & 0x00FFF000) >> 12)) / 4.0f);
-        ul_y = max(0.0f, ((short)(rdp.cmd1 & 0x00000FFF)) / 4.0f);
-        lr_x = max(0.0f, ((short)((rdp.cmd0 & 0x00FFF000) >> 12)) / 4.0f);
-        lr_y = max(0.0f, ((short)(rdp.cmd0 & 0x00000FFF)) / 4.0f);
+        ul_x = maxval(0.0f, ((short)((rdp.cmd1 & 0x00FFF000) >> 12)) / 4.0f);
+        ul_y = maxval(0.0f, ((short)(rdp.cmd1 & 0x00000FFF)) / 4.0f);
+        lr_x = maxval(0.0f, ((short)((rdp.cmd0 & 0x00FFF000) >> 12)) / 4.0f);
+        lr_y = maxval(0.0f, ((short)(rdp.cmd0 & 0x00000FFF)) / 4.0f);
     }
 
     if (ul_x >= lr_x)
@@ -1128,8 +1121,8 @@ static void rdp_texrect()
     //
     //integer representation of texture coordinate.
     //needed to detect and avoid overflow after shifting
-    wxInt32 off_x_i = (rdp.cmd2 >> 16) & 0xFFFF;
-    wxInt32 off_y_i = rdp.cmd2 & 0xFFFF;
+    int32_t off_x_i = (rdp.cmd2 >> 16) & 0xFFFF;
+    int32_t off_y_i = rdp.cmd2 & 0xFFFF;
     float dsdx = (float)((short)((rdp.cmd3 & 0xFFFF0000) >> 16)) / 1024.0f;
     float dtdy = (float)((short)(rdp.cmd3 & 0x0000FFFF)) / 1024.0f;
     if (off_x_i & 0x8000) //check for sign bit
@@ -1434,9 +1427,9 @@ static void rdp_texrect()
     {
         float fog;
         if (rdp.fog_mode == RDP::fog_blend)
-            fog = 1.0f / max(1, rdp.fog_color & 0xFF);
+            fog = 1.0f / maxval(1, rdp.fog_color & 0xFF);
         else
-            fog = 1.0f / max(1, (~rdp.fog_color) & 0xFF);
+            fog = 1.0f / maxval(1, (~rdp.fog_color) & 0xFF);
         for (i = 0; i < n_vertices; i++)
         {
             vptr[i].f = fog;
@@ -1545,10 +1538,10 @@ static void rdp_setconvert()
 static void rdp_setscissor()
 {
     // clipper resolution is 320x240, scale based on computer resolution
-    rdp.scissor_o.ul_x = /*min(*/(uint32_t)(((rdp.cmd0 & 0x00FFF000) >> 14))/*, 320)*/;
-    rdp.scissor_o.ul_y = /*min(*/(uint32_t)(((rdp.cmd0 & 0x00000FFF) >> 2))/*, 240)*/;
-    rdp.scissor_o.lr_x = /*min(*/(uint32_t)(((rdp.cmd1 & 0x00FFF000) >> 14))/*, 320)*/;
-    rdp.scissor_o.lr_y = /*min(*/(uint32_t)(((rdp.cmd1 & 0x00000FFF) >> 2))/*, 240)*/;
+    rdp.scissor_o.ul_x = /*minval(*/(uint32_t)(((rdp.cmd0 & 0x00FFF000) >> 14))/*, 320)*/;
+    rdp.scissor_o.ul_y = /*minval(*/(uint32_t)(((rdp.cmd0 & 0x00000FFF) >> 2))/*, 240)*/;
+    rdp.scissor_o.lr_x = /*minval(*/(uint32_t)(((rdp.cmd1 & 0x00FFF000) >> 14))/*, 320)*/;
+    rdp.scissor_o.lr_y = /*minval(*/(uint32_t)(((rdp.cmd1 & 0x00000FFF) >> 2))/*, 240)*/;
 
     rdp.ci_upper_bound = rdp.scissor_o.ul_y;
     rdp.ci_lower_bound = rdp.scissor_o.lr_y;
@@ -2159,8 +2152,8 @@ static void rdp_loadtile()
     LOAD_TILE_INFO &info = rdp.load_info[rdp.tiles[tile].t_mem];
     info.tile_ul_s = ul_s;
     info.tile_ul_t = ul_t;
-    info.tile_width = (rdp.tiles[tile].mask_s ? min((uint16_t)width, 1 << rdp.tiles[tile].mask_s) : (uint16_t)width);
-    info.tile_height = (rdp.tiles[tile].mask_t ? min((uint16_t)height, 1 << rdp.tiles[tile].mask_t) : (uint16_t)height);
+    info.tile_width = (rdp.tiles[tile].mask_s ? minval((uint16_t)width, 1 << rdp.tiles[tile].mask_s) : (uint16_t)width);
+    info.tile_height = (rdp.tiles[tile].mask_t ? minval((uint16_t)height, 1 << rdp.tiles[tile].mask_t) : (uint16_t)height);
     if (settings.hacks&hack_MK64) {
         if (info.tile_width % 2)
             info.tile_width--;
@@ -2289,10 +2282,10 @@ static void rdp_fillrect()
         }
         //if (settings.frame_buffer&fb_depth_clear)
         {
-            ul_x = min(max(ul_x, rdp.scissor_o.ul_x), rdp.scissor_o.lr_x);
-            lr_x = min(max(lr_x, rdp.scissor_o.ul_x), rdp.scissor_o.lr_x);
-            ul_y = min(max(ul_y, rdp.scissor_o.ul_y), rdp.scissor_o.lr_y);
-            lr_y = min(max(lr_y, rdp.scissor_o.ul_y), rdp.scissor_o.lr_y);
+            ul_x = minval(maxval(ul_x, rdp.scissor_o.ul_x), rdp.scissor_o.lr_x);
+            lr_x = minval(maxval(lr_x, rdp.scissor_o.ul_x), rdp.scissor_o.lr_x);
+            ul_y = minval(maxval(ul_y, rdp.scissor_o.ul_y), rdp.scissor_o.lr_y);
+            lr_y = minval(maxval(lr_y, rdp.scissor_o.ul_y), rdp.scissor_o.lr_y);
             uint32_t zi_width_in_dwords = rdp.ci_width >> 1;
             ul_x >>= 1;
             lr_x >>= 1;
@@ -2348,10 +2341,10 @@ static void rdp_fillrect()
         rdp.scissor.lr_y);
 
     // KILL the floating point error with 0.01f
-    wxInt32 s_ul_x = (uint32_t)min(max(ul_x * rdp.scale_x + rdp.offset_x + 0.01f, rdp.scissor.ul_x), rdp.scissor.lr_x);
-    wxInt32 s_lr_x = (uint32_t)min(max(lr_x * rdp.scale_x + rdp.offset_x + 0.01f, rdp.scissor.ul_x), rdp.scissor.lr_x);
-    wxInt32 s_ul_y = (uint32_t)min(max(ul_y * rdp.scale_y + rdp.offset_y + 0.01f, rdp.scissor.ul_y), rdp.scissor.lr_y);
-    wxInt32 s_lr_y = (uint32_t)min(max(lr_y * rdp.scale_y + rdp.offset_y + 0.01f, rdp.scissor.ul_y), rdp.scissor.lr_y);
+    int32_t s_ul_x = (uint32_t)minval(maxval(ul_x * rdp.scale_x + rdp.offset_x + 0.01f, rdp.scissor.ul_x), rdp.scissor.lr_x);
+    int32_t s_lr_x = (uint32_t)minval(maxval(lr_x * rdp.scale_x + rdp.offset_x + 0.01f, rdp.scissor.ul_x), rdp.scissor.lr_x);
+    int32_t s_ul_y = (uint32_t)minval(maxval(ul_y * rdp.scale_y + rdp.offset_y + 0.01f, rdp.scissor.ul_y), rdp.scissor.lr_y);
+    int32_t s_lr_y = (uint32_t)minval(maxval(lr_y * rdp.scale_y + rdp.offset_y + 0.01f, rdp.scissor.ul_y), rdp.scissor.lr_y);
 
     if (s_lr_x < 0) s_lr_x = 0;
     if (s_lr_y < 0) s_lr_y = 0;
@@ -2509,7 +2502,7 @@ static void rdp_setprimcolor()
 {
     rdp.prim_color = rdp.cmd1;
     rdp.prim_lodmin = (rdp.cmd0 >> 8) & 0xFF;
-    rdp.prim_lodfrac = max(rdp.cmd0 & 0xFF, rdp.prim_lodmin);
+    rdp.prim_lodfrac = maxval(rdp.cmd0 & 0xFF, rdp.prim_lodmin);
     rdp.update |= UPDATE_COMBINE;
 
     FRDP("setprimcolor: %08lx, lodmin: %d, lodfrac: %d\n", rdp.cmd1, rdp.prim_lodmin,
@@ -2939,7 +2932,7 @@ static void rdp_setcolorimage()
     if (rdp.zimg == rdp.cimg)
     {
         rdp.zi_width = rdp.ci_width;
-        //    int zi_height = min((int)rdp.zi_width*3/4, (int)rdp.vi_height);
+        //    int zi_height = minval((int)rdp.zi_width*3/4, (int)rdp.vi_height);
         //    rdp.zi_words = rdp.zi_width * zi_height;
     }
     uint32_t format = (rdp.cmd0 >> 21) & 0x7;
@@ -3216,10 +3209,10 @@ EXPORT void CALL FBWrite(uint32_t addr, uint32_t /*size*/)
     uint32_t shift_l = (a - rdp.cimg) >> 1;
     uint32_t shift_r = shift_l + 2;
 
-    d_ul_x = min(d_ul_x, shift_l%rdp.ci_width);
-    d_ul_y = min(d_ul_y, shift_l / rdp.ci_width);
-    d_lr_x = max(d_lr_x, shift_r%rdp.ci_width);
-    d_lr_y = max(d_lr_y, shift_r / rdp.ci_width);
+    d_ul_x = minval(d_ul_x, shift_l%rdp.ci_width);
+    d_ul_y = minval(d_ul_y, shift_l / rdp.ci_width);
+    d_lr_x = maxval(d_lr_x, shift_r%rdp.ci_width);
+    d_lr_y = maxval(d_lr_y, shift_r / rdp.ci_width);
 }
 
 /************************************************************************
@@ -3343,7 +3336,7 @@ void DetectFrameBufferUsage()
         // Go to the next instruction
         rdp.pc[rdp.pc_i] = (a + 8) & BMASK;
 
-        if (wxPtrToUInt(reinterpret_cast<void*>(gfx_instruction_lite[settings.ucode][rdp.cmd0 >> 24])))
+        if (uintptr_t(reinterpret_cast<void*>(gfx_instruction_lite[settings.ucode][rdp.cmd0 >> 24])))
             gfx_instruction_lite[settings.ucode][rdp.cmd0 >> 24]();
 
         // check DL counter
@@ -3528,9 +3521,9 @@ void lle_triangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
     int drde = 0, dgde = 0, dbde = 0, dade = 0, dzde = 0, dsde = 0, dtde = 0, dwde = 0;
     int flip = (w1 & 0x800000) ? 1 : 0;
 
-    wxInt32 yl, ym, yh;
-    wxInt32 xl, xm, xh;
-    wxInt32 dxldy, dxhdy, dxmdy;
+    int32_t yl, ym, yh;
+    int32_t xl, xm, xh;
+    int32_t dxldy, dxhdy, dxmdy;
     uint32_t w3, w4, w5, w6, w7, w8;
 
     uint32_t * shade_base = rdp_cmd + 8;
@@ -3557,12 +3550,12 @@ void lle_triangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
     yl = (w1 & 0x3fff);
     ym = ((w2 >> 16) & 0x3fff);
     yh = ((w2 >> 0) & 0x3fff);
-    xl = (wxInt32)(w3);
-    xh = (wxInt32)(w5);
-    xm = (wxInt32)(w7);
-    dxldy = (wxInt32)(w4);
-    dxhdy = (wxInt32)(w6);
-    dxmdy = (wxInt32)(w8);
+    xl = (int32_t)(w3);
+    xh = (int32_t)(w5);
+    xm = (int32_t)(w7);
+    dxldy = (int32_t)(w4);
+    dxhdy = (int32_t)(w6);
+    dxmdy = (int32_t)(w8);
 
     if (yl & (0x800 << 2)) yl |= 0xfffff000 << 2;
     if (ym & (0x800 << 2)) ym |= 0xfffff000 << 2;
@@ -4125,6 +4118,9 @@ output:   none
 *******************************************************************/
 void CALL ProcessRDPList(void)
 {
+#ifdef _WIN32
+    CGuard guard(*g_ProcessDListCS);
+#endif
     LOG("ProcessRDPList ()\n");
     LRDP("ProcessRDPList ()\n");
 

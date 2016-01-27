@@ -311,7 +311,7 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
                 double fdz = fabs(fdzdx) + fabs(fdzdy);
                 if ((settings.hacks & hack_Zelda) && (rdp.rm & 0x800))
                     fdz *= 4.0;  // Decal mode in Zelda sometimes needs mutiplied deltaZ to work correct, e.g. roads
-                deltaZ = max(8, (int)fdz);
+                deltaZ = maxval(8, (int)fdz);
             }
             dzdx = (int)(fdzdx * 65536.0);
         }
@@ -336,7 +336,7 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
                 {
                     if (rdp.geom_mode & 0x00000004) // flat shading
                     {
-                        int flag = min(2, (rdp.cmd1 >> 24) & 3);
+                        int flag = minval(2, (rdp.cmd1 >> 24) & 3);
                         v->a = vtx[flag]->a;
                         v->b = vtx[flag]->b;
                         v->g = vtx[flag]->g;
@@ -486,11 +486,11 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
         int index, i, j, min_256, max_256, cur_256, left_256, right_256;
         float percent;
 
-        min_256 = min((int)vtx[0]->u0, (int)vtx[1]->u0); // bah, don't put two mins on one line
-        min_256 = min(min_256, (int)vtx[2]->u0) >> 8;  // or it will be calculated twice
+        min_256 = minval((int)vtx[0]->u0, (int)vtx[1]->u0); // bah, don't put two mins on one line
+        min_256 = minval(min_256, (int)vtx[2]->u0) >> 8;  // or it will be calculated twice
 
-        max_256 = max((int)vtx[0]->u0, (int)vtx[1]->u0); // not like it makes much difference
-        max_256 = max(max_256, (int)vtx[2]->u0) >> 8;  // anyway :P
+        max_256 = maxval((int)vtx[0]->u0, (int)vtx[1]->u0); // not like it makes much difference
+        max_256 = maxval(max_256, (int)vtx[2]->u0) >> 8;  // anyway :P
 
         for (cur_256 = min_256; cur_256 <= max_256; cur_256++)
         {
@@ -1012,11 +1012,11 @@ static void CalculateLOD(VERTEX *v, int n)
         lodFactor = lodFactor / n;
     }
     int ilod = (int)lodFactor;
-    int lod_tile = min((int)(log10f((float)ilod) / log10f(2.0f)), rdp.cur_tile + rdp.mipmap_level);
+    int lod_tile = minval((int)(log10f((float)ilod) / log10f(2.0f)), rdp.cur_tile + rdp.mipmap_level);
     float lod_fraction = 1.0f;
     if (lod_tile < rdp.cur_tile + rdp.mipmap_level)
     {
-        lod_fraction = max((float)modf(lodFactor / pow(2., lod_tile), &intptr), rdp.prim_lodmin / 255.0f);
+        lod_fraction = maxval((float)modf(lodFactor / pow(2., lod_tile), &intptr), rdp.prim_lodmin / 255.0f);
     }
     float detailmax;
     if (cmb.dc0_detailmax < 0.5f)
@@ -1586,12 +1586,12 @@ static void render_tri(uint16_t linew, int old_interpolate)
     {
         for (i = 0; i < n; i++)
         {
-            rdp.vtxbuf[i].f = 1.0f / max(4.0f, rdp.vtxbuf[i].f);
+            rdp.vtxbuf[i].f = 1.0f / maxval(4.0f, rdp.vtxbuf[i].f);
         }
     }
     else if (rdp.fog_mode == RDP::fog_blend)
     {
-        float fog = 1.0f / max(1, rdp.fog_color & 0xFF);
+        float fog = 1.0f / maxval(1, rdp.fog_color & 0xFF);
         for (i = 0; i < n; i++)
         {
             rdp.vtxbuf[i].f = fog;
@@ -1599,7 +1599,7 @@ static void render_tri(uint16_t linew, int old_interpolate)
     }
     else if (rdp.fog_mode == RDP::fog_blend_inverse)
     {
-        float fog = 1.0f / max(1, (~rdp.fog_color) & 0xFF);
+        float fog = 1.0f / maxval(1, (~rdp.fog_color) & 0xFF);
         for (i = 0; i < n; i++)
         {
             rdp.vtxbuf[i].f = fog;
@@ -1782,10 +1782,10 @@ void update_scissor()
         rdp.update ^= UPDATE_SCISSOR;
 
         // KILL the floating point error with 0.01f
-        rdp.scissor.ul_x = (uint32_t)max(min((rdp.scissor_o.ul_x * rdp.scale_x + rdp.offset_x + 0.01f), settings.res_x), 0);
-        rdp.scissor.lr_x = (uint32_t)max(min((rdp.scissor_o.lr_x * rdp.scale_x + rdp.offset_x + 0.01f), settings.res_x), 0);
-        rdp.scissor.ul_y = (uint32_t)max(min((rdp.scissor_o.ul_y * rdp.scale_y + rdp.offset_y + 0.01f), settings.res_y), 0);
-        rdp.scissor.lr_y = (uint32_t)max(min((rdp.scissor_o.lr_y * rdp.scale_y + rdp.offset_y + 0.01f), settings.res_y), 0);
+        rdp.scissor.ul_x = (uint32_t)maxval(minval((rdp.scissor_o.ul_x * rdp.scale_x + rdp.offset_x + 0.01f), settings.res_x), 0);
+        rdp.scissor.lr_x = (uint32_t)maxval(minval((rdp.scissor_o.lr_x * rdp.scale_x + rdp.offset_x + 0.01f), settings.res_x), 0);
+        rdp.scissor.ul_y = (uint32_t)maxval(minval((rdp.scissor_o.ul_y * rdp.scale_y + rdp.offset_y + 0.01f), settings.res_y), 0);
+        rdp.scissor.lr_y = (uint32_t)maxval(minval((rdp.scissor_o.lr_y * rdp.scale_y + rdp.offset_y + 0.01f), settings.res_y), 0);
         //grClipWindow specifies the hardware clipping window. Any pixels outside the clipping window are rejected.
         //Values are inclusive for minimum x and y values and exclusive for maximum x and y values.
         //    grClipWindow (rdp.scissor.ul_x?rdp.scissor.ul_x+1:0, rdp.scissor.ul_y?rdp.scissor.ul_y+1:0, rdp.scissor.lr_x, rdp.scissor.lr_y);
@@ -2095,10 +2095,10 @@ void update()
         float scale_x = (float)fabs(rdp.view_scale[0]);
         float scale_y = (float)fabs(rdp.view_scale[1]);
 
-        rdp.clip_min_x = max((rdp.view_trans[0] - scale_x + rdp.offset_x) / rdp.clip_ratio, 0.0f);
-        rdp.clip_min_y = max((rdp.view_trans[1] - scale_y + rdp.offset_y) / rdp.clip_ratio, 0.0f);
-        rdp.clip_max_x = min((rdp.view_trans[0] + scale_x + rdp.offset_x) * rdp.clip_ratio, settings.res_x);
-        rdp.clip_max_y = min((rdp.view_trans[1] + scale_y + rdp.offset_y) * rdp.clip_ratio, settings.res_y);
+        rdp.clip_min_x = maxval((rdp.view_trans[0] - scale_x + rdp.offset_x) / rdp.clip_ratio, 0.0f);
+        rdp.clip_min_y = maxval((rdp.view_trans[1] - scale_y + rdp.offset_y) / rdp.clip_ratio, 0.0f);
+        rdp.clip_max_x = minval((rdp.view_trans[0] + scale_x + rdp.offset_x) * rdp.clip_ratio, settings.res_x);
+        rdp.clip_max_y = minval((rdp.view_trans[1] + scale_y + rdp.offset_y) * rdp.clip_ratio, settings.res_y);
 
         FRDP(" |- viewport - (%d, %d, %d, %d)\n", (uint32_t)rdp.clip_min_x, (uint32_t)rdp.clip_min_y, (uint32_t)rdp.clip_max_x, (uint32_t)rdp.clip_max_y);
         if (!rdp.scissor_set)

@@ -66,6 +66,7 @@ the plugin
 
 #include <stdio.h>
 #include <fstream>
+#include <stdlib.h>
 #include <stddef.h>		// offsetof
 #include <glide.h>
 #include <Common/MemTest.h>
@@ -82,10 +83,6 @@ typedef unsigned char boolean;
 #else
 #define GLIDE64_TRY try
 #define GLIDE64_CATCH catch (...)
-#endif
-
-#ifndef _WIN32
-typedef void* HWND;
 #endif
 
 #ifndef TEXTURE_FILTER
@@ -296,28 +293,30 @@ extern "C" {
     /* Plugin types */
 #define PLUGIN_TYPE_GFX				2
 
-#ifdef __WINDOWS__
-#define EXPORT					__declspec(dllexport)
-#define CALL						_cdecl
+#ifdef _WIN32
+#define EXPORT      extern "C" __declspec(dllexport)
+#define CALL        __cdecl
 #else
-#define EXPORT					extern
+#define EXPORT      __attribute__((visibility("default")))
 #define CALL
 #endif
 
     /***** Structures *****/
-    typedef struct {
-        wxUint16 Version;        /* Set to 0x0103 */
-        wxUint16 Type;           /* Set to PLUGIN_TYPE_GFX */
+    typedef struct
+    {
+        uint16_t Version;        /* Set to 0x0103 */
+        uint16_t Type;           /* Set to PLUGIN_TYPE_GFX */
         char Name[100];      /* Name of the DLL */
 
         /* If DLL supports memory these memory options then set them to TRUE or FALSE
            if it does not support it */
-        int NormalMemory;    /* a normal wxUint8 array */
-        int MemoryBswaped;  /* a normal wxUint8 array where the memory has been pre
+        int NormalMemory;    /* a normal uint8_t array */
+        int MemoryBswaped;  /* a normal uint8_t array where the memory has been pre
                                   bswap on a dword (32 bits) boundry */
     } PLUGIN_INFO;
 
-    typedef struct {
+    typedef struct
+    {
         HWND hWnd;			/* Render window */
         HWND hStatusBar;    /* if render window does not have a status bar then this is NULL */
 
@@ -326,11 +325,11 @@ extern "C" {
         //	eg. the first 8 bytes are stored like this:
         //        4 3 2 1   8 7 6 5
 
-        wxUint8 * HEADER;	// This is the rom header (first 40h bytes of the rom
+        uint8_t * HEADER;	// This is the rom header (first 40h bytes of the rom
         // This will be in the same memory format as the rest of the memory.
-        wxUint8 * RDRAM;
-        wxUint8 * DMEM;
-        wxUint8 * IMEM;
+        uint8_t * RDRAM;
+        uint8_t * DMEM;
+        uint8_t * IMEM;
 
         uint32_t * MI_INTR_REG;
 
@@ -362,7 +361,6 @@ extern "C" {
     } GFX_INFO;
 
     extern GFX_INFO gfx;
-    extern wxWindow * GFXWindow;
     extern bool no_dlist;
 
     typedef void (FX_CALL *GRCOLORCOMBINEEXT) (GrCCUColor_t     a,
@@ -595,7 +593,7 @@ extern "C" {
       frame buffer has been modified by CPU at the given address.
       input:    addr		rdram address
       val			val
-      size		1 = wxUint8, 2 = wxUint16, 4 = uint32_t
+      size		1 = uint8_t, 2 = uint16_t, 4 = uint32_t
       output:   none
       *******************************************************************/
     EXPORT void CALL FBWrite(uint32_t, uint32_t);
@@ -604,7 +602,7 @@ extern "C" {
     {
         uint32_t addr;
         uint32_t val;
-        uint32_t size;				// 1 = wxUint8, 2 = wxUint16, 4=uint32_t
+        uint32_t size;				// 1 = uint8_t, 2 = uint16_t, 4=uint32_t
     } FrameBufferModifyEntry;
 
     /******************************************************************
@@ -629,7 +627,7 @@ extern "C" {
       is read within the same 4KB range
       input:    addr		rdram address
       val			val
-      size		1 = wxUint8, 2 = wxUint16, 4 = uint32_t
+      size		1 = uint8_t, 2 = uint16_t, 4 = uint32_t
       output:   none
       *******************************************************************/
     EXPORT void CALL FBRead(uint32_t addr);

@@ -95,7 +95,7 @@ typedef struct HIRESTEX_t {
 
 typedef struct NODE_t {
     uint32_t	crc;
-    wxUIntPtr	data;
+    uintptr_t	data;
     int		tmu;
     int		number;
     NODE_t	*pNext;
@@ -103,7 +103,7 @@ typedef struct NODE_t {
 
 NODE *cachelut[65536];
 
-void AddToList(NODE **list, uint32_t crc, wxUIntPtr data, int tmu, int number)
+void AddToList(NODE **list, uint32_t crc, uintptr_t data, int tmu, int number)
 {
     NODE *node = new NODE;
     node->crc = crc;
@@ -215,28 +215,28 @@ void GetTexInfo(int id, int tile)
         if ((rdp.tiles[tile].clamp_s && tile_width <= 256) || (mask_width > 256))
         {
             // loading width
-            width = min(mask_width, tile_width);
+            width = minval(mask_width, tile_width);
             // actual width
             rdp.tiles[tile].width = tile_width;
         }
         else
         {
             // wrap all the way
-            width = min(mask_width, tile_width);	// changed from mask_width only
+            width = minval(mask_width, tile_width);	// changed from mask_width only
             rdp.tiles[tile].width = width;
         }
 
         if ((rdp.tiles[tile].clamp_t && tile_height <= 256) || (mask_height > 256))
         {
             // loading height
-            height = min(mask_height, tile_height);
+            height = minval(mask_height, tile_height);
             // actual height
             rdp.tiles[tile].height = tile_height;
         }
         else
         {
             // wrap all the way
-            height = min(mask_height, tile_height);
+            height = minval(mask_height, tile_height);
             rdp.tiles[tile].height = height;
         }
     }
@@ -256,7 +256,7 @@ void GetTexInfo(int id, int tile)
         if ((rdp.tiles[tile].clamp_s && tile_width <= 256))//|| (mask_width > 256))
         {
             // loading width
-            width = min(mask_width, tile_width);
+            width = minval(mask_width, tile_width);
             // actual width
             rdp.tiles[tile].width = tile_width;
         }
@@ -270,7 +270,7 @@ void GetTexInfo(int id, int tile)
         if ((rdp.tiles[tile].clamp_t && tile_height <= 256) || (mask_height > 256))
         {
             // loading height
-            height = min(mask_height, tile_height);
+            height = minval(mask_height, tile_height);
             // actual height
             rdp.tiles[tile].height = tile_height;
         }
@@ -333,7 +333,7 @@ void GetTexInfo(int id, int tile)
     wid_64 = wid_64 >> 3;
 
     // Texture too big for tmem & needs to wrap? (trees in mm)
-    if (rdp.tiles[tile].t_mem + min(height, tile_height) * (rdp.tiles[tile].line << 3) > 4096)
+    if (rdp.tiles[tile].t_mem + minval(height, tile_height) * (rdp.tiles[tile].line << 3) > 4096)
     {
         LRDP("TEXTURE WRAPS TMEM!!! ");
 
@@ -370,7 +370,7 @@ void GetTexInfo(int id, int tile)
             else //32b texture
             {
                 int line_2 = line >> 1;
-                int wid_64_2 = max(1, wid_64 >> 1);
+                int wid_64_2 = maxval(1, wid_64 >> 1);
                 crc = textureCRC(addr, wid_64_2, crc_height, line_2);
                 crc += textureCRC(addr + 0x800, wid_64_2, crc_height, line_2);
             }
@@ -379,8 +379,8 @@ void GetTexInfo(int id, int tile)
     else
     {
         crc = 0xFFFFFFFF;
-        wxUIntPtr addr = wxPtrToUInt(rdp.tmem) + (rdp.tiles[tile].t_mem << 3);
-        uint32_t line2 = max(line, 1);
+        uintptr_t addr = uintptr_t(rdp.tmem) + (rdp.tiles[tile].t_mem << 3);
+        uint32_t line2 = maxval(line, 1);
         if (rdp.tiles[tile].size < 3)
         {
             line2 <<= 3;
@@ -395,7 +395,7 @@ void GetTexInfo(int id, int tile)
             line2 <<= 2;
             //32b texel is split in two 16b parts, so bpl/2 and line/2.
             //Min value for bpl is 4, because when width==1 first 2 bytes of tmem will not be used.
-            bpl = max(bpl >> 1, 4);
+            bpl = maxval(bpl >> 1, 4);
             for (int y = 0; y < crc_height; y++)
             {
                 crc = CRC32(crc, reinterpret_cast<void*>(addr), bpl);
@@ -980,10 +980,7 @@ uint32_t sizeBytes[4] = { 0, 1, 2, 4 };
 
 inline uint32_t Txl2Words(uint32_t width, uint32_t size)
 {
-    if (size == 0)
-        return max(1, width / 16);
-    else
-        return max(1, width*sizeBytes[size] / 8);
+    return size == 0 ? maxval(1, width / 16) : maxval(1, width*sizeBytes[size] / 8);
 }
 
 inline uint32_t ReverseDXT(uint32_t val, uint32_t /*lrs*/, uint32_t width, uint32_t size)
@@ -1069,7 +1066,7 @@ void LoadTex(int id, int tmu)
 #endif
 
     // Add this cache to the list
-    AddToList(&cachelut[cache->crc >> 16], cache->crc, wxPtrToUInt(cache), tmu, rdp.n_cached[tmu]);
+    AddToList(&cachelut[cache->crc >> 16], cache->crc, uintptr_t(cache), tmu, rdp.n_cached[tmu]);
 
     // temporary
     cache->t_info.format = GR_TEXFMT_ARGB_1555;
@@ -1101,7 +1098,7 @@ void LoadTex(int id, int tmu)
     }
 
     // Calculate the maximum size
-    int size_max = max(size_x, size_y);
+    int size_max = maxval(size_x, size_y);
     uint32_t real_x = size_max, real_y = size_max;
     switch (size_max)
     {
@@ -1308,7 +1305,7 @@ void LoadTex(int id, int tmu)
             bpl = info.tex_width << info.tex_size >> 1;
             addr += (info.tile_ul_t * bpl) + (((info.tile_ul_s << info.tex_size) + 1) >> 1);
 
-            tile_width = min(info.tile_width, info.tex_width);
+            tile_width = minval(info.tile_width, info.tex_width);
             if (info.tex_size > rdp.tiles[td].size)
                 tile_width <<= info.tex_size - rdp.tiles[td].size;
 
@@ -1385,7 +1382,7 @@ void LoadTex(int id, int tmu)
                     start_src >>= 1;
 
                 result = load_table[rdp.tiles[td].size][rdp.tiles[td].format]
-                    (wxPtrToUInt(texture) + start_dst, wxPtrToUInt(rdp.tmem) + (rdp.tiles[td].t_mem << 3) + start_src,
+                    (uintptr_t(texture) + start_dst, uintptr_t(rdp.tmem) + (rdp.tiles[td].t_mem << 3) + start_src,
                     texinfo[id].wid_64, texinfo[id].height, texinfo[id].line, real_x, td);
 
                 uint32_t size = HIWORD(result);
@@ -1402,18 +1399,18 @@ void LoadTex(int id, int tmu)
         else
         {
             result = load_table[rdp.tiles[td].size][rdp.tiles[td].format]
-                (wxPtrToUInt(texture), wxPtrToUInt(rdp.tmem) + (rdp.tiles[td].t_mem << 3),
+                (uintptr_t(texture), uintptr_t(rdp.tmem) + (rdp.tiles[td].t_mem << 3),
                 texinfo[id].wid_64, texinfo[id].height, texinfo[id].line, real_x, td);
 
             uint32_t size = HIWORD(result);
 
             int min_x, min_y;
             if (rdp.tiles[td].mask_s != 0)
-                min_x = min((int)real_x, 1 << rdp.tiles[td].mask_s);
+                min_x = minval((int)real_x, 1 << rdp.tiles[td].mask_s);
             else
                 min_x = real_x;
             if (rdp.tiles[td].mask_t != 0)
-                min_y = min((int)real_y, 1 << rdp.tiles[td].mask_t);
+                min_y = minval((int)real_y, 1 << rdp.tiles[td].mask_t);
             else
                 min_y = real_y;
 
