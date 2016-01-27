@@ -188,10 +188,12 @@ void CN64System::ExternalEvent(SystemEvent action)
 
 bool CN64System::RunFileImage(const char * FileLoc)
 {
+    WriteTrace(TraceN64System, TraceDebug, "FileLoc: %s", FileLoc);
     CloseSystem();
     g_Settings->SaveBool(Setting_EnableDisk, false);
     if (g_Settings->LoadBool(GameRunning_LoadingInProgress))
     {
+        WriteTrace(TraceN64System, TraceError, "game loading is in progress, can not load new file");
         return false;
     }
 
@@ -231,8 +233,11 @@ bool CN64System::RunFileImage(const char * FileLoc)
         g_Settings->SaveString(Game_File, FileLoc);
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
 
-        if (g_Settings->LoadDword(Setting_AutoStart) != 0)
+        WriteTrace(TraceN64System, TraceDebug, "Finished Loading (GoodName: %s)", g_Settings->LoadStringVal(Game_GoodName).c_str());
+
+        if (g_Settings->LoadBool(Setting_AutoStart) != 0)
         {
+            WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
             g_BaseSystem = new CN64System(g_Plugins, false);
             if (g_BaseSystem)
             {
@@ -376,19 +381,19 @@ bool CN64System::EmulationStarting(void * hThread, uint32_t ThreadId)
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
         try
         {
-            WriteTrace(TraceN64System, TraceDebug, "Game set to auto start, starting");
+            WriteTrace(TraceN64System, TraceDebug, "Game starting");
             g_BaseSystem->StartEmulation2(false);
             WriteTrace(TraceN64System, TraceDebug, "Game Done");
         }
         catch (...)
         {
-            g_Notify->DisplayError(stdstr_f(__FUNCTION__ ": Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).c_str());
+            g_Notify->DisplayError(stdstr_f("%s: Exception caught\nFile: %s\nLine: %d", __FUNCTION__, __FILE__, __LINE__).c_str());
         }
     }
     else
     {
         WriteTrace(TraceN64System, TraceError, "SetActiveSystem failed");
-        g_Notify->DisplayError(__FUNCTION__ ": Failed to Initialize N64 System");
+        g_Notify->DisplayError(stdstr_f("%s: Failed to Initialize N64 System", __FUNCTION__).c_str());
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
         bRes = false;
     }
@@ -465,16 +470,18 @@ void CN64System::StartEmulation2(bool NewThread)
 
 void  CN64System::StartEmulation(bool NewThread)
 {
-    __try
+    WriteTrace(TraceN64System, TraceDebug, "Start");
+    __except_try()
     {
         StartEmulation2(NewThread);
     }
-    __except (g_MMU->MemoryFilter(GetExceptionCode(), GetExceptionInformation()))
+    __except_catch()
     {
         char message[400];
         sprintf(message, "Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__);
         g_Notify->DisplayError(message);
     }
+    WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
 void CN64System::Pause()
@@ -534,7 +541,7 @@ void CN64System::PluginReset()
     {
         m_SyncCPU->m_Plugins->RomOpened();
     }
-#ifndef _WIN64
+#ifdef _WIN32
     _controlfp(_PC_53, _MCW_PC);
 #endif
 }
@@ -885,14 +892,14 @@ void CN64System::ExecuteCPU()
     {
         m_SyncCPU->m_Plugins->RomOpened();
     }
-#ifndef _WIN64
+#ifdef _WIN32
     _controlfp(_PC_53, _MCW_PC);
 #endif
 
     switch ((CPU_TYPE)g_Settings->LoadDword(Game_CpuType))
     {
         // Currently the compiler is 32-bit only.  We might have to ignore that RDB setting for now.
-#ifndef _WIN64
+#ifdef _WIN32
     case CPU_Recompiler: ExecuteRecompiler(); break;
     case CPU_SyncCores:  ExecuteSyncCPU();    break;
 #endif
@@ -1133,11 +1140,13 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
         Error.Log("Errors:\r\n");
         Error.Log("Register,        Recompiler,         Interpter\r\n");
 #ifdef TEST_SP_TRACKING
-        if (m_CurrentSP != GPR[29].UW[0]) {
+        if (m_CurrentSP != GPR[29].UW[0])
+        {
             Error.Log("m_CurrentSP,%X,%X\r\n", m_CurrentSP, GPR[29].UW[0]);
         }
 #endif
-        if (m_Reg.m_PROGRAM_COUNTER != SecondCPU->m_Reg.m_PROGRAM_COUNTER) {
+        if (m_Reg.m_PROGRAM_COUNTER != SecondCPU->m_Reg.m_PROGRAM_COUNTER)
+        {
             Error.LogF("PROGRAM_COUNTER 0x%X,         0x%X\r\n", m_Reg.m_PROGRAM_COUNTER, SecondCPU->m_Reg.m_PROGRAM_COUNTER);
         }
         if (b32BitCore())
@@ -1526,8 +1535,7 @@ bool CN64System::LoadState()
         return Result;
     }
 
-    CPath FileName;
-    FileName.SetDriveDirectory(g_Settings->LoadStringVal(Directory_InstantSave).c_str());
+    CPath FileName(g_Settings->LoadStringVal(Directory_InstantSave).c_str(), "");
     if (g_Settings->LoadDword(Game_CurrentSaveState) != 0)
     {
         FileName.SetNameExtension(stdstr_f("%s.pj%d", g_Settings->LoadStringVal(Game_GoodName).c_str(), g_Settings->LoadDword(Game_CurrentSaveState)).c_str());
@@ -1538,7 +1546,7 @@ bool CN64System::LoadState()
     }
 
     CPath ZipFileName;
-    ZipFileName = (std::string)FileName + ".zip";
+    ZipFileName = (const std::string &)FileName + ".zip";
 
     if ((g_Settings->LoadDword(Setting_AutoZipInstantSave) && ZipFileName.Exists()) || FileName.Exists())
     {
@@ -1870,16 +1878,16 @@ void CN64System::RunRSP()
                 }
             }
 
-            __try
+            __except_try()
             {
                 WriteTrace(TraceRSP, TraceDebug, "do cycles - starting");
                 g_Plugins->RSP()->DoRspCycles(100);
                 WriteTrace(TraceRSP, TraceDebug, "do cycles - Done");
             }
-            __except (g_MMU->MemoryFilter(GetExceptionCode(), GetExceptionInformation()))
+            __except_catch()
             {
                 WriteTrace(TraceRSP, TraceError, "exception generated");
-                g_Notify->FatalError(__FUNCTION__ "\nUnknown memory action\n\nEmulation stop");
+                g_Notify->FatalError("CN64System::RunRSP()\nUnknown memory action\n\nEmulation stop");
             }
 
             if (Task == 1 && bDelayDP() && ((m_Reg.m_GfxIntrReg & MI_INTR_DP) != 0))
@@ -1974,13 +1982,13 @@ void CN64System::RefreshScreen()
     if (bShowCPUPer()) { m_CPU_Usage.StartTimer(Timer_UpdateScreen); }
     //	if (bProfiling)    { m_Profile.StartTimer(Timer_UpdateScreen); }
 
-    __try
+    __except_try()
     {
         WriteTrace(TraceGFXPlugin, TraceDebug, "Starting");
         g_Plugins->Gfx()->UpdateScreen();
         WriteTrace(TraceGFXPlugin, TraceDebug, "Done");
     }
-    __except (g_MMU->MemoryFilter(GetExceptionCode(), GetExceptionInformation()))
+    __except_catch()
     {
         WriteTrace(TraceGFXPlugin, TraceError, "Exception caught");
     }
