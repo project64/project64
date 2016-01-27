@@ -8109,3 +8109,11 @@ Internal Name=shut up and code
 CPU Type=Interpreter
 RDRAM Size=8
 Status=Unsupported
+
+[00000000-00000000-C:4A]
+32bit=No
+Core Note=Recompiler isn't working properly
+CPU Type=Interpreter
+Good Name=64DD IPL (JPN)
+RDRAM Size=8
+Status=Issues (core)
