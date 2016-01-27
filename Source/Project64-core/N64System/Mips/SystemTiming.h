@@ -29,6 +29,7 @@ public:
         PiTimer,
         RspTimer,
         RSPTimerDlist,
+        DDPiTimer,
         MaxTimer
     };
 

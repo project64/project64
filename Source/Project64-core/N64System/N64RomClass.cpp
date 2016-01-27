@@ -579,6 +579,183 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
     return true;
 }
 
+bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
+{
+    UnallocateRomImage();
+    m_ErrorMsg = EMPTY_STRING;
+
+    stdstr ext = CPath(FileLoc).GetExtension();
+    bool Loaded7zFile = false;
+
+    if (strstr(FileLoc, "?") != NULL || _stricmp(ext.c_str(), "7z") == 0)
+    {
+        stdstr FullPath = FileLoc;
+
+        //this should be a 7zip file
+        char * SubFile = strstr(const_cast<char*>(FullPath.c_str()), "?");
+        if (SubFile == NULL)
+        {
+            //Pop up a dialog and select file
+            //allocate memory for sub name and copy selected file name to var
+            return false; //remove once dialog is done
+        }
+        else
+        {
+            *SubFile = '\0';
+            SubFile += 1;
+        }
+
+        C7zip ZipFile(FullPath.c_str());
+        ZipFile.SetNotificationCallback((C7zip::LP7ZNOTIFICATION)NotificationCB, this);
+        for (int i = 0; i < ZipFile.NumFiles(); i++)
+        {
+            CSzFileItem * f = ZipFile.FileItem(i);
+            if (f->IsDir)
+            {
+                continue;
+            }
+
+            stdstr ZipFileName;
+            ZipFileName.FromUTF16(ZipFile.FileNameIndex(i).c_str());
+            if (SubFile != NULL)
+            {
+                if (_stricmp(ZipFileName.c_str(), SubFile) != 0)
+                {
+                    continue;
+                }
+            }
+
+            //Get the size of the rom and try to allocate the memory needed.
+            uint32_t RomFileSize = (uint32_t)f->Size;
+            //if loading boot code then just load the first 0x1000 bytes
+            if (LoadBootCodeOnly) { RomFileSize = 0x1000; }
+
+            if (!AllocateRomImage(RomFileSize))
+            {
+                return false;
+            }
+
+            //Load the n64 rom to the allocated memory
+            g_Notify->DisplayMessage(5, MSG_LOADING);
+            if (!ZipFile.GetFile(i, m_ROMImage, RomFileSize))
+            {
+                SetError(MSG_FAIL_IMAGE);
+                return false;
+            }
+
+            if (!IsValidRomImage(m_ROMImage))
+            {
+                SetError(MSG_FAIL_IMAGE);
+                return false;
+            }
+            g_Notify->DisplayMessage(5, MSG_BYTESWAP);
+            ByteSwapRom();
+
+            //Protect the memory so that it can not be written to.
+            ProtectMemory(m_ROMImage, m_RomFileSize, MEM_READONLY);
+            Loaded7zFile = true;
+            break;
+        }
+        if (!Loaded7zFile)
+        {
+            SetError(MSG_7Z_FILE_NOT_FOUND);
+            return false;
+        }
+    }
+
+    //Try to open the file as a zip file
+    if (!Loaded7zFile)
+    {
+        if (!AllocateAndLoadZipImage(FileLoc, LoadBootCodeOnly))
+        {
+            if (m_ErrorMsg != EMPTY_STRING)
+            {
+                return false;
+            }
+            if (!AllocateAndLoadN64Image(FileLoc, LoadBootCodeOnly))
+            {
+                return false;
+            }
+        }
+    }
+
+    char RomName[260];
+    int  count;
+    //Get the header from the rom image
+    memcpy(&RomName[0], (void *)(m_ROMImage + 0x20), 20);
+    for (count = 0; count < 20; count += 4)
+    {
+        RomName[count] ^= RomName[count + 3];
+        RomName[count + 3] ^= RomName[count];
+        RomName[count] ^= RomName[count + 3];
+        RomName[count + 1] ^= RomName[count + 2];
+        RomName[count + 2] ^= RomName[count + 1];
+        RomName[count + 1] ^= RomName[count + 2];
+    }
+
+    //truncate all the spaces at the end of the string
+    for (count = 19; count >= 0; count--)
+    {
+        if (RomName[count] == ' ')
+        {
+            RomName[count] = '\0';
+        }
+        else if (RomName[count] == '\0')
+        {
+        }
+        else
+        {
+            count = -1;
+        }
+    }
+    RomName[20] = '\0';
+    if (strlen(RomName) == 0)
+    {
+        strcpy(RomName, CPath(FileLoc).GetName().c_str());
+    }
+
+    //remove all /,\,: from the string
+    for (count = 0; count < (int)strlen(RomName); count++)
+    {
+        switch (RomName[count])
+        {
+        case '/': case '\\': RomName[count] = '-'; break;
+        case ':': RomName[count] = ';'; break;
+        }
+    }
+    WriteTrace(TraceN64System, TraceDebug, "RomName %s", RomName);
+
+    m_RomName = RomName;
+    m_FileName = FileLoc;
+    m_MD5 = "";
+
+    if (!LoadBootCodeOnly)
+    {
+        //Calculate files MD5
+        m_MD5 = MD5((const unsigned char *)m_ROMImage, m_RomFileSize).hex_digest();
+        WriteTrace(TraceN64System, TraceDebug, "MD5: %s", m_MD5.c_str());
+    }
+
+    m_Country = (Country)m_ROMImage[0x3D];
+    m_RomIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(&m_ROMImage[0x10]), *(uint32_t *)(&m_ROMImage[0x14]), m_ROMImage[0x3D]);
+    WriteTrace(TraceN64System, TraceDebug, "Ident: %s", m_RomIdent.c_str());
+    CalculateCicChip();
+
+    if (!LoadBootCodeOnly && g_DDRom == this)
+    {
+        g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
+        SaveRomSettingID(false);
+    }
+
+    if (g_Settings->LoadBool(Game_CRC_Recalc))
+    {
+        //Calculate ROM Header CRC
+        CalculateRomCrc();
+    }
+
+    return true;
+}
+
 //Save the settings of the loaded rom, so all loaded settings about rom will be identified with
 //this rom
 void CN64Rom::SaveRomSettingID(bool temp)

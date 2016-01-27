@@ -133,6 +133,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(POPUP_SETTINGS, "Edit Game Settings");
     DEF_STR(POPUP_CHEATS, "Edit Cheats");
     DEF_STR(POPUP_GFX_PLUGIN, "Graphics Plugin");
+    DEF_STR(POPUP_PLAYDISK, "Play Game with Disk");
 
     //Alternate Name to save Slot
     DEF_STR(SAVE_SLOT_DEFAULT, "Save Slot - Default");

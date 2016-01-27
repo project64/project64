@@ -16,6 +16,8 @@
 #include <Project64-core/N64System/N64RomClass.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Project64-core/N64System/Mips/Disk.h>
+#include <Project64-core/N64System/N64DiskClass.h>
 #include <Project64-core/N64System/N64Class.h>
 
 CDMA::CDMA(CFlashram & FlashRam, CSram & Sram) :
@@ -63,6 +65,37 @@ void CDMA::PI_DMA_READ()
         {
             g_Notify->DisplayError(stdstr_f("PI_DMA_READ not in Memory: %08X", g_Reg->PI_DRAM_ADDR_REG + PI_RD_LEN_REG).c_str());
         }
+        g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+        g_Reg->MI_INTR_REG |= MI_INTR_PI;
+        g_Reg->CheckInterrupts();
+        return;
+    }
+
+    //64DD Buffers Write
+    if (g_Reg->PI_CART_ADDR_REG >= 0x05000000 && g_Reg->PI_CART_ADDR_REG <= 0x050003FF)
+    {
+        //64DD C2 Sectors (don't care)
+        g_SystemTimer->SetTimer(g_SystemTimer->DDPiTimer, (PI_RD_LEN_REG * 63) / 25, false);
+        return;
+    }
+
+    if (g_Reg->PI_CART_ADDR_REG >= 0x05000400 && g_Reg->PI_CART_ADDR_REG <= 0x050004FF)
+    {
+        //64DD User Sector
+        uint32_t i;
+        uint8_t * RDRAM = g_MMU->Rdram();
+        uint8_t * DISK = g_Disk->GetDiskAddressBuffer();
+        for (i = 0; i < PI_RD_LEN_REG; i++)
+        {
+            *(DISK + (i ^ 3)) = *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3));
+        }
+        g_SystemTimer->SetTimer(g_SystemTimer->DDPiTimer, (PI_RD_LEN_REG * 63) / 25, false);
+        return;
+    }
+
+    if (g_Reg->PI_CART_ADDR_REG >= 0x05000580 && g_Reg->PI_CART_ADDR_REG <= 0x050005BF)
+    {
+        //64DD MSEQ (don't care)
         g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         g_Reg->MI_INTR_REG |= MI_INTR_PI;
         g_Reg->CheckInterrupts();
@@ -182,20 +215,51 @@ void CDMA::PI_DMA_WRITE()
         return;
     }
 
+    //64DD Buffers Read
+    if (g_Reg->PI_CART_ADDR_REG >= 0x05000000 && g_Reg->PI_CART_ADDR_REG <= 0x050003FF)
+    {
+        //64DD C2 Sectors (just read 0)
+        uint32_t i;
+        uint8_t * RDRAM = g_MMU->Rdram();
+        for (i = 0; i < PI_WR_LEN_REG; i++)
+        {
+            *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = 0;
+        }
+
+        //Timer is needed for Track Read
+        g_SystemTimer->SetTimer(g_SystemTimer->DDPiTimer, (PI_WR_LEN_REG * 63) / 25, false);
+        return;
+    }
+
+    if (g_Reg->PI_CART_ADDR_REG >= 0x05000400 && g_Reg->PI_CART_ADDR_REG <= 0x050004FF)
+    {
+        //64DD User Sector
+        uint32_t i;
+        uint8_t * RDRAM = g_MMU->Rdram();
+        uint8_t * DISK = g_Disk->GetDiskAddressBuffer();
+        for (i = 0; i < PI_WR_LEN_REG; i++)
+        {
+            *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = *(DISK + (i ^ 3));
+        }
+
+        //Timer is needed for Track Read
+        g_SystemTimer->SetTimer(g_SystemTimer->DDPiTimer, (PI_WR_LEN_REG * 63) / 25, false);
+        return;
+    }
+
+    if (g_Reg->PI_CART_ADDR_REG >= 0x05000580 && g_Reg->PI_CART_ADDR_REG <= 0x050005BF)
+    {
+        //64DD MSEQ (don't care)
+        g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+        g_Reg->MI_INTR_REG |= MI_INTR_PI;
+        g_Reg->CheckInterrupts();
+        return;
+    }
+
     //64DD IPL ROM
     if (g_Reg->PI_CART_ADDR_REG >= 0x06000000 && g_Reg->PI_CART_ADDR_REG <= 0x063FFFFF)
     {
         uint32_t i;
-
-#ifdef legacycode
-#ifdef ROM_IN_MAPSPACE
-        if (WrittenToRom)
-        {
-            uint32_t OldProtect;
-            VirtualProtect(ROM, m_RomFileSize, PAGE_READONLY, &OldProtect);
-        }
-#endif
-#endif
 
         uint8_t * ROM = g_DDRom->GetRomAddress();
         uint8_t * RDRAM = g_MMU->Rdram();

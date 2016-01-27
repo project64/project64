@@ -16,6 +16,7 @@
 #include <Project64-core/N64System/Mips/Mempak.H>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
+#include <Project64-core/N64System/N64DiskClass.h>
 #include <Project64-core/ExceptionHandler.h>
 #include <Project64-core/Logging.h>
 #include <Project64-core/Debugger.h>
@@ -188,6 +189,7 @@ void CN64System::ExternalEvent(SystemEvent action)
 bool CN64System::RunFileImage(const char * FileLoc)
 {
     CloseSystem();
+    g_Settings->SaveBool(Setting_EnableDisk, false);
     if (g_Settings->LoadBool(GameRunning_LoadingInProgress))
     {
         return false;
@@ -216,6 +218,12 @@ bool CN64System::RunFileImage(const char * FileLoc)
         {
             //64DD IPL
             g_DDRom = g_Rom;
+            g_Settings->SaveString(File_DiskIPLPath, FileLoc);
+        }
+
+        if (g_DDRom != NULL)
+        {
+            g_Settings->SaveBool(Setting_EnableDisk, true);
         }
 
         g_System->RefreshGameSettings();
@@ -238,6 +246,107 @@ bool CN64System::RunFileImage(const char * FileLoc)
         g_Notify->DisplayError(g_Rom->GetError());
         delete g_Rom;
         g_Rom = NULL;
+        g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
+        return false;
+    }
+    return true;
+}
+
+bool CN64System::RunFileImageIPL(const char * FileLoc)
+{
+    CloseSystem();
+    if (g_Settings->LoadBool(GameRunning_LoadingInProgress))
+    {
+        return false;
+    }
+
+    //Mark the rom as loading
+    WriteTrace(TraceN64System, TraceDebug, "Mark DDRom as loading");
+    //g_Settings->SaveString(Game_File, "");
+    g_Settings->SaveBool(GameRunning_LoadingInProgress, true);
+
+    //Try to load the passed N64 DDrom
+    if (g_DDRom == NULL)
+    {
+        WriteTrace(TraceN64System, TraceDebug, "Allocating global DDrom object");
+        g_DDRom = new CN64Rom();
+    }
+    else
+    {
+        WriteTrace(TraceN64System, TraceDebug, "Use existing global DDrom object");
+    }
+
+    WriteTrace(TraceN64System, TraceDebug, "Loading \"%s\"", FileLoc);
+    if (g_DDRom->LoadN64ImageIPL(FileLoc))
+    {
+        if (g_DDRom->CicChipID() != CIC_NUS_8303)
+        {
+            //If not 64DD IPL then it's wrong
+            WriteTrace(TraceN64System, TraceError, "LoadN64ImageIPL failed (\"%s\")", FileLoc);
+            g_Notify->DisplayError(g_DDRom->GetError());
+            delete g_DDRom;
+            g_DDRom = NULL;
+            g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
+            return false;
+        }
+
+        g_System->RefreshGameSettings();
+
+        g_Settings->SaveString(File_DiskIPLPath, FileLoc);
+
+        //g_Settings->SaveString(Game_File, FileLoc);
+        g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
+    }
+    else
+    {
+        WriteTrace(TraceN64System, TraceError, "LoadN64ImageIPL failed (\"%s\")", FileLoc);
+        g_Notify->DisplayError(g_DDRom->GetError());
+        delete g_DDRom;
+        g_DDRom = NULL;
+        g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
+        return false;
+    }
+    return true;
+}
+
+bool CN64System::RunDiskImage(const char * FileLoc)
+{
+    CloseSystem();
+    if (g_Settings->LoadBool(GameRunning_LoadingInProgress))
+    {
+        return false;
+    }
+
+    //Mark the rom as loading
+    WriteTrace(TraceN64System, TraceDebug, "Mark Disk as loading");
+    //g_Settings->SaveString(Game_File, "");
+    g_Settings->SaveBool(GameRunning_LoadingInProgress, true);
+
+    //Try to load the passed N64 Disk
+    if (g_Disk == NULL)
+    {
+        WriteTrace(TraceN64System, TraceDebug, "Allocating global Disk object");
+        g_Disk = new CN64Disk();
+    }
+    else
+    {
+        WriteTrace(TraceN64System, TraceDebug, "Use existing global Disk object");
+    }
+
+    WriteTrace(TraceN64System, TraceDebug, "Loading \"%s\"", FileLoc);
+    if (g_Disk->LoadDiskImage(FileLoc))
+    {
+        g_System->RefreshGameSettings();
+
+        //g_Settings->SaveString(Game_File, FileLoc);
+        g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
+    }
+    else
+    {
+        WriteTrace(TraceN64System, TraceError, "LoadDiskImage failed (\"%s\")", FileLoc);
+        g_Notify->DisplayError(g_Disk->GetError());
+        delete g_Disk;
+        g_Disk = NULL;
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
         return false;
     }

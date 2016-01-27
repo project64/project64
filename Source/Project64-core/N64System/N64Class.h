@@ -56,6 +56,8 @@ public:
 
     //Methods
     static bool RunFileImage(const char * FileLoc);
+    static bool RunFileImageIPL(const char * FileLoc);
+    static bool RunDiskImage(const char * FileLoc);
     static void CloseSystem(void);
 
     void   CloseCpu();

@@ -224,6 +224,7 @@ enum SettingID
     //File Info
     File_RecentGameFileCount,
     File_RecentGameFileIndex,
+    File_DiskIPLPath,
 
     //Debugger
     Debugger_Enabled,
