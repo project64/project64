@@ -16,6 +16,6 @@ public:
     static uint8_t CalculateCrc(uint8_t * DataToCrc);
     static void Load();
     static void Format(int32_t Control);
-    static void ReadFrom(int32_t Control, uint8_t * command);
-    static void WriteTo(int32_t Control, uint8_t * command);
+    static void ReadFrom(int32_t Control, uint32_t address, uint8_t * data);
+    static void WriteTo(int32_t Control, uint32_t address, uint8_t * data);
 };
