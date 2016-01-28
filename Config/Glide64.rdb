@@ -4,7 +4,7 @@
 // If a crc is not found here, the plugin will ask you
 // to add it. All these values are in hexadecimal.
 //
-// uCodes:ra
+// uCodes:
 // -1 - Unknown, display error
 // 0 - RSP SW 2.0X (Super Mario 64)
 // 1 - F3DEX 1.XX (Star Fox 64)
