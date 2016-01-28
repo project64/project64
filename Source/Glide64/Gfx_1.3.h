@@ -74,7 +74,7 @@ the plugin
 #include "GlideExtensions.h"
 #include "rdp.h"
 #include "Keys.h"
-#include "config.h"
+#include "Config.h"
 
 #if defined __VISUALC__
 typedef unsigned char boolean;

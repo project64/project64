@@ -41,6 +41,8 @@
 //
 //****************************************************************
 
+#include <string.h>
+
 static inline void mirror32bS(uint8_t *tex, uint8_t *start, int width, int height, int mask, int line, int full, int count)
 {
     uint32_t *v8;
