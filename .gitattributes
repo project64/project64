@@ -1,12 +1,3 @@
-# Files that will always have CRLF line endings on checkout
-*.sln text eol=crlf
-*.vcproj text eol=crlf
-*.vcxproj text eol=crlf
-*.filters text eol=crlf
-*.props text eol=crlf
-*.vsprops text eol=crlf
-*.vbs text eol=crlf
-
 # All files that are binary and should not be normalized
 
 # Images
