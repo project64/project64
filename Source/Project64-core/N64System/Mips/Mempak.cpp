@@ -109,28 +109,24 @@ uint8_t Mempak::CalculateCrc(uint8_t * DataToCrc)
     return CRC;
 }
 
-void Mempak::ReadFrom(int32_t Control, uint8_t * command)
+void Mempak::ReadFrom(int32_t Control, uint32_t address, uint8_t * data)
 {
-    uint32_t address = (command[3] << 8) | (command[4] & 0xE0);
-
     if (address < 0x8000)
     {
-        memcpy(&command[5], &Mempaks[Control][address], 0x20);
+        memcpy(data, &Mempaks[Control][address], 0x20);
     }
     else
     {
-        memset(&command[5], 0x00, 0x20);
+        memset(data, 0x00, 0x20);
         /* Rumble pack area */
     }
 }
 
-void Mempak::WriteTo(int32_t Control, uint8_t * command)
+void Mempak::WriteTo(int32_t Control, uint32_t address, uint8_t * data)
 {
-    uint32_t address = (command[3] << 8) | (command[4] & 0xE0);
-
     if (address < 0x8000)
     {
-        memcpy(&Mempaks[Control][address], &command[5], 0x20);
+        memcpy(&Mempaks[Control][address], data, 0x20);
 
         FILE* mempak = fopen(MempakNames[Control], "wb");
         fwrite(Mempaks[Control], 1, 0x8000, mempak);

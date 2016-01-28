@@ -468,11 +468,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
         }
         if (bShowPifRamErrors())
         {
-            if (Command[0] != 1)
-            {
-                g_Notify->DisplayError("What am I meant to do with this Controller Command");
-            }
-            if (Command[1] != 3)
+            if (Command[0] != 1 || Command[1] != 3)
             {
                 g_Notify->DisplayError("What am I meant to do with this Controller Command");
             }
@@ -499,11 +495,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
     case 0x01: // read controller
         if (bShowPifRamErrors())
         {
-            if (Command[0] != 1)
-            {
-                g_Notify->DisplayError("What am I meant to do with this Controller Command");
-            }
-            if (Command[1] != 4)
+            if (Command[0] != 1 || Command[1] != 4)
             {
                 g_Notify->DisplayError("What am I meant to do with this Controller Command");
             }
@@ -520,21 +512,20 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
         }
         if (bShowPifRamErrors())
         {
-            if (Command[0] != 3)
-            {
-                g_Notify->DisplayError("What am I meant to do with this Controller Command");
-            }
-            if (Command[1] != 33)
+            if (Command[0] != 3 || Command[1] != 33)
             {
                 g_Notify->DisplayError("What am I meant to do with this Controller Command");
             }
         }
         if (Controllers[Control].Present == true)
         {
+            uint32_t address = (Command[3] << 8) | (Command[4] & 0xE0);
+            uint8_t* data = &Command[5];
+
             switch (Controllers[Control].Plugin)
             {
-            case PLUGIN_RUMBLE_PAK: Rumblepak::ReadFrom(Command); break;
-            case PLUGIN_MEMPAK: Mempak::ReadFrom(Control, Command); break;
+            case PLUGIN_RUMBLE_PAK: Rumblepak::ReadFrom(address, data); break;
+            case PLUGIN_MEMPAK: Mempak::ReadFrom(Control, address, data); break;
             case PLUGIN_TANSFER_PAK: /* TODO */; break;
             case PLUGIN_RAW: if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Control, Command); } break;
             default:
@@ -562,21 +553,20 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
         }
         if (bShowPifRamErrors())
         {
-            if (Command[0] != 35)
-            {
-                g_Notify->DisplayError("What am I meant to do with this Controller Command");
-            }
-            if (Command[1] != 1)
+            if (Command[0] != 35 || Command[1] != 1)
             {
                 g_Notify->DisplayError("What am I meant to do with this Controller Command");
             }
         }
         if (Controllers[Control].Present == true)
         {
+            uint32_t address = (Command[3] << 8) | (Command[4] & 0xE0);
+            uint8_t* data = &Command[5];
+
             switch (Controllers[Control].Plugin)
             {
-            case PLUGIN_MEMPAK: Mempak::WriteTo(Control, Command); break;
-            case PLUGIN_RUMBLE_PAK: Rumblepak::WriteTo(Control, Command); break;
+            case PLUGIN_MEMPAK: Mempak::WriteTo(Control, address, data); break;
+            case PLUGIN_RUMBLE_PAK: Rumblepak::WriteTo(Control, address, data); break;
             case PLUGIN_TANSFER_PAK: /* TODO */; break;
             case PLUGIN_RAW: if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Control, Command); } break;
             }
@@ -614,8 +604,7 @@ void CPifRam::ReadControllerCommand(int32_t Control, uint8_t * Command)
         {
             if (bShowPifRamErrors())
             {
-                if (Command[0] != 1) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
-                if (Command[1] != 4) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
+                if (Command[0] != 1 || Command[1] != 4) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
             }
 
             const uint32_t buttons = g_BaseSystem->GetButtons(Control);

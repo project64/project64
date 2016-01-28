@@ -15,29 +15,25 @@
 #include <Project64-core/Plugins/PluginClass.h>
 #include <Project64-core/Plugins/ControllerPlugin.h>
 
-void Rumblepak::ReadFrom(uint8_t * command)
+void Rumblepak::ReadFrom(uint32_t address, uint8_t * data)
 {
-	uint32_t address = (command[3] << 8) | (command[4] & 0xE0);
-
 	if ((address >= 0x8000) && (address < 0x9000))
 	{
-		memset(&command[5], 0x80, 0x20);
+		memset(data, 0x80, 0x20);
 	}
 	else
 	{
-		memset(&command[5], 0x00, 0x20);
+		memset(data, 0x00, 0x20);
 	}
 }
 
-void Rumblepak::WriteTo(int32_t Control, uint8_t * command)
+void Rumblepak::WriteTo(int32_t Control, uint32_t address, uint8_t * data)
 {
-	uint32_t address = (command[3] << 8) | (command[4] & 0xE0);
-
 	if ((address) == 0xC000)
 	{
 		if (g_Plugins->Control()->RumbleCommand != NULL)
 		{
-			g_Plugins->Control()->RumbleCommand(Control, *(int *)(&command[5]));
+			g_Plugins->Control()->RumbleCommand(Control, *(int *)data);
 		}
 	}
 }
