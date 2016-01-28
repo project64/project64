@@ -8,12 +8,12 @@
 * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
 *                                                                           *
 ****************************************************************************/
-#pragma once
 #include "stdafx.h"
 #include "N64DiskClass.h"
 #include "SystemGlobals.h"
 #include <Common/Platform.h>
 #include <Common/MemoryManagement.h>
+#include <memory>
 
 CN64Disk::CN64Disk() :
 m_DiskImage(NULL),
@@ -101,7 +101,7 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
     if (DiskFileSize == MameFormatSize)
     {
         //If Disk is MAME Format (size is constant, it should be the same for every file), then continue
-        WriteTrace(TraceN64System, TraceDebug, "Disk File is MAME Format", );
+        WriteTrace(TraceN64System, TraceDebug, "Disk File is MAME Format");
 
         if (!AllocateDiskImage(DiskFileSize))
         {
@@ -285,7 +285,7 @@ void CN64Disk::ConvertDiskFormat()
     {
         OutOffset = OutStart[zone];
         InOffset = InStart[RevDiskTypeZones[disktype][zone]];
-        m_DiskFile.Seek(InOffset, CFileBase::SeekPosition::begin);
+        m_DiskFile.Seek(InOffset, CFileBase::begin);
         block = StartBlock[disktype][zone];
         atrack = 0;
         for (track = 0; track < ZoneTracks[zone]; track++)
@@ -322,7 +322,7 @@ void CN64Disk::ConvertDiskFormat()
     {
         //OutOffset = OutStart[zone];
         InOffset = InStart[RevDiskTypeZones[disktype][zone]];
-        m_DiskFile.Seek(InOffset, CFileBase::SeekPosition::begin);
+        m_DiskFile.Seek(InOffset, CFileBase::begin);
         block = StartBlock[disktype][zone];
         atrack = 0xB;
         for (track = 1; track < ZoneTracks[zone] + 1; track++)

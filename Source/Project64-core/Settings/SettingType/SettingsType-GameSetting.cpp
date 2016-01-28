@@ -37,8 +37,10 @@ CSettingTypeGame::~CSettingTypeGame()
 
 void CSettingTypeGame::Initialize ( void )
 {
+    WriteTrace(TraceAppInit, TraceDebug, "Start");
     UpdateSettings(NULL);
     g_Settings->RegisterChangeCB(Game_IniKey,NULL,UpdateSettings);
+    WriteTrace(TraceAppInit, TraceDebug, "Done");
 }
 
 void CSettingTypeGame::CleanUp   ( void )

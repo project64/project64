@@ -60,10 +60,12 @@ CSettingTypeApplication::~CSettingTypeApplication()
 
 void CSettingTypeApplication::Initialize( const char * /*AppName*/ )
 {
+    WriteTrace(TraceAppInit, TraceDebug, "Start");
 	CPath BaseDir(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(),"");
 	if (!BaseDir.DirectoryExists())
 	{
-		printf("BaseDir does not exists, doing nothing");
+        WriteTrace(TraceAppInit, TraceDebug, "BaseDir does not exists, doing nothing");
+        WriteTrace(TraceAppInit, TraceDebug, "Done");
 		return;
 	}
 
@@ -98,6 +100,7 @@ void CSettingTypeApplication::Initialize( const char * /*AppName*/ )
     }
 
     m_SettingsIniFile->SetAutoFlush(false);
+    WriteTrace(TraceAppInit, TraceDebug, "Done");
 }
 
 void CSettingTypeApplication::Flush()
@@ -123,7 +126,7 @@ bool CSettingTypeApplication::Load ( int /*Index*/, bool & Value ) const
     bool bRes = false;
 
     uint32_t dwValue;
-    bRes = m_SettingsIniFile->GetNumber(SectionName(),m_KeyNameIdex.c_str(),Value,dwValue);
+    bRes = m_SettingsIniFile ? m_SettingsIniFile->GetNumber(SectionName(), m_KeyNameIdex.c_str(), Value, dwValue) : false;
     if (bRes)
     {
         Value = dwValue != 0;

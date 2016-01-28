@@ -9,7 +9,6 @@
 *                                                                           *
 ****************************************************************************/
 // Based from MAME's N64DD driver code by Happy_
-#pragma once
 #include "stdafx.h"
 #include "Disk.h"
 #include <Project64-core/N64System/N64DiskClass.h>

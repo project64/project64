@@ -11,8 +11,6 @@
 #include "stdafx.h"
 #include "SettingsType-Cheats.h"
 
-
-
 CIniFile * CSettingTypeCheats::m_CheatIniFile = NULL;
 stdstr   * CSettingTypeCheats::m_SectionIdent = NULL;
 
@@ -27,11 +25,13 @@ CSettingTypeCheats::~CSettingTypeCheats ( void )
 
 void CSettingTypeCheats::Initialize ( void )
 {
+    WriteTrace(TraceAppInit, TraceDebug, "Start");
     m_CheatIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_Cheats).c_str());
     m_CheatIniFile->SetAutoFlush(false);
     g_Settings->RegisterChangeCB(Game_IniKey,NULL,GameChanged);
     m_SectionIdent = new stdstr(g_Settings->LoadStringVal(Game_IniKey));
     GameChanged(NULL);
+    WriteTrace(TraceAppInit, TraceDebug, "Done");
 }
 
 void CSettingTypeCheats::CleanUp   ( void )

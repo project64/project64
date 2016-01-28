@@ -61,6 +61,8 @@ CSettingTypeRomDatabase::~CSettingTypeRomDatabase()
 
 void CSettingTypeRomDatabase::Initialize( void )
 {
+    WriteTrace(TraceAppInit, TraceDebug, "Start");
+
     m_SettingsIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
     m_GlideIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_Glide64RDB).c_str());
 
@@ -68,6 +70,7 @@ void CSettingTypeRomDatabase::Initialize( void )
     g_Settings->RegisterChangeCB(Cmd_BaseDirectory,NULL,BaseDirChanged);
 
     m_SectionIdent = new stdstr(g_Settings->LoadStringVal(Game_IniKey));
+    WriteTrace(TraceAppInit, TraceDebug, "Done");
 }
 
 void CSettingTypeRomDatabase::CleanUp( void )
