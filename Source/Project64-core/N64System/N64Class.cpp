@@ -65,12 +65,12 @@ m_CheatsSlectionChanged(false)
     m_Limiter.SetHertz(gameHertz);
     g_Settings->SaveDword(GameRunning_ScreenHertz, gameHertz);
     m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats), Plugins);
+    Mempak::Load();
 }
 
 CN64System::~CN64System()
 {
     SetActiveSystem(false);
-    Mempak::Close();
     if (m_SyncCPU)
     {
         m_SyncCPU->CpuStopped();
@@ -552,7 +552,6 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
     RefreshGameSettings();
     m_Audio.Reset();
     m_MMU_VM.Reset(ClearMenory);
-    Mempak::Close();
 
     m_CyclesToSkip = 0;
     m_AlistCount = 0;
