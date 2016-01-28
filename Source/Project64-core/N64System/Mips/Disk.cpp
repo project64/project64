@@ -17,6 +17,12 @@
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <Project64-core/N64System/Mips/SystemTiming.h>
 
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#include <sys/time.h>
+#endif
+
 bool dd_write;
 bool dd_reset_hold;
 uint32_t dd_track_offset, dd_zone;
@@ -44,13 +50,13 @@ void DiskCommand()
 #else
     time_t ltime;
     ltime = time(&ltime);
-    
+
     struct tm result = { 0 };
     localtime_r(&ltime, &result);
 
     //BCD format needed for 64DD RTC
     uint8_t year = (uint8_t)(((result.tm_year / 10) << 4) | (result.tm_year % 10));
-    uint8_t month = (uint8_t)(((result.tm_mon / 10) << 4) | (result.tm_mon % 10));
+    uint8_t month = (uint8_t)((((result.tm_mon + 1) / 10) << 4) | ((result.tm_mon + 1) % 10));
     uint8_t day = (uint8_t)(((result.tm_mday / 10) << 4) | (result.tm_mday % 10));
     uint8_t hour = (uint8_t)(((result.tm_hour / 10) << 4) | (result.tm_hour % 10));
     uint8_t minute = (uint8_t)(((result.tm_min / 10) << 4) | (result.tm_min % 10));

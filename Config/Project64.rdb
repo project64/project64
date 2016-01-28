@@ -1805,6 +1805,7 @@ Clear Frame=2
 [4D3E622E-9B828B4E-C:4A]
 Good Name=F-ZERO X (J)
 Internal Name=F-ZERO X
+RDRAM Size=8
 Status=Compatible
 Plugin Note=[Glide64] missing menu effects
 32bit=No
