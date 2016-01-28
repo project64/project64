@@ -37,7 +37,7 @@ void InitializeLog(void)
 
 void AddLogModule(void)
 {
-    CPath LogFilePath(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(), "");
+    CPath LogFilePath(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str());
     LogFilePath.AppendDirectory("Logs");
     if (!LogFilePath.DirectoryExists())
     {
@@ -260,7 +260,7 @@ void AppCleanup(void)
 
 void FixDirectories(void)
 {
-    CPath Directory(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(), "");
+    CPath Directory(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str());
     Directory.AppendDirectory("Config");
     if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
 
