@@ -5474,12 +5474,12 @@ void CRecompilerOps::COP0_MT()
         }
         break;
     case 13: //cause
+        AndConstToVariable(0xFFFFCFF, &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
         if (IsConst(m_Opcode.rt))
         {
-            AndConstToVariable(0xFFFFCFF, &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
             if ((GetMipsRegLo(m_Opcode.rt) & 0x300) != 0 && bHaveDebugger()){ g_Notify->DisplayError("Set IP0 or IP1"); }
         }
-        else
+        else if (bHaveDebugger())
         {
             UnknownOpcode();
             return;
