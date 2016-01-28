@@ -7,7 +7,6 @@
 *.gif binary
 *.bmp binary
 *.ico binary
-*.xpm binary
 *.cur binary
 
 # Binary data
