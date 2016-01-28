@@ -4,7 +4,7 @@
 // If a crc is not found here, the plugin will ask you
 // to add it. All these values are in hexadecimal.
 //
-// uCodes:
+// uCodes:ra
 // -1 - Unknown, display error
 // 0 - RSP SW 2.0X (Super Mario 64)
 // 1 - F3DEX 1.XX (Star Fox 64)
@@ -3547,24 +3547,28 @@ Good Name=Tom Clancy's Rainbow Six (E)
 Internal Name=RAINBOW SIX
 depthmode=1
 increase_texrect_edge=1
+swapmode=0
 
 [486BF335-034DCC81-C:46]
 Good Name=Tom Clancy's Rainbow Six (F)
 Internal Name=RAINBOW SIX
 depthmode=1
 increase_texrect_edge=1
+swapmode=0
 
 [8D412933-588F64DB-C:44]
 Good Name=Tom Clancy's Rainbow Six (G)
 Internal Name=RAINBOW SIX
 depthmode=1
 increase_texrect_edge=1
+swapmode=0
 
 [392A0C42-B790E77D-C:45]
 Good Name=Tom Clancy's Rainbow Six (U)
 Internal Name=RAINBOW SIX
 depthmode=1
 increase_texrect_edge=1
+swapmode=0
 
 [093F916E-4408B698-C:50]
 Good Name=Tonic Trouble (E) (M5)
