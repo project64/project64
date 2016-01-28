@@ -167,9 +167,9 @@ bool CPath::operator !=(const CPath& rPath) const
 CPath& CPath::operator =(const CPath& rPath)
 {
     if (this != &rPath)
-	{
+    {
         m_strPath = rPath.m_strPath;
-	}
+    }
     return *this;
 }
 
@@ -451,7 +451,11 @@ void CPath::SetComponents(const char * lpszDrive, const char * lpszDirectory, co
     char buff_fullname[MAX_PATH];
 
     memset(buff_fullname, 0, sizeof(buff_fullname));
-
+    if (lpszDirectory == NULL || strlen(lpszDirectory) == 0)
+    {
+        static char empty_dir[] = { DIRECTORY_DELIMITER, '\0' };
+        lpszDirectory = empty_dir;
+    }
     _makepath(buff_fullname, lpszDrive, lpszDirectory, lpszName, lpszExtension);
 
     m_strPath.erase();
@@ -482,13 +486,13 @@ void CPath::SetDirectory(const char * lpszDirectory, bool bEnsureAbsolute /*= fa
     std::string	Extension;
 
     if (bEnsureAbsolute)
-	{
-		EnsureLeadingBackslash(Directory);
-	}
-	if (Directory.length() > 0)
-	{
-		EnsureTrailingBackslash(Directory);
-	}
+    {
+        EnsureLeadingBackslash(Directory);
+    }
+    if (Directory.length() > 0)
+    {
+        EnsureTrailingBackslash(Directory);
+    }
 
     std::string	Drive;
     GetComponents(&Drive, NULL, &Name, &Extension);
@@ -504,11 +508,11 @@ void CPath::SetDriveDirectory(const char * lpszDriveDirectory)
     std::string	Name;
     std::string	Extension;
 
-	if (DriveDirectory.length() > 0)
-	{
-		EnsureTrailingBackslash(DriveDirectory);
-		cleanPathString(DriveDirectory);
-	}
+    if (DriveDirectory.length() > 0)
+    {
+        EnsureTrailingBackslash(DriveDirectory);
+        cleanPathString(DriveDirectory);
+    }
 
     GetComponents(NULL, NULL, &Name, &Extension);
     SetComponents(NULL, DriveDirectory.c_str(), Name.c_str(), Extension.c_str());
@@ -731,14 +735,14 @@ bool CPath::DirectoryExists() const
 
     WIN32_FIND_DATA	FindData;
     HANDLE          hFindFile = FindFirstFile((const char *)TestPath, &FindData); // Find anything
-    bool            bGotFile = (hFindFile != INVALID_HANDLE_VALUE);
+    bool            bGotDirectory = (hFindFile != INVALID_HANDLE_VALUE) && (FindData.dwFileAttributes && FILE_ATTRIBUTE_DIRECTORY != 0);
 
     if (hFindFile != NULL)	// Make sure we close the search
     {
         FindClose(hFindFile);
     }
 
-    return bGotFile;
+    return bGotDirectory;
 }
 
 //-------------------------------------------------------------
@@ -1048,7 +1052,7 @@ void CPath::cleanPathString(std::string& rDirectory) const
     }
     if (AppendEnd)
     {
-		rDirectory.insert(0, stdstr_f("%c",DIRECTORY_DELIMITER).c_str());
+        rDirectory.insert(0, stdstr_f("%c", DIRECTORY_DELIMITER).c_str());
     }
 }
 
