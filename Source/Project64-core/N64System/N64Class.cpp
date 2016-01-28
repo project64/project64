@@ -1130,9 +1130,8 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
     int count;
 
     {
-        CPath ErrorFile(CPath::MODULE_DIRECTORY);
+        CPath ErrorFile(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(), "Sync Errors.txt");
         ErrorFile.AppendDirectory("Logs");
-        ErrorFile.SetNameExtension("Sync Errors.txt");
 
         CLog Error;
         Error.Open(ErrorFile);

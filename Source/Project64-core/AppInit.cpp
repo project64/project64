@@ -12,6 +12,7 @@
 #include "Settings/SettingType/SettingsType-Application.h"
 
 static void FixDirectories(void);
+void SetTraceModuleNames(void);
 
 #ifdef _WIN32
 static void IncreaseThreadPriority(void);
@@ -31,11 +32,12 @@ void InitializeLog(void)
 #else
     TraceSetMaxModule(MaxTraceModuleProject64, TraceError);
 #endif
+    SetTraceModuleNames();
 }
 
 void AddLogModule(void)
 {
-    CPath LogFilePath(CPath::MODULE_DIRECTORY);
+    CPath LogFilePath(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(), "");
     LogFilePath.AppendDirectory("Logs");
     if (!LogFilePath.DirectoryExists())
     {
@@ -93,7 +95,6 @@ void UpdateTraceLevel(void * /*NotUsed*/)
 
 void SetupTrace(void)
 {
-    SetTraceModuleNames();
     AddLogModule();
 
     g_Settings->RegisterChangeCB(Debugger_TraceMD5, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
@@ -151,7 +152,7 @@ void TraceDone(void)
     if (g_LogFile) { delete g_LogFile; g_LogFile = NULL; }
 }
 
-const char * AppName ( void )
+const char * AppName(void)
 {
     static stdstr_f ApplicationName("Project64 %s", VER_FILE_VERSION_STR);
     return ApplicationName.c_str();
@@ -166,13 +167,7 @@ static bool ParseCommand(int32_t argc, char **argv)
     for (int32_t i = 1; i < argc; i++)
     {
         int32_t ArgsLeft = argc - i - 1;
-        if (strcmp(argv[i], "--basedir") == 0 && ArgsLeft >= 1)
-        {
-            g_Settings->SaveString(Cmd_BaseDirectory, argv[i + 1]);
-            CSettingTypeApplication::Initialize(AppName());
-            i++;
-        }
-        else if (strcmp(argv[i], "--help") == 0)
+        if (strcmp(argv[i], "--help") == 0)
         {
             g_Settings->SaveBool(Cmd_ShowHelp, true);
             return false;
@@ -184,26 +179,29 @@ static bool ParseCommand(int32_t argc, char **argv)
         }
         else
         {
-            //WriteTraceF(TraceError, __FUNCTION__ ": unrecognized command-line parameter '%s'", argv[i]);
+            WriteTrace(TraceAppInit, TraceError, "unrecognized command-line parameter '%d: %s'", i, argv[i]);
         }
     }
     return false;
 }
 
-bool AppInit(CNotification * Notify, int argc, char **argv)
+bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char **argv)
 {
     try
     {
         g_Notify = Notify;
         InitializeLog();
+        WriteTrace(TraceAppInit, TraceDebug, "Starting");
         if (Notify == NULL)
         {
             WriteTrace(TraceAppInit, TraceError, "No Notification class passed");
             return false;
         }
+        WriteTrace(TraceAppInit, TraceDebug, "Settings up settings");
         g_Settings = new CSettings;
-        g_Settings->Initialize(AppName());
+        g_Settings->Initialize(BaseDirectory, AppName());
 
+        WriteTrace(TraceAppInit, TraceDebug, "Parse Commands");
         if (!ParseCommand(argc, argv))
         {
             return false;
@@ -215,7 +213,7 @@ bool AppInit(CNotification * Notify, int argc, char **argv)
         {
             delete g_Settings;
             g_Settings = new CSettings;
-            g_Settings->Initialize(AppName());
+            g_Settings->Initialize(BaseDirectory, AppName());
         }
 #endif
 
@@ -262,7 +260,7 @@ void AppCleanup(void)
 
 void FixDirectories(void)
 {
-    CPath Directory(CPath::MODULE_DIRECTORY);
+    CPath Directory(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(), "");
     Directory.AppendDirectory("Config");
     if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
 

@@ -7,7 +7,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     try
     {
         CoInitialize(NULL);
-        AppInit(&Notify(), __argc, __argv);
+        AppInit(&Notify(), CPath(CPath::MODULE_DIRECTORY), __argc, __argv);
         if (!g_Lang->IsLanguageLoaded())
         {
             CLanguageSelector().Select();
