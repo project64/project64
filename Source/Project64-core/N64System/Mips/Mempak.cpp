@@ -113,11 +113,11 @@ void Mempak::ReadFrom(int32_t Control, uint32_t address, uint8_t * data)
 {
     if (address < 0x8000)
     {
-        memcpy(&data, &Mempaks[Control][address], 0x20);
+        memcpy(data, &Mempaks[Control][address], 0x20);
     }
     else
     {
-        memset(&data, 0x00, 0x20);
+        memset(data, 0x00, 0x20);
         /* Rumble pack area */
     }
 }
@@ -126,7 +126,7 @@ void Mempak::WriteTo(int32_t Control, uint32_t address, uint8_t * data)
 {
     if (address < 0x8000)
     {
-        memcpy(&Mempaks[Control][address], &data, 0x20);
+        memcpy(&Mempaks[Control][address], data, 0x20);
 
         FILE* mempak = fopen(MempakNames[Control], "wb");
         fwrite(Mempaks[Control], 1, 0x8000, mempak);
