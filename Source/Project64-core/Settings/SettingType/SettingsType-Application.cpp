@@ -61,7 +61,7 @@ CSettingTypeApplication::~CSettingTypeApplication()
 void CSettingTypeApplication::Initialize( const char * /*AppName*/ )
 {
     WriteTrace(TraceAppInit, TraceDebug, "Start");
-	CPath BaseDir(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(),"");
+	CPath BaseDir(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str());
 	if (!BaseDir.DirectoryExists())
 	{
         WriteTrace(TraceAppInit, TraceDebug, "BaseDir does not exists, doing nothing");
@@ -87,9 +87,9 @@ void CSettingTypeApplication::Initialize( const char * /*AppName*/ )
             delete m_SettingsIniFile;
         }
 #ifdef _WIN32
-        CPath SettingsDir(CPath(SettingsFile).GetDriveDirectory(),"");
+        CPath SettingsDir(CPath(SettingsFile).GetDriveDirectory());
 #else
-		CPath SettingsDir(CPath(SettingsFile).GetDirectory(), "");
+		CPath SettingsDir(CPath(SettingsFile).GetDirectory());
 #endif
         if (!SettingsDir.DirectoryExists())
         {
