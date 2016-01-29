@@ -2874,9 +2874,8 @@ Good Name=King Hill 64 - Extreme Snowboarding (J)
 Internal Name=KING HILL 64
 Status=Issues (mixed)
 Core Note=Bad sound
-Plugin Note=[video] no fog [audio] needs audio plugin
+Plugin Note=[Glide64] no fog
 32bit=No
-Cheat0=81052760 AD99 //exhalatio's no sound fix
 Culling=1
 RDRAM Size=8
 
@@ -6369,9 +6368,8 @@ Good Name=Twisted Edge Extreme Snowboarding (E)
 Internal Name=TWISTED EDGE
 Status=Issues (mixed)
 Core Note=Bad sound
-Plugin Note=[video] no fog [audio] needs audio plugin
+Plugin Note=[video] no fog
 32bit=No
-Cheat0=81051960 AD99 //exhalatio's no sound fix
 Culling=1
 RDRAM Size=8
 
@@ -6380,9 +6378,8 @@ Good Name=Twisted Edge Extreme Snowboarding (U)
 Internal Name=TWISTED EDGE
 Status=Issues (mixed)
 Core Note=Bad sound
-Plugin Note=[video] no fog [audio] needs audio plugin
+Plugin Note=[video] no fog
 32bit=No
-Cheat0=81051840 AD99 //exhalatio's no sound fix
 Culling=1
 RDRAM Size=8
 
