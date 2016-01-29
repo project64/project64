@@ -193,6 +193,7 @@ RDRAM Size=8
 Good Name=64 de Hakken!! Tamagotchi - Minna de Tamagotchi World (J)
 Internal Name=ÐÝÅÃÞÀÏºÞ¯ÁÜ°ÙÄÞ
 Status=Issues (plugin)
+Plugin Note=[video] HLE incorrect sprites
 Counter Factor=1
 Save Type=FlashRam
 
@@ -1133,7 +1134,7 @@ RDRAM Size=8
 Good Name=Conker's Bad Fur Day (E)
 Internal Name=CONKER BFD
 Status=Compatible
-Plugin Note=[Glide64] broken mipmapping, certain FB effects missing.
+Plugin Note=[Glide64] broken mipmapping, certain FB effects missing
 32bit=No
 Clear Frame=2
 Culling=1
@@ -1150,7 +1151,7 @@ ViRefresh=2200
 Good Name=Conker's Bad Fur Day (U) (Debug Version)
 Internal Name=CONKER BFD DEBUG
 Status=Compatible
-Plugin Note=[Glide64] broken mipmapping, certain FB effects missing.
+Plugin Note=[Glide64] broken mipmapping, certain FB effects missing
 32bit=No
 Clear Frame=2
 Culling=1
@@ -1167,7 +1168,7 @@ ViRefresh=2200
 Good Name=Conker's Bad Fur Day (U) (ECTS Demo)
 Internal Name=CBFD ECTS
 Status=Compatible
-Plugin Note=[Glide64] broken mipmapping, certain FB effects missing.
+Plugin Note=[Glide64] broken mipmapping, certain FB effects missing
 32bit=No
 Clear Frame=2
 Culling=1
@@ -1185,7 +1186,7 @@ ViRefresh=2200
 Good Name=Conker's Bad Fur Day (U)
 Internal Name=CONKER BFD
 Status=Compatible
-Plugin Note=[Glide64] broken mipmapping, certain FB effects missing.
+Plugin Note=[Glide64] broken mipmapping, certain FB effects missing
 32bit=No
 Clear Frame=2
 Culling=1
@@ -3673,11 +3674,13 @@ Save Type=FlashRam
 Good Name=NBA Hangtime (E)
 Internal Name=NBA HANGTIME
 Status=Issues (plugin)
+Plugin Note=[video] slow
 
 [4E69B487-FE18E290-C:45]
 Good Name=NBA Hangtime (U)
 Internal Name=NBA HANGTIME
 Status=Issues (plugin)
+Plugin Note=[video] slow
 
 [36ACBA9B-F28D4D94-C:4A]
 Good Name=NBA In the Zone '98 (J)
@@ -4677,7 +4680,7 @@ Status=Compatible
 Good Name=Rat Attack (E) (M6)
 Internal Name=RAT ATTACK
 Status=Issues (core)
-Core Note=Interpreter only for multi
+Core Note=Interpreter only for multiplayer
 SMM-FUNC=0
 Use TLB=No
 
@@ -4685,7 +4688,7 @@ Use TLB=No
 Good Name=Rat Attack (U) (M6)
 Internal Name=RAT ATTACK
 Status=Issues (core)
-Core Note=Interpreter only for multi
+Core Note=Interpreter only for multiplayer
 SMM-FUNC=0
 Use TLB=No
 
@@ -5651,13 +5654,11 @@ RDRAM Size=8
 Good Name=Tetrisphere (E)
 Internal Name=TETRISPHERE
 Status=Compatible
-Plugin Note=[video] slow in menus
 
 [3C1FDABE-02A4E0BA-C:45]
 Good Name=Tetrisphere (U)
 Internal Name=TETRISPHERE
 Status=Compatible
-Plugin Note=[video] slow in menus
 
 [F82DD377-8C3FB347-C:58]
 Good Name=TG Rally 2 (E)
@@ -6368,7 +6369,7 @@ Good Name=Twisted Edge Extreme Snowboarding (E)
 Internal Name=TWISTED EDGE
 Status=Issues (mixed)
 Core Note=Bad sound
-Plugin Note=[video] no fog
+Plugin Note=[Glide64] no fog
 32bit=No
 Culling=1
 RDRAM Size=8
@@ -6378,7 +6379,7 @@ Good Name=Twisted Edge Extreme Snowboarding (U)
 Internal Name=TWISTED EDGE
 Status=Issues (mixed)
 Core Note=Bad sound
-Plugin Note=[video] no fog
+Plugin Note=[Glide64] no fog
 32bit=No
 Culling=1
 RDRAM Size=8
@@ -6729,7 +6730,7 @@ Plugin Note=[video] HLE square bug
 Good Name=WinBack - Covert Operations (U)
 Internal Name=WIN BACK
 Status=Compatible
-Plugin Note=[video] HLE square bug.
+Plugin Note=[video] HLE square bug
 
 [54310E7D-6B5430D8-C:50]
 Good Name=Wipeout 64 (E)
