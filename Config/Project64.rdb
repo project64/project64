@@ -5654,13 +5654,11 @@ RDRAM Size=8
 Good Name=Tetrisphere (E)
 Internal Name=TETRISPHERE
 Status=Compatible
-Plugin Note=[video] slow in menus
 
 [3C1FDABE-02A4E0BA-C:45]
 Good Name=Tetrisphere (U)
 Internal Name=TETRISPHERE
 Status=Compatible
-Plugin Note=[video] slow in menus
 
 [F82DD377-8C3FB347-C:58]
 Good Name=TG Rally 2 (E)
