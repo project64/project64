@@ -4680,7 +4680,7 @@ Status=Compatible
 Good Name=Rat Attack (E) (M6)
 Internal Name=RAT ATTACK
 Status=Issues (core)
-Core Note=Interpreter only for multi
+Core Note=Interpreter only for multiplayer
 SMM-FUNC=0
 Use TLB=No
 
@@ -4688,7 +4688,7 @@ Use TLB=No
 Good Name=Rat Attack (U) (M6)
 Internal Name=RAT ATTACK
 Status=Issues (core)
-Core Note=Interpreter only for multi
+Core Note=Interpreter only for multiplayer
 SMM-FUNC=0
 Use TLB=No
 
