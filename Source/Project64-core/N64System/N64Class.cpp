@@ -14,6 +14,7 @@
 #include <Project64-core/N64System/Recompiler/x86CodeLog.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/Mempak.H>
+#include <Project64-core/N64System/Mips/Transferpak.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
 #include <Project64-core/N64System/N64DiskClass.h>
@@ -66,11 +67,13 @@ m_CheatsSlectionChanged(false)
     g_Settings->SaveDword(GameRunning_ScreenHertz, gameHertz);
     m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats), Plugins);
     Mempak::Load();
+    Transferpak::Init();
 }
 
 CN64System::~CN64System()
 {
     SetActiveSystem(false);
+    Transferpak::Release();
     if (m_SyncCPU)
     {
         m_SyncCPU->CpuStopped();
