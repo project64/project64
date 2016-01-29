@@ -193,6 +193,7 @@ RDRAM Size=8
 Good Name=64 de Hakken!! Tamagotchi - Minna de Tamagotchi World (J)
 Internal Name=ÐÝÅÃÞÀÏºÞ¯ÁÜ°ÙÄÞ
 Status=Issues (plugin)
+Plugin Note=[Glide64] incorrect sprites
 Counter Factor=1
 Save Type=FlashRam
 
