@@ -3674,11 +3674,13 @@ Save Type=FlashRam
 Good Name=NBA Hangtime (E)
 Internal Name=NBA HANGTIME
 Status=Issues (plugin)
+Plugin Note=[video] slow
 
 [4E69B487-FE18E290-C:45]
 Good Name=NBA Hangtime (U)
 Internal Name=NBA HANGTIME
 Status=Issues (plugin)
+Plugin Note=[video] slow
 
 [36ACBA9B-F28D4D94-C:4A]
 Good Name=NBA In the Zone '98 (J)
