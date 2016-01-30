@@ -28,8 +28,36 @@ struct gb_cart
 	bool ram_bank_mode;
 	bool ram_enabled;
 
+    uint32_t rtc_latch;
+
+    uint32_t rtc_second;
+    uint32_t rtc_minute;
+    uint32_t rtc_hour;
+    uint32_t rtc_day;
+    uint32_t rtc_day_carry;
+    uint32_t rtc_latch_second;
+    uint32_t rtc_latch_minute;
+    uint32_t rtc_latch_hour;
+    uint32_t rtc_latch_day;
+    uint32_t rtc_latch_day_carry;
+    time_t   rtc_last_time;
+
 	void(*read_gb_cart)(struct gb_cart* gb_cart, uint16_t address, uint8_t* data);
 	void(*write_gb_cart)(struct gb_cart* gb_cart, uint16_t address, const uint8_t* data);
+};
+
+struct gbCartRTC {
+    uint32_t second;
+    uint32_t minute;
+    uint32_t hour;
+    uint32_t day;
+    uint32_t day_carry;
+    uint32_t latch_second;
+    uint32_t latch_minute;
+    uint32_t latch_hour;
+    uint32_t latch_day;
+    uint32_t latch_day_carry;
+    time_t mapperLastTime;
 };
 
 class GBCart

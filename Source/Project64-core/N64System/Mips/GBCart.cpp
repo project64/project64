@@ -11,6 +11,7 @@
 #include "stdafx.h"
 #include "GBCart.h"
 
+#include <time.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 
 //--------------------------------------------------------------------------------------
@@ -332,10 +333,6 @@ static void read_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, uint8_t
 		{
 			memcpy(data, &gb_cart->rom[offset], 0x20);
 		}
-        else
-        {
-            memset(data, 0x00, 0x20);
-        }
 	}
 	else if ((address >= 0xA000) && (address <= 0xC000)) //Upper Bounds of memory map
 	{
@@ -343,8 +340,24 @@ static void read_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, uint8_t
 		{
 			if (gb_cart->has_rtc && (gb_cart->ram_bank >= 0x08 && gb_cart->ram_bank <= 0x0c))
 			{
-				/* XXX: implement RTC read */
-				memset(data, 0, 0x20);
+                switch (gb_cart->ram_bank)
+                {
+                case 0x08:
+                    data[0] = gb_cart->rtc_latch_second;
+                    break;
+                case 0x09:
+                    data[0] = gb_cart->rtc_latch_minute;
+                    break;
+                case 0x0A:
+                    data[0] = gb_cart->rtc_latch_hour;
+                    break;
+                case 0x0B:
+                    data[0] = gb_cart->rtc_latch_day;
+                    break;
+                case 0x0C:
+                    data[0] = (gb_cart->rtc_latch_day_carry << 7) | (gb_cart->rtc_latch_day >> 8);
+                    break;
+                }
 			}
 			else
 			{
@@ -370,7 +383,7 @@ static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const 
 	}
 	else if ((address >= 0x2000) && (address <= 0x3FFF)) // ROM bank select
 	{
-		bank = data[0] & 0x7f;
+        bank = data[0] & 0x7F;
 		gb_cart->rom_bank = (bank == 0) ? 1 : bank;
 	}
 	else if ((address >= 0x4000) && (address <= 0x5FFF)) // RAM/Clock bank select
@@ -392,6 +405,16 @@ static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const 
 	else if ((address >= 0x6000) && (address <= 0x7FFF)) // Latch timer data
 	{
 		//Implement RTC timer / latch
+        if (gb_cart->rtc_latch == 0 && data[0] == 1)
+        {
+            correctRTC(gb_cart);
+            gb_cart->rtc_latch_second    = gb_cart->rtc_second;
+            gb_cart->rtc_latch_minute    = gb_cart->rtc_minute;
+            gb_cart->rtc_latch_hour      = gb_cart->rtc_hour;
+            gb_cart->rtc_latch_day       = gb_cart->rtc_day;
+            gb_cart->rtc_latch_day_carry = gb_cart->rtc_day_carry;
+        }
+        gb_cart->rtc_latch = data[0];
 	}
 	else if ((address >= 0xA000) && (address <= 0xBFFF)) // Write to RAM
 	{
@@ -399,7 +422,34 @@ static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const 
         {
             if (gb_cart->has_rtc && (gb_cart->ram_bank >= 0x8 && gb_cart->ram_bank <= 0xC))
             {
-                /* XXX: implement RTC write */
+                bank = data[0];
+
+                /* RTC write */
+                switch (gb_cart->ram_bank)
+                {
+                case 0x08:
+                    if (bank >= 60)
+                        bank = 0;
+                    gb_cart->rtc_second = bank;
+                    break;
+                case 0x09:
+                    if (bank >= 60)
+                        bank = 0;
+                    gb_cart->rtc_minute = bank;
+                    break;
+                case 0x0A:
+                    if (bank >= 24)
+                        bank = 0;
+                    gb_cart->rtc_hour = bank;
+                    break;
+                case 0x0B:
+                    gb_cart->rtc_day = (gb_cart->rtc_day & 0x0100) | bank;
+                    break;
+                case 0x0C:
+                    gb_cart->rtc_day = ((bank & 1) << 8) | (gb_cart->rtc_day & 0xFF);
+                    gb_cart->rtc_day_carry = bank & 0x80;
+                    break;
+                }
             }
             else
             {
@@ -425,8 +475,6 @@ static void write_gb_cart_mbc4(struct gb_cart* gb_cart, uint16_t address, const 
 
 static void read_gb_cart_mbc5(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
 {
-	size_t offset;
-
 	if ((address < 0x4000)) //Rom Bank 0
 	{
 		memcpy(data, &gb_cart->rom[address], 0x20);
@@ -687,10 +735,10 @@ static const struct parsed_cart_type* parse_cart_type(uint8_t cart_type)
 	case 0x06: return &GB_CART_TYPES[5];
 	case 0x08: return &GB_CART_TYPES[6];
 	case 0x09: return &GB_CART_TYPES[7];
-	case 0x0b: return &GB_CART_TYPES[8];
-	case 0x0c: return &GB_CART_TYPES[9];
-	case 0x0d: return &GB_CART_TYPES[10];
-	case 0x0f: return &GB_CART_TYPES[11];
+	case 0x0B: return &GB_CART_TYPES[8];
+	case 0x0C: return &GB_CART_TYPES[9];
+	case 0x0D: return &GB_CART_TYPES[10];
+	case 0x0F: return &GB_CART_TYPES[11];
 	case 0x10: return &GB_CART_TYPES[12];
 	case 0x11: return &GB_CART_TYPES[13];
 	case 0x12: return &GB_CART_TYPES[14];
@@ -699,19 +747,52 @@ static const struct parsed_cart_type* parse_cart_type(uint8_t cart_type)
 	case 0x16: return &GB_CART_TYPES[17];
 	case 0x17: return &GB_CART_TYPES[18];
 	case 0x19: return &GB_CART_TYPES[19];
-	case 0x1a: return &GB_CART_TYPES[20];
-	case 0x1b: return &GB_CART_TYPES[21];
-	case 0x1c: return &GB_CART_TYPES[22];
-	case 0x1d: return &GB_CART_TYPES[23];
-	case 0x1e: return &GB_CART_TYPES[24];
-	case 0xfc: return &GB_CART_TYPES[25];
-	case 0xfd: return &GB_CART_TYPES[26];
-	case 0xfe: return &GB_CART_TYPES[27];
-	case 0xff: return &GB_CART_TYPES[28];
+	case 0x1A: return &GB_CART_TYPES[20];
+	case 0x1B: return &GB_CART_TYPES[21];
+	case 0x1C: return &GB_CART_TYPES[22];
+	case 0x1D: return &GB_CART_TYPES[23];
+	case 0x1E: return &GB_CART_TYPES[24];
+	case 0xFC: return &GB_CART_TYPES[25];
+	case 0xFD: return &GB_CART_TYPES[26];
+	case 0xFE: return &GB_CART_TYPES[27];
+	case 0xFF: return &GB_CART_TYPES[28];
 	default:   return NULL;
 	}
 }
 
+void correctRTC(struct gb_cart* gb_cart)
+{
+    time_t now, dif;
+    int days;
+
+    now = time(NULL);
+    dif = now - gb_cart->rtc_last_time;
+
+    gb_cart->rtc_second += (BYTE)(dif % 60);
+    dif /= 60;
+    gb_cart->rtc_minute += (BYTE)(dif % 60);
+    dif /= 60;
+    gb_cart->rtc_hour += (BYTE)(dif % 24);
+    dif /= 24;
+    
+    days = (int)(gb_cart->rtc_day + ((gb_cart->rtc_day_carry & 1) << 8) + dif);
+    gb_cart->rtc_day = (days & 0xFF);
+
+    if (days > 255)
+    {
+        if (days > 511)
+        {
+            days &= 511;
+            gb_cart->rtc_day_carry |= 0x80;
+        }
+        if (days > 255)
+        {
+            gb_cart->rtc_day_carry = (gb_cart->rtc_day_carry & 0xFE) | (days > 255 ? 1 : 0);
+        }
+    }
+
+    gb_cart->rtc_last_time = now;
+}
 
 int GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
 {
@@ -750,8 +831,8 @@ int GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
 		ram_size = 0;
 		switch (rom[0x149])
 		{
-		case 0x01: ram_size = 1 * 0x800; break;
-		case 0x02: ram_size = 4 * 0x800; break;
+		case 0x01: ram_size =  1 * 0x800; break;
+		case 0x02: ram_size =  4 * 0x800; break;
 		case 0x03: ram_size = 16 * 0x800; break;
 		case 0x04: ram_size = 64 * 0x800; break;
 		case 0x05: ram_size = 32 * 0x800; break;
@@ -766,8 +847,29 @@ int GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
 				goto free_rom;
 			}
 
-			read_from_file("C:/Users/death/Desktop/pkmgb.sav", ram, ram_size);
+			read_from_file("C:/Users/death/Desktop/pokemonsilver.sav", ram, ram_size + ((type->extra_devices & GED_RTC ) ? 0x30 : 0x00));
 		}
+        
+        //If we have RTC we need to load in the data, we assume the save will use the VBA-M format
+        if (type->extra_devices & GED_RTC)
+        {
+            gbCartRTC rtc;
+            memcpy(&rtc, &ram[ram_size], 0x30);
+           
+            gb_cart->rtc_second          = rtc.second;
+            gb_cart->rtc_minute          = rtc.minute;
+            gb_cart->rtc_hour            = rtc.hour;
+            gb_cart->rtc_day             = rtc.day;
+            gb_cart->rtc_day_carry       = rtc.day_carry;
+            gb_cart->rtc_latch_second    = rtc.latch_second;
+            gb_cart->rtc_latch_minute    = rtc.latch_minute;
+            gb_cart->rtc_latch_hour      = rtc.latch_hour;
+            gb_cart->rtc_latch_day       = rtc.latch_day;
+            gb_cart->rtc_latch_day_carry = rtc.latch_day_carry;
+            gb_cart->rtc_last_time       = rtc.mapperLastTime;
+
+            correctRTC(gb_cart);
+        }
 	}
 
 	/* update gb_cart */
