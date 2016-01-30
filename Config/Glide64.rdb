@@ -3546,6 +3546,7 @@ filtering=1
 Good Name=Tom Clancy's Rainbow Six (E)
 Internal Name=RAINBOW SIX
 depthmode=1
+fb_render=1
 increase_texrect_edge=1
 swapmode=0
 
@@ -3553,6 +3554,7 @@ swapmode=0
 Good Name=Tom Clancy's Rainbow Six (F)
 Internal Name=RAINBOW SIX
 depthmode=1
+fb_render=1
 increase_texrect_edge=1
 swapmode=0
 
@@ -3560,6 +3562,7 @@ swapmode=0
 Good Name=Tom Clancy's Rainbow Six (G)
 Internal Name=RAINBOW SIX
 depthmode=1
+fb_render=1
 increase_texrect_edge=1
 swapmode=0
 
@@ -3567,6 +3570,7 @@ swapmode=0
 Good Name=Tom Clancy's Rainbow Six (U)
 Internal Name=RAINBOW SIX
 depthmode=1
+fb_render=1
 increase_texrect_edge=1
 swapmode=0
 
