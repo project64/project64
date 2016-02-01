@@ -38,6 +38,8 @@
 //****************************************************************
 
 #include <math.h>
+#include <string.h>
+
 #include "Gfx_1.3.h"
 #include "3dmath.h"
 #include "Util.h"

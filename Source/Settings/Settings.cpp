@@ -77,7 +77,7 @@ __declspec(dllexport) void SetSettingInfo3 (PLUGIN_SETTINGS3 * info)
 	g_PluginSettings3 = *info;
 }
 
-BOOL SettingsInitilized ( void )
+bool SettingsInitilized(void)
 {
 	return g_PluginInitilized;
 }
