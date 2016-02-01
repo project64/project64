@@ -21,8 +21,9 @@ uint16_t gb_cart_address(unsigned int bank, uint16_t address)
 
 void Transferpak::Init()
 {
+    
 	memset(&tpak, 0, sizeof(tpak));
-	tpak.access_mode = (!GBCart::init_gb_cart(&tpak.gb_cart, "C:/Users/death/Desktop/pokemonsilver.gbc")) ? CART_NOT_INSERTED : CART_ACCESS_MODE_0;
+	tpak.access_mode = (!GBCart::init_gb_cart(&tpak.gb_cart, g_Settings->LoadStringVal(Game_Transferpak_ROM).c_str())) ? CART_NOT_INSERTED : CART_ACCESS_MODE_0;
 
     tpak.access_mode_changed = 0x44;
 }

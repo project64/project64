@@ -811,7 +811,7 @@ bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
                 return false;
 			}
 
-			read_from_file("C:/Users/death/Desktop/pokemonsilver.sav", ram, ram_size );
+			read_from_file(g_Settings->LoadStringVal(Game_Transferpak_Sav).c_str(), ram, ram_size );
 		}
         
         //If we have RTC we need to load in the data, we assume the save will use the VBA-M format
@@ -849,8 +849,8 @@ bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
 
 void GBCart::save_gb_cart(struct gb_cart* gb_cart)
 {
-    FILE *fRAM = fopen("C:/Users/death/Desktop/pokemonsilver.sav", "wb");
-
+    FILE *fRAM = fopen(g_Settings->LoadStringVal(Game_Transferpak_Sav).c_str(), "wb");
+    
     if (gb_cart->has_rtc)
     {
         fwrite(gb_cart->ram, 1, gb_cart->ram_size-0x30, fRAM);

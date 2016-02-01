@@ -157,6 +157,8 @@ enum SettingID
     Game_AudioResetOnLoad,
     Game_AllowROMWrites,
     Game_CRC_Recalc,
+    Game_Transferpak_ROM,
+    Game_Transferpak_Sav,
 
     // General Game running info
     GameRunning_LoadingInProgress,
