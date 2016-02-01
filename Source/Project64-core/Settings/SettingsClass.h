@@ -11,6 +11,7 @@
 #pragma once
 
 #include <Project64-core/Settings/SettingType/SettingsType-Base.h>
+#include <map>
 
 enum SettingDataType
 {
