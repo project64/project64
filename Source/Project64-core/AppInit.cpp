@@ -160,7 +160,7 @@ const char * AppName(void)
 
 static bool ParseCommand(int32_t argc, char **argv)
 {
-    if (argc == 1)
+    if (argc <= 1)
     {
         return true;
     }
@@ -191,7 +191,7 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
     {
         g_Notify = Notify;
         InitializeLog();
-        WriteTrace(TraceAppInit, TraceDebug, "Starting");
+        WriteTrace(TraceAppInit, TraceDebug, "Starting (BaseDirectory: %s)", BaseDirectory ? BaseDirectory : "null");
         if (Notify == NULL)
         {
             WriteTrace(TraceAppInit, TraceError, "No Notification class passed");
@@ -204,6 +204,7 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
         WriteTrace(TraceAppInit, TraceDebug, "Parse Commands");
         if (!ParseCommand(argc, argv))
         {
+            WriteTrace(TraceAppInit, TraceError, "Failed to Parse Commands, exiting now");
             return false;
         }
 
