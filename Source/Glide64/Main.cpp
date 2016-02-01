@@ -1625,7 +1625,7 @@ void CALL PluginLoaded(void)
     game_setting(Set_read_back_to_screen, "read_back_to_screen", 0);
     game_setting(Set_detect_cpu_write, "detect_cpu_write", 0);
     game_setting(Set_fb_get_info, "fb_get_info", 0);
-    game_setting(Set_fb_render, "fb_render", 0);
+    game_setting(Set_fb_render, "fb_render", 1);
 }
 
 /******************************************************************
