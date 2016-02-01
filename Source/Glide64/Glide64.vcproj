@@ -421,11 +421,27 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Settings.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Settings.h"
+			>
+		</File>
+		<File
 			RelativePath="TexBuffer.cpp"
 			>
 		</File>
 		<File
 			RelativePath="TexBuffer.h"
+			>
+		</File>
+		<File
+			RelativePath=".\trace.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\trace.h"
 			>
 		</File>
 		<File
