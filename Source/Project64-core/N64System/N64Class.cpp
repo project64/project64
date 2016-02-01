@@ -219,7 +219,9 @@ bool CN64System::RunFileImage(const char * FileLoc)
         if (g_Rom->CicChipID() == CIC_NUS_8303)
         {
             //64DD IPL
-            g_DDRom = g_Rom;
+            if (g_DDRom == NULL)
+                g_DDRom = new CN64Rom();
+            g_DDRom->LoadN64ImageIPL(FileLoc);
             g_Settings->SaveString(File_DiskIPLPath, FileLoc);
         }
 
