@@ -101,6 +101,9 @@ public:
     static uint32_t  FindSetting(CSettings * _this, const char * Name);
     static void   FlushSettings(CSettings * _this);
 
+    //Notification
+    void NotifyCallBacks(SettingID Type);
+
 private:
     void AddHandler(SettingID TypeID, CSettingType * Handler);
     void AddHowToHandleSetting(const char * BaseDirectory);
@@ -116,9 +119,6 @@ private:
     typedef std::map<SettingID, SETTING_CHANGED_CB *> SETTING_CALLBACK;
     typedef std::map<SettingID, CSettingType *> SETTING_MAP;
     typedef SETTING_MAP::iterator SETTING_HANDLER;
-
-private:
-    void NotifyCallBacks(SettingID Type);
 
     SETTING_MAP      m_SettingInfo;
     SETTING_CALLBACK m_Callback;
