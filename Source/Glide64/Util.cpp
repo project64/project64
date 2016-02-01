@@ -311,7 +311,7 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
                 // Calculate deltaZ per polygon for Decal z-mode
                 double fdzdy = (diffz_02 * diffx_12 - diffz_12 * diffx_02) / denom;
                 double fdz = fabs(fdzdx) + fabs(fdzdy);
-                if ((settings.hacks & hack_Zelda) && (rdp.rm & 0x800))
+                if ((g_settings->hacks & hack_Zelda) && (rdp.rm & 0x800))
                     fdz *= 4.0;  // Decal mode in Zelda sometimes needs mutiplied deltaZ to work correct, e.g. roads
                 deltaZ = maxval(8, (int)fdz);
             }
@@ -403,7 +403,7 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
                 {
                     if (rdp.aTBuffTex[0]->tile_uls != (int)rdp.tiles[rdp.cur_tile].f_ul_s)
                         v->u0 -= rdp.tiles[rdp.cur_tile].f_ul_s;
-                    if (rdp.aTBuffTex[0]->tile_ult != (int)rdp.tiles[rdp.cur_tile].f_ul_t || (settings.hacks&hack_Megaman))
+                    if (rdp.aTBuffTex[0]->tile_ult != (int)rdp.tiles[rdp.cur_tile].f_ul_t || (g_settings->hacks&hack_Megaman))
                         v->v0 -= rdp.tiles[rdp.cur_tile].f_ul_t; //required for megaman (boss special attack)
                     v->u0 *= rdp.aTBuffTex[0]->u_scale;
                     v->v0 *= rdp.aTBuffTex[0]->v_scale;
@@ -814,9 +814,9 @@ void do_triangle_stuff(uint16_t linew, int old_interpolate) // what else?? do th
         rdp.clip = 0;
     else
     {
-        if (!settings.clip_zmin)
+        if (!g_settings->clip_zmin)
             rdp.clip &= ~CLIP_ZMIN;
-        if (!settings.clip_zmax)
+        if (!g_settings->clip_zmax)
             rdp.clip &= ~CLIP_ZMAX;
     }
     render_tri(linew, old_interpolate);
@@ -979,7 +979,7 @@ static void CalculateLOD(VERTEX *v, int n)
     double intptr;
     float s_scale = rdp.tiles[rdp.cur_tile].width / 255.0f;
     float t_scale = rdp.tiles[rdp.cur_tile].height / 255.0f;
-    if (settings.lodmode == 1)
+    if (g_settings->lodmode == 1)
     {
         deltaS = (v[1].u0 / v[1].q - v[0].u0 / v[0].q) * s_scale;
         deltaT = (v[1].v0 / v[1].q - v[0].v0 / v[0].q) * t_scale;
@@ -1033,7 +1033,7 @@ static void CalculateLOD(VERTEX *v, int n)
 
 float ScaleZ(float z)
 {
-    if (settings.n64_z_scale)
+    if (g_settings->n64_z_scale)
     {
         int iz = (int)(z*8.0f + 0.5f);
         if (iz < 0) iz = 0;
@@ -1048,7 +1048,7 @@ float ScaleZ(float z)
 
 static void DepthBuffer(VERTEX * vtx, int n)
 {
-    if (fb_depth_render_enabled && !(settings.hacks&hack_RE2) && dzdx && (rdp.flags & ZBUF_UPDATE))
+    if (fb_depth_render_enabled && !(g_settings->hacks&hack_RE2) && dzdx && (rdp.flags & ZBUF_UPDATE))
     {
         vertexi v[12];
         if (u_cull_mode == 1) //cull front
@@ -1608,7 +1608,7 @@ static void render_tri(uint16_t linew, int old_interpolate)
         }
     }
 
-    if (settings.lodmode > 0 && rdp.cur_tile < rdp.mipmap_level)
+    if (g_settings->lodmode > 0 && rdp.cur_tile < rdp.mipmap_level)
         CalculateLOD(rdp.vtxbuf, n);
 
     cmb.cmb_ext_use = cmb.tex_cmb_ext_use = 0;
@@ -1622,7 +1622,7 @@ static void render_tri(uint16_t linew, int old_interpolate)
     }
     }
     */
-    if (settings.wireframe)
+    if (g_settings->wireframe)
     {
         SetWireframeCol();
         for (i = 0; i < n; i++)
@@ -1637,7 +1637,7 @@ static void render_tri(uint16_t linew, int old_interpolate)
         //      VERTEX ** pv = rdp.vtx_buffer?(vtx_list2):(vtx_list1);
         //      for (int k = 0; k < n; k ++)
         //			FRDP ("DRAW[%d]: v.x = %f, v.y = %f, v.z = %f, v.u = %f, v.v = %f\n", k, pv[k]->x, pv[k]->y, pv[k]->z, pv[k]->coord[rdp.t0<<1], pv[k]->coord[(rdp.t0<<1)+1]);
-        //        pv[k]->y = settings.res_y - pv[k]->y;
+        //        pv[k]->y = g_settings->res_y - pv[k]->y;
 
         if (linew > 0)
         {
@@ -1784,10 +1784,10 @@ void update_scissor()
         rdp.update ^= UPDATE_SCISSOR;
 
         // KILL the floating point error with 0.01f
-        rdp.scissor.ul_x = (uint32_t)maxval(minval((rdp.scissor_o.ul_x * rdp.scale_x + rdp.offset_x + 0.01f), settings.res_x), 0);
-        rdp.scissor.lr_x = (uint32_t)maxval(minval((rdp.scissor_o.lr_x * rdp.scale_x + rdp.offset_x + 0.01f), settings.res_x), 0);
-        rdp.scissor.ul_y = (uint32_t)maxval(minval((rdp.scissor_o.ul_y * rdp.scale_y + rdp.offset_y + 0.01f), settings.res_y), 0);
-        rdp.scissor.lr_y = (uint32_t)maxval(minval((rdp.scissor_o.lr_y * rdp.scale_y + rdp.offset_y + 0.01f), settings.res_y), 0);
+        rdp.scissor.ul_x = (uint32_t)maxval(minval((rdp.scissor_o.ul_x * rdp.scale_x + rdp.offset_x + 0.01f), g_settings->res_x), 0);
+        rdp.scissor.lr_x = (uint32_t)maxval(minval((rdp.scissor_o.lr_x * rdp.scale_x + rdp.offset_x + 0.01f), g_settings->res_x), 0);
+        rdp.scissor.ul_y = (uint32_t)maxval(minval((rdp.scissor_o.ul_y * rdp.scale_y + rdp.offset_y + 0.01f), g_settings->res_y), 0);
+        rdp.scissor.lr_y = (uint32_t)maxval(minval((rdp.scissor_o.lr_y * rdp.scale_y + rdp.offset_y + 0.01f), g_settings->res_y), 0);
         //grClipWindow specifies the hardware clipping window. Any pixels outside the clipping window are rejected.
         //Values are inclusive for minimum x and y values and exclusive for maximum x and y values.
         //    grClipWindow (rdp.scissor.ul_x?rdp.scissor.ul_x+1:0, rdp.scissor.ul_y?rdp.scissor.ul_y+1:0, rdp.scissor.lr_x, rdp.scissor.lr_y);
@@ -1920,14 +1920,14 @@ void update()
                 switch ((rdp.rm & 0xC00) >> 10) {
                 case 0:
                     grDepthBiasLevel(0);
-                    grDepthBufferFunction(settings.zmode_compare_less ? GR_CMP_LESS : GR_CMP_LEQUAL);
+                    grDepthBufferFunction(g_settings->zmode_compare_less ? GR_CMP_LESS : GR_CMP_LEQUAL);
                     break;
                 case 1:
                     grDepthBiasLevel(-4);
-                    grDepthBufferFunction(settings.zmode_compare_less ? GR_CMP_LESS : GR_CMP_LEQUAL);
+                    grDepthBufferFunction(g_settings->zmode_compare_less ? GR_CMP_LESS : GR_CMP_LEQUAL);
                     break;
                 case 2:
-                    grDepthBiasLevel(settings.ucode == 7 ? -4 : 0);
+                    grDepthBiasLevel(g_settings->ucode == 7 ? -4 : 0);
                     grDepthBufferFunction(GR_CMP_LESS);
                     break;
                 case 3:
@@ -2006,9 +2006,9 @@ void update()
         {
             if (grStippleModeExt != 0)
             {
-                if (settings.old_style_adither || rdp.alpha_dither_mode != 3) {
+                if (g_settings->old_style_adither || rdp.alpha_dither_mode != 3) {
                     LRDP(" |- alpha compare: dither\n");
-                    grStippleModeExt(settings.stipple_mode);
+                    grStippleModeExt(g_settings->stipple_mode);
                 }
                 else
                     grStippleModeExt(GR_STIPPLE_DISABLE);
@@ -2047,7 +2047,7 @@ void update()
     }
 
     //Added by Gonetz.
-    if (settings.fog && (rdp.update & UPDATE_FOG_ENABLED))
+    if (g_settings->fog && (rdp.update & UPDATE_FOG_ENABLED))
     {
         rdp.update ^= UPDATE_FOG_ENABLED;
 
@@ -2099,8 +2099,8 @@ void update()
 
         rdp.clip_min_x = maxval((rdp.view_trans[0] - scale_x + rdp.offset_x) / rdp.clip_ratio, 0.0f);
         rdp.clip_min_y = maxval((rdp.view_trans[1] - scale_y + rdp.offset_y) / rdp.clip_ratio, 0.0f);
-        rdp.clip_max_x = minval((rdp.view_trans[0] + scale_x + rdp.offset_x) * rdp.clip_ratio, settings.res_x);
-        rdp.clip_max_y = minval((rdp.view_trans[1] + scale_y + rdp.offset_y) * rdp.clip_ratio, settings.res_y);
+        rdp.clip_max_x = minval((rdp.view_trans[0] + scale_x + rdp.offset_x) * rdp.clip_ratio, g_settings->res_x);
+        rdp.clip_max_y = minval((rdp.view_trans[1] + scale_y + rdp.offset_y) * rdp.clip_ratio, g_settings->res_y);
 
         FRDP(" |- viewport - (%d, %d, %d, %d)\n", (uint32_t)rdp.clip_min_x, (uint32_t)rdp.clip_min_y, (uint32_t)rdp.clip_max_x, (uint32_t)rdp.clip_max_y);
         if (!rdp.scissor_set)
@@ -2133,7 +2133,7 @@ void set_message_combiner()
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
         FXFALSE);
-    if (settings.buff_clear && (settings.show_fps & 0x08))
+    if (g_settings->buff_clear && (g_settings->show_fps & 0x08))
         grAlphaBlendFunction(GR_BLEND_SRC_ALPHA,
         GR_BLEND_ONE_MINUS_SRC_ALPHA,
         GR_BLEND_ZERO,

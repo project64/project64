@@ -282,7 +282,7 @@ enum {
 	Set_ucodeLookup,
 };
 
-extern short Set_basic_mode, Set_texture_dir;
+extern short Set_basic_mode, Set_texture_dir, Set_log_dir, Set_log_flush;
 
 extern void general_setting(short setting_ID, const char * name, unsigned int value);
 extern void game_setting(short setting_ID, const char * name, unsigned int value);

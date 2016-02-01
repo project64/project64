@@ -376,7 +376,7 @@ static void uc0_movemem()
         short trans_x = ((short*)gfx.RDRAM)[(a + 4) ^ 1] / 4;
         short trans_y = ((short*)gfx.RDRAM)[(a + 5) ^ 1] / 4;
         short trans_z = ((short*)gfx.RDRAM)[(a + 6) ^ 1];
-        if (settings.correct_viewport)
+        if (g_settings->correct_viewport)
         {
             scale_x = abs(scale_x);
             scale_y = abs(scale_y);
@@ -548,7 +548,7 @@ static void uc0_tri1()
         &rdp.vtx[((rdp.cmd1 >> 8) & 0xFF) / 10],
         &rdp.vtx[(rdp.cmd1 & 0xFF) / 10]
     };
-    if (settings.hacks & hack_Makers)
+    if (g_settings->hacks & hack_Makers)
     {
         rdp.force_wrap = FALSE;
         for (int i = 0; i < 3; i++)
@@ -791,7 +791,7 @@ static void uc0_moveword()
 static void uc0_texture()
 {
     int tile = (rdp.cmd0 >> 8) & 0x07;
-    if (tile == 7 && (settings.hacks&hack_Supercross)) tile = 0; //fix for supercross 2000
+    if (tile == 7 && (g_settings->hacks&hack_Supercross)) tile = 0; //fix for supercross 2000
     rdp.mipmap_level = (rdp.cmd0 >> 11) & 0x07;
     uint32_t on = (rdp.cmd0 & 0xFF);
     rdp.cur_tile = tile;
@@ -827,7 +827,7 @@ static void uc0_setothermode_h()
     LRDP("uc0:setothermode_h: ");
 
     int shift, len;
-    if ((settings.ucode == ucode_F3DEX2) || (settings.ucode == ucode_CBFD))
+    if ((g_settings->ucode == ucode_F3DEX2) || (g_settings->ucode == ucode_CBFD))
     {
         len = (rdp.cmd0 & 0xFF) + 1;
         shift = 32 - ((rdp.cmd0 >> 8) & 0xFF) - len;
@@ -905,7 +905,7 @@ static void uc0_setothermode_l()
     LRDP("uc0:setothermode_l ");
 
     int shift, len;
-    if ((settings.ucode == ucode_F3DEX2) || (settings.ucode == ucode_CBFD))
+    if ((g_settings->ucode == ucode_F3DEX2) || (g_settings->ucode == ucode_CBFD))
     {
         len = (rdp.cmd0 & 0xFF) + 1;
         shift = 32 - ((rdp.cmd0 >> 8) & 0xFF) - len;
@@ -947,7 +947,7 @@ static void uc0_setothermode_l()
         rdp.update |= UPDATE_FOG_ENABLED; //if blender has no fog bits, fog must be set off
         rdp.render_mode_changed |= rdp.rm ^ rdp.othermode_l;
         rdp.rm = rdp.othermode_l;
-        if (settings.flame_corona && (rdp.rm == 0x00504341)) //hack for flame's corona
+        if (g_settings->flame_corona && (rdp.rm == 0x00504341)) //hack for flame's corona
             rdp.othermode_l |= /*0x00000020 |*/ 0x00000010;
         FRDP("rendermode: %08lx\n", rdp.othermode_l);  // just output whole othermode_l
     }

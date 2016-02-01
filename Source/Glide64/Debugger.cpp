@@ -116,8 +116,8 @@ void debug_cacheviewer ()
   for (i=0; i<2; i++)
   {
     grTexFilterMode (i,
-      (settings.filter_cache)?GR_TEXTUREFILTER_BILINEAR:GR_TEXTUREFILTER_POINT_SAMPLED,
-      (settings.filter_cache)?GR_TEXTUREFILTER_BILINEAR:GR_TEXTUREFILTER_POINT_SAMPLED);
+      (g_settings->filter_cache)?GR_TEXTUREFILTER_BILINEAR:GR_TEXTUREFILTER_POINT_SAMPLED,
+      (g_settings->filter_cache)?GR_TEXTUREFILTER_BILINEAR:GR_TEXTUREFILTER_POINT_SAMPLED);
     grTexClampMode (i,
       GR_TEXTURECLAMP_CLAMP,
       GR_TEXTURECLAMP_CLAMP);
@@ -257,12 +257,12 @@ void debug_capture ()
       POINT pt;
       DbgCursorPos(&pt);
 
-      //int diff = settings.scr_res_y-settings.res_y;
+      //int diff = g_settings->scr_res_y-g_settings->res_y;
 
-      if (pt.y <= (int)settings.res_y)
+      if (pt.y <= (int)g_settings->res_y)
       {
         int x = pt.x;
-        int y = pt.y;//settings.res_y - (pt.y - diff);
+        int y = pt.y;//g_settings->res_y - (pt.y - diff);
 
         TRI_INFO *start;
         TRI_INFO *tri;
@@ -330,10 +330,10 @@ void debug_capture ()
       (uint32_t)rdp.offset_x,
       (uint32_t)rdp.offset_y,
       GR_LFB_SRC_FMT_565,
-      settings.res_x,
-      settings.res_y,
+      g_settings->res_x,
+      g_settings->res_y,
       FXFALSE,
-      settings.res_x<<1,
+      g_settings->res_x<<1,
       _debugger.screen);
 
     // Do the cacheviewer
@@ -784,10 +784,10 @@ void debug_capture ()
       for (i=0; i<_debugger.tri_sel->nv; i++)
       {
         grConstantColorValue (0x000000FF);
-        output (_debugger.tri_sel->v[i].x+1, settings.scr_res_y-_debugger.tri_sel->v[i].y+1, 1,
+        output (_debugger.tri_sel->v[i].x+1, g_settings->scr_res_y-_debugger.tri_sel->v[i].y+1, 1,
           "%d", i);
         grConstantColorValue (0xFFFFFFFF);
-        output (_debugger.tri_sel->v[i].x, settings.scr_res_y-_debugger.tri_sel->v[i].y, 1,
+        output (_debugger.tri_sel->v[i].x, g_settings->scr_res_y-_debugger.tri_sel->v[i].y, 1,
           "%d", i);
       }
     }

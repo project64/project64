@@ -51,6 +51,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Gfx_1.3.h" />
+    <ClInclude Include="Settings.h" />
+    <ClInclude Include="trace.h" />
     <ClInclude Include="turbo3D.h" />
     <ClInclude Include="ucode.h" />
     <ClInclude Include="ucode00.h" />
@@ -97,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CRC.cpp" />
+    <ClCompile Include="Settings.cpp" />
     <ClCompile Include="TexCache.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="3dmath.cpp" />
@@ -109,6 +112,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="rdp.cpp" />
     <ClCompile Include="TexBuffer.cpp" />
+    <ClCompile Include="trace.cpp" />
     <ClCompile Include="Util.cpp" />
   </ItemGroup>
   <ItemGroup>

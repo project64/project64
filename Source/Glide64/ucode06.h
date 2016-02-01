@@ -210,7 +210,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
     grDepthMask(FXFALSE);
 
     GrLOD_t LOD = GR_LOD_LOG2_1024;
-    if (settings.scr_res_x > 1024)
+    if (g_settings->scr_res_x > 1024)
         LOD = GR_LOD_LOG2_2048;
 
     float lr_x = (float)d.imageW * rdp.scale_x;
@@ -262,8 +262,8 @@ void DrawDepthImage(const DRAWIMAGE & d)
     float scale_y_src = 1.0f / rdp.scale_y;
     int src_width = d.imageW;
     int src_height = d.imageH;
-    int dst_width = minval(int(src_width*scale_x_dst), (int)settings.scr_res_x);
-    int dst_height = minval(int(src_height*scale_y_dst), (int)settings.scr_res_y);
+    int dst_width = minval(int(src_width*scale_x_dst), (int)g_settings->scr_res_x);
+    int dst_height = minval(int(src_height*scale_y_dst), (int)g_settings->scr_res_y);
     uint16_t * src = (uint16_t*)(gfx.RDRAM + d.imagePtr);
     uint16_t * dst = new uint16_t[dst_width*dst_height];
     for (int y = 0; y < dst_height; y++)
@@ -356,12 +356,12 @@ void DrawImage(DRAWIMAGE & d)
         }
     }
 
-    if ((settings.hacks&hack_PPL) > 0)
+    if ((g_settings->hacks&hack_PPL) > 0)
     {
         if (d.imageY > d.imageH)
             d.imageY = (d.imageY%d.imageH);
     }
-    else if ((settings.hacks&hack_Starcraft) > 0)
+    else if ((g_settings->hacks&hack_Starcraft) > 0)
     {
         if (d.imageH % 2 == 1)
             d.imageH -= 1;
@@ -443,7 +443,7 @@ void DrawImage(DRAWIMAGE & d)
         rdp.allow_combine = 0;
 
     if (rdp.ci_width == 512 && !no_dlist)
-        grClipWindow(0, 0, settings.scr_res_x, settings.scr_res_y);
+        grClipWindow(0, 0, g_settings->scr_res_x, g_settings->scr_res_y);
     else if (d.scaleX == 1.0f && d.scaleY == 1.0f)
         grClipWindow(rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
     else
@@ -611,13 +611,13 @@ void DrawHiresImage(DRAWIMAGE & d, int screensize = FALSE)
     setTBufTex(rdp.tbuff_tex->t_mem, rdp.tbuff_tex->width << rdp.tbuff_tex->size >> 1);
 
     const float Z = set_sprite_combine_mode();
-    grClipWindow(0, 0, settings.res_x, settings.res_y);
+    grClipWindow(0, 0, g_settings->res_x, g_settings->res_y);
 
     if (d.imageW % 2 == 1) d.imageW -= 1;
     if (d.imageH % 2 == 1) d.imageH -= 1;
     if (d.imageY > d.imageH) d.imageY = (d.imageY%d.imageH);
 
-    if (!(settings.hacks&hack_PPL))
+    if (!(g_settings->hacks&hack_PPL))
     {
         if ((d.frameX > 0) && (d.frameW == rdp.ci_width))
             d.frameW -= (uint16_t)(2.0f*d.frameX);
@@ -764,7 +764,7 @@ static void uc6_bg(bool bg_1cyc)
         return;
     }
 
-    if (settings.ucode == ucode_F3DEX2 || (settings.hacks&hack_PPL))
+    if (g_settings->ucode == ucode_F3DEX2 || (g_settings->hacks&hack_PPL))
     {
         if ((d.imagePtr != rdp.cimg) && (d.imagePtr != rdp.ocimg) && d.imagePtr) //can't draw from framebuffer
             DrawImage(d);
@@ -979,7 +979,7 @@ static void uc6_draw_polygons(VERTEX v[4])
     }
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_VIEWPORT;
 
-    if (settings.fog && (rdp.flags & FOG_ENABLED))
+    if (g_settings->fog && (rdp.flags & FOG_ENABLED))
     {
         grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
     }
@@ -1278,7 +1278,7 @@ static void uc6_obj_rectangle_r()
     DRAWOBJECT d;
     uc6_read_object_data(d);
 
-    if (d.imageFmt == 1 && (settings.hacks&hack_Ogre64)) //Ogre Battle needs to copy YUV texture to frame buffer
+    if (d.imageFmt == 1 && (g_settings->hacks&hack_Ogre64)) //Ogre Battle needs to copy YUV texture to frame buffer
     {
         float ul_x = d.objX / mat_2d.BaseScaleX + mat_2d.X;
         float lr_x = (d.objX + d.imageW / d.scaleW) / mat_2d.BaseScaleX + mat_2d.X;
@@ -1523,7 +1523,7 @@ void uc6_sprite2d()
             d.frameY = ((short)(cmd1 & 0xFFFF)) / 4.0f;
             d.frameW = (uint16_t)(d.imageW / d.scaleX);
             d.frameH = (uint16_t)(d.imageH / d.scaleY);
-            if (settings.hacks&hack_WCWnitro)
+            if (g_settings->hacks&hack_WCWnitro)
             {
                 int scaleY = (int)d.scaleY;
                 d.imageH /= scaleY;
@@ -1692,7 +1692,7 @@ void uc6_sprite2d()
             }
             rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_VIEWPORT;
 
-            if (settings.fog && (rdp.flags & FOG_ENABLED))
+            if (g_settings->fog && (rdp.flags & FOG_ENABLED))
             {
                 grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
             }

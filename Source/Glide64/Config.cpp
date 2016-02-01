@@ -55,7 +55,7 @@
 // begin wxGlade: ::extracode
 // end wxGlade
 
-short Set_basic_mode = 0, Set_texture_dir = 0;
+short Set_basic_mode = 0, Set_texture_dir = 0, Set_log_dir = 0, Set_log_flush = 0;
 extern CriticalSection * g_ProcessDListCS;
 
 ConfigNotebook::ConfigNotebook(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long /*style*/) :
@@ -121,13 +121,13 @@ wxNotebook(parent, id, pos, size, 0)
     cbxFBO = new wxCheckBox(BasicSettingsPanel, wxID_ANY, "Use frame buffer objects");
 
     //emulation settings panel
-    if (settings.advanced_options)
+    if (g_settings->advanced_options)
     {
         EmuSettingsPanel = new wxPanel(this, wxID_ANY);
         if (romopen)
-            EmuSettingsBoxSizer_staticbox = new wxStaticBox(EmuSettingsPanel, -1, "Current game emulation settings. Change with care!");
+            EmuSettingsBoxSizer_staticbox = new wxStaticBox(EmuSettingsPanel, -1, "Current game emulation g_settings-> Change with care!");
         else
-            EmuSettingsBoxSizer_staticbox = new wxStaticBox(EmuSettingsPanel, -1, "Default emulation settings. Not recommended to change!");
+            EmuSettingsBoxSizer_staticbox = new wxStaticBox(EmuSettingsPanel, -1, "Default emulation g_settings-> Not recommended to change!");
         EmuSettingsLeftSizer_staticbox = new wxStaticBox(EmuSettingsPanel, -1, "General options");
         FrameBufferSizer_staticbox = new wxStaticBox(EmuSettingsPanel, -1, "Frame buffer emulation");
         DepthBufferSizer_staticbox = new wxStaticBox(EmuSettingsPanel, -1, "Depth buffer emulation");
@@ -172,12 +172,12 @@ wxNotebook(parent, id, pos, size, 0)
     }
 
 #ifdef TEXTURE_FILTER
-    if (settings.texenh_options)
+    if (g_settings->texenh_options)
     {
         if (!GfxInitDone)
         {
             grGlideInit();
-            grSstSelect(settings.card_id);
+            grSstSelect(g_settings->card_id);
         }
         const char *extensions = grGetString(GR_EXTENSION);
         if (strstr(extensions, "EVOODOO"))
@@ -313,7 +313,7 @@ void ConfigNotebook::OnClickVRAM(wxCommandEvent &event)
     {
         bool enable = !cbxVRAM->GetValue();
         if (enable)
-            spinVRAM->SetValue(settings.wrpVRAM);
+            spinVRAM->SetValue(g_settings->wrpVRAM);
         else
             spinVRAM->SetValue(" auto");
         spinVRAM->Enable(enable);
@@ -389,7 +389,7 @@ void ConfigNotebook::OnClickTexEdit(wxCommandEvent &event)
         bool val = !cbxHrsTexEdit->GetValue();
         cbxHrsAltCRC->Enable(val);
         if (val)
-            cbxHrsAltCRC->SetValue(settings.ghq_hirs_altcrc > 0);
+            cbxHrsAltCRC->SetValue(g_settings->ghq_hirs_altcrc > 0);
         else
             cbxHrsAltCRC->SetValue(false);
     }
@@ -422,29 +422,29 @@ void ConfigNotebook::set_properties()
     wxString tooltip = "Resolution\nThis option selects the fullscreen resolution for 3dfx cards and windowed resolution for other cards\n(note again that for 3dfx cards the plugin must be in fullscreen mode to see anything).\n[Recommended: 640x480, 800x600, 1024x768]";
     lblResolution->SetToolTip(tooltip);
     cmbResolution->SetToolTip(tooltip);
-    cmbResolution->SetSelection(settings.res_data);
+    cmbResolution->SetSelection(g_settings->res_data);
     cbxVSync->SetToolTip("Vertical sync\nThis option will enable the vertical sync, which will prevent tearing.\nNote: this option will ONLY have effect if vsync is set to \"Software Controlled\".\n");
-    cbxVSync->SetValue(settings.vsync > 0);
+    cbxVSync->SetValue(g_settings->vsync > 0);
     tooltip = "Select a format, in which screen shots will be saved";
     lblScreenShotFormat->SetToolTip(tooltip);
     cmbScreenShotFormat->SetToolTip(tooltip);
     for (int f = 0; f < NumOfFormats; f++) {
         cmbScreenShotFormat->Append(ScreenShotFormats[f].format);
     }
-    cmbScreenShotFormat->SetSelection(settings.ssformat);
+    cmbScreenShotFormat->SetSelection(g_settings->ssformat);
     cbxFPS->SetToolTip("FPS counter\nWhen this option is checked, a FPS (frames per second) counter will be shown\nin the lower left corner of the screen.\n[Recommended: your preference]");
-    cbxFPS->SetValue((settings.show_fps & 1) > 0);
+    cbxFPS->SetValue((g_settings->show_fps & 1) > 0);
     cbxVIS->SetToolTip("VI/s counter\nWhen this option is checked, a VI/s (vertical interrupts per second) counter\nwill be shown in the lower left corner of the screen.  This is like the FPS\ncounter but will be consistent at 60 VI/s for full speed on NTSC (U) games and\n50 VI/s for full speed on PAL (E) ones.\n[Recommended: your preference]");
-    cbxVIS->SetValue((settings.show_fps & 2) > 0);
+    cbxVIS->SetValue((g_settings->show_fps & 2) > 0);
     cbxPercent->SetToolTip("% speed\nThis displays a percentage of the actual N64 speed in the lower\nleft corner of the screen.\n[Recommended: your preference]");
-    cbxPercent->SetValue((settings.show_fps & 4) > 0);
+    cbxPercent->SetValue((g_settings->show_fps & 4) > 0);
     cbxClockEnabled->SetToolTip("Clock enabled\nThis option will put a clock in the lower right corner of the screen, showing the current time.\n[Recommended: your preference]");
-    cbxClockEnabled->SetValue(settings.clock > 0);
-    cbxClock24->SetValue(settings.clock_24_hr > 0);
+    cbxClockEnabled->SetValue(g_settings->clock > 0);
+    cbxClock24->SetValue(g_settings->clock_24_hr > 0);
     cbxClock24->SetToolTip("Display hours as 24-hour clock.\n[Recommended: your preference]");
     cbxTextTransparent->SetToolTip("Transparent text background\nIf this is checked, all on-screen messages will have a transparent background.  Otherwise, it will have a solid black background.\n[Recommended: your preference]");
-    cbxTextTransparent->SetValue((settings.show_fps & 8) > 0);
-    cbxTextureSettings->SetValue(settings.texenh_options > 0);
+    cbxTextTransparent->SetValue((g_settings->show_fps & 8) > 0);
+    cbxTextureSettings->SetValue(g_settings->texenh_options > 0);
     cbxTextureSettings->SetToolTip("Enable \"Texture enhancement\" panel.\nIt shows various enhancement options for original textures as well as options for hi-resolution textures.");
     tooltip = "Full screen resolution:\nThis sets the full screen resolution for non-3dfx video cards.\nAll the resolutions that your video card/monitor support should be displayed.\n[Recommended: native (max) resolution of your monitor - unless performance becomes an issue]";
     lblFSResolution->SetToolTip(tooltip);
@@ -461,122 +461,122 @@ void ConfigNotebook::set_properties()
             wxString res(aRes[r], wxConvUTF8);
             cmbFSResolution->Append(res);
         }
-        cmbFSResolution->SetSelection(settings.wrpResolution < size ? settings.wrpResolution : 0);
+        cmbFSResolution->SetSelection(g_settings->wrpResolution < size ? g_settings->wrpResolution : 0);
     }
 #ifdef __WINDOWS__
-    cbxVRAM->SetValue(settings.wrpVRAM == 0);
+    cbxVRAM->SetValue(g_settings->wrpVRAM == 0);
     if (cbxVRAM->GetValue())
         spinVRAM->SetValue(" auto");
     else
-        spinVRAM->SetValue(settings.wrpVRAM);
+        spinVRAM->SetValue(g_settings->wrpVRAM);
     spinVRAM->Enable(!cbxVRAM->GetValue());
     lblMb->Enable(!cbxVRAM->GetValue());
 #else
     cbxVRAM->SetValue(false);
     cbxVRAM->Disable();
-    spinVRAM->SetValue(settings.wrpVRAM ? settings.wrpVRAM : 32);
+    spinVRAM->SetValue(g_settings->wrpVRAM ? g_settings->wrpVRAM : 32);
     spinVRAM->Enable(true);
     lblMb->Enable(true);
 #endif
-    cbxFBO->SetValue(settings.wrpFBO > 0);
-    cbxAnisotropic->SetValue(settings.wrpAnisotropic > 0);
+    cbxFBO->SetValue(g_settings->wrpFBO > 0);
+    cbxAnisotropic->SetValue(g_settings->wrpAnisotropic > 0);
 
     //emulation settings panel
-    if (settings.advanced_options)
+    if (g_settings->advanced_options)
     {
         AddPage(EmuSettingsPanel, "Emulation settings");
         tooltip = "Filtering mode\nThere are three filtering modes possible:\n* Automatic filtering - filter exactly how the N64 specifies.\n* Point-sampled filtering - causes texels to appear square and sharp.\n* Bilinear filtering - interpolates the texture to make it appear more smooth.\n[Recommended: Automatic]";
         lbFiltering->SetToolTip(tooltip);
         cmbFiltering->SetToolTip(tooltip);
-        cmbFiltering->SetSelection(settings.filtering);
+        cmbFiltering->SetSelection(g_settings->filtering);
         tooltip = "Buffer swapping method\nThere are 3 buffer swapping methods:\n* old - swap buffers when vertical interrupt has occurred.\n* new - swap buffers when set of conditions is satisfied. Prevents flicker on some games.\n* hybrid - mix of first two methods.\nCan prevent even more flickering then previous method, but also can cause artefacts.\nIf you have flickering problems in a game (or graphics that don't show),\ntry to change swapping method.\n[Recommended: new (hybrid for Paper Mario)]";
         lbBufferSwap->SetToolTip(tooltip);
         cmbBufferSwap->SetToolTip(tooltip);
-        cmbBufferSwap->SetSelection(settings.swapmode);
+        cmbBufferSwap->SetSelection(g_settings->swapmode);
         tooltip = "Per-pixel level-of-detail calculation\nN64 uses special mechanism for mip-mapping, which nearly impossible to reproduce\ncorrectly on PC hardware. This option enables approximate emulation of this feature.\nFor example, it is required for the Peach/Bowser portrait's transition in Super Mario 64.\nThere are 3 modes:\n* off - LOD is not calculated\n* fast - fast imprecise LOD calculation.\n* precise - most precise LOD calculation possible, but more slow.\n[Recommended: your preference]";
         lblLOD->SetToolTip(tooltip);
         cmbLOD->SetToolTip(tooltip);
-        cmbLOD->SetSelection(settings.lodmode);
-        cmbAspect->SetSelection(settings.aspectmode);
-        tooltip = "Aspect ratio of the output.\nMost N64 games use 4:3 aspect ratio, but some support widescreen too.\nYou may select appropriate aspect here and set widescreen mode in game settings.\nIn \"Stretch\" mode the output will be stretched to the entire screen,\nother modes may add black borders if necessary";
+        cmbLOD->SetSelection(g_settings->lodmode);
+        cmbAspect->SetSelection(g_settings->aspectmode);
+        tooltip = "Aspect ratio of the output.\nMost N64 games use 4:3 aspect ratio, but some support widescreen too.\nYou may select appropriate aspect here and set widescreen mode in game g_settings->\nIn \"Stretch\" mode the output will be stretched to the entire screen,\nother modes may add black borders if necessary";
         cmbAspect->SetToolTip(tooltip);
         lblAspect->SetToolTip(tooltip);
         cbxFog->SetToolTip("Fog enabled\nSets fog emulation on//off.\n[Recommended: on]");
-        cbxFog->SetValue(settings.fog > 0);
+        cbxFog->SetValue(g_settings->fog > 0);
         cbxBuffer->SetToolTip("Buffer clear on every frame\nForces the frame buffer to be cleared every frame drawn.\nUsually frame buffer clear is controlled by the game.\nHowever, in some cases it is not well emulated,\nand some garbage may be left on the screen.\nIn such cases, this option must be set on.\n[Recommended: on]");
-        cbxBuffer->SetValue(settings.buff_clear > 0);
+        cbxBuffer->SetValue(g_settings->buff_clear > 0);
         cbxFBEnable->SetToolTip("Enable frame buffer emulation\nIf on, plugin will try to detect frame buffer usage and apply appropriate frame buffer emulation.\n[Recommended: on for games which use frame buffer effects]");
         cbxFBEnable->SetValue(fb_emulation_enabled);
         cbxFBHWFBE->SetToolTip("Enable hardware frame buffer emulation\nIf this option is on, plugin will create auxiliary frame buffers in video memory instead of copying\nframe buffer content into main memory. This allows plugin to run frame buffer effects without slowdown\nand without scaling image down to N64's native resolution. This feature is fully supported by\nVoodoo 4/5 cards and partially by Voodoo3 and Banshee. Modern cards also fully support it.\n[Recommended: on, if supported by your hardware]");
-        cbxFBHWFBE->SetValue(((settings.frame_buffer&fb_hwfbe) > 0));
+        cbxFBHWFBE->SetValue(((g_settings->frame_buffer&fb_hwfbe) > 0));
         cbxFBHWFBE->Enable(fb_emulation_enabled);
         cbxFBGetFBI->SetToolTip("Get information about frame buffers\nThis is compatibility option. It must be set on for Mupen64 and off for 1964");
-        cbxFBGetFBI->SetValue((settings.frame_buffer&fb_get_info) > 0);
+        cbxFBGetFBI->SetValue((g_settings->frame_buffer&fb_get_info) > 0);
         cbxFBReadEveryFrame->SetToolTip("Read every frame\nIn some games plugin can't detect frame buffer usage.\nIn such cases you need to enable this option to see frame buffer effects.\nEvery drawn frame will be read from video card -> it works very slow.\n[Recommended: mostly off (needed only for a few games)]");
-        cbxFBReadEveryFrame->SetValue((settings.frame_buffer&fb_ref) > 0);
+        cbxFBReadEveryFrame->SetValue((g_settings->frame_buffer&fb_ref) > 0);
         cbxFBasTex->SetToolTip("Render N64 frame buffer as texture\nWhen this option is enabled, content of each N64 frame buffer is rendered\nas texture over the frame, rendered by the plugin. This prevents graphics lost,\nbut may cause slowdowns and various glitches in some games.\n[Recommended: mostly off]");
-        cbxFBasTex->SetValue((settings.frame_buffer&fb_read_back_to_screen) > 0);
+        cbxFBasTex->SetValue((g_settings->frame_buffer&fb_read_back_to_screen) > 0);
         cbxDetect->SetToolTip("Detect CPU write to the N64 frame buffer\nThis option works as the previous options, but the plugin is trying to detect,\nwhen game uses CPU writes to N64 frame buffer. The N64 frame buffer is rendered\nonly when CPU writes is detected. Use this option for those games, in which you\nsee still image or no image at all for some time with no reason.\n[Recommended: mostly off]");
-        cbxDetect->SetValue((settings.frame_buffer&fb_cpu_write_hack) > 0);
+        cbxDetect->SetValue((g_settings->frame_buffer&fb_cpu_write_hack) > 0);
         cbxFBDepthBuffer->SetToolTip("Enable depth buffer rendering\nThis option is used to fully emulate N64 depth buffer.\nIt is required for correct emulation of depth buffer based effects.\nHowever, it requires fast (>1GHz) CPU to work full speed.\n[Recommended: on for fast PC]");
-        cbxFBDepthBuffer->SetValue((settings.frame_buffer&fb_depth_render) > 0);
+        cbxFBDepthBuffer->SetValue((g_settings->frame_buffer&fb_depth_render) > 0);
     }
 
 #ifdef TEXTURE_FILTER
-    if (settings.texenh_options)
+    if (g_settings->texenh_options)
     {
         AddPage(TexturePanel, "Texture enhancement");
         tooltip = "Filters:\nApply a filter to either smooth or sharpen textures.\nThere are 4 different smoothing filters and 2 different sharpening filters.\nThe higher the number, the stronger the effect,\ni.e. \"Smoothing filter 4\" will have a much more noticeable effect than \"Smoothing filter 1\".\nBe aware that performance may have an impact depending on the game and/or the PC.\n[Recommended: your preference]";
         lblFilter->SetToolTip(tooltip);
         cmbEnhFilter->SetToolTip(tooltip);
-        cmbEnhFilter->SetSelection(settings.ghq_fltr);
+        cmbEnhFilter->SetSelection(g_settings->ghq_fltr);
         tooltip = "Texture enhancement:\n7 different filters are selectable here, each one with a distinctive look.\nBe aware of possible performance impacts.\n\nIMPORTANT: 'Store' mode - saves textures in cache 'as is'. It can improve performance in games, which load many textures.\nDisable 'Ignore backgrounds' option for better result.\n\n[Recommended: your preference]";
         lblEnhancement->SetToolTip(tooltip);
         cmbEnhEnhancement->SetToolTip(tooltip);
-        cmbEnhEnhancement->SetSelection(settings.ghq_enht);
+        cmbEnhEnhancement->SetSelection(g_settings->ghq_enht);
         tooltip = "Texture cache size:\nEnhanced and filtered textures can be cached to aid performance.\nThis setting will adjust how much PC memory will be dedicated for texture cache.\nThis helps boost performance if there are subsequent requests for the same texture (usually the case).\nNormally, 128MB should be more than enough but there is a sweet spot for each game.\nSuper Mario may not need more than 32megs, but Conker streams a lot of textures,\nso setting 256+ megs can boost performance. Adjust accordingly if you are encountering speed issues.\n'0' disables cache.\n[Recommended: PC and game dependant]";
         lblTexCache->SetToolTip(tooltip);
         lblTexCacheMB->SetToolTip(tooltip);
         spinEnhCacheSize->SetToolTip(tooltip);
         spinEnhCacheSize->SetMinSize(wxSize(55, 21));
-        spinEnhCacheSize->SetValue(settings.ghq_cache_size);
+        spinEnhCacheSize->SetValue(g_settings->ghq_cache_size);
         cbxEnhIgnoreBG->SetToolTip("Ignore Backgrounds:\nIt is used to skip enhancement for long narrow textures, usually used for backgrounds.\nThis may save texture memory greatly and increase performance.\n[Recommended: on (off for 'Store' mode)]");
-        cbxEnhIgnoreBG->SetValue(settings.ghq_enht_nobg > 0);
+        cbxEnhIgnoreBG->SetValue(g_settings->ghq_enht_nobg > 0);
         tooltip = "Texture compression:\nTextures will be compressed using selected texture compression method.\nThe overall compression ratio is about 1/6 for FXT1 and 1/4 for S3TC.\nIn addition to saving space on the texture cache,\nthe space occupied on the GFX hardware's texture RAM,\nby the enhanced textures, will be greatly reduced.\nThis minimizes texture RAM usage,\ndecreasing the number of texture swaps to the GFX hardware leading to performance gains.\nHowever, due to the nature of lossy compression of FXT1 and S3TC, using this option can sometimes lead to quality degradation of small size textures and color banding of gradient colored textures.\n[Recommended: off]";
         cbxEnhTexCompression->SetToolTip(tooltip);
         cbxHrsTexCompression->SetToolTip(tooltip);
-        cbxEnhTexCompression->SetValue(settings.ghq_enht_cmpr > 0);
+        cbxEnhTexCompression->SetValue(g_settings->ghq_enht_cmpr > 0);
         cbxEnhCompressCache->SetToolTip("Compress texture cache:\nMemory will be compressed so that more textures can be held in the texture cache.\nThe compression ratio varies with each texture,\nbut 1/5 of the original size would be a modest approximation.\nThey will be decompressed on-the-fly, before being downloaded to the gfx hardware.\nThis option will still help save memory space even when using texture compression.\n[Recommended: on]");
-        cbxEnhCompressCache->SetValue(settings.ghq_enht_gz > 0);
+        cbxEnhCompressCache->SetValue(g_settings->ghq_enht_gz > 0);
         tooltip = "Hi-res pack format:\nChoose which method is to be used for loading Hi-res texture packs.\nOnly Rice's format is available currently.\nLeave on \"None\" if you will not be needing to load hi-res packs.\n[Recommended: Rice's format. Default: \"None\"]";
         lblHrsFormat->SetToolTip(tooltip);
         cmbHrsFormat->SetToolTip(tooltip);
-        cmbHrsFormat->SetSelection(settings.ghq_hirs);
+        cmbHrsFormat->SetSelection(g_settings->ghq_hirs);
         cbxHrsTile->SetToolTip("Tile textures:\nWhen on, wide texture will be split on several tiles to fit in one 256-width texture.\nThis tiled texture takes much less video memory space and thus overall performance will increase.\nHowever, corresponding polygons must be split too, and this is not polished yet\n- various issues are possible, including black lines and polygons distortions.\n[Recommended: off]");
-        cbxHrsTile->SetValue(settings.ghq_hirs_tile > 0);
+        cbxHrsTile->SetValue(g_settings->ghq_hirs_tile > 0);
         cbxHrsForce16->SetToolTip("Force 16bpp textures:\nThe color of the textures will be reduced to 16bpp.\nThis is another space saver and performance enhancer.\nThis halves the space used on the texture cache and the GFX hardware's texture RAM.\nColor reduction is done so that the original quality is preserved as much as possible.\nDepending on the texture, this usually is hardly noticeable.\nSometimes though, it can be: skies are a good example.\n[Recommended: off]");
-        cbxHrsForce16->SetValue(settings.ghq_hirs_f16bpp > 0);
+        cbxHrsForce16->SetValue(g_settings->ghq_hirs_f16bpp > 0);
         cbxHrsTexEdit->SetToolTip("Texture dumping mode:\nIn this mode, you have that ability to dump textures on screen to the appropriate folder.\nYou can also reload textures while the game is running to see how they look instantly - big time saver!\n\nHotkeys: \"R\" reloads hires textures from the texture pack - \"D\" toggles texture dumps on/off.");
-        cbxHrsTexEdit->SetValue(settings.ghq_hirs_dump > 0);
+        cbxHrsTexEdit->SetValue(g_settings->ghq_hirs_dump > 0);
         cbxHrsAltCRC->SetToolTip("Alternative CRC calculation:\nThis option enables emulation of a palette CRC calculation bug in RiceVideo.\nIf some textures are not loaded, try to set this option on/off.\n[Recommended: texture pack dependant, mostly on]");
-        cbxHrsAltCRC->SetValue(settings.ghq_hirs_altcrc > 0 && settings.ghq_hirs_dump == 0);
-        if (settings.ghq_hirs_dump)
+        cbxHrsAltCRC->SetValue(g_settings->ghq_hirs_altcrc > 0 && g_settings->ghq_hirs_dump == 0);
+        if (g_settings->ghq_hirs_dump)
             cbxHrsAltCRC->Disable();
-        cbxHrsTexCompression->SetValue(settings.ghq_hirs_cmpr > 0);
+        cbxHrsTexCompression->SetValue(g_settings->ghq_hirs_cmpr > 0);
         cbxHrsCompressCache->SetToolTip("Compress texture cache:\nWhen game started, plugin loads all its hi-resolution textures into PC memory.\nSince hi-resolution textures are usually large, the whole pack can take hundreds megabytes of memory.\nCache compression allows save memory space greatly.\nTextures will be decompressed on-the-fly, before being downloaded to the gfx hardware.\nThis option will still help save memory space even when using texture compression.\n[Recommended: on]");
-        cbxHrsCompressCache->SetValue(settings.ghq_hirs_gz > 0);
+        cbxHrsCompressCache->SetValue(g_settings->ghq_hirs_gz > 0);
         cbxHrsLetFly->SetToolTip("Use Alpha channel fully:\nWhen this option is off, 16bit rgba textures will be loaded using RiceVideo style\n- with 1bit for alpha channel.\nWhen it is on, GlideHQ will check, how alpha channel is used by the hires texture,\nand select most appropriate format for it.\nThis gives texture designers freedom to play with alpha, as they need,\nregardless of format of original N64 texture.\nFor older and badly designed texture packs it can cause unwanted black borders.\n[Recommended: texture pack dependant]");
-        cbxHrsLetFly->SetValue(settings.ghq_hirs_let_texartists_fly > 0);
-        cmbTextureCompression->SetSelection(settings.ghq_cmpr);
+        cbxHrsLetFly->SetValue(g_settings->ghq_hirs_let_texartists_fly > 0);
+        cmbTextureCompression->SetSelection(g_settings->ghq_cmpr);
         cbxSaveTexCache->SetToolTip("Save texture cache to HD:\n\nFor enhanced textures cache:\nThis will save all previously loaded and enhanced textures to HD.\nSo upon next game launch, all the textures will be instantly loaded, resulting in smoother performance.\n\nFor high-resolution textures cache:\nAfter creation, loading hi-res texture will take only a few seconds upon game launch,\nas opposed to the 5 -60 seconds a pack can take to load without this cache file.\nThe only downside here is upon any changes to the pack, the cache file will need to be manually deleted.\n\nSaved cache files go into a folder called \"Cache\" within the Plugins folder.\n\n[Highly Recommended: on]");
-        cbxSaveTexCache->SetValue(settings.ghq_cache_save > 0);
+        cbxSaveTexCache->SetValue(g_settings->ghq_cache_save > 0);
         TexturePanel->SetMinSize(wxSize(526, 494));
 
         if (!voodoo.sup_32bit_tex)
         {
-            settings.ghq_cmpr = 0;
-            settings.ghq_enht_cmpr = settings.ghq_hirs_cmpr = FALSE;
-            settings.ghq_enht_f16bpp = settings.ghq_hirs_f16bpp = TRUE;
+            g_settings->ghq_cmpr = 0;
+            g_settings->ghq_enht_cmpr = g_settings->ghq_hirs_cmpr = FALSE;
+            g_settings->ghq_enht_f16bpp = g_settings->ghq_hirs_f16bpp = TRUE;
             lblTexCompression->Disable();
             cmbTextureCompression->SetSelection(0);
             cmbTextureCompression->Disable();
@@ -593,30 +593,30 @@ void ConfigNotebook::set_properties()
 #ifndef _ENDUSER_RELEASE_
     AddPage(DebugPanel, "Debug");
     cbxAutoUcode->SetToolTip("Autodetect Microcode\nIf this option is checked, the microcode of the game\nwill be detected automatically from the INI, and\ntherefore it will not need to be set in this\nconfiguration dialog.\n[Recommended: on]");
-    cbxAutoUcode->SetValue(settings.autodetect_ucode > 0);
+    cbxAutoUcode->SetValue(g_settings->autodetect_ucode > 0);
     tooltip = "Force Microcode\nThis option ONLY has an effect if Autodetect Microcode\nis unchecked, the crc from the game could not be\nfound in the INI, OR after the game has already started\nrunning. In any of those three cases, this will\nselect the microcode to use\n[Recommended: any, turn on Autodetect Microcode]";
     lblForceUcode->SetToolTip(tooltip);
     cmbForceUcode->SetToolTip(tooltip);
-    cmbForceUcode->SetSelection(settings.ucode);
+    cmbForceUcode->SetSelection(g_settings->ucode);
     cbxWireframe->SetToolTip("Wireframe\nThis option, when checked, makes it so that the plugin will draw only the\noutlines of objects.  The colors specified in the combo box to the right\ndetermines the color that the wireframes show up as.\n[Recommended: off]");
-    cbxWireframe->SetValue(settings.wireframe>0);
+    cbxWireframe->SetValue(g_settings->wireframe>0);
     cmbWireframe->SetToolTip("Wireframe Colors\nThis selects the colors to use for the wireframes (if wireframe mode is enabled).\nThere are 3 modes:\n* Original colors - draw exactly as it would normally, textures and all, only in wireframes.\n* Vertex colors - use the colors specified in the vertices to draw the wireframes with.\n* Red only - use a constant red color to draw the wireframes.\n[Recommended: Vertex colors]");
-    cmbWireframe->SetSelection(settings.wfmode);
+    cmbWireframe->SetSelection(g_settings->wfmode);
     cbxLog->SetToolTip("Log to RDP.txt\nRECOMMENDED FOR DEBUGGING ONLY - this option, when checked, will log EVERY SINGLE\nCOMMAND the plugin processes to a file called RDP.txt in the current directory.\nThis is incredibly slow, so I recommend keeping it disabled.\n[Recommended: off]");
-    cbxLog->SetValue(settings.logging>0);
+    cbxLog->SetValue(g_settings->logging>0);
     cbxCombRed->SetToolTip("Unknown combiners as red\nObjects that use an unimplemented combine mode will show up as red instead of\nassuming texture with full alpha. Disable this option to remove the red stuff\nand at least have a guess at the correct combine mode.\n[Recommended: off]");
-    cbxCombRed->SetValue(settings.unk_as_red>0);
+    cbxCombRed->SetValue(g_settings->unk_as_red>0);
     cbxLogClear->SetToolTip("Log clear every frame\nRECOMMENDED FOR DEBUGGING ONLY - this option has no effect unless 'Log to RDP.txt'\nis checked. This will make it so that the log, RDP.txt, will be cleared at the\nbeginning of every frame.\n[Recommended: off]");
-    cbxLogClear->SetValue(settings.log_clear>0);
+    cbxLogClear->SetValue(g_settings->log_clear>0);
     cbxCmbLog->SetToolTip("Log unknown combiners\nRECOMMENDED FOR DEBUGGING ONLY - when checked, this option will cause every\nunimplemented combiner drawn to be logged to a file called Unimp.txt in the\ncurrent directory. This becomes slow when there are unimplemented combiners\non the screen, so I recommend keeping it disabled.\n[Recommended: off]");
-    cbxCmbLog->SetValue(settings.log_unk>0);
+    cbxCmbLog->SetValue(g_settings->log_unk>0);
     cbxWindowLog->SetToolTip("Run and log in window\nRECOMMENDED FOR DEBUGGING ONLY - this option will make it so that the plugin will\nstill process dlists in windowed mode. This allows for logging to occur while not\nin fullscreen, possibly allowing you to debug a crash.\n[Recommended: off]");
-    cbxWindowLog->SetValue(settings.run_in_window>0);
+    cbxWindowLog->SetValue(g_settings->run_in_window>0);
     cbxCmbLogClear->SetToolTip("Clear unknown combiner log every frame\nRECOMMENDED FOR DEBUGGING ONLY - this option works much like 'Log clear every frame'\nexcept it clears the combiner log (Unimp.txt) instead of RDP.txt at the\nbeginning of each frame. Again, this option has no effect if 'combiner logging' is disabled.\n[Recommended: off]");
-    cbxCmbLogClear->SetValue(settings.unk_clear>0);
-    cbxErrLog->SetValue(settings.elogging>0);
+    cbxCmbLogClear->SetValue(g_settings->unk_clear>0);
+    cbxErrLog->SetValue(g_settings->elogging>0);
     cbxBilinearTexCache->SetToolTip("Bilinear filter texture cache\nRECOMMENDED FOR DEBUGGING ONLY - when checked, this option will make the graphical\ndebugger texture cache use bilinear filtering as opposed to point-sampled filtering,\nwhich it will use otherwise. See 'Filtering mode' for descriptions of bilinear and\npoint-sampled filtering.\n[Recommended: off]");
-    cbxBilinearTexCache->SetValue(settings.filter_cache>0);
+    cbxBilinearTexCache->SetValue(g_settings->filter_cache>0);
 #endif //_ENDUSER_RELEASE_
     // end wxGlade
 }
@@ -685,7 +685,7 @@ void ConfigNotebook::do_layout()
     BasicSettingsPanel->SetSizer(ConfigMainSizer);
 
     //emulation settings panel
-    if (settings.advanced_options)
+    if (g_settings->advanced_options)
     {
         wxStaticBoxSizer* EmuSettingsBoxSizer = new wxStaticBoxSizer(EmuSettingsBoxSizer_staticbox, wxHORIZONTAL);
         wxBoxSizer* EmuSettingsMainSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -734,7 +734,7 @@ void ConfigNotebook::do_layout()
     }
 
 #ifdef TEXTURE_FILTER
-    if (settings.texenh_options)
+    if (g_settings->texenh_options)
     {
         wxBoxSizer* TextureMainSizer = new wxBoxSizer(wxVERTICAL);
         wxStaticBoxSizer* PresetsSizer = new wxStaticBoxSizer(PresetsSizer_staticbox, wxHORIZONTAL);
@@ -829,93 +829,93 @@ void ConfigNotebook::do_layout()
 
 void ConfigNotebook::SaveSettings()
 {
-    SETTINGS oldsettings = settings;
+    CSettings oldsettings = *g_settings;
     int is_advanced_changed = 0;
-    if (settings.advanced_options)
+    if (g_settings->advanced_options)
     {
-        settings.filtering = cmbFiltering->GetSelection();
-        settings.aspectmode = cmbAspect->GetSelection();
-        settings.swapmode = cmbBufferSwap->GetSelection();
-        settings.fog = (int)cbxFog->GetValue();
-        settings.buff_clear = cbxBuffer->GetValue();
-        settings.lodmode = cmbLOD->GetSelection();
+        g_settings->filtering = cmbFiltering->GetSelection();
+        g_settings->aspectmode = cmbAspect->GetSelection();
+        g_settings->swapmode = cmbBufferSwap->GetSelection();
+        g_settings->fog = (int)cbxFog->GetValue();
+        g_settings->buff_clear = cbxBuffer->GetValue();
+        g_settings->lodmode = cmbLOD->GetSelection();
 
-        if (cbxFBEnable->GetValue()) settings.frame_buffer |= fb_emulation;
-        else settings.frame_buffer &= ~fb_emulation;
-        if (cbxFBHWFBE->GetValue()) settings.frame_buffer |= fb_hwfbe;
-        else settings.frame_buffer &= ~fb_hwfbe;
-        if (cbxFBReadEveryFrame->GetValue()) settings.frame_buffer |= fb_ref;
-        else settings.frame_buffer &= ~fb_ref;
-        if (cbxFBasTex->GetValue()) settings.frame_buffer |= fb_read_back_to_screen;
-        else settings.frame_buffer &= ~fb_read_back_to_screen;
-        if (cbxDetect->GetValue()) settings.frame_buffer |= fb_cpu_write_hack;
-        else settings.frame_buffer &= ~fb_cpu_write_hack;
-        if (cbxFBGetFBI->GetValue()) settings.frame_buffer |= fb_get_info;
-        else settings.frame_buffer &= ~fb_get_info;
-        if (cbxFBDepthBuffer->GetValue()) settings.frame_buffer |= fb_depth_render;
-        else settings.frame_buffer &= ~fb_depth_render;
-        is_advanced_changed = memcmp(&oldsettings, &settings, sizeof(SETTINGS));
+        if (cbxFBEnable->GetValue()) g_settings->frame_buffer |= fb_emulation;
+        else g_settings->frame_buffer &= ~fb_emulation;
+        if (cbxFBHWFBE->GetValue()) g_settings->frame_buffer |= fb_hwfbe;
+        else g_settings->frame_buffer &= ~fb_hwfbe;
+        if (cbxFBReadEveryFrame->GetValue()) g_settings->frame_buffer |= fb_ref;
+        else g_settings->frame_buffer &= ~fb_ref;
+        if (cbxFBasTex->GetValue()) g_settings->frame_buffer |= fb_read_back_to_screen;
+        else g_settings->frame_buffer &= ~fb_read_back_to_screen;
+        if (cbxDetect->GetValue()) g_settings->frame_buffer |= fb_cpu_write_hack;
+        else g_settings->frame_buffer &= ~fb_cpu_write_hack;
+        if (cbxFBGetFBI->GetValue()) g_settings->frame_buffer |= fb_get_info;
+        else g_settings->frame_buffer &= ~fb_get_info;
+        if (cbxFBDepthBuffer->GetValue()) g_settings->frame_buffer |= fb_depth_render;
+        else g_settings->frame_buffer &= ~fb_depth_render;
+        is_advanced_changed = memcmp(&oldsettings, g_settings, sizeof(CSettings));
     }
 
-    settings.res_data = cmbResolution->GetSelection();
-    settings.res_data_org = settings.res_data;
-    settings.scr_res_x = settings.res_x = resolutions[settings.res_data][0];
-    settings.scr_res_y = settings.res_y = resolutions[settings.res_data][1];
-    settings.vsync = (int)cbxVSync->GetValue();
-    settings.ssformat = cmbScreenShotFormat->GetSelection();
-    settings.show_fps =
+    g_settings->res_data = cmbResolution->GetSelection();
+    g_settings->res_data_org = g_settings->res_data;
+    g_settings->scr_res_x = g_settings->res_x = resolutions[g_settings->res_data][0];
+    g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
+    g_settings->vsync = (int)cbxVSync->GetValue();
+    g_settings->ssformat = cmbScreenShotFormat->GetSelection();
+    g_settings->show_fps =
         (cbxFPS->GetValue() ? 1 : 0) |
         (cbxVIS->GetValue() ? 2 : 0) |
         (cbxPercent->GetValue() ? 4 : 0) |
         (cbxTextTransparent->GetValue() ? 8 : 0);
-    settings.clock = (int)cbxClockEnabled->GetValue();
-    settings.clock_24_hr = (int)cbxClock24->GetValue();
+    g_settings->clock = (int)cbxClockEnabled->GetValue();
+    g_settings->clock_24_hr = (int)cbxClock24->GetValue();
 
-    settings.wrpResolution = cmbFSResolution->GetSelection();
-    settings.wrpVRAM = cbxVRAM->GetValue() ? 0 : spinVRAM->GetValue();
-    settings.wrpFBO = cbxFBO->GetValue();
-    settings.wrpAnisotropic = cbxAnisotropic->GetValue();
+    g_settings->wrpResolution = cmbFSResolution->GetSelection();
+    g_settings->wrpVRAM = cbxVRAM->GetValue() ? 0 : spinVRAM->GetValue();
+    g_settings->wrpFBO = cbxFBO->GetValue();
+    g_settings->wrpAnisotropic = cbxAnisotropic->GetValue();
 
 #ifdef TEXTURE_FILTER
-    if (settings.texenh_options)
+    if (g_settings->texenh_options)
     {
-        settings.ghq_fltr = cmbEnhFilter->GetSelection();
-        settings.ghq_enht = cmbEnhEnhancement->GetSelection();
-        settings.ghq_cache_size = spinEnhCacheSize->GetValue();
-        settings.ghq_enht_nobg = (int)cbxEnhIgnoreBG->GetValue();
-        settings.ghq_enht_cmpr = (int)cbxEnhTexCompression->GetValue();
-        settings.ghq_enht_gz = (int)cbxEnhCompressCache->GetValue();
-        settings.ghq_hirs = cmbHrsFormat->GetSelection();
-        settings.ghq_hirs_tile = (int)cbxHrsTile->GetValue();
-        settings.ghq_hirs_f16bpp = (int)cbxHrsForce16->GetValue();
-        settings.ghq_hirs_dump = (int)cbxHrsTexEdit->GetValue();
-        settings.ghq_hirs_altcrc = (int)cbxHrsAltCRC->GetValue();
-        settings.ghq_hirs_cmpr = (int)cbxHrsTexCompression->GetValue();
-        settings.ghq_hirs_gz = (int)cbxHrsCompressCache->GetValue();
-        settings.ghq_hirs_let_texartists_fly = (int)cbxHrsLetFly->GetValue();
-        settings.ghq_cmpr = (int)cmbTextureCompression->GetSelection();
-        settings.ghq_cache_save = (int)cbxSaveTexCache->GetValue();
+        g_settings->ghq_fltr = cmbEnhFilter->GetSelection();
+        g_settings->ghq_enht = cmbEnhEnhancement->GetSelection();
+        g_settings->ghq_cache_size = spinEnhCacheSize->GetValue();
+        g_settings->ghq_enht_nobg = (int)cbxEnhIgnoreBG->GetValue();
+        g_settings->ghq_enht_cmpr = (int)cbxEnhTexCompression->GetValue();
+        g_settings->ghq_enht_gz = (int)cbxEnhCompressCache->GetValue();
+        g_settings->ghq_hirs = cmbHrsFormat->GetSelection();
+        g_settings->ghq_hirs_tile = (int)cbxHrsTile->GetValue();
+        g_settings->ghq_hirs_f16bpp = (int)cbxHrsForce16->GetValue();
+        g_settings->ghq_hirs_dump = (int)cbxHrsTexEdit->GetValue();
+        g_settings->ghq_hirs_altcrc = (int)cbxHrsAltCRC->GetValue();
+        g_settings->ghq_hirs_cmpr = (int)cbxHrsTexCompression->GetValue();
+        g_settings->ghq_hirs_gz = (int)cbxHrsCompressCache->GetValue();
+        g_settings->ghq_hirs_let_texartists_fly = (int)cbxHrsLetFly->GetValue();
+        g_settings->ghq_cmpr = (int)cmbTextureCompression->GetSelection();
+        g_settings->ghq_cache_save = (int)cbxSaveTexCache->GetValue();
     }
 #endif //TEXTURE_FILTER
 
-    settings.texenh_options = (int)cbxTextureSettings->GetValue();
+    g_settings->texenh_options = (int)cbxTextureSettings->GetValue();
 
 #ifndef _ENDUSER_RELEASE_
-    settings.autodetect_ucode = (int)cbxAutoUcode->GetValue();
-    settings.ucode = cmbForceUcode->GetSelection();
-    settings.wireframe = (int)cbxWireframe->GetValue();
-    settings.wfmode = cmbWireframe->GetSelection();
-    settings.logging = (int)cbxLog->GetValue();
-    settings.unk_as_red = (int)cbxCombRed->GetValue();
-    settings.log_clear = (int)cbxLogClear->GetValue();
-    settings.log_unk = (int)cbxCmbLog->GetValue();
-    settings.run_in_window = (int)cbxWindowLog->GetValue();
-    settings.unk_clear = (int)cbxCmbLogClear->GetValue();
-    settings.elogging = (int)cbxErrLog->GetValue();
-    settings.filter_cache = (int)cbxBilinearTexCache->GetValue();
+    g_settings->autodetect_ucode = (int)cbxAutoUcode->GetValue();
+    g_settings->ucode = cmbForceUcode->GetSelection();
+    g_settings->wireframe = (int)cbxWireframe->GetValue();
+    g_settings->wfmode = cmbWireframe->GetSelection();
+    g_settings->logging = (int)cbxLog->GetValue();
+    g_settings->unk_as_red = (int)cbxCombRed->GetValue();
+    g_settings->log_clear = (int)cbxLogClear->GetValue();
+    g_settings->log_unk = (int)cbxCmbLog->GetValue();
+    g_settings->run_in_window = (int)cbxWindowLog->GetValue();
+    g_settings->unk_clear = (int)cbxCmbLogClear->GetValue();
+    g_settings->elogging = (int)cbxErrLog->GetValue();
+    g_settings->filter_cache = (int)cbxBilinearTexCache->GetValue();
 #endif //_ENDUSER_RELEASE_
 
-    if (memcmp(&oldsettings, &settings, sizeof(SETTINGS))) //check that settings were changed
+    if (memcmp(&oldsettings, g_settings, sizeof(CSettings))) //check that settings were changed
     {
         if (romopen)
         {
@@ -1087,10 +1087,10 @@ void CALL DllConfig(HWND hParent)
             rdp_reset();
         }
 #ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
-        if (settings.ghq_use)
+        if (g_settings->ghq_use)
         {
             ext_ghq_shutdown();
-            settings.ghq_use = 0;
+            g_settings->ghq_use = 0;
         }
 #endif
     }

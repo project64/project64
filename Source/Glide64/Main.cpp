@@ -54,6 +54,7 @@
 #include "CRC.h"
 #include "FBtoScreen.h"
 #include "DepthBufferRender.h"
+#include "trace.h"
 
 #ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
 #include <stdarg.h>
@@ -165,7 +166,7 @@ unsigned int BMASK = 0x7FFFFF;
 // Reality display processor structure
 RDP rdp;
 
-SETTINGS settings = { FALSE, 640, 480, GR_RESOLUTION_640x480, 0 };
+CSettings * g_settings;
 
 HOTKEY_INFO hotkey_info;
 
@@ -186,11 +187,11 @@ std::string capture_path;
 
 void _ChangeSize()
 {
-    rdp.scale_1024 = settings.scr_res_x / 1024.0f;
-    rdp.scale_768 = settings.scr_res_y / 768.0f;
+    rdp.scale_1024 = g_settings->scr_res_x / 1024.0f;
+    rdp.scale_768 = g_settings->scr_res_y / 768.0f;
 
-    //  float res_scl_x = (float)settings.res_x / 320.0f;
-    float res_scl_y = (float)settings.res_y / 240.0f;
+    //  float res_scl_x = (float)g_settings->res_x / 320.0f;
+    float res_scl_y = (float)g_settings->res_y / 240.0f;
 
     uint32_t scale_x = *gfx.VI_X_SCALE_REG & 0xFFF;
     if (!scale_x) return;
@@ -214,7 +215,7 @@ void _ChangeSize()
 
     rdp.vi_width = (hend - hstart) * fscale_x;
     rdp.vi_height = (vend - vstart) * fscale_y * 1.0126582f;
-    float aspect = (settings.adjust_aspect && (fscale_y > fscale_x) && (rdp.vi_width > rdp.vi_height)) ? fscale_x / fscale_y : 1.0f;
+    float aspect = (g_settings->adjust_aspect && (fscale_y > fscale_x) && (rdp.vi_width > rdp.vi_height)) ? fscale_x / fscale_y : 1.0f;
 
 #ifdef LOGGING
     sprintf (out_buf, "hstart: %d, hend: %d, vstart: %d, vend: %d\n", hstart, hend, vstart, vend);
@@ -223,21 +224,21 @@ void _ChangeSize()
     LOG (out_buf);
 #endif
 
-    rdp.scale_x = (float)settings.res_x / rdp.vi_width;
-    if (region > 0 && settings.pal230)
+    rdp.scale_x = (float)g_settings->res_x / rdp.vi_width;
+    if (region > 0 && g_settings->pal230)
     {
         // odd... but pal games seem to want 230 as height...
         rdp.scale_y = res_scl_y * (230.0f / rdp.vi_height)  * aspect;
     }
     else
     {
-        rdp.scale_y = (float)settings.res_y / rdp.vi_height * aspect;
+        rdp.scale_y = (float)g_settings->res_y / rdp.vi_height * aspect;
     }
-    //  rdp.offset_x = settings.offset_x * res_scl_x;
-    //  rdp.offset_y = settings.offset_y * res_scl_y;
+    //  rdp.offset_x = g_settings->offset_x * res_scl_x;
+    //  rdp.offset_y = g_settings->offset_y * res_scl_y;
     //rdp.offset_x = 0;
     //  rdp.offset_y = 0;
-    rdp.offset_y = ((float)settings.res_y - rdp.vi_height * rdp.scale_y) * 0.5f;
+    rdp.offset_y = ((float)g_settings->res_y - rdp.vi_height * rdp.scale_y) * 0.5f;
     if (((uint32_t)rdp.vi_width <= (*gfx.VI_WIDTH_REG) / 2) && (rdp.vi_width > rdp.vi_height))
         rdp.scale_y *= 0.5f;
 
@@ -256,51 +257,51 @@ void ChangeSize()
         _ChangeSize();
         return;
     }
-    switch (settings.aspectmode)
+    switch (g_settings->aspectmode)
     {
     case 0: //4:3
-        if (settings.scr_res_x >= settings.scr_res_y * 4.0f / 3.0f) {
-            settings.res_y = settings.scr_res_y;
-            settings.res_x = (uint32_t)(settings.res_y * 4.0f / 3.0f);
+        if (g_settings->scr_res_x >= g_settings->scr_res_y * 4.0f / 3.0f) {
+            g_settings->res_y = g_settings->scr_res_y;
+            g_settings->res_x = (uint32_t)(g_settings->res_y * 4.0f / 3.0f);
         }
         else {
-            settings.res_x = settings.scr_res_x;
-            settings.res_y = (uint32_t)(settings.res_x / 4.0f * 3.0f);
+            g_settings->res_x = g_settings->scr_res_x;
+            g_settings->res_y = (uint32_t)(g_settings->res_x / 4.0f * 3.0f);
         }
         break;
     case 1: //16:9
-        if (settings.scr_res_x >= settings.scr_res_y * 16.0f / 9.0f) {
-            settings.res_y = settings.scr_res_y;
-            settings.res_x = (uint32_t)(settings.res_y * 16.0f / 9.0f);
+        if (g_settings->scr_res_x >= g_settings->scr_res_y * 16.0f / 9.0f) {
+            g_settings->res_y = g_settings->scr_res_y;
+            g_settings->res_x = (uint32_t)(g_settings->res_y * 16.0f / 9.0f);
         }
         else {
-            settings.res_x = settings.scr_res_x;
-            settings.res_y = (uint32_t)(settings.res_x / 16.0f * 9.0f);
+            g_settings->res_x = g_settings->scr_res_x;
+            g_settings->res_y = (uint32_t)(g_settings->res_x / 16.0f * 9.0f);
         }
         break;
     default: //stretch or original
-        settings.res_x = settings.scr_res_x;
-        settings.res_y = settings.scr_res_y;
+        g_settings->res_x = g_settings->scr_res_x;
+        g_settings->res_y = g_settings->scr_res_y;
     }
     _ChangeSize();
-    rdp.offset_x = (settings.scr_res_x - settings.res_x) / 2.0f;
-    float offset_y = (settings.scr_res_y - settings.res_y) / 2.0f;
-    settings.res_x += (uint32_t)rdp.offset_x;
-    settings.res_y += (uint32_t)offset_y;
+    rdp.offset_x = (g_settings->scr_res_x - g_settings->res_x) / 2.0f;
+    float offset_y = (g_settings->scr_res_y - g_settings->res_y) / 2.0f;
+    g_settings->res_x += (uint32_t)rdp.offset_x;
+    g_settings->res_y += (uint32_t)offset_y;
     rdp.offset_y += offset_y;
-    if (settings.aspectmode == 3) // original
+    if (g_settings->aspectmode == 3) // original
     {
         rdp.scale_x = rdp.scale_y = 1.0f;
-        rdp.offset_x = (settings.scr_res_x - rdp.vi_width) / 2.0f;
-        rdp.offset_y = (settings.scr_res_y - rdp.vi_height) / 2.0f;
+        rdp.offset_x = (g_settings->scr_res_x - rdp.vi_width) / 2.0f;
+        rdp.offset_y = (g_settings->scr_res_y - rdp.vi_height) / 2.0f;
     }
-    //	settings.res_x = settings.scr_res_x;
-    //	settings.res_y = settings.scr_res_y;
+    //	g_settings->res_x = g_settings->scr_res_x;
+    //	g_settings->res_y = g_settings->scr_res_y;
 }
 
 void ConfigWrapper()
 {
-    grConfigWrapperExt(settings.wrpResolution, settings.wrpVRAM * 1024 * 1024, settings.wrpFBO, settings.wrpAnisotropic);
+    grConfigWrapperExt(g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic);
 }
 
 void UseUnregisteredSetting(int /*SettingID*/)
@@ -312,76 +313,76 @@ void UseUnregisteredSetting(int /*SettingID*/)
 
 void ReadSettings()
 {
-    settings.card_id = GetSetting(Set_CardId);
-    settings.res_data = (uint32_t)GetSetting(Set_Resolution);
-    if (settings.res_data >= 24) settings.res_data = 12;
-    settings.scr_res_x = settings.res_x = resolutions[settings.res_data][0];
-    settings.scr_res_y = settings.res_y = resolutions[settings.res_data][1];
-    settings.vsync = GetSetting(Set_vsync);
-    settings.ssformat = (uint8_t)GetSetting(Set_ssformat);
-    settings.show_fps = (uint8_t)GetSetting(Set_ShowFps);
-    settings.clock = GetSetting(Set_clock);
-    settings.clock_24_hr = GetSetting(Set_clock_24_hr);
-    settings.advanced_options = Set_basic_mode ? !GetSystemSetting(Set_basic_mode) : 0;
-    settings.texenh_options = GetSetting(Set_texenh_options);
-    settings.use_hotkeys = GetSetting(Set_hotkeys);
+    g_settings->card_id = GetSetting(Set_CardId);
+    g_settings->res_data = (uint32_t)GetSetting(Set_Resolution);
+    if (g_settings->res_data >= 24) g_settings->res_data = 12;
+    g_settings->scr_res_x = g_settings->res_x = resolutions[g_settings->res_data][0];
+    g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
+    g_settings->vsync = GetSetting(Set_vsync);
+    g_settings->ssformat = (uint8_t)GetSetting(Set_ssformat);
+    g_settings->show_fps = (uint8_t)GetSetting(Set_ShowFps);
+    g_settings->clock = GetSetting(Set_clock);
+    g_settings->clock_24_hr = GetSetting(Set_clock_24_hr);
+    g_settings->advanced_options = Set_basic_mode ? !GetSystemSetting(Set_basic_mode) : 0;
+    g_settings->texenh_options = GetSetting(Set_texenh_options);
+    g_settings->use_hotkeys = GetSetting(Set_hotkeys);
 
-    settings.wrpResolution = GetSetting(Set_wrpResolution);
-    settings.wrpVRAM = GetSetting(Set_wrpVRAM);
-    settings.wrpFBO = GetSetting(Set_wrpFBO);
-    settings.wrpAnisotropic = GetSetting(Set_wrpAnisotropic);
+    g_settings->wrpResolution = GetSetting(Set_wrpResolution);
+    g_settings->wrpVRAM = GetSetting(Set_wrpVRAM);
+    g_settings->wrpFBO = GetSetting(Set_wrpFBO);
+    g_settings->wrpAnisotropic = GetSetting(Set_wrpAnisotropic);
 
 #ifndef _ENDUSER_RELEASE_
-    settings.autodetect_ucode = GetSetting(Set_autodetect_ucode);
-    settings.ucode = GetSetting(Set_ucode);
-    settings.wireframe = GetSetting(Set_wireframe);
-    settings.wfmode = GetSetting(Set_wfmode);
-    settings.logging = GetSetting(Set_logging);
-    settings.log_clear = GetSetting(Set_log_clear);
-    settings.run_in_window = GetSetting(Set_run_in_window);
-    settings.elogging = GetSetting(Set_elogging);
-    settings.filter_cache = GetSetting(Set_filter_cache);
-    settings.unk_as_red = GetSetting(Set_unk_as_red);
-    settings.log_unk = GetSetting(Set_log_unk);
-    settings.unk_clear = GetSetting(Set_unk_clear);
+    g_settings->autodetect_ucode = GetSetting(Set_autodetect_ucode);
+    g_settings->ucode = GetSetting(Set_ucode);
+    g_settings->wireframe = GetSetting(Set_wireframe);
+    g_settings->wfmode = GetSetting(Set_wfmode);
+    g_settings->logging = GetSetting(Set_logging);
+    g_settings->log_clear = GetSetting(Set_log_clear);
+    g_settings->run_in_window = GetSetting(Set_run_in_window);
+    g_settings->elogging = GetSetting(Set_elogging);
+    g_settings->filter_cache = GetSetting(Set_filter_cache);
+    g_settings->unk_as_red = GetSetting(Set_unk_as_red);
+    g_settings->log_unk = GetSetting(Set_log_unk);
+    g_settings->unk_clear = GetSetting(Set_unk_clear);
 #else
-    settings.autodetect_ucode = TRUE;
-    settings.ucode = 2;
-    settings.wireframe = FALSE;
-    settings.wfmode = 0;
-    settings.logging = FALSE;
-    settings.log_clear = FALSE;
-    settings.run_in_window = FALSE;
-    settings.elogging = FALSE;
-    settings.filter_cache = FALSE;
-    settings.unk_as_red = FALSE;
-    settings.log_unk = FALSE;
-    settings.unk_clear = FALSE;
+    g_settings->autodetect_ucode = TRUE;
+    g_settings->ucode = 2;
+    g_settings->wireframe = FALSE;
+    g_settings->wfmode = 0;
+    g_settings->logging = FALSE;
+    g_settings->log_clear = FALSE;
+    g_settings->run_in_window = FALSE;
+    g_settings->elogging = FALSE;
+    g_settings->filter_cache = FALSE;
+    g_settings->unk_as_red = FALSE;
+    g_settings->log_unk = FALSE;
+    g_settings->unk_clear = FALSE;
 #endif
 
 #ifdef TEXTURE_FILTER
-    char texture_dir[MAX_PATH];
+    char texture_dir[260];
     memset(texture_dir, 0, sizeof(texture_dir));
     GetSystemSettingSz(Set_texture_dir, texture_dir, sizeof(texture_dir));
-    settings.texture_dir = texture_dir;
-    settings.ghq_fltr = (uint8_t)GetSetting(Set_ghq_fltr);
-    settings.ghq_cmpr = (uint8_t)GetSetting(Set_ghq_cmpr);
-    settings.ghq_enht = (uint8_t)GetSetting(Set_ghq_enht);
-    settings.ghq_hirs = (uint8_t)GetSetting(Set_ghq_hirs);
-    settings.ghq_enht_cmpr = GetSetting(Set_ghq_enht_cmpr);
-    settings.ghq_enht_tile = GetSetting(Set_ghq_enht_tile);
-    settings.ghq_enht_f16bpp = GetSetting(Set_ghq_enht_f16bpp);
-    settings.ghq_enht_gz = GetSetting(Set_ghq_enht_gz);
-    settings.ghq_enht_nobg = GetSetting(Set_ghq_enht_nobg);
-    settings.ghq_hirs_cmpr = GetSetting(Set_ghq_hirs_cmpr);
-    settings.ghq_hirs_tile = GetSetting(Set_ghq_hirs_tile);
-    settings.ghq_hirs_f16bpp = GetSetting(Set_ghq_hirs_f16bpp);
-    settings.ghq_hirs_gz = GetSetting(Set_ghq_hirs_gz);
-    settings.ghq_hirs_altcrc = GetSetting(Set_ghq_hirs_altcrc);
-    settings.ghq_cache_save = GetSetting(Set_ghq_cache_save);
-    settings.ghq_cache_size = GetSetting(Set_ghq_cache_size);
-    settings.ghq_hirs_let_texartists_fly = GetSetting(Set_ghq_hirs_let_texartists_fly);
-    settings.ghq_hirs_dump = GetSetting(Set_ghq_hirs_dump);
+    g_settings->texture_dir = texture_dir;
+    g_settings->ghq_fltr = (uint8_t)GetSetting(Set_ghq_fltr);
+    g_settings->ghq_cmpr = (uint8_t)GetSetting(Set_ghq_cmpr);
+    g_settings->ghq_enht = (uint8_t)GetSetting(Set_ghq_enht);
+    g_settings->ghq_hirs = (uint8_t)GetSetting(Set_ghq_hirs);
+    g_settings->ghq_enht_cmpr = GetSetting(Set_ghq_enht_cmpr);
+    g_settings->ghq_enht_tile = GetSetting(Set_ghq_enht_tile);
+    g_settings->ghq_enht_f16bpp = GetSetting(Set_ghq_enht_f16bpp);
+    g_settings->ghq_enht_gz = GetSetting(Set_ghq_enht_gz);
+    g_settings->ghq_enht_nobg = GetSetting(Set_ghq_enht_nobg);
+    g_settings->ghq_hirs_cmpr = GetSetting(Set_ghq_hirs_cmpr);
+    g_settings->ghq_hirs_tile = GetSetting(Set_ghq_hirs_tile);
+    g_settings->ghq_hirs_f16bpp = GetSetting(Set_ghq_hirs_f16bpp);
+    g_settings->ghq_hirs_gz = GetSetting(Set_ghq_hirs_gz);
+    g_settings->ghq_hirs_altcrc = GetSetting(Set_ghq_hirs_altcrc);
+    g_settings->ghq_cache_save = GetSetting(Set_ghq_cache_save);
+    g_settings->ghq_cache_size = GetSetting(Set_ghq_cache_size);
+    g_settings->ghq_hirs_let_texartists_fly = GetSetting(Set_ghq_hirs_let_texartists_fly);
+    g_settings->ghq_hirs_dump = GetSetting(Set_ghq_hirs_dump);
 #endif
 
     ConfigWrapper();
@@ -392,93 +393,93 @@ void ReadSpecialSettings(const char * name)
     //  char buf [256];
     //  sprintf(buf, "ReadSpecialSettings. Name: %s\n", name);
     //  LOG(buf);
-    settings.hacks = 0;
+    g_settings->hacks = 0;
 
     //detect games which require special hacks
     if (strstr(name, (const char *)"ZELDA"))
-        settings.hacks |= (hack_Zelda | hack_OoT);
+        g_settings->hacks |= (hack_Zelda | hack_OoT);
     else if (strstr(name, (const char *)"MASK"))
-        settings.hacks |= hack_Zelda;
+        g_settings->hacks |= hack_Zelda;
     else if (strstr(name, (const char *)"ROADSTERS TROPHY"))
-        settings.hacks |= hack_Zelda;
+        g_settings->hacks |= hack_Zelda;
     else if (strstr(name, (const char *)"Diddy Kong Racing"))
-        settings.hacks |= hack_Diddy;
+        g_settings->hacks |= hack_Diddy;
     else if (strstr(name, (const char *)"Tonic Trouble"))
-        settings.hacks |= hack_Tonic;
+        g_settings->hacks |= hack_Tonic;
     else if (strstr(name, (const char *)"All") && strstr(name, (const char *)"Star") && strstr(name, (const char *)"Baseball"))
-        settings.hacks |= hack_ASB;
+        g_settings->hacks |= hack_ASB;
     else if (strstr(name, (const char *)"Beetle") || strstr(name, (const char *)"BEETLE") || strstr(name, (const char *)"HSV"))
-        settings.hacks |= hack_BAR;
+        g_settings->hacks |= hack_BAR;
     else if (strstr(name, (const char *)"I S S 64") || strstr(name, (const char *)"J WORLD SOCCER3") || strstr(name, (const char *)"PERFECT STRIKER") || strstr(name, (const char *)"RONALDINHO SOCCER"))
-        settings.hacks |= hack_ISS64;
+        g_settings->hacks |= hack_ISS64;
     else if (strstr(name, (const char *)"MARIOKART64"))
-        settings.hacks |= hack_MK64;
+        g_settings->hacks |= hack_MK64;
     else if (strstr(name, (const char *)"NITRO64"))
-        settings.hacks |= hack_WCWnitro;
+        g_settings->hacks |= hack_WCWnitro;
     else if (strstr(name, (const char *)"CHOPPER_ATTACK") || strstr(name, (const char *)"WILD CHOPPERS"))
-        settings.hacks |= hack_Chopper;
+        g_settings->hacks |= hack_Chopper;
     else if (strstr(name, (const char *)"Resident Evil II") || strstr(name, (const char *)"BioHazard II"))
-        settings.hacks |= hack_RE2;
+        g_settings->hacks |= hack_RE2;
     else if (strstr(name, (const char *)"YOSHI STORY"))
-        settings.hacks |= hack_Yoshi;
+        g_settings->hacks |= hack_Yoshi;
     else if (strstr(name, (const char *)"F-Zero X") || strstr(name, (const char *)"F-ZERO X"))
-        settings.hacks |= hack_Fzero;
+        g_settings->hacks |= hack_Fzero;
     else if (strstr(name, (const char *)"PAPER MARIO") || strstr(name, (const char *)"MARIO STORY"))
-        settings.hacks |= hack_PMario;
+        g_settings->hacks |= hack_PMario;
     else if (strstr(name, (const char *)"TOP GEAR RALLY 2"))
-        settings.hacks |= hack_TGR2;
+        g_settings->hacks |= hack_TGR2;
     else if (strstr(name, (const char *)"TOP GEAR RALLY"))
-        settings.hacks |= hack_TGR;
+        g_settings->hacks |= hack_TGR;
     else if (strstr(name, (const char *)"Top Gear Hyper Bike"))
-        settings.hacks |= hack_Hyperbike;
+        g_settings->hacks |= hack_Hyperbike;
     else if (strstr(name, (const char *)"Killer Instinct Gold") || strstr(name, (const char *)"KILLER INSTINCT GOLD"))
-        settings.hacks |= hack_KI;
+        g_settings->hacks |= hack_KI;
     else if (strstr(name, (const char *)"Knockout Kings 2000"))
-        settings.hacks |= hack_Knockout;
+        g_settings->hacks |= hack_Knockout;
     else if (strstr(name, (const char *)"LEGORacers"))
-        settings.hacks |= hack_Lego;
+        g_settings->hacks |= hack_Lego;
     else if (strstr(name, (const char *)"OgreBattle64"))
-        settings.hacks |= hack_Ogre64;
+        g_settings->hacks |= hack_Ogre64;
     else if (strstr(name, (const char *)"Pilot Wings64"))
-        settings.hacks |= hack_Pilotwings;
+        g_settings->hacks |= hack_Pilotwings;
     else if (strstr(name, (const char *)"Supercross"))
-        settings.hacks |= hack_Supercross;
+        g_settings->hacks |= hack_Supercross;
     else if (strstr(name, (const char *)"STARCRAFT 64"))
-        settings.hacks |= hack_Starcraft;
+        g_settings->hacks |= hack_Starcraft;
     else if (strstr(name, (const char *)"BANJO KAZOOIE 2") || strstr(name, (const char *)"BANJO TOOIE"))
-        settings.hacks |= hack_Banjo2;
+        g_settings->hacks |= hack_Banjo2;
     else if (strstr(name, (const char *)"FIFA: RTWC 98") || strstr(name, (const char *)"RoadToWorldCup98"))
-        settings.hacks |= hack_Fifa98;
+        g_settings->hacks |= hack_Fifa98;
     else if (strstr(name, (const char *)"Mega Man 64") || strstr(name, (const char *)"RockMan Dash"))
-        settings.hacks |= hack_Megaman;
+        g_settings->hacks |= hack_Megaman;
     else if (strstr(name, (const char *)"MISCHIEF MAKERS") || strstr(name, (const char *)"TROUBLE MAKERS"))
-        settings.hacks |= hack_Makers;
+        g_settings->hacks |= hack_Makers;
     else if (strstr(name, (const char *)"GOLDENEYE"))
-        settings.hacks |= hack_GoldenEye;
+        g_settings->hacks |= hack_GoldenEye;
     else if (strstr(name, (const char *)"PUZZLE LEAGUE"))
-        settings.hacks |= hack_PPL;
+        g_settings->hacks |= hack_PPL;
 
-    settings.alt_tex_size = GetSetting(Set_alt_tex_size);
-    settings.use_sts1_only = GetSetting(Set_use_sts1_only);
-    settings.force_calc_sphere = GetSetting(Set_force_calc_sphere);
-    settings.correct_viewport = GetSetting(Set_correct_viewport);
-    settings.increase_texrect_edge = GetSetting(Set_increase_texrect_edge);
-    settings.decrease_fillrect_edge = GetSetting(Set_decrease_fillrect_edge);
-    settings.texture_correction = GetSetting(Set_texture_correction) == 0 ? 0 : 1;
-    settings.pal230 = GetSetting(Set_pal230) == 1 ? 1 : 0;
-    settings.stipple_mode = GetSetting(Set_stipple_mode);
+    g_settings->alt_tex_size = GetSetting(Set_alt_tex_size);
+    g_settings->use_sts1_only = GetSetting(Set_use_sts1_only);
+    g_settings->force_calc_sphere = GetSetting(Set_force_calc_sphere);
+    g_settings->correct_viewport = GetSetting(Set_correct_viewport);
+    g_settings->increase_texrect_edge = GetSetting(Set_increase_texrect_edge);
+    g_settings->decrease_fillrect_edge = GetSetting(Set_decrease_fillrect_edge);
+    g_settings->texture_correction = GetSetting(Set_texture_correction) == 0 ? 0 : 1;
+    g_settings->pal230 = GetSetting(Set_pal230) == 1 ? 1 : 0;
+    g_settings->stipple_mode = GetSetting(Set_stipple_mode);
     int stipple_pattern = GetSetting(Set_stipple_pattern);
-    settings.stipple_pattern = stipple_pattern > 0 ? (uint32_t)stipple_pattern : 0x3E0F83E0;
-    settings.force_microcheck = GetSetting(Set_force_microcheck);
-    settings.force_quad3d = GetSetting(Set_force_quad3d);
-    settings.clip_zmin = GetSetting(Set_clip_zmin);
-    settings.clip_zmax = GetSetting(Set_clip_zmax);
-    settings.fast_crc = GetSetting(Set_fast_crc);
-    settings.adjust_aspect = GetSetting(Set_adjust_aspect);
-    settings.zmode_compare_less = GetSetting(Set_zmode_compare_less);
-    settings.old_style_adither = GetSetting(Set_old_style_adither);
-    settings.n64_z_scale = GetSetting(Set_n64_z_scale);
-    if (settings.n64_z_scale)
+    g_settings->stipple_pattern = stipple_pattern > 0 ? (uint32_t)stipple_pattern : 0x3E0F83E0;
+    g_settings->force_microcheck = GetSetting(Set_force_microcheck);
+    g_settings->force_quad3d = GetSetting(Set_force_quad3d);
+    g_settings->clip_zmin = GetSetting(Set_clip_zmin);
+    g_settings->clip_zmax = GetSetting(Set_clip_zmax);
+    g_settings->fast_crc = GetSetting(Set_fast_crc);
+    g_settings->adjust_aspect = GetSetting(Set_adjust_aspect);
+    g_settings->zmode_compare_less = GetSetting(Set_zmode_compare_less);
+    g_settings->old_style_adither = GetSetting(Set_old_style_adither);
+    g_settings->n64_z_scale = GetSetting(Set_n64_z_scale);
+    if (g_settings->n64_z_scale)
         ZLUT_init();
 
     //frame buffer
@@ -489,33 +490,33 @@ void ReadSpecialSettings(const char * name)
     int useless_is_useless = GetSetting(Set_useless_is_useless);
     int fb_crc_mode = GetSetting(Set_fb_crc_mode);
 
-    if (optimize_texrect > 0) settings.frame_buffer |= fb_optimize_texrect;
-    else if (optimize_texrect == 0) settings.frame_buffer &= ~fb_optimize_texrect;
-    if (ignore_aux_copy > 0) settings.frame_buffer |= fb_ignore_aux_copy;
-    else if (ignore_aux_copy == 0) settings.frame_buffer &= ~fb_ignore_aux_copy;
-    if (hires_buf_clear > 0) settings.frame_buffer |= fb_hwfbe_buf_clear;
-    else if (hires_buf_clear == 0) settings.frame_buffer &= ~fb_hwfbe_buf_clear;
-    if (read_alpha > 0) settings.frame_buffer |= fb_read_alpha;
-    else if (read_alpha == 0) settings.frame_buffer &= ~fb_read_alpha;
-    if (useless_is_useless > 0) settings.frame_buffer |= fb_useless_is_useless;
-    else settings.frame_buffer &= ~fb_useless_is_useless;
-    if (fb_crc_mode >= 0) settings.fb_crc_mode = (SETTINGS::FBCRCMODE)fb_crc_mode;
+    if (optimize_texrect > 0) g_settings->frame_buffer |= fb_optimize_texrect;
+    else if (optimize_texrect == 0) g_settings->frame_buffer &= ~fb_optimize_texrect;
+    if (ignore_aux_copy > 0) g_settings->frame_buffer |= fb_ignore_aux_copy;
+    else if (ignore_aux_copy == 0) g_settings->frame_buffer &= ~fb_ignore_aux_copy;
+    if (hires_buf_clear > 0) g_settings->frame_buffer |= fb_hwfbe_buf_clear;
+    else if (hires_buf_clear == 0) g_settings->frame_buffer &= ~fb_hwfbe_buf_clear;
+    if (read_alpha > 0) g_settings->frame_buffer |= fb_read_alpha;
+    else if (read_alpha == 0) g_settings->frame_buffer &= ~fb_read_alpha;
+    if (useless_is_useless > 0) g_settings->frame_buffer |= fb_useless_is_useless;
+    else g_settings->frame_buffer &= ~fb_useless_is_useless;
+    if (fb_crc_mode >= 0) g_settings->fb_crc_mode = (CSettings::FBCRCMODE)fb_crc_mode;
 
-    //  if (settings.custom_ini)
+    //  if (g_settings->custom_ini)
     {
-        settings.filtering = GetSetting(Set_filtering);
-        settings.fog = GetSetting(Set_fog);
-        settings.buff_clear = GetSetting(Set_buff_clear);
-        settings.swapmode = GetSetting(Set_swapmode);
-        settings.aspectmode = GetSetting(Set_aspect);
-        settings.lodmode = GetSetting(Set_lodmode);
+        g_settings->filtering = GetSetting(Set_filtering);
+        g_settings->fog = GetSetting(Set_fog);
+        g_settings->buff_clear = GetSetting(Set_buff_clear);
+        g_settings->swapmode = GetSetting(Set_swapmode);
+        g_settings->aspectmode = GetSetting(Set_aspect);
+        g_settings->lodmode = GetSetting(Set_lodmode);
         int resolution = GetSetting(Set_Resolution);
         if (resolution >= 0)
         {
-            settings.res_data = (uint32_t)resolution;
-            if (settings.res_data >= 0x18) settings.res_data = 12;
-            settings.scr_res_x = settings.res_x = resolutions[settings.res_data][0];
-            settings.scr_res_y = settings.res_y = resolutions[settings.res_data][1];
+            g_settings->res_data = (uint32_t)resolution;
+            if (g_settings->res_data >= 0x18) g_settings->res_data = 12;
+            g_settings->scr_res_x = g_settings->res_x = resolutions[g_settings->res_data][0];
+            g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
         }
 
         //frame buffer
@@ -527,97 +528,97 @@ void ReadSpecialSettings(const char * name)
         int get_fbinfo = GetSetting(Set_fb_get_info);
         int depth_render = GetSetting(Set_fb_render);
 
-        if (smart_read > 0) settings.frame_buffer |= fb_emulation;
-        else if (smart_read == 0) settings.frame_buffer &= ~fb_emulation;
-        if (hires > 0) settings.frame_buffer |= fb_hwfbe;
-        else if (hires == 0) settings.frame_buffer &= ~fb_hwfbe;
-        if (read_always > 0) settings.frame_buffer |= fb_ref;
-        else if (read_always == 0) settings.frame_buffer &= ~fb_ref;
-        if (read_back_to_screen == 1) settings.frame_buffer |= fb_read_back_to_screen;
-        else if (read_back_to_screen == 2) settings.frame_buffer |= fb_read_back_to_screen2;
-        else if (read_back_to_screen == 0) settings.frame_buffer &= ~(fb_read_back_to_screen | fb_read_back_to_screen2);
-        if (cpu_write_hack > 0) settings.frame_buffer |= fb_cpu_write_hack;
-        else if (cpu_write_hack == 0) settings.frame_buffer &= ~fb_cpu_write_hack;
-        if (get_fbinfo > 0) settings.frame_buffer |= fb_get_info;
-        else if (get_fbinfo == 0) settings.frame_buffer &= ~fb_get_info;
-        if (depth_render > 0) settings.frame_buffer |= fb_depth_render;
-        else if (depth_render == 0) settings.frame_buffer &= ~fb_depth_render;
-        settings.frame_buffer |= fb_motionblur;
+        if (smart_read > 0) g_settings->frame_buffer |= fb_emulation;
+        else if (smart_read == 0) g_settings->frame_buffer &= ~fb_emulation;
+        if (hires > 0) g_settings->frame_buffer |= fb_hwfbe;
+        else if (hires == 0) g_settings->frame_buffer &= ~fb_hwfbe;
+        if (read_always > 0) g_settings->frame_buffer |= fb_ref;
+        else if (read_always == 0) g_settings->frame_buffer &= ~fb_ref;
+        if (read_back_to_screen == 1) g_settings->frame_buffer |= fb_read_back_to_screen;
+        else if (read_back_to_screen == 2) g_settings->frame_buffer |= fb_read_back_to_screen2;
+        else if (read_back_to_screen == 0) g_settings->frame_buffer &= ~(fb_read_back_to_screen | fb_read_back_to_screen2);
+        if (cpu_write_hack > 0) g_settings->frame_buffer |= fb_cpu_write_hack;
+        else if (cpu_write_hack == 0) g_settings->frame_buffer &= ~fb_cpu_write_hack;
+        if (get_fbinfo > 0) g_settings->frame_buffer |= fb_get_info;
+        else if (get_fbinfo == 0) g_settings->frame_buffer &= ~fb_get_info;
+        if (depth_render > 0) g_settings->frame_buffer |= fb_depth_render;
+        else if (depth_render == 0) g_settings->frame_buffer &= ~fb_depth_render;
+        g_settings->frame_buffer |= fb_motionblur;
     }
-    settings.flame_corona = (settings.hacks & hack_Zelda) && !fb_depth_render_enabled;
+    g_settings->flame_corona = (g_settings->hacks & hack_Zelda) && !fb_depth_render_enabled;
 }
 
 void WriteSettings(bool saveEmulationSettings)
 {
-    SetSetting(Set_CardId, settings.card_id);
-    SetSetting(Set_Resolution, (int)settings.res_data);
-    SetSetting(Set_ssformat, settings.ssformat);
-    SetSetting(Set_vsync, settings.vsync);
-    SetSetting(Set_ShowFps, settings.show_fps);
-    SetSetting(Set_clock, settings.clock);
-    SetSetting(Set_clock_24_hr, settings.clock_24_hr);
-    //SetSetting(Set_advanced_options,settings.advanced_options);
-    SetSetting(Set_texenh_options, settings.texenh_options);
+    SetSetting(Set_CardId, g_settings->card_id);
+    SetSetting(Set_Resolution, (int)g_settings->res_data);
+    SetSetting(Set_ssformat, g_settings->ssformat);
+    SetSetting(Set_vsync, g_settings->vsync);
+    SetSetting(Set_ShowFps, g_settings->show_fps);
+    SetSetting(Set_clock, g_settings->clock);
+    SetSetting(Set_clock_24_hr, g_settings->clock_24_hr);
+    //SetSetting(Set_advanced_options,g_settings->advanced_options);
+    SetSetting(Set_texenh_options, g_settings->texenh_options);
 
-    SetSetting(Set_wrpResolution, settings.wrpResolution);
-    SetSetting(Set_wrpVRAM, settings.wrpVRAM);
-    SetSetting(Set_wrpFBO, settings.wrpFBO);
-    SetSetting(Set_wrpAnisotropic, settings.wrpAnisotropic);
+    SetSetting(Set_wrpResolution, g_settings->wrpResolution);
+    SetSetting(Set_wrpVRAM, g_settings->wrpVRAM);
+    SetSetting(Set_wrpFBO, g_settings->wrpFBO);
+    SetSetting(Set_wrpAnisotropic, g_settings->wrpAnisotropic);
 
 #ifndef _ENDUSER_RELEASE_
-    SetSetting(Set_autodetect_ucode,settings.autodetect_ucode);
-    SetSetting(Set_ucode,(int)settings.ucode);
-    SetSetting(Set_wireframe,settings.wireframe);
-    SetSetting(Set_wfmode,settings.wfmode);
-    SetSetting(Set_logging,settings.logging);
-    SetSetting(Set_log_clear,settings.log_clear);
-    SetSetting(Set_run_in_window,settings.run_in_window);
-    SetSetting(Set_elogging,settings.elogging);
-    SetSetting(Set_filter_cache,settings.filter_cache);
-    SetSetting(Set_unk_as_red,settings.unk_as_red);
-    SetSetting(Set_log_unk,settings.log_unk);
-    SetSetting(Set_unk_clear, settings.unk_clear);
+    SetSetting(Set_autodetect_ucode,g_settings->autodetect_ucode);
+    SetSetting(Set_ucode,(int)g_settings->ucode);
+    SetSetting(Set_wireframe,g_settings->wireframe);
+    SetSetting(Set_wfmode,g_settings->wfmode);
+    SetSetting(Set_logging,g_settings->logging);
+    SetSetting(Set_log_clear,g_settings->log_clear);
+    SetSetting(Set_run_in_window,g_settings->run_in_window);
+    SetSetting(Set_elogging,g_settings->elogging);
+    SetSetting(Set_filter_cache,g_settings->filter_cache);
+    SetSetting(Set_unk_as_red,g_settings->unk_as_red);
+    SetSetting(Set_log_unk,g_settings->log_unk);
+    SetSetting(Set_unk_clear, g_settings->unk_clear);
 #endif //_ENDUSER_RELEASE_
 
 #ifdef TEXTURE_FILTER
-    SetSetting(Set_ghq_fltr, settings.ghq_fltr);
-    SetSetting(Set_ghq_cmpr, settings.ghq_cmpr);
-    SetSetting(Set_ghq_enht, settings.ghq_enht);
-    SetSetting(Set_ghq_hirs, settings.ghq_hirs);
-    SetSetting(Set_ghq_enht_cmpr, settings.ghq_enht_cmpr);
-    SetSetting(Set_ghq_enht_tile, settings.ghq_enht_tile);
-    SetSetting(Set_ghq_enht_f16bpp, settings.ghq_enht_f16bpp);
-    SetSetting(Set_ghq_enht_gz, settings.ghq_enht_gz);
-    SetSetting(Set_ghq_enht_nobg, settings.ghq_enht_nobg);
-    SetSetting(Set_ghq_hirs_cmpr, settings.ghq_hirs_cmpr);
-    SetSetting(Set_ghq_hirs_tile, settings.ghq_hirs_tile);
-    SetSetting(Set_ghq_hirs_f16bpp, settings.ghq_hirs_f16bpp);
-    SetSetting(Set_ghq_hirs_gz, settings.ghq_hirs_gz);
-    SetSetting(Set_ghq_hirs_altcrc, settings.ghq_hirs_altcrc);
-    SetSetting(Set_ghq_cache_save, settings.ghq_cache_save);
-    SetSetting(Set_ghq_cache_size, settings.ghq_cache_size);
-    SetSetting(Set_ghq_hirs_let_texartists_fly, settings.ghq_hirs_let_texartists_fly);
-    SetSetting(Set_ghq_hirs_dump, settings.ghq_hirs_dump);
+    SetSetting(Set_ghq_fltr, g_settings->ghq_fltr);
+    SetSetting(Set_ghq_cmpr, g_settings->ghq_cmpr);
+    SetSetting(Set_ghq_enht, g_settings->ghq_enht);
+    SetSetting(Set_ghq_hirs, g_settings->ghq_hirs);
+    SetSetting(Set_ghq_enht_cmpr, g_settings->ghq_enht_cmpr);
+    SetSetting(Set_ghq_enht_tile, g_settings->ghq_enht_tile);
+    SetSetting(Set_ghq_enht_f16bpp, g_settings->ghq_enht_f16bpp);
+    SetSetting(Set_ghq_enht_gz, g_settings->ghq_enht_gz);
+    SetSetting(Set_ghq_enht_nobg, g_settings->ghq_enht_nobg);
+    SetSetting(Set_ghq_hirs_cmpr, g_settings->ghq_hirs_cmpr);
+    SetSetting(Set_ghq_hirs_tile, g_settings->ghq_hirs_tile);
+    SetSetting(Set_ghq_hirs_f16bpp, g_settings->ghq_hirs_f16bpp);
+    SetSetting(Set_ghq_hirs_gz, g_settings->ghq_hirs_gz);
+    SetSetting(Set_ghq_hirs_altcrc, g_settings->ghq_hirs_altcrc);
+    SetSetting(Set_ghq_cache_save, g_settings->ghq_cache_save);
+    SetSetting(Set_ghq_cache_size, g_settings->ghq_cache_size);
+    SetSetting(Set_ghq_hirs_let_texartists_fly, g_settings->ghq_hirs_let_texartists_fly);
+    SetSetting(Set_ghq_hirs_dump, g_settings->ghq_hirs_dump);
 #endif
 
     if (saveEmulationSettings)
     {
-        SetSetting(Set_filtering, settings.filtering);
-        SetSetting(Set_fog, settings.fog);
-        SetSetting(Set_buff_clear, settings.buff_clear);
-        SetSetting(Set_swapmode, settings.swapmode);
-        SetSetting(Set_lodmode, settings.lodmode);
-        SetSetting(Set_aspect, settings.aspectmode);
+        SetSetting(Set_filtering, g_settings->filtering);
+        SetSetting(Set_fog, g_settings->fog);
+        SetSetting(Set_buff_clear, g_settings->buff_clear);
+        SetSetting(Set_swapmode, g_settings->swapmode);
+        SetSetting(Set_lodmode, g_settings->lodmode);
+        SetSetting(Set_aspect, g_settings->aspectmode);
 
-        SetSetting(Set_fb_read_always, settings.frame_buffer&fb_ref ? 1 : 0);
-        SetSetting(Set_fb_smart, settings.frame_buffer & fb_emulation ? 1 : 0);
-        SetSetting(Set_fb_hires, settings.frame_buffer & fb_hwfbe ? 1 : 0);
-        SetSetting(Set_fb_get_info, settings.frame_buffer & fb_get_info ? 1 : 0);
-        SetSetting(Set_fb_render, settings.frame_buffer & fb_depth_render ? 1 : 0);
-        SetSetting(Set_detect_cpu_write, settings.frame_buffer & fb_cpu_write_hack ? 1 : 0);
-        if (settings.frame_buffer & fb_read_back_to_screen)
+        SetSetting(Set_fb_read_always, g_settings->frame_buffer&fb_ref ? 1 : 0);
+        SetSetting(Set_fb_smart, g_settings->frame_buffer & fb_emulation ? 1 : 0);
+        SetSetting(Set_fb_hires, g_settings->frame_buffer & fb_hwfbe ? 1 : 0);
+        SetSetting(Set_fb_get_info, g_settings->frame_buffer & fb_get_info ? 1 : 0);
+        SetSetting(Set_fb_render, g_settings->frame_buffer & fb_depth_render ? 1 : 0);
+        SetSetting(Set_detect_cpu_write, g_settings->frame_buffer & fb_cpu_write_hack ? 1 : 0);
+        if (g_settings->frame_buffer & fb_read_back_to_screen)
             SetSetting(Set_read_back_to_screen, 1);
-        else if (settings.frame_buffer & fb_read_back_to_screen2)
+        else if (g_settings->frame_buffer & fb_read_back_to_screen2)
             SetSetting(Set_read_back_to_screen, 2);
         else
             SetSetting(Set_read_back_to_screen, 0);
@@ -656,7 +657,7 @@ void guLoadTextures()
         tbuf_size = 8 * grTexCalcMemRequired(GR_LOD_LOG2_256, GR_LOD_LOG2_256,
             GR_ASPECT_LOG2_1x1, GR_TEXFMT_RGB_565);
     }
-    else if (settings.scr_res_x <= 1024)
+    else if (g_settings->scr_res_x <= 1024)
     {
         grTextureBufferExt(GR_TMU0, voodoo.tex_min_addr[GR_TMU0], GR_LOD_LOG2_1024, GR_LOD_LOG2_1024,
             GR_ASPECT_LOG2_1x1, GR_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
@@ -812,7 +813,7 @@ int InitGfx()
     grGlideInit();
 
     // Select the Glide device
-    grSstSelect(settings.card_id);
+    grSstSelect(g_settings->card_id);
 
     // Is mirroring allowed?
     const char *extensions = grGetString(GR_EXTENSION);
@@ -862,21 +863,21 @@ int InitGfx()
     }
     //*/
 
-    uint32_t res_data = settings.res_data;
+    uint32_t res_data = g_settings->res_data;
     if (ev_fullscreen)
     {
         uint32_t _width, _height = 0;
-        settings.res_data = grWrapperFullScreenResolutionExt((FxU32*)&_width, (FxU32*)&_height);
-        settings.scr_res_x = settings.res_x = _width;
-        settings.scr_res_y = settings.res_y = _height;
-        res_data = settings.res_data;
+        g_settings->res_data = grWrapperFullScreenResolutionExt((FxU32*)&_width, (FxU32*)&_height);
+        g_settings->scr_res_x = g_settings->res_x = _width;
+        g_settings->scr_res_y = g_settings->res_y = _height;
+        res_data = g_settings->res_data;
     }
     else if (evoodoo)
     {
-        settings.res_data = settings.res_data_org;
-        settings.scr_res_x = settings.res_x = resolutions[settings.res_data][0];
-        settings.scr_res_y = settings.res_y = resolutions[settings.res_data][1];
-        res_data = settings.res_data | 0x80000000;
+        g_settings->res_data = g_settings->res_data_org;
+        g_settings->scr_res_x = g_settings->res_x = resolutions[g_settings->res_data][0];
+        g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
+        res_data = g_settings->res_data | 0x80000000;
     }
 
     gfx_context = 0;
@@ -929,7 +930,7 @@ int InitGfx()
     grGet(GR_NUM_TMU, 4, (FxI32*)&voodoo.num_tmu);
     // get maximal texture size
     grGet(GR_MAX_TEXTURE_SIZE, 4, (FxI32*)&voodoo.max_tex_size);
-    voodoo.sup_large_tex = (voodoo.max_tex_size > 256 && !(settings.hacks & hack_PPL));
+    voodoo.sup_large_tex = (voodoo.max_tex_size > 256 && !(g_settings->hacks & hack_PPL));
 
     //num_tmu = 1;
     if (voodoo.tex_UMA)
@@ -947,7 +948,7 @@ int InitGfx()
         voodoo.tex_max_addr[1] = grTexMaxAddress(GR_TMU1);
     }
 
-    if (strstr(extensions, "TEXMIRROR") && !(settings.hacks&hack_Zelda)) //zelda's trees suffer from hardware mirroring
+    if (strstr(extensions, "TEXMIRROR") && !(g_settings->hacks&hack_Zelda)) //zelda's trees suffer from hardware mirroring
         voodoo.sup_mirroring = 1;
     else
         voodoo.sup_mirroring = 0;
@@ -965,7 +966,7 @@ int InitGfx()
     grStipplePatternExt = (GRSTIPPLE)grStipplePattern;
 
     if (grStipplePatternExt)
-        grStipplePatternExt(settings.stipple_pattern);
+        grStipplePatternExt(g_settings->stipple_pattern);
 
     char strKeyPressedExt[] = "grKeyPressedExt";
     grKeyPressed = (FxBool(FX_CALL *)(FxU32))grGetProcAddress(strKeyPressedExt);
@@ -992,7 +993,7 @@ int InitGfx()
 
     grCullMode(GR_CULL_NEGATIVE);
 
-    if (settings.fog) //"FOGCOORD" extension
+    if (g_settings->fog) //"FOGCOORD" extension
     {
         if (strstr(extensions, "FOGCOORD"))
         {
@@ -1015,15 +1016,15 @@ int InitGfx()
             grVertexLayout(GR_PARAM_FOG_EXT, offsetof(VERTEX, f), GR_PARAM_ENABLE);
         }
         else //not supported
-            settings.fog = FALSE;
+            g_settings->fog = FALSE;
     }
 
     grDepthBufferMode(GR_DEPTHBUFFER_ZBUFFER);
     grDepthBufferFunction(GR_CMP_LESS);
     grDepthMask(FXTRUE);
 
-    settings.res_x = settings.scr_res_x;
-    settings.res_y = settings.scr_res_y;
+    g_settings->res_x = g_settings->scr_res_x;
+    g_settings->res_y = g_settings->scr_res_y;
     ChangeSize();
 
     guLoadTextures();
@@ -1043,53 +1044,53 @@ int InitGfx()
     grTexFilterMode(1, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
     grTexClampMode(0, GR_TEXTURECLAMP_CLAMP, GR_TEXTURECLAMP_CLAMP);
     grTexClampMode(1, GR_TEXTURECLAMP_CLAMP, GR_TEXTURECLAMP_CLAMP);
-    grClipWindow(0, 0, settings.scr_res_x, settings.scr_res_y);
+    grClipWindow(0, 0, g_settings->scr_res_x, g_settings->scr_res_y);
     rdp.update |= UPDATE_SCISSOR | UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
 
 #ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
-    if (!settings.ghq_use)
+    if (!g_settings->ghq_use)
     {
-        settings.ghq_use = settings.ghq_fltr || settings.ghq_enht /*|| settings.ghq_cmpr*/ || settings.ghq_hirs;
-        if (settings.ghq_use)
+        g_settings->ghq_use = g_settings->ghq_fltr || g_settings->ghq_enht /*|| g_settings->ghq_cmpr*/ || g_settings->ghq_hirs;
+        if (g_settings->ghq_use)
         {
             /* Plugin path */
-            int options = texfltr[settings.ghq_fltr] | texenht[settings.ghq_enht] | texcmpr[settings.ghq_cmpr] | texhirs[settings.ghq_hirs];
-            if (settings.ghq_enht_cmpr)
+            int options = texfltr[g_settings->ghq_fltr] | texenht[g_settings->ghq_enht] | texcmpr[g_settings->ghq_cmpr] | texhirs[g_settings->ghq_hirs];
+            if (g_settings->ghq_enht_cmpr)
                 options |= COMPRESS_TEX;
-            if (settings.ghq_hirs_cmpr)
+            if (g_settings->ghq_hirs_cmpr)
                 options |= COMPRESS_HIRESTEX;
-            //      if (settings.ghq_enht_tile)
+            //      if (g_settings->ghq_enht_tile)
             //        options |= TILE_TEX;
-            if (settings.ghq_hirs_tile)
+            if (g_settings->ghq_hirs_tile)
                 options |= TILE_HIRESTEX;
-            if (settings.ghq_enht_f16bpp)
+            if (g_settings->ghq_enht_f16bpp)
                 options |= FORCE16BPP_TEX;
-            if (settings.ghq_hirs_f16bpp)
+            if (g_settings->ghq_hirs_f16bpp)
                 options |= FORCE16BPP_HIRESTEX;
-            if (settings.ghq_enht_gz)
+            if (g_settings->ghq_enht_gz)
                 options |= GZ_TEXCACHE;
-            if (settings.ghq_hirs_gz)
+            if (g_settings->ghq_hirs_gz)
                 options |= GZ_HIRESTEXCACHE;
-            if (settings.ghq_cache_save)
+            if (g_settings->ghq_cache_save)
                 options |= (DUMP_TEXCACHE | DUMP_HIRESTEXCACHE);
-            if (settings.ghq_hirs_let_texartists_fly)
+            if (g_settings->ghq_hirs_let_texartists_fly)
                 options |= LET_TEXARTISTS_FLY;
-            if (settings.ghq_hirs_dump)
+            if (g_settings->ghq_hirs_dump)
                 options |= DUMP_TEX;
 
             ghq_dmptex_toggle_key = 0;
 
-            settings.ghq_use = (int)ext_ghq_init(voodoo.max_tex_size, // max texture width supported by hardware
+            g_settings->ghq_use = (int)ext_ghq_init(voodoo.max_tex_size, // max texture width supported by hardware
                 voodoo.max_tex_size, // max texture height supported by hardware
                 voodoo.sup_32bit_tex ? 32 : 16, // max texture bpp supported by hardware
                 options,
-                settings.ghq_cache_size * 1024 * 1024, // cache texture to system memory
-                settings.texture_dir.c_str(),
+                g_settings->ghq_cache_size * 1024 * 1024, // cache texture to system memory
+                g_settings->texture_dir.c_str(),
                 rdp.RomName, // name of ROM. must be no longer than 256 characters
                 DisplayLoadProgress);
         }
     }
-    if (settings.ghq_use && strstr(extensions, "TEXMIRROR"))
+    if (g_settings->ghq_use && strstr(extensions, "TEXMIRROR"))
         voodoo.sup_mirroring = 1;
 #endif
 
@@ -1202,9 +1203,9 @@ extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReser
 
 void CALL ReadScreen(void **dest, int *width, int *height)
 {
-    *width = settings.res_x;
-    *height = settings.res_y;
-    uint8_t * buff = (uint8_t*)malloc(settings.res_x * settings.res_y * 3);
+    *width = g_settings->res_x;
+    *height = g_settings->res_y;
+    uint8_t * buff = (uint8_t*)malloc(g_settings->res_x * g_settings->res_y * 3);
     uint8_t * line = buff;
     *dest = (void*)buff;
 
@@ -1217,17 +1218,17 @@ void CALL ReadScreen(void **dest, int *width, int *height)
         FXFALSE,
         &info))
     {
-        uint32_t offset_src = info.strideInBytes*(settings.scr_res_y - 1);
+        uint32_t offset_src = info.strideInBytes*(g_settings->scr_res_y - 1);
 
         // Copy the screen
         uint8_t r, g, b;
         if (info.writeMode == GR_LFBWRITEMODE_8888)
         {
             uint32_t col;
-            for (uint32_t y = 0; y < settings.res_y; y++)
+            for (uint32_t y = 0; y < g_settings->res_y; y++)
             {
                 uint32_t *ptr = (uint32_t*)((uint8_t*)info.lfbPtr + offset_src);
-                for (uint32_t x = 0; x < settings.res_x; x++)
+                for (uint32_t x = 0; x < g_settings->res_x; x++)
                 {
                     col = *(ptr++);
                     r = (uint8_t)((col >> 16) & 0xFF);
@@ -1237,17 +1238,17 @@ void CALL ReadScreen(void **dest, int *width, int *height)
                     line[x * 3 + 1] = g;
                     line[x * 3 + 2] = r;
                 }
-                line += settings.res_x * 3;
+                line += g_settings->res_x * 3;
                 offset_src -= info.strideInBytes;
             }
         }
         else
         {
             uint16_t col;
-            for (uint32_t y = 0; y < settings.res_y; y++)
+            for (uint32_t y = 0; y < g_settings->res_y; y++)
             {
                 uint16_t *ptr = (uint16_t*)((uint8_t*)info.lfbPtr + offset_src);
-                for (uint32_t x = 0; x < settings.res_x; x++)
+                for (uint32_t x = 0; x < g_settings->res_x; x++)
                 {
                     col = *(ptr++);
                     r = (uint8_t)((float)(col >> 11) / 31.0f * 255.0f);
@@ -1257,7 +1258,7 @@ void CALL ReadScreen(void **dest, int *width, int *height)
                     line[x * 3 + 1] = g;
                     line[x * 3 + 2] = r;
                 }
-                line += settings.res_x * 3;
+                line += g_settings->res_x * 3;
                 offset_src -= info.strideInBytes;
             }
         }
@@ -1374,12 +1375,19 @@ void CALL CloseDLL(void)
     //CLOSELOG ();
 
 #ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
-    if (settings.ghq_use)
+    if (g_settings->ghq_use)
     {
         ext_ghq_shutdown();
-        settings.ghq_use = 0;
+        g_settings->ghq_use = 0;
     }
 #endif
+
+    if (g_settings)
+    {
+        delete g_settings;
+        g_settings = NULL;
+    }
+
     ReleaseGfx();
     ZLUT_release();
     ClearCache();
@@ -1459,18 +1467,18 @@ that there is a waiting interrupt.
 
 int CALL InitiateGFX(GFX_INFO Gfx_Info)
 {
-    LOG("InitiateGFX (*)\n");
+    WriteTrace(TraceInterface, TraceDebug, "Start");
     voodoo.num_tmu = 2;
 
     // Assume scale of 1 for debug purposes
     rdp.scale_x = 1.0f;
     rdp.scale_y = 1.0f;
 
-    memset(&settings, 0, sizeof(SETTINGS));
+    g_settings = new CSettings;
     ReadSettings();
     char name[21] = "DEFAULT";
     ReadSpecialSettings(name);
-    settings.res_data_org = settings.res_data;
+    g_settings->res_data_org = g_settings->res_data;
 
 #ifdef FPS
     fps_last = wxDateTime::UNow();
@@ -1497,7 +1505,7 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     if (fb_depth_render_enabled)
         ZLUT_init();
 
-    grConfigWrapperExt(settings.wrpResolution, settings.wrpVRAM * 1024 * 1024, settings.wrpFBO, settings.wrpAnisotropic);
+    grConfigWrapperExt(g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic);
 
     grGlideInit();
     grSstSelect(0);
@@ -1508,11 +1516,11 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
         evoodoo = 1;
         voodoo.has_2mb_tex_boundary = 0;
     }
-    else {
+    else
+    {
         evoodoo = 0;
         voodoo.has_2mb_tex_boundary = 1;
     }
-
     return TRUE;
 }
 
@@ -1540,6 +1548,11 @@ void CALL PluginLoaded(void)
     SetModuleName("default");
     Set_basic_mode = FindSystemSettingId("Basic Mode");
     Set_texture_dir = FindSystemSettingId("Dir:Texture");
+    Set_log_flush = FindSystemSettingId("Log Auto Flush");
+    Set_log_dir = FindSystemSettingId("Dir:Log");
+    SetupTrace();
+
+    WriteTrace(TraceInterface, TraceDebug, "Start");
 
     SetModuleName("Glide64");
     general_setting(Set_CardId, "card_id", 0);
@@ -1626,6 +1639,8 @@ void CALL PluginLoaded(void)
     game_setting(Set_detect_cpu_write, "detect_cpu_write", 0);
     game_setting(Set_fb_get_info, "fb_get_info", 0);
     game_setting(Set_fb_render, "fb_render", 0);
+
+    WriteTrace(TraceInterface, TraceDebug, "Done");
 }
 
 /******************************************************************
@@ -1717,10 +1732,10 @@ void CALL RomOpen(void)
         name[strlen(name) - 1] = 0;
     }
 
-    if (settings.ghq_use && strcmp(rdp.RomName, name) != 0)
+    if (g_settings->ghq_use && strcmp(rdp.RomName, name) != 0)
     {
         ext_ghq_shutdown();
-        settings.ghq_use = 0;
+        g_settings->ghq_use = 0;
     }
     strcpy(rdp.RomName, name);
     ReadSpecialSettings(name);
@@ -1797,7 +1812,7 @@ void drawViRegBG()
     rdp.last_bg = fb_info.addr;
 
     bool drawn = DrawFrameBufferToScreen(fb_info);
-    if (settings.hacks&hack_Lego && drawn)
+    if (g_settings->hacks&hack_Lego && drawn)
     {
         rdp.updatescreen = 1;
         newSwapBuffers();
@@ -1863,8 +1878,8 @@ void CALL UpdateScreen(void)
     }
 #endif
     //*
-    uint32_t limit = (settings.hacks&hack_Lego) ? 15 : 30;
-    if ((settings.frame_buffer&fb_cpu_write_hack) && (update_screen_count > limit) && (rdp.last_bg == 0))
+    uint32_t limit = (g_settings->hacks&hack_Lego) ? 15 : 30;
+    if ((g_settings->frame_buffer&fb_cpu_write_hack) && (update_screen_count > limit) && (rdp.last_bg == 0))
     {
         LRDP("DirectCPUWrite hack!\n");
         update_screen_count = 0;
@@ -1889,7 +1904,7 @@ void CALL UpdateScreen(void)
         return;
     }
     //*/
-    if (settings.swapmode == 0)
+    if (g_settings->swapmode == 0)
         newSwapBuffers();
 }
 
@@ -1914,7 +1929,7 @@ static void DrawWholeFrameBufferToScreen()
     fb_info.lr_y = rdp.ci_height - 1;
     fb_info.opaque = 0;
     DrawFrameBufferToScreen(fb_info);
-    if (!(settings.frame_buffer & fb_ref))
+    if (!(g_settings->frame_buffer & fb_ref))
         memset(gfx.RDRAM + rdp.cimg, 0, (rdp.ci_width*rdp.ci_height) << rdp.ci_size >> 1);
 }
 
@@ -1943,18 +1958,18 @@ void newSwapBuffers()
     LRDP("swapped\n");
 
     rdp.update |= UPDATE_SCISSOR | UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
-    grClipWindow(0, 0, settings.scr_res_x, settings.scr_res_y);
+    grClipWindow(0, 0, g_settings->scr_res_x, g_settings->scr_res_y);
     grDepthBufferFunction(GR_CMP_ALWAYS);
     grDepthMask(FXFALSE);
     grCullMode(GR_CULL_DISABLE);
 
-    if ((settings.show_fps & 0xF) || settings.clock)
+    if ((g_settings->show_fps & 0xF) || g_settings->clock)
         set_message_combiner();
 #ifdef FPS
-    float y = 0;//(float)settings.res_y;
-    if (settings.show_fps & 0x0F)
+    float y = 0;//(float)g_settings->res_y;
+    if (g_settings->show_fps & 0x0F)
     {
-        if (settings.show_fps & 4)
+        if (g_settings->show_fps & 4)
         {
             if (region)   // PAL
                 output(0, y, 1, "%d%% ", (int)pal_percent);
@@ -1962,19 +1977,19 @@ void newSwapBuffers()
                 output(0, y, 1, "%d%% ", (int)ntsc_percent);
             y += 16;
         }
-        if (settings.show_fps & 2)
+        if (g_settings->show_fps & 2)
         {
             output(0, y, 1, "VI/s: %.02f ", vi);
             y += 16;
         }
-        if (settings.show_fps & 1)
+        if (g_settings->show_fps & 1)
             output(0, y, 1, "FPS: %.02f ", fps);
     }
 #endif
 
-    if (settings.clock)
+    if (g_settings->clock)
     {
-        if (settings.clock_24_hr)
+        if (g_settings->clock_24_hr)
         {
             output(956.0f, 0, 1, (char*)wxDateTime::Now().Format("%H:%M:%S").char_str(), 0);
         }
@@ -1987,10 +2002,10 @@ void newSwapBuffers()
     //if (CheckKeyPressed(G64_VK_BACK, 0x0001))
     //{
     //hotkey_info.hk_filtering = 100;
-    //if (settings.filtering < 2)
-    //settings.filtering++;
+    //if (g_settings->filtering < 2)
+    //g_settings->filtering++;
     //else
-    //settings.filtering = 0;
+    //g_settings->filtering = 0;
     //}
     if ((abs((int)(frame_count - curframe)) > 3) && CheckKeyPressed(G64_VK_ALT, 0x8000))  //alt +
     {
@@ -1999,17 +2014,17 @@ void newSwapBuffers()
             hotkey_info.hk_motionblur = 100;
             hotkey_info.hk_ref = 0;
             curframe = frame_count;
-            settings.frame_buffer ^= fb_motionblur;
+            g_settings->frame_buffer ^= fb_motionblur;
         }
         else if (CheckKeyPressed(G64_VK_V, 0x8000))  //v
         {
             hotkey_info.hk_ref = 100;
             hotkey_info.hk_motionblur = 0;
             curframe = frame_count;
-            settings.frame_buffer ^= fb_ref;
+            g_settings->frame_buffer ^= fb_ref;
         }
     }
-    if (settings.buff_clear && (hotkey_info.hk_ref || hotkey_info.hk_motionblur || hotkey_info.hk_filtering))
+    if (g_settings->buff_clear && (hotkey_info.hk_ref || hotkey_info.hk_motionblur || hotkey_info.hk_filtering))
     {
         set_message_combiner();
         char buf[256];
@@ -2017,7 +2032,7 @@ void newSwapBuffers()
         char * message = 0;
         if (hotkey_info.hk_ref)
         {
-            if (settings.frame_buffer & fb_ref)
+            if (g_settings->frame_buffer & fb_ref)
                 message = strcat(buf, "FB READ ALWAYS: ON");
             else
                 message = strcat(buf, "FB READ ALWAYS: OFF");
@@ -2025,7 +2040,7 @@ void newSwapBuffers()
         }
         if (hotkey_info.hk_motionblur)
         {
-            if (settings.frame_buffer & fb_motionblur)
+            if (g_settings->frame_buffer & fb_motionblur)
                 message = strcat(buf, "  MOTION BLUR: ON");
             else
                 message = strcat(buf, "  MOTION BLUR: OFF");
@@ -2033,7 +2048,7 @@ void newSwapBuffers()
         }
         if (hotkey_info.hk_filtering)
         {
-            switch (settings.filtering)
+            switch (g_settings->filtering)
             {
             case 0:
                 message = strcat(buf, "  FILTERING MODE: AUTOMATIC");
@@ -2061,13 +2076,13 @@ void newSwapBuffers()
         romName.Replace(" ", "_");
         romName.Replace(":", ";");
 
-        if (settings.ssformat > NumOfFormats)
+        if (g_settings->ssformat > NumOfFormats)
         {
-            settings.ssformat = 0;
+            g_settings->ssformat = 0;
         }
         for (int i = 1;; i++)
         {
-            stdstr_f filename("Glide64_%s_%s%d.%s", romName.c_str(), i < 10 ? "0" : "", i, ScreenShotFormats[settings.ssformat].extension);
+            stdstr_f filename("Glide64_%s_%s%d.%s", romName.c_str(), i < 10 ? "0" : "", i, ScreenShotFormats[g_settings->ssformat].extension);
             path.SetNameExtension(filename.c_str());
             if (!path.Exists())
             {
@@ -2077,8 +2092,8 @@ void newSwapBuffers()
 
         const uint32_t offset_x = (uint32_t)rdp.offset_x;
         const uint32_t offset_y = (uint32_t)rdp.offset_y;
-        const uint32_t image_width = settings.scr_res_x - offset_x * 2;
-        const uint32_t image_height = settings.scr_res_y - offset_y * 2;
+        const uint32_t image_width = g_settings->scr_res_x - offset_x * 2;
+        const uint32_t image_height = g_settings->scr_res_y - offset_y * 2;
 
         GrLfbInfo_t info;
         info.size = sizeof(GrLfbInfo_t);
@@ -2127,7 +2142,7 @@ void newSwapBuffers()
             grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
             wxImage screenshot(image_width, image_height, ssimg);
             wxString wxPath((const char *)path);
-            screenshot.SaveFile(wxPath, ScreenShotFormats[settings.ssformat].type);
+            screenshot.SaveFile(wxPath, ScreenShotFormats[g_settings->ssformat].type);
             capture_screen = 0;
         }
     }
@@ -2136,7 +2151,7 @@ void newSwapBuffers()
     if (_debugger.capture)
     {
         // Allocate the screen
-        _debugger.screen = new uint8_t[(settings.res_x*settings.res_y) << 1];
+        _debugger.screen = new uint8_t[(g_settings->res_x*g_settings->res_y) << 1];
 
         // Lock the backbuffer (already rendered)
         GrLfbInfo_t info;
@@ -2151,7 +2166,7 @@ void newSwapBuffers()
         uint32_t offset_src = 0, offset_dst = 0;
 
         // Copy the screen
-        for (uint32_t y = 0; y < settings.res_y; y++)
+        for (uint32_t y = 0; y < g_settings->res_y; y++)
         {
             if (info.writeMode == GR_LFBWRITEMODE_8888)
             {
@@ -2159,7 +2174,7 @@ void newSwapBuffers()
                 uint16_t *dst = (uint16_t*)(_debugger.screen + offset_dst);
                 uint8_t r, g, b;
                 uint32_t col;
-                for (unsigned int x = 0; x < settings.res_x; x++)
+                for (unsigned int x = 0; x < g_settings->res_x; x++)
                 {
                     col = src[x];
                     r = (uint8_t)((col >> 19) & 0x1F);
@@ -2170,9 +2185,9 @@ void newSwapBuffers()
             }
             else
             {
-                memcpy(_debugger.screen + offset_dst, (uint8_t*)info.lfbPtr + offset_src, settings.res_x << 1);
+                memcpy(_debugger.screen + offset_dst, (uint8_t*)info.lfbPtr + offset_src, g_settings->res_x << 1);
             }
-            offset_dst += settings.res_x << 1;
+            offset_dst += g_settings->res_x << 1;
             offset_src += info.strideInBytes;
         }
 
@@ -2187,13 +2202,13 @@ void newSwapBuffers()
         debug_mouse();
     }
 
-    if (settings.frame_buffer & fb_read_back_to_screen)
+    if (g_settings->frame_buffer & fb_read_back_to_screen)
         DrawWholeFrameBufferToScreen();
 
-    if (fb_hwfbe_enabled && !(settings.hacks&hack_RE2) && !evoodoo)
+    if (fb_hwfbe_enabled && !(g_settings->hacks&hack_RE2) && !evoodoo)
         grAuxBufferExt(GR_BUFFER_AUXBUFFER);
     LOG("BUFFER SWAPPED\n");
-    grBufferSwap(settings.vsync);
+    grBufferSwap(g_settings->vsync);
     fps_count++;
     if (*gfx.VI_STATUS_REG & 0x08) //gamma correction is used
     {
@@ -2220,9 +2235,9 @@ void newSwapBuffers()
     if (_debugger.capture)
         debug_capture();
 
-    if (debugging || settings.wireframe || settings.buff_clear || (settings.hacks&hack_PPL && settings.ucode == 6))
+    if (debugging || g_settings->wireframe || g_settings->buff_clear || (g_settings->hacks&hack_PPL && g_settings->ucode == 6))
     {
-        if (settings.hacks&hack_RE2 && fb_depth_render_enabled)
+        if (g_settings->hacks&hack_RE2 && fb_depth_render_enabled)
             grDepthMask(FXFALSE);
         else
             grDepthMask(FXTRUE);
@@ -2238,7 +2253,7 @@ void newSwapBuffers()
     }
     */
 
-    if (settings.frame_buffer & fb_read_back_to_screen2)
+    if (g_settings->frame_buffer & fb_read_back_to_screen2)
     {
         DrawWholeFrameBufferToScreen();
     }
@@ -2249,13 +2264,13 @@ void newSwapBuffers()
     {
         if (!debugging)
         {
-            //if (settings.scr_res_x == 1024 && settings.scr_res_y == 768)
+            //if (g_settings->scr_res_x == 1024 && g_settings->scr_res_y == 768)
             {
                 debugging = 1;
 
                 // Recalculate screen size, don't resize screen
-                settings.res_x = (uint32_t)(settings.scr_res_x * 0.625f);
-                settings.res_y = (uint32_t)(settings.scr_res_y * 0.625f);
+                g_settings->res_x = (uint32_t)(g_settings->scr_res_x * 0.625f);
+                g_settings->res_y = (uint32_t)(g_settings->scr_res_y * 0.625f);
 
                 ChangeSize();
             }
@@ -2264,8 +2279,8 @@ void newSwapBuffers()
         {
             debugging = 0;
 
-            settings.res_x = settings.scr_res_x;
-            settings.res_y = settings.scr_res_y;
+            g_settings->res_x = g_settings->scr_res_x;
+            g_settings->res_y = g_settings->scr_res_y;
 
             ChangeSize();
         }
@@ -2324,7 +2339,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 int CheckKeyPressed(int key, int mask)
 {
     static Glide64Keys g64Keys;
-    if (settings.use_hotkeys == 0)
+    if (g_settings->use_hotkeys == 0)
         return 0;
 #ifdef __WINDOWS__
     return (GetAsyncKeyState(g64Keys[key]) & mask);

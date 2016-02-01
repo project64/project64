@@ -205,7 +205,7 @@ void GetTexInfo(int id, int tile)
     mask_width = (rdp.tiles[tile].mask_s == 0) ? (tile_width) : (1 << rdp.tiles[tile].mask_s);
     mask_height = (rdp.tiles[tile].mask_t == 0) ? (tile_height) : (1 << rdp.tiles[tile].mask_t);
 
-    if (settings.alt_tex_size)
+    if (g_settings->alt_tex_size)
     {
         // ** ALTERNATE TEXTURE SIZE METHOD **
         // Helps speed in some games that loaded weird-sized textures, but could break other
@@ -358,7 +358,7 @@ void GetTexInfo(int id, int tile)
     if (rdp.tiles[tile].size == 3)
         line <<= 1;
     uint32_t crc = 0;
-    if (settings.fast_crc)
+    if (g_settings->fast_crc)
     {
         line = (line - wid_64) << 3;
         if (wid_64 < 1) wid_64 = 1;
@@ -530,7 +530,7 @@ void TexCache()
     LRDP(" |-+ TexCache called\n");
 
 #ifdef TEXTURE_FILTER /* Hiroshi Morii <koolsmoky@users.sourceforge.net> */ // POSTNAPALM
-    if (settings.ghq_use && settings.ghq_hirs_dump) {
+    if (g_settings->ghq_use && g_settings->ghq_hirs_dump) {
         /* Force reload hi-res textures. Useful for texture artists */
         if (CheckKeyPressed(G64_VK_R, 0x0001)) {
             if (ext_ghq_reloadhirestex()) ClearCache();
@@ -900,14 +900,14 @@ void TexCache()
 
             int tile = rdp.cur_tile + i;
 
-            if (settings.filtering == 0)
+            if (g_settings->filtering == 0)
             {
                 int filter = (rdp.filter_mode != 2) ? GR_TEXTUREFILTER_POINT_SAMPLED : GR_TEXTUREFILTER_BILINEAR;
                 grTexFilterMode(tmu, filter, filter);
             }
             else
             {
-                int filter = (settings.filtering == 1) ? GR_TEXTUREFILTER_BILINEAR : GR_TEXTUREFILTER_POINT_SAMPLED;
+                int filter = (g_settings->filtering == 1) ? GR_TEXTUREFILTER_BILINEAR : GR_TEXTUREFILTER_POINT_SAMPLED;
                 grTexFilterMode(tmu, filter, filter);
             }
 
@@ -1035,7 +1035,7 @@ void LoadTex(int id, int tmu)
 
     //!Hackalert
     //GoldenEye water texture. It has CI format in fact, but the game set it to RGBA
-    if ((settings.hacks&hack_GoldenEye) && rdp.tiles[td].format == 0 && rdp.tlut_mode == 2 && rdp.tiles[td].size == 2)
+    if ((g_settings->hacks&hack_GoldenEye) && rdp.tiles[td].format == 0 && rdp.tlut_mode == 2 && rdp.tiles[td].size == 2)
     {
         rdp.tiles[td].format = 2;
         rdp.tiles[td].size = 1;
@@ -1293,7 +1293,7 @@ void LoadTex(int id, int tmu)
     GHQTexInfo ghqTexInfo;
     memset(&ghqTexInfo, 0, sizeof(GHQTexInfo));
     uint32_t g64_crc = cache->crc;
-    if (settings.ghq_use)
+    if (g_settings->ghq_use)
     {
         int bpl;
         uint8_t* addr = (uint8_t*)(gfx.RDRAM + rdp.addr[rdp.tiles[td].t_mem]);
@@ -1335,7 +1335,7 @@ void LoadTex(int id, int tmu)
         {
             if (rdp.tiles[td].size == 1)
                 paladdr = (uint8_t*)(rdp.pal_8_rice);
-            else if (settings.ghq_hirs_altcrc)
+            else if (g_settings->ghq_hirs_altcrc)
                 paladdr = (uint8_t*)(rdp.pal_8_rice + (rdp.tiles[td].palette << 5));
             else
                 paladdr = (uint8_t*)(rdp.pal_8_rice + (rdp.tiles[td].palette << 4));
@@ -1623,7 +1623,7 @@ void LoadTex(int id, int tmu)
     if (GfxInitDone)
     {
 #ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
-        if (settings.ghq_use)
+        if (g_settings->ghq_use)
         {
             if (!ghqTexInfo.data && ghq_dmptex_toggle_key) {
                 unsigned char *tmpbuf = (unsigned char*)texture;
@@ -1661,7 +1661,7 @@ void LoadTex(int id, int tmu)
             }
 
             if (!ghqTexInfo.data)
-                if (!settings.ghq_enht_nobg || !rdp.texrecting || (texinfo[id].splits == 1 && texinfo[id].width <= 256))
+                if (!g_settings->ghq_enht_nobg || !rdp.texrecting || (texinfo[id].splits == 1 && texinfo[id].width <= 256))
                     ext_ghq_txfilter((unsigned char*)texture, (int)real_x, (int)real_y, LOWORD(result), (uint64)g64_crc, &ghqTexInfo);
 
             if (ghqTexInfo.data)
