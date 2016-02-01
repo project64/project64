@@ -37,8 +37,7 @@ void InitializeLog(void)
 
 void AddLogModule(void)
 {
-    CPath LogFilePath(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(), "");
-    LogFilePath.AppendDirectory("Logs");
+    CPath LogFilePath(g_Settings->LoadStringVal(Directory_Log).c_str(), "");
     if (!LogFilePath.DirectoryExists())
     {
         LogFilePath.DirectoryCreate();
@@ -227,7 +226,7 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
 
         //Create the plugin container
         WriteTrace(TraceAppInit, TraceInfo, "Create Plugins");
-        g_Plugins = new CPlugins(g_Settings->LoadStringVal(Directory_Plugin));
+        g_Plugins = new CPlugins(Directory_Plugin);
 
         g_Lang = new CLanguage();
         g_Lang->LoadCurrentStrings();
@@ -261,21 +260,55 @@ void AppCleanup(void)
 
 void FixDirectories(void)
 {
+    WriteTrace(TraceAppInit, TraceDebug, "Starting");
     CPath Directory(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(), "");
     Directory.AppendDirectory("Config");
-    if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
+    if (!Directory.DirectoryExists())
+    {
+        WriteTrace(TraceAppInit, TraceDebug, "Creating %s", (const char *)Directory);
+        Directory.DirectoryCreate();
+    }
+    else
+    {
+        WriteTrace(TraceAppInit, TraceDebug, "%s Already exists", (const char *)Directory);
+    }
 
     Directory.UpDirectory();
     Directory.AppendDirectory("Save");
-    if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
+    if (!Directory.DirectoryExists())
+    {
+        WriteTrace(TraceAppInit, TraceDebug, "Creating %s", (const char *)Directory);
+        Directory.DirectoryCreate();
+    }
+    else
+    {
+        WriteTrace(TraceAppInit, TraceDebug, "%s Already exists", (const char *)Directory);
+    }
 
     Directory.UpDirectory();
     Directory.AppendDirectory("Screenshots");
-    if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
+    if (!Directory.DirectoryExists())
+    {
+        WriteTrace(TraceAppInit, TraceDebug, "Creating %s", (const char *)Directory);
+        Directory.DirectoryCreate();
+    }
+    else
+    {
+        WriteTrace(TraceAppInit, TraceDebug, "%s Already exists", (const char *)Directory);
+    }
 
     Directory.UpDirectory();
     Directory.AppendDirectory("textures");
-    if (!Directory.DirectoryExists()) Directory.DirectoryCreate();
+    if (!Directory.DirectoryExists())
+    {
+        WriteTrace(TraceAppInit, TraceDebug, "Creating %s", (const char *)Directory);
+        Directory.DirectoryCreate();
+    }
+    else
+    {
+        WriteTrace(TraceAppInit, TraceDebug, "%s Already exists", (const char *)Directory);
+    }
+    WriteTrace(TraceAppInit, TraceDebug, "Done");
 }
 
 #ifdef _WIN32

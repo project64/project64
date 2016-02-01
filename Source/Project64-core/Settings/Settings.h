@@ -220,6 +220,10 @@ enum SettingID
     Directory_TextureInitial,
     Directory_TextureSelected,
     Directory_TextureUseSelected,
+    Directory_Log,
+    Directory_LogInitial,
+    Directory_LogSelected,
+    Directory_LogUseSelected,
 
     //File Info
     File_RecentGameFileCount,
