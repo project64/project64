@@ -220,7 +220,9 @@ bool CN64System::RunFileImage(const char * FileLoc)
         {
             //64DD IPL
             if (g_DDRom == NULL)
+            {
                 g_DDRom = new CN64Rom();
+            }
             g_DDRom->LoadN64ImageIPL(FileLoc);
             g_Settings->SaveString(File_DiskIPLPath, FileLoc);
         }
