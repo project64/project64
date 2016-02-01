@@ -23,10 +23,7 @@ void Mempak::Load()
     {
         MempakName.Format("%s_Cont_%d", g_Settings->LoadStringVal(Game_GameName).c_str(), i + 1);
 
-        MempakNames[i].SetDriveDirectory(g_Settings->LoadStringVal(Directory_NativeSave).c_str());
-        MempakNames[i].SetName(MempakName.c_str());
-        MempakNames[i].SetExtension("mpk");
-
+        MempakNames[i] = CPath(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.mpk",MempakName.c_str()).c_str());
         if (!MempakNames[i].DirectoryExists())
         {
             MempakNames[i].DirectoryCreate();
