@@ -63,8 +63,9 @@ struct gbCartRTC {
 class GBCart
 {
 public:
-	static int init_gb_cart(struct gb_cart* gb_cart, const char* gb_file);
+	static bool init_gb_cart(struct gb_cart* gb_cart, const char* gb_file);
 	static void release_gb_cart(struct gb_cart* gb_cart);
+    static void save_gb_cart(struct gb_cart* gb_cart);
 
 	static void read_gb_cart(struct gb_cart* gb_cart, uint16_t address, uint8_t* data);
 	static void write_gb_cart(struct gb_cart* gb_cart, uint16_t address, const uint8_t* data);

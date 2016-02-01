@@ -38,11 +38,8 @@ bool load_file(const char* filename, void** buffer, size_t* size)
     FILE* fd;
     size_t l_size;
     void* l_buffer;
-    int err;
-    bool ret;
 
     /* open file */
-    ret = false;
     fd = fopen(filename, "rb");
     if (fd == NULL)
     {
@@ -50,51 +47,48 @@ bool load_file(const char* filename, void** buffer, size_t* size)
     }
 
     /* obtain file size */
-    ret = false;
-    err = fseek(fd, 0, SEEK_END);
-    if (err != 0)
+    if (fseek(fd, 0, SEEK_END) != 0)
     {
-        goto close_file;
+        fclose(fd);
+        return false;
     }
 
-    err = ftell(fd);
-    if (err == -1)
+    l_size = (size_t)ftell(fd);
+    if (l_size == -1)
     {
-        goto close_file;
+        fclose(fd);
+        return false;
     }
-    l_size = (size_t)err;
 
-    err = fseek(fd, 0, SEEK_SET);
-    if (err != 0)
+    if (fseek(fd, 0, SEEK_SET) != 0)
     {
-        goto close_file;
+        fclose(fd);
+        return false;
     }
 
     /* allocate buffer */
     l_buffer = malloc(l_size);
     if (l_buffer == NULL)
     {
-        goto close_file;
+        fclose(fd);
+        return false;
     }
 
     /* copy file content to buffer */
-    ret = false;
-    err = fread(l_buffer, 1, l_size, fd);
-    if (err != l_size)
+    if (fread(l_buffer, 1, l_size, fd) != l_size)
     {
         free(l_buffer);
-        goto close_file;
+        fclose(fd);
+        return false;
     }
 
     /* commit buffer,size */
-    ret = true;
     *buffer = l_buffer;
     *size = l_size;
 
     /* close file */
-close_file:
     fclose(fd);
-    return ret;
+    return true;
 }
 //--------------------------------------------------------------------------------------
 
@@ -407,7 +401,6 @@ static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const 
 		//Implement RTC timer / latch
         if (gb_cart->rtc_latch == 0 && data[0] == 1)
         {
-            correctRTC(gb_cart);
             gb_cart->rtc_latch_second    = gb_cart->rtc_second;
             gb_cart->rtc_latch_minute    = gb_cart->rtc_minute;
             gb_cart->rtc_latch_hour      = gb_cart->rtc_hour;
@@ -475,6 +468,8 @@ static void write_gb_cart_mbc4(struct gb_cart* gb_cart, uint16_t address, const 
 
 static void read_gb_cart_mbc5(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
 {
+    size_t offset;
+
 	if ((address < 0x4000)) //Rom Bank 0
 	{
 		memcpy(data, &gb_cart->rom[address], 0x20);
@@ -760,43 +755,8 @@ static const struct parsed_cart_type* parse_cart_type(uint8_t cart_type)
 	}
 }
 
-void correctRTC(struct gb_cart* gb_cart)
+bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
 {
-    time_t now, dif;
-    int days;
-
-    now = time(NULL);
-    dif = now - gb_cart->rtc_last_time;
-
-    gb_cart->rtc_second += (BYTE)(dif % 60);
-    dif /= 60;
-    gb_cart->rtc_minute += (BYTE)(dif % 60);
-    dif /= 60;
-    gb_cart->rtc_hour += (BYTE)(dif % 24);
-    dif /= 24;
-    
-    days = (int)(gb_cart->rtc_day + ((gb_cart->rtc_day_carry & 1) << 8) + dif);
-    gb_cart->rtc_day = (days & 0xFF);
-
-    if (days > 255)
-    {
-        if (days > 511)
-        {
-            days &= 511;
-            gb_cart->rtc_day_carry |= 0x80;
-        }
-        if (days > 255)
-        {
-            gb_cart->rtc_day_carry = (gb_cart->rtc_day_carry & 0xFE) | (days > 255 ? 1 : 0);
-        }
-    }
-
-    gb_cart->rtc_last_time = now;
-}
-
-int GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
-{
-	int err;
 	const struct parsed_cart_type* type;
 	uint8_t* rom = NULL;
 	size_t rom_size = 0;
@@ -804,16 +764,15 @@ int GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
 	size_t ram_size = 0;
 
 	/* load GB cart ROM */
-	err = load_file(gb_file, (void**)&rom, &rom_size);
-	if (err == 0)
+	if (!load_file(gb_file, (void**)&rom, &rom_size))
 	{
-		return err;
+		return false;
 	}
 
 	if (rom_size < 0x8000)
 	{
-		err = 0;
-		goto free_rom;
+        free(rom);
+        return false;
 	}
 
 	/* get and parse cart type */
@@ -821,8 +780,8 @@ int GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
 	type = parse_cart_type(cart_type);
 	if (type == NULL)
 	{
-		err = 0;
-		goto free_rom;
+        free(rom);
+        return false;
 	}
 
 	/* load ram (if present) */
@@ -840,21 +799,26 @@ int GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
 
 		if (ram_size != 0)
 		{
-			ram = (uint8_t*)malloc(ram_size);
+            if (type->extra_devices & GED_RTC)
+            {
+                ram_size += 0x30;
+            }
+           
+			ram = (uint8_t*)malloc(ram_size );
 			if (ram == NULL)
 			{
-				err = 0;
-				goto free_rom;
+                free(rom);
+                return false;
 			}
 
-			read_from_file("C:/Users/death/Desktop/pokemonsilver.sav", ram, ram_size + ((type->extra_devices & GED_RTC ) ? 0x30 : 0x00));
+			read_from_file("C:/Users/death/Desktop/pokemonsilver.sav", ram, ram_size );
 		}
         
         //If we have RTC we need to load in the data, we assume the save will use the VBA-M format
         if (type->extra_devices & GED_RTC)
         {
             gbCartRTC rtc;
-            memcpy(&rtc, &ram[ram_size], 0x30);
+            memcpy(&rtc, &ram[ram_size-0x30], 0x30);
            
             gb_cart->rtc_second          = rtc.second;
             gb_cart->rtc_minute          = rtc.minute;
@@ -867,8 +831,6 @@ int GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
             gb_cart->rtc_latch_day       = rtc.latch_day;
             gb_cart->rtc_latch_day_carry = rtc.latch_day_carry;
             gb_cart->rtc_last_time       = rtc.mapperLastTime;
-
-            correctRTC(gb_cart);
         }
 	}
 
@@ -882,11 +844,37 @@ int GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
 	gb_cart->has_rtc = (type->extra_devices & GED_RTC) ? 1 : 0;
 	gb_cart->read_gb_cart = type->read_gb_cart;
 	gb_cart->write_gb_cart = type->write_gb_cart;
-	return 1;
+	return true;
+}
 
-free_rom:
-	free(rom);
-	return err;
+void GBCart::save_gb_cart(struct gb_cart* gb_cart)
+{
+    FILE *fRAM = fopen("C:/Users/death/Desktop/pokemonsilver.sav", "wb");
+
+    if (gb_cart->has_rtc)
+    {
+        fwrite(gb_cart->ram, 1, gb_cart->ram_size-0x30, fRAM);
+
+        gbCartRTC rtc;
+        rtc.second = gb_cart->rtc_second;
+        rtc.minute = gb_cart->rtc_minute;
+        rtc.hour = gb_cart->rtc_hour;
+        rtc.day = gb_cart->rtc_day;
+        rtc.day_carry = gb_cart->rtc_day_carry;
+        rtc.latch_second = gb_cart->rtc_latch_second;
+        rtc.latch_minute = gb_cart->rtc_latch_minute;
+        rtc.latch_hour = gb_cart->rtc_latch_hour;
+        rtc.latch_day = gb_cart->rtc_latch_day;
+        rtc.latch_day_carry = gb_cart->rtc_latch_day_carry;
+        rtc.mapperLastTime = gb_cart->rtc_last_time;
+        fwrite(&rtc, 1, 0x30, fRAM);
+    }
+    else
+    {
+        fwrite(gb_cart->ram, 1, gb_cart->ram_size, fRAM);
+    }
+
+    fclose(fRAM);
 }
 
 void GBCart::release_gb_cart(struct gb_cart* gb_cart)
@@ -894,8 +882,8 @@ void GBCart::release_gb_cart(struct gb_cart* gb_cart)
 	if (gb_cart->rom != NULL)
 		free(gb_cart->rom);
 
-	if (gb_cart->ram != NULL)
-		free(gb_cart->ram);
+    if (gb_cart->ram != NULL)
+        free(gb_cart->ram);
 
 	memset(gb_cart, 0, sizeof(*gb_cart));
 }
