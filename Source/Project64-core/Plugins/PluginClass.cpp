@@ -14,14 +14,15 @@
 #include <Project64-core/Plugins/PluginClass.h>
 #include <Common/path.h>
 
-CPlugins::CPlugins(const stdstr & PluginDir) :
-    m_MainWindow(NULL),
-    m_SyncWindow(NULL),
-    m_PluginDir(PluginDir),
-    m_Gfx(NULL),
-    m_Audio(NULL),
-    m_RSP(NULL),
-    m_Control(NULL)
+CPlugins::CPlugins(SettingID PluginDirSetting) :
+m_MainWindow(NULL),
+m_SyncWindow(NULL),
+m_PluginDirSetting(PluginDirSetting),
+m_PluginDir(g_Settings->LoadStringVal(PluginDirSetting)),
+m_Gfx(NULL),
+m_Audio(NULL),
+m_RSP(NULL),
+m_Control(NULL)
 {
     CreatePlugins();
     g_Settings->RegisterChangeCB(Plugin_RSP_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
@@ -34,6 +35,7 @@ CPlugins::CPlugins(const stdstr & PluginDir) :
     g_Settings->RegisterChangeCB(Game_EditPlugin_Audio, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->RegisterChangeCB(Game_EditPlugin_Contr, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->RegisterChangeCB(Game_EditPlugin_RSP, this, (CSettings::SettingChangedFunc)PluginChanged);
+    g_Settings->RegisterChangeCB(m_PluginDirSetting, this, (CSettings::SettingChangedFunc)PluginChanged);
 }
 
 CPlugins::~CPlugins(void)
@@ -48,6 +50,7 @@ CPlugins::~CPlugins(void)
     g_Settings->UnregisterChangeCB(Game_EditPlugin_Audio, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->UnregisterChangeCB(Game_EditPlugin_Contr, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->UnregisterChangeCB(Game_EditPlugin_RSP, this, (CSettings::SettingChangedFunc)PluginChanged);
+    g_Settings->UnregisterChangeCB(m_PluginDirSetting, this, (CSettings::SettingChangedFunc)PluginChanged);
 
     DestroyGfxPlugin();
     DestroyAudioPlugin();
@@ -59,15 +62,29 @@ void CPlugins::PluginChanged(CPlugins * _this)
 {
     if (g_Settings->LoadBool(Game_TempLoaded) == true)
     {
+        WriteTrace(TracePlugins, TraceDebug, "Game is temporary loaded, not changing plugins");
         return;
     }
+
     bool bGfxChange = _stricmp(_this->m_GfxFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Gfx).c_str()) != 0;
     bool bAudioChange = _stricmp(_this->m_AudioFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Audio).c_str()) != 0;
     bool bRspChange = _stricmp(_this->m_RSPFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_RSP).c_str()) != 0;
     bool bContChange = _stricmp(_this->m_ControlFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Controller).c_str()) != 0;
+    if (_stricmp(_this->m_PluginDir.c_str(), g_Settings->LoadStringVal(_this->m_PluginDirSetting).c_str()) != 0)
+    {
+        bGfxChange = true;
+        bAudioChange = true;
+        bRspChange = true;
+        bContChange = true;
+        WriteTrace(TracePlugins, TraceDebug, "plugin directory changed");
+    }
 
     if (bGfxChange || bAudioChange || bRspChange || bContChange)
     {
+        if (bGfxChange) { WriteTrace(TracePlugins, TraceDebug, "Gfx plugin changed"); }
+        if (bAudioChange) { WriteTrace(TracePlugins, TraceDebug, "Audio plugin changed"); }
+        if (bRspChange) { WriteTrace(TracePlugins, TraceDebug, "RSP plugin changed"); }
+        if (bContChange) { WriteTrace(TracePlugins, TraceDebug, "Controller plugin changed"); }
         if (g_Settings->LoadBool(GameRunning_CPU_Running))
         {
             //Ensure that base system actually exists before we go triggering the event
@@ -81,6 +98,7 @@ void CPlugins::PluginChanged(CPlugins * _this)
             _this->Reset(NULL);
         }
     }
+    WriteTrace(TracePlugins, TraceDebug, "Done");
 }
 
 template <typename plugin_type>
@@ -103,7 +121,7 @@ static void LoadPlugin(SettingID PluginSettingID, SettingID PluginVerSettingID, 
         }
         else
         {
-            WriteTrace(TraceError, TraceDebug, "Failed to load %s", (const char *)PluginFileName);
+            WriteTrace(TraceLevel, TraceError, "Failed to load %s", (const char *)PluginFileName);
             delete plugin;
             plugin = NULL;
         }
@@ -111,7 +129,7 @@ static void LoadPlugin(SettingID PluginSettingID, SettingID PluginVerSettingID, 
     }
     else
     {
-        WriteTrace(TraceError, TraceDebug, "Failed to allocate %s plugin", type);
+        WriteTrace(TraceLevel, TraceError, "Failed to allocate %s plugin", type);
     }
 }
 

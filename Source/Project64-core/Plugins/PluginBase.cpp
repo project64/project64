@@ -10,20 +10,21 @@
 ****************************************************************************/
 #include "stdafx.h"
 #include <Project64-core/Plugins/PluginBase.h>
+#include <Common/path.h>
 
 CPlugin::CPlugin() :
-    DllAbout(NULL),
-    DllConfig(NULL),
-    CloseDLL(NULL),
-    RomOpen(NULL),
-    RomClosed(NULL),
-    PluginOpened(NULL),
-    SetSettingInfo(NULL),
-    SetSettingInfo2(NULL),
-    SetSettingInfo3(NULL),
-    m_LibHandle(NULL),
-    m_Initialized(false),
-    m_RomOpen(false)
+DllAbout(NULL),
+DllConfig(NULL),
+CloseDLL(NULL),
+RomOpen(NULL),
+RomClosed(NULL),
+PluginOpened(NULL),
+SetSettingInfo(NULL),
+SetSettingInfo2(NULL),
+SetSettingInfo3(NULL),
+m_LibHandle(NULL),
+m_Initialized(false),
+m_RomOpen(false)
 {
     memset(&m_PluginInfo, 0, sizeof(m_PluginInfo));
 }

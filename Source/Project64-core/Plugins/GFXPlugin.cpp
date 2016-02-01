@@ -16,22 +16,22 @@
 #include "GFXPlugin.h"
 
 CGfxPlugin::CGfxPlugin() :
-    CaptureScreen(NULL),
-    ChangeWindow(NULL),
-    DrawScreen(NULL),
-    DrawStatus(NULL),
-    MoveScreen(NULL),
-    ProcessDList(NULL),
-    ProcessRDPList(NULL),
-    ShowCFB(NULL),
-    UpdateScreen(NULL),
-    ViStatusChanged(NULL),
-    ViWidthChanged(NULL),
-    SoftReset(NULL),
-    GetRomBrowserMenu(NULL),
-    OnRomBrowserMenuItem(NULL),
-    GetDebugInfo(NULL),
-    InitiateDebugger(NULL)
+CaptureScreen(NULL),
+ChangeWindow(NULL),
+DrawScreen(NULL),
+DrawStatus(NULL),
+MoveScreen(NULL),
+ProcessDList(NULL),
+ProcessRDPList(NULL),
+ShowCFB(NULL),
+UpdateScreen(NULL),
+ViStatusChanged(NULL),
+ViWidthChanged(NULL),
+SoftReset(NULL),
+GetRomBrowserMenu(NULL),
+OnRomBrowserMenuItem(NULL),
+GetDebugInfo(NULL),
+InitiateDebugger(NULL)
 {
     memset(&m_GFXDebug, 0, sizeof(m_GFXDebug));
 }
@@ -101,6 +101,7 @@ bool CGfxPlugin::LoadFunctions(void)
 
 bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 {
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Starting");
     if (m_Initialized)
     {
         Close();
@@ -153,14 +154,18 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 
     //Get Function from DLL
     int32_t(CALL *InitiateGFX)(GFX_INFO Gfx_Info);
-    _LoadFunction("InitiateGFX",InitiateGFX);
-    if (InitiateGFX == NULL) { return false; }
+    _LoadFunction("InitiateGFX", InitiateGFX);
+    if (InitiateGFX == NULL)
+    {
+        WriteTrace(TraceGFXPlugin, TraceDebug, "Failed to find InitiateGFX");
+        return false;
+    }
 
     GFX_INFO Info = { 0 };
 
     Info.MemoryBswaped = true;
-    Info.hWnd = Window->GetWindowHandle();
-    Info.hStatusBar = Window->GetStatusBar();
+    Info.hWnd = Window ? Window->GetWindowHandle() : NULL;
+    Info.hStatusBar = Window ? Window->GetStatusBar() : NULL;
     Info.CheckInterrupts = DummyCheckInterrupts;
 
     // We are initializing the plugin before any rom is loaded so we do not have any correct
@@ -222,13 +227,15 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
         Info.VI__Y_SCALE_REG = &g_Reg->VI_Y_SCALE_REG;
     }
 
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Calling InitiateGFX");
     m_Initialized = InitiateGFX(Info) != 0;
 
 #ifdef _WIN32
-	//jabo had a bug so I call CreateThread so his dllmain gets called again
+    //jabo had a bug so I call CreateThread so his dllmain gets called again
     pjutil::DynLibCallDllMain();
 #endif
 
+    WriteTrace(TraceGFXPlugin, TraceDebug, "InitiateGFX done (res: %s)", m_Initialized ? "true" : "false");
     return m_Initialized;
 }
 

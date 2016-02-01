@@ -13,30 +13,29 @@
 #include "SettingsType-ApplicationPath.h"
 #include <Common/path.h>
 
-CSettingTypeApplicationPath::CSettingTypeApplicationPath(const char * Section, const char * Name, SettingID DefaultSetting ) :
-	CSettingTypeApplication(Section,Name,DefaultSetting)
+CSettingTypeApplicationPath::CSettingTypeApplicationPath(const char * Section, const char * Name, SettingID DefaultSetting) :
+CSettingTypeApplication(Section, Name, DefaultSetting)
 {
-
 }
 
 CSettingTypeApplicationPath::~CSettingTypeApplicationPath()
 {
 }
 
-bool CSettingTypeApplicationPath::Load ( int Index, stdstr & Value ) const
+bool CSettingTypeApplicationPath::Load(int Index, stdstr & Value) const
 {
-	bool bRes = CSettingTypeApplication::Load(Index,Value);
-	if (bRes)
-	{
-		if (Value.substr(0,2) == ".\\" || Value.substr(0,2) == "./" ||
-			Value.substr(0,3) == "..\\" || Value.substr(0,3) == "../")
-		{
+    bool bRes = CSettingTypeApplication::Load(Index, Value);
+    if (bRes)
+    {
+        if (Value.substr(0, 2) == ".\\" || Value.substr(0, 2) == "./" ||
+            Value.substr(0, 3) == "..\\" || Value.substr(0, 3) == "../")
+        {
             CPath FullFilePath(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(), ""), RelativePath(Value);
-			FullFilePath.SetNameExtension(RelativePath.GetNameExtension().c_str());
-			FullFilePath.AppendDirectory(RelativePath.GetDirectory().c_str());
+            FullFilePath.SetNameExtension(RelativePath.GetNameExtension().c_str());
+            FullFilePath.AppendDirectory(RelativePath.GetDirectory().c_str());
 
             Value = (const std::string &)FullFilePath;
-		}
-	}
-	return bRes;
+        }
+    }
+    return bRes;
 }

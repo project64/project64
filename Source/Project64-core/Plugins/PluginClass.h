@@ -98,7 +98,7 @@ class CPlugins :
 {
 public:
     //Functions
-    CPlugins(const stdstr & PluginDir);
+    CPlugins(SettingID PluginDirSetting);
     ~CPlugins();
 
     bool Initiate(CN64System * System);
@@ -135,7 +135,8 @@ private:
     RenderWindow * m_MainWindow;
     RenderWindow * m_SyncWindow;
 
-    stdstr  const m_PluginDir;
+    SettingID m_PluginDirSetting;
+    stdstr m_PluginDir;
 
     //Plugins
     CGfxPlugin      * m_Gfx;
