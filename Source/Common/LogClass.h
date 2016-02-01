@@ -1,5 +1,6 @@
 #pragma once
 #include "FileClass.h"
+#include "StdString.h"
 
 enum LOG_OPEN_MODE
 {
