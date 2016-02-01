@@ -12,11 +12,14 @@
 #include "N64RomClass.h"
 #include "SystemGlobals.h"
 #include <Project64-core/3rdParty/zip.h>
-#include <Project64-core/3rdParty/7zip.h>
 #include <Common/md5.h>
 #include <Common/Platform.h>
 #include <Common/MemoryManagement.h>
 #include <memory>
+
+#ifdef _WIN32
+#include <Project64-core/3rdParty/7zip.h>
+#endif
 
 CN64Rom::CN64Rom() :
 m_ROMImage(NULL),
@@ -410,6 +413,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
     stdstr ext = CPath(FileLoc).GetExtension();
     bool Loaded7zFile = false;
 
+#ifdef _WIN32
     if (strstr(FileLoc, "?") != NULL || _stricmp(ext.c_str(), "7z") == 0)
     {
         stdstr FullPath = FileLoc;
@@ -485,6 +489,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
             return false;
         }
     }
+#endif
 
     //Try to open the file as a zip file
     if (!Loaded7zFile)
@@ -586,7 +591,7 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
 
     stdstr ext = CPath(FileLoc).GetExtension();
     bool Loaded7zFile = false;
-
+#ifdef _WIN32
     if (strstr(FileLoc, "?") != NULL || _stricmp(ext.c_str(), "7z") == 0)
     {
         stdstr FullPath = FileLoc;
@@ -662,6 +667,7 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
             return false;
         }
     }
+#endif
 
     //Try to open the file as a zip file
     if (!Loaded7zFile)
