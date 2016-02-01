@@ -81,7 +81,7 @@ void CPluginList::AddPluginFromDir(CPath Dir)
             if (hLib == NULL)
             {
                 DWORD LoadError = GetLastError();
-                WriteTrace(TraceUserInterface, TraceDebug, "failed to loadi %s (error: %d)", (LPCSTR)Dir, LoadError);
+                WriteTrace(TraceUserInterface, TraceDebug, "failed to load %s (error: %d)", (LPCSTR)Dir, LoadError);
                 continue;
             }
 
