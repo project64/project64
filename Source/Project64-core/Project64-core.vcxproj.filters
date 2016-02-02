@@ -303,7 +303,7 @@
     <ClCompile Include="N64System\Mips\GBCart.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Mips\Trasferpak.cpp">
+    <ClCompile Include="N64System\Mips\Transferpak.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
   </ItemGroup>

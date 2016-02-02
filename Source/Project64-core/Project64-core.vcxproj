@@ -61,7 +61,7 @@
     <ClCompile Include="N64System\Mips\SystemEvents.cpp" />
     <ClCompile Include="N64System\Mips\SystemTiming.cpp" />
     <ClCompile Include="N64System\Mips\TLBclass.cpp" />
-    <ClCompile Include="N64System\Mips\Trasferpak.cpp" />
+    <ClCompile Include="N64System\Mips\Transferpak.cpp" />
     <ClCompile Include="N64System\N64Class.cpp" />
     <ClCompile Include="N64System\N64DiskClass.cpp" />
     <ClCompile Include="N64System\N64RomClass.cpp" />
