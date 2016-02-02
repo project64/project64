@@ -332,7 +332,15 @@ static void read_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, uint8_t
 	{
 		if (gb_cart->ram != NULL)
 		{
-			if (gb_cart->has_rtc && (gb_cart->ram_bank >= 0x08 && gb_cart->ram_bank <= 0x0c))
+			if (gb_cart->ram_bank >= 0x00 && gb_cart->ram_bank <= 0x03)
+			{
+                offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
+                if (offset < gb_cart->ram_size)
+                {
+                    memcpy(data, &gb_cart->ram[offset], 0x20);
+                }
+			}
+			else if (gb_cart->has_rtc)
 			{
                 switch (gb_cart->ram_bank)
                 {
@@ -352,14 +360,6 @@ static void read_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, uint8_t
                     data[0] = (gb_cart->rtc_latch_day_carry << 7) | (gb_cart->rtc_latch_day >> 8);
                     break;
                 }
-			}
-			else
-			{
-				offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
-				if (offset < gb_cart->ram_size)
-				{
-					memcpy(data, &gb_cart->ram[offset], 0x20);
-				}
 			}
 		}
 	}
@@ -413,7 +413,15 @@ static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const 
 	{
         if (gb_cart->ram != NULL)
         {
-            if (gb_cart->has_rtc && (gb_cart->ram_bank >= 0x8 && gb_cart->ram_bank <= 0xC))
+            if (gb_cart->ram_bank >= 0x00 && gb_cart->ram_bank <= 0x03)
+            {
+                offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
+                if (offset < gb_cart->ram_size)
+                {
+                    memcpy(&gb_cart->ram[offset], data, 0x20);
+                }
+            }
+            else if (gb_cart->has_rtc)
             {
                 bank = data[0];
 
@@ -442,14 +450,6 @@ static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const 
                     gb_cart->rtc_day = ((bank & 1) << 8) | (gb_cart->rtc_day & 0xFF);
                     gb_cart->rtc_day_carry = bank & 0x80;
                     break;
-                }
-            }
-            else
-            {
-                offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
-                if (offset < gb_cart->ram_size)
-                {
-                    memcpy(&gb_cart->ram[offset], data, 0x20);
                 }
             }
         }
