@@ -6896,6 +6896,7 @@ Status=Compatible
 Counter Factor=1
 Culling=1
 RDRAM Size=8
+HLE GFX=No
 
 [2DCFCA60-8354B147-C:4A]
 Good Name=Yoshi Story (J)
