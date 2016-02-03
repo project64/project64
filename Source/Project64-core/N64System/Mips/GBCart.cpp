@@ -11,6 +11,8 @@
 #include "stdafx.h"
 #include "GBCart.h"
 
+#include <time.h>
+
 static void read_gb_cart_normal(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
 {
 	uint16_t offset;
@@ -230,6 +232,44 @@ static void write_gb_cart_mbc2(struct gb_cart* gb_cart, uint16_t address, const 
 	}
 }
 
+void memoryUpdateMBC3Clock(struct gb_cart* gb_cart)
+{
+    time_t now = time(NULL);
+    time_t diff = now - gb_cart->rtc_last_time;
+    if (diff > 0) {
+        // update the clock according to the last update time
+        gb_cart->rtc_data[0] += (int)(diff % 60);
+        if (gb_cart->rtc_data[0] > 59) {
+            gb_cart->rtc_data[0] -= 60;
+            gb_cart->rtc_data[1]++;
+        }
+        diff /= 60;
+
+        gb_cart->rtc_data[1] += (int)(diff % 60);
+        if (gb_cart->rtc_data[1] > 59) {
+            gb_cart->rtc_data[1] -= 60;
+            gb_cart->rtc_data[2]++;
+        }
+        diff /= 60;
+
+        gb_cart->rtc_data[2] += (int)(diff % 24);
+        if (gb_cart->rtc_data[2] > 23) {
+            gb_cart->rtc_data[2] -= 24;
+            gb_cart->rtc_data[3]++;
+        }
+        diff /= 24;
+        
+        gb_cart->rtc_data[3] += (int)(diff & 0xffffffff);
+        if (gb_cart->rtc_data[3] > 255) {
+            if (gb_cart->rtc_data[3] > 511) {
+                gb_cart->rtc_data[3] %= 512;
+                gb_cart->rtc_data[3] |= 0x80;
+            }
+            gb_cart->rtc_data[4] = (gb_cart->rtc_data[4] & 0xFE) | (gb_cart->rtc_data[3]>255 ? 1 : 0);
+        }
+    }
+    gb_cart->rtc_last_time = now;
+}
 
 static void read_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
 {
@@ -261,23 +301,20 @@ static void read_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, uint8_t
 			}
 			else if (gb_cart->has_rtc)
 			{
-                switch (gb_cart->ram_bank)
+                if (gb_cart->rtc_latch)
                 {
-                case 0x08:
-                    data[0] = gb_cart->rtc_latch_second;
-                    break;
-                case 0x09:
-                    data[0] = gb_cart->rtc_latch_minute;
-                    break;
-                case 0x0A:
-                    data[0] = gb_cart->rtc_latch_hour;
-                    break;
-                case 0x0B:
-                    data[0] = gb_cart->rtc_latch_day;
-                    break;
-                case 0x0C:
-                    data[0] = (gb_cart->rtc_latch_day_carry << 7) | (gb_cart->rtc_latch_day >> 8);
-                    break;
+                    for (int i = 0; i < 32; i++)
+                    {
+                        data[i] = gb_cart->rtc_latch_data[gb_cart->ram_bank - 0x08];
+                    }
+                }
+                else
+                {
+                    memoryUpdateMBC3Clock(gb_cart);
+                    for (int i = 0; i < 32; i++)
+                    {
+                        data[i] = gb_cart->rtc_data[gb_cart->ram_bank - 0x08];
+                    }
                 }
 			}
 		}
@@ -320,11 +357,12 @@ static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const 
 		//Implement RTC timer / latch
         if (gb_cart->rtc_latch == 0 && data[0] == 1)
         {
-            gb_cart->rtc_latch_second    = gb_cart->rtc_second;
-            gb_cart->rtc_latch_minute    = gb_cart->rtc_minute;
-            gb_cart->rtc_latch_hour      = gb_cart->rtc_hour;
-            gb_cart->rtc_latch_day       = gb_cart->rtc_day;
-            gb_cart->rtc_latch_day_carry = gb_cart->rtc_day_carry;
+            //Update time
+            memoryUpdateMBC3Clock(gb_cart);
+            for (int i = 0; i < 4; i++)
+            {
+                gb_cart->rtc_latch_data[i] = gb_cart->rtc_data[i];
+            }
         }
         gb_cart->rtc_latch = data[0];
 	}
@@ -342,34 +380,8 @@ static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const 
             }
             else if (gb_cart->has_rtc)
             {
-                bank = data[0];
-
                 /* RTC write */
-                switch (gb_cart->ram_bank)
-                {
-                case 0x08:
-                    if (bank >= 60)
-                        bank = 0;
-                    gb_cart->rtc_second = bank;
-                    break;
-                case 0x09:
-                    if (bank >= 60)
-                        bank = 0;
-                    gb_cart->rtc_minute = bank;
-                    break;
-                case 0x0A:
-                    if (bank >= 24)
-                        bank = 0;
-                    gb_cart->rtc_hour = bank;
-                    break;
-                case 0x0B:
-                    gb_cart->rtc_day = (gb_cart->rtc_day & 0x0100) | bank;
-                    break;
-                case 0x0C:
-                    gb_cart->rtc_day = ((bank & 1) << 8) | (gb_cart->rtc_day & 0xFF);
-                    gb_cart->rtc_day_carry = bank & 0x80;
-                    break;
-                }
+                gb_cart->rtc_data[gb_cart->ram_bank - 0x08] = data[0];
             }
         }
 	}
@@ -724,11 +736,6 @@ bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
 
 		if (ram_size != 0)
 		{
-            if (type->extra_devices & GED_RTC)
-            {
-                ram_size += 0x30;
-            }
-           
             ram.reset(new uint8_t[ram_size]);
 			if (ram.get() == NULL)
 			{
@@ -742,32 +749,30 @@ bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
             }
 
             tempFile.Read(ram.get(), ram_size);
-            tempFile.Close();
 		}
         
         //If we have RTC we need to load in the data, we assume the save will use the VBA-M format
         if (type->extra_devices & GED_RTC)
         {
-            gbCartRTC rtc;
-            memcpy(&rtc, &ram.get()[ram_size-0x30], 0x30);
-           
-            gb_cart->rtc_second          = rtc.second;
-            gb_cart->rtc_minute          = rtc.minute;
-            gb_cart->rtc_hour            = rtc.hour;
-            gb_cart->rtc_day             = rtc.day;
-            gb_cart->rtc_day_carry       = rtc.day_carry;
-            gb_cart->rtc_latch_second    = rtc.latch_second;
-            gb_cart->rtc_latch_minute    = rtc.latch_minute;
-            gb_cart->rtc_latch_hour      = rtc.latch_hour;
-            gb_cart->rtc_latch_day       = rtc.latch_day;
-            gb_cart->rtc_latch_day_carry = rtc.latch_day_carry;
-            gb_cart->rtc_last_time       = rtc.mapperLastTime;
+            tempFile.Read(&gb_cart->rtc_data[0],       4);
+            tempFile.Read(&gb_cart->rtc_data[1],       4);
+            tempFile.Read(&gb_cart->rtc_data[2],       4);
+            tempFile.Read(&gb_cart->rtc_data[3],       4);
+            tempFile.Read(&gb_cart->rtc_data[4],       4);
+            tempFile.Read(&gb_cart->rtc_latch_data[0], 4);
+            tempFile.Read(&gb_cart->rtc_latch_data[1], 4);
+            tempFile.Read(&gb_cart->rtc_latch_data[2], 4);
+            tempFile.Read(&gb_cart->rtc_latch_data[3], 4);
+            tempFile.Read(&gb_cart->rtc_latch_data[4], 4);
+            tempFile.Read(&gb_cart->rtc_last_time,     8);
+            memoryUpdateMBC3Clock(gb_cart);
         }
+        tempFile.Close();
 	}
 
 	/* update gb_cart */
-    gb_cart->ram = ram.release();
     gb_cart->rom = rom.release();
+    gb_cart->ram = ram.release();
 	gb_cart->rom_size = rom_size;
 	gb_cart->ram_size = ram_size;
 	gb_cart->rom_bank = 1;
@@ -782,28 +787,21 @@ void GBCart::save_gb_cart(struct gb_cart* gb_cart)
 {
     CFile ramFile;
     ramFile.Open(g_Settings->LoadStringVal(Game_Transferpak_Sav).c_str(), CFileBase::modeWrite | CFileBase::modeCreate);
-    
+    ramFile.Write(gb_cart->ram, gb_cart->ram_size);
+
     if (gb_cart->has_rtc)
     {
-        ramFile.Write(gb_cart->ram, gb_cart->ram_size - 0x30);
-
-        gbCartRTC rtc;
-        rtc.second = gb_cart->rtc_second;
-        rtc.minute = gb_cart->rtc_minute;
-        rtc.hour = gb_cart->rtc_hour;
-        rtc.day = gb_cart->rtc_day;
-        rtc.day_carry = gb_cart->rtc_day_carry;
-        rtc.latch_second = gb_cart->rtc_latch_second;
-        rtc.latch_minute = gb_cart->rtc_latch_minute;
-        rtc.latch_hour = gb_cart->rtc_latch_hour;
-        rtc.latch_day = gb_cart->rtc_latch_day;
-        rtc.latch_day_carry = gb_cart->rtc_latch_day_carry;
-        rtc.mapperLastTime = gb_cart->rtc_last_time;
-        ramFile.Write(&rtc, 0x30);
-    }
-    else
-    {
-        ramFile.Write(gb_cart->ram, gb_cart->ram_size);
+        ramFile.Write(&gb_cart->rtc_data[0],       4);
+        ramFile.Write(&gb_cart->rtc_data[1],       4);
+        ramFile.Write(&gb_cart->rtc_data[2],       4);
+        ramFile.Write(&gb_cart->rtc_data[3],       4);
+        ramFile.Write(&gb_cart->rtc_data[4],       4);
+        ramFile.Write(&gb_cart->rtc_latch_data[0], 4);
+        ramFile.Write(&gb_cart->rtc_latch_data[1], 4);
+        ramFile.Write(&gb_cart->rtc_latch_data[2], 4);
+        ramFile.Write(&gb_cart->rtc_latch_data[3], 4);
+        ramFile.Write(&gb_cart->rtc_latch_data[4], 4);
+        ramFile.Write(&gb_cart->rtc_last_time,     8);
     }
 
     ramFile.Close();
