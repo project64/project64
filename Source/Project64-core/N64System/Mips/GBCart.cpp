@@ -812,10 +812,10 @@ void GBCart::save_gb_cart(struct gb_cart* gb_cart)
 void GBCart::release_gb_cart(struct gb_cart* gb_cart)
 {
 	if (gb_cart->rom != NULL)
-		free(gb_cart->rom);
+		delete gb_cart->rom;
 
     if (gb_cart->ram != NULL)
-        free(gb_cart->ram);
+        delete gb_cart->ram;
 
 	memset(gb_cart, 0, sizeof(*gb_cart));
 }
