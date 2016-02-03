@@ -15,13 +15,12 @@ extern int dumping;
 
 typedef struct _wrapper_config
 {
-  int res;
-  int fbo;
-  int anisofilter;
-  int vram_size;
+    int res;
+    int fbo;
+    int anisofilter;
+    int vram_size;
 } wrapper_config;
 extern wrapper_config config;
-
 
 // VP added this utility function
 // returns the bytes per pixel of a given GR texture format
@@ -44,7 +43,7 @@ extern int buffer_cleared; // mark that the buffer has been cleared, used to che
 #ifdef _WIN32
 #include <windows.h>
 extern "C" {
-    #include <SDL_opengl.h>
+#include <SDL_opengl.h>
     extern PFNGLACTIVETEXTUREARBPROC glActiveTextureARB;
     extern PFNGLATTACHOBJECTARBPROC glAttachObjectARB;
     extern PFNGLBINDFRAMEBUFFEREXTPROC glBindFramebufferEXT;
@@ -174,8 +173,7 @@ int getFullScreenHeight();
 #define GR_FBCOPY_BUFFER_BACK 0
 #define GR_FBCOPY_BUFFER_FRONT 1
 FX_ENTRY void FX_CALL grFramebufferCopyExt(int x, int y, int w, int h,
-                                           int buffer_from, int buffer_to, int mode);
-
+    int buffer_from, int buffer_to, int mode);
 
 // COMBINE extension
 
@@ -210,40 +208,39 @@ typedef FxU32 GrCombineMode_t;
 #define GR_CMBX_TMU_CALPHA                0x10
 #define GR_CMBX_TMU_CCOLOR                0x11
 
-
 FX_ENTRY void FX_CALL
 grColorCombineExt(GrCCUColor_t a, GrCombineMode_t a_mode,
-				  GrCCUColor_t b, GrCombineMode_t b_mode,
-                  GrCCUColor_t c, FxBool c_invert,
-				  GrCCUColor_t d, FxBool d_invert,
-				  FxU32 shift, FxBool invert);
+GrCCUColor_t b, GrCombineMode_t b_mode,
+GrCCUColor_t c, FxBool c_invert,
+GrCCUColor_t d, FxBool d_invert,
+FxU32 shift, FxBool invert);
 
 FX_ENTRY void FX_CALL
 grAlphaCombineExt(GrACUColor_t a, GrCombineMode_t a_mode,
-				  GrACUColor_t b, GrCombineMode_t b_mode,
-				  GrACUColor_t c, FxBool c_invert,
-				  GrACUColor_t d, FxBool d_invert,
-				  FxU32 shift, FxBool invert);
+GrACUColor_t b, GrCombineMode_t b_mode,
+GrACUColor_t c, FxBool c_invert,
+GrACUColor_t d, FxBool d_invert,
+FxU32 shift, FxBool invert);
 
 FX_ENTRY void FX_CALL
 grTexColorCombineExt(GrChipID_t       tmu,
-                     GrTCCUColor_t a, GrCombineMode_t a_mode,
-                     GrTCCUColor_t b, GrCombineMode_t b_mode,
-                     GrTCCUColor_t c, FxBool c_invert,
-                     GrTCCUColor_t d, FxBool d_invert,
-                     FxU32 shift, FxBool invert);
+GrTCCUColor_t a, GrCombineMode_t a_mode,
+GrTCCUColor_t b, GrCombineMode_t b_mode,
+GrTCCUColor_t c, FxBool c_invert,
+GrTCCUColor_t d, FxBool d_invert,
+FxU32 shift, FxBool invert);
 
 FX_ENTRY void FX_CALL
 grTexAlphaCombineExt(GrChipID_t       tmu,
-                     GrTACUColor_t a, GrCombineMode_t a_mode,
-                     GrTACUColor_t b, GrCombineMode_t b_mode,
-                     GrTACUColor_t c, FxBool c_invert,
-                     GrTACUColor_t d, FxBool d_invert,
-                     FxU32 shift, FxBool invert);
+GrTACUColor_t a, GrCombineMode_t a_mode,
+GrTACUColor_t b, GrCombineMode_t b_mode,
+GrTACUColor_t c, FxBool c_invert,
+GrTACUColor_t d, FxBool d_invert,
+FxU32 shift, FxBool invert);
 
 FX_ENTRY void FX_CALL
 grConstantColorValueExt(GrChipID_t    tmu,
-                        GrColor_t     value);
+GrColor_t     value);
 
 #define CHECK_FRAMEBUFFER_STATUS() \
 {\
