@@ -11,87 +11,6 @@
 #include "stdafx.h"
 #include "GBCart.h"
 
-#include <time.h>
-#include <Project64-core/N64System/SystemGlobals.h>
-
-//--------------------------------------------------------------------------------------
-bool read_from_file(const char *filename, void *data, size_t size)
-{
-    FILE *f = fopen(filename, "rb");
-    if (f == NULL)
-    {
-        return false;
-    }
-
-    if (fread(data, 1, size, f) != size)
-    {
-        fclose(f);
-        return false;
-    }
-
-    fclose(f);
-    return true;
-}
-
-bool load_file(const char* filename, void** buffer, size_t* size)
-{
-    FILE* fd;
-    size_t l_size;
-    void* l_buffer;
-
-    /* open file */
-    fd = fopen(filename, "rb");
-    if (fd == NULL)
-    {
-        return false;
-    }
-
-    /* obtain file size */
-    if (fseek(fd, 0, SEEK_END) != 0)
-    {
-        fclose(fd);
-        return false;
-    }
-
-    l_size = (size_t)ftell(fd);
-    if (l_size == -1)
-    {
-        fclose(fd);
-        return false;
-    }
-
-    if (fseek(fd, 0, SEEK_SET) != 0)
-    {
-        fclose(fd);
-        return false;
-    }
-
-    /* allocate buffer */
-    l_buffer = malloc(l_size);
-    if (l_buffer == NULL)
-    {
-        fclose(fd);
-        return false;
-    }
-
-    /* copy file content to buffer */
-    if (fread(l_buffer, 1, l_size, fd) != l_size)
-    {
-        free(l_buffer);
-        fclose(fd);
-        return false;
-    }
-
-    /* commit buffer,size */
-    *buffer = l_buffer;
-    *size = l_size;
-
-    /* close file */
-    fclose(fd);
-    return true;
-}
-//--------------------------------------------------------------------------------------
-
 static void read_gb_cart_normal(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
 {
 	uint16_t offset;
@@ -758,29 +677,35 @@ static const struct parsed_cart_type* parse_cart_type(uint8_t cart_type)
 bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
 {
 	const struct parsed_cart_type* type;
-	uint8_t* rom = NULL;
-	size_t rom_size = 0;
-	uint8_t* ram = NULL;
-	size_t ram_size = 0;
+    std::auto_ptr<uint8_t> rom;
+    size_t rom_size = 0;
+    std::auto_ptr<uint8_t> ram;
+    size_t ram_size = 0;
+    CFile tempFile;
 
-	/* load GB cart ROM */
-	if (!load_file(gb_file, (void**)&rom, &rom_size))
-	{
-		return false;
-	}
+    /* load GB cart ROM */
+    if (!tempFile.Open(gb_file, CFileBase::modeRead))
+    {
+        g_Notify->DisplayError("Failed to open Transferpak ROM");
+        return false;
+    }
+
+    rom_size = tempFile.GetLength();
+    rom.reset(new uint8_t[rom_size]);
+
+    tempFile.Read(rom.get(), rom_size);
+    tempFile.Close();
 
 	if (rom_size < 0x8000)
 	{
-        free(rom);
         return false;
 	}
 
 	/* get and parse cart type */
-	uint8_t cart_type = rom[0x147];
+	uint8_t cart_type = rom.get()[0x147];
 	type = parse_cart_type(cart_type);
 	if (type == NULL)
 	{
-        free(rom);
         return false;
 	}
 
@@ -788,7 +713,7 @@ bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
 	if (type->extra_devices & GED_RAM)
 	{
 		ram_size = 0;
-		switch (rom[0x149])
+		switch (rom.get()[0x149])
 		{
 		case 0x01: ram_size =  1 * 0x800; break;
 		case 0x02: ram_size =  4 * 0x800; break;
@@ -804,21 +729,27 @@ bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
                 ram_size += 0x30;
             }
            
-			ram = (uint8_t*)malloc(ram_size );
-			if (ram == NULL)
+            ram.reset(new uint8_t[ram_size]);
+			if (ram.get() == NULL)
 			{
-                free(rom);
                 return false;
 			}
 
-			read_from_file(g_Settings->LoadStringVal(Game_Transferpak_Sav).c_str(), ram, ram_size );
+            if (!tempFile.Open(g_Settings->LoadStringVal(Game_Transferpak_Sav).c_str(), CFileBase::modeRead))
+            {
+                g_Notify->DisplayError("Failed to open Transferpak SAV File");
+                return false;
+            }
+
+            tempFile.Read(ram.get(), ram_size);
+            tempFile.Close();
 		}
         
         //If we have RTC we need to load in the data, we assume the save will use the VBA-M format
         if (type->extra_devices & GED_RTC)
         {
             gbCartRTC rtc;
-            memcpy(&rtc, &ram[ram_size-0x30], 0x30);
+            memcpy(&rtc, &ram.get()[ram_size-0x30], 0x30);
            
             gb_cart->rtc_second          = rtc.second;
             gb_cart->rtc_minute          = rtc.minute;
@@ -835,8 +766,8 @@ bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
 	}
 
 	/* update gb_cart */
-    gb_cart->ram = ram;
-	gb_cart->rom = rom;
+    gb_cart->ram = ram.release();
+    gb_cart->rom = rom.release();
 	gb_cart->rom_size = rom_size;
 	gb_cart->ram_size = ram_size;
 	gb_cart->rom_bank = 1;
@@ -849,11 +780,12 @@ bool GBCart::init_gb_cart(struct gb_cart* gb_cart, const char* gb_file)
 
 void GBCart::save_gb_cart(struct gb_cart* gb_cart)
 {
-    FILE *fRAM = fopen(g_Settings->LoadStringVal(Game_Transferpak_Sav).c_str(), "wb");
+    CFile ramFile;
+    ramFile.Open(g_Settings->LoadStringVal(Game_Transferpak_Sav).c_str(), CFileBase::modeWrite | CFileBase::modeCreate);
     
     if (gb_cart->has_rtc)
     {
-        fwrite(gb_cart->ram, 1, gb_cart->ram_size-0x30, fRAM);
+        ramFile.Write(gb_cart->ram, gb_cart->ram_size - 0x30);
 
         gbCartRTC rtc;
         rtc.second = gb_cart->rtc_second;
@@ -867,14 +799,14 @@ void GBCart::save_gb_cart(struct gb_cart* gb_cart)
         rtc.latch_day = gb_cart->rtc_latch_day;
         rtc.latch_day_carry = gb_cart->rtc_latch_day_carry;
         rtc.mapperLastTime = gb_cart->rtc_last_time;
-        fwrite(&rtc, 1, 0x30, fRAM);
+        ramFile.Write(&rtc, 0x30);
     }
     else
     {
-        fwrite(gb_cart->ram, 1, gb_cart->ram_size, fRAM);
+        ramFile.Write(gb_cart->ram, gb_cart->ram_size);
     }
 
-    fclose(fRAM);
+    ramFile.Close();
 }
 
 void GBCart::release_gb_cart(struct gb_cart* gb_cart)
