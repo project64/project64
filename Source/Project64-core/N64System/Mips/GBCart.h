@@ -30,8 +30,8 @@ struct gb_cart
 
     uint32_t rtc_latch;
 
-    int32_t rtc_data[5];
-    int32_t rtc_latch_data[5];
+    int rtc_data[5];
+    int rtc_latch_data[5];
     time_t   rtc_last_time;
 
 	void(*read_gb_cart)(struct gb_cart* gb_cart, uint16_t address, uint8_t* data);

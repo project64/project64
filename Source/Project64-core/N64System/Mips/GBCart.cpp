@@ -259,7 +259,8 @@ void memoryUpdateMBC3Clock(struct gb_cart* gb_cart)
         }
         diff /= 24;
         
-        gb_cart->rtc_data[3] += (int)(diff & 0xffffffff);
+
+        gb_cart->rtc_data[3] += (int)(diff & 0xFFFFFFFF);
         if (gb_cart->rtc_data[3] > 255) {
             if (gb_cart->rtc_data[3] > 511) {
                 gb_cart->rtc_data[3] %= 512;
