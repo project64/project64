@@ -67,9 +67,9 @@ void Mempak::Format(int32_t Control)
         0x00, 0x71, 0x00, 0x03, 0x00, 0x03, 0x00, 0x03, 0x00, 0x03, 0x00, 0x03, 0x00, 0x03, 0x00, 0x03,
     };
 
-    memcpy(&Mempaks[Control][0], &Initialize[0], 0x110);
+    memcpy(&Mempaks[Control][0], &Initialize[0], sizeof(Initialize));
 
-    for (int32_t count = 0x110; count < 0x8000; count += 2)
+    for (int32_t count = sizeof(Initialize); count < 0x8000; count += 2)
     {
         Mempaks[Control][count] = 0x00;
         Mempaks[Control][count + 1] = 0x03;
