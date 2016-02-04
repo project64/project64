@@ -46,6 +46,7 @@ extern "C" {
 
 #include <math.h>
 #include "3dmath.h"
+#include "trace.h"
 
 void calc_light(VERTEX *v)
 {
@@ -417,26 +418,26 @@ void math_init()
     {
         __asm
         {
-            mov  eax,1
+            mov  eax, 1
                 cpuid
-                mov dwEdx,edx
+                mov dwEdx, edx
         }
     }
-    __except(EXCEPTION_EXECUTE_HANDLER)
+    __except (EXCEPTION_EXECUTE_HANDLER)
     {
         return;
     }
 
-    if (dwEdx & (1<<25))
+    if (dwEdx & (1 << 25))
     {
-        if (dwEdx & (1<<24))
+        if (dwEdx & (1 << 24))
         {
             __try
             {
                 __asm xorps xmm0, xmm0
                 IsSSE = TRUE;
             }
-            __except(EXCEPTION_EXECUTE_HANDLER)
+            __except (EXCEPTION_EXECUTE_HANDLER)
             {
                 return;
             }
@@ -446,7 +447,7 @@ void math_init()
     if (IsSSE)
     {
         MulMatrices = MulMatricesSSE;
-        LOG("3DNOW! detected.\n");
+        WriteTrace(TraceGlide64, TraceDebug, "3DNOW! detected.");
     }
 
 #endif //_DEBUG
