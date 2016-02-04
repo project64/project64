@@ -50,6 +50,7 @@
 #include "FBtoScreen.h"
 #include "CRC.h"
 #include <Common/StdString.h>
+#include "trace.h"
 
 #ifdef _WIN32
 #include <Common/CriticalSection.h>
@@ -60,7 +61,7 @@ extern CriticalSection * g_ProcessDListCS;
 const int NumOfFormats = 1;
 SCREEN_SHOT_FORMAT ScreenShotFormats[NumOfFormats] =
 {
-    { "PNG", "png", rdpBITMAP_TYPE_PNG},
+    { "PNG", "png", rdpBITMAP_TYPE_PNG },
 };
 
 const char *ACmp[] = { "NONE", "THRESHOLD", "UNKNOWN", "DITHER" };
@@ -547,7 +548,7 @@ void GoToFullScreen()
 {
     if (!InitGfx())
     {
-        LOG("FAILED!!!\n");
+        WriteTrace(TraceGlide64, TraceError, "tInitGfx failed");
         return;
     }
 #ifdef __WINDOWS__
@@ -594,7 +595,7 @@ EXPORT void CALL ProcessDList(void)
     }
 #endif
 
-    LOG("ProcessDList ()\n");
+    WriteTrace(TraceGlide64, TraceDebug, "ProcessDList");
 
     if (reset)
     {
@@ -3114,7 +3115,7 @@ output:   none
 *******************************************************************/
 EXPORT void CALL FBRead(uint32_t addr)
 {
-    LOG("FBRead ()\n");
+    WriteTrace(TraceGlide64, TraceDebug, "-");
 
     if (cpu_fb_ignore)
         return;
@@ -3170,16 +3171,9 @@ input:    FrameBufferModifyEntry *plist
 size = size of the plist, max = 1024
 output:   none
 *******************************************************************/
-#ifdef RDP_LOGGING
 EXPORT void CALL FBWList(FrameBufferModifyEntry* /*plist*/, uint32_t size)
-#else
-EXPORT void CALL FBWList(FrameBufferModifyEntry* /*plist*/, uint32_t)
-#endif
 {
-    LOG("FBWList ()\n");
-#ifdef RDP_LOGGING
-    FRDP("FBWList. size: %d\n", size);
-#endif
+    WriteTrace(TraceGlide64, TraceDebug, "size: %d", size);
 }
 
 /******************************************************************
@@ -3193,7 +3187,7 @@ output:   none
 *******************************************************************/
 EXPORT void CALL FBWrite(uint32_t addr, uint32_t /*size*/)
 {
-    LOG("FBWrite ()\n");
+    WriteTrace(TraceGlide64, TraceDebug, "-");
     if (cpu_fb_ignore)
         return;
     if (cpu_fb_read_called)
@@ -3248,7 +3242,7 @@ typedef struct
 } FrameBufferInfo;
 EXPORT void CALL FBGetFrameBufferInfo(void *p)
 {
-    LOG("FBGetFrameBufferInfo ()\n");
+    WriteTrace(TraceGlide64, TraceDebug, "-");
     FrameBufferInfo * pinfo = (FrameBufferInfo *)p;
     memset(pinfo, 0, sizeof(FrameBufferInfo) * 6);
     if (!(g_settings->frame_buffer&fb_get_info))
@@ -4123,8 +4117,7 @@ void CALL ProcessRDPList(void)
 #ifdef _WIN32
     CGuard guard(*g_ProcessDListCS);
 #endif
-    LOG("ProcessRDPList ()\n");
-    LRDP("ProcessRDPList ()\n");
+    WriteTrace(TraceGlide64, TraceDebug, "-");
 
     uint32_t i;
     uint32_t cmd, length, cmd_length;

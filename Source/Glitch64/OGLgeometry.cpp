@@ -4,6 +4,7 @@
 #endif // _WIN32
 #include "glide.h"
 #include "glitchmain.h"
+#include <Glide64\trace.h>
 
 #define Z_MAX (65536.0f)
 
@@ -60,7 +61,7 @@ void init_geometry()
 FX_ENTRY void FX_CALL
 grCoordinateSpace(GrCoordinateSpaceMode_t mode)
 {
-    LOG("grCoordinateSpace(%d)\r\n", mode);
+    WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
     switch (mode)
     {
     case GR_WINDOW_COORDS:
@@ -73,7 +74,7 @@ grCoordinateSpace(GrCoordinateSpaceMode_t mode)
 FX_ENTRY void FX_CALL
 grVertexLayout(FxU32 param, FxI32 offset, FxU32 mode)
 {
-    LOG("grVertexLayout(%d,%d,%d)\r\n", param, offset, mode);
+    WriteTrace(TraceGlitch, TraceDebug, "param: %d offset: %d mode: %d", param, offset, mode);
     switch (param)
     {
     case GR_PARAM_XY:
@@ -112,7 +113,7 @@ grVertexLayout(FxU32 param, FxI32 offset, FxU32 mode)
 FX_ENTRY void FX_CALL
 grCullMode(GrCullMode_t mode)
 {
-    LOG("grCullMode(%d)\r\n", mode);
+    WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
     static int oldmode = -1, oldinv = -1;
     culling_mode = mode;
     if (inverted_culling == oldinv && oldmode == mode)
@@ -149,7 +150,7 @@ grCullMode(GrCullMode_t mode)
 FX_ENTRY void FX_CALL
 grDepthBufferMode(GrDepthBufferMode_t mode)
 {
-    LOG("grDepthBufferMode(%d)\r\n", mode);
+    WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
     switch (mode)
     {
     case GR_DEPTHBUFFER_DISABLE:
@@ -175,7 +176,7 @@ grDepthBufferMode(GrDepthBufferMode_t mode)
 FX_ENTRY void FX_CALL
 grDepthBufferFunction(GrCmpFnc_t function)
 {
-    LOG("grDepthBufferFunction(%d)\r\n", function);
+    WriteTrace(TraceGlitch, TraceDebug, "function: %d", function);
     switch (function)
     {
     case GR_CMP_GEQUAL:
@@ -224,7 +225,7 @@ grDepthBufferFunction(GrCmpFnc_t function)
 FX_ENTRY void FX_CALL
 grDepthMask(FxBool mask)
 {
-    LOG("grDepthMask(%d)\r\n", mask);
+    WriteTrace(TraceGlitch, TraceDebug, "mask: %d", mask);
     glDepthMask((GLboolean)mask);
     grDisplayGLError("grDepthMask");
 }
@@ -292,7 +293,7 @@ void FindBestDepthBias()
 FX_ENTRY void FX_CALL
 grDepthBiasLevel(FxI32 level)
 {
-    LOG("grDepthBiasLevel(%d)\r\n", level);
+    WriteTrace(TraceGlitch, TraceDebug, "level: %d", level);
     if (level)
     {
         if (w_buffer_mode)
@@ -346,7 +347,7 @@ grDrawTriangle(const void *a, const void *b, const void *c)
     float *c_s1 = (float*)c + st1_off / sizeof(float);
     float *c_t1 = (float*)c + st1_off / sizeof(float) + 1;
     float *c_fog = (float*)c + fog_ext_off / sizeof(float);
-    LOG("grDrawTriangle()\r\n");
+    WriteTrace(TraceGlitch, TraceDebug, "-");
 
     // ugly ? i know but nvidia drivers are losing the viewport otherwise
 
@@ -461,7 +462,7 @@ grDrawPoint(const void *pt)
     float *s1 = (float*)pt + st1_off / sizeof(float);
     float *t1 = (float*)pt + st1_off / sizeof(float) + 1;
     float *fog = (float*)pt + fog_ext_off / sizeof(float);
-    LOG("grDrawPoint()\r\n");
+    WriteTrace(TraceGlitch, TraceDebug, "-");
 
     if (nvidia_viewport_hack && !render_to_texture)
     {
@@ -530,7 +531,7 @@ grDrawLine(const void *a, const void *b)
     float *b_s1 = (float*)b + st1_off / sizeof(float);
     float *b_t1 = (float*)b + st1_off / sizeof(float) + 1;
     float *b_fog = (float*)b + fog_ext_off / sizeof(float);
-    LOG("grDrawLine()\r\n");
+    WriteTrace(TraceGlitch, TraceDebug, "-");
 
     if (nvidia_viewport_hack && !render_to_texture)
     {
@@ -606,7 +607,7 @@ grDrawVertexArray(FxU32 mode, FxU32 Count, void *pointers2)
     float *x, *y, *q, *s0, *t0, *s1, *t1, *z, *fog;
     unsigned char *pargb;
     void **pointers = (void**)pointers2;
-    LOG("grDrawVertexArray(%d,%d)\r\n", mode, Count);
+    WriteTrace(TraceGlitch, TraceDebug, "mode: %d Count: %d", mode, Count);
 
     if (nvidia_viewport_hack && !render_to_texture)
     {
@@ -678,7 +679,7 @@ grDrawVertexArrayContiguous(FxU32 mode, FxU32 Count, void *pointers, FxU32 strid
     unsigned int i;
     float *x, *y, *q, *s0, *t0, *s1, *t1, *z, *fog;
     unsigned char *pargb;
-    LOG("grDrawVertexArrayContiguous(%d,%d,%d)\r\n", mode, Count, stride);
+    WriteTrace(TraceGlitch, TraceDebug, "mode: %d Count: %d stride: %d", mode, Count, stride);
 
     if (nvidia_viewport_hack && !render_to_texture)
     {

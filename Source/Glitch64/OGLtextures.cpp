@@ -7,6 +7,7 @@
 #include "glitchmain.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <Glide64\trace.h>
 
 /* Napalm extensions to GrTextureFormat_t */
 #define GR_TEXFMT_ARGB_CMP_FXT1           0x11
@@ -140,7 +141,7 @@ void free_textures()
 FX_ENTRY FxU32 FX_CALL
 grTexMinAddress(GrChipID_t tmu)
 {
-    LOG("grTexMinAddress(%d)\r\n", tmu);
+    WriteTrace(TraceGlitch, TraceDebug, "tmu = %d", tmu);
     if (UMAmode)
         return 0;
     else
@@ -150,7 +151,7 @@ grTexMinAddress(GrChipID_t tmu)
 FX_ENTRY FxU32 FX_CALL
 grTexMaxAddress(GrChipID_t tmu)
 {
-    LOG("grTexMaxAddress(%d)\r\n", tmu);
+    WriteTrace(TraceGlitch, TraceDebug, "tmu = %d", tmu);
     if (UMAmode)
         return TMU_SIZE * 2 - 1;
     else
@@ -161,8 +162,8 @@ FX_ENTRY FxU32 FX_CALL
 grTexTextureMemRequired(FxU32     evenOdd,
 GrTexInfo *info)
 {
+    WriteTrace(TraceGlitch, TraceDebug, "evenOdd = %d", evenOdd);
     int width, height;
-    LOG("grTextureMemRequired(%d)\r\n", evenOdd);
     if (info->largeLodLog2 != info->smallLodLog2) display_warning("grTexTextureMemRequired : loading more than one LOD");
 
     if (info->aspectRatioLog2 < 0)
@@ -211,8 +212,8 @@ grTexCalcMemRequired(
 GrLOD_t lodmin, GrLOD_t lodmax,
 GrAspectRatio_t aspect, GrTextureFormat_t fmt)
 {
+    WriteTrace(TraceGlitch, TraceDebug, "lodmin = %d, lodmax: %d aspect: %d fmt: %d", lodmin, lodmax, aspect, fmt);
     int width, height;
-    LOG("grTexCalcMemRequired(%d, %d, %d, %d)\r\n", lodmin, lodmax, aspect, fmt);
     if (lodmax != lodmin) display_warning("grTexCalcMemRequired : loading more than one LOD");
 
     if (aspect < 0)
@@ -387,11 +388,12 @@ FxU32      startAddress,
 FxU32      evenOdd,
 GrTexInfo  *info)
 {
+    WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, startAddress: %d evenOdd: %d", tmu, startAddress, evenOdd);
+
     int width, height, i, j;
     int factor;
     int glformat = 0;
     int gltexfmt = 0, glpixfmt = 0, glpackfmt = 0;
-    LOG("grTexDownloadMipMap(%d,%d,%d)\r\n", tmu, startAddress, evenOdd);
     if (info->largeLodLog2 != info->smallLodLog2) display_warning("grTexDownloadMipMap : loading more than one LOD");
 
     if (info->aspectRatioLog2 < 0)
@@ -649,7 +651,7 @@ FxU32      startAddress,
 FxU32      evenOdd,
 GrTexInfo  *info)
 {
-    LOG("grTexSource(%d,%d,%d)\r\n", tmu, startAddress, evenOdd);
+    WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, startAddress: %d evenOdd: %d", tmu, startAddress, evenOdd);
 
     if (tmu == GR_TMU1 || nbTextureUnits <= 2)
     {
@@ -669,7 +671,7 @@ GrTexInfo  *info)
 
         glBindTexture(GL_TEXTURE_2D, startAddress + 1);
 #ifdef VPDEBUG
-        dump_tex(startAddress+1);
+        dump_tex(startAddress + 1);
 #endif
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter0);
@@ -693,7 +695,7 @@ GrTexInfo  *info)
 
         glBindTexture(GL_TEXTURE_2D, startAddress + 1);
 #ifdef VPDEBUG
-        dump_tex(startAddress+1);
+        dump_tex(startAddress + 1);
 #endif
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter1);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter1);
@@ -733,7 +735,7 @@ FxU8 detail_scale,
 float detail_max
 )
 {
-    LOG("grTexDetailControl(%d,%d,%d,%d)\r\n", tmu, lod_bias, detail_scale, detail_max);
+    WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, lod_bias: %d detail_scale: %d detail_max: %d", tmu, lod_bias, detail_scale, detail_max);
     if (lod_bias != 31 && detail_scale != 7)
     {
         if (!lod_bias && !detail_scale && !detail_max) return;
@@ -753,7 +755,7 @@ float detail_max
 FX_ENTRY void FX_CALL
 grTexLodBiasValue(GrChipID_t tmu, float bias)
 {
-    LOG("grTexLodBiasValue(%d,%f)\r\n", tmu, bias);
+    WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, bias: %f", tmu, bias);
 }
 
 FX_ENTRY void FX_CALL
@@ -763,7 +765,7 @@ GrTextureFilterMode_t minfilter_mode,
 GrTextureFilterMode_t magfilter_mode
 )
 {
-    LOG("grTexFilterMode(%d,%d,%d)\r\n", tmu, minfilter_mode, magfilter_mode);
+    WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, bias: %d magfilter_mode: %d", tmu, minfilter_mode, magfilter_mode);
     if (tmu == GR_TMU1 || nbTextureUnits <= 2)
     {
         if (tmu == GR_TMU1 && nbTextureUnits <= 2) return;
@@ -799,7 +801,7 @@ GrTextureClampMode_t s_clampmode,
 GrTextureClampMode_t t_clampmode
 )
 {
-    LOG("grTexClampMode(%d, %d, %d)\r\n", tmu, s_clampmode, t_clampmode);
+    WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, s_clampmode: %d t_clampmode: %d", tmu, s_clampmode, t_clampmode);
     if (tmu == GR_TMU1 || nbTextureUnits <= 2)
     {
         if (tmu == GR_TMU1 && nbTextureUnits <= 2) return;

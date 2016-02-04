@@ -6,7 +6,10 @@ enum TraceModuleGlide64
 {
     TraceSettings = MaxTraceModuleCommon,
     TraceUnknown,
+    TraceGlide64,
     TraceInterface,
+    TraceResolution,
+    TraceGlitch,
     MaxTraceModuleGlide64,
 };
 

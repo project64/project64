@@ -41,6 +41,7 @@
 #include "Gfx_1.3.h"
 #include "Util.h"
 #include "Combine.h"
+#include "trace.h"
 
 #define FASTSEARCH  // Enable fast combine mode searching algorithm
 
@@ -152,8 +153,8 @@ COMBINE cmb;
   cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
   cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_ONE; \
-  } \
-  else { \
+          } \
+                                else { \
   USE_T0(); \
 }
 #define T0_ADD_T1() \
@@ -189,13 +190,13 @@ COMBINE cmb;
 #define T0_INTER_T1_USING_FACTOR(factor) \
   if (factor == 0xFF) { \
   USE_T1(); \
-  } \
-  else if (factor == 0x00) { \
+          } \
+                                else if (factor == 0x00) { \
   USE_T0(); \
 }\
-  else {\
+                                else {\
   if (factor <= 0x80) rdp.best_tex = 0; \
-  else rdp.best_tex = 1; \
+                                else rdp.best_tex = 1; \
   cmb.tex |= 3, \
   cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
   cmb.tmu0_func = GR_COMBINE_FUNCTION_BLEND, \
@@ -206,13 +207,13 @@ COMBINE cmb;
 #define T1_INTER_T0_USING_FACTOR(factor)  /* inverse of above */\
   if (factor == 0xFF) { \
   USE_T0(); \
-  } \
-  else if (factor == 0x00) { \
+          } \
+                                else if (factor == 0x00) { \
   USE_T1(); \
 }\
-  else {\
+                                else {\
   if (factor <= 0x80) rdp.best_tex = 0; \
-  else rdp.best_tex = 1; \
+                                else rdp.best_tex = 1; \
   cmb.tex |= 3, \
   cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
   cmb.tmu0_func = GR_COMBINE_FUNCTION_BLEND, \
@@ -235,8 +236,8 @@ COMBINE cmb;
 #define T0_INTER_T1_USING_T1() \
   if (!cmb.combine_ext) { \
   T0_INTER_T1_USING_FACTOR(0x7F); \
-  }\
-  else {\
+          }\
+                                else {\
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
   cmb.t1c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB, \
@@ -266,8 +267,8 @@ COMBINE cmb;
 #define T0_INTER_T1_USING_PRIM() \
   if (!cmb.combine_ext) { \
   T0_INTER_T1_USING_FACTOR ((rdp.prim_color&0xFF)); \
-  }\
-  else {\
+          }\
+                                else {\
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
   cmb.t1c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB, \
@@ -292,8 +293,8 @@ COMBINE cmb;
 #define T1_INTER_T0_USING_PRIM() /* inverse of above */\
   if (!cmb.combine_ext) { \
   T1_INTER_T0_USING_FACTOR ((rdp.prim_color&0xFF)); \
-  }\
-  else {\
+          }\
+                                else {\
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
   cmb.t1c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB, \
@@ -318,8 +319,8 @@ COMBINE cmb;
 #define T0_INTER_T1_USING_ENV() \
   if (!cmb.combine_ext) { \
   T0_INTER_T1_USING_FACTOR ((rdp.env_color&0xFF)); \
-  }\
-  else {\
+          }\
+                                else {\
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
   cmb.t1c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB, \
@@ -344,8 +345,8 @@ COMBINE cmb;
 #define T1_INTER_T0_USING_ENV() /* inverse of above */\
   if (!cmb.combine_ext) { \
   T1_INTER_T0_USING_FACTOR ((rdp.env_color&0xFF)); \
-  }\
-  else {\
+          }\
+                                else {\
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
   cmb.t1c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB, \
@@ -370,8 +371,8 @@ COMBINE cmb;
 #define T0_INTER_T1_USING_SHADEA() \
   if (!cmb.combine_ext) { \
   T0_INTER_T1_USING_FACTOR (0x7F); \
-  }\
-  else {\
+          }\
+                                else {\
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
   cmb.t1c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB, \
@@ -395,8 +396,8 @@ COMBINE cmb;
 #define T1_INTER_T0_USING_SHADEA() \
   if (!cmb.combine_ext) { \
   T0_INTER_T1_USING_FACTOR (0x7F); \
-  }\
-  else {\
+          }\
+                                else {\
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
   cmb.t1c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB, \
@@ -460,7 +461,7 @@ COMBINE cmb;
   MOD_0_FAC (lod_frac & 0xFF);
 #define T1_SUB_PRIM_MUL_PRIMLOD_ADD_T0() \
   if (cmb.combine_ext) \
-{ \
+        { \
   T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GR_FUNC_MODE_X, \
   GR_CMBX_TMU_CCOLOR, GR_FUNC_MODE_NEGATIVE_X, \
   GR_CMBX_DETAIL_FACTOR, 0, \
@@ -473,8 +474,8 @@ COMBINE cmb;
   cmb.tex |= 3; \
   percent = (float)(lod_frac) / 255.0f; \
   cmb.dc0_detailmax = cmb.dc1_detailmax = percent; \
-} \
-  else \
+        } \
+                                else \
 {  \
   T0_ADD_T1 (); \
   MOD_1 (TMOD_TEX_SUB_COL_MUL_FAC); \
@@ -484,8 +485,8 @@ COMBINE cmb;
 #define PRIM_INTER_T0_USING_SHADEA() \
   if (!cmb.combine_ext) { \
   USE_T0 (); \
-  }\
-  else {\
+          }\
+                                else {\
   rdp.best_tex = 0; \
   cmb.tex |= 1, \
   cmb.t0c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB, \
@@ -509,8 +510,8 @@ COMBINE cmb;
   cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL, \
   cmb.tmu0_a_func = GR_COMBINE_FUNCTION_SCALE_OTHER, \
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_ONE; \
-  } \
-  else { \
+          } \
+                                else { \
   A_USE_T0(); \
 }
 #define A_T0_ADD_T1() \
@@ -554,11 +555,11 @@ COMBINE cmb;
 #define A_T0_INTER_T1_USING_FACTOR(factor) \
   if (factor == 0xFF) { \
   A_USE_T1(); \
-  } \
-  else if (factor == 0x00) { \
+          } \
+                                else if (factor == 0x00) { \
   A_USE_T0(); \
 }\
-  else { \
+                                else { \
   cmb.tex |= 3, \
   cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL, \
   cmb.tmu0_a_func = GR_COMBINE_FUNCTION_BLEND, \
@@ -569,11 +570,11 @@ COMBINE cmb;
 #define A_T1_INTER_T0_USING_FACTOR(factor) /* inverse of above */\
   if (factor == 0xFF) { \
   A_USE_T0(); \
-  } \
-  else if (factor == 0x00) { \
+          } \
+                                else if (factor == 0x00) { \
   A_USE_T1(); \
 }\
-  else { \
+                                else { \
   cmb.tex |= 3, \
   cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL, \
   cmb.tmu0_a_func = GR_COMBINE_FUNCTION_BLEND, \
@@ -584,8 +585,8 @@ COMBINE cmb;
 #define A_T0_INTER_T1_USING_SHADEA() \
   if (!cmb.combine_ext) { \
   A_T0_INTER_T1_USING_FACTOR (0x7F); \
-  }\
-  else {\
+          }\
+                                else {\
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
   cmb.t1a_ext_a = GR_CMBX_LOCAL_TEXTURE_ALPHA, \
@@ -630,7 +631,6 @@ COMBINE cmb;
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR, \
   percent = (float)(rdp.env_color&0xFF) / 255.0f, \
   cmb.dc0_detailmax = cmb.dc1_detailmax = percent
-
 
 // UNIMP - writes to the unimplemented log, if it's enabled
 #ifdef UNIMP_LOG
@@ -15974,12 +15974,12 @@ void CombineBlender()
 
 void InitCombine()
 {
-    LOG("InitCombine() ");
+    WriteTrace(TraceGlide64, TraceDebug, "-");
     memset(&cmb, 0, sizeof(cmb));
     const char *extensions = grGetString(GR_EXTENSION);
     if (const char * extstr = strstr(extensions, "COMBINE")) {
         if (!strncmp(extstr, "COMBINE", 7)) {
-            LOG("extensions ");
+            WriteTrace(TraceGlide64, TraceDebug, "extensions");
             cmb.grColorCombineExt = (GRCOLORCOMBINEEXT)grColorCombineExt;
             cmb.grAlphaCombineExt = (GRCOLORCOMBINEEXT)grAlphaCombineExt;
             cmb.grTexColorCombineExt = (GRTEXCOLORCOMBINEEXT)grTexColorCombineExt;
@@ -15989,7 +15989,7 @@ void InitCombine()
                 cmb.grTexColorCombineExt && cmb.grTexAlphaCombineExt)
             {
                 cmb.combine_ext = TRUE;
-                LOG("initialized.");
+                WriteTrace(TraceGlide64, TraceDebug, "initialized.");
             }
             else
             {
@@ -16000,7 +16000,6 @@ void InitCombine()
     cmb.dc0_lodbias = cmb.dc1_lodbias = 31;
     cmb.dc0_detailscale = cmb.dc1_detailscale = 7;
     cmb.lodbias0 = cmb.lodbias1 = 1.0f;
-    LOG("\n");
 }
 
 void ColorCombinerToExtension()

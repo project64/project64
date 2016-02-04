@@ -65,10 +65,6 @@ int  ghq_dmptex_toggle_key = 0;
 std::ofstream extlog;
 #endif
 
-#ifdef LOGGING
-std::ofstream loga;
-#endif
-
 #ifdef RDP_LOGGING
 int log_open = FALSE;
 std::ofstream rdp_log;
@@ -217,12 +213,8 @@ void _ChangeSize()
     rdp.vi_height = (vend - vstart) * fscale_y * 1.0126582f;
     float aspect = (g_settings->adjust_aspect && (fscale_y > fscale_x) && (rdp.vi_width > rdp.vi_height)) ? fscale_x / fscale_y : 1.0f;
 
-#ifdef LOGGING
-    sprintf (out_buf, "hstart: %d, hend: %d, vstart: %d, vend: %d\n", hstart, hend, vstart, vend);
-    LOG (out_buf);
-    sprintf (out_buf, "size: %d x %d\n", (int)rdp.vi_width, (int)rdp.vi_height);
-    LOG (out_buf);
-#endif
+    WriteTrace(TraceResolution, TraceDebug, "hstart: %d, hend: %d, vstart: %d, vend: %d\n", hstart, hend, vstart, vend);
+    WriteTrace(TraceResolution, TraceDebug, "size: %d x %d\n", (int)rdp.vi_width, (int)rdp.vi_height);
 
     rdp.scale_x = (float)g_settings->res_x / rdp.vi_width;
     if (region > 0 && g_settings->pal230)
@@ -566,12 +558,12 @@ void WriteSettings(bool saveEmulationSettings)
     SetSetting(Set_wrpAnisotropic, g_settings->wrpAnisotropic);
 
 #ifndef _ENDUSER_RELEASE_
-    SetSetting(Set_autodetect_ucode,g_settings->autodetect_ucode);
-    SetSetting(Set_ucode,(int)g_settings->ucode);
-    SetSetting(Set_wireframe,g_settings->wireframe);
-    SetSetting(Set_wfmode,g_settings->wfmode);
-    SetSetting(Set_logging,g_settings->logging);
-    SetSetting(Set_log_clear,g_settings->log_clear);
+    SetSetting(Set_autodetect_ucode, g_settings->autodetect_ucode);
+    SetSetting(Set_ucode, (int)g_settings->ucode);
+    SetSetting(Set_wireframe, g_settings->wireframe);
+    SetSetting(Set_wfmode, g_settings->wfmode);
+    SetSetting(Set_logging, g_settings->logging);
+    SetSetting(Set_log_clear, g_settings->log_clear);
     SetSetting(Set_run_in_window,g_settings->run_in_window);
     SetSetting(Set_elogging,g_settings->elogging);
     SetSetting(Set_filter_cache,g_settings->filter_cache);
@@ -804,7 +796,7 @@ int InitGfx()
 
     OPEN_RDP_LOG();  // doesn't matter if opens again; it will check for it
     OPEN_RDP_E_LOG();
-    LOG("InitGfx ()\n");
+    WriteTrace(TraceGlide64, TraceDebug, "-");
 
     debugging = FALSE;
     rdp_reset();
@@ -859,7 +851,7 @@ int InitGfx()
         // we get better texture cache hits with UMA on
         grEnable(GR_TEXTURE_UMA_EXT);
         voodoo.tex_UMA = TRUE;
-        LOG("Using TEXUMA extension.\n");
+        WriteTrace(TraceGlide64, TraceDebug, "Using TEXUMA extension");
     }
     //*/
 
@@ -1099,7 +1091,7 @@ int InitGfx()
 
 void ReleaseGfx()
 {
-    LOG("ReleaseGfx ()\n");
+    WriteTrace(TraceGlide64, TraceDebug, "-");
 
     // Restore gamma settings
     if (voodoo.gamma_correction)
@@ -1176,12 +1168,10 @@ CriticalSection * g_ProcessDListCS = NULL;
 
 extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReserved*/)
 {
-    sprintf(out_buf, "DllMain (%0p - %d)\n", hinst, fdwReason);
-    LOG(out_buf);
-
     if (fdwReason == DLL_PROCESS_ATTACH)
     {
         hinstDLL = hinst;
+        SetupTrace();
         if (g_ProcessDListCS == NULL)
         {
             g_ProcessDListCS = new CriticalSection();
@@ -1265,7 +1255,7 @@ void CALL ReadScreen(void **dest, int *width, int *height)
         // Unlock the frontbuffer
         grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_FRONTBUFFER);
     }
-    LOG("ReadScreen. Success.\n");
+    WriteTrace(TraceGlide64, TraceDebug, "Success");
 }
 
 /******************************************************************
@@ -1290,7 +1280,7 @@ output:   none
 *******************************************************************/
 EXPORT void CALL ChangeWindow(void)
 {
-    LOG("ChangeWindow()\n");
+    WriteTrace(TraceGlide64, TraceDebug, "-");
 
     if (evoodoo)
     {
@@ -1357,7 +1347,7 @@ output:   none
 *******************************************************************/
 void CALL CloseDLL(void)
 {
-    LOG("CloseDLL ()\n");
+    WriteTrace(TraceGlide64, TraceDebug, "-");
 
     // re-set the old window proc
 #ifdef WINPROC_OVERRIDE
@@ -1369,7 +1359,7 @@ void CALL CloseDLL(void)
     {
         UnhookWindowsHookEx(hhkLowLevelKybd);
         hhkLowLevelKybd = 0;
-    }
+}
 #endif
 
     //CLOSELOG ();
@@ -1420,7 +1410,7 @@ output:   none
 *******************************************************************/
 void CALL DrawScreen(void)
 {
-    LOG("DrawScreen ()\n");
+    WriteTrace(TraceGlide64, TraceDebug, "-");
 }
 
 /******************************************************************
@@ -1433,7 +1423,7 @@ output:   none
 *******************************************************************/
 void CALL GetDllInfo(PLUGIN_INFO * PluginInfo)
 {
-    LOG("GetDllInfo ()\n");
+    WriteTrace(TraceGlide64, TraceDebug, "-");
     PluginInfo->Version = 0x0104;     // Set to 0x0104
     PluginInfo->Type = PLUGIN_TYPE_GFX;  // Set to PLUGIN_TYPE_GFX
 #ifdef _DEBUG
@@ -1539,7 +1529,7 @@ void CALL MoveScreen(int xpos, int ypos)
 {
     xpos = xpos;
     ypos = ypos;
-    LOG("MoveScreen (" << xpos << ", " << ypos << ")\n");
+    WriteTrace(TraceGlide64, TraceDebug, "xpos: %d ypos: %d", xpos, ypos);
     rdp.window_changed = TRUE;
 }
 
@@ -1550,7 +1540,6 @@ void CALL PluginLoaded(void)
     Set_texture_dir = FindSystemSettingId("Dir:Texture");
     Set_log_flush = FindSystemSettingId("Log Auto Flush");
     Set_log_dir = FindSystemSettingId("Dir:Log");
-    SetupTrace();
 
     WriteTrace(TraceInterface, TraceDebug, "Start");
 
@@ -1651,7 +1640,7 @@ output:   none
 *******************************************************************/
 void CALL RomClosed(void)
 {
-    LOG("RomClosed ()\n");
+    WriteTrace(TraceGlide64, TraceDebug, "-");
 
     CLOSE_RDP_LOG();
     CLOSE_RDP_E_LOG();
@@ -1691,7 +1680,7 @@ output:   none
 *******************************************************************/
 void CALL RomOpen(void)
 {
-    LOG("RomOpen ()\n");
+    WriteTrace(TraceGlide64, TraceDebug, "-");
     no_dlist = true;
     romopen = TRUE;
     ucode_error_report = TRUE;	// allowed to report ucode errors
@@ -1784,13 +1773,13 @@ output:   none
 bool no_dlist = true;
 void CALL ShowCFB(void)
 {
+    WriteTrace(TraceGlide64, TraceDebug, "-");
     no_dlist = true;
-    LOG("ShowCFB ()\n");
 }
 
 void drawViRegBG()
 {
-    LRDP("drawViRegBG\n");
+    WriteTrace(TraceGlide64, TraceDebug, "-");
     const uint32_t VIwidth = *gfx.VI_WIDTH_REG;
     FB_TO_SCREEN_INFO fb_info;
     fb_info.width = VIwidth;
@@ -1848,10 +1837,7 @@ void CALL UpdateScreen(void)
         LOG("KEY!!!\n");
     }
 #endif
-    char out_buf[128];
-    sprintf(out_buf, "UpdateScreen (). Origin: %08x, Old origin: %08x, width: %d\n", *gfx.VI_ORIGIN_REG, rdp.vi_org_reg, *gfx.VI_WIDTH_REG);
-    LOG(out_buf);
-    LRDP(out_buf);
+    WriteTrace(TraceGlide64, TraceDebug, "Origin: %08x, Old origin: %08x, width: %d\n", *gfx.VI_ORIGIN_REG, rdp.vi_org_reg, *gfx.VI_WIDTH_REG);
 
     uint32_t width = (*gfx.VI_WIDTH_REG) << 1;
     if (*gfx.VI_ORIGIN_REG > width)
@@ -2207,7 +2193,7 @@ void newSwapBuffers()
 
     if (fb_hwfbe_enabled && !(g_settings->hacks&hack_RE2) && !evoodoo)
         grAuxBufferExt(GR_BUFFER_AUXBUFFER);
-    LOG("BUFFER SWAPPED\n");
+    WriteTrace(TraceGlide64, TraceDebug, "BUFFER SWAPPED");
     grBufferSwap(g_settings->vsync);
     fps_count++;
     if (*gfx.VI_STATUS_REG & 0x08) //gamma correction is used

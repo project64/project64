@@ -47,6 +47,7 @@
 #include "Gfx_1.3.h"
 #include "DepthBufferRender.h"
 #include "Config.h"
+#include "trace.h"
 
 #ifdef _WIN32
 #include <Common/CriticalSection.h>
@@ -1073,7 +1074,7 @@ output:   none
 *******************************************************************/
 void CALL DllConfig(HWND hParent)
 {
-    LOG("DllConfig ()\n");
+    WriteTrace(TraceGlide64, TraceDebug, "-");
 #ifdef _WIN32
     CGuard guard(*g_ProcessDListCS);
     ReadSettings();

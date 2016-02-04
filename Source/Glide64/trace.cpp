@@ -46,7 +46,7 @@ void SetupTrace(void)
     TraceSetMaxModule(MaxTraceModuleGlide64, TraceVerbose);
 #else
 #ifdef _DEBUG
-    TraceSetMaxModule(MaxTraceModuleGlide64, TraceVerbose);
+    TraceSetMaxModule(MaxTraceModuleGlide64, TraceInfo);
 #else
     TraceSetMaxModule(MaxTraceModuleGlide64, TraceError);
 #endif
@@ -55,7 +55,10 @@ void SetupTrace(void)
     TraceSetModuleName(TraceMD5, "MD5");
     TraceSetModuleName(TraceSettings, "Settings");
     TraceSetModuleName(TraceUnknown, "Unknown");
+    TraceSetModuleName(TraceGlide64, "Glide64");
     TraceSetModuleName(TraceInterface, "Interface");
+    TraceSetModuleName(TraceResolution, "Resolution");
+    TraceSetModuleName(TraceGlitch, "Glitch");
 
     char log_dir[260];
     memset(log_dir, 0, sizeof(log_dir));

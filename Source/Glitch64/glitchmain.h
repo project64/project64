@@ -287,18 +287,4 @@ GrColor_t     value);
  }\
 }
 
-#ifdef VPDEBUG
-#define LOGGING
-#endif
-
-#ifdef LOGGING
-void OPEN_LOG();
-void CLOSE_LOG();
-void LOG(const char *text, ...);
-#else // LOGGING
-#define OPEN_LOG()
-#define CLOSE_LOG()
-#define LOG
-#endif // LOGGING
-
 #endif

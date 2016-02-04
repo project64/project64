@@ -102,7 +102,6 @@ extern "C" {
 
     // ********************************
     // ** TAKE OUT BEFORE RELEASE!!! **
-    //#define LOGGING			// log of spec functions called
     //#define LOG_KEY			// says "Key!!!" in the log when space bar is pressed
 
     //#define LOG_UCODE
@@ -190,13 +189,6 @@ extern "C" {
 #ifdef PERFORMANCE
     extern int64 perf_cur;
     extern int64 perf_next;
-#endif
-
-#ifdef LOGGING
-    extern std::ofstream loga;
-#define LOG(x) loga.open("glide64_log.txt",std::ios::app); loga << x; loga.flush(); loga.close();
-#else
-#define LOG(x)
 #endif
 
 #ifdef RDP_LOGGING
