@@ -77,17 +77,6 @@ void UpdateRTC(LPGBCART Cart)
 
 	Cart->timerLastUpdate = now;
 
-	DebugWriteA("Update RTC: ");
-	DebugWriteByteA(Cart->TimerData[0]);
-	DebugWriteA(":");
-	DebugWriteByteA(Cart->TimerData[1]);
-	DebugWriteA(":");
-	DebugWriteByteA(Cart->TimerData[2]);
-	DebugWriteA(":");
-	DebugWriteByteA(Cart->TimerData[3]);
-	DebugWriteA(":");
-	DebugWriteByteA(Cart->TimerData[4]);
-	DebugWriteA("\n");
 }
 
 // returns true if the ROM was loaded OK

@@ -17,6 +17,7 @@
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/N64Class.h>
+#include <Project64-core/N64System/Mips/Transferpak.h>
 #include <Project64-core/N64System/Mips/Rumblepak.h>
 #include <Project64-core/N64System/Mips/Mempak.H>
 #include <Project64-core/Logging.h>
@@ -526,7 +527,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
             {
             case PLUGIN_RUMBLE_PAK: Rumblepak::ReadFrom(address, data); break;
             case PLUGIN_MEMPAK: Mempak::ReadFrom(Control, address, data); break;
-            case PLUGIN_TANSFER_PAK: /* TODO */; break;
+            case PLUGIN_TANSFER_PAK: Transferpak::ReadFrom(address, data); break;
             case PLUGIN_RAW: if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Control, Command); } break;
             default:
                 memset(&Command[5], 0, 0x20);
@@ -534,7 +535,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
 
             if (Controllers[Control].Plugin != PLUGIN_RAW)
             {
-                Command[0x25] = Mempak::CalculateCrc(&Command[5]);
+                Command[0x25] = Mempak::CalculateCrc(data);
             }
         }
         else
@@ -567,13 +568,13 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
             {
             case PLUGIN_MEMPAK: Mempak::WriteTo(Control, address, data); break;
             case PLUGIN_RUMBLE_PAK: Rumblepak::WriteTo(Control, address, data); break;
-            case PLUGIN_TANSFER_PAK: /* TODO */; break;
+            case PLUGIN_TANSFER_PAK: Transferpak::WriteTo(address, data); break;
             case PLUGIN_RAW: if (g_Plugins->Control()->ControllerCommand) { g_Plugins->Control()->ControllerCommand(Control, Command); } break;
             }
 
             if (Controllers[Control].Plugin != PLUGIN_RAW)
             {
-                Command[0x25] = Mempak::CalculateCrc(&Command[5]);
+                Command[0x25] = Mempak::CalculateCrc(data);
             }
         }
         else

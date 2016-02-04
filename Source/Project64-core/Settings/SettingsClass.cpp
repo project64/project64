@@ -228,6 +228,8 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_AudioResetOnLoad, new CSettingTypeGame("AudioResetOnLoad", Rdb_AudioResetOnLoad));
     AddHandler(Game_AllowROMWrites, new CSettingTypeGame("AllowROMWrites", Rdb_AllowROMWrites));
     AddHandler(Game_CRC_Recalc, new CSettingTypeGame("CRC-Recalc", Rdb_CRC_Recalc));
+    AddHandler(Game_Transferpak_ROM, new CSettingTypeGame("Tpak-ROM-dir", Default_None));
+    AddHandler(Game_Transferpak_Sav, new CSettingTypeGame("Tpak-Sav-dir", Default_None));
 
     //User Interface
     AddHandler(UserInterface_BasicMode, new CSettingTypeApplication("", "Basic Mode", (uint32_t)true));

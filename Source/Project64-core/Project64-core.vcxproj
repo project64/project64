@@ -50,6 +50,7 @@
     <ClCompile Include="N64System\Mips\Dma.cpp" />
     <ClCompile Include="N64System\Mips\Eeprom.cpp" />
     <ClCompile Include="N64System\Mips\FlashRam.cpp" />
+    <ClCompile Include="N64System\Mips\GBCart.cpp" />
     <ClCompile Include="N64System\Mips\MemoryVirtualMem.cpp" />
     <ClCompile Include="N64System\Mips\Mempak.cpp" />
     <ClCompile Include="N64System\Mips\OpcodeName.cpp" />
@@ -60,6 +61,7 @@
     <ClCompile Include="N64System\Mips\SystemEvents.cpp" />
     <ClCompile Include="N64System\Mips\SystemTiming.cpp" />
     <ClCompile Include="N64System\Mips\TLBclass.cpp" />
+    <ClCompile Include="N64System\Mips\Transferpak.cpp" />
     <ClCompile Include="N64System\N64Class.cpp" />
     <ClCompile Include="N64System\N64DiskClass.cpp" />
     <ClCompile Include="N64System\N64RomClass.cpp" />
@@ -135,6 +137,7 @@
     <ClInclude Include="N64System\Mips\Dma.h" />
     <ClInclude Include="N64System\Mips\Eeprom.h" />
     <ClInclude Include="N64System\Mips\FlashRam.h" />
+    <ClInclude Include="N64System\Mips\GBCart.h" />
     <ClInclude Include="N64System\Mips\MemoryClass.h" />
     <ClInclude Include="N64System\Mips\MemoryVirtualMem.h" />
     <ClInclude Include="N64System\Mips\Mempak.h" />
@@ -147,6 +150,7 @@
     <ClInclude Include="N64System\Mips\SystemEvents.h" />
     <ClInclude Include="N64System\Mips\SystemTiming.h" />
     <ClInclude Include="N64System\Mips\TLBClass.h" />
+    <ClInclude Include="N64System\Mips\Transferpak.h" />
     <ClInclude Include="N64System\Mips\TranslateVaddr.h" />
     <ClInclude Include="N64System\N64Class.h" />
     <ClInclude Include="N64System\N64DiskClass.h" />
