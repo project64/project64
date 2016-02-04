@@ -11,7 +11,7 @@
 #pragma once
 
 #include <stddef.h>
-#include <stdint.h>
+#include <Common/stdtypes.h>
 
 struct gb_cart
 {
