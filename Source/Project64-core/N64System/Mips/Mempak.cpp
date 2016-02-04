@@ -10,6 +10,8 @@
 ****************************************************************************/
 #include "stdafx.h"
 #include "Mempak.H"
+
+#include <stdio.h>
 #include <Common/path.h>
 
 uint8_t Mempaks[4][0x8000];
