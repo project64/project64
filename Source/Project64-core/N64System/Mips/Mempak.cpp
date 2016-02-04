@@ -12,7 +12,7 @@
 #include "Mempak.H"
 #include <Common/path.h>
 
-uint8_t Mempaks[4][0x8000];
+uint8_t Mempaks[4][128 * 256]; /* [CONTROLLERS][PAGES][BYTES_PER_PAGE] */
 CPath MempakNames[4];
 
 void Mempak::Load()
