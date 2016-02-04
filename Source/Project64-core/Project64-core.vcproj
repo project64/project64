@@ -385,6 +385,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\N64System\Mips\GBCart.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\N64System\Mips\MemoryVirtualMem.cpp"
 						>
 					</File>
@@ -553,6 +557,10 @@
 				</File>
 				<File
 					RelativePath=".\N64System\FramePerSecondClass.h"
+					>
+				</File>
+				<File
+					RelativePath=".\N64System\Mips\GBCart.h"
 					>
 				</File>
 				<File
