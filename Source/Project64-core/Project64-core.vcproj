@@ -424,6 +424,10 @@
 						RelativePath=".\N64System\Mips\TLBclass.cpp"
 						>
 					</File>
+					<File
+						RelativePath=".\N64System\Mips\Transferpak.cpp"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Recompiler"
