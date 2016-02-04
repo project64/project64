@@ -71,7 +71,7 @@ void Mempak::Format(int32_t Control)
 
     for (size_t count = sizeof(Initialize); count < 128 * 256; count += 2)
     {
-        Mempaks[Control][count] = 0x00;
+        Mempaks[Control][count + 0] = 0x00;
         Mempaks[Control][count + 1] = 0x03;
     }
 }
