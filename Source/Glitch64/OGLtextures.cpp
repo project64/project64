@@ -7,7 +7,7 @@
 #include "glitchmain.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <Glide64\trace.h>
+#include <Glide64/trace.h>
 
 /* Napalm extensions to GrTextureFormat_t */
 #define GR_TEXFMT_ARGB_CMP_FXT1           0x11
