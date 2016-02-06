@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include <Common/stdtypes.h>
+#include <Common/Platform.h>
 #include "Settings.h"
 
 enum SettingLocation {
