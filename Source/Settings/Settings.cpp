@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #include <Common/stdtypes.h>
 #include <Common/Platform.h>
