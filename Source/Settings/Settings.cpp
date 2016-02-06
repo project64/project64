@@ -1,4 +1,6 @@
 #include <stdio.h>
+
+#include <Common/stdtypes.h>
 #include "Settings.h"
 
 enum SettingLocation {
@@ -23,7 +25,7 @@ enum SettingDataType {
 };
 
 typedef struct {
-	DWORD  dwSize;
+    uint32_t dwSize;
 	int    DefaultStartRange;
 	int    SettingStartRange;
 	int    MaximumSettings;
@@ -34,9 +36,9 @@ typedef struct {
 	const char * (*GetSettingSz)    ( void * handle, int ID, char * Buffer, int BufferLen );
     void         (*SetSetting)      ( void * handle, int ID, unsigned int Value );
     void         (*SetSettingSz)    ( void * handle, int ID, const char * Value );
-	void         (*RegisterSetting) ( void * handle, int ID, int DefaultID, SettingDataType Type, 
-                                      SettingLocation Location, const char * Category, const char * DefaultStr, DWORD Value );
-	void         (*UseUnregisteredSetting) (int ID);
+    void         (*RegisterSetting) (void * handle, int ID, int DefaultID, SettingDataType Type,
+        SettingLocation Location, const char * Category, const char * DefaultStr, uint32_t Value);
+    void         (*UseUnregisteredSetting) (int ID);
 } PLUGIN_SETTINGS;
 
 typedef struct {
