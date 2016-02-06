@@ -55,24 +55,24 @@ static bool             g_PluginInitilized = false;
 static char             g_PluginSettingName[300];
 
 extern "C" {
-__declspec(dllexport) void SetSettingInfo (PLUGIN_SETTINGS * info);
-__declspec(dllexport) void SetSettingInfo2 (PLUGIN_SETTINGS2 * info);
-__declspec(dllexport) void SetSettingInfo3 (PLUGIN_SETTINGS3 * info);
+EXPORT void SetSettingInfo (PLUGIN_SETTINGS * info);
+EXPORT void SetSettingInfo2 (PLUGIN_SETTINGS2 * info);
+EXPORT void SetSettingInfo3 (PLUGIN_SETTINGS3 * info);
 }
 
-__declspec(dllexport) void SetSettingInfo (PLUGIN_SETTINGS * info) 
+EXPORT void SetSettingInfo (PLUGIN_SETTINGS * info) 
 {
 	g_PluginSettings   = *info;
 	g_PluginInitilized = true;
 	info->UseUnregisteredSetting = UseUnregisteredSetting;
 }
 
-__declspec(dllexport) void SetSettingInfo2 (PLUGIN_SETTINGS2 * info) 
+EXPORT void SetSettingInfo2 (PLUGIN_SETTINGS2 * info) 
 {
 	g_PluginSettings2 = *info;
 }
 
-__declspec(dllexport) void SetSettingInfo3 (PLUGIN_SETTINGS3 * info) 
+EXPORT void SetSettingInfo3 (PLUGIN_SETTINGS3 * info) 
 {
 	g_PluginSettings3 = *info;
 }
