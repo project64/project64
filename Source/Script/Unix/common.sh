@@ -5,6 +5,7 @@ mkdir -p $obj
 
 FLAGS_x86="\
  -S \
+ -fPIC \
  -masm=intel \
  -march=native \
  -Os"
