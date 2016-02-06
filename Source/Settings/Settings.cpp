@@ -1,4 +1,3 @@
-#include <windows.h>
 #include <stdio.h>
 #include "Settings.h"
 
