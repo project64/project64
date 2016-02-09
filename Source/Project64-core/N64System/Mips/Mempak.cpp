@@ -17,30 +17,27 @@
 uint8_t Mempaks[4][128 * 256]; /* [CONTROLLERS][PAGES][BYTES_PER_PAGE] */
 CPath MempakNames[4];
 
-void Mempak::Load()
+void Mempak::Load(int32_t Control)
 {
     stdstr MempakName;
 
-    for (int i = 0; i < 3; i++)
+    MempakName.Format("%s_Cont_%d", g_Settings->LoadStringVal(Game_GameName).c_str(), Control + 1);
+
+    MempakNames[Control] = CPath(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.mpk",MempakName.c_str()).c_str());
+    if (!MempakNames[Control].DirectoryExists())
     {
-        MempakName.Format("%s_Cont_%d", g_Settings->LoadStringVal(Game_GameName).c_str(), i + 1);
+        MempakNames[Control].DirectoryCreate();
+    }
 
-        MempakNames[i] = CPath(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.mpk",MempakName.c_str()).c_str());
-        if (!MempakNames[i].DirectoryExists())
-        {
-            MempakNames[i].DirectoryCreate();
-        }
-
-        if (MempakNames[i].Exists())
-        {
-            FILE *mempak = fopen(MempakNames[i], "rb");
-            fread(Mempaks[i], 1, 0x8000, mempak);
-            fclose(mempak);
-        }
-        else
-        {
-            Mempak::Format(i);
-        }
+    if (MempakNames[Control].Exists())
+    {
+        FILE *mempak = fopen(MempakNames[Control], "rb");
+        fread(Mempaks[Control], 1, 0x8000, mempak);
+        fclose(mempak);
+    }
+    else
+    {
+        Mempak::Format(Control);
     }
 }
 
