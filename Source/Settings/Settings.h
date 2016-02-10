@@ -4,6 +4,12 @@
 extern "C" {
 #endif
 
+#if defined(_WIN32)
+#define EXPORT          __declspec(dllexport)
+#else
+#define EXPORT          __attribute__((visibility("default")))
+#endif
+
 // Get Plugin Settings, take a setting id
 unsigned int GetSetting        ( short SettingID );
 const char * GetSettingSz      ( short SettingID, char * Buffer, int BufferLen );

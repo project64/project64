@@ -17,7 +17,7 @@
 #include "glide.h"
 #include "g3ext.h"
 #include "glitchmain.h"
-#include <Glide64\trace.h>
+#include <Glide64/trace.h>
 
 #ifdef VPDEBUG
 #include <IL/il.h>
@@ -2964,8 +2964,10 @@ static void CorrectGamma(LPVOID apGammaRamp)
 #else
 static void CorrectGamma(const FxU16 aGammaRamp[3][256])
 {
-    int res = SDL_SetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]);
-    LOG("SDL_SetGammaRamp returned %d\r\n", res);
+    int res;
+
+    res = SDL_SetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]);
+    WriteTrace(TraceGlitch, TraceDebug, "SDL_SetGammaRamp returned %d\r\n", res);
 }
 #endif
 

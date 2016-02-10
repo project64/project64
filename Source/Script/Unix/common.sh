@@ -5,6 +5,7 @@ mkdir -p $obj
 
 FLAGS_x86="\
  -S \
+ -fPIC \
  -masm=intel \
  -march=native \
  -Os"
@@ -40,7 +41,7 @@ $AS -o $obj/SyncEvent.o                 $obj/SyncEvent.asm
 $AS -o $obj/Trace.o                     $obj/Trace.asm
 $AS -o $obj/Util.o                      $obj/Util.asm
 
-set OBJ_LIST="\
+OBJ_LIST="\
  $obj/Util.o \
  $obj/Trace.o \
  $obj/SyncEvent.o \

@@ -4,7 +4,7 @@
 #endif // _WIN32
 #include "glide.h"
 #include "glitchmain.h"
-#include <Glide64\trace.h>
+#include <Glide64/trace.h>
 
 #define Z_MAX (65536.0f)
 

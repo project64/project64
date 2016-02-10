@@ -74,7 +74,7 @@ the plugin
 #include "GlideExtensions.h"
 #include "rdp.h"
 #include "Keys.h"
-#include "config.h"
+#include "Config.h"
 #include "Settings.h"
 
 #if defined __VISUALC__

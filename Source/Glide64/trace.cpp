@@ -1,5 +1,7 @@
 #include "trace.h"
 #include "Config.h"
+
+#include <string.h>
 #include <Common/Trace.h>
 #include <Common/path.h>
 #include <Common/LogClass.h>

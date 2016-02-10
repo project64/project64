@@ -12,6 +12,7 @@
 #include "GBCart.h"
 
 #include <time.h>
+#include <memory>
 
 static void read_gb_cart_normal(struct gb_cart* gb_cart, uint16_t address, uint8_t* data)
 {
