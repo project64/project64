@@ -36,15 +36,12 @@
 // * Do NOT send me the whole project or file that you modified.  Take out your modified code sections, and tell me where to put them.  If people sent the whole thing, I would have many different versions, but no idea how to combine them all.
 //
 //****************************************************************
-
-#ifndef _WIN32
-#include <SDL.h>
-#endif
 #include "Gfx_1.3.h"
 
 #include "TexCache.h"
 #include "Combine.h"
 #include "Util.h"
+#include <Common/Util.h>
 
 void LoadTex(int id, int tmu);
 
@@ -546,11 +543,7 @@ void TexCache()
             else {
                 DisplayLoadProgress(L"Texture dump - OFF\n");
             }
-#if defined(_WIN32)
-            Sleep(1000);
-#else
-            SDL_Delay(1000);
-#endif
+            pjutil::Sleep(1000);
         }
     }
 #endif
