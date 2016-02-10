@@ -4,12 +4,6 @@
 extern "C" {
 #endif
 
-#if defined(_WIN32)
-#define EXPORT          __declspec(dllexport)
-#else
-#define EXPORT          __attribute__((visibility("default")))
-#endif
-
 // Get Plugin Settings, take a setting id
 unsigned int GetSetting        ( short SettingID );
 const char * GetSettingSz      ( short SettingID, char * Buffer, int BufferLen );
@@ -23,7 +17,8 @@ void SetSetting ( short SettingID, unsigned int Value );
 void SetSettingSz ( short SettingID, const char * Value );
 
 // enum's
-enum SETTING_DATA_TYPE {
+enum SETTING_DATA_TYPE 
+{
 	Data_DWORD_General      = 0, // A unsigned int setting used anywhere
 	Data_String_General     = 1, // A string setting used anywhere
 	Data_DWORD_Game         = 2, // A unsigned int associated with the current game
@@ -35,7 +30,7 @@ enum SETTING_DATA_TYPE {
 };
 
 // set other information about different settings
-bool SettingsInitilized ( void );
+int SettingsInitilized ( void );
 void SetModuleName      ( const char * Name );
 void RegisterSetting    ( short SettingID, SETTING_DATA_TYPE Type, const char * Name, const char * Category,
 					        unsigned int DefaultDW, const char * DefaultStr );
