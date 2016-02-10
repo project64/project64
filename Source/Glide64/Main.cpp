@@ -1359,7 +1359,7 @@ void CALL CloseDLL(void)
     {
         UnhookWindowsHookEx(hhkLowLevelKybd);
         hhkLowLevelKybd = 0;
-}
+    }
 #endif
 
     //CLOSELOG ();
@@ -1832,12 +1832,6 @@ output:   none
 uint32_t update_screen_count = 0;
 void CALL UpdateScreen(void)
 {
-#ifdef LOG_KEY
-    if (CheckKeyPressed(G64_VK_SPACE, 0x0001))
-    {
-        LOG("KEY!!!\n");
-    }
-#endif
     WriteTrace(TraceGlide64, TraceDebug, "Origin: %08x, Old origin: %08x, width: %d\n", *gfx.VI_ORIGIN_REG, rdp.vi_org_reg, *gfx.VI_WIDTH_REG);
 
     uint32_t width = (*gfx.VI_WIDTH_REG) << 1;

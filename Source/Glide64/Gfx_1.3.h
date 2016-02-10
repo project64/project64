@@ -102,8 +102,6 @@ extern "C" {
 
     // ********************************
     // ** TAKE OUT BEFORE RELEASE!!! **
-    //#define LOG_KEY			// says "Key!!!" in the log when space bar is pressed
-
     //#define LOG_UCODE
 
     //#define ALTTAB_FIX
