@@ -5,7 +5,7 @@
 #1  #  "Português Brasileiro"	// LANGUAGE ID
 #2  #  "Project64 team"			// Author
 #3  #  "2.2"					// Version
-#4  #  "Dezembro, 2015"			// Date
+#4  #  "Fevereiro, 2016"			// Date
 
 //About DLL Dialog
 #5  #  "Idioma Atual"
@@ -96,6 +96,7 @@
 #212#  "Editar as Configurações do Jogo"
 #213#  "Editar as Trapaças"
 #214#  "Plugin Gráfico"
+#215#  "Jogar com Disco"
 
 //Alternate Name to save Slot
 #220#  "Slot Padrão"
