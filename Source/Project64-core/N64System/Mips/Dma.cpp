@@ -362,9 +362,63 @@ void CDMA::PI_DMA_WRITE()
         g_Reg->PI_CART_ADDR_REG -= 0x10000000;
         if (g_Reg->PI_CART_ADDR_REG + PI_WR_LEN_REG < g_Rom->GetRomSize())
         {
-            for (i = 0; i < PI_WR_LEN_REG; i++)
+            size_t alignment;
+            RDRAM += g_Reg->PI_DRAM_ADDR_REG;
+            ROM += g_Reg->PI_CART_ADDR_REG;
+            alignment = PI_WR_LEN_REG | (size_t)RDRAM | (size_t)ROM;
+            if ((alignment & 0x3) == 0)
             {
-                *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = *(ROM + ((g_Reg->PI_CART_ADDR_REG + i) ^ 3));
+                for (i = 0; i < PI_WR_LEN_REG; i += 4)
+                {
+                    *(uint32_t *)(RDRAM + i) = *(uint32_t *)(ROM + i);
+                }
+            }
+            else if ((alignment & 1) == 0)
+            {
+                if ((PI_WR_LEN_REG & 2) == 0)
+                {
+                    if (((size_t)RDRAM & 2) == 0)
+                    {
+                        for (i = 0; i < PI_WR_LEN_REG; i += 4)
+                        {
+                            *(uint16_t *)(((size_t)RDRAM + i) + 2) = *(uint16_t *)(((size_t)ROM + i) - 2);
+                            *(uint16_t *)(((size_t)RDRAM + i) + 0) = *(uint16_t *)(((size_t)ROM + i) + 4);
+                        }
+                    }
+                    else
+                    {
+                        if (((size_t)ROM & 2) == 0)
+                        {
+                            for (i = 0; i < PI_WR_LEN_REG; i += 4)
+                            {
+                                *(uint16_t *)(((size_t)RDRAM + i) - 2) = *(uint16_t *)(((size_t)ROM + i) + 2);
+                                *(uint16_t *)(((size_t)RDRAM + i) + 4) = *(uint16_t *)(((size_t)ROM + i) + 0);
+                            }
+                        }
+                        else
+                        {
+                            for (i = 0; i < PI_WR_LEN_REG; i += 4)
+                            {
+                                *(uint16_t *)(((size_t)RDRAM + i) - 2) = *(uint16_t *)(((size_t)ROM + i) - 2);
+                                *(uint16_t *)(((size_t)RDRAM + i) + 4) = *(uint16_t *)(((size_t)ROM + i) + 4);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    for (i = 0; i < PI_WR_LEN_REG; i += 2)
+                    {
+                        *(uint16_t *)(((size_t)RDRAM + i) ^ 2) = *(uint16_t *)(((size_t)ROM + i) ^ 2);
+                    }
+                }
+            }
+            else
+            {
+                for (i = 0; i < PI_WR_LEN_REG; i++)
+                {
+                    *(uint8_t *)(((size_t)RDRAM + i) ^ 3) = *(uint8_t *)(((size_t)ROM + i) ^ 3);
+                }
             }
         }
         else if (g_Reg->PI_CART_ADDR_REG >= g_Rom->GetRomSize())
