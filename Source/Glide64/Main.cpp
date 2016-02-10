@@ -1540,6 +1540,7 @@ void CALL PluginLoaded(void)
     Set_texture_dir = FindSystemSettingId("Dir:Texture");
     Set_log_flush = FindSystemSettingId("Log Auto Flush");
     Set_log_dir = FindSystemSettingId("Dir:Log");
+    SetupTrace();
 
     WriteTrace(TraceInterface, TraceDebug, "Start");
 

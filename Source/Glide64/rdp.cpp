@@ -338,6 +338,7 @@ void microcheck()
         g_settings->ucode = GetSetting(Set_ucode);
 
         ReleaseGfx();
+        WriteTrace(TraceGlide64, TraceError, "uCode crc not found in INI, using currently selected uCode %08lx", (unsigned long)uc_crc);
 #ifdef _WIN32
         MessageBox(gfx.hWnd, stdstr_f("Error: uCode crc not found in INI, using currently selected uCode\n\n%08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
 #endif
@@ -349,6 +350,8 @@ void microcheck()
         g_settings->ucode = GetSetting(Set_ucode);
 
         ReleaseGfx();
+        WriteTrace(TraceGlide64, TraceError, "Unsupported uCode! crc: %08lx", (unsigned long)uc_crc);
+
 #ifdef _WIN32
         MessageBox(gfx.hWnd, stdstr_f("Error: Unsupported uCode!\n\ncrc: %08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
 #endif
