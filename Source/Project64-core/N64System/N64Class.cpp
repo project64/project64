@@ -66,8 +66,6 @@ m_CheatsSlectionChanged(false)
     m_Limiter.SetHertz(gameHertz);
     g_Settings->SaveDword(GameRunning_ScreenHertz, gameHertz);
     m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats), Plugins);
-    Mempak::Load();
-    Transferpak::Init();
 }
 
 CN64System::~CN64System()
@@ -693,6 +691,25 @@ bool CN64System::SetActiveSystem(bool bActive)
         if (!bRes)
         {
             WriteTrace(TraceN64System, TraceError, "g_Plugins->Initiate Failed");
+        }
+        else
+        {
+            CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
+            for (int i = 0; i < 3; i++)
+            {
+                if (Controllers[i].Present)
+                {
+                    switch (Controllers[i].Plugin)
+                    {
+                    case PLUGIN_TANSFER_PAK:
+                        Transferpak::Init();
+                        break;
+                    case PLUGIN_MEMPAK:
+                        Mempak::Load(i);
+                        break;
+                    }
+                }
+            }
         }
     }
 
