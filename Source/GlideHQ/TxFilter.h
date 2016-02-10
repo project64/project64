@@ -44,8 +44,8 @@ private:
   int _maxbpp;
   int _options;
   int _cacheSize;
-  std::wstring _ident;
-  std::wstring _path;
+  std::string _ident;
+  std::string _path;
   TxQuantize *_txQuantize;
   TxTexCache *_txTexCache;
   TxHiResCache *_txHiResCache;
@@ -60,8 +60,8 @@ public:
            int maxbpp,
            int options,
            int cachesize,
-           const wchar_t *path,
-           const wchar_t *ident,
+           const char *path,
+           const char *ident,
            dispInfoFuncExt callback);
   boolean filter(uint8 *src,
                   int srcwidth,

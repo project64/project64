@@ -62,20 +62,23 @@
 #include <string>
 #include <Common/path.h>
 #include <Common/StdString.h>
+#ifdef _WIN32
 #include <io.h>
+#endif
 
 TxHiResCache::~TxHiResCache()
 {
 #if DUMP_CACHE
-    if ((_options & DUMP_HIRESTEXCACHE) && !_haveCache && !_abortLoad) {
+    if ((_options & DUMP_HIRESTEXCACHE) && !_haveCache && !_abortLoad)
+    {
         /* dump cache to disk */
-        std::wstring filename = _ident + L"_HIRESTEXTURES.dat";
+        std::string filename = _ident + "_HIRESTEXTURES.dat";
 
-        CPath cachepath(stdstr().FromUTF16(_path.c_str()).c_str(), "");
+        CPath cachepath(_path.c_str(), "");
         cachepath.AppendDirectory("cache");
         int config = _options & (HIRESTEXTURES_MASK | COMPRESS_HIRESTEX | COMPRESSION_MASK | TILE_HIRESTEX | FORCE16BPP_HIRESTEX | GZ_HIRESTEXCACHE | LET_TEXARTISTS_FLY);
 
-        TxCache::save(stdstr((std::string &)cachepath).ToUTF16().c_str(), filename.c_str(), config);
+        TxCache::save(cachepath, filename.c_str(), config);
     }
 #endif
 
@@ -84,10 +87,8 @@ TxHiResCache::~TxHiResCache()
     delete _txReSample;
 }
 
-TxHiResCache::TxHiResCache(int maxwidth, int maxheight, int maxbpp, int options,
-    const wchar_t *path, const wchar_t *ident,
-    dispInfoFuncExt callback
-    ) : TxCache((options & ~GZ_TEXCACHE), 0, path, ident, callback)
+TxHiResCache::TxHiResCache(int maxwidth, int maxheight, int maxbpp, int options, const char *path, const char *ident, dispInfoFuncExt callback) :
+TxCache((options & ~GZ_TEXCACHE), 0, path, ident, callback)
 {
     _txImage = new TxImage();
     _txQuantize = new TxQuantize();
@@ -101,23 +102,26 @@ TxHiResCache::TxHiResCache(int maxwidth, int maxheight, int maxbpp, int options,
 
     /* assert local options */
     if (!(_options & COMPRESS_HIRESTEX))
+    {
         _options &= ~COMPRESSION_MASK;
-
-    if (_path.empty() || _ident.empty()) {
+    }
+    if (_path.empty() || _ident.empty())
+    {
         _options &= ~DUMP_HIRESTEXCACHE;
         return;
     }
 
 #if DUMP_CACHE
     /* read in hires texture cache */
-    if (_options & DUMP_HIRESTEXCACHE) {
+    if (_options & DUMP_HIRESTEXCACHE)
+    {
         /* find it on disk */
-        std::wstring filename = _ident + L"_HIRESTEXTURES.dat";
-        CPath cachepath(stdstr().FromUTF16(_path.c_str()).c_str(), "");
+        std::string filename = _ident + "_HIRESTEXTURES.dat";
+        CPath cachepath(_path.c_str(), "");
         cachepath.AppendDirectory("cache");
         int config = _options & (HIRESTEXTURES_MASK | COMPRESS_HIRESTEX | COMPRESSION_MASK | TILE_HIRESTEX | FORCE16BPP_HIRESTEX | GZ_HIRESTEXCACHE | LET_TEXARTISTS_FLY);
 
-        _haveCache = TxCache::load(stdstr((std::string &)cachepath).ToUTF16().c_str(), filename.c_str(), config);
+        _haveCache = TxCache::load(cachepath, filename.c_str(), config);
     }
 #endif
 
@@ -134,12 +138,14 @@ TxHiResCache::empty()
 boolean
 TxHiResCache::load(boolean replace) /* 0 : reload, 1 : replace partial */
 {
-    if (!_path.empty() && !_ident.empty()) {
+    if (!_path.empty() && !_ident.empty())
+    {
         if (!replace) TxCache::clear();
 
-        CPath dir_path(stdstr().FromUTF16(_path.c_str()).c_str(), "");
+        CPath dir_path(_path.c_str(), "");
 
-        switch (_options & HIRESTEXTURES_MASK) {
+        switch (_options & HIRESTEXTURES_MASK)
+        {
         case GHQ_HIRESTEXTURES:
             break;
         case RICE_HIRESTEXTURES:
@@ -154,7 +160,7 @@ TxHiResCache::load(boolean replace) /* 0 : reload, 1 : replace partial */
             INFO(80, L"  usage of only 2) and 3) highly recommended!\n");
             INFO(80, L"  folder names must be in US-ASCII characters!\n");
 
-            dir_path.AppendDirectory(stdstr().FromUTF16(_ident.c_str()).c_str());
+            dir_path.AppendDirectory(_ident.c_str());
             loadHiResTextures(dir_path, replace);
             break;
         case JABO_HIRESTEXTURES:
@@ -163,12 +169,12 @@ TxHiResCache::load(boolean replace) /* 0 : reload, 1 : replace partial */
 
         return 1;
     }
-
     return 0;
 }
 
-boolean TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
+boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
 {
+#ifdef _WIN32
     DBG_INFO(80, L"-----\n");
     DBG_INFO(80, L"path: %s\n", stdstr(dir_path).ToUTF16().c_str());
 
@@ -196,7 +202,8 @@ boolean TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
     {
         do
         {
-            if (KBHIT(0x1B)) {
+            if (KBHIT(0x1B))
+            {
                 _abortLoad = 1;
                 if (_callback) (*_callback)(L"Aborted loading hiresolution texture!\n");
                 INFO(80, L"Error: aborted loading hiresolution texture!\n");
@@ -222,7 +229,7 @@ boolean TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
             std::string ident;
             FILE *fp = NULL;
 
-            wcstombs(fname, _ident.c_str(), MAX_PATH);
+            strcpy(fname, _ident.c_str());
             /* XXX case sensitivity fiasco!
             * files must use _a, _rgb, _all, _allciByRGBA, _ciByRGBA, _ci
             * and file extensions must be in lower case letters! */
@@ -417,16 +424,16 @@ boolean TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
                             /* use libpng style grayscale conversion */
                             uint32 texel = ((uint32*)tmptex)[i];
                             uint32 acomp = (((texel >> 16) & 0xff) * 6969 +
-                                ((texel >>  8) & 0xff) * 23434 +
-                                ((texel      ) & 0xff) * 2365) / 32768;
+                                ((texel >> 8) & 0xff) * 23434 +
+                                ((texel)& 0xff) * 2365) / 32768;
                             ((uint32*)tex)[i] = (acomp << 24) | (((uint32*)tex)[i] & 0x00ffffff);
 #endif
 #if 0
                             /* use the standard NTSC gray scale conversion */
                             uint32 texel = ((uint32*)tmptex)[i];
                             uint32 acomp = (((texel >> 16) & 0xff) * 299 +
-                                ((texel >>  8) & 0xff) * 587 +
-                                ((texel      ) & 0xff) * 114) / 1000;
+                                ((texel >> 8) & 0xff) * 587 +
+                                ((texel)& 0xff) * 114) / 1000;
                             ((uint32*)tex)[i] = (acomp << 24) | (((uint32*)tex)[i] & 0x00ffffff);
 #endif
                         }
@@ -838,8 +845,8 @@ boolean TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
                         tex = NULL;
                         DBG_INFO(80, L"Error: minification failed!\n");
                         continue;
-              }
-          }
+                    }
+                }
 
 #endif /* TEXTURE_TILING */
 
@@ -940,8 +947,8 @@ boolean TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
                                 free(tmptex);
                             }
                         }
-                        }
                     }
+                }
                 else {
 #if POW2_TEXTURES
 #if (POW2_TEXTURES == 2)
@@ -957,7 +964,7 @@ boolean TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
                         continue;
                     }
 #endif
-                    }
+                }
 
                 /* quantize */
       {
@@ -1004,7 +1011,7 @@ boolean TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
               }
           }
       }
-                    }
+            }
 
             /* last minute validations */
             if (!tex || !chksum || !width || !height || !format || width > _maxwidth || height > _maxheight) {
@@ -1025,51 +1032,52 @@ boolean TxHiResCache::loadHiResTextures(LPCSTR dir_path, boolean replace)
             }
 
             /* load it into hires texture cache. */
-    {
-        uint64 chksum64 = (uint64)palchksum;
-        chksum64 <<= 32;
-        chksum64 |= (uint64)chksum;
+            {
+                uint64 chksum64 = (uint64)palchksum;
+                chksum64 <<= 32;
+                chksum64 |= (uint64)chksum;
 
-        GHQTexInfo tmpInfo;
-        memset(&tmpInfo, 0, sizeof(GHQTexInfo));
+                GHQTexInfo tmpInfo;
+                memset(&tmpInfo, 0, sizeof(GHQTexInfo));
 
-        tmpInfo.data = tex;
-        tmpInfo.width = width;
-        tmpInfo.height = height;
-        tmpInfo.format = format;
-        tmpInfo.largeLodLog2 = _txUtil->grLodLog2(width, height);
-        tmpInfo.smallLodLog2 = tmpInfo.largeLodLog2;
-        tmpInfo.aspectRatioLog2 = _txUtil->grAspectRatioLog2(width, height);
-        tmpInfo.is_hires_tex = 1;
+                tmpInfo.data = tex;
+                tmpInfo.width = width;
+                tmpInfo.height = height;
+                tmpInfo.format = format;
+                tmpInfo.largeLodLog2 = _txUtil->grLodLog2(width, height);
+                tmpInfo.smallLodLog2 = tmpInfo.largeLodLog2;
+                tmpInfo.aspectRatioLog2 = _txUtil->grAspectRatioLog2(width, height);
+                tmpInfo.is_hires_tex = 1;
 
 #if TEXTURE_TILING
-        /* Glide64 style texture tiling. */
-        if (untiled_width && untiled_height) {
-            tmpInfo.tiles = ((untiled_width - 1) >> 8) + 1;
-            tmpInfo.untiled_width = untiled_width;
-            tmpInfo.untiled_height = untiled_height;
-        }
+                /* Glide64 style texture tiling. */
+                if (untiled_width && untiled_height) {
+                    tmpInfo.tiles = ((untiled_width - 1) >> 8) + 1;
+                    tmpInfo.untiled_width = untiled_width;
+                    tmpInfo.untiled_height = untiled_height;
+                }
 #endif
 
-        /* remove redundant in cache */
-        if (replace && TxCache::del(chksum64)) {
-            DBG_INFO(80, L"removed duplicate old cache.\n");
-        }
-
-        /* add to cache */
-        if (TxCache::add(chksum64, &tmpInfo)) {
-            /* Callback to display hires texture info.
-             * Gonetz <gonetz(at)ngs.ru> */
-            if (_callback) {
-                wchar_t tmpbuf[MAX_PATH];
-                mbstowcs(tmpbuf, fname, MAX_PATH);
-                (*_callback)(L"[%d] total mem:%.2fmb - %ls\n", _cache.size(), (float)_totalSize / 1000000, tmpbuf);
-            }
-            DBG_INFO(80, L"texture loaded!\n");
-        }
-        free(tex);
-    }
-                    } while (TextureDir.FindNext());
+                /* remove redundant in cache */
+                if (replace && TxCache::del(chksum64)) {
+                    DBG_INFO(80, L"removed duplicate old cache.\n");
                 }
+
+                /* add to cache */
+                if (TxCache::add(chksum64, &tmpInfo)) {
+                    /* Callback to display hires texture info.
+                     * Gonetz <gonetz(at)ngs.ru> */
+                    if (_callback) {
+                        wchar_t tmpbuf[MAX_PATH];
+                        mbstowcs(tmpbuf, fname, MAX_PATH);
+                        (*_callback)(L"[%d] total mem:%.2fmb - %ls\n", _cache.size(), (float)_totalSize / 1000000, tmpbuf);
+                    }
+                    DBG_INFO(80, L"texture loaded!\n");
+                }
+                free(tex);
+            }
+        } while (TextureDir.FindNext());
+    }
+#endif
     return 1;
-      }
+}

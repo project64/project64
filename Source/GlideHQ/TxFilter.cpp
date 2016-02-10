@@ -54,7 +54,7 @@ TxFilter::~TxFilter()
 }
 
 TxFilter::TxFilter(int maxwidth, int maxheight, int maxbpp, int options,
-    int cachesize, const wchar_t *path, const wchar_t *ident,
+    int cachesize, const char *path, const char *ident,
     dispInfoFuncExt callback) :
     _numcore(0),
     _tex1(NULL),
@@ -72,7 +72,7 @@ TxFilter::TxFilter(int maxwidth, int maxheight, int maxbpp, int options,
     _initialized(false)
 {
     /* HACKALERT: the emulator misbehaves and sometimes forgets to shutdown */
-    if ((ident && wcscmp(ident, L"DEFAULT") != 0 && _ident.compare(ident) == 0) &&
+    if ((ident && strcmp(ident, "DEFAULT") != 0 && _ident.compare(ident) == 0) &&
         _maxwidth == maxwidth  &&
         _maxheight == maxheight &&
         _maxbpp == maxbpp    &&
@@ -123,7 +123,7 @@ TxFilter::TxFilter(int maxwidth, int maxheight, int maxbpp, int options,
         _path.assign(path);
 
     /* save ROM name */
-    if (ident && wcscmp(ident, L"DEFAULT") != 0)
+    if (ident && strcmp(ident, "DEFAULT") != 0)
         _ident.assign(ident);
 
     /* check for dxtn extensions */
@@ -220,9 +220,9 @@ TxFilter::filter(uint8 *src, int srcwidth, int srcheight, uint16 srcformat, uint
                 }
                 texture = tmptex;
                 destformat = GR_TEXFMT_ARGB_8888;
-    }
+            }
 #if !_16BPP_HACK
-}
+        }
 #endif
 
         switch (destformat) {
@@ -422,7 +422,7 @@ TxFilter::filter(uint8 *src, int srcwidth, int srcheight, uint16 srcformat, uint
             break;
 #endif /* _16BPP_HACK */
         }
-        }
+    }
 
     /* fill in the texture info. */
     info->data = texture;
@@ -566,8 +566,10 @@ TxFilter::hirestex(uint64 g64crc, uint64 r_crc64, uint16 *palette, GHQTexInfo *i
 #endif
 
     /* check if we have it in memory cache */
-    if (_cacheSize && g64crc) {
-        if (_txTexCache->get(g64crc, info)) {
+    if (_cacheSize && g64crc)
+    {
+        if (_txTexCache->get(g64crc, info))
+        {
             DBG_INFO(80, L"cache hit: %d x %d gfmt:%x\n", info->width, info->height, info->format);
             return 1; /* yep, we've got it */
         }
@@ -582,8 +584,9 @@ uint64
 TxFilter::checksum64(uint8 *src, int width, int height, int size, int rowStride, uint8 *palette)
 {
     if (_options & (HIRESTEXTURES_MASK | DUMP_TEX))
+    {
         return _txUtil->checksum64(src, width, height, size, rowStride, palette);
-
+    }
     return 0;
 }
 
@@ -591,52 +594,60 @@ boolean
 TxFilter::dmptx(uint8 *src, int width, int height, int rowStridePixel, uint16 gfmt, uint16 n64fmt, uint64 r_crc64)
 {
     if (!_initialized)
+    {
         return 0;
-
+    }
     if (!(_options & DUMP_TEX))
+    {
         return 0;
-
+    }
     DBG_INFO(80, L"gfmt = %02x n64fmt = %02x\n", gfmt, n64fmt);
     DBG_INFO(80, L"hirestex: r_crc64:%08X %08X\n",
         (uint32)(r_crc64 >> 32), (uint32)(r_crc64 & 0xffffffff));
 
     if (!_txQuantize->quantize(src, _tex1, rowStridePixel, height, (gfmt & 0x00ff), GR_TEXFMT_ARGB_8888))
+    {
         return 0;
+    }
 
     src = _tex1;
 
-    if (!_path.empty() && !_ident.empty()) {
+    if (!_path.empty() && !_ident.empty())
+    {
         /* dump it to disk */
         FILE *fp = NULL;
-        CPath tmpbuf(stdstr().FromUTF16(_path.c_str()).c_str(), "");
+        CPath tmpbuf(_path.c_str(), "");
 
         /* create directories */
         tmpbuf.AppendDirectory("texture_dump");
 
         if (!tmpbuf.DirectoryExists() && !tmpbuf.DirectoryCreate())
+        {
             return 0;
+        }
 
-        tmpbuf.AppendDirectory(stdstr().FromUTF16(_ident.c_str()).c_str());
+        tmpbuf.AppendDirectory(_ident.c_str());
         if (!tmpbuf.DirectoryExists() && !tmpbuf.DirectoryCreate())
+        {
             return 0;
+        }
 
         tmpbuf.AppendDirectory("GlideHQ");
         if (!tmpbuf.DirectoryExists() && !tmpbuf.DirectoryCreate())
+        {
             return 0;
+        }
 
-        if ((n64fmt >> 8) == 0x2) {
+        if ((n64fmt >> 8) == 0x2)
+        {
             tmpbuf.SetNameExtension(stdstr_f("%ls#%08X#%01X#%01X#%08X_ciByRGBA.png", _ident.c_str(), (uint32)(r_crc64 & 0xffffffff), (n64fmt >> 8), (n64fmt & 0xf), (uint32)(r_crc64 >> 32)).c_str());
         }
-        else {
+        else
+        {
             tmpbuf.SetNameExtension(stdstr_f("%ls#%08X#%01X#%01X_all.png", _ident.c_str(), (uint32)(r_crc64 & 0xffffffff), (n64fmt >> 8), (n64fmt & 0xf)).c_str());
         }
-#ifdef _WIN32
-        if ((fp = fopen(tmpbuf, "wb")) != NULL) {
-#else
-        char cbuf[MAX_PATH];
-        wcstombs(cbuf, tmpbuf.c_str(), MAX_PATH);
-        if ((fp = fopen(cbuf, "wb")) != NULL) {
-#endif
+        if ((fp = fopen(tmpbuf, "wb")) != NULL)
+        {
             _txImage->writePNG(src, fp, width, height, (rowStridePixel << 2), 0x0003, 0);
             fclose(fp);
             return 1;
@@ -646,8 +657,7 @@ TxFilter::dmptx(uint8 *src, int width, int height, int rowStridePixel, uint16 gf
     return 0;
 }
 
-boolean
-TxFilter::reloadhirestex()
+boolean TxFilter::reloadhirestex()
 {
     DBG_INFO(80, L"Reload hires textures from texture pack.\n");
 

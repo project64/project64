@@ -38,44 +38,46 @@
 TxTexCache::~TxTexCache()
 {
 #if DUMP_CACHE
-  if (_options & DUMP_TEXCACHE) {
-    /* dump cache to disk */
-    std::wstring filename = _ident + L"_MEMORYCACHE.dat";
-    CPath cachepath(stdstr().FromUTF16(_path.c_str()).c_str(),"");
-	cachepath.AppendDirectory("cache");
+    if (_options & DUMP_TEXCACHE)
+    {
+        /* dump cache to disk */
+        std::string filename = _ident + "_MEMORYCACHE.dat";
+        CPath cachepath(_path.c_str(), "");
+        cachepath.AppendDirectory("cache");
 
-    int config = _options & (FILTER_MASK|ENHANCEMENT_MASK|COMPRESS_TEX|COMPRESSION_MASK|FORCE16BPP_TEX|GZ_TEXCACHE);
+        int config = _options & (FILTER_MASK | ENHANCEMENT_MASK | COMPRESS_TEX | COMPRESSION_MASK | FORCE16BPP_TEX | GZ_TEXCACHE);
 
-	TxCache::save(stdstr((std::string &)cachepath).ToUTF16().c_str(), filename.c_str(), config);
-  }
+        TxCache::save(cachepath, filename.c_str(), config);
+    }
 #endif
 }
 
-TxTexCache::TxTexCache(int options, int cachesize, const wchar_t *path, const wchar_t *ident,
-                       dispInfoFuncExt callback
-                       ) : TxCache((options & ~GZ_HIRESTEXCACHE), cachesize, path, ident, callback)
+TxTexCache::TxTexCache(int options, int cachesize, const char *path, const char *ident, dispInfoFuncExt callback) :
+TxCache((options & ~GZ_HIRESTEXCACHE), cachesize, path, ident, callback)
 {
-  /* assert local options */
-  if (_path.empty() || _ident.empty() || !_cacheSize)
-    _options &= ~DUMP_TEXCACHE;
+    /* assert local options */
+    if (_path.empty() || _ident.empty() || !_cacheSize)
+    {
+        _options &= ~DUMP_TEXCACHE;
+    }
 
 #if DUMP_CACHE
-  if (_options & DUMP_TEXCACHE) {
-    /* find it on disk */
-    std::wstring filename = _ident + L"_MEMORYCACHE.dat";
-	CPath cachepath(stdstr().FromUTF16(_path.c_str()),"");
-    cachepath.AppendDirectory("cache");
-    int config = _options & (FILTER_MASK|ENHANCEMENT_MASK|COMPRESS_TEX|COMPRESSION_MASK|FORCE16BPP_TEX|GZ_TEXCACHE);
+    if (_options & DUMP_TEXCACHE)
+    {
+        /* find it on disk */
+        std::string filename = _ident + "_MEMORYCACHE.dat";
+        CPath cachepath(_path.c_str(), "");
+        cachepath.AppendDirectory("cache");
+        int config = _options & (FILTER_MASK | ENHANCEMENT_MASK | COMPRESS_TEX | COMPRESSION_MASK | FORCE16BPP_TEX | GZ_TEXCACHE);
 
-	TxCache::load(stdstr((std::string &)cachepath).ToUTF16().c_str(), filename.c_str(), config);
-  }
+        TxCache::load(cachepath, filename.c_str(), config);
+    }
 #endif
 }
 
-boolean
-TxTexCache::add(uint64 checksum, GHQTexInfo *info)
+boolean TxTexCache::add(uint64 checksum, GHQTexInfo *info)
 {
-  if (_cacheSize <= 0) return 0;
+    if (_cacheSize <= 0) return 0;
 
-  return TxCache::add(checksum, info);
+    return TxCache::add(checksum, info);
 }
