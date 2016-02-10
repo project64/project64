@@ -198,12 +198,8 @@ void CDMA::PI_DMA_READ()
 
 void CDMA::PI_DMA_WRITE()
 {
-    uint32_t PI_WR_LEN_REG = ((g_Reg->PI_WR_LEN_REG) & 0x00FFFFFFul) + 1;
-
-    if ((PI_WR_LEN_REG & 1) != 0)
-    {
-        PI_WR_LEN_REG += 1; /* fixes AI Shougi 3, Doraemon 3, etc. */
-    }
+    uint32_t PI_WR_LEN_REG = ((g_Reg->PI_WR_LEN_REG) & 0x00FFFFFEul) + 2;
+    /* rounding PI_WR_LEN_REG up to the nearest even number fixes AI Shougi 3, Doraemon 3, etc. */
 
     g_Reg->PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
     if (g_Reg->PI_DRAM_ADDR_REG + PI_WR_LEN_REG > g_MMU->RdramSize())
