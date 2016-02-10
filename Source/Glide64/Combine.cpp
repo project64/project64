@@ -42,6 +42,7 @@
 #include "Util.h"
 #include "Combine.h"
 #include "trace.h"
+#include <Glide64/trace.h>
 
 #define FASTSEARCH  // Enable fast combine mode searching algorithm
 
@@ -152,11 +153,8 @@ COMBINE cmb;
   cmb.tex |= 2, \
   cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
   cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER, \
-  cmb.tmu0_fac = GR_COMBINE_FACTOR_ONE; \
-          } \
-                                else { \
-  USE_T0(); \
-}
+  cmb.tmu0_fac = GR_COMBINE_FACTOR_ONE; } else { USE_T0(); }
+
 #define T0_ADD_T1() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
@@ -188,22 +186,13 @@ COMBINE cmb;
   cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_LOCAL
 #define T0_INTER_T1_USING_FACTOR(factor) \
-  if (factor == 0xFF) { \
-  USE_T1(); \
-          } \
-                                else if (factor == 0x00) { \
-  USE_T0(); \
-}\
-                                else {\
-  if (factor <= 0x80) rdp.best_tex = 0; \
-                                else rdp.best_tex = 1; \
+  if (factor == 0xFF) { USE_T1(); else if (factor == 0x00) { USE_T0(); } else {\\                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 if (factor <= 0x80) { rdp.best_tex = 0; } else { rdp.best_tex = 1; } \
   cmb.tex |= 3, \
   cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
   cmb.tmu0_func = GR_COMBINE_FUNCTION_BLEND, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR, \
   percent = (float)factor / 255.0f, \
-  cmb.dc0_detailmax = cmb.dc1_detailmax = percent; \
-}
+  cmb.dc0_detailmax = cmb.dc1_detailmax = percent; } \
 #define T1_INTER_T0_USING_FACTOR(factor)  /* inverse of above */\
   if (factor == 0xFF) { \
   USE_T0(); \
@@ -631,18 +620,6 @@ COMBINE cmb;
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR, \
   percent = (float)(rdp.env_color&0xFF) / 255.0f, \
   cmb.dc0_detailmax = cmb.dc1_detailmax = percent
-
-// UNIMP - writes to the unimplemented log, if it's enabled
-#ifdef UNIMP_LOG
-#define UNIMPMODE() { \
-  std::ofstream unimp; \
-  unimp.open("unimp.txt", std::ios::app); \
-  unimp << out_buf; \
-  unimp.close(); \
-}
-#else
-#define UNIMPMODE()
-#endif
 
 // Bright red, sets up a bright red combine
 #ifdef BRIGHT_RED
@@ -15626,16 +15603,12 @@ void Combine()
     if (actual_combine != current_combine)
     {
         rdp.uncombined |= 1;
-#ifdef UNIMP_LOG
         if (g_settings->log_unk)
         {
-            sprintf (out_buf, "COLOR combine not found: %08x, #1: (%s-%s)*%s+%s, #2: (%s-%s)*%s+%s\n",
-                actual_combine,
-                Mode0[rdp.cycle1&0xF], Mode1[(rdp.cycle1>>4)&0xF], Mode2[(rdp.cycle1>>8)&0x1F], Mode3[(rdp.cycle1>>13)&7],
-                Mode0[rdp.cycle2&0xF], Mode1[(rdp.cycle2>>4)&0xF], Mode2[(rdp.cycle2>>8)&0x1F], Mode3[(rdp.cycle2>>13)&7]);
-            UNIMPMODE();
+            WriteTrace(TraceUnknown, TraceDebug, "COLOR combine not found: %08x, #1: (%s-%s)*%s+%s, #2: (%s-%s)*%s+%s", actual_combine,
+                Mode0[rdp.cycle1 & 0xF], Mode1[(rdp.cycle1 >> 4) & 0xF], Mode2[(rdp.cycle1 >> 8) & 0x1F], Mode3[(rdp.cycle1 >> 13) & 7],
+                Mode0[rdp.cycle2 & 0xF], Mode1[(rdp.cycle2 >> 4) & 0xF], Mode2[(rdp.cycle2 >> 8) & 0x1F], Mode3[(rdp.cycle2 >> 13) & 7]);
         }
-#endif
         found = FALSE;
         //tex |= 3;
 
@@ -15681,16 +15654,12 @@ void Combine()
         if (actual_combine != current_combine)
         {
             rdp.uncombined |= 2;
-#ifdef UNIMP_LOG
             if (g_settings->log_unk)
             {
-                sprintf (out_buf, "ALPHA combine not found: %08x, #1: (%s-%s)*%s+%s, #2: (%s-%s)*%s+%s\n",
-                    actual_combine,
-                    Alpha0[(rdp.cycle1>>16)&7], Alpha1[(rdp.cycle1>>19)&7], Alpha2[(rdp.cycle1>>22)&7], Alpha3[(rdp.cycle1>>25)&7],
-                    Alpha0[(rdp.cycle2>>16)&7], Alpha1[(rdp.cycle2>>19)&7], Alpha2[(rdp.cycle2>>22)&7], Alpha3[(rdp.cycle2>>25)&7]);
-                UNIMPMODE();
+                WriteTrace(TraceUnknown, TraceDebug, "ALPHA combine not found: %08x, #1: (%s-%s)*%s+%s, #2: (%s-%s)*%s+%s", actual_combine,
+                    Alpha0[(rdp.cycle1 >> 16) & 7], Alpha1[(rdp.cycle1 >> 19) & 7], Alpha2[(rdp.cycle1 >> 22) & 7], Alpha3[(rdp.cycle1 >> 25) & 7],
+                    Alpha0[(rdp.cycle2 >> 16) & 7], Alpha1[(rdp.cycle2 >> 19) & 7], Alpha2[(rdp.cycle2 >> 22) & 7], Alpha3[(rdp.cycle2 >> 25) & 7]);
             }
-#endif
         }
         if (g_settings->unk_as_red)
         {
@@ -15704,7 +15673,9 @@ void Combine()
         //tex |= 3;
     }
     else
+    {
         alpha_cmb_list[current].func();
+    }
 
     if (color_combine == 0x69351fff) //text, PD, need to change texture alpha
     {
