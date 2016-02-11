@@ -24,7 +24,7 @@
  *
  */
 
-#include "opcode.h"
+#include "OpCode.h"
 
 extern DWORD CompilePC, NextInstruction, JumpTableSize;
 extern BOOL ChangedPC;
