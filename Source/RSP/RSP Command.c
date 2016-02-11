@@ -29,7 +29,7 @@
 #include <stdlib.h>
 
 #include "opcode.h"
-#include "RSP.h"
+#include "Rsp.h"
 #include "CPU.h"
 #include "RSP Registers.h"
 #include "RSP Command.h"

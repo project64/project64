@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <float.h>
 #include <stdlib.h>
-#include "RSP.h"
+#include "Rsp.h"
 #include "Cpu.h"
 #include "Interpreter CPU.h"
 #include "Recompiler CPU.h"

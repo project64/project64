@@ -26,7 +26,7 @@
 
 #include <windows.h>
 #include <stdio.h>
-#include "RSP.h"
+#include "Rsp.h"
 #include "CPU.h"
 #include "Interpreter CPU.h"
 #include "Interpreter Ops.h"

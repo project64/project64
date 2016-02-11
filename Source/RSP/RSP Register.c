@@ -27,7 +27,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include <stdio.h>
-#include "rsp.h"
+#include "Rsp.h"
 #include "types.h"
 
 #define GeneralPurpose			1

@@ -24,7 +24,7 @@
  *
  */
 
-#include "types.h"
+#include "Types.h"
 
 #define SP_STATUS_HALT			0x001		/* Bit  0: halt */
 #define SP_STATUS_BROKE			0x002		/* Bit  1: broke */

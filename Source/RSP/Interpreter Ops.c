@@ -27,7 +27,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <math.h>
-#include "RSP.h"
+#include "Rsp.h"
 #include "CPU.h"
 #include "RSP Command.h"
 #include "RSP Registers.h"
