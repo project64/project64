@@ -134,10 +134,10 @@ typedef struct {
 
 EXPORT void CloseDLL(void);
 EXPORT void DllAbout(void * hParent);
-EXPORT DWORD DoRspCycles(DWORD Cycles);
+EXPORT uint32_t DoRspCycles(uint32_t Cycles);
 EXPORT void GetDllInfo(PLUGIN_INFO * PluginInfo);
 EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo);
-EXPORT void InitiateRSP(RSP_INFO Rsp_Info, DWORD * CycleCount);
+EXPORT void InitiateRSP(RSP_INFO Rsp_Info, uint32_t * CycleCount);
 EXPORT void InitiateRSPDebugger(DEBUG_INFO Debug_Info);
 EXPORT void RomOpen(void);
 EXPORT void RomClosed(void);
@@ -145,15 +145,15 @@ EXPORT void DllConfig(void * hWnd);
 EXPORT void EnableDebugging(BOOL Enabled);
 EXPORT void PluginLoaded(void);
 
-DWORD AsciiToHex (char * HexValue);
+uint32_t AsciiToHex(char * HexValue);
 void DisplayError (char * Message, ...);
-int  GetStoredWinPos( char * WinName, DWORD * X, DWORD * Y );
+int GetStoredWinPos(char * WinName, uint32_t * X, uint32_t * Y);
 
 #define InterpreterCPU	0
 #define RecompilerCPU	1
 
 extern int DebuggingEnabled, Profiling, IndvidualBlock, ShowErrors, BreakOnStart, LogRDP, LogX86Code;
-extern DWORD CPUCore;
+extern uint32_t CPUCore;
 extern DEBUG_INFO DebugInfo;
 extern RSP_INFO RSPInfo;
 extern void * hinstDLL;
