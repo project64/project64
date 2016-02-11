@@ -26,7 +26,7 @@
 
 #include <windows.h>
 #include <stdio.h>
-#include "RSP.h"
+#include "Rsp.h"
 #include "CPU.h"
 #include "Recompiler CPU.h"
 #include "RSP Command.h"

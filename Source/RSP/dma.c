@@ -26,7 +26,7 @@
 
 #include <Windows.h>
 #include <stdio.h>
-#include "RSP.h"
+#include "Rsp.h"
 #include "RSP Registers.h"
 #include "memory.h"
 

@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <float.h>
 #include "breakpoint.h"
-#include "RSP.h"
+#include "Rsp.h"
 #include "Cpu.h"
 #include "Interpreter Ops.h"
 #include "Interpreter CPU.h"

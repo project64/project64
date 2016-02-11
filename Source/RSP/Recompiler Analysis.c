@@ -25,7 +25,7 @@
  */
 
 #include <windows.h>
-#include "rsp.h"
+#include "Rsp.h"
 #include "CPU.h"
 #include "Interpreter CPU.h"
 #include "Recompiler CPU.h"
