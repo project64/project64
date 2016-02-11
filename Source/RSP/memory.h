@@ -24,7 +24,7 @@
  *
  */
 
-#include "types.h"
+#include "Types.h"
 
 int  AllocateMemory ( void );
 void FreeMemory     ( void );
