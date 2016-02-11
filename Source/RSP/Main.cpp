@@ -31,18 +31,18 @@
 #endif
 #include <stdio.h>
 
-#include <common/StdString.h>
+#include <Common/StdString.h>
 #include "../Settings/Settings.h"
 
 extern "C" {
 #include "Rsp.h"
-#include "CPU.h"
+#include "Cpu.h"
 #include "Recompiler CPU.h"
-#include "Rsp Command.h"
-#include "Rsp Registers.h"
+#include "RSP Command.h"
+#include "RSP Registers.h"
 #include "memory.h"
 #include "breakpoint.h"
-#include "profiling.h"
+#include "Profiling.h"
 #include "log.h"
 #include "resource.h"
 #include "Version.h"
