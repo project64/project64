@@ -24,9 +24,11 @@
  *
  */
 
+#ifdef _WIN32
 #include <Windows.h>
 #include <windowsx.h>
 #include <commctrl.h>
+#endif
 #include <stdio.h>
 
 #include <common/StdString.h>
