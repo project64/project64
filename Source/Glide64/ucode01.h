@@ -56,10 +56,10 @@ static void uc1_tri1()
 {
     if (rdp.skip_drawing)
     {
-        LRDP("uc1:tri1. skipped\n");
+        WriteTrace(TraceRDP, TraceDebug, "uc1:tri1. skipped");
         return;
     }
-    FRDP("uc1:tri1 #%d - %d, %d, %d - %08lx - %08lx\n", rdp.tri_n,
+    WriteTrace(TraceRDP, TraceDebug, "uc1:tri1 #%d - %d, %d, %d - %08lx - %08lx", rdp.tri_n,
         ((rdp.cmd1 >> 17) & 0x7F),
         ((rdp.cmd1 >> 9) & 0x7F),
         ((rdp.cmd1 >> 1) & 0x7F), rdp.cmd0, rdp.cmd1);
@@ -77,12 +77,12 @@ static void uc1_tri2()
 {
     if (rdp.skip_drawing)
     {
-        LRDP("uc1:tri2. skipped\n");
+        WriteTrace(TraceRDP, TraceDebug, "uc1:tri2. skipped");
         return;
     }
-    LRDP("uc1:tri2");
+    WriteTrace(TraceRDP, TraceDebug, "uc1:tri2");
 
-    FRDP(" #%d, #%d - %d, %d, %d - %d, %d, %d\n", rdp.tri_n, rdp.tri_n + 1,
+    WriteTrace(TraceRDP, TraceDebug, " #%d, #%d - %d, %d, %d - %d, %d, %d", rdp.tri_n, rdp.tri_n + 1,
         ((rdp.cmd0 >> 17) & 0x7F),
         ((rdp.cmd0 >> 9) & 0x7F),
         ((rdp.cmd0 >> 1) & 0x7F),
@@ -108,7 +108,7 @@ static void uc1_line3d()
     {
         uint16_t width = (uint16_t)(rdp.cmd1 & 0xFF) + 3;
 
-        FRDP("uc1:line3d width: %d #%d, #%d - %d, %d\n", width, rdp.tri_n, rdp.tri_n + 1,
+        WriteTrace(TraceRDP, TraceDebug, "uc1:line3d width: %d #%d, #%d - %d, %d", width, rdp.tri_n, rdp.tri_n + 1,
             (rdp.cmd1 >> 17) & 0x7F,
             (rdp.cmd1 >> 9) & 0x7F);
 
@@ -127,7 +127,7 @@ static void uc1_line3d()
     }
     else
     {
-        FRDP("uc1:quad3d #%d, #%d\n", rdp.tri_n, rdp.tri_n + 1);
+        WriteTrace(TraceRDP, TraceDebug, "uc1:quad3d #%d, #%d", rdp.tri_n, rdp.tri_n + 1);
 
         VERTEX *v[6] = {
             &rdp.vtx[(rdp.cmd1 >> 25) & 0x7F],
@@ -146,7 +146,7 @@ uint32_t branch_dl = 0;
 
 static void uc1_rdphalf_1()
 {
-    LRDP("uc1:rdphalf_1\n");
+    WriteTrace(TraceRDP, TraceDebug, "uc1:rdphalf_1");
     branch_dl = rdp.cmd1;
     rdphalf_1();
 }
@@ -154,7 +154,7 @@ static void uc1_rdphalf_1()
 static void uc1_branch_z()
 {
     uint32_t addr = segoffset(branch_dl);
-    FRDP("uc1:branch_less_z, addr: %08lx\n", addr);
+    WriteTrace(TraceRDP, TraceDebug, "uc1:branch_less_z, addr: %08lx", addr);
     uint32_t vtx = (rdp.cmd0 & 0xFFF) >> 1;
     if (fabs(rdp.vtx[vtx].z) <= (rdp.cmd1/*&0xFFFF*/))
     {

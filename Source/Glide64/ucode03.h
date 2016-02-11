@@ -61,7 +61,7 @@ static void uc3_vertex()
 
 static void uc3_tri1()
 {
-    FRDP("uc3:tri1 #%d - %d, %d, %d - %08lx - %08lx\n", rdp.tri_n,
+    WriteTrace(TraceRDP, TraceDebug, "uc3:tri1 #%d - %d, %d, %d - %08lx - %08lx", rdp.tri_n,
         ((rdp.cmd1 >> 16) & 0xFF) / 5,
         ((rdp.cmd1 >> 8) & 0xFF) / 5,
         ((rdp.cmd1) & 0xFF) / 5, rdp.cmd0, rdp.cmd1);
@@ -77,7 +77,7 @@ static void uc3_tri1()
 
 static void uc3_tri2()
 {
-    FRDP("uc3:tri2 #%d, #%d - %d, %d, %d - %d, %d, %d\n", rdp.tri_n, rdp.tri_n + 1,
+    WriteTrace(TraceRDP, TraceDebug, "uc3:tri2 #%d, #%d - %d, %d, %d - %d, %d, %d", rdp.tri_n, rdp.tri_n + 1,
         ((rdp.cmd0 >> 16) & 0xFF) / 5,
         ((rdp.cmd0 >> 8) & 0xFF) / 5,
         ((rdp.cmd0) & 0xFF) / 5,
@@ -99,7 +99,7 @@ static void uc3_tri2()
 
 static void uc3_quad3d()
 {
-    FRDP("uc3:quad3d #%d, #%d\n", rdp.tri_n, rdp.tri_n + 1);
+    WriteTrace(TraceRDP, TraceDebug, "uc3:quad3d #%d, #%d", rdp.tri_n, rdp.tri_n + 1);
 
     VERTEX *v[6] = {
         &rdp.vtx[((rdp.cmd1 >> 24) & 0xFF) / 5],

@@ -45,6 +45,7 @@
 #include "Gfx_1.3.h"
 #include "FBtoScreen.h"
 #include "TexCache.h"
+#include <Glide64/trace.h>
 
 static int SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaque)
 {
@@ -148,7 +149,7 @@ static void DrawRE2Video(FB_TO_SCREEN_INFO & fb_info, float scale)
 
 static void DrawRE2Video256(FB_TO_SCREEN_INFO & fb_info)
 {
-    FRDP("DrawRE2Video256. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx\n", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
+    WriteTrace(TraceRDP, TraceDebug, "DrawRE2Video256. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
     uint32_t * src = (uint32_t*)(gfx.RDRAM + fb_info.addr);
     GrTexInfo t_info;
     t_info.smallLodLog2 = GR_LOD_LOG2_256;
@@ -195,7 +196,7 @@ static void DrawFrameBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
         DrawRE2Video256(fb_info);
         return;
     }
-    FRDP("DrawFrameBufferToScreen256. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx\n", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
+    WriteTrace(TraceRDP, TraceDebug, "DrawFrameBufferToScreen256. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
     uint32_t width = fb_info.lr_x - fb_info.ul_x + 1;
     uint32_t height = fb_info.lr_y - fb_info.ul_y + 1;
     GrTexInfo t_info;
@@ -313,7 +314,7 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         DrawFrameBufferToScreen256(fb_info);
         return true;
     }
-    FRDP("DrawFrameBufferToScreen. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx\n", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
+    WriteTrace(TraceRDP, TraceDebug, "DrawFrameBufferToScreen. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
     GrTexInfo t_info;
     uint8_t * image = gfx.RDRAM + fb_info.addr;
     uint32_t texwidth;
@@ -429,7 +430,7 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
 
 static void DrawDepthBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
 {
-    FRDP("DrawDepthBufferToScreen256. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx\n", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
+    WriteTrace(TraceRDP, TraceDebug, "DrawDepthBufferToScreen256. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
     uint32_t width = fb_info.lr_x - fb_info.ul_x + 1;
     uint32_t height = fb_info.lr_y - fb_info.ul_y + 1;
     GrTexInfo t_info;
@@ -501,7 +502,7 @@ static void DrawDepthBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
 
 static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
 {
-    FRDP("DrawHiresDepthBufferToScreen. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx\n", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
+    WriteTrace(TraceRDP, TraceDebug, "DrawHiresDepthBufferToScreen. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
     GrTexInfo t_info;
     float scale = 0.25f;
     GrLOD_t LOD = GR_LOD_LOG2_1024;
@@ -582,7 +583,7 @@ void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         DrawHiresDepthBufferToScreen(fb_info);
         return;
     }
-    FRDP("DrawDepthBufferToScreen. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx\n", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
+    WriteTrace(TraceRDP, TraceDebug, "DrawDepthBufferToScreen. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
     GrTexInfo t_info;
     uint8_t * image = gfx.RDRAM + fb_info.addr;
     uint32_t texwidth;

@@ -59,12 +59,11 @@ static void uc8_vertex()
     rdp.vn = n = (rdp.cmd0 >> 12) & 0xFF;
     rdp.v0 = v0 = ((rdp.cmd0 >> 1) & 0x7F) - n;
 
-    FRDP("uc8:vertex n: %d, v0: %d, from: %08lx\n", n, v0, addr);
+    WriteTrace(TraceRDP, TraceDebug, "uc8:vertex n: %d, v0: %d, from: %08lx", n, v0, addr);
 
     if (v0 < 0)
     {
-        RDP_E("** ERROR: uc2:vertex v0 < 0\n");
-        LRDP("** ERROR: uc2:vertex v0 < 0\n");
+        WriteTrace(TraceRDP, TraceWarning, "** ERROR: uc2:vertex v0 < 0");
         return;
     }
     //*
@@ -78,9 +77,7 @@ static void uc8_vertex()
         {
             InverseTransformVector(&rdp.light[l].dir_x, rdp.light_vector[l], rdp.model);
             NormalizeVector(rdp.light_vector[l]);
-#ifdef EXTREME_LOGGING
-            FRDP("light_vector[%d] x: %f, y: %f, z: %f\n", l, rdp.light_vector[l][0], rdp.light_vector[l][1], rdp.light_vector[l][2]);
-#endif
+            WriteTrace(TraceRDP, TraceVerbose, "light_vector[%d] x: %f, y: %f, z: %f", l, rdp.light_vector[l][0], rdp.light_vector[l][1], rdp.light_vector[l][2]);
         }
     }
     //*/
@@ -96,17 +93,13 @@ static void uc8_vertex()
         v->uv_scaled = 0;
         v->a = ((uint8_t*)gfx.RDRAM)[(addr + i + 15) ^ 3];
 
-#ifdef EXTREME_LOGGING
-        FRDP ("before v%d - x: %f, y: %f, z: %f\n", i>>4, x, y, z);
-#endif
+        WriteTrace(TraceRDP, TraceVerbose, "before v%d - x: %f, y: %f, z: %f", i >> 4, x, y, z);
         v->x = x*rdp.combined[0][0] + y*rdp.combined[1][0] + z*rdp.combined[2][0] + rdp.combined[3][0];
         v->y = x*rdp.combined[0][1] + y*rdp.combined[1][1] + z*rdp.combined[2][1] + rdp.combined[3][1];
         v->z = x*rdp.combined[0][2] + y*rdp.combined[1][2] + z*rdp.combined[2][2] + rdp.combined[3][2];
         v->w = x*rdp.combined[0][3] + y*rdp.combined[1][3] + z*rdp.combined[2][3] + rdp.combined[3][3];
 
-#ifdef EXTREME_LOGGING
-        FRDP ("v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f, flags: %d\n", i>>4, v->x, v->y, v->z, v->w, v->ou, v->ov, v->flags);
-#endif
+        WriteTrace(TraceRDP, TraceVerbose, "v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f, flags: %d", i >> 4, v->x, v->y, v->z, v->w, v->ou, v->ov, v->flags);
 
         if (fabs(v->w) < 0.001) v->w = 0.001f;
         v->oow = 1.0f / v->w;
@@ -128,9 +121,7 @@ static void uc8_vertex()
         v->r = ((uint8_t*)gfx.RDRAM)[(addr + i + 12) ^ 3];
         v->g = ((uint8_t*)gfx.RDRAM)[(addr + i + 13) ^ 3];
         v->b = ((uint8_t*)gfx.RDRAM)[(addr + i + 14) ^ 3];
-#ifdef EXTREME_LOGGING
-        FRDP ("r: %02lx, g: %02lx, b: %02lx, a: %02lx\n", v->r, v->g, v->b, v->a);
-#endif
+        WriteTrace(TraceRDP, TraceVerbose, "r: %02lx, g: %02lx, b: %02lx, a: %02lx", v->r, v->g, v->b, v->a);
 
         if ((rdp.geom_mode & 0x00020000))
         {
@@ -142,21 +133,16 @@ static void uc8_vertex()
             if (rdp.geom_mode & 0x80000)
             {
                 calc_linear(v);
-#ifdef EXTREME_LOGGING
-                FRDP ("calc linear: v%d - u: %f, v: %f\n", i>>4, v->ou, v->ov);
-#endif
+                WriteTrace(TraceRDP, TraceVerbose, "calc linear: v%d - u: %f, v: %f", i >> 4, v->ou, v->ov);
             }
             else if (rdp.geom_mode & 0x40000)
             {
                 calc_sphere(v);
-#ifdef EXTREME_LOGGING
-                FRDP ("calc sphere: v%d - u: %f, v: %f\n", i>>4, v->ou, v->ov);
-#endif
+                WriteTrace(TraceRDP, TraceVerbose, "calc sphere: v%d - u: %f, v: %f", i >> 4, v->ou, v->ov);
             }
-            //     FRDP("calc light. r: 0x%02lx, g: 0x%02lx, b: 0x%02lx, nx: %.3f, ny: %.3f, nz: %.3f\n", v->r, v->g, v->b, v->vec[0], v->vec[1], v->vec[2]);
-            FRDP("v[%d] calc light. r: 0x%02lx, g: 0x%02lx, b: 0x%02lx\n", i >> 4, v->r, v->g, v->b);
+            WriteTrace(TraceRDP, TraceDebug, "v[%d] calc light. r: 0x%02lx, g: 0x%02lx, b: 0x%02lx", i >> 4, v->r, v->g, v->b);
             float color[3] = { rdp.light[rdp.num_lights].r, rdp.light[rdp.num_lights].g, rdp.light[rdp.num_lights].b };
-            FRDP("ambient light. r: %f, g: %f, b: %f\n", color[0], color[1], color[2]);
+            WriteTrace(TraceRDP, TraceDebug, "ambient light. r: %f, g: %f, b: %f", color[0], color[1], color[2]);
             float light_intensity = 0.0f;
             uint32_t l;
             if (rdp.geom_mode & 0x00400000)
@@ -167,7 +153,7 @@ static void uc8_vertex()
                     if (!rdp.light[l].nonblack)
                         continue;
                     light_intensity = DotProduct(rdp.light_vector[l], v->vec);
-                    FRDP("light %d, intensity : %f\n", l, light_intensity);
+                    WriteTrace(TraceRDP, TraceDebug, "light %d, intensity : %f", l, light_intensity);
                     if (light_intensity < 0.0f)
                         continue;
                     //*
@@ -181,23 +167,23 @@ static void uc8_vertex()
                         float p_i = rdp.light[l].ca / len;
                         if (p_i > 1.0f) p_i = 1.0f;
                         light_intensity *= p_i;
-                        FRDP("light %d, len: %f, p_intensity : %f\n", l, len, p_i);
+                        WriteTrace(TraceRDP, TraceDebug, "light %d, len: %f, p_intensity : %f", l, len, p_i);
                     }
                     //*/
                     color[0] += rdp.light[l].r * light_intensity;
                     color[1] += rdp.light[l].g * light_intensity;
                     color[2] += rdp.light[l].b * light_intensity;
-                    FRDP("light %d r: %f, g: %f, b: %f\n", l, color[0], color[1], color[2]);
+                    WriteTrace(TraceRDP, TraceDebug, "light %d r: %f, g: %f, b: %f", l, color[0], color[1], color[2]);
                 }
                 light_intensity = DotProduct(rdp.light_vector[l], v->vec);
-                FRDP("light %d, intensity : %f\n", l, light_intensity);
+                WriteTrace(TraceRDP, TraceDebug, "light %d, intensity : %f", l, light_intensity);
                 if (light_intensity > 0.0f)
                 {
                     color[0] += rdp.light[l].r * light_intensity;
                     color[1] += rdp.light[l].g * light_intensity;
                     color[2] += rdp.light[l].b * light_intensity;
                 }
-                FRDP("light %d r: %f, g: %f, b: %f\n", l, color[0], color[1], color[2]);
+                WriteTrace(TraceRDP, TraceDebug, "light %d r: %f, g: %f, b: %f", l, color[0], color[1], color[2]);
             }
             else
             {
@@ -212,11 +198,11 @@ static void uc8_vertex()
                         float len = (vx*vx + vy*vy + vz*vz + vw*vw) / 65536.0f;
                         light_intensity = rdp.light[l].ca / len;
                         if (light_intensity > 1.0f) light_intensity = 1.0f;
-                        FRDP("light %d, p_intensity : %f\n", l, light_intensity);
+                        WriteTrace(TraceRDP, TraceDebug, "light %d, p_intensity : %f", l, light_intensity);
                         color[0] += rdp.light[l].r * light_intensity;
                         color[1] += rdp.light[l].g * light_intensity;
                         color[2] += rdp.light[l].b * light_intensity;
-                        //FRDP("light %d r: %f, g: %f, b: %f\n", l, color[0], color[1], color[2]);
+                        //WriteTrace(TraceRDP, TraceDebug, "light %d r: %f, g: %f, b: %f", l, color[0], color[1], color[2]);
                     }
                 }
             }
@@ -226,9 +212,7 @@ static void uc8_vertex()
             v->r = (uint8_t)(((float)v->r)*color[0]);
             v->g = (uint8_t)(((float)v->g)*color[1]);
             v->b = (uint8_t)(((float)v->b)*color[2]);
-#ifdef EXTREME_LOGGING
-            FRDP("color after light: r: 0x%02lx, g: 0x%02lx, b: 0x%02lx\n", v->r, v->g, v->b);
-#endif
+            WriteTrace(TraceRDP, TraceVerbose, "color after light: r: 0x%02lx, g: 0x%02lx, b: 0x%02lx", v->r, v->g, v->b);
         }
     }
 }
@@ -239,7 +223,7 @@ static void uc8_moveword()
     uint16_t offset = (uint16_t)(rdp.cmd0 & 0xFFFF);
     uint32_t data = rdp.cmd1;
 
-    FRDP("uc8:moveword ");
+    WriteTrace(TraceRDP, TraceDebug, "uc8:moveword ");
 
     switch (index)
     {
@@ -249,7 +233,7 @@ static void uc8_moveword()
     case 0x02:
         rdp.num_lights = (data / 48);
         rdp.update |= UPDATE_LIGHTS;
-        FRDP("numlights: %d\n", rdp.num_lights);
+        WriteTrace(TraceRDP, TraceDebug, "numlights: %d", rdp.num_lights);
         break;
 
     case 0x04:
@@ -258,12 +242,12 @@ static void uc8_moveword()
             rdp.clip_ratio = sqrt((float)rdp.cmd1);
             rdp.update |= UPDATE_VIEWPORT;
         }
-        FRDP("mw_clip %08lx, %08lx\n", rdp.cmd0, rdp.cmd1);
+        WriteTrace(TraceRDP, TraceDebug, "mw_clip %08lx, %08lx", rdp.cmd0, rdp.cmd1);
         break;
 
     case 0x06:  // moveword SEGMENT
     {
-        FRDP("SEGMENT %08lx -> seg%d\n", data, offset >> 2);
+        WriteTrace(TraceRDP, TraceDebug, "SEGMENT %08lx -> seg%d", data, offset >> 2);
         rdp.segment[(offset >> 2) & 0xF] = data;
     }
     break;
@@ -272,24 +256,24 @@ static void uc8_moveword()
     {
         rdp.fog_multiplier = (short)(rdp.cmd1 >> 16);
         rdp.fog_offset = (short)(rdp.cmd1 & 0x0000FFFF);
-        FRDP("fog: multiplier: %f, offset: %f\n", rdp.fog_multiplier, rdp.fog_offset);
+        WriteTrace(TraceRDP, TraceDebug, "fog: multiplier: %f, offset: %f", rdp.fog_multiplier, rdp.fog_offset);
     }
     break;
 
     case 0x0c:
-        RDP_E("uc8:moveword forcemtx - IGNORED\n");
-        LRDP("forcemtx - IGNORED\n");
+
+        WriteTrace(TraceRDP, TraceWarning, "uc8:moveword forcemtx - IGNORED");
         break;
 
     case 0x0e:
-        LRDP("perspnorm - IGNORED\n");
+        WriteTrace(TraceRDP, TraceDebug, "perspnorm - IGNORED");
         break;
 
     case 0x10:  // moveword coord mod
     {
         uint8_t n = offset >> 2;
 
-        FRDP("coord mod:%d, %08lx\n", n, data);
+        WriteTrace(TraceRDP, TraceDebug, "coord mod:%d, %08lx", n, data);
         if (rdp.cmd0 & 8)
             return;
         uint32_t idx = (rdp.cmd0 >> 1) & 3;
@@ -310,22 +294,19 @@ static void uc8_moveword()
         {
             uc8_coord_mod[8 + idx] = (short)(rdp.cmd1 >> 16);
             uc8_coord_mod[9 + idx] = (short)(rdp.cmd1 & 0xffff);
-#ifdef EXTREME_LOGGING
             if (idx)
             {
                 for (int k = 8; k < 16; k++)
                 {
-                    FRDP("coord_mod[%d]=%f\n", k, uc8_coord_mod[k]);
+                    WriteTrace(TraceRDP, TraceVerbose, "coord_mod[%d]=%f", k, uc8_coord_mod[k]);
                 }
             }
-#endif
         }
     }
     break;
 
     default:
-        FRDP_E("uc8:moveword unknown (index: 0x%08lx, offset 0x%08lx)\n", index, offset);
-        FRDP("unknown (index: 0x%08lx, offset 0x%08lx)\n", index, offset);
+        WriteTrace(TraceRDP, TraceWarning, "uc8:moveword unknown (index: 0x%08lx, offset 0x%08lx)", index, offset);
     }
 }
 
@@ -335,7 +316,7 @@ static void uc8_movemem()
     uint32_t addr = segoffset(rdp.cmd1);
     int ofs = (rdp.cmd0 >> 5) & 0x3FFF;
 
-    FRDP("uc8:movemem ofs:%d ", ofs);
+    WriteTrace(TraceRDP, TraceDebug, "uc8:movemem ofs:%d ", ofs);
 
     switch (idx)
     {
@@ -357,7 +338,7 @@ static void uc8_movemem()
 
         rdp.update |= UPDATE_VIEWPORT;
 
-        FRDP("viewport scale(%d, %d), trans(%d, %d), from:%08lx\n", scale_x, scale_y,
+        WriteTrace(TraceRDP, TraceDebug, "viewport scale(%d, %d), trans(%d, %d), from:%08lx", scale_x, scale_y,
             trans_x, trans_y, a);
     }
     break;
@@ -379,7 +360,7 @@ static void uc8_movemem()
                 if (!dir_x && !dir_y)
                     rdp.use_lookat = FALSE;
             }
-            FRDP("lookat_%d (%f, %f, %f)\n", n, rdp.lookat[n][0], rdp.lookat[n][1], rdp.lookat[n][2]);
+            WriteTrace(TraceRDP, TraceDebug, "lookat_%d (%f, %f, %f)", n, rdp.lookat[n][0], rdp.lookat[n][1], rdp.lookat[n][2]);
             return;
         }
         n -= 2;
@@ -405,57 +386,51 @@ static void uc8_movemem()
         rdp.light[n].nonzero = gfx.RDRAM[(addr + 12) ^ 3];
         rdp.light[n].ca = (float)rdp.light[n].nonzero / 16.0f;
         //rdp.light[n].la = rdp.light[n].ca * 1.0f;
-#ifdef EXTREME_LOGGING
-        FRDP("light: n: %d, pos: x: %f, y: %f, z: %f, w: %f, ca: %f\n",
+        WriteTrace(TraceRDP, TraceVerbose, "light: n: %d, pos: x: %f, y: %f, z: %f, w: %f, ca: %f",
             n, rdp.light[n].x, rdp.light[n].y, rdp.light[n].z, rdp.light[n].w, rdp.light[n].ca);
-#endif
-        FRDP("light: n: %d, r: %f, g: %f, b: %f. dir: x: %.3f, y: %.3f, z: %.3f\n",
+        WriteTrace(TraceRDP, TraceDebug, "light: n: %d, r: %f, g: %f, b: %f. dir: x: %.3f, y: %.3f, z: %.3f",
             n, rdp.light[n].r, rdp.light[n].g, rdp.light[n].b,
             rdp.light[n].dir_x, rdp.light[n].dir_y, rdp.light[n].dir_z);
-#ifdef EXTREME_LOGGING
         for (int t = 0; t < 24; t++)
         {
-            FRDP ("light[%d] = 0x%04lx \n", t, ((uint16_t*)gfx.RDRAM)[(a+t)^1]);
+            WriteTrace(TraceRDP, TraceVerbose, "light[%d] = 0x%04lx ", t, ((uint16_t*)gfx.RDRAM)[(a + t) ^ 1]);
         }
-#endif
     }
     break;
 
     case 14: //Normales
     {
         uc8_normale_addr = segoffset(rdp.cmd1);
-        FRDP("Normale - addr: %08lx\n", uc8_normale_addr);
-#ifdef EXTREME_LOGGING
+        WriteTrace(TraceRDP, TraceVerbose, "Normale - addr: %08lx", uc8_normale_addr);
         int i;
         for (i = 0; i < 32; i++)
         {
-            char x = ((char*)gfx.RDRAM)[uc8_normale_addr + ((i<<1) + 0)^3];
-            char y = ((char*)gfx.RDRAM)[uc8_normale_addr + ((i<<1) + 1)^3];
-            FRDP("#%d x = %d, y = %d\n", i, x, y);
+            char x = ((char*)gfx.RDRAM)[uc8_normale_addr + ((i << 1) + 0) ^ 3];
+            char y = ((char*)gfx.RDRAM)[uc8_normale_addr + ((i << 1) + 1) ^ 3];
+            WriteTrace(TraceRDP, TraceVerbose, "#%d x = %d, y = %d", i, x, y);
         }
         uint32_t a = uc8_normale_addr >> 1;
         for (i = 0; i < 32; i++)
         {
-            FRDP ("n[%d] = 0x%04lx \n", i, ((uint16_t*)gfx.RDRAM)[(a+i)^1]);
+            WriteTrace(TraceRDP, TraceVerbose, "n[%d] = 0x%04lx ", i, ((uint16_t*)gfx.RDRAM)[(a + i) ^ 1]);
         }
-#endif
     }
     break;
 
     default:
-        FRDP("uc8:movemem unknown (%d)\n", idx);
+        WriteTrace(TraceRDP, TraceDebug, "uc8:movemem unknown (%d)", idx);
     }
-    }
+}
 
 static void uc8_tri4() //by Gugaman Apr 19 2002
 {
     if (rdp.skip_drawing)
     {
-        LRDP("uc8:tri4. skipped\n");
+        WriteTrace(TraceRDP, TraceDebug, "uc8:tri4. skipped");
         return;
     }
 
-    FRDP("uc8:tri4 (#%d - #%d), %d-%d-%d, %d-%d-%d, %d-%d-%d, %d-%d-%d\n",
+    WriteTrace(TraceRDP, TraceDebug, "uc8:tri4 (#%d - #%d), %d-%d-%d, %d-%d-%d, %d-%d-%d, %d-%d-%d",
         rdp.tri_n,
         rdp.tri_n + 3,
         ((rdp.cmd0 >> 23) & 0x1F),

@@ -47,7 +47,7 @@ uint32_t pd_col_addr = 0;
 
 static void uc7_colorbase()
 {
-    LRDP("uc7_colorbase\n");
+    WriteTrace(TraceRDP, TraceDebug, "uc7_colorbase");
     pd_col_addr = segoffset(rdp.cmd1);
 }
 
@@ -91,7 +91,7 @@ static void uc7_vertex()
     rdp.v0 = v0 = (rdp.cmd0 & 0x0F0000) >> 16;
     rdp.vn = n = ((rdp.cmd0 & 0xF00000) >> 20) + 1;
 
-    FRDP("uc7:vertex n: %d, v0: %d, from: %08lx\n", n, v0, addr);
+    WriteTrace(TraceRDP, TraceDebug, "uc7:vertex n: %d, v0: %d, from: %08lx", n, v0, addr);
 
     vtx_uc7 *vertex = (vtx_uc7 *)&gfx.RDRAM[addr];
 
@@ -106,9 +106,7 @@ static void uc7_vertex()
         v->ov = (float)vertex->t;
         v->uv_scaled = 0;
 
-#ifdef EXTREME_LOGGING
-        //    FRDP ("before: v%d - x: %f, y: %f, z: %f, flags: %04lx, ou: %f, ov: %f\n", i>>4, x, y, z, v->flags, v->ou, v->ov);
-#endif
+        WriteTrace(TraceRDP, TraceVerbose, "before: v%d - x: %f, y: %f, z: %f, flags: %04lx, ou: %f, ov: %f", i >> 4, x, y, z, v->flags, v->ou, v->ov);
 
         v->x = x*rdp.combined[0][0] + y*rdp.combined[1][0] + z*rdp.combined[2][0] + rdp.combined[3][0];
         v->y = x*rdp.combined[0][1] + y*rdp.combined[1][1] + z*rdp.combined[2][1] + rdp.combined[3][1];
@@ -145,31 +143,25 @@ static void uc7_vertex()
             if (rdp.geom_mode & 0x80000)
             {
                 calc_linear(v);
-#ifdef EXTREME_LOGGING
-                FRDP("calc linear: v%d - u: %f, v: %f\n", i >> 4, v->ou, v->ov);
-#endif
+                WriteTrace(TraceRDP, TraceVerbose, "calc linear: v%d - u: %f, v: %f", i >> 4, v->ou, v->ov);
             }
             else if (rdp.geom_mode & 0x40000)
             {
                 calc_sphere(v);
-#ifdef EXTREME_LOGGING
-                FRDP("calc sphere: v%d - u: %f, v: %f\n", i >> 4, v->ou, v->ov);
-#endif
+                WriteTrace(TraceRDP, TraceVerbose, "calc sphere: v%d - u: %f, v: %f", i >> 4, v->ou, v->ov);
             }
 
             NormalizeVector(v->vec);
 
             calc_light(v);
-            }
+        }
         else
         {
             v->r = color[3];
             v->g = color[2];
             v->b = color[1];
         }
-#ifdef EXTREME_LOGGING
-        FRDP("v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f\n", i >> 4, v->x, v->y, v->z, v->w, v->ou, v->ov);
-#endif
+        WriteTrace(TraceRDP, TraceVerbose, "v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f", i >> 4, v->x, v->y, v->z, v->w, v->ou, v->ov);
         vertex++;
     }
-            }
+}

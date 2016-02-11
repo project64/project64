@@ -103,7 +103,7 @@ static void t3dProcessRDP(uint32_t a)
 static void t3dLoadGlobState(uint32_t pgstate)
 {
     t3dGlobState *gstate = (t3dGlobState*)&gfx.RDRAM[segoffset(pgstate)];
-    FRDP("Global state. pad0: %04lx, perspNorm: %04lx, flag: %08lx\n", gstate->pad0, gstate->perspNorm, gstate->flag);
+    WriteTrace(TraceRDP, TraceDebug, "Global state. pad0: %04lx, perspNorm: %04lx, flag: %08lx", gstate->pad0, gstate->perspNorm, gstate->flag);
     rdp.cmd0 = gstate->othermode0;
     rdp.cmd1 = gstate->othermode1;
     rdp_setothermode();
@@ -111,7 +111,7 @@ static void t3dLoadGlobState(uint32_t pgstate)
     for (int s = 0; s < 16; s++)
     {
         rdp.segment[s] = gstate->segBases[s];
-        FRDP("segment: %08lx -> seg%d\n", rdp.segment[s], s);
+        WriteTrace(TraceRDP, TraceDebug, "segment: %08lx -> seg%d", rdp.segment[s], s);
     }
 
     short scale_x = gstate->vsacle0 / 4;
@@ -127,7 +127,7 @@ static void t3dLoadGlobState(uint32_t pgstate)
     rdp.view_trans[1] = trans_y * rdp.scale_y;
     rdp.view_trans[2] = 32.0f * trans_z;
     rdp.update |= UPDATE_VIEWPORT;
-    FRDP("viewport scale(%d, %d, %d), trans(%d, %d, %d)\n", scale_x, scale_y, scale_z,
+    WriteTrace(TraceRDP, TraceDebug, "viewport scale(%d, %d, %d), trans(%d, %d, %d)", scale_x, scale_y, scale_z,
         trans_x, trans_y, trans_z);
 
     t3dProcessRDP(segoffset(gstate->rdpCmds) >> 2);
@@ -177,27 +177,23 @@ static void t3d_vertex(uint32_t addr, uint32_t v0, uint32_t n)
         if (v->y < -v->w) v->scr_off |= 4;
         if (v->y > v->w) v->scr_off |= 8;
         if (v->w < 0.1f) v->scr_off |= 16;
-#ifdef EXTREME_LOGGING
-        FRDP ("v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f, f: %f, z_w: %f, r=%d, g=%d, b=%d, a=%d\n", i>>4, v->x, v->y, v->z, v->w, v->ou*rdp.tiles[rdp.cur_tile].s_scale, v->ov*rdp.tiles[rdp.cur_tile].t_scale, v->f, v->z_w, v->r, v->g, v->b, v->a);
-#endif
+        WriteTrace(TraceRDP, TraceVerbose, "v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f, f: %f, z_w: %f, r=%d, g=%d, b=%d, a=%d", i >> 4, v->x, v->y, v->z, v->w, v->ou*rdp.tiles[rdp.cur_tile].s_scale, v->ov*rdp.tiles[rdp.cur_tile].t_scale, v->f, v->z_w, v->r, v->g, v->b, v->a);
     }
 }
 
 static void t3dLoadObject(uint32_t pstate, uint32_t pvtx, uint32_t ptri)
 {
-    LRDP("Loading Turbo3D object\n");
+    WriteTrace(TraceRDP, TraceDebug, "Loading Turbo3D object");
     t3dState *ostate = (t3dState*)&gfx.RDRAM[segoffset(pstate)];
     rdp.cur_tile = (ostate->textureState) & 7;
-    FRDP("tile: %d\n", rdp.cur_tile);
+    WriteTrace(TraceRDP, TraceDebug, "tile: %d", rdp.cur_tile);
     if (rdp.tiles[rdp.cur_tile].s_scale < 0.001f)
         rdp.tiles[rdp.cur_tile].s_scale = 0.015625;
     if (rdp.tiles[rdp.cur_tile].t_scale < 0.001f)
         rdp.tiles[rdp.cur_tile].t_scale = 0.015625;
 
-#ifdef EXTREME_LOGGING
-    FRDP("renderState: %08lx, textureState: %08lx, othermode0: %08lx, othermode1: %08lx, rdpCmds: %08lx, triCount : %d, v0: %d, vn: %d\n", ostate->renderState, ostate->textureState,
+    WriteTrace(TraceRDP, TraceVerbose, "renderState: %08lx, textureState: %08lx, othermode0: %08lx, othermode1: %08lx, rdpCmds: %08lx, triCount : %d, v0: %d, vn: %d", ostate->renderState, ostate->textureState,
         ostate->othermode0, ostate->othermode1, ostate->rdpCmds, ostate->triCount, ostate->vtxV0, ostate->vtxCount);
-#endif
 
     rdp.cmd0 = ostate->othermode0;
     rdp.cmd1 = ostate->othermode1;
@@ -210,12 +206,10 @@ static void t3dLoadObject(uint32_t pstate, uint32_t pvtx, uint32_t ptri)
     {
         uint32_t addr = segoffset(pstate + sizeof(t3dState)) & BMASK;
         load_matrix(rdp.combined, addr);
-#ifdef EXTREME_LOGGING
-        FRDP ("{%f,%f,%f,%f}\n", rdp.combined[0][0], rdp.combined[0][1], rdp.combined[0][2], rdp.combined[0][3]);
-        FRDP ("{%f,%f,%f,%f}\n", rdp.combined[1][0], rdp.combined[1][1], rdp.combined[1][2], rdp.combined[1][3]);
-        FRDP ("{%f,%f,%f,%f}\n", rdp.combined[2][0], rdp.combined[2][1], rdp.combined[2][2], rdp.combined[2][3]);
-        FRDP ("{%f,%f,%f,%f}\n", rdp.combined[3][0], rdp.combined[3][1], rdp.combined[3][2], rdp.combined[3][3]);
-#endif
+        WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", rdp.combined[0][0], rdp.combined[0][1], rdp.combined[0][2], rdp.combined[0][3]);
+        WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", rdp.combined[1][0], rdp.combined[1][1], rdp.combined[1][2], rdp.combined[1][3]);
+        WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", rdp.combined[2][0], rdp.combined[2][1], rdp.combined[2][2], rdp.combined[2][3]);
+        WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", rdp.combined[3][0], rdp.combined[3][1], rdp.combined[3][2], rdp.combined[3][3]);
     }
 
     rdp.geom_mode &= ~0x00020000;
@@ -233,7 +227,7 @@ static void t3dLoadObject(uint32_t pstate, uint32_t pvtx, uint32_t ptri)
         {
             t3dTriN * tri = (t3dTriN*)&gfx.RDRAM[a];
             a += 4;
-            FRDP("tri #%d - %d, %d, %d\n", t, tri->v0, tri->v1, tri->v2);
+            WriteTrace(TraceRDP, TraceDebug, "tri #%d - %d, %d, %d", t, tri->v0, tri->v1, tri->v2);
             VERTEX *v[3] = { &rdp.vtx[tri->v0], &rdp.vtx[tri->v1], &rdp.vtx[tri->v2] };
             if (cull_tri(v))
                 rdp.tri_n++;
@@ -248,7 +242,7 @@ static void t3dLoadObject(uint32_t pstate, uint32_t pvtx, uint32_t ptri)
 
 static void Turbo3D()
 {
-    LRDP("Start Turbo3D microcode\n");
+    WriteTrace(TraceRDP, TraceDebug, "Start Turbo3D microcode");
     g_settings->ucode = ucode_Fast3D;
     uint32_t a = 0, pgstate = 0, pstate = 0, pvtx = 0, ptri = 0;
     do {
@@ -257,7 +251,7 @@ static void Turbo3D()
         pstate = ((uint32_t*)gfx.RDRAM)[(a >> 2) + 1];
         pvtx = ((uint32_t*)gfx.RDRAM)[(a >> 2) + 2];
         ptri = ((uint32_t*)gfx.RDRAM)[(a >> 2) + 3];
-        FRDP("GlobalState: %08lx, Object: %08lx, Vertices: %08lx, Triangles: %08lx\n", pgstate, pstate, pvtx, ptri);
+        WriteTrace(TraceRDP, TraceDebug, "GlobalState: %08lx, Object: %08lx, Vertices: %08lx, Triangles: %08lx", pgstate, pstate, pvtx, ptri);
         if (!pstate)
         {
             rdp.halt = 1;

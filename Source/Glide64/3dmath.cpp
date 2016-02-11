@@ -114,14 +114,12 @@ void calc_linear(VERTEX *v)
         v->ov = (acosf(y) / 3.141592654f) * (rdp.tiles[rdp.cur_tile].org_t_scale >> 6);
     }
     v->uv_scaled = 1;
-#ifdef EXTREME_LOGGING
-    FRDP ("calc linear u: %f, v: %f\n", v->ou, v->ov);
-#endif
+    WriteTrace(TraceRDP, TraceVerbose, "calc linear u: %f, v: %f", v->ou, v->ov);
 }
 
 void calc_sphere(VERTEX *v)
 {
-    //  LRDP("calc_sphere\n");
+    WriteTrace(TraceRDP, TraceDebug, "calc_sphere");
     DECLAREALIGN16VAR(vec[3]);
     int s_scale, t_scale;
     if (g_settings->hacks&hack_Chopper)
@@ -151,9 +149,7 @@ void calc_sphere(VERTEX *v)
     v->ou = (x * 0.5f + 0.5f) * s_scale;
     v->ov = (y * 0.5f + 0.5f) * t_scale;
     v->uv_scaled = 1;
-#ifdef EXTREME_LOGGING
-    FRDP ("calc sphere u: %f, v: %f\n", v->ou, v->ov);
-#endif
+    WriteTrace(TraceRDP, TraceVerbose, "calc sphere u: %f, v: %f", v->ou, v->ov);
 }
 
 float DotProductC(register float *v1, register float *v2)
@@ -195,8 +191,12 @@ void MulMatricesC(float m1[4][4], float m2[4][4], float r[4][4])
     register unsigned int i, j;
 
     for (i = 0; i < 4; i++)
+    {
         for (j = 0; j < 4; j++)
+        {
             row[i][j] = m2[i][j];
+        }
+    }
     for (i = 0; i < 4; i++)
     {
         // auto-vectorizable algorithm

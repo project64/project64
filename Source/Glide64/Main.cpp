@@ -61,20 +61,6 @@
 int  ghq_dmptex_toggle_key = 0;
 #endif
 
-#ifdef EXT_LOGGING
-std::ofstream extlog;
-#endif
-
-#ifdef RDP_LOGGING
-int log_open = FALSE;
-std::ofstream rdp_log;
-#endif
-
-#ifdef RDP_ERROR_LOG
-int elog_open = FALSE;
-std::ofstream rdp_err;
-#endif
-
 GFX_INFO gfx;
 
 int to_fullscreen = FALSE;
@@ -213,8 +199,8 @@ void _ChangeSize()
     rdp.vi_height = (vend - vstart) * fscale_y * 1.0126582f;
     float aspect = (g_settings->adjust_aspect && (fscale_y > fscale_x) && (rdp.vi_width > rdp.vi_height)) ? fscale_x / fscale_y : 1.0f;
 
-    WriteTrace(TraceResolution, TraceDebug, "hstart: %d, hend: %d, vstart: %d, vend: %d\n", hstart, hend, vstart, vend);
-    WriteTrace(TraceResolution, TraceDebug, "size: %d x %d\n", (int)rdp.vi_width, (int)rdp.vi_height);
+    WriteTrace(TraceResolution, TraceDebug, "hstart: %d, hend: %d, vstart: %d, vend: %d", hstart, hend, vstart, vend);
+    WriteTrace(TraceResolution, TraceDebug, "size: %d x %d", (int)rdp.vi_width, (int)rdp.vi_height);
 
     rdp.scale_x = (float)g_settings->res_x / rdp.vi_width;
     if (region > 0 && g_settings->pal230)
@@ -383,7 +369,7 @@ void ReadSettings()
 void ReadSpecialSettings(const char * name)
 {
     //  char buf [256];
-    //  sprintf(buf, "ReadSpecialSettings. Name: %s\n", name);
+    //  sprintf(buf, "ReadSpecialSettings. Name: %s", name);
     //  LOG(buf);
     g_settings->hacks = 0;
 
@@ -718,8 +704,8 @@ void guLoadTextures()
             if (cur&b) *tex8 = 0xFF;
             else *tex8 = 0x00;
             tex8++;
-        }
     }
+}
 
     grTexDownloadMipMap(GR_TMU0,
         voodoo.tex_min_addr[GR_TMU0] + offset_font,
@@ -794,8 +780,6 @@ int InitGfx()
         ReleaseGfx();
     }
 
-    OPEN_RDP_LOG();  // doesn't matter if opens again; it will check for it
-    OPEN_RDP_E_LOG();
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
     debugging = FALSE;
@@ -1002,7 +986,7 @@ int InitGfx()
             fog_t[0] = 0;
             //      for (int f = 0; f < 64; f++)
             //      {
-            //        FRDP("fog[%d]=%d->%f\n", f, fog_t[f], guFogTableIndexToW(f));
+            //        WriteTrace(TraceRDP, TraceDebug, "fog[%d]=%d->%f", f, fog_t[f], guFogTableIndexToW(f));
             //      }
             grFogTable(fog_t);
             grVertexLayout(GR_PARAM_FOG_EXT, offsetof(VERTEX, f), GR_PARAM_ENABLE);
@@ -1387,7 +1371,7 @@ void CALL CloseDLL(void)
     voodoo.gamma_table_g = 0;
     delete[] voodoo.gamma_table_b;
     voodoo.gamma_table_b = 0;
-}
+    }
 
 /******************************************************************
 Function: DllTest
@@ -1643,12 +1627,12 @@ void CALL RomClosed(void)
 {
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
-    CLOSE_RDP_LOG();
-    CLOSE_RDP_E_LOG();
     rdp.window_changed = TRUE;
     romopen = FALSE;
     if (evoodoo)
+    {
         ReleaseGfx();
+    }
 }
 
 static void CheckDRAMSize()
@@ -1667,7 +1651,7 @@ static void CheckDRAMSize()
         else
             BMASK = WMASK;
 #ifdef LOGGING
-    sprintf(out_buf, "Detected RDRAM size: %08lx\n", BMASK);
+    sprintf(out_buf, "Detected RDRAM size: %08lx", BMASK);
     LOG(out_buf);
 #endif
 }
@@ -1733,9 +1717,6 @@ void CALL RomOpen(void)
 
     CheckDRAMSize();
 
-    OPEN_RDP_LOG();
-    OPEN_RDP_E_LOG();
-
     // ** EVOODOO EXTENSIONS **
     if (!GfxInitDone)
     {
@@ -1787,7 +1768,7 @@ void drawViRegBG()
     fb_info.height = (uint32_t)rdp.vi_height;
     if (fb_info.height == 0)
     {
-        LRDP("Image height = 0 - skipping\n");
+        WriteTrace(TraceRDP, TraceDebug, "Image height = 0 - skipping");
         return;
     }
     fb_info.ul_x = 0;
@@ -1832,7 +1813,7 @@ output:   none
 uint32_t update_screen_count = 0;
 void CALL UpdateScreen(void)
 {
-    WriteTrace(TraceGlide64, TraceDebug, "Origin: %08x, Old origin: %08x, width: %d\n", *gfx.VI_ORIGIN_REG, rdp.vi_org_reg, *gfx.VI_WIDTH_REG);
+    WriteTrace(TraceGlide64, TraceDebug, "Origin: %08x, Old origin: %08x, width: %d", *gfx.VI_ORIGIN_REG, rdp.vi_org_reg, *gfx.VI_WIDTH_REG);
 
     uint32_t width = (*gfx.VI_WIDTH_REG) << 1;
     if (*gfx.VI_ORIGIN_REG > width)
@@ -1862,7 +1843,7 @@ void CALL UpdateScreen(void)
     uint32_t limit = (g_settings->hacks&hack_Lego) ? 15 : 30;
     if ((g_settings->frame_buffer&fb_cpu_write_hack) && (update_screen_count > limit) && (rdp.last_bg == 0))
     {
-        LRDP("DirectCPUWrite hack!\n");
+        WriteTrace(TraceRDP, TraceDebug, "DirectCPUWrite hack!");
         update_screen_count = 0;
         no_dlist = true;
         ClearCache();
@@ -1876,9 +1857,9 @@ void CALL UpdateScreen(void)
         if (*gfx.VI_ORIGIN_REG > width)
         {
             ChangeSize();
-            LRDP("ChangeSize done\n");
+            WriteTrace(TraceRDP, TraceDebug, "ChangeSize done");
             DrawFrameBuffer();
-            LRDP("DrawFrameBuffer done\n");
+            WriteTrace(TraceRDP, TraceDebug, "DrawFrameBuffer done");
             rdp.updatescreen = 1;
             newSwapBuffers();
         }
@@ -1936,7 +1917,7 @@ void newSwapBuffers()
 
     rdp.updatescreen = 0;
 
-    LRDP("swapped\n");
+    WriteTrace(TraceRDP, TraceDebug, "swapped");
 
     rdp.update |= UPDATE_SCISSOR | UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
     grClipWindow(0, 0, g_settings->scr_res_x, g_settings->scr_res_y);

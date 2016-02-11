@@ -424,7 +424,7 @@ void ConfigNotebook::set_properties()
     lblResolution->SetToolTip(tooltip);
     cmbResolution->SetToolTip(tooltip);
     cmbResolution->SetSelection(g_settings->res_data);
-    cbxVSync->SetToolTip("Vertical sync\nThis option will enable the vertical sync, which will prevent tearing.\nNote: this option will ONLY have effect if vsync is set to \"Software Controlled\".\n");
+    cbxVSync->SetToolTip("Vertical sync\nThis option will enable the vertical sync, which will prevent tearing.\nNote: this option will ONLY have effect if vsync is set to \"Software Controlled\".");
     cbxVSync->SetValue(g_settings->vsync > 0);
     tooltip = "Select a format, in which screen shots will be saved";
     lblScreenShotFormat->SetToolTip(tooltip);
@@ -1174,7 +1174,7 @@ void AboutDialog::do_layout()
 
     wxStaticText* label_1 = new wxStaticText(this, wxID_ANY, "authors:");
     sizer_1->Add(label_1, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
-    wxStaticText* label_2 = new wxStaticText(this, wxID_ANY, "Dave2001. Original author and former main developer.\nHe founded Glide64 project on Dec. 29th, 2001.\nLeft the project at fall of 2002.\n");
+    wxStaticText* label_2 = new wxStaticText(this, wxID_ANY, "Dave2001. Original author and former main developer.\nHe founded Glide64 project on Dec. 29th, 2001.\nLeft the project at fall of 2002.");
     label_2->Enable(false);
     sizer_2->Add(label_2, 0, 0, 0);
     sizer_1->Add(sizer_2, 1, wxEXPAND, 0);
@@ -1214,7 +1214,7 @@ void AboutDialog::do_layout()
     wxStaticText* label_13 = new wxStaticText(this, wxID_ANY, "olivieryuyu");
     sizer_12->Add(label_13, 0, wxALIGN_CENTER_VERTICAL, 0);
     sizer_1->Add(sizer_12, 1, wxEXPAND, 0);
-    wxStaticText* label_14 = new wxStaticText(this, wxID_ANY, "special thanks to:\n Orkin, Rice, Daniel Borca, Legend.\nThanks to EmuXHaven for hosting my site:\nhttp://glide64.emuxhaven.net\n", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
+    wxStaticText* label_14 = new wxStaticText(this, wxID_ANY, "special thanks to:\n Orkin, Rice, Daniel Borca, Legend.\nThanks to EmuXHaven for hosting my site:\nhttp://glide64.emuxhaven.net", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
     sizer_1->Add(label_14, 0, wxALIGN_CENTER_HORIZONTAL, 0);
     sizer_1->Add(button_ok, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND | wxALIGN_CENTER_HORIZONTAL, 10);
     SetSizer(sizer_1);

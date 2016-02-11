@@ -51,9 +51,7 @@ static void calc_point_light(VERTEX *v, float * vpos)
             lvec[2] -= vpos[2];
             float light_len2 = lvec[0] * lvec[0] + lvec[1] * lvec[1] + lvec[2] * lvec[2];
             float light_len = sqrtf(light_len2);
-#ifdef EXTREME_LOGGING
-            FRDP ("calc_point_light: len: %f, len2: %f\n", light_len, light_len2);
-#endif
+            WriteTrace(TraceRDP, TraceVerbose, "calc_point_light: len: %f, len2: %f", light_len, light_len2);
             float at = rdp.light[l].ca + light_len / 65535.0f*rdp.light[l].la + light_len2 / 65535.0f*rdp.light[l].qa;
             if (at > 0.0f)
                 light_intensity = 1 / at;//DotProduct (lvec, nvec) / (light_len * normal_len * at);
@@ -116,12 +114,11 @@ static void uc2_vertex()
     rdp.vn = n = (rdp.cmd0 >> 12) & 0xFF;
     rdp.v0 = v0 = ((rdp.cmd0 >> 1) & 0x7F) - n;
 
-    FRDP("uc2:vertex n: %d, v0: %d, from: %08lx\n", n, v0, addr);
+    WriteTrace(TraceRDP, TraceDebug, "uc2:vertex n: %d, v0: %d, from: %08lx", n, v0, addr);
 
     if (v0 < 0)
     {
-        RDP_E("** ERROR: uc2:vertex v0 < 0\n");
-        LRDP("** ERROR: uc2:vertex v0 < 0\n");
+        WriteTrace(TraceRDP, TraceWarning, "** ERROR: uc2:vertex v0 < 0");
         return;
     }
 
@@ -172,7 +169,7 @@ static void uc2_vertex()
             v->vec[0] = ((char*)gfx.RDRAM)[(addr + i + 12) ^ 3];
             v->vec[1] = ((char*)gfx.RDRAM)[(addr + i + 13) ^ 3];
             v->vec[2] = ((char*)gfx.RDRAM)[(addr + i + 14) ^ 3];
-            //	  FRDP("Calc light. x: %f, y: %f z: %f\n", v->vec[0], v->vec[1], v->vec[2]);
+            //	  WriteTrace(TraceRDP, TraceDebug, "Calc light. x: %f, y: %f z: %f", v->vec[0], v->vec[1], v->vec[2]);
             //      if (!(rdp.geom_mode & 0x800000))
             {
                 if (rdp.geom_mode & 0x40000)
@@ -180,16 +177,12 @@ static void uc2_vertex()
                     if (rdp.geom_mode & 0x80000)
                     {
                         calc_linear(v);
-#ifdef EXTREME_LOGGING
-                        FRDP ("calc linear: v%d - u: %f, v: %f\n", i>>4, v->ou, v->ov);
-#endif
+                        WriteTrace(TraceRDP, TraceVerbose, "calc linear: v%d - u: %f, v: %f", i >> 4, v->ou, v->ov);
                     }
                     else
                     {
                         calc_sphere(v);
-#ifdef EXTREME_LOGGING
-                        FRDP ("calc sphere: v%d - u: %f, v: %f\n", i>>4, v->ou, v->ov);
-#endif
+                        WriteTrace(TraceRDP, TraceVerbose, "calc sphere: v%d - u: %f, v: %f", i >> 4, v->ou, v->ov);
                     }
                 }
             }
@@ -210,9 +203,7 @@ static void uc2_vertex()
             v->g = ((uint8_t*)gfx.RDRAM)[(addr + i + 13) ^ 3];
             v->b = ((uint8_t*)gfx.RDRAM)[(addr + i + 14) ^ 3];
         }
-#ifdef EXTREME_LOGGING
-        FRDP ("v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f, f: %f, z_w: %f, r=%d, g=%d, b=%d, a=%d\n", i>>4, v->x, v->y, v->z, v->w, v->ou*rdp.tiles[rdp.cur_tile].s_scale, v->ov*rdp.tiles[rdp.cur_tile].t_scale, v->f, v->z_w, v->r, v->g, v->b, v->a);
-#endif
+        WriteTrace(TraceRDP, TraceVerbose, "v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f, f: %f, z_w: %f, r=%d, g=%d, b=%d, a=%d", i >> 4, v->x, v->y, v->z, v->w, v->ou*rdp.tiles[rdp.cur_tile].s_scale, v->ov*rdp.tiles[rdp.cur_tile].t_scale, v->f, v->z_w, v->r, v->g, v->b, v->a);
     }
     rdp.geom_mode = geom_mode;
 }
@@ -222,7 +213,7 @@ static void uc2_modifyvtx()
     uint8_t where = (uint8_t)((rdp.cmd0 >> 16) & 0xFF);
     uint16_t vtx = (uint16_t)((rdp.cmd0 >> 1) & 0xFFFF);
 
-    FRDP("uc2:modifyvtx: vtx: %d, where: 0x%02lx, val: %08lx - ", vtx, where, rdp.cmd1);
+    WriteTrace(TraceRDP, TraceDebug, "uc2:modifyvtx: vtx: %d, where: 0x%02lx, val: %08lx - ", vtx, where, rdp.cmd1);
     uc0_modifyvtx(where, vtx, rdp.cmd1);
 }
 
@@ -231,7 +222,7 @@ static void uc2_culldl()
     uint16_t vStart = (uint16_t)(rdp.cmd0 & 0xFFFF) >> 1;
     uint16_t vEnd = (uint16_t)(rdp.cmd1 & 0xFFFF) >> 1;
     uint32_t cond = 0;
-    FRDP("uc2:culldl start: %d, end: %d\n", vStart, vEnd);
+    WriteTrace(TraceRDP, TraceDebug, "uc2:culldl start: %d, end: %d", vStart, vEnd);
 
     if (vEnd < vStart) return;
     for (uint16_t i = vStart; i <= vEnd; i++)
@@ -254,16 +245,14 @@ static void uc2_culldl()
         return;
         //*/
 
-#ifdef EXTREME_LOGGING
-        FRDP (" v[%d] = (%02f, %02f, %02f, 0x%02lx)\n", i, rdp.vtx[i].x, rdp.vtx[i].y, rdp.vtx[i].w, rdp.vtx[i].scr_off);
-#endif
+        WriteTrace(TraceRDP, TraceVerbose, " v[%d] = (%02f, %02f, %02f, 0x%02lx)", i, rdp.vtx[i].x, rdp.vtx[i].y, rdp.vtx[i].w, rdp.vtx[i].scr_off);
 
         cond |= (~rdp.vtx[i].scr_off) & 0x1F;
         if (cond == 0x1F)
             return;
     }
 
-    LRDP(" - ");  // specify that the enddl is not a real command
+    WriteTrace(TraceRDP, TraceDebug, " - ");  // specify that the enddl is not a real command
     uc0_enddl();
 }
 
@@ -278,11 +267,11 @@ static void uc2_tri1()
     }
     if (rdp.skip_drawing)
     {
-        LRDP("uc2:tri1. skipped\n");
+        WriteTrace(TraceRDP, TraceDebug, "uc2:tri1. skipped");
         return;
     }
 
-    FRDP("uc2:tri1 #%d - %d, %d, %d\n", rdp.tri_n,
+    WriteTrace(TraceRDP, TraceDebug, "uc2:tri1 #%d - %d, %d, %d", rdp.tri_n,
         ((rdp.cmd0 >> 17) & 0x7F),
         ((rdp.cmd0 >> 9) & 0x7F),
         ((rdp.cmd0 >> 1) & 0x7F));
@@ -318,13 +307,13 @@ static void uc2_quad()
 
     if (rdp.skip_drawing)
     {
-        LRDP("uc2_quad. skipped\n");
+        WriteTrace(TraceRDP, TraceDebug, "uc2_quad. skipped");
         return;
     }
 
-    LRDP("uc2:quad");
+    WriteTrace(TraceRDP, TraceDebug, "uc2:quad");
 
-    FRDP(" #%d, #%d - %d, %d, %d - %d, %d, %d\n", rdp.tri_n, rdp.tri_n + 1,
+    WriteTrace(TraceRDP, TraceDebug, " #%d, #%d - %d, %d, %d - %d, %d, %d", rdp.tri_n, rdp.tri_n + 1,
         ((rdp.cmd0 >> 17) & 0x7F),
         ((rdp.cmd0 >> 9) & 0x7F),
         ((rdp.cmd0 >> 1) & 0x7F),
@@ -352,7 +341,7 @@ static void uc2_line3d()
         uc6_ldtx_rect_r();
     else
     {
-        FRDP("uc2:line3d #%d, #%d - %d, %d\n", rdp.tri_n, rdp.tri_n + 1,
+        WriteTrace(TraceRDP, TraceDebug, "uc2:line3d #%d, #%d - %d, %d", rdp.tri_n, rdp.tri_n + 1,
             (rdp.cmd0 >> 17) & 0x7F,
             (rdp.cmd0 >> 9) & 0x7F);
 
@@ -374,22 +363,22 @@ static void uc2_line3d()
 
 static void uc2_special3()
 {
-    LRDP("uc2:special3\n");
+    WriteTrace(TraceRDP, TraceDebug, "uc2:special3");
 }
 
 static void uc2_special2()
 {
-    LRDP("uc2:special2\n");
+    WriteTrace(TraceRDP, TraceDebug, "uc2:special2");
 }
 
 static void uc2_dma_io()
 {
-    LRDP("uc2:dma_io\n");
+    WriteTrace(TraceRDP, TraceDebug, "uc2:dma_io");
 }
 
 static void uc2_pop_matrix()
 {
-    FRDP("uc2:pop_matrix %08lx, %08lx\n", rdp.cmd0, rdp.cmd1);
+    WriteTrace(TraceRDP, TraceDebug, "uc2:pop_matrix %08lx, %08lx", rdp.cmd0, rdp.cmd1);
 
     // Just pop the modelview matrix
     modelview_pop(rdp.cmd1 >> 6);
@@ -405,12 +394,12 @@ static void uc2_geom_mode()
         ((rdp.cmd1 & 0x00000600) << 3) |
         ((rdp.cmd1 & 0x00200000) >> 12);
 
-    FRDP("uc2:geom_mode c:%08lx, s:%08lx ", clr_mode, set_mode);
+    WriteTrace(TraceRDP, TraceDebug, "uc2:geom_mode c:%08lx, s:%08lx ", clr_mode, set_mode);
 
     rdp.geom_mode &= clr_mode;
     rdp.geom_mode |= set_mode;
 
-    FRDP("result:%08lx\n", rdp.geom_mode);
+    WriteTrace(TraceRDP, TraceDebug, "result:%08lx", rdp.geom_mode);
 
     if (rdp.geom_mode & 0x00000001) // Z-Buffer enable
     {
@@ -490,7 +479,7 @@ static void uc2_matrix()
         uc6_obj_rectangle_r();
         return;
     }
-    LRDP("uc2:matrix\n");
+    WriteTrace(TraceRDP, TraceDebug, "uc2:matrix");
 
     DECLAREALIGN16VAR(m[4][4]);
     load_matrix(m, segoffset(rdp.cmd1));
@@ -499,56 +488,53 @@ static void uc2_matrix()
     switch (command)
     {
     case 0: // modelview mul nopush
-        LRDP("modelview mul\n");
+        WriteTrace(TraceRDP, TraceDebug, "modelview mul");
         modelview_mul(m);
         break;
 
     case 1: // modelview mul push
-        LRDP("modelview mul push\n");
+        WriteTrace(TraceRDP, TraceDebug, "modelview mul push");
         modelview_mul_push(m);
         break;
 
     case 2: // modelview load nopush
-        LRDP("modelview load\n");
+        WriteTrace(TraceRDP, TraceDebug, "modelview load");
         modelview_load(m);
         break;
 
     case 3: // modelview load push
-        LRDP("modelview load push\n");
+        WriteTrace(TraceRDP, TraceDebug, "modelview load push");
         modelview_load_push(m);
         break;
 
     case 4: // projection mul nopush
     case 5: // projection mul push, can't push projection
-        LRDP("projection mul\n");
+        WriteTrace(TraceRDP, TraceDebug, "projection mul");
         projection_mul(m);
         break;
 
     case 6: // projection load nopush
     case 7: // projection load push, can't push projection
-        LRDP("projection load\n");
+        WriteTrace(TraceRDP, TraceDebug, "projection load");
         projection_load(m);
         break;
 
     default:
-        FRDP_E("Unknown matrix command, %02lx", command);
-        FRDP("Unknown matrix command, %02lx", command);
+        WriteTrace(TraceRDP, TraceWarning, "Unknown matrix command, %02lx", command);
     }
 
-#ifdef EXTREME_LOGGING
-    FRDP ("{%f,%f,%f,%f}\n", m[0][0], m[0][1], m[0][2], m[0][3]);
-    FRDP ("{%f,%f,%f,%f}\n", m[1][0], m[1][1], m[1][2], m[1][3]);
-    FRDP ("{%f,%f,%f,%f}\n", m[2][0], m[2][1], m[2][2], m[2][3]);
-    FRDP ("{%f,%f,%f,%f}\n", m[3][0], m[3][1], m[3][2], m[3][3]);
-    FRDP ("\nmodel\n{%f,%f,%f,%f}\n", rdp.model[0][0], rdp.model[0][1], rdp.model[0][2], rdp.model[0][3]);
-    FRDP ("{%f,%f,%f,%f}\n", rdp.model[1][0], rdp.model[1][1], rdp.model[1][2], rdp.model[1][3]);
-    FRDP ("{%f,%f,%f,%f}\n", rdp.model[2][0], rdp.model[2][1], rdp.model[2][2], rdp.model[2][3]);
-    FRDP ("{%f,%f,%f,%f}\n", rdp.model[3][0], rdp.model[3][1], rdp.model[3][2], rdp.model[3][3]);
-    FRDP ("\nproj\n{%f,%f,%f,%f}\n", rdp.proj[0][0], rdp.proj[0][1], rdp.proj[0][2], rdp.proj[0][3]);
-    FRDP ("{%f,%f,%f,%f}\n", rdp.proj[1][0], rdp.proj[1][1], rdp.proj[1][2], rdp.proj[1][3]);
-    FRDP ("{%f,%f,%f,%f}\n", rdp.proj[2][0], rdp.proj[2][1], rdp.proj[2][2], rdp.proj[2][3]);
-    FRDP ("{%f,%f,%f,%f}\n", rdp.proj[3][0], rdp.proj[3][1], rdp.proj[3][2], rdp.proj[3][3]);
-#endif
+    WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", m[0][0], m[0][1], m[0][2], m[0][3]);
+    WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", m[1][0], m[1][1], m[1][2], m[1][3]);
+    WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", m[2][0], m[2][1], m[2][2], m[2][3]);
+    WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", m[3][0], m[3][1], m[3][2], m[3][3]);
+    WriteTrace(TraceRDP, TraceVerbose, "\nmodel\n{%f,%f,%f,%f}", rdp.model[0][0], rdp.model[0][1], rdp.model[0][2], rdp.model[0][3]);
+    WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", rdp.model[1][0], rdp.model[1][1], rdp.model[1][2], rdp.model[1][3]);
+    WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", rdp.model[2][0], rdp.model[2][1], rdp.model[2][2], rdp.model[2][3]);
+    WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", rdp.model[3][0], rdp.model[3][1], rdp.model[3][2], rdp.model[3][3]);
+    WriteTrace(TraceRDP, TraceVerbose, "\nproj\n{%f,%f,%f,%f}", rdp.proj[0][0], rdp.proj[0][1], rdp.proj[0][2], rdp.proj[0][3]);
+    WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", rdp.proj[1][0], rdp.proj[1][1], rdp.proj[1][2], rdp.proj[1][3]);
+    WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", rdp.proj[2][0], rdp.proj[2][1], rdp.proj[2][2], rdp.proj[2][3]);
+    WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", rdp.proj[3][0], rdp.proj[3][1], rdp.proj[3][2], rdp.proj[3][3]);
 }
 
 static void uc2_moveword()
@@ -557,7 +543,7 @@ static void uc2_moveword()
     uint16_t offset = (uint16_t)(rdp.cmd0 & 0xFFFF);
     uint32_t data = rdp.cmd1;
 
-    FRDP("uc2:moveword ");
+    WriteTrace(TraceRDP, TraceDebug, "uc2:moveword ");
 
     switch (index)
     {
@@ -597,14 +583,14 @@ static void uc2_moveword()
             rdp.combined[index_y][index_x + 1] = (short)(rdp.cmd1 & 0xFFFF);
         }
 
-        LRDP("matrix\n");
+        WriteTrace(TraceRDP, TraceDebug, "matrix");
     }
     break;
 
     case 0x02:
         rdp.num_lights = data / 24;
         rdp.update |= UPDATE_LIGHTS;
-        FRDP("numlights: %d\n", rdp.num_lights);
+        WriteTrace(TraceRDP, TraceDebug, "numlights: %d", rdp.num_lights);
         break;
 
     case 0x04:
@@ -613,12 +599,12 @@ static void uc2_moveword()
             rdp.clip_ratio = sqrt((float)rdp.cmd1);
             rdp.update |= UPDATE_VIEWPORT;
         }
-        FRDP("mw_clip %08lx, %08lx\n", rdp.cmd0, rdp.cmd1);
+        WriteTrace(TraceRDP, TraceDebug, "mw_clip %08lx, %08lx", rdp.cmd0, rdp.cmd1);
         break;
 
     case 0x06:  // moveword SEGMENT
     {
-        FRDP("SEGMENT %08lx -> seg%d\n", data, offset >> 2);
+        WriteTrace(TraceRDP, TraceDebug, "SEGMENT %08lx -> seg%d", data, offset >> 2);
         if ((data&BMASK) < BMASK)
             rdp.segment[(offset >> 2) & 0xF] = data;
     }
@@ -628,7 +614,7 @@ static void uc2_moveword()
     {
         rdp.fog_multiplier = (short)(rdp.cmd1 >> 16);
         rdp.fog_offset = (short)(rdp.cmd1 & 0x0000FFFF);
-        FRDP("fog: multiplier: %f, offset: %f\n", rdp.fog_multiplier, rdp.fog_offset);
+        WriteTrace(TraceRDP, TraceDebug, "fog: multiplier: %f, offset: %f", rdp.fog_multiplier, rdp.fog_offset);
 
         //offset must be 0 for move_fog, but it can be non zero in Nushi Zuri 64 - Shiokaze ni Notte
         //low-level display list has setothermode commands in this place, so this is obviously not move_fog.
@@ -640,7 +626,7 @@ static void uc2_moveword()
     case 0x0a:  // moveword LIGHTCOL
     {
         int n = offset / 24;
-        FRDP("lightcol light:%d, %08lx\n", n, data);
+        WriteTrace(TraceRDP, TraceDebug, "lightcol light:%d, %08lx", n, data);
 
         rdp.light[n].r = (float)((data >> 24) & 0xFF) / 255.0f;
         rdp.light[n].g = (float)((data >> 16) & 0xFF) / 255.0f;
@@ -650,17 +636,15 @@ static void uc2_moveword()
     break;
 
     case 0x0c:
-        RDP_E("uc2:moveword forcemtx - IGNORED\n");
-        LRDP("forcemtx - IGNORED\n");
+        WriteTrace(TraceRDP, TraceWarning, "uc2:moveword forcemtx - IGNORED");
         break;
 
     case 0x0e:
-        LRDP("perspnorm - IGNORED\n");
+        WriteTrace(TraceRDP, TraceDebug, "perspnorm - IGNORED");
         break;
 
     default:
-        FRDP_E("uc2:moveword unknown (index: 0x%08lx, offset 0x%08lx)\n", index, offset);
-        FRDP("unknown (index: 0x%08lx, offset 0x%08lx)\n", index, offset);
+        WriteTrace(TraceRDP, TraceWarning, "uc2:moveword unknown (index: 0x%08lx, offset 0x%08lx)", index, offset);
     }
 }
 
@@ -672,7 +656,7 @@ static void uc2_movemem()
     uint32_t addr = segoffset(rdp.cmd1);
     int ofs = (rdp.cmd0 >> 5) & 0x7F8;
 
-    FRDP("uc2:movemem ofs:%d ", ofs);
+    WriteTrace(TraceRDP, TraceDebug, "uc2:movemem ofs:%d ", ofs);
 
     switch (idx)
     {
@@ -699,7 +683,7 @@ static void uc2_movemem()
 
         rdp.update |= UPDATE_VIEWPORT;
 
-        FRDP("viewport scale(%d, %d, %d), trans(%d, %d, %d), from:%08lx\n", scale_x, scale_y, scale_z,
+        WriteTrace(TraceRDP, TraceDebug, "viewport scale(%d, %d, %d), trans(%d, %d, %d), from:%08lx", scale_x, scale_y, scale_z,
             trans_x, trans_y, trans_z, a);
     }
     break;
@@ -722,7 +706,7 @@ static void uc2_movemem()
                 if (!dir_x && !dir_y)
                     rdp.use_lookat = FALSE;
             }
-            FRDP("lookat_%d (%f, %f, %f)\n", n, rdp.lookat[n][0], rdp.lookat[n][1], rdp.lookat[n][2]);
+            WriteTrace(TraceRDP, TraceDebug, "lookat_%d (%f, %f, %f)", n, rdp.lookat[n][0], rdp.lookat[n][1], rdp.lookat[n][2]);
             return;
         }
         n -= 2;
@@ -751,11 +735,9 @@ static void uc2_movemem()
         rdp.light[n].ca = (float)(gfx.RDRAM[(addr + 3) ^ 3]) / 16.0f;
         rdp.light[n].la = (float)(gfx.RDRAM[(addr + 7) ^ 3]);
         rdp.light[n].qa = (float)(gfx.RDRAM[(addr + 14) ^ 3]) / 8.0f;
-#ifdef EXTREME_LOGGING
-        FRDP ("light: n: %d, pos: x: %f, y: %f, z: %f, ca: %f, la:%f, qa: %f\n",
+        WriteTrace(TraceRDP, TraceVerbose, "light: n: %d, pos: x: %f, y: %f, z: %f, ca: %f, la:%f, qa: %f",
             n, rdp.light[n].x, rdp.light[n].y, rdp.light[n].z, rdp.light[n].ca, rdp.light[n].la, rdp.light[n].qa);
-#endif
-        FRDP("light: n: %d, r: %.3f, g: %.3f, b: %.3f. dir: x: %.3f, y: %.3f, z: %.3f\n",
+        WriteTrace(TraceRDP, TraceDebug, "light: n: %d, r: %.3f, g: %.3f, b: %.3f. dir: x: %.3f, y: %.3f, z: %.3f",
             n, rdp.light[n].r, rdp.light[n].g, rdp.light[n].b,
             rdp.light[n].dir_x, rdp.light[n].dir_y, rdp.light[n].dir_z);
     }
@@ -767,42 +749,40 @@ static void uc2_movemem()
         rdp.update &= ~UPDATE_MULT_MAT;
         load_matrix(rdp.combined, segoffset(rdp.cmd1));
 
-#ifdef EXTREME_LOGGING
-        FRDP ("{%f,%f,%f,%f}\n", rdp.combined[0][0], rdp.combined[0][1], rdp.combined[0][2], rdp.combined[0][3]);
-        FRDP ("{%f,%f,%f,%f}\n", rdp.combined[1][0], rdp.combined[1][1], rdp.combined[1][2], rdp.combined[1][3]);
-        FRDP ("{%f,%f,%f,%f}\n", rdp.combined[2][0], rdp.combined[2][1], rdp.combined[2][2], rdp.combined[2][3]);
-        FRDP ("{%f,%f,%f,%f}\n", rdp.combined[3][0], rdp.combined[3][1], rdp.combined[3][2], rdp.combined[3][3]);
-#endif
+        WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", rdp.combined[0][0], rdp.combined[0][1], rdp.combined[0][2], rdp.combined[0][3]);
+        WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", rdp.combined[1][0], rdp.combined[1][1], rdp.combined[1][2], rdp.combined[1][3]);
+        WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", rdp.combined[2][0], rdp.combined[2][1], rdp.combined[2][2], rdp.combined[2][3]);
+        WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", rdp.combined[3][0], rdp.combined[3][1], rdp.combined[3][2], rdp.combined[3][3]);
     }
     break;
 
     default:
-        FRDP("uc2:matrix unknown (%d)\n", idx);
-        FRDP("** UNKNOWN %d\n", idx);
+        WriteTrace(TraceRDP, TraceDebug, "uc2:matrix unknown (%d)", idx);
+        WriteTrace(TraceRDP, TraceDebug, "** UNKNOWN %d", idx);
     }
 }
 
 static void uc2_load_ucode()
 {
-    LRDP("uc2:load_ucode\n");
+    WriteTrace(TraceRDP, TraceDebug, "uc2:load_ucode");
 }
 
 static void uc2_rdphalf_2()
 {
-    LRDP("uc2:rdphalf_2\n");
+    WriteTrace(TraceRDP, TraceDebug, "uc2:rdphalf_2");
 }
 
 static void uc2_dlist_cnt()
 {
     uint32_t addr = segoffset(rdp.cmd1) & BMASK;
     int count = rdp.cmd0 & 0x000000FF;
-    FRDP("dl_count - addr: %08lx, count: %d\n", addr, count);
+    WriteTrace(TraceRDP, TraceDebug, "dl_count - addr: %08lx, count: %d", addr, count);
     if (addr == 0)
         return;
 
-    if (rdp.pc_i >= 9) {
-        RDP_E("** DL stack overflow **\n");
-        LRDP("** DL stack overflow **\n");
+    if (rdp.pc_i >= 9)
+    {
+        WriteTrace(TraceRDP, TraceWarning, "** DL stack overflow **");
         return;
     }
     rdp.pc_i++;  // go to the next PC in the stack

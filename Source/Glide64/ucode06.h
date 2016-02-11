@@ -70,7 +70,7 @@ static float set_sprite_combine_mode()
         {
             Z = rdp.prim_depth;
         }
-        FRDP("prim_depth = %d, prim_dz = %d\n", rdp.prim_depth, rdp.prim_dz);
+        WriteTrace(TraceRDP, TraceDebug, "prim_depth = %d, prim_dz = %d", rdp.prim_depth, rdp.prim_dz);
         Z = ScaleZ(Z);
 
         if (rdp.othermode_l & 0x00000400)
@@ -78,7 +78,7 @@ static float set_sprite_combine_mode()
     }
     else
     {
-        LRDP("z compare not used, using 0\n");
+        WriteTrace(TraceRDP, TraceDebug, "z compare not used, using 0");
     }
 
     grCullMode(GR_CULL_DISABLE);
@@ -250,7 +250,7 @@ void DrawDepthImage(const DRAWIMAGE & d)
         return;
     if (d.imageH > d.imageW)
         return;
-    LRDP("Depth image write\n");
+    WriteTrace(TraceRDP, TraceDebug, "Depth image write");
     if (fb_hwfbe_enabled)
     {
         DrawHiresDepthImage(d);
@@ -338,7 +338,7 @@ void DrawImage(DRAWIMAGE & d)
         line = 16;
         break;
     default:
-        FRDP("DrawImage. unknown image size: %d\n", d.imageSiz);
+        WriteTrace(TraceRDP, TraceDebug, "DrawImage. unknown image size: %d", d.imageSiz);
         return;
     }
 
@@ -567,7 +567,7 @@ void DrawImage(DRAWIMAGE & d)
             else
             {
                 rdp.tri_n += 2;
-                LRDP("Clipped!\n");
+                WriteTrace(TraceRDP, TraceDebug, "Clipped!");
             }
 
             // increment whatever caused this split
@@ -606,7 +606,7 @@ void DrawHiresImage(DRAWIMAGE & d, int screensize = FALSE)
         rdp.tbuff_tex = &(rdp.texbufs[rdp.cur_tex_buf ^ 1].images[0]);
     else if (rdp.tbuff_tex == 0)
         return;
-    FRDP("DrawHiresImage. fb format=%d\n", rdp.tbuff_tex->info.format);
+    WriteTrace(TraceRDP, TraceDebug, "DrawHiresImage. fb format=%d", rdp.tbuff_tex->info.format);
 
     setTBufTex(rdp.tbuff_tex->t_mem, rdp.tbuff_tex->width << rdp.tbuff_tex->size >> 1);
 
@@ -737,11 +737,11 @@ static void uc6_read_background_data(DRAWIMAGE & d, bool bReadScale)
     int imageYorig = ((int *)gfx.RDRAM)[(addr + 16) >> 1] >> 5;
     rdp.last_bg = d.imagePtr;
 
-    FRDP("imagePtr: %08lx\n", d.imagePtr);
-    FRDP("frameX: %f, frameW: %d, frameY: %f, frameH: %d\n", d.frameX, d.frameW, d.frameY, d.frameH);
-    FRDP("imageX: %d, imageW: %d, imageY: %d, imageH: %d\n", d.imageX, d.imageW, d.imageY, d.imageH);
-    FRDP("imageYorig: %d, scaleX: %f, scaleY: %f\n", imageYorig, d.scaleX, d.scaleY);
-    FRDP("imageFmt: %d, imageSiz: %d, imagePal: %d, imageFlip: %d\n", d.imageFmt, d.imageSiz, d.imagePal, d.flipX);
+    WriteTrace(TraceRDP, TraceDebug, "imagePtr: %08lx", d.imagePtr);
+    WriteTrace(TraceRDP, TraceDebug, "frameX: %f, frameW: %d, frameY: %f, frameH: %d", d.frameX, d.frameW, d.frameY, d.frameH);
+    WriteTrace(TraceRDP, TraceDebug, "imageX: %d, imageW: %d, imageY: %d, imageH: %d", d.imageX, d.imageW, d.imageY, d.imageH);
+    WriteTrace(TraceRDP, TraceDebug, "imageYorig: %d, scaleX: %f, scaleY: %f", imageYorig, d.scaleX, d.scaleY);
+    WriteTrace(TraceRDP, TraceDebug, "imageFmt: %d, imageSiz: %d, imagePal: %d, imageFlip: %d", d.imageFmt, d.imageSiz, d.imagePal, d.flipX);
 }
 
 static void uc6_bg(bool bg_1cyc)
@@ -750,10 +750,10 @@ static void uc6_bg(bool bg_1cyc)
     const char *strFuncName = bg_1cyc ? strFuncNames[0] : strFuncNames[1];
     if (rdp.skip_drawing)
     {
-        FRDP("%s skipped\n", strFuncName);
+        WriteTrace(TraceRDP, TraceDebug, "%s skipped", strFuncName);
         return;
     }
-    FRDP("%s #%d, #%d\n", strFuncName, rdp.tri_n, rdp.tri_n + 1);
+    WriteTrace(TraceRDP, TraceDebug, "%s #%d, #%d", strFuncName, rdp.tri_n, rdp.tri_n + 1);
 
     DRAWIMAGE d;
     uc6_read_background_data(d, bg_1cyc);
@@ -770,7 +770,7 @@ static void uc6_bg(bool bg_1cyc)
             DrawImage(d);
         else
         {
-            FRDP("%s skipped\n", strFuncName);
+            WriteTrace(TraceRDP, TraceDebug, "%s skipped", strFuncName);
         }
     }
     else
@@ -1008,10 +1008,10 @@ static void uc6_read_object_data(DRAWOBJECT & d)
     if (d.imageH < 0)
         d.imageH = (short)rdp.scissor_o.lr_y - (short)d.objY - d.imageH;
 
-    FRDP("#%d, #%d\n"
-        "objX: %f, scaleW: %f, imageW: %d\n"
-        "objY: %f, scaleH: %f, imageH: %d\n"
-        "size: %d, format: %d\n", rdp.tri_n, rdp.tri_n + 1,
+    WriteTrace(TraceRDP, TraceDebug, "#%d, #%d"
+        "objX: %f, scaleW: %f, imageW: %d"
+        "objY: %f, scaleH: %f, imageH: %d"
+        "size: %d, format: %d", rdp.tri_n, rdp.tri_n + 1,
         d.objX, d.scaleW, d.imageW, d.objY, d.scaleH, d.imageH, d.imageSiz, d.imageFmt);
 }
 
@@ -1042,18 +1042,18 @@ static void uc6_init_tile(const DRAWOBJECT & d)
 
 static void uc6_obj_rectangle()
 {
-    LRDP("uc6:obj_rectangle ");
+    WriteTrace(TraceRDP, TraceDebug, "uc6:obj_rectangle ");
     DRAWOBJECT d;
     uc6_read_object_data(d);
 
     if (d.imageAdrs > 4096)
     {
-        FRDP("tmem: %08lx is out of bounds! return\n", d.imageAdrs);
+        WriteTrace(TraceRDP, TraceDebug, "tmem: %08lx is out of bounds! return", d.imageAdrs);
         return;
     }
     if (!rdp.s2dex_tex_loaded)
     {
-        LRDP("Texture was not loaded! return\n");
+        WriteTrace(TraceRDP, TraceDebug, "Texture was not loaded! return");
         return;
     }
 
@@ -1111,7 +1111,7 @@ static void uc6_obj_rectangle()
 
 static void uc6_obj_sprite()
 {
-    LRDP("uc6:obj_sprite ");
+    WriteTrace(TraceRDP, TraceDebug, "uc6:obj_sprite ");
     DRAWOBJECT d;
     uc6_read_object_data(d);
     uc6_init_tile(d);
@@ -1150,7 +1150,7 @@ static void uc6_obj_sprite()
         ul_v = 0.5f;
 
     // Make the vertices
-    //    FRDP("scale_x: %f, scale_y: %f\n", rdp.cur_cache[0]->scale_x, rdp.cur_cache[0]->scale_y);
+    //    WriteTrace(TraceRDP, TraceDebug, "scale_x: %f, scale_y: %f", rdp.cur_cache[0]->scale_x, rdp.cur_cache[0]->scale_y);
 
     VERTEX v[4] = {
         { ul_x, ul_y, Z, 1, ul_u, ul_v },
@@ -1172,7 +1172,7 @@ static void uc6_obj_sprite()
 
 static void uc6_obj_movemem()
 {
-    LRDP("uc6:obj_movemem\n");
+    WriteTrace(TraceRDP, TraceDebug, "uc6:obj_movemem");
 
     int index = rdp.cmd0 & 0xFFFF;
     uint32_t addr = segoffset(rdp.cmd1) >> 1;
@@ -1187,7 +1187,7 @@ static void uc6_obj_movemem()
         mat_2d.BaseScaleX = ((uint16_t*)gfx.RDRAM)[(addr + 10) ^ 1] / 1024.0f;
         mat_2d.BaseScaleY = ((uint16_t*)gfx.RDRAM)[(addr + 11) ^ 1] / 1024.0f;
 
-        FRDP("mat_2d\nA: %f, B: %f, c: %f, D: %f\nX: %f, Y: %f\nBaseScaleX: %f, BaseScaleY: %f\n",
+        WriteTrace(TraceRDP, TraceDebug, "mat_2d\nA: %f, B: %f, c: %f, D: %f\nX: %f, Y: %f\nBaseScaleX: %f, BaseScaleY: %f",
             mat_2d.A, mat_2d.B, mat_2d.C, mat_2d.D, mat_2d.X, mat_2d.Y, mat_2d.BaseScaleX, mat_2d.BaseScaleY);
     }
     else if (index == 2) {        // movemem submatrix
@@ -1196,21 +1196,19 @@ static void uc6_obj_movemem()
         mat_2d.BaseScaleX = ((uint16_t*)gfx.RDRAM)[(addr + 2) ^ 1] / 1024.0f;
         mat_2d.BaseScaleY = ((uint16_t*)gfx.RDRAM)[(addr + 3) ^ 1] / 1024.0f;
 
-        FRDP("submatrix\nX: %f, Y: %f\nBaseScaleX: %f, BaseScaleY: %f\n",
+        WriteTrace(TraceRDP, TraceDebug, "submatrix\nX: %f, Y: %f\nBaseScaleX: %f, BaseScaleY: %f",
             mat_2d.X, mat_2d.Y, mat_2d.BaseScaleX, mat_2d.BaseScaleY);
     }
 }
 
 static void uc6_select_dl()
 {
-    LRDP("uc6:select_dl\n");
-    RDP_E("uc6:select_dl\n");
+    WriteTrace(TraceRDP, TraceWarning, "uc6:select_dl");
 }
 
 static void uc6_obj_rendermode()
 {
-    LRDP("uc6:obj_rendermode\n");
-    RDP_E("uc6:obj_rendermode\n");
+    WriteTrace(TraceRDP, TraceWarning, "uc6:obj_rendermode");
 }
 
 static uint16_t uc6_yuv_to_rgba(uint8_t y, uint8_t u, uint8_t v)
@@ -1237,7 +1235,7 @@ static uint16_t uc6_yuv_to_rgba(uint8_t y, uint8_t u, uint8_t v)
 
 static void uc6_DrawYUVImageToFrameBuffer(uint16_t ul_x, uint16_t ul_y, uint16_t lr_x, uint16_t lr_y)
 {
-    FRDP("uc6:DrawYUVImageToFrameBuffer ul_x%d, ul_y%d, lr_x%d, lr_y%d\n", ul_x, ul_y, lr_x, lr_y);
+    WriteTrace(TraceRDP, TraceDebug, "uc6:DrawYUVImageToFrameBuffer ul_x%d, ul_y%d, lr_x%d, lr_y%d", ul_x, ul_y, lr_x, lr_y);
     uint32_t ci_width = rdp.ci_width;
     uint32_t ci_height = rdp.ci_lower_bound;
     if (ul_x >= ci_width)
@@ -1274,7 +1272,7 @@ static void uc6_DrawYUVImageToFrameBuffer(uint16_t ul_x, uint16_t ul_y, uint16_t
 
 static void uc6_obj_rectangle_r()
 {
-    LRDP("uc6:obj_rectangle_r ");
+    WriteTrace(TraceRDP, TraceDebug, "uc6:obj_rectangle_r ");
     DRAWOBJECT d;
     uc6_read_object_data(d);
 
@@ -1345,7 +1343,7 @@ static void uc6_obj_rectangle_r()
 
 static void uc6_obj_loadtxtr()
 {
-    LRDP("uc6:obj_loadtxtr ");
+    WriteTrace(TraceRDP, TraceDebug, "uc6:obj_loadtxtr ");
     rdp.s2dex_tex_loaded = TRUE;
     rdp.update |= UPDATE_TEXTURE;
 
@@ -1357,7 +1355,7 @@ static void uc6_obj_loadtxtr()
         uint16_t  phead = ((uint16_t *)gfx.RDRAM)[(addr + 4) ^ 1] - 256;        // 4
         uint16_t  pnum = ((uint16_t *)gfx.RDRAM)[(addr + 5) ^ 1] + 1;          // 5
 
-        FRDP("palette addr: %08lx, start: %d, num: %d\n", image, phead, pnum);
+        WriteTrace(TraceRDP, TraceDebug, "palette addr: %08lx, start: %d, num: %d", image, phead, pnum);
         load_palette(image, phead, pnum);
     }
     else if (type == 0x00001033) {        // TxtrBlock
@@ -1366,7 +1364,7 @@ static void uc6_obj_loadtxtr()
         uint16_t  tsize = ((uint16_t *)gfx.RDRAM)[(addr + 5) ^ 1];      // 5
         uint16_t  tline = ((uint16_t *)gfx.RDRAM)[(addr + 6) ^ 1];      // 6
 
-        FRDP("addr: %08lx, tmem: %08lx, size: %d\n", image, tmem, tsize);
+        WriteTrace(TraceRDP, TraceDebug, "addr: %08lx, tmem: %08lx, size: %d", image, tmem, tsize);
         rdp.timg.addr = image;
         rdp.timg.width = 1;
         rdp.timg.size = 1;
@@ -1384,7 +1382,7 @@ static void uc6_obj_loadtxtr()
         uint16_t  twidth = ((uint16_t *)gfx.RDRAM)[(addr + 5) ^ 1];      // 5
         uint16_t  theight = ((uint16_t *)gfx.RDRAM)[(addr + 6) ^ 1];      // 6
 
-        FRDP("tile addr: %08lx, tmem: %08lx, twidth: %d, theight: %d\n", image, tmem, twidth, theight);
+        WriteTrace(TraceRDP, TraceDebug, "tile addr: %08lx, tmem: %08lx, twidth: %d, theight: %d", image, tmem, twidth, theight);
 
         int line = (twidth + 1) >> 2;
 
@@ -1403,14 +1401,13 @@ static void uc6_obj_loadtxtr()
     }
     else
     {
-        FRDP("UNKNOWN (0x%08lx)\n", type);
-        FRDP_E("uc6:obj_loadtxtr UNKNOWN (0x%08lx)\n", type);
+        WriteTrace(TraceRDP, TraceWarning, "uc6:obj_loadtxtr UNKNOWN (0x%08lx)", type);
     }
 }
 
 static void uc6_obj_ldtx_sprite()
 {
-    LRDP("uc6:obj_ldtx_sprite\n");
+    WriteTrace(TraceRDP, TraceDebug, "uc6:obj_ldtx_sprite");
 
     uint32_t addr = rdp.cmd1;
     uc6_obj_loadtxtr();
@@ -1420,7 +1417,7 @@ static void uc6_obj_ldtx_sprite()
 
 static void uc6_obj_ldtx_rect()
 {
-    LRDP("uc6:obj_ldtx_rect\n");
+    WriteTrace(TraceRDP, TraceDebug, "uc6:obj_ldtx_rect");
 
     uint32_t addr = rdp.cmd1;
     uc6_obj_loadtxtr();
@@ -1430,7 +1427,7 @@ static void uc6_obj_ldtx_rect()
 
 static void uc6_ldtx_rect_r()
 {
-    LRDP("uc6:ldtx_rect_r\n");
+    WriteTrace(TraceRDP, TraceDebug, "uc6:ldtx_rect_r");
 
     uint32_t addr = rdp.cmd1;
     uc6_obj_loadtxtr();
@@ -1440,8 +1437,7 @@ static void uc6_ldtx_rect_r()
 
 static void uc6_loaducode()
 {
-    LRDP("uc6:load_ucode\n");
-    RDP_E("uc6:load_ucode\n");
+    WriteTrace(TraceRDP, TraceWarning, "uc6:load_ucode");
 
     // copy the microcode data
     uint32_t addr = segoffset(rdp.cmd1);
@@ -1458,7 +1454,7 @@ void uc6_sprite2d()
     if ((cmd0 >> 24) != 0xBE)
         return;
 
-    FRDP("uc6:uc6_sprite2d #%d, #%d\n", rdp.tri_n, rdp.tri_n + 1);
+    WriteTrace(TraceRDP, TraceDebug, "uc6:uc6_sprite2d #%d, #%d", rdp.tri_n, rdp.tri_n + 1);
     uint32_t addr = segoffset(rdp.cmd1) >> 1;
     DRAWIMAGE d;
 
@@ -1531,11 +1527,11 @@ void uc6_sprite2d()
                 stride *= scaleY;
                 d.scaleY = 1.0f;
             }
-            FRDP("imagePtr: %08lx\n", d.imagePtr);
-            FRDP("frameX: %f, frameW: %d, frameY: %f, frameH: %d\n", d.frameX, d.frameW, d.frameY, d.frameH);
-            FRDP("imageX: %d, imageW: %d, imageY: %d, imageH: %d\n", d.imageX, d.imageW, d.imageY, d.imageH);
-            FRDP("imageFmt: %d, imageSiz: %d, imagePal: %d, imageStride: %d\n", d.imageFmt, d.imageSiz, d.imagePal, stride);
-            FRDP("scaleX: %f, scaleY: %f\n", d.scaleX, d.scaleY);
+            WriteTrace(TraceRDP, TraceDebug, "imagePtr: %08lx", d.imagePtr);
+            WriteTrace(TraceRDP, TraceDebug, "frameX: %f, frameW: %d, frameY: %f, frameH: %d", d.frameX, d.frameW, d.frameY, d.frameH);
+            WriteTrace(TraceRDP, TraceDebug, "imageX: %d, imageW: %d, imageY: %d, imageH: %d", d.imageX, d.imageW, d.imageY, d.imageH);
+            WriteTrace(TraceRDP, TraceDebug, "imageFmt: %d, imageSiz: %d, imagePal: %d, imageStride: %d", d.imageFmt, d.imageSiz, d.imagePal, stride);
+            WriteTrace(TraceRDP, TraceDebug, "scaleX: %f, scaleY: %f", d.scaleX, d.scaleY);
         }
         else
         {

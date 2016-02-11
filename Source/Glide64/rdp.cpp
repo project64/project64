@@ -314,7 +314,7 @@ void microcheck()
         uc_crc += ((uint32_t*)microcode)[i];
     }
 
-    FRDP_E("crc: %08lx\n", uc_crc);
+    WriteTrace(TraceRDP, TraceWarning, "crc: %08lx", uc_crc);
 
 #ifdef LOG_UCODE
     std::ofstream ucf;
@@ -328,7 +328,7 @@ void microcheck()
     ucf.close();
 #endif
 
-    FRDP("ucode = %08lx\n", uc_crc);
+    WriteTrace(TraceRDP, TraceDebug, "ucode = %08lx", uc_crc);
 
     RegisterSetting(Set_ucodeLookup, Data_DWORD_RDB_Setting, stdstr_f("%08lx", uc_crc).c_str(), "ucode", (unsigned int)-2, NULL);
     int uc = GetSetting(Set_ucodeLookup);
@@ -362,7 +362,7 @@ void microcheck()
     {
         old_ucode = g_settings->ucode;
         g_settings->ucode = uc;
-        FRDP("microcheck: old ucode: %d,  new ucode: %d\n", old_ucode, uc);
+        WriteTrace(TraceRDP, TraceDebug, "microcheck: old ucode: %d,  new ucode: %d", old_ucode, uc);
         if (uc_crc == 0x8d5735b2 || uc_crc == 0xb1821ed3 || uc_crc == 0x1118b3e0) //F3DLP.Rej ucode. perspective texture correction is not implemented
         {
             rdp.Persp_en = 1;
@@ -421,7 +421,7 @@ static void copyWhiteToRDRAM()
 
 static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
 {
-    FRDP("CopyFrameBuffer: %08lx... ", rdp.cimg);
+    WriteTrace(TraceRDP, TraceDebug, "CopyFrameBuffer: %08lx... ", rdp.cimg);
 
     // don't bother to write the stuff in asm... the slow part is the read from video card,
     //   not the copy.
@@ -439,7 +439,7 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
         if (g_settings->hacks&hack_PPL)
             height -= rdp.ci_upper_bound;
     }
-    FRDP("width: %d, height: %d...  ", width, height);
+    WriteTrace(TraceRDP, TraceDebug, "width: %d, height: %d...  ", width, height);
 
     if (rdp.scale_x < 1.1f)
     {
@@ -476,11 +476,11 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
                         ptr_dst32[x + y * width] = RGBA16TO32(c);
                 }
             }
-            LRDP("ReadRegion.  Framebuffer copy complete.\n");
+            WriteTrace(TraceRDP, TraceDebug, "ReadRegion.  Framebuffer copy complete.");
         }
         else
         {
-            LRDP("Framebuffer copy failed.\n");
+            WriteTrace(TraceRDP, TraceDebug, "Framebuffer copy failed.");
         }
         delete[] ptr_src;
     }
@@ -495,7 +495,7 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
             float scale_x = (g_settings->scr_res_x - rdp.offset_x*2.0f) / maxval(width, rdp.vi_width);
             float scale_y = (g_settings->scr_res_y - rdp.offset_y*2.0f) / maxval(height, rdp.vi_height);
 
-            FRDP("width: %d, height: %d, ul_y: %d, lr_y: %d, scale_x: %f, scale_y: %f, ci_width: %d, ci_height: %d\n", width, height, rdp.ci_upper_bound, rdp.ci_lower_bound, scale_x, scale_y, rdp.ci_width, rdp.ci_height);
+            WriteTrace(TraceRDP, TraceDebug, "width: %d, height: %d, ul_y: %d, lr_y: %d, scale_x: %f, scale_y: %f, ci_width: %d, ci_height: %d", width, height, rdp.ci_upper_bound, rdp.ci_lower_bound, scale_x, scale_y, rdp.ci_width, rdp.ci_height);
             GrLfbInfo_t info;
             info.size = sizeof(GrLfbInfo_t);
 
@@ -537,11 +537,11 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
 
                 // Unlock the backbuffer
                 grLfbUnlock(GR_LFB_READ_ONLY, buffer);
-                LRDP("LfbLock.  Framebuffer copy complete.\n");
+                WriteTrace(TraceRDP, TraceDebug, "LfbLock.  Framebuffer copy complete.");
             }
             else
             {
-                LRDP("Framebuffer copy failed.\n");
+                WriteTrace(TraceRDP, TraceDebug, "Framebuffer copy failed.");
             }
         }
     }
@@ -627,24 +627,6 @@ EXPORT void CALL ProcessDList(void)
     if (to_fullscreen)
         GoToFullScreen();
 
-    // Clear out the RDP log
-#ifdef RDP_LOGGING
-    if (g_settings->logging && g_settings->log_clear)
-    {
-        CLOSE_RDP_LOG();
-        OPEN_RDP_LOG();
-    }
-#endif
-
-#ifdef UNIMP_LOG
-    if (g_settings->log_unk && g_settings->unk_clear)
-    {
-        std::ofstream unimp;
-        unimp.open("unimp.txt");
-        unimp.close();
-    }
-#endif
-
     //* Set states *//
     if (g_settings->swapmode > 0)
         SwapOK = TRUE;
@@ -694,8 +676,7 @@ EXPORT void CALL ProcessDList(void)
     // Get the start of the display list and the length of it
     uint32_t dlist_start = *(uint32_t*)(gfx.DMEM + 0xFF0);
     uint32_t dlist_length = *(uint32_t*)(gfx.DMEM + 0xFF4);
-    FRDP("--- NEW DLIST --- crc: %08lx, ucode: %d, fbuf: %08lx, fbuf_width: %d, dlist start: %08lx, dlist_length: %d, x_scale: %f, y_scale: %f\n", uc_crc, g_settings->ucode, *gfx.VI_ORIGIN_REG, *gfx.VI_WIDTH_REG, dlist_start, dlist_length, (*gfx.VI_X_SCALE_REG & 0xFFF) / 1024.0f, (*gfx.VI_Y_SCALE_REG & 0xFFF) / 1024.0f);
-    FRDP_E("--- NEW DLIST --- crc: %08lx, ucode: %d, fbuf: %08lx\n", uc_crc, g_settings->ucode, *gfx.VI_ORIGIN_REG);
+    WriteTrace(TraceRDP, TraceDebug, "--- NEW DLIST --- crc: %08lx, ucode: %d, fbuf: %08lx, fbuf_width: %d, dlist start: %08lx, dlist_length: %d, x_scale: %f, y_scale: %f", uc_crc, g_settings->ucode, *gfx.VI_ORIGIN_REG, *gfx.VI_WIDTH_REG, dlist_start, dlist_length, (*gfx.VI_X_SCALE_REG & 0xFFF) / 1024.0f, (*gfx.VI_Y_SCALE_REG & 0xFFF) / 1024.0f);
 
     // Do nothing if dlist is empty
     if (dlist_start == 0)
@@ -706,7 +687,7 @@ EXPORT void CALL ProcessDList(void)
     if ((g_settings->hacks&hack_Tonic) && dlist_length < 16)
     {
         rdp_fullsync();
-        FRDP_E("DLIST is too short!\n");
+        WriteTrace(TraceRDP, TraceWarning, "DLIST is too short!");
         return;
     }
 
@@ -739,9 +720,9 @@ EXPORT void CALL ProcessDList(void)
 
                 // Output the address before the command
 #ifdef LOG_COMMANDS
-                FRDP("%08lx (c0:%08lx, c1:%08lx): ", a, rdp.cmd0, rdp.cmd1);
+                WriteTrace(TraceRDP, TraceDebug, "%08lx (c0:%08lx, c1:%08lx): ", a, rdp.cmd0, rdp.cmd1);
 #else
-                FRDP("%08lx: ", a);
+                WriteTrace(TraceRDP, TraceDebug, "%08lx: ", a);
 #endif
 
                 // Go to the next instruction
@@ -761,14 +742,14 @@ EXPORT void CALL ProcessDList(void)
                     {
                         rdp.dl_count = -1;
 
-                        LRDP("End of DL\n");
+                        WriteTrace(TraceRDP, TraceDebug, "End of DL");
                         rdp.pc_i--;
                     }
                 }
 
 #ifdef PERFORMANCE
                 perf_next = wxDateTime::UNow();
-                sprintf(out_buf, "perf %08lx: %016I64d\n", a - 8, (perf_next - perf_cur).Format(_T("%l")).mb_str());
+                sprintf(out_buf, "perf %08lx: %016I64d", a - 8, (perf_next - perf_cur).Format(_T("%l")).mb_str());
                 rdp_log << out_buf;
 #endif
             } while (!rdp.halt);
@@ -819,14 +800,13 @@ EXPORT void CALL ProcessDList(void)
         newSwapBuffers();
         CI_SET = FALSE;
     }
-    LRDP("ProcessDList end\n");
+    WriteTrace(TraceRDP, TraceDebug, "ProcessDList end");
 }
 
 // undef - undefined instruction, always ignore
 static void undef()
 {
-    FRDP_E("** undefined ** (%08lx)\n", rdp.cmd0);
-    FRDP("** undefined ** (%08lx) - IGNORED\n", rdp.cmd0);
+    WriteTrace(TraceRDP, TraceWarning, "** undefined ** (%08lx) - IGNORED", rdp.cmd0);
 #ifdef _ENDUSER_RELEASE_
     *gfx.MI_INTR_REG |= 0x20;
     gfx.CheckInterrupts();
@@ -837,13 +817,13 @@ static void undef()
 // spnoop - no operation, always ignore
 static void spnoop()
 {
-    LRDP("spnoop\n");
+    WriteTrace(TraceRDP, TraceDebug, "spnoop");
 }
 
 // noop - no operation, always ignore
 static void rdp_noop()
 {
-    LRDP("noop\n");
+    WriteTrace(TraceRDP, TraceDebug, "noop");
 }
 
 static void ys_memrect()
@@ -860,12 +840,11 @@ static void ys_memrect()
     uint32_t off_x = ((rdp.cmd2 & 0xFFFF0000) >> 16) >> 5;
     uint32_t off_y = (rdp.cmd2 & 0x0000FFFF) >> 5;
 
-    FRDP("memrect (%d, %d, %d, %d), ci_width: %d", ul_x, ul_y, lr_x, lr_y, rdp.ci_width);
+    WriteTrace(TraceRDP, TraceDebug, "memrect (%d, %d, %d, %d), ci_width: %d", ul_x, ul_y, lr_x, lr_y, rdp.ci_width);
     if (off_x > 0)
-        FRDP("  off_x: %d", off_x);
+        WriteTrace(TraceRDP, TraceDebug, "  off_x: %d", off_x);
     if (off_y > 0)
-        FRDP("  off_y: %d", off_y);
-    LRDP("\n");
+        WriteTrace(TraceRDP, TraceDebug, "  off_y: %d", off_y);
 
     uint32_t y, width = lr_x - ul_x;
     uint32_t tex_width = rdp.tiles[tile].line << 3;
@@ -894,7 +873,7 @@ static void pm_palette_mod()
     {
         dst[i ^ 1] = (rdp.pal_8[i] & 1) ? prim16 : env16;
     }
-    LRDP("Texrect palette modification\n");
+    WriteTrace(TraceRDP, TraceDebug, "Texrect palette modification");
 }
 
 static void pd_zcopy()
@@ -911,7 +890,7 @@ static void pd_zcopy()
         c = ptr_src[x];
         c = ((c << 8) & 0xFF00) | (c >> 8);
         ptr_dst[(ul_x + x) ^ 1] = c;
-        //      FRDP("dst[%d]=%04lx \n", (x + ul_x)^1, c);
+        //      WriteTrace(TraceRDP, TraceDebug, "dst[%d]=%04lx ", (x + ul_x)^1, c);
     }
 }
 
@@ -972,15 +951,15 @@ static void rdp_texrect()
         }
         else
         {
-            LRDP("Texrect skipped\n");
+            WriteTrace(TraceRDP, TraceDebug, "Texrect skipped");
         }
         return;
     }
 
     if ((g_settings->ucode == ucode_CBFD) && rdp.cur_image && rdp.cur_image->format)
     {
-        //FRDP("Wrong Texrect. texaddr: %08lx, cimg: %08lx, cimg_end: %08lx\n", rdp.timg.addr, rdp.maincimg[1].addr, rdp.maincimg[1].addr+rdp.ci_width*rdp.ci_height*rdp.ci_size);
-        LRDP("Shadow texrect is skipped.\n");
+        //WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect. texaddr: %08lx, cimg: %08lx, cimg_end: %08lx", rdp.timg.addr, rdp.maincimg[1].addr, rdp.maincimg[1].addr+rdp.ci_width*rdp.ci_height*rdp.ci_size);
+        WriteTrace(TraceRDP, TraceDebug, "Shadow texrect is skipped.");
         rdp.tri_n += 2;
         return;
     }
@@ -988,7 +967,7 @@ static void rdp_texrect()
     if ((g_settings->ucode == ucode_PerfectDark) && rdp.ci_count > 0 && (rdp.frame_buffers[rdp.ci_count - 1].status == ci_zcopy))
     {
         pd_zcopy();
-        LRDP("Depth buffer copied.\n");
+        WriteTrace(TraceRDP, TraceDebug, "Depth buffer copied.");
         rdp.tri_n += 2;
         return;
     }
@@ -1003,7 +982,7 @@ static void rdp_texrect()
         return;
     }
 
-    //  FRDP ("rdp.cycle1 %08lx, rdp.cycle2 %08lx\n", rdp.cycle1, rdp.cycle2);
+    //  WriteTrace(TraceRDP, TraceDebug, "rdp.cycle1 %08lx, rdp.cycle2 %08lx", rdp.cycle1, rdp.cycle2);
 
     float ul_x, ul_y, lr_x, lr_y;
     if (rdp.cycle_mode == 2)
@@ -1023,7 +1002,7 @@ static void rdp_texrect()
 
     if (ul_x >= lr_x)
     {
-        FRDP("Wrong Texrect: ul_x: %f, lr_x: %f\n", ul_x, lr_x);
+        WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect: ul_x: %f, lr_x: %f", ul_x, lr_x);
         return;
     }
 
@@ -1046,7 +1025,7 @@ static void rdp_texrect()
     //*
     if (rdp.tbuff_tex && (g_settings->frame_buffer & fb_optimize_texrect))
     {
-        LRDP("Attempt to optimize texrect\n");
+        WriteTrace(TraceRDP, TraceDebug, "Attempt to optimize texrect");
         if (!rdp.tbuff_tex->drawn)
         {
             DRAWIMAGE d;
@@ -1059,7 +1038,7 @@ static void rdp_texrect()
             d.imageH = (uint16_t)rdp.tbuff_tex->height;
             d.frameY = (uint16_t)ul_y;
             d.frameH = (uint16_t)(rdp.tbuff_tex->height);
-            FRDP("texrect. ul_x: %d, ul_y: %d, lr_x: %d, lr_y: %d, width: %d, height: %d\n", ul_x, ul_y, lr_x, lr_y, rdp.tbuff_tex->width, rdp.tbuff_tex->height);
+            WriteTrace(TraceRDP, TraceDebug, "texrect. ul_x: %d, ul_y: %d, lr_x: %d, lr_y: %d, width: %d, height: %d", ul_x, ul_y, lr_x, lr_y, rdp.tbuff_tex->width, rdp.tbuff_tex->height);
             d.scaleX = 1.0f;
             d.scaleY = 1.0f;
             DrawHiresImage(d, rdp.tbuff_tex->width == rdp.ci_width);
@@ -1076,7 +1055,7 @@ static void rdp_texrect()
     //hack for Zelda MM. it removes black texrects which cover all geometry in "Link meets Zelda" cut scene
     if ((g_settings->hacks&hack_Zelda) && rdp.timg.addr >= rdp.cimg && rdp.timg.addr < rdp.ci_end)
     {
-        FRDP("Wrong Texrect. texaddr: %08lx, cimg: %08lx, cimg_end: %08lx\n", rdp.cur_cache[0]->addr, rdp.cimg, rdp.cimg + rdp.ci_width*rdp.ci_height * 2);
+        WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect. texaddr: %08lx, cimg: %08lx, cimg_end: %08lx", rdp.cur_cache[0]->addr, rdp.cimg, rdp.cimg + rdp.ci_width*rdp.ci_height * 2);
         rdp.tri_n += 2;
         return;
     }
@@ -1095,8 +1074,8 @@ static void rdp_texrect()
         if (fb_emulation_enabled)
             if (rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_copy_self)
             {
-                //FRDP("Wrong Texrect. texaddr: %08lx, cimg: %08lx, cimg_end: %08lx\n", rdp.timg.addr, rdp.maincimg[1], rdp.maincimg[1]+rdp.ci_width*rdp.ci_height*rdp.ci_size);
-                LRDP("Wrong Texrect.\n");
+                //WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect. texaddr: %08lx, cimg: %08lx, cimg_end: %08lx", rdp.timg.addr, rdp.maincimg[1], rdp.maincimg[1]+rdp.ci_width*rdp.ci_height*rdp.ci_size);
+                WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect.");
                 rdp.tri_n += 2;
                 return;
             }
@@ -1145,9 +1124,9 @@ static void rdp_texrect()
     float s_ul_y = ul_y * rdp.scale_y + rdp.offset_y;
     float s_lr_y = lr_y * rdp.scale_y + rdp.offset_y;
 
-    FRDP("texrect (%.2f, %.2f, %.2f, %.2f), tile: %d, #%d, #%d\n", ul_x, ul_y, lr_x, lr_y, tile, rdp.tri_n, rdp.tri_n + 1);
-    FRDP("(%f, %f) -> (%f, %f), s: (%d, %d) -> (%d, %d)\n", s_ul_x, s_ul_y, s_lr_x, s_lr_y, rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
-    FRDP("\toff_x: %f, off_y: %f, dsdx: %f, dtdy: %f\n", off_x_i / 32.0f, off_y_i / 32.0f, dsdx, dtdy);
+    WriteTrace(TraceRDP, TraceDebug, "texrect (%.2f, %.2f, %.2f, %.2f), tile: %d, #%d, #%d", ul_x, ul_y, lr_x, lr_y, tile, rdp.tri_n, rdp.tri_n + 1);
+    WriteTrace(TraceRDP, TraceDebug, "(%f, %f) -> (%f, %f), s: (%d, %d) -> (%d, %d)", s_ul_x, s_ul_y, s_lr_x, s_lr_y, rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
+    WriteTrace(TraceRDP, TraceDebug, "\toff_x: %f, off_y: %f, dsdx: %f, dtdy: %f", off_x_i / 32.0f, off_y_i / 32.0f, dsdx, dtdy);
 
     float off_size_x;
     float off_size_y;
@@ -1255,7 +1234,7 @@ static void rdp_texrect()
                 texUV[i].ul_v *= rdp.aTBuffTex[i]->v_scale;
                 texUV[i].lr_u *= rdp.aTBuffTex[i]->u_scale;
                 texUV[i].lr_v *= rdp.aTBuffTex[i]->v_scale;
-                FRDP("tbuff_tex[%d] ul_u: %f, ul_v: %f, lr_u: %f, lr_v: %f\n",
+                WriteTrace(TraceRDP, TraceDebug, "tbuff_tex[%d] ul_u: %f, ul_v: %f, lr_u: %f, lr_v: %f",
                     i, texUV[i].ul_u, texUV[i].ul_v, texUV[i].lr_u, texUV[i].lr_v);
             }
             else //common case
@@ -1285,12 +1264,12 @@ static void rdp_texrect()
 
     // ****
 
-    FRDP("  scissor: (%d, %d) -> (%d, %d)\n", rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
+    WriteTrace(TraceRDP, TraceDebug, "  scissor: (%d, %d) -> (%d, %d)", rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
 
     CCLIP2(s_ul_x, s_lr_x, texUV[0].ul_u, texUV[0].lr_u, texUV[1].ul_u, texUV[1].lr_u, (float)rdp.scissor.ul_x, (float)rdp.scissor.lr_x);
     CCLIP2(s_ul_y, s_lr_y, texUV[0].ul_v, texUV[0].lr_v, texUV[1].ul_v, texUV[1].lr_v, (float)rdp.scissor.ul_y, (float)rdp.scissor.lr_y);
 
-    FRDP("  draw at: (%f, %f) -> (%f, %f)\n", s_ul_x, s_ul_y, s_lr_x, s_lr_y);
+    WriteTrace(TraceRDP, TraceDebug, "  draw at: (%f, %f) -> (%f, %f)", s_ul_x, s_ul_y, s_lr_x, s_lr_y);
 
     VERTEX vstd[4] = {
         { s_ul_x, s_ul_y, Z, 1.0f, texUV[0].ul_u, texUV[0].ul_v, texUV[1].ul_u, texUV[1].ul_v, { 0, 0, 0, 0 }, 255 },
@@ -1316,7 +1295,7 @@ static void rdp_texrect()
 
     VERTEX *vnew = 0;
     //          for (int j =0; j < 4; j++)
-    //            FRDP("v[%d]  u0: %f, v0: %f, u1: %f, v1: %f\n", j, vstd[j].u0, vstd[j].v0, vstd[j].u1, vstd[j].v1);
+    //            WriteTrace(TraceRDP, TraceDebug, "v[%d]  u0: %f, v0: %f, u1: %f, v1: %f", j, vstd[j].u0, vstd[j].v0, vstd[j].u1, vstd[j].v1);
 
     if (!rdp.aTBuffTex[0] && rdp.cur_cache[0]->splits != 1)
     {
@@ -1341,7 +1320,7 @@ static void rdp_texrect()
         int start_u_256, end_u_256;
         start_u_256 = (int)min_u >> 8;
         end_u_256 = (int)max_u >> 8;
-        //FRDP(" min_u: %f, max_u: %f start: %d, end: %d\n", min_u, max_u, start_u_256, end_u_256);
+        //WriteTrace(TraceRDP, TraceDebug, " min_u: %f, max_u: %f start: %d, end: %d", min_u, max_u, start_u_256, end_u_256);
 
         int splitheight = rdp.cur_cache[0]->splitheight;
 
@@ -1481,17 +1460,17 @@ static void rdp_texrect()
 
 static void rdp_loadsync()
 {
-    LRDP("loadsync - ignored\n");
+    WriteTrace(TraceRDP, TraceDebug, "loadsync - ignored");
 }
 
 static void rdp_pipesync()
 {
-    LRDP("pipesync - ignored\n");
+    WriteTrace(TraceRDP, TraceDebug, "pipesync - ignored");
 }
 
 static void rdp_tilesync()
 {
-    LRDP("tilesync - ignored\n");
+    WriteTrace(TraceRDP, TraceDebug, "tilesync - ignored");
 }
 
 static void rdp_fullsync()
@@ -1499,7 +1478,7 @@ static void rdp_fullsync()
     // Set an interrupt to allow the game to continue
     *gfx.MI_INTR_REG |= 0x20;
     gfx.CheckInterrupts();
-    LRDP("fullsync\n");
+    WriteTrace(TraceRDP, TraceDebug, "fullsync");
 }
 
 static void rdp_setkeygb()
@@ -1510,7 +1489,7 @@ static void rdp_setkeygb()
     uint32_t cG = (rdp.cmd1 >> 24) & 0xFF;
     rdp.SCALE = (rdp.SCALE & 0xFF0000FF) | (sG << 16) | (sB << 8);
     rdp.CENTER = (rdp.CENTER & 0xFF0000FF) | (cG << 16) | (cB << 8);
-    FRDP("setkeygb. cG=%02lx, sG=%02lx, cB=%02lx, sB=%02lx\n", cG, sG, cB, sB);
+    WriteTrace(TraceRDP, TraceDebug, "setkeygb. cG=%02lx, sG=%02lx, cB=%02lx, sB=%02lx", cG, sG, cB, sB);
 }
 
 static void rdp_setkeyr()
@@ -1519,7 +1498,7 @@ static void rdp_setkeyr()
     uint32_t cR = (rdp.cmd1 >> 8) & 0xFF;
     rdp.SCALE = (rdp.SCALE & 0x00FFFFFF) | (sR << 24);
     rdp.CENTER = (rdp.CENTER & 0x00FFFFFF) | (cR << 24);
-    FRDP("setkeyr. cR=%02lx, sR=%02lx\n", cR, sR);
+    WriteTrace(TraceRDP, TraceDebug, "setkeyr. cR=%02lx, sR=%02lx", cR, sR);
 }
 
 static void rdp_setconvert()
@@ -1533,8 +1512,7 @@ static void rdp_setconvert()
     */
     rdp.K4 = (uint8_t)(rdp.cmd1 >> 9) & 0x1FF;
     rdp.K5 = (uint8_t)(rdp.cmd1 & 0x1FF);
-    //  RDP_E("setconvert - IGNORED\n");
-    FRDP("setconvert. K4=%02lx K5=%02lx\n", rdp.K4, rdp.K5);
+    WriteTrace(TraceRDP, TraceDebug, "setconvert. K4=%02lx K5=%02lx", rdp.K4, rdp.K5);
 }
 
 //
@@ -1553,7 +1531,7 @@ static void rdp_setscissor()
     rdp.ci_lower_bound = rdp.scissor_o.lr_y;
     rdp.scissor_set = TRUE;
 
-    FRDP("setscissor: (%d,%d) -> (%d,%d)\n", rdp.scissor_o.ul_x, rdp.scissor_o.ul_y,
+    WriteTrace(TraceRDP, TraceDebug, "setscissor: (%d,%d) -> (%d,%d)", rdp.scissor_o.ul_x, rdp.scissor_o.ul_y,
         rdp.scissor_o.lr_x, rdp.scissor_o.lr_y);
 
     rdp.update |= UPDATE_SCISSOR;
@@ -1573,7 +1551,7 @@ static void rdp_setprimdepth()
     rdp.prim_depth = (uint16_t)((rdp.cmd1 >> 16) & 0x7FFF);
     rdp.prim_dz = (uint16_t)(rdp.cmd1 & 0x7FFF);
 
-    FRDP("setprimdepth: %d\n", rdp.prim_depth);
+    WriteTrace(TraceRDP, TraceDebug, "setprimdepth: %d", rdp.prim_depth);
 }
 
 static void rdp_setothermode()
@@ -1589,7 +1567,7 @@ static void rdp_setothermode()
   gfx_instruction[g_settings->ucode][cmd] (); \
 }
 
-    LRDP("rdp_setothermode\n");
+    WriteTrace(TraceRDP, TraceDebug, "rdp_setothermode");
 
     if ((g_settings->ucode == ucode_F3DEX2) || (g_settings->ucode == ucode_CBFD))
     {
@@ -1607,7 +1585,7 @@ static void rdp_setothermode()
 
 void load_palette(uint32_t addr, uint16_t start, uint16_t count)
 {
-    LRDP("Loading palette... ");
+    WriteTrace(TraceRDP, TraceDebug, "Loading palette... ");
     uint16_t *dpal = rdp.pal_8 + start;
     uint16_t end = start + count;
 #ifdef TEXTURE_FILTER
@@ -1619,13 +1597,13 @@ void load_palette(uint32_t addr, uint16_t start, uint16_t count)
         *(dpal++) = *(uint16_t *)(gfx.RDRAM + (addr ^ 2));
         addr += 2;
 
-#ifdef TLUT_LOGGING
-        FRDP("%d: %08lx\n", i, *(uint16_t *)(gfx.RDRAM + (addr ^ 2)));
-#endif
+        WriteTrace(TraceTLUT, TraceDebug, "%d: %08lx", i, *(uint16_t *)(gfx.RDRAM + (addr ^ 2)));
     }
 #ifdef TEXTURE_FILTER
     if (g_settings->ghq_hirs)
+    {
         memcpy((uint8_t*)(rdp.pal_8_rice + start), spal, count << 1);
+    }
 #endif
     start >>= 4;
     end = start + (count >> 4);
@@ -1636,7 +1614,7 @@ void load_palette(uint32_t addr, uint16_t start, uint16_t count)
         rdp.pal_8_crc[p] = CRC32(0xFFFFFFFF, &rdp.pal_8[(p << 4)], 32);
     }
     rdp.pal_256_crc = CRC32(0xFFFFFFFF, rdp.pal_8_crc, 64);
-    LRDP("Done.\n");
+    WriteTrace(TraceRDP, TraceDebug, "Done.");
 }
 
 static void rdp_loadtlut()
@@ -1651,7 +1629,7 @@ static void rdp_loadtlut()
 
     if (start + count > 256) count = 256 - start;
 
-    FRDP("loadtlut: tile: %d, start: %d, count: %d, from: %08lx\n", tile, start, count,
+    WriteTrace(TraceRDP, TraceDebug, "loadtlut: tile: %d, start: %d, count: %d, from: %08lx", tile, start, count,
         rdp.timg.addr);
 
     load_palette(rdp.timg.addr, start, count);
@@ -1730,22 +1708,22 @@ static void rdp_settilesize()
 
     rdp.first = 1;
 
-    FRDP("settilesize: tile: %d, ul_s: %d, ul_t: %d, lr_s: %d, lr_t: %d, f_ul_s: %f, f_ul_t: %f\n",
+    WriteTrace(TraceRDP, TraceDebug, "settilesize: tile: %d, ul_s: %d, ul_t: %d, lr_s: %d, lr_t: %d, f_ul_s: %f, f_ul_t: %f",
         tile, ul_s, ul_t, lr_s, lr_t, rdp.tiles[tile].f_ul_s, rdp.tiles[tile].f_ul_t);
 }
 
 void setTBufTex(uint16_t t_mem, uint32_t cnt)
 {
-    FRDP("setTBufTex t_mem=%d, cnt=%d\n", t_mem, cnt);
+    WriteTrace(TraceRDP, TraceDebug, "setTBufTex t_mem=%d, cnt=%d", t_mem, cnt);
     TBUFF_COLOR_IMAGE * pTbufTex = rdp.tbuff_tex;
     for (int i = 0; i < 2; i++)
     {
-        LRDP("Before: ");
+        WriteTrace(TraceRDP, TraceDebug, "Before: ");
         if (rdp.aTBuffTex[i]) {
-            FRDP("rdp.aTBuffTex[%d]: tmu=%d t_mem=%d tile=%d\n", i, rdp.aTBuffTex[i]->tmu, rdp.aTBuffTex[i]->t_mem, rdp.aTBuffTex[i]->tile);
+            WriteTrace(TraceRDP, TraceDebug, "rdp.aTBuffTex[%d]: tmu=%d t_mem=%d tile=%d", i, rdp.aTBuffTex[i]->tmu, rdp.aTBuffTex[i]->t_mem, rdp.aTBuffTex[i]->tile);
         }
         else {
-            FRDP("rdp.aTBuffTex[%d]=0\n", i);
+            WriteTrace(TraceRDP, TraceDebug, "rdp.aTBuffTex[%d]=0", i);
         }
         if ((rdp.aTBuffTex[i] == 0 && rdp.aTBuffTex[i ^ 1] != pTbufTex) || (rdp.aTBuffTex[i] && rdp.aTBuffTex[i]->t_mem >= t_mem && rdp.aTBuffTex[i]->t_mem < t_mem + cnt))
         {
@@ -1754,12 +1732,12 @@ void setTBufTex(uint16_t t_mem, uint32_t cnt)
                 rdp.aTBuffTex[i] = pTbufTex;
                 rdp.aTBuffTex[i]->t_mem = t_mem;
                 pTbufTex = 0;
-                FRDP("rdp.aTBuffTex[%d] tmu=%d t_mem=%d\n", i, rdp.aTBuffTex[i]->tmu, rdp.aTBuffTex[i]->t_mem);
+                WriteTrace(TraceRDP, TraceDebug, "rdp.aTBuffTex[%d] tmu=%d t_mem=%d", i, rdp.aTBuffTex[i]->tmu, rdp.aTBuffTex[i]->t_mem);
             }
             else
             {
                 rdp.aTBuffTex[i] = 0;
-                FRDP("rdp.aTBuffTex[%d]=0\n", i);
+                WriteTrace(TraceRDP, TraceDebug, "rdp.aTBuffTex[%d]=0", i);
             }
         }
     }
@@ -1890,7 +1868,7 @@ static void rdp_loadblock()
 {
     if (rdp.skip_drawing)
     {
-        LRDP("loadblock skipped\n");
+        WriteTrace(TraceRDP, TraceDebug, "loadblock skipped");
         return;
     }
     uint32_t tile = (uint32_t)((rdp.cmd1 >> 24) & 0x07);
@@ -1970,7 +1948,7 @@ static void rdp_loadblock()
 
     rdp.update |= UPDATE_TEXTURE;
 
-    FRDP("loadblock: tile: %d, ul_s: %d, ul_t: %d, lr_s: %d, dxt: %08lx -> %08lx\n",
+    WriteTrace(TraceRDP, TraceDebug, "loadblock: tile: %d, ul_s: %d, ul_t: %d, lr_s: %d, dxt: %08lx -> %08lx",
         tile, ul_s, ul_t, lr_s,
         dxt, _dxt);
 
@@ -2107,7 +2085,7 @@ static void rdp_loadtile()
 {
     if (rdp.skip_drawing)
     {
-        LRDP("loadtile skipped\n");
+        WriteTrace(TraceRDP, TraceDebug, "loadtile skipped");
         return;
     }
     rdp.timg.set_by = 1;  // load tile
@@ -2138,7 +2116,7 @@ static void rdp_loadtile()
 
     if (rdp.tbuff_tex)// && (rdp.tiles[tile].format == 0))
     {
-        FRDP("loadtile: tbuff_tex ul_s: %d, ul_t:%d\n", ul_s, ul_t);
+        WriteTrace(TraceRDP, TraceDebug, "loadtile: tbuff_tex ul_s: %d, ul_t:%d", ul_s, ul_t);
         rdp.tbuff_tex->tile_uls = ul_s;
         rdp.tbuff_tex->tile_ult = ul_t;
     }
@@ -2194,7 +2172,7 @@ static void rdp_loadtile()
         unsigned char *end = ((unsigned char *)rdp.tmem) + 4096 - (wid_64 << 3);
         loadTile((uint32_t *)gfx.RDRAM, (uint32_t *)dst, wid_64, height, line_n, offs, (uint32_t *)end);
     }
-    FRDP("loadtile: tile: %d, ul_s: %d, ul_t: %d, lr_s: %d, lr_t: %d\n", tile,
+    WriteTrace(TraceRDP, TraceDebug, "loadtile: tile: %d, ul_s: %d, ul_t: %d, lr_s: %d, lr_t: %d", tile,
         ul_s, ul_t, lr_s, lr_t);
 
     if (fb_hwfbe_enabled)
@@ -2226,9 +2204,9 @@ static void rdp_settile()
 
     rdp.update |= UPDATE_TEXTURE;
 
-    FRDP("settile: tile: %d, format: %s, size: %s, line: %d, "
+    WriteTrace(TraceRDP, TraceDebug, "settile: tile: %d, format: %s, size: %s, line: %d, "
         "t_mem: %08lx, palette: %d, clamp_t/mirror_t: %s, mask_t: %d, "
-        "shift_t: %d, clamp_s/mirror_s: %s, mask_s: %d, shift_s: %d\n",
+        "shift_t: %d, clamp_s/mirror_s: %s, mask_s: %d, shift_s: %d",
         rdp.last_tile, str_format[tile->format], str_size[tile->size], tile->line,
         tile->t_mem, tile->palette, str_cm[(tile->clamp_t << 1) | tile->mirror_t], tile->mask_t,
         tile->shift_t, str_cm[(tile->clamp_s << 1) | tile->mirror_s], tile->mask_s, tile->shift_s);
@@ -2245,7 +2223,7 @@ static void rdp_settile()
                     {
                         rdp.aTBuffTex[i]->tile = rdp.last_tile;
                         rdp.aTBuffTex[i]->info.format = tile->format == 0 ? GR_TEXFMT_RGB_565 : GR_TEXFMT_ALPHA_INTENSITY_88;
-                        FRDP("rdp.aTBuffTex[%d] tile=%d, format=%s\n", i, rdp.last_tile, tile->format == 0 ? "RGB565" : "Alpha88");
+                        WriteTrace(TraceRDP, TraceDebug, "rdp.aTBuffTex[%d] tile=%d, format=%s", i, rdp.last_tile, tile->format == 0 ? "RGB565" : "Alpha88");
                     }
                     else
                         rdp.aTBuffTex[i] = 0;
@@ -2270,13 +2248,13 @@ static void rdp_fillrect()
     uint32_t lr_y = ((rdp.cmd0 & 0x00000FFF) >> 2) + 1;
     if ((ul_x > lr_x) || (ul_y > lr_y))
     {
-        LRDP("Fillrect. Wrong coordinates. Skipped\n");
+        WriteTrace(TraceRDP, TraceDebug, "Fillrect. Wrong coordinates. Skipped");
         return;
     }
     int pd_multiplayer = (g_settings->ucode == ucode_PerfectDark) && (rdp.cycle_mode == 3) && (rdp.fill_color == 0xFFFCFFFC);
     if ((rdp.cimg == rdp.zimg) || (fb_emulation_enabled && rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_zimg) || pd_multiplayer)
     {
-        LRDP("Fillrect - cleared the depth buffer\n");
+        WriteTrace(TraceRDP, TraceDebug, "Fillrect - cleared the depth buffer");
         if (!(g_settings->hacks&hack_Hyperbike) || rdp.ci_width > 64) //do not clear main depth buffer for aux depth buffers
         {
             update_scissor();
@@ -2311,7 +2289,7 @@ static void rdp_fillrect()
 
     if (rdp.skip_drawing)
     {
-        LRDP("Fillrect skipped\n");
+        WriteTrace(TraceRDP, TraceDebug, "Fillrect skipped");
         return;
     }
 
@@ -2329,7 +2307,7 @@ static void rdp_fillrect()
         grBufferClear(color, 0, 0xFFFF);
         grDepthMask(FXTRUE);
         rdp.update |= UPDATE_ZBUF_ENABLED;
-        LRDP("Fillrect - cleared the texture buffer\n");
+        WriteTrace(TraceRDP, TraceDebug, "Fillrect - cleared the texture buffer");
         return;
     }
 
@@ -2340,10 +2318,10 @@ static void rdp_fillrect()
     {
         lr_x--; lr_y--;
     }
-    FRDP("fillrect (%d,%d) -> (%d,%d), cycle mode: %d, #%d, #%d\n", ul_x, ul_y, lr_x, lr_y, rdp.cycle_mode,
+    WriteTrace(TraceRDP, TraceDebug, "fillrect (%d,%d) -> (%d,%d), cycle mode: %d, #%d, #%d", ul_x, ul_y, lr_x, lr_y, rdp.cycle_mode,
         rdp.tri_n, rdp.tri_n + 1);
 
-    FRDP("scissor (%d,%d) -> (%d,%d)\n", rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x,
+    WriteTrace(TraceRDP, TraceDebug, "scissor (%d,%d) -> (%d,%d)", rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x,
         rdp.scissor.lr_y);
 
     // KILL the floating point error with 0.01f
@@ -2357,7 +2335,7 @@ static void rdp_fillrect()
     if ((uint32_t)s_ul_x > g_settings->res_x) s_ul_x = g_settings->res_x;
     if ((uint32_t)s_ul_y > g_settings->res_y) s_ul_y = g_settings->res_y;
 
-    FRDP(" - %d, %d, %d, %d\n", s_ul_x, s_ul_y, s_lr_x, s_lr_y);
+    WriteTrace(TraceRDP, TraceDebug, " - %d, %d, %d, %d", s_ul_x, s_ul_y, s_lr_x, s_lr_y);
 
     grFogMode(GR_FOG_DISABLE);
 
@@ -2485,7 +2463,7 @@ static void rdp_setfillcolor()
     rdp.fill_color = rdp.cmd1;
     rdp.update |= UPDATE_ALPHA_COMPARE | UPDATE_COMBINE;
 
-    FRDP("setfillcolor: %08lx\n", rdp.cmd1);
+    WriteTrace(TraceRDP, TraceDebug, "setfillcolor: %08lx", rdp.cmd1);
 }
 
 static void rdp_setfogcolor()
@@ -2493,7 +2471,7 @@ static void rdp_setfogcolor()
     rdp.fog_color = rdp.cmd1;
     rdp.update |= UPDATE_COMBINE | UPDATE_FOG_ENABLED;
 
-    FRDP("setfogcolor - %08lx\n", rdp.cmd1);
+    WriteTrace(TraceRDP, TraceDebug, "setfogcolor - %08lx", rdp.cmd1);
 }
 
 static void rdp_setblendcolor()
@@ -2501,7 +2479,7 @@ static void rdp_setblendcolor()
     rdp.blend_color = rdp.cmd1;
     rdp.update |= UPDATE_COMBINE;
 
-    FRDP("setblendcolor: %08lx\n", rdp.cmd1);
+    WriteTrace(TraceRDP, TraceDebug, "setblendcolor: %08lx", rdp.cmd1);
 }
 
 static void rdp_setprimcolor()
@@ -2511,7 +2489,7 @@ static void rdp_setprimcolor()
     rdp.prim_lodfrac = maxval(rdp.cmd0 & 0xFF, rdp.prim_lodmin);
     rdp.update |= UPDATE_COMBINE;
 
-    FRDP("setprimcolor: %08lx, lodmin: %d, lodfrac: %d\n", rdp.cmd1, rdp.prim_lodmin,
+    WriteTrace(TraceRDP, TraceDebug, "setprimcolor: %08lx, lodmin: %d, lodfrac: %d", rdp.cmd1, rdp.prim_lodmin,
         rdp.prim_lodfrac);
 }
 
@@ -2520,7 +2498,7 @@ static void rdp_setenvcolor()
     rdp.env_color = rdp.cmd1;
     rdp.update |= UPDATE_COMBINE;
 
-    FRDP("setenvcolor: %08lx\n", rdp.cmd1);
+    WriteTrace(TraceRDP, TraceDebug, "setenvcolor: %08lx", rdp.cmd1);
 }
 
 static void rdp_setcombine()
@@ -2550,7 +2528,7 @@ static void rdp_setcombine()
 
     rdp.update |= UPDATE_COMBINE;
 
-    FRDP("setcombine\na0=%s b0=%s c0=%s d0=%s\nAa0=%s Ab0=%s Ac0=%s Ad0=%s\na1=%s b1=%s c1=%s d1=%s\nAa1=%s Ab1=%s Ac1=%s Ad1=%s\n",
+    WriteTrace(TraceRDP, TraceDebug, "setcombine\na0=%s b0=%s c0=%s d0=%s\nAa0=%s Ab0=%s Ac0=%s Ad0=%s\na1=%s b1=%s c1=%s d1=%s\nAa1=%s Ab1=%s Ac1=%s Ad1=%s",
         Mode0[rdp.c_a0], Mode1[rdp.c_b0], Mode2[rdp.c_c0], Mode3[rdp.c_d0],
         Alpha0[rdp.c_Aa0], Alpha1[rdp.c_Ab0], Alpha2[rdp.c_Ac0], Alpha3[rdp.c_Ad0],
         Mode0[rdp.c_a1], Mode1[rdp.c_b1], Mode2[rdp.c_c1], Mode3[rdp.c_d1],
@@ -2603,7 +2581,7 @@ static void rdp_settextureimage()
     if (fb_hwfbe_enabled) //search this texture among drawn texture buffers
         FindTextureBuffer(rdp.timg.addr, rdp.timg.width);
 
-    FRDP("settextureimage: format: %s, size: %s, width: %d, addr: %08lx\n",
+    WriteTrace(TraceRDP, TraceDebug, "settextureimage: format: %s, size: %s, width: %d, addr: %08lx",
         format[rdp.timg.format], size[rdp.timg.size],
         rdp.timg.width, rdp.timg.addr);
 }
@@ -2612,13 +2590,13 @@ static void rdp_setdepthimage()
 {
     rdp.zimg = segoffset(rdp.cmd1) & BMASK;
     rdp.zi_width = rdp.ci_width;
-    FRDP("setdepthimage - %08lx\n", rdp.zimg);
+    WriteTrace(TraceRDP, TraceDebug, "setdepthimage - %08lx", rdp.zimg);
 }
 
 int SwapOK = TRUE;
 static void RestoreScale()
 {
-    FRDP("Return to original scale: x = %f, y = %f\n", rdp.scale_x_bak, rdp.scale_y_bak);
+    WriteTrace(TraceRDP, TraceDebug, "Return to original scale: x = %f, y = %f", rdp.scale_x_bak, rdp.scale_y_bak);
     rdp.scale_x = rdp.scale_x_bak;
     rdp.scale_y = rdp.scale_y_bak;
     //    update_scissor();
@@ -2818,7 +2796,7 @@ static void rdp_setcolorimage()
                     grTextureAuxBufferExt(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, LOD, LOD,
                         GR_ASPECT_LOG2_1x1, GR_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
                     grAuxBufferExt(GR_BUFFER_TEXTUREAUXBUFFER_EXT);
-                    LRDP("rdp_setcolorimage - set texture depth buffer to TMU0\n");
+                    WriteTrace(TraceRDP, TraceDebug, "rdp_setcolorimage - set texture depth buffer to TMU0");
                 }
             }
             rdp.skip_drawing = TRUE;
@@ -2913,7 +2891,7 @@ static void rdp_setcolorimage()
             }
             if (to_org_res)
             {
-                LRDP("return to original scale\n");
+                WriteTrace(TraceRDP, TraceDebug, "return to original scale");
                 rdp.scale_x = rdp.scale_x_bak;
                 rdp.scale_y = rdp.scale_y_bak;
                 if (fb_hwfbe_enabled && !rdp.read_whole_frame)
@@ -2944,8 +2922,8 @@ static void rdp_setcolorimage()
     uint32_t format = (rdp.cmd0 >> 21) & 0x7;
     rdp.ci_size = (rdp.cmd0 >> 19) & 0x3;
     rdp.ci_end = rdp.cimg + ((rdp.ci_width*rdp.ci_height) << (rdp.ci_size - 1));
-    FRDP("setcolorimage - %08lx, width: %d,  height: %d, format: %d, size: %d\n", rdp.cmd1, rdp.ci_width, rdp.ci_height, format, rdp.ci_size);
-    FRDP("cimg: %08lx, ocimg: %08lx, SwapOK: %d\n", rdp.cimg, rdp.ocimg, SwapOK);
+    WriteTrace(TraceRDP, TraceDebug, "setcolorimage - %08lx, width: %d,  height: %d, format: %d, size: %d", rdp.cmd1, rdp.ci_width, rdp.ci_height, format, rdp.ci_size);
+    WriteTrace(TraceRDP, TraceDebug, "cimg: %08lx, ocimg: %08lx, SwapOK: %d", rdp.cimg, rdp.ocimg, SwapOK);
 
     if (format != 0) //can't draw into non RGBA buffer
     {
@@ -2987,7 +2965,7 @@ static void rdp_setcolorimage()
                 if (rdp.copy_ci_index && (rdp.frame_buffers[rdp.ci_count - 1].status != ci_zimg))
                 {
                     int idx = (rdp.frame_buffers[rdp.ci_count].status == ci_aux_copy) ? rdp.main_ci_index : rdp.copy_ci_index;
-                    FRDP("attempt open tex buffer. status: %s, addr: %08lx\n", CIStatus[rdp.frame_buffers[idx].status], rdp.frame_buffers[idx].addr);
+                    WriteTrace(TraceRDP, TraceDebug, "attempt open tex buffer. status: %s, addr: %08lx", CIStatus[rdp.frame_buffers[idx].status], rdp.frame_buffers[idx].addr);
                     OpenTextureBuffer(rdp.frame_buffers[idx]);
                     if (rdp.frame_buffers[rdp.copy_ci_index].status == ci_main) //tidal wave
                         rdp.copy_ci_index = 0;
@@ -3007,28 +2985,27 @@ static void rsp_reserved0()
     {
         ucode5_texshiftaddr = segoffset(rdp.cmd1);
         ucode5_texshiftcount = 0;
-        FRDP("uc5_texshift. addr: %08lx\n", ucode5_texshiftaddr);
+        WriteTrace(TraceRDP, TraceDebug, "uc5_texshift. addr: %08lx", ucode5_texshiftaddr);
     }
     else
     {
-        RDP_E("reserved0 - IGNORED\n");
-        LRDP("reserved0 - IGNORED\n");
+        WriteTrace(TraceRDP, TraceWarning, "reserved0 - IGNORED");
     }
 }
 
 static void rsp_reserved1()
 {
-    LRDP("reserved1 - ignored\n");
+    WriteTrace(TraceRDP, TraceDebug, "reserved1 - ignored");
 }
 
 static void rsp_reserved2()
 {
-    LRDP("reserved2\n");
+    WriteTrace(TraceRDP, TraceDebug, "reserved2");
 }
 
 static void rsp_reserved3()
 {
-    LRDP("reserved3 - ignored\n");
+    WriteTrace(TraceRDP, TraceDebug, "reserved3 - ignored");
 }
 
 void SetWireframeCol()
@@ -3130,7 +3107,7 @@ EXPORT void CALL FBRead(uint32_t addr)
     }
     cpu_fb_read_called = TRUE;
     uint32_t a = segoffset(addr);
-    FRDP("FBRead. addr: %08lx\n", a);
+    WriteTrace(TraceRDP, TraceDebug, "FBRead. addr: %08lx", a);
     if (!rdp.fb_drawn && (a >= rdp.cimg) && (a < rdp.ci_end))
     {
         fbreads_back++;
@@ -3201,7 +3178,7 @@ EXPORT void CALL FBWrite(uint32_t addr, uint32_t /*size*/)
     }
     cpu_fb_write_called = TRUE;
     uint32_t a = segoffset(addr);
-    FRDP("FBWrite. addr: %08lx\n", a);
+    WriteTrace(TraceRDP, TraceDebug, "FBWrite. addr: %08lx", a);
     if (a < rdp.cimg || a > rdp.ci_end)
         return;
     cpu_fb_write = TRUE;
@@ -3250,7 +3227,7 @@ EXPORT void CALL FBGetFrameBufferInfo(void *p)
     memset(pinfo, 0, sizeof(FrameBufferInfo) * 6);
     if (!(g_settings->frame_buffer&fb_get_info))
         return;
-    LRDP("FBGetFrameBufferInfo ()\n");
+    WriteTrace(TraceRDP, TraceDebug, "FBGetFrameBufferInfo ()");
     //*
     if (fb_emulation_enabled)
     {
@@ -3291,7 +3268,7 @@ EXPORT void CALL FBGetFrameBufferInfo(void *p)
 
 void DetectFrameBufferUsage()
 {
-    LRDP("DetectFrameBufferUsage\n");
+    WriteTrace(TraceRDP, TraceDebug, "DetectFrameBufferUsage");
 
     uint32_t dlist_start = *(uint32_t*)(gfx.DMEM + 0xFF0);
     uint32_t a;
@@ -3346,7 +3323,7 @@ void DetectFrameBufferUsage()
             {
                 rdp.dl_count = -1;
 
-                LRDP("End of DL\n");
+                WriteTrace(TraceRDP, TraceDebug, "End of DL");
                 rdp.pc_i--;
             }
         }
@@ -3383,7 +3360,7 @@ void DetectFrameBufferUsage()
                 rdp.frame_buffers[i].status = ci_aux;
             else if (rdp.frame_buffers[i].addr == rdp.frame_buffers[rdp.ci_count - 1].addr)
                 rdp.frame_buffers[i].status = ci_main;
-            //                        FRDP("rdp.frame_buffers[%d].status = %d\n", i, rdp.frame_buffers[i].status);
+            //                        WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = %d", i, rdp.frame_buffers[i].status);
         }
         rdp.main_ci_index = rdp.ci_count - 1;
     }
@@ -3404,10 +3381,10 @@ void DetectFrameBufferUsage()
             rdp.frame_buffers[i].status = ci_main;
     }
 
-    LRDP("detect fb final results: \n");
+    WriteTrace(TraceRDP, TraceDebug, "detect fb final results: ");
     for (i = 0; i < rdp.ci_count; i++)
     {
-        FRDP("rdp.frame_buffers[%d].status = %s, addr: %08lx, height: %d\n", i, CIStatus[rdp.frame_buffers[i].status], rdp.frame_buffers[i].addr, rdp.frame_buffers[i].height);
+        WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = %s, addr: %08lx, height: %d", i, CIStatus[rdp.frame_buffers[i].status], rdp.frame_buffers[i].addr, rdp.frame_buffers[i].height);
     }
 
     rdp.cimg = ci;
@@ -3486,7 +3463,7 @@ void DetectFrameBufferUsage()
         }
         if (tidal)
         {
-            //LRDP("Tidal wave!\n");
+            //WriteTrace(TraceRDP, TraceDebug, "Tidal wave!");
             rdp.copy_ci_index = rdp.main_ci_index;
         }
     }
@@ -3496,7 +3473,7 @@ void DetectFrameBufferUsage()
     rdp.maincimg[0] = rdp.frame_buffers[rdp.main_ci_index];
     //    rdp.scale_x = rdp.scale_x_bak;
     //    rdp.scale_y = rdp.scale_y_bak;
-    LRDP("DetectFrameBufferUsage End\n");
+    WriteTrace(TraceRDP, TraceDebug, "DetectFrameBufferUsage End");
 }
 
 /*******************************************
@@ -3888,49 +3865,49 @@ static void rdp_triangle(int shade, int texture, int zbuffer)
 static void rdp_trifill()
 {
     rdp_triangle(0, 0, 0);
-    LRDP("trifill\n");
+    WriteTrace(TraceRDP, TraceDebug, "trifill");
 }
 
 static void rdp_trishade()
 {
     rdp_triangle(1, 0, 0);
-    LRDP("trishade\n");
+    WriteTrace(TraceRDP, TraceDebug, "trishade");
 }
 
 static void rdp_tritxtr()
 {
     rdp_triangle(0, 1, 0);
-    LRDP("tritxtr\n");
+    WriteTrace(TraceRDP, TraceDebug, "tritxtr");
 }
 
 static void rdp_trishadetxtr()
 {
     rdp_triangle(1, 1, 0);
-    LRDP("trishadetxtr\n");
+    WriteTrace(TraceRDP, TraceDebug, "trishadetxtr");
 }
 
 static void rdp_trifillz()
 {
     rdp_triangle(0, 0, 1);
-    LRDP("trifillz\n");
+    WriteTrace(TraceRDP, TraceDebug, "trifillz");
 }
 
 static void rdp_trishadez()
 {
     rdp_triangle(1, 0, 1);
-    LRDP("trishadez\n");
+    WriteTrace(TraceRDP, TraceDebug, "trishadez");
 }
 
 static void rdp_tritxtrz()
 {
     rdp_triangle(0, 1, 1);
-    LRDP("tritxtrz\n");
+    WriteTrace(TraceRDP, TraceDebug, "tritxtrz");
 }
 
 static void rdp_trishadetxtrz()
 {
     rdp_triangle(1, 1, 1);
-    LRDP("trishadetxtrz\n");
+    WriteTrace(TraceRDP, TraceDebug, "trishadetxtrz");
 }
 
 static rdp_instr rdp_command_table[64] =
@@ -4046,7 +4023,7 @@ static void rdphalf_1()
     uint32_t cmd = rdp.cmd1 >> 24;
     if (cmd >= 0xc8 && cmd <= 0xcf) //triangle command
     {
-        LRDP("rdphalf_1 - lle triangle\n");
+        WriteTrace(TraceRDP, TraceDebug, "rdphalf_1 - lle triangle");
         rdp_cmd_ptr = 0;
         rdp_cmd_cur = 0;
         uint32_t a;
@@ -4062,7 +4039,7 @@ static void rdphalf_1()
                 {
                     rdp.dl_count = -1;
 
-                    LRDP("End of DL\n");
+                    WriteTrace(TraceRDP, TraceDebug, "End of DL");
                     rdp.pc_i--;
                 }
             }
@@ -4092,20 +4069,18 @@ static void rdphalf_1()
     }
     else
     {
-        LRDP("rdphalf_1 - IGNORED\n");
+        WriteTrace(TraceRDP, TraceDebug, "rdphalf_1 - IGNORED");
     }
 }
 
 static void rdphalf_2()
 {
-    RDP_E("rdphalf_2 - IGNORED\n");
-    LRDP("rdphalf_2 - IGNORED\n");
+    WriteTrace(TraceRDP, TraceWarning, "rdphalf_2 - IGNORED");
 }
 
 static void rdphalf_cont()
 {
-    RDP_E("rdphalf_cont - IGNORED\n");
-    LRDP("rdphalf_cont - IGNORED\n");
+    WriteTrace(TraceRDP, TraceWarning, "rdphalf_cont - IGNORED");
 }
 
 /******************************************************************
@@ -4136,7 +4111,7 @@ void CALL ProcessRDPList(void)
         rdp_cmd_data[rdp_cmd_ptr++] = READ_RDP_DATA(dp_current + i);
         if (rdp_cmd_ptr >= 0x1000)
         {
-            FRDP("rdp_process_list: rdp_cmd_ptr overflow %x %x --> %x\n", length, dp_current, dp_end);
+            WriteTrace(TraceRDP, TraceDebug, "rdp_process_list: rdp_cmd_ptr overflow %x %x --> %x", length, dp_current, dp_end);
         }
     }
 

@@ -106,11 +106,9 @@ extern "C" {
 
     //#define ALTTAB_FIX
 
-    //#define EXTREME_LOGGING		// lots of logging
     //  note that some of these things are inserted/removed
     //  from within the code & may not be changed by this define.
 
-    //#define TLUT_LOGGING		// log every entry of the TLUT?
     // ********************************
 
 #define FPS					// fps counter able? (not enabled necessarily)
@@ -127,9 +125,7 @@ extern "C" {
     //  the command is logged before continuing (in case of
     //  crash or exception, the log will not be cut short)
 #ifndef _ENDUSER_RELEASE_
-#define RDP_LOGGING			// Allow logging (will not log unless checked, but allows the option)
-    //  Logging functions will not be compiled if this is not present.
-    //#define RDP_ERROR_LOG
+
 #endif
 
 #define FPS_FRAMES	10		// Number of frames in which to make an FPS count
@@ -151,15 +147,7 @@ extern "C" {
     //#define SIMULATE_BANSHEE
     //********
 
-#ifdef EXT_LOGGING
-    extern std::ofstream extlog;
-#define EXT(x) extlog.open("ext.txt",std::ios::app); extlog << x; extlog.close();
-#else
-#define EXT(x)
-#endif
-
 #ifndef _ENDUSER_RELEASE_
-#define UNIMP_LOG			// Keep enabled, option in dialog
 #define BRIGHT_RED			// Keep enabled, option in dialog
 #endif
 
@@ -187,78 +175,6 @@ extern "C" {
 #ifdef PERFORMANCE
     extern int64 perf_cur;
     extern int64 perf_next;
-#endif
-
-#ifdef RDP_LOGGING
-    extern int log_open;
-    extern std::ofstream rdp_log;
-#define OPEN_RDP_LOG() EXT("OPEN_RDP_LOG ()\n"); if (g_settings->logging && !log_open) { rdp_log.open ("rdp.txt"); log_open=TRUE; }
-#define CLOSE_RDP_LOG() EXT("CLOSE_RDP_LOG ()\n"); if (g_settings->logging && log_open) { rdp_log.close (); log_open=FALSE; }
-
-#ifdef LOGNOTKEY
-#define LRDP(x) EXT("RDP (...)\n"); if (g_settings->logging && log_open) { if (!CheckKeyPressed(LOGKEY,0x8000)) { rdp_log << x; rdp_log.flush(); } }
-#else
-#define LRDP(x) EXT("RDP (...)\n"); if (g_settings->logging && log_open) { rdp_log << x; rdp_log.flush(); }
-#endif
-
-#else
-#define OPEN_RDP_LOG()
-#define CLOSE_RDP_LOG()
-#define LRDP(x)
-#endif
-
-#ifdef RDP_ERROR_LOG
-    extern int elog_open;
-    extern std::ofstream rdp_err;
-#define OPEN_RDP_E_LOG() EXT("OPEN_RDP_E_LOG ()\n"); if (g_settings->elogging && !elog_open) { rdp_err.open ("rdp_e.txt"); elog_open=TRUE; }
-#define CLOSE_RDP_E_LOG() EXT("CLOSE_RDP_LOG ()\n"); if (g_settings->elogging && elog_open) { rdp_err.close (); elog_open=FALSE; }
-#define RDP_E(x) if (g_settings->elogging) { FRDP_E (x); }
-#else
-#define OPEN_RDP_E_LOG()
-#define CLOSE_RDP_E_LOG()
-#define RDP_E(x)
-#endif
-
-#ifdef RDP_LOGGING
-    __inline void FRDP(const char *fmt, ...)
-    {
-        if (!g_settings->logging || !log_open) return;
-
-#ifdef LOGNOTKEY
-        if (CheckKeyPressed(LOGKEY, 0x8000)) return;
-#endif
-
-        va_list ap;
-        va_start(ap, fmt);
-        vsprintf(out_buf, fmt, ap);
-        LRDP(out_buf);
-        va_end(ap);
-    }
-#else
-    __inline void FRDP(const char * /*fmt*/, ...) {}
-#endif
-
-#ifdef RDP_ERROR_LOG
-    __inline void FRDP_E(const char *fmt, ...)
-    {
-        if (!g_settings->elogging || !elog_open) return;
-
-#ifdef LOGNOTKEY
-        if (CheckKeyPressed(LOGKEY, 0x8000)) return;
-#endif
-
-        sprintf(out_buf, "%08lx: (%08lx, %08lx) ", rdp.pc[rdp.pc_i] - 8, rdp.cmd0, rdp.cmd1);
-        rdp_err << out_buf;
-
-        va_list ap2;
-        va_start(ap2, fmt);
-        vsprintf(out_buf, fmt, ap2);
-        rdp_err << out_buf;
-        rdp_err.flush();
-        va_end(ap2);
-    }
-#else
-    __inline void FRDP_E(const char * /*fmt*/, ...) {}
 #endif
 
     extern int GfxInitDone;
