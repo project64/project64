@@ -24,16 +24,15 @@
  *
  */
 
-#include <windows.h>
 #include "types.h"
 
 int  AllocateMemory ( void );
 void FreeMemory     ( void );
-void SetJumpTable   ( DWORD End );
+void SetJumpTable  (uint32_t End);
 
-extern BYTE * RecompCode, * RecompCodeSecondary, * RecompPos;
+extern uint8_t * RecompCode, * RecompCodeSecondary, * RecompPos;
 extern void ** JumpTable;
-extern DWORD Table;
+extern uint32_t Table;
 
 void RSP_LB_DMEM  ( uint32_t Addr, uint8_t * Value );
 void RSP_LBV_DMEM ( uint32_t Addr, int vect, int element );
