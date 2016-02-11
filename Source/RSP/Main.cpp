@@ -98,14 +98,15 @@ const char * AboutMsg ( void )
 }
 
 /************ Functions ***********/
-DWORD AsciiToHex (char * HexValue)
+uint32_t AsciiToHex(char * HexValue)
 {
-	DWORD Value = 0;
+    size_t Finish, Count;
+    uint32_t Value = 0;
 
-	size_t Finish = strlen(HexValue);
+    Finish = strlen(HexValue);
 	if (Finish > 8 ) { Finish = 8; }
 
-	for (size_t Count = 0; Count < Finish; Count++)
+    for (Count = 0; Count < Finish; Count++)
 	{
 		Value = (Value << 4);
 		switch( HexValue[Count] )
