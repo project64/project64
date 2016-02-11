@@ -59,13 +59,13 @@ BOOL DebuggingEnabled = FALSE,
 	BreakOnStart = FALSE,
 	LogRDP = FALSE,
 	LogX86Code = FALSE;
-DWORD CPUCore = RecompilerCPU;
+uint32_t CPUCore = RecompilerCPU;
 
 HANDLE hMutex = NULL;
 
 DEBUG_INFO DebugInfo;
 RSP_INFO RSPInfo;
-HINSTANCE hinstDLL;
+void * hinstDLL;
 HMENU hRSPMenu = NULL;
 
 extern BYTE * pLastSecondary;
