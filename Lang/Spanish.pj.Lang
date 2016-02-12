@@ -5,7 +5,7 @@
 #1  #  "Español"		// LANGUAGE ID
 #2  #  "MELERIX"		// Author
 #3  #  "2.2"			// Version
-#4  #  "01/12/2015"		// Date
+#4  #  "12/02/2016"		// Date
 
 //About DLL Dialog
 #5  #  "Lenguaje Actual"
@@ -96,6 +96,7 @@
 #212#  "Editar Ajustes del Juego"
 #213#  "Editar Trucos"
 #214#  "Complemento Gráfico"
+#215#  "Jugar Juego con Disco"
 
 //Alternate Name to save Slot
 #220#  "Ranura de Guardado - Predeterminada"
