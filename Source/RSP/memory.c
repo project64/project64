@@ -27,7 +27,7 @@
 enum { MaxMaps	= 32 };
 
 #include <windows.h>
-#include "rsp.h"
+#include "Rsp.h"
 #include "RSP Registers.h"
 
 DWORD NoOfMaps, MapsCRC[MaxMaps], Table;

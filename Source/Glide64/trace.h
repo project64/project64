@@ -10,6 +10,8 @@ enum TraceModuleGlide64
     TraceInterface,
     TraceResolution,
     TraceGlitch,
+    TraceRDP,
+    TraceTLUT,
     MaxTraceModuleGlide64,
 };
 

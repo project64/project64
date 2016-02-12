@@ -42,6 +42,7 @@
 #include "Combine.h"
 #include "Util.h"
 #include <Common/Util.h>
+#include <Glide64/trace.h>
 
 void LoadTex(int id, int tmu);
 
@@ -173,7 +174,7 @@ uint32_t textureCRC(uint8_t *addr, int width, int height, int line)
 
 void GetTexInfo(int id, int tile)
 {
-    FRDP(" | |-+ GetTexInfo (id: %d, tile: %d)\n", id, tile);
+    WriteTrace(TraceRDP, TraceDebug, " | |-+ GetTexInfo (id: %d, tile: %d)", id, tile);
 
     // this is the NEW cache searching, searches only textures with similar crc's
     int t;
@@ -305,15 +306,15 @@ void GetTexInfo(int id, int tile)
         info->splits = 1;
     }
 
-    LRDP(" | | |-+ Texture approved:\n");
-    FRDP(" | | | |- tmem: %08lx\n", rdp.tiles[tile].t_mem);
-    FRDP(" | | | |- load width: %d\n", width);
-    FRDP(" | | | |- load height: %d\n", height);
-    FRDP(" | | | |- actual width: %d\n", rdp.tiles[tile].width);
-    FRDP(" | | | |- actual height: %d\n", rdp.tiles[tile].height);
-    FRDP(" | | | |- size: %d\n", rdp.tiles[tile].size);
-    FRDP(" | | | +- format: %d\n", rdp.tiles[tile].format);
-    LRDP(" | | |- Calculating CRC... ");
+    WriteTrace(TraceRDP, TraceDebug, " | | |-+ Texture approved:");
+    WriteTrace(TraceRDP, TraceDebug, " | | | |- tmem: %08lx", rdp.tiles[tile].t_mem);
+    WriteTrace(TraceRDP, TraceDebug, " | | | |- load width: %d", width);
+    WriteTrace(TraceRDP, TraceDebug, " | | | |- load height: %d", height);
+    WriteTrace(TraceRDP, TraceDebug, " | | | |- actual width: %d", rdp.tiles[tile].width);
+    WriteTrace(TraceRDP, TraceDebug, " | | | |- actual height: %d", rdp.tiles[tile].height);
+    WriteTrace(TraceRDP, TraceDebug, " | | | |- size: %d", rdp.tiles[tile].size);
+    WriteTrace(TraceRDP, TraceDebug, " | | | +- format: %d", rdp.tiles[tile].format);
+    WriteTrace(TraceRDP, TraceDebug, " | | |- Calculating CRC... ");
 
     // ** CRC CHECK
 
@@ -332,7 +333,7 @@ void GetTexInfo(int id, int tile)
     // Texture too big for tmem & needs to wrap? (trees in mm)
     if (rdp.tiles[tile].t_mem + minval(height, tile_height) * (rdp.tiles[tile].line << 3) > 4096)
     {
-        LRDP("TEXTURE WRAPS TMEM!!! ");
+        WriteTrace(TraceRDP, TraceDebug, "TEXTURE WRAPS TMEM!!! ");
 
         // calculate the y value that intersects at 4096 bytes
         int y = (4096 - rdp.tiles[tile].t_mem) / (rdp.tiles[tile].line << 3);
@@ -346,7 +347,7 @@ void GetTexInfo(int id, int tile)
         rdp.tiles[tile].mask_t = shift;
 
         // restart the function
-        LRDP("restarting...\n");
+        WriteTrace(TraceRDP, TraceDebug, "restarting...");
         GetTexInfo(id, tile);
         return;
     }
@@ -411,7 +412,7 @@ void GetTexInfo(int id, int tile)
             crc += rdp.pal_256_crc;
     }
 
-    FRDP("Done.  CRC is: %08lx.\n", crc);
+    WriteTrace(TraceRDP, TraceDebug, "Done.  CRC is: %08lx.", crc);
 
     uint32_t flags = (rdp.tiles[tile].clamp_s << 23) | (rdp.tiles[tile].mirror_s << 22) |
         (rdp.tiles[tile].mask_s << 18) | (rdp.tiles[tile].clamp_t << 17) |
@@ -431,7 +432,7 @@ void GetTexInfo(int id, int tile)
     info->flags = flags;
 
     // Search the texture cache for this texture
-    LRDP(" | | |-+ Checking cache...\n");
+    WriteTrace(TraceRDP, TraceDebug, " | | |-+ Checking cache...");
 
     CACHE_LUT *cache;
 
@@ -477,7 +478,7 @@ void GetTexInfo(int id, int tile)
                     (cache->mod_color2&mod_mask) == (modcolor2&mod_mask) &&
                     abs((int)(cache->mod_factor - modfactor)) < 8))
                 {
-                    FRDP(" | | | |- Texture found in cache (tmu=%d).\n", node->tmu);
+                    WriteTrace(TraceRDP, TraceDebug, " | | | |- Texture found in cache (tmu=%d).", node->tmu);
                     tex_found[id][node->tmu] = node->number;
                     if (voodoo.tex_UMA)
                     {
@@ -490,7 +491,7 @@ void GetTexInfo(int id, int tile)
         node = node->pNext;
     }
 
-    LRDP(" | | | +- Done.\n | | +- GetTexInfo end\n");
+    WriteTrace(TraceRDP, TraceDebug, " | | | +- Done.\n | | +- GetTexInfo end");
 }
 
 //****************************************************************
@@ -515,7 +516,7 @@ int ChooseBestTmu(int tmu1, int tmu2)
 // SelectTBuffTex - select texture from texture buffer
 static void SelectTBuffTex(TBUFF_COLOR_IMAGE * pTBuffTex)
 {
-    FRDP("SelectTBuffTex: tex: %d, tmu: %d, tile: %d\n", rdp.tex, pTBuffTex->tmu, pTBuffTex->tile);
+    WriteTrace(TraceRDP, TraceDebug, "SelectTBuffTex: tex: %d, tmu: %d, tile: %d", rdp.tex, pTBuffTex->tmu, pTBuffTex->tile);
     grTexSource(pTBuffTex->tile, pTBuffTex->tex_addr, GR_MIPMAPLEVELMASK_BOTH, &(pTBuffTex->info));
 }
 
@@ -524,7 +525,7 @@ static void SelectTBuffTex(TBUFF_COLOR_IMAGE * pTBuffTex)
 int SwapTextureBuffer();
 void TexCache()
 {
-    LRDP(" |-+ TexCache called\n");
+    WriteTrace(TraceRDP, TraceDebug, " |-+ TexCache called");
 
 #ifdef TEXTURE_FILTER /* Hiroshi Morii <koolsmoky@users.sourceforge.net> */ // POSTNAPALM
     if (g_settings->ghq_use && g_settings->ghq_hirs_dump) {
@@ -537,11 +538,11 @@ void TexCache()
             extern void DisplayLoadProgress(const wchar_t *format, ...);
             ghq_dmptex_toggle_key = !ghq_dmptex_toggle_key;
             if (ghq_dmptex_toggle_key) {
-                DisplayLoadProgress(L"Texture dump - ON\n");
+                DisplayLoadProgress(L"Texture dump - ON");
                 ClearCache();
             }
             else {
-                DisplayLoadProgress(L"Texture dump - OFF\n");
+                DisplayLoadProgress(L"Texture dump - OFF");
             }
             pjutil::Sleep(1000);
         }
@@ -604,9 +605,9 @@ void TexCache()
         tmu_1_mode = TMUMODE_NONE;
     }
 
-    FRDP(" | |-+ Modes set:\n | | |- tmu_0 = %d\n | | |- tmu_1 = %d\n",
+    WriteTrace(TraceRDP, TraceDebug, " | |-+ Modes set:\n | | |- tmu_0 = %d\n | | |- tmu_1 = %d",
         tmu_0, tmu_1);
-    FRDP(" | | |- tmu_0_mode = %d\n | | |- tmu_1_mode = %d\n",
+    WriteTrace(TraceRDP, TraceDebug, " | | |- tmu_0_mode = %d\n | | |- tmu_1_mode = %d",
         tmu_0_mode, tmu_1_mode);
 
     if (tmu_0_mode == TMUMODE_PASSTHRU) {
@@ -733,7 +734,7 @@ void TexCache()
             // Now actually combine
             if (cmb.cmb_ext_use)
             {
-                LRDP(" | | | |- combiner extension\n");
+                WriteTrace(TraceRDP, TraceDebug, " | | | |- combiner extension");
                 if (!(cmb.cmb_ext_use & COMBINE_EXT_COLOR))
                     ColorCombinerToExtension();
                 if (!(cmb.cmb_ext_use & COMBINE_EXT_ALPHA))
@@ -762,7 +763,7 @@ void TexCache()
         {
             if (cmb.tex_cmb_ext_use)
             {
-                LRDP(" | | | |- combiner extension tmu1\n");
+                WriteTrace(TraceRDP, TraceDebug, " | | | |- combiner extension tmu1");
                 if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_COLOR))
                     TexColorCombinerToExtension(GR_TMU1);
                 if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_ALPHA))
@@ -790,7 +791,7 @@ void TexCache()
         {
             if (cmb.tex_cmb_ext_use)
             {
-                LRDP(" | | | |- combiner extension tmu0\n");
+                WriteTrace(TraceRDP, TraceDebug, " | | | |- combiner extension tmu0");
                 if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_COLOR))
                     TexColorCombinerToExtension(GR_TMU0);
                 if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_ALPHA))
@@ -820,7 +821,7 @@ void TexCache()
     {
         if (aTBuff[0] && aTBuff[0]->cache)
         {
-            LRDP(" | |- Hires tex T0 found in cache.\n");
+            WriteTrace(TraceRDP, TraceDebug, " | |- Hires tex T0 found in cache.");
             if (GfxInitDone)
             {
                 rdp.cur_cache[0] = aTBuff[0]->cache;
@@ -830,7 +831,7 @@ void TexCache()
         }
         else if (tex_found[0][tmu_0] != -1)
         {
-            LRDP(" | |- T0 found in cache.\n");
+            WriteTrace(TraceRDP, TraceDebug, " | |- T0 found in cache.");
             if (GfxInitDone)
             {
                 CACHE_LUT *cache = voodoo.tex_UMA ? &rdp.cache[0][tex_found[0][0]] : &rdp.cache[tmu_0][tex_found[0][tmu_0]];
@@ -851,7 +852,7 @@ void TexCache()
     {
         if (aTBuff[1] && aTBuff[1]->cache)
         {
-            LRDP(" | |- Hires tex T1 found in cache.\n");
+            WriteTrace(TraceRDP, TraceDebug, " | |- Hires tex T1 found in cache.");
             if (GfxInitDone)
             {
                 rdp.cur_cache[1] = aTBuff[1]->cache;
@@ -861,7 +862,7 @@ void TexCache()
         }
         else if (tex_found[1][tmu_1] != -1)
         {
-            LRDP(" | |- T1 found in cache.\n");
+            WriteTrace(TraceRDP, TraceDebug, " | |- T1 found in cache.");
             if (GfxInitDone)
             {
                 CACHE_LUT *cache = voodoo.tex_UMA ? &rdp.cache[0][tex_found[1][0]] : &rdp.cache[tmu_1][tex_found[1][tmu_1]];
@@ -958,7 +959,7 @@ void TexCache()
         }
     }
 
-    LRDP(" | +- TexCache End\n");
+    WriteTrace(TraceRDP, TraceDebug, " | +- TexCache End");
 }
 
 #ifdef TEXTURE_FILTER
@@ -1002,7 +1003,7 @@ inline uint32_t ReverseDXT(uint32_t val, uint32_t /*lrs*/, uint32_t width, uint3
 
 void LoadTex(int id, int tmu)
 {
-    FRDP(" | |-+ LoadTex (id: %d, tmu: %d)\n", id, tmu);
+    WriteTrace(TraceRDP, TraceDebug, " | |-+ LoadTex (id: %d, tmu: %d)", id, tmu);
 
     int td = rdp.cur_tile + id;
     int lod, aspect;
@@ -1014,7 +1015,7 @@ void LoadTex(int id, int tmu)
     // Clear the cache if it's full
     if (rdp.n_cached[tmu] >= MAX_CACHE)
     {
-        LRDP("Cache count reached, clearing...\n");
+        WriteTrace(TraceRDP, TraceDebug, "Cache count reached, clearing...");
         ClearCache();
         if (id == 1 && rdp.tex == 3)
             LoadTex(0, rdp.t0);
@@ -1263,7 +1264,7 @@ void LoadTex(int id, int tmu)
         if (rdp.aTBuffTex[t] && rdp.aTBuffTex[t]->tile == id) //texture buffer will be used instead of frame buffer texture
         {
             rdp.aTBuffTex[t]->cache = cache;
-            FRDP("tbuff_tex selected: %d, tile=%d\n", t, id);
+            WriteTrace(TraceRDP, TraceDebug, "tbuff_tex selected: %d, tile=%d", t, id);
             return;
         }
     }
@@ -1345,7 +1346,7 @@ void LoadTex(int id, int tmu)
         g64_crc = CRC32(g64_crc, &cache->mod_factor, 4);
 
         cache->ricecrc = ext_ghq_checksum(addr, tile_width, tile_height, (unsigned short)(rdp.tiles[td].format << 8 | rdp.tiles[td].size), bpl, paladdr);
-        FRDP("CI RICE CRC. format: %d, size: %d, CRC: %08lx, PalCRC: %08lx\n", rdp.tiles[td].format, rdp.tiles[td].size, (uint32_t)(cache->ricecrc & 0xFFFFFFFF), (uint32_t)(cache->ricecrc >> 32));
+        WriteTrace(TraceRDP, TraceDebug, "CI RICE CRC. format: %d, size: %d, CRC: %08lx, PalCRC: %08lx", rdp.tiles[td].format, rdp.tiles[td].size, (uint32_t)(cache->ricecrc & 0xFFFFFFFF), (uint32_t)(cache->ricecrc >> 32));
         if (ext_ghq_hirestex((uint64)g64_crc, cache->ricecrc, palette, &ghqTexInfo))
         {
             cache->is_hires_tex = ghqTexInfo.is_hires_tex;
@@ -1797,7 +1798,7 @@ void LoadTex(int id, int tmu)
         // Check for end of memory (too many textures to fit, clear cache)
         if (voodoo.tmem_ptr[tmu] + texture_size >= voodoo.tex_max_addr[tmu])
         {
-            LRDP("Cache size reached, clearing...\n");
+            WriteTrace(TraceRDP, TraceDebug, "Cache size reached, clearing...");
             ClearCache();
 
             if (id == 1 && rdp.tex == 3)
@@ -1820,5 +1821,5 @@ void LoadTex(int id, int tmu)
             t_info);
     }
 
-    LRDP(" | | +- LoadTex end\n");
+    WriteTrace(TraceRDP, TraceDebug, " | | +- LoadTex end");
 }

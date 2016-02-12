@@ -47,6 +47,7 @@
 #include "Debugger.h"
 #include "TexCache.h"
 #include "DepthBufferRender.h"
+#include <Glide64/trace.h>
 
 #define Vj rdp.vtxbuf2[j]
 #define Vi rdp.vtxbuf2[i]
@@ -77,7 +78,7 @@ int cull_tri(VERTEX **v) // type changed to VERTEX** [Dave2001]
 
     if (v[0]->scr_off & v[1]->scr_off & v[2]->scr_off)
     {
-        LRDP(" clipped\n");
+        WriteTrace(TraceRDP, TraceDebug, " clipped");
         return TRUE;
     }
 
@@ -120,13 +121,13 @@ int cull_tri(VERTEX **v) // type changed to VERTEX** [Dave2001]
 
     if ((iarea & 0x7FFFFFFF) == 0)
     {
-        LRDP(" zero area triangles\n");
+        WriteTrace(TraceRDP, TraceDebug, " zero area triangles");
         return TRUE;
     }
 
     if ((rdp.flags & CULLMASK) && ((int)(iarea ^ mode)) >= 0)
     {
-        LRDP(" culled\n");
+        WriteTrace(TraceRDP, TraceDebug, " culled");
         return TRUE;
     }
 #else
@@ -143,7 +144,7 @@ int cull_tri(VERTEX **v) // type changed to VERTEX** [Dave2001]
         //    if ((x1*y2 - y1*x2) < 0.0f) //counter-clockwise, positive
         if ((y1*x2-x1*y2) < 0.0f) //counter-clockwise, positive
         {
-            LRDP (" culled!\n");
+            WriteTrace(TraceRDP, TraceDebug, " culled!");
             return TRUE;
         }
         return FALSE;
@@ -151,7 +152,7 @@ int cull_tri(VERTEX **v) // type changed to VERTEX** [Dave2001]
         //    if ((x1*y2 - y1*x2) >= 0.0f) //clockwise, negative
         if ((y1*x2-x1*y2) >= 0.0f) //clockwise, negative
         {
-            LRDP (" culled!\n");
+            WriteTrace(TraceRDP, TraceDebug, " culled!");
             return TRUE;
         }
         return FALSE;
@@ -327,9 +328,7 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
 
         if (v->uv_calculated != rdp.tex_ctr)
         {
-#ifdef EXTREME_LOGGING
-            FRDP(" * CALCULATING VERTEX U/V: %d\n", v->number);
-#endif
+            WriteTrace(TraceRDP, TraceVerbose, " * CALCULATING VERTEX U/V: %d", v->number);
             v->uv_calculated = rdp.tex_ctr;
 
             if (!(rdp.geom_mode & 0x00020000))
@@ -343,15 +342,11 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
                         v->b = vtx[flag]->b;
                         v->g = vtx[flag]->g;
                         v->r = vtx[flag]->r;
-#ifdef EXTREME_LOGGING
-                        FRDP(" * Flat shaded, flag%d - r: %d, g: %d, b: %d, a: %d\n", flag, v->r, v->g, v->b, v->a);
-#endif
+                        WriteTrace(TraceRDP, TraceVerbose, " * Flat shaded, flag%d - r: %d, g: %d, b: %d, a: %d", flag, v->r, v->g, v->b, v->a);
                     }
                     else  // prim color
                     {
-#ifdef EXTREME_LOGGING
-                        FRDP(" * Prim shaded %08lx\n", rdp.prim_color);
-#endif
+                        WriteTrace(TraceRDP, TraceVerbose, " * Prim shaded %08lx", rdp.prim_color);
                         v->a = (uint8_t)(rdp.prim_color & 0xFF);
                         v->b = (uint8_t)((rdp.prim_color >> 8) & 0xFF);
                         v->g = (uint8_t)((rdp.prim_color >> 16) & 0xFF);
@@ -407,9 +402,7 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
                         v->v0 -= rdp.tiles[rdp.cur_tile].f_ul_t; //required for megaman (boss special attack)
                     v->u0 *= rdp.aTBuffTex[0]->u_scale;
                     v->v0 *= rdp.aTBuffTex[0]->v_scale;
-#ifdef EXTREME_LOGGING
-                    FRDP("tbuff_tex t0: (%f, %f)->(%f, %f)\n", v->ou, v->ov, v->u0, v->v0);
-#endif
+                    WriteTrace(TraceRDP, TraceVerbose, "tbuff_tex t0: (%f, %f)->(%f, %f)", v->ou, v->ov, v->u0, v->v0);
                 }
                 else
                 {
@@ -450,9 +443,7 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
                         v->u1 -= rdp.tiles[rdp.cur_tile].f_ul_s;
                     v->u1 *= rdp.aTBuffTex[1]->u_scale;
                     v->v1 *= rdp.aTBuffTex[1]->v_scale;
-#ifdef EXTREME_LOGGING
-                    FRDP("tbuff_tex t1: (%f, %f)->(%f, %f)\n", v->ou, v->ov, v->u1, v->v1);
-#endif
+                    WriteTrace(TraceRDP, TraceVerbose, "tbuff_tex t1: (%f, %f)->(%f, %f)", v->ou, v->ov, v->u1, v->v1);
                 }
                 else
                 {
@@ -465,11 +456,9 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
                 v->u1_w = v->u1 / v->w;
                 v->v1_w = v->v1 / v->w;
             }
-            //      FRDP(" * CALCULATING VERTEX U/V: %d  u0: %f, v0: %f, u1: %f, v1: %f\n", v->number, v->u0, v->v0, v->u1, v->v1);
+            //      WriteTrace(TraceRDP, TraceDebug, " * CALCULATING VERTEX U/V: %d  u0: %f, v0: %f, u1: %f, v1: %f", v->number, v->u0, v->v0, v->u1, v->v1);
         }
-#ifdef EXTREME_LOGGING
-        FRDP("draw_tri. v[%d] ou=%f, ov = %f\n", i, v->ou, v->ov);
-#endif
+        WriteTrace(TraceRDP, TraceVerbose, "draw_tri. v[%d] ou=%f, ov = %f", i, v->ou, v->ov);
         if (v->shade_mod != cmb.shade_mod_hash)
             apply_shade_mods(v);
     } //for
@@ -765,9 +754,7 @@ void do_triangle_stuff(uint16_t linew, int old_interpolate) // what else?? do th
     {
         if (rdp.vtxbuf[i].not_zclipped)// && rdp.zsrc != 1)
         {
-#ifdef EXTREME_LOGGING
-            FRDP (" * NOT ZCLIPPPED: %d\n", rdp.vtxbuf[i].number);
-#endif
+            WriteTrace(TraceRDP, TraceVerbose, " * NOT ZCLIPPPED: %d", rdp.vtxbuf[i].number);
             rdp.vtxbuf[i].x = rdp.vtxbuf[i].sx;
             rdp.vtxbuf[i].y = rdp.vtxbuf[i].sy;
             rdp.vtxbuf[i].z = rdp.vtxbuf[i].sz;
@@ -779,9 +766,7 @@ void do_triangle_stuff(uint16_t linew, int old_interpolate) // what else?? do th
         }
         else
         {
-#ifdef EXTREME_LOGGING
-            FRDP (" * ZCLIPPED: %d\n", rdp.vtxbuf[i].number);
-#endif
+            WriteTrace(TraceRDP, TraceVerbose, " * ZCLIPPED: %d", rdp.vtxbuf[i].number);
             rdp.vtxbuf[i].q = 1.0f / rdp.vtxbuf[i].w;
             rdp.vtxbuf[i].x = rdp.view_trans[0] + rdp.vtxbuf[i].x * rdp.vtxbuf[i].q * rdp.view_scale[0] + rdp.offset_x;
             rdp.vtxbuf[i].y = rdp.view_trans[1] + rdp.vtxbuf[i].y * rdp.vtxbuf[i].q * rdp.view_scale[1] + rdp.offset_y;
@@ -1028,7 +1013,7 @@ static void CalculateLOD(VERTEX *v, int n)
     grTexDetailControl(GR_TMU0, cmb.dc0_lodbias, cmb.dc0_detailscale, detailmax);
     if (voodoo.num_tmu == 2)
         grTexDetailControl(GR_TMU1, cmb.dc1_lodbias, cmb.dc1_detailscale, detailmax);
-    FRDP("CalculateLOD factor: %f, tile: %d, lod_fraction: %f\n", (float)lodFactor, lod_tile, lod_fraction);
+    WriteTrace(TraceRDP, TraceDebug, "CalculateLOD factor: %f, tile: %d, lod_fraction: %f", (float)lodFactor, lod_tile, lod_fraction);
 }
 
 float ScaleZ(float z)
@@ -1074,21 +1059,6 @@ static void DepthBuffer(VERTEX * vtx, int n)
     for (int i = 0; i < n; i++)
         vtx[i].z = ScaleZ(vtx[i].z);
 }
-
-/*
-std::ofstream loga;
-#define LOGG(x) loga.open("glide_log.txt",std::ios::app); loga << x; loga.flush(); loga.close();
-__inline void FRDP2(char *fmt, ...)
-{
-va_list ap;
-va_start(ap, fmt);
-vsprintf(out_buf, fmt, ap);
-LOGG(out_buf);
-va_end(ap);
-}
-//*/
-//#define LOGG(x)
-//#define FRDP2(x)
 
 void clip_tri(int interpolate_colors)
 {
@@ -1493,7 +1463,7 @@ static void render_tri(uint16_t linew, int old_interpolate)
     int n = rdp.n_global;
     if (n < 3)
     {
-        FRDP(" * render_tri: n < 3\n");
+        WriteTrace(TraceRDP, TraceDebug, " * render_tri: n < 3");
         return;
     }
     int i, j;
@@ -1511,7 +1481,7 @@ static void render_tri(uint16_t linew, int old_interpolate)
         }
         if (!to_render) //all z < 0
         {
-            FRDP(" * render_tri: all z < 0\n");
+            WriteTrace(TraceRDP, TraceDebug, " * render_tri: all z < 0");
             return;
         }
     }
@@ -1566,22 +1536,6 @@ static void render_tri(uint16_t linew, int old_interpolate)
             InterpolateColors2(*v1, *v2, rdp.vtxbuf[i], percent);
         }
     }
-    /*
-    if (rdp.clip)
-    {
-    LOGG("Colors before clipping:\n");
-    unsigned int k;
-    for(k=0; k<3; k++)
-    {
-    FRDP2("V%d: r=%d, g=%d, b=%d, a=%d, f=%d\n", k, org_vtx[k]->r, org_vtx[k]->g, org_vtx[k]->b, org_vtx[k]->a, (short)org_vtx[k]->f);
-    }
-    FRDP("Got %d vertex after clipping\n", n);
-    for(k=0; k<n; k++)
-    {
-    FRDP("V%d: r=%d, g=%d, b=%d, a=%d, f=%d\n", k, rdp.vtxbuf[k].r, rdp.vtxbuf[k].g, rdp.vtxbuf[k].b, rdp.vtxbuf[k].a, (short)rdp.vtxbuf[k].f);
-    }
-    }
-    */
 
     ConvertCoordsConvert(rdp.vtxbuf, n);
     if (rdp.fog_mode == RDP::fog_enabled)
@@ -1618,7 +1572,7 @@ static void render_tri(uint16_t linew, int old_interpolate)
     {
     for (int k = 0; k < 3; k++)
     {
-    FRDP("v%d %f->%f, width: %d. height: %d, tex_width: %d, tex_height: %d, lr_u: %f, lr_v: %f\n", k, vv0[k], pv[k]->v1, rdp.tbuff_tex->width, rdp.tbuff_tex->height, rdp.tbuff_tex->tex_width, rdp.tbuff_tex->tex_height, rdp.tbuff_tex->lr_u, rdp.tbuff_tex->lr_v);
+    WriteTrace(TraceRDP, TraceDebug, "v%d %f->%f, width: %d. height: %d, tex_width: %d, tex_height: %d, lr_u: %f, lr_v: %f", k, vv0[k], pv[k]->v1, rdp.tbuff_tex->width, rdp.tbuff_tex->height, rdp.tbuff_tex->tex_width, rdp.tbuff_tex->tex_height, rdp.tbuff_tex->lr_u, rdp.tbuff_tex->lr_v);
     }
     }
     */
@@ -1636,7 +1590,7 @@ static void render_tri(uint16_t linew, int old_interpolate)
     {
         //      VERTEX ** pv = rdp.vtx_buffer?(vtx_list2):(vtx_list1);
         //      for (int k = 0; k < n; k ++)
-        //			FRDP ("DRAW[%d]: v.x = %f, v.y = %f, v.z = %f, v.u = %f, v.v = %f\n", k, pv[k]->x, pv[k]->y, pv[k]->z, pv[k]->coord[rdp.t0<<1], pv[k]->coord[(rdp.t0<<1)+1]);
+        //			WriteTrace(TraceRDP, TraceDebug, "DRAW[%d]: v.x = %f, v.y = %f, v.z = %f, v.u = %f, v.v = %f", k, pv[k]->x, pv[k]->y, pv[k]->z, pv[k]->coord[rdp.t0<<1], pv[k]->coord[(rdp.t0<<1)+1]);
         //        pv[k]->y = g_settings->res_y - pv[k]->y;
 
         if (linew > 0)
@@ -1704,7 +1658,7 @@ static void render_tri(uint16_t linew, int old_interpolate)
 
 void add_tri(VERTEX *v, int n, int type)
 {
-    //FRDP ("ENTER (%f, %f, %f), (%f, %f, %f), (%f, %f, %f)\n", v[0].x, v[0].y, v[0].w,
+    //WriteTrace(TraceRDP, TraceDebug, "ENTER (%f, %f, %f), (%f, %f, %f), (%f, %f, %f)", v[0].x, v[0].y, v[0].w,
     //  v[1].x, v[1].y, v[1].w, v[2].x, v[2].y, v[2].w);
 
     // Debug capture
@@ -1792,7 +1746,7 @@ void update_scissor()
         //Values are inclusive for minimum x and y values and exclusive for maximum x and y values.
         //    grClipWindow (rdp.scissor.ul_x?rdp.scissor.ul_x+1:0, rdp.scissor.ul_y?rdp.scissor.ul_y+1:0, rdp.scissor.lr_x, rdp.scissor.lr_y);
         grClipWindow(rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
-        FRDP(" |- scissor - (%d, %d) -> (%d, %d)\n", rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
+        WriteTrace(TraceRDP, TraceDebug, " |- scissor - (%d, %d) -> (%d, %d)", rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
     }
 }
 
@@ -1814,12 +1768,12 @@ typedef struct
 
 void update()
 {
-    LRDP("-+ update called\n");
+    WriteTrace(TraceRDP, TraceDebug, "-+ update called");
     // Check for rendermode changes
     // Z buffer
     if (rdp.render_mode_changed & 0x00000C30)
     {
-        FRDP(" |- render_mode_changed zbuf - decal: %s, update: %s, compare: %s\n",
+        WriteTrace(TraceRDP, TraceDebug, " |- render_mode_changed zbuf - decal: %s, update: %s, compare: %s",
             str_yn[(rdp.othermode_l & 0x00000400) ? 1 : 0],
             str_yn[(rdp.othermode_l & 0x00000020) ? 1 : 0],
             str_yn[(rdp.othermode_l & 0x00000010) ? 1 : 0]);
@@ -1843,7 +1797,7 @@ void update()
     // Alpha compare
     if (rdp.render_mode_changed & 0x00001000)
     {
-        FRDP(" |- render_mode_changed alpha compare - on: %s\n",
+        WriteTrace(TraceRDP, TraceDebug, " |- render_mode_changed alpha compare - on: %s",
             str_yn[(rdp.othermode_l & 0x00001000) ? 1 : 0]);
         rdp.render_mode_changed &= ~0x00001000;
         rdp.update |= UPDATE_ALPHA_COMPARE;
@@ -1856,7 +1810,7 @@ void update()
 
     if (rdp.render_mode_changed & 0x00002000) // alpha cvg sel
     {
-        FRDP(" |- render_mode_changed alpha cvg sel - on: %s\n",
+        WriteTrace(TraceRDP, TraceDebug, " |- render_mode_changed alpha cvg sel - on: %s",
             str_yn[(rdp.othermode_l & 0x00002000) ? 1 : 0]);
         rdp.render_mode_changed &= ~0x00002000;
         rdp.update |= UPDATE_COMBINE;
@@ -1866,7 +1820,7 @@ void update()
     // Force blend
     if (rdp.render_mode_changed & 0xFFFF0000)
     {
-        FRDP(" |- render_mode_changed force_blend - %08lx\n", rdp.othermode_l & 0xFFFF0000);
+        WriteTrace(TraceRDP, TraceDebug, " |- render_mode_changed force_blend - %08lx", rdp.othermode_l & 0xFFFF0000);
         rdp.render_mode_changed &= 0x0000FFFF;
 
         rdp.fbl_a0 = (uint8_t)((rdp.othermode_l >> 30) & 0x3);
@@ -1892,7 +1846,7 @@ void update()
         rdp.aTBuffTex[0] = aTBuff[0];
         rdp.aTBuffTex[1] = aTBuff[1];
 
-        LRDP(" |-+ update_combine\n");
+        WriteTrace(TraceRDP, TraceDebug, " |-+ update_combine");
         Combine();
     }
 
@@ -1969,7 +1923,7 @@ void update()
             uint8_t reference = (uint8_t)(rdp.blend_color & 0xFF);
             grAlphaTestFunction(reference ? GR_CMP_GEQUAL : GR_CMP_GREATER);
             grAlphaTestReferenceValue(reference);
-            FRDP(" |- alpha compare: blend: %02lx\n", reference);
+            WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: blend: %02lx", reference);
         }
         else
         {
@@ -1979,7 +1933,7 @@ void update()
                 {
                     grAlphaTestFunction(GR_CMP_GEQUAL);
                     grAlphaTestReferenceValue(0x20);//0xA0);
-                    LRDP(" |- alpha compare: 0x20\n");
+                    WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: 0x20");
                 }
                 else
                 {
@@ -1987,19 +1941,19 @@ void update()
                     if (rdp.acmp == 3)
                     {
                         grAlphaTestReferenceValue((uint8_t)(rdp.blend_color & 0xFF));
-                        FRDP(" |- alpha compare: blend: %02lx\n", rdp.blend_color & 0xFF);
+                        WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: blend: %02lx", rdp.blend_color & 0xFF);
                     }
                     else
                     {
                         grAlphaTestReferenceValue(0x00);
-                        LRDP(" |- alpha compare: 0x00\n");
+                        WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: 0x00");
                     }
                 }
             }
             else
             {
                 grAlphaTestFunction(GR_CMP_ALWAYS);
-                LRDP(" |- alpha compare: none\n");
+                WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: none");
             }
         }
         if (rdp.acmp == 3 && rdp.cycle_mode < 2)
@@ -2007,7 +1961,7 @@ void update()
             if (grStippleModeExt != 0)
             {
                 if (g_settings->old_style_adither || rdp.alpha_dither_mode != 3) {
-                    LRDP(" |- alpha compare: dither\n");
+                    WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: dither");
                     grStippleModeExt(g_settings->stipple_mode);
                 }
                 else
@@ -2018,7 +1972,7 @@ void update()
         {
             if (grStippleModeExt)
             {
-                //LRDP (" |- alpha compare: dither disabled\n");
+                //WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: dither disabled");
                 grStippleModeExt(GR_STIPPLE_DISABLE);
             }
         }
@@ -2028,7 +1982,7 @@ void update()
     {
         rdp.update ^= UPDATE_CULL_MODE;
         uint32_t mode = (rdp.flags & CULLMASK) >> CULLSHIFT;
-        FRDP(" |- cull_mode - mode: %s\n", str_cull[mode]);
+        WriteTrace(TraceRDP, TraceDebug, " |- cull_mode - mode: %s", str_cull[mode]);
         switch (mode)
         {
         case 0: // cull none
@@ -2060,11 +2014,11 @@ void update()
                 grFogColorValue(rdp.fog_color);
                 grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
                 rdp.fog_mode = RDP::fog_enabled;
-                LRDP("fog enabled \n");
+                WriteTrace(TraceRDP, TraceDebug, "fog enabled ");
             }
             else
             {
-                LRDP("fog disabled in blender\n");
+                WriteTrace(TraceRDP, TraceDebug, "fog disabled in blender");
                 rdp.fog_mode = RDP::fog_disabled;
                 grFogMode(GR_FOG_DISABLE);
             }
@@ -2074,18 +2028,18 @@ void update()
             grFogColorValue(rdp.fog_color);
             grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
             rdp.fog_mode = RDP::fog_blend;
-            LRDP("fog blend \n");
+            WriteTrace(TraceRDP, TraceDebug, "fog blend ");
         }
         else if (blender == 0x04d1)
         {
             grFogColorValue(rdp.fog_color);
             grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
             rdp.fog_mode = RDP::fog_blend_inverse;
-            LRDP("fog blend \n");
+            WriteTrace(TraceRDP, TraceDebug, "fog blend ");
         }
         else
         {
-            LRDP("fog disabled\n");
+            WriteTrace(TraceRDP, TraceDebug, "fog disabled");
             rdp.fog_mode = RDP::fog_disabled;
             grFogMode(GR_FOG_DISABLE);
         }
@@ -2102,7 +2056,7 @@ void update()
         rdp.clip_max_x = minval((rdp.view_trans[0] + scale_x + rdp.offset_x) * rdp.clip_ratio, g_settings->res_x);
         rdp.clip_max_y = minval((rdp.view_trans[1] + scale_y + rdp.offset_y) * rdp.clip_ratio, g_settings->res_y);
 
-        FRDP(" |- viewport - (%d, %d, %d, %d)\n", (uint32_t)rdp.clip_min_x, (uint32_t)rdp.clip_min_y, (uint32_t)rdp.clip_max_x, (uint32_t)rdp.clip_max_y);
+        WriteTrace(TraceRDP, TraceDebug, " |- viewport - (%d, %d, %d, %d)", (uint32_t)rdp.clip_min_x, (uint32_t)rdp.clip_min_y, (uint32_t)rdp.clip_max_x, (uint32_t)rdp.clip_max_y);
         if (!rdp.scissor_set)
         {
             rdp.scissor.ul_x = (uint32_t)rdp.clip_min_x;
@@ -2118,7 +2072,7 @@ void update()
         update_scissor();
     }
 
-    LRDP(" + update end\n");
+    WriteTrace(TraceRDP, TraceDebug, " + update end");
 }
 
 void set_message_combiner()

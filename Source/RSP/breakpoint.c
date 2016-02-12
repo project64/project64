@@ -26,7 +26,7 @@
 
 #include <windows.h>
 #include <stdio.h>
-#include "rsp.h"
+#include "Rsp.h"
 #include "CPU.h"
 #include "breakpoint.h"
 

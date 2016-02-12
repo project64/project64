@@ -53,7 +53,7 @@ static void uc4_tri1()
     int v1 = ((rdp.cmd1 >> 16) & 0xFF) / 5;
     int v2 = ((rdp.cmd1 >> 8) & 0xFF) / 5;
     int v3 = (rdp.cmd1 & 0xFF) / 5;
-    FRDP("uc4:tri1 #%d - %d, %d, %d\n", rdp.tri_n,
+    WriteTrace(TraceRDP, TraceDebug, "uc4:tri1 #%d - %d, %d, %d", rdp.tri_n,
         v1, v2, v3);
 
     VERTEX *v[3] = {
@@ -67,7 +67,7 @@ static void uc4_tri1()
 
 static void uc4_quad3d()
 {
-    FRDP("uc4:quad3d #%d, #%d\n", rdp.tri_n, rdp.tri_n + 1);
+    WriteTrace(TraceRDP, TraceDebug, "uc4:quad3d #%d, #%d", rdp.tri_n, rdp.tri_n + 1);
 
     VERTEX *v[6] = {
         &rdp.vtx[((rdp.cmd1 >> 24) & 0xFF) / 5],

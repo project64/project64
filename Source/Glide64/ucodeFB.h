@@ -69,7 +69,7 @@ static void fb_bg_copy()
     uint8_t imageFmt = ((uint8_t *)gfx.RDRAM)[(((addr + 11) << 1) + 0) ^ 3];
     uint8_t imageSiz = ((uint8_t *)gfx.RDRAM)[(((addr + 11) << 1) + 1) ^ 3];
     uint32_t imagePtr = segoffset(((uint32_t*)gfx.RDRAM)[(addr + 8) >> 1]);
-    FRDP("fb_bg_copy. fmt: %d, size: %d, imagePtr %08lx, main_ci: %08lx, cur_ci: %08lx \n", imageFmt, imageSiz, imagePtr, rdp.main_ci, rdp.frame_buffers[rdp.ci_count - 1].addr);
+    WriteTrace(TraceRDP, TraceDebug, "fb_bg_copy. fmt: %d, size: %d, imagePtr %08lx, main_ci: %08lx, cur_ci: %08lx ", imageFmt, imageSiz, imagePtr, rdp.main_ci, rdp.frame_buffers[rdp.ci_count - 1].addr);
 
     if (status == ci_main)
     {
@@ -82,7 +82,7 @@ static void fb_bg_copy()
     {
         rdp.copy_ci_index = rdp.ci_count - 1;
         rdp.frame_buffers[rdp.copy_ci_index].status = ci_copy;
-        FRDP("rdp.frame_buffers[%d].status = ci_copy\n", rdp.copy_ci_index);
+        WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_copy", rdp.copy_ci_index);
 
         if (rdp.frame_buffers[rdp.copy_ci_index].addr != rdp.main_ci_bg)
         {
@@ -91,11 +91,11 @@ static void fb_bg_copy()
         }
         else
         {
-            LRDP("motion blur!\n");
+            WriteTrace(TraceRDP, TraceDebug, "motion blur!");
             rdp.motionblur = TRUE;
         }
 
-        FRDP("Detect FB usage. texture addr is inside framebuffer: %08lx - %08lx \n", imagePtr, rdp.main_ci);
+        WriteTrace(TraceRDP, TraceDebug, "Detect FB usage. texture addr is inside framebuffer: %08lx - %08lx ", imagePtr, rdp.main_ci);
     }
     else if (imagePtr == rdp.zimg)
     {
@@ -105,7 +105,7 @@ static void fb_bg_copy()
             rdp.tmpzimg = rdp.frame_buffers[rdp.ci_count - 1].addr;
             if (!rdp.copy_zi_index)
                 rdp.copy_zi_index = rdp.ci_count - 1;
-            FRDP("rdp.frame_buffers[%d].status = ci_zcopy\n", rdp.copy_ci_index);
+            WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_zcopy", rdp.copy_ci_index);
         }
     }
 }
@@ -123,7 +123,7 @@ static void fb_setscissor()
             if (cur_fb.height == 0 || (cur_fb.width >= rdp.scissor_o.lr_x - 1 && cur_fb.width <= rdp.scissor_o.lr_x + 1))
                 cur_fb.height = rdp.scissor_o.lr_y;
         }
-        FRDP("fb_setscissor. lr_x = %d, lr_y = %d, fb_width = %d, fb_height = %d\n", rdp.scissor_o.lr_x, rdp.scissor_o.lr_y, cur_fb.width, cur_fb.height);
+        WriteTrace(TraceRDP, TraceDebug, "fb_setscissor. lr_x = %d, lr_y = %d, fb_width = %d, fb_height = %d", rdp.scissor_o.lr_x, rdp.scissor_o.lr_y, cur_fb.width, cur_fb.height);
     }
 }
 
@@ -159,7 +159,7 @@ static void fb_rect()
         uint32_t lr_y = minval(rdp.scissor_o.lr_y, (rdp.cmd0 & 0xFFF) >> 2);
         if (rdp.frame_buffers[rdp.ci_count - 1].height < lr_y)
         {
-            FRDP("fb_rect. ul_x: %d, lr_x: %d, fb_height: %d -> %d\n", ul_x, lr_x, rdp.frame_buffers[rdp.ci_count - 1].height, lr_y);
+            WriteTrace(TraceRDP, TraceDebug, "fb_rect. ul_x: %d, lr_x: %d, fb_height: %d -> %d", ul_x, lr_x, rdp.frame_buffers[rdp.ci_count - 1].height, lr_y);
             rdp.frame_buffers[rdp.ci_count - 1].height = lr_y;
         }
     }
@@ -183,7 +183,7 @@ static void fb_settextureimage()
         uint32_t addr = segoffset(rdp.cmd1);
         if (tex_format == 0)
         {
-            FRDP("fb_settextureimage. fmt: %d, size: %d, imagePtr %08lx, main_ci: %08lx, cur_ci: %08lx \n", ((rdp.cmd0 >> 21) & 0x07), ((rdp.cmd0 >> 19) & 0x03), addr, rdp.main_ci, rdp.frame_buffers[rdp.ci_count - 1].addr);
+            WriteTrace(TraceRDP, TraceDebug, "fb_settextureimage. fmt: %d, size: %d, imagePtr %08lx, main_ci: %08lx, cur_ci: %08lx ", ((rdp.cmd0 >> 21) & 0x07), ((rdp.cmd0 >> 19) & 0x03), addr, rdp.main_ci, rdp.frame_buffers[rdp.ci_count - 1].addr);
             if (cur_fb.status == ci_main)
             {
                 rdp.main_ci_last_tex_addr = addr;
@@ -201,7 +201,7 @@ static void fb_settextureimage()
                     cur_fb.status = ci_copy_self;
                     rdp.scale_x = rdp.scale_x_bak;
                     rdp.scale_y = rdp.scale_y_bak;
-                    FRDP("rdp.frame_buffers[%d].status = ci_copy_self\n", rdp.ci_count - 1);
+                    WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_copy_self", rdp.ci_count - 1);
                 }
                 else
                 {
@@ -209,11 +209,11 @@ static void fb_settextureimage()
                     {
                         rdp.copy_ci_index = rdp.ci_count - 1;
                         cur_fb.status = ci_copy;
-                        FRDP("rdp.frame_buffers[%d].status = ci_copy\n", rdp.copy_ci_index);
+                        WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_copy", rdp.copy_ci_index);
                         if ((rdp.main_ci_last_tex_addr >= cur_fb.addr) &&
                             (rdp.main_ci_last_tex_addr < (cur_fb.addr + cur_fb.width*cur_fb.height*cur_fb.size)))
                         {
-                            LRDP("motion blur!\n");
+                            WriteTrace(TraceRDP, TraceDebug, "motion blur!");
                             rdp.motionblur = TRUE;
                         }
                         else
@@ -226,17 +226,17 @@ static void fb_settextureimage()
                     {
                         rdp.copy_ci_index = rdp.ci_count - 1;
                         cur_fb.status = ci_aux_copy;
-                        FRDP("rdp.frame_buffers[%d].status = ci_aux_copy\n", rdp.copy_ci_index);
+                        WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_aux_copy", rdp.copy_ci_index);
                         rdp.scale_x = 1.0f;
                         rdp.scale_y = 1.0f;
                     }
                     else
                     {
                         cur_fb.status = ci_aux;
-                        FRDP("rdp.frame_buffers[%d].status = ci_aux\n", rdp.copy_ci_index);
+                        WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_aux", rdp.copy_ci_index);
                     }
                 }
-                FRDP("Detect FB usage. texture addr is inside framebuffer: %08lx - %08lx \n", addr, rdp.main_ci);
+                WriteTrace(TraceRDP, TraceDebug, "Detect FB usage. texture addr is inside framebuffer: %08lx - %08lx ", addr, rdp.main_ci);
             }
             ///*
             else if ((cur_fb.status != ci_main) && (addr >= rdp.zimg && addr < rdp.zimg_end))
@@ -244,7 +244,7 @@ static void fb_settextureimage()
                 cur_fb.status = ci_zcopy;
                 if (!rdp.copy_zi_index)
                     rdp.copy_zi_index = rdp.ci_count - 1;
-                FRDP("fb_settextureimage. rdp.frame_buffers[%d].status = ci_zcopy\n", rdp.ci_count - 1);
+                WriteTrace(TraceRDP, TraceDebug, "fb_settextureimage. rdp.frame_buffers[%d].status = ci_zcopy", rdp.ci_count - 1);
             }
             //*/
             else if ((rdp.maincimg[0].width > 64) && (addr >= rdp.maincimg[0].addr) && (addr < (rdp.maincimg[0].addr + rdp.maincimg[0].width*rdp.maincimg[0].height * 2)))
@@ -252,20 +252,20 @@ static void fb_settextureimage()
                 if (cur_fb.status != ci_main)
                 {
                     cur_fb.status = ci_old_copy;
-                    FRDP("rdp.frame_buffers[%d].status = ci_old_copy 1, addr:%08lx\n", rdp.ci_count - 1, rdp.last_drawn_ci_addr);
+                    WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_old_copy 1, addr:%08lx", rdp.ci_count - 1, rdp.last_drawn_ci_addr);
                 }
                 rdp.read_previous_ci = TRUE;
-                LRDP("read_previous_ci = TRUE\n");
+                WriteTrace(TraceRDP, TraceDebug, "read_previous_ci = TRUE");
             }
             else if ((addr >= rdp.last_drawn_ci_addr) && (addr < (rdp.last_drawn_ci_addr + rdp.maincimg[0].width*rdp.maincimg[0].height * 2)))
             {
                 if (cur_fb.status != ci_main)
                 {
                     cur_fb.status = ci_old_copy;
-                    FRDP("rdp.frame_buffers[%d].status = ci_old_copy 2, addr:%08lx\n", rdp.ci_count - 1, rdp.last_drawn_ci_addr);
+                    WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_old_copy 2, addr:%08lx", rdp.ci_count - 1, rdp.last_drawn_ci_addr);
                 }
                 rdp.read_previous_ci = TRUE;
-                LRDP("read_previous_ci = TRUE\n");
+                WriteTrace(TraceRDP, TraceDebug, "read_previous_ci = TRUE");
             }
         }
         else if (fb_hwfbe_enabled && (cur_fb.status == ci_main))
@@ -275,14 +275,14 @@ static void fb_settextureimage()
                 rdp.copy_ci_index = rdp.ci_count - 1;
                 rdp.black_ci_index = rdp.ci_count - 1;
                 cur_fb.status = ci_copy_self;
-                FRDP("rdp.frame_buffers[%d].status = ci_copy_self\n", rdp.ci_count - 1);
+                WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_copy_self", rdp.ci_count - 1);
             }
         }
     }
     if (cur_fb.status == ci_unknown)
     {
         cur_fb.status = ci_aux;
-        FRDP("fb_settextureimage. rdp.frame_buffers[%d].status = ci_aux\n", rdp.ci_count - 1);
+        WriteTrace(TraceRDP, TraceDebug, "fb_settextureimage. rdp.frame_buffers[%d].status = ci_aux", rdp.ci_count - 1);
     }
 }
 
@@ -291,7 +291,7 @@ static void fb_loadtxtr()
     if (rdp.frame_buffers[rdp.ci_count - 1].status == ci_unknown)
     {
         rdp.frame_buffers[rdp.ci_count - 1].status = ci_aux;
-        FRDP("rdp.frame_buffers[%d].status = ci_aux\n", rdp.ci_count - 1);
+        WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_aux", rdp.ci_count - 1);
     }
 }
 
@@ -299,17 +299,17 @@ static void fb_setdepthimage()
 {
     rdp.zimg = segoffset(rdp.cmd1) & BMASK;
     rdp.zimg_end = rdp.zimg + rdp.ci_width*rdp.ci_height * 2;
-    FRDP("fb_setdepthimage. addr %08lx - %08lx\n", rdp.zimg, rdp.zimg_end);
+    WriteTrace(TraceRDP, TraceDebug, "fb_setdepthimage. addr %08lx - %08lx", rdp.zimg, rdp.zimg_end);
     if (rdp.zimg == rdp.main_ci)  //strange, but can happen
     {
         rdp.frame_buffers[rdp.main_ci_index].status = ci_unknown;
         if (rdp.main_ci_index < rdp.ci_count)
         {
             rdp.frame_buffers[rdp.main_ci_index].status = ci_zimg;
-            FRDP("rdp.frame_buffers[%d].status = ci_zimg\n", rdp.main_ci_index);
+            WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_zimg", rdp.main_ci_index);
             rdp.main_ci_index++;
             rdp.frame_buffers[rdp.main_ci_index].status = ci_main;
-            FRDP("rdp.frame_buffers[%d].status = ci_main\n", rdp.main_ci_index);
+            WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_main", rdp.main_ci_index);
             rdp.main_ci = rdp.frame_buffers[rdp.main_ci_index].addr;
             rdp.main_ci_end = rdp.main_ci + (rdp.frame_buffers[rdp.main_ci_index].width * rdp.frame_buffers[rdp.main_ci_index].height * rdp.frame_buffers[rdp.main_ci_index].size);
             for (int i = rdp.main_ci_index + 1; i < rdp.ci_count; i++)
@@ -318,7 +318,7 @@ static void fb_setdepthimage()
                 if (fb.addr == rdp.main_ci)
                 {
                     fb.status = ci_main;
-                    FRDP("rdp.frame_buffers[%d].status = ci_main\n", i);
+                    WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_main", i);
                 }
             }
         }
@@ -333,7 +333,7 @@ static void fb_setdepthimage()
         if ((fb.addr == rdp.zimg) && (fb.status == ci_aux || fb.status == ci_useless))
         {
             fb.status = ci_zimg;
-            FRDP("rdp.frame_buffers[%d].status = ci_zimg\n", i);
+            WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_zimg", i);
         }
     }
 }
@@ -361,19 +361,19 @@ static void fb_setcolorimage()
     if (rdp.frame_buffers[0].addr == rdp.cimg)
     rdp.frame_buffers[0].height = rdp.scissor_o.lr_y;
     */
-    FRDP("fb_setcolorimage. width: %d,  height: %d,  fmt: %d, size: %d, addr %08lx\n", cur_fb.width, cur_fb.height, cur_fb.format, cur_fb.size, cur_fb.addr);
+    WriteTrace(TraceRDP, TraceDebug, "fb_setcolorimage. width: %d,  height: %d,  fmt: %d, size: %d, addr %08lx", cur_fb.width, cur_fb.height, cur_fb.format, cur_fb.size, cur_fb.addr);
     if (rdp.cimg == rdp.zimg)
     {
         cur_fb.status = ci_zimg;
         rdp.zimg_end = rdp.zimg + cur_fb.width*rdp.scissor_o.lr_y * 2;
-        FRDP("rdp.frame_buffers[%d].status = ci_zimg\n", rdp.ci_count);
+        WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_zimg", rdp.ci_count);
     }
     else if (rdp.cimg == rdp.tmpzimg)
     {
         cur_fb.status = ci_zcopy;
         if (!rdp.copy_zi_index)
             rdp.copy_zi_index = rdp.ci_count - 1;
-        FRDP("rdp.frame_buffers[%d].status = ci_zcopy\n", rdp.ci_count);
+        WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_zcopy", rdp.ci_count);
     }
     else if (rdp.main_ci != 0)
     {
@@ -383,7 +383,7 @@ static void fb_setcolorimage()
             rdp.main_ci_index = rdp.ci_count;
             rdp.main_ci_end = rdp.cimg + ((cur_fb.width * cur_fb.height) << cur_fb.size >> 1);
             cur_fb.status = ci_main;
-            FRDP("rdp.frame_buffers[%d].status = ci_main\n", rdp.ci_count);
+            WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_main", rdp.ci_count);
         }
         else // status is not known yet
         {
@@ -398,7 +398,7 @@ static void fb_setcolorimage()
             rdp.main_ci_end = rdp.cimg + ((cur_fb.width * cur_fb.height) << cur_fb.size >> 1);
             rdp.main_ci_index = rdp.ci_count;
             cur_fb.status = ci_main;
-            FRDP("rdp.frame_buffers[%d].status = ci_main\n", rdp.ci_count);
+            WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_main", rdp.ci_count);
         }
         else
         {
@@ -411,7 +411,7 @@ static void fb_setcolorimage()
         {
             rdp.frame_buffers[rdp.ci_count - 1].status = ci_aux;
             rdp.frame_buffers[rdp.ci_count - 1].changed = 0;
-            FRDP("rdp.frame_buffers[%d].status = ci_aux\n", rdp.ci_count - 1);
+            WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = ci_aux", rdp.ci_count - 1);
         }
         else
         {
@@ -427,7 +427,7 @@ static void fb_setcolorimage()
             }
             }
             //*/
-            FRDP("rdp.frame_buffers[%d].status = %s\n", rdp.ci_count - 1, CIStatus[rdp.frame_buffers[rdp.ci_count - 1].status]);
+            WriteTrace(TraceRDP, TraceDebug, "rdp.frame_buffers[%d].status = %s", rdp.ci_count - 1, CIStatus[rdp.frame_buffers[rdp.ci_count - 1].status]);
         }
     }
     if (cur_fb.status == ci_main)

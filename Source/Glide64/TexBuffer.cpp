@@ -46,6 +46,7 @@
 #include "Gfx_1.3.h"
 #include "TexBuffer.h"
 #include "CRC.h"
+#include <Glide64/trace.h>
 
 static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
 {
@@ -153,7 +154,7 @@ static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
     texbuf.crc = 0;
     texbuf.t_mem = 0;
 
-    FRDP("\nAllocateTextureBuffer. width: %d, height: %d, scr_width: %f, scr_height: %f, vi_width: %f, vi_height:%f, scale_x: %f, scale_y: %f, lr_u: %f, lr_v: %f, u_scale: %f, v_scale: %f\n", texbuf.width, texbuf.height, texbuf.scr_width, texbuf.scr_height, rdp.vi_width, rdp.vi_height, rdp.scale_x, rdp.scale_y, texbuf.lr_u, texbuf.lr_v, texbuf.u_scale, texbuf.v_scale);
+    WriteTrace(TraceRDP, TraceDebug, "\nAllocateTextureBuffer. width: %d, height: %d, scr_width: %f, scr_height: %f, vi_width: %f, vi_height:%f, scale_x: %f, scale_y: %f, lr_u: %f, lr_v: %f, u_scale: %f, v_scale: %f", texbuf.width, texbuf.height, texbuf.scr_width, texbuf.scr_height, rdp.vi_width, rdp.vi_height, rdp.scale_x, rdp.scale_y, texbuf.lr_u, texbuf.lr_v, texbuf.u_scale, texbuf.v_scale);
 
     uint32_t required = grTexCalcMemRequired(texbuf.info.smallLodLog2, texbuf.info.largeLodLog2,
         texbuf.info.aspectRatioLog2, texbuf.info.format);
@@ -210,7 +211,7 @@ static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
 
 int OpenTextureBuffer(COLOR_IMAGE & cimage)
 {
-    FRDP("OpenTextureBuffer. cur_tex_buf: %d, addr: %08lx, width: %d, height: %d", rdp.cur_tex_buf, cimage.addr, cimage.width, cimage.height);
+    WriteTrace(TraceRDP, TraceDebug, "OpenTextureBuffer. cur_tex_buf: %d, addr: %08lx, width: %d, height: %d", rdp.cur_tex_buf, cimage.addr, cimage.width, cimage.height);
 
     int found = FALSE, search = TRUE;
     TBUFF_COLOR_IMAGE *texbuf = 0;
@@ -229,7 +230,7 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
         if (g_settings->hacks&hack_PMario) //motion blur effects in Paper Mario
         {
             rdp.cur_tex_buf = rdp.acc_tex_buf;
-            FRDP("\nread_whole_frame. last allocated bank: %d\n", rdp.acc_tex_buf);
+            WriteTrace(TraceRDP, TraceDebug, "\nread_whole_frame. last allocated bank: %d", rdp.acc_tex_buf);
         }
         else
         {
@@ -301,22 +302,22 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
     }
     else
     {
-        LRDP("  not searched");
+        WriteTrace(TraceRDP, TraceDebug, "  not searched");
     }
 
     if (!found)
     {
-        LRDP("  not found");
+        WriteTrace(TraceRDP, TraceDebug, "  not found");
         texbuf = AllocateTextureBuffer(cimage);
     }
     else
     {
-        LRDP("  found");
+        WriteTrace(TraceRDP, TraceDebug, "  found");
     }
 
     if (!texbuf)
     {
-        LRDP("  KO\n");
+        WriteTrace(TraceRDP, TraceDebug, "  KO");
         return FALSE;
     }
 
@@ -335,7 +336,7 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
     }
     //*/
     //  memset(gfx.RDRAM+cimage.addr, 0, cimage.width*cimage.height*cimage.size);
-    FRDP("  texaddr: %08lx, tex_width: %d, tex_height: %d, cur_tex_buf: %d, texformat: %d, motionblur: %d\n", rdp.cur_image->tex_addr, rdp.cur_image->tex_width, rdp.cur_image->tex_height, rdp.cur_tex_buf, rdp.cur_image->info.format, rdp.motionblur);
+    WriteTrace(TraceRDP, TraceDebug, "  texaddr: %08lx, tex_width: %d, tex_height: %d, cur_tex_buf: %d, texformat: %d, motionblur: %d", rdp.cur_image->tex_addr, rdp.cur_image->tex_width, rdp.cur_image->tex_height, rdp.cur_tex_buf, rdp.cur_image->info.format, rdp.motionblur);
     if (!rdp.offset_x_bak)
     {
         rdp.offset_x_bak = rdp.offset_x;
@@ -421,7 +422,7 @@ int CloseTextureBuffer(int draw)
 {
     if (!rdp.cur_image)
     {
-        LRDP("CloseTextureBuffer KO\n");
+        WriteTrace(TraceRDP, TraceDebug, "CloseTextureBuffer KO");
         return FALSE;
     }
     grRenderBuffer(GR_BUFFER_BACKBUFFER);
@@ -431,7 +432,7 @@ int CloseTextureBuffer(int draw)
     rdp.update |= UPDATE_VIEWPORT | UPDATE_SCISSOR;
     if (!draw)
     {
-        LRDP("CloseTextureBuffer no draw, OK\n");
+        WriteTrace(TraceRDP, TraceDebug, "CloseTextureBuffer no draw, OK");
         rdp.cur_image = 0;
         return TRUE;
     }
@@ -445,7 +446,7 @@ int CloseTextureBuffer(int draw)
     float lr_y = rdp.tbuff_tex->scr_height + rdp.offset_y;
     float lr_u = rdp.tbuff_tex->lr_u;
     float lr_v = rdp.tbuff_tex->lr_v;
-    FRDP("lr_x: %f, lr_y: %f, lr_u: %f, lr_v: %f\n", lr_x, lr_y, lr_u, lr_v);
+    WriteTrace(TraceRDP, TraceDebug, "lr_x: %f, lr_y: %f, lr_u: %f, lr_v: %f", lr_x, lr_y, lr_u, lr_v);
 
     // Make the vertices
     VERTEX v[4] = {
@@ -464,14 +465,14 @@ int CloseTextureBuffer(int draw)
     {
         grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
     }
-    LRDP("CloseTextureBuffer draw, OK\n");
+    WriteTrace(TraceRDP, TraceDebug, "CloseTextureBuffer draw, OK");
     rdp.tbuff_tex = 0;
     return TRUE;
 }
 
 int CopyTextureBuffer(COLOR_IMAGE & fb_from, COLOR_IMAGE & fb_to)
 {
-    FRDP("CopyTextureBuffer from %08x to %08x\n", fb_from.addr, fb_to.addr);
+    WriteTrace(TraceRDP, TraceDebug, "CopyTextureBuffer from %08x to %08x", fb_from.addr, fb_to.addr);
     if (rdp.cur_image)
     {
         rdp.cur_image->crc = 0;
@@ -481,12 +482,12 @@ int CopyTextureBuffer(COLOR_IMAGE & fb_from, COLOR_IMAGE & fb_to)
     }
     else if (!FindTextureBuffer(fb_from.addr, (uint16_t)fb_from.width))
     {
-        LRDP("Can't find 'from' buffer.\n");
+        WriteTrace(TraceRDP, TraceDebug, "Can't find 'from' buffer.");
         return FALSE;
     }
     if (!OpenTextureBuffer(fb_to))
     {
-        LRDP("Can't open new buffer.\n");
+        WriteTrace(TraceRDP, TraceDebug, "Can't open new buffer.");
         return CloseTextureBuffer(TRUE);
     }
     rdp.tbuff_tex->crc = 0;
@@ -500,7 +501,7 @@ int CopyTextureBuffer(COLOR_IMAGE & fb_from, COLOR_IMAGE & fb_to)
     float zero = 0.0f;
     float lr_u = rdp.tbuff_tex->lr_u;
     float lr_v = rdp.tbuff_tex->lr_v;
-    FRDP("lr_x: %f, lr_y: %f\n", lr_x, lr_y);
+    WriteTrace(TraceRDP, TraceDebug, "lr_x: %f, lr_y: %f", lr_x, lr_y);
 
     // Make the vertices
     VERTEX v[4] = {
@@ -527,7 +528,7 @@ int CopyTextureBuffer(COLOR_IMAGE & fb_from, COLOR_IMAGE & fb_to)
     rdp.update |= UPDATE_VIEWPORT | UPDATE_SCISSOR;
     if (g_settings->fog && (rdp.flags & FOG_ENABLED))
         grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
-    LRDP("CopyTextureBuffer draw, OK\n");
+    WriteTrace(TraceRDP, TraceDebug, "CopyTextureBuffer draw, OK");
     rdp.tbuff_tex = 0;
     rdp.cur_image = 0;
     return TRUE;
@@ -535,7 +536,7 @@ int CopyTextureBuffer(COLOR_IMAGE & fb_from, COLOR_IMAGE & fb_to)
 
 int CopyDepthBuffer()
 {
-    LRDP("CopyDepthBuffer. ");
+    WriteTrace(TraceRDP, TraceDebug, "CopyDepthBuffer. ");
     float bound = 1024.0f;
     GrLOD_t LOD = GR_LOD_LOG2_1024;
     if (g_settings->scr_res_x > 1024)
@@ -556,7 +557,7 @@ int CopyDepthBuffer()
     float zero = 0.0f;
     float lr_u = 255.5f;
     float lr_v = 255.5f;
-    FRDP("lr_x: %f, lr_y: %f\n", lr_x, lr_y);
+    WriteTrace(TraceRDP, TraceDebug, "lr_x: %f, lr_y: %f", lr_x, lr_y);
 
     // Make the vertices
     VERTEX v[4] = {
@@ -581,7 +582,7 @@ int CopyDepthBuffer()
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE;
     if (g_settings->fog && (rdp.flags & FOG_ENABLED))
         grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
-    LRDP("CopyDepthBuffer draw, OK\n");
+    WriteTrace(TraceRDP, TraceDebug, "CopyDepthBuffer draw, OK");
     rdp.tbuff_tex = 0;
     return TRUE;
 }
@@ -590,7 +591,7 @@ int SwapTextureBuffer()
 {
     if (!rdp.tbuff_tex)
         return FALSE;
-    LRDP("SwapTextureBuffer.");
+    WriteTrace(TraceRDP, TraceDebug, "SwapTextureBuffer.");
     COLOR_IMAGE ci;
     ci.addr = rdp.tbuff_tex->addr;
     ci.format = rdp.tbuff_tex->format;
@@ -602,7 +603,7 @@ int SwapTextureBuffer()
     TBUFF_COLOR_IMAGE * texbuf = AllocateTextureBuffer(ci);
     if (!texbuf)
     {
-        LRDP("Failed!\n");
+        WriteTrace(TraceRDP, TraceDebug, "Failed!");
         return FALSE;
     }
     TexBufSetupCombiner();
@@ -657,7 +658,7 @@ int SwapTextureBuffer()
     {
         grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
     }
-    LRDP("SwapTextureBuffer draw, OK\n");
+    WriteTrace(TraceRDP, TraceDebug, "SwapTextureBuffer draw, OK");
     return TRUE;
 }
 
@@ -683,7 +684,7 @@ int FindTextureBuffer(uint32_t addr, uint16_t width)
 {
     if (rdp.skip_drawing)
         return FALSE;
-    FRDP("FindTextureBuffer. addr: %08lx, width: %d, scale_x: %f\n", addr, width, rdp.scale_x);
+    WriteTrace(TraceRDP, TraceDebug, "FindTextureBuffer. addr: %08lx, width: %d, scale_x: %f", addr, width, rdp.scale_x);
     int found = FALSE;
     uint32_t shift = 0;
     for (int i = 0; i < voodoo.num_tmu && !found; i++)
@@ -709,7 +710,7 @@ int FindTextureBuffer(uint32_t addr, uint16_t width)
                     if (!rdp.cur_image)
                         rdp.cur_tex_buf = index;
                     found = TRUE;
-                    //    FRDP("FindTextureBuffer, found in TMU%d buffer: %d\n", rdp.tbuff_tex->tmu, j);
+                    //    WriteTrace(TraceRDP, TraceDebug, "FindTextureBuffer, found in TMU%d buffer: %d", rdp.tbuff_tex->tmu, j);
                 }
                 else //new texture is loaded into this place, texture buffer is not valid anymore
                 {
@@ -735,11 +736,11 @@ int FindTextureBuffer(uint32_t addr, uint16_t width)
             rdp.tbuff_tex->v_shift = 0;
             rdp.tbuff_tex->u_shift = 0;
         }
-        FRDP("FindTextureBuffer, found, u_shift: %d,  v_shift: %d, format: %s\n", rdp.tbuff_tex->u_shift, rdp.tbuff_tex->v_shift, str_format[rdp.tbuff_tex->format]);
-        //FRDP("Buffer, addr=%08lx, end_addr=%08lx, width: %d, height: %d\n", rdp.tbuff_tex->addr, rdp.tbuff_tex->end_addr, rdp.tbuff_tex->width, rdp.tbuff_tex->height);
+        WriteTrace(TraceRDP, TraceDebug, "FindTextureBuffer, found, u_shift: %d,  v_shift: %d, format: %s", rdp.tbuff_tex->u_shift, rdp.tbuff_tex->v_shift, str_format[rdp.tbuff_tex->format]);
+        //WriteTrace(TraceRDP, TraceDebug, "Buffer, addr=%08lx, end_addr=%08lx, width: %d, height: %d", rdp.tbuff_tex->addr, rdp.tbuff_tex->end_addr, rdp.tbuff_tex->width, rdp.tbuff_tex->height);
         return TRUE;
     }
     rdp.tbuff_tex = 0;
-    LRDP("FindTextureBuffer, not found\n");
+    WriteTrace(TraceRDP, TraceDebug, "FindTextureBuffer, not found");
     return FALSE;
 }

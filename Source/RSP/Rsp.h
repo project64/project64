@@ -64,7 +64,7 @@ typedef struct {
 } PLUGIN_INFO;
 
 typedef struct {
-	HINSTANCE hInst;
+    void * hInst;
     int MemoryBswaped;    /* If this is set to TRUE, then the memory has been pre
                               bswap on a dword (32 bits) boundry */
     uint8_t * RDRAM;
@@ -102,19 +102,19 @@ typedef struct {
 typedef struct {
 	/* Menu */
 	/* Items should have an ID between 5001 and 5100 */
-	HMENU hRSPMenu;
+    void * hRSPMenu;
 	void (*ProcessMenuItem) ( int ID );
 
 	/* Break Points */
     int UseBPoints;
 	char BPPanelName[20];
 	void (*Add_BPoint)      ( void );
-	void (*CreateBPPanel)   ( HWND hDlg, RECT rcBox );
+    void (*CreateBPPanel) (void * hDlg, RECT rcBox);
 	void (*HideBPPanel)     ( void );
 	void (*PaintBPPanel)    ( PAINTSTRUCT ps );
 	void (*ShowBPPanel)     ( void );
-	void (*RefreshBpoints)  ( HWND hList );
-	void (*RemoveBpoint)    ( HWND hList, int index );
+    void (*RefreshBpoints)(void * hList);
+    void (*RemoveBpoint)  (void * hList, int index);
 	void (*RemoveAllBpoint) ( void );
 	
 	/* RSP command Window */
@@ -133,30 +133,30 @@ typedef struct {
 } DEBUG_INFO;
 
 EXPORT void CloseDLL(void);
-EXPORT void DllAbout(HWND hParent);
-EXPORT DWORD DoRspCycles(DWORD Cycles);
+EXPORT void DllAbout(void * hParent);
+EXPORT uint32_t DoRspCycles(uint32_t Cycles);
 EXPORT void GetDllInfo(PLUGIN_INFO * PluginInfo);
 EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo);
-EXPORT void InitiateRSP(RSP_INFO Rsp_Info, DWORD * CycleCount);
+EXPORT void InitiateRSP(RSP_INFO Rsp_Info, uint32_t * CycleCount);
 EXPORT void InitiateRSPDebugger(DEBUG_INFO Debug_Info);
 EXPORT void RomOpen(void);
 EXPORT void RomClosed(void);
-EXPORT void DllConfig(HWND hWnd);
-EXPORT void EnableDebugging(BOOL Enabled);
+EXPORT void DllConfig(void * hWnd);
+EXPORT void EnableDebugging(int Enabled);
 EXPORT void PluginLoaded(void);
 
-DWORD AsciiToHex (char * HexValue);
+uint32_t AsciiToHex(char * HexValue);
 void DisplayError (char * Message, ...);
-int  GetStoredWinPos( char * WinName, DWORD * X, DWORD * Y );
+int GetStoredWinPos(char * WinName, uint32_t * X, uint32_t * Y);
 
 #define InterpreterCPU	0
 #define RecompilerCPU	1
 
 extern int DebuggingEnabled, Profiling, IndvidualBlock, ShowErrors, BreakOnStart, LogRDP, LogX86Code;
-extern DWORD CPUCore;
+extern uint32_t CPUCore;
 extern DEBUG_INFO DebugInfo;
 extern RSP_INFO RSPInfo;
-extern HINSTANCE hinstDLL;
+extern void * hinstDLL;
 
 #if defined(__cplusplus)
 }

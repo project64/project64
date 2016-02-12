@@ -44,7 +44,7 @@
 void uc9_rpdcmd()
 {
     uint32_t a = segoffset(rdp.cmd1) >> 2;
-    FRDP("uc9:rdpcmd addr: %08lx\n", a);
+    WriteTrace(TraceRDP, TraceDebug, "uc9:rdpcmd addr: %08lx", a);
     if (a)
     {
         rdp.LLE = 1;

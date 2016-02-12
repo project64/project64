@@ -61,6 +61,8 @@ void SetupTrace(void)
     TraceSetModuleName(TraceInterface, "Interface");
     TraceSetModuleName(TraceResolution, "Resolution");
     TraceSetModuleName(TraceGlitch, "Glitch");
+    TraceSetModuleName(TraceRDP, "RDP");
+    TraceSetModuleName(TraceTLUT, "TLUT");
 
     char log_dir[260];
     memset(log_dir, 0, sizeof(log_dir));
