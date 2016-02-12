@@ -92,7 +92,7 @@ public:
     // methods for controlled operation:
     MD5();  // simple initializer
     ~MD5();
-    void  update(const unsigned char *input, unsigned int input_length);
+    void  update(const unsigned char *input, uint32_t input_length);
     void  update(FILE *file);
     void  finalize();
 

@@ -35,7 +35,7 @@ void* AllocateAddressSpace(size_t size)
     return VirtualAlloc(NULL, size, MEM_RESERVE | MEM_TOP_DOWN, PAGE_NOACCESS);
 }
 
-bool FreeAddressSpace(void* addr, size_t size)
+bool FreeAddressSpace(void* addr, size_t /*size*/)
 {
     return VirtualFree(addr, 0, MEM_RELEASE) != 0;
 }
