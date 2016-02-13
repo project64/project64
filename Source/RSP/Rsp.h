@@ -146,7 +146,7 @@ EXPORT void EnableDebugging(int Enabled);
 EXPORT void PluginLoaded(void);
 
 uint32_t AsciiToHex(char * HexValue);
-void DisplayError (char * Message, ...);
+void DisplayError(char * Message, ...);
 int GetStoredWinPos(char * WinName, uint32_t * X, uint32_t * Y);
 
 #define InterpreterCPU	0

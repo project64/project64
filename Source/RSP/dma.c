@@ -24,7 +24,9 @@
  *
  */
 
+#ifdef _WIN32
 #include <Windows.h>
+#endif
 #include <stdio.h>
 #include <Common/stdtypes.h>
 
@@ -43,13 +45,13 @@ void SP_DMA_READ (void)
 
 	if (addr > 0x7FFFFF)
 	{
-		MessageBox(NULL,"SP DMA READ\nSP_DRAM_ADDR_REG not in RDRam space","Error",MB_OK);
+        DisplayError("SP DMA READ\nSP_DRAM_ADDR_REG not in RDRam space");
 		return;
 	}
 	
 	if ((*RSPInfo.SP_RD_LEN_REG & 0xFFF) + 1  + (*RSPInfo.SP_MEM_ADDR_REG & 0xFFF) > 0x1000)
 	{
-		MessageBox(NULL,"SP DMA READ\ncould not fit copy in memory segment","Error",MB_OK);
+        DisplayError("SP DMA READ\ncould not fit copy in memory segment");
 		return;
 	}
 
@@ -119,13 +121,13 @@ void SP_DMA_WRITE (void)
 
 	if (addr > 0x7FFFFF)
 	{
-		MessageBox(NULL,"SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space","Error",MB_OK);
+        DisplayError("SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space");
 		return;
 	}
 
 	if ((*RSPInfo.SP_WR_LEN_REG & 0xFFF) + 1  + (*RSPInfo.SP_MEM_ADDR_REG & 0xFFF) > 0x1000)
 	{
-		MessageBox(NULL,"SP DMA WRITE\ncould not fit copy in memory segment","Error",MB_OK);
+        DisplayError("SP DMA WRITE\ncould not fit copy in memory segment");
 		return;
 	}
 

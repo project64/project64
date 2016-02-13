@@ -138,15 +138,19 @@ DWORD AsciiToHex (char * HexValue)
 	return Value;
 }
 
-void DisplayError (char * Message, ...)
+void DisplayError(char* Message, ...)
 {
-	char Msg[400];
-	va_list ap;
+    char Msg[400];
+    va_list ap;
 
 	va_start( ap, Message );
 	vsprintf( Msg, Message, ap );
 	va_end( ap );
-	MessageBox(NULL,Msg,"Error",MB_OK|MB_ICONERROR);
+#ifdef _WIN32
+    MessageBox(NULL, Msg, "Error", MB_OK | MB_ICONERROR);
+#else
+    fputs(&Msg[0], stderr);
+#endif
 }
 
 /******************************************************************
