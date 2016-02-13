@@ -26,6 +26,8 @@
 
 #include <Windows.h>
 #include <stdio.h>
+#include <Common/stdtypes.h>
+
 #include "Rsp.h"
 #include "RSP Registers.h"
 #include "memory.h"
@@ -34,8 +36,8 @@
 
 void SP_DMA_READ (void)
 {
-	DWORD i, j, Length, Skip, Count, End, addr;
-	BYTE *Dest, *Source;
+    uint32_t i, j, Length, Skip, Count, End, addr;
+    uint8_t *Dest, *Source;
 
     addr = (*RSPInfo.SP_DRAM_ADDR_REG) & 0x00FFFFFF;
 
@@ -110,8 +112,8 @@ void SP_DMA_READ (void)
 
 void SP_DMA_WRITE (void)
 {
-	DWORD i, j, Length, Skip, Count, addr;
-	BYTE *Dest, *Source;
+    uint32_t i, j, Length, Skip, Count, addr;
+    uint8_t *Dest, *Source;
 
     addr = (*RSPInfo.SP_DRAM_ADDR_REG) & 0x00FFFFFF;
 
