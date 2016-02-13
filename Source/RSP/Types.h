@@ -35,6 +35,17 @@
  */
 typedef void(*p_func)(void);
 
+/*
+ * `BOOL` is Windows-specific so is going to tend to be avoided.
+ * `int` is the exact replacement.
+ *
+ * However, saying "int" all the time for true/false is a little ambiguous.
+ *
+ * Maybe in the future, with C++ (or C99) rewrites, we can switch to `bool`.
+ * Until then, a simple type definition will help emphasize true/false logic.
+ */
+typedef int Boolean;
+
 typedef union tagUWORD {
     int32_t     W;
     uint32_t    UW;
