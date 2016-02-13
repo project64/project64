@@ -28,6 +28,7 @@
 #include <Windows.h>
 #endif
 #include <stdio.h>
+#include <string.h>
 #include <Common/stdtypes.h>
 
 #include "Rsp.h"
