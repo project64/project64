@@ -29,6 +29,7 @@ extern "C" {
 #endif
 
 #include <Common/stdtypes.h>
+#include "Types.h"
 
 #if defined(_WIN32)
 #define EXPORT          __declspec(dllexport)
@@ -100,6 +101,18 @@ typedef struct {
 } RSP_INFO;
 
 typedef struct {
+    long left, top, right, bottom;
+} rectangle; /* <windows.h> equivalent:  RECT */
+typedef struct {
+    void * hdc;
+    Boolean fErase;
+    rectangle rcPaint;
+    Boolean fRestore;
+    Boolean fIncUpdate;
+    uint8_t rgbReserved[32];
+} window_paint; /* <windows.h> equivalent:  PAINTSTRUCT */
+
+typedef struct {
 	/* Menu */
 	/* Items should have an ID between 5001 and 5100 */
     void * hRSPMenu;
@@ -109,9 +122,9 @@ typedef struct {
     int UseBPoints;
 	char BPPanelName[20];
 	void (*Add_BPoint)      ( void );
-    void (*CreateBPPanel) (void * hDlg, RECT rcBox);
+    void (*CreateBPPanel) (void * hDlg, rectangle rcBox);
 	void (*HideBPPanel)     ( void );
-	void (*PaintBPPanel)    ( PAINTSTRUCT ps );
+    void (*PaintBPPanel)  (window_paint ps);
 	void (*ShowBPPanel)     ( void );
     void (*RefreshBpoints)(void * hList);
     void (*RemoveBpoint)  (void * hList, int index);
