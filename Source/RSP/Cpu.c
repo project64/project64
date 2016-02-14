@@ -33,7 +33,7 @@
 #include "RSP Command.h"
 #include "Recompiler CPU.h"
 #include "memory.h"
-#include "opcode.h"
+#include "OpCode.h"
 #include "log.h"
 #include "Profiling.h"
 #include "breakpoint.h"
