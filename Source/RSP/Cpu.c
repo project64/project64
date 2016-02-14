@@ -41,7 +41,7 @@
 
 UDWORD EleSpec[32], Indx[32];
 OPCODE RSPOpC;
-DWORD *PrgCount, NextInstruction, RSP_Running, RSP_MfStatusCount;
+uint32_t *PrgCount, NextInstruction, RSP_Running, RSP_MfStatusCount;
 
 p_func RSP_Opcode[64];
 p_func RSP_RegImm[32];

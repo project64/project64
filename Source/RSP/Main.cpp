@@ -240,7 +240,7 @@ __declspec(dllexport) void GetRspDebugInfo ( RSPDEBUG_INFO * DebugInfo )
 {
 	if (hRSPMenu == NULL)
 	{
-		hRSPMenu = LoadMenu(hinstDLL,MAKEINTRESOURCE(RspMenu));
+		hRSPMenu = LoadMenu((HINSTANCE)hinstDLL,MAKEINTRESOURCE(RspMenu));
 		FixMenuState();
 	}
 	DebugInfo->hRSPMenu = hRSPMenu;
@@ -435,7 +435,7 @@ void ProcessMenuItem(int ID)
 		}
 		break;
 	case ID_COMPILER:		
-		DialogBox(hinstDLL, "RSPCOMPILER", HWND_DESKTOP, (DLGPROC)CompilerDlgProc);
+		DialogBox((HINSTANCE)hinstDLL, "RSPCOMPILER", HWND_DESKTOP, (DLGPROC)CompilerDlgProc);
 		break;
 	case ID_BREAKONSTARTOFTASK:
 		{

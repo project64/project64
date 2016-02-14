@@ -23,6 +23,7 @@
  * should be forwarded to them so if they want them.
  *
  */
+#include "Rsp.h"
 
 #define MaxBPoints			0x30
 
@@ -34,12 +35,12 @@ BPOINT BPoint[MaxBPoints];
 int	NoOfBpoints;
 
 void Add_BPoint ( void );
-void CreateBPPanel ( HWND hDlg, RECT rcBox );
+void CreateBPPanel ( void * hDlg, rectangle rcBox );
 void HideBPPanel ( void );
-void PaintBPPanel ( PAINTSTRUCT ps );
+void PaintBPPanel ( window_paint ps );
 void ShowBPPanel ( void );
-void RefreshBpoints ( HWND hList );
-void RemoveBpoint ( HWND hList, int index );
+void RefreshBpoints ( void * hList );
+void RemoveBpoint ( void * hList, int index );
 void RemoveAllBpoint ( void );
 
 int  AddRSP_BPoint ( DWORD Location, int Confirm );

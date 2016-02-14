@@ -23,6 +23,7 @@
  * should be forwarded to them so if they want them.
  *
  */
+#pragma once 
 
 #if defined(__cplusplus)
 extern "C" {

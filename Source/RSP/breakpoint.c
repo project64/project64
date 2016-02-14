@@ -99,7 +99,7 @@ int CheckForRSPBPoint ( DWORD Location )
 	return FALSE;
 }
 
-void CreateBPPanel ( HWND hDlg, RECT rcBox )
+void CreateBPPanel ( void * hDlg, rectangle rcBox )
 {
 	if (hRSPLocation != NULL) { return; }
 
@@ -124,7 +124,7 @@ void HideBPPanel ( void )
 	ShowWindow(hRSPLocation,FALSE);
 }
 
-void PaintBPPanel ( PAINTSTRUCT ps )
+void PaintBPPanel ( window_paint ps )
 {
 	TextOut( ps.hdc, 29,60,"Break when the Program Counter equals",37);
 	TextOut( ps.hdc, 59,85,"0x",2);
@@ -135,7 +135,7 @@ void ShowBPPanel ( void )
 	ShowWindow(hRSPLocation,TRUE);
 }
 
-void RefreshBpoints ( HWND hList )
+void RefreshBpoints ( void * hList )
 {
 	char Message[100];
 	LRESULT location;
