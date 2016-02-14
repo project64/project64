@@ -24,23 +24,25 @@
  *
  */
 
+#ifdef _WIN32
 #include <Windows.h>
 #include <windowsx.h>
 #include <commctrl.h>
+#endif
 #include <stdio.h>
 
-#include <common/StdString.h>
+#include <Common/StdString.h>
 #include "../Settings/Settings.h"
 
 extern "C" {
 #include "Rsp.h"
-#include "CPU.h"
+#include "Cpu.h"
 #include "Recompiler CPU.h"
-#include "Rsp Command.h"
-#include "Rsp Registers.h"
+#include "RSP Command.h"
+#include "RSP Registers.h"
 #include "memory.h"
 #include "breakpoint.h"
-#include "profiling.h"
+#include "Profiling.h"
 #include "log.h"
 #include "resource.h"
 #include "Version.h"
@@ -57,13 +59,13 @@ BOOL DebuggingEnabled = FALSE,
 	BreakOnStart = FALSE,
 	LogRDP = FALSE,
 	LogX86Code = FALSE;
-DWORD CPUCore = RecompilerCPU;
+uint32_t CPUCore = RecompilerCPU;
 
 HANDLE hMutex = NULL;
 
 DEBUG_INFO DebugInfo;
 RSP_INFO RSPInfo;
-HINSTANCE hinstDLL;
+void * hinstDLL;
 HMENU hRSPMenu = NULL;
 
 extern BYTE * pLastSecondary;
@@ -96,14 +98,15 @@ const char * AboutMsg ( void )
 }
 
 /************ Functions ***********/
-DWORD AsciiToHex (char * HexValue)
+uint32_t AsciiToHex(char * HexValue)
 {
-	DWORD Value = 0;
+    size_t Finish, Count;
+    uint32_t Value = 0;
 
-	size_t Finish = strlen(HexValue);
+    Finish = strlen(HexValue);
 	if (Finish > 8 ) { Finish = 8; }
 
-	for (size_t Count = 0; Count < Finish; Count++)
+    for (Count = 0; Count < Finish; Count++)
 	{
 		Value = (Value << 4);
 		switch( HexValue[Count] )

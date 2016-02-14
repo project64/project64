@@ -24,7 +24,7 @@
  *
  */
 
-#include "opcode.h"
+#include "OpCode.h"
 
 extern UDWORD EleSpec[32], Indx[32];
 
