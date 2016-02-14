@@ -36,6 +36,7 @@
 #include "dma.h"
 #include "log.h"
 #include "x86.h"
+#include "Types.h"
 
 #include <float.h>
 /*
@@ -55,7 +56,7 @@
 #endif
 
 extern UWORD32 Recp, RecpResult, SQroot, SQrootResult;
-extern BOOL AudioHle, GraphicsHle;
+extern Boolean AudioHle, GraphicsHle;
 
 /************************* OpCode functions *************************/
 void RSP_Opcode_SPECIAL ( void ) {

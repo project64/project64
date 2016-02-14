@@ -38,6 +38,7 @@
 #include "Profiling.h"
 #include "breakpoint.h"
 #include "x86.h"
+#include "Types.h"
 
 UDWORD EleSpec[32], Indx[32];
 OPCODE RSPOpC;
@@ -194,7 +195,7 @@ DWORD RunRecompilerCPU (DWORD Cycles);
 
 __declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles )
 {
-	extern BOOL AudioHle, GraphicsHle;
+    extern Boolean AudioHle, GraphicsHle;
 	DWORD TaskType = *(DWORD*)(RSPInfo.DMEM + 0xFC0);
 		
 /*	if (*RSPInfo.SP_STATUS_REG & SP_STATUS_SIG0)

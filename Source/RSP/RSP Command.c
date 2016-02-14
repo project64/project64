@@ -35,6 +35,7 @@
 #include "RSP Command.h"
 #include "memory.h"
 #include "breakpoint.h"
+#include "Types.h"
 
 #define RSP_MaxCommandLines		30
 
@@ -70,7 +71,7 @@ RSPCOMMANDLINE RSPCommandLine[30];
 HWND RSPCommandshWnd, hList, hAddress, hFunctionlist, hGoButton, hBreakButton,
 	hStepButton, hSkipButton, hBPButton, hR4300iRegisters, hR4300iDebugger, hRSPRegisters,
 	hMemory, hScrlBar;
-BOOL InRSPCommandsWindow;
+Boolean InRSPCommandsWindow;
 char CommandName[100];
 DWORD Stepping_Commands, WaitingForStep;
 
@@ -131,7 +132,7 @@ int DisplayRSPCommand (DWORD location, int InsertPos)
 {
 	uint32_t OpCode;
 	DWORD LinesUsed = 1, status;
-	BOOL Redraw = FALSE;
+    Boolean Redraw = FALSE;
 
 	RSP_LW_IMEM(location, &OpCode);
 
