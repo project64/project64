@@ -45,6 +45,10 @@ typedef void(*p_func)(void);
  * Until then, a simple type definition will help emphasize true/false logic.
  */
 typedef int Boolean;
+#if !defined(FALSE) && !defined(TRUE)
+#define FALSE           0
+#define TRUE            1
+#endif
 
 typedef union tagUWORD {
     int32_t     W;

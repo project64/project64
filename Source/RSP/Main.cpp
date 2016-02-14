@@ -46,19 +46,20 @@ extern "C" {
 #include "log.h"
 #include "resource.h"
 #include "Version.h"
+#include "Types.h"
 
 void ClearAllx86Code(void);
 void ProcessMenuItem(int ID);
-BOOL CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+Boolean CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-BOOL GraphicsHle = TRUE, AudioHle, ConditionalMove;
-BOOL DebuggingEnabled = FALSE, 
-	Profiling, 
-	IndvidualBlock, 
-	ShowErrors, 
-	BreakOnStart = FALSE,
-	LogRDP = FALSE,
-	LogX86Code = FALSE;
+Boolean GraphicsHle = TRUE, AudioHle, ConditionalMove;
+Boolean DebuggingEnabled = FALSE, 
+        Profiling, 
+        IndvidualBlock, 
+        ShowErrors, 
+        BreakOnStart = FALSE,
+        LogRDP = FALSE,
+        LogX86Code = FALSE;
 uint32_t CPUCore = RecompilerCPU;
 
 HANDLE hMutex = NULL;
@@ -180,11 +181,34 @@ __declspec(dllexport) void DllAbout ( HWND hParent )
 	MessageBox(hParent,AboutMsg(),"About",MB_OK | MB_ICONINFORMATION );
 }
 
-BOOL WINAPI DllMain(  HINSTANCE hinst, DWORD /*fdwReason*/, LPVOID /*lpvReserved*/ )
+#ifdef _WIN32
+BOOL WINAPI DllMain(HINSTANCE hinst, DWORD /*fdwReason*/, LPVOID /*lpvReserved*/)
 {
-	hinstDLL = hinst;
-	return TRUE;
+    hinstDLL = hinst;
+    return TRUE;
 }
+
+void FixMenuState(void)
+{
+    EnableMenuItem(hRSPMenu, ID_RSPCOMMANDS,MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
+    EnableMenuItem(hRSPMenu, ID_RSPREGISTERS,MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
+    EnableMenuItem(hRSPMenu, ID_PROFILING_RESETSTATS, MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
+    EnableMenuItem(hRSPMenu, ID_PROFILING_GENERATELOG, MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
+    EnableMenuItem(hRSPMenu, ID_DUMP_RSPCODE, MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
+    EnableMenuItem(hRSPMenu, ID_DUMP_DMEM, MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
+
+    CheckMenuItem(hRSPMenu, ID_CPUMETHOD_RECOMPILER, MF_BYCOMMAND | (CPUCore == RecompilerCPU  ?  MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_CPUMETHOD_INTERPT,    MF_BYCOMMAND | (CPUCore == InterpreterCPU ?  MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND | (BreakOnStart ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND | (LogRDP ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND | (LogX86Code ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_PROFILING_ON, MF_BYCOMMAND | (Profiling ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_PROFILING_OFF, MF_BYCOMMAND | (Profiling ? MFS_UNCHECKED : MF_CHECKED));
+    CheckMenuItem(hRSPMenu, ID_PROFILING_LOGINDIVIDUALBLOCKS, MF_BYCOMMAND | (IndvidualBlock ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_SHOWCOMPILERERRORS, MF_BYCOMMAND | (ShowErrors ? MFS_CHECKED : MF_UNCHECKED));
+}
+#endif
+
 /******************************************************************
   Function: GetDllInfo
   Purpose:  This function allows the emulator to gather information
@@ -215,26 +239,6 @@ __declspec(dllexport) void GetDllInfo ( PLUGIN_INFO * PluginInfo )
             filled by the function. (see def above)
   output:   none
 *******************************************************************/ 
-
-void FixMenuState (void) 
-{
-	EnableMenuItem(hRSPMenu,ID_RSPCOMMANDS,MF_BYCOMMAND| (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
-	EnableMenuItem(hRSPMenu,ID_RSPREGISTERS,MF_BYCOMMAND| (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
-	EnableMenuItem(hRSPMenu,ID_PROFILING_RESETSTATS,MF_BYCOMMAND| (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
-	EnableMenuItem(hRSPMenu,ID_PROFILING_GENERATELOG,MF_BYCOMMAND| (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
-	EnableMenuItem(hRSPMenu,ID_DUMP_RSPCODE,MF_BYCOMMAND| (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
-	EnableMenuItem(hRSPMenu,ID_DUMP_DMEM,MF_BYCOMMAND| (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
-
-	CheckMenuItem( hRSPMenu, ID_CPUMETHOD_RECOMPILER, MF_BYCOMMAND | (CPUCore == RecompilerCPU  ?  MFS_CHECKED : MF_UNCHECKED ));
-	CheckMenuItem( hRSPMenu, ID_CPUMETHOD_INTERPT,    MF_BYCOMMAND | (CPUCore == InterpreterCPU ?  MFS_CHECKED : MF_UNCHECKED ));
-	CheckMenuItem( hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND | (BreakOnStart ? MFS_CHECKED : MF_UNCHECKED ));
-	CheckMenuItem( hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND | (LogRDP ? MFS_CHECKED : MF_UNCHECKED ));
-	CheckMenuItem( hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND | (LogX86Code ? MFS_CHECKED : MF_UNCHECKED ));
-	CheckMenuItem( hRSPMenu, ID_PROFILING_ON, MF_BYCOMMAND | (Profiling ? MFS_CHECKED : MF_UNCHECKED ));
-	CheckMenuItem( hRSPMenu, ID_PROFILING_OFF, MF_BYCOMMAND | (Profiling ? MFS_UNCHECKED : MF_CHECKED ));
-	CheckMenuItem( hRSPMenu, ID_PROFILING_LOGINDIVIDUALBLOCKS, MF_BYCOMMAND | (IndvidualBlock ? MFS_CHECKED : MF_UNCHECKED ));
-	CheckMenuItem( hRSPMenu, ID_SHOWCOMPILERERRORS,MF_BYCOMMAND | (ShowErrors ? MFS_CHECKED : MF_UNCHECKED ));
-}
 
 __declspec(dllexport) void GetRspDebugInfo ( RSPDEBUG_INFO * DebugInfo ) 
 {
@@ -563,6 +567,7 @@ __declspec(dllexport) void RomClosed (void) {
 #endif
 }
 
+#ifdef _WIN32
 static BOOL GetBooleanCheck(HWND hDlg, DWORD DialogID)
 {
 	return (IsDlgButtonChecked(hDlg, DialogID) == BST_CHECKED) ? TRUE : FALSE;
@@ -691,6 +696,7 @@ BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam
 	}
 	return TRUE;
 }
+#endif
 
 /*__declspec(dllexport) void DllConfig (HWND hWnd)
 {
@@ -698,7 +704,7 @@ BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam
 	DialogBox(hinstDLL, "RSPCONFIG", GetForegroundWindow(), ConfigDlgProc);
 }*/
 
-__declspec(dllexport) void EnableDebugging (BOOL Enabled)
+__declspec(dllexport) void EnableDebugging(Boolean Enabled)
 {
 	DebuggingEnabled = Enabled;
 	if (DebuggingEnabled)
