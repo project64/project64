@@ -1407,7 +1407,6 @@ output:   none
 *******************************************************************/
 void CALL GetDllInfo(PLUGIN_INFO * PluginInfo)
 {
-    WriteTrace(TraceGlide64, TraceDebug, "-");
     PluginInfo->Version = 0x0104;     // Set to 0x0104
     PluginInfo->Type = PLUGIN_TYPE_GFX;  // Set to PLUGIN_TYPE_GFX
 #ifdef _DEBUG

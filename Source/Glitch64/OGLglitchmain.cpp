@@ -538,22 +538,6 @@ unsigned short depthBuffer[2048 * 2048];
 
 //#define VOODOO1
 
-void display_warning(const char *text, ...)
-{
-    static int first_message = 100;
-    if (first_message)
-    {
-        char buf[1000];
-
-        va_list ap;
-
-        va_start(ap, text);
-        vsprintf(buf, text, ap);
-        va_end(ap);
-        first_message--;
-    }
-}
-
 #ifdef _WIN32
 void display_error()
 {
@@ -572,7 +556,7 @@ grSstOrigin(GrOriginLocation_t  origin)
 {
     WriteTrace(TraceGlitch, TraceDebug, "origin = %d", origin);
     if (origin != GR_ORIGIN_UPPER_LEFT)
-        display_warning("grSstOrigin : %x", origin);
+        WriteTrace(TraceGlitch, TraceWarning, "grSstOrigin : %x", origin);
 }
 
 FX_ENTRY void FX_CALL
@@ -864,7 +848,7 @@ int                  nAuxBuffers)
             height = 2048;
             break;
         default:
-            display_warning("unknown SstWinOpen resolution : %x", screen_resolution);
+            WriteTrace(TraceGlitch, TraceWarning, "unknown SstWinOpen resolution : %x", screen_resolution);
         }
     }
 
@@ -910,7 +894,7 @@ int                  nAuxBuffers)
         // primary monitor only
         if (!g_FullScreenResolutions.changeDisplaySettings(screen_resolution))
         {
-            display_warning("can't change to fullscreen mode");
+            WriteTrace(TraceGlitch, TraceWarning, "can't change to fullscreen mode");
         }
 
         windowedMenu = GetMenu(hwnd_win);
@@ -935,7 +919,7 @@ int                  nAuxBuffers)
 
     if ((hDC = GetDC(hwnd_win)) == NULL)
     {
-        display_warning("GetDC on main window failed");
+        WriteTrace(TraceGlitch, TraceWarning, "GetDC on main window failed");
         return FXFALSE;
     }
 
@@ -946,18 +930,18 @@ int                  nAuxBuffers)
     }
     if (pfm == 0)
     {
-        display_warning("ChoosePixelFormat failed");
+        WriteTrace(TraceGlitch, TraceWarning, "ChoosePixelFormat failed");
         return FXFALSE;
     }
     if (SetPixelFormat(hDC, pfm, &pfd) == 0)
     {
-        display_warning("SetPixelFormat failed");
+        WriteTrace(TraceGlitch, TraceWarning, "SetPixelFormat failed");
         return FXFALSE;
     }
 
     if ((hGLRC = wglCreateContext(hDC)) == 0)
     {
-        display_warning("wglCreateContext failed!");
+        WriteTrace(TraceGlitch, TraceWarning, "wglCreateContext failed!");
         grSstWinClose(0);
         return FXFALSE;
     }
@@ -968,7 +952,7 @@ int                  nAuxBuffers)
     {
         if (!wglMakeCurrent(hDC, hGLRC))
         {
-            display_warning("wglMakeCurrent failed!");
+            WriteTrace(TraceGlitch, TraceWarning, "wglMakeCurrent failed!");
             grSstWinClose(0);
             return FXFALSE;
         }
@@ -982,7 +966,7 @@ int                  nAuxBuffers)
 
     /* Initialize SDL */
     printf("(II) Initializing SDL video subsystem...\n");
-    if(SDL_InitSubSystem(SDL_INIT_VIDEO) == -1)
+    if (SDL_InitSubSystem(SDL_INIT_VIDEO) == -1)
     {
         printf("(EE) Error initializing SDL video subsystem: %s\n", SDL_GetError());
         return false;
@@ -1058,18 +1042,18 @@ int                  nAuxBuffers)
     glViewport(0, viewport_offset, width, height);
 #endif // _WIN32
     lfb_color_fmt = color_format;
-    if (origin_location != GR_ORIGIN_UPPER_LEFT) display_warning("origin must be in upper left corner");
-    if (nColBuffers != 2) display_warning("number of color buffer is not 2");
-    if (nAuxBuffers != 1) display_warning("number of auxiliary buffer is not 1");
+    if (origin_location != GR_ORIGIN_UPPER_LEFT) WriteTrace(TraceGlitch, TraceWarning, "origin must be in upper left corner");
+    if (nColBuffers != 2) WriteTrace(TraceGlitch, TraceWarning, "number of color buffer is not 2");
+    if (nAuxBuffers != 1) WriteTrace(TraceGlitch, TraceWarning, "number of auxiliary buffer is not 1");
 
     if (isExtensionSupported("GL_ARB_texture_env_combine") == 0 &&
         isExtensionSupported("GL_EXT_texture_env_combine") == 0 &&
         show_warning)
-        display_warning("Your video card doesn't support GL_ARB_texture_env_combine extension");
+        WriteTrace(TraceGlitch, TraceWarning, "Your video card doesn't support GL_ARB_texture_env_combine extension");
     if (isExtensionSupported("GL_ARB_multitexture") == 0 && show_warning)
-        display_warning("Your video card doesn't support GL_ARB_multitexture extension");
+        WriteTrace(TraceGlitch, TraceWarning, "Your video card doesn't support GL_ARB_multitexture extension");
     if (isExtensionSupported("GL_ARB_texture_mirrored_repeat") == 0 && show_warning)
-        display_warning("Your video card doesn't support GL_ARB_texture_mirrored_repeat extension");
+        WriteTrace(TraceGlitch, TraceWarning, "Your video card doesn't support GL_ARB_texture_mirrored_repeat extension");
     show_warning = 0;
 
 #ifdef _WIN32
@@ -1084,7 +1068,7 @@ int                  nAuxBuffers)
 
     nbTextureUnits = 0;
     glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, &nbTextureUnits);
-    if (nbTextureUnits == 1) display_warning("You need a video card that has at least 2 texture units");
+    if (nbTextureUnits == 1) WriteTrace(TraceGlitch, TraceWarning, "You need a video card that has at least 2 texture units");
 
     nbAuxBuffers = 0;
     glGetIntegerv(GL_AUX_BUFFERS, &nbAuxBuffers);
@@ -1204,9 +1188,9 @@ int                  nAuxBuffers)
     }
 
     if (isExtensionSupported("GL_EXT_texture_compression_s3tc") == 0 && show_warning)
-        display_warning("Your video card doesn't support GL_EXT_texture_compression_s3tc extension");
+        WriteTrace(TraceGlitch, TraceWarning, "Your video card doesn't support GL_EXT_texture_compression_s3tc extension");
     if (isExtensionSupported("GL_3DFX_texture_compression_FXT1") == 0 && show_warning)
-        display_warning("Your video card doesn't support GL_3DFX_texture_compression_FXT1 extension");
+        WriteTrace(TraceGlitch, TraceWarning, "Your video card doesn't support GL_3DFX_texture_compression_FXT1 extension");
 
 #ifdef _WIN32
     glCompressedTexImage2DARB = (PFNGLCOMPRESSEDTEXIMAGE2DPROC)wglGetProcAddress("glCompressedTexImage2DARB");
@@ -1315,7 +1299,7 @@ int                  nAuxBuffers)
         glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGBA, 16, 16, 0, GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV, NULL);
         glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &ifmt);
         if (ifmt != GL_RGB5_A1) {
-            display_warning("ATI SUCKS %x\n", ifmt);
+            WriteTrace(TraceGlitch, TraceWarning, "ATI SUCKS %x\n", ifmt);
             ati_sucks = 1;
         }
         else
@@ -1362,7 +1346,7 @@ grSstWinClose(GrContext_t context)
 
     if (clear_texbuff)
     {
-        for (i=0; i<nb_fb; i++)
+        for (i = 0; i < nb_fb; i++)
         {
             glDeleteTextures( 1, &(fbs[i].texid) );
             glDeleteFramebuffersEXT(1, &(fbs[i].fbid));
@@ -1385,7 +1369,7 @@ grSstWinClose(GrContext_t context)
         wglMakeCurrent(hDC, NULL);
         wglDeleteContext(hGLRC);
         hGLRC = NULL;
-    }
+        }
     if (fullscreen)
     {
         ChangeDisplaySettings(NULL, 0);
@@ -1404,7 +1388,7 @@ grSstWinClose(GrContext_t context)
     m_pScreen = NULL;
 #endif
     return FXTRUE;
-}
+    }
 
 FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
     FxU32 				startAddress,
@@ -1418,7 +1402,7 @@ FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
     static int fbs_init = 0;
 
     WriteTrace(TraceGlitch, TraceDebug, "tmu: %d startAddress: %d lodmin: %d lodmax: %d aspect: %d fmt: %d evenOdd: %d", tmu, startAddress, lodmin, lodmax, aspect, fmt, evenOdd);
-    if (lodmin != lodmax) display_warning("grTextureBufferExt : loading more than one LOD");
+    if (lodmin != lodmax) WriteTrace(TraceGlitch, TraceWarning, "grTextureBufferExt : loading more than one LOD");
     if (!use_fbo) {
         if (!render_to_texture) { //initialization
             return;
@@ -1785,7 +1769,7 @@ grGetProcAddress(char *procName)
         return (GrProc)grQueryResolutionsExt;
     if (!strcmp(procName, "grGetGammaTableExt"))
         return (GrProc)grGetGammaTableExt;
-    display_warning("grGetProcAddress : %s", procName);
+    WriteTrace(TraceGlitch, TraceWarning, "grGetProcAddress : %s", procName);
     return 0;
 }
 
@@ -1902,7 +1886,7 @@ grGet(FxU32 pname, FxU32 plength, FxI32 *params)
         return 4;
         break;
     default:
-        display_warning("unknown pname in grGet : %x", pname);
+        WriteTrace(TraceGlitch, TraceWarning, "unknown pname in grGet : %x", pname);
     }
     return 0;
 }
@@ -1944,7 +1928,7 @@ grGetString(FxU32 pname)
     }
     break;
     default:
-        display_warning("unknown grGetString selector : %x", pname);
+        WriteTrace(TraceGlitch, TraceWarning, "unknown grGetString selector : %x", pname);
     }
     return NULL;
 }
@@ -2223,7 +2207,7 @@ grRenderBuffer(GrBuffer_t buffer)
     render_to_texture = 1;
     break;
     default:
-        display_warning("grRenderBuffer : unknown buffer : %x", buffer);
+        WriteTrace(TraceGlitch, TraceWarning, "grRenderBuffer : unknown buffer : %x", buffer);
     }
     grDisplayGLError("grRenderBuffer");
 }
@@ -2272,7 +2256,7 @@ grBufferClear(GrColor_t color, GrAlpha_t alpha, FxU32 depth)
             alpha / 255.0f);
         break;
     default:
-        display_warning("grBufferClear: unknown color format : %x", lfb_color_fmt);
+        WriteTrace(TraceGlitch, TraceWarning, "grBufferClear: unknown color format : %x", lfb_color_fmt);
     }
 
     if (w_buffer_mode)
@@ -2295,7 +2279,7 @@ grBufferSwap(FxU32 swap_interval)
     WriteTrace(TraceGlitch, TraceDebug, "swap_interval: %d", swap_interval);
     //printf("swap\n");
     if (render_to_texture) {
-        display_warning("swap while render_to_texture\n");
+        WriteTrace(TraceGlitch, TraceWarning, "swap while render_to_texture\n");
         return;
     }
 
@@ -2326,7 +2310,7 @@ grBufferSwap(FxU32 swap_interval)
             case 'w': {
                 static int wireframe;
                 wireframe = !wireframe;
-                glPolygonMode(GL_FRONT_AND_BACK, wireframe? GL_LINE : GL_FILL);
+                glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
                 break;
             }
             }
@@ -2346,7 +2330,7 @@ GrLfbInfo_t *info)
     WriteTrace(TraceGlitch, TraceDebug, "type: %d buffer: %d writeMode: %d origin: %d pixelPipeline: %d", type, buffer, writeMode, origin, pixelPipeline);
     if (type == GR_LFB_WRITE_ONLY)
     {
-        display_warning("grLfbLock : write only");
+        WriteTrace(TraceGlitch, TraceWarning, "grLfbLock : write only");
     }
     else
     {
@@ -2362,7 +2346,7 @@ GrLfbInfo_t *info)
             glReadBuffer(GL_BACK);
             break;
         default:
-            display_warning("grLfbLock : unknown buffer : %x", buffer);
+            WriteTrace(TraceGlitch, TraceWarning, "grLfbLock : unknown buffer : %x", buffer);
         }
 
         if (buffer != GR_BUFFER_AUXBUFFER)
@@ -2409,7 +2393,7 @@ GrLfbInfo_t *info)
 
     grDisplayGLError("grLfbLock");
     return FXTRUE;
-}
+            }
 
 FX_ENTRY FxBool FX_CALL
 grLfbUnlock(GrLock_t type, GrBuffer_t buffer)
@@ -2417,7 +2401,7 @@ grLfbUnlock(GrLock_t type, GrBuffer_t buffer)
     WriteTrace(TraceGlitch, TraceDebug, "type: %d, buffer: %d", type, buffer);
     if (type == GR_LFB_WRITE_ONLY)
     {
-        display_warning("grLfbUnlock : write only");
+        WriteTrace(TraceGlitch, TraceWarning, "grLfbUnlock : write only");
     }
     return FXTRUE;
 }
@@ -2446,7 +2430,7 @@ FxU32 dst_stride, void *dst_data)
         glReadBuffer(current_buffer);
         break;*/
     default:
-        display_warning("grReadRegion : unknown buffer : %x", src_buffer);
+        WriteTrace(TraceGlitch, TraceWarning, "grReadRegion : unknown buffer : %x", src_buffer);
     }
 
     if (src_buffer != GR_BUFFER_AUXBUFFER)
@@ -2517,7 +2501,7 @@ FxI32 src_stride, void *src_data)
         glDrawBuffer(current_buffer);
         break;
     default:
-        display_warning("grLfbWriteRegion : unknown buffer : %x", dst_buffer);
+        WriteTrace(TraceGlitch, TraceWarning, "grLfbWriteRegion : unknown buffer : %x", dst_buffer);
     }
 
     if (dst_buffer != GR_BUFFER_AUXBUFFER)
@@ -2570,7 +2554,7 @@ FxI32 src_stride, void *src_data)
             }
             break;
         default:
-            display_warning("grLfbWriteRegion : unknown format : %d", src_format);
+            WriteTrace(TraceGlitch, TraceWarning, "grLfbWriteRegion : unknown format : %d", src_format);
         }
 
 #ifdef VPDEBUG
@@ -2602,10 +2586,10 @@ FxI32 src_stride, void *src_data)
         float *buf = (float*)malloc(src_width*(src_height + (viewport_offset))*sizeof(float));
 
         if (src_format != GR_LFBWRITEMODE_ZA16)
-            display_warning("unknown depth buffer write format:%x", src_format);
+            WriteTrace(TraceGlitch, TraceWarning, "unknown depth buffer write format:%x", src_format);
 
         if (dst_x || dst_y)
-            display_warning("dst_x:%d, dst_y:%d\n", dst_x, dst_y);
+            WriteTrace(TraceGlitch, TraceWarning, "dst_x:%d, dst_y:%d\n", dst_x, dst_y);
 
         for (j = 0; j < src_height; j++)
         {
@@ -2620,7 +2604,7 @@ FxI32 src_stride, void *src_data)
         if (dumping) {
             unsigned char * buf2 = (unsigned char *)malloc(src_width*(src_height + (viewport_offset)));
             for (i = 0; i < src_width*src_height; i++)
-                buf2[i] = buf[i]*255.0f;
+                buf2[i] = buf[i] * 255.0f;
             ilTexImage(src_width, src_height, 1, 1, IL_LUMINANCE, IL_UNSIGNED_BYTE, buf2);
             char name[128];
             static int id;
@@ -2646,7 +2630,7 @@ FxI32 src_stride, void *src_data)
 
     grDisplayGLError("grLfbWriteRegion");
     return FXTRUE;
-}
+    }
 
 /* wrapper-specific glide extensions */
 
@@ -2676,8 +2660,8 @@ FX_ENTRY FxBool FX_CALL grKeyPressedExt(FxU32 key)
     }
     else
     {
-        Uint8 *keystates = SDL_GetKeyState( NULL );
-        if( keystates[ key ] )
+        Uint8 *keystates = SDL_GetKeyState(NULL);
+        if (keystates[key])
         {
             return 1;
         }
@@ -2708,14 +2692,14 @@ grQueryResolutions(const GrResolution *resTemplate, GrResolution *output)
     int i;
     int n = 0;
     WriteTrace(TraceGlitch, TraceDebug, "-");
-    display_warning("grQueryResolutions");
+    WriteTrace(TraceGlitch, TraceWarning, "grQueryResolutions");
     if ((unsigned int)resTemplate->resolution != GR_QUERY_ANY)
     {
         res_inf = res_sup = resTemplate->resolution;
     }
-    if ((unsigned int)resTemplate->refresh == GR_QUERY_ANY) display_warning("querying any refresh rate");
-    if ((unsigned int)resTemplate->numAuxBuffers == GR_QUERY_ANY) display_warning("querying any numAuxBuffers");
-    if ((unsigned int)resTemplate->numColorBuffers == GR_QUERY_ANY) display_warning("querying any numColorBuffers");
+    if ((unsigned int)resTemplate->refresh == GR_QUERY_ANY) WriteTrace(TraceGlitch, TraceWarning, "querying any refresh rate");
+    if ((unsigned int)resTemplate->numAuxBuffers == GR_QUERY_ANY) WriteTrace(TraceGlitch, TraceWarning, "querying any numAuxBuffers");
+    if ((unsigned int)resTemplate->numColorBuffers == GR_QUERY_ANY) WriteTrace(TraceGlitch, TraceWarning, "querying any numColorBuffers");
 
     if (output == NULL) return res_sup - res_inf + 1;
     for (i = res_inf; i <= res_sup; i++)
@@ -2732,7 +2716,7 @@ grQueryResolutions(const GrResolution *resTemplate, GrResolution *output)
 FX_ENTRY FxBool FX_CALL
 grReset(FxU32 /*what*/)
 {
-    display_warning("grReset");
+    WriteTrace(TraceGlitch, TraceWarning, "grReset");
     return 1;
 }
 
@@ -2755,13 +2739,13 @@ grDisable(GrEnableMode_t mode)
 FX_ENTRY void FX_CALL
 grDisableAllEffects(void)
 {
-    display_warning("grDisableAllEffects");
+    WriteTrace(TraceGlitch, TraceWarning, "grDisableAllEffects");
 }
 
 FX_ENTRY void FX_CALL
 grErrorSetCallback(GrErrorCallbackFnc_t /*fnc*/)
 {
-    display_warning("grErrorSetCallback");
+    WriteTrace(TraceGlitch, TraceWarning, "grErrorSetCallback");
 }
 
 FX_ENTRY void FX_CALL
@@ -2782,7 +2766,7 @@ FX_ENTRY void FX_CALL
 grTexMultibase(GrChipID_t /*tmu*/,
 FxBool     /*enable*/)
 {
-    display_warning("grTexMultibase");
+    WriteTrace(TraceGlitch, TraceWarning, "grTexMultibase");
 }
 
 FX_ENTRY void FX_CALL
@@ -2790,7 +2774,7 @@ grTexMipMapMode(GrChipID_t    /*tmu*/,
 GrMipMapMode_t /*mode*/,
 FxBool         /*lodBlend*/)
 {
-    display_warning("grTexMipMapMode");
+    WriteTrace(TraceGlitch, TraceWarning, "grTexMipMapMode");
 }
 
 FX_ENTRY void FX_CALL
@@ -2799,14 +2783,14 @@ void      * /*data*/,
 int         /*start*/,
 int         /*end*/)
 {
-    display_warning("grTexDownloadTablePartial");
+    WriteTrace(TraceGlitch, TraceWarning, "grTexDownloadTablePartial");
 }
 
 FX_ENTRY void FX_CALL
 grTexDownloadTable(GrTexTable_t /*type*/,
 void        * /*data*/)
 {
-    display_warning("grTexDownloadTable");
+    WriteTrace(TraceGlitch, TraceWarning, "grTexDownloadTable");
 }
 
 FX_ENTRY FxBool FX_CALL
@@ -2821,7 +2805,7 @@ void *            /*data*/,
 int               /*start*/,
 int               /*end*/)
 {
-    display_warning("grTexDownloadMipMapLevelPartial");
+    WriteTrace(TraceGlitch, TraceWarning, "grTexDownloadMipMapLevelPartial");
     return 1;
 }
 
@@ -2835,37 +2819,37 @@ GrTextureFormat_t /*format*/,
 FxU32             /*evenOdd*/,
 void            * /*data*/)
 {
-    display_warning("grTexDownloadMipMapLevel");
+    WriteTrace(TraceGlitch, TraceWarning, "grTexDownloadMipMapLevel");
 }
 
 FX_ENTRY void FX_CALL
 grTexNCCTable(GrNCCTable_t /*table*/)
 {
-    display_warning("grTexNCCTable");
+    WriteTrace(TraceGlitch, TraceWarning, "grTexNCCTable");
 }
 
 FX_ENTRY void FX_CALL
 grViewport(FxI32 /*x*/, FxI32 /*y*/, FxI32 /*width*/, FxI32 /*height*/)
 {
-    display_warning("grViewport");
+    WriteTrace(TraceGlitch, TraceWarning, "grViewport");
 }
 
 FX_ENTRY void FX_CALL
 grDepthRange(FxFloat /*n*/, FxFloat /*f*/)
 {
-    display_warning("grDepthRange");
+    WriteTrace(TraceGlitch, TraceWarning, "grDepthRange");
 }
 
 FX_ENTRY void FX_CALL
 grSplash(float /*x*/, float /*y*/, float /*width*/, float /*height*/, FxU32 /*frame*/)
 {
-    display_warning("grSplash");
+    WriteTrace(TraceGlitch, TraceWarning, "grSplash");
 }
 
 FX_ENTRY FxBool FX_CALL
 grSelectContext(GrContext_t /*context*/)
 {
-    display_warning("grSelectContext");
+    WriteTrace(TraceGlitch, TraceWarning, "grSelectContext");
     return 1;
 }
 
@@ -2875,61 +2859,61 @@ const void * /*a*/, const void * /*b*/, const void * /*c*/,
 FxBool /*ab_antialias*/, FxBool /*bc_antialias*/, FxBool /*ca_antialias*/
 )
 {
-    display_warning("grAADrawTriangle");
+    WriteTrace(TraceGlitch, TraceWarning, "grAADrawTriangle");
 }
 
 FX_ENTRY void FX_CALL
 grAlphaControlsITRGBLighting(FxBool /*enable*/)
 {
-    display_warning("grAlphaControlsITRGBLighting");
+    WriteTrace(TraceGlitch, TraceWarning, "grAlphaControlsITRGBLighting");
 }
 
 FX_ENTRY void FX_CALL
 grGlideSetVertexLayout(const void * /*layout*/)
 {
-    display_warning("grGlideSetVertexLayout");
+    WriteTrace(TraceGlitch, TraceWarning, "grGlideSetVertexLayout");
 }
 
 FX_ENTRY void FX_CALL
 grGlideGetVertexLayout(void * /*layout*/)
 {
-    display_warning("grGlideGetVertexLayout");
+    WriteTrace(TraceGlitch, TraceWarning, "grGlideGetVertexLayout");
 }
 
 FX_ENTRY void FX_CALL
 grGlideSetState(const void * /*state*/)
 {
-    display_warning("grGlideSetState");
+    WriteTrace(TraceGlitch, TraceWarning, "grGlideSetState");
 }
 
 FX_ENTRY void FX_CALL
 grGlideGetState(void * /*state*/)
 {
-    display_warning("grGlideGetState");
+    WriteTrace(TraceGlitch, TraceWarning, "grGlideGetState");
 }
 
 FX_ENTRY void FX_CALL
 grLfbWriteColorFormat(GrColorFormat_t /*colorFormat*/)
 {
-    display_warning("grLfbWriteColorFormat");
+    WriteTrace(TraceGlitch, TraceWarning, "grLfbWriteColorFormat");
 }
 
 FX_ENTRY void FX_CALL
 grLfbWriteColorSwizzle(FxBool /*swizzleBytes*/, FxBool /*swapWords*/)
 {
-    display_warning("grLfbWriteColorSwizzle");
+    WriteTrace(TraceGlitch, TraceWarning, "grLfbWriteColorSwizzle");
 }
 
 FX_ENTRY void FX_CALL
 grLfbConstantDepth(FxU32 /*depth*/)
 {
-    display_warning("grLfbConstantDepth");
+    WriteTrace(TraceGlitch, TraceWarning, "grLfbConstantDepth");
 }
 
 FX_ENTRY void FX_CALL
 grLfbConstantAlpha(GrAlpha_t /*alpha*/)
 {
-    display_warning("grLfbConstantAlpha");
+    WriteTrace(TraceGlitch, TraceWarning, "grLfbConstantAlpha");
 }
 
 FX_ENTRY void FX_CALL
@@ -2939,7 +2923,7 @@ FxU32            /*startAddress*/,
 FxU32            /*evenOdd*/,
 GrTexInfo *      /*info*/)
 {
-    display_warning("grTexMultibaseAddress");
+    WriteTrace(TraceGlitch, TraceWarning, "grTexMultibaseAddress");
 }
 
 inline void MySleep(FxU32 ms)
@@ -2968,7 +2952,7 @@ static void CorrectGamma(const FxU16 aGammaRamp[3][256])
 
     res = SDL_SetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]);
     WriteTrace(TraceGlitch, TraceDebug, "SDL_SetGammaRamp returned %d\r\n", res);
-}
+        }
 #endif
 
 FX_ENTRY void FX_CALL
@@ -3011,7 +2995,7 @@ grGetGammaTableExt(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
             blue[i] = aGammaRamp[2][i] >> 8;
         }
     }
-}
+    }
 
 FX_ENTRY void FX_CALL
 guGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB)
@@ -3032,27 +3016,27 @@ guGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB)
 FX_ENTRY void FX_CALL
 grDitherMode(GrDitherMode_t /*mode*/)
 {
-    display_warning("grDitherMode");
+    WriteTrace(TraceGlitch, TraceWarning, "grDitherMode");
 }
 
 void grChromaRangeExt(GrColor_t /*color0*/, GrColor_t /*color1*/, FxU32 /*mode*/)
 {
-    display_warning("grChromaRangeExt");
+    WriteTrace(TraceGlitch, TraceWarning, "grChromaRangeExt");
 }
 
 void grChromaRangeModeExt(GrChromakeyMode_t /*mode*/)
 {
-    display_warning("grChromaRangeModeExt");
+    WriteTrace(TraceGlitch, TraceWarning, "grChromaRangeModeExt");
 }
 
 void grTexChromaRangeExt(GrChipID_t /*tmu*/, GrColor_t /*color0*/, GrColor_t /*color1*/, GrTexChromakeyMode_t /*mode*/)
 {
-    display_warning("grTexChromaRangeExt");
+    WriteTrace(TraceGlitch, TraceWarning, "grTexChromaRangeExt");
 }
 
 void grTexChromaModeExt(GrChipID_t /*tmu*/, GrChromakeyMode_t /*mode*/)
 {
-    display_warning("grTexChromaRangeModeExt");
+    WriteTrace(TraceGlitch, TraceWarning, "grTexChromaRangeModeExt");
 }
 
 static const char * GL_errors[7 + 1] = {
@@ -3124,7 +3108,7 @@ void dump_start()
         init = 1;
         ilInit();
         ilEnable(IL_FILE_OVERWRITE);
-    }
+}
     dumping = 1;
     tl_i = 0;
 }

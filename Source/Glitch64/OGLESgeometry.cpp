@@ -173,7 +173,7 @@ grCoordinateSpace( GrCoordinateSpaceMode_t mode )
   case GR_WINDOW_COORDS:
     break;
   default:
-    display_warning("unknwown coordinate space : %x", mode);
+    WriteTrace(TraceGlitch, TraceWarning, "unknwown coordinate space : %x", mode);
   }
 }
 
@@ -212,7 +212,7 @@ grVertexLayout(FxU32 param, FxI32 offset, FxU32 mode)
     st1_off = offset;
     break;
   default:
-    display_warning("unknown grVertexLayout parameter : %x", param);
+    WriteTrace(TraceGlitch, TraceWarning, "unknown grVertexLayout parameter : %x", param);
   }
 }
 
@@ -246,7 +246,7 @@ grCullMode( GrCullMode_t mode )
     glEnable(GL_CULL_FACE);
     break;
   default:
-    display_warning("unknown cull mode : %x", mode);
+    WriteTrace(TraceGlitch, TraceWarning, "unknown cull mode : %x", mode);
   }
 }
 
@@ -273,7 +273,7 @@ grDepthBufferMode( GrDepthBufferMode_t mode )
     w_buffer_mode = 0;
     break;
   default:
-    display_warning("unknown depth buffer mode : %x", mode);
+    WriteTrace(TraceGlitch, TraceWarning, "unknown depth buffer mode : %x", mode);
   }
 }
 
@@ -321,7 +321,7 @@ grDepthBufferFunction( GrCmpFnc_t function )
     break;
 
   default:
-    display_warning("unknown depth buffer function : %x", function);
+    WriteTrace(TraceGlitch, TraceWarning, "unknown depth buffer function : %x", function);
   }
 }
 
@@ -600,7 +600,7 @@ grDrawVertexArray(FxU32 mode, FxU32 Count, void *pointers2)
 
   if(mode != GR_TRIANGLE_FAN)
   {
-    display_warning("grDrawVertexArray : unknown mode : %x", mode);
+    WriteTrace(TraceGlitch, TraceWarning, "grDrawVertexArray : unknown mode : %x", mode);
   }
 
   vbo_enable();
@@ -638,6 +638,6 @@ grDrawVertexArrayContiguous(FxU32 mode, FxU32 Count, void *pointers, FxU32 strid
     vbo_buffer(GL_TRIANGLE_FAN,0,Count,pointers);
     break;
   default:
-    display_warning("grDrawVertexArrayContiguous : unknown mode : %x", mode);
+    WriteTrace(TraceGlitch, TraceWarning, "grDrawVertexArrayContiguous : unknown mode : %x", mode);
   }
 }

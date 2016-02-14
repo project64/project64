@@ -164,7 +164,7 @@ GrTexInfo *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "evenOdd = %d", evenOdd);
     int width, height;
-    if (info->largeLodLog2 != info->smallLodLog2) display_warning("grTexTextureMemRequired : loading more than one LOD");
+    if (info->largeLodLog2 != info->smallLodLog2) WriteTrace(TraceGlitch, TraceWarning, "grTexTextureMemRequired : loading more than one LOD");
 
     if (info->aspectRatioLog2 < 0)
     {
@@ -202,7 +202,7 @@ GrTexInfo *info)
     case GR_TEXFMT_ARGB_CMP_FXT1:
         return ((((width + 0x7)&~0x7)*((height + 0x3)&~0x3)) >> 1);
     default:
-        display_warning("grTexTextureMemRequired : unknown texture format: %x", info->format);
+        WriteTrace(TraceGlitch, TraceWarning, "grTexTextureMemRequired : unknown texture format: %x", info->format);
     }
     return 0;
 }
@@ -214,7 +214,7 @@ GrAspectRatio_t aspect, GrTextureFormat_t fmt)
 {
     WriteTrace(TraceGlitch, TraceDebug, "lodmin = %d, lodmax: %d aspect: %d fmt: %d", lodmin, lodmax, aspect, fmt);
     int width, height;
-    if (lodmax != lodmin) display_warning("grTexCalcMemRequired : loading more than one LOD");
+    if (lodmax != lodmin) WriteTrace(TraceGlitch, TraceWarning, "grTexCalcMemRequired : loading more than one LOD");
 
     if (aspect < 0)
     {
@@ -252,7 +252,7 @@ GrAspectRatio_t aspect, GrTextureFormat_t fmt)
     case GR_TEXFMT_ARGB_CMP_FXT1:
         return ((((width + 0x7)&~0x7)*((height + 0x3)&~0x3)) >> 1);
     default:
-        display_warning("grTexTextureMemRequired : unknown texture format: %x", fmt);
+        WriteTrace(TraceGlitch, TraceWarning, "grTexTextureMemRequired : unknown texture format: %x", fmt);
     }
     return 0;
 }
@@ -296,7 +296,7 @@ int grTexFormatSize(int fmt)
         factor = 8;
         break;
     default:
-        display_warning("grTexFormatSize : unknown texture format: %x", fmt);
+        WriteTrace(TraceGlitch, TraceWarning, "grTexFormatSize : unknown texture format: %x", fmt);
     }
     return factor;
 }
@@ -377,7 +377,7 @@ int grTexFormat2GLPackedFmt(int fmt, int * gltexfmt, int * glpixfmt, int * glpac
         *glpackfmt = GL_COMPRESSED_RGBA_FXT1_3DFX; // XXX: what should we do about GL_COMPRESSED_RGB_FXT1_3DFX?
         break;
     default:
-        display_warning("grTexFormat2GLPackedFmt : unknown texture format: %x", fmt);
+        WriteTrace(TraceGlitch, TraceWarning, "grTexFormat2GLPackedFmt : unknown texture format: %x", fmt);
     }
     return factor;
 }
@@ -394,7 +394,7 @@ GrTexInfo  *info)
     int factor;
     int glformat = 0;
     int gltexfmt = 0, glpixfmt = 0, glpackfmt = 0;
-    if (info->largeLodLog2 != info->smallLodLog2) display_warning("grTexDownloadMipMap : loading more than one LOD");
+    if (info->largeLodLog2 != info->smallLodLog2) WriteTrace(TraceGlitch, TraceWarning, "grTexDownloadMipMap : loading more than one LOD");
 
     if (info->aspectRatioLog2 < 0)
     {
@@ -595,7 +595,7 @@ GrTexInfo  *info)
             glformat = GL_COMPRESSED_RGBA_FXT1_3DFX;
             break;
         default:
-            display_warning("grTexDownloadMipMap : unknown texture format: %x", info->format);
+            WriteTrace(TraceGlitch, TraceWarning, "grTexDownloadMipMap : unknown texture format: %x", info->format);
             factor = 0;
         }
     }
@@ -740,14 +740,14 @@ float detail_max
     {
         if (!lod_bias && !detail_scale && !detail_max) return;
         else
-            display_warning("grTexDetailControl : %d, %d, %f", lod_bias, detail_scale, detail_max);
+            WriteTrace(TraceGlitch, TraceWarning, "grTexDetailControl : %d, %d, %f", lod_bias, detail_scale, detail_max);
     }
     lambda = detail_max;
     if (lambda > 1.0f)
     {
         lambda = 1.0f - (255.0f - lambda);
     }
-    if (lambda > 1.0f) display_warning("lambda:%f", lambda);
+    if (lambda > 1.0f) WriteTrace(TraceGlitch, TraceWarning, "lambda:%f", lambda);
 
     set_lambda();
 }
@@ -817,7 +817,7 @@ GrTextureClampMode_t t_clampmode
             wrap_s0 = GL_MIRRORED_REPEAT_ARB;
             break;
         default:
-            display_warning("grTexClampMode : unknown s_clampmode : %x", s_clampmode);
+            WriteTrace(TraceGlitch, TraceWarning, "grTexClampMode : unknown s_clampmode : %x", s_clampmode);
         }
         switch (t_clampmode)
         {
@@ -831,7 +831,7 @@ GrTextureClampMode_t t_clampmode
             wrap_t0 = GL_MIRRORED_REPEAT_ARB;
             break;
         default:
-            display_warning("grTexClampMode : unknown t_clampmode : %x", t_clampmode);
+            WriteTrace(TraceGlitch, TraceWarning, "grTexClampMode : unknown t_clampmode : %x", t_clampmode);
         }
         glActiveTextureARB(GL_TEXTURE0_ARB);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s0);
@@ -851,7 +851,7 @@ GrTextureClampMode_t t_clampmode
             wrap_s1 = GL_MIRRORED_REPEAT_ARB;
             break;
         default:
-            display_warning("grTexClampMode : unknown s_clampmode : %x", s_clampmode);
+            WriteTrace(TraceGlitch, TraceWarning, "grTexClampMode : unknown s_clampmode : %x", s_clampmode);
         }
         switch (t_clampmode)
         {
@@ -865,7 +865,7 @@ GrTextureClampMode_t t_clampmode
             wrap_t1 = GL_MIRRORED_REPEAT_ARB;
             break;
         default:
-            display_warning("grTexClampMode : unknown t_clampmode : %x", t_clampmode);
+            WriteTrace(TraceGlitch, TraceWarning, "grTexClampMode : unknown t_clampmode : %x", t_clampmode);
         }
         glActiveTextureARB(GL_TEXTURE1_ARB);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s1);
