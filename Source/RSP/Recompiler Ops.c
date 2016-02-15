@@ -2976,7 +2976,7 @@ void Compile_Vector_VMADM ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-    Boolean bOptimize = (SPOpC.rs & 8) ? TRUE : FALSE;
+    Boolean bOptimize = (RSPOpC.rs & 8) ? TRUE : FALSE;
     Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
 
 	#ifndef CompileVmadm
