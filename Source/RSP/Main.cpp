@@ -30,8 +30,11 @@
 #include <commctrl.h>
 #endif
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <Common/StdString.h>
+#include <Common/stdtypes.h>
 #include "../Settings/Settings.h"
 
 extern "C" {
@@ -50,7 +53,10 @@ extern "C" {
 
 void ClearAllx86Code(void);
 void ProcessMenuItem(int ID);
+#ifdef _WIN32
 Boolean CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+HMENU hRSPMenu = NULL;
+#endif
 
 Boolean GraphicsHle = TRUE, AudioHle, ConditionalMove;
 Boolean DebuggingEnabled = FALSE, 
@@ -62,14 +68,13 @@ Boolean DebuggingEnabled = FALSE,
         LogX86Code = FALSE;
 uint32_t CPUCore = RecompilerCPU;
 
-HANDLE hMutex = NULL;
+void * hMutex = NULL;
 
 DEBUG_INFO DebugInfo;
 RSP_INFO RSPInfo;
 void * hinstDLL;
-HMENU hRSPMenu = NULL;
 
-extern BYTE * pLastSecondary;
+extern uint8_t * pLastSecondary;
 }
 
 enum {
@@ -176,9 +181,13 @@ EXPORT void CloseDLL(void)
   input:    a handle to the window that calls this function
   output:   none
 *******************************************************************/ 
-EXPORT void DllAbout(HWND hParent)
+EXPORT void DllAbout(void * hParent)
 {
-	MessageBox(hParent,AboutMsg(),"About",MB_OK | MB_ICONINFORMATION );
+#ifdef _WIN32
+    MessageBox((HWND)hParent, AboutMsg(), "About", MB_OK | MB_ICONINFORMATION);
+#else
+    puts(AboutMsg());
+#endif
 }
 
 #ifdef _WIN32
@@ -242,12 +251,14 @@ EXPORT void GetDllInfo(PLUGIN_INFO * PluginInfo)
 
 EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo)
 {
+#ifdef _WIN32
 	if (hRSPMenu == NULL)
 	{
 		hRSPMenu = LoadMenu((HINSTANCE)hinstDLL,MAKEINTRESOURCE(RspMenu));
 		FixMenuState();
 	}
 	DebugInfo->hRSPMenu = hRSPMenu;
+#endif
 	DebugInfo->ProcessMenuItem = ProcessMenuItem;
 
 	DebugInfo->UseBPoints = TRUE;
@@ -260,7 +271,7 @@ EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo)
 	DebugInfo->RemoveAllBpoint = RemoveAllBpoint;
 	DebugInfo->RemoveBpoint = RemoveBpoint;
 	DebugInfo->ShowBPPanel = ShowBPPanel;
-	
+
 	DebugInfo->Enter_RSP_Commands_Window = Enter_RSP_Commands_Window;
 }
 
@@ -369,6 +380,7 @@ EXPORT void InitiateRSPDebugger(DEBUG_INFO Debug_Info)
 	DebugInfo = Debug_Info;
 }
 
+#ifdef _WIN32
 void ProcessMenuItem(int ID)
 {
 	UINT uState;
@@ -529,6 +541,7 @@ void ProcessMenuItem(int ID)
 		break;
 	}
 }
+#endif
 
 /******************************************************************
   Function: RomOpen
@@ -730,7 +743,11 @@ EXPORT void EnableDebugging(Boolean Enabled)
 		Compiler.bAlignVector  = GetSetting(Set_AlignVector);
 		SetCPU(CPUCore);
 	}
-	FixMenuState();
+#ifdef _WIN32
+    FixMenuState();
+#else
+    fputs("FixMenuState()\n", stderr);
+#endif
 	if (LogRDP)
 	{
 		StartRDPLog();
@@ -791,13 +808,15 @@ EXPORT void PluginLoaded(void)
 
 	AudioHle       = Set_AudioHle != 0 ? GetSystemSetting(Set_AudioHle) : false;
 	GraphicsHle    = Set_GraphicsHle != 0 ? GetSystemSetting(Set_GraphicsHle) : true;
-	
-	hMutex = CreateMutex(NULL, FALSE, NULL);
-
+#ifdef _WIN32
+    hMutex = (HANDLE)CreateMutex(NULL, FALSE, NULL);
+#endif
 	SetCPU(CPUCore);
 }
 
-void UseUnregisteredSetting (int /*SettingID*/)
+#ifdef _WIN32
+void UseUnregisteredSetting(int /*SettingID*/)
 {
-	DebugBreak();
+    DebugBreak();
 }
+#endif
