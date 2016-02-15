@@ -26,11 +26,13 @@
 
 #include <windows.h>
 #include <stdio.h>
+
 #include "Rsp.h"
 #include "x86.h"
 #include "memory.h"
 #include "RSP registers.h"
 #include "log.h"
+#include "Types.h"
 
 #pragma warning(disable : 4152) // nonstandard extension, function/data pointer conversion in expression
 
@@ -55,7 +57,7 @@ char * x86_HalfStrings[8] = {
 	"si", "di", "bp", "sp"
 };
 
-extern BOOL ConditionalMove;
+extern Boolean ConditionalMove;
 
 #define x86Byte_Name(Reg) (x86_ByteStrings[(Reg)])
 #define x86Half_Name(Reg) (x86_HalfStrings[(Reg)])

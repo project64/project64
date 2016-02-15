@@ -26,6 +26,7 @@
 
 #include <windows.h>
 #include <stdio.h>
+
 #include "Rsp.h"
 #include "CPU.h"
 #include "Recompiler CPU.h"
@@ -35,6 +36,7 @@
 #include "dma.h"
 #include "log.h"
 #include "x86.h"
+#include "Types.h"
 
 #pragma warning(disable : 4152) // nonstandard extension, function/data pointer conversion in expression
 
@@ -750,7 +752,8 @@ void RSP_Sections_VMACF ( OPCODE RspOp, DWORD AccumStyle ) {
 
 static DWORD Section_000_VMADN; /* Yah i know, but leave it */
 
-BOOL Check_Section_000(void) {
+Boolean Check_Section_000(void)
+{
 	DWORD i;
 	OPCODE op0, op1;
 
@@ -854,7 +857,8 @@ void Compile_Section_000(void) {
 
 static DWORD Section_001_VMACF;
 
-BOOL Check_Section_001(void) {
+Boolean Check_Section_001(void)
+{
 	DWORD i;
 	OPCODE op0, op1;
 
@@ -944,7 +948,8 @@ void Compile_Section_001(void) {
 	MmxEmptyMultimediaState();
 }
 
-BOOL Check_Section_002 ( void ) {
+Boolean Check_Section_002(void)
+{
 	DWORD Count;
 	OPCODE op[0x0C];
 
@@ -1049,7 +1054,8 @@ void Compile_Section_002 ( void ) {
 	CompilePC += 12 * sizeof(OPCODE);
 }
 
-BOOL Check_Section_003 ( void ) {
+Boolean Check_Section_003(void)
+{
 	DWORD Count;
 	OPCODE op[4];
 
@@ -1117,7 +1123,8 @@ void Compile_Section_003 ( void ) {
 	CompilePC += 4 * sizeof(OPCODE);
 }
 
-BOOL RSP_DoSections(void) {
+Boolean RSP_DoSections(void)
+{
 	if (TRUE == Check_Section_000()) {
 		Compile_Section_000();
 		return TRUE;
