@@ -164,7 +164,7 @@ void DisplayError(char* Message, ...)
   input:    none
   output:   none
 *******************************************************************/ 
-__declspec(dllexport) void CloseDLL (void)
+EXPORT void CloseDLL(void)
 {
 	FreeMemory();
 }
@@ -176,7 +176,7 @@ __declspec(dllexport) void CloseDLL (void)
   input:    a handle to the window that calls this function
   output:   none
 *******************************************************************/ 
-__declspec(dllexport) void DllAbout ( HWND hParent )
+EXPORT void DllAbout(HWND hParent)
 {
 	MessageBox(hParent,AboutMsg(),"About",MB_OK | MB_ICONINFORMATION );
 }
@@ -217,7 +217,7 @@ void FixMenuState(void)
             filled by the function. (see def above)
   output:   none
 *******************************************************************/ 
-__declspec(dllexport) void GetDllInfo ( PLUGIN_INFO * PluginInfo )
+EXPORT void GetDllInfo(PLUGIN_INFO * PluginInfo)
 {
 	PluginInfo->Version = 0x0102;
 	PluginInfo->Type = PLUGIN_TYPE_RSP;
@@ -240,7 +240,7 @@ __declspec(dllexport) void GetDllInfo ( PLUGIN_INFO * PluginInfo )
   output:   none
 *******************************************************************/ 
 
-__declspec(dllexport) void GetRspDebugInfo ( RSPDEBUG_INFO * DebugInfo ) 
+EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo)
 {
 	if (hRSPMenu == NULL)
 	{
@@ -339,7 +339,7 @@ void DetectCpuSpecs(void)
 	}
 }
 
-__declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, DWORD * CycleCount)
+EXPORT void InitiateRSP(RSP_INFO Rsp_Info, DWORD * CycleCount)
 {
 	RSPInfo = Rsp_Info;
 	AudioHle = GetSystemSetting(Set_AudioHle);
@@ -364,7 +364,7 @@ __declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, DWORD * CycleCount)
             above.
   output:   none
 *******************************************************************/ 
-__declspec(dllexport) void InitiateRSPDebugger ( DEBUG_INFO Debug_Info)
+EXPORT void InitiateRSPDebugger(DEBUG_INFO Debug_Info)
 {
 	DebugInfo = Debug_Info;
 }
@@ -536,7 +536,7 @@ void ProcessMenuItem(int ID)
   input:    none
   output:   none
 *******************************************************************/ 
-__declspec(dllexport) void RomOpen (void) 
+EXPORT void RomOpen(void)
 {
 	ClearAllx86Code();
 	if (DebuggingEnabled)
@@ -552,7 +552,8 @@ __declspec(dllexport) void RomOpen (void)
   input:    none
   output:   none
 *******************************************************************/ 
-__declspec(dllexport) void RomClosed (void) {
+EXPORT void RomClosed(void)
+{
 	if (Profiling)
 	{
 		StopTimer();
@@ -698,13 +699,13 @@ BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam
 }
 #endif
 
-/*__declspec(dllexport) void DllConfig (HWND hWnd)
+/*EXPORT void DllConfig(HWND hWnd)
 {
 	// DialogBox(hinstDLL, "RSPCONFIG", hWnd, ConfigDlgProc);
 	DialogBox(hinstDLL, "RSPCONFIG", GetForegroundWindow(), ConfigDlgProc);
 }*/
 
-__declspec(dllexport) void EnableDebugging(Boolean Enabled)
+EXPORT void EnableDebugging(Boolean Enabled)
 {
 	DebuggingEnabled = Enabled;
 	if (DebuggingEnabled)
@@ -740,7 +741,7 @@ __declspec(dllexport) void EnableDebugging(Boolean Enabled)
 	}
 }
 
-__declspec(dllexport) void PluginLoaded (void) 
+EXPORT void PluginLoaded(void)
 {
 	BreakOnStart   = false;
 	CPUCore        = RecompilerCPU;
