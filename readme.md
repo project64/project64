@@ -12,5 +12,8 @@ If you want to try the current version (Possibly Not-So-Stable build), you can e
 
 ###Building Instructions
 Building Project64 requires a copy of Visual Studio 2010 or later, 2015 Recommended, running on XP or newer.
-[More information can be found here](https://github.com/project64/project64/wiki/Building)
+To build, open Project64.sln, wait for it to load, then make sure you have the the right settings for your build selected,  
+generally Win32 and Release, then click Build. 
+
+[Instructions for Command Line Builds and Other things can be found here.](https://github.com/project64/project64/wiki/Building)
 
