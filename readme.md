@@ -7,7 +7,7 @@ Licenced under GPLv2 (See [Licence.md](https://github.com/project64/project64/bl
 
 ###Downloading
 You can download the latest Public Stable build [Here](http://www.pj64-emu.com/downloads/project64/binaries/)  
-If you would like a Not-So-Stable build, you can either Build it yourself (See Building) or use the unofficial build [Here](http://hyvart.com/download/project64/project64.application)
+If you would like a Not-So-Stable build, you can either Build it yourself (See Building) or use the unofficial build [Here](http://hyvart.com/download/project64/project64dev.application)
 
 
 ###Building  
