@@ -11,6 +11,6 @@ If you would like a Not-So-Stable build, you can either Build it yourself (See B
 
 
 ###Building  
-Building Project64 requires (at this point in time) a copy of Visual Studio 2008 or newer, 2015 Recommended, running on XP or newer (Visual Studio 2015 will not run on Windows XP).  
+Building Project64 requires a copy of Visual Studio 2008 or newer, 2015 Recommended, running on XP or newer.
 [More information can be found here](https://github.com/project64/project64/wiki/Building)
 
