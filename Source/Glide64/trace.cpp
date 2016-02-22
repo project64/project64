@@ -66,7 +66,10 @@ void SetupTrace(void)
 
     char log_dir[260];
     memset(log_dir, 0, sizeof(log_dir));
-    GetSystemSettingSz(Set_log_dir, log_dir, sizeof(log_dir));
+    if (Set_log_dir != 0)
+    {
+        GetSystemSettingSz(Set_log_dir, log_dir, sizeof(log_dir));
+    }
 
     if (strlen(log_dir) == 0)
     {
