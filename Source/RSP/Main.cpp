@@ -339,7 +339,7 @@ void DetectCpuSpecs(void)
 	}
 }
 
-__declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, DWORD * CycleCount)
+__declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, uint32_t * CycleCount)
 {
 	RSPInfo = Rsp_Info;
 	AudioHle = GetSystemSetting(Set_AudioHle);
