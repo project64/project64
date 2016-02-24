@@ -44,6 +44,7 @@
 #include <Settings/Settings.h>
 #include <Common/CriticalSection.h>
 #include <Common/path.h>
+#include <png/png.h>
 
 #include "Config.h"
 #include "Util.h"
@@ -1907,6 +1908,102 @@ static void GetGammaTable()
     }
 }
 
+void write_png_file(const char* file_name, int width, int height, uint8_t *buffer)
+{
+    /* create file */
+    FILE *fp = fopen(file_name, "wb");
+    if (!fp)
+    {
+        WriteTrace(TracePNG, TraceError, "File %s could not be opened for writing", file_name);
+        return;
+    }
+
+    /* initialize stuff */
+    png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if (png_ptr == NULL)
+    {
+        WriteTrace(TracePNG, TraceError, "png_create_write_struct failed");
+        fclose(fp);
+        return;
+    }
+
+    png_infop info_ptr = png_create_info_struct(png_ptr);
+    if (info_ptr == NULL)
+    {
+        WriteTrace(TracePNG, TraceError, "png_create_info_struct failed");
+        png_destroy_read_struct(&png_ptr, NULL, NULL);
+        fclose(fp);
+        return;
+    }
+
+    if (setjmp(png_jmpbuf(png_ptr)))
+    {
+        WriteTrace(TracePNG, TraceError, "Error during init_io");
+        png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+        fclose(fp);
+        return;
+    }
+
+    png_init_io(png_ptr, fp);
+
+    /* write header */
+    if (setjmp(png_jmpbuf(png_ptr)))
+    {
+        WriteTrace(TracePNG, TraceError, "Error during writing header");
+        png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+        fclose(fp);
+        return;
+    }
+
+    png_byte bit_depth = 8;
+    png_byte color_type = PNG_COLOR_TYPE_RGB;
+    png_set_IHDR(png_ptr, info_ptr, width, height, bit_depth, color_type, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+
+    png_write_info(png_ptr, info_ptr);
+
+    /* write bytes */
+    if (setjmp(png_jmpbuf(png_ptr)))
+    {
+        WriteTrace(TracePNG, TraceError, "Error during writing bytes");
+        png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+        fclose(fp);
+        return;
+    }
+
+    int pixel_size = 3;
+    int p = 0;
+    png_bytep * row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * height);
+    for (int y = 0; y < height; y++)
+    {
+        row_pointers[y] = (png_byte*)malloc(width*pixel_size);
+        for (int x = 0; x < width; x++)
+        {
+            row_pointers[y][x*pixel_size + 0] = buffer[p++];
+            row_pointers[y][x*pixel_size + 1] = buffer[p++];
+            row_pointers[y][x*pixel_size + 2] = buffer[p++];
+        }
+    }
+    png_write_image(png_ptr, row_pointers);
+
+    // cleanup heap allocation
+    for (int y = 0; y < height; y++)
+    {
+        free(row_pointers[y]);
+    }
+    free(row_pointers);
+
+    /* end write */
+    if (setjmp(png_jmpbuf(png_ptr)))
+    {
+        WriteTrace(TracePNG, TraceError, "Error during end of write");
+        png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+        fclose(fp);
+        return;
+    }
+    png_write_end(png_ptr, NULL);
+    fclose(fp);
+}
+
 uint32_t curframe = 0;
 void newSwapBuffers()
 {
@@ -2036,7 +2133,7 @@ void newSwapBuffers()
         romName.Replace(" ", "_");
         romName.Replace(":", ";");
 
-        if (g_settings->ssformat > NumOfFormats)
+        if (g_settings->ssformat >= NumOfFormats)
         {
             g_settings->ssformat = 0;
         }
@@ -2059,7 +2156,8 @@ void newSwapBuffers()
         info.size = sizeof(GrLfbInfo_t);
         if (grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_565, GR_ORIGIN_UPPER_LEFT, FXFALSE, &info))
         {
-            uint8_t *ssimg = (uint8_t*)malloc(image_width * image_height * 3); // will be free in wxImage destructor
+            std::auto_ptr<uint8_t> ssimg_buffer(new uint8_t[image_width * image_height * 3]);
+            uint8_t * ssimg = ssimg_buffer.get();
             int sspos = 0;
             uint32_t offset_src = info.strideInBytes * offset_y;
 
@@ -2100,9 +2198,10 @@ void newSwapBuffers()
             }
             // Unlock the backbuffer
             grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
-            wxImage screenshot(image_width, image_height, ssimg);
-            wxString wxPath((const char *)path);
-            screenshot.SaveFile(wxPath, ScreenShotFormats[g_settings->ssformat].type);
+            if (ScreenShotFormats[g_settings->ssformat].type == rdpBITMAP_TYPE_PNG)
+            {
+                write_png_file(path, image_width, image_height, ssimg);
+            }
             capture_screen = 0;
         }
     }
