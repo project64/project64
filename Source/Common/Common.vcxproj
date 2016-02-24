@@ -46,6 +46,7 @@
     </ClCompile>
     <ClCompile Include="StdString.cpp" />
     <ClCompile Include="SyncEvent.cpp" />
+    <ClCompile Include="DateTimeClass.cpp" />
     <ClCompile Include="Trace.cpp" />
     <ClCompile Include="Util.cpp" />
   </ItemGroup>
@@ -64,6 +65,7 @@
     <ClInclude Include="StdString.h" />
     <ClInclude Include="stdtypes.h" />
     <ClInclude Include="SyncEvent.h" />
+    <ClInclude Include="DateTimeClass.h" />
     <ClInclude Include="Trace.h" />
     <ClInclude Include="TraceModulesCommon.h" />
     <ClInclude Include="Util.h" />
