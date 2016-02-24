@@ -96,8 +96,8 @@ int64 perf_next;
 #endif
 
 #ifdef FPS
-wxDateTime fps_last;
-wxDateTime fps_next;
+CDateTime  fps_last;
+CDateTime  fps_next;
 float      fps = 0.0f;
 uint32_t   fps_count = 0;
 
@@ -153,8 +153,8 @@ CSettings * g_settings;
 HOTKEY_INFO hotkey_info;
 
 VOODOO voodoo = { 0, 0, 0, 0,
-0, 0, 0, 0,
-0, 0, 0, 0
+    0, 0, 0, 0,
+    0, 0, 0, 0
 };
 
 GrTexInfo fontTex;
@@ -704,8 +704,8 @@ void guLoadTextures()
             if (cur&b) *tex8 = 0xFF;
             else *tex8 = 0x00;
             tex8++;
+        }
     }
-}
 
     grTexDownloadMipMap(GR_TMU0,
         voodoo.tex_min_addr[GR_TMU0] + offset_font,
@@ -1371,7 +1371,7 @@ void CALL CloseDLL(void)
     voodoo.gamma_table_g = 0;
     delete[] voodoo.gamma_table_b;
     voodoo.gamma_table_b = 0;
-    }
+}
 
 /******************************************************************
 Function: DllTest
@@ -1454,7 +1454,7 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     g_settings->res_data_org = g_settings->res_data;
 
 #ifdef FPS
-    fps_last = wxDateTime::UNow();
+    fps_last.SetToNow();
 #endif
 
     debug_init();    // Initialize debugger
@@ -1641,14 +1641,14 @@ static void CheckDRAMSize()
     {
         test = gfx.RDRAM[0x007FFFFF] + 1;
     }
-        GLIDE64_CATCH
+    GLIDE64_CATCH
     {
         test = 0;
     }
-        if (test)
-            BMASK = 0x7FFFFF;
-        else
-            BMASK = WMASK;
+    if (test)
+        BMASK = 0x7FFFFF;
+    else
+        BMASK = WMASK;
 #ifdef LOGGING
     sprintf(out_buf, "Detected RDRAM size: %08lx", BMASK);
     LOG(out_buf);
@@ -1824,9 +1824,8 @@ void CALL UpdateScreen(void)
     vi_count++;
 
     // Check frames per second
-    fps_next = wxDateTime::UNow();
-    wxTimeSpan difference = fps_next - fps_last;
-    double diff_secs = difference.GetMilliseconds().ToDouble() / 1000.0;
+    fps_next.SetToNow();
+    double diff_secs = fps_next.DiffernceMilliseconds(fps_last);
     if (diff_secs > 0.5f)
     {
         fps = (float)(fps_count / diff_secs);
@@ -1952,11 +1951,11 @@ void newSwapBuffers()
     {
         if (g_settings->clock_24_hr)
         {
-            output(956.0f, 0, 1, (char*)wxDateTime::Now().Format("%H:%M:%S").char_str(), 0);
+            output(956.0f, 0, 1, CDateTime().SetToNow().Format("%H:%M:%S").c_str(), 0);
         }
         else
         {
-            output(930.0f, 0, 1, (char*)wxDateTime::Now().Format("%I:%M:%S %p").char_str(), 0);
+            output(930.0f, 0, 1, CDateTime().SetToNow().Format("%I:%M:%S %p").c_str(), 0);
         }
     }
     //hotkeys
@@ -2340,7 +2339,7 @@ LRESULT CALLBACK LowLevelKeyboardProc(int nCode,
             if (p->vkCode == 46) k_del = 1;
             goto do_it;
 
-        do_it:
+do_it:
             TabKey =
                 ((p->vkCode == VK_TAB) && ((p->flags & LLKHF_ALTDOWN) != 0)) ||
                 ((p->vkCode == VK_ESCAPE) && ((p->flags & LLKHF_ALTDOWN) != 0)) ||

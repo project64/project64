@@ -67,55 +67,55 @@ SCREEN_SHOT_FORMAT ScreenShotFormats[NumOfFormats] =
 const char *ACmp[] = { "NONE", "THRESHOLD", "UNKNOWN", "DITHER" };
 
 const char *Mode0[] = { "COMBINED", "TEXEL0",
-"TEXEL1", "PRIMITIVE",
-"SHADE", "ENVIORNMENT",
-"1", "NOISE",
-"0", "0",
-"0", "0",
-"0", "0",
-"0", "0" };
+    "TEXEL1", "PRIMITIVE",
+    "SHADE", "ENVIORNMENT",
+    "1", "NOISE",
+    "0", "0",
+    "0", "0",
+    "0", "0",
+    "0", "0" };
 
 const char *Mode1[] = { "COMBINED", "TEXEL0",
-"TEXEL1", "PRIMITIVE",
-"SHADE", "ENVIORNMENT",
-"CENTER", "K4",
-"0", "0",
-"0", "0",
-"0", "0",
-"0", "0" };
+    "TEXEL1", "PRIMITIVE",
+    "SHADE", "ENVIORNMENT",
+    "CENTER", "K4",
+    "0", "0",
+    "0", "0",
+    "0", "0",
+    "0", "0" };
 
 const char *Mode2[] = { "COMBINED", "TEXEL0",
-"TEXEL1", "PRIMITIVE",
-"SHADE", "ENVIORNMENT",
-"SCALE", "COMBINED_ALPHA",
-"T0_ALPHA", "T1_ALPHA",
-"PRIM_ALPHA", "SHADE_ALPHA",
-"ENV_ALPHA", "LOD_FRACTION",
-"PRIM_LODFRAC", "K5",
-"0", "0",
-"0", "0",
-"0", "0",
-"0", "0",
-"0", "0",
-"0", "0",
-"0", "0",
-"0", "0" };
+    "TEXEL1", "PRIMITIVE",
+    "SHADE", "ENVIORNMENT",
+    "SCALE", "COMBINED_ALPHA",
+    "T0_ALPHA", "T1_ALPHA",
+    "PRIM_ALPHA", "SHADE_ALPHA",
+    "ENV_ALPHA", "LOD_FRACTION",
+    "PRIM_LODFRAC", "K5",
+    "0", "0",
+    "0", "0",
+    "0", "0",
+    "0", "0",
+    "0", "0",
+    "0", "0",
+    "0", "0",
+    "0", "0" };
 
 const char *Mode3[] = { "COMBINED", "TEXEL0",
-"TEXEL1", "PRIMITIVE",
-"SHADE", "ENVIORNMENT",
-"1", "0" };
+    "TEXEL1", "PRIMITIVE",
+    "SHADE", "ENVIORNMENT",
+    "1", "0" };
 
 const char *Alpha0[] = { "COMBINED", "TEXEL0",
-"TEXEL1", "PRIMITIVE",
-"SHADE", "ENVIORNMENT",
-"1", "0" };
+    "TEXEL1", "PRIMITIVE",
+    "SHADE", "ENVIORNMENT",
+    "1", "0" };
 
 #define Alpha1 Alpha0
 const char *Alpha2[] = { "LOD_FRACTION", "TEXEL0",
-"TEXEL1", "PRIMITIVE",
-"SHADE", "ENVIORNMENT",
-"PRIM_LODFRAC", "0" };
+    "TEXEL1", "PRIMITIVE",
+    "SHADE", "ENVIORNMENT",
+    "PRIM_LODFRAC", "0" };
 #define Alpha3 Alpha0
 
 const char *FBLa[] = { "G_BL_CLR_IN", "G_BL_CLR_MEM", "G_BL_CLR_BL", "G_BL_CLR_FOG" };
@@ -144,8 +144,8 @@ const char *str_tlut[] = { "TT_NONE", "TT_UNKNOWN", "TT_RGBA_16", "TT_IA_16" };
 const char *str_dither[] = { "Pattern", "~Pattern", "Noise", "None" };
 
 const char *CIStatus[] = { "ci_main", "ci_zimg", "ci_unknown", "ci_useless",
-"ci_old_copy", "ci_copy", "ci_copy_self",
-"ci_zcopy", "ci_aux", "ci_aux_copy" };
+    "ci_old_copy", "ci_copy", "ci_copy_self",
+    "ci_zcopy", "ci_aux", "ci_aux_copy" };
 
 //static variables
 
@@ -394,10 +394,10 @@ static void DrawPartFrameBufferToScreen()
 }
 
 #define RGBA16TO32(color) \
-  ((color&1)?0xFF:0) | \
-  ((uint32_t)((float)((color&0xF800) >> 11) / 31.0f * 255.0f) << 24) | \
-  ((uint32_t)((float)((color&0x07C0) >> 6) / 31.0f * 255.0f) << 16) | \
-  ((uint32_t)((float)((color&0x003E) >> 1) / 31.0f * 255.0f) << 8)
+    ((color&1)?0xFF:0) | \
+    ((uint32_t)((float)((color&0xF800) >> 11) / 31.0f * 255.0f) << 24) | \
+    ((uint32_t)((float)((color&0x07C0) >> 6) / 31.0f * 255.0f) << 16) | \
+    ((uint32_t)((float)((color&0x003E) >> 1) / 31.0f * 255.0f) << 8)
 
 static void copyWhiteToRDRAM()
 {
@@ -729,7 +729,7 @@ EXPORT void CALL ProcessDList(void)
                 rdp.pc[rdp.pc_i] = (a + 8) & BMASK;
 
 #ifdef PERFORMANCE
-                perf_cur = wxDateTime::UNow();
+                perf_cur = CDateTime().SetToNow().Value();
 #endif
                 // Process this instruction
                 gfx_instruction[g_settings->ucode][rdp.cmd0 >> 24]();
@@ -748,7 +748,7 @@ EXPORT void CALL ProcessDList(void)
                 }
 
 #ifdef PERFORMANCE
-                perf_next = wxDateTime::UNow();
+                perf_next = CDateTime().SetToNow().Value();
                 sprintf(out_buf, "perf %08lx: %016I64d", a - 8, (perf_next - perf_cur).Format(_T("%l")).mb_str());
                 rdp_log << out_buf;
 #endif
@@ -1557,14 +1557,14 @@ static void rdp_setprimdepth()
 static void rdp_setothermode()
 {
 #define F3DEX2_SETOTHERMODE(cmd,sft,len,data) { \
-  rdp.cmd0 = (uint32_t)((cmd<<24) | ((32-(sft)-(len))<<8) | (((len)-1))); \
-  rdp.cmd1 = (uint32_t)(data); \
-  gfx_instruction[g_settings->ucode][cmd] (); \
+    rdp.cmd0 = (uint32_t)((cmd<<24) | ((32-(sft)-(len))<<8) | (((len)-1))); \
+    rdp.cmd1 = (uint32_t)(data); \
+    gfx_instruction[g_settings->ucode][cmd] (); \
 }
 #define SETOTHERMODE(cmd,sft,len,data) { \
-  rdp.cmd0 = (uint32_t)((cmd<<24) | ((sft)<<8) | (len)); \
-  rdp.cmd1 = (uint32_t)data; \
-  gfx_instruction[g_settings->ucode][cmd] (); \
+    rdp.cmd0 = (uint32_t)((cmd<<24) | ((sft)<<8) | (len)); \
+    rdp.cmd1 = (uint32_t)data; \
+    gfx_instruction[g_settings->ucode][cmd] (); \
 }
 
     WriteTrace(TraceRDP, TraceDebug, "rdp_setothermode");
