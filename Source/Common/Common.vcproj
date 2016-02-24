@@ -130,6 +130,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DateTimeClass.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FileClass.cpp"
 				>
 			</File>
@@ -204,6 +208,10 @@
 			>
 			<File
 				RelativePath=".\CriticalSection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DateTimeClass.h"
 				>
 			</File>
 			<File
