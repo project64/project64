@@ -183,6 +183,10 @@ void CEeprom::ReadFrom(uint8_t * Buffer, int32_t line)
 
 void CEeprom::WriteTo(uint8_t * Buffer, int32_t line)
 {
+    if (m_ReadOnly)
+    {
+        return;
+    }
     int32_t i;
 
     if (!m_File.IsOpen())
