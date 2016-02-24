@@ -55,13 +55,13 @@ public:
 	}
 	
 	//recording timing against current timer, returns the address of the timer stoped
-	DWORD StartTimer ( DWORD Address )
+	uint32_t StartTimer ( uint32_t Address )
 	{
-		DWORD OldTimerAddr = StopTimer();
+		uint32_t OldTimerAddr = StopTimer();
 		m_CurrentTimerAddr = Address;
 
 #if defined(_M_IX86) && defined(_MSC_VER)
-		DWORD HiValue, LoValue;
+		uint32_t HiValue, LoValue;
 		_asm {
 			pushad
 			rdtsc
@@ -76,12 +76,12 @@ public:
 #endif
 		return OldTimerAddr;
 	}
-	DWORD StopTimer  ( void )
+	uint32_t StopTimer  ( void )
 	{		
 		if (m_CurrentTimerAddr == Timer_None) { return m_CurrentTimerAddr; }
 
 #if defined(_M_IX86) && defined(_MSC_VER)
-		DWORD HiValue, LoValue;
+		uint32_t HiValue, LoValue;
 		_asm {
 			pushad
 			rdtsc
@@ -107,7 +107,7 @@ public:
 		DebugBreak();
 #endif
 
-		DWORD OldTimerAddr = m_CurrentTimerAddr;
+		uint32_t OldTimerAddr = m_CurrentTimerAddr;
 		m_CurrentTimerAddr = Timer_None;
 		return OldTimerAddr;
 	}
@@ -174,7 +174,7 @@ public:
 				sprintf(Buffer, "Func 0x%08X", ItemList[count]->first);
 				for (int NameID = 0; NameID < (sizeof(TimerNames) / sizeof(TIMER_NAME)); NameID++)
 				{
-					if (ItemList[count]->first == (DWORD)TimerNames[NameID].Timer)
+					if (ItemList[count]->first == (uint32_t)TimerNames[NameID].Timer)
 					{
 						strcpy(Buffer,TimerNames[NameID].Name);
 						break;
@@ -201,7 +201,7 @@ void ResetTimerList (void)
 	GetProfiler().ResetCounters();
 }
 
-DWORD StartTimer (DWORD Address)
+uint32_t StartTimer (uint32_t Address)
 {
 	return GetProfiler().StartTimer(Address);
 }

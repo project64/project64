@@ -339,7 +339,7 @@ void DetectCpuSpecs(void)
 	}
 }
 
-__declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, DWORD * CycleCount)
+__declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, uint32_t * CycleCount)
 {
 	RSPInfo = Rsp_Info;
 	AudioHle = GetSystemSetting(Set_AudioHle);
@@ -704,7 +704,7 @@ BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam
 	DialogBox(hinstDLL, "RSPCONFIG", GetForegroundWindow(), ConfigDlgProc);
 }*/
 
-__declspec(dllexport) void EnableDebugging(Boolean Enabled)
+EXPORT void EnableDebugging(Boolean Enabled)
 {
 	DebuggingEnabled = Enabled;
 	if (DebuggingEnabled)
