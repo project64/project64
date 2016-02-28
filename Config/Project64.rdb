@@ -3921,7 +3921,7 @@ Status=Compatible
 SMM-Cache=0
 SMM-FUNC=0
 SMM-TLB=0
-ViRefresh=2200
+ViRefresh=1500
 
 [8A97A197-272DF6C1-C:50]
 Good Name=Nuclear Strike 64 (E) (M2)
@@ -5542,7 +5542,7 @@ Culling=1
 SMM-Cache=0
 SMM-FUNC=0
 SMM-TLB=0
-ViRefresh=2200
+ViRefresh=1500
 
 [93945F48-5C0F2E30-C:50]
 Good Name=Super Smash Bros. (E) (M3)
@@ -5553,6 +5553,7 @@ Culling=1
 SMM-Cache=0
 SMM-FUNC=0
 SMM-TLB=0
+ViRefresh=1500
 
 [916B8B5B-780B85A4-C:45]
 Good Name=Super Smash Bros. (U)
@@ -5562,7 +5563,7 @@ Culling=1
 SMM-Cache=0
 SMM-FUNC=0
 SMM-TLB=0
-ViRefresh=2200
+ViRefresh=1500
 
 [9CE02E22-206EF1B0-C:4A]
 Good Name=Super Speed Race 64 (J)
