@@ -4093,58 +4093,102 @@ output:   none
 void CALL ProcessRDPList(void)
 {
 #ifdef _WIN32
-    CGuard guard(*g_ProcessDListCS);
+	CGuard guard(*g_ProcessDListCS);
 #endif
-    WriteTrace(TraceGlide64, TraceDebug, "-");
+	WriteTrace(TraceGlide64, TraceDebug, "-");
 
-    uint32_t i;
-    uint32_t cmd, length, cmd_length;
-    rdp_cmd_ptr = 0;
-    rdp_cmd_cur = 0;
+	no_dlist = false;
+	update_screen_count = 0;
+	ChangeSize();
 
-    if (dp_end <= dp_current) return;
-    length = dp_end - dp_current;
+	// Switch to fullscreen?
+	if (to_fullscreen)
+		GoToFullScreen();
 
-    // load command data
-    for (i = 0; i < length; i += 4)
-    {
-        rdp_cmd_data[rdp_cmd_ptr++] = READ_RDP_DATA(dp_current + i);
-        if (rdp_cmd_ptr >= 0x1000)
-        {
-            WriteTrace(TraceRDP, TraceDebug, "rdp_process_list: rdp_cmd_ptr overflow %x %x --> %x", length, dp_current, dp_end);
-        }
-    }
+	//* Set states *//
+	if (g_settings->swapmode > 0)
+		SwapOK = TRUE;
+	rdp.updatescreen = 1;
 
-    dp_current = dp_end;
+	rdp.tri_n = 0;  // 0 triangles so far this frame
+	rdp.debug_n = 0;
 
-    cmd = (rdp_cmd_data[0] >> 24) & 0x3f;
-    cmd_length = (rdp_cmd_ptr + 1) * 4;
+	rdp.model_i = 0; // 0 matrices so far in stack
+	//stack_size can be less then 32! Important for Silicon Vally. Thanks Orkin!
+	rdp.model_stack_size = minval(32, (*(uint32_t*)(gfx.DMEM + 0x0FE4)) >> 6);
+	if (rdp.model_stack_size == 0)
+		rdp.model_stack_size = 32;
+	rdp.Persp_en = TRUE;
+	rdp.fb_drawn = rdp.fb_drawn_front = FALSE;
+	rdp.update = 0x7FFFFFFF;  // All but clear cache
+	rdp.geom_mode = 0;
+	rdp.acmp = 0;
+	rdp.maincimg[1] = rdp.maincimg[0];
+	rdp.skip_drawing = FALSE;
+	rdp.s2dex_tex_loaded = FALSE;
+	rdp.bg_image_height = 0xFFFF;
+	fbreads_front = fbreads_back = 0;
+	rdp.fog_multiplier = rdp.fog_offset = 0;
+	rdp.zsrc = 0;
+	if (rdp.vi_org_reg != *gfx.VI_ORIGIN_REG)
+		rdp.tlut_mode = 0; //is it correct?
+	rdp.scissor_set = FALSE;
+	ucode5_texshiftaddr = ucode5_texshiftcount = 0;
+	cpu_fb_write = FALSE;
+	cpu_fb_read_called = FALSE;
+	cpu_fb_write_called = FALSE;
+	cpu_fb_ignore = FALSE;
+	d_ul_x = 0xffff;
+	d_ul_y = 0xffff;
+	d_lr_x = 0;
+	d_lr_y = 0;
+	depth_buffer_fog = TRUE;
 
-    // check if more data is needed
-    if (cmd_length < rdp_command_length[cmd])
-        return;
-    rdp.LLE = TRUE;
-    while (rdp_cmd_cur < rdp_cmd_ptr)
-    {
-        cmd = (rdp_cmd_data[rdp_cmd_cur] >> 24) & 0x3f;
+	const uint32_t length = dp_end - dp_current;
 
-        if (((rdp_cmd_ptr - rdp_cmd_cur) * 4) < rdp_command_length[cmd])
-            return;
+	dp_status &= ~0x0002;
 
-        // execute the command
-        rdp.cmd0 = rdp_cmd_data[rdp_cmd_cur + 0];
-        rdp.cmd1 = rdp_cmd_data[rdp_cmd_cur + 1];
-        rdp.cmd2 = rdp_cmd_data[rdp_cmd_cur + 2];
-        rdp.cmd3 = rdp_cmd_data[rdp_cmd_cur + 3];
-        rdp_command_table[cmd]();
+	if (dp_end <= dp_current) return;
 
-        rdp_cmd_cur += rdp_command_length[cmd] / 4;
-    };
-    rdp.LLE = FALSE;
+	rdp.LLE = TRUE;
 
-    dp_start = dp_end;
+	// load command data
+	for (uint32_t i = 0; i < length; i += 4)
+	{
+		rdp_cmd_data[rdp_cmd_ptr] = READ_RDP_DATA(dp_current + i);
+		rdp_cmd_ptr = (rdp_cmd_ptr + 1) & maxCMDMask;
+	}
 
-    dp_status &= ~0x0002;
+	bool setZero = true;
 
-    //}
+	while (rdp_cmd_cur != rdp_cmd_ptr) {
+		uint32_t cmd = (rdp_cmd_data[rdp_cmd_cur] >> 24) & 0x3f;
+
+		if ((((rdp_cmd_ptr - rdp_cmd_cur)&maxCMDMask) * 4) < rdp_command_length[cmd]) {
+			setZero = false;
+			break;
+		}
+
+		if (rdp_cmd_cur + rdp_command_length[cmd] / 4 > MAXCMD)
+			::memcpy(rdp_cmd_data + MAXCMD, rdp_cmd_data, rdp_command_length[cmd] - (MAXCMD - rdp_cmd_cur) * 4);
+
+		// execute the command
+		rdp.cmd0 = rdp_cmd_data[rdp_cmd_cur + 0];
+		rdp.cmd1 = rdp_cmd_data[rdp_cmd_cur + 1];
+		rdp.cmd2 = rdp_cmd_data[rdp_cmd_cur + 2];
+		rdp.cmd3 = rdp_cmd_data[rdp_cmd_cur + 3];
+		//RSP.cmd = cmd;
+		rdp_command_table[cmd]();
+
+		rdp_cmd_cur = (rdp_cmd_cur + rdp_command_length[cmd] / 4) & maxCMDMask;
+	}
+
+	if (setZero) {
+		rdp_cmd_ptr = 0;
+		rdp_cmd_cur = 0;
+	}
+
+	rdp.LLE = FALSE;
+
+	dp_start = dp_current = dp_end;
 }
