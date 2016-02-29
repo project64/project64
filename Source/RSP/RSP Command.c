@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -26,13 +26,16 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <stdlib.h>
+
 #include "opcode.h"
-#include "RSP.h"
+#include "Rsp.h"
 #include "CPU.h"
 #include "RSP Registers.h"
 #include "RSP Command.h"
 #include "memory.h"
 #include "breakpoint.h"
+#include "Types.h"
 
 #define RSP_MaxCommandLines		30
 
@@ -68,7 +71,7 @@ RSPCOMMANDLINE RSPCommandLine[30];
 HWND RSPCommandshWnd, hList, hAddress, hFunctionlist, hGoButton, hBreakButton,
 	hStepButton, hSkipButton, hBPButton, hR4300iRegisters, hR4300iDebugger, hRSPRegisters,
 	hMemory, hScrlBar;
-BOOL InRSPCommandsWindow;
+Boolean InRSPCommandsWindow;
 char CommandName[100];
 DWORD Stepping_Commands, WaitingForStep;
 
@@ -129,7 +132,7 @@ int DisplayRSPCommand (DWORD location, int InsertPos)
 {
 	uint32_t OpCode;
 	DWORD LinesUsed = 1, status;
-	BOOL Redraw = FALSE;
+    Boolean Redraw = FALSE;
 
 	RSP_LW_IMEM(location, &OpCode);
 
@@ -194,9 +197,23 @@ void DumpRSPCode (void)
 	SetFilePointer(hLogFile,0,NULL,FILE_BEGIN);
 
 	for (location = 0; location < 0x1000; location += 4) {
+		unsigned int characters_to_write;
+		int characters_converted;
+
 		RSP_LW_IMEM(location, &OpCode);
-		sprintf(string," 0x%03X\t%s\r\n",location, RSPOpcodeName ( OpCode, location ));
-		WriteFile( hLogFile,string,strlen(string),&dwWritten,NULL );
+		characters_converted = sprintf(
+			&string[0],
+			" 0x%03X\t%s\r\n",
+			location,
+			RSPOpcodeName(OpCode, location)
+		);
+
+		if (characters_converted < 0) {
+			DisplayError("Failed to sprintf IMEM from 0x%03X.", location);
+			break;
+		}
+		characters_to_write = (unsigned)characters_converted;
+		WriteFile(hLogFile, string, characters_to_write, &dwWritten, NULL);
 	}
 	CloseHandle(hLogFile);
 }
@@ -235,9 +252,23 @@ void DumpRSPData (void)
 
 	for (location = 0; location < 0x1000; location += 4)
 	{
+		unsigned int characters_to_write;
+		int characters_converted;
+
 		RSP_LW_DMEM(location, &value);
-		sprintf(string," 0x%03X\t0x%08X\r\n", location, value);
-		WriteFile( hLogFile,string,strlen(string),&dwWritten,NULL );
+		characters_converted = sprintf(
+			&string[0],
+			" 0x%03X\t0x%08X\r\n",
+			location,
+			value
+		);
+
+		if (characters_converted < 0) {
+			DisplayError("Failed to sprintf DMEM from 0x%03X.", location);
+			break;
+		}
+		characters_to_write = (unsigned)characters_converted;
+		WriteFile(hLogFile, string, characters_to_write, &dwWritten, NULL);
 	}
 	CloseHandle(hLogFile);
 }
@@ -245,6 +276,7 @@ void DumpRSPData (void)
 void DrawRSPCommand ( LPARAM lParam )
 {
 	char Command[150], Offset[30], Instruction[30], Arguments[40];
+	int printed_offset, printed_instruction, printed_arguments;
 	LPDRAWITEMSTRUCT ditem;
 	COLORREF oldColor = {0};
 	int ResetColor;
@@ -258,26 +290,31 @@ void DrawRSPCommand ( LPARAM lParam )
 	if (strchr(Command,'\t'))
 	{
 		p1 = strchr(Command,'\t');
-		sprintf(Offset,"%.*s",p1 - Command, Command);
+		printed_offset = sprintf(Offset, "%.*s", p1 - Command, Command);
 		p1++;
 		if (strchr(p1,'\t'))
 		{
 			p2 = strchr(p1,'\t');
-			sprintf(Instruction,"%.*s",p2 - p1, p1);
-			sprintf(Arguments,"%s",p2 + 1);
+			printed_instruction = sprintf(Instruction, "%.*s", p2 - p1, p1);
+			printed_arguments   = sprintf(Arguments, "%s", p2 + 1);
 		}
 		else
 		{
-			sprintf(Instruction,"%s",p1);
-			sprintf(Arguments,"\0");
+			printed_instruction = sprintf(Instruction, "%s", p1);
+			printed_arguments   = sprintf(Arguments, "\0");
 		}
-		sprintf(Command,"\0");
+		Command[0] = '\0';
 	}
 	else
 	{
-		sprintf(Offset,"\0");
-		sprintf(Instruction,"\0");
-		sprintf(Arguments,"\0");
+		printed_offset      = sprintf(Offset, "\0");
+		printed_instruction = sprintf(Instruction, "\0");
+		printed_arguments   = sprintf(Arguments, "\0");
+	}
+
+	if (printed_offset < 0 || printed_instruction < 0 || printed_arguments < 0)
+	{
+		DisplayError("Failed to sprintf from item %u.", ditem -> itemID);
 	}
 
 	if (*PrgCount == RSPCommandLine[ditem->itemID].Location)
@@ -308,23 +345,43 @@ void DrawRSPCommand ( LPARAM lParam )
 	FillRect( ditem->hDC, &ditem->rcItem,hBrush);
 	SetBkMode( ditem->hDC, TRANSPARENT );
 
-	if (strlen (Command) == 0 )
+	if (Command[0] == '\0')
 	{
 		SetRect(&TextRect,ditem->rcItem.left,ditem->rcItem.top, ditem->rcItem.left + 83,
 			ditem->rcItem.bottom);
-		DrawText(ditem->hDC,Offset,strlen(Offset), &TextRect,DT_SINGLELINE | DT_VCENTER);
+		DrawText(
+			ditem->hDC,
+			&Offset[0], printed_offset,
+			&TextRect,
+			DT_SINGLELINE | DT_VCENTER
+		);
 
 		SetRect(&TextRect,ditem->rcItem.left + 83,ditem->rcItem.top, ditem->rcItem.left + 165,
 			ditem->rcItem.bottom);
-		DrawText(ditem->hDC,Instruction,strlen(Instruction), &TextRect,DT_SINGLELINE | DT_VCENTER);
+		DrawText(
+			ditem->hDC,
+			&Instruction[0], printed_instruction,
+			&TextRect,
+			DT_SINGLELINE | DT_VCENTER
+		);
 
 		SetRect(&TextRect,ditem->rcItem.left + 165,ditem->rcItem.top, ditem->rcItem.right,
 			ditem->rcItem.bottom);
-		DrawText(ditem->hDC,Arguments,strlen(Arguments), &TextRect,DT_SINGLELINE | DT_VCENTER);
+		DrawText(
+			ditem->hDC,
+			&Arguments[0], printed_arguments,
+			&TextRect,
+			DT_SINGLELINE | DT_VCENTER
+		);
 	}
 	else
 	{
-		DrawText(ditem->hDC,Command,strlen(Command), &ditem->rcItem,DT_SINGLELINE | DT_VCENTER);
+		DrawText(
+			ditem->hDC,
+			&Command[0], (signed int)strlen(Command),
+			&ditem->rcItem,
+			DT_SINGLELINE | DT_VCENTER
+		);
 	}
 
 	if (ResetColor == TRUE) {
@@ -468,8 +525,10 @@ LRESULT CALLBACK RSP_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 		case IDC_LIST:
 			if (HIWORD(wParam) == LBN_DBLCLK )
 			{
-				DWORD Location, Selected;
-				Selected = SendMessage(hList,LB_GETCURSEL,(WPARAM)0, (LPARAM)0);
+				LRESULT Selected;
+				DWORD Location;
+
+				Selected = SendMessage(hList, LB_GETCURSEL, 0, 0);
 				Location = RSPCommandLine[Selected].Location;
 				if (Location != (DWORD)-1)
 				{
@@ -1090,11 +1149,12 @@ char * RSPLc2Name ( DWORD OpCode, DWORD PC )
 	{
 		sprintf(
 			CommandName,
-			"%s\t$v%d[%d], 0x%04X(%s)",
+			"%s\t$v%d[%d], %c0x%03X(%s)",
 			mnemonics_lwc2[command.rd],
 			command.rt,
 			command.del,
-			command.voffset,
+			(command.voffset < 0) ? '-' : '+',
+			abs(command.voffset),
 			GPR_Name(command.base)
 		);
 	}
@@ -1123,11 +1183,12 @@ char * RSPSc2Name ( DWORD OpCode, DWORD PC )
 	{
 		sprintf(
 			CommandName,
-			"%s\t$v%d[%d], 0x%04X(%s)",
+			"%s\t$v%d[%d], %c0x%03X(%s)",
 			mnemonics_swc2[command.rd],
 			command.rt,
 			command.del,
-			command.voffset,
+			(command.voffset < 0) ? '-' : '+',
+			abs(command.voffset),
 			GPR_Name(command.base)
 		);
 	}
@@ -1224,10 +1285,11 @@ char * RSPOpcodeName ( DWORD OpCode, DWORD PC )
 	case RSP_SB:
 	case RSP_SH:
 	case RSP_SW:
-		sprintf(CommandName, "%s\t%s, 0x%04X(%s)",
+		sprintf(CommandName, "%s\t%s, %c0x%04X(%s)",
 			mnemonics_primary[command.op],
 			GPR_Name(command.rt),
-			command.offset,
+			((int16_t)command.offset < 0) ? '-' : '+',
+			abs((int16_t)command.offset),
 			GPR_Name(command.base)
 		);
 		break;

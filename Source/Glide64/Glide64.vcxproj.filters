@@ -121,13 +121,15 @@
     <ClInclude Include="DepthBufferRender.h" />
     <ClInclude Include="Ext_TxFilter.h" />
     <ClInclude Include="FBtoScreen.h" />
-    <ClInclude Include="Gfx #1.3.h" />
     <ClInclude Include="GlideExtensions.h" />
     <ClInclude Include="Keys.h" />
     <ClInclude Include="rdp.h" />
     <ClInclude Include="TexBuffer.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Version.h" />
+    <ClInclude Include="Gfx_1.3.h" />
+    <ClInclude Include="trace.h" />
+    <ClInclude Include="Settings.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CRC.cpp">
@@ -136,25 +138,22 @@
     <ClCompile Include="TexCache.cpp">
       <Filter>Texture</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.asm.cpp">
-      <Filter>Texture</Filter>
-    </ClCompile>
     <ClCompile Include="Config.cpp">
       <Filter>Config</Filter>
     </ClCompile>
     <ClCompile Include="3dmath.cpp" />
-    <ClCompile Include="3dmathSIMD.asm.cpp" />
     <ClCompile Include="Combine.cpp" />
     <ClCompile Include="Debugger.cpp" />
     <ClCompile Include="DepthBufferRender.cpp" />
     <ClCompile Include="Ext_TxFilter.cpp" />
     <ClCompile Include="FBtoScreen.cpp" />
-    <ClCompile Include="FixedPoint.asm.cpp" />
     <ClCompile Include="Keys.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="rdp.cpp" />
     <ClCompile Include="TexBuffer.cpp" />
     <ClCompile Include="Util.cpp" />
+    <ClCompile Include="trace.cpp" />
+    <ClCompile Include="Settings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="gpl.txt">

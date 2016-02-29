@@ -24,7 +24,7 @@
 #ifndef __EXT_TXFILTER_H__
 #define __EXT_TXFILTER_H__
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #define TXHMODULE HMODULE
 #define DLOPEN(a) LoadLibraryW(a)
@@ -168,8 +168,8 @@ boolean ext_ghq_init(int maxwidth, /* maximum texture width supported by hardwar
                      int maxbpp,   /* maximum texture bpp supported by hardware */
                      int options,  /* options */
                      int cachesize,/* cache textures to system memory */
-                     const wchar_t *path,   /* plugin directory. must be smaller than MAX_PATH */
-                     const wchar_t *ident,  /* name of ROM. must be no longer than 64 in character. */
+                     const char *path,   /* plugin directory. must be smaller than MAX_PATH */
+                     const char *ident,  /* name of ROM. must be no longer than 64 in character. */
                      dispInfoFuncExt callback /* callback function to display info */
                      );
 

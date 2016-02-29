@@ -36,7 +36,7 @@
 
 // ProtoTypes //
 bool prepareHeap();
-void FillControls(CONTROL Controls[]);
+void FillControls(CONTROL * Controls);
 void InitiatePaks( bool bInitialize );
 void DoShortcut( int iPlayer, int iShortcut );
 DWORD WINAPI MsgThreadFunction( LPVOID lpParam );
@@ -156,7 +156,7 @@ EXPORT void CALL GetDllInfo ( PLUGIN_INFO* PluginInfo )
 	sprintf(PluginInfo->Name,"N-Rage For PJ64: %s",VER_FILE_VERSION_STR);
 #endif
 	PluginInfo->Type = PLUGIN_TYPE_CONTROLLER;
-	PluginInfo->Version = 0x0101;
+	PluginInfo->Version = SPECS_VERSION;
 }
 
 /******************************************************************
@@ -311,15 +311,36 @@ EXPORT void CALL DllTest ( HWND hParent )
 			  the emulator to know how to handle each controller.
   output:   none
 *******************************************************************/  
-EXPORT void CALL InitiateControllers (CONTROL_INFO * ControlInfo)
+EXPORT void CALL InitiateControllers(
+#if (SPECS_VERSION < 0x0101)
+    void * hMainWindow, CONTROL Controls[4]
+#elif (SPECS_VERSION == 0x0101)
+    CONTROL_INFO ControlInfo
+#else
+    CONTROL_INFO * ControlInfo
+#endif
+)
 {
 	DebugWriteA("CALLED: InitiateControllers\n");
 	if( !prepareHeap())
 		return;
 
-	g_strEmuInfo.hMainWindow = ControlInfo->hMainWindow;
-//	g_strEmuInfo.MemoryBswaped = ControlInfo->MemoryBswaped;
-//	g_strEmuInfo.HEADER = ControlInfo->HEADER;
+#if (SPECS_VERSION < 0x0101)
+    g_strEmuInfo.controllers   = &Controls[0];
+    g_strEmuInfo.hMainWindow   = hMainWindow;
+ // g_strEmuInfo.MemoryBswaped = TRUE; // Or FALSE.  Really does not matter.
+ // g_strEmuInfo.HEADER        = NULL;
+#elif (SPECS_VERSION == 0x0101)
+    g_strEmuInfo.controllers   = ControlInfo.Controls;
+    g_strEmuInfo.hMainWindow   = ControlInfo.hMainWindow;
+ // g_strEmuInfo.MemoryBswaped = ControlInfo.MemoryBswaped;
+ // g_strEmuInfo.HEADER        = ControlInfo.HEADER;
+#else
+    g_strEmuInfo.controllers   = ControlInfo->Controls;
+    g_strEmuInfo.hMainWindow   = ControlInfo->hMainWindow;
+ // g_strEmuInfo.MemoryBswaped = ControlInfo->MemoryBswaped;
+ // g_strEmuInfo.HEADER        = ControlInfo->HEADER;
+#endif
 	// UNDONE: Instead of just storing the header, figure out what ROM we're running and save that information somewhere
 
 	// The emulator expects us to tell what controllers are plugged in and what their paks are at this point.
@@ -430,8 +451,7 @@ EXPORT void CALL InitiateControllers (CONTROL_INFO * ControlInfo)
 
 	LeaveCriticalSection( &g_critical );
 
-	FillControls(ControlInfo->Controls);
-
+	FillControls(g_strEmuInfo.controllers);
 	return;
 } // end InitiateControllers
 
@@ -884,7 +904,7 @@ void InitiatePaks( bool bInitialize )
 //		Unfortunately the spec doesn't work that way.  Fixed the func and changed the func name to something that makes more sense.
 // FillControls takes a Controls array from InitiateControllers and fills it with what we know about whether
 //		a controller is plugged in, accepting raw data, and what type of pak is plugged in.
-void FillControls(CONTROL Controls[4])
+void FillControls(CONTROL * Controls)
 {
 	for( int i = 4-1; i >= 0; i-- )
 	{

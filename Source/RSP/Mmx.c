@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -26,7 +26,7 @@
 
 #include <windows.h>
 #include <stdio.h>
-#include "rsp.h"
+#include "Rsp.h"
 #include "x86.h"
 #include "memory.h"
 #include "RSP registers.h"
@@ -35,6 +35,8 @@
 #define PUTDST8(dest,value)  (*((BYTE *)(dest))=(BYTE)(value)); dest += 1;
 #define PUTDST16(dest,value) (*((WORD *)(dest))=(WORD)(value)); dest += 2;
 #define PUTDST32(dest,value) (*((DWORD *)(dest))=(DWORD)(value)); dest += 4;
+#define PUTDSTPTR(dest, value) \
+    *(void **)(dest) = (void *)(value); dest += sizeof(void *);
 
 char * mmx_Strings[8] = {
 	"mm0", "mm1", "mm2", "mm3", 
@@ -96,7 +98,7 @@ void MmxMoveQwordVariableToReg(int Dest, void *Variable, char *VariableName) {
 
 	PUTDST16(RecompPos,0x6f0f);
 	PUTDST8(RecompPos, x86Command);
-	PUTDST32(RecompPos,Variable);
+	PUTDSTPTR(RecompPos, Variable);
 }
 
 void MmxMoveQwordRegToVariable(int Dest, void *Variable, char *VariableName) {
@@ -117,7 +119,7 @@ void MmxMoveQwordRegToVariable(int Dest, void *Variable, char *VariableName) {
 
 	PUTDST16(RecompPos,0x7f0f);
 	PUTDST8(RecompPos, x86Command);
-	PUTDST32(RecompPos,Variable);
+	PUTDSTPTR(RecompPos, Variable);
 }
 
 void MmxPorRegToReg(int Dest, int Source) {
@@ -167,7 +169,7 @@ void MmxPorVariableToReg(void * Variable, char * VariableName, int Dest) {
 
 	PUTDST16(RecompPos,0xeb0f);
 	PUTDST8(RecompPos, x86Command);
-	PUTDST32(RecompPos,Variable);
+	PUTDSTPTR(RecompPos, Variable);
 }
 
 void MmxPandRegToReg(int Dest, int Source) {
@@ -217,7 +219,7 @@ void MmxPandVariableToReg(void * Variable, char * VariableName, int Dest) {
 
 	PUTDST16(RecompPos,0xdb0f);
 	PUTDST8(RecompPos, x86Command);
-	PUTDST32(RecompPos,Variable);
+	PUTDSTPTR(RecompPos, Variable);
 }
 
 void MmxPandnRegToReg(int Dest, int Source) {
@@ -296,7 +298,7 @@ void MmxShuffleMemoryToReg(int Dest, void * Variable, char * VariableName, BYTE 
 
 	PUTDST16(RecompPos,0x700f);
 	PUTDST8(RecompPos, x86Command);
-	PUTDST32(RecompPos,Variable);
+	PUTDSTPTR(RecompPos, Variable);
 	PUTDST8(RecompPos, Immed);	
 }
 
@@ -375,7 +377,7 @@ void MmxPmullwVariableToReg(int Dest, void * Variable, char * VariableName) {
 	}
 	PUTDST16(RecompPos,0xd50f);
 	PUTDST8(RecompPos, x86Command);
-	PUTDST32(RecompPos, Variable);
+	PUTDSTPTR(RecompPos, Variable);
 }
 
 void MmxPmulhuwRegToReg(int Dest, int Source) {
@@ -453,7 +455,7 @@ void MmxPmulhwRegToVariable(int Dest, void * Variable, char * VariableName) {
 	}
 	PUTDST16(RecompPos,0xe50f);
 	PUTDST8(RecompPos, x86Command);
-	PUTDST32(RecompPos, Variable);
+	PUTDSTPTR(RecompPos, Variable);
 }
 
 
@@ -596,7 +598,7 @@ void MmxPaddswVariableToReg(int Dest, void * Variable, char * VariableName) {
 
 	PUTDST16(RecompPos,0xed0f);
 	PUTDST8(RecompPos, x86Command);
-	PUTDST32(RecompPos, Variable);
+	PUTDSTPTR(RecompPos, Variable);
 }
 
 void MmxPsubswVariableToReg(int Dest, void * Variable, char * VariableName) {
@@ -617,7 +619,7 @@ void MmxPsubswVariableToReg(int Dest, void * Variable, char * VariableName) {
 
 	PUTDST16(RecompPos,0xe90f);
 	PUTDST8(RecompPos, x86Command);
-	PUTDST32(RecompPos, Variable);
+	PUTDSTPTR(RecompPos, Variable);
 }
 
 void MmxPaddwRegToReg(int Dest, int Source) {

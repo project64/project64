@@ -133,7 +133,7 @@ TxImage::readPNG(FILE* fp, int* width, int* height, uint16* format)
 
   /* expand 1,2,4 bit gray scale to 8 bit gray scale */
   if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
-    png_set_expand_gray_1_2_4_to_8(png_ptr);
+    png_set_expand(png_ptr);
 
   /* convert gray scale or gray scale + alpha to rgb color */
   if (color_type == PNG_COLOR_TYPE_GRAY ||
@@ -496,7 +496,8 @@ TxImage::readBMP(FILE* fp, int* width, int* height, uint16* format)
   uint8 *image = NULL;
   uint8 *image_row = NULL;
   uint8 *tmpimage = NULL;
-  int row_bytes, pos, i, j;
+  unsigned int row_bytes, pos;
+  int i, j;
   /* Windows Bitmap */
   BITMAPFILEHEADER bmp_fhdr;
   BITMAPINFOHEADER bmp_ihdr;
@@ -560,7 +561,7 @@ TxImage::readBMP(FILE* fp, int* width, int* height, uint16* format)
         fseek(fp, pos, SEEK_SET);
         fread(image_row, row_bytes, 1, fp);
         /* expand 4bpp to 8bpp. stuff 4bit values into 8bit comps. */
-        for (j = 0; j < row_bytes; j++) {
+        for (j = 0; j < (int) row_bytes; j++) {
           tmpimage[j << 1] = image_row[j] & 0x0f;
           tmpimage[(j << 1) + 1] = (image_row[j] & 0xf0) >> 4;
         }

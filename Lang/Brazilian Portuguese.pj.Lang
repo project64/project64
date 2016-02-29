@@ -5,17 +5,17 @@
 #1  #  "Português Brasileiro"	// LANGUAGE ID
 #2  #  "Project64 team"			// Author
 #3  #  "2.2"					// Version
-#4  #  "Abril, 2015"			// Date
+#4  #  "Fevereiro, 2016"			// Date
 
 //About DLL Dialog
 #5  #  "Idioma Atual"
 #6  #  "Autor"
 #7  #  "Versão"
 #8  #  "Data"
-#9  #  "Visitar a Home Page"
-#10 #  "Base de Dados da ROM (.RDB)"
-#11 #  "Arquivo do Código de Trapaças (.CHT)"
-#12 #  "Informação Extendida da ROM (.RDX)"
+#9  #  "Visitar o Website"
+#10 #  "Banco de Dados das ROMs (.RDB)"
+#11 #  "Arquivo de Códigos de Trapaça (.CHT)"
+#12 #  "Informação Extendida das ROMs (.RDX)"
 
 //About INI title
 #20 #  "Sobre os Arquivos de Configuração"
@@ -30,7 +30,7 @@
 #103#  "Iniciar a Emulação"
 #104#  "&Finalizar a Emulação"
 #105#  "Escolher o Diretório das ROMs..."
-#106#  "Atualizar a Lista das ROMs"
+#106#  "Atualizar Lista"
 #107#  "ROMs Recentes"
 #108#  "Diretórios das ROMs Recentes"
 #109#  "S&air"
@@ -74,7 +74,7 @@
 #181#  "Sobre os Arqui&vos de Configuração"
 #182#  "&Sobre o Project 64"
 #183# "Fórum de &Suporte"
-#184# "&Homepage"
+#184# "&Website"
 
 //Current Save Slot menu
 #190#  "Padrão"
@@ -88,13 +88,15 @@
 #198#  "Slot 8"
 #199#  "Slot 9"
 #200#  "Slot 10"
+#201#  "Save Slot (%ws) selecionado"
 
 //Pop up Menu
-#210#  "Jogar o Jogo"
-#211#  "Informação da ROM"
+#210#  "Jogar"
+#211#  "Informações da ROM"
 #212#  "Editar as Configurações do Jogo"
 #213#  "Editar as Trapaças"
 #214#  "Plugin Gráfico"
+#215#  "Jogar com Disco"
 
 //Alternate Name to save Slot
 #220#  "Slot Padrão"
@@ -117,18 +119,18 @@
 #254#  "Selecionar o Diretório das ROMs"
 #255#  "Atualizar a lista de ROMs atuais no Explorador de ROMs"
 #256#  "Sair deste aplicativo"
-#257#  "Reiniciar a imagem da ROM atual (recarregar quaisquer mudanças nas configurações)"
-#258#  "Pausar/Resumir a emulação da ROM atual em execução"
+#257#  "Reiniciar a imagem da ROM em execução (recarregar quaisquer mudanças nas configurações)"
+#258#  "Pausar/Resumir a emulação da ROM atualmente em execução"
 #259#  "Gerar uma imagem Bitmap da Tela atual"
 #260#  "Limitar o FPS para a velocidade correta do n64"
-#261#  "Criar um instante do sistema atual para o salvamento rápido"
-#262#  "Criar um instante do sistema atual com a seleção do local do arquivo"
-#263#  "Carregar um salvamento do instante rápido"
-#264#  "Escolher um arquivo de salvamento do instante para carregar"
+#261#  "Salvar o atual estado do sistema"
+#262#  "Salvar o atual estado do sistema em um local específico"
+#263#  "Carregar um estado de sistema salvo"
+#264#  "Escolher um estado de sistema salvo para carregar"
 #265#  "Ativar/Desativar as trapaças do Game shark"
 #266#  "O botão do Game shark é usado com trapaças especifícas"
-#267#  "Mudar a emulação do modo de janela para tela cheia"
-#268#  "Fazer a janela ficar acima de todas as outras janelas"
+#267#  "Mudar o modo de janela para tela cheia"
+#268#  "Manter a janela atual acima de todas as outras janelas"
 #269#  "Mudar as configurações dentro do plugin dos Gráficos"
 #270#  "Mudar as configurações dentro do plugin de Áudio"
 #271#  "Mudar as configurações dentro do plugin do Controle (ex: definir as teclas)"
@@ -139,7 +141,7 @@
 #276#  "Visualizar o FAQ do aplicativo"
 #278#  "Sobre o aplicativo e os autores"
 #277#  "Sobre os autores dos arquivos de suporte"
-#279#  "Abrir esta imagem da ROM aberta anteriormente"
+#279#  "Abrir ROM anteriormente aberta"
 #280#  "Escolher este diretório como seu diretório das ROMs"
 #281#  "Mudar o Aplicativo para usar este idioma"
 #282#  "Escolher este local para salvamento rápido"
@@ -177,7 +179,7 @@
 #320#  "Selecionar o diretório atual das ROMs"
 
 //Messages
-#340#  "ROM ruim? Use o GoodN64 & procure por um RDB atualizado"
+#340#  "ROM ruim? Use o GoodN64 & verifique se o RDB esta atualizado."
 
 /*********************************************************************************
 * Options                                                                        *
@@ -230,7 +232,7 @@
 #463#  "Lembrar as trapaças selecionadas"
 #464#  "Desativar a proteção de tela quando executar uma ROM"
 #465#  "Exibir a velocidade"
-#466#  "Forma de exibição da velocidade:"
+#466#  "Display de velocidade:"
 #467#  "Verificar se o Project64 já está em execução"
 
 //ROM Browser Tab
@@ -241,7 +243,7 @@
 #484#  "Usar Explorador de ROMs"
 #485#  "Usar repetição de diretório"
 #486#  "Campos disponíveis:"
-#487#  "Mostrar os campos nesta ordem:"
+#487#  "Ordem dos campos:"
 #488#  "Adicionar ->"
 #489#  "<- Remover"
 #490#  "Pra Cima"
@@ -254,7 +256,7 @@
 #502#  "Estilo do core da CPU:"
 #503#  "Método do código self-mod"
 #504#  "Tamanho padrão da memória:"
-#505#  "Ligamento de blocos avançado"
+#505#  "ABL"
 #506#  "Iniciar a emulação quando a ROM está aberta"
 #507#  "Sempre sobrescrever as configurações padrão com aquelas do RDB"
 #508#  "Automaticamente comprimir os save states"
@@ -282,10 +284,10 @@
 #533#  "Timing do áudio fixo"
 #534#  "Método de procura de função:"
 #535#  "Método de self-mod personalizado"
-#536#  "Sincronizar usando o áudio"
+#536#  "Sincronizar com o áudio"
 #537#  "Contagem de IA por byte"
 #538#  "Engine de 32 bits"
-#539#  "Atrasar a interrupção do DP"
+#539#  "Atrasar o DP interrupt"
 
 //Core Styles
 #540#  "Interpretador"
@@ -315,10 +317,10 @@
 #601#  "Desligado"
 
 //Save Type
-#620#  "Usar o Primeiro Tipo de Salvamento Usado"
+#620#  "Usar o primeiro tipo de salvamento utilizado"
 #621#  "4-kbit EEPROM"
 #622#  "16-kbit EEPROM"
-#623#  "32-kbyte SRAM"
+#623#  "SRAM"
 #624#  "Flash RAM"
 
 //Shell Integration Tab
@@ -440,33 +442,33 @@
 *********************************************************************************/
 #2000#  "*** CPU PAUSADA ***"
 #2001#  "CPU Resumida"
-#2002#  "Em um loop permanente do qual não se pode sair. \nA emulação vai parar agora. \n\nVerifique a ROM e as configurações da ROM."
+#2002#  "Em um loop permanente do qual não se pode sair.\nA emulação vai parar agora.\n\nVerifique a ROM e as configurações da ROM."
 #2003#  "Falha ao alocar a Memória"
-#2004#  "O plugin de vídeo padrão ou selecionado está faltando ou é inválido. \n\nVocê precisa ir em Configurações e selecionar um plugin de vídeo (gráficos).\nVerifique se você tem ao menos um arquivo de plugin compatível na sua pasta de plugins."
-#2005#  "O plugin de áudio padrão ou selecionado está faltando ou é inválido. \n\nVocê precisa ir em Configurações e selecionar um plugin de áudio (som).\nVerifique se você tem ao menos um arquivo de plugin compatível na sua pasta de plugins."
-#2006#  "O plugin de RSP padrão ou selecionado está faltando ou é inválido. \n\nVocê precisa ir em Configurações e selecionar um plugin de RSP (Reality Signal Processor).\nVerifique se você tem ao menos um arquivo de plugin compatível na sua pasta de plugins."
-#2007#  "O plugin de entrada padrão ou selecionado está faltando ou é inválido. \n\nVocê precisa ir em Configurações e selecionar um plugin de entrada (controle).\nVerifique se você tem ao menos um arquivo de plugin compatível na sua pasta de plugins."
+#2004#  "O plugin de vídeo padrão ou selecionado está faltando ou é inválido.\n\nVocê precisa ir em Configurações e selecionar um plugin de vídeo (gráficos).\nVerifique se você tem ao menos um arquivo de plugin compatível na sua pasta de plugins."
+#2005#  "O plugin de áudio padrão ou selecionado está faltando ou é inválido.\n\nVocê precisa ir em Configurações e selecionar um plugin de áudio (som).\nVerifique se você tem ao menos um arquivo de plugin compatível na sua pasta de plugins."
+#2006#  "O plugin de RSP padrão ou selecionado está faltando ou é inválido.\n\nVocê precisa ir em Configurações e selecionar um plugin de RSP (Reality Signal Processor).\nVerifique se você tem ao menos um arquivo de plugin compatível na sua pasta de plugins."
+#2007#  "O plugin de entrada padrão ou selecionado está faltando ou é inválido.\n\nVocê precisa ir em Configurações e selecionar um plugin de entrada (controle).\nVerifique se você tem ao menos um arquivo de plugin compatível na sua pasta de plugins."
 #2008#  "Falha ao carregar o plugin:"
 #2009#  "Falha ao carregar a palavra\n\nVerifique a ROM e as configurações da ROM."
 #2010#  "Falha ao abrir o Arquivo do Salvamento"
 #2011#  "Falha ao abrir o EEPROM"
 #2012#  "Falha ao abrir a flash RAM"
 #2013#  "Falha ao abrir o mempak"
-#2014#  "A tentativa de abrir o arquivo zip falhou. \n\nProvavelmente um arquivo zip corrompido - tente descompactar a ROM manualmente."
+#2014#  "A tentativa de abrir o arquivo zip falhou.\n\nProvavelmente um arquivo zip corrompido - tente descompactar a ROM manualmente."
 #2015#  "A tentativa de abrir o arquivo falhou."
 #2016#  "Um erro ocorreu quando tentava abrir o arquivo zip."
-#2017#  "O arquivo carregado não aparenta ser uma ROM de N64 válida. \n\nVerifique suas ROMs com o GoodN64."
+#2017#  "O arquivo carregado não aparenta ser uma ROM de N64 válida.\n\nVerifique suas ROMs com o GoodN64."
 #2018#  "País desconhecido"
 #2019#  "Chip Cic desconhecido"
 #2020#  "Formato do arquivo desconhecido"
 #2021#  "Ação de memória desconhecida\n\nEmulação parada"
 #2022#  "OpCode R4300i não manejado em"
 #2023#  "Executando do espaço não-mapeado.\n\nVerifique a ROM e as configurações da ROM."
-#2024#  "Este save state não aparenta combinar com a ROM em execução. \n\nOs save states devem ser salvos & carregados entre ROMs 100% idênticas, \nEm particular a REGIÃO e VERSÃO precisam ser as mesmas. \nCarregar este state provavelmente causaria um crash no jogo e/ou no emulador. \n\nVocê tem certeza que você quer continuar carregando?"
+#2024#  "Este save state não aparenta combinar com a ROM em execução.\n\nOs save states devem ser salvos & carregados entre ROMs 100% idênticas,\nEm particular a REGIÃO e VERSÃO precisam ser as mesmas. \nCarregar este state provavelmente causaria um crash no jogo e/ou no emulador. \n\nVocê tem certeza que você quer continuar carregando?"
 #2025#  "Erro"
 #2026#  "Sequência de Copyright não encontrada no LUT. O jogo não mais funcionará."
 #2027#  "Falha da Proteção Contra Cópia"
-#2028#  "Mudar um plugin requer que o Project64 resete uma ROM em execução. \nSe você não quer perder seu lugar, responda Não e faça um save state primeiro. \n\nMudar os plugins e resetar a ROM agora?"
+#2028#  "Mudar um plugin requer que o Project64 resete uma ROM em execução.\nSe você não quer perder seu lugar, responda Não e faça um save state primeiro.\n\nMudar os plugins e resetar a ROM agora?"
 #2029#  "Mudar os Plugins"
 #2030#  "Emulação encerrada"
 #2031#  "Emulação iniciada"

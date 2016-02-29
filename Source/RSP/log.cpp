@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -23,10 +23,12 @@
  * should be forwarded to them so if they want them.
  *
  */
+
+#include <stdio.h>
 #include <windows.h>
-#include <Common/std string.h>
-#include <Common/File Class.h>
-#include <Common/Log Class.h>
+#include <Common/StdString.h>
+#include <Common/FileClass.h>
+#include <Common/LogClass.h>
 #include <Common/path.h>
 
 extern "C" {
@@ -208,7 +210,6 @@ void RDP_LogLoc   ( DWORD /*PC*/ )
 #ifdef old
 
 #include <windows.h>
-#include <stdio.h>
 #include "RSP Registers.h"
 #include "log.h"
 

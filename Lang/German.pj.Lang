@@ -269,7 +269,7 @@
 #620#  "Automatisch"
 #621#  "4-kbit EEPROM"
 #622#  "16-kbit EEPROM"
-#623#  "32-kbyte SRAM"
+#623#  "SRAM"
 #624#  "128-kbyte flash RAM"
 
 //Shell Intergration Tab

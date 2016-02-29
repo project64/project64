@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -27,29 +27,28 @@
 #ifndef __Types_h
 #define __Types_h
 
-/*
- * Some versions of Microsoft Visual C/++ compilers before Visual Studio 2010
- * have <stdint.h> removed in favor of these nonstandard built-in types:
- */
-#if defined(_MSC_VER) && (_MSC_VER < 1600)
-typedef signed __int8           int8_t;
-typedef signed __int16          int16_t;
-typedef signed __int32          int32_t;
-typedef signed __int64          int64_t;
-
-typedef unsigned __int8         uint8_t;
-typedef unsigned __int16        uint16_t;
-typedef unsigned __int32        uint32_t;
-typedef unsigned __int64        uint64_t;
-#else
-#include <stdint.h>
-#endif
+#include <Common/stdtypes.h>
 
 /*
  * pointer to RSP operation code functions or "func"
  * This is the type of all RSP interpreter and recompiler functions.
  */
 typedef void(*p_func)(void);
+
+/*
+ * `BOOL` is Windows-specific so is going to tend to be avoided.
+ * `int` is the exact replacement.
+ *
+ * However, saying "int" all the time for true/false is a little ambiguous.
+ *
+ * Maybe in the future, with C++ (or C99) rewrites, we can switch to `bool`.
+ * Until then, a simple type definition will help emphasize true/false logic.
+ */
+typedef int Boolean;
+#if !defined(FALSE) && !defined(TRUE)
+#define FALSE           0
+#define TRUE            1
+#endif
 
 typedef union tagUWORD {
     int32_t     W;

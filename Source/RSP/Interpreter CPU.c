@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <float.h>
 #include "breakpoint.h"
-#include "RSP.h"
+#include "Rsp.h"
 #include "Cpu.h"
 #include "Interpreter Ops.h"
 #include "Interpreter CPU.h"

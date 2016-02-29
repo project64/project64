@@ -45,29 +45,29 @@
 //
 //****************************************************************
 
-#include "Gfx #1.3.h"
+#include "Gfx_1.3.h"
 #include "rdp.h"
 #include "DepthBufferRender.h"
 
-wxUint16 * zLUT = 0;
+uint16_t * zLUT = 0;
 
 void ZLUT_init()
 {
   if (zLUT)
     return;
-  zLUT = new wxUint16[0x40000];
+  zLUT = new uint16_t[0x40000];
   for(int i=0; i<0x40000; i++)
   {
-    wxUint32 exponent = 0;
-    wxUint32 testbit = 1 << 17;
+    uint32_t exponent = 0;
+    uint32_t testbit = 1 << 17;
     while((i & testbit) && (exponent < 7))
     {
       exponent++;
       testbit = 1 << (17 - exponent);
     }
     
-    wxUint32 mantissa = (i >> (6 - (6 < exponent ? 6 : exponent))) & 0x7ff;
-    zLUT[i] = (wxUint16)(((exponent << 11) | mantissa) << 2);
+    uint32_t mantissa = (i >> (6 - (6 < exponent ? 6 : exponent))) & 0x7ff;
+    zLUT[i] = (uint16_t)(((exponent << 11) | mantissa) << 2);
   }
 }
 
@@ -85,9 +85,21 @@ static int right_height, left_height;
 static int right_x, right_dxdy, left_x, left_dxdy;
 static int left_z, left_dzdy;
 
-extern int imul16(int x, int y);
-extern int imul14(int x, int y);
-extern int idiv16(int x, int y);
+__inline int imul16(int x, int y)        // (x * y) >> 16
+{
+    return ((int64_t)x * (int64_t)y) >> 16;
+}
+
+__inline int imul14(int x, int y)        // (x * y) >> 14
+{
+    return ((int64_t)x * (int64_t)y) >> 14;
+}
+
+__inline int idiv16(int x, int y)        // (x << 16) / y
+{
+    x = ((int64_t)x << 16) / (int64_t)y;
+    return x;
+}
 
 __inline int iceil(int x)
 {
@@ -95,7 +107,7 @@ __inline int iceil(int x)
   return (x >> 16);
 }
 
-void RightSection(void)
+static void RightSection(void)
 {
   // Walk backwards trough the vertex array
   
@@ -230,7 +242,7 @@ void Rasterize(vertexi * vtx, int vertices, int dzdx)
     LeftSection();
   } while(left_height <= 0);
   
-  wxUint16 * destptr = (wxUint16*)(gfx.RDRAM+rdp.zimg);
+  uint16_t * destptr = (uint16_t*)(gfx.RDRAM+rdp.zimg);
   int y1 = iceil(min_y);
   if (y1 >= (int)rdp.scissor_o.lr_y) return;
   int shift;
@@ -255,7 +267,7 @@ void Rasterize(vertexi * vtx, int vertices, int dzdx)
       //draw to depth buffer
       int trueZ;
       int idx;
-      wxUint16 encodedZ;
+      uint16_t encodedZ;
       for (int x = 0; x < width; x++)
       {
         trueZ = z/8192;

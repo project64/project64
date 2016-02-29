@@ -19,6 +19,10 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+//code from http://msdn.microsoft.com/en-us/library/ee417014(VS.85).aspx
+#include <windows.h>
+#include <wbemidl.h>
+
 #include "XInputController.h"
 #include "FileAccess.h"
 #include <wchar.h>
@@ -100,10 +104,10 @@ BOOL IsXInputDevice( const GUID* pGuidProductFromDirectInput )
 						// If it does, then get the VID/PID from var.bstrVal
 						DWORD dwPid = 0, dwVid = 0;
 						WCHAR* strVid = wcsstr( var.bstrVal, L"VID_" );
-						if( strVid && wscanf_s( strVid, L"VID_%4X", &dwVid ) != 1 )
+						if (strVid && wscanf(strVid, L"VID_%4X", &dwVid) != 1)
 							dwVid = 0;
 						WCHAR* strPid = wcsstr( var.bstrVal, L"PID_" );
-						if( strPid && wscanf_s( strPid, L"PID_%4X", &dwPid ) != 1 )
+						if (strPid && wscanf(strPid, L"PID_%4X", &dwPid) != 1)
 							dwPid = 0;
 
 						// Compare the VID/PID to the DInput device
@@ -738,49 +742,49 @@ void LoadXInputConfigFromFile( FILE *file, LPXCONTROLLER gController )
 		switch( buffer[0] )
 		{
 		case 'A':
-			sscanf_s( buffer, "A=%lu", &gController->stButtons.iA ); break;
+			sscanf(buffer, "A=%lu", &gController->stButtons.iA); break;
 		case 'B':
-			sscanf_s( buffer, "B=%lu", &gController->stButtons.iB ); break;
+			sscanf(buffer, "B=%lu", &gController->stButtons.iB); break;
 		case 'C':
 			switch( buffer[1] )
 			{
 			case 'U':
-				sscanf_s( buffer, "CUp=%lu", &gController->stButtons.iCUp ); break;
+				sscanf(buffer, "CUp=%lu", &gController->stButtons.iCUp); break;
 			case 'D':
-				sscanf_s( buffer, "CDown=%lu", &gController->stButtons.iCDown ); break;
+				sscanf(buffer, "CDown=%lu", &gController->stButtons.iCDown); break;
 			case 'L':
-				sscanf_s( buffer, "CLeft=%lu", &gController->stButtons.iCLeft ); break;
+				sscanf(buffer, "CLeft=%lu", &gController->stButtons.iCLeft); break;
 			case 'R':
-				sscanf_s( buffer, "CRight=%lu", &gController->stButtons.iCRight ); break;
+				sscanf(buffer, "CRight=%lu", &gController->stButtons.iCRight); break;
 			}
 			break;
 		case 'D':
 			switch( buffer[1] )
 			{
 			case 'U':
-				sscanf_s( buffer, "DUp=%lu", &gController->stButtons.iDUp ); break;
+				sscanf(buffer, "DUp=%lu", &gController->stButtons.iDUp); break;
 			case 'D':
-				sscanf_s( buffer, "DDown=%lu", &gController->stButtons.iDDown ); break;
+				sscanf(buffer, "DDown=%lu", &gController->stButtons.iDDown); break;
 			case 'L':
-				sscanf_s( buffer, "DLeft=%lu", &gController->stButtons.iDLeft ); break;
+				sscanf(buffer, "DLeft=%lu", &gController->stButtons.iDLeft); break;
 			case 'R':
-				sscanf_s( buffer, "DRight=%lu", &gController->stButtons.iDRight ); break;
+				sscanf(buffer, "DRight=%lu", &gController->stButtons.iDRight); break;
 			}
 			break;
 		case 'L':
 			switch( buffer[1] )
 			{
 			case '=':
-				sscanf_s( buffer, "L=%lu", &gController->stButtons.iL ); break;
+				sscanf(buffer, "L=%lu", &gController->stButtons.iL); break;
 			case 'e':
 				switch( buffer[4] )
 				{
 				case 'T':
-					sscanf_s( buffer, "LeftTrigger=%lu", &gController->stAnalogs.iLeftTrigger ); break;
+					sscanf(buffer, "LeftTrigger=%lu", &gController->stAnalogs.iLeftTrigger); break;
 				case 'X':
-					sscanf_s( buffer, "LeftXAxis=%lu", &gController->stAnalogs.iLXAxis ); break;
+					sscanf(buffer, "LeftXAxis=%lu", &gController->stAnalogs.iLXAxis); break;
 				case 'Y':
-					sscanf_s( buffer, "LeftYAxis=%lu", &gController->stAnalogs.iLYAxis ); break;
+					sscanf(buffer, "LeftYAxis=%lu", &gController->stAnalogs.iLYAxis); break;
 				}
 				break;
 			}
@@ -789,28 +793,28 @@ void LoadXInputConfigFromFile( FILE *file, LPXCONTROLLER gController )
 			switch( buffer[1] )
 			{
 			case '=':
-				sscanf_s( buffer, "R=%lu", &gController->stButtons.iR ); break;
+				sscanf(buffer, "R=%lu", &gController->stButtons.iR); break;
 			case 'i':
 				switch( buffer[5] )
 				{
 				case 'T':
-					sscanf_s( buffer, "RightTrigger=%lu", &gController->stAnalogs.iRightTrigger ); break;
+					sscanf(buffer, "RightTrigger=%lu", &gController->stAnalogs.iRightTrigger); break;
 				case 'X':
-					sscanf_s( buffer, "RightXAxis=%lu", &gController->stAnalogs.iRXAxis ); break;
+					sscanf(buffer, "RightXAxis=%lu", &gController->stAnalogs.iRXAxis); break;
 				case 'Y':
-					sscanf_s( buffer, "RightYAxis=%lu", &gController->stAnalogs.iRYAxis ); break;
+					sscanf(buffer, "RightYAxis=%lu", &gController->stAnalogs.iRYAxis); break;
 				}
 				break;
 			}
 			break;
 		case 'Z':
-			sscanf_s( buffer, "Z=%lu", &gController->stButtons.iZ ); break;
+			sscanf(buffer, "Z=%lu", &gController->stButtons.iZ); break;
 		case 'S':
-			sscanf_s( buffer, "Start=%lu", &gController->stButtons.iStart ); break;
+			sscanf(buffer, "Start=%lu", &gController->stButtons.iStart); break;
 		case 'X':
-			sscanf_s( buffer, "XAxis=%lu", &gController->stButtons.iXAxis ); break;
+			sscanf(buffer, "XAxis=%lu", &gController->stButtons.iXAxis); break;
 		case 'Y':
-			sscanf_s( buffer, "YAxis=%lu", &gController->stButtons.iYAxis ); break;
+			sscanf(buffer, "YAxis=%lu", &gController->stButtons.iYAxis); break;
 		}
 	}
 

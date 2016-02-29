@@ -5,7 +5,7 @@
 
 [Setup]
 AppId={{BEB5FB69-4080-466F-96C4-F15DF271718B}
-AppName=Project 64
+AppName=Project64
 AppVersion={#AppVersion}
 DefaultDirName={pf}\Project64 2.2
 VersionInfoVersion={#AppVersion}
@@ -18,10 +18,10 @@ WizardSmallImageFile=Pj64LogoSmallImage.bmp
 DisableProgramGroupPage=yes
 DisableReadyPage=yes
 UninstallDisplayIcon={uninstallexe}
-SetupIconFile={#BaseDir}\Source\Project64\User Interface\Icons\pj64.ico
+SetupIconFile={#BaseDir}\Source\Project64\UserInterface\Icons\pj64.ico
 
 [Run]
-Filename: "{app}\Project64.exe"; Description: "{cm:LaunchProgram,{#StringChange('Project 64', '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\Project64.exe"; Description: "{cm:LaunchProgram,{#StringChange('Project64', '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
 [Files]
 Source: "{#BaseDir}\Bin\{#Configuration}\Project64.exe"; DestDir: "{app}"; Flags: ignoreversion
@@ -44,9 +44,9 @@ Name: "{app}\Screenshots"; Permissions: users-modify
 Name: "{app}\Textures"; Permissions: users-modify
 
 [Icons]
-Name: "{commonprograms}\Project 64 2.2\Project 64"; Filename: "{app}\Project64.exe"
-Name: "{commonprograms}\Project 64 2.2\Uninstall Project64 2.2"; Filename: "{uninstallexe}"; Parameters: "/LOG"
-Name: "{commonprograms}\Project 64 2.2\Support"; Filename: "http://forum.pj64-emu.com"
+Name: "{commonprograms}\Project64 2.2\Project64"; Filename: "{app}\Project64.exe"
+Name: "{commonprograms}\Project64 2.2\Uninstall Project64 2.2"; Filename: "{uninstallexe}"; Parameters: "/LOG"
+Name: "{commonprograms}\Project64 2.2\Support"; Filename: "http://forum.pj64-emu.com"
 
 [Code]
 function HaveCommandlineParam (inParam: String): Boolean;

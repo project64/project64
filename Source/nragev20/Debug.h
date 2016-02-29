@@ -24,7 +24,7 @@
 #ifndef _DEBUG_H_
 #define _DEBUG_H_
 
-#include <wtypes.h>
+#include <windows.h>
 
 #ifdef _DEBUG
 

@@ -43,33 +43,33 @@
 
 typedef struct TEX_INFO_t
 {
-	wxUint32 cur_cache[2];	// Current cache #
-	wxUint8 format;
-	wxUint8 size;
-	wxUint32 width, height;
-	wxUint16 line, wid;
-	wxUint8 palette;
-	wxUint8 clamp_s, clamp_t;
-	wxUint8 mirror_s, mirror_t;
-	wxUint8 mask_s, mask_t;
-	wxUint8 shift_s, shift_t;
-	wxUint16 ul_s, ul_t, lr_s, lr_t;
-	wxUint16 t_ul_s, t_ul_t, t_lr_s, t_lr_t;
+	uint32_t cur_cache[2];	// Current cache #
+	uint8_t format;
+	uint8_t size;
+	uint32_t width, height;
+	uint16_t line, wid;
+	uint8_t palette;
+	uint8_t clamp_s, clamp_t;
+	uint8_t mirror_s, mirror_t;
+	uint8_t mask_s, mask_t;
+	uint8_t shift_s, shift_t;
+	uint16_t ul_s, ul_t, lr_s, lr_t;
+	uint16_t t_ul_s, t_ul_t, t_lr_s, t_lr_t;
 	float scale_s, scale_t;
 	int tmu;
 } TEX_INFO;
 
 typedef struct TRI_INFO_t
 {
-	wxUint32	nv;			// Number of vertices
+	uint32_t	nv;			// Number of vertices
 	VERTEX	*v;			// Vertices (2d screen coords) of the triangle, used to outline
-	wxUint32	cycle1, cycle2, cycle_mode;	// Combine mode at the time of rendering
-	wxUint8	uncombined;	// which is uncombined: 0x01=color 0x02=alpha 0x03=both
-	wxUint32	geom_mode;	// geometry mode flags
-	wxUint32	othermode_h;	// setothermode_h flags
-	wxUint32	othermode_l;	// setothermode_l flags
-	wxUint32	tri_n;		// Triangle number
-	wxUint32	flags;
+	uint32_t	cycle1, cycle2, cycle_mode;	// Combine mode at the time of rendering
+	uint8_t	uncombined;	// which is uncombined: 0x01=color 0x02=alpha 0x03=both
+	uint32_t	geom_mode;	// geometry mode flags
+	uint32_t	othermode_h;	// setothermode_h flags
+	uint32_t	othermode_l;	// setothermode_l flags
+	uint32_t	tri_n;		// Triangle number
+	uint32_t	flags;
 
 	int		type;	// 0-normal, 1-texrect, 2-fillrect
 
@@ -77,12 +77,12 @@ typedef struct TRI_INFO_t
 	TEX_INFO t[2];
 
 	// colors
-	wxUint32 fog_color;
-	wxUint32 fill_color;
-	wxUint32 prim_color;
-	wxUint32 blend_color;
-	wxUint32 env_color;
-	wxUint32 prim_lodmin, prim_lodfrac;
+	uint32_t fog_color;
+	uint32_t fill_color;
+	uint32_t prim_color;
+	uint32_t blend_color;
+	uint32_t env_color;
+	uint32_t prim_lodmin, prim_lodfrac;
 
 	TRI_INFO_t	*pNext;
 } TRI_INFO;
@@ -91,20 +91,20 @@ typedef struct DEBUGGER_t
 {
 	int capture;	// Capture moment for debugging?
 
-	wxUint32 selected;	// Selected object (see flags above)
+	uint32_t selected;	// Selected object (see flags above)
 	TRI_INFO *tri_sel;
 
-	wxUint32 tex_scroll;	// texture scrolling
-	wxUint32 tex_sel;
+	uint32_t tex_scroll;	// texture scrolling
+	uint32_t tex_sel;
 
 	// CAPTURE INFORMATION
-	wxUint8 *screen;		// Screen capture
+	uint8_t *screen;		// Screen capture
 	TRI_INFO *tri_list;	// Triangle information list
 	TRI_INFO *tri_last;	// Last in the list (first in)
 
-	wxUint32 tmu;	// tmu #
+	uint32_t tmu;	// tmu #
 
-	wxUint32 draw_mode;
+	uint32_t draw_mode;
 
 	// Page number
 	int page;

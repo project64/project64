@@ -20,7 +20,7 @@
 	<Tool
 		Name="VCCLCompilerTool"
 		UseUnicodeResponseFiles="true"
-		AdditionalIncludeDirectories=".\;..\;..\3rd Party"
+		AdditionalIncludeDirectories=".\;..\;..\3rdParty"
 		PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS"
 		IgnoreStandardIncludePath="false"
 		GeneratePreprocessedFile="0"
@@ -69,7 +69,7 @@
 	/>
 	<Tool
 		Name="VCLibrarianTool"
-		OutputFile="$(OutDir)\lib\$(ProjectName).lib"
+		OutputFile="$(OutDir)\$(ProjectName).lib"
 		UseUnicodeResponseFiles="true"
 		LinkLibraryDependencies="true"
 		AdditionalLibraryDirectories=""
@@ -129,7 +129,7 @@
 	/>
 	<Tool
 		Name="VCMIDLTool"
-		AdditionalIncludeDirectories=".;$(SRC);$(SRC)\3rd Party"
+		AdditionalIncludeDirectories=".;$(SRC);$(SRC)\3rdParty"
 		IgnoreStandardIncludePath="false"
 		MkTypLibCompatible="false"
 		WarningLevel="3"

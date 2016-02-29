@@ -26,44 +26,44 @@
 #include "TxDbg.h"
 #include <string.h>
 #include <stdarg.h>
-#include <Common/std string.h>
+#include <Common/StdString.h>
 #include <Common/path.h>
 
 TxDbg::TxDbg()
 {
-  _level = DBG_LEVEL;
-  CPath Dir(CPath::MODULE_DIRECTORY,"");
-  Dir.AppendDirectory("Logs");
+    _level = DBG_LEVEL;
+    CPath Dir(CPath::MODULE_DIRECTORY, "");
+    Dir.AppendDirectory("Logs");
 
-  if (!_dbgfile)
+    if (!_dbgfile)
 #ifdef GHQCHK
-    _dbgfile = fopen(CPath(Dir,"ghqchk.txt"), "w");
+        _dbgfile = fopen(CPath(Dir,"ghqchk.txt"), "w");
 #else
-    _dbgfile = fopen(CPath((LPCSTR)Dir,"glidehq.dbg"), "w");
+        _dbgfile = fopen(CPath((LPCSTR)Dir, "glidehq.dbg"), "w");
 #endif
 }
 
 TxDbg::~TxDbg()
 {
-  if (_dbgfile) {
-    fclose(_dbgfile);
-    _dbgfile = 0;
-  }
+    if (_dbgfile) {
+        fclose(_dbgfile);
+        _dbgfile = 0;
+    }
 
-  _level = DBG_LEVEL;
+    _level = DBG_LEVEL;
 }
 
 void
 TxDbg::output(const int level, const wchar_t *format, ...)
 {
-	if (level > _level)
-		return;
+    if (level > _level)
+        return;
 
-	stdstr_f newformat("%d:\t%s",level,stdstr().FromUTF16(format).c_str());
+    stdstr_f newformat("%d:\t%s", level, stdstr().FromUTF16(format).c_str());
 
-	va_list args;
-	va_start(args, format);
-	vfwprintf(_dbgfile, newformat.ToUTF16().c_str(), args);
-	fflush(_dbgfile);
-	va_end(args);
+    va_list args;
+    va_start(args, format);
+    vfwprintf(_dbgfile, newformat.ToUTF16().c_str(), args);
+    fflush(_dbgfile);
+    va_end(args);
 }

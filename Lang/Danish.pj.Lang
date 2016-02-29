@@ -265,7 +265,7 @@
 #620#  "* Find den først anvendte type"
 #621#  "4kbit EEPROM"
 #622#  "16kbit EEPROM"
-#623#  "32kbyte SRAM"
+#623#  "SRAM"
 #624#  "128kbyte FlashRAM"
 
 //Shell Intergration Tab

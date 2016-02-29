@@ -26,7 +26,7 @@
 
 #define DIRECTINPUT_VERSION 0x0800
 
-	// hacks for GNU C compilers
+// hacks for GNU C compilers // No thank you....
 #ifdef __GNUC__
 
 #ifndef WINVER
@@ -37,10 +37,10 @@
 #define _WIN32_IE 0x0300
 #endif // #ifndef _WIN32_IE
 
-#ifndef _const unsigned char *_DEFINED
-#define _const unsigned char *_DEFINED
-typedef const unsigned char *const unsigned char *;
-#endif // #ifndef _const unsigned char *_DEFINED
+//#ifndef _const unsigned char *_DEFINED
+//#define _const unsigned char *_DEFINED
+//typedef const unsigned char *const unsigned char *;
+//#endif
 
 #endif // #ifdef __GNUC__
 

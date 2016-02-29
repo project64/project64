@@ -28,9 +28,6 @@
 #ifndef _XINPUTCONTROLLER_H
 #define _XINPUTCONTROLLER_H
 
-//code from http://msdn.microsoft.com/en-us/library/ee417014(VS.85).aspx
-#include <wbemidl.h>
-#include <oleauto.h>
 //#include <wmsstd.h> <-- only needed for SAFE_RELEASE(x)
 
 /* fixes undefined FILE, etc. type errors in MSVC 2010 build -- cxd4 */
@@ -66,7 +63,7 @@ BOOL IsXInputDevice( const GUID* pGuidProductFromDirectInput );
 //defines
 #define N64_ANALOG_MAX 127
 #define XC_ANALOG_MAX 32767
-#define BUTTON_ANALOG_VALUE 107
+#define BUTTON_ANALOG_VALUE 60
 
 //enums
 namespace N64_BUTTONS

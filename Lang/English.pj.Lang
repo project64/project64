@@ -88,6 +88,7 @@
 #198#  "Slot 8"
 #199#  "Slot 9"
 #200#  "Slot 10"
+#201#  "Save Slot (%ws) selected"
 
 //Pop up Menu
 #210#  "Play Game"
@@ -95,6 +96,7 @@
 #212#  "Edit Game Settings"
 #213#  "Edit Cheats"
 #214#  "Graphics Plugin"
+#215#  "Play Game with Disk"
 
 //Alternate Name to save Slot
 #220#  "Save Slot - Default"
@@ -177,7 +179,7 @@
 #320#  "Select current ROM directory"
 
 //Messages
-#340#  "Bad ROM? Use GoodN64 & check for updated RDB."
+#340#  "Bad ROM? Use GoodN64 & check that the RDB is up-to-date."
 
 /*********************************************************************************
 * Options                                                                        *
@@ -241,7 +243,7 @@
 #484#  "Use ROM browser"
 #485#  "Use directory recursion"
 #486#  "Available fields:"
-#487#  "Show fields in this order:"
+#487#  "Order of fields:"
 #488#  "Add ->"
 #489#  "<- Remove"
 #490#  "Up"
@@ -318,7 +320,7 @@
 #620#  "Use first-used save type"
 #621#  "4-kbit EEPROM"
 #622#  "16-kbit EEPROM"
-#623#  "32-kbyte SRAM"
+#623#  "SRAM"
 #624#  "Flash RAM"
 
 //Shell Integration Tab

@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -24,7 +24,7 @@
  *
  */
 
-#include "opcode.h"
+#include "OpCode.h"
 
 extern UDWORD EleSpec[32], Indx[32];
 
@@ -36,7 +36,7 @@ extern p_func RSP_Cop2[32];
 extern p_func RSP_Vector[64];
 extern p_func RSP_Lc2[32];
 extern p_func RSP_Sc2[32];
-extern DWORD * PrgCount, RSP_Running;
+extern uint32_t * PrgCount, RSP_Running;
 extern OPCODE RSPOpC;
 
 void SetCPU(DWORD core);

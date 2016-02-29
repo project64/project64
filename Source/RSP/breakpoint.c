@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -26,7 +26,7 @@
 
 #include <windows.h>
 #include <stdio.h>
-#include "rsp.h"
+#include "Rsp.h"
 #include "CPU.h"
 #include "breakpoint.h"
 
@@ -99,7 +99,7 @@ int CheckForRSPBPoint ( DWORD Location )
 	return FALSE;
 }
 
-void CreateBPPanel ( HWND hDlg, RECT rcBox )
+void CreateBPPanel ( void * hDlg, rectangle rcBox )
 {
 	if (hRSPLocation != NULL) { return; }
 
@@ -124,7 +124,7 @@ void HideBPPanel ( void )
 	ShowWindow(hRSPLocation,FALSE);
 }
 
-void PaintBPPanel ( PAINTSTRUCT ps )
+void PaintBPPanel ( window_paint ps )
 {
 	TextOut( ps.hdc, 29,60,"Break when the Program Counter equals",37);
 	TextOut( ps.hdc, 59,85,"0x",2);
@@ -135,15 +135,21 @@ void ShowBPPanel ( void )
 	ShowWindow(hRSPLocation,TRUE);
 }
 
-void RefreshBpoints ( HWND hList )
+void RefreshBpoints ( void * hList )
 {
 	char Message[100];
-	int count, location;
+	LRESULT location;
+	int count;
 
 	for (count = 0; count < NoOfBpoints; count ++ ) {
 		sprintf(Message," at 0x%03X (RSP)", BPoint[count].Location);
-		location = SendMessage(hList,LB_ADDSTRING,0,(LPARAM)Message);
-		SendMessage(hList,LB_SETITEMDATA,(WPARAM)location,(LPARAM)BPoint[count].Location);
+		location = SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)Message);
+		SendMessage(
+			hList,
+			LB_SETITEMDATA,
+			(WPARAM)location,
+			(LPARAM)BPoint[count].Location
+		);
 	}
 }
 
@@ -154,9 +160,18 @@ void RemoveAllBpoint ( void )
 
 void RemoveBpoint ( HWND hList, int index )
 {
-	DWORD location;
-	
-	location = SendMessage(hList,LB_GETITEMDATA,(WPARAM)index,0);
+	LRESULT response;
+	uint32_t location;
+
+	response = SendMessage(hList, LB_GETITEMDATA, (WPARAM)index, 0);
+	if (response < 0 || response > 0x7FFFFFFFL)
+	{
+		DisplayError(
+			"LB_GETITEMDATA response for %i out of DWORD range.",
+			index
+		);
+	}
+	location = (uint32_t)response;
 	RemoveRSPBreakPoint(location);
 }
 

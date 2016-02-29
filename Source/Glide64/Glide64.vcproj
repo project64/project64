@@ -37,7 +37,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(Root)Source/3rd Party/wx/include&quot;;&quot;$(Root)Source/3rd Party/wx/include/msvc&quot;;inc"
+				AdditionalIncludeDirectories="&quot;$(Root)Source\3rdParty\sdl\include&quot;;&quot;$(Root)Source/3rdParty/wx/include&quot;;&quot;$(Root)Source/3rdParty/wx/include/msvc&quot;;&quot;$(Root)Source/Glitch64/inc&quot;;inc"
 				PreprocessorDefinitions="__MSC__;RDP_LOGGING;RDP_ERROR_LOG;"
 				UsePrecompiledHeader="0"
 			/>
@@ -53,7 +53,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="$(Root)Plugin/GFX/PJ64Glide64_d.dll"
-				AdditionalLibraryDirectories="&quot;$(Root)Source\3rd Party\wx\lib\vc_lib&quot;"
+				AdditionalLibraryDirectories=""
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -99,7 +99,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(Root)Source/3rd Party/wx/include&quot;;&quot;$(Root)Source/3rd Party/wx/include/msvc&quot;;inc"
+				AdditionalIncludeDirectories="&quot;$(Root)Source\3rdParty\sdl\include&quot;;&quot;$(Root)Source/3rdParty/wx/include&quot;;&quot;$(Root)Source/3rdParty/wx/include/msvc&quot;;&quot;$(Root)Source/Glitch64/inc&quot;;inc"
 				PreprocessorDefinitions="__MSC__"
 				UsePrecompiledHeader="0"
 			/>
@@ -115,7 +115,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="$(Root)Plugin/GFX/PJ64Glide64.dll"
-				AdditionalLibraryDirectories="&quot;$(Root)Source\3rd Party\wx\lib\vc_lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(Root)Source\3rdParty\wx\lib\vc_lib&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -199,11 +199,11 @@
 				>
 			</File>
 			<File
-				RelativePath="Version.h"
+				RelativePath="ucodeFB.h"
 				>
 			</File>
 			<File
-				RelativePath="ucodeFB.h"
+				RelativePath="Version.h"
 				>
 			</File>
 		</Filter>
@@ -268,10 +268,6 @@
 			</File>
 			<File
 				RelativePath="TexModCI.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Texture.asm.cpp"
 				>
 			</File>
 		</Filter>
@@ -357,10 +353,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\3dmathSIMD.asm.cpp"
-			>
-		</File>
-		<File
 			RelativePath="Combine.cpp"
 			>
 		</File>
@@ -401,10 +393,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\FixedPoint.asm.cpp"
-			>
-		</File>
-		<File
 			RelativePath="Gfx #1.3.h"
 			>
 		</File>
@@ -433,6 +421,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Settings.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Settings.h"
+			>
+		</File>
+		<File
 			RelativePath="TexBuffer.cpp"
 			>
 		</File>
@@ -441,11 +437,23 @@
 			>
 		</File>
 		<File
+			RelativePath=".\trace.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\trace.h"
+			>
+		</File>
+		<File
 			RelativePath="Util.cpp"
 			>
 		</File>
 		<File
 			RelativePath="Util.h"
+			>
+		</File>
+		<File
+			RelativePath=".\winlnxdefs.h"
 			>
 		</File>
 	</Files>

@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -24,7 +24,7 @@
  *
  */
 
-#include "types.h"
+#include "Types.h"
 
 #define SP_STATUS_HALT			0x001		/* Bit  0: halt */
 #define SP_STATUS_BROKE			0x002		/* Bit  1: broke */

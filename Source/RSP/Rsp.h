@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -23,9 +23,21 @@
  * should be forwarded to them so if they want them.
  *
  */
+#pragma once 
 
 #if defined(__cplusplus)
 extern "C" {
+#endif
+
+#include <Common/stdtypes.h>
+#include "Types.h"
+
+#if defined(_WIN32)
+#define EXPORT          __declspec(dllexport)
+#define CALL            _cdecl
+#else
+#define EXPORT          __attribute__((visibility("default")))
+#define CALL
 #endif
 
 /************ Profiling **************/
@@ -34,53 +46,51 @@ extern "C" {
 #define Default_ShowErrors			FALSE
 #define Default_AudioHle			FALSE
 
-/* Note: BOOL, BYTE, WORD, DWORD, TRUE, FALSE are defined in windows.h */
-
 #define PLUGIN_TYPE_RSP				1
 #define PLUGIN_TYPE_GFX				2
 #define PLUGIN_TYPE_AUDIO			3
 #define PLUGIN_TYPE_CONTROLLER		4
 
 typedef struct {
-	WORD Version;        /* Should be set to 0x0101 */
-	WORD Type;           /* Set to PLUGIN_TYPE_RSP */
+    uint16_t Version;        /* Should be set to 0x0101 */
+    uint16_t Type;           /* Set to PLUGIN_TYPE_RSP */
 	char Name[100];      /* Name of the DLL */
 
 	/* If DLL supports memory these memory options then set them to TRUE or FALSE
 	   if it does not support it */
-	BOOL NormalMemory;   /* a normal BYTE array */ 
-	BOOL MemoryBswaped;  /* a normal BYTE array where the memory has been pre
-	                          bswap on a dword (32 bits) boundry */
+    int NormalMemory;   /* a normal BYTE array */ 
+    int MemoryBswaped;  /* a normal BYTE array where the memory has been pre
+                              bswap on a dword (32 bits) boundry */
 } PLUGIN_INFO;
 
 typedef struct {
-	HINSTANCE hInst;
-	BOOL MemoryBswaped;    /* If this is set to TRUE, then the memory has been pre
-	                          bswap on a dword (32 bits) boundry */
-	BYTE * RDRAM;
-	BYTE * DMEM;
-	BYTE * IMEM;
+    void * hInst;
+    int MemoryBswaped;    /* If this is set to TRUE, then the memory has been pre
+                              bswap on a dword (32 bits) boundry */
+    uint8_t * RDRAM;
+    uint8_t * DMEM;
+    uint8_t * IMEM;
 
-	DWORD * MI_INTR_REG;
+    uint32_t * MI_INTR_REG;
 
-	DWORD * SP_MEM_ADDR_REG;
-	DWORD * SP_DRAM_ADDR_REG;
-	DWORD * SP_RD_LEN_REG;
-	DWORD * SP_WR_LEN_REG;
-	DWORD * SP_STATUS_REG;
-	DWORD * SP_DMA_FULL_REG;
-	DWORD * SP_DMA_BUSY_REG;
-	DWORD * SP_PC_REG;
-	DWORD * SP_SEMAPHORE_REG;
+    uint32_t * SP_MEM_ADDR_REG;
+    uint32_t * SP_DRAM_ADDR_REG;
+    uint32_t * SP_RD_LEN_REG;
+    uint32_t * SP_WR_LEN_REG;
+    uint32_t * SP_STATUS_REG;
+    uint32_t * SP_DMA_FULL_REG;
+    uint32_t * SP_DMA_BUSY_REG;
+    uint32_t * SP_PC_REG;
+    uint32_t * SP_SEMAPHORE_REG;
 
-	DWORD * DPC_START_REG;
-	DWORD * DPC_END_REG;
-	DWORD * DPC_CURRENT_REG;
-	DWORD * DPC_STATUS_REG;
-	DWORD * DPC_CLOCK_REG;
-	DWORD * DPC_BUFBUSY_REG;
-	DWORD * DPC_PIPEBUSY_REG;
-	DWORD * DPC_TMEM_REG;
+    uint32_t * DPC_START_REG;
+    uint32_t * DPC_END_REG;
+    uint32_t * DPC_CURRENT_REG;
+    uint32_t * DPC_STATUS_REG;
+    uint32_t * DPC_CLOCK_REG;
+    uint32_t * DPC_BUFBUSY_REG;
+    uint32_t * DPC_PIPEBUSY_REG;
+    uint32_t * DPC_TMEM_REG;
 
 	void (*CheckInterrupts)( void );
 	void (*ProcessDList)( void );
@@ -90,21 +100,33 @@ typedef struct {
 } RSP_INFO;
 
 typedef struct {
+    long left, top, right, bottom;
+} rectangle; /* <windows.h> equivalent:  RECT */
+typedef struct {
+    void * hdc;
+    Boolean fErase;
+    rectangle rcPaint;
+    Boolean fRestore;
+    Boolean fIncUpdate;
+    uint8_t rgbReserved[32];
+} window_paint; /* <windows.h> equivalent:  PAINTSTRUCT */
+
+typedef struct {
 	/* Menu */
 	/* Items should have an ID between 5001 and 5100 */
-	HMENU hRSPMenu;
+    void * hRSPMenu;
 	void (*ProcessMenuItem) ( int ID );
 
 	/* Break Points */
-	BOOL UseBPoints;
+    int UseBPoints;
 	char BPPanelName[20];
 	void (*Add_BPoint)      ( void );
-	void (*CreateBPPanel)   ( HWND hDlg, RECT rcBox );
+    void (*CreateBPPanel) (void * hDlg, rectangle rcBox);
 	void (*HideBPPanel)     ( void );
-	void (*PaintBPPanel)    ( PAINTSTRUCT ps );
+    void (*PaintBPPanel)  (window_paint ps);
 	void (*ShowBPPanel)     ( void );
-	void (*RefreshBpoints)  ( HWND hList );
-	void (*RemoveBpoint)    ( HWND hList, int index );
+    void (*RefreshBpoints)(void * hList);
+    void (*RemoveBpoint)  (void * hList, int index);
 	void (*RemoveAllBpoint) ( void );
 	
 	/* RSP command Window */
@@ -122,31 +144,31 @@ typedef struct {
 	void (*Enter_Memory_Window)( void );
 } DEBUG_INFO;
 
-__declspec(dllexport) void CloseDLL (void);
-__declspec(dllexport) void DllAbout ( HWND hParent );
-__declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles );
-__declspec(dllexport) void GetDllInfo ( PLUGIN_INFO * PluginInfo );
-__declspec(dllexport) void GetRspDebugInfo ( RSPDEBUG_INFO * DebugInfo );
-__declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, DWORD * CycleCount);
-__declspec(dllexport) void InitiateRSPDebugger ( DEBUG_INFO Debug_Info);
-__declspec(dllexport) void RomOpen (void);
-__declspec(dllexport) void RomClosed (void);
-__declspec(dllexport) void DllConfig (HWND hWnd);
-__declspec(dllexport) void EnableDebugging (BOOL Enabled);
-__declspec(dllexport) void PluginLoaded (void);
+EXPORT void CloseDLL(void);
+EXPORT void DllAbout(void * hParent);
+EXPORT uint32_t DoRspCycles(uint32_t Cycles);
+EXPORT void GetDllInfo(PLUGIN_INFO * PluginInfo);
+EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo);
+EXPORT void InitiateRSP(RSP_INFO Rsp_Info, uint32_t * CycleCount);
+EXPORT void InitiateRSPDebugger(DEBUG_INFO Debug_Info);
+EXPORT void RomOpen(void);
+EXPORT void RomClosed(void);
+EXPORT void DllConfig(void * hWnd);
+EXPORT void EnableDebugging(int Enabled);
+EXPORT void PluginLoaded(void);
 
-DWORD AsciiToHex (char * HexValue);
-void DisplayError (char * Message, ...);
-int  GetStoredWinPos( char * WinName, DWORD * X, DWORD * Y );
+uint32_t AsciiToHex(char * HexValue);
+void DisplayError(char * Message, ...);
+int GetStoredWinPos(char * WinName, uint32_t * X, uint32_t * Y);
 
 #define InterpreterCPU	0
 #define RecompilerCPU	1
 
-extern BOOL DebuggingEnabled, Profiling, IndvidualBlock, ShowErrors, BreakOnStart, LogRDP, LogX86Code;
-extern DWORD CPUCore;
+extern int DebuggingEnabled, Profiling, IndvidualBlock, ShowErrors, BreakOnStart, LogRDP, LogX86Code;
+extern uint32_t CPUCore;
 extern DEBUG_INFO DebugInfo;
 extern RSP_INFO RSPInfo;
-extern HINSTANCE hinstDLL;
+extern void * hinstDLL;
 
 #if defined(__cplusplus)
 }

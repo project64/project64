@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -24,16 +24,15 @@
  *
  */
 
-#include <windows.h>
-#include "types.h"
+#include "Types.h"
 
 int  AllocateMemory ( void );
 void FreeMemory     ( void );
-void SetJumpTable   ( DWORD End );
+void SetJumpTable  (uint32_t End);
 
-extern BYTE * RecompCode, * RecompCodeSecondary, * RecompPos;
+extern uint8_t * RecompCode, * RecompCodeSecondary, * RecompPos;
 extern void ** JumpTable;
-extern DWORD Table;
+extern uint32_t Table;
 
 void RSP_LB_DMEM  ( uint32_t Addr, uint8_t * Value );
 void RSP_LBV_DMEM ( uint32_t Addr, int vect, int element );

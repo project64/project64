@@ -1,5 +1,5 @@
 /*
- * RSP Compiler plug in for Project 64 (A Nintendo 64 emulator).
+ * RSP Compiler plug in for Project64 (A Nintendo 64 emulator).
  *
  * (c) Copyright 2001 jabo (jabo@emulation64.com) and
  * zilmar (zilmar@emulation64.com)
@@ -37,4 +37,4 @@ void SetRSPCommandToStepping ( void );
 void SetRSPCommandViewto ( UINT NewLocation );
 
 extern DWORD Stepping_Commands, WaitingForStep;
-extern BOOL InRSPCommandsWindow;
+extern Boolean InRSPCommandsWindow;

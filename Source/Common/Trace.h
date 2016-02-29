@@ -1,50 +1,51 @@
-#ifndef __TRACE_H__
-#define __TRACE_H__
+#pragma once
+#include "LogClass.h"
 
-class CTraceModule 
+enum TraceSeverity
 {
-	TraceLevel m_Type;
-	
-public:
-	CTraceModule () {  m_Type = TrLvError; }
-	virtual ~CTraceModule () {}
+    TraceError = 0x00000001,
+    TraceWarning = 0x00000002,
+    TraceNotice = 0x00000003,
+    TraceInfo = 0x00000004,
+    TraceDebug = 0x00000005,
+    TraceVerbose = 0x00000006,
+};
 
-	inline  void       SetTraceLevel ( TraceLevel Type ) { m_Type = Type; }
-	inline  TraceLevel GetTraceLevel ( void ) const     { return m_Type; }
-	virtual void       Write         ( LPCTSTR Message, bool EndOfLine ) = 0;
+#if defined(_WIN32)
+#include <objbase.h>
+#else
+#define __interface     struct
+#endif
+
+__interface CTraceModule
+{
+    virtual void Write(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char * Message) = 0;
 };
 
 class CTraceFileLog : public CTraceModule
 {
-	enum { MB = 1024 * 1024 };
-
-	CriticalSection m_CriticalSection;
-	CLog            m_hLogFile;
-	bool            m_FlushFile;
-
 public:
-	CTraceFileLog (LPCTSTR FileName, bool FlushFile = true);
-	CTraceFileLog (LPCTSTR FileName, bool FlushFile, LOG_OPEN_MODE eMode, DWORD dwMaxFileSize = 5);
-	virtual ~CTraceFileLog ();
-	
-	void Write ( LPCTSTR Message, bool EndOfLine );
-	void SetFlushFile ( bool bFlushFile );
+    CTraceFileLog(const char * FileName, bool FlushFile, LOG_OPEN_MODE eMode, size_t dwMaxFileSize = 5);
+    virtual ~CTraceFileLog();
+
+    void SetFlushFile(bool bFlushFile);
+    void Write(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char * Message);
+
+private:
+    CLog m_hLogFile;
+    bool m_FlushFile;
 };
 
-class CDebugTraceLog : public CTraceModule
-{
-public:	
-	void Write ( LPCTSTR Message, bool EndOfLine ) 
-	{
-		OutputDebugString(Message); 
-		if (EndOfLine)
-		{
-			OutputDebugString("\n"); 
-		}
-	}
-};
+#define WriteTrace(m, s, format, ...) if(g_ModuleLogLevel[(m)] >= (s)) { WriteTraceFull((m), (s), __FILE__, __LINE__, __FUNCTION__, (format), ## __VA_ARGS__); }
 
-CTraceModule * AddTraceModule    ( CTraceModule * TraceModule ); // Must be created with new
-CTraceModule * RemoveTraceModule ( CTraceModule * TraceModule ); // Is not automaticly deleted
+CTraceModule * TraceAddModule(CTraceModule * TraceModule);
+CTraceModule * TraceRemoveModule(CTraceModule * TraceModule);
+const char * TraceSeverity(uint8_t severity);
+const char * TraceModule(uint32_t module);
+void TraceSetModuleName(uint8_t module, const char * Name);
+void CloseTrace(void);
 
-#endif // __TRACE_H__
+void WriteTraceFull(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char *format, ...);
+void TraceSetMaxModule(uint32_t MaxModule, uint8_t DefaultSeverity);
+
+extern uint32_t * g_ModuleLogLevel;

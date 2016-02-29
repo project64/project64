@@ -1,5 +1,5 @@
 #include <windows.h>
-#include <common/Ini File Class.h>
+#include <common/IniFileClass.h>
 #include <set>
 
 int main (int argc, char *argv[])

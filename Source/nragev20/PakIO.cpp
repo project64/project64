@@ -800,17 +800,19 @@ inline WORD CountBlocks( const unsigned char * bMemPakBinary, LPBYTE aNoteSizes 
 
 void FormatMemPak( LPBYTE aMemPak )
 {
-	FillMemory( aMemPak, 0x100, 0xFF );
+	size_t iRand, n;
 
+	FillMemory(aMemPak, 0x100, 0xFF);
 	aMemPak[0] = 0x81;
 
 	// generate a valid code( i hope i can calculate it one day)
 	BYTE aValidCodes[] = {	0x12, 0xC5, 0x8F, 0x6F, 0xA4, 0x28, 0x5B, 0xCA };
 	BYTE aCode[8];
 
-	int iRand = (( (ULONG)aMemPak / 4 + (ULONG)g_strEmuInfo.hMainWindow / 4 ) % (sizeof(aValidCodes)/8) );
-	for( int n = 0; n <8; n++ )
-		aCode[n] = aValidCodes[n+iRand];
+	iRand  = ((size_t)aMemPak / 4) + ((size_t)g_strEmuInfo.hMainWindow / 4);
+	iRand %= sizeof(aValidCodes) / 8;
+	for (n = 0; n < 8; n++)
+		aCode[n] = aValidCodes[n + iRand];
 
 	//----------
 

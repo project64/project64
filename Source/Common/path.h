@@ -1,167 +1,139 @@
-//////////////////////////////////////////////////////////////////////
-//
-// Handy routines to help with file & path management
-//
-// This class is used to represent pathnames, that is the name and 
-// location of a file. CPaths are used when you want to refer to a file
-// as a whole, or to the location of a file.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_PATH_H__6DD6923B_E241_40CE_81A3_4C2C88C140E4__INCLUDED_)
-#define AFX_PATH_H__6DD6923B_E241_40CE_81A3_4C2C88C140E4__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
-
-#include "std string.h"
-#include <sys\types.h>
-#include <dos.h>
-#include <WTypes.h>
+#include <string>
+#include "stdtypes.h"
 
 class CPathException
 {
 public:
-    ULONG m_dwErrorCode;
+    uint32_t m_dwErrorCode;
 
 public:
-    CPathException(ULONG code =0): m_dwErrorCode(code) {}
+    CPathException(uint32_t code = 0) : m_dwErrorCode(code) {}
 };
 
-class CPath  
+class CPath
 {
-//Enums
+    //Enums
 public:
 
-	enum DIR_CURRENT_DIRECTORY   { CURRENT_DIRECTORY   = 1 };
-	enum DIR_MODULE_DIRECTORY { MODULE_DIRECTORY = 2 };
-	enum DIR_MODULE_FILE { MODULE_FILE = 3 };
+    enum DIR_CURRENT_DIRECTORY   { CURRENT_DIRECTORY = 1 };
+    enum DIR_MODULE_DIRECTORY { MODULE_DIRECTORY = 2 };
+    enum DIR_MODULE_FILE { MODULE_FILE = 3 };
 
-	enum { _A_ALLFILES = 0xFFFF };    /* Search Include all files */
+    enum { _A_ALLFILES = 0xFFFF };    /* Search Include all files */
 
-//Attributes
-private:	
-	
-	stdstr	m_strPath;
-	ULONG   m_dwFindFileAttributes;
-	HANDLE	m_hFindFile;
-	static HINSTANCE m_hInst;
+    //Attributes
+private:
+
+    std::string	m_strPath;
+    uint32_t   m_dwFindFileAttributes;
+    void *	m_hFindFile;
+    static void * m_hInst;
 
 public:
-//Methods
+    //Methods
 
-	//Construction / destruction
-	CPath();
+    //Construction / destruction
+    CPath();
     CPath(const CPath& rPath);
-    CPath(LPCTSTR lpszPath);
-	CPath(LPCTSTR lpszPath, LPCTSTR NameExten);
-	CPath(LPCTSTR lpszPath, const stdstr& NameExten);
-    CPath(const stdstr& strPath);
-	CPath(const stdstr& strPath, LPCTSTR NameExten);
-	CPath(const stdstr& strPath, const stdstr& NameExten);
+    CPath(const char * lpszPath);
+    CPath(const char * lpszPath, const char * NameExten);
+    CPath(const char * lpszPath, const std::string & NameExten);
+    CPath(const std::string& strPath);
+    CPath(const std::string& strPath, const char * NameExten);
+    CPath(const std::string& strPath, const std::string& NameExten);
 
-	CPath(DIR_CURRENT_DIRECTORY sdt, LPCTSTR NameExten = NULL);
-	CPath(DIR_MODULE_DIRECTORY sdt, LPCTSTR NameExten = NULL);
-	CPath(DIR_MODULE_FILE sdt);
-	
-	virtual ~CPath();
+    CPath(DIR_CURRENT_DIRECTORY sdt, const char * NameExten = NULL);
+    CPath(DIR_MODULE_DIRECTORY sdt, const char * NameExten = NULL);
+    CPath(DIR_MODULE_FILE sdt);
 
-	//Setup & Cleanup
+    virtual ~CPath();
+
+    //Setup & Cleanup
     inline void Init();
-	inline void Exit();
+    inline void Exit();
 
-	//Operators
+    //Operators
     CPath& operator  = (const CPath& rPath);
-    CPath& operator  = (LPCTSTR lpszPath);
-    CPath& operator  = (const stdstr& strPath);
-    BOOL   operator == (const CPath& rPath) const;
-    BOOL   operator != (const CPath& rPath) const;
-    operator LPCTSTR() const;
-	operator stdstr&() { return m_strPath; }
-	
-	//Get path components
-	void   GetDriveDirectory(stdstr& rDriveDirectory) const;
-	stdstr GetDriveDirectory(void) const;
-	void   GetDirectory(stdstr& rDirectory) const;
-	stdstr GetDirectory(void) const;
-	void   GetName(stdstr& rName) const;
-	stdstr GetName(void) const;
-	void   GetNameExtension(stdstr& rNameExtension) const;
-	stdstr GetNameExtension(void) const;
-	void   GetExtension(stdstr& rExtension) const;
-	stdstr GetExtension(void) const;
-	void   GetCurrentDirectory(stdstr& rDrive) const;
-	stdstr GetCurrentDirectory(void) const;
-    void GetFullyQualified(stdstr& rFullyQualified) const;
-	void GetComponents(stdstr* pDrive     =NULL, 
-                       stdstr* pDirectory =NULL, 
-                       stdstr* pName      =NULL, 
-                       stdstr* pExtension =NULL) const;
+    CPath& operator  = (const char * lpszPath);
+    CPath& operator  = (const std::string & strPath);
+    bool   operator == (const CPath& rPath) const;
+    bool   operator != (const CPath& rPath) const;
+    operator const char *() const;
+    operator const std::string &() { return m_strPath; }
 
-	//Get other state
-    BOOL IsEmpty() const { return m_strPath.empty(); }
-    BOOL IsRelative() const;
+    //Get path components
+    void   GetDriveDirectory(std::string & rDriveDirectory) const;
+    std::string GetDriveDirectory(void) const;
+    void   GetDirectory(std::string& rDirectory) const;
+    std::string GetDirectory(void) const;
+    void   GetName(std::string& rName) const;
+    std::string GetName(void) const;
+    void   GetNameExtension(std::string& rNameExtension) const;
+    std::string GetNameExtension(void) const;
+    void   GetExtension(std::string& rExtension) const;
+    std::string GetExtension(void) const;
+    void   GetLastDirectory(std::string& rDirectory) const;
+    std::string GetLastDirectory(void) const;
+    void GetFullyQualified(std::string& rFullyQualified) const;
+	void GetComponents(std::string* pDrive = NULL, std::string* pDirectory = NULL, std::string* pName = NULL, std::string* pExtension = NULL) const;
+    //Get other state
+    bool IsEmpty() const { return m_strPath.empty(); }
+    bool IsRelative() const;
 
-	//Set path components
-    void SetDrive(TCHAR chDrive);
-    void SetDriveDirectory(LPCTSTR lpszDriveDirectory);
-    void SetDirectory(LPCTSTR lpszDirectory, BOOL bEnsureAbsolute =FALSE);
-    void SetName(LPCTSTR lpszName);
+    //Set path components
+    void SetDrive(char chDrive);
+    void SetDriveDirectory(const char * lpszDriveDirectory);
+    void SetDirectory(const char * lpszDirectory, bool bEnsureAbsolute = false);
+    void SetName(const char * lpszName);
     void SetName(int iName);
-    void SetNameExtension(LPCTSTR lpszNameExtension);
-    void SetExtension(LPCTSTR lpszExtension);
+    void SetNameExtension(const char * lpszNameExtension);
+    void SetExtension(const char * lpszExtension);
     void SetExtension(int iExtension);
-	void AppendDirectory(LPCTSTR lpszSubDirectory);
-	void UpDirectory(stdstr* pLastDirectory =NULL);
-	void SetComponents(LPCTSTR lpszDrive, 
-                       LPCTSTR lpszDirectory,
-					   LPCTSTR lpszName, 
-                       LPCTSTR lpszExtension);
-
-	//Set whole path
+    void AppendDirectory(const char * lpszSubDirectory);
+    void UpDirectory(std::string* pLastDirectory = NULL);
+	void SetComponents(const char * lpszDrive, const char * lpszDirectory, const char * lpszName, const char * lpszExtension);
+    //Set whole path
     void Empty()		{ m_strPath.erase(); }
     void CurrentDirectory();
     void Module();
-	void Module(HINSTANCE hInstance);
+    void Module(void * hInstance);
     void ModuleDirectory();
-    void ModuleDirectory(HINSTANCE hInstance);
+    void ModuleDirectory(void * hInstance);
 
-	//Directory information
-    BOOL IsDirectory() const;
-    BOOL DirectoryExists() const;
+    //Directory information
+    bool IsDirectory() const;
+    bool DirectoryExists() const;
 
-	//File Information
-    BOOL     IsFile() const { return !IsDirectory(); }
-    BOOL     Exists() const;
+    //File Information
+    bool     IsFile() const { return !IsDirectory(); }
+    bool     Exists() const;
 
-	//Directory operations
-    BOOL CreateDirectory(BOOL bCreateIntermediates =TRUE);
-    BOOL ChangeDirectory();
-	    
-	//File operations
-	BOOL Delete(BOOL bEvenIfReadOnly =TRUE) const;
-    BOOL CopyTo(LPCTSTR lpcszTargetFile, BOOL bOverwrite =TRUE);
-    BOOL MoveTo(LPCTSTR lpcszTargetFile, BOOL bOverwrite =TRUE);
+    //Directory operations
+    bool DirectoryCreate(bool bCreateIntermediates = true);
+    bool ChangeDirectory();
 
-	//Finders
-    BOOL FindFirst(ULONG dwAttributes =_A_NORMAL);
-    BOOL FindNext();
+    //File operations
+    bool Delete(bool bEvenIfReadOnly = true) const;
+    bool CopyTo(const char * lpcszTargetFile, bool bOverwrite = true);
+    bool MoveTo(const char * lpcszTargetFile, bool bOverwrite = true);
 
-	// Helpers
-	static void SethInst ( HINSTANCE hInst );
-	static HINSTANCE GethInst();
+    //Finders
+    bool FindFirst(uint32_t dwAttributes = 0);
+    bool FindNext();
+
+    // Helpers
+    static void SethInst(void * hInst);
+    static void * GethInst();
 
 private:
-    BOOL AttributesMatch(ULONG dwTargetAttributes, ULONG dwFileAttributes);
+    bool AttributesMatch(uint32_t dwTargetAttributes, uint32_t dwFileAttributes);
 
-	void cleanPathString(stdstr& rDirectory) const;
-	void StripLeadingChar(stdstr& rText, TCHAR chLeading) const;
-	void StripLeadingBackslash(stdstr& Directory)  const;
-	void StripTrailingChar(stdstr& rText, TCHAR chTrailing) const;
-	void StripTrailingBackslash(stdstr& rDirectory) const;
-	void EnsureTrailingBackslash(stdstr& Directory) const;
-	void EnsureLeadingBackslash(stdstr& Directory) const;
+    void cleanPathString(std::string& rDirectory) const;
+    void StripLeadingChar(std::string& rText, char chLeading) const;
+    void StripLeadingBackslash(std::string& Directory)  const;
+    void StripTrailingChar(std::string& rText, char chTrailing) const;
+    void StripTrailingBackslash(std::string& rDirectory) const;
+    void EnsureTrailingBackslash(std::string& Directory) const;
+    void EnsureLeadingBackslash(std::string& Directory) const;
 };
-
-#endif // !defined(AFX_PATH_H__6DD6923B_E241_40CE_81A3_4C2C88C140E4__INCLUDED_)
