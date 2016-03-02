@@ -1,4 +1,4 @@
-﻿// ============ RDB for PJ64 v2.2. GoodN64 v321 =====================================
+// ============ RDB for PJ64 v2.2. GoodN64 v321 =====================================
 // PJ64 v2.2 Official RDB
 // Not for use with PJ64 v1.6 or previous
 //---- START OF RDB FILE HEADER ---------------------------------------------------------
@@ -5548,6 +5548,7 @@ ViRefresh=2200
 Good Name=Super Smash Bros. (E) (M3)
 Internal Name=SMASH BROTHERS
 Status=Compatible
+Counter Factor=1
 Culling=1
 SMM-Cache=0
 SMM-FUNC=0
