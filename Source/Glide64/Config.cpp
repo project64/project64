@@ -454,7 +454,7 @@ void ConfigNotebook::set_properties()
     cbxVRAM->SetToolTip("Autodetect VRAM Size:\nSince OpenGL cannot do this reliably at the moment, the option to set this manually is available.\nIf checked, plugin will try to autodetect VRAM size.\nBut if this appears wrong, please uncheck and set it to correct value.\n[Recommended: on]");
     spinVRAM->SetMinSize(wxSize(55, 21));
     cbxFBO->SetToolTip("Use frame buffer objects:\nChanges the way FB effects are rendered - with or without usage of the OpenGL Frame Buffer Objects (FBO) extension.\nThe choice depends on game and your video card. FBO off is good for NVIDIA cards, while for ATI cards, it's usually best that FBOs are turned on.\nAlso, some FB effects works only with one of the methods, no matter, which card you have.\nOn the whole, with FBO off, compatibility/ accuracy is a bit better (which is the case for Resident Evil 2).\nHowever, with FBO on with some systems, it can actually be a bit faster in cases.\n[Recommended: video card and game dependant]");
-    FxI32 size = 0;
+    int32_t size = 0;
     char ** aRes = grQueryResolutionsExt(&size);
     if (aRes && size)
     {
