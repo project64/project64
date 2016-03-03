@@ -164,9 +164,6 @@
     <ClInclude Include="Multilanguage\LanguageSelector.h">
       <Filter>Header Files\Multilanguage Headers</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\RomInformationClass.h">
-      <Filter>Header Files\N64 System Headers</Filter>
-    </ClInclude>
     <ClInclude Include="N64System\Debugger\DebugDialog.h">
       <Filter>Header Files\N64 System Headers\Debugger Headers</Filter>
     </ClInclude>
