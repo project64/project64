@@ -524,9 +524,6 @@
     <ClInclude Include="N64System\Mips\FlashRam.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Mips\MemoryClass.h">
-      <Filter>Header Files\N64 System\Mips</Filter>
-    </ClInclude>
     <ClInclude Include="N64System\Mips\MemoryVirtualMem.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>

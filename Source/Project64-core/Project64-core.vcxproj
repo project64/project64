@@ -138,7 +138,6 @@
     <ClInclude Include="N64System\Mips\Eeprom.h" />
     <ClInclude Include="N64System\Mips\FlashRam.h" />
     <ClInclude Include="N64System\Mips\GBCart.h" />
-    <ClInclude Include="N64System\Mips\MemoryClass.h" />
     <ClInclude Include="N64System\Mips\MemoryVirtualMem.h" />
     <ClInclude Include="N64System\Mips\Mempak.h" />
     <ClInclude Include="N64System\Mips\OpCode.h" />
