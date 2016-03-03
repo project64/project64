@@ -170,6 +170,54 @@ void RegisterSetting(short SettingID, SETTING_DATA_TYPE Type, const char * Name,
     }
 }
 
+void RegisterSetting2(short SettingID, SETTING_DATA_TYPE Type, const char * Name, const char * Category, short DefaultID)
+{
+    SettingLocation Location = (SettingLocation)g_PluginSettings.DefaultLocation;
+    char FullCategory[400];
+    if (Category && Category[0] != 0)
+    {
+        _snprintf(FullCategory, sizeof(FullCategory), "%s\\%s", g_PluginSettingName, Category);
+    }
+    else
+    {
+        _snprintf(FullCategory, sizeof(FullCategory), "%s", g_PluginSettingName);
+    }
+
+    switch (Type)
+    {
+    case Data_DWORD_Game:
+    case Data_String_Game:
+        Location = SettingType_GameSetting;
+        break;
+    case Data_DWORD_RDB:
+    case Data_String_RDB:
+        Location = SettingType_RomDatabase;
+        break;
+    case Data_DWORD_RDB_Setting:
+    case Data_String_RDB_Setting:
+        Location = SettingType_RdbSetting;
+        break;
+    }
+
+    switch (Type)
+    {
+    case Data_DWORD_Game:
+    case Data_DWORD_General:
+    case Data_DWORD_RDB:
+    case Data_DWORD_RDB_Setting:
+        g_PluginSettings.RegisterSetting(g_PluginSettings.handle, SettingID + g_PluginSettings.SettingStartRange,
+            DefaultID + g_PluginSettings.SettingStartRange, Data_DWORD, Location, FullCategory, Name, 0);
+        break;
+    case Data_String_General:
+    case Data_String_Game:
+    case Data_String_RDB:
+    case Data_String_RDB_Setting:
+        g_PluginSettings.RegisterSetting(g_PluginSettings.handle, SettingID + g_PluginSettings.SettingStartRange,
+            DefaultID + g_PluginSettings.SettingStartRange, Data_String, Location, FullCategory, Name, 0);
+        break;
+    }
+}
+
 short FindSystemSettingId(const char * Name)
 {
     if (g_PluginSettings2.FindSystemSettingId && g_PluginSettings.handle)
