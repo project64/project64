@@ -4,9 +4,8 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     21.06.2003 (extracted from common/fontmap.cpp)
-// RCS-ID:      $Id: fmapbase.cpp 43063 2006-11-04 20:48:04Z VZ $
 // Copyright:   (c) 1999-2003 Vadim Zeitlin <vadim@wxwindows.org>
-// License:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -31,9 +30,10 @@
     #include "wx/log.h"
     #include "wx/intl.h"
     #include "wx/module.h"
+    #include "wx/wxcrtvararg.h"
 #endif //WX_PRECOMP
 
-#if defined(__WXMSW__)
+#if defined(__WINDOWS__)
     #include  "wx/msw/private.h"  // includes windows.h for LOGFONT
     #include  "wx/msw/winundef.h"
 #endif
@@ -54,7 +54,7 @@
 // ----------------------------------------------------------------------------
 
 // encodings supported by GetEncodingDescription
-static wxFontEncoding gs_encodings[] =
+static const wxFontEncoding gs_encodings[] =
 {
     wxFONTENCODING_ISO8859_1,
     wxFONTENCODING_ISO8859_2,
@@ -73,6 +73,7 @@ static wxFontEncoding gs_encodings[] =
     wxFONTENCODING_ISO8859_15,
     wxFONTENCODING_KOI8,
     wxFONTENCODING_KOI8_U,
+    wxFONTENCODING_CP866,
     wxFONTENCODING_CP874,
     wxFONTENCODING_CP932,
     wxFONTENCODING_CP936,
@@ -86,6 +87,8 @@ static wxFontEncoding gs_encodings[] =
     wxFONTENCODING_CP1255,
     wxFONTENCODING_CP1256,
     wxFONTENCODING_CP1257,
+    wxFONTENCODING_CP1258,
+    wxFONTENCODING_CP1361,
     wxFONTENCODING_CP437,
     wxFONTENCODING_UTF7,
     wxFONTENCODING_UTF8,
@@ -95,13 +98,52 @@ static wxFontEncoding gs_encodings[] =
     wxFONTENCODING_UTF32LE,
     wxFONTENCODING_EUC_JP,
     wxFONTENCODING_DEFAULT,
-    wxFONTENCODING_BIG5,
-    wxFONTENCODING_SHIFT_JIS,
-    wxFONTENCODING_GB2312,
+    wxFONTENCODING_ISO2022_JP,
+
+    wxFONTENCODING_MACROMAN,
+    wxFONTENCODING_MACJAPANESE,
+    wxFONTENCODING_MACCHINESETRAD,
+    wxFONTENCODING_MACKOREAN,
+    wxFONTENCODING_MACARABIC,
+    wxFONTENCODING_MACHEBREW,
+    wxFONTENCODING_MACGREEK,
+    wxFONTENCODING_MACCYRILLIC,
+    wxFONTENCODING_MACDEVANAGARI,
+    wxFONTENCODING_MACGURMUKHI,
+    wxFONTENCODING_MACGUJARATI,
+    wxFONTENCODING_MACORIYA,
+    wxFONTENCODING_MACBENGALI,
+    wxFONTENCODING_MACTAMIL,
+    wxFONTENCODING_MACTELUGU,
+    wxFONTENCODING_MACKANNADA,
+    wxFONTENCODING_MACMALAJALAM,
+    wxFONTENCODING_MACSINHALESE,
+    wxFONTENCODING_MACBURMESE,
+    wxFONTENCODING_MACKHMER,
+    wxFONTENCODING_MACTHAI,
+    wxFONTENCODING_MACLAOTIAN,
+    wxFONTENCODING_MACGEORGIAN,
+    wxFONTENCODING_MACARMENIAN,
+    wxFONTENCODING_MACCHINESESIMP,
+    wxFONTENCODING_MACTIBETAN,
+    wxFONTENCODING_MACMONGOLIAN,
+    wxFONTENCODING_MACETHIOPIC,
+    wxFONTENCODING_MACCENTRALEUR,
+    wxFONTENCODING_MACVIATNAMESE,
+    wxFONTENCODING_MACARABICEXT,
+    wxFONTENCODING_MACSYMBOL,
+    wxFONTENCODING_MACDINGBATS,
+    wxFONTENCODING_MACTURKISH,
+    wxFONTENCODING_MACCROATIAN,
+    wxFONTENCODING_MACICELANDIC,
+    wxFONTENCODING_MACROMANIAN,
+    wxFONTENCODING_MACCELTIC,
+    wxFONTENCODING_MACGAELIC,
+    wxFONTENCODING_MACKEYBOARD
 };
 
 // the descriptions for them
-static const wxChar* gs_encodingDescs[] =
+static const char* const gs_encodingDescs[] =
 {
     wxTRANSLATE( "Western European (ISO-8859-1)" ),
     wxTRANSLATE( "Central European (ISO-8859-2)" ),
@@ -120,11 +162,12 @@ static const wxChar* gs_encodingDescs[] =
     wxTRANSLATE( "Western European with Euro (ISO-8859-15)" ),
     wxTRANSLATE( "KOI8-R" ),
     wxTRANSLATE( "KOI8-U" ),
+    wxTRANSLATE( "Windows/DOS OEM Cyrillic (CP 866)" ),
     wxTRANSLATE( "Windows Thai (CP 874)" ),
-    wxTRANSLATE( "Windows Japanese (CP 932)" ),
-    wxTRANSLATE( "Windows Chinese Simplified (CP 936)" ),
+    wxTRANSLATE( "Windows Japanese (CP 932) or Shift-JIS" ),
+    wxTRANSLATE( "Windows Chinese Simplified (CP 936) or GB-2312" ),
     wxTRANSLATE( "Windows Korean (CP 949)" ),
-    wxTRANSLATE( "Windows Chinese Traditional (CP 950)" ),
+    wxTRANSLATE( "Windows Chinese Traditional (CP 950) or Big-5" ),
     wxTRANSLATE( "Windows Central European (CP 1250)" ),
     wxTRANSLATE( "Windows Cyrillic (CP 1251)" ),
     wxTRANSLATE( "Windows Western European (CP 1252)" ),
@@ -133,6 +176,8 @@ static const wxChar* gs_encodingDescs[] =
     wxTRANSLATE( "Windows Hebrew (CP 1255)" ),
     wxTRANSLATE( "Windows Arabic (CP 1256)" ),
     wxTRANSLATE( "Windows Baltic (CP 1257)" ),
+    wxTRANSLATE( "Windows Vietnamese (CP 1258)" ),
+    wxTRANSLATE( "Windows Johab (CP 1361)" ),
     wxTRANSLATE( "Windows/DOS OEM (CP 437)" ),
     wxTRANSLATE( "Unicode 7 bit (UTF-7)" ),
     wxTRANSLATE( "Unicode 8 bit (UTF-8)" ),
@@ -149,31 +194,70 @@ static const wxChar* gs_encodingDescs[] =
 #endif // WORDS_BIGENDIAN
     wxTRANSLATE( "Extended Unix Codepage for Japanese (EUC-JP)" ),
     wxTRANSLATE( "US-ASCII" ),
-    wxTRANSLATE( "BIG5" ),
-    wxTRANSLATE( "SHIFT-JIS" ),
-    wxTRANSLATE( "GB-2312" ),
+    wxTRANSLATE( "ISO-2022-JP" ),
+
+    wxTRANSLATE( "MacRoman" ),
+    wxTRANSLATE( "MacJapanese" ),
+    wxTRANSLATE( "MacChineseTrad" ),
+    wxTRANSLATE( "MacKorean" ),
+    wxTRANSLATE( "MacArabic" ),
+    wxTRANSLATE( "MacHebrew" ),
+    wxTRANSLATE( "MacGreek" ),
+    wxTRANSLATE( "MacCyrillic" ),
+    wxTRANSLATE( "MacDevanagari" ),
+    wxTRANSLATE( "MacGurmukhi" ),
+    wxTRANSLATE( "MacGujarati" ),
+    wxTRANSLATE( "MacOriya" ),
+    wxTRANSLATE( "MacBengali" ),
+    wxTRANSLATE( "MacTamil" ),
+    wxTRANSLATE( "MacTelugu" ),
+    wxTRANSLATE( "MacKannada" ),
+    wxTRANSLATE( "MacMalayalam" ),
+    wxTRANSLATE( "MacSinhalese" ),
+    wxTRANSLATE( "MacBurmese" ),
+    wxTRANSLATE( "MacKhmer" ),
+    wxTRANSLATE( "MacThai" ),
+    wxTRANSLATE( "MacLaotian" ),
+    wxTRANSLATE( "MacGeorgian" ),
+    wxTRANSLATE( "MacArmenian" ),
+    wxTRANSLATE( "MacChineseSimp" ),
+    wxTRANSLATE( "MacTibetan" ),
+    wxTRANSLATE( "MacMongolian" ),
+    wxTRANSLATE( "MacEthiopic" ),
+    wxTRANSLATE( "MacCentralEurRoman" ),
+    wxTRANSLATE( "MacVietnamese" ),
+    wxTRANSLATE( "MacExtArabic" ),
+    wxTRANSLATE( "MacSymbol" ),
+    wxTRANSLATE( "MacDingbats" ),
+    wxTRANSLATE( "MacTurkish" ),
+    wxTRANSLATE( "MacCroatian" ),
+    wxTRANSLATE( "MacIcelandic" ),
+    wxTRANSLATE( "MacRomanian" ),
+    wxTRANSLATE( "MacCeltic" ),
+    wxTRANSLATE( "MacGaelic" ),
+    wxTRANSLATE( "MacKeyboardGlyphs" )
 };
 
 // and the internal names (these are not translated on purpose!)
-static const wxChar* gs_encodingNames[WXSIZEOF(gs_encodingDescs)][9] =
+static const wxChar* const gs_encodingNames[][9] =
 {
     // names from the columns correspond to these OS:
     //      Linux        Solaris and IRIX       HP-UX             AIX
-    { _T("ISO-8859-1"),  _T("ISO8859-1"),  _T("iso88591"),  _T("8859-1"), wxT("iso_8859_1"), NULL },
-    { _T("ISO-8859-2"),  _T("ISO8859-2"),  _T("iso88592"),  _T("8859-2"), NULL },
-    { _T("ISO-8859-3"),  _T("ISO8859-3"),  _T("iso88593"),  _T("8859-3"), NULL },
-    { _T("ISO-8859-4"),  _T("ISO8859-4"),  _T("iso88594"),  _T("8859-4"), NULL },
-    { _T("ISO-8859-5"),  _T("ISO8859-5"),  _T("iso88595"),  _T("8859-5"), NULL },
-    { _T("ISO-8859-6"),  _T("ISO8859-6"),  _T("iso88596"),  _T("8859-6"), NULL },
-    { _T("ISO-8859-7"),  _T("ISO8859-7"),  _T("iso88597"),  _T("8859-7"), NULL },
-    { _T("ISO-8859-8"),  _T("ISO8859-8"),  _T("iso88598"),  _T("8859-8"), NULL },
-    { _T("ISO-8859-9"),  _T("ISO8859-9"),  _T("iso88599"),  _T("8859-9"), NULL },
-    { _T("ISO-8859-10"), _T("ISO8859-10"), _T("iso885910"), _T("8859-10"), NULL },
-    { _T("ISO-8859-11"), _T("ISO8859-11"), _T("iso885911"), _T("8859-11"), NULL },
-    { _T("ISO-8859-12"), _T("ISO8859-12"), _T("iso885912"), _T("8859-12"), NULL },
-    { _T("ISO-8859-13"), _T("ISO8859-13"), _T("iso885913"), _T("8859-13"), NULL },
-    { _T("ISO-8859-14"), _T("ISO8859-14"), _T("iso885914"), _T("8859-14"), NULL },
-    { _T("ISO-8859-15"), _T("ISO8859-15"), _T("iso885915"), _T("8859-15"), NULL },
+    { wxT("ISO-8859-1"),  wxT("ISO8859-1"),  wxT("iso88591"),  wxT("8859-1"), wxT("iso_8859_1"), NULL },
+    { wxT("ISO-8859-2"),  wxT("ISO8859-2"),  wxT("iso88592"),  wxT("8859-2"), NULL },
+    { wxT("ISO-8859-3"),  wxT("ISO8859-3"),  wxT("iso88593"),  wxT("8859-3"), NULL },
+    { wxT("ISO-8859-4"),  wxT("ISO8859-4"),  wxT("iso88594"),  wxT("8859-4"), NULL },
+    { wxT("ISO-8859-5"),  wxT("ISO8859-5"),  wxT("iso88595"),  wxT("8859-5"), NULL },
+    { wxT("ISO-8859-6"),  wxT("ISO8859-6"),  wxT("iso88596"),  wxT("8859-6"), NULL },
+    { wxT("ISO-8859-7"),  wxT("ISO8859-7"),  wxT("iso88597"),  wxT("8859-7"), NULL },
+    { wxT("ISO-8859-8"),  wxT("ISO8859-8"),  wxT("iso88598"),  wxT("8859-8"), NULL },
+    { wxT("ISO-8859-9"),  wxT("ISO8859-9"),  wxT("iso88599"),  wxT("8859-9"), NULL },
+    { wxT("ISO-8859-10"), wxT("ISO8859-10"), wxT("iso885910"), wxT("8859-10"), NULL },
+    { wxT("ISO-8859-11"), wxT("ISO8859-11"), wxT("iso885911"), wxT("8859-11"), NULL },
+    { wxT("ISO-8859-12"), wxT("ISO8859-12"), wxT("iso885912"), wxT("8859-12"), NULL },
+    { wxT("ISO-8859-13"), wxT("ISO8859-13"), wxT("iso885913"), wxT("8859-13"), NULL },
+    { wxT("ISO-8859-14"), wxT("ISO8859-14"), wxT("iso885914"), wxT("8859-14"), NULL },
+    { wxT("ISO-8859-15"), wxT("ISO8859-15"), wxT("iso885915"), wxT("8859-15"), NULL },
 
     // although koi8-ru is not strictly speaking the same as koi8-r,
     // they are similar enough to make mapping it to koi8 better than
@@ -181,33 +265,37 @@ static const wxChar* gs_encodingNames[WXSIZEOF(gs_encodingDescs)][9] =
     { wxT( "KOI8-R" ), wxT( "KOI8-RU" ), NULL },
     { wxT( "KOI8-U" ), NULL },
 
-    { wxT( "WINDOWS-874" ), wxT( "CP-874" ), NULL },
-    { wxT( "WINDOWS-932" ), wxT( "CP-932" ), NULL },
-    { wxT( "WINDOWS-936" ), wxT( "CP-936" ), NULL },
-    { wxT( "WINDOWS-949" ), wxT( "CP-949" ), wxT( "EUC-KR" ), wxT( "eucKR" ), wxT( "euc_kr" ), NULL },
-    { wxT( "WINDOWS-950" ), wxT( "CP-950" ), NULL },
-    { wxT( "WINDOWS-1250" ),wxT( "CP-1250" ), NULL },
-    { wxT( "WINDOWS-1251" ),wxT( "CP-1251" ), NULL },
-    { wxT( "WINDOWS-1252" ),wxT( "CP-1252" ), wxT("IBM-1252"), NULL },
-    { wxT( "WINDOWS-1253" ),wxT( "CP-1253" ), NULL },
-    { wxT( "WINDOWS-1254" ),wxT( "CP-1254" ), NULL },
-    { wxT( "WINDOWS-1255" ),wxT( "CP-1255" ), NULL },
-    { wxT( "WINDOWS-1256" ),wxT( "CP-1256" ), NULL },
-    { wxT( "WINDOWS-1257" ),wxT( "CP-1257" ), NULL },
-    { wxT( "WINDOWS-437" ), wxT( "CP-437" ), NULL },
+    { wxT( "WINDOWS-866" ), wxT( "CP866" ), NULL },
 
-    { wxT( "UTF-7" ), wxT("utf7"), NULL },
-    { wxT( "UTF-8" ), wxT("utf8"), NULL },
+    { wxT( "WINDOWS-874" ), wxT( "CP874" ), wxT( "MS874" ), wxT( "IBM-874" ), NULL },
+    { wxT( "WINDOWS-932" ), wxT( "CP932" ), wxT( "MS932" ), wxT( "IBM-932" ), wxT( "SJIS" ), wxT( "SHIFT-JIS" ), wxT( "SHIFT_JIS" ), NULL },
+    { wxT( "WINDOWS-936" ), wxT( "CP936" ), wxT( "MS936" ), wxT( "IBM-936" ), wxT( "GB2312" ), wxT( "gbk" ),wxT( "GBK" ), NULL },
+    { wxT( "WINDOWS-949" ), wxT( "CP949" ), wxT( "MS949" ), wxT( "IBM-949" ), wxT( "EUC-KR" ), wxT( "eucKR" ), wxT( "euc_kr" ), NULL },
+    { wxT( "WINDOWS-950" ), wxT( "CP950" ), wxT( "MS950" ), wxT( "IBM-950" ), wxT( "BIG5" ), wxT( "BIG-5" ), wxT( "BIG-FIVE" ), NULL },
+    { wxT( "WINDOWS-1250" ),wxT( "CP1250" ),wxT( "MS1250" ),wxT( "IBM-1250" ),NULL },
+    { wxT( "WINDOWS-1251" ),wxT( "CP1251" ),wxT( "MS1251" ),wxT( "IBM-1251" ),NULL },
+    { wxT( "WINDOWS-1252" ),wxT( "CP1252" ),wxT( "MS1252" ),wxT( "IBM-1252" ),NULL },
+    { wxT( "WINDOWS-1253" ),wxT( "CP1253" ),wxT( "MS1253" ),wxT( "IBM-1253" ),NULL },
+    { wxT( "WINDOWS-1254" ),wxT( "CP1254" ),wxT( "MS1254" ),wxT( "IBM-1254" ),NULL },
+    { wxT( "WINDOWS-1255" ),wxT( "CP1255" ),wxT( "MS1255" ),wxT( "IBM-1255" ),NULL },
+    { wxT( "WINDOWS-1256" ),wxT( "CP1256" ),wxT( "MS1256" ),wxT( "IBM-1256" ),NULL },
+    { wxT( "WINDOWS-1257" ),wxT( "CP1257" ),wxT( "MS1257" ),wxT( "IBM-1257" ),NULL },
+    { wxT( "WINDOWS-1258" ),wxT( "CP1258" ),wxT( "MS1258" ),wxT( "IBM-1258" ),NULL },
+    { wxT( "WINDOWS-1361" ),wxT( "CP1361" ),wxT( "MS1361" ),wxT( "IBM-1361" ), wxT( "JOHAB" ), NULL },
+    { wxT( "WINDOWS-437" ), wxT( "CP437" ), wxT( "MS437" ), wxT( "IBM-437" ), NULL },
+
+    { wxT( "UTF-7" ), wxT("UTF7"), NULL },
+    { wxT( "UTF-8" ), wxT("UTF8"), NULL },
 #ifdef WORDS_BIGENDIAN
-    { wxT( "UTF-16BE" ), wxT("UCS-2BE"), wxT( "UTF-16" ), wxT("UCS-2"), wxT("UCS2"), NULL },
-    { wxT( "UTF-16LE" ), wxT("UCS-2LE"), NULL },
-    { wxT( "UTF-32BE" ), wxT( "UCS-4BE" ), wxT( "UTF-32" ), wxT( "UCS-4" ), wxT("UCS4"), NULL },
-    { wxT( "UTF-32LE" ), wxT( "UCS-4LE" ), NULL },
+    { wxT( "UTF-16BE" ), wxT("UTF16BE"), wxT("UCS-2BE"), wxT("UCS2BE"), wxT("UTF-16"), wxT("UTF16"), wxT("UCS-2"), wxT("UCS2"), NULL },
+    { wxT( "UTF-16LE" ), wxT("UTF16LE"), wxT("UCS-2LE"), wxT("UCS2LE"), NULL },
+    { wxT( "UTF-32BE" ), wxT("UTF32BE"), wxT("UCS-4BE" ), wxT("UTF-32"), wxT("UTF32"), wxT("UCS-4"), wxT("UCS4"), NULL },
+    { wxT( "UTF-32LE" ), wxT("UTF32LE"), wxT("UCS-4LE"), wxT("UCS4LE"), NULL },
 #else // WORDS_BIGENDIAN
-    { wxT( "UTF-16BE" ), wxT("UCS-2BE"), NULL },
-    { wxT( "UTF-16LE" ), wxT("UCS-2LE"), wxT( "UTF-16" ), wxT("UCS-2"), wxT("UCS2"), NULL },
-    { wxT( "UTF-32BE" ), wxT( "UCS-4BE" ), NULL },
-    { wxT( "UTF-32LE" ), wxT( "UCS-4LE" ), wxT( "UTF-32" ), wxT( "UCS-4" ), wxT("UCS4"), NULL },
+    { wxT("UTF-16BE"), wxT("UTF16BE"), wxT("UCS-2BE"), wxT("UCS2BE"), NULL },
+    { wxT("UTF-16LE"), wxT("UTF16LE"), wxT("UCS-2LE"), wxT("UTF-16"), wxT("UTF16"), wxT("UCS-2"), wxT("UCS2"), NULL },
+    { wxT("UTF-32BE"), wxT("UTF32BE"), wxT("UCS-4BE"), wxT("UCS4BE"), NULL },
+    { wxT("UTF-32LE"), wxT("UTF32LE"), wxT("UCS-4LE"), wxT("UCS4LE"), wxT("UTF-32"), wxT("UTF32"), wxT("UCS-4"), wxT("UCS4"), NULL },
 #endif // WORDS_BIGENDIAN
 
     { wxT( "EUC-JP" ), wxT( "eucJP" ), wxT( "euc_jp" ), wxT( "IBM-eucJP" ), NULL },
@@ -216,9 +304,49 @@ static const wxChar* gs_encodingNames[WXSIZEOF(gs_encodingDescs)][9] =
     { wxT( "US-ASCII" ), wxT( "ASCII" ), wxT("C"), wxT("POSIX"), wxT("ANSI_X3.4-1968"),
       wxT("646"), wxT("roman8"), wxT( "" ), NULL },
 
-    { wxT( "BIG5" ), wxT("big5"), NULL },
-    { wxT( "SJIS" ), wxT( "SHIFT-JIS" ), wxT( "SHIFT_JIS" ), NULL },
-    { wxT( "GB2312" ), NULL },
+    { wxT( "ISO-2022-JP" ), NULL },
+
+
+    { wxT( "MacRoman" ), NULL },
+    { wxT( "MacJapanese" ), NULL },
+    { wxT( "MacChineseTrad" ), NULL },
+    { wxT( "MacKorean" ), NULL },
+    { wxT( "MacArabic" ), NULL },
+    { wxT( "MacHebrew" ), NULL },
+    { wxT( "MacGreek" ), NULL },
+    { wxT( "MacCyrillic" ), NULL },
+    { wxT( "MacDevanagari" ), NULL },
+    { wxT( "MacGurmukhi" ), NULL },
+    { wxT( "MacGujarati" ), NULL },
+    { wxT( "MacOriya" ), NULL },
+    { wxT( "MacBengali" ), NULL },
+    { wxT( "MacTamil" ), NULL },
+    { wxT( "MacTelugu" ), NULL },
+    { wxT( "MacKannada" ), NULL },
+    { wxT( "MacMalayalam" ), NULL },
+    { wxT( "MacSinhalese" ), NULL },
+    { wxT( "MacBurmese" ), NULL },
+    { wxT( "MacKhmer" ), NULL },
+    { wxT( "MacThai" ), NULL },
+    { wxT( "MacLaotian" ), NULL },
+    { wxT( "MacGeorgian" ), NULL },
+    { wxT( "MacArmenian" ), NULL },
+    { wxT( "MacChineseSimp" ), NULL },
+    { wxT( "MacTibetan" ), NULL },
+    { wxT( "MacMongolian" ), NULL },
+    { wxT( "MacEthiopic" ), NULL },
+    { wxT( "MacCentralEurRoman" ), NULL },
+    { wxT( "MacVietnamese" ), NULL },
+    { wxT( "MacExtArabic" ), NULL },
+    { wxT( "MacSymbol" ), NULL },
+    { wxT( "MacDingbats" ), NULL },
+    { wxT( "MacTurkish" ), NULL },
+    { wxT( "MacCroatian" ), NULL },
+    { wxT( "MacIcelandic" ), NULL },
+    { wxT( "MacRomanian" ), NULL },
+    { wxT( "MacCeltic" ), NULL },
+    { wxT( "MacGaelic" ), NULL },
+    { wxT( "MacKeyboardGlyphs" ), NULL }
 };
 
 wxCOMPILE_TIME_ASSERT( WXSIZEOF(gs_encodingDescs) == WXSIZEOF(gs_encodings), EncodingsArraysNotInSync );
@@ -295,7 +423,7 @@ wxFontMapperBase *wxFontMapperBase::Get()
             sm_instance = traits->CreateFontMapper();
 
             wxASSERT_MSG( sm_instance,
-                            _T("wxAppTraits::CreateFontMapper() failed") );
+                            wxT("wxAppTraits::CreateFontMapper() failed") );
         }
 
         if ( !sm_instance )
@@ -336,10 +464,15 @@ void wxFontMapperBase::Reset()
 // config usage customisation
 // ----------------------------------------------------------------------------
 
+
+static wxString gs_defaultConfigPath(FONTMAPPER_ROOT_PATH);
+
 /* static */
-const wxChar *wxFontMapperBase::GetDefaultConfigPath()
+const wxString& wxFontMapperBase::GetDefaultConfigPath()
 {
-    return FONTMAPPER_ROOT_PATH;
+    // NB: we return const wxString& and not wxString for compatibility
+    //     with 2.8 that returned const wxChar*
+    return gs_defaultConfigPath;
 }
 
 void wxFontMapperBase::SetConfigPath(const wxString& prefix)
@@ -501,7 +634,7 @@ wxFontMapperBase::NonInteractiveCharsetToEncoding(const wxString& charset)
         // discard the optional quotes
         if ( !cs.empty() )
         {
-            if ( cs[0u] == _T('"') && cs.Last() == _T('"') )
+            if ( cs[0u] == wxT('"') && cs.Last() == wxT('"') )
             {
                 cs = wxString(cs.c_str(), cs.length() - 1);
             }
@@ -509,7 +642,7 @@ wxFontMapperBase::NonInteractiveCharsetToEncoding(const wxString& charset)
 
         for ( size_t i = 0; i < WXSIZEOF(gs_encodingNames); ++i )
         {
-            for ( const wxChar** encName = gs_encodingNames[i]; *encName; ++encName )
+            for ( const wxChar* const* encName = gs_encodingNames[i]; *encName; ++encName )
             {
                 if ( cs.CmpNoCase(*encName) == 0 )
                     return gs_encodings[i];
@@ -521,18 +654,14 @@ wxFontMapperBase::NonInteractiveCharsetToEncoding(const wxString& charset)
         if ( cs.Left(3) == wxT("ISO") )
         {
             // the dash is optional (or, to be exact, it is not, but
-            // several brokenmails "forget" it)
+            // several broken programs "forget" it)
             const wxChar *p = cs.c_str() + 3;
             if ( *p == wxT('-') )
                 p++;
 
-            // printf( "iso %s\n", (const char*) cs.ToAscii() );
-
             unsigned int value;
             if ( wxSscanf(p, wxT("8859-%u"), &value) == 1 )
             {
-                // printf( "value %d\n", (int)value );
-
                 // make it 0 based and check that it is strictly positive in
                 // the process (no such thing as iso8859-0 encoding)
                 if ( (value-- > 0) &&
@@ -552,8 +681,6 @@ wxFontMapperBase::NonInteractiveCharsetToEncoding(const wxString& charset)
             unsigned int value;
             if ( wxSscanf(p, wxT("8859-%u"), &value) == 1 )
             {
-                // printf( "value %d\n", (int)value );
-
                 // make it 0 based and check that it is strictly positive in
                 // the process (no such thing as iso8859-0 encoding)
                 if ( (value-- > 0) &&
@@ -628,6 +755,14 @@ wxFontMapperBase::NonInteractiveCharsetToEncoding(const wxString& charset)
                         case 950:
                             encoding = wxFONTENCODING_CP950;
                             break;
+
+                        case 1258:
+                            encoding = wxFONTENCODING_CP1258;
+                            break;
+
+                        case 1361:
+                            encoding = wxFONTENCODING_CP1361;
+                            break;
                     }
                 }
             }
@@ -648,7 +783,7 @@ size_t wxFontMapperBase::GetSupportedEncodingsCount()
 wxFontEncoding wxFontMapperBase::GetEncoding(size_t n)
 {
     wxCHECK_MSG( n < WXSIZEOF(gs_encodings), wxFONTENCODING_SYSTEM,
-                    _T("wxFontMapper::GetEncoding(): invalid index") );
+                    wxT("wxFontMapper::GetEncoding(): invalid index") );
 
     return gs_encodings[n];
 }
@@ -704,17 +839,17 @@ wxString wxFontMapperBase::GetEncodingName(wxFontEncoding encoding)
 /* static */
 const wxChar** wxFontMapperBase::GetAllEncodingNames(wxFontEncoding encoding)
 {
-    static const wxChar* dummy[] = { NULL };
+    static const wxChar* const dummy[] = { NULL };
 
     for ( size_t i = 0; i < WXSIZEOF(gs_encodingNames); i++ )
     {
         if ( gs_encodings[i] == encoding )
         {
-            return gs_encodingNames[i];
+            return const_cast<const wxChar**>(gs_encodingNames[i]);
         }
     }
 
-    return dummy;
+    return const_cast<const wxChar**>(dummy);
 }
 
 /* static */
@@ -724,7 +859,7 @@ wxFontEncoding wxFontMapperBase::GetEncodingFromName(const wxString& name)
 
     for ( size_t i = 0; i < count; i++ )
     {
-        for ( const wxChar** encName = gs_encodingNames[i]; *encName; ++encName )
+        for ( const wxChar* const* encName = gs_encodingNames[i]; *encName; ++encName )
         {
             if ( name.CmpNoCase(*encName) == 0 )
                 return gs_encodings[i];

@@ -4,13 +4,14 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.09.00
-// RCS-ID:      $Id: checklst.h 38319 2006-03-23 22:05:23Z VZ $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_CHECKLST_H_BASE_
 #define _WX_CHECKLST_H_BASE_
+
+#include "wx/defs.h"
 
 #if wxUSE_CHECKLISTBOX
 
@@ -20,7 +21,7 @@
 // wxCheckListBox: a listbox whose items may be checked
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxCheckListBoxBase : public
+class WXDLLIMPEXP_CORE wxCheckListBoxBase : public
                                               #ifdef __WXWINCE__
                                                   // keep virtuals synchronised
                                                   wxListBoxBase
@@ -35,7 +36,9 @@ public:
     virtual bool IsChecked(unsigned int item) const = 0;
     virtual void Check(unsigned int item, bool check = true) = 0;
 
-    DECLARE_NO_COPY_CLASS(wxCheckListBoxBase)
+    virtual unsigned int GetCheckedItems(wxArrayInt& checkedItems) const;
+
+    wxDECLARE_NO_COPY_CLASS(wxCheckListBoxBase);
 };
 
 #if defined(__WXUNIVERSAL__)
@@ -51,7 +54,7 @@ public:
 #elif defined(__WXGTK__)
     #include "wx/gtk1/checklst.h"
 #elif defined(__WXMAC__)
-    #include "wx/mac/checklst.h"
+    #include "wx/osx/checklst.h"
 #elif defined(__WXCOCOA__)
     #include "wx/cocoa/checklst.h"
 #elif defined(__WXPM__)

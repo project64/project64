@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: dcmemory.cpp 42755 2006-10-30 19:41:46Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -25,6 +24,7 @@
 #endif
 
 #include "wx/dcmemory.h"
+#include "wx/msw/dcmemory.h"
 
 #ifndef WX_PRECOMP
     #include "wx/utils.h"
@@ -34,29 +34,37 @@
 #include "wx/msw/private.h"
 
 // ----------------------------------------------------------------------------
-// wxWin macros
+// wxMemoryDCImpl
 // ----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(wxMemoryDC, wxDC)
+IMPLEMENT_ABSTRACT_CLASS(wxMemoryDCImpl, wxMSWDCImpl)
 
-// ============================================================================
-// implementation
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// wxMemoryDC
-// ----------------------------------------------------------------------------
-
-wxMemoryDC::wxMemoryDC(wxDC *dc)
+wxMemoryDCImpl::wxMemoryDCImpl( wxMemoryDC *owner )
+        : wxMSWDCImpl( owner )
 {
-    wxCHECK_RET( dc, _T("NULL dc in wxMemoryDC ctor") );
+    CreateCompatible(NULL);
+    Init();
+}
+
+wxMemoryDCImpl::wxMemoryDCImpl( wxMemoryDC *owner, wxBitmap& bitmap )
+        : wxMSWDCImpl( owner )
+{
+    CreateCompatible(NULL);
+    Init();
+    DoSelect(bitmap);
+}
+
+wxMemoryDCImpl::wxMemoryDCImpl( wxMemoryDC *owner, wxDC *dc )
+        : wxMSWDCImpl( owner )
+{
+    wxCHECK_RET( dc, wxT("NULL dc in wxMemoryDC ctor") );
 
     CreateCompatible(dc);
 
     Init();
 }
 
-void wxMemoryDC::Init()
+void wxMemoryDCImpl::Init()
 {
     if ( m_ok )
     {
@@ -69,9 +77,17 @@ void wxMemoryDC::Init()
     }
 }
 
-bool wxMemoryDC::CreateCompatible(wxDC *dc)
+bool wxMemoryDCImpl::CreateCompatible(wxDC *dc)
 {
-    m_hDC = (WXHDC)::CreateCompatibleDC(dc ? GetHdcOf(*dc) : NULL);
+    wxDCImpl *impl = dc ? dc->GetImpl() : NULL ;
+    wxMSWDCImpl *msw_impl = wxDynamicCast( impl, wxMSWDCImpl );
+    if ( dc && !msw_impl)
+    {
+        m_ok = false;
+        return false;
+    }
+
+    m_hDC = (WXHDC)::CreateCompatibleDC(dc ? GetHdcOf(*msw_impl) : NULL);
 
     // as we created the DC, we must delete it in the dtor
     m_bOwnsDC = true;
@@ -81,24 +97,22 @@ bool wxMemoryDC::CreateCompatible(wxDC *dc)
     return m_ok;
 }
 
-void wxMemoryDC::DoSelect( const wxBitmap& bitmap)
+void wxMemoryDCImpl::DoSelect( const wxBitmap& bitmap )
 {
     // select old bitmap out of the device context
     if ( m_oldBitmap )
     {
         ::SelectObject(GetHdc(), (HBITMAP) m_oldBitmap);
-        if ( m_selectedBitmap.Ok() )
+        if ( m_selectedBitmap.IsOk() )
         {
-#ifdef __WXDEBUG__
             m_selectedBitmap.SetSelectedInto(NULL);
-#endif
             m_selectedBitmap = wxNullBitmap;
         }
     }
 
     // check for whether the bitmap is already selected into a device context
     wxASSERT_MSG( !bitmap.GetSelectedInto() ||
-                  (bitmap.GetSelectedInto() == this),
+                  (bitmap.GetSelectedInto() == GetOwner()),
                   wxT("Bitmap is selected in another wxMemoryDC, delete the first wxMemoryDC or use SelectObject(NULL)") );
 
     m_selectedBitmap = bitmap;
@@ -106,9 +120,7 @@ void wxMemoryDC::DoSelect( const wxBitmap& bitmap)
     if ( !hBmp )
         return;
 
-#ifdef __WXDEBUG__
-    m_selectedBitmap.SetSelectedInto(this);
-#endif
+    m_selectedBitmap.SetSelectedInto(GetOwner());
     hBmp = (WXHBITMAP)::SelectObject(GetHdc(), (HBITMAP)hBmp);
 
     if ( !hBmp )
@@ -123,9 +135,9 @@ void wxMemoryDC::DoSelect( const wxBitmap& bitmap)
     }
 }
 
-void wxMemoryDC::DoGetSize(int *width, int *height) const
+void wxMemoryDCImpl::DoGetSize(int *width, int *height) const
 {
-    if ( m_selectedBitmap.Ok() )
+    if ( m_selectedBitmap.IsOk() )
     {
         *width = m_selectedBitmap.GetWidth();
         *height = m_selectedBitmap.GetHeight();
@@ -150,7 +162,7 @@ static void wxDrawRectangle(wxDC& dc, wxCoord x, wxCoord y, wxCoord width, wxCoo
 {
     wxBrush brush(dc.GetBrush());
     wxPen pen(dc.GetPen());
-    if (brush.Ok() && brush.GetStyle() != wxTRANSPARENT)
+    if (brush.IsOk() && brush.GetStyle() != wxTRANSPARENT)
     {
         HBRUSH hBrush = (HBRUSH) brush.GetResourceHandle() ;
         if (hBrush)
@@ -163,7 +175,7 @@ static void wxDrawRectangle(wxDC& dc, wxCoord x, wxCoord y, wxCoord width, wxCoo
         }
     }
     width --; height --;
-    if (pen.Ok() && pen.GetStyle() != wxTRANSPARENT)
+    if (pen.IsOk() && pen.GetStyle() != wxTRANSPARENT)
     {
         dc.DrawLine(x, y, x + width, y);
         dc.DrawLine(x, y, x, y + height);
@@ -174,12 +186,12 @@ static void wxDrawRectangle(wxDC& dc, wxCoord x, wxCoord y, wxCoord width, wxCoo
 
 #endif // wxUSE_MEMORY_DC_DRAW_RECTANGLE
 
-void wxMemoryDC::DoDrawRectangle(wxCoord x, wxCoord y, wxCoord width, wxCoord height)
+void wxMemoryDCImpl::DoDrawRectangle(wxCoord x, wxCoord y, wxCoord width, wxCoord height)
 {
     // Set this to 1 to work around an apparent video driver bug
     // (visible with e.g. 70x70 rectangle on a memory DC; see Drawing sample)
 #if wxUSE_MEMORY_DC_DRAW_RECTANGLE
-    if (m_brush.Ok() && m_pen.Ok() &&
+    if (m_brush.IsOk() && m_pen.IsOk() &&
         (m_brush.GetStyle() == wxSOLID || m_brush.GetStyle() == wxTRANSPARENT) &&
         (m_pen.GetStyle() == wxSOLID || m_pen.GetStyle() == wxTRANSPARENT) &&
         (GetLogicalFunction() == wxCOPY))
@@ -189,6 +201,6 @@ void wxMemoryDC::DoDrawRectangle(wxCoord x, wxCoord y, wxCoord width, wxCoord he
     else
 #endif // wxUSE_MEMORY_DC_DRAW_RECTANGLE
     {
-        wxDC::DoDrawRectangle(x, y, width, height);
+        wxMSWDCImpl::DoDrawRectangle(x, y, width, height);
     }
 }

@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: paper.cpp 60706 2009-05-21 10:17:44Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -79,7 +78,7 @@ WX_DECLARE_LIST(wxPrintPaperType, wxPrintPaperTypeList);
 #include "wx/listimpl.cpp"
 WX_DEFINE_LIST(wxPrintPaperTypeList)
 
-wxPrintPaperDatabase* wxThePrintPaperDatabase = (wxPrintPaperDatabase*) NULL;
+wxPrintPaperDatabase* wxThePrintPaperDatabase = NULL;
 
 wxPrintPaperDatabase::wxPrintPaperDatabase()
 {
@@ -136,7 +135,7 @@ void wxPrintPaperDatabase::CreateDatabase()
     WXADDPAPER(wxPAPER_FANFOLD_STD_GERMAN, DMPAPER_FANFOLD_STD_GERMAN, wxTRANSLATE("German Std Fanfold, 8 1/2 x 12 in"), 2159, 3048);
     WXADDPAPER(wxPAPER_FANFOLD_LGL_GERMAN, DMPAPER_FANFOLD_LGL_GERMAN, wxTRANSLATE("German Legal Fanfold, 8 1/2 x 13 in"), 2159, 3302);
 
-    WXADDPAPER(wxPAPER_ISO_B4,             DMPAPER_ISO_B4,             wxTRANSLATE("B4 (ISO) 250 x 353 mm"), 2500, 2530);
+    WXADDPAPER(wxPAPER_ISO_B4,             DMPAPER_ISO_B4,             wxTRANSLATE("B4 (ISO) 250 x 353 mm"), 2500, 3530);
     WXADDPAPER(wxPAPER_JAPANESE_POSTCARD,  DMPAPER_JAPANESE_POSTCARD,  wxTRANSLATE("Japanese Postcard 100 x 148 mm"), 1000, 1480);
     WXADDPAPER(wxPAPER_9X11,               DMPAPER_9X11,               wxTRANSLATE("9 x 11 in"), 2286, 2794);
     WXADDPAPER(wxPAPER_10X11,              DMPAPER_10X11,              wxTRANSLATE("10 x 11 in"), 2540, 2794);
@@ -212,6 +211,12 @@ void wxPrintPaperDatabase::CreateDatabase()
     WXADDPAPER(wxPAPER_PENV_8_ROTATED,      116,                        wxTRANSLATE("PRC Envelope #8 Rotated 309 x 120 mm"), 3090, 1200);
     WXADDPAPER(wxPAPER_PENV_9_ROTATED,      117,                        wxTRANSLATE("PRC Envelope #9 Rotated 324 x 229 mm"), 3240, 2290);
     WXADDPAPER(wxPAPER_PENV_10_ROTATED,     118,                        wxTRANSLATE("PRC Envelope #10 Rotated 458 x 324 mm"), 4580, 3240);
+
+    // notice that the values 135 and 136 for Windows paper size ids of A0 and
+    // A1 formats are not documented anywhere but seem to work for at least
+    // some printers so we use them until we find a better way (see #11083)
+    WXADDPAPER(wxPAPER_A0,                  136,                        wxTRANSLATE("A0 sheet, 841 x 1189 mm"), 8410, 11888);
+    WXADDPAPER(wxPAPER_A1,                  135,                        wxTRANSLATE("A1 sheet, 594 x 841 mm"), 5940, 8410);
 }
 
 void wxPrintPaperDatabase::ClearDatabase()
@@ -278,12 +283,11 @@ wxPrintPaperType *wxPrintPaperDatabase::FindPaperType(const wxSize& sz)
     // are likely to be taken into account first. This fixes problems with,
     // for example, Letter reverting to A4 in the page setup dialog because
     // it was wrongly translated to Note.
-    size_t i;
-    for (i = 0; i < GetCount(); i++)
+    for ( size_t i = 0; i < GetCount(); i++ )
     {
-        wxPrintPaperType* paperType = Item(i);
-        wxSize paperSize = paperType->GetSize() ;
-        if ( abs( paperSize.x - sz.x ) < 10 && abs( paperSize.y - sz.y ) < 10 )
+        wxPrintPaperType* const paperType = Item(i);
+        const wxSize paperSize = paperType->GetSize() ;
+        if ( abs(paperSize.x - sz.x) < 10 && abs(paperSize.y - sz.y) < 10 )
             return paperType;
     }
 
@@ -369,8 +373,7 @@ bool wxPrintPaperModule::OnInit()
 
 void wxPrintPaperModule::OnExit()
 {
-    delete wxThePrintPaperDatabase;
-    wxThePrintPaperDatabase = NULL;
+    wxDELETE(wxThePrintPaperDatabase);
 }
 
 #endif // wxUSE_PRINTING_ARCHITECTURE

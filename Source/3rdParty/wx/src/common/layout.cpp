@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: layout.cpp 39627 2006-06-08 06:57:39Z ABX $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -75,7 +74,7 @@ wxIndividualLayoutConstraint::wxIndividualLayoutConstraint()
     percent = 0;
     otherEdge = wxTop;
     done = false;
-    otherWin = (wxWindowBase *) NULL;
+    otherWin = NULL;
 }
 
 void wxIndividualLayoutConstraint::Set(wxRelationship rel, wxWindowBase *otherW, wxEdge otherE, int val, int marg)
@@ -158,7 +157,7 @@ bool wxIndividualLayoutConstraint::ResetIfWin(wxWindowBase *otherW)
         value = 0;
         percent = 0;
         otherEdge = wxTop;
-        otherWin = (wxWindowBase *) NULL;
+        otherWin = NULL;
         return true;
     }
 

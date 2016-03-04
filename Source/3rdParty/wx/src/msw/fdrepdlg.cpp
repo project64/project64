@@ -4,7 +4,6 @@
 // Author:      Markus Greither and Vadim Zeitlin
 // Modified by:
 // Created:     23/03/2001
-// RCS-ID:      $Id: fdrepdlg.cpp 46184 2007-05-23 23:40:12Z VZ $
 // Copyright:   (c) Markus Greither
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -40,9 +39,6 @@
 // functions prototypes
 // ----------------------------------------------------------------------------
 
-LRESULT CALLBACK wxFindReplaceWindowProc(HWND hwnd, WXUINT nMsg,
-                                         WPARAM wParam, LPARAM lParam);
-
 UINT_PTR CALLBACK wxFindReplaceDialogHookProc(HWND hwnd,
                                               UINT uiMsg,
                                               WPARAM wParam,
@@ -67,10 +63,6 @@ public:
     void InitFindWhat(const wxString& str);
     void InitReplaceWith(const wxString& str);
 
-    void SubclassDialog(HWND hwnd);
-
-    static UINT GetFindDialogMessage() { return ms_msgFindDialog; }
-
     // only for passing to ::FindText or ::ReplaceText
     FINDREPLACE *GetPtrFindReplace() { return &m_findReplace; }
 
@@ -79,13 +71,15 @@ public:
     bool WasClosedByUser() const { return m_wasClosedByUser; }
 
 private:
+    // called from window procedure for ms_msgFindDialog
+    static bool FindMessageHandler(wxWindow *win,
+                                   WXUINT nMsg,
+                                   WPARAM wParam,
+                                   LPARAM lParam);
+
+    // copy string str contents to ppStr and fill pLen with its length
     void InitString(const wxString& str, LPTSTR *ppStr, WORD *pLen);
 
-    // the owner of the dialog
-    HWND m_hwndOwner;
-
-    // the previous window proc of our owner
-    WNDPROC m_oldParentWndProc;
 
     // the find replace data used by the dialog
     FINDREPLACE m_findReplace;
@@ -96,7 +90,7 @@ private:
     // registered Message for Dialog
     static UINT ms_msgFindDialog;
 
-    DECLARE_NO_COPY_CLASS(wxFindReplaceDialogImpl)
+    wxDECLARE_NO_COPY_CLASS(wxFindReplaceDialogImpl);
 };
 
 UINT wxFindReplaceDialogImpl::ms_msgFindDialog = 0;
@@ -119,12 +113,15 @@ wxFindReplaceDialogImpl::wxFindReplaceDialogImpl(wxFindReplaceDialog *dialog,
 
         if ( !ms_msgFindDialog )
         {
-            wxLogLastError(_T("RegisterWindowMessage(FINDMSGSTRING)"));
+            wxLogLastError(wxT("RegisterWindowMessage(FINDMSGSTRING)"));
         }
-    }
 
-    m_hwndOwner = NULL;
-    m_oldParentWndProc = NULL;
+        wxWindow::MSWRegisterMessageHandler
+                  (
+                    ms_msgFindDialog,
+                    &wxFindReplaceDialogImpl::FindMessageHandler
+                  );
+    }
 
     m_wasClosedByUser = false;
 
@@ -186,40 +183,21 @@ void wxFindReplaceDialogImpl::InitReplaceWith(const wxString& str)
                &m_findReplace.wReplaceWithLen);
 }
 
-void wxFindReplaceDialogImpl::SubclassDialog(HWND hwnd)
-{
-    m_hwndOwner = hwnd;
-
-    // check that we don't subclass the parent twice: this would be a bad idea
-    // as then we'd have infinite recursion in wxFindReplaceWindowProc
-    wxCHECK_RET( wxGetWindowProc(hwnd) != &wxFindReplaceWindowProc,
-                 _T("can't have more than one find dialog currently") );
-
-    // set the new one and save the old as user data to allow access to it
-    // from wxFindReplaceWindowProc
-    m_oldParentWndProc = wxSetWindowProc(hwnd, wxFindReplaceWindowProc);
-
-    wxSetWindowUserData(hwnd, (void *)m_oldParentWndProc);
-}
-
 wxFindReplaceDialogImpl::~wxFindReplaceDialogImpl()
 {
     delete [] m_findReplace.lpstrFindWhat;
     delete [] m_findReplace.lpstrReplaceWith;
-
-    if ( m_hwndOwner )
-    {
-        // undo subclassing
-        wxSetWindowProc(m_hwndOwner, m_oldParentWndProc);
-    }
 }
 
 // ----------------------------------------------------------------------------
-// Window Proc for handling RegisterWindowMessage(FINDMSGSTRING)
+// handler for FINDMSGSTRING message
 // ----------------------------------------------------------------------------
 
-LRESULT CALLBACK wxFindReplaceWindowProc(HWND hwnd, WXUINT nMsg,
-                                         WPARAM wParam, LPARAM lParam)
+bool
+wxFindReplaceDialogImpl::FindMessageHandler(wxWindow * WXUNUSED(win),
+                                            WXUINT WXUNUSED_UNLESS_DEBUG(nMsg),
+                                            WPARAM WXUNUSED(wParam),
+                                            LPARAM lParam)
 {
 #if wxUSE_UNICODE_MSLU
     static unsigned long s_lastMsgFlags = 0;
@@ -231,100 +209,89 @@ LRESULT CALLBACK wxFindReplaceWindowProc(HWND hwnd, WXUINT nMsg,
     static bool s_blockMsg = false;
 #endif // wxUSE_UNICODE_MSLU
 
-    if ( nMsg == wxFindReplaceDialogImpl::GetFindDialogMessage() )
+    wxASSERT_MSG( nMsg == ms_msgFindDialog, wxT("unexpected message received") );
+
+    FINDREPLACE *pFR = (FINDREPLACE *)lParam;
+
+#if wxUSE_UNICODE_MSLU
+    // This is a hack for a MSLU problem: Versions up to 1.0.4011
+    // of UNICOWS.DLL send the correct UNICODE item after button press
+    // and a bogus ANSI mode item right after this, so let's ignore
+    // the second bogus message
+    if ( wxUsingUnicowsDll() && s_lastMsgFlags == pFR->Flags )
     {
-        FINDREPLACE *pFR = (FINDREPLACE *)lParam;
-
-#if wxUSE_UNICODE_MSLU
-        // This is a hack for a MSLU problem: Versions up to 1.0.4011
-        // of UNICOWS.DLL send the correct UNICODE item after button press
-        // and a bogus ANSI mode item right after this, so lets ignore
-        // the second bogus message
-        if ( wxUsingUnicowsDll() && s_lastMsgFlags == pFR->Flags )
-        {
-            s_lastMsgFlags = 0;
-            return 0;
-        }
-        s_lastMsgFlags = pFR->Flags;
-#endif // wxUSE_UNICODE_MSLU
-
-        wxFindReplaceDialog *dialog = (wxFindReplaceDialog *)pFR->lCustData;
-
-        // map flags from Windows
-        wxEventType evtType;
-
-        bool replace = false;
-        if ( pFR->Flags & FR_DIALOGTERM )
-        {
-            // we have to notify the dialog that it's being closed by user and
-            // not deleted programmatically as it behaves differently in these
-            // 2 cases
-            dialog->GetImpl()->SetClosedByUser();
-
-            evtType = wxEVT_COMMAND_FIND_CLOSE;
-        }
-        else if ( pFR->Flags & FR_FINDNEXT )
-        {
-            evtType = wxEVT_COMMAND_FIND_NEXT;
-        }
-        else if ( pFR->Flags & FR_REPLACE )
-        {
-            evtType = wxEVT_COMMAND_FIND_REPLACE;
-
-            replace = true;
-        }
-        else if ( pFR->Flags & FR_REPLACEALL )
-        {
-            evtType = wxEVT_COMMAND_FIND_REPLACE_ALL;
-
-            replace = true;
-        }
-        else
-        {
-            wxFAIL_MSG( _T("unknown find dialog event") );
-
-            return 0;
-        }
-
-        wxUint32 flags = 0;
-        if ( pFR->Flags & FR_DOWN )
-            flags |= wxFR_DOWN;
-        if ( pFR->Flags & FR_WHOLEWORD )
-            flags |= wxFR_WHOLEWORD;
-        if ( pFR->Flags & FR_MATCHCASE )
-            flags |= wxFR_MATCHCASE;
-
-        wxFindDialogEvent event(evtType, dialog->GetId());
-        event.SetEventObject(dialog);
-        event.SetFlags(flags);
-        event.SetFindString(pFR->lpstrFindWhat);
-        if ( replace )
-        {
-            event.SetReplaceString(pFR->lpstrReplaceWith);
-        }
-
-#if wxUSE_UNICODE_MSLU
-        s_blockMsg = true;
-#endif // wxUSE_UNICODE_MSLU
-
-        dialog->Send(event);
-
-#if wxUSE_UNICODE_MSLU
-        s_blockMsg = false;
-#endif // wxUSE_UNICODE_MSLU
-    }
-#if wxUSE_UNICODE_MSLU
-    else if ( !s_blockMsg )
         s_lastMsgFlags = 0;
+        return 0;
+    }
+    s_lastMsgFlags = pFR->Flags;
 #endif // wxUSE_UNICODE_MSLU
 
-    WNDPROC wndProc = (WNDPROC)wxGetWindowUserData(hwnd);
+    wxFindReplaceDialog *dialog = (wxFindReplaceDialog *)pFR->lCustData;
 
-    // sanity check
-    wxASSERT_MSG( wndProc != wxFindReplaceWindowProc,
-                  _T("infinite recursion detected") );
+    // map flags from Windows
+    wxEventType evtType;
 
-    return ::CallWindowProc(wndProc, hwnd, nMsg, wParam, lParam);
+    bool replace = false;
+    if ( pFR->Flags & FR_DIALOGTERM )
+    {
+        // we have to notify the dialog that it's being closed by user and
+        // not deleted programmatically as it behaves differently in these
+        // 2 cases
+        dialog->GetImpl()->SetClosedByUser();
+
+        evtType = wxEVT_FIND_CLOSE;
+    }
+    else if ( pFR->Flags & FR_FINDNEXT )
+    {
+        evtType = wxEVT_FIND_NEXT;
+    }
+    else if ( pFR->Flags & FR_REPLACE )
+    {
+        evtType = wxEVT_FIND_REPLACE;
+
+        replace = true;
+    }
+    else if ( pFR->Flags & FR_REPLACEALL )
+    {
+        evtType = wxEVT_FIND_REPLACE_ALL;
+
+        replace = true;
+    }
+    else
+    {
+        wxFAIL_MSG( wxT("unknown find dialog event") );
+
+        return 0;
+    }
+
+    wxUint32 flags = 0;
+    if ( pFR->Flags & FR_DOWN )
+        flags |= wxFR_DOWN;
+    if ( pFR->Flags & FR_WHOLEWORD )
+        flags |= wxFR_WHOLEWORD;
+    if ( pFR->Flags & FR_MATCHCASE )
+        flags |= wxFR_MATCHCASE;
+
+    wxFindDialogEvent event(evtType, dialog->GetId());
+    event.SetEventObject(dialog);
+    event.SetFlags(flags);
+    event.SetFindString(pFR->lpstrFindWhat);
+    if ( replace )
+    {
+        event.SetReplaceString(pFR->lpstrReplaceWith);
+    }
+
+#if wxUSE_UNICODE_MSLU
+    s_blockMsg = true;
+#endif // wxUSE_UNICODE_MSLU
+
+    dialog->Send(event);
+
+#if wxUSE_UNICODE_MSLU
+    s_blockMsg = false;
+#endif // wxUSE_UNICODE_MSLU
+
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -342,7 +309,7 @@ wxFindReplaceDialogHookProc(HWND hwnd,
         FINDREPLACE *pFR = (FINDREPLACE *)lParam;
         wxFindReplaceDialog *dialog = (wxFindReplaceDialog *)pFR->lCustData;
 
-        ::SetWindowText(hwnd, dialog->GetTitle());
+        ::SetWindowText(hwnd, dialog->GetTitle().t_str());
 
         // don't return FALSE from here or the dialog won't be shown
         return TRUE;
@@ -391,7 +358,7 @@ wxFindReplaceDialog::~wxFindReplaceDialog()
             // if it wasn't, delete the dialog ourselves
             if ( !::DestroyWindow(GetHwnd()) )
             {
-                wxLogLastError(_T("DestroyWindow(find dialog)"));
+                wxLogLastError(wxT("DestroyWindow(find dialog)"));
             }
         }
 
@@ -448,9 +415,9 @@ bool wxFindReplaceDialog::Show(bool show)
         return true;
     }
 
-    wxCHECK_MSG( m_FindReplaceData, false, _T("call Create() first!") );
+    wxCHECK_MSG( m_FindReplaceData, false, wxT("call Create() first!") );
 
-    wxASSERT_MSG( !m_impl, _T("why don't we have the window then?") );
+    wxASSERT_MSG( !m_impl, wxT("why don't we have the window then?") );
 
     m_impl = new wxFindReplaceDialogImpl(this, m_FindReplaceData->GetFlags());
 
@@ -475,18 +442,14 @@ bool wxFindReplaceDialog::Show(bool show)
         wxLogError(_("Failed to create the standard find/replace dialog (error code %d)"),
                    ::CommDlgExtendedError());
 
-        delete m_impl;
-        m_impl = NULL;
+        wxDELETE(m_impl);
 
         return false;
     }
 
-    // subclass parent window in order to get FINDMSGSTRING message
-    m_impl->SubclassDialog(GetHwndOf(m_parent));
-
     if ( !::ShowWindow(hwnd, SW_SHOW) )
     {
-        wxLogLastError(_T("ShowWindow(find dialog)"));
+        wxLogLastError(wxT("ShowWindow(find dialog)"));
     }
 
     m_hWnd = (WXHWND)hwnd;

@@ -5,7 +5,6 @@
 // Modified by:
 //  Chris Elliott (biol75@york.ac.uk) 5 Dec 00: write support for Win32
 // Created:     23.09.98
-// RCS-ID:      $Id: mimetype.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence (part of wxExtra library)
 /////////////////////////////////////////////////////////////////////////////
@@ -25,6 +24,8 @@
 #include "wx/string.h"
 #include "wx/dynarray.h"
 #include "wx/arrstr.h"
+
+#include <stdarg.h>
 
 // fwd decls
 class WXDLLIMPEXP_FWD_BASE wxIconLocation;
@@ -116,16 +117,107 @@ private:
 
 class WXDLLIMPEXP_BASE wxFileTypeInfo
 {
+private:
+    void DoVarArgInit(const wxString& mimeType,
+                      const wxString& openCmd,
+                      const wxString& printCmd,
+                      const wxString& desc,
+                      va_list argptr);
+
+    void VarArgInit(const wxString *mimeType,
+                    const wxString *openCmd,
+                    const wxString *printCmd,
+                    const wxString *desc,
+                    // the other parameters form a NULL terminated list of
+                    // extensions
+                    ...);
+
 public:
+    // NB: This is a helper to get implicit conversion of variadic ctor's
+    //     fixed arguments into something that can be passed to VarArgInit().
+    //     Do not use, it's used by the ctor only.
+    struct CtorString
+    {
+        CtorString(const char *str) : m_str(str) {}
+        CtorString(const wchar_t *str) : m_str(str) {}
+        CtorString(const wxString& str) : m_str(str) {}
+        CtorString(const wxCStrData& str) : m_str(str) {}
+        CtorString(const wxScopedCharBuffer& str) : m_str(str) {}
+        CtorString(const wxScopedWCharBuffer& str) : m_str(str) {}
+
+        operator const wxString*() const { return &m_str; }
+
+        wxString m_str;
+    };
+
     // ctors
-        // a normal item
-    wxFileTypeInfo(const wxChar *mimeType,
-                   const wxChar *openCmd,
-                   const wxChar *printCmd,
-                   const wxChar *desc,
-                   // the other parameters form a NULL terminated list of
-                   // extensions
-                   ...);
+
+    // Ctor specifying just the MIME type (which is mandatory), the other
+    // fields can be set later if needed.
+    wxFileTypeInfo(const wxString& mimeType)
+        : m_mimeType(mimeType)
+    {
+    }
+
+    // Ctor allowing to specify the values of all fields at once:
+    //
+    // wxFileTypeInfo(const wxString& mimeType,
+    //               const wxString& openCmd,
+    //               const wxString& printCmd,
+    //               const wxString& desc,
+    //               // the other parameters form a list of extensions for this
+    //               // file type and should be terminated with wxNullPtr (not
+    //               // just NULL!)
+    //               ...);
+    WX_DEFINE_VARARG_FUNC_CTOR(wxFileTypeInfo,
+                               4, (const CtorString&,
+                                   const CtorString&,
+                                   const CtorString&,
+                                   const CtorString&),
+                               VarArgInit, VarArgInit)
+#ifdef __WATCOMC__
+    // workaround for http://bugzilla.openwatcom.org/show_bug.cgi?id=351
+    WX_VARARG_WATCOM_WORKAROUND_CTOR(
+                                wxFileTypeInfo,
+                                4, (const wxString&,
+                                    const wxString&,
+                                    const wxString&,
+                                    const wxString&),
+                                (CtorString(f1),
+                                 CtorString(f2),
+                                 CtorString(f3),
+                                 CtorString(f4)));
+    WX_VARARG_WATCOM_WORKAROUND_CTOR(
+                                wxFileTypeInfo,
+                                4, (const wxCStrData&,
+                                    const wxCStrData&,
+                                    const wxCStrData&,
+                                    const wxCStrData&),
+                                (CtorString(f1),
+                                 CtorString(f2),
+                                 CtorString(f3),
+                                 CtorString(f4)));
+    WX_VARARG_WATCOM_WORKAROUND_CTOR(
+                                wxFileTypeInfo,
+                                4, (const char*,
+                                    const char*,
+                                    const char*,
+                                    const char*),
+                                (CtorString(f1),
+                                 CtorString(f2),
+                                 CtorString(f3),
+                                 CtorString(f4)));
+    WX_VARARG_WATCOM_WORKAROUND_CTOR(
+                                wxFileTypeInfo,
+                                4, (const wchar_t*,
+                                    const wchar_t*,
+                                    const wchar_t*,
+                                    const wchar_t*),
+                                (CtorString(f1),
+                                 CtorString(f2),
+                                 CtorString(f3),
+                                 CtorString(f4)));
+#endif
 
         // the array elements correspond to the parameters of the ctor above in
         // the same order
@@ -139,6 +231,16 @@ public:
     bool IsValid() const { return !m_mimeType.empty(); }
 
     // setters
+        // set the open/print commands
+    void SetOpenCommand(const wxString& command) { m_openCmd = command; }
+    void SetPrintCommand(const wxString& command) { m_printCmd = command; }
+
+        // set the description
+    void SetDescription(const wxString& desc) { m_desc = desc; }
+
+        // add another extension corresponding to this file type
+    void AddExtension(const wxString& ext) { m_exts.push_back(ext); }
+
         // set the icon info
     void SetIcon(const wxString& iconFile, int iconIndex = 0)
     {
@@ -286,7 +388,7 @@ public:
 
     // operations
         // expand a string in the format of GetOpenCommand (which may contain
-        // '%s' and '%t' format specificators for the file name and mime type
+        // '%s' and '%t' format specifiers for the file name and mime type
         // and %{param} constructions).
     static wxString ExpandCommand(const wxString& command,
                                   const MessageParameters& params);
@@ -325,7 +427,7 @@ public:
 
     static void Set( wxMimeTypesManagerFactory *factory );
     static wxMimeTypesManagerFactory *Get();
-    
+
 private:
     static wxMimeTypesManagerFactory *m_factory;
 };
@@ -376,32 +478,13 @@ public:
         // get file type from MIME type (in format <category>/<format>)
     wxFileType *GetFileTypeFromMimeType(const wxString& mimeType);
 
-    // other operations: return true if there were no errors or false if there
-    // were some unrecognized entries (the good entries are always read anyhow)
-    //
-    // FIXME: These ought to be private ??
-
-        // read in additional file (the standard ones are read automatically)
-        // in mailcap format (see mimetype.cpp for description)
-        //
-        // 'fallback' parameter may be set to true to avoid overriding the
-        // settings from other, previously parsed, files by this one: normally,
-        // the files read most recently would override the older files, but with
-        // fallback == true this won't happen
-
-    bool ReadMailcap(const wxString& filename, bool fallback = false);
-        // read in additional file in mime.types format
-    bool ReadMimeTypes(const wxString& filename);
-
     // enumerate all known MIME types
     //
     // returns the number of retrieved file types
     size_t EnumAllFileTypes(wxArrayString& mimetypes);
 
     // these functions can be used to provide default values for some of the
-    // MIME types inside the program itself (you may also use
-    // ReadMailcap(filenameWithDefaultTypes, true /* use as fallback */) to
-    // achieve the same goal, but this requires having this info in a file).
+    // MIME types inside the program itself
     //
     // The filetypes array should be terminated by either NULL entry or an
     // invalid wxFileTypeInfo (i.e. the one created with default ctor)

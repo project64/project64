@@ -4,7 +4,6 @@
 // Author:      Jaakko Salli
 // Modified by:
 // Created:     Apr-30-2006
-// RCS-ID:      $Id: combo.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) Jaakko Salli
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -31,9 +30,11 @@
 
 #endif
 
-extern WXDLLIMPEXP_DATA_CORE(const wxChar) wxComboBoxNameStr[];
+#include "wx/dcbuffer.h"
 
-class WXDLLEXPORT wxGenericComboCtrl : public wxComboCtrlBase
+extern WXDLLIMPEXP_DATA_CORE(const char) wxComboBoxNameStr[];
+
+class WXDLLIMPEXP_CORE wxGenericComboCtrl : public wxComboCtrlBase
 {
 public:
     // ctors and such
@@ -80,6 +81,37 @@ public:
 
 protected:
 
+    // Dummies for platform-specific wxTextEntry implementations
+#if defined(__WXUNIVERSAL__)
+    // Looks like there's nothing we need to override here
+#elif defined(__WXMOTIF__)
+    virtual WXWidget GetTextWidget() const { return NULL; }
+#elif defined(__WXGTK__)
+#if defined(__WXGTK20__)
+    virtual GtkEditable *GetEditable() const { return NULL; }
+    virtual GtkEntry *GetEntry() const { return NULL; }
+#endif
+#elif defined(__WXMAC__)
+    // Looks like there's nothing we need to override here
+#elif defined(__WXPM__)
+    virtual WXHWND GetEditHWND() const { return NULL; }
+#endif
+
+    // For better transparent background rendering
+    virtual bool HasTransparentBackground()
+    {
+        #if wxALWAYS_NATIVE_DOUBLE_BUFFER
+          #ifdef __WXGTK__
+            // Sanity check for GTK+
+            return IsDoubleBuffered();
+          #else
+            return true;
+          #endif
+        #else
+            return false;
+        #endif
+    }
+
     // Mandatory virtuals
     virtual void OnResize();
 
@@ -101,7 +133,7 @@ private:
 // If native wxComboCtrl was not defined, then prepare a simple
 // front-end so that wxRTTI works as expected.
 
-class WXDLLEXPORT wxComboCtrl : public wxGenericComboCtrl
+class WXDLLIMPEXP_CORE wxComboCtrl : public wxGenericComboCtrl
 {
 public:
     wxComboCtrl() : wxGenericComboCtrl() {}

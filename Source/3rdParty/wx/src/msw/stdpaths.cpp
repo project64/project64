@@ -1,12 +1,11 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        msw/stdpaths.cpp
+// Name:        src/msw/stdpaths.cpp
 // Purpose:     wxStandardPaths implementation for Win32
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2004-10-19
-// RCS-ID:      $Id: stdpaths.cpp 51807 2008-02-15 13:14:49Z VZ $
 // Copyright:   (c) 2004 Vadim Zeitlin <vadim@wxwindows.org>
-// License:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -50,7 +49,7 @@ typedef HRESULT (WINAPI *SHGetSpecialFolderPath_t)(HWND, LPTSTR, int, BOOL);
 // ----------------------------------------------------------------------------
 
 // used in our wxLogTrace messages
-#define TRACE_MASK _T("stdpaths")
+#define TRACE_MASK wxT("stdpaths")
 
 #ifndef CSIDL_APPDATA
     #define CSIDL_APPDATA         0x001a
@@ -79,9 +78,13 @@ typedef HRESULT (WINAPI *SHGetSpecialFolderPath_t)(HWND, LPTSTR, int, BOOL);
 #ifndef SHGFP_TYPE_DEFAULT
     #define SHGFP_TYPE_DEFAULT 1
 #endif
+
 // ----------------------------------------------------------------------------
 // module globals
 // ----------------------------------------------------------------------------
+
+namespace
+{
 
 struct ShellFunctions
 {
@@ -101,28 +104,28 @@ struct ShellFunctions
 // in spite of using a static variable, this is MT-safe as in the worst case it
 // results in initializing the function pointer several times -- but this is
 // harmless
-static ShellFunctions gs_shellFuncs;
+ShellFunctions gs_shellFuncs;
 
 // ----------------------------------------------------------------------------
 // private functions
 // ----------------------------------------------------------------------------
 
-static void ResolveShellFunctions()
+void ResolveShellFunctions()
 {
 #if wxUSE_DYNLIB_CLASS
 
     // start with the newest functions, fall back to the oldest ones
 #ifdef __WXWINCE__
-    wxString shellDllName(_T("coredll"));
+    wxString shellDllName(wxT("coredll"));
 #else
     // first check for SHGetFolderPath (shell32.dll 5.0)
-    wxString shellDllName(_T("shell32"));
+    wxString shellDllName(wxT("shell32"));
 #endif
 
     wxDynamicLibrary dllShellFunctions( shellDllName );
     if ( !dllShellFunctions.IsLoaded() )
     {
-        wxLogTrace(TRACE_MASK, _T("Failed to load %s.dll"), shellDllName.c_str() );
+        wxLogTrace(TRACE_MASK, wxT("Failed to load %s.dll"), shellDllName.c_str() );
     }
 
     // don't give errors if the functions are unavailable, we're ready to deal
@@ -139,14 +142,14 @@ static void ResolveShellFunctions()
     static const char UNICODE_SUFFIX = 'A';
 #endif // Unicode/!Unicode
 
-    wxString funcname(_T("SHGetFolderPath"));
+    wxString funcname(wxT("SHGetFolderPath"));
     gs_shellFuncs.pSHGetFolderPath =
         (SHGetFolderPath_t)dllShellFunctions.GetSymbol(funcname + UNICODE_SUFFIX);
 
     // then for SHGetSpecialFolderPath (shell32.dll 4.71)
     if ( !gs_shellFuncs.pSHGetFolderPath )
     {
-        funcname = _T("SHGetSpecialFolderPath");
+        funcname = wxT("SHGetSpecialFolderPath");
         gs_shellFuncs.pSHGetSpecialFolderPath = (SHGetSpecialFolderPath_t)
             dllShellFunctions.GetSymbol(funcname + UNICODE_SUFFIX);
     }
@@ -160,6 +163,8 @@ static void ResolveShellFunctions()
     gs_shellFuncs.initialized = true;
 #endif
 }
+
+} // anonymous namespace
 
 // ============================================================================
 // wxStandardPaths implementation
@@ -245,24 +250,14 @@ wxString wxStandardPaths::DoGetDirectory(int csidl)
     return dir;
 }
 
-/* static */
-wxString wxStandardPaths::GetAppDir()
+wxString wxStandardPaths::GetAppDir() const
 {
-    wxFileName fn(wxGetFullModuleName());
-
-    // allow running the apps directly from build directory in debug builds
-#ifdef __WXDEBUG__
-    wxString lastdir;
-    if ( fn.GetDirCount() )
+    if ( m_appDir.empty() )
     {
-        lastdir = fn.GetDirs().Last();
-        lastdir.MakeLower();
-        if ( lastdir.Matches(_T("debug*")) || lastdir.Matches(_T("vc_msw*")) )
-            fn.RemoveLastDir();
+        m_appDir = wxFileName(wxGetFullModuleName()).GetPath();
     }
-#endif // __WXDEBUG__
 
-    return fn.GetPath();
+    return m_appDir;
 }
 
 wxString wxStandardPaths::GetDocumentsDir() const
@@ -271,8 +266,75 @@ wxString wxStandardPaths::GetDocumentsDir() const
 }
 
 // ----------------------------------------------------------------------------
+// MSW-specific functions
+// ----------------------------------------------------------------------------
+
+void wxStandardPaths::IgnoreAppSubDir(const wxString& subdirPattern)
+{
+    wxFileName fn = wxFileName::DirName(GetAppDir());
+
+    if ( !fn.GetDirCount() )
+    {
+        // no last directory to ignore anyhow
+        return;
+    }
+
+    const wxString lastdir = fn.GetDirs().Last().Lower();
+    if ( lastdir.Matches(subdirPattern.Lower()) )
+    {
+        fn.RemoveLastDir();
+
+        // store the cached value so that subsequent calls to GetAppDir() will
+        // reuse it instead of using just the program binary directory
+        m_appDir = fn.GetPath();
+    }
+}
+
+void wxStandardPaths::IgnoreAppBuildSubDirs()
+{
+    IgnoreAppSubDir("debug");
+    IgnoreAppSubDir("release");
+
+    wxString compilerPrefix;
+#ifdef __VISUALC__
+    compilerPrefix = "vc";
+#elif defined(__GNUG__)
+    compilerPrefix = "gcc";
+#elif defined(__BORLANDC__)
+    compilerPrefix = "bcc";
+#elif defined(__DIGITALMARS__)
+    compilerPrefix = "dmc";
+#elif defined(__WATCOMC__)
+    compilerPrefix = "wat";
+#else
+    return;
+#endif
+
+    IgnoreAppSubDir(compilerPrefix + "_msw*");
+}
+
+void wxStandardPaths::DontIgnoreAppSubDir()
+{
+    // this will force the next call to GetAppDir() to use the program binary
+    // path as the application directory
+    m_appDir.clear();
+}
+
+/* static */
+wxString wxStandardPaths::MSWGetShellDir(int csidl)
+{
+    return DoGetDirectory(csidl);
+}
+
+// ----------------------------------------------------------------------------
 // public functions
 // ----------------------------------------------------------------------------
+
+wxStandardPaths::wxStandardPaths()
+{
+    // make it possible to run uninstalled application from the build directory
+    IgnoreAppBuildSubDirs();
+}
 
 wxString wxStandardPaths::GetExecutablePath() const
 {
@@ -281,7 +343,7 @@ wxString wxStandardPaths::GetExecutablePath() const
 
 wxString wxStandardPaths::GetConfigDir() const
 {
-    return AppendAppName(DoGetDirectory(CSIDL_COMMON_APPDATA));
+    return AppendAppInfo(DoGetDirectory(CSIDL_COMMON_APPDATA));
 }
 
 wxString wxStandardPaths::GetUserConfigDir() const
@@ -298,12 +360,12 @@ wxString wxStandardPaths::GetDataDir() const
 
 wxString wxStandardPaths::GetUserDataDir() const
 {
-    return AppendAppName(GetUserConfigDir());
+    return AppendAppInfo(GetUserConfigDir());
 }
 
 wxString wxStandardPaths::GetUserLocalDataDir() const
 {
-    return AppendAppName(DoGetDirectory(CSIDL_LOCAL_APPDATA));
+    return AppendAppInfo(DoGetDirectory(CSIDL_LOCAL_APPDATA));
 }
 
 wxString wxStandardPaths::GetPluginsDir() const
@@ -325,7 +387,7 @@ wxString wxStandardPathsWin16::GetConfigDir() const
 #ifndef __WXWINCE__
     if ( !::GetWindowsDirectory(wxStringBuffer(dir, MAX_PATH), MAX_PATH) )
     {
-        wxLogLastError(_T("GetWindowsDirectory"));
+        wxLogLastError(wxT("GetWindowsDirectory"));
     }
 #else
     // TODO: use CSIDL_WINDOWS (eVC4, possibly not eVC3)

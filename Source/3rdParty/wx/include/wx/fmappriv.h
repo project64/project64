@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     21.06.2003 (extracted from common/fontmap.cpp)
-// RCS-ID:      $Id: fmappriv.h 27454 2004-05-26 10:49:43Z JS $
 // Copyright:   (c) 1999-2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -65,7 +64,7 @@ private:
     bool m_ok;
 
 
-    DECLARE_NO_COPY_CLASS(wxFontMapperPathChanger)
+    wxDECLARE_NO_COPY_CLASS(wxFontMapperPathChanger);
 };
 
 #endif // wxUSE_CONFIG

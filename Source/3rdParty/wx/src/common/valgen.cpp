@@ -4,7 +4,6 @@
 // Author:      Kevin Smith
 // Modified by:
 // Created:     Jan 22 1999
-// RCS-ID:      $Id: valgen.cpp 39463 2006-05-29 21:26:35Z ABX $
 // Copyright:   (c) 1999 Kevin Smith
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -38,6 +37,7 @@
 #endif
 
 #include "wx/spinctrl.h"
+// #include "wx/datectrl.h" -- can't use it in this (core) file for now
 
 #if wxUSE_SPINBTN
     #include "wx/spinbutt.h"
@@ -45,6 +45,7 @@
 #if wxUSE_TOGGLEBTN
     #include "wx/tglbtn.h"
 #endif
+#include "wx/filename.h"
 
 #include "wx/valgen.h"
 
@@ -74,6 +75,34 @@ wxGenericValidator::wxGenericValidator(wxArrayInt *val)
     m_pArrayInt = val;
 }
 
+#if wxUSE_DATETIME
+
+wxGenericValidator::wxGenericValidator(wxDateTime *val)
+{
+    Initialize();
+    m_pDateTime = val;
+}
+
+#endif // wxUSE_DATETIME
+
+wxGenericValidator::wxGenericValidator(wxFileName *val)
+{
+    Initialize();
+    m_pFileName = val;
+}
+
+wxGenericValidator::wxGenericValidator(float *val)
+{
+    Initialize();
+    m_pFloat = val;
+}
+
+wxGenericValidator::wxGenericValidator(double *val)
+{
+    Initialize();
+    m_pDouble = val;
+}
+
 wxGenericValidator::wxGenericValidator(const wxGenericValidator& val)
     : wxValidator()
 {
@@ -88,6 +117,12 @@ bool wxGenericValidator::Copy(const wxGenericValidator& val)
     m_pInt = val.m_pInt;
     m_pString = val.m_pString;
     m_pArrayInt = val.m_pArrayInt;
+#if wxUSE_DATETIME
+    m_pDateTime = val.m_pDateTime;
+#endif // wxUSE_DATETIME
+    m_pFileName = val.m_pFileName;
+    m_pFloat = val.m_pFloat;
+    m_pDouble = val.m_pDouble;
 
     return true;
 }
@@ -100,7 +135,7 @@ bool wxGenericValidator::TransferToWindow(void)
 
     // bool controls
 #if wxUSE_CHECKBOX
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxCheckBox)) )
+    if (wxDynamicCast(m_validatorWindow, wxCheckBox))
     {
         wxCheckBox* pControl = (wxCheckBox*) m_validatorWindow;
         if (m_pBool)
@@ -111,7 +146,7 @@ bool wxGenericValidator::TransferToWindow(void)
     } else
 #endif
 #if wxUSE_RADIOBTN
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxRadioButton)) )
+    if (wxDynamicCast(m_validatorWindow, wxRadioButton))
     {
         wxRadioButton* pControl = (wxRadioButton*) m_validatorWindow;
         if (m_pBool)
@@ -121,8 +156,9 @@ bool wxGenericValidator::TransferToWindow(void)
         }
     } else
 #endif
+
 #if wxUSE_TOGGLEBTN
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxToggleButton)) )
+    if (wxDynamicCast(m_validatorWindow, wxToggleButton))
     {
         wxToggleButton * pControl = (wxToggleButton *) m_validatorWindow;
         if (m_pBool)
@@ -131,11 +167,22 @@ bool wxGenericValidator::TransferToWindow(void)
             return true;
         }
     } else
+#if (defined(__WXMAC__) || defined(__WXMSW__) || defined(__WXGTK20__)) && !defined(__WXUNIVERSAL__)
+    if (wxDynamicCast(m_validatorWindow, wxBitmapToggleButton))
+    {
+        wxBitmapToggleButton * pControl = (wxBitmapToggleButton *) m_validatorWindow;
+        if (m_pBool)
+        {
+            pControl->SetValue(*m_pBool);
+            return true;
+        }
+    } else
+#endif
 #endif
 
     // int controls
 #if wxUSE_GAUGE
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxGauge)) )
+    if (wxDynamicCast(m_validatorWindow, wxGauge))
     {
         wxGauge* pControl = (wxGauge*) m_validatorWindow;
         if (m_pInt)
@@ -146,7 +193,7 @@ bool wxGenericValidator::TransferToWindow(void)
     } else
 #endif
 #if wxUSE_RADIOBOX
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxRadioBox)) )
+    if (wxDynamicCast(m_validatorWindow, wxRadioBox))
     {
         wxRadioBox* pControl = (wxRadioBox*) m_validatorWindow;
         if (m_pInt)
@@ -157,7 +204,7 @@ bool wxGenericValidator::TransferToWindow(void)
     } else
 #endif
 #if wxUSE_SCROLLBAR
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxScrollBar)) )
+    if (wxDynamicCast(m_validatorWindow, wxScrollBar))
     {
         wxScrollBar* pControl = (wxScrollBar*) m_validatorWindow;
         if (m_pInt)
@@ -168,7 +215,7 @@ bool wxGenericValidator::TransferToWindow(void)
     } else
 #endif
 #if wxUSE_SPINCTRL && !defined(__WXMOTIF__)
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxSpinCtrl)) )
+    if (wxDynamicCast(m_validatorWindow, wxSpinCtrl))
     {
         wxSpinCtrl* pControl = (wxSpinCtrl*) m_validatorWindow;
         if (m_pInt)
@@ -179,7 +226,7 @@ bool wxGenericValidator::TransferToWindow(void)
     } else
 #endif
 #if wxUSE_SPINBTN
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxSpinButton)) )
+    if (wxDynamicCast(m_validatorWindow, wxSpinButton))
     {
         wxSpinButton* pControl = (wxSpinButton*) m_validatorWindow;
         if (m_pInt)
@@ -190,7 +237,7 @@ bool wxGenericValidator::TransferToWindow(void)
     } else
 #endif
 #if wxUSE_SLIDER
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxSlider)) )
+    if (wxDynamicCast(m_validatorWindow, wxSlider))
     {
         wxSlider* pControl = (wxSlider*) m_validatorWindow;
         if (m_pInt)
@@ -201,9 +248,22 @@ bool wxGenericValidator::TransferToWindow(void)
     } else
 #endif
 
+    // date time controls
+#if 0 // wxUSE_DATEPICKCTRL -- temporary fix for shared build linking
+    if (wxDynamicCast(m_validatorWindow, wxDatePickerCtrl))
+    {
+        wxDatePickerCtrl* pControl = (wxDatePickerCtrl*) m_validatorWindow;
+        if (m_pDateTime)
+        {
+            pControl->SetValue(*m_pDateTime) ;
+            return true;
+        }
+    } else
+#endif
+
     // string controls
 #if wxUSE_BUTTON
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxButton)) )
+    if (wxDynamicCast(m_validatorWindow, wxButton))
     {
         wxButton* pControl = (wxButton*) m_validatorWindow;
         if (m_pString)
@@ -214,7 +274,7 @@ bool wxGenericValidator::TransferToWindow(void)
     } else
 #endif
 #if wxUSE_COMBOBOX
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxComboBox)) )
+    if (wxDynamicCast(m_validatorWindow, wxComboBox))
     {
         wxComboBox* pControl = (wxComboBox*) m_validatorWindow;
         if (m_pInt)
@@ -237,7 +297,7 @@ bool wxGenericValidator::TransferToWindow(void)
     } else
 #endif
 #if wxUSE_CHOICE
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxChoice)) )
+    if (wxDynamicCast(m_validatorWindow, wxChoice))
     {
         wxChoice* pControl = (wxChoice*) m_validatorWindow;
         if (m_pInt)
@@ -256,7 +316,7 @@ bool wxGenericValidator::TransferToWindow(void)
     } else
 #endif
 #if wxUSE_STATTEXT
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxStaticText)) )
+    if (wxDynamicCast(m_validatorWindow, wxStaticText))
     {
         wxStaticText* pControl = (wxStaticText*) m_validatorWindow;
         if (m_pString)
@@ -267,7 +327,7 @@ bool wxGenericValidator::TransferToWindow(void)
     } else
 #endif
 #if wxUSE_TEXTCTRL
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxTextCtrl)) )
+    if (wxDynamicCast(m_validatorWindow, wxTextCtrl))
     {
         wxTextCtrl* pControl = (wxTextCtrl*) m_validatorWindow;
         if (m_pString)
@@ -282,13 +342,28 @@ bool wxGenericValidator::TransferToWindow(void)
             pControl->SetValue(str);
             return true;
         }
+        else if (m_pFileName)
+        {
+            pControl->SetValue(m_pFileName->GetFullPath());
+            return true;
+        }
+        else if (m_pFloat)
+        {
+            pControl->SetValue(wxString::Format(wxT("%g"), *m_pFloat));
+            return true;
+        }
+        else if (m_pDouble)
+        {
+            pControl->SetValue(wxString::Format(wxT("%g"), *m_pDouble));
+            return true;
+        }
     } else
 #endif
 
     // array controls
 #if wxUSE_CHECKLISTBOX
     // NOTE: wxCheckListBox is a wxListBox, so wxCheckListBox MUST come first:
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxCheckListBox)) )
+    if (wxDynamicCast(m_validatorWindow, wxCheckListBox))
     {
         wxCheckListBox* pControl = (wxCheckListBox*) m_validatorWindow;
         if (m_pArrayInt)
@@ -311,7 +386,7 @@ bool wxGenericValidator::TransferToWindow(void)
     } else
 #endif
 #if wxUSE_LISTBOX
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxListBox)) )
+    if (wxDynamicCast(m_validatorWindow, wxListBox))
     {
         wxListBox* pControl = (wxListBox*) m_validatorWindow;
         if (m_pArrayInt)
@@ -331,7 +406,8 @@ bool wxGenericValidator::TransferToWindow(void)
         }
     } else
 #endif
-        ;   // to match the last 'else' above
+    {   // to match the last 'else' above
+    }
 
   // unrecognized control, or bad pointer
   return false;
@@ -345,7 +421,7 @@ bool wxGenericValidator::TransferFromWindow(void)
 
     // BOOL CONTROLS **************************************
 #if wxUSE_CHECKBOX
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxCheckBox)) )
+    if (wxDynamicCast(m_validatorWindow, wxCheckBox))
     {
         wxCheckBox* pControl = (wxCheckBox*) m_validatorWindow;
         if (m_pBool)
@@ -356,7 +432,7 @@ bool wxGenericValidator::TransferFromWindow(void)
     } else
 #endif
 #if wxUSE_RADIOBTN
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxRadioButton)) )
+    if (wxDynamicCast(m_validatorWindow, wxRadioButton))
     {
         wxRadioButton* pControl = (wxRadioButton*) m_validatorWindow;
         if (m_pBool)
@@ -367,7 +443,7 @@ bool wxGenericValidator::TransferFromWindow(void)
     } else
 #endif
 #if wxUSE_TOGGLEBTN
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxToggleButton)) )
+    if (wxDynamicCast(m_validatorWindow, wxToggleButton))
     {
         wxToggleButton *pControl = (wxToggleButton *) m_validatorWindow;
         if (m_pBool)
@@ -376,11 +452,22 @@ bool wxGenericValidator::TransferFromWindow(void)
             return true;
         }
     } else
+#if (defined(__WXMAC__) || defined(__WXMSW__) || defined(__WXGTK20__)) && !defined(__WXUNIVERSAL__)
+    if (wxDynamicCast(m_validatorWindow, wxBitmapToggleButton))
+    {
+        wxBitmapToggleButton *pControl = (wxBitmapToggleButton *) m_validatorWindow;
+        if (m_pBool)
+        {
+            *m_pBool = pControl->GetValue() ;
+            return true;
+        }
+    } else
+#endif
 #endif
 
     // INT CONTROLS ***************************************
 #if wxUSE_GAUGE
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxGauge)) )
+    if (wxDynamicCast(m_validatorWindow, wxGauge))
     {
         wxGauge* pControl = (wxGauge*) m_validatorWindow;
         if (m_pInt)
@@ -391,7 +478,7 @@ bool wxGenericValidator::TransferFromWindow(void)
     } else
 #endif
 #if wxUSE_RADIOBOX
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxRadioBox)) )
+    if (wxDynamicCast(m_validatorWindow, wxRadioBox))
     {
         wxRadioBox* pControl = (wxRadioBox*) m_validatorWindow;
         if (m_pInt)
@@ -402,7 +489,7 @@ bool wxGenericValidator::TransferFromWindow(void)
     } else
 #endif
 #if wxUSE_SCROLLBAR
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxScrollBar)) )
+    if (wxDynamicCast(m_validatorWindow, wxScrollBar))
     {
         wxScrollBar* pControl = (wxScrollBar*) m_validatorWindow;
         if (m_pInt)
@@ -413,7 +500,7 @@ bool wxGenericValidator::TransferFromWindow(void)
     } else
 #endif
 #if wxUSE_SPINCTRL && !defined(__WXMOTIF__)
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxSpinCtrl)) )
+    if (wxDynamicCast(m_validatorWindow, wxSpinCtrl))
     {
         wxSpinCtrl* pControl = (wxSpinCtrl*) m_validatorWindow;
         if (m_pInt)
@@ -424,7 +511,7 @@ bool wxGenericValidator::TransferFromWindow(void)
     } else
 #endif
 #if wxUSE_SPINBTN
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxSpinButton)) )
+    if (wxDynamicCast(m_validatorWindow, wxSpinButton))
     {
         wxSpinButton* pControl = (wxSpinButton*) m_validatorWindow;
         if (m_pInt)
@@ -435,7 +522,7 @@ bool wxGenericValidator::TransferFromWindow(void)
     } else
 #endif
 #if wxUSE_SLIDER
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxSlider)) )
+    if (wxDynamicCast(m_validatorWindow, wxSlider))
     {
         wxSlider* pControl = (wxSlider*) m_validatorWindow;
         if (m_pInt)
@@ -446,9 +533,22 @@ bool wxGenericValidator::TransferFromWindow(void)
     } else
 #endif
 
+    // DATE TIME CONTROLS ************************************
+#if 0 // wxUSE_DATEPICKCTRL -- temporary fix for shared build linking
+    if (wxDynamicCast(m_validatorWindow, wxDatePickerCtrl))
+    {
+        wxDatePickerCtrl* pControl = (wxDatePickerCtrl*) m_validatorWindow;
+        if (m_pDateTime)
+        {
+            *m_pDateTime = pControl->GetValue() ;
+            return true;
+        }
+    } else
+#endif
+
     // STRING CONTROLS ************************************
 #if wxUSE_BUTTON
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxButton)) )
+    if (wxDynamicCast(m_validatorWindow, wxButton))
     {
         wxButton* pControl = (wxButton*) m_validatorWindow;
         if (m_pString)
@@ -459,7 +559,7 @@ bool wxGenericValidator::TransferFromWindow(void)
     } else
 #endif
 #if wxUSE_COMBOBOX
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxComboBox)) )
+    if (wxDynamicCast(m_validatorWindow, wxComboBox))
     {
         wxComboBox* pControl = (wxComboBox*) m_validatorWindow;
         if (m_pInt)
@@ -478,7 +578,7 @@ bool wxGenericValidator::TransferFromWindow(void)
     } else
 #endif
 #if wxUSE_CHOICE
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxChoice)) )
+    if (wxDynamicCast(m_validatorWindow, wxChoice))
     {
         wxChoice* pControl = (wxChoice*) m_validatorWindow;
         if (m_pInt)
@@ -494,7 +594,7 @@ bool wxGenericValidator::TransferFromWindow(void)
     } else
 #endif
 #if wxUSE_STATTEXT
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxStaticText)) )
+    if (wxDynamicCast(m_validatorWindow, wxStaticText))
     {
         wxStaticText* pControl = (wxStaticText*) m_validatorWindow;
         if (m_pString)
@@ -505,7 +605,7 @@ bool wxGenericValidator::TransferFromWindow(void)
     } else
 #endif
 #if wxUSE_TEXTCTRL
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxTextCtrl)) )
+    if (wxDynamicCast(m_validatorWindow, wxTextCtrl))
     {
         wxTextCtrl* pControl = (wxTextCtrl*) m_validatorWindow;
         if (m_pString)
@@ -518,13 +618,28 @@ bool wxGenericValidator::TransferFromWindow(void)
             *m_pInt = wxAtoi(pControl->GetValue());
             return true;
         }
+        else if (m_pFileName)
+        {
+            m_pFileName->Assign(pControl->GetValue());
+            return true;
+        }
+        else if (m_pFloat)
+        {
+            *m_pFloat = (float)wxAtof(pControl->GetValue());
+            return true;
+        }
+        else if (m_pDouble)
+        {
+            *m_pDouble = wxAtof(pControl->GetValue());
+            return true;
+        }
     } else
 #endif
 
     // ARRAY CONTROLS *************************************
 #if wxUSE_CHECKLISTBOX
     // NOTE: wxCheckListBox isa wxListBox, so wxCheckListBox MUST come first:
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxCheckListBox)) )
+    if (wxDynamicCast(m_validatorWindow, wxCheckListBox))
     {
         wxCheckListBox* pControl = (wxCheckListBox*) m_validatorWindow;
         if (m_pArrayInt)
@@ -548,7 +663,7 @@ bool wxGenericValidator::TransferFromWindow(void)
     } else
 #endif
 #if wxUSE_LISTBOX
-    if (m_validatorWindow->IsKindOf(CLASSINFO(wxListBox)) )
+    if (wxDynamicCast(m_validatorWindow, wxListBox))
     {
         wxListBox* pControl = (wxListBox*) m_validatorWindow;
         if (m_pArrayInt)
@@ -581,11 +696,16 @@ bool wxGenericValidator::TransferFromWindow(void)
 */
 void wxGenericValidator::Initialize()
 {
-    m_pBool = 0;
-    m_pInt = 0;
-    m_pString = 0;
-    m_pArrayInt = 0;
+    m_pBool = NULL;
+    m_pInt = NULL;
+    m_pString = NULL;
+    m_pArrayInt = NULL;
+#if wxUSE_DATETIME
+    m_pDateTime = NULL;
+#endif // wxUSE_DATETIME
+    m_pFileName = NULL;
+    m_pFloat = NULL;
+    m_pDouble = NULL;
 }
 
-#endif
-  // wxUSE_VALIDATORS
+#endif // wxUSE_VALIDATORS

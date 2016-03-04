@@ -4,7 +4,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     22/6/2000
-// RCS-ID:      $Id: quantize.h 49804 2007-11-10 01:09:42Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
@@ -34,7 +33,7 @@ class WXDLLIMPEXP_FWD_CORE wxPalette;
 #define wxQUANTIZE_RETURN_8BIT_DATA             0x02
 #define wxQUANTIZE_FILL_DESTINATION_IMAGE       0x04
 
-class WXDLLEXPORT wxQuantize: public wxObject
+class WXDLLIMPEXP_CORE wxQuantize: public wxObject
 {
 public:
 DECLARE_DYNAMIC_CLASS(wxQuantize)

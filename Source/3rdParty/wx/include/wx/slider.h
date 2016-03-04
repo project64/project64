@@ -4,7 +4,6 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     09.02.01
-// RCS-ID:      $Id: slider.h 38717 2006-04-14 17:01:16Z ABX $
 // Copyright:   (c) 1996-2001 Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,7 +30,6 @@
 
 #define wxSL_TICKS           0x0010
 #define wxSL_AUTOTICKS       wxSL_TICKS // we don't support manual ticks
-#define wxSL_LABELS          0x0020
 #define wxSL_LEFT            0x0040
 #define wxSL_TOP             0x0080
 #define wxSL_RIGHT           0x0100
@@ -39,19 +37,22 @@
 #define wxSL_BOTH            0x0400
 #define wxSL_SELRANGE        0x0800
 #define wxSL_INVERSE         0x1000
+#define wxSL_MIN_MAX_LABELS  0x2000
+#define wxSL_VALUE_LABEL     0x4000
+#define wxSL_LABELS          (wxSL_MIN_MAX_LABELS|wxSL_VALUE_LABEL)
 
 #if WXWIN_COMPATIBILITY_2_6
     // obsolete
     #define wxSL_NOTIFY_DRAG     0x0000
 #endif // WXWIN_COMPATIBILITY_2_6
 
-extern WXDLLEXPORT_DATA(const wxChar) wxSliderNameStr[];
+extern WXDLLIMPEXP_DATA_CORE(const char) wxSliderNameStr[];
 
 // ----------------------------------------------------------------------------
 // wxSliderBase: define wxSlider interface
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxSliderBase : public wxControl
+class WXDLLIMPEXP_CORE wxSliderBase : public wxControl
 {
 public:
     /* the ctor of the derived class should have the following form:
@@ -93,7 +94,7 @@ public:
     // warning: most of subsequent methods are currently only implemented in
     //          wxMSW under Win95 and are silently ignored on other platforms
 
-    virtual void SetTickFreq(int WXUNUSED(n), int WXUNUSED(pos)) { }
+    void SetTickFreq(int freq) { DoSetTickFreq(freq); }
     virtual int GetTickFreq() const { return 0; }
     virtual void ClearTicks() { }
     virtual void SetTick(int WXUNUSED(tickPos)) { }
@@ -103,7 +104,16 @@ public:
     virtual int GetSelStart() const { return GetMax(); }
     virtual void SetSelection(int WXUNUSED(min), int WXUNUSED(max)) { }
 
+#if WXWIN_COMPATIBILITY_2_8
+    wxDEPRECATED_INLINE( void SetTickFreq(int freq, int), DoSetTickFreq(freq); )
+#endif
+
 protected:
+    // Platform-specific implementation of SetTickFreq
+    virtual void DoSetTickFreq(int WXUNUSED(freq)) { /* unsupported by default */ }
+
+    // choose the default border for this window
+    virtual wxBorder GetDefaultBorder() const { return wxBORDER_NONE; }
 
     // adjust value according to wxSL_INVERSE style
     virtual int ValueInvertOrNot(int value) const
@@ -115,7 +125,7 @@ protected:
     }
 
 private:
-    DECLARE_NO_COPY_CLASS(wxSliderBase)
+    wxDECLARE_NO_COPY_CLASS(wxSliderBase);
 };
 
 // ----------------------------------------------------------------------------
@@ -125,10 +135,7 @@ private:
 #if defined(__WXUNIVERSAL__)
     #include "wx/univ/slider.h"
 #elif defined(__WXMSW__)
-    #include "wx/msw/slider95.h"
-    #if WXWIN_COMPATIBILITY_2_4
-         #define wxSlider95 wxSlider
-    #endif
+    #include "wx/msw/slider.h"
 #elif defined(__WXMOTIF__)
     #include "wx/motif/slider.h"
 #elif defined(__WXGTK20__)
@@ -136,13 +143,11 @@ private:
 #elif defined(__WXGTK__)
     #include "wx/gtk1/slider.h"
 #elif defined(__WXMAC__)
-    #include "wx/mac/slider.h"
+    #include "wx/osx/slider.h"
 #elif defined(__WXCOCOA__)
     #include "wx/cocoa/slider.h"
 #elif defined(__WXPM__)
     #include "wx/os2/slider.h"
-#elif defined(__WXPALMOS__)
-    #include "wx/palmos/slider.h"
 #endif
 
 #endif // wxUSE_SLIDER

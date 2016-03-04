@@ -4,7 +4,6 @@
 // Author:      Robin Dunn
 // Modified by:
 // Created:     19-Dec-2006
-// RCS-ID:      $Id: srchcmn.cpp 43939 2006-12-11 20:32:16Z KO $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -33,10 +32,10 @@
 
 // ----------------------------------------------------------------------------
 
-const wxChar wxSearchCtrlNameStr[] = wxT("searchCtrl");
+const char wxSearchCtrlNameStr[] = "searchCtrl";
 
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN)
-DEFINE_EVENT_TYPE(wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN)
+wxDEFINE_EVENT(wxEVT_SEARCHCTRL_CANCEL_BTN, wxCommandEvent);
+wxDEFINE_EVENT(wxEVT_SEARCHCTRL_SEARCH_BTN, wxCommandEvent);
 
 
 #endif // wxUSE_SEARCHCTRL

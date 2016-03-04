@@ -5,7 +5,6 @@
 // Author:      Vadim Zeitlin, Vaclav Slavik
 // Modified by:
 // Created:     06.08.01
-// RCS-ID:      $Id: toplevel.h 53135 2008-04-12 02:31:04Z VZ $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 //                       Vaclav Slavik <vaclav@wxwidgets.org>
 // Licence:     wxWindows licence
@@ -18,11 +17,12 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#include "wx/window.h"
+#include "wx/nonownedwnd.h"
 #include "wx/iconbndl.h"
+#include "wx/weakref.h"
 
 // the default names for various classes
-extern WXDLLEXPORT_DATA(const wxChar) wxFrameNameStr[];
+extern WXDLLIMPEXP_DATA_CORE(const char) wxFrameNameStr[];
 
 class WXDLLIMPEXP_FWD_CORE wxTopLevelWindowBase;
 
@@ -30,19 +30,59 @@ class WXDLLIMPEXP_FWD_CORE wxTopLevelWindowBase;
 // constants
 // ----------------------------------------------------------------------------
 
+/*
+    Summary of the bits used (some of them are defined in wx/frame.h and
+    wx/dialog.h and not here):
+
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |15|14|13|12|11|10| 9| 8| 7| 6| 5| 4| 3| 2| 1| 0|
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+      |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+      |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  \_ wxCENTRE
+      |  |  |  |  |  |  |  |  |  |  |  |  |  |  \____ wxFRAME_NO_TASKBAR
+      |  |  |  |  |  |  |  |  |  |  |  |  |  \_______ wxFRAME_TOOL_WINDOW
+      |  |  |  |  |  |  |  |  |  |  |  |  \__________ wxFRAME_FLOAT_ON_PARENT
+      |  |  |  |  |  |  |  |  |  |  |  \_____________ wxFRAME_SHAPED
+      |  |  |  |  |  |  |  |  |  |  \________________ wxDIALOG_NO_PARENT
+      |  |  |  |  |  |  |  |  |  \___________________ wxRESIZE_BORDER
+      |  |  |  |  |  |  |  |  \______________________ wxTINY_CAPTION_VERT
+      |  |  |  |  |  |  |  \_________________________
+      |  |  |  |  |  |  \____________________________ wxMAXIMIZE_BOX
+      |  |  |  |  |  \_______________________________ wxMINIMIZE_BOX
+      |  |  |  |  \__________________________________ wxSYSTEM_MENU
+      |  |  |  \_____________________________________ wxCLOSE_BOX
+      |  |  \________________________________________ wxMAXIMIZE
+      |  \___________________________________________ wxMINIMIZE
+      \______________________________________________ wxSTAY_ON_TOP
+
+
+    Notice that the 8 lower bits overlap with wxCENTRE and the button selection
+    bits (wxYES, wxOK wxNO, wxCANCEL, wxAPPLY, wxCLOSE and wxNO_DEFAULT) which
+    can be combined with the dialog style for several standard dialogs and
+    hence shouldn't overlap with any styles which can be used for the dialogs.
+    Additionally, wxCENTRE can be used with frames also.
+ */
+
 // style common to both wxFrame and wxDialog
 #define wxSTAY_ON_TOP           0x8000
 #define wxICONIZE               0x4000
 #define wxMINIMIZE              wxICONIZE
 #define wxMAXIMIZE              0x2000
-#define wxCLOSE_BOX             0x1000
+#define wxCLOSE_BOX             0x1000  // == wxHELP so can't be used with it
 
 #define wxSYSTEM_MENU           0x0800
 #define wxMINIMIZE_BOX          0x0400
 #define wxMAXIMIZE_BOX          0x0200
-#define wxTINY_CAPTION_HORIZ    0x0100
-#define wxTINY_CAPTION_VERT     0x0080
-#define wxRESIZE_BORDER         0x0040
+
+#define wxTINY_CAPTION          0x0080  // clashes with wxNO_DEFAULT
+#define wxRESIZE_BORDER         0x0040  // == wxCLOSE
+
+#if WXWIN_COMPATIBILITY_2_8
+    // HORIZ and VERT styles are equivalent anyhow so don't use different names
+    // for them
+    #define wxTINY_CAPTION_HORIZ    wxTINY_CAPTION
+    #define wxTINY_CAPTION_VERT     wxTINY_CAPTION
+#endif
 
 #if WXWIN_COMPATIBILITY_2_6
 
@@ -115,7 +155,7 @@ enum
 // wxTopLevelWindow: a top level (as opposed to child) window
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxTopLevelWindowBase : public wxWindow
+class WXDLLIMPEXP_CORE wxTopLevelWindowBase : public wxNonOwnedWindow
 {
 public:
     // construction
@@ -145,19 +185,25 @@ public:
     virtual bool IsIconized() const = 0;
 
     // get the frame icon
-    const wxIcon& GetIcon() const { return m_icons.GetIcon( -1 ); }
+    wxIcon GetIcon() const;
 
     // get the frame icons
     const wxIconBundle& GetIcons() const { return m_icons; }
 
-    // set the frame icon
-    virtual void SetIcon(const wxIcon& icon) { m_icons = wxIconBundle( icon ); }
+    // set the frame icon: implemented in terms of SetIcons()
+    void SetIcon(const wxIcon& icon);
 
     // set the frame icons
-    virtual void SetIcons(const wxIconBundle& icons ) { m_icons = icons; }
+    virtual void SetIcons(const wxIconBundle& icons) { m_icons = icons; }
 
     // maximize the window to cover entire screen
     virtual bool ShowFullScreen(bool show, long style = wxFULLSCREEN_ALL) = 0;
+
+    // shows the window, but doesn't activate it. If the base code is being run,
+    // it means the port doesn't implement this method yet and so alert the user.
+    virtual void ShowWithoutActivating() {
+        wxFAIL_MSG("ShowWithoutActivating not implemented on this platform.");
+    }
 
     // return true if the frame is in fullscreen mode
     virtual bool IsFullScreen() const = 0;
@@ -168,19 +214,16 @@ public:
     virtual wxString GetTitle() const = 0;
 
     // enable/disable close button [x]
-    virtual bool EnableCloseButton(bool WXUNUSED(enable) ) { return false; } 
-
-    // Set the shape of the window to the given region.
-    // Returns true if the platform supports this feature (and the
-    // operation is successful.)
-    virtual bool SetShape(const wxRegion& WXUNUSED(region)) { return false; }
+    virtual bool EnableCloseButton(bool WXUNUSED(enable) ) { return false; }
 
     // Attracts the users attention to this window if the application is
     // inactive (should be called when a background event occurs)
     virtual void RequestUserAttention(int flags = wxUSER_ATTENTION_INFO);
 
     // Is this the active frame (highlighted in the taskbar)?
-    virtual bool IsActive() { return wxGetTopLevelParent(FindFocus()) == this; }
+    //
+    // A TLW is active only if it contains the currently focused window.
+    virtual bool IsActive() { return IsDescendant(FindFocus()); }
 
     // this function may be overridden to return false to allow closing the
     // application even when this top level window is still open
@@ -199,15 +242,16 @@ public:
     void CentreOnScreen(int dir = wxBOTH) { DoCentre(dir | wxCENTRE_ON_SCREEN); }
     void CenterOnScreen(int dir = wxBOTH) { CentreOnScreen(dir); }
 
+    // Get the default size for a new top level window. This is used when
+    // creating a wxTLW under some platforms if no explicit size given.
+    static wxSize GetDefaultSize();
+
 
     // default item access: we have a permanent default item which is the one
     // set by the user code but we may also have a temporary default item which
     // would be chosen if the user pressed "Enter" now but the default action
     // reverts to the "permanent" default as soon as this temporary default
     // item loses focus
-
-    // used to reset default if pointing to removed child
-    virtual void RemoveChild(wxWindowBase *child);
 
     // get the default item, temporary or permanent
     wxWindow *GetDefaultItem() const
@@ -225,13 +269,13 @@ public:
     wxWindow *SetTmpDefaultItem(wxWindow *win)
         { wxWindow *old = GetDefaultItem(); m_winTmpDefault = win; return old; }
 
-
     // implementation only from now on
     // -------------------------------
 
     // override some base class virtuals
     virtual bool Destroy();
     virtual bool IsTopLevel() const { return true; }
+    virtual bool IsTopNavigationDomain() const { return true; }
     virtual bool IsVisible() const { return IsShown(); }
 
     // event handlers
@@ -252,10 +296,17 @@ public:
     virtual void SetMinSize(const wxSize& minSize);
     virtual void SetMaxSize(const wxSize& maxSize);
 
-    // set size hints for "window manager"
-    virtual void DoSetSizeHints( int minW, int minH,
-                                 int maxW = wxDefaultCoord, int maxH = wxDefaultCoord,
-                                 int incW = wxDefaultCoord, int incH = wxDefaultCoord );
+    virtual void OSXSetModified(bool modified) { m_modified = modified; }
+    virtual bool OSXIsModified() const { return m_modified; }
+
+    virtual void SetRepresentedFilename(const wxString& WXUNUSED(filename)) { }
+
+#if wxUSE_MENUS || wxUSE_TOOLBAR
+    // show help text for the currently selected menu or toolbar item
+    // (typically in the status bar) or hide it and restore the status bar text
+    // originally shown before the menu was opened if show == false
+    virtual void DoGiveHelp(const wxString& WXUNUSED(text), bool WXUNUSED(show))  {}
+#endif
 
 protected:
     // the frame client to screen translation should take account of the
@@ -288,32 +339,28 @@ protected:
     // client area
     void DoLayout();
 
-    // Get the default size for the new window if no explicit size given. If
-    // there are better default sizes then these can be changed, just as long
-    // as they are not too small for TLWs (and not larger than screen).
-    static wxSize GetDefaultSize();
     static int WidthDefault(int w) { return w == wxDefaultCoord ? GetDefaultSize().x : w; }
     static int HeightDefault(int h) { return h == wxDefaultCoord ? GetDefaultSize().y : h; }
+
 
     // the frame icon
     wxIconBundle m_icons;
 
     // a default window (usually a button) or NULL
-    wxWindow *m_winDefault;
+    wxWindowRef m_winDefault;
 
     // a temporary override of m_winDefault, use the latter if NULL
-    wxWindow *m_winTmpDefault;
+    wxWindowRef m_winTmpDefault;
 
-    DECLARE_NO_COPY_CLASS(wxTopLevelWindowBase)
+    bool m_modified;
+
+    wxDECLARE_NO_COPY_CLASS(wxTopLevelWindowBase);
     DECLARE_EVENT_TABLE()
 };
 
 
 // include the real class declaration
-#if defined(__WXPALMOS__)
-    #include "wx/palmos/toplevel.h"
-    #define wxTopLevelWindowNative wxTopLevelWindowPalm
-#elif defined(__WXMSW__)
+#if defined(__WXMSW__)
     #include "wx/msw/toplevel.h"
     #define wxTopLevelWindowNative wxTopLevelWindowMSW
 #elif defined(__WXGTK20__)
@@ -325,14 +372,11 @@ protected:
 #elif defined(__WXX11__)
     #include "wx/x11/toplevel.h"
     #define wxTopLevelWindowNative wxTopLevelWindowX11
-#elif defined(__WXMGL__)
-    #include "wx/mgl/toplevel.h"
-    #define wxTopLevelWindowNative wxTopLevelWindowMGL
 #elif defined(__WXDFB__)
     #include "wx/dfb/toplevel.h"
     #define wxTopLevelWindowNative wxTopLevelWindowDFB
 #elif defined(__WXMAC__)
-    #include "wx/mac/toplevel.h"
+    #include "wx/osx/toplevel.h"
     #define wxTopLevelWindowNative wxTopLevelWindowMac
 #elif defined(__WXCOCOA__)
     #include "wx/cocoa/toplevel.h"
@@ -348,28 +392,25 @@ protected:
 #ifdef __WXUNIVERSAL__
     #include "wx/univ/toplevel.h"
 #else // !__WXUNIVERSAL__
-    #ifdef wxTopLevelWindowNative
-        class WXDLLEXPORT wxTopLevelWindow : public wxTopLevelWindowNative
+    class WXDLLIMPEXP_CORE wxTopLevelWindow : public wxTopLevelWindowNative
+    {
+    public:
+        // construction
+        wxTopLevelWindow() { }
+        wxTopLevelWindow(wxWindow *parent,
+                   wxWindowID winid,
+                   const wxString& title,
+                   const wxPoint& pos = wxDefaultPosition,
+                   const wxSize& size = wxDefaultSize,
+                   long style = wxDEFAULT_FRAME_STYLE,
+                   const wxString& name = wxFrameNameStr)
+            : wxTopLevelWindowNative(parent, winid, title,
+                                     pos, size, style, name)
         {
-        public:
-            // construction
-            wxTopLevelWindow() { Init(); }
-            wxTopLevelWindow(wxWindow *parent,
-                       wxWindowID winid,
-                       const wxString& title,
-                       const wxPoint& pos = wxDefaultPosition,
-                       const wxSize& size = wxDefaultSize,
-                       long style = wxDEFAULT_FRAME_STYLE,
-                       const wxString& name = wxFrameNameStr)
-            {
-                Init();
-                Create(parent, winid, title, pos, size, style, name);
-            }
+        }
 
-            DECLARE_DYNAMIC_CLASS_NO_COPY(wxTopLevelWindow)
-        };
-    #endif // wxTopLevelWindowNative
+        DECLARE_DYNAMIC_CLASS_NO_COPY(wxTopLevelWindow)
+    };
 #endif // __WXUNIVERSAL__/!__WXUNIVERSAL__
-
 
 #endif // _WX_TOPLEVEL_BASE_H_

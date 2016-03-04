@@ -1,13 +1,12 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        msw/snglinst.cpp
+// Name:        src/msw/snglinst.cpp
 // Purpose:     implements wxSingleInstanceChecker class for Win32 using
 //              named mutexes
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     08.06.01
-// RCS-ID:      $Id: snglinst.cpp 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) 2001 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
-// License:     wxWindows licence
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -40,7 +39,7 @@
 // wxSingleInstanceCheckerImpl: the real implementation class
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxSingleInstanceCheckerImpl
+class WXDLLIMPEXP_BASE wxSingleInstanceCheckerImpl
 {
 public:
     wxSingleInstanceCheckerImpl()
@@ -52,10 +51,10 @@ public:
 
     bool Create(const wxString& name)
     {
-        m_hMutex = ::CreateMutex(NULL, FALSE, name);
+        m_hMutex = ::CreateMutex(NULL, FALSE, name.t_str());
         if ( !m_hMutex )
         {
-            wxLogLastError(_T("CreateMutex"));
+            wxLogLastError(wxT("CreateMutex"));
 
             return false;
         }
@@ -69,7 +68,7 @@ public:
     bool WasOpened() const
     {
         wxCHECK_MSG( m_hMutex, false,
-                     _T("can't be called if mutex creation failed") );
+                     wxT("can't be called if mutex creation failed") );
 
         return m_wasOpened;
     }
@@ -80,7 +79,7 @@ public:
         {
             if ( !::CloseHandle(m_hMutex) )
             {
-                wxLogLastError(_T("CloseHandle(mutex)"));
+                wxLogLastError(wxT("CloseHandle(mutex)"));
             }
         }
     }
@@ -92,7 +91,7 @@ private:
     // the mutex handle, may be NULL
     HANDLE m_hMutex;
 
-    DECLARE_NO_COPY_CLASS(wxSingleInstanceCheckerImpl)
+    wxDECLARE_NO_COPY_CLASS(wxSingleInstanceCheckerImpl);
 };
 
 // ============================================================================
@@ -103,19 +102,19 @@ bool wxSingleInstanceChecker::Create(const wxString& name,
                                      const wxString& WXUNUSED(path))
 {
     wxASSERT_MSG( !m_impl,
-                  _T("calling wxSingleInstanceChecker::Create() twice?") );
+                  wxT("calling wxSingleInstanceChecker::Create() twice?") );
 
     // creating unnamed mutex doesn't have the same semantics!
-    wxASSERT_MSG( !name.empty(), _T("mutex name can't be empty") );
+    wxASSERT_MSG( !name.empty(), wxT("mutex name can't be empty") );
 
     m_impl = new wxSingleInstanceCheckerImpl;
 
     return m_impl->Create(name);
 }
 
-bool wxSingleInstanceChecker::IsAnotherRunning() const
+bool wxSingleInstanceChecker::DoIsAnotherRunning() const
 {
-    wxCHECK_MSG( m_impl, false, _T("must call Create() first") );
+    wxCHECK_MSG( m_impl, false, wxT("must call Create() first") );
 
     // if the mutex had been opened, another instance is running - otherwise we
     // would have created it

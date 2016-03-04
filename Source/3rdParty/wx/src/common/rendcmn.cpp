@@ -4,9 +4,8 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     28.07.03
-// RCS-ID:      $Id: rendcmn.cpp 41216 2006-09-14 16:04:18Z ABX $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
-// License:     wxWindows license
+// Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 // ============================================================================
@@ -32,7 +31,7 @@
 #include "wx/apptrait.h"
 #include "wx/renderer.h"
 
-#include "wx/ptr_scpd.h"
+#include "wx/scopedptr.h"
 
 #if wxUSE_DYNLIB_CLASS
     #include "wx/dynlib.h"
@@ -42,8 +41,7 @@
 // wxRendererPtr: auto pointer holding the global renderer
 // ----------------------------------------------------------------------------
 
-wxDECLARE_SCOPED_PTR(wxRendererNative, wxRendererPtrBase)
-wxDEFINE_SCOPED_PTR(wxRendererNative, wxRendererPtrBase)
+typedef wxScopedPtr<wxRendererNative> wxRendererPtrBase;
 
 class wxRendererPtr : public wxRendererPtrBase
 {
@@ -83,7 +81,7 @@ private:
     // just to suppress a gcc warning
     friend class wxRendererPtrDummyFriend;
 
-    DECLARE_NO_COPY_CLASS(wxRendererPtr)
+    wxDECLARE_NO_COPY_CLASS(wxRendererPtr);
 };
 
 // return the global and unique wxRendererPtr
