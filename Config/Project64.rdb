@@ -5318,6 +5318,7 @@ Good Name=Star Wars - Shadows of the Empire (E)
 Internal Name=Shadow of the Empire
 Status=Compatible
 Core Note=Swoop bike speed issue
+Linking=Off
 RDRAM Size=8
 
 [264D7E5C-18874622-C:45]
