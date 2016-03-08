@@ -45,6 +45,7 @@
 #include <Common/CriticalSection.h>
 #include <Common/path.h>
 #include <png/png.h>
+#include <memory>
 
 #include "Config.h"
 #include "Util.h"
@@ -297,6 +298,7 @@ void ReadSettings()
     if (g_settings->res_data >= 24) g_settings->res_data = 12;
     g_settings->scr_res_x = g_settings->res_x = resolutions[g_settings->res_data][0];
     g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
+    g_settings->wrpResolution = GetSetting(Set_wrpResolution);
     g_settings->vsync = GetSetting(Set_vsync);
     g_settings->ssformat = (uint8_t)GetSetting(Set_ssformat);
     g_settings->show_fps = (uint8_t)GetSetting(Set_ShowFps);
@@ -306,7 +308,6 @@ void ReadSettings()
     g_settings->texenh_options = GetSetting(Set_texenh_options);
     g_settings->use_hotkeys = GetSetting(Set_hotkeys);
 
-    g_settings->wrpResolution = GetSetting(Set_wrpResolution);
     g_settings->wrpVRAM = GetSetting(Set_wrpVRAM);
     g_settings->wrpFBO = GetSetting(Set_wrpFBO);
     g_settings->wrpAnisotropic = GetSetting(Set_wrpAnisotropic);
@@ -369,9 +370,6 @@ void ReadSettings()
 
 void ReadSpecialSettings(const char * name)
 {
-    //  char buf [256];
-    //  sprintf(buf, "ReadSpecialSettings. Name: %s", name);
-    //  LOG(buf);
     g_settings->hacks = 0;
 
     //detect games which require special hacks
