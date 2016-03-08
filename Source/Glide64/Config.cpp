@@ -51,6 +51,22 @@
 
 #ifdef _WIN32
 #include <Common/CriticalSection.h>
+#include "resource.h"
+
+#define _ATL_DISABLE_NOTHROW_NEW
+#include <atlbase.h>
+#pragma warning(push)
+#pragma warning(disable : 4996) // warning C4996: 'GetVersionExA': was declared deprecated
+#include <wtl/atlapp.h>
+#pragma warning(pop)
+
+#include <atlwin.h>
+#include <wtl/atldlgs.h>
+#include <wtl/atlctrls.h>
+#include <wtl/atlcrack.h>
+
+extern HINSTANCE hinstDLL;
+
 #include <wx/file.h>
 #include <wx/dir.h>
 // begin wxGlade: ::extracode
@@ -58,6 +74,36 @@
 
 short Set_basic_mode = 0, Set_texture_dir = 0, Set_log_dir = 0, Set_log_flush = 0;
 extern CriticalSection * g_ProcessDListCS;
+
+class CGlide64WtlModule :
+    public CAppModule
+{
+public:
+    CGlide64WtlModule(HINSTANCE hinst)
+    {
+        Init(NULL, hinst);
+    }
+    virtual ~CGlide64WtlModule(void)
+    {
+        Term();
+    }
+};
+
+CGlide64WtlModule * WtlModule = NULL;
+
+void ConfigInit(HINSTANCE hinst)
+{
+    WtlModule = new CGlide64WtlModule(hinst);
+}
+
+void ConfigCleanup(void)
+{
+    if (WtlModule)
+    {
+        delete WtlModule;
+        WtlModule = NULL;
+    }
+}
 
 ConfigNotebook::ConfigNotebook(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long /*style*/) :
 wxNotebook(parent, id, pos, size, 0)
@@ -1026,7 +1072,8 @@ void Glide64ConfigDialog::do_layout()
 }
 
 #ifdef TEXTURE_FILTER
-uint32_t texfltr[] = {
+uint32_t texfltr[] =
+{
     NO_FILTER, //"None"
     SMOOTH_FILTER_1, //"Smooth filtering 1"
     SMOOTH_FILTER_2, //"Smooth filtering 2"
@@ -1036,7 +1083,8 @@ uint32_t texfltr[] = {
     SHARP_FILTER_2,  //"Sharp filtering 2"
 };
 
-uint32_t texenht[] = {
+uint32_t texenht[] =
+{
     NO_ENHANCEMENT,    //"None"
     NO_ENHANCEMENT,    //"Store"
     X2_ENHANCEMENT,    //"X2"
@@ -1048,14 +1096,16 @@ uint32_t texenht[] = {
     HQ4X_ENHANCEMENT,  //"HQ4X"
 };
 
-uint32_t texcmpr[] = {
+uint32_t texcmpr[] =
+{
     //NO_COMPRESSION,   //"None"
     //  NCC_COMPRESSION,  //"NCC"
     S3TC_COMPRESSION, //"S3TC"
     FXT1_COMPRESSION, //"FXT1"
 };
 
-uint32_t texhirs[] = {
+uint32_t texhirs[] =
+{
     NO_HIRESTEXTURES,   //"Do not use"
     RICE_HIRESTEXTURES,  //"Rice format"
     //  GHQ_HIRESTEXTURES, //"GlideHQ format"
@@ -1136,95 +1186,32 @@ void CloseConfig()
 #endif
 }
 
-AboutDialog::AboutDialog(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long /*style*/) :
-wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE)
+#ifdef _WIN32
+class CAboutDlg :
+    public CDialogImpl<CAboutDlg>
 {
-    // begin wxGlade: AboutDialog::AboutDialog
-    button_ok = new wxButton(this, wxID_OK, wxEmptyString);
+public:
+    enum { IDD = IDD_ABOUTBOX };
 
-    set_properties();
-    do_layout();
-    // end wxGlade
-}
+    BEGIN_MSG_MAP(CAboutDlg)
+        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+        COMMAND_ID_HANDLER(IDOK, OnCloseCmd)
+        COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
+    END_MSG_MAP()
 
-void AboutDialog::set_properties()
-{
-    // begin wxGlade: AboutDialog::set_properties
-    SetTitle("About Glide64");
-    button_ok->SetDefault();
-    // end wxGlade
-}
+    LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+    {
+        CenterWindow(GetParent());
+        return TRUE;
+    }
 
-void AboutDialog::do_layout()
-{
-    // begin wxGlade: AboutDialog::do_layout
-    wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* sizer_12 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_11 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_8 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_10 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_9 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_5 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_7 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_6 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_13 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_4 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_3 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_2 = new wxBoxSizer(wxHORIZONTAL);
-
-    wxStaticText* label_1 = new wxStaticText(this, wxID_ANY, "authors:");
-    sizer_1->Add(label_1, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
-    wxStaticText* label_2 = new wxStaticText(this, wxID_ANY, "Dave2001. Original author and former main developer.\nHe founded Glide64 project on Dec. 29th, 2001.\nLeft the project at fall of 2002.");
-    label_2->Enable(false);
-    sizer_2->Add(label_2, 0, 0, 0);
-    sizer_1->Add(sizer_2, 1, wxEXPAND, 0);
-    wxStaticText* label_3 = new wxStaticText(this, wxID_ANY, "Gugaman. Developer. Joined the project at winter 2002\n and left it at fall 2002.");
-    label_3->Enable(false);
-    sizer_3->Add(label_3, 0, 0, 0);
-    sizer_1->Add(sizer_3, 1, wxEXPAND, 0);
-    wxStaticText* label_4 = new wxStaticText(this, wxID_ANY, "Sergey 'Gonetz' Lipski. Joined the project at winter 2002.\nMain developer since fall of 2002.");
-    sizer_4->Add(label_4, 0, 0, 0);
-    sizer_1->Add(sizer_4, 1, wxEXPAND, 0);
-    wxStaticText* label_15 = new wxStaticText(this, wxID_ANY, "Hiroshi 'KoolSmoky' Morii, Joined the project in 2007. ");
-    sizer_13->Add(label_15, 0, 0, 0);
-    sizer_1->Add(sizer_13, 1, wxEXPAND, 0);
-    wxStaticText* label_5 = new wxStaticText(this, wxID_ANY, "Glitch64 (the wrapper) authors:");
-    sizer_1->Add(label_5, 0, wxBOTTOM | wxALIGN_CENTER_HORIZONTAL, 10);
-    wxStaticText* label_6 = new wxStaticText(this, wxID_ANY, "hacktarux");
-    sizer_6->Add(label_6, 0, 0, 0);
-    sizer_5->Add(sizer_6, 1, wxEXPAND, 0);
-    wxStaticText* label_7 = new wxStaticText(this, wxID_ANY, "mudlord");
-    sizer_7->Add(label_7, 0, 0, 0);
-    sizer_5->Add(sizer_7, 1, wxEXPAND, 0);
-    sizer_1->Add(sizer_5, 0, wxEXPAND, 0);
-    wxStaticText* label_8 = new wxStaticText(this, wxID_ANY, "ziggy");
-    sizer_9->Add(label_8, 0, 0, 0);
-    sizer_8->Add(sizer_9, 1, wxEXPAND, 0);
-    wxStaticText* label_9 = new wxStaticText(this, wxID_ANY, "Hiroshi 'KoolSmoky' Morii");
-    sizer_10->Add(label_9, 0, 0, 0);
-    sizer_8->Add(sizer_10, 1, wxEXPAND, 0);
-    sizer_1->Add(sizer_8, 0, wxEXPAND, 0);
-    wxStaticText* label_10 = new wxStaticText(this, wxID_ANY, "GlideHQ author:");
-    sizer_11->Add(label_10, 0, wxLEFT | wxALIGN_CENTER_VERTICAL, 10);
-    wxStaticText* label_11 = new wxStaticText(this, wxID_ANY, "Hiroshi 'KoolSmoky' Morii");
-    sizer_11->Add(label_11, 0, wxALIGN_CENTER_VERTICAL, 0);
-    sizer_1->Add(sizer_11, 1, wxEXPAND, 0);
-    wxStaticText* label_12 = new wxStaticText(this, wxID_ANY, "beta tester:");
-    sizer_12->Add(label_12, 0, wxLEFT | wxALIGN_CENTER_VERTICAL, 10);
-    wxStaticText* label_13 = new wxStaticText(this, wxID_ANY, "olivieryuyu");
-    sizer_12->Add(label_13, 0, wxALIGN_CENTER_VERTICAL, 0);
-    sizer_1->Add(sizer_12, 1, wxEXPAND, 0);
-    wxStaticText* label_14 = new wxStaticText(this, wxID_ANY, "special thanks to:\n Orkin, Rice, Daniel Borca, Legend.\nThanks to EmuXHaven for hosting my site:\nhttp://glide64.emuxhaven.net", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
-    sizer_1->Add(label_14, 0, wxALIGN_CENTER_HORIZONTAL, 0);
-    sizer_1->Add(button_ok, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND | wxALIGN_CENTER_HORIZONTAL, 10);
-    SetSizer(sizer_1);
-    sizer_1->Fit(this);
-    Layout();
-#ifdef __WINDOWS__
-    Centre();
+    LRESULT OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+    {
+        EndDialog(wID);
+        return 0;
+    }
+};
 #endif
-    // end wxGlade
-}
 
 /******************************************************************
 Function: DllAbout
@@ -1233,28 +1220,11 @@ to give further information about the DLL.
 input:    a handle to the window that calls this function
 output:   none
 *******************************************************************/
-void CALL DllAbout(HWND hParent)
+void CALL DllAbout(HWND /*hParent*/)
 {
-#ifdef __WINDOWS__
-    if (hostWindow == NULL)
-        hostWindow = new wxWindow();
-    WXHWND hwnd = hParent;
-    hostWindow->SetHWND(hwnd);
-    //  hostWindow->SubclassWin(hwnd);
-    hostWindow->Disable();
-#endif
-
-    //translation
-    ReadSettings();
-
-    AboutDialog* AboutGlide64 = new AboutDialog(hostWindow, wxID_ANY, wxEmptyString);
-    AboutGlide64->ShowModal();
-#ifdef __WINDOWS__
-    hostWindow->Enable();
-    //  hostWindow->UnsubclassWin();
-    hostWindow->SetHWND(NULL);
-    delete hostWindow;
-    hostWindow = NULL;
+#ifdef _WIN32
+    CAboutDlg dlg;
+    dlg.DoModal();
 #endif
 }
 #endif

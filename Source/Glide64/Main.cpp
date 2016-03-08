@@ -1138,6 +1138,7 @@ extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReser
         {
             g_ProcessDListCS = new CriticalSection();
         }
+        ConfigInit(hinst);
         wxSetInstance(hinstDLL);
         return DllLoad();
     }
@@ -1147,6 +1148,7 @@ extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReser
         {
             delete g_ProcessDListCS;
         }
+        ConfigCleanup();
         return DllUnload();
     }
     return TRUE;

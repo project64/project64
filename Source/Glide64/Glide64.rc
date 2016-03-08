@@ -55,6 +55,49 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 200, 202
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About Glide64"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,71,181,50,14
+    LTEXT           "Authors:",IDC_STATIC,7,6,186,8
+    LTEXT           "Dave2001. Original author and former main developer.\nHe founded Glide64 project on Dec. 29th, 2001.\nLeft the project at fall of 2002.",IDC_STATIC,7,17,186,27
+    LTEXT           "Gugaman. Developer. Joined the project at winter 2002\n and left it at fall 2002.",IDC_STATIC,7,46,186,17
+    LTEXT           "Sergey 'Gonetz' Lipski. Joined the project at winter 2002.\nMain developer since fall of 2002.",IDC_STATIC,7,66,186,18
+    LTEXT           "Hiroshi 'KoolSmoky' Morii, Joined the project in 2007.",IDC_STATIC,7,86,186,8,SS_CENTERIMAGE
+    LTEXT           "Glitch64 (the wrapper) authors:",IDC_STATIC,7,110,186,8,SS_CENTERIMAGE
+    LTEXT           "hacktarux, mudlord, ziggy, Hiroshi 'KoolSmoky' Morii",IDC_STATIC,7,122,186,8,SS_CENTERIMAGE
+    LTEXT           "GlideHQ author: Hiroshi 'KoolSmoky' Morii",IDC_STATIC,7,138,186,8,SS_CENTERIMAGE
+    LTEXT           "beta tester: olivieryuyu",IDC_STATIC,7,153,186,8,SS_CENTERIMAGE
+    LTEXT           "special thanks to:\n Orkin, Rice, Daniel Borca, Legend.",IDC_STATIC,7,167,186,8,SS_CENTERIMAGE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 193
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 195
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 

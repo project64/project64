@@ -46,6 +46,9 @@
 #pragma once
 
 #ifdef _WIN32
+void ConfigInit(HINSTANCE hinst);
+void ConfigCleanup(void);
+
 #include <wx/wx.h>
 #include <wx/image.h>
 // begin wxGlade: ::dependencies
