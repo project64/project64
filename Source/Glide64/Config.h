@@ -251,10 +251,11 @@ protected:
 }; // wxGlade: end class
 #endif
 
-enum {
+enum
+{
     // General Settings
-    Set_CardId, Set_Resolution, Set_vsync, Set_ssformat, Set_ShowFps, Set_clock,
-    Set_clock_24_hr, Set_texenh_options, Set_hotkeys, Set_wrpResolution, Set_wrpVRAM,
+    Set_CardId, Set_vsync, Set_ssformat, Set_ShowFps, Set_clock,
+    Set_clock_24_hr, Set_texenh_options, Set_hotkeys, Set_wrpVRAM,
     Set_wrpFBO, Set_wrpAnisotropic, Set_autodetect_ucode, Set_ucode, Set_wireframe,
     Set_wfmode, Set_logging, Set_log_clear, Set_elogging, Set_run_in_window,
     Set_filter_cache, Set_unk_as_red, Set_log_unk, Set_unk_clear, Set_ghq_fltr,
@@ -263,6 +264,10 @@ enum {
     Set_ghq_hirs_tile, Set_ghq_hirs_f16bpp, Set_ghq_hirs_gz, Set_ghq_hirs_altcrc,
     Set_ghq_cache_save, Set_ghq_cache_size, Set_ghq_hirs_let_texartists_fly,
     Set_ghq_hirs_dump,
+
+#ifdef _WIN32
+    Set_Resolution, Set_wrpResolution,
+#endif
 
     //Game Settings
     Set_alt_tex_size, Set_use_sts1_only, Set_force_calc_sphere, Set_correct_viewport,
