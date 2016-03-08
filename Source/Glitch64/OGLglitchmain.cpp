@@ -87,6 +87,15 @@ public:
             *_frequency = (FxU32)aResolutions[_idx].dwF;
         }
     }
+    
+    int getCurrentResolutions(void)
+    {
+        if (dwNumResolutions == 0)
+        {
+            init();
+        }
+        return currentResolutions;
+    }
 
     char ** getResolutionsList(int32_t * Size)
     {
@@ -105,6 +114,7 @@ private:
     unsigned int dwNumResolutions;
     ResolutionInfo * aResolutions;
     char ** aResolutionsStr;
+    int currentResolutions;
 };
 
 FullScreenResolutions::~FullScreenResolutions()
@@ -121,9 +131,13 @@ void FullScreenResolutions::init()
 {
     WriteTrace(TraceGlitch, TraceDebug, "executing");
 #ifdef _WIN32
-    DEVMODE enumMode;
+    currentResolutions = -1;
+    DEVMODE enumMode , currentMode;
     int iModeNum = 0;
     memset(&enumMode, 0, sizeof(DEVMODE));
+
+    EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &currentMode);
+
     ResolutionInfo prevInfo;
     while (EnumDisplaySettings(NULL, iModeNum++, &enumMode) != 0)
     {
@@ -147,6 +161,10 @@ void FullScreenResolutions::init()
         ResolutionInfo curInfo(enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency);
         if (enumMode.dmBitsPerPel == 32 && curInfo != prevInfo)
         {
+            if (enumMode.dmPelsHeight == currentMode.dmPelsHeight && enumMode.dmPelsWidth == currentMode.dmPelsWidth)
+            {
+                currentResolutions = current;
+            }
             aResolutions[current] = curInfo;
             curInfo.toString(smode);
             aResolutionsStr[current] = new char[strlen(smode) + 1];
@@ -155,48 +173,7 @@ void FullScreenResolutions::init()
             current++;
         }
     }
-#else // _WIN32
-    SDL_Rect** modes;
-    SDL_Surface *check_surface;
-    SDL_PixelFormat *fmt;
-    int iModeNum;
-
-    SDL_InitSubSystem(SDL_INIT_VIDEO);
-    check_surface = SDL_CreateRGBSurface(NULL, 0, 0, 32, 0, 0, 0, 0);
-    if (!check_surface || check_surface->format->BitsPerPixel != 32) {
-        return; //failtrain!
-    }
-
-    fmt = check_surface->format;
-    modes = SDL_ListModes(fmt, SDL_FULLSCREEN|SDL_HWSURFACE);
-
-    ResolutionInfo prevInfo;
-    for (iModeNum = 0; modes[iModeNum]; ++iModeNum) {
-        ResolutionInfo curInfo(modes[iModeNum]->w, modes[iModeNum]->h, 0);
-        if (curInfo != prevInfo) {
-            dwNumResolutions++;
-            prevInfo = curInfo;
-        }
-    }
-
-    aResolutions = new ResolutionInfo[dwNumResolutions];
-    aResolutionsStr = new char*[dwNumResolutions];
-    int current = 0;
-    char smode[256];
-    memset(&prevInfo, 0, sizeof(ResolutionInfo));
-    for (iModeNum = 0; modes[iModeNum]; ++iModeNum) {
-        ResolutionInfo curInfo(modes[iModeNum]->w, modes[iModeNum]->h, 0);
-        if (curInfo != prevInfo) {
-            aResolutions[current] = curInfo;
-            curInfo.toString(smode);
-            aResolutionsStr[current] = new char[strlen(smode)+1];
-            strcpy(aResolutionsStr[current], smode);
-            prevInfo = curInfo;
-            current++;
-        }
-    }
-    SDL_FreeSurface(check_surface);
-#endif // _WIN32
+#endif
 }
 
 bool FullScreenResolutions::changeDisplaySettings(FxU32 _resolution)
@@ -697,7 +674,7 @@ int                  nAuxBuffers)
     return grSstWinOpen(hWnd, screen_resolution, refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 # include <fcntl.h>
 # ifndef ATTACH_PARENT_PROCESS
 #  define ATTACH_PARENT_PROCESS ((FxU32)-1)
@@ -957,89 +934,6 @@ int                  nAuxBuffers)
             return FXFALSE;
         }
     }
-#else // _WIN32
-
-    // init sdl & gl
-    const SDL_VideoInfo *videoInfo;
-    Uint32 videoFlags = 0;
-    fullscreen = 0;
-
-    /* Initialize SDL */
-    printf("(II) Initializing SDL video subsystem...\n");
-    if (SDL_InitSubSystem(SDL_INIT_VIDEO) == -1)
-    {
-        printf("(EE) Error initializing SDL video subsystem: %s\n", SDL_GetError());
-        return false;
-    }
-
-    /* Video Info */
-    printf("(II) Getting video info...\n");
-    if(!(videoInfo = SDL_GetVideoInfo()))
-    {
-        printf("(EE) Video query failed: %s\n", SDL_GetError());
-        SDL_QuitSubSystem(SDL_INIT_VIDEO);
-        return false;
-    }
-
-    /* Setting the video mode */
-    videoFlags |= SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE;
-
-    if(videoInfo->hw_available)
-        videoFlags |= SDL_HWSURFACE;
-    else
-        videoFlags |= SDL_SWSURFACE;
-
-    if(videoInfo->blit_hw)
-        videoFlags |= SDL_HWACCEL;
-
-    //if (!(screen_resolution & 0x80000000))
-    //videoFlags |= SDL_FULLSCREEN;
-
-    if (screen_resolution & 0x80000000)
-    {
-        fullscreen = 0;
-    }
-    else
-    {
-        FxU32 _width, _height;
-        g_FullScreenResolutions.getResolution(screen_resolution, &_width, &_height);
-        width = _width;
-        height = _height;
-        videoFlags |= SDL_FULLSCREEN;
-        fullscreen = 1;
-    }
-    TMU_SIZE = (config.vram_size - width * height * 4 * 3) / 2;
-
-    //viewport_offset = ((screen_resolution>>2) > 20) ? screen_resolution >> 2 : 20;
-    // ZIGGY viewport_offset is WIN32 specific, with SDL just set it to zero
-    viewport_offset = 0; //-10 //-20;
-
-    // ZIGGY not sure, but it might be better to let the system choose
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 16);
-    //   SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
-    //   SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-    //   SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-    //   SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-    //   SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-
-    printf("(II) Setting video mode %dx%d...\n", width, height);
-    if(!(m_pScreen = SDL_SetVideoMode(width, height, 0, videoFlags)))
-    {
-        printf("(EE) Error setting videomode %dx%d: %s\n", width, height, SDL_GetError());
-        SDL_QuitSubSystem(SDL_INIT_VIDEO);
-        return false;
-    }
-
-    char caption[500];
-# ifdef _DEBUG
-    sprintf(caption, "Glide64 debug");
-# else // _DEBUG
-    sprintf(caption, "Glide64");
-# endif // _DEBUG
-    SDL_WM_SetCaption(caption, caption);
-    glViewport(0, viewport_offset, width, height);
 #endif // _WIN32
     lfb_color_fmt = color_format;
     if (origin_location != GR_ORIGIN_UPPER_LEFT) WriteTrace(TraceGlitch, TraceWarning, "origin must be in upper left corner");
@@ -1788,8 +1682,7 @@ grGet(FxU32 pname, FxU32 plength, FxI32 *params)
         if (plength < 4 || params == NULL) return 0;
         if (!nbTextureUnits)
         {
-            grSstWinOpen((unsigned long)NULL, GR_RESOLUTION_640x480 | 0x80000000, 0, GR_COLORFORMAT_ARGB,
-                GR_ORIGIN_UPPER_LEFT, 2, 1);
+            grSstWinOpen((unsigned long)NULL, GR_RESOLUTION_640x480 | 0x80000000, 0, GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
             grSstWinClose(0);
         }
 #ifdef VOODOO1
@@ -2630,6 +2523,11 @@ FxI32 src_stride, void *src_data)
 
     grDisplayGLError("grLfbWriteRegion");
     return FXTRUE;
+}
+
+int GetCurrentResIndex(void)
+{
+    return g_FullScreenResolutions.getCurrentResolutions();
 }
 
 /* wrapper-specific glide extensions */

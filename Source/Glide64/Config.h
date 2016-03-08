@@ -269,6 +269,13 @@ enum
     Set_Resolution, Set_wrpResolution,
 #endif
 
+    // Default Game Settings
+    Set_optimize_texrect_default, Set_filtering_default, Set_lodmode_default,
+    Set_fog_default, Set_buff_clear_default, Set_swapmode_default,
+    Set_aspect_default, Set_fb_smart_default, Set_fb_hires_default,
+    Set_fb_read_always_default, Set_read_back_to_screen_default, Set_detect_cpu_write_default,
+    Set_fb_get_info_default, Set_fb_render_default,
+
     //Game Settings
     Set_alt_tex_size, Set_use_sts1_only, Set_force_calc_sphere, Set_correct_viewport,
     Set_increase_texrect_edge, Set_decrease_fillrect_edge, Set_texture_correction,
@@ -288,3 +295,4 @@ extern short Set_basic_mode, Set_texture_dir, Set_log_dir, Set_log_flush;
 
 extern void general_setting(short setting_ID, const char * name, unsigned int value);
 extern void game_setting(short setting_ID, const char * name, unsigned int value);
+extern void game_setting_default(short setting_ID, const char * name, short default_setting);

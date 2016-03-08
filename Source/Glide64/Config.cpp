@@ -1268,3 +1268,8 @@ void game_setting(short setting_ID, const char * name, unsigned int value)
 {
     RegisterSetting(setting_ID, Data_DWORD_Game, name, NULL, value, NULL);
 }
+
+void game_setting_default(short setting_ID, const char * name, short default_setting)
+{
+    RegisterSetting2(setting_ID, Data_DWORD_Game, name, NULL, default_setting);
+}
