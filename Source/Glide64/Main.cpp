@@ -66,7 +66,7 @@ GFX_INFO gfx;
 
 int to_fullscreen = FALSE;
 int GfxInitDone = FALSE;
-int romopen = FALSE;
+bool g_romopen = false;
 GrContext_t gfx_context = 0;
 int debugging = FALSE;
 int exception = FALSE;
@@ -1628,7 +1628,7 @@ void CALL RomClosed(void)
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
     rdp.window_changed = TRUE;
-    romopen = FALSE;
+    g_romopen = FALSE;
     if (evoodoo)
     {
         ReleaseGfx();
@@ -1667,7 +1667,7 @@ void CALL RomOpen(void)
 {
     WriteTrace(TraceGlide64, TraceDebug, "-");
     no_dlist = true;
-    romopen = TRUE;
+    g_romopen = TRUE;
     ucode_error_report = TRUE;	// allowed to report ucode errors
     rdp_reset();
 

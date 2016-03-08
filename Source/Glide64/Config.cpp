@@ -125,7 +125,7 @@ wxNotebook(parent, id, pos, size, 0)
     if (g_settings->advanced_options)
     {
         EmuSettingsPanel = new wxPanel(this, wxID_ANY);
-        if (romopen)
+        if (g_romopen)
             EmuSettingsBoxSizer_staticbox = new wxStaticBox(EmuSettingsPanel, -1, "Current game emulation g_settings-> Change with care!");
         else
             EmuSettingsBoxSizer_staticbox = new wxStaticBox(EmuSettingsPanel, -1, "Default emulation g_settings-> Not recommended to change!");
@@ -918,7 +918,7 @@ void ConfigNotebook::SaveSettings()
 
     if (memcmp(&oldsettings, g_settings, sizeof(CSettings))) //check that settings were changed
     {
-        if (romopen)
+        if (g_romopen)
         {
             if (is_advanced_changed)
             {
@@ -1079,7 +1079,7 @@ void CALL DllConfig(HWND hParent)
     CGuard guard(*g_ProcessDListCS);
     ReadSettings();
 
-    if (romopen)
+    if (g_romopen)
     {
         //    ReadSpecialSettings ((char*)rdp.RomName.c_str());
         if (evoodoo)// && fullscreen && !ev_fullscreen)
@@ -1119,7 +1119,7 @@ void CALL DllConfig(HWND hParent)
 
 void CloseConfig()
 {
-    if (romopen)
+    if (g_romopen)
     {
         if (fb_depth_render_enabled)
             ZLUT_init();

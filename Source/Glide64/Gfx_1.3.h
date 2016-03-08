@@ -174,7 +174,7 @@ extern "C" {
 #endif
 
     extern int GfxInitDone;
-    extern int romopen;
+    extern bool g_romopen;
     extern int to_fullscreen;
     extern int debugging;
 
