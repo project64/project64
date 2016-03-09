@@ -88,13 +88,13 @@ public:
         }
     }
 
-    char ** getResolutionsList(FxI32 * Size)
+    char ** getResolutionsList(int32_t * Size)
     {
         if (dwNumResolutions == 0)
         {
             init();
         }
-        *Size = (FxI32)dwNumResolutions;
+        *Size = (int32_t)dwNumResolutions;
         return aResolutionsStr;
     }
 
@@ -1369,7 +1369,7 @@ grSstWinClose(GrContext_t context)
         wglMakeCurrent(hDC, NULL);
         wglDeleteContext(hGLRC);
         hGLRC = NULL;
-        }
+    }
     if (fullscreen)
     {
         ChangeDisplaySettings(NULL, 0);
@@ -1388,7 +1388,7 @@ grSstWinClose(GrContext_t context)
     m_pScreen = NULL;
 #endif
     return FXTRUE;
-    }
+}
 
 FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
     FxU32 				startAddress,
@@ -2393,7 +2393,7 @@ GrLfbInfo_t *info)
 
     grDisplayGLError("grLfbLock");
     return FXTRUE;
-            }
+}
 
 FX_ENTRY FxBool FX_CALL
 grLfbUnlock(GrLock_t type, GrBuffer_t buffer)
@@ -2630,12 +2630,12 @@ FxI32 src_stride, void *src_data)
 
     grDisplayGLError("grLfbWriteRegion");
     return FXTRUE;
-    }
+}
 
 /* wrapper-specific glide extensions */
 
 FX_ENTRY char ** FX_CALL
-grQueryResolutionsExt(FxI32 * Size)
+grQueryResolutionsExt(int32_t * Size)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
     return g_FullScreenResolutions.getResolutionsList(Size);
@@ -2952,7 +2952,7 @@ static void CorrectGamma(const FxU16 aGammaRamp[3][256])
 
     res = SDL_SetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]);
     WriteTrace(TraceGlitch, TraceDebug, "SDL_SetGammaRamp returned %d\r\n", res);
-        }
+}
 #endif
 
 FX_ENTRY void FX_CALL
@@ -2995,7 +2995,7 @@ grGetGammaTableExt(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
             blue[i] = aGammaRamp[2][i] >> 8;
         }
     }
-    }
+}
 
 FX_ENTRY void FX_CALL
 guGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB)
@@ -3108,7 +3108,7 @@ void dump_start()
         init = 1;
         ilInit();
         ilEnable(IL_FILE_OVERWRITE);
-}
+    }
     dumping = 1;
     tl_i = 0;
 }

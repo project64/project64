@@ -1,4 +1,4 @@
-﻿// ============ RDB for PJ64 v2.2. GoodN64 v321 =====================================
+// ============ RDB for PJ64 v2.2. GoodN64 v321 =====================================
 // PJ64 v2.2 Official RDB
 // Not for use with PJ64 v1.6 or previous
 //---- START OF RDB FILE HEADER ---------------------------------------------------------
@@ -5318,6 +5318,7 @@ Good Name=Star Wars - Shadows of the Empire (E)
 Internal Name=Shadow of the Empire
 Status=Compatible
 Core Note=Swoop bike speed issue
+Linking=Off
 RDRAM Size=8
 
 [264D7E5C-18874622-C:45]
@@ -5548,6 +5549,7 @@ ViRefresh=2200
 Good Name=Super Smash Bros. (E) (M3)
 Internal Name=SMASH BROTHERS
 Status=Compatible
+Counter Factor=1
 Culling=1
 SMM-Cache=0
 SMM-FUNC=0
