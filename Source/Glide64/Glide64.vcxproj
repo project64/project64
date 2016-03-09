@@ -137,26 +137,6 @@
     <ProjectReference Include="..\3rdParty\sdl\sdl2.vcxproj">
       <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\3rdParty\wx\wx_base.vcxproj">
-      <Project>{427f1dcd-3bed-4010-9322-077a4c06d871}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\3rdParty\wx\wx_core.vcxproj">
-      <Project>{93447136-facd-4740-8f35-fc46fb4a9e82}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\3rdParty\wx\wx_wxjpeg.vcxproj">
-      <Project>{93cfedf3-9a75-4484-b169-d9d8074f5ac2}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\3rdParty\wx\wx_wxpng.vcxproj">
-      <Project>{05b9cb11-12d1-47cd-8e4a-88e12162119b}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\3rdParty\wx\wx_wxzlib.vcxproj">
-      <Project>{25a25249-c284-4c5a-8dc2-26fc3eb13703}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\Common\Common.vcxproj">
       <Project>{b4a4b994-9111-42b1-93c2-6f1ca8bc4421}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
