@@ -1075,57 +1075,8 @@ void ReleaseGfx()
     rdp.window_changed = TRUE;
 }
 
-//
-// DllMain - called when the DLL is loaded, use this to get the DLL's instance
-//
-class wxDLLApp : public wxApp
-{
-public:
-    virtual bool OnInit();
-    virtual void CleanUp();
-};
-
-IMPLEMENT_APP_NO_MAIN(wxDLLApp)
-
-bool wxDLLApp::OnInit()
-{
-    wxImage::AddHandler(new wxPNGHandler);
-    wxImage::AddHandler(new wxJPEGHandler);
-    return true;
-}
-
-void wxDLLApp::CleanUp()
-{
-    wxApp::CleanUp();
-}
-
-#ifndef __WINDOWS__
-int __attribute__((constructor)) DllLoad(void);
-int __attribute__((destructor)) DllUnload(void);
-#endif
-
-// Called when the library is loaded and before dlopen() returns
-int DllLoad(void)
-{
-    int argc = 0;
-    char **argv = NULL;
-    wxEntryStart(argc, argv);
-    if (wxTheApp)
-        return wxTheApp->CallOnInit() ? TRUE : FALSE;
-    return 0;
-}
-
-// Called when the library is unloaded and before dlclose() returns
-int DllUnload(void)
-{
-    if (wxTheApp)
-        wxTheApp->OnExit();
-    wxEntryCleanup();
-    return TRUE;
-}
 
 #ifdef _WIN32
-void wxSetInstance(HINSTANCE hInstance);
 CriticalSection * g_ProcessDListCS = NULL;
 
 extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReserved*/)
@@ -1139,8 +1090,6 @@ extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReser
             g_ProcessDListCS = new CriticalSection();
         }
         ConfigInit(hinst);
-        wxSetInstance(hinstDLL);
-        return DllLoad();
     }
     else if (fdwReason == DLL_PROCESS_DETACH)
     {
@@ -1149,7 +1098,6 @@ extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReser
             delete g_ProcessDListCS;
         }
         ConfigCleanup();
-        return DllUnload();
     }
     return TRUE;
 }
