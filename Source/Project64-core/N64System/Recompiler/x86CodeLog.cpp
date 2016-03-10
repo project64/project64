@@ -33,9 +33,7 @@ void x86_Log_Message (const char * Message, ...)
 
 void Start_x86_Log (void)
 {
-    CPath LogFileName(CPath::MODULE_DIRECTORY);
-    LogFileName.AppendDirectory("Logs");
-    LogFileName.SetNameExtension("CPUoutput.log");
+    CPath LogFileName(g_Settings->LoadStringVal(Directory_Log).c_str(), "CPUoutput.log");
 
     if (hCPULogFile) { Stop_x86_Log(); }
     hCPULogFile = CreateFile(LogFileName,GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE,NULL,
