@@ -9,7 +9,9 @@ public:
 
     uint32_t res_x, scr_res_x;
     uint32_t res_y, scr_res_y;
+#ifdef _WIN32
     uint32_t res_data, res_data_org;
+#endif
 
     int advanced_options;
     int texenh_options;
@@ -19,6 +21,9 @@ public:
     int show_fps;
     int clock;
     int clock_24_hr;
+#ifdef ANDROID
+    int rotate;
+#endif
 
     int filtering;
     int fog;
@@ -152,7 +157,9 @@ public:
     uint32_t hacks;
 
     //wrapper settings
+#ifdef _WIN32
     int wrpResolution;
+#endif
     int wrpVRAM;
     int wrpFBO;
     int wrpAnisotropic;

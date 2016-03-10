@@ -44,15 +44,13 @@ void SetupTrace(void)
         g_AndroidLogger = new AndroidLogger();
     }
     TraceAddModule(g_AndroidLogger);
-
-    TraceSetMaxModule(MaxTraceModuleGlide64, TraceVerbose);
-#else
+#endif
 #ifdef _DEBUG
     TraceSetMaxModule(MaxTraceModuleGlide64, TraceInfo);
 #else
     TraceSetMaxModule(MaxTraceModuleGlide64, TraceError);
 #endif
-#endif
+
 
     TraceSetModuleName(TraceMD5, "MD5");
     TraceSetModuleName(TraceSettings, "Settings");
@@ -64,6 +62,7 @@ void SetupTrace(void)
     TraceSetModuleName(TraceRDP, "RDP");
     TraceSetModuleName(TraceTLUT, "TLUT");
     TraceSetModuleName(TracePNG, "PNG");
+    TraceSetModuleName(TraceOGLWrapper, "OGL Wrapper");
 
     char log_dir[260];
     memset(log_dir, 0, sizeof(log_dir));

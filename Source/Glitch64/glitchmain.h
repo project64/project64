@@ -17,7 +17,9 @@ extern int dumping;
 
 typedef struct _wrapper_config
 {
+#ifdef _WIN32
     int res;
+#endif
     int fbo;
     int anisofilter;
     int vram_size;
@@ -117,6 +119,17 @@ extern PFNGLGETINFOLOGARBPROC glGetInfoLogARB;
 extern PFNGLGETOBJECTPARAMETERIVARBPROC glGetObjectParameterivARB;
 extern PFNGLSECONDARYCOLOR3FPROC glSecondaryColor3f;
 #endif
+void check_compile(GLuint shader);
+void check_link(GLuint program);
+void vbo_enable();
+void vbo_disable();
+
+//Vertex Attribute Locations
+#define POSITION_ATTR 0
+#define COLOUR_ATTR 1
+#define TEXCOORD_0_ATTR 2
+#define TEXCOORD_1_ATTR 3
+#define FOG_ATTR 4
 
 extern int w_buffer_mode;
 extern int nbTextureUnits;
@@ -154,11 +167,15 @@ void free_combiners();
 void compile_shader();
 void set_lambda();
 void set_copy_shader();
+void disable_textureSizes();
 
 // config functions
 
-//FX_ENTRY void FX_CALL grConfigWrapperExt(HINSTANCE instance, HWND hwnd);
+#ifdef _WIN32
 FX_ENTRY void FX_CALL grConfigWrapperExt(FxI32, FxI32, FxBool, FxBool);
+#else
+FX_ENTRY void FX_CALL grConfigWrapperExt(FxI32, FxBool, FxBool);
+#endif
 FX_ENTRY GrScreenResolution_t FX_CALL grWrapperFullScreenResolutionExt(FxU32*, FxU32*);
 FX_ENTRY char ** FX_CALL grQueryResolutionsExt(int32_t*);
 FX_ENTRY FxBool FX_CALL grKeyPressedExt(FxU32 key);

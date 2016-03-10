@@ -281,7 +281,11 @@ void ChangeSize()
 
 void ConfigWrapper()
 {
+#ifdef _WIN32
     grConfigWrapperExt(g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic);
+#else
+    grConfigWrapperExt(g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic);
+#endif
 }
 
 void UseUnregisteredSetting(int /*SettingID*/)
@@ -290,20 +294,31 @@ void UseUnregisteredSetting(int /*SettingID*/)
     DebugBreak();
 #endif
 }
+#ifdef ANDROID
+extern int g_width, g_height;
+#endif
 
 void ReadSettings()
 {
     g_settings->card_id = GetSetting(Set_CardId);
+#ifdef ANDROID
+    g_settings->scr_res_x = g_settings->res_x = g_width;
+    g_settings->scr_res_y = g_settings->res_y = g_height;
+#else
     g_settings->res_data = (uint32_t)GetSetting(Set_Resolution);
     if (g_settings->res_data >= 24) g_settings->res_data = 12;
     g_settings->scr_res_x = g_settings->res_x = resolutions[g_settings->res_data][0];
     g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
     g_settings->wrpResolution = GetSetting(Set_wrpResolution);
+#endif
     g_settings->vsync = GetSetting(Set_vsync);
     g_settings->ssformat = (uint8_t)GetSetting(Set_ssformat);
     g_settings->show_fps = (uint8_t)GetSetting(Set_ShowFps);
     g_settings->clock = GetSetting(Set_clock);
     g_settings->clock_24_hr = GetSetting(Set_clock_24_hr);
+#ifdef ANDROID
+    g_settings->rotate = GetSetting(Set_Rotate);
+#endif
     g_settings->advanced_options = Set_basic_mode ? !GetSystemSetting(Set_basic_mode) : 0;
     g_settings->texenh_options = GetSetting(Set_texenh_options);
     g_settings->use_hotkeys = GetSetting(Set_hotkeys);
@@ -532,6 +547,9 @@ void WriteSettings(bool saveEmulationSettings)
     SetSetting(Set_ShowFps, g_settings->show_fps);
     SetSetting(Set_clock, g_settings->clock);
     SetSetting(Set_clock_24_hr, g_settings->clock_24_hr);
+#ifdef ANDROID
+    SetSetting(Set_Rotate, g_settings->rotate);
+#endif
     //SetSetting(Set_advanced_options,g_settings->advanced_options);
     SetSetting(Set_texenh_options, g_settings->texenh_options);
 
@@ -866,6 +884,10 @@ int InitGfx()
         grGlideShutdown();
         return FALSE;
     }
+#else
+    gfx_context = grSstWinOpen(GR_REFRESH_60Hz, GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1);
+    g_settings->scr_res_x = g_settings->res_x = g_width;
+    g_settings->scr_res_y = g_settings->res_y = g_height;
 #endif
 
     GfxInitDone = TRUE;
@@ -1379,7 +1401,9 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     ReadSettings();
     char name[21] = "DEFAULT";
     ReadSpecialSettings(name);
+#ifdef _WIN32
     g_settings->res_data_org = g_settings->res_data;
+#endif
 
 #ifdef FPS
     fps_last.SetToNow();
@@ -1406,7 +1430,11 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     if (fb_depth_render_enabled)
         ZLUT_init();
 
+#ifdef _WIN32
     grConfigWrapperExt(g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic);
+#else
+    grConfigWrapperExt(g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic);
+#endif
 
     grGlideInit();
     grSstSelect(0);
@@ -1473,7 +1501,12 @@ void CALL PluginLoaded(void)
     general_setting(Set_texenh_options, "texenh_options", 0);
     general_setting(Set_hotkeys, "hotkeys", 1);
     general_setting(Set_wrpVRAM, "wrpVRAM", 0);
+#ifndef ANDROID
     general_setting(Set_wrpFBO, "wrpFBO", 0);
+#else
+    general_setting(Set_Rotate, "rotate", 0);
+    general_setting(Set_wrpFBO, "wrpFBO", 1);
+#endif
     general_setting(Set_wrpAnisotropic, "wrpAnisotropic", 0);
     general_setting(Set_autodetect_ucode, "autodetect_ucode", 1);
     general_setting(Set_ucode, "ucode", 2);
@@ -2322,6 +2355,33 @@ void CALL ViWidthChanged(void)
 {
 }
 
+#ifdef ANDROID
+/******************************************************************
+Function: SurfaceCreated
+Purpose:  this function is called when the surface is created.
+input:    none
+output:   none
+*******************************************************************/
+void CALL SurfaceCreated(void)
+{
+}
+
+/******************************************************************
+Function: SurfaceChanged
+Purpose:  this function is called when the surface is has changed.
+input:    none
+output:   none
+*******************************************************************/
+void init_combiner();
+
+void CALL SurfaceChanged(int width, int height)
+{
+    g_width = width;
+    g_height = height;
+    init_combiner();
+}
+#endif
+
 #ifdef WINPROC_OVERRIDE
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -2406,5 +2466,12 @@ LRESULT CALLBACK LowLevelKeyboardProc(int nCode,
     }
 
     return CallNextHookEx(NULL, nCode, wParam, lParam);
+}
+#endif
+
+#ifdef ANDROID
+void Android_JNI_SwapWindow()
+{
+    gfx.SwapBuffers();
 }
 #endif

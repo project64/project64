@@ -54,11 +54,18 @@
     <ClCompile Include="OGLEStextures.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="OGLESwrappers.cpp">
+      <ExcludedFromBuild Condition="'$(Platform)'=='Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="OGLgeometry.cpp" />
     <ClCompile Include="OGLglitchmain.cpp" />
     <ClCompile Include="OGLtextures.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glitchmain.h" />
+    <ClInclude Include="OGLESwrappers.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="opengl.h" />
   </ItemGroup>
 </Project>

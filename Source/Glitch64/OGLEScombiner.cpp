@@ -26,8 +26,11 @@
 #endif // _WIN32
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "glide.h"
 #include "glitchmain.h"
+#include <Glide64/trace.h>
+#include <Glide64/Settings.h>
 
 void vbo_draw();
 
@@ -68,6 +71,7 @@ static GLuint vertex_shader_object;
 static GLuint program_object_default;
 static GLuint program_object_depth;
 static GLuint program_object;
+static GLuint rotation_matrix_location;
 static int constant_color_location;
 static int ccolor0_location;
 static int ccolor1_location;
@@ -176,6 +180,7 @@ SHADER_HEADER
 "uniform vec3 vertexOffset;                                     \n" //Moved some calculations from grDrawXXX to shader
 "uniform vec4 textureSizes;                                     \n"
 "uniform vec3 fogModeEndScale;                                  \n" //0 = Mode, 1 = gl_Fog.end, 2 = gl_Fog.scale
+"uniform mat4 rotation_matrix;                                  \n"
 SHADER_VARYING
 "                                                               \n"
 "void main()                                                    \n"
@@ -187,6 +192,7 @@ SHADER_VARYING
 "  gl_Position.z = aVertex.z / Z_MAX;                                       \n"
 "  gl_Position.w = 1.0;                                                     \n"
 "  gl_Position /= q;                                                        \n"
+"  gl_Position = rotation_matrix * gl_Position;                             \n"
 "  gl_FrontColor = aColor.bgra;                                             \n"
 "                                                                           \n"
 "  gl_TexCoord[0] = vec4(aMultiTexCoord0.xy / q / textureSizes.xy,0,1);     \n"
@@ -220,7 +226,7 @@ void check_compile(GLuint shader)
     {
         char log[1024];
         glGetShaderInfoLog(shader, 1024, NULL, log);
-        LOGINFO(log);
+        //LOGINFO(log);
     }
 }
 
@@ -232,8 +238,72 @@ void check_link(GLuint program)
     {
         char log[1024];
         glGetProgramInfoLog(program, 1024, NULL, log);
-        LOGINFO(log);
+        //LOGINFO(log);
     }
+}
+
+void set_rotation_matrix(GLuint loc, int rotate)
+{
+    GLfloat mat[16];
+
+    /* first setup everything which is the same everytime */
+    /* (X, X, 0, 0)
+     * (X, X, 0, 0)
+     * (0, 0, 1, 0)
+     * (0, 0, 0, 1)
+     */
+
+    //mat[0] =  cos(angle);
+    //mat[1] =  sin(angle);
+    mat[2] = 0;
+    mat[3] = 0;
+
+    //mat[4] = -sin(angle);
+    //mat[5] =  cos(angle);
+    mat[6] = 0;
+    mat[7] = 0;
+
+    mat[8] = 0;
+    mat[9] = 0;
+    mat[10] = 1;
+    mat[11] = 0;
+
+    mat[12] = 0;
+    mat[13] = 0;
+    mat[14] = 0;
+    mat[15] = 1;
+
+    /* now set the actual rotation */
+    if (1 == rotate) // 90 degree
+    {
+        mat[0] = 0;
+        mat[1] = 1;
+        mat[4] = -1;
+        mat[5] = 0;
+    }
+    else if (2 == rotate) // 180 degree
+    {
+        mat[0] = -1;
+        mat[1] = 0;
+        mat[4] = 0;
+        mat[5] = -1;
+    }
+    else if (3 == rotate) // 270 degree
+    {
+        mat[0] = 0;
+        mat[1] = -1;
+        mat[4] = 1;
+        mat[5] = 0;
+    }
+    else /* 0 degree, also fallback if input is wrong) */
+    {
+        mat[0] = 1;
+        mat[1] = 0;
+        mat[4] = 0;
+        mat[5] = 1;
+    }
+
+    glUniformMatrix4fv(loc, 1, GL_FALSE, mat);
 }
 
 void init_combiner()
@@ -241,7 +311,6 @@ void init_combiner()
     int texture[4] = { 0, 0, 0, 0 };
 
     glActiveTexture(GL_TEXTURE0);
-    glEnable(GL_TEXTURE_2D);
 
     // creating a fake texture
     glBindTexture(GL_TEXTURE_2D, default_texture);
@@ -251,8 +320,8 @@ void init_combiner()
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, default_texture);
-    glEnable(GL_TEXTURE_2D);
 
+    int rotation_matrix_location;
     int texture0_location;
     int texture1_location;
     char *fragment_shader;
@@ -299,6 +368,7 @@ void init_combiner()
     check_compile(vertex_shader_object);
 
     // depth program
+#ifndef ANDROID
     program_object = glCreateProgram();
     program_object_depth = program_object;
     glAttachShader(program_object, fragment_depth_shader_object);
@@ -314,10 +384,14 @@ void init_combiner()
     check_link(program_object);
     glUseProgram(program_object);
 
+    rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
+    set_rotation_matrix(rotation_matrix_location, g_settings->rotate);
+
     texture0_location = glGetUniformLocation(program_object, "texture0");
     texture1_location = glGetUniformLocation(program_object, "texture1");
     glUniform1i(texture0_location, 0);
     glUniform1i(texture1_location, 1);
+#endif
 
     // default program
     program_object = glCreateProgram();
@@ -334,6 +408,8 @@ void init_combiner()
     glLinkProgram(program_object);
     check_link(program_object);
     glUseProgram(program_object);
+    rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
+    set_rotation_matrix(rotation_matrix_location, g_settings->rotate);
 
     texture0_location = glGetUniformLocation(program_object, "texture0");
     texture1_location = glGetUniformLocation(program_object, "texture1");
@@ -410,6 +486,7 @@ typedef struct _shader_program_key
     int blackandwhite1;
     GLuint fragment_shader_object;
     GLuint program_object;
+    int rotation_matrix_location;
     int texture0_location;
     int texture1_location;
     int vertexOffset_location;
@@ -469,6 +546,11 @@ void update_uniforms(shader_program_key prog)
         glUniform1i(prog.ditherTex_location, 2);
     }
 
+    rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
+    set_rotation_matrix(rotation_matrix_location, g_settings->rotate);
+    rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
+    set_rotation_matrix(rotation_matrix_location, g_settings->rotate);
+
     set_lambda();
 }
 
@@ -480,6 +562,7 @@ void disable_textureSizes()
 
 void compile_shader()
 {
+    int rotation_matrix_location;
     int texture0_location;
     int texture1_location;
     int ditherTex_location;
@@ -582,6 +665,7 @@ void compile_shader()
     check_link(program_object);
     glUseProgram(program_object);
 
+    shader_programs[number_of_programs].rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
     shader_programs[number_of_programs].texture0_location = glGetUniformLocation(program_object, "texture0");
     shader_programs[number_of_programs].texture1_location = glGetUniformLocation(program_object, "texture1");
     shader_programs[number_of_programs].vertexOffset_location = glGetUniformLocation(program_object, "vertexOffset");
@@ -589,6 +673,7 @@ void compile_shader()
     shader_programs[number_of_programs].fogModeEndScale_location = glGetUniformLocation(program_object, "fogModeEndScale");
     shader_programs[number_of_programs].fogColor_location = glGetUniformLocation(program_object, "fogColor");
     shader_programs[number_of_programs].alphaRef_location = glGetUniformLocation(program_object, "alphaRef");
+    shader_programs[number_of_programs].chroma_color_location = glGetUniformLocation(program_object, "chroma_color");
 
     update_uniforms(shader_programs[number_of_programs]);
 
@@ -639,7 +724,7 @@ void set_lambda()
 FX_ENTRY void FX_CALL
 grConstantColorValue(GrColor_t value)
 {
-    LOG("grConstantColorValue(%d)\r\n", value);
+    WriteTrace(TraceResolution, TraceDebug, "value: %d", value);
     switch (lfb_color_fmt)
     {
     case GR_COLORFORMAT_ARGB:
@@ -752,7 +837,7 @@ GrCombineFunction_t function, GrCombineFactor_t factor,
 GrCombineLocal_t local, GrCombineOther_t other,
 FxBool invert)
 {
-    LOG("grColorCombine(%d,%d,%d,%d,%d)\r\n", function, factor, local, other, invert);
+    WriteTrace(TraceResolution, TraceDebug, "function: %d factor: %d local: %d other: %d invert: %d", function, factor, local, other, invert);
     static int last_function = 0;
     static int last_factor = 0;
     static int last_local = 0;
@@ -962,7 +1047,7 @@ GrCombineLocal_t local, GrCombineOther_t other,
 FxBool invert
 )
 {
-    LOG("grAlphaCombine(%d,%d,%d,%d,%d)\r\n", function, factor, local, other, invert);
+    WriteTrace(TraceResolution, TraceDebug, "function: %d factor: %d local: %d other: %d invert: %d", function, factor, local, other, invert);
     static int last_function = 0;
     static int last_factor = 0;
     static int last_local = 0;
@@ -1200,7 +1285,7 @@ FxBool rgb_invert,
 FxBool alpha_invert
 )
 {
-    LOG("grTexCombine(%d,%d,%d,%d,%d,%d,%d)\r\n", tmu, rgb_function, rgb_factor, alpha_function, alpha_factor, rgb_invert, alpha_invert);
+    WriteTrace(TraceResolution, TraceDebug, "tmu: %d rgb_function: %d rgb_factor: %d alpha_function: %d alpha_factor: %d rgb_invert: %d alpha_invert: %d", tmu, rgb_function, rgb_factor, alpha_function, alpha_factor, rgb_invert, alpha_invert);
     int num_tex;
 
     if (tmu == GR_TMU0) num_tex = 1;
@@ -1451,7 +1536,7 @@ GrAlphaBlendFnc_t alpha_sf, GrAlphaBlendFnc_t alpha_df
 )
 {
     int sfactorRGB = 0, dfactorRGB = 0, sfactorAlpha = 0, dfactorAlpha = 0;
-    LOG("grAlphaBlendFunction(%d,%d,%d,%d)\r\n", rgb_sf, rgb_df, alpha_sf, alpha_df);
+    WriteTrace(TraceResolution, TraceDebug, "rgb_sf: %d rgb_df: %d alpha_sf: %d alpha_df: %d", rgb_sf, rgb_df, alpha_sf, alpha_df);
 
     switch (rgb_sf)
     {
@@ -1525,7 +1610,7 @@ GrAlphaBlendFnc_t alpha_sf, GrAlphaBlendFnc_t alpha_df
 FX_ENTRY void FX_CALL
 grAlphaTestReferenceValue(GrAlpha_t value)
 {
-    LOG("grAlphaTestReferenceValue(%d)\r\n", value);
+    WriteTrace(TraceResolution, TraceDebug, "value: %d", value);
     alpha_ref = value;
     grAlphaTestFunction(alpha_func);
 }
@@ -1533,7 +1618,7 @@ grAlphaTestReferenceValue(GrAlpha_t value)
 FX_ENTRY void FX_CALL
 grAlphaTestFunction(GrCmpFnc_t function)
 {
-    LOG("grAlphaTestFunction(%d)\r\n", function);
+    WriteTrace(TraceResolution, TraceDebug, "function: %d", function);
     alpha_func = function;
     switch (function)
     {
@@ -1561,7 +1646,7 @@ grAlphaTestFunction(GrCmpFnc_t function)
 FX_ENTRY void FX_CALL
 grFogMode(GrFogMode_t mode)
 {
-    LOG("grFogMode(%d)\r\n", mode);
+    WriteTrace(TraceResolution, TraceDebug, "mode: %d", mode);
     switch (mode)
     {
     case GR_FOG_DISABLE:
@@ -1587,7 +1672,7 @@ grFogMode(GrFogMode_t mode)
 FX_ENTRY float FX_CALL
 guFogTableIndexToW(int i)
 {
-    LOG("guFogTableIndexToW(%d)\r\n", i);
+    WriteTrace(TraceResolution, TraceDebug, "i: %d", i);
     return (float)(pow(2.0, 3.0 + (double)(i >> 2)) / (8 - (i & 3)));
 }
 
@@ -1595,7 +1680,7 @@ FX_ENTRY void FX_CALL
 guFogGenerateLinear(GrFog_t *fogtable,
 float nearZ, float farZ)
 {
-    LOG("guFogGenerateLinear(%f,%f)\r\n", nearZ, farZ);
+    WriteTrace(TraceResolution, TraceDebug, "nearZ: %f farZ: %f", nearZ, farZ);
     /*
       glFogi(GL_FOG_MODE, GL_LINEAR);
       glFogi(GL_FOG_COORDINATE_SOURCE_EXT, GL_FOG_COORDINATE_EXT);
@@ -1607,15 +1692,15 @@ float nearZ, float farZ)
 }
 
 FX_ENTRY void FX_CALL
-grFogTable(const GrFog_t ft[])
+grFogTable(const GrFog_t /*ft */[])
 {
-    LOG("grFogTable()\r\n");
+    WriteTrace(TraceResolution, TraceDebug, "-");
 }
 
 FX_ENTRY void FX_CALL
 grFogColorValue(GrColor_t fogcolor)
 {
-    LOG("grFogColorValue(%x)\r\n", fogcolor);
+    WriteTrace(TraceResolution, TraceDebug, "fogcolor: %x", fogcolor);
 
     switch (lfb_color_fmt)
     {
@@ -1643,7 +1728,7 @@ grFogColorValue(GrColor_t fogcolor)
 FX_ENTRY void FX_CALL
 grChromakeyMode(GrChromakeyMode_t mode)
 {
-    LOG("grChromakeyMode(%d)\r\n", mode);
+    WriteTrace(TraceResolution, TraceDebug, "mode: %d", mode);
     switch (mode)
     {
     case GR_CHROMAKEY_DISABLE:
@@ -1661,7 +1746,7 @@ grChromakeyMode(GrChromakeyMode_t mode)
 FX_ENTRY void FX_CALL
 grChromakeyValue(GrColor_t value)
 {
-    LOG("grChromakeyValue(%x)\r\n", value);
+    WriteTrace(TraceResolution, TraceDebug, "value: %d", value);
     int chroma_color_location;
 
     switch (lfb_color_fmt)
@@ -1716,19 +1801,17 @@ static void setPattern()
         }
     }
     glActiveTexture(GL_TEXTURE2);
-    glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 33 * 1024 * 1024);
     glTexImage2D(GL_TEXTURE_2D, 0, 4, 32, 32, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glDisable(GL_TEXTURE_2D);
 }
 
 FX_ENTRY void FX_CALL
 grStipplePattern(
 GrStipplePattern_t stipple)
 {
-    LOG("grStipplePattern(%x)\r\n", stipple);
+    WriteTrace(TraceResolution, TraceDebug, "value: %x", stipple);
     srand(stipple);
     setPattern();
 }
@@ -1736,25 +1819,22 @@ GrStipplePattern_t stipple)
 FX_ENTRY void FX_CALL
 grStippleMode(GrStippleMode_t mode)
 {
-    LOG("grStippleMode(%d)\r\n", mode);
+    WriteTrace(TraceResolution, TraceDebug, "mode: %d", mode);
     switch (mode)
     {
     case GR_STIPPLE_DISABLE:
         dither_enabled = 0;
         glActiveTexture(GL_TEXTURE2);
-        glDisable(GL_TEXTURE_2D);
         break;
     case GR_STIPPLE_PATTERN:
         setPattern();
         dither_enabled = 1;
         glActiveTexture(GL_TEXTURE2);
-        glEnable(GL_TEXTURE_2D);
         break;
     case GR_STIPPLE_ROTATE:
         setPattern();
         dither_enabled = 1;
         glActiveTexture(GL_TEXTURE2);
-        glEnable(GL_TEXTURE_2D);
         break;
     default:
         WriteTrace(TraceGlitch, TraceWarning, "grStippleMode:%x", mode);
@@ -1769,7 +1849,7 @@ GrCCUColor_t c, FxBool c_invert,
 GrCCUColor_t d, FxBool d_invert,
 FxU32 shift, FxBool invert)
 {
-    LOG("grColorCombineExt(%d, %d, %d, %d, %d, %d, %d, %d, %d, %d)\r\n", a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
+    WriteTrace(TraceResolution, TraceDebug, "a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift: %d invert: %d", a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
     if (invert) WriteTrace(TraceGlitch, TraceWarning, "grColorCombineExt : inverted result");
     if (shift) WriteTrace(TraceGlitch, TraceWarning, "grColorCombineExt : shift = %d", shift);
 
@@ -1951,7 +2031,7 @@ GrACUColor_t c, FxBool c_invert,
 GrACUColor_t d, FxBool d_invert,
 FxU32 shift, FxBool invert)
 {
-    LOG("grAlphaCombineExt(%d,%d,%d,%d,%d,%d,%d,%d,%d,%d)\r\n", a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
+    WriteTrace(TraceResolution, TraceDebug, "a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift: %d invert: %d", a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
     if (invert) WriteTrace(TraceGlitch, TraceWarning, "grAlphaCombineExt : inverted result");
     if (shift) WriteTrace(TraceGlitch, TraceWarning, "grAlphaCombineExt : shift = %d", shift);
 
@@ -2105,7 +2185,7 @@ GrTCCUColor_t d, FxBool d_invert,
 FxU32 shift, FxBool invert)
 {
     int num_tex;
-    LOG("grTexColorCombineExt(%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d)\r\n", tmu, a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
+    WriteTrace(TraceResolution, TraceDebug, "tmu: %d a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift: %d invert: %d", tmu, a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
 
     if (invert) WriteTrace(TraceGlitch, TraceWarning, "grTexColorCombineExt : inverted result");
     if (shift) WriteTrace(TraceGlitch, TraceWarning, "grTexColorCombineExt : shift = %d", shift);
@@ -2470,7 +2550,7 @@ GrTACUColor_t d, FxBool d_invert,
 FxU32 shift, FxBool invert)
 {
     int num_tex;
-    LOG("grTexAlphaCombineExt(%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d)\r\n", tmu, a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
+    WriteTrace(TraceResolution, TraceDebug, "tmu: %d a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift, invert: %d", tmu, a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
 
     if (invert) WriteTrace(TraceGlitch, TraceWarning, "grTexAlphaCombineExt : inverted result");
     if (shift) WriteTrace(TraceGlitch, TraceWarning, "grTexAlphaCombineExt : shift = %d", shift);
@@ -2750,7 +2830,7 @@ grConstantColorValueExt(GrChipID_t    tmu,
 GrColor_t     value)
 {
     int num_tex;
-    LOG("grConstantColorValueExt(%d,%d)\r\n", tmu, value);
+    WriteTrace(TraceResolution, TraceDebug, "tmu: %d value: %d", tmu, value);
 
     if (tmu == GR_TMU0) num_tex = 1;
     else num_tex = 0;

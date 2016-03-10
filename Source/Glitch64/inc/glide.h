@@ -623,15 +623,11 @@ grFinish(void);
 FX_ENTRY void FX_CALL 
 grFlush(void);
 
-FX_ENTRY GrContext_t FX_CALL 
-grSstWinOpen(
-          HWND                 hWnd,
-          GrScreenResolution_t screen_resolution,
-          GrScreenRefresh_t    refresh_rate,
-          GrColorFormat_t      color_format,
-          GrOriginLocation_t   origin_location,
-          int                  nColBuffers,
-          int                  nAuxBuffers);
+#ifdef _WIN32
+FX_ENTRY GrContext_t FX_CALL grSstWinOpen( HWND hWnd, GrScreenResolution_t screen_resolution, GrScreenRefresh_t refresh_rate, GrColorFormat_t color_format, GrOriginLocation_t origin_location, int  nColBuffers, int nAuxBuffers);
+#else
+FX_ENTRY GrContext_t FX_CALL grSstWinOpen( GrScreenRefresh_t refresh_rate, GrColorFormat_t color_format, GrOriginLocation_t origin_location, int  nColBuffers, int nAuxBuffers);
+#endif
 
 FX_ENTRY FxBool FX_CALL
 grSstWinClose( GrContext_t context );
