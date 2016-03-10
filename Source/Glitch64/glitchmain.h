@@ -44,8 +44,9 @@ extern int buffer_cleared; // mark that the buffer has been cleared, used to che
 
 #ifdef _WIN32
 #include <windows.h>
+#include "opengl.h"
+
 extern "C" {
-#include <SDL_opengl.h>
     extern PFNGLACTIVETEXTUREARBPROC glActiveTextureARB;
     extern PFNGLATTACHOBJECTARBPROC glAttachObjectARB;
     extern PFNGLBINDFRAMEBUFFEREXTPROC glBindFramebufferEXT;
@@ -74,13 +75,12 @@ extern "C" {
     extern PFNGLUNIFORM1IARBPROC glUniform1iARB;
     extern PFNGLUNIFORM4FARBPROC glUniform4fARB;
     extern PFNGLUSEPROGRAMOBJECTARBPROC glUseProgramObjectARB;
+    extern PFNGLGETHANDLEARBPROC glGetHandleARB;
     typedef const char * (WINAPI * PFNWGLGETEXTENSIONSSTRINGARBPROC) (HDC hdc);
 }
 #else
 #include <stdio.h>
-//#define printf(...)
-#define GL_GLEXT_PROTOTYPES
-#include <SDL_opengl.h>
+#include "OGLESwrappers.h"
 #endif // _WIN32
 #include "glide.h"
 
@@ -106,6 +106,7 @@ extern PFNGLCREATEPROGRAMOBJECTARBPROC glCreateProgramObjectARB;
 extern PFNGLATTACHOBJECTARBPROC glAttachObjectARB;
 extern PFNGLLINKPROGRAMARBPROC glLinkProgramARB;
 extern PFNGLUSEPROGRAMOBJECTARBPROC glUseProgramObjectARB;
+extern PFNGLGETHANDLEARBPROC glGetHandleARB;
 extern PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocationARB;
 extern PFNGLUNIFORM1IARBPROC glUniform1iARB;
 extern PFNGLUNIFORM4IARBPROC glUniform4iARB;

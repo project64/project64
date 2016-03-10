@@ -134,9 +134,6 @@
     <ProjectReference Include="..\3rdParty\png\png.vcxproj">
       <Project>{17836496-31b0-46f2-b1b1-366d7df6f04c}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\3rdParty\sdl\sdl2.vcxproj">
-      <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\Common\Common.vcxproj">
       <Project>{b4a4b994-9111-42b1-93c2-6f1ca8bc4421}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
