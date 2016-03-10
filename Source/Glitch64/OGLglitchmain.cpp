@@ -2528,23 +2528,7 @@ FX_ENTRY FxBool FX_CALL grKeyPressedExt(FxU32 key)
 #ifdef _WIN32
     return (GetAsyncKeyState(key) & 0x8000);
 #else
-    if (key == 1) //LBUTTON
-    {
-        Uint8 mstate = SDL_GetMouseState(NULL, NULL);
-        return (mstate & SDL_BUTTON_LMASK);
-    }
-    else
-    {
-        Uint8 *keystates = SDL_GetKeyState(NULL);
-        if (keystates[key])
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
+    return 0;
 #endif
 }
 
@@ -2799,15 +2783,6 @@ FxU32            /*evenOdd*/,
 GrTexInfo *      /*info*/)
 {
     WriteTrace(TraceGlitch, TraceWarning, "grTexMultibaseAddress");
-}
-
-inline void MySleep(FxU32 ms)
-{
-#ifdef _WIN32
-    Sleep(ms);
-#else
-    SDL_Delay(ms);
-#endif
 }
 
 #ifdef _WIN32
@@ -3074,3 +3049,48 @@ void dump_tex(int id)
 }
 
 #endif
+
+void CHECK_FRAMEBUFFER_STATUS()
+{
+    GLenum status;
+    status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+    WriteTrace(TraceGlitch, TraceDebug, "status: %X", status);
+    switch (status) {
+    case GL_FRAMEBUFFER_COMPLETE_EXT:
+        /*WriteTrace(TraceGlitch, TraceWarning, "framebuffer complete!\n");*/
+        break;
+    case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer GL_FRAMEBUFFER_UNSUPPORTED_EXT\n");
+        /* you gotta choose different formats */
+        /*assert(0);*/
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer INCOMPLETE_ATTACHMENT\n");
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer FRAMEBUFFER_MISSING_ATTACHMENT\n");
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer FRAMEBUFFER_DIMENSIONS\n");
+        break;
+        /*case GL_FRAMEBUFFER_INCOMPLETE_DUPLICATE_ATTACHMENT_EXT:
+          WriteTrace(TraceGlitch, TraceWarning, "framebuffer INCOMPLETE_DUPLICATE_ATTACHMENT\n");
+          break;*/
+    case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer INCOMPLETE_FORMATS\n");
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer INCOMPLETE_DRAW_BUFFER\n");
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer INCOMPLETE_READ_BUFFER\n");
+        break;
+    case GL_FRAMEBUFFER_BINDING_EXT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer BINDING_EXT\n");
+        break;
+    default:
+        break;
+        /* programming error; will fail on all hardware */
+        /*assert(0);*/
+    }
+}

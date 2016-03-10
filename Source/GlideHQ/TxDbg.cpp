@@ -47,7 +47,7 @@ TxDbg::TxDbg()
 #ifdef GHQCHK
         _dbgfile = fopen(CPath(log_dir, "ghqchk.txt"), "w");
 #else
-        _dbgfile = fopen(CPath((LPCSTR)log_dir, "glidehq.dbg"), "w");
+        _dbgfile = fopen(CPath(log_dir, "glidehq.dbg"), "w");
 #endif
 }
 

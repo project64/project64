@@ -2583,3 +2583,33 @@ void dump_tex(int id)
 }
 
 #endif
+
+void CHECK_FRAMEBUFFER_STATUS(void)
+{
+    GLenum status;
+    status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    WriteTrace(TraceGlitch, TraceDebug, "status: %X", status);
+    switch(status) {
+    case GL_FRAMEBUFFER_COMPLETE:
+        /*WriteTrace(TraceGlitch, TraceWarning, "framebuffer complete!\n");*/
+        break;
+    case GL_FRAMEBUFFER_UNSUPPORTED:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer GL_FRAMEBUFFER_UNSUPPORTED_EXT\n");
+        /* you gotta choose different formats */
+        /*assert(0);*/
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer INCOMPLETE_ATTACHMENT\n");
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer FRAMEBUFFER_MISSING_ATTACHMENT\n");
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer FRAMEBUFFER_DIMENSIONS\n");
+        break;
+    default:
+        break;
+        /* programming error; will fail on all hardware */
+        /*assert(0);*/
+    }
+}
