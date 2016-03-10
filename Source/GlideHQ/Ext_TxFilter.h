@@ -160,7 +160,7 @@ struct GHQTexInfo {
  * }
  */
 #define INFO_BUF 4095
-typedef void (*dispInfoFuncExt)(const wchar_t *format, ...);
+typedef void (*dispInfoFuncExt)(const char *format, ...);
 
 #ifndef TXFILTER_DLL
 boolean ext_ghq_init(int maxwidth, /* maximum texture width supported by hardware */

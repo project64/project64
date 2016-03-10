@@ -103,11 +103,11 @@ TxCache::add(uint64 checksum, GHQTexInfo *info, int dataSize)
             if (compress2(dest, &destLen, info->data, dataSize, 1) != Z_OK)
             {
                 dest = info->data;
-                DBG_INFO(80, L"Error: zlib compression failed!\n");
+                DBG_INFO(80, "Error: zlib compression failed!\n");
             }
             else
             {
-                DBG_INFO(80, L"zlib compressed: %.02fkb->%.02fkb\n", (float)dataSize / 1000, (float)destLen / 1000);
+                DBG_INFO(80, "zlib compressed: %.02fkb->%.02fkb\n", (float)dataSize / 1000, (float)destLen / 1000);
                 dataSize = destLen;
                 format |= GR_TEXFMT_GZ;
             }
@@ -143,7 +143,7 @@ TxCache::add(uint64 checksum, GHQTexInfo *info, int dataSize)
             /* remove from _cachelist */
             _cachelist.erase(_cachelist.begin(), itList);
 
-            DBG_INFO(80, L"+++++++++\n");
+            DBG_INFO(80, "+++++++++\n");
         }
         _totalSize -= dataSize;
     }
@@ -176,25 +176,25 @@ TxCache::add(uint64 checksum, GHQTexInfo *info, int dataSize)
             _cache.insert(std::map<uint64, TXCACHE*>::value_type(checksum, txCache));
 
 #ifdef DEBUG
-            DBG_INFO(80, L"[%5d] added!! crc:%08X %08X %d x %d gfmt:%x total:%.02fmb\n",
+            DBG_INFO(80, "[%5d] added!! crc:%08X %08X %d x %d gfmt:%x total:%.02fmb\n",
                 _cache.size(), (uint32)(checksum >> 32), (uint32)(checksum & 0xffffffff),
                 info->width, info->height, info->format, (float)_totalSize / 1000000);
 
-            DBG_INFO(80, L"smalllodlog2:%d largelodlog2:%d aspectratiolog2:%d\n",
+            DBG_INFO(80, "smalllodlog2:%d largelodlog2:%d aspectratiolog2:%d\n",
                 txCache->info.smallLodLog2, txCache->info.largeLodLog2, txCache->info.aspectRatioLog2);
 
             if (info->tiles)
             {
-                DBG_INFO(80, L"tiles:%d un-tiled size:%d x %d\n", info->tiles, info->untiled_width, info->untiled_height);
+                DBG_INFO(80, "tiles:%d un-tiled size:%d x %d\n", info->tiles, info->untiled_width, info->untiled_height);
             }
 
             if (_cacheSize > 0)
             {
-                DBG_INFO(80, L"cache max config:%.02fmb\n", (float)_cacheSize / 1000000);
+                DBG_INFO(80, "cache max config:%.02fmb\n", (float)_cacheSize / 1000000);
 
                 if (_cache.size() != _cachelist.size())
                 {
-                    DBG_INFO(80, L"Error: cache/cachelist mismatch! (%d/%d)\n", _cache.size(), _cachelist.size());
+                    DBG_INFO(80, "Error: cache/cachelist mismatch! (%d/%d)\n", _cache.size(), _cachelist.size());
                 }
             }
 #endif
@@ -237,12 +237,12 @@ TxCache::get(uint64 checksum, GHQTexInfo *info)
             uint8 *dest = (_gzdest0 == info->data) ? _gzdest1 : _gzdest0;
             if (uncompress(dest, &destLen, info->data, ((*itMap).second)->size) != Z_OK)
             {
-                DBG_INFO(80, L"Error: zlib decompression failed!\n");
+                DBG_INFO(80, "Error: zlib decompression failed!\n");
                 return 0;
             }
             info->data = dest;
             info->format &= ~GR_TEXFMT_GZ;
-            DBG_INFO(80, L"zlib decompressed: %.02fkb->%.02fkb\n", (float)(((*itMap).second)->size) / 1000, (float)destLen / 1000);
+            DBG_INFO(80, "zlib decompressed: %.02fkb->%.02fkb\n", (float)(((*itMap).second)->size) / 1000, (float)destLen / 1000);
         }
         return 1;
     }
@@ -256,7 +256,7 @@ boolean TxCache::save(const char *path, const char *filename, int config)
         CPath(path, "").DirectoryCreate();
 
         gzFile gzfp = gzopen(CPath(path, filename), "wb1");
-        DBG_INFO(80, L"gzfp:%x file:%ls\n", gzfp, filename);
+        DBG_INFO(80, "gzfp:%x file:%ls\n", gzfp, filename);
         if (gzfp)
         {
             /* write header to determine config match */
@@ -314,7 +314,7 @@ boolean TxCache::save(const char *path, const char *filename, int config)
 
                 /* not ready yet */
                 /*if (_callback)
-                  (*_callback)(L"Total textures saved to HDD: %d\n", std::distance(itMap, _cache.begin()));*/
+                  (*_callback)("Total textures saved to HDD: %d\n", std::distance(itMap, _cache.begin()));*/
             }
             gzclose(gzfp);
         }
@@ -328,7 +328,7 @@ boolean TxCache::load(const char *path, const char *filename, int config)
     CPath cbuf(path, filename);
 
     gzFile gzfp = gzopen(cbuf, "rb");
-    DBG_INFO(80, L"gzfp:%x file:%ls\n", gzfp, filename);
+    DBG_INFO(80, "gzfp:%x file:%ls\n", gzfp, filename);
     if (gzfp)
     {
         /* yep, we have it. load it into memory cache. */
@@ -380,7 +380,7 @@ boolean TxCache::load(const char *path, const char *filename, int config)
 
                 /* skip in between to prevent the loop from being tied down to vsync */
                 if (_callback && (!(_cache.size() % 100) || gzeof(gzfp)))
-                    (*_callback)(L"[%d] total mem:%.02fmb - %ls\n", _cache.size(), (float)_totalSize / 1000000, filename);
+                    (*_callback)("[%d] total mem:%.02fmb - %ls\n", _cache.size(), (float)_totalSize / 1000000, filename);
             } while (!gzeof(gzfp));
             gzclose(gzfp);
         }
@@ -404,7 +404,7 @@ boolean TxCache::del(uint64 checksum)
         delete (*itMap).second;
         _cache.erase(itMap);
 
-        DBG_INFO(80, L"removed from cache: checksum = %08X %08X\n", (uint32)(checksum & 0xffffffff), (uint32)(checksum >> 32));
+        DBG_INFO(80, "removed from cache: checksum = %08X %08X\n", (uint32)(checksum & 0xffffffff), (uint32)(checksum >> 32));
 
         return 1;
     }
