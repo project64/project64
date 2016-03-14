@@ -2128,6 +2128,7 @@ Good Name=Goemon's Great Adventure (U)
 Internal Name=GOEMONS GREAT ADV
 Status=Compatible
 Counter Factor=1
+Culling=1
 
 [4690FB1C-4CD56D44-C:45]
 Good Name=Golden Nugget 64 (U)
