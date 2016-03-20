@@ -2469,7 +2469,7 @@ Good Name=Indiana Jones and the Infernal Machine (E) (Unreleased)
 Internal Name=Indiana Jones
 Status=Only intro/part OK
 Core Note=Camera issue; can't play
-Plugin Note=[rsp] interpreter only [video] HLE not supported
+Plugin Note=[Glide64] errors:various
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -2489,7 +2489,7 @@ Good Name=Indiana Jones and the Infernal Machine (U)
 Internal Name=Indiana Jones
 Status=Only intro/part OK
 Core Note=Camera issue; can't play
-Plugin Note=[rsp] interpreter only [video] HLE not supported
+Plugin Note=[Glide64] errors:various
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -4440,6 +4440,7 @@ Culling=1
 Emulate Clear=1
 Linking=Off
 RDRAM Size=8
+RSP-Mfc0Count=10
 
 [AC5AA5C7-A9B0CDC3-C:46]
 Good Name=Pokemon Stadium 2 (F)
@@ -4450,6 +4451,7 @@ Culling=1
 Emulate Clear=1
 Linking=Off
 RDRAM Size=8
+RSP-Mfc0Count=10
 
 [439B7E7E-C1A1495D-C:44]
 Good Name=Pokemon Stadium 2 (G)
@@ -4460,6 +4462,7 @@ Culling=1
 Emulate Clear=1
 Linking=Off
 RDRAM Size=8
+RSP-Mfc0Count=10
 
 [EFCEAF00-22094848-C:49]
 Good Name=Pokemon Stadium 2 (I)
@@ -4470,6 +4473,7 @@ Culling=1
 Emulate Clear=1
 Linking=Off
 RDRAM Size=8
+RSP-Mfc0Count=10
 
 [63775886-5FB80E7B-C:4A]
 Good Name=Pokemon Stadium 2 (J)
@@ -4490,6 +4494,7 @@ Culling=1
 Emulate Clear=1
 Linking=Off
 RDRAM Size=8
+RSP-Mfc0Count=10
 
 [03571182-892FD06D-C:45]
 Good Name=Pokemon Stadium 2 (U)
@@ -4500,6 +4505,7 @@ Culling=1
 Emulate Clear=1
 Linking=Off
 RDRAM Size=8
+RSP-Mfc0Count=10
 
 [EE4FD7C2-9CF1D938-C:4A]
 Good Name=Pokemon Stadium Kin Gin (J)
@@ -4510,6 +4516,7 @@ Culling=1
 Emulate Clear=1
 Linking=Off
 RDRAM Size=8
+RSP-Mfc0Count=10
 
 [41380792-A167E045-C:45]
 Good Name=Polaris SnoCross (U)
@@ -5273,7 +5280,7 @@ SMM-TLB=0
 Good Name=Star Wars - Rogue Squadron (E) (M3) (V1.0)
 Internal Name=Rogue Squadron
 Status=Broken (plugin)
-Plugin Note=[rsp] interpreter only [video] HLE not supported
+Plugin Note=[Glide64] errors:various
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5285,7 +5292,7 @@ RSP-JumpTableSize=3584
 Good Name=Star Wars - Rogue Squadron (E) (M3) (V1.1)
 Internal Name=Rogue Squadron
 Status=Broken (plugin)
-Plugin Note=[rsp] interpreter only [video] HLE not supported
+Plugin Note=[Glide64] errors:various
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5297,7 +5304,7 @@ RSP-JumpTableSize=3584
 Good Name=Star Wars - Rogue Squadron (U) (V1.0)
 Internal Name=Rogue Squadron
 Status=Broken (plugin)
-Plugin Note=[rsp] interpreter only [video] HLE not supported
+Plugin Note=[Glide64] errors:various
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5309,7 +5316,7 @@ RSP-JumpTableSize=3584
 Good Name=Star Wars - Rogue Squadron (U) (V1.1)
 Internal Name=Rogue Squadron
 Status=Broken (plugin)
-Plugin Note=[rsp] interpreter only [video] HLE not supported
+Plugin Note=[Glide64] errors:various
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5354,7 +5361,7 @@ RDRAM Size=8
 Good Name=Star Wars - Shutsugeki! Rogue Chuutai (J)
 Internal Name=rogue squadron
 Status=Broken (plugin)
-Plugin Note=[rsp] interpreter only [video] HLE not supported
+Plugin Note=[Glide64] errors:various
 32bit=No
 HLE GFX=No
 RDRAM Size=8
@@ -5374,7 +5381,7 @@ Good Name=Star Wars Episode I - Battle for Naboo (E)
 Internal Name=Battle for Naboo
 Status=Only intro/part OK
 Core Note=Camera issue; can't play
-Plugin Note=[rsp] interpreter only [video] HLE not supported
+Plugin Note=[Glide64] errors:various
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5387,7 +5394,7 @@ Good Name=Star Wars Episode I - Battle for Naboo (U)
 Internal Name=Battle for Naboo
 Status=Only intro/part OK
 Core Note=Camera issue; can't play
-Plugin Note=[rsp] interpreter only [video] HLE not supported
+Plugin Note=[Glide64] errors:various
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
