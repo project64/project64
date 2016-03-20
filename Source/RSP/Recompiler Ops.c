@@ -1681,9 +1681,11 @@ void Compile_Cop0_MF ( void ) {
 	case 4: 
 		MoveVariableToX86reg(&RSP_MfStatusCount, "RSP_MfStatusCount", x86_ECX);
 		MoveVariableToX86reg(RSPInfo.SP_STATUS_REG, "SP_STATUS_REG", x86_EAX);
-		CompConstToX86reg(x86_ECX, 10);
-		JbLabel8("label", 10);
-		MoveConstToVariable(0, &RSP_Running, "RSP_Running");
+		if (Mfc0Count != 0) {
+			CompConstToX86reg(x86_ECX, Mfc0Count);
+			JbLabel8("label", Mfc0Count);
+			MoveConstToVariable(0, &RSP_Running, "RSP_Running");
+		}
 		IncX86reg(x86_ECX);
 		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 		MoveX86regToVariable(x86_ECX, &RSP_MfStatusCount, "RSP_MfStatusCount");
@@ -1705,7 +1707,8 @@ void Compile_Cop0_MF ( void ) {
 			MoveConstToVariable(0, &RSP_GPR[RSPOpC.rt].W, GPR_Name(RSPOpC.rt));
 		} else {
 			MoveVariableToX86reg(RSPInfo.SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG", x86_EAX);
-			MoveConstToVariable(0, &RSP_Running, "RSP_Running");
+			if (SemaphoreExit != 0)
+				MoveConstToVariable(0, &RSP_Running, "RSP_Running");
 			MoveConstToVariable(1, RSPInfo.SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG");
 			MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].W, GPR_Name(RSPOpC.rt));
 			if (NextInstruction == NORMAL)

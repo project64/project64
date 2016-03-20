@@ -57,6 +57,7 @@ void BuildInterpreterCPU(void);
 void BuildRecompilerCPU(void);
 
 extern HANDLE hMutex;
+DWORD Mfc0Count, SemaphoreExit = 0;
 
 void SetCPU(DWORD core)
 {
