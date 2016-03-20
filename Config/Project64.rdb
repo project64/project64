@@ -1,4 +1,4 @@
-// ============ RDB for PJ64 v2.2. GoodN64 v321 =====================================
+﻿// ============ RDB for PJ64 v2.2. GoodN64 v321 =====================================
 // PJ64 v2.2 Official RDB
 // Not for use with PJ64 v1.6 or previous
 //---- START OF RDB FILE HEADER ---------------------------------------------------------
@@ -2041,6 +2041,7 @@ Internal Name=GAUNTLET LEGENDS
 Status=Issues (mixed)
 Plugin Note=[Glide64] missing:various
 RDRAM Size=8
+RSP-Mfc0Count=10
 
 [70B0260E-6716D04C-C:4A]
 Good Name=Gauntlet Legends (J)
@@ -2048,6 +2049,7 @@ Internal Name=GAUNTLET LEGENDS
 Status=Issues (mixed)
 Plugin Note=[Glide64] missing:various
 RDRAM Size=8
+RSP-Mfc0Count=10
 
 [729B5E32-B728D980-C:45]
 Good Name=Gauntlet Legends (U)
@@ -2056,6 +2058,7 @@ Status=Issues (mixed)
 Plugin Note=[Glide64] missing:various
 Culling=1
 RDRAM Size=8
+RSP-Mfc0Count=10
 
 [489C84E6-4C6E49F9-C:4A]
 Good Name=Getter Love!! - Cho Ren-ai Party Game (J)
@@ -3274,6 +3277,7 @@ Internal Name=ÏØµÉÌ«ÄËß°
 Status=Issues (plugin)
 Plugin Note=[video] HLE not supported; errors:various
 HLE GFX=No
+RSP-SemaphoreExit=1
 
 [9C663069-80F24A80-C:50]
 Good Name=Mario Party (E) (M3)
@@ -5480,6 +5484,7 @@ AudioResetOnLoad=Yes
 HLE GFX=No
 Fixed Audio=0
 RDRAM Size=8
+RSP-Mfc0Count=10
 
 [F4646B69-C5751095-C:4A]
 Good Name=Super B-Daman - Battle Phoenix 64 (J)
@@ -6786,6 +6791,7 @@ Plugin Note=[video] HLE not supported [audio] needs audio plugin
 AudioResetOnLoad=Yes
 Fixed Audio=0
 HLE GFX=No
+RSP-Mfc0Count=10
 
 [308DFEC8-CE2EB5F6-C:45]
 Good Name=World Driver Championship (U)
@@ -6796,6 +6802,7 @@ Plugin Note=[video] HLE not supported [audio] needs audio plugin
 AudioResetOnLoad=Yes
 Fixed Audio=0
 HLE GFX=No
+RSP-Mfc0Count=10
 
 [2D21C57B-8FE4C58C-C:50]
 Good Name=Worms - Armageddon (E) (M6)
