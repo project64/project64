@@ -81,7 +81,7 @@ enum {
 	Set_ReOrdering, Set_GPRConstants, Set_Flags, Set_AlignVector,
 
 	//Game Settings
-	Set_JumpTableSize
+	Set_JumpTableSize, Set_Mfc0Count, Set_SemaphoreExit
 };
 
 short Set_AudioHle = 0, Set_GraphicsHle = 0;
@@ -544,6 +544,8 @@ __declspec(dllexport) void RomOpen (void)
 		EnableDebugging(true);
 	}
 	JumpTableSize = GetSetting(Set_JumpTableSize); 
+	Mfc0Count = GetSetting(Set_Mfc0Count);
+	SemaphoreExit = GetSetting(Set_SemaphoreExit);
 }
 
 /******************************************************************
@@ -787,6 +789,8 @@ __declspec(dllexport) void PluginLoaded (void)
 	RegisterSetting(Set_AlignVector,    Data_DWORD_General,"Assume Vector loads align", NULL,Compiler.bAlignVector,NULL);
 
 	RegisterSetting(Set_JumpTableSize,  Data_DWORD_Game,"JumpTableSize",NULL,0x800,NULL);
+	RegisterSetting(Set_Mfc0Count, Data_DWORD_Game, "Mfc0Count", NULL, 0x0, NULL);
+	RegisterSetting(Set_SemaphoreExit, Data_DWORD_Game, "SemaphoreExit", NULL, 0x0, NULL);
 
 	AudioHle       = Set_AudioHle != 0 ? GetSystemSetting(Set_AudioHle) : false;
 	GraphicsHle    = Set_GraphicsHle != 0 ? GetSystemSetting(Set_GraphicsHle) : true;
