@@ -1683,7 +1683,7 @@ void Compile_Cop0_MF ( void ) {
 		MoveVariableToX86reg(RSPInfo.SP_STATUS_REG, "SP_STATUS_REG", x86_EAX);
 		if (Mfc0Count != 0) {
 			CompConstToX86reg(x86_ECX, Mfc0Count);
-			JbLabel8("label", Mfc0Count);
+			JbLabel8("label", 10);
 			MoveConstToVariable(0, &RSP_Running, "RSP_Running");
 		}
 		IncX86reg(x86_ECX);
@@ -1702,13 +1702,12 @@ void Compile_Cop0_MF ( void ) {
 		}
 		break;
 	case 7:
-		if (AudioHle || GraphicsHle)
+		if (AudioHle || GraphicsHle || SemaphoreExit == 0)
 		{
 			MoveConstToVariable(0, &RSP_GPR[RSPOpC.rt].W, GPR_Name(RSPOpC.rt));
 		} else {
 			MoveVariableToX86reg(RSPInfo.SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG", x86_EAX);
-			if (SemaphoreExit != 0)
-				MoveConstToVariable(0, &RSP_Running, "RSP_Running");
+			MoveConstToVariable(0, &RSP_Running, "RSP_Running");
 			MoveConstToVariable(1, RSPInfo.SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG");
 			MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].W, GPR_Name(RSPOpC.rt));
 			if (NextInstruction == NORMAL)
