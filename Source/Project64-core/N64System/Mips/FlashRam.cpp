@@ -218,6 +218,7 @@ void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
         m_FlashStatus = 0x1111800100C2001E;
         break;
     case 0xF0000000:
+    case 0x00000000:
         m_FlashFlag = FLASHRAM_MODE_READ;
         m_FlashStatus = 0x11118004F0000000;
         break;
