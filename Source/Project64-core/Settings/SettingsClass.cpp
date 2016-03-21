@@ -524,26 +524,35 @@ void CSettings::RegisterSetting(CSettings * _this, SettingID ID, SettingID Defau
         switch (DataType)
         {
         case Data_DWORD:
-            if (DefaultID == Default_None)
             {
                 SettingID RdbSetting = (SettingID)_this->m_NextAutoSettingId;
                 _this->m_NextAutoSettingId += 1;
-                _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), (int)Value));
-                _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
-            }
-            else
-            {
-                _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), DefaultID));
+                if (DefaultID == Default_None)
+                {
+                    _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), (int)Value));
+                    _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
+                }
+                else
+                {
+                    _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), DefaultID));
+                    _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
+                }
             }
             break;
         case Data_String:
-            if (DefaultID == Default_None)
             {
-                _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), ""));
-            }
-            else
-            {
-                _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), DefaultID));
+                SettingID RdbSetting = (SettingID)_this->m_NextAutoSettingId;
+                _this->m_NextAutoSettingId += 1;
+                if (DefaultID == Default_None)
+                {
+                    _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), ""));
+                    _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
+                }
+                else
+                {
+                    _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), DefaultID));
+                    _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
+                }
             }
             break;
         default:

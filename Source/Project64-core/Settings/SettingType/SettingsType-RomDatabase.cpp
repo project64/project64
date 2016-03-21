@@ -46,7 +46,7 @@ CSettingTypeRomDatabase::CSettingTypeRomDatabase(const char * Name, const char *
 }
 
 CSettingTypeRomDatabase::CSettingTypeRomDatabase(const char * Name, SettingID DefaultSetting, bool DeleteOnDefault ) :
-    m_KeyName(Name),
+    m_KeyName(StripNameSection(Name)),
     m_DefaultStr(""),
     m_DefaultValue(0),
     m_DefaultSetting(DefaultSetting),
