@@ -15867,6 +15867,10 @@ void CombineBlender()
         case 0x5000: /* Vigilante 8 explosions */
             A_BLEND(GR_BLEND_ONE_MINUS_SRC_ALPHA, GR_BLEND_SRC_ALPHA);
             break;
+            
+            case 0xFA00: // Bomberman second attack
+				A_BLEND(GR_BLEND_ONE, GR_BLEND_ZERO);
+				break;
 
         default:
             A_BLEND(GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA);
