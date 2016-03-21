@@ -5578,13 +5578,13 @@ void CMipsMemoryVM::Write32CartridgeDomain2Address2(void)
         g_MMU->DmaFromSram(tmp, (m_MemLookupAddress & 0x1FFFFFFF) - 0x08000000, 4);
         return;
     }
-    if ((m_MemLookupAddress & 0x1FFFFFFF) != 0x08010000)
+    /*if ((m_MemLookupAddress & 0x1FFFFFFF) != 0x08010000)
     {
         if (bHaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
-    }
+    }*/
     if (g_System->m_SaveUsing == SaveChip_Auto)
     {
         g_System->m_SaveUsing = SaveChip_FlashRam;
