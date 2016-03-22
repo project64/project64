@@ -706,7 +706,7 @@ BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam
 	DialogBox(hinstDLL, "RSPCONFIG", GetForegroundWindow(), ConfigDlgProc);
 }*/
 
-__declspec(dllexport) void EnableDebugging(Boolean Enabled)
+EXPORT void EnableDebugging(Boolean Enabled)
 {
 	DebuggingEnabled = Enabled;
 	if (DebuggingEnabled)

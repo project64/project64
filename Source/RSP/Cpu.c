@@ -194,10 +194,10 @@ DWORD RunRecompilerCPU (DWORD Cycles);
 
 #define MI_INTR_SP				0x01		/* Bit 0: SP intr */
 
-__declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles )
+EXPORT uint32_t DoRspCycles ( uint32_t Cycles )
 {
     extern Boolean AudioHle, GraphicsHle;
-	DWORD TaskType = *(DWORD*)(RSPInfo.DMEM + 0xFC0);
+	uint32_t TaskType = *(uint32_t*)(RSPInfo.DMEM + 0xFC0);
 		
 /*	if (*RSPInfo.SP_STATUS_REG & SP_STATUS_SIG0)
 	{
@@ -207,7 +207,7 @@ __declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles )
 		return Cycles;
 	}
 */
-	if (TaskType == 1 && GraphicsHle && *(DWORD*)(RSPInfo.DMEM + 0x0ff0) != 0)
+	if (TaskType == 1 && GraphicsHle && *(uint32_t*)(RSPInfo.DMEM + 0x0ff0) != 0)
 	{
 		if (RSPInfo.ProcessDList != NULL)
 		{
@@ -256,7 +256,7 @@ __declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles )
 
 	if (Profiling && !IndvidualBlock)
 	{
-		StartTimer((DWORD)Timer_RSP_Running);
+		StartTimer((uint32_t)Timer_RSP_Running);
 	}
 
 	WaitForSingleObjectEx(hMutex, 1000 * 100, FALSE);
@@ -280,7 +280,7 @@ __declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles )
 
 	if (Profiling && !IndvidualBlock)
 	{
-		StartTimer((DWORD)Timer_R4300_Running);
+		StartTimer((uint32_t)Timer_R4300_Running);
 	}
 
 	return Cycles;

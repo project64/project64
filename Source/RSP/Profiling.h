@@ -23,6 +23,7 @@
  * should be forwarded to them so if they want them.
  *
  */
+#include <stdint.h>
 
 enum SPECIAL_TIMERS {
 	Timer_None          =  0, Timer_Compiling   = -1, Timer_RSP_Running   = -2, 
@@ -32,6 +33,6 @@ enum SPECIAL_TIMERS {
 };
 
 void  ResetTimerList       ( void );
-DWORD StartTimer           ( DWORD Address );
+uint32_t StartTimer        ( uint32_t Address );
 void  StopTimer            ( void );
 void  GenerateTimerResults ( void );

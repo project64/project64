@@ -154,7 +154,7 @@ EXPORT void InitiateRSPDebugger(DEBUG_INFO Debug_Info);
 EXPORT void RomOpen(void);
 EXPORT void RomClosed(void);
 EXPORT void DllConfig(void * hWnd);
-EXPORT void EnableDebugging(int Enabled);
+EXPORT void EnableDebugging(Boolean Enabled);
 EXPORT void PluginLoaded(void);
 
 uint32_t AsciiToHex(char * HexValue);
