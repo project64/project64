@@ -5279,8 +5279,8 @@ SMM-TLB=0
 [7EE0E8BB-49E411AA-C:50]
 Good Name=Star Wars - Rogue Squadron (E) (M3) (V1.0)
 Internal Name=Rogue Squadron
-Status=Broken (plugin)
-Plugin Note=[Glide64] errors:various
+Status=Issues (plugin)
+Plugin Note=[video] errors:various
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5291,8 +5291,8 @@ RSP-JumpTableSize=3584
 [219191C1-33183C61-C:50]
 Good Name=Star Wars - Rogue Squadron (E) (M3) (V1.1)
 Internal Name=Rogue Squadron
-Status=Broken (plugin)
-Plugin Note=[Glide64] errors:various
+Status=Issues (plugin)
+Plugin Note=[video] errors:various
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5303,8 +5303,8 @@ RSP-JumpTableSize=3584
 [66A24BEC-2EADD94F-C:45]
 Good Name=Star Wars - Rogue Squadron (U) (V1.0)
 Internal Name=Rogue Squadron
-Status=Broken (plugin)
-Plugin Note=[Glide64] errors:various
+Status=Issues (plugin)
+Plugin Note=[video] errors:various
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5315,8 +5315,8 @@ RSP-JumpTableSize=3584
 [C7F30CFA-ECB0FA36-C:45]
 Good Name=Star Wars - Rogue Squadron (U) (V1.1)
 Internal Name=Rogue Squadron
-Status=Broken (plugin)
-Plugin Note=[Glide64] errors:various
+Status=Issues (plugin)
+Plugin Note=[video] errors:various
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5360,8 +5360,8 @@ RDRAM Size=8
 [827E4890-958468DC-C:4A]
 Good Name=Star Wars - Shutsugeki! Rogue Chuutai (J)
 Internal Name=rogue squadron
-Status=Broken (plugin)
-Plugin Note=[Glide64] errors:various
+Status=Issues (plugin)
+Plugin Note=[video] errors:various
 32bit=No
 HLE GFX=No
 RDRAM Size=8
