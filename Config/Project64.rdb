@@ -2020,11 +2020,14 @@ RDRAM Size=8
 Good Name=Ganbare Goemon - Derodero Douchuu Obake Tenkomori (J)
 Internal Name=GOEMON2 DERODERO
 Status=Compatible
+Counter Factor=1
+Culling=1
 
 [832C168B-56A2CDAE-C:4A]
 Good Name=Ganbare Goemon - Neo Momoyama Bakufu no Odori (J)
 Internal Name=GANBAKE GOEMON
 Status=Compatible
+Counter Factor=1
 Culling=1
 RDRAM Size=8
 
@@ -2128,6 +2131,8 @@ Status=Compatible
 Good Name=Goemon's Great Adventure (U)
 Internal Name=GOEMONS GREAT ADV
 Status=Compatible
+Counter Factor=1
+Culling=1
 
 [4690FB1C-4CD56D44-C:45]
 Good Name=Golden Nugget 64 (U)
@@ -3606,17 +3611,22 @@ Good Name=Mystical Ninja 2 Starring Goemon (E) (M3)
 Internal Name=MYSTICAL NINJA2 SG
 Status=Compatible
 Counter Factor=1
+Culling=1
 
 [F5360FBE-2BF1691D-C:50]
 Good Name=Mystical Ninja Starring Goemon (E)
 Internal Name=MYSTICAL NINJA
 Status=Compatible
+Counter Factor=1
+Culling=1
 RDRAM Size=8
 
 [FCBCCB21-72903C6B-C:45]
 Good Name=Mystical Ninja Starring Goemon (U)
 Internal Name=MYSTICAL NINJA
 Status=Compatible
+Counter Factor=1
+Culling=1
 RDRAM Size=8
 
 //================  N  ================
