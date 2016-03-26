@@ -46,10 +46,21 @@ extern int buffer_cleared; // mark that the buffer has been cleared, used to che
 
 #ifdef _WIN32
 #include <windows.h>
+typedef const char * (WINAPI * PFNWGLGETEXTENSIONSSTRINGARBPROC)(HDC hdc);
+#else
+#include <stdio.h>
+#endif
+
+#if defined(__ANDROID__) || defined(ANDROID)
+#include "OGLESwrappers.h"
+#else
 #include "opengl.h"
 
 extern "C" {
+#ifndef GL_VERSION_1_3
     extern PFNGLACTIVETEXTUREARBPROC glActiveTextureARB;
+    extern PFNGLMULTITEXCOORD2FARBPROC glMultiTexCoord2fARB;
+#endif
     extern PFNGLATTACHOBJECTARBPROC glAttachObjectARB;
     extern PFNGLBINDFRAMEBUFFEREXTPROC glBindFramebufferEXT;
     extern PFNGLBINDRENDERBUFFEREXTPROC glBindRenderbufferEXT;
@@ -69,7 +80,6 @@ extern "C" {
     extern PFNGLGETOBJECTPARAMETERIVARBPROC glGetObjectParameterivARB;
     extern PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocationARB;
     extern PFNGLLINKPROGRAMARBPROC glLinkProgramARB;
-    extern PFNGLMULTITEXCOORD2FARBPROC glMultiTexCoord2fARB;
     extern PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT;
     extern PFNGLSECONDARYCOLOR3FPROC glSecondaryColor3f;
     extern PFNGLSHADERSOURCEARBPROC glShaderSourceARB;
@@ -78,12 +88,9 @@ extern "C" {
     extern PFNGLUNIFORM4FARBPROC glUniform4fARB;
     extern PFNGLUSEPROGRAMOBJECTARBPROC glUseProgramObjectARB;
     extern PFNGLGETHANDLEARBPROC glGetHandleARB;
-    typedef const char * (WINAPI * PFNWGLGETEXTENSIONSSTRINGARBPROC) (HDC hdc);
 }
-#else
-#include <stdio.h>
-#include "OGLESwrappers.h"
-#endif // _WIN32
+#endif
+
 #include "glide.h"
 
 void init_geometry();
