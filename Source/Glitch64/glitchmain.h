@@ -46,6 +46,14 @@ extern int buffer_cleared; // mark that the buffer has been cleared, used to che
 
 #ifdef _WIN32
 #include <windows.h>
+typedef const char * (WINAPI * PFNWGLGETEXTENSIONSSTRINGARBPROC)(HDC hdc);
+#else
+#include <stdio.h>
+#endif
+
+#if defined(__ANDROID__) || defined(ANDROID)
+#include "OGLESwrappers.h"
+#else
 #include "opengl.h"
 
 extern "C" {
@@ -78,12 +86,9 @@ extern "C" {
     extern PFNGLUNIFORM4FARBPROC glUniform4fARB;
     extern PFNGLUSEPROGRAMOBJECTARBPROC glUseProgramObjectARB;
     extern PFNGLGETHANDLEARBPROC glGetHandleARB;
-    typedef const char * (WINAPI * PFNWGLGETEXTENSIONSSTRINGARBPROC) (HDC hdc);
 }
-#else
-#include <stdio.h>
-#include "OGLESwrappers.h"
-#endif // _WIN32
+#endif
+
 #include "glide.h"
 
 void init_geometry();
