@@ -17,7 +17,7 @@
 #include "g3ext.h"
 #include "glitchmain.h"
 #include <Glide64/trace.h>
-#include <Common\Util.h>
+#include <Common/Util.h>
 
 #ifdef VPDEBUG
 #include <IL/il.h>
