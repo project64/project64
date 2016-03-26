@@ -5,14 +5,13 @@ extern "C"
 {
 #endif
 
-#ifdef _WIN32
-#include <GL/gl.h>              /* Header File For The OpenGL Library */
-#else
+#if defined(ANDROID) || defined(__ANDROID__)
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
 typedef unsigned int     GLenum;
-
+#else
+#include <GL/gl.h>              /* Header File For The OpenGL Library */
 #endif
 
 #ifndef APIENTRY
