@@ -57,7 +57,10 @@ typedef const char * (WINAPI * PFNWGLGETEXTENSIONSSTRINGARBPROC)(HDC hdc);
 #include "opengl.h"
 
 extern "C" {
+#ifndef GL_VERSION_1_3
     extern PFNGLACTIVETEXTUREARBPROC glActiveTextureARB;
+    extern PFNGLMULTITEXCOORD2FARBPROC glMultiTexCoord2fARB;
+#endif
     extern PFNGLATTACHOBJECTARBPROC glAttachObjectARB;
     extern PFNGLBINDFRAMEBUFFEREXTPROC glBindFramebufferEXT;
     extern PFNGLBINDRENDERBUFFEREXTPROC glBindRenderbufferEXT;
@@ -77,7 +80,6 @@ extern "C" {
     extern PFNGLGETOBJECTPARAMETERIVARBPROC glGetObjectParameterivARB;
     extern PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocationARB;
     extern PFNGLLINKPROGRAMARBPROC glLinkProgramARB;
-    extern PFNGLMULTITEXCOORD2FARBPROC glMultiTexCoord2fARB;
     extern PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT;
     extern PFNGLSECONDARYCOLOR3FPROC glSecondaryColor3f;
     extern PFNGLSHADERSOURCEARBPROC glShaderSourceARB;
