@@ -17,7 +17,7 @@ extern int dumping;
 
 typedef struct _wrapper_config
 {
-#ifdef _WIN32
+#ifndef ANDROID
     int res;
 #endif
     int fbo;
@@ -178,11 +178,14 @@ void disable_textureSizes();
 
 // config functions
 
-#ifdef _WIN32
-FX_ENTRY void FX_CALL grConfigWrapperExt(FxI32, FxI32, FxBool, FxBool);
-#else
-FX_ENTRY void FX_CALL grConfigWrapperExt(FxI32, FxBool, FxBool);
+FX_ENTRY void FX_CALL grConfigWrapperExt(
+#ifndef ANDROID
+    FxI32, /* resolution parameter not supported on Android build */
 #endif
+    FxI32,
+    FxBool,
+    FxBool
+);
 FX_ENTRY GrScreenResolution_t FX_CALL grWrapperFullScreenResolutionExt(FxU32*, FxU32*);
 FX_ENTRY char ** FX_CALL grQueryResolutionsExt(int32_t*);
 FX_ENTRY FxBool FX_CALL grKeyPressedExt(FxU32 key);

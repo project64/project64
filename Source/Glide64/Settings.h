@@ -9,7 +9,7 @@ public:
 
     uint32_t res_x, scr_res_x;
     uint32_t res_y, scr_res_y;
-#ifdef _WIN32
+#ifndef ANDROID
     uint32_t res_data, res_data_org;
 #endif
 
@@ -157,7 +157,7 @@ public:
     uint32_t hacks;
 
     //wrapper settings
-#ifdef _WIN32
+#ifndef ANDROID
     int wrpResolution;
 #endif
     int wrpVRAM;
