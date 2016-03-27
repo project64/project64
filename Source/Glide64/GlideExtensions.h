@@ -44,20 +44,31 @@ typedef FxU32 GrCombineMode_t;
 
 #define GR_TEXTURE_UMA_EXT                0x06
 //wrapper specific
-#ifdef _WIN32
-FX_ENTRY void FX_CALL grConfigWrapperExt(FxI32, FxI32, FxBool, FxBool);
-#else
-FX_ENTRY void FX_CALL grConfigWrapperExt(FxI32, FxBool, FxBool);
+FX_ENTRY void FX_CALL grConfigWrapperExt(
+#ifndef ANDROID
+    FxI32, /* resolution parameter not supported on Android */
 #endif
+    FxI32,
+    FxBool,
+    FxBool
+);
 FX_ENTRY GrScreenResolution_t FX_CALL grWrapperFullScreenResolutionExt(FxU32*, FxU32*);
 FX_ENTRY char ** FX_CALL grQueryResolutionsExt(int32_t*);
 FX_ENTRY FxBool FX_CALL grKeyPressedExt(FxU32 key);
 FX_ENTRY void FX_CALL grGetGammaTableExt(FxU32, FxU32*, FxU32*, FxU32*);
 
-#ifdef _WIN32
-FX_ENTRY GrContext_t FX_CALL grSstWinOpenExt(HWND hWnd, GrScreenResolution_t screen_resolution, GrScreenRefresh_t refresh_rate, GrColorFormat_t color_format, GrOriginLocation_t origin_location, GrPixelFormat_t pixelformat, int nColBuffers, int nAuxBuffers);
-#else
-FX_ENTRY GrContext_t FX_CALL grSstWinOpenExt(GrScreenRefresh_t refresh_rate, GrColorFormat_t color_format, GrOriginLocation_t origin_location, GrPixelFormat_t pixelformat, int nColBuffers, int nAuxBuffers);
+FX_ENTRY GrContext_t FX_CALL grSstWinOpenExt(
+#ifndef ANDROID
+    HWND hWnd,
+    GrScreenResolution_t screen_resolution,
+#endif
+    GrScreenRefresh_t refresh_rate,
+    GrColorFormat_t color_format,
+    GrOriginLocation_t origin_location,
+    GrPixelFormat_t pixelformat,
+    int nColBuffers,
+    int nAuxBuffers
+);
 #endif
 
 //color combiner

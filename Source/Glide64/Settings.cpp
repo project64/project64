@@ -6,7 +6,7 @@ res_x(640),
 scr_res_x(640),
 res_y(480),
 scr_res_y(480),
-#ifdef _WIN32
+#ifndef ANDROID
 res_data(GR_RESOLUTION_640x480),
 res_data_org(GR_RESOLUTION_640x480),
 #endif
@@ -94,7 +94,7 @@ n64_z_scale(0), //scale vertex z value before writing to depth buffer, as N64 do
 hacks(0),
 
 //wrapper settings
-#ifdef _WIN32
+#ifndef ANDROID
 wrpResolution(0),
 #endif
 wrpVRAM(0),

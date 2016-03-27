@@ -281,11 +281,13 @@ void ChangeSize()
 
 void ConfigWrapper()
 {
-#ifdef _WIN32
-    grConfigWrapperExt(g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic);
+    grConfigWrapperExt(
+#ifdef ANDROID
+        g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
 #else
-    grConfigWrapperExt(g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic);
+        g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
 #endif
+    );
 }
 
 void UseUnregisteredSetting(int /*SettingID*/)
@@ -859,6 +861,10 @@ int InitGfx()
     }
     //*/
 
+/*
+ * 2016.03.27 cxd4 -- to do:  #ifdef _WIN32 or #ifndef _ANDROID?
+ * Can't tell which one is correct here, but I think the latter.
+ */
 #ifdef _WIN32
     uint32_t res_data = g_settings->res_data;
     if (ev_fullscreen)
@@ -1401,7 +1407,7 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     ReadSettings();
     char name[21] = "DEFAULT";
     ReadSpecialSettings(name);
-#ifdef _WIN32
+#ifndef ANDROID
     g_settings->res_data_org = g_settings->res_data;
 #endif
 
@@ -1430,11 +1436,13 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     if (fb_depth_render_enabled)
         ZLUT_init();
 
+    grConfigWrapperExt(
 #ifdef _WIN32
-    grConfigWrapperExt(g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic);
+        g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
 #else
-    grConfigWrapperExt(g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic);
+        g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
 #endif
+    );
 
     grGlideInit();
     grSstSelect(0);
