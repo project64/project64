@@ -69,7 +69,6 @@ FX_ENTRY GrContext_t FX_CALL grSstWinOpenExt(
     int nColBuffers,
     int nAuxBuffers
 );
-#endif
 
 //color combiner
 FX_ENTRY void FX_CALL
