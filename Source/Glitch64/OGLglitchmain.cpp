@@ -1126,7 +1126,7 @@ int                  nAuxBuffers)
         glCompressedTexImage2DARB = (PFNGLCOMPRESSEDTEXIMAGE2DPROC)dummy_glCompressedTexImage2D;
 #endif
 
-#ifdef _WIN32
+#ifndef ANDROID
     glViewport(0, viewport_offset, g_width, g_height);
     viewport_width = g_width;
     viewport_height = g_height;
