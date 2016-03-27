@@ -29,6 +29,21 @@
  */
 #include <Settings/Settings.h>
 
+#if !defined(_WIN32) && !defined(__ANDROID__) && !defined(ANDROID)
+/*
+ * Do not include <SDL.h> for Windows or Android builds.
+ * Most other platforms tend to include it by default, though.
+ *
+ * Just a few dependencies to SDL remain in the code:
+ *     1.  SDL_SetGammaRamp(), in CorrectGamma()
+ *     2.  SDL_SetGammaRamp(), in grGetGammaTableExt()
+ *     3.  SDL_Surface* m_pScreen = SDL_SetVideoMode(...), to create context
+ * Context creation can be done fine without SDL, and eventually it will be
+ * nice to remove it.  However, Mac & modern Linux tends to come with SDL.
+ */
+#include <SDL.h>
+#endif
+
 struct ResolutionInfo
 {
     unsigned int dwW, dwH, dwF;
