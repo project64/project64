@@ -62,7 +62,7 @@ enum
     Set_ghq_cache_save, Set_ghq_cache_size, Set_ghq_hirs_let_texartists_fly,
     Set_ghq_hirs_dump,
 
-#ifdef _WIN32
+#ifndef ANDROID
     Set_Resolution, Set_wrpResolution,
 #endif
 
