@@ -699,7 +699,6 @@ int                  nAuxBuffers)
     depth_texture = free_texture++;
 
 #ifdef _WIN32
-
     PIXELFORMATDESCRIPTOR pfd;
     memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
     pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
@@ -712,6 +711,8 @@ int                  nAuxBuffers)
     pfd.cAuxBuffers = 1;
 
     int pfm;
+#else
+    fputs("ERROR:  No GLX yet to start GL on [Free]BSD, Linux etc.\n", stderr);
 #endif // _WIN32
 
     WriteTrace(TraceGlitch, TraceDebug, "hWnd: %d, screen_resolution: %d, refresh_rate: %d, color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", hWnd, screen_resolution&~0x80000000, refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
