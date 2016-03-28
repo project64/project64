@@ -861,11 +861,7 @@ int InitGfx()
     }
     //*/
 
-/*
- * 2016.03.27 cxd4 -- to do:  #ifdef _WIN32 or #ifndef _ANDROID?
- * Can't tell which one is correct here, but I think the latter.
- */
-#ifdef _WIN32
+#ifndef ANDROID
     uint32_t res_data = g_settings->res_data;
     if (ev_fullscreen)
     {
@@ -886,7 +882,11 @@ int InitGfx()
     gfx_context = grSstWinOpen(gfx.hWnd, res_data, GR_REFRESH_60Hz, GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1);
     if (!gfx_context)
     {
+#ifdef _WIN32
         MessageBox(gfx.hWnd, "Error setting display mode", "Error", MB_OK | MB_ICONEXCLAMATION);
+#else
+        fprintf(stderr, "Error setting display mode\n");
+#endif
         grGlideShutdown();
         return FALSE;
     }
@@ -1437,10 +1437,10 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
         ZLUT_init();
 
     grConfigWrapperExt(
-#ifdef _WIN32
-        g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
-#else
+#ifdef ANDROID
         g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
+#else
+        g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
 #endif
     );
 
