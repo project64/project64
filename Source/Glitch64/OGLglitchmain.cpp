@@ -29,21 +29,6 @@
  */
 #include <Settings/Settings.h>
 
-#if !defined(_WIN32) && !defined(__ANDROID__) && !defined(ANDROID)
-/*
- * Do not include <SDL.h> for Windows or Android builds.
- * Most other platforms tend to include it by default, though.
- *
- * Just a few dependencies to SDL remain in the code:
- *     1.  SDL_SetGammaRamp(), in CorrectGamma()
- *     2.  SDL_SetGammaRamp(), in grGetGammaTableExt()
- *     3.  SDL_Surface* m_pScreen = SDL_SetVideoMode(...), to create context
- * Context creation can be done fine without SDL, and eventually it will be
- * nice to remove it.  However, Mac & modern Linux tends to come with SDL.
- */
-#include <SDL.h>
-#endif
-
 struct ResolutionInfo
 {
     unsigned int dwW, dwH, dwF;
@@ -522,9 +507,6 @@ struct texbuf_t {
 static texbuf_t texbufs[NB_TEXBUFS];
 static int texbuf_i;
 
-#ifndef _WIN32
-static SDL_Surface *m_pScreen;
-#endif // _WIN32
 unsigned short frameBuffer[2048 * 2048];
 unsigned short depthBuffer[2048 * 2048];
 
@@ -1294,7 +1276,7 @@ grSstWinClose(GrContext_t context)
 #else
     //SDL_QuitSubSystem(SDL_INIT_VIDEO);
     //sleep(2);
-    m_pScreen = NULL;
+    //m_pScreen = NULL;
 #endif
     return FXTRUE;
 }
@@ -2815,7 +2797,9 @@ static void CorrectGamma(const FxU16 aGammaRamp[3][256])
 {
     int res;
 
-    res = SDL_SetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]);
+ /* res = SDL_SetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]); */
+    res = -1;
+    fputs("ERROR:  Replacement for SDL_SetGammaRamp unimplemented.\n", stderr);
     WriteTrace(TraceGlitch, TraceDebug, "SDL_SetGammaRamp returned %d\r\n", res);
 }
 #endif
@@ -2850,7 +2834,8 @@ grGetGammaTableExt(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
     {
         ReleaseDC(NULL, hdc);
 #else
-    if (SDL_GetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]) != -1)
+    fputs("ERROR:  Replacement for SDL_GetGammaRamp unimplemented.\n", stderr);
+ /* if (SDL_GetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]) != -1) */
     {
 #endif
         for (int i = 0; i < 256; i++)
