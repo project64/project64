@@ -507,9 +507,6 @@ struct texbuf_t {
 static texbuf_t texbufs[NB_TEXBUFS];
 static int texbuf_i;
 
-#ifndef _WIN32
-static SDL_Surface *m_pScreen;
-#endif // _WIN32
 unsigned short frameBuffer[2048 * 2048];
 unsigned short depthBuffer[2048 * 2048];
 
@@ -702,7 +699,6 @@ int                  nAuxBuffers)
     depth_texture = free_texture++;
 
 #ifdef _WIN32
-
     PIXELFORMATDESCRIPTOR pfd;
     memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
     pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
@@ -715,6 +711,8 @@ int                  nAuxBuffers)
     pfd.cAuxBuffers = 1;
 
     int pfm;
+#else
+    fputs("ERROR:  No GLX yet to start GL on [Free]BSD, Linux etc.\n", stderr);
 #endif // _WIN32
 
     WriteTrace(TraceGlitch, TraceDebug, "hWnd: %d, screen_resolution: %d, refresh_rate: %d, color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", hWnd, screen_resolution&~0x80000000, refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
@@ -1126,7 +1124,7 @@ int                  nAuxBuffers)
         glCompressedTexImage2DARB = (PFNGLCOMPRESSEDTEXIMAGE2DPROC)dummy_glCompressedTexImage2D;
 #endif
 
-#ifdef _WIN32
+#ifndef ANDROID
     glViewport(0, viewport_offset, g_width, g_height);
     viewport_width = g_width;
     viewport_height = g_height;
@@ -1279,7 +1277,7 @@ grSstWinClose(GrContext_t context)
 #else
     //SDL_QuitSubSystem(SDL_INIT_VIDEO);
     //sleep(2);
-    m_pScreen = NULL;
+    //m_pScreen = NULL;
 #endif
     return FXTRUE;
 }
@@ -2800,7 +2798,9 @@ static void CorrectGamma(const FxU16 aGammaRamp[3][256])
 {
     int res;
 
-    res = SDL_SetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]);
+ /* res = SDL_SetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]); */
+    res = -1;
+    fputs("ERROR:  Replacement for SDL_SetGammaRamp unimplemented.\n", stderr);
     WriteTrace(TraceGlitch, TraceDebug, "SDL_SetGammaRamp returned %d\r\n", res);
 }
 #endif
@@ -2835,7 +2835,8 @@ grGetGammaTableExt(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
     {
         ReleaseDC(NULL, hdc);
 #else
-    if (SDL_GetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]) != -1)
+    fputs("ERROR:  Replacement for SDL_GetGammaRamp unimplemented.\n", stderr);
+ /* if (SDL_GetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]) != -1) */
     {
 #endif
         for (int i = 0; i < 256; i++)
