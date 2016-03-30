@@ -3380,6 +3380,11 @@ Plugin Note=[Glide64] errors:various
 RDRAM Size=8
 Save Type=16kbit Eeprom
 
+[27C985A8-ED7CE5C6-C:0]
+Good Name=Mega Man 64 (Proto)
+Internal Name=Megaman 64
+Status=Compatible
+
 [0EC158F5-FB3E6896-C:45]
 Good Name=Mega Man 64 (U)
 Internal Name=Mega Man 64
