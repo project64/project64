@@ -6,17 +6,12 @@ mkdir -p $obj
 FLAGS_x86="\
  -I$src/.. \
  -I$src/../3rdParty \
- -I$src/../3rdParty/wx/include \
- -I$src/../3rdParty/wx/lib/vc_lib/msw \
  -I$src/../Glitch64/inc \
- -I$src/../3rdParty/sdl/include \
  -S \
  -fPIC \
  -masm=intel \
  -march=native \
  -Os"
-# -I$src/../3rdParty/wx/include/msvc \
-# -I$src/../3rdParty/wx/include/wx \
 
 C_FLAGS=$FLAGS_x86
 
