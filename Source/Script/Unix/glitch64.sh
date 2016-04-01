@@ -7,7 +7,6 @@ FLAGS_x86="\
  -S \
  -fPIC \
  -I$src/inc \
- -I/usr/include/SDL \
  -I$src/.. \
  -masm=intel \
  -march=native \
