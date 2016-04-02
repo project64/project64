@@ -859,8 +859,8 @@ void COptionsSheet::UpdateTextureSettings(void)
         {
             m_pgTextureEnhancement = new CConfigTextureEnhancement;
             m_hTextureEnhancement = m_pgTextureEnhancement->Create();
+            AddPage(m_hTextureEnhancement);
         }
-        AddPage(m_hTextureEnhancement);
     }
     else if (m_hTextureEnhancement != NULL)
     {
