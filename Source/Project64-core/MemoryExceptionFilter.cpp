@@ -26,7 +26,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
     size_t * Reg;
 #endif
 
-    if (dwExptCode != EXCEPTION_ACCESS_VIOLATION)
+    if (dwExptCode != EXCEPTION_ACCESS_VIOLATION || g_MMU == NULL)
     {
         if (bHaveDebugger())
         {
