@@ -232,7 +232,16 @@ void CSettingTypeApplication::Save ( int /*Index*/, bool Value )
 
 void CSettingTypeApplication::Save ( int /*Index*/, uint32_t Value )
 {
-    m_SettingsIniFile->SaveNumber(SectionName(),m_KeyNameIdex.c_str(),Value);
+    if (m_DefaultSetting != Default_None &&
+        ((m_DefaultSetting == Default_Constant && m_DefaultValue == Value) ||
+        (m_DefaultSetting != Default_Constant && g_Settings->LoadDword(m_DefaultSetting) == Value)))
+    {
+        m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), NULL);
+    }
+    else
+    {
+        m_SettingsIniFile->SaveNumber(SectionName(), m_KeyNameIdex.c_str(), Value);
+    }
 }
 
 void CSettingTypeApplication::Save ( int /*Index*/, const stdstr & Value )
