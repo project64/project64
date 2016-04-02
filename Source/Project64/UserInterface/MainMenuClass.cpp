@@ -179,9 +179,12 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         g_BaseSystem->StartEmulation(true);
         break;
     case ID_FILE_ENDEMULATION:
-        WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ENDEMULATION");
-        CN64System::CloseSystem();
-        m_Gui->SaveWindowLoc();
+        {
+            CGuard Guard(m_CS);
+            WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ENDEMULATION");
+            CN64System::CloseSystem();
+            m_Gui->SaveWindowLoc();
+        }
         break;
     case ID_FILE_ROMDIRECTORY:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ROMDIRECTORY 1");
