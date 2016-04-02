@@ -612,11 +612,11 @@ public:
         CSettings oldsettings = *g_settings;
 
         g_settings->filtering = m_cmbFiltering.GetItemData(m_cmbFiltering.GetCurSel());
-        g_settings->aspectmode = m_cmbAspect.GetItemData(m_cmbFiltering.GetCurSel());
-        g_settings->swapmode = m_cmbBufferSwap.GetItemData(m_cmbFiltering.GetCurSel());
+        g_settings->aspectmode = m_cmbAspect.GetItemData(m_cmbAspect.GetCurSel());
+        g_settings->swapmode = m_cmbBufferSwap.GetItemData(m_cmbBufferSwap.GetCurSel());
         g_settings->fog = m_cbxFog.GetCheck() == BST_CHECKED;
         g_settings->buff_clear = m_cbxBuffer.GetCheck() == BST_CHECKED;
-        g_settings->lodmode = m_cmbLOD.GetItemData(m_cmbFiltering.GetCurSel());
+        g_settings->lodmode = m_cmbLOD.GetItemData(m_cmbLOD.GetCurSel());
 
         if (m_cbxFBEnable.GetCheck() == BST_CHECKED) g_settings->frame_buffer |= fb_emulation;
         else g_settings->frame_buffer &= ~fb_emulation;
