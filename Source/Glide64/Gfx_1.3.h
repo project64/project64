@@ -312,7 +312,7 @@ extern "C" {
 
     void ReadSettings();
     void ReadSpecialSettings(const char * name);
-    void WriteSettings(bool saveEmulationSettings = false);
+    void WriteSettings(void);
 
     /******************************************************************
     Function: CaptureScreen
