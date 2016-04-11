@@ -13,41 +13,29 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Common/path.h>
-#include <Windows.h>
 
 CFlashram::CFlashram(bool ReadOnly) :
 m_FlashRamPointer(NULL),
 m_FlashFlag(FLASHRAM_MODE_NOPES),
 m_FlashStatus(0),
 m_FlashRAM_Offset(0),
-m_ReadOnly(ReadOnly),
-m_hFile(NULL)
+m_ReadOnly(ReadOnly)
 {
 }
 
 CFlashram::~CFlashram()
 {
-    if (m_hFile)
-    {
-        CloseHandle(m_hFile);
-        m_hFile = NULL;
-    }
 }
 
 void CFlashram::DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len)
 {
     uint8_t FlipBuffer[0x10000];
-    uint32_t count;
-
     switch (m_FlashFlag)
     {
     case FLASHRAM_MODE_READ:
-        if (m_hFile == NULL)
+        if (!m_File.IsOpen() && !LoadFlashram())
         {
-            if (!LoadFlashram())
-            {
-                return;
-            }
+            return;
         }
         if (len > 0x10000)
         {
@@ -67,21 +55,17 @@ void CFlashram::DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len
         }
         memset(FlipBuffer, 0, sizeof(FlipBuffer));
         StartOffset = StartOffset << 1;
-        SetFilePointer(m_hFile, StartOffset, NULL, FILE_BEGIN);
-        DWORD dwRead;
-        ReadFile(m_hFile, FlipBuffer, len, &dwRead, NULL);
-        for (count = dwRead; (int32_t)count < len; count++)
+        m_File.Seek(StartOffset, CFile::begin);
+        m_File.Read(FlipBuffer, len);
+
+        for (int32_t count = m_File.GetLength(); count < len; count++)
         {
             FlipBuffer[count] = 0xFF;
         }
 
-        for (count = 0; (int32_t)count < len; count += 4)
+        for (int32_t count = 0; count < len; count += 4)
         {
-            register uint32_t eax;
-
-            eax = *(uint32_t *)&FlipBuffer[count];
-            //	eax = swap32by8(eax); // ; bswap eax
-            *(uint32_t *)(dest + count) = eax;
+            *(uint32_t *)(dest + count) = *(uint32_t *)&FlipBuffer[count];
         }
         break;
     case FLASHRAM_MODE_STATUS:
@@ -135,9 +119,7 @@ uint32_t CFlashram::ReadFromFlashStatus(uint32_t PAddr)
 
 bool CFlashram::LoadFlashram()
 {
-    CPath FileName;
-
-    FileName.SetDriveDirectory(g_Settings->LoadStringVal(Directory_NativeSave).c_str());
+    CPath FileName(g_Settings->LoadStringVal(Directory_NativeSave).c_str());
     FileName.SetName(g_Settings->LoadStringVal(Game_GameName).c_str());
     FileName.SetExtension("fla");
 
@@ -146,22 +128,23 @@ bool CFlashram::LoadFlashram()
         FileName.DirectoryCreate();
     }
 
-    m_hFile = CreateFile(FileName, m_ReadOnly ? GENERIC_READ : GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS,
-        FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
-    if (m_hFile == INVALID_HANDLE_VALUE)
+    if (!m_File.Open(FileName, (m_ReadOnly ? CFileBase::modeRead : CFileBase::modeReadWrite) | CFileBase::modeNoTruncate | CFileBase::modeCreate))
     {
-        WriteTrace(TraceN64System, TraceError, "Failed to open (%s), ReadOnly = %d, LastError = %X", (LPCTSTR)FileName, m_ReadOnly, GetLastError());
+#ifdef _WIN32
+        WriteTrace(TraceN64System, TraceError, "Failed to open (%s), ReadOnly = %d, LastError = %X", (const char *)FileName, m_ReadOnly, GetLastError());
+#else
+        WriteTrace(TraceN64System, TraceError, "Failed to open (%s), ReadOnly = %d", (const char *)FileName, m_ReadOnly);
+#endif
         g_Notify->DisplayError(GS(MSG_FAIL_OPEN_FLASH));
         return false;
     }
-    SetFilePointer(m_hFile, 0, NULL, FILE_BEGIN);
+    m_File.SeekToBegin();
     return true;
 }
 
 void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
 {
     uint8_t EmptyBlock[128];
-    DWORD dwWritten;
 
     switch (FlashRAM_Command & 0xFF000000)
     {
@@ -173,21 +156,18 @@ void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
         case FLASHRAM_MODE_STATUS: break;
         case FLASHRAM_MODE_ERASE:
             memset(EmptyBlock, 0xFF, sizeof(EmptyBlock));
-            if (m_hFile == NULL) {
-                if (!LoadFlashram())
-                {
-                    return;
-                }
+            if (!m_File.IsOpen() && !LoadFlashram())
+            {
+                return;
             }
-            SetFilePointer(m_hFile, m_FlashRAM_Offset, NULL, FILE_BEGIN);
-            WriteFile(m_hFile, EmptyBlock, 128, &dwWritten, NULL);
+            m_File.Seek(m_FlashRAM_Offset, CFile::begin);
+            m_File.Write(EmptyBlock, 128);
+            m_File.Flush();
             break;
         case FLASHRAM_MODE_WRITE:
-            if (m_hFile == NULL) {
-                if (!LoadFlashram())
-                {
-                    return;
-                }
+            if (!m_File.IsOpen() && !LoadFlashram())
+            {
+                return;
             }
             {
                 uint8_t FlipBuffer[128];
@@ -197,15 +177,12 @@ void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
                 memset(FlipBuffer, 0, sizeof(FlipBuffer));
                 for (edx = 0; edx < 128; edx += 4)
                 {
-                    register uint32_t eax;
-
-                    eax = *(unsigned __int32 *)&FlashRamPointer[edx];
-                    //	eax = swap32by8(eax); // ; bswap eax
-                    *(unsigned __int32 *)(FlipBuffer + edx) = eax;
+                    *(unsigned __int32 *)(FlipBuffer + edx) = *(unsigned __int32 *)&FlashRamPointer[edx];
                 }
 
-                SetFilePointer(m_hFile, m_FlashRAM_Offset, NULL, FILE_BEGIN);
-                WriteFile(m_hFile, FlipBuffer, 128, &dwWritten, NULL);
+                m_File.Seek(m_FlashRAM_Offset, CFile::begin);
+                m_File.Write(FlipBuffer, 128);
+                m_File.Flush();
             }
             break;
         default:
