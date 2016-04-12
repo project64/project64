@@ -5,6 +5,7 @@
 *.suo
 *.user
 *.opendb
+*.VC.db
 
 # compiler-generated sources (MSVC, GCC)
 *.asm
