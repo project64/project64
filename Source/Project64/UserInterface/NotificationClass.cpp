@@ -8,9 +8,9 @@ CNotificationImp & Notify(void)
 }
 
 CNotificationImp::CNotificationImp() :
-m_hWnd(NULL),
-m_gfxPlugin(NULL),
-m_NextMsg(0)
+    m_hWnd(NULL),
+    m_gfxPlugin(NULL),
+    m_NextMsg(0)
 {
     _tzset();
 }
@@ -250,18 +250,18 @@ void CNotificationImp::BreakPoint(const char * FileName, int LineNumber)
         }
         else
         {
-            if (g_BaseSystem) 
-			{
-				g_BaseSystem->CloseCpu();
-			}
+            if (g_BaseSystem)
+            {
+                g_BaseSystem->CloseCpu();
+            }
         }
     }
     else
     {
         DisplayError("Fatal Error: Stopping emulation");
-		if (g_BaseSystem) 
-		{
-			g_BaseSystem->CloseCpu();
-		}
+        if (g_BaseSystem)
+        {
+            g_BaseSystem->CloseCpu();
+        }
     }
 }
