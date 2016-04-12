@@ -175,10 +175,7 @@ void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
                 uint8_t * FlashRamPointer = m_FlashRamPointer;
 
                 memset(FlipBuffer, 0, sizeof(FlipBuffer));
-                for (edx = 0; edx < 128; edx += 4)
-                {
-                    *(unsigned __int32 *)(FlipBuffer + edx) = *(unsigned __int32 *)&FlashRamPointer[edx];
-                }
+                memcpy(&FlipBuffer[0], FlashRamPointer, 128);
 
                 m_File.Seek(m_FlashRAM_Offset, CFile::begin);
                 m_File.Write(FlipBuffer, 128);
