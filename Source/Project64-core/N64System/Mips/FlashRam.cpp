@@ -29,7 +29,8 @@ CFlashram::~CFlashram()
 
 void CFlashram::DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len)
 {
-    uint8_t FlipBuffer[1 << 16];
+    uint8_t FlipBuffer[0x10000];
+
     switch (m_FlashFlag)
     {
     case FLASHRAM_MODE_READ:
