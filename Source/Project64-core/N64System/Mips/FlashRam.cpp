@@ -175,10 +175,10 @@ void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
                 uint8_t * FlashRamPointer = m_FlashRamPointer;
 
                 memset(FlipBuffer, 0, sizeof(FlipBuffer));
-                for (edx = 0; edx < 128; edx += 4)
+                for (edx = 0; edx < 128; edx += 1)
                 {
-                    *(unsigned __int32 *)(FlipBuffer + edx) = *(unsigned __int32 *)&FlashRamPointer[edx];
-                }
+                    FlipBuffer[edx] = FlashRamPointer[edx ^ 0];
+                } /* To do:  Have controllable XOR mask to correct flash RAM. */
 
                 m_File.Seek(m_FlashRAM_Offset, CFile::begin);
                 m_File.Write(FlipBuffer, 128);
