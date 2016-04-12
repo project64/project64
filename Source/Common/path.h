@@ -20,7 +20,12 @@ public:
     enum DIR_MODULE_DIRECTORY { MODULE_DIRECTORY = 2 };
     enum DIR_MODULE_FILE { MODULE_FILE = 3 };
 
-    enum { _A_ALLFILES = 0xFFFF };    /* Search Include all files */
+    enum 
+    {
+        FIND_ATTRIBUTE_ALLFILES = 0xFFFF,  // Search Include all files
+        FIND_ATTRIBUTE_FILES    = 0x0000,  // File can be read or written to without restriction
+        FIND_ATTRIBUTE_SUBDIR   = 0x0010,  // Subdirectories
+    };    
 
     //Attributes
 private:

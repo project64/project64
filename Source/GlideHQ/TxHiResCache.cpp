@@ -188,8 +188,8 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
     }
 
     /* recursive read into sub-directory */
-    TextureDir.SetNameExtension("*.*");
-    if (TextureDir.FindFirst(_A_SUBDIR))
+    TextureDir.SetNameExtension("*");
+    if (TextureDir.FindFirst(CPath::FIND_ATTRIBUTE_SUBDIR))
     {
         do
         {

@@ -51,8 +51,8 @@ bool CPluginList::LoadList()
 
 void CPluginList::AddPluginFromDir(CPath Dir)
 {
-    Dir.SetNameExtension("*.*");
-    if (Dir.FindFirst(_A_SUBDIR))
+    Dir.SetNameExtension("*");
+    if (Dir.FindFirst(CPath::FIND_ATTRIBUTE_SUBDIR))
     {
         do
         {

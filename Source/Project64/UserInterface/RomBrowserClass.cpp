@@ -510,7 +510,7 @@ bool CRomBrowser::GetRomFileNames(strlist & FileList, const CPath & BaseDirector
     CPath SearchPath(BaseDirectory, "*.*");
     SearchPath.AppendDirectory(Directory.c_str());
 
-    if (!SearchPath.FindFirst(CPath::_A_ALLFILES))
+    if (!SearchPath.FindFirst(CPath::FIND_ATTRIBUTE_ALLFILES))
     {
         return false;
     }
@@ -578,7 +578,7 @@ void CRomBrowser::FillRomList(strlist & FileList, const CPath & BaseDirectory, c
     SearchPath.AppendDirectory(Directory.c_str());
 
     WriteTrace(TraceUserInterface, TraceDebug, "1 %s", (const char *)SearchPath);
-    if (!SearchPath.FindFirst(CPath::_A_ALLFILES))
+    if (!SearchPath.FindFirst(CPath::FIND_ATTRIBUTE_ALLFILES))
     {
         return;
     }

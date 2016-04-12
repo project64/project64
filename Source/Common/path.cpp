@@ -852,15 +852,15 @@ bool CPath::MoveTo(const char * lpcszTargetFile, bool bOverwrite)
 //-------------------------------------------------------------
 bool CPath::AttributesMatch(uint32_t dwTargetAttributes, uint32_t dwFileAttributes)
 {
-    if (dwTargetAttributes == _A_ALLFILES)
+    if (dwTargetAttributes == FIND_ATTRIBUTE_ALLFILES)
     {
         return true;
     }
-    if (dwTargetAttributes == _A_NORMAL)
+    if (dwTargetAttributes == FIND_ATTRIBUTE_FILES)
     {
-        return ((_A_SUBDIR & dwFileAttributes) == 0);
+        return ((FIND_ATTRIBUTE_SUBDIR & dwFileAttributes) == 0);
     }
-    return (((dwTargetAttributes & dwFileAttributes) != 0) && ((_A_SUBDIR & dwTargetAttributes) == (_A_SUBDIR & dwFileAttributes)));
+    return (((dwTargetAttributes & dwFileAttributes) != 0) && ((FIND_ATTRIBUTE_SUBDIR & dwTargetAttributes) == (FIND_ATTRIBUTE_SUBDIR & dwFileAttributes)));
 }
 
 //-------------------------------------------------------------
