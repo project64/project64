@@ -168,13 +168,13 @@ VIRTUAL_KEY CMenuShortCutKey::m_VirtualKeyList[] = {
 };
 
 CMenuShortCutKey::CMenuShortCutKey(WORD key, bool bCtrl, bool bAlt, bool bShift, ACCESS_MODE AccessMode, bool bUserAdded, bool bInactive) :
-m_key(key),
-m_bCtrl(bCtrl),
-m_bAlt(bAlt),
-m_bShift(bShift),
-m_AccessMode(AccessMode),
-m_bUserAdded(bUserAdded),
-m_bInactive(bInactive)
+    m_key(key),
+    m_bCtrl(bCtrl),
+    m_bAlt(bAlt),
+    m_bShift(bShift),
+    m_AccessMode(AccessMode),
+    m_bUserAdded(bUserAdded),
+    m_bInactive(bInactive)
 {
     m_ShortCutName = "";
     for (int i = 0, n = sizeof(m_VirtualKeyList) / sizeof(m_VirtualKeyList[0]); i < n; i++)
