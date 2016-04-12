@@ -854,7 +854,7 @@ int CALLBACK CCheatsUI::CheatsCodeQuantProc(HWND hDlg, uint32_t uMsg, uint32_t w
                 TCHAR szTmp[10], szTmp2[10];
                 uint32_t Value;
                 GetDlgItemText(hDlg, IDC_VALUE, szTmp, sizeof(szTmp));
-                Value = szTmp[0] == '$' ? strtoul(&szTmp[1], 0, 16) : std::strtoul(szTmp, 0, 16);
+                Value = szTmp[0] == '$' ? strtoul(&szTmp[1], 0, 16) : strtoul(&szTmp[0], 0, 16);
                 if (Value > Stop)  { Value = Stop; }
                 if (Value < Start) { Value = Start; }
                 sprintf(szTmp2, "$%X", Value);
@@ -887,7 +887,7 @@ int CALLBACK CCheatsUI::CheatsCodeQuantProc(HWND hDlg, uint32_t uMsg, uint32_t w
             uint32_t Value;
 
             GetDlgItemText(hDlg, IDC_VALUE, szTmp, sizeof(szTmp));
-            Value = szTmp[0] == '$' ? std::strtol(&szTmp[1], 0, 16) : std::strtol(szTmp, 0, 16);
+            Value = szTmp[0] == '$' ? strtol(&szTmp[1], 0, 16) : strtol(&szTmp[0], 0, 16);
             if (Value > Stop) { Value = Stop; }
             if (Value < Start) { Value = Start; }
             sprintf(CheatExten, "$%X", Value);
