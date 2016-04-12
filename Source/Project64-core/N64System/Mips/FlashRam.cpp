@@ -29,7 +29,7 @@ CFlashram::~CFlashram()
 
 void CFlashram::DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len)
 {
-    uint8_t FlipBuffer[0x10000];
+    uint8_t FlipBuffer[1 << 16];
     switch (m_FlashFlag)
     {
     case FLASHRAM_MODE_READ:
@@ -37,13 +37,13 @@ void CFlashram::DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len
         {
             return;
         }
-        if (len > 0x10000)
+        if (len > sizeof(FlipBuffer))
         {
             if (bHaveDebugger())
             {
                 g_Notify->DisplayError(stdstr_f("%s: DmaFromFlashram FlipBuffer to small (len: %d)", __FUNCTION__, len).c_str());
             }
-            len = 0x10000;
+            len = sizeof(FlipBuffer);
         }
         if ((len & 3) != 0)
         {
@@ -76,7 +76,7 @@ void CFlashram::DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len
                 g_Notify->DisplayError(stdstr_f("%s: Reading m_FlashStatus not being handled correctly\nStart: %X len: %X", __FUNCTION__, StartOffset, len).c_str());
             }
         }
-        *((uint32_t *)(dest)) = (uint32_t)((m_FlashStatus >> 32) & 0xFFFFFFFF);
+        *((uint32_t *)(dest)+0) = (uint32_t)((m_FlashStatus >> 32) & 0xFFFFFFFF);
         *((uint32_t *)(dest)+1) = (uint32_t)(m_FlashStatus & 0xFFFFFFFF);
         break;
     default:
@@ -144,7 +144,7 @@ bool CFlashram::LoadFlashram()
 
 void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
 {
-    uint8_t EmptyBlock[128];
+    uint8_t EmptyBlock[16 * sizeof(int64_t)];
 
     switch (FlashRAM_Command & 0xFF000000)
     {
@@ -161,7 +161,7 @@ void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
                 return;
             }
             m_File.Seek(m_FlashRAM_Offset, CFile::begin);
-            m_File.Write(EmptyBlock, 128);
+            m_File.Write(EmptyBlock, sizeof(EmptyBlock));
             m_File.Flush();
             break;
         case FLASHRAM_MODE_WRITE:
@@ -170,15 +170,15 @@ void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
                 return;
             }
             {
-                uint8_t FlipBuffer[128];
+                uint8_t FlipBuffer[sizeof(EmptyBlock)];
                 register size_t edx;
                 uint8_t * FlashRamPointer = m_FlashRamPointer;
 
                 memset(FlipBuffer, 0, sizeof(FlipBuffer));
-                memcpy(&FlipBuffer[0], FlashRamPointer, 128);
+                memcpy(&FlipBuffer[0], FlashRamPointer, sizeof(EmptyBlock));
 
                 m_File.Seek(m_FlashRAM_Offset, CFile::begin);
-                m_File.Write(FlipBuffer, 128);
+                m_File.Write(FlipBuffer, sizeof(EmptyBlock));
                 m_File.Flush();
             }
             break;
@@ -197,7 +197,7 @@ void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
         m_FlashStatus = 0x11118004F0000000;
         break;
     case 0x4B000000:
-        m_FlashRAM_Offset = (FlashRAM_Command & 0xffff) * 128;
+        m_FlashRAM_Offset = (FlashRAM_Command & 0xFFFF) * sizeof(EmptyBlock);
         break;
     case 0x78000000:
         m_FlashFlag = FLASHRAM_MODE_ERASE;
@@ -207,7 +207,7 @@ void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
         m_FlashFlag = FLASHRAM_MODE_WRITE; //????
         break;
     case 0xA5000000:
-        m_FlashRAM_Offset = (FlashRAM_Command & 0xffff) * 128;
+        m_FlashRAM_Offset = (FlashRAM_Command & 0xFFFF) * sizeof(EmptyBlock);
         m_FlashStatus = 0x1111800400C2001E;
         break;
     default:
