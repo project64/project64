@@ -5,10 +5,6 @@
     <PlatformToolset Condition="'$(DefaultPlatformToolset)'!=''">$(DefaultPlatformToolset)_xp</PlatformToolset>
   </PropertyGroup>
 
-  <ImportGroup Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-
   <!-- All platforms settings -->
   <PropertyGroup>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
@@ -80,7 +76,7 @@
       <ExpandAttributedSource>false</ExpandAttributedSource>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <ProgramDataBaseFileName>$(IntDir)vc$(VisualStudioVersion).pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
       <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
       <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
       <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
@@ -222,5 +218,11 @@
     </Link>
   </ItemDefinitionGroup>
   <!-- END x64 -->
+
+	<!--Declare missing targets to supress warnings.-->
+	<Target Name="_ConvertPdbFiles" />
+	<Target Name="_CollectPdbFiles" />
+	<Target Name="_CollectMdbFiles" />
+	<Target Name="_CopyMdbFiles" />
 
 </Project>
