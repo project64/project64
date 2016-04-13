@@ -23,7 +23,7 @@ CGameStatusPage::CGameStatusPage(HWND hParent, const RECT & rcDispay)
     CIniFile RomIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
     strlist Keys;
     RomIniFile.GetKeyList("Rom Status", Keys);
-    stdstr Status = g_Settings->LoadStringVal(Rdb_Status);
+    stdstr Status = UISettingsLoadStringVal(Rdb_Status);
 
     CModifiedComboBoxTxt * ComboBox;
     ComboBox = AddModComboBoxTxt(GetDlgItem(IDC_STATUS_TYPE), Rdb_Status);

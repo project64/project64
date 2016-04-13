@@ -13,7 +13,7 @@
 #include "SettingsPage.h"
 
 COptionsShortCutsPage::COptionsShortCutsPage(HWND hParent, const RECT & rcDispay) :
-m_EnableReset(false)
+    m_EnableReset(false)
 {
     if (!Create(hParent, rcDispay))
     {
@@ -356,7 +356,7 @@ void COptionsShortCutsPage::ShowPage()
 void COptionsShortCutsPage::ApplySettings(bool /*UpdateScreen*/)
 {
     m_ShortCuts.Save();
-    g_Settings->SaveBool(Info_ShortCutsChanged, true);
+    UISettingsSaveBool(Info_ShortCutsChanged, true);
 }
 
 bool COptionsShortCutsPage::EnableReset(void)

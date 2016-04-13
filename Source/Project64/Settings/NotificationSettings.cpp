@@ -20,17 +20,17 @@ CNotificationSettings::~CNotificationSettings()
 {
     if (g_Settings)
     {
-        g_Settings->UnregisterChangeCB(UserInterface_InFullScreen, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->UnregisterChangeCB((SettingID)(FirstUISettings + UserInterface_InFullScreen), this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
     }
 }
 
 void CNotificationSettings::RegisterNotifications()
 {
-    g_Settings->RegisterChangeCB(UserInterface_InFullScreen, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+    g_Settings->RegisterChangeCB((SettingID)(FirstUISettings + UserInterface_InFullScreen), this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
     RefreshSettings();
 }
 
 void CNotificationSettings::RefreshSettings()
 {
-    m_bInFullScreen = g_Settings->LoadBool(UserInterface_InFullScreen);
+    m_bInFullScreen = UISettingsLoadBool(UserInterface_InFullScreen);
 }

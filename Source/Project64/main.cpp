@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <Project64-core/AppInit.h>
 #include "Multilanguage\LanguageSelector.h"
+#include "Settings/UISettings.h"
 
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
@@ -27,7 +28,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         }
         else
         {
-            if (g_Settings->LoadDword(RomBrowser_Enabled))
+            if (UISettingsLoadBool(RomBrowser_Enabled))
             {
                 WriteTrace(TraceUserInterface, TraceDebug, "Show Rom Browser");
                 //Display the rom browser

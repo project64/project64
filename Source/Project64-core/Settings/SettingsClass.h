@@ -103,9 +103,9 @@ public:
 
     //Notification
     void NotifyCallBacks(SettingID Type);
+    void AddHandler(SettingID TypeID, CSettingType * Handler);
 
 private:
-    void AddHandler(SettingID TypeID, CSettingType * Handler);
     void AddHowToHandleSetting(const char * BaseDirectory);
     void UnknownSetting(SettingID Type);
 

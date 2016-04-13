@@ -101,7 +101,8 @@ protected:
             {
                 g_Settings->SaveString(Type, Value);
             }
-            else {
+            else
+            {
                 DWORD dwValue = atoi(Value.c_str());
                 g_Settings->SaveDword(Type, dwValue);
             }
@@ -156,7 +157,8 @@ protected:
             EditBox.SetWindowText(Value.c_str());
             EditBox.SetReset(true);
         }
-        else {
+        else
+        {
             DWORD Value = g_Settings->LoadDefaultDword(Type);
             EditBox.SetWindowText(stdstr_f("%d", Value).c_str());
             EditBox.SetReset(true);
@@ -182,6 +184,11 @@ protected:
         return NULL;
     }
 
+    CModifiedEditBox * AddModTextBox(HWND hWnd, UISettingID Type, bool bString)
+    {
+        return AddModTextBox(hWnd, (SettingID)(FirstUISettings + Type), bString);
+    }
+
     void AddModCheckBox(HWND hWnd, SettingID Type)
     {
         ButtonList::iterator item = m_ButtonList.find(Type);
@@ -196,6 +203,11 @@ protected:
 
             m_ButtonList.insert(ButtonList::value_type(Type, Button));
         }
+    }
+
+    void AddModCheckBox(HWND hWnd, UISettingID Type)
+    {
+        AddModCheckBox(hWnd, (SettingID)(FirstUISettings + Type));
     }
 
     CModifiedComboBox * AddModComboBox(HWND hWnd, SettingID Type)
@@ -232,6 +244,11 @@ protected:
         ComboBox->Attach(hWnd);
         m_ComboBoxTxtList.insert(ComboBoxTxtList::value_type(Type, ComboBox));
         return ComboBox;
+    }
+
+    CModifiedComboBoxTxt * AddModComboBoxTxt(HWND hWnd, UISettingID Type)
+    {
+        return AddModComboBoxTxt(hWnd, (SettingID)(FirstUISettings + Type));
     }
 
     void UpdateCheckBoxes(void)
@@ -280,7 +297,8 @@ protected:
                 TextBox->SetChanged(g_Settings->LoadStringVal(iter->first, SelectedValue));
                 TextBox->SetWindowText(SelectedValue.c_str());
             }
-            else {
+            else
+            {
                 uint32_t SelectedValue;
                 TextBox->SetChanged(g_Settings->LoadDword(iter->first, SelectedValue));
                 TextBox->SetWindowText(stdstr_f("%d", SelectedValue).c_str());

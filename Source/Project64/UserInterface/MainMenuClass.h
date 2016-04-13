@@ -1,4 +1,5 @@
 #pragma once
+#include <Project64/Settings/UISettings.h>
 
 enum MainMenuID
 {
@@ -82,12 +83,14 @@ private:
     static void SettingsChanged(CMainMenu * _this);
 
     typedef std::list<SettingID> SettingList;
+    typedef std::list<UISettingID> UISettingList;
 
     CMainGui   * m_Gui;
 
-    void *       m_AccelTable;
-    bool         m_ResetAccelerators;
-    CShortCuts   m_ShortCuts;
-    SettingList  m_ChangeSettingList;
+    void *        m_AccelTable;
+    bool          m_ResetAccelerators;
+    CShortCuts    m_ShortCuts;
+    SettingList   m_ChangeSettingList;
+    UISettingList m_ChangeUISettingList;
     CriticalSection m_CS;
 };

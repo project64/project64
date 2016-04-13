@@ -13,10 +13,10 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
 
     hMainWindow->SetWindowMenu(this);
 
-    m_ChangeSettingList.push_back(Info_ShortCutsChanged);
+    m_ChangeUISettingList.push_back(Info_ShortCutsChanged);
     m_ChangeSettingList.push_back(GameRunning_LimitFPS);
-    m_ChangeSettingList.push_back(UserInterface_InFullScreen);
-    m_ChangeSettingList.push_back(UserInterface_AlwaysOnTop);
+    m_ChangeUISettingList.push_back(UserInterface_InFullScreen);
+    m_ChangeUISettingList.push_back(UserInterface_AlwaysOnTop);
     m_ChangeSettingList.push_back(UserInterface_ShowCPUPer);
     m_ChangeSettingList.push_back(Logging_GenerateLog);
     m_ChangeSettingList.push_back(Debugger_ProfileCode);
@@ -50,6 +50,10 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     m_ChangeSettingList.push_back(Game_CurrentSaveState);
     m_ChangeSettingList.push_back(Setting_CurrentLanguage);
 
+    for (UISettingList::const_iterator iter = m_ChangeUISettingList.begin(); iter != m_ChangeUISettingList.end(); iter++)
+    {
+        g_Settings->RegisterChangeCB((SettingID)(FirstUISettings + *iter), this, (CSettings::SettingChangedFunc)SettingsChanged);
+    }
     for (SettingList::const_iterator iter = m_ChangeSettingList.begin(); iter != m_ChangeSettingList.end(); iter++)
     {
         g_Settings->RegisterChangeCB(*iter, this, (CSettings::SettingChangedFunc)SettingsChanged);
@@ -58,6 +62,10 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
 
 CMainMenu::~CMainMenu()
 {
+    for (UISettingList::const_iterator iter = m_ChangeUISettingList.begin(); iter != m_ChangeUISettingList.end(); iter++)
+    {
+        g_Settings->UnregisterChangeCB((SettingID)(FirstUISettings + *iter), this, (CSettings::SettingChangedFunc)SettingsChanged);
+    }
     for (SettingList::const_iterator iter = m_ChangeSettingList.begin(); iter != m_ChangeSettingList.end(); iter++)
     {
         g_Settings->UnregisterChangeCB(*iter, this, (CSettings::SettingChangedFunc)SettingsChanged);
@@ -88,7 +96,7 @@ stdstr CMainMenu::ChooseFileToOpen(HWND hParent)
     memset(&FileName, 0, sizeof(FileName));
     memset(&openfilename, 0, sizeof(openfilename));
 
-    strcpy(Directory, g_Settings->LoadStringVal(Directory_Game).c_str());
+    strcpy(Directory, g_Settings->LoadStringVal(RomList_GameDir).c_str());
 
     openfilename.lStructSize = sizeof(openfilename);
     openfilename.hwndOwner = (HWND)hParent;
@@ -140,7 +148,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
                             memset(&FileName, 0, sizeof(FileName));
                             memset(&openfilename, 0, sizeof(openfilename));
 
-                            strcpy(Directory, g_Settings->LoadStringVal(Directory_Game).c_str());
+                            strcpy(Directory, g_Settings->LoadStringVal(RomList_GameDir).c_str());
                             openfilename.lStructSize = sizeof(openfilename);
                             openfilename.hwndOwner = (HWND)hWnd;
                             openfilename.lpstrFilter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
@@ -234,7 +242,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             memset(&SaveFile, 0, sizeof(SaveFile));
             memset(&openfilename, 0, sizeof(openfilename));
 
-            g_Settings->LoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
+            UISettingsLoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
 
             openfilename.lStructSize = sizeof(openfilename);
             openfilename.hwndOwner = (HWND)hWnd;
@@ -261,7 +269,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 
                 char SaveDir[MAX_PATH];
                 _makepath(SaveDir, drive, dir, NULL, NULL);
-                g_Settings->SaveString(Directory_LastSave, SaveDir);
+                UISettingsSaveString(Directory_LastSave, SaveDir);
                 g_BaseSystem->ExternalEvent(SysEvent_SaveMachineState);
             }
             g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SaveGame);
@@ -276,7 +284,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             memset(&SaveFile, 0, sizeof(SaveFile));
             memset(&openfilename, 0, sizeof(openfilename));
 
-            g_Settings->LoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
+            UISettingsLoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
 
             openfilename.lStructSize = sizeof(openfilename);
             openfilename.hwndOwner = (HWND)hWnd;
@@ -293,7 +301,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
                 char SaveDir[MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
                 _splitpath(SaveFile, drive, dir, fname, ext);
                 _makepath(SaveDir, drive, dir, NULL, NULL);
-                g_Settings->SaveString(Directory_LastSave, SaveDir);
+                UISettingsSaveString(Directory_LastSave, SaveDir);
                 g_System->LoadState();
             }
             g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_LoadGame);
@@ -335,7 +343,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         g_BaseSystem->ExternalEvent(SysEvent_ChangingFullScreen);
         break;
     case ID_OPTIONS_FULLSCREEN2:
-        if (g_Settings->LoadBool(UserInterface_InFullScreen))
+        if (UISettingsLoadBool(UserInterface_InFullScreen))
         {
             WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN a");
             m_Gui->MakeWindowOnTop(false);
@@ -345,8 +353,8 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             WriteTrace(TraceGFXPlugin, TraceDebug, "ChangeWindow: Done");
             ShowCursor(true);
             m_Gui->ShowStatusBar(true);
-            m_Gui->MakeWindowOnTop(g_Settings->LoadBool(UserInterface_AlwaysOnTop));
-            g_Settings->SaveBool(UserInterface_InFullScreen, (DWORD)false);
+            m_Gui->MakeWindowOnTop(UISettingsLoadBool(UserInterface_AlwaysOnTop));
+            UISettingsSaveBool(UserInterface_InFullScreen, (DWORD)false);
         }
         else
         {
@@ -373,20 +381,20 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN b 5");
             Notify().SetGfxPlugin(g_Plugins->Gfx());
             WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN b 3");
-            g_Settings->SaveBool(UserInterface_InFullScreen, true);
+            UISettingsSaveBool(UserInterface_InFullScreen, true);
             WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN b 6");
         }
         WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN 1");
         break;
     case ID_OPTIONS_ALWAYSONTOP:
-        if (g_Settings->LoadDword(UserInterface_AlwaysOnTop))
+        if (UISettingsLoadBool(UserInterface_AlwaysOnTop))
         {
-            g_Settings->SaveBool(UserInterface_AlwaysOnTop, false);
+            UISettingsSaveBool(UserInterface_AlwaysOnTop, false);
             m_Gui->MakeWindowOnTop(false);
         }
         else
         {
-            g_Settings->SaveBool(UserInterface_AlwaysOnTop, true);
+            UISettingsSaveBool(UserInterface_AlwaysOnTop, true);
             m_Gui->MakeWindowOnTop(g_Settings->LoadBool(GameRunning_CPU_Running));
         }
         break;
@@ -517,7 +525,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         if (MenuID >= ID_RECENT_ROM_START && MenuID < ID_RECENT_ROM_END)
         {
             stdstr FileName;
-            if (g_Settings->LoadStringIndex(File_RecentGameFileIndex, MenuID - ID_RECENT_ROM_START, FileName) &&
+            if (UISettingsLoadStringIndex(File_RecentGameFileIndex, MenuID - ID_RECENT_ROM_START, FileName) &&
                 FileName.length() > 0)
             {
                 g_BaseSystem->RunFileImage(FileName.c_str());
@@ -526,10 +534,10 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         if (MenuID >= ID_RECENT_DIR_START && MenuID < ID_RECENT_DIR_END)
         {
             int Offset = MenuID - ID_RECENT_DIR_START;
-            stdstr Dir = g_Settings->LoadStringIndex(Directory_RecentGameDirIndex, Offset);
+            stdstr Dir = UISettingsLoadStringIndex(Directory_RecentGameDirIndex, Offset);
             if (Dir.length() > 0)
             {
-                g_Settings->SaveString(Directory_Game, Dir.c_str());
+                g_Settings->SaveString(RomList_GameDir, Dir.c_str());
                 Notify().AddRecentDir(Dir.c_str());
                 m_Gui->RefreshMenu();
                 if (m_Gui->RomBrowserVisible())
@@ -668,12 +676,12 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     bool CPURunning = g_Settings->LoadBool(GameRunning_CPU_Running);
     bool RomLoading = g_Settings->LoadBool(GameRunning_LoadingInProgress);
     bool RomLoaded = g_Settings->LoadStringVal(Game_GameName).length() > 0;
-    bool RomList = g_Settings->LoadBool(RomBrowser_Enabled) && !CPURunning;
+    bool RomList = UISettingsLoadBool(RomBrowser_Enabled) && !CPURunning;
 
     CMenuShortCutKey::ACCESS_MODE AccessLevel = CMenuShortCutKey::GAME_NOT_RUNNING;
     if (g_Settings->LoadBool(GameRunning_CPU_Running))
     {
-        AccessLevel = g_Settings->LoadBool(UserInterface_InFullScreen) ? CMenuShortCutKey::GAME_RUNNING_FULLSCREEN : CMenuShortCutKey::GAME_RUNNING_WINDOW;
+        AccessLevel = UISettingsLoadBool(UserInterface_InFullScreen) ? CMenuShortCutKey::GAME_RUNNING_FULLSCREEN : CMenuShortCutKey::GAME_RUNNING_WINDOW;
     }
 
     //Get the system information to make the menu
@@ -693,11 +701,11 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 
     //Go through the settings to create a list of Recent Roms
     MenuItemList RecentRomMenu;
-    DWORD count, RomsToRemember = g_Settings->LoadDword(File_RecentGameFileCount);
+    DWORD count, RomsToRemember = UISettingsLoadDword(File_RecentGameFileCount);
 
     for (count = 0; count < RomsToRemember; count++)
     {
-        stdstr LastRom = g_Settings->LoadStringIndex(File_RecentGameFileIndex, count);
+        stdstr LastRom = UISettingsLoadStringIndex(File_RecentGameFileIndex, count);
         if (LastRom.empty())
         {
             break;
@@ -710,11 +718,11 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     /* Recent Dir
     ****************/
     MenuItemList RecentDirMenu;
-    DWORD DirsToRemember = g_Settings->LoadDword(Directory_RecentGameDirCount);
+    DWORD DirsToRemember = UISettingsLoadDword(Directory_RecentGameDirCount);
 
     for (count = 0; count < DirsToRemember; count++)
     {
-        stdstr LastDir = g_Settings->LoadStringIndex(Directory_RecentGameDirIndex, count);
+        stdstr LastDir = UISettingsLoadStringIndex(Directory_RecentGameDirIndex, count);
         if (LastDir.empty())
         {
             break;
@@ -886,7 +894,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     if (!inBasicMode)
     {
         Item.Reset(ID_OPTIONS_ALWAYSONTOP, MENU_ON_TOP, m_ShortCuts.ShortCutString(ID_OPTIONS_ALWAYSONTOP, AccessLevel));
-        if (g_Settings->LoadDword(UserInterface_AlwaysOnTop)) { Item.SetItemTicked(true); }
+        if (UISettingsLoadDword(UserInterface_AlwaysOnTop)) { Item.SetItemTicked(true); }
         Item.SetItemEnabled(CPURunning);
         OptionMenu.push_back(Item);
     }
@@ -1241,7 +1249,7 @@ void CMainMenu::RebuildAccelerators(void)
 void CMainMenu::ResetMenu(void)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
-    if (!g_Settings->LoadBool(UserInterface_InFullScreen))
+    if (!UISettingsLoadBool(UserInterface_InFullScreen))
     {
         //Create a new window with all the items
         WriteTrace(TraceUserInterface, TraceDebug, "Create Menu");
