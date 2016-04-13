@@ -33,7 +33,22 @@
 		<PlatformToolset Condition="'$(DefaultPlatformToolset)'!=''">$(DefaultPlatformToolset)_xp</PlatformToolset>
 	</PropertyGroup>
 
-	<ImportGroup Label="VCTargets">
+  <PropertyGroup Condition="'$(ConfigurationType)'=='StaticLibrary'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)\lib\</OutDir>
+  </PropertyGroup>
+
+  <!-- x64 -->
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)64\</OutDir>
+    <IntDir>$(SolutionDir)build\$(Configuration)64\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(ConfigurationType)|$(Platform)'=='StaticLibrary|x64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)64\lib\</OutDir>
+  </PropertyGroup>
+
+
+  <ImportGroup Label="VCTargets">
 		<Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
 		<Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
