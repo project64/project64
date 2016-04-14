@@ -44,6 +44,7 @@
     <ClCompile Include="UserInterface\NotificationClass.cpp" />
     <ClCompile Include="UserInterface\RomBrowserClass.cpp" />
     <ClCompile Include="UserInterface\RomInformationClass.cpp" />
+    <ClCompile Include="UserInterface\RomList.cpp" />
     <ClCompile Include="UserInterface\SettingsConfig.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-AdvancedOptions.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-Directories.cpp" />
@@ -85,6 +86,7 @@
     <ClInclude Include="UserInterface\resource.h" />
     <ClInclude Include="UserInterface\RomBrowser.h" />
     <ClInclude Include="UserInterface\RomInformationClass.h" />
+    <ClInclude Include="UserInterface\RomList.h" />
     <ClInclude Include="UserInterface\SettingsConfig.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage-AdvancedOptions.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage-Directories.h" />
