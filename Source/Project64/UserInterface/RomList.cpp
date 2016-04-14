@@ -148,10 +148,6 @@ void CRomList::FillRomList(strlist & FileList, const CPath & BaseDirectory, cons
 
     do
     {
-        uint8_t ext_ID;
-        int8_t new_list_entry = 0;
-        const uint8_t exts = sizeof(ROM_extensions) / sizeof(ROM_extensions[0]);
-
         WriteTrace(TraceRomList, TraceVerbose, "Found: \"%s\" m_StopRefresh = %s", (const char *)SearchPath, m_StopRefresh ? "true" : "false");
         if (m_StopRefresh)
         {
@@ -314,14 +310,6 @@ void CRomList::FillRomList(strlist & FileList, const CPath & BaseDirectory, cons
                         WriteTrace(TraceUserInterface, TraceDebug, "16");
                         FillRomExtensionInfo(&RomInfo);
 
-                        if (RomInfo.SelColor == -1)
-                        {
-                             RomInfo.SelColorBrush = (uint32_t)((HBRUSH)(COLOR_HIGHLIGHT + 1));
-                        }
-                        else
-                        {
-                            RomInfo.SelColorBrush = (uint32_t)CreateSolidBrush(RomInfo.SelColor);
-                        }
                         WriteTrace(TraceUserInterface, TraceDebug, "17");
                         int32_t ListPos = m_RomInfo.size();
                         m_RomInfo.push_back(RomInfo);
@@ -469,18 +457,7 @@ bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
         pRomInfo->CRC1 = *(uint32_t *)(RomData + 0x10);
         pRomInfo->CRC2 = *(uint32_t *)(RomData + 0x14);
         pRomInfo->CicChip = GetCicChipID(RomData);
-
         FillRomExtensionInfo(pRomInfo);
-
-        if (pRomInfo->SelColor == -1)
-        {
-            pRomInfo->SelColorBrush = (uint32_t)((HBRUSH)(COLOR_HIGHLIGHT + 1));
-        }
-        else
-        {
-            pRomInfo->SelColorBrush = (uint32_t)CreateSolidBrush(pRomInfo->SelColor);
-        }
-
         return true;
     }
     return false;

@@ -122,7 +122,8 @@ private:
         NoOfSortKeys = 3
     };
 
-    void  AllocateBrushs(void);
+    typedef std::map<int32_t, HBRUSH> HBRUSH_MAP;
+
     void  RomListReset(void);
     void  RomListLoaded(void);
     void  RomAddedToList(int32_t ListPos);
@@ -156,5 +157,6 @@ private:
     bool m_ShowingRomBrowser;
     bool m_AllowSelectionLastRom;
     static std::wstring m_UnknownGoodName;
+    HBRUSH_MAP m_Brushes;
     std::string m_LastRom;
 };

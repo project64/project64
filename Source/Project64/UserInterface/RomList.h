@@ -39,7 +39,6 @@ public:
         uint32_t    TextColor;
         int32_t     SelColor;
         uint32_t    SelTextColor;
-        uint32_t    SelColorBrush;
         int32_t     RomSize;
         uint8_t     Manufacturer;
         uint8_t     Country;

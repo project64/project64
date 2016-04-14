@@ -253,8 +253,6 @@ int32_t CRomBrowser::CalcSortPosition(uint32_t lParam)
 
 void CRomBrowser::RomAddedToList(int32_t ListPos)
 {
-    m_RomInfo[ListPos].SelColorBrush = NULL;
-
     LVITEMW lvItem;
     memset(&lvItem, 0, sizeof(lvItem));
     lvItem.mask = LVIF_TEXT | LVIF_PARAM;
@@ -274,21 +272,6 @@ void CRomBrowser::RomAddedToList(int32_t ListPos)
     if (iItem >= 0)
     {
         ListView_EnsureVisible(m_hRomList, iItem, FALSE);
-    }
-}
-
-void CRomBrowser::AllocateBrushs(void)
-{
-    for (size_t count = 0; count < m_RomInfo.size(); count++)
-    {
-        if (m_RomInfo[count].SelColor == -1)
-        {
-            m_RomInfo[count].SelColorBrush = (uint32_t)((HBRUSH)(COLOR_HIGHLIGHT + 1));
-        }
-        else
-        {
-            m_RomInfo[count].SelColorBrush = (uint32_t)CreateSolidBrush(m_RomInfo[count].SelColor);
-        }
     }
 }
 
@@ -313,23 +296,15 @@ void CRomBrowser::CreateRomListControl(void)
 
 void CRomBrowser::DeallocateBrushs(void)
 {
-    for (size_t count = 0; count < m_RomInfo.size(); count++)
+    for (HBRUSH_MAP::iterator itr = m_Brushes.begin(); itr != m_Brushes.end(); itr++)
     {
-        if (m_RomInfo[count].SelColor == -1)
-        {
-            continue;
-        }
-        if (m_RomInfo[count].SelColorBrush)
-        {
-            DeleteObject((HBRUSH)m_RomInfo[count].SelColorBrush);
-            m_RomInfo[count].SelColorBrush = NULL;
-        }
+        DeleteObject(itr->second);
     }
+    m_Brushes.clear();
 }
 
 void CRomBrowser::RomListLoaded(void)
 {
-    AllocateBrushs();
     RomList_SortList();
 }
 
@@ -498,7 +473,7 @@ bool CRomBrowser::RomListDrawItem(int32_t idCtrl, uint32_t lParam)
     RECT rcItem, rcDraw;
     wchar_t String[300];
     LVITEMW lvItem;
-    HBRUSH hBrush;
+    HBRUSH hBrush = (HBRUSH)(COLOR_WINDOW + 1);
     LV_COLUMN lvc;
     int32_t nColumn;
 
@@ -519,12 +494,20 @@ bool CRomBrowser::RomListDrawItem(int32_t idCtrl, uint32_t lParam)
     }
     if (bSelected)
     {
-        hBrush = (HBRUSH)pRomInfo->SelColorBrush;
+        HBRUSH_MAP::iterator itr = m_Brushes.find(pRomInfo->SelColor);
+        if (itr != m_Brushes.end())
+        {
+            hBrush = itr->second;
+        }
+        else
+        {
+            std::pair<HBRUSH_MAP::iterator, bool> res = m_Brushes.insert(HBRUSH_MAP::value_type(pRomInfo->SelColor, CreateSolidBrush(pRomInfo->SelColor)));
+            hBrush = res.first->second;
+        }
         SetTextColor(ditem->hDC, pRomInfo->SelTextColor);
     }
     else
     {
-        hBrush = (HBRUSH)(COLOR_WINDOW + 1);
         SetTextColor(ditem->hDC, pRomInfo->TextColor);
     }
     FillRect(ditem->hDC, &ditem->rcItem, hBrush);
