@@ -12,7 +12,6 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <PrecompiledHeader />
-      <WarningLevel>Level4</WarningLevel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

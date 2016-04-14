@@ -33,20 +33,25 @@
 		<PlatformToolset Condition="'$(DefaultPlatformToolset)'!=''">$(DefaultPlatformToolset)_xp</PlatformToolset>
 	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(ConfigurationType)'=='StaticLibrary'">
-    <OutDir>$(SolutionDir)bin\$(Configuration)\lib\</OutDir>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(ConfigurationType)'=='StaticLibrary'">
+		<OutDir>$(SolutionDir)bin\$(Configuration)\lib\</OutDir>
+	</PropertyGroup>
 
-  <!-- x64 -->
-  <PropertyGroup Condition="'$(Platform)'=='x64'">
-    <OutDir>$(SolutionDir)bin\$(Configuration)64\</OutDir>
-    <IntDir>$(SolutionDir)build\$(Configuration)64\$(ProjectName)\</IntDir>
-  </PropertyGroup>
+	<!-- x64 -->
+	<PropertyGroup Condition="'$(Platform)'=='x64'">
+		<OutDir>$(SolutionDir)bin\$(Configuration)64\</OutDir>
+		<IntDir>$(SolutionDir)build\$(Configuration)64\$(ProjectName)\</IntDir>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(ConfigurationType)|$(Platform)'=='StaticLibrary|x64'">
-    <OutDir>$(SolutionDir)bin\$(Configuration)64\lib\</OutDir>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(ConfigurationType)|$(Platform)'=='StaticLibrary|x64'">
+		<OutDir>$(SolutionDir)bin\$(Configuration)64\lib\</OutDir>
+	</PropertyGroup>
 
+	<ItemDefinitionGroup Condition="'$(ConfigurationType)'!='StaticLibrary'">
+		<Link>
+			<AdditionalDependencies>Delayimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+		</Link>
+	</ItemDefinitionGroup>
 
   <ImportGroup Label="VCTargets">
 		<Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
