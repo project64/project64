@@ -295,10 +295,10 @@ void CRomBrowser::AllocateBrushs(void)
 void CRomBrowser::RomListReset(void)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "1");
-    ListView_DeleteAllItems((HWND)m_hRomList);
+    ListView_DeleteAllItems(m_hRomList);
     DeallocateBrushs();
     WriteTrace(TraceUserInterface, TraceDebug, "2");
-    InvalidateRect((HWND)m_hRomList, NULL, TRUE);
+    InvalidateRect(m_hRomList, NULL, TRUE);
     Sleep(100);
     WriteTrace(TraceUserInterface, TraceDebug, "3");
     m_LastRom = UISettingsLoadStringIndex(File_RecentGameFileIndex, 0);

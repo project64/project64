@@ -12,7 +12,19 @@
 
 static const char* ROM_extensions[] =
 {
-    "zip", "7z", "v64", "z64", "n64", "rom", "jap", "pal", "usa", "eur", "bin",
+#ifdef _WIN32
+    "7z",
+#endif
+    "zip",
+    "v64",
+    "z64", 
+    "n64", 
+    "rom", 
+    "jap", 
+    "pal", 
+    "usa", 
+    "eur", 
+    "bin",
 };
 
 CRomList::CRomList() :
@@ -126,9 +138,11 @@ void CRomList::FillRomList(strlist & FileList, const CPath & BaseDirectory, cons
     CPath SearchPath(BaseDirectory, "*");
     SearchPath.AppendDirectory(Directory);
 
-    WriteTrace(TraceUserInterface, TraceDebug, "1 %s", (const char *)SearchPath);
+    WriteTrace(TraceRomList, TraceVerbose, "SearchPath: %s", (const char *)SearchPath);
     if (!SearchPath.FindFirst(CPath::FIND_ATTRIBUTE_ALLFILES))
     {
+        WriteTrace(TraceRomList, TraceVerbose, "No files found");
+        WriteTrace(TraceRomList, TraceDebug, "Done (Directory: %s)",Directory);
         return;
     }
 
@@ -138,8 +152,12 @@ void CRomList::FillRomList(strlist & FileList, const CPath & BaseDirectory, cons
         int8_t new_list_entry = 0;
         const uint8_t exts = sizeof(ROM_extensions) / sizeof(ROM_extensions[0]);
 
-        WriteTrace(TraceUserInterface, TraceDebug, ": 2 %s m_StopRefresh = %d", (const char *)SearchPath, m_StopRefresh);
-        if (m_StopRefresh) { break; }
+        WriteTrace(TraceRomList, TraceVerbose, "Found: \"%s\" m_StopRefresh = %s", (const char *)SearchPath, m_StopRefresh ? "true" : "false");
+        if (m_StopRefresh)
+        {
+            WriteTrace(TraceRomList, TraceVerbose, "stop refresh set, stopping");
+            break; 
+        }
 
         if (SearchPath.IsDirectory())
         {
@@ -155,164 +173,174 @@ void CRomList::FillRomList(strlist & FileList, const CPath & BaseDirectory, cons
         AddFileNameToList(FileList, Directory, SearchPath);
 
         stdstr Extension = stdstr(SearchPath.GetExtension()).ToLower();
-
-        for (ext_ID = 0; ext_ID < exts; ext_ID++)
+        for (uint8_t i = 0; i < sizeof(ROM_extensions) / sizeof(ROM_extensions[0]); i++)
         {
-            if (Extension == ROM_extensions[ext_ID] && Extension != "7z")
+            if (Extension != ROM_extensions[i])
             {
-                new_list_entry = 1;
-                break;
+                continue;
             }
-        }
-        if (new_list_entry)
-        {
-            AddRomToList(SearchPath);
-            continue;
-        }
-
-        if (Extension == "7z")
-        {
-            try
+            WriteTrace(TraceRomList, TraceVerbose, "File has matching extension: \"%s\"", ROM_extensions[i]);
+            if (FileList.size() <= 3000)
             {
-                C7zip ZipFile(SearchPath);
-                if (!ZipFile.OpenSuccess())
+                stdstr file = stdstr(Directory + SearchPath.GetNameExtension()).ToLower();
+                WriteTrace(TraceRomList, TraceVerbose, "Adding: \"%s\" to FileList", file.c_str());
+                FileList.push_back(file);
+            }
+            if (Extension != "7z")
+            {
+                AddRomToList(SearchPath);
+            }
+#ifdef _WIN32
+            else
+            {
+                WriteTrace(TraceRomList, TraceVerbose, "Looking at contents of 7z file");
+                try
                 {
-                    continue;
-                }
-                char ZipFileName[260];
-                stdstr_f SectionName("%s-%d", ZipFile.FileName(ZipFileName, sizeof(ZipFileName)), ZipFile.FileSize());
-                SectionName.ToLower();
-
-                WriteTrace(TraceUserInterface, TraceDebug, "4 %s", SectionName.c_str());
-                for (int32_t i = 0; i < ZipFile.NumFiles(); i++)
-                {
-                    CSzFileItem * f = ZipFile.FileItem(i);
-                    if (f->IsDir)
+                    C7zip ZipFile(SearchPath);
+                    if (!ZipFile.OpenSuccess())
                     {
                         continue;
                     }
-                    ROM_INFO RomInfo;
+                    char ZipFileName[260];
+                    stdstr_f SectionName("%s-%d", ZipFile.FileName(ZipFileName, sizeof(ZipFileName)), ZipFile.FileSize());
+                    SectionName.ToLower();
 
-                    std::wstring FileNameW = ZipFile.FileNameIndex(i);
-                    if (FileNameW.length() == 0)
+                    WriteTrace(TraceUserInterface, TraceDebug, "4 %s", SectionName.c_str());
+                    for (int32_t i = 0; i < ZipFile.NumFiles(); i++)
                     {
-                        continue;
-                    }
-
-                    stdstr FileName;
-                    FileName.FromUTF16(FileNameW.c_str());
-                    WriteTrace(TraceUserInterface, TraceDebug, "5");
-                    char drive2[_MAX_DRIVE], dir2[_MAX_DIR], FileName2[MAX_PATH], ext2[_MAX_EXT];
-                    _splitpath(FileName.c_str(), drive2, dir2, FileName2, ext2);
-
-                    WriteTrace(TraceUserInterface, TraceDebug, ": 6 %s", ext2);
-                    if (_stricmp(ext2, ".bin") == 0)
-                    {
-                        continue;
-                    }
-                    WriteTrace(TraceUserInterface, TraceDebug, "7");
-                    memset(&RomInfo, 0, sizeof(ROM_INFO));
-                    stdstr_f zipFileName("%s?%s", (LPCSTR)SearchPath, FileName.c_str());
-                    ZipFile.SetNotificationCallback((C7zip::LP7ZNOTIFICATION)NotificationCB, this);
-
-                    strncpy(RomInfo.szFullFileName, zipFileName.c_str(), sizeof(RomInfo.szFullFileName) - 1);
-                    RomInfo.szFullFileName[sizeof(RomInfo.szFullFileName) - 1] = 0;
-                    strcpy(RomInfo.FileName, strstr(RomInfo.szFullFileName, "?") + 1);
-                    RomInfo.FileFormat = Format_7zip;
-
-                    WriteTrace(TraceUserInterface, TraceDebug, "8");
-                    char szHeader[0x90];
-                    if (m_ZipIniFile->GetString(SectionName.c_str(), FileName.c_str(), "", szHeader, sizeof(szHeader)) == 0)
-                    {
-                        uint8_t RomData[0x1000];
-                        if (!ZipFile.GetFile(i, RomData, sizeof(RomData)))
+                        CSzFileItem * f = ZipFile.FileItem(i);
+                        if (f->IsDir)
                         {
                             continue;
                         }
-                        WriteTrace(TraceUserInterface, TraceDebug, "9");
-                        if (!CN64Rom::IsValidRomImage(RomData)) { continue; }
-                        WriteTrace(TraceUserInterface, TraceDebug, "10");
-                        ByteSwapRomData(RomData, sizeof(RomData));
-                        WriteTrace(TraceUserInterface, TraceDebug, "11");
+                        ROM_INFO RomInfo;
 
-                        stdstr RomHeader;
+                        std::wstring FileNameW = ZipFile.FileNameIndex(i);
+                        if (FileNameW.length() == 0)
+                        {
+                            continue;
+                        }
+
+                        stdstr FileName;
+                        FileName.FromUTF16(FileNameW.c_str());
+                        WriteTrace(TraceUserInterface, TraceDebug, "5");
+                        char drive2[_MAX_DRIVE], dir2[_MAX_DIR], FileName2[MAX_PATH], ext2[_MAX_EXT];
+                        _splitpath(FileName.c_str(), drive2, dir2, FileName2, ext2);
+
+                        WriteTrace(TraceUserInterface, TraceDebug, ": 6 %s", ext2);
+                        if (_stricmp(ext2, ".bin") == 0)
+                        {
+                            continue;
+                        }
+                        WriteTrace(TraceUserInterface, TraceDebug, "7");
+                        memset(&RomInfo, 0, sizeof(ROM_INFO));
+                        stdstr_f zipFileName("%s?%s", (LPCSTR)SearchPath, FileName.c_str());
+                        ZipFile.SetNotificationCallback((C7zip::LP7ZNOTIFICATION)NotificationCB, this);
+
+                        strncpy(RomInfo.szFullFileName, zipFileName.c_str(), sizeof(RomInfo.szFullFileName) - 1);
+                        RomInfo.szFullFileName[sizeof(RomInfo.szFullFileName) - 1] = 0;
+                        strcpy(RomInfo.FileName, strstr(RomInfo.szFullFileName, "?") + 1);
+                        RomInfo.FileFormat = Format_7zip;
+
+                        WriteTrace(TraceUserInterface, TraceDebug, "8");
+                        char szHeader[0x90];
+                        if (m_ZipIniFile->GetString(SectionName.c_str(), FileName.c_str(), "", szHeader, sizeof(szHeader)) == 0)
+                        {
+                            uint8_t RomData[0x1000];
+                            if (!ZipFile.GetFile(i, RomData, sizeof(RomData)))
+                            {
+                                continue;
+                            }
+                            WriteTrace(TraceUserInterface, TraceDebug, "9");
+                            if (!CN64Rom::IsValidRomImage(RomData)) { continue; }
+                            WriteTrace(TraceUserInterface, TraceDebug, "10");
+                            ByteSwapRomData(RomData, sizeof(RomData));
+                            WriteTrace(TraceUserInterface, TraceDebug, "11");
+
+                            stdstr RomHeader;
+                            for (int32_t x = 0; x < 0x40; x += 4)
+                            {
+                                RomHeader += stdstr_f("%08X", *((uint32_t *)&RomData[x]));
+                            }
+                            WriteTrace(TraceUserInterface, TraceDebug, "11a %s", RomHeader.c_str());
+                            int32_t CicChip = GetCicChipID(RomData);
+
+                            //save this info
+                            WriteTrace(TraceUserInterface, TraceDebug, "12");
+                            m_ZipIniFile->SaveString(SectionName.c_str(), FileName.c_str(), RomHeader.c_str());
+                            m_ZipIniFile->SaveNumber(SectionName.c_str(), stdstr_f("%s-Cic", FileName.c_str()).c_str(), CicChip);
+                            strcpy(szHeader, RomHeader.c_str());
+                        }
+                        WriteTrace(TraceUserInterface, TraceDebug, "13");
+                        uint8_t RomData[0x40];
+
                         for (int32_t x = 0; x < 0x40; x += 4)
                         {
-                            RomHeader += stdstr_f("%08X", *((uint32_t *)&RomData[x]));
+                            const size_t delimit_offset = sizeof("FFFFFFFF") - 1;
+                            const char backup_character = szHeader[2 * x + delimit_offset];
+
+                            szHeader[2 * x + delimit_offset] = '\0';
+                            *(uint32_t *)&RomData[x] = strtoul(&szHeader[2 * x], NULL, 16);
+                            szHeader[2 * x + delimit_offset] = backup_character;
                         }
-                        WriteTrace(TraceUserInterface, TraceDebug, "11a %s", RomHeader.c_str());
-                        int32_t CicChip = GetCicChipID(RomData);
 
-                        //save this info
-                        WriteTrace(TraceUserInterface, TraceDebug, "12");
-                        m_ZipIniFile->SaveString(SectionName.c_str(), FileName.c_str(), RomHeader.c_str());
-                        m_ZipIniFile->SaveNumber(SectionName.c_str(), stdstr_f("%s-Cic", FileName.c_str()).c_str(), CicChip);
-                        strcpy(szHeader, RomHeader.c_str());
-                    }
-                    WriteTrace(TraceUserInterface, TraceDebug, "13");
-                    uint8_t RomData[0x40];
-
-                    for (int32_t x = 0; x < 0x40; x += 4)
-                    {
-                        const size_t delimit_offset = sizeof("FFFFFFFF") - 1;
-                        const char backup_character = szHeader[2 * x + delimit_offset];
-
-                        szHeader[2 * x + delimit_offset] = '\0';
-                        *(uint32_t *)&RomData[x] = strtoul(&szHeader[2 * x], NULL, 16);
-                        szHeader[2 * x + delimit_offset] = backup_character;
-                    }
-                    WriteTrace(TraceUserInterface, TraceDebug, "14");
-                    {
-                        char InternalName[22];
-                        memcpy(InternalName, (void *)(RomData + 0x20), 20);
-                        for (int32_t count = 0; count < 20; count += 4)
+                        WriteTrace(TraceUserInterface, TraceDebug, "14");
                         {
-                            InternalName[count] ^= InternalName[count + 3];
-                            InternalName[count + 3] ^= InternalName[count];
-                            InternalName[count] ^= InternalName[count + 3];
-                            InternalName[count + 1] ^= InternalName[count + 2];
-                            InternalName[count + 2] ^= InternalName[count + 1];
-                            InternalName[count + 1] ^= InternalName[count + 2];
+                            char InternalName[22];
+                            memcpy(InternalName, (void *)(RomData + 0x20), 20);
+                            for (int32_t count = 0; count < 20; count += 4)
+                            {
+                                InternalName[count] ^= InternalName[count + 3];
+                                InternalName[count + 3] ^= InternalName[count];
+                                InternalName[count] ^= InternalName[count + 3];
+                                InternalName[count + 1] ^= InternalName[count + 2];
+                                InternalName[count + 2] ^= InternalName[count + 1];
+                                InternalName[count + 1] ^= InternalName[count + 2];
+                            }
+                            InternalName[20] = '\0';
+                            wcscpy(RomInfo.InternalName, stdstr(InternalName).ToUTF16(stdstr::CODEPAGE_932).c_str());
                         }
-                        InternalName[20] = '\0';
-                        wcscpy(RomInfo.InternalName, stdstr(InternalName).ToUTF16(stdstr::CODEPAGE_932).c_str());
-                    }
-                    RomInfo.RomSize = (int32_t)f->Size;
+                        RomInfo.RomSize = (int32_t)f->Size;
 
-                    WriteTrace(TraceUserInterface, TraceDebug, "15");
-                    RomInfo.CartID[0] = *(RomData + 0x3F);
-                    RomInfo.CartID[1] = *(RomData + 0x3E);
-                    RomInfo.CartID[2] = '\0';
-                    RomInfo.Manufacturer = *(RomData + 0x38);
-                    RomInfo.Country = *(RomData + 0x3D);
-                    RomInfo.CRC1 = *(uint32_t *)(RomData + 0x10);
-                    RomInfo.CRC2 = *(uint32_t *)(RomData + 0x14);
-                    m_ZipIniFile->GetNumber(SectionName.c_str(), stdstr_f("%s-Cic", FileName.c_str()).c_str(), (ULONG)-1, (uint32_t &)RomInfo.CicChip);
-                    WriteTrace(TraceUserInterface, TraceDebug, "16");
-                    FillRomExtensionInfo(&RomInfo);
+                        WriteTrace(TraceUserInterface, TraceDebug, "15");
+                        RomInfo.CartID[0] = *(RomData + 0x3F);
+                        RomInfo.CartID[1] = *(RomData + 0x3E);
+                        RomInfo.CartID[2] = '\0';
+                        RomInfo.Manufacturer = *(RomData + 0x38);
+                        RomInfo.Country = *(RomData + 0x3D);
+                        RomInfo.CRC1 = *(uint32_t *)(RomData + 0x10);
+                        RomInfo.CRC2 = *(uint32_t *)(RomData + 0x14);
+                        m_ZipIniFile->GetNumber(SectionName.c_str(), stdstr_f("%s-Cic", FileName.c_str()).c_str(), (ULONG)-1, (uint32_t &)RomInfo.CicChip);
+                        WriteTrace(TraceUserInterface, TraceDebug, "16");
+                        FillRomExtensionInfo(&RomInfo);
 
-                    if (RomInfo.SelColor == -1)
-                    {
-                        RomInfo.SelColorBrush = (uint32_t)((HBRUSH)(COLOR_HIGHLIGHT + 1));
+                        if (RomInfo.SelColor == -1)
+                        {
+                             RomInfo.SelColorBrush = (uint32_t)((HBRUSH)(COLOR_HIGHLIGHT + 1));
+                        }
+                        else
+                        {
+                            RomInfo.SelColorBrush = (uint32_t)CreateSolidBrush(RomInfo.SelColor);
+                        }
+                        WriteTrace(TraceUserInterface, TraceDebug, "17");
+                        int32_t ListPos = m_RomInfo.size();
+                        m_RomInfo.push_back(RomInfo);
+                        RomAddedToList(ListPos);
                     }
-                    else
-                    {
-                        RomInfo.SelColorBrush = (uint32_t)CreateSolidBrush(RomInfo.SelColor);
-                    }
-                    WriteTrace(TraceUserInterface, TraceDebug, "17");
-                    int32_t ListPos = m_RomInfo.size();
-                    m_RomInfo.push_back(RomInfo);
-                    RomAddedToList(ListPos);
+                }
+                catch (...)
+                {
+                    WriteTrace(TraceUserInterface, TraceError, "execpetion processing %s", (LPCSTR)SearchPath);
                 }
             }
-            catch (...)
-            {
-                WriteTrace(TraceUserInterface, TraceError, "execpetion processing %s", (LPCSTR)SearchPath);
-            }
-            continue;
+#endif
+            break;
         }
     } while (SearchPath.FindNext());
+#ifdef _WIN32
     m_ZipIniFile->FlushChanges();
+#endif
+    WriteTrace(TraceRomList, TraceDebug, "Done (Directory: %s)",Directory);
 }
 
 void CRomList::NotificationCB(const char * Status, CRomList * /*_this*/)
@@ -410,11 +438,7 @@ bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
     int32_t count;
     uint8_t RomData[0x1000];
 
-    if (!LoadDataFromRomFile(pRomInfo->szFullFileName, RomData, sizeof(RomData), &pRomInfo->RomSize, pRomInfo->FileFormat))
-    {
-        return false;
-    }
-    else
+    if (LoadDataFromRomFile(pRomInfo->szFullFileName, RomData, sizeof(RomData), &pRomInfo->RomSize, pRomInfo->FileFormat))
     {
         if (strstr(pRomInfo->szFullFileName, "?") != NULL)
         {
@@ -459,6 +483,7 @@ bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
 
         return true;
     }
+    return false;
 }
 
 void CRomList::FillRomExtensionInfo(ROM_INFO * pRomInfo)
