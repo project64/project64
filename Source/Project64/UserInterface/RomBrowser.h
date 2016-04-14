@@ -12,6 +12,7 @@
 
 #include <vector>
 #include <Project64/Settings/UISettings.h>
+#include "RomList.h"
 
 class CMainGui;
 class CPlugins;
@@ -80,14 +81,14 @@ struct SORT_FIELD
 };
 
 class C7zip;
-class CRomBrowser
+class CRomBrowser :
+    public CRomList
 {
 public:
     CRomBrowser(HWND & hMainWindow, HWND & StatusWindow);
     ~CRomBrowser(void);
     void  HighLightLastRom(void);
     void  HideRomList(void);
-    void  RefreshRomBrowser(void);
     void  ResetRomBrowserColomuns(void);
     void  ResizeRomList(WORD nWidth, WORD nHeight);
     void  RomBrowserToTop(void);
@@ -116,85 +117,29 @@ private:
         RB_ForceFeedback = 18, RB_FileFormat = 19
     };
 
-    enum FILE_FORMAT
-    {
-        Format_Uncompressed,
-        Format_Zip,
-        Format_7zip,
-    };
-
     enum
     {
         NoOfSortKeys = 3
     };
 
-    struct ROM_INFO
-    {
-        char        szFullFileName[300];
-        FILE_FORMAT FileFormat;
-        wchar_t     Status[60];
-        char        FileName[200];
-        wchar_t     InternalName[22];
-        wchar_t     GoodName[200];
-        wchar_t     CartID[3];
-        wchar_t     PluginNotes[250];
-        wchar_t     CoreNotes[250];
-        wchar_t     UserNotes[250];
-        wchar_t     Developer[30];
-        wchar_t     ReleaseDate[30];
-        wchar_t     Genre[15];
-        int32_t	    Players;
-        uint32_t    TextColor;
-        int32_t     SelColor;
-        uint32_t    SelTextColor;
-        uint32_t    SelColorBrush;
-        int32_t     RomSize;
-        uint8_t     Manufacturer;
-        uint8_t     Country;
-        uint32_t    CRC1;
-        uint32_t    CRC2;
-        int32_t     CicChip;
-        wchar_t     ForceFeedback[15];
-    };
-
-    typedef std::vector<ROM_INFO>   ROMINFO_LIST;
-
-    void  AddFileNameToList(strlist & FileList, const stdstr & Directory, CPath & File);
-    void  AddRomToList(const char * RomLocation, const char * lpLastRom);
-    void  AddRomInfoToList(ROM_INFO &RomInfo, const char * lpLastRom);
     void  AllocateBrushs(void);
-    static void  ByteSwapRomData(uint8_t * Data, int DataLen);
+    void  RomListReset(void);
+    void  RomListLoaded(void);
+    void  RomAddedToList(int32_t ListPos);
     int   CalcSortPosition(uint32_t lParam);
     void  CreateRomListControl(void);
     void  DeallocateBrushs(void);
-    void  FillRomExtensionInfo(ROM_INFO * pRomInfo);
     bool  FillRomInfo(ROM_INFO * pRomInfo);
-    void  FillRomList(strlist & FileList, const CPath & BaseDirectory, const char * Directory, const char * lpLastRom);
     void  FixRomListWindow(void);
-    static int32_t GetCicChipID(uint8_t * RomData);
-    bool  LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_t DataLen, int32_t * RomSize, FILE_FORMAT & FileFormat);
-    void  LoadRomList(void);
     void  MenuSetText(HMENU hMenu, int32_t MenuPos, const wchar_t * Title, char * ShortCut);
-    void  SaveRomList(strlist & FileList);
     void  RomList_ColoumnSortList(uint32_t pnmh);
     void  RomList_GetDispInfo(uint32_t pnmh);
     void  RomList_OpenRom(uint32_t pnmh);
     void  RomList_PopupMenu(uint32_t pnmh);
     void  RomList_SortList(void);
-    bool  GetRomFileNames(strlist & FileList, const CPath & BaseDirectory, const std::string & Directory, bool InWatchThread);
-    MD5   RomListHash(strlist & FileList);
 
-    static void NotificationCB(const char * Status, CRomBrowser * _this);
+    void RomDirChanged(void);
 
-    //Watch Directory Changed function
-    HANDLE m_WatchThread, m_WatchStopEvent;
-    DWORD  m_WatchThreadID;
-    stdstr m_WatchRomDir;
-    void WatchThreadStart(void);
-    void WatchThreadStop(void);
-    bool RomDirNeedsRefresh(void); // Called from watch thread
-    static void WatchRomDirChanged(CRomBrowser * _this);
-    static void RefreshRomBrowserStatic(CRomBrowser * _this);
     static void AddField(ROMBROWSER_FIELDS_LIST & Fields, const char * Name, int32_t Pos, int32_t ID, int32_t Width, LanguageStringID LangID, bool UseDefault);
 
     //Callback
@@ -206,16 +151,10 @@ private:
     HWND m_hRomList;
     ROMBROWSER_FIELDS_LIST m_Fields;
     FIELD_TYPE_LIST m_FieldType;
-    ROMINFO_LIST m_RomInfo;
     std::string m_SelectedRom;
     bool m_Visible;
     bool m_ShowingRomBrowser;
-    HANDLE m_RefreshThread;
-    bool m_StopRefresh;
-    CIniFile * m_RomIniFile;
-    CIniFile * m_NotesIniFile;
-    CIniFile * m_ExtIniFile;
-    CIniFile * m_ZipIniFile;
     bool m_AllowSelectionLastRom;
     static std::wstring m_UnknownGoodName;
+    std::string m_LastRom;
 };
