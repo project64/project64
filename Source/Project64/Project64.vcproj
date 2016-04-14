@@ -180,6 +180,10 @@
 					RelativePath=".\Settings\NotificationSettings.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\Settings\UISettings.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="User Interface Source"
@@ -400,6 +404,10 @@
 				</File>
 				<File
 					RelativePath=".\Settings\NotificationSettings.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Settings\UISettings.h"
 					>
 				</File>
 			</Filter>
