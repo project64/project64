@@ -149,7 +149,7 @@ bool CN64Rom::AllocateAndLoadZipImage(const char * FileLoc, bool LoadBootCodeOnl
     while (port == UNZ_OK && !FoundRom)
     {
         unz_file_info info;
-        char zname[_MAX_PATH];
+        char zname[260];
 
         unzGetCurrentFileInfo(file, &info, zname, sizeof(zname), NULL, 0, NULL, 0);
         if (unzLocateFile(file, zname, 1) != UNZ_OK)
@@ -267,35 +267,48 @@ void CN64Rom::ByteSwapRom()
     }
 }
 
+CICChip CN64Rom::GetCicChipID(uint8_t * RomData, uint64_t * CRC)
+{
+    uint64_t crc = 0;
+    int32_t count;
+
+    for (count = 0x40; count < 0x1000; count += 4)
+    {
+        crc += *(uint32_t *)(RomData + count);
+    }
+    if (CRC != NULL) { *CRC = crc; }
+
+    switch (crc)
+    {
+    case 0x000000D0027FDF31: return CIC_NUS_6101;
+    case 0x000000CFFB631223: return CIC_NUS_6101;
+    case 0x000000D057C85244: return CIC_NUS_6102;
+    case 0x000000D6497E414B: return CIC_NUS_6103;
+    case 0x0000011A49F60E96: return CIC_NUS_6105;
+    case 0x000000D6D5BE5580: return CIC_NUS_6106;
+    case 0x000001053BC19870: return CIC_NUS_5167; //64DD CONVERSION CIC
+    case 0x000000D2E53EF008: return CIC_NUS_8303; //64DD IPL
+    default:
+        return CIC_UNKNOWN;
+    }
+}
+
 void CN64Rom::CalculateCicChip()
 {
-    int64_t CRC = 0;
+    uint64_t CRC = 0;
 
     if (m_ROMImage == NULL)
     {
         m_CicChip = CIC_UNKNOWN;
         return;
     }
-
-    for (int count = 0x40; count < 0x1000; count += 4)
+    m_CicChip = GetCicChipID(m_ROMImage, &CRC);
+    if (m_CicChip == CIC_UNKNOWN)
     {
-        CRC += *(uint32_t *)(m_ROMImage + count);
-    }
-    switch (CRC) {
-    case 0x000000D0027FDF31: m_CicChip = CIC_NUS_6101; break;
-    case 0x000000CFFB631223: m_CicChip = CIC_NUS_6101; break;
-    case 0x000000D057C85244: m_CicChip = CIC_NUS_6102; break;
-    case 0x000000D6497E414B: m_CicChip = CIC_NUS_6103; break;
-    case 0x0000011A49F60E96: m_CicChip = CIC_NUS_6105; break;
-    case 0x000000D6D5BE5580: m_CicChip = CIC_NUS_6106; break;
-    case 0x000001053BC19870: m_CicChip = CIC_NUS_5167; break;	//64DD CONVERSION CIC
-    case 0x000000D2E53EF008: m_CicChip = CIC_NUS_8303; break;	//64DD IPL
-    default:
         if (bHaveDebugger())
         {
             g_Notify->DisplayError(stdstr_f("Unknown CIC checksum:\n%I64X.", CRC).c_str());
         }
-        m_CicChip = CIC_UNKNOWN; break;
     }
 }
 

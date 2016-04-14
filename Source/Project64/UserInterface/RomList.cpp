@@ -265,7 +265,7 @@ void CRomList::FillRomList(strlist & FileList, const CPath & BaseDirectory, cons
                                 RomHeader += stdstr_f("%08X", *((uint32_t *)&RomData[x]));
                             }
                             WriteTrace(TraceUserInterface, TraceDebug, "11a %s", RomHeader.c_str());
-                            int32_t CicChip = GetCicChipID(RomData);
+                            int32_t CicChip = CN64Rom::GetCicChipID(RomData);
 
                             //save this info
                             WriteTrace(TraceUserInterface, TraceDebug, "12");
@@ -462,7 +462,7 @@ bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
         pRomInfo->Country = *(RomData + 0x3D);
         pRomInfo->CRC1 = *(uint32_t *)(RomData + 0x10);
         pRomInfo->CRC2 = *(uint32_t *)(RomData + 0x14);
-        pRomInfo->CicChip = GetCicChipID(RomData);
+        pRomInfo->CicChip = CN64Rom::GetCicChipID(RomData);
         FillRomExtensionInfo(pRomInfo);
         return true;
     }
@@ -842,28 +842,4 @@ bool CRomList::GetRomFileNames(strlist & FileList, const CPath & BaseDirectory, 
         }
     } while (SearchPath.FindNext());
     return true;
-}
-
-int32_t CRomList::GetCicChipID(uint8_t * RomData)
-{
-    __int64 CRC = 0;
-    int32_t count;
-
-    for (count = 0x40; count < 0x1000; count += 4)
-    {
-        CRC += *(uint32_t *)(RomData + count);
-    }
-    switch (CRC)
-    {
-    case 0x000000D0027FDF31: return CIC_NUS_6101;
-    case 0x000000CFFB631223: return CIC_NUS_6101;
-    case 0x000000D057C85244: return CIC_NUS_6102;
-    case 0x000000D6497E414B: return CIC_NUS_6103;
-    case 0x0000011A49F60E96: return CIC_NUS_6105;
-    case 0x000000D6D5BE5580: return CIC_NUS_6106;
-    case 0x000001053BC19870: return CIC_NUS_5167; //64DD CONVERSION CIC
-    case 0x000000D2E53EF008: return CIC_NUS_8303; //64DD IPL
-    default:
-        return CIC_UNKNOWN;
-    }
 }

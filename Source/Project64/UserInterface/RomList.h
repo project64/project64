@@ -88,7 +88,6 @@ private:
     static void WatchRomDirChanged(CRomList * _this);
     static void RefreshRomListStatic(CRomList * _this);
     static void  ByteSwapRomData(uint8_t * Data, int DataLen);
-    static int32_t GetCicChipID(uint8_t * RomData);
 
     CIniFile * m_NotesIniFile;
     CIniFile * m_ExtIniFile;
