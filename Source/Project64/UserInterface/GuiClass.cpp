@@ -245,7 +245,7 @@ void RomBowserColoumnsChanged(CMainGui * Gui)
 
 void RomBrowserRecursiveChanged(CMainGui * Gui)
 {
-    Gui->RefreshRomBrowser();
+    Gui->RefreshRomList();
     Gui->HighLightLastRom();
 }
 
@@ -1041,7 +1041,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                 }
                 break;
             case ID_POPUPMENU_ROMDIRECTORY:   _this->SelectRomDir(); break;
-            case ID_POPUPMENU_REFRESHROMLIST: _this->RefreshRomBrowser(); break;
+            case ID_POPUPMENU_REFRESHROMLIST: _this->RefreshRomList(); break;
             case ID_POPUPMENU_ROMINFORMATION:
                 {
                     RomInformation Info(_this->CurrentedSelectedRom());

@@ -985,7 +985,7 @@ void CRomBrowser::SelectRomDir(void)
             WriteTrace(TraceUserInterface, TraceDebug, "7");
             Notify().AddRecentDir(Directory);
             WriteTrace(TraceUserInterface, TraceDebug, "8");
-            RefreshRomBrowser();
+            RefreshRomList();
             WriteTrace(TraceUserInterface, TraceDebug, "9");
         }
     }

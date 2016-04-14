@@ -52,7 +52,7 @@ public:
     CRomList();
     virtual ~CRomList();
 
-    void  RefreshRomBrowser(void);
+    void  RefreshRomList(void);
     void LoadRomList(void);
 
 protected:
@@ -87,7 +87,7 @@ private:
 
     static void NotificationCB(const char * Status, CRomList * _this);
     static void WatchRomDirChanged(CRomList * _this);
-    static void RefreshRomBrowserStatic(CRomList * _this);
+    static void RefreshRomListStatic(CRomList * _this);
     static void  ByteSwapRomData(uint8_t * Data, int DataLen);
     static int32_t GetCicChipID(uint8_t * RomData);
 

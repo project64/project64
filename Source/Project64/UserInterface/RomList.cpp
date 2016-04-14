@@ -72,7 +72,7 @@ CRomList::~CRomList()
     }
 }
 
-void CRomList::RefreshRomBrowser(void)
+void CRomList::RefreshRomList(void)
 {
     DWORD ThreadID;
 
@@ -82,7 +82,7 @@ void CRomList::RefreshRomBrowser(void)
     }
     WriteTrace(TraceUserInterface, TraceDebug, "1");
     m_StopRefresh = false;
-    m_RefreshThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)RefreshRomBrowserStatic, (LPVOID)this, 0, &ThreadID);
+    m_RefreshThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)RefreshRomListStatic, (LPVOID)this, 0, &ThreadID);
     WriteTrace(TraceUserInterface, TraceDebug, "2");
 }
 
@@ -348,7 +348,7 @@ void CRomList::NotificationCB(const char * Status, CRomList * /*_this*/)
     g_Notify->DisplayMessage(5, Status);
 }
 
-void CRomList::RefreshRomBrowserStatic(CRomList * _this)
+void CRomList::RefreshRomListStatic(CRomList * _this)
 {
     _this->RefreshRomListThread();
 }
@@ -586,14 +586,14 @@ void CRomList::LoadRomList(void)
     if (!file.IsOpen())
     {
         //if file does not exist then refresh the data
-        RefreshRomBrowser();
+        RefreshRomList();
         return;
     }
     unsigned char md5[16];
     if (!file.Read(md5, sizeof(md5)))
     {
         file.Close();
-        RefreshRomBrowser();
+        RefreshRomList();
         return;
     }
 
@@ -602,7 +602,7 @@ void CRomList::LoadRomList(void)
     if (!file.Read(&RomInfoSize, sizeof(RomInfoSize)) || RomInfoSize != sizeof(ROM_INFO))
     {
         file.Close();
-        RefreshRomBrowser();
+        RefreshRomList();
         return;
     }
 

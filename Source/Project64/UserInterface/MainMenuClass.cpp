@@ -200,7 +200,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         m_Gui->RefreshMenu();
         WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ROMDIRECTORY 3");
         break;
-    case ID_FILE_REFRESHROMLIST: m_Gui->RefreshRomBrowser(); break;
+    case ID_FILE_REFRESHROMLIST: m_Gui->RefreshRomList(); break;
     case ID_FILE_EXIT:           DestroyWindow((HWND)hWnd); break;
     case ID_SYSTEM_RESET_SOFT:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_RESET_SOFT");
@@ -542,7 +542,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
                 m_Gui->RefreshMenu();
                 if (m_Gui->RomBrowserVisible())
                 {
-                    m_Gui->RefreshRomBrowser();
+                    m_Gui->RefreshRomList();
                 }
             }
         }
