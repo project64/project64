@@ -31,7 +31,9 @@ CRomList::CRomList() :
     m_RefreshThread(NULL),
     m_NotesIniFile(NULL),
     m_ExtIniFile(NULL),
+#ifdef _WIN32
     m_ZipIniFile(NULL),
+#endif
     m_RomIniFile(NULL),
     m_WatchThreadID(0),
     m_WatchThread(NULL),
@@ -42,7 +44,9 @@ CRomList::CRomList() :
         m_NotesIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_Notes).c_str());
         m_ExtIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_ExtInfo).c_str());
         m_RomIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
+#ifdef _WIN32
         m_ZipIniFile = new CIniFile(g_Settings->LoadStringVal(RomList_7zipCache).c_str());
+#endif
     }
 }
 
@@ -65,11 +69,13 @@ CRomList::~CRomList()
         delete m_RomIniFile;
         m_RomIniFile = NULL;
     }
+#ifdef _WIN32
     if (m_ZipIniFile)
     {
         delete m_ZipIniFile;
         m_ZipIniFile = NULL;
     }
+#endif
 }
 
 void CRomList::RefreshRomList(void)

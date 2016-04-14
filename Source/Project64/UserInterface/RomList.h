@@ -93,7 +93,9 @@ private:
     CIniFile * m_NotesIniFile;
     CIniFile * m_ExtIniFile;
     CIniFile * m_RomIniFile;
+#ifdef _WIN32
     CIniFile * m_ZipIniFile;
+#endif
     HANDLE m_RefreshThread;
     stdstr m_WatchRomDir;
 
