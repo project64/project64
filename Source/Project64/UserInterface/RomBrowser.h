@@ -146,7 +146,6 @@ private:
     void WatchThreadStop(void);
 
     static void WatchRomDirChanged(CRomBrowser * _this);
-    
     static void AddField(ROMBROWSER_FIELDS_LIST & Fields, const char * Name, int32_t Pos, int32_t ID, int32_t Width, LanguageStringID LangID, bool UseDefault);
 
     //Callback

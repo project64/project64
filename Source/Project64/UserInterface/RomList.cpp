@@ -29,6 +29,7 @@ static const char* ROM_extensions[] =
 
 CRomList::CRomList() :
     m_RefreshThread(NULL),
+    m_GameDir(g_Settings->LoadStringVal(RomList_GameDir).c_str()),
     m_NotesIniFile(NULL),
     m_ExtIniFile(NULL),
 #ifdef _WIN32
@@ -90,20 +91,22 @@ void CRomList::RefreshRomList(void)
 
 void CRomList::RefreshRomListThread(void)
 {
+    WriteTrace(TraceRomList, TraceVerbose, "Start");
     //delete cache
     CPath(g_Settings->LoadStringVal(RomList_RomListCache)).Delete();
+    WriteTrace(TraceRomList, TraceVerbose, "Cache Deleted");
 
     //clear all current items
     RomListReset();
     m_RomInfo.clear();
 
     WriteTrace(TraceUserInterface, TraceDebug, "7");
-    stdstr RomDir = g_Settings->LoadStringVal(RomList_GameDir);
     stdstr LastRom = UISettingsLoadStringIndex(File_RecentGameFileIndex, 0);
     WriteTrace(TraceUserInterface, TraceDebug, "8");
 
     strlist FileNames;
-    FillRomList(FileNames, CPath(RomDir), "", LastRom.c_str());
+    FillRomList(FileNames, "");
+    RomListLoaded();
     WriteTrace(TraceUserInterface, TraceDebug, "9");
     SaveRomList(FileNames);
     WriteTrace(TraceUserInterface, TraceDebug, "10");
@@ -126,9 +129,10 @@ void CRomList::AddRomToList(const char * RomLocation)
     }
 }
 
-void CRomList::FillRomList(strlist & FileList, const CPath & BaseDirectory, const char * Directory, const char * lpLastRom)
+void CRomList::FillRomList(strlist & FileList, const char * Directory)
 {
-    CPath SearchPath(BaseDirectory, "*");
+    WriteTrace(TraceRomList, TraceDebug, "Start (m_GameDir = %s, Directory: %s)",(const char *)m_GameDir,Directory);
+    CPath SearchPath((const char *)m_GameDir, "*");
     SearchPath.AppendDirectory(Directory);
 
     WriteTrace(TraceRomList, TraceVerbose, "SearchPath: %s", (const char *)SearchPath);
@@ -154,7 +158,7 @@ void CRomList::FillRomList(strlist & FileList, const CPath & BaseDirectory, cons
             {
                 CPath CurrentDir(Directory);
                 CurrentDir.AppendDirectory(SearchPath.GetLastDirectory().c_str());
-                FillRomList(FileList, BaseDirectory, CurrentDir, lpLastRom);
+                FillRomList(FileList, CurrentDir);
             }
             continue;
         }
@@ -632,6 +636,11 @@ MD5 CRomList::RomListHash(strlist & FileList)
     return md5Hash;
 }
 
+void CRomList::RefreshSettings(CRomList * _this)
+{
+    _this->m_GameDir = g_Settings->LoadStringVal(RomList_GameDir).c_str();
+}
+
 void CRomList::AddFileNameToList(strlist & FileList, const stdstr & Directory, CPath & File)
 {
     uint8_t i;
@@ -641,18 +650,15 @@ void CRomList::AddFileNameToList(strlist & FileList, const stdstr & Directory, C
         return;
     }
 
-    stdstr Drive, Dir, Name, Extension;
-    File.GetComponents(NULL, &Dir, &Name, &Extension);
-    Extension.ToLower();
+    stdstr Extension = stdstr(File.GetExtension()).ToLower();
     for (i = 0; i < sizeof(ROM_extensions) / sizeof(ROM_extensions[0]); i++)
     {
         if (Extension == ROM_extensions[i])
         {
-            stdstr FileName = Directory + Name + "." + Extension;
+            stdstr FileName = Directory + File.GetNameExtension();
             FileName.ToLower();
             FileList.push_back(FileName);
             break;
         }
     }
 }
-

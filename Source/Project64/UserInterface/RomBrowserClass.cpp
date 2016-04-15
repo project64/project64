@@ -260,7 +260,7 @@ void CRomBrowser::RomAddedToList(int32_t ListPos)
     LVITEMW lvItem;
     memset(&lvItem, 0, sizeof(lvItem));
     lvItem.mask = LVIF_TEXT | LVIF_PARAM;
-    lvItem.iItem = ListView_GetItemCount(m_hRomList);
+    lvItem.iItem = CalcSortPosition(ListPos);
     lvItem.lParam = (LPARAM)ListPos;
     lvItem.pszText = LPSTR_TEXTCALLBACKW;
 
@@ -283,7 +283,6 @@ void CRomBrowser::RomListReset(void)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "1");
     ListView_DeleteAllItems(m_hRomList);
-    DeallocateBrushs();
     WriteTrace(TraceUserInterface, TraceDebug, "2");
     InvalidateRect(m_hRomList, NULL, TRUE);
     Sleep(100);
@@ -335,10 +334,6 @@ void CRomBrowser::HighLightLastRom(void)
     //Make sure Rom browser is visible
     if (!RomBrowserVisible()) { return; }
 
-    //Get the string to the last rom
-    stdstr LastRom = UISettingsLoadStringIndex(File_RecentGameFileIndex, 0);
-    LPCSTR lpLastRom = LastRom.c_str();
-
     LVITEMW lvItem;
     lvItem.mask = LVIF_PARAM;
 
@@ -362,7 +357,7 @@ void CRomBrowser::HighLightLastRom(void)
         }
 
         //if the last rom then highlight the item
-        if (_stricmp(pRomInfo->szFullFileName, lpLastRom) == 0)
+        if (_stricmp(pRomInfo->szFullFileName, m_LastRom.c_str()) == 0)
         {
             ListView_SetItemState(m_hRomList, index, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
             ListView_EnsureVisible(m_hRomList, index, FALSE);

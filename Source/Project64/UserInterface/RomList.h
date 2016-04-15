@@ -51,34 +51,37 @@ public:
     CRomList();
     virtual ~CRomList();
 
-    void  RefreshRomList(void);
+    void RefreshRomList(void);
     void LoadRomList(void);
 
 protected:
     typedef std::vector<ROM_INFO> ROMINFO_LIST;
+
     virtual void RomListReset(void) {}
     virtual void RomAddedToList(int32_t /*ListPos*/) {}
     virtual void RomListLoaded(void) {}
     virtual void RomDirChanged(void) {}
 
     MD5 RomListHash(strlist & FileList);
-    void  AddFileNameToList(strlist & FileList, const stdstr & Directory, CPath & File);
+    void AddFileNameToList(strlist & FileList, const stdstr & Directory, CPath & File);
     ROMINFO_LIST m_RomInfo;
     bool m_StopRefresh;
 
 private:
     void AddRomToList(const char * RomLocation);
-    void FillRomList(strlist & FileList, const CPath & BaseDirectory, const char * Directory, const char * lpLastRom);
+    void FillRomList(strlist & FileList, const char * Directory);
     bool FillRomInfo(ROM_INFO * pRomInfo);
     void FillRomExtensionInfo(ROM_INFO * pRomInfo);
     bool LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_t DataLen, int32_t * RomSize, FILE_FORMAT & FileFormat);
-    void  SaveRomList(strlist & FileList);
-    void  RefreshRomListThread(void);
+    void SaveRomList(strlist & FileList);
+    void RefreshRomListThread(void);
 
+    static void RefreshSettings(CRomList *);
     static void NotificationCB(const char * Status, CRomList * _this);
     static void RefreshRomListStatic(CRomList * _this);
-    static void  ByteSwapRomData(uint8_t * Data, int DataLen);
+    static void ByteSwapRomData(uint8_t * Data, int DataLen);
 
+    CPath  m_GameDir;
     CIniFile * m_NotesIniFile;
     CIniFile * m_ExtIniFile;
     CIniFile * m_RomIniFile;
