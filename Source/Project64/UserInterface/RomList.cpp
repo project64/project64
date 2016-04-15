@@ -404,17 +404,26 @@ bool CRomList::LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_
     }
     else
     {
-        HANDLE hFile = CreateFile(FileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
-        if (hFile == INVALID_HANDLE_VALUE) { return false; }
-        SetFilePointer(hFile, 0, 0, FILE_BEGIN);
-
-        DWORD dwRead;
-        ReadFile(hFile, Test, 4, &dwRead, NULL);
-        if (!CN64Rom::IsValidRomImage(Test)) { CloseHandle(hFile); return false; }
-        SetFilePointer(hFile, 0, 0, FILE_BEGIN);
-        if (!ReadFile(hFile, Data, DataLen, &dwRead, NULL)) { CloseHandle(hFile); return false; }
-        *RomSize = GetFileSize(hFile, NULL);
-        CloseHandle(hFile);
+        CFile File;
+        if (!File.Open(FileName, CFileBase::modeRead))
+        {
+            return false;
+        }
+        File.SeekToBegin();
+        if (!File.Read(Test,sizeof(Test)))
+        {
+            return false;
+        }
+        if (!CN64Rom::IsValidRomImage(Test))
+        { 
+            return false; 
+        }
+        File.SeekToBegin();
+        if (!File.Read(Data,DataLen))
+        {
+            return false;
+        }
+        *RomSize = File.GetLength();
         FileFormat = Format_Uncompressed;
     }
     ByteSwapRomData(Data, DataLen);
