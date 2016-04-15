@@ -29,6 +29,7 @@ static const char* ROM_extensions[] =
 
 CRomList::CRomList() :
     m_RefreshThread(NULL),
+    m_StopRefresh(false),
     m_GameDir(g_Settings->LoadStringVal(RomList_GameDir).c_str()),
     m_NotesIniFile(NULL),
     m_ExtIniFile(NULL),
@@ -37,6 +38,7 @@ CRomList::CRomList() :
 #endif
     m_RomIniFile(NULL)
 {
+    WriteTrace(TraceRomList, TraceVerbose, "Start");
     if (g_Settings)
     {
         m_NotesIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_Notes).c_str());
@@ -45,11 +47,14 @@ CRomList::CRomList() :
 #ifdef _WIN32
         m_ZipIniFile = new CIniFile(g_Settings->LoadStringVal(RomList_7zipCache).c_str());
 #endif
+        g_Settings->RegisterChangeCB(RomList_GameDir, this, (CSettings::SettingChangedFunc)RefreshSettings);
     }
+    WriteTrace(TraceRomList, TraceVerbose, "Done");
 }
 
 CRomList::~CRomList()
 {
+    WriteTrace(TraceRomList, TraceVerbose, "Start");
     m_StopRefresh = true;
     if (m_NotesIniFile)
     {
@@ -73,6 +78,11 @@ CRomList::~CRomList()
         m_ZipIniFile = NULL;
     }
 #endif
+    if (g_Settings)
+    {
+        g_Settings->UnregisterChangeCB(RomList_GameDir, this, (CSettings::SettingChangedFunc)RefreshSettings);
+    }
+    WriteTrace(TraceRomList, TraceVerbose, "Done");
 }
 
 void CRomList::RefreshRomList(void)
@@ -83,10 +93,10 @@ void CRomList::RefreshRomList(void)
     {
         return;
     }
-    WriteTrace(TraceUserInterface, TraceDebug, "1");
+    WriteTrace(TraceRomList, TraceDebug, "Starting thread");
     m_StopRefresh = false;
     m_RefreshThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)RefreshRomListStatic, (LPVOID)this, 0, &ThreadID);
-    WriteTrace(TraceUserInterface, TraceDebug, "2");
+    WriteTrace(TraceRomList, TraceVerbose, "Done");
 }
 
 void CRomList::RefreshRomListThread(void)
@@ -100,26 +110,20 @@ void CRomList::RefreshRomListThread(void)
     RomListReset();
     m_RomInfo.clear();
 
-    WriteTrace(TraceUserInterface, TraceDebug, "7");
-    stdstr LastRom = UISettingsLoadStringIndex(File_RecentGameFileIndex, 0);
-    WriteTrace(TraceUserInterface, TraceDebug, "8");
-
     strlist FileNames;
     FillRomList(FileNames, "");
     RomListLoaded();
-    WriteTrace(TraceUserInterface, TraceDebug, "9");
     SaveRomList(FileNames);
-    WriteTrace(TraceUserInterface, TraceDebug, "10");
     CloseHandle(m_RefreshThread);
     m_RefreshThread = NULL;
-    WriteTrace(TraceUserInterface, TraceDebug, "11");
+    WriteTrace(TraceRomList, TraceVerbose, "Done");
 }
 
 void CRomList::AddRomToList(const char * RomLocation)
 {
-    ROM_INFO RomInfo;
+    WriteTrace(TraceRomList, TraceVerbose, "Start (RomLocation: \"%s\")",RomLocation);
+    ROM_INFO RomInfo = { 0 };
 
-    memset(&RomInfo, 0, sizeof(ROM_INFO));
     strncpy(RomInfo.szFullFileName, RomLocation, (sizeof(RomInfo.szFullFileName) / sizeof(RomInfo.szFullFileName[0])) - 1);
     if (FillRomInfo(&RomInfo))
     {
@@ -127,6 +131,11 @@ void CRomList::AddRomToList(const char * RomLocation)
         m_RomInfo.push_back(RomInfo);
         RomAddedToList(ListPos);
     }
+    else
+    {
+        WriteTrace(TraceRomList, TraceVerbose, "Failed to fill rom information, ignoring");
+    }
+    WriteTrace(TraceRomList, TraceVerbose, "Done");
 }
 
 void CRomList::FillRomList(strlist & FileList, const char * Directory)

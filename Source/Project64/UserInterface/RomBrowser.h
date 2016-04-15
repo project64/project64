@@ -130,7 +130,6 @@ private:
     int   CalcSortPosition(uint32_t lParam);
     void  CreateRomListControl(void);
     void  DeallocateBrushs(void);
-    bool  FillRomInfo(ROM_INFO * pRomInfo);
     void  FixRomListWindow(void);
     void  MenuSetText(HMENU hMenu, int32_t MenuPos, const wchar_t * Title, char * ShortCut);
     void  RomList_ColoumnSortList(uint32_t pnmh);
