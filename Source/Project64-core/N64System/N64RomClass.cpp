@@ -413,6 +413,49 @@ bool CN64Rom::IsValidRomImage(uint8_t Test[4])
     return false;
 }
 
+void CN64Rom::CleanRomName(char * RomName, bool byteswap)
+{
+    if (byteswap)
+    {
+        for (int count = 0; count < 20; count += 4)
+        {
+            RomName[count] ^= RomName[count + 3];
+            RomName[count + 3] ^= RomName[count];
+            RomName[count] ^= RomName[count + 3];
+            RomName[count + 1] ^= RomName[count + 2];
+            RomName[count + 2] ^= RomName[count + 1];
+            RomName[count + 1] ^= RomName[count + 2];
+        }
+    }
+
+    //truncate all the spaces at the end of the string
+    for (int count = 19; count >= 0; count--)
+    {
+        if (RomName[count] == ' ')
+        {
+            RomName[count] = '\0';
+        }
+        else if (RomName[count] == '\0')
+        {
+        }
+        else
+        {
+            count = -1;
+        }
+    }
+    RomName[20] = '\0';
+
+    //remove all /,\,: from the string
+    for (int count = 0; count < (int)strlen(RomName); count++)
+    {
+        switch (RomName[count])
+        {
+        case '/': case '\\': RomName[count] = '-'; break;
+        case ':': RomName[count] = ';'; break;
+        }
+    }
+}
+
 void CN64Rom::NotificationCB(const char * Status, CN64Rom * /*_this*/)
 {
     g_Notify->DisplayMessage(5, stdstr_f("%s", Status).c_str());
@@ -521,49 +564,16 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
     }
 
     char RomName[260];
-    int  count;
     //Get the header from the rom image
     memcpy(&RomName[0], (void *)(m_ROMImage + 0x20), 20);
-    for (count = 0; count < 20; count += 4)
-    {
-        RomName[count] ^= RomName[count + 3];
-        RomName[count + 3] ^= RomName[count];
-        RomName[count] ^= RomName[count + 3];
-        RomName[count + 1] ^= RomName[count + 2];
-        RomName[count + 2] ^= RomName[count + 1];
-        RomName[count + 1] ^= RomName[count + 2];
-    }
+    CN64Rom::CleanRomName(RomName);
 
-    //truncate all the spaces at the end of the string
-    for (count = 19; count >= 0; count--)
-    {
-        if (RomName[count] == ' ')
-        {
-            RomName[count] = '\0';
-        }
-        else if (RomName[count] == '\0')
-        {
-        }
-        else
-        {
-            count = -1;
-        }
-    }
-    RomName[20] = '\0';
     if (strlen(RomName) == 0)
     {
         strcpy(RomName, CPath(FileLoc).GetName().c_str());
+        CN64Rom::CleanRomName(RomName, false);
     }
 
-    //remove all /,\,: from the string
-    for (count = 0; count < (int)strlen(RomName); count++)
-    {
-        switch (RomName[count])
-        {
-        case '/': case '\\': RomName[count] = '-'; break;
-        case ':': RomName[count] = ';'; break;
-        }
-    }
     WriteTrace(TraceN64System, TraceDebug, "RomName %s", RomName);
 
     m_RomName = RomName;
@@ -699,48 +709,13 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
     }
 
     char RomName[260];
-    int  count;
     //Get the header from the rom image
     memcpy(&RomName[0], (void *)(m_ROMImage + 0x20), 20);
-    for (count = 0; count < 20; count += 4)
-    {
-        RomName[count] ^= RomName[count + 3];
-        RomName[count + 3] ^= RomName[count];
-        RomName[count] ^= RomName[count + 3];
-        RomName[count + 1] ^= RomName[count + 2];
-        RomName[count + 2] ^= RomName[count + 1];
-        RomName[count + 1] ^= RomName[count + 2];
-    }
-
-    //truncate all the spaces at the end of the string
-    for (count = 19; count >= 0; count--)
-    {
-        if (RomName[count] == ' ')
-        {
-            RomName[count] = '\0';
-        }
-        else if (RomName[count] == '\0')
-        {
-        }
-        else
-        {
-            count = -1;
-        }
-    }
-    RomName[20] = '\0';
+    CN64Rom::CleanRomName(RomName);
     if (strlen(RomName) == 0)
     {
         strcpy(RomName, CPath(FileLoc).GetName().c_str());
-    }
-
-    //remove all /,\,: from the string
-    for (count = 0; count < (int)strlen(RomName); count++)
-    {
-        switch (RomName[count])
-        {
-        case '/': case '\\': RomName[count] = '-'; break;
-        case ':': RomName[count] = ';'; break;
-        }
+        CN64Rom::CleanRomName(RomName,false);
     }
     WriteTrace(TraceN64System, TraceDebug, "RomName %s", RomName);
 

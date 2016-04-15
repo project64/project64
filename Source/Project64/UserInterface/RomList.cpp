@@ -284,16 +284,7 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
                         {
                             char InternalName[22];
                             memcpy(InternalName, (void *)(RomData + 0x20), 20);
-                            for (int32_t count = 0; count < 20; count += 4)
-                            {
-                                InternalName[count] ^= InternalName[count + 3];
-                                InternalName[count + 3] ^= InternalName[count];
-                                InternalName[count] ^= InternalName[count + 3];
-                                InternalName[count + 1] ^= InternalName[count + 2];
-                                InternalName[count + 2] ^= InternalName[count + 1];
-                                InternalName[count + 1] ^= InternalName[count + 2];
-                            }
-                            InternalName[20] = '\0';
+                            CN64Rom::CleanRomName(InternalName);
                             wcscpy(RomInfo.InternalName, stdstr(InternalName).ToUTF16(stdstr::CODEPAGE_932).c_str());
                         }
                         RomInfo.RomSize = (int32_t)f->Size;
@@ -432,7 +423,6 @@ bool CRomList::LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_
 
 bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
 {
-    int32_t count;
     uint8_t RomData[0x1000];
 
     if (LoadDataFromRomFile(pRomInfo->szFullFileName, RomData, sizeof(RomData), &pRomInfo->RomSize, pRomInfo->FileFormat))
@@ -447,16 +437,7 @@ bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
         }
         char InternalName[22];
         memcpy(InternalName, (void *)(RomData + 0x20), 20);
-        for (count = 0; count < 20; count += 4)
-        {
-            InternalName[count] ^= InternalName[count + 3];
-            InternalName[count + 3] ^= InternalName[count];
-            InternalName[count] ^= InternalName[count + 3];
-            InternalName[count + 1] ^= InternalName[count + 2];
-            InternalName[count + 2] ^= InternalName[count + 1];
-            InternalName[count + 1] ^= InternalName[count + 2];
-        }
-        InternalName[20] = '\0';
+        CN64Rom::CleanRomName(InternalName);
         wcscpy(pRomInfo->InternalName, stdstr(InternalName).ToUTF16(stdstr::CODEPAGE_932).c_str());
         pRomInfo->CartID[0] = *(RomData + 0x3F);
         pRomInfo->CartID[1] = *(RomData + 0x3E);
