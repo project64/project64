@@ -61,9 +61,8 @@ protected:
     virtual void RomListLoaded(void) {}
     virtual void RomDirChanged(void) {}
 
-    void WatchThreadStart(void);
-    void WatchThreadStop(void);
-
+    MD5 RomListHash(strlist & FileList);
+    void  AddFileNameToList(strlist & FileList, const stdstr & Directory, CPath & File);
     ROMINFO_LIST m_RomInfo;
     bool m_StopRefresh;
 
@@ -73,19 +72,10 @@ private:
     bool FillRomInfo(ROM_INFO * pRomInfo);
     void FillRomExtensionInfo(ROM_INFO * pRomInfo);
     bool LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_t DataLen, int32_t * RomSize, FILE_FORMAT & FileFormat);
-    void  AddFileNameToList(strlist & FileList, const stdstr & Directory, CPath & File);
     void  SaveRomList(strlist & FileList);
     void  RefreshRomListThread(void);
-    bool  GetRomFileNames(strlist & FileList, const CPath & BaseDirectory, const std::string & Directory, bool InWatchThread);
-    MD5   RomListHash(strlist & FileList);
-
-    //Watch Directory Changed function
-    HANDLE m_WatchThread, m_WatchStopEvent;
-    DWORD  m_WatchThreadID;
-    bool RomDirNeedsRefresh(void); // Called from watch thread
 
     static void NotificationCB(const char * Status, CRomList * _this);
-    static void WatchRomDirChanged(CRomList * _this);
     static void RefreshRomListStatic(CRomList * _this);
     static void  ByteSwapRomData(uint8_t * Data, int DataLen);
 
@@ -96,6 +86,4 @@ private:
     CIniFile * m_ZipIniFile;
 #endif
     HANDLE m_RefreshThread;
-    stdstr m_WatchRomDir;
-
 };

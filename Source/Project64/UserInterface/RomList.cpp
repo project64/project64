@@ -34,10 +34,7 @@ CRomList::CRomList() :
 #ifdef _WIN32
     m_ZipIniFile(NULL),
 #endif
-    m_RomIniFile(NULL),
-    m_WatchThreadID(0),
-    m_WatchThread(NULL),
-    m_WatchStopEvent(NULL)
+    m_RomIniFile(NULL)
 {
     if (g_Settings)
     {
@@ -52,7 +49,6 @@ CRomList::CRomList() :
 
 CRomList::~CRomList()
 {
-    WatchThreadStop();
     m_StopRefresh = true;
     if (m_NotesIniFile)
     {
@@ -100,15 +96,6 @@ void CRomList::RefreshRomListThread(void)
     //clear all current items
     RomListReset();
     m_RomInfo.clear();
-
-    if (m_WatchRomDir != g_Settings->LoadStringVal(RomList_GameDir))
-    {
-        WriteTrace(TraceUserInterface, TraceDebug, "4");
-        WatchThreadStop();
-        WriteTrace(TraceUserInterface, TraceDebug, "5");
-        WatchThreadStart();
-        WriteTrace(TraceUserInterface, TraceDebug, "6");
-    }
 
     WriteTrace(TraceUserInterface, TraceDebug, "7");
     stdstr RomDir = g_Settings->LoadStringVal(RomList_GameDir);
@@ -182,12 +169,6 @@ void CRomList::FillRomList(strlist & FileList, const CPath & BaseDirectory, cons
                 continue;
             }
             WriteTrace(TraceRomList, TraceVerbose, "File has matching extension: \"%s\"", ROM_extensions[i]);
-            if (FileList.size() <= 3000)
-            {
-                stdstr file = stdstr(Directory + SearchPath.GetNameExtension()).ToLower();
-                WriteTrace(TraceRomList, TraceVerbose, "Adding: \"%s\" to FileList", file.c_str());
-                FileList.push_back(file);
-            }
             if (Extension != "7z")
             {
                 AddRomToList(SearchPath);
@@ -637,137 +618,6 @@ void CRomList::SaveRomList(strlist & FileList)
     file.Close();
 }
 
-void CRomList::WatchRomDirChanged(CRomList * _this)
-{
-    try
-    {
-        WriteTrace(TraceUserInterface, TraceDebug, "1");
-        _this->m_WatchRomDir = g_Settings->LoadStringVal(RomList_GameDir);
-        WriteTrace(TraceUserInterface, TraceDebug, "2");
-        if (_this->RomDirNeedsRefresh())
-        {
-            WriteTrace(TraceUserInterface, TraceDebug, "2a");
-            _this->RomDirChanged();
-        }
-        WriteTrace(TraceUserInterface, TraceDebug, "3");
-        HANDLE hChange[] =
-        {
-            _this->m_WatchStopEvent,
-            FindFirstChangeNotification(_this->m_WatchRomDir.c_str(), g_Settings->LoadBool(RomList_GameDirRecursive), FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_SIZE),
-        };
-        WriteTrace(TraceUserInterface, TraceDebug, "4");
-        for (;;)
-        {
-            WriteTrace(TraceUserInterface, TraceDebug, "5");
-            if (WaitForMultipleObjects(sizeof(hChange) / sizeof(hChange[0]), hChange, false, INFINITE) == WAIT_OBJECT_0)
-            {
-                WriteTrace(TraceUserInterface, TraceDebug, "5a");
-                FindCloseChangeNotification(hChange[1]);
-                return;
-            }
-            WriteTrace(TraceUserInterface, TraceDebug, "5b");
-            if (_this->RomDirNeedsRefresh())
-            {
-                _this->RomDirChanged();
-            }
-            WriteTrace(TraceUserInterface, TraceDebug, "5c");
-            if (!FindNextChangeNotification(hChange[1]))
-            {
-                FindCloseChangeNotification(hChange[1]);
-                return;
-            }
-            WriteTrace(TraceUserInterface, TraceDebug, "5d");
-        }
-    }
-    catch (...)
-    {
-        WriteTrace(TraceUserInterface, TraceError, __FUNCTION__ ":  Unhandled Exception");
-    }
-}
-
-bool CRomList::RomDirNeedsRefresh(void)
-{
-    bool InWatchThread = (m_WatchThreadID == GetCurrentThreadId());
-
-    //Get Old MD5 of file names
-    stdstr FileName = g_Settings->LoadStringVal(RomList_RomListCache);
-    HANDLE hFile = CreateFile(FileName.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
-        //if file does not exist then refresh the data
-        return true;
-    }
-
-    DWORD dwRead;
-    unsigned char CurrentFileMD5[16];
-    ReadFile(hFile, &CurrentFileMD5, sizeof(CurrentFileMD5), &dwRead, NULL);
-    CloseHandle(hFile);
-
-    //Get Current MD5 of file names
-    strlist FileNames;
-    if (!GetRomFileNames(FileNames, CPath(g_Settings->LoadStringVal(RomList_GameDir)), stdstr(""), InWatchThread))
-    {
-        return false;
-    }
-    FileNames.sort();
-
-    MD5 NewMd5 = RomListHash(FileNames);
-    if (memcmp(NewMd5.raw_digest(), CurrentFileMD5, sizeof(CurrentFileMD5)) != 0)
-    {
-        return true;
-    }
-    return false;
-}
-
-void CRomList::WatchThreadStart(void)
-{
-    WriteTrace(TraceUserInterface, TraceDebug, "1");
-    WatchThreadStop();
-    WriteTrace(TraceUserInterface, TraceDebug, "2");
-    if (m_WatchStopEvent == NULL)
-    {
-        m_WatchStopEvent = CreateEvent(NULL, true, false, NULL);
-    }
-    WriteTrace(TraceUserInterface, TraceDebug, "3");
-    m_WatchThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WatchRomDirChanged, this, 0, &m_WatchThreadID);
-    WriteTrace(TraceUserInterface, TraceDebug, "4");
-}
-
-void CRomList::WatchThreadStop(void)
-{
-    if (m_WatchThread == NULL)
-    {
-        return;
-    }
-    WriteTrace(TraceUserInterface, TraceDebug, "1");
-    SetEvent(m_WatchStopEvent);
-    DWORD ExitCode = 0;
-    for (int32_t count = 0; count < 20; count++)
-    {
-        WriteTrace(TraceUserInterface, TraceDebug, "2");
-        GetExitCodeThread(m_WatchThread, &ExitCode);
-        if (ExitCode != STILL_ACTIVE)
-        {
-            break;
-        }
-        Sleep(200);
-    }
-    WriteTrace(TraceUserInterface, TraceDebug, "3");
-    if (ExitCode == STILL_ACTIVE)
-    {
-        WriteTrace(TraceUserInterface, TraceDebug, "3a");
-        TerminateThread(m_WatchThread, 0);
-    }
-    WriteTrace(TraceUserInterface, TraceDebug, "4");
-
-    CloseHandle(m_WatchThread);
-    CloseHandle(m_WatchStopEvent);
-    m_WatchStopEvent = NULL;
-    m_WatchThread = NULL;
-    m_WatchThreadID = 0;
-    WriteTrace(TraceUserInterface, TraceDebug, "5");
-}
-
 MD5 CRomList::RomListHash(strlist & FileList)
 {
     stdstr NewFileNames;
@@ -798,7 +648,7 @@ void CRomList::AddFileNameToList(strlist & FileList, const stdstr & Directory, C
     {
         if (Extension == ROM_extensions[i])
         {
-            stdstr FileName = Directory + Name + Extension;
+            stdstr FileName = Directory + Name + "." + Extension;
             FileName.ToLower();
             FileList.push_back(FileName);
             break;
@@ -806,40 +656,3 @@ void CRomList::AddFileNameToList(strlist & FileList, const stdstr & Directory, C
     }
 }
 
-bool CRomList::GetRomFileNames(strlist & FileList, const CPath & BaseDirectory, const std::string & Directory, bool InWatchThread)
-{
-    if (!BaseDirectory.DirectoryExists())
-    {
-        return false;
-    }
-    CPath SearchPath(BaseDirectory, "*.*");
-    SearchPath.AppendDirectory(Directory.c_str());
-
-    if (!SearchPath.FindFirst(CPath::FIND_ATTRIBUTE_ALLFILES))
-    {
-        return false;
-    }
-
-    do
-    {
-        if (InWatchThread && WaitForSingleObject(m_WatchStopEvent, 0) != WAIT_TIMEOUT)
-        {
-            return false;
-        }
-
-        if (SearchPath.IsDirectory())
-        {
-            if (g_Settings->LoadBool(RomList_GameDirRecursive))
-            {
-                CPath CurrentDir(Directory);
-                CurrentDir.AppendDirectory(SearchPath.GetLastDirectory().c_str());
-                GetRomFileNames(FileList, BaseDirectory, CurrentDir, InWatchThread);
-            }
-        }
-        else
-        {
-            AddFileNameToList(FileList, Directory, SearchPath);
-        }
-    } while (SearchPath.FindNext());
-    return true;
-}

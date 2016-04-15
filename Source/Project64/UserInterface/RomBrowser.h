@@ -139,13 +139,23 @@ private:
     void  RomList_PopupMenu(uint32_t pnmh);
     void  RomList_SortList(void);
 
+    bool RomDirNeedsRefresh(void); // Called from watch thread
     void RomDirChanged(void);
+    bool GetRomFileNames(strlist & FileList, const CPath & BaseDirectory, const std::string & Directory, bool InWatchThread);
+    void WatchThreadStart(void);
+    void WatchThreadStop(void);
 
+    static void WatchRomDirChanged(CRomBrowser * _this);
+    
     static void AddField(ROMBROWSER_FIELDS_LIST & Fields, const char * Name, int32_t Pos, int32_t ID, int32_t Width, LanguageStringID LangID, bool UseDefault);
 
     //Callback
     static int CALLBACK SelectRomDirCallBack(HWND hwnd, uint32_t uMsg, uint32_t lp, uint32_t lpData);
     static int CALLBACK RomList_CompareItems(uint32_t lParam1, uint32_t lParam2, uint32_t lParamSort);
+    
+    //Watch Directory Changed function
+    HANDLE m_WatchThread, m_WatchStopEvent;
+    DWORD  m_WatchThreadID;
 
     HWND & m_MainWindow;
     HWND & m_StatusWindow;
@@ -159,4 +169,5 @@ private:
     static std::wstring m_UnknownGoodName;
     HBRUSH_MAP m_Brushes;
     std::string m_LastRom;
+    stdstr m_WatchRomDir;
 };
