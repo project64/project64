@@ -9,6 +9,10 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#include <Common/path.h>
+#include <Common/IniFileClass.h>
+#include <Common/md5.h>
+#include <Project64-core/N64System/N64Types.h>
 
 class CRomList
 {
@@ -24,17 +28,17 @@ public:
     {
         char        szFullFileName[300];
         FILE_FORMAT FileFormat;
-        wchar_t     Status[60];
+        char        Status[60];
         char        FileName[200];
-        wchar_t     InternalName[22];
-        wchar_t     GoodName[200];
-        wchar_t     CartID[3];
-        wchar_t     PluginNotes[250];
-        wchar_t     CoreNotes[250];
-        wchar_t     UserNotes[250];
-        wchar_t     Developer[30];
-        wchar_t     ReleaseDate[30];
-        wchar_t     Genre[15];
+        char        InternalName[22];
+        char        GoodName[200];
+        char        CartID[3];
+        char        PluginNotes[250];
+        char        CoreNotes[250];
+        char        UserNotes[250];
+        char        Developer[30];
+        char        ReleaseDate[30];
+        char        Genre[15];
         int32_t	    Players;
         uint32_t    TextColor;
         int32_t     SelColor;
@@ -44,8 +48,8 @@ public:
         uint8_t     Country;
         uint32_t    CRC1;
         uint32_t    CRC2;
-        int32_t     CicChip;
-        wchar_t     ForceFeedback[15];
+        CICChip     CicChip;
+        char        ForceFeedback[15];
     };
 
     CRomList();
@@ -60,7 +64,6 @@ protected:
     virtual void RomListReset(void) {}
     virtual void RomAddedToList(int32_t /*ListPos*/) {}
     virtual void RomListLoaded(void) {}
-    virtual void RomDirChanged(void) {}
 
     MD5 RomListHash(strlist & FileList);
     void AddFileNameToList(strlist & FileList, const stdstr & Directory, CPath & File);

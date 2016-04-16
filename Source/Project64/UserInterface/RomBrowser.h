@@ -164,7 +164,7 @@ private:
     bool m_Visible;
     bool m_ShowingRomBrowser;
     bool m_AllowSelectionLastRom;
-    static std::wstring m_UnknownGoodName;
+    static std::string m_UnknownGoodName;
     HBRUSH_MAP m_Brushes;
     std::string m_LastRom;
     stdstr m_WatchRomDir;

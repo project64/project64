@@ -14,7 +14,7 @@
 #include <commctrl.h>
 #include <shlobj.h>
 
-std::wstring CRomBrowser::m_UnknownGoodName;
+std::string CRomBrowser::m_UnknownGoodName;
 
 CRomBrowser::CRomBrowser(HWND & MainWindow, HWND & StatusWindow) :
     m_MainWindow(MainWindow),
@@ -633,34 +633,34 @@ int32_t CALLBACK CRomBrowser::RomList_CompareItems(uint32_t lParam1, uint32_t lP
     ROM_INFO * pRomInfo2 = &_this->m_RomInfo[SortFieldInfo->KeyAscend ? lParam2 : lParam1];
     int32_t result;
 
-    const wchar_t * GoodName1 = NULL, *GoodName2 = NULL;
+    const char * GoodName1 = NULL, *GoodName2 = NULL;
     if (SortFieldInfo->Key == RB_GoodName)
     {
-        GoodName1 = wcscmp(L"#340#", pRomInfo1->GoodName) != 0 ? pRomInfo1->GoodName : m_UnknownGoodName.c_str();
-        GoodName2 = wcscmp(L"#340#", pRomInfo2->GoodName) != 0 ? pRomInfo2->GoodName : m_UnknownGoodName.c_str();
+        GoodName1 = strcmp("#340#", pRomInfo1->GoodName) != 0 ? pRomInfo1->GoodName : m_UnknownGoodName.c_str();
+        GoodName2 = strcmp("#340#", pRomInfo2->GoodName) != 0 ? pRomInfo2->GoodName : m_UnknownGoodName.c_str();
     }
 
     switch (SortFieldInfo->Key)
     {
     case RB_FileName: result = (int32_t)lstrcmpi(pRomInfo1->FileName, pRomInfo2->FileName); break;
-    case RB_InternalName: result = (int32_t)lstrcmpiW(pRomInfo1->InternalName, pRomInfo2->InternalName); break;
-    case RB_GoodName: result = (int32_t)lstrcmpiW(GoodName1, GoodName2); break;
-    case RB_Status: result = (int32_t)lstrcmpiW(pRomInfo1->Status, pRomInfo2->Status); break;
+    case RB_InternalName: result = (int32_t)lstrcmpi(pRomInfo1->InternalName, pRomInfo2->InternalName); break;
+    case RB_GoodName: result = (int32_t)lstrcmpi(GoodName1, GoodName2); break;
+    case RB_Status: result = (int32_t)lstrcmpi(pRomInfo1->Status, pRomInfo2->Status); break;
     case RB_RomSize: result = (int32_t)pRomInfo1->RomSize - (int32_t)pRomInfo2->RomSize; break;
-    case RB_CoreNotes: result = (int32_t)lstrcmpiW(pRomInfo1->CoreNotes, pRomInfo2->CoreNotes); break;
-    case RB_PluginNotes: result = (int32_t)lstrcmpiW(pRomInfo1->PluginNotes, pRomInfo2->PluginNotes); break;
-    case RB_UserNotes: result = (int32_t)lstrcmpiW(pRomInfo1->UserNotes, pRomInfo2->UserNotes); break;
-    case RB_CartridgeID: result = (int32_t)lstrcmpiW(pRomInfo1->CartID, pRomInfo2->CartID); break;
+    case RB_CoreNotes: result = (int32_t)lstrcmpi(pRomInfo1->CoreNotes, pRomInfo2->CoreNotes); break;
+    case RB_PluginNotes: result = (int32_t)lstrcmpi(pRomInfo1->PluginNotes, pRomInfo2->PluginNotes); break;
+    case RB_UserNotes: result = (int32_t)lstrcmpi(pRomInfo1->UserNotes, pRomInfo2->UserNotes); break;
+    case RB_CartridgeID: result = (int32_t)lstrcmpi(pRomInfo1->CartID, pRomInfo2->CartID); break;
     case RB_Manufacturer: result = (int32_t)pRomInfo1->Manufacturer - (int32_t)pRomInfo2->Manufacturer; break;
     case RB_Country: result = (int32_t)pRomInfo1->Country - (int32_t)pRomInfo2->Country; break;
-    case RB_Developer: result = (int32_t)lstrcmpiW(pRomInfo1->Developer, pRomInfo2->Developer); break;
+    case RB_Developer: result = (int32_t)lstrcmpi(pRomInfo1->Developer, pRomInfo2->Developer); break;
     case RB_Crc1: result = (int32_t)pRomInfo1->CRC1 - (int32_t)pRomInfo2->CRC1; break;
     case RB_Crc2: result = (int32_t)pRomInfo1->CRC2 - (int32_t)pRomInfo2->CRC2; break;
     case RB_CICChip: result = (int32_t)pRomInfo1->CicChip - (int32_t)pRomInfo2->CicChip; break;
-    case RB_ReleaseDate: result = (int32_t)lstrcmpiW(pRomInfo1->ReleaseDate, pRomInfo2->ReleaseDate); break;
+    case RB_ReleaseDate: result = (int32_t)lstrcmpi(pRomInfo1->ReleaseDate, pRomInfo2->ReleaseDate); break;
     case RB_Players: result = (int32_t)pRomInfo1->Players - (int32_t)pRomInfo2->Players; break;
-    case RB_ForceFeedback: result = (int32_t)lstrcmpiW(pRomInfo1->ForceFeedback, pRomInfo2->ForceFeedback); break;
-    case RB_Genre: result = (int32_t)lstrcmpiW(pRomInfo1->Genre, pRomInfo2->Genre); break;
+    case RB_ForceFeedback: result = (int32_t)lstrcmpi(pRomInfo1->ForceFeedback, pRomInfo2->ForceFeedback); break;
+    case RB_Genre: result = (int32_t)lstrcmpi(pRomInfo1->Genre, pRomInfo2->Genre); break;
     case RB_FileFormat: result = (int32_t)pRomInfo1->FileFormat - (int32_t)pRomInfo2->FileFormat; break;
     default: result = 0; break;
     }
@@ -686,13 +686,13 @@ void CRomBrowser::RomList_GetDispInfo(uint32_t pnmh)
     switch (m_FieldType[lpdi->item.iSubItem])
     {
     case RB_FileName: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->FileName).ToUTF16(CP_ACP).c_str(), lpdi->item.cchTextMax); break;
-    case RB_InternalName: wcsncpy(lpdi->item.pszText, pRomInfo->InternalName, lpdi->item.cchTextMax / sizeof(wchar_t)); break;
-    case RB_GoodName: wcsncpy(lpdi->item.pszText, pRomInfo->GoodName, lpdi->item.cchTextMax / sizeof(wchar_t)); break;
-    case RB_CoreNotes: wcsncpy(lpdi->item.pszText, pRomInfo->CoreNotes, lpdi->item.cchTextMax / sizeof(wchar_t)); break;
-    case RB_PluginNotes: wcsncpy(lpdi->item.pszText, pRomInfo->PluginNotes, lpdi->item.cchTextMax / sizeof(wchar_t)); break;
-    case RB_Status: wcsncpy(lpdi->item.pszText, pRomInfo->Status, lpdi->item.cchTextMax / sizeof(wchar_t)); break;
+    case RB_InternalName: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->InternalName).ToUTF16(stdstr::CODEPAGE_932).c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
+    case RB_GoodName: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->GoodName).ToUTF16().c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
+    case RB_CoreNotes: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->CoreNotes).ToUTF16().c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
+    case RB_PluginNotes: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->PluginNotes).ToUTF16().c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
+    case RB_Status: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->Status).ToUTF16().c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
     case RB_RomSize: swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"%.1f MBit", (float)pRomInfo->RomSize / 0x20000); break;
-    case RB_CartridgeID: wcsncpy(lpdi->item.pszText, pRomInfo->CartID, lpdi->item.cchTextMax / sizeof(wchar_t)); break;
+    case RB_CartridgeID: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->CartID).ToUTF16().c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
     case RB_Manufacturer:
         switch (pRomInfo->Manufacturer)
         {
@@ -740,12 +740,12 @@ void CRomBrowser::RomList_GetDispInfo(uint32_t pnmh)
             swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"CIC-NUS-610%d", pRomInfo->CicChip);
         }
         break;
-    case RB_UserNotes: wcsncpy(lpdi->item.pszText, pRomInfo->UserNotes, lpdi->item.cchTextMax / sizeof(wchar_t)); break;
-    case RB_Developer: wcsncpy(lpdi->item.pszText, pRomInfo->Developer, lpdi->item.cchTextMax / sizeof(wchar_t)); break;
-    case RB_ReleaseDate: wcsncpy(lpdi->item.pszText, pRomInfo->ReleaseDate, lpdi->item.cchTextMax / sizeof(wchar_t)); break;
-    case RB_Genre: wcsncpy(lpdi->item.pszText, pRomInfo->Genre, lpdi->item.cchTextMax / sizeof(wchar_t)); break;
+    case RB_UserNotes: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->UserNotes).ToUTF16().c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
+    case RB_Developer: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->Developer).ToUTF16().c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
+    case RB_ReleaseDate: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->ReleaseDate).ToUTF16().c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
+    case RB_Genre: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->Genre).ToUTF16().c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
     case RB_Players: swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"%d", pRomInfo->Players); break;
-    case RB_ForceFeedback: wcsncpy(lpdi->item.pszText, pRomInfo->ForceFeedback, lpdi->item.cchTextMax / sizeof(wchar_t)); break;
+    case RB_ForceFeedback: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->ForceFeedback).ToUTF16().c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
     case RB_FileFormat:
         switch (pRomInfo->FileFormat)
         {
@@ -869,7 +869,7 @@ void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
 void CRomBrowser::RomList_SortList(void)
 {
     SORT_FIELD SortFieldInfo;
-    m_UnknownGoodName = wGS(RB_NOT_GOOD_FILE);
+    m_UnknownGoodName = stdstr().FromUTF16(wGS(RB_NOT_GOOD_FILE).c_str());
 
     for (int32_t count = NoOfSortKeys; count >= 0; count--)
     {

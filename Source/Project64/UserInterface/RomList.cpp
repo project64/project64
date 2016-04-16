@@ -9,6 +9,13 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include "RomList.h"
+#include <Project64-core/3rdParty/zip.h>
+#include <Project64-core/N64System/N64RomClass.h>
+
+#ifdef _WIN32
+#include <Project64-core/3rdParty/7zip.h>
+#endif
 
 static const char* ROM_extensions[] =
 {
@@ -285,7 +292,7 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
                             char InternalName[22];
                             memcpy(InternalName, (void *)(RomData + 0x20), 20);
                             CN64Rom::CleanRomName(InternalName);
-                            wcscpy(RomInfo.InternalName, stdstr(InternalName).ToUTF16(stdstr::CODEPAGE_932).c_str());
+                            strcpy(RomInfo.InternalName, InternalName);
                         }
                         RomInfo.RomSize = (int32_t)f->Size;
 
@@ -438,7 +445,7 @@ bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
         char InternalName[22];
         memcpy(InternalName, (void *)(RomData + 0x20), 20);
         CN64Rom::CleanRomName(InternalName);
-        wcscpy(pRomInfo->InternalName, stdstr(InternalName).ToUTF16(stdstr::CODEPAGE_932).c_str());
+        strcpy(pRomInfo->InternalName, InternalName);
         pRomInfo->CartID[0] = *(RomData + 0x3F);
         pRomInfo->CartID[1] = *(RomData + 0x3E);
         pRomInfo->CartID[2] = '\0';
@@ -456,45 +463,45 @@ bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
 void CRomList::FillRomExtensionInfo(ROM_INFO * pRomInfo)
 {
     //Initialize the structure
-    pRomInfo->UserNotes[0] = 0;
-    pRomInfo->Developer[0] = 0;
-    pRomInfo->ReleaseDate[0] = 0;
-    pRomInfo->Genre[0] = 0;
+    pRomInfo->UserNotes[0] = '\0';
+    pRomInfo->Developer[0] = '\0';
+    pRomInfo->ReleaseDate[0] = '\0';
+    pRomInfo->Genre[0] = '\0';
     pRomInfo->Players = 1;
-    pRomInfo->CoreNotes[0] = 0;
-    pRomInfo->PluginNotes[0] = 0;
-    wcscpy(pRomInfo->GoodName, L"#340#");
-    wcscpy(pRomInfo->Status, L"Unknown");
+    pRomInfo->CoreNotes[0] = '\0';
+    pRomInfo->PluginNotes[0] = '\0';
+    strcpy(pRomInfo->GoodName, "#340#");
+    strcpy(pRomInfo->Status, "Unknown");
 
     //Get File Identifier
     char Identifier[100];
     sprintf(Identifier, "%08X-%08X-C:%X", pRomInfo->CRC1, pRomInfo->CRC2, pRomInfo->Country);
 
     //Rom Notes
-    wcsncpy(pRomInfo->UserNotes, m_NotesIniFile->GetString(Identifier, "Note", "").ToUTF16().c_str(), sizeof(pRomInfo->UserNotes) / sizeof(wchar_t));
+    strncpy(pRomInfo->UserNotes, m_NotesIniFile->GetString(Identifier, "Note", "").c_str(), sizeof(pRomInfo->UserNotes) / sizeof(char));
 
     //Rom Extension info
-    wcsncpy(pRomInfo->Developer, m_ExtIniFile->GetString(Identifier, "Developer", "").ToUTF16().c_str(), sizeof(pRomInfo->Developer) / sizeof(wchar_t));
-    wcsncpy(pRomInfo->ReleaseDate, m_ExtIniFile->GetString(Identifier, "ReleaseDate", "").ToUTF16().c_str(), sizeof(pRomInfo->ReleaseDate) / sizeof(wchar_t));
-    wcsncpy(pRomInfo->Genre, m_ExtIniFile->GetString(Identifier, "Genre", "").ToUTF16().c_str(), sizeof(pRomInfo->Genre) / sizeof(wchar_t));
+    strncpy(pRomInfo->Developer, m_ExtIniFile->GetString(Identifier, "Developer", "").c_str(), sizeof(pRomInfo->Developer) / sizeof(char));
+    strncpy(pRomInfo->ReleaseDate, m_ExtIniFile->GetString(Identifier, "ReleaseDate", "").c_str(), sizeof(pRomInfo->ReleaseDate) / sizeof(char));
+    strncpy(pRomInfo->Genre, m_ExtIniFile->GetString(Identifier, "Genre", "").c_str(), sizeof(pRomInfo->Genre) / sizeof(char));
     m_ExtIniFile->GetNumber(Identifier, "Players", 1, (uint32_t &)pRomInfo->Players);
-    wcsncpy(pRomInfo->ForceFeedback, m_ExtIniFile->GetString(Identifier, "ForceFeedback", "unknown").ToUTF16().c_str(), sizeof(pRomInfo->ForceFeedback) / sizeof(wchar_t));
+    strncpy(pRomInfo->ForceFeedback, m_ExtIniFile->GetString(Identifier, "ForceFeedback", "unknown").c_str(), sizeof(pRomInfo->ForceFeedback) / sizeof(char));
 
     //Rom Settings
-    wcsncpy(pRomInfo->GoodName, m_RomIniFile->GetString(Identifier, "Good Name", stdstr().FromUTF16(pRomInfo->GoodName).c_str()).ToUTF16().c_str(), sizeof(pRomInfo->GoodName) / sizeof(wchar_t));
-    wcsncpy(pRomInfo->Status, m_RomIniFile->GetString(Identifier, "Status", stdstr().FromUTF16(pRomInfo->Status).c_str()).ToUTF16().c_str(), sizeof(pRomInfo->Status) / sizeof(wchar_t));
-    wcsncpy(pRomInfo->CoreNotes, m_RomIniFile->GetString(Identifier, "Core Note", "").ToUTF16().c_str(), sizeof(pRomInfo->CoreNotes) / sizeof(wchar_t));
-    wcsncpy(pRomInfo->PluginNotes, m_RomIniFile->GetString(Identifier, "Plugin Note", "").ToUTF16().c_str(), sizeof(pRomInfo->PluginNotes) / sizeof(wchar_t));
+    strncpy(pRomInfo->GoodName, m_RomIniFile->GetString(Identifier, "Good Name", pRomInfo->GoodName).c_str(), sizeof(pRomInfo->GoodName) / sizeof(char));
+    strncpy(pRomInfo->Status, m_RomIniFile->GetString(Identifier, "Status", pRomInfo->Status).c_str(), sizeof(pRomInfo->Status) / sizeof(char));
+    strncpy(pRomInfo->CoreNotes, m_RomIniFile->GetString(Identifier, "Core Note", "").c_str(), sizeof(pRomInfo->CoreNotes) / sizeof(char));
+    strncpy(pRomInfo->PluginNotes, m_RomIniFile->GetString(Identifier, "Plugin Note", "").c_str(), sizeof(pRomInfo->PluginNotes) / sizeof(char));
 
     //Get the text color
-    stdstr String = m_RomIniFile->GetString("Rom Status", stdstr().FromUTF16(pRomInfo->Status).c_str(), "000000");
-    pRomInfo->TextColor = (std::strtoul(String.c_str(), 0, 16) & 0xFFFFFF);
+    stdstr String = m_RomIniFile->GetString("Rom Status", pRomInfo->Status, "000000");
+    pRomInfo->TextColor = (strtoul(String.c_str(), 0, 16) & 0xFFFFFF);
     pRomInfo->TextColor = (pRomInfo->TextColor & 0x00FF00) | ((pRomInfo->TextColor >> 0x10) & 0xFF) | ((pRomInfo->TextColor & 0xFF) << 0x10);
 
     //Get the selected color
-    String.Format("%ws.Sel", pRomInfo->Status);
+    String.Format("%s.Sel", pRomInfo->Status);
     String = m_RomIniFile->GetString("Rom Status", String.c_str(), "FFFFFFFF");
-    uint32_t selcol = std::strtoul(String.c_str(), NULL, 16);
+    uint32_t selcol = strtoul(String.c_str(), NULL, 16);
     if (selcol & 0x80000000)
     {
         pRomInfo->SelColor = -1;
@@ -506,9 +513,9 @@ void CRomList::FillRomExtensionInfo(ROM_INFO * pRomInfo)
     }
 
     //Get the selected text color
-    String.Format("%ws.Seltext", pRomInfo->Status);
+    String.Format("%s.Seltext", pRomInfo->Status);
     String = m_RomIniFile->GetString("Rom Status", String.c_str(), "FFFFFF");
-    pRomInfo->SelTextColor = (std::strtoul(String.c_str(), 0, 16) & 0xFFFFFF);
+    pRomInfo->SelTextColor = (strtoul(String.c_str(), 0, 16) & 0xFFFFFF);
     pRomInfo->SelTextColor = (pRomInfo->SelTextColor & 0x00FF00) | ((pRomInfo->SelTextColor >> 0x10) & 0xFF) | ((pRomInfo->SelTextColor & 0xFF) << 0x10);
 }
 
