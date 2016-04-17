@@ -137,9 +137,9 @@ void CSystemEvents::ExecuteEvents()
 			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
 			{
 				g_Settings->SaveBool(GameRunning_CPU_Paused, true);
-				g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_FromMenu);
 				bPause = true;
 			}
+			g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_FromMenu);
 			break;
 		case SysEvent_PauseCPU_AppLostFocus:
 			if (!g_Settings->LoadBool(GameRunning_CPU_Paused))

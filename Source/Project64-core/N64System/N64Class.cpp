@@ -113,9 +113,9 @@ void CN64System::ExternalEvent(SystemEvent action)
     case SysEvent_ResetCPU_Soft:
     case SysEvent_CloseCPU:
     case SysEvent_ChangePlugins:
+    case SysEvent_PauseCPU_FromMenu:
         QueueEvent(action);
         break;
-    case SysEvent_PauseCPU_FromMenu:
     case SysEvent_PauseCPU_AppLostFocus:
     case SysEvent_PauseCPU_AppLostActive:
     case SysEvent_PauseCPU_SaveGame:
@@ -909,6 +909,8 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
 
 void CN64System::ExecuteCPU()
 {
+    WriteTrace(TraceN64System, TraceDebug, "Start");
+
     //reset code
     g_Settings->SaveBool(GameRunning_CPU_Paused, false);
     g_Settings->SaveBool(GameRunning_CPU_Running, true);
@@ -934,12 +936,15 @@ void CN64System::ExecuteCPU()
 #endif
     default:             ExecuteInterpret();  break;
     }
+    WriteTrace(TraceN64System, TraceDebug, "CPU finished executing");
     g_Settings->SaveBool(GameRunning_CPU_Running, (uint32_t)false);
+    WriteTrace(TraceN64System, TraceDebug, "Notifing plugins rom is done");
     m_Plugins->RomClosed();
     if (m_SyncCPU)
     {
         m_SyncCPU->m_Plugins->RomClosed();
     }
+    WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
 void CN64System::ExecuteInterpret()
@@ -960,6 +965,7 @@ void CN64System::ExecuteSyncCPU()
 
 void CN64System::CpuStopped()
 {
+    WriteTrace(TraceN64System, TraceDebug, "Start");
     if (!m_InReset)
     {
         g_Settings->SaveBool(GameRunning_CPU_Running, (uint32_t)false);
@@ -970,6 +976,7 @@ void CN64System::CpuStopped()
         m_SyncCPU->CpuStopped();
     }
     m_CPU_Handle = NULL;
+    WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
 void CN64System::UpdateSyncCPU(CN64System * const SecondCPU, uint32_t const Cycles)
