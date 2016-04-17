@@ -53,6 +53,8 @@ void SetupTrace(void)
 
 
     TraceSetModuleName(TraceMD5, "MD5");
+    TraceSetModuleName(TraceThread, "Thread");
+    TraceSetModuleName(TracePath, "Path");
     TraceSetModuleName(TraceSettings, "Settings");
     TraceSetModuleName(TraceUnknown, "Unknown");
     TraceSetModuleName(TraceGlide64, "Glide64");

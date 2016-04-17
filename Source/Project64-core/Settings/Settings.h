@@ -217,6 +217,8 @@ enum SettingID
 
     //Trace
     Debugger_TraceMD5,
+    Debugger_TraceThread,
+    Debugger_TracePath,
     Debugger_TraceSettings,
     Debugger_TraceUnknown,
     Debugger_TraceAppInit,

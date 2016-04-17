@@ -8,7 +8,6 @@
 #define _strnicmp strncasecmp
 #define _snprintf snprintf
 #define _isnan isnan
-#define GetCurrentThreadId pthread_self
 
 int _vscprintf (const char * format, va_list pargs);
 

@@ -3,5 +3,7 @@
 enum TraceModuleCommon
 {
     TraceMD5,
+    TraceThread,
+    TracePath,
     MaxTraceModuleCommon,
 };
