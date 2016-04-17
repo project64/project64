@@ -26,9 +26,6 @@
 
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
-#include <windows.h>
-#include <commdlg.h>
-
 CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly) :
 CSystemEvents(this, Plugins),
 m_EndEmulation(false),
@@ -53,8 +50,7 @@ m_JumpToLocation(0),
 m_TLBLoadAddress(0),
 m_TLBStoreAddress(0),
 m_SyncCount(0),
-m_CPU_Handle(NULL),
-m_CPU_ThreadID(0),
+m_thread(NULL),
 m_hPauseEvent(true),
 m_CheatsSlectionChanged(false)
 {
@@ -373,16 +369,15 @@ void CN64System::CloseSystem()
     }
 }
 
-bool CN64System::EmulationStarting(void * hThread, uint32_t ThreadId)
+bool CN64System::EmulationStarting(CThread * thread)
 {
-    WriteTrace(TraceN64System, TraceDebug, "Starting (hThread: %p ThreadId: %d)", hThread, ThreadId);
+    WriteTrace(TraceN64System, TraceDebug, "Starting (hThread: %p ThreadId: %d)", thread, thread->ThreadID());
     bool bRes = true;
 
     WriteTrace(TraceN64System, TraceDebug, "Setting N64 system as active");
     if (g_BaseSystem->SetActiveSystem(true))
     {
-        g_BaseSystem->m_CPU_Handle = hThread;
-        g_BaseSystem->m_CPU_ThreadID = ThreadId;
+        g_BaseSystem->m_thread = thread;
         WriteTrace(TraceN64System, TraceDebug, "Setting up N64 system done");
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
         try
@@ -975,7 +970,6 @@ void CN64System::CpuStopped()
     {
         m_SyncCPU->CpuStopped();
     }
-    m_CPU_Handle = NULL;
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 

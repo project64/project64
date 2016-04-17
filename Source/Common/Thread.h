@@ -3,7 +3,7 @@
 class CThread 
 {
 public:
-    typedef uint32_t(__stdcall * CTHREAD_START_ROUTINE)(void * lpThreadParameter);
+    typedef uint32_t(* CTHREAD_START_ROUTINE)(void * lpThreadParameter);
     CThread(CTHREAD_START_ROUTINE lpStartAddress);
     ~CThread();
 
