@@ -22,12 +22,6 @@
 #include <stdio.h>
 #include <Common/MemoryManagement.h>
 
-#ifdef _WIN32
-#include <Windows.h>
-#else
-#include <sys/time.h>
-#endif
-
 uint32_t RegModValue;
 
 uint8_t * CMipsMemoryVM::m_Reserve1 = NULL;
