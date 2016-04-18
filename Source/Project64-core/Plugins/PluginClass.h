@@ -10,6 +10,7 @@
 ****************************************************************************/
 #pragma once
 #include <list>
+#include <Project64-core/Settings/SettingsClass.h>
 #include <Project64-core/Settings/DebugSettings.h>
 
 #ifndef PLUGIN_INFO_STRUCT
@@ -85,12 +86,24 @@ class CGfxPlugin; class CAudioPlugin; class CRSP_Plugin; class CControl_Plugin;
 class CN64System;
 class CPlugins;
 
+#if defined(_WIN32)
+#include <objbase.h>
+#else
+#define __interface     struct
+#endif
+
 __interface RenderWindow
 {
+#ifdef _WIN32
     virtual bool ResetPluginsInUiThread(CPlugins * plugins, CN64System * System) = 0;
     virtual void * GetWindowHandle(void) const = 0;
     virtual void * GetStatusBar(void) const = 0;
     virtual void * GetModuleInstance(void) const = 0;
+#else
+    virtual void GfxThreadInit() = 0;
+    virtual void GfxThreadDone() = 0;
+    virtual void SwapWindow() = 0;
+#endif
 };
 
 class CPlugins :

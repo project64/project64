@@ -35,10 +35,10 @@ public:
 
     bool Load(const char * FileName);
 
-    void RomOpened();
-    void RomClose();
-    void GameReset();
-    void Close();
+    void RomOpened(RenderWindow * Render);
+    void RomClose(RenderWindow * Render);
+    void GameReset(RenderWindow * Render);
+    void Close(RenderWindow * Render);
 
     void(CALL *DllAbout)  (void * hWnd);
     void(CALL *DllConfig) (void * hParent);
