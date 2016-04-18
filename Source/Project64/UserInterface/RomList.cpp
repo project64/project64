@@ -35,7 +35,7 @@ static const char* ROM_extensions[] =
 };
 
 CRomList::CRomList() :
-    m_RefreshThread(NULL),
+    m_RefreshThread((CThread::CTHREAD_START_ROUTINE)RefreshRomListStatic),
     m_StopRefresh(false),
     m_GameDir(g_Settings->LoadStringVal(RomList_GameDir).c_str()),
     m_NotesIniFile(NULL),
@@ -94,15 +94,14 @@ CRomList::~CRomList()
 
 void CRomList::RefreshRomList(void)
 {
-    DWORD ThreadID;
-
-    if (m_RefreshThread)
+    if (m_RefreshThread.isRunning())
     {
+        WriteTrace(TraceRomList, TraceVerbose, "already refreshing, ignoring");
         return;
     }
     WriteTrace(TraceRomList, TraceDebug, "Starting thread");
     m_StopRefresh = false;
-    m_RefreshThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)RefreshRomListStatic, (LPVOID)this, 0, &ThreadID);
+    m_RefreshThread.Start((void *)this);
     WriteTrace(TraceRomList, TraceVerbose, "Done");
 }
 
@@ -121,8 +120,6 @@ void CRomList::RefreshRomListThread(void)
     FillRomList(FileNames, "");
     RomListLoaded();
     SaveRomList(FileNames);
-    CloseHandle(m_RefreshThread);
-    m_RefreshThread = NULL;
     WriteTrace(TraceRomList, TraceVerbose, "Done");
 }
 

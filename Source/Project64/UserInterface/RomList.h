@@ -12,6 +12,7 @@
 #include <Common/path.h>
 #include <Common/IniFileClass.h>
 #include <Common/md5.h>
+#include <Common/Thread.h>
 #include <Project64-core/N64System/N64Types.h>
 
 class CRomList
@@ -91,5 +92,5 @@ private:
 #ifdef _WIN32
     CIniFile * m_ZipIniFile;
 #endif
-    HANDLE m_RefreshThread;
+    CThread m_RefreshThread;
 };
