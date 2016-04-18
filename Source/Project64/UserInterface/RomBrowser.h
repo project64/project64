@@ -12,7 +12,7 @@
 
 #include <vector>
 #include <Project64/Settings/UISettings.h>
-#include "RomList.h"
+#include <Project64-core/RomList/RomList.h>
 
 class CMainGui;
 class CPlugins;

@@ -70,6 +70,12 @@
     <Filter Include="Header Files\3rd Party\Zlib">
       <UniqueIdentifier>{1478740a-b66b-41bd-833c-917c0cb85047}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Rom List">
+      <UniqueIdentifier>{1cc42db5-377e-4882-9afa-4e6b2a3e389d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Rom List">
+      <UniqueIdentifier>{1030356f-55d6-4fef-9ee2-64c45b9c8ff2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -592,6 +598,9 @@
     </ClInclude>
     <ClInclude Include="N64System\Mips\GBCart.h">
       <Filter>Header Files\N64 System\Mips</Filter>
+    </ClInclude>
+    <ClInclude Include="RomList\RomList.h">
+      <Filter>Header Files\Rom List</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

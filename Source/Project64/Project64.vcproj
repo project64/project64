@@ -225,10 +225,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\UserInterface\RomList.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\UserInterface\SettingsConfig.cpp"
 					>
 				</File>
@@ -456,10 +452,6 @@
 				</File>
 				<File
 					RelativePath=".\UserInterface\RomInformationClass.h"
-					>
-				</File>
-				<File
-					RelativePath=".\UserInterface\RomList.h"
 					>
 				</File>
 				<File

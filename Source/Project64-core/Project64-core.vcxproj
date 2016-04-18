@@ -86,6 +86,7 @@
     <ClCompile Include="Plugins\PluginBase.cpp" />
     <ClCompile Include="Plugins\PluginClass.cpp" />
     <ClCompile Include="Plugins\RSPPlugin.cpp" />
+    <ClCompile Include="RomList\RomList.cpp" />
     <ClCompile Include="Settings\DebugSettings.cpp" />
     <ClCompile Include="Settings\GameSettings.cpp" />
     <ClCompile Include="Settings\LoggingSettings.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="Plugins\PluginBase.h" />
     <ClInclude Include="Plugins\PluginClass.h" />
     <ClInclude Include="Plugins\RSPPlugin.h" />
+    <ClInclude Include="RomList\RomList.h" />
     <ClInclude Include="Settings\DebugSettings.h" />
     <ClInclude Include="Settings\GameSettings.h" />
     <ClInclude Include="Settings\LoggingSettings.h" />
