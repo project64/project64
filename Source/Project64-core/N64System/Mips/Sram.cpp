@@ -9,30 +9,22 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "Sram.h"
+#include <Project64-core/N64System/Mips/Sram.h>
 #include <Common/path.h>
-#include <Windows.h>
 
 CSram::CSram(bool ReadOnly) :
-m_ReadOnly(ReadOnly),
-m_hFile(NULL)
+m_ReadOnly(ReadOnly)
 {
 }
 
 CSram::~CSram()
 {
-    if (m_hFile)
-    {
-        CloseHandle(m_hFile);
-        m_hFile = NULL;
-    }
 }
 
 bool CSram::LoadSram()
 {
-    CPath FileName;
 
-    FileName.SetDriveDirectory(g_Settings->LoadStringVal(Directory_NativeSave).c_str());
+    CPath FileName(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), "");
     FileName.SetName(g_Settings->LoadStringVal(Game_GameName).c_str());
     FileName.SetExtension("sra");
 
@@ -41,24 +33,25 @@ bool CSram::LoadSram()
         FileName.DirectoryCreate();
     }
 
-    m_hFile = CreateFile(FileName, m_ReadOnly ? GENERIC_READ : GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS,
-        FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
-    if (m_hFile == INVALID_HANDLE_VALUE)
+    if (!m_File.Open(FileName, (m_ReadOnly ? CFileBase::modeRead : CFileBase::modeReadWrite) | CFileBase::modeNoTruncate | CFileBase::modeCreate))
     {
-        WriteTrace(TraceN64System, TraceError, "Failed to open (%s), ReadOnly = %d, LastError = %X", (LPCTSTR)FileName, m_ReadOnly, GetLastError());
+#ifdef _WIN32
+        WriteTrace(TraceN64System, TraceError, "Failed to open (%s), ReadOnly = %d, LastError = %X", (const char *)FileName, m_ReadOnly, GetLastError());
+#else
+        WriteTrace(TraceN64System, TraceError, "Failed to open (%s), ReadOnly = %d", (const char *)FileName, m_ReadOnly);
+#endif
         return false;
     }
-    SetFilePointer(m_hFile, 0, NULL, FILE_BEGIN);
+    m_File.SeekToBegin();
     return true;
 }
 
 void CSram::DmaFromSram(uint8_t * dest, int32_t StartOffset, int32_t len)
 {
-    DWORD dwRead;
     uint32_t i;
     uint8_t tmp[4];
 
-    if (m_hFile == NULL)
+    if (!m_File.IsOpen())
     {
         if (!LoadSram())
         {
@@ -73,21 +66,21 @@ void CSram::DmaFromSram(uint8_t * dest, int32_t StartOffset, int32_t len)
 
     if (Offset == 0)
     {
-        SetFilePointer(m_hFile, StartOffset, NULL, FILE_BEGIN);
-        ReadFile(m_hFile, dest, len, &dwRead, NULL);
+        m_File.Seek(StartOffset, CFile::begin);
+        m_File.Read(dest, len);
     }
     else
     {
-        SetFilePointer(m_hFile, StartOffset - Offset, NULL, FILE_BEGIN);
+        m_File.Seek(StartOffset - Offset, CFile::begin);
+        m_File.Read(tmp, 4);
 
-        ReadFile(m_hFile, tmp, 4, &dwRead, NULL);
         for (i = 0; i < (4 - Offset); i++)
         {
             dest[i + Offset] = tmp[i];
         }
         for (i = 4 - Offset; i < len - Offset; i += 4)
         {
-            ReadFile(m_hFile, tmp, 4, &dwRead, NULL);
+            m_File.Read(tmp, 4);
             switch (Offset)
             {
             case 1:
@@ -112,7 +105,7 @@ void CSram::DmaFromSram(uint8_t * dest, int32_t StartOffset, int32_t len)
                 break;
             }
         }
-        ReadFile(m_hFile, tmp, 4, &dwRead, NULL);
+        m_File.Read(tmp, 4);
         switch (Offset)
         {
         case 1:
@@ -135,7 +128,6 @@ void CSram::DmaFromSram(uint8_t * dest, int32_t StartOffset, int32_t len)
 
 void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len)
 {
-    DWORD dwWritten;
     uint32_t i;
     uint8_t tmp[4];
 
@@ -144,7 +136,7 @@ void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len)
         return;
     }
 
-    if (m_hFile == NULL)
+    if (!m_File.IsOpen())
     {
         if (!LoadSram())
         {
@@ -159,8 +151,8 @@ void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len)
 
     if (Offset == 0)
     {
-        SetFilePointer(m_hFile, StartOffset, NULL, FILE_BEGIN);
-        WriteFile(m_hFile, Source, len, &dwWritten, NULL);
+        m_File.Seek(StartOffset, CFile::begin);
+        m_File.Write(Source, len);
     }
     else
     {
@@ -168,10 +160,10 @@ void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len)
         {
             tmp[i] = Source[i + Offset];
         }
-        SetFilePointer(m_hFile, StartOffset - Offset, NULL, FILE_BEGIN);
-        WriteFile(m_hFile, tmp, (4 - Offset), &dwWritten, NULL);
+        m_File.Seek(StartOffset - Offset, CFile::begin);
+        m_File.Write(tmp, (4 - Offset));
+        m_File.Seek(Offset, CFile::current);
 
-        SetFilePointer(m_hFile, Offset, NULL, FILE_CURRENT);
         for (i = 4 - Offset; i < len - Offset; i += 4)
         {
             switch (Offset)
@@ -197,7 +189,7 @@ void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len)
             default:
                 break;
             }
-            WriteFile(m_hFile, tmp, 4, &dwWritten, NULL);
+            m_File.Write(tmp, 4);
         }
         switch (Offset)
         {
@@ -216,8 +208,8 @@ void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len)
         default:
             break;
         }
-        SetFilePointer(m_hFile, 4 - Offset, NULL, FILE_CURRENT);
-        WriteFile(m_hFile, tmp, Offset, &dwWritten, NULL);
+        m_File.Seek(4 - Offset, CFile::current);
+        m_File.Write(tmp, Offset);
     }
-    FlushFileBuffers(m_hFile);
+    m_File.Flush();
 }
