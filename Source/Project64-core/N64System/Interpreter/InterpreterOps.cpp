@@ -31,9 +31,7 @@ float roundf(float num)
 {
     return (num - floorf(num) > 0.5) ? ceilf(num) : floorf(num);
 }
-#endif
 
-#if (defined(_MSC_VER) && (_MSC_VER <= 1700))
 double trunc(double num)
 {
     return (num < 0) ? ceil(num) : floor(num);
