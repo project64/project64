@@ -84,6 +84,6 @@ void SetupTrace(void)
         LogFilePath.DirectoryCreate();
     }
     LogFilePath.SetNameExtension("Glide64.log");
-    g_LogFile = new CTraceFileLog(LogFilePath, GetSystemSetting(Set_log_flush) != 0, Log_New, 500);
+    g_LogFile = new CTraceFileLog(LogFilePath, GetSystemSetting(Set_log_flush) != 0, CLog::Log_New, 500);
     TraceAddModule(g_LogFile);
 }
