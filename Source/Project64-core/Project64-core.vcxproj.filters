@@ -312,6 +312,9 @@
     <ClCompile Include="N64System\Mips\Transferpak.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
+    <ClCompile Include="RomList\RomList.cpp">
+      <Filter>Source Files\Rom List</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

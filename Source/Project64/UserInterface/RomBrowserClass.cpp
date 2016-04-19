@@ -1098,17 +1098,22 @@ bool CRomBrowser::RomDirNeedsRefresh(void)
 
     //Get Old MD5 of file names
     stdstr FileName = g_Settings->LoadStringVal(RomList_RomListCache);
-    HANDLE hFile = CreateFile(FileName.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
-    if (hFile == INVALID_HANDLE_VALUE)
+    if (!CPath(FileName).Exists())
     {
         //if file does not exist then refresh the data
         return true;
     }
 
-    DWORD dwRead;
+    CFile hFile(FileName.c_str(), CFileBase::modeRead);
+    if (!hFile.IsOpen())
+    {
+        //Could not validate, assume it is fine
+        return false;
+    }
+
     unsigned char CurrentFileMD5[16];
-    ReadFile(hFile, &CurrentFileMD5, sizeof(CurrentFileMD5), &dwRead, NULL);
-    CloseHandle(hFile);
+    hFile.Read(&CurrentFileMD5, sizeof(CurrentFileMD5));
+    hFile.Close();
 
     //Get Current MD5 of file names
     strlist FileNames;
@@ -1176,6 +1181,11 @@ void CRomBrowser::WatchRomDirChanged(CRomBrowser * _this)
 
 void CRomBrowser::WatchThreadStart(void)
 {
+    if (m_WatchThread != NULL)
+    {
+        // thread already running
+        return;
+    }
     WriteTrace(TraceUserInterface, TraceDebug, "1");
     WatchThreadStop();
     WriteTrace(TraceUserInterface, TraceDebug, "2");
