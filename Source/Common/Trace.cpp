@@ -171,8 +171,8 @@ const char * TraceModule(uint32_t module)
     return Unknown.c_str();
 }
 
-CTraceFileLog::CTraceFileLog(const char * FileName, bool FlushFile, LOG_OPEN_MODE eMode, size_t dwMaxFileSize) :
-m_FlushFile(FlushFile)
+CTraceFileLog::CTraceFileLog(const char * FileName, bool FlushFile, CLog::LOG_OPEN_MODE eMode, size_t dwMaxFileSize) :
+    m_FlushFile(FlushFile)
 {
     enum { MB = 1024 * 1024 };
 

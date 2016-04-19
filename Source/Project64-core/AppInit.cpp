@@ -44,7 +44,7 @@ void AddLogModule(void)
     }
     LogFilePath.SetNameExtension("Project64.log");
 
-    g_LogFile = new CTraceFileLog(LogFilePath, g_Settings->LoadDword(Debugger_AppLogFlush) != 0, Log_New, 500);
+    g_LogFile = new CTraceFileLog(LogFilePath, g_Settings->LoadDword(Debugger_AppLogFlush) != 0, CLog::Log_New, 500);
     TraceAddModule(g_LogFile);
 }
 
