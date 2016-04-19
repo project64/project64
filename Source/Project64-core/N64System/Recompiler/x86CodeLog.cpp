@@ -11,7 +11,6 @@
 #include "stdafx.h"
 #include "x86CodeLog.h"
 #include <Common/path.h>
-#include <Windows.h>
 
 static CLog * g_CPULogFile = NULL;
 bool bX86Logging = false;
