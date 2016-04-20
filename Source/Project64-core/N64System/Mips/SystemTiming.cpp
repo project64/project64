@@ -318,7 +318,7 @@ bool CSystemTimer::SaveAllowed(void)
     return true;
 }
 
-void CSystemTimer::SaveData(void * file) const
+void CSystemTimer::SaveData(zipFile & file) const
 {
     uint32_t TimerDetailsSize = sizeof(TIMER_DETAILS);
     uint32_t Entries = sizeof(m_TimerDetatils) / sizeof(m_TimerDetatils[0]);
@@ -328,6 +328,19 @@ void CSystemTimer::SaveData(void * file) const
     zipWriteInFileInZip(file, (void *)&m_LastUpdate, sizeof(m_LastUpdate));
     zipWriteInFileInZip(file, &m_NextTimer, sizeof(m_NextTimer));
     zipWriteInFileInZip(file, (void *)&m_Current, sizeof(m_Current));
+}
+
+void CSystemTimer::SaveData(CFile & file) const
+{
+    uint32_t TimerDetailsSize = sizeof(TIMER_DETAILS);
+    uint32_t Entries = sizeof(m_TimerDetatils) / sizeof(m_TimerDetatils[0]);
+    
+    file.Write(&TimerDetailsSize, sizeof(TimerDetailsSize));
+    file.Write(&Entries, sizeof(Entries));
+    file.Write((void *)&m_TimerDetatils, sizeof(m_TimerDetatils));
+    file.Write((void *)&m_LastUpdate, sizeof(m_LastUpdate));
+    file.Write(&m_NextTimer, sizeof(m_NextTimer));
+    file.Write((void *)&m_Current, sizeof(m_Current));
 }
 
 void CSystemTimer::LoadData(void * file)

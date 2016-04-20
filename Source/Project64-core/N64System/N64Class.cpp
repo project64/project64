@@ -1399,52 +1399,33 @@ bool CN64System::SaveState()
     //	if (!m_SystemTimer.SaveAllowed()) { return false; }
     if ((m_Reg.STATUS_REGISTER & STATUS_EXL) != 0) { return false; }
 
-    //Get the file Name
-    stdstr FileName, ExtraInfoFileName, CurrentSaveName = g_Settings->LoadStringVal(GameRunning_InstantSaveFile);
-    if (CurrentSaveName.empty())
+    CPath SaveFile(g_Settings->LoadStringVal(GameRunning_InstantSaveFile));
+    int Slot = 0;
+    if (((const std::string &)SaveFile).empty())
     {
-        int Slot = g_Settings->LoadDword(Game_CurrentSaveState);
-        if (Slot != 0)
-        {
-            CurrentSaveName.Format("%s.pj%d", g_Settings->LoadStringVal(Game_GoodName).c_str(), Slot);
-        }
-        else
-        {
-            CurrentSaveName.Format("%s.pj", g_Settings->LoadStringVal(Game_GoodName).c_str());
-        }
-        FileName.Format("%s%s", g_Settings->LoadStringVal(Directory_InstantSave).c_str(), CurrentSaveName.c_str());
-        stdstr_f ZipFileName("%s.zip", FileName.c_str());
-        //Make sure the target dir exists
-        CreateDirectory(g_Settings->LoadStringVal(Directory_InstantSave).c_str(), NULL);
-        //delete any old save
-        DeleteFile(FileName.c_str());
-        DeleteFile(ZipFileName.c_str());
-        ExtraInfoFileName.Format("%s.dat", CurrentSaveName.c_str());
-
-        //If ziping save add .zip on the end
-        if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
-        {
-            FileName = ZipFileName;
-        }
+        Slot = g_Settings->LoadDword(Game_CurrentSaveState);
+        SaveFile = CPath(g_Settings->LoadStringVal(Directory_InstantSave).c_str(), "");
+        SaveFile.SetName(g_Settings->LoadStringVal(Game_GoodName).c_str());
         g_Settings->SaveDword(Game_LastSaveSlot, g_Settings->LoadDword(Game_CurrentSaveState));
     }
-    else
+    SaveFile.SetExtension(stdstr_f("pj%s", Slot != 0 ? stdstr_f("%d", Slot).c_str() : "").c_str());
+
+    CPath ExtraInfo(SaveFile);
+    ExtraInfo.SetExtension(".dat");
+
+    CPath ZipFile(SaveFile);
+    ZipFile.SetNameExtension(stdstr_f("%s.zip", ZipFile.GetNameExtension().c_str()).c_str());
+
+    //Make sure the target dir exists
+    if (!SaveFile.DirectoryExists())
     {
-        char drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
-        _splitpath(CurrentSaveName.c_str(), drive, dir, fname, ext);
-
-        FileName.Format("%s.pj", CurrentSaveName.c_str());
-
-        CurrentSaveName.Format("%s.pj", fname);
-        ExtraInfoFileName.Format("%s.dat", fname);
-
-        //If ziping save add .zip on the end
-        if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
-        {
-            FileName.Format("%s.zip", FileName.c_str());
-        }
+        SaveFile.DirectoryCreate();
     }
-    if (FileName.empty()) { return true; }
+
+    //delete any old save
+    ExtraInfo.Delete();
+    SaveFile.Delete();
+    ZipFile.Delete();
 
     //Open the file
     if (g_Settings->LoadDword(Game_FuncLookupMode) == FuncFind_ChangeMemory)
@@ -1461,10 +1442,8 @@ bool CN64System::SaveState()
     uint32_t NextViTimer = m_SystemTimer.GetTimer(CSystemTimer::ViTimer);
     if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
     {
-        zipFile			file;
-
-        file = zipOpen(FileName.c_str(), 0);
-        zipOpenNewFileInZip(file, CurrentSaveName.c_str(), NULL, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
+        zipFile file = zipOpen(ZipFile, 0);
+        zipOpenNewFileInZip(file, SaveFile.GetNameExtension().c_str(), NULL, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
         zipWriteInFileInZip(file, &SaveID_0, sizeof(SaveID_0));
         zipWriteInFileInZip(file, &RdramSize, sizeof(uint32_t));
         zipWriteInFileInZip(file, g_Rom->GetRomAddress(), 0x40);
@@ -1492,7 +1471,7 @@ bool CN64System::SaveState()
         zipWriteInFileInZip(file, m_MMU_VM.Imem(), 0x1000);
         zipCloseFileInZip(file);
 
-        zipOpenNewFileInZip(file, ExtraInfoFileName.c_str(), NULL, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
+        zipOpenNewFileInZip(file, ExtraInfo.GetNameExtension().c_str(), NULL, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
         zipWriteInFileInZip(file, &SaveID_1, sizeof(SaveID_1));
         m_SystemTimer.SaveData(file);
         zipCloseFileInZip(file);
@@ -1501,9 +1480,8 @@ bool CN64System::SaveState()
     }
     else
     {
-        HANDLE hSaveFile = CreateFile(FileName.c_str(), GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ,
-            NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
-        if (hSaveFile == INVALID_HANDLE_VALUE)
+        CFile hSaveFile(SaveFile, CFileBase::modeWrite | CFileBase::modeCreate);
+        if (!hSaveFile.IsOpen())
         {
             g_Notify->DisplayError(GS(MSG_FAIL_OPEN_SAVE));
             m_Reg.MI_INTR_REG = MiInterReg;
@@ -1511,44 +1489,45 @@ bool CN64System::SaveState()
         }
 
         //Write info to file
-        SetFilePointer(hSaveFile, 0, NULL, FILE_BEGIN);
-        DWORD dwWritten;
-        WriteFile(hSaveFile, &SaveID_0, sizeof(uint32_t), &dwWritten, NULL);
-        WriteFile(hSaveFile, &RdramSize, sizeof(uint32_t), &dwWritten, NULL);
-        WriteFile(hSaveFile, g_Rom->GetRomAddress(), 0x40, &dwWritten, NULL);
-        WriteFile(hSaveFile, &NextViTimer, sizeof(uint32_t), &dwWritten, NULL);
-        WriteFile(hSaveFile, &m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER), &dwWritten, NULL);
-        WriteFile(hSaveFile, m_Reg.m_GPR, sizeof(int64_t) * 32, &dwWritten, NULL);
-        WriteFile(hSaveFile, m_Reg.m_FPR, sizeof(int64_t) * 32, &dwWritten, NULL);
-        WriteFile(hSaveFile, m_Reg.m_CP0, sizeof(uint32_t) * 32, &dwWritten, NULL);
-        WriteFile(hSaveFile, m_Reg.m_FPCR, sizeof(uint32_t) * 32, &dwWritten, NULL);
-        WriteFile(hSaveFile, &m_Reg.m_HI, sizeof(int64_t), &dwWritten, NULL);
-        WriteFile(hSaveFile, &m_Reg.m_LO, sizeof(int64_t), &dwWritten, NULL);
-        WriteFile(hSaveFile, m_Reg.m_RDRAM_Registers, sizeof(uint32_t) * 10, &dwWritten, NULL);
-        WriteFile(hSaveFile, m_Reg.m_SigProcessor_Interface, sizeof(uint32_t) * 10, &dwWritten, NULL);
-        WriteFile(hSaveFile, m_Reg.m_Display_ControlReg, sizeof(uint32_t) * 10, &dwWritten, NULL);
-        WriteFile(hSaveFile, m_Reg.m_Mips_Interface, sizeof(uint32_t) * 4, &dwWritten, NULL);
-        WriteFile(hSaveFile, m_Reg.m_Video_Interface, sizeof(uint32_t) * 14, &dwWritten, NULL);
-        WriteFile(hSaveFile, m_Reg.m_Audio_Interface, sizeof(uint32_t) * 6, &dwWritten, NULL);
-        WriteFile(hSaveFile, m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13, &dwWritten, NULL);
-        WriteFile(hSaveFile, m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8, &dwWritten, NULL);
-        WriteFile(hSaveFile, m_Reg.m_SerialInterface, sizeof(uint32_t) * 4, &dwWritten, NULL);
-        WriteFile(hSaveFile, &g_TLB->TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32, &dwWritten, NULL);
-        WriteFile(hSaveFile, g_MMU->PifRam(), 0x40, &dwWritten, NULL);
-        WriteFile(hSaveFile, g_MMU->Rdram(), RdramSize, &dwWritten, NULL);
-        WriteFile(hSaveFile, g_MMU->Dmem(), 0x1000, &dwWritten, NULL);
-        WriteFile(hSaveFile, g_MMU->Imem(), 0x1000, &dwWritten, NULL);
+        hSaveFile.SeekToBegin();
+        hSaveFile.Write(&SaveID_0, sizeof(uint32_t));
+        hSaveFile.Write(&RdramSize, sizeof(uint32_t));
+        hSaveFile.Write(g_Rom->GetRomAddress(), 0x40);
+        hSaveFile.Write(&NextViTimer, sizeof(uint32_t));
+        hSaveFile.Write(&m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER));
+        hSaveFile.Write(m_Reg.m_GPR, sizeof(int64_t) * 32);
+        hSaveFile.Write(m_Reg.m_FPR, sizeof(int64_t) * 32);
+        hSaveFile.Write(m_Reg.m_CP0, sizeof(uint32_t) * 32);
+        hSaveFile.Write(m_Reg.m_FPCR, sizeof(uint32_t) * 32);
+        hSaveFile.Write(&m_Reg.m_HI, sizeof(int64_t));
+        hSaveFile.Write(&m_Reg.m_LO, sizeof(int64_t));
+        hSaveFile.Write(m_Reg.m_RDRAM_Registers, sizeof(uint32_t) * 10);
+        hSaveFile.Write(m_Reg.m_SigProcessor_Interface, sizeof(uint32_t) * 10);
+        hSaveFile.Write(m_Reg.m_Display_ControlReg, sizeof(uint32_t) * 10);
+        hSaveFile.Write(m_Reg.m_Mips_Interface, sizeof(uint32_t) * 4);
+        hSaveFile.Write(m_Reg.m_Video_Interface, sizeof(uint32_t) * 14);
+        hSaveFile.Write(m_Reg.m_Audio_Interface, sizeof(uint32_t) * 6);
+        hSaveFile.Write(m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13);
+        hSaveFile.Write(m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
+        hSaveFile.Write(m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
+        hSaveFile.Write(&g_TLB->TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
+        hSaveFile.Write(g_MMU->PifRam(), 0x40);
+        hSaveFile.Write(g_MMU->Rdram(), RdramSize);
+        hSaveFile.Write(g_MMU->Dmem(), 0x1000);
+        hSaveFile.Write(g_MMU->Imem(), 0x1000);
+        hSaveFile.Close();
 
-        CloseHandle(hSaveFile);
+        CFile hExtraInfo(ExtraInfo, CFileBase::modeWrite | CFileBase::modeCreate);
+        if (hExtraInfo.IsOpen())
+        {
+            m_SystemTimer.SaveData(hExtraInfo);
+            hExtraInfo.Close();
+        }
     }
     m_Reg.MI_INTR_REG = MiInterReg;
     g_Settings->SaveString(GameRunning_InstantSaveFile, "");
-    std::string SaveMessage = g_Lang->GetString(MSG_SAVED_STATE);
-
-    CPath SavedFileName(FileName);
-
-    g_Notify->DisplayMessage(5, stdstr_f("%s %s", SaveMessage.c_str(), stdstr(SavedFileName.GetNameExtension()).c_str()).c_str());
-    //Notify().RefreshMenu();
+  
+    g_Notify->DisplayMessage(5, stdstr_f("%s %s", g_Lang->GetString(MSG_SAVED_STATE).c_str(), stdstr(SaveFile.GetNameExtension()).c_str()).c_str());
     WriteTrace(TraceN64System, TraceDebug, "Done");
     return true;
 }
