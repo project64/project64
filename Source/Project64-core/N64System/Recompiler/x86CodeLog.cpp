@@ -11,6 +11,7 @@
 #include "stdafx.h"
 #include "x86CodeLog.h"
 #include <Common/path.h>
+#include <Common/Platform.h>
 
 static CLog * g_CPULogFile = NULL;
 bool bX86Logging = false;
