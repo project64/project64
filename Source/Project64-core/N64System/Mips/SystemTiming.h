@@ -53,7 +53,8 @@ public:
 
     void      SaveData(zipFile & file) const;
     void      SaveData(CFile & file) const;
-    void      LoadData(void * file);
+    void      LoadData(zipFile & file);
+    void      LoadData(CFile & file);
 
     void RecordDifference(CLog &LogFile, const CSystemTimer& rSystemTimer);
 

@@ -1408,7 +1408,11 @@ bool CN64System::SaveState()
         SaveFile.SetName(g_Settings->LoadStringVal(Game_GoodName).c_str());
         g_Settings->SaveDword(Game_LastSaveSlot, g_Settings->LoadDword(Game_CurrentSaveState));
     }
-    SaveFile.SetExtension(stdstr_f("pj%s", Slot != 0 ? stdstr_f("%d", Slot).c_str() : "").c_str());
+    stdstr_f target_ext("pj%s", Slot != 0 ? stdstr_f("%d", Slot).c_str() : "");
+    if (_stricmp(SaveFile.GetExtension().c_str(), target_ext.c_str()) != 0)
+    {
+        SaveFile.SetNameExtension(stdstr_f("%s.%s", SaveFile.GetNameExtension().c_str(), target_ext.c_str()).c_str());
+    }
 
     CPath ExtraInfo(SaveFile);
     ExtraInfo.SetExtension(".dat");
@@ -1584,19 +1588,16 @@ bool CN64System::LoadState(const char * FileName)
     old_dacrate = g_Reg->AI_DACRATE_REG;
 
     WriteTrace(TraceN64System, TraceDebug, "(%s): Start", FileName);
+    CPath SaveFile(FileName);
 
-    char drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
-    _splitpath(FileName, drive, dir, fname, ext);
-
-    stdstr FileNameStr(FileName);
-    if (g_Settings->LoadDword(Setting_AutoZipInstantSave) || _stricmp(ext, ".zip") == 0)
+    if (g_Settings->LoadDword(Setting_AutoZipInstantSave) || _stricmp(SaveFile.GetExtension().c_str(), ".zip") == 0)
     {
         //If ziping save add .zip on the end
-        if (_stricmp(ext, ".zip") != 0)
+        if (!SaveFile.Exists() && _stricmp(SaveFile.GetExtension().c_str(), ".zip") != 0)
         {
-            FileNameStr += ".zip";
+            SaveFile.SetNameExtension(stdstr_f("%s.zip", SaveFile.GetNameExtension().c_str()).c_str());
         }
-        unzFile file = unzOpen(FileNameStr.c_str());
+        unzFile file = unzOpen(SaveFile);
         int port = -1;
         if (file != NULL)
         {
@@ -1635,15 +1636,10 @@ bool CN64System::LoadState(const char * FileName)
 
                 uint8_t LoadHeader[64];
                 unzReadCurrentFile(file, LoadHeader, 0x40);
-                if (memcmp(LoadHeader, g_Rom->GetRomAddress(), 0x40) != 0)
+                if (memcmp(LoadHeader, g_Rom->GetRomAddress(), 0x40) != 0 &&
+                   !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
                 {
-                    //if (inFullScreen) { return false; }
-                    int result = MessageBoxW(NULL, wGS(MSG_SAVE_STATE_HEADER).c_str(), wGS(MSG_MSGBOX_TITLE).c_str(), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2);
-
-                    if (result == IDNO)
-                    {
-                        return false;
-                    }
+                    return false;
                 }
                 Reset(false, true);
 
@@ -1688,64 +1684,67 @@ bool CN64System::LoadState(const char * FileName)
     }
     if (!LoadedZipFile)
     {
-        HANDLE hSaveFile = CreateFile(FileNameStr.c_str(), GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ, NULL,
-            OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
-        if (hSaveFile == INVALID_HANDLE_VALUE)
+        CFile hSaveFile(SaveFile, CFileBase::modeRead);
+        if (!hSaveFile.IsOpen())
         {
-            g_Notify->DisplayMessage(5, stdstr_f("%s %s", GS(MSG_UNABLED_LOAD_STATE), FileNameStr.c_str()).c_str());
+            g_Notify->DisplayMessage(5, stdstr_f("%s %s", GS(MSG_UNABLED_LOAD_STATE), FileName).c_str());
             return false;
         }
+        hSaveFile.SeekToBegin();
 
-        SetFilePointer(hSaveFile, 0, NULL, FILE_BEGIN);
-        DWORD dwRead;
-        ReadFile(hSaveFile, &Value, sizeof(Value), &dwRead, NULL);
+        hSaveFile.Read(&Value, sizeof(Value));
         if (Value != 0x23D8A6C8)
         {
             return false;
         }
 
-        ReadFile(hSaveFile, &SaveRDRAMSize, sizeof(SaveRDRAMSize), &dwRead, NULL);
+        hSaveFile.Read(&SaveRDRAMSize, sizeof(SaveRDRAMSize));
+        
         //Check header
         uint8_t LoadHeader[64];
-        ReadFile(hSaveFile, LoadHeader, 0x40, &dwRead, NULL);
-        if (memcmp(LoadHeader, g_Rom->GetRomAddress(), 0x40) != 0)
+        hSaveFile.Read(LoadHeader, 0x40);
+        if (memcmp(LoadHeader, g_Rom->GetRomAddress(), 0x40) != 0 &&
+            !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
         {
-            //if (inFullScreen) { return false; }
-            int result = MessageBoxW(NULL, wGS(MSG_SAVE_STATE_HEADER).c_str(), wGS(MSG_MSGBOX_TITLE).c_str(), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2);
-
-            if (result == IDNO)
-            {
-                return false;
-            }
+            return false;
         }
         Reset(false, true);
         m_MMU_VM.UnProtectMemory(0x80000000, 0x80000000 + g_Settings->LoadDword(Game_RDRamSize) - 4);
         m_MMU_VM.UnProtectMemory(0xA4000000, 0xA4001FFC);
         g_Settings->SaveDword(Game_RDRamSize, SaveRDRAMSize);
 
-        ReadFile(hSaveFile, &NextVITimer, sizeof(NextVITimer), &dwRead, NULL);
-        ReadFile(hSaveFile, &m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER), &dwRead, NULL);
-        ReadFile(hSaveFile, m_Reg.m_GPR, sizeof(int64_t) * 32, &dwRead, NULL);
-        ReadFile(hSaveFile, m_Reg.m_FPR, sizeof(int64_t) * 32, &dwRead, NULL);
-        ReadFile(hSaveFile, m_Reg.m_CP0, sizeof(uint32_t) * 32, &dwRead, NULL);
-        ReadFile(hSaveFile, m_Reg.m_FPCR, sizeof(uint32_t) * 32, &dwRead, NULL);
-        ReadFile(hSaveFile, &m_Reg.m_HI, sizeof(int64_t), &dwRead, NULL);
-        ReadFile(hSaveFile, &m_Reg.m_LO, sizeof(int64_t), &dwRead, NULL);
-        ReadFile(hSaveFile, m_Reg.m_RDRAM_Registers, sizeof(uint32_t) * 10, &dwRead, NULL);
-        ReadFile(hSaveFile, m_Reg.m_SigProcessor_Interface, sizeof(uint32_t) * 10, &dwRead, NULL);
-        ReadFile(hSaveFile, m_Reg.m_Display_ControlReg, sizeof(uint32_t) * 10, &dwRead, NULL);
-        ReadFile(hSaveFile, m_Reg.m_Mips_Interface, sizeof(uint32_t) * 4, &dwRead, NULL);
-        ReadFile(hSaveFile, m_Reg.m_Video_Interface, sizeof(uint32_t) * 14, &dwRead, NULL);
-        ReadFile(hSaveFile, m_Reg.m_Audio_Interface, sizeof(uint32_t) * 6, &dwRead, NULL);
-        ReadFile(hSaveFile, m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13, &dwRead, NULL);
-        ReadFile(hSaveFile, m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8, &dwRead, NULL);
-        ReadFile(hSaveFile, m_Reg.m_SerialInterface, sizeof(uint32_t) * 4, &dwRead, NULL);
-        ReadFile(hSaveFile, (void *const)&g_TLB->TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32, &dwRead, NULL);
-        ReadFile(hSaveFile, m_MMU_VM.PifRam(), 0x40, &dwRead, NULL);
-        ReadFile(hSaveFile, m_MMU_VM.Rdram(), SaveRDRAMSize, &dwRead, NULL);
-        ReadFile(hSaveFile, m_MMU_VM.Dmem(), 0x1000, &dwRead, NULL);
-        ReadFile(hSaveFile, m_MMU_VM.Imem(), 0x1000, &dwRead, NULL);
-        CloseHandle(hSaveFile);
+        hSaveFile.Read(&NextVITimer, sizeof(NextVITimer));
+        hSaveFile.Read(&m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER));
+        hSaveFile.Read(m_Reg.m_GPR, sizeof(int64_t) * 32);
+        hSaveFile.Read(m_Reg.m_FPR, sizeof(int64_t) * 32);
+        hSaveFile.Read(m_Reg.m_CP0, sizeof(uint32_t) * 32);
+        hSaveFile.Read(m_Reg.m_FPCR, sizeof(uint32_t) * 32);
+        hSaveFile.Read(&m_Reg.m_HI, sizeof(int64_t));
+        hSaveFile.Read(&m_Reg.m_LO, sizeof(int64_t));
+        hSaveFile.Read(m_Reg.m_RDRAM_Registers, sizeof(uint32_t) * 10);
+        hSaveFile.Read(m_Reg.m_SigProcessor_Interface, sizeof(uint32_t) * 10);
+        hSaveFile.Read(m_Reg.m_Display_ControlReg, sizeof(uint32_t) * 10);
+        hSaveFile.Read(m_Reg.m_Mips_Interface, sizeof(uint32_t) * 4);
+        hSaveFile.Read(m_Reg.m_Video_Interface, sizeof(uint32_t) * 14);
+        hSaveFile.Read(m_Reg.m_Audio_Interface, sizeof(uint32_t) * 6);
+        hSaveFile.Read(m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13);
+        hSaveFile.Read(m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
+        hSaveFile.Read(m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
+        hSaveFile.Read((void *const)&g_TLB->TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
+        hSaveFile.Read(m_MMU_VM.PifRam(), 0x40);
+        hSaveFile.Read(m_MMU_VM.Rdram(), SaveRDRAMSize);
+        hSaveFile.Read(m_MMU_VM.Dmem(), 0x1000);
+        hSaveFile.Read(m_MMU_VM.Imem(), 0x1000);
+        hSaveFile.Close();
+        
+        CPath ExtraInfo(SaveFile);
+        ExtraInfo.SetExtension(".dat");
+        CFile hExtraInfo(ExtraInfo, CFileBase::modeWrite | CFileBase::modeCreate);
+        if (hExtraInfo.IsOpen())
+        {
+            m_SystemTimer.LoadData(hExtraInfo);
+            hExtraInfo.Close();
+        }
     }
 
     //Fix losing audio in certain games with certain plugins
@@ -1817,14 +1816,14 @@ bool CN64System::LoadState(const char * FileName)
                 m_LastSuccessSyncPC[i] = 0;
             }
             m_SyncCPU->SetActiveSystem(true);
-            m_SyncCPU->LoadState(FileNameStr.c_str());
+            m_SyncCPU->LoadState(FileName);
             SetActiveSystem(true);
             SyncCPU(m_SyncCPU);
         }
     }
     WriteTrace(TraceN64System, TraceDebug, "13");
     std::string LoadMsg = g_Lang->GetString(MSG_LOADED_STATE);
-    g_Notify->DisplayMessage(5, stdstr_f("%s %s", LoadMsg.c_str(), stdstr(CPath(FileNameStr).GetNameExtension()).c_str()).c_str());
+    g_Notify->DisplayMessage(5, stdstr_f("%s %s", LoadMsg.c_str(), stdstr(SaveFile.GetNameExtension()).c_str()).c_str());
     WriteTrace(TraceN64System, TraceDebug, "Done");
     return true;
 }
