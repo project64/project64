@@ -12,7 +12,7 @@
 
 #include <Common/LogClass.h>
 #include <Project64-core/N64System/N64Types.h>
-#include <Project64-core/3rdParty/Zip.h>
+#include <Project64-core/3rdParty/zip.h>
 
 class CSystemTimer
 {
