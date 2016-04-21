@@ -1,12 +1,15 @@
 #pragma once
 #include <string>
 #include "stdtypes.h"
+#ifndef _WIN32
+# include <dirent.h>
+#endif
 
 class CPathException
 {
 public:
     uint32_t m_dwErrorCode;
-
+    
 public:
     CPathException(uint32_t code = 0) : m_dwErrorCode(code) {}
 };
@@ -15,29 +18,34 @@ class CPath
 {
     //Enums
 public:
-
+    
     enum DIR_CURRENT_DIRECTORY   { CURRENT_DIRECTORY = 1 };
     enum DIR_MODULE_DIRECTORY { MODULE_DIRECTORY = 2 };
     enum DIR_MODULE_FILE { MODULE_FILE = 3 };
-
-    enum 
+    
+    enum
     {
         FIND_ATTRIBUTE_ALLFILES = 0xFFFF,  // Search Include all files
+#ifdef _WIN32
         FIND_ATTRIBUTE_FILES    = 0x0000,  // File can be read or written to without restriction
         FIND_ATTRIBUTE_SUBDIR   = 0x0010,  // Subdirectories
-    };    
-
+#else
+        FIND_ATTRIBUTE_FILES    = DT_REG,
+        FIND_ATTRIBUTE_SUBDIR   = DT_DIR
+#endif
+    };
+    
     //Attributes
 private:
-
+    
     std::string	m_strPath;
     uint32_t   m_dwFindFileAttributes;
     void *	m_hFindFile;
     static void * m_hInst;
-
+    
 public:
     //Methods
-
+    
     //Construction / destruction
     CPath();
     CPath(const CPath& rPath);
@@ -47,17 +55,17 @@ public:
     CPath(const std::string& strPath);
     CPath(const std::string& strPath, const char * NameExten);
     CPath(const std::string& strPath, const std::string& NameExten);
-
+    
     CPath(DIR_CURRENT_DIRECTORY sdt, const char * NameExten = NULL);
     CPath(DIR_MODULE_DIRECTORY sdt, const char * NameExten = NULL);
     CPath(DIR_MODULE_FILE sdt);
-
+    
     virtual ~CPath();
-
+    
     //Setup & Cleanup
     inline void Init();
     inline void Exit();
-
+    
     //Operators
     CPath& operator  = (const CPath& rPath);
     CPath& operator  = (const char * lpszPath);
@@ -66,7 +74,7 @@ public:
     bool   operator != (const CPath& rPath) const;
     operator const char *() const;
     operator const std::string &() { return m_strPath; }
-
+    
     //Get path components
     void   GetDriveDirectory(std::string & rDriveDirectory) const;
     std::string GetDriveDirectory(void) const;
@@ -81,11 +89,11 @@ public:
     void   GetLastDirectory(std::string& rDirectory) const;
     std::string GetLastDirectory(void) const;
     void GetFullyQualified(std::string& rFullyQualified) const;
-	void GetComponents(std::string* pDrive = NULL, std::string* pDirectory = NULL, std::string* pName = NULL, std::string* pExtension = NULL) const;
+    void GetComponents(std::string* pDrive = NULL, std::string* pDirectory = NULL, std::string* pName = NULL, std::string* pExtension = NULL) const;
     //Get other state
     bool IsEmpty() const { return m_strPath.empty(); }
     bool IsRelative() const;
-
+    
     //Set path components
     void SetDrive(char chDrive);
     void SetDriveDirectory(const char * lpszDriveDirectory);
@@ -97,7 +105,7 @@ public:
     void SetExtension(int iExtension);
     void AppendDirectory(const char * lpszSubDirectory);
     void UpDirectory(std::string* pLastDirectory = NULL);
-	void SetComponents(const char * lpszDrive, const char * lpszDirectory, const char * lpszName, const char * lpszExtension);
+    void SetComponents(const char * lpszDrive, const char * lpszDirectory, const char * lpszName, const char * lpszExtension);
     //Set whole path
     void Empty()		{ m_strPath.erase(); }
     void CurrentDirectory();
@@ -105,35 +113,35 @@ public:
     void Module(void * hInstance);
     void ModuleDirectory();
     void ModuleDirectory(void * hInstance);
-
+    
     //Directory information
     bool IsDirectory() const;
     bool DirectoryExists() const;
-
+    
     //File Information
     bool     IsFile() const { return !IsDirectory(); }
     bool     Exists() const;
-
+    
     //Directory operations
     bool DirectoryCreate(bool bCreateIntermediates = true);
     bool ChangeDirectory();
-
+    
     //File operations
     bool Delete(bool bEvenIfReadOnly = true) const;
     bool CopyTo(const char * lpcszTargetFile, bool bOverwrite = true);
     bool MoveTo(const char * lpcszTargetFile, bool bOverwrite = true);
-
+    
     //Finders
-    bool FindFirst(uint32_t dwAttributes = 0);
+    bool FindFirst(uint32_t dwAttributes = FIND_ATTRIBUTE_FILES);
     bool FindNext();
-
+    
     // Helpers
     static void SethInst(void * hInst);
     static void * GethInst();
-
+    
 private:
     bool AttributesMatch(uint32_t dwTargetAttributes, uint32_t dwFileAttributes);
-
+    
     void cleanPathString(std::string& rDirectory) const;
     void StripLeadingChar(std::string& rText, char chLeading) const;
     void StripLeadingBackslash(std::string& Directory)  const;

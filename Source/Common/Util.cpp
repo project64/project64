@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <Tlhelp32.h>
 #else
+#include <dlfcn.h>
 #include <unistd.h>
 #endif
 
@@ -13,9 +14,21 @@ pjutil::DynLibHandle pjutil::DynLibOpen(const char *pccLibraryPath, bool ShowErr
     {
         return NULL;
     }
+
+#ifdef _WIN32
     UINT LastErrorMode = SetErrorMode(ShowErrors ? 0 : SEM_FAILCRITICALERRORS);
     pjutil::DynLibHandle lib = (pjutil::DynLibHandle)LoadLibrary(pccLibraryPath);
     SetErrorMode(LastErrorMode);
+#else
+    pjutil::DynLibHandle lib = dlopen(pccLibraryPath, RTLD_LAZY);
+    if (!lib)
+    {
+        // TODO: show error
+        //printf("Error loading library: %s", dlerror());
+        return NULL;
+    }
+#endif
+    
     return lib;
 }
 
@@ -24,12 +37,20 @@ void * pjutil::DynLibGetProc(pjutil::DynLibHandle LibHandle, const char * Proced
     if (ProcedureName == NULL)
         return NULL;
 
+#ifdef _WIN32
     return GetProcAddress((HMODULE)LibHandle, ProcedureName);
+#else
+    return dlsym(LibHandle, ProcedureName);
+#endif
 }
 
 void pjutil::DynLibClose(pjutil::DynLibHandle LibHandle)
 {
+#ifdef _WIN32
     FreeLibrary((HMODULE)LibHandle);
+#else
+    dlclose(LibHandle);
+#endif
 }
 
 #ifdef _WIN32

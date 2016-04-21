@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CRITICALSECTION_H
+#define CRITICALSECTION_H
 
 class CriticalSection
 {
@@ -32,3 +33,4 @@ private:
 	CGuard &operator=(const CGuard& rhs);
 };
 
+#endif // CRITICALSECTION_H
