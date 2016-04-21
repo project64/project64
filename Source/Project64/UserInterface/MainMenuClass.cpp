@@ -275,7 +275,10 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SaveGame);
         }
         break;
-    case ID_SYSTEM_RESTORE:   WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_RESTORE");   g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState); break;
+    case ID_SYSTEM_RESTORE:
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_RESTORE");
+        g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState);
+        break;
     case ID_SYSTEM_LOAD:
         {
             char Directory[255], SaveFile[255];
@@ -302,7 +305,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
                 _splitpath(SaveFile, drive, dir, fname, ext);
                 _makepath(SaveDir, drive, dir, NULL, NULL);
                 UISettingsSaveString(Directory_LastSave, SaveDir);
-                g_System->LoadState();
+                g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState);
             }
             g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_LoadGame);
         }
