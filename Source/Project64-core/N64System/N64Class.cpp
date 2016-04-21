@@ -1405,6 +1405,10 @@ bool CN64System::SaveState()
     {
         Slot = g_Settings->LoadDword(Game_CurrentSaveState);
         SaveFile = CPath(g_Settings->LoadStringVal(Directory_InstantSave).c_str(), "");
+        if (g_Settings->LoadBool(Setting_UniqueSaveDir))
+        {
+            SaveFile.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
+        }
         SaveFile.SetName(g_Settings->LoadStringVal(Game_GoodName).c_str());
         g_Settings->SaveDword(Game_LastSaveSlot, g_Settings->LoadDword(Game_CurrentSaveState));
     }
@@ -1547,6 +1551,10 @@ bool CN64System::LoadState()
     }
 
     CPath FileName(g_Settings->LoadStringVal(Directory_InstantSave).c_str(), "");
+    if (g_Settings->LoadBool(Setting_UniqueSaveDir))
+    {
+        FileName.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
+    }
     if (g_Settings->LoadDword(Game_CurrentSaveState) != 0)
     {
         FileName.SetNameExtension(stdstr_f("%s.pj%d", g_Settings->LoadStringVal(Game_GoodName).c_str(), g_Settings->LoadDword(Game_CurrentSaveState)).c_str());

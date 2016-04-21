@@ -116,6 +116,11 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Setting_CheckEmuRunning, new CSettingTypeApplication("", "Check Running", (uint32_t)true));
 
     AddHandler(Setting_RememberCheats, new CSettingTypeApplication("", "Remember Cheats", (uint32_t)false));
+#ifdef ANDROID
+    AddHandler(Setting_UniqueSaveDir, new CSettingTypeTempBool(true));
+#else
+    AddHandler(Setting_UniqueSaveDir, new CSettingTypeApplication("", "Unique Game Dir", (uint32_t)false));
+#endif
     AddHandler(Setting_CurrentLanguage, new CSettingTypeApplication("", "Current Language", ""));
     AddHandler(Setting_EnableDisk, new CSettingTypeApplication("", "Enable Disk", (uint32_t)true));
     AddHandler(Setting_LanguageDirDefault, new CSettingTypeRelativePath("Lang", ""));
@@ -168,6 +173,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 
     AddHandler(Game_IniKey, new CSettingTypeTempString(""));
     AddHandler(Game_File, new CSettingTypeTempString(""));
+    AddHandler(Game_UniqueSaveDir, new CSettingTypeTempString(""));
     AddHandler(Game_GameName, new CSettingTypeTempString(""));
     AddHandler(Game_GoodName, new CSettingTypeGame("Good Name", Rdb_GoodName));
     AddHandler(Game_TempLoaded, new CSettingTypeTempBool(false));

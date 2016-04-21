@@ -264,6 +264,7 @@ enum LanguageStringID
     OPTION_DISPLAY_FR = 465,
     OPTION_CHANGE_FR = 466,
     OPTION_CHECK_RUNNING = 467,
+    OPTION_UNIQUE_GAME_DIR = 468,
 
     //Rom Browser Tab
     RB_MAX_ROMS = 480,

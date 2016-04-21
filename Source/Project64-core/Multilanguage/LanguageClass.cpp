@@ -231,6 +231,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(OPTION_DISABLE_SS, "Disable screen saver when running a ROM");
     DEF_STR(OPTION_DISPLAY_FR, "Display speed");
     DEF_STR(OPTION_CHECK_RUNNING, "Check if Project64 is already running");
+    DEF_STR(OPTION_UNIQUE_GAME_DIR, "Unique Game Save Directory");
     DEF_STR(OPTION_CHANGE_FR, "Speed display:");
 
     //ROM Browser Tab

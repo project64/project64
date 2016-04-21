@@ -51,6 +51,7 @@ enum SettingID
 
     Setting_AutoZipInstantSave,
     Setting_RememberCheats,
+    Setting_UniqueSaveDir,
     Setting_LanguageDir,
     Setting_LanguageDirDefault,
     Setting_CurrentLanguage,
@@ -97,6 +98,7 @@ enum SettingID
     //Individual Game Settings
     Game_IniKey,
     Game_File,
+    Game_UniqueSaveDir,
     Game_GameName,
     Game_GoodName,
     Game_TempLoaded,

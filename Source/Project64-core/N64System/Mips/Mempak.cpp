@@ -24,6 +24,10 @@ void Mempak::Load(int32_t Control)
     MempakName.Format("%s_Cont_%d", g_Settings->LoadStringVal(Game_GameName).c_str(), Control + 1);
 
     MempakNames[Control] = CPath(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.mpk",MempakName.c_str()).c_str());
+    if (g_Settings->LoadBool(Setting_UniqueSaveDir))
+    {
+        MempakNames[Control].AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
+    }
     if (!MempakNames[Control].DirectoryExists())
     {
         MempakNames[Control].DirectoryCreate();

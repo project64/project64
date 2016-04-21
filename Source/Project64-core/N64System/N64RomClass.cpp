@@ -757,6 +757,7 @@ void CN64Rom::SaveRomSettingID(bool temp)
     g_Settings->SaveBool(Game_TempLoaded, temp);
     g_Settings->SaveString(Game_GameName, m_RomName.c_str());
     g_Settings->SaveString(Game_IniKey, m_RomIdent.c_str());
+    g_Settings->SaveString(Game_UniqueSaveDir, stdstr_f("%s-%s", m_RomName.c_str(), m_MD5.c_str() ).c_str());
 
     switch (GetCountry())
     {
