@@ -173,13 +173,17 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
     GFX_INFO Info = { 0 };
 
     Info.MemoryBswaped = true;
-#ifdef _WIN32
-    Info.hWnd = Window ? Window->GetWindowHandle() : NULL;
-    Info.hStatusBar = Window ? Window->GetStatusBar() : NULL;
-#else
+#if defined(ANDROID) || defined(__ANDROID__)
     Info.SwapBuffers = SwapBuffers;
+#endif
     Info.hWnd = NULL;
     Info.hStatusBar = NULL;
+#ifdef _WIN32
+    if (Window != NULL)
+    {
+        Info.hWnd       = Window->GetWindowHandle();
+        Info.hStatusBar = Window->GetStatusBar();
+    }
 #endif
     Info.CheckInterrupts = DummyCheckInterrupts;
 
