@@ -1,8 +1,23 @@
 #include "stdafx.h"
 #include "Thread.h"
 #ifndef _WIN32
-#include <pthread.h>
-#define THREAD(t) *static_cast<pthread_t*>(t)
+# include <pthread.h>
+# include <signal.h>
+# include <sys/types.h>
+# if defined(__ANDROID__)
+#  include <unistd.h>
+# elif defined(__linux)
+#  include <cxxabi.h>
+# endif
+# define THREAD(t) *static_cast<pthread_t*>(t)
+#endif
+
+
+// glibc workaround for gettid()
+#ifdef __GNU_LIBRARY__
+#include <unistd.h>
+#include <sys/syscall.h>
+#define gettid() syscall(SYS_gettid)
 #endif
 
 CThread::CThread(CTHREAD_START_ROUTINE lpStartAddress) :
@@ -28,7 +43,7 @@ CThread::~CThread()
 #else
     if(m_thread != NULL)
     {
-        delete THREAD(m_thread);
+        delete &THREAD(m_thread);
         m_thread = NULL;
     }
 #endif
@@ -38,6 +53,7 @@ CThread::~CThread()
 bool CThread::Start(void * lpThreadParameter)
 {   WriteTrace(TraceThread, TraceDebug, "Start");
     m_lpThreadParameter = lpThreadParameter;
+    
 #ifdef _WIN32
     m_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ThreadWrapper, this, 0, (LPDWORD)&m_threadID);
 #else
@@ -55,22 +71,39 @@ bool CThread::Start(void * lpThreadParameter)
 void * CThread::ThreadWrapper (CThread * _this)
 {
     WriteTrace(TraceThread, TraceDebug, "Start");
+    
+    /* Get Thread ID on UNIX */
 #ifndef _WIN32
-    uint64_t tid = 0;
-    pthread_threadid_np(NULL,&tid);
-    _this->m_threadID = tid;
-
+    _this->m_threadID = CThread::GetCurrentThreadId();
+#endif
+    
+    /* Set pthread cancel state and type */
+#if !defined(_WIN32) && !defined(__ANDROID__)
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 #endif
-    
+
     void * res = NULL;
     try
     {
         res = (void *)_this->m_StartAddress(_this->m_lpThreadParameter);
     }
+#if defined(__linux) && !defined(__ANDROID__) && defined(__GNUC__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 2
+    // for post gcc 4.1.2 or glibc version used in RHEL6 and above -
+    // pthread_exit and pthread_cancel will cause
+    // an abi::__forced_unwind to be thrown. Rethrow it.
+    catch (abi::__forced_unwind&)
+    {
+        throw;
+    }
+#endif
     catch (...)
     {
+#if defined(__linux) && !defined(__ANDROID__) && defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ == 1
+        // for gcc 4.1.2 or glibc version used in RHEL 5
+        // that does not work with the abi::__forced_unwind
+        throw;
+#endif
         //WriteTrace(TraceUserInterface, TraceError, "Unhandled Exception ");
     }
 
@@ -122,7 +155,15 @@ void CThread::Terminate(void)
         TerminateThread(m_thread, 0);
         m_thread = NULL;
 #else
+#  if defined(__ANDROID__)
+        usleep(1000);
+        pthread_kill(THREAD(m_thread), SIGTERM);
+#  else
+        // On Mac OS X thread is not terminated
+        // unless it calls any of the cancellation point function
+        // or call pthread_testcancel()
         pthread_cancel(THREAD(m_thread));
+#  endif
         pthread_join(THREAD(m_thread), NULL);
 #endif
     }
@@ -133,9 +174,11 @@ uint32_t CThread::GetCurrentThreadId(void)
 {
 #ifdef _WIN32
     return ::GetCurrentThreadId();
+#elif defined(__APPLE__)
+    uint64_t tid;
+    pthread_threadid_np(NULL,&tid);
+    return tid;
 #else
-    uint64_t t;
-    pthread_threadid_np(NULL,&t);
-    return t;
+    return gettid();
 #endif
 }
