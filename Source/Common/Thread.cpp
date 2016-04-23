@@ -20,6 +20,15 @@
 #define gettid() syscall(SYS_gettid)
 #endif
 
+// Android workaround callback for pthread_cancel
+#ifdef __ANDROID__
+void thread_exit_handler(int sig)
+{
+    pthread_exit(0);
+}
+#endif
+
+
 CThread::CThread(CTHREAD_START_ROUTINE lpStartAddress) :
     m_StartAddress(lpStartAddress),
     m_thread(NULL)
@@ -27,6 +36,16 @@ CThread::CThread(CTHREAD_START_ROUTINE lpStartAddress) :
     WriteTrace(TraceThread, TraceDebug, "Start");
 #ifndef _WIN32
     m_thread = static_cast<void*>(new pthread_t);
+#endif
+    
+    // Android workaround for pthread_cancel
+#ifdef __ANDROID__
+    struct sigaction actions;
+    memset(&actions, 0, sizeof(actions));
+    sigemptyset(&actions.sa_mask);
+    actions.sa_flags = 0;
+    actions.sa_handler = thread_exit_handler;
+    sigaction(SIGUSR1, &actions, NULL);
 #endif
     WriteTrace(TraceThread, TraceDebug, "Done");
 }
@@ -77,7 +96,7 @@ void * CThread::ThreadWrapper (CThread * _this)
     _this->m_threadID = CThread::GetCurrentThreadId();
 #endif
     
-    /* Set pthread cancel state and type */
+    /* Set pthread cancel state and type on Unix */
 #if !defined(_WIN32) && !defined(__ANDROID__)
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
@@ -155,15 +174,15 @@ void CThread::Terminate(void)
         TerminateThread(m_thread, 0);
         m_thread = NULL;
 #else
-#  if defined(__ANDROID__)
-        usleep(1000);
-        pthread_kill(THREAD(m_thread), SIGTERM);
-#  else
+   #if defined(__ANDROID__)
+        usleep(1000); // Could get SEGFAULT
+        pthread_kill(THREAD(m_thread), SIGUSR1);
+   #else
         // On Mac OS X thread is not terminated
         // unless it calls any of the cancellation point function
         // or call pthread_testcancel()
         pthread_cancel(THREAD(m_thread));
-#  endif
+   #endif
         pthread_join(THREAD(m_thread), NULL);
 #endif
     }
@@ -176,7 +195,7 @@ uint32_t CThread::GetCurrentThreadId(void)
     return ::GetCurrentThreadId();
 #elif defined(__APPLE__)
     uint64_t tid;
-    pthread_threadid_np(NULL,&tid);
+    pthread_threadid_np(NULL, &tid);
     return tid;
 #else
     return gettid();
