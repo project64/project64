@@ -7,6 +7,9 @@
 
 CThread::CThread(CTHREAD_START_ROUTINE lpStartAddress) :
     m_StartAddress(lpStartAddress),
+#ifndef _WIN32
+    m_running(false),
+#endif
     m_thread(NULL)
 {
     WriteTrace(TraceThread, TraceDebug, "Start");
@@ -30,7 +33,15 @@ bool CThread::Start(void * lpThreadParameter)
 {
     WriteTrace(TraceThread, TraceDebug, "Start");
     m_lpThreadParameter = lpThreadParameter;
+#ifdef _WIN32
     m_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ThreadWrapper, this, 0, (LPDWORD)&m_threadID);
+#else
+    pthread_t * thread_id = new pthread_t;
+
+    m_thread = (void*)thread_id;
+
+    int res = pthread_create(thread_id, NULL, (void *(*)(void *))ThreadWrapper, this);
+#endif
     WriteTrace(TraceThread, TraceDebug, "Done");
     return true;
 }
@@ -38,6 +49,10 @@ bool CThread::Start(void * lpThreadParameter)
 void * CThread::ThreadWrapper (CThread * _this)
 {
     WriteTrace(TraceThread, TraceDebug, "Start");
+#ifndef _WIN32
+    _this->m_running = true;
+    WriteTrace(TraceThread, TraceDebug, "Thread is running");
+#endif
     void * res = NULL;
     try
     {
@@ -47,7 +62,16 @@ void * CThread::ThreadWrapper (CThread * _this)
     {
         //WriteTrace(TraceUserInterface, TraceError, "Unhandled Exception ");
     }
+#ifndef _WIN32
+    _this->m_running = false;
+    WriteTrace(TraceThread, TraceDebug, "Thread is finished");
+#endif
+#ifdef _WIN32
     CloseHandle(_this->m_thread);
+#else
+    pthread_t * thread_id = (pthread_t *)_this->m_thread;
+    delete thread_id;
+#endif
     _this->m_thread = NULL;
     WriteTrace(TraceThread, TraceDebug, "Done");
     return res;
@@ -61,7 +85,11 @@ bool CThread::isRunning(void) const
         WriteTrace(TraceThread, TraceDebug, "Done (res: false), m_thread is null");
         return false;
     }
-
+#ifndef _WIN32
+    WriteTrace(TraceThread, TraceDebug, "Done (res: %s)", m_running ? "true" : "false");
+    return m_running;
+#endif
+#ifdef _WIN32
     DWORD ExitCode;
     if (GetExitCodeThread(m_thread, &ExitCode))
     {
@@ -73,6 +101,9 @@ bool CThread::isRunning(void) const
     }
     WriteTrace(TraceThread, TraceDebug, "Done (res: false)");
     return false;
+#else
+    return true;
+#endif
 }
 
 void CThread::Terminate(void)
@@ -80,13 +111,21 @@ void CThread::Terminate(void)
     WriteTrace(TraceThread, TraceDebug, "Start");
     if (isRunning())
     {
+#ifdef _WIN32
         WriteTrace(TraceThread, TraceDebug, "Terminating thread");
         TerminateThread(m_thread, 0);
+#else
+    	WriteTrace(TraceThread, TraceError, "Need to fix");
+#endif
     }
     WriteTrace(TraceThread, TraceDebug, "Done");
 }
 
 uint32_t CThread::GetCurrentThreadId(void)
 {
+#ifdef _WIN32
     return ::GetCurrentThreadId();
+#else
+    return gettid();
+#endif
 }

@@ -3,7 +3,11 @@
 class CThread 
 {
 public:
-    typedef uint32_t(* CTHREAD_START_ROUTINE)(void * lpThreadParameter);
+#ifdef _WIN32
+    typedef uint32_t(__stdcall * CTHREAD_START_ROUTINE)(void * lpThreadParameter);
+#else
+    typedef void *(*CTHREAD_START_ROUTINE)(void *);
+#endif
     CThread(CTHREAD_START_ROUTINE lpStartAddress);
     ~CThread();
 
@@ -26,4 +30,7 @@ private:
     void * m_lpThreadParameter;
     void * m_thread;
     uint32_t m_threadID;
+#ifndef _WIN32
+    bool m_running;
+#endif
 };
