@@ -1,16 +1,28 @@
 #include "stdafx.h"
+#ifdef _WIN32
 #include <windows.h>
+#else
+#include <mutex>
+#endif
 
 CriticalSection::CriticalSection()
 {
-	m_cs = new CRITICAL_SECTION;
-	::InitializeCriticalSection((CRITICAL_SECTION *)m_cs);
+#ifdef _WIN32
+    m_cs = new CRITICAL_SECTION;
+    ::InitializeCriticalSection((CRITICAL_SECTION *)m_cs);
+#else
+    m_cs = static_cast<void*>(new std::mutex);
+#endif
 }
 
 CriticalSection::~CriticalSection(void)
 {
+#ifdef _WIN32
 	::DeleteCriticalSection((CRITICAL_SECTION *)m_cs);
 	delete (CRITICAL_SECTION *)m_cs;
+#else
+    delete static_cast<std::mutex*>(m_cs);
+#endif
 }
 
 /**
@@ -21,7 +33,11 @@ CriticalSection::~CriticalSection(void)
 */
 void CriticalSection::enter(void)
 {
+#ifdef _WIN32
 	::EnterCriticalSection((CRITICAL_SECTION *)m_cs);
+#else
+    static_cast<std::mutex*>(m_cs)->lock();
+#endif
 }
 
 /**
@@ -33,5 +49,9 @@ void CriticalSection::enter(void)
 */
 void CriticalSection::leave(void)
 {
+#ifdef _WIN32
 	::LeaveCriticalSection((CRITICAL_SECTION *)m_cs);
+#else
+    static_cast<std::mutex*>(m_cs)->unlock();
+#endif
 }

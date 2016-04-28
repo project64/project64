@@ -1,6 +1,9 @@
 #pragma once
 #include <string>
 #include "stdtypes.h"
+#ifndef _WIN32
+# include <dirent.h>
+#endif
 
 class CPathException
 {
@@ -19,14 +22,19 @@ public:
     enum DIR_CURRENT_DIRECTORY   { CURRENT_DIRECTORY = 1 };
     enum DIR_MODULE_DIRECTORY { MODULE_DIRECTORY = 2 };
     enum DIR_MODULE_FILE { MODULE_FILE = 3 };
-
-    enum 
+    
+    enum
     {
         FIND_ATTRIBUTE_ALLFILES = 0xFFFF,  // Search Include all files
+#ifdef _WIN32
         FIND_ATTRIBUTE_FILES    = 0x0000,  // File can be read or written to without restriction
         FIND_ATTRIBUTE_SUBDIR   = 0x0010,  // Subdirectories
-    };    
-
+#else
+        FIND_ATTRIBUTE_FILES    = DT_REG,
+        FIND_ATTRIBUTE_SUBDIR   = DT_DIR
+#endif
+    };
+    
     //Attributes
 private:
 
@@ -34,7 +42,7 @@ private:
     uint32_t   m_dwFindFileAttributes;
     void *	m_hFindFile;
     static void * m_hInst;
-
+    
 public:
     //Methods
 
@@ -81,7 +89,7 @@ public:
     void   GetLastDirectory(std::string& rDirectory) const;
     std::string GetLastDirectory(void) const;
     void GetFullyQualified(std::string& rFullyQualified) const;
-	void GetComponents(std::string* pDrive = NULL, std::string* pDirectory = NULL, std::string* pName = NULL, std::string* pExtension = NULL) const;
+    void GetComponents(std::string* pDrive = NULL, std::string* pDirectory = NULL, std::string* pName = NULL, std::string* pExtension = NULL) const;
     //Get other state
     bool IsEmpty() const { return m_strPath.empty(); }
     bool IsRelative() const;
@@ -97,7 +105,7 @@ public:
     void SetExtension(int iExtension);
     void AppendDirectory(const char * lpszSubDirectory);
     void UpDirectory(std::string* pLastDirectory = NULL);
-	void SetComponents(const char * lpszDrive, const char * lpszDirectory, const char * lpszName, const char * lpszExtension);
+    void SetComponents(const char * lpszDrive, const char * lpszDirectory, const char * lpszName, const char * lpszExtension);
     //Set whole path
     void Empty()		{ m_strPath.erase(); }
     void CurrentDirectory();
@@ -124,7 +132,7 @@ public:
     bool MoveTo(const char * lpcszTargetFile, bool bOverwrite = true);
 
     //Finders
-    bool FindFirst(uint32_t dwAttributes = 0);
+    bool FindFirst(uint32_t dwAttributes = FIND_ATTRIBUTE_FILES);
     bool FindNext();
 
     // Helpers

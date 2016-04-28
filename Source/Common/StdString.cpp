@@ -1,5 +1,9 @@
 #include "stdafx.h"
-#include <malloc.h>
+#ifdef __APPLE__
+# include <malloc/malloc.h>
+#else
+# include <malloc.h>
+#endif
 #include <algorithm>
 #ifdef _WIN32
 #include <Windows.h>

@@ -2,17 +2,48 @@
 //
 //////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include <Shlobj.h>
-#include <dos.h>
+#ifdef _WIN32
+# include <Shlobj.h>
+# include <dos.h>
+#else
+# include <cstdio>
+# include <dirent.h>
+# include <dlfcn.h>
+# include <fcntl.h>
+# include <fnmatch.h>
+# include <libgen.h>
+# include <limits.h>
+# include <stdlib.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <unistd.h>
+# ifndef MAX_PATH
+#  define MAX_PATH PATH_MAX
+# endif
+#endif
 
 //////////////////////////////////////////////////////////////////////
 // Constants
 //////////////////////////////////////////////////////////////////////
 
+#ifdef _WIN32
 const char DRIVE_DELIMITER = ':';
 const char * const DIR_DOUBLEDELIM = "\\\\";
 const char DIRECTORY_DELIMITER = '\\';
 const char DIRECTORY_DELIMITER2 = '/';
+#else
+// Helper Struct for FindNext method
+struct FindFileHandle
+{
+    DIR* pDir = NULL;
+    dirent* pDirEntry = NULL;
+    std::string searchPattern;
+};
+#define FINDFILE_HANDLE(handle) static_cast<FindFileHandle*>(handle)
+
+const char * DRIVE_DELIMITER = "";
+const char DIRECTORY_DELIMITER = '/';
+#endif
 const char EXTENSION_DELIMITER = '.';
 void * CPath::m_hInst = NULL;
 
@@ -53,7 +84,12 @@ inline void CPath::Exit()
 {
     if (m_hFindFile != NULL)
     {
+#ifdef _WIN32
         FindClose(m_hFindFile);
+#else
+        closedir(FINDFILE_HANDLE(m_hFindFile)->pDir);
+        delete FINDFILE_HANDLE(m_hFindFile);
+#endif
         m_hFindFile = NULL;
     }
 }
@@ -86,6 +122,7 @@ CPath::CPath(const CPath& rPath)
 CPath::CPath(const char * lpszPath)
 {
     Init();
+
     m_strPath = lpszPath ? lpszPath : "";
     cleanPathString(m_strPath);
 }
@@ -245,6 +282,7 @@ CPath::CPath(DIR_MODULE_FILE /*sdt*/)
 //-------------------------------------------------------------
 void CPath::GetComponents(std::string* pDrive, std::string* pDirectory, std::string* pName, std::string* pExtension) const
 {
+#ifdef _WIN32
     char buff_drive[_MAX_DRIVE + 1];
     char buff_dir[_MAX_DIR + 1];
     char buff_name[_MAX_FNAME + 1];
@@ -291,6 +329,31 @@ void CPath::GetComponents(std::string* pDrive, std::string* pDirectory, std::str
     {
         StripLeadingChar(*pExtension, EXTENSION_DELIMITER);
     }
+#else
+    /* Find Path Components */
+    size_t posRoot = m_strPath.find_first_of(DIRECTORY_DELIMITER);
+    size_t posFile = m_strPath.find_last_of(DIRECTORY_DELIMITER);
+    size_t posExt  = m_strPath.find_last_of(EXTENSION_DELIMITER);
+    
+    if(posFile == std::string::npos)
+        posFile = 0;
+    
+    if(!m_strPath.empty() && m_strPath.at(posFile) == DIRECTORY_DELIMITER)
+        posFile++;
+        
+    if(posExt == std::string::npos || posExt == 0 || posExt == 1 || m_strPath.at(posExt -1) == DIRECTORY_DELIMITER)
+        posExt = m_strPath.size();
+    
+    /* Extract Path Components */
+    if (pDrive)
+        *pDrive     = ((posRoot == 0) ? std::string(1, DIRECTORY_DELIMITER) : std::string());
+    if (pDirectory)
+        *pDirectory = m_strPath.substr(((posRoot == 0) ? 1 : 0), posFile - ((posRoot == 0) ? 1 : 0));
+    if (pName)
+        *pName      = m_strPath.substr(posFile, posExt - posFile);
+    if (pExtension)
+        *pExtension = m_strPath.substr((posExt == m_strPath.size()) ? posExt : posExt + 1);
+#endif
 }
 
 //-------------------------------------------------------------
@@ -419,10 +482,13 @@ std::string CPath::GetLastDirectory(void) const
 void CPath::GetFullyQualified(std::string& rFullyQualified) const
 {
     char buff_fullname[MAX_PATH];
-
     memset(buff_fullname, 0, sizeof(buff_fullname));
-
+    
+#ifdef _WIN32
     _fullpath(buff_fullname, m_strPath.c_str(), MAX_PATH - 1);
+#else
+    realpath(m_strPath.c_str(), buff_fullname);
+#endif
     rFullyQualified = buff_fullname;
 }
 
@@ -432,11 +498,13 @@ void CPath::GetFullyQualified(std::string& rFullyQualified) const
 //-------------------------------------------------------------
 bool CPath::IsRelative() const
 {
+#ifdef _WIN32
     if (m_strPath.length() > 1 && m_strPath[1] == DRIVE_DELIMITER)
     {
         return false;
     }
-    if (m_strPath.length() > 1 && m_strPath[0] == DIRECTORY_DELIMITER && m_strPath[1] == DIRECTORY_DELIMITER)
+#endif
+    if (m_strPath.length() > 1 && m_strPath[0] == DIRECTORY_DELIMITER)
     {
         return false;
     }
@@ -448,18 +516,45 @@ bool CPath::IsRelative() const
 //-------------------------------------------------------------
 void CPath::SetComponents(const char * lpszDrive, const char * lpszDirectory, const char * lpszName, const char * lpszExtension)
 {
+#ifdef _WIN32
     char buff_fullname[MAX_PATH];
-
     memset(buff_fullname, 0, sizeof(buff_fullname));
+
     if (lpszDirectory == NULL || strlen(lpszDirectory) == 0)
     {
         static char empty_dir[] = { DIRECTORY_DELIMITER, '\0' };
         lpszDirectory = empty_dir;
     }
     _makepath(buff_fullname, lpszDrive, lpszDirectory, lpszName, lpszExtension);
-
     m_strPath.erase();
     m_strPath = buff_fullname;
+#else
+    m_strPath.erase();
+    if (lpszDrive != NULL && strlen(lpszDrive) != 0)
+    {
+        if(lpszDirectory != NULL && lpszDirectory[0] !=  '/')
+            m_strPath += (*lpszDrive == '/' ? "/" : "");
+    }
+    
+    if (lpszDirectory != NULL && strlen(lpszDirectory) != 0)
+    {
+        m_strPath += lpszDirectory;
+        if(m_strPath.back() != DIRECTORY_DELIMITER)
+            m_strPath += DIRECTORY_DELIMITER;
+    }
+    
+    if (lpszName != NULL && strlen(lpszName) != 0)
+    {
+        m_strPath += lpszName;
+    }
+    
+    if ((lpszName != NULL && strlen(lpszName) != 0) && (lpszExtension != NULL && strlen(lpszExtension) != 0))
+    {
+        if(lpszExtension[0] != EXTENSION_DELIMITER)
+            m_strPath += EXTENSION_DELIMITER;
+        m_strPath += lpszExtension;
+    }
+#endif
 }
 
 //-------------------------------------------------------------
@@ -658,7 +753,11 @@ void CPath::CurrentDirectory()
 
     memset(buff_path, 0, sizeof(buff_path));
 
+#ifdef _WIN32
     ::GetCurrentDirectory(MAX_PATH, buff_path);
+#else
+    getcwd(buff_path, MAX_PATH);
+#endif
 
     Empty();
     SetDriveDirectory(buff_path);
@@ -669,12 +768,19 @@ void CPath::CurrentDirectory()
 //-------------------------------------------------------------
 void CPath::Module(void * hInstance)
 {
+#ifdef _WIN32
     char buff_path[MAX_PATH];
-
+    
     memset(buff_path, 0, sizeof(buff_path));
-
     GetModuleFileName((HINSTANCE)hInstance, buff_path, MAX_PATH);
     m_strPath = buff_path;
+#else
+    Dl_info dlInfo;
+    if(dladdr(hInstance, &dlInfo) == 0)
+        return;
+    m_strPath = dlInfo.dli_fname;
+#endif
+
 }
 
 //-------------------------------------------------------------
@@ -709,6 +815,14 @@ void CPath::ModuleDirectory()
 //---------------------------------------------------------------------------
 bool CPath::IsDirectory() const
 {
+#ifndef _WIN32
+    struct stat statbuf;
+    if(stat(m_strPath.c_str(), &statbuf) == -1)
+        goto LABEL_CheckPath;
+    return S_ISDIR(statbuf.st_mode);
+    
+LABEL_CheckPath:
+#endif
     // Check if this path has a filename
     std::string file_name;
     GetNameExtension(file_name);
@@ -733,6 +847,7 @@ bool CPath::DirectoryExists() const
     TestPath.UpDirectory(&DirName);
     TestPath.SetNameExtension(DirName.c_str());
 
+#ifdef _WIN32
     WIN32_FIND_DATA	FindData;
     HANDLE          hFindFile = FindFirstFile((const char *)TestPath, &FindData); // Find anything
     bool            bGotDirectory = (hFindFile != INVALID_HANDLE_VALUE) && (FindData.dwFileAttributes && FILE_ATTRIBUTE_DIRECTORY != 0);
@@ -741,6 +856,14 @@ bool CPath::DirectoryExists() const
     {
         FindClose(hFindFile);
     }
+#else
+    DIR* dir = opendir((const char *)TestPath);
+    bool bGotDirectory = (dir != NULL);
+    if(bGotDirectory)
+    {
+        closedir(dir);
+    }    
+#endif
 
     return bGotDirectory;
 }
@@ -751,6 +874,7 @@ bool CPath::DirectoryExists() const
 //-------------------------------------------------------------
 bool CPath::Exists() const
 {
+#ifdef _WIN32
     WIN32_FIND_DATA FindData;
     HANDLE          hFindFile = FindFirstFile(m_strPath.c_str(), &FindData);
     bool            bSuccess = (hFindFile != INVALID_HANDLE_VALUE);
@@ -759,8 +883,11 @@ bool CPath::Exists() const
     {
         FindClose(hFindFile);
     }
-
+    
     return bSuccess;
+#else
+    return access(m_strPath.c_str(), F_OK) != -1;
+#endif
 }
 
 //-------------------------------------------------------------
@@ -769,6 +896,7 @@ bool CPath::Exists() const
 //-------------------------------------------------------------
 bool CPath::Delete(bool bEvenIfReadOnly) const
 {
+#ifdef _WIN32
     uint32_t dwAttr = ::GetFileAttributes(m_strPath.c_str());
     if (dwAttr == (uint32_t)-1)
     {
@@ -784,6 +912,14 @@ bool CPath::Delete(bool bEvenIfReadOnly) const
 
     SetFileAttributes(m_strPath.c_str(), FILE_ATTRIBUTE_NORMAL);
     return DeleteFile(m_strPath.c_str()) != 0;
+#else
+    if (access(m_strPath.c_str(), W_OK) == -1 && !bEvenIfReadOnly)
+    {
+        return false;
+    }
+    
+    return (unlink(m_strPath.c_str()) == 0);
+#endif
 }
 
 //-------------------------------------------------------------
@@ -813,9 +949,41 @@ bool CPath::CopyTo(const char * lpcszTargetFile, bool bOverwrite)
         }
     }
 
+#ifdef _WIN32
     // CopyFile will set the target's attributes 2 the same as
     // the source after copying
     return CopyFile(m_strPath.c_str(), lpcszTargetFile, !bOverwrite) != 0;
+#else
+    // Get source file permission mode
+    struct stat sourceStat;
+    if(stat(m_strPath.c_str(), &sourceStat) != 0)
+        return false;
+
+    int source = open(m_strPath.c_str(), O_RDONLY, 0);
+    if( source == -1)
+    {
+        return false;
+    }
+    
+    int dest = open(lpcszTargetFile, O_WRONLY | O_CREAT | O_TRUNC, sourceStat.st_mode);
+    if(dest == -1)
+    {
+        close(source);
+        return false;
+    }
+    
+    // Copy file
+    char buffer[BUFSIZ];
+    size_t size;
+    
+    while ((size = read(source, buffer, BUFSIZ)) > 0) {
+        write(dest, buffer, size);
+    }
+    
+    close(source);
+    close(dest);
+    return true;
+#endif
 }
 
 //-------------------------------------------------------------
@@ -837,13 +1005,17 @@ bool CPath::MoveTo(const char * lpcszTargetFile, bool bOverwrite)
         }
 
         // Delete any previous target
-        if (!TargetFile.Delete(TRUE))
+        if (!TargetFile.Delete(true))
         {
             return false;
         }
     }
-
+    
+#ifdef _WIN32
     return MoveFile(m_strPath.c_str(), lpcszTargetFile) != 0;
+#else
+    return rename(m_strPath.c_str(), lpcszTargetFile) == 0;
+#endif
 }
 
 //-------------------------------------------------------------
@@ -862,6 +1034,19 @@ bool CPath::AttributesMatch(uint32_t dwTargetAttributes, uint32_t dwFileAttribut
     }
     return (((dwTargetAttributes & dwFileAttributes) != 0) && ((FIND_ATTRIBUTE_SUBDIR & dwTargetAttributes) == (FIND_ATTRIBUTE_SUBDIR & dwFileAttributes)));
 }
+
+#ifndef _WIN32
+bool FindNextFile(FindFileHandle* hFindFile)
+{
+    while((hFindFile->pDirEntry = readdir(hFindFile->pDir)) != NULL)
+    {
+        /* File name matches search pattern ? */
+        if (fnmatch(hFindFile->searchPattern.c_str(), hFindFile->pDirEntry->d_name, 0) == 0)
+            return true;
+    }
+    return false;
+}
+#endif
 
 //-------------------------------------------------------------
 // Post    : Return TRUE if any match found
@@ -890,16 +1075,25 @@ bool CPath::AttributesMatch(uint32_t dwTargetAttributes, uint32_t dwFileAttribut
 //           get normal files, and may also get Archive, Hidden, etc.
 //           if you specify those attributes
 //           See aso: FindFirstFile, FindNextFile
+//
+//           UNIX: On Unix like Systems use attributes:
+//                 FIND_ATTRIBUTE_SUBDIR, FIND_ATTRIBUTE_FILES,
+//                 FIND_ATTRIBUTE_ALLFILES and unix file types eg.: DT_DIR, DT_BLK etc..
+//
+//                 The struct 'dirent' returned from readdir may not be fully featured on some systems.
+//                 The POSIX.1-2001 standard only specifies fields d_name and d_ino.
+//                 On this systems call to the function 'stat' should be used to determine file type.
 //-------------------------------------------------------------
 bool CPath::FindFirst(uint32_t dwAttributes /*= _A_NORMAL*/)
 {
     m_dwFindFileAttributes = dwAttributes;
-    BOOL bGotFile;
-    BOOL bWantSubdirectory = (BOOL)(_A_SUBDIR & dwAttributes);
+    bool bGotFile;
+    bool bWantSubdirectory = (bool)(FIND_ATTRIBUTE_SUBDIR & dwAttributes);
 
     // Close handle to any previous enumeration
     Exit();
 
+#ifdef _WIN32
     // i.) Finding first candidate file
     WIN32_FIND_DATA	FindData;
     m_hFindFile = FindFirstFile(m_strPath.c_str(), &FindData);
@@ -921,15 +1115,50 @@ bool CPath::FindFirst(uint32_t dwAttributes /*= _A_NORMAL*/)
 
         if ((_A_SUBDIR & FindData.dwFileAttributes) != 0)
             EnsureTrailingBackslash(m_strPath);
-        return TRUE;
+        return true;
 
         // iv.) Not found match, get another
     LABEL_GetAnother:
         bGotFile = FindNextFile(m_hFindFile, &FindData);
     }
+#else // UNIX
+    m_hFindFile = static_cast<void*>(new FindFileHandle);
+    if(m_hFindFile == NULL)
+        return false;
+    
+    // Set file search pattern and open directory
+    FINDFILE_HANDLE(m_hFindFile)->searchPattern = GetNameExtension();
+    FINDFILE_HANDLE(m_hFindFile)->pDir = opendir(GetDriveDirectory().c_str());
+    bGotFile = FINDFILE_HANDLE(m_hFindFile)->pDir != NULL;
 
-    return false;
+    // i.) Finding first candidate file
+    bGotFile = bGotFile && FindNextFile(FINDFILE_HANDLE(m_hFindFile));
+    while (bGotFile)
+    {
+        // ii.) Compare candidate to attributes, and filter out the "." and ".." folders
+        if (!AttributesMatch(m_dwFindFileAttributes, FINDFILE_HANDLE(m_hFindFile)->pDirEntry->d_type)) // Note: d_type might not be set on some unix system
+            goto LABEL_GetAnother;
+        if (bWantSubdirectory && (FINDFILE_HANDLE(m_hFindFile)->pDirEntry->d_name[0] == '.'))
+            goto LABEL_GetAnother;
+        
+        // iii.) Found match, prepare result
+        if ((DT_DIR & FINDFILE_HANDLE(m_hFindFile)->pDirEntry->d_type) != 0)
+            StripTrailingBackslash(m_strPath);
+        
+        SetNameExtension(FINDFILE_HANDLE(m_hFindFile)->pDirEntry->d_name);
+        
+        if ((DT_DIR & FINDFILE_HANDLE(m_hFindFile)->pDirEntry->d_type) != 0)
+            EnsureTrailingBackslash(m_strPath);
+        return true;
+        
+        // iv.) Not found match, get another
+    LABEL_GetAnother:
+        bGotFile = FindNextFile(FINDFILE_HANDLE(m_hFindFile));
+    }
+#endif
+        return false;
 }
+
 
 //-------------------------------------------------------------
 // Post    : Return TRUE if a new match found
@@ -943,6 +1172,7 @@ bool CPath::FindNext()
         return false;
     }
 
+#ifdef _WIN32
     WIN32_FIND_DATA	FindData;
     while (FindNextFile(m_hFindFile, &FindData) != false)
     { // while(FindNext(...))
@@ -976,7 +1206,40 @@ bool CPath::FindNext()
             return TRUE;
         }
     }
-
+#else // Unix
+    while (FindNextFile(FINDFILE_HANDLE(m_hFindFile)))
+    { // while(FindNext(...))
+        if (AttributesMatch(m_dwFindFileAttributes, FINDFILE_HANDLE(m_hFindFile)->pDirEntry->d_type))
+        { // if(AttributesMatch(...)
+            if ((DT_DIR & FINDFILE_HANDLE(m_hFindFile)->pDirEntry->d_type) == DT_DIR)
+            {
+                if (IsDirectory())
+                {
+                    // Found a directory
+                    UpDirectory();
+                }
+                else
+                {
+                    SetNameExtension("");
+                }
+                AppendDirectory(FINDFILE_HANDLE(m_hFindFile)->pDirEntry->d_name);
+            }
+            else
+            {
+                // Found a file
+                if (IsDirectory())
+                {
+                    // Found a directory
+                    UpDirectory();
+                }
+                SetNameExtension(FINDFILE_HANDLE(m_hFindFile)->pDirEntry->d_name);
+            }
+            if ((DT_DIR & FINDFILE_HANDLE(m_hFindFile)->pDirEntry->d_type) == DT_DIR)
+                EnsureTrailingBackslash(m_strPath);
+            return true;
+        }
+    }
+#endif
     return false;
 }
 
@@ -989,7 +1252,11 @@ bool CPath::ChangeDirectory()
     std::string DriveDirectory;
     GetDriveDirectory(DriveDirectory);
 
+#ifdef _WIN32
     return SetCurrentDirectory(DriveDirectory.c_str()) != 0;
+#else
+    return chdir(DriveDirectory.c_str()) == 0;
+#endif
 }
 
 //-------------------------------------------------------------
@@ -1005,7 +1272,13 @@ bool CPath::DirectoryCreate(bool bCreateIntermediates /*= TRUE*/)
 
     GetDriveDirectory(PathText);
     StripTrailingBackslash(PathText);
+    
+#ifdef _WIN32
     bSuccess = ::CreateDirectory(PathText.c_str(), NULL) != 0;
+#else
+    bSuccess = mkdir(PathText.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0;
+#endif
+    
     if (!bSuccess)
     {
         CPath CurrentDir(CPath::CURRENT_DIRECTORY);
@@ -1036,6 +1309,7 @@ bool CPath::DirectoryCreate(bool bCreateIntermediates /*= TRUE*/)
 //------------------------------------------------------------------------
 void CPath::cleanPathString(std::string& rDirectory) const
 {
+#ifdef _WIN32
     std::string::size_type pos = rDirectory.find(DIRECTORY_DELIMITER2);
     while (pos != std::string::npos)
     {
@@ -1054,6 +1328,7 @@ void CPath::cleanPathString(std::string& rDirectory) const
     {
         rDirectory.insert(0, stdstr_f("%c", DIRECTORY_DELIMITER).c_str());
     }
+#endif
 }
 
 void CPath::StripLeadingChar(std::string& rText, char chLeading) const
@@ -1067,7 +1342,7 @@ void CPath::StripLeadingChar(std::string& rText, char chLeading) const
 }
 
 //------------------------------------------------------------------------
-// Task    : Remove first character if \
+// Task    : Remove first character if \ (Unix /)
 //------------------------------------------------------------------------
 void CPath::StripLeadingBackslash(std::string& Directory) const
 {
@@ -1095,7 +1370,7 @@ void CPath::StripTrailingChar(std::string& rText, char chTrailing) const
 }
 
 //------------------------------------------------------------------------
-// Task    : Remove last character if \
+// Task    : Remove last character if \ (Unix /)
 //------------------------------------------------------------------------
 void CPath::StripTrailingBackslash(std::string& rDirectory) const
 {
@@ -1107,7 +1382,11 @@ void CPath::StripTrailingBackslash(std::string& rDirectory) const
             return;
         }
 
-        if (rDirectory[nLength - 1] == DIRECTORY_DELIMITER || rDirectory[nLength - 1] == DIRECTORY_DELIMITER2)
+        if (rDirectory[nLength - 1] == DIRECTORY_DELIMITER
+        #ifdef _WIN32
+            || rDirectory[nLength - 1] == DIRECTORY_DELIMITER2
+        #endif
+            )
         {
             rDirectory.resize(nLength - 1);
             continue;
@@ -1117,21 +1396,26 @@ void CPath::StripTrailingBackslash(std::string& rDirectory) const
 }
 
 //------------------------------------------------------------------------
-// Task    : Add a backslash to the end of Directory if there is
+// Task    : Add a directory delimiter to the end of Directory if there is
 //           not already one there
 //------------------------------------------------------------------------
 void CPath::EnsureTrailingBackslash(std::string& Directory) const
 {
     std::string::size_type nLength = Directory.length();
+    bool appendDirectoryDelimiter = Directory.empty() || (Directory[nLength - 1] != DIRECTORY_DELIMITER);
+    
+#ifndef _WIN32 // On Unix do not set leading forward slash
+    appendDirectoryDelimiter = !Directory.empty() && appendDirectoryDelimiter;
+#endif
 
-    if (Directory.empty() || (Directory[nLength - 1] != DIRECTORY_DELIMITER))
+    if (appendDirectoryDelimiter)
     {
         Directory += DIRECTORY_DELIMITER;
     }
 }
 
 //------------------------------------------------------------------------
-// Task    : Add a backslash to the beginning of Directory if there
+// Task    : Add a directory delimiter to the beginning of Directory if there
 //           is not already one there
 //------------------------------------------------------------------------
 void CPath::EnsureLeadingBackslash(std::string & Directory) const
