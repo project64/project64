@@ -12,8 +12,8 @@
 #include "SettingsType-RelativePath.h"
 
 CSettingTypeRelativePath::CSettingTypeRelativePath(const char * Directory, const char * FileName) :
-m_Directory(Directory),
-m_FileName(FileName)
+    m_Directory(Directory),
+    m_FileName(FileName)
 {
     BuildPath();
     g_Settings->RegisterChangeCB(Cmd_BaseDirectory, this, RefreshSettings);

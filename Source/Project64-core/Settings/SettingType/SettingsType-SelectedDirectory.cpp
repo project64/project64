@@ -12,11 +12,11 @@
 #include "SettingsType-SelectedDirectory.h"
 
 CSettingTypeSelectedDirectory::CSettingTypeSelectedDirectory(const char * Name, SettingID InitialDir, SettingID SelectedDir, SettingID UseSelected, SettingID NotifyChangeId) :
-m_Name(Name),
-m_InitialDir(InitialDir),
-m_SelectedDir(SelectedDir),
-m_UseSelected(UseSelected),
-m_NotifyChangeId(NotifyChangeId)
+    m_Name(Name),
+    m_InitialDir(InitialDir),
+    m_SelectedDir(SelectedDir),
+    m_UseSelected(UseSelected),
+    m_NotifyChangeId(NotifyChangeId)
 {
     g_Settings->RegisterChangeCB(m_InitialDir, this, (CSettings::SettingChangedFunc)DirectoryChanged);
     g_Settings->RegisterChangeCB(m_SelectedDir, this, (CSettings::SettingChangedFunc)DirectoryChanged);
