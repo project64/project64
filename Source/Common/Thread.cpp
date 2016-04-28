@@ -3,6 +3,7 @@
 #ifndef _WIN32
 #include <unistd.h>
 #include <pthread.h>
+#include <sys/syscall.h>
 #endif
 
 CThread::CThread(CTHREAD_START_ROUTINE lpStartAddress) :
@@ -125,6 +126,8 @@ uint32_t CThread::GetCurrentThreadId(void)
 {
 #ifdef _WIN32
     return ::GetCurrentThreadId();
+#elif defined(SYS_gettid) || defined(__NR_gettid)
+    return syscall(__NR_gettid); /* GLIBC has no implementation of gettid(). */
 #else
     return gettid();
 #endif
