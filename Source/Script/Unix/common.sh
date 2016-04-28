@@ -27,6 +27,7 @@ $CC -o $obj/path.asm                    $src/path.cpp $C_FLAGS
 $CC -o $obj/Platform.asm                $src/Platform.cpp $C_FLAGS
 $CC -o $obj/stdstring.asm               $src/StdString.cpp $C_FLAGS
 $CC -o $obj/SyncEvent.asm               $src/SyncEvent.cpp $C_FLAGS
+$CC -o $obj/DateTimeClass.asm           $src/DateTimeClass.cpp $C_FLAGS
 $CC -o $obj/Trace.asm                   $src/Trace.cpp $C_FLAGS
 $CC -o $obj/Util.asm                    $src/Util.cpp $C_FLAGS
 
@@ -42,12 +43,14 @@ $AS -o $obj/path.o                      $obj/path.asm
 $AS -o $obj/Platform.o                  $obj/Platform.asm
 $AS -o $obj/stdstring.o                 $obj/stdstring.asm
 $AS -o $obj/SyncEvent.o                 $obj/SyncEvent.asm
+$AS -o $obj/DateTimeClass.o             $obj/DateTimeClass.asm
 $AS -o $obj/Trace.o                     $obj/Trace.asm
 $AS -o $obj/Util.o                      $obj/Util.asm
 
 OBJ_LIST="\
  $obj/Util.o \
  $obj/Trace.o \
+ $obj/DateTimeClass.o \
  $obj/SyncEvent.o \
  $obj/stdstring.o \
  $obj/Platform.o \
