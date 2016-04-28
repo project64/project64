@@ -96,6 +96,7 @@
 #212#  "Edit Game Settings"
 #213#  "Edit Cheats"
 #214#  "Graphics Plugin"
+#215#  "Play Game with Disk"
 
 //Alternate Name to save Slot
 #220#  "Save Slot - Default"
@@ -178,7 +179,7 @@
 #320#  "Select current ROM directory"
 
 //Messages
-#340#  "Bad ROM? Use GoodN64 & check for updated RDB."
+#340#  "Bad ROM? Use GoodN64 & check that the RDB is up-to-date."
 
 /*********************************************************************************
 * Options                                                                        *
@@ -233,6 +234,7 @@
 #465#  "Display speed"
 #466#  "Speed display:"
 #467#  "Check if Project64 is already running"
+#468#  "Unique Game Save Directory"
 
 //ROM Browser Tab
 #480#  "Max # of ROMs remembered (0-10):"
@@ -319,7 +321,7 @@
 #620#  "Use first-used save type"
 #621#  "4-kbit EEPROM"
 #622#  "16-kbit EEPROM"
-#623#  "32-kbyte SRAM"
+#623#  "SRAM"
 #624#  "Flash RAM"
 
 //Shell Integration Tab

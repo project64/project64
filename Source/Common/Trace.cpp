@@ -1,244 +1,235 @@
 #include "stdafx.h"
-#include <TChar.H>
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#include <sys/time.h>
+#endif
 
-BOOL TraceClosed = FALSE;
+typedef std::map<uint32_t, stdstr> ModuleNameMap;
+
+uint32_t * g_ModuleLogLevel = NULL;
+static bool g_TraceClosed = false;
+static ModuleNameMap g_ModuleNames;
 
 class CTraceLog
 {
-	std::vector<CTraceModule *> m_Modules;
-	CriticalSection             m_CS;
+    std::vector<CTraceModule *> m_Modules;
+    CriticalSection             m_CS;
 
 public:
-	CTraceLog()
-	{
-	}
-	~CTraceLog() { CloseTrace(); }
+    CTraceLog()
+    {
+    }
+    ~CTraceLog() { CloseTrace(); }
 
-	CTraceModule * AddTraceModule(CTraceModule * TraceModule);
-	CTraceModule * RemoveTraceModule(CTraceModule * TraceModule);
-	void           CloseTrace(void);
-	void           WriteTrace(TraceType Type, LPCTSTR Message);
-	void           WriteTraceF(TraceType Type, LPCTSTR strFormat, va_list args);
+    void TraceMessage(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char * Message);
+
+    CTraceModule * AddTraceModule(CTraceModule * TraceModule);
+    CTraceModule * RemoveTraceModule(CTraceModule * TraceModule);
+    void           CloseTrace(void);
 };
-
-CTraceModule * CTraceLog::AddTraceModule(CTraceModule * TraceModule)
-{
-	CGuard Guard(m_CS);
-
-	for (int i = 0; i < (int)m_Modules.size(); i++)
-	{
-		if (m_Modules[i] == TraceModule)
-		{
-			return TraceModule;
-		}
-	}
-	m_Modules.push_back(TraceModule);
-	return TraceModule;
-}
-
-CTraceModule * CTraceLog::RemoveTraceModule(CTraceModule * TraceModule)
-{
-	CGuard Guard(m_CS);
-
-	for (std::vector<CTraceModule *>::iterator itr = m_Modules.begin(); itr != m_Modules.end(); itr++)
-	{
-		if ((*itr) == TraceModule)
-		{
-			m_Modules.erase(itr);
-			return TraceModule;
-		}
-	}
-	return NULL;
-}
-
-void CTraceLog::CloseTrace(void)
-{
-	CGuard Guard(m_CS);
-
-	for (int i = 0; i < (int)m_Modules.size(); i++)
-	{
-		if (m_Modules[i])
-			delete m_Modules[i];
-	}
-	m_Modules.clear();
-}
-
-void CTraceLog::WriteTraceF(TraceType Type, LPCTSTR strFormat, va_list args)
-{
-	const int nMaxSize = 32 * 1024;
-	TCHAR pBuffer[nMaxSize];
-
-	_vsntprintf(pBuffer, nMaxSize, strFormat, args);
-	pBuffer[nMaxSize - 1] = 0;
-	WriteTrace(Type, pBuffer);
-}
-
-void CTraceLog::WriteTrace(TraceType Type, LPCTSTR Message)
-{
-	CGuard Guard(m_CS);
-
-	if (Type != TraceNone)
-	{
-		bool WriteToLog = false;
-		for (int i = 0; i < (int)m_Modules.size(); i++)
-		{
-			if ((m_Modules[i]->GetTraceLevel() & Type) != 0)
-			{
-				WriteToLog = true;
-				break;
-			}
-		}
-		if (!WriteToLog) { return; }
-	}
-
-	if ((Type & TraceNoHeader) == 0)
-	{
-		TCHAR pBuffer[300];
-		int nPos = 0;
-
-		SYSTEMTIME sysTime;
-		::GetLocalTime(&sysTime);
-
-		nPos = _stprintf(pBuffer, _T("%04d/%02d/%02d %02d:%02d:%02d.%03d %05d: "), sysTime.wYear,
-			sysTime.wMonth, sysTime.wDay, sysTime.wHour, sysTime.wMinute, sysTime.wSecond, sysTime.wMilliseconds,
-			::GetCurrentThreadId()
-			);
-
-		// show the debug level
-		if (Type == TraceNone) { nPos += _stprintf(pBuffer + nPos, _T("%s"), _T("None   : ")); }
-		else if ((Type & TraceError) != 0) { nPos += _stprintf(pBuffer + nPos, _T("%s"), _T("Error  : ")); }
-		else if ((Type & TraceSettings) != 0) { nPos += _stprintf(pBuffer + nPos, _T("%s"), _T("Setting: ")); }
-		else if ((Type & TraceGfxPlugin) != 0) { nPos += _stprintf(pBuffer + nPos, _T("%s"), _T("Gfx    : ")); }
-		else if ((Type & TraceDebug) != 0) { nPos += _stprintf(pBuffer + nPos, _T("%s"), _T("Debug  : ")); }
-		else if ((Type & TraceRecompiler) != 0) { nPos += _stprintf(pBuffer + nPos, _T("%s"), _T("Recomp : ")); }
-		else if ((Type & TraceRSP) != 0) { nPos += _stprintf(pBuffer + nPos, _T("%s"), _T("RSP    : ")); }
-		else if ((Type & TraceTLB) != 0) { nPos += _stprintf(pBuffer + nPos, _T("%s"), _T("TLB    : ")); }
-		else if ((Type & TraceValidate) != 0) { nPos += _stprintf(pBuffer + nPos, _T("%s"), _T("Valid  : ")); }
-		else if ((Type & TraceAudio) != 0) { nPos += _stprintf(pBuffer + nPos, _T("%s"), _T("Audio  : ")); }
-		else { nPos += _stprintf(pBuffer + nPos, _T("%s"), _T("Unknown: ")); }
-
-		for (int i = 0; i < (int)m_Modules.size(); i++)
-		{
-			if ((m_Modules[i]->GetTraceLevel() & Type) != 0)
-			{
-				m_Modules[i]->Write(pBuffer, false);
-			}
-		}
-	}
-	for (int i = 0; i < (int)m_Modules.size(); i++)
-	{
-		if ((m_Modules[i]->GetTraceLevel() & Type) != 0)
-		{
-			m_Modules[i]->Write(Message, true);
-		}
-	}
-}
 
 CTraceLog & GetTraceObjet(void)
 {
-	static CTraceLog TraceLog;
-	return TraceLog;
+    static CTraceLog TraceLog;
+    return TraceLog;
 }
 
-void WriteTrace(TraceType Type, LPCTSTR Message)
+void TraceSetModuleName(uint8_t module, const char * Name)
 {
-	if (TraceClosed)
-	{
-		return;
-	}
-	GetTraceObjet().WriteTrace(Type, Message);
+    g_ModuleNames.insert(ModuleNameMap::value_type(module, Name));
 }
 
-void WriteTraceF(TraceType Type, LPCTSTR strFormat, ...)
+void WriteTraceFull(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char *format, ...)
 {
-	if (TraceClosed)
-	{
-		return;
-	}
-	va_list args;
-	va_start(args, strFormat);
-	GetTraceObjet().WriteTraceF(Type, strFormat, args);
-	va_end(args);
-}
-
-CTraceModule * AddTraceModule(CTraceModule * TraceModule)
-{
-	if (TraceClosed)
-	{
-		return NULL;
-	}
-	GetTraceObjet().AddTraceModule(TraceModule);
-	return TraceModule;
-}
-
-CTraceModule * RemoveTraceModule(CTraceModule * TraceModule)
-{
-	return GetTraceObjet().RemoveTraceModule(TraceModule);
+    va_list args;
+    va_start(args, format);
+    size_t nlen = _vscprintf(format, args) + 1;
+    char * Message = (char *)alloca(nlen * sizeof(char));
+    Message[nlen - 1] = 0;
+    if (Message != NULL)
+    {
+        vsprintf(Message, format, args);
+        GetTraceObjet().TraceMessage(module, severity, file, line, function, Message);
+    }
+    va_end(args);
 }
 
 void CloseTrace(void)
 {
-	TraceClosed = true;
-	GetTraceObjet().CloseTrace();
+    g_TraceClosed = true;
+    GetTraceObjet().CloseTrace();
+
+    if (g_ModuleLogLevel)
+    {
+        delete g_ModuleLogLevel;
+        g_ModuleLogLevel = NULL;
+    }
 }
 
-CTraceFileLog::CTraceFileLog(LPCTSTR FileName, bool FlushFile) :
-m_FlushFile(FlushFile)
+void TraceSetMaxModule(uint32_t MaxModule, uint8_t DefaultSeverity)
 {
-	m_hLogFile.SetFlush(false);
-	m_hLogFile.SetTruncateFile(true);
-	m_hLogFile.SetMaxFileSize(5 * MB);
-	m_hLogFile.Open(FileName, Log_Append);
+    if (g_ModuleLogLevel)
+    {
+        delete g_ModuleLogLevel;
+        g_ModuleLogLevel = NULL;
+    }
+    g_ModuleLogLevel = new uint32_t[MaxModule];
+    for (uint32_t i = 0; i < MaxModule; i++)
+    {
+        g_ModuleLogLevel[i] = DefaultSeverity;
+    }
 }
 
-CTraceFileLog::CTraceFileLog(LPCTSTR FileName, bool FlushFile, LOG_OPEN_MODE eMode, size_t dwMaxFileSize) :
-m_FlushFile(FlushFile)
+CTraceModule * CTraceLog::AddTraceModule(CTraceModule * TraceModule)
 {
-	enum { MB = 1024 * 1024 };
+    CGuard Guard(m_CS);
 
-	m_hLogFile.SetFlush(false);
-	m_hLogFile.SetTruncateFile(true);
+    for (int i = 0; i < (int)m_Modules.size(); i++)
+    {
+        if (m_Modules[i] == TraceModule)
+        {
+            return TraceModule;
+        }
+    }
+    m_Modules.push_back(TraceModule);
+    return TraceModule;
+}
 
-	if (dwMaxFileSize < 3 || dwMaxFileSize > 2047)
-	{ /* Clamp file size to 5 MB if it exceeds 2047 or falls short of 3. */
-		dwMaxFileSize = 5;
-	}
-	m_hLogFile.SetMaxFileSize(dwMaxFileSize * MB);
+CTraceModule * CTraceLog::RemoveTraceModule(CTraceModule * TraceModule)
+{
+    CGuard Guard(m_CS);
 
-	m_hLogFile.Open(FileName, eMode);
+    for (std::vector<CTraceModule *>::iterator itr = m_Modules.begin(); itr != m_Modules.end(); itr++)
+    {
+        if ((*itr) == TraceModule)
+        {
+            m_Modules.erase(itr);
+            return TraceModule;
+        }
+    }
+    return NULL;
+}
+
+void CTraceLog::CloseTrace(void)
+{
+    CGuard Guard(m_CS);
+    m_Modules.clear();
+}
+
+void CTraceLog::TraceMessage(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char * Message)
+{
+    CGuard Guard(m_CS);
+
+    for (uint32_t i = 0, n = m_Modules.size(); i < n; i++)
+    {
+        m_Modules[i]->Write(module, severity, file, line, function, Message);
+    }
+}
+
+CTraceModule * TraceAddModule(CTraceModule * TraceModule)
+{
+    if (g_TraceClosed)
+    {
+        return NULL;
+    }
+    GetTraceObjet().AddTraceModule(TraceModule);
+    return TraceModule;
+}
+
+CTraceModule * TraceRemoveModule(CTraceModule * TraceModule)
+{
+    return GetTraceObjet().RemoveTraceModule(TraceModule);
+}
+
+const char * TraceSeverity(uint8_t severity)
+{
+    switch (severity)
+    {
+    case TraceError: return "Error";
+    case TraceWarning: return "Warning";
+    case TraceNotice: return "Notice";
+    case TraceInfo: return "Info";
+    case TraceDebug: return "Debug";
+    case TraceVerbose: return "Verbose";
+    }
+
+    static stdstr Unknown;
+    Unknown.Format("Unknown (%d)", (int32_t)severity);
+    return Unknown.c_str();
+}
+
+const char * TraceModule(uint32_t module)
+{
+    ModuleNameMap::const_iterator itr = g_ModuleNames.find(module);
+    if (itr != g_ModuleNames.end())
+    {
+        return itr->second.c_str();
+    }
+    static stdstr Unknown;
+    Unknown.Format("Unknown (%d)", module);
+    return Unknown.c_str();
+}
+
+CTraceFileLog::CTraceFileLog(const char * FileName, bool FlushFile, CLog::LOG_OPEN_MODE eMode, size_t dwMaxFileSize) :
+    m_FlushFile(FlushFile)
+{
+    enum { MB = 1024 * 1024 };
+
+    m_hLogFile.SetFlush(false);
+    m_hLogFile.SetTruncateFile(true);
+
+    if (dwMaxFileSize < 3 || dwMaxFileSize > 2047)
+    { /* Clamp file size to 5 MB if it exceeds 2047 or falls short of 3. */
+        dwMaxFileSize = 5;
+    }
+    m_hLogFile.SetMaxFileSize(dwMaxFileSize * MB);
+
+    m_hLogFile.Open(FileName, eMode);
 }
 
 CTraceFileLog::~CTraceFileLog()
 {
-	TraceClosed = true;
 }
 
-void CTraceFileLog::Write(LPCTSTR Message, bool EndOfLine)
+void CTraceFileLog::Write(uint32_t module, uint8_t severity, const char * /*file*/, int /*line*/, const char * function, const char * Message)
 {
-	if (!m_hLogFile.IsOpen()) { return; }
+    if (!m_hLogFile.IsOpen()) { return; }
 
-	CGuard Section(m_CriticalSection);
-	m_hLogFile.Log(Message);
-	if (EndOfLine)
-	{
-		m_hLogFile.Log(_T("\r\n"));
-		if (m_FlushFile)
-		{
-			m_hLogFile.Flush();
-		}
-	}
+#ifdef _WIN32
+    SYSTEMTIME sysTime;
+    ::GetLocalTime(&sysTime);
+    stdstr_f timestamp("%04d/%02d/%02d %02d:%02d:%02d.%03d %05d,", sysTime.wYear, sysTime.wMonth, sysTime.wDay, sysTime.wHour, sysTime.wMinute, sysTime.wSecond, sysTime.wMilliseconds, GetCurrentThreadId());
+#else
+    time_t ltime;
+    ltime=time(&ltime);
+
+    struct tm result={0};
+    localtime_r(&ltime, &result);
+
+    struct timeval curTime;
+    gettimeofday(&curTime, NULL);
+    int milliseconds = curTime.tv_usec / 1000;
+
+    stdstr_f timestamp("%04d/%02d/%02d %02d:%02d:%02d.%03d %05d,", result.tm_year+1900, result.tm_mon+1, result.tm_mday, result.tm_hour, result.tm_min, result.tm_sec, milliseconds, GetCurrentThreadId());
+#endif
+
+    m_hLogFile.Log(timestamp.c_str());
+    m_hLogFile.Log(TraceSeverity(severity));
+    m_hLogFile.Log(",");
+    m_hLogFile.Log(TraceModule(module));
+    m_hLogFile.Log(",");
+    m_hLogFile.Log(function);
+    m_hLogFile.Log(",");
+    m_hLogFile.Log(Message);
+    m_hLogFile.Log("\r\n");
+    if (m_FlushFile)
+    {
+        m_hLogFile.Flush();
+    }
 }
 
 void CTraceFileLog::SetFlushFile(bool bFlushFile)
 {
-	m_FlushFile = bFlushFile;
-}
-
-void CDebugTraceLog::Write(const char * Message, bool EndOfLine)
-{
-	OutputDebugString(Message);
-	if (EndOfLine)
-	{
-		OutputDebugString("\n");
-	}
+    m_FlushFile = bFlushFile;
 }

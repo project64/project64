@@ -1,51 +1,52 @@
 #include "stdafx.h"
-#include <Project64\AppInit.h>
+#include <Project64-core/AppInit.h>
 #include "Multilanguage\LanguageSelector.h"
+#include "Settings/UISettings.h"
 
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
     try
     {
         CoInitialize(NULL);
-        AppInit(&Notify());
+        AppInit(&Notify(), CPath(CPath::MODULE_DIRECTORY), __argc, __argv);
         if (!g_Lang->IsLanguageLoaded())
         {
             CLanguageSelector().Select();
         }
 
         //Create the main window with Menu
-        WriteTrace(TraceDebug, __FUNCTION__ ": Create Main Window");
+        WriteTrace(TraceUserInterface, TraceDebug, "Create Main Window");
         CMainGui  MainWindow(true, stdstr_f("Project64 %s", VER_FILE_VERSION_STR).c_str()), HiddenWindow(false);
         CMainMenu MainMenu(&MainWindow);
         g_Plugins->SetRenderWindows(&MainWindow, &HiddenWindow);
         Notify().SetMainWindow(&MainWindow);
 
-        if (__argc > 1)
+        if (g_Settings->LoadStringVal(Cmd_RomFile).length() > 0)
         {
-            WriteTraceF(TraceDebug, __FUNCTION__ ": Cmd line found \"%s\"", __argv[1]);
             MainWindow.Show(true);	//Show the main window
-            CN64System::RunFileImage(__argv[1]);
+            CN64System::RunFileImage(g_Settings->LoadStringVal(Cmd_RomFile).c_str());
         }
         else
         {
-            if (g_Settings->LoadDword(RomBrowser_Enabled))
+            if (UISettingsLoadBool(RomBrowser_Enabled))
             {
-                WriteTrace(TraceDebug, __FUNCTION__ ": Show Rom Browser");
+                WriteTrace(TraceUserInterface, TraceDebug, "Show Rom Browser");
                 //Display the rom browser
                 MainWindow.ShowRomList();
                 MainWindow.Show(true);	//Show the main window
                 MainWindow.HighLightLastRom();
             }
-            else {
-                WriteTrace(TraceDebug, __FUNCTION__ ": Show Main Window");
+            else
+            {
+                WriteTrace(TraceUserInterface, TraceDebug, "Show Main Window");
                 MainWindow.Show(true);	//Show the main window
             }
         }
 
         //Process Messages till program is closed
-        WriteTrace(TraceDebug, __FUNCTION__ ": Entering Message Loop");
+        WriteTrace(TraceUserInterface, TraceDebug, "Entering Message Loop");
         MainWindow.ProcessAllMessages();
-        WriteTrace(TraceDebug, __FUNCTION__ ": Message Loop Finished");
+        WriteTrace(TraceUserInterface, TraceDebug, "Message Loop Finished");
 
         if (g_BaseSystem)
         {
@@ -53,11 +54,11 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
             delete g_BaseSystem;
             g_BaseSystem = NULL;
         }
-        WriteTrace(TraceDebug, __FUNCTION__ ": System Closed");
+        WriteTrace(TraceUserInterface, TraceDebug, "System Closed");
     }
     catch (...)
     {
-        WriteTraceF(TraceError, __FUNCTION__ ": Exception caught (File: \"%s\" Line: %d)", __FILE__, __LINE__);
+        WriteTrace(TraceUserInterface, TraceError, "Exception caught (File: \"%s\" Line: %d)", __FILE__, __LINE__);
         MessageBox(NULL, stdstr_f("Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__).c_str(), "Exception", MB_OK);
     }
     AppCleanup();

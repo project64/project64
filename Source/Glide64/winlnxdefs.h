@@ -23,50 +23,8 @@
 #ifndef WINLNXDEFS_H
 #define WINLNXDEFS_H
 
-#define wxNO_GL_LIB
-#define wxNO_HTML_LIB
-#define wxNO_ADV_LIB
-#define wxNO_ZLIB_LIB
-#define wxNO_TIFF_LIB
-#define wxNO_EXPAT_LIB
-#define wxNO_REGEX_LIB
-#define wxNO_XML_LIB
-#define wxNO_NET_LIB
-#define wxNO_QA_LIB
-#define wxNO_XRC_LIB
-#define wxNO_AUI_LIB
-#define wxNO_PROPGRID_LIB
-#define wxNO_RIBBON_LIB
-#define wxNO_RICHTEXT_LIB
-#define wxNO_MEDIA_LIB
-#define wxNO_STC_LIB
-
-
-#include <wx/wx.h>
-#include <wx/dynlib.h>
-#include <wx/filename.h>
-#include <wx/datetime.h>
-
-#define wxPtrToUInt (uintptr_t)
-#define TRUE 1
-#define FALSE 0
 
 #include <Common/stdtypes.h>
-
-typedef int BOOL;
-typedef uint32_t wxUint32;
-typedef uint16_t wxUint16;
-typedef uint8_t wxUint8;
-typedef uint8_t BYTE;
-typedef long long LONGLONG;
-
-
-typedef int32_t wxInt32;
-typedef int16_t wxInt16;
-typedef int8_t wxInt8;
-
-typedef uint64_t wxUint64;
-typedef int64_t wxInt64;
 
 #ifndef _WIN32
 

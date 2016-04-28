@@ -24,9 +24,11 @@
  *
  */
 
-#include <Windows.h>
 #include <stdio.h>
-#include "RSP.h"
+#include <string.h>
+#include <Common/stdtypes.h>
+
+#include "Rsp.h"
 #include "RSP Registers.h"
 #include "memory.h"
 
@@ -34,20 +36,20 @@
 
 void SP_DMA_READ (void)
 {
-	DWORD i, j, Length, Skip, Count, End, addr;
-	BYTE *Dest, *Source;
+    uint32_t i, j, Length, Skip, Count, End, addr;
+    uint8_t *Dest, *Source;
 
     addr = (*RSPInfo.SP_DRAM_ADDR_REG) & 0x00FFFFFF;
 
 	if (addr > 0x7FFFFF)
 	{
-		MessageBox(NULL,"SP DMA READ\nSP_DRAM_ADDR_REG not in RDRam space","Error",MB_OK);
+        DisplayError("SP DMA READ\nSP_DRAM_ADDR_REG not in RDRam space");
 		return;
 	}
 	
 	if ((*RSPInfo.SP_RD_LEN_REG & 0xFFF) + 1  + (*RSPInfo.SP_MEM_ADDR_REG & 0xFFF) > 0x1000)
 	{
-		MessageBox(NULL,"SP DMA READ\ncould not fit copy in memory segment","Error",MB_OK);
+        DisplayError("SP DMA READ\ncould not fit copy in memory segment");
 		return;
 	}
 
@@ -110,20 +112,20 @@ void SP_DMA_READ (void)
 
 void SP_DMA_WRITE (void)
 {
-	DWORD i, j, Length, Skip, Count, addr;
-	BYTE *Dest, *Source;
+    uint32_t i, j, Length, Skip, Count, addr;
+    uint8_t *Dest, *Source;
 
     addr = (*RSPInfo.SP_DRAM_ADDR_REG) & 0x00FFFFFF;
 
 	if (addr > 0x7FFFFF)
 	{
-		MessageBox(NULL,"SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space","Error",MB_OK);
+        DisplayError("SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space");
 		return;
 	}
 
 	if ((*RSPInfo.SP_WR_LEN_REG & 0xFFF) + 1  + (*RSPInfo.SP_MEM_ADDR_REG & 0xFFF) > 0x1000)
 	{
-		MessageBox(NULL,"SP DMA WRITE\ncould not fit copy in memory segment","Error",MB_OK);
+        DisplayError("SP DMA WRITE\ncould not fit copy in memory segment");
 		return;
 	}
 

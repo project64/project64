@@ -26,7 +26,7 @@
 
 #include <windows.h>
 #include <stdio.h>
-#include "RSP.h"
+#include "Rsp.h"
 #include "CPU.h"
 #include "Interpreter CPU.h"
 #include "Interpreter Ops.h"
@@ -38,10 +38,11 @@
 #include "log.h"
 #include "x86.h"
 #include "Profiling.h"
+#include "Types.h"
 
 #pragma warning(disable : 4152) // nonstandard extension, function/data pointer conversion in expression
 
-extern BOOL AudioHle, GraphicsHle;
+extern Boolean AudioHle, GraphicsHle;
 UWORD32 Recp, RecpResult, SQroot, SQrootResult;
 DWORD ESP_RegSave = 0, EBP_RegSave = 0;
 DWORD BranchCompare = 0;
@@ -240,8 +241,9 @@ void Compile_JAL ( void ) {
 	}
 }
 
-void Compile_BEQ ( void ) {
-	static BOOL bDelayAffect;
+void Compile_BEQ(void)
+{
+    static Boolean bDelayAffect;
 
 	if ( NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
@@ -299,8 +301,9 @@ void Compile_BEQ ( void ) {
 	}
 }
 
-void Compile_BNE ( void ) {
-	static BOOL bDelayAffect;
+void Compile_BNE(void)
+{
+    static Boolean bDelayAffect;
 
 	if ( NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
@@ -358,8 +361,9 @@ void Compile_BNE ( void ) {
 	}
 }
 
-void Compile_BLEZ ( void ) {
-	static BOOL bDelayAffect;
+void Compile_BLEZ(void)
+{
+    static Boolean bDelayAffect;
 
 	if ( NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
@@ -404,8 +408,9 @@ void Compile_BLEZ ( void ) {
 	}
 }
 
-void Compile_BGTZ ( void ) {
-	static BOOL bDelayAffect;
+void Compile_BGTZ(void)
+{
+    static Boolean bDelayAffect;
 
 	if ( NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
@@ -1455,8 +1460,9 @@ void Compile_Special_SLTU ( void ) {
 }
 
 /********************** R4300i OpCodes: RegImm **********************/
-void Compile_RegImm_BLTZ ( void ) {
-	static BOOL bDelayAffect;
+void Compile_RegImm_BLTZ(void)
+{
+    static Boolean bDelayAffect;
 
 	if ( NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
@@ -1498,8 +1504,9 @@ void Compile_RegImm_BLTZ ( void ) {
 	}
 }
 
-void Compile_RegImm_BGEZ ( void ) {
-	static BOOL bDelayAffect;
+void Compile_RegImm_BGEZ(void)
+{
+    static Boolean bDelayAffect;
 
 	if ( NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
@@ -1576,8 +1583,9 @@ void Compile_RegImm_BLTZAL ( void ) {
 	}
 }
 
-void Compile_RegImm_BGEZAL ( void ) {
-	static BOOL bDelayAffect;
+void Compile_RegImm_BGEZAL(void)
+{
+    static Boolean bDelayAffect;
 
 	if ( NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
@@ -1673,9 +1681,11 @@ void Compile_Cop0_MF ( void ) {
 	case 4: 
 		MoveVariableToX86reg(&RSP_MfStatusCount, "RSP_MfStatusCount", x86_ECX);
 		MoveVariableToX86reg(RSPInfo.SP_STATUS_REG, "SP_STATUS_REG", x86_EAX);
-		CompConstToX86reg(x86_ECX, 10);
-		JbLabel8("label", 10);
-		MoveConstToVariable(0, &RSP_Running, "RSP_Running");
+		if (Mfc0Count != 0) {
+			CompConstToX86reg(x86_ECX, Mfc0Count);
+			JbLabel8("label", 10);
+			MoveConstToVariable(0, &RSP_Running, "RSP_Running");
+		}
 		IncX86reg(x86_ECX);
 		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 		MoveX86regToVariable(x86_ECX, &RSP_MfStatusCount, "RSP_MfStatusCount");
@@ -1692,7 +1702,7 @@ void Compile_Cop0_MF ( void ) {
 		}
 		break;
 	case 7:
-		if (AudioHle || GraphicsHle)
+		if (AudioHle || GraphicsHle || SemaphoreExit == 0)
 		{
 			MoveConstToVariable(0, &RSP_GPR[RSPOpC.rt].W, GPR_Name(RSPOpC.rt));
 		} else {
@@ -2109,7 +2119,8 @@ void RSP_MultiElement2Mmx(int MmxReg1, int MmxReg2) {
 	}
 }
 
-BOOL Compile_Vector_VMULF_MMX ( void ) {
+Boolean Compile_Vector_VMULF_MMX(void)
+{
 	char Reg[256];
 
 	/* Do our MMX checks here */
@@ -2161,9 +2172,9 @@ void Compile_Vector_VMULF ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-	BOOL bOptimize = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	BOOL bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
 
 	#ifndef CompileVmulf
 	Cheat_r4300iOpcode(RSP_Vector_VMULF,"RSP_Vector_VMULF"); return;
@@ -2236,7 +2247,8 @@ void Compile_Vector_VMULU ( void ) {
 	Cheat_r4300iOpcode(RSP_Vector_VMULU,"RSP_Vector_VMULU");
 }
 
-BOOL Compile_Vector_VMUDL_MMX ( void ) {
+Boolean Compile_Vector_VMUDL_MMX(void)
+{
 	char Reg[256];
 
 	/* Do our MMX checks here */
@@ -2287,10 +2299,10 @@ BOOL Compile_Vector_VMUDL_MMX ( void ) {
 void Compile_Vector_VMUDL ( void ) {
 	char Reg[256];
 	int count, el, del;
-	
-	BOOL bOptimize = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
+
+	Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+	Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+	Boolean bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
 
 	#ifndef CompileVmudl
 	Cheat_r4300iOpcode(RSP_Vector_VMUDL,"RSP_Vector_VMUDL"); return;
@@ -2342,7 +2354,8 @@ void Compile_Vector_VMUDL ( void ) {
 	}
 }
 
-BOOL Compile_Vector_VMUDM_MMX ( void ) {
+Boolean Compile_Vector_VMUDM_MMX(void)
+{
 	char Reg[256];
 
 	/* Do our MMX checks here */
@@ -2428,9 +2441,9 @@ void Compile_Vector_VMUDM ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-	BOOL bOptimize = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
+    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
 
 	#ifndef CompileVmudm
 	Cheat_r4300iOpcode(RSP_Vector_VMUDM,"RSP_Vector_VMUDM"); return;
@@ -2508,7 +2521,8 @@ void Compile_Vector_VMUDM ( void ) {
 	Pop(x86_EBP);
 }
 
-BOOL Compile_Vector_VMUDN_MMX ( void ) {
+Boolean Compile_Vector_VMUDN_MMX(void)
+{
 	char Reg[256];
 
 	/* Do our MMX checks here */
@@ -2551,10 +2565,10 @@ BOOL Compile_Vector_VMUDN_MMX ( void ) {
 void Compile_Vector_VMUDN ( void ) {
 	char Reg[256];
 	int count, el, del;
-	
-	BOOL bOptimize = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
+
+    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
 
 	#ifndef CompileVmudn
 	Cheat_r4300iOpcode(RSP_Vector_VMUDN,"RSP_Vector_VMUDN"); return;
@@ -2611,7 +2625,8 @@ void Compile_Vector_VMUDN ( void ) {
 	Pop(x86_EBP);
 }
 
-BOOL Compile_Vector_VMUDH_MMX ( void ) {
+Boolean Compile_Vector_VMUDH_MMX(void)
+{
 	char Reg[256];
 
 	/* Do our MMX checks here */
@@ -2690,9 +2705,9 @@ void Compile_Vector_VMUDH ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-	BOOL bOptimize = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
+    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
 
 	#ifndef CompileVmudh
 	Cheat_r4300iOpcode(RSP_Vector_VMUDH,"RSP_Vector_VMUDH"); return;
@@ -2823,8 +2838,8 @@ void Compile_Vector_VMACF ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-	BOOL bOptimize = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
 
 	#ifndef CompileVmacf
 	Cheat_r4300iOpcode(RSP_Vector_VMACF,"RSP_Vector_VMACF"); return;
@@ -2894,8 +2909,8 @@ void Compile_Vector_VMADL ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-	BOOL bOptimize = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
 
 	#ifndef CompileVmadl
 	Cheat_r4300iOpcode(RSP_Vector_VMADL,"RSP_Vector_VMADL"); return;
@@ -2963,8 +2978,8 @@ void Compile_Vector_VMADM ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-	BOOL bOptimize = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
 
 	#ifndef CompileVmadm
 	Cheat_r4300iOpcode(RSP_Vector_VMADM,"RSP_Vector_VMADM"); return;
@@ -3045,9 +3060,9 @@ void Compile_Vector_VMADM ( void ) {
 void Compile_Vector_VMADN ( void ) {
 	char Reg[256];
 	int count, el, del;
-	
-	BOOL bOptimize = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+
+    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
 
 	#ifndef CompileVmadn
 	Cheat_r4300iOpcode(RSP_Vector_VMADN,"RSP_Vector_VMADN"); return;
@@ -3120,8 +3135,8 @@ void Compile_Vector_VMADH ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-	BOOL bOptimize = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
 
 	#ifndef CompileVmadh
 	Cheat_r4300iOpcode(RSP_Vector_VMADH,"RSP_Vector_VMADH"); return;
@@ -3245,7 +3260,8 @@ void Compile_Vector_VMADH ( void ) {
 	}
 }
 
-BOOL Compile_Vector_VADD_MMX ( void ) {
+Boolean Compile_Vector_VADD_MMX(void)
+{
 	char Reg[256];
 
 	/* Do our MMX checks here */
@@ -3295,11 +3311,10 @@ void Compile_Vector_VADD ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bElement = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
-	BOOL bFlagUseage = UseRspFlags(CompilePC);
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bElement = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    Boolean bFlagUseage = UseRspFlags(CompilePC);
 
 	#ifndef CompileVadd
 	Cheat_r4300iOpcode(RSP_Vector_VADD,"RSP_Vector_VADD"); return;
@@ -3367,7 +3382,8 @@ void Compile_Vector_VADD ( void ) {
 	Pop(x86_EBP);
 }
 
-BOOL Compile_Vector_VSUB_MMX ( void ) {
+Boolean Compile_Vector_VSUB_MMX(void)
+{
 	char Reg[256];
 
 	/* Do our MMX checks here */
@@ -3416,10 +3432,10 @@ void Compile_Vector_VSUB ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bOptimize = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
-	BOOL bFlagUseage = UseRspFlags(CompilePC);
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    Boolean bFlagUseage = UseRspFlags(CompilePC);
 
 	#ifndef CompileVsub
 	Cheat_r4300iOpcode(RSP_Vector_VSUB,"RSP_Vector_VSUB"); return;
@@ -3489,7 +3505,8 @@ void Compile_Vector_VSUB ( void ) {
 	Pop(x86_EBP);
 }
 
-BOOL Compile_Vector_VABS_MMX ( void ) {
+Boolean Compile_Vector_VABS_MMX(void)
+{
 	char Reg[256];
 
 	/* Do our MMX checks here */
@@ -3568,9 +3585,9 @@ BOOL Compile_Vector_VABS_MMX ( void ) {
 void Compile_Vector_VABS ( void ) {
 	int count, el, del;
 	char Reg[256];
-	
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 	#ifndef CompileVabs
 	Cheat_r4300iOpcode(RSP_Vector_VABS,"RSP_Vector_VABS"); return;
@@ -3665,10 +3682,10 @@ void Compile_Vector_VADDC ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
-	BOOL bElement = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    Boolean bElement = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+
 	#ifndef CompileVaddc
 	Cheat_r4300iOpcode(RSP_Vector_VADDC,"RSP_Vector_VADDC"); return;
 	#endif
@@ -3730,10 +3747,10 @@ void Compile_Vector_VSUBC ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
-	BOOL bElement = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    Boolean bElement = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+
 	#ifndef CompileVsubc
 	Cheat_r4300iOpcode(RSP_Vector_VSUBC,"RSP_Vector_VSUBC"); return;
 	#endif
@@ -3841,9 +3858,10 @@ void Compile_Vector_VSAW ( void ) {
 	MoveX86regToVariable(x86_EDX, &RSP_Vect[RSPOpC.sa].HW[6], Reg);
 }
 
-void Compile_Vector_VLT ( void ) {
-	BOOL bWriteToDest  = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+void Compile_Vector_VLT(void)
+{
+    Boolean bWriteToDest  = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 	BYTE *jump[3];
 	DWORD flag;
 	char Reg[256];
@@ -3932,9 +3950,10 @@ void Compile_Vector_VLT ( void ) {
 	}
 }
 
-void Compile_Vector_VEQ ( void ) {
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+void Compile_Vector_VEQ(void)
+{
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 	DWORD flag;
 	char Reg[256];
 	int count, el, del, last = -1;
@@ -3998,9 +4017,10 @@ void Compile_Vector_VEQ ( void ) {
 	}
 }
 
-void Compile_Vector_VNE ( void ) {
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+void Compile_Vector_VNE(void)
+{
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 	DWORD flag;
 	char Reg[256];
 	int el, del, last = -1;
@@ -4058,7 +4078,8 @@ void Compile_Vector_VNE ( void ) {
 	}
 }
 
-BOOL Compile_Vector_VGE_MMX ( void ) {
+Boolean Compile_Vector_VGE_MMX(void)
+{
 	char Reg[256];
 
 	if ((RSPOpC.rs & 0xF) >= 2 && (RSPOpC.rs & 0xF) <= 7 && IsMmx2Enabled == FALSE)
@@ -4099,8 +4120,9 @@ BOOL Compile_Vector_VGE_MMX ( void ) {
 	return TRUE;
 }
 
-void Compile_Vector_VGE ( void ) {
-/*	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+void Compile_Vector_VGE(void)
+{ /*
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 	/* FIXME: works ok, but needs careful flag analysis */
 /*	#if defined (DLIST)
@@ -4109,8 +4131,8 @@ void Compile_Vector_VGE ( void ) {
 	}
 	#endif
 */
-	BOOL bWriteToDest  = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    Boolean bWriteToDest  = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 	BYTE *jump[3];
 	DWORD flag;
 	char Reg[256];
@@ -4217,7 +4239,7 @@ void Compile_Vector_VCR ( void ) {
 void Compile_Vector_VMRG ( void ) {
 	char Reg[256];
 	int count, el, del;
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 	#ifndef CompileVmrg
 	Cheat_r4300iOpcode(RSP_Vector_VMRG,"RSP_Vector_VMRG"); return;
@@ -4249,7 +4271,8 @@ void Compile_Vector_VMRG ( void ) {
 	}
 }
 
-BOOL Compile_Vector_VAND_MMX ( void ) {
+Boolean Compile_Vector_VAND_MMX(void)
+{
 	char Reg[256];
 
 	/* Do our MMX checks here */
@@ -4289,12 +4312,13 @@ BOOL Compile_Vector_VAND_MMX ( void ) {
 	return TRUE;
 }
 
-void Compile_Vector_VAND ( void ) {
+void Compile_Vector_VAND(void)
+{
 	char Reg[256];
 	int el, del, count;
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bElement = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bElement = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 	#ifndef CompileVand
 	Cheat_r4300iOpcode(RSP_Vector_VAND,"RSP_Vector_VAND"); return;
@@ -4341,7 +4365,8 @@ void Compile_Vector_VAND ( void ) {
 	}
 }
 
-BOOL Compile_Vector_VNAND_MMX ( void ) {
+Boolean Compile_Vector_VNAND_MMX(void)
+{
 	char Reg[256];
 
 	/* Do our MMX checks here */
@@ -4387,9 +4412,9 @@ BOOL Compile_Vector_VNAND_MMX ( void ) {
 void Compile_Vector_VNAND ( void ) {
 	char Reg[256];
 	int el, del, count;
-	BOOL bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-	BOOL bElement = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
+    Boolean bElement = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 #ifndef CompileVnand
 	Cheat_r4300iOpcode(RSP_Vector_VNAND, "RSP_Vector_VNAND"); return;
@@ -4438,7 +4463,8 @@ void Compile_Vector_VNAND ( void ) {
 	}
 }
 
-BOOL Compile_Vector_VOR_MMX ( void ) {
+Boolean Compile_Vector_VOR_MMX(void)
+{
 	char Reg[256];
 
 	/* Do our MMX checks here */
@@ -4483,8 +4509,8 @@ BOOL Compile_Vector_VOR_MMX ( void ) {
 void Compile_Vector_VOR ( void ) {
 	char Reg[256];
 	int el, del, count;
-	BOOL bElement = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    Boolean bElement = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 #ifndef CompileVor
 	Cheat_r4300iOpcode(RSP_Vector_VOR, "RSP_Vector_VOR"); return;
@@ -4528,7 +4554,8 @@ void Compile_Vector_VOR ( void ) {
 	}
 }
 
-BOOL Compile_Vector_VNOR_MMX ( void ) {
+Boolean Compile_Vector_VNOR_MMX(void)
+{
 	char Reg[256];
 
 	/* Do our MMX checks here */
@@ -4574,8 +4601,8 @@ BOOL Compile_Vector_VNOR_MMX ( void ) {
 void Compile_Vector_VNOR ( void ) {
 	char Reg[256];
 	int el, del, count;
-	BOOL bElement = ((RSPOpC.rs & 0x0f) >= 8) ? TRUE : FALSE;
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    Boolean bElement = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 #ifndef CompileVnor
 	Cheat_r4300iOpcode(RSP_Vector_VNOR, "RSP_Vector_VNOR"); return;
@@ -4621,7 +4648,8 @@ void Compile_Vector_VNOR ( void ) {
 	}
 }
 
-BOOL Compile_Vector_VXOR_MMX ( void ) {
+Boolean Compile_Vector_VXOR_MMX(void)
+{
 	char Reg[256];
 
 	/* Do our MMX checks here */
@@ -4675,11 +4703,12 @@ BOOL Compile_Vector_VXOR_MMX ( void ) {
 	return TRUE;
 }
 
-void Compile_Vector_VXOR ( void ) {
-	#ifdef CompileVxor
-		char Reg[256];
-		DWORD count;
-		BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+void Compile_Vector_VXOR(void)
+{
+#ifdef CompileVxor
+    char Reg[256];
+    DWORD count;
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 		CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
 
@@ -4700,7 +4729,8 @@ void Compile_Vector_VXOR ( void ) {
 	Cheat_r4300iOpcodeNoMessage(RSP_Vector_VXOR, "RSP_Vector_VXOR");
 }
 
-BOOL Compile_Vector_VNXOR_MMX ( void ) {
+Boolean Compile_Vector_VNXOR_MMX(void)
+{
 	char Reg[256];
 
 	/* Do our MMX checks here */
@@ -4757,11 +4787,12 @@ BOOL Compile_Vector_VNXOR_MMX ( void ) {
 	return TRUE;
 }
 
-void Compile_Vector_VNXOR ( void ) {
-	#ifdef CompileVnxor
-		char Reg[256];
-		DWORD count;
-		BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+void Compile_Vector_VNXOR(void)
+{
+#ifdef CompileVnxor
+    char Reg[256];
+    DWORD count;
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 		CPU_Message("  %X %s", CompilePC, RSPOpcodeName(RSPOpC.Hex, CompilePC));
 
@@ -4785,9 +4816,9 @@ void Compile_Vector_VNXOR ( void ) {
 void Compile_Vector_VRCP ( void ) {
 	char Reg[256];
 	int count, el, last;
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 	DWORD *end = NULL;
-	
+
 #ifndef CompileVrcp
 	Cheat_r4300iOpcode(RSP_Vector_VRCP,"RSP_Vector_VRCP");
 	return;
@@ -4851,7 +4882,7 @@ void Compile_Vector_VRCP ( void ) {
 void Compile_Vector_VRCPL ( void ) {
 	char Reg[256];
 	int count, el, last;
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 	DWORD *end = NULL;
 
 #ifndef CompileVrcpl
@@ -4924,7 +4955,7 @@ void Compile_Vector_VRCPL ( void ) {
 void Compile_Vector_VRCPH ( void ) {
 	char Reg[256];
 	int count, el, last;
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 	#ifndef CompileVrcph
 	Cheat_r4300iOpcode(RSP_Vector_VRCPH,"RSP_Vector_VRCPH"); return;
@@ -4963,7 +4994,7 @@ void Compile_Vector_VRCPH ( void ) {
 void Compile_Vector_VMOV ( void ) {
 	char Reg[256];
 	int el, count;
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 #ifndef CompileVmov
 	Cheat_r4300iOpcode(RSP_Vector_VMOV, "RSP_Vector_VMOV"); return;
 #endif
@@ -5003,7 +5034,7 @@ void Compile_Vector_VRSQL ( void ) {
 void Compile_Vector_VRSQH ( void ) {
 	char Reg[256];
 	int count, el, last;
-	BOOL bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
+    Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 	#ifndef CompileVrsqh
 	Cheat_r4300iOpcode(RSP_Vector_VRSQH,"RSP_Vector_VRSQH"); return;

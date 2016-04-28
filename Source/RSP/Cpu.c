@@ -27,21 +27,22 @@
 #include <windows.h>
 #include <stdio.h>
 #include <float.h>
-#include "RSP.h"
+#include "Rsp.h"
 #include "Cpu.h"
 #include "RSP registers.h"
 #include "RSP Command.h"
 #include "Recompiler CPU.h"
 #include "memory.h"
-#include "opcode.h"
+#include "OpCode.h"
 #include "log.h"
 #include "Profiling.h"
 #include "breakpoint.h"
 #include "x86.h"
+#include "Types.h"
 
 UDWORD EleSpec[32], Indx[32];
 OPCODE RSPOpC;
-DWORD *PrgCount, NextInstruction, RSP_Running, RSP_MfStatusCount;
+uint32_t *PrgCount, NextInstruction, RSP_Running, RSP_MfStatusCount;
 
 p_func RSP_Opcode[64];
 p_func RSP_RegImm[32];
@@ -56,6 +57,7 @@ void BuildInterpreterCPU(void);
 void BuildRecompilerCPU(void);
 
 extern HANDLE hMutex;
+DWORD Mfc0Count, SemaphoreExit = 0;
 
 void SetCPU(DWORD core)
 {
@@ -194,7 +196,7 @@ DWORD RunRecompilerCPU (DWORD Cycles);
 
 __declspec(dllexport) DWORD DoRspCycles ( DWORD Cycles )
 {
-	extern BOOL AudioHle, GraphicsHle;
+    extern Boolean AudioHle, GraphicsHle;
 	DWORD TaskType = *(DWORD*)(RSPInfo.DMEM + 0xFC0);
 		
 /*	if (*RSPInfo.SP_STATUS_REG & SP_STATUS_SIG0)

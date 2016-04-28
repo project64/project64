@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -35,21 +35,21 @@
     <TargetName>PJ64Glide64</TargetName>
     <TargetName Condition="'$(Configuration)'=='Debug'">PJ64Glide64_d</TargetName>
     <OutDir>$(SolutionDir)Plugin\GFX\</OutDir>
-	<OutDir Condition="'$(Platform)'=='x64'">$(SolutionDir)Plugin64\GFX\</OutDir>
+    <OutDir Condition="'$(Platform)'=='x64'">$(SolutionDir)Plugin64\GFX\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(Root)Source\3rd Party\sdl\include;$(Root)Source/3rd Party/wx/include;$(Root)Source/3rd Party/wx/include/msvc;$(Root)Source/Glitch64/inc;inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(Root)Source/Glitch64/inc;inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__MSC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Platform)'=='x64'">NO_ASM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)'=='Debug'">RDP_LOGGING;RDP_ERROR_LOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader />
     </ClCompile>
-    <Link>
-      <AdditionalLibraryDirectories>$(Root)Source\3rd Party\wx\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Gfx_1.3.h" />
+    <ClInclude Include="Settings.h" />
+    <ClInclude Include="trace.h" />
     <ClInclude Include="turbo3D.h" />
     <ClInclude Include="ucode.h" />
     <ClInclude Include="ucode00.h" />
@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CRC.cpp" />
+    <ClCompile Include="Settings.cpp" />
     <ClCompile Include="TexCache.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="3dmath.cpp" />
@@ -108,6 +109,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="rdp.cpp" />
     <ClCompile Include="TexBuffer.cpp" />
+    <ClCompile Include="trace.cpp" />
     <ClCompile Include="Util.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -126,28 +128,8 @@
     <ResourceCompile Include="Glide64.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\3rd Party\sdl\sdl2.vcxproj">
-      <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\3rd Party\wx\wx_base.vcxproj">
-      <Project>{427f1dcd-3bed-4010-9322-077a4c06d871}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\3rd Party\wx\wx_core.vcxproj">
-      <Project>{93447136-facd-4740-8f35-fc46fb4a9e82}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\3rd Party\wx\wx_wxjpeg.vcxproj">
-      <Project>{93cfedf3-9a75-4484-b169-d9d8074f5ac2}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\3rd Party\wx\wx_wxpng.vcxproj">
-      <Project>{05b9cb11-12d1-47cd-8e4a-88e12162119b}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\3rd Party\wx\wx_wxzlib.vcxproj">
-      <Project>{25a25249-c284-4c5a-8dc2-26fc3eb13703}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    <ProjectReference Include="..\3rdParty\png\png.vcxproj">
+      <Project>{17836496-31b0-46f2-b1b1-366d7df6f04c}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Common\Common.vcxproj">
       <Project>{b4a4b994-9111-42b1-93c2-6f1ca8bc4421}</Project>

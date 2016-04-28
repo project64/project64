@@ -24,10 +24,11 @@
  *
  */
 
-#include "opcode.h"
+#include "OpCode.h"
+#include "Types.h"
 
 extern DWORD CompilePC, NextInstruction, JumpTableSize;
-extern BOOL ChangedPC;
+extern Boolean ChangedPC;
 
 #define CompilerWarning if (ShowErrors) DisplayError
 
@@ -36,17 +37,17 @@ extern BOOL ChangedPC;
 #define Low16BitAccum		4
 #define EntireAccum			(Low16BitAccum|Middle16BitAccum|High16BitAccum)
 
-BOOL WriteToAccum (int Location, int PC);
-BOOL WriteToVectorDest (DWORD DestReg, int PC);
-BOOL UseRspFlags (int PC);
+Boolean WriteToAccum(int Location, int PC);
+Boolean WriteToVectorDest(DWORD DestReg, int PC);
+Boolean UseRspFlags(int PC);
 
-BOOL DelaySlotAffectBranch(DWORD PC);
-BOOL CompareInstructions(DWORD PC, OPCODE * Top, OPCODE * Bottom);
-BOOL IsOpcodeBranch(DWORD PC, OPCODE RspOp);
-BOOL IsOpcodeNop(DWORD PC);
+Boolean DelaySlotAffectBranch(DWORD PC);
+Boolean CompareInstructions(DWORD PC, OPCODE * Top, OPCODE * Bottom);
+Boolean IsOpcodeBranch(DWORD PC, OPCODE RspOp);
+Boolean IsOpcodeNop(DWORD PC);
 
-BOOL IsNextInstructionMmx(DWORD PC);
-BOOL IsRegisterConstant (DWORD Reg, DWORD * Constant);
+Boolean IsNextInstructionMmx(DWORD PC);
+Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant);
 
 void RSP_Element2Mmx(int MmxReg);
 void RSP_MultiElement2Mmx(int MmxReg1, int MmxReg2);
@@ -59,7 +60,7 @@ void BuildRecompilerCPU ( void );
 
 void CompilerRSPBlock ( void );
 void CompilerToggleBuffer (void);
-BOOL RSP_DoSections(void);
+Boolean RSP_DoSections(void);
 
 typedef struct {
 	DWORD StartPC, CurrPC;		/* block start */
@@ -75,7 +76,7 @@ typedef struct {
 extern RSP_BLOCK CurrentBlock;
 
 typedef struct {
-	BOOL bIsRegConst[32];		/* BOOLean toggle for constant */
+    Boolean bIsRegConst[32];    /* Boolean toggle for constant */
 	DWORD MipsRegConst[32];		/* Value of register 32-bit */
 	DWORD BranchLabels[250];
 	DWORD LabelCount;
@@ -89,15 +90,15 @@ extern RSP_CODE RspCode;
 #define MipsRegConst(i) (RspCode.MipsRegConst[i])
 
 typedef struct {
-	BOOL mmx, mmx2, sse;	/* CPU specs and compiling */
-	BOOL bFlags;			/* RSP Flag Analysis */
-	BOOL bReOrdering;		/* Instruction reordering */
-	BOOL bSections;			/* Microcode sections */
-	BOOL bDest;				/* Vector destionation toggle */
-	BOOL bAccum;			/* Accumulator toggle */
-	BOOL bGPRConstants;		/* Analyze GPR constants */
-	BOOL bAlignVector;		/* Align known vector loads */
-	BOOL bAudioUcode;		/* Audio ucode analysis */
+    Boolean mmx, mmx2, sse;     /* CPU specs and compiling */
+    Boolean bFlags;             /* RSP Flag Analysis */
+    Boolean bReOrdering;        /* Instruction reordering */
+    Boolean bSections;          /* Microcode sections */
+    Boolean bDest;              /* Vector destionation toggle */
+    Boolean bAccum;             /* Accumulator toggle */
+    Boolean bGPRConstants;      /* Analyze GPR constants */
+    Boolean bAlignVector;       /* Align known vector loads */
+    Boolean bAudioUcode;        /* Audio ucode analysis */
 } RSP_COMPILER;
 
 extern RSP_COMPILER Compiler;

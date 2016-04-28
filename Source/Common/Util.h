@@ -4,6 +4,14 @@
 class pjutil
 {
 public:
+    typedef void * DynLibHandle;
+
+    static DynLibHandle DynLibOpen(const char *pccLibraryPath, bool ShowErrors = true);
+    static void * DynLibGetProc(DynLibHandle LibHandle, const char * ProcedureName);
+    static void DynLibClose(DynLibHandle LibHandle);
+#ifdef _WIN32
+    static void DynLibCallDllMain(void);
+#endif
     static void Sleep(uint32_t timeout);
     static bool TerminatedExistingExe();
 

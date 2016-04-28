@@ -127,6 +127,9 @@
     <ClInclude Include="TexBuffer.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Version.h" />
+    <ClInclude Include="Gfx_1.3.h" />
+    <ClInclude Include="trace.h" />
+    <ClInclude Include="Settings.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CRC.cpp">
@@ -149,6 +152,8 @@
     <ClCompile Include="rdp.cpp" />
     <ClCompile Include="TexBuffer.cpp" />
     <ClCompile Include="Util.cpp" />
+    <ClCompile Include="trace.cpp" />
+    <ClCompile Include="Settings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="gpl.txt">

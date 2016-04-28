@@ -146,15 +146,7 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath=".\AppInit.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Logging.cpp"
-				>
-			</File>
-			<File
-				RelativePath="main.cpp"
+				RelativePath=".\main.cpp"
 				>
 			</File>
 			<File
@@ -181,206 +173,106 @@
 				Name="Settings Files"
 				>
 				<File
-					RelativePath=".\Settings\Debug Settings.cpp"
+					RelativePath=".\Settings\GuiSettings.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\Settings\Game Settings.cpp"
+					RelativePath=".\Settings\NotificationSettings.cpp"
 					>
 				</File>
 				<File
-					RelativePath="Settings\Gui Settings.cpp"
+					RelativePath=".\Settings\UISettings.cpp"
 					>
 				</File>
-				<File
-					RelativePath=".\Settings\Logging Settings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Settings\N64System Settings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Settings\Notification Settings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Settings\Recompiler Settings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Settings\Settings Class.cpp"
-					>
-				</File>
-				<Filter
-					Name="Setting Types Files"
-					>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-Application.cpp"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-ApplicationIndex.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Settings\SettingType\SettingsType-ApplicationPath.cpp"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-Cheats.cpp"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-GameSetting.cpp"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-GameSettingIndex.cpp"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-RDBCpuType.cpp"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-RDBOnOff.cpp"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-RDBRamSize.cpp"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-RDBSaveChip.cpp"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-RDBYesNo.cpp"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-RelativePath.cpp"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-RomDatabase.cpp"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-RomDatabaseIndex.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Settings\SettingType\SettingsType-RomDatabaseSetting.cpp"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-SelectedDirectory.cpp"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-TempBool.cpp"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-TempNumber.cpp"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-TempString.cpp"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="User Interface Source"
 				>
 				<File
-					RelativePath=".\User Interface\Cheat Class UI.cpp"
+					RelativePath=".\UserInterface\CheatClassUI.cpp"
 					>
 				</File>
 				<File
-					RelativePath="User Interface\Frame Per Second Class.cpp"
+					RelativePath=".\UserInterface\GuiClass.cpp"
 					>
 				</File>
 				<File
-					RelativePath="User Interface\Gui Class.cpp"
+					RelativePath=".\UserInterface\LoggingUI.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\User Interface\LoggingUI.cpp"
+					RelativePath=".\UserInterface\MainMenuClass.cpp"
 					>
 				</File>
 				<File
-					RelativePath="User Interface\Main Menu Class.cpp"
+					RelativePath=".\UserInterface\MenuClass.cpp"
 					>
 				</File>
 				<File
-					RelativePath="User Interface\Menu Class.cpp"
+					RelativePath=".\UserInterface\MenuShortCuts.cpp"
 					>
 				</File>
 				<File
-					RelativePath="User Interface\MenuShortCuts.cpp"
+					RelativePath=".\UserInterface\NotificationClass.cpp"
 					>
 				</File>
 				<File
-					RelativePath="User Interface\Notification Class.cpp"
+					RelativePath=".\UserInterface\RomBrowserClass.cpp"
 					>
 				</File>
 				<File
-					RelativePath="User Interface\Rom Browser Class.cpp"
+					RelativePath=".\UserInterface\RomInformationClass.cpp"
 					>
 				</File>
 				<File
-					RelativePath="User Interface\Settings Config.cpp"
+					RelativePath=".\UserInterface\SettingsConfig.cpp"
 					>
 				</File>
 				<Filter
 					Name="Settings Source"
 					>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Advanced Options.cpp"
+						RelativePath=".\UserInterface\Settings\SettingsPage-AdvancedOptions.cpp"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Directories.cpp"
+						RelativePath=".\UserInterface\Settings\SettingsPage-Directories.cpp"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Game - General.cpp"
+						RelativePath=".\UserInterface\Settings\SettingsPage-Game-General.cpp"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Game - Plugin.cpp"
+						RelativePath=".\UserInterface\Settings\SettingsPage-Game-Plugin.cpp"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Game - Recompiler.cpp"
+						RelativePath=".\UserInterface\Settings\SettingsPage-Game-Recompiler.cpp"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Game - Status.cpp"
+						RelativePath=".\UserInterface\Settings\SettingsPage-Game-Status.cpp"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Game Browser.cpp"
+						RelativePath=".\UserInterface\Settings\SettingsPage-GameBrowser.cpp"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Keyboard Shortcuts.cpp"
+						RelativePath=".\UserInterface\Settings\SettingsPage-KeyboardShortcuts.cpp"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Options.cpp"
+						RelativePath=".\UserInterface\Settings\SettingsPage-Options.cpp"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Plugin.cpp"
+						RelativePath=".\UserInterface\Settings\SettingsPage-Plugin.cpp"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page.cpp"
+						RelativePath=".\UserInterface\Settings\SettingsPage.cpp"
 						>
 					</File>
 				</Filter>
@@ -388,11 +280,11 @@
 					Name="WTL Controls Source"
 					>
 					<File
-						RelativePath="User Interface\WTL Controls\ModifiedEditBox.cpp"
+						RelativePath=".\UserInterface\WTLControls\ModifiedEditBox.cpp"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\WTL Controls\PartialGroupBox.cpp"
+						RelativePath=".\UserInterface\WTLControls\PartialGroupBox.cpp"
 						>
 					</File>
 				</Filter>
@@ -400,23 +292,23 @@
 					Name="Debugger Source"
 					>
 					<File
-						RelativePath="N64 System\Debugger\Debugger - Memory Dump.cpp"
+						RelativePath=".\N64System\Debugger\Debugger-MemoryDump.cpp"
 						>
 					</File>
 					<File
-						RelativePath="N64 System\Debugger\Debugger - Memory Search.cpp"
+						RelativePath=".\N64System\Debugger\Debugger-MemorySearch.cpp"
 						>
 					</File>
 					<File
-						RelativePath="N64 System\Debugger\Debugger - TLB.cpp"
+						RelativePath=".\N64System\Debugger\Debugger-TLB.cpp"
 						>
 					</File>
 					<File
-						RelativePath="N64 System\Debugger\Debugger - View Memory.cpp"
+						RelativePath=".\N64System\Debugger\Debugger-ViewMemory.cpp"
 						>
 					</File>
 					<File
-						RelativePath="N64 System\Debugger\Debugger.cpp"
+						RelativePath=".\N64System\Debugger\Debugger.cpp"
 						>
 					</File>
 				</Filter>
@@ -425,293 +317,17 @@
 				Name="Multilanguage Source"
 				>
 				<File
-					RelativePath="Multilanguage\Language Class.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\Multilanguage\LanguageSelector.cpp"
 					>
 				</File>
 			</Filter>
 			<Filter
-				Name="N64 System Source"
-				>
-				<File
-					RelativePath="N64 System\Cheat Class.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\N64 System\Emulation Thread.cpp"
-					>
-				</File>
-				<File
-					RelativePath="N64 System\N64 Class.cpp"
-					>
-				</File>
-				<File
-					RelativePath="N64 System\N64 Rom Class.cpp"
-					>
-				</File>
-				<File
-					RelativePath="N64 System\Profiling Class.cpp"
-					>
-				</File>
-				<File
-					RelativePath="N64 System\Rom Information Class.cpp"
-					>
-				</File>
-				<File
-					RelativePath="N64 System\Speed Limitor Class.cpp"
-					>
-				</File>
-				<File
-					RelativePath="N64 System\System Globals.cpp"
-					>
-				</File>
-				<Filter
-					Name="Mips Source"
-					>
-					<File
-						RelativePath="N64 System\Mips\Audio.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\Dma.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\Eeprom.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\FlashRam.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\Memory Labels Class.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\Memory Virtual Mem.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\N64 System\Mips\Mempak.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\Pif Ram.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\Register Class.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\N64 System\Mips\Rumblepak.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\Sram.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\System Events.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\System Timing.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\TLB class.cpp"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="C Core Source"
-					>
-					<File
-						RelativePath="N64 System\C Core\r4300i Commands.cpp"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Recompiler Files"
-					>
-					<File
-						RelativePath="N64 System\Recompiler\Code Block.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Code Section.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Function Info.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Function Map Class.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\N64 System\Recompiler\Loop Analysis.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Recompiler Class.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Recompiler Memory.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Recompiler Ops.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Reg Info.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Section Info.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\N64 System\Recompiler\x86CodeLog.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\X86ops.cpp"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Interpreter Files"
-					>
-					<File
-						RelativePath="N64 System\Interpreter\Interpreter CPU.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Interpreter\Interpreter Ops 32.cpp"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Interpreter\Interpreter Ops.cpp"
-						>
-					</File>
-				</Filter>
-			</Filter>
-			<Filter
 				Name="Plugin Source"
 				>
 				<File
-					RelativePath="Plugins\Audio Plugin.cpp"
+					RelativePath=".\Plugins\PluginList.cpp"
 					>
 				</File>
-				<File
-					RelativePath="Plugins\Controller Plugin.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Plugins\GFX plugin.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Plugins\Plugin Base.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Plugins\Plugin Class.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Plugins\Plugin List.cpp"
-					>
-				</File>
-				<File
-					RelativePath="Plugins\RSP Plugin.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="3rd Party Source"
-				>
-				<File
-					RelativePath="3rd Party\7zip.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<Filter
-					Name="ZLib Source"
-					>
-					<File
-						RelativePath="..\3rd Party\zlib\contrib\minizip\unzip.c"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-								UsePrecompiledHeader="0"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-								UsePrecompiledHeader="0"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\3rd Party\zlib\contrib\minizip\zip.c"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-								UsePrecompiledHeader="0"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-								UsePrecompiledHeader="0"
-							/>
-						</FileConfiguration>
-					</File>
-				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
@@ -719,86 +335,40 @@
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
 			<File
-				RelativePath="User Interface\Bitmaps\AboutScreen.bmp"
+				RelativePath=".\UserInterface\Bitmaps\AboutScreenLogo.bmp"
 				>
 			</File>
 			<File
-				RelativePath="User Interface\Bitmaps\AboutScreenBottom.bmp"
+				RelativePath=".\UserInterface\Icons\divider.cur"
 				>
 			</File>
 			<File
-				RelativePath="User Interface\Bitmaps\AboutScreenMiddle.bmp"
+				RelativePath=".\UserInterface\Icons\hand.cur"
 				>
 			</File>
 			<File
-				RelativePath="User Interface\Bitmaps\AboutScreenTop.bmp"
+				RelativePath=".\UserInterface\Icons\left.ico"
 				>
 			</File>
 			<File
-				RelativePath="User Interface\Bitmaps\CloseNormal.bmp"
+				RelativePath=".\UserInterface\Bitmaps\ListItems.bmp"
 				>
 			</File>
 			<File
-				RelativePath="User Interface\Icons\divider.cur"
+				RelativePath=".\UserInterface\Icons\pj64.ico"
 				>
 			</File>
 			<File
-				RelativePath="User Interface\Icons\hand.cur"
+				RelativePath=".\UserInterface\Icons\right.ico"
 				>
 			</File>
 			<File
-				RelativePath="User Interface\Bitmaps\LangOK.bmp"
+				RelativePath=".\UserInterface\Bitmaps\tri-state.bmp"
 				>
 			</File>
 			<File
-				RelativePath="User Interface\Bitmaps\LangOK_down.bmp"
+				RelativePath=".\UserInterface\UIResources.rc"
 				>
-			</File>
-			<File
-				RelativePath="User Interface\Icons\left.ico"
-				>
-			</File>
-			<File
-				RelativePath="User Interface\Bitmaps\ListItems.bmp"
-				>
-			</File>
-			<File
-				RelativePath="User Interface\Bitmaps\pj64.BMP"
-				>
-			</File>
-			<File
-				RelativePath="User Interface\Icons\PJ64.ICO"
-				>
-			</File>
-			<File
-				RelativePath="User Interface\Icons\right.ico"
-				>
-			</File>
-			<File
-				RelativePath="User Interface\Bitmaps\tri-state.bmp"
-				>
-			</File>
-			<File
-				RelativePath="User Interface\UI Resources.rc"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCResourceCompilerTool"
-						PreprocessorDefinitions=""
-						AdditionalIncludeDirectories="User Interface"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCResourceCompilerTool"
-						PreprocessorDefinitions=""
-						AdditionalIncludeDirectories="User Interface"
-					/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -806,257 +376,133 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath=".\AppInit.h"
+				RelativePath=".\N64System.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Logging.h"
+				RelativePath=".\stdafx.h"
 				>
 			</File>
 			<File
-				RelativePath="Multilanguage.h"
+				RelativePath=".\Support.h"
 				>
 			</File>
 			<File
-				RelativePath="N64 System.h"
+				RelativePath=".\UserInterface.h"
 				>
 			</File>
 			<File
-				RelativePath="Plugin.h"
-				>
-			</File>
-			<File
-				RelativePath="Settings.h"
-				>
-			</File>
-			<File
-				RelativePath="stdafx.h"
-				>
-			</File>
-			<File
-				RelativePath="User Interface.h"
-				>
-			</File>
-			<File
-				RelativePath="Version.h"
-				>
-			</File>
-			<File
-				RelativePath="WTL App.h"
+				RelativePath=".\WTLApp.h"
 				>
 			</File>
 			<Filter
 				Name="Settings Headers"
 				>
 				<File
-					RelativePath=".\Settings\Debug Settings.h"
+					RelativePath=".\Settings\GuiSettings.h"
 					>
 				</File>
 				<File
-					RelativePath=".\Settings\Game Settings.h"
+					RelativePath=".\Settings\NotificationSettings.h"
 					>
 				</File>
 				<File
-					RelativePath="Settings\Gui Settings.h"
+					RelativePath=".\Settings\UISettings.h"
 					>
 				</File>
-				<File
-					RelativePath=".\Settings\Logging Settings.h"
-					>
-				</File>
-				<File
-					RelativePath="Settings\N64System Settings.h"
-					>
-				</File>
-				<File
-					RelativePath="Settings\Notification Settings.h"
-					>
-				</File>
-				<File
-					RelativePath="Settings\Recompiler Settings.h"
-					>
-				</File>
-				<File
-					RelativePath="Settings\Settings Class.h"
-					>
-				</File>
-				<Filter
-					Name="Setting Types Header"
-					>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-Application.h"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-ApplicationIndex.h"
-						>
-					</File>
-					<File
-						RelativePath=".\Settings\SettingType\SettingsType-ApplicationPath.h"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-Base.h"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-Cheats.h"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-GameSetting.h"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-GameSettingIndex.h"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-RDBCpuType.h"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-RDBOnOff.h"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-RDBRamSize.h"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-RDBSaveChip.h"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-RDBYesNo.h"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-RelativePath.h"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-RomDatabase.h"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-RomDatabaseIndex.h"
-						>
-					</File>
-					<File
-						RelativePath=".\Settings\SettingType\SettingsType-RomDatabaseSetting.h"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-SelectedDirectory.h"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-TempBool.h"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-TempNumber.h"
-						>
-					</File>
-					<File
-						RelativePath="Settings\SettingType\SettingsType-TempString.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="User Interface Headers"
 				>
 				<File
-					RelativePath=".\User Interface\Cheat Class UI.h"
+					RelativePath=".\UserInterface\CheatClassUI.h"
 					>
 				</File>
 				<File
-					RelativePath="User Interface\Frame Per Second Class.h"
+					RelativePath=".\UserInterface\GuiClass.h"
 					>
 				</File>
 				<File
-					RelativePath="User Interface\Gui Class.h"
+					RelativePath=".\UserInterface\LoggingUI.h"
 					>
 				</File>
 				<File
-					RelativePath="User Interface\Log Class.h"
+					RelativePath=".\UserInterface\MainMenuClass.h"
 					>
 				</File>
 				<File
-					RelativePath=".\User Interface\LoggingUI.h"
+					RelativePath=".\UserInterface\MenuClass.h"
 					>
 				</File>
 				<File
-					RelativePath="User Interface\Main Menu Class.h"
+					RelativePath=".\UserInterface\MenuShortCuts.h"
 					>
 				</File>
 				<File
-					RelativePath="User Interface\Menu Class.h"
+					RelativePath=".\UserInterface\NotificationClass.h"
 					>
 				</File>
 				<File
-					RelativePath="User Interface\MenuShortCuts.h"
+					RelativePath=".\UserInterface\resource.h"
 					>
 				</File>
 				<File
-					RelativePath="User Interface\Notification Class.h"
+					RelativePath=".\UserInterface\RomBrowser.h"
 					>
 				</File>
 				<File
-					RelativePath="User Interface\resource.h"
+					RelativePath=".\UserInterface\RomInformationClass.h"
 					>
 				</File>
 				<File
-					RelativePath="User Interface\Rom Browser.h"
+					RelativePath=".\UserInterface\SettingsConfig.h"
 					>
 				</File>
 				<Filter
 					Name="Settings Header"
 					>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Advanced Options.h"
+						RelativePath=".\UserInterface\Settings\SettingsPage-AdvancedOptions.h"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Directories.h"
+						RelativePath=".\UserInterface\Settings\SettingsPage-Directories.h"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Game - General.h"
+						RelativePath=".\UserInterface\Settings\SettingsPage-Game-General.h"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Game - Plugin.h"
+						RelativePath=".\UserInterface\Settings\SettingsPage-Game-Plugin.h"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Game - Recompiler.h"
+						RelativePath=".\UserInterface\Settings\SettingsPage-Game-Recompiler.h"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Game - Status.h"
+						RelativePath=".\UserInterface\Settings\SettingsPage-Game-Status.h"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Game Browser.h"
+						RelativePath=".\UserInterface\Settings\SettingsPage-GameBrowser.h"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Keyboard Shortcuts.h"
+						RelativePath=".\UserInterface\Settings\SettingsPage-KeyboardShortcuts.h"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Options.h"
+						RelativePath=".\UserInterface\Settings\SettingsPage-Options.h"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page - Plugin.h"
+						RelativePath=".\UserInterface\Settings\SettingsPage-Plugin.h"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\Settings\Settings Page.h"
+						RelativePath=".\UserInterface\Settings\SettingsPage.h"
 						>
 					</File>
 				</Filter>
@@ -1064,23 +510,23 @@
 					Name="WTL Controls Headers"
 					>
 					<File
-						RelativePath="User Interface\WTL Controls\ModifiedCheckBox.h"
+						RelativePath=".\UserInterface\WTLControls\ModifiedCheckBox.h"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\WTL Controls\ModifiedComboBox.h"
+						RelativePath=".\UserInterface\WTLControls\ModifiedComboBox.h"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\WTL Controls\ModifiedEditBox.h"
+						RelativePath=".\UserInterface\WTLControls\ModifiedEditBox.h"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\WTL Controls\numberctrl.h"
+						RelativePath=".\UserInterface\WTLControls\numberctrl.h"
 						>
 					</File>
 					<File
-						RelativePath="User Interface\WTL Controls\PartialGroupBox.h"
+						RelativePath=".\UserInterface\WTLControls\PartialGroupBox.h"
 						>
 					</File>
 				</Filter>
@@ -1089,305 +535,17 @@
 				Name="Multilanguage Headers"
 				>
 				<File
-					RelativePath="Multilanguage\Language Class.h"
-					>
-				</File>
-				<File
 					RelativePath=".\Multilanguage\LanguageSelector.h"
 					>
 				</File>
 			</Filter>
 			<Filter
-				Name="N64 System Headers"
-				>
-				<File
-					RelativePath="N64 System\Cheat Class.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Debugger.h"
-					>
-				</File>
-				<File
-					RelativePath="N64 System\N64 Class.h"
-					>
-				</File>
-				<File
-					RelativePath="N64 System\N64 Rom Class.h"
-					>
-				</File>
-				<File
-					RelativePath="N64 System\N64 Types.h"
-					>
-				</File>
-				<File
-					RelativePath="N64 System\Profiling Class.h"
-					>
-				</File>
-				<File
-					RelativePath="N64 System\Rom Information Class.h"
-					>
-				</File>
-				<File
-					RelativePath="N64 System\Speed Limitor Class.h"
-					>
-				</File>
-				<File
-					RelativePath="N64 System\System Globals.h"
-					>
-				</File>
-				<File
-					RelativePath="N64 System\Types.h"
-					>
-				</File>
-				<Filter
-					Name="Mips Headers"
-					>
-					<File
-						RelativePath="N64 System\Mips\Audio.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\Dma.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\Eeprom.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\FlashRam.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\Memory Class.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\Memory Labels Class.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\Memory Virtual Mem.h"
-						>
-					</File>
-					<File
-						RelativePath=".\N64 System\Mips\Mempak.H"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\OpCode.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\Pif Ram.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\Register Class.h"
-						>
-					</File>
-					<File
-						RelativePath=".\N64 System\Mips\Rumblepak.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\Sram.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\System Events.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\System Timing.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\TLB Class.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Mips\TranslateVaddr.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="C Core Headers"
-					>
-					<File
-						RelativePath="N64 System\C Core\r4300i Commands.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Debugger Headers"
-					>
-					<File
-						RelativePath="N64 System\Debugger\Debugger - Memory Dump.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Debugger\Debugger - Memory Search.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Debugger\Debugger - TLB.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Debugger\Debugger - View Memory.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Debugger\debugger.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Recompiler Headers"
-					>
-					<File
-						RelativePath="N64 System\Recompiler\Code Block.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Code Section.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Delay Slot Map Class.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Exit Info.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Function Info.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Function Map Class.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Jump Info.h"
-						>
-					</File>
-					<File
-						RelativePath=".\N64 System\Recompiler\Loop Analysis.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Recompiler Class.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Recompiler Memory.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Recompiler Ops.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Reg Info.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\Section Info.h"
-						>
-					</File>
-					<File
-						RelativePath=".\N64 System\Recompiler\x86CodeLog.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Recompiler\X86ops.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Interpreter Headers"
-					>
-					<File
-						RelativePath="N64 System\Interpreter\Interpreter CPU.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Interpreter\Interpreter Ops 32.h"
-						>
-					</File>
-					<File
-						RelativePath="N64 System\Interpreter\Interpreter Ops.h"
-						>
-					</File>
-				</Filter>
-			</Filter>
-			<Filter
 				Name="Plugin Headers"
 				>
 				<File
-					RelativePath="Plugins\Audio Plugin.h"
+					RelativePath=".\Plugins\PluginList.h"
 					>
 				</File>
-				<File
-					RelativePath="Plugins\Controller Plugin.h"
-					>
-				</File>
-				<File
-					RelativePath="Plugins\GFX plugin.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Plugins\Plugin Base.h"
-					>
-				</File>
-				<File
-					RelativePath="Plugins\Plugin Class.h"
-					>
-				</File>
-				<File
-					RelativePath="Plugins\Plugin List.h"
-					>
-				</File>
-				<File
-					RelativePath="Plugins\RSP Plugin.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="3rd Party Headers"
-				>
-				<File
-					RelativePath="3rd Party\7zip.h"
-					>
-				</File>
-				<File
-					RelativePath="3rd Party\zip.h"
-					>
-				</File>
-				<Filter
-					Name="Zlib Headers"
-					>
-					<File
-						RelativePath="..\3rd Party\zlib\contrib\minizip\unzip.h"
-						>
-					</File>
-					<File
-						RelativePath="..\3rd Party\zlib\zconf.h"
-						>
-					</File>
-					<File
-						RelativePath="..\3rd Party\zlib\contrib\minizip\zip.h"
-						>
-					</File>
-					<File
-						RelativePath="..\3rd Party\zlib\zlib.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 		</Filter>
 		<Filter

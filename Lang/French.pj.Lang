@@ -1,11 +1,11 @@
-/*********************************************************************************
+﻿/*********************************************************************************
 * Meta Information                                                               *
 *********************************************************************************/
 //About DLL
 #1  #  "Français"		// LANGUAGE ID
 #2  #  "Benjamin Siskoo"			// Author
 #3  #  "2.2"			// Version
-#4  #  "6 Mai 2015"		// Date
+#4  #  "2 Décembre 2015"		// Date
 
 //About DLL Dialog
 #5  #  "Langue actuelle"
@@ -88,6 +88,7 @@
 #198#  "Emplacement 8"
 #199#  "Emplacement 9"
 #200#  "Emplacement 10"
+#201#  "Sélection de l’emplacement de sauvegarde (%ws)"
 
 //Pop up Menu
 #210#  "Lancer le jeu"
@@ -95,6 +96,7 @@
 #212#  "Éditer les paramètres du jeu"
 #213#  "Éditer les cheats"
 #214#  "Plugin graphique"
+#215#  "Lancer le Jeu avec le Disque"
 
 //Alternate Name to save Slot
 #220#  "Emplacement de sauvegarde - Défaut"
@@ -340,8 +342,9 @@
 #687#  "Tout Réinitialiser"
 #688#  "Aucun jeu lancé"
 #689#  "Un jeu est lancé"
-#690#  "Un jeu est lancé (fenêtré)"
-#691#  "Un jeu est lancé (plein écran)"
+#690#  "Un jeu est lancé (Fenêtré)"
+#691#  "Un jeu est lancé (Plein écran)"
+#692#  "Détecter la touche"
 
 // Frame Rate Option
 #700#  "Interruptions verticales par seconde"
@@ -356,6 +359,7 @@
 #720#  "Réinitialiser la page"
 #721#  "Tout réinitialiser"
 #722#  "Appliquer"
+#723#  "Fermer"
 
 /*********************************************************************************
 * ROM Information                                                                *

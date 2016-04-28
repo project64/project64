@@ -27,8 +27,8 @@
 #include <windows.h>
 #include <commctrl.h>
 #include <stdio.h>
-#include "rsp.h"
-#include "types.h"
+#include "Rsp.h"
+#include "Types.h"
 
 #define GeneralPurpose			1
 #define ControlProcessor0		2

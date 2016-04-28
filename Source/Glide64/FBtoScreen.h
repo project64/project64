@@ -46,15 +46,15 @@
 
 typedef struct 
 {
-  wxUint32 addr;   //color image address
-  wxUint32 size;   
-  wxUint32 width;
-  wxUint32 height;
-  wxUint32 ul_x;
-  wxUint32 ul_y;
-  wxUint32 lr_x;
-  wxUint32 lr_y;
-  wxUint32 opaque;
+  uint32_t addr;   //color image address
+  uint32_t size;   
+  uint32_t width;
+  uint32_t height;
+  uint32_t ul_x;
+  uint32_t ul_y;
+  uint32_t lr_x;
+  uint32_t lr_y;
+  uint32_t opaque;
 } FB_TO_SCREEN_INFO;
 
 bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info);

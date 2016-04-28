@@ -1,0 +1,16 @@
+# All files that are binary and should not be normalized
+
+# Images
+*.png binary
+*.jpg binary
+*.psd binary
+*.gif binary
+*.bmp binary
+*.ico binary
+*.cur binary
+
+# Binary data
+*.exe binary
+*.dll binary
+*.e32 binary
+*.lib binary

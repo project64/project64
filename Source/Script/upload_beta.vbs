@@ -3,7 +3,7 @@
 if WScript.Arguments.Count < 4 then
     WScript.StdOut.WriteLine "Missing parameters"
     WScript.StdOut.WriteLine "[password] [file to upload] [BuildUrl] [Posttitle]"
-	WScript.Quit
+	WScript.Quit 1
 end if
 
 Set IE = CreateIeWindow()
@@ -13,6 +13,7 @@ IE.Visible = True
 Login IE
 PostThread IE
 IE.Quit
+WScript.Quit 0
 
 function CreateIeWindow ()
 	on error resume next
@@ -36,7 +37,7 @@ function CreateIeWindow ()
 	Next
 	if CreateIeWindow is nothing then
 		WScript.StdOut.WriteLine "Failed to create InternetExplorer.Application"
-		WScript.Quit
+		WScript.Quit 1
 	end if
 End Function
 
@@ -68,7 +69,7 @@ Sub Wait(IE)
 
 	if  not complete then
 		WScript.StdOut.WriteLine "Failed to wait for IE"
-		WScript.Quit
+		WScript.Quit 1
 	end if
 	WScript.StdOut.WriteLine "IE Done"
 End Sub
@@ -142,7 +143,7 @@ Sub ValidateLoggedIn(IE)
 
 	if LoggedIn = false then
 		WScript.StdOut.WriteLine "Failed to login"
-		WScript.Quit
+		WScript.Quit 1
 	end if
  	WScript.StdOut.WriteLine "ValidateLoggedIn Done"
 End Sub
@@ -191,7 +192,7 @@ Sub Login(IE)
 
 	if FoundIt = false then
 		WScript.StdOut.WriteLine "Failed to find redirect"
-		WScript.Quit
+		WScript.Quit 1
 	end if
 
 	WScript.StdOut.WriteLine "found redirect"
@@ -231,7 +232,7 @@ Sub PostThread(IE)
 	
 	if submitButton is nothing then
         WScript.StdOut.WriteLine "failed to find submit button"
-        WScript.Quit
+        WScript.Quit 1
 	end if
 
 	dim ieId
@@ -257,7 +258,7 @@ Sub SetPostDetails(IE, BuildUrl, PostTitle)
 
     if (oReq.status <> 200) then
         WScript.StdOut.WriteLine "failed to get job details (" & BuildUrl & "api/xml?wrapper=changes)"
-        WScript.Quit
+        WScript.Quit 1
     end if
 
     Dim xmlDoc
@@ -314,7 +315,7 @@ Sub SetPostDetails(IE, BuildUrl, PostTitle)
 
 	if not SetTitle then
 		WScript.StdOut.WriteLine "failed to set post title"
-		WScript.Quit
+		WScript.Quit 1
 	end if
 
 	Dim SetMessage
@@ -331,7 +332,7 @@ Sub SetPostDetails(IE, BuildUrl, PostTitle)
 
 	if not SetMessage then
 		WScript.StdOut.WriteLine "failed to set post message"
-		WScript.Quit
+		WScript.Quit 1
 	end if
 
 end sub
@@ -342,8 +343,8 @@ sub UploadFile(FileToUpload)
 	dim filePos
 	filePos = InStrRev(FileToUpload, "\")
 	if filePos = 0 then 
-		WScript.StdOut.WriteLine "failed to find directory seperator in " & FileToUpload
-		WScript.Quit
+		WScript.StdOut.WriteLine "failed to find directory seperator in " & FileToUplo& FileToUpload
+		WScript.Quit 1
 	end if
 
 	dim fileName
@@ -353,19 +354,19 @@ sub UploadFile(FileToUpload)
 	extPos = InStrRev(fileName, ".")
 	if extPos = 0 then 
 		WScript.StdOut.WriteLine "failed to find file extension in " & fileName
-		WScript.Quit
+		WScript.Quit 1
 	end if
 	extension = Mid(fileName, extPos, len(fileName))
 	if lcase(extension) <> ".zip" then 
 		WScript.StdOut.WriteLine "not a zip file: " & fileName
-		WScript.Quit
+		WScript.Quit 1
 	end if	
 
 
 	set manage_attachments_button = ie.document.getelementbyid("manage_attachments_button")
 	if manage_attachments_button is nothing then
 		WScript.StdOut.WriteLine "failed to find manage_attachments_button"
-		WScript.Quit
+		WScript.Quit 1
 	end if
 
 	WScript.StdOut.WriteLine "InStr(1, lcase(manage_attachments_button.onclick), ""vb_attachments"") = " & InStr(1, lcase(manage_attachments_button.onclick), "vb_attachments")
@@ -373,18 +374,18 @@ sub UploadFile(FileToUpload)
 	startPos = InStr(1, lcase(manage_attachments_button.onclick), "vb_attachments")
 	if startPos = 0 then 
 		WScript.StdOut.WriteLine "failed to find vb_attachments in " & manage_attachments_button.onclick
-		WScript.Quit
+		WScript.Quit 1
 	end if
 	startPos = InStr(startPos, lcase(manage_attachments_button.onclick), "'")
 	if startPos = 0 then 
 		WScript.StdOut.WriteLine "failed to find first quote in " & manage_attachments_button.onclick
-		WScript.Quit
+		WScript.Quit 1
 	end if
 	startPos = startPos + 1
 	endPos = InStr(startPos,manage_attachments_button.onclick, "'")
 	if endPos = 0 then 
 		WScript.StdOut.WriteLine "failed to find second quote in " & manage_attachments_button.onclick
-		WScript.Quit
+		WScript.Quit 1
 	end if
 
 	Set IE2 = WScript.CreateObject("InternetExplorer.Application", "IE_")
@@ -395,7 +396,7 @@ sub UploadFile(FileToUpload)
 	Set FormList = IE2.document.getElementsByTagName("form") 
 	if FormList.length <> 1 or FormList(0).name <> "newattachment" then 
 		WScript.StdOut.WriteLine "failed to find attachement form"
-		WScript.Quit
+		WScript.Quit 1
 	end if
 
 	Set InputList = FormList(0).getElementsByTagName("input")
@@ -470,7 +471,7 @@ sub UploadFile(FileToUpload)
 
 	if not UploadDone then
 		WScript.StdOut.WriteLine "Failed to upload file"
-		WScript.Quit
+		WScript.Quit 1
 	end if
 	IE3.Quit
 

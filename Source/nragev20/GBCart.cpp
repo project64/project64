@@ -28,6 +28,8 @@ bool ReadCartMBC3(LPGBCART Cart, WORD dwAddress, BYTE *Data);
 bool WriteCartMBC3(LPGBCART Cart, WORD dwAddress, BYTE *Data);
 bool ReadCartMBC5(LPGBCART Cart, WORD dwAddress, BYTE *Data);
 bool WriteCartMBC5(LPGBCART Cart, WORD dwAddress, BYTE *Data);
+bool ReadCartCamera(LPGBCART Cart, WORD dwAddress, BYTE *Data);
+bool WriteCartCamera(LPGBCART Cart, WORD dwAddress, BYTE *Data);
 
 // Tries to read RTC data from separate file (not integrated into SAV)
 //		success sets the useTDF flag
@@ -75,17 +77,6 @@ void UpdateRTC(LPGBCART Cart)
 
 	Cart->timerLastUpdate = now;
 
-	DebugWriteA("Update RTC: ");
-	DebugWriteByteA(Cart->TimerData[0]);
-	DebugWriteA(":");
-	DebugWriteByteA(Cart->TimerData[1]);
-	DebugWriteA(":");
-	DebugWriteByteA(Cart->TimerData[2]);
-	DebugWriteA(":");
-	DebugWriteByteA(Cart->TimerData[3]);
-	DebugWriteA(":");
-	DebugWriteByteA(Cart->TimerData[4]);
-	DebugWriteA("\n");
 }
 
 // returns true if the ROM was loaded OK
@@ -289,6 +280,14 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
 		Cart->bHasTimer = false;
 		Cart->bHasRumble = true;
 		break;
+	case 0xFC:
+		//GAME BOY CAMERA
+		Cart->iCartType = GB_CAMERA;
+		Cart->bHasRam = true;
+		Cart->bHasBattery = true;
+		Cart->bHasTimer = false;
+		Cart->bHasRumble = false;
+		break;
 	default:
 		WarningMessage( IDS_ERR_GBROM, MB_OK | MB_ICONWARNING);
 		DebugWriteA("TPak: unsupported paktype\n");
@@ -318,6 +317,10 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
 	case GB_MBC5:
 		Cart->ptrfnReadCart =  &ReadCartMBC5;
 		Cart->ptrfnWriteCart = &WriteCartMBC5;
+		break;
+	case GB_CAMERA:
+		Cart->ptrfnReadCart =  &ReadCartCamera;
+		Cart->ptrfnWriteCart = &WriteCartCamera;
 		break;
 	default: // Don't pretend we know how to handle carts we don't support
 		Cart->ptrfnReadCart = NULL;
@@ -1047,6 +1050,136 @@ bool WriteCartMBC5(LPGBCART Cart, WORD dwAddress, BYTE *Data)
 	else
 	{
 		DebugWriteA("Bad write to MBC5 cart, address %04X\n", dwAddress);
+	}
+
+	return true;
+}
+
+// Done
+bool ReadCartCamera(LPGBCART Cart, WORD dwAddress, BYTE *Data)
+{
+	if ((dwAddress < 0x4000)) //Rom Bank 0
+	{
+		CopyMemory(Data, &Cart->RomData[dwAddress], 32);
+		DebugWriteA("Nonbanked ROM read - CAMERA\n");
+	}
+	else if ((dwAddress >= 0x4000) && (dwAddress < 0x8000)) //Switchable ROM BANK
+	{
+		if (Cart->iCurrentRomBankNo >= Cart->iNumRomBanks)
+		{
+			ZeroMemory(Data, 32);
+			DebugWriteA("Banked ROM read: (Banking Error)");
+			DebugWriteByteA(Cart->iCurrentRomBankNo);
+			DebugWriteA("\n");
+		}
+		else {
+			CopyMemory(Data, &Cart->RomData[dwAddress - 0x4000 + (Cart->iCurrentRomBankNo << 14)], 32);
+			DebugWriteA("Banked ROM read: Bank=");
+			DebugWriteByteA(Cart->iCurrentRomBankNo);
+			DebugWriteA("\n");
+		}
+	}
+	else if ((dwAddress >= 0xA000) && (dwAddress <= 0xC000)) //Upper bounds of memory map
+	{
+		if (Cart->iCurrentRamBankNo & 0x10)
+		{
+			//REGISTER MODE
+			ZeroMemory(Data, 32);
+			DebugWriteA("REGISTER read (Camera): All Zero\n", Cart->iCurrentRamBankNo);
+		}
+		else
+		{
+			//RAM MODE
+			if (Cart->bHasRam)
+			{
+				if (Cart->iCurrentRamBankNo >= Cart->iNumRamBanks)
+				{
+					ZeroMemory(Data, 32);
+					DebugWriteA("Failed RAM read: (Banking Error) %02X\n", Cart->iCurrentRamBankNo);
+				}
+				else
+				{
+					CopyMemory(Data, &Cart->RamData[dwAddress - 0xA000 + (Cart->iCurrentRamBankNo << 13)], 32);
+					DebugWriteA("RAM read: Bank %02X\n", Cart->iCurrentRamBankNo);
+				}
+			}
+			else
+			{
+				ZeroMemory(Data, 32);
+				DebugWriteA("Failed RAM read: (RAM Not Present)\n");
+			}
+		}
+	}
+	else
+	{
+		DebugWriteA("Bad read from GBCamera cart, address %04X\n", dwAddress);
+	}
+
+	return true;
+}
+
+//Done
+bool WriteCartCamera(LPGBCART Cart, WORD dwAddress, BYTE *Data)
+{
+	if ((dwAddress >= 0x0000) && (dwAddress <= 0x1FFF)) // We shouldn't be able to read/write to RAM unless this is toggled on
+	{
+		Cart->bRamEnableState = (Data[0] == 0x0A);
+		DebugWriteA("Set RAM enable: %d\n", Cart->bRamEnableState);
+	}
+	else if ((dwAddress >= 0x2000) && (dwAddress <= 0x2FFF)) // ROM bank select, low bits
+	{
+		Cart->iCurrentRomBankNo &= 0xFF00;
+		Cart->iCurrentRomBankNo |= Data[0];
+		// Cart->iCurrentRomBankNo = ((int) Data[0]) | (Cart->iCurrentRomBankNo & 0x100);
+		DebugWriteA("Set ROM Bank: %02X\n", Cart->iCurrentRomBankNo);
+	}
+	else if ((dwAddress >= 0x4000) && (dwAddress <= 0x4FFF)) // Camera Register & RAM bank select
+	{
+		if (Data[0] & 0x10)
+		{
+			//REGISTER MODE
+			Cart->iCurrentRamBankNo = Data[0];
+			DebugWriteA("Set Register Bank (Camera): %02X\n", Cart->iCurrentRamBankNo);
+		}
+		else
+		{
+			//RAM MODE
+			if (Cart->bHasRam)
+			{
+				Cart->iCurrentRamBankNo = Data[0] & 0x0F;
+				DebugWriteA("Set RAM Bank: %02X\n", Cart->iCurrentRamBankNo);
+			}
+		}
+	}
+	else if ((dwAddress >= 0xA000) && (dwAddress <= 0xBFFF)) // Write to RAM
+	{
+		if (Cart->iCurrentRamBankNo & 0x10)
+		{
+			//REGISTER MODE (DO NOTHING)
+			DebugWriteA("REGISTER write (Camera): Do nothing\n");
+		}
+		else
+		{
+			//RAM MODE
+			if (Cart->bHasRam)
+			{
+				if (Cart->iCurrentRamBankNo >= Cart->iNumRamBanks)
+				{
+					DebugWriteA("RAM write: Buffer error on ");
+					DebugWriteByteA(Cart->iCurrentRamBankNo);
+					DebugWriteA("\n");
+				}
+				else
+				{
+					DebugWriteA("RAM write: Bank %02X\n", Cart->iCurrentRamBankNo);
+					CopyMemory(&Cart->RamData[dwAddress - 0xA000 + (Cart->iCurrentRamBankNo << 13)], Data, 32);
+				}
+			}
+		}
+	}
+	else
+	{
+		DebugWriteA("Bad write to GBCamera cart, address %04X\n", dwAddress);
 	}
 
 	return true;

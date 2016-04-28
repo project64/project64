@@ -1,12 +1,61 @@
 #include "stdafx.h"
 #include "Util.h"
+#ifdef _WIN32
+#include <windows.h>
 #include <Tlhelp32.h>
+#else
+#include <unistd.h>
+#endif
+
+pjutil::DynLibHandle pjutil::DynLibOpen(const char *pccLibraryPath, bool ShowErrors)
+{
+    if (pccLibraryPath == NULL)
+    {
+        return NULL;
+    }
+    UINT LastErrorMode = SetErrorMode(ShowErrors ? 0 : SEM_FAILCRITICALERRORS);
+    pjutil::DynLibHandle lib = (pjutil::DynLibHandle)LoadLibrary(pccLibraryPath);
+    SetErrorMode(LastErrorMode);
+    return lib;
+}
+
+void * pjutil::DynLibGetProc(pjutil::DynLibHandle LibHandle, const char * ProcedureName)
+{
+    if (ProcedureName == NULL)
+        return NULL;
+
+    return GetProcAddress((HMODULE)LibHandle, ProcedureName);
+}
+
+void pjutil::DynLibClose(pjutil::DynLibHandle LibHandle)
+{
+    FreeLibrary((HMODULE)LibHandle);
+}
+
+#ifdef _WIN32
+static void EmptyThreadFunction(void)
+{
+}
+
+void pjutil::DynLibCallDllMain(void)
+{
+    //jabo had a bug so I call CreateThread so the dllmain in the plugins will get called again with thread attached
+    DWORD ThreadID;
+    HANDLE hthread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)EmptyThreadFunction, NULL, 0, &ThreadID);
+    CloseHandle(hthread);
+}
+#endif
 
 void pjutil::Sleep(uint32_t timeout)
 {
+#ifdef _WIN32
     ::Sleep(timeout);
+#else
+	sleep(timeout);
+#endif
 }
 
+#ifdef _WIN32
 bool pjutil::TerminatedExistingExe()
 {
     bool bTerminated = false;
@@ -59,3 +108,4 @@ bool pjutil::TerminatedExistingExe()
     }
     return bTerminated;
 }
+#endif

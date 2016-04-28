@@ -25,7 +25,7 @@
  */
 
 #include <windows.h>
-#include "rsp.h"
+#include "Rsp.h"
 #include "CPU.h"
 #include "Interpreter CPU.h"
 #include "Recompiler CPU.h"
@@ -33,17 +33,19 @@
 #include "memory.h"
 #include "opcode.h"
 #include "log.h"
+#include "Types.h"
 
 //#define COMPARE_INSTRUCTIONS_VERBOSE
 
 /************************************************************
 ** IsOpcodeNop
 **
-** Output: BOOLean whether opcode at PC is a NOP
+** Output: Boolean whether opcode at PC is a NOP
 ** Input: PC
 *************************************************************/
 
-BOOL IsOpcodeNop(DWORD PC) {
+Boolean IsOpcodeNop(DWORD PC)
+{
 	OPCODE RspOp;
 	RSP_LW_IMEM(PC, &RspOp.Hex);
 
@@ -61,7 +63,8 @@ BOOL IsOpcodeNop(DWORD PC) {
 ** Input: PC
 *************************************************************/
 
-BOOL IsNextInstructionMmx(DWORD PC) {
+Boolean IsNextInstructionMmx(DWORD PC)
+{
 	OPCODE RspOp;
 	
 	if (IsMmxEnabled == FALSE)
@@ -133,7 +136,8 @@ BOOL IsNextInstructionMmx(DWORD PC) {
 
 #define HIT_BRANCH	0x2
 
-DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
+DWORD WriteToAccum2(int Location, int PC, Boolean RecursiveCall)
+{
 	OPCODE RspOp;
 	DWORD BranchTarget = 0;
 	signed int BranchImmed = 0;
@@ -426,7 +430,8 @@ DWORD WriteToAccum2 (int Location, int PC, BOOL RecursiveCall) {
 	return TRUE;
 }
 
-BOOL WriteToAccum (int Location, int PC) {
+Boolean WriteToAccum(int Location, int PC)
+{
 	DWORD value = WriteToAccum2(Location, PC, FALSE);
 
 	if (value == HIT_BRANCH) {
@@ -445,7 +450,8 @@ BOOL WriteToAccum (int Location, int PC) {
 ** Input: PC, Register
 *************************************************************/
 
-BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
+Boolean WriteToVectorDest2(DWORD DestReg, int PC, Boolean RecursiveCall)
+{
 	OPCODE RspOp;
 	DWORD BranchTarget = 0;
 	signed int BranchImmed = 0;
@@ -648,13 +654,16 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 			case RSP_LSC2_RV:
 				break;
 
-			case RSP_LSC2_HV:
 			case RSP_LSC2_QV:
 			case RSP_LSC2_BV:
 			case RSP_LSC2_LV:
-			case RSP_LSC2_UV:
-			case RSP_LSC2_PV:
 			case RSP_LSC2_TV:			
+				break;
+				
+			case RSP_LSC2_PV:
+			case RSP_LSC2_UV:
+			case RSP_LSC2_HV:
+				if (DestReg == RspOp.rt) { return FALSE; }
 				break;
 
 			default:
@@ -675,9 +684,25 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 			case RSP_LSC2_HV:
 			case RSP_LSC2_FV:
 			case RSP_LSC2_WV:
-			case RSP_LSC2_TV:
 				if (DestReg == RspOp.rt) { return TRUE; }
 				break;
+				
+			case RSP_LSC2_TV:
+				if (8 <= 32 - RspOp.rt) {
+					if (DestReg >= RspOp.rt && DestReg <= RspOp.rt + 7) {
+						return TRUE;
+					}
+				} else {
+					int length = 32 - RspOp.rt, count, del = RspOp.del >> 1, vect = RspOp.rt;
+					for (count = 0; count < length; count++) {
+						if (DestReg == vect + del) {
+							return TRUE;
+						}
+						del = (del + 1) & 7;
+					}
+				}
+				break;
+				
 			default:
 				CompilerWarning("Unkown opcode in WriteToVectorDest\n%s",RSPOpcodeName(RspOp.Hex,PC));
 				return TRUE;
@@ -742,7 +767,8 @@ BOOL WriteToVectorDest2 (DWORD DestReg, int PC, BOOL RecursiveCall) {
 	return TRUE;
 }
 
-BOOL WriteToVectorDest (DWORD DestReg, int PC) {
+Boolean WriteToVectorDest(DWORD DestReg, int PC)
+{
 	DWORD value;
 	value = WriteToVectorDest2(DestReg, PC, FALSE);
 
@@ -763,7 +789,8 @@ BOOL WriteToVectorDest (DWORD DestReg, int PC) {
 *************************************************************/
 
 /* TODO: consider delay slots and such in a branch? */
-BOOL UseRspFlags (int PC) {
+Boolean UseRspFlags(int PC)
+{
 	OPCODE RspOp;
 	int Instruction_State = NextInstruction;
 
@@ -988,7 +1015,8 @@ BOOL UseRspFlags (int PC) {
 ** Input: PC, Pointer to constant to fill
 *************************************************************/
 
-BOOL IsRegisterConstant (DWORD Reg, DWORD * Constant) {
+Boolean IsRegisterConstant(DWORD Reg, DWORD * Constant)
+{
 	DWORD PC = 0;
 	DWORD References = 0;
 	DWORD Const = 0;
@@ -1164,8 +1192,8 @@ BOOL IsRegisterConstant (DWORD Reg, DWORD * Constant) {
 ** Input: PC
 *************************************************************/
 
-BOOL IsOpcodeBranch(DWORD PC, OPCODE RspOp) {
-
+Boolean IsOpcodeBranch(DWORD PC, OPCODE RspOp)
+{
 	PC = PC; // unused
 
 	switch (RspOp.op) {
@@ -1643,7 +1671,8 @@ void GetInstructionInfo(DWORD PC, OPCODE * RspOp, OPCODE_INFO * info) {
 ** Input: PC
 *************************************************************/
 
-BOOL DelaySlotAffectBranch(DWORD PC) {
+Boolean DelaySlotAffectBranch(DWORD PC)
+{
 	OPCODE Branch, Delay;
 	OPCODE_INFO infoBranch, infoDelay;
 
@@ -1686,8 +1715,8 @@ BOOL DelaySlotAffectBranch(DWORD PC) {
 **	Bottom: the current opcode for re-ordering bubble style
 *************************************************************/
 
-BOOL CompareInstructions(DWORD PC, OPCODE * Top, OPCODE * Bottom) {
-
+Boolean CompareInstructions(DWORD PC, OPCODE * Top, OPCODE * Bottom)
+{
 	OPCODE_INFO info0, info1;
 	DWORD InstructionType;
 

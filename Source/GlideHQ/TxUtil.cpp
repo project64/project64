@@ -26,7 +26,7 @@
 #include <zlib/zlib.h>
 #include <malloc.h>
 #include <stdlib.h>
-#include <common/stdtypes.h>
+#include <Common/stdtypes.h>
 
 
 /*
@@ -126,7 +126,7 @@ TxUtil::sizeofTx(int width, int height, uint16 format)
     break;
   default:
     /* unsupported format */
-    DBG_INFO(80, L"Error: cannot get size. unsupported gfmt:%x\n", format);
+    DBG_INFO(80, "Error: cannot get size. unsupported gfmt:%x\n", format);
     ;
   }
 

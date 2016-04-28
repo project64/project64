@@ -24,46 +24,49 @@
  *
  */
 
+#ifdef _WIN32
 #include <Windows.h>
 #include <windowsx.h>
 #include <commctrl.h>
+#endif
 #include <stdio.h>
 
-#include <common/std string.h>
+#include <Common/StdString.h>
 #include "../Settings/Settings.h"
 
 extern "C" {
 #include "Rsp.h"
-#include "CPU.h"
+#include "Cpu.h"
 #include "Recompiler CPU.h"
-#include "Rsp Command.h"
-#include "Rsp Registers.h"
+#include "RSP Command.h"
+#include "RSP Registers.h"
 #include "memory.h"
 #include "breakpoint.h"
-#include "profiling.h"
+#include "Profiling.h"
 #include "log.h"
 #include "resource.h"
 #include "Version.h"
+#include "Types.h"
 
 void ClearAllx86Code(void);
 void ProcessMenuItem(int ID);
-BOOL CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+Boolean CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-BOOL GraphicsHle = TRUE, AudioHle, ConditionalMove;
-BOOL DebuggingEnabled = FALSE, 
-	Profiling, 
-	IndvidualBlock, 
-	ShowErrors, 
-	BreakOnStart = FALSE,
-	LogRDP = FALSE,
-	LogX86Code = FALSE;
-DWORD CPUCore = RecompilerCPU;
+Boolean GraphicsHle = TRUE, AudioHle, ConditionalMove;
+Boolean DebuggingEnabled = FALSE, 
+        Profiling, 
+        IndvidualBlock, 
+        ShowErrors, 
+        BreakOnStart = FALSE,
+        LogRDP = FALSE,
+        LogX86Code = FALSE;
+uint32_t CPUCore = RecompilerCPU;
 
 HANDLE hMutex = NULL;
 
 DEBUG_INFO DebugInfo;
 RSP_INFO RSPInfo;
-HINSTANCE hinstDLL;
+void * hinstDLL;
 HMENU hRSPMenu = NULL;
 
 extern BYTE * pLastSecondary;
@@ -78,7 +81,7 @@ enum {
 	Set_ReOrdering, Set_GPRConstants, Set_Flags, Set_AlignVector,
 
 	//Game Settings
-	Set_JumpTableSize
+	Set_JumpTableSize, Set_Mfc0Count, Set_SemaphoreExit
 };
 
 short Set_AudioHle = 0, Set_GraphicsHle = 0;
@@ -96,14 +99,15 @@ const char * AboutMsg ( void )
 }
 
 /************ Functions ***********/
-DWORD AsciiToHex (char * HexValue)
+uint32_t AsciiToHex(char * HexValue)
 {
-	DWORD Value = 0;
+    size_t Finish, Count;
+    uint32_t Value = 0;
 
-	size_t Finish = strlen(HexValue);
+    Finish = strlen(HexValue);
 	if (Finish > 8 ) { Finish = 8; }
 
-	for (size_t Count = 0; Count < Finish; Count++)
+    for (Count = 0; Count < Finish; Count++)
 	{
 		Value = (Value << 4);
 		switch( HexValue[Count] )
@@ -138,15 +142,19 @@ DWORD AsciiToHex (char * HexValue)
 	return Value;
 }
 
-void DisplayError (char * Message, ...)
+void DisplayError(char* Message, ...)
 {
-	char Msg[400];
-	va_list ap;
+    char Msg[400];
+    va_list ap;
 
 	va_start( ap, Message );
 	vsprintf( Msg, Message, ap );
 	va_end( ap );
-	MessageBox(NULL,Msg,"Error",MB_OK|MB_ICONERROR);
+#ifdef _WIN32
+    MessageBox(NULL, Msg, "Error", MB_OK | MB_ICONERROR);
+#else
+    fputs(&Msg[0], stderr);
+#endif
 }
 
 /******************************************************************
@@ -173,11 +181,34 @@ __declspec(dllexport) void DllAbout ( HWND hParent )
 	MessageBox(hParent,AboutMsg(),"About",MB_OK | MB_ICONINFORMATION );
 }
 
-BOOL WINAPI DllMain(  HINSTANCE hinst, DWORD /*fdwReason*/, LPVOID /*lpvReserved*/ )
+#ifdef _WIN32
+BOOL WINAPI DllMain(HINSTANCE hinst, DWORD /*fdwReason*/, LPVOID /*lpvReserved*/)
 {
-	hinstDLL = hinst;
-	return TRUE;
+    hinstDLL = hinst;
+    return TRUE;
 }
+
+void FixMenuState(void)
+{
+    EnableMenuItem(hRSPMenu, ID_RSPCOMMANDS,MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
+    EnableMenuItem(hRSPMenu, ID_RSPREGISTERS,MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
+    EnableMenuItem(hRSPMenu, ID_PROFILING_RESETSTATS, MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
+    EnableMenuItem(hRSPMenu, ID_PROFILING_GENERATELOG, MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
+    EnableMenuItem(hRSPMenu, ID_DUMP_RSPCODE, MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
+    EnableMenuItem(hRSPMenu, ID_DUMP_DMEM, MF_BYCOMMAND | (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
+
+    CheckMenuItem(hRSPMenu, ID_CPUMETHOD_RECOMPILER, MF_BYCOMMAND | (CPUCore == RecompilerCPU  ?  MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_CPUMETHOD_INTERPT,    MF_BYCOMMAND | (CPUCore == InterpreterCPU ?  MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND | (BreakOnStart ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND | (LogRDP ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND | (LogX86Code ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_PROFILING_ON, MF_BYCOMMAND | (Profiling ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_PROFILING_OFF, MF_BYCOMMAND | (Profiling ? MFS_UNCHECKED : MF_CHECKED));
+    CheckMenuItem(hRSPMenu, ID_PROFILING_LOGINDIVIDUALBLOCKS, MF_BYCOMMAND | (IndvidualBlock ? MFS_CHECKED : MF_UNCHECKED));
+    CheckMenuItem(hRSPMenu, ID_SHOWCOMPILERERRORS, MF_BYCOMMAND | (ShowErrors ? MFS_CHECKED : MF_UNCHECKED));
+}
+#endif
+
 /******************************************************************
   Function: GetDllInfo
   Purpose:  This function allows the emulator to gather information
@@ -209,31 +240,11 @@ __declspec(dllexport) void GetDllInfo ( PLUGIN_INFO * PluginInfo )
   output:   none
 *******************************************************************/ 
 
-void FixMenuState (void) 
-{
-	EnableMenuItem(hRSPMenu,ID_RSPCOMMANDS,MF_BYCOMMAND| (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
-	EnableMenuItem(hRSPMenu,ID_RSPREGISTERS,MF_BYCOMMAND| (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
-	EnableMenuItem(hRSPMenu,ID_PROFILING_RESETSTATS,MF_BYCOMMAND| (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
-	EnableMenuItem(hRSPMenu,ID_PROFILING_GENERATELOG,MF_BYCOMMAND| (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
-	EnableMenuItem(hRSPMenu,ID_DUMP_RSPCODE,MF_BYCOMMAND| (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
-	EnableMenuItem(hRSPMenu,ID_DUMP_DMEM,MF_BYCOMMAND| (DebuggingEnabled ? MF_ENABLED : (MF_GRAYED | MF_DISABLED)));
-
-	CheckMenuItem( hRSPMenu, ID_CPUMETHOD_RECOMPILER, MF_BYCOMMAND | (CPUCore == RecompilerCPU  ?  MFS_CHECKED : MF_UNCHECKED ));
-	CheckMenuItem( hRSPMenu, ID_CPUMETHOD_INTERPT,    MF_BYCOMMAND | (CPUCore == InterpreterCPU ?  MFS_CHECKED : MF_UNCHECKED ));
-	CheckMenuItem( hRSPMenu, ID_BREAKONSTARTOFTASK, MF_BYCOMMAND | (BreakOnStart ? MFS_CHECKED : MF_UNCHECKED ));
-	CheckMenuItem( hRSPMenu, ID_LOGRDPCOMMANDS, MF_BYCOMMAND | (LogRDP ? MFS_CHECKED : MF_UNCHECKED ));
-	CheckMenuItem( hRSPMenu, ID_SETTINGS_LOGX86CODE, MF_BYCOMMAND | (LogX86Code ? MFS_CHECKED : MF_UNCHECKED ));
-	CheckMenuItem( hRSPMenu, ID_PROFILING_ON, MF_BYCOMMAND | (Profiling ? MFS_CHECKED : MF_UNCHECKED ));
-	CheckMenuItem( hRSPMenu, ID_PROFILING_OFF, MF_BYCOMMAND | (Profiling ? MFS_UNCHECKED : MF_CHECKED ));
-	CheckMenuItem( hRSPMenu, ID_PROFILING_LOGINDIVIDUALBLOCKS, MF_BYCOMMAND | (IndvidualBlock ? MFS_CHECKED : MF_UNCHECKED ));
-	CheckMenuItem( hRSPMenu, ID_SHOWCOMPILERERRORS,MF_BYCOMMAND | (ShowErrors ? MFS_CHECKED : MF_UNCHECKED ));
-}
-
 __declspec(dllexport) void GetRspDebugInfo ( RSPDEBUG_INFO * DebugInfo ) 
 {
 	if (hRSPMenu == NULL)
 	{
-		hRSPMenu = LoadMenu(hinstDLL,MAKEINTRESOURCE(RspMenu));
+		hRSPMenu = LoadMenu((HINSTANCE)hinstDLL,MAKEINTRESOURCE(RspMenu));
 		FixMenuState();
 	}
 	DebugInfo->hRSPMenu = hRSPMenu;
@@ -328,7 +339,7 @@ void DetectCpuSpecs(void)
 	}
 }
 
-__declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, DWORD * CycleCount)
+__declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, uint32_t * CycleCount)
 {
 	RSPInfo = Rsp_Info;
 	AudioHle = GetSystemSetting(Set_AudioHle);
@@ -428,7 +439,7 @@ void ProcessMenuItem(int ID)
 		}
 		break;
 	case ID_COMPILER:		
-		DialogBox(hinstDLL, "RSPCOMPILER", HWND_DESKTOP, (DLGPROC)CompilerDlgProc);
+		DialogBox((HINSTANCE)hinstDLL, "RSPCOMPILER", HWND_DESKTOP, (DLGPROC)CompilerDlgProc);
 		break;
 	case ID_BREAKONSTARTOFTASK:
 		{
@@ -533,6 +544,8 @@ __declspec(dllexport) void RomOpen (void)
 		EnableDebugging(true);
 	}
 	JumpTableSize = GetSetting(Set_JumpTableSize); 
+	Mfc0Count = GetSetting(Set_Mfc0Count);
+	SemaphoreExit = GetSetting(Set_SemaphoreExit);
 }
 
 /******************************************************************
@@ -556,6 +569,7 @@ __declspec(dllexport) void RomClosed (void) {
 #endif
 }
 
+#ifdef _WIN32
 static BOOL GetBooleanCheck(HWND hDlg, DWORD DialogID)
 {
 	return (IsDlgButtonChecked(hDlg, DialogID) == BST_CHECKED) ? TRUE : FALSE;
@@ -684,6 +698,7 @@ BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam
 	}
 	return TRUE;
 }
+#endif
 
 /*__declspec(dllexport) void DllConfig (HWND hWnd)
 {
@@ -691,7 +706,7 @@ BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam
 	DialogBox(hinstDLL, "RSPCONFIG", GetForegroundWindow(), ConfigDlgProc);
 }*/
 
-__declspec(dllexport) void EnableDebugging (BOOL Enabled)
+__declspec(dllexport) void EnableDebugging(Boolean Enabled)
 {
 	DebuggingEnabled = Enabled;
 	if (DebuggingEnabled)
@@ -774,6 +789,8 @@ __declspec(dllexport) void PluginLoaded (void)
 	RegisterSetting(Set_AlignVector,    Data_DWORD_General,"Assume Vector loads align", NULL,Compiler.bAlignVector,NULL);
 
 	RegisterSetting(Set_JumpTableSize,  Data_DWORD_Game,"JumpTableSize",NULL,0x800,NULL);
+	RegisterSetting(Set_Mfc0Count, Data_DWORD_Game, "Mfc0Count", NULL, 0x0, NULL);
+	RegisterSetting(Set_SemaphoreExit, Data_DWORD_Game, "SemaphoreExit", NULL, 0x0, NULL);
 
 	AudioHle       = Set_AudioHle != 0 ? GetSystemSetting(Set_AudioHle) : false;
 	GraphicsHle    = Set_GraphicsHle != 0 ? GetSystemSetting(Set_GraphicsHle) : true;

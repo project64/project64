@@ -1,19 +1,18 @@
 #pragma warning(disable:4786)
 
 #include <map>
-#include <windows.h>
 #include <stdio.h>
 #include <stdarg.h>
 
 #include "MemTest.h"
-#include "std string.h"
+#include "StdString.h"
 #include "CriticalSection.h"
-#include "File Class.h"
-#include "Ini File Class.h"
+#include "FileClass.h"
+#include "IniFileClass.h"
 #include "path.h"
-#include "Log Class.h"
-#include "TraceDefs.h"
+#include "LogClass.h"
+#include "TraceModulesCommon.h"
 #include "Trace.h"
 #include "md5.h"
-#include "Smart Pointer.h"
+#include "SmartPointer.h"
 #include "SyncEvent.h"

@@ -39,7 +39,7 @@ public:
     return &txDbg;
   }
   ~TxDbg();
-  void output(const int level, const wchar_t *format, ...);
+  void output(const int level, const char *format, ...);
 };
 
 #ifdef DEBUG

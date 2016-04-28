@@ -38,22 +38,22 @@
 class TxHiResCache : public TxCache
 {
 private:
-  int _maxwidth;
-  int _maxheight;
-  int _maxbpp;
-  boolean _haveCache;
-  boolean _abortLoad;
-  TxImage *_txImage;
-  TxQuantize *_txQuantize;
-  TxReSample *_txReSample;
-  boolean loadHiResTextures(LPCSTR dir_path, boolean replace);
+    int _maxwidth;
+    int _maxheight;
+    int _maxbpp;
+    boolean _haveCache;
+    boolean _abortLoad;
+    TxImage *_txImage;
+    TxQuantize *_txQuantize;
+    TxReSample *_txReSample;
+    boolean loadHiResTextures(const char * dir_path, boolean replace);
 public:
-  ~TxHiResCache();
-  TxHiResCache(int maxwidth, int maxheight, int maxbpp, int options,
-               const wchar_t *path, const wchar_t *ident,
-               dispInfoFuncExt callback);
-  boolean empty();
-  boolean load(boolean replace);
+    ~TxHiResCache();
+    TxHiResCache(int maxwidth, int maxheight, int maxbpp, int options,
+        const char *path, const char *ident,
+        dispInfoFuncExt callback);
+    boolean empty();
+    boolean load(boolean replace);
 };
 
 #endif /* __TXHIRESCACHE_H__ */

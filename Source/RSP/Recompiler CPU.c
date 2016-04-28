@@ -28,7 +28,8 @@
 #include <stdio.h>
 #include <float.h>
 #include <stdlib.h>
-#include "RSP.h"
+
+#include "Rsp.h"
 #include "Cpu.h"
 #include "Interpreter CPU.h"
 #include "Recompiler CPU.h"
@@ -40,6 +41,7 @@
 #include "log.h"
 #include "Profiling.h"
 #include "x86.h"
+#include "Types.h"
 
 #pragma warning(disable : 4152) // nonstandard extension, function/data pointer conversion in expression
 
@@ -50,7 +52,7 @@
 
 DWORD CompilePC, JumpTableSize, BlockID = 0;
 DWORD dwBuffer = MainBuffer;
-BOOL ChangedPC;
+Boolean ChangedPC;
 
 RSP_BLOCK CurrentBlock;
 RSP_CODE RspCode;
@@ -546,7 +548,7 @@ void ReOrderSubBlock(RSP_BLOCK * Block) {
 void DetectGPRConstants(RSP_CODE * code) {
 	DWORD Count, Constant = 0;
 
-	memset(&code->bIsRegConst, 0, sizeof(BOOL) * 0x20);
+	memset(&code->bIsRegConst, 0, sizeof(Boolean) * 0x20);
 	memset(&code->MipsRegConst, 0, sizeof(DWORD) * 0x20);
 	
 	if (!Compiler.bGPRConstants) { 
@@ -728,7 +730,8 @@ void BuildBranchLabels(void) {
 #endif
 }
 
-BOOL IsJumpLabel(DWORD PC) {
+Boolean IsJumpLabel(DWORD PC)
+{
 	DWORD Count;
 	
 	if (!RspCode.LabelCount) {

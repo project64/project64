@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <windows.h>
 
 CriticalSection::CriticalSection()
 {

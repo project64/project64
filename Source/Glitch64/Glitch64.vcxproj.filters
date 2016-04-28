@@ -23,9 +23,30 @@
     <ClCompile Include="OGLtextures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OGLEScombiner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OGLESgeometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OGLESglitchmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OGLEStextures.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OGLESwrappers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glitchmain.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="OGLESwrappers.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="opengl.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

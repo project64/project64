@@ -27,7 +27,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <math.h>
-#include "RSP.h"
+#include "Rsp.h"
 #include "CPU.h"
 #include "RSP Command.h"
 #include "RSP Registers.h"
@@ -36,6 +36,7 @@
 #include "dma.h"
 #include "log.h"
 #include "x86.h"
+#include "Types.h"
 
 #include <float.h>
 /*
@@ -55,7 +56,7 @@
 #endif
 
 extern UWORD32 Recp, RecpResult, SQroot, SQrootResult;
-extern BOOL AudioHle, GraphicsHle;
+extern Boolean AudioHle, GraphicsHle;
 
 /************************* OpCode functions *************************/
 void RSP_Opcode_SPECIAL ( void ) {
@@ -309,7 +310,7 @@ void RSP_Cop0_MF (void) {
 	case 4: 
 		RSP_MfStatusCount += 1;
 		RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_STATUS_REG;
-		if (RSP_MfStatusCount > 10)
+		if (Mfc0Count != 0 && RSP_MfStatusCount > Mfc0Count)
 		{
 			RSP_Running = FALSE;
 		}
@@ -317,7 +318,7 @@ void RSP_Cop0_MF (void) {
 	case 5: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DMA_FULL_REG; break;
 	case 6: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DMA_BUSY_REG; break;
 	case 7: 
-		if (AudioHle || GraphicsHle)
+		if (AudioHle || GraphicsHle || SemaphoreExit == 0)
 		{
 			RSP_GPR[RSPOpC.rt].W = 0;
 		} else {
