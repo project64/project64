@@ -4,6 +4,7 @@ obj=./Common
 mkdir -p $obj
 
 FLAGS_x86="\
+ -I$src/.. \
  -S \
  -fPIC \
  -masm=intel \
