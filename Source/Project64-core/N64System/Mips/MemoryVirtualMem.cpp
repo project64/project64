@@ -5569,7 +5569,7 @@ void CMipsMemoryVM::Write32CartridgeDomain2Address2(void)
         tmp[1] = 0xFF & (m_MemLookupValue.UW[0] >> 8);
         tmp[2] = 0xFF & (m_MemLookupValue.UW[0] >> 16);
         tmp[3] = 0xFF & (m_MemLookupValue.UW[0] >> 24);
-        g_MMU->DmaFromSram(tmp, (m_MemLookupAddress & 0x1FFFFFFF) - 0x08000000, 4);
+        g_MMU->DmaToSram(tmp, (m_MemLookupAddress & 0x1FFFFFFF) - 0x08000000, 4);
         return;
     }
     /*if ((m_MemLookupAddress & 0x1FFFFFFF) != 0x08010000)
