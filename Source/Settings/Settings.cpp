@@ -104,6 +104,10 @@ void SetModuleName(const char * Name)
 void RegisterSetting(short SettingID, SETTING_DATA_TYPE Type, const char * Name, const char * Category,
     unsigned int DefaultDW, const char * DefaultStr)
 {
+    if (g_PluginSettings.RegisterSetting == NULL)
+    {
+        return;
+    }
     int DefaultID = g_PluginSettings.NoDefault;
     SettingLocation Location = (SettingLocation)g_PluginSettings.DefaultLocation;
     char FullCategory[400];
