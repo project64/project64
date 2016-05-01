@@ -473,8 +473,7 @@ void ReadSpecialSettings(const char * name)
     g_settings->zmode_compare_less = GetSetting(Set_zmode_compare_less);
     g_settings->old_style_adither = GetSetting(Set_old_style_adither);
     g_settings->n64_z_scale = GetSetting(Set_n64_z_scale);
-    if (g_settings->n64_z_scale)
-        ZLUT_init();
+    ZLUT_init();
 
     //frame buffer
     int optimize_texrect = GetSetting(g_romopen ? Set_optimize_texrect : Set_optimize_texrect_default);
@@ -1430,8 +1429,7 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     TexCacheInit();
     CRC_BuildTable();
     CountCombine();
-    if (fb_depth_render_enabled)
-        ZLUT_init();
+    ZLUT_init();
 
     grConfigWrapperExt(
 #ifdef ANDROID
