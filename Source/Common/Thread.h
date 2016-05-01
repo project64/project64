@@ -4,7 +4,7 @@ class CThread
 {
 public:
 #ifdef _WIN32
-    typedef uint32_t(__stdcall * CTHREAD_START_ROUTINE)(void * lpThreadParameter);
+    typedef uint32_t(*CTHREAD_START_ROUTINE)(void * lpThreadParameter);
 #else
     typedef void *(*CTHREAD_START_ROUTINE)(void *);
 #endif
