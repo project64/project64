@@ -36,7 +36,11 @@ public:
 
     struct TIMER_DETAILS
     {
-        bool    Active;
+        union 
+        {
+            int64_t reserved;
+            bool Active;
+        };
         int64_t CyclesToTimer;
     };
 
