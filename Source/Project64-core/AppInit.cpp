@@ -37,12 +37,11 @@ void InitializeLog(void)
 
 void AddLogModule(void)
 {
-    CPath LogFilePath(g_Settings->LoadStringVal(Directory_Log).c_str(), "");
+    CPath LogFilePath(g_Settings->LoadStringVal(Directory_Log).c_str(), "Project64.log");
     if (!LogFilePath.DirectoryExists())
     {
         LogFilePath.DirectoryCreate();
     }
-    LogFilePath.SetNameExtension("Project64.log");
 
     g_LogFile = new CTraceFileLog(LogFilePath, g_Settings->LoadDword(Debugger_AppLogFlush) != 0, CLog::Log_New, 500);
     TraceAddModule(g_LogFile);
