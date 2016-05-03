@@ -26,6 +26,7 @@
 #endif
 
 #include <string.h> /* memcpy, memset */
+#include <stdlib.h> /* malloc, free */
 
 #include "TxCache.h"
 #include "TxDbg.h"
