@@ -72,8 +72,9 @@ OBJ_LIST="\
  $obj/FBtoScreen.o \
  $obj/Main.o \
  -L$obj/../Glitch64 \
+ -L$obj/../GlideHQ \
  -L$obj/../Common \
  -L$obj/../Settings"
 
 echo Linking PJGlide64 objects...
-g++ -o $obj/PJ64Glide64.so $OBJ_LIST -lglitch64 -lcommon -lsettings -shared -shared-libgcc
+g++ -o $obj/PJ64Glide64.so $OBJ_LIST -lglitch64 -lglidehq -lcommon -lsettings -shared -shared-libgcc
