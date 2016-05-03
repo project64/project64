@@ -25,6 +25,8 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <string.h> /* memcpy, memset */
+
 #include "TxCache.h"
 #include "TxDbg.h"
 #include <zlib/zlib.h>
