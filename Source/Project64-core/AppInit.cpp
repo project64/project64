@@ -281,7 +281,7 @@ void FixDirectories(void)
     }
     else
     {
-        WriteTrace(TraceAppInit, TraceDebug, "%s Already exists", (const char *)Directory);
+        WriteTrace(TraceAppInit, TraceDebug, "%s already exists", (const char *)Directory);
     }
 
     Directory.UpDirectory();
@@ -293,7 +293,7 @@ void FixDirectories(void)
     }
     else
     {
-        WriteTrace(TraceAppInit, TraceDebug, "%s Already exists", (const char *)Directory);
+        WriteTrace(TraceAppInit, TraceDebug, "%s already exists", (const char *)Directory);
     }
 
     Directory.UpDirectory();
@@ -305,7 +305,7 @@ void FixDirectories(void)
     }
     else
     {
-        WriteTrace(TraceAppInit, TraceDebug, "%s Already exists", (const char *)Directory);
+        WriteTrace(TraceAppInit, TraceDebug, "%s already exists", (const char *)Directory);
     }
 
     Directory.UpDirectory();
@@ -317,7 +317,7 @@ void FixDirectories(void)
     }
     else
     {
-        WriteTrace(TraceAppInit, TraceDebug, "%s Already exists", (const char *)Directory);
+        WriteTrace(TraceAppInit, TraceDebug, "%s already exists", (const char *)Directory);
     }
     WriteTrace(TraceAppInit, TraceDebug, "Done");
 }
