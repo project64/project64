@@ -31,9 +31,6 @@
 #include <string>
 
 #ifndef DXTN_DLL
-#ifdef __cplusplus
-extern "C"{
-#endif
 void tx_compress_dxtn(int srccomps, int width, int height,
                       const void *source, int destformat, void *dest,
                       int destRowStride);
@@ -41,9 +38,6 @@ void tx_compress_dxtn(int srccomps, int width, int height,
 int fxt1_encode(int width, int height, int comps,
                 const void *source, int srcRowStride,
                 void *dest, int destRowStride);
-#ifdef __cplusplus
-}
-#endif
 #endif /* DXTN_DLL */
 
 typedef void (*dxtCompressTexFuncExt)(int srccomps, int width,
