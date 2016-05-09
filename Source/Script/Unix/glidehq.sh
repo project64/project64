@@ -33,10 +33,10 @@ $CC -o $obj/TxQuantize.asm              $src/TxQuantize.cpp $C_FLAGS
 $CC -o $obj/TxReSample.asm              $src/TxReSample.cpp $C_FLAGS
 $CC -o $obj/TxTexCache.asm              $src/TxTexCache.cpp $C_FLAGS
 $CC -o $obj/TxUtil.asm                  $src/TxUtil.cpp $C_FLAGS
-$CC -o $obj/dxtn.asm                    $src/tc-1.1+/dxtn.c $C_FLAGS
-$CC -o $obj/fxt1.asm                    $src/tc-1.1+/fxt1.c $C_FLAGS
-$CC -o $obj/texstore.asm                $src/tc-1.1+/texstore.c $C_FLAGS
-$CC -o $obj/wrapper.asm                 $src/tc-1.1+/wrapper.c $C_FLAGS
+$CC -o $obj/dxtn.asm                    $src/tc-1.1+/dxtn.cpp $C_FLAGS
+$CC -o $obj/fxt1.asm                    $src/tc-1.1+/fxt1.cpp $C_FLAGS
+$CC -o $obj/texstore.asm                $src/tc-1.1+/texstore.cpp $C_FLAGS
+$CC -o $obj/wrapper.asm                 $src/tc-1.1+/wrapper.cpp $C_FLAGS
 
 echo Assembling GlideHQ library sources...
 $AS -o $obj/TextureFilters.o            $obj/TextureFilters.asm

@@ -259,11 +259,11 @@
 			Name="tc-1.1+"
 			>
 			<File
-				RelativePath=".\tc-1.1+\dxtn.c"
+				RelativePath=".\tc-1.1+\dxtn.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\tc-1.1+\fxt1.c"
+				RelativePath=".\tc-1.1+\fxt1.cpp"
 				>
 			</File>
 			<File
@@ -275,7 +275,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\tc-1.1+\texstore.c"
+				RelativePath=".\tc-1.1+\texstore.cpp"
 				>
 			</File>
 			<File
@@ -283,7 +283,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\tc-1.1+\wrapper.c"
+				RelativePath=".\tc-1.1+\wrapper.cpp"
 				>
 			</File>
 		</Filter>
