@@ -15,7 +15,7 @@ FLAGS_x86="\
 
 C_FLAGS=$FLAGS_x86
 
-CC=g++
+CC=cc
 AS=as
 
 echo Compiling GlideHQ library sources for Glide64...
