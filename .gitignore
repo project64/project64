@@ -7,6 +7,10 @@
 *.opendb
 *.VC.db
 
+# static library output (MSVC, GCC--from core components like Common)
+*.lib
+*.a
+
 # compiler-generated sources (MSVC, GCC)
 *.asm
 *.s
