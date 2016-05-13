@@ -7,6 +7,7 @@
  *                                                                          *
  * License:                                                                 *
  * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                       *
+ * version 2 of the License, or (at your option) any later version.         *
  *                                                                          *
  ****************************************************************************/
 #include "stdafx.h"
