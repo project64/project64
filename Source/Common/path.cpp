@@ -602,6 +602,10 @@ void CPath::SetComponents(const char * lpszDirectory, const char * lpszName, con
     }
     if (lpszExtension != NULL)
     {
+        if (lpszExtension[0] != '.')
+        {
+            strncat(buff_fullname,".",sizeof(buff_fullname));
+        }
         strncat(buff_fullname,lpszExtension,sizeof(buff_fullname));
     }
     buff_fullname[sizeof(buff_fullname) - 1] = 0; //Make sure it is null terminated
