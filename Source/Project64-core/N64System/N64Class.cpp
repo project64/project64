@@ -687,22 +687,6 @@ bool CN64System::SetActiveSystem(bool bActive)
         {
             WriteTrace(TraceN64System, TraceError, "g_Plugins->Initiate Failed");
         }
-        else
-        {
-            CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
-            for (int i = 0; i < 3; i++)
-            {
-                if (Controllers[i].Present)
-                {
-                    switch (Controllers[i].Plugin)
-                    {
-                    case PLUGIN_TANSFER_PAK:
-                        Transferpak::Init();
-                        break;
-                    }
-                }
-            }
-        }
     }
 
     if (bReset)
