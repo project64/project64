@@ -699,9 +699,6 @@ bool CN64System::SetActiveSystem(bool bActive)
                     case PLUGIN_TANSFER_PAK:
                         Transferpak::Init();
                         break;
-                    case PLUGIN_MEMPAK:
-                        Mempak::Load(i);
-                        break;
                     }
                 }
             }
