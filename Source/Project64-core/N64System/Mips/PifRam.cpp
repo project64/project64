@@ -118,6 +118,7 @@ void CPifRam::PifRamRead()
                 CurPos = 0x40;
             }
             break;
+        case 0xFD: CurPos = 0x40; break;
         case 0xFE: CurPos = 0x40; break;
         case 0xFF: break;
         case 0xB4: case 0x56: case 0xB8: break; /* ??? */
@@ -227,6 +228,7 @@ void CPifRam::PifRamWrite()
                 CurPos = 0x40;
             }
             break;
+        case 0xFD: CurPos = 0x40; break;
         case 0xFE: CurPos = 0x40; break;
         case 0xFF: break;
         case 0xB4: case 0x56: case 0xB8: break; /* ??? */
