@@ -1327,6 +1327,7 @@ bool CCodeSection::GenerateX86Code(uint32_t Test)
                 case R4300i_COP1_FUNCT_NEG: COP1_D_NEG(); break;
                 case R4300i_COP1_FUNCT_SQRT: COP1_D_SQRT(); break;
                 case R4300i_COP1_FUNCT_MOV: COP1_D_MOV(); break;
+                case R4300i_COP1_FUNCT_ROUND_L: COP1_D_ROUND_L(); break;
                 case R4300i_COP1_FUNCT_TRUNC_L: COP1_D_TRUNC_L(); break;	//added by Witten
                 case R4300i_COP1_FUNCT_CEIL_L: COP1_D_CEIL_L(); break;	//added by Witten
                 case R4300i_COP1_FUNCT_FLOOR_L: COP1_D_FLOOR_L(); break;	//added by Witten

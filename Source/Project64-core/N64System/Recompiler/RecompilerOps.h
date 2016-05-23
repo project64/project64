@@ -182,6 +182,7 @@ protected:
     static void COP1_D_NEG     ();
     static void COP1_D_SQRT    ();
     static void COP1_D_MOV     ();
+    static void COP1_D_ROUND_L ();
     static void COP1_D_TRUNC_L (); //added by Witten
     static void COP1_D_CEIL_L  (); //added by Witten
     static void COP1_D_FLOOR_L (); //added by Witten
