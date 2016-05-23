@@ -160,6 +160,7 @@ public:
     static void  COP1_S_ABS();
     static void  COP1_S_MOV();
     static void  COP1_S_NEG();
+    static void  COP1_S_ROUND_L();
     static void  COP1_S_TRUNC_L();
     static void  COP1_S_CEIL_L();  //added by Witten
     static void  COP1_S_FLOOR_L(); //added by Witten
