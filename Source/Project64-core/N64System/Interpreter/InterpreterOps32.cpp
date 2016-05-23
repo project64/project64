@@ -376,7 +376,7 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_CoP1_S[5] = R4300iOp::COP1_S_ABS;
     Jump_CoP1_S[6] = R4300iOp::COP1_S_MOV;
     Jump_CoP1_S[7] = R4300iOp::COP1_S_NEG;
-    Jump_CoP1_S[8] = R4300iOp::UnknownOpcode;
+	Jump_CoP1_S[8] = R4300iOp::COP1_S_ROUND_L;
     Jump_CoP1_S[9] = R4300iOp::COP1_S_TRUNC_L;
     Jump_CoP1_S[10] = R4300iOp::COP1_S_CEIL_L;		//added by Witten
     Jump_CoP1_S[11] = R4300iOp::COP1_S_FLOOR_L;		//added by Witten
@@ -441,7 +441,7 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_CoP1_D[5] = R4300iOp::COP1_D_ABS;
     Jump_CoP1_D[6] = R4300iOp::COP1_D_MOV;
     Jump_CoP1_D[7] = R4300iOp::COP1_D_NEG;
-    Jump_CoP1_D[8] = R4300iOp::UnknownOpcode;
+    Jump_CoP1_D[8] = R4300iOp::COP1_D_ROUND_L;
     Jump_CoP1_D[9] = R4300iOp::COP1_D_TRUNC_L;		//added by Witten
     Jump_CoP1_D[10] = R4300iOp::COP1_D_CEIL_L;		//added by Witten
     Jump_CoP1_D[11] = R4300iOp::COP1_D_FLOOR_L;		//added by Witten
