@@ -41,6 +41,40 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
     }
 
+    m_FileName = FileLoc;
+    return true;
+}
+
+bool CN64Disk::SaveDiskImage()
+{
+    ForceByteSwapDisk();
+
+    if (m_DiskFormat == DiskFormatMAME)
+    {
+        //If original file was MAME format, just copy
+        //SDK format protection
+        WriteTrace(TraceN64System, TraceDebug, "Trying to open %s", m_FileName);
+        m_DiskFile.Close();
+        if (!m_DiskFile.Open(m_FileName.c_str(), CFileBase::modeWrite))
+        {
+            WriteTrace(TraceN64System, TraceError, "Failed to open %s", m_FileName);
+            return false;
+        }
+
+        m_DiskFile.SeekToBegin();
+        if (!m_DiskFile.Write(m_DiskImage, MameFormatSize))
+        {
+            m_DiskFile.Close();
+            WriteTrace(TraceN64System, TraceError, "Failed to write file");
+            return false;
+        }
+    }
+    else if (m_DiskFormat == DiskFormatSDK)
+    {
+        //If original file was SDK format, we need to convert it back
+    }
+
+    m_DiskFile.Close();
     return true;
 }
 
@@ -101,6 +135,7 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
     if (DiskFileSize == MameFormatSize)
     {
         //If Disk is MAME Format (size is constant, it should be the same for every file), then continue
+        m_DiskFormat = DiskFormatMAME;
         WriteTrace(TraceN64System, TraceDebug, "Disk File is MAME Format");
 
         if (!AllocateDiskImage(DiskFileSize))
@@ -144,6 +179,8 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
     {
         //If Disk is SDK format (made with SDK based dumpers like LuigiBlood's, or Nintendo's, size is also constant)
         //We need to convert it.
+        m_DiskFormat = DiskFormatSDK;
+
         g_Notify->DisplayMessage(5, MSG_LOADING);
 
         //Allocate supported size
@@ -190,6 +227,21 @@ void CN64Disk::ByteSwapDisk()
     case 0xE848D316: break;
     default:
         g_Notify->DisplayError(stdstr_f("ByteSwapDisk: %X", m_DiskImage[0]).c_str());
+    }
+}
+
+void CN64Disk::ForceByteSwapDisk()
+{
+    uint32_t count;
+
+    for (count = 0; count < m_DiskFileSize; count += 4)
+    {
+        m_DiskImage[count] ^= m_DiskImage[count + 3];
+        m_DiskImage[count + 3] ^= m_DiskImage[count];
+        m_DiskImage[count] ^= m_DiskImage[count + 3];
+        m_DiskImage[count + 1] ^= m_DiskImage[count + 2];
+        m_DiskImage[count + 2] ^= m_DiskImage[count + 1];
+        m_DiskImage[count + 1] ^= m_DiskImage[count + 2];
     }
 }
 
