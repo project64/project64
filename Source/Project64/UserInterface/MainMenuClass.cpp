@@ -895,7 +895,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         SystemMenu.push_back(Item);
         SystemMenu.push_back(MENU_ITEM(SPLITER));
     }
-    Item.Reset(ID_SYSTEM_SWAPDISK, MENU_SWAPDISK);
+    Item.Reset(ID_SYSTEM_SWAPDISK, MENU_SWAPDISK, m_ShortCuts.ShortCutString(ID_SYSTEM_SWAPDISK, AccessLevel));
     if (g_Disk == NULL) { Item.SetItemEnabled(false); }
     SystemMenu.push_back(Item);
     SystemMenu.push_back(MENU_ITEM(SPLITER));

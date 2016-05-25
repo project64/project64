@@ -316,6 +316,7 @@ void CShortCuts::Load(bool InitialValues)
     AddShortCut(ID_SYSTEM_PAUSE, STR_SHORTCUT_SYSTEMMENU, MENU_PAUSE, CMenuShortCutKey::GAME_RUNNING);
     AddShortCut(ID_SYSTEM_BITMAP, STR_SHORTCUT_SYSTEMMENU, MENU_BITMAP, CMenuShortCutKey::GAME_RUNNING);
     AddShortCut(ID_SYSTEM_LIMITFPS, STR_SHORTCUT_SYSTEMMENU, MENU_LIMIT_FPS, CMenuShortCutKey::GAME_RUNNING);
+    AddShortCut(ID_SYSTEM_SWAPDISK, STR_SHORTCUT_SYSTEMMENU, MENU_SWAPDISK, CMenuShortCutKey::GAME_RUNNING_WINDOW);
     AddShortCut(ID_SYSTEM_SAVE, STR_SHORTCUT_SYSTEMMENU, MENU_SAVE, CMenuShortCutKey::GAME_RUNNING);
     AddShortCut(ID_SYSTEM_SAVEAS, STR_SHORTCUT_SYSTEMMENU, MENU_SAVE_AS, CMenuShortCutKey::GAME_RUNNING_WINDOW);
     AddShortCut(ID_SYSTEM_RESTORE, STR_SHORTCUT_SYSTEMMENU, MENU_RESTORE, CMenuShortCutKey::GAME_RUNNING);
@@ -383,6 +384,7 @@ void CShortCuts::Load(bool InitialValues)
         m_ShortCuts.find(ID_SYSTEM_PAUSE)->second.AddShortCut(VK_PAUSE, false, false, false, CMenuShortCutKey::GAME_RUNNING);
         m_ShortCuts.find(ID_SYSTEM_BITMAP)->second.AddShortCut(VK_F3, false, false, false, CMenuShortCutKey::GAME_RUNNING);
         m_ShortCuts.find(ID_SYSTEM_LIMITFPS)->second.AddShortCut(VK_F4, false, false, false, CMenuShortCutKey::GAME_RUNNING);
+        m_ShortCuts.find(ID_SYSTEM_SWAPDISK)->second.AddShortCut('D', true, false, false, CMenuShortCutKey::GAME_RUNNING_WINDOW);
         m_ShortCuts.find(ID_SYSTEM_SAVE)->second.AddShortCut(VK_F5, false, false, false, CMenuShortCutKey::GAME_RUNNING);
         m_ShortCuts.find(ID_SYSTEM_RESTORE)->second.AddShortCut(VK_F7, false, false, false, CMenuShortCutKey::GAME_RUNNING);
         m_ShortCuts.find(ID_SYSTEM_LOAD)->second.AddShortCut('L', true, false, false, CMenuShortCutKey::GAME_RUNNING_WINDOW);
