@@ -13,6 +13,7 @@
 #include "SystemGlobals.h"
 #include <Common/Platform.h>
 #include <Common/MemoryManagement.h>
+#include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <memory>
 
 CN64Disk::CN64Disk() :
@@ -78,6 +79,11 @@ bool CN64Disk::SaveDiskImage()
 
     m_DiskFile.Close();
     return true;
+}
+
+void CN64Disk::SwapDiskImage()
+{
+    g_Reg->ASIC_STATUS &= ~DD_STATUS_DISK_PRES;
 }
 
 bool CN64Disk::IsValidDiskImage(uint8_t Test[4])

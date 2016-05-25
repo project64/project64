@@ -19,6 +19,7 @@ public:
 
     bool    LoadDiskImage(const char * FileLoc);
     bool    SaveDiskImage();
+    void    SwapDiskImage();
     static bool IsValidDiskImage(uint8_t Test[4]);
     uint8_t *  GetDiskAddress() { return m_DiskImage; }
     uint8_t *  GetDiskAddressBuffer() { return m_DiskImage + m_DiskBufAddress; }

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "RomInformationClass.h"
+#include <Project64-core/N64System/N64DiskClass.h>
 
 #include <windows.h>
 #include <commdlg.h>
@@ -228,6 +229,32 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_LIMITFPS");
         g_Settings->SaveBool(GameRunning_LimitFPS, !g_Settings->LoadBool(GameRunning_LimitFPS));
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_LIMITFPS 1");
+        break;
+    case ID_SYSTEM_SWAPDISK:
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_SWAPDISK");
+        // Open Disk
+        OPENFILENAME openfilename;
+        char FileName[_MAX_PATH], Directory[_MAX_PATH];
+
+        memset(&FileName, 0, sizeof(FileName));
+        memset(&openfilename, 0, sizeof(openfilename));
+
+        strcpy(Directory, g_Settings->LoadStringVal(RomList_GameDir).c_str());
+
+        openfilename.lStructSize = sizeof(openfilename);
+        openfilename.hwndOwner = (HWND)hWnd;
+        openfilename.lpstrFilter = "N64DD Disk Image (*.ndd)\0*.ndd\0All files (*.*)\0*.*\0";
+        openfilename.lpstrFile = FileName;
+        openfilename.lpstrInitialDir = Directory;
+        openfilename.nMaxFile = MAX_PATH;
+        openfilename.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+
+        if (GetOpenFileName(&openfilename))
+        {
+            g_Disk->SaveDiskImage();
+            g_Disk->SwapDiskImage();
+            g_Disk->LoadDiskImage(FileName);
+        }
         break;
     case ID_SYSTEM_SAVE:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_SAVE");
@@ -868,6 +895,10 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         SystemMenu.push_back(Item);
         SystemMenu.push_back(MENU_ITEM(SPLITER));
     }
+    Item.Reset(ID_SYSTEM_SWAPDISK, MENU_SWAPDISK);
+    if (g_Disk == NULL) { Item.SetItemEnabled(false); }
+    SystemMenu.push_back(Item);
+    SystemMenu.push_back(MENU_ITEM(SPLITER));
     SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_SAVE, MENU_SAVE, m_ShortCuts.ShortCutString(ID_SYSTEM_SAVE, AccessLevel)));
     if (!inBasicMode)
     {
