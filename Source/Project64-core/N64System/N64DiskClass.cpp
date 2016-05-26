@@ -32,9 +32,19 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
 {
     UnallocateDiskImage();
 
-    if (!AllocateAndLoadDiskImage(FileLoc))
+    //Assume the file extension is *.ndd (it is the only case where it is loaded)
+    stdstr ShadowFile = FileLoc;
+    ShadowFile[ShadowFile.length() - 1] = 'r';
+
+    WriteTrace(TraceN64System, TraceDebug, "Attempt to load shadow file.");
+    if (!AllocateAndLoadDiskImage(ShadowFile.c_str()))
     {
-        return false;
+        WriteTrace(TraceN64System, TraceDebug, "Loading Shadow file failed");
+        UnallocateDiskImage();
+        if (!AllocateAndLoadDiskImage(FileLoc))
+        {
+            return false;
+        }
     }
 
     if (g_Disk == this)
@@ -48,11 +58,24 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
 
 bool CN64Disk::SaveDiskImage()
 {
-    WriteTrace(TraceN64System, TraceDebug, "Trying to open %s", m_FileName);
-    m_DiskFile.Close();
-    if (!m_DiskFile.Open(m_FileName.c_str(), CFileBase::modeWrite))
+    //NO NEED TO SAVE IF DISK TYPE IS 6
+    uint8_t disktype = m_DiskImage[5] & 0xF;
+    if (disktype == 0x6)
     {
-        WriteTrace(TraceN64System, TraceError, "Failed to open %s", m_FileName);
+        m_DiskFile.Close();
+        WriteTrace(TraceN64System, TraceDebug, "Loaded Disk Type is 0x7. No RAM area. Shadow file is not needed.");
+        return true;
+    }
+
+    //Assume the file extension is *.ndd (it is the only case where it is loaded)
+    stdstr ShadowFile = m_FileName;
+    ShadowFile[ShadowFile.length() - 1] = 'r';
+
+    WriteTrace(TraceN64System, TraceDebug, "Trying to open %s (Shadow File)", ShadowFile.c_str());
+    m_DiskFile.Close();
+    if (!m_DiskFile.Open(ShadowFile.c_str(), CFileBase::modeWrite | CFileBase::modeCreate))
+    {
+        WriteTrace(TraceN64System, TraceError, "Failed to open %s (Shadow File)", ShadowFile.c_str());
         return false;
     }
 
