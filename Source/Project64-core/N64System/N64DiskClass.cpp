@@ -36,6 +36,8 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
     stdstr ShadowFile = FileLoc;
     ShadowFile[ShadowFile.length() - 1] = 'r';
 
+    g_Settings->SaveBool(GameRunning_LoadingInProgress, true);
+
     WriteTrace(TraceN64System, TraceDebug, "Attempt to load shadow file.");
     if (!AllocateAndLoadDiskImage(ShadowFile.c_str()))
     {
@@ -104,9 +106,10 @@ bool CN64Disk::SaveDiskImage()
     return true;
 }
 
-void CN64Disk::SwapDiskImage()
+void CN64Disk::SwapDiskImage(const char * FileLoc)
 {
     g_Reg->ASIC_STATUS &= ~DD_STATUS_DISK_PRES;
+    LoadDiskImage(FileLoc);
 }
 
 bool CN64Disk::IsValidDiskImage(uint8_t Test[4])

@@ -252,8 +252,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         if (GetOpenFileName(&openfilename))
         {
             g_Disk->SaveDiskImage();
-            g_Disk->SwapDiskImage();
-            g_Disk->LoadDiskImage(FileName);
+            g_Disk->SwapDiskImage(FileName);
         }
         break;
     case ID_SYSTEM_SAVE:

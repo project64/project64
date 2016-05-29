@@ -166,10 +166,10 @@ void DiskGapSectorCheck()
         }
     }
 
-    if (!(g_Reg->ASIC_STATUS & DD_STATUS_DISK_PRES) && g_Disk != NULL)
+    if (!(g_Reg->ASIC_STATUS & DD_STATUS_DISK_PRES) && g_Disk != NULL && g_Settings->LoadBool(GameRunning_LoadingInProgress) == false)
     {
         dd_swapdelay++;
-        if (dd_swapdelay >= 40)
+        if (dd_swapdelay >= 50)
         {
             g_Reg->ASIC_STATUS |= (DD_STATUS_DISK_PRES | DD_STATUS_DISK_CHNG);
             dd_swapdelay = 0;
