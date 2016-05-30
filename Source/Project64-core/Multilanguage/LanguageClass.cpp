@@ -88,6 +88,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MENU_RESUME, "R&esume");
     DEF_STR(MENU_RESET_SOFT, "&Soft Reset");
     DEF_STR(MENU_RESET_HARD, "&Hard Reset");
+    DEF_STR(MENU_SWAPDISK, "Swap &Disk");
 
     //Options Menu
     DEF_STR(MENU_OPTIONS, "&Options");
