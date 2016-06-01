@@ -32,13 +32,22 @@ void Transferpak::Init()
 
 void Transferpak::Release()
 {
-    GBCart::release_gb_cart(&tpak.gb_cart);
+    if (tpak.gb_cart.rom != NULL)
+    {
+        GBCart::release_gb_cart(&tpak.gb_cart);
+    }
 }
 
 void Transferpak::ReadFrom(uint16_t address, uint8_t * data)
 {
 	if ((address >= 0x8000) && (address <= 0x8FFF))
 	{
+        //Ensure we actually have a ROM loaded in first.
+        if (tpak.gb_cart.rom == NULL)
+        {
+            Init();
+        }
+
 		//Get whether the GB cart is enabled or disabled
 		uint8_t value = (tpak.enabled) ? 0x84 : 0x00;
 
@@ -71,8 +80,15 @@ void Transferpak::ReadFrom(uint16_t address, uint8_t * data)
 
 void Transferpak::WriteTo(uint16_t address, uint8_t * data)
 {
+
     if ((address >= 0x8000) && (address <= 0x8FFF))
     {
+        //Ensure we actually have a ROM loaded in first.
+        if (tpak.gb_cart.rom == NULL)
+        {
+            Init();
+        }
+
         //Set whether the gb cart is enabled or disabled.
         switch (*data)
         {
