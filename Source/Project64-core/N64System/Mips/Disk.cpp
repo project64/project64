@@ -83,6 +83,10 @@ void DiskCommand()
         //Unset Reset Bit
         g_Reg->ASIC_STATUS &= ~DD_STATUS_RST_STATE;
         g_Reg->ASIC_STATUS &= ~DD_STATUS_DISK_CHNG;
+        //F-Zero X + Expansion Kit fix so it doesn't enable "swapping" at boot
+        dd_swapdelay = 0;
+        if (g_Disk != NULL)
+            g_Reg->ASIC_STATUS |= DD_STATUS_DISK_PRES;
         break;
     case 0x00120000:
         //RTC Get Year & Month
