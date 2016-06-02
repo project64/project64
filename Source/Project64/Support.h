@@ -1,4 +1,6 @@
+#if defined(_WIN32)
 #include <windows.h>
+#endif
 
 #include <Common/memtest.h>
 #include <Common/CriticalSection.h>
