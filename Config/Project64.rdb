@@ -1811,6 +1811,7 @@ Status=Compatible
 Plugin Note=[Glide64] missing menu effects
 32bit=No
 Culling=1
+Fixed Audio=0
 
 [B30ED978-3003C9F9-C:45]
 Good Name=F-ZERO X (U)
