@@ -3753,12 +3753,14 @@ Status=Compatible
 Good Name=NBA Live 2000 (E) (M4)
 Internal Name=NBA LIVE 2000
 Status=Compatible
+32bit=No
 
 [5F25B0EE-6227C1DB-C:45]
 Good Name=NBA Live 2000 (U) (M4)
 Internal Name=NBA LIVE 2000
 Status=Compatible
 Culling=1
+32bit=No
 
 [CF84F45F-00E4F6EB-C:50]
 Good Name=NBA Live 99 (E) (M5)
