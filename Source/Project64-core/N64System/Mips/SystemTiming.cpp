@@ -161,12 +161,12 @@ void CSystemTimer::UpdateTimers()
     int TimeTaken = m_LastUpdate - m_NextTimer;
     if (TimeTaken != 0)
     {
-        uint32_t random, wired;
+        int32_t random, wired;
         m_LastUpdate = m_NextTimer;
         g_Reg->COUNT_REGISTER += TimeTaken;
         random = g_Reg->RANDOM_REGISTER - (TimeTaken / g_System->CountPerOp());
         wired = g_Reg->WIRED_REGISTER;
-        if ((int)random < (int)wired)
+        if (random < wired)
         {
             if (wired == 0)
             {
@@ -175,10 +175,7 @@ void CSystemTimer::UpdateTimers()
             else
             {
                 uint32_t increment = 32 - wired;
-                do
-                {
-                    random += increment;
-                } while ((int)random < (int)wired);
+                random += ((wired - random + increment - 1) / increment) * increment;
             }
         }
         g_Reg->RANDOM_REGISTER = random;

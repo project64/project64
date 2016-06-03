@@ -385,6 +385,13 @@ bool CN64System::EmulationStarting(CThread * thread)
             WriteTrace(TraceN64System, TraceDebug, "Game starting");
             g_BaseSystem->StartEmulation2(false);
             WriteTrace(TraceN64System, TraceDebug, "Game Done");
+            //PLACE TO ADD 64DD SAVING CODE
+            if (g_Disk != NULL)
+            {
+                g_Disk->SaveDiskImage();
+                //g_Notify->DisplayError(g_Disk->GetError());
+                WriteTrace(TraceN64System, TraceDebug, "64DD Save Done");
+            }
         }
         catch (...)
         {
@@ -411,11 +418,11 @@ void CN64System::StartEmulation2(bool NewThread)
             StartLog();
         }
 
-		WriteTrace(TraceN64System, TraceDebug, "Setting up system");
+        WriteTrace(TraceN64System, TraceDebug, "Setting up system");
         CInterpreterCPU::BuildCPU();
 
         uint32_t CpuType = g_Settings->LoadDword(Game_CpuType);
-		WriteTrace(TraceN64System, TraceDebug, "CpuType = %d",CpuType);
+        WriteTrace(TraceN64System, TraceDebug, "CpuType = %d",CpuType);
         if (CpuType == CPU_SyncCores && !g_Settings->LoadBool(Debugger_Enabled))
         {
             g_Settings->SaveDword(Game_CpuType, CPU_Recompiler);
@@ -440,7 +447,7 @@ void CN64System::StartEmulation2(bool NewThread)
             m_Recomp = new CRecompiler(m_Reg, m_Profile, m_EndEmulation);
         }
 
-		WriteTrace(TraceN64System, TraceDebug, "Setting system as active");
+        WriteTrace(TraceN64System, TraceDebug, "Setting system as active");
         bool bSetActive = true;
         if (m_SyncCPU)
         {
@@ -454,13 +461,13 @@ void CN64System::StartEmulation2(bool NewThread)
 
         if (!bSetActive)
         {
-			WriteTrace(TraceN64System, TraceWarning, "Failed to set system as active");
+            WriteTrace(TraceN64System, TraceWarning, "Failed to set system as active");
             g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
             g_Notify->DisplayError(MSG_PLUGIN_NOT_INIT);
         }
         else
         {
-			WriteTrace(TraceN64System, TraceDebug, "Starting emulation thread");
+            WriteTrace(TraceN64System, TraceDebug, "Starting emulation thread");
             StartEmulationThead();
         }
     }
@@ -468,10 +475,10 @@ void CN64System::StartEmulation2(bool NewThread)
     {
         //mark the emulation as starting and fix up menus
         g_Notify->DisplayMessage(5, MSG_EMULATION_STARTED);
-		WriteTrace(TraceN64System, TraceDebug, "Start Executing CPU");
+        WriteTrace(TraceN64System, TraceDebug, "Start Executing CPU");
         ExecuteCPU();
     }
-	WriteTrace(TraceN64System, TraceDebug, "Done");
+    WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
 void  CN64System::StartEmulation(bool NewThread)
@@ -686,25 +693,6 @@ bool CN64System::SetActiveSystem(bool bActive)
         if (!bRes)
         {
             WriteTrace(TraceN64System, TraceError, "g_Plugins->Initiate Failed");
-        }
-        else
-        {
-            CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
-            for (int i = 0; i < 3; i++)
-            {
-                if (Controllers[i].Present)
-                {
-                    switch (Controllers[i].Plugin)
-                    {
-                    case PLUGIN_TANSFER_PAK:
-                        Transferpak::Init();
-                        break;
-                    case PLUGIN_MEMPAK:
-                        Mempak::Load(i);
-                        break;
-                    }
-                }
-            }
         }
     }
 

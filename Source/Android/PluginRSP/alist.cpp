@@ -633,11 +633,11 @@ void alist_resample( CHle * hle, bool init, bool flag2, uint16_t dmemo, uint16_t
     {
         const int16_t* lut = RESAMPLE_LUT + ((pitch_accu & 0xfc00) >> 8);
 
-        *sample(hle, opos++) = clamp_s16(
-            ((*sample(hle, ipos) * lut[0]) >> 15) +
-            ((*sample(hle, ipos + 1) * lut[1]) >> 15) +
-            ((*sample(hle, ipos + 2) * lut[2]) >> 15) +
-            ((*sample(hle, ipos + 3) * lut[3]) >> 15));
+        *sample(hle, opos++) = clamp_s16( (
+            (*sample(hle, ipos    ) * lut[0]) +
+            (*sample(hle, ipos + 1) * lut[1]) +
+            (*sample(hle, ipos + 2) * lut[2]) +
+            (*sample(hle, ipos + 3) * lut[3]) ) >> 15);
 
         pitch_accu += pitch;
         ipos += (pitch_accu >> 16);
@@ -911,7 +911,7 @@ void alist_polef(CHle * hle, bool init, uint16_t dmemo, uint16_t dmemi, uint16_t
         count -= 16;
     } while (count != 0);
 
-    dram_store_u16(hle, (uint16_t*)(dst - 4), address, 4);
+    dram_store_u32(hle, (uint32_t*)(dst - 4), address, 2);
 }
 
 void alist_iirf(CHle * hle, bool init, uint16_t dmemo, uint16_t dmemi, uint16_t count, int16_t* table, uint32_t address)

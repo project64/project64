@@ -307,14 +307,15 @@ void CRegisters::SetAsCurrentSystem()
 
 void CRegisters::CheckInterrupts()
 {
+    uint32_t mi_intr_reg = MI_INTR_REG, status_register;
     if (!m_System->bFixedAudio() && CpuType() != CPU_SyncCores)
     {
-        MI_INTR_REG &= ~MI_INTR_AI;
-        MI_INTR_REG |= (m_AudioIntrReg & MI_INTR_AI);
+        mi_intr_reg &= ~MI_INTR_AI;
+        mi_intr_reg |= (m_AudioIntrReg & MI_INTR_AI);
     }
-    MI_INTR_REG |= (m_RspIntrReg & MI_INTR_SP);
-    MI_INTR_REG |= (m_GfxIntrReg & MI_INTR_DP);
-    if ((MI_INTR_MASK_REG & MI_INTR_REG) != 0)
+    mi_intr_reg |= (m_RspIntrReg & MI_INTR_SP);
+    mi_intr_reg |= (m_GfxIntrReg & MI_INTR_DP);
+    if ((MI_INTR_MASK_REG & mi_intr_reg) != 0)
     {
         FAKE_CAUSE_REGISTER |= CAUSE_IP2;
     }
@@ -322,21 +323,23 @@ void CRegisters::CheckInterrupts()
     {
         FAKE_CAUSE_REGISTER &= ~CAUSE_IP2;
     }
+    MI_INTR_REG = mi_intr_reg;
+    status_register = STATUS_REGISTER;
 
-    if ((STATUS_REGISTER & STATUS_IE) == 0)
+    if ((status_register & STATUS_IE) == 0)
     {
         return;
     }
-    if ((STATUS_REGISTER & STATUS_EXL) != 0)
+    if ((status_register & STATUS_EXL) != 0)
     {
         return;
     }
-    if ((STATUS_REGISTER & STATUS_ERL) != 0)
+    if ((status_register & STATUS_ERL) != 0)
     {
         return;
     }
 
-    if ((STATUS_REGISTER & FAKE_CAUSE_REGISTER & 0xFF00) != 0)
+    if ((status_register & FAKE_CAUSE_REGISTER & 0xFF00) != 0)
     {
         if (m_FirstInterupt)
         {

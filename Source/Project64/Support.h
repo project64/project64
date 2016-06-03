@@ -1,6 +1,8 @@
+#if defined(_WIN32)
 #include <windows.h>
+#endif
 
-#include <Common/memtest.h>
+#include <Common/MemTest.h>
 #include <Common/CriticalSection.h>
 #include <Common/StdString.h>
 #include <Common/FileClass.h>
