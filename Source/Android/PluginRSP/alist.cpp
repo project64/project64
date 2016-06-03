@@ -868,7 +868,6 @@ void alist_polef(CHle * hle, bool init, uint16_t dmemo, uint16_t dmemi, uint16_t
     unsigned i;
     int16_t l1, l2;
     int16_t h2_before[8];
-    int32_t state[2];
 
     count = align(count, 16);
 
@@ -876,11 +875,9 @@ void alist_polef(CHle * hle, bool init, uint16_t dmemo, uint16_t dmemi, uint16_t
     {
         l1 = 0;
         l2 = 0;
-        state[0] = 0;
     }
     else
     {
-        state[0] = *dram_u32(hle, address);
         l1 = *dram_u16(hle, address + 4);
         l2 = *dram_u16(hle, address + 6);
     }
@@ -914,8 +911,7 @@ void alist_polef(CHle * hle, bool init, uint16_t dmemo, uint16_t dmemi, uint16_t
         count -= 16;
     } while (count != 0);
 
-    state[1] = (l1 << 16) + l2;
-    dram_store_u32(hle, (uint32_t*)(state), address, 2);
+    dram_store_u32(hle, (uint32_t*)(dst - 4), address, 2);
 }
 
 void alist_iirf(CHle * hle, bool init, uint16_t dmemo, uint16_t dmemi, uint16_t count, int16_t* table, uint32_t address)
