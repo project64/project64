@@ -20,6 +20,8 @@ class CGeneralOptionsPage :
 		COMMAND_ID_HANDLER_EX(IDC_LOAD_FULLSCREEN,CheckBoxChanged)
 		COMMAND_ID_HANDLER_EX(IDC_SCREEN_SAVER,CheckBoxChanged)
 		COMMAND_ID_HANDLER_EX(IDC_BASIC_MODE,OnBasicMode)
+		COMMAND_ID_HANDLER_EX(IDC_SELECT_IPL_DIR, SelectIplDir)
+		COMMAND_HANDLER_EX(IDC_IPL_DIR, EN_UPDATE, IplDirChanged)
 		COMMAND_HANDLER_EX(IDC_REMEMBER,EN_UPDATE,EditBoxChanged)
 		COMMAND_HANDLER_EX(IDC_REMEMBERDIR,EN_UPDATE,EditBoxChanged)
 	END_MSG_MAP()
@@ -38,5 +40,12 @@ public:
 
 private:
 	void OnBasicMode ( UINT Code, int id, HWND ctl );
+	void SelectIplDir( UINT Code, int id, HWND ctl );
+	void IplDirChanged( UINT Code, int id, HWND ctl );
+	void UpdatePageSettings( void );
+	void SelectFile( LanguageStringID Title, CModifiedEditBox & EditBox );
 	CSettingConfig * m_SettingsConfig;
+	CModifiedEditBox m_IplDir;
+
+	bool m_InUpdateSettings;
 };

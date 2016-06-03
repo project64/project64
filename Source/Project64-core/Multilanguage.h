@@ -265,6 +265,7 @@ enum LanguageStringID
     OPTION_CHANGE_FR = 466,
     OPTION_CHECK_RUNNING = 467,
     OPTION_UNIQUE_SAVE_DIR = 468,
+    OPTION_IPL_ROM_PATH = 469,
 
     //Rom Browser Tab
     RB_MAX_ROMS = 480,

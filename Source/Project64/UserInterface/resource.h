@@ -329,6 +329,9 @@
 #define IDC_VALUE_TEXT                  1207
 #define IDC_NOTES_TEXT                  1208
 #define IDC_LANG_SEL                    1219
+#define IDC_IPL_DIR                     1220
+#define IDC_SELECT_IPL_DIR              1221
+#define IDC_IPLDIR_TXT                  1222
 #define ID_POPUP_SHOWINMEMORYVIEWER     40005
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ROMDIRECTORY       40137

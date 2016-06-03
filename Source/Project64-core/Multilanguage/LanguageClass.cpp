@@ -233,6 +233,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(OPTION_CHECK_RUNNING, "Check if Project64 is already running");
     DEF_STR(OPTION_UNIQUE_SAVE_DIR, "Unique Game Save Directory");
     DEF_STR(OPTION_CHANGE_FR, "Speed display:");
+    DEF_STR(OPTION_IPL_ROM_PATH, "64DD IPL ROM Path:");
 
     //ROM Browser Tab
     DEF_STR(RB_MAX_ROMS, "Max # of ROMs remembered (0-10):");
