@@ -911,7 +911,7 @@ void alist_polef(CHle * hle, bool init, uint16_t dmemo, uint16_t dmemi, uint16_t
         count -= 16;
     } while (count != 0);
 
-    dram_store_u16(hle, (uint16_t*)(dst - 4), address, 4);
+    dram_store_u32(hle, (uint32_t*)(dst - 4), address, 2);
 }
 
 void alist_iirf(CHle * hle, bool init, uint16_t dmemo, uint16_t dmemi, uint16_t count, int16_t* table, uint32_t address)
