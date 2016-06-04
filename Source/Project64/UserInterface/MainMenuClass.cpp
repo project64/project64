@@ -596,9 +596,9 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     return true;
 }
 
-stdstr CMainMenu::GetFileLastMod(stdstr FileName)
+stdstr CMainMenu::GetFileLastMod(const CPath & FileName)
 {
-    HANDLE hFile = CreateFile(FileName.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL,
+    HANDLE hFile = CreateFile(FileName, GENERIC_READ, FILE_SHARE_READ, NULL,
         OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
     if (hFile == INVALID_HANDLE_VALUE)
     {
@@ -644,22 +644,23 @@ std::wstring CMainMenu::GetSaveSlotString(int Slot)
     stdstr LastSaveTime;
 
     //check first save name
-    stdstr _GoodName = g_Settings->LoadStringVal(Game_GoodName);
-    stdstr _InstantSaveDirectory = g_Settings->LoadStringVal(Directory_InstantSave);
-    stdstr CurrentSaveName;
+    CPath FileName(g_Settings->LoadStringVal(Directory_InstantSave).c_str(), "");
+    if (g_Settings->LoadBool(Setting_UniqueSaveDir))
+    {
+        FileName.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
+    }
     if (Slot != 0)
     {
-        CurrentSaveName.Format("%s.pj%d", _GoodName.c_str(), Slot);
+        FileName.SetNameExtension(stdstr_f("%s.pj%d", g_Settings->LoadStringVal(Game_GoodName).c_str(), Slot).c_str());
     }
     else
     {
-        CurrentSaveName.Format("%s.pj", _GoodName.c_str());
+        FileName.SetNameExtension(stdstr_f("%s.pj", g_Settings->LoadStringVal(Game_GoodName).c_str()).c_str());
     }
-    stdstr_f FileName("%s%s", _InstantSaveDirectory.c_str(), CurrentSaveName.c_str());
 
     if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
     {
-        stdstr_f ZipFileName("%s.zip", FileName.c_str());
+        CPath ZipFileName(FileName.GetDriveDirectory(),stdstr_f("%s.zip", FileName.GetNameExtension().c_str()).c_str());
         LastSaveTime = GetFileLastMod(ZipFileName);
     }
     if (LastSaveTime.empty())
@@ -670,19 +671,18 @@ std::wstring CMainMenu::GetSaveSlotString(int Slot)
     // Check old file name
     if (LastSaveTime.empty())
     {
-        stdstr _RomName = g_Settings->LoadStringVal(Game_GameName);
         if (Slot > 0)
         {
-            FileName.Format("%s%s.pj%d", _InstantSaveDirectory.c_str(), _RomName.c_str(), Slot);
+            FileName.SetNameExtension(stdstr_f("%s.pj%d",g_Settings->LoadStringVal(Game_GameName), Slot).c_str());
         }
         else
         {
-            FileName.Format("%s%s.pj", _InstantSaveDirectory.c_str(), _RomName.c_str());
+            FileName.SetNameExtension(stdstr_f("%s.pj",g_Settings->LoadStringVal(Game_GameName)).c_str());
         }
 
         if (g_Settings->LoadBool(Setting_AutoZipInstantSave))
         {
-            stdstr_f ZipFileName("%s.zip", FileName.c_str());
+            CPath ZipFileName(FileName.GetDriveDirectory(),stdstr_f("%s.zip", FileName.GetNameExtension().c_str()).c_str());
             LastSaveTime = GetFileLastMod(ZipFileName);
         }
         if (LastSaveTime.empty())

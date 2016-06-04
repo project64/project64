@@ -75,7 +75,7 @@ private:
 
     void FillOutMenu(HMENU hMenu);
     std::wstring GetSaveSlotString(int Slot);
-    stdstr GetFileLastMod(stdstr FileName);
+    stdstr GetFileLastMod(const CPath & FileName);
     void RebuildAccelerators(void);
     stdstr ChooseFileToOpen(HWND hParent);
     void SetTraceModuleSetttings(SettingID Type);
