@@ -179,18 +179,24 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         break;
     case ID_FILE_STARTEMULATION:
         m_Gui->SaveWindowLoc();
-        //Before we go and create the new system, ensure the previous one has been closed
-        CN64System::CloseSystem();
-        //Ok now g_BaseSystem should definitely be clean for initialization
-        g_BaseSystem = new CN64System(g_Plugins, false);
         //Now we have created again, we can start up emulation
-        g_BaseSystem->StartEmulation(true);
+        if (g_BaseSystem)
+        {
+            g_BaseSystem->StartEmulation(true);
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
         break;
     case ID_FILE_ENDEMULATION:
         {
              CGuard Guard(m_CS);
              WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ENDEMULATION");
-             CN64System::CloseSystem();
+             if (g_BaseSystem)
+             {
+                 g_BaseSystem->CloseCpu();
+             }
              m_Gui->SaveWindowLoc();
         }
         break;

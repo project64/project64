@@ -236,13 +236,17 @@ bool CN64System::RunFileImage(const char * FileLoc)
 
         WriteTrace(TraceN64System, TraceDebug, "Finished Loading (GoodName: %s)", g_Settings->LoadStringVal(Game_GoodName).c_str());
 
-        if (g_Settings->LoadBool(Setting_AutoStart) != 0)
+        g_BaseSystem = new CN64System(g_Plugins, false);
+        if (g_BaseSystem)
         {
-            WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
-            g_BaseSystem = new CN64System(g_Plugins, false);
-            if (g_BaseSystem)
+            if (g_Settings->LoadBool(Setting_AutoStart) != 0)
             {
+                WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
                 g_BaseSystem->StartEmulation(true);
+            }
+            else
+            {
+                g_BaseSystem->SetActiveSystem(true);
             }
         }
     }
@@ -361,12 +365,14 @@ bool CN64System::RunDiskImage(const char * FileLoc)
 
 void CN64System::CloseSystem()
 {
+    WriteTrace(TraceN64System, TraceDebug, "Start");
     if (g_BaseSystem)
     {
         g_BaseSystem->CloseCpu();
         delete g_BaseSystem;
         g_BaseSystem = NULL;
     }
+    WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
 bool CN64System::EmulationStarting(CThread * thread)
