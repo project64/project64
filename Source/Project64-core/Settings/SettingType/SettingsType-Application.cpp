@@ -58,6 +58,11 @@ CSettingTypeApplication::~CSettingTypeApplication()
 {
 }
 
+bool CSettingTypeApplication::IsSettingSet(void) const
+{
+    return m_SettingsIniFile ? m_SettingsIniFile->EntryExists(SectionName(), m_KeyNameIdex.c_str()) : false;
+}
+
 void CSettingTypeApplication::Initialize(const char * /*AppName*/)
 {
     WriteTrace(TraceAppInit, TraceDebug, "Start");

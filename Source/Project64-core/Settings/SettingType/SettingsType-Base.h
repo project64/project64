@@ -40,6 +40,7 @@ public:
 
     virtual SettingType GetSettingType(void) const = 0;
     virtual bool        IndexBasedSetting(void) const = 0;
+    virtual bool        IsSettingSet(void) const = 0;
 
     //return the values
     virtual bool Load(int32_t Index, bool & Value) const = 0;

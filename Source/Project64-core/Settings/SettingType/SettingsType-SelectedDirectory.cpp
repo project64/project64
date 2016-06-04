@@ -30,6 +30,12 @@ CSettingTypeSelectedDirectory::~CSettingTypeSelectedDirectory()
     g_Settings->UnregisterChangeCB(m_UseSelected, this, (CSettings::SettingChangedFunc)DirectoryChanged);
 }
 
+bool CSettingTypeSelectedDirectory::IsSettingSet(void) const
+{
+    SettingID DirSettingId = g_Settings->LoadBool(m_UseSelected) ? m_SelectedDir : m_InitialDir;
+    return g_Settings->IsSettingSet(DirSettingId);
+}
+
 bool CSettingTypeSelectedDirectory::Load(int /*Index*/, bool & /*Value*/) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -75,9 +81,9 @@ void CSettingTypeSelectedDirectory::Save(int /*Index*/, uint32_t /*Value*/)
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeSelectedDirectory::Save(int /*Index*/, const stdstr & /*Value*/)
+void CSettingTypeSelectedDirectory::Save(int Index, const stdstr & Value)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    Save(Index, Value.c_str());
 }
 
 void CSettingTypeSelectedDirectory::Save(int /*Index*/, const char * Value)

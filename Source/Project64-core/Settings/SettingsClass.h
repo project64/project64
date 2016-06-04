@@ -89,6 +89,7 @@ public:
     SettingType   GetSettingType(SettingID Type);
     bool          IndexBasedSetting(SettingID Type);
     void          SettingTypeChanged(SettingType Type);
+    bool          IsSettingSet(SettingID Type);
 
     // static functions for plugins
     static uint32_t  GetSetting(CSettings * _this, SettingID Type);

@@ -62,6 +62,11 @@ void CSettingTypeCheats::GameChanged ( void * /*Data */ )
     *m_SectionIdent = g_Settings->LoadStringVal(Game_IniKey);
 }
 
+bool CSettingTypeCheats::IsSettingSet(void) const
+{
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    return false;
+}
 
 bool CSettingTypeCheats::Load ( int /*Index*/, bool & /*Value*/ ) const
 {

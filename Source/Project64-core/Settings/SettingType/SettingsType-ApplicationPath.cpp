@@ -22,6 +22,11 @@ CSettingTypeApplicationPath::~CSettingTypeApplicationPath()
 {
 }
 
+bool CSettingTypeApplicationPath::IsSettingSet(void) const
+{
+    return CSettingTypeApplication::IsSettingSet();
+}
+
 bool CSettingTypeApplicationPath::Load(int Index, stdstr & Value) const
 {
     bool bRes = CSettingTypeApplication::Load(Index, Value);

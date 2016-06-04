@@ -1139,6 +1139,17 @@ void CSettings::SettingTypeChanged(SettingType Type)
         }
     }
 }
+
+bool CSettings::IsSettingSet(SettingID Type)
+{
+    SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
+    if (FindInfo == m_SettingInfo.end())
+    {
+        return false;
+    }
+    return FindInfo->second->IsSettingSet();
+}
+
 void CSettings::UnknownSetting(SettingID /*Type*/)
 {
 #ifdef _DEBUG

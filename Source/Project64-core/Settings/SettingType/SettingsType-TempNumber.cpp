@@ -12,7 +12,8 @@
 #include "SettingsType-TempNumber.h"
 
 CSettingTypeTempNumber::CSettingTypeTempNumber(uint32_t initialValue) :
-    m_value(initialValue)
+    m_value(initialValue),
+    m_initialValue(initialValue)
 {
 }
 
@@ -44,9 +45,9 @@ void CSettingTypeTempNumber::LoadDefault ( int /*Index*/, bool & /*Value*/ ) con
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeTempNumber::LoadDefault ( int /*Index*/, uint32_t & /*Value*/ ) const
+void CSettingTypeTempNumber::LoadDefault ( int /*Index*/, uint32_t & Value ) const
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+   Value = m_initialValue;
 }
 
 void CSettingTypeTempNumber::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const

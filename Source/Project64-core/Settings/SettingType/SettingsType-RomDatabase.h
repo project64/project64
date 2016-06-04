@@ -26,6 +26,7 @@ public:
 
     virtual bool        IndexBasedSetting ( void ) const { return false; }
     virtual SettingType GetSettingType    ( void ) const { return SettingType_RomDatabase; }
+    virtual bool        IsSettingSet(void) const { return false;  }
 
     //return the values
     virtual bool Load   ( int32_t Index, bool & Value   ) const;
