@@ -509,13 +509,20 @@ void CN64System::Pause()
     {
         return;
     }
+    uint32_t PauseType = g_Settings->LoadDword(GameRunning_CPU_PausedType);
     m_hPauseEvent.Reset();
     g_Settings->SaveBool(GameRunning_CPU_Paused, true);
-    g_Notify->DisplayMessage(5, MSG_CPU_PAUSED);
+    if (PauseType == PauseType_FromMenu)
+    {
+        g_Notify->DisplayMessage(5, MSG_CPU_PAUSED);
+    }
     m_hPauseEvent.IsTriggered(SyncEvent::INFINITE_TIMEOUT);
     m_hPauseEvent.Reset();
     g_Settings->SaveBool(GameRunning_CPU_Paused, (uint32_t)false);
-    g_Notify->DisplayMessage(5, MSG_CPU_RESUMED);
+    if (PauseType == PauseType_FromMenu)
+    {
+        g_Notify->DisplayMessage(5, MSG_CPU_RESUMED);
+    }
 }
 
 void CN64System::GameReset()
