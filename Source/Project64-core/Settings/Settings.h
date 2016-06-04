@@ -239,6 +239,7 @@ enum SettingID
     Debugger_TraceProtectedMEM,
     Debugger_TraceUserInterface,
     Debugger_TraceRomList,
+    Debugger_TraceExceptionHandler,
 
     //Plugins
     Plugin_RSP_Current,
