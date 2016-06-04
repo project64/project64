@@ -26,8 +26,6 @@ CSystemEvents::~CSystemEvents()
 
 void CSystemEvents::QueueEvent(SystemEvent action)
 {
-	m_bDoSomething = true;
-
 	CGuard Guard(m_CS);
 	for (EventList::const_iterator iter = m_Events.begin(); iter != m_Events.end(); iter++)
 	{
@@ -37,6 +35,7 @@ void CSystemEvents::QueueEvent(SystemEvent action)
 		}
 	}
 	m_Events.push_back(action);
+    m_bDoSomething = true;
 }
 
 void CSystemEvents::ExecuteEvents()
