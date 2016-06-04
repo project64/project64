@@ -1,6 +1,9 @@
 #pragma once 
 
+#if defined(_WIN32)
 #include "../../WTLApp.h"
+#endif
+
 #include "../../N64System.h"
 #include "DebugDialog.h"
 #include "Debugger-MemorySearch.h"

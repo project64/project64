@@ -1,6 +1,8 @@
 #pragma once
 
+#ifdef _WIN32
 #include <commctrl.h>
+#endif
 
 class CConfigSettingSection;
 class CSettingsPage;

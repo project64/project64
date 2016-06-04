@@ -18,14 +18,20 @@
 #include <Common/MemTest.h>
 #include <Common/CriticalSection.h>
 #include <Project64-core/Multilanguage.h>
+#if defined(_WIN32)
 #include "UserInterface.h"
+#endif
+
 #include "N64System.h"
 #include <Project64-core/Plugin.h>
 #include "Support.h"
 #include <Project64-core/Version.h>
+
+#if defined(_WIN32)
 #include <windows.h>
 #include <mmsystem.h>
 #include <Aclapi.h>
+#endif
 
-#include <Project64-core/3rdParty/Zip.h>
+#include <Project64-core/3rdParty/zip.h>
 #include <Project64-core/3rdParty/7zip.h>

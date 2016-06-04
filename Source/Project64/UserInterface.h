@@ -16,7 +16,10 @@
 #include <Project64-core/Multilanguage.h>
 #include <Project64-core/Settings/SettingsClass.h>
 
+#if defined(_WIN32)
 #include "WTLApp.h"
+#endif
+
 #include "UserInterface/MenuShortCuts.h"
 #include "UserInterface/RomBrowser.h"
 #include "UserInterface/GuiClass.h"

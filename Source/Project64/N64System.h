@@ -15,7 +15,9 @@
 #include <float.h>
 #include <math.h>
 
+#if defined(_WIN32)
 #include "UserInterface.h"
+#endif
 #include <Project64-core/N64System/N64Types.h>
 
 #include <Project64-core/N64System/ProfilingClass.h>
