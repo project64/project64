@@ -501,8 +501,8 @@ void CLanguage::LoadDefaultStrings(void)
 }
 
 CLanguage::CLanguage() :
-m_emptyString(""),
-m_LanguageLoaded(false)
+    m_emptyString(""),
+    m_LanguageLoaded(false)
 {
     LoadDefaultStrings();
     if (g_Settings)
@@ -513,11 +513,17 @@ m_LanguageLoaded(false)
 
 bool CLanguage::LoadCurrentStrings(void)
 {
-    LanguageList LangList = GetLangList();
-    stdstr       Filename;
-
     //clear all the current strings loaded
     m_CurrentStrings.clear();
+
+    if (g_Settings->LoadBool(Debugger_DebugLanguage))
+    {
+        m_LanguageLoaded = true;
+        return true;
+    }
+    
+    LanguageList LangList = GetLangList();
+    stdstr       Filename;
 
     //Find the file name of the current language
     for (LanguageList::iterator Language = LangList.begin(); Language != LangList.end(); Language++)
@@ -599,6 +605,15 @@ const std::string & CLanguage::GetString(LanguageStringID StringID)
         return CurrentString->second;
     }
 
+    if (g_Settings->LoadBool(Debugger_DebugLanguage))
+    {
+        std::pair<LANG_STRINGS::iterator, bool> ret = m_CurrentStrings.insert(LANG_STRINGS::value_type(StringID, stdstr_f("#%d#", StringID)));
+        if (ret.second)
+        {
+            return ret.first->second;
+        }
+    }
+
     LANG_STRINGS::iterator DefString = m_DefaultStrings.find(StringID);
     if (DefString != m_DefaultStrings.end())
     {
@@ -645,7 +660,7 @@ std::string CLanguage::GetLangString(const char * FileName, LanguageStringID ID)
 
 LANG_STR CLanguage::GetNextLangString(void * OpenFile)
 {
-    enum { MAX_STRING_LEN = 400 };
+    enum { MAX_STRING_LEN = 800 };
     int32_t  StringID;
     char szString[MAX_STRING_LEN];  //temp store the string from the file
 

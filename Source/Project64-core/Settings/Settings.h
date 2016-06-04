@@ -216,6 +216,7 @@ enum SettingID
     Debugger_AppLogFlush,
     Debugger_ShowDListAListCount,
     Debugger_ShowRecompMemSize,
+    Debugger_DebugLanguage,
 
     //Trace
     Debugger_TraceMD5,

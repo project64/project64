@@ -25,6 +25,7 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     m_ChangeSettingList.push_back(Debugger_ShowUnhandledMemory);
     m_ChangeSettingList.push_back(Debugger_ShowPifErrors);
     m_ChangeSettingList.push_back(Debugger_ShowDListAListCount);
+    m_ChangeSettingList.push_back(Debugger_DebugLanguage);
     m_ChangeSettingList.push_back(Debugger_ShowRecompMemSize);
     m_ChangeSettingList.push_back(Debugger_ShowDivByZero);
     m_ChangeSettingList.push_back(Debugger_GenerateLogFiles);
@@ -485,6 +486,10 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUG_SHOW_DLIST_COUNT:
         g_Notify->DisplayMessage(0, "");
         g_Settings->SaveBool(Debugger_ShowDListAListCount, !g_Settings->LoadBool(Debugger_ShowDListAListCount));
+        break;
+    case ID_DEBUG_LANGUAGE:
+        g_Settings->SaveBool(Debugger_DebugLanguage, !g_Settings->LoadBool(Debugger_DebugLanguage));
+        g_Lang->LoadCurrentStrings();
         break;
     case ID_DEBUG_SHOW_RECOMP_MEM_SIZE:
         g_Notify->DisplayMessage(0, "");
@@ -1205,8 +1210,15 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         {
             Item.SetItemTicked(true);
         }
+        DebugMenu.push_back(Item);
         Item.Reset(ID_DEBUG_SHOW_DLIST_COUNT, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Display Alist/Dlist Count");
         if (g_Settings->LoadBool(Debugger_ShowDListAListCount))
+        {
+            Item.SetItemTicked(true);
+        }
+        DebugMenu.push_back(Item);
+        Item.Reset(ID_DEBUG_LANGUAGE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Debug Language");
+        if (g_Settings->LoadBool(Debugger_DebugLanguage))
         {
             Item.SetItemTicked(true);
         }
