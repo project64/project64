@@ -21,5 +21,6 @@ enum TraceModuleProject64
     TraceProtectedMem,
     TraceUserInterface,
     TraceRomList,
+    TraceExceptionHandler,
     MaxTraceModuleProject64,
 };
