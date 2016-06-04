@@ -202,7 +202,6 @@ void CMainGui::GameLoaded(CMainGui * Gui)
         WriteTrace(TraceUserInterface, TraceDebug, "Add Recent Rom");
         Gui->AddRecentRom(FileLoc.c_str());
         Gui->SetWindowCaption(stdstr(g_Settings->LoadStringVal(Game_GoodName)).ToUTF16().c_str());
-        Gui->HideRomList();
     }
 }
 
@@ -215,6 +214,7 @@ void CMainGui::GameCpuRunning(CMainGui * Gui)
 {
     if (g_Settings->LoadBool(GameRunning_CPU_Running))
     {
+        Gui->HideRomList();
         Gui->MakeWindowOnTop(UISettingsLoadBool(UserInterface_AlwaysOnTop));
         if (UISettingsLoadBool(Setting_AutoFullscreen))
         {
