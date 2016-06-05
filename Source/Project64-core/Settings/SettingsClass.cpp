@@ -124,7 +124,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Setting_CurrentLanguage, new CSettingTypeApplication("", "Current Language", ""));
     AddHandler(Setting_EnableDisk, new CSettingTypeApplication("", "Enable Disk", (uint32_t)true));
     AddHandler(Setting_LanguageDirDefault, new CSettingTypeRelativePath("Lang", ""));
-    AddHandler(Setting_LanguageDir, new CSettingTypeApplicationPath("Directory", "Lang", Setting_LanguageDirDefault));
+    AddHandler(Setting_LanguageDir, new CSettingTypeApplicationPath("Lang Directory", "Directory", Setting_LanguageDirDefault));
 
     AddHandler(Rdb_GoodName, new CSettingTypeRomDatabase("Good Name", Game_GameName));
     AddHandler(Rdb_SaveChip, new CSettingTypeRDBSaveChip("Save Type", SaveChip_Auto));
@@ -233,40 +233,40 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Directory_Plugin, new CSettingTypeSelectedDirectory("Dir:Plugin", Directory_PluginInitial, Directory_PluginSelected, Directory_PluginUseSelected, Directory_Plugin));
 #ifndef _M_X64
     AddHandler(Directory_PluginInitial, new CSettingTypeRelativePath("Plugin", ""));
-    AddHandler(Directory_PluginSelected, new CSettingTypeApplicationPath("Directory", "Plugin", Directory_PluginInitial));
-    AddHandler(Directory_PluginUseSelected, new CSettingTypeApplication("Directory", "Plugin - Use Selected", false));
+    AddHandler(Directory_PluginSelected, new CSettingTypeApplicationPath("Plugin Directory", "Directory", Directory_PluginInitial));
+    AddHandler(Directory_PluginUseSelected, new CSettingTypeApplication("Plugin Directory", "Use Selected", false));
     AddHandler(Directory_PluginSync, new CSettingTypeRelativePath("SyncPlugin", ""));
 #else
     AddHandler(Directory_PluginInitial, new CSettingTypeRelativePath("Plugin64", ""));
-    AddHandler(Directory_PluginSelected, new CSettingTypeApplicationPath("Directory", "Plugin64", Directory_PluginInitial));
-    AddHandler(Directory_PluginUseSelected, new CSettingTypeApplication("Directory", "Plugin - Use Selected", false));
+    AddHandler(Directory_PluginSelected, new CSettingTypeApplicationPath("Plugin64 Directory", "Directory", Directory_PluginInitial));
+    AddHandler(Directory_PluginUseSelected, new CSettingTypeApplication("Plugin64 Directory", "Use Selected", false));
     AddHandler(Directory_PluginSync, new CSettingTypeRelativePath("SyncPlugin64", ""));
 #endif
 
     AddHandler(Directory_SnapShot, new CSettingTypeSelectedDirectory("Dir:Snapshot", Directory_SnapShotInitial, Directory_SnapShotSelected, Directory_SnapShotUseSelected, Directory_SnapShot));
     AddHandler(Directory_SnapShotInitial, new CSettingTypeRelativePath("Screenshots", ""));
-    AddHandler(Directory_SnapShotSelected, new CSettingTypeApplicationPath("Directory", "Snap Shot", Directory_SnapShotInitial));
-    AddHandler(Directory_SnapShotUseSelected, new CSettingTypeApplication("Directory", "Snap Shot - Use Selected", false));
+    AddHandler(Directory_SnapShotSelected, new CSettingTypeApplicationPath("Snap Shot Directory", "Directory", Directory_SnapShotInitial));
+    AddHandler(Directory_SnapShotUseSelected, new CSettingTypeApplication("Snap Shot Directory", "Use Selected", false));
 
     AddHandler(Directory_NativeSave, new CSettingTypeSelectedDirectory("Dir:NativeSave", Directory_NativeSaveInitial, Directory_NativeSaveSelected, Directory_NativeSaveUseSelected, Directory_NativeSave));
     AddHandler(Directory_NativeSaveInitial, new CSettingTypeRelativePath("Save", ""));
-    AddHandler(Directory_NativeSaveSelected, new CSettingTypeApplicationPath("Directory", "Save", Directory_NativeSaveInitial));
-    AddHandler(Directory_NativeSaveUseSelected, new CSettingTypeApplication("Directory", "Save - Use Selected", false));
+    AddHandler(Directory_NativeSaveSelected, new CSettingTypeApplicationPath("Native Save Directory", "Directory", Directory_NativeSaveInitial));
+    AddHandler(Directory_NativeSaveUseSelected, new CSettingTypeApplication("Native Save Directory", "Use Selected", false));
 
     AddHandler(Directory_InstantSave, new CSettingTypeSelectedDirectory("Dir:InstantSave", Directory_InstantSaveInitial, Directory_InstantSaveSelected, Directory_InstantSaveUseSelected, Directory_InstantSave));
     AddHandler(Directory_InstantSaveInitial, new CSettingTypeRelativePath("Save", ""));
-    AddHandler(Directory_InstantSaveSelected, new CSettingTypeApplicationPath("Directory", "Instant Save", Directory_InstantSaveInitial));
-    AddHandler(Directory_InstantSaveUseSelected, new CSettingTypeApplication("Directory", "Instant Save - Use Selected", false));
+    AddHandler(Directory_InstantSaveSelected, new CSettingTypeApplicationPath("Instant Save Directory", "Directory", Directory_InstantSaveInitial));
+    AddHandler(Directory_InstantSaveUseSelected, new CSettingTypeApplication("Instant Save Directory", "Use Selected", false));
 
     AddHandler(Directory_Texture, new CSettingTypeSelectedDirectory("Dir:Texture", Directory_TextureInitial, Directory_TextureSelected, Directory_TextureUseSelected, Directory_Texture));
     AddHandler(Directory_TextureInitial, new CSettingTypeRelativePath("Textures", ""));
-    AddHandler(Directory_TextureSelected, new CSettingTypeApplicationPath("Directory", "Texture Dir", Directory_InstantSaveInitial));
-    AddHandler(Directory_TextureUseSelected, new CSettingTypeApplication("Directory", "Texture Dir - Use Selected", false));
+    AddHandler(Directory_TextureSelected, new CSettingTypeApplicationPath("Texture Directory", "Directory", Directory_InstantSaveInitial));
+    AddHandler(Directory_TextureUseSelected, new CSettingTypeApplication("Texture Directory", "Use Selected", false));
 
     AddHandler(Directory_Log, new CSettingTypeSelectedDirectory("Dir:Log", Directory_LogInitial, Directory_LogSelected, Directory_LogUseSelected, Directory_Log));
     AddHandler(Directory_LogInitial, new CSettingTypeRelativePath("Logs", ""));
-    AddHandler(Directory_LogSelected, new CSettingTypeApplicationPath("Directory", "Log Dir", Directory_InstantSaveInitial));
-    AddHandler(Directory_LogUseSelected, new CSettingTypeApplication("Directory", "Log Dir - Use Selected", false));
+    AddHandler(Directory_LogSelected, new CSettingTypeApplicationPath("Log Directory", "Directory", Directory_InstantSaveInitial));
+    AddHandler(Directory_LogUseSelected, new CSettingTypeApplication("Log Directory", "Use Selected", false));
 
     AddHandler(RomList_RomListCacheDefault, new CSettingTypeRelativePath("Config", "Project64.cache3"));
     AddHandler(RomList_RomListCache, new CSettingTypeApplicationPath("", "RomListCache", RomList_RomListCacheDefault));
