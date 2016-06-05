@@ -108,6 +108,7 @@ echo Assembling Project64 core sources...
 #$AS -o $obj/7zip.o                      $obj/7zip.asm
 $AS -o $obj/AppInit.o                   $obj/AppInit.asm
 $AS -o $obj/logging.o                   $obj/logging.asm
+$AS -o $obj/MemoryExceptionFilter.o     $obj/MemoryExceptionFilter.asm
 $AS -o $obj/Multilanguage/LangClass.o   $obj/Multilanguage/LangClass.asm
 $AS -o $obj/N64System/CheatClass.o      $obj/N64System/CheatClass.asm
 $AS -o $obj/N64System/EmuThread.o       $obj/N64System/EmuThread.asm
@@ -130,6 +131,7 @@ $AS -o $obj/N64System/Mips/Sram.o       $obj/N64System/Mips/Sram.asm
 $AS -o $obj/N64System/Mips/SyEvents.o   $obj/N64System/Mips/SyEvents.asm
 $AS -o $obj/N64System/Mips/SyTiming.o   $obj/N64System/Mips/SyTiming.asm
 $AS -o $obj/N64System/Mips/TLBclass.o   $obj/N64System/Mips/TLBclass.asm
+$AS -o $obj/N64System/Mips/Transfer.o   $obj/N64System/Mips/Transfer.asm
 $AS -o $obj/N64System/N64Class.o        $obj/N64System/N64Class.asm
 $AS -o $obj/N64System/N64DiskClass.o    $obj/N64System/N64DiskClass.asm
 $AS -o $obj/N64System/N64RomClass.o     $obj/N64System/N64RomClass.asm
@@ -185,6 +187,7 @@ $AS -o $obj/Settings/type/TmpString.o   $obj/Settings/type/TmpString.asm
 OBJ_LIST="\
 $obj/AppInit.o \
 $obj/logging.o \
+$obj/MemoryExceptionFilter.o \
 $obj/Multilanguage/LangClass.o \
 $obj/N64System/CheatClass.o \
 $obj/N64System/EmuThread.o \
@@ -207,6 +210,7 @@ $obj/N64System/Mips/Sram.o \
 $obj/N64System/Mips/SyEvents.o \
 $obj/N64System/Mips/SyTiming.o \
 $obj/N64System/Mips/TLBclass.o \
+$obj/N64System/Mips/Transfer.o \
 $obj/N64System/N64Class.o \
 $obj/N64System/N64DiskClass.o \
 $obj/N64System/N64RomClass.o \
