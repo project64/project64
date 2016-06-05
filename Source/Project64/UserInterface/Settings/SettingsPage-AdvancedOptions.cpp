@@ -27,6 +27,7 @@ CAdvancedOptionsPage::CAdvancedOptionsPage(HWND hParent, const RECT & rcDispay)
     SetDlgItemTextW(m_hWnd, IDC_UNIQUE_SAVE_DIR, wGS(OPTION_UNIQUE_SAVE_DIR).c_str());
     SetDlgItemTextW(m_hWnd, IDC_CHECK_RUNNING, wGS(OPTION_CHECK_RUNNING).c_str());
     SetDlgItemTextW(m_hWnd, IDC_DISPLAY_FRAMERATE, wGS(OPTION_CHANGE_FR).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_IPLDIR_TXT, wGS(OPTION_IPL_ROM_PATH).c_str());
 
     AddModCheckBox(GetDlgItem(IDC_START_ON_ROM_OPEN), Setting_AutoStart);
     AddModCheckBox(GetDlgItem(IDC_ZIP), Setting_AutoZipInstantSave);
@@ -45,6 +46,8 @@ CAdvancedOptionsPage::CAdvancedOptionsPage(HWND hParent, const RECT & rcDispay)
         ComboBox->AddItemW(wGS(STR_FR_PERCENT).c_str(), FR_PERCENT);
     }
 
+    m_IplDir.Attach(GetDlgItem(IDC_IPL_DIR));
+
     UpdatePageSettings();
 }
 
@@ -60,6 +63,16 @@ void CAdvancedOptionsPage::ShowPage()
 
 void CAdvancedOptionsPage::ApplySettings(bool UpdateScreen)
 {
+    if (m_IplDir.IsChanged())
+    {
+        stdstr file = m_IplDir.GetWindowText();
+        g_Settings->SaveString(File_DiskIPLPath, file.c_str());
+    }
+    if (m_IplDir.IsReset())
+    {
+        g_Settings->DeleteSetting(File_DiskIPLPath);
+    }
+
     CSettingsPageImpl<CAdvancedOptionsPage>::ApplySettings(UpdateScreen);
 }
 
@@ -72,4 +85,53 @@ bool CAdvancedOptionsPage::EnableReset(void)
 void CAdvancedOptionsPage::ResetPage()
 {
     CSettingsPageImpl<CAdvancedOptionsPage>::ResetPage();
+}
+
+void CAdvancedOptionsPage::SelectIplDir(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
+{
+    SelectFile(DIR_SELECT_PLUGIN, m_IplDir);
+}
+
+void CAdvancedOptionsPage::IplDirChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
+{
+    if (m_InUpdateSettings)  { return; }
+    m_IplDir.SetChanged(true);
+    SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
+}
+
+void CAdvancedOptionsPage::UpdatePageSettings(void)
+{
+    m_InUpdateSettings = true;
+    CSettingsPageImpl<CAdvancedOptionsPage>::UpdatePageSettings();
+
+    stdstr File;
+    g_Settings->LoadStringVal(File_DiskIPLPath, File);
+    m_IplDir.SetWindowText(File.c_str());
+
+    m_InUpdateSettings = false;
+}
+
+void CAdvancedOptionsPage::SelectFile(LanguageStringID Title, CModifiedEditBox & EditBox)
+{
+    // Open DDROM
+    OPENFILENAME openfilename;
+    char FileName[_MAX_PATH], Directory[_MAX_PATH];
+    memset(&FileName, 0, sizeof(FileName));
+    memset(&openfilename, 0, sizeof(openfilename));
+
+    strcpy(Directory, g_Settings->LoadStringVal(RomList_GameDir).c_str());
+    openfilename.lStructSize = sizeof(openfilename);
+    openfilename.hwndOwner = m_hWnd;
+    openfilename.lpstrFilter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+    openfilename.lpstrFile = FileName;
+    openfilename.lpstrInitialDir = Directory;
+    openfilename.nMaxFile = MAX_PATH;
+    openfilename.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+
+    if (GetOpenFileName(&openfilename))
+    {
+        EditBox.SetChanged(true);
+        EditBox.SetWindowText(FileName);
+        SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
+    }
 }

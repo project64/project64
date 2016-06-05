@@ -122,7 +122,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Setting_UniqueSaveDir, new CSettingTypeApplication("", "Unique Game Dir", (uint32_t)false));
 #endif
     AddHandler(Setting_CurrentLanguage, new CSettingTypeApplication("", "Current Language", ""));
-    AddHandler(Setting_EnableDisk, new CSettingTypeApplication("", "Enable Disk", (uint32_t)true));
+    AddHandler(Setting_EnableDisk, new CSettingTypeTempBool(false));
     AddHandler(Setting_LanguageDirDefault, new CSettingTypeRelativePath("Lang", ""));
     AddHandler(Setting_LanguageDir, new CSettingTypeApplicationPath("Lang Directory", "Directory", Setting_LanguageDirDefault));
 

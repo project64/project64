@@ -29,6 +29,7 @@ m_SettingsConfig(SettingsConfig)
     SetDlgItemTextW(m_hWnd, IDC_ROMSEL_TEXT2, wGS(RB_ROMS).c_str());
     SetDlgItemTextW(m_hWnd, IDC_MAXROMDIR_TXT, wGS(RB_MAX_DIRS).c_str());
     SetDlgItemTextW(m_hWnd, IDC_ROMSEL_TEXT4, wGS(RB_DIRS).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_IPLDIR_TXT, wGS(OPTION_IPL_ROM_PATH).c_str());
 
     AddModCheckBox(GetDlgItem(IDC_AUTOSLEEP), Setting_AutoSleep);
     AddModCheckBox(GetDlgItem(IDC_LOAD_FULLSCREEN), Setting_AutoFullscreen);
