@@ -114,6 +114,7 @@ echo Assembling Project64 core sources...
 #$AS -o $obj/7zip.o                      $obj/7zip.asm
 $AS -o $obj/AppInit.o                   $obj/AppInit.asm
 $AS -o $obj/logging.o                   $obj/logging.asm
+$AS -o $obj/MemoryExceptionFilter.o     $obj/MemoryExceptionFilter.asm
 $AS -o $obj/Multilanguage/LangClass.o   $obj/Multilanguage/LangClass.asm
 $AS -o $obj/N64System/CheatClass.o      $obj/N64System/CheatClass.asm
 $AS -o $obj/N64System/EmuThread.o       $obj/N64System/EmuThread.asm
@@ -190,6 +191,7 @@ set OBJ_LIST="\
 $obj/7zip.o \
 $obj/AppInit.o \
 $obj/logging.o \
+$obj/MemoryExceptionFilter.o \
 $obj/Multilanguage/LangClass.o \
 $obj/N64System/CheatClass.o \
 $obj/N64System/EmuThread.o \
