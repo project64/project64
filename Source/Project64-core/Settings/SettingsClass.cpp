@@ -328,11 +328,17 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Debugger_TraceExceptionHandler, new CSettingTypeApplication("Logging", "Exception Handler", (uint32_t)g_ModuleLogLevel[TraceExceptionHandler]));
 
     //Plugin
+#ifdef _WIN32
     AddHandler(Plugin_RSP_Current, new CSettingTypeApplication("Plugin", "RSP Dll", "RSP\\RSP 1.7.dll"));
     AddHandler(Plugin_GFX_Current, new CSettingTypeApplication("Plugin", "Graphics Dll", "GFX\\Jabo_Direct3D8.dll"));
     AddHandler(Plugin_AUDIO_Current, new CSettingTypeApplication("Plugin", "Audio Dll", "Audio\\Jabo_Dsound.dll"));
     AddHandler(Plugin_CONT_Current, new CSettingTypeApplication("Plugin", "Controller Dll", "Input\\PJ64_NRage.dll"));
-
+#else
+    AddHandler(Plugin_RSP_Current, new CSettingTypeApplication("Plugin", "RSP Dll", "libProject64-rsp-hle.so"));
+    AddHandler(Plugin_GFX_Current, new CSettingTypeApplication("Plugin", "Graphics Dll", "libProject64-gfx-glide64.so"));
+    AddHandler(Plugin_AUDIO_Current, new CSettingTypeApplication("Plugin", "Audio Dll", "libProject64-audio-android.so"));
+    AddHandler(Plugin_CONT_Current, new CSettingTypeApplication("Plugin", "Controller Dll", "libProject64-input-android.so"));
+#endif
     AddHandler(Plugin_RSP_CurVer, new CSettingTypeApplication("Plugin", "RSP Dll Ver", ""));
     AddHandler(Plugin_GFX_CurVer, new CSettingTypeApplication("Plugin", "Graphics Dll Ver", ""));
     AddHandler(Plugin_AUDIO_CurVer, new CSettingTypeApplication("Plugin", "Audio Dll Ver", ""));
