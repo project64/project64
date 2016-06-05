@@ -684,11 +684,11 @@ std::wstring CMainMenu::GetSaveSlotString(int Slot)
     {
         if (Slot > 0)
         {
-            FileName.SetNameExtension(stdstr_f("%s.pj%d",g_Settings->LoadStringVal(Game_GameName), Slot).c_str());
+            FileName.SetNameExtension(stdstr_f("%s.pj%d", g_Settings->LoadStringVal(Game_GameName).c_str(), Slot).c_str());
         }
         else
         {
-            FileName.SetNameExtension(stdstr_f("%s.pj",g_Settings->LoadStringVal(Game_GameName)).c_str());
+            FileName.SetNameExtension(stdstr_f("%s.pj", g_Settings->LoadStringVal(Game_GameName).c_str()).c_str());
         }
 
         if (g_Settings->LoadBool(Setting_AutoZipInstantSave))
