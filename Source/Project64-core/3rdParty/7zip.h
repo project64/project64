@@ -5,10 +5,10 @@
 extern "C" {
 #endif
 
-#include "7zip\7zCrc.h"
-#include "7zip\7z.h"
-#include "7zip\7zFile.h"
-#include "7zip\Types.h"
+#include "7zip/7zCrc.h"
+#include "7zip/7z.h"
+#include "7zip/7zFile.h"
+#include "7zip/Types.h"
 
 #ifdef __cplusplus
 }
