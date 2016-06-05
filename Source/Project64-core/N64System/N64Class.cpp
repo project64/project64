@@ -23,6 +23,7 @@
 #include <Project64-core/Debugger.h>
 #include <Common/Util.h>
 #include <float.h>
+#include <time.h>
 #if defined(ANDROID)
 #include <utime.h>
 #endif
