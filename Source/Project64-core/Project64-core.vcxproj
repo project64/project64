@@ -128,6 +128,7 @@
     <ClInclude Include="Logging.h" />
     <ClInclude Include="Multilanguage.h" />
     <ClInclude Include="Multilanguage\LanguageClass.h" />
+    <ClInclude Include="N64System\Arm\ArmOpCode.h" />
     <ClInclude Include="N64System\CheatClass.h" />
     <ClInclude Include="N64System\FramePerSecondClass.h" />
     <ClInclude Include="N64System\Interpreter\InterpreterCPU.h" />

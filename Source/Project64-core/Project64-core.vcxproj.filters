@@ -76,6 +76,9 @@
     <Filter Include="Header Files\Rom List">
       <UniqueIdentifier>{1030356f-55d6-4fef-9ee2-64c45b9c8ff2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\N64 System\Arm">
+      <UniqueIdentifier>{8c526293-ee42-44b0-938f-f3c1cc18a986}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -604,6 +607,9 @@
     </ClInclude>
     <ClInclude Include="RomList\RomList.h">
       <Filter>Header Files\Rom List</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Arm\ArmOpCode.h">
+      <Filter>Source Files\N64 System\Arm</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
