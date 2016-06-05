@@ -124,6 +124,7 @@ enum SettingID
     Game_SMM_TLB,
     Game_SMM_StoreInstruc,
     Game_CurrentSaveState,
+    Game_LastSaveTime,
     Game_RDRamSize,
     Game_CounterFactor,
     Game_UseTlb,

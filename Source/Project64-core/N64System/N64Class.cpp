@@ -207,6 +207,7 @@ bool CN64System::RunFileImage(const char * FileLoc)
     WriteTrace(TraceN64System, TraceDebug, "FileLoc: %s", FileLoc);
     CloseSystem();
     g_Settings->SaveBool(Setting_EnableDisk, false);
+    g_Settings->SaveDword(Game_CurrentSaveState, g_Settings->LoadDefaultDword(Game_CurrentSaveState));
     if (g_Settings->LoadBool(GameRunning_LoadingInProgress))
     {
         WriteTrace(TraceN64System, TraceError, "game loading is in progress, can not load new file");
@@ -442,6 +443,7 @@ void CN64System::StartEmulation2(bool NewThread)
         {
             StartLog();
         }
+        g_Settings->SaveDword(Game_CurrentSaveState, g_Settings->LoadDefaultDword(Game_CurrentSaveState));
 
         WriteTrace(TraceN64System, TraceDebug, "Setting up system");
         CInterpreterCPU::BuildCPU();
@@ -1161,9 +1163,9 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
         m_LastSuccessSyncPC[i] = m_LastSuccessSyncPC[i - 1];
     }
     m_LastSuccessSyncPC[0] = m_Reg.m_PROGRAM_COUNTER;
-    //	if (PROGRAM_COUNTER == 0x8009BBD8) {
-    //		g_Notify->BreakPoint(__FILE__, __LINE__);
-    //	}
+    //    if (PROGRAM_COUNTER == 0x8009BBD8) {
+    //        g_Notify->BreakPoint(__FILE__, __LINE__);
+    //    }
 }
 
 void CN64System::SyncSystem()
@@ -1416,8 +1418,12 @@ bool CN64System::SaveState()
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
 
-    //	if (!m_SystemTimer.SaveAllowed()) { return false; }
-    if ((m_Reg.STATUS_REGISTER & STATUS_EXL) != 0) { return false; }
+    //    if (!m_SystemTimer.SaveAllowed()) { return false; }
+    if ((m_Reg.STATUS_REGISTER & STATUS_EXL) != 0) 
+    {
+        WriteTrace(TraceN64System, TraceDebug, "Done - STATUS_EXL set, can not save");
+        return false;
+    }
 
     CPath SaveFile(g_Settings->LoadStringVal(GameRunning_InstantSaveFile));
     int Slot = 0;
@@ -1516,6 +1522,7 @@ bool CN64System::SaveState()
         {
             g_Notify->DisplayError(GS(MSG_FAIL_OPEN_SAVE));
             m_Reg.MI_INTR_REG = MiInterReg;
+            WriteTrace(TraceN64System, TraceDebug, "Done - Failed to open");
             return true;
         }
 
@@ -1557,6 +1564,7 @@ bool CN64System::SaveState()
     }
     m_Reg.MI_INTR_REG = MiInterReg;
     g_Settings->SaveString(GameRunning_InstantSaveFile, "");
+    g_Settings->SaveDword(Game_LastSaveTime, (uint32_t)time(NULL));
   
     g_Notify->DisplayMessage(5, stdstr_f("%s %s", g_Lang->GetString(MSG_SAVED_STATE).c_str(), stdstr(SaveFile.GetNameExtension()).c_str()).c_str());
     WriteTrace(TraceN64System, TraceDebug, "Done");
@@ -1565,6 +1573,8 @@ bool CN64System::SaveState()
 
 bool CN64System::LoadState()
 {
+    WriteTrace(TraceN64System, TraceDebug, "Start");
+
     stdstr InstantFileName = g_Settings->LoadStringVal(GameRunning_InstantSaveFile);
     if (!InstantFileName.empty())
     {
@@ -1607,18 +1617,21 @@ bool CN64System::LoadState()
     {
         FileName.SetNameExtension(stdstr_f("%s.pj", g_Settings->LoadStringVal(Game_GameName).c_str()).c_str());
     }
-    return LoadState(FileName);
+    bool Result = LoadState(FileName);
+    WriteTrace(TraceN64System, TraceDebug, "Done (res: %s)", Result ? "True" : "False");
+    return Result;
 }
 
 bool CN64System::LoadState(const char * FileName)
 {
+    WriteTrace(TraceN64System, TraceDebug, "(%s): Start", FileName);
+
     uint32_t Value, SaveRDRAMSize, NextVITimer = 0, old_status, old_width, old_dacrate;
     bool LoadedZipFile = false, AudioResetOnLoad;
     old_status = g_Reg->VI_STATUS_REG;
     old_width = g_Reg->VI_WIDTH_REG;
     old_dacrate = g_Reg->AI_DACRATE_REG;
 
-    WriteTrace(TraceN64System, TraceDebug, "(%s): Start", FileName);
     CPath SaveFile(FileName);
 
     if (g_Settings->LoadDword(Setting_AutoZipInstantSave) || _stricmp(SaveFile.GetExtension().c_str(), ".zip") == 0)
@@ -2017,7 +2030,7 @@ void CN64System::RefreshScreen()
     }
 
     if (bShowCPUPer()) { m_CPU_Usage.StartTimer(Timer_UpdateScreen); }
-    //	if (bProfiling)    { m_Profile.StartTimer(Timer_UpdateScreen); }
+    //    if (bProfiling)    { m_Profile.StartTimer(Timer_UpdateScreen); }
 
     __except_try()
     {
@@ -2073,7 +2086,7 @@ void CN64System::RefreshScreen()
         }
         m_Cheats.ApplyCheats(g_MMU);
     }
-    //	if (bProfiling)    { m_Profile.StartTimer(ProfilingAddr != Timer_None ? ProfilingAddr : Timer_R4300); }
+    //    if (bProfiling)    { m_Profile.StartTimer(ProfilingAddr != Timer_None ? ProfilingAddr : Timer_R4300); }
 }
 
 void CN64System::TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly)

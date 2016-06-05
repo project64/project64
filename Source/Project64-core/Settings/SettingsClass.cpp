@@ -198,7 +198,12 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_RspAudioSignal, new CSettingTypeGame("Audio Signal", Rdb_RspAudioSignal));
     AddHandler(Game_32Bit, new CSettingTypeGame("32bit", Rdb_32Bit));
     AddHandler(Game_FastSP, new CSettingTypeGame("Fast SP", Rdb_FastSP));
+#ifdef ANDROID
+    AddHandler(Game_CurrentSaveState, new CSettingTypeTempNumber(1));
+#else
     AddHandler(Game_CurrentSaveState, new CSettingTypeTempNumber(0));
+#endif
+    AddHandler(Game_LastSaveTime, new CSettingTypeTempNumber(0));
     AddHandler(Game_SyncViaAudio, new CSettingTypeGame("Sync Audio", Rdb_SyncViaAudio));
     AddHandler(Game_UseHleGfx, new CSettingTypeGame("HLE GFX", Rdb_UseHleGfx));
     AddHandler(Game_UseHleAudio, new CSettingTypeGame("HLE Audio", Rdb_UseHleAudio));
