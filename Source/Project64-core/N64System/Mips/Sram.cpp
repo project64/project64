@@ -52,7 +52,6 @@ bool CSram::LoadSram()
 void CSram::DmaFromSram(uint8_t * dest, int32_t StartOffset, int32_t len)
 {
     uint32_t i;
-    uint8_t tmp[4];
 
     if (!m_File.IsOpen())
     {
@@ -65,66 +64,17 @@ void CSram::DmaFromSram(uint8_t * dest, int32_t StartOffset, int32_t len)
     // Fix Dezaemon 3D saves
     StartOffset = ((StartOffset >> 3) & 0xFFFF8000) | (StartOffset & 0x7FFF);
 
-    uint32_t Offset = StartOffset & 3;
-
-    if (Offset == 0)
+    if (((StartOffset & 3) == 0) && ((((uint32_t)dest) & 3) == 0))
     {
         m_File.Seek(StartOffset, CFile::begin);
         m_File.Read(dest, len);
     }
     else
     {
-        m_File.Seek(StartOffset - Offset, CFile::begin);
-        m_File.Read(tmp, 4);
-
-        for (i = 0; i < (4 - Offset); i++)
+        for (i = 0; i < len; i++)
         {
-            dest[i + Offset] = tmp[i];
-        }
-        for (i = 4 - Offset; i < len - Offset; i += 4)
-        {
-            m_File.Read(tmp, 4);
-            switch (Offset)
-            {
-            case 1:
-                dest[i + 2] = tmp[0];
-                dest[i + 3] = tmp[1];
-                dest[i + 4] = tmp[2];
-                dest[i - 3] = tmp[3];
-                break;
-            case 2:
-                dest[i + 4] = tmp[0];
-                dest[i + 5] = tmp[1];
-                dest[i - 2] = tmp[2];
-                dest[i - 1] = tmp[3];
-                break;
-            case 3:
-                dest[i + 6] = tmp[0];
-                dest[i - 1] = tmp[1];
-                dest[i] = tmp[2];
-                dest[i + 1] = tmp[3];
-                break;
-            default:
-                break;
-            }
-        }
-        m_File.Read(tmp, 4);
-        switch (Offset)
-        {
-        case 1:
-            dest[i - 3] = tmp[3];
-            break;
-        case 2:
-            dest[i - 2] = tmp[2];
-            dest[i - 1] = tmp[3];
-            break;
-        case 3:
-            dest[i - 1] = tmp[1];
-            dest[i] = tmp[2];
-            dest[i + 1] = tmp[3];
-            break;
-        default:
-            break;
+            m_File.Seek((StartOffset + i) ^ 3, CFile::begin);
+            m_File.Read((uint8_t*)(((uint32_t)dest + i) ^ 3), 1);
         }
     }
 }
@@ -132,7 +82,6 @@ void CSram::DmaFromSram(uint8_t * dest, int32_t StartOffset, int32_t len)
 void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len)
 {
     uint32_t i;
-    uint8_t tmp[4];
 
     if (m_ReadOnly)
     {
@@ -150,69 +99,18 @@ void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len)
     // Fix Dezaemon 3D saves
     StartOffset = ((StartOffset >> 3) & 0xFFFF8000) | (StartOffset & 0x7FFF);
 
-    uint32_t Offset = StartOffset & 3;
-
-    if (Offset == 0)
+    if (((StartOffset & 3) == 0) && ((((uint32_t)Source) & 3) == 0) && NULL != NULL)
     {
         m_File.Seek(StartOffset, CFile::begin);
         m_File.Write(Source, len);
     }
     else
     {
-        for (i = 0; i < (4 - Offset); i++)
+        for (i = 0; i < len; i++)
         {
-            tmp[i] = Source[i + Offset];
+            m_File.Seek((StartOffset + i) ^ 3, CFile::begin);
+            m_File.Write((uint8_t*)(((uint32_t)Source + i) ^ 3), 1);
         }
-        m_File.Seek(StartOffset - Offset, CFile::begin);
-        m_File.Write(tmp, (4 - Offset));
-        m_File.Seek(Offset, CFile::current);
-
-        for (i = 4 - Offset; i < len - Offset; i += 4)
-        {
-            switch (Offset)
-            {
-            case 1:
-                tmp[0] = Source[i + 2];
-                tmp[1] = Source[i + 3];
-                tmp[2] = Source[i + 4];
-                tmp[3] = Source[i - 3];
-                break;
-            case 2:
-                tmp[0] = Source[i + 4];
-                tmp[1] = Source[i + 5];
-                tmp[2] = Source[i - 2];
-                tmp[3] = Source[i - 1];
-                break;
-            case 3:
-                tmp[0] = Source[i + 6];
-                tmp[1] = Source[i - 1];
-                tmp[2] = Source[i];
-                tmp[3] = Source[i + 1];
-                break;
-            default:
-                break;
-            }
-            m_File.Write(tmp, 4);
-        }
-        switch (Offset)
-        {
-        case 1:
-            tmp[0] = Source[i - 3];
-            break;
-        case 2:
-            tmp[0] = Source[i - 2];
-            tmp[0] = Source[i - 1];
-            break;
-        case 3:
-            tmp[0] = Source[i - 1];
-            tmp[0] = Source[i];
-            tmp[0] = Source[i + 1];
-            break;
-        default:
-            break;
-        }
-        m_File.Seek(4 - Offset, CFile::current);
-        m_File.Write(tmp, Offset);
     }
     m_File.Flush();
 }
