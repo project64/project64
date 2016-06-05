@@ -1814,11 +1814,7 @@ bool CN64System::LoadState(const char * FileName)
     {
         g_Plugins->Gfx()->ViWidthChanged();
     }
-
-    if (old_dacrate != g_Reg->AI_DACRATE_REG)
-    {
-        g_Plugins->Audio()->DacrateChanged(g_System->SystemType());
-    }
+    g_Plugins->Audio()->DacrateChanged(g_System->SystemType());
 
     //Fix Random Register
     while ((int)m_Reg.RANDOM_REGISTER < (int)m_Reg.WIRED_REGISTER)
