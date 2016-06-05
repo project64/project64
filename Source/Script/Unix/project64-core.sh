@@ -135,6 +135,7 @@ $AS -o $obj/N64System/Mips/Sram.o       $obj/N64System/Mips/Sram.asm
 $AS -o $obj/N64System/Mips/SyEvents.o   $obj/N64System/Mips/SyEvents.asm
 $AS -o $obj/N64System/Mips/SyTiming.o   $obj/N64System/Mips/SyTiming.asm
 $AS -o $obj/N64System/Mips/TLBclass.o   $obj/N64System/Mips/TLBclass.asm
+$AS -o $obj/N64System/Mips/Transfer.o   $obj/N64System/Mips/Transfer.asm
 $AS -o $obj/N64System/N64Class.o        $obj/N64System/N64Class.asm
 $AS -o $obj/N64System/N64RomClass.o     $obj/N64System/N64RomClass.asm
 $AS -o $obj/N64System/ProfileClass.o    $obj/N64System/ProfileClass.asm
@@ -210,6 +211,7 @@ $obj/N64System/Mips/Sram.o \
 $obj/N64System/Mips/SyEvents.o \
 $obj/N64System/Mips/SyTiming.o \
 $obj/N64System/Mips/TLBclass.o \
+$obj/N64System/Mips/Transfer.o \
 $obj/N64System/N64Class.o \
 $obj/N64System/N64RomClass.o \
 $obj/N64System/ProfileClass.o \
