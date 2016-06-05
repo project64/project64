@@ -6,6 +6,8 @@ mkdir -p $obj/contrib/minizip
 FLAGS_x86="\
  -S \
  -fPIC \
+ -Wall \
+ -pedantic \
  -masm=intel \
  -march=native \
  -Os"
