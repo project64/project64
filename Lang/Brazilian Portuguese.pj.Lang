@@ -51,6 +51,7 @@
 #132#  "R&esumir"
 #133#  "&Resetar Software"
 #134#  "&Resetar Hardware"
+#135#  "Trocar &Disco"
 
 //Options Menu
 #140#  "&Opções"
@@ -235,6 +236,7 @@
 #466#  "Display de velocidade:"
 #467#  "Verificar se o Project64 já está em execução"
 #468#  "&Diretório de Saves Unificado"
+#469#  "Caminho Para a ROM 64DD IPL:"
 
 //ROM Browser Tab
 #480#  "Máx # de ROMs Lembradas (0-10):"
