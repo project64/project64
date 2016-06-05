@@ -91,6 +91,22 @@ CN64System::~CN64System()
 
 void CN64System::ExternalEvent(SystemEvent action)
 {
+    if (action == SysEvent_LoadMachineState && 
+        !g_Settings->LoadBool(GameRunning_CPU_Running) &&
+        g_BaseSystem != NULL &&
+        g_BaseSystem->LoadState())
+    {
+        return;
+    }
+
+    if (action == SysEvent_SaveMachineState &&
+        !g_Settings->LoadBool(GameRunning_CPU_Running) &&
+        g_BaseSystem != NULL &&
+        g_BaseSystem->SaveState())
+    {
+        return;
+    }
+
     switch (action)
     {
     case SysEvent_Profile_GenerateLogs:
@@ -832,8 +848,8 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
         case CIC_NUS_6101:
             m_Reg.m_GPR[22].DW = 0x000000000000003F;
             break;
-        case CIC_NUS_8303:		//64DD IPL CIC
-        case CIC_NUS_5167:		//64DD CONVERSION CIC
+        case CIC_NUS_8303:        //64DD IPL CIC
+        case CIC_NUS_5167:        //64DD CONVERSION CIC
             m_Reg.m_GPR[22].DW = 0x00000000000000DD;
             break;
         case CIC_UNKNOWN:
@@ -893,15 +909,15 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
     else
     {
         m_Reg.m_PROGRAM_COUNTER = 0xBFC00000;
-        /*		PIF_Ram[36] = 0x00; PIF_Ram[39] = 0x3F; //common pif ram start values
+        /*        PIF_Ram[36] = 0x00; PIF_Ram[39] = 0x3F; //common pif ram start values
 
         switch (g_Rom->CicChipID()) {
         case CIC_NUS_6101: PIF_Ram[37] = 0x06; PIF_Ram[38] = 0x3F; break;
         case CIC_UNKNOWN:
         case CIC_NUS_6102: PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x3F; break;
-        case CIC_NUS_6103:	PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x78; break;
-        case CIC_NUS_6105:	PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x91; break;
-        case CIC_NUS_6106:	PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x85; break;
+        case CIC_NUS_6103:    PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x78; break;
+        case CIC_NUS_6105:    PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x91; break;
+        case CIC_NUS_6106:    PIF_Ram[37] = 0x02; PIF_Ram[38] = 0x85; break;
         }*/
     }
 }
