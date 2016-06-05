@@ -185,7 +185,7 @@ $AS -o $obj/Settings/type/TmpBool.o     $obj/Settings/type/TmpBool.asm
 $AS -o $obj/Settings/type/TmpNumber.o   $obj/Settings/type/TmpNumber.asm
 $AS -o $obj/Settings/type/TmpString.o   $obj/Settings/type/TmpString.asm
 
-set OBJ_LIST="\
+OBJ_LIST="\
 $obj/7zip.o \
 $obj/AppInit.o \
 $obj/logging.o \
