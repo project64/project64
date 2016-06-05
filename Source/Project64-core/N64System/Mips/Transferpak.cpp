@@ -1,13 +1,15 @@
 /****************************************************************************
-*                                                                           *
-* Project64 - A Nintendo 64 emulator.                                      *
-* http://www.pj64-emu.com/                                                  *
-* Copyright (C) 2012 Project64. All rights reserved.                        *
-*                                                                           *
-* License:                                                                  *
-* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
-*                                                                           *
-****************************************************************************/
+ *                                                                          *
+ * Project64 - A Nintendo 64 emulator.                                      *
+ * http://www.pj64-emu.com/                                                 *
+ * Copyright (C) 2016 Project64. All rights reserved.                       *
+ * Copyright (C) 2015 Bobby Smiles                                          *
+ *                                                                          *
+ * License:                                                                 *
+ * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                       *
+ * version 2 of the License, or (at your option) any later version.         *
+ *                                                                          *
+ ****************************************************************************/
 #include "stdafx.h"
 #include "GBCart.h"
 #include "Transferpak.h"
