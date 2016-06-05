@@ -27,6 +27,7 @@ CAdvancedOptionsPage::CAdvancedOptionsPage(HWND hParent, const RECT & rcDispay)
     SetDlgItemTextW(m_hWnd, IDC_UNIQUE_SAVE_DIR, wGS(OPTION_UNIQUE_SAVE_DIR).c_str());
     SetDlgItemTextW(m_hWnd, IDC_CHECK_RUNNING, wGS(OPTION_CHECK_RUNNING).c_str());
     SetDlgItemTextW(m_hWnd, IDC_DISPLAY_FRAMERATE, wGS(OPTION_CHANGE_FR).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_IPLDIR_TXT, wGS(OPTION_IPL_ROM_PATH).c_str());
 
     AddModCheckBox(GetDlgItem(IDC_START_ON_ROM_OPEN), Setting_AutoStart);
     AddModCheckBox(GetDlgItem(IDC_ZIP), Setting_AutoZipInstantSave);
