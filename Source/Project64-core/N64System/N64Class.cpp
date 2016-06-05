@@ -23,6 +23,9 @@
 #include <Project64-core/Debugger.h>
 #include <Common/Util.h>
 #include <float.h>
+#if defined(ANDROID)
+#include <utime.h>
+#endif
 
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
@@ -1486,6 +1489,9 @@ bool CN64System::SaveState()
         zipCloseFileInZip(file);
 
         zipClose(file, "");
+#if defined(ANDROID)
+        utimes((const char *)ZipFile, NULL);
+#endif
     }
     else
     {
