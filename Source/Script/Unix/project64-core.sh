@@ -30,7 +30,7 @@ CC=g++
 AS=as
 
 echo Compiling core sources for Project64...
-#$CC -o $obj/7zip.asm                    $src/../3rdParty/7zip.cpp $C_FLAGS # precompiled?
+#$CC -o $obj/7zip.asm                    $src/3rdParty/7zip.cpp $C_FLAGS # precompiled?
 $CC -o $obj/AppInit.asm                 $src/AppInit.cpp $C_FLAGS
 $CC -o $obj/logging.asm                 $src/Logging.cpp $C_FLAGS
 $CC -o $obj/MemoryExceptionFilter.asm   $src/MemoryExceptionFilter.cpp $C_FLAGS
@@ -185,8 +185,8 @@ $AS -o $obj/Settings/type/TmpBool.o     $obj/Settings/type/TmpBool.asm
 $AS -o $obj/Settings/type/TmpNumber.o   $obj/Settings/type/TmpNumber.asm
 $AS -o $obj/Settings/type/TmpString.o   $obj/Settings/type/TmpString.asm
 
+# $obj/7zip.o \
 OBJ_LIST="\
-$obj/7zip.o \
 $obj/AppInit.o \
 $obj/logging.o \
 $obj/Multilanguage/LangClass.o \
