@@ -237,6 +237,12 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
 #ifdef _WIN32
         CMipsMemoryVM::ReserveMemory();
         IncreaseThreadPriority();
+#else
+        if (!CMipsMemoryVM::SetupSegvHandler())
+        {
+            WriteTrace(TraceAppInit, TraceDebug, "Setup Segv Handler Failed");
+            return false;
+        }
 #endif
 
         //Create the plugin container
