@@ -4,8 +4,8 @@
 //About DLL
 #1  #  "Português Brasileiro"	// LANGUAGE ID
 #2  #  "Project64 team"			// Author
-#3  #  "2.2"					// Version
-#4  #  "Fevereiro, 2016"			// Date
+#3  #  "2.3"					// Version
+#4  #  "Junho, 2016"			// Date
 
 //About DLL Dialog
 #5  #  "Idioma Atual"
@@ -234,6 +234,7 @@
 #465#  "Exibir a velocidade"
 #466#  "Display de velocidade:"
 #467#  "Verificar se o Project64 já está em execução"
+#468#  "&Diretório de Saves Unificado"
 
 //ROM Browser Tab
 #480#  "Máx # de ROMs Lembradas (0-10):"
