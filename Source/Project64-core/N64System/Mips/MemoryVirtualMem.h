@@ -22,6 +22,11 @@
 #include <sys/ucontext.h>
 #endif
 
+#ifndef _WIN32
+#include <signal.h>
+/* siginfo_t */
+#endif
+
 /*
 * 64-bit Windows exception recovery facilities will expect to interact with
 * the 64-bit registers of the Intel architecture (e.g., rax instead of eax).
@@ -101,7 +106,7 @@ public:
     int32_t   MemoryFilter(uint32_t dwExptCode, void * lpExceptionPointer);
     void  UpdateFieldSerration(uint32_t interlaced);
 #ifndef _WIN32
-    static bool SetupSegvHandler (void);
+    static bool SetupSegvHandler(void);
     static void segv_handler(int signal, siginfo_t *siginfo, void *sigcontext);
 #endif
 
