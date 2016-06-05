@@ -116,6 +116,7 @@ $AS -o $obj/N64System/interp/CPU.o      $obj/N64System/interp/CPU.asm
 $AS -o $obj/N64System/interp/Ops.o      $obj/N64System/interp/Ops.asm
 $AS -o $obj/N64System/interp/Ops32.o    $obj/N64System/interp/Ops32.asm
 $AS -o $obj/N64System/Mips/Audio.o      $obj/N64System/Mips/Audio.asm
+$AS -o $obj/N64System/Mips/Disk.o       $obj/N64System/Mips/Disk.asm
 $AS -o $obj/N64System/Mips/Dma.o        $obj/N64System/Mips/Dma.asm
 $AS -o $obj/N64System/Mips/Eeprom.o     $obj/N64System/Mips/Eeprom.asm
 $AS -o $obj/N64System/Mips/FlashRam.o   $obj/N64System/Mips/FlashRam.asm
@@ -130,6 +131,7 @@ $AS -o $obj/N64System/Mips/SyEvents.o   $obj/N64System/Mips/SyEvents.asm
 $AS -o $obj/N64System/Mips/SyTiming.o   $obj/N64System/Mips/SyTiming.asm
 $AS -o $obj/N64System/Mips/TLBclass.o   $obj/N64System/Mips/TLBclass.asm
 $AS -o $obj/N64System/N64Class.o        $obj/N64System/N64Class.asm
+$AS -o $obj/N64System/N64DiskClass.o    $obj/N64System/N64DiskClass.asm
 $AS -o $obj/N64System/N64RomClass.o     $obj/N64System/N64RomClass.asm
 $AS -o $obj/N64System/ProfileClass.o    $obj/N64System/ProfileClass.asm
 $AS -o $obj/N64System/dynarec/Block.o   $obj/N64System/dynarec/Block.asm
@@ -191,6 +193,7 @@ $obj/N64System/interp/CPU.o \
 $obj/N64System/interp/Ops.o \
 $obj/N64System/interp/Ops32.o \
 $obj/N64System/Mips/Audio.o \
+$obj/N64System/Mips/Disk.o \
 $obj/N64System/Mips/Dma.o \
 $obj/N64System/Mips/Eeprom.o \
 $obj/N64System/Mips/FlashRam.o \
@@ -205,6 +208,7 @@ $obj/N64System/Mips/SyEvents.o \
 $obj/N64System/Mips/SyTiming.o \
 $obj/N64System/Mips/TLBclass.o \
 $obj/N64System/N64Class.o \
+$obj/N64System/N64DiskClass.o \
 $obj/N64System/N64RomClass.o \
 $obj/N64System/ProfileClass.o \
 $obj/N64System/dynarec/Block.o \
