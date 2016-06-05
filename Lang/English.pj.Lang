@@ -51,6 +51,7 @@
 #132#  "R&esume"
 #133#  "&Soft Reset"
 #134#  "&Hard Reset"
+#135#  "Swap &Disk"
 
 //Options Menu
 #140#  "&Options"
@@ -235,6 +236,7 @@
 #466#  "Speed display:"
 #467#  "Check if Project64 is already running"
 #468#  "Unique Game Save Directory"
+#469#  "64DD IPL ROM Path:"
 
 //ROM Browser Tab
 #480#  "Max # of ROMs remembered (0-10):"

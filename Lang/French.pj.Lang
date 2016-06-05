@@ -51,6 +51,7 @@
 #132#  "R&eprendre"
 #133#  "Redémarrage &logiciel"
 #134#  "Redémarrage &matériel"
+#135#  "Changer &disque"
 
 //Options Menu
 #140#  "&Options"
@@ -96,7 +97,7 @@
 #212#  "Éditer les paramètres du jeu"
 #213#  "Éditer les cheats"
 #214#  "Plugin graphique"
-#215#  "Lancer le Jeu avec le Disque"
+#215#  "Lancer le jeu avec un disque"
 
 //Alternate Name to save Slot
 #220#  "Emplacement de sauvegarde - Défaut"
@@ -234,6 +235,8 @@
 #465#  "Afficher la vitesse"
 #466#  "Vitesse affichée :"
 #467#  "Vérifier si Project64 est déjà lancé"
+#468#  "Répertoire de sauvegarde unique"
+#469#  "Chemin vers 64DD IPL ROM:"
 
 //ROM Browser Tab
 #480#  "Max de ROM à retenir (0-10) :"
