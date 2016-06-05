@@ -261,4 +261,4 @@ $obj/Settings/type/TmpNumber.o \
 $obj/Settings/type/TmpString.o"
 
 echo Linking static library objects for Project64-core...
-ar rcs $obj/project64-core.a $OBJ_LIST
+ar rcs $obj/libproject64-core.a $OBJ_LIST
