@@ -31,7 +31,7 @@ CAudioPlugin::CAudioPlugin() :
 
 CAudioPlugin::~CAudioPlugin()
 {
-    Close();
+    Close(NULL);
     UnloadPlugin();
 }
 
@@ -97,8 +97,13 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
 
     AUDIO_INFO Info = { 0 };
 
+#ifdef _WIN32
     Info.hwnd = Window ? Window->GetWindowHandle() : NULL;
-    Info.hinst =  Window ? Window->GetModuleInstance() : NULL;;
+    Info.hinst = Window ? Window->GetModuleInstance() : NULL;
+#else
+    Info.hwnd = NULL;
+    Info.hinst = NULL;
+#endif
     Info.MemoryBswaped = true;
     Info.CheckInterrupts = DummyCheckInterrupts;
 
@@ -140,7 +145,7 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
     m_Initialized = InitiateAudio(Info) != 0;
 
 #ifdef _WIN32
-	//jabo had a bug so I call CreateThread so his dllmain gets called again
+    //jabo had a bug so I call CreateThread so his dllmain gets called again
     pjutil::DynLibCallDllMain();
 
     if (System != NULL)
@@ -152,7 +157,7 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
                 WriteTrace(TraceAudioPlugin, TraceDebug, "Terminate Audio Thread");
                 TerminateThread(m_hAudioThread, 0);
             }
-			DWORD ThreadID;
+            DWORD ThreadID;
             m_hAudioThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)this, 0, &ThreadID);
         }
 
@@ -175,7 +180,7 @@ void CAudioPlugin::UnloadPluginDetails(void)
         m_hAudioThread = NULL;
     }
 #endif
-	AiDacrateChanged = NULL;
+    AiDacrateChanged = NULL;
     AiLenChanged = NULL;
     AiReadLength = NULL;
     AiUpdate = NULL;

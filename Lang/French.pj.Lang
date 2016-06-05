@@ -1,4 +1,4 @@
-/*********************************************************************************
+﻿/*********************************************************************************
 * Meta Information                                                               *
 *********************************************************************************/
 //About DLL
@@ -96,6 +96,7 @@
 #212#  "Éditer les paramètres du jeu"
 #213#  "Éditer les cheats"
 #214#  "Plugin graphique"
+#215#  "Lancer le Jeu avec le Disque"
 
 //Alternate Name to save Slot
 #220#  "Emplacement de sauvegarde - Défaut"

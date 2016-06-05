@@ -89,6 +89,7 @@ public:
     SettingType   GetSettingType(SettingID Type);
     bool          IndexBasedSetting(SettingID Type);
     void          SettingTypeChanged(SettingType Type);
+    bool          IsSettingSet(SettingID Type);
 
     // static functions for plugins
     static uint32_t  GetSetting(CSettings * _this, SettingID Type);
@@ -103,9 +104,9 @@ public:
 
     //Notification
     void NotifyCallBacks(SettingID Type);
+    void AddHandler(SettingID TypeID, CSettingType * Handler);
 
 private:
-    void AddHandler(SettingID TypeID, CSettingType * Handler);
     void AddHowToHandleSetting(const char * BaseDirectory);
     void UnknownSetting(SettingID Type);
 

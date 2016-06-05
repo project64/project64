@@ -67,55 +67,55 @@ SCREEN_SHOT_FORMAT ScreenShotFormats[NumOfFormats] =
 const char *ACmp[] = { "NONE", "THRESHOLD", "UNKNOWN", "DITHER" };
 
 const char *Mode0[] = { "COMBINED", "TEXEL0",
-"TEXEL1", "PRIMITIVE",
-"SHADE", "ENVIORNMENT",
-"1", "NOISE",
-"0", "0",
-"0", "0",
-"0", "0",
-"0", "0" };
+    "TEXEL1", "PRIMITIVE",
+    "SHADE", "ENVIORNMENT",
+    "1", "NOISE",
+    "0", "0",
+    "0", "0",
+    "0", "0",
+    "0", "0" };
 
 const char *Mode1[] = { "COMBINED", "TEXEL0",
-"TEXEL1", "PRIMITIVE",
-"SHADE", "ENVIORNMENT",
-"CENTER", "K4",
-"0", "0",
-"0", "0",
-"0", "0",
-"0", "0" };
+    "TEXEL1", "PRIMITIVE",
+    "SHADE", "ENVIORNMENT",
+    "CENTER", "K4",
+    "0", "0",
+    "0", "0",
+    "0", "0",
+    "0", "0" };
 
 const char *Mode2[] = { "COMBINED", "TEXEL0",
-"TEXEL1", "PRIMITIVE",
-"SHADE", "ENVIORNMENT",
-"SCALE", "COMBINED_ALPHA",
-"T0_ALPHA", "T1_ALPHA",
-"PRIM_ALPHA", "SHADE_ALPHA",
-"ENV_ALPHA", "LOD_FRACTION",
-"PRIM_LODFRAC", "K5",
-"0", "0",
-"0", "0",
-"0", "0",
-"0", "0",
-"0", "0",
-"0", "0",
-"0", "0",
-"0", "0" };
+    "TEXEL1", "PRIMITIVE",
+    "SHADE", "ENVIORNMENT",
+    "SCALE", "COMBINED_ALPHA",
+    "T0_ALPHA", "T1_ALPHA",
+    "PRIM_ALPHA", "SHADE_ALPHA",
+    "ENV_ALPHA", "LOD_FRACTION",
+    "PRIM_LODFRAC", "K5",
+    "0", "0",
+    "0", "0",
+    "0", "0",
+    "0", "0",
+    "0", "0",
+    "0", "0",
+    "0", "0",
+    "0", "0" };
 
 const char *Mode3[] = { "COMBINED", "TEXEL0",
-"TEXEL1", "PRIMITIVE",
-"SHADE", "ENVIORNMENT",
-"1", "0" };
+    "TEXEL1", "PRIMITIVE",
+    "SHADE", "ENVIORNMENT",
+    "1", "0" };
 
 const char *Alpha0[] = { "COMBINED", "TEXEL0",
-"TEXEL1", "PRIMITIVE",
-"SHADE", "ENVIORNMENT",
-"1", "0" };
+    "TEXEL1", "PRIMITIVE",
+    "SHADE", "ENVIORNMENT",
+    "1", "0" };
 
 #define Alpha1 Alpha0
 const char *Alpha2[] = { "LOD_FRACTION", "TEXEL0",
-"TEXEL1", "PRIMITIVE",
-"SHADE", "ENVIORNMENT",
-"PRIM_LODFRAC", "0" };
+    "TEXEL1", "PRIMITIVE",
+    "SHADE", "ENVIORNMENT",
+    "PRIM_LODFRAC", "0" };
 #define Alpha3 Alpha0
 
 const char *FBLa[] = { "G_BL_CLR_IN", "G_BL_CLR_MEM", "G_BL_CLR_BL", "G_BL_CLR_FOG" };
@@ -144,8 +144,8 @@ const char *str_tlut[] = { "TT_NONE", "TT_UNKNOWN", "TT_RGBA_16", "TT_IA_16" };
 const char *str_dither[] = { "Pattern", "~Pattern", "Noise", "None" };
 
 const char *CIStatus[] = { "ci_main", "ci_zimg", "ci_unknown", "ci_useless",
-"ci_old_copy", "ci_copy", "ci_copy_self",
-"ci_zcopy", "ci_aux", "ci_aux_copy" };
+    "ci_old_copy", "ci_copy", "ci_copy_self",
+    "ci_zcopy", "ci_aux", "ci_aux_copy" };
 
 //static variables
 
@@ -394,10 +394,10 @@ static void DrawPartFrameBufferToScreen()
 }
 
 #define RGBA16TO32(color) \
-  ((color&1)?0xFF:0) | \
-  ((uint32_t)((float)((color&0xF800) >> 11) / 31.0f * 255.0f) << 24) | \
-  ((uint32_t)((float)((color&0x07C0) >> 6) / 31.0f * 255.0f) << 16) | \
-  ((uint32_t)((float)((color&0x003E) >> 1) / 31.0f * 255.0f) << 8)
+    ((color&1)?0xFF:0) | \
+    ((uint32_t)((float)((color&0xF800) >> 11) / 31.0f * 255.0f) << 24) | \
+    ((uint32_t)((float)((color&0x07C0) >> 6) / 31.0f * 255.0f) << 16) | \
+    ((uint32_t)((float)((color&0x003E) >> 1) / 31.0f * 255.0f) << 8)
 
 static void copyWhiteToRDRAM()
 {
@@ -729,7 +729,7 @@ EXPORT void CALL ProcessDList(void)
                 rdp.pc[rdp.pc_i] = (a + 8) & BMASK;
 
 #ifdef PERFORMANCE
-                perf_cur = wxDateTime::UNow();
+                perf_cur = CDateTime().SetToNow().Value();
 #endif
                 // Process this instruction
                 gfx_instruction[g_settings->ucode][rdp.cmd0 >> 24]();
@@ -748,7 +748,7 @@ EXPORT void CALL ProcessDList(void)
                 }
 
 #ifdef PERFORMANCE
-                perf_next = wxDateTime::UNow();
+                perf_next = CDateTime().SetToNow().Value();
                 sprintf(out_buf, "perf %08lx: %016I64d", a - 8, (perf_next - perf_cur).Format(_T("%l")).mb_str());
                 rdp_log << out_buf;
 #endif
@@ -1557,14 +1557,14 @@ static void rdp_setprimdepth()
 static void rdp_setothermode()
 {
 #define F3DEX2_SETOTHERMODE(cmd,sft,len,data) { \
-  rdp.cmd0 = (uint32_t)((cmd<<24) | ((32-(sft)-(len))<<8) | (((len)-1))); \
-  rdp.cmd1 = (uint32_t)(data); \
-  gfx_instruction[g_settings->ucode][cmd] (); \
+    rdp.cmd0 = (uint32_t)((cmd<<24) | ((32-(sft)-(len))<<8) | (((len)-1))); \
+    rdp.cmd1 = (uint32_t)(data); \
+    gfx_instruction[g_settings->ucode][cmd] (); \
 }
 #define SETOTHERMODE(cmd,sft,len,data) { \
-  rdp.cmd0 = (uint32_t)((cmd<<24) | ((sft)<<8) | (len)); \
-  rdp.cmd1 = (uint32_t)data; \
-  gfx_instruction[g_settings->ucode][cmd] (); \
+    rdp.cmd0 = (uint32_t)((cmd<<24) | ((sft)<<8) | (len)); \
+    rdp.cmd1 = (uint32_t)data; \
+    gfx_instruction[g_settings->ucode][cmd] (); \
 }
 
     WriteTrace(TraceRDP, TraceDebug, "rdp_setothermode");
@@ -2020,7 +2020,7 @@ static inline void loadTile(uint32_t *src, uint32_t *dst, int width, int height,
             do
             {
                 v16 = __ROL__(v16, 8);
-                *(uint8_t *)v7 = v16;
+                *(uint8_t *)v7 = (v16  & 0xFF);
                 v7 = (uint32_t *)((char *)v7 + 1);
                 --v15;
             } while (v15);
@@ -2048,7 +2048,7 @@ static inline void loadTile(uint32_t *src, uint32_t *dst, int width, int height,
                 do
                 {
                     v20 = __ROL__(v20, 8);
-                    *(uint8_t *)v7 = v20;
+                    *(uint8_t *)v7 = (v20 & 0xFF);
                     v7 = (uint32_t *)((char *)v7 + 1);
                     --v19;
                 } while (v19);
@@ -4097,54 +4097,98 @@ void CALL ProcessRDPList(void)
 #endif
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
-    uint32_t i;
-    uint32_t cmd, length, cmd_length;
-    rdp_cmd_ptr = 0;
-    rdp_cmd_cur = 0;
+    no_dlist = false;
+    update_screen_count = 0;
+    ChangeSize();
+
+    // Switch to fullscreen?
+    if (to_fullscreen)
+        GoToFullScreen();
+
+    //* Set states *//
+    if (g_settings->swapmode > 0)
+        SwapOK = TRUE;
+    rdp.updatescreen = 1;
+
+    rdp.tri_n = 0;  // 0 triangles so far this frame
+    rdp.debug_n = 0;
+
+    rdp.model_i = 0; // 0 matrices so far in stack
+    //stack_size can be less then 32! Important for Silicon Vally. Thanks Orkin!
+    rdp.model_stack_size = minval(32, (*(uint32_t*)(gfx.DMEM + 0x0FE4)) >> 6);
+    if (rdp.model_stack_size == 0)
+        rdp.model_stack_size = 32;
+    rdp.Persp_en = TRUE;
+    rdp.fb_drawn = rdp.fb_drawn_front = FALSE;
+    rdp.update = 0x7FFFFFFF;  // All but clear cache
+    rdp.geom_mode = 0;
+    rdp.acmp = 0;
+    rdp.maincimg[1] = rdp.maincimg[0];
+    rdp.skip_drawing = FALSE;
+    rdp.s2dex_tex_loaded = FALSE;
+    rdp.bg_image_height = 0xFFFF;
+    fbreads_front = fbreads_back = 0;
+    rdp.fog_multiplier = rdp.fog_offset = 0;
+    rdp.zsrc = 0;
+    if (rdp.vi_org_reg != *gfx.VI_ORIGIN_REG)
+        rdp.tlut_mode = 0; //is it correct?
+    rdp.scissor_set = FALSE;
+    ucode5_texshiftaddr = ucode5_texshiftcount = 0;
+    cpu_fb_write = FALSE;
+    cpu_fb_read_called = FALSE;
+    cpu_fb_write_called = FALSE;
+    cpu_fb_ignore = FALSE;
+    d_ul_x = 0xffff;
+    d_ul_y = 0xffff;
+    d_lr_x = 0;
+    d_lr_y = 0;
+    depth_buffer_fog = TRUE;
+
+    const uint32_t length = dp_end - dp_current;
+
+    dp_status &= ~0x0002;
 
     if (dp_end <= dp_current) return;
-    length = dp_end - dp_current;
+
+    rdp.LLE = TRUE;
 
     // load command data
-    for (i = 0; i < length; i += 4)
+    for (uint32_t i = 0; i < length; i += 4)
     {
-        rdp_cmd_data[rdp_cmd_ptr++] = READ_RDP_DATA(dp_current + i);
-        if (rdp_cmd_ptr >= 0x1000)
-        {
-            WriteTrace(TraceRDP, TraceDebug, "rdp_process_list: rdp_cmd_ptr overflow %x %x --> %x", length, dp_current, dp_end);
-        }
+        rdp_cmd_data[rdp_cmd_ptr] = READ_RDP_DATA(dp_current + i);
+        rdp_cmd_ptr = (rdp_cmd_ptr + 1) & maxCMDMask;
     }
 
-    dp_current = dp_end;
+    bool setZero = true;
 
-    cmd = (rdp_cmd_data[0] >> 24) & 0x3f;
-    cmd_length = (rdp_cmd_ptr + 1) * 4;
+    while (rdp_cmd_cur != rdp_cmd_ptr) {
+        uint32_t cmd = (rdp_cmd_data[rdp_cmd_cur] >> 24) & 0x3f;
 
-    // check if more data is needed
-    if (cmd_length < rdp_command_length[cmd])
-        return;
-    rdp.LLE = TRUE;
-    while (rdp_cmd_cur < rdp_cmd_ptr)
-    {
-        cmd = (rdp_cmd_data[rdp_cmd_cur] >> 24) & 0x3f;
+        if ((((rdp_cmd_ptr - rdp_cmd_cur)&maxCMDMask) * 4) < rdp_command_length[cmd]) {
+            setZero = false;
+            break;
+        }
 
-        if (((rdp_cmd_ptr - rdp_cmd_cur) * 4) < rdp_command_length[cmd])
-            return;
+        if (rdp_cmd_cur + rdp_command_length[cmd] / 4 > MAXCMD)
+            ::memcpy(rdp_cmd_data + MAXCMD, rdp_cmd_data, rdp_command_length[cmd] - (MAXCMD - rdp_cmd_cur) * 4);
 
         // execute the command
         rdp.cmd0 = rdp_cmd_data[rdp_cmd_cur + 0];
         rdp.cmd1 = rdp_cmd_data[rdp_cmd_cur + 1];
         rdp.cmd2 = rdp_cmd_data[rdp_cmd_cur + 2];
         rdp.cmd3 = rdp_cmd_data[rdp_cmd_cur + 3];
+        //RSP.cmd = cmd;
         rdp_command_table[cmd]();
 
-        rdp_cmd_cur += rdp_command_length[cmd] / 4;
-    };
+        rdp_cmd_cur = (rdp_cmd_cur + rdp_command_length[cmd] / 4) & maxCMDMask;
+    }
+
+    if (setZero) {
+        rdp_cmd_ptr = 0;
+        rdp_cmd_cur = 0;
+    }
+
     rdp.LLE = FALSE;
 
-    dp_start = dp_end;
-
-    dp_status &= ~0x0002;
-
-    //}
+    dp_start = dp_current = dp_end;
 }

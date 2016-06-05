@@ -11,48 +11,56 @@
 #include "stdafx.h"
 #include "x86CodeLog.h"
 #include <Common/path.h>
-#include <Windows.h>
+#include <Common/Platform.h>
 
-static HANDLE hCPULogFile = NULL;
+static CLog * g_CPULogFile = NULL;
 bool bX86Logging = false;
 
-void x86_Log_Message (const char * Message, ...)
+void x86_Log_Message(const char * strFormat, ...)
 {
-    DWORD dwWritten;
-    char Msg[400];
-
-    va_list ap;
-    va_start( ap, Message );
-    vsprintf( Msg, Message, ap );
-    va_end( ap );
-
-    strcat(Msg,"\r\n");
-
-    WriteFile( hCPULogFile,Msg,strlen(Msg),&dwWritten,NULL );
+    va_list args;
+    va_start(args, strFormat);
+    size_t nlen = _vscprintf(strFormat, args) + 3;
+    char * buffer = (char *)alloca(nlen * sizeof(char));
+    if (buffer != NULL)
+    {
+        buffer[nlen - 1] = 0;
+        vsprintf(buffer, strFormat, args);
+        strcat(buffer, "\r\n");
+        g_CPULogFile->Log(buffer);
+    }
+    va_end(args);
 }
 
 void Start_x86_Log (void)
 {
-    CPath LogFileName(CPath::MODULE_DIRECTORY);
-    LogFileName.AppendDirectory("Logs");
-    LogFileName.SetNameExtension("CPUoutput.log");
-
-    if (hCPULogFile) { Stop_x86_Log(); }
-    hCPULogFile = CreateFile(LogFileName,GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE,NULL,
-        CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
-    if (hCPULogFile)
+    CPath LogFileName(g_Settings->LoadStringVal(Directory_Log).c_str(), "CPUoutput.log");
+    if (g_CPULogFile != NULL)
     {
-        bX86Logging = true;
-        SetFilePointer(hCPULogFile,0,NULL,FILE_BEGIN);
+        Stop_x86_Log();
+    }
+    g_CPULogFile = new CLog();
+    if (g_CPULogFile)
+    {
+        if (g_CPULogFile->Open(LogFileName))
+        {
+            g_CPULogFile->SetMaxFileSize(300 * CLog::MB);
+            bX86Logging = true;
+        }
+        else
+        {
+            delete g_CPULogFile;
+            g_CPULogFile = NULL;
+        }
     }
 }
 
 void Stop_x86_Log (void)
 {
-    if (hCPULogFile)
+    bX86Logging = false;
+    if (g_CPULogFile != NULL)
     {
-        CloseHandle(hCPULogFile);
-        hCPULogFile = NULL;
-        bX86Logging = false;
+        delete g_CPULogFile;
+        g_CPULogFile = NULL;
     }
 }

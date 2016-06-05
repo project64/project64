@@ -12,6 +12,8 @@ enum TraceModuleGlide64
     TraceGlitch,
     TraceRDP,
     TraceTLUT,
+    TracePNG,
+    TraceOGLWrapper,
     MaxTraceModuleGlide64,
 };
 

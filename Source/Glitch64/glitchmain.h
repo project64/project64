@@ -17,7 +17,9 @@ extern int dumping;
 
 typedef struct _wrapper_config
 {
+#ifndef ANDROID
     int res;
+#endif
     int fbo;
     int anisofilter;
     int vram_size;
@@ -44,9 +46,21 @@ extern int buffer_cleared; // mark that the buffer has been cleared, used to che
 
 #ifdef _WIN32
 #include <windows.h>
+typedef const char * (WINAPI * PFNWGLGETEXTENSIONSSTRINGARBPROC)(HDC hdc);
+#else
+#include <stdio.h>
+#endif
+
+#if defined(__ANDROID__) || defined(ANDROID)
+#include "OGLESwrappers.h"
+#else
+#include "opengl.h"
+
 extern "C" {
-#include <SDL_opengl.h>
+#ifndef GL_VERSION_1_3
     extern PFNGLACTIVETEXTUREARBPROC glActiveTextureARB;
+    extern PFNGLMULTITEXCOORD2FARBPROC glMultiTexCoord2fARB;
+#endif
     extern PFNGLATTACHOBJECTARBPROC glAttachObjectARB;
     extern PFNGLBINDFRAMEBUFFEREXTPROC glBindFramebufferEXT;
     extern PFNGLBINDRENDERBUFFEREXTPROC glBindRenderbufferEXT;
@@ -66,7 +80,6 @@ extern "C" {
     extern PFNGLGETOBJECTPARAMETERIVARBPROC glGetObjectParameterivARB;
     extern PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocationARB;
     extern PFNGLLINKPROGRAMARBPROC glLinkProgramARB;
-    extern PFNGLMULTITEXCOORD2FARBPROC glMultiTexCoord2fARB;
     extern PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT;
     extern PFNGLSECONDARYCOLOR3FPROC glSecondaryColor3f;
     extern PFNGLSHADERSOURCEARBPROC glShaderSourceARB;
@@ -74,14 +87,10 @@ extern "C" {
     extern PFNGLUNIFORM1IARBPROC glUniform1iARB;
     extern PFNGLUNIFORM4FARBPROC glUniform4fARB;
     extern PFNGLUSEPROGRAMOBJECTARBPROC glUseProgramObjectARB;
-    typedef const char * (WINAPI * PFNWGLGETEXTENSIONSSTRINGARBPROC) (HDC hdc);
+    extern PFNGLGETHANDLEARBPROC glGetHandleARB;
 }
-#else
-#include <stdio.h>
-//#define printf(...)
-#define GL_GLEXT_PROTOTYPES
-#include <SDL_opengl.h>
-#endif // _WIN32
+#endif
+
 #include "glide.h"
 
 void init_geometry();
@@ -106,6 +115,7 @@ extern PFNGLCREATEPROGRAMOBJECTARBPROC glCreateProgramObjectARB;
 extern PFNGLATTACHOBJECTARBPROC glAttachObjectARB;
 extern PFNGLLINKPROGRAMARBPROC glLinkProgramARB;
 extern PFNGLUSEPROGRAMOBJECTARBPROC glUseProgramObjectARB;
+extern PFNGLGETHANDLEARBPROC glGetHandleARB;
 extern PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocationARB;
 extern PFNGLUNIFORM1IARBPROC glUniform1iARB;
 extern PFNGLUNIFORM4IARBPROC glUniform4iARB;
@@ -116,10 +126,21 @@ extern PFNGLGETINFOLOGARBPROC glGetInfoLogARB;
 extern PFNGLGETOBJECTPARAMETERIVARBPROC glGetObjectParameterivARB;
 extern PFNGLSECONDARYCOLOR3FPROC glSecondaryColor3f;
 #endif
+void check_compile(GLuint shader);
+void check_link(GLuint program);
+void vbo_enable();
+void vbo_disable();
+
+//Vertex Attribute Locations
+#define POSITION_ATTR 0
+#define COLOUR_ATTR 1
+#define TEXCOORD_0_ATTR 2
+#define TEXCOORD_1_ATTR 3
+#define FOG_ATTR 4
 
 extern int w_buffer_mode;
 extern int nbTextureUnits;
-extern int width, height, widtho, heighto;
+extern int g_width, g_height, widtho, heighto;
 extern int tex0_width, tex0_height, tex1_width, tex1_height;
 extern float texture_env_color[4];
 extern int fog_enabled;
@@ -153,13 +174,20 @@ void free_combiners();
 void compile_shader();
 void set_lambda();
 void set_copy_shader();
+void disable_textureSizes();
 
 // config functions
 
-//FX_ENTRY void FX_CALL grConfigWrapperExt(HINSTANCE instance, HWND hwnd);
-FX_ENTRY void FX_CALL grConfigWrapperExt(FxI32, FxI32, FxBool, FxBool);
+FX_ENTRY void FX_CALL grConfigWrapperExt(
+#ifndef ANDROID
+    FxI32, /* resolution parameter not supported on Android build */
+#endif
+    FxI32,
+    FxBool,
+    FxBool
+);
 FX_ENTRY GrScreenResolution_t FX_CALL grWrapperFullScreenResolutionExt(FxU32*, FxU32*);
-FX_ENTRY char ** FX_CALL grQueryResolutionsExt(FxI32*);
+FX_ENTRY char ** FX_CALL grQueryResolutionsExt(int32_t*);
 FX_ENTRY FxBool FX_CALL grKeyPressedExt(FxU32 key);
 FX_ENTRY void FX_CALL grGetGammaTableExt(FxU32, FxU32*, FxU32*, FxU32*);
 
@@ -173,7 +201,7 @@ int getFullScreenHeight();
 #define GR_FBCOPY_BUFFER_BACK 0
 #define GR_FBCOPY_BUFFER_FRONT 1
 FX_ENTRY void FX_CALL grFramebufferCopyExt(int x, int y, int w, int h,
-    int buffer_from, int buffer_to, int mode);
+                                           int buffer_from, int buffer_to, int mode);
 
 // COMBINE extension
 
@@ -209,85 +237,39 @@ typedef FxU32 GrCombineMode_t;
 #define GR_CMBX_TMU_CCOLOR                0x11
 
 FX_ENTRY void FX_CALL
-grColorCombineExt(GrCCUColor_t a, GrCombineMode_t a_mode,
-GrCCUColor_t b, GrCombineMode_t b_mode,
-GrCCUColor_t c, FxBool c_invert,
-GrCCUColor_t d, FxBool d_invert,
-FxU32 shift, FxBool invert);
+    grColorCombineExt(GrCCUColor_t a, GrCombineMode_t a_mode,
+    GrCCUColor_t b, GrCombineMode_t b_mode,
+    GrCCUColor_t c, FxBool c_invert,
+    GrCCUColor_t d, FxBool d_invert,
+    FxU32 shift, FxBool invert);
 
 FX_ENTRY void FX_CALL
-grAlphaCombineExt(GrACUColor_t a, GrCombineMode_t a_mode,
-GrACUColor_t b, GrCombineMode_t b_mode,
-GrACUColor_t c, FxBool c_invert,
-GrACUColor_t d, FxBool d_invert,
-FxU32 shift, FxBool invert);
+    grAlphaCombineExt(GrACUColor_t a, GrCombineMode_t a_mode,
+    GrACUColor_t b, GrCombineMode_t b_mode,
+    GrACUColor_t c, FxBool c_invert,
+    GrACUColor_t d, FxBool d_invert,
+    FxU32 shift, FxBool invert);
 
 FX_ENTRY void FX_CALL
-grTexColorCombineExt(GrChipID_t       tmu,
-GrTCCUColor_t a, GrCombineMode_t a_mode,
-GrTCCUColor_t b, GrCombineMode_t b_mode,
-GrTCCUColor_t c, FxBool c_invert,
-GrTCCUColor_t d, FxBool d_invert,
-FxU32 shift, FxBool invert);
+    grTexColorCombineExt(GrChipID_t       tmu,
+    GrTCCUColor_t a, GrCombineMode_t a_mode,
+    GrTCCUColor_t b, GrCombineMode_t b_mode,
+    GrTCCUColor_t c, FxBool c_invert,
+    GrTCCUColor_t d, FxBool d_invert,
+    FxU32 shift, FxBool invert);
 
 FX_ENTRY void FX_CALL
-grTexAlphaCombineExt(GrChipID_t       tmu,
-GrTACUColor_t a, GrCombineMode_t a_mode,
-GrTACUColor_t b, GrCombineMode_t b_mode,
-GrTACUColor_t c, FxBool c_invert,
-GrTACUColor_t d, FxBool d_invert,
-FxU32 shift, FxBool invert);
+    grTexAlphaCombineExt(GrChipID_t       tmu,
+    GrTACUColor_t a, GrCombineMode_t a_mode,
+    GrTACUColor_t b, GrCombineMode_t b_mode,
+    GrTACUColor_t c, FxBool c_invert,
+    GrTACUColor_t d, FxBool d_invert,
+    FxU32 shift, FxBool invert);
 
 FX_ENTRY void FX_CALL
-grConstantColorValueExt(GrChipID_t    tmu,
-GrColor_t     value);
+    grConstantColorValueExt(GrChipID_t    tmu,
+    GrColor_t     value);
 
-static void CHECK_FRAMEBUFFER_STATUS(void)
-{
-    GLenum status;
-    status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
-
-    WriteTrace(TraceGlitch, TraceDebug, "status: %X", status);
-    switch (status)
-    {
-    case GL_FRAMEBUFFER_COMPLETE_EXT:
-        WriteTrace(TraceGlitch, TraceDebug, "framebuffer complete!");
-        break;
-    case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
-        WriteTrace(TraceGlitch, TraceWarning, "framebuffer GL_FRAMEBUFFER_UNSUPPORTED_EXT");
-        /* you gotta choose different formats */
-        /*assert(0);*/
-        break;
-    case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
-        WriteTrace(TraceGlitch, TraceWarning, "framebuffer INCOMPLETE_ATTACHMENT");
-        break;
-    case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
-        WriteTrace(TraceGlitch, TraceWarning, "framebuffer FRAMEBUFFER_MISSING_ATTACHMENT");
-        break;
-    case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
-        WriteTrace(TraceGlitch, TraceWarning, "framebuffer FRAMEBUFFER_DIMENSIONS");
-        break;
-        /*case GL_FRAMEBUFFER_INCOMPLETE_DUPLICATE_ATTACHMENT_EXT:
-          WriteTrace(TraceGlitch, TraceWarning, "framebuffer INCOMPLETE_DUPLICATE_ATTACHMENT");
-          break;*/
-    case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
-        WriteTrace(TraceGlitch, TraceWarning, "framebuffer INCOMPLETE_FORMATS");
-        break;
-    case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
-        WriteTrace(TraceGlitch, TraceWarning, "framebuffer INCOMPLETE_DRAW_BUFFER");
-        break;
-    case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
-        WriteTrace(TraceGlitch, TraceWarning, "framebuffer INCOMPLETE_READ_BUFFER");
-        break;
-    case GL_FRAMEBUFFER_BINDING_EXT:
-        WriteTrace(TraceGlitch, TraceWarning, "framebuffer BINDING_EXT");
-        break;
-    default:
-        WriteTrace(TraceGlitch, TraceError, "Unhandled status: %X", status);
-        break;
-        /* programming error; will fail on all hardware */
-        /*assert(0);*/
-    }
-}
+void CHECK_FRAMEBUFFER_STATUS(void);
 
 #endif

@@ -13,8 +13,8 @@
 #include "SettingsPage.h"
 
 COptionsGameBrowserPage::COptionsGameBrowserPage(HWND hParent, const RECT & rcDispay) :
-m_OrderChanged(false),
-m_OrderReset(false)
+    m_OrderChanged(false),
+    m_OrderReset(false)
 {
     if (!Create(hParent, rcDispay))
     {
@@ -33,7 +33,7 @@ m_OrderReset(false)
     SetDlgItemTextW(m_hWnd, IDC_DOWN, wGS(RB_DOWN).c_str());
 
     AddModCheckBox(GetDlgItem(IDC_USE_ROMBROWSER), RomBrowser_Enabled);
-    AddModCheckBox(GetDlgItem(IDC_RECURSION), RomBrowser_Recursive);
+    AddModCheckBox(GetDlgItem(IDC_RECURSION), RomList_GameDirRecursive);
 
     m_Avaliable.Attach(GetDlgItem(IDC_AVALIABLE));
     m_Using.Attach(GetDlgItem(IDC_USING));
@@ -231,7 +231,7 @@ void COptionsGameBrowserPage::ApplySettings(bool UpdateScreen)
     }
     if (bColChanged)
     {
-        g_Settings->SaveBool(RomBrowser_ColoumnsChanged, !g_Settings->LoadBool(RomBrowser_ColoumnsChanged));
+        UISettingsSaveBool(RomBrowser_ColoumnsChanged, !UISettingsLoadBool(RomBrowser_ColoumnsChanged));
     }
 
     CSettingsPageImpl<COptionsGameBrowserPage>::ApplySettings(UpdateScreen);

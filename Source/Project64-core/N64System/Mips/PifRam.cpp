@@ -118,6 +118,7 @@ void CPifRam::PifRamRead()
                 CurPos = 0x40;
             }
             break;
+        case 0xFD: CurPos = 0x40; break;
         case 0xFE: CurPos = 0x40; break;
         case 0xFF: break;
         case 0xB4: case 0x56: case 0xB8: break; /* ??? */
@@ -143,7 +144,7 @@ void CPifRam::PifRamRead()
             }
             else
             {
-                if (bShowPifRamErrors())
+                if (CurPos != 0x27 && bShowPifRamErrors())
                 {
                     g_Notify->DisplayError(stdstr_f("Unknown Command in PifRamRead(%X)", m_PifRam[CurPos]).c_str());
                 }
@@ -227,6 +228,7 @@ void CPifRam::PifRamWrite()
                 CurPos = 0x40;
             }
             break;
+        case 0xFD: CurPos = 0x40; break;
         case 0xFE: CurPos = 0x40; break;
         case 0xFF: break;
         case 0xB4: case 0x56: case 0xB8: break; /* ??? */
@@ -263,7 +265,7 @@ void CPifRam::PifRamWrite()
             }
             else
             {
-                if (bShowPifRamErrors())
+                if (CurPos != 0x27 && bShowPifRamErrors())
                 {
                     g_Notify->DisplayError(stdstr_f("Unknown Command in PifRamWrite(%X)", m_PifRam[CurPos]).c_str());
                 }

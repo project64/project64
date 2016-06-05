@@ -22,12 +22,6 @@
 #include <stdio.h>
 #include <Common/MemoryManagement.h>
 
-#ifdef _WIN32
-#include <Windows.h>
-#else
-#include <sys/time.h>
-#endif
-
 uint32_t RegModValue;
 
 uint8_t * CMipsMemoryVM::m_Reserve1 = NULL;
@@ -474,7 +468,7 @@ bool CMipsMemoryVM::SW_VAddr(uint32_t VAddr, uint32_t Value)
 {
     if (VAddr >= 0xA3F00000 && VAddr < 0xC0000000)
     {
-        if (VAddr < 0xA4000000 || VAddr >= 0xA4002000)
+        if ((VAddr & 0xFFFFE000ul) != 0xA4000000ul) // !(A4000000 <= addr < A4002000)
         {
             VAddr &= 0x1FFFFFFF;
             SW_NonMemory(VAddr, Value);
@@ -5575,16 +5569,16 @@ void CMipsMemoryVM::Write32CartridgeDomain2Address2(void)
         tmp[1] = 0xFF & (m_MemLookupValue.UW[0] >> 8);
         tmp[2] = 0xFF & (m_MemLookupValue.UW[0] >> 16);
         tmp[3] = 0xFF & (m_MemLookupValue.UW[0] >> 24);
-        g_MMU->DmaFromSram(tmp, (m_MemLookupAddress & 0x1FFFFFFF) - 0x08000000, 4);
+        g_MMU->DmaToSram(tmp, (m_MemLookupAddress & 0x1FFFFFFF) - 0x08000000, 4);
         return;
     }
-    if ((m_MemLookupAddress & 0x1FFFFFFF) != 0x08010000)
+    /*if ((m_MemLookupAddress & 0x1FFFFFFF) != 0x08010000)
     {
         if (bHaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
-    }
+    }*/
     if (g_System->m_SaveUsing == SaveChip_Auto)
     {
         g_System->m_SaveUsing = SaveChip_FlashRam;

@@ -2,14 +2,14 @@
 #include <stdlib.h>
 
 CIniFileBase::CIniFileBase(CFileBase & FileObject, const char * FileName) :
-m_lastSectionSearch(0),
-m_CurrentSectionFilePos(0),
-m_LineFeed("\r\n"),
-m_ReadOnly(true),
-m_InstantFlush(true),
-m_File(FileObject),
-m_FileName(FileName),
-m_CurrentSectionDirty(false)
+    m_lastSectionSearch(0),
+    m_CurrentSectionFilePos(0),
+    m_LineFeed("\r\n"),
+    m_ReadOnly(true),
+    m_InstantFlush(true),
+    m_File(FileObject),
+    m_FileName(FileName),
+    m_CurrentSectionDirty(false)
 {
 }
 
@@ -734,6 +734,26 @@ void CIniFileBase::SaveNumber(const char * lpSectionName, const char * lpKeyName
 {
     //translate the string to an ascii version and save as text
     SaveString(lpSectionName, lpKeyName, stdstr_f("%d", Value).c_str());
+}
+
+bool CIniFileBase::EntryExists(const char * lpSectionName, const char * lpKeyName)
+{
+    CGuard Guard(m_CS);
+
+    if (lpSectionName == NULL || strlen(lpSectionName) == 0)
+    {
+        lpSectionName = "default";
+    }
+
+    if (m_File.IsOpen() && MoveToSectionNameData(lpSectionName, true))
+    {
+        KeyValueList::iterator iter = m_CurrentSectionData.find(lpKeyName);
+        if (iter != m_CurrentSectionData.end())
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void CIniFileBase::FlushChanges(void)

@@ -10,6 +10,10 @@
 ****************************************************************************/
 #pragma once
 
+/* vsprintf() needs to have both of these included. */
+#include <stdio.h>
+#include <stdarg.h>
+
 #define CPU_Message(Message,... )  if (bX86Logging) { x86_Log_Message(Message,## __VA_ARGS__); }
 
 void x86_Log_Message (const char * Message, ...);

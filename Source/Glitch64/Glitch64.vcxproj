@@ -33,7 +33,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(Root)Source/3rdParty/sdl/include;inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader />
     </ClCompile>
     <Lib>
@@ -54,11 +54,18 @@
     <ClCompile Include="OGLEStextures.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="OGLESwrappers.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="OGLgeometry.cpp" />
     <ClCompile Include="OGLglitchmain.cpp" />
     <ClCompile Include="OGLtextures.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glitchmain.h" />
+    <ClInclude Include="OGLESwrappers.h">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="opengl.h" />
   </ItemGroup>
 </Project>

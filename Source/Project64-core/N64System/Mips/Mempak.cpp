@@ -15,29 +15,37 @@
 #include <Common/path.h>
 
 uint8_t Mempaks[4][128 * 256]; /* [CONTROLLERS][PAGES][BYTES_PER_PAGE] */
-CPath MempakNames[4];
+CFile MempakHandle[4];
 
-void Mempak::Load(int32_t Control)
+void Mempak::LoadMempak(int32_t Control)
 {
     stdstr MempakName;
-
     MempakName.Format("%s_Cont_%d", g_Settings->LoadStringVal(Game_GameName).c_str(), Control + 1);
 
-    MempakNames[Control] = CPath(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.mpk",MempakName.c_str()).c_str());
-    if (!MempakNames[Control].DirectoryExists())
+    CPath MempakPath(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.mpk",MempakName.c_str()).c_str());
+
+    if (g_Settings->LoadBool(Setting_UniqueSaveDir))
     {
-        MempakNames[Control].DirectoryCreate();
+        MempakPath.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
+    }
+    if (!MempakPath.DirectoryExists())
+    {
+        MempakPath.DirectoryCreate();
     }
 
-    if (MempakNames[Control].Exists())
+    bool formatMempak = !MempakPath.Exists();
+
+    MempakHandle[Control].Open(MempakPath, CFileBase::modeReadWrite | CFileBase::modeNoTruncate | CFileBase::modeCreate);
+    MempakHandle[Control].SeekToBegin();
+
+    if (formatMempak)
     {
-        FILE *mempak = fopen(MempakNames[Control], "rb");
-        fread(Mempaks[Control], 1, 0x8000, mempak);
-        fclose(mempak);
+        Mempak::Format(Control);
+        MempakHandle[Control].Write(Mempaks[Control], 0x8000);
     }
     else
     {
-        Mempak::Format(Control);
+        MempakHandle[Control].Read(Mempaks[Control], 0x8000);
     }
 }
 
@@ -109,6 +117,11 @@ void Mempak::ReadFrom(int32_t Control, uint32_t address, uint8_t * data)
 {
     if (address < 0x8000)
     {
+        if (!MempakHandle[Control].IsOpen())
+        {
+            LoadMempak(Control);
+        }
+
         memcpy(data, &Mempaks[Control][address], 0x20);
     }
     else
@@ -122,11 +135,16 @@ void Mempak::WriteTo(int32_t Control, uint32_t address, uint8_t * data)
 {
     if (address < 0x8000)
     {
+        if (!MempakHandle[Control].IsOpen())
+        {
+            LoadMempak(Control);
+        }
+
         memcpy(&Mempaks[Control][address], data, 0x20);
 
-        FILE* mempak = fopen(MempakNames[Control], "wb");
-        fwrite(Mempaks[Control], 1, 0x8000, mempak);
-        fclose(mempak);
+        MempakHandle[Control].Seek(address, CFile::begin);
+        MempakHandle[Control].Write(data, 0x20);
+        MempakHandle[Control].Flush();
     }
     else
     {

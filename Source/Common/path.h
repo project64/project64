@@ -17,18 +17,30 @@ class CPath
 public:
 
     enum DIR_CURRENT_DIRECTORY   { CURRENT_DIRECTORY = 1 };
+#ifdef _WIN32
     enum DIR_MODULE_DIRECTORY { MODULE_DIRECTORY = 2 };
     enum DIR_MODULE_FILE { MODULE_FILE = 3 };
+#endif
 
-    enum { _A_ALLFILES = 0xFFFF };    /* Search Include all files */
+    enum 
+    {
+        FIND_ATTRIBUTE_ALLFILES = 0xFFFF,  // Search Include all files
+        FIND_ATTRIBUTE_FILES    = 0x0000,  // File can be read or written to without restriction
+        FIND_ATTRIBUTE_SUBDIR   = 0x0010,  // Subdirectories
+    };    
 
     //Attributes
 private:
 
     std::string	m_strPath;
-    uint32_t   m_dwFindFileAttributes;
+#ifdef _WIN32
     void *	m_hFindFile;
     static void * m_hInst;
+#else
+    void * m_OpenedDir;
+    std::string m_FindWildcard;
+#endif
+    uint32_t m_dwFindFileAttributes;
 
 public:
     //Methods
@@ -44,9 +56,10 @@ public:
     CPath(const std::string& strPath, const std::string& NameExten);
 
     CPath(DIR_CURRENT_DIRECTORY sdt, const char * NameExten = NULL);
+#ifdef _WIN32
     CPath(DIR_MODULE_DIRECTORY sdt, const char * NameExten = NULL);
     CPath(DIR_MODULE_FILE sdt);
-
+#endif
     virtual ~CPath();
 
     //Setup & Cleanup
@@ -63,8 +76,10 @@ public:
     operator const std::string &() { return m_strPath; }
 
     //Get path components
+#ifdef _WIN32
     void   GetDriveDirectory(std::string & rDriveDirectory) const;
     std::string GetDriveDirectory(void) const;
+#endif
     void   GetDirectory(std::string& rDirectory) const;
     std::string GetDirectory(void) const;
     void   GetName(std::string& rName) const;
@@ -76,14 +91,20 @@ public:
     void   GetLastDirectory(std::string& rDirectory) const;
     std::string GetLastDirectory(void) const;
     void GetFullyQualified(std::string& rFullyQualified) const;
+#ifdef _WIN32
 	void GetComponents(std::string* pDrive = NULL, std::string* pDirectory = NULL, std::string* pName = NULL, std::string* pExtension = NULL) const;
+#else
+    void GetComponents(std::string* pDirectory = NULL, std::string* pName = NULL, std::string* pExtension = NULL) const;
+#endif
     //Get other state
     bool IsEmpty() const { return m_strPath.empty(); }
     bool IsRelative() const;
 
     //Set path components
+#ifdef _WIN32
     void SetDrive(char chDrive);
     void SetDriveDirectory(const char * lpszDriveDirectory);
+#endif
     void SetDirectory(const char * lpszDirectory, bool bEnsureAbsolute = false);
     void SetName(const char * lpszName);
     void SetName(int iName);
@@ -92,14 +113,20 @@ public:
     void SetExtension(int iExtension);
     void AppendDirectory(const char * lpszSubDirectory);
     void UpDirectory(std::string* pLastDirectory = NULL);
+#ifdef _WIN32
 	void SetComponents(const char * lpszDrive, const char * lpszDirectory, const char * lpszName, const char * lpszExtension);
+#else
+    void SetComponents(const char * lpszDirectory, const char * lpszName, const char * lpszExtension);
+#endif
     //Set whole path
     void Empty()		{ m_strPath.erase(); }
     void CurrentDirectory();
+#ifdef _WIN32
     void Module();
     void Module(void * hInstance);
     void ModuleDirectory();
     void ModuleDirectory(void * hInstance);
+#endif
 
     //Directory information
     bool IsDirectory() const;
@@ -123,8 +150,10 @@ public:
     bool FindNext();
 
     // Helpers
+#ifdef _WIN32
     static void SethInst(void * hInst);
     static void * GethInst();
+#endif
 
 private:
     bool AttributesMatch(uint32_t dwTargetAttributes, uint32_t dwFileAttributes);
@@ -136,4 +165,7 @@ private:
     void StripTrailingBackslash(std::string& rDirectory) const;
     void EnsureTrailingBackslash(std::string& Directory) const;
     void EnsureLeadingBackslash(std::string& Directory) const;
+#ifndef _WIN32
+    bool wildcmp(const char *wild, const char *string);
+#endif
 };

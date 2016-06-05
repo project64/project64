@@ -1681,9 +1681,11 @@ void Compile_Cop0_MF ( void ) {
 	case 4: 
 		MoveVariableToX86reg(&RSP_MfStatusCount, "RSP_MfStatusCount", x86_ECX);
 		MoveVariableToX86reg(RSPInfo.SP_STATUS_REG, "SP_STATUS_REG", x86_EAX);
-		CompConstToX86reg(x86_ECX, 10);
-		JbLabel8("label", 10);
-		MoveConstToVariable(0, &RSP_Running, "RSP_Running");
+		if (Mfc0Count != 0) {
+			CompConstToX86reg(x86_ECX, Mfc0Count);
+			JbLabel8("label", 10);
+			MoveConstToVariable(0, &RSP_Running, "RSP_Running");
+		}
 		IncX86reg(x86_ECX);
 		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 		MoveX86regToVariable(x86_ECX, &RSP_MfStatusCount, "RSP_MfStatusCount");
@@ -1700,7 +1702,7 @@ void Compile_Cop0_MF ( void ) {
 		}
 		break;
 	case 7:
-		if (AudioHle || GraphicsHle)
+		if (AudioHle || GraphicsHle || SemaphoreExit == 0)
 		{
 			MoveConstToVariable(0, &RSP_GPR[RSPOpC.rt].W, GPR_Name(RSPOpC.rt));
 		} else {
@@ -2124,7 +2126,7 @@ Boolean Compile_Vector_VMULF_MMX(void)
 	/* Do our MMX checks here */
 	if (IsMmxEnabled == FALSE)
 		return FALSE;
-	if ((RSPOpC.rs & 0x0f) >= 2 && (RSPOpC.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE)
+	if ((RSPOpC.rs & 0x0f) >= 2 && !(RSPOpC.rs & 8) && IsMmx2Enabled == FALSE)
 		return FALSE;
 
 	/* NOTE: Problem here is the lack of +/- 0x8000 rounding */
@@ -2143,7 +2145,7 @@ Boolean Compile_Vector_VMULF_MMX(void)
 			sprintf(Reg, "RSP_Vect[%i].UHW[4]", RSPOpC.rt);
 			MmxPmulhwRegToVariable(x86_MM1, &RSP_Vect[RSPOpC.rt].UHW[4], Reg);
 		}
-	} else if ((RSPOpC.rs & 0xF) >= 8) {
+	} else if (RSPOpC.rs & 8) {
 		RSP_Element2Mmx(x86_MM2);
 		MmxPmulhwRegToReg(x86_MM0, x86_MM2);
 		MmxPmulhwRegToReg(x86_MM1, x86_MM2);
@@ -2170,7 +2172,7 @@ void Compile_Vector_VMULF ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bOptimize = (RSPOpC.rs & 8) ? TRUE : FALSE;
     Boolean bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
     Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
 
@@ -2273,7 +2275,7 @@ Boolean Compile_Vector_VMUDL_MMX(void)
 			MmxPmulhuwRegToReg(x86_MM0, x86_MM2);
 			MmxPmulhuwRegToReg(x86_MM1, x86_MM3);
 		}
-	} else if ((RSPOpC.rs & 0xF) >= 8) {
+	} else if (RSPOpC.rs & 8) {
 		RSP_Element2Mmx(x86_MM2);
 		MmxPmulhuwRegToReg(x86_MM0, x86_MM2);
 		MmxPmulhuwRegToReg(x86_MM1, x86_MM2);
@@ -2298,7 +2300,7 @@ void Compile_Vector_VMUDL ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-	Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+	Boolean bOptimize = (RSPOpC.rs & 8) ? TRUE : FALSE;
 	Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
 	Boolean bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
 
@@ -2386,7 +2388,7 @@ Boolean Compile_Vector_VMUDM_MMX(void)
 		MmxPsrawImmed(x86_MM3, 15);
 		MmxPmullwRegToReg(x86_MM2, x86_MM4);
 		MmxPmullwRegToReg(x86_MM3, x86_MM5);
-	} else if ((RSPOpC.rs & 0xF) >= 8) {
+	} else if (RSPOpC.rs & 8) {
 		RSP_Element2Mmx(x86_MM4);
 
 		/* Copy the signed portion */
@@ -2439,7 +2441,7 @@ void Compile_Vector_VMUDM ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bOptimize = (RSPOpC.rs & 8) ? TRUE : FALSE;
     Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     Boolean bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
 
@@ -2526,7 +2528,7 @@ Boolean Compile_Vector_VMUDN_MMX(void)
 	/* Do our MMX checks here */
 	if (IsMmxEnabled == FALSE)
 		return FALSE;
-	if ((RSPOpC.rs & 0x0f) >= 2 && (RSPOpC.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE)
+	if ((RSPOpC.rs & 0x0f) >= 2 && !(RSPOpC.rs & 8) && IsMmx2Enabled == FALSE)
 		return FALSE;
 
 	sprintf(Reg, "RSP_Vect[%i].UHW[0]", RSPOpC.rd);
@@ -2539,7 +2541,7 @@ Boolean Compile_Vector_VMUDN_MMX(void)
 		MmxPmullwVariableToReg(x86_MM0, &RSP_Vect[RSPOpC.rt].UHW[0], Reg);
 		sprintf(Reg, "RSP_Vect[%i].UHW[4]", RSPOpC.rt);
 		MmxPmullwVariableToReg(x86_MM1, &RSP_Vect[RSPOpC.rt].UHW[4], Reg);
-	} else if ((RSPOpC.rs & 0xF) >= 8) {
+	} else if (RSPOpC.rs & 8) {
 		RSP_Element2Mmx(x86_MM2);
 		MmxPmullwRegToReg(x86_MM0, x86_MM2);
 		MmxPmullwRegToReg(x86_MM1, x86_MM2);
@@ -2564,7 +2566,7 @@ void Compile_Vector_VMUDN ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bOptimize = (RSPOpC.rs & 8) ? TRUE : FALSE;
     Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     Boolean bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
 
@@ -2630,7 +2632,7 @@ Boolean Compile_Vector_VMUDH_MMX(void)
 	/* Do our MMX checks here */
 	if (IsMmxEnabled == FALSE)
 		return FALSE;
-	if ((RSPOpC.rs & 0x0f) >= 2 && (RSPOpC.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE)
+	if ((RSPOpC.rs & 0x0f) >= 2 && !(RSPOpC.rs & 8) && IsMmx2Enabled == FALSE)
 		return FALSE;
 
 	sprintf(Reg, "RSP_Vect[%i].HW[0]", RSPOpC.rd);
@@ -2659,7 +2661,7 @@ Boolean Compile_Vector_VMUDH_MMX(void)
 			MmxPmullwRegToReg(x86_MM1, x86_MM3);
 			MmxPmulhwRegToReg(x86_MM5, x86_MM3);
 		}
-	} else if ((RSPOpC.rs & 0x0f) >= 8) {
+	} else if (RSPOpC.rs & 8) {
 		RSP_Element2Mmx(x86_MM2);
 
 		MmxPmullwRegToReg(x86_MM0, x86_MM2);
@@ -2703,7 +2705,7 @@ void Compile_Vector_VMUDH ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bOptimize = (RSPOpC.rs & 8) ? TRUE : FALSE;
     Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     Boolean bWriteToAccum = WriteToAccum(EntireAccum, CompilePC);
 
@@ -2836,7 +2838,7 @@ void Compile_Vector_VMACF ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bOptimize = (RSPOpC.rs & 8) ? TRUE : FALSE;
     Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
 
 	#ifndef CompileVmacf
@@ -2907,7 +2909,7 @@ void Compile_Vector_VMADL ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bOptimize = (RSPOpC.rs & 8) ? TRUE : FALSE;
     Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
 
 	#ifndef CompileVmadl
@@ -2976,7 +2978,7 @@ void Compile_Vector_VMADM ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bOptimize = (RSPOpC.rs & 8) ? TRUE : FALSE;
     Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
 
 	#ifndef CompileVmadm
@@ -3059,7 +3061,7 @@ void Compile_Vector_VMADN ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bOptimize = (RSPOpC.rs & 8) ? TRUE : FALSE;
     Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
 
 	#ifndef CompileVmadn
@@ -3133,7 +3135,7 @@ void Compile_Vector_VMADH ( void ) {
 	char Reg[256];
 	int count, el, del;
 
-    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bOptimize = (RSPOpC.rs & 8) ? TRUE : FALSE;
     Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
 
 	#ifndef CompileVmadh
@@ -3265,7 +3267,7 @@ Boolean Compile_Vector_VADD_MMX(void)
 	/* Do our MMX checks here */
 	if (IsMmxEnabled == FALSE)
 		return FALSE;
-	if ((RSPOpC.rs & 0x0f) >= 2 && (RSPOpC.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE)
+	if ((RSPOpC.rs & 0x0f) >= 2 && !(RSPOpC.rs & 8) && IsMmx2Enabled == FALSE)
 		return FALSE;
 
 	sprintf(Reg, "RSP_Vect[%i].UHW[0]", RSPOpC.rd);
@@ -3273,7 +3275,7 @@ Boolean Compile_Vector_VADD_MMX(void)
 	sprintf(Reg, "RSP_Vect[%i].UHW[4]", RSPOpC.rd);
 	MmxMoveQwordVariableToReg(x86_MM1, &RSP_Vect[RSPOpC.rd].UHW[4], Reg);
 
-	if ((RSPOpC.rs & 15) >= 8) {
+	if (RSPOpC.rs & 8) {
 		RSP_Element2Mmx(x86_MM2);
 		MmxPaddswRegToReg(x86_MM0, x86_MM2);
 		MmxPaddswRegToReg(x86_MM1, x86_MM2);
@@ -3310,7 +3312,7 @@ void Compile_Vector_VADD ( void ) {
 	int count, el, del;
 
     Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-    Boolean bElement = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bElement = (RSPOpC.rs & 8) ? TRUE : FALSE;
     Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
     Boolean bFlagUseage = UseRspFlags(CompilePC);
 
@@ -3387,7 +3389,7 @@ Boolean Compile_Vector_VSUB_MMX(void)
 	/* Do our MMX checks here */
 	if (IsMmxEnabled == FALSE)
 		return FALSE;
-	if ((RSPOpC.rs & 0x0f) >= 2 && (RSPOpC.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE)
+	if ((RSPOpC.rs & 0x0f) >= 2 && !(RSPOpC.rs & 8) && IsMmx2Enabled == FALSE)
 		return FALSE;
 
 	sprintf(Reg, "RSP_Vect[%i].UHW[0]", RSPOpC.rd);
@@ -3431,7 +3433,7 @@ void Compile_Vector_VSUB ( void ) {
 	int count, el, del;
 
     Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-    Boolean bOptimize = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bOptimize = (RSPOpC.rs & 8) ? TRUE : FALSE;
     Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
     Boolean bFlagUseage = UseRspFlags(CompilePC);
 
@@ -3510,7 +3512,7 @@ Boolean Compile_Vector_VABS_MMX(void)
 	/* Do our MMX checks here */
 	if (IsMmxEnabled == FALSE)
 		return FALSE;
-	if ((RSPOpC.rs & 0x0f) >= 2 && (RSPOpC.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE)
+	if ((RSPOpC.rs & 0x0f) >= 2 && !(RSPOpC.rs & 8) && IsMmx2Enabled == FALSE)
 		return FALSE;
 
 	sprintf(Reg, "RSP_Vect[%i].UHW[0]", RSPOpC.rd);
@@ -3682,7 +3684,7 @@ void Compile_Vector_VADDC ( void ) {
 
     Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
-    Boolean bElement = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bElement = (RSPOpC.rs & 8) ? TRUE : FALSE;
 
 	#ifndef CompileVaddc
 	Cheat_r4300iOpcode(RSP_Vector_VADDC,"RSP_Vector_VADDC"); return;
@@ -3747,7 +3749,7 @@ void Compile_Vector_VSUBC ( void ) {
 
     Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
     Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
-    Boolean bElement = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bElement = (RSPOpC.rs & 8) ? TRUE : FALSE;
 
 	#ifndef CompileVsubc
 	Cheat_r4300iOpcode(RSP_Vector_VSUBC,"RSP_Vector_VSUBC"); return;
@@ -4080,7 +4082,7 @@ Boolean Compile_Vector_VGE_MMX(void)
 {
 	char Reg[256];
 
-	if ((RSPOpC.rs & 0xF) >= 2 && (RSPOpC.rs & 0xF) <= 7 && IsMmx2Enabled == FALSE)
+	if ((RSPOpC.rs & 0xF) >= 2 && !(RSPOpC.rs & 8) && IsMmx2Enabled == FALSE)
 		return FALSE;
 
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
@@ -4098,19 +4100,19 @@ Boolean Compile_Vector_VGE_MMX(void)
 		MmxMoveQwordVariableToReg(x86_MM4, &RSP_Vect[RSPOpC.rt].HW[0], Reg);
 		sprintf(Reg, "RSP_Vect[%i].HW[4]", RSPOpC.rt);
 		MmxMoveQwordVariableToReg(x86_MM5, &RSP_Vect[RSPOpC.rt].HW[4], Reg);
-	} else if ((RSPOpC.rs & 0x0f) >= 8) {
+	} else if (RSPOpC.rs & 8) {
 		RSP_Element2Mmx(x86_MM4);
 	} else {
 		RSP_MultiElement2Mmx(x86_MM4, x86_MM5);
 	}
 
 	MmxCompareGreaterWordRegToReg(x86_MM2, x86_MM4);
-	MmxCompareGreaterWordRegToReg(x86_MM3, ((RSPOpC.rs & 0x0f) >= 8) ? x86_MM4 : x86_MM5);
+	MmxCompareGreaterWordRegToReg(x86_MM3, (RSPOpC.rs & 8) ? x86_MM4 : x86_MM5);
 
 	MmxPandRegToReg(x86_MM0, x86_MM2);
 	MmxPandRegToReg(x86_MM1, x86_MM3);
 	MmxPandnRegToReg(x86_MM2, x86_MM4);
-	MmxPandnRegToReg(x86_MM3, ((RSPOpC.rs & 0x0f) >= 8) ? x86_MM4 : x86_MM5);
+	MmxPandnRegToReg(x86_MM3, (RSPOpC.rs & 8) ? x86_MM4 : x86_MM5);
 
 	MmxPorRegToReg(x86_MM0, x86_MM2);
 	MmxPorRegToReg(x86_MM1, x86_MM3);
@@ -4276,7 +4278,7 @@ Boolean Compile_Vector_VAND_MMX(void)
 	/* Do our MMX checks here */
 	if (IsMmxEnabled == FALSE)
 		return FALSE;
-	if ((RSPOpC.rs & 0x0f) >= 2 && (RSPOpC.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE)
+	if ((RSPOpC.rs & 0x0f) >= 2 && !(RSPOpC.rs & 8) && IsMmx2Enabled == FALSE)
 		return FALSE;
 
 	sprintf(Reg, "RSP_Vect[%i].UHW[0]", RSPOpC.rd);
@@ -4284,7 +4286,7 @@ Boolean Compile_Vector_VAND_MMX(void)
 	sprintf(Reg, "RSP_Vect[%i].UHW[4]", RSPOpC.rd);
 	MmxMoveQwordVariableToReg(x86_MM1, &RSP_Vect[RSPOpC.rd].UHW[4], Reg);
 
-	if ((RSPOpC.rs & 0xF) >= 8) {
+	if (RSPOpC.rs & 8) {
 		RSP_Element2Mmx(x86_MM2);
 		MmxPandRegToReg(x86_MM0, x86_MM2);
 		MmxPandRegToReg(x86_MM1, x86_MM2);
@@ -4315,7 +4317,7 @@ void Compile_Vector_VAND(void)
 	char Reg[256];
 	int el, del, count;
     Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-    Boolean bElement = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bElement = (RSPOpC.rs & 8) ? TRUE : FALSE;
     Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 	#ifndef CompileVand
@@ -4370,7 +4372,7 @@ Boolean Compile_Vector_VNAND_MMX(void)
 	/* Do our MMX checks here */
 	if (IsMmxEnabled == FALSE)
 		return FALSE;
-	if ((RSPOpC.rs & 0x0f) >= 2 && (RSPOpC.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE)
+	if ((RSPOpC.rs & 0x0f) >= 2 && !(RSPOpC.rs & 8) && IsMmx2Enabled == FALSE)
 		return FALSE;
 
 	sprintf(Reg, "RSP_Vect[%i].UHW[0]", RSPOpC.rd);
@@ -4379,7 +4381,7 @@ Boolean Compile_Vector_VNAND_MMX(void)
 	MmxMoveQwordVariableToReg(x86_MM1, &RSP_Vect[RSPOpC.rd].UHW[4], Reg);
 	MmxPcmpeqwRegToReg(x86_MM7, x86_MM7);
 
-	if ((RSPOpC.rs & 0xF) >= 8) {
+	if (RSPOpC.rs & 8) {
 		RSP_Element2Mmx(x86_MM2);
 		MmxPandRegToReg(x86_MM0, x86_MM2);
 		MmxPandRegToReg(x86_MM1, x86_MM2);
@@ -4411,7 +4413,7 @@ void Compile_Vector_VNAND ( void ) {
 	char Reg[256];
 	int el, del, count;
     Boolean bWriteToDest = WriteToVectorDest(RSPOpC.sa, CompilePC);
-    Boolean bElement = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bElement = (RSPOpC.rs & 8) ? TRUE : FALSE;
     Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 #ifndef CompileVnand
@@ -4468,7 +4470,7 @@ Boolean Compile_Vector_VOR_MMX(void)
 	/* Do our MMX checks here */
 	if (IsMmxEnabled == FALSE)
 		return FALSE;
-	if ((RSPOpC.rs & 0x0f) >= 2 && (RSPOpC.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE)
+	if ((RSPOpC.rs & 0x0f) >= 2 && !(RSPOpC.rs & 8) && IsMmx2Enabled == FALSE)
 		return FALSE;
 
 	sprintf(Reg, "RSP_Vect[%i].UHW[0]", RSPOpC.rd);
@@ -4478,7 +4480,7 @@ Boolean Compile_Vector_VOR_MMX(void)
 
 	if ((RSPOpC.rs & 0xF) < 2 && (RSPOpC.rd == RSPOpC.rt)) {
 
-	} else if ((RSPOpC.rs & 0xF) >= 8) {
+	} else if (RSPOpC.rs & 8) {
 		RSP_Element2Mmx(x86_MM2);
 		MmxPorRegToReg(x86_MM0, x86_MM2);
 		MmxPorRegToReg(x86_MM1, x86_MM2);
@@ -4507,7 +4509,7 @@ Boolean Compile_Vector_VOR_MMX(void)
 void Compile_Vector_VOR ( void ) {
 	char Reg[256];
 	int el, del, count;
-    Boolean bElement = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bElement = (RSPOpC.rs & 8) ? TRUE : FALSE;
     Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 #ifndef CompileVor
@@ -4559,7 +4561,7 @@ Boolean Compile_Vector_VNOR_MMX(void)
 	/* Do our MMX checks here */
 	if (IsMmxEnabled == FALSE)
 		return FALSE;
-	if ((RSPOpC.rs & 0x0f) >= 2 && (RSPOpC.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE)
+	if ((RSPOpC.rs & 0x0f) >= 2 && !(RSPOpC.rs & 8) && IsMmx2Enabled == FALSE)
 		return FALSE;
 
 	sprintf(Reg, "RSP_Vect[%i].UHW[0]", RSPOpC.rd);
@@ -4568,7 +4570,7 @@ Boolean Compile_Vector_VNOR_MMX(void)
 	MmxMoveQwordVariableToReg(x86_MM1, &RSP_Vect[RSPOpC.rd].UHW[4], Reg);
 	MmxPcmpeqwRegToReg(x86_MM7, x86_MM7);
 
-	if ((RSPOpC.rs & 0xF) >= 8) {
+	if (RSPOpC.rs & 8) {
 		RSP_Element2Mmx(x86_MM2);
 		MmxPorRegToReg(x86_MM0, x86_MM2);
 		MmxPorRegToReg(x86_MM1, x86_MM2);
@@ -4599,7 +4601,7 @@ Boolean Compile_Vector_VNOR_MMX(void)
 void Compile_Vector_VNOR ( void ) {
 	char Reg[256];
 	int el, del, count;
-    Boolean bElement = ((RSPOpC.rs & 0xF) >= 8) ? TRUE : FALSE;
+    Boolean bElement = (RSPOpC.rs & 8) ? TRUE : FALSE;
     Boolean bWriteToAccum = WriteToAccum(Low16BitAccum, CompilePC);
 
 #ifndef CompileVnor
@@ -4653,7 +4655,7 @@ Boolean Compile_Vector_VXOR_MMX(void)
 	/* Do our MMX checks here */
 	if (IsMmxEnabled == FALSE)
 		return FALSE;
-	if ((RSPOpC.rs & 0x0f) >= 2 && (RSPOpC.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE)
+	if ((RSPOpC.rs & 0x0f) >= 2 && !(RSPOpC.rs & 8) && IsMmx2Enabled == FALSE)
 		return FALSE;
 
 	if ((RSPOpC.rs & 0xF) < 2 && (RSPOpC.rd == RSPOpC.rt)) {
@@ -4671,7 +4673,7 @@ Boolean Compile_Vector_VXOR_MMX(void)
 		sprintf(Reg, "RSP_Vect[%i].UHW[4]", RSPOpC.rd);
 		MmxMoveQwordVariableToReg(x86_MM1, &RSP_Vect[RSPOpC.rd].UHW[4], Reg);
 
-		if ((RSPOpC.rs & 0xF) >= 8) {
+		if (RSPOpC.rs & 8) {
 			RSP_Element2Mmx(x86_MM2);
 			MmxXorRegToReg(x86_MM0, x86_MM2);
 			MmxXorRegToReg(x86_MM1, x86_MM2);
@@ -4734,7 +4736,7 @@ Boolean Compile_Vector_VNXOR_MMX(void)
 	/* Do our MMX checks here */
 	if (IsMmxEnabled == FALSE)
 		return FALSE;
-	if ((RSPOpC.rs & 0x0f) >= 2 && (RSPOpC.rs & 0x0f) <= 7 && IsMmx2Enabled == FALSE)
+	if ((RSPOpC.rs & 0x0f) >= 2 && !(RSPOpC.rs & 8) && IsMmx2Enabled == FALSE)
 		return FALSE;
 
 	if ((RSPOpC.rs & 0xF) < 2 && (RSPOpC.rd == RSPOpC.rt)) {
@@ -4753,7 +4755,7 @@ Boolean Compile_Vector_VNXOR_MMX(void)
 		MmxMoveQwordVariableToReg(x86_MM1, &RSP_Vect[RSPOpC.rd].UHW[4], Reg);
 		MmxPcmpeqwRegToReg(x86_MM7, x86_MM7);
 
-		if ((RSPOpC.rs & 0xF) >= 8) {
+		if (RSPOpC.rs & 8) {
 			RSP_Element2Mmx(x86_MM2);
 			MmxXorRegToReg(x86_MM0, x86_MM2);
 			MmxXorRegToReg(x86_MM1, x86_MM2);

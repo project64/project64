@@ -61,7 +61,7 @@ TxImage::getPNGInfo(FILE *fp, png_structp *png_ptr, png_infop *info_ptr)
   }
 
   if (setjmp(png_jmpbuf(*png_ptr))) {
-    DBG_INFO(80, L"error reading png!\n");
+    DBG_INFO(80, "error reading png!\n");
     png_destroy_read_struct(png_ptr, info_ptr, NULL);
     return 0;
   }
@@ -93,8 +93,9 @@ TxImage::readPNG(FILE* fp, int* width, int* height, uint16* format)
   if (!fp)
     return NULL;
 
-  if (!getPNGInfo(fp, &png_ptr, &info_ptr)) {
-    INFO(80, L"error reading png file! png image is corrupt.\n");
+  if (!getPNGInfo(fp, &png_ptr, &info_ptr)) 
+  {
+    INFO(80, "error reading png file! png image is corrupt.\n");
     return NULL;
   }
 
@@ -102,7 +103,7 @@ TxImage::readPNG(FILE* fp, int* width, int* height, uint16* format)
                (png_uint_32*)&o_width, (png_uint_32*)&o_height, &bit_depth, &color_type,
                &interlace_type, &compression_type, &filter_type);
 
-  DBG_INFO(80, L"png format %d x %d bitdepth:%d color:%x interlace:%x compression:%x filter:%x\n",
+  DBG_INFO(80, "png format %d x %d bitdepth:%d color:%x interlace:%x compression:%x filter:%x\n",
            o_width, o_height, bit_depth, color_type,
            interlace_type, compression_type, filter_type);
 
@@ -158,7 +159,7 @@ TxImage::readPNG(FILE* fp, int* width, int* height, uint16* format)
   /* punt invalid formats */
   if (color_type != PNG_COLOR_TYPE_RGB_ALPHA) {
     png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-    DBG_INFO(80, L"Error: not PNG_COLOR_TYPE_RGB_ALPHA format!\n");
+    DBG_INFO(80, "Error: not PNG_COLOR_TYPE_RGB_ALPHA format!\n");
     return NULL;
   }
 
@@ -236,7 +237,7 @@ TxImage::readPNG(FILE* fp, int* width, int* height, uint16* format)
 
 #ifdef DEBUG
   if (!image) {
-    DBG_INFO(80, L"Error: failed to load png image!\n");
+    DBG_INFO(80, "Error: failed to load png image!\n");
   }
 #endif
 
@@ -512,11 +513,11 @@ TxImage::readBMP(FILE* fp, int* width, int* height, uint16* format)
     return NULL;
 
   if (!getBMPInfo(fp, &bmp_fhdr, &bmp_ihdr)) {
-    INFO(80, L"error reading bitmap file! bitmap image is corrupt.\n");
+    INFO(80, "error reading bitmap file! bitmap image is corrupt.\n");
     return NULL;
   }
 
-  DBG_INFO(80, L"bmp format %d x %d bitdepth:%d compression:%x offset:%d\n",
+  DBG_INFO(80, "bmp format %d x %d bitdepth:%d compression:%x offset:%d\n",
            bmp_ihdr.biWidth, bmp_ihdr.biHeight, bmp_ihdr.biBitCount,
            bmp_ihdr.biCompression, bmp_fhdr.bfOffBits);
 
@@ -528,7 +529,7 @@ TxImage::readBMP(FILE* fp, int* width, int* height, uint16* format)
   /* Rice hi-res textures */
   if (!(bmp_ihdr.biBitCount == 8 || bmp_ihdr.biBitCount == 4 || bmp_ihdr.biBitCount == 32 || bmp_ihdr.biBitCount == 24) ||
       bmp_ihdr.biCompression != 0) {
-    DBG_INFO(80, L"Error: incompatible bitmap format!\n");
+    DBG_INFO(80, "Error: incompatible bitmap format!\n");
     return NULL;
   }
 
@@ -647,7 +648,7 @@ TxImage::readBMP(FILE* fp, int* width, int* height, uint16* format)
 
 #ifdef DEBUG
   if (!image) {
-    DBG_INFO(80, L"Error: failed to load bmp image!\n");
+    DBG_INFO(80, "Error: failed to load bmp image!\n");
   }
 #endif
 
@@ -745,43 +746,43 @@ TxImage::readDDS(FILE* fp, int* width, int* height, uint16* format)
     return NULL;
 
   if (!getDDSInfo(fp, &dds_fhdr)) {
-    INFO(80, L"error reading dds file! dds image is corrupt.\n");
+    INFO(80, "error reading dds file! dds image is corrupt.\n");
     return NULL;
   }
 
-  DBG_INFO(80, L"dds format %d x %d HeaderSize %d LinearSize %d\n",
+  DBG_INFO(80, "dds format %d x %d HeaderSize %d LinearSize %d\n",
            dds_fhdr.dwWidth, dds_fhdr.dwHeight, dds_fhdr.dwSize, dds_fhdr.dwLinearSize);
 
   if (!(dds_fhdr.dwFlags & (DDSD_CAPS|DDSD_WIDTH|DDSD_HEIGHT|DDSD_PIXELFORMAT|DDSD_LINEARSIZE))) {
-    DBG_INFO(80, L"Error: incompatible dds format!\n");
+    DBG_INFO(80, "Error: incompatible dds format!\n");
     return NULL;
   }
 
   if ((dds_fhdr.dwFlags & DDSD_MIPMAPCOUNT) && dds_fhdr.dwMipMapCount != 1) {
-    DBG_INFO(80, L"Error: mipmapped dds not supported!\n");
+    DBG_INFO(80, "Error: mipmapped dds not supported!\n");
     return NULL;
   }
 
   if (!((dds_fhdr.ddpf.dwFlags & DDPF_FOURCC) && dds_fhdr.dwCaps2 == 0)) {
-    DBG_INFO(80, L"Error: not fourcc standard texture!\n");
+    DBG_INFO(80, "Error: not fourcc standard texture!\n");
     return NULL;
   }
 
   if (memcmp(&dds_fhdr.ddpf.dwFourCC, "DXT1", 4) == 0) {
-    DBG_INFO(80, L"DXT1 format\n");
+    DBG_INFO(80, "DXT1 format\n");
     /* compensate for missing LinearSize */
     dds_fhdr.dwLinearSize = (dds_fhdr.dwWidth * dds_fhdr.dwHeight) >> 1;
     tmpformat = GR_TEXFMT_ARGB_CMP_DXT1;
   } else if (memcmp(&dds_fhdr.ddpf.dwFourCC, "DXT3", 4) == 0) {
-    DBG_INFO(80, L"DXT3 format\n");
+    DBG_INFO(80, "DXT3 format\n");
     dds_fhdr.dwLinearSize = dds_fhdr.dwWidth * dds_fhdr.dwHeight;
     tmpformat = GR_TEXFMT_ARGB_CMP_DXT3;
   } else if (memcmp(&dds_fhdr.ddpf.dwFourCC, "DXT5", 4) == 0) {
-    DBG_INFO(80, L"DXT5 format\n");
+    DBG_INFO(80, "DXT5 format\n");
     dds_fhdr.dwLinearSize = dds_fhdr.dwWidth * dds_fhdr.dwHeight;
     tmpformat = GR_TEXFMT_ARGB_CMP_DXT5;
   } else {
-    DBG_INFO(80, L"Error: not DXT1 or DXT3 or DXT5 format!\n");
+    DBG_INFO(80, "Error: not DXT1 or DXT3 or DXT5 format!\n");
     return NULL;
   }
 

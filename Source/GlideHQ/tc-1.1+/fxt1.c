@@ -755,7 +755,7 @@ fxt1_quantize_MIXED1 (dword *cc,
     /* left microtile */
     if (maxColL == -1) {
 	/* all transparent black */
-	cc[0] = ~0UL;
+	cc[0] = 0xFFFFFFFFUL;
 	for (i = 0; i < n_comp; i++) {
 	    vec[0][i] = 0;
 	    vec[1][i] = 0;
@@ -789,7 +789,7 @@ fxt1_quantize_MIXED1 (dword *cc,
     /* right microtile */
     if (maxColR == -1) {
 	/* all transparent black */
-	cc[1] = ~0UL;
+	cc[1] = 0xFFFFFFFFUL;
 	for (i = 0; i < n_comp; i++) {
 	    vec[2][i] = 0;
 	    vec[3][i] = 0;
@@ -1109,7 +1109,7 @@ fxt1_quantize (dword *cc, const byte *lines[], int comps)
     if (trualpha) {
 	fxt1_quantize_ALPHA1(cc, input);
     } else if (l == 0) {
-	cc[0] = cc[1] = cc[2] = ~0UL;
+	cc[0] = cc[1] = cc[2] = 0xFFFFFFFFUL;
 	cc[3] = 0;
     } else if (l < N_TEXELS) {
 	fxt1_quantize_MIXED1(cc, input);

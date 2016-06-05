@@ -1,22 +1,23 @@
 #include "stdafx.h"
 #include "RomInformationClass.h"
+#include <Project64-core/N64System/N64DiskClass.h>
 
 #include <windows.h>
 #include <commdlg.h>
 
 CMainMenu::CMainMenu(CMainGui * hMainWindow) :
-CBaseMenu(),
-m_ResetAccelerators(true),
-m_Gui(hMainWindow)
+    CBaseMenu(),
+    m_ResetAccelerators(true),
+    m_Gui(hMainWindow)
 {
     ResetMenu();
 
     hMainWindow->SetWindowMenu(this);
 
-    m_ChangeSettingList.push_back(Info_ShortCutsChanged);
+    m_ChangeUISettingList.push_back(Info_ShortCutsChanged);
     m_ChangeSettingList.push_back(GameRunning_LimitFPS);
-    m_ChangeSettingList.push_back(UserInterface_InFullScreen);
-    m_ChangeSettingList.push_back(UserInterface_AlwaysOnTop);
+    m_ChangeUISettingList.push_back(UserInterface_InFullScreen);
+    m_ChangeUISettingList.push_back(UserInterface_AlwaysOnTop);
     m_ChangeSettingList.push_back(UserInterface_ShowCPUPer);
     m_ChangeSettingList.push_back(Logging_GenerateLog);
     m_ChangeSettingList.push_back(Debugger_ProfileCode);
@@ -24,6 +25,7 @@ m_Gui(hMainWindow)
     m_ChangeSettingList.push_back(Debugger_ShowUnhandledMemory);
     m_ChangeSettingList.push_back(Debugger_ShowPifErrors);
     m_ChangeSettingList.push_back(Debugger_ShowDListAListCount);
+    m_ChangeSettingList.push_back(Debugger_DebugLanguage);
     m_ChangeSettingList.push_back(Debugger_ShowRecompMemSize);
     m_ChangeSettingList.push_back(Debugger_ShowDivByZero);
     m_ChangeSettingList.push_back(Debugger_GenerateLogFiles);
@@ -50,6 +52,10 @@ m_Gui(hMainWindow)
     m_ChangeSettingList.push_back(Game_CurrentSaveState);
     m_ChangeSettingList.push_back(Setting_CurrentLanguage);
 
+    for (UISettingList::const_iterator iter = m_ChangeUISettingList.begin(); iter != m_ChangeUISettingList.end(); iter++)
+    {
+        g_Settings->RegisterChangeCB((SettingID)(FirstUISettings + *iter), this, (CSettings::SettingChangedFunc)SettingsChanged);
+    }
     for (SettingList::const_iterator iter = m_ChangeSettingList.begin(); iter != m_ChangeSettingList.end(); iter++)
     {
         g_Settings->RegisterChangeCB(*iter, this, (CSettings::SettingChangedFunc)SettingsChanged);
@@ -58,6 +64,10 @@ m_Gui(hMainWindow)
 
 CMainMenu::~CMainMenu()
 {
+    for (UISettingList::const_iterator iter = m_ChangeUISettingList.begin(); iter != m_ChangeUISettingList.end(); iter++)
+    {
+        g_Settings->UnregisterChangeCB((SettingID)(FirstUISettings + *iter), this, (CSettings::SettingChangedFunc)SettingsChanged);
+    }
     for (SettingList::const_iterator iter = m_ChangeSettingList.begin(); iter != m_ChangeSettingList.end(); iter++)
     {
         g_Settings->UnregisterChangeCB(*iter, this, (CSettings::SettingChangedFunc)SettingsChanged);
@@ -88,7 +98,7 @@ stdstr CMainMenu::ChooseFileToOpen(HWND hParent)
     memset(&FileName, 0, sizeof(FileName));
     memset(&openfilename, 0, sizeof(openfilename));
 
-    strcpy(Directory, g_Settings->LoadStringVal(Directory_Game).c_str());
+    strcpy(Directory, g_Settings->LoadStringVal(RomList_GameDir).c_str());
 
     openfilename.lStructSize = sizeof(openfilename);
     openfilename.hwndOwner = (HWND)hParent;
@@ -115,73 +125,81 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 {
     switch (MenuID) {
     case ID_FILE_OPEN_ROM:
-    {
-        stdstr File = ChooseFileToOpen(hWnd);
-        if (File.length() > 0)
         {
-            stdstr ext = CPath(File).GetExtension();
-            if (!(_stricmp(ext.c_str(), "ndd") == 0))
+            stdstr File = ChooseFileToOpen(hWnd);
+            if (File.length() > 0)
             {
-                delete g_DDRom;
-                g_DDRom = NULL;
-                g_BaseSystem->RunFileImage(File.c_str());
-            }
-            else
-            {
-                // Open Disk
-                if (g_BaseSystem->RunDiskImage(File.c_str()))
+                stdstr ext = CPath(File).GetExtension();
+                if (!(_stricmp(ext.c_str(), "ndd") == 0))
                 {
-                    stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
-                    if ((IPLROM.length() <= 0) || (!g_BaseSystem->RunFileImage(IPLROM.c_str())))
+                    delete g_DDRom;
+                    g_DDRom = NULL;
+                    g_BaseSystem->RunFileImage(File.c_str());
+                }
+                else
+                {
+                    // Open Disk
+                    if (g_BaseSystem->RunDiskImage(File.c_str()))
                     {
-                        // Open DDROM
-                        OPENFILENAME openfilename;
-                        char FileName[_MAX_PATH], Directory[_MAX_PATH];
-                        memset(&FileName, 0, sizeof(FileName));
-                        memset(&openfilename, 0, sizeof(openfilename));
-
-                        strcpy(Directory, g_Settings->LoadStringVal(Directory_Game).c_str());
-                        openfilename.lStructSize = sizeof(openfilename);
-                        openfilename.hwndOwner = (HWND)hWnd;
-                        openfilename.lpstrFilter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-                        openfilename.lpstrFile = FileName;
-                        openfilename.lpstrInitialDir = Directory;
-                        openfilename.nMaxFile = MAX_PATH;
-                        openfilename.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-
-                        if (GetOpenFileName(&openfilename))
+                        stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
+                        if ((IPLROM.length() <= 0) || (!g_BaseSystem->RunFileImage(IPLROM.c_str())))
                         {
-                            g_BaseSystem->RunFileImage(FileName);
+                            // Open DDROM
+                            OPENFILENAME openfilename;
+                            char FileName[_MAX_PATH], Directory[_MAX_PATH];
+                            memset(&FileName, 0, sizeof(FileName));
+                            memset(&openfilename, 0, sizeof(openfilename));
+
+                            strcpy(Directory, g_Settings->LoadStringVal(RomList_GameDir).c_str());
+                            openfilename.lStructSize = sizeof(openfilename);
+                            openfilename.hwndOwner = (HWND)hWnd;
+                            openfilename.lpstrFilter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+                            openfilename.lpstrFile = FileName;
+                            openfilename.lpstrInitialDir = Directory;
+                            openfilename.nMaxFile = MAX_PATH;
+                            openfilename.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+
+                            if (GetOpenFileName(&openfilename))
+                            {
+                                g_BaseSystem->RunFileImage(FileName);
+                            }
                         }
                     }
                 }
             }
-            
         }
-    }
-    break;
+        break;
     case ID_FILE_ROM_INFO:
-    {
-        if (g_Rom)
         {
-            RomInformation Info(g_Rom);
-            Info.DisplayInformation(hWnd);
+            if (g_Rom)
+            {
+                RomInformation Info(g_Rom);
+                Info.DisplayInformation(hWnd);
+            }
         }
-    }
-    break;
+        break;
     case ID_FILE_STARTEMULATION:
         m_Gui->SaveWindowLoc();
-        //Before we go and create the new system, ensure the previous one has been closed
-        CN64System::CloseSystem();
-        //Ok now g_BaseSystem should definitely be clean for initialization
-        g_BaseSystem = new CN64System(g_Plugins, false);
         //Now we have created again, we can start up emulation
-        g_BaseSystem->StartEmulation(true);
+        if (g_BaseSystem)
+        {
+            g_BaseSystem->StartEmulation(true);
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
         break;
     case ID_FILE_ENDEMULATION:
-        WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ENDEMULATION");
-        CN64System::CloseSystem();
-        m_Gui->SaveWindowLoc();
+        {
+             CGuard Guard(m_CS);
+             WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ENDEMULATION");
+             if (g_BaseSystem)
+             {
+                 g_BaseSystem->CloseCpu();
+             }
+             m_Gui->SaveWindowLoc();
+        }
         break;
     case ID_FILE_ROMDIRECTORY:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ROMDIRECTORY 1");
@@ -190,7 +208,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         m_Gui->RefreshMenu();
         WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ROMDIRECTORY 3");
         break;
-    case ID_FILE_REFRESHROMLIST: m_Gui->RefreshRomBrowser(); break;
+    case ID_FILE_REFRESHROMLIST: m_Gui->RefreshRomList(); break;
     case ID_FILE_EXIT:           DestroyWindow((HWND)hWnd); break;
     case ID_SYSTEM_RESET_SOFT:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_RESET_SOFT");
@@ -207,103 +225,131 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_PAUSE 1");
         break;
     case ID_SYSTEM_BITMAP:
-    {
-        stdstr Dir(g_Settings->LoadStringVal(Directory_SnapShot));
-        WriteTrace(TraceGFXPlugin, TraceDebug, "CaptureScreen(%s): Starting", Dir.c_str());
-        g_Plugins->Gfx()->CaptureScreen(Dir.c_str());
-        WriteTrace(TraceGFXPlugin, TraceDebug, "CaptureScreen: Done");
-    }
-    break;
+        {
+            stdstr Dir(g_Settings->LoadStringVal(Directory_SnapShot));
+            WriteTrace(TraceGFXPlugin, TraceDebug, "CaptureScreen(%s): Starting", Dir.c_str());
+            g_Plugins->Gfx()->CaptureScreen(Dir.c_str());
+            WriteTrace(TraceGFXPlugin, TraceDebug, "CaptureScreen: Done");
+        }
+        break;
     case ID_SYSTEM_LIMITFPS:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_LIMITFPS");
         g_Settings->SaveBool(GameRunning_LimitFPS, !g_Settings->LoadBool(GameRunning_LimitFPS));
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_LIMITFPS 1");
+        break;
+    case ID_SYSTEM_SWAPDISK:
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_SWAPDISK");
+        // Open Disk
+        OPENFILENAME openfilename;
+        char FileName[_MAX_PATH], Directory[_MAX_PATH];
+
+        memset(&FileName, 0, sizeof(FileName));
+        memset(&openfilename, 0, sizeof(openfilename));
+
+        strcpy(Directory, g_Settings->LoadStringVal(RomList_GameDir).c_str());
+
+        openfilename.lStructSize = sizeof(openfilename);
+        openfilename.hwndOwner = (HWND)hWnd;
+        openfilename.lpstrFilter = "N64DD Disk Image (*.ndd)\0*.ndd\0All files (*.*)\0*.*\0";
+        openfilename.lpstrFile = FileName;
+        openfilename.lpstrInitialDir = Directory;
+        openfilename.nMaxFile = MAX_PATH;
+        openfilename.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+
+        if (GetOpenFileName(&openfilename))
+        {
+            g_Disk->SaveDiskImage();
+            g_Disk->SwapDiskImage(FileName);
+        }
         break;
     case ID_SYSTEM_SAVE:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_SAVE");
         g_BaseSystem->ExternalEvent(SysEvent_SaveMachineState);
         break;
     case ID_SYSTEM_SAVEAS:
-    {
-        char drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
-        char Directory[255], SaveFile[255];
-        OPENFILENAME openfilename;
-
-        memset(&SaveFile, 0, sizeof(SaveFile));
-        memset(&openfilename, 0, sizeof(openfilename));
-
-        g_Settings->LoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
-
-        openfilename.lStructSize = sizeof(openfilename);
-        openfilename.hwndOwner = (HWND)hWnd;
-        openfilename.lpstrFilter = "PJ64 Saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
-        openfilename.lpstrFile = SaveFile;
-        openfilename.lpstrInitialDir = Directory;
-        openfilename.nMaxFile = MAX_PATH;
-        openfilename.Flags = OFN_HIDEREADONLY;
-
-        g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_SaveGame);
-        if (GetSaveFileName(&openfilename))
         {
-            _splitpath(SaveFile, drive, dir, fname, ext);
-            if (_stricmp(ext, ".pj") == 0 || _stricmp(ext, ".zip") == 0)
+            char drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
+            char Directory[255], SaveFile[255];
+            OPENFILENAME openfilename;
+
+            memset(&SaveFile, 0, sizeof(SaveFile));
+            memset(&openfilename, 0, sizeof(openfilename));
+
+            UISettingsLoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
+
+            openfilename.lStructSize = sizeof(openfilename);
+            openfilename.hwndOwner = (HWND)hWnd;
+            openfilename.lpstrFilter = "PJ64 Saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
+            openfilename.lpstrFile = SaveFile;
+            openfilename.lpstrInitialDir = Directory;
+            openfilename.nMaxFile = MAX_PATH;
+            openfilename.Flags = OFN_HIDEREADONLY;
+
+            g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_SaveGame);
+            if (GetSaveFileName(&openfilename))
             {
-                _makepath(SaveFile, drive, dir, fname, NULL);
                 _splitpath(SaveFile, drive, dir, fname, ext);
-                if (_stricmp(ext, ".pj") == 0)
+                if (_stricmp(ext, ".pj") == 0 || _stricmp(ext, ".zip") == 0)
                 {
                     _makepath(SaveFile, drive, dir, fname, NULL);
+                    _splitpath(SaveFile, drive, dir, fname, ext);
+                    if (_stricmp(ext, ".pj") == 0)
+                    {
+                        _makepath(SaveFile, drive, dir, fname, NULL);
+                    }
                 }
+                g_Settings->SaveString(GameRunning_InstantSaveFile, SaveFile);
+
+                char SaveDir[MAX_PATH];
+                _makepath(SaveDir, drive, dir, NULL, NULL);
+                UISettingsSaveString(Directory_LastSave, SaveDir);
+                g_BaseSystem->ExternalEvent(SysEvent_SaveMachineState);
             }
-            g_Settings->SaveString(GameRunning_InstantSaveFile, SaveFile);
-
-            char SaveDir[MAX_PATH];
-            _makepath(SaveDir, drive, dir, NULL, NULL);
-            g_Settings->SaveString(Directory_LastSave, SaveDir);
-            g_BaseSystem->ExternalEvent(SysEvent_SaveMachineState);
+            g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SaveGame);
         }
-        g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SaveGame);
-    }
-    break;
-    case ID_SYSTEM_RESTORE:   WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_RESTORE");   g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState); break;
+        break;
+    case ID_SYSTEM_RESTORE:
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_RESTORE");
+        g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState);
+        break;
     case ID_SYSTEM_LOAD:
-    {
-        char Directory[255], SaveFile[255];
-        OPENFILENAME openfilename;
-
-        memset(&SaveFile, 0, sizeof(SaveFile));
-        memset(&openfilename, 0, sizeof(openfilename));
-
-        g_Settings->LoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
-
-        openfilename.lStructSize = sizeof(openfilename);
-        openfilename.hwndOwner = (HWND)hWnd;
-        openfilename.lpstrFilter = "PJ64 Saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
-        openfilename.lpstrFile = SaveFile;
-        openfilename.lpstrInitialDir = Directory;
-        openfilename.nMaxFile = MAX_PATH;
-        openfilename.Flags = OFN_HIDEREADONLY;
-
-        g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_LoadGame);
-        if (GetOpenFileName(&openfilename))
         {
-            g_Settings->SaveString(GameRunning_InstantSaveFile, SaveFile);
-            char SaveDir[MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
-            _splitpath(SaveFile, drive, dir, fname, ext);
-            _makepath(SaveDir, drive, dir, NULL, NULL);
-            g_Settings->SaveString(Directory_LastSave, SaveDir);
-            g_System->LoadState();
+            char Directory[255], SaveFile[255];
+            OPENFILENAME openfilename;
+
+            memset(&SaveFile, 0, sizeof(SaveFile));
+            memset(&openfilename, 0, sizeof(openfilename));
+
+            UISettingsLoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
+
+            openfilename.lStructSize = sizeof(openfilename);
+            openfilename.hwndOwner = (HWND)hWnd;
+            openfilename.lpstrFilter = "PJ64 Saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
+            openfilename.lpstrFile = SaveFile;
+            openfilename.lpstrInitialDir = Directory;
+            openfilename.nMaxFile = MAX_PATH;
+            openfilename.Flags = OFN_HIDEREADONLY;
+
+            g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_LoadGame);
+            if (GetOpenFileName(&openfilename))
+            {
+                g_Settings->SaveString(GameRunning_InstantSaveFile, SaveFile);
+                char SaveDir[MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
+                _splitpath(SaveFile, drive, dir, fname, ext);
+                _makepath(SaveDir, drive, dir, NULL, NULL);
+                UISettingsSaveString(Directory_LastSave, SaveDir);
+                g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState);
+            }
+            g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_LoadGame);
         }
-        g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_LoadGame);
-    }
-    break;
+        break;
     case ID_SYSTEM_CHEAT:
-    {
-        CCheatsUI * cheatUI = new CCheatsUI;
-        g_cheatUI = cheatUI;
-        cheatUI->SelectCheats(hWnd, false);
-    }
-    break;
+        {
+            CCheatsUI * cheatUI = new CCheatsUI;
+            g_cheatUI = cheatUI;
+            cheatUI->SelectCheats(hWnd, false);
+        }
+        break;
     case ID_SYSTEM_GSBUTTON:
         g_BaseSystem->ExternalEvent(SysEvent_GSButtonPressed);
         break;
@@ -333,7 +379,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         g_BaseSystem->ExternalEvent(SysEvent_ChangingFullScreen);
         break;
     case ID_OPTIONS_FULLSCREEN2:
-        if (g_Settings->LoadBool(UserInterface_InFullScreen))
+        if (UISettingsLoadBool(UserInterface_InFullScreen))
         {
             WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN a");
             m_Gui->MakeWindowOnTop(false);
@@ -343,8 +389,8 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             WriteTrace(TraceGFXPlugin, TraceDebug, "ChangeWindow: Done");
             ShowCursor(true);
             m_Gui->ShowStatusBar(true);
-            m_Gui->MakeWindowOnTop(g_Settings->LoadBool(UserInterface_AlwaysOnTop));
-            g_Settings->SaveBool(UserInterface_InFullScreen, (DWORD)false);
+            m_Gui->MakeWindowOnTop(UISettingsLoadBool(UserInterface_AlwaysOnTop));
+            UISettingsSaveBool(UserInterface_InFullScreen, (DWORD)false);
         }
         else
         {
@@ -371,20 +417,20 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN b 5");
             Notify().SetGfxPlugin(g_Plugins->Gfx());
             WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN b 3");
-            g_Settings->SaveBool(UserInterface_InFullScreen, true);
+            UISettingsSaveBool(UserInterface_InFullScreen, true);
             WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN b 6");
         }
         WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_FULLSCREEN 1");
         break;
     case ID_OPTIONS_ALWAYSONTOP:
-        if (g_Settings->LoadDword(UserInterface_AlwaysOnTop))
+        if (UISettingsLoadBool(UserInterface_AlwaysOnTop))
         {
-            g_Settings->SaveBool(UserInterface_AlwaysOnTop, false);
+            UISettingsSaveBool(UserInterface_AlwaysOnTop, false);
             m_Gui->MakeWindowOnTop(false);
         }
         else
         {
-            g_Settings->SaveBool(UserInterface_AlwaysOnTop, true);
+            UISettingsSaveBool(UserInterface_AlwaysOnTop, true);
             m_Gui->MakeWindowOnTop(g_Settings->LoadBool(GameRunning_CPU_Running));
         }
         break;
@@ -417,11 +463,11 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         }
         break;
     case ID_OPTIONS_SETTINGS:
-    {
-        CSettingConfig SettingConfig;
-        SettingConfig.Display(hWnd);
-    }
-    break;
+        {
+            CSettingConfig SettingConfig;
+            SettingConfig.Display(hWnd);
+        }
+        break;
     case ID_PROFILE_PROFILE:
         g_Settings->SaveBool(Debugger_ProfileCode, !g_Settings->LoadBool(Debugger_ProfileCode));
         g_BaseSystem->ExternalEvent(SysEvent_Profile_StartStop);
@@ -440,6 +486,10 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUG_SHOW_DLIST_COUNT:
         g_Notify->DisplayMessage(0, "");
         g_Settings->SaveBool(Debugger_ShowDListAListCount, !g_Settings->LoadBool(Debugger_ShowDListAListCount));
+        break;
+    case ID_DEBUG_LANGUAGE:
+        g_Settings->SaveBool(Debugger_DebugLanguage, !g_Settings->LoadBool(Debugger_DebugLanguage));
+        g_Lang->LoadCurrentStrings();
         break;
     case ID_DEBUG_SHOW_RECOMP_MEM_SIZE:
         g_Notify->DisplayMessage(0, "");
@@ -515,7 +565,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         if (MenuID >= ID_RECENT_ROM_START && MenuID < ID_RECENT_ROM_END)
         {
             stdstr FileName;
-            if (g_Settings->LoadStringIndex(File_RecentGameFileIndex, MenuID - ID_RECENT_ROM_START, FileName) &&
+            if (UISettingsLoadStringIndex(File_RecentGameFileIndex, MenuID - ID_RECENT_ROM_START, FileName) &&
                 FileName.length() > 0)
             {
                 g_BaseSystem->RunFileImage(FileName.c_str());
@@ -524,15 +574,15 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         if (MenuID >= ID_RECENT_DIR_START && MenuID < ID_RECENT_DIR_END)
         {
             int Offset = MenuID - ID_RECENT_DIR_START;
-            stdstr Dir = g_Settings->LoadStringIndex(Directory_RecentGameDirIndex, Offset);
+            stdstr Dir = UISettingsLoadStringIndex(Directory_RecentGameDirIndex, Offset);
             if (Dir.length() > 0)
             {
-                g_Settings->SaveString(Directory_Game, Dir.c_str());
+                g_Settings->SaveString(RomList_GameDir, Dir.c_str());
                 Notify().AddRecentDir(Dir.c_str());
                 m_Gui->RefreshMenu();
                 if (m_Gui->RomBrowserVisible())
                 {
-                    m_Gui->RefreshRomBrowser();
+                    m_Gui->RefreshRomList();
                 }
             }
         }
@@ -557,9 +607,9 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     return true;
 }
 
-stdstr CMainMenu::GetFileLastMod(stdstr FileName)
+stdstr CMainMenu::GetFileLastMod(const CPath & FileName)
 {
-    HANDLE hFile = CreateFile(FileName.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL,
+    HANDLE hFile = CreateFile(FileName, GENERIC_READ, FILE_SHARE_READ, NULL,
         OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
     if (hFile == INVALID_HANDLE_VALUE)
     {
@@ -605,22 +655,23 @@ std::wstring CMainMenu::GetSaveSlotString(int Slot)
     stdstr LastSaveTime;
 
     //check first save name
-    stdstr _GoodName = g_Settings->LoadStringVal(Game_GoodName);
-    stdstr _InstantSaveDirectory = g_Settings->LoadStringVal(Directory_InstantSave);
-    stdstr CurrentSaveName;
+    CPath FileName(g_Settings->LoadStringVal(Directory_InstantSave).c_str(), "");
+    if (g_Settings->LoadBool(Setting_UniqueSaveDir))
+    {
+        FileName.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
+    }
     if (Slot != 0)
     {
-        CurrentSaveName.Format("%s.pj%d", _GoodName.c_str(), Slot);
+        FileName.SetNameExtension(stdstr_f("%s.pj%d", g_Settings->LoadStringVal(Game_GoodName).c_str(), Slot).c_str());
     }
     else
     {
-        CurrentSaveName.Format("%s.pj", _GoodName.c_str());
+        FileName.SetNameExtension(stdstr_f("%s.pj", g_Settings->LoadStringVal(Game_GoodName).c_str()).c_str());
     }
-    stdstr_f FileName("%s%s", _InstantSaveDirectory.c_str(), CurrentSaveName.c_str());
 
     if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
     {
-        stdstr_f ZipFileName("%s.zip", FileName.c_str());
+        CPath ZipFileName(FileName.GetDriveDirectory(),stdstr_f("%s.zip", FileName.GetNameExtension().c_str()).c_str());
         LastSaveTime = GetFileLastMod(ZipFileName);
     }
     if (LastSaveTime.empty())
@@ -631,19 +682,18 @@ std::wstring CMainMenu::GetSaveSlotString(int Slot)
     // Check old file name
     if (LastSaveTime.empty())
     {
-        stdstr _RomName = g_Settings->LoadStringVal(Game_GameName);
         if (Slot > 0)
         {
-            FileName.Format("%s%s.pj%d", _InstantSaveDirectory.c_str(), _RomName.c_str(), Slot);
+            FileName.SetNameExtension(stdstr_f("%s.pj%d",g_Settings->LoadStringVal(Game_GameName), Slot).c_str());
         }
         else
         {
-            FileName.Format("%s%s.pj", _InstantSaveDirectory.c_str(), _RomName.c_str());
+            FileName.SetNameExtension(stdstr_f("%s.pj",g_Settings->LoadStringVal(Game_GameName)).c_str());
         }
 
         if (g_Settings->LoadBool(Setting_AutoZipInstantSave))
         {
-            stdstr_f ZipFileName("%s.zip", FileName.c_str());
+            CPath ZipFileName(FileName.GetDriveDirectory(),stdstr_f("%s.zip", FileName.GetNameExtension().c_str()).c_str());
             LastSaveTime = GetFileLastMod(ZipFileName);
         }
         if (LastSaveTime.empty())
@@ -666,12 +716,12 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     bool CPURunning = g_Settings->LoadBool(GameRunning_CPU_Running);
     bool RomLoading = g_Settings->LoadBool(GameRunning_LoadingInProgress);
     bool RomLoaded = g_Settings->LoadStringVal(Game_GameName).length() > 0;
-    bool RomList = g_Settings->LoadBool(RomBrowser_Enabled) && !CPURunning;
+    bool RomList = UISettingsLoadBool(RomBrowser_Enabled) && !CPURunning;
 
     CMenuShortCutKey::ACCESS_MODE AccessLevel = CMenuShortCutKey::GAME_NOT_RUNNING;
     if (g_Settings->LoadBool(GameRunning_CPU_Running))
     {
-        AccessLevel = g_Settings->LoadBool(UserInterface_InFullScreen) ? CMenuShortCutKey::GAME_RUNNING_FULLSCREEN : CMenuShortCutKey::GAME_RUNNING_WINDOW;
+        AccessLevel = UISettingsLoadBool(UserInterface_InFullScreen) ? CMenuShortCutKey::GAME_RUNNING_FULLSCREEN : CMenuShortCutKey::GAME_RUNNING_WINDOW;
     }
 
     //Get the system information to make the menu
@@ -691,11 +741,11 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 
     //Go through the settings to create a list of Recent Roms
     MenuItemList RecentRomMenu;
-    DWORD count, RomsToRemember = g_Settings->LoadDword(File_RecentGameFileCount);
+    DWORD count, RomsToRemember = UISettingsLoadDword(File_RecentGameFileCount);
 
     for (count = 0; count < RomsToRemember; count++)
     {
-        stdstr LastRom = g_Settings->LoadStringIndex(File_RecentGameFileIndex, count);
+        stdstr LastRom = UISettingsLoadStringIndex(File_RecentGameFileIndex, count);
         if (LastRom.empty())
         {
             break;
@@ -708,11 +758,11 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     /* Recent Dir
     ****************/
     MenuItemList RecentDirMenu;
-    DWORD DirsToRemember = g_Settings->LoadDword(Directory_RecentGameDirCount);
+    DWORD DirsToRemember = UISettingsLoadDword(Directory_RecentGameDirCount);
 
     for (count = 0; count < DirsToRemember; count++)
     {
-        stdstr LastDir = g_Settings->LoadStringIndex(Directory_RecentGameDirIndex, count);
+        stdstr LastDir = UISettingsLoadStringIndex(Directory_RecentGameDirIndex, count);
         if (LastDir.empty())
         {
             break;
@@ -855,6 +905,10 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         SystemMenu.push_back(Item);
         SystemMenu.push_back(MENU_ITEM(SPLITER));
     }
+    Item.Reset(ID_SYSTEM_SWAPDISK, MENU_SWAPDISK, m_ShortCuts.ShortCutString(ID_SYSTEM_SWAPDISK, AccessLevel));
+    if (g_Disk == NULL) { Item.SetItemEnabled(false); }
+    SystemMenu.push_back(Item);
+    SystemMenu.push_back(MENU_ITEM(SPLITER));
     SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_SAVE, MENU_SAVE, m_ShortCuts.ShortCutString(ID_SYSTEM_SAVE, AccessLevel)));
     if (!inBasicMode)
     {
@@ -884,7 +938,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     if (!inBasicMode)
     {
         Item.Reset(ID_OPTIONS_ALWAYSONTOP, MENU_ON_TOP, m_ShortCuts.ShortCutString(ID_OPTIONS_ALWAYSONTOP, AccessLevel));
-        if (g_Settings->LoadDword(UserInterface_AlwaysOnTop)) { Item.SetItemTicked(true); }
+        if (UISettingsLoadDword(UserInterface_AlwaysOnTop)) { Item.SetItemTicked(true); }
         Item.SetItemEnabled(CPURunning);
         OptionMenu.push_back(Item);
     }
@@ -1156,8 +1210,15 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         {
             Item.SetItemTicked(true);
         }
+        DebugMenu.push_back(Item);
         Item.Reset(ID_DEBUG_SHOW_DLIST_COUNT, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Display Alist/Dlist Count");
         if (g_Settings->LoadBool(Debugger_ShowDListAListCount))
+        {
+            Item.SetItemTicked(true);
+        }
+        DebugMenu.push_back(Item);
+        Item.Reset(ID_DEBUG_LANGUAGE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Debug Language");
+        if (g_Settings->LoadBool(Debugger_DebugLanguage))
         {
             Item.SetItemTicked(true);
         }
@@ -1239,7 +1300,7 @@ void CMainMenu::RebuildAccelerators(void)
 void CMainMenu::ResetMenu(void)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
-    if (!g_Settings->LoadBool(UserInterface_InFullScreen))
+    if (!UISettingsLoadBool(UserInterface_InFullScreen))
     {
         //Create a new window with all the items
         WriteTrace(TraceUserInterface, TraceDebug, "Create Menu");

@@ -310,7 +310,7 @@ void RSP_Cop0_MF (void) {
 	case 4: 
 		RSP_MfStatusCount += 1;
 		RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_STATUS_REG;
-		if (RSP_MfStatusCount > 10)
+		if (Mfc0Count != 0 && RSP_MfStatusCount > Mfc0Count)
 		{
 			RSP_Running = FALSE;
 		}
@@ -318,7 +318,7 @@ void RSP_Cop0_MF (void) {
 	case 5: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DMA_FULL_REG; break;
 	case 6: RSP_GPR[RSPOpC.rt].UW = *RSPInfo.SP_DMA_BUSY_REG; break;
 	case 7: 
-		if (AudioHle || GraphicsHle)
+		if (AudioHle || GraphicsHle || SemaphoreExit == 0)
 		{
 			RSP_GPR[RSPOpC.rt].W = 0;
 		} else {

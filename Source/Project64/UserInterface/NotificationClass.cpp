@@ -8,15 +8,16 @@ CNotificationImp & Notify(void)
 }
 
 CNotificationImp::CNotificationImp() :
-m_hWnd(NULL),
-m_gfxPlugin(NULL),
-m_NextMsg(0)
+    m_hWnd(NULL),
+    m_gfxPlugin(NULL),
+    m_NextMsg(0)
 {
     _tzset();
 }
 
 void CNotificationImp::AppInitDone(void)
 {
+    RegisterUISettings();
     CNotificationSettings::RegisterNotifications();
 }
 
@@ -159,12 +160,12 @@ void CNotificationImp::AddRecentDir(const char * RomDir)
     if (HIWORD(RomDir) == NULL) { return; }
 
     //Get Information about the stored rom list
-    size_t MaxRememberedDirs = g_Settings->LoadDword(Directory_RecentGameDirCount);
+    size_t MaxRememberedDirs = UISettingsLoadDword(Directory_RecentGameDirCount);
     strlist RecentDirs;
     size_t i;
     for (i = 0; i < MaxRememberedDirs; i++)
     {
-        stdstr RecentDir = g_Settings->LoadStringIndex(Directory_RecentGameDirIndex, i);
+        stdstr RecentDir = UISettingsLoadStringIndex(Directory_RecentGameDirIndex, i);
         if (RecentDir.empty())
         {
             break;
@@ -191,7 +192,7 @@ void CNotificationImp::AddRecentDir(const char * RomDir)
 
     for (i = 0, iter = RecentDirs.begin(); iter != RecentDirs.end(); iter++, i++)
     {
-        g_Settings->SaveStringIndex(Directory_RecentGameDirIndex, i, *iter);
+        UISettingsSaveStringIndex(Directory_RecentGameDirIndex, i, *iter);
     }
 }
 
@@ -211,7 +212,7 @@ void CNotificationImp::HideRomBrowser(void)
 void CNotificationImp::ShowRomBrowser(void)
 {
     if (m_hWnd == NULL) { return; }
-    if (g_Settings->LoadDword(RomBrowser_Enabled))
+    if (UISettingsLoadBool(RomBrowser_Enabled))
     {
         //Display the rom browser
         m_hWnd->ShowRomList();
@@ -250,18 +251,18 @@ void CNotificationImp::BreakPoint(const char * FileName, int LineNumber)
         }
         else
         {
-            if (g_BaseSystem) 
-			{
-				g_BaseSystem->CloseCpu();
-			}
+            if (g_BaseSystem)
+            {
+                g_BaseSystem->CloseCpu();
+            }
         }
     }
     else
     {
         DisplayError("Fatal Error: Stopping emulation");
-		if (g_BaseSystem) 
-		{
-			g_BaseSystem->CloseCpu();
-		}
+        if (g_BaseSystem)
+        {
+            g_BaseSystem->CloseCpu();
+        }
     }
 }

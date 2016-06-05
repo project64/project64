@@ -149,7 +149,7 @@ bool CN64Rom::AllocateAndLoadZipImage(const char * FileLoc, bool LoadBootCodeOnl
     while (port == UNZ_OK && !FoundRom)
     {
         unz_file_info info;
-        char zname[_MAX_PATH];
+        char zname[260];
 
         unzGetCurrentFileInfo(file, &info, zname, sizeof(zname), NULL, 0, NULL, 0);
         if (unzLocateFile(file, zname, 1) != UNZ_OK)
@@ -267,35 +267,48 @@ void CN64Rom::ByteSwapRom()
     }
 }
 
+CICChip CN64Rom::GetCicChipID(uint8_t * RomData, uint64_t * CRC)
+{
+    uint64_t crc = 0;
+    int32_t count;
+
+    for (count = 0x40; count < 0x1000; count += 4)
+    {
+        crc += *(uint32_t *)(RomData + count);
+    }
+    if (CRC != NULL) { *CRC = crc; }
+
+    switch (crc)
+    {
+    case 0x000000D0027FDF31: return CIC_NUS_6101;
+    case 0x000000CFFB631223: return CIC_NUS_6101;
+    case 0x000000D057C85244: return CIC_NUS_6102;
+    case 0x000000D6497E414B: return CIC_NUS_6103;
+    case 0x0000011A49F60E96: return CIC_NUS_6105;
+    case 0x000000D6D5BE5580: return CIC_NUS_6106;
+    case 0x000001053BC19870: return CIC_NUS_5167; //64DD CONVERSION CIC
+    case 0x000000D2E53EF008: return CIC_NUS_8303; //64DD IPL
+    default:
+        return CIC_UNKNOWN;
+    }
+}
+
 void CN64Rom::CalculateCicChip()
 {
-    int64_t CRC = 0;
+    uint64_t CRC = 0;
 
     if (m_ROMImage == NULL)
     {
         m_CicChip = CIC_UNKNOWN;
         return;
     }
-
-    for (int count = 0x40; count < 0x1000; count += 4)
+    m_CicChip = GetCicChipID(m_ROMImage, &CRC);
+    if (m_CicChip == CIC_UNKNOWN)
     {
-        CRC += *(uint32_t *)(m_ROMImage + count);
-    }
-    switch (CRC) {
-    case 0x000000D0027FDF31: m_CicChip = CIC_NUS_6101; break;
-    case 0x000000CFFB631223: m_CicChip = CIC_NUS_6101; break;
-    case 0x000000D057C85244: m_CicChip = CIC_NUS_6102; break;
-    case 0x000000D6497E414B: m_CicChip = CIC_NUS_6103; break;
-    case 0x0000011A49F60E96: m_CicChip = CIC_NUS_6105; break;
-    case 0x000000D6D5BE5580: m_CicChip = CIC_NUS_6106; break;
-    case 0x000001053BC19870: m_CicChip = CIC_NUS_5167; break;	//64DD CONVERSION CIC
-    case 0x000000D2E53EF008: m_CicChip = CIC_NUS_8303; break;	//64DD IPL
-    default:
         if (bHaveDebugger())
         {
             g_Notify->DisplayError(stdstr_f("Unknown CIC checksum:\n%I64X.", CRC).c_str());
         }
-        m_CicChip = CIC_UNKNOWN; break;
     }
 }
 
@@ -398,6 +411,49 @@ bool CN64Rom::IsValidRomImage(uint8_t Test[4])
     if (*((uint32_t *)&Test[0]) == 0x80371240) { return true; }
     if (*((uint32_t *)&Test[0]) == 0x40072780) { return true; } //64DD IPL
     return false;
+}
+
+void CN64Rom::CleanRomName(char * RomName, bool byteswap)
+{
+    if (byteswap)
+    {
+        for (int count = 0; count < 20; count += 4)
+        {
+            RomName[count] ^= RomName[count + 3];
+            RomName[count + 3] ^= RomName[count];
+            RomName[count] ^= RomName[count + 3];
+            RomName[count + 1] ^= RomName[count + 2];
+            RomName[count + 2] ^= RomName[count + 1];
+            RomName[count + 1] ^= RomName[count + 2];
+        }
+    }
+
+    //truncate all the spaces at the end of the string
+    for (int count = 19; count >= 0; count--)
+    {
+        if (RomName[count] == ' ')
+        {
+            RomName[count] = '\0';
+        }
+        else if (RomName[count] == '\0')
+        {
+        }
+        else
+        {
+            count = -1;
+        }
+    }
+    RomName[20] = '\0';
+
+    //remove all /,\,: from the string
+    for (int count = 0; count < (int)strlen(RomName); count++)
+    {
+        switch (RomName[count])
+        {
+        case '/': case '\\': RomName[count] = '-'; break;
+        case ':': RomName[count] = ';'; break;
+        }
+    }
 }
 
 void CN64Rom::NotificationCB(const char * Status, CN64Rom * /*_this*/)
@@ -508,49 +564,16 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
     }
 
     char RomName[260];
-    int  count;
     //Get the header from the rom image
     memcpy(&RomName[0], (void *)(m_ROMImage + 0x20), 20);
-    for (count = 0; count < 20; count += 4)
-    {
-        RomName[count] ^= RomName[count + 3];
-        RomName[count + 3] ^= RomName[count];
-        RomName[count] ^= RomName[count + 3];
-        RomName[count + 1] ^= RomName[count + 2];
-        RomName[count + 2] ^= RomName[count + 1];
-        RomName[count + 1] ^= RomName[count + 2];
-    }
+    CN64Rom::CleanRomName(RomName);
 
-    //truncate all the spaces at the end of the string
-    for (count = 19; count >= 0; count--)
-    {
-        if (RomName[count] == ' ')
-        {
-            RomName[count] = '\0';
-        }
-        else if (RomName[count] == '\0')
-        {
-        }
-        else
-        {
-            count = -1;
-        }
-    }
-    RomName[20] = '\0';
     if (strlen(RomName) == 0)
     {
         strcpy(RomName, CPath(FileLoc).GetName().c_str());
+        CN64Rom::CleanRomName(RomName, false);
     }
 
-    //remove all /,\,: from the string
-    for (count = 0; count < (int)strlen(RomName); count++)
-    {
-        switch (RomName[count])
-        {
-        case '/': case '\\': RomName[count] = '-'; break;
-        case ':': RomName[count] = ';'; break;
-        }
-    }
     WriteTrace(TraceN64System, TraceDebug, "RomName %s", RomName);
 
     m_RomName = RomName;
@@ -686,48 +709,13 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
     }
 
     char RomName[260];
-    int  count;
     //Get the header from the rom image
     memcpy(&RomName[0], (void *)(m_ROMImage + 0x20), 20);
-    for (count = 0; count < 20; count += 4)
-    {
-        RomName[count] ^= RomName[count + 3];
-        RomName[count + 3] ^= RomName[count];
-        RomName[count] ^= RomName[count + 3];
-        RomName[count + 1] ^= RomName[count + 2];
-        RomName[count + 2] ^= RomName[count + 1];
-        RomName[count + 1] ^= RomName[count + 2];
-    }
-
-    //truncate all the spaces at the end of the string
-    for (count = 19; count >= 0; count--)
-    {
-        if (RomName[count] == ' ')
-        {
-            RomName[count] = '\0';
-        }
-        else if (RomName[count] == '\0')
-        {
-        }
-        else
-        {
-            count = -1;
-        }
-    }
-    RomName[20] = '\0';
+    CN64Rom::CleanRomName(RomName);
     if (strlen(RomName) == 0)
     {
         strcpy(RomName, CPath(FileLoc).GetName().c_str());
-    }
-
-    //remove all /,\,: from the string
-    for (count = 0; count < (int)strlen(RomName); count++)
-    {
-        switch (RomName[count])
-        {
-        case '/': case '\\': RomName[count] = '-'; break;
-        case ':': RomName[count] = ';'; break;
-        }
+        CN64Rom::CleanRomName(RomName,false);
     }
     WriteTrace(TraceN64System, TraceDebug, "RomName %s", RomName);
 
@@ -769,6 +757,7 @@ void CN64Rom::SaveRomSettingID(bool temp)
     g_Settings->SaveBool(Game_TempLoaded, temp);
     g_Settings->SaveString(Game_GameName, m_RomName.c_str());
     g_Settings->SaveString(Game_IniKey, m_RomIdent.c_str());
+    g_Settings->SaveString(Game_UniqueSaveDir, stdstr_f("%s-%s", m_RomName.c_str(), m_MD5.c_str() ).c_str());
 
     switch (GetCountry())
     {

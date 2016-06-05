@@ -168,13 +168,13 @@ VIRTUAL_KEY CMenuShortCutKey::m_VirtualKeyList[] = {
 };
 
 CMenuShortCutKey::CMenuShortCutKey(WORD key, bool bCtrl, bool bAlt, bool bShift, ACCESS_MODE AccessMode, bool bUserAdded, bool bInactive) :
-m_key(key),
-m_bCtrl(bCtrl),
-m_bAlt(bAlt),
-m_bShift(bShift),
-m_AccessMode(AccessMode),
-m_bUserAdded(bUserAdded),
-m_bInactive(bInactive)
+    m_key(key),
+    m_bCtrl(bCtrl),
+    m_bAlt(bAlt),
+    m_bShift(bShift),
+    m_AccessMode(AccessMode),
+    m_bUserAdded(bUserAdded),
+    m_bInactive(bInactive)
 {
     m_ShortCutName = "";
     for (int i = 0, n = sizeof(m_VirtualKeyList) / sizeof(m_VirtualKeyList[0]); i < n; i++)
@@ -316,6 +316,7 @@ void CShortCuts::Load(bool InitialValues)
     AddShortCut(ID_SYSTEM_PAUSE, STR_SHORTCUT_SYSTEMMENU, MENU_PAUSE, CMenuShortCutKey::GAME_RUNNING);
     AddShortCut(ID_SYSTEM_BITMAP, STR_SHORTCUT_SYSTEMMENU, MENU_BITMAP, CMenuShortCutKey::GAME_RUNNING);
     AddShortCut(ID_SYSTEM_LIMITFPS, STR_SHORTCUT_SYSTEMMENU, MENU_LIMIT_FPS, CMenuShortCutKey::GAME_RUNNING);
+    AddShortCut(ID_SYSTEM_SWAPDISK, STR_SHORTCUT_SYSTEMMENU, MENU_SWAPDISK, CMenuShortCutKey::GAME_RUNNING_WINDOW);
     AddShortCut(ID_SYSTEM_SAVE, STR_SHORTCUT_SYSTEMMENU, MENU_SAVE, CMenuShortCutKey::GAME_RUNNING);
     AddShortCut(ID_SYSTEM_SAVEAS, STR_SHORTCUT_SYSTEMMENU, MENU_SAVE_AS, CMenuShortCutKey::GAME_RUNNING_WINDOW);
     AddShortCut(ID_SYSTEM_RESTORE, STR_SHORTCUT_SYSTEMMENU, MENU_RESTORE, CMenuShortCutKey::GAME_RUNNING);
@@ -350,7 +351,7 @@ void CShortCuts::Load(bool InitialValues)
     AddShortCut(ID_OPTIONS_CPU_USAGE, STR_SHORTCUT_OPTIONS, MENU_SHOW_CPU, CMenuShortCutKey::GAME_RUNNING);
     AddShortCut(ID_OPTIONS_SETTINGS, STR_SHORTCUT_OPTIONS, MENU_SETTINGS, CMenuShortCutKey::NOT_IN_FULLSCREEN);
 
-    CPath ShortCutFile = g_Settings->LoadStringVal(SupportFile_ShortCuts);
+    CPath ShortCutFile = UISettingsLoadStringVal(SupportFile_ShortCuts);
     if (!ShortCutFile.Exists() || InitialValues)
     {
         m_ShortCuts.find(ID_FILE_OPEN_ROM)->second.AddShortCut('O', TRUE, false, false, CMenuShortCutKey::GAME_RUNNING);
@@ -383,6 +384,7 @@ void CShortCuts::Load(bool InitialValues)
         m_ShortCuts.find(ID_SYSTEM_PAUSE)->second.AddShortCut(VK_PAUSE, false, false, false, CMenuShortCutKey::GAME_RUNNING);
         m_ShortCuts.find(ID_SYSTEM_BITMAP)->second.AddShortCut(VK_F3, false, false, false, CMenuShortCutKey::GAME_RUNNING);
         m_ShortCuts.find(ID_SYSTEM_LIMITFPS)->second.AddShortCut(VK_F4, false, false, false, CMenuShortCutKey::GAME_RUNNING);
+        m_ShortCuts.find(ID_SYSTEM_SWAPDISK)->second.AddShortCut('D', true, false, false, CMenuShortCutKey::GAME_RUNNING_WINDOW);
         m_ShortCuts.find(ID_SYSTEM_SAVE)->second.AddShortCut(VK_F5, false, false, false, CMenuShortCutKey::GAME_RUNNING);
         m_ShortCuts.find(ID_SYSTEM_RESTORE)->second.AddShortCut(VK_F7, false, false, false, CMenuShortCutKey::GAME_RUNNING);
         m_ShortCuts.find(ID_SYSTEM_LOAD)->second.AddShortCut('L', true, false, false, CMenuShortCutKey::GAME_RUNNING_WINDOW);
@@ -422,7 +424,7 @@ void CShortCuts::Save(void)
 {
     CGuard CS(m_CS);
 
-    stdstr FileName = g_Settings->LoadStringVal(SupportFile_ShortCuts);
+    stdstr FileName = UISettingsLoadStringVal(SupportFile_ShortCuts);
     FILE *file = fopen(FileName.c_str(), "w");
     if (file == NULL)
     {
@@ -455,9 +457,7 @@ HACCEL CShortCuts::GetAcceleratorTable(void)
     CMenuShortCutKey::ACCESS_MODE AccessLevel = CMenuShortCutKey::GAME_NOT_RUNNING;
     if (g_Settings->LoadBool(GameRunning_CPU_Running))
     {
-        AccessLevel = g_Settings->LoadBool(UserInterface_InFullScreen) ?
-            CMenuShortCutKey::GAME_RUNNING_FULLSCREEN :
-            CMenuShortCutKey::GAME_RUNNING_WINDOW;
+        AccessLevel = UISettingsLoadBool(UserInterface_InFullScreen) ? CMenuShortCutKey::GAME_RUNNING_FULLSCREEN : CMenuShortCutKey::GAME_RUNNING_WINDOW;
     }
 
     int size = 0, MaxSize = m_ShortCuts.size() * 5;

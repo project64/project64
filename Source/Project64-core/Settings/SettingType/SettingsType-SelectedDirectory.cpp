@@ -12,11 +12,11 @@
 #include "SettingsType-SelectedDirectory.h"
 
 CSettingTypeSelectedDirectory::CSettingTypeSelectedDirectory(const char * Name, SettingID InitialDir, SettingID SelectedDir, SettingID UseSelected, SettingID NotifyChangeId) :
-m_Name(Name),
-m_InitialDir(InitialDir),
-m_SelectedDir(SelectedDir),
-m_UseSelected(UseSelected),
-m_NotifyChangeId(NotifyChangeId)
+    m_Name(Name),
+    m_InitialDir(InitialDir),
+    m_SelectedDir(SelectedDir),
+    m_UseSelected(UseSelected),
+    m_NotifyChangeId(NotifyChangeId)
 {
     g_Settings->RegisterChangeCB(m_InitialDir, this, (CSettings::SettingChangedFunc)DirectoryChanged);
     g_Settings->RegisterChangeCB(m_SelectedDir, this, (CSettings::SettingChangedFunc)DirectoryChanged);
@@ -28,6 +28,12 @@ CSettingTypeSelectedDirectory::~CSettingTypeSelectedDirectory()
     g_Settings->UnregisterChangeCB(m_InitialDir, this, (CSettings::SettingChangedFunc)DirectoryChanged);
     g_Settings->UnregisterChangeCB(m_SelectedDir, this, (CSettings::SettingChangedFunc)DirectoryChanged);
     g_Settings->UnregisterChangeCB(m_UseSelected, this, (CSettings::SettingChangedFunc)DirectoryChanged);
+}
+
+bool CSettingTypeSelectedDirectory::IsSettingSet(void) const
+{
+    SettingID DirSettingId = g_Settings->LoadBool(m_UseSelected) ? m_SelectedDir : m_InitialDir;
+    return g_Settings->IsSettingSet(DirSettingId);
 }
 
 bool CSettingTypeSelectedDirectory::Load(int /*Index*/, bool & /*Value*/) const
@@ -75,9 +81,9 @@ void CSettingTypeSelectedDirectory::Save(int /*Index*/, uint32_t /*Value*/)
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeSelectedDirectory::Save(int /*Index*/, const stdstr & /*Value*/)
+void CSettingTypeSelectedDirectory::Save(int Index, const stdstr & Value)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    Save(Index, Value.c_str());
 }
 
 void CSettingTypeSelectedDirectory::Save(int /*Index*/, const char * Value)

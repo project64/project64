@@ -17,6 +17,7 @@ public:
     virtual ~CSettingTypeApplicationPath();
 
     CSettingTypeApplicationPath(const char * Section, const char * Name, SettingID DefaultSetting );
+    bool IsSettingSet(void) const;
 
     //return the values
     virtual bool Load   ( int32_t Index, stdstr & Value ) const;

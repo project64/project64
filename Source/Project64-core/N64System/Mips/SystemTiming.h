@@ -12,6 +12,7 @@
 
 #include <Common/LogClass.h>
 #include <Project64-core/N64System/N64Types.h>
+#include <Project64-core/3rdParty/zip.h>
 
 class CSystemTimer
 {
@@ -35,7 +36,11 @@ public:
 
     struct TIMER_DETAILS
     {
-        bool    Active;
+        union 
+        {
+            int64_t reserved;
+            bool Active;
+        };
         int64_t CyclesToTimer;
     };
 
@@ -50,8 +55,10 @@ public:
     void      UpdateCompareTimer();
     bool      SaveAllowed();
 
-    void      SaveData(void * file) const;
-    void      LoadData(void * file);
+    void      SaveData(zipFile & file) const;
+    void      SaveData(CFile & file) const;
+    void      LoadData(zipFile & file);
+    void      LoadData(CFile & file);
 
     void RecordDifference(CLog &LogFile, const CSystemTimer& rSystemTimer);
 

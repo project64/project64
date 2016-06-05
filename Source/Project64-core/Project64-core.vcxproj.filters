@@ -70,6 +70,15 @@
     <Filter Include="Header Files\3rd Party\Zlib">
       <UniqueIdentifier>{1478740a-b66b-41bd-833c-917c0cb85047}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Rom List">
+      <UniqueIdentifier>{1cc42db5-377e-4882-9afa-4e6b2a3e389d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Rom List">
+      <UniqueIdentifier>{1030356f-55d6-4fef-9ee2-64c45b9c8ff2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\N64 System\Arm">
+      <UniqueIdentifier>{8c526293-ee42-44b0-938f-f3c1cc18a986}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -306,6 +315,9 @@
     <ClCompile Include="N64System\Mips\Transferpak.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
+    <ClCompile Include="RomList\RomList.cpp">
+      <Filter>Source Files\Rom List</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -524,9 +536,6 @@
     <ClInclude Include="N64System\Mips\FlashRam.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Mips\MemoryClass.h">
-      <Filter>Header Files\N64 System\Mips</Filter>
-    </ClInclude>
     <ClInclude Include="N64System\Mips\MemoryVirtualMem.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
@@ -595,6 +604,12 @@
     </ClInclude>
     <ClInclude Include="N64System\Mips\GBCart.h">
       <Filter>Header Files\N64 System\Mips</Filter>
+    </ClInclude>
+    <ClInclude Include="RomList\RomList.h">
+      <Filter>Header Files\Rom List</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Arm\ArmOpCode.h">
+      <Filter>Source Files\N64 System\Arm</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

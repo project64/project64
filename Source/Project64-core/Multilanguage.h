@@ -81,6 +81,7 @@ enum LanguageStringID
     MENU_RESUME = 132,
     MENU_RESET_SOFT = 133, //added in build 1.7.50
     MENU_RESET_HARD = 134, //added in build 1.7.50
+    MENU_SWAPDISK = 135,   //added in build 2.2.????
 
     //Options Menu
     MENU_OPTIONS = 140,
@@ -264,6 +265,7 @@ enum LanguageStringID
     OPTION_DISPLAY_FR = 465,
     OPTION_CHANGE_FR = 466,
     OPTION_CHECK_RUNNING = 467,
+    OPTION_UNIQUE_SAVE_DIR = 468,
 
     //Rom Browser Tab
     RB_MAX_ROMS = 480,

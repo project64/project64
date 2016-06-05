@@ -58,6 +58,9 @@ extern uint32_t frame_count; // frame counter
 
 #define MAX_TMU     2
 
+#define MAXCMD 0x100000
+const unsigned int maxCMDMask = MAXCMD - 1;
+
 #define TEXMEM_2MB_EDGE 2097152
 
 // Supported flags

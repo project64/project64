@@ -86,6 +86,7 @@
     <ClCompile Include="Plugins\PluginBase.cpp" />
     <ClCompile Include="Plugins\PluginClass.cpp" />
     <ClCompile Include="Plugins\RSPPlugin.cpp" />
+    <ClCompile Include="RomList\RomList.cpp" />
     <ClCompile Include="Settings\DebugSettings.cpp" />
     <ClCompile Include="Settings\GameSettings.cpp" />
     <ClCompile Include="Settings\LoggingSettings.cpp" />
@@ -127,6 +128,7 @@
     <ClInclude Include="Logging.h" />
     <ClInclude Include="Multilanguage.h" />
     <ClInclude Include="Multilanguage\LanguageClass.h" />
+    <ClInclude Include="N64System\Arm\ArmOpCode.h" />
     <ClInclude Include="N64System\CheatClass.h" />
     <ClInclude Include="N64System\FramePerSecondClass.h" />
     <ClInclude Include="N64System\Interpreter\InterpreterCPU.h" />
@@ -138,7 +140,6 @@
     <ClInclude Include="N64System\Mips\Eeprom.h" />
     <ClInclude Include="N64System\Mips\FlashRam.h" />
     <ClInclude Include="N64System\Mips\GBCart.h" />
-    <ClInclude Include="N64System\Mips\MemoryClass.h" />
     <ClInclude Include="N64System\Mips\MemoryVirtualMem.h" />
     <ClInclude Include="N64System\Mips\Mempak.h" />
     <ClInclude Include="N64System\Mips\OpCode.h" />
@@ -181,6 +182,7 @@
     <ClInclude Include="Plugins\PluginBase.h" />
     <ClInclude Include="Plugins\PluginClass.h" />
     <ClInclude Include="Plugins\RSPPlugin.h" />
+    <ClInclude Include="RomList\RomList.h" />
     <ClInclude Include="Settings\DebugSettings.h" />
     <ClInclude Include="Settings\GameSettings.h" />
     <ClInclude Include="Settings\LoggingSettings.h" />

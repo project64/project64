@@ -275,6 +275,7 @@
 #define IDC_CHECK_RUNNING               1144
 #define IDC_BASIC_MODE                  1145
 #define IDC_JAP                         1145
+#define IDC_UNIQUE_SAVE_DIR             1145
 #define IDC_PAL                         1146
 #define IDC_USA                         1147
 #define IDC_SHELL_INT_TEXT              1149

@@ -11,6 +11,7 @@
 #pragma once
 
 #include <Common/SyncEvent.h>
+#include <Common/Thread.h>
 #include <Project64-core/Settings/N64SystemSettings.h>
 #include <Project64-core/N64System/ProfilingClass.h>
 #include <Project64-core/N64System/Recompiler/RecompilerClass.h>
@@ -103,14 +104,8 @@ private:
     friend CSystemTimer;
 
     //Used for loading and potentially executing the CPU in its own thread.
-    struct ThreadInfo
-    {
-        void** ThreadHandle;
-        uint32_t ThreadID;
-    };
-
-    static void StartEmulationThread(ThreadInfo * Info);
-    static bool EmulationStarting(void * hThread, uint32_t ThreadId);
+    static void StartEmulationThread(CThread * thread);
+    static bool EmulationStarting(CThread * thread);
     static void StartEmulationThead();
 
     void   ExecuteCPU();
@@ -166,8 +161,7 @@ private:
     int32_t  m_CyclesToSkip;
 
     //Handle to the cpu thread
-    void * m_CPU_Handle;
-    uint32_t  m_CPU_ThreadID;
+    CThread * m_thread;
 
     //Handle to pause mutex
     SyncEvent m_hPauseEvent;

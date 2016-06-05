@@ -12,24 +12,19 @@
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/Notification.h>
 #include <Common/Util.h>
-#include <Windows.h>
-#include <Objbase.h>
 
 void  CN64System::StartEmulationThead()
 {
-    ThreadInfo * Info = new ThreadInfo;
-    HANDLE  * hThread = new HANDLE;
-    *hThread = NULL;
-
-    //create the needed info into a structure to pass as one parameter
-    //for creating a thread
-    Info->ThreadHandle = hThread;
-
-    *hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)StartEmulationThread, Info, 0, (LPDWORD)&Info->ThreadID);
+    WriteTrace(TraceN64System, TraceDebug, "Start");
+    CThread * thread = new CThread((CThread::CTHREAD_START_ROUTINE)StartEmulationThread);
+    thread->Start(thread);
+    WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
-void CN64System::StartEmulationThread(ThreadInfo * Info)
+void CN64System::StartEmulationThread(CThread * thread)
 {
+    WriteTrace(TraceN64System, TraceDebug, "Start");
+#ifdef _WIN32
     if (g_Settings->LoadBool(Setting_CN64TimeCritical))
     {
         SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
@@ -37,61 +32,57 @@ void CN64System::StartEmulationThread(ThreadInfo * Info)
 
     CoInitialize(NULL);
 
-    EmulationStarting(*Info->ThreadHandle, Info->ThreadID);
-    delete ((HANDLE  *)Info->ThreadHandle);
-    delete Info;
+    EmulationStarting(thread);
 
     CoUninitialize();
+#else
+    EmulationStarting(thread);
+#endif
+    WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
 void CN64System::CloseCpu()
 {
-    if (m_CPU_Handle == NULL)
+    WriteTrace(TraceN64System, TraceDebug, "Start");
+    if (m_thread == NULL)
     {
         return;
     }
 
+    WriteTrace(TraceN64System, TraceDebug, "Setting end emulation");
     m_EndEmulation = true;
     if (g_Settings->LoadBool(GameRunning_CPU_Paused))
     {
+        WriteTrace(TraceN64System, TraceDebug, "Resume cpu");
         m_hPauseEvent.Trigger();
     }
 
-    if (GetCurrentThreadId() == m_CPU_ThreadID)
+    if (CThread::GetCurrentThreadId() == m_thread->ThreadID())
     {
+        WriteTrace(TraceN64System, TraceDebug, "CloseCpu called on emulation thread");
         ExternalEvent(SysEvent_CloseCPU);
         return;
     }
 
-    HANDLE hThread = m_CPU_Handle;
-    m_CPU_Handle = NULL;
+    CThread * hThread = m_thread;
+    m_thread = NULL;
     for (int count = 0; count < 200; count++)
     {
+        if (hThread == NULL || !hThread->isRunning())
+        {
+            WriteTrace(TraceN64System, TraceDebug, "Thread no longer running");
+            break;
+        }
+        WriteTrace(TraceN64System, TraceDebug, "%d - waiting", count);
         pjutil::Sleep(100);
+        WriteTrace(TraceN64System, TraceDebug, "%d - Finished wait", count);
         if (g_Notify->ProcessGuiMessages())
         {
             return;
         }
-
-        DWORD ExitCode;
-        if (GetExitCodeThread(hThread, &ExitCode))
-        {
-            if (ExitCode != STILL_ACTIVE)
-            {
-                break;
-            }
-        }
     }
-
-    if (hThread)
-    {
-        DWORD ExitCode;
-        GetExitCodeThread(hThread, &ExitCode);
-        if (ExitCode == STILL_ACTIVE)
-        {
-            TerminateThread(hThread, 0);
-        }
-    }
-    CloseHandle(hThread);
     CpuStopped();
+    WriteTrace(TraceN64System, TraceDebug, "Deleting thread object");
+    delete hThread;
+    WriteTrace(TraceN64System, TraceDebug, "Done");
 }

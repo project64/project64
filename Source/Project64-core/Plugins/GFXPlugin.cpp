@@ -38,8 +38,10 @@ InitiateDebugger(NULL)
 
 CGfxPlugin::~CGfxPlugin()
 {
-    Close();
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Start");
+    Close(NULL);
     UnloadPlugin();
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Done");
 }
 
 bool CGfxPlugin::LoadFunctions(void)
@@ -55,6 +57,10 @@ bool CGfxPlugin::LoadFunctions(void)
     LoadFunction(ViStatusChanged);
     LoadFunction(ViWidthChanged);
     LoadFunction(SoftReset);
+#ifdef ANDROID
+    LoadFunction(SurfaceCreated);
+    LoadFunction(SurfaceChanged);
+#endif
 
     // version 0x104 functions
     _LoadFunction("DrawFullScreenStatus", DrawStatus);
@@ -104,7 +110,7 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
     WriteTrace(TraceGFXPlugin, TraceDebug, "Starting");
     if (m_Initialized)
     {
-        Close();
+        Close(Window);
     }
 
     typedef struct
@@ -150,6 +156,9 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
         uint32_t * VI__Y_SCALE_REG;
 
         void(CALL *CheckInterrupts)(void);
+#ifdef ANDROID
+        void(CALL *SwapBuffers)(void);
+#endif
     } GFX_INFO;
 
     //Get Function from DLL
@@ -164,8 +173,18 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
     GFX_INFO Info = { 0 };
 
     Info.MemoryBswaped = true;
-    Info.hWnd = Window ? Window->GetWindowHandle() : NULL;
-    Info.hStatusBar = Window ? Window->GetStatusBar() : NULL;
+#if defined(ANDROID) || defined(__ANDROID__)
+    Info.SwapBuffers = SwapBuffers;
+#endif
+    Info.hWnd = NULL;
+    Info.hStatusBar = NULL;
+#ifdef _WIN32
+    if (Window != NULL)
+    {
+        Info.hWnd       = Window->GetWindowHandle();
+        Info.hStatusBar = Window->GetStatusBar();
+    }
+#endif
     Info.CheckInterrupts = DummyCheckInterrupts;
 
     // We are initializing the plugin before any rom is loaded so we do not have any correct
@@ -241,6 +260,7 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 
 void CGfxPlugin::UnloadPluginDetails(void)
 {
+    WriteTrace(TraceGFXPlugin, TraceDebug, "start");
     if (m_LibHandle != NULL)
     {
         pjutil::DynLibClose(m_LibHandle);
@@ -265,6 +285,7 @@ void CGfxPlugin::UnloadPluginDetails(void)
     ViWidthChanged = NULL;
     GetRomBrowserMenu = NULL;
     OnRomBrowserMenuItem = NULL;
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Done");
 }
 
 void CGfxPlugin::ProcessMenuItem(int32_t id)
@@ -274,3 +295,16 @@ void CGfxPlugin::ProcessMenuItem(int32_t id)
         m_GFXDebug.ProcessMenuItem(id);
     }
 }
+
+#ifdef ANDROID
+void CGfxPlugin::SwapBuffers(void)
+{
+    RenderWindow * render = g_Plugins ? g_Plugins->MainWindow() : NULL;
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Start (render: %p)",render);
+    if (render != NULL)
+    {
+        render->SwapWindow();
+    }
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Done");
+}
+#endif

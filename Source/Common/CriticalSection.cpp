@@ -1,16 +1,29 @@
 #include "stdafx.h"
-#include <windows.h>
 
 CriticalSection::CriticalSection()
 {
-	m_cs = new CRITICAL_SECTION;
-	::InitializeCriticalSection((CRITICAL_SECTION *)m_cs);
+#ifdef _WIN32
+    m_cs = new CRITICAL_SECTION;
+    ::InitializeCriticalSection((CRITICAL_SECTION *)m_cs);
+#else
+    m_cs = new pthread_mutex_t;
+
+    pthread_mutexattr_t mAttr;
+    pthread_mutexattr_settype(&mAttr, PTHREAD_MUTEX_RECURSIVE_NP);
+    pthread_mutex_init((pthread_mutex_t *)m_cs, &mAttr);
+    pthread_mutexattr_destroy(&mAttr);
+#endif
 }
 
 CriticalSection::~CriticalSection(void)
 {
-	::DeleteCriticalSection((CRITICAL_SECTION *)m_cs);
-	delete (CRITICAL_SECTION *)m_cs;
+#ifdef _WIN32
+    ::DeleteCriticalSection((CRITICAL_SECTION *)m_cs);
+    delete (CRITICAL_SECTION *)m_cs;
+#else
+    pthread_mutex_destroy((pthread_mutex_t *)m_cs);
+    delete (pthread_mutex_t *)m_cs;
+#endif
 }
 
 /**
@@ -21,7 +34,11 @@ CriticalSection::~CriticalSection(void)
 */
 void CriticalSection::enter(void)
 {
-	::EnterCriticalSection((CRITICAL_SECTION *)m_cs);
+#ifdef _WIN32
+    ::EnterCriticalSection((CRITICAL_SECTION *)m_cs);
+#else
+    pthread_mutex_lock((pthread_mutex_t *)m_cs);
+#endif
 }
 
 /**
@@ -33,5 +50,9 @@ void CriticalSection::enter(void)
 */
 void CriticalSection::leave(void)
 {
-	::LeaveCriticalSection((CRITICAL_SECTION *)m_cs);
+#ifdef _WIN32
+    ::LeaveCriticalSection((CRITICAL_SECTION *)m_cs);
+#else
+    pthread_mutex_unlock((pthread_mutex_t *)m_cs);
+#endif
 }

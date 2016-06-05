@@ -36,6 +36,8 @@ public:
 
     //Get a message id for the reason that you failed to load the rom
     LanguageStringID GetError() const { return m_ErrorMsg; }
+    static CICChip GetCicChipID(uint8_t * RomData, uint64_t * CRC = NULL);
+    static void CleanRomName(char * RomName, bool byteswap = true);
 
 private:
     bool   AllocateRomImage(uint32_t RomFileSize);

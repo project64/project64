@@ -1,17 +1,15 @@
 #define BaseDir ExtractFilePath(ExtractFilePath(ExtractFilePath(SourcePath)))
 #define AppVersion GetFileVersion(BaseDir + "\Bin\" + Configuration + "\Project64.exe")
 
-#include BaseDir+"\Source\Installer\binno\binno.iss"
-
 [Setup]
 AppId={{BEB5FB69-4080-466F-96C4-F15DF271718B}
 AppName=Project64
 AppVersion={#AppVersion}
-DefaultDirName={pf}\Project64 2.2
+DefaultDirName={pf}\Project64 2.3
 VersionInfoVersion={#AppVersion}
 OutputDir={#BaseDir}\Bin\{#Configuration}
-OutputBaseFilename=Setup Project64 2.2
-VersionInfoDescription=Installation Setup of Project64 2.2
+OutputBaseFilename=Setup Project64 2.3
+VersionInfoDescription=Installation Setup of Project64 2.3
 Compression=lzma2/ultra64
 WizardImageFile=Installer-Sidebar.bmp
 WizardSmallImageFile=Pj64LogoSmallImage.bmp
@@ -44,32 +42,7 @@ Name: "{app}\Screenshots"; Permissions: users-modify
 Name: "{app}\Textures"; Permissions: users-modify
 
 [Icons]
-Name: "{commonprograms}\Project64 2.2\Project64"; Filename: "{app}\Project64.exe"
-Name: "{commonprograms}\Project64 2.2\Uninstall Project64 2.2"; Filename: "{uninstallexe}"; Parameters: "/LOG"
-Name: "{commonprograms}\Project64 2.2\Support"; Filename: "http://forum.pj64-emu.com"
+Name: "{commonprograms}\Project64 2.3\Project64"; Filename: "{app}\Project64.exe"
+Name: "{commonprograms}\Project64 2.3\Uninstall Project64 2.3"; Filename: "{uninstallexe}"; Parameters: "/LOG"
+Name: "{commonprograms}\Project64 2.3\Support"; Filename: "http://forum.pj64-emu.com"
 
-[Code]
-function HaveCommandlineParam (inParam: String): Boolean;
-var
-  LoopVar : Integer;
-begin
-  LoopVar := 1;
-  Result := false;
-
-  while LoopVar <= ParamCount do
-  begin
-    if ((ParamStr(LoopVar) = '-' + inParam) or (ParamStr(LoopVar) = '/' + inParam)) then
-    begin
-      Result := true;
-      Break;
-    end;
-    LoopVar := LoopVar + 1;
-  end;
-end;
-
-procedure InitializeWizard();
-begin  
-  if ((WizardSilent() <> true) and (HaveCommandlineParam('noads') <> true)) then begin
-	  CreateBINNOPage(wpSelectTasks,'pj64emu','pj64emu');
-  end;
-end;

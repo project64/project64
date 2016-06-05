@@ -258,14 +258,14 @@ void FindBestDepthBias()
     for (x = 0, f = 1.0f; f <= 65536.0f; x += 4, f *= 2.0f) {
         float z;
 
-        vertices[0][0] = float(x + 4 - widtho) / (width / 2);
-        vertices[0][1] = float(0 + 0 - heighto) / (height / 2);
-        vertices[1][0] = float(x + 0 - widtho) / (width / 2);
-        vertices[1][1] = float(0 + 0 - heighto) / (height / 2);
-        vertices[2][0] = float(x + 4 - widtho) / (width / 2);
-        vertices[2][1] = float(0 + 4 - heighto) / (height / 2);
-        vertices[3][0] = float(x + 0 - widtho) / (width / 2);
-        vertices[3][1] = float(0 + 4 - heighto) / (height / 2);
+        vertices[0][0] = float(x + 4 - widtho) / (g_width / 2);
+        vertices[0][1] = float(0 + 0 - heighto) / (g_height / 2);
+        vertices[1][0] = float(x + 0 - widtho) / (g_width / 2);
+        vertices[1][1] = float(0 + 0 - heighto) / (g_height / 2);
+        vertices[2][0] = float(x + 4 - widtho) / (g_width / 2);
+        vertices[2][1] = float(0 + 4 - heighto) / (g_height / 2);
+        vertices[3][0] = float(x + 0 - widtho) / (g_width / 2);
+        vertices[3][1] = float(0 + 4 - heighto) / (g_height / 2);
         glPolygonOffset(0, f);
 
         glBegin(GL_TRIANGLE_STRIP);
@@ -387,8 +387,8 @@ grDrawTriangle(const void *a, const void *b, const void *c)
         else
             glSecondaryColor3f((1.0f / *a_fog) / 255.0f, 0.0f, 0.0f);
     }
-    glVertex4f((*a_x - (float)widtho) / (float)(width / 2) / *a_q,
-        -(*a_y - (float)heighto) / (float)(height / 2) / *a_q, ZCALC(*a_z, *a_q), 1.0f / *a_q);
+    glVertex4f((*a_x - (float)widtho) / (float)(g_width / 2) / *a_q,
+        -(*a_y - (float)heighto) / (float)(g_height / 2) / *a_q, ZCALC(*a_z, *a_q), 1.0f / *a_q);
 
     if (nbTextureUnits > 2)
     {
@@ -415,8 +415,8 @@ grDrawTriangle(const void *a, const void *b, const void *c)
             glSecondaryColor3f((1.0f / *b_fog) / 255.0f, 0.0f, 0.0f);
     }
 
-    glVertex4f((*b_x - (float)widtho) / (float)(width / 2) / *b_q,
-        -(*b_y - (float)heighto) / (float)(height / 2) / *b_q, ZCALC(*b_z, *b_q), 1.0f / *b_q);
+    glVertex4f((*b_x - (float)widtho) / (float)(g_width / 2) / *b_q,
+        -(*b_y - (float)heighto) / (float)(g_height / 2) / *b_q, ZCALC(*b_z, *b_q), 1.0f / *b_q);
 
     if (nbTextureUnits > 2)
     {
@@ -442,8 +442,8 @@ grDrawTriangle(const void *a, const void *b, const void *c)
         else
             glSecondaryColor3f((1.0f / *c_fog) / 255.0f, 0.0f, 0.0f);
     }
-    glVertex4f((*c_x - (float)widtho) / (float)(width / 2) / *c_q,
-        -(*c_y - (float)heighto) / (float)(height / 2) / *c_q, ZCALC(*c_z, *c_q), 1.0f / *c_q);
+    glVertex4f((*c_x - (float)widtho) / (float)(g_width / 2) / *c_q,
+        -(*c_y - (float)heighto) / (float)(g_height / 2) / *c_q, ZCALC(*c_z, *c_q), 1.0f / *c_q);
 
     glEnd();
     grDisplayGLError("grDrawTriangle");
@@ -500,8 +500,8 @@ grDrawPoint(const void *pt)
         else
             glSecondaryColor3f((1.0f / *fog) / 255.0f, 0.0f, 0.0f);
     }
-    glVertex4f((*x - (float)widtho) / (float)(width / 2) / *q,
-        -(*y - (float)heighto) / (float)(height / 2) / *q, ZCALC(*z, *q), 1.0f / *q);
+    glVertex4f((*x - (float)widtho) / (float)(g_width / 2) / *q,
+        -(*y - (float)heighto) / (float)(g_height / 2) / *q, ZCALC(*z, *q), 1.0f / *q);
 
     glEnd();
     grDisplayGLError("grDrawPoint");
@@ -566,8 +566,8 @@ grDrawLine(const void *a, const void *b)
         else
             glSecondaryColor3f((1.0f / *a_fog) / 255.0f, 0.0f, 0.0f);
     }
-    glVertex4f((*a_x - (float)widtho) / (float)(width / 2) / *a_q,
-        -(*a_y - (float)heighto) / (float)(height / 2) / *a_q, ZCALC(*a_z, *a_q), 1.0f / *a_q);
+    glVertex4f((*a_x - (float)widtho) / (float)(g_width / 2) / *a_q,
+        -(*a_y - (float)heighto) / (float)(g_height / 2) / *a_q, ZCALC(*a_z, *a_q), 1.0f / *a_q);
 
     if (nbTextureUnits > 2)
     {
@@ -593,8 +593,8 @@ grDrawLine(const void *a, const void *b)
         else
             glSecondaryColor3f((1.0f / *b_fog) / 255.0f, 0.0f, 0.0f);
     }
-    glVertex4f((*b_x - (float)widtho) / (float)(width / 2) / *b_q,
-        -(*b_y - (float)heighto) / (float)(height / 2) / *b_q, ZCALC(*b_z, *b_q), 1.0f / *b_q);
+    glVertex4f((*b_x - (float)widtho) / (float)(g_width / 2) / *b_q,
+        -(*b_y - (float)heighto) / (float)(g_height / 2) / *b_q, ZCALC(*b_z, *b_q), 1.0f / *b_q);
 
     glEnd();
     grDisplayGLError("grDrawLine");
@@ -665,8 +665,8 @@ grDrawVertexArray(FxU32 mode, FxU32 Count, void *pointers2)
             else
                 glSecondaryColor3f((1.0f / *fog) / 255.0f, 0.0f, 0.0f);
         }
-        glVertex4f((*x - (float)widtho) / (float)(width / 2) / *q,
-            -(*y - (float)heighto) / (float)(height / 2) / *q, ZCALC(*z, *q), 1.0f / *q);
+        glVertex4f((*x - (float)widtho) / (float)(g_width / 2) / *q,
+            -(*y - (float)heighto) / (float)(g_height / 2) / *q, ZCALC(*z, *q), 1.0f / *q);
     }
     glEnd();
 
@@ -743,8 +743,8 @@ grDrawVertexArrayContiguous(FxU32 mode, FxU32 Count, void *pointers, FxU32 strid
                 glSecondaryColor3f((1.0f / *fog) / 255.0f, 0.0f, 0.0f);
         }
 
-        glVertex4f((*x - (float)widtho) / (float)(width / 2) / *q,
-            -(*y - (float)heighto) / (float)(height / 2) / *q, ZCALC(*z, *q), 1.0f / *q);
+        glVertex4f((*x - (float)widtho) / (float)(g_width / 2) / *q,
+            -(*y - (float)heighto) / (float)(g_height / 2) / *q, ZCALC(*z, *q), 1.0f / *q);
     }
     glEnd();
 

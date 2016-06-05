@@ -24,6 +24,7 @@ CAdvancedOptionsPage::CAdvancedOptionsPage(HWND hParent, const RECT & rcDispay)
     SetDlgItemTextW(m_hWnd, IDC_ZIP, wGS(ADVANCE_COMPRESS).c_str());
     SetDlgItemTextW(m_hWnd, IDC_DEBUGGER, wGS(ADVANCE_DEBUGGER).c_str());
     SetDlgItemTextW(m_hWnd, IDC_REMEMBER_CHEAT, wGS(OPTION_REMEMBER_CHEAT).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_UNIQUE_SAVE_DIR, wGS(OPTION_UNIQUE_SAVE_DIR).c_str());
     SetDlgItemTextW(m_hWnd, IDC_CHECK_RUNNING, wGS(OPTION_CHECK_RUNNING).c_str());
     SetDlgItemTextW(m_hWnd, IDC_DISPLAY_FRAMERATE, wGS(OPTION_CHANGE_FR).c_str());
 
@@ -31,6 +32,7 @@ CAdvancedOptionsPage::CAdvancedOptionsPage(HWND hParent, const RECT & rcDispay)
     AddModCheckBox(GetDlgItem(IDC_ZIP), Setting_AutoZipInstantSave);
     AddModCheckBox(GetDlgItem(IDC_DEBUGGER), Debugger_Enabled);
     AddModCheckBox(GetDlgItem(IDC_REMEMBER_CHEAT), Setting_RememberCheats);
+    AddModCheckBox(GetDlgItem(IDC_UNIQUE_SAVE_DIR), Setting_UniqueSaveDir);
     AddModCheckBox(GetDlgItem(IDC_CHECK_RUNNING), Setting_CheckEmuRunning);
     AddModCheckBox(GetDlgItem(IDC_DISPLAY_FRAMERATE), UserInterface_DisplayFrameRate);
 

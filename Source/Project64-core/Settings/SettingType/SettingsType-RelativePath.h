@@ -21,6 +21,7 @@ public:
 
     bool        IndexBasedSetting ( void ) const { return false; }
     SettingType GetSettingType    ( void ) const { return SettingType_RelativePath; }
+    bool        IsSettingSet(void) const { return false; }
 
     //return the values
     bool Load   ( int32_t /*Index*/, bool & /*Value*/ ) const { return false; };

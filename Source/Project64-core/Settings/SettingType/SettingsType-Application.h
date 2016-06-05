@@ -25,6 +25,7 @@ public:
 
     virtual bool        IndexBasedSetting(void) const { return false; }
     virtual SettingType GetSettingType(void) const { return SettingType_CfgFile; }
+    virtual bool        IsSettingSet(void) const;
 
     //return the values
     virtual bool Load(int32_t Index, bool & Value) const;

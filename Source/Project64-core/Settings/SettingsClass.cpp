@@ -37,7 +37,7 @@
 CSettings * g_Settings = NULL;
 
 CSettings::CSettings() :
-m_NextAutoSettingId(0x200000)
+    m_NextAutoSettingId(0x200000)
 {
 }
 
@@ -84,9 +84,6 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 {
     WriteTrace(TraceAppInit, TraceDebug, "Start");
 
-    //information - temp keys
-    AddHandler(Info_ShortCutsChanged, new CSettingTypeTempBool(false));
-
     //Command Settings
     AddHandler(Cmd_BaseDirectory, new CSettingTypeTempString(BaseDirectory));
     AddHandler(Cmd_ShowHelp, new CSettingTypeTempBool(false));
@@ -105,12 +102,6 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(SupportFile_NotesDefault, new CSettingTypeRelativePath("Config", "Project64.rdn"));
     AddHandler(SupportFile_ExtInfo, new CSettingTypeApplicationPath("", "ExtInfo", SupportFile_ExtInfoDefault));
     AddHandler(SupportFile_ExtInfoDefault, new CSettingTypeRelativePath("Config", "Project64.rdx"));
-    AddHandler(SupportFile_ShortCuts, new CSettingTypeApplicationPath("", "ShortCuts", SupportFile_ShortCutsDefault));
-    AddHandler(SupportFile_ShortCutsDefault, new CSettingTypeRelativePath("Config", "Project64.sc3"));
-    AddHandler(SupportFile_RomListCache, new CSettingTypeApplicationPath("", "RomListCache", SupportFile_RomListCacheDefault));
-    AddHandler(SupportFile_RomListCacheDefault, new CSettingTypeRelativePath("Config", "Project64.cache3"));
-    AddHandler(SupportFile_7zipCache, new CSettingTypeApplicationPath("", "7zipCache", SupportFile_7zipCacheDefault));
-    AddHandler(SupportFile_7zipCacheDefault, new CSettingTypeRelativePath("Config", "Project64.zcache"));
 
     //AddHandler(SyncPluginDir,   new CSettingTypeRelativePath("SyncPlugin",""));
 
@@ -119,20 +110,21 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Setting_UseFromRegistry, new CSettingTypeApplication("Settings", "Use Registry", (uint32_t)false));
     AddHandler(Setting_RdbEditor, new CSettingTypeApplication("", "Rdb Editor", false));
     AddHandler(Setting_CN64TimeCritical, new CSettingTypeApplication("", "CN64TimeCritical", false));
-    AddHandler(Setting_PluginPageFirst, new CSettingTypeApplication("", "Plugin Page First", false));
-    AddHandler(Setting_DisableScrSaver, new CSettingTypeApplication("", "Disable Screen Saver", (uint32_t)true));
-    AddHandler(Setting_AutoSleep, new CSettingTypeApplication("", "Auto Sleep", (uint32_t)true));
     AddHandler(Setting_AutoStart, new CSettingTypeApplication("", "Auto Start", (uint32_t)true));
-    AddHandler(Setting_AutoFullscreen, new CSettingTypeApplication("", "Auto Full Screen", (uint32_t)false));
     AddHandler(Setting_AutoZipInstantSave, new CSettingTypeApplication("", "Auto Zip Saves", (uint32_t)true));
     AddHandler(Setting_EraseGameDefaults, new CSettingTypeApplication("", "Erase on default", (uint32_t)true));
     AddHandler(Setting_CheckEmuRunning, new CSettingTypeApplication("", "Check Running", (uint32_t)true));
 
     AddHandler(Setting_RememberCheats, new CSettingTypeApplication("", "Remember Cheats", (uint32_t)false));
+#ifdef ANDROID
+    AddHandler(Setting_UniqueSaveDir, new CSettingTypeTempBool(true));
+#else
+    AddHandler(Setting_UniqueSaveDir, new CSettingTypeApplication("", "Unique Game Dir", (uint32_t)false));
+#endif
     AddHandler(Setting_CurrentLanguage, new CSettingTypeApplication("", "Current Language", ""));
     AddHandler(Setting_EnableDisk, new CSettingTypeApplication("", "Enable Disk", (uint32_t)true));
     AddHandler(Setting_LanguageDirDefault, new CSettingTypeRelativePath("Lang", ""));
-    AddHandler(Setting_LanguageDir, new CSettingTypeApplicationPath("Directory", "Lang", Setting_LanguageDirDefault));
+    AddHandler(Setting_LanguageDir, new CSettingTypeApplicationPath("Lang Directory", "Directory", Setting_LanguageDirDefault));
 
     AddHandler(Rdb_GoodName, new CSettingTypeRomDatabase("Good Name", Game_GameName));
     AddHandler(Rdb_SaveChip, new CSettingTypeRDBSaveChip("Save Type", SaveChip_Auto));
@@ -152,9 +144,6 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_DelaySi, new CSettingTypeRDBYesNo("Delay SI", false));
     AddHandler(Rdb_32Bit, new CSettingTypeRDBYesNo("32bit", true));
     AddHandler(Rdb_FastSP, new CSettingTypeRDBYesNo("Fast SP", true));
-    AddHandler(Rdb_Status, new CSettingTypeRomDatabase("Status", "Unknown"));
-    AddHandler(Rdb_NotesCore, new CSettingTypeRomDatabase("Core Note", ""));
-    AddHandler(Rdb_NotesPlugin, new CSettingTypeRomDatabase("Plugin Note", ""));
     AddHandler(Rdb_FixedAudio, new CSettingTypeRomDatabase("Fixed Audio", true));
     AddHandler(Rdb_SyncViaAudio, new CSettingTypeRomDatabase("Sync Audio", false));
     AddHandler(Rdb_RspAudioSignal, new CSettingTypeRDBYesNo("Audio Signal", false));
@@ -184,6 +173,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 
     AddHandler(Game_IniKey, new CSettingTypeTempString(""));
     AddHandler(Game_File, new CSettingTypeTempString(""));
+    AddHandler(Game_UniqueSaveDir, new CSettingTypeTempString(""));
     AddHandler(Game_GameName, new CSettingTypeTempString(""));
     AddHandler(Game_GoodName, new CSettingTypeGame("Good Name", Rdb_GoodName));
     AddHandler(Game_TempLoaded, new CSettingTypeTempBool(false));
@@ -208,7 +198,12 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_RspAudioSignal, new CSettingTypeGame("Audio Signal", Rdb_RspAudioSignal));
     AddHandler(Game_32Bit, new CSettingTypeGame("32bit", Rdb_32Bit));
     AddHandler(Game_FastSP, new CSettingTypeGame("Fast SP", Rdb_FastSP));
+#ifdef ANDROID
+    AddHandler(Game_CurrentSaveState, new CSettingTypeTempNumber(1));
+#else
     AddHandler(Game_CurrentSaveState, new CSettingTypeTempNumber(0));
+#endif
+    AddHandler(Game_LastSaveTime, new CSettingTypeTempNumber(0));
     AddHandler(Game_SyncViaAudio, new CSettingTypeGame("Sync Audio", Rdb_SyncViaAudio));
     AddHandler(Game_UseHleGfx, new CSettingTypeGame("HLE GFX", Rdb_UseHleGfx));
     AddHandler(Game_UseHleAudio, new CSettingTypeGame("HLE Audio", Rdb_UseHleAudio));
@@ -232,76 +227,56 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_Transferpak_Sav, new CSettingTypeGame("Tpak-Sav-dir", Default_None));
 
     //User Interface
-    AddHandler(UserInterface_BasicMode, new CSettingTypeApplication("", "Basic Mode", (uint32_t)true));
     AddHandler(UserInterface_ShowCPUPer, new CSettingTypeApplication("", "Display CPU Usage", (uint32_t)false));
     AddHandler(UserInterface_DisplayFrameRate, new CSettingTypeApplication("", "Display Frame Rate", (uint32_t)true));
-    AddHandler(UserInterface_InFullScreen, new CSettingTypeTempBool(false));
     AddHandler(UserInterface_FrameDisplayType, new CSettingTypeApplication("", "Frame Rate Display Type", (uint32_t)FR_VIs));
-    AddHandler(UserInterface_MainWindowTop, new CSettingTypeApplication("Main Window", "Top", Default_None));
-    AddHandler(UserInterface_MainWindowLeft, new CSettingTypeApplication("Main Window", "Left", Default_None));
-    AddHandler(UserInterface_AlwaysOnTop, new CSettingTypeApplication("", "Always on top", (uint32_t)false));
-
-    AddHandler(RomBrowser_Enabled, new CSettingTypeApplication("Rom Browser", "Rom Browser", true));
-    AddHandler(RomBrowser_ColoumnsChanged, new CSettingTypeTempBool(false));
-    AddHandler(RomBrowser_Top, new CSettingTypeApplication("Rom Browser", "Top", Default_None));
-    AddHandler(RomBrowser_Left, new CSettingTypeApplication("Rom Browser", "Left", Default_None));
-    AddHandler(RomBrowser_Width, new CSettingTypeApplication("Rom Browser", "Width", (uint32_t)640));
-    AddHandler(RomBrowser_Height, new CSettingTypeApplication("Rom Browser", "Height", (uint32_t)480));
-    AddHandler(RomBrowser_PosIndex, new CSettingTypeApplicationIndex("Rom Browser\\Field Pos", "Field", Default_None));
-    AddHandler(RomBrowser_WidthIndex, new CSettingTypeApplicationIndex("Rom Browser\\Field Width", "Field", Default_None));
-    AddHandler(RomBrowser_SortFieldIndex, new CSettingTypeApplicationIndex("Rom Browser", "Sort Field", Default_None));
-    AddHandler(RomBrowser_SortAscendingIndex, new CSettingTypeApplicationIndex("Rom Browser", "Sort Ascending", Default_None));
-    AddHandler(RomBrowser_Recursive, new CSettingTypeApplication("Rom Browser", "Recursive", false));
-    AddHandler(RomBrowser_Maximized, new CSettingTypeApplication("Rom Browser", "Maximized", false));
-
-    AddHandler(Directory_RecentGameDirCount, new CSettingTypeApplication("", "Remembered Rom Dirs", (uint32_t)10));
-    AddHandler(Directory_RecentGameDirIndex, new CSettingTypeApplicationIndex("Recent Dir", "Recent Dir", Default_None));
-
-    //Directory_Game,
-    AddHandler(Directory_Game, new CSettingTypeSelectedDirectory("Dir:Game", Directory_GameInitial, Directory_GameSelected, Directory_GameUseSelected, Directory_Game));
-    AddHandler(Directory_GameInitial, new CSettingTypeRelativePath("Game Directory", ""));
-    AddHandler(Directory_GameSelected, new CSettingTypeApplication("Directory", "Game", Directory_GameInitial));
-    AddHandler(Directory_GameUseSelected, new CSettingTypeApplication("Directory", "Game - Use Selected", false));
-
     AddHandler(Directory_Plugin, new CSettingTypeSelectedDirectory("Dir:Plugin", Directory_PluginInitial, Directory_PluginSelected, Directory_PluginUseSelected, Directory_Plugin));
-#ifdef _M_IX86
+#ifndef _M_X64
     AddHandler(Directory_PluginInitial, new CSettingTypeRelativePath("Plugin", ""));
-    AddHandler(Directory_PluginSelected, new CSettingTypeApplicationPath("Directory", "Plugin", Directory_PluginInitial));
-    AddHandler(Directory_PluginUseSelected, new CSettingTypeApplication("Directory", "Plugin - Use Selected", false));
+    AddHandler(Directory_PluginSelected, new CSettingTypeApplicationPath("Plugin Directory", "Directory", Directory_PluginInitial));
+    AddHandler(Directory_PluginUseSelected, new CSettingTypeApplication("Plugin Directory", "Use Selected", false));
     AddHandler(Directory_PluginSync, new CSettingTypeRelativePath("SyncPlugin", ""));
 #else
     AddHandler(Directory_PluginInitial, new CSettingTypeRelativePath("Plugin64", ""));
-    AddHandler(Directory_PluginSelected, new CSettingTypeApplicationPath("Directory", "Plugin64", Directory_PluginInitial));
-    AddHandler(Directory_PluginUseSelected, new CSettingTypeApplication("Directory", "Plugin - Use Selected", false));
+    AddHandler(Directory_PluginSelected, new CSettingTypeApplicationPath("Plugin64 Directory", "Directory", Directory_PluginInitial));
+    AddHandler(Directory_PluginUseSelected, new CSettingTypeApplication("Plugin64 Directory", "Use Selected", false));
     AddHandler(Directory_PluginSync, new CSettingTypeRelativePath("SyncPlugin64", ""));
 #endif
 
     AddHandler(Directory_SnapShot, new CSettingTypeSelectedDirectory("Dir:Snapshot", Directory_SnapShotInitial, Directory_SnapShotSelected, Directory_SnapShotUseSelected, Directory_SnapShot));
     AddHandler(Directory_SnapShotInitial, new CSettingTypeRelativePath("Screenshots", ""));
-    AddHandler(Directory_SnapShotSelected, new CSettingTypeApplicationPath("Directory", "Snap Shot", Directory_SnapShotInitial));
-    AddHandler(Directory_SnapShotUseSelected, new CSettingTypeApplication("Directory", "Snap Shot - Use Selected", false));
+    AddHandler(Directory_SnapShotSelected, new CSettingTypeApplicationPath("Snap Shot Directory", "Directory", Directory_SnapShotInitial));
+    AddHandler(Directory_SnapShotUseSelected, new CSettingTypeApplication("Snap Shot Directory", "Use Selected", false));
 
     AddHandler(Directory_NativeSave, new CSettingTypeSelectedDirectory("Dir:NativeSave", Directory_NativeSaveInitial, Directory_NativeSaveSelected, Directory_NativeSaveUseSelected, Directory_NativeSave));
     AddHandler(Directory_NativeSaveInitial, new CSettingTypeRelativePath("Save", ""));
-    AddHandler(Directory_NativeSaveSelected, new CSettingTypeApplicationPath("Directory", "Save", Directory_NativeSaveInitial));
-    AddHandler(Directory_NativeSaveUseSelected, new CSettingTypeApplication("Directory", "Save - Use Selected", false));
+    AddHandler(Directory_NativeSaveSelected, new CSettingTypeApplicationPath("Native Save Directory", "Directory", Directory_NativeSaveInitial));
+    AddHandler(Directory_NativeSaveUseSelected, new CSettingTypeApplication("Native Save Directory", "Use Selected", false));
 
     AddHandler(Directory_InstantSave, new CSettingTypeSelectedDirectory("Dir:InstantSave", Directory_InstantSaveInitial, Directory_InstantSaveSelected, Directory_InstantSaveUseSelected, Directory_InstantSave));
     AddHandler(Directory_InstantSaveInitial, new CSettingTypeRelativePath("Save", ""));
-    AddHandler(Directory_InstantSaveSelected, new CSettingTypeApplicationPath("Directory", "Instant Save", Directory_InstantSaveInitial));
-    AddHandler(Directory_InstantSaveUseSelected, new CSettingTypeApplication("Directory", "Instant Save - Use Selected", false));
+    AddHandler(Directory_InstantSaveSelected, new CSettingTypeApplicationPath("Instant Save Directory", "Directory", Directory_InstantSaveInitial));
+    AddHandler(Directory_InstantSaveUseSelected, new CSettingTypeApplication("Instant Save Directory", "Use Selected", false));
 
     AddHandler(Directory_Texture, new CSettingTypeSelectedDirectory("Dir:Texture", Directory_TextureInitial, Directory_TextureSelected, Directory_TextureUseSelected, Directory_Texture));
     AddHandler(Directory_TextureInitial, new CSettingTypeRelativePath("Textures", ""));
-    AddHandler(Directory_TextureSelected, new CSettingTypeApplicationPath("Directory", "Texture Dir", Directory_InstantSaveInitial));
-    AddHandler(Directory_TextureUseSelected, new CSettingTypeApplication("Directory", "Texture Dir - Use Selected", false));
+    AddHandler(Directory_TextureSelected, new CSettingTypeApplicationPath("Texture Directory", "Directory", Directory_InstantSaveInitial));
+    AddHandler(Directory_TextureUseSelected, new CSettingTypeApplication("Texture Directory", "Use Selected", false));
 
     AddHandler(Directory_Log, new CSettingTypeSelectedDirectory("Dir:Log", Directory_LogInitial, Directory_LogSelected, Directory_LogUseSelected, Directory_Log));
     AddHandler(Directory_LogInitial, new CSettingTypeRelativePath("Logs", ""));
-    AddHandler(Directory_LogSelected, new CSettingTypeApplicationPath("Directory", "Log Dir", Directory_InstantSaveInitial));
-    AddHandler(Directory_LogUseSelected, new CSettingTypeApplication("Directory", "Log Dir - Use Selected", false));
+    AddHandler(Directory_LogSelected, new CSettingTypeApplicationPath("Log Directory", "Directory", Directory_InstantSaveInitial));
+    AddHandler(Directory_LogUseSelected, new CSettingTypeApplication("Log Directory", "Use Selected", false));
 
-    AddHandler(Directory_LastSave, new CSettingTypeApplication("Directory", "Last Save Directory", Directory_InstantSave));
+    AddHandler(RomList_RomListCacheDefault, new CSettingTypeRelativePath("Config", "Project64.cache3"));
+    AddHandler(RomList_RomListCache, new CSettingTypeApplicationPath("", "RomListCache", RomList_RomListCacheDefault));
+    AddHandler(RomList_GameDir, new CSettingTypeSelectedDirectory("Dir:Game", RomList_GameDirInitial, RomList_GameDirSelected, RomList_GameDirUseSelected, RomList_GameDir));
+    AddHandler(RomList_GameDirInitial, new CSettingTypeRelativePath("Game Directory", ""));
+    AddHandler(RomList_GameDirSelected, new CSettingTypeApplication("Game Directory", "Directory", RomList_GameDirInitial));
+    AddHandler(RomList_GameDirUseSelected, new CSettingTypeApplication("Game Directory", "Use Selected", false));
+    AddHandler(RomList_GameDirRecursive, new CSettingTypeApplication("Game Directory", "Recursive", false));
+    AddHandler(RomList_7zipCache, new CSettingTypeApplicationPath("", "7zipCache", RomList_7zipCacheDefault));
+    AddHandler(RomList_7zipCacheDefault, new CSettingTypeRelativePath("Config", "Project64.zcache"));
 
     AddHandler(GameRunning_LoadingInProgress, new CSettingTypeTempBool(false));
     AddHandler(GameRunning_CPU_Running, new CSettingTypeTempBool(false));
@@ -312,8 +287,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(GameRunning_ScreenHertz, new CSettingTypeTempNumber(60));
     AddHandler(GameRunning_InReset, new CSettingTypeTempBool(false));
 
-    AddHandler(File_RecentGameFileCount, new CSettingTypeApplication("", "Remembered Rom Files", (uint32_t)10));
-    AddHandler(File_RecentGameFileIndex, new CSettingTypeApplicationIndex("Recent File", "Recent Rom", Default_None));
+    AddHandler(UserInterface_BasicMode, new CSettingTypeApplication("", "Basic Mode", (uint32_t)true));
     AddHandler(File_DiskIPLPath, new CSettingTypeApplicationPath("", "Disk IPL ROM Path", Default_None));
 
     AddHandler(Debugger_Enabled, new CSettingTypeApplication("Debugger", "Debugger", false));
@@ -323,6 +297,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Debugger_DisableGameFixes, new CSettingTypeApplication("Debugger", "Disable Game Fixes", false));
     AddHandler(Debugger_ShowDListAListCount, new CSettingTypeApplication("Debugger", "Show Dlist Alist Count", false));
     AddHandler(Debugger_ShowRecompMemSize, new CSettingTypeApplication("Debugger", "Show Recompiler Memory size", false));
+    AddHandler(Debugger_DebugLanguage, new CSettingTypeApplication("Debugger", "Debug Language", false));
     AddHandler(Debugger_ShowDivByZero, new CSettingTypeApplication("Debugger", "Show Div by zero", false));
     AddHandler(Debugger_ProfileCode, new CSettingTypeApplication("Debugger", "Profile Code", (uint32_t)false));
     AddHandler(Debugger_AppLogFlush, new CSettingTypeApplication("Logging", "Log Auto Flush", (uint32_t)false));
@@ -330,6 +305,8 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 
     //Logging
     AddHandler(Debugger_TraceMD5, new CSettingTypeApplication("Logging", "MD5", (uint32_t)g_ModuleLogLevel[TraceMD5]));
+    AddHandler(Debugger_TraceThread, new CSettingTypeApplication("Logging", "Thread", (uint32_t)g_ModuleLogLevel[TraceThread]));
+    AddHandler(Debugger_TracePath, new CSettingTypeApplication("Logging", "Path", (uint32_t)g_ModuleLogLevel[TracePath]));
     AddHandler(Debugger_TraceSettings, new CSettingTypeApplication("Logging", "Settings", (uint32_t)g_ModuleLogLevel[TraceSettings]));
     AddHandler(Debugger_TraceUnknown, new CSettingTypeApplication("Logging", "Unknown", (uint32_t)g_ModuleLogLevel[TraceUnknown]));
     AddHandler(Debugger_TraceAppInit, new CSettingTypeApplication("Logging", "App Init", (uint32_t)g_ModuleLogLevel[TraceAppInit]));
@@ -347,13 +324,21 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Debugger_TraceTLB, new CSettingTypeApplication("Logging", "TLB", (uint32_t)g_ModuleLogLevel[TraceTLB]));
     AddHandler(Debugger_TraceProtectedMEM, new CSettingTypeApplication("Logging", "Protected MEM", (uint32_t)g_ModuleLogLevel[TraceProtectedMem]));
     AddHandler(Debugger_TraceUserInterface, new CSettingTypeApplication("Logging", "User Interface", (uint32_t)g_ModuleLogLevel[TraceUserInterface]));
+    AddHandler(Debugger_TraceRomList, new CSettingTypeApplication("Logging", "Rom List", (uint32_t)g_ModuleLogLevel[TraceRomList]));
+    AddHandler(Debugger_TraceExceptionHandler, new CSettingTypeApplication("Logging", "Exception Handler", (uint32_t)g_ModuleLogLevel[TraceExceptionHandler]));
 
     //Plugin
+#ifdef _WIN32
     AddHandler(Plugin_RSP_Current, new CSettingTypeApplication("Plugin", "RSP Dll", "RSP\\RSP 1.7.dll"));
     AddHandler(Plugin_GFX_Current, new CSettingTypeApplication("Plugin", "Graphics Dll", "GFX\\Jabo_Direct3D8.dll"));
     AddHandler(Plugin_AUDIO_Current, new CSettingTypeApplication("Plugin", "Audio Dll", "Audio\\Jabo_Dsound.dll"));
     AddHandler(Plugin_CONT_Current, new CSettingTypeApplication("Plugin", "Controller Dll", "Input\\PJ64_NRage.dll"));
-
+#else
+    AddHandler(Plugin_RSP_Current, new CSettingTypeApplication("Plugin", "RSP Dll", "libProject64-rsp-hle.so"));
+    AddHandler(Plugin_GFX_Current, new CSettingTypeApplication("Plugin", "Graphics Dll", "libProject64-gfx-glide64.so"));
+    AddHandler(Plugin_AUDIO_Current, new CSettingTypeApplication("Plugin", "Audio Dll", "libProject64-audio-android.so"));
+    AddHandler(Plugin_CONT_Current, new CSettingTypeApplication("Plugin", "Controller Dll", "libProject64-input-android.so"));
+#endif
     AddHandler(Plugin_RSP_CurVer, new CSettingTypeApplication("Plugin", "RSP Dll Ver", ""));
     AddHandler(Plugin_GFX_CurVer, new CSettingTypeApplication("Plugin", "Graphics Dll Ver", ""));
     AddHandler(Plugin_AUDIO_CurVer, new CSettingTypeApplication("Plugin", "Audio Dll Ver", ""));
@@ -469,8 +454,8 @@ void CSettings::SetSettingSz(CSettings * _this, SettingID ID, const char * Value
 }
 
 void CSettings::RegisterSetting(CSettings * _this, SettingID ID, SettingID DefaultID, SettingDataType DataType,
-    SettingType Type, const char * Category, const char * DefaultStr,
-    uint32_t Value)
+                                SettingType Type, const char * Category, const char * DefaultStr,
+                                uint32_t Value)
 {
     switch (Type)
     {
@@ -524,26 +509,35 @@ void CSettings::RegisterSetting(CSettings * _this, SettingID ID, SettingID Defau
         switch (DataType)
         {
         case Data_DWORD:
-            if (DefaultID == Default_None)
             {
                 SettingID RdbSetting = (SettingID)_this->m_NextAutoSettingId;
                 _this->m_NextAutoSettingId += 1;
-                _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), (int)Value));
-                _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
-            }
-            else
-            {
-                _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), DefaultID));
+                if (DefaultID == Default_None)
+                {
+                    _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), (int)Value));
+                    _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
+                }
+                else
+                {
+                    _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), DefaultID));
+                    _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
+                }
             }
             break;
         case Data_String:
-            if (DefaultID == Default_None)
             {
-                _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), ""));
-            }
-            else
-            {
-                _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), DefaultID));
+                SettingID RdbSetting = (SettingID)_this->m_NextAutoSettingId;
+                _this->m_NextAutoSettingId += 1;
+                if (DefaultID == Default_None)
+                {
+                    _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), ""));
+                    _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
+                }
+                else
+                {
+                    _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), DefaultID));
+                    _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
+                }
             }
             break;
         default:
@@ -1157,6 +1151,17 @@ void CSettings::SettingTypeChanged(SettingType Type)
         }
     }
 }
+
+bool CSettings::IsSettingSet(SettingID Type)
+{
+    SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
+    if (FindInfo == m_SettingInfo.end())
+    {
+        return false;
+    }
+    return FindInfo->second->IsSettingSet();
+}
+
 void CSettings::UnknownSetting(SettingID /*Type*/)
 {
 #ifdef _DEBUG

@@ -77,7 +77,7 @@ static inline void load8bCI(uint8_t *src, uint8_t *dst, int wid_64, int height, 
             ALOWORD(v14) = __ROR__(*(uint16_t *)((char *)pal + ((v12 >> 23) & 0x1FE)), 1);
             *v8 = v14;
             v15 = v8 + 1;
-            ALOWORD(v14) = __ROR__(*(uint16_t *)((char *)pal + (2 * (uint16_t)v12 & 0x1FE)), 1);
+            ALOWORD(v14) = __ROR__(*(uint16_t *)((char *)pal + (2 * (uint16_t)(v12 & 0xFFFF) & 0x1FE)), 1);
             v14 <<= 16;
             ALOWORD(v14) = __ROR__(*(uint16_t *)((char *)pal + ((v12 >> 7) & 0x1FE)), 1);
             *v15 = v14;
@@ -89,7 +89,7 @@ static inline void load8bCI(uint8_t *src, uint8_t *dst, int wid_64, int height, 
             ALOWORD(v14) = __ROR__(*(uint16_t *)((char *)pal + ((v16 >> 23) & 0x1FE)), 1);
             *v15 = v14;
             ++v15;
-            ALOWORD(v14) = __ROR__(*(uint16_t *)((char *)pal + (2 * (uint16_t)v16 & 0x1FE)), 1);
+            ALOWORD(v14) = __ROR__(*(uint16_t *)((char *)pal + (2 * (uint16_t)(v16 & 0xFFFF) & 0x1FE)), 1);
             v14 <<= 16;
             ALOWORD(v14) = __ROR__(*(uint16_t *)((char *)pal + ((v16 >> 7) & 0x1FE)), 1);
             *v15 = v14;
@@ -111,7 +111,7 @@ static inline void load8bCI(uint8_t *src, uint8_t *dst, int wid_64, int height, 
             ALOWORD(v22) = __ROR__(*(uint16_t *)((char *)pal + ((v21 >> 23) & 0x1FE)), 1);
             *v18 = v22;
             v23 = v18 + 1;
-            ALOWORD(v22) = __ROR__(*(uint16_t *)((char *)pal + (2 * (uint16_t)v21 & 0x1FE)), 1);
+            ALOWORD(v22) = __ROR__(*(uint16_t *)((char *)pal + (2 * (uint16_t)(v21 & 0xFFFF) & 0x1FE)), 1);
             v22 <<= 16;
             ALOWORD(v22) = __ROR__(*(uint16_t *)((char *)pal + ((v21 >> 7) & 0x1FE)), 1);
             *v23 = v22;
@@ -123,7 +123,7 @@ static inline void load8bCI(uint8_t *src, uint8_t *dst, int wid_64, int height, 
             ALOWORD(v22) = __ROR__(*(uint16_t *)((char *)pal + ((v24 >> 23) & 0x1FE)), 1);
             *v23 = v22;
             ++v23;
-            ALOWORD(v22) = __ROR__(*(uint16_t *)((char *)pal + (2 * (uint16_t)v24 & 0x1FE)), 1);
+            ALOWORD(v22) = __ROR__(*(uint16_t *)((char *)pal + (2 * (uint16_t)(v24 & 0xFFFF) & 0x1FE)), 1);
             v22 <<= 16;
             ALOWORD(v22) = __ROR__(*(uint16_t *)((char *)pal + ((v24 >> 7) & 0x1FE)), 1);
             *v23 = v22;

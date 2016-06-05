@@ -1946,6 +1946,12 @@ optimize_texrect=0
 swapmode=2
 useless_is_useless=1
 
+[27C985A8-ED7CE5C6-C:0]
+Good Name=Mega Man 64 (Proto)
+Internal Name=Megaman 64
+depthmode=1
+increase_texrect_edge=1
+
 [0EC158F5-FB3E6896-C:45]
 Good Name=Mega Man 64 (U)
 Internal Name=Mega Man 64

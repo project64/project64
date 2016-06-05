@@ -30,7 +30,7 @@ CRSP_Plugin::CRSP_Plugin(void) :
 
 CRSP_Plugin::~CRSP_Plugin()
 {
-    Close();
+    Close(NULL);
     UnloadPlugin();
 }
 
@@ -113,7 +113,11 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
 
     RSP_INFO_1_1 Info = { 0 };
 
-    Info.hInst = (Plugins != NULL && Plugins->MainWindow()!= NULL ) ? Plugins->MainWindow()->GetModuleInstance() : NULL;
+#ifdef _WIN32
+    Info.hInst = (Plugins != NULL && Plugins->MainWindow() != NULL) ? Plugins->MainWindow()->GetModuleInstance() : NULL;
+#else
+    Info.hInst = NULL;
+#endif
     Info.CheckInterrupts = DummyCheckInterrupts;
     Info.MemoryBswaped = (System == NULL); // only true when the system's not yet loaded
 

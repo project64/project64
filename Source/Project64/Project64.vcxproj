@@ -54,6 +54,7 @@
     <ClCompile Include="Plugins\PluginList.cpp" />
     <ClCompile Include="Settings\GuiSettings.cpp" />
     <ClCompile Include="Settings\NotificationSettings.cpp" />
+    <ClCompile Include="Settings\UISettings.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -91,7 +92,9 @@
     <ClInclude Include="N64System\Debugger\Debugger-ViewMemory.h" />
     <ClInclude Include="N64System\Debugger\debugger.h" />
     <ClInclude Include="N64System\Debugger\DebuggerUI.h" />
-    <ClInclude Include="N64System\RomInformationClass.h" />
+    <ClInclude Include="Settings\GuiSettings.h" />
+    <ClInclude Include="Settings\NotificationSettings.h" />
+    <ClInclude Include="Settings\UISettings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Support.h" />
     <ClInclude Include="UserInterface.h" />

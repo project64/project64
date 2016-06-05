@@ -1,0 +1,35 @@
+
+Libpng 1.4.7 - April 10, 2011
+
+This is a public release of libpng, intended for use in production codes.
+
+Files available for download:
+
+Source files with LF line endings (for Unix/Linux) and with a
+"configure" script
+
+   libpng-1.4.7.tar.xz (LZMA-compressed, recommended)
+   libpng-1.4.7.tar.gz
+   libpng-1.4.7.tar.bz2
+
+Source files with CRLF line endings (for Windows), without the
+"configure" script
+
+   lpng147.7z (LZMA-compressed, recommended)
+   lpng147.zip
+
+Other information:
+
+   libpng-1.4.7-README.txt
+   libpng-1.4.7-LICENSE.txt
+
+Changes since the last public release (1.4.6):
+
+  Relocated misplaced new declarations in pngwutil.c.
+  Disabled PNG_PEDANTIC_WARNINGS for all MSC versions as in libpng-1.4.5.
+
+Send comments/corrections/commendations to glennrp at users.sourceforge.net
+or to png-mng-implement at lists.sf.net (subscription required; visit
+https://lists.sourceforge.net/lists/listinfo/png-mng-implement).
+
+Glenn R-P

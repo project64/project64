@@ -5,10 +5,10 @@
 #include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 
 CSettingConfig::CSettingConfig(bool bJustGameSetting /* = false */) :
-m_CurrentPage(NULL),
-m_GeneralOptionsPage(NULL),
-m_AdvancedPage(NULL),
-m_GameConfig(bJustGameSetting)
+    m_CurrentPage(NULL),
+    m_GeneralOptionsPage(NULL),
+    m_AdvancedPage(NULL),
+    m_GameConfig(bJustGameSetting)
 {
 }
 
@@ -118,7 +118,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
             ::SetWindowTextW(m_hWnd, wGS(OPTIONS_TITLE).c_str());
         }
 
-        if (g_Settings->LoadBool(Setting_PluginPageFirst))
+        if (UISettingsLoadBool(Setting_PluginPageFirst))
         {
             SettingsSection = new CConfigSettingSection(wGS(TAB_PLUGIN).c_str());
             SettingsSection->AddPage(new COptionPluginPage(this->m_hWnd, rcSettingInfo));
@@ -142,7 +142,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         SettingsSection->AddPage(new COptionsShortCutsPage(this->m_hWnd, rcSettingInfo));
         m_Sections.push_back(SettingsSection);
 
-        if (!g_Settings->LoadBool(Setting_PluginPageFirst))
+        if (!UISettingsLoadBool(Setting_PluginPageFirst))
         {
             SettingsSection = new CConfigSettingSection(wGS(TAB_PLUGIN).c_str());
             SettingsSection->AddPage(new COptionPluginPage(this->m_hWnd, rcSettingInfo));

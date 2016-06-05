@@ -21,6 +21,7 @@ public:
 
     bool        IndexBasedSetting ( void ) const { return false; }
     SettingType GetSettingType    ( void ) const { return SettingType_NumberVariable; }
+    bool        IsSettingSet(void) const { return false; }
 
     //return the values
     bool Load   ( int32_t Index, bool & Value   ) const;
@@ -47,4 +48,5 @@ private:
     CSettingTypeTempNumber& operator=(const CSettingTypeTempNumber&); // Disable assignment
 
     uint32_t m_value;
+    uint32_t m_initialValue;
 };

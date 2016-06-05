@@ -7,7 +7,6 @@
 #include <stdint.h>
 #include <stdarg.h>
 #include <string.h>
-#include <SDL.h>
 #endif // _WIN32
 #include <stdlib.h>
 #include <stdio.h>
@@ -18,6 +17,7 @@
 #include "g3ext.h"
 #include "glitchmain.h"
 #include <Glide64/trace.h>
+#include <Common/Util.h>
 
 #ifdef VPDEBUG
 #include <IL/il.h>
@@ -87,14 +87,23 @@ public:
             *_frequency = (FxU32)aResolutions[_idx].dwF;
         }
     }
-
-    char ** getResolutionsList(FxI32 * Size)
+    
+    int getCurrentResolutions(void)
     {
         if (dwNumResolutions == 0)
         {
             init();
         }
-        *Size = (FxI32)dwNumResolutions;
+        return currentResolutions;
+    }
+
+    char ** getResolutionsList(int32_t * Size)
+    {
+        if (dwNumResolutions == 0)
+        {
+            init();
+        }
+        *Size = (int32_t)dwNumResolutions;
         return aResolutionsStr;
     }
 
@@ -105,6 +114,7 @@ private:
     unsigned int dwNumResolutions;
     ResolutionInfo * aResolutions;
     char ** aResolutionsStr;
+    int currentResolutions;
 };
 
 FullScreenResolutions::~FullScreenResolutions()
@@ -121,9 +131,13 @@ void FullScreenResolutions::init()
 {
     WriteTrace(TraceGlitch, TraceDebug, "executing");
 #ifdef _WIN32
-    DEVMODE enumMode;
+    currentResolutions = -1;
+    DEVMODE enumMode , currentMode;
     int iModeNum = 0;
     memset(&enumMode, 0, sizeof(DEVMODE));
+
+    EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &currentMode);
+
     ResolutionInfo prevInfo;
     while (EnumDisplaySettings(NULL, iModeNum++, &enumMode) != 0)
     {
@@ -147,6 +161,10 @@ void FullScreenResolutions::init()
         ResolutionInfo curInfo(enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency);
         if (enumMode.dmBitsPerPel == 32 && curInfo != prevInfo)
         {
+            if (enumMode.dmPelsHeight == currentMode.dmPelsHeight && enumMode.dmPelsWidth == currentMode.dmPelsWidth)
+            {
+                currentResolutions = current;
+            }
             aResolutions[current] = curInfo;
             curInfo.toString(smode);
             aResolutionsStr[current] = new char[strlen(smode) + 1];
@@ -155,48 +173,7 @@ void FullScreenResolutions::init()
             current++;
         }
     }
-#else // _WIN32
-    SDL_Rect** modes;
-    SDL_Surface *check_surface;
-    SDL_PixelFormat *fmt;
-    int iModeNum;
-
-    SDL_InitSubSystem(SDL_INIT_VIDEO);
-    check_surface = SDL_CreateRGBSurface(NULL, 0, 0, 32, 0, 0, 0, 0);
-    if (!check_surface || check_surface->format->BitsPerPixel != 32) {
-        return; //failtrain!
-    }
-
-    fmt = check_surface->format;
-    modes = SDL_ListModes(fmt, SDL_FULLSCREEN|SDL_HWSURFACE);
-
-    ResolutionInfo prevInfo;
-    for (iModeNum = 0; modes[iModeNum]; ++iModeNum) {
-        ResolutionInfo curInfo(modes[iModeNum]->w, modes[iModeNum]->h, 0);
-        if (curInfo != prevInfo) {
-            dwNumResolutions++;
-            prevInfo = curInfo;
-        }
-    }
-
-    aResolutions = new ResolutionInfo[dwNumResolutions];
-    aResolutionsStr = new char*[dwNumResolutions];
-    int current = 0;
-    char smode[256];
-    memset(&prevInfo, 0, sizeof(ResolutionInfo));
-    for (iModeNum = 0; modes[iModeNum]; ++iModeNum) {
-        ResolutionInfo curInfo(modes[iModeNum]->w, modes[iModeNum]->h, 0);
-        if (curInfo != prevInfo) {
-            aResolutions[current] = curInfo;
-            curInfo.toString(smode);
-            aResolutionsStr[current] = new char[strlen(smode)+1];
-            strcpy(aResolutionsStr[current], smode);
-            prevInfo = curInfo;
-            current++;
-        }
-    }
-    SDL_FreeSurface(check_surface);
-#endif // _WIN32
+#endif
 }
 
 bool FullScreenResolutions::changeDisplaySettings(FxU32 _resolution)
@@ -472,7 +449,7 @@ typedef struct
 
 int nbTextureUnits;
 int nbAuxBuffers, current_buffer;
-int width, widtho, heighto, height;
+int g_width, widtho, heighto, g_height;
 int saved_width, saved_height;
 int blend_func_separate_support;
 int npot_support;
@@ -530,9 +507,6 @@ struct texbuf_t {
 static texbuf_t texbufs[NB_TEXBUFS];
 static int texbuf_i;
 
-#ifndef _WIN32
-static SDL_Surface *m_pScreen;
-#endif // _WIN32
 unsigned short frameBuffer[2048 * 2048];
 unsigned short depthBuffer[2048 * 2048];
 
@@ -576,14 +550,14 @@ grClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
     }
 
     if (!use_fbo) {
-        int th = height;
+        int th = g_height;
         if (th > screen_height)
             th = screen_height;
         maxy = th - maxy;
         miny = th - miny;
         FxU32 tmp = maxy; maxy = miny; miny = tmp;
-        if ((FxI32)maxx > width) maxx = width;
-        if ((FxI32)maxy > height) maxy = height;
+        if ((FxI32)maxx > g_width) maxx = g_width;
+        if ((FxI32)maxy > g_height) maxy = g_height;
         if (int(minx) < 0) minx = 0;
         if (int(miny) < 0) miny = 0;
         if (maxx < minx) maxx = minx;
@@ -592,7 +566,7 @@ grClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
         //printf("gl scissor %d %d %d %d\n", minx, miny, maxx, maxy);
     }
     else {
-        glScissor(minx, (viewport_offset)+height - maxy, maxx - minx, maxy - miny);
+        glScissor(minx, (viewport_offset)+g_height - maxy, maxx - minx, maxy - miny);
     }
     glEnable(GL_SCISSOR_TEST);
     grDisplayGLError("grClipWindow");
@@ -697,7 +671,7 @@ int                  nAuxBuffers)
     return grSstWinOpen(hWnd, screen_resolution, refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 # include <fcntl.h>
 # ifndef ATTACH_PARENT_PROCESS
 #  define ATTACH_PARENT_PROCESS ((FxU32)-1)
@@ -725,7 +699,6 @@ int                  nAuxBuffers)
     depth_texture = free_texture++;
 
 #ifdef _WIN32
-
     PIXELFORMATDESCRIPTOR pfd;
     memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
     pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
@@ -738,6 +711,8 @@ int                  nAuxBuffers)
     pfd.cAuxBuffers = 1;
 
     int pfm;
+#else
+    fputs("ERROR:  No GLX yet to start GL on [Free]BSD, Linux etc.\n", stderr);
 #endif // _WIN32
 
     WriteTrace(TraceGlitch, TraceDebug, "hWnd: %d, screen_resolution: %d, refresh_rate: %d, color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", hWnd, screen_resolution&~0x80000000, refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
@@ -746,106 +721,106 @@ int                  nAuxBuffers)
     if ((HWND)hWnd == NULL) hWnd = GetActiveWindow();
     hwnd_win = (HWND)hWnd;
 #endif // _WIN32
-    width = height = 0;
+    g_width = g_height = 0;
     if (screen_resolution & 0x80000000)
     {
         switch (screen_resolution & ~0x80000000)
         {
         case GR_RESOLUTION_320x200:
-            width = 320;
-            height = 200;
+            g_width = 320;
+            g_height = 200;
             break;
         case GR_RESOLUTION_320x240:
-            width = 320;
-            height = 240;
+            g_width = 320;
+            g_height = 240;
             break;
         case GR_RESOLUTION_400x256:
-            width = 400;
-            height = 256;
+            g_width = 400;
+            g_height = 256;
             break;
         case GR_RESOLUTION_512x384:
-            width = 512;
-            height = 384;
+            g_width = 512;
+            g_height = 384;
             break;
         case GR_RESOLUTION_640x200:
-            width = 640;
-            height = 200;
+            g_width = 640;
+            g_height = 200;
             break;
         case GR_RESOLUTION_640x350:
-            width = 640;
-            height = 350;
+            g_width = 640;
+            g_height = 350;
             break;
         case GR_RESOLUTION_640x400:
-            width = 640;
-            height = 400;
+            g_width = 640;
+            g_height = 400;
             break;
         case GR_RESOLUTION_640x480:
-            width = 640;
-            height = 480;
+            g_width = 640;
+            g_height = 480;
             break;
         case GR_RESOLUTION_800x600:
-            width = 800;
-            height = 600;
+            g_width = 800;
+            g_height = 600;
             break;
         case GR_RESOLUTION_960x720:
-            width = 960;
-            height = 720;
+            g_width = 960;
+            g_height = 720;
             break;
         case GR_RESOLUTION_856x480:
-            width = 856;
-            height = 480;
+            g_width = 856;
+            g_height = 480;
             break;
         case GR_RESOLUTION_512x256:
-            width = 512;
-            height = 256;
+            g_width = 512;
+            g_height = 256;
             break;
         case GR_RESOLUTION_1024x768:
-            width = 1024;
-            height = 768;
+            g_width = 1024;
+            g_height = 768;
             break;
         case GR_RESOLUTION_1280x1024:
-            width = 1280;
-            height = 1024;
+            g_width = 1280;
+            g_height = 1024;
             break;
         case GR_RESOLUTION_1600x1200:
-            width = 1600;
-            height = 1200;
+            g_width = 1600;
+            g_height = 1200;
             break;
         case GR_RESOLUTION_400x300:
-            width = 400;
-            height = 300;
+            g_width = 400;
+            g_height = 300;
             break;
         case GR_RESOLUTION_1152x864:
-            width = 1152;
-            height = 864;
+            g_width = 1152;
+            g_height = 864;
             break;
         case GR_RESOLUTION_1280x960:
-            width = 1280;
-            height = 960;
+            g_width = 1280;
+            g_height = 960;
             break;
         case GR_RESOLUTION_1600x1024:
-            width = 1600;
-            height = 1024;
+            g_width = 1600;
+            g_height = 1024;
             break;
         case GR_RESOLUTION_1792x1344:
-            width = 1792;
-            height = 1344;
+            g_width = 1792;
+            g_height = 1344;
             break;
         case GR_RESOLUTION_1856x1392:
-            width = 1856;
-            height = 1392;
+            g_width = 1856;
+            g_height = 1392;
             break;
         case GR_RESOLUTION_1920x1440:
-            width = 1920;
-            height = 1440;
+            g_width = 1920;
+            g_height = 1440;
             break;
         case GR_RESOLUTION_2048x1536:
-            width = 2048;
-            height = 1536;
+            g_width = 2048;
+            g_height = 1536;
             break;
         case GR_RESOLUTION_2048x2048:
-            width = 2048;
-            height = 2048;
+            g_width = 2048;
+            g_height = 2048;
             break;
         default:
             WriteTrace(TraceGlitch, TraceWarning, "unknown SstWinOpen resolution : %x", screen_resolution);
@@ -868,12 +843,12 @@ int                  nAuxBuffers)
         viewport_offset = statusbarRect.bottom - statusbarRect.top;
         GetWindowRect(hwnd_win, &windowedRect);
         GetClientRect(hwnd_win, &clientRect);
-        windowedRect.right += (width - (clientRect.right - clientRect.left));
-        windowedRect.bottom += (height + (toolbarRect.bottom - toolbarRect.top) + (statusbarRect.bottom - statusbarRect.top) - (clientRect.bottom - clientRect.top));
+        windowedRect.right += (g_width - (clientRect.right - clientRect.left));
+        windowedRect.bottom += (g_height + (toolbarRect.bottom - toolbarRect.top) + (statusbarRect.bottom - statusbarRect.top) - (clientRect.bottom - clientRect.top));
         SetWindowPos(hwnd_win, NULL, 0, 0, windowedRect.right - windowedRect.left,
             windowedRect.bottom - windowedRect.top, SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
 
-        TMU_SIZE = (config.vram_size - width * height * 4 * 3) / 2; // XXX - what about windows desktop usage?
+        TMU_SIZE = (config.vram_size - g_width * g_height * 4 * 3) / 2; // XXX - what about windows desktop usage?
 
         fullscreen = 0;
     }
@@ -882,8 +857,8 @@ int                  nAuxBuffers)
         {
             FxU32 _width, _height;
             g_FullScreenResolutions.getResolution(screen_resolution, &_width, &_height);
-            width = _width;
-            height = _height;
+            g_width = _width;
+            g_height = _height;
         }
         ZeroMemory(&windowedRect, sizeof(RECT));
         GetWindowRect(hwnd_win, &windowedRect);
@@ -905,17 +880,17 @@ int                  nAuxBuffers)
 
         SetWindowLong(hwnd_win, GWL_STYLE, 0);
         SetWindowLong(hwnd_win, GWL_EXSTYLE, WS_EX_APPWINDOW | WS_EX_TOPMOST);
-        SetWindowPos(hwnd_win, NULL, 0, 0, width, height, SWP_NOACTIVATE | SWP_NOZORDER | SWP_SHOWWINDOW);
+        SetWindowPos(hwnd_win, NULL, 0, 0, g_width, g_height, SWP_NOACTIVATE | SWP_NOZORDER | SWP_SHOWWINDOW);
 
         viewport_offset = 0;
         fullscreen = 1;
     }
 
-    TMU_SIZE = (config.vram_size - width * height * 4 * 3) / 2;
+    TMU_SIZE = (config.vram_size - g_width * g_height * 4 * 3) / 2;
 
     // save screen resolution for hwfbe, after resolution enumeration
-    screen_width = width;
-    screen_height = height;
+    screen_width = g_width;
+    screen_height = g_height;
 
     if ((hDC = GetDC(hwnd_win)) == NULL)
     {
@@ -957,89 +932,6 @@ int                  nAuxBuffers)
             return FXFALSE;
         }
     }
-#else // _WIN32
-
-    // init sdl & gl
-    const SDL_VideoInfo *videoInfo;
-    Uint32 videoFlags = 0;
-    fullscreen = 0;
-
-    /* Initialize SDL */
-    printf("(II) Initializing SDL video subsystem...\n");
-    if (SDL_InitSubSystem(SDL_INIT_VIDEO) == -1)
-    {
-        printf("(EE) Error initializing SDL video subsystem: %s\n", SDL_GetError());
-        return false;
-    }
-
-    /* Video Info */
-    printf("(II) Getting video info...\n");
-    if(!(videoInfo = SDL_GetVideoInfo()))
-    {
-        printf("(EE) Video query failed: %s\n", SDL_GetError());
-        SDL_QuitSubSystem(SDL_INIT_VIDEO);
-        return false;
-    }
-
-    /* Setting the video mode */
-    videoFlags |= SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE;
-
-    if(videoInfo->hw_available)
-        videoFlags |= SDL_HWSURFACE;
-    else
-        videoFlags |= SDL_SWSURFACE;
-
-    if(videoInfo->blit_hw)
-        videoFlags |= SDL_HWACCEL;
-
-    //if (!(screen_resolution & 0x80000000))
-    //videoFlags |= SDL_FULLSCREEN;
-
-    if (screen_resolution & 0x80000000)
-    {
-        fullscreen = 0;
-    }
-    else
-    {
-        FxU32 _width, _height;
-        g_FullScreenResolutions.getResolution(screen_resolution, &_width, &_height);
-        width = _width;
-        height = _height;
-        videoFlags |= SDL_FULLSCREEN;
-        fullscreen = 1;
-    }
-    TMU_SIZE = (config.vram_size - width * height * 4 * 3) / 2;
-
-    //viewport_offset = ((screen_resolution>>2) > 20) ? screen_resolution >> 2 : 20;
-    // ZIGGY viewport_offset is WIN32 specific, with SDL just set it to zero
-    viewport_offset = 0; //-10 //-20;
-
-    // ZIGGY not sure, but it might be better to let the system choose
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 16);
-    //   SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
-    //   SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-    //   SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-    //   SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-    //   SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-
-    printf("(II) Setting video mode %dx%d...\n", width, height);
-    if(!(m_pScreen = SDL_SetVideoMode(width, height, 0, videoFlags)))
-    {
-        printf("(EE) Error setting videomode %dx%d: %s\n", width, height, SDL_GetError());
-        SDL_QuitSubSystem(SDL_INIT_VIDEO);
-        return false;
-    }
-
-    char caption[500];
-# ifdef _DEBUG
-    sprintf(caption, "Glide64 debug");
-# else // _DEBUG
-    sprintf(caption, "Glide64");
-# endif // _DEBUG
-    SDL_WM_SetCaption(caption, caption);
-    glViewport(0, viewport_offset, width, height);
 #endif // _WIN32
     lfb_color_fmt = color_format;
     if (origin_location != GR_ORIGIN_UPPER_LEFT) WriteTrace(TraceGlitch, TraceWarning, "origin must be in upper left corner");
@@ -1232,10 +1124,10 @@ int                  nAuxBuffers)
         glCompressedTexImage2DARB = (PFNGLCOMPRESSEDTEXIMAGE2DPROC)dummy_glCompressedTexImage2D;
 #endif
 
-#ifdef _WIN32
-    glViewport(0, viewport_offset, width, height);
-    viewport_width = width;
-    viewport_height = height;
+#ifndef ANDROID
+    glViewport(0, viewport_offset, g_width, g_height);
+    viewport_width = g_width;
+    viewport_height = g_height;
     nvidia_viewport_hack = 1;
 #else
     glViewport(0, viewport_offset, width, height);
@@ -1252,8 +1144,8 @@ int                  nAuxBuffers)
     glTranslatef(0, 0, 1 - zscale);
     glScalef(1, 1, zscale);
 
-    widtho = width / 2;
-    heighto = height / 2;
+    widtho = g_width / 2;
+    heighto = g_height / 2;
 
     pBufferWidth = pBufferHeight = -1;
 
@@ -1269,12 +1161,12 @@ int                  nAuxBuffers)
 
     if (!use_fbo && nbAuxBuffers == 0) {
         // create the framebuffer saving texture
-        int w = width, h = height;
+        int w = g_width, h = g_height;
         glBindTexture(GL_TEXTURE_2D, color_texture);
         if (!npot_support) {
             w = h = 1;
-            while (w < width) w *= 2;
-            while (h < height) h *= 2;
+            while (w < g_width) w *= 2;
+            while (h < g_height) h *= 2;
         }
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -1337,7 +1229,7 @@ grSstWinClose(GrContext_t context)
         // ZIGGY : I found the problem : it is a function pointer, when the extension isn't supported , it is then zero, so just need to check the pointer prior to do the call.
     {
         if (use_fbo && glBindFramebufferEXT)
-            glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, 0 );
+            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
     catch (...)
     {
@@ -1348,7 +1240,7 @@ grSstWinClose(GrContext_t context)
     {
         for (i = 0; i < nb_fb; i++)
         {
-            glDeleteTextures( 1, &(fbs[i].texid) );
+            glDeleteTextures(1, &(fbs[i].texid));
             glDeleteFramebuffersEXT(1, &(fbs[i].fbid));
             glDeleteRenderbuffersEXT(1, &(fbs[i].zbid));
         }
@@ -1369,7 +1261,7 @@ grSstWinClose(GrContext_t context)
         wglMakeCurrent(hDC, NULL);
         wglDeleteContext(hGLRC);
         hGLRC = NULL;
-        }
+    }
     if (fullscreen)
     {
         ChangeDisplaySettings(NULL, 0);
@@ -1385,10 +1277,10 @@ grSstWinClose(GrContext_t context)
 #else
     //SDL_QuitSubSystem(SDL_INIT_VIDEO);
     //sleep(2);
-    m_pScreen = NULL;
+    //m_pScreen = NULL;
 #endif
     return FXTRUE;
-    }
+}
 
 FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
     FxU32 				startAddress,
@@ -1490,11 +1382,11 @@ FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
         //   printf("tmu %d usage now %gMb - %gMb\n",
         //          rtmu, tmu_usage[rtmu].min/1024.0f, tmu_usage[rtmu].max/1024.0f);
 
-        width = pBufferWidth;
-        height = pBufferHeight;
+        g_width = pBufferWidth;
+        g_height = pBufferHeight;
 
-        widtho = width / 2;
-        heighto = height / 2;
+        widtho = g_width / 2;
+        heighto = g_height / 2;
 
         // this could be improved, but might be enough as long as the set of
         // texture buffer addresses stay small
@@ -1514,13 +1406,13 @@ FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
         add_tex(pBufferAddress);
 
         //printf("viewport %dx%d\n", width, height);
-        if (height > screen_height) {
-            glViewport(0, viewport_offset + screen_height - height, width, height);
+        if (g_height > screen_height) {
+            glViewport(0, viewport_offset + screen_height - g_height, g_width, g_height);
         }
         else
-            glViewport(0, viewport_offset, width, height);
+            glViewport(0, viewport_offset, g_width, g_height);
 
-        glScissor(0, viewport_offset, width, height);
+        glScissor(0, viewport_offset, g_width, g_height);
 
         grDisplayGLError("grTextureBufferExt :: A");
     }
@@ -1550,25 +1442,25 @@ FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
         }
         pBufferAddress = startAddress + 1;
 
-        width = pBufferWidth;
-        height = pBufferHeight;
+        g_width = pBufferWidth;
+        g_height = pBufferHeight;
 
-        widtho = width / 2;
-        heighto = height / 2;
+        widtho = g_width / 2;
+        heighto = g_height / 2;
 
         for (i = 0; i < nb_fb; i++)
         {
             if (fbs[i].address == pBufferAddress)
             {
-                if (fbs[i].width == width && fbs[i].height == height) //select already allocated FBO
+                if (fbs[i].width == g_width && fbs[i].height == g_height) //select already allocated FBO
                 {
                     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
                     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbs[i].fbid);
                     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, fbs[i].texid, 0);
                     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, fbs[i].zbid);
                     glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, fbs[i].zbid);
-                    glViewport(0, 0, width, height);
-                    glScissor(0, 0, width, height);
+                    glViewport(0, 0, g_width, g_height);
+                    glScissor(0, 0, g_width, g_height);
                     if (fbs[i].buff_clear)
                     {
                         glDepthMask(1);
@@ -1592,20 +1484,20 @@ FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
             }
         }
 
-        remove_tex(pBufferAddress, pBufferAddress + width*height * 2/*grTexFormatSize(fmt)*/);
+        remove_tex(pBufferAddress, pBufferAddress + g_width*g_height * 2/*grTexFormatSize(fmt)*/);
         //create new FBO
         glGenFramebuffersEXT(1, &(fbs[nb_fb].fbid));
         glGenRenderbuffersEXT(1, &(fbs[nb_fb].zbid));
         glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, fbs[nb_fb].zbid);
-        glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, width, height);
+        glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, g_width, g_height);
         fbs[nb_fb].address = pBufferAddress;
-        fbs[nb_fb].width = width;
-        fbs[nb_fb].height = height;
+        fbs[nb_fb].width = g_width;
+        fbs[nb_fb].height = g_height;
         fbs[nb_fb].texid = pBufferAddress;
         fbs[nb_fb].buff_clear = 0;
         add_tex(fbs[nb_fb].texid);
         glBindTexture(GL_TEXTURE_2D, fbs[nb_fb].texid);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0,
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, g_width, g_height, 0,
             GL_RGB, GL_UNSIGNED_BYTE, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -1614,8 +1506,8 @@ FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
         glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
             GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, fbs[nb_fb].texid, 0);
         glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, fbs[nb_fb].zbid);
-        glViewport(0, 0, width, height);
-        glScissor(0, 0, width, height);
+        glViewport(0, 0, g_width, g_height);
+        glScissor(0, 0, g_width, g_height);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glDepthMask(1);
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -1788,8 +1680,7 @@ grGet(FxU32 pname, FxU32 plength, FxI32 *params)
         if (plength < 4 || params == NULL) return 0;
         if (!nbTextureUnits)
         {
-            grSstWinOpen((unsigned long)NULL, GR_RESOLUTION_640x480 | 0x80000000, 0, GR_COLORFORMAT_ARGB,
-                GR_ORIGIN_UPPER_LEFT, 2, 1);
+            grSstWinOpen((unsigned long)NULL, GR_RESOLUTION_640x480 | 0x80000000, 0, GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
             grSstWinClose(0);
         }
 #ifdef VOODOO1
@@ -1945,16 +1836,16 @@ static void render_rectangle(int texture_number,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    planar_vertices[0][0] = ((int)dst_x - widtho) / (float)(width / 2);
-    planar_vertices[0][1] = -((int)dst_y - heighto) / (float)(height / 2) * invert;
-    planar_vertices[1][0] = ((int)dst_x - widtho) / (float)(width / 2);
-    planar_vertices[1][1] = -((int)dst_y + (int)src_height - heighto) / (float)(height / 2) * invert;
-    planar_vertices[2][0] = ((int)dst_x + (int)src_width - widtho) / (float)(width / 2);
-    planar_vertices[2][1] = -((int)dst_y + (int)src_height - heighto) / (float)(height / 2) * invert;
-    planar_vertices[3][0] = ((int)dst_x + (int)src_width - widtho) / (float)(width / 2);
-    planar_vertices[3][1] = -((int)dst_y - heighto) / (float)(height / 2) * invert;
-    planar_vertices[4][0] = ((int)dst_x - widtho) / (float)(width / 2);
-    planar_vertices[4][1] = -((int)dst_y - heighto) / (float)(height / 2) * invert;
+    planar_vertices[0][0] = ((int)dst_x - widtho) / (float)(g_width / 2);
+    planar_vertices[0][1] = -((int)dst_y - heighto) / (float)(g_height / 2) * invert;
+    planar_vertices[1][0] = ((int)dst_x - widtho) / (float)(g_width / 2);
+    planar_vertices[1][1] = -((int)dst_y + (int)src_height - heighto) / (float)(g_height / 2) * invert;
+    planar_vertices[2][0] = ((int)dst_x + (int)src_width - widtho) / (float)(g_width / 2);
+    planar_vertices[2][1] = -((int)dst_y + (int)src_height - heighto) / (float)(g_height / 2) * invert;
+    planar_vertices[3][0] = ((int)dst_x + (int)src_width - widtho) / (float)(g_width / 2);
+    planar_vertices[3][1] = -((int)dst_y - heighto) / (float)(g_height / 2) * invert;
+    planar_vertices[4][0] = ((int)dst_x - widtho) / (float)(g_width / 2);
+    planar_vertices[4][1] = -((int)dst_y - heighto) / (float)(g_height / 2) * invert;
 
     glBegin(GL_QUADS);
 
@@ -1987,7 +1878,7 @@ void reloadTexture()
     if (use_fbo || !render_to_texture || buffer_cleared)
         return;
 
-    WriteTrace(TraceGlitch, TraceDebug, "width: %d height: %d", width, height);
+    WriteTrace(TraceGlitch, TraceDebug, "width: %d height: %d", g_width, g_height);
 
     buffer_cleared = 1;
 
@@ -2001,11 +1892,11 @@ void reloadTexture()
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
     int w = 0, h = 0;
-    if (height > screen_height) h = screen_height - height;
+    if (g_height > screen_height) h = screen_height - g_height;
     render_rectangle(texture_unit,
         -w, -h,
-        width, height,
-        width, height, -1);
+        g_width, g_height,
+        g_width, g_height, -1);
     glBindTexture(GL_TEXTURE_2D, default_texture);
     glPopAttrib();
     grDisplayGLError("reloadTexture");
@@ -2035,7 +1926,7 @@ void updateTexture()
         //glDeleteTextures( 1, &pBufferAddress );
         glBindTexture(GL_TEXTURE_2D, pBufferAddress);
         glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
-            0, viewport_offset, width, height, 0);
+            0, viewport_offset, g_width, g_height, 0);
 
         glBindTexture(GL_TEXTURE_2D, default_texture);
         glPopAttrib();
@@ -2049,11 +1940,11 @@ FX_ENTRY void FX_CALL grFramebufferCopyExt(int /*x*/, int /*y*/, int /*w*/, int 
     if (mode == GR_FBCOPY_MODE_DEPTH) {
         int tw = 1, th = 1;
         if (npot_support) {
-            tw = width; th = height;
+            tw = g_width; th = g_height;
         }
         else {
-            while (tw < width) tw <<= 1;
-            while (th < height) th <<= 1;
+            while (tw < g_width) tw <<= 1;
+            while (th < g_height) th <<= 1;
         }
 
         if (from == GR_FBCOPY_BUFFER_BACK && to == GR_FBCOPY_BUFFER_FRONT) {
@@ -2081,7 +1972,7 @@ FX_ENTRY void FX_CALL grFramebufferCopyExt(int /*x*/, int /*y*/, int /*w*/, int 
             glDisable(GL_CULL_FACE);
             render_rectangle(texture_unit,
                 0, 0,
-                width, height,
+                g_width, g_height,
                 tw, th, -1);
             glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
             glBindTexture(GL_TEXTURE_2D, default_texture);
@@ -2117,8 +2008,8 @@ grRenderBuffer(GrBuffer_t buffer)
             inverted_culling = 0;
             grCullMode(culling_mode);
 
-            width = savedWidth;
-            height = savedHeight;
+            g_width = savedWidth;
+            g_height = savedHeight;
             widtho = savedWidtho;
             heighto = savedHeighto;
             if (use_fbo) {
@@ -2127,8 +2018,8 @@ grRenderBuffer(GrBuffer_t buffer)
             }
             curBufferAddr = 0;
 
-            glViewport(0, viewport_offset, width, viewport_height);
-            glScissor(0, viewport_offset, width, height);
+            glViewport(0, viewport_offset, g_width, viewport_height);
+            glScissor(0, viewport_offset, g_width, g_height);
 
 #ifdef SAVE_CBUFFER
             if (!use_fbo && render_to_texture == 2) {
@@ -2176,8 +2067,8 @@ grRenderBuffer(GrBuffer_t buffer)
     case 6: // RENDER TO TEXTURE
         if (!render_to_texture)
         {
-            savedWidth = width;
-            savedHeight = height;
+            savedWidth = g_width;
+            savedHeight = g_height;
             savedWidtho = widtho;
             savedHeighto = heighto;
         }
@@ -2240,7 +2131,7 @@ grAuxBufferExt(GrBuffer_t buffer)
 FX_ENTRY void FX_CALL
 grBufferClear(GrColor_t color, GrAlpha_t alpha, FxU32 depth)
 {
-    WriteTrace(TraceGlitch, TraceDebug, "color: %d alpha: %d depth: %d", color, alpha, depth);
+    WriteTrace(TraceGlitch, TraceDebug, "color: %X alpha: %X depth: %X", color, alpha, depth);
     switch (lfb_color_fmt)
     {
     case GR_COLORFORMAT_ARGB:
@@ -2286,7 +2177,6 @@ grBufferSwap(FxU32 swap_interval)
 #ifdef _WIN32
     SwapBuffers(wglGetCurrentDC());
 #else // _WIN32
-    SDL_GL_SwapBuffers();
 #endif // _WIN32
     for (i = 0; i < nb_fb; i++)
         fbs[i].buff_clear = 1;
@@ -2296,28 +2186,6 @@ grBufferSwap(FxU32 swap_interval)
 #endif
 
     // VP debugging
-#ifdef VPDEBUG
-    dump_stop();
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-        case SDL_KEYDOWN:
-            switch (event.key.keysym.sym) {
-            case 'd':
-                printf("Dumping !\n");
-                dump_start();
-                break;
-            case 'w': {
-                static int wireframe;
-                wireframe = !wireframe;
-                glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
-                break;
-            }
-            }
-            break;
-        }
-    }
-#endif
 }
 
 // frame buffer
@@ -2354,28 +2222,28 @@ GrLfbInfo_t *info)
             if (writeMode == GR_LFBWRITEMODE_888) {
                 //printf("LfbLock GR_LFBWRITEMODE_888\n");
                 info->lfbPtr = frameBuffer;
-                info->strideInBytes = width * 4;
+                info->strideInBytes = g_width * 4;
                 info->writeMode = GR_LFBWRITEMODE_888;
                 info->origin = origin;
-                glReadPixels(0, viewport_offset, width, height, GL_BGRA, GL_UNSIGNED_BYTE, frameBuffer);
+                glReadPixels(0, viewport_offset, g_width, g_height, GL_BGRA, GL_UNSIGNED_BYTE, frameBuffer);
             }
             else {
-                buf = (unsigned char*)malloc(width*height * 4);
+                buf = (unsigned char*)malloc(g_width*g_height * 4);
 
                 info->lfbPtr = frameBuffer;
-                info->strideInBytes = width * 2;
+                info->strideInBytes = g_width * 2;
                 info->writeMode = GR_LFBWRITEMODE_565;
                 info->origin = origin;
-                glReadPixels(0, viewport_offset, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+                glReadPixels(0, viewport_offset, g_width, g_height, GL_RGBA, GL_UNSIGNED_BYTE, buf);
 
-                for (j = 0; j < height; j++)
+                for (j = 0; j < g_height; j++)
                 {
-                    for (i = 0; i < width; i++)
+                    for (i = 0; i < g_width; i++)
                     {
-                        frameBuffer[(height - j - 1)*width + i] =
-                            ((buf[j*width * 4 + i * 4 + 0] >> 3) << 11) |
-                            ((buf[j*width * 4 + i * 4 + 1] >> 2) << 5) |
-                            (buf[j*width * 4 + i * 4 + 2] >> 3);
+                        frameBuffer[(g_height - j - 1)*g_width + i] =
+                            ((buf[j*g_width * 4 + i * 4 + 0] >> 3) << 11) |
+                            ((buf[j*g_width * 4 + i * 4 + 1] >> 2) << 5) |
+                            (buf[j*g_width * 4 + i * 4 + 2] >> 3);
                     }
                 }
                 free(buf);
@@ -2384,16 +2252,16 @@ GrLfbInfo_t *info)
         else
         {
             info->lfbPtr = depthBuffer;
-            info->strideInBytes = width * 2;
+            info->strideInBytes = g_width * 2;
             info->writeMode = GR_LFBWRITEMODE_ZA16;
             info->origin = origin;
-            glReadPixels(0, viewport_offset, width, height, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, depthBuffer);
+            glReadPixels(0, viewport_offset, g_width, g_height, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, depthBuffer);
         }
     }
 
     grDisplayGLError("grLfbLock");
     return FXTRUE;
-            }
+}
 
 FX_ENTRY FxBool FX_CALL
 grLfbUnlock(GrLock_t type, GrBuffer_t buffer)
@@ -2437,7 +2305,7 @@ FxU32 dst_stride, void *dst_data)
     {
         buf = (unsigned char*)malloc(src_width*src_height * 4);
 
-        glReadPixels(src_x, (viewport_offset)+height - src_y - src_height, src_width, src_height, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+        glReadPixels(src_x, (viewport_offset)+g_height - src_y - src_height, src_width, src_height, GL_RGBA, GL_UNSIGNED_BYTE, buf);
 
         for (j = 0; j < src_height; j++)
         {
@@ -2455,7 +2323,7 @@ FxU32 dst_stride, void *dst_data)
     {
         buf = (unsigned char*)malloc(src_width*src_height * 2);
 
-        glReadPixels(src_x, (viewport_offset)+height - src_y - src_height, src_width, src_height, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, depthBuffer);
+        glReadPixels(src_x, (viewport_offset)+g_height - src_y - src_height, src_width, src_height, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, depthBuffer);
 
         for (j = 0; j < src_height; j++)
         {
@@ -2630,12 +2498,17 @@ FxI32 src_stride, void *src_data)
 
     grDisplayGLError("grLfbWriteRegion");
     return FXTRUE;
-    }
+}
+
+int GetCurrentResIndex(void)
+{
+    return g_FullScreenResolutions.getCurrentResolutions();
+}
 
 /* wrapper-specific glide extensions */
 
 FX_ENTRY char ** FX_CALL
-grQueryResolutionsExt(FxI32 * Size)
+grQueryResolutionsExt(int32_t * Size)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
     return g_FullScreenResolutions.getResolutionsList(Size);
@@ -2653,23 +2526,7 @@ FX_ENTRY FxBool FX_CALL grKeyPressedExt(FxU32 key)
 #ifdef _WIN32
     return (GetAsyncKeyState(key) & 0x8000);
 #else
-    if (key == 1) //LBUTTON
-    {
-        Uint8 mstate = SDL_GetMouseState(NULL, NULL);
-        return (mstate & SDL_BUTTON_LMASK);
-    }
-    else
-    {
-        Uint8 *keystates = SDL_GetKeyState(NULL);
-        if (keystates[key])
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
+    return 0;
 #endif
 }
 
@@ -2926,15 +2783,6 @@ GrTexInfo *      /*info*/)
     WriteTrace(TraceGlitch, TraceWarning, "grTexMultibaseAddress");
 }
 
-inline void MySleep(FxU32 ms)
-{
-#ifdef _WIN32
-    Sleep(ms);
-#else
-    SDL_Delay(ms);
-#endif
-}
-
 #ifdef _WIN32
 static void CorrectGamma(LPVOID apGammaRamp)
 {
@@ -2950,9 +2798,11 @@ static void CorrectGamma(const FxU16 aGammaRamp[3][256])
 {
     int res;
 
-    res = SDL_SetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]);
+ /* res = SDL_SetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]); */
+    res = -1;
+    fputs("ERROR:  Replacement for SDL_SetGammaRamp unimplemented.\n", stderr);
     WriteTrace(TraceGlitch, TraceDebug, "SDL_SetGammaRamp returned %d\r\n", res);
-        }
+}
 #endif
 
 FX_ENTRY void FX_CALL
@@ -2969,7 +2819,7 @@ grLoadGammaTable(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
         aGammaRamp[2][i] = (FxU16)((blue[i] << 8) & 0xFFFF);
     }
     CorrectGamma(aGammaRamp);
-    MySleep(1000); //workaround for Mupen64
+    pjutil::Sleep(1000);
 }
 
 FX_ENTRY void FX_CALL
@@ -2985,7 +2835,8 @@ grGetGammaTableExt(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
     {
         ReleaseDC(NULL, hdc);
 #else
-    if (SDL_GetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]) != -1)
+    fputs("ERROR:  Replacement for SDL_GetGammaRamp unimplemented.\n", stderr);
+ /* if (SDL_GetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]) != -1) */
     {
 #endif
         for (int i = 0; i < 256; i++)
@@ -2995,7 +2846,7 @@ grGetGammaTableExt(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
             blue[i] = aGammaRamp[2][i] >> 8;
         }
     }
-    }
+}
 
 FX_ENTRY void FX_CALL
 guGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB)
@@ -3108,7 +2959,7 @@ void dump_start()
         init = 1;
         ilInit();
         ilEnable(IL_FILE_OVERWRITE);
-}
+    }
     dumping = 1;
     tl_i = 0;
 }
@@ -3118,7 +2969,7 @@ void dump_stop()
     if (!dumping) return;
 
     int i, j;
-    for (i=0; i<nb_fb; i++) {
+    for (i = 0; i < nb_fb; i++) {
         dump_tex(fbs[i].texid);
     }
     dump_tex(default_texture);
@@ -3134,38 +2985,39 @@ void dump_stop()
     //   FILE * fp = fopen("glide_depth1.bin", "rb");
     //   fread(depthBuffer, 2, width*height, fp);
     //   fclose(fp);
-    for (j=0; j<height; j++) {
-        for (i=0; i<width; i++) {
+    for (j = 0; j < height; j++) {
+        for (i = 0; i < width; i++) {
             //uint16_t d = ( (uint16_t *)depthBuffer )[i+(height-1-j)*width]/2 + 0x8000;
-            uint16_t d = ( (uint16_t *)depthBuffer )[i+j*width];
-            uint32_t c = ( (uint32_t *)frameBuffer )[i+j*width];
-            ( (unsigned char *)frameBuffer )[(i+j*width)*3] = d&0xff;
-            ( (unsigned char *)frameBuffer )[(i+j*width)*3+1] = d>>8;
-            ( (unsigned char *)frameBuffer )[(i+j*width)*3+2] = c&0xff;
+            uint16_t d = ((uint16_t *)depthBuffer)[i + j*width];
+            uint32_t c = ((uint32_t *)frameBuffer)[i + j*width];
+            ((unsigned char *)frameBuffer)[(i + j*width) * 3] = d & 0xff;
+            ((unsigned char *)frameBuffer)[(i + j*width) * 3 + 1] = d >> 8;
+            ((unsigned char *)frameBuffer)[(i + j*width) * 3 + 2] = c & 0xff;
         }
     }
     ilTexImage(width, height, 1, 3, IL_RGB, IL_UNSIGNED_BYTE, frameBuffer);
     ilSaveImage("dump/framedepth.png");
 
-    for (i=0; i<tl_i; i++) {
+    for (i = 0; i < tl_i; i++) {
         glBindTexture(GL_TEXTURE_2D, tl[i]);
         GLint w, h, fmt;
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &fmt);
-        fprintf(stderr, "Texture %d %dx%d fmt %x\n", tl[i], (int)w, (int)h, (int) fmt);
+        fprintf(stderr, "Texture %d %dx%d fmt %x\n", tl[i], (int)w, (int)h, (int)fmt);
 
-        uint32_t * pixels = (uint32_t *) malloc(w*h*4);
+        uint32_t * pixels = (uint32_t *)malloc(w*h * 4);
         // 0x1902 is another constant meaning GL_DEPTH_COMPONENT
         // (but isn't defined in gl's headers !!)
         if (fmt != GL_DEPTH_COMPONENT && fmt != 0x1902) {
             glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
             ilTexImage(w, h, 1, 4, IL_RGBA, IL_UNSIGNED_BYTE, pixels);
-        } else {
+        }
+        else {
             glGetTexImage(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, pixels);
             int i;
-            for (i=0; i<w*h; i++)
-                ((unsigned char *)frameBuffer)[i] = ((unsigned short *)pixels)[i]/256;
+            for (i = 0; i < w*h; i++)
+                ((unsigned char *)frameBuffer)[i] = ((unsigned short *)pixels)[i] / 256;
             ilTexImage(w, h, 1, 1, IL_LUMINANCE, IL_UNSIGNED_BYTE, frameBuffer);
         }
         char name[128];
@@ -3198,3 +3050,48 @@ void dump_tex(int id)
 }
 
 #endif
+
+void CHECK_FRAMEBUFFER_STATUS()
+{
+    GLenum status;
+    status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+    WriteTrace(TraceGlitch, TraceDebug, "status: %X", status);
+    switch (status) {
+    case GL_FRAMEBUFFER_COMPLETE_EXT:
+        /*WriteTrace(TraceGlitch, TraceWarning, "framebuffer complete!\n");*/
+        break;
+    case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer GL_FRAMEBUFFER_UNSUPPORTED_EXT\n");
+        /* you gotta choose different formats */
+        /*assert(0);*/
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer INCOMPLETE_ATTACHMENT\n");
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer FRAMEBUFFER_MISSING_ATTACHMENT\n");
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer FRAMEBUFFER_DIMENSIONS\n");
+        break;
+        /*case GL_FRAMEBUFFER_INCOMPLETE_DUPLICATE_ATTACHMENT_EXT:
+          WriteTrace(TraceGlitch, TraceWarning, "framebuffer INCOMPLETE_DUPLICATE_ATTACHMENT\n");
+          break;*/
+    case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer INCOMPLETE_FORMATS\n");
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer INCOMPLETE_DRAW_BUFFER\n");
+        break;
+    case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer INCOMPLETE_READ_BUFFER\n");
+        break;
+    case GL_FRAMEBUFFER_BINDING_EXT:
+        WriteTrace(TraceGlitch, TraceWarning, "framebuffer BINDING_EXT\n");
+        break;
+    default:
+        break;
+        /* programming error; will fail on all hardware */
+        /*assert(0);*/
+    }
+}

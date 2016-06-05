@@ -14,32 +14,32 @@ class CSettingTypeApplicationIndex :
     public CSettingTypeApplication
 {
 public:
-    CSettingTypeApplicationIndex(const char * Section, const char * Name, const char * DefaultValue );
-    CSettingTypeApplicationIndex(const char * Section, const char * Name, bool DefaultValue );
-    CSettingTypeApplicationIndex(const char * Section, const char * Name, uint32_t DefaultValue );
-    CSettingTypeApplicationIndex(const char * Section, const char * Name, SettingID DefaultSetting );
+    CSettingTypeApplicationIndex(const char * Section, const char * Name, const char * DefaultValue);
+    CSettingTypeApplicationIndex(const char * Section, const char * Name, bool DefaultValue);
+    CSettingTypeApplicationIndex(const char * Section, const char * Name, uint32_t DefaultValue);
+    CSettingTypeApplicationIndex(const char * Section, const char * Name, SettingID DefaultSetting);
     ~CSettingTypeApplicationIndex();
 
-    virtual bool IndexBasedSetting ( void ) const { return true; }
+    virtual bool IndexBasedSetting(void) const { return true; }
 
     //return the values
-    virtual bool Load ( int32_t Index, bool & Value   ) const;
-    virtual bool Load ( int32_t Index, uint32_t & Value  ) const;
-    virtual bool Load ( int32_t Index, stdstr & Value ) const;
+    virtual bool Load(int32_t Index, bool & Value) const;
+    virtual bool Load(int32_t Index, uint32_t & Value) const;
+    virtual bool Load(int32_t Index, stdstr & Value) const;
 
     //return the default values
-    virtual void LoadDefault ( int32_t Index, bool & Value   ) const;
-    virtual void LoadDefault ( int32_t Index, uint32_t & Value  ) const;
-    virtual void LoadDefault ( int32_t Index, stdstr & Value ) const;
+    virtual void LoadDefault(int32_t Index, bool & Value) const;
+    virtual void LoadDefault(int32_t Index, uint32_t & Value) const;
+    virtual void LoadDefault(int32_t Index, stdstr & Value) const;
 
     //Update the settings
-    virtual void Save ( int32_t Index, bool Value );
-    virtual void Save ( int32_t Index, uint32_t Value );
-    virtual void Save ( int32_t Index, const stdstr & Value );
-    virtual void Save ( int32_t Index, const char * Value );
+    virtual void Save(int32_t Index, bool Value);
+    virtual void Save(int32_t Index, uint32_t Value);
+    virtual void Save(int32_t Index, const stdstr & Value);
+    virtual void Save(int32_t Index, const char * Value);
 
     // Delete the setting
-    virtual void Delete ( int32_t Index );
+    virtual void Delete(int32_t Index);
 
 private:
     CSettingTypeApplicationIndex(void);                                             // Disable default constructor

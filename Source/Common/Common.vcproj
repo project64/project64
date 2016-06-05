@@ -130,6 +130,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DateTimeClass.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FileClass.cpp"
 				>
 			</File>
@@ -190,6 +194,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Thread.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Trace.cpp"
 				>
 			</File>
@@ -204,6 +212,10 @@
 			>
 			<File
 				RelativePath=".\CriticalSection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DateTimeClass.h"
 				>
 			</File>
 			<File
@@ -256,6 +268,10 @@
 			</File>
 			<File
 				RelativePath=".\SyncEvent.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Thread.h"
 				>
 			</File>
 			<File

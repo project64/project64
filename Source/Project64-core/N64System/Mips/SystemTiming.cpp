@@ -161,12 +161,12 @@ void CSystemTimer::UpdateTimers()
     int TimeTaken = m_LastUpdate - m_NextTimer;
     if (TimeTaken != 0)
     {
-        uint32_t random, wired;
+        int32_t random, wired;
         m_LastUpdate = m_NextTimer;
         g_Reg->COUNT_REGISTER += TimeTaken;
         random = g_Reg->RANDOM_REGISTER - (TimeTaken / g_System->CountPerOp());
         wired = g_Reg->WIRED_REGISTER;
-        if ((int)random < (int)wired)
+        if (random < wired)
         {
             if (wired == 0)
             {
@@ -175,10 +175,7 @@ void CSystemTimer::UpdateTimers()
             else
             {
                 uint32_t increment = 32 - wired;
-                do
-                {
-                    random += increment;
-                } while ((int)random < (int)wired);
+                random += ((wired - random + increment - 1) / increment) * increment;
             }
         }
         g_Reg->RANDOM_REGISTER = random;
@@ -318,7 +315,7 @@ bool CSystemTimer::SaveAllowed(void)
     return true;
 }
 
-void CSystemTimer::SaveData(void * file) const
+void CSystemTimer::SaveData(zipFile & file) const
 {
     uint32_t TimerDetailsSize = sizeof(TIMER_DETAILS);
     uint32_t Entries = sizeof(m_TimerDetatils) / sizeof(m_TimerDetatils[0]);
@@ -330,7 +327,20 @@ void CSystemTimer::SaveData(void * file) const
     zipWriteInFileInZip(file, (void *)&m_Current, sizeof(m_Current));
 }
 
-void CSystemTimer::LoadData(void * file)
+void CSystemTimer::SaveData(CFile & file) const
+{
+    uint32_t TimerDetailsSize = sizeof(TIMER_DETAILS);
+    uint32_t Entries = sizeof(m_TimerDetatils) / sizeof(m_TimerDetatils[0]);
+    
+    file.Write(&TimerDetailsSize, sizeof(TimerDetailsSize));
+    file.Write(&Entries, sizeof(Entries));
+    file.Write((void *)&m_TimerDetatils, sizeof(m_TimerDetatils));
+    file.Write((void *)&m_LastUpdate, sizeof(m_LastUpdate));
+    file.Write(&m_NextTimer, sizeof(m_NextTimer));
+    file.Write((void *)&m_Current, sizeof(m_Current));
+}
+
+void CSystemTimer::LoadData(zipFile & file)
 {
     uint32_t TimerDetailsSize, Entries;
 
@@ -352,6 +362,30 @@ void CSystemTimer::LoadData(void * file)
     unzReadCurrentFile(file, (void *)&m_LastUpdate, sizeof(m_LastUpdate));
     unzReadCurrentFile(file, &m_NextTimer, sizeof(m_NextTimer));
     unzReadCurrentFile(file, (void *)&m_Current, sizeof(m_Current));
+}
+
+void CSystemTimer::LoadData(CFile & file)
+{
+    uint32_t TimerDetailsSize, Entries;
+
+    file.Read(&TimerDetailsSize, sizeof(TimerDetailsSize));
+    file.Read(&Entries, sizeof(Entries));
+
+    if (TimerDetailsSize != sizeof(TIMER_DETAILS))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    if (Entries != sizeof(m_TimerDetatils) / sizeof(m_TimerDetatils[0]))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    file.Read((void *)&m_TimerDetatils, sizeof(m_TimerDetatils));
+    file.Read((void *)&m_LastUpdate, sizeof(m_LastUpdate));
+    file.Read(&m_NextTimer, sizeof(m_NextTimer));
+    file.Read((void *)&m_Current, sizeof(m_Current));
 }
 
 void CSystemTimer::RecordDifference(CLog &LogFile, const CSystemTimer& rSystemTimer)

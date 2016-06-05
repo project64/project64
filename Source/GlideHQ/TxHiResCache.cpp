@@ -149,16 +149,16 @@ TxHiResCache::load(boolean replace) /* 0 : reload, 1 : replace partial */
         case GHQ_HIRESTEXTURES:
             break;
         case RICE_HIRESTEXTURES:
-            INFO(80, L"-----\n");
-            INFO(80, L"using Rice hires texture format...\n");
-            INFO(80, L"  must be one of the following;\n");
-            INFO(80, L"    1) *_rgb.png + *_a.png\n");
-            INFO(80, L"    2) *_all.png\n");
-            INFO(80, L"    3) *_ciByRGBA.png\n");
-            INFO(80, L"    4) *_allciByRGBA.png\n");
-            INFO(80, L"    5) *_ci.bmp\n");
-            INFO(80, L"  usage of only 2) and 3) highly recommended!\n");
-            INFO(80, L"  folder names must be in US-ASCII characters!\n");
+            INFO(80, "-----\n");
+            INFO(80, "using Rice hires texture format...\n");
+            INFO(80, "  must be one of the following;\n");
+            INFO(80, "    1) *_rgb.png + *_a.png\n");
+            INFO(80, "    2) *_all.png\n");
+            INFO(80, "    3) *_ciByRGBA.png\n");
+            INFO(80, "    4) *_allciByRGBA.png\n");
+            INFO(80, "    5) *_ci.bmp\n");
+            INFO(80, "  usage of only 2) and 3) highly recommended!\n");
+            INFO(80, "  folder names must be in US-ASCII characters!\n");
 
             dir_path.AppendDirectory(_ident.c_str());
             loadHiResTextures(dir_path, replace);
@@ -175,21 +175,21 @@ TxHiResCache::load(boolean replace) /* 0 : reload, 1 : replace partial */
 boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
 {
 #ifdef _WIN32
-    DBG_INFO(80, L"-----\n");
-    DBG_INFO(80, L"path: %s\n", stdstr(dir_path).ToUTF16().c_str());
+    DBG_INFO(80, "-----\n");
+    DBG_INFO(80, "path: %s\n", stdstr(dir_path).ToUTF16().c_str());
 
     CPath TextureDir(dir_path, "");
 
     /* find it on disk */
     if (!TextureDir.DirectoryExists())
     {
-        INFO(80, L"Error: path not found!\n");
+        INFO(80, "Error: path not found!\n");
         return 0;
     }
 
     /* recursive read into sub-directory */
-    TextureDir.SetNameExtension("*.*");
-    if (TextureDir.FindFirst(_A_SUBDIR))
+    TextureDir.SetNameExtension("*");
+    if (TextureDir.FindFirst(CPath::FIND_ATTRIBUTE_SUBDIR))
     {
         do
         {
@@ -205,13 +205,13 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
             if (KBHIT(0x1B))
             {
                 _abortLoad = 1;
-                if (_callback) (*_callback)(L"Aborted loading hiresolution texture!\n");
-                INFO(80, L"Error: aborted loading hiresolution texture!\n");
+                if (_callback) (*_callback)("Aborted loading hiresolution texture!\n");
+                INFO(80, "Error: aborted loading hiresolution texture!\n");
             }
             if (_abortLoad) break;
 
-            DBG_INFO(80, L"-----\n");
-            DBG_INFO(80, L"file: %ls\n", stdstr(TextureDir.GetNameExtension().c_str()).ToUTF16().c_str());
+            DBG_INFO(80, "-----\n");
+            DBG_INFO(80, "file: %ls\n", stdstr(TextureDir.GetNameExtension().c_str()).ToUTF16().c_str());
 
             int width = 0, height = 0;
             uint16 format = 0;
@@ -260,11 +260,11 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                 pfname == strstr(fname, ".dds")))
             {
 #if !DEBUG
-                INFO(80, L"-----\n");
-                INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
-                INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+                INFO(80, "-----\n");
+                INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+                INFO(80, "file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
-                INFO(80, L"Error: not png or bmp or dds!\n");
+                INFO(80, "Error: not png or bmp or dds!\n");
                 continue;
             }
             pfname = strstr(fname, ident.c_str());
@@ -279,20 +279,20 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
             }
             if (!pfname) {
 #if !DEBUG
-                INFO(80, L"-----\n");
-                INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
-                INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+                INFO(80, "-----\n");
+                INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+                INFO(80, "file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
-                INFO(80, L"Error: not Rice texture naming convention!\n");
+                INFO(80, "Error: not Rice texture naming convention!\n");
                 continue;
             }
             if (!chksum) {
 #if !DEBUG
-                INFO(80, L"-----\n");
-                INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
-                INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+                INFO(80, "-----\n");
+                INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+                INFO(80, "file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
-                INFO(80, L"Error: crc32 = 0!\n");
+                INFO(80, "Error: crc32 = 0!\n");
                 continue;
             }
 
@@ -303,16 +303,16 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                 chksum64 |= (uint64)chksum;
                 if (TxCache::is_cached(chksum64)) {
 #if !DEBUG
-                    INFO(80, L"-----\n");
-                    INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
-                    INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+                    INFO(80, "-----\n");
+                    INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+                    INFO(80, "file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
-                    INFO(80, L"Error: already cached! duplicate texture!\n");
+                    INFO(80, "Error: already cached! duplicate texture!\n");
                     continue;
                 }
             }
 
-            DBG_INFO(80, L"rom: %ls chksum:%08X %08X fmt:%x size:%x\n", _ident.c_str(), chksum, palchksum, fmt, siz);
+            DBG_INFO(80, "rom: %ls chksum:%08X %08X fmt:%x size:%x\n", _ident.c_str(), chksum, palchksum, fmt, siz);
 
             /* Deal with the wackiness some texture packs utilize Rice format.
             * Read in the following order: _a.* + _rgb.*, _all.png _ciByRGBA.png,
@@ -343,11 +343,11 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                     if (!TargetFile.Exists())
                     {
 #if !DEBUG
-                        INFO(80, L"-----\n");
-                        INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
-                        INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+                        INFO(80, "-----\n");
+                        INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+                        INFO(80, "file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
-                        INFO(80, L"Error: missing _rgb.*! _a.* must be paired with _rgb.*!\n");
+                        INFO(80, "Error: missing _rgb.*! _a.* must be paired with _rgb.*!\n");
                         continue;
                     }
                 }
@@ -388,18 +388,18 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                     if (!tex || width != tmpwidth || height != tmpheight ||
                         format != GR_TEXFMT_ARGB_8888 || tmpformat != GR_TEXFMT_ARGB_8888) {
 #if !DEBUG
-                        INFO(80, L"-----\n");
-                        INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
-                        INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+                        INFO(80, "-----\n");
+                        INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+                        INFO(80, "file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
                         if (!tex) {
-                            INFO(80, L"Error: missing _rgb.*!\n");
+                            INFO(80, "Error: missing _rgb.*!\n");
                         }
                         else if (width != tmpwidth || height != tmpheight) {
-                            INFO(80, L"Error: _rgb.* and _a.* have mismatched width or height!\n");
+                            INFO(80, "Error: _rgb.* and _a.* have mismatched width or height!\n");
                         }
                         else if (format != GR_TEXFMT_ARGB_8888 || tmpformat != GR_TEXFMT_ARGB_8888) {
-                            INFO(80, L"Error: _rgb.* or _a.* not in 32bit color!\n");
+                            INFO(80, "Error: _rgb.* or _a.* not in 32bit color!\n");
                         }
                         if (tex) free(tex);
                         if (tmptex) free(tmptex);
@@ -412,7 +412,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                 if (tex) {
                     if (tmptex) {
                         /* merge (A)RGB and A comp */
-                        DBG_INFO(80, L"merge (A)RGB and A comp\n");
+                        DBG_INFO(80, "merge (A)RGB and A comp\n");
                         int i;
                         for (i = 0; i < height * width; i++) {
 #if 1
@@ -443,11 +443,11 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                     else {
                         /* clobber A comp. never a question of alpha. only RGB used. */
 #if !DEBUG
-                        INFO(80, L"-----\n");
-                        INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
-                        INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+                        INFO(80, "-----\n");
+                        INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+                        INFO(80, "file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
-                        INFO(80, L"Warning: missing _a.*! only using _rgb.*. treat as opaque texture.\n");
+                        INFO(80, "Warning: missing _a.*! only using _rgb.*. treat as opaque texture.\n");
                         int i;
                         for (i = 0; i < height * width; i++) {
                             ((uint32*)tex)[i] |= 0xff000000;
@@ -492,11 +492,11 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                              free(tex);
                              tex = NULL;
 #if !DEBUG
-                             INFO(80, L"-----\n");
-                             INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
-                             INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+                             INFO(80, "-----\n");
+                             INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+                             INFO(80, "file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
-                             INFO(80, L"Error: W:H aspect ratio range not 8:1 - 1:8!\n");
+                             INFO(80, "Error: W:H aspect ratio range not 8:1 - 1:8!\n");
                              continue;
                          }
                          if (width != _txReSample->nextPow2(width) ||
@@ -504,11 +504,11 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                              free(tex);
                              tex = NULL;
 #if !DEBUG
-                             INFO(80, L"-----\n");
-                             INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
-                             INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+                             INFO(80, "-----\n");
+                             INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+                             INFO(80, "file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
-                             INFO(80, L"Error: not power of 2 size!\n");
+                             INFO(80, "Error: not power of 2 size!\n");
                              continue;
                          }
                      }
@@ -517,14 +517,14 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
             /* if we do not have a texture at this point we are screwed */
             if (!tex) {
 #if !DEBUG
-                INFO(80, L"-----\n");
-                INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
-                INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+                INFO(80, "-----\n");
+                INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+                INFO(80, "file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
-                INFO(80, L"Error: load failed!\n");
+                INFO(80, "Error: load failed!\n");
                 continue;
             }
-            DBG_INFO(80, L"read in as %d x %d gfmt:%x\n", tmpwidth, tmpheight, tmpformat);
+            DBG_INFO(80, "read in as %d x %d gfmt:%x\n", tmpwidth, tmpheight, tmpformat);
 
             /* check if size and format are OK */
             if (!(format == GR_TEXFMT_ARGB_8888 ||
@@ -536,11 +536,11 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                 free(tex);
                 tex = NULL;
 #if !DEBUG
-                INFO(80, L"-----\n");
-                INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
-                INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+                INFO(80, "-----\n");
+                INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+                INFO(80, "file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
-                INFO(80, L"Error: not width * height > 4 or 8bit palette color or 32bpp or dxt1 or dxt3 or dxt5!\n");
+                INFO(80, "Error: not width * height > 4 or 8bit palette color or 32bpp or dxt1 or dxt3 or dxt5!\n");
                 continue;
             }
 
@@ -560,7 +560,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                      * meter. The same goes for fmt:2 textures. See Mollymutt's
                      * PaperMario text. */
                     if ((fmt == 0 && siz == 2) || fmt == 2) {
-                        DBG_INFO(80, L"Remove black, white, etc borders along the alpha edges.\n");
+                        DBG_INFO(80, "Remove black, white, etc borders along the alpha edges.\n");
                         /* round A comp */
                         for (i = 0; i < height * width; i++) {
                             uint32 texel = ((uint32*)tex)[i];
@@ -647,7 +647,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                     }
                     if (!intensity && alphabits == 8) break;
                 }
-                DBG_INFO(80, L"required alpha bits:%d zero acomp texels:%d rgb as intensity:%d\n", alphabits, fullalpha, intensity);
+                DBG_INFO(80, "required alpha bits:%d zero acomp texels:%d rgb as intensity:%d\n", alphabits, fullalpha, intensity);
 
                 /* preparations based on above analysis */
 #if !REDUCE_TEXTURE_FOOTPRINT
@@ -683,7 +683,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                     }
                 }
 
-                DBG_INFO(80, L"best gfmt:%x\n", destformat);
+                DBG_INFO(80, "best gfmt:%x\n", destformat);
             }
             /*
              * Rice hi-res textures: end */
@@ -706,26 +706,26 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
           /* minification to enable glide64 style texture tiling */
           /* determine the minification ratio to tile the texture into 256x256 size */
           if ((_options & TILE_HIRESTEX) && _maxwidth >= 256 && _maxheight >= 256) {
-              DBG_INFO(80, L"determine minification ratio to tile\n");
+              DBG_INFO(80, "determine minification ratio to tile\n");
               tmpwidth = width;
               tmpheight = height;
               if (height > 256) {
                   ratio = ((height - 1) >> 8) + 1;
                   tmpwidth = width / ratio;
                   tmpheight = height / ratio;
-                  DBG_INFO(80, L"height > 256, minification ratio:%d %d x %d -> %d x %d\n",
+                  DBG_INFO(80, "height > 256, minification ratio:%d %d x %d -> %d x %d\n",
                       ratio, width, height, tmpwidth, tmpheight);
               }
               if (tmpwidth > 256 && (((tmpwidth - 1) >> 8) + 1) * tmpheight > 256) {
                   ratio *= ((((((tmpwidth - 1) >> 8) + 1) * tmpheight) - 1) >> 8) + 1;
-                  DBG_INFO(80, L"width > 256, minification ratio:%d %d x %d -> %d x %d\n",
+                  DBG_INFO(80, "width > 256, minification ratio:%d %d x %d -> %d x %d\n",
                       ratio, width, height, width / ratio, height / ratio);
               }
           }
           else {
               /* normal minification to fit max texture size */
               if (width > _maxwidth || height > _maxheight) {
-                  DBG_INFO(80, L"determine minification ratio to fit max texture size\n");
+                  DBG_INFO(80, "determine minification ratio to fit max texture size\n");
                   tmpwidth = width;
                   tmpheight = height;
                   while (tmpwidth > _maxwidth) {
@@ -738,7 +738,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                       tmpwidth >>= 1;
                       ratio <<= 1;
                   }
-                  DBG_INFO(80, L"minification ratio:%d %d x %d -> %d x %d\n",
+                  DBG_INFO(80, "minification ratio:%d %d x %d -> %d x %d\n",
                       ratio, width, height, tmpwidth, tmpheight);
               }
           }
@@ -747,7 +747,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
               if (!_txReSample->minify(&tex, &width, &height, ratio)) {
                   free(tex);
                   tex = NULL;
-                  DBG_INFO(80, L"Error: minification failed!\n");
+                  DBG_INFO(80, "Error: minification failed!\n");
                   continue;
               }
           }
@@ -796,7 +796,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
 
           /* tile it! do the actual tiling into 256x256 size */
           if (usetile) {
-              DBG_INFO(80, L"Glide64 style texture tiling\n");
+              DBG_INFO(80, "Glide64 style texture tiling\n");
 
               int x, y, z, ratio, offset;
               offset = 0;
@@ -825,7 +825,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                   untiled_height = height;
                   width = 256;
                   height *= ratio;
-                  DBG_INFO(80, L"Tiled: %d x %d -> %d x %d\n", untiled_width, untiled_height, width, height);
+                  DBG_INFO(80, "Tiled: %d x %d -> %d x %d\n", untiled_width, untiled_height, width, height);
               }
           }
       }
@@ -843,7 +843,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                     if (!_txReSample->minify(&tex, &width, &height, ratio)) {
                         free(tex);
                         tex = NULL;
-                        DBG_INFO(80, L"Error: minification failed!\n");
+                        DBG_INFO(80, "Error: minification failed!\n");
                         continue;
                     }
                 }
@@ -876,7 +876,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
 #endif
                         free(tex);
                         tex = NULL;
-                        DBG_INFO(80, L"Error: aspect ratio adjustment failed!\n");
+                        DBG_INFO(80, "Error: aspect ratio adjustment failed!\n");
                         continue;
                     }
 #endif
@@ -960,7 +960,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
 #endif
                         free(tex);
                         tex = NULL;
-                        DBG_INFO(80, L"Error: aspect ratio adjustment failed!\n");
+                        DBG_INFO(80, "Error: aspect ratio adjustment failed!\n");
                         continue;
                     }
 #endif
@@ -1016,17 +1016,17 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
             /* last minute validations */
             if (!tex || !chksum || !width || !height || !format || width > _maxwidth || height > _maxheight) {
 #if !DEBUG
-                INFO(80, L"-----\n");
-                INFO(80, L"path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
-                INFO(80, L"file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+                INFO(80, "-----\n");
+                INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+                INFO(80, "file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
                 if (tex) {
                     free(tex);
                     tex = NULL;
-                    INFO(80, L"Error: bad format or size! %d x %d gfmt:%x\n", width, height, format);
+                    INFO(80, "Error: bad format or size! %d x %d gfmt:%x\n", width, height, format);
                 }
                 else {
-                    INFO(80, L"Error: load failed!!\n");
+                    INFO(80, "Error: load failed!!\n");
                 }
                 continue;
             }
@@ -1060,7 +1060,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
 
                 /* remove redundant in cache */
                 if (replace && TxCache::del(chksum64)) {
-                    DBG_INFO(80, L"removed duplicate old cache.\n");
+                    DBG_INFO(80, "removed duplicate old cache.\n");
                 }
 
                 /* add to cache */
@@ -1070,9 +1070,9 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                     if (_callback) {
                         wchar_t tmpbuf[MAX_PATH];
                         mbstowcs(tmpbuf, fname, MAX_PATH);
-                        (*_callback)(L"[%d] total mem:%.2fmb - %ls\n", _cache.size(), (float)_totalSize / 1000000, tmpbuf);
+                        (*_callback)("[%d] total mem:%.2fmb - %ls\n", _cache.size(), (float)_totalSize / 1000000, tmpbuf);
                     }
-                    DBG_INFO(80, L"texture loaded!\n");
+                    DBG_INFO(80, "texture loaded!\n");
                 }
                 free(tex);
             }

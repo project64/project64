@@ -327,13 +327,14 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     CONTROL         "Start Emulation when rom is opened?",IDC_START_ON_ROM_OPEN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,8,191,10
-    CONTROL         "Automatically compress instant saves",IDC_ZIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,24,191,10
-    CONTROL         "Enable Debugger",IDC_DEBUGGER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,41,191,10
-    CONTROL         "Remember selected cheats",IDC_REMEMBER_CHEAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,57,191,10
+    CONTROL         "Automatically compress instant saves",IDC_ZIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,23,191,10
+    CONTROL         "Enable Debugger",IDC_DEBUGGER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,38,191,10
+    CONTROL         "Remember selected cheats",IDC_REMEMBER_CHEAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,53,191,10
     CONTROL         "Check if project64 is already running",IDC_CHECK_RUNNING,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,73,189,10
-    CONTROL         "Frame rate display",IDC_DISPLAY_FRAMERATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,88,86,10
-    COMBOBOX        IDC_FRAME_DISPLAY_TYPE,101,87,99,57,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,68,189,10
+    CONTROL         "Frame rate display",IDC_DISPLAY_FRAMERATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,98,86,10
+    COMBOBOX        IDC_FRAME_DISPLAY_TYPE,101,97,99,57,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Unique Game Save Directory",IDC_UNIQUE_SAVE_DIR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,83,189,10
 END
 
 IDD_Settings_ShellInt DIALOGEX 0, 0, 231, 206

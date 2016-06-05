@@ -90,6 +90,7 @@ public:
     virtual void  SaveNumber(const char * lpSectionName, const char * lpKeyName, uint32_t Value);
     void SetAutoFlush(bool AutoFlush);
     void FlushChanges(void);
+    bool EntryExists(const char * lpSectionName, const char * lpKeyName);
     void GetKeyList(const char * lpSectionName, strlist &List);
     void GetKeyValueData(const char * lpSectionName, KeyValueData & List);
 

@@ -510,6 +510,14 @@
 					</FileConfiguration>
 				</File>
 			</Filter>
+			<Filter
+				Name="Rom List"
+				>
+				<File
+					RelativePath=".\RomList\RomList.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -733,6 +741,14 @@
 				</File>
 				<File
 					RelativePath=".\3rdParty\zip.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Rom List"
+				>
+				<File
+					RelativePath=".\RomList\RomList.h"
 					>
 				</File>
 			</Filter>

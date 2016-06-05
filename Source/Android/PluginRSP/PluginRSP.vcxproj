@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B685BB34-D700-4FCC-8503-9B6AA1A0C95D}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>RSPhle</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)PropertySheets\Platform.$(Configuration).props" />
+  </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <PropertyGroup>
+    <TargetName>RSP-HLE</TargetName>
+    <TargetName Condition="'$(Configuration)'=='Debug'">RSP-HLE_d</TargetName>
+    <OutDir>$(SolutionDir)Plugin\RSP\</OutDir>
+    <OutDir Condition="'$(Platform)'=='x64'">$(SolutionDir)Plugin64\RSP\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="alist.cpp" />
+    <ClCompile Include="alist_audio.cpp" />
+    <ClCompile Include="alist_naudio.cpp" />
+    <ClCompile Include="alist_nead.cpp" />
+    <ClCompile Include="audio.cpp" />
+    <ClCompile Include="cicx105.cpp" />
+    <ClCompile Include="hle.cpp" />
+    <ClCompile Include="jpeg.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="mem.cpp" />
+    <ClCompile Include="mp3.cpp" />
+    <ClCompile Include="musyx.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="alist.h" />
+    <ClInclude Include="arithmetics.h" />
+    <ClInclude Include="audio.h" />
+    <ClInclude Include="common.h" />
+    <ClInclude Include="hle.h" />
+    <ClInclude Include="mem.h" />
+    <ClInclude Include="Rsp.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="ucodes.h" />
+    <ClInclude Include="Version.h" />
+  </ItemGroup>
+</Project>

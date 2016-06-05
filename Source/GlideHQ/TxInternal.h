@@ -35,7 +35,7 @@
 #define TAPIENTRY
 #endif
 
-#include <common/stdtypes.h>
+#include <Common/stdtypes.h>
 
 typedef uint8_t  uint8;
 typedef uint16_t uint16;

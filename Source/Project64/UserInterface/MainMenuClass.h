@@ -1,4 +1,5 @@
 #pragma once
+#include <Project64/Settings/UISettings.h>
 
 enum MainMenuID
 {
@@ -17,7 +18,7 @@ enum MainMenuID
 
     //System Menu
     ID_SYSTEM_RESET_SOFT, ID_SYSTEM_RESET_HARD, ID_SYSTEM_PAUSE, ID_SYSTEM_BITMAP,
-    ID_SYSTEM_LIMITFPS, ID_SYSTEM_RESTORE, ID_SYSTEM_LOAD, ID_SYSTEM_SAVE,
+    ID_SYSTEM_LIMITFPS, ID_SYSTEM_SWAPDISK, ID_SYSTEM_RESTORE, ID_SYSTEM_LOAD, ID_SYSTEM_SAVE,
     ID_SYSTEM_SAVEAS, ID_SYSTEM_CHEAT, ID_SYSTEM_GSBUTTON,
 
     //Current Save Slot
@@ -34,7 +35,7 @@ enum MainMenuID
     //Debugger Menu
     ID_DEBUG_SHOW_TLB_MISSES, ID_DEBUG_SHOW_UNHANDLED_MEM, ID_DEBUG_SHOW_PIF_ERRORS,
     ID_DEBUG_SHOW_DLIST_COUNT, ID_DEBUG_SHOW_RECOMP_MEM_SIZE, ID_DEBUG_SHOW_DIV_BY_ZERO,
-    ID_DEBUG_GENERATE_LOG_FILES, ID_DEBUG_DISABLE_GAMEFIX,
+    ID_DEBUG_GENERATE_LOG_FILES, ID_DEBUG_DISABLE_GAMEFIX, ID_DEBUG_LANGUAGE,
     ID_DEBUGGER_LOGOPTIONS, ID_DEBUGGER_GENERATELOG, ID_DEBUGGER_DUMPMEMORY, ID_DEBUGGER_SEARCHMEMORY,
     ID_DEBUGGER_TLBENTRIES, ID_DEBUGGER_BREAKPOINTS, ID_DEBUGGER_MEMORY, ID_DEBUGGER_R4300REGISTERS,
     ID_DEBUGGER_INTERRUPT_SP, ID_DEBUGGER_INTERRUPT_SI, ID_DEBUGGER_INTERRUPT_AI, ID_DEBUGGER_INTERRUPT_VI,
@@ -74,7 +75,7 @@ private:
 
     void FillOutMenu(HMENU hMenu);
     std::wstring GetSaveSlotString(int Slot);
-    stdstr GetFileLastMod(stdstr FileName);
+    stdstr GetFileLastMod(const CPath & FileName);
     void RebuildAccelerators(void);
     stdstr ChooseFileToOpen(HWND hParent);
     void SetTraceModuleSetttings(SettingID Type);
@@ -82,12 +83,14 @@ private:
     static void SettingsChanged(CMainMenu * _this);
 
     typedef std::list<SettingID> SettingList;
+    typedef std::list<UISettingID> UISettingList;
 
     CMainGui   * m_Gui;
 
-    void *       m_AccelTable;
-    bool         m_ResetAccelerators;
-    CShortCuts   m_ShortCuts;
-    SettingList  m_ChangeSettingList;
+    void *        m_AccelTable;
+    bool          m_ResetAccelerators;
+    CShortCuts    m_ShortCuts;
+    SettingList   m_ChangeSettingList;
+    UISettingList m_ChangeUISettingList;
     CriticalSection m_CS;
 };
