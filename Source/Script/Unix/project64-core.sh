@@ -121,6 +121,7 @@ $AS -o $obj/N64System/Mips/Disk.o       $obj/N64System/Mips/Disk.asm
 $AS -o $obj/N64System/Mips/Dma.o        $obj/N64System/Mips/Dma.asm
 $AS -o $obj/N64System/Mips/Eeprom.o     $obj/N64System/Mips/Eeprom.asm
 $AS -o $obj/N64System/Mips/FlashRam.o   $obj/N64System/Mips/FlashRam.asm
+$AS -o $obj/N64System/Mips/GBCart.o     $obj/N64System/Mips/GBCart.asm
 $AS -o $obj/N64System/Mips/Memory.o     $obj/N64System/Mips/Memory.asm
 $AS -o $obj/N64System/Mips/Mempak.o     $obj/N64System/Mips/Mempak.asm
 $AS -o $obj/N64System/Mips/OpName.o     $obj/N64System/Mips/OpName.asm
@@ -200,6 +201,7 @@ $obj/N64System/Mips/Disk.o \
 $obj/N64System/Mips/Dma.o \
 $obj/N64System/Mips/Eeprom.o \
 $obj/N64System/Mips/FlashRam.o \
+$obj/N64System/Mips/GBCart.o \
 $obj/N64System/Mips/Memory.o \
 $obj/N64System/Mips/Mempak.o \
 $obj/N64System/Mips/OpName.o \
