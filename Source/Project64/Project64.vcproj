@@ -135,6 +135,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="call &quot;$(Root)Source\Script\sign.cmd&quot; &quot;$(TargetPath)&quot;"
 			/>
 		</Configuration>
 	</Configurations>
