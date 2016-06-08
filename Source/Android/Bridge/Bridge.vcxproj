@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{593B00E6-1987-415D-A62C-26533FC3E95C}</ProjectGuid>
+    <ProjectGuid>{2607037A-ADEE-4C8D-9761-17E7823A9E61}</ProjectGuid>
     <RootNamespace>Bridge</RootNamespace>
     <ProjectName>JniBridge</ProjectName>
   </PropertyGroup>
