@@ -5,7 +5,7 @@
 #1  #  "Español"		// LANGUAGE ID
 #2  #  "MELERIX"		// Author
 #3  #  "2.2"			// Version
-#4  #  "12/02/2016"		// Date
+#4  #  "07/06/2016"		// Date
 
 //About DLL Dialog
 #5  #  "Lenguaje Actual"
@@ -51,6 +51,7 @@
 #132#  "C&ontinuar"
 #133#  "&Reinicio Simple"
 #134#  "&Reinicio Completo"
+#135#  "Intercambiar &Disco"
 
 //Options Menu
 #140#  "&Opciones"
@@ -235,6 +236,7 @@
 #466#  "Velocidad de la pantalla:"
 #467#  "Comprobar si Project64 ya está en ejecución"
 #468#  "Directorio Único de Guardados de Juego"
+#469#  "Ruta de ROM 66DD IPL:"
 
 //ROM Browser Tab
 #480#  "Máx # de ROMs recordadas (0-10):"
