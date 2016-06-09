@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="UseCompoundDrawables" >
+    
+    <ImageView android:id="@+id/mainImage" 
+        android:layout_width="wrap_content" 
+        android:layout_gravity="center" 
+        android:layout_height="match_parent" 
+        android:scaleType="fitXY" 
+        android:adjustViewBounds="true" 
+        android:contentDescription="@string/app_name" 
+        android:src="@drawable/publisherlogo" 
+        android:layout_weight="1"
+     />
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="0"
+		>
+
+	    <TextView
+	        android:id="@+id/mainText"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_weight="1"
+			android:paddingLeft="10dp"
+			android:paddingRight="0dp"
+            android:text="@string/assetExtractor_startingUp" />    
+	    <TextView
+	        android:id="@+id/versionText"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+			android:layout_weight="0"
+			android:paddingRight="30dp"
+			android:paddingLeft="30dp"
+	        android:text="@string/assetExtractor_version" />	        	    
+    </LinearLayout>
+</LinearLayout>

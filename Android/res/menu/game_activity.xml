@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" >
+    <item
+        android:id="@+id/menuItem_SaveState"
+        android:title="@string/menuItem_SaveState">
+    </item>
+    <item
+        android:id="@+id/menuItem_LoadState"
+        android:title="@string/menuItem_LoadState">
+    </item>
+    <item
+        android:id="@+id/menuItem_CurrentSaveState"
+        android:title="@string/menuItem_CurrentSaveState">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item android:id="@+id/menuItem_CurrentSaveAuto" android:title="@string/menuItem_CurrentSaveAuto" />
+                <item android:id="@+id/menuItem_CurrentSave1" android:title="@string/menuItem_CurrentSave1" />
+                <item android:id="@+id/menuItem_CurrentSave2" android:title="@string/menuItem_CurrentSave2" />
+                <item android:id="@+id/menuItem_CurrentSave3" android:title="@string/menuItem_CurrentSave3" />
+                <item android:id="@+id/menuItem_CurrentSave4" android:title="@string/menuItem_CurrentSave4" />
+                <item android:id="@+id/menuItem_CurrentSave5" android:title="@string/menuItem_CurrentSave5" />
+                <item android:id="@+id/menuItem_CurrentSave6" android:title="@string/menuItem_CurrentSave6" />
+                <item android:id="@+id/menuItem_CurrentSave7" android:title="@string/menuItem_CurrentSave7" />
+                <item android:id="@+id/menuItem_CurrentSave8" android:title="@string/menuItem_CurrentSave8" />
+                <item android:id="@+id/menuItem_CurrentSave9" android:title="@string/menuItem_CurrentSave9" />
+                <item android:id="@+id/menuItem_CurrentSave10" android:title="@string/menuItem_CurrentSave10" />
+            </group>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/menuItem_pause"
+        android:title="@string/menuItem_pause"/>
+    <item
+        android:id="@+id/menuItem_resume"
+        android:title="@string/menuItem_resume"/>
+    <item
+        android:id="@+id/menuItem_HardReset"
+        android:title="@string/menuItem_ConsoleReset"/>
+    <item
+        android:id="@+id/menuItem_EndEmulation"
+        android:title="@string/menuItem_EndEmulation"/>
+</menu>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="galleryImageWidth">450dp</dimen>
+    <dimen name="galleryImageHeight">15dp</dimen> <!-- galleryImageWidth * 177 / 256 -->
+    <dimen name="galleryHalfSpacing">5dp</dimen>
+
+</resources>
