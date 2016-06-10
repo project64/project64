@@ -13,6 +13,13 @@ if %NDK-BUILDER% == "" (
 	goto :EndErr
 )
 
+set ANDROID_SDK=
+if exist "C:\Android\android-sdk" ( set ANDROID_SDK="C:\Android\android-sdk" )
+if %NDK-BUILDER% == "" ( 
+	echo can not find android SDK
+	goto :EndErr
+)
+
 call "%base_dir%\Android\Script\buildAssets.cmd"
 IF %ERRORLEVEL% NEQ 0 goto :EndErr
 
@@ -21,8 +28,22 @@ IF %ERRORLEVEL% NEQ 0 goto :EndErr
 
 cd /d %base_dir%\Android
 call %NDK-BUILDER% clean
+IF %ERRORLEVEL% NEQ 0 goto :EndErr
 call %NDK-BUILDER%
+IF %ERRORLEVEL% NEQ 0 goto :EndErr
+ant clean release -Dsdk.dir=%ANDROID_SDK%
+IF %ERRORLEVEL% NEQ 0 goto :EndErr
 cd /d %origdir%
+
+:: Make sure the sign environment variables exist
+IF NOT DEFINED project64_cert_keystore ( exit /B 0 )
+IF NOT DEFINED project64_cert_password ( exit /B 0 )
+
+:: Sign the APK
+jarsigner -verbose -tsa http://timestamp.digicert.com -keystore "%project64_cert_keystore%" -storepass %project64_cert_password% -keypass %project64_cert_password% "%base_dir%\Android\bin\Project64-release-unsigned.apk" project64
+
+:: Align the APK
+zipalign -v 4 "%base_dir%\Android\bin\Project64-release-unsigned.apk" "%base_dir%\Package\Project64.apk"
 
 echo Build ok
 goto :end
