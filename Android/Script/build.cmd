@@ -31,7 +31,7 @@ call %NDK-BUILDER% clean
 IF %ERRORLEVEL% NEQ 0 goto :EndErr
 call %NDK-BUILDER%
 IF %ERRORLEVEL% NEQ 0 goto :EndErr
-ant clean release -Dsdk.dir=%ANDROID_SDK%
+call ant clean release -Dsdk.dir=%ANDROID_SDK%
 IF %ERRORLEVEL% NEQ 0 goto :EndErr
 cd /d %origdir%
 
