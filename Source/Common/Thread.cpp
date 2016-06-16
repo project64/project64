@@ -8,10 +8,12 @@
 
 CThread::CThread(CTHREAD_START_ROUTINE lpStartAddress) :
     m_StartAddress(lpStartAddress),
+    m_lpThreadParameter(NULL),
+    m_thread(NULL),
 #ifndef _WIN32
     m_running(false),
 #endif
-    m_thread(NULL)
+    m_threadID(0)
 {
     WriteTrace(TraceThread, TraceDebug, "Start");
     WriteTrace(TraceThread, TraceDebug, "Done");
@@ -20,7 +22,7 @@ CThread::CThread(CTHREAD_START_ROUTINE lpStartAddress) :
 CThread::~CThread()
 {
     WriteTrace(TraceThread, TraceDebug, "Start");
-    if (isRunning())
+    if (CThread::GetCurrentThreadId() != m_threadID && isRunning())
     {
         Terminate();
     }
@@ -50,6 +52,7 @@ bool CThread::Start(void * lpThreadParameter)
 void * CThread::ThreadWrapper (CThread * _this)
 {
     WriteTrace(TraceThread, TraceDebug, "Start");
+    _this->m_threadID = CThread::GetCurrentThreadId();
 #ifndef _WIN32
     _this->m_running = true;
     WriteTrace(TraceThread, TraceDebug, "Thread is running");
