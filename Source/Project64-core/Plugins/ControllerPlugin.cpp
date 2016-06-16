@@ -64,7 +64,7 @@ bool CControl_Plugin::LoadFunctions(void)
 
 bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
 {
-    uint8_t Buffer[100];
+    static uint8_t Buffer[100];
 
     for (int32_t i = 0; i < 4; i++)
     {

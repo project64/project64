@@ -133,6 +133,8 @@ public:
     inline RenderWindow * MainWindow(void) const { return m_MainWindow; }
     inline RenderWindow * SyncWindow(void) const { return m_SyncWindow; }
 
+    inline bool initilized ( void ) const { return m_initilized; }
+
 private:
     CPlugins(void);							// Disable default constructor
     CPlugins(const CPlugins&);				// Disable copy constructor
@@ -161,6 +163,7 @@ private:
     stdstr m_AudioFile;
     stdstr m_RSPFile;
     stdstr m_ControlFile;
+    bool m_initilized;
 };
 
 //Dummy Functions

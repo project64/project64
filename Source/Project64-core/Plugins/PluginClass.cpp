@@ -22,7 +22,8 @@ m_PluginDir(g_Settings->LoadStringVal(PluginDirSetting)),
 m_Gfx(NULL),
 m_Audio(NULL),
 m_RSP(NULL),
-m_Control(NULL)
+m_Control(NULL),
+m_initilized(false)
 {
     CreatePlugins();
     g_Settings->RegisterChangeCB(Plugin_RSP_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
@@ -145,10 +146,6 @@ void CPlugins::CreatePlugins(void)
 {
     WriteTrace(TracePlugins, TraceInfo, "Start");
     
-#ifdef ANDROID
-    //this is a hack and should not be here, glide64 is not correctly freeing something on restart, this needs to be fixed but this is a short term workaround
-    DestroyGfxPlugin();
-#endif
     LoadPlugin(Game_Plugin_Gfx, Plugin_GFX_CurVer, m_Gfx, m_PluginDir.c_str(), m_GfxFile, TraceGFXPlugin, "GFX");
     LoadPlugin(Game_Plugin_Audio, Plugin_AUDIO_CurVer, m_Audio, m_PluginDir.c_str(), m_AudioFile, TraceAudioPlugin, "Audio");
     LoadPlugin(Game_Plugin_RSP, Plugin_RSP_CurVer, m_RSP, m_PluginDir.c_str(), m_RSPFile, TraceRSPPlugin, "RSP");
@@ -256,18 +253,26 @@ void CPlugins::SetRenderWindows(RenderWindow * MainWindow, RenderWindow * SyncWi
 
 void CPlugins::RomOpened(void)
 {
+	WriteTrace(TracePlugins, TraceDebug, "Start");
+
     m_Gfx->RomOpened(m_MainWindow);
     m_RSP->RomOpened(m_MainWindow);
     m_Audio->RomOpened(m_MainWindow);
     m_Control->RomOpened(m_MainWindow);
+
+    WriteTrace(TracePlugins, TraceDebug, "Done");
 }
 
 void CPlugins::RomClosed(void)
 {
+	WriteTrace(TracePlugins, TraceDebug, "Start");
+
     m_Gfx->RomClose(m_MainWindow);
     m_RSP->RomClose(m_MainWindow);
     m_Audio->RomClose(m_MainWindow);
     m_Control->RomClose(m_MainWindow);
+
+    WriteTrace(TracePlugins, TraceDebug, "Done");
 }
 
 bool CPlugins::Initiate(CN64System * System)
@@ -292,6 +297,7 @@ bool CPlugins::Initiate(CN64System * System)
     if (!m_RSP->Initiate(this, System))   { return false; }
     WriteTrace(TraceRSPPlugin, TraceDebug, "RSP Initiate Done");
     WriteTrace(TracePlugins, TraceDebug, "Done");
+    m_initilized = true;
     return true;
 }
 
@@ -312,6 +318,11 @@ bool CPlugins::Reset(CN64System * System)
     bool bAudioChange = _stricmp(m_AudioFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Audio).c_str()) != 0;
     bool bRspChange = _stricmp(m_RSPFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_RSP).c_str()) != 0;
     bool bContChange = _stricmp(m_ControlFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Controller).c_str()) != 0;
+
+#ifdef ANDROID
+    //this is a hack and should not be here, glide64 is not correctly freeing something on restart, this needs to be fixed but this is a short term workaround
+    bGfxChange = true;
+#endif
 
     //if GFX and Audio has changed we also need to force reset of RSP
     if (bGfxChange || bAudioChange)

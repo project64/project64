@@ -189,10 +189,11 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 
     // We are initializing the plugin before any rom is loaded so we do not have any correct
     // parameters here.. it's just needed so we can config the DLL.
+    WriteTrace(TraceGFXPlugin, TraceDebug, "System = %X",System);
     if (System == NULL)
     {
-        uint8_t Buffer[100];
-        uint32_t Value = 0;
+        static uint8_t Buffer[100];
+        static uint32_t Value = 0;
 
         Info.HEADER = Buffer;
         Info.RDRAM = Buffer;

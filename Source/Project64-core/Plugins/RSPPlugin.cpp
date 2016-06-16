@@ -135,8 +135,8 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
     // parameters here.. just needed to we can config the DLL.
     if (System == NULL)
     {
-        uint8_t Buffer[100];
-        uint32_t Value = 0;
+        static uint8_t Buffer[100];
+        static uint32_t Value = 0;
 
         Info.ProcessDlist = DummyCheckInterrupts;
         Info.ProcessRdpList = DummyCheckInterrupts;
