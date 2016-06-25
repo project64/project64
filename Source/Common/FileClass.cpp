@@ -127,10 +127,10 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
 
     if ((nOpenFlags & CFileBase::modeCreate) != CFileBase::modeCreate)
     {
-        printf("Checking if %s exists\n",lpszFileName);
+        printf("Checking if %s exists...\n",lpszFileName);
         if (!CPath(lpszFileName).Exists())
         {
-            printf("%s does not exists\n",lpszFileName);
+            printf("%s does not exist.\n",lpszFileName);
             return false;
         }
     }

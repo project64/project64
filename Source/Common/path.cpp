@@ -985,7 +985,7 @@ bool CPath::Delete(bool bEvenIfReadOnly) const
     uint32_t dwAttr = ::GetFileAttributes(m_strPath.c_str());
     if (dwAttr == (uint32_t)-1)
     {
-        // File does not exists
+        // File does not exist.
         return false;
     }
 
