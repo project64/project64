@@ -69,7 +69,7 @@ void CSettingTypeApplication::Initialize(const char * /*AppName*/)
     CPath BaseDir(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(), "");
     if (!BaseDir.DirectoryExists())
     {
-        WriteTrace(TraceAppInit, TraceDebug, "BaseDir does not exists, doing nothing");
+        WriteTrace(TraceAppInit, TraceDebug, "BaseDir does not exist.  Doing nothing.");
         WriteTrace(TraceAppInit, TraceDebug, "Done");
         return;
     }
