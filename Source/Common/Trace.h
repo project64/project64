@@ -37,9 +37,19 @@ private:
 };
 
 #ifdef _WIN32
-#define WriteTrace(m, s, format, ...) if(g_ModuleLogLevel[(m)] >= (s)) { WriteTraceFull((m), (s), __FILE__, __LINE__, __FUNCTION__, (format), ## __VA_ARGS__); }
+
+#define WriteTrace(m, s, format, ...) \
+if (g_ModuleLogLevel[(m)] >= (s)) {\
+    WriteTraceFull((m), (s), __FILE__, __LINE__, __FUNCTION__, (format), ## __VA_ARGS__);\
+}
+
 #else
-#define WriteTrace(m, s, format, ...) if(g_ModuleLogLevel[(m)] >= (s)) { WriteTraceFull((m), (s), __FILE__, __LINE__, __PRETTY_FUNCTION__, (format), ## __VA_ARGS__); }
+
+#define WriteTrace(m, s, format, ...) \
+if (g_ModuleLogLevel[(m)] >= (s)) {\
+    WriteTraceFull((m), (s), __FILE__, __LINE__, __PRETTY_FUNCTION__, (format), ## __VA_ARGS__);\
+}
+
 #endif
 
 CTraceModule * TraceAddModule(CTraceModule * TraceModule);
