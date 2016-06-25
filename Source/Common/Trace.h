@@ -41,7 +41,7 @@ private:
 #ifdef _DEBUG
 #define WriteTrace(m, s, format, ...) \
 if (g_ModuleLogLevel == NULL) {\
-    fputs("**ERROR**:  (g_ModuleLogLevel == NULL) in WriteTrace()", stderr);\
+    fputs("**ERROR**:  (g_ModuleLogLevel == NULL) in WriteTrace()\n", stderr);\
 } else if (g_ModuleLogLevel[(m)] >= (s)) {\
     WriteTraceFull((m), (s), __FILE__, __LINE__, __FUNCTION__, (format), ## __VA_ARGS__);\
 }
@@ -57,7 +57,7 @@ if (g_ModuleLogLevel[(m)] >= (s)) {\
 #ifdef _DEBUG
 #define WriteTrace(m, s, format, ...) \
 if (g_ModuleLogLevel == NULL) {\
-    fputs("**ERROR**:  (g_ModuleLogLevel == NULL) in WriteTrace()", stderr);\
+    fputs("**ERROR**:  (g_ModuleLogLevel == NULL) in WriteTrace()\n", stderr);\
 } else if (g_ModuleLogLevel[(m)] >= (s)) {\
     WriteTraceFull((m), (s), __FILE__, __LINE__, __PRETTY_FUNCTION__, (format), ## __VA_ARGS__);\
 }
