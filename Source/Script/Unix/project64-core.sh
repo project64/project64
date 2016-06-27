@@ -63,7 +63,7 @@ $CC -o $obj/N64System/dynarec/FnMap.asm $src/N64System/Recompiler/FunctionMapCla
 $CC -o $obj/N64System/dynarec/Loop.asm  $src/N64System/Recompiler/LoopAnalysis.cpp $C_FLAGS
 $CC -o $obj/N64System/dynarec/Class.asm $src/N64System/Recompiler/RecompilerClass.cpp $C_FLAGS
 $CC -o $obj/N64System/dynarec/Mem.asm   $src/N64System/Recompiler/RecompilerMemory.cpp $C_FLAGS
-$CC -o $obj/N64System/dynarec/Ops.asm   $src/N64System/Recompiler/RecompilerOps.cpp $C_FLAGS
+$CC -o $obj/N64System/dynarec/Ops.asm   $src/N64System/Recompiler/x86/x86RecompilerOps.cpp $C_FLAGS
 $CC -o $obj/N64System/dynarec/Reg.asm   $src/N64System/Recompiler/RegInfo.cpp $C_FLAGS
 $CC -o $obj/N64System/dynarec/Sect.asm  $src/N64System/Recompiler/SectionInfo.cpp $C_FLAGS
 $CC -o $obj/N64System/dynarec/log.asm   $src/N64System/Recompiler/RecompilerCodeLog.cpp $C_FLAGS
