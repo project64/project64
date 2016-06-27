@@ -16,10 +16,10 @@
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/Recompiler/RecompilerClass.h>
 #include <Project64-core/N64System/Recompiler/CodeSection.h>
-#include <Project64-core/N64System/Recompiler/RecompilerOps.h>
+#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
+#include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <stdio.h>
-#include "RecompilerCodeLog.h"
 
 CCodeSection * CRecompilerOps::m_Section = NULL;
 CRegInfo       CRecompilerOps::m_RegWorkingSet;

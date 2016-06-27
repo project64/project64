@@ -11,7 +11,7 @@
 #pragma once
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include "TranslateVaddr.h"
-#include <Project64-core/N64System/Recompiler/RecompilerOps.h>
+#include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>
 #include <Project64-core/N64System/Mips/PifRam.h>
 #include <Project64-core/N64System/Mips/FlashRam.h>

@@ -469,10 +469,6 @@
 						>
 					</File>
 					<File
-						RelativePath=".\N64System\Recompiler\RecompilerOps.cpp"
-						>
-					</File>
-					<File
 						RelativePath=".\N64System\Recompiler\RegInfo.cpp"
 						>
 					</File>
@@ -484,6 +480,14 @@
 						RelativePath=".\N64System\Recompiler\X86ops.cpp"
 						>
 					</File>
+					<Filter
+						Name="x86"
+						>
+						<File
+							RelativePath=".\N64System\Recompiler\x86\x86RecompilerOps.cpp"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter

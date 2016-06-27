@@ -79,6 +79,12 @@
     <Filter Include="Source Files\N64 System\Arm">
       <UniqueIdentifier>{8c526293-ee42-44b0-938f-f3c1cc18a986}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\N64 System\Recompiler\x86">
+      <UniqueIdentifier>{84d10022-4b24-4ba2-bfef-f85d16dfdc09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\N64 System\Recompiler\x86">
+      <UniqueIdentifier>{b6d9fd3a-e8e5-42a2-8bcc-8fa430dd8aaa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -234,9 +240,6 @@
     <ClCompile Include="N64System\Recompiler\RecompilerMemory.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Recompiler\RecompilerOps.cpp">
-      <Filter>Source Files\N64 System\Recompiler</Filter>
-    </ClCompile>
     <ClCompile Include="N64System\Recompiler\RegInfo.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
@@ -317,6 +320,9 @@
     </ClCompile>
     <ClCompile Include="N64System\Recompiler\RecompilerCodeLog.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\x86\x86RecompilerOps.cpp">
+      <Filter>Source Files\N64 System\Recompiler\x86</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -610,6 +616,9 @@
     </ClInclude>
     <ClInclude Include="N64System\Recompiler\RecompilerCodeLog.h">
       <Filter>Header Files\N64 System\Recompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\x86\x86RecompilerOps.h">
+      <Filter>Header Files\N64 System\Recompiler\x86</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
