@@ -66,7 +66,7 @@ $CC -o $obj/N64System/dynarec/Mem.asm   $src/N64System/Recompiler/RecompilerMemo
 $CC -o $obj/N64System/dynarec/Ops.asm   $src/N64System/Recompiler/RecompilerOps.cpp $C_FLAGS
 $CC -o $obj/N64System/dynarec/Reg.asm   $src/N64System/Recompiler/RegInfo.cpp $C_FLAGS
 $CC -o $obj/N64System/dynarec/Sect.asm  $src/N64System/Recompiler/SectionInfo.cpp $C_FLAGS
-$CC -o $obj/N64System/dynarec/x86.asm   $src/N64System/Recompiler/x86CodeLog.cpp $C_FLAGS
+$CC -o $obj/N64System/dynarec/log.asm   $src/N64System/Recompiler/RecompilerCodeLog.cpp $C_FLAGS
 $CC -o $obj/N64System/dynarec/x86op.asm $src/N64System/Recompiler/X86ops.cpp $C_FLAGS
 $CC -o $obj/N64System/SpeedLimiter.asm  $src/N64System/SpeedLimiterClass.cpp $C_FLAGS
 $CC -o $obj/N64System/SystemGlobals.asm $src/N64System/SystemGlobals.cpp $C_FLAGS
@@ -147,7 +147,7 @@ $AS -o $obj/N64System/dynarec/Mem.o     $obj/N64System/dynarec/Mem.asm
 $AS -o $obj/N64System/dynarec/Ops.o     $obj/N64System/dynarec/Ops.asm
 $AS -o $obj/N64System/dynarec/Reg.o     $obj/N64System/dynarec/Reg.asm
 $AS -o $obj/N64System/dynarec/Sect.o    $obj/N64System/dynarec/Sect.asm
-$AS -o $obj/N64System/dynarec/x86.o     $obj/N64System/dynarec/x86.asm
+$AS -o $obj/N64System/dynarec/log.o     $obj/N64System/dynarec/log.asm
 $AS -o $obj/N64System/dynarec/x86op.o   $obj/N64System/dynarec/x86op.asm
 $AS -o $obj/N64System/SpeedLimiter.o    $obj/N64System/SpeedLimiter.asm
 $AS -o $obj/N64System/SystemGlobals.o   $obj/N64System/SystemGlobals.asm
@@ -227,7 +227,7 @@ $obj/N64System/dynarec/Mem.o \
 $obj/N64System/dynarec/Ops.o \
 $obj/N64System/dynarec/Reg.o \
 $obj/N64System/dynarec/Sect.o \
-$obj/N64System/dynarec/x86.o \
+$obj/N64System/dynarec/log.o \
 $obj/N64System/dynarec/x86op.o \
 $obj/N64System/SpeedLimiter.o \
 $obj/N64System/SystemGlobals.o \
