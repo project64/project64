@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <float.h>
-#include "x86CodeLog.h"
+#include "RecompilerCodeLog.h"
 
 uint32_t CRegInfo::m_fpuControl = 0;
 

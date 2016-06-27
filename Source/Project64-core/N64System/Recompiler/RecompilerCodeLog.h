@@ -14,10 +14,10 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#define CPU_Message(Message,... )  if (bX86Logging) { x86_Log_Message(Message,## __VA_ARGS__); }
+#define CPU_Message(Message,... )  if (g_bRecompilerLogging) { Recompiler_Log_Message(Message,## __VA_ARGS__); }
 
-void x86_Log_Message (const char * Message, ...);
-void Start_x86_Log (void);
-void Stop_x86_Log (void);
+void Recompiler_Log_Message (const char * Message, ...);
+void Start_Recompiler_Log (void);
+void Stop_Recompiler_Log (void);
 
-extern bool bX86Logging;
+extern bool g_bRecompilerLogging;

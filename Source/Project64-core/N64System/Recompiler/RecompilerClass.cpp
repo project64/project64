@@ -11,16 +11,16 @@
 #include "stdafx.h"
 #include <Project64-core/N64System/Recompiler/RecompilerClass.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/Recompiler/x86CodeLog.h>
+#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/ExceptionHandler.h>
 
 CRecompiler::CRecompiler(CRegisters & Registers, CProfiling & Profile, bool & EndEmulation) :
-m_Registers(Registers),
-m_Profile(Profile),
-m_EndEmulation(EndEmulation),
-PROGRAM_COUNTER(Registers.m_PROGRAM_COUNTER)
+    m_Registers(Registers),
+    m_Profile(Profile),
+    m_EndEmulation(EndEmulation),
+    PROGRAM_COUNTER(Registers.m_PROGRAM_COUNTER)
 {
     if (g_MMU != NULL)
     {
@@ -35,9 +35,11 @@ CRecompiler::~CRecompiler()
 
 void CRecompiler::Run()
 {
+    WriteTrace(TraceRecompiler, TraceDebug, "Start");
+
     if (bLogX86Code())
     {
-        Start_x86_Log();
+        Start_Recompiler_Log();
     }
 
     if (!CRecompMemory::AllocateMemory())
@@ -98,10 +100,12 @@ void CRecompiler::Run()
             }
         }
     }
-	__except_catch()
+    __except_catch()
     {
         g_Notify->DisplayError(MSG_UNKNOWN_MEM_ACTION);
     }
+
+    WriteTrace(TraceRecompiler, TraceDebug, "Done");
 }
 
 void CRecompiler::RecompilerMain_VirtualTable()
@@ -633,6 +637,7 @@ void CRecompiler::RecompilerMain_Lookup_validate()
 
 void CRecompiler::RecompilerMain_Lookup_validate_TLB()
 {
+    WriteTrace(TraceRecompiler, TraceDebug, "Start");
     uint32_t PhysicalAddr;
 
     while (!m_EndEmulation)
@@ -705,6 +710,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
             }
         }
     }
+    WriteTrace(TraceRecompiler, TraceDebug, "Done");
 }
 
 void CRecompiler::Reset()
@@ -943,13 +949,13 @@ CCompiledFunc * CRecompiler::CompilerCode()
     }
 
     CCompiledFunc * Func = new CCompiledFunc(CodeBlock);
-	std::pair<CCompiledFuncList::iterator, bool> ret = m_Functions.insert(CCompiledFuncList::value_type(Func->EnterPC(), Func));
+    std::pair<CCompiledFuncList::iterator, bool> ret = m_Functions.insert(CCompiledFuncList::value_type(Func->EnterPC(), Func));
     if (ret.second == false)
     {
         Func->SetNext(ret.first->second->Next());
         ret.first->second->SetNext(Func);
-        return Func;
     }
+    WriteTrace(TraceRecompiler, TraceVerbose, "Done");
     return Func;
 }
 
@@ -999,39 +1005,39 @@ void CRecompiler::ClearRecompCode_Virt(uint32_t Address, int length, REMOVE_REAS
     switch (g_System->LookUpMode())
     {
     case FuncFind_VirtualLookup:
-    {
-        uint32_t AddressIndex = Address >> 0xC;
-        uint32_t WriteStart = (Address & 0xFFC);
-        length = ((length + 3) & ~0x3);
-
-        int DataInBlock = 0x1000 - WriteStart;
-        int DataToWrite = length < DataInBlock ? length : DataInBlock;
-        int DataLeft = length - DataToWrite;
-
-        PCCompiledFunc_TABLE & table = FunctionTable()[AddressIndex];
-        if (table)
         {
-            WriteTrace(TraceRecompiler, TraceError, "Delete Table (%X): Index = %d", table, AddressIndex);
-            delete table;
-            table = NULL;
-            g_MMU->UnProtectMemory(Address, Address + length);
-        }
+            uint32_t AddressIndex = Address >> 0xC;
+            uint32_t WriteStart = (Address & 0xFFC);
+            length = ((length + 3) & ~0x3);
 
-        if (DataLeft > 0)
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            int DataInBlock = 0x1000 - WriteStart;
+            int DataToWrite = length < DataInBlock ? length : DataInBlock;
+            int DataLeft = length - DataToWrite;
+
+            PCCompiledFunc_TABLE & table = FunctionTable()[AddressIndex];
+            if (table)
+            {
+                WriteTrace(TraceRecompiler, TraceError, "Delete Table (%X): Index = %d", table, AddressIndex);
+                delete table;
+                table = NULL;
+                g_MMU->UnProtectMemory(Address, Address + length);
+            }
+
+            if (DataLeft > 0)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
         }
-    }
-    break;
+        break;
     case FuncFind_PhysicalLookup:
-    {
-        uint32_t pAddr = 0;
-        if (g_TransVaddr->TranslateVaddr(Address, pAddr))
         {
-            ClearRecompCode_Phys(pAddr, length, Reason);
+            uint32_t pAddr = 0;
+            if (g_TransVaddr->TranslateVaddr(Address, pAddr))
+            {
+                ClearRecompCode_Phys(pAddr, length, Reason);
+            }
         }
-    }
-    break;
+        break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }

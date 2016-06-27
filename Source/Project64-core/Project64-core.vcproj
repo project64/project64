@@ -461,6 +461,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\N64System\Recompiler\RecompilerCodeLog.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\N64System\Recompiler\RecompilerMemory.cpp"
 						>
 					</File>
@@ -474,10 +478,6 @@
 					</File>
 					<File
 						RelativePath=".\N64System\Recompiler\SectionInfo.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\N64System\Recompiler\x86CodeLog.cpp"
 						>
 					</File>
 					<File

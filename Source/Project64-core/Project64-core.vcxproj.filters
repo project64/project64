@@ -150,9 +150,6 @@
     <ClCompile Include="3rdParty\7zip.cpp">
       <Filter>Source Files\3rd Party</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Recompiler\x86CodeLog.cpp">
-      <Filter>Source Files\N64 System\Recompiler</Filter>
-    </ClCompile>
     <ClCompile Include="N64System\Recompiler\X86ops.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
@@ -317,6 +314,9 @@
     </ClCompile>
     <ClCompile Include="RomList\RomList.cpp">
       <Filter>Source Files\Rom List</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\RecompilerCodeLog.cpp">
+      <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -518,9 +518,6 @@
     <ClInclude Include="N64System\Recompiler\SectionInfo.h">
       <Filter>Header Files\N64 System\Recompiler</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Recompiler\X86CodeLog.h">
-      <Filter>Header Files\N64 System\Recompiler</Filter>
-    </ClInclude>
     <ClInclude Include="N64System\Recompiler\X86ops.h">
       <Filter>Header Files\N64 System\Recompiler</Filter>
     </ClInclude>
@@ -610,6 +607,9 @@
     </ClInclude>
     <ClInclude Include="N64System\Arm\ArmOpCode.h">
       <Filter>Source Files\N64 System\Arm</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\RecompilerCodeLog.h">
+      <Filter>Header Files\N64 System\Recompiler</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

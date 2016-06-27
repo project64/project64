@@ -19,7 +19,7 @@
 #include <Project64-core/N64System/Recompiler/RecompilerOps.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <stdio.h>
-#include "x86CodeLog.h"
+#include "RecompilerCodeLog.h"
 
 CCodeSection * CRecompilerOps::m_Section = NULL;
 CRegInfo       CRecompilerOps::m_RegWorkingSet;

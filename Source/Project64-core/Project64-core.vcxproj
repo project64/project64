@@ -72,11 +72,11 @@
     <ClCompile Include="N64System\Recompiler\FunctionMapClass.cpp" />
     <ClCompile Include="N64System\Recompiler\LoopAnalysis.cpp" />
     <ClCompile Include="N64System\Recompiler\RecompilerClass.cpp" />
+    <ClCompile Include="N64System\Recompiler\RecompilerCodeLog.cpp" />
     <ClCompile Include="N64System\Recompiler\RecompilerMemory.cpp" />
     <ClCompile Include="N64System\Recompiler\RecompilerOps.cpp" />
     <ClCompile Include="N64System\Recompiler\RegInfo.cpp" />
     <ClCompile Include="N64System\Recompiler\SectionInfo.cpp" />
-    <ClCompile Include="N64System\Recompiler\x86CodeLog.cpp" />
     <ClCompile Include="N64System\Recompiler\X86ops.cpp" />
     <ClCompile Include="N64System\SpeedLimiterClass.cpp" />
     <ClCompile Include="N64System\SystemGlobals.cpp" />
@@ -166,11 +166,11 @@
     <ClInclude Include="N64System\Recompiler\JumpInfo.h" />
     <ClInclude Include="N64System\Recompiler\LoopAnalysis.h" />
     <ClInclude Include="N64System\Recompiler\RecompilerClass.h" />
+    <ClInclude Include="N64System\Recompiler\RecompilerCodeLog.h" />
     <ClInclude Include="N64System\Recompiler\RecompilerMemory.h" />
     <ClInclude Include="N64System\Recompiler\RecompilerOps.h" />
     <ClInclude Include="N64System\Recompiler\RegInfo.h" />
     <ClInclude Include="N64System\Recompiler\SectionInfo.h" />
-    <ClInclude Include="N64System\Recompiler\X86CodeLog.h" />
     <ClInclude Include="N64System\Recompiler\X86ops.h" />
     <ClInclude Include="N64System\SpeedLimiterClass.h" />
     <ClInclude Include="N64System\SystemGlobals.h" />

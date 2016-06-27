@@ -9,14 +9,14 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "x86CodeLog.h"
+#include "RecompilerCodeLog.h"
 #include <Common/path.h>
 #include <Common/Platform.h>
 
 static CLog * g_CPULogFile = NULL;
-bool bX86Logging = false;
+bool g_bRecompilerLogging = false;
 
-void x86_Log_Message(const char * strFormat, ...)
+void Recompiler_Log_Message(const char * strFormat, ...)
 {
     va_list args;
     va_start(args, strFormat);
@@ -32,12 +32,12 @@ void x86_Log_Message(const char * strFormat, ...)
     va_end(args);
 }
 
-void Start_x86_Log (void)
+void Start_Recompiler_Log (void)
 {
     CPath LogFileName(g_Settings->LoadStringVal(Directory_Log).c_str(), "CPUoutput.log");
     if (g_CPULogFile != NULL)
     {
-        Stop_x86_Log();
+        Stop_Recompiler_Log();
     }
     g_CPULogFile = new CLog();
     if (g_CPULogFile)
@@ -45,7 +45,7 @@ void Start_x86_Log (void)
         if (g_CPULogFile->Open(LogFileName))
         {
             g_CPULogFile->SetMaxFileSize(300 * CLog::MB);
-            bX86Logging = true;
+            g_bRecompilerLogging = true;
         }
         else
         {
@@ -55,9 +55,9 @@ void Start_x86_Log (void)
     }
 }
 
-void Stop_x86_Log (void)
+void Stop_Recompiler_Log (void)
 {
-    bX86Logging = false;
+    g_bRecompilerLogging = false;
     if (g_CPULogFile != NULL)
     {
         delete g_CPULogFile;

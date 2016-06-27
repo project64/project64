@@ -128,14 +128,10 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 
     AddHandler(Rdb_GoodName, new CSettingTypeRomDatabase("Good Name", Game_GameName));
     AddHandler(Rdb_SaveChip, new CSettingTypeRDBSaveChip("Save Type", SaveChip_Auto));
-#ifdef _WIN32
 #ifdef _DEBUG
     AddHandler(Rdb_CpuType, new CSettingTypeRDBCpuType("CPU Type", CPU_SyncCores));
 #else
     AddHandler(Rdb_CpuType, new CSettingTypeRDBCpuType("CPU Type", CPU_Recompiler));
-#endif
-#else
-    AddHandler(Rdb_CpuType, new CSettingTypeRDBCpuType("CPU Type", CPU_Interpreter));
 #endif
     AddHandler(Rdb_RDRamSize, new CSettingTypeRDBRDRamSize("RDRAM Size", 0x400000));
     AddHandler(Rdb_CounterFactor, new CSettingTypeRomDatabase("Counter Factor", 2));

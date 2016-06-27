@@ -11,7 +11,7 @@
 #include "stdafx.h"
 #include "N64Class.h"
 #include <Project64-core/3rdParty/zip.h>
-#include <Project64-core/N64System/Recompiler/x86CodeLog.h>
+#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/Mempak.H>
 #include <Project64-core/N64System/Mips/Transferpak.h>
@@ -31,32 +31,32 @@
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
 CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly) :
-CSystemEvents(this, Plugins),
-m_EndEmulation(false),
-m_SaveUsing((SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip)),
-m_Plugins(Plugins),
-m_SyncCPU(NULL),
-m_SyncPlugins(NULL),
-m_MMU_VM(SavesReadOnly),
-m_TLB(this),
-m_Reg(this, this),
-m_Recomp(NULL),
-m_InReset(false),
-m_NextTimer(0),
-m_SystemTimer(m_NextTimer),
-m_bCleanFrameBox(true),
-m_bInitialized(false),
-m_RspBroke(true),
-m_DMAUsed(false),
-m_TestTimer(false),
-m_NextInstruction(0),
-m_JumpToLocation(0),
-m_TLBLoadAddress(0),
-m_TLBStoreAddress(0),
-m_SyncCount(0),
-m_thread(NULL),
-m_hPauseEvent(true),
-m_CheatsSlectionChanged(false)
+    CSystemEvents(this, Plugins),
+    m_EndEmulation(false),
+    m_SaveUsing((SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip)),
+    m_Plugins(Plugins),
+    m_SyncCPU(NULL),
+    m_SyncPlugins(NULL),
+    m_MMU_VM(SavesReadOnly),
+    m_TLB(this),
+    m_Reg(this, this),
+    m_Recomp(NULL),
+    m_InReset(false),
+    m_NextTimer(0),
+    m_SystemTimer(m_NextTimer),
+    m_bCleanFrameBox(true),
+    m_bInitialized(false),
+    m_RspBroke(true),
+    m_DMAUsed(false),
+    m_TestTimer(false),
+    m_NextInstruction(0),
+    m_JumpToLocation(0),
+    m_TLBLoadAddress(0),
+    m_TLBStoreAddress(0),
+    m_SyncCount(0),
+    m_thread(NULL),
+    m_hPauseEvent(true),
+    m_CheatsSlectionChanged(false)
 {
     uint32_t gameHertz = g_Settings->LoadDword(Game_ScreenHertz);
     if (gameHertz == 0)
@@ -92,7 +92,7 @@ CN64System::~CN64System()
 
 void CN64System::ExternalEvent(SystemEvent action)
 {
-    if (action == SysEvent_LoadMachineState && 
+    if (action == SysEvent_LoadMachineState &&
         !g_Settings->LoadBool(GameRunning_CPU_Running) &&
         g_BaseSystem != NULL &&
         g_BaseSystem->LoadState())
@@ -947,11 +947,8 @@ void CN64System::ExecuteCPU()
 
     switch ((CPU_TYPE)g_Settings->LoadDword(Game_CpuType))
     {
-        // Currently the compiler is 32-bit only.  We might have to ignore that RDB setting for now.
-#ifdef _WIN32
     case CPU_Recompiler: ExecuteRecompiler(); break;
     case CPU_SyncCores:  ExecuteSyncCPU();    break;
-#endif
     default:             ExecuteInterpret();  break;
     }
     WriteTrace(TraceN64System, TraceDebug, "CPU finished executing");
@@ -1420,7 +1417,7 @@ bool CN64System::SaveState()
     WriteTrace(TraceN64System, TraceDebug, "Start");
 
     //    if (!m_SystemTimer.SaveAllowed()) { return false; }
-    if ((m_Reg.STATUS_REGISTER & STATUS_EXL) != 0) 
+    if ((m_Reg.STATUS_REGISTER & STATUS_EXL) != 0)
     {
         WriteTrace(TraceN64System, TraceDebug, "Done - STATUS_EXL set, can not save");
         return false;
@@ -1566,7 +1563,7 @@ bool CN64System::SaveState()
     m_Reg.MI_INTR_REG = MiInterReg;
     g_Settings->SaveString(GameRunning_InstantSaveFile, "");
     g_Settings->SaveDword(Game_LastSaveTime, (uint32_t)time(NULL));
-  
+
     g_Notify->DisplayMessage(5, stdstr_f("%s %s", g_Lang->GetString(MSG_SAVED_STATE).c_str(), stdstr(SaveFile.GetNameExtension()).c_str()).c_str());
     WriteTrace(TraceN64System, TraceDebug, "Done");
     return true;
@@ -1682,7 +1679,7 @@ bool CN64System::LoadState(const char * FileName)
                 uint8_t LoadHeader[64];
                 unzReadCurrentFile(file, LoadHeader, 0x40);
                 if (memcmp(LoadHeader, g_Rom->GetRomAddress(), 0x40) != 0 &&
-                   !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
+                    !g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SAVE_STATE_HEADER).c_str()))
                 {
                     return false;
                 }
@@ -1744,7 +1741,7 @@ bool CN64System::LoadState(const char * FileName)
         }
 
         hSaveFile.Read(&SaveRDRAMSize, sizeof(SaveRDRAMSize));
-        
+
         //Check header
         uint8_t LoadHeader[64];
         hSaveFile.Read(LoadHeader, 0x40);
@@ -1781,7 +1778,7 @@ bool CN64System::LoadState(const char * FileName)
         hSaveFile.Read(m_MMU_VM.Dmem(), 0x1000);
         hSaveFile.Read(m_MMU_VM.Imem(), 0x1000);
         hSaveFile.Close();
-        
+
         CPath ExtraInfo(SaveFile);
         ExtraInfo.SetExtension(".dat");
         CFile hExtraInfo(ExtraInfo, CFileBase::modeWrite | CFileBase::modeCreate);
@@ -1838,8 +1835,8 @@ bool CN64System::LoadState(const char * FileName)
     WriteTrace(TraceN64System, TraceDebug, "9");
     if (bLogX86Code())
     {
-        Stop_x86_Log();
-        Start_x86_Log();
+        Start_Recompiler_Log();
+        Stop_Recompiler_Log();
     }
     WriteTrace(TraceN64System, TraceDebug, "Done");
 

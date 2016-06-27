@@ -12,7 +12,7 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Recompiler/X86ops.h>
-#include "x86CodeLog.h"
+#include "RecompilerCodeLog.h"
 
 #define PUTDST8(dest,value)  (*((uint8_t *)(dest))=(uint8_t)(value)); dest += 1;
 #define PUTDST16(dest,value) (*((uint16_t *)(dest))=(uint16_t)(value)); dest += 2;

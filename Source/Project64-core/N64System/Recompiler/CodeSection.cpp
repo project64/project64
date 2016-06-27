@@ -13,7 +13,7 @@
 #include <Project64-core/N64System/Mips/OpCode.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
-#include <Project64-core/N64System/Recompiler/x86CodeLog.h>
+#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/Recompiler/CodeBlock.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
@@ -2217,7 +2217,7 @@ bool CCodeSection::InheritParentInfo()
 
 bool CCodeSection::DisplaySectionInformation(uint32_t ID, uint32_t Test)
 {
-    if (!bX86Logging)
+    if (!g_bRecompilerLogging)
     {
         return false;
     }
@@ -2243,9 +2243,12 @@ void CCodeSection::DisplaySectionInformation()
 
     CPU_Message("====== Section %d ======", m_SectionID);
     CPU_Message("Start PC: %X", m_EnterPC);
-    CPU_Message("End PC: %X", m_EndPC);
+    if (g_System->bLinkBlocks())
+    {
+        CPU_Message("End PC: %X", m_EndPC);
+    }
     CPU_Message("CompiledLocation: %X", m_CompiledLocation);
-    if (!m_ParentSection.empty())
+    if (g_System->bLinkBlocks() && !m_ParentSection.empty())
     {
         stdstr ParentList;
         for (SECTION_LIST::iterator iter = m_ParentSection.begin(); iter != m_ParentSection.end(); iter++)
@@ -2260,25 +2263,28 @@ void CCodeSection::DisplaySectionInformation()
         CPU_Message("Number of parents: %d (%s)", m_ParentSection.size(), ParentList.c_str());
     }
 
-    CPU_Message("Jump Address: 0x%08X", m_Jump.JumpPC);
-    CPU_Message("Jump Target Address: 0x%08X", m_Jump.TargetPC);
-    if (m_JumpSection != NULL)
+    if (g_System->bLinkBlocks())
     {
-        CPU_Message("Jump Section: %d", m_JumpSection->m_SectionID);
+        CPU_Message("Jump Address: 0x%08X", m_Jump.JumpPC);
+        CPU_Message("Jump Target Address: 0x%08X", m_Jump.TargetPC);
+        if (m_JumpSection != NULL)
+        {
+            CPU_Message("Jump Section: %d", m_JumpSection->m_SectionID);
+        }
+        else
+        {
+            CPU_Message("Jump Section: None");
+        }
+        CPU_Message("Continue Address: 0x%08X", m_Cont.JumpPC);
+        CPU_Message("Continue Target Address: 0x%08X", m_Cont.TargetPC);
+        if (m_ContinueSection != NULL) {
+            CPU_Message("Continue Section: %d", m_ContinueSection->m_SectionID);
+        }
+        else
+        {
+            CPU_Message("Continue Section: None");
+        }
+        CPU_Message("In Loop: %s", m_InLoop ? "Yes" : "No");
     }
-    else
-    {
-        CPU_Message("Jump Section: None");
-    }
-    CPU_Message("Continue Address: 0x%08X", m_Cont.JumpPC);
-    CPU_Message("Continue Target Address: 0x%08X", m_Cont.TargetPC);
-    if (m_ContinueSection != NULL) {
-        CPU_Message("Continue Section: %d", m_ContinueSection->m_SectionID);
-    }
-    else
-    {
-        CPU_Message("Continue Section: None");
-    }
-    CPU_Message("In Loop: %s", m_InLoop ? "Yes" : "No");
     CPU_Message("=======================");
 }

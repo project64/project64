@@ -11,7 +11,7 @@
 #include "stdafx.h"
 #include <string.h>
 #include <Project64-core/N64System/Recompiler/CodeBlock.h>
-#include "x86CodeLog.h"
+#include "RecompilerCodeLog.h"
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/TranslateVaddr.h>
 #include <Project64-core/N64System/N64Class.h>

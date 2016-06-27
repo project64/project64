@@ -14,7 +14,7 @@
 
 #include <Project64-core/N64System/N64Types.h>
 #include <Project64-core/N64System/Recompiler/CodeBlock.h>
-#include <Project64-core/N64System/Recompiler/x86CodeLog.h>
+#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
