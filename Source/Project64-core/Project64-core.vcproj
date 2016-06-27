@@ -476,13 +476,13 @@
 						RelativePath=".\N64System\Recompiler\SectionInfo.cpp"
 						>
 					</File>
-					<File
-						RelativePath=".\N64System\Recompiler\X86ops.cpp"
-						>
-					</File>
 					<Filter
 						Name="x86"
 						>
+						<File
+							RelativePath=".\N64System\Recompiler\x86\x86ops.cpp"
+							>
+						</File>
 						<File
 							RelativePath=".\N64System\Recompiler\x86\x86RecompilerOps.cpp"
 							>

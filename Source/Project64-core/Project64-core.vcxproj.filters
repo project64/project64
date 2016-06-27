@@ -156,9 +156,6 @@
     <ClCompile Include="3rdParty\7zip.cpp">
       <Filter>Source Files\3rd Party</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Recompiler\X86ops.cpp">
-      <Filter>Source Files\N64 System\Recompiler</Filter>
-    </ClCompile>
     <ClCompile Include="Settings\DebugSettings.cpp">
       <Filter>Source Files\Settings</Filter>
     </ClCompile>
@@ -322,6 +319,9 @@
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
     <ClCompile Include="N64System\Recompiler\x86\x86RecompilerOps.cpp">
+      <Filter>Source Files\N64 System\Recompiler\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\x86\x86ops.cpp">
       <Filter>Source Files\N64 System\Recompiler\x86</Filter>
     </ClCompile>
   </ItemGroup>
@@ -618,6 +618,9 @@
       <Filter>Header Files\N64 System\Recompiler</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Recompiler\x86\x86RecompilerOps.h">
+      <Filter>Header Files\N64 System\Recompiler\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\x86\x86ops.h">
       <Filter>Header Files\N64 System\Recompiler\x86</Filter>
     </ClInclude>
   </ItemGroup>
