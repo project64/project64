@@ -11,7 +11,8 @@
 #include "stdafx.h"
 #include <string.h>
 #include <Project64-core/N64System/Recompiler/CodeBlock.h>
-#include "RecompilerCodeLog.h"
+#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
+#include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/TranslateVaddr.h>
 #include <Project64-core/N64System/N64Class.h>
@@ -19,11 +20,11 @@
 
 bool DelaySlotEffectsCompare (uint32_t PC, uint32_t Reg1, uint32_t Reg2);
 
-CCodeBlock::CCodeBlock(uint32_t VAddrEnter, uint8_t * RecompPos) :
+CCodeBlock::CCodeBlock(uint32_t VAddrEnter, uint8_t * CompiledLocation) :
     m_VAddrEnter(VAddrEnter),
     m_VAddrFirst(VAddrEnter),
     m_VAddrLast(VAddrEnter),
-    m_CompiledLocation(RecompPos),
+    m_CompiledLocation(CompiledLocation),
     m_EnterSection(NULL),
     m_Test(1)
 {
@@ -45,7 +46,6 @@ CCodeBlock::CCodeBlock(uint32_t VAddrEnter, uint8_t * RecompPos) :
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     baseSection->m_ContinueSection = m_EnterSection;
-
     m_EnterSection->AddParent(baseSection);
     m_Sections.push_back(m_EnterSection);
     m_SectionMap.insert(SectionMap::value_type(VAddrEnter,m_EnterSection));
@@ -61,6 +61,7 @@ CCodeBlock::CCodeBlock(uint32_t VAddrEnter, uint8_t * RecompPos) :
         memset(m_MemLocation,0,sizeof(m_MemLocation));
         memset(m_MemContents,0,sizeof(m_MemContents));
     }
+
     AnalyseBlock();
 }
 
@@ -726,11 +727,11 @@ bool CCodeBlock::Compile()
 
     if (g_System->bLinkBlocks())
     {
-        while (m_EnterSection->GenerateX86Code(NextTest()));
+        while (m_EnterSection->GenerateNativeCode(NextTest()));
     }
     else
     {
-        if (!m_EnterSection->GenerateX86Code(NextTest()))
+        if (!m_EnterSection->GenerateNativeCode(NextTest()))
         {
             return false;
         }

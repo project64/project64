@@ -206,8 +206,8 @@ protected:
     /************************** Other functions **************************/
     static void UnknownOpcode  ();
 
-    static void BeforeCallDirect(CRegInfo  & RegSet);
-    static void AfterCallDirect(CRegInfo  & RegSet);
+    static void BeforeCallDirect(CRegInfo & RegSet);
+    static void AfterCallDirect(CRegInfo & RegSet);
     static void EnterCodeBlock();
     static void ExitCodeBlock();
     static void CompileReadTLBMiss(uint32_t VirtualAddress, x86Reg LookUpReg);
@@ -222,7 +222,7 @@ protected:
     static STEP_TYPE      m_NextInstruction;
     static uint32_t       m_CompilePC;
     static OPCODE         m_Opcode;
-    static CRegInfo       m_RegWorkingSet;
+    static CX86RegInfo    m_RegWorkingSet;
     static uint32_t       m_BranchCompare;
     static CCodeSection * m_Section;
 

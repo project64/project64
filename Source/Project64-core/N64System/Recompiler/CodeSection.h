@@ -27,7 +27,7 @@ public:
     void SetJumpAddress(uint32_t JumpPC, uint32_t TargetPC, bool PermLoop);
     void SetContinueAddress(uint32_t JumpPC, uint32_t TargetPC);
     void CompileCop1Test();
-    bool GenerateX86Code(uint32_t Test);
+    bool GenerateNativeCode(uint32_t Test);
     void GenerateSectionLinkage();
     void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void(*x86Jmp)(const char * Label, uint32_t Value));
     void DetermineLoop(uint32_t Test, uint32_t Test2, uint32_t TestID);

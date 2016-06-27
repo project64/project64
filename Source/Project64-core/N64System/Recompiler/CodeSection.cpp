@@ -648,7 +648,7 @@ void CCodeSection::GenerateSectionLinkage()
 
     for (i = 0; i < 2; i++)
     {
-        if (JumpInfo[i]->FallThrough && !TargetSection[i]->GenerateX86Code(m_BlockInfo->NextTest()))
+        if (JumpInfo[i]->FallThrough && !TargetSection[i]->GenerateNativeCode(m_BlockInfo->NextTest()))
         {
             JumpInfo[i]->FallThrough = false;
             JmpLabel32(JumpInfo[i]->BranchLabel.c_str(), 0);
@@ -679,7 +679,7 @@ void CCodeSection::GenerateSectionLinkage()
         }
         if (TargetSection[i]->m_CompiledLocation == NULL)
         {
-            TargetSection[i]->GenerateX86Code(m_BlockInfo->NextTest());
+            TargetSection[i]->GenerateNativeCode(m_BlockInfo->NextTest());
         }
         else
         {
@@ -1001,7 +1001,7 @@ g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 }*/
 
-bool CCodeSection::GenerateX86Code(uint32_t Test)
+bool CCodeSection::GenerateNativeCode(uint32_t Test)
 {
     if (this == NULL) { return false; }
 
@@ -1012,8 +1012,8 @@ bool CCodeSection::GenerateX86Code(uint32_t Test)
             return false;
         }
         m_Test = Test;
-        if (m_ContinueSection->GenerateX86Code(Test)) { return true; }
-        if (m_JumpSection->GenerateX86Code(Test)) { return true; }
+        if (m_ContinueSection->GenerateNativeCode(Test)) { return true; }
+        if (m_JumpSection->GenerateNativeCode(Test)) { return true; }
         return false;
     }
 

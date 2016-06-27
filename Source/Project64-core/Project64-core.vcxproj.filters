@@ -237,9 +237,6 @@
     <ClCompile Include="N64System\Recompiler\RecompilerMemory.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Recompiler\RegInfo.cpp">
-      <Filter>Source Files\N64 System\Recompiler</Filter>
-    </ClCompile>
     <ClCompile Include="N64System\Recompiler\SectionInfo.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
@@ -322,6 +319,9 @@
       <Filter>Source Files\N64 System\Recompiler\x86</Filter>
     </ClCompile>
     <ClCompile Include="N64System\Recompiler\x86\x86ops.cpp">
+      <Filter>Source Files\N64 System\Recompiler\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\x86\x86RegInfo.cpp">
       <Filter>Source Files\N64 System\Recompiler\x86</Filter>
     </ClCompile>
   </ItemGroup>
@@ -621,6 +621,9 @@
       <Filter>Header Files\N64 System\Recompiler\x86</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Recompiler\x86\x86ops.h">
+      <Filter>Header Files\N64 System\Recompiler\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\x86\x86RegInfo.h">
       <Filter>Header Files\N64 System\Recompiler\x86</Filter>
     </ClInclude>
   </ItemGroup>

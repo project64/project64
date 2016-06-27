@@ -12,22 +12,22 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/Recompiler/RecompilerClass.h>
-#include <Project64-core/N64System/Recompiler/RegInfo.h>
+#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
+#include <Project64-core/N64System/Recompiler/x86/x86RegInfo.h>
 
 #include <stdio.h>
 #include <string.h>
 #include <float.h>
-#include "RecompilerCodeLog.h"
 
-uint32_t CRegInfo::m_fpuControl = 0;
+uint32_t CX86RegInfo::m_fpuControl = 0;
 
 const char *Format_Name[] = { "Unknown", "dword", "qword", "float", "double" };
 
-CRegInfo::CRegInfo() :
-m_CycleCount(0),
-m_Stack_TopPos(0),
-m_Fpu_Used(false),
-m_RoundingModel(RoundUnknown)
+CX86RegInfo::CX86RegInfo() :
+    m_CycleCount(0),
+    m_Stack_TopPos(0),
+    m_Fpu_Used(false),
+    m_RoundingModel(RoundUnknown)
 {
     m_MIPS_RegState[0] = STATE_CONST_32_SIGN;
     m_MIPS_RegVal[0].DW = 0;
@@ -56,16 +56,16 @@ m_RoundingModel(RoundUnknown)
     }
 }
 
-CRegInfo::CRegInfo(const CRegInfo& rhs)
+CX86RegInfo::CX86RegInfo(const CX86RegInfo& rhs)
 {
     *this = rhs;
 }
 
-CRegInfo::~CRegInfo()
+CX86RegInfo::~CX86RegInfo()
 {
 }
 
-CRegInfo& CRegInfo::operator=(const CRegInfo& right)
+CX86RegInfo& CX86RegInfo::operator=(const CX86RegInfo& right)
 {
     m_CycleCount = right.m_CycleCount;
     m_Stack_TopPos = right.m_Stack_TopPos;
@@ -94,7 +94,7 @@ CRegInfo& CRegInfo::operator=(const CRegInfo& right)
     return *this;
 }
 
-bool CRegInfo::operator==(const CRegInfo& right) const
+bool CX86RegInfo::operator==(const CX86RegInfo& right) const
 {
     int32_t count;
 
@@ -133,19 +133,19 @@ bool CRegInfo::operator==(const CRegInfo& right) const
     return true;
 }
 
-bool CRegInfo::operator!=(const CRegInfo& right) const
+bool CX86RegInfo::operator!=(const CX86RegInfo& right) const
 {
     return !(right == *this);
 }
 
-CRegInfo::REG_STATE CRegInfo::ConstantsType(int64_t Value)
+CX86RegInfo::REG_STATE CX86RegInfo::ConstantsType(int64_t Value)
 {
     if (((Value >> 32) == -1) && ((Value & 0x80000000) != 0)) { return STATE_CONST_32_SIGN; }
     if (((Value >> 32) == 0) && ((Value & 0x80000000) == 0)) { return STATE_CONST_32_SIGN; }
     return STATE_CONST_64;
 }
 
-void CRegInfo::FixRoundModel(FPU_ROUND RoundMethod)
+void CX86RegInfo::FixRoundModel(FPU_ROUND RoundMethod)
 {
     if (GetRoundingModel() == RoundMethod)
     {
@@ -161,13 +161,13 @@ void CRegInfo::FixRoundModel(FPU_ROUND RoundMethod)
 
     if (RoundMethod == RoundDefault)
     {
-        static const unsigned int msRound[4] = 
-		{
-			0x00000000, //_RC_NEAR
-			0x00000300, //_RC_CHOP
-			0x00000200, //_RC_UP
-			0x00000100, //_RC_DOWN 
-		};
+        static const unsigned int msRound[4] =
+        {
+            0x00000000, //_RC_NEAR
+            0x00000300, //_RC_CHOP
+            0x00000200, //_RC_UP
+            0x00000100, //_RC_DOWN
+        };
 
         x86Reg RoundReg = Map_TempReg(x86_Any, -1, false);
         MoveVariableToX86reg(&g_Reg->m_RoundingModel, "m_RoundingModel", RoundReg);
@@ -195,7 +195,7 @@ void CRegInfo::FixRoundModel(FPU_ROUND RoundMethod)
     SetRoundingModel(RoundMethod);
 }
 
-void CRegInfo::ChangeFPURegFormat(int32_t Reg, FPU_STATE OldFormat, FPU_STATE NewFormat, FPU_ROUND RoundingModel)
+void CX86RegInfo::ChangeFPURegFormat(int32_t Reg, FPU_STATE OldFormat, FPU_STATE NewFormat, FPU_ROUND RoundingModel)
 {
     for (uint32_t i = 0; i < 8; i++)
     {
@@ -224,7 +224,7 @@ void CRegInfo::ChangeFPURegFormat(int32_t Reg, FPU_STATE OldFormat, FPU_STATE Ne
     }
 }
 
-void CRegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Format)
+void CX86RegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Format)
 {
     if (GetRoundingModel() != RoundDefault)
     {
@@ -405,7 +405,7 @@ void CRegInfo::Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Format)
     }
 }
 
-CRegInfo::x86FpuValues CRegInfo::StackPosition(int32_t Reg)
+CX86RegInfo::x86FpuValues CX86RegInfo::StackPosition(int32_t Reg)
 {
     int32_t i;
 
@@ -419,7 +419,7 @@ CRegInfo::x86FpuValues CRegInfo::StackPosition(int32_t Reg)
     return x86_ST_Unknown;
 }
 
-CX86Ops::x86Reg CRegInfo::FreeX86Reg()
+CX86Ops::x86Reg CX86RegInfo::FreeX86Reg()
 {
     if (GetX86Mapped(x86_EDI) == NotMapped && !GetX86Protected(x86_EDI)) { return x86_EDI; }
     if (GetX86Mapped(x86_ESI) == NotMapped && !GetX86Protected(x86_ESI)) { return x86_ESI; }
@@ -481,7 +481,7 @@ CX86Ops::x86Reg CRegInfo::FreeX86Reg()
     return x86_Unknown;
 }
 
-CX86Ops::x86Reg CRegInfo::Free8BitX86Reg()
+CX86Ops::x86Reg CX86RegInfo::Free8BitX86Reg()
 {
     if (GetX86Mapped(x86_EBX) == NotMapped && !GetX86Protected(x86_EBX)) { return x86_EBX; }
     if (GetX86Mapped(x86_EAX) == NotMapped && !GetX86Protected(x86_EAX)) { return x86_EAX; }
@@ -530,7 +530,7 @@ CX86Ops::x86Reg CRegInfo::Free8BitX86Reg()
     return x86_Unknown;
 }
 
-CX86Ops::x86Reg CRegInfo::UnMap_8BitTempReg()
+CX86Ops::x86Reg CX86RegInfo::UnMap_8BitTempReg()
 {
     int32_t count;
 
@@ -542,7 +542,7 @@ CX86Ops::x86Reg CRegInfo::UnMap_8BitTempReg()
             if (GetX86Protected((x86Reg)count) == false)
             {
                 CPU_Message("    regcache: unallocate %s from temp storage", x86_Name((x86Reg)count));
-                SetX86Mapped((x86Reg)count, CRegInfo::NotMapped);
+                SetX86Mapped((x86Reg)count, CX86RegInfo::NotMapped);
                 return (x86Reg)count;
             }
         }
@@ -550,7 +550,7 @@ CX86Ops::x86Reg CRegInfo::UnMap_8BitTempReg()
     return x86_Unknown;
 }
 
-CRegInfo::x86Reg CRegInfo::Get_MemoryStack() const
+CX86RegInfo::x86Reg CX86RegInfo::Get_MemoryStack() const
 {
     for (int32_t i = 0, n = sizeof(x86_Registers) / sizeof(x86_Registers[0]); i < n; i++)
     {
@@ -562,7 +562,7 @@ CRegInfo::x86Reg CRegInfo::Get_MemoryStack() const
     return x86_Unknown;
 }
 
-CRegInfo::x86Reg CRegInfo::Map_MemoryStack(x86Reg Reg, bool bMapRegister, bool LoadValue)
+CX86RegInfo::x86Reg CX86RegInfo::Map_MemoryStack(x86Reg Reg, bool bMapRegister, bool LoadValue)
 {
     x86Reg CurrentMap = Get_MemoryStack();
     if (!bMapRegister)
@@ -589,7 +589,7 @@ CRegInfo::x86Reg CRegInfo::Map_MemoryStack(x86Reg Reg, bool bMapRegister, bool L
             g_Notify->DisplayError("Map_MemoryStack\n\nOut of registers");
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
-        SetX86Mapped(Reg, CRegInfo::Stack_Mapped);
+        SetX86Mapped(Reg, CX86RegInfo::Stack_Mapped);
         CPU_Message("    regcache: allocate %s as Memory Stack", x86_Name(Reg));
         if (LoadValue)
         {
@@ -603,13 +603,13 @@ CRegInfo::x86Reg CRegInfo::Map_MemoryStack(x86Reg Reg, bool bMapRegister, bool L
     if (CurrentMap != x86_Unknown)
     {
         CPU_Message("    regcache: change allocation of Memory Stack from %s to %s", x86_Name(CurrentMap), x86_Name(Reg));
-        SetX86Mapped(Reg, CRegInfo::Stack_Mapped);
-        SetX86Mapped(CurrentMap, CRegInfo::NotMapped);
+        SetX86Mapped(Reg, CX86RegInfo::Stack_Mapped);
+        SetX86Mapped(CurrentMap, CX86RegInfo::NotMapped);
         MoveX86RegToX86Reg(CurrentMap, Reg);
     }
     else
     {
-        SetX86Mapped(Reg, CRegInfo::Stack_Mapped);
+        SetX86Mapped(Reg, CX86RegInfo::Stack_Mapped);
         CPU_Message("    regcache: allocate %s as Memory Stack", x86_Name(Reg));
         if (LoadValue)
         {
@@ -619,7 +619,7 @@ CRegInfo::x86Reg CRegInfo::Map_MemoryStack(x86Reg Reg, bool bMapRegister, bool L
     return Reg;
 }
 
-void CRegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsRegToLoad)
+void CX86RegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsRegToLoad)
 {
     int32_t count;
 
@@ -691,7 +691,7 @@ void CRegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsRegToL
     SetMipsRegState(MipsReg, SignValue ? STATE_MAPPED_32_SIGN : STATE_MAPPED_32_ZERO);
 }
 
-void CRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
+void CX86RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
 {
     x86Reg x86Hi, x86lo;
     int32_t count;
@@ -820,7 +820,7 @@ void CRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
     SetMipsRegState(MipsReg, STATE_MAPPED_64);
 }
 
-CX86Ops::x86Reg CRegInfo::Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, bool LoadHiWord)
+CX86Ops::x86Reg CX86RegInfo::Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, bool LoadHiWord)
 {
     int32_t count;
 
@@ -991,7 +991,7 @@ CX86Ops::x86Reg CRegInfo::Map_TempReg(CX86Ops::x86Reg Reg, int32_t MipsReg, bool
     return Reg;
 }
 
-void CRegInfo::ProtectGPR(uint32_t Reg)
+void CX86RegInfo::ProtectGPR(uint32_t Reg)
 {
     if (IsUnknown(Reg) || IsConst(Reg))
     {
@@ -1004,7 +1004,7 @@ void CRegInfo::ProtectGPR(uint32_t Reg)
     SetX86Protected(GetMipsRegMapLo(Reg), true);
 }
 
-void CRegInfo::UnProtectGPR(uint32_t Reg)
+void CX86RegInfo::UnProtectGPR(uint32_t Reg)
 {
     if (IsUnknown(Reg) || IsConst(Reg))
     {
@@ -1017,7 +1017,7 @@ void CRegInfo::UnProtectGPR(uint32_t Reg)
     SetX86Protected(GetMipsRegMapLo(Reg), false);
 }
 
-void CRegInfo::ResetX86Protection()
+void CX86RegInfo::ResetX86Protection()
 {
     for (int32_t count = 0; count < 10; count++)
     {
@@ -1025,7 +1025,7 @@ void CRegInfo::ResetX86Protection()
     }
 }
 
-bool CRegInfo::RegInStack(int32_t Reg, FPU_STATE Format)
+bool CX86RegInfo::RegInStack(int32_t Reg, FPU_STATE Format)
 {
     for (int32_t i = 0; i < 8; i++)
     {
@@ -1041,7 +1041,7 @@ bool CRegInfo::RegInStack(int32_t Reg, FPU_STATE Format)
     return false;
 }
 
-void CRegInfo::UnMap_AllFPRs()
+void CX86RegInfo::UnMap_AllFPRs()
 {
     for (;;)
     {
@@ -1062,7 +1062,7 @@ void CRegInfo::UnMap_AllFPRs()
     }
 }
 
-void CRegInfo::UnMap_FPR(int32_t Reg, bool WriteBackValue)
+void CX86RegInfo::UnMap_FPR(int32_t Reg, bool WriteBackValue)
 {
     char Name[50];
     int32_t i;
@@ -1084,7 +1084,7 @@ void CRegInfo::UnMap_FPR(int32_t Reg, bool WriteBackValue)
                 }
                 else
                 {
-                    CRegInfo::FPU_ROUND RoundingModel = FpuRoundingModel(StackTopPos());
+                    CX86RegInfo::FPU_ROUND RoundingModel = FpuRoundingModel(StackTopPos());
                     FPU_STATE RegState = m_x86fpu_State[StackTopPos()];
                     bool Changed = m_x86fpu_StateChanged[StackTopPos()];
                     uint32_t MappedTo = m_x86fpu_MappedTo[StackTopPos()];
@@ -1150,7 +1150,7 @@ void CRegInfo::UnMap_FPR(int32_t Reg, bool WriteBackValue)
     }
 }
 
-void CRegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
+void CX86RegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
 {
     if (Reg == 0)
     {
@@ -1229,7 +1229,7 @@ void CRegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
     SetMipsRegState(Reg, STATE_UNKNOWN);
 }
 
-CX86Ops::x86Reg CRegInfo::UnMap_TempReg()
+CX86Ops::x86Reg CX86RegInfo::UnMap_TempReg()
 {
     CX86Ops::x86Reg Reg = x86_Unknown;
 
@@ -1253,7 +1253,7 @@ CX86Ops::x86Reg CRegInfo::UnMap_TempReg()
     return Reg;
 }
 
-bool CRegInfo::UnMap_X86reg(CX86Ops::x86Reg Reg)
+bool CX86RegInfo::UnMap_X86reg(CX86Ops::x86Reg Reg)
 {
     int32_t count;
 
@@ -1264,7 +1264,7 @@ bool CRegInfo::UnMap_X86reg(CX86Ops::x86Reg Reg)
             return true;
         }
     }
-    else if (GetX86Mapped(Reg) == CRegInfo::GPR_Mapped)
+    else if (GetX86Mapped(Reg) == CX86RegInfo::GPR_Mapped)
     {
         for (count = 1; count < 32; count++)
         {
@@ -1293,7 +1293,7 @@ bool CRegInfo::UnMap_X86reg(CX86Ops::x86Reg Reg)
             }
         }
     }
-    else if (GetX86Mapped(Reg) == CRegInfo::Temp_Mapped)
+    else if (GetX86Mapped(Reg) == CX86RegInfo::Temp_Mapped)
     {
         if (!GetX86Protected(Reg))
         {
@@ -1302,7 +1302,7 @@ bool CRegInfo::UnMap_X86reg(CX86Ops::x86Reg Reg)
             return true;
         }
     }
-    else if (GetX86Mapped(Reg) == CRegInfo::Stack_Mapped)
+    else if (GetX86Mapped(Reg) == CX86RegInfo::Stack_Mapped)
     {
         CPU_Message("    regcache: unallocate %s from Memory Stack", x86_Name(Reg));
         MoveX86regToVariable(Reg, &(g_Recompiler->MemoryStackPos()), "MemoryStack");
@@ -1313,7 +1313,7 @@ bool CRegInfo::UnMap_X86reg(CX86Ops::x86Reg Reg)
     return false;
 }
 
-void CRegInfo::WriteBackRegisters()
+void CX86RegInfo::WriteBackRegisters()
 {
     UnMap_AllFPRs();
 
@@ -1331,8 +1331,8 @@ void CRegInfo::WriteBackRegisters()
     {
         switch (GetMipsRegState(count))
         {
-        case CRegInfo::STATE_UNKNOWN: break;
-        case CRegInfo::STATE_CONST_32_SIGN:
+        case CX86RegInfo::STATE_UNKNOWN: break;
+        case CX86RegInfo::STATE_CONST_32_SIGN:
             if (!g_System->b32BitCore())
             {
                 if (!bEdiZero && (!GetMipsRegLo(count) || !(GetMipsRegLo(count) & 0x80000000)))
@@ -1384,9 +1384,9 @@ void CRegInfo::WriteBackRegisters()
                 MoveConstToVariable(GetMipsRegLo(count), &_GPR[count].UW[0], CRegName::GPR_Lo[count]);
             }
 
-            SetMipsRegState(count, CRegInfo::STATE_UNKNOWN);
+            SetMipsRegState(count, CX86RegInfo::STATE_UNKNOWN);
             break;
-        case CRegInfo::STATE_CONST_32_ZERO:
+        case CX86RegInfo::STATE_CONST_32_ZERO:
             if (!g_System->b32BitCore())
             {
                 if (!bEdiZero)
@@ -1413,9 +1413,9 @@ void CRegInfo::WriteBackRegisters()
             {
                 MoveConstToVariable(GetMipsRegLo(count), &_GPR[count].UW[0], CRegName::GPR_Lo[count]);
             }
-            SetMipsRegState(count, CRegInfo::STATE_UNKNOWN);
+            SetMipsRegState(count, CX86RegInfo::STATE_UNKNOWN);
             break;
-        case CRegInfo::STATE_CONST_64:
+        case CX86RegInfo::STATE_CONST_64:
             if (GetMipsRegLo(count) == 0 || GetMipsRegHi(count) == 0)
             {
                 XorX86RegToX86Reg(x86_EDI, x86_EDI);
@@ -1452,7 +1452,7 @@ void CRegInfo::WriteBackRegisters()
             {
                 MoveConstToVariable(GetMipsRegLo(count), &_GPR[count].UW[0], CRegName::GPR_Lo[count]);
             }
-            SetMipsRegState(count, CRegInfo::STATE_UNKNOWN);
+            SetMipsRegState(count, CX86RegInfo::STATE_UNKNOWN);
             break;
         default:
             CPU_Message("%s: Unknown State: %d reg %d (%s)", __FUNCTION__, GetMipsRegState(count), count, CRegName::GPR[count]);
@@ -1461,7 +1461,7 @@ void CRegInfo::WriteBackRegisters()
     }
 }
 
-const char * CRegInfo::RoundingModelName(FPU_ROUND RoundType)
+const char * CX86RegInfo::RoundingModelName(FPU_ROUND RoundType)
 {
     switch (RoundType)
     {
