@@ -299,6 +299,9 @@ protected:
 private:
     static void BreakPointNotification(const char * FileName, int32_t LineNumber);
     static char m_fpupop[2][2];
+    static void AddCode8(uint8_t value);
+    static void AddCode16(uint16_t value);
+    static void AddCode32(uint32_t value);
 };
 
 #define AddressOf(Addr) CX86Ops::GetAddressOf(5,(Addr))
