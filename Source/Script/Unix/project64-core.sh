@@ -67,7 +67,7 @@ $CC -o $obj/N64System/dynarec/Ops.asm   $src/N64System/Recompiler/x86/x86Recompi
 $CC -o $obj/N64System/dynarec/Reg.asm   $src/N64System/Recompiler/x86/x86RegInfo.cpp $C_FLAGS
 $CC -o $obj/N64System/dynarec/Sect.asm  $src/N64System/Recompiler/SectionInfo.cpp $C_FLAGS
 $CC -o $obj/N64System/dynarec/log.asm   $src/N64System/Recompiler/RecompilerCodeLog.cpp $C_FLAGS
-$CC -o $obj/N64System/dynarec/x86op.asm $src/N64System/Recompiler/X86ops.cpp $C_FLAGS
+$CC -o $obj/N64System/dynarec/x86op.asm $src/N64System/Recompiler/x86/x86ops.cpp $C_FLAGS
 $CC -o $obj/N64System/SpeedLimiter.asm  $src/N64System/SpeedLimiterClass.cpp $C_FLAGS
 $CC -o $obj/N64System/SystemGlobals.asm $src/N64System/SystemGlobals.cpp $C_FLAGS
 $CC -o $obj/Plugins/Audio.asm           $src/Plugins/AudioPlugin.cpp $C_FLAGS
