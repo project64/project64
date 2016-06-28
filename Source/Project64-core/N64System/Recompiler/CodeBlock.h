@@ -11,14 +11,12 @@
 #pragma once
 #include <Common/md5.h>
 #include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
-#include <Project64-core/N64System/Recompiler/ExitInfo.h>
 #include <Project64-core/N64System/Recompiler/CodeSection.h>
 
-class CCodeBlock :
-    private CRecompilerOps
+class CCodeBlock
 {
 public:
-    CCodeBlock(uint32_t VAddrEnter, uint8_t * RecompPos );
+    CCodeBlock(uint32_t VAddrEnter, uint8_t * CompiledLocation );
     ~CCodeBlock();
 
     bool Compile();
@@ -27,10 +25,10 @@ public:
     uint32_t    VAddrFirst() const { return m_VAddrFirst; }
     uint32_t    VAddrLast()  const { return m_VAddrLast; }
     uint8_t *   CompiledLocation() const { return m_CompiledLocation; }
-    int32_t      NoOfSections() const { return m_Sections.size(); }
+    int32_t     NoOfSections() const { return m_Sections.size() - 1;}
     const CCodeSection & EnterSection() const { return *m_EnterSection; }
     const MD5Digest & Hash() const { return m_Hash; }
-
+    CRecompilerOps * RecompilerOps() { return m_EnterSection; }
     void SetVAddrFirst(uint32_t VAddr) { m_VAddrFirst = VAddr; }
     void SetVAddrLast(uint32_t VAddr) { m_VAddrLast = VAddr; }
 
@@ -42,15 +40,12 @@ public:
 
     uint32_t NextTest();
 
-    EXIT_LIST       m_ExitInfo;
-
 private:
     CCodeBlock();                             // Disable default constructor
     CCodeBlock(const CCodeBlock&);            // Disable copy constructor
     CCodeBlock& operator=(const CCodeBlock&); // Disable assignment
 
     bool AnalyseBlock();
-    void CompileExitCode();
 
     bool CreateBlockLinkage ( CCodeSection * EnterSection );
     void DetermineLoops     ();
@@ -67,11 +62,11 @@ private:
     typedef std::map<uint32_t,CCodeSection *> SectionMap;
     typedef std::list<CCodeSection *>      SectionList;
 
-    SectionMap      m_SectionMap;
-    SectionList     m_Sections;
-    CCodeSection  * m_EnterSection;
-    int32_t            m_Test;
-    MD5Digest       m_Hash;
-    uint64_t        m_MemContents[2];
-    uint64_t *      m_MemLocation[2];
+    SectionMap       m_SectionMap;
+    SectionList      m_Sections;
+    CCodeSection   * m_EnterSection;
+    int32_t          m_Test;
+    MD5Digest        m_Hash;
+    uint64_t         m_MemContents[2];
+    uint64_t *       m_MemLocation[2];
 };

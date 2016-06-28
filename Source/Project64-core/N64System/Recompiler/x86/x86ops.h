@@ -290,7 +290,6 @@ protected:
 
     static bool Is8BitReg(x86Reg Reg);
     static uint8_t CalcMultiplyCode(Multipler Multiply);
-    static uint8_t * m_RecompPos;
 
     static void * GetAddressOf(int32_t value, ...);
     static void SetJump32(uint32_t * Loc, uint32_t * JumpLoc);

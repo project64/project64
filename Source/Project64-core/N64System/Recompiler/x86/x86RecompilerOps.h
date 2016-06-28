@@ -12,6 +12,7 @@
 
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <Project64-core/N64System/Mips/OpCode.h>
+#include <Project64-core/N64System/Recompiler/ExitInfo.h>
 #include <Project64-core/N64System/Recompiler/RegInfo.h>
 #include <Project64-core/N64System/Recompiler/x86/x86ops.h>
 #include <Project64-core/Settings/DebugSettings.h>
@@ -27,7 +28,7 @@ class CRecompilerOps :
     protected CN64SystemSettings,
     protected CRecompilerSettings
 {
-protected:
+public:
     enum BRANCH_TYPE
     {
         BranchTypeCop1, BranchTypeRs, BranchTypeRsRt
@@ -36,8 +37,8 @@ protected:
     typedef void ( * BranchFunction )();
 
     /************************** Branch functions  ************************/
-    static void Compile_Branch         ( BranchFunction CompareFunc, BRANCH_TYPE BranchType, bool Link);
-    static void Compile_BranchLikely   ( BranchFunction CompareFunc, bool Link);
+    void Compile_Branch         ( BranchFunction CompareFunc, BRANCH_TYPE BranchType, bool Link);
+    void Compile_BranchLikely   ( BranchFunction CompareFunc, bool Link);
     static void BNE_Compare();
     static void BEQ_Compare();
     static void BGTZ_Compare();
@@ -49,7 +50,7 @@ protected:
 
     /*************************  OpCode functions *************************/
     static void J              ();
-    static void JAL            ();
+    void JAL            ();
     static void ADDI           ();
     static void ADDIU          ();
     static void SLTI           ();
@@ -93,9 +94,9 @@ protected:
     static void SPECIAL_SLLV   ();
     static void SPECIAL_SRLV   ();
     static void SPECIAL_SRAV   ();
-    static void SPECIAL_JR     ();
-    static void SPECIAL_JALR   ();
-    static void SPECIAL_SYSCALL();
+    void SPECIAL_JR     ();
+    void SPECIAL_JALR   ();
+    void SPECIAL_SYSCALL();
     static void SPECIAL_MFLO   ();
     static void SPECIAL_MTLO   ();
     static void SPECIAL_MFHI   ();
@@ -105,7 +106,7 @@ protected:
     static void SPECIAL_DSRAV  ();
     static void SPECIAL_MULT   ();
     static void SPECIAL_MULTU  ();
-    static void SPECIAL_DIV    ();
+    void SPECIAL_DIV    ();
     static void SPECIAL_DIVU   ();
     static void SPECIAL_DMULT  ();
     static void SPECIAL_DMULTU ();
@@ -141,7 +142,7 @@ protected:
     static void COP0_CO_TLBWI  ();
     static void COP0_CO_TLBWR  ();
     static void COP0_CO_TLBP   ();
-    static void COP0_CO_ERET   ();
+    void COP0_CO_ERET   ();
 
     /************************** COP1 functions **************************/
     static void COP1_MF        ();
@@ -206,13 +207,14 @@ protected:
     /************************** Other functions **************************/
     static void UnknownOpcode  ();
 
+    void CompileExitCode();
     static void BeforeCallDirect(CRegInfo & RegSet);
     static void AfterCallDirect(CRegInfo & RegSet);
     static void EnterCodeBlock();
     static void ExitCodeBlock();
-    static void CompileReadTLBMiss(uint32_t VirtualAddress, x86Reg LookUpReg);
-    static void CompileReadTLBMiss(x86Reg AddressReg, x86Reg LookUpReg);
-    static void CompileWriteTLBMiss(x86Reg AddressReg, x86Reg LookUpReg);
+    void CompileReadTLBMiss(uint32_t VirtualAddress, x86Reg LookUpReg);
+    void CompileReadTLBMiss(x86Reg AddressReg, x86Reg LookUpReg);
+    void CompileWriteTLBMiss(x86Reg AddressReg, x86Reg LookUpReg);
     static void UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles);
     static void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false);
     static void CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet);
@@ -334,4 +336,7 @@ protected:
 
 public:
     static uint32_t CompilePC() { return m_CompilePC; }
+
+    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void(*x86Jmp)(const char * Label, uint32_t Value));
+    EXIT_LIST m_ExitInfo;
 };

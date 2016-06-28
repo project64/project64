@@ -33,6 +33,7 @@ CCodeBlock::CCodeBlock(uint32_t VAddrEnter, uint8_t * CompiledLocation) :
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
+
     m_Sections.push_back(baseSection);
     baseSection->AddParent(NULL);
     baseSection->m_CompiledLocation = (uint8_t *)-1;
@@ -714,17 +715,7 @@ bool CCodeBlock::Compile()
     CPU_Message("No of Sections: %d",NoOfSections() );
     CPU_Message("====== recompiled code ======");
 
-    EnterCodeBlock();
-
-    if (g_SyncSystem)
-    {
-        //if ((uint32_t)BlockInfo.CompiledLocation == 0x60A7B73B)
-        //{
-        //	X86BreakPoint(__FILEW__,__LINE__);
-        //}
-        //MoveConstToVariable((uint32_t)BlockInfo.CompiledLocation,&CurrentBlock,"CurrentBlock");
-    }
-
+    m_EnterSection->EnterCodeBlock();
     if (g_System->bLinkBlocks())
     {
         while (m_EnterSection->GenerateNativeCode(NextTest()));
@@ -736,25 +727,13 @@ bool CCodeBlock::Compile()
             return false;
         }
     }
-    CompileExitCode();
+    m_EnterSection->CompileExitCode();
 
     uint32_t PAddr;
     g_TransVaddr->TranslateVaddr(VAddrFirst(),PAddr);
     MD5(g_MMU->Rdram() + PAddr,(VAddrLast() - VAddrFirst()) + 4).get_digest(m_Hash);
 
     return true;
-}
-
-void CCodeBlock::CompileExitCode()
-{
-    for (EXIT_LIST::iterator ExitIter = m_ExitInfo.begin(); ExitIter != m_ExitInfo.end(); ExitIter++)
-    {
-        CPU_Message("");
-        CPU_Message("      $Exit_%d",ExitIter->ID);
-        SetJump32(ExitIter->JumpLoc,(uint32_t *)m_RecompPos);
-        m_NextInstruction = ExitIter->NextInstruction;
-        m_EnterSection->CompileExit((uint32_t)-1, ExitIter->TargetPC,ExitIter->ExitRegSet,ExitIter->reason,true,NULL);
-    }
 }
 
 uint32_t CCodeBlock::NextTest()

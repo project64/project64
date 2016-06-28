@@ -683,6 +683,7 @@ bool CN64System::SetActiveSystem(bool bActive)
         g_Plugins = m_Plugins;
         g_TLBLoadAddress = &m_TLBLoadAddress;
         g_TLBStoreAddress = &m_TLBStoreAddress;
+        g_RecompPos = m_Recomp ? m_Recomp->RecompPos() : NULL;
         R4300iOp::m_TestTimer = m_TestTimer;
         R4300iOp::m_NextInstruction = m_NextInstruction;
         R4300iOp::m_JumpToLocation = m_JumpToLocation;

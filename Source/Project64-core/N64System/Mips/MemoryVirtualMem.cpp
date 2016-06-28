@@ -1462,14 +1462,14 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
             {
                 CompConstToVariable(Value, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
                 JeLabel8("Continue", 0);
-                Jump = m_RecompPos - 1;
+                Jump = *g_RecompPos - 1;
                 MoveConstToVariable(Value, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
                 BeforeCallDirect(m_RegWorkingSet);
                 Call_Direct((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
                 AfterCallDirect(m_RegWorkingSet);
                 CPU_Message("");
                 CPU_Message("      Continue:");
-                SetJump8(Jump, m_RecompPos);
+                SetJump8(Jump, *g_RecompPos);
             }
             break;
         case 0x04400004: MoveConstToVariable((Value & 0xFFFFFF), &g_Reg->VI_ORIGIN_REG, "VI_ORIGIN_REG"); break;
@@ -1478,14 +1478,14 @@ void CMipsMemoryVM::Compile_SW_Const(uint32_t Value, uint32_t VAddr)
             {
                 CompConstToVariable(Value, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
                 JeLabel8("Continue", 0);
-                Jump = m_RecompPos - 1;
+                Jump = *g_RecompPos - 1;
                 MoveConstToVariable(Value, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
                 BeforeCallDirect(m_RegWorkingSet);
                 Call_Direct((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
                 AfterCallDirect(m_RegWorkingSet);
                 CPU_Message("");
                 CPU_Message("      Continue:");
-                SetJump8(Jump, m_RecompPos);
+                SetJump8(Jump, *g_RecompPos);
             }
             break;
         case 0x0440000C: MoveConstToVariable(Value, &g_Reg->VI_INTR_REG, "VI_INTR_REG"); break;
@@ -1821,14 +1821,14 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
             {
                 CompX86regToVariable(Reg, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
                 JeLabel8("Continue", 0);
-                Jump = m_RecompPos - 1;
+                Jump = *g_RecompPos - 1;
                 MoveX86regToVariable(Reg, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
                 BeforeCallDirect(m_RegWorkingSet);
                 Call_Direct((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
                 AfterCallDirect(m_RegWorkingSet);
                 CPU_Message("");
                 CPU_Message("      Continue:");
-                SetJump8(Jump, m_RecompPos);
+                SetJump8(Jump, *g_RecompPos);
             }
             break;
         case 0x04400004:
@@ -1840,14 +1840,14 @@ void CMipsMemoryVM::Compile_SW_Register(x86Reg Reg, uint32_t VAddr)
             {
                 CompX86regToVariable(Reg, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
                 JeLabel8("Continue", 0);
-                Jump = m_RecompPos - 1;
+                Jump = *g_RecompPos - 1;
                 MoveX86regToVariable(Reg, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
                 BeforeCallDirect(m_RegWorkingSet);
                 Call_Direct((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
                 AfterCallDirect(m_RegWorkingSet);
                 CPU_Message("");
                 CPU_Message("      Continue:");
-                SetJump8(Jump, m_RecompPos);
+                SetJump8(Jump, *g_RecompPos);
             }
             break;
         case 0x0440000C: MoveX86regToVariable(Reg, &g_Reg->VI_INTR_REG, "VI_INTR_REG"); break;
@@ -3701,7 +3701,7 @@ void CMipsMemoryVM::Compile_SW(bool bCheckLLbit)
             {
                 CompConstToVariable(1, _LLBit, "_LLBit");
                 JneLabel8("LLBit_Continue", 0);
-                Jump = m_RecompPos - 1;
+                Jump = *g_RecompPos - 1;
             }
             if (IsConst(Opcode.rt))
             {
@@ -3719,7 +3719,7 @@ void CMipsMemoryVM::Compile_SW(bool bCheckLLbit)
             {
                 CPU_Message("      ");
                 CPU_Message("      LLBit_Continue:");
-                SetJump8(Jump, m_RecompPos);
+                SetJump8(Jump, *g_RecompPos);
                 Map_GPR_32bit(Opcode.rt, false, -1);
                 MoveVariableToX86reg(_LLBit, "_LLBit", GetMipsRegMapLo(Opcode.rt));
             }
@@ -4056,18 +4056,18 @@ void CMipsMemoryVM::Compile_StoreInstructClean(x86Reg AddressReg, int32_t Length
     Call_Direct(AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
     AfterCallDirect(m_RegWorkingSet);
     /*JmpLabel8("MemCheckDone",0);
-    uint8_t * MemCheckDone = m_RecompPos - 1;
+    uint8_t * MemCheckDone = *g_RecompPos - 1;
 
     CPU_Message("      ");
     CPU_Message("      NotDelaySlot:");
-    SetJump8(NotDelaySlotJump,m_RecompPos);
+    SetJump8(NotDelaySlotJump,*g_RecompPos);
 
     MoveX86RegToX86Reg(AddressReg, StoreTemp1);
     ShiftRightUnsignImmed(StoreTemp1,12);
     LeaRegReg(StoreTemp1,StoreTemp1,(uint32_t)&(g_Recompiler->FunctionTable()[0]),Multip_x4);
     CompConstToX86regPointer(StoreTemp1,0);
     JeLabel8("MemCheckDone",0);
-    uint8_t * MemCheckDone2 = m_RecompPos - 1;
+    uint8_t * MemCheckDone2 = *g_RecompPos - 1;
 
     BeforeCallDirect(m_RegWorkingSet);
     PushImm32("CRecompiler::Remove_StoreInstruc",CRecompiler::Remove_StoreInstruc);
@@ -4079,8 +4079,8 @@ void CMipsMemoryVM::Compile_StoreInstructClean(x86Reg AddressReg, int32_t Length
 
     CPU_Message("      ");
     CPU_Message("      MemCheckDone:");
-    SetJump8(MemCheckDone,m_RecompPos);
-    SetJump8(MemCheckDone2,m_RecompPos);
+    SetJump8(MemCheckDone,*g_RecompPos);
+    SetJump8(MemCheckDone2,*g_RecompPos);
 
     X86Protected(StoreTemp1) = false;*/
 }

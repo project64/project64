@@ -937,7 +937,7 @@ CCompiledFunc * CRecompiler::CompilerCode()
     //uint32_t StartTime = timeGetTime();
     WriteTrace(TraceRecompiler, TraceDebug, ": Compile Block-Start: Program Counter: %X pAddr: %X", PROGRAM_COUNTER, pAddr);
 
-    CCodeBlock CodeBlock(PROGRAM_COUNTER, RecompPos());
+    CCodeBlock CodeBlock(PROGRAM_COUNTER, *g_RecompPos);
     if (!CodeBlock.Compile())
     {
         return NULL;

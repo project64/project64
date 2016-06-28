@@ -15,7 +15,7 @@
 class CCodeBlock;
 
 class CCodeSection :
-    private CRecompilerOps
+    public CRecompilerOps
 {
 public:
     typedef std::list<CCodeSection *> SECTION_LIST;
@@ -29,7 +29,6 @@ public:
     void CompileCop1Test();
     bool GenerateNativeCode(uint32_t Test);
     void GenerateSectionLinkage();
-    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void(*x86Jmp)(const char * Label, uint32_t Value));
     void DetermineLoop(uint32_t Test, uint32_t Test2, uint32_t TestID);
     bool FixConstants(uint32_t Test);
     CCodeSection * ExistingSection(uint32_t Addr, uint32_t Test);

@@ -14,8 +14,6 @@
 #include <Project64-core/N64System/Recompiler/x86/x86ops.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 
-uint8_t * CX86Ops::m_RecompPos;
-
 char CX86Ops::m_fpupop[2][2] =
 {
     "", "p"
@@ -216,7 +214,7 @@ void CX86Ops::Call_Direct(void * FunctAddress, const char * FunctName)
 {
     CPU_Message("      call offset %s", FunctName);
     AddCode8(0xE8);
-    AddCode32((uint32_t)FunctAddress - (uint32_t)*m_RecompPos - 4);
+    AddCode32((uint32_t)FunctAddress - (uint32_t)*g_RecompPos - 4);
 }
 
 void CX86Ops::Call_Indirect(void * FunctAddress, const char * FunctName)
@@ -4294,18 +4292,36 @@ void * CX86Ops::GetAddressOf(int value, ...)
 
 void CX86Ops::AddCode8(uint8_t value)
 {
-    (*((uint8_t *)(m_RecompPos)) = (uint8_t)(value));
-    m_RecompPos += 1;
+#ifdef _DEBUG
+    if (g_RecompPos == NULL)
+    {
+        g_Notify->BreakPoint(__FILE__,__LINE__);
+    }
+#endif
+    (*((uint8_t *)(*g_RecompPos))=(uint8_t)(value));
+    *g_RecompPos += 1;
 }
 
 void CX86Ops::AddCode16(uint16_t value)
 {
-    (*((uint16_t *)(m_RecompPos)) = (uint16_t)(value));
-    m_RecompPos += 2;
+#ifdef _DEBUG
+    if (g_RecompPos == NULL)
+    {
+        g_Notify->BreakPoint(__FILE__,__LINE__);
+    }
+#endif
+    (*((uint16_t *)(*g_RecompPos))=(uint16_t)(value));
+    *g_RecompPos += 2;
 }
 
 void CX86Ops::AddCode32(uint32_t value)
 {
-    (*((uint32_t *)(m_RecompPos)) = (uint32_t)(value));
-    m_RecompPos += 4;
+#ifdef _DEBUG
+    if (g_RecompPos == NULL)
+    {
+        g_Notify->BreakPoint(__FILE__,__LINE__);
+    }
+#endif
+    (*((uint32_t *)(*g_RecompPos))=(uint32_t)(value));
+    *g_RecompPos += 4;
 }

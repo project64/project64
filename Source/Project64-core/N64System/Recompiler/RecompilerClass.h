@@ -18,7 +18,7 @@ class CRecompiler :
     protected CDebugSettings,
     public CRecompilerSettings,
     public CFunctionMap,
-    private CRecompMemory,
+    public CRecompMemory,
     private CSystemRegisters
 {
 public:

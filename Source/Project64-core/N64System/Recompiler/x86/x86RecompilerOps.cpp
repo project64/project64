@@ -32,21 +32,21 @@ void CRecompilerOps::CompileReadTLBMiss(uint32_t VirtualAddress, x86Reg LookUpRe
 {
     MoveConstToVariable(VirtualAddress, g_TLBLoadAddress, "TLBLoadAddress");
     TestX86RegToX86Reg(LookUpReg, LookUpReg);
-    m_Section->CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, false, JeLabel32);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, false, JeLabel32);
 }
 
 void CRecompilerOps::CompileReadTLBMiss(x86Reg AddressReg, x86Reg LookUpReg)
 {
     MoveX86regToVariable(AddressReg, g_TLBLoadAddress, "TLBLoadAddress");
     TestX86RegToX86Reg(LookUpReg, LookUpReg);
-    m_Section->CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, false, JeLabel32);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, false, JeLabel32);
 }
 
 void CRecompilerOps::CompileWriteTLBMiss(x86Reg AddressReg, x86Reg LookUpReg)
 {
     MoveX86regToVariable(AddressReg, &g_TLBStoreAddress, "g_TLBStoreAddress");
     TestX86RegToX86Reg(LookUpReg, LookUpReg);
-    m_Section->CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBWriteMiss, false, JeLabel32);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBWriteMiss, false, JeLabel32);
 }
 
 bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
@@ -165,11 +165,11 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
                 {
                     CPU_Message("");
                     CPU_Message("      %s:", m_Section->m_Jump.BranchLabel.c_str());
-                    SetJump32((uint32_t *)m_Section->m_Jump.LinkLocation, (uint32_t *)m_RecompPos);
+                    SetJump32((uint32_t *)m_Section->m_Jump.LinkLocation, (uint32_t *)*g_RecompPos);
                     m_Section->m_Jump.LinkLocation = NULL;
                     if (m_Section->m_Jump.LinkLocation2 != NULL)
                     {
-                        SetJump32((uint32_t *)m_Section->m_Jump.LinkLocation2, (uint32_t *)m_RecompPos);
+                        SetJump32((uint32_t *)m_Section->m_Jump.LinkLocation2, (uint32_t *)*g_RecompPos);
                         m_Section->m_Jump.LinkLocation2 = NULL;
                     }
                     m_Section->m_Jump.FallThrough = true;
@@ -178,11 +178,11 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
                 {
                     CPU_Message("");
                     CPU_Message("      %s:", m_Section->m_Cont.BranchLabel.c_str());
-                    SetJump32((uint32_t *)m_Section->m_Cont.LinkLocation, (uint32_t *)m_RecompPos);
+                    SetJump32((uint32_t *)m_Section->m_Cont.LinkLocation, (uint32_t *)*g_RecompPos);
                     m_Section->m_Cont.LinkLocation = NULL;
                     if (m_Section->m_Cont.LinkLocation2 != NULL)
                     {
-                        SetJump32((uint32_t *)m_Section->m_Cont.LinkLocation2, (uint32_t *)m_RecompPos);
+                        SetJump32((uint32_t *)m_Section->m_Cont.LinkLocation2, (uint32_t *)*g_RecompPos);
                         m_Section->m_Cont.LinkLocation2 = NULL;
                     }
                     m_Section->m_Cont.FallThrough = true;
@@ -212,15 +212,15 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
                 {
                     JmpLabel8("DoDelaySlot", 0);
                     if (DelayLinkLocation != NULL) { g_Notify->BreakPoint(__FILE__, __LINE__); }
-                    DelayLinkLocation = (uint8_t *)(m_RecompPos - 1);
+                    DelayLinkLocation = (uint8_t *)(*g_RecompPos - 1);
 
                     CPU_Message("      ");
                     CPU_Message("      %s:", m_Section->m_Jump.BranchLabel.c_str());
-                    SetJump32(m_Section->m_Jump.LinkLocation, (uint32_t *)m_RecompPos);
+                    SetJump32(m_Section->m_Jump.LinkLocation, (uint32_t *)*g_RecompPos);
                     m_Section->m_Jump.LinkLocation = NULL;
                     if (m_Section->m_Jump.LinkLocation2 != NULL)
                     {
-                        SetJump32(m_Section->m_Jump.LinkLocation2, (uint32_t *)m_RecompPos);
+                        SetJump32(m_Section->m_Jump.LinkLocation2, (uint32_t *)*g_RecompPos);
                         m_Section->m_Jump.LinkLocation2 = NULL;
                     }
                     MoveConstToVariable(m_Section->m_Jump.TargetPC, &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
@@ -229,15 +229,15 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
                 {
                     JmpLabel8("DoDelaySlot", 0);
                     if (DelayLinkLocation != NULL) { g_Notify->BreakPoint(__FILE__, __LINE__); }
-                    DelayLinkLocation = (uint8_t *)(m_RecompPos - 1);
+                    DelayLinkLocation = (uint8_t *)(*g_RecompPos - 1);
 
                     CPU_Message("      ");
                     CPU_Message("      %s:", m_Section->m_Cont.BranchLabel.c_str());
-                    SetJump32(m_Section->m_Cont.LinkLocation, (uint32_t *)m_RecompPos);
+                    SetJump32(m_Section->m_Cont.LinkLocation, (uint32_t *)*g_RecompPos);
                     m_Section->m_Cont.LinkLocation = NULL;
                     if (m_Section->m_Cont.LinkLocation2 != NULL)
                     {
-                        SetJump32(m_Section->m_Cont.LinkLocation2, (uint32_t *)m_RecompPos);
+                        SetJump32(m_Section->m_Cont.LinkLocation2, (uint32_t *)*g_RecompPos);
                         m_Section->m_Cont.LinkLocation2 = NULL;
                     }
                     MoveConstToVariable(m_Section->m_Cont.TargetPC, &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
@@ -246,7 +246,7 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
                 {
                     CPU_Message("");
                     CPU_Message("      DoDelaySlot:");
-                    SetJump8(DelayLinkLocation, m_RecompPos);
+                    SetJump8(DelayLinkLocation, *g_RecompPos);
                 }
                 OverflowDelaySlot(false);
                 return;
@@ -303,16 +303,16 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
                 {
                     FallInfo->FallThrough = false;
                     JmpLabel32(FallInfo->BranchLabel.c_str(), 0);
-                    FallInfo->LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    FallInfo->LinkLocation = (uint32_t *)(*g_RecompPos - 4);
 
                     if (JumpInfo->LinkLocation != NULL)
                     {
                         CPU_Message("      %s:", JumpInfo->BranchLabel.c_str());
-                        SetJump32((uint32_t *)JumpInfo->LinkLocation, (uint32_t *)m_RecompPos);
+                        SetJump32((uint32_t *)JumpInfo->LinkLocation, (uint32_t *)*g_RecompPos);
                         JumpInfo->LinkLocation = NULL;
                         if (JumpInfo->LinkLocation2 != NULL)
                         {
-                            SetJump32((uint32_t *)JumpInfo->LinkLocation2, (uint32_t *)m_RecompPos);
+                            SetJump32((uint32_t *)JumpInfo->LinkLocation2, (uint32_t *)*g_RecompPos);
                             JumpInfo->LinkLocation2 = NULL;
                         }
                         JumpInfo->FallThrough = true;
@@ -443,11 +443,11 @@ void CRecompilerOps::Compile_BranchLikely(BranchFunction CompareFunc, bool Link)
             {
                 if (m_Section->m_Jump.LinkLocation != NULL)
                 {
-                    SetJump32(m_Section->m_Jump.LinkLocation, (uint32_t *)m_RecompPos);
+                    SetJump32(m_Section->m_Jump.LinkLocation, (uint32_t *)*g_RecompPos);
                     m_Section->m_Jump.LinkLocation = NULL;
                     if (m_Section->m_Jump.LinkLocation2 != NULL)
                     {
-                        SetJump32(m_Section->m_Jump.LinkLocation2, (uint32_t *)m_RecompPos);
+                        SetJump32(m_Section->m_Jump.LinkLocation2, (uint32_t *)*g_RecompPos);
                         m_Section->m_Jump.LinkLocation2 = NULL;
                     }
                 }
@@ -464,15 +464,15 @@ void CRecompilerOps::Compile_BranchLikely(BranchFunction CompareFunc, bool Link)
 
             if (m_Section->m_Cont.LinkLocation != NULL)
             {
-                SetJump32(m_Section->m_Cont.LinkLocation, (uint32_t *)m_RecompPos);
+                SetJump32(m_Section->m_Cont.LinkLocation, (uint32_t *)*g_RecompPos);
                 m_Section->m_Cont.LinkLocation = NULL;
                 if (m_Section->m_Cont.LinkLocation2 != NULL)
                 {
-                    SetJump32(m_Section->m_Cont.LinkLocation2, (uint32_t *)m_RecompPos);
+                    SetJump32(m_Section->m_Cont.LinkLocation2, (uint32_t *)*g_RecompPos);
                     m_Section->m_Cont.LinkLocation2 = NULL;
                 }
             }
-            m_Section->CompileExit(m_CompilePC, m_CompilePC + 8, m_Section->m_Cont.RegSet, CExitInfo::Normal, true, NULL);
+            CompileExit(m_CompilePC, m_CompilePC + 8, m_Section->m_Cont.RegSet, CExitInfo::Normal, true, NULL);
             return;
         }
         else
@@ -549,33 +549,33 @@ void CRecompilerOps::BNE_Compare()
                 if (m_Section->m_Jump.FallThrough)
                 {
                     JneLabel8("continue", 0);
-                    Jump = m_RecompPos - 1;
+                    Jump = *g_RecompPos - 1;
                 }
                 else
                 {
                     JneLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
                 CompX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rs), GetMipsRegMapLo(m_Opcode.rt));
                 if (m_Section->m_Cont.FallThrough)
                 {
                     JneLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
                 }
                 else if (m_Section->m_Jump.FallThrough)
                 {
                     JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                     CPU_Message("      ");
                     CPU_Message("      continue:");
-                    SetJump8(Jump, m_RecompPos);
+                    SetJump8(Jump, *g_RecompPos);
                 }
                 else
                 {
                     JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                     JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
                 }
             }
             else
@@ -584,19 +584,19 @@ void CRecompilerOps::BNE_Compare()
                 if (m_Section->m_Cont.FallThrough)
                 {
                     JneLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
                 else if (m_Section->m_Jump.FallThrough)
                 {
                     JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
                 else
                 {
                     JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                     JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
             }
         }
@@ -626,33 +626,33 @@ void CRecompilerOps::BNE_Compare()
                 if (m_Section->m_Jump.FallThrough)
                 {
                     JneLabel8("continue", 0);
-                    Jump = m_RecompPos - 1;
+                    Jump = *g_RecompPos - 1;
                 }
                 else
                 {
                     JneLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
                 CompConstToX86reg(GetMipsRegMapLo(MappedReg), GetMipsRegLo(ConstReg));
                 if (m_Section->m_Cont.FallThrough)
                 {
                     JneLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
                 }
                 else if (m_Section->m_Jump.FallThrough)
                 {
                     JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                     CPU_Message("      ");
                     CPU_Message("      continue:");
-                    SetJump8(Jump, m_RecompPos);
+                    SetJump8(Jump, *g_RecompPos);
                 }
                 else
                 {
                     JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                     JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
                 }
             }
             else
@@ -661,19 +661,19 @@ void CRecompilerOps::BNE_Compare()
                 if (m_Section->m_Cont.FallThrough)
                 {
                     JneLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
                 else if (m_Section->m_Jump.FallThrough)
                 {
                     JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
                 else
                 {
                     JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                     JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
             }
         }
@@ -719,12 +719,12 @@ void CRecompilerOps::BNE_Compare()
             if (m_Section->m_Jump.FallThrough)
             {
                 JneLabel8("continue", 0);
-                Jump = m_RecompPos - 1;
+                Jump = *g_RecompPos - 1;
             }
             else
             {
                 JneLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
         }
         if (IsConst(KnownReg))
@@ -740,38 +740,38 @@ void CRecompilerOps::BNE_Compare()
             JneLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
             if (g_System->b32BitCore())
             {
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else
             {
-                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
             }
         }
         else if (m_Section->m_Jump.FallThrough)
         {
             JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-            m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
 
             if (Jump)
             {
                 CPU_Message("      ");
                 CPU_Message("      continue:");
 
-                SetJump8(Jump, m_RecompPos);
+                SetJump8(Jump, *g_RecompPos);
             }
         }
         else
         {
             JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-            m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
             if (g_System->b32BitCore())
             {
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else
             {
-                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
             }
         }
     }
@@ -786,12 +786,12 @@ void CRecompilerOps::BNE_Compare()
             if (m_Section->m_Jump.FallThrough)
             {
                 JneLabel8("continue", 0);
-                Jump = m_RecompPos - 1;
+                Jump = *g_RecompPos - 1;
             }
             else
             {
                 JneLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
         }
 
@@ -802,36 +802,36 @@ void CRecompilerOps::BNE_Compare()
             JneLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
             if (g_System->b32BitCore())
             {
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else
             {
-                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
             }
         }
         else if (m_Section->m_Jump.FallThrough)
         {
             JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-            m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             if (Jump)
             {
                 CPU_Message("      ");
                 CPU_Message("      continue:");
-                SetJump8(Jump, m_RecompPos);
+                SetJump8(Jump, *g_RecompPos);
             }
         }
         else
         {
             JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-            m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
             if (g_System->b32BitCore())
             {
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else
             {
-                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
             }
         }
     }
@@ -874,33 +874,33 @@ void CRecompilerOps::BEQ_Compare()
                 if (m_Section->m_Cont.FallThrough)
                 {
                     JneLabel8("continue", 0);
-                    Jump = m_RecompPos - 1;
+                    Jump = *g_RecompPos - 1;
                 }
                 else
                 {
                     JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
                 CompX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rs), GetMipsRegMapLo(m_Opcode.rt));
                 if (m_Section->m_Cont.FallThrough)
                 {
                     JeLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                     CPU_Message("      ");
                     CPU_Message("      continue:");
-                    SetJump8(Jump, m_RecompPos);
+                    SetJump8(Jump, *g_RecompPos);
                 }
                 else if (m_Section->m_Jump.FallThrough)
                 {
                     JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
                 }
                 else
                 {
                     JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
                     JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
             }
             else
@@ -909,19 +909,19 @@ void CRecompilerOps::BEQ_Compare()
                 if (m_Section->m_Cont.FallThrough)
                 {
                     JeLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
                 else if (m_Section->m_Jump.FallThrough)
                 {
                     JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
                 else
                 {
                     JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                     JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
             }
         }
@@ -950,33 +950,33 @@ void CRecompilerOps::BEQ_Compare()
                 }
                 if (m_Section->m_Cont.FallThrough) {
                     JneLabel8("continue", 0);
-                    Jump = m_RecompPos - 1;
+                    Jump = *g_RecompPos - 1;
                 }
                 else
                 {
                     JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
                 CompConstToX86reg(GetMipsRegMapLo(MappedReg), GetMipsRegLo(ConstReg));
                 if (m_Section->m_Cont.FallThrough)
                 {
                     JeLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                     CPU_Message("      ");
                     CPU_Message("      continue:");
-                    SetJump8(Jump, m_RecompPos);
+                    SetJump8(Jump, *g_RecompPos);
                 }
                 else if (m_Section->m_Jump.FallThrough)
                 {
                     JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
                 }
                 else
                 {
                     JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
                     JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
             }
             else
@@ -985,19 +985,19 @@ void CRecompilerOps::BEQ_Compare()
                 if (m_Section->m_Cont.FallThrough)
                 {
                     JeLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
                 else if (m_Section->m_Jump.FallThrough)
                 {
                     JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
                 else
                 {
                     JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                    m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                     JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                    m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
             }
         }
@@ -1043,12 +1043,12 @@ void CRecompilerOps::BEQ_Compare()
             if (m_Section->m_Cont.FallThrough)
             {
                 JneLabel8("continue", 0);
-                Jump = m_RecompPos - 1;
+                Jump = *g_RecompPos - 1;
             }
             else
             {
                 JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
         }
         if (IsConst(KnownReg))
@@ -1062,12 +1062,12 @@ void CRecompilerOps::BEQ_Compare()
         if (m_Section->m_Cont.FallThrough)
         {
             JeLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-            m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             if (Jump)
             {
                 CPU_Message("      ");
                 CPU_Message("      continue:");
-                SetJump8(Jump, m_RecompPos);
+                SetJump8(Jump, *g_RecompPos);
             }
         }
         else if (m_Section->m_Jump.FallThrough)
@@ -1075,19 +1075,19 @@ void CRecompilerOps::BEQ_Compare()
             JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
             if (g_System->b32BitCore())
             {
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else
             {
-                m_Section->m_Cont.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
             }
         }
         else
         {
             JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-            m_Section->m_Cont.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
             JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-            m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
     }
     else
@@ -1100,24 +1100,24 @@ void CRecompilerOps::BEQ_Compare()
             if (m_Section->m_Cont.FallThrough)
             {
                 JneLabel8("continue", 0);
-                Jump = m_RecompPos - 1;
+                Jump = *g_RecompPos - 1;
             }
             else
             {
                 JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
         }
         CompX86regToVariable(Map_TempReg(Reg, m_Opcode.rs, false), &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
         if (m_Section->m_Cont.FallThrough)
         {
             JeLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-            m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             if (Jump)
             {
                 CPU_Message("      ");
                 CPU_Message("      continue:");
-                SetJump8(Jump, m_RecompPos);
+                SetJump8(Jump, *g_RecompPos);
             }
         }
         else if (m_Section->m_Jump.FallThrough)
@@ -1125,11 +1125,11 @@ void CRecompilerOps::BEQ_Compare()
             JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
             if (g_System->b32BitCore())
             {
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else
             {
-                m_Section->m_Cont.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
             }
         }
         else
@@ -1137,14 +1137,14 @@ void CRecompilerOps::BEQ_Compare()
             JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
             if (g_System->b32BitCore())
             {
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else
             {
-                m_Section->m_Cont.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
             }
             JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-            m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
     }
 }
@@ -1186,19 +1186,19 @@ void CRecompilerOps::BGTZ_Compare()
         if (m_Section->m_Jump.FallThrough)
         {
             JleLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-            m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
         else if (m_Section->m_Cont.FallThrough)
         {
             JgLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-            m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
         else
         {
             JleLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-            m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-            m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
     }
     else if (IsUnknown(m_Opcode.rs) && g_System->b32BitCore())
@@ -1207,19 +1207,19 @@ void CRecompilerOps::BGTZ_Compare()
         if (m_Section->m_Jump.FallThrough)
         {
             JleLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-            m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
         else if (m_Section->m_Cont.FallThrough)
         {
             JgLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-            m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
         else
         {
             JleLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-            m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-            m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
     }
     else
@@ -1237,23 +1237,23 @@ void CRecompilerOps::BGTZ_Compare()
         if (m_Section->m_Jump.FallThrough)
         {
             JlLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-            m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             JgLabel8("continue", 0);
-            Jump = m_RecompPos - 1;
+            Jump = *g_RecompPos - 1;
         }
         else if (m_Section->m_Cont.FallThrough)
         {
             JlLabel8("continue", 0);
-            Jump = m_RecompPos - 1;
+            Jump = *g_RecompPos - 1;
             JgLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-            m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
         else
         {
             JlLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-            m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             JgLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-            m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
 
         if (IsMapped(m_Opcode.rs))
@@ -1267,23 +1267,23 @@ void CRecompilerOps::BGTZ_Compare()
         if (m_Section->m_Jump.FallThrough)
         {
             JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-            m_Section->m_Cont.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
             CPU_Message("      continue:");
-            SetJump8(Jump, m_RecompPos);
+            SetJump8(Jump, *g_RecompPos);
         }
         else if (m_Section->m_Cont.FallThrough)
         {
             JneLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-            m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             CPU_Message("      continue:");
-            SetJump8(Jump, m_RecompPos);
+            SetJump8(Jump, *g_RecompPos);
         }
         else
         {
             JneLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-            m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             JmpLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-            m_Section->m_Cont.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
         }
     }
 }
@@ -1340,19 +1340,19 @@ void CRecompilerOps::BLEZ_Compare()
             if (m_Section->m_Jump.FallThrough)
             {
                 JgLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else if (m_Section->m_Cont.FallThrough)
             {
                 JleLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else
             {
                 JgLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
         }
         else
@@ -1370,23 +1370,23 @@ void CRecompilerOps::BLEZ_Compare()
             if (m_Section->m_Jump.FallThrough)
             {
                 JgLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 JlLabel8("Continue", 0);
-                Jump = m_RecompPos - 1;
+                Jump = *g_RecompPos - 1;
             }
             else if (m_Section->m_Cont.FallThrough)
             {
                 JgLabel8("Continue", 0);
-                Jump = m_RecompPos - 1;
+                Jump = *g_RecompPos - 1;
                 JlLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else
             {
                 JgLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 JlLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
 
             if (IsMapped(m_Opcode.rs))
@@ -1400,23 +1400,23 @@ void CRecompilerOps::BLEZ_Compare()
             if (m_Section->m_Jump.FallThrough)
             {
                 JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
                 CPU_Message("      continue:");
-                SetJump8(Jump, m_RecompPos);
+                SetJump8(Jump, *g_RecompPos);
             }
             else if (m_Section->m_Cont.FallThrough)
             {
                 JeLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
                 CPU_Message("      continue:");
-                SetJump8(Jump, m_RecompPos);
+                SetJump8(Jump, *g_RecompPos);
             }
             else
             {
                 JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
                 JmpLabel32("BranchToJump", 0);
-                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
             }
         }
     }
@@ -1429,23 +1429,23 @@ void CRecompilerOps::BLEZ_Compare()
             if (m_Section->m_Jump.FallThrough)
             {
                 JgLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 JlLabel8("Continue", 0);
-                Jump = m_RecompPos - 1;
+                Jump = *g_RecompPos - 1;
             }
             else if (m_Section->m_Cont.FallThrough)
             {
                 JgLabel8("Continue", 0);
-                Jump = m_RecompPos - 1;
+                Jump = *g_RecompPos - 1;
                 JlLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else
             {
                 JgLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 JlLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             CompConstToVariable(0, &_GPR[m_Opcode.rs].W[0], CRegName::GPR_Lo[m_Opcode.rs]);
             if (m_Section->m_Jump.FallThrough)
@@ -1453,34 +1453,34 @@ void CRecompilerOps::BLEZ_Compare()
                 JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
                 if (g_System->b32BitCore())
                 {
-                    m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 }
                 else
                 {
-                    m_Section->m_Cont.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                    m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
                 }
                 if (Jump)
                 {
                     CPU_Message("      continue:");
-                    SetJump8(Jump, m_RecompPos);
+                    SetJump8(Jump, *g_RecompPos);
                 }
             }
             else if (m_Section->m_Cont.FallThrough)
             {
                 JeLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
                 if (Jump)
                 {
                     CPU_Message("      continue:");
-                    SetJump8(Jump, m_RecompPos);
+                    SetJump8(Jump, *g_RecompPos);
                 }
             }
             else
             {
                 JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
                 JmpLabel32("BranchToJump", 0);
-                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
             }
         }
         else
@@ -1489,19 +1489,19 @@ void CRecompilerOps::BLEZ_Compare()
             if (m_Section->m_Jump.FallThrough)
             {
                 JgLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else if (m_Section->m_Cont.FallThrough)
             {
                 JleLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else
             {
                 JgLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
         }
     }
@@ -1551,19 +1551,19 @@ void CRecompilerOps::BLTZ_Compare()
             if (m_Section->m_Jump.FallThrough)
             {
                 JgeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else if (m_Section->m_Cont.FallThrough)
             {
                 JlLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else
             {
                 JgeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
         }
         else if (IsSigned(m_Opcode.rs))
@@ -1572,19 +1572,19 @@ void CRecompilerOps::BLTZ_Compare()
             if (m_Section->m_Jump.FallThrough)
             {
                 JgeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else if (m_Section->m_Cont.FallThrough)
             {
                 JlLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else
             {
                 JgeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
         }
         else
@@ -1606,19 +1606,19 @@ void CRecompilerOps::BLTZ_Compare()
         if (m_Section->m_Jump.FallThrough)
         {
             JgeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-            m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
         else if (m_Section->m_Cont.FallThrough)
         {
             JlLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-            m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
         else
         {
             JlLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-            m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             JmpLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-            m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
     }
 }
@@ -1659,19 +1659,19 @@ void CRecompilerOps::BGEZ_Compare()
             if (m_Section->m_Cont.FallThrough)
             {
                 JgeLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else if (m_Section->m_Jump.FallThrough)
             {
                 JlLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else
             {
                 JlLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
         }
         else if (IsSigned(m_Opcode.rs))
@@ -1680,19 +1680,19 @@ void CRecompilerOps::BGEZ_Compare()
             if (m_Section->m_Cont.FallThrough)
             {
                 JgeLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else if (m_Section->m_Jump.FallThrough)
             {
                 JlLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             else
             {
                 JlLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-                m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
                 JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-                m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
         }
         else
@@ -1714,19 +1714,19 @@ void CRecompilerOps::BGEZ_Compare()
         if (m_Section->m_Cont.FallThrough)
         {
             JgeLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-            m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
         else if (m_Section->m_Jump.FallThrough)
         {
             JlLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-            m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
         else
         {
             JlLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-            m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-            m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
     }
 }
@@ -1737,19 +1737,19 @@ void CRecompilerOps::COP1_BCF_Compare()
     if (m_Section->m_Cont.FallThrough)
     {
         JeLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-        m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+        m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
     }
     else if (m_Section->m_Jump.FallThrough)
     {
         JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-        m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+        m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
     }
     else
     {
         JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-        m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+        m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-        m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+        m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
     }
 }
 
@@ -1759,19 +1759,19 @@ void CRecompilerOps::COP1_BCT_Compare()
     if (m_Section->m_Cont.FallThrough)
     {
         JneLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-        m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+        m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
     }
     else if (m_Section->m_Jump.FallThrough)
     {
         JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-        m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+        m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
     }
     else
     {
         JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
-        m_Section->m_Cont.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+        m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         JmpLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
-        m_Section->m_Jump.LinkLocation = (uint32_t *)(m_RecompPos - 4);
+        m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
     }
 }
 
@@ -1866,7 +1866,7 @@ void CRecompilerOps::JAL()
             bool bCheck = TargetPC <= m_CompilePC;
             UpdateCounters(m_RegWorkingSet, bCheck, true);
 
-            m_Section->CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, bCheck ? CExitInfo::Normal : CExitInfo::Normal_NoSysCheck, true, NULL);
+            CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, bCheck ? CExitInfo::Normal : CExitInfo::Normal_NoSysCheck, true, NULL);
         }
         m_NextInstruction = END_BLOCK;
     }
@@ -1973,18 +1973,18 @@ void CRecompilerOps::SLTIU()
 
             CompConstToX86reg(GetMipsRegMapHi(m_Opcode.rs), ((int16_t)m_Opcode.immediate >> 31));
             JeLabel8("Low Compare", 0);
-            Jump[0] = m_RecompPos - 1;
+            Jump[0] = *g_RecompPos - 1;
             SetbVariable(&m_BranchCompare, "m_BranchCompare");
             JmpLabel8("Continue", 0);
-            Jump[1] = m_RecompPos - 1;
+            Jump[1] = *g_RecompPos - 1;
             CPU_Message("");
             CPU_Message("      Low Compare:");
-            SetJump8(Jump[0], m_RecompPos);
+            SetJump8(Jump[0], *g_RecompPos);
             CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rs), (int16_t)m_Opcode.immediate);
             SetbVariable(&m_BranchCompare, "m_BranchCompare");
             CPU_Message("");
             CPU_Message("      Continue:");
-            SetJump8(Jump[1], m_RecompPos);
+            SetJump8(Jump[1], *g_RecompPos);
             Map_GPR_32bit(m_Opcode.rt, false, -1);
             MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rt));
         }
@@ -2009,11 +2009,11 @@ void CRecompilerOps::SLTIU()
 
         CompConstToVariable(((int16_t)m_Opcode.immediate >> 31), &_GPR[m_Opcode.rs].W[1], CRegName::GPR_Hi[m_Opcode.rs]);
         JneLabel8("CompareSet", 0);
-        Jump = m_RecompPos - 1;
+        Jump = *g_RecompPos - 1;
         CompConstToVariable((int16_t)m_Opcode.immediate, &_GPR[m_Opcode.rs].W[0], CRegName::GPR_Lo[m_Opcode.rs]);
         CPU_Message("");
         CPU_Message("      CompareSet:");
-        SetJump8(Jump, m_RecompPos);
+        SetJump8(Jump, *g_RecompPos);
         SetbVariable(&m_BranchCompare, "m_BranchCompare");
         Map_GPR_32bit(m_Opcode.rt, false, -1);
         MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rt));
@@ -2046,18 +2046,18 @@ void CRecompilerOps::SLTI()
 
             CompConstToX86reg(GetMipsRegMapHi(m_Opcode.rs), ((int16_t)m_Opcode.immediate >> 31));
             JeLabel8("Low Compare", 0);
-            Jump[0] = m_RecompPos - 1;
+            Jump[0] = *g_RecompPos - 1;
             SetlVariable(&m_BranchCompare, "m_BranchCompare");
             JmpLabel8("Continue", 0);
-            Jump[1] = m_RecompPos - 1;
+            Jump[1] = *g_RecompPos - 1;
             CPU_Message("");
             CPU_Message("      Low Compare:");
-            SetJump8(Jump[0], m_RecompPos);
+            SetJump8(Jump[0], *g_RecompPos);
             CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rs), (int16_t)m_Opcode.immediate);
             SetbVariable(&m_BranchCompare, "m_BranchCompare");
             CPU_Message("");
             CPU_Message("      Continue:");
-            SetJump8(Jump[1], m_RecompPos);
+            SetJump8(Jump[1], *g_RecompPos);
             Map_GPR_32bit(m_Opcode.rt, false, -1);
             MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rt));
         }
@@ -2105,20 +2105,20 @@ void CRecompilerOps::SLTI()
         uint8_t * Jump[2] = { NULL, NULL };
         CompConstToVariable(((int16_t)m_Opcode.immediate >> 31), &_GPR[m_Opcode.rs].W[1], CRegName::GPR_Hi[m_Opcode.rs]);
         JeLabel8("Low Compare", 0);
-        Jump[0] = m_RecompPos - 1;
+        Jump[0] = *g_RecompPos - 1;
         SetlVariable(&m_BranchCompare, "m_BranchCompare");
         JmpLabel8("Continue", 0);
-        Jump[1] = m_RecompPos - 1;
+        Jump[1] = *g_RecompPos - 1;
         CPU_Message("");
         CPU_Message("      Low Compare:");
-        SetJump8(Jump[0], m_RecompPos);
+        SetJump8(Jump[0], *g_RecompPos);
         CompConstToVariable((int16_t)m_Opcode.immediate, &_GPR[m_Opcode.rs].W[0], CRegName::GPR_Lo[m_Opcode.rs]);
         SetbVariable(&m_BranchCompare, "m_BranchCompare");
         if (Jump[1])
         {
             CPU_Message("");
             CPU_Message("      Continue:");
-            SetJump8(Jump[1], m_RecompPos);
+            SetJump8(Jump[1], *g_RecompPos);
         }
         Map_GPR_32bit(m_Opcode.rt, false, -1);
         MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rt));
@@ -2605,7 +2605,7 @@ void CRecompilerOps::SPECIAL_JR()
     {
         if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0))
         {
-            m_Section->CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
+            CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
         }
         else
         {
@@ -2622,7 +2622,7 @@ void CRecompilerOps::SPECIAL_JR()
             {
                 MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rs, false), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
             }
-            m_Section->CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
+            CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
             if (m_Section->m_JumpSection)
             {
                 m_Section->GenerateSectionLinkage();
@@ -2688,7 +2688,7 @@ void CRecompilerOps::SPECIAL_JALR()
     {
         if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0))
         {
-            m_Section->CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
+            CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
         }
         else
         {
@@ -2705,7 +2705,7 @@ void CRecompilerOps::SPECIAL_JALR()
             {
                 MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rs, false), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
             }
-            m_Section->CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
+            CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
             if (m_Section->m_JumpSection)
             {
                 m_Section->GenerateSectionLinkage();
@@ -2722,7 +2722,7 @@ void CRecompilerOps::SPECIAL_JALR()
 void CRecompilerOps::SPECIAL_SYSCALL()
 {
     CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-    m_Section->CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::DoSysCall, true, NULL);
+    CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::DoSysCall, true, NULL);
     m_NextInstruction = END_BLOCK;
 }
 
@@ -2855,16 +2855,16 @@ void CRecompilerOps::SPECIAL_DSLLV()
     Map_GPR_64bit(m_Opcode.rd, m_Opcode.rt);
     CompConstToX86reg(x86_ECX, 0x20);
     JaeLabel8("MORE32", 0);
-    Jump[0] = m_RecompPos - 1;
+    Jump[0] = *g_RecompPos - 1;
     ShiftLeftDouble(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegMapLo(m_Opcode.rd));
     ShiftLeftSign(GetMipsRegMapLo(m_Opcode.rd));
     JmpLabel8("continue", 0);
-    Jump[1] = m_RecompPos - 1;
+    Jump[1] = *g_RecompPos - 1;
 
     //MORE32:
     CPU_Message("");
     CPU_Message("      MORE32:");
-    SetJump8(Jump[0], m_RecompPos);
+    SetJump8(Jump[0], *g_RecompPos);
     MoveX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapHi(m_Opcode.rd));
     XorX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapLo(m_Opcode.rd));
     AndConstToX86Reg(x86_ECX, 0x1F);
@@ -2873,7 +2873,7 @@ void CRecompilerOps::SPECIAL_DSLLV()
     //continue:
     CPU_Message("");
     CPU_Message("      continue:");
-    SetJump8(Jump[1], m_RecompPos);
+    SetJump8(Jump[1], *g_RecompPos);
 }
 
 void CRecompilerOps::SPECIAL_DSRLV()
@@ -2941,16 +2941,16 @@ void CRecompilerOps::SPECIAL_DSRLV()
         Map_GPR_64bit(m_Opcode.rd, m_Opcode.rt);
         CompConstToX86reg(x86_ECX, 0x20);
         JaeLabel8("MORE32", 0);
-        Jump[0] = m_RecompPos - 1;
+        Jump[0] = *g_RecompPos - 1;
         ShiftRightDouble(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapHi(m_Opcode.rd));
         ShiftRightUnsign(GetMipsRegMapHi(m_Opcode.rd));
         JmpLabel8("continue", 0);
-        Jump[1] = m_RecompPos - 1;
+        Jump[1] = *g_RecompPos - 1;
 
         //MORE32:
         CPU_Message("");
         CPU_Message("      MORE32:");
-        SetJump8(Jump[0], m_RecompPos);
+        SetJump8(Jump[0], *g_RecompPos);
         MoveX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegMapLo(m_Opcode.rd));
         XorX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegMapHi(m_Opcode.rd));
         AndConstToX86Reg(x86_ECX, 0x1F);
@@ -2959,7 +2959,7 @@ void CRecompilerOps::SPECIAL_DSRLV()
         //continue:
         CPU_Message("");
         CPU_Message("      continue:");
-        SetJump8(Jump[1], m_RecompPos);
+        SetJump8(Jump[1], *g_RecompPos);
     }
 }
 
@@ -2984,16 +2984,16 @@ void CRecompilerOps::SPECIAL_DSRAV()
     Map_GPR_64bit(m_Opcode.rd, m_Opcode.rt);
     CompConstToX86reg(x86_ECX, 0x20);
     JaeLabel8("MORE32", 0);
-    Jump[0] = m_RecompPos - 1;
+    Jump[0] = *g_RecompPos - 1;
     ShiftRightDouble(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapHi(m_Opcode.rd));
     ShiftRightSign(GetMipsRegMapHi(m_Opcode.rd));
     JmpLabel8("continue", 0);
-    Jump[1] = m_RecompPos - 1;
+    Jump[1] = *g_RecompPos - 1;
 
     //MORE32:
     CPU_Message("");
     CPU_Message("      MORE32:");
-    SetJump8(Jump[0], m_RecompPos);
+    SetJump8(Jump[0], *g_RecompPos);
     MoveX86RegToX86Reg(GetMipsRegMapHi(m_Opcode.rd), GetMipsRegMapLo(m_Opcode.rd));
     ShiftRightSignImmed(GetMipsRegMapHi(m_Opcode.rd), 0x1F);
     AndConstToX86Reg(x86_ECX, 0x1F);
@@ -3002,7 +3002,7 @@ void CRecompilerOps::SPECIAL_DSRAV()
     //continue:
     CPU_Message("");
     CPU_Message("      continue:");
-    SetJump8(Jump[1], m_RecompPos);
+    SetJump8(Jump[1], *g_RecompPos);
 }
 
 void CRecompilerOps::SPECIAL_MULT()
@@ -3068,7 +3068,7 @@ void CRecompilerOps::SPECIAL_DIV()
         {
             CompConstToVariable(0, &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
         }
-        m_Section->CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::DivByZero, false, JeLabel32);
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::DivByZero, false, JeLabel32);
     }
     /*	lo = (SD)rs / (SD)rt;
     hi = (SD)rs % (SD)rt; */
@@ -3130,7 +3130,7 @@ void CRecompilerOps::SPECIAL_DIVU()
             CompConstToVariable(0, &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
         }
         JneLabel8("NoExcept", 0);
-        Jump[0] = m_RecompPos - 1;
+        Jump[0] = *g_RecompPos - 1;
 
         MoveConstToVariable(0, &_RegLO->UW[0], "_RegLO->UW[0]");
         MoveConstToVariable(0, &_RegLO->UW[1], "_RegLO->UW[1]");
@@ -3138,11 +3138,11 @@ void CRecompilerOps::SPECIAL_DIVU()
         MoveConstToVariable(0, &_RegHI->UW[1], "_RegHI->UW[1]");
 
         JmpLabel8("EndDivu", 0);
-        Jump[1] = m_RecompPos - 1;
+        Jump[1] = *g_RecompPos - 1;
 
         CPU_Message("");
         CPU_Message("      NoExcept:");
-        SetJump8(Jump[0], m_RecompPos);
+        SetJump8(Jump[0], *g_RecompPos);
     }
 
     /*	lo = (UD)rs / (UD)rt;
@@ -3171,7 +3171,7 @@ void CRecompilerOps::SPECIAL_DIVU()
     {
         CPU_Message("");
         CPU_Message("      EndDivu:");
-        SetJump8(Jump[1], m_RecompPos);
+        SetJump8(Jump[1], *g_RecompPos);
     }
 }
 
@@ -4233,19 +4233,19 @@ void CRecompilerOps::SPECIAL_SLT()
                     Is64Bit(m_Opcode.rt) ? GetMipsRegMapHi(m_Opcode.rt) : Map_TempReg(x86_Any, m_Opcode.rt, true)
                     );
                 JeLabel8("Low Compare", 0);
-                Jump[0] = m_RecompPos - 1;
+                Jump[0] = *g_RecompPos - 1;
                 SetlVariable(&m_BranchCompare, "m_BranchCompare");
                 JmpLabel8("Continue", 0);
-                Jump[1] = m_RecompPos - 1;
+                Jump[1] = *g_RecompPos - 1;
 
                 CPU_Message("");
                 CPU_Message("      Low Compare:");
-                SetJump8(Jump[0], m_RecompPos);
+                SetJump8(Jump[0], *g_RecompPos);
                 CompX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rs), GetMipsRegMapLo(m_Opcode.rt));
                 SetbVariable(&m_BranchCompare, "m_BranchCompare");
                 CPU_Message("");
                 CPU_Message("      Continue:");
-                SetJump8(Jump[1], m_RecompPos);
+                SetJump8(Jump[1], *g_RecompPos);
                 Map_GPR_32bit(m_Opcode.rd, true, -1);
                 MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rd));
             }
@@ -4281,7 +4281,7 @@ void CRecompilerOps::SPECIAL_SLT()
                     Is64Bit(ConstReg) ? GetMipsRegHi(ConstReg) : (GetMipsRegLo_S(ConstReg) >> 31)
                     );
                 JeLabel8("Low Compare", 0);
-                Jump[0] = m_RecompPos - 1;
+                Jump[0] = *g_RecompPos - 1;
                 if (MappedReg == m_Opcode.rs)
                 {
                     SetlVariable(&m_BranchCompare, "m_BranchCompare");
@@ -4291,11 +4291,11 @@ void CRecompilerOps::SPECIAL_SLT()
                     SetgVariable(&m_BranchCompare, "m_BranchCompare");
                 }
                 JmpLabel8("Continue", 0);
-                Jump[1] = m_RecompPos - 1;
+                Jump[1] = *g_RecompPos - 1;
 
                 CPU_Message("");
                 CPU_Message("      Low Compare:");
-                SetJump8(Jump[0], m_RecompPos);
+                SetJump8(Jump[0], *g_RecompPos);
                 CompConstToX86reg(GetMipsRegMapLo(MappedReg), GetMipsRegLo(ConstReg));
                 if (MappedReg == m_Opcode.rs)
                 {
@@ -4307,7 +4307,7 @@ void CRecompilerOps::SPECIAL_SLT()
                 }
                 CPU_Message("");
                 CPU_Message("      Continue:");
-                SetJump8(Jump[1], m_RecompPos);
+                SetJump8(Jump[1], *g_RecompPos);
                 Map_GPR_32bit(m_Opcode.rd, true, -1);
                 MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rd));
             }
@@ -4376,7 +4376,7 @@ void CRecompilerOps::SPECIAL_SLT()
                 }
             }
             JeLabel8("Low Compare", 0);
-            Jump[0] = m_RecompPos - 1;
+            Jump[0] = *g_RecompPos - 1;
             if (KnownReg == (IsConst(KnownReg) ? m_Opcode.rs : m_Opcode.rt))
             {
                 SetgVariable(&m_BranchCompare, "m_BranchCompare");
@@ -4386,11 +4386,11 @@ void CRecompilerOps::SPECIAL_SLT()
                 SetlVariable(&m_BranchCompare, "m_BranchCompare");
             }
             JmpLabel8("Continue", 0);
-            Jump[1] = m_RecompPos - 1;
+            Jump[1] = *g_RecompPos - 1;
 
             CPU_Message("");
             CPU_Message("      Low Compare:");
-            SetJump8(Jump[0], m_RecompPos);
+            SetJump8(Jump[0], *g_RecompPos);
             if (IsConst(KnownReg))
             {
                 CompConstToVariable(GetMipsRegLo(KnownReg), &_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg]);
@@ -4408,7 +4408,7 @@ void CRecompilerOps::SPECIAL_SLT()
             }
             CPU_Message("");
             CPU_Message("      Continue:");
-            SetJump8(Jump[1], m_RecompPos);
+            SetJump8(Jump[1], *g_RecompPos);
             Map_GPR_32bit(m_Opcode.rd, true, -1);
             MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rd));
         }
@@ -4479,21 +4479,21 @@ void CRecompilerOps::SPECIAL_SLT()
         x86Reg Reg = Map_TempReg(x86_Any, m_Opcode.rs, true);
         CompX86regToVariable(Reg, &_GPR[m_Opcode.rt].W[1], CRegName::GPR_Hi[m_Opcode.rt]);
         JeLabel8("Low Compare", 0);
-        Jump[0] = m_RecompPos - 1;
+        Jump[0] = *g_RecompPos - 1;
         SetlVariable(&m_BranchCompare, "m_BranchCompare");
         JmpLabel8("Continue", 0);
-        Jump[1] = m_RecompPos - 1;
+        Jump[1] = *g_RecompPos - 1;
 
         CPU_Message("");
         CPU_Message("      Low Compare:");
-        SetJump8(Jump[0], m_RecompPos);
+        SetJump8(Jump[0], *g_RecompPos);
         CompX86regToVariable(Map_TempReg(Reg, m_Opcode.rs, false), &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
         SetbVariable(&m_BranchCompare, "m_BranchCompare");
         if (Jump[1])
         {
             CPU_Message("");
             CPU_Message("      Continue:");
-            SetJump8(Jump[1], m_RecompPos);
+            SetJump8(Jump[1], *g_RecompPos);
         }
         Map_GPR_32bit(m_Opcode.rd, true, -1);
         MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rd));
@@ -4549,19 +4549,19 @@ void CRecompilerOps::SPECIAL_SLTU()
                     Is64Bit(m_Opcode.rt) ? GetMipsRegMapHi(m_Opcode.rt) : Map_TempReg(x86_Any, m_Opcode.rt, true)
                     );
                 JeLabel8("Low Compare", 0);
-                Jump[0] = m_RecompPos - 1;
+                Jump[0] = *g_RecompPos - 1;
                 SetbVariable(&m_BranchCompare, "m_BranchCompare");
                 JmpLabel8("Continue", 0);
-                Jump[1] = m_RecompPos - 1;
+                Jump[1] = *g_RecompPos - 1;
 
                 CPU_Message("");
                 CPU_Message("      Low Compare:");
-                SetJump8(Jump[0], m_RecompPos);
+                SetJump8(Jump[0], *g_RecompPos);
                 CompX86RegToX86Reg(GetMipsRegMapLo(m_Opcode.rs), GetMipsRegMapLo(m_Opcode.rt));
                 SetbVariable(&m_BranchCompare, "m_BranchCompare");
                 CPU_Message("");
                 CPU_Message("      Continue:");
-                SetJump8(Jump[1], m_RecompPos);
+                SetJump8(Jump[1], *g_RecompPos);
                 Map_GPR_32bit(m_Opcode.rd, true, -1);
                 MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rd));
             }
@@ -4599,7 +4599,7 @@ void CRecompilerOps::SPECIAL_SLTU()
                 Map_GPR_32bit(m_Opcode.rd, true, -1);
                 CompConstToX86reg(MappedRegHi, ConstHi);
                 JeLabel8("Low Compare", 0);
-                Jump[0] = m_RecompPos - 1;
+                Jump[0] = *g_RecompPos - 1;
                 if (MappedReg == m_Opcode.rs)
                 {
                     SetbVariable(&m_BranchCompare, "m_BranchCompare");
@@ -4609,11 +4609,11 @@ void CRecompilerOps::SPECIAL_SLTU()
                     SetaVariable(&m_BranchCompare, "m_BranchCompare");
                 }
                 JmpLabel8("Continue", 0);
-                Jump[1] = m_RecompPos - 1;
+                Jump[1] = *g_RecompPos - 1;
 
                 CPU_Message("");
                 CPU_Message("      Low Compare:");
-                SetJump8(Jump[0], m_RecompPos);
+                SetJump8(Jump[0], *g_RecompPos);
                 CompConstToX86reg(MappedRegLo, ConstLo);
                 if (MappedReg == m_Opcode.rs)
                 {
@@ -4625,7 +4625,7 @@ void CRecompilerOps::SPECIAL_SLTU()
                 }
                 CPU_Message("");
                 CPU_Message("      Continue:");
-                SetJump8(Jump[1], m_RecompPos);
+                SetJump8(Jump[1], *g_RecompPos);
                 Map_GPR_32bit(m_Opcode.rd, true, -1);
                 MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rd));
             }
@@ -4703,7 +4703,7 @@ void CRecompilerOps::SPECIAL_SLTU()
                 }
             }
             JeLabel8("Low Compare", 0);
-            Jump[0] = m_RecompPos - 1;
+            Jump[0] = *g_RecompPos - 1;
 
             if (KnownReg == (IsConst(KnownReg) ? m_Opcode.rs : m_Opcode.rt))
             {
@@ -4714,11 +4714,11 @@ void CRecompilerOps::SPECIAL_SLTU()
                 SetbVariable(&m_BranchCompare, "m_BranchCompare");
             }
             JmpLabel8("Continue", 0);
-            Jump[1] = m_RecompPos - 1;
+            Jump[1] = *g_RecompPos - 1;
 
             CPU_Message("");
             CPU_Message("      Low Compare:");
-            SetJump8(Jump[0], m_RecompPos);
+            SetJump8(Jump[0], *g_RecompPos);
             if (IsConst(KnownReg))
             {
                 CompConstToVariable(GetMipsRegLo(KnownReg), &_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg]);
@@ -4739,7 +4739,7 @@ void CRecompilerOps::SPECIAL_SLTU()
             {
                 CPU_Message("");
                 CPU_Message("      Continue:");
-                SetJump8(Jump[1], m_RecompPos);
+                SetJump8(Jump[1], *g_RecompPos);
             }
         }
         Map_GPR_32bit(m_Opcode.rd, true, -1);
@@ -4760,21 +4760,21 @@ void CRecompilerOps::SPECIAL_SLTU()
         x86Reg Reg = Map_TempReg(x86_Any, m_Opcode.rs, true);
         CompX86regToVariable(Reg, &_GPR[m_Opcode.rt].W[1], CRegName::GPR_Hi[m_Opcode.rt]);
         JeLabel8("Low Compare", 0);
-        Jump[0] = m_RecompPos - 1;
+        Jump[0] = *g_RecompPos - 1;
         SetbVariable(&m_BranchCompare, "m_BranchCompare");
         JmpLabel8("Continue", 0);
-        Jump[1] = m_RecompPos - 1;
+        Jump[1] = *g_RecompPos - 1;
 
         CPU_Message("");
         CPU_Message("      Low Compare:");
-        SetJump8(Jump[0], m_RecompPos);
+        SetJump8(Jump[0], *g_RecompPos);
         CompX86regToVariable(Map_TempReg(Reg, m_Opcode.rs, false), &_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
         SetbVariable(&m_BranchCompare, "m_BranchCompare");
         if (Jump[1])
         {
             CPU_Message("");
             CPU_Message("      Continue:");
-            SetJump8(Jump[1], m_RecompPos);
+            SetJump8(Jump[1], *g_RecompPos);
         }
         Map_GPR_32bit(m_Opcode.rd, true, -1);
         MoveVariableToX86reg(&m_BranchCompare, "m_BranchCompare", GetMipsRegMapLo(m_Opcode.rd));
@@ -5435,16 +5435,16 @@ void CRecompilerOps::COP0_MT()
         XorVariableToX86reg(&_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd], OldStatusReg);
         TestConstToX86Reg(STATUS_FR, OldStatusReg);
         JeLabel8("FpuFlagFine", 0);
-        Jump = m_RecompPos - 1;
+        Jump = *g_RecompPos - 1;
         BeforeCallDirect(m_RegWorkingSet);
         MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
         Call_Direct(AddressOf(&CRegisters::FixFpuLocations), "CRegisters::FixFpuLocations");
 
         AfterCallDirect(m_RegWorkingSet);
-        SetJump8(Jump, m_RecompPos);
+        SetJump8(Jump, *g_RecompPos);
 
         //TestConstToX86Reg(STATUS_FR,OldStatusReg);
-        //BreakPoint(__FILEW__,__LINE__); //m_Section->CompileExit(m_CompilePC+4,m_RegWorkingSet,ExitResetRecompCode,false,JneLabel32);
+        //BreakPoint(__FILEW__,__LINE__); //CompileExit(m_CompilePC+4,m_RegWorkingSet,ExitResetRecompCode,false,JneLabel32);
         BeforeCallDirect(m_RegWorkingSet);
         MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
         Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
@@ -5574,7 +5574,7 @@ void CRecompilerOps::COP0_CO_ERET(void)
     Call_Direct((void *)compiler_COP0_CO_ERET, "compiler_COP0_CO_ERET");
 
     UpdateCounters(m_RegWorkingSet, true, true);
-    m_Section->CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
+    CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
     m_NextInstruction = END_BLOCK;
 }
 
@@ -6655,6 +6655,17 @@ void CRecompilerOps::ExitCodeBlock()
     Ret();
 }
 
+void CRecompilerOps::CompileExitCode()
+{
+    for (EXIT_LIST::iterator ExitIter = m_ExitInfo.begin(); ExitIter != m_ExitInfo.end(); ExitIter++)
+    {
+        CPU_Message("");
+        CPU_Message("      $Exit_%d",ExitIter->ID);
+        SetJump32(ExitIter->JumpLoc,(uint32_t *)*g_RecompPos);
+        m_NextInstruction = ExitIter->NextInstruction;
+        CompileExit((uint32_t)-1, ExitIter->TargetPC,ExitIter->ExitRegSet,ExitIter->reason,true,NULL);
+    }
+}
 void CRecompilerOps::UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles)
 {
     if (!g_SyncSystem)
@@ -6691,7 +6702,7 @@ void CRecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool Cle
     if (CheckTimer)
     {
         JnsLabel8("Continue_From_Timer_Test", 0);
-        uint8_t * Jump = m_RecompPos - 1;
+        uint8_t * Jump = *g_RecompPos - 1;
         Pushad();
         MoveConstToX86reg((uint32_t)g_SystemTimer, x86_ECX);
         Call_Direct(AddressOf(&CSystemTimer::TimerDone), "CSystemTimer::TimerDone");
@@ -6699,7 +6710,7 @@ void CRecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool Cle
 
         CPU_Message("");
         CPU_Message("      $Continue_From_Timer_Test:");
-        SetJump8(Jump, m_RecompPos);
+        SetJump8(Jump, *g_RecompPos);
     }
 }
 
@@ -6707,7 +6718,7 @@ void CRecompilerOps::CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegS
 {
     CompConstToVariable(0, (void *)&g_SystemEvents->DoSomething(), "g_SystemEvents->DoSomething()");
     JeLabel32("Continue_From_Interrupt_Test", 0);
-    uint32_t * Jump = (uint32_t *)(m_RecompPos - 4);
+    uint32_t * Jump = (uint32_t *)(*g_RecompPos - 4);
     if (TargetPC != (uint32_t)-1)
     {
         MoveConstToVariable(TargetPC, &g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
@@ -6726,7 +6737,7 @@ void CRecompilerOps::CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegS
     ExitCodeBlock();
     CPU_Message("");
     CPU_Message("      $Continue_From_Interrupt_Test:");
-    SetJump32(Jump, (uint32_t *)m_RecompPos);
+    SetJump32(Jump, (uint32_t *)*g_RecompPos);
 }
 
 void CRecompilerOps::OverflowDelaySlot(bool TestTimer)
@@ -6767,4 +6778,257 @@ void CRecompilerOps::OverflowDelaySlot(bool TestTimer)
 
     ExitCodeBlock();
     m_NextInstruction = END_BLOCK;
+}
+
+void CRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void(*x86Jmp)(const char * Label, uint32_t Value))
+{
+    if (!CompileNow)
+    {
+        char String[100];
+        sprintf(String, "Exit_%d", m_ExitInfo.size());
+        if (x86Jmp == NULL)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+        x86Jmp(String, 0);
+
+        CExitInfo ExitInfo;
+        ExitInfo.ID = m_ExitInfo.size();
+        ExitInfo.TargetPC = TargetPC;
+        ExitInfo.ExitRegSet = ExitRegSet;
+        ExitInfo.reason = reason;
+        ExitInfo.NextInstruction = m_NextInstruction;
+        ExitInfo.JumpLoc = (uint32_t *)(*g_RecompPos - 4);
+        m_ExitInfo.push_back(ExitInfo);
+        return;
+    }
+
+    //CPU_Message("CompileExit: %d",reason);
+    ExitRegSet.WriteBackRegisters();
+
+    if (TargetPC != (uint32_t)-1)
+    {
+        MoveConstToVariable(TargetPC, &g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+        UpdateCounters(ExitRegSet, TargetPC <= JumpPC && JumpPC != -1, reason == CExitInfo::Normal);
+    }
+    else
+    {
+        UpdateCounters(ExitRegSet, false, reason == CExitInfo::Normal);
+    }
+
+    switch (reason)
+    {
+    case CExitInfo::Normal: case CExitInfo::Normal_NoSysCheck:
+        ExitRegSet.SetBlockCycleCount(0);
+        if (TargetPC != (uint32_t)-1)
+        {
+            if (TargetPC <= JumpPC && reason == CExitInfo::Normal)
+            {
+                CPU_Message("CompileSystemCheck 1");
+                CompileSystemCheck((uint32_t)-1, ExitRegSet);
+            }
+        }
+        else
+        {
+            if (reason == CExitInfo::Normal)
+            {
+                CPU_Message("CompileSystemCheck 2");
+                CompileSystemCheck((uint32_t)-1, ExitRegSet);
+            }
+        }
+        if (g_SyncSystem)
+        {
+            MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
+            Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+        }
+#ifdef LinkBlocks
+        if (bSMM_ValidFunc == false)
+        {
+            if (LookUpMode() == FuncFind_ChangeMemory)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+                //			uint8_t * Jump, * Jump2;
+                //			if (TargetPC >= 0x80000000 && TargetPC < 0xC0000000) {
+                //				uint32_t pAddr = TargetPC & 0x1FFFFFFF;
+                //
+                //				MoveVariableToX86reg((uint8_t *)RDRAM + pAddr,"RDRAM + pAddr",x86_EAX);
+                //				Jump2 = NULL;
+                //			} else {
+                //				MoveConstToX86reg((TargetPC >> 12),x86_ECX);
+                //				MoveConstToX86reg(TargetPC,x86_EBX);
+                //				MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",x86_ECX,x86_ECX,4);
+                //				TestX86RegToX86Reg(x86_ECX,x86_ECX);
+                //				JeLabel8("NoTlbEntry",0);
+                //				Jump2 = *g_RecompPos - 1;
+                //				MoveX86regPointerToX86reg(x86_ECX, x86_EBX,x86_EAX);
+                //			}
+                //			MoveX86RegToX86Reg(x86_EAX,x86_ECX);
+                //			AndConstToX86Reg(x86_ECX,0xFFFF0000);
+                //			CompConstToX86reg(x86_ECX,0x7C7C0000);
+                //			JneLabel8("NoCode",0);
+                //			Jump = *g_RecompPos - 1;
+                //			AndConstToX86Reg(x86_EAX,0xFFFF);
+                //			ShiftLeftSignImmed(x86_EAX,4);
+                //			AddConstToX86Reg(x86_EAX,0xC);
+                //			MoveVariableDispToX86Reg(OrigMem,"OrigMem",x86_ECX,x86_EAX,1);
+                //			JmpDirectReg(x86_ECX);
+                //			CPU_Message("      NoCode:");
+                //			*((uint8_t *)(Jump))=(uint8_t)(*g_RecompPos - Jump - 1);
+                //			if (Jump2 != NULL) {
+                //				CPU_Message("      NoTlbEntry:");
+                //				*((uint8_t *)(Jump2))=(uint8_t)(*g_RecompPos - Jump2 - 1);
+                //			}
+            }
+            else if (LookUpMode() == FuncFind_VirtualLookup)
+            {
+                MoveConstToX86reg(TargetPC, x86_EDX);
+                MoveConstToX86reg((uint32_t)&m_Functions, x86_ECX);
+                Call_Direct(AddressOf(&CFunctionMap::CompilerFindFunction), "CFunctionMap::CompilerFindFunction");
+                MoveX86RegToX86Reg(x86_EAX, x86_ECX);
+                JecxzLabel8("NullPointer", 0);
+                uint8_t * Jump = *g_RecompPos - 1;
+                MoveX86PointerToX86regDisp(x86_EBX, x86_ECX, 0xC);
+                JmpDirectReg(x86_EBX);
+                CPU_Message("      NullPointer:");
+                *((uint8_t *)(Jump)) = (uint8_t)(*g_RecompPos - Jump - 1);
+            }
+            else if (LookUpMode() == FuncFind_PhysicalLookup)
+            {
+                uint8_t * Jump2 = NULL;
+                if (TargetPC >= 0x80000000 && TargetPC < 0x90000000)
+                {
+                    uint32_t pAddr = TargetPC & 0x1FFFFFFF;
+                    MoveVariableToX86reg((uint8_t *)JumpTable + pAddr, "JumpTable + pAddr", x86_ECX);
+                }
+                else if (TargetPC >= 0x90000000 && TargetPC < 0xC0000000)
+                {
+                }
+                else
+                {
+                    MoveConstToX86reg((TargetPC >> 12), x86_ECX);
+                    MoveConstToX86reg(TargetPC, x86_EBX);
+                    MoveVariableDispToX86Reg(TLB_ReadMap, "TLB_ReadMap", x86_ECX, x86_ECX, 4);
+                    TestX86RegToX86Reg(x86_ECX, x86_ECX);
+                    JeLabel8("NoTlbEntry", 0);
+                    Jump2 = *g_RecompPos - 1;
+                    AddConstToX86Reg(x86_ECX, (uint32_t)JumpTable - (uint32_t)RDRAM);
+                    MoveX86regPointerToX86reg(x86_ECX, x86_EBX, x86_ECX);
+                }
+                if (TargetPC < 0x90000000 || TargetPC >= 0xC0000000)
+                {
+                    JecxzLabel8("NullPointer", 0);
+                    uint8_t * Jump = *g_RecompPos - 1;
+                    MoveX86PointerToX86regDisp(x86_EAX, x86_ECX, 0xC);
+                    JmpDirectReg(x86_EAX);
+                    CPU_Message("      NullPointer:");
+                    *((uint8_t *)(Jump)) = (uint8_t)(*g_RecompPos - Jump - 1);
+                    if (Jump2 != NULL)
+                    {
+                        CPU_Message("      NoTlbEntry:");
+                        *((uint8_t *)(Jump2)) = (uint8_t)(*g_RecompPos - Jump2 - 1);
+                    }
+                }
+            }
+        }
+        ExitCodeBlock();
+#else
+        ExitCodeBlock();
+#endif
+        break;
+    case CExitInfo::DoCPU_Action:
+        MoveConstToX86reg((uint32_t)g_SystemEvents, x86_ECX);
+        Call_Direct(AddressOf(&CSystemEvents::ExecuteEvents), "CSystemEvents::ExecuteEvents");
+        if (g_SyncSystem)
+        {
+            MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
+            Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+        }
+        //g_System->SyncCPU(g_SyncSystem);
+        ExitCodeBlock();
+        break;
+    case CExitInfo::DoSysCall:
+    {
+                                 bool bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
+                                 PushImm32(bDelay ? "true" : "false", bDelay);
+                                 MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
+                                 Call_Direct(AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
+                                 if (g_SyncSystem)
+                                 {
+                                     MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
+                                     Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+                                 }
+                                 ExitCodeBlock();
+    }
+        break;
+    case CExitInfo::COP1_Unuseable:
+    {
+                                      bool bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
+                                      PushImm32("1", 1);
+                                      PushImm32(bDelay ? "true" : "false", bDelay);
+                                      MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
+                                      Call_Direct(AddressOf(&CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
+                                      if (g_SyncSystem)
+                                      {
+                                          MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
+                                          Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+                                      }
+                                      ExitCodeBlock();
+    }
+        break;
+    case CExitInfo::ExitResetRecompCode:
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+#ifdef legacycode
+        if (m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT)
+        {
+            X86BreakPoint(__FILEW__, __LINE__);
+        }
+        if (g_SyncSystem)
+        {
+            MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
+            Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+        }
+        X86BreakPoint(__FILEW__, __LINE__);
+        MoveVariableToX86reg(this, "this", x86_ECX);
+        Call_Direct(AddressOf(ResetRecompCode), "ResetRecompCode");
+#endif
+        ExitCodeBlock();
+        break;
+    case CExitInfo::TLBReadMiss:
+        MoveVariableToX86reg(g_TLBLoadAddress, "g_TLBLoadAddress", x86_EDX);
+        Push(x86_EDX);
+        PushImm32(m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT);
+        MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
+        Call_Direct(AddressOf(&CRegisters::DoTLBReadMiss), "CRegisters::DoTLBReadMiss");
+        if (g_SyncSystem)
+        {
+            MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
+            Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+        }
+        ExitCodeBlock();
+        break;
+    case CExitInfo::TLBWriteMiss:
+        X86BreakPoint(__FILE__, __LINE__);
+        ExitCodeBlock();
+        break;
+    case CExitInfo::DivByZero:
+        AddConstToVariable(4, _PROGRAM_COUNTER, "PROGRAM_COUNTER");
+        if (!g_System->b32BitCore())
+        {
+            MoveConstToVariable(0, &_RegHI->UW[1], "_RegHI->UW[1]");
+            MoveConstToVariable(0, &_RegLO->UW[1], "_RegLO->UW[1]");
+        }
+        MoveConstToVariable(0, &_RegHI->UW[0], "_RegHI->UW[0]");
+        MoveConstToVariable(0, &_RegLO->UW[0], "_RegLO->UW[0]");
+        if (g_SyncSystem)
+        {
+            MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
+            Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+        }
+        ExitCodeBlock();
+        break;
+    default:
+        WriteTrace(TraceRecompiler, TraceError, "how did you want to exit on reason (%d) ???", reason);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
