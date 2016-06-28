@@ -216,7 +216,7 @@ void CX86Ops::Call_Direct(void * FunctAddress, const char * FunctName)
 {
     CPU_Message("      call offset %s", FunctName);
     AddCode8(0xE8);
-    AddCode32((uint32_t)FunctAddress - (uint32_t)*g_RecompPos - 4);
+    AddCode32((uint32_t)FunctAddress - (uint32_t)*m_RecompPos - 4);
 }
 
 void CX86Ops::Call_Indirect(void * FunctAddress, const char * FunctName)
