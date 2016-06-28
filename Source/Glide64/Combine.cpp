@@ -15799,6 +15799,8 @@ void CombineBlender()
             A_BLEND(GR_BLEND_ONE, GR_BLEND_ONE);
             break;
 
+            //Pokemon Stadium
+        case 0xc712:
             // LOT in Zelda: MM
         case 0xaf50:
         case 0x0f5a: //clr_in * 0 + clr_mem * 1
@@ -15868,9 +15870,17 @@ void CombineBlender()
             A_BLEND(GR_BLEND_ONE_MINUS_SRC_ALPHA, GR_BLEND_SRC_ALPHA);
             break;
             
-            case 0xFA00: // Bomberman second attack
-				A_BLEND(GR_BLEND_ONE, GR_BLEND_ZERO);
-				break;
+        case 0xFA00: // Bomberman second attack
+            A_BLEND(GR_BLEND_ONE, GR_BLEND_ZERO);
+            break;
+
+            //Pokemon Stadium
+        case 0x0F1A:
+            if (rdp.cycle_mode == 0)
+                A_BLEND(GR_BLEND_ONE, GR_BLEND_ZERO);
+            else
+                A_BLEND(GR_BLEND_ZERO, GR_BLEND_ONE);
+			break;
 
         default:
             A_BLEND(GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA);
