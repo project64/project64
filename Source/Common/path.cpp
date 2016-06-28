@@ -12,6 +12,17 @@
 #endif
 #include "Platform.h"
 
+/*
+ * g_ModuleLogLevel may be NULL while AppInit() is still in session in path.cpp.
+ * The added check to compare to NULL here is at least a temporary workaround.
+ */
+#undef WriteTrace
+#ifdef _WIN32
+#define WriteTrace(m, s, format, ...) if (g_ModuleLogLevel != NULL && g_ModuleLogLevel[(m)] >= (s)) { WriteTraceFull((m), (s), __FILE__, __LINE__, __FUNCTION__, (format), ## __VA_ARGS__); }
+#else
+#define WriteTrace(m, s, format, ...) if (g_ModuleLogLevel != NULL && g_ModuleLogLevel[(m)] >= (s)) { WriteTraceFull((m), (s), __FILE__, __LINE__, __PRETTY_FUNCTION__, (format), ## __VA_ARGS__); }
+#endif
+
 //////////////////////////////////////////////////////////////////////
 // Constants
 //////////////////////////////////////////////////////////////////////
