@@ -13,8 +13,8 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <unistd.h>
-#include <libgen.h> /* pathname() */
-#include <limits.h> /* PATHMAX, realpath() */
+#include <libgen.h> /* dirname() */
+#include <limits.h> /* PATH_MAX, realpath() */
 #include <stdlib.h> /* calloc(), realpath() */
 
 #endif
