@@ -162,11 +162,11 @@ public:
     static void  COP1_S_NEG();
     static void  COP1_S_ROUND_L();
     static void  COP1_S_TRUNC_L();
-    static void  COP1_S_CEIL_L();  //added by Witten
-    static void  COP1_S_FLOOR_L(); //added by Witten
+    static void  COP1_S_CEIL_L();  
+    static void  COP1_S_FLOOR_L(); 
     static void  COP1_S_ROUND_W();
     static void  COP1_S_TRUNC_W();
-    static void  COP1_S_CEIL_W();  //added by Witten
+    static void  COP1_S_CEIL_W();  
     static void  COP1_S_FLOOR_W();
     static void  COP1_S_CVT_D();
     static void  COP1_S_CVT_W();
@@ -183,13 +183,13 @@ public:
     static void  COP1_D_MOV();
     static void  COP1_D_NEG();
     static void  COP1_D_ROUND_L();
-    static void  COP1_D_TRUNC_L(); //added by Witten
-    static void  COP1_D_CEIL_L();  //added by Witten
-    static void  COP1_D_FLOOR_L(); //added by Witten
+    static void  COP1_D_TRUNC_L(); 
+    static void  COP1_D_CEIL_L();  
+    static void  COP1_D_FLOOR_L(); 
     static void  COP1_D_ROUND_W();
     static void  COP1_D_TRUNC_W();
-    static void  COP1_D_CEIL_W();  //added by Witten
-    static void  COP1_D_FLOOR_W(); //added by Witten
+    static void  COP1_D_CEIL_W();  
+    static void  COP1_D_FLOOR_W(); 
     static void  COP1_D_CVT_S();
     static void  COP1_D_CVT_W();
     static void  COP1_D_CVT_L();

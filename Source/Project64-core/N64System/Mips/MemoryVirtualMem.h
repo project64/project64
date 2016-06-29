@@ -116,44 +116,7 @@ public:
 
     //Compilation Functions
     void ResetMemoryStack();
-
-    void Compile_LB();
-    void Compile_LBU();
-    void Compile_LH();
-    void Compile_LHU();
-    void Compile_LW();
-    void Compile_LL();
-    void Compile_LWC1();
-    void Compile_LWU();
-    void Compile_LWL();
-    void Compile_LWR();
-    void Compile_LD();
-    void Compile_LDC1();
-    void Compile_LDL();
-    void Compile_LDR();
-    void Compile_SB();
-    void Compile_SH();
-    void Compile_SW();
-    void Compile_SWL();
-    void Compile_SWR();
-    void Compile_SD();
-    void Compile_SDL();
-    void Compile_SDR();
-    void Compile_SC();
-    void Compile_SWC1();
-    void Compile_SDC1();
-
     void ResetMemoryStack(CRegInfo& RegInfo);
-    void Compile_LB(CX86Ops::x86Reg Reg, uint32_t Addr, bool SignExtend);
-    void Compile_LH(CX86Ops::x86Reg Reg, uint32_t Addr, bool SignExtend);
-    void Compile_LW(CX86Ops::x86Reg Reg, uint32_t Addr);
-    void Compile_SB_Const(uint8_t Value, uint32_t Addr);
-    void Compile_SB_Register(CX86Ops::x86Reg Reg, uint32_t Addr);
-    void Compile_SH_Const(uint16_t Value, uint32_t Addr);
-    void Compile_SH_Register(CX86Ops::x86Reg Reg, uint32_t Addr);
-    void Compile_SW_Const(uint32_t Value, uint32_t Addr);
-
-    void Compile_SW_Register(CX86Ops::x86Reg Reg, uint32_t Addr);
 
     //Functions for TLB notification
     void TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly);
@@ -172,6 +135,7 @@ private:
     CMipsMemoryVM(const CMipsMemoryVM&);            // Disable copy constructor
     CMipsMemoryVM& operator=(const CMipsMemoryVM&); // Disable assignment
 
+    friend CRecompilerOps;
     void Compile_LW(bool ResultSigned, bool bRecordLLbit);
     void Compile_SW(bool bCheckLLbit);
 
@@ -186,8 +150,6 @@ private:
     bool SB_NonMemory(uint32_t PAddr, uint8_t Value);
     bool SH_NonMemory(uint32_t PAddr, uint16_t Value);
     bool SW_NonMemory(uint32_t PAddr, uint32_t Value);
-
-    void Compile_StoreInstructClean(x86Reg AddressReg, int32_t Length);
 
     static void Load32RDRAMRegisters(void);
     static void Load32SPRegisters(void);
@@ -261,7 +223,6 @@ private:
     uint32_t         m_HalfLine;
     uint32_t         m_HalfLineCheck;
     uint32_t         m_FieldSerration;
-    uint32_t         m_TempValue;
 
     //Initializing and resetting information about the memory system
     void FreeMemory();
@@ -275,4 +236,5 @@ private:
     static uint32_t m_MemLookupAddress;
     static MIPS_DWORD m_MemLookupValue;
     static bool m_MemLookupValid;
+    static uint32_t RegModValue;
 };

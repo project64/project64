@@ -1125,32 +1125,32 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
         case R4300i_BGTZL:Compile_BranchLikely(BGTZ_Compare, false); break;
         case R4300i_BLEZL:Compile_BranchLikely(BLEZ_Compare, false); break;
         case R4300i_DADDIU: DADDIU(); break;
-        case R4300i_LDL: g_MMU->Compile_LDL(); break;
-        case R4300i_LDR: g_MMU->Compile_LDR(); break;
-        case R4300i_LB: g_MMU->Compile_LB(); break;
-        case R4300i_LH: g_MMU->Compile_LH(); break;
-        case R4300i_LWL: g_MMU->Compile_LWL(); break;
-        case R4300i_LW: g_MMU->Compile_LW(); break;
-        case R4300i_LBU: g_MMU->Compile_LBU(); break;
-        case R4300i_LHU: g_MMU->Compile_LHU(); break;
-        case R4300i_LWR: g_MMU->Compile_LWR(); break;
-        case R4300i_LWU: g_MMU->Compile_LWU(); break;	//added by Witten
-        case R4300i_SB: g_MMU->Compile_SB(); break;
-        case R4300i_SH: g_MMU->Compile_SH(); break;
-        case R4300i_SWL: g_MMU->Compile_SWL(); break;
-        case R4300i_SW: g_MMU->Compile_SW(); break;
-        case R4300i_SWR: g_MMU->Compile_SWR(); break;
-        case R4300i_SDL: g_MMU->Compile_SDL(); break;
-        case R4300i_SDR: g_MMU->Compile_SDR(); break;
+        case R4300i_LDL: LDL(); break;
+        case R4300i_LDR: LDR(); break;
+        case R4300i_LB: LB(); break;
+        case R4300i_LH: LH(); break;
+        case R4300i_LWL: LWL(); break;
+        case R4300i_LW: LW(); break;
+        case R4300i_LBU: LBU(); break;
+        case R4300i_LHU: LHU(); break;
+        case R4300i_LWR: LWR(); break;
+        case R4300i_LWU: LWU(); break;	//added by Witten
+        case R4300i_SB: SB(); break;
+        case R4300i_SH: SH(); break;
+        case R4300i_SWL: SWL(); break;
+        case R4300i_SW: SW(); break;
+        case R4300i_SWR: SWR(); break;
+        case R4300i_SDL: SDL(); break;
+        case R4300i_SDR: SDR(); break;
         case R4300i_CACHE: CACHE(); break;
-        case R4300i_LL: g_MMU->Compile_LL(); break;
-        case R4300i_LWC1: g_MMU->Compile_LWC1(); break;
-        case R4300i_LDC1: g_MMU->Compile_LDC1(); break;
-        case R4300i_SC: g_MMU->Compile_SC(); break;
-        case R4300i_LD: g_MMU->Compile_LD(); break;
-        case R4300i_SWC1: g_MMU->Compile_SWC1(); break;
-        case R4300i_SDC1: g_MMU->Compile_SDC1(); break;
-        case R4300i_SD: g_MMU->Compile_SD(); break;
+        case R4300i_LL: LL(); break;
+        case R4300i_LWC1: LWC1(); break;
+        case R4300i_LDC1: LDC1(); break;
+        case R4300i_SC: SC(); break;
+        case R4300i_LD: LD(); break;
+        case R4300i_SWC1: SWC1(); break;
+        case R4300i_SDC1: SDC1(); break;
+        case R4300i_SD: SD(); break;
         default:
             UnknownOpcode(); break;
         }

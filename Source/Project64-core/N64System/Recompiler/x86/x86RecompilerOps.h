@@ -60,32 +60,32 @@ public:
     static void XORI           ();
     static void LUI            ();
     static void DADDIU         ();
-    //	static void LDL            ();
-    //	static void LDR            ();
-    //	static void LB             ();
-    //	static void LH             ();
-    //	static void LWL            ();
-    //	static void LW             ();
-    //	static void LBU            ();
-    //	static void LHU            ();
-    //	static void LWR            ();
-    //	static void LWU            (); //added by Witten
-    //	static void SB             ();
-    //	static void SH             ();
-    //	static void SWL            ();
-    //	static void SW             ();
-    //	static void SWR            ();
-    //	static void SDL            ();
-    //	static void SDR            ();
+    static void LDL            ();
+    static void LDR            ();
+    void LB             ();
+    void LH             ();
+    void LWL            ();
+    void LW             ();
+    void LBU            ();
+    void LHU            ();
+    void LWR            ();
+    void LWU            ();
+    void SB             ();
+    void SH             ();
+    void SWL            ();
+    void SW             ();
+    void SWR            ();
+    static void SDL            ();
+    static void SDR            ();
     static void CACHE          ();
-    //	static void LL             ();
-    //	static void LWC1           ();
-    //	static void LDC1           ();
-    //	static void LD             ();
-    //	static void SC             ();
-    //	static void SWC1           ();
-    //	static void SDC1           ();
-    //	static void SD             ();
+    void LL             ();
+    void LWC1           ();
+    void LDC1           ();
+    void LD             ();
+    void SC             ();
+    void SWC1           ();
+    void SDC1           ();
+    void SD             ();
 
     /********************** R4300i OpCodes: Special **********************/
     static void SPECIAL_SLL    ();
@@ -163,11 +163,11 @@ public:
     static void COP1_S_MOV     ();
     static void COP1_S_ROUND_L ();
     static void COP1_S_TRUNC_L ();
-    static void COP1_S_CEIL_L  (); //added by Witten
-    static void COP1_S_FLOOR_L (); //added by Witten
+    static void COP1_S_CEIL_L  ();
+    static void COP1_S_FLOOR_L ();
     static void COP1_S_ROUND_W ();
     static void COP1_S_TRUNC_W ();
-    static void COP1_S_CEIL_W  (); //added by Witten
+    static void COP1_S_CEIL_W  ();
     static void COP1_S_FLOOR_W ();
     static void COP1_S_CVT_D   ();
     static void COP1_S_CVT_W   ();
@@ -184,13 +184,13 @@ public:
     static void COP1_D_SQRT    ();
     static void COP1_D_MOV     ();
     static void COP1_D_ROUND_L ();
-    static void COP1_D_TRUNC_L (); //added by Witten
-    static void COP1_D_CEIL_L  (); //added by Witten
-    static void COP1_D_FLOOR_L (); //added by Witten
+    static void COP1_D_TRUNC_L ();
+    static void COP1_D_CEIL_L  ();
+    static void COP1_D_FLOOR_L ();
     static void COP1_D_ROUND_W ();
     static void COP1_D_TRUNC_W ();
-    static void COP1_D_CEIL_W  (); //added by Witten
-    static void COP1_D_FLOOR_W (); //added by Witten
+    static void COP1_D_CEIL_W  ();
+    static void COP1_D_FLOOR_W ();
     static void COP1_D_CVT_S   ();
     static void COP1_D_CVT_W   ();
     static void COP1_D_CVT_L   ();
@@ -212,6 +212,7 @@ public:
     static void AfterCallDirect(CRegInfo & RegSet);
     static void EnterCodeBlock();
     static void ExitCodeBlock();
+    void Compile_StoreInstructClean(x86Reg AddressReg, int32_t Length);
     void CompileReadTLBMiss(uint32_t VirtualAddress, x86Reg LookUpReg);
     void CompileReadTLBMiss(x86Reg AddressReg, x86Reg LookUpReg);
     void CompileWriteTLBMiss(x86Reg AddressReg, x86Reg LookUpReg);
@@ -337,6 +338,22 @@ public:
 public:
     static uint32_t CompilePC() { return m_CompilePC; }
 
+protected:
     void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void(*x86Jmp)(const char * Label, uint32_t Value));
+
+private:
+    void SB_Const(uint8_t Value, uint32_t Addr);
+    void SB_Register(CX86Ops::x86Reg Reg, uint32_t Addr);
+    void SH_Const(uint16_t Value, uint32_t Addr);
+    void SH_Register(CX86Ops::x86Reg Reg, uint32_t Addr);
+    void SW_Const(uint32_t Value, uint32_t Addr);
+    void SW_Register(CX86Ops::x86Reg Reg, uint32_t Addr);
+    void LB_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExtend);
+    void LH_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExtend);
+    void LW_KnownAddress(x86Reg Reg, uint32_t VAddr);
+    void LW(bool ResultSigned, bool bRecordLLBit);
+    void SW(bool bCheckLLbit);
+
     EXIT_LIST m_ExitInfo;
+    static uint32_t m_TempValue;
 };

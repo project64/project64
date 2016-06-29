@@ -483,11 +483,11 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP1_S[7] = COP1_S_NEG;
     Jump_CoP1_S[8] = COP1_S_ROUND_L;
     Jump_CoP1_S[9] = COP1_S_TRUNC_L;
-    Jump_CoP1_S[10] = COP1_S_CEIL_L;		//added by Witten
-    Jump_CoP1_S[11] = COP1_S_FLOOR_L;		//added by Witten
+    Jump_CoP1_S[10] = COP1_S_CEIL_L;		
+    Jump_CoP1_S[11] = COP1_S_FLOOR_L;		
     Jump_CoP1_S[12] = COP1_S_ROUND_W;
     Jump_CoP1_S[13] = COP1_S_TRUNC_W;
-    Jump_CoP1_S[14] = COP1_S_CEIL_W;		//added by Witten
+    Jump_CoP1_S[14] = COP1_S_CEIL_W;		
     Jump_CoP1_S[15] = COP1_S_FLOOR_W;
     Jump_CoP1_S[16] = UnknownOpcode;
     Jump_CoP1_S[17] = UnknownOpcode;
@@ -547,13 +547,13 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP1_D[6] = COP1_D_MOV;
     Jump_CoP1_D[7] = COP1_D_NEG;
     Jump_CoP1_D[8] = COP1_D_ROUND_L;
-    Jump_CoP1_D[9] = COP1_D_TRUNC_L;		//added by Witten
-    Jump_CoP1_D[10] = COP1_D_CEIL_L;		//added by Witten
-    Jump_CoP1_D[11] = COP1_D_FLOOR_L;		//added by Witten
+    Jump_CoP1_D[9] = COP1_D_TRUNC_L;		
+    Jump_CoP1_D[10] = COP1_D_CEIL_L;		
+    Jump_CoP1_D[11] = COP1_D_FLOOR_L;		
     Jump_CoP1_D[12] = COP1_D_ROUND_W;
     Jump_CoP1_D[13] = COP1_D_TRUNC_W;
-    Jump_CoP1_D[14] = COP1_D_CEIL_W;		//added by Witten
-    Jump_CoP1_D[15] = COP1_D_FLOOR_W;		//added by Witten
+    Jump_CoP1_D[14] = COP1_D_CEIL_W;		
+    Jump_CoP1_D[15] = COP1_D_FLOOR_W;		
     Jump_CoP1_D[16] = UnknownOpcode;
     Jump_CoP1_D[17] = UnknownOpcode;
     Jump_CoP1_D[18] = UnknownOpcode;
@@ -2474,13 +2474,13 @@ void R4300iOp::COP1_S_TRUNC_L()
 }
 
 void R4300iOp::COP1_S_CEIL_L()
-{	//added by Witten
+{	
     TEST_COP1_USABLE_EXCEPTION();
     Float_RoundToInteger64(&*(int64_t *)_FPR_D[m_Opcode.fd], &*(float *)_FPR_S[m_Opcode.fs], FE_UPWARD);
 }
 
 void R4300iOp::COP1_S_FLOOR_L()
-{	//added by Witten
+{	
     TEST_COP1_USABLE_EXCEPTION();
     Float_RoundToInteger64(&*(int64_t *)_FPR_D[m_Opcode.fd], &*(float *)_FPR_S[m_Opcode.fs], FE_DOWNWARD);
 }
@@ -2498,7 +2498,7 @@ void R4300iOp::COP1_S_TRUNC_W()
 }
 
 void R4300iOp::COP1_S_CEIL_W()
-{	//added by Witten
+{	
     TEST_COP1_USABLE_EXCEPTION();
     Float_RoundToInteger32(&*(int32_t *)_FPR_S[m_Opcode.fd], &*(float *)_FPR_S[m_Opcode.fs], FE_UPWARD);
 }
@@ -2665,19 +2665,19 @@ void R4300iOp::COP1_D_ROUND_L()
 }
 
 void R4300iOp::COP1_D_TRUNC_L()
-{	//added by Witten
+{	
     TEST_COP1_USABLE_EXCEPTION();
     Double_RoundToInteger64(&*(uint64_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_TOWARDZERO);
 }
 
 void R4300iOp::COP1_D_CEIL_L()
-{	//added by Witten
+{	
     TEST_COP1_USABLE_EXCEPTION();
     Double_RoundToInteger64(&*(uint64_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_UPWARD);
 }
 
 void R4300iOp::COP1_D_FLOOR_L()
-{	//added by Witten
+{	
     TEST_COP1_USABLE_EXCEPTION();
     Double_RoundToInteger64(&*(uint64_t *)_FPR_D[m_Opcode.fd], &*(double *)_FPR_S[m_Opcode.fs], FE_DOWNWARD);
 }
@@ -2695,13 +2695,13 @@ void R4300iOp::COP1_D_TRUNC_W()
 }
 
 void R4300iOp::COP1_D_CEIL_W()
-{	//added by Witten
+{	
     TEST_COP1_USABLE_EXCEPTION();
     Double_RoundToInteger32(&*(uint32_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_UPWARD);
 }
 
 void R4300iOp::COP1_D_FLOOR_W()
-{	//added by Witten
+{	
     TEST_COP1_USABLE_EXCEPTION();
     Double_RoundToInteger32(&*(uint32_t *)_FPR_D[m_Opcode.fd], &*(double *)_FPR_S[m_Opcode.fs], FE_DOWNWARD);
 }
