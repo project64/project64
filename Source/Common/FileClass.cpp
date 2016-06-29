@@ -155,7 +155,7 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
     if ((nOpenFlags & CFileBase::modeWrite) == CFileBase::modeWrite ||
         (nOpenFlags & CFileBase::modeReadWrite) == CFileBase::modeReadWrite)
     {
-        printf("trying to open %s (rb+)\n", lpszFileName);
+        printf("Trying to open %s (rb+).\n", lpszFileName);
         m_hFile = fopen(lpszFileName, "rb+");
         if (m_hFile != NULL)
         {
@@ -164,7 +164,7 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
     }
     else if ((nOpenFlags & CFileBase::modeRead) == CFileBase::modeRead)
     {
-        printf("trying to open %s (rb)\n", lpszFileName);
+        printf("Trying to open %s (rb).\n", lpszFileName);
         m_hFile = fopen(lpszFileName, "rb");
         if (m_hFile != NULL)
         {
