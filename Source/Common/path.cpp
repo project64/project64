@@ -2,13 +2,21 @@
 //
 //////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
+
 #ifdef _WIN32
+
 #include <Shlobj.h>
 #include <dos.h>
+
 #else
+
 #include <sys/stat.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <libgen.h> /* pathname() */
+#include <limits.h> /* PATHMAX, realpath() */
+#include <stdlib.h> /* calloc(), realpath() */
+
 #endif
 #include "Platform.h"
 
@@ -38,6 +46,7 @@ const char DIRECTORY_DELIMITER = '/';
 const char DIRECTORY_DELIMITER2 = '\\';
 #endif
 const char EXTENSION_DELIMITER = '.';
+
 #ifdef _WIN32
 void * CPath::m_hInst = NULL;
 #endif
@@ -267,7 +276,6 @@ CPath::CPath(DIR_CURRENT_DIRECTORY /*sdt*/, const char * NameExten)
     if (NameExten) { SetNameExtension(NameExten); }
 }
 
-#ifdef _WIN32
 CPath::CPath(DIR_MODULE_DIRECTORY /*sdt*/, const char * NameExten)
 {
     // The directory where the executable of this app is
@@ -276,6 +284,7 @@ CPath::CPath(DIR_MODULE_DIRECTORY /*sdt*/, const char * NameExten)
     if (NameExten) { SetNameExtension(NameExten); }
 }
 
+#ifdef _WIN32
 CPath::CPath(DIR_MODULE_FILE /*sdt*/)
 {
     // The directory where the executable of this app is
@@ -878,15 +887,40 @@ void CPath::CurrentDirectory()
 //-------------------------------------------------------------
 // Task    : Set path 2 the name of specified module
 //-------------------------------------------------------------
-#ifdef _WIN32
 void CPath::Module(void * hInstance)
 {
+#ifdef _WIN32
     char buff_path[MAX_PATH];
 
     memset(buff_path, 0, sizeof(buff_path));
-
     GetModuleFileName((HINSTANCE)hInstance, buff_path, MAX_PATH);
     m_strPath = buff_path;
+#else
+    char buff_path[PATH_MAX];
+    ssize_t bytes_written;
+
+    bytes_written = readlink("/proc/self/exe", buff_path, PATH_MAX);
+    if (bytes_written > 0) /* UNIX:  Linux */
+    {
+        dirname(buff_path);
+    }
+    else if (access(buff_path, F_OK) == 0) /* UNIX:  other */
+    {
+        const char* argv0;
+
+        argv0 = (hInstance != NULL) ? (const char *)hInstance : "project64";
+        if (realpath(argv0, buff_path) != NULL)
+        {
+            dirname(buff_path);
+        }
+    }
+    else
+    {
+        strcpy(buff_path, ".");
+    }
+    strcat(buff_path, "/");
+    m_strPath = buff_path;
+#endif
 }
 
 //-------------------------------------------------------------
@@ -894,7 +928,11 @@ void CPath::Module(void * hInstance)
 //-------------------------------------------------------------
 void CPath::Module()
 {
+#ifdef _WIN32
     Module(m_hInst);
+#else
+    Module(NULL);
+#endif
 }
 
 //-------------------------------------------------------------
@@ -914,7 +952,6 @@ void CPath::ModuleDirectory()
     Module();
     SetNameExtension("");
 }
-#endif
 
 //---------------------------------------------------------------------------
 // Post    : Return TRUE if a directory
