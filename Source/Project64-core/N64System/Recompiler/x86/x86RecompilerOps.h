@@ -31,22 +31,34 @@ class CRecompilerOps :
 public:
     enum BRANCH_TYPE
     {
-        BranchTypeCop1, BranchTypeRs, BranchTypeRsRt
+        BranchTypeCop1,
+        BranchTypeRs,
+        BranchTypeRsRt
+    };
+    enum BRANCH_COMPARE
+    {
+        CompareTypeBEQ,
+        CompareTypeBNE,
+        CompareTypeBLTZ,
+        CompareTypeBLEZ,
+        CompareTypeBGTZ,
+        CompareTypeBGEZ,
+        CompareTypeCOP1BCF,
+        CompareTypeCOP1BCT,
     };
 
-    typedef void ( * BranchFunction )();
-
     /************************** Branch functions  ************************/
-    void Compile_Branch         ( BranchFunction CompareFunc, BRANCH_TYPE BranchType, bool Link);
-    void Compile_BranchLikely   ( BranchFunction CompareFunc, bool Link);
-    static void BNE_Compare();
-    static void BEQ_Compare();
-    static void BGTZ_Compare();
-    static void BLEZ_Compare();
-    static void BLTZ_Compare();
-    static void BGEZ_Compare();
-    static void COP1_BCF_Compare();
-    static void COP1_BCT_Compare();
+    void Compile_BranchCompare(BRANCH_COMPARE CompareType);
+    void Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE BranchType, bool Link);
+    void Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Link);
+    void BNE_Compare();
+    void BEQ_Compare();
+    void BGTZ_Compare();
+    void BLEZ_Compare();
+    void BLTZ_Compare();
+    void BGEZ_Compare();
+    void COP1_BCF_Compare();
+    void COP1_BCT_Compare();
 
     /*************************  OpCode functions *************************/
     static void J              ();

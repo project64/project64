@@ -960,20 +960,20 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
         case R4300i_REGIMM:
             switch (m_Opcode.rt)
             {
-            case R4300i_REGIMM_BLTZ:Compile_Branch(BLTZ_Compare, BranchTypeRs, false); break;
-            case R4300i_REGIMM_BGEZ:Compile_Branch(BGEZ_Compare, BranchTypeRs, false); break;
-            case R4300i_REGIMM_BLTZL:Compile_BranchLikely(BLTZ_Compare, false); break;
-            case R4300i_REGIMM_BGEZL:Compile_BranchLikely(BGEZ_Compare, false); break;
-            case R4300i_REGIMM_BLTZAL:Compile_Branch(BLTZ_Compare, BranchTypeRs, true); break;
-            case R4300i_REGIMM_BGEZAL:Compile_Branch(BGEZ_Compare, BranchTypeRs, true); break;
+            case R4300i_REGIMM_BLTZ:Compile_Branch(CRecompilerOps::CompareTypeBLTZ, BranchTypeRs, false); break;
+            case R4300i_REGIMM_BGEZ:Compile_Branch(CRecompilerOps::CompareTypeBGEZ, BranchTypeRs, false); break;
+            case R4300i_REGIMM_BLTZL:Compile_BranchLikely(CRecompilerOps::CompareTypeBLTZ, false); break;
+            case R4300i_REGIMM_BGEZL:Compile_BranchLikely(CRecompilerOps::CompareTypeBGEZ, false); break;
+            case R4300i_REGIMM_BLTZAL:Compile_Branch(CRecompilerOps::CompareTypeBLTZ, BranchTypeRs, true); break;
+            case R4300i_REGIMM_BGEZAL:Compile_Branch(CRecompilerOps::CompareTypeBGEZ, BranchTypeRs, true); break;
             default:
                 UnknownOpcode(); break;
             }
             break;
-        case R4300i_BEQ: Compile_Branch(BEQ_Compare, BranchTypeRsRt, false); break;
-        case R4300i_BNE: Compile_Branch(BNE_Compare, BranchTypeRsRt, false); break;
-        case R4300i_BGTZ:Compile_Branch(BGTZ_Compare, BranchTypeRs, false); break;
-        case R4300i_BLEZ:Compile_Branch(BLEZ_Compare, BranchTypeRs, false); break;
+        case R4300i_BEQ: Compile_Branch(CRecompilerOps::CompareTypeBEQ, BranchTypeRsRt, false); break;
+        case R4300i_BNE: Compile_Branch(CRecompilerOps::CompareTypeBNE, BranchTypeRsRt, false); break;
+        case R4300i_BGTZ:Compile_Branch(CRecompilerOps::CompareTypeBGTZ, BranchTypeRs, false); break;
+        case R4300i_BLEZ:Compile_Branch(CRecompilerOps::CompareTypeBLEZ, BranchTypeRs, false); break;
         case R4300i_J: J(); break;
         case R4300i_JAL: JAL(); break;
         case R4300i_ADDI: ADDI(); break;
@@ -1020,10 +1020,10 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             case R4300i_COP1_BC:
                 switch (m_Opcode.ft)
                 {
-                case R4300i_COP1_BC_BCF: Compile_Branch(COP1_BCF_Compare, BranchTypeCop1, false); break;
-                case R4300i_COP1_BC_BCT: Compile_Branch(COP1_BCT_Compare, BranchTypeCop1, false); break;
-                case R4300i_COP1_BC_BCFL: Compile_BranchLikely(COP1_BCF_Compare, false); break;
-                case R4300i_COP1_BC_BCTL: Compile_BranchLikely(COP1_BCT_Compare, false); break;
+                case R4300i_COP1_BC_BCF: Compile_Branch(CRecompilerOps::CompareTypeCOP1BCF, BranchTypeCop1, false); break;
+                case R4300i_COP1_BC_BCT: Compile_Branch(CRecompilerOps::CompareTypeCOP1BCT, BranchTypeCop1, false); break;
+                case R4300i_COP1_BC_BCFL: Compile_BranchLikely(CRecompilerOps::CompareTypeCOP1BCF, false); break;
+                case R4300i_COP1_BC_BCTL: Compile_BranchLikely(CRecompilerOps::CompareTypeCOP1BCT, false); break;
                 default:
                     UnknownOpcode(); break;
                 }
@@ -1120,10 +1120,10 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
                 UnknownOpcode(); break;
             }
             break;
-        case R4300i_BEQL: Compile_BranchLikely(BEQ_Compare, false); break;
-        case R4300i_BNEL: Compile_BranchLikely(BNE_Compare, false); break;
-        case R4300i_BGTZL:Compile_BranchLikely(BGTZ_Compare, false); break;
-        case R4300i_BLEZL:Compile_BranchLikely(BLEZ_Compare, false); break;
+        case R4300i_BEQL: Compile_BranchLikely(CRecompilerOps::CompareTypeBEQ, false); break;
+        case R4300i_BNEL: Compile_BranchLikely(CRecompilerOps::CompareTypeBNE, false); break;
+        case R4300i_BGTZL:Compile_BranchLikely(CRecompilerOps::CompareTypeBGTZ, false); break;
+        case R4300i_BLEZL:Compile_BranchLikely(CRecompilerOps::CompareTypeBLEZ, false); break;
         case R4300i_DADDIU: DADDIU(); break;
         case R4300i_LDL: LDL(); break;
         case R4300i_LDR: LDR(); break;

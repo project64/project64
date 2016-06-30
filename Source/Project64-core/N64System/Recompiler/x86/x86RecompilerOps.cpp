@@ -106,7 +106,24 @@ void CRecompilerOps::CompileWriteTLBMiss(x86Reg AddressReg, x86Reg LookUpReg)
 bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
 
 /************************** Branch functions  ************************/
-void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, BRANCH_TYPE BranchType, bool Link)
+void CRecompilerOps::Compile_BranchCompare(BRANCH_COMPARE CompareType)
+{
+    switch (CompareType)
+    {
+    case CompareTypeBEQ: BEQ_Compare(); break;
+    case CompareTypeBNE: BNE_Compare(); break;
+    case CompareTypeBLTZ: BLTZ_Compare(); break;
+    case CompareTypeBLEZ: BLEZ_Compare(); break;
+    case CompareTypeBGTZ: BGTZ_Compare(); break;
+    case CompareTypeBGEZ: BGEZ_Compare(); break;
+    case CompareTypeCOP1BCF: COP1_BCF_Compare(); break;
+    case CompareTypeCOP1BCT: COP1_BCT_Compare(); break;
+    default:
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+}
+
+void CRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE BranchType, bool Link)
 {
     static CRegInfo RegBeforeDelay;
     static bool EffectDelaySlot;
@@ -114,7 +131,10 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
     if (m_NextInstruction == NORMAL)
     {
         CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
+        if (CompareType == CompareTypeCOP1BCF || CompareType == CompareTypeCOP1BCT)
+        {
+            m_Section->CompileCop1Test();
+        }
         if (m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 4 == m_CompilePC + 8)
         {
             return;
@@ -127,25 +147,25 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
             case BranchTypeRs: EffectDelaySlot = DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0); break;
             case BranchTypeRsRt: EffectDelaySlot = DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, m_Opcode.rt); break;
             case BranchTypeCop1:
-            {
-                OPCODE Command;
-
-                if (!g_MMU->LW_VAddr(m_CompilePC + 4, Command.Hex))
                 {
-                    g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
-                }
+                    OPCODE Command;
 
-                EffectDelaySlot = false;
-                if (Command.op == R4300i_CP1)
-                {
-                    if ((Command.fmt == R4300i_COP1_S && (Command.funct & 0x30) == 0x30) ||
-                        (Command.fmt == R4300i_COP1_D && (Command.funct & 0x30) == 0x30))
+                    if (!g_MMU->LW_VAddr(m_CompilePC + 4, Command.Hex))
                     {
-                        EffectDelaySlot = true;
+                        g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+                    }
+
+                    EffectDelaySlot = false;
+                    if (Command.op == R4300i_CP1)
+                    {
+                        if ((Command.fmt == R4300i_COP1_S && (Command.funct & 0x30) == 0x30) ||
+                            (Command.fmt == R4300i_COP1_D && (Command.funct & 0x30) == 0x30))
+                        {
+                            EffectDelaySlot = true;
+                        }
                     }
                 }
-            }
-            break;
+                break;
             default:
                 if (bHaveDebugger()) { g_Notify->DisplayError("Unknown branch type"); }
             }
@@ -211,7 +231,7 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
             }
             if (m_Section->m_Jump.TargetPC != m_Section->m_Cont.TargetPC)
             {
-                CompareFunc();
+                Compile_BranchCompare(CompareType);
             }
             if (!m_Section->m_Jump.FallThrough && !m_Section->m_Cont.FallThrough)
             {
@@ -381,7 +401,7 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
         {
             if (m_Section->m_Jump.TargetPC != m_Section->m_Cont.TargetPC)
             {
-                CompareFunc();
+                Compile_BranchCompare(CompareType);
                 ResetX86Protection();
                 m_Section->m_Cont.RegSet = m_RegWorkingSet;
                 m_Section->m_Jump.RegSet = m_RegWorkingSet;
@@ -418,12 +438,16 @@ void CRecompilerOps::Compile_Branch(CRecompilerOps::BranchFunction CompareFunc, 
     }
 }
 
-void CRecompilerOps::Compile_BranchLikely(BranchFunction CompareFunc, bool Link)
+void CRecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Link)
 {
     if (m_NextInstruction == NORMAL)
     {
         CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
+        if (CompareType == CompareTypeCOP1BCF || CompareType == CompareTypeCOP1BCT)
+        {
+            m_Section->CompileCop1Test();;
+        }
         if (!g_System->bLinkBlocks() || (m_CompilePC & 0xFFC) == 0xFFC)
         {
             m_Section->m_Jump.JumpPC = m_CompilePC;
@@ -479,7 +503,7 @@ void CRecompilerOps::Compile_BranchLikely(BranchFunction CompareFunc, bool Link)
             m_RegWorkingSet.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
         }
 
-        CompareFunc();
+        Compile_BranchCompare(CompareType);
         ResetX86Protection();
 
         m_Section->m_Cont.RegSet = m_RegWorkingSet;
