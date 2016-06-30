@@ -34,20 +34,20 @@ uint32_t CMipsMemoryVM::RegModValue;
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
 CMipsMemoryVM::CMipsMemoryVM(bool SavesReadOnly) :
-CPifRam(SavesReadOnly),
-CFlashram(SavesReadOnly),
-CSram(SavesReadOnly),
-CDMA(*this, *this),
-m_RomMapped(false),
-m_Rom(NULL),
-m_RomSize(0),
-m_RomWrittenTo(false),
-m_RomWroteValue(0),
-m_HalfLine(0),
-m_HalfLineCheck(false),
-m_FieldSerration(0),
-m_TLB_ReadMap(NULL),
-m_TLB_WriteMap(NULL)
+    CPifRam(SavesReadOnly),
+    CFlashram(SavesReadOnly),
+    CSram(SavesReadOnly),
+    CDMA(*this, *this),
+    m_RomMapped(false),
+    m_Rom(NULL),
+    m_RomSize(0),
+    m_RomWrittenTo(false),
+    m_RomWroteValue(0),
+    m_HalfLine(0),
+    m_HalfLineCheck(false),
+    m_FieldSerration(0),
+    m_TLB_ReadMap(NULL),
+    m_TLB_WriteMap(NULL)
 {
     g_Settings->RegisterChangeCB(Game_RDRamSize, this, (CSettings::SettingChangedFunc)RdramChanged);
     m_RDRAM = NULL;
@@ -221,7 +221,7 @@ bool CMipsMemoryVM::Initialize()
             m_DDRomSize = g_DDRom->GetRomSize();
         }
     }
-    
+
     CPifRam::Reset();
 
     m_TLB_ReadMap = new size_t[0x100000];
