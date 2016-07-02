@@ -214,8 +214,8 @@ void CMainGui::GameCpuRunning(CMainGui * Gui)
 {
     if (g_Settings->LoadBool(GameRunning_CPU_Running))
     {
-        Gui->HideRomList();
         Gui->MakeWindowOnTop(UISettingsLoadBool(UserInterface_AlwaysOnTop));
+        Gui->HideRomList();
         if (UISettingsLoadBool(Setting_AutoFullscreen))
         {
             WriteTrace(TraceUserInterface, TraceDebug, "15");
