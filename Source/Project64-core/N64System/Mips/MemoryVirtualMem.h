@@ -60,7 +60,6 @@
 
 class CMipsMemoryVM :
     public CTransVaddr,
-    private CRecompilerOps,
     private R4300iOp,
     private CPifRam,
     private CFlashram,
@@ -113,10 +112,6 @@ public:
     //Protect the Memory from being written to
     void  ProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr);
     void  UnProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr);
-
-    //Compilation Functions
-    void ResetMemoryStack();
-    void ResetMemoryStack(CRegInfo& RegInfo);
 
     //Functions for TLB notification
     void TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly);
@@ -182,7 +177,7 @@ private:
 
 #if defined(__i386__) || defined(_M_IX86)
 
-    typedef struct _X86_CONTEXT 
+    typedef struct _X86_CONTEXT
     {
         uint32_t * Edi;
         uint32_t * Esi;

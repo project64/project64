@@ -2057,7 +2057,7 @@ void CRecompilerOps::ADDI()
     if (g_System->bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29)
     {
         ResetX86Protection();
-        g_MMU->ResetMemoryStack();
+        ResetMemoryStack();
     }
 }
 
@@ -2097,7 +2097,7 @@ void CRecompilerOps::ADDIU()
     if (g_System->bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29)
     {
         ResetX86Protection();
-        g_MMU->ResetMemoryStack();
+        ResetMemoryStack();
     }
 }
 
@@ -2366,7 +2366,7 @@ void CRecompilerOps::ORI()
     if (g_System->bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29)
     {
         ResetX86Protection();
-        g_MMU->ResetMemoryStack();
+        ResetMemoryStack();
     }
 }
 
@@ -3004,7 +3004,7 @@ void CRecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
     if (g_System->bFastSP() && m_Opcode.rt == 29)
     {
         ResetX86Protection();
-        g_MMU->ResetMemoryStack();
+        ResetMemoryStack();
     }
 }
 
@@ -4316,7 +4316,7 @@ void CRecompilerOps::LD()
         LW_KnownAddress(GetMipsRegMapLo(m_Opcode.rt), Address + 4);
         if (g_System->bFastSP() && m_Opcode.rt == 29)
         {
-            g_MMU->ResetMemoryStack();
+            ResetMemoryStack();
         }
         return;
     }
@@ -4378,7 +4378,7 @@ void CRecompilerOps::LD()
     if (g_System->bFastSP() && m_Opcode.rt == 29)
     {
         ResetX86Protection();
-        g_MMU->ResetMemoryStack();
+        ResetMemoryStack();
     }
 }
 
@@ -5685,7 +5685,7 @@ void CRecompilerOps::SPECIAL_ADD()
     }
     if (g_System->bFastSP() && m_Opcode.rd == 29)
     {
-        g_MMU->ResetMemoryStack();
+        ResetMemoryStack();
     }
 }
 
@@ -5727,7 +5727,7 @@ void CRecompilerOps::SPECIAL_ADDU()
     }
     if (g_System->bFastSP() && m_Opcode.rd == 29)
     {
-        g_MMU->ResetMemoryStack();
+        ResetMemoryStack();
     }
 }
 
@@ -5776,7 +5776,7 @@ void CRecompilerOps::SPECIAL_SUB()
     }
     if (g_System->bFastSP() && m_Opcode.rd == 29)
     {
-        g_MMU->ResetMemoryStack();
+        ResetMemoryStack();
     }
 }
 
@@ -5826,7 +5826,7 @@ void CRecompilerOps::SPECIAL_SUBU()
 
     if (g_System->bFastSP() && m_Opcode.rd == 29)
     {
-        g_MMU->ResetMemoryStack();
+        ResetMemoryStack();
     }
 }
 
@@ -6200,7 +6200,7 @@ void CRecompilerOps::SPECIAL_OR()
     if (g_System->bFastSP() && m_Opcode.rd == 29)
     {
         ResetX86Protection();
-        g_MMU->ResetMemoryStack();
+        ResetMemoryStack();
     }
 }
 
@@ -11285,4 +11285,47 @@ void CRecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
         }
     }
+}
+
+void CRecompilerOps::ResetMemoryStack()
+{
+    x86Reg Reg, TempReg;
+
+    int32_t MipsReg = 29;
+    CPU_Message("    ResetMemoryStack");
+    Reg = Get_MemoryStack();
+    if (Reg == x86_Unknown)
+    {
+        Reg = Map_TempReg(x86_Any, MipsReg, false);
+    }
+    else
+    {
+        if (IsUnknown(MipsReg))
+        {
+            MoveVariableToX86reg(&_GPR[MipsReg].UW[0], CRegName::GPR_Lo[MipsReg], Reg);
+        }
+        else if (IsMapped(MipsReg))
+        {
+            MoveX86RegToX86Reg(GetMipsRegMapLo(MipsReg), Reg);
+        }
+        else
+        {
+            MoveConstToX86reg(GetMipsRegLo(MipsReg), Reg);
+        }
+    }
+
+    if (g_System->bUseTlb())
+    {
+        TempReg = Map_TempReg(x86_Any, -1, false);
+        MoveX86RegToX86Reg(Reg, TempReg);
+        ShiftRightUnsignImmed(TempReg, 12);
+        MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg, TempReg, 4);
+        AddX86RegToX86Reg(Reg, TempReg);
+    }
+    else
+    {
+        AndConstToX86Reg(Reg, 0x1FFFFFFF);
+        AddConstToX86Reg(Reg, (uint32_t)g_MMU->Rdram());
+    }
+    MoveX86regToVariable(Reg, &(g_Recompiler->MemoryStackPos()), "MemoryStack");
 }

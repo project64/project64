@@ -15,11 +15,11 @@
 #include <Common/path.h>
 
 CFlashram::CFlashram(bool ReadOnly) :
-m_FlashRamPointer(NULL),
-m_FlashFlag(FLASHRAM_MODE_NOPES),
-m_FlashStatus(0),
-m_FlashRAM_Offset(0),
-m_ReadOnly(ReadOnly)
+    m_FlashRamPointer(NULL),
+    m_FlashFlag(FLASHRAM_MODE_NOPES),
+    m_FlashStatus(0),
+    m_FlashRAM_Offset(0),
+    m_ReadOnly(ReadOnly)
 {
 }
 
@@ -176,7 +176,6 @@ void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
             }
             {
                 uint8_t FlipBuffer[sizeof(EmptyBlock)];
-                register size_t edx;
                 uint8_t * FlashRamPointer = m_FlashRamPointer;
 
                 memset(FlipBuffer, 0, sizeof(FlipBuffer));

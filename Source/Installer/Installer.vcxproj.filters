@@ -4,20 +4,6 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{93ba3998-9310-4111-bfd3-a907e3452213}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\binno">
-      <UniqueIdentifier>{389ec096-ad75-499a-82a2-f6b5dbe0ed90}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="binno\binno.iss">
-      <Filter>Source Files\binno</Filter>
-    </None>
-    <None Include="binno\it_download.iss">
-      <Filter>Source Files\binno</Filter>
-    </None>
-    <None Include="binno\it_download_u.iss">
-      <Filter>Source Files\binno</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Installer.iss">
