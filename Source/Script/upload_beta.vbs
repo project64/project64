@@ -156,7 +156,7 @@ Sub ValidateLoggedIn(IE)
 End Sub
 
 Sub Login(IE)
-    'On Error resume next
+    On Error resume next
 
     Set IE2 = WScript.CreateObject("InternetExplorer.Application", "IE_")
     IE2.Visible = True
@@ -179,7 +179,7 @@ Sub Login(IE)
     Dim FoundIt
     FoundIt = False
 
-     WScript.StdOut.WriteLine "Looking for redirect"
+    WScript.StdOut.WriteLine "Looking for redirect"
     For count = 0 to 100
         Set NodeList = IE2.document.getElementsByTagName("a") 
         WScript.StdOut.WriteLine count & ": Found " & NodeList.length & " a tags"
