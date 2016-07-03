@@ -15,10 +15,12 @@
 #include <Project64-core/N64System/Recompiler/ExitInfo.h>
 #include <Project64-core/N64System/Recompiler/RegInfo.h>
 #include <Project64-core/N64System/Recompiler/x86/x86ops.h>
+#include <Project64-core/N64System/Recompiler/JumpInfo.h>
 #include <Project64-core/Settings/DebugSettings.h>
 #include <Project64-core/Settings/N64SystemSettings.h>
 #include <Project64-core/Settings/RecompilerSettings.h>
 
+class CCodeBlock;
 class CCodeSection;
 
 class CRecompilerOps :
@@ -61,19 +63,19 @@ public:
     void COP1_BCT_Compare();
 
     /*************************  OpCode functions *************************/
-    static void J              ();
+    void J              ();
     void JAL            ();
-    static void ADDI           ();
-    static void ADDIU          ();
-    static void SLTI           ();
-    static void SLTIU          ();
-    static void ANDI           ();
-    static void ORI            ();
-    static void XORI           ();
-    static void LUI            ();
-    static void DADDIU         ();
-    static void LDL            ();
-    static void LDR            ();
+    void ADDI           ();
+    void ADDIU          ();
+    void SLTI           ();
+    void SLTIU          ();
+    void ANDI           ();
+    void ORI            ();
+    void XORI           ();
+    void LUI            ();
+    void DADDIU         ();
+    void LDL            ();
+    void LDR            ();
     void LB             ();
     void LH             ();
     void LWL            ();
@@ -87,9 +89,9 @@ public:
     void SWL            ();
     void SW             ();
     void SWR            ();
-    static void SDL            ();
-    static void SDR            ();
-    static void CACHE          ();
+    void SDL            ();
+    void SDR            ();
+    void CACHE          ();
     void LL             ();
     void LWC1           ();
     void LDC1           ();
@@ -100,131 +102,151 @@ public:
     void SD             ();
 
     /********************** R4300i OpCodes: Special **********************/
-    static void SPECIAL_SLL    ();
-    static void SPECIAL_SRL    ();
-    static void SPECIAL_SRA    ();
-    static void SPECIAL_SLLV   ();
-    static void SPECIAL_SRLV   ();
-    static void SPECIAL_SRAV   ();
+    void SPECIAL_SLL    ();
+    void SPECIAL_SRL    ();
+    void SPECIAL_SRA    ();
+    void SPECIAL_SLLV   ();
+    void SPECIAL_SRLV   ();
+    void SPECIAL_SRAV   ();
     void SPECIAL_JR     ();
     void SPECIAL_JALR   ();
     void SPECIAL_SYSCALL();
-    static void SPECIAL_MFLO   ();
-    static void SPECIAL_MTLO   ();
-    static void SPECIAL_MFHI   ();
-    static void SPECIAL_MTHI   ();
-    static void SPECIAL_DSLLV  ();
-    static void SPECIAL_DSRLV  ();
-    static void SPECIAL_DSRAV  ();
-    static void SPECIAL_MULT   ();
-    static void SPECIAL_MULTU  ();
+    void SPECIAL_MFLO   ();
+    void SPECIAL_MTLO   ();
+    void SPECIAL_MFHI   ();
+    void SPECIAL_MTHI   ();
+    void SPECIAL_DSLLV  ();
+    void SPECIAL_DSRLV  ();
+    void SPECIAL_DSRAV  ();
+    void SPECIAL_MULT   ();
+    void SPECIAL_MULTU  ();
     void SPECIAL_DIV    ();
-    static void SPECIAL_DIVU   ();
-    static void SPECIAL_DMULT  ();
-    static void SPECIAL_DMULTU ();
-    static void SPECIAL_DDIV   ();
-    static void SPECIAL_DDIVU  ();
-    static void SPECIAL_ADD    ();
-    static void SPECIAL_ADDU   ();
-    static void SPECIAL_SUB    ();
-    static void SPECIAL_SUBU   ();
-    static void SPECIAL_AND    ();
-    static void SPECIAL_OR     ();
-    static void SPECIAL_XOR    ();
-    static void SPECIAL_NOR    ();
-    static void SPECIAL_SLT    ();
-    static void SPECIAL_SLTU   ();
-    static void SPECIAL_DADD   ();
-    static void SPECIAL_DADDU  ();
-    static void SPECIAL_DSUB   ();
-    static void SPECIAL_DSUBU  ();
-    static void SPECIAL_DSLL   ();
-    static void SPECIAL_DSRL   ();
-    static void SPECIAL_DSRA   ();
-    static void SPECIAL_DSLL32 ();
-    static void SPECIAL_DSRL32 ();
-    static void SPECIAL_DSRA32 ();
+    void SPECIAL_DIVU   ();
+    void SPECIAL_DMULT  ();
+    void SPECIAL_DMULTU ();
+    void SPECIAL_DDIV   ();
+    void SPECIAL_DDIVU  ();
+    void SPECIAL_ADD    ();
+    void SPECIAL_ADDU   ();
+    void SPECIAL_SUB    ();
+    void SPECIAL_SUBU   ();
+    void SPECIAL_AND    ();
+    void SPECIAL_OR     ();
+    void SPECIAL_XOR    ();
+    void SPECIAL_NOR    ();
+    void SPECIAL_SLT    ();
+    void SPECIAL_SLTU   ();
+    void SPECIAL_DADD   ();
+    void SPECIAL_DADDU  ();
+    void SPECIAL_DSUB   ();
+    void SPECIAL_DSUBU  ();
+    void SPECIAL_DSLL   ();
+    void SPECIAL_DSRL   ();
+    void SPECIAL_DSRA   ();
+    void SPECIAL_DSLL32 ();
+    void SPECIAL_DSRL32 ();
+    void SPECIAL_DSRA32 ();
 
     /************************** COP0 functions **************************/
-    static void COP0_MF        ();
-    static void COP0_MT        ();
+    void COP0_MF        ();
+    void COP0_MT        ();
 
     /************************** COP0 CO functions ***********************/
-    static void COP0_CO_TLBR   ();
-    static void COP0_CO_TLBWI  ();
-    static void COP0_CO_TLBWR  ();
-    static void COP0_CO_TLBP   ();
+    void COP0_CO_TLBR   ();
+    void COP0_CO_TLBWI  ();
+    void COP0_CO_TLBWR  ();
+    void COP0_CO_TLBP   ();
     void COP0_CO_ERET   ();
 
     /************************** COP1 functions **************************/
-    static void COP1_MF        ();
-    static void COP1_DMF       ();
-    static void COP1_CF        ();
-    static void COP1_MT        ();
-    static void COP1_DMT       ();
-    static void COP1_CT        ();
+    void COP1_MF        ();
+    void COP1_DMF       ();
+    void COP1_CF        ();
+    void COP1_MT        ();
+    void COP1_DMT       ();
+    void COP1_CT        ();
 
     /************************** COP1: S functions ************************/
-    static void COP1_S_ADD     ();
-    static void COP1_S_SUB     ();
-    static void COP1_S_MUL     ();
-    static void COP1_S_DIV     ();
-    static void COP1_S_ABS     ();
-    static void COP1_S_NEG     ();
-    static void COP1_S_SQRT    ();
-    static void COP1_S_MOV     ();
-    static void COP1_S_ROUND_L ();
-    static void COP1_S_TRUNC_L ();
-    static void COP1_S_CEIL_L  ();
-    static void COP1_S_FLOOR_L ();
-    static void COP1_S_ROUND_W ();
-    static void COP1_S_TRUNC_W ();
-    static void COP1_S_CEIL_W  ();
-    static void COP1_S_FLOOR_W ();
-    static void COP1_S_CVT_D   ();
-    static void COP1_S_CVT_W   ();
-    static void COP1_S_CVT_L   ();
-    static void COP1_S_CMP     ();
+    void COP1_S_ADD     ();
+    void COP1_S_SUB     ();
+    void COP1_S_MUL     ();
+    void COP1_S_DIV     ();
+    void COP1_S_ABS     ();
+    void COP1_S_NEG     ();
+    void COP1_S_SQRT    ();
+    void COP1_S_MOV     ();
+    void COP1_S_ROUND_L ();
+    void COP1_S_TRUNC_L ();
+    void COP1_S_CEIL_L  ();
+    void COP1_S_FLOOR_L ();
+    void COP1_S_ROUND_W ();
+    void COP1_S_TRUNC_W ();
+    void COP1_S_CEIL_W  ();
+    void COP1_S_FLOOR_W ();
+    void COP1_S_CVT_D   ();
+    void COP1_S_CVT_W   ();
+    void COP1_S_CVT_L   ();
+    void COP1_S_CMP     ();
 
     /************************** COP1: D functions ************************/
-    static void COP1_D_ADD     ();
-    static void COP1_D_SUB     ();
-    static void COP1_D_MUL     ();
-    static void COP1_D_DIV     ();
-    static void COP1_D_ABS     ();
-    static void COP1_D_NEG     ();
-    static void COP1_D_SQRT    ();
-    static void COP1_D_MOV     ();
-    static void COP1_D_ROUND_L ();
-    static void COP1_D_TRUNC_L ();
-    static void COP1_D_CEIL_L  ();
-    static void COP1_D_FLOOR_L ();
-    static void COP1_D_ROUND_W ();
-    static void COP1_D_TRUNC_W ();
-    static void COP1_D_CEIL_W  ();
-    static void COP1_D_FLOOR_W ();
-    static void COP1_D_CVT_S   ();
-    static void COP1_D_CVT_W   ();
-    static void COP1_D_CVT_L   ();
-    static void COP1_D_CMP     ();
+    void COP1_D_ADD     ();
+    void COP1_D_SUB     ();
+    void COP1_D_MUL     ();
+    void COP1_D_DIV     ();
+    void COP1_D_ABS     ();
+    void COP1_D_NEG     ();
+    void COP1_D_SQRT    ();
+    void COP1_D_MOV     ();
+    void COP1_D_ROUND_L ();
+    void COP1_D_TRUNC_L ();
+    void COP1_D_CEIL_L  ();
+    void COP1_D_FLOOR_L ();
+    void COP1_D_ROUND_W ();
+    void COP1_D_TRUNC_W ();
+    void COP1_D_CEIL_W  ();
+    void COP1_D_FLOOR_W ();
+    void COP1_D_CVT_S   ();
+    void COP1_D_CVT_W   ();
+    void COP1_D_CVT_L   ();
+    void COP1_D_CMP     ();
 
     /************************** COP1: W functions ************************/
-    static void COP1_W_CVT_S   ();
-    static void COP1_W_CVT_D   ();
+    void COP1_W_CVT_S   ();
+    void COP1_W_CVT_D   ();
 
     /************************** COP1: L functions ************************/
-    static void COP1_L_CVT_S   ();
-    static void COP1_L_CVT_D   ();
+    void COP1_L_CVT_S   ();
+    void COP1_L_CVT_D   ();
 
     /************************** Other functions **************************/
-    static void UnknownOpcode  ();
+    void UnknownOpcode  ();
 
-    void CompileExitCode();
-    static void BeforeCallDirect(CRegInfo & RegSet);
-    static void AfterCallDirect(CRegInfo & RegSet);
     static void EnterCodeBlock();
     static void ExitCodeBlock();
+    void CompileExitCode();
+    void CompileCop1Test();
+    void CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCounter);
+    void SyncRegState(const CRegInfo & SyncTo);
+    bool SetupRegisterForLoop(CCodeBlock * BlockInfo, const CRegInfo & RegSet);
+    CRegInfo & GetRegWorkingSet(void);
+    static void BeforeCallDirect(CRegInfo & RegSet);
+    static void AfterCallDirect(CRegInfo & RegSet);
+    void SetRegWorkingSet(const CRegInfo & RegInfo);
+    bool InheritParentInfo();
+    void LinkJump(CJumpInfo & JumpInfo, uint32_t SectionID = -1, uint32_t FromSectionID = -1);
+    void JumpToSection(CCodeSection * Section);
+    void JumpToUnknown(CJumpInfo * JumpInfo);
+    void SetCurrentPC(uint32_t ProgramCounter);
+    uint32_t GetCurrentPC(void);
+    void SetCurrentSection(CCodeSection * section);
+    void SetNextStepType(STEP_TYPE StepType);
+    STEP_TYPE GetNextStepType( void );
+    const OPCODE & GetOpcode ( void ) const;
+    void PreCompileOpcode(void);
+    void PostCompileOpcode ( void );
     void Compile_StoreInstructClean(x86Reg AddressReg, int32_t Length);
+    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow);
+
     void CompileReadTLBMiss(uint32_t VirtualAddress, x86Reg LookUpReg);
     void CompileReadTLBMiss(x86Reg AddressReg, x86Reg LookUpReg);
     void CompileWriteTLBMiss(x86Reg AddressReg, x86Reg LookUpReg);
@@ -234,12 +256,6 @@ public:
     static void ChangeDefaultRoundingModel();
     static void OverflowDelaySlot(bool TestTimer);
 
-    static STEP_TYPE      m_NextInstruction;
-    static uint32_t       m_CompilePC;
-    static OPCODE         m_Opcode;
-    static CX86RegInfo    m_RegWorkingSet;
-    static uint32_t       m_BranchCompare;
-    static CCodeSection * m_Section;
 
     /********* Helper Functions *********/
     typedef CRegInfo::REG_STATE REG_STATE;
@@ -350,9 +366,6 @@ public:
 public:
     static uint32_t CompilePC() { return m_CompilePC; }
 
-protected:
-    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void(*x86Jmp)(const char * Label, uint32_t Value));
-
 private:
     void SB_Const(uint8_t Value, uint32_t Addr);
     void SB_Register(CX86Ops::x86Reg Reg, uint32_t Addr);
@@ -365,7 +378,14 @@ private:
     void LW_KnownAddress(x86Reg Reg, uint32_t VAddr);
     void LW(bool ResultSigned, bool bRecordLLBit);
     void SW(bool bCheckLLbit);
+    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void(*x86Jmp)(const char * Label, uint32_t Value));
 
     EXIT_LIST m_ExitInfo;
+    static STEP_TYPE      m_NextInstruction;
+    static uint32_t       m_CompilePC;
+    static OPCODE         m_Opcode;
+    static CX86RegInfo    m_RegWorkingSet;
+    static uint32_t       m_BranchCompare;
+    static CCodeSection * m_Section;
     static uint32_t m_TempValue;
 };

@@ -28,7 +28,7 @@ public:
     int32_t     NoOfSections() const { return m_Sections.size() - 1;}
     const CCodeSection & EnterSection() const { return *m_EnterSection; }
     const MD5Digest & Hash() const { return m_Hash; }
-    CRecompilerOps * RecompilerOps() { return m_EnterSection; }
+    CRecompilerOps *& RecompilerOps() { return m_RecompilerOps; }
     void SetVAddrFirst(uint32_t VAddr) { m_VAddrFirst = VAddr; }
     void SetVAddrLast(uint32_t VAddr) { m_VAddrLast = VAddr; }
 
@@ -69,4 +69,5 @@ private:
     MD5Digest        m_Hash;
     uint64_t         m_MemContents[2];
     uint64_t *       m_MemLocation[2];
+    CRecompilerOps * m_RecompilerOps;
 };

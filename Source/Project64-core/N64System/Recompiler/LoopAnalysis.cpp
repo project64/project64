@@ -26,11 +26,11 @@
 bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
 
 LoopAnalysis::LoopAnalysis(CCodeBlock * CodeBlock, CCodeSection * Section) :
-m_EnterSection(Section),
-m_BlockInfo(CodeBlock),
-m_PC((uint32_t)-1),
-m_NextInstruction(NORMAL),
-m_Test(m_BlockInfo->NextTest())
+    m_EnterSection(Section),
+    m_BlockInfo(CodeBlock),
+    m_PC((uint32_t)-1),
+    m_NextInstruction(NORMAL),
+    m_Test(m_BlockInfo->NextTest())
 {
     memset(&m_Command, 0, sizeof(m_Command));
 }

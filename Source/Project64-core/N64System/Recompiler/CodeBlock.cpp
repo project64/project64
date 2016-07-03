@@ -26,10 +26,19 @@ CCodeBlock::CCodeBlock(uint32_t VAddrEnter, uint8_t * CompiledLocation) :
     m_VAddrLast(VAddrEnter),
     m_CompiledLocation(CompiledLocation),
     m_EnterSection(NULL),
+    m_RecompilerOps(NULL),
     m_Test(1)
 {
+    memset(m_MemContents, 0, sizeof(m_MemContents));
+    memset(m_MemLocation, 0, sizeof(m_MemLocation));
+    
     CCodeSection * baseSection = new CCodeSection(this, VAddrEnter, 0, false);
     if (baseSection == NULL)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    m_RecompilerOps = new CRecompilerOps;
+    if (m_RecompilerOps == NULL)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
@@ -74,6 +83,12 @@ CCodeBlock::~CCodeBlock()
         delete Section;
     }
     m_Sections.clear();
+
+    if (m_RecompilerOps != NULL)
+    {
+        delete m_RecompilerOps;
+        m_RecompilerOps = NULL;
+    }
 }
 
 bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSection, uint32_t TargetPC, bool LinkAllowed, uint32_t CurrentPC )
@@ -715,7 +730,7 @@ bool CCodeBlock::Compile()
     CPU_Message("No of Sections: %d",NoOfSections() );
     CPU_Message("====== recompiled code ======");
 
-    m_EnterSection->EnterCodeBlock();
+    m_RecompilerOps->EnterCodeBlock();
     if (g_System->bLinkBlocks())
     {
         while (m_EnterSection->GenerateNativeCode(NextTest()));
@@ -727,7 +742,7 @@ bool CCodeBlock::Compile()
             return false;
         }
     }
-    m_EnterSection->CompileExitCode();
+    m_RecompilerOps->CompileExitCode();
 
     uint32_t PAddr;
     g_TransVaddr->TranslateVaddr(VAddrFirst(),PAddr);

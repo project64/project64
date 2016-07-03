@@ -14,8 +14,7 @@
 
 class CCodeBlock;
 
-class CCodeSection :
-    public CRecompilerOps
+class CCodeSection
 {
 public:
     typedef std::list<CCodeSection *> SECTION_LIST;
@@ -26,7 +25,6 @@ public:
     void SetDelaySlot();
     void SetJumpAddress(uint32_t JumpPC, uint32_t TargetPC, bool PermLoop);
     void SetContinueAddress(uint32_t JumpPC, uint32_t TargetPC);
-    void CompileCop1Test();
     bool GenerateNativeCode(uint32_t Test);
     void GenerateSectionLinkage();
     void DetermineLoop(uint32_t Test, uint32_t Test2, uint32_t TestID);
@@ -53,6 +51,7 @@ public:
     uint8_t          * m_CompiledLocation;
     bool               m_InLoop;
     bool               m_DelaySlot;
+    CRecompilerOps * & m_RecompilerOps;
 
     /* Register Info */
     CRegInfo    m_RegEnter;
@@ -69,9 +68,7 @@ private:
     void UnlinkParent(CCodeSection * Parent, bool ContinueSection);
     void InheritConstants();
     void TestRegConstantStates(CRegInfo & Base, CRegInfo & Reg);
-    void SyncRegState(const CRegInfo & SyncTo);
     bool IsAllParentLoops(CCodeSection * Parent, bool IgnoreIfCompiled, uint32_t Test);
     bool ParentContinue();
-    bool InheritParentInfo();
     bool SetupRegisterForLoop();
 };
