@@ -384,7 +384,7 @@ sub UploadFile(ieID, FileToUpload)
         WScript.Quit 1
     end if
     extension = Mid(fileName, extPos, len(fileName))
-    if lcase(extension) <> ".zip" And lcase(extension) <> ".exe" then 
+    if lcase(extension) <> ".zip" And lcase(extension) <> ".exe" And lcase(extension) <> ".apk" then 
         WScript.StdOut.WriteLine "not a valid extension: " & fileName
         WScript.Quit 1
     end if    
