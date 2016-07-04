@@ -28,35 +28,16 @@
 #endif
 
 /*
-* 64-bit Windows exception recovery facilities will expect to interact with
-* the 64-bit registers of the Intel architecture (e.g., rax instead of eax).
+* To do:  Have address translation functions here?
+* `return` either the translated address or the mask to XOR by?
 *
-* Attempting to read the 32-bit subsets seems to be erroneous and forbidden.
-* Refer to "MemoryFilter" in `Memory Virtual Mem.cpp`.
+* This will help us gradually be able to port Project64 for big-endian CPUs.
+* Currently it is written to assume 32-bit little-endian, like so:
+*
+* 0xAABBCCDD EEFFGGHH --> 0xDDCCBBAA HHGGFFEE
+*   GPR bits[63..0]         b1b2b3b4 b5b6b7b8
 */
-#ifdef _WIN64
-#define Eax     Rax
-#define Ebx     Rbx
-#define Ecx     Rcx
-#define Edx     Rdx
-#define Esp     Rsp
-#define Ebp     Rbp
-#define Esi     Rsi
-#define Edi     Rdi
 
-#define Eip     Rip
-#endif
-
-/*
- * To do:  Have address translation functions here?
- * `return` either the translated address or the mask to XOR by?
- *
- * This will help us gradually be able to port Project64 for big-endian CPUs.
- * Currently it is written to assume 32-bit little-endian, like so:
- *
- * 0xAABBCCDD EEFFGGHH --> 0xDDCCBBAA HHGGFFEE
- *   GPR bits[63..0]         b1b2b3b4 b5b6b7b8
- */
 class CX86RecompilerOps;
 
 class CMipsMemoryVM :
@@ -132,8 +113,6 @@ private:
     CMipsMemoryVM& operator=(const CMipsMemoryVM&); // Disable assignment
 
     friend CX86RecompilerOps;
-    void Compile_LW(bool ResultSigned, bool bRecordLLbit);
-    void Compile_SW(bool bCheckLLbit);
 
     static void RdramChanged(CMipsMemoryVM * _this);
     static void ChangeSpStatus();
