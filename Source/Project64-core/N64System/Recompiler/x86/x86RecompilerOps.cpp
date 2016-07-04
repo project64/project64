@@ -133,7 +133,7 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     }
     }*/
-    /*		if (m_CompilePC == 0x803245CC && m_NextInstruction == NORMAL)
+    /*        if (m_CompilePC == 0x803245CC && m_NextInstruction == NORMAL)
     {
     //m_RegWorkingSet.UnMap_AllFPRs();
     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -221,24 +221,24 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
             case BranchTypeRs: EffectDelaySlot = DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0); break;
             case BranchTypeRsRt: EffectDelaySlot = DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, m_Opcode.rt); break;
             case BranchTypeCop1:
-            {
-                                   OPCODE Command;
+                {
+                    OPCODE Command;
 
-                                   if (!g_MMU->LW_VAddr(m_CompilePC + 4, Command.Hex))
-                                   {
-                                       g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
-                                   }
+                    if (!g_MMU->LW_VAddr(m_CompilePC + 4, Command.Hex))
+                    {
+                        g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+                    }
 
-                                   EffectDelaySlot = false;
-                                   if (Command.op == R4300i_CP1)
-                                   {
-                                       if ((Command.fmt == R4300i_COP1_S && (Command.funct & 0x30) == 0x30) ||
-                                           (Command.fmt == R4300i_COP1_D && (Command.funct & 0x30) == 0x30))
-                                       {
-                                           EffectDelaySlot = true;
-                                       }
-                                   }
-            }
+                    EffectDelaySlot = false;
+                    if (Command.op == R4300i_CP1)
+                    {
+                        if ((Command.fmt == R4300i_COP1_S && (Command.funct & 0x30) == 0x30) ||
+                            (Command.fmt == R4300i_COP1_D && (Command.funct & 0x30) == 0x30))
+                        {
+                            EffectDelaySlot = true;
+                        }
+                    }
+                }
                 break;
             default:
                 if (bHaveDebugger()) { g_Notify->DisplayError("Unknown branch type"); }
@@ -2215,7 +2215,7 @@ void CX86RecompilerOps::SLTI()
         }
         else
         {
-            /*	CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rs),(int16_t)m_Opcode.immediate);
+            /*    CompConstToX86reg(GetMipsRegMapLo(m_Opcode.rs),(int16_t)m_Opcode.immediate);
             SetlVariable(&m_BranchCompare,"m_BranchCompare");
             Map_GPR_32bit(m_Opcode.rt, false, -1);
             MoveVariableToX86reg(&m_BranchCompare,"m_BranchCompare",GetMipsRegMapLo(m_Opcode.rt));
@@ -3075,16 +3075,16 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
             }
             break;
         case 0x04100000:
-        {
-                           static uint32_t TempValue = 0;
-                           BeforeCallDirect(m_RegWorkingSet);
-                           PushImm32("TempValue", (uint32_t)&TempValue);
-                           PushImm32(PAddr);
-                           MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
-                           Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory");
-                           AfterCallDirect(m_RegWorkingSet);
-                           MoveVariableToX86reg(&TempValue, "TempValue", Reg);
-        }
+            {
+               static uint32_t TempValue = 0;
+               BeforeCallDirect(m_RegWorkingSet);
+               PushImm32("TempValue", (uint32_t)&TempValue);
+               PushImm32(PAddr);
+               MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
+               Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory");
+               AfterCallDirect(m_RegWorkingSet);
+               MoveVariableToX86reg(&TempValue, "TempValue", Reg);
+            }
             break;
         case 0x04300000:
             switch (PAddr)
@@ -5366,7 +5366,7 @@ void CX86RecompilerOps::SPECIAL_MULT()
 
     MoveX86regToVariable(x86_EAX, &_RegLO->UW[0], "_RegLO->UW[0]");
     MoveX86regToVariable(x86_EDX, &_RegHI->UW[0], "_RegHI->UW[0]");
-    ShiftRightSignImmed(x86_EAX, 31);	/* paired */
+    ShiftRightSignImmed(x86_EAX, 31);    /* paired */
     ShiftRightSignImmed(x86_EDX, 31);
     MoveX86regToVariable(x86_EAX, &_RegLO->UW[1], "_RegLO->UW[1]");
     MoveX86regToVariable(x86_EDX, &_RegHI->UW[1], "_RegHI->UW[1]");
@@ -5385,7 +5385,7 @@ void CX86RecompilerOps::SPECIAL_MULTU()
 
     MoveX86regToVariable(x86_EAX, &_RegLO->UW[0], "_RegLO->UW[0]");
     MoveX86regToVariable(x86_EDX, &_RegHI->UW[0], "_RegHI->UW[0]");
-    ShiftRightSignImmed(x86_EAX, 31);	/* paired */
+    ShiftRightSignImmed(x86_EAX, 31);    /* paired */
     ShiftRightSignImmed(x86_EDX, 31);
     MoveX86regToVariable(x86_EAX, &_RegLO->UW[1], "_RegLO->UW[1]");
     MoveX86regToVariable(x86_EDX, &_RegHI->UW[1], "_RegHI->UW[1]");
@@ -5418,7 +5418,7 @@ void CX86RecompilerOps::SPECIAL_DIV()
         }
         CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::DivByZero, false, JeLabel32);
     }
-    /*	lo = (SD)rs / (SD)rt;
+    /* lo = (SD)rs / (SD)rt;
     hi = (SD)rs % (SD)rt; */
 
     m_RegWorkingSet.SetX86Protected(x86_EDX, true);
@@ -5442,7 +5442,7 @@ void CX86RecompilerOps::SPECIAL_DIV()
 
     MoveX86regToVariable(x86_EAX, &_RegLO->UW[0], "_RegLO->UW[0]");
     MoveX86regToVariable(x86_EDX, &_RegHI->UW[0], "_RegHI->UW[0]");
-    ShiftRightSignImmed(x86_EAX, 31);	/* paired */
+    ShiftRightSignImmed(x86_EAX, 31);    /* paired */
     ShiftRightSignImmed(x86_EDX, 31);
     MoveX86regToVariable(x86_EAX, &_RegLO->UW[1], "_RegLO->UW[1]");
     MoveX86regToVariable(x86_EDX, &_RegHI->UW[1], "_RegHI->UW[1]");
@@ -5493,7 +5493,7 @@ void CX86RecompilerOps::SPECIAL_DIVU()
         SetJump8(Jump[0], *g_RecompPos);
     }
 
-    /*	lo = (UD)rs / (UD)rt;
+    /*    lo = (UD)rs / (UD)rt;
     hi = (UD)rs % (UD)rt; */
 
     m_RegWorkingSet.SetX86Protected(x86_EAX, true);
@@ -5510,7 +5510,7 @@ void CX86RecompilerOps::SPECIAL_DIVU()
 
     /* wouldnt these be zero (???) */
 
-    ShiftRightSignImmed(x86_EAX, 31);	/* paired */
+    ShiftRightSignImmed(x86_EAX, 31);    /* paired */
     ShiftRightSignImmed(x86_EDX, 31);
     MoveX86regToVariable(x86_EAX, &_RegLO->UW[1], "_RegLO->UW[1]");
     MoveX86regToVariable(x86_EDX, &_RegHI->UW[1], "_RegHI->UW[1]");
@@ -5600,7 +5600,7 @@ void CX86RecompilerOps::SPECIAL_DMULTU()
     AddX86RegToX86Reg(x86_EAX, x86_EBX);
     AddConstToX86Reg(x86_EDX, 0);
     AddX86RegToX86Reg(x86_EAX, x86_ESI);
-    AddConstToX86Reg(x86_EDX, 0);			/* EDX:EAX */
+    AddConstToX86Reg(x86_EDX, 0);            /* EDX:EAX */
 
     /* _RegLO->UDW += ((uint64)Tmp[0].UW[0] + (uint64)Tmp[1].UW[0]) << 32; */
     /* [low+4] += ebx + esi */
@@ -8367,7 +8367,7 @@ void CX86RecompilerOps::COP1_S_TRUNC_W()
 }
 
 void CX86RecompilerOps::COP1_S_CEIL_W() // added by Witten
-{			// added by Witten
+{            // added by Witten
     CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     CompileCop1Test();
@@ -9681,7 +9681,7 @@ bool CX86RecompilerOps::InheritParentInfo()
         {
             UpdateCounters(m_RegWorkingSet, false, true);
         }
-        SyncRegState(m_Section->m_RegEnter); 		//Sync
+        SyncRegState(m_Section->m_RegEnter);         //Sync
         m_Section->m_RegEnter = m_RegWorkingSet;
     }
 
@@ -10064,33 +10064,33 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitCodeBlock();
         break;
     case CExitInfo::DoSysCall:
-    {
-                                 bool bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
-                                 PushImm32(bDelay ? "true" : "false", bDelay);
-                                 MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
-                                 Call_Direct(AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
-                                 if (g_SyncSystem)
-                                 {
-                                     MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
-                                     Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-                                 }
-                                 ExitCodeBlock();
-    }
+        {
+            bool bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
+            PushImm32(bDelay ? "true" : "false", bDelay);
+            MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
+            Call_Direct(AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
+            if (g_SyncSystem)
+            {
+                MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
+                Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+            }
+            ExitCodeBlock();
+        }
         break;
     case CExitInfo::COP1_Unuseable:
-    {
-                                      bool bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
-                                      PushImm32("1", 1);
-                                      PushImm32(bDelay ? "true" : "false", bDelay);
-                                      MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
-                                      Call_Direct(AddressOf(&CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
-                                      if (g_SyncSystem)
-                                      {
-                                          MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
-                                          Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-                                      }
-                                      ExitCodeBlock();
-    }
+        {
+            bool bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
+            PushImm32("1", 1);
+            PushImm32(bDelay ? "true" : "false", bDelay);
+            MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
+            Call_Direct(AddressOf(&CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
+            if (g_SyncSystem)
+            {
+                MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
+                Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+            }
+            ExitCodeBlock();
+        }
         break;
     case CExitInfo::ExitResetRecompCode:
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -10479,23 +10479,23 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x04040008:
             MoveConstToVariable(Value, &g_Reg->SP_RD_LEN_REG, "SP_RD_LEN_REG");
             BeforeCallDirect(m_RegWorkingSet);
-            MoveConstToX86reg((uint32_t)((CDMA *)this), x86_ECX);
+            MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CDMA::SP_DMA_READ), "CDMA::SP_DMA_READ");
             AfterCallDirect(m_RegWorkingSet);
             break;
         case 0x04040010:
-        {
-                           m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
-                           UpdateCounters(m_RegWorkingSet, false, true);
-                           m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            {
+                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+                UpdateCounters(m_RegWorkingSet, false, true);
+                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
-                           BeforeCallDirect(m_RegWorkingSet);
-                           PushImm32(Value);
-                           PushImm32(PAddr);
-                           MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
-                           Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
-                           AfterCallDirect(m_RegWorkingSet);
-        }
+                BeforeCallDirect(m_RegWorkingSet);
+                PushImm32(Value);
+                PushImm32(PAddr);
+                MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
+                Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+                AfterCallDirect(m_RegWorkingSet);
+            }
             break;
         case 0x0404001C: MoveConstToVariable(0, &g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG"); break;
         case 0x04080000: MoveConstToVariable(Value & 0xFFC, &g_Reg->SP_PC_REG, "SP_PC_REG"); break;
@@ -10528,112 +10528,112 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         switch (PAddr)
         {
         case 0x04300000:
-        {
-                           uint32_t ModValue;
-                           ModValue = 0x7F;
-                           if ((Value & MI_CLR_INIT) != 0)
-                           {
-                               ModValue |= MI_MODE_INIT;
-                           }
-                           if ((Value & MI_CLR_EBUS) != 0)
-                           {
-                               ModValue |= MI_MODE_EBUS;
-                           }
-                           if ((Value & MI_CLR_RDRAM) != 0)
-                           {
-                               ModValue |= MI_MODE_RDRAM;
-                           }
-                           if (ModValue != 0)
-                           {
-                               AndConstToVariable(~ModValue, &g_Reg->MI_MODE_REG, "MI_MODE_REG");
-                           }
+            {
+               uint32_t ModValue;
+               ModValue = 0x7F;
+               if ((Value & MI_CLR_INIT) != 0)
+               {
+                   ModValue |= MI_MODE_INIT;
+               }
+               if ((Value & MI_CLR_EBUS) != 0)
+               {
+                   ModValue |= MI_MODE_EBUS;
+               }
+               if ((Value & MI_CLR_RDRAM) != 0)
+               {
+                   ModValue |= MI_MODE_RDRAM;
+               }
+               if (ModValue != 0)
+               {
+                   AndConstToVariable(~ModValue, &g_Reg->MI_MODE_REG, "MI_MODE_REG");
+               }
 
-                           ModValue = (Value & 0x7F);
-                           if ((Value & MI_SET_INIT) != 0)
-                           {
-                               ModValue |= MI_MODE_INIT;
-                           }
-                           if ((Value & MI_SET_EBUS) != 0)
-                           {
-                               ModValue |= MI_MODE_EBUS;
-                           }
-                           if ((Value & MI_SET_RDRAM) != 0)
-                           {
-                               ModValue |= MI_MODE_RDRAM;
-                           }
-                           if (ModValue != 0) {
-                               OrConstToVariable(ModValue, &g_Reg->MI_MODE_REG, "MI_MODE_REG");
-                           }
-                           if ((Value & MI_CLR_DP_INTR) != 0)
-                           {
-                               AndConstToVariable((uint32_t)~MI_INTR_DP, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
-                               AndConstToVariable((uint32_t)~MI_INTR_DP, &g_Reg->m_GfxIntrReg, "m_GfxIntrReg");
-                           }
-        }
+               ModValue = (Value & 0x7F);
+               if ((Value & MI_SET_INIT) != 0)
+               {
+                   ModValue |= MI_MODE_INIT;
+               }
+               if ((Value & MI_SET_EBUS) != 0)
+               {
+                   ModValue |= MI_MODE_EBUS;
+               }
+               if ((Value & MI_SET_RDRAM) != 0)
+               {
+                   ModValue |= MI_MODE_RDRAM;
+               }
+               if (ModValue != 0) {
+                   OrConstToVariable(ModValue, &g_Reg->MI_MODE_REG, "MI_MODE_REG");
+               }
+               if ((Value & MI_CLR_DP_INTR) != 0)
+               {
+                   AndConstToVariable((uint32_t)~MI_INTR_DP, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
+                   AndConstToVariable((uint32_t)~MI_INTR_DP, &g_Reg->m_GfxIntrReg, "m_GfxIntrReg");
+               }
+            }
             break;
         case 0x0430000C:
-        {
-                           uint32_t ModValue;
-                           ModValue = 0;
-                           if ((Value & MI_INTR_MASK_CLR_SP) != 0)
-                           {
-                               ModValue |= MI_INTR_MASK_SP;
-                           }
-                           if ((Value & MI_INTR_MASK_CLR_SI) != 0)
-                           {
-                               ModValue |= MI_INTR_MASK_SI;
-                           }
-                           if ((Value & MI_INTR_MASK_CLR_AI) != 0)
-                           {
-                               ModValue |= MI_INTR_MASK_AI;
-                           }
-                           if ((Value & MI_INTR_MASK_CLR_VI) != 0)
-                           {
-                               ModValue |= MI_INTR_MASK_VI;
-                           }
-                           if ((Value & MI_INTR_MASK_CLR_PI) != 0)
-                           {
-                               ModValue |= MI_INTR_MASK_PI;
-                           }
-                           if ((Value & MI_INTR_MASK_CLR_DP) != 0)
-                           {
-                               ModValue |= MI_INTR_MASK_DP;
-                           }
-                           if (ModValue != 0)
-                           {
-                               AndConstToVariable(~ModValue, &g_Reg->MI_INTR_MASK_REG, "MI_INTR_MASK_REG");
-                           }
+            {
+               uint32_t ModValue;
+               ModValue = 0;
+               if ((Value & MI_INTR_MASK_CLR_SP) != 0)
+               {
+                   ModValue |= MI_INTR_MASK_SP;
+               }
+               if ((Value & MI_INTR_MASK_CLR_SI) != 0)
+               {
+                   ModValue |= MI_INTR_MASK_SI;
+               }
+               if ((Value & MI_INTR_MASK_CLR_AI) != 0)
+               {
+                   ModValue |= MI_INTR_MASK_AI;
+               }
+               if ((Value & MI_INTR_MASK_CLR_VI) != 0)
+               {
+                   ModValue |= MI_INTR_MASK_VI;
+               }
+               if ((Value & MI_INTR_MASK_CLR_PI) != 0)
+               {
+                   ModValue |= MI_INTR_MASK_PI;
+               }
+               if ((Value & MI_INTR_MASK_CLR_DP) != 0)
+               {
+                   ModValue |= MI_INTR_MASK_DP;
+               }
+               if (ModValue != 0)
+               {
+                   AndConstToVariable(~ModValue, &g_Reg->MI_INTR_MASK_REG, "MI_INTR_MASK_REG");
+               }
 
-                           ModValue = 0;
-                           if ((Value & MI_INTR_MASK_SET_SP) != 0)
-                           {
-                               ModValue |= MI_INTR_MASK_SP;
-                           }
-                           if ((Value & MI_INTR_MASK_SET_SI) != 0)
-                           {
-                               ModValue |= MI_INTR_MASK_SI;
-                           }
-                           if ((Value & MI_INTR_MASK_SET_AI) != 0)
-                           {
-                               ModValue |= MI_INTR_MASK_AI;
-                           }
-                           if ((Value & MI_INTR_MASK_SET_VI) != 0)
-                           {
-                               ModValue |= MI_INTR_MASK_VI;
-                           }
-                           if ((Value & MI_INTR_MASK_SET_PI) != 0)
-                           {
-                               ModValue |= MI_INTR_MASK_PI;
-                           }
-                           if ((Value & MI_INTR_MASK_SET_DP) != 0)
-                           {
-                               ModValue |= MI_INTR_MASK_DP;
-                           }
-                           if (ModValue != 0)
-                           {
-                               OrConstToVariable(ModValue, &g_Reg->MI_INTR_MASK_REG, "MI_INTR_MASK_REG");
-                           }
-        }
+               ModValue = 0;
+               if ((Value & MI_INTR_MASK_SET_SP) != 0)
+               {
+                   ModValue |= MI_INTR_MASK_SP;
+               }
+               if ((Value & MI_INTR_MASK_SET_SI) != 0)
+               {
+                   ModValue |= MI_INTR_MASK_SI;
+               }
+               if ((Value & MI_INTR_MASK_SET_AI) != 0)
+               {
+                   ModValue |= MI_INTR_MASK_AI;
+               }
+               if ((Value & MI_INTR_MASK_SET_VI) != 0)
+               {
+                   ModValue |= MI_INTR_MASK_VI;
+               }
+               if ((Value & MI_INTR_MASK_SET_PI) != 0)
+               {
+                   ModValue |= MI_INTR_MASK_PI;
+               }
+               if ((Value & MI_INTR_MASK_SET_DP) != 0)
+               {
+                   ModValue |= MI_INTR_MASK_DP;
+               }
+               if (ModValue != 0)
+               {
+                   OrConstToVariable(ModValue, &g_Reg->MI_INTR_MASK_REG, "MI_INTR_MASK_REG");
+               }
+            }
             break;
         default:
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
@@ -10751,14 +10751,14 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x04600008:
             MoveConstToVariable(Value, &g_Reg->PI_RD_LEN_REG, "PI_RD_LEN_REG");
             BeforeCallDirect(m_RegWorkingSet);
-            MoveConstToX86reg((uint32_t)((CDMA *)this), x86_ECX);
+            MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CDMA::PI_DMA_READ), "CDMA::PI_DMA_READ");
             AfterCallDirect(m_RegWorkingSet);
             break;
         case 0x0460000C:
             MoveConstToVariable(Value, &g_Reg->PI_WR_LEN_REG, "PI_WR_LEN_REG");
             BeforeCallDirect(m_RegWorkingSet);
-            MoveConstToX86reg((uint32_t)((CDMA *)this), x86_ECX);
+            MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CDMA::PI_DMA_WRITE), "CDMA::PI_DMA_WRITE");
             AfterCallDirect(m_RegWorkingSet);
             break;
@@ -10841,18 +10841,18 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         }
         break;
     case 0x1fc00000:
-    {
-                       m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
-                       UpdateCounters(m_RegWorkingSet, false, true);
-                       m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+        {
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            UpdateCounters(m_RegWorkingSet, false, true);
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
-                       BeforeCallDirect(m_RegWorkingSet);
-                       PushImm32(Value);
-                       PushImm32(PAddr);
-                       MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
-                       Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
-                       AfterCallDirect(m_RegWorkingSet);
-    }
+            BeforeCallDirect(m_RegWorkingSet);
+            PushImm32(Value);
+            PushImm32(PAddr);
+            MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
+            Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+            AfterCallDirect(m_RegWorkingSet);
+        }
         break;
     default:
         if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
@@ -10924,14 +10924,14 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         case 0x04040008:
             MoveX86regToVariable(Reg, &g_Reg->SP_RD_LEN_REG, "SP_RD_LEN_REG");
             BeforeCallDirect(m_RegWorkingSet);
-            MoveConstToX86reg((uint32_t)((CDMA *)this), x86_ECX);
+            MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CDMA::SP_DMA_READ), "CDMA::SP_DMA_READ");
             AfterCallDirect(m_RegWorkingSet);
             break;
         case 0x0404000C:
             MoveX86regToVariable(Reg, &g_Reg->SP_WR_LEN_REG, "SP_WR_LEN_REG");
             BeforeCallDirect(m_RegWorkingSet);
-            MoveConstToX86reg((uint32_t)((CDMA *)this), x86_ECX);
+            MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CDMA::SP_DMA_WRITE), "CDMA::SP_DMA_WRITE");
             AfterCallDirect(m_RegWorkingSet);
             break;
@@ -11125,14 +11125,14 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         case 0x04600008:
             MoveX86regToVariable(Reg, &g_Reg->PI_RD_LEN_REG, "PI_RD_LEN_REG");
             BeforeCallDirect(m_RegWorkingSet);
-            MoveConstToX86reg((uint32_t)((CDMA *)this), x86_ECX);
+            MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CDMA::PI_DMA_READ), "CDMA::PI_DMA_READ");
             AfterCallDirect(m_RegWorkingSet);
             break;
         case 0x0460000C:
             MoveX86regToVariable(Reg, &g_Reg->PI_WR_LEN_REG, "PI_WR_LEN_REG");
             BeforeCallDirect(m_RegWorkingSet);
-            MoveConstToX86reg((uint32_t)((CDMA *)this), x86_ECX);
+            MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CDMA::PI_DMA_WRITE), "CDMA::PI_DMA_WRITE");
             AfterCallDirect(m_RegWorkingSet);
             break;
