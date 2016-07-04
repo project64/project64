@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 #include <Common/md5.h>
-#include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
+#include <Project64-core/N64System/Recompiler/RecompilerOps.h>
 #include <Project64-core/N64System/Recompiler/CodeSection.h>
 
 class CCodeBlock

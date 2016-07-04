@@ -30,7 +30,7 @@
 
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
-CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly) :
+CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem) :
     CSystemEvents(this, Plugins),
     m_EndEmulation(false),
     m_SaveUsing((SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip)),
@@ -56,7 +56,8 @@ CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly) :
     m_SyncCount(0),
     m_thread(NULL),
     m_hPauseEvent(true),
-    m_CheatsSlectionChanged(false)
+    m_CheatsSlectionChanged(false),
+    m_SyncCpu(SyncSystem)
 {
     uint32_t gameHertz = g_Settings->LoadDword(Game_ScreenHertz);
     if (gameHertz == 0)
@@ -66,6 +67,36 @@ CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly) :
     m_Limiter.SetHertz(gameHertz);
     g_Settings->SaveDword(GameRunning_ScreenHertz, gameHertz);
     m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats), Plugins);
+    WriteTrace(TraceN64System, TraceDebug, "Setting up system");
+    CInterpreterCPU::BuildCPU();
+
+    if (!SyncSystem)
+    {
+        uint32_t CpuType = g_Settings->LoadDword(Game_CpuType);
+        WriteTrace(TraceN64System, TraceDebug, "CpuType = %d",CpuType);
+        if (CpuType == CPU_SyncCores && !g_Settings->LoadBool(Debugger_Enabled))
+        {
+            g_Settings->SaveDword(Game_CpuType, CPU_Recompiler);
+            CpuType = CPU_Recompiler;
+        }
+        if (CpuType == CPU_SyncCores)
+        {
+            if (g_Plugins->SyncWindow() == NULL)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            g_Notify->DisplayMessage(5, "Copy Plugins");
+            g_Plugins->CopyPlugins(g_Settings->LoadStringVal(Directory_PluginSync));
+            m_SyncPlugins = new CPlugins(Directory_PluginSync);
+            m_SyncPlugins->SetRenderWindows(g_Plugins->SyncWindow(), NULL);
+            m_SyncCPU = new CN64System(m_SyncPlugins, true, true);
+        }
+
+        if (CpuType == CPU_Recompiler || CpuType == CPU_SyncCores)
+        {
+            m_Recomp = new CRecompiler(m_Reg, m_Profile, m_EndEmulation);
+        }
+    }
 }
 
 CN64System::~CN64System()
@@ -87,6 +118,12 @@ CN64System::~CN64System()
     {
         delete m_SyncPlugins;
         m_SyncPlugins = NULL;
+    }
+    if (m_thread != NULL)
+    {
+        WriteTrace(TraceN64System, TraceDebug, "Deleting thread object");
+        delete m_thread;
+        m_thread = NULL;
     }
 }
 
@@ -257,7 +294,7 @@ bool CN64System::RunFileImage(const char * FileLoc)
 
         WriteTrace(TraceN64System, TraceDebug, "Finished Loading (GoodName: %s)", g_Settings->LoadStringVal(Game_GoodName).c_str());
 
-        g_BaseSystem = new CN64System(g_Plugins, false);
+        g_BaseSystem = new CN64System(g_Plugins, false, false);
         if (g_BaseSystem)
         {
             if (g_Settings->LoadBool(Setting_AutoStart) != 0)
@@ -267,7 +304,16 @@ bool CN64System::RunFileImage(const char * FileLoc)
             }
             else
             {
-                g_BaseSystem->SetActiveSystem(true);
+                bool bSetActive = true;
+                if (g_BaseSystem->m_SyncCPU != NULL)
+                {
+                    bSetActive = g_BaseSystem->m_SyncCPU->SetActiveSystem(true);
+                }
+
+                if (bSetActive)
+                {
+                    bSetActive = g_BaseSystem->SetActiveSystem(true);
+                }
             }
         }
     }
@@ -437,7 +483,7 @@ bool CN64System::EmulationStarting(CThread * thread)
 
 void CN64System::StartEmulation2(bool NewThread)
 {
-    WriteTrace(TraceN64System, TraceDebug, "Start (NewThread: %s)", NewThread ? "true" : "false");
+    WriteTrace(TraceN64System, TraceDebug, "Start (NewThread: %s)",NewThread ? "true" : "false");
     if (NewThread)
     {
         if (bHaveDebugger())
@@ -445,35 +491,6 @@ void CN64System::StartEmulation2(bool NewThread)
             StartLog();
         }
         g_Settings->SaveDword(Game_CurrentSaveState, g_Settings->LoadDefaultDword(Game_CurrentSaveState));
-
-        WriteTrace(TraceN64System, TraceDebug, "Setting up system");
-        CInterpreterCPU::BuildCPU();
-
-        uint32_t CpuType = g_Settings->LoadDword(Game_CpuType);
-        WriteTrace(TraceN64System, TraceDebug, "CpuType = %d", CpuType);
-        if (CpuType == CPU_SyncCores && !g_Settings->LoadBool(Debugger_Enabled))
-        {
-            g_Settings->SaveDword(Game_CpuType, CPU_Recompiler);
-            CpuType = CPU_Recompiler;
-        }
-
-        if (CpuType == CPU_SyncCores)
-        {
-            if (g_Plugins->SyncWindow() == NULL)
-            {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-            }
-            g_Notify->DisplayMessage(5, "Copy Plugins");
-            g_Plugins->CopyPlugins(g_Settings->LoadStringVal(Directory_PluginSync));
-            m_SyncPlugins = new CPlugins(Directory_PluginSync);
-            m_SyncPlugins->SetRenderWindows(g_Plugins->SyncWindow(), NULL);
-            m_SyncCPU = new CN64System(m_SyncPlugins, true);
-        }
-
-        if (CpuType == CPU_Recompiler || CpuType == CPU_SyncCores)
-        {
-            m_Recomp = new CRecompiler(m_Reg, m_Profile, m_EndEmulation);
-        }
 
         WriteTrace(TraceN64System, TraceDebug, "Setting system as active");
         bool bSetActive = true;
@@ -487,11 +504,16 @@ void CN64System::StartEmulation2(bool NewThread)
             bSetActive = SetActiveSystem();
         }
 
-        if (!bSetActive)
+        if (!m_Plugins->Reset(this) || !m_Plugins->initilized())
+        {
+            WriteTrace(TraceN64System, TraceWarning, "can not run, plugins not initlized");
+            g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
+            g_Notify->DisplayError(MSG_PLUGIN_NOT_INIT);
+        }
+        else if (!bSetActive)
         {
             WriteTrace(TraceN64System, TraceWarning, "Failed to set system as active");
             g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
-            g_Notify->DisplayError(MSG_PLUGIN_NOT_INIT);
         }
         else
         {
@@ -953,7 +975,7 @@ void CN64System::ExecuteCPU()
     default:             ExecuteInterpret();  break;
     }
     WriteTrace(TraceN64System, TraceDebug, "CPU finished executing");
-    g_Settings->SaveBool(GameRunning_CPU_Running, (uint32_t)false);
+    CpuStopped();
     WriteTrace(TraceN64System, TraceDebug, "Notifing plugins rom is done");
     m_Plugins->RomClosed();
     if (m_SyncCPU)

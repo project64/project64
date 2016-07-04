@@ -11,7 +11,7 @@
 #pragma once
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include "TranslateVaddr.h"
-#include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
+#include <Project64-core/N64System/Recompiler/RecompilerOps.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>
 #include <Project64-core/N64System/Mips/PifRam.h>
 #include <Project64-core/N64System/Mips/FlashRam.h>
@@ -57,6 +57,7 @@
  * 0xAABBCCDD EEFFGGHH --> 0xDDCCBBAA HHGGFFEE
  *   GPR bits[63..0]         b1b2b3b4 b5b6b7b8
  */
+class CX86RecompilerOps;
 
 class CMipsMemoryVM :
     public CTransVaddr,
@@ -130,7 +131,7 @@ private:
     CMipsMemoryVM(const CMipsMemoryVM&);            // Disable copy constructor
     CMipsMemoryVM& operator=(const CMipsMemoryVM&); // Disable assignment
 
-    friend CRecompilerOps;
+    friend CX86RecompilerOps;
     void Compile_LW(bool ResultSigned, bool bRecordLLbit);
     void Compile_SW(bool bCheckLLbit);
 

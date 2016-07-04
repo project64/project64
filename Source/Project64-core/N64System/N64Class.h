@@ -47,7 +47,7 @@ class CN64System :
     protected CDebugSettings
 {
 public:
-    CN64System(CPlugins * Plugins, bool SavesReadOnly);
+    CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem);
     virtual ~CN64System(void);
 
     CProfiling m_Profile;
@@ -154,6 +154,7 @@ private:
     uint32_t        m_TLBLoadAddress;
     uint32_t        m_TLBStoreAddress;
     uint32_t        m_SyncCount;
+    bool            m_SyncCpu;
     bool            m_CheatsSlectionChanged;
 
     //When Syncing cores this is the PC where it last Sync'ed correctly
