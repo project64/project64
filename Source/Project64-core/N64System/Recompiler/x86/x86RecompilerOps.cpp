@@ -2026,7 +2026,6 @@ void CX86RecompilerOps::JAL()
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-    return;
 }
 
 void CX86RecompilerOps::ADDI()
@@ -2694,44 +2693,42 @@ void CX86RecompilerOps::LH_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExt
 
 void CX86RecompilerOps::LB()
 {
-    OPCODE & Opcode = CX86RecompilerOps::m_Opcode;
+    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
+
+    if (m_Opcode.rt == 0)
+    {
+        return;
+    }
+
+    if (IsConst(m_Opcode.base))
+    {
+        uint32_t Address = (GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset) ^ 3;
+        Map_GPR_32bit(m_Opcode.rt, true, -1);
+        LB_KnownAddress(GetMipsRegMapLo(m_Opcode.rt), Address, true);
+        return;
+    }
+    if (IsMapped(m_Opcode.rt))
+    {
+        ProtectGPR(m_Opcode.rt);
+    }
     x86Reg TempReg1, TempReg2;
-
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(Opcode.Hex, m_CompilePC));
-
-    if (Opcode.rt == 0)
+    if (IsMapped(m_Opcode.base))
     {
-        return;
-    }
-
-    if (IsConst(Opcode.base))
-    {
-        uint32_t Address = (GetMipsRegLo(Opcode.base) + (int16_t)Opcode.offset) ^ 3;
-        Map_GPR_32bit(Opcode.rt, true, -1);
-        LB_KnownAddress(GetMipsRegMapLo(Opcode.rt), Address, true);
-        return;
-    }
-    if (IsMapped(Opcode.rt))
-    {
-        ProtectGPR(Opcode.rt);
-    }
-    if (IsMapped(Opcode.base))
-    {
-        ProtectGPR(Opcode.base);
-        if (Opcode.offset != 0)
+        ProtectGPR(m_Opcode.base);
+        if (m_Opcode.offset != 0)
         {
             TempReg1 = Map_TempReg(x86_Any, -1, false);
-            LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(Opcode.base), (int16_t)Opcode.offset);
+            LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
         }
         else
         {
-            TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
         }
     }
     else
     {
-        TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
-        AddConstToX86Reg(TempReg1, (int16_t)Opcode.immediate);
+        TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
+        AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
     }
     if (g_System->bUseTlb())
     {
@@ -2741,73 +2738,72 @@ void CX86RecompilerOps::LB()
         MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
         CompileReadTLBMiss(TempReg1, TempReg2);
         XorConstToX86Reg(TempReg1, 3);
-        Map_GPR_32bit(Opcode.rt, true, -1);
-        MoveSxByteX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(Opcode.rt));
+        Map_GPR_32bit(m_Opcode.rt, true, -1);
+        MoveSxByteX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
     }
     else
     {
         AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
         XorConstToX86Reg(TempReg1, 3);
-        Map_GPR_32bit(Opcode.rt, true, -1);
-        MoveSxN64MemToX86regByte(GetMipsRegMapLo(Opcode.rt), TempReg1);
+        Map_GPR_32bit(m_Opcode.rt, true, -1);
+        MoveSxN64MemToX86regByte(GetMipsRegMapLo(m_Opcode.rt), TempReg1);
     }
 }
 
 void CX86RecompilerOps::LH()
 {
-    OPCODE & Opcode = CX86RecompilerOps::m_Opcode;
-    x86Reg TempReg1, TempReg2;
+    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(Opcode.Hex, m_CompilePC));
+    if (m_Opcode.rt == 0) return;
 
-    if (Opcode.rt == 0) return;
-
-    if (IsConst(Opcode.base))
+    if (IsConst(m_Opcode.base))
     {
-        uint32_t Address = (GetMipsRegLo(Opcode.base) + (int16_t)Opcode.offset) ^ 2;
-        Map_GPR_32bit(Opcode.rt, true, -1);
-        LH_KnownAddress(GetMipsRegMapLo(Opcode.rt), Address, true);
+        uint32_t Address = (GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset) ^ 2;
+        Map_GPR_32bit(m_Opcode.rt, true, -1);
+        LH_KnownAddress(GetMipsRegMapLo(m_Opcode.rt), Address, true);
         return;
     }
-    if (IsMapped(Opcode.rt))
+    if (IsMapped(m_Opcode.rt))
     {
-        ProtectGPR(Opcode.rt);
+        ProtectGPR(m_Opcode.rt);
     }
-    if (IsMapped(Opcode.base))
+
+    x86Reg TempReg1;
+    if (IsMapped(m_Opcode.base))
     {
-        ProtectGPR(Opcode.base);
-        if (Opcode.offset != 0)
+        ProtectGPR(m_Opcode.base);
+        if (m_Opcode.offset != 0)
         {
             TempReg1 = Map_TempReg(x86_Any, -1, false);
-            LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(Opcode.base), (int16_t)Opcode.offset);
+            LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
         }
         else
         {
-            TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
+            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
         }
     }
     else
     {
-        TempReg1 = Map_TempReg(x86_Any, Opcode.base, false);
-        AddConstToX86Reg(TempReg1, (int16_t)Opcode.immediate);
+        TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
+        AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
     }
     if (g_System->bUseTlb())
     {
-        TempReg2 = Map_TempReg(x86_Any, -1, false);
+        x86Reg TempReg2 = Map_TempReg(x86_Any, -1, false);
         MoveX86RegToX86Reg(TempReg1, TempReg2);
         ShiftRightUnsignImmed(TempReg2, 12);
         MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
         CompileReadTLBMiss(TempReg1, TempReg2);
         XorConstToX86Reg(TempReg1, 2);
-        Map_GPR_32bit(Opcode.rt, true, -1);
-        MoveSxHalfX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(Opcode.rt));
+        Map_GPR_32bit(m_Opcode.rt, true, -1);
+        MoveSxHalfX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
     }
     else
     {
         AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
         XorConstToX86Reg(TempReg1, 2);
-        Map_GPR_32bit(Opcode.rt, true, -1);
-        MoveSxN64MemToX86regHalf(GetMipsRegMapLo(Opcode.rt), TempReg1);
+        Map_GPR_32bit(m_Opcode.rt, true, -1);
+        MoveSxN64MemToX86regHalf(GetMipsRegMapLo(m_Opcode.rt), TempReg1);
     }
 }
 
@@ -3786,7 +3782,6 @@ void CX86RecompilerOps::SW()
 
 void CX86RecompilerOps::SW(bool bCheckLLbit)
 {
-    OPCODE & m_Opcode = CX86RecompilerOps::m_Opcode;
     CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     x86Reg TempReg1, TempReg2;
@@ -4078,7 +4073,6 @@ void CX86RecompilerOps::LL()
 
 void CX86RecompilerOps::LWC1()
 {
-    OPCODE & m_Opcode = CX86RecompilerOps::m_Opcode;
     x86Reg TempReg1, TempReg2, TempReg3;
     char Name[50];
 
@@ -4389,7 +4383,6 @@ void CX86RecompilerOps::SC()
 
 void CX86RecompilerOps::SWC1()
 {
-    OPCODE & m_Opcode = CX86RecompilerOps::m_Opcode;
     x86Reg TempReg1, TempReg2, TempReg3;
     char Name[50];
 
