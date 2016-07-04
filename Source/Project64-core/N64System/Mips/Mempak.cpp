@@ -144,7 +144,7 @@ void Mempak::WriteTo(int32_t Control, uint32_t address, uint8_t * data)
 
         MempakHandle[Control].Seek(address, CFile::begin);
         MempakHandle[Control].Write(data, 0x20);
-        MempakHandle[Control].Flush();
+        //MempakHandle[Control].Flush();
     }
     else
     {
