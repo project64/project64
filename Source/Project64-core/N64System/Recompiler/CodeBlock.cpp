@@ -86,7 +86,7 @@ CCodeBlock::~CCodeBlock()
 
     if (m_RecompilerOps != NULL)
     {
-        delete m_RecompilerOps;
+        delete (CX86RecompilerOps *)m_RecompilerOps;
         m_RecompilerOps = NULL;
     }
 }
