@@ -213,8 +213,6 @@ public:
     void SyncRegState(const CRegInfo & SyncTo);
     bool SetupRegisterForLoop(CCodeBlock * BlockInfo, const CRegInfo & RegSet);
     CRegInfo & GetRegWorkingSet(void);
-    static void BeforeCallDirect(CRegInfo & RegSet);
-    static void AfterCallDirect(CRegInfo & RegSet);
     void SetRegWorkingSet(const CRegInfo & RegInfo);
     bool InheritParentInfo();
     void LinkJump(CJumpInfo & JumpInfo, uint32_t SectionID = -1, uint32_t FromSectionID = -1);

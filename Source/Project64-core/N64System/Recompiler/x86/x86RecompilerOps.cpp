@@ -80,9 +80,9 @@ void CX86RecompilerOps::PreCompileOpcode(void)
 
     /*if (m_CompilePC == 0x801C1B88)
     {
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     Call_Direct(AddressOf(TestFunc), "TestFunc");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
     }*/
 
     /*if (m_CompilePC >= 0x801C1AF8 && m_CompilePC <= 0x801C1C00 && m_NextInstruction == NORMAL)
@@ -90,10 +90,10 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     UpdateCounters(m_RegWorkingSet,false,true);
     MoveConstToVariable(m_CompilePC,&g_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
     if (g_SyncSystem) {
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     MoveConstToX86reg((uint32_t)g_BaseSystem,x86_ECX);
     Call_Direct(AddressOf(&CN64System::SyncSystemPC), "CN64System::SyncSystemPC");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
     }
     }*/
 
@@ -2435,10 +2435,10 @@ void CX86RecompilerOps::DADDIU()
         UnMap_GPR(m_Opcode.rt, true);
     }
 
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
     Call_Direct((void *)R4300iOp::DADDIU, "R4300iOp::DADDIU");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 void CX86RecompilerOps::CACHE()
@@ -2452,7 +2452,7 @@ void CX86RecompilerOps::CACHE()
     {
     case 0:
     case 16:
-        BeforeCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.BeforeCallDirect();
         PushImm32("CRecompiler::Remove_Cache", CRecompiler::Remove_Cache);
         PushImm32("0x20", 0x20);
         if (IsConst(m_Opcode.base))
@@ -2473,7 +2473,7 @@ void CX86RecompilerOps::CACHE()
         }
         MoveConstToX86reg((uint32_t)g_Recompiler, x86_ECX);
         Call_Direct(AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
-        AfterCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.AfterCallDirect();
         break;
     case 1:
     case 3:
@@ -2505,10 +2505,10 @@ void CX86RecompilerOps::LDL()
         UnMap_GPR(m_Opcode.rt, true);
     }
 
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
     Call_Direct((void *)R4300iOp::LDL, "R4300iOp::LDL");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 void CX86RecompilerOps::LDR()
@@ -2523,10 +2523,10 @@ void CX86RecompilerOps::LDR()
         UnMap_GPR(m_Opcode.rt, true);
     }
 
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
     Call_Direct((void *)R4300iOp::LDR, "R4300iOp::LDR");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 void CX86RecompilerOps::LB_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExtend)
@@ -3045,12 +3045,12 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
         case 0x04100000:
             {
                static uint32_t TempValue = 0;
-               BeforeCallDirect(m_RegWorkingSet);
+               m_RegWorkingSet.BeforeCallDirect();
                PushImm32("TempValue", (uint32_t)&TempValue);
                PushImm32(PAddr);
                MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
                Call_Direct(AddressOf(&CMipsMemoryVM::LW_NonMemory), "CMipsMemoryVM::LW_NonMemory");
-               AfterCallDirect(m_RegWorkingSet);
+               m_RegWorkingSet.AfterCallDirect();
                MoveVariableToX86reg(&TempValue, "TempValue", Reg);
             }
             break;
@@ -3073,10 +3073,10 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
                 m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
                 UpdateCounters(m_RegWorkingSet, false, true);
                 m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-                BeforeCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.BeforeCallDirect();
                 MoveConstToX86reg((uint32_t)g_MMU, x86_ECX);
                 Call_Direct(AddressOf(&CMipsMemoryVM::UpdateHalfLine), "CMipsMemoryVM::UpdateHalfLine");
-                AfterCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.AfterCallDirect();
                 MoveVariableToX86reg((void *)&g_MMU->m_HalfLine, "MMU->m_HalfLine", Reg);
                 break;
             default:
@@ -3096,21 +3096,21 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
                     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
                     UpdateCounters(m_RegWorkingSet, false, true);
                     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-                    BeforeCallDirect(m_RegWorkingSet);
+                    m_RegWorkingSet.BeforeCallDirect();
                     MoveConstToX86reg((uint32_t)g_Audio, x86_ECX);
                     Call_Direct(AddressOf(&CAudio::GetLength), "CAudio::GetLength");
                     MoveX86regToVariable(x86_EAX, &m_TempValue, "m_TempValue");
-                    AfterCallDirect(m_RegWorkingSet);
+                    m_RegWorkingSet.AfterCallDirect();
                     MoveVariableToX86reg(&m_TempValue, "m_TempValue", Reg);
                 }
                 else
                 {
                     if (g_Plugins->Audio()->AiReadLength != NULL)
                     {
-                        BeforeCallDirect(m_RegWorkingSet);
+                        m_RegWorkingSet.BeforeCallDirect();
                         Call_Direct((void *)g_Plugins->Audio()->AiReadLength, "AiReadLength");
                         MoveX86regToVariable(x86_EAX, &m_TempValue, "m_TempValue");
-                        AfterCallDirect(m_RegWorkingSet);
+                        m_RegWorkingSet.AfterCallDirect();
                         MoveVariableToX86reg(&m_TempValue, "m_TempValue", Reg);
                     }
                     else
@@ -3122,11 +3122,11 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
             case 0x0450000C:
                 if (g_System->bFixedAudio())
                 {
-                    BeforeCallDirect(m_RegWorkingSet);
+                    m_RegWorkingSet.BeforeCallDirect();
                     MoveConstToX86reg((uint32_t)g_Audio, x86_ECX);
                     Call_Direct(AddressOf(&CAudio::GetStatus), "GetStatus");
                     MoveX86regToVariable(x86_EAX, &m_TempValue, "m_TempValue");
-                    AfterCallDirect(m_RegWorkingSet);
+                    m_RegWorkingSet.AfterCallDirect();
                     MoveVariableToX86reg(&m_TempValue, "m_TempValue", Reg);
                 }
                 else
@@ -3197,9 +3197,9 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
                 case 0x05000504: MoveVariableToX86reg(&g_Reg->ASIC_MISC_REG, "ASIC_MISC_REG", Reg); break;
                 case 0x05000508:
                     MoveVariableToX86reg(&g_Reg->ASIC_STATUS, "ASIC_STATUS", Reg);
-                    BeforeCallDirect(m_RegWorkingSet);
+                    m_RegWorkingSet.BeforeCallDirect();
                     Call_Direct(AddressOf(&DiskGapSectorCheck), "DiskGapSectorCheck");
-                    AfterCallDirect(m_RegWorkingSet);
+                    m_RegWorkingSet.AfterCallDirect();
                     break;
                 case 0x0500050C: MoveVariableToX86reg(&g_Reg->ASIC_CUR_TK, "ASIC_CUR_TK", Reg); break;
                 case 0x05000510: MoveVariableToX86reg(&g_Reg->ASIC_BM_STATUS, "ASIC_BM_STATUS", Reg); break;
@@ -3994,10 +3994,10 @@ void CX86RecompilerOps::SDL()
         UnMap_GPR(m_Opcode.rt, true);
     }
 
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
     Call_Direct((void *)R4300iOp::SDL, "R4300iOp::SDL");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 void CX86RecompilerOps::SDR()
@@ -4012,10 +4012,10 @@ void CX86RecompilerOps::SDR()
         UnMap_GPR(m_Opcode.rt, true);
     }
 
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
     Call_Direct((void *)R4300iOp::SDR, "R4300iOp::SDR");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 void CX86RecompilerOps::LL()
@@ -5441,20 +5441,20 @@ void CX86RecompilerOps::SPECIAL_DMULT()
         UnMap_GPR(m_Opcode.rt, true);
     }
 
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
     Call_Direct((void *)R4300iOp::SPECIAL_DMULT, "R4300iOp::SPECIAL_DMULT");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 void CX86RecompilerOps::SPECIAL_DMULTU()
 {
     UnMap_GPR(m_Opcode.rs, true);
     UnMap_GPR(m_Opcode.rt, true);
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
     Call_Direct((void *)R4300iOp::SPECIAL_DMULTU, "R4300iOp::SPECIAL_DMULTU");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
 
 #ifdef toremove
     /* _RegLO->UDW = (uint64)_GPR[m_Opcode.rs].UW[0] * (uint64)_GPR[m_Opcode.rt].UW[0]; */
@@ -5528,20 +5528,20 @@ void CX86RecompilerOps::SPECIAL_DDIV()
 {
     UnMap_GPR(m_Opcode.rs, true);
     UnMap_GPR(m_Opcode.rt, true);
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
     Call_Direct((void *)R4300iOp::SPECIAL_DDIV, "R4300iOp::SPECIAL_DDIV");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 void CX86RecompilerOps::SPECIAL_DDIVU()
 {
     UnMap_GPR(m_Opcode.rs, true);
     UnMap_GPR(m_Opcode.rt, true);
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     MoveConstToVariable(m_Opcode.Hex, &R4300iOp::m_Opcode.Hex, "R4300iOp::m_Opcode.Hex");
     Call_Direct((void *)R4300iOp::SPECIAL_DDIVU, "R4300iOp::SPECIAL_DDIVU");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 void CX86RecompilerOps::SPECIAL_ADD()
@@ -7534,10 +7534,10 @@ void CX86RecompilerOps::COP0_MF()
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-        BeforeCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.BeforeCallDirect();
         MoveConstToX86reg((uint32_t)g_SystemTimer, x86_ECX);
         Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
-        AfterCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.AfterCallDirect();
     }
     Map_GPR_32bit(m_Opcode.rt, true, -1);
     MoveVariableToX86reg(&_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd], GetMipsRegMapLo(m_Opcode.rt));
@@ -7583,10 +7583,10 @@ void CX86RecompilerOps::COP0_MT()
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-        BeforeCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.BeforeCallDirect();
         MoveConstToX86reg((uint32_t)g_SystemTimer, x86_ECX);
         Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
-        AfterCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.AfterCallDirect();
         if (IsConst(m_Opcode.rt))
         {
             MoveConstToVariable(GetMipsRegLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
@@ -7600,19 +7600,19 @@ void CX86RecompilerOps::COP0_MT()
             MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rt, false), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
         }
         AndConstToVariable((uint32_t)~CAUSE_IP7, &g_Reg->FAKE_CAUSE_REGISTER, "FAKE_CAUSE_REGISTER");
-        BeforeCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.BeforeCallDirect();
         MoveConstToX86reg((uint32_t)g_SystemTimer, x86_ECX);
         Call_Direct(AddressOf(&CSystemTimer::UpdateCompareTimer), "CSystemTimer::UpdateCompareTimer");
-        AfterCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.AfterCallDirect();
         break;
     case 9: //Count
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
         UpdateCounters(m_RegWorkingSet, false, true);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-        BeforeCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.BeforeCallDirect();
         MoveConstToX86reg((uint32_t)g_SystemTimer, x86_ECX);
         Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
-        AfterCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.AfterCallDirect();
         if (IsConst(m_Opcode.rt))
         {
             MoveConstToVariable(GetMipsRegLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
@@ -7625,10 +7625,10 @@ void CX86RecompilerOps::COP0_MT()
         {
             MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rt, false), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
         }
-        BeforeCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.BeforeCallDirect();
         MoveConstToX86reg((uint32_t)g_SystemTimer, x86_ECX);
         Call_Direct(AddressOf(&CSystemTimer::UpdateCompareTimer), "CSystemTimer::UpdateCompareTimer");
-        AfterCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.AfterCallDirect();
         break;
     case 12: //Status
     {
@@ -7649,19 +7649,19 @@ void CX86RecompilerOps::COP0_MT()
                  TestConstToX86Reg(STATUS_FR, OldStatusReg);
                  JeLabel8("FpuFlagFine", 0);
                  Jump = *g_RecompPos - 1;
-                 BeforeCallDirect(m_RegWorkingSet);
+                 m_RegWorkingSet.BeforeCallDirect();
                  MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
                  Call_Direct(AddressOf(&CRegisters::FixFpuLocations), "CRegisters::FixFpuLocations");
 
-                 AfterCallDirect(m_RegWorkingSet);
+                 m_RegWorkingSet.AfterCallDirect();
                  SetJump8(Jump, *g_RecompPos);
 
                  //TestConstToX86Reg(STATUS_FR,OldStatusReg);
                  //BreakPoint(__FILEW__,__LINE__); //CompileExit(m_CompilePC+4,m_RegWorkingSet,ExitResetRecompCode,false,JneLabel32);
-                 BeforeCallDirect(m_RegWorkingSet);
+                 m_RegWorkingSet.BeforeCallDirect();
                  MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
                  Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-                 AfterCallDirect(m_RegWorkingSet);
+                 m_RegWorkingSet.AfterCallDirect();
     }
         break;
     case 6: //Wired
@@ -7669,10 +7669,10 @@ void CX86RecompilerOps::COP0_MT()
         UpdateCounters(m_RegWorkingSet, false, true);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
-        BeforeCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.BeforeCallDirect();
         MoveConstToX86reg((uint32_t)g_SystemTimer, x86_ECX);
         Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
-        AfterCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.AfterCallDirect();
         if (IsConst(m_Opcode.rt))
         {
             MoveConstToVariable(GetMipsRegLo(m_Opcode.rt), &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
@@ -7697,10 +7697,10 @@ void CX86RecompilerOps::COP0_MT()
             UnknownOpcode();
             return;
         }
-        BeforeCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.BeforeCallDirect();
         MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
         Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-        AfterCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.AfterCallDirect();
         break;
     default:
         UnknownOpcode();
@@ -7711,23 +7711,23 @@ void CX86RecompilerOps::COP0_MT()
 void CX86RecompilerOps::COP0_CO_TLBR(void)
 {
     if (!g_System->bUseTlb()) { return; }
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     MoveConstToX86reg((uint32_t)g_TLB, x86_ECX);
     Call_Direct(AddressOf(&CTLB::ReadEntry), "CTLB::ReadEntry");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 void CX86RecompilerOps::COP0_CO_TLBWI(void)
 {
     if (!g_System->bUseTlb()) { return; }
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     PushImm32("false", 0);
     MoveVariableToX86reg(&g_Reg->INDEX_REGISTER, "INDEX_REGISTER", x86_ECX);
     AndConstToX86Reg(x86_ECX, 0x1F);
     Push(x86_ECX);
     MoveConstToX86reg((uint32_t)g_TLB, x86_ECX);
     Call_Direct(AddressOf(&CTLB::WriteEntry), "CTLB::WriteEntry");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 void CX86RecompilerOps::COP0_CO_TLBWR(void)
@@ -7737,7 +7737,7 @@ void CX86RecompilerOps::COP0_CO_TLBWR(void)
     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
     UpdateCounters(m_RegWorkingSet, false, true);
     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     MoveConstToX86reg((uint32_t)g_SystemTimer, x86_ECX);
     Call_Direct(AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
 
@@ -7747,16 +7747,16 @@ void CX86RecompilerOps::COP0_CO_TLBWR(void)
     Push(x86_ECX);
     MoveConstToX86reg((uint32_t)g_TLB, x86_ECX);
     Call_Direct(AddressOf(&CTLB::WriteEntry), "CTLB::WriteEntry");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 void CX86RecompilerOps::COP0_CO_TLBP(void)
 {
     if (!g_System->bUseTlb()) { return; }
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     MoveConstToX86reg((uint32_t)g_TLB, x86_ECX);
     Call_Direct(AddressOf(&CTLB::Probe), "CTLB::TLB_Probe");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 void compiler_COP0_CO_ERET()
@@ -7953,9 +7953,9 @@ void CX86RecompilerOps::COP1_CT()
     {
         MoveX86regToVariable(Map_TempReg(x86_Any, m_Opcode.rt, false), &_FPCR[m_Opcode.fs], CRegName::FPR_Ctrl[m_Opcode.fs]);
     }
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     Call_Direct((void *)ChangeDefaultRoundingModel, "ChangeDefaultRoundingModel");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
     m_RegWorkingSet.SetRoundingModel(CRegInfo::RoundUnknown);
 }
 
@@ -8738,18 +8738,6 @@ void CX86RecompilerOps::UnknownOpcode()
     Call_Direct((void *)R4300iOp::UnknownOpcode, "R4300iOp::UnknownOpcode");
     Ret();
     if (m_NextInstruction == NORMAL) { m_NextInstruction = END_BLOCK; }
-}
-
-void CX86RecompilerOps::BeforeCallDirect(CRegInfo  & RegSet)
-{
-    RegSet.UnMap_AllFPRs();
-    Pushad();
-}
-
-void CX86RecompilerOps::AfterCallDirect(CRegInfo  & RegSet)
-{
-    Popad();
-    RegSet.SetRoundingModel(CRegInfo::RoundUnknown);
 }
 
 void CX86RecompilerOps::EnterCodeBlock()
@@ -9557,12 +9545,12 @@ void CX86RecompilerOps::UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles)
     }
 
     WriteX86Comment("Updating Sync CPU");
-    BeforeCallDirect(RegSet);
+    RegSet.BeforeCallDirect();
     PushImm32(stdstr_f("%d", Cycles).c_str(), Cycles);
     PushImm32("g_SyncSystem", (uint32_t)g_SyncSystem);
     MoveConstToX86reg((uint32_t)g_System, x86_ECX);
     Call_Direct(AddressOf(&CN64System::UpdateSyncCPU), "CN64System::UpdateSyncCPU");
-    AfterCallDirect(RegSet);
+    RegSet.AfterCallDirect();
 }
 
 void CX86RecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues)
@@ -9936,13 +9924,13 @@ void CX86RecompilerOps::Compile_StoreInstructClean(x86Reg AddressReg, int32_t Le
     /*x86Reg StoreTemp1 = Map_TempReg(x86_Any,-1,false);
     MoveX86RegToX86Reg(AddressReg, StoreTemp1);
     AndConstToX86Reg(StoreTemp1,0xFFC);*/
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     PushImm32("CRecompiler::Remove_StoreInstruc", CRecompiler::Remove_StoreInstruc);
     PushImm32(Length);
     Push(AddressReg);
     MoveConstToX86reg((uint32_t)g_Recompiler, x86_ECX);
     Call_Direct(AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
     /*JmpLabel8("MemCheckDone",0);
     uint8_t * MemCheckDone = *g_RecompPos - 1;
 
@@ -9957,13 +9945,13 @@ void CX86RecompilerOps::Compile_StoreInstructClean(x86Reg AddressReg, int32_t Le
     JeLabel8("MemCheckDone",0);
     uint8_t * MemCheckDone2 = *g_RecompPos - 1;
 
-    BeforeCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.BeforeCallDirect();
     PushImm32("CRecompiler::Remove_StoreInstruc",CRecompiler::Remove_StoreInstruc);
     PushImm32(strLen.c_str(),Length);
     Push(AddressReg);
     MoveConstToX86reg((uint32_t)g_Recompiler,x86_ECX);
     Call_Direct(AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
-    AfterCallDirect(m_RegWorkingSet);
+    m_RegWorkingSet.AfterCallDirect();
 
     CPU_Message("      ");
     CPU_Message("      MemCheckDone:");
@@ -10250,10 +10238,10 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x04040004: MoveConstToVariable(Value, &g_Reg->SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG"); break;
         case 0x04040008:
             MoveConstToVariable(Value, &g_Reg->SP_RD_LEN_REG, "SP_RD_LEN_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CDMA::SP_DMA_READ), "CDMA::SP_DMA_READ");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04040010:
             {
@@ -10261,12 +10249,12 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
                 UpdateCounters(m_RegWorkingSet, false, true);
                 m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
-                BeforeCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.BeforeCallDirect();
                 PushImm32(Value);
                 PushImm32(PAddr);
                 MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
                 Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
-                AfterCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.AfterCallDirect();
             }
             break;
         case 0x0404001C: MoveConstToVariable(0, &g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG"); break;
@@ -10282,12 +10270,12 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         switch (PAddr)
         {
         case 0x0410000C:
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             PushImm32(Value);
             PushImm32(PAddr);
             MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         default:
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
@@ -10424,9 +10412,9 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
                 JeLabel8("Continue", 0);
                 Jump = *g_RecompPos - 1;
                 MoveConstToVariable(Value, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
-                BeforeCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.BeforeCallDirect();
                 Call_Direct((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
-                AfterCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.AfterCallDirect();
                 CPU_Message("");
                 CPU_Message("      Continue:");
                 SetJump8(Jump, *g_RecompPos);
@@ -10440,9 +10428,9 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
                 JeLabel8("Continue", 0);
                 Jump = *g_RecompPos - 1;
                 MoveConstToVariable(Value, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
-                BeforeCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.BeforeCallDirect();
                 Call_Direct((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
-                AfterCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.AfterCallDirect();
                 CPU_Message("");
                 CPU_Message("      Continue:");
                 SetJump8(Jump, *g_RecompPos);
@@ -10451,10 +10439,10 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x0440000C: MoveConstToVariable(Value, &g_Reg->VI_INTR_REG, "VI_INTR_REG"); break;
         case 0x04400010:
             AndConstToVariable((uint32_t)~MI_INTR_VI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
             Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04400014: MoveConstToVariable(Value, &g_Reg->VI_BURST_REG, "VI_BURST_REG"); break;
         case 0x04400018: MoveConstToVariable(Value, &g_Reg->VI_V_SYNC_REG, "VI_V_SYNC_REG"); break;
@@ -10478,7 +10466,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x04500000: MoveConstToVariable(Value, &g_Reg->AI_DRAM_ADDR_REG, "AI_DRAM_ADDR_REG"); break;
         case 0x04500004:
             MoveConstToVariable(Value, &g_Reg->AI_LEN_REG, "AI_LEN_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             if (g_System->bFixedAudio())
             {
                 X86BreakPoint(__FILE__, __LINE__);
@@ -10489,17 +10477,17 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             {
                 Call_Direct((void *)g_Plugins->Audio()->AiLenChanged, "AiLenChanged");
             }
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04500008: MoveConstToVariable((Value & 1), &g_Reg->AI_CONTROL_REG, "AI_CONTROL_REG"); break;
         case 0x0450000C:
             /* Clear Interrupt */;
             AndConstToVariable((uint32_t)~MI_INTR_AI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
             AndConstToVariable((uint32_t)~MI_INTR_AI, &g_Reg->m_AudioIntrReg, "m_AudioIntrReg");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
             Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04500010:
             sprintf(VarName, "RDRAM + %X", PAddr);
@@ -10522,26 +10510,26 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x04600004: MoveConstToVariable(Value, &g_Reg->PI_CART_ADDR_REG, "PI_CART_ADDR_REG"); break;
         case 0x04600008:
             MoveConstToVariable(Value, &g_Reg->PI_RD_LEN_REG, "PI_RD_LEN_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CDMA::PI_DMA_READ), "CDMA::PI_DMA_READ");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x0460000C:
             MoveConstToVariable(Value, &g_Reg->PI_WR_LEN_REG, "PI_WR_LEN_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CDMA::PI_DMA_WRITE), "CDMA::PI_DMA_WRITE");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04600010:
             if ((Value & PI_CLR_INTR) != 0)
             {
                 AndConstToVariable((uint32_t)~MI_INTR_PI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
-                BeforeCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.BeforeCallDirect();
                 MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
                 Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-                AfterCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.AfterCallDirect();
             }
             break;
         case 0x04600014: MoveConstToVariable((Value & 0xFF), &g_Reg->PI_DOMAIN1_REG, "PI_DOMAIN1_REG"); break;
@@ -10582,28 +10570,28 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             UpdateCounters(m_RegWorkingSet, false, true);
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
             MoveConstToVariable(Value, &g_Reg->SI_PIF_ADDR_RD64B_REG, "SI_PIF_ADDR_RD64B_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)((CPifRam *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CPifRam::SI_DMA_READ), "CPifRam::SI_DMA_READ");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04800010:
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
             UpdateCounters(m_RegWorkingSet, false, true);
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
             MoveConstToVariable(Value, &g_Reg->SI_PIF_ADDR_WR64B_REG, "SI_PIF_ADDR_WR64B_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)((CPifRam *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CPifRam::SI_DMA_WRITE), "CPifRam::SI_DMA_WRITE");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04800018:
             AndConstToVariable((uint32_t)~MI_INTR_SI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
             AndConstToVariable((uint32_t)~SI_STATUS_INTERRUPT, &g_Reg->SI_STATUS_REG, "SI_STATUS_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
             Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         default:
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
@@ -10618,12 +10606,12 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             UpdateCounters(m_RegWorkingSet, false, true);
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             PushImm32(Value);
             PushImm32(PAddr);
             MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
         }
         break;
     default:
@@ -10635,12 +10623,12 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         UpdateCounters(m_RegWorkingSet, false, true);
         m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
 
-        BeforeCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.BeforeCallDirect();
         PushImm32(Value);
         PushImm32(PAddr);
         MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
         Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
-        AfterCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.AfterCallDirect();
     }
 }
 
@@ -10695,26 +10683,26 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         case 0x04040004: MoveX86regToVariable(Reg, &g_Reg->SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG"); break;
         case 0x04040008:
             MoveX86regToVariable(Reg, &g_Reg->SP_RD_LEN_REG, "SP_RD_LEN_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CDMA::SP_DMA_READ), "CDMA::SP_DMA_READ");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x0404000C:
             MoveX86regToVariable(Reg, &g_Reg->SP_WR_LEN_REG, "SP_WR_LEN_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CDMA::SP_DMA_WRITE), "CDMA::SP_DMA_WRITE");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04040010:
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
             UpdateCounters(m_RegWorkingSet, false, true);
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
             MoveX86regToVariable(Reg, &CMipsMemoryVM::RegModValue, "CMipsMemoryVM::RegModValue");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             Call_Direct((void *)CMipsMemoryVM::ChangeSpStatus, "CMipsMemoryVM::ChangeSpStatus");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x0404001C: MoveConstToVariable(0, &g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG"); break;
         case 0x04080000:
@@ -10744,27 +10732,27 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             UpdateCounters(m_RegWorkingSet, false, true);
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
         }
-        BeforeCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.BeforeCallDirect();
         Push(Reg);
         PushImm32(PAddr);
         MoveConstToX86reg((uint32_t)(g_MMU), x86_ECX);
         Call_Direct(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
-        AfterCallDirect(m_RegWorkingSet);
+        m_RegWorkingSet.AfterCallDirect();
         break;
     case 0x04300000:
         switch (PAddr)
         {
         case 0x04300000:
             MoveX86regToVariable(Reg, &CMipsMemoryVM::RegModValue, "CMipsMemoryVM::RegModValue");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             Call_Direct((void *)CMipsMemoryVM::ChangeMiIntrMask, "CMipsMemoryVM::ChangeMiModeReg");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x0430000C:
             MoveX86regToVariable(Reg, &CMipsMemoryVM::RegModValue, "CMipsMemoryVM::RegModValue");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             Call_Direct((void *)CMipsMemoryVM::ChangeMiIntrMask, "CMipsMemoryVM::ChangeMiIntrMask");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         default:
             CPU_Message("    Should be moving %s in to %08X ?!?", x86_Name(Reg), VAddr);
@@ -10783,9 +10771,9 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
                 JeLabel8("Continue", 0);
                 Jump = *g_RecompPos - 1;
                 MoveX86regToVariable(Reg, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
-                BeforeCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.BeforeCallDirect();
                 Call_Direct((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
-                AfterCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.AfterCallDirect();
                 CPU_Message("");
                 CPU_Message("      Continue:");
                 SetJump8(Jump, *g_RecompPos);
@@ -10802,9 +10790,9 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
                 JeLabel8("Continue", 0);
                 Jump = *g_RecompPos - 1;
                 MoveX86regToVariable(Reg, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
-                BeforeCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.BeforeCallDirect();
                 Call_Direct((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
-                AfterCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.AfterCallDirect();
                 CPU_Message("");
                 CPU_Message("      Continue:");
                 SetJump8(Jump, *g_RecompPos);
@@ -10813,10 +10801,10 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         case 0x0440000C: MoveX86regToVariable(Reg, &g_Reg->VI_INTR_REG, "VI_INTR_REG"); break;
         case 0x04400010:
             AndConstToVariable((uint32_t)~MI_INTR_VI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
             Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04400014: MoveX86regToVariable(Reg, &g_Reg->VI_BURST_REG, "VI_BURST_REG"); break;
         case 0x04400018: MoveX86regToVariable(Reg, &g_Reg->VI_V_SYNC_REG, "VI_V_SYNC_REG"); break;
@@ -10843,7 +10831,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             UpdateCounters(m_RegWorkingSet, false, true);
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
             MoveX86regToVariable(Reg, &g_Reg->AI_LEN_REG, "AI_LEN_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             if (g_System->bFixedAudio())
             {
                 MoveConstToX86reg((uint32_t)g_Audio, x86_ECX);
@@ -10853,7 +10841,7 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             {
                 Call_Direct((void *)g_Plugins->Audio()->AiLenChanged, "g_Plugins->Audio()->LenChanged");
             }
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04500008:
             MoveX86regToVariable(Reg, &g_Reg->AI_CONTROL_REG, "AI_CONTROL_REG");
@@ -10862,10 +10850,10 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             /* Clear Interrupt */;
             AndConstToVariable((uint32_t)~MI_INTR_AI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
             AndConstToVariable((uint32_t)~MI_INTR_AI, &g_Reg->m_AudioIntrReg, "m_AudioIntrReg");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
             Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04500010:
             sprintf(VarName, "RDRAM + %X", PAddr);
@@ -10889,24 +10877,24 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             MoveX86regToVariable(Reg, &g_Reg->PI_CART_ADDR_REG, "PI_CART_ADDR_REG");
             if (g_Settings->LoadBool(Setting_EnableDisk))
             {
-                BeforeCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.BeforeCallDirect();
                 Call_Direct(AddressOf(&DiskDMACheck), "DiskDMACheck");
-                AfterCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.AfterCallDirect();
             }
             break;
         case 0x04600008:
             MoveX86regToVariable(Reg, &g_Reg->PI_RD_LEN_REG, "PI_RD_LEN_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CDMA::PI_DMA_READ), "CDMA::PI_DMA_READ");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x0460000C:
             MoveX86regToVariable(Reg, &g_Reg->PI_WR_LEN_REG, "PI_WR_LEN_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)((CDMA *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CDMA::PI_DMA_WRITE), "CDMA::PI_DMA_WRITE");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04600010:
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
@@ -10914,10 +10902,10 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
                 g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
             }
             AndConstToVariable((uint32_t)~MI_INTR_PI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
             Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04600014:
             MoveX86regToVariable(Reg, &g_Reg->PI_DOMAIN1_REG, "PI_DOMAIN1_REG");
@@ -10976,25 +10964,25 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         case 0x04800000: MoveX86regToVariable(Reg, &g_Reg->SI_DRAM_ADDR_REG, "SI_DRAM_ADDR_REG"); break;
         case 0x04800004:
             MoveX86regToVariable(Reg, &g_Reg->SI_PIF_ADDR_RD64B_REG, "SI_PIF_ADDR_RD64B_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)((CPifRam *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CPifRam::SI_DMA_READ), "CPifRam::SI_DMA_READ");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04800010:
             MoveX86regToVariable(Reg, &g_Reg->SI_PIF_ADDR_WR64B_REG, "SI_PIF_ADDR_WR64B_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)((CPifRam *)g_MMU), x86_ECX);
             Call_Direct(AddressOf(&CPifRam::SI_DMA_WRITE), "CPifRam::SI_DMA_WRITE");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04800018:
             AndConstToVariable((uint32_t)~MI_INTR_SI, &g_Reg->MI_INTR_REG, "MI_INTR_REG");
             AndConstToVariable((uint32_t)~SI_STATUS_INTERRUPT, &g_Reg->SI_STATUS_REG, "SI_STATUS_REG");
-            BeforeCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.BeforeCallDirect();
             MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
             Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-            AfterCallDirect(m_RegWorkingSet);
+            m_RegWorkingSet.AfterCallDirect();
             break;
         default:
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
@@ -11012,33 +11000,33 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
             case 0x05000500: MoveX86regToVariable(Reg, &g_Reg->ASIC_DATA, "ASIC_DATA"); break;
             case 0x05000508:
             {
-                               //ASIC_CMD
-                               MoveX86regToVariable(Reg, &g_Reg->ASIC_CMD, "ASIC_CMD");
-                               BeforeCallDirect(m_RegWorkingSet);
-                               Call_Direct(AddressOf(&DiskCommand), "DiskCommand");
-                               AfterCallDirect(m_RegWorkingSet);
-                               OrConstToVariable((uint32_t)DD_STATUS_MECHA_INT, &g_Reg->ASIC_STATUS, "ASIC_STATUS");
-                               OrConstToVariable((uint32_t)CAUSE_IP3, &g_Reg->FAKE_CAUSE_REGISTER, "FAKE_CAUSE_REGISTER");
-                               BeforeCallDirect(m_RegWorkingSet);
-                               Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-                               AfterCallDirect(m_RegWorkingSet);
-                               break;
+                //ASIC_CMD
+                MoveX86regToVariable(Reg, &g_Reg->ASIC_CMD, "ASIC_CMD");
+                m_RegWorkingSet.BeforeCallDirect();
+                Call_Direct(AddressOf(&DiskCommand), "DiskCommand");
+                m_RegWorkingSet.AfterCallDirect();
+                OrConstToVariable((uint32_t)DD_STATUS_MECHA_INT, &g_Reg->ASIC_STATUS, "ASIC_STATUS");
+                OrConstToVariable((uint32_t)CAUSE_IP3, &g_Reg->FAKE_CAUSE_REGISTER, "FAKE_CAUSE_REGISTER");
+                m_RegWorkingSet.BeforeCallDirect();
+                Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+                m_RegWorkingSet.AfterCallDirect();
+                break;
             }
             case 0x05000510:
             {
-                               //ASIC_BM_CTL
-                               MoveX86regToVariable(Reg, &g_Reg->ASIC_BM_CTL, "ASIC_BM_CTL");
-                               BeforeCallDirect(m_RegWorkingSet);
-                               Call_Direct(AddressOf(&DiskBMControl), "DiskBMControl");
-                               AfterCallDirect(m_RegWorkingSet);
-                               break;
+                //ASIC_BM_CTL
+                MoveX86regToVariable(Reg, &g_Reg->ASIC_BM_CTL, "ASIC_BM_CTL");
+                m_RegWorkingSet.BeforeCallDirect();
+                Call_Direct(AddressOf(&DiskBMControl), "DiskBMControl");
+                m_RegWorkingSet.AfterCallDirect();
+                break;
             }
             case 0x05000518:
                 break;
             case 0x05000520:
-                BeforeCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.BeforeCallDirect();
                 Call_Direct(AddressOf(&DiskReset), "DiskReset");
-                AfterCallDirect(m_RegWorkingSet);
+                m_RegWorkingSet.AfterCallDirect();
                 break;
             case 0x05000528: MoveX86regToVariable(Reg, &g_Reg->ASIC_HOST_SECBYTE, "ASIC_HOST_SECBYTE"); break;
             case 0x05000530: MoveX86regToVariable(Reg, &g_Reg->ASIC_SEC_BYTE, "ASIC_SEC_BYTE"); break;

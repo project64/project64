@@ -145,6 +145,18 @@ CX86RegInfo::REG_STATE CX86RegInfo::ConstantsType(int64_t Value)
     return STATE_CONST_64;
 }
 
+void CX86RegInfo::BeforeCallDirect(void)
+{
+    UnMap_AllFPRs();
+    Pushad();
+}
+
+void CX86RegInfo::AfterCallDirect(void)
+{
+    Popad();
+    SetRoundingModel(CRegInfo::RoundUnknown);
+}
+
 void CX86RegInfo::FixRoundModel(FPU_ROUND RoundMethod)
 {
     if (GetRoundingModel() == RoundMethod)

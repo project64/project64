@@ -78,6 +78,9 @@ public:
 
     static REG_STATE ConstantsType(int64_t Value);
 
+    void BeforeCallDirect(void);
+    void AfterCallDirect(void);
+
     void   FixRoundModel(FPU_ROUND RoundMethod);
     void   ChangeFPURegFormat(int32_t Reg, FPU_STATE OldFormat, FPU_STATE NewFormat, FPU_ROUND RoundingModel);
     void   Load_FPR_ToTop(int32_t Reg, int32_t RegToLoad, FPU_STATE Format);
