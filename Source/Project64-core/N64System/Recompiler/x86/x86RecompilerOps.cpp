@@ -45,6 +45,10 @@ g_Notify->BreakPoint(__FILE__, __LINE__);
 
 void CX86RecompilerOps::PreCompileOpcode(void)
 {
+    if (m_NextInstruction != DELAY_SLOT_DONE)
+    {
+        CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
+    }
     /*if (m_CompilePC == 0x803245C4 && m_NextInstruction == NORMAL)
     {
     X86BreakPoint(__FILE__, __LINE__);
@@ -204,7 +208,6 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
 
     if (m_NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
         if (CompareType == CompareTypeCOP1BCF || CompareType == CompareTypeCOP1BCT)
         {
             CompileCop1Test();
@@ -516,8 +519,6 @@ void CX86RecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
 {
     if (m_NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
         if (CompareType == CompareTypeCOP1BCF || CompareType == CompareTypeCOP1BCT)
         {
             CompileCop1Test();
@@ -1932,7 +1933,6 @@ void CX86RecompilerOps::J()
 {
     if (m_NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
             MoveConstToVariable((m_CompilePC & 0xF0000000) + (m_Opcode.target << 2), &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
@@ -1971,7 +1971,6 @@ void CX86RecompilerOps::JAL()
 {
     if (m_NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
         Map_GPR_32bit(31, true, -1);
         MoveVariableToX86reg(_PROGRAM_COUNTER, "_PROGRAM_COUNTER", GetMipsRegMapLo(31));
         AndConstToX86Reg(GetMipsRegMapLo(31), 0xF0000000);
@@ -2030,8 +2029,6 @@ void CX86RecompilerOps::JAL()
 
 void CX86RecompilerOps::ADDI()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.rt == 0) { return; }
 
     if (g_System->bFastSP() && m_Opcode.rs == 29 && m_Opcode.rt == 29)
@@ -2062,8 +2059,6 @@ void CX86RecompilerOps::ADDI()
 
 void CX86RecompilerOps::ADDIU()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.rt == 0 || (m_Opcode.immediate == 0 && m_Opcode.rs == m_Opcode.rt))
     {
         return;
@@ -2102,7 +2097,6 @@ void CX86RecompilerOps::ADDIU()
 
 void CX86RecompilerOps::SLTIU()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rt == 0)
     {
         return;
@@ -2173,7 +2167,6 @@ void CX86RecompilerOps::SLTIU()
 
 void CX86RecompilerOps::SLTI()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rt == 0)
     {
         return;
@@ -2278,8 +2271,6 @@ void CX86RecompilerOps::SLTI()
 
 void CX86RecompilerOps::ANDI()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.rt == 0)
     {
         return;
@@ -2308,7 +2299,6 @@ void CX86RecompilerOps::ANDI()
 
 void CX86RecompilerOps::ORI()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rt == 0)
     {
         return;
@@ -2371,7 +2361,6 @@ void CX86RecompilerOps::ORI()
 
 void CX86RecompilerOps::XORI()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rt == 0)
     {
         return;
@@ -2408,7 +2397,6 @@ void CX86RecompilerOps::XORI()
 
 void CX86RecompilerOps::LUI()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rt == 0)
     {
         return;
@@ -2437,8 +2425,6 @@ void CX86RecompilerOps::LUI()
 
 void CX86RecompilerOps::DADDIU()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.rs != 0)
     {
         UnMap_GPR(m_Opcode.rs, true);
@@ -2457,8 +2443,6 @@ void CX86RecompilerOps::DADDIU()
 
 void CX86RecompilerOps::CACHE()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (g_Settings->LoadDword(Game_SMM_Cache) == 0)
     {
         return;
@@ -2511,8 +2495,6 @@ void CX86RecompilerOps::CACHE()
 
 void CX86RecompilerOps::LDL()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.base != 0)
     {
         UnMap_GPR(m_Opcode.base, true);
@@ -2531,8 +2513,6 @@ void CX86RecompilerOps::LDL()
 
 void CX86RecompilerOps::LDR()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.base != 0)
     {
         UnMap_GPR(m_Opcode.base, true);
@@ -2693,8 +2673,6 @@ void CX86RecompilerOps::LH_KnownAddress(x86Reg Reg, uint32_t VAddr, bool SignExt
 
 void CX86RecompilerOps::LB()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.rt == 0)
     {
         return;
@@ -2752,8 +2730,6 @@ void CX86RecompilerOps::LB()
 
 void CX86RecompilerOps::LH()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.rt == 0) return;
 
     if (IsConst(m_Opcode.base))
@@ -2810,8 +2786,6 @@ void CX86RecompilerOps::LH()
 void CX86RecompilerOps::LWL()
 {
     x86Reg TempReg1 = x86_Unknown, TempReg2 = x86_Unknown, OffsetReg = x86_Unknown, shift = x86_Unknown;
-
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     if (m_Opcode.rt == 0)
     {
@@ -2893,8 +2867,6 @@ void CX86RecompilerOps::LW()
 
 void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.rt == 0) return;
 
     x86Reg TempReg1, TempReg2;
@@ -3288,8 +3260,6 @@ void CX86RecompilerOps::LBU()
 {
     x86Reg TempReg1, TempReg2;
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.rt == 0)
     {
         return;
@@ -3348,8 +3318,6 @@ void CX86RecompilerOps::LHU()
 {
     x86Reg TempReg1, TempReg2;
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.rt == 0)
     {
         return;
@@ -3407,8 +3375,6 @@ void CX86RecompilerOps::LHU()
 void CX86RecompilerOps::LWR()
 {
     x86Reg TempReg1 = x86_Unknown, TempReg2 = x86_Unknown, OffsetReg = x86_Unknown, shift = x86_Unknown;
-
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     if (m_Opcode.rt == 0)
     {
@@ -3492,8 +3458,6 @@ void CX86RecompilerOps::LWU()
 void CX86RecompilerOps::SB()
 {
     x86Reg TempReg1, TempReg2;
-
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     if (IsConst(m_Opcode.base))
     {
@@ -3586,8 +3550,6 @@ void CX86RecompilerOps::SH()
 {
     x86Reg TempReg1, TempReg2;
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (IsConst(m_Opcode.base))
     {
         uint32_t Address = (GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset) ^ 2;
@@ -3677,8 +3639,6 @@ void CX86RecompilerOps::SWL()
 {
     x86Reg TempReg1 = x86_Unknown, TempReg2 = x86_Unknown, Value = x86_Unknown,
         shift = x86_Unknown, OffsetReg = x86_Unknown;
-
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     if (IsConst(m_Opcode.base))
     {
@@ -3782,8 +3742,6 @@ void CX86RecompilerOps::SW()
 
 void CX86RecompilerOps::SW(bool bCheckLLbit)
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     x86Reg TempReg1, TempReg2;
     if (m_Opcode.base == 29 && g_System->bFastSP())
     {
@@ -3931,8 +3889,6 @@ void CX86RecompilerOps::SWR()
     x86Reg TempReg1 = x86_Unknown, TempReg2 = x86_Unknown, Value = x86_Unknown,
         OffsetReg = x86_Unknown, shift = x86_Unknown;
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (IsConst(m_Opcode.base))
     {
         uint32_t Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
@@ -4028,8 +3984,6 @@ void CX86RecompilerOps::SWR()
 
 void CX86RecompilerOps::SDL()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.base != 0)
     {
         UnMap_GPR(m_Opcode.base, true);
@@ -4048,8 +4002,6 @@ void CX86RecompilerOps::SDL()
 
 void CX86RecompilerOps::SDR()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.base != 0)
     {
         UnMap_GPR(m_Opcode.base, true);
@@ -4075,8 +4027,6 @@ void CX86RecompilerOps::LWC1()
 {
     x86Reg TempReg1, TempReg2, TempReg3;
     char Name[50];
-
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     CompileCop1Test();
     if ((m_Opcode.ft & 1) != 0)
@@ -4181,8 +4131,6 @@ void CX86RecompilerOps::LDC1()
 {
     x86Reg TempReg1, TempReg2, TempReg3;
     char Name[50];
-
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     CompileCop1Test();
 
@@ -4293,8 +4241,6 @@ void CX86RecompilerOps::LDC1()
 
 void CX86RecompilerOps::LD()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.rt == 0)
     {
         return;
@@ -4386,8 +4332,6 @@ void CX86RecompilerOps::SWC1()
     x86Reg TempReg1, TempReg2, TempReg3;
     char Name[50];
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
 
     if (IsConst(m_Opcode.base))
@@ -4466,8 +4410,6 @@ void CX86RecompilerOps::SDC1()
 {
     x86Reg TempReg1, TempReg2, TempReg3;
     char Name[50];
-
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     CompileCop1Test();
 
@@ -4560,8 +4502,6 @@ void CX86RecompilerOps::SDC1()
 void CX86RecompilerOps::SD()
 {
     x86Reg TempReg1, TempReg2;
-
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     if (IsConst(m_Opcode.base))
     {
@@ -4702,8 +4642,6 @@ void CX86RecompilerOps::SD()
 /********************** R4300i OpCodes: Special **********************/
 void CX86RecompilerOps::SPECIAL_SLL()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.rd == 0)
     {
         return;
@@ -4755,7 +4693,6 @@ void CX86RecompilerOps::SPECIAL_SLL()
 
 void CX86RecompilerOps::SPECIAL_SRL()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
     {
         return;
@@ -4778,7 +4715,6 @@ void CX86RecompilerOps::SPECIAL_SRL()
 
 void CX86RecompilerOps::SPECIAL_SRA()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
     {
         return;
@@ -4801,7 +4737,6 @@ void CX86RecompilerOps::SPECIAL_SRA()
 
 void CX86RecompilerOps::SPECIAL_SLLV()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
     {
         return;
@@ -4835,7 +4770,6 @@ void CX86RecompilerOps::SPECIAL_SLLV()
 
 void CX86RecompilerOps::SPECIAL_SRLV()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
     {
         return;
@@ -4867,7 +4801,6 @@ void CX86RecompilerOps::SPECIAL_SRLV()
 
 void CX86RecompilerOps::SPECIAL_SRAV()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
     {
         return;
@@ -4901,7 +4834,6 @@ void CX86RecompilerOps::SPECIAL_JR()
 {
     if (m_NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
             if (IsMapped(m_Opcode.rs))
@@ -4981,7 +4913,6 @@ void CX86RecompilerOps::SPECIAL_JALR()
 {
     if (m_NextInstruction == NORMAL)
     {
-        CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
         if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0) && (m_CompilePC & 0xFFC) != 0xFFC)
         {
             if (IsConst(m_Opcode.rs))
@@ -5062,14 +4993,12 @@ void CX86RecompilerOps::SPECIAL_JALR()
 
 void CX86RecompilerOps::SPECIAL_SYSCALL()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::DoSysCall, true, NULL);
     m_NextInstruction = END_BLOCK;
 }
 
 void CX86RecompilerOps::SPECIAL_MFLO()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0) { return; }
 
     Map_GPR_64bit(m_Opcode.rd, -1);
@@ -5079,8 +5008,6 @@ void CX86RecompilerOps::SPECIAL_MFLO()
 
 void CX86RecompilerOps::SPECIAL_MTLO()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (IsKnown(m_Opcode.rs) && IsConst(m_Opcode.rs))
     {
         if (Is64Bit(m_Opcode.rs))
@@ -5123,7 +5050,6 @@ void CX86RecompilerOps::SPECIAL_MTLO()
 
 void CX86RecompilerOps::SPECIAL_MFHI()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0) { return; }
 
     Map_GPR_64bit(m_Opcode.rd, -1);
@@ -5133,8 +5059,6 @@ void CX86RecompilerOps::SPECIAL_MFHI()
 
 void CX86RecompilerOps::SPECIAL_MTHI()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (IsKnown(m_Opcode.rs) && IsConst(m_Opcode.rs))
     {
         if (Is64Bit(m_Opcode.rs))
@@ -5179,7 +5103,6 @@ void CX86RecompilerOps::SPECIAL_DSLLV()
 {
     uint8_t * Jump[2];
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
     {
         return;
@@ -5221,7 +5144,6 @@ void CX86RecompilerOps::SPECIAL_DSRLV()
 {
     uint8_t * Jump[2];
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
     {
         return;
@@ -5308,7 +5230,6 @@ void CX86RecompilerOps::SPECIAL_DSRAV()
 {
     uint8_t * Jump[2];
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
     {
         return;
@@ -5348,8 +5269,6 @@ void CX86RecompilerOps::SPECIAL_DSRAV()
 
 void CX86RecompilerOps::SPECIAL_MULT()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     m_RegWorkingSet.SetX86Protected(x86_EDX, true);
     Map_TempReg(x86_EAX, m_Opcode.rs, false);
     m_RegWorkingSet.SetX86Protected(x86_EDX, false);
@@ -5367,8 +5286,6 @@ void CX86RecompilerOps::SPECIAL_MULT()
 
 void CX86RecompilerOps::SPECIAL_MULTU()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     m_RegWorkingSet.SetX86Protected(x86_EDX, true);
     Map_TempReg(x86_EAX, m_Opcode.rs, false);
     m_RegWorkingSet.SetX86Protected(x86_EDX, false);
@@ -5386,8 +5303,6 @@ void CX86RecompilerOps::SPECIAL_MULTU()
 
 void CX86RecompilerOps::SPECIAL_DIV()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (IsConst(m_Opcode.rt))
     {
         if (GetMipsRegLo(m_Opcode.rt) == 0)
@@ -5445,8 +5360,6 @@ void CX86RecompilerOps::SPECIAL_DIVU()
 {
     uint8_t *Jump[2];
     x86Reg Reg;
-
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     if (IsConst(m_Opcode.rt))
     {
@@ -5518,8 +5431,6 @@ void CX86RecompilerOps::SPECIAL_DIVU()
 
 void CX86RecompilerOps::SPECIAL_DMULT()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.rs != 0)
     {
         UnMap_GPR(m_Opcode.rs, true);
@@ -5538,8 +5449,6 @@ void CX86RecompilerOps::SPECIAL_DMULT()
 
 void CX86RecompilerOps::SPECIAL_DMULTU()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     UnMap_GPR(m_Opcode.rs, true);
     UnMap_GPR(m_Opcode.rt, true);
     BeforeCallDirect(m_RegWorkingSet);
@@ -5617,8 +5526,6 @@ void CX86RecompilerOps::SPECIAL_DMULTU()
 
 void CX86RecompilerOps::SPECIAL_DDIV()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     UnMap_GPR(m_Opcode.rs, true);
     UnMap_GPR(m_Opcode.rt, true);
     BeforeCallDirect(m_RegWorkingSet);
@@ -5629,8 +5536,6 @@ void CX86RecompilerOps::SPECIAL_DDIV()
 
 void CX86RecompilerOps::SPECIAL_DDIVU()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     UnMap_GPR(m_Opcode.rs, true);
     UnMap_GPR(m_Opcode.rt, true);
     BeforeCallDirect(m_RegWorkingSet);
@@ -5644,7 +5549,6 @@ void CX86RecompilerOps::SPECIAL_ADD()
     int source1 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rt : m_Opcode.rs;
     int source2 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rs : m_Opcode.rt;
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
     {
         return;
@@ -5687,7 +5591,6 @@ void CX86RecompilerOps::SPECIAL_ADDU()
     int source1 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rt : m_Opcode.rs;
     int source2 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rs : m_Opcode.rt;
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
     {
         return;
@@ -5726,7 +5629,6 @@ void CX86RecompilerOps::SPECIAL_ADDU()
 
 void CX86RecompilerOps::SPECIAL_SUB()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
     {
         return;
@@ -5775,7 +5677,6 @@ void CX86RecompilerOps::SPECIAL_SUB()
 
 void CX86RecompilerOps::SPECIAL_SUBU()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
     {
         return;
@@ -5825,8 +5726,6 @@ void CX86RecompilerOps::SPECIAL_SUBU()
 
 void CX86RecompilerOps::SPECIAL_AND()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (IsKnown(m_Opcode.rt) && IsKnown(m_Opcode.rs))
     {
         if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs))
@@ -6032,8 +5931,6 @@ void CX86RecompilerOps::SPECIAL_AND()
 
 void CX86RecompilerOps::SPECIAL_OR()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (IsKnown(m_Opcode.rt) && IsKnown(m_Opcode.rs))
     {
         if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs))
@@ -6199,7 +6096,6 @@ void CX86RecompilerOps::SPECIAL_OR()
 
 void CX86RecompilerOps::SPECIAL_XOR()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
         return;
 
@@ -6359,8 +6255,6 @@ void CX86RecompilerOps::SPECIAL_XOR()
 
 void CX86RecompilerOps::SPECIAL_NOR()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (IsKnown(m_Opcode.rt) && IsKnown(m_Opcode.rs))
     {
         if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs))
@@ -6527,7 +6421,6 @@ void CX86RecompilerOps::SPECIAL_NOR()
 
 void CX86RecompilerOps::SPECIAL_SLT()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
     {
         return;
@@ -6843,7 +6736,6 @@ void CX86RecompilerOps::SPECIAL_SLT()
 
 void CX86RecompilerOps::SPECIAL_SLTU()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
     {
         return;
@@ -7124,7 +7016,6 @@ void CX86RecompilerOps::SPECIAL_SLTU()
 
 void CX86RecompilerOps::SPECIAL_DADD()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
     {
         return;
@@ -7182,7 +7073,6 @@ void CX86RecompilerOps::SPECIAL_DADD()
 
 void CX86RecompilerOps::SPECIAL_DADDU()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
         return;
 
@@ -7243,7 +7133,6 @@ void CX86RecompilerOps::SPECIAL_DADDU()
 
 void CX86RecompilerOps::SPECIAL_DSUB()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
     {
         return;
@@ -7308,7 +7197,6 @@ void CX86RecompilerOps::SPECIAL_DSUB()
 
 void CX86RecompilerOps::SPECIAL_DSUBU()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (m_Opcode.rd == 0)
     {
         return;
@@ -7372,8 +7260,6 @@ void CX86RecompilerOps::SPECIAL_DSUBU()
 
 void CX86RecompilerOps::SPECIAL_DSLL()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.rd == 0)
     {
         return;
@@ -7410,8 +7296,6 @@ void CX86RecompilerOps::SPECIAL_DSLL()
 
 void CX86RecompilerOps::SPECIAL_DSRL()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.rd == 0)
     {
         return;
@@ -7446,8 +7330,6 @@ void CX86RecompilerOps::SPECIAL_DSRL()
 
 void CX86RecompilerOps::SPECIAL_DSRA()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.rd == 0)
     {
         return;
@@ -7484,8 +7366,6 @@ void CX86RecompilerOps::SPECIAL_DSRA()
 
 void CX86RecompilerOps::SPECIAL_DSLL32()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (m_Opcode.rd == 0)
     {
         return;
@@ -7547,8 +7427,6 @@ void CX86RecompilerOps::SPECIAL_DSLL32()
 
 void CX86RecompilerOps::SPECIAL_DSRL32()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (IsConst(m_Opcode.rt))
     {
         if (m_Opcode.rt != m_Opcode.rd)
@@ -7599,8 +7477,6 @@ void CX86RecompilerOps::SPECIAL_DSRL32()
 
 void CX86RecompilerOps::SPECIAL_DSRA32()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (IsConst(m_Opcode.rt))
     {
         if (m_Opcode.rt != m_Opcode.rd)
@@ -7652,8 +7528,6 @@ void CX86RecompilerOps::SPECIAL_DSRA32()
 /************************** COP0 functions **************************/
 void CX86RecompilerOps::COP0_MF()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     switch (m_Opcode.rd)
     {
     case 9: //Count
@@ -7671,8 +7545,6 @@ void CX86RecompilerOps::COP0_MF()
 
 void CX86RecompilerOps::COP0_MT()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     uint8_t *Jump;
 
     switch (m_Opcode.rd)
@@ -7838,7 +7710,6 @@ void CX86RecompilerOps::COP0_MT()
 /************************** COP0 CO functions ***********************/
 void CX86RecompilerOps::COP0_CO_TLBR(void)
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (!g_System->bUseTlb()) { return; }
     BeforeCallDirect(m_RegWorkingSet);
     MoveConstToX86reg((uint32_t)g_TLB, x86_ECX);
@@ -7848,7 +7719,6 @@ void CX86RecompilerOps::COP0_CO_TLBR(void)
 
 void CX86RecompilerOps::COP0_CO_TLBWI(void)
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (!g_System->bUseTlb()) { return; }
     BeforeCallDirect(m_RegWorkingSet);
     PushImm32("false", 0);
@@ -7862,7 +7732,6 @@ void CX86RecompilerOps::COP0_CO_TLBWI(void)
 
 void CX86RecompilerOps::COP0_CO_TLBWR(void)
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     if (!g_System->bUseTlb()) { return; }
 
     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
@@ -7883,8 +7752,6 @@ void CX86RecompilerOps::COP0_CO_TLBWR(void)
 
 void CX86RecompilerOps::COP0_CO_TLBP(void)
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     if (!g_System->bUseTlb()) { return; }
     BeforeCallDirect(m_RegWorkingSet);
     MoveConstToX86reg((uint32_t)g_TLB, x86_ECX);
@@ -7909,8 +7776,6 @@ void compiler_COP0_CO_ERET()
 
 void CX86RecompilerOps::COP0_CO_ERET(void)
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     m_RegWorkingSet.WriteBackRegisters();
     Call_Direct((void *)compiler_COP0_CO_ERET, "compiler_COP0_CO_ERET");
 
@@ -7936,7 +7801,6 @@ void CX86RecompilerOps::COP1_MF()
 {
     x86Reg TempReg;
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     CompileCop1Test();
 
     UnMap_FPR(m_Opcode.fs, true);
@@ -7953,7 +7817,6 @@ void CX86RecompilerOps::COP1_DMF()
     x86Reg TempReg;
     char Name[50];
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     CompileCop1Test();
 
     UnMap_FPR(m_Opcode.fs, true);
@@ -7970,8 +7833,6 @@ void CX86RecompilerOps::COP1_DMF()
 
 void CX86RecompilerOps::COP1_CF()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
 
     if (m_Opcode.fs != 31 && m_Opcode.fs != 0)
@@ -7988,7 +7849,6 @@ void CX86RecompilerOps::COP1_MT()
 {
     x86Reg TempReg;
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     CompileCop1Test();
 
     if ((m_Opcode.fs & 1) != 0)
@@ -8022,7 +7882,6 @@ void CX86RecompilerOps::COP1_DMT()
 {
     x86Reg TempReg;
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     CompileCop1Test();
 
     if ((m_Opcode.fs & 1) == 0)
@@ -8074,7 +7933,6 @@ void CX86RecompilerOps::COP1_DMT()
 
 void CX86RecompilerOps::COP1_CT()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     CompileCop1Test();
 
     if (m_Opcode.fs != 31)
@@ -8107,8 +7965,6 @@ void CX86RecompilerOps::COP1_S_ADD()
     uint32_t Reg1 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.ft : m_Opcode.fs;
     uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     FixRoundModel(CRegInfo::RoundDefault);
 
@@ -8138,8 +7994,6 @@ void CX86RecompilerOps::COP1_S_SUB()
     uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
     x86Reg TempReg;
     char Name[50];
-
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     CompileCop1Test();
     FixRoundModel(CRegInfo::RoundDefault);
@@ -8181,8 +8035,6 @@ void CX86RecompilerOps::COP1_S_MUL()
     uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
     x86Reg TempReg;
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     FixRoundModel(CRegInfo::RoundDefault);
 
@@ -8211,8 +8063,6 @@ void CX86RecompilerOps::COP1_S_DIV()
     uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
     x86Reg TempReg;
     char Name[50];
-
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     CompileCop1Test();
     FixRoundModel(CRegInfo::RoundDefault);
@@ -8251,7 +8101,6 @@ void CX86RecompilerOps::COP1_S_DIV()
 
 void CX86RecompilerOps::COP1_S_ABS()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     CompileCop1Test();
     FixRoundModel(CRegInfo::RoundDefault);
     Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
@@ -8261,7 +8110,6 @@ void CX86RecompilerOps::COP1_S_ABS()
 
 void CX86RecompilerOps::COP1_S_NEG()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     CompileCop1Test();
     FixRoundModel(CRegInfo::RoundDefault);
     Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
@@ -8271,7 +8119,6 @@ void CX86RecompilerOps::COP1_S_NEG()
 
 void CX86RecompilerOps::COP1_S_SQRT()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     CompileCop1Test();
     FixRoundModel(CRegInfo::RoundDefault);
     Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
@@ -8281,7 +8128,6 @@ void CX86RecompilerOps::COP1_S_SQRT()
 
 void CX86RecompilerOps::COP1_S_MOV()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     CompileCop1Test();
     FixRoundModel(CRegInfo::RoundDefault);
     Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Float);
@@ -8289,8 +8135,6 @@ void CX86RecompilerOps::COP1_S_MOV()
 
 void CX86RecompilerOps::COP1_S_ROUND_L()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd, CRegInfo::FPU_Float))
     {
@@ -8301,8 +8145,6 @@ void CX86RecompilerOps::COP1_S_ROUND_L()
 
 void CX86RecompilerOps::COP1_S_TRUNC_L()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd, CRegInfo::FPU_Float))
     {
@@ -8313,8 +8155,6 @@ void CX86RecompilerOps::COP1_S_TRUNC_L()
 
 void CX86RecompilerOps::COP1_S_CEIL_L()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd, CRegInfo::FPU_Float))
     {
@@ -8325,8 +8165,6 @@ void CX86RecompilerOps::COP1_S_CEIL_L()
 
 void CX86RecompilerOps::COP1_S_FLOOR_L()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd, CRegInfo::FPU_Float))
     {
@@ -8337,8 +8175,6 @@ void CX86RecompilerOps::COP1_S_FLOOR_L()
 
 void CX86RecompilerOps::COP1_S_ROUND_W()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd, CRegInfo::FPU_Float))
     {
@@ -8349,8 +8185,6 @@ void CX86RecompilerOps::COP1_S_ROUND_W()
 
 void CX86RecompilerOps::COP1_S_TRUNC_W()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd, CRegInfo::FPU_Float))
     {
@@ -8359,10 +8193,8 @@ void CX86RecompilerOps::COP1_S_TRUNC_W()
     ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Float, CRegInfo::FPU_Dword, CRegInfo::RoundTruncate);
 }
 
-void CX86RecompilerOps::COP1_S_CEIL_W() // added by Witten
-{            // added by Witten
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
+void CX86RecompilerOps::COP1_S_CEIL_W()
+{
     CompileCop1Test();
     if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd, CRegInfo::FPU_Float))
     {
@@ -8373,8 +8205,6 @@ void CX86RecompilerOps::COP1_S_CEIL_W() // added by Witten
 
 void CX86RecompilerOps::COP1_S_FLOOR_W()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd, CRegInfo::FPU_Float))
     {
@@ -8385,8 +8215,6 @@ void CX86RecompilerOps::COP1_S_FLOOR_W()
 
 void CX86RecompilerOps::COP1_S_CVT_D()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd, CRegInfo::FPU_Float))
     {
@@ -8397,8 +8225,6 @@ void CX86RecompilerOps::COP1_S_CVT_D()
 
 void CX86RecompilerOps::COP1_S_CVT_W()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd, CRegInfo::FPU_Float))
     {
@@ -8409,8 +8235,6 @@ void CX86RecompilerOps::COP1_S_CVT_W()
 
 void CX86RecompilerOps::COP1_S_CVT_L()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd, CRegInfo::FPU_Float))
     {
@@ -8430,8 +8254,6 @@ void CX86RecompilerOps::COP1_S_CMP()
         Reg1 = RegInStack(m_Opcode.ft, CRegInfo::FPU_Float) ? m_Opcode.ft : m_Opcode.fs;
         Reg2 = RegInStack(m_Opcode.ft, CRegInfo::FPU_Float) ? m_Opcode.fs : m_Opcode.ft;
     }
-
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     CompileCop1Test();
     if ((m_Opcode.funct & 7) == 0) { CX86RecompilerOps::UnknownOpcode(); }
@@ -8493,8 +8315,6 @@ void CX86RecompilerOps::COP1_D_ADD()
     uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
     char Name[50];
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
 
     Load_FPR_ToTop(m_Opcode.fd, Reg1, CRegInfo::FPU_Double);
@@ -8521,8 +8341,6 @@ void CX86RecompilerOps::COP1_D_SUB()
     uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
     x86Reg TempReg;
     char Name[50];
-
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     CompileCop1Test();
 
@@ -8562,8 +8380,6 @@ void CX86RecompilerOps::COP1_D_MUL()
     x86Reg TempReg;
     char Name[50];
 
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     FixRoundModel(CRegInfo::RoundDefault);
 
@@ -8589,8 +8405,6 @@ void CX86RecompilerOps::COP1_D_DIV()
     uint32_t Reg2 = m_Opcode.ft == m_Opcode.fd ? m_Opcode.fs : m_Opcode.ft;
     x86Reg TempReg;
     char Name[50];
-
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     CompileCop1Test();
 
@@ -8624,35 +8438,29 @@ void CX86RecompilerOps::COP1_D_DIV()
 
 void CX86RecompilerOps::COP1_D_ABS()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
     fpuAbs();
 }
 
 void CX86RecompilerOps::COP1_D_NEG()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
     fpuNeg();
 }
 
 void CX86RecompilerOps::COP1_D_SQRT()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
     fpuSqrt();
 }
 
 void CX86RecompilerOps::COP1_D_MOV()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     Load_FPR_ToTop(m_Opcode.fd, m_Opcode.fs, CRegInfo::FPU_Double);
 }
 
 void CX86RecompilerOps::COP1_D_ROUND_L()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (RegInStack(m_Opcode.fs, CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs, CRegInfo::FPU_Qword))
     {
@@ -8667,8 +8475,6 @@ void CX86RecompilerOps::COP1_D_ROUND_L()
 
 void CX86RecompilerOps::COP1_D_TRUNC_L()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (RegInStack(m_Opcode.fs, CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs, CRegInfo::FPU_Qword))
     {
@@ -8683,8 +8489,6 @@ void CX86RecompilerOps::COP1_D_TRUNC_L()
 
 void CX86RecompilerOps::COP1_D_CEIL_L()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (RegInStack(m_Opcode.fs, CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs, CRegInfo::FPU_Qword))
     {
@@ -8699,8 +8503,6 @@ void CX86RecompilerOps::COP1_D_CEIL_L()
 
 void CX86RecompilerOps::COP1_D_FLOOR_L()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (RegInStack(m_Opcode.fs, CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs, CRegInfo::FPU_Qword))
     {
@@ -8715,8 +8517,6 @@ void CX86RecompilerOps::COP1_D_FLOOR_L()
 
 void CX86RecompilerOps::COP1_D_ROUND_W()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (RegInStack(m_Opcode.fs, CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs, CRegInfo::FPU_Qword))
     {
@@ -8731,8 +8531,6 @@ void CX86RecompilerOps::COP1_D_ROUND_W()
 
 void CX86RecompilerOps::COP1_D_TRUNC_W()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (RegInStack(m_Opcode.fd, CRegInfo::FPU_Double) || RegInStack(m_Opcode.fd, CRegInfo::FPU_Qword))
     {
@@ -8745,10 +8543,8 @@ void CX86RecompilerOps::COP1_D_TRUNC_W()
     ChangeFPURegFormat(m_Opcode.fd, CRegInfo::FPU_Double, CRegInfo::FPU_Dword, CRegInfo::RoundTruncate);
 }
 
-void CX86RecompilerOps::COP1_D_CEIL_W() // added by Witten
+void CX86RecompilerOps::COP1_D_CEIL_W()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (RegInStack(m_Opcode.fs, CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs, CRegInfo::FPU_Qword))
     {
@@ -8763,8 +8559,6 @@ void CX86RecompilerOps::COP1_D_CEIL_W() // added by Witten
 
 void CX86RecompilerOps::COP1_D_FLOOR_W()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (RegInStack(m_Opcode.fs, CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs, CRegInfo::FPU_Qword))
     {
@@ -8779,8 +8573,6 @@ void CX86RecompilerOps::COP1_D_FLOOR_W()
 
 void CX86RecompilerOps::COP1_D_CVT_S()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (RegInStack(m_Opcode.fd, CRegInfo::FPU_Double) || RegInStack(m_Opcode.fd, CRegInfo::FPU_Qword))
     {
@@ -8795,8 +8587,6 @@ void CX86RecompilerOps::COP1_D_CVT_S()
 
 void CX86RecompilerOps::COP1_D_CVT_W()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (RegInStack(m_Opcode.fs, CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs, CRegInfo::FPU_Qword))
     {
@@ -8811,8 +8601,6 @@ void CX86RecompilerOps::COP1_D_CVT_W()
 
 void CX86RecompilerOps::COP1_D_CVT_L()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (RegInStack(m_Opcode.fs, CRegInfo::FPU_Double) || RegInStack(m_Opcode.fs, CRegInfo::FPU_Qword))
     {
@@ -8836,7 +8624,6 @@ void CX86RecompilerOps::COP1_D_CMP()
         Reg1 = RegInStack(m_Opcode.ft, CRegInfo::FPU_Double) ? m_Opcode.ft : m_Opcode.fs;
         Reg2 = RegInStack(m_Opcode.ft, CRegInfo::FPU_Double) ? m_Opcode.fs : m_Opcode.ft;
     }
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
 
     CompileCop1Test();
     if ((m_Opcode.funct & 7) == 0) { CX86RecompilerOps::UnknownOpcode(); }
@@ -8893,8 +8680,6 @@ void CX86RecompilerOps::COP1_D_CMP()
 /************************** COP1: W functions ************************/
 void CX86RecompilerOps::COP1_W_CVT_S()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd, CRegInfo::FPU_Dword))
     {
@@ -8905,8 +8690,6 @@ void CX86RecompilerOps::COP1_W_CVT_S()
 
 void CX86RecompilerOps::COP1_W_CVT_D()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd, CRegInfo::FPU_Dword))
     {
@@ -8918,8 +8701,6 @@ void CX86RecompilerOps::COP1_W_CVT_D()
 /************************** COP1: L functions ************************/
 void CX86RecompilerOps::COP1_L_CVT_S()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd, CRegInfo::FPU_Qword))
     {
@@ -8930,8 +8711,6 @@ void CX86RecompilerOps::COP1_L_CVT_S()
 
 void CX86RecompilerOps::COP1_L_CVT_D()
 {
-    CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
-
     CompileCop1Test();
     if (m_Opcode.fd != m_Opcode.fs || !RegInStack(m_Opcode.fd, CRegInfo::FPU_Qword))
     {
