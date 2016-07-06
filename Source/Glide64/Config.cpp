@@ -328,6 +328,7 @@ public:
     LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
         TTInit();
+		TTSize(400);
         m_WindowRes.Attach(GetDlgItem(IDC_CMB_WINDOW_RES));
         m_WindowRes.SetItemData(m_WindowRes.AddString("320x200"), 0);
         m_WindowRes.SetItemData(m_WindowRes.AddString("320x240"), 1);
@@ -519,6 +520,7 @@ public:
     LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
         TTInit();
+		TTSize(400);
 
         if (g_romopen)
         {
@@ -676,6 +678,7 @@ public:
     LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
         TTInit();
+		TTSize(400);
 
         std::string tooltip = "Filters:\nApply a filter to either smooth or sharpen textures.\nThere are 4 different smoothing filters and 2 different sharpening filters.\nThe higher the number, the stronger the effect,\ni.e. \"Smoothing filter 4\" will have a much more noticeable effect than \"Smoothing filter 1\".\nBe aware that performance may have an impact depending on the game and/or the PC.\n[Recommended: your preference]";
         TTSetTxt(IDC_TXT_ENH_FILTER, tooltip.c_str());
