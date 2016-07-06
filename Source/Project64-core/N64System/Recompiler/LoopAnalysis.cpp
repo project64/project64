@@ -188,7 +188,6 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
             return false;
         }
         CPU_Message("  %08X: %s", m_PC, R4300iOpcodeName(m_Command.Hex, m_PC));
-        CPU_Message("  %s state: %X value: %X", CRegName::GPR[3], m_Reg.GetMipsRegState(3), m_Reg.GetMipsRegLo(3));
         switch (m_Command.op)
         {
         case R4300i_SPECIAL:

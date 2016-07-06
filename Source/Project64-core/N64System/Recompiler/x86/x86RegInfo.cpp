@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#if defined(__i386__) || defined(_M_IX86)
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/Recompiler/RecompilerClass.h>
@@ -24,20 +26,16 @@ uint32_t CX86RegInfo::m_fpuControl = 0;
 const char *Format_Name[] = { "Unknown", "dword", "qword", "float", "double" };
 
 CX86RegInfo::CX86RegInfo() :
-    m_CycleCount(0),
     m_Stack_TopPos(0),
     m_Fpu_Used(false),
     m_RoundingModel(RoundUnknown)
 {
-    m_MIPS_RegState[0] = STATE_CONST_32_SIGN;
     m_MIPS_RegVal[0].DW = 0;
     m_RegMapLo[0] = x86_Unknown;
     m_RegMapHi[0] = x86_Unknown;
 
     for (int32_t i = 1; i < 32; i++)
     {
-        m_MIPS_RegState[i] = STATE_UNKNOWN;
-        m_MIPS_RegVal[i].DW = 0;
         m_RegMapLo[i] = x86_Unknown;
         m_RegMapHi[i] = x86_Unknown;
     }
@@ -1486,3 +1484,5 @@ const char * CX86RegInfo::RoundingModelName(FPU_ROUND RoundType)
     }
     return "** Invalid **";
 }
+
+#endif

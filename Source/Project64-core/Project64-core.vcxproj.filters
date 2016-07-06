@@ -85,6 +85,9 @@
     <Filter Include="Header Files\N64 System\Recompiler\x86">
       <UniqueIdentifier>{b6d9fd3a-e8e5-42a2-8bcc-8fa430dd8aaa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\N64 System\Recompiler\x64-86">
+      <UniqueIdentifier>{4a163a31-b1fb-4e50-b229-45d508dfc4a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -323,6 +326,9 @@
     </ClCompile>
     <ClCompile Include="N64System\Recompiler\x86\x86RegInfo.cpp">
       <Filter>Source Files\N64 System\Recompiler\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\RegBase.cpp">
+      <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -625,6 +631,12 @@
     </ClInclude>
     <ClInclude Include="N64System\Recompiler\x86\x86RegInfo.h">
       <Filter>Header Files\N64 System\Recompiler\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\x64-86\x64RegInfo.h">
+      <Filter>Source Files\N64 System\Recompiler\x64-86</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\RegBase.h">
+      <Filter>Header Files\N64 System\Recompiler</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

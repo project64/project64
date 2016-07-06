@@ -12,6 +12,7 @@
 
 #include <Project64-core/N64System/Recompiler/RegInfo.h>
 #include <Project64-core/N64System/Mips/OpCode.h>
+#include <Project64-core/N64System/N64Types.h>
 
 class CCodeSection;
 class CCodeBlock;

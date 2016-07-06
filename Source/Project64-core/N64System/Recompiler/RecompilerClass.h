@@ -9,10 +9,13 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-#include <Project64-core/Settings/RecompilerSettings.h>
+
+#include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <Project64-core/N64System/Recompiler/FunctionMapClass.h>
 #include <Project64-core/N64System/Recompiler/RecompilerMemory.h>
 #include <Project64-core/N64System/ProfilingClass.h>
+#include <Project64-core/Settings/RecompilerSettings.h>
+#include <Project64-core/Settings/DebugSettings.h>
 
 class CRecompiler :
     protected CDebugSettings,

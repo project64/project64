@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#if defined(__i386__) || defined(_M_IX86)
 
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <Project64-core/N64System/Mips/OpCode.h>
@@ -371,3 +372,5 @@ private:
     static CCodeSection * m_Section;
     static uint32_t m_TempValue;
 };
+
+#endif

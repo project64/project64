@@ -38,7 +38,9 @@
 *   GPR bits[63..0]         b1b2b3b4 b5b6b7b8
 */
 
+#if defined(__i386__) || defined(_M_IX86)
 class CX86RecompilerOps;
+#endif
 
 class CMipsMemoryVM :
     public CTransVaddr,
@@ -112,7 +114,9 @@ private:
     CMipsMemoryVM(const CMipsMemoryVM&);            // Disable copy constructor
     CMipsMemoryVM& operator=(const CMipsMemoryVM&); // Disable assignment
 
+#if defined(__i386__) || defined(_M_IX86)
     friend CX86RecompilerOps;
+#endif
 
     static void RdramChanged(CMipsMemoryVM * _this);
     static void ChangeSpStatus();

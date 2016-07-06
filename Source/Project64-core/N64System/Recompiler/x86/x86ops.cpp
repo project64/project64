@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#if defined(__i386__) || defined(_M_IX86)
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Recompiler/x86/x86ops.h>
@@ -4325,3 +4327,5 @@ void CX86Ops::AddCode32(uint32_t value)
     (*((uint32_t *)(*g_RecompPos))=(uint32_t)(value));
     *g_RecompPos += 4;
 }
+
+#endif

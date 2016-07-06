@@ -29,10 +29,9 @@ m_EnterSection(NULL),
 m_RecompilerOps(NULL),
 m_Test(1)
 {
-    memset(m_MemContents, 0, sizeof(m_MemContents));
-    memset(m_MemLocation, 0, sizeof(m_MemLocation));
-
+#if defined(__i386__) || defined(_M_IX86)
     m_RecompilerOps = new CX86RecompilerOps;
+#endif
     if (m_RecompilerOps == NULL)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -86,7 +85,9 @@ CCodeBlock::~CCodeBlock()
 
     if (m_RecompilerOps != NULL)
     {
+#if defined(__i386__) || defined(_M_IX86)
         delete (CX86RecompilerOps *)m_RecompilerOps;
+#endif
         m_RecompilerOps = NULL;
     }
 }

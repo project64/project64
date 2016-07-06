@@ -44,15 +44,16 @@ LOCAL_SRC_FILES :=                                                     \
     $(SRCDIR)/N64System/Recompiler/x86/x86RecompilerOps.cpp            \
     $(SRCDIR)/N64System/Recompiler/x86/x86ops.cpp                      \
     $(SRCDIR)/N64System/Recompiler/x86/x86RegInfo.cpp                  \
-    $(SRCDIR)/N64System/Recompiler/LoopAnalysis.cpp                    \
     $(SRCDIR)/N64System/Recompiler/CodeBlock.cpp                       \
+    $(SRCDIR)/N64System/Recompiler/CodeSection.cpp                     \
     $(SRCDIR)/N64System/Recompiler/SectionInfo.cpp                     \
     $(SRCDIR)/N64System/Recompiler/FunctionInfo.cpp                    \
     $(SRCDIR)/N64System/Recompiler/FunctionMapClass.cpp                \
+    $(SRCDIR)/N64System/Recompiler/LoopAnalysis.cpp                    \
     $(SRCDIR)/N64System/Recompiler/RecompilerClass.cpp                 \
     $(SRCDIR)/N64System/Recompiler/RecompilerCodeLog.cpp               \
     $(SRCDIR)/N64System/Recompiler/RecompilerMemory.cpp                \
-    $(SRCDIR)/N64System/Recompiler/CodeSection.cpp                     \
+    $(SRCDIR)/N64System/Recompiler/RegBase.cpp                         \
     $(SRCDIR)/N64System/CheatClass.cpp                                 \
     $(SRCDIR)/N64System/FramePerSecondClass.cpp                        \
     $(SRCDIR)/N64System/N64Class.cpp                                   \

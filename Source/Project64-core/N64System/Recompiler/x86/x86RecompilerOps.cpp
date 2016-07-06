@@ -9,6 +9,9 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#if defined(__i386__) || defined(_M_IX86)
+
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/Disk.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
@@ -11426,3 +11429,5 @@ void CX86RecompilerOps::ResetMemoryStack()
     }
     MoveX86regToVariable(Reg, &(g_Recompiler->MemoryStackPos()), "MemoryStack");
 }
+
+#endif
