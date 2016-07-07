@@ -19,6 +19,7 @@
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/SystemEvents.h>
 #include <Project64-core/N64System/Mips/SystemTiming.h>
+#include <Project64-core/N64System/Mips/Mempak.h>
 #include <Project64-core/Settings/DebugSettings.h>
 #include <Project64-core/Plugin.h>
 #include <Project64-core/Logging.h>
@@ -135,6 +136,7 @@ private:
     CMipsMemoryVM   m_MMU_VM;   //Memory of the n64
     CTLB            m_TLB;
     CRegisters      m_Reg;
+    CMempak         m_Mempak;
     CFramePerSecond m_FPS;
     CProfiling      m_CPU_Usage; //used to track the cpu usage
     CRecompiler   * m_Recomp;
