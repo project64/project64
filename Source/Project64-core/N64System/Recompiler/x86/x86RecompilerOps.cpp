@@ -3266,7 +3266,7 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
                 sprintf(VarName, "RDRAM + %X", PAddr);
                 MoveVariableToX86reg(PAddr + g_MMU->Rdram(), VarName, Reg);
             }
-            else if ((PAddr & 0xFF000000) == 0x06000000 && (PAddr - 0x06000000) < g_DDRom->GetRomSize())
+            else if (g_DDRom != NULL && ((PAddr & 0xFF000000) == 0x06000000 && (PAddr - 0x06000000) < g_DDRom->GetRomSize()))
             {
                 // read from ddrom
                 sprintf(VarName, "RDRAM + %X", PAddr);
