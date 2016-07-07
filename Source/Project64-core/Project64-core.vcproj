@@ -469,6 +469,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\N64System\Recompiler\RegBase.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\N64System\Recompiler\SectionInfo.cpp"
 						>
 					</File>
