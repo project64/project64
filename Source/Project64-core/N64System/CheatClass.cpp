@@ -114,22 +114,22 @@ void CCheats::LoadPermCheats(CPlugins * Plugins)
             for (size_t i = 0, n = PluginList.size(); i < n; i++)
             {
                 stdstr PluginName = PluginList[i].Trim();
-                if (strstr(Plugins->Gfx()->PluginName(), PluginName.c_str()) != NULL)
+                if (Plugins->Gfx() != NULL && strstr(Plugins->Gfx()->PluginName(), PluginName.c_str()) != NULL)
                 {
                     LoadEntry = true;
                     break;
                 }
-                if (strstr(Plugins->Audio()->PluginName(), PluginName.c_str()) != NULL)
+                if (Plugins->Audio() != NULL && strstr(Plugins->Audio()->PluginName(), PluginName.c_str()) != NULL)
                 {
                     LoadEntry = true;
                     break;
                 }
-                if (strstr(Plugins->RSP()->PluginName(), PluginName.c_str()) != NULL)
+                if (Plugins->RSP() != NULL && strstr(Plugins->RSP()->PluginName(), PluginName.c_str()) != NULL)
                 {
                     LoadEntry = true;
                     break;
                 }
-                if (strstr(Plugins->Control()->PluginName(), PluginName.c_str()) != NULL)
+                if (Plugins->Control() != NULL && strstr(Plugins->Control()->PluginName(), PluginName.c_str()) != NULL)
                 {
                     LoadEntry = true;
                     break;
