@@ -18,7 +18,6 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.graphics.Point;
 import android.os.Vibrator;
-import android.util.FloatMath;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
 import android.view.View;
@@ -501,7 +500,7 @@ public class TouchController extends AbstractController implements OnTouchListen
         // Compute the pythagorean displacement of the stick
         int dX = point.x;
         int dY = point.y;
-        float displacement = FloatMath.sqrt( ( dX * dX ) + ( dY * dY ) );
+        float displacement = (float) Math.sqrt( ( dX * dX ) + ( dY * dY ) );
         
         // "Capture" the analog control
         if( mTouchMap.isInCaptureRange( displacement ) )
@@ -515,7 +514,7 @@ public class TouchController extends AbstractController implements OnTouchListen
             point = mTouchMap.getConstrainedDisplacement( dX, dY );
             dX = point.x;
             dY = point.y;
-            displacement = FloatMath.sqrt( ( dX * dX ) + ( dY * dY ) );
+            displacement = (float) Math.sqrt( ( dX * dX ) + ( dY * dY ) );
             
             // Fraction of full-throttle, between 0 and 1, inclusive
             float p = mTouchMap.getAnalogStrength( displacement );
