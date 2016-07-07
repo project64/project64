@@ -4,5 +4,6 @@
     <dimen name="galleryImageWidth">450dp</dimen>
     <dimen name="galleryImageHeight">15dp</dimen> <!-- galleryImageWidth * 177 / 256 -->
     <dimen name="galleryHalfSpacing">5dp</dimen>
+    <dimen name="actionBarSize">56dp</dimen>
 
 </resources>

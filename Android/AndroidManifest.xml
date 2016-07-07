@@ -35,7 +35,7 @@
             android:exported="false"
             android:label="@string/GalleryActivity_title"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.AppCompat.NoActionBar" >
+            android:theme="@style/Theme.Project64.Apearance" >
         </activity>
         <activity
             android:name="emu.project64.ScanRomsActivity"

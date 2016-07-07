@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="toolbar_popup_style" format="reference" />
+    <attr name="background_actionbar" format="reference|color" />
+    <attr name="background_gallerymenu" format="reference|color" />
+    <attr name="font_actionbar" format="reference|color" />
+    <attr name="font_actionbar_selected" format="reference|color" />
+    <attr name="textMenuColor" format="reference|color" />
     <declare-styleable name="PathPreference">
         <attr name="selectionMode" format="integer" />
     </declare-styleable>

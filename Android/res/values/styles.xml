@@ -18,4 +18,23 @@
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:textColor">#000000</item>
     </style>
+
+    <style name="Theme.Project64.Preference" parent="PreferenceThemeOverlay">
+    </style>
+    
+    <style name="Theme.Project64.Apearance" parent="Theme.AppCompat.NoActionBar">
+        <item name="background_actionbar">#4683ec</item>
+        <item name="background_gallerymenu">#000000</item>
+        <item name="android:textColor">#000000</item>
+        <item name="font_actionbar">@color/grey600</item>
+        <item name="font_actionbar_selected">@color/grey200</item>
+        <item name="textMenuColor">#FFFFFF</item>      
+        <item name="preferenceTheme">@style/Theme.Project64.Preference</item>       
+    </style>
+    
+    <style name="Theme.Project64.About" parent="Theme.Project64.Apearance">
+      <item name="android:windowBackground">@android:color/white</item>
+      <item name="android:colorBackground">@android:color/white</item>
+    </style>       
+    <style name="Project64.Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 </resources>
