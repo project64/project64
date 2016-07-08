@@ -21,6 +21,7 @@ public class NativeExports
     }
     
     public static native void appInit (String BaseDir );
+    public static native String appVersion();
     public static native void StopEmulation();
     public static native void StartEmulation();
     public static native void CloseSystem();

@@ -11,6 +11,7 @@
 package emu.project64;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 public class Project64Application extends android.app.Application
 {
@@ -30,5 +31,13 @@ public class Project64Application extends android.app.Application
     public static Context getAppContext()
     {
         return m_instance;
+    }
+    
+    /**
+     * @return the main resources from the Application
+     */
+    public static Resources getAppResources()
+    {
+        return m_instance.getResources();
     }
 }

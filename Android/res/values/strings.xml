@@ -29,7 +29,8 @@
     <string name="menuItem_about">About</string>
     <string name="menuItem_appVersion">App version</string>
     <string name="menuItem_hardwareInfo">Hardware info</string>
-
+    <string name="menuItem_forum">Help/Forum</string>
+  
     <!-- ************************************************************************** -->
     <!-- Toast Messages                                                             -->
     <!-- Developers: Follow punctuation and grammar as shown below                  -->
@@ -47,6 +48,18 @@
     <string name="categoryDisplay_title">Display</string>
     <string name="categoryAudio_title">Audio</string>
     <string name="categoryData_title">Data</string>
+
+    <!-- About -->
+    <string name="info">Information</string>
+    <string name="app_name_full">Project64 for Android</string>
+    <string name="licence">License</string>
+    <string name="revision">Revision</string>
+    <string name="about">About</string>
+    <string name="about_text">Project64 for Android™ is a port of the windows version of project64. The Android™ version can play most N64 games.</string>
+    <string name="Project64_authors">Project64 Authors.</string>
+    <string name="about_link" translatable="false">        &lt;a href=&quot;www.pj64-emu.com&quot;&gt;www.pj64-emu.com&lt;/a&gt;</string>
+    <string name="about_copyright" translatable="false">Copyleft &#169; 1998&#8211;2016 by Project64.\n</string>
+    <string name="authors" translatable="false">Zilmar, Jabo, Smiff, Gent, Jahra!n, Witten, RadeonUser, Trotterwatch, pixi, Azimer, Gonetz, cxd4, AmbientMalice, LegendOfDragoon, Nekokabu, Lithium64, death-droid, LuigiBlood, dsx.</string>
 
     <!-- Gallery sections -->
     <string name="galleryRecentlyPlayed">Recently played</string>

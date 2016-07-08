@@ -131,6 +131,11 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv* env, j
     return res;
 }
 
+EXPORT jstring CALL Java_emu_project64_jni_NativeExports_appVersion(JNIEnv* env, jclass cls)
+{
+    return env->NewStringUTF(VER_FILE_VERSION_STR);
+}
+
 EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveBool(JNIEnv* env, jclass cls, int Type, jboolean Value)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Saving %d value: %s",Type,Value ? "true" : "false");

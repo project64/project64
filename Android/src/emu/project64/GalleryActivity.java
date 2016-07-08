@@ -318,8 +318,9 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                 Intent GlobalPrefsIntent = new Intent( this, GlobalPrefsActivity.class );
                 startActivity( GlobalPrefsIntent );
                 return true;
-            case R.id.menuItem_hardwareInfo:
-                Popups.showHardwareInfo( this );
+            case R.id.menuItem_about:
+                Intent AboutIntent = new Intent(this, AboutActivity.class);
+                startActivity( AboutIntent );
                 return true;
             default:
                 return super.onOptionsItemSelected( item );

@@ -74,6 +74,8 @@
                 android:name="android.app.lib_name"
                 android:value="xperia-touchpad" />
         </activity>
-    </application>
-
+        <activity
+            android:name="emu.project64.AboutActivity"
+            android:theme="@style/Theme.Project64.About" />
+     </application>
 </manifest>
