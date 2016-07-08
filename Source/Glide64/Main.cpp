@@ -76,7 +76,6 @@ int evoodoo = 0;
 int ev_fullscreen = 0;
 
 #ifdef _WIN32
-#define WINPROC_OVERRIDE
 HINSTANCE hinstDLL = NULL;
 #endif
 
