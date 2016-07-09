@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #endif
 #ifdef __arm__
-#include <Project64-core/N64System/Arm/ArmOpCode.h>
+#include <Project64-core/N64System/Recompiler/Arm/ArmOpCode.h>
 #endif
 
 #if defined(__i386__) || defined(_M_IX86)
