@@ -107,15 +107,15 @@ void MD5::update(const uint1 *input, uint4 input_length)
 
 void MD5::update(FILE *file)
 {
-    unsigned char buffer[1024];
+    unsigned char localBuffer[1024];
     int len;
 
     do
     {
-        len = (int)fread(buffer, 1, 1024, file);
+        len = (int)fread(localBuffer, 1, 1024, file);
         if (len)
         {
-            update(buffer, len);
+            update(localBuffer, len);
         }
     } while (len);
 

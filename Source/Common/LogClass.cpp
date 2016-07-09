@@ -105,11 +105,10 @@ void CLog::Log( const char * Message )
 			m_hLogFile.Seek((end - m_MaxFileSize) + m_FileChangeSize,CFile::begin);
 
 			// Find next end of line
-			uint32_t NextEnter = 0, dwRead = 0;
+			uint32_t NextEnter = 0, dwRead;
 			do 
 			{
 				uint8_t Data[300];
-				uint32_t dwRead;
 
 				dwRead = m_hLogFile.Read(Data,sizeof(Data));
 				if (dwRead == 0)
@@ -142,7 +141,6 @@ void CLog::Log( const char * Message )
 
 				m_hLogFile.Seek(ReadPos,CFile::begin);
 
-				uint32_t dwRead;
 				dwRead = m_hLogFile.Read(Data,SizeToRead);
 
 				m_hLogFile.Seek(WritePos,CFile::begin);
