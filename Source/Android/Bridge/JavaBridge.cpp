@@ -8,6 +8,8 @@
 * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
 *                                                                           *
 ****************************************************************************/
+#include <Project64-core/TraceModulesProject64.h>
+#include <Common/Trace.h>
 #include "JavaBridge.h"
 #include "jniBridge.h"
 
@@ -30,6 +32,7 @@ JavaBridge::JavaBridge(JavaVM* vm) :
 
 void JavaBridge::GfxThreadInit()
 {
+    WriteTrace(TraceUserInterface, TraceDebug, "Start");
     JNIEnv *env = Android_JNI_GetEnv();
 	if (g_GLThread != NULL && env != NULL)
 	{
@@ -38,18 +41,22 @@ void JavaBridge::GfxThreadInit()
         env->CallVoidMethod(g_GLThread, midThreadStarting);
 		env->DeleteLocalRef(GLThreadClass);
 	}
+    WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
 void JavaBridge::GfxThreadDone()
 {
+    WriteTrace(TraceUserInterface, TraceDebug, "Start");
     JNIEnv *env = Android_JNI_GetEnv();
 	if (g_GLThread != NULL && env != NULL)
 	{
+        WriteTrace(TraceUserInterface, TraceDebug, "calling java GLThread::ThreadExiting");
 		jclass GLThreadClass = env->GetObjectClass(g_GLThread);
 		jmethodID midThreadExiting = env->GetMethodID(GLThreadClass, "ThreadExiting", "()V");
 		env->CallVoidMethod(g_GLThread, midThreadExiting);
 		env->DeleteLocalRef(GLThreadClass);
 	}
+    WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
 void JavaBridge::SwapWindow()
@@ -103,6 +110,18 @@ void JavaBridge::RomListLoaded(void)
     }
 }
 
+void JavaBridge::DisplayError(const char * Message)
+{
+    JNIEnv *env = Android_JNI_GetEnv();
+    if (env)
+    {
+        jstring j_Message = env->NewStringUTF(Message);
+        jmethodID midDisplayError = env->GetStaticMethodID(m_NotifierClass, "DisplayError", "(Landroid/app/Activity;Ljava/lang/String;)V");
+        env->CallStaticVoidMethod(m_NotifierClass, midDisplayError,g_Activity,j_Message);
+        env->DeleteLocalRef(j_Message);
+    }
+}
+
 void JavaBridge::DisplayMessage(const char * Message)
 {
     JNIEnv *env = Android_JNI_GetEnv();
@@ -112,6 +131,16 @@ void JavaBridge::DisplayMessage(const char * Message)
         jmethodID midShowToast = env->GetStaticMethodID(m_NotifierClass, "showToast", "(Landroid/app/Activity;Ljava/lang/String;)V");
         env->CallStaticVoidMethod(m_NotifierClass, midShowToast,g_Activity,j_Message);
         env->DeleteLocalRef(j_Message);
+    }
+}
+
+void JavaBridge::EmulationStopped(void)
+{
+    JNIEnv *env = Android_JNI_GetEnv();
+	if (g_Activity != NULL && env != NULL)
+	{
+        jmethodID midEmulationStopped = env->GetStaticMethodID(m_NotifierClass, "EmulationStopped", "(Landroid/app/Activity;)V");
+        env->CallStaticVoidMethod(m_NotifierClass, midEmulationStopped, g_Activity);
     }
 }
 

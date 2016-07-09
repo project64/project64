@@ -12,6 +12,7 @@
 #include <Common/Trace.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Settings/SettingsClass.h>
+#include <Project64-core/N64System/N64Class.h>
 #include "NotificationClass.h"
 #include "JavaBridge.h"
 #if defined(ANDROID)
@@ -35,26 +36,42 @@ CNotificationImp::~CNotificationImp()
 {
 }
 
-void CNotificationImp::DisplayError(const char * /*Message*/) const
+void CNotificationImp::DisplayError(const char * Message) const
 {
+#ifdef ANDROID
+    g_JavaBridge->DisplayError(Message);
+#endif
 }
 
-void CNotificationImp::DisplayError(LanguageStringID /*StringID*/) const
+void CNotificationImp::DisplayError(LanguageStringID StringID) const
 {
+    if (g_Lang)
+    {
+        DisplayError(g_Lang->GetString(StringID).c_str());
+    }
 }
 
-void CNotificationImp::FatalError(LanguageStringID /*StringID*/) const
+void CNotificationImp::FatalError(LanguageStringID StringID) const
 {
+    if (g_Lang)
+    {
+        FatalError(g_Lang->GetString(StringID).c_str());
+    }
+}
+
+void CNotificationImp::FatalError(const char * Message) const
+{
+    WriteTrace(TraceUserInterface, TraceError, Message);
+    DisplayError(Message);
+    if (g_BaseSystem)
+    {
+        g_BaseSystem->CloseCpu();
+    }
 }
 
 void CNotificationImp::DisplayMessage(int DisplayTime, LanguageStringID StringID) const
 {
     DisplayMessage(DisplayTime, g_Lang->GetString(StringID).c_str());
-}
-
-void CNotificationImp::FatalError(const char * Message) const
-{
-    DisplayMessage(0,Message);
 }
 
 //User Feedback
@@ -83,6 +100,10 @@ void CNotificationImp::DisplayMessage(int DisplayTime, const char * Message) con
     }*/
 
     g_JavaBridge->DisplayMessage(Message);
+#else
+    // ignore warning usage
+    DisplayTime = DisplayTime;
+    Message = Message;
 #endif
 }
 
@@ -100,26 +121,11 @@ void CNotificationImp::BreakPoint(const char * FileName, int32_t LineNumber)
 {
     if (g_Settings->LoadBool(Debugger_Enabled))
     {
-        DisplayError(stdstr_f("Break point found at\n%s\n%d", FileName, LineNumber).c_str());
-#ifndef _WIN32
-		__builtin_trap();
-#endif
-#ifdef tofix
-		if (g_BaseSystem) 
-		{
-			g_BaseSystem->CloseCpu();
-		}
-#endif
+        FatalError(stdstr_f("Break point found at\n%s\nLine: %d", FileName, LineNumber).c_str());
     }
     else
     {
-        DisplayError("Fatal Error: Stopping emulation");
-#ifdef tofix
-		if (g_BaseSystem) 
-		{
-			g_BaseSystem->CloseCpu();
-		}
-#endif
+        FatalError("Fatal Error: Emulation stopped");
 	}
 }
 

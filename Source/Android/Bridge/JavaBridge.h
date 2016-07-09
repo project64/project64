@@ -22,7 +22,9 @@ public:
     void RomListLoaded(void);
 
     //Notification
+    void DisplayError(const char * Message);
     void DisplayMessage(const char * Message);
+    void EmulationStopped(void);
 
 private:
 	JavaBridge(void);		                    // Disable default constructor

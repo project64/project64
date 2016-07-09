@@ -84,7 +84,49 @@ EXPORT jint CALL JNI_OnLoad(JavaVM* vm, void* reserved)
         __android_log_print(ANDROID_LOG_ERROR, "jniBridge", "Error initializing pthread key");
     }
     Android_JNI_SetupThread();
+
     return JNI_VERSION_1_4;
+}
+
+void GameCpuRunning(void * /*NotUsed*/)
+{
+    WriteTrace(TraceUserInterface, TraceDebug, "Start");
+    bool Running = g_Settings->LoadBool(GameRunning_CPU_Running);
+    WriteTrace(TraceUserInterface, TraceDebug, Running ? "Game Started" : "Game Stopped");
+    if (!Running)
+    {
+        JNIEnv *env = Android_JNI_GetEnv();
+        if (env != NULL)
+        {
+            if (g_JavaBridge)
+            {
+                WriteTrace(TraceUserInterface, TraceDebug, "Notify java emulation stopped");
+                g_JavaBridge->EmulationStopped();
+            }
+            else
+            {
+                WriteTrace(TraceUserInterface, TraceError, "No Java bridge");
+            }
+
+            // call in to java that emulation done
+            WriteTrace(TraceUserInterface, TraceDebug, "clean up global activity");
+            env->DeleteGlobalRef(g_Activity);
+            g_Activity = NULL;
+
+            WriteTrace(TraceUserInterface, TraceDebug, "clean up global gl thread");
+            if (g_JavaBridge)
+            {
+                g_JavaBridge->GfxThreadDone();
+            }
+            env->DeleteGlobalRef(g_GLThread);
+            g_GLThread = NULL;
+        }  
+        else
+        {
+            WriteTrace(TraceUserInterface, TraceError, "Failed to get java environment");
+        }
+    }
+    WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
 EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv* env, jclass cls, jstring BaseDir)
@@ -123,6 +165,7 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv* env, j
         JniBridegSettings = new CJniBridegSettings();
 
         RegisterUISettings();
+        g_Settings->RegisterChangeCB(GameRunning_CPU_Running, NULL, (CSettings::SettingChangedFunc)GameCpuRunning);
     }
     else
     {
@@ -191,10 +234,8 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadRomList(JNIEnv* env, j
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
-EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadGame(JNIEnv* env, jclass cls, jstring FileLoc, jobject activity, jobject GLThread)
+EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadGame(JNIEnv* env, jclass cls, jstring FileLoc)
 {
-    g_Activity = env->NewGlobalRef(activity);
-    g_GLThread = env->NewGlobalRef(GLThread);
     const char *fileLoc = env->GetStringUTFChars(FileLoc, 0);
     WriteTrace(TraceUserInterface, TraceDebug, "FileLoc: %s",fileLoc);
     g_Settings->SaveBool(Setting_AutoStart,false);
@@ -203,8 +244,10 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadGame(JNIEnv* env, jcla
     WriteTrace(TraceUserInterface, TraceDebug, "Image loaded");
 }
 
-EXPORT void CALL Java_emu_project64_jni_NativeExports_StartGame(JNIEnv* env, jclass cls)
+EXPORT void CALL Java_emu_project64_jni_NativeExports_StartGame(JNIEnv* env, jclass cls, jobject activity, jobject GLThread)
 {
+    g_Activity = env->NewGlobalRef(activity);
+    g_GLThread = env->NewGlobalRef(GLThread);
     g_BaseSystem->StartEmulation(true);
 }
 
@@ -299,10 +342,6 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_CloseSystem(JNIEnv* env, j
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
     CN64System::CloseSystem();
-    env->DeleteGlobalRef(g_Activity);
-    g_Activity = NULL;
-    env->DeleteGlobalRef(g_GLThread);
-    g_GLThread = NULL;
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
