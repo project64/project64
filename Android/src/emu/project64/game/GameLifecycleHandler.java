@@ -253,14 +253,17 @@ public class GameLifecycleHandler implements SurfaceHolder.Callback, GameSurface
         {
             Log.i("GameLifecycleHandler", "onPause");
         }
-        AutoSave();
         mIsResumed = false;
         mStopped = true;
-        if (LOG_GAMELIFECYCLEHANDLER) 
-        {
-        	Log.i("GameLifecycleHandler", "Stop Emulation");
-        }
-        NativeExports.StopEmulation();
+        if (NativeExports.SettingsLoadBool(SettingsID.GameRunning_CPU_Running.getValue()) == true)
+    	{
+            AutoSave();
+            if (LOG_GAMELIFECYCLEHANDLER) 
+            {
+            	Log.i("GameLifecycleHandler", "Stop Emulation");
+            }
+            NativeExports.StopEmulation();
+    	}
         if (LOG_GAMELIFECYCLEHANDLER) 
         {
         	Log.i("GameLifecycleHandler", "onPause - done");

@@ -20,11 +20,11 @@ import emu.project64.jni.UISettingID;
 import emu.project64.task.ExtractAssetsTask;
 import emu.project64.task.ExtractAssetsTask.ExtractAssetsListener;
 import emu.project64.task.ExtractAssetsTask.Failure;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.Window;
@@ -35,7 +35,7 @@ import android.widget.TextView;
  * The main activity that presents the splash screen, extracts the assets if necessary, and launches
  * the main menu activity.
  */
-public class SplashActivity extends AppCompatActivity implements ExtractAssetsListener
+public class SplashActivity extends Activity implements ExtractAssetsListener
 {
     /**
      * Asset version number, used to determine stale assets. Increment this number every time the
@@ -75,7 +75,7 @@ public class SplashActivity extends AppCompatActivity implements ExtractAssetsLi
 
         // Lay out the content
         setContentView( R.layout.splash_activity );
-        ((TextView) findViewById( R.id.versionText )).setText("v1.0");
+        ((TextView) findViewById( R.id.versionText )).setText(NativeExports.appVersion());
         mTextView = (TextView) findViewById( R.id.mainText );
         
         if (!mInit)

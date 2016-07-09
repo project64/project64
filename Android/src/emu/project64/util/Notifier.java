@@ -11,6 +11,9 @@
 package emu.project64.util;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -21,7 +24,62 @@ public final class Notifier
 {   
     private static Toast sToast = null;
     private static Runnable sToastMessager = null;
+    private static Runnable sDisplayMessager = null;
    
+    /**
+     * Pop up a temporary message on the device.
+     * 
+     * @param activity The activity to display from
+     * @param message  The message string to display.
+     */
+    public static void DisplayError( Activity activity, String message )
+    {
+        if( activity == null )
+            return;
+
+        final String finalMessage = new String(message);
+        final Activity finalActivity = activity;
+
+        sDisplayMessager = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                new AlertDialog.Builder(finalActivity)
+                .setTitle("Error")
+                .setMessage(finalMessage)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() 
+                {
+                    public void onClick(DialogInterface dialog, int id) 
+                    {
+                        // You don't have to do anything here if you just want it dismissed when clicked
+                	   synchronized(sDisplayMessager)
+                	   {
+                		   sDisplayMessager.notify();
+                	   };
+                    }
+                })
+                .create()
+                .show();
+            }
+        };
+        activity.runOnUiThread( sDisplayMessager );
+        synchronized(sDisplayMessager)
+        {
+            try 
+            {
+            	sDisplayMessager.wait();
+    		}
+            catch (InterruptedException e) 
+            {
+            }
+            catch (IllegalMonitorStateException e)
+            {
+            }
+        }
+        Log.d("DisplayError", "Done");
+    }
+    
     /**
      * Pop up a temporary message on the device.
      * 
@@ -64,5 +122,39 @@ public final class Notifier
             };
         }
         activity.runOnUiThread( sToastMessager );
+    }
+    
+    private static Runnable runEmulationStopped = null;
+    public static void EmulationStopped (Activity activity)
+    {
+        final Activity finalActivity = activity;
+
+        runEmulationStopped = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+            	finalActivity.finish();
+        		synchronized(runEmulationStopped)
+        		{
+        			runEmulationStopped.notify();
+    			};
+            }
+        };
+        activity.runOnUiThread( runEmulationStopped );
+        synchronized(runEmulationStopped)
+        {
+            try 
+            {
+            	runEmulationStopped.wait();
+    		}
+            catch (InterruptedException e) 
+            {
+            }
+            catch (IllegalMonitorStateException e)
+            {
+            }
+        }
+        Log.d("EmulationStopped", "Done");
     }
 }

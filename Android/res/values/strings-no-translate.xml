@@ -11,7 +11,6 @@
     <string name="SplashActivity_title" translatable="false">@string/app_name</string>
     <string name="GalleryActivity_title" translatable="false">@string/app_name</string>
     <string name="ScanRomsActivity_title" translatable="false">@string/app_name</string>
-    <string name="SettingsGlobalActivity_title" translatable="false">@string/menuItem_globalSettings</string>
     <string name="GameActivity_title" translatable="false">@string/app_name</string>
     
 </resources>

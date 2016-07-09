@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import emu.project64.R;
-import emu.project64.dialog.Popups;
 import emu.project64.dialog.ProgressDialog;
 import emu.project64.game.GameActivity;
 import emu.project64.game.GameActivityXperiaPlay;
@@ -28,7 +27,8 @@ import emu.project64.inAppPurchase.Inventory;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
 import emu.project64.jni.SystemEvent;
-import emu.project64.persistent.GlobalPrefsActivity;
+import emu.project64.settings.GameSettingsActivity;
+import emu.project64.settings.SettingsActivity;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -38,6 +38,7 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -73,7 +74,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
     public int galleryMaxWidth;
     public int galleryHalfSpacing;
     public int galleryColumns = 2;
-    public float galleryAspectRatio;
     
     // Misc.
     private static List<GalleryItem> mGalleryItems = new ArrayList<GalleryItem>();
@@ -166,7 +166,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         // Update the grid layout
         galleryMaxWidth = (int) getResources().getDimension( R.dimen.galleryImageWidth );
         galleryHalfSpacing = (int) getResources().getDimension( R.dimen.galleryHalfSpacing );
-        galleryAspectRatio = galleryMaxWidth * 1.0f / getResources().getDimension( R.dimen.galleryImageHeight );
         
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics( metrics );
@@ -315,8 +314,12 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                 startActivityForResult( intent, GAME_DIR_REQUEST_CODE );
                 return true;
             case R.id.menuItem_settings:
-                Intent GlobalPrefsIntent = new Intent( this, GlobalPrefsActivity.class );
-                startActivity( GlobalPrefsIntent );
+                Intent SettingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity( SettingsIntent );
+                return true;
+            case R.id.menuItem_forum:
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://forum.pj64-emu.com/forumdisplay.php?f=13"));
+                startActivity(browserIntent);
                 return true;
             case R.id.menuItem_about:
                 Intent AboutIntent = new Intent(this, AboutActivity.class);
@@ -391,7 +394,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
             menuItemLst.add(new Item("Resume from Auto save", R.drawable.ic_lock));            
         }
         menuItemLst.add(new Item("Restart", R.drawable.ic_refresh));
-        if (ShowSettings)
+        if (ShowSettings && !NativeExports.SettingsLoadBool(SettingsID.UserInterface_BasicMode.getValue()))
         {
             menuItemLst.add(new Item("Settings", R.drawable.ic_sliders));
         }
@@ -452,10 +455,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                 {
                     return false;
                 }
-                if (position == 3)
-                {
-                    return false;                    
-                }
                 return true;
             }            
         };
@@ -514,7 +513,8 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                 } 
                 else if (item == 3) 
                 {
-                    //settings still to do
+                    Intent SettingsIntent = new Intent(finalContext, GameSettingsActivity.class);
+                    startActivity( SettingsIntent );
                 }
             }
         });

@@ -43,17 +43,7 @@
             android:label="@string/ScanRomsActivity_title"
             android:theme="@style/Theme.AppCompat" >
         </activity>
-        <activity
-            android:name="emu.project64.persistent.GlobalPrefsActivity"
-            android:exported="false"
-            android:label="@string/SettingsGlobalActivity_title"
-            android:theme="@style/Theme.AppCompat" >
-            <intent-filter>
-                <action android:name=".persistent.GlobalPrefsActivity" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <!--
         For the GameActivities, do not restart the activity when the phone's slider
         opens or closes, or when the orientation (and thereby screen size) changes.
@@ -77,5 +67,11 @@
         <activity
             android:name="emu.project64.AboutActivity"
             android:theme="@style/Theme.Project64.About" />
+         <activity
+            android:name="emu.project64.settings.SettingsActivity"
+            android:theme="@style/Theme.Project64.Apearance" />
+         <activity
+            android:name="emu.project64.settings.GameSettingsActivity"
+            android:theme="@style/Theme.Project64.Apearance" />
      </application>
 </manifest>

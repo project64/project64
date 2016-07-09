@@ -25,7 +25,6 @@
     <string name="menuItem_refreshRoms">Refresh ROMs</string>
     <string name="menuItem_gameDir">Game Dir</string>
     <string name="menuItem_settings">Settings</string>
-    <string name="menuItem_globalSettings">Global settings</string>
     <string name="menuItem_about">About</string>
     <string name="menuItem_appVersion">App version</string>
     <string name="menuItem_hardwareInfo">Hardware info</string>
@@ -61,18 +60,86 @@
     <string name="about_copyright" translatable="false">Copyleft &#169; 1998&#8211;2016 by Project64.\n</string>
     <string name="authors" translatable="false">Zilmar, Jabo, Smiff, Gent, Jahra!n, Witten, RadeonUser, Trotterwatch, pixi, Azimer, Gonetz, cxd4, AmbientMalice, LegendOfDragoon, Nekokabu, Lithium64, death-droid, LuigiBlood, dsx.</string>
 
-    <!-- Gallery sections -->
-    <string name="galleryRecentlyPlayed">Recently played</string>
-    <string name="galleryLibrary">Library</string>
-
+    <!-- Settings -->
+    <string name="preferences">Settings</string>
+    <string name="settings_title">Settings</string>
     <string name="displayFps_title">Framerate</string>
     <string name="displayFps_summary">Display FPS on screen</string>
-    <string name="audioEnabled_title">Enabled</string>
+    <string name="audioEnabled_title">Enable Audio</string>
     <string name="audioEnabled_summary">Enable/Disable audio output</string>
+    <string name="advancedSettings_title">Hide Advanced Settings</string>
+    <string name="advancedSettings_summary">Remove more complex settings that most users will not want to use</string>
+    <string name="debuggerEnabled_title">Enable debugger</string>
+    <string name="debuggerEnabled_summary">Enable/Disable extra options to try and debug why games do not work</string>
+    <string name="BlockLinking_title">Advanced Block Linking</string>
+    <string name="BlockLinking_summary">Precompile blocks together</string>
+    <string name="GenerateLogFiles_title">Generate Log Files</string>
+    <string name="GenerateLogFiles_summary">Log recompiler code</string>
+    <string name="logging">Logging</string>
+    <string name="project64core">Project64 Core</string>
+    <string name="logging_project64core">Logging - Project64 Core</string>
+    <string name="TraceError">Error</string>
+    <string name="TraceWarning">Warning</string>
+    <string name="TraceNotice">Notice</string>
+    <string name="TraceInfo">Info</string>
+    <string name="TraceDebug">Debug</string>
+    <string name="TraceVerbose">Verbose</string>
+    <string name="TraceMD5">MD5</string>
+    <string name="TraceThread">Thread</string>
+    <string name="TracePath">Path</string>
+    <string name="TraceSettings">Settings</string>
+    <string name="TraceUnknown">Unknown</string>
+    <string name="TraceAppInit">App Init</string>
+    <string name="TraceAppCleanup">App Cleanup</string>
+    <string name="TraceN64System">N64 System</string>
+    <string name="TracePlugins">Plugins</string>
+    <string name="TraceGFXPlugin">GFX Plugin</string>
+    <string name="TraceAudioPlugin">Audio Plugin</string>
+    <string name="TraceControllerPlugin">Controller Plugin</string>
+    <string name="TraceRSPPlugin">RSP Plugin</string>
+    <string name="TraceRSP">RSP</string>
+    <string name="TraceAudio">Audio</string>
+    <string name="TraceRegisterCache">Register Cache</string>
+    <string name="TraceRecompiler">Recompiler</string>
+    <string name="TraceTLB">TLB</string>
+    <string name="TraceProtectedMem">Protected Mem</string>
+    <string name="TraceUserInterface">User Interface</string>
+    <string name="TraceRomList">Rom List</string>
+    <string name="TraceExceptionHandler">Exception Handler</string>
+    <string name="CpuType">CPU core style</string>
+    <string name="Interpreter">Interpreter</string>
+    <string name="Recompiler">Recompiler</string>
+    <string name="SyncCores">Synchronize Cores</string>
+    
+    <string-array name="cpu_core_list">
+        <item>@string/Interpreter</item>
+        <item>@string/Recompiler</item>
+        <item>@string/SyncCores</item>
+    </string-array>
+    <string-array name="cpu_core_values" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    
+	<string-array name="trace_severity_list">
+        <item>@string/TraceError</item>
+        <item>@string/TraceWarning</item>
+        <item>@string/TraceNotice</item>
+        <item>@string/TraceInfo</item>
+        <item>@string/TraceDebug</item>
+        <item>@string/TraceVerbose</item>
+    </string-array>
+    <string-array name="trace_severity_values" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+    
     <!-- Path Preferences (selected path will become the summary) -->
-    <!-- '~' indicates rel path & use storage dir if path doesn't exist -->
-    <!-- '!' indicates rel path & create parent dirs if path doesn't exist -->
-    <string name="pathPreference_dialogTitle">Selected folder: %1$s</string>
     <string name="pathGameSaves_title">Game save folder</string>
     <string name="pathGameSaves_default">!project64</string>
 

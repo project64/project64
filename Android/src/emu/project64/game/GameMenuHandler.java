@@ -141,7 +141,6 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
             NativeExports.ExternalEvent( SystemEvent.SysEvent_ResumeCPU_FromMenu.getValue());
             mLifecycleHandler.AutoSave();
             NativeExports.CloseSystem();
-            mActivity.finish();
             break;
         }
         return false;
