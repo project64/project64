@@ -170,28 +170,28 @@ void CPifRam::PifRamWrite()
         {
         case 0x02:
             // format the 'challenge' message into 30 nibbles for X-Scale's CIC code
-        {
-                     char Challenge[30], Response[30];
-                     for (int32_t i = 0; i < 15; i++)
-                     {
-                         Challenge[i * 2] = (m_PifRam[48 + i] >> 4) & 0x0f;
-                         Challenge[i * 2 + 1] = m_PifRam[48 + i] & 0x0f;
-                     }
-                     n64_cic_nus_6105(Challenge, Response, CHALLENGE_LENGTH - 2);
-                     uint64_t ResponseValue = 0;
-                     m_PifRam[46] = m_PifRam[47] = 0x00;
-                     for (int32_t z = 8; z > 0; z--)
-                     {
-                         ResponseValue = (ResponseValue << 8) | ((Response[(z - 1) * 2] << 4) + Response[(z - 1) * 2 + 1]);
-                     }
-                     memcpy(&m_PifRam[48], &ResponseValue, sizeof(uint64_t));
-                     ResponseValue = 0;
-                     for (int32_t z = 7; z > 0; z--)
-                     {
-                         ResponseValue = (ResponseValue << 8) | ((Response[((z + 8) - 1) * 2] << 4) + Response[((z + 8) - 1) * 2 + 1]);
-                     }
-                     memcpy(&m_PifRam[56], &ResponseValue, sizeof(uint64_t));
-        }
+            {
+                char Challenge[30], Response[30];
+                for (int32_t i = 0; i < 15; i++)
+                {
+                    Challenge[i * 2] = (m_PifRam[48 + i] >> 4) & 0x0f;
+                    Challenge[i * 2 + 1] = m_PifRam[48 + i] & 0x0f;
+                }
+                n64_cic_nus_6105(Challenge, Response, CHALLENGE_LENGTH - 2);
+                uint64_t ResponseValue = 0;
+                m_PifRam[46] = m_PifRam[47] = 0x00;
+                for (int32_t z = 8; z > 0; z--)
+                {
+                    ResponseValue = (ResponseValue << 8) | ((Response[(z - 1) * 2] << 4) + Response[(z - 1) * 2 + 1]);
+                }
+                memcpy(&m_PifRam[48], &ResponseValue, sizeof(uint64_t));
+                ResponseValue = 0;
+                for (int32_t z = 7; z > 0; z--)
+                {
+                    ResponseValue = (ResponseValue << 8) | ((Response[((z + 8) - 1) * 2] << 4) + Response[((z + 8) - 1) * 2 + 1]);
+                }
+                memcpy(&m_PifRam[56], &ResponseValue, sizeof(uint64_t));
+            }
             break;
         case 0x08:
             m_PifRam[0x3F] = 0;
