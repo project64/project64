@@ -1375,6 +1375,10 @@ void CMipsMemoryVM::Load32PeripheralInterface(void)
 {
     switch (m_MemLookupAddress & 0x1FFFFFFF)
     {
+    case 0x04600000: m_MemLookupValue.UW[0] = g_Reg->PI_DRAM_ADDR_REG; break;
+    case 0x04600004: m_MemLookupValue.UW[0] = g_Reg->PI_CART_ADDR_REG; break;
+    case 0x04600008: m_MemLookupValue.UW[0] = g_Reg->PI_RD_LEN_REG; break;
+    case 0x0460000C: m_MemLookupValue.UW[0] = g_Reg->PI_WR_LEN_REG; break;
     case 0x04600010: m_MemLookupValue.UW[0] = g_Reg->PI_STATUS_REG; break;
     case 0x04600014: m_MemLookupValue.UW[0] = g_Reg->PI_DOMAIN1_REG; break;
     case 0x04600018: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM1_PWD_REG; break;
