@@ -10852,6 +10852,21 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             }
         }
         break;
+    case 0x05000000:
+        //64DD Registers
+        if (g_Settings->LoadBool(Setting_EnableDisk))
+        {
+            switch (PAddr)
+            {
+            case 0x05000520: MoveConstToVariable(Value, &g_Reg->ASIC_HARD_RESET, "ASIC_HARD_RESET"); break;
+            default:
+                if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+                {
+                    g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+                }
+            }
+            break;
+        }
     case 0x1fc00000:
 		{
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
