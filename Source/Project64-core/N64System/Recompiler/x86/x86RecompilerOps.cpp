@@ -7721,13 +7721,16 @@ void CX86RecompilerOps::COP0_MT()
         AndConstToVariable(0xFFFFCFF, &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
         if (IsConst(m_Opcode.rt))
         {
-            if ((GetMipsRegLo(m_Opcode.rt) & 0x300) != 0 && bHaveDebugger()){ g_Notify->DisplayError("Set IP0 or IP1"); }
+            if ((GetMipsRegLo(m_Opcode.rt) & 0x300) != 0 && bHaveDebugger())
+            {
+                g_Notify->DisplayError("Set IP0 or IP1");
+            }
         }
-        else if (bHaveDebugger())
+        /*else if (bHaveDebugger())
         {
             UnknownOpcode();
             return;
-        }
+        }*/
         m_RegWorkingSet.BeforeCallDirect();
 #ifdef _MSC_VER
         MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
@@ -10852,6 +10855,25 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             }
         }
         break;
+    case 0x05000000:
+        //64DD Registers
+        if (g_Settings->LoadBool(Setting_EnableDisk))
+        {
+            switch (PAddr)
+            {
+            case 0x05000520:
+                m_RegWorkingSet.BeforeCallDirect();
+                Call_Direct(AddressOf(&DiskReset), "DiskReset");
+                m_RegWorkingSet.AfterCallDirect();
+                break;
+            default:
+                if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+                {
+                    g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+                }
+            }
+            break;
+        }
     case 0x1fc00000:
 		{
             m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
