@@ -52,7 +52,6 @@ Thumbs.db
 /Plugin/RSP/RSP_d 1.7.dll
 /Plugin/RSP/RSP-HLE.dll
 /Plugin/RSP/RSP-HLE_d.dll
-/Plugin64/AndroidAudio
 /Plugin64/Audio/AndroidAudio.dll
 /Plugin64/Audio/AndroidAudio_d.dll
 /Plugin64/GFX/lib
@@ -72,7 +71,6 @@ Thumbs.db
 /Plugin64/RSP/pdb
 /Plugin64/RSP/RSP 1.7.dll
 /Plugin64/RSP/RSP_d 1.7.dll
-/Plugin64/RSP/RSP-HLE.dll
 /Source/3rdParty/wx/lib/vc_lib/msw/wx/setup.h
 /Source/3rdParty/wx/lib/vc_lib/mswd/wx/setup.h
 /Source/3rdParty/wx/lib/vc_lib/mswu/wx/msw/rcdefs.h
