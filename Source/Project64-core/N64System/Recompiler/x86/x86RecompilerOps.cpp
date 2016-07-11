@@ -7721,13 +7721,16 @@ void CX86RecompilerOps::COP0_MT()
         AndConstToVariable(0xFFFFCFF, &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
         if (IsConst(m_Opcode.rt))
         {
-            if ((GetMipsRegLo(m_Opcode.rt) & 0x300) != 0 && bHaveDebugger()){ g_Notify->DisplayError("Set IP0 or IP1"); }
+            if ((GetMipsRegLo(m_Opcode.rt) & 0x300) != 0 && bHaveDebugger())
+            {
+                g_Notify->DisplayError("Set IP0 or IP1");
+            }
         }
-        else if (bHaveDebugger())
+        /*else if (bHaveDebugger())
         {
             UnknownOpcode();
             return;
-        }
+        }*/
         m_RegWorkingSet.BeforeCallDirect();
 #ifdef _MSC_VER
         MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
