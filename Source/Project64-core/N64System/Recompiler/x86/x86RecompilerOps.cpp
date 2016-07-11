@@ -10861,7 +10861,11 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         {
             switch (PAddr)
             {
-            case 0x05000520: MoveConstToVariable(Value, &g_Reg->ASIC_HARD_RESET, "ASIC_HARD_RESET"); break;
+            case 0x05000520:
+                m_RegWorkingSet.BeforeCallDirect();
+                Call_Direct(AddressOf(&DiskReset), "DiskReset");
+                m_RegWorkingSet.AfterCallDirect();
+                break;
             default:
                 if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
                 {
