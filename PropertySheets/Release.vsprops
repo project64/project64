@@ -9,7 +9,7 @@
 		Name="VCCLCompilerTool"
 		Optimization="1"
 		InlineFunctionExpansion="0"
-		EnableIntrinsicFunctions="false"
+		EnableIntrinsicFunctions="true"
 		FavorSizeOrSpeed="2"
 		OmitFramePointers="false"
 		EnableFiberSafeOptimizations="false"
