@@ -3513,6 +3513,7 @@ Status=Compatible
 Good Name=Monaco Grand Prix (U)
 Internal Name=Monaco Grand Prix
 Status=Compatible
+Counter Factor=1
 Culling=1
 RDRAM Size=8
 
@@ -3521,6 +3522,7 @@ Good Name=Monaco Grand Prix - Racing Simulation 2 (E) (M4)
 Internal Name=Monaco GP Racing 2
 Status=Compatible
 Clear Frame=2
+Counter Factor=1
 Culling=1
 
 [5AC383E1-D712E387-C:45]
