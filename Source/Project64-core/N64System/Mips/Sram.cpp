@@ -112,5 +112,4 @@ void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len)
             m_File.Write((uint8_t*)(((uint32_t)Source + i) ^ 3), 1);
         }
     }
-    m_File.Flush();
 }

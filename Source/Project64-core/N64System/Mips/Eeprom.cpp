@@ -203,5 +203,4 @@ void CEeprom::WriteTo(uint8_t * Buffer, int32_t line)
     }
     m_File.Seek(line * 8, CFile::begin);
     m_File.Write(Buffer, 8);
-    m_File.Flush();
 }
