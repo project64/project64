@@ -67,7 +67,20 @@ void* CommitMemory(void* addr, size_t size, MEM_PROTECTION memProtection)
     }
     return VirtualAlloc(addr, size, MEM_COMMIT, OsMemProtection);
 #else
-    void * ptr = mmap(addr, size, PROT_READ|PROT_WRITE, MAP_FIXED|MAP_SHARED|MAP_ANON, -1, 0);
+    int prot = 0;
+    if (memProtection == MEM_READWRITE)
+    {
+        prot = PROT_READ|PROT_WRITE;
+    }
+    else if (memProtection == MEM_EXECUTE_READWRITE)
+    {
+        prot = PROT_READ|PROT_WRITE|PROT_EXEC;
+    }
+    else
+    {
+        return NULL;
+    }
+    void * ptr = mmap(addr, size, prot, MAP_FIXED|MAP_SHARED|MAP_ANON, -1, 0);
     msync(addr, size, MS_SYNC|MS_INVALIDATE);
     return ptr;
 #endif
