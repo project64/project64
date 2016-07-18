@@ -726,7 +726,7 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
 bool CCodeBlock::Compile()
 {
     CPU_Message("====== Code Block ======");
-    CPU_Message("x86 code at: %X", CompiledLocation());
+    CPU_Message("Native entry point: %X", CompiledLocation());
     CPU_Message("Start of Block: %X", VAddrEnter());
     CPU_Message("No of Sections: %d", NoOfSections());
     CPU_Message("====== recompiled code ======");
