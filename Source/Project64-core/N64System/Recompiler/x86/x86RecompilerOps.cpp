@@ -319,26 +319,14 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
                 {
                     CPU_Message("");
                     CPU_Message("      %s:", m_Section->m_Jump.BranchLabel.c_str());
-                    SetJump32((uint32_t *)m_Section->m_Jump.LinkLocation, (uint32_t *)*g_RecompPos);
-                    m_Section->m_Jump.LinkLocation = NULL;
-                    if (m_Section->m_Jump.LinkLocation2 != NULL)
-                    {
-                        SetJump32((uint32_t *)m_Section->m_Jump.LinkLocation2, (uint32_t *)*g_RecompPos);
-                        m_Section->m_Jump.LinkLocation2 = NULL;
-                    }
+                    LinkJump(m_Section->m_Jump);
                     m_Section->m_Jump.FallThrough = true;
                 }
                 else if (m_Section->m_Cont.LinkLocation != NULL)
                 {
                     CPU_Message("");
                     CPU_Message("      %s:", m_Section->m_Cont.BranchLabel.c_str());
-                    SetJump32((uint32_t *)m_Section->m_Cont.LinkLocation, (uint32_t *)*g_RecompPos);
-                    m_Section->m_Cont.LinkLocation = NULL;
-                    if (m_Section->m_Cont.LinkLocation2 != NULL)
-                    {
-                        SetJump32((uint32_t *)m_Section->m_Cont.LinkLocation2, (uint32_t *)*g_RecompPos);
-                        m_Section->m_Cont.LinkLocation2 = NULL;
-                    }
+                    LinkJump(m_Section->m_Cont);
                     m_Section->m_Cont.FallThrough = true;
                 }
             }
@@ -370,13 +358,7 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
 
                     CPU_Message("      ");
                     CPU_Message("      %s:", m_Section->m_Jump.BranchLabel.c_str());
-                    SetJump32(m_Section->m_Jump.LinkLocation, (uint32_t *)*g_RecompPos);
-                    m_Section->m_Jump.LinkLocation = NULL;
-                    if (m_Section->m_Jump.LinkLocation2 != NULL)
-                    {
-                        SetJump32(m_Section->m_Jump.LinkLocation2, (uint32_t *)*g_RecompPos);
-                        m_Section->m_Jump.LinkLocation2 = NULL;
-                    }
+                    LinkJump(m_Section->m_Jump);
                     MoveConstToVariable(m_Section->m_Jump.TargetPC, &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
                 }
                 if (m_Section->m_Cont.LinkLocation != NULL || m_Section->m_Cont.LinkLocation2 != NULL)
@@ -387,13 +369,7 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
 
                     CPU_Message("      ");
                     CPU_Message("      %s:", m_Section->m_Cont.BranchLabel.c_str());
-                    SetJump32(m_Section->m_Cont.LinkLocation, (uint32_t *)*g_RecompPos);
-                    m_Section->m_Cont.LinkLocation = NULL;
-                    if (m_Section->m_Cont.LinkLocation2 != NULL)
-                    {
-                        SetJump32(m_Section->m_Cont.LinkLocation2, (uint32_t *)*g_RecompPos);
-                        m_Section->m_Cont.LinkLocation2 = NULL;
-                    }
+                    LinkJump(m_Section->m_Cont);
                     MoveConstToVariable(m_Section->m_Cont.TargetPC, &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
                 }
                 if (DelayLinkLocation)
@@ -462,13 +438,7 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
                     if (JumpInfo->LinkLocation != NULL)
                     {
                         CPU_Message("      %s:", JumpInfo->BranchLabel.c_str());
-                        SetJump32((uint32_t *)JumpInfo->LinkLocation, (uint32_t *)*g_RecompPos);
-                        JumpInfo->LinkLocation = NULL;
-                        if (JumpInfo->LinkLocation2 != NULL)
-                        {
-                            SetJump32((uint32_t *)JumpInfo->LinkLocation2, (uint32_t *)*g_RecompPos);
-                            JumpInfo->LinkLocation2 = NULL;
-                        }
+                        LinkJump(*JumpInfo);
                         JumpInfo->FallThrough = true;
                         m_NextInstruction = DO_DELAY_SLOT;
                         m_RegWorkingSet = RegBeforeDelay;
@@ -597,16 +567,7 @@ void CX86RecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
 
             if (m_Section->m_Jump.LinkLocation != NULL || m_Section->m_Jump.FallThrough)
             {
-                if (m_Section->m_Jump.LinkLocation != NULL)
-                {
-                    SetJump32(m_Section->m_Jump.LinkLocation, (uint32_t *)*g_RecompPos);
-                    m_Section->m_Jump.LinkLocation = NULL;
-                    if (m_Section->m_Jump.LinkLocation2 != NULL)
-                    {
-                        SetJump32(m_Section->m_Jump.LinkLocation2, (uint32_t *)*g_RecompPos);
-                        m_Section->m_Jump.LinkLocation2 = NULL;
-                    }
-                }
+                LinkJump(m_Section->m_Jump);
 
                 MoveConstToVariable(m_Section->m_Jump.TargetPC, &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
                 OverflowDelaySlot(false);
@@ -618,16 +579,7 @@ void CX86RecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
 
-            if (m_Section->m_Cont.LinkLocation != NULL)
-            {
-                SetJump32(m_Section->m_Cont.LinkLocation, (uint32_t *)*g_RecompPos);
-                m_Section->m_Cont.LinkLocation = NULL;
-                if (m_Section->m_Cont.LinkLocation2 != NULL)
-                {
-                    SetJump32(m_Section->m_Cont.LinkLocation2, (uint32_t *)*g_RecompPos);
-                    m_Section->m_Cont.LinkLocation2 = NULL;
-                }
-            }
+            LinkJump(m_Section->m_Cont);
             CompileExit(m_CompilePC, m_CompilePC + 8, m_Section->m_Cont.RegSet, CExitInfo::Normal, true, NULL);
             return;
         }
@@ -664,7 +616,7 @@ void CX86RecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
     }
     else if (bHaveDebugger())
     {
-        g_Notify->DisplayError(stdstr_f("WTF\n\nBranchLikely\nNextInstruction = %X", m_NextInstruction).c_str());
+        g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_NextInstruction).c_str());
     }
 }
 
