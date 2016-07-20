@@ -69,8 +69,17 @@ public:
     void SetBlockCycleCount(uint32_t CyleCount) { m_CycleCount = CyleCount; }
     uint32_t GetBlockCycleCount() const { return m_CycleCount; }
 
+    void SetFpuBeenUsed(bool FpuUsed) { m_Fpu_Used = FpuUsed; }
+    bool GetFpuBeenUsed() const { return m_Fpu_Used; }
+
+    CRegBase& operator=(const CRegBase&);
+
+    bool operator==(const CRegBase& right) const;
+    bool operator!=(const CRegBase& right) const;
+
 protected:
     REG_STATE m_MIPS_RegState[32];
     MIPS_DWORD m_MIPS_RegVal[32];
     uint32_t m_CycleCount;
+    bool m_Fpu_Used;
 };

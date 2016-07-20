@@ -27,10 +27,8 @@ const char *Format_Name[] = { "Unknown", "dword", "qword", "float", "double" };
 
 CX86RegInfo::CX86RegInfo() :
     m_Stack_TopPos(0),
-    m_Fpu_Used(false),
     m_RoundingModel(RoundUnknown)
 {
-    m_MIPS_RegVal[0].DW = 0;
     m_RegMapLo[0] = x86_Unknown;
     m_RegMapHi[0] = x86_Unknown;
 
@@ -65,13 +63,10 @@ CX86RegInfo::~CX86RegInfo()
 
 CX86RegInfo& CX86RegInfo::operator=(const CX86RegInfo& right)
 {
-    m_CycleCount = right.m_CycleCount;
+    CRegBase::operator=(right);
     m_Stack_TopPos = right.m_Stack_TopPos;
-    m_Fpu_Used = right.m_Fpu_Used;
     m_RoundingModel = right.m_RoundingModel;
 
-    memcpy(&m_MIPS_RegState, &right.m_MIPS_RegState, sizeof(m_MIPS_RegState));
-    memcpy(&m_MIPS_RegVal, &right.m_MIPS_RegVal, sizeof(m_MIPS_RegVal));
     memcpy(&m_RegMapLo, &right.m_RegMapLo, sizeof(m_RegMapLo));
     memcpy(&m_RegMapHi, &right.m_RegMapHi, sizeof(m_RegMapHi));
     memcpy(&m_x86reg_MappedTo, &right.m_x86reg_MappedTo, sizeof(m_x86reg_MappedTo));
@@ -94,30 +89,19 @@ CX86RegInfo& CX86RegInfo::operator=(const CX86RegInfo& right)
 
 bool CX86RegInfo::operator==(const CX86RegInfo& right) const
 {
+    if (!CRegBase::operator==(right))
+    {
+        return false;
+    }
+
     int32_t count;
 
-    for (count = 0; count < 32; count++)
-    {
-        if (m_MIPS_RegState[count] != right.m_MIPS_RegState[count])
-        {
-            return false;
-        }
-        if (m_MIPS_RegState[count] == STATE_UNKNOWN)
-        {
-            continue;
-        }
-        if (m_MIPS_RegVal[count].DW != right.m_MIPS_RegVal[count].DW)
-        {
-            return false;
-        }
-    }
     for (count = 0; count < 10; count++)
     {
         if (m_x86reg_MappedTo[count] != right.m_x86reg_MappedTo[count]) { return false; }
         if (m_x86reg_Protected[count] != right.m_x86reg_Protected[count]) { return false; }
         if (m_x86reg_MapOrder[count] != right.m_x86reg_MapOrder[count]) { return false; }
     }
-    if (m_CycleCount != right.m_CycleCount) { return false; }
     if (m_Stack_TopPos != right.m_Stack_TopPos) { return false; }
 
     for (count = 0; count < 8; count++)

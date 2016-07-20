@@ -108,7 +108,6 @@ public:
     int32_t & FpuMappedTo(int32_t Reg) { return m_x86fpu_MappedTo[Reg]; }
     FPU_STATE & FpuState(int32_t Reg) { return m_x86fpu_State[Reg]; }
     FPU_ROUND & FpuRoundingModel(int32_t Reg) { return m_x86fpu_RoundingModel[Reg]; }
-    bool & FpuBeenUsed() { return m_Fpu_Used; }
 
     FPU_ROUND GetRoundingModel() const { return m_RoundingModel; }
     void      SetRoundingModel(FPU_ROUND RoundingModel) { m_RoundingModel = RoundingModel; }
@@ -132,7 +131,6 @@ private:
     bool        m_x86fpu_StateChanged[8];
     FPU_ROUND   m_x86fpu_RoundingModel[8];
 
-    bool        m_Fpu_Used;
     FPU_ROUND   m_RoundingModel;
 
     static uint32_t m_fpuControl;

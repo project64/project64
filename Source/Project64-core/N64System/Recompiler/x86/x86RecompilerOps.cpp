@@ -8851,12 +8851,14 @@ void CX86RecompilerOps::CompileExitCode()
 
 void CX86RecompilerOps::CompileCop1Test()
 {
-    if (m_RegWorkingSet.FpuBeenUsed())
+    if (m_RegWorkingSet.GetFpuBeenUsed())
+    {
         return;
+    }
 
     TestVariable(STATUS_CU1, &g_Reg->STATUS_REGISTER, "STATUS_REGISTER");
     CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::COP1_Unuseable, false, JeLabel32);
-    m_RegWorkingSet.FpuBeenUsed() = true;
+    m_RegWorkingSet.SetFpuBeenUsed(true);
 }
 
 void CX86RecompilerOps::CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCounter)
