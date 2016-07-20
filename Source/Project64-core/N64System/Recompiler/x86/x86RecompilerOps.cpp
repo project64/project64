@@ -8779,6 +8779,17 @@ void CX86RecompilerOps::EnterCodeBlock()
 
 void CX86RecompilerOps::ExitCodeBlock()
 {
+    if (g_SyncSystem)
+    {
+#ifdef _MSC_VER
+        MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
+        Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+#else
+        PushImm32((uint32_t)g_BaseSystem);
+        Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+        AddConstToX86Reg(x86_ESP, 4);
+#endif
+    }
 #ifdef _DEBUG
     Pop(x86_ESI);
 #else
@@ -9658,17 +9669,6 @@ void CX86RecompilerOps::CompileSystemCheck(uint32_t TargetPC, const CRegInfo & R
     Call_Direct(AddressOf(&CSystemEvents::ExecuteEvents), "CSystemEvents::ExecuteEvents");
     AddConstToX86Reg(x86_ESP, 4);
 #endif
-    if (g_SyncSystem)
-    {
-#ifdef _MSC_VER
-        MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
-        Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-#else
-        PushImm32((uint32_t)g_BaseSystem);
-        Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-        AddConstToX86Reg(x86_ESP, 4);
-#endif
-    }
     ExitCodeBlock();
     CPU_Message("");
     CPU_Message("      $Continue_From_Interrupt_Test:");
@@ -9712,19 +9712,6 @@ void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)
 #else
         PushImm32((uint32_t)g_Recompiler);
         Call_Direct(AddressOf(&CRecompiler::ResetMemoryStackPos), "CRecompiler::ResetMemoryStackPos");
-        AddConstToX86Reg(x86_ESP, 4);
-#endif
-    }
-
-    if (g_SyncSystem)
-    {
-        UpdateSyncCPU(m_RegWorkingSet, g_System->CountPerOp());
-#ifdef _MSC_VER
-        MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
-        Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-#else
-        PushImm32((uint32_t)g_BaseSystem);
-        Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
         AddConstToX86Reg(x86_ESP, 4);
 #endif
     }
@@ -9909,18 +9896,6 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         Call_Direct(AddressOf(&CSystemEvents::ExecuteEvents), "CSystemEvents::ExecuteEvents");
         AddConstToX86Reg(x86_ESP, 4);
 #endif
-        if (g_SyncSystem)
-        {
-#ifdef _MSC_VER
-            MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
-            Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-#else
-            PushImm32((uint32_t)g_BaseSystem);
-            Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-            AddConstToX86Reg(x86_ESP, 4);
-#endif
-        }
-        //g_System->SyncCPU(g_SyncSystem);
         ExitCodeBlock();
         break;
     case CExitInfo::DoSysCall:
@@ -9935,17 +9910,6 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
              Call_Direct(AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
             AddConstToX86Reg(x86_ESP, 4);
 #endif
-             if (g_SyncSystem)
-             {
-#ifdef _MSC_VER
-                 MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
-                 Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-#else
-                 PushImm32((uint32_t)g_BaseSystem);
-                 Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-                 AddConstToX86Reg(x86_ESP, 4);
-#endif
-             }
              ExitCodeBlock();
         }
         break;
@@ -9962,17 +9926,6 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
             Call_Direct(AddressOf(&CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
             AddConstToX86Reg(x86_ESP, 12);
 #endif
-            if (g_SyncSystem)
-            {
-#ifdef _MSC_VER
-                MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
-                Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-#else
-                PushImm32((uint32_t)g_BaseSystem);
-                Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-                AddConstToX86Reg(x86_ESP, 4);
-#endif
-            }
             ExitCodeBlock();
         }
         break;
@@ -10006,17 +9959,6 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         Call_Direct(AddressOf(&CRegisters::DoTLBReadMiss), "CRegisters::DoTLBReadMiss");
         AddConstToX86Reg(x86_ESP, 12);
 #endif
-        if (g_SyncSystem)
-        {
-#ifdef _MSC_VER
-            MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
-            Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-#else
-            PushImm32((uint32_t)g_BaseSystem);
-            Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-            AddConstToX86Reg(x86_ESP, 4);
-#endif
-        }
         ExitCodeBlock();
         break;
     case CExitInfo::TLBWriteMiss:
@@ -10032,11 +9974,6 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         }
         MoveConstToVariable(0, &_RegHI->UW[0], "_RegHI->UW[0]");
         MoveConstToVariable(0, &_RegLO->UW[0], "_RegLO->UW[0]");
-        if (g_SyncSystem)
-        {
-            MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
-            Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-        }
         ExitCodeBlock();
         break;
     default:
