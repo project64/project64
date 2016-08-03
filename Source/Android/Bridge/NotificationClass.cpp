@@ -40,6 +40,8 @@ void CNotificationImp::DisplayError(const char * Message) const
 {
 #ifdef ANDROID
     g_JavaBridge->DisplayError(Message);
+#else
+    Message = NULL; // not used
 #endif
 }
 
