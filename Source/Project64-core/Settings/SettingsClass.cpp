@@ -433,6 +433,16 @@ void CSettings::FlushSettings(CSettings * /*_this*/)
     CSettingTypeApplication::Flush();
 }
 
+void CSettings::sRegisterChangeCB(CSettings * _this, SettingID Type, void * Data, SettingChangedFunc Func)
+{
+    _this->RegisterChangeCB(Type, Data, Func);
+}
+
+void CSettings::sUnregisterChangeCB(CSettings * _this, SettingID Type, void * Data, SettingChangedFunc Func)
+{
+    _this->UnregisterChangeCB(Type, Data, Func);
+}
+
 uint32_t CSettings::GetSetting(CSettings * _this, SettingID Type)
 {
     return _this->LoadDword(Type);
@@ -459,9 +469,12 @@ void CSettings::SetSettingSz(CSettings * _this, SettingID ID, const char * Value
 }
 
 void CSettings::RegisterSetting(CSettings * _this, SettingID ID, SettingID DefaultID, SettingDataType DataType,
-                                SettingType Type, const char * Category, const char * DefaultStr,
-                                uint32_t Value)
+    SettingType Type, const char * Category, const char * DefaultStr,
+    uint32_t Value)
 {
+    SettingID RdbSetting;
+    stdstr Name;
+
     switch (Type)
     {
     case SettingType_ConstValue:
@@ -509,47 +522,41 @@ void CSettings::RegisterSetting(CSettings * _this, SettingID ID, SettingID Defau
         }
         break;
     case SettingType_GameSetting:
-    {
-        stdstr_f Name("%s-%s", Category, DefaultStr);
+        Name.Format("%s-%s", Category, DefaultStr);
         switch (DataType)
         {
         case Data_DWORD:
+            RdbSetting = (SettingID)_this->m_NextAutoSettingId;
+            _this->m_NextAutoSettingId += 1;
+            if (DefaultID == Default_None)
             {
-                SettingID RdbSetting = (SettingID)_this->m_NextAutoSettingId;
-                _this->m_NextAutoSettingId += 1;
-                if (DefaultID == Default_None)
-                {
-                    _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), (int)Value));
-                    _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
-                }
-                else
-                {
-                    _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), DefaultID));
-                    _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
-                }
+                _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), (int)Value));
+                _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
+            }
+            else
+            {
+                _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), DefaultID));
+                _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
             }
             break;
         case Data_String:
+            RdbSetting = (SettingID)_this->m_NextAutoSettingId;
+            _this->m_NextAutoSettingId += 1;
+            if (DefaultID == Default_None)
             {
-                SettingID RdbSetting = (SettingID)_this->m_NextAutoSettingId;
-                _this->m_NextAutoSettingId += 1;
-                if (DefaultID == Default_None)
-                {
-                    _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), ""));
-                    _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
-                }
-                else
-                {
-                    _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), DefaultID));
-                    _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
-                }
+                _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), ""));
+                _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
+            }
+            else
+            {
+                _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), DefaultID));
+                _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
             }
             break;
         default:
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
-    }
-    break;
+        break;
     case SettingType_RomDatabase:
         switch (DataType)
         {

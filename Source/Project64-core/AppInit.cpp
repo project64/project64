@@ -247,7 +247,7 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
 
         //Create the plugin container
         WriteTrace(TraceAppInit, TraceInfo, "Create Plugins");
-        g_Plugins = new CPlugins(Directory_Plugin);
+        g_Plugins = new CPlugins(Directory_Plugin, false);
 
         g_Lang = new CLanguage();
         g_Lang->LoadCurrentStrings();

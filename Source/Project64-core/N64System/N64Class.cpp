@@ -87,7 +87,7 @@ CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem) 
             }
             g_Notify->DisplayMessage(5, "Copy Plugins");
             g_Plugins->CopyPlugins(g_Settings->LoadStringVal(Directory_PluginSync));
-            m_SyncPlugins = new CPlugins(Directory_PluginSync);
+            m_SyncPlugins = new CPlugins(Directory_PluginSync, true);
             m_SyncPlugins->SetRenderWindows(g_Plugins->SyncWindow(), NULL);
             m_SyncCPU = new CN64System(m_SyncPlugins, true, true);
         }

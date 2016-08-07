@@ -41,6 +41,10 @@ extern "C" {
     // this must be implemented to be notified when a setting is used but has not been set up
     void UseUnregisteredSetting(int SettingID);
 
+    typedef void(*SettingChangedFunc)(void *);
+    void SettingsRegisterChange(bool SystemSetting, int Type, void * Data, SettingChangedFunc Func);
+    void SettingsUnregisterChange(bool SystemSetting, int Type, void * Data, SettingChangedFunc Func);
+
 #if defined(__cplusplus)
 }
 #endif

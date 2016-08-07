@@ -12,6 +12,7 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Project64-core/N64System/N64Class.h>
 #include "RSPPlugin.h"
 #include "GFXPlugin.h"
 #include <Project64-core/Plugins/AudioPlugin.h>
@@ -69,8 +70,8 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
     WriteTrace(TraceRSPPlugin, TraceDebug, "Starting");
     if (m_PluginInfo.Version == 1 || m_PluginInfo.Version == 0x100)
     {
-		WriteTrace(TraceRSPPlugin, TraceDebug, "Invalid Version: %X",m_PluginInfo.Version);
-		WriteTrace(TraceRSPPlugin, TraceDebug, "Done (res: false)");
+        WriteTrace(TraceRSPPlugin, TraceDebug, "Invalid Version: %X", m_PluginInfo.Version);
+        WriteTrace(TraceRSPPlugin, TraceDebug, "Done (res: false)");
         return false;
     }
 
@@ -120,16 +121,16 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
 #endif
     Info.CheckInterrupts = DummyCheckInterrupts;
     Info.MemoryBswaped = (System == NULL); // only true when the system's not yet loaded
-
+    
     //Get Function from DLL
     void(CALL *InitiateRSP) (RSP_INFO_1_1 Audio_Info, uint32_t * Cycles);
     LoadFunction(InitiateRSP);
     if (InitiateRSP == NULL)
-	{
-		WriteTrace(TraceRSPPlugin, TraceDebug, "Failed to find InitiateRSP");
-		WriteTrace(TraceRSPPlugin, TraceDebug, "Done (res: false)");
-		return false; 
-	}
+    {
+        WriteTrace(TraceRSPPlugin, TraceDebug, "Failed to find InitiateRSP");
+        WriteTrace(TraceRSPPlugin, TraceDebug, "Done (res: false)");
+        return false;
+    }
 
     // We are initializing the plugin before any rom is loaded so we do not have any correct
     // parameters here.. just needed to we can config the DLL.
@@ -176,40 +177,43 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
         Info.ShowCFB = Plugins->Gfx()->ShowCFB;
         Info.ProcessAlist = Plugins->Audio()->ProcessAList;
 
-        Info.RDRAM = g_MMU->Rdram();
-        Info.DMEM = g_MMU->Dmem();
-        Info.IMEM = g_MMU->Imem();
+        CMipsMemoryVM & MMU = System->m_MMU_VM;
+        CRegisters & Reg = System->m_Reg;
 
-        Info.MI__INTR_REG = &g_Reg->m_RspIntrReg;
+        Info.RDRAM = MMU.Rdram();
+        Info.DMEM = MMU.Dmem();
+        Info.IMEM = MMU.Imem();
 
-        Info.SP__MEM_ADDR_REG = &g_Reg->SP_MEM_ADDR_REG;
-        Info.SP__DRAM_ADDR_REG = &g_Reg->SP_DRAM_ADDR_REG;
-        Info.SP__RD_LEN_REG = &g_Reg->SP_RD_LEN_REG;
-        Info.SP__WR_LEN_REG = &g_Reg->SP_WR_LEN_REG;
-        Info.SP__STATUS_REG = &g_Reg->SP_STATUS_REG;
-        Info.SP__DMA_FULL_REG = &g_Reg->SP_DMA_FULL_REG;
-        Info.SP__DMA_BUSY_REG = &g_Reg->SP_DMA_BUSY_REG;
-        Info.SP__PC_REG = &g_Reg->SP_PC_REG;
-        Info.SP__SEMAPHORE_REG = &g_Reg->SP_SEMAPHORE_REG;
+        Info.MI__INTR_REG = &Reg.m_RspIntrReg;
 
-        Info.DPC__START_REG = &g_Reg->DPC_START_REG;
-        Info.DPC__END_REG = &g_Reg->DPC_END_REG;
-        Info.DPC__CURRENT_REG = &g_Reg->DPC_CURRENT_REG;
-        Info.DPC__STATUS_REG = &g_Reg->DPC_STATUS_REG;
-        Info.DPC__CLOCK_REG = &g_Reg->DPC_CLOCK_REG;
-        Info.DPC__BUFBUSY_REG = &g_Reg->DPC_BUFBUSY_REG;
-        Info.DPC__PIPEBUSY_REG = &g_Reg->DPC_PIPEBUSY_REG;
-        Info.DPC__TMEM_REG = &g_Reg->DPC_TMEM_REG;
+        Info.SP__MEM_ADDR_REG = &Reg.SP_MEM_ADDR_REG;
+        Info.SP__DRAM_ADDR_REG = &Reg.SP_DRAM_ADDR_REG;
+        Info.SP__RD_LEN_REG = &Reg.SP_RD_LEN_REG;
+        Info.SP__WR_LEN_REG = &Reg.SP_WR_LEN_REG;
+        Info.SP__STATUS_REG = &Reg.SP_STATUS_REG;
+        Info.SP__DMA_FULL_REG = &Reg.SP_DMA_FULL_REG;
+        Info.SP__DMA_BUSY_REG = &Reg.SP_DMA_BUSY_REG;
+        Info.SP__PC_REG = &Reg.SP_PC_REG;
+        Info.SP__SEMAPHORE_REG = &Reg.SP_SEMAPHORE_REG;
+
+        Info.DPC__START_REG = &Reg.DPC_START_REG;
+        Info.DPC__END_REG = &Reg.DPC_END_REG;
+        Info.DPC__CURRENT_REG = &Reg.DPC_CURRENT_REG;
+        Info.DPC__STATUS_REG = &Reg.DPC_STATUS_REG;
+        Info.DPC__CLOCK_REG = &Reg.DPC_CLOCK_REG;
+        Info.DPC__BUFBUSY_REG = &Reg.DPC_BUFBUSY_REG;
+        Info.DPC__PIPEBUSY_REG = &Reg.DPC_PIPEBUSY_REG;
+        Info.DPC__TMEM_REG = &Reg.DPC_TMEM_REG;
     }
 
     InitiateRSP(Info, &m_CycleCount);
     m_Initialized = true;
 
 #ifdef _WIN32
-	//jabo had a bug so I call CreateThread so his dllmain gets called again
+    //jabo had a bug so I call CreateThread so his dllmain gets called again
     pjutil::DynLibCallDllMain();
 #endif
-	WriteTrace(TraceRSPPlugin, TraceDebug, "Done (res: %s)",m_Initialized ? "true" : "false");
+    WriteTrace(TraceRSPPlugin, TraceDebug, "Done (res: %s)", m_Initialized ? "true" : "false");
     return m_Initialized;
 }
 
