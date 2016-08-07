@@ -55,7 +55,11 @@ void CGameSettings::RefreshGameSettings()
     m_bFixedAudio = g_Settings->LoadBool(Game_FixedAudio);
     m_bSyncToAudio = m_bFixedAudio ? g_Settings->LoadBool(Game_SyncViaAudio) : false;
     m_b32Bit = g_Settings->LoadBool(Game_32Bit);
+#ifdef ANDROID
+    m_bFastSP = false;
+#else
     m_bFastSP = g_Settings->LoadBool(Game_FastSP);
+#endif
     m_RspAudioSignal = g_Settings->LoadBool(Game_RspAudioSignal);
     m_bRomInMemory = g_Settings->LoadBool(Game_LoadRomToMemory);
     m_RegCaching = g_Settings->LoadBool(Game_RegCache);
