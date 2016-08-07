@@ -504,6 +504,7 @@ void CN64System::StartEmulation2(bool NewThread)
             bSetActive = SetActiveSystem();
         }
 
+        WriteTrace(TraceN64System, TraceDebug, "Setting system as active");
         if (!m_Plugins->Reset(this) || !m_Plugins->initilized())
         {
             WriteTrace(TraceN64System, TraceWarning, "can not run, plugins not initlized");
@@ -531,7 +532,7 @@ void CN64System::StartEmulation2(bool NewThread)
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
-void  CN64System::StartEmulation(bool NewThread)
+void CN64System::StartEmulation(bool NewThread)
 {
     WriteTrace(TraceN64System, TraceDebug, "Start (NewThread: %s)", NewThread ? "true" : "false");
     __except_try()
@@ -1396,10 +1397,22 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
                 m_Reg.m_CP0[count], SecondCPU->m_Reg.m_CP0[count]);
         }
         Error.Log("\r\n");
+        for (count = 0; count < 32; count++)
+        {
+            Error.LogF("FPR_Ctrl[%s],%*s0x%08X, 0x%08X\r\n", CRegName::FPR_Ctrl[count],
+                12 - strlen(CRegName::FPR_Ctrl[count]), "",
+                m_Reg.m_FPCR[count], SecondCPU->m_Reg.m_FPCR[count]);
+        }
+        Error.Log("\r\n");
+
         Error.LogF("HI                0x%08X%08X, 0x%08X%08X\r\n", m_Reg.m_HI.UW[1], m_Reg.m_HI.UW[0],
             SecondCPU->m_Reg.m_HI.UW[1], SecondCPU->m_Reg.m_HI.UW[0]);
         Error.LogF("LO                0x%08X%08X, 0x%08X%08X\r\n", m_Reg.m_LO.UW[1], m_Reg.m_LO.UW[0],
             SecondCPU->m_Reg.m_LO.UW[1], SecondCPU->m_Reg.m_LO.UW[0]);
+        Error.LogF("CP0[%s],%*s0x%08X, 0x%08X\r\n", CRegName::Cop0[count],
+            12 - strlen(CRegName::Cop0[count]), "",
+            m_Reg.m_CP0[count], SecondCPU->m_Reg.m_CP0[count]);
+
         bool bHasTlb = false;
         for (count = 0; count < 32; count++)
         {
