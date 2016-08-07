@@ -9,7 +9,7 @@ LOCAL_MODULE := Project64-bridge
 LOCAL_STATIC_LIBRARIES := common  \
       Project64-core              \
 
-LOCAL_C_INCLUDES := $(SDL_INCLUDES)
+LOCAL_C_INCLUDES :=
 
 LOCAL_SRC_FILES :=                   \
     $(SRCDIR)/JavaBridge.cpp         \
@@ -26,7 +26,6 @@ LOCAL_CFLAGS :=         \
 LOCAL_CPPFLAGS := $(COMMON_CPPFLAGS)
 
 LOCAL_LDLIBS :=         \
-    -lGLESv2            \
     -llog               \
 
 include $(BUILD_SHARED_LIBRARY)
