@@ -103,8 +103,6 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(SupportFile_ExtInfo, new CSettingTypeApplicationPath("", "ExtInfo", SupportFile_ExtInfoDefault));
     AddHandler(SupportFile_ExtInfoDefault, new CSettingTypeRelativePath("Config", "Project64.rdx"));
 
-    //AddHandler(SyncPluginDir,   new CSettingTypeRelativePath("SyncPlugin",""));
-
     //Settings location
     AddHandler(Setting_ApplicationName, new CSettingTypeTempString(""));
     AddHandler(Setting_UseFromRegistry, new CSettingTypeApplication("Settings", "Use Registry", (uint32_t)false));
@@ -231,13 +229,23 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Directory_PluginInitial, new CSettingTypeRelativePath("Plugin", ""));
     AddHandler(Directory_PluginSelected, new CSettingTypeApplicationPath("Plugin Directory", "Directory", Directory_PluginInitial));
     AddHandler(Directory_PluginUseSelected, new CSettingTypeApplication("Plugin Directory", "Use Selected", false));
-    AddHandler(Directory_PluginSync, new CSettingTypeRelativePath("SyncPlugin", ""));
+
+    AddHandler(Directory_PluginSyncInitial, new CSettingTypeRelativePath("SyncPlugin", ""));
+    AddHandler(Directory_PluginSyncSelected, new CSettingTypeApplicationPath("Sync Plugin Directory", "Directory", Directory_PluginInitial));
+    AddHandler(Directory_PluginSyncUseSelected, new CSettingTypeApplication("Sync Plugin Directory", "Use Selected", false));
+
 #else
     AddHandler(Directory_PluginInitial, new CSettingTypeRelativePath("Plugin64", ""));
     AddHandler(Directory_PluginSelected, new CSettingTypeApplicationPath("Plugin64 Directory", "Directory", Directory_PluginInitial));
     AddHandler(Directory_PluginUseSelected, new CSettingTypeApplication("Plugin64 Directory", "Use Selected", false));
     AddHandler(Directory_PluginSync, new CSettingTypeRelativePath("SyncPlugin64", ""));
+
+    AddHandler(Directory_PluginSyncInitial, new CSettingTypeRelativePath("SyncPlugin64", ""));
+    AddHandler(Directory_PluginSyncSelected, new CSettingTypeApplicationPath("Sync Plugin Directory64", "Directory", Directory_PluginInitial));
+    AddHandler(Directory_PluginSyncUseSelected, new CSettingTypeApplication("Sync Plugin Directory64", "Use Selected", false));
+
 #endif
+    AddHandler(Directory_PluginSync, new CSettingTypeSelectedDirectory("Dir:SyncPlugin", Directory_PluginSyncInitial, Directory_PluginSyncSelected, Directory_PluginSyncUseSelected, Directory_PluginSync));
 
     AddHandler(Directory_SnapShot, new CSettingTypeSelectedDirectory("Dir:Snapshot", Directory_SnapShotInitial, Directory_SnapShotSelected, Directory_SnapShotUseSelected, Directory_SnapShot));
     AddHandler(Directory_SnapShotInitial, new CSettingTypeRelativePath("Screenshots", ""));
