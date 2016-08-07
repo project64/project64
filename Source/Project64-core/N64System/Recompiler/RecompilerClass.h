@@ -60,7 +60,7 @@ private:
     CRecompiler(const CRecompiler&);            // Disable copy constructor
     CRecompiler& operator=(const CRecompiler&); // Disable assignment
 
-    CCompiledFunc * CompilerCode();
+    CCompiledFunc * CompileCode();
 
     // Main loops for the different look up methods
     void RecompilerMain_VirtualTable();
