@@ -257,6 +257,7 @@ enum SettingID
     Plugin_CONT_CurVer,
     Plugin_UseHleGfx,
     Plugin_UseHleAudio,
+    Plugin_EnableAudio,
 
     Logging_GenerateLog,
     Logging_LogRDRamRegisters,

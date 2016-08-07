@@ -35,11 +35,11 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
 
     if ((int32_t)(MemAddress) < 0 || MemAddress > 0x1FFFFFFF)
     {
+        WriteTrace(TraceExceptionHandler, TraceError, "Invalid memory adderess: %X", MemAddress);
         if (bHaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
-        WriteTrace(TraceExceptionHandler, TraceError, "Invalid memory adderess: %X", MemAddress);
         return false;
     }
 
@@ -226,7 +226,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
             {
                 if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
                 {
-                    g_Notify->DisplayError(stdstr_f("Failed to load half word\n\nMIPS Address: %08X\nX86 Address: %08X",MemAddress,(uint8_t *)*context.Eip).c_str());
+                    g_Notify->DisplayError(stdstr_f("Failed to load half word\n\nMIPS Address: %08X\nX86 Address: %08X", MemAddress, (uint8_t *)*context.Eip).c_str());
                 }
             }
             *context.Eip = (uint32_t)ReadPos;
@@ -272,7 +272,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
                 }
                 return false;
             }
-            if (!g_MMU->SH_NonMemory(MemAddress, *(uint16_t *)ReadPos)) 
+            if (!g_MMU->SH_NonMemory(MemAddress, *(uint16_t *)ReadPos))
             {
                 if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
                 {
@@ -382,7 +382,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         (uint32_t*)&context.arm_r0, (uint32_t*)&context.arm_r1, (uint32_t*)&context.arm_r2, (uint32_t*)&context.arm_r3,
         (uint32_t*)&context.arm_r4, (uint32_t*)&context.arm_r5, (uint32_t*)&context.arm_r6, (uint32_t*)&context.arm_r7,
         (uint32_t*)&context.arm_r8, (uint32_t*)&context.arm_r9, (uint32_t*)&context.arm_r10,(uint32_t*)&context.arm_fp,
-        (uint32_t*)&context.arm_ip, (uint32_t*)&context.arm_sp, (uint32_t*)&context.arm_lr, (uint32_t*)&context.arm_pc, 
+        (uint32_t*)&context.arm_ip, (uint32_t*)&context.arm_sp, (uint32_t*)&context.arm_lr, (uint32_t*)&context.arm_pc,
     };
 
     ArmThumbOpcode * OpCode = (ArmThumbOpcode *)context.arm_pc;
@@ -510,7 +510,7 @@ void CMipsMemoryVM::segv_handler(int signal, siginfo_t *siginfo, void *sigcontex
         WriteTrace(TraceExceptionHandler, TraceNotice, "reg[%02d] = 0x%08x", i, ucontext->uc_mcontext.gregs[i]);
     }
     WriteTrace(TraceExceptionHandler, TraceNotice, "REG_EIP  = %X", ucontext->uc_mcontext.gregs[REG_EIP]);
-    
+
     uint8_t * TypePos = (uint8_t *)ucontext->uc_mcontext.gregs[REG_EIP];
     WriteTrace(TraceExceptionHandler, TraceNotice, "TypePos: %02X %02X %02X %02X %02X %02X %02X %02X %02X",TypePos[0],TypePos[1],TypePos[2],TypePos[3],TypePos[4],TypePos[5],TypePos[6],TypePos[7],TypePos[8]);
 

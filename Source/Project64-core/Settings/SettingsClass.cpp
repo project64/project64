@@ -350,6 +350,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 
     AddHandler(Plugin_UseHleGfx, new CSettingTypeApplication("RSP", "HLE GFX", true));
     AddHandler(Plugin_UseHleAudio, new CSettingTypeApplication("RSP", "HLE Audio", false));
+    AddHandler(Plugin_EnableAudio, new CSettingTypeApplication("Audio", "Enable Audio", true));
 
     //Logging
     AddHandler(Logging_GenerateLog, new CSettingTypeApplication("Logging", "Generate Log Files", false));
