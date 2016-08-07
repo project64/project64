@@ -65,6 +65,7 @@ public:
     void   CloseCpu();
     void   ExternalEvent(SystemEvent action); //covers gui interacting and timers etc..
     void   StartEmulation(bool NewThread);
+    void   EndEmulation();
     void   SyncToAudio();
     void   IncreaseSpeed() { m_Limiter.IncreaseSpeed(); }
     void   DecreaseSpeed() { m_Limiter.DecreaseSpeed(); }

@@ -547,6 +547,11 @@ void  CN64System::StartEmulation(bool NewThread)
     WriteTrace(TraceN64System, TraceDebug, "Done (NewThread: %s)", NewThread ? "true" : "false")
 }
 
+void CN64System::EndEmulation(void)
+{
+    m_EndEmulation = true;
+}
+
 void CN64System::Pause()
 {
     if (m_EndEmulation)
