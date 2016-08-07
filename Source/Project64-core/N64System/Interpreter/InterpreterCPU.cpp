@@ -272,6 +272,8 @@ void CInterpreterCPU::InPermLoop()
 
 void CInterpreterCPU::ExecuteCPU()
 {
+    WriteTrace(TraceN64System, TraceDebug, "Start");
+
     bool & Done = g_System->m_EndEmulation;
     uint32_t & PROGRAM_COUNTER = *_PROGRAM_COUNTER;
     OPCODE & Opcode = R4300iOp::m_Opcode;
@@ -280,6 +282,7 @@ void CInterpreterCPU::ExecuteCPU()
     const int32_t & bDoSomething = g_SystemEvents->DoSomething();
     uint32_t CountPerOp = g_System->CountPerOp();
     int32_t & NextTimer = *g_NextTimer;
+    bool CheckTimer = false;
 
     __except_try()
     {
@@ -313,8 +316,7 @@ void CInterpreterCPU::ExecuteCPU()
                 R4300iOp::m_NextInstruction = PERMLOOP_DELAY_DONE;
                 break;
             case JUMP:
-            {
-                bool CheckTimer = (JumpToLocation < PROGRAM_COUNTER - 4 || TestTimer);
+                CheckTimer = (JumpToLocation < PROGRAM_COUNTER - 4 || TestTimer);
                 PROGRAM_COUNTER = JumpToLocation;
                 R4300iOp::m_NextInstruction = NORMAL;
                 if (CheckTimer)
@@ -329,8 +331,7 @@ void CInterpreterCPU::ExecuteCPU()
                         g_SystemEvents->ExecuteEvents();
                     }
                 }
-            }
-            break;
+                break;
             case PERMLOOP_DELAY_DONE:
                 PROGRAM_COUNTER = JumpToLocation;
                 R4300iOp::m_NextInstruction = NORMAL;
@@ -350,6 +351,7 @@ void CInterpreterCPU::ExecuteCPU()
     {
         g_Notify->FatalError(GS(MSG_UNKNOWN_MEM_ACTION));
     }
+    WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
 void CInterpreterCPU::ExecuteOps(int32_t Cycles)
@@ -361,6 +363,7 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
     bool   & TestTimer = R4300iOp::m_TestTimer;
     const int32_t & DoSomething = g_SystemEvents->DoSomething();
     uint32_t CountPerOp = g_System->CountPerOp();
+    bool CheckTimer = false;
 
     __except_try()
     {
@@ -416,21 +419,19 @@ void CInterpreterCPU::ExecuteOps(int32_t Cycles)
                     PROGRAM_COUNTER += 4;
                     break;
                 case JUMP:
+                    CheckTimer = (JumpToLocation < PROGRAM_COUNTER || TestTimer);
+                    PROGRAM_COUNTER = JumpToLocation;
+                    R4300iOp::m_NextInstruction = NORMAL;
+                    if (CheckTimer)
                     {
-                        bool CheckTimer = (JumpToLocation < PROGRAM_COUNTER || TestTimer);
-                        PROGRAM_COUNTER = JumpToLocation;
-                        R4300iOp::m_NextInstruction = NORMAL;
-                        if (CheckTimer)
+                        TestTimer = false;
+                        if (*g_NextTimer < 0)
                         {
-                            TestTimer = false;
-                            if (*g_NextTimer < 0)
-                            {
-                                g_SystemTimer->TimerDone();
-                            }
-                            if (DoSomething)
-                            {
-                                g_SystemEvents->ExecuteEvents();
-                            }
+                            g_SystemTimer->TimerDone();
+                        }
+                        if (DoSomething)
+                        {
+                            g_SystemEvents->ExecuteEvents();
                         }
                     }
                     break;
