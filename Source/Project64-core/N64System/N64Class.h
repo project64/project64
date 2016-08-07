@@ -83,6 +83,7 @@ public:
     void   SetCheatsSlectionChanged(bool changed) { m_CheatsSlectionChanged = changed; }
     bool   HasCheatsSlectionChanged(void) const { return m_CheatsSlectionChanged; }
     uint32_t  GetButtons(int32_t Control) const { return m_Buttons[Control]; }
+    CPlugins * GetPlugins() { return m_Plugins; }
 
     //Variable used to track that the SP is being handled and stays the same as the real SP in sync core
 #ifdef TEST_SP_TRACKING
