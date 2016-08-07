@@ -63,8 +63,14 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     UpdateCounters(m_RegWorkingSet, false, true);
     MoveConstToVariable(m_CompilePC, &g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
     if (g_SyncSystem) {
+    #ifdef _WIN32
     MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
     Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+    #else
+    PushImm32((uint32_t)g_BaseSystem);
+    Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+    AddConstToX86Reg(x86_ESP, 4);
+    #endif
     }
     }*/
 
@@ -72,13 +78,20 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     m_CompilePC == 0x8031CD88 ||  m_CompilePC == 0x8031CE24 ||
     m_CompilePC == 0x8031CE30 || m_CompilePC == 0x8031CE40) && m_NextInstruction == NORMAL)
     {
-    m_RegWorkingSet.WriteBackRegisters();
-    UpdateCounters(m_RegWorkingSet,false,true);
-    MoveConstToVariable(m_CompilePC,&g_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
-    if (g_SyncSystem) {
-    MoveConstToX86reg((uint32_t)g_BaseSystem,x86_ECX);
-    Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
-    }
+        m_RegWorkingSet.WriteBackRegisters();
+        UpdateCounters(m_RegWorkingSet, false, true);
+        MoveConstToVariable(m_CompilePC, &g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+        if (g_SyncSystem)
+        {
+#ifdef _WIN32
+            MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
+            Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+#else
+            PushImm32((uint32_t)g_BaseSystem);
+            Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+            AddConstToX86Reg(x86_ESP, 4);
+#endif
+        }
     }*/
 
     /*if (m_CompilePC == 0x801C1B88)
@@ -111,8 +124,14 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     UpdateCounters(m_RegWorkingSet,false,true);
     MoveConstToVariable(m_CompilePC,&g_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
     if (g_SyncSystem) {
-    MoveConstToX86reg((uint32_t)g_BaseSystem,x86_ECX);
+    #ifdef _WIN32
+    MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
     Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+    #else
+    PushImm32((uint32_t)g_BaseSystem);
+    Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+    AddConstToX86Reg(x86_ESP, 4);
+    #endif
     }
     }*/
     /*if ((m_CompilePC == 0x80324E14) && m_NextInstruction == NORMAL)
@@ -126,8 +145,14 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     UpdateCounters(m_RegWorkingSet,false,true);
     MoveConstToVariable(m_CompilePC,&g_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
     if (g_SyncSystem) {
-    MoveConstToX86reg((uint32_t)g_BaseSystem,x86_ECX);
+    #ifdef _WIN32
+    MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
     Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+    #else
+    PushImm32((uint32_t)g_BaseSystem);
+    Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+    AddConstToX86Reg(x86_ESP, 4);
+    #endif
     }
     }*/
     /*if (m_CompilePC >= 0x80324E00 && m_CompilePC <= 0x80324E18 && m_NextInstruction == NORMAL)
@@ -136,8 +161,14 @@ void CX86RecompilerOps::PreCompileOpcode(void)
     UpdateCounters(m_RegWorkingSet,false,true);
     MoveConstToVariable(m_CompilePC,&g_Reg->m_PROGRAM_COUNTER,"PROGRAM_COUNTER");
     if (g_SyncSystem) {
-    MoveConstToX86reg((uint32_t)g_BaseSystem,x86_ECX);
+    #ifdef _WIN32
+    MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
     Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+    #else
+    PushImm32((uint32_t)g_BaseSystem);
+    Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+    AddConstToX86Reg(x86_ESP, 4);
+    #endif
     }
     }*/
     /*        if (m_CompilePC == 0x803245CC && m_NextInstruction == NORMAL)
@@ -2432,7 +2463,7 @@ void CX86RecompilerOps::CACHE()
 #else
         PushImm32((uint32_t)g_Recompiler);
         Call_Direct(AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
-        AddConstToX86Reg(x86_ESP, 4);
+        AddConstToX86Reg(x86_ESP, 16);
 #endif
         m_RegWorkingSet.AfterCallDirect();
         break;
@@ -7729,7 +7760,7 @@ void CX86RecompilerOps::COP0_CO_TLBWI(void)
 #else
     PushImm32((uint32_t)g_TLB);
     Call_Direct(AddressOf(&CTLB::WriteEntry), "CTLB::WriteEntry");
-    AddConstToX86Reg(x86_ESP, 4);
+    AddConstToX86Reg(x86_ESP, 12);
 #endif
     m_RegWorkingSet.AfterCallDirect();
 }
@@ -7781,9 +7812,10 @@ void CX86RecompilerOps::COP0_CO_TLBP(void)
     m_RegWorkingSet.AfterCallDirect();
 }
 
-void compiler_COP0_CO_ERET()
+void x86_compiler_COP0_CO_ERET()
 {
-    if ((g_Reg->STATUS_REGISTER & STATUS_ERL) != 0) {
+    if ((g_Reg->STATUS_REGISTER & STATUS_ERL) != 0)
+    {
         g_Reg->m_PROGRAM_COUNTER = g_Reg->ERROREPC_REGISTER;
         g_Reg->STATUS_REGISTER &= ~STATUS_ERL;
     }
@@ -7799,7 +7831,7 @@ void compiler_COP0_CO_ERET()
 void CX86RecompilerOps::COP0_CO_ERET(void)
 {
     m_RegWorkingSet.WriteBackRegisters();
-    Call_Direct((void *)compiler_COP0_CO_ERET, "compiler_COP0_CO_ERET");
+    Call_Direct((void *)x86_compiler_COP0_CO_ERET, "x86_compiler_COP0_CO_ERET");
 
     UpdateCounters(m_RegWorkingSet, true, true);
     CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal, true, NULL);
@@ -9715,6 +9747,10 @@ void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)
         AddConstToX86Reg(x86_ESP, 4);
 #endif
     }
+    if (g_SyncSystem)
+    {
+        UpdateSyncCPU(m_RegWorkingSet, g_System->CountPerOp());
+    }
 
     ExitCodeBlock();
     m_NextInstruction = END_BLOCK;
@@ -9764,7 +9800,8 @@ void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
 
     switch (reason)
     {
-    case CExitInfo::Normal: case CExitInfo::Normal_NoSysCheck:
+    case CExitInfo::Normal:
+    case CExitInfo::Normal_NoSysCheck:
         ExitRegSet.SetBlockCycleCount(0);
         if (TargetPC != (uint32_t)-1)
         {

@@ -2340,6 +2340,10 @@ void CX86Ops::OrConstToVariable(uint32_t Const, void * Variable, const char * Va
 
 void CX86Ops::OrConstToX86Reg(uint32_t Const, x86Reg reg)
 {
+    if (Const == 0)
+    {
+        return;
+    }
     CPU_Message("      or %s, %Xh", x86_Name(reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
