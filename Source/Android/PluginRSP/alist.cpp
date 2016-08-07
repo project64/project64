@@ -264,6 +264,7 @@ void alist_envmix_exp( CHle * hle, bool init, bool aux, uint16_t dmem_dl, uint16
     int x, y;
     short save_buffer[40];
 
+    memcpy((uint8_t *)save_buffer, (hle->dram() + address), sizeof(save_buffer));
     if (init)
     {
         ramps[0].value = (vol[0] << 16);
@@ -277,7 +278,6 @@ void alist_envmix_exp( CHle * hle, bool init, bool aux, uint16_t dmem_dl, uint16
     }
     else
     {
-        memcpy((uint8_t *)save_buffer, (hle->dram() + address), 80);
         wet = *(int16_t *)(save_buffer + 0); /* 0-1 */
         dry = *(int16_t *)(save_buffer + 2); /* 2-3 */
         ramps[0].target = *(int32_t *)(save_buffer + 4); /* 4-5 */
@@ -340,7 +340,7 @@ void alist_envmix_exp( CHle * hle, bool init, bool aux, uint16_t dmem_dl, uint16
     *(int32_t *)(save_buffer + 14) = exp_seq[1];        /* 14-15 */
     *(int32_t *)(save_buffer + 16) = (int32_t)ramps[0].value;    /* 12-13 */
     *(int32_t *)(save_buffer + 18) = (int32_t)ramps[1].value;    /* 14-15 */
-    memcpy(hle->dram() + address, (uint8_t *)save_buffer, 80);
+    memcpy(hle->dram() + address, (uint8_t *)save_buffer, sizeof(save_buffer));
 }
 
 void alist_envmix_ge( CHle * hle, bool init, bool aux, uint16_t dmem_dl, uint16_t dmem_dr, uint16_t dmem_wl, uint16_t dmem_wr, uint16_t dmemi, uint16_t count, int16_t dry, int16_t wet, const int16_t *vol, const int16_t *target, const int32_t *rate, uint32_t address)
