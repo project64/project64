@@ -9756,9 +9756,9 @@ void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)
     m_NextInstruction = END_BLOCK;
 }
 
-void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow)
+void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason)
 {
-    CompileExit(JumpPC, TargetPC, ExitRegSet, reason, CompileNow, NULL);
+    CompileExit(JumpPC, TargetPC, ExitRegSet, reason, true, NULL);
 }
 
 void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow, void(*x86Jmp)(const char * Label, uint32_t Value))

@@ -227,7 +227,7 @@ public:
     const OPCODE & GetOpcode(void) const;
     void PreCompileOpcode(void);
     void PostCompileOpcode(void);
-    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow);
+    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason);
 
     void CompileReadTLBMiss(uint32_t VirtualAddress, x86Reg LookUpReg);
     void CompileReadTLBMiss(x86Reg AddressReg, x86Reg LookUpReg);

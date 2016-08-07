@@ -205,7 +205,7 @@ public:
     virtual void CompileCop1Test() = 0;
     virtual void CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCounter) = 0;
     virtual void SyncRegState(const CRegInfo & SyncTo) = 0;
-    virtual void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, bool CompileNow) = 0;
+    virtual void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason) = 0;
     virtual void CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet) = 0;
     virtual CRegInfo & GetRegWorkingSet(void) = 0;
     virtual void SetRegWorkingSet(const CRegInfo & RegInfo) = 0;
