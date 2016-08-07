@@ -155,6 +155,7 @@ void CX86RegInfo::FixRoundModel(FPU_ROUND RoundMethod)
 
     if (RoundMethod == RoundDefault)
     {
+#ifdef _WIN32
         static const unsigned int msRound[4] =
         {
             0x00000000, //_RC_NEAR
@@ -169,6 +170,11 @@ void CX86RegInfo::FixRoundModel(FPU_ROUND RoundMethod)
 
         ShiftLeftSignImmed(RoundReg, 2);
         OrX86RegToX86Reg(reg, RoundReg);
+#else
+        x86Reg RoundReg = Map_TempReg(x86_Any, -1, false);
+        MoveVariableToX86reg(_RoundingModel, "_RoundingModel", RoundReg);
+        OrX86RegToX86Reg(reg, RoundReg);
+#endif
         SetX86Protected(RoundReg, false);
     }
     else
@@ -176,7 +182,7 @@ void CX86RegInfo::FixRoundModel(FPU_ROUND RoundMethod)
         switch (RoundMethod)
         {
         case RoundTruncate: OrConstToX86Reg(0x0C00, reg); break;
-        case RoundNearest: /*OrConstToX86Reg(0x0000, reg);*/ break;
+        case RoundNearest:  OrConstToX86Reg(0x0000, reg); break;
         case RoundDown:     OrConstToX86Reg(0x0400, reg); break;
         case RoundUp:       OrConstToX86Reg(0x0800, reg); break;
         default:
