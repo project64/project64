@@ -6,9 +6,9 @@
 #endif
 #include "MemoryManagement.h"
 
-#ifdef _WIN32
 static bool TranslateFromMemProtect(MEM_PROTECTION memProtection, int & OsMemProtection)
 {
+#ifdef _WIN32
     switch (memProtection)
     {
     case MEM_NOACCESS: OsMemProtection = PAGE_NOACCESS; break;
@@ -18,9 +18,21 @@ static bool TranslateFromMemProtect(MEM_PROTECTION memProtection, int & OsMemPro
     default:
         return false;
     }
+#else
+    switch (memProtection)
+    {
+    case MEM_NOACCESS: OsMemProtection = PROT_NONE; break;
+    case MEM_READONLY: OsMemProtection = PROT_READ; break;
+    case MEM_READWRITE: OsMemProtection = PROT_READ|PROT_WRITE; break;
+    case MEM_EXECUTE_READWRITE: OsMemProtection = PROT_READ|PROT_WRITE|PROT_EXEC; break;
+    default:
+        return false;
+    }
+#endif
     return true;
 }
 
+#ifdef _WIN32
 static bool TranslateToMemProtect(int OsMemProtection, MEM_PROTECTION & memProtection)
 {
     switch (OsMemProtection)
@@ -59,28 +71,15 @@ bool FreeAddressSpace(void* addr, size_t size)
 
 void* CommitMemory(void* addr, size_t size, MEM_PROTECTION memProtection)
 {
-#ifdef _WIN32
     int OsMemProtection;
     if (!TranslateFromMemProtect(memProtection, OsMemProtection))
     {
         return NULL;
     }
+#ifdef _WIN32
     return VirtualAlloc(addr, size, MEM_COMMIT, OsMemProtection);
 #else
-    int prot = 0;
-    if (memProtection == MEM_READWRITE)
-    {
-        prot = PROT_READ|PROT_WRITE;
-    }
-    else if (memProtection == MEM_EXECUTE_READWRITE)
-    {
-        prot = PROT_READ|PROT_WRITE|PROT_EXEC;
-    }
-    else
-    {
-        return NULL;
-    }
-    void * ptr = mmap(addr, size, prot, MAP_FIXED|MAP_SHARED|MAP_ANON, -1, 0);
+    void * ptr = mmap(addr, size, OsMemProtection, MAP_FIXED|MAP_SHARED|MAP_ANON, -1, 0);
     msync(addr, size, MS_SYNC|MS_INVALIDATE);
     return ptr;
 #endif
@@ -104,13 +103,13 @@ bool DecommitMemory(void* addr, size_t size)
 
 bool ProtectMemory(void* addr, size_t size, MEM_PROTECTION memProtection, MEM_PROTECTION * OldProtect)
 {
-#ifdef _WIN32
     int OsMemProtection;
     if (!TranslateFromMemProtect(memProtection, OsMemProtection))
     {
-        return NULL;
+        return false;
     }
 
+#ifdef _WIN32
     DWORD OldOsProtect;
     BOOL res = VirtualProtect(addr, size, OsMemProtection, &OldOsProtect);
     if (OldProtect != NULL)
@@ -122,6 +121,6 @@ bool ProtectMemory(void* addr, size_t size, MEM_PROTECTION memProtection, MEM_PR
     }
     return res != 0;
 #else
-	return false;
+    return mprotect(addr,size,OsMemProtection) == 0;
 #endif
 }
