@@ -383,6 +383,7 @@ enum LanguageStringID
     STR_FR_VIS = 700,
     STR_FR_DLS = 701,
     STR_FR_PERCENT = 702,
+    STR_FR_DLS_VIS = 703,
 
     // Increase speed
     STR_INSREASE_SPEED = 710,

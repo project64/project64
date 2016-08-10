@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#include <Common/DateTimeClass.h>
 
 class CFramePerSecond
 {
@@ -20,7 +21,6 @@ public:
 
     void UpdateDlCounter(void);
     void UpdateViCounter(void);
-    void DisplayDlCounter(uint32_t FrameRate);
     void DisplayViCounter(uint32_t FrameRate);
 
 private:
@@ -29,11 +29,20 @@ private:
 
     static void FrameRateTypeChanged(CFramePerSecond * _this);
     static void ScreenHertzChanged(CFramePerSecond * _this);
+    void UpdateDisplay(void);
 
     int32_t  m_iFrameRateType, m_ScreenHertz;
 
     enum { NoOfFrames = 7 };
 
-    int64_t m_Frequency, m_Frames[NoOfFrames], m_LastFrame;
-    int32_t m_CurrentFrame;
+    CDateTime m_LastViFrame;
+    int64_t m_ViFrames[NoOfFrames];
+    int32_t m_CurrentViFrame;
+    float m_ViFrameRate;
+
+    //Dlist
+    CDateTime m_LastDlistFrame;
+    int64_t m_FramesDlist[NoOfFrames];
+    int32_t m_CurrentDlistFrame;
+    float m_DlistFrameRate;
 };

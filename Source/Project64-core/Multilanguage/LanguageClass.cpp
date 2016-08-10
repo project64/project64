@@ -351,6 +351,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(STR_FR_VIS, "Vertical interrupts per second");
     DEF_STR(STR_FR_DLS, "Display lists per second");
     DEF_STR(STR_FR_PERCENT, "Percentage of full speed");
+    DEF_STR(STR_FR_DLS_VIS, "VI/s & DL/s");
 
     // Increase speed
     DEF_STR(STR_INSREASE_SPEED, "Increase Game Speed");
@@ -522,7 +523,7 @@ bool CLanguage::LoadCurrentStrings(void)
         m_LanguageLoaded = true;
         return true;
     }
-    
+
     LanguageList LangList = GetLangList();
     stdstr       Filename;
 

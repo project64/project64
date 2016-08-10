@@ -26,7 +26,7 @@ CDateTime & CDateTime::SetToNow(void)
     return *this;
 }
 
-std::string CDateTime::Format (const char * format)
+std::string CDateTime::Format(const char * format)
 {
     char buffer[100];
     time_t TimeValue = m_time / 1000l;
@@ -34,13 +34,18 @@ std::string CDateTime::Format (const char * format)
     return std::string(buffer);
 }
 
-double CDateTime::DiffernceMilliseconds (const CDateTime & compare)
+double CDateTime::DiffernceMilliseconds(const CDateTime & compare)
 {
     double diff = (double)(m_time - compare.m_time);
     return diff / 1000.0;
 }
 
-uint64_t CDateTime::Value ( void )
+uint64_t CDateTime::Value(void)
 {
     return m_time;
+}
+
+void CDateTime::SetValue(uint64_t value)
+{
+    m_time = value;
 }

@@ -15,10 +15,13 @@
 #include <Windows.h>
 #endif
 
-CFramePerSecond::CFramePerSecond()
+CFramePerSecond::CFramePerSecond() :
+m_CurrentViFrame(0),
+m_CurrentDlistFrame(0),
+m_iFrameRateType(g_Settings->LoadDword(UserInterface_FrameDisplayType)),
+m_ScreenHertz(g_Settings->LoadDword(GameRunning_ScreenHertz)),
+m_ViFrameRate(0)
 {
-    m_iFrameRateType = g_Settings->LoadDword(UserInterface_FrameDisplayType);
-    m_ScreenHertz = g_Settings->LoadDword(GameRunning_ScreenHertz);
     g_Settings->RegisterChangeCB(UserInterface_FrameDisplayType, this, (CSettings::SettingChangedFunc)FrameRateTypeChanged);
     g_Settings->RegisterChangeCB(GameRunning_ScreenHertz, this, (CSettings::SettingChangedFunc)ScreenHertzChanged);
 
@@ -26,12 +29,6 @@ CFramePerSecond::CFramePerSecond()
     {
         m_ScreenHertz = 60;
     }
-
-#ifdef _WIN32
-    LARGE_INTEGER Freq;
-    QueryPerformanceFrequency(&Freq);
-    m_Frequency = Freq.QuadPart;
-#endif
     Reset(true);
 }
 
@@ -43,18 +40,18 @@ CFramePerSecond::~CFramePerSecond()
 
 void CFramePerSecond::Reset(bool ClearDisplay)
 {
-    m_CurrentFrame = 0;
-    m_LastFrame = 0;
+    m_CurrentDlistFrame = 0;
+    m_CurrentViFrame = 0;
+    m_LastViFrame.SetValue(0);
 
     for (int count = 0; count < NoOfFrames; count++)
     {
-        m_Frames[count] = 0;
+        m_ViFrames[count] = 0;
+        m_FramesDlist[count] = 0;
     }
     if (ClearDisplay)
     {
-#ifdef _WIN32
         g_Notify->DisplayMessage2("");
-#endif
         return;
     }
 
@@ -66,80 +63,72 @@ void CFramePerSecond::Reset(bool ClearDisplay)
 
 void CFramePerSecond::UpdateViCounter(void)
 {
-#ifdef _WIN32
-    if (m_iFrameRateType != FR_VIs && m_iFrameRateType != FR_PERCENT)
+    if (m_iFrameRateType != FR_VIs &&
+        m_iFrameRateType != FR_VIs_DLs &&
+        m_iFrameRateType != FR_PERCENT)
     {
         return;
     }
-    if ((m_CurrentFrame & 7) == 0)
+    if ((m_CurrentViFrame & 7) == 0)
     {
-        LARGE_INTEGER Time;
-        QueryPerformanceCounter(&Time);
-        m_Frames[(m_CurrentFrame >> 3) % NoOfFrames] = Time.QuadPart - m_LastFrame;
-        m_LastFrame = Time.QuadPart;
+        CDateTime Time;
+        Time.SetToNow();
+        m_ViFrames[(m_CurrentViFrame >> 3) % NoOfFrames] = Time.Value() - m_LastViFrame.Value();
+        m_LastViFrame = Time;
         DisplayViCounter(0);
     }
-    m_CurrentFrame += 1;
-#endif
+    m_CurrentViFrame += 1;
+}
+
+void CFramePerSecond::UpdateDisplay(void)
+{
+    std::string DisplayString;
+    if (m_iFrameRateType == FR_VIs || m_iFrameRateType == FR_VIs_DLs)
+    {
+        DisplayString = stdstr_f(m_ViFrameRate >= 0 ? "VI/s: %.2f" : "VI/s: -.--", m_ViFrameRate);
+    }
+    if (m_iFrameRateType == FR_PERCENT && m_ViFrameRate > 0)
+    {
+        float Percent = ((float)m_ViFrameRate) / m_ScreenHertz;
+        DisplayString = stdstr_f("%.1f %%", Percent * 100).c_str();
+    }
+    if (m_iFrameRateType == FR_DLs || m_iFrameRateType == FR_VIs_DLs)
+    {
+        if (DisplayString.length() > 0) { DisplayString += " "; }
+        DisplayString += stdstr_f(m_DlistFrameRate >= 0 ? "DL/s: %.1f" : "DL/s: -.--", m_DlistFrameRate);
+    }
+    g_Notify->DisplayMessage2(DisplayString.c_str());
 }
 
 void CFramePerSecond::DisplayViCounter(uint32_t FrameRate)
 {
-#ifdef _WIN32
-    if (m_iFrameRateType == FR_VIs)
+    if (m_iFrameRateType != FR_VIs && m_iFrameRateType != FR_VIs_DLs && m_iFrameRateType != FR_PERCENT)
     {
-        if (FrameRate != 0)
+        return;
+    }
+    if (FrameRate != 0)
+    {
+        m_ViFrameRate = (float)FrameRate;
+    }
+    else
+    {
+        if (m_CurrentViFrame > (NoOfFrames << 3))
         {
-            g_Notify->DisplayMessage2(stdstr_f("VI/s: %d.00", FrameRate).c_str());
+            uint64_t Total;
+
+            Total = 0;
+            for (int count = 0; count < NoOfFrames; count++)
+            {
+                Total += m_ViFrames[count];
+            }
+            m_ViFrameRate = ((NoOfFrames << 3) / ((float)Total / 1000));
         }
         else
         {
-            if (m_CurrentFrame > (NoOfFrames << 3))
-            {
-                int64_t Total;
-
-                Total = 0;
-                for (int count = 0; count < NoOfFrames; count++)
-                {
-                    Total += m_Frames[count];
-                }
-                g_Notify->DisplayMessage2(stdstr_f("VI/s: %.2f", m_Frequency / ((double)Total / (NoOfFrames << 3))).c_str());
-            }
-            else
-            {
-                g_Notify->DisplayMessage2("VI/s: -.--");
-            }
+            m_ViFrameRate = -1.0;
         }
     }
-    if (m_iFrameRateType == FR_PERCENT)
-    {
-        float Percent;
-        if (FrameRate != 0)
-        {
-            Percent = ((float)FrameRate) / m_ScreenHertz;
-        }
-        else
-        {
-            if (m_CurrentFrame > (NoOfFrames << 3))
-            {
-                int64_t Total;
-
-                Total = 0;
-                for (int count = 0; count < NoOfFrames; count++)
-                {
-                    Total += m_Frames[count];
-                }
-                Percent = ((float)(m_Frequency / ((double)Total / (NoOfFrames << 3)))) / m_ScreenHertz;
-            }
-            else
-            {
-                g_Notify->DisplayMessage2("");
-                return;
-            }
-        }
-        g_Notify->DisplayMessage2(stdstr_f("%.1f %%", Percent * 100).c_str());
-    }
-#endif
+    UpdateDisplay();
 }
 
 void CFramePerSecond::FrameRateTypeChanged(CFramePerSecond * _this)
@@ -156,50 +145,32 @@ void CFramePerSecond::ScreenHertzChanged(CFramePerSecond * _this)
 
 void CFramePerSecond::UpdateDlCounter(void)
 {
-#ifdef _WIN32
-    if (m_iFrameRateType != FR_DLs)
+    if (m_iFrameRateType != FR_DLs && m_iFrameRateType != FR_VIs_DLs)
     {
         return;
     }
-    if ((m_CurrentFrame & 3) == 0) {
-        LARGE_INTEGER Time;
-        QueryPerformanceCounter(&Time);
-        m_Frames[(m_CurrentFrame >> 2) % NoOfFrames] = Time.QuadPart - m_LastFrame;
-        m_LastFrame = Time.QuadPart;
-        DisplayDlCounter(0);
-    }
-    m_CurrentFrame += 1;
-#endif
-}
-
-void CFramePerSecond::DisplayDlCounter(uint32_t FrameRate)
-{
-#ifdef _WIN32
-    if (m_iFrameRateType != FR_DLs)
+    if ((m_CurrentDlistFrame & 3) == 0)
     {
-        return;
-    }
-    if (FrameRate != 0)
-    {
-        g_Notify->DisplayMessage2(stdstr_f("DL/s: %d.00", FrameRate).c_str());
-    }
-    else
-    {
-        if (m_CurrentFrame > (NoOfFrames << 2))
+        CDateTime Time;
+        Time.SetToNow();
+        m_FramesDlist[(m_CurrentDlistFrame >> 2) % NoOfFrames] = Time.Value() - m_LastDlistFrame.Value();
+        m_LastDlistFrame = Time;
+        if (m_CurrentDlistFrame > (NoOfFrames << 2))
         {
             int64_t Total;
 
             Total = 0;
             for (int count = 0; count < NoOfFrames; count++)
             {
-                Total += m_Frames[count];
+                Total += m_FramesDlist[count];
             }
-            g_Notify->DisplayMessage2(stdstr_f("DL/s: %.1f", m_Frequency / ((double)Total / (NoOfFrames << 2))).c_str());
+            m_DlistFrameRate = ((NoOfFrames << 2) / ((float)Total / 1000));
         }
         else
         {
-            g_Notify->DisplayMessage2("DL/s: -.--");
+            m_DlistFrameRate = -1.0;
         }
+        UpdateDisplay();
     }
-#endif
+    m_CurrentDlistFrame += 1;
 }
