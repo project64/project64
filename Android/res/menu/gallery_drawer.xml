@@ -8,8 +8,12 @@
         android:title="@string/menuItem_settings"/>
     <item
         android:id="@+id/menuItem_forum"
-        android:icon="@drawable/ic_about"
+        android:icon="@drawable/ic_forum"
         android:title="@string/menuItem_forum" />
+    <item
+        android:id="@+id/menuItem_reportBug"
+        android:icon="@drawable/ic_bug"
+        android:title="@string/menuItem_reportBug" />
     <item
         android:id="@+id/menuItem_about"
         android:icon="@drawable/ic_about"
