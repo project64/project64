@@ -2070,9 +2070,9 @@ void CN64System::RefreshScreen()
 
     __except_try()
     {
-        WriteTrace(TraceGFXPlugin, TraceDebug, "Starting");
+        WriteTrace(TraceGFXPlugin, TraceDebug, "UpdateScreen Starting");
         g_Plugins->Gfx()->UpdateScreen();
-        WriteTrace(TraceGFXPlugin, TraceDebug, "Done");
+        WriteTrace(TraceGFXPlugin, TraceDebug, "UpdateScreen Done");
     }
     __except_catch()
     {
