@@ -117,9 +117,12 @@ public class SplashActivity extends Activity implements ExtractAssetsListener
         {
             LibsDir = this.getApplicationInfo().nativeLibraryDir;            
         }
+        String SyncDir = this.getFilesDir().getParentFile().getAbsolutePath() + "/lib-sync/";
         NativeExports.appInit(AndroidDevice.PACKAGE_DIRECTORY);
         NativeExports.SettingsSaveString(SettingsID.Directory_PluginSelected.getValue(), LibsDir);
         NativeExports.SettingsSaveBool(SettingsID.Directory_PluginUseSelected.getValue(), true);
+        NativeExports.SettingsSaveString(SettingsID.Directory_PluginSyncSelected.getValue(), SyncDir);
+        NativeExports.SettingsSaveBool(SettingsID.Directory_PluginSyncUseSelected.getValue(), true);
         String SaveDir = AndroidDevice.EXTERNAL_PUBLIC_DIRECTORY + "/Project64/Save";
         if (!NativeExports.IsSettingSet(SettingsID.Directory_NativeSave.getValue()))
         {
