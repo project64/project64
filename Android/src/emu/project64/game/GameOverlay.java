@@ -94,6 +94,6 @@ public class GameOverlay extends View implements TouchController.OnStateChangedL
             
             // Redraw the autoHold mask
             mTouchMap.drawAutoHold( canvas );
-        }        
+        }
     }
 }
