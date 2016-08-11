@@ -17,6 +17,7 @@ LOCAL_SRC_FILES :=                   \
     $(SRCDIR)/jniBridge.cpp          \
     $(SRCDIR)/jniBridgeSettings.cpp  \
     $(SRCDIR)/NotificationClass.cpp  \
+    $(SRCDIR)/SyncBridge.cpp         \
     $(SRCDIR)/UISettings.cpp         \
 
 LOCAL_CFLAGS :=         \
