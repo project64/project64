@@ -7,8 +7,14 @@
     android:fitsSystemWindows="true" >
 
     <!-- activity view -->
-
+    <WebView
+        android:id="@+id/screen_wait"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+        
     <LinearLayout
+        android:id="@+id/screen_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
