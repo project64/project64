@@ -80,25 +80,23 @@ void CNotificationImp::DisplayMessage(int DisplayTime, LanguageStringID StringID
 void CNotificationImp::DisplayMessage(int DisplayTime, const char * Message) const
 {
 #ifdef ANDROID
-    __android_log_print(ANDROID_LOG_VERBOSE, "PJ64-Bridge", "%s", Message);
-
     if (g_JavaBridge == NULL) { return; }
 
     /*if (m_NextMsg > 0 || DisplayTime > 0)
     {
-        time_t Now = time(NULL);
-        if (DisplayTime == 0 && Now < m_NextMsg)
-        {
-            return;
-        }
-        if (DisplayTime > 0)
-        {
-            m_NextMsg = Now + DisplayTime;
-        }
-        if (m_NextMsg == 0)
-        {
-            m_NextMsg = 0;
-        }
+    time_t Now = time(NULL);
+    if (DisplayTime == 0 && Now < m_NextMsg)
+    {
+    return;
+    }
+    if (DisplayTime > 0)
+    {
+    m_NextMsg = Now + DisplayTime;
+    }
+    if (m_NextMsg == 0)
+    {
+    m_NextMsg = 0;
+    }
     }*/
 
     g_JavaBridge->DisplayMessage(Message);
@@ -109,8 +107,16 @@ void CNotificationImp::DisplayMessage(int DisplayTime, const char * Message) con
 #endif
 }
 
-void CNotificationImp::DisplayMessage2(const char * /*Message*/) const
+void CNotificationImp::DisplayMessage2(const char * Message) const
 {
+#ifdef ANDROID
+    if (g_JavaBridge == NULL) { return; }
+
+    g_JavaBridge->DisplayMessage2(Message);
+#else
+    // ignore warning usage
+    Message = Message;
+#endif
 }
 
 // Ask a Yes/No Question to the user, yes = true, no = false
@@ -128,7 +134,7 @@ void CNotificationImp::BreakPoint(const char * FileName, int32_t LineNumber)
     else
     {
         FatalError("Fatal Error: Emulation stopped");
-	}
+    }
 }
 
 void CNotificationImp::AppInitDone(void)

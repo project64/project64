@@ -21,6 +21,7 @@
 #include "jniBridge.h"
 #include "jniBridgeSettings.h"
 #include "JavaBridge.h"
+#include "SyncBridge.h"
 #include "UISettings.h"
 #include "JavaRomList.h"
 
@@ -58,6 +59,7 @@ AndroidLogger * g_Logger = NULL;
 static pthread_key_t g_ThreadKey;
 static JavaVM* g_JavaVM = NULL;
 JavaBridge * g_JavaBridge = NULL;
+SyncBridge * g_SyncBridge = NULL;
 jobject g_Activity = NULL;
 jobject g_GLThread = NULL;
 
@@ -120,7 +122,7 @@ void GameCpuRunning(void * /*NotUsed*/)
             }
             env->DeleteGlobalRef(g_GLThread);
             g_GLThread = NULL;
-        }  
+        }
         else
         {
             WriteTrace(TraceUserInterface, TraceError, "Failed to get java environment");
@@ -155,12 +157,13 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv* env, j
 
     const char *baseDir = env->GetStringUTFChars(BaseDir, 0);
     bool res = AppInit(&Notify(), baseDir, 0, NULL);
-    
+
     env->ReleaseStringUTFChars(BaseDir, baseDir);
     if (res)
     {
         g_JavaBridge = new JavaBridge(g_JavaVM);
-        g_Plugins->SetRenderWindows(g_JavaBridge, NULL);
+        g_SyncBridge = new SyncBridge(g_JavaBridge);
+        g_Plugins->SetRenderWindows(g_JavaBridge, g_SyncBridge);
 
         JniBridegSettings = new CJniBridegSettings();
 
@@ -183,6 +186,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveBool(JNIEnv* e
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Saving %d value: %s",Type,Value ? "true" : "false");
     g_Settings->SaveBool((SettingID)Type, Value);
+    CSettings::FlushSettings(g_Settings);
     WriteTrace(TraceUserInterface, TraceDebug, "Saved");
 }
 
@@ -190,6 +194,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveDword(JNIEnv* 
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Saving %d value: 0x%X",Type,Value);
     g_Settings->SaveDword((SettingID)Type, Value);
+    CSettings::FlushSettings(g_Settings);
     WriteTrace(TraceUserInterface, TraceDebug, "Saved");
 }
 
@@ -198,6 +203,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveString(JNIEnv*
     const char *value = env->GetStringUTFChars(Buffer, 0);
     WriteTrace(TraceUserInterface, TraceDebug, "Saving %d value: %s",Type,value);
     g_Settings->SaveString((SettingID)Type, value);
+    CSettings::FlushSettings(g_Settings);
     WriteTrace(TraceUserInterface, TraceDebug, "Saved");
     env->ReleaseStringUTFChars(Buffer, value);
 }
@@ -281,9 +287,21 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_ExternalEvent(JNIEnv* env,
 EXPORT void CALL Java_emu_project64_jni_NativeExports_onSurfaceCreated(JNIEnv * env, jclass cls)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
-    if (g_Plugins != NULL && g_Plugins->Gfx() != NULL && g_Plugins->Gfx()->SurfaceCreated)
+    if (g_BaseSystem != NULL && g_BaseSystem->GetPlugins() != NULL && g_BaseSystem->GetPlugins()->Gfx() != NULL)
     {
-        g_Plugins->Gfx()->SurfaceCreated();
+        CGfxPlugin * GfxPlugin = g_BaseSystem->GetPlugins()->Gfx();
+        if (GfxPlugin->SurfaceCreated != NULL)
+        {
+            GfxPlugin->SurfaceCreated();
+        }
+    }
+    if (g_SyncSystem != NULL && g_SyncSystem->GetPlugins() != NULL && g_SyncSystem->GetPlugins()->Gfx() != NULL)
+    {
+        CGfxPlugin * GfxPlugin = g_SyncSystem->GetPlugins()->Gfx();
+        if (GfxPlugin->SurfaceCreated != NULL)
+        {
+            GfxPlugin->SurfaceCreated();
+        }
     }
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
@@ -291,9 +309,21 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_onSurfaceCreated(JNIEnv * 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_onSurfaceChanged(JNIEnv * env, jclass cls, jint width, jint height)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
-    if (g_Plugins != NULL && g_Plugins->Gfx() != NULL && g_Plugins->Gfx()->SurfaceChanged)
+    if (g_BaseSystem != NULL && g_BaseSystem->GetPlugins() != NULL && g_BaseSystem->GetPlugins()->Gfx() != NULL)
     {
-        g_Plugins->Gfx()->SurfaceChanged(width,height);
+        CGfxPlugin * GfxPlugin = g_BaseSystem->GetPlugins()->Gfx();
+        if (GfxPlugin->SurfaceChanged != NULL)
+        {
+            GfxPlugin->SurfaceChanged(width,height);
+        }
+    }
+    if (g_SyncSystem != NULL && g_SyncSystem->GetPlugins() != NULL && g_SyncSystem->GetPlugins()->Gfx() != NULL)
+    {
+        CGfxPlugin * GfxPlugin = g_SyncSystem->GetPlugins()->Gfx();
+        if (GfxPlugin->SurfaceChanged != NULL)
+        {
+            GfxPlugin->SurfaceChanged(width,height);
+        }
     }
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
@@ -341,7 +371,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_StartEmulation(JNIEnv* env
 EXPORT void CALL Java_emu_project64_jni_NativeExports_CloseSystem(JNIEnv* env, jclass cls)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
-    CN64System::CloseSystem();
+    g_BaseSystem->EndEmulation();
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
