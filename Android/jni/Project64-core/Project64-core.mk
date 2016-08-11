@@ -50,6 +50,9 @@ LOCAL_SRC_FILES :=                                                     \
     $(SRCDIR)/N64System/Recompiler/RecompilerCodeLog.cpp               \
     $(SRCDIR)/N64System/Recompiler/RecompilerMemory.cpp                \
     $(SRCDIR)/N64System/Recompiler/RegBase.cpp                         \
+    $(SRCDIR)/N64System/Recompiler/Arm/ArmOps.cpp                      \
+    $(SRCDIR)/N64System/Recompiler/Arm/ArmRecompilerOps.cpp            \
+    $(SRCDIR)/N64System/Recompiler/Arm/ArmRegInfo.cpp                  \
     $(SRCDIR)/N64System/Recompiler/x86/x86ops.cpp                      \
     $(SRCDIR)/N64System/Recompiler/x86/x86RecompilerOps.cpp            \
     $(SRCDIR)/N64System/Recompiler/x86/x86RegInfo.cpp                  \
@@ -91,6 +94,14 @@ LOCAL_SRC_FILES :=                                                     \
     $(SRCDIR)/Settings/DebugSettings.cpp                               \
     $(SRCDIR)/Settings/GameSettings.cpp                                \
     $(SRCDIR)/Settings/N64SystemSettings.cpp                           \
+
+ifeq ($(TARGET_ARCH_ABI), armeabi-v7a)
+    # Use for ARM7a:
+    LOCAL_SRC_FILES += $(SRCDIR)/N64System/Recompiler/Arm/asm_functions.S
+else ifeq ($(TARGET_ARCH_ABI), armeabi)
+    # Use for ARM7a:
+    LOCAL_SRC_FILES += $(SRCDIR)/N64System/Recompiler/Arm/asm_functions.S
+endif
 
 LOCAL_CFLAGS := $(COMMON_CFLAGS)
 LOCAL_CPPFLAGS := $(COMMON_CPPFLAGS)
