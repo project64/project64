@@ -47,7 +47,7 @@ import android.view.WindowManager.LayoutParams;
 
 public class GameLifecycleHandler implements SurfaceHolder.Callback, GameSurface.SurfaceInfo
 {
-    private final static boolean LOG_GAMELIFECYCLEHANDLER = true;
+    private final static boolean LOG_GAMELIFECYCLEHANDLER = false;
 
     // Activity and views
     private Activity mActivity;
@@ -214,31 +214,48 @@ public class GameLifecycleHandler implements SurfaceHolder.Callback, GameSurface
         }
         if (NativeExports.SettingsLoadBool(SettingsID.GameRunning_CPU_Running.getValue()) == true)
         {
-	        int CurrentSaveState = NativeExports.SettingsLoadDword(SettingsID.Game_CurrentSaveState.getValue());
-	        int OriginalSaveTime = NativeExports.SettingsLoadDword(SettingsID.Game_LastSaveTime.getValue());
-	        NativeExports.SettingsSaveDword(SettingsID.Game_CurrentSaveState.getValue(), 0);
-	        NativeExports.ExternalEvent(SystemEvent.SysEvent_SaveMachineState.getValue());
-	        for (int i = 0; i < 100; i++)
-	        {
-	            int LastSaveTime = NativeExports.SettingsLoadDword(SettingsID.Game_LastSaveTime.getValue());
-	            if (LastSaveTime != OriginalSaveTime)
-	            {
-	                break;
-	            }
-	            try 
-	            {
-	                Thread.sleep(100); 
-	            }
-	            catch(InterruptedException ex)
-	            {
-	                Thread.currentThread().interrupt();
-	            }
-	        }
-	        NativeExports.SettingsSaveDword(SettingsID.Game_CurrentSaveState.getValue(), CurrentSaveState);
+            Boolean pause = false;
+            int PauseType = 0;
+            if (NativeExports.SettingsLoadBool(SettingsID.GameRunning_CPU_Paused.getValue()) == true)
+            {
+                pause = true;
+                PauseType = NativeExports.SettingsLoadDword(SettingsID.GameRunning_CPU_PausedType.getValue());
+                NativeExports.ExternalEvent( SystemEvent.SysEvent_ResumeCPU_FromMenu.getValue());
+            }
+            int CurrentSaveState = NativeExports.SettingsLoadDword(SettingsID.Game_CurrentSaveState.getValue());
+            int OriginalSaveTime = NativeExports.SettingsLoadDword(SettingsID.Game_LastSaveTime.getValue());
+            NativeExports.SettingsSaveDword(SettingsID.Game_CurrentSaveState.getValue(), 0);
+            NativeExports.ExternalEvent(SystemEvent.SysEvent_SaveMachineState.getValue());
+            for (int i = 0; i < 100; i++)
+            {
+                int LastSaveTime = NativeExports.SettingsLoadDword(SettingsID.Game_LastSaveTime.getValue());
+                if (LOG_GAMELIFECYCLEHANDLER) 
+                {
+                    Log.i("GameLifecycleHandler", "LastSaveTime = " + LastSaveTime + " OriginalSaveTime = " + OriginalSaveTime);
+                }
+                if (LastSaveTime != OriginalSaveTime)
+                {
+                    break;
+                }
+                try 
+                {
+                    Thread.sleep(100); 
+                }
+                catch(InterruptedException ex)
+                {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            NativeExports.SettingsSaveDword(SettingsID.Game_CurrentSaveState.getValue(), CurrentSaveState);
+            if (pause)
+            {
+                NativeExports.ExternalEvent( SystemEvent.SysEvent_PauseCPU_FromMenu.getValue());
+                NativeExports.SettingsSaveDword(SettingsID.GameRunning_CPU_PausedType.getValue(), PauseType);
+            }
         }
         else if (LOG_GAMELIFECYCLEHANDLER)
         {
-            Log.i("GameLifecycleHandler", "CPU not running, not doing anything");        	
+            Log.i("GameLifecycleHandler", "CPU not running, not doing anything");            
         }
         
         if (LOG_GAMELIFECYCLEHANDLER) 
@@ -254,19 +271,13 @@ public class GameLifecycleHandler implements SurfaceHolder.Callback, GameSurface
             Log.i("GameLifecycleHandler", "onPause");
         }
         mIsResumed = false;
-        mStopped = true;
         if (NativeExports.SettingsLoadBool(SettingsID.GameRunning_CPU_Running.getValue()) == true)
-    	{
+        {
             AutoSave();
-            if (LOG_GAMELIFECYCLEHANDLER) 
-            {
-            	Log.i("GameLifecycleHandler", "Stop Emulation");
-            }
-            NativeExports.StopEmulation();
-    	}
+        }
         if (LOG_GAMELIFECYCLEHANDLER) 
         {
-        	Log.i("GameLifecycleHandler", "onPause - done");
+            Log.i("GameLifecycleHandler", "onPause - done");
         }
     }
 
