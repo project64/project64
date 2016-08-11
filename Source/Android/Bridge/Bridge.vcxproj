@@ -35,6 +35,7 @@
     <ClCompile Include="jniBridge.cpp" />
     <ClCompile Include="jniBridgeSettings.cpp" />
     <ClCompile Include="NotificationClass.cpp" />
+    <ClCompile Include="SyncBridge.cpp" />
     <ClCompile Include="UISettings.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +44,7 @@
     <ClInclude Include="jniBridge.h" />
     <ClInclude Include="jniBridgeSettings.h" />
     <ClInclude Include="NotificationClass.h" />
+    <ClInclude Include="SyncBridge.h" />
     <ClInclude Include="UISettings.h" />
   </ItemGroup>
 </Project>
