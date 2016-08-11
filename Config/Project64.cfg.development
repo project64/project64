@@ -36,3 +36,5 @@ Directory=..\..\Lang
 Directory=..\..\Textures\
 Use Selected=1
 
+[Support Project64]
+Run Count=-1

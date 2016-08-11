@@ -79,6 +79,8 @@
     <ClCompile Include="UserInterface\Settings\SettingsPage-Options.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-Plugin.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage.cpp" />
+    <ClCompile Include="UserInterface\SupportEnterCode.cpp" />
+    <ClCompile Include="UserInterface\SupportWindow.cpp" />
     <ClCompile Include="UserInterface\WTLControls\ModifiedEditBox.cpp" />
     <ClCompile Include="UserInterface\WTLControls\PartialGroupBox.cpp" />
   </ItemGroup>
@@ -120,6 +122,8 @@
     <ClInclude Include="UserInterface\Settings\SettingsPage-Options.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage-Plugin.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage.h" />
+    <ClInclude Include="UserInterface\SupportEnterCode.h" />
+    <ClInclude Include="UserInterface\SupportWindow.h" />
     <ClInclude Include="UserInterface\WTLControls\ModifiedCheckBox.h" />
     <ClInclude Include="UserInterface\WTLControls\ModifiedComboBox.h" />
     <ClInclude Include="UserInterface\WTLControls\ModifiedEditBox.h" />

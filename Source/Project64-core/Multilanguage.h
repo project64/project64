@@ -472,6 +472,22 @@ enum LanguageStringID
     STR_SHORTCUT_SAVESLOT = 1105,
 
     /*********************************************************************************
+    * Support Window                                                                       *
+    *********************************************************************************/
+    MSG_SUPPORT_TITLE = 1200,
+    MSG_SUPPORT_INFO = 1201,
+    MSG_SUPPORT_ENTER_CODE = 1202,
+    MSG_SUPPORT_PROJECT64 = 1203,
+    MSG_SUPPORT_CONTINUE = 1204,
+    MSG_SUPPORT_ENTER_SUPPORT_CODE = 1205,
+    MSG_SUPPORT_INCORRECT_CODE = 1206,
+    MSG_SUPPORT_COMPLETE = 1207,
+    MSG_SUPPORT_ENTER_CODE_TITLE = 1208,
+    MSG_SUPPORT_ENTER_CODE_DESC = 1209,
+    MSG_SUPPORT_OK = 1210,
+    MSG_SUPPORT_CANCEL = 1211,
+
+    /*********************************************************************************
     * Messages                                                                       *
     *********************************************************************************/
     MSG_CPU_PAUSED = 2000,

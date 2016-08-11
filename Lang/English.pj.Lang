@@ -441,6 +441,22 @@
 #1105#  "Save Slots"
 
 /*********************************************************************************
+* Support Window                                                                 *
+*********************************************************************************/
+#1200#  "Support Project64"
+#1201#  "Project64 is a software package designed to emulate a Nintendo64 video game system on a Microsoft Windows based PC. This allows you to play real N64 software in much the same way as it would be on the original hardware system.\n\nIf you like Project64 and have gotten some value out of it then please support project64 as either a thank you, or your desire to see it continually improved.\n\nIf you have supported project64:"
+#1202#  "Enter notification code"
+#1203#  "Support Project64"
+#1204#  "Continue"
+#1205#  "Please enter the support code"
+#1206#  "Incorrect support code"
+#1207#  "Thank you"
+#1208#  "Enter code"
+#1209#  "Please enter the code in the email"
+#1210#  "OK"
+#1211#  "Cancel"
+
+/*********************************************************************************
 * Messages                                                                       *
 *********************************************************************************/
 #2000#  "*** CPU PAUSED ***"
