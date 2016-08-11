@@ -386,9 +386,9 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
     };
 
     ArmThumbOpcode * OpCode = (ArmThumbOpcode *)context.arm_pc;
-    if (OpCode->opcode == ArmLDR_Reg)
+    if (OpCode->Reg.opcode == ArmLDR_Reg)
     {
-        if (!g_MMU->LW_NonMemory(MemAddress, ArmRegisters[OpCode->rt]))
+        if (!g_MMU->LW_NonMemory(MemAddress, ArmRegisters[OpCode->Reg.rt]))
         {
             if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
             {
@@ -398,9 +398,9 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         context.arm_pc = context.arm_pc + 2;
         return true;
     }
-    if (OpCode->opcode == ArmSTR_Reg)
+    if (OpCode->Reg.opcode == ArmSTR_Reg)
     {
-        if (!g_MMU->SW_NonMemory(MemAddress, *ArmRegisters[OpCode->rt]))
+        if (!g_MMU->SW_NonMemory(MemAddress, *ArmRegisters[OpCode->Reg.rt]))
         {
             if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
             {
@@ -458,12 +458,12 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 
     uint8_t * TypePos = (uint8_t *)context.arm_pc;
     WriteTrace(TraceExceptionHandler, TraceError, "TypePos: %02X %02X %02X %02X %02X %02X %02X %02X %02X",TypePos[0],TypePos[1],TypePos[2],TypePos[3],TypePos[4],TypePos[5],TypePos[6],TypePos[7],TypePos[8]);
-    
+
     WriteTrace(TraceExceptionHandler, TraceError, "OpCode.Hex: %X",OpCode->Hex);
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.opcode: %X",OpCode->opcode);
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rm: %X",OpCode->rm);
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rn: %X",OpCode->rn);
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rt: %X",OpCode->rt);
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.opcode: %X",OpCode->Reg.opcode);
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rm: %X",OpCode->Reg.rm);
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rn: %X",OpCode->Reg.rn);
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rt: %X",OpCode->Reg.rt);
 
     WriteTrace(TraceExceptionHandler, TraceError, "OpCode32.Hex: %X",OpCode32->Hex);
     WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.opcode: %X",OpCode32->uint16.opcode);

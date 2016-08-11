@@ -66,6 +66,9 @@
     <ClCompile Include="N64System\N64DiskClass.cpp" />
     <ClCompile Include="N64System\N64RomClass.cpp" />
     <ClCompile Include="N64System\ProfilingClass.cpp" />
+    <ClCompile Include="N64System\Recompiler\Arm\ArmOps.cpp" />
+    <ClCompile Include="N64System\Recompiler\Arm\ArmRecompilerOps.cpp" />
+    <ClCompile Include="N64System\Recompiler\Arm\ArmRegInfo.cpp" />
     <ClCompile Include="N64System\Recompiler\CodeBlock.cpp" />
     <ClCompile Include="N64System\Recompiler\CodeSection.cpp" />
     <ClCompile Include="N64System\Recompiler\FunctionInfo.cpp" />
@@ -129,7 +132,6 @@
     <ClInclude Include="Logging.h" />
     <ClInclude Include="Multilanguage.h" />
     <ClInclude Include="Multilanguage\LanguageClass.h" />
-    <ClInclude Include="N64System\Arm\ArmOpCode.h" />
     <ClInclude Include="N64System\CheatClass.h" />
     <ClInclude Include="N64System\FramePerSecondClass.h" />
     <ClInclude Include="N64System\Interpreter\InterpreterCPU.h" />
@@ -159,6 +161,9 @@
     <ClInclude Include="N64System\N64RomClass.h" />
     <ClInclude Include="N64System\N64Types.h" />
     <ClInclude Include="N64System\ProfilingClass.h" />
+    <ClInclude Include="N64System\Recompiler\Arm\ArmOpCode.h" />
+    <ClInclude Include="N64System\Recompiler\Arm\ArmOps.h" />
+    <ClInclude Include="N64System\Recompiler\Arm\ArmRecompilerOps.h" />
     <ClInclude Include="N64System\Recompiler\Arm\ArmRegInfo.h" />
     <ClInclude Include="N64System\Recompiler\CodeBlock.h" />
     <ClInclude Include="N64System\Recompiler\CodeSection.h" />

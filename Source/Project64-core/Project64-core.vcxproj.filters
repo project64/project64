@@ -76,26 +76,17 @@
     <Filter Include="Header Files\Rom List">
       <UniqueIdentifier>{1030356f-55d6-4fef-9ee2-64c45b9c8ff2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\N64 System\Arm">
-      <UniqueIdentifier>{8c526293-ee42-44b0-938f-f3c1cc18a986}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\N64 System\Recompiler\x86">
       <UniqueIdentifier>{84d10022-4b24-4ba2-bfef-f85d16dfdc09}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\N64 System\Recompiler\x86">
       <UniqueIdentifier>{b6d9fd3a-e8e5-42a2-8bcc-8fa430dd8aaa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\N64 System\Recompiler\x64-86">
-      <UniqueIdentifier>{4a163a31-b1fb-4e50-b229-45d508dfc4a2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\N64 System\Recompiler\Arm">
-      <UniqueIdentifier>{30c93ff6-032f-4702-9437-67b799f088af}</UniqueIdentifier>
+      <UniqueIdentifier>{cf6a56ff-5e83-49c8-af46-2d0eb9ff5abe}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\N64 System\Recompiler\Arm">
-      <UniqueIdentifier>{7ad7bbe7-44ed-4604-95c1-9af746e49e8e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\N64 System\Recompiler\x64-86">
-      <UniqueIdentifier>{271c80e0-b4fa-4510-ae8b-1f0f2c88ab39}</UniqueIdentifier>
+      <UniqueIdentifier>{98453fda-8903-4074-8c4c-831c3f2bd63d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -306,9 +297,6 @@
     <ClCompile Include="Multilanguage\LanguageClass.cpp">
       <Filter>Source Files\Multilanguage</Filter>
     </ClCompile>
-    <ClCompile Include="MemoryExceptionFilter.cpp">
-      <Filter>Source Files\N64 System</Filter>
-    </ClCompile>
     <ClCompile Include="N64System\Mips\Disk.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
@@ -336,8 +324,20 @@
     <ClCompile Include="N64System\Recompiler\x86\x86RegInfo.cpp">
       <Filter>Source Files\N64 System\Recompiler\x86</Filter>
     </ClCompile>
+    <ClCompile Include="MemoryExceptionFilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="N64System\Recompiler\RegBase.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\Arm\ArmOps.cpp">
+      <Filter>Source Files\N64 System\Recompiler\Arm</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\Arm\ArmRecompilerOps.cpp">
+      <Filter>Source Files\N64 System\Recompiler\Arm</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\Arm\ArmRegInfo.cpp">
+      <Filter>Source Files\N64 System\Recompiler\Arm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -626,9 +626,6 @@
     <ClInclude Include="RomList\RomList.h">
       <Filter>Header Files\Rom List</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Arm\ArmOpCode.h">
-      <Filter>Source Files\N64 System\Arm</Filter>
-    </ClInclude>
     <ClInclude Include="N64System\Recompiler\RecompilerCodeLog.h">
       <Filter>Header Files\N64 System\Recompiler</Filter>
     </ClInclude>
@@ -641,14 +638,17 @@
     <ClInclude Include="N64System\Recompiler\x86\x86RegInfo.h">
       <Filter>Header Files\N64 System\Recompiler\x86</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Recompiler\RegBase.h">
-      <Filter>Header Files\N64 System\Recompiler</Filter>
+    <ClInclude Include="N64System\Recompiler\Arm\ArmOpCode.h">
+      <Filter>Header Files\N64 System\Recompiler\Arm</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\Arm\ArmOps.h">
+      <Filter>Header Files\N64 System\Recompiler\Arm</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\Arm\ArmRecompilerOps.h">
+      <Filter>Header Files\N64 System\Recompiler\Arm</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Recompiler\Arm\ArmRegInfo.h">
       <Filter>Header Files\N64 System\Recompiler\Arm</Filter>
-    </ClInclude>
-    <ClInclude Include="N64System\Recompiler\x64-86\x64RegInfo.h">
-      <Filter>Header Files\N64 System\Recompiler\x64-86</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

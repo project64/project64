@@ -8,28 +8,45 @@
 * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
 *                                                                           *
 ****************************************************************************/
-#pragma once
+#include "stdafx.h"
+
 #if defined(__arm__) || defined(_M_ARM)
-#include <Project64-core/N64System/Recompiler/RegBase.h>
+#include <Project64-core/N64System/Recompiler/Arm/ArmRegInfo.h>
 
-class CArmRegInfo :
-    public CRegBase
+CArmRegInfo::CArmRegInfo() 
 {
-public:
-    CArmRegInfo();
-    CArmRegInfo(const CArmRegInfo&);
-    ~CArmRegInfo();
+}
 
-    CArmRegInfo& operator=(const CArmRegInfo&);
+CArmRegInfo::CArmRegInfo(const CArmRegInfo& rhs)
+{
+    *this = rhs;
+}
 
-    bool operator==(const CArmRegInfo& right) const;
-    bool operator!=(const CArmRegInfo& right) const;
-    
-    void BeforeCallDirect(void);
-    void AfterCallDirect(void);
+CArmRegInfo::~CArmRegInfo()
+{
+}
 
-    void WriteBackRegisters();
+CArmRegInfo& CArmRegInfo::operator=(const CArmRegInfo& right)
+{
+    CRegBase::operator=(right);
+#ifdef _DEBUG
+    if (*this != right)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+#endif
+    return *this;
+}
 
-private:
-};
+void CArmRegInfo::BeforeCallDirect(void)
+{
+}
+
+void CArmRegInfo::AfterCallDirect(void)
+{
+}
+
+void CArmRegInfo::WriteBackRegisters()
+{
+}
 #endif

@@ -13,12 +13,18 @@
 #include <Project64-core/N64System/Recompiler/CodeBlock.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
+#include <Project64-core/N64System/Recompiler/Arm/ArmRecompilerOps.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/TranslateVaddr.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
 
 bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
+
+#if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
+/* bug-fix to implement __clear_cache (missing in Android; http://code.google.com/p/android/issues/detail?id=1803) */
+extern "C" void __clear_cache_android(uint8_t* begin, uint8_t *end);
+#endif
 
 CCodeBlock::CCodeBlock(uint32_t VAddrEnter, uint8_t * CompiledLocation) :
 m_VAddrEnter(VAddrEnter),
@@ -29,12 +35,22 @@ m_EnterSection(NULL),
 m_RecompilerOps(NULL),
 m_Test(1)
 {
+#if defined(__arm__) || defined(_M_ARM)
+    // make sure function starts at odd address so that the system knows it is thumb mode
+    if (((uint32_t)m_CompiledLocation % 2) == 0)
+    {
+        m_CompiledLocation+=1;
+    }
+#endif
 #if defined(__i386__) || defined(_M_IX86)
     m_RecompilerOps = new CX86RecompilerOps;
+#elif defined(__arm__) || defined(_M_ARM)
+    m_RecompilerOps = new CArmRecompilerOps;
 #endif
     if (m_RecompilerOps == NULL)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
     }
     CCodeSection * baseSection = new CCodeSection(this, VAddrEnter, 0, false);
     if (baseSection == NULL)
@@ -749,6 +765,9 @@ bool CCodeBlock::Compile()
     g_TransVaddr->TranslateVaddr(VAddrFirst(), PAddr);
     MD5(g_MMU->Rdram() + PAddr, (VAddrLast() - VAddrFirst()) + 4).get_digest(m_Hash);
 
+#if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
+    __clear_cache_android((uint8_t *)((uint32_t)m_CompiledLocation & ~1), (uint8_t *)(*g_RecompPos));
+#endif
     return true;
 }
 
