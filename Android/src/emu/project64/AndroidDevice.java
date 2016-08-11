@@ -28,36 +28,36 @@ import android.os.Environment;
 
 public class AndroidDevice
 {
-	/** True if device is running Gingerbread or later (9 - Android 2.3.x) */
-	public static final boolean IS_GINGERBREAD = Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD;
-	
-	/** True if device is running Honeycomb or later (11 - Android 3.0.x) */
-	public static final boolean IS_HONEYCOMB = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
-	
-	/** True if device is running Honeycomb MR1 or later (12 - Android 3.1.x) */
-	public static final boolean IS_HONEYCOMB_MR1 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1;
-	
-	/** True if device is running Ice Cream Sandwich or later (14 - Android 4.0.x) */
-	public static final boolean IS_ICE_CREAM_SANDWICH = Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH;
-	
-	/** True if device is running Jellybean or later (16 - Android 4.1.x) */
-	public static final boolean IS_JELLY_BEAN = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
-	
-	/** True if device is running KitKat or later (19 - Android 4.4.x) */
-	public static final boolean IS_KITKAT = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-	
-	/** True if device is an OUYA. */
-	public static final boolean IS_OUYA_HARDWARE = OuyaFacade.getInstance().isRunningOnOUYAHardware();
-	
-	public final static String EXTERNAL_PUBLIC_DIRECTORY = Environment.getExternalStorageDirectory().getPath();
-	public final static String PACKAGE_DIRECTORY = EXTERNAL_PUBLIC_DIRECTORY + "/Android/data/" + AndroidDevice.class.getPackage().getName();
+    /** True if device is running Gingerbread or later (9 - Android 2.3.x) */
+    public static final boolean IS_GINGERBREAD = Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD;
+    
+    /** True if device is running Honeycomb or later (11 - Android 3.0.x) */
+    public static final boolean IS_HONEYCOMB = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+    
+    /** True if device is running Honeycomb MR1 or later (12 - Android 3.1.x) */
+    public static final boolean IS_HONEYCOMB_MR1 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1;
+    
+    /** True if device is running Ice Cream Sandwich or later (14 - Android 4.0.x) */
+    public static final boolean IS_ICE_CREAM_SANDWICH = Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH;
+    
+    /** True if device is running Jellybean or later (16 - Android 4.1.x) */
+    public static final boolean IS_JELLY_BEAN = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
+    
+    /** True if device is running KitKat or later (19 - Android 4.4.x) */
+    public static final boolean IS_KITKAT = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+    
+    /** True if device is an OUYA. */
+    public static final boolean IS_OUYA_HARDWARE = OuyaFacade.getInstance().isRunningOnOUYAHardware();
+    
+    public final static String EXTERNAL_PUBLIC_DIRECTORY = Environment.getExternalStorageDirectory().getPath();
+    public final static String PACKAGE_DIRECTORY = EXTERNAL_PUBLIC_DIRECTORY + "/Android/data/" + AndroidDevice.class.getPackage().getName();
 
-	public static final boolean IS_ACTION_BAR_AVAILABLE = AndroidDevice.IS_HONEYCOMB && !AndroidDevice.IS_OUYA_HARDWARE;
+    public static final boolean IS_ACTION_BAR_AVAILABLE = AndroidDevice.IS_HONEYCOMB && !AndroidDevice.IS_OUYA_HARDWARE;
 
-	final static boolean isTv;
+    final static boolean isTv;
     static 
     {
-		isTv = Project64Application.getAppContext().getPackageManager().hasSystemFeature("android.software.leanback");
+        isTv = Project64Application.getAppContext().getPackageManager().hasSystemFeature("android.software.leanback");
     }
     
     public static boolean isAndroidTv() 
@@ -75,7 +75,7 @@ public class AndroidDevice
         List<String> typeBL = Arrays.asList("tmpfs");
         String[] mountWL = {"/mnt", "/Removable", "/storage"};
         String[] mountBL = 
-    	{
+        {
             "/mnt/secure",
             "/mnt/shell",
             "/mnt/asec",
@@ -85,10 +85,10 @@ public class AndroidDevice
             "/storage/emulated"
         };
         String[] deviceWL = 
-    	{
-	        "/dev/block/vold",
-	        "/dev/fuse",
-	        "/mnt/media_rw"
+        {
+            "/dev/block/vold",
+            "/dev/fuse",
+            "/mnt/media_rw"
         };
 
         try 
@@ -128,7 +128,7 @@ public class AndroidDevice
         }
         finally 
         {
-        	Utility.close(bufReader);
+            Utility.close(bufReader);
         }
         return list;
     }
