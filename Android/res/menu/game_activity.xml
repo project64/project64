@@ -29,6 +29,9 @@
         </menu>
     </item>
     <item
+        android:id="@+id/menuItem_settings"
+        android:title="@string/menuItem_settings"/>
+    <item
         android:id="@+id/menuItem_pause"
         android:title="@string/menuItem_pause"/>
     <item

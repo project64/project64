@@ -18,8 +18,10 @@ import emu.project64.R;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
 import emu.project64.jni.SystemEvent;
+import emu.project64.settings.SettingsActivity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -142,6 +144,10 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
             mLifecycleHandler.AutoSave();
             NativeExports.CloseSystem();
             break;
+        case R.id.menuItem_settings:
+            Intent SettingsIntent = new Intent(mActivity, SettingsActivity.class);
+            mActivity.startActivity( SettingsIntent );
+            return true;
         }
         return false;
     }
