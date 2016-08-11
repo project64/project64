@@ -14,6 +14,7 @@ import emu.project64.AndroidDevice;
 import emu.project64.R;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
+import emu.project64.jni.SystemEvent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -29,6 +30,10 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     {
         super.onCreate(savedInstanceState);
 
+        if (NativeExports.SettingsLoadBool(SettingsID.GameRunning_CPU_Running.getValue()) == true)
+        {
+            NativeExports.ExternalEvent( SystemEvent.SysEvent_ResumeCPU_FromMenu.getValue());
+        }
         setContentView(R.layout.settings_activity);
         
         // Add the tool bar to the activity (which supports the fancy menu/arrow animation)
@@ -45,10 +50,12 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPrefs.edit().clear()
-        .putBoolean("audio_Enabled",true)
+        .putBoolean("audio_Enabled",NativeExports.SettingsLoadBool(SettingsID.Plugin_EnableAudio.getValue()))
         .putBoolean("UserInterface_BasicMode",NativeExports.SettingsLoadBool(SettingsID.UserInterface_BasicMode.getValue()))
         .putBoolean("Debugger_Enabled",NativeExports.SettingsLoadBool(SettingsID.Debugger_Enabled.getValue()))
         .putBoolean("Debugger_GenerateLogFiles",NativeExports.SettingsLoadBool(SettingsID.Debugger_GenerateLogFiles.getValue()))
+        .putBoolean("Debugger_DisplaySpeed",NativeExports.SettingsLoadBool(SettingsID.UserInterface_DisplayFrameRate.getValue()))
+        .putString("Debugger_DisplaySpeedType",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.UserInterface_FrameDisplayType.getValue())))
         .putString("Debugger_TraceMD5",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Debugger_TraceMD5.getValue())))
         .putString("Debugger_TraceThread",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Debugger_TraceThread.getValue())))
         .putString("Debugger_TracePath",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Debugger_TracePath.getValue())))
@@ -110,8 +117,11 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     		NativeExports.SettingsSaveBool(SettingsID.UserInterface_BasicMode.getValue(), sharedPreferences.getBoolean(key,false));
     		getSupportFragmentManager().beginTransaction().replace(R.id.fragment_placeholder, new SettingsFragment()).commit();
     	}
-    	else if (key.equals("Debugger_Enabled")) { NativeExports.SettingsSaveBool(SettingsID.Debugger_Enabled.getValue(), sharedPreferences.getBoolean(key,false)); }
+       	else if (key.equals("audio_Enabled")) { NativeExports.SettingsSaveBool(SettingsID.Plugin_EnableAudio.getValue(), sharedPreferences.getBoolean(key,false)); }
+       	else if (key.equals("Debugger_Enabled")) { NativeExports.SettingsSaveBool(SettingsID.Debugger_Enabled.getValue(), sharedPreferences.getBoolean(key,false)); }
     	else if (key.equals("Debugger_GenerateLogFiles")) { NativeExports.SettingsSaveBool(SettingsID.Debugger_GenerateLogFiles.getValue(), sharedPreferences.getBoolean(key,false)); }
+    	else if (key.equals("Debugger_DisplaySpeed")) { NativeExports.SettingsSaveBool(SettingsID.UserInterface_DisplayFrameRate.getValue(), sharedPreferences.getBoolean(key,false)); }
+    	else if (key.equals("Debugger_DisplaySpeedType")) { NativeExports.SettingsSaveDword(SettingsID.UserInterface_FrameDisplayType.getValue(), Integer.valueOf(sharedPreferences.getString(key, "0"))); }
     	else if (key.equals("Debugger_TraceMD5")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceMD5.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
     	else if (key.equals("Debugger_TraceThread")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceThread.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
     	else if (key.equals("Debugger_TracePath")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TracePath.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }

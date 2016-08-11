@@ -29,7 +29,9 @@
     <string name="menuItem_appVersion">App version</string>
     <string name="menuItem_hardwareInfo">Hardware info</string>
     <string name="menuItem_forum">Help/Forum</string>
-  
+    <string name="menuItem_reportBug">Report Issue</string>
+    <string name="content_description_app_loading_image">App loading image</string>
+   
     <!-- ************************************************************************** -->
     <!-- Toast Messages                                                             -->
     <!-- Developers: Follow punctuation and grammar as shown below                  -->
@@ -110,7 +112,25 @@
     <string name="Interpreter">Interpreter</string>
     <string name="Recompiler">Recompiler</string>
     <string name="SyncCores">Synchronize Cores</string>
-    
+    <string name="Advanced">Advanced</string>
+    <string name="DisplaySpeed_title">Display Speed</string>
+    <string name="DisplaySpeed_summary">Show the speed of the emulation</string>
+    <string name="DisplaySpeedDisplay">Display Speed Display</string>
+    <string name="DListPerSecond">Display lists per second</string>
+    <string name="PercentageOfSpeed">Percentage of full speed</string>
+    <string name="VerticalInterruptsPerSecond">Vertical interrupts per second</string>
+        
+    <string-array name="DisplaySpeed_list">
+        <item>@string/DListPerSecond</item>
+        <item>@string/PercentageOfSpeed</item>
+        <item>@string/VerticalInterruptsPerSecond</item>
+    </string-array>
+    <string-array name="DisplaySpeed_values" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>0</item>
+    </string-array>
+
     <string-array name="cpu_core_list">
         <item>@string/Interpreter</item>
         <item>@string/Recompiler</item>
@@ -122,7 +142,7 @@
         <item>3</item>
     </string-array>
     
-	<string-array name="trace_severity_list">
+    <string-array name="trace_severity_list">
         <item>@string/TraceError</item>
         <item>@string/TraceWarning</item>
         <item>@string/TraceNotice</item>
@@ -138,16 +158,15 @@
         <item>5</item>
         <item>6</item>
     </string-array>
-    
-    <!-- Path Preferences (selected path will become the summary) -->
-    <string name="pathGameSaves_title">Game save folder</string>
-    <string name="pathGameSaves_default">!project64</string>
 
     <!-- Confirmation Dialogs -->
     <string name="confirmResetGame_title">Reset game?</string>
     <string name="confirmResetGame_message">The game will go back to a clear state, all progress made will be lost.</string>
-
-    <!-- Asset Extractor -->
+    <string name="GetSaveSupport_title">Save Support</string>
+    <string name="GetSaveSupport_message">Save support is a one time purchase and the only purchase in Project64.\n\nProject64 may not be perfect and making this as an upgrade it allows you to play and test the emulator before you have to spend any money.\n\nThis is also a good way for you to support and give back to the creation of the emulator..</string>
+    <string name="GetSaveSupport_OkButton">Purchase</string>
+    
+  <!-- Asset Extractor -->
     <string name="assetExtractor_startingUp">Starting Up …</string>
     <string name="assetExtractor_version">version</string>
     <string name="assetExtractor_progress">%1$.0f%% done: extracting - %2$s</string>
