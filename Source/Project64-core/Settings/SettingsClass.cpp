@@ -150,7 +150,11 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_ScreenHertz, new CSettingTypeRomDatabase("ScreenHertz", 0));
     AddHandler(Rdb_FuncLookupMode, new CSettingTypeRomDatabase("FuncFind", FuncFind_PhysicalLookup));
     AddHandler(Rdb_RegCache, new CSettingTypeRDBYesNo("Reg Cache", true));
+#ifdef ANDROID
+    AddHandler(Rdb_BlockLinking, new CSettingTypeRDBOnOff("Linking", false));
+#else
     AddHandler(Rdb_BlockLinking, new CSettingTypeRDBOnOff("Linking", true));
+#endif
     AddHandler(Rdb_SMM_Cache, new CSettingTypeRomDatabase("SMM-Cache", true));
     AddHandler(Rdb_SMM_StoreInstruc, new CSettingTypeRomDatabase("SMM-StoreInstr", false));
     AddHandler(Rdb_SMM_PIDMA, new CSettingTypeRomDatabase("SMM-PI DMA", true));
@@ -222,7 +226,11 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 
     //User Interface
     AddHandler(UserInterface_ShowCPUPer, new CSettingTypeApplication("", "Display CPU Usage", (uint32_t)false));
+#ifdef ANDROID
+    AddHandler(UserInterface_DisplayFrameRate, new CSettingTypeApplication("", "Display Frame Rate", (uint32_t)false));
+#else
     AddHandler(UserInterface_DisplayFrameRate, new CSettingTypeApplication("", "Display Frame Rate", (uint32_t)true));
+#endif
     AddHandler(UserInterface_FrameDisplayType, new CSettingTypeApplication("", "Frame Rate Display Type", (uint32_t)FR_VIs));
     AddHandler(Directory_Plugin, new CSettingTypeSelectedDirectory("Dir:Plugin", Directory_PluginInitial, Directory_PluginSelected, Directory_PluginUseSelected, Directory_Plugin));
 #ifndef _M_X64
