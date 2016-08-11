@@ -81,10 +81,10 @@ public class GameOverlay extends View implements TouchController.OnStateChangedL
     @Override
     protected void onDraw( Canvas canvas )
     {
-        if( mTouchMap == null || canvas == null )
+        if(canvas == null )
             return;
         
-        if( mDrawingEnabled )
+        if( mTouchMap != null && mDrawingEnabled )
         {
             // Redraw the static buttons
             mTouchMap.drawButtons( canvas );

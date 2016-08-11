@@ -24,12 +24,15 @@ import emu.project64.inAppPurchase.IabHelper;
 import emu.project64.inAppPurchase.IabHelper.IabAsyncInProgressException;
 import emu.project64.inAppPurchase.IabResult;
 import emu.project64.inAppPurchase.Inventory;
+import emu.project64.inAppPurchase.Purchase;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
 import emu.project64.jni.SystemEvent;
 import emu.project64.settings.GameSettingsActivity;
 import emu.project64.settings.SettingsActivity;
+import emu.project64.util.Utility;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -54,6 +57,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
@@ -87,6 +91,10 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
     IabBroadcastReceiver mBroadcastReceiver;
     
     public static final int GAME_DIR_REQUEST_CODE = 1;
+    static final String SKU_SAVESUPPORT = "save_support";
+
+    // (arbitrary) request code for the purchase flow
+    static final int RC_REQUEST = 10001;
 
     @Override
     protected void onNewIntent( Intent intent )
@@ -128,6 +136,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                     // Oh noes, there was a problem.
                     Log.d("GalleryActivity", "Problem setting up in-app billing: " + result);
                     // complain("Problem setting up in-app billing: " + result);
+                    mHasSaveSupport = true;
                     return;
                 }
                 // Have we been disposed of in the meantime? If so, quit.
@@ -146,9 +155,12 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
 
                 // IAB is fully set up. Now, let's get an inventory of stuff we own.
                 Log.d("GalleryActivity", "Setup successful. Querying inventory.");
-                try {
+                try 
+                {
                     mIabHelper.queryInventoryAsync(mGotInventoryListener);
-                } catch (IabAsyncInProgressException e) {
+                }
+                catch (IabAsyncInProgressException e) 
+                {
                     //complain("Error querying inventory. Another async operation in progress.");
                 }
             }
@@ -201,16 +213,31 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         } );
     }
     
+    // Enables or disables the "please wait" screen.
+    void setWaitScreen(boolean set) 
+    {
+        if (set)
+        {
+            WebView webView = (WebView)findViewById(R.id.screen_wait);
+            webView.loadData(Utility.readAsset("loading.htm", ""), "text/html", "UTF8");
+        }
+        findViewById(R.id.screen_main).setVisibility(set ? View.GONE : View.VISIBLE);
+        findViewById(R.id.screen_wait).setVisibility(set ? View.VISIBLE : View.GONE);
+    }
+
     // Listener that's called when we finish querying the items and subscriptions we own
-    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
-        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
+    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() 
+    {
+        public void onQueryInventoryFinished(IabResult result, Inventory inventory) 
+        {
             Log.d("GalleryActivity", "Query inventory finished.");
 
             // Have we been disposed of in the meantime? If so, quit.
             if (mIabHelper == null) return;
 
             // Is it a failure?
-            if (result.isFailure()) {
+            if (result.isFailure())
+            {
                 //complain("Failed to query inventory: " + result);
                 return;
             }
@@ -223,50 +250,54 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
              * verifyDeveloperPayload().
              */
 
-            // Do we have the premium upgrade?
-            /*Purchase premiumPurchase = inventory.getPurchase(SKU_PREMIUM);
-            mIsPremium = (premiumPurchase != null && verifyDeveloperPayload(premiumPurchase));
-            Log.d(TAG, "User is " + (mIsPremium ? "PREMIUM" : "NOT PREMIUM"));
-
-            // First find out which subscription is auto renewing
-            Purchase gasMonthly = inventory.getPurchase(SKU_INFINITE_GAS_MONTHLY);
-            Purchase gasYearly = inventory.getPurchase(SKU_INFINITE_GAS_YEARLY);
-            if (gasMonthly != null && gasMonthly.isAutoRenewing()) {
-                mInfiniteGasSku = SKU_INFINITE_GAS_MONTHLY;
-                mAutoRenewEnabled = true;
-            } else if (gasYearly != null && gasYearly.isAutoRenewing()) {
-                mInfiniteGasSku = SKU_INFINITE_GAS_YEARLY;
-                mAutoRenewEnabled = true;
-            } else {
-                mInfiniteGasSku = "";
-                mAutoRenewEnabled = false;
+            Purchase SaveSupportPurchase = inventory.getPurchase(SKU_SAVESUPPORT);
+            Log.d("GalleryActivity", "Purchased save support " + (SaveSupportPurchase!= null ? "Yes" : "No"));
+            if (SaveSupportPurchase != null)
+            {
+            	mHasSaveSupport = true;
             }
-
-            // The user is subscribed if either subscription exists, even if neither is auto
-            // renewing
-            mSubscribedToInfiniteGas = (gasMonthly != null && verifyDeveloperPayload(gasMonthly))
-                    || (gasYearly != null && verifyDeveloperPayload(gasYearly));
-            Log.d(TAG, "User " + (mSubscribedToInfiniteGas ? "HAS" : "DOES NOT HAVE")
-                    + " infinite gas subscription.");
-            if (mSubscribedToInfiniteGas) mTank = TANK_MAX;
-
-            // Check for gas delivery -- if we own gas, we should fill up the tank immediately
-            Purchase gasPurchase = inventory.getPurchase(SKU_GAS);
-            if (gasPurchase != null && verifyDeveloperPayload(gasPurchase)) {
-                Log.d(TAG, "We have gas. Consuming it.");
-                try {
-                    mHelper.consumeAsync(inventory.getPurchase(SKU_GAS), mConsumeFinishedListener);
-                } catch (IabAsyncInProgressException e) {
-                    complain("Error consuming gas. Another async operation in progress.");
-                }
-                return;
-            }
-
-            updateUi();
+            
             setWaitScreen(false);
-            Log.d(TAG, "Initial inventory query finished; enabling main UI.");*/
         }
     };
+
+    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() 
+    {
+        public void onIabPurchaseFinished(IabResult result, Purchase purchase) 
+        {
+            Log.d("GalleryActivity", "Purchase finished: " + result + ", purchase: " + purchase);
+            // if we were disposed of in the meantime, quit.
+            if (mIabHelper == null) return;
+
+            if (result.isFailure())
+            {
+                Log.e("GalleryActivity", "**** Purcahse Error: " + result);
+                alert("Save Support Upgrade failed\n\n" + result.getMessage());
+                setWaitScreen(false);
+                return;
+            }
+            
+            Log.d("GalleryActivity", "Purchase successful.");
+
+            if (purchase.getSku().equals(SKU_SAVESUPPORT)) 
+            {
+                // bought the premium upgrade!
+                Log.d("GalleryActivity", "Purchase is save support. Congratulating user.");
+                alert("Thank you for upgrading to have save support!");
+                mHasSaveSupport = true;
+                setWaitScreen(false);
+            }
+        }
+    };
+    
+    void alert(String message) 
+    {
+        AlertDialog.Builder bld = new AlertDialog.Builder(this);
+        bld.setMessage(message);
+        bld.setNeutralButton("OK", null);
+        Log.d("GalleryActivity", "Showing alert dialog: " + message);
+        bld.create().show();
+    }
 
     public void receivedBroadcast()
     {
@@ -318,8 +349,12 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                 startActivity( SettingsIntent );
                 return true;
             case R.id.menuItem_forum:
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://forum.pj64-emu.com/forumdisplay.php?f=13"));
-                startActivity(browserIntent);
+                Intent ForumIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://forum.pj64-emu.com/forumdisplay.php?f=13"));
+                startActivity(ForumIntent);
+                return true;
+            case R.id.menuItem_reportBug:
+                Intent IssueIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/project64/project64/issues"));
+                startActivity(IssueIntent);
                 return true;
             case R.id.menuItem_about:
                 Intent AboutIntent = new Intent(this, AboutActivity.class);
@@ -460,6 +495,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         };
 
         final Context finalContext = this;
+        final Activity finalActivity = this;
         AlertDialog.Builder GameMenu = new AlertDialog.Builder(finalContext);
         GameMenu.setTitle(NativeExports.SettingsLoadString(SettingsID.Game_GoodName.getValue()));
         GameMenu.setAdapter(adapter, new DialogInterface.OnClickListener()
@@ -469,14 +505,29 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
             {
                 if ((item == 0 || item == 1) && !mHasSaveSupport)
                 {
-                    //Purchase save support
-                    /*try {
-                        mHelper.launchPurchaseFlow(this, SKU_PREMIUM, RC_REQUEST,
-                                mPurchaseFinishedListener, payload);
-                    } catch (IabAsyncInProgressException e) {
-                        complain("Error launching purchase flow. Another async operation in progress.");
-                        setWaitScreen(false);
-                    }*/
+                    AlertDialog.Builder ResetPrompt = new AlertDialog.Builder(finalContext);
+                    ResetPrompt
+                    .setTitle(getText(R.string.GetSaveSupport_title))
+                    .setMessage(getText(R.string.GetSaveSupport_message))
+                    .setPositiveButton(R.string.GetSaveSupport_OkButton, new DialogInterface.OnClickListener() 
+                    {
+                        public void onClick(DialogInterface dialog, int id) 
+                        {
+                            setWaitScreen(true);
+                            //Purchase save support
+                            try 
+                            {
+                            	String payload = NativeExports.appVersion();
+                            	mIabHelper.launchPurchaseFlow(finalActivity, SKU_SAVESUPPORT, RC_REQUEST, mPurchaseFinishedListener, payload);
+                            }
+                            catch (IabAsyncInProgressException e) 
+                            {                           
+                                setWaitScreen(false);
+                            }
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, this)
+                    .show();
                     return;
                 }
                 if (item == 0)
@@ -499,16 +550,17 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                     {
                         public void onClick(DialogInterface dialog, int id) 
                         {
-                            //delete folder
-                            //launchGameActivity();
+                            String[]entries = SaveDir.list();
+                            for(String s: entries)
+                            {
+                                File currentFile = new File(SaveDir.getPath(),s);
+                                currentFile.delete();
+                            }
+                            SaveDir.delete();
+                            launchGameActivity();
                         }
                     })
-                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() 
-                    {
-                        public void onClick(DialogInterface dialog, int id) 
-                        {
-                        }
-                    })
+                    .setNegativeButton(android.R.string.cancel, this)
                     .show();
                 } 
                 else if (item == 3) 
@@ -554,6 +606,8 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        Log.d("GalleryActivity", "onActivityResult(" + requestCode + "," + resultCode + "," + data);
+
         // Check which request we're responding to
         if (requestCode == GAME_DIR_REQUEST_CODE)
         {
@@ -570,6 +624,15 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                 }
             }
         }
+        // Pass on the activity result to the helper for handling
+        if (mIabHelper != null && !mIabHelper.handleActivityResult(requestCode, resultCode, data)) 
+        {
+            // not handled, so handle it ourselves (here's where you'd
+            // perform any handling of activity results not related to in-app
+            // billing...
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+
     }
 
     void refreshGrid( )
