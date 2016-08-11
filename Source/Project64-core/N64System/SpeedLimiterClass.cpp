@@ -17,31 +17,16 @@
 #pragma comment(lib, "winmm.lib")
 #endif
 
-CSpeedLimiter::CSpeedLimiter()
+CSpeedLimiter::CSpeedLimiter() :
+m_Frames(0),
+m_Speed(60),
+m_BaseSpeed(60),
+m_Ratio(1000.0F / (float)m_Speed)
 {
-    m_Frames = 0;
-    m_LastTime = 0;
-    m_Speed = 60;
-    m_BaseSpeed = 60;
-    m_Ratio = 1000.0F / (float)m_Speed;
-
-#ifdef _WIN32
-    TIMECAPS Caps;
-    timeGetDevCaps(&Caps, sizeof(Caps));
-    if (timeBeginPeriod(Caps.wPeriodMin) == TIMERR_NOCANDO)
-    {
-        g_Notify->DisplayError("Error during timer begin");
-    }
-#endif
 }
 
 CSpeedLimiter::~CSpeedLimiter()
 {
-#ifdef _WIN32
-    TIMECAPS Caps;
-    timeGetDevCaps(&Caps, sizeof(Caps));
-    timeEndPeriod(Caps.wPeriodMin);
-#endif
 }
 
 void CSpeedLimiter::SetHertz(uint32_t Hertz)
@@ -55,47 +40,38 @@ void CSpeedLimiter::FixSpeedRatio()
 {
     m_Ratio = 1000.0f / static_cast<double>(m_Speed);
     m_Frames = 0;
-#ifdef _WIN32
-    m_LastTime = timeGetTime();
-#endif
 }
 
 bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
 {
-#ifdef _WIN32
     m_Frames += 1;
-    uint32_t CurrentTime = timeGetTime();
+    CDateTime CurrentTime;
+    CurrentTime.SetToNow();
 
     /* Calculate time that should of elapsed for this frame */
-    double CalculatedTime = (double)m_LastTime + (m_Ratio * (double)m_Frames);
-    if ((double)CurrentTime < CalculatedTime)
+    uint64_t CalculatedTime = (m_LastTime.Value()) + (m_Ratio * (double)m_Frames);
+    if (CurrentTime.Value() < CalculatedTime)
     {
-        int32_t time = (int)(CalculatedTime - (double)CurrentTime);
+        int32_t time = (int)(CalculatedTime - CurrentTime.Value());
         if (time > 0)
         {
             pjutil::Sleep(time);
         }
-
         /* Refresh current time */
-        CurrentTime = timeGetTime();
+        CurrentTime.SetToNow();
     }
-
-    if (CurrentTime - m_LastTime >= 1000)
+    if (CurrentTime.Value() - m_LastTime.Value() >= 1000)
     {
         /* Output FPS */
         if (FrameRate != NULL) { *FrameRate = m_Frames; }
         m_Frames = 0;
         m_LastTime = CurrentTime;
-
         return true;
     }
     else
     {
         return false;
     }
-#else
-    return false;
-#endif
 }
 
 void CSpeedLimiter::IncreaseSpeed()
