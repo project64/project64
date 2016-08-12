@@ -166,7 +166,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
             UnMap_GPR(31, false);
             if (!g_System->b32BitCore())
             {
-                g_Notify->BreakPoint(__FILE__,__LINE__);
+                MoveConstToVariable((m_CompilePC & 0x80000000) != 0 ? 0xFFFFFFFF : 0, &_GPR[31].UW[1], CRegName::GPR_Hi[31]);
             }
             MoveConstToVariable(m_CompilePC + 8, &_GPR[31].UW[0], CRegName::GPR_Lo[31]);
         }
@@ -505,29 +505,26 @@ void CArmRecompilerOps::BNE_Compare()
     }
     else
     {
-#ifdef tofix
-        x86Reg Reg = x86_Any;
-#endif
+        uint8_t * Jump = NULL;
 
         //r0 = low, r1 = high
         //r2 = low, r3 = high
         if (!g_System->b32BitCore())
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-#ifdef tofix
-            Reg = Map_TempReg(x86_Any, m_Opcode.rt, true);
-            CompX86regToVariable(Reg, &_GPR[m_Opcode.rs].W[1], CRegName::GPR_Hi[m_Opcode.rs]);
+            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[1],CRegName::GPR_Hi[m_Opcode.rs], Arm_R1);
+            MoveVariableToArmReg(&_GPR[m_Opcode.rt].UW[1],CRegName::GPR_Hi[m_Opcode.rt], Arm_R3);
+            CompareArmRegToArmReg(Arm_R1,Arm_R3);
+
             if (m_Section->m_Jump.FallThrough)
             {
-                JneLabel8("continue", 0);
-                Jump = *g_RecompPos - 1;
+                Jump = *g_RecompPos;
+                BranchLabel8(ArmBranch_Notequal, "continue");
             }
             else
             {
-                JneLabel32(m_Section->m_Jump.BranchLabel.c_str(), 0);
+                BranchLabel20(ArmBranch_Notequal, m_Section->m_Jump.BranchLabel.c_str());
                 m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
-#endif
         }
 
         MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0],CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
@@ -549,14 +546,12 @@ void CArmRecompilerOps::BNE_Compare()
         {
             BranchLabel20(ArmBranch_Equal, m_Section->m_Jump.BranchLabel.c_str());
             m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
-#ifdef tofix
             if (Jump)
             {
                 CPU_Message("      ");
                 CPU_Message("      continue:");
                 SetJump8(Jump, *g_RecompPos);
             }
-#endif
         }
         else
         {
@@ -587,42 +582,41 @@ void CArmRecompilerOps::BEQ_Compare()
     }
     else
     {
+        uint8_t * Jump = NULL;
+
         //r0 = low, r1 = high
         //r2 = low, r3 = high
         if (!g_System->b32BitCore())
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-#ifdef tofix
-            Reg = Map_TempReg(x86_Any, m_Opcode.rs, true);
-            CompX86regToVariable(Reg, &_GPR[m_Opcode.rt].W[1], CRegName::GPR_Hi[m_Opcode.rt]);
+            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[1],CRegName::GPR_Hi[m_Opcode.rs], Arm_R1);
+            MoveVariableToArmReg(&_GPR[m_Opcode.rt].UW[1],CRegName::GPR_Hi[m_Opcode.rt], Arm_R3);
+            CompareArmRegToArmReg(Arm_R1,Arm_R3);
+
             if (m_Section->m_Cont.FallThrough)
             {
-                JneLabel8("continue", 0);
-                Jump = *g_RecompPos - 1;
+                Jump = *g_RecompPos;
+                BranchLabel8(ArmBranch_Notequal, "continue");
             }
             else
             {
-                JneLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
+                BranchLabel20(ArmBranch_Notequal, m_Section->m_Cont.BranchLabel.c_str());
                 m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
-#endif
         }
-        MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0],CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-        MoveVariableToArmReg(&_GPR[m_Opcode.rt].UW[0],CRegName::GPR_Lo[m_Opcode.rt], Arm_R2);
-        CompareArmRegToArmReg(Arm_R0,Arm_R2);
+        MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
+        MoveVariableToArmReg(&_GPR[m_Opcode.rt].UW[0], CRegName::GPR_Lo[m_Opcode.rt], Arm_R2);
+        CompareArmRegToArmReg(Arm_R0, Arm_R2);
         if (m_Section->m_Cont.FallThrough)
         {
             BranchLabel20(ArmBranch_Equal, m_Section->m_Jump.BranchLabel.c_str());
             m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
 
-#ifdef tofix
             if (Jump)
             {
                 CPU_Message("      ");
                 CPU_Message("      continue:");
                 SetJump8(Jump, *g_RecompPos);
             }
-#endif
         }
         else if (m_Section->m_Jump.FallThrough)
         {
@@ -664,9 +658,9 @@ void CArmRecompilerOps::BGTZ_Compare()
     {
         //r0 = low, r1 = high
         //r2 = low, r3 = high
-        MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0],CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
+        MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
         MoveConstToArmReg((uint32_t)0, Arm_R2);
-        CompareArmRegToArmReg(Arm_R0,Arm_R2);
+        CompareArmRegToArmReg(Arm_R0, Arm_R2);
         if (m_Section->m_Jump.FallThrough)
         {
             BranchLabel20(ArmBranch_LessThanOrEqual, m_Section->m_Cont.BranchLabel.c_str());
@@ -687,8 +681,56 @@ void CArmRecompilerOps::BGTZ_Compare()
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-        CArmRecompilerOps::UnknownOpcode();
+        uint8_t *Jump = NULL;
+
+        MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[1], CRegName::GPR_Hi[m_Opcode.rs], Arm_R0);
+        MoveConstToArmReg((uint32_t)0, Arm_R2);
+        CompareArmRegToArmReg(Arm_R0, Arm_R2);
+        if (m_Section->m_Jump.FallThrough)
+        {
+            BranchLabel20(ArmBranch_LessThan, m_Section->m_Cont.BranchLabel.c_str());
+            m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+            Jump = *g_RecompPos;
+            BranchLabel8(ArmBranch_GreaterThan, "continue");
+        }
+        else if (m_Section->m_Cont.FallThrough)
+        {
+            Jump = *g_RecompPos;
+            BranchLabel8(ArmBranch_LessThan, "continue");
+            BranchLabel20(ArmBranch_GreaterThan, m_Section->m_Jump.BranchLabel.c_str());
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+        }
+        else
+        {
+            BranchLabel20(ArmBranch_LessThan, m_Section->m_Cont.BranchLabel.c_str());
+            m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+            BranchLabel20(ArmBranch_GreaterThan, m_Section->m_Jump.BranchLabel.c_str());
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+        }
+
+        MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
+        CompareArmRegToArmReg(Arm_R0, Arm_R2);
+        if (m_Section->m_Jump.FallThrough)
+        {
+            BranchLabel20(ArmBranch_Equal, m_Section->m_Cont.BranchLabel.c_str());
+            m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
+            CPU_Message("      continue:");
+            SetJump8(Jump, *g_RecompPos);
+        }
+        else if (m_Section->m_Cont.FallThrough)
+        {
+            BranchLabel20(ArmBranch_Notequal, m_Section->m_Jump.BranchLabel.c_str());
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+            CPU_Message("      continue:");
+            SetJump8(Jump, *g_RecompPos);
+        }
+        else
+        {
+            BranchLabel20(ArmBranch_Notequal, m_Section->m_Jump.BranchLabel.c_str());
+            m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+            BranchLabel20(ArmBranch_Always, m_Section->m_Cont.BranchLabel.c_str());
+            m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
+        }
     }
 }
 
@@ -705,13 +747,65 @@ void CArmRecompilerOps::BLEZ_Compare()
 
         if (!g_System->b32BitCore())
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[1], CRegName::GPR_Hi[m_Opcode.rs], Arm_R0);
+            MoveConstToArmReg((uint32_t)0, Arm_R2);
+            CompareArmRegToArmReg(Arm_R0, Arm_R2);
+            if (m_Section->m_Jump.FallThrough)
+            {
+                BranchLabel20(ArmBranch_GreaterThan, m_Section->m_Cont.BranchLabel.c_str());
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+                Jump = *g_RecompPos;
+                BranchLabel8(ArmBranch_LessThan, "Continue");
+            }
+            else if (m_Section->m_Cont.FallThrough)
+            {
+                Jump = *g_RecompPos;
+                BranchLabel8(ArmBranch_GreaterThan, "Continue");
+                BranchLabel20(ArmBranch_LessThan, m_Section->m_Cont.BranchLabel.c_str());
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+            }
+            else
+            {
+                BranchLabel20(ArmBranch_GreaterThan, m_Section->m_Cont.BranchLabel.c_str());
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+                BranchLabel20(ArmBranch_LessThan, m_Section->m_Jump.BranchLabel.c_str());
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+            }
+            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
+            CompareArmRegToArmReg(Arm_R0, Arm_R2);
+            if (m_Section->m_Jump.FallThrough)
+            {
+                BranchLabel20(ArmBranch_Notequal, m_Section->m_Cont.BranchLabel.c_str());
+                m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
+                if (Jump)
+                {
+                    CPU_Message("      continue:");
+                    SetJump8(Jump, *g_RecompPos);
+                }
+            }
+            else if (m_Section->m_Cont.FallThrough)
+            {
+                BranchLabel20(ArmBranch_Equal, m_Section->m_Jump.BranchLabel.c_str());
+                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
+                if (Jump)
+                {
+                    CPU_Message("      continue:");
+                    SetJump8(Jump, *g_RecompPos);
+                }
+            }
+            else
+            {
+                BranchLabel20(ArmBranch_Notequal, m_Section->m_Cont.BranchLabel.c_str());
+                m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
+                BranchLabel20(ArmBranch_Always, "BranchToJump");
+                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
+            }
         }
         else
         {
-            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0],CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
+            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
             MoveConstToArmReg((uint32_t)0, Arm_R2);
-            CompareArmRegToArmReg(Arm_R0,Arm_R2);
+            CompareArmRegToArmReg(Arm_R0, Arm_R2);
             if (m_Section->m_Jump.FallThrough)
             {
                 BranchLabel20(ArmBranch_GreaterThan, m_Section->m_Cont.BranchLabel.c_str());
@@ -743,14 +837,14 @@ void CArmRecompilerOps::BLTZ_Compare()
     {
         if (g_System->b32BitCore())
         {
-            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0],CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-            MoveConstToArmReg((uint32_t)0, Arm_R2);
-            CompareArmRegToArmReg(Arm_R0,Arm_R2);
+            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
         }
         else
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[1], CRegName::GPR_Hi[m_Opcode.rs], Arm_R0);
         }
+        MoveConstToArmReg((uint32_t)0, Arm_R2);
+        CompareArmRegToArmReg(Arm_R0, Arm_R2);
         if (m_Section->m_Jump.FallThrough)
         {
             BranchLabel20(ArmBranch_GreaterThanOrEqual, m_Section->m_Cont.BranchLabel.c_str());
@@ -786,14 +880,14 @@ void CArmRecompilerOps::BGEZ_Compare()
     {
         if (g_System->b32BitCore())
         {
-            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0],CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-            MoveConstToArmReg((uint32_t)0, Arm_R2);
-            CompareArmRegToArmReg(Arm_R0,Arm_R2);
+            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
         }
         else
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[1], CRegName::GPR_Hi[m_Opcode.rs], Arm_R0);
         }
+        MoveConstToArmReg((uint32_t)0, Arm_R2);
+        CompareArmRegToArmReg(Arm_R0, Arm_R2);
         if (m_Section->m_Cont.FallThrough)
         {
             BranchLabel20(ArmBranch_GreaterThanOrEqual, m_Section->m_Jump.BranchLabel.c_str());
@@ -907,7 +1001,11 @@ void CArmRecompilerOps::JAL()
             return;
         }
 
-        MoveConstToVariable(m_CompilePC + 8, &_GPR[31].UW[0],CRegName::GPR_Lo[31]);
+        if (!g_System->b32BitCore())
+        {
+            MoveConstToVariable((m_CompilePC & 0x80000000) != 0 ? 0xFFFFFFFF : 0, &_GPR[31].UW[1], CRegName::GPR_Hi[31]);
+        }
+        MoveConstToVariable(m_CompilePC + 8, &_GPR[31].UW[0], CRegName::GPR_Lo[31]);
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
             MoveConstToVariable((m_CompilePC & 0xF0000000) + (m_Opcode.target << 2), &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
@@ -940,13 +1038,13 @@ void CArmRecompilerOps::JAL()
         {
             m_RegWorkingSet.WriteBackRegisters();
 
-            MoveConstToArmReg((uint32_t)_PROGRAM_COUNTER,Arm_R0,"_PROGRAM_COUNTER");
-            LoadArmRegPointerToArmReg(Arm_R0,Arm_R1,0);
+            MoveConstToArmReg((uint32_t)_PROGRAM_COUNTER, Arm_R0, "_PROGRAM_COUNTER");
+            LoadArmRegPointerToArmReg(Arm_R0, Arm_R1, 0);
             MoveConstToArmReg(0xF0000000, Arm_R2);
             MoveConstToArmReg((uint32_t)(m_Opcode.target << 2), Arm_R3);
             AndArmRegToArmReg(Arm_R2, Arm_R1);
             AddArmRegToArmReg(Arm_R3, Arm_R1, Arm_R1);
-            StoreArmRegToArmRegPointer(Arm_R1,Arm_R0,0);
+            StoreArmRegToArmRegPointer(Arm_R1, Arm_R0, 0);
 
             uint32_t TargetPC = (m_CompilePC & 0xF0000000) + (m_Opcode.target << 2);
             bool bCheck = TargetPC <= m_CompilePC;
@@ -1367,9 +1465,9 @@ void CArmRecompilerOps::CACHE()
     case 0:
     case 16:
         m_RegWorkingSet.BeforeCallDirect();
-        MoveConstToArmReg((uint32_t)CRecompiler::Remove_Cache, Arm_R3,"CRecompiler::Remove_Cache");
+        MoveConstToArmReg((uint32_t)CRecompiler::Remove_Cache, Arm_R3, "CRecompiler::Remove_Cache");
         MoveConstToArmReg((uint32_t)0x20, Arm_R2);
-        MoveVariableToArmReg(&_GPR[m_Opcode.base].UW[0],CRegName::GPR_Lo[m_Opcode.base], Arm_R1);
+        MoveVariableToArmReg(&_GPR[m_Opcode.base].UW[0], CRegName::GPR_Lo[m_Opcode.base], Arm_R1);
         MoveConstToArmReg((uint32_t)((int16_t)m_Opcode.offset), Arm_R0);
         AddArmRegToArmReg(Arm_R0, Arm_R1, Arm_R1);
         MoveConstToArmReg((uint32_t)g_Recompiler, Arm_R0, "g_Recompiler");
@@ -1614,9 +1712,9 @@ void CArmRecompilerOps::SPECIAL_JR()
             else
             {
                 m_RegWorkingSet.WriteBackRegisters();
-                MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0],CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-                MoveConstToArmReg((uint32_t)&R4300iOp::m_JumpToLocation,Arm_R1,"R4300iOp::m_JumpToLocation");
-                StoreArmRegToArmRegPointer(Arm_R0,Arm_R1,0);
+                MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
+                MoveConstToArmReg((uint32_t)&R4300iOp::m_JumpToLocation, Arm_R1, "R4300iOp::m_JumpToLocation");
+                StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
             }
             OverflowDelaySlot(true);
             return;
@@ -1638,9 +1736,9 @@ void CArmRecompilerOps::SPECIAL_JR()
             }
             else
             {
-                MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0],CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-                MoveConstToArmReg((uint32_t)_PROGRAM_COUNTER,Arm_R1,"PROGRAM_COUNTER");
-                StoreArmRegToArmRegPointer(Arm_R0,Arm_R1,0);
+                MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
+                MoveConstToArmReg((uint32_t)_PROGRAM_COUNTER, Arm_R1, "PROGRAM_COUNTER");
+                StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
             }
         }
         m_NextInstruction = DO_DELAY_SLOT;
@@ -1661,9 +1759,9 @@ void CArmRecompilerOps::SPECIAL_JR()
             }
             else
             {
-                MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0],CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-                MoveConstToArmReg((uint32_t)_PROGRAM_COUNTER,Arm_R1,"PROGRAM_COUNTER");
-                StoreArmRegToArmRegPointer(Arm_R0,Arm_R1,0);
+                MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
+                MoveConstToArmReg((uint32_t)_PROGRAM_COUNTER, Arm_R1, "PROGRAM_COUNTER");
+                StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
             }
             CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal);
             if (m_Section->m_JumpSection)
@@ -1690,12 +1788,12 @@ void CArmRecompilerOps::SPECIAL_JALR()
                 g_Notify->BreakPoint(__FILE__, __LINE__);
                 return;
             }
-            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0],CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-            MoveConstToArmReg((uint32_t)_PROGRAM_COUNTER,Arm_R1,"PROGRAM_COUNTER");
-            StoreArmRegToArmRegPointer(Arm_R0,Arm_R1,0);
+            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
+            MoveConstToArmReg((uint32_t)_PROGRAM_COUNTER, Arm_R1, "PROGRAM_COUNTER");
+            StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
         }
         UnMap_GPR(m_Opcode.rd, false);
-        MoveConstToVariable(m_CompilePC + 8, &_GPR[m_Opcode.rd].UW[0],CRegName::GPR_Lo[m_Opcode.rd]);
+        MoveConstToVariable(m_CompilePC + 8, &_GPR[m_Opcode.rd].UW[0], CRegName::GPR_Lo[m_Opcode.rd]);
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
             if (IsKnown(m_Opcode.rs))
@@ -1703,9 +1801,9 @@ void CArmRecompilerOps::SPECIAL_JALR()
                 g_Notify->BreakPoint(__FILE__, __LINE__);
                 return;
             }
-            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0],CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-            MoveConstToArmReg((uint32_t)&R4300iOp::m_JumpToLocation,Arm_R1,"R4300iOp::m_JumpToLocation");
-            StoreArmRegToArmRegPointer(Arm_R0,Arm_R1,0);
+            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
+            MoveConstToArmReg((uint32_t)&R4300iOp::m_JumpToLocation, Arm_R1, "R4300iOp::m_JumpToLocation");
+            StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
 
             m_RegWorkingSet.WriteBackRegisters();
             OverflowDelaySlot(true);
@@ -3195,6 +3293,13 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
                 CompileSystemCheck((uint32_t)-1, ExitRegSet);
             }
         }
+        ExitCodeBlock();
+        break;
+    case CExitInfo::DoSysCall:
+        bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
+        MoveConstToArmReg((uint32_t)bDelay, Arm_R1, bDelay ? "true" : "false");
+        MoveConstToArmReg((uint32_t)g_Reg, Arm_R0);
+        CallFunction(AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
         ExitCodeBlock();
         break;
     case CExitInfo::COP1_Unuseable:
