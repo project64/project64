@@ -1190,16 +1190,6 @@ void R4300iOp32::SPECIAL_TEQ()
     }
 }
 
-void R4300iOp32::SPECIAL_DSRL32()
-{
-    _GPR[m_Opcode.rd].UW[0] = (uint32_t)(_GPR[m_Opcode.rt].UDW >> (m_Opcode.sa + 32));
-}
-
-void R4300iOp32::SPECIAL_DSRA32()
-{
-    _GPR[m_Opcode.rd].W[0] = (int32_t)(_GPR[m_Opcode.rt].DW >> (m_Opcode.sa + 32));
-}
-
 /********************** R4300i OpCodes: RegImm **********************/
 void R4300iOp32::REGIMM_BLTZ()
 {
