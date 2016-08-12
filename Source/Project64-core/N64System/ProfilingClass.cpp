@@ -41,6 +41,10 @@ SPECIAL_TIMERS CProfiling::StartTimer(SPECIAL_TIMERS Address)
     }
     m_StartTimeHi = HiValue;
     m_StartTimeLo = LoValue;
+#elif !defined(_WIN32)
+	struct timespec now;
+	clock_gettime(CLOCK_MONOTONIC, &now);
+	m_StartTimeLo = (now.tv_sec * 1000) + (now.tv_nsec / 1000000);
 #else
     g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
@@ -61,6 +65,10 @@ SPECIAL_TIMERS CProfiling::StopTimer()
         mov LoValue, eax;
         popad;
     }
+#elif !defined(_WIN32)
+	struct timespec now;
+	clock_gettime(CLOCK_MONOTONIC, &now);
+	LoValue = (now.tv_sec * 1000) + (now.tv_nsec / 1000000);
 #else
     g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
