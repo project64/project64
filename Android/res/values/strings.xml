@@ -113,6 +113,8 @@
     <string name="Recompiler">Recompiler</string>
     <string name="SyncCores">Synchronize Cores</string>
     <string name="Advanced">Advanced</string>
+    <string name="CpuUsage_title">CPU Usage</string>
+    <string name="CpuUsage_summary">Show the cpu used by different components</string>
     <string name="DisplaySpeed_title">Display Speed</string>
     <string name="DisplaySpeed_summary">Show the speed of the emulation</string>
     <string name="DisplaySpeedDisplay">Display Speed Display</string>

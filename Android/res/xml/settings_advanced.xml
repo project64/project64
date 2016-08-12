@@ -20,6 +20,10 @@
             android:summary="@string/GenerateLogFiles_summary"
             android:title="@string/GenerateLogFiles_title" />
         <CheckBoxPreference
+            android:key="Debugger_CpuUsage"
+            android:summary="@string/CpuUsage_summary"
+            android:title="@string/CpuUsage_title" />
+        <CheckBoxPreference
             android:key="Debugger_DisplaySpeed"
             android:summary="@string/DisplaySpeed_summary"
             android:title="@string/DisplaySpeed_title" />

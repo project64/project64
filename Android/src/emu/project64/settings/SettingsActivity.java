@@ -55,6 +55,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         .putBoolean("Debugger_Enabled",NativeExports.SettingsLoadBool(SettingsID.Debugger_Enabled.getValue()))
         .putBoolean("Debugger_GenerateLogFiles",NativeExports.SettingsLoadBool(SettingsID.Debugger_GenerateLogFiles.getValue()))
         .putBoolean("Debugger_DisplaySpeed",NativeExports.SettingsLoadBool(SettingsID.UserInterface_DisplayFrameRate.getValue()))
+        .putBoolean("Debugger_CpuUsage",NativeExports.SettingsLoadBool(SettingsID.UserInterface_ShowCPUPer.getValue()))
         .putString("Debugger_DisplaySpeedType",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.UserInterface_FrameDisplayType.getValue())))
         .putString("Debugger_TraceMD5",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Debugger_TraceMD5.getValue())))
         .putString("Debugger_TraceThread",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Debugger_TraceThread.getValue())))
@@ -120,6 +121,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
        	else if (key.equals("audio_Enabled")) { NativeExports.SettingsSaveBool(SettingsID.Plugin_EnableAudio.getValue(), sharedPreferences.getBoolean(key,false)); }
        	else if (key.equals("Debugger_Enabled")) { NativeExports.SettingsSaveBool(SettingsID.Debugger_Enabled.getValue(), sharedPreferences.getBoolean(key,false)); }
     	else if (key.equals("Debugger_GenerateLogFiles")) { NativeExports.SettingsSaveBool(SettingsID.Debugger_GenerateLogFiles.getValue(), sharedPreferences.getBoolean(key,false)); }
+    	else if (key.equals("Debugger_CpuUsage")) { NativeExports.SettingsSaveBool(SettingsID.UserInterface_ShowCPUPer.getValue(), sharedPreferences.getBoolean(key,false)); }
     	else if (key.equals("Debugger_DisplaySpeed")) { NativeExports.SettingsSaveBool(SettingsID.UserInterface_DisplayFrameRate.getValue(), sharedPreferences.getBoolean(key,false)); }
     	else if (key.equals("Debugger_DisplaySpeedType")) { NativeExports.SettingsSaveDword(SettingsID.UserInterface_FrameDisplayType.getValue(), Integer.valueOf(sharedPreferences.getString(key, "0"))); }
     	else if (key.equals("Debugger_TraceMD5")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceMD5.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
