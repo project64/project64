@@ -28,7 +28,7 @@ CNotificationImp & Notify(void)
 }
 
 CNotificationImp::CNotificationImp() :
-    m_NextMsg(0)
+m_NextMsg(0)
 {
 }
 
@@ -82,24 +82,25 @@ void CNotificationImp::DisplayMessage(int DisplayTime, const char * Message) con
 #ifdef ANDROID
     if (g_JavaBridge == NULL) { return; }
 
-    /*if (m_NextMsg > 0 || DisplayTime > 0)
+    if (m_NextMsg > 0 || DisplayTime > 0)
     {
-    time_t Now = time(NULL);
-    if (DisplayTime == 0 && Now < m_NextMsg)
-    {
-    return;
+        time_t Now = time(NULL);
+        if (DisplayTime == 0 && Now < m_NextMsg)
+        {
+            return;
+        }
+        if (DisplayTime > 0)
+        {
+            m_NextMsg = Now + DisplayTime;
+        }
+        if (m_NextMsg == 0)
+        {
+            m_NextMsg = 0;
+        }
     }
-    if (DisplayTime > 0)
-    {
-    m_NextMsg = Now + DisplayTime;
-    }
-    if (m_NextMsg == 0)
-    {
-    m_NextMsg = 0;
-    }
-    }*/
+    m_Message[0] = Message;
+    UpdateMessage();
 
-    g_JavaBridge->DisplayMessage(Message);
 #else
     // ignore warning usage
     DisplayTime = DisplayTime;
@@ -111,8 +112,9 @@ void CNotificationImp::DisplayMessage2(const char * Message) const
 {
 #ifdef ANDROID
     if (g_JavaBridge == NULL) { return; }
+    m_Message[1] = Message;
 
-    g_JavaBridge->DisplayMessage2(Message);
+    UpdateMessage();
 #else
     // ignore warning usage
     Message = Message;
@@ -148,4 +150,20 @@ bool CNotificationImp::ProcessGuiMessages(void) const
 
 void CNotificationImp::ChangeFullScreen(void) const
 {
+}
+
+void CNotificationImp::UpdateMessage(void) const
+{
+#ifdef ANDROID
+    std::string message = m_Message[0];
+    if (message.length() > 0 && m_Message[1].length())
+    {
+        message += " ";
+    }
+    message += m_Message[1];
+    if (message.length() > 0)
+    {
+        g_JavaBridge->DisplayMessage(message.c_str());
+    }
+#endif
 }

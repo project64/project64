@@ -134,18 +134,6 @@ void JavaBridge::DisplayMessage(const char * Message)
     }
 }
 
-void JavaBridge::DisplayMessage2(const char * Message)
-{
-    JNIEnv *env = Android_JNI_GetEnv();
-    if (env)
-    {
-        jstring j_Message = env->NewStringUTF(Message);
-        jmethodID midShowToast = env->GetStaticMethodID(m_NotifierClass, "showToast", "(Landroid/app/Activity;Ljava/lang/String;)V");
-        env->CallStaticVoidMethod(m_NotifierClass, midShowToast,g_Activity,j_Message);
-        env->DeleteLocalRef(j_Message);
-    }
-}
-
 void JavaBridge::EmulationStopped(void)
 {
     JNIEnv *env = Android_JNI_GetEnv();

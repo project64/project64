@@ -24,7 +24,6 @@ public:
     //Notification
     void DisplayError(const char * Message);
     void DisplayMessage(const char * Message);
-    void DisplayMessage2(const char * Message);
     void EmulationStopped(void);
 
 private:
