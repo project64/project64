@@ -55,7 +55,9 @@ bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
         int32_t time = (int)(CalculatedTime - CurrentTime.Value());
         if (time > 0)
         {
+#ifndef ANDROID
             pjutil::Sleep(time);
+#endif
         }
         /* Refresh current time */
         CurrentTime.SetToNow();
