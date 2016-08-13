@@ -79,12 +79,6 @@ int ev_fullscreen = 0;
 HINSTANCE hinstDLL = NULL;
 #endif
 
-#ifdef WINPROC_OVERRIDE
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-WNDPROC oldWndProc = NULL;
-WNDPROC myWndProc = NULL;
-#endif
-
 #ifdef ALTTAB_FIX
 HHOOK hhkLowLevelKybd = NULL;
 LRESULT CALLBACK LowLevelKeyboardProc(int nCode,
@@ -1284,11 +1278,6 @@ void CALL CloseDLL(void)
 {
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
-    // re-set the old window proc
-#ifdef WINPROC_OVERRIDE
-    SetWindowLongPtr(gfx.hWnd, GWLP_WNDPROC, (LONG_PTR)oldWndProc);
-#endif
-
 #ifdef ALTTAB_FIX
     if (hhkLowLevelKybd)
     {
@@ -1413,15 +1402,6 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     debug_init();    // Initialize debugger
 
     gfx = Gfx_Info;
-
-#ifdef WINPROC_OVERRIDE
-    // [H.Morii] inject our own winproc so that "alt-enter to fullscreen"
-    // message is shown when the emulator window is activated.
-    WNDPROC curWndProc = (WNDPROC)GetWindowLongPtr(gfx.hWnd, GWLP_WNDPROC);
-    if (curWndProc && curWndProc != (WNDPROC)WndProc) {
-        oldWndProc = (WNDPROC)SetWindowLongPtr(gfx.hWnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
-    }
-#endif
 
     util_init();
     math_init();
@@ -2387,27 +2367,6 @@ void CALL SurfaceChanged(int width, int height)
 {
     g_width = width;
     g_height = height;
-}
-#endif
-
-#ifdef WINPROC_OVERRIDE
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    switch (msg)
-    {
-    case WM_ACTIVATEAPP:
-        if (wParam == TRUE && !GfxInitDone) rdp.window_changed = TRUE;
-        break;
-    case WM_PAINT:
-        if (!GfxInitDone) rdp.window_changed = TRUE;
-        break;
-
-        /*    case WM_DESTROY:
-        SetWindowLong (gfx.hWnd, GWL_WNDPROC, (long)oldWndProc);
-        break;*/
-    }
-
-    return CallWindowProc(oldWndProc, hwnd, msg, wParam, lParam);
 }
 #endif
 
