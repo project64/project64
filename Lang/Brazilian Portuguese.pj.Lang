@@ -441,6 +441,22 @@
 #1105#  "Slots de Salvamento"
 
 /*********************************************************************************
+* Support Window                                                                 *
+*********************************************************************************/
+#1200#  "Apoie o Project64"
+#1201#  "Project64 é um pacote de software projetado para emular o video game Nintendo64 em um PC com Microsoft Windows. Este permite que você jogue software de N64 da mesma forma que seria no hardware original.\n\nSe você gostou do Project64 e obteve algum valor através do mesmo, então por favor, apoie o project64 como um agradecimento, ou seu desejo de vê-lo continuamente melhorado.\n\nSe você apoiou o project64:"
+#1202#  "Digite o código de notificação"
+#1203#  "Apoie o Project64"
+#1204#  "Continuar"
+#1205#  "Por favor, insira o código de apoio"
+#1206#  "Código de apoio incorreto"
+#1207#  "Obrigado"
+#1208#  "Digite o código"
+#1209#  "Por favor, digite o código que esta no e-mail"
+#1210#  "OK"
+#1211#  "Cancelar"
+
+/*********************************************************************************
 * Messages                                                                       *
 *********************************************************************************/
 #2000#  "*** CPU PAUSADA ***"
