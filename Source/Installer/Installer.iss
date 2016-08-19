@@ -5,7 +5,7 @@
 AppId={{BEB5FB69-4080-466F-96C4-F15DF271718B}
 AppName=Project64
 AppVersion={#AppVersion}
-DefaultDirName={pf}\Project64 2.3
+DefaultDirName={userdocs}\..\Project64 2.3
 VersionInfoVersion={#AppVersion}
 OutputDir={#BaseDir}\Bin\{#Configuration}
 OutputBaseFilename=Setup Project64 2.3
