@@ -5,7 +5,7 @@
 AppId={{BEB5FB69-4080-466F-96C4-F15DF271718B}
 AppName=Project64
 AppVersion={#AppVersion}
-DefaultDirName={pf}\Project64 2.3
+DefaultDirName={pf32}\Project64 2.3
 VersionInfoVersion={#AppVersion}
 OutputDir={#BaseDir}\Bin\{#Configuration}
 OutputBaseFilename=Setup Project64 2.3
@@ -35,11 +35,11 @@ Source: "{#BaseDir}\Plugin\Input\PJ64_NRage.dll"; DestDir: "{app}\Plugin\Input"
 Source: "{#BaseDir}\Plugin\RSP\RSP 1.7.dll"; DestDir: "{app}\Plugin\RSP"
 
 [Dirs]
-Name: "{app}\Config"; Permissions: users-modify
-Name: "{app}\Logs"; Permissions: users-modify
-Name: "{app}\Save"; Permissions: users-modify
-Name: "{app}\Screenshots"; Permissions: users-modify
-Name: "{app}\Textures"; Permissions: users-modify
+Name: "{app}\Config"; Permissions: everyone-full
+Name: "{app}\Logs"; Permissions: everyone-full
+Name: "{app}\Save"; Permissions: everyone-full
+Name: "{app}\Screenshots"; Permissions: everyone-full
+Name: "{app}\Textures"; Permissions: everyone-full
 
 [Icons]
 Name: "{commonprograms}\Project64 2.3\Project64"; Filename: "{app}\Project64.exe"
