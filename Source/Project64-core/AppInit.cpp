@@ -319,7 +319,7 @@ void FixDirectories(void)
     }
 
     Directory.UpDirectory();
-    Directory.AppendDirectory("textures");
+    Directory.AppendDirectory("Textures");
     if (!Directory.DirectoryExists())
     {
         WriteTrace(TraceAppInit, TraceDebug, "Creating %s", (const char *)Directory);
