@@ -15,6 +15,7 @@ WizardImageFile=Installer-Sidebar.bmp
 WizardSmallImageFile=Pj64LogoSmallImage.bmp
 DisableProgramGroupPage=yes
 DisableReadyPage=yes
+Uninstallable=not IsTaskSelected('portablemode')
 UninstallDisplayIcon={uninstallexe}
 SetupIconFile={#BaseDir}\Source\Project64\UserInterface\Icons\pj64.ico
 
@@ -45,8 +46,9 @@ Name: "{app}"; Permissions: everyone-full
 [Icons]
 Name: "{commondesktop}\Project64"; Filename: "{app}\Project64.exe"; Tasks: desktopicon
 Name: "{commonprograms}\Project64 2.3\Project64"; Filename: "{app}\Project64.exe"
-Name: "{commonprograms}\Project64 2.3\Uninstall Project64 2.3"; Filename: "{uninstallexe}"; Parameters: "/LOG"
+Name: "{commonprograms}\Project64 2.3\Uninstall Project64 2.3"; Filename: "{uninstallexe}"; Parameters: "/LOG"; Flags: createonlyiffileexists
 Name: "{commonprograms}\Project64 2.3\Support"; Filename: "http://forum.pj64-emu.com"
 
 [Tasks]
 Name: desktopicon; Description: "Create a &desktop icon"
+Name: portablemode; Description: "&Portable Mode"; Flags: unchecked
