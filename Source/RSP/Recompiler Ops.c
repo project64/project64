@@ -921,14 +921,40 @@ void Compile_SB ( void ) {
 
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 
-	MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
-	MoveVariableToX86regByte(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
+	if (IsRegConst(RSPOpC.base) == TRUE) {
+		char Address[32];
+		DWORD Addr = (MipsRegConst(RSPOpC.base) + Offset) ^ 3;
+		Addr &= 0xfff;
+		sprintf(Address, "Dmem + %Xh", Addr);
 
-	if (Offset != 0) AddConstToX86Reg(x86_EBX, Offset);
-	XorConstToX86Reg(x86_EBX, 3);
-	AndConstToX86Reg(x86_EBX, 0x0fff);
+		if (IsRegConst(RSPOpC.rt) == TRUE) {
+			MoveConstByteToVariable(MipsRegConst(RSPOpC.rt), RSPInfo.DMEM + Addr, Address);
+			return;
+		} else {
+			MoveVariableToX86regByte(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
+			MoveX86regByteToVariable(x86_EAX, RSPInfo.DMEM + Addr, Address);
+			return;
+		}
+	}
 
-	MoveX86regByteToN64Mem(x86_EAX, x86_EBX);
+	if (IsRegConst(RSPOpC.rt) == TRUE) {
+		MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
+
+		if (Offset != 0) AddConstToX86Reg(x86_EBX, Offset);
+		XorConstToX86Reg(x86_EBX, 3);
+		AndConstToX86Reg(x86_EBX, 0x0fff);
+
+		MoveConstByteToN64Mem(MipsRegConst(RSPOpC.rt), x86_EBX);
+	} else {
+		MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
+		MoveVariableToX86regByte(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
+
+		if (Offset != 0) AddConstToX86Reg(x86_EBX, Offset);
+		XorConstToX86Reg(x86_EBX, 3);
+		AndConstToX86Reg(x86_EBX, 0x0fff);
+
+		MoveX86regByteToN64Mem(x86_EAX, x86_EBX);
+	}
 }
 
 void Compile_SH ( void ) {
