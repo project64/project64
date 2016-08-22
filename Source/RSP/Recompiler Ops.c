@@ -517,9 +517,17 @@ void Compile_SLTI ( void ) {
 	if (RSPOpC.rt == 0) return;
 
 	Immediate = (short)RSPOpC.immediate;
-	XorX86RegToX86Reg(x86_ECX, x86_ECX);
-	CompConstToVariable(Immediate, &RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs));
-	Setl(x86_ECX);
+	if (Immediate == 0)
+	{
+		MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs), x86_ECX);
+		ShiftRightUnsignImmed(x86_ECX, 31);
+	}
+	else
+	{
+		XorX86RegToX86Reg(x86_ECX, x86_ECX);
+		CompConstToVariable(Immediate, &RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs));
+		Setl(x86_ECX);
+	}
 	MoveX86regToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 }
 
