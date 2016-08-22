@@ -1154,6 +1154,28 @@ void LeaSourceAndOffset(int x86DestReg, int x86SourceReg, size_t offset) {
 	}
 }
 
+void MoveConstByteToN64Mem(BYTE Const, int AddrReg) {
+	WORD x86Command = 0;
+
+	CPU_Message("      mov byte ptr [%s+Dmem], %Xh", x86_Name(AddrReg), Const);
+	switch (AddrReg) {
+	case x86_EAX: x86Command = 0x80C6; break;
+	case x86_EBX: x86Command = 0x83C6; break;
+	case x86_ECX: x86Command = 0x81C6; break;
+	case x86_EDX: x86Command = 0x82C6; break;
+	case x86_ESI: x86Command = 0x86C6; break;
+	case x86_EDI: x86Command = 0x87C6; break;
+	case x86_ESP: x86Command = 0x84C6; break;
+	case x86_EBP: x86Command = 0x85C6; break;
+	default:
+		DisplayError("MoveConstByteToN64Mem\nUnknown x86 Register");
+	}
+
+	PUTDST16(RecompPos, x86Command);
+	PUTDST32(RecompPos, RSPInfo.DMEM);
+	PUTDST8(RecompPos, Const);
+}
+
 void MoveConstByteToVariable (BYTE Const,void *Variable, char *VariableName) {
 	CPU_Message("      mov byte ptr [%s], %Xh",VariableName,Const);
 	PUTDST16(RecompPos,0x05C6);
