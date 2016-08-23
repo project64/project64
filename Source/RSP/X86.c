@@ -1196,7 +1196,7 @@ void MoveConstHalfToN64Mem(WORD Const, int AddrReg) {
 
 	PUTDST8(RecompPos, x86Command);
 	PUTDST32(RecompPos, RSPInfo.DMEM);
-	PUTDST8(RecompPos, Const);
+	PUTDST16(RecompPos, Const);
 }
 
 void MoveConstByteToVariable (BYTE Const,void *Variable, char *VariableName) {
