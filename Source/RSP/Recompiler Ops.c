@@ -1498,26 +1498,26 @@ void Compile_Special_SLT ( void ) {
 	#endif
 
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
-	if (RSPOpC.rt == 0) { return; }
+	if (RSPOpC.rd == 0) { return; }
 
 	if (RSPOpC.rt == RSPOpC.rs) {
 		MoveConstToVariable(0, &RSP_GPR[RSPOpC.rd].UW, GPR_Name(RSPOpC.rd));
 	} else {
-		XorX86RegToX86Reg(x86_EBX, x86_EBX);
 		if (RSPOpC.rs == 0) {
 			MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
+			XorX86RegToX86Reg(x86_ECX, x86_ECX);
 			CompConstToX86reg(x86_EAX, 0);
-			Setg(x86_EBX);
+			Setg(x86_ECX);
 		} else if (RSPOpC.rt == 0) {
-			MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs), x86_EAX);
-			CompConstToX86reg(x86_EAX, 0);
-			Setl(x86_EBX);
+			MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs), x86_ECX);
+			ShiftRightUnsignImmed(x86_ECX, 31);
 		} else {
 			MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs), x86_EAX);
+			XorX86RegToX86Reg(x86_ECX, x86_ECX);
 			CompX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
-			Setl(x86_EBX);
+			Setl(x86_ECX);
 		}
-		MoveX86regToVariable(x86_EBX, &RSP_GPR[RSPOpC.rd].UW, GPR_Name(RSPOpC.rd));
+		MoveX86regToVariable(x86_ECX, &RSP_GPR[RSPOpC.rd].UW, GPR_Name(RSPOpC.rd));
 	}
 }
 
