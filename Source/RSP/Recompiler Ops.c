@@ -1031,17 +1031,38 @@ void Compile_SW ( void ) {
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 
 	if (IsRegConst(RSPOpC.base) == TRUE) {
+		char Address[32];
 		DWORD Addr = (MipsRegConst(RSPOpC.base) + Offset) & 0xfff;
 
 		if ((Addr & 3) != 0) {
-			CompilerWarning("Unaligned SW at constant address PC = %04X", CompilePC);
-			Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SW,"RSP_Opcode_SW");
+			if (Addr > 0xFFC) {
+				DisplayError("hmmmm.... Problem with:\nRSP_SW_DMEM");
+				return;
+			}
+			if (IsRegConst(RSPOpC.rt) == TRUE) {
+				DWORD Value = MipsRegConst(RSPOpC.rt);
+				sprintf(Address, "Dmem + %Xh", (Addr + 0) ^ 3);
+				MoveConstByteToVariable((Value >> 24) & 0xFF, RSPInfo.DMEM + ((Addr + 0) ^ 3), Address);
+				sprintf(Address, "Dmem + %Xh", (Addr + 1) ^ 3);
+				MoveConstByteToVariable((Value >> 16) & 0xFF, RSPInfo.DMEM + ((Addr + 1) ^ 3), Address);
+				sprintf(Address, "Dmem + %Xh", (Addr + 2) ^ 3);
+				MoveConstByteToVariable((Value >> 8) & 0xFF, RSPInfo.DMEM + ((Addr + 2) ^ 3), Address);
+				sprintf(Address, "Dmem + %Xh", (Addr + 3) ^ 3);
+				MoveConstByteToVariable((Value >> 0) & 0xFF, RSPInfo.DMEM + ((Addr + 3) ^ 3), Address);
+			} else {
+				CompilerWarning("Unaligned SW at constant address PC = %04X", CompilePC);
+				Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SW,"RSP_Opcode_SW");
+			}
 			return;
 		} else {
-			char Address[32];
 			sprintf(Address, "Dmem + %Xh", Addr);
-			MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
-			MoveX86regToVariable(x86_EAX, RSPInfo.DMEM + Addr, Address);
+
+			if (IsRegConst(RSPOpC.rt) == TRUE) {
+				MoveConstToVariable(MipsRegConst(RSPOpC.rt), RSPInfo.DMEM + Addr, Address);
+			} else {
+				MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
+				MoveX86regToVariable(x86_EAX, RSPInfo.DMEM + Addr, Address);
+			}
 			return;
 		}
 	} 
@@ -1088,12 +1109,12 @@ void Compile_SW ( void ) {
 
 	CompilerToggleBuffer();
 
-	if (RSPOpC.rt == 0) {
-		XorX86RegToX86Reg(x86_EAX,x86_EAX);
+	if (IsRegConst(RSPOpC.rt) == TRUE) {
+		MoveConstToN64Mem(MipsRegConst(RSPOpC.rt), x86_EBX);
 	} else {
 		MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
+		MoveX86regToN64Mem(x86_EAX, x86_EBX);
 	}
-	MoveX86regToN64Mem(x86_EAX, x86_EBX);
 	
 	CPU_Message("   Done:");
 	x86_SetBranch32b(Jump[1], RecompPos);
