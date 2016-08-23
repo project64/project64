@@ -978,8 +978,12 @@ void Compile_SH ( void ) {
 		} else {
 			char Address[32];
 			sprintf(Address, "Dmem + %Xh", Addr);
-			MoveVariableToX86regHalf(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
-			MoveX86regHalfToVariable(x86_EAX, RSPInfo.DMEM + Addr, Address);
+			if (IsRegConst(RSPOpC.rt) == TRUE) {
+				MoveConstHalfToVariable(MipsRegConst(RSPOpC.rt), RSPInfo.DMEM + Addr, Address);
+			} else {
+				MoveVariableToX86regHalf(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
+				MoveX86regHalfToVariable(x86_EAX, RSPInfo.DMEM + Addr, Address);
+			}
 			return;
 		}
 	}
@@ -1005,8 +1009,12 @@ void Compile_SH ( void ) {
 	XorConstToX86Reg(x86_EBX, 2);
 	AndConstToX86Reg(x86_EBX, 0x0fff);
 
-	MoveVariableToX86regHalf(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
-	MoveX86regHalfToN64Mem(x86_EAX, x86_EBX);
+	if (IsRegConst(RSPOpC.rt) == TRUE) {
+		MoveConstHalfToN64Mem(MipsRegConst(RSPOpC.rt), x86_EBX);
+	} else {
+		MoveVariableToX86regHalf(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
+		MoveX86regHalfToN64Mem(x86_EAX, x86_EBX);
+	}
 
 	CPU_Message("   Done:");
 	x86_SetBranch32b(Jump[1], RecompPos);
