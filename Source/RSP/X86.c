@@ -1176,7 +1176,7 @@ void MoveConstByteToN64Mem(BYTE Const, int AddrReg) {
 	PUTDST8(RecompPos, Const);
 }
 
-void MoveConstHalfToN64Mem(BYTE Const, int AddrReg) {
+void MoveConstHalfToN64Mem(WORD Const, int AddrReg) {
 	BYTE x86Command = 0;
 
 	CPU_Message("      mov word ptr [%s+Dmem], %Xh", x86_Name(AddrReg), Const);
@@ -1212,6 +1212,28 @@ void MoveConstHalfToVariable (WORD Const,void *Variable, char *VariableName) {
 	PUTDST16(RecompPos,0x05C7);
     PUTDSTPTR(RecompPos, Variable);
     PUTDST16(RecompPos,Const);
+}
+
+void MoveConstToN64Mem(DWORD Const, int AddrReg) {
+	WORD x86Command = 0;
+
+	CPU_Message("      mov dword ptr [%s+Dmem], %Xh", x86_Name(AddrReg), Const);
+	switch (AddrReg) {
+	case x86_EAX: x86Command = 0x80C7; break;
+	case x86_EBX: x86Command = 0x83C7; break;
+	case x86_ECX: x86Command = 0x81C7; break;
+	case x86_EDX: x86Command = 0x82C7; break;
+	case x86_ESI: x86Command = 0x86C7; break;
+	case x86_EDI: x86Command = 0x87C7; break;
+	case x86_ESP: x86Command = 0x84C7; break;
+	case x86_EBP: x86Command = 0x85C7; break;
+	default:
+		DisplayError("MoveConstToN64Mem\nUnknown x86 Register");
+	}
+
+	PUTDST16(RecompPos, x86Command);
+	PUTDST32(RecompPos, RSPInfo.DMEM);
+	PUTDST32(RecompPos, Const);
 }
 
 void MoveConstToVariable (DWORD Const,void *Variable, char *VariableName) {
