@@ -4046,7 +4046,8 @@ Status=Compatible
 Good Name=Operation WinBack (E) (M5)
 Internal Name=OPERATION WINBACK
 Status=Compatible
-Plugin Note=[video] HLE square bug
+Cheat0=D01348D4 0041,811348D4 43A6,D01348D8 0041,811348D8 4380,D11348D4 447F,811348D4 43A6,D11348D8 447F,811348D8 4380 // Grey Square Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64
 
 [E86415A6-98395B53-C:50]
 Good Name=O.D.T (Or Die Trying) (E) (M5) (Unreleased Final)
@@ -6754,19 +6755,22 @@ RDRAM Size=8
 Good Name=WinBack (J) (V1.0)
 Internal Name=WIN BACK
 Status=Compatible
-Plugin Note=[video] HLE square bug
+Cheat0=D01348D4 0041,811348D4 43A6,D01348D8 0041,811348D8 4380,D11348D4 447F,811348D4 43A6,D11348D8 447F,811348D8 4380 // Grey Square Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64
 
 [C52E0BC6-56BC6556-C:4A]
 Good Name=WinBack (J) (V1.1)
 Internal Name=WIN BACK
 Status=Compatible
-Plugin Note=[video] HLE square bug
+Cheat0=D01348D4 0041,811348D4 43A6,D01348D8 0041,811348D8 4380,D11348D4 447F,811348D4 43A6,D11348D8 447F,811348D8 4380 // Grey Square Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64
 
 [ED98957E-8242DCAC-C:45]
 Good Name=WinBack - Covert Operations (U)
 Internal Name=WIN BACK
 Status=Compatible
-Plugin Note=[video] HLE square bug
+Cheat0=D01348D4 0041,811348D4 43A6,D01348D8 0041,811348D8 4380,D11348D4 447F,811348D4 43A6,D11348D8 447F,811348D8 4380 // Grey Square Fix
+CheatPlugin0=Jabo's Direct3D8,Glide64
 
 [54310E7D-6B5430D8-C:50]
 Good Name=Wipeout 64 (E)
