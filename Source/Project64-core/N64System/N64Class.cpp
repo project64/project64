@@ -271,7 +271,7 @@ bool CN64System::RunFileImage(const char * FileLoc)
     WriteTrace(TraceN64System, TraceDebug, "Loading \"%s\"", FileLoc);
     if (g_Rom->LoadN64Image(FileLoc))
     {
-        if (g_Rom->CicChipID() == CIC_NUS_8303)
+        if (g_Rom->CicChipID() == CIC_NUS_8303 || g_Rom->CicChipID() == CIC_NUS_DDUS)
         {
             //64DD IPL
             if (g_DDRom == NULL)
@@ -356,7 +356,7 @@ bool CN64System::RunFileImageIPL(const char * FileLoc)
     WriteTrace(TraceN64System, TraceDebug, "Loading \"%s\"", FileLoc);
     if (g_DDRom->LoadN64ImageIPL(FileLoc))
     {
-        if (g_DDRom->CicChipID() != CIC_NUS_8303)
+        if (g_DDRom->CicChipID() != CIC_NUS_8303 && g_DDRom->CicChipID() != CIC_NUS_DDUS)
         {
             //If not 64DD IPL then it's wrong
             WriteTrace(TraceN64System, TraceError, "LoadN64ImageIPL failed (\"%s\")", FileLoc);
@@ -884,6 +884,9 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
         case CIC_NUS_8303:        //64DD IPL CIC
         case CIC_NUS_5167:        //64DD CONVERSION CIC
             m_Reg.m_GPR[22].DW = 0x00000000000000DD;
+            break;
+        case CIC_NUS_DDUS:        //64DD US IPL CIC
+            m_Reg.m_GPR[22].DW = 0x00000000000000DE;
             break;
         case CIC_UNKNOWN:
         case CIC_NUS_6102:
