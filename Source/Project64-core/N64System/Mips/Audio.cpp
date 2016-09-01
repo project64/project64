@@ -41,7 +41,7 @@ uint32_t CAudio::GetLength()
         Res = (TimeLeft / m_CountsPerByte);
     }
     WriteTrace(TraceAudio, TraceDebug, "Done (res = %d, TimeLeft = %d)", Res, TimeLeft);
-    return (Res + 3)&~3;
+    return (Res)&~7;
 }
 
 uint32_t CAudio::GetStatus()
