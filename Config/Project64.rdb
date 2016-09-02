@@ -8157,3 +8157,10 @@ Fixed Audio=0
 Good Name=64DD IPL (JPN)
 RDRAM Size=8
 Status=Compatible
+
+[00000000-00000000-C:45]
+32bit=No
+Fixed Audio=0
+Good Name=64DD IPL (USA)
+RDRAM Size=8
+Status=Compatible
