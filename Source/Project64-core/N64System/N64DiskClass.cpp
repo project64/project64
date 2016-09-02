@@ -115,6 +115,7 @@ void CN64Disk::SwapDiskImage(const char * FileLoc)
 bool CN64Disk::IsValidDiskImage(uint8_t Test[4])
 {
     if (*((uint32_t *)&Test[0]) == 0x16D348E8) { return true; }
+    else if (*((uint32_t *)&Test[0]) == 0x56EE6322) { return true; }
     return false;
 }
 
@@ -248,6 +249,7 @@ void CN64Disk::ByteSwapDisk()
     switch (*((uint32_t *)&m_DiskImage[0]))
     {
     case 0x16D348E8:
+    case 0x56EE6322:
         for (count = 0; count < m_DiskFileSize; count += 4)
         {
             m_DiskImage[count] ^= m_DiskImage[count + 3];
@@ -259,6 +261,7 @@ void CN64Disk::ByteSwapDisk()
         }
         break;
     case 0xE848D316: break;
+    case 0x2263EE56: break;
     default:
         g_Notify->DisplayError(stdstr_f("ByteSwapDisk: %X", m_DiskImage[0]).c_str());
     }

@@ -288,6 +288,8 @@ CICChip CN64Rom::GetCicChipID(uint8_t * RomData, uint64_t * CRC)
     case 0x000000D6D5BE5580: return CIC_NUS_6106;
     case 0x000001053BC19870: return CIC_NUS_5167; //64DD CONVERSION CIC
     case 0x000000D2E53EF008: return CIC_NUS_8303; //64DD IPL
+    case 0x000000D2E53EF39F: return CIC_NUS_8303; //64DD IPL TOOL
+    case 0x000000D2E53E5DDA: return CIC_NUS_DDUS; //64DD IPL US (different CIC)
     default:
         return CIC_UNKNOWN;
     }
