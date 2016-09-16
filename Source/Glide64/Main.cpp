@@ -43,6 +43,7 @@
 #include "Version.h"
 #include <Settings/Settings.h>
 #include <Common/CriticalSection.h>
+#include <Common/DateTimeClass.h>
 #include <Common/path.h>
 #include <png/png.h>
 #include <memory>
@@ -91,8 +92,8 @@ int64 perf_next;
 #endif
 
 #ifdef FPS
-CDateTime  fps_last;
-CDateTime  fps_next;
+HighResTimeStamp fps_last;
+HighResTimeStamp fps_next;
 float      fps = 0.0f;
 uint32_t   fps_count = 0;
 
@@ -1796,7 +1797,7 @@ void CALL UpdateScreen(void)
 
     // Check frames per second
     fps_next.SetToNow();
-    double diff_secs = fps_next.DiffernceMilliseconds(fps_last);
+    double diff_secs = (double)(fps_next.GetMicroSeconds() - fps_last.GetMicroSeconds()) / 1000000;
     if (diff_secs > 0.5f)
     {
         fps = (float)(fps_count / diff_secs);
@@ -2018,11 +2019,11 @@ void newSwapBuffers()
     {
         if (g_settings->clock_24_hr)
         {
-            output(956.0f, 0, 1, CDateTime().SetToNow().Format("%H:%M:%S").c_str(), 0);
+            output(956.0f, 0, 1, CDateTime().Format("%H:%M:%S").c_str(), 0);
         }
         else
         {
-            output(930.0f, 0, 1, CDateTime().SetToNow().Format("%I:%M:%S %p").c_str(), 0);
+            output(930.0f, 0, 1, CDateTime().Format("%I:%M:%S %p").c_str(), 0);
         }
     }
     //hotkeys

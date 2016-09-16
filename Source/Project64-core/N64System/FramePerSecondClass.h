@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-#include <Common/DateTimeClass.h>
+#include <Common/HighResTimeStamp.h>
 
 class CFramePerSecond
 {
@@ -21,7 +21,7 @@ public:
 
     void UpdateDlCounter(void);
     void UpdateViCounter(void);
-    void DisplayViCounter(uint32_t FrameRate);
+    void DisplayViCounter(int32_t FrameRateWhole, uint32_t FrameRateFraction);
 
 private:
     CFramePerSecond(const CFramePerSecond&);            // Disable copy constructor
@@ -35,14 +35,15 @@ private:
 
     enum { NoOfFrames = 7 };
 
-    CDateTime m_LastViFrame;
-    int64_t m_ViFrames[NoOfFrames];
-    int32_t m_CurrentViFrame;
-    float m_ViFrameRate;
+    HighResTimeStamp m_LastViFrame;
+    uint64_t m_ViFrames[NoOfFrames];
+    uint32_t m_CurrentViFrame;
+    int32_t m_ViFrameRateWhole;
+    uint32_t m_ViFrameRateFraction;
 
     //Dlist
-    CDateTime m_LastDlistFrame;
-    int64_t m_FramesDlist[NoOfFrames];
-    int32_t m_CurrentDlistFrame;
+    HighResTimeStamp m_LastDlistFrame;
+    uint64_t m_FramesDlist[NoOfFrames];
+    uint32_t m_CurrentDlistFrame;
     float m_DlistFrameRate;
 };

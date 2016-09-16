@@ -2089,7 +2089,7 @@ void CN64System::RefreshScreen()
         uint32_t FrameRate;
         if (m_Limiter.Timer_Process(&FrameRate) && bDisplayFrameRate())
         {
-            m_FPS.DisplayViCounter(FrameRate);
+            m_FPS.DisplayViCounter(FrameRate, 0);
             m_bCleanFrameBox = true;
         }
     }

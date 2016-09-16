@@ -11,7 +11,7 @@
 #pragma once
 
 #include <Project64-core/Settings/GameSettings.h>
-#include <Common/DateTimeClass.h>
+#include <Common/HighResTimeStamp.h>
 
 class CSpeedLimiter :
     private CGameSettings
@@ -32,6 +32,6 @@ private:
     void FixSpeedRatio();
 
     uint32_t m_Speed, m_BaseSpeed, m_Frames;
-    CDateTime m_LastTime;
-    double m_Ratio;
+    HighResTimeStamp m_LastTime;
+    uint32_t m_MicroSecondsPerFrame;
 };
