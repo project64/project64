@@ -14,6 +14,7 @@ LOCAL_SRC_FILES := \
     $(SRCDIR)/CriticalSection.cpp        \
     $(SRCDIR)/DateTimeClass.cpp          \
     $(SRCDIR)/FileClass.cpp              \
+    $(SRCDIR)/HighResTimeStamp.cpp       \
     $(SRCDIR)/IniFileClass.cpp           \
     $(SRCDIR)/LogClass.cpp               \
     $(SRCDIR)/md5.cpp                    \
