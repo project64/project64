@@ -22,7 +22,7 @@
 
 #define VERSION_MAJOR               2
 #define VERSION_MINOR               1
-#define VERSION_REVISION            0
+#define VERSION_REVISION            1
 #define VERSION_BUILD               9999
 
 #define VER_FILE_DESCRIPTION_STR    "Glide 64 for Project64"
