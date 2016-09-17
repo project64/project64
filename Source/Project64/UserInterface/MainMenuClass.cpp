@@ -186,6 +186,45 @@ void CMainMenu::OnEndEmulation(void)
     m_Gui->SaveWindowLoc();
 }
 
+void CMainMenu::OnScreenShot(void)
+{
+    stdstr Dir(g_Settings->LoadStringVal(Directory_SnapShot));
+    WriteTrace(TraceGFXPlugin, TraceDebug, "CaptureScreen(%s): Starting", Dir.c_str());
+    g_Plugins->Gfx()->CaptureScreen(Dir.c_str());
+    WriteTrace(TraceGFXPlugin, TraceDebug, "CaptureScreen: Done");
+}
+
+void CMainMenu::OnLodState(HWND hWnd)
+{
+{
+    char Directory[255], SaveFile[255];
+    OPENFILENAME openfilename;
+
+    memset(&SaveFile, 0, sizeof(SaveFile));
+    memset(&openfilename, 0, sizeof(openfilename));
+
+    UISettingsLoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
+
+    openfilename.lStructSize = sizeof(openfilename);
+    openfilename.hwndOwner = (HWND)hWnd;
+    openfilename.lpstrFilter = "PJ64 Saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
+    openfilename.lpstrFile = SaveFile;
+    openfilename.lpstrInitialDir = Directory;
+    openfilename.nMaxFile = MAX_PATH;
+    openfilename.Flags = OFN_HIDEREADONLY;
+
+    g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_LoadGame);
+    if (GetOpenFileName(&openfilename))
+    {
+        g_Settings->SaveString(GameRunning_InstantSaveFile, SaveFile);
+        char SaveDir[MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
+        _splitpath(SaveFile, drive, dir, fname, ext);
+        _makepath(SaveDir, drive, dir, NULL, NULL);
+        UISettingsSaveString(Directory_LastSave, SaveDir);
+        g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState);
+    }
+    g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_LoadGame);
+}
 bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuID)
 {
     switch (MenuID)
@@ -228,13 +267,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         g_BaseSystem->ExternalEvent(g_Settings->LoadBool(GameRunning_CPU_Paused) ? SysEvent_ResumeCPU_FromMenu : SysEvent_PauseCPU_FromMenu);
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_PAUSE 1");
         break;
-    case ID_SYSTEM_BITMAP:
-        {
-            stdstr Dir(g_Settings->LoadStringVal(Directory_SnapShot));
-            WriteTrace(TraceGFXPlugin, TraceDebug, "CaptureScreen(%s): Starting", Dir.c_str());
-            g_Plugins->Gfx()->CaptureScreen(Dir.c_str());
-            WriteTrace(TraceGFXPlugin, TraceDebug, "CaptureScreen: Done");
-        }
+    case ID_SYSTEM_BITMAP: OnScreenShot(); break;
         break;
     case ID_SYSTEM_LIMITFPS:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_LIMITFPS");
@@ -316,37 +349,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_RESTORE");
         g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState);
         break;
-    case ID_SYSTEM_LOAD:
-        {
-            char Directory[255], SaveFile[255];
-            OPENFILENAME openfilename;
-
-            memset(&SaveFile, 0, sizeof(SaveFile));
-            memset(&openfilename, 0, sizeof(openfilename));
-
-            UISettingsLoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
-
-            openfilename.lStructSize = sizeof(openfilename);
-            openfilename.hwndOwner = (HWND)hWnd;
-            openfilename.lpstrFilter = "PJ64 Saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
-            openfilename.lpstrFile = SaveFile;
-            openfilename.lpstrInitialDir = Directory;
-            openfilename.nMaxFile = MAX_PATH;
-            openfilename.Flags = OFN_HIDEREADONLY;
-
-            g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_LoadGame);
-            if (GetOpenFileName(&openfilename))
-            {
-                g_Settings->SaveString(GameRunning_InstantSaveFile, SaveFile);
-                char SaveDir[MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
-                _splitpath(SaveFile, drive, dir, fname, ext);
-                _makepath(SaveDir, drive, dir, NULL, NULL);
-                UISettingsSaveString(Directory_LastSave, SaveDir);
-                g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState);
-            }
-            g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_LoadGame);
-        }
-        break;
+    case ID_SYSTEM_LOAD: OnLodState(hWnd); break;
     case ID_SYSTEM_CHEAT:
         {
             CCheatsUI * cheatUI = new CCheatsUI;

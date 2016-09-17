@@ -76,6 +76,10 @@ private:
     void OnOpenRom(HWND hWnd);
     void OnRomInfo(HWND hWnd);
     void OnEndEmulation(void);
+    void OnScreenShot(void);
+    void OnSaveAs(HWND hWnd);
+    void OnLodState(HWND hWnd);
+    void OnCheats(HWND hWnd);
     void FillOutMenu(HMENU hMenu);
     std::wstring GetSaveSlotString(int Slot);
     stdstr GetFileLastMod(const CPath & FileName);
