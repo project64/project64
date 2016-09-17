@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                       *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -8,14 +8,23 @@
 * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
 *                                                                           *
 ****************************************************************************/
+
 #include "stdafx.h"
-#include "SpeedLimiterClass.h"
+#include "Project64-Core/N64System/SpeedLimiterClass.h"
+
 #include <Common/Util.h>
+
+// ---------------------------------------------------
+
+const uint32_t CSpeedLimiter::m_HighSpeed = 60;
+const uint32_t CSpeedLimiter::m_MediumSpeed = 15;
+
+// ---------------------------------------------------
 
 CSpeedLimiter::CSpeedLimiter() :
 m_Frames(0),
-m_Speed(60),
-m_BaseSpeed(60)
+m_Speed(m_HighSpeed),
+m_BaseSpeed(m_HighSpeed)
 {
 }
 
@@ -73,38 +82,24 @@ bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
     return false;
 }
 
-void CSpeedLimiter::IncreaseSpeed()
+void CSpeedLimiter::AlterSpeed( const ESpeedChange SpeedChange )
 {
-    if (m_Speed >= 60)
-    {
-        m_Speed += 10;
-    }
-    else if (m_Speed >= 15)
-    {
-        m_Speed += 5;
-    }
-    else
-    {
-        m_Speed += 1;
-    }
-    SpeedChanged(m_Speed);
-    FixSpeedRatio();
-}
+	int32_t SpeedFactor = 1;
+	if (SpeedChange == DECREASE_SPEED) { SpeedFactor = -1; }
 
-void CSpeedLimiter::DecreaseSpeed()
-{
-    if (m_Speed > 60)
-    {
-        m_Speed -= 10;
-    }
-    else if (m_Speed > 15)
-    {
-        m_Speed -= 5;
-    }
-    else if (m_Speed > 1)
-    {
-        m_Speed -= 1;
-    }
-    SpeedChanged(m_Speed);
-    FixSpeedRatio();
+	if (m_Speed >= m_HighSpeed)
+	{
+		m_Speed += 10 * SpeedFactor;
+	}
+	else if (m_Speed >= m_MediumSpeed)
+	{
+		m_Speed += 5 * SpeedFactor;
+	}
+	else
+	{
+		m_Speed += 1 * SpeedFactor;
+	}
+
+	SpeedChanged(m_Speed);
+	FixSpeedRatio();
 }
