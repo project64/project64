@@ -23,7 +23,8 @@ public:
 
     //Notification
     void DisplayError(const char * Message);
-    void DisplayMessage(const char * Message);
+    void DisplayMessage(const char * Message, int DisplayTime);
+    void DisplayMessage2(const char * Message);
     void EmulationStopped(void);
 
 private:

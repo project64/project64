@@ -17,7 +17,7 @@ class CNotificationImp :
 {
 public:
     CNotificationImp(void);
-    virtual ~CNotificationImp();
+	virtual ~CNotificationImp();
 
     //Error Messages
     void DisplayError(const char * Message) const;
@@ -44,10 +44,7 @@ private:
     CNotificationImp(const CNotificationImp&);				// Disable copy constructor
     CNotificationImp& operator=(const CNotificationImp&);	// Disable assignment
 
-    void UpdateMessage(void) const;
-
     mutable time_t m_NextMsg;
-    mutable std::string m_Message[2];
 };
 
 CNotificationImp & Notify(void);
