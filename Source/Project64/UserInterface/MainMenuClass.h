@@ -80,6 +80,8 @@ private:
     void OnSaveAs(HWND hWnd);
     void OnLodState(HWND hWnd);
     void OnCheats(HWND hWnd);
+    void OnSettings(HWND hWnd);
+
     void FillOutMenu(HMENU hMenu);
     std::wstring GetSaveSlotString(int Slot);
     stdstr GetFileLastMod(const CPath & FileName);

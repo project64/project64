@@ -266,6 +266,20 @@ void CMainMenu::OnLodState(HWND hWnd)
     }
     g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_LoadGame);
 }
+
+void CMainMenu::OnCheats(HWND hWnd)
+{
+    CCheatsUI * cheatUI = new CCheatsUI;
+    g_cheatUI = cheatUI;
+    cheatUI->SelectCheats(hWnd, false);
+}
+
+void CMainMenu::OnSettings(HWND hWnd)
+{
+    CSettingConfig SettingConfig;
+    SettingConfig.Display(hWnd);
+}
+
 bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuID)
 {
     switch (MenuID)
@@ -350,13 +364,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState);
         break;
     case ID_SYSTEM_LOAD: OnLodState(hWnd); break;
-    case ID_SYSTEM_CHEAT:
-        {
-            CCheatsUI * cheatUI = new CCheatsUI;
-            g_cheatUI = cheatUI;
-            cheatUI->SelectCheats(hWnd, false);
-        }
-        break;
+    case ID_SYSTEM_CHEAT: OnCheats(hWnd); break;
     case ID_SYSTEM_GSBUTTON:
         g_BaseSystem->ExternalEvent(SysEvent_GSButtonPressed);
         break;
@@ -469,12 +477,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             g_Settings->SaveBool(UserInterface_ShowCPUPer, true);
         }
         break;
-    case ID_OPTIONS_SETTINGS:
-        {
-            CSettingConfig SettingConfig;
-            SettingConfig.Display(hWnd);
-        }
-        break;
+    case ID_OPTIONS_SETTINGS: OnSettings(hWnd);  break;
     case ID_PROFILE_PROFILE:
         g_Settings->SaveBool(Debugger_ProfileCode, !g_Settings->LoadBool(Debugger_ProfileCode));
         g_BaseSystem->ExternalEvent(SysEvent_Profile_StartStop);
