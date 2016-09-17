@@ -54,7 +54,11 @@ void* AllocateAddressSpace(size_t size)
     return VirtualAlloc(NULL, size, MEM_RESERVE | MEM_TOP_DOWN, PAGE_NOACCESS);
 #else
     void * ptr = mmap((void*)0, size, PROT_NONE, MAP_PRIVATE|MAP_ANON, -1, 0);
-    msync(ptr, size, MS_SYNC|MS_INVALIDATE);
+    if (ptr == MAP_FAILED)
+    {
+        return NULL;
+    }
+    msync(ptr, size, MS_SYNC | MS_INVALIDATE);
     return ptr;
 #endif
 }
@@ -79,8 +83,8 @@ void* CommitMemory(void* addr, size_t size, MEM_PROTECTION memProtection)
 #ifdef _WIN32
     return VirtualAlloc(addr, size, MEM_COMMIT, OsMemProtection);
 #else
-    void * ptr = mmap(addr, size, OsMemProtection, MAP_FIXED|MAP_SHARED|MAP_ANON, -1, 0);
-    msync(addr, size, MS_SYNC|MS_INVALIDATE);
+    void * ptr = mmap(addr, size, OsMemProtection, MAP_FIXED | MAP_SHARED | MAP_ANON, -1, 0);
+    msync(addr, size, MS_SYNC | MS_INVALIDATE);
     return ptr;
 #endif
 }
@@ -90,14 +94,14 @@ bool DecommitMemory(void* addr, size_t size)
 #ifdef _WIN32
     return VirtualFree((void*)addr, size, MEM_DECOMMIT) != 0;
 #else
-    // instead of unmapping the address, we're just gonna trick 
-    // the TLB to mark this as a new mapped area which, due to 
+    // instead of unmapping the address, we're just gonna trick
+    // the TLB to mark this as a new mapped area which, due to
     // demand paging, will not be committed until used.
- 
-    mmap(addr, size, PROT_NONE, MAP_FIXED|MAP_PRIVATE|MAP_ANON, -1, 0);
-    msync(addr, size, MS_SYNC|MS_INVALIDATE);
-	
-	return true;
+
+    mmap(addr, size, PROT_NONE, MAP_FIXED | MAP_PRIVATE | MAP_ANON, -1, 0);
+    msync(addr, size, MS_SYNC | MS_INVALIDATE);
+
+    return true;
 #endif
 }
 
@@ -121,6 +125,6 @@ bool ProtectMemory(void* addr, size_t size, MEM_PROTECTION memProtection, MEM_PR
     }
     return res != 0;
 #else
-    return mprotect(addr,size,OsMemProtection) == 0;
+    return mprotect(addr, size, OsMemProtection) == 0;
 #endif
 }
