@@ -73,6 +73,7 @@ private:
     CMainMenu(const CMainMenu&);				// Disable copy constructor
     CMainMenu& operator=(const CMainMenu&);		// Disable assignment
 
+    void OnOpenRom(HWND hWnd);
     void FillOutMenu(HMENU hMenu);
     std::wstring GetSaveSlotString(int Slot);
     stdstr GetFileLastMod(const CPath & FileName);
