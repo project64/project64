@@ -35,6 +35,7 @@ public class GalleryItem
     public final File romFile;
     public final int textColor;
     public final Context context;
+    public final boolean isHeading;
     
     public GalleryItem( Context context, String goodName, String fileName, String romPath, int textColor )
     {
@@ -42,7 +43,18 @@ public class GalleryItem
         this.fileName = fileName;
         this.context = context; 
         this.textColor = textColor;
+        this.isHeading = false;
         this.romFile = TextUtils.isEmpty( romPath ) ? null : new File( romPath );
+    }
+    
+    public GalleryItem( Context context, String headingName )
+    {
+        this.goodName = headingName;
+        this.fileName = null;
+        this.context = context;
+        this.isHeading = true;
+        this.romFile = null;
+        this.textColor = 0;
     }
     
     @Override
@@ -139,7 +151,7 @@ public class GalleryItem
         @Override
         public int getItemViewType( int position )
         {
-            return 0;
+            return mObjects.get( position ).isHeading ? 1 : 0;
         }
         
         public void onBindViewHolder( ViewHolder holder, int position )
@@ -158,14 +170,24 @@ public class GalleryItem
                 LinearLayout linearLayout = (LinearLayout) view.findViewById( R.id.galleryItem );
                 GalleryActivity activity = (GalleryActivity) item.context;
                 
-                view.setClickable( true );
-                view.setLongClickable( true );
-                linearLayout.setPadding( activity.galleryHalfSpacing,
-                        activity.galleryHalfSpacing, activity.galleryHalfSpacing,
-                        activity.galleryHalfSpacing );
-                tv1.setPadding( 0, 0, 0, 0 );
-                tv1.setTextSize( TypedValue.COMPLEX_UNIT_DIP, 13.0f );
-                
+                if( item.isHeading )
+                {
+                    view.setClickable( false );
+                    view.setLongClickable( false );
+                    linearLayout.setPadding( 0, 0, 0, 0 );
+                    tv1.setPadding( 5, 10, 0, 0 );
+                    tv1.setTextSize( TypedValue.COMPLEX_UNIT_DIP, 18.0f );
+                }
+                else
+                {
+                    view.setClickable( true );
+                    view.setLongClickable( true );
+                    linearLayout.setPadding( activity.galleryHalfSpacing,
+                            activity.galleryHalfSpacing, activity.galleryHalfSpacing,
+                            activity.galleryHalfSpacing );
+                    tv1.setPadding( 0, 0, 0, 0 );
+                    tv1.setTextSize( TypedValue.COMPLEX_UNIT_DIP, 13.0f );
+                }
                 LinearLayout layout = (LinearLayout) view.findViewById( R.id.info );
                 layout.getLayoutParams().width = activity.galleryWidth;
             }

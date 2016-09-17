@@ -14,6 +14,10 @@ public enum UISettingID
 {		
     Asserts_Version,
     Screen_Orientation,
+
+    //Recent Game
+    File_RecentGameFileCount,
+    File_RecentGameFileIndex,
     ;
     
     private int value;

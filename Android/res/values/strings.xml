@@ -62,6 +62,10 @@
     <string name="about_copyright" translatable="false">Copyleft &#169; 1998&#8211;2016 by Project64.\n</string>
     <string name="authors" translatable="false">Zilmar, Jabo, Smiff, Gent, Jahra!n, Witten, RadeonUser, Trotterwatch, pixi, Azimer, Gonetz, cxd4, AmbientMalice, LegendOfDragoon, Nekokabu, Lithium64, death-droid, LuigiBlood, dsx.</string>
 
+    <!-- Gallery sections -->
+    <string name="galleryRecentlyPlayed">Recently played</string>
+    <string name="galleryLibrary">Games</string>
+
     <!-- Settings -->
     <string name="preferences">Settings</string>
     <string name="settings_title">Settings</string>

@@ -28,6 +28,7 @@ import emu.project64.inAppPurchase.Purchase;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
 import emu.project64.jni.SystemEvent;
+import emu.project64.jni.UISettingID;
 import emu.project64.settings.GameSettingsActivity;
 import emu.project64.settings.SettingsActivity;
 import emu.project64.util.Utility;
@@ -83,6 +84,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
     
     // Misc.
     private static List<GalleryItem> mGalleryItems = new ArrayList<GalleryItem>();
+    private static List<GalleryItem> mRecentItems = new ArrayList<GalleryItem>();
     private static GalleryActivity mActiveGalleryActivity = null;
     
     // The IAB helper object
@@ -256,7 +258,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
             Log.d("GalleryActivity", "Purchased save support " + (SaveSupportPurchase!= null ? "Yes" : "No"));
             if (SaveSupportPurchase != null)
             {
-            	mHasSaveSupport = true;
+                mHasSaveSupport = true;
             }
             
             setWaitScreen(false);
@@ -519,8 +521,8 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                             //Purchase save support
                             try 
                             {
-                            	String payload = NativeExports.appVersion();
-                            	mIabHelper.launchPurchaseFlow(finalActivity, SKU_SAVESUPPORT, RC_REQUEST, mPurchaseFinishedListener, payload);
+                                String payload = NativeExports.appVersion();
+                                mIabHelper.launchPurchaseFlow(finalActivity, SKU_SAVESUPPORT, RC_REQUEST, mPurchaseFinishedListener, payload);
                             }
                             catch (IabAsyncInProgressException e) 
                             {                           
@@ -634,21 +636,36 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
             // billing...
             super.onActivityResult(requestCode, resultCode, data);
         }
-
     }
 
     void refreshGrid( )
     {        
-        mGridView.setAdapter( new GalleryItem.Adapter( this, mGalleryItems ) );
+        List<GalleryItem> items;
+        items = new ArrayList<GalleryItem>();
+        
+        if (mRecentItems.size() > 0)
+        {
+            items.add( new GalleryItem( this, getString( R.string.galleryRecentlyPlayed ) ) );
+            items.addAll( mRecentItems );
+            
+            items.add( new GalleryItem( this, getString( R.string.galleryLibrary ) ) );
+        }
+        items.addAll( mGalleryItems );
+        
+        mGridView.setAdapter( new GalleryItem.Adapter( this, items ) );
         
         // Allow the headings to take up the entire width of the layout
-        //final List<GalleryItem> finalItems = mGalleryItems;
+        final List<GalleryItem> finalItems = items;
         GridLayoutManager layoutManager = new GridLayoutManager( this, galleryColumns );
         layoutManager.setSpanSizeLookup( new GridLayoutManager.SpanSizeLookup()
         {
             @Override
             public int getSpanSize( int position )
             {
+                // Headings will take up every span (column) in the grid
+                if( finalItems.get( position ).isHeading )
+                    return galleryColumns;
+                
                 // Games will fit in a single column
                 return 1;
             }
@@ -752,6 +769,27 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
 
     public static void RomListLoadDone()
     {
+        mRecentItems = new ArrayList<GalleryItem>();
+        
+        Log.d("GalleryActivity","File_RecentGameFileCount = " + NativeExports.UISettingsLoadDword(UISettingID.File_RecentGameFileCount.getValue()));
+        
+        for (int i = 0, n = NativeExports.UISettingsLoadDword(UISettingID.File_RecentGameFileCount.getValue()); i < n; i++)
+        {
+            String RecentFile = NativeExports.UISettingsLoadStringIndex(UISettingID.File_RecentGameFileIndex.getValue(), i);
+            if (RecentFile.length() == 0)
+            {
+                break;
+            }
+            for (int z = 0; z < mGalleryItems.size(); z++)
+            {
+                if (RecentFile.equals(mGalleryItems.get(z).romFile.getAbsolutePath()))
+                {
+                    mRecentItems.add(mGalleryItems.get(z));
+                       break;
+                }
+            }
+        }
+
         if (mActiveGalleryActivity != null && mActiveGalleryActivity.mProgress != null)
         {
             Handler h = new Handler(Looper.getMainLooper());

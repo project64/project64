@@ -90,6 +90,68 @@ EXPORT jint CALL JNI_OnLoad(JavaVM* vm, void* reserved)
     return JNI_VERSION_1_4;
 }
 
+std::string UISettingsLoadStringIndex(UISettingID Type, int32_t index)
+{
+    return g_Settings->LoadStringIndex((SettingID)(FirstUISettings + Type), index);
+}
+
+void UISettingsSaveStringIndex(UISettingID Type, int32_t index, const std::string & Value)
+{
+    g_Settings->SaveStringIndex((SettingID)(FirstUISettings + Type), index, Value);
+}
+
+void AddRecentRom(const char * ImagePath)
+{
+    if (ImagePath == NULL) { return; }
+    WriteTrace(TraceUserInterface, TraceDebug, "Start (ImagePath: %s)",ImagePath);
+
+    //Get Information about the stored rom list
+    size_t MaxRememberedFiles = UISettingsLoadDword(File_RecentGameFileCount);
+    strlist RecentGames;
+    size_t i;
+    for (i = 0; i < MaxRememberedFiles; i++)
+    {
+        stdstr RecentGame = UISettingsLoadStringIndex(File_RecentGameFileIndex, i);
+        if (RecentGame.empty())
+        {
+            break;
+        }
+        RecentGames.push_back(RecentGame);
+    }
+
+    //See if the dir is already in the list if so then move it to the top of the list
+    strlist::iterator iter;
+    for (iter = RecentGames.begin(); iter != RecentGames.end(); iter++)
+    {
+        if (_stricmp(ImagePath, iter->c_str()) != 0)
+        {
+            continue;
+        }
+        RecentGames.erase(iter);
+        break;
+    }
+    RecentGames.push_front(ImagePath);
+    if (RecentGames.size() > MaxRememberedFiles)
+    {
+        RecentGames.pop_back();
+    }
+
+    for (i = 0, iter = RecentGames.begin(); iter != RecentGames.end(); iter++, i++)
+    {
+        UISettingsSaveStringIndex(File_RecentGameFileIndex, i, *iter);
+    }
+    WriteTrace(TraceUserInterface, TraceDebug, "Done");
+}
+
+void GameLoaded(void * /*NotUsed*/)
+{
+    stdstr FileLoc = g_Settings->LoadStringVal(Game_File);
+    if (FileLoc.length() > 0)
+    {
+        AddRecentRom(FileLoc.c_str());
+    }
+}
+
 void GameCpuRunning(void * /*NotUsed*/)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
@@ -169,6 +231,7 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv* env, j
 
         RegisterUISettings();
         g_Settings->RegisterChangeCB(GameRunning_CPU_Running, NULL, (CSettings::SettingChangedFunc)GameCpuRunning);
+        g_Settings->RegisterChangeCB(Game_File, NULL, (CSettings::SettingChangedFunc)GameLoaded);
     }
     else
     {
@@ -346,6 +409,11 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_UISettingsLoadBool(JNI
 EXPORT int CALL Java_emu_project64_jni_NativeExports_UISettingsLoadDword(JNIEnv* env, jclass cls, jint Type)
 {
     return UISettingsLoadDword((UISettingID)Type);
+}
+
+EXPORT jstring CALL Java_emu_project64_jni_NativeExports_UISettingsLoadStringIndex(JNIEnv* env, jclass cls, jint Type, jint Index)
+{
+    return env->NewStringUTF(UISettingsLoadStringIndex((UISettingID)Type, Index).c_str());
 }
 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_StopEmulation(JNIEnv* env, jclass cls)

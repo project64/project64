@@ -47,4 +47,5 @@ public class NativeExports
 
     public static native boolean UISettingsLoadBool(int Type);
     public static native int UISettingsLoadDword(int Type);
+    public static native String UISettingsLoadStringIndex(int Type, int Index);
 }

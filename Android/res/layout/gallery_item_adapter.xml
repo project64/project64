@@ -11,7 +11,7 @@
     <LinearLayout
         android:id="@+id/info"
         android:layout_width="@dimen/galleryImageWidth"
-        android:layout_height="@dimen/galleryImageHeight"
+        android:layout_height="wrap_content"
         android:orientation="horizontal" >
         
         <TextView
