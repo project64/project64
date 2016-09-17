@@ -194,8 +194,49 @@ void CMainMenu::OnScreenShot(void)
     WriteTrace(TraceGFXPlugin, TraceDebug, "CaptureScreen: Done");
 }
 
-void CMainMenu::OnLodState(HWND hWnd)
+void CMainMenu::OnSaveAs(HWND hWnd)
 {
+    char drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
+    char Directory[255], SaveFile[255];
+    OPENFILENAME openfilename;
+
+    memset(&SaveFile, 0, sizeof(SaveFile));
+    memset(&openfilename, 0, sizeof(openfilename));
+
+    UISettingsLoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
+
+    openfilename.lStructSize = sizeof(openfilename);
+    openfilename.hwndOwner = (HWND)hWnd;
+    openfilename.lpstrFilter = "PJ64 Saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
+    openfilename.lpstrFile = SaveFile;
+    openfilename.lpstrInitialDir = Directory;
+    openfilename.nMaxFile = MAX_PATH;
+    openfilename.Flags = OFN_HIDEREADONLY;
+
+    g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_SaveGame);
+    if (GetSaveFileName(&openfilename))
+    {
+        _splitpath(SaveFile, drive, dir, fname, ext);
+        if (_stricmp(ext, ".pj") == 0 || _stricmp(ext, ".zip") == 0)
+        {
+            _makepath(SaveFile, drive, dir, fname, NULL);
+            _splitpath(SaveFile, drive, dir, fname, ext);
+            if (_stricmp(ext, ".pj") == 0)
+            {
+                _makepath(SaveFile, drive, dir, fname, NULL);
+            }
+        }
+        g_Settings->SaveString(GameRunning_InstantSaveFile, SaveFile);
+
+        char SaveDir[MAX_PATH];
+        _makepath(SaveDir, drive, dir, NULL, NULL);
+        UISettingsSaveString(Directory_LastSave, SaveDir);
+        g_BaseSystem->ExternalEvent(SysEvent_SaveMachineState);
+    }
+    g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SaveGame);
+}
+
+void CMainMenu::OnLodState(HWND hWnd)
 {
     char Directory[255], SaveFile[255];
     OPENFILENAME openfilename;
@@ -303,48 +344,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_SAVE");
         g_BaseSystem->ExternalEvent(SysEvent_SaveMachineState);
         break;
-    case ID_SYSTEM_SAVEAS:
-        {
-            char drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
-            char Directory[255], SaveFile[255];
-            OPENFILENAME openfilename;
-
-            memset(&SaveFile, 0, sizeof(SaveFile));
-            memset(&openfilename, 0, sizeof(openfilename));
-
-            UISettingsLoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
-
-            openfilename.lStructSize = sizeof(openfilename);
-            openfilename.hwndOwner = (HWND)hWnd;
-            openfilename.lpstrFilter = "PJ64 Saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
-            openfilename.lpstrFile = SaveFile;
-            openfilename.lpstrInitialDir = Directory;
-            openfilename.nMaxFile = MAX_PATH;
-            openfilename.Flags = OFN_HIDEREADONLY;
-
-            g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_SaveGame);
-            if (GetSaveFileName(&openfilename))
-            {
-                _splitpath(SaveFile, drive, dir, fname, ext);
-                if (_stricmp(ext, ".pj") == 0 || _stricmp(ext, ".zip") == 0)
-                {
-                    _makepath(SaveFile, drive, dir, fname, NULL);
-                    _splitpath(SaveFile, drive, dir, fname, ext);
-                    if (_stricmp(ext, ".pj") == 0)
-                    {
-                        _makepath(SaveFile, drive, dir, fname, NULL);
-                    }
-                }
-                g_Settings->SaveString(GameRunning_InstantSaveFile, SaveFile);
-
-                char SaveDir[MAX_PATH];
-                _makepath(SaveDir, drive, dir, NULL, NULL);
-                UISettingsSaveString(Directory_LastSave, SaveDir);
-                g_BaseSystem->ExternalEvent(SysEvent_SaveMachineState);
-            }
-            g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_SaveGame);
-        }
-        break;
+    case ID_SYSTEM_SAVEAS: OnSaveAs(hWnd); break;
     case ID_SYSTEM_RESTORE:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_RESTORE");
         g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState);
@@ -678,7 +678,7 @@ std::wstring CMainMenu::GetSaveSlotString(int Slot)
 
     if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
     {
-        CPath ZipFileName(FileName.GetDriveDirectory(),stdstr_f("%s.zip", FileName.GetNameExtension().c_str()).c_str());
+        CPath ZipFileName(FileName.GetDriveDirectory(), stdstr_f("%s.zip", FileName.GetNameExtension().c_str()).c_str());
         LastSaveTime = GetFileLastMod(ZipFileName);
     }
     if (LastSaveTime.empty())
@@ -700,7 +700,7 @@ std::wstring CMainMenu::GetSaveSlotString(int Slot)
 
         if (g_Settings->LoadBool(Setting_AutoZipInstantSave))
         {
-            CPath ZipFileName(FileName.GetDriveDirectory(),stdstr_f("%s.zip", FileName.GetNameExtension().c_str()).c_str());
+            CPath ZipFileName(FileName.GetDriveDirectory(), stdstr_f("%s.zip", FileName.GetNameExtension().c_str()).c_str());
             LastSaveTime = GetFileLastMod(ZipFileName);
         }
         if (LastSaveTime.empty())
