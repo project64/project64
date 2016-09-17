@@ -166,20 +166,32 @@ void CMainMenu::OnOpenRom(HWND hWnd)
     }
 }
 
+void CMainMenu::OnRomInfo(HWND hWnd)
+{
+    if (g_Rom)
+    {
+        RomInformation Info(g_Rom);
+        Info.DisplayInformation(hWnd);
+    }
+}
+
+void CMainMenu::OnEndEmulation(void)
+{
+    CGuard Guard(m_CS);
+    WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ENDEMULATION");
+    if (g_BaseSystem)
+    {
+        g_BaseSystem->CloseCpu();
+    }
+    m_Gui->SaveWindowLoc();
+}
+
 bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuID)
 {
     switch (MenuID)
     {
     case ID_FILE_OPEN_ROM: OnOpenRom(hWnd); break;
-    case ID_FILE_ROM_INFO:
-        {
-            if (g_Rom)
-            {
-                RomInformation Info(g_Rom);
-                Info.DisplayInformation(hWnd);
-            }
-        }
-        break;
+    case ID_FILE_ROM_INFO: OnRomInfo(hWnd); break;
     case ID_FILE_STARTEMULATION:
         m_Gui->SaveWindowLoc();
         //Now we have created again, we can start up emulation
@@ -192,17 +204,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         break;
-    case ID_FILE_ENDEMULATION:
-        {
-             CGuard Guard(m_CS);
-             WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ENDEMULATION");
-             if (g_BaseSystem)
-             {
-                 g_BaseSystem->CloseCpu();
-             }
-             m_Gui->SaveWindowLoc();
-        }
-        break;
+    case ID_FILE_ENDEMULATION: OnEndEmulation(); break;
     case ID_FILE_ROMDIRECTORY:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ROMDIRECTORY 1");
         m_Gui->SelectRomDir();

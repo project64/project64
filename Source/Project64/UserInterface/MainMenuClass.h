@@ -74,6 +74,8 @@ private:
     CMainMenu& operator=(const CMainMenu&);		// Disable assignment
 
     void OnOpenRom(HWND hWnd);
+    void OnRomInfo(HWND hWnd);
+    void OnEndEmulation(void);
     void FillOutMenu(HMENU hMenu);
     std::wstring GetSaveSlotString(int Slot);
     stdstr GetFileLastMod(const CPath & FileName);
