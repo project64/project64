@@ -16,15 +16,14 @@
 
 // ---------------------------------------------------
 
-const uint32_t CSpeedLimiter::m_HighSpeed = 60;
-const uint32_t CSpeedLimiter::m_MediumSpeed = 15;
+const uint32_t CSpeedLimiter::m_DefaultSpeed = 60;
 
 // ---------------------------------------------------
 
 CSpeedLimiter::CSpeedLimiter() :
 m_Frames(0),
-m_Speed(m_HighSpeed),
-m_BaseSpeed(m_HighSpeed)
+m_Speed(m_DefaultSpeed),
+m_BaseSpeed(m_DefaultSpeed)
 {
 }
 
@@ -87,11 +86,11 @@ void CSpeedLimiter::AlterSpeed( const ESpeedChange SpeedChange )
 	int32_t SpeedFactor = 1;
 	if (SpeedChange == DECREASE_SPEED) { SpeedFactor = -1; }
 
-	if (m_Speed >= m_HighSpeed)
+	if (m_Speed >= m_DefaultSpeed)
 	{
 		m_Speed += 10 * SpeedFactor;
 	}
-	else if (m_Speed >= m_MediumSpeed)
+	else if (m_Speed >= 15)
 	{
 		m_Speed += 5 * SpeedFactor;
 	}
