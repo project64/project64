@@ -46,6 +46,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -54,6 +55,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -670,9 +672,34 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
     }
     
     @Override
+    public boolean onKeyDown( int keyCode, KeyEvent event )
+    {
+        if( keyCode == KeyEvent.KEYCODE_MENU )
+        {
+            if( mDrawerLayout.isDrawerOpen( GravityCompat.START ) )
+            {
+                mDrawerLayout.closeDrawer( GravityCompat.START );
+            }
+            else
+            {
+                mDrawerLayout.openDrawer( GravityCompat.START );
+            }
+            return true;
+        }
+        return super.onKeyDown( keyCode, event );
+    }
+    
+    @Override
     public void onBackPressed() 
     {
-        moveTaskToBack(true);
+        if( mDrawerLayout.isDrawerOpen( GravityCompat.START ) )
+        {
+            mDrawerLayout.closeDrawer( GravityCompat.START );
+        }
+        else
+        {
+            moveTaskToBack(true);
+        }
     }
     
     public void launchGameActivity()
