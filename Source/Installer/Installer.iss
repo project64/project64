@@ -41,7 +41,6 @@ Name: "{app}\Logs"; Permissions: everyone-full
 Name: "{app}\Save"; Permissions: everyone-full
 Name: "{app}\Screenshots"; Permissions: everyone-full
 Name: "{app}\Textures"; Permissions: everyone-full
-Name: "{app}"; Permissions: everyone-full
 
 [Icons]
 Name: "{commondesktop}\Project64"; Filename: "{app}\Project64.exe"; Tasks: desktopicon
