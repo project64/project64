@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                       *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -11,19 +11,22 @@
 #pragma once
 
 #include <Project64-core/Settings/GameSettings.h>
+
 #include <Common/HighResTimeStamp.h>
 
 class CSpeedLimiter :
     private CGameSettings
 {
 public:
+	enum ESpeedChange { INCREASE_SPEED, DECREASE_SPEED };
+
     CSpeedLimiter();
     ~CSpeedLimiter();
 
     void SetHertz(const uint32_t Hertz);
     bool Timer_Process(uint32_t* const FrameRate);
-    void IncreaseSpeed();
-    void DecreaseSpeed();
+
+	void AlterSpeed(const ESpeedChange SpeedChange);
 
 private:
     CSpeedLimiter(const CSpeedLimiter&);            // Disable copy constructor
@@ -31,7 +34,9 @@ private:
 
     void FixSpeedRatio();
 
-    uint32_t m_Speed, m_BaseSpeed, m_Frames;
-    HighResTimeStamp m_LastTime;
-    uint32_t m_MicroSecondsPerFrame;
+	HighResTimeStamp m_LastTime;
+
+    uint32_t m_Speed, m_BaseSpeed, m_Frames, m_MicroSecondsPerFrame;
+
+	static const uint32_t m_DefaultSpeed;
 };

@@ -67,8 +67,7 @@ public:
     void   StartEmulation(bool NewThread);
     void   EndEmulation();
     void   SyncToAudio();
-    void   IncreaseSpeed() { m_Limiter.IncreaseSpeed(); }
-    void   DecreaseSpeed() { m_Limiter.DecreaseSpeed(); }
+    void   AlterSpeed(const CSpeedLimiter::ESpeedChange SpeedChange) { m_Limiter.AlterSpeed(SpeedChange); }
     void   Reset(bool bInitReg, bool ClearMenory);
     void   GameReset();
     void   PluginReset();
