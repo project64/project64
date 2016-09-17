@@ -8,22 +8,27 @@
         android:title="@string/audioEnabled_title" />
     <PreferenceCategory android:title="@string/Advanced" >
         <CheckBoxPreference
-            android:key="UserInterface_BasicMode"
-            android:summary="@string/advancedSettings_summary"
-            android:title="@string/advancedSettings_title" />
-        <CheckBoxPreference
-            android:key="Debugger_Enabled"
-            android:summary="@string/debuggerEnabled_summary"
-            android:title="@string/debuggerEnabled_title" />
-        <CheckBoxPreference
-            android:key="Debugger_GenerateLogFiles"
-            android:summary="@string/GenerateLogFiles_summary"
-            android:title="@string/GenerateLogFiles_title" />
-        <CheckBoxPreference
-            android:key="Debugger_CpuUsage"
-            android:summary="@string/CpuUsage_summary"
-            android:title="@string/CpuUsage_title" />
-        <CheckBoxPreference
+        android:key="UserInterface_BasicMode"
+        android:summary="@string/advancedSettings_summary"
+        android:title="@string/advancedSettings_title" />
+    <CheckBoxPreference
+        android:key="Debugger_Enabled"
+        android:summary="@string/debuggerEnabled_summary"
+        android:title="@string/debuggerEnabled_title" />
+    <CheckBoxPreference
+        android:key="Debugger_GenerateLogFiles"
+        android:summary="@string/GenerateLogFiles_summary"
+        android:title="@string/GenerateLogFiles_title" />
+    <CheckBoxPreference
+        android:key="Debugger_LimitFPS"
+        android:summary="@string/LimitFPS_summary"
+        android:title="@string/LimitFPS_title" />
+
+    <CheckBoxPreference
+        android:key="Debugger_CpuUsage"
+        android:summary="@string/CpuUsage_summary"
+        android:title="@string/CpuUsage_title" />
+    <CheckBoxPreference
             android:key="Debugger_DisplaySpeed"
             android:summary="@string/DisplaySpeed_summary"
             android:title="@string/DisplaySpeed_title" />
