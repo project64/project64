@@ -50,7 +50,7 @@
     <ClCompile Include="N64System\Debugger\Debugger-MemorySearch.cpp" />
     <ClCompile Include="N64System\Debugger\Debugger-TLB.cpp" />
     <ClCompile Include="N64System\Debugger\Debugger-ViewMemory.cpp" />
-    <ClCompile Include="N64System\Debugger\Debugger.cpp" />
+    <ClCompile Include="N64System\Debugger\DebuggerUI.cpp" />
     <ClCompile Include="Plugins\PluginList.cpp" />
     <ClCompile Include="Settings\GuiSettings.cpp" />
     <ClCompile Include="Settings\NotificationSettings.cpp" />
@@ -92,7 +92,6 @@
     <ClInclude Include="N64System\Debugger\Debugger-MemorySearch.h" />
     <ClInclude Include="N64System\Debugger\Debugger-TLB.h" />
     <ClInclude Include="N64System\Debugger\Debugger-ViewMemory.h" />
-    <ClInclude Include="N64System\Debugger\debugger.h" />
     <ClInclude Include="N64System\Debugger\DebuggerUI.h" />
     <ClInclude Include="Settings\GuiSettings.h" />
     <ClInclude Include="Settings\NotificationSettings.h" />
