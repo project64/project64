@@ -116,6 +116,8 @@ private:
 
 #if defined(__i386__) || defined(_M_IX86)
     friend CX86RecompilerOps;
+#elif defined(__arm__) || defined(_M_ARM)
+    friend CArmRegInfo;
 #endif
 
     static void RdramChanged(CMipsMemoryVM * _this);

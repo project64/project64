@@ -45,12 +45,12 @@ CMipsMemoryVM::CMipsMemoryVM(bool SavesReadOnly) :
     m_HalfLineCheck(false),
     m_FieldSerration(0),
     m_TLB_ReadMap(NULL),
-    m_TLB_WriteMap(NULL)
+    m_TLB_WriteMap(NULL),
+    m_RDRAM(NULL),
+    m_DMEM(NULL),
+    m_IMEM(NULL)
 {
     g_Settings->RegisterChangeCB(Game_RDRamSize, this, (CSettings::SettingChangedFunc)RdramChanged);
-    m_RDRAM = NULL;
-    m_DMEM = NULL;
-    m_IMEM = NULL;
 }
 
 uint32_t swap32by8(uint32_t word)
@@ -137,11 +137,13 @@ bool CMipsMemoryVM::Initialize()
 
     if (m_Reserve1)
     {
-        m_RDRAM = m_Reserve1; m_Reserve1 = NULL;
+        m_RDRAM = m_Reserve1;
+        m_Reserve1 = NULL;
     }
     if (m_RDRAM == NULL && m_Reserve2)
     {
-        m_RDRAM = m_Reserve2; m_Reserve2 = NULL;
+        m_RDRAM = m_Reserve2;
+        m_Reserve2 = NULL;
     }
     if (m_RDRAM == NULL)
     {
@@ -703,10 +705,6 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         case 0x1FC00000: Load32PifRam(); break;
         case 0x1FF00000: Load32CartridgeDomain1Address3(); break;
         default:
-            if (bHaveDebugger())
-            {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-            }
             m_MemLookupValue.UW[0] = PAddr & 0xFFFF;
             m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
         }
