@@ -26,13 +26,9 @@ uint32_t CX86RegInfo::m_fpuControl = 0;
 const char *Format_Name[] = { "Unknown", "dword", "qword", "float", "double" };
 
 CX86RegInfo::CX86RegInfo() :
-    m_Stack_TopPos(0),
-    m_RoundingModel(RoundUnknown)
+m_Stack_TopPos(0)
 {
-    m_RegMapLo[0] = x86_Unknown;
-    m_RegMapHi[0] = x86_Unknown;
-
-    for (int32_t i = 1; i < 32; i++)
+    for (int32_t i = 0; i < 32; i++)
     {
         m_RegMapLo[i] = x86_Unknown;
         m_RegMapHi[i] = x86_Unknown;
@@ -65,7 +61,6 @@ CX86RegInfo& CX86RegInfo::operator=(const CX86RegInfo& right)
 {
     CRegBase::operator=(right);
     m_Stack_TopPos = right.m_Stack_TopPos;
-    m_RoundingModel = right.m_RoundingModel;
 
     memcpy(&m_RegMapLo, &right.m_RegMapLo, sizeof(m_RegMapLo));
     memcpy(&m_RegMapHi, &right.m_RegMapHi, sizeof(m_RegMapHi));
@@ -1459,20 +1454,6 @@ void CX86RegInfo::WriteBackRegisters()
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
-}
-
-const char * CX86RegInfo::RoundingModelName(FPU_ROUND RoundType)
-{
-    switch (RoundType)
-    {
-    case RoundUnknown:  return "RoundUnknown";
-    case RoundDefault:  return "RoundDefault";
-    case RoundTruncate: return "RoundTruncate";
-    case RoundNearest:  return "RoundNearest";
-    case RoundDown:     return "RoundDown";
-    case RoundUp:       return "RoundUp";
-    }
-    return "** Invalid **";
 }
 
 #endif

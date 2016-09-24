@@ -42,16 +42,6 @@ public:
         FPU_Double = 4,
     };
 
-    enum FPU_ROUND
-    {
-        RoundUnknown = -1,
-        RoundDefault = 0,
-        RoundTruncate = 1,
-        RoundNearest = 2,
-        RoundDown = 3,
-        RoundUp = 4,
-    };
-
 public:
     CX86RegInfo();
     CX86RegInfo(const CX86RegInfo&);
@@ -109,11 +99,7 @@ public:
     FPU_STATE & FpuState(int32_t Reg) { return m_x86fpu_State[Reg]; }
     FPU_ROUND & FpuRoundingModel(int32_t Reg) { return m_x86fpu_RoundingModel[Reg]; }
 
-    FPU_ROUND GetRoundingModel() const { return m_RoundingModel; }
-    void      SetRoundingModel(FPU_ROUND RoundingModel) { m_RoundingModel = RoundingModel; }
-
 private:
-    const char * RoundingModelName(FPU_ROUND RoundType);
     x86Reg UnMap_8BitTempReg();
 
     //r4k
@@ -130,8 +116,6 @@ private:
     FPU_STATE   m_x86fpu_State[8];
     bool        m_x86fpu_StateChanged[8];
     FPU_ROUND   m_x86fpu_RoundingModel[8];
-
-    FPU_ROUND   m_RoundingModel;
 
     static uint32_t m_fpuControl;
 };
