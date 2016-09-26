@@ -108,7 +108,7 @@ bool CGfxPlugin::LoadFunctions(void)
 
 bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 {
-    WriteTrace(TraceGFXPlugin, TraceDebug, "Starting");
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Start");
     if (m_Initialized)
     {
         Close(Window);
@@ -259,7 +259,7 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
     pjutil::DynLibCallDllMain();
 #endif
 
-    WriteTrace(TraceGFXPlugin, TraceDebug, "InitiateGFX done (res: %s)", m_Initialized ? "true" : "false");
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Done (res: %s)", m_Initialized ? "true" : "false");
     return m_Initialized;
 }
 

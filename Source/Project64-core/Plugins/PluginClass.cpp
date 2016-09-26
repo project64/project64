@@ -192,7 +192,9 @@ void CPlugins::DestroyGfxPlugin(void)
     {
         return;
     }
-    WriteTrace(TraceGFXPlugin, TraceInfo, "Start");
+    WriteTrace(TraceGFXPlugin, TraceDebug, "before close");
+    m_Gfx->Close(m_MainWindow);
+    WriteTrace(TraceGFXPlugin, TraceInfo, "deleting");
     delete m_Gfx;
     WriteTrace(TraceGFXPlugin, TraceInfo, "m_Gfx deleted");
     m_Gfx = NULL;
@@ -324,14 +326,18 @@ bool CPlugins::Reset(CN64System * System)
     bool bRspChange = _stricmp(m_RSPFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_RSP).c_str()) != 0;
     bool bContChange = _stricmp(m_ControlFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Controller).c_str()) != 0;
 
-#ifdef ANDROID
-    //this is a hack and should not be here, glide64 is not correctly freeing something on restart, this needs to be fixed but this is a short term workaround
-    bGfxChange = true;
-#endif
+
+    if (g_Settings->LoadBool(Plugin_ForceGfxReset))
+    {
+        //this is a hack and should not be here, glide64 is not correctly freeing something on restart, this needs to be fixed but this is a short term workaround
+        bGfxChange = true;
+    }
 
     //if GFX and Audio has changed we also need to force reset of RSP
     if (bGfxChange || bAudioChange)
+    {
         bRspChange = true;
+    }
 
     if (bGfxChange) { DestroyGfxPlugin(); }
     if (bAudioChange) { DestroyAudioPlugin(); }

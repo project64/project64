@@ -59,6 +59,7 @@ CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem) 
     m_CheatsSlectionChanged(false),
     m_SyncCpu(SyncSystem)
 {
+    WriteTrace(TraceN64System, TraceDebug, "Start");
     uint32_t gameHertz = g_Settings->LoadDword(Game_ScreenHertz);
     if (gameHertz == 0)
     {
@@ -97,6 +98,7 @@ CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem) 
             m_Recomp = new CRecompiler(m_Reg, m_Profile, m_EndEmulation);
         }
     }
+    WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
 CN64System::~CN64System()
@@ -315,6 +317,10 @@ bool CN64System::RunFileImage(const char * FileLoc)
                     bSetActive = g_BaseSystem->SetActiveSystem(true);
                 }
             }
+        }
+        else
+        {
+            WriteTrace(TraceN64System, TraceError, "Failed to create CN64System");
         }
     }
     else
@@ -624,6 +630,7 @@ void CN64System::PluginReset()
 
 void CN64System::Reset(bool bInitReg, bool ClearMenory)
 {
+    WriteTrace(TraceN64System, TraceDebug, "Start (bInitReg: %s, ClearMenory: %s)", bInitReg ? "true" : "false", ClearMenory ? "true" : "false");
     g_Settings->SaveBool(GameRunning_InReset, true);
     RefreshGameSettings();
     m_Audio.Reset();
@@ -664,12 +671,21 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
     {
         m_Recomp->Reset();
     }
-    if (m_Plugins) { m_Plugins->GameReset(); }
+    if (m_Plugins && g_Settings->LoadBool(GameRunning_CPU_Running))
+    {
+        if (g_Settings->LoadBool(Plugin_ForceGfxReset))
+        {
+            m_Plugins->Reset(this);
+        }
+        m_Plugins->RomClosed();
+        m_Plugins->RomOpened();
+    }
     if (m_SyncCPU)
     {
         m_SyncCPU->Reset(bInitReg, ClearMenory);
     }
     g_Settings->SaveBool(GameRunning_InReset, true);
+    WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
 bool CN64System::SetActiveSystem(bool bActive)
@@ -680,6 +696,7 @@ bool CN64System::SetActiveSystem(bool bActive)
 
     if (bActive && g_System == this)
     {
+        WriteTrace(TraceN64System, TraceDebug, "Done (Res: true)");
         return true;
     }
 
@@ -721,6 +738,8 @@ bool CN64System::SetActiveSystem(bool bActive)
         {
             if (!m_MMU_VM.Initialize())
             {
+                WriteTrace(TraceN64System, TraceWarning, "MMU failed to Initialize");
+                WriteTrace(TraceN64System, TraceDebug, "Done (Res: false)");
                 return false;
             }
             bReset = true;
@@ -758,6 +777,8 @@ bool CN64System::SetActiveSystem(bool bActive)
         if (!bRes)
         {
             WriteTrace(TraceN64System, TraceError, "g_Plugins->Initiate Failed");
+            WriteTrace(TraceN64System, TraceDebug, "Done (Res: false)");
+            return false;
         }
     }
 
@@ -1072,7 +1093,6 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
     bool ErrorFound = false;
 
     m_SyncCount += 1;
-    //WriteTraceF(TraceError,"SyncCPU PC = %08X",m_Reg.m_PROGRAM_COUNTER);
     g_SystemTimer->UpdateTimers();
 
 #ifdef TEST_SP_TRACKING
@@ -2036,7 +2056,6 @@ void CN64System::RefreshScreen()
     uint32_t VI_INTR_TIME = 500000;
 
     if (bShowCPUPer()) { CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_RefreshScreen); }
-    //if (bProfiling)    { ProfilingAddr = m_Profile.StartTimer(Timer_RefreshScreen); }
 
     //Calculate how many cycles to next refresh
     if (m_Reg.VI_V_SYNC_REG == 0)
@@ -2069,7 +2088,6 @@ void CN64System::RefreshScreen()
     }
 
     if (bShowCPUPer()) { m_CPU_Usage.StartTimer(Timer_UpdateScreen); }
-    //    if (bProfiling)    { m_Profile.StartTimer(Timer_UpdateScreen); }
 
     __except_try()
     {

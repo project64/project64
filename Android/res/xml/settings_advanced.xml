@@ -23,7 +23,6 @@
         android:key="Debugger_LimitFPS"
         android:summary="@string/LimitFPS_summary"
         android:title="@string/LimitFPS_title" />
-
     <CheckBoxPreference
         android:key="Debugger_CpuUsage"
         android:summary="@string/CpuUsage_summary"
@@ -37,6 +36,10 @@
             android:entryValues="@array/DisplaySpeed_values"
             android:key="Debugger_DisplaySpeedType"
             android:title="@string/DisplaySpeedDisplay" />
+    <CheckBoxPreference
+        android:key="Plugin_ForceGfxReset"
+        android:summary="@string/ForceGfxReset_summary"
+        android:title="@string/ForceGfxReset_title" />
     </PreferenceCategory>   
     <PreferenceCategory android:title="@string/logging" >
         <Preference
