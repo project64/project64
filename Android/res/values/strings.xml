@@ -127,6 +127,8 @@
     <string name="DListPerSecond">Display lists per second</string>
     <string name="PercentageOfSpeed">Percentage of full speed</string>
     <string name="VerticalInterruptsPerSecond">Vertical interrupts per second</string>
+    <string name="ForceGfxReset_title">Reset GFX Plugin</string>
+    <string name="ForceGfxReset_summary">Always reload GFX plugin</string>
         
     <string-array name="DisplaySpeed_list">
         <item>@string/DListPerSecond</item>
