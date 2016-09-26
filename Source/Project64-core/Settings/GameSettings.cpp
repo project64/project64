@@ -40,6 +40,7 @@ CPU_TYPE CGameSettings::m_CpuType = CPU_Recompiler;
 
 void CGameSettings::RefreshGameSettings()
 {
+    WriteTrace(TraceN64System, TraceDebug, "start");
     m_bSMM_StoreInstruc = false /*g_Settings->LoadBool(Game_SMM_StoreInstruc)*/;
     m_bSMM_Protect = g_Settings->LoadBool(Game_SMM_Protect);
     m_bSMM_ValidFunc = g_Settings->LoadBool(Game_SMM_ValidFunc);
@@ -73,6 +74,7 @@ void CGameSettings::RefreshGameSettings()
     {
         m_CountPerOp = 2;
     }
+    WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
 void CGameSettings::SpeedChanged(int SpeedLimit)

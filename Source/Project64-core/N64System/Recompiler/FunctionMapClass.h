@@ -11,7 +11,8 @@
 #pragma once
 #include <Project64-core/N64System/Recompiler/FunctionInfo.h>
 
-class CFunctionMap
+class CFunctionMap :
+    private CGameSettings
 {
 protected:
     typedef CCompiledFunc *  PCCompiledFunc;

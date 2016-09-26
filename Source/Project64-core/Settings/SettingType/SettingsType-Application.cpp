@@ -130,7 +130,7 @@ bool CSettingTypeApplication::Load(int /*Index*/, bool & Value) const
 {
     bool bRes = false;
 
-    uint32_t dwValue;
+    uint32_t dwValue = 0;
     bRes = m_SettingsIniFile ? m_SettingsIniFile->GetNumber(SectionName(), m_KeyNameIdex.c_str(), Value, dwValue) : false;
     if (bRes)
     {

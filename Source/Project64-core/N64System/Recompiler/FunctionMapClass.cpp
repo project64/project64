@@ -26,9 +26,10 @@ CFunctionMap::~CFunctionMap()
 
 bool CFunctionMap::AllocateMemory()
 {
-    if (g_System->LookUpMode() == FuncFind_VirtualLookup && m_FunctionTable == NULL)
+    WriteTrace(TraceRecompiler, TraceDebug, "start");
+    if (LookUpMode() == FuncFind_VirtualLookup && m_FunctionTable == NULL)
     {
-        m_FunctionTable = new PCCompiledFunc_TABLE[0x100000];
+        m_FunctionTable = new (std::nothrow) PCCompiledFunc_TABLE[0x100000];
         if (m_FunctionTable == NULL)
         {
             WriteTrace(TraceRecompiler, TraceError, "failed to allocate function table");
@@ -37,17 +38,18 @@ bool CFunctionMap::AllocateMemory()
         }
         memset(m_FunctionTable, 0, 0x100000 * sizeof(PCCompiledFunc_TABLE));
     }
-    if (g_System->LookUpMode() == FuncFind_PhysicalLookup && m_JumpTable == NULL)
+    if (LookUpMode() == FuncFind_PhysicalLookup && m_JumpTable == NULL)
     {
-        m_JumpTable = new PCCompiledFunc[g_MMU->RdramSize() >> 2];
+        m_JumpTable = new (std::nothrow) PCCompiledFunc[RdramSize() >> 2];
         if (m_JumpTable == NULL)
         {
             WriteTrace(TraceRecompiler, TraceError, "failed to allocate jump table");
             g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
             return false;
         }
-        memset(m_JumpTable, 0, (g_MMU->RdramSize() >> 2) * sizeof(PCCompiledFunc));
+        memset(m_JumpTable, 0, (RdramSize() >> 2) * sizeof(PCCompiledFunc));
     }
+    WriteTrace(TraceRecompiler, TraceDebug, "Done");
     return true;
 }
 
@@ -62,7 +64,7 @@ void CFunctionMap::CleanBuffers()
                 delete m_FunctionTable[i];
             }
         }
-		delete [] m_FunctionTable;
+        delete[] m_FunctionTable;
         m_FunctionTable = NULL;
     }
     if (m_JumpTable)
@@ -74,9 +76,11 @@ void CFunctionMap::CleanBuffers()
 
 void CFunctionMap::Reset(bool bAllocate)
 {
+    WriteTrace(TraceRecompiler, TraceDebug, "start (bAllocate: %s)", bAllocate ? "true" : "false");
     CleanBuffers();
     if (bAllocate && (g_System->LookUpMode() == FuncFind_VirtualLookup || g_System->LookUpMode() == FuncFind_PhysicalLookup))
     {
         AllocateMemory();
     }
+    WriteTrace(TraceRecompiler, TraceDebug, "Done");
 }

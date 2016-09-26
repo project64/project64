@@ -234,8 +234,8 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
 
         SetupTrace();
         FixDirectories();
-#ifdef _WIN32
         CMipsMemoryVM::ReserveMemory();
+#ifdef _WIN32
         IncreaseThreadPriority();
 #else
         if (!CMipsMemoryVM::SetupSegvHandler())

@@ -465,6 +465,8 @@ void CN64Rom::NotificationCB(const char * Status, CN64Rom * /*_this*/)
 
 bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
 {
+    WriteTrace(TraceN64System, TraceDebug, "Start (FileLoc: \"%s\" LoadBootCodeOnly: %s)", FileLoc, LoadBootCodeOnly ? "true" : "false");
+
     UnallocateRomImage();
     m_ErrorMsg = EMPTY_STRING;
 
@@ -482,6 +484,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
         {
             //Pop up a dialog and select file
             //allocate memory for sub name and copy selected file name to var
+            WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
             return false; //remove once dialog is done
         }
         else
@@ -517,6 +520,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
 
             if (!AllocateRomImage(RomFileSize))
             {
+                WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
                 return false;
             }
 
@@ -525,12 +529,14 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
             if (!ZipFile.GetFile(i, m_ROMImage, RomFileSize))
             {
                 SetError(MSG_FAIL_IMAGE);
+                WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
                 return false;
             }
 
             if (!IsValidRomImage(m_ROMImage))
             {
                 SetError(MSG_FAIL_IMAGE);
+                WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
                 return false;
             }
             g_Notify->DisplayMessage(5, MSG_BYTESWAP);
@@ -544,6 +550,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
         if (!Loaded7zFile)
         {
             SetError(MSG_7Z_FILE_NOT_FOUND);
+            WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
             return false;
         }
     }
@@ -556,10 +563,12 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
         {
             if (m_ErrorMsg != EMPTY_STRING)
             {
+                WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
                 return false;
             }
             if (!AllocateAndLoadN64Image(FileLoc, LoadBootCodeOnly))
             {
+                WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
                 return false;
             }
         }
@@ -606,6 +615,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
         CalculateRomCrc();
     }
 
+    WriteTrace(TraceN64System, TraceDebug, "Done (res: true)");
     return true;
 }
 
@@ -759,7 +769,7 @@ void CN64Rom::SaveRomSettingID(bool temp)
     g_Settings->SaveBool(Game_TempLoaded, temp);
     g_Settings->SaveString(Game_GameName, m_RomName.c_str());
     g_Settings->SaveString(Game_IniKey, m_RomIdent.c_str());
-    g_Settings->SaveString(Game_UniqueSaveDir, stdstr_f("%s-%s", m_RomName.c_str(), m_MD5.c_str() ).c_str());
+    g_Settings->SaveString(Game_UniqueSaveDir, stdstr_f("%s-%s", m_RomName.c_str(), m_MD5.c_str()).c_str());
 
     switch (GetCountry())
     {

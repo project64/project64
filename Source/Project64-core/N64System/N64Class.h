@@ -105,6 +105,8 @@ private:
     //Recompiler has access to manipulate and call functions
     friend CSystemTimer;
 
+    friend CMipsMemoryVM;
+
     //Used for loading and potentially executing the CPU in its own thread.
     static void StartEmulationThread(CThread * thread);
     static bool EmulationStarting(CThread * thread);

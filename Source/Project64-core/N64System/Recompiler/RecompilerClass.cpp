@@ -22,6 +22,7 @@ CRecompiler::CRecompiler(CRegisters & Registers, CProfiling & Profile, bool & En
     m_EndEmulation(EndEmulation),
     PROGRAM_COUNTER(Registers.m_PROGRAM_COUNTER)
 {
+    CFunctionMap::AllocateMemory();
     if (g_MMU != NULL)
     {
         ResetMemoryStackPos();
@@ -718,12 +719,15 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
 
 void CRecompiler::Reset()
 {
+    WriteTrace(TraceRecompiler, TraceDebug, "start");
     ResetRecompCode(true);
     ResetMemoryStackPos();
+    WriteTrace(TraceRecompiler, TraceDebug, "Done");
 }
 
 void CRecompiler::ResetRecompCode(bool bAllocate)
 {
+    WriteTrace(TraceRecompiler, TraceDebug, "start");
     CRecompMemory::Reset();
     CFunctionMap::Reset(bAllocate);
 
@@ -739,6 +743,7 @@ void CRecompiler::ResetRecompCode(bool bAllocate)
         }
     }
     m_Functions.clear();
+    WriteTrace(TraceRecompiler, TraceDebug, "Done");
 }
 
 void CRecompiler::RecompilerMain_ChangeMemory()
@@ -1036,18 +1041,21 @@ void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REAS
 
 void CRecompiler::ClearRecompCode_Virt(uint32_t Address, int length, REMOVE_REASON Reason)
 {
+    uint32_t AddressIndex, WriteStart;
+    int DataInBlock, DataToWrite, DataLeft;
+
     switch (g_System->LookUpMode())
     {
     case FuncFind_VirtualLookup:
+        AddressIndex = Address >> 0xC;
+        WriteStart = (Address & 0xFFC);
+        length = ((length + 3) & ~0x3);
+
+        DataInBlock = 0x1000 - WriteStart;
+        DataToWrite = length < DataInBlock ? length : DataInBlock;
+        DataLeft = length - DataToWrite;
+
         {
-            uint32_t AddressIndex = Address >> 0xC;
-            uint32_t WriteStart = (Address & 0xFFC);
-            length = ((length + 3) & ~0x3);
-
-            int DataInBlock = 0x1000 - WriteStart;
-            int DataToWrite = length < DataInBlock ? length : DataInBlock;
-            int DataLeft = length - DataToWrite;
-
             PCCompiledFunc_TABLE & table = FunctionTable()[AddressIndex];
             if (table)
             {
