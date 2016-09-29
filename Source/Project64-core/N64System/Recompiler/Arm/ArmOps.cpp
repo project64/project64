@@ -131,14 +131,34 @@ void CArmOps::AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const)
     }
 }
 
-void CArmOps::AndArmRegToArmReg(ArmReg SourceReg, ArmReg DestReg)
+void CArmOps::AndArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg)
 {
-    CPU_Message("      and\t%s, %s", ArmRegName(DestReg), ArmRegName(SourceReg));
-    ArmThumbOpcode op = {0};
-    op.Reg2.rn = DestReg;
-    op.Reg2.rm = SourceReg;
-    op.Reg2.opcode = 0x100;
-    AddCode16(op.Hex);
+    if (DestReg <= 0x7 && SourceReg <= 0x7 )
+    {
+        CPU_Message("      ands\t%s, %s", ArmRegName(DestReg), ArmRegName(SourceReg));
+        ArmThumbOpcode op = {0};
+        op.Reg2.rn = DestReg;
+        op.Reg2.rm = SourceReg;
+        op.Reg2.opcode = 0x100;
+        AddCode16(op.Hex);
+    }
+    else
+    {
+        CPU_Message("      and.w\t%s, %s, %s", ArmRegName(DestReg), ArmRegName(DestReg), ArmRegName(SourceReg));
+        Arm32Opcode op = {0};
+        op.imm5.rn = DestReg;
+        op.imm5.s = 0;
+        op.imm5.opcode = 0x750;
+
+        op.imm5.rm = SourceReg;
+        op.imm5.type = 0;
+        op.imm5.imm2 = 0;
+        op.imm5.rd = DestReg;
+        op.imm5.imm3 = 0;
+        op.imm5.opcode2 = 0;
+
+        AddCode32(op.Hex);
+    }
 }
 
 void CArmOps::BranchLabel8(ArmBranchCompare CompareType, const char * Label)
