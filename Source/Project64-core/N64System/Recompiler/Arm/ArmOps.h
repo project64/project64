@@ -133,6 +133,8 @@ protected:
     static void WriteArmLabel(const char * Label);
 
     static void AddArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
+    static void AddConstToArmReg(ArmReg DestReg, uint32_t Const);
+    static void AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const);
     static void AndArmRegToArmReg(ArmReg SourceReg, ArmReg DestReg);
     static void BranchLabel8(ArmBranchCompare CompareType, const char * Label);
     static void BranchLabel20(ArmBranchCompare CompareType, const char * Label);

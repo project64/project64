@@ -60,6 +60,77 @@ void CArmOps::AddArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg Source
         AddCode32(op.Hex);
     }
 }
+
+void CArmOps::AddConstToArmReg(ArmReg DestReg, uint32_t Const)
+{
+    AddConstToArmReg(DestReg, DestReg, Const);
+}
+
+void CArmOps::AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const)
+{
+    if (DestReg == SourceReg && Const == 0)
+    {
+        //ignore
+    }
+    else if ((Const & 0xFFFFFFF8) == 0 && DestReg <= 7 && SourceReg <= 7)
+    {
+        CPU_Message("      adds\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), Const);
+        ArmThumbOpcode op = {0};
+        op.Imm3.rd = DestReg;
+        op.Imm3.rn = SourceReg;
+        op.Imm3.imm3 = Const;
+        op.Imm3.opcode = 0xE;
+        AddCode16(op.Hex);
+    }
+    else if ((Const & 0xFFFFFF00) == 0 && DestReg <= 7 && DestReg == SourceReg)
+    {
+        CPU_Message("      adds\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), Const);
+        ArmThumbOpcode op = {0};
+        op.Imm8.imm8 = Const;
+        op.Imm8.rdn = DestReg;
+        op.Imm8.opcode = 0x6;
+        AddCode16(op.Hex);
+    }
+    else if ((Const & 0xFFFFFF80) == 0xFFFFFF80 && DestReg <= 7 && DestReg == SourceReg)
+    {
+        CPU_Message("      sub\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), (~Const) + 1);
+        ArmThumbOpcode op = {0};
+        op.Imm8.imm8 = ((~Const) + 1) & 0xFF;
+        op.Imm8.rdn = DestReg;
+        op.Imm8.opcode = 0x7;
+        AddCode16(op.Hex);
+    }
+    else if (CanThumbCompressConst(Const))
+    {
+        CPU_Message("      add.w\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), Const);
+        uint16_t CompressedConst = ThumbCompressConst(Const);
+        Arm32Opcode op = {0};
+        op.imm8_3_1.rn = SourceReg;
+        op.imm8_3_1.s = 0;
+        op.imm8_3_1.opcode = 0x8;
+        op.imm8_3_1.i = (CompressedConst >> 11) & 1;
+        op.imm8_3_1.opcode2 = 0x1E;
+
+        op.imm8_3_1.imm8 = CompressedConst & 0xFF;
+        op.imm8_3_1.rd = DestReg;
+        op.imm8_3_1.imm3 = (CompressedConst >> 8) & 0x3;
+        op.imm8_3_1.opcode3 = 0;
+        AddCode32(op.Hex);
+    }
+    else if ((Const & 0xFFFF8000) == 0xFFFF8000 || (Const & 0xFFFF0000) == 0)
+    {
+        ArmReg TempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+        MoveConstToArmReg(TempReg,Const);
+        AddArmRegToArmReg(DestReg, TempReg, SourceReg);
+        m_RegWorkingSet.SetArmRegProtected(TempReg,false);
+    }
+    else
+    {
+        CPU_Message("%s: DestReg = %X Const = %X", __FUNCTION__, DestReg, Const);
+        g_Notify->BreakPoint(__FILE__,__LINE__);
+    }
+}
+
 void CArmOps::AndArmRegToArmReg(ArmReg SourceReg, ArmReg DestReg)
 {
     CPU_Message("      and\t%s, %s", ArmRegName(DestReg), ArmRegName(SourceReg));
