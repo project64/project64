@@ -186,16 +186,6 @@ void CSystemTimer::TimerDone()
 {
     UpdateTimers();
 
-    /*	uint32_t LastTimer;
-        if (Profiling)
-        {
-        LastTimer = StartTimer(Timer_Done);
-        }
-        if (LogOptions.GenerateLog && LogOptions.LogExceptions && !LogOptions.NoInterrupts)
-        {
-        LogMessage("%08X: Timer Done (Type: %d CurrentTimer: %d)", *_PROGRAM_COUNTER, m_Current, *_Timer );
-        }
-        */
     switch (m_Current)
     {
     case CSystemTimer::CompareTimer:
