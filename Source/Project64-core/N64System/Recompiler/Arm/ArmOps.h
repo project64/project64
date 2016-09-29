@@ -132,7 +132,7 @@ protected:
     static void WriteArmComment(const char * Comment);
     static void WriteArmLabel(const char * Label);
 
-    static void AddArmRegToArmReg(ArmReg SourceReg1, ArmReg SourceReg2, ArmReg DestReg);
+    static void AddArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
     static void AndArmRegToArmReg(ArmReg SourceReg, ArmReg DestReg);
     static void BranchLabel8(ArmBranchCompare CompareType, const char * Label);
     static void BranchLabel20(ArmBranchCompare CompareType, const char * Label);

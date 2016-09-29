@@ -31,17 +31,35 @@ void CArmOps::WriteArmLabel(const char * Label)
     CPU_Message("      %s:", Label);
 }
 
-void CArmOps::AddArmRegToArmReg(ArmReg SourceReg1, ArmReg SourceReg2, ArmReg DestReg)
+void CArmOps::AddArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2)
 {
-    CPU_Message("      add\t%s,%s,%s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
-    ArmThumbOpcode op = {0};
-    op.Reg.rt = DestReg;
-    op.Reg.rn = SourceReg1;
-    op.Reg.rm = SourceReg2;
-    op.Reg.opcode = 0xC;
-    AddCode16(op.Hex);
-}
+    if (DestReg <= 7 && SourceReg1 <=7 && SourceReg2 <= 7)
+    {
+        CPU_Message("      add\t%s,%s,%s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
+        ArmThumbOpcode op = {0};
+        op.Reg.rt = DestReg;
+        op.Reg.rn = SourceReg1;
+        op.Reg.rm = SourceReg2;
+        op.Reg.opcode = 0xC;
+        AddCode16(op.Hex);
+    }
+    else
+    {
+        CPU_Message("      add.w\t%s,%s,%s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
+        Arm32Opcode op = {0};
+        op.imm5.rn = SourceReg1;
+        op.imm5.s = 0;
+        op.imm5.opcode = 0x758;
 
+        op.imm5.rm = SourceReg2;
+        op.imm5.type = 0;
+        op.imm5.imm2 = 0;
+        op.imm5.rd = DestReg;
+        op.imm5.imm3 = 0;
+        op.imm5.opcode2 = 0;
+        AddCode32(op.Hex);
+    }
+}
 void CArmOps::AndArmRegToArmReg(ArmReg SourceReg, ArmReg DestReg)
 {
     CPU_Message("      and\t%s, %s", ArmRegName(DestReg), ArmRegName(SourceReg));
