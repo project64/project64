@@ -55,7 +55,7 @@ private:
     void fInsertSpaces(int Pos, int NoOfSpaces);
     int  GetStringFromFile(char * & String, char * &Data, int & MaxDataSize, int & DataSize, int & ReadPos);
     bool MoveToSectionNameData(const char * lpSectionName, bool ChangeCurrentSection);
-    const char * CleanLine(char * const Line);
+    const char * CleanLine(char * Line);
     void ClearSectionPosList(long FilePos);
 
 protected:
