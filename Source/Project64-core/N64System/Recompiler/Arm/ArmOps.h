@@ -37,6 +37,62 @@ public:
         ArmRegPC = 15,
     };
 
+    enum ArmFpuSingle
+    {
+        Arm_S0 = 0,
+        Arm_S1 = 1,
+        Arm_S2 = 2,
+        Arm_S3 = 3,
+        Arm_S4 = 4,
+        Arm_S5 = 5,
+        Arm_S6 = 6,
+        Arm_S7 = 7,
+        Arm_S8 = 8,
+        Arm_S9 = 9,
+        Arm_S10 = 10,
+        Arm_S11 = 11,
+        Arm_S12 = 12,
+        Arm_S13 = 13,
+        Arm_S14 = 14,
+        Arm_S15 = 15,
+        Arm_S16 = 16,
+        Arm_S17 = 17,
+        Arm_S18 = 18,
+        Arm_S19 = 19,
+        Arm_S20 = 20,
+        Arm_S21 = 21,
+        Arm_S22 = 22,
+        Arm_S23 = 23,
+        Arm_S24 = 24,
+        Arm_S25 = 25,
+        Arm_S26 = 26,
+        Arm_S27 = 27,
+        Arm_S28 = 28,
+        Arm_S29 = 29,
+        Arm_S30 = 30,
+        Arm_S31 = 31,
+    };
+
+    enum ArmFpuDouble
+    {
+        Arm_D0 = 0,
+        Arm_D1 = 1,
+        Arm_D2 = 2,
+        Arm_D3 = 3,
+        Arm_D4 = 4,
+        Arm_D5 = 5,
+        Arm_D6 = 6,
+        Arm_D7 = 7,
+        Arm_D8 = 8,
+        Arm_D9 = 9,
+        Arm_D10 = 10,
+        Arm_D11 = 11,
+        Arm_D12 = 12,
+        Arm_D13 = 13,
+        Arm_D14 = 14,
+        Arm_D15 = 15,
+    };
+
     enum ArmRegPushPop
     {
         ArmPushPop_R0 = 0x0001,
