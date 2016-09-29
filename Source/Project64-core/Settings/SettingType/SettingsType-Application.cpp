@@ -116,6 +116,20 @@ void CSettingTypeApplication::Flush()
     }
 }
 
+void CSettingTypeApplication::ResetAll()
+{
+    if (m_SettingsIniFile == NULL)
+    {
+        return;
+    }
+    CIniFile::SectionList sections;
+    m_SettingsIniFile->GetVectorOfSections(sections);
+    for (size_t i = 0; i < sections.size(); i++)
+    {
+        m_SettingsIniFile->DeleteSection(sections[i].c_str());
+    }
+}
+
 void CSettingTypeApplication::CleanUp()
 {
     if (m_SettingsIniFile)
