@@ -13,7 +13,8 @@
 #if defined(__arm__) || defined(_M_ARM)
 #include <Project64-core/N64System/Recompiler/Arm/ArmRegInfo.h>
 
-CArmRegInfo::CArmRegInfo()
+CArmRegInfo::CArmRegInfo() :
+m_InCallDirect(false)
 {
 }
 
@@ -29,6 +30,8 @@ CArmRegInfo::~CArmRegInfo()
 CArmRegInfo& CArmRegInfo::operator=(const CArmRegInfo& right)
 {
     CRegBase::operator=(right);
+
+    m_InCallDirect = right.m_InCallDirect;
 #ifdef _DEBUG
     if (*this != right)
     {
@@ -40,10 +43,24 @@ CArmRegInfo& CArmRegInfo::operator=(const CArmRegInfo& right)
 
 void CArmRegInfo::BeforeCallDirect(void)
 {
+    if (m_InCallDirect)
+    {
+        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    m_InCallDirect = true;
 }
 
 void CArmRegInfo::AfterCallDirect(void)
 {
+    if (!m_InCallDirect)
+    {
+        CPU_Message("%s: Not in CallDirect",__FUNCTION__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    m_InCallDirect = false;
 }
 
 void CArmRegInfo::WriteBackRegisters()

@@ -33,5 +33,6 @@ public:
     void WriteBackRegisters();
 
 private:
+    bool m_InCallDirect;
 };
 #endif
