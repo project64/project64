@@ -23,13 +23,11 @@ CSram::~CSram()
 
 bool CSram::LoadSram()
 {
-    CPath FileName(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), "");
+    CPath FileName(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.sra", g_Settings->LoadStringVal(Game_GameName).c_str()).c_str());
     if (g_Settings->LoadBool(Setting_UniqueSaveDir))
     {
         FileName.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
     }
-    FileName.SetName(g_Settings->LoadStringVal(Game_GameName).c_str());
-    FileName.SetExtension("sra");
 
     if (!FileName.DirectoryExists())
     {

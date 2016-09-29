@@ -120,13 +120,11 @@ uint32_t CFlashram::ReadFromFlashStatus(uint32_t PAddr)
 
 bool CFlashram::LoadFlashram()
 {
-    CPath FileName(g_Settings->LoadStringVal(Directory_NativeSave).c_str());
+    CPath FileName(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.fla", g_Settings->LoadStringVal(Game_GameName).c_str()).c_str());
     if (g_Settings->LoadBool(Setting_UniqueSaveDir))
     {
         FileName.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
     }
-    FileName.SetName(g_Settings->LoadStringVal(Game_GameName).c_str());
-    FileName.SetExtension("fla");
 
     if (!FileName.DirectoryExists())
     {
