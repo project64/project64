@@ -12,6 +12,7 @@
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Recompiler/RecompilerClass.h>
 #include <Project64-core/N64System/SystemGlobals.h>
+#include <Project64-core/N64System/N64Class.h>
 #ifndef _WIN32
 #include <stdlib.h>
 #endif
@@ -377,6 +378,16 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
 #ifdef __arm__
 bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context)
 {
+    if ((int32_t)(MemAddress) < 0 || MemAddress > 0x1FFFFFFF)
+    {
+        WriteTrace(TraceExceptionHandler, TraceError, "Invalid memory adderess: %X", MemAddress);
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        return false;
+    }
+
     uint32_t * ArmRegisters[16] =
     {
         (uint32_t*)&context.arm_r0, (uint32_t*)&context.arm_r1, (uint32_t*)&context.arm_r2, (uint32_t*)&context.arm_r3,
@@ -386,6 +397,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
     };
 
     ArmThumbOpcode * OpCode = (ArmThumbOpcode *)context.arm_pc;
+    Arm32Opcode * OpCode32 = (Arm32Opcode *)context.arm_pc;
     if (OpCode->Reg.opcode == ArmLDR_Reg)
     {
         if (!g_MMU->LW_NonMemory(MemAddress, ArmRegisters[OpCode->Reg.rt]))
@@ -410,7 +422,90 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         context.arm_pc = context.arm_pc + 2;
         return true;
     }
-    Arm32Opcode * OpCode32 = (Arm32Opcode *)context.arm_pc;
+
+    if (OpCode32->reg_cond_imm5.opcode == 3 && OpCode32->reg_cond_imm5.opcode1 == 0 && OpCode32->reg_cond_imm5.opcode2 == 0 && OpCode32->reg_cond_imm5.opcode3 == 0)
+    {
+        //17847001 	strne	r7, [r4, r1]
+        //e789300c 	str	r3, [r9, ip]
+        if (!g_MMU->SW_NonMemory(MemAddress, *ArmRegisters[OpCode32->reg_cond_imm5.rt]))
+        {
+            if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+            }
+        }
+        context.arm_pc = context.arm_pc + 4;
+        return true;
+    }
+
+    if (OpCode->Reg.opcode == 0x2A) //STRB
+    {
+        if (!g_MMU->SB_NonMemory(MemAddress, *ArmRegisters[OpCode->Reg.rt]))
+        {
+            if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to store byte\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+            }
+        }
+        context.arm_pc = context.arm_pc + 2;
+        return true;
+    }
+
+    if (OpCode32->reg_cond_imm5.opcode == 3 && OpCode32->reg_cond_imm5.opcode1 == 1 && OpCode32->reg_cond_imm5.opcode2 == 0 && OpCode32->reg_cond_imm5.opcode3 == 0)
+    {
+        //17c32001 	strbne	r2, [r3, r1]
+        if (!g_MMU->SB_NonMemory(MemAddress, *ArmRegisters[OpCode32->reg_cond_imm5.rt]))
+        {
+            if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to store byte\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+            }
+        }
+        context.arm_pc = context.arm_pc + 4;
+        return true;
+    }
+
+    if (OpCode->Reg.opcode == 0x29) //STRH
+    {
+        if (!g_MMU->SH_NonMemory(MemAddress, *ArmRegisters[OpCode->Reg.rt]))
+        {
+            if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+            }
+        }
+        context.arm_pc = context.arm_pc + 2;
+        return true;
+    }
+
+    if (OpCode32->reg_cond.opcode == 0 && OpCode32->reg_cond.opcode1 == 0 && OpCode32->reg_cond.opcode2 == 0 && OpCode32->reg_cond.opcode3 == 0xB)
+    {
+        //118320b1 	strhne	r2, [r3, r1]
+        if (!g_MMU->SH_NonMemory(MemAddress, *ArmRegisters[OpCode32->reg_cond.rt]))
+        {
+            if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+            }
+        }
+        context.arm_pc = context.arm_pc + 4;
+        return true;
+    }
+
+    if (OpCode32->reg_cond_imm12.opcode == 2 && OpCode32->reg_cond_imm12.opcode1 == 0 && OpCode32->reg_cond_imm12.opcode2 == 0)
+    {
+        //e48a1004 	str	r1, [sl], #4
+        if (!g_MMU->SW_NonMemory(MemAddress, *ArmRegisters[OpCode32->reg_cond_imm12.rt]))
+        {
+            if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+            }
+        }
+        context.arm_pc = context.arm_pc + 4;
+        return true;
+    }
+
     if (OpCode32->uint16.opcode == ArmLDRH_W)
     {
         //f833 c001 ldrh.w	ip, [r3, r1]
@@ -418,7 +513,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to load half word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 4;
@@ -432,11 +527,59 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         {
             if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
             {
-                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+                g_Notify->DisplayError(stdstr_f("Failed to load half word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 4;
         return true;
+    }
+
+    if (OpCode32->reg_cond.opcode == 0 && OpCode32->reg_cond.opcode1 == 0 && OpCode32->reg_cond.opcode2 == 1 && OpCode32->reg_cond.opcode3 == 0xB)
+    {
+        //119330b1 	ldrhne	r3, [r3, r1]
+        if (!g_MMU->LH_NonMemory(MemAddress, ArmRegisters[OpCode32->reg_cond.rt], false))
+        {
+            if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to load half word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+            }
+        }
+        context.arm_pc = context.arm_pc + 4;
+        return true;
+    }
+
+    if (OpCode32->reg_cond_imm5.opcode == 3 && OpCode32->reg_cond_imm5.opcode1 == 0 && OpCode32->reg_cond_imm5.opcode2 == 1 && OpCode32->reg_cond_imm5.opcode3 == 0)
+    {
+        //1790a001 	ldrne	sl, [r0, r1]
+        if (!g_MMU->LW_NonMemory(MemAddress, ArmRegisters[OpCode32->reg_cond_imm5.rt]))
+        {
+            if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to load word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+            }
+        }
+        context.arm_pc = context.arm_pc + 4;
+        return true;
+    }
+
+    if (OpCode32->imm2.opcode == 0xF85 && OpCode32->imm2.Opcode2 == 0)
+    {
+        //52 f8 21 30 ldr.w	r3, [r2, r1, lsl #2]
+        if (!g_MMU->LW_NonMemory(MemAddress, ArmRegisters[OpCode32->imm2.rt]))
+        {
+            if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to load word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+            }
+        }
+        context.arm_pc = context.arm_pc + 4;
+        return true;
+    }
+
+    WriteTrace(TraceExceptionHandler, TraceError, "Program Counter 0x%lx", g_Reg->m_PROGRAM_COUNTER);
+    for (int i = 0, n = (sizeof(g_BaseSystem->m_LastSuccessSyncPC) / sizeof(g_BaseSystem->m_LastSuccessSyncPC[0])); i < n; i++)
+    {
+        WriteTrace(TraceExceptionHandler, TraceError, "m_LastSuccessSyncPC[%d] = 0x%lx", i, g_BaseSystem->m_LastSuccessSyncPC[i]);
     }
     WriteTrace(TraceExceptionHandler, TraceError, "MemAddress = 0x%lx", MemAddress);
     WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r0 = 0x%lx", context.arm_r0);
