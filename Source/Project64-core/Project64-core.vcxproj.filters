@@ -539,9 +539,6 @@
     <ClInclude Include="N64System\Recompiler\SectionInfo.h">
       <Filter>Header Files\N64 System\Recompiler</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Recompiler\X86ops.h">
-      <Filter>Header Files\N64 System\Recompiler</Filter>
-    </ClInclude>
     <ClInclude Include="N64System\Mips\Audio.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
@@ -649,6 +646,12 @@
     </ClInclude>
     <ClInclude Include="N64System\Recompiler\Arm\ArmRegInfo.h">
       <Filter>Header Files\N64 System\Recompiler\Arm</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\RegBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\x64-86\x64RegInfo.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

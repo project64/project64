@@ -49,13 +49,6 @@ union ArmThumbOpcode
 
     struct
     {
-        unsigned imm8 : 8;
-        unsigned rdn : 3;
-        unsigned opcode : 5;
-    } Imm8;
-
-    struct
-    {
         unsigned rd : 3;
         unsigned rn : 3;
         unsigned imm3 : 3;
@@ -69,6 +62,13 @@ union ArmThumbOpcode
         unsigned imm5 : 5;
         unsigned opcode : 5;
     } Imm5;
+
+    struct
+    {
+        unsigned imm8 : 8;
+        unsigned rdn : 3;
+        unsigned opcode : 5;
+    } Imm8;
 
     struct
     {
@@ -124,11 +124,80 @@ union Arm32Opcode
 
     struct
     {
+        unsigned Rn : 4;
+        unsigned op3 : 2;
+        unsigned D : 1;
+        unsigned U : 1;
+        unsigned op2 : 8;
+
+        unsigned imm8 : 8;
+        unsigned op1 : 4;
+        unsigned vd : 4;
+    } RnVdImm8;
+
+    struct
+    {
+        unsigned vn : 4;
+        unsigned op1 : 2;
+        unsigned d : 1;
+        unsigned op2 : 9;
+
+        unsigned vm : 4;
+        unsigned op3 : 1;
+        unsigned m : 1;
+        unsigned op4 : 1;
+        unsigned n : 1;
+        unsigned sz : 1;
+        unsigned op5 : 3;
+        unsigned vd : 4;
+    } VnVmVd;
+
+    struct
+    {
+        unsigned rn : 4;
+        unsigned opcode : 12;
+
+        unsigned rm : 4;
+        unsigned imm : 2;
+        unsigned Opcode2 : 6;
+        unsigned rt : 4;
+    } imm2;
+
+    struct
+    {
+        unsigned rn : 4;
+        unsigned s : 1;
+        unsigned opcode : 11;
+
+        unsigned rm : 4;
+        unsigned type : 2;
+        unsigned imm2 : 2;
+        unsigned rd : 4;
+        unsigned imm3 : 3;
+        unsigned opcode2 : 1;
+    } imm5;
+
+    struct
+    {
         unsigned rn : 4;
         unsigned opcode : 12;
         unsigned imm : 12;
         unsigned rt : 4;
     } imm12;
+
+    struct
+    {
+        unsigned rn : 4;
+        unsigned s : 1;
+        unsigned opcode : 5;
+        unsigned i : 1;
+        unsigned opcode2 : 5;
+
+        unsigned imm8 : 8;
+        unsigned rd : 4;
+        unsigned imm3 : 3;
+        unsigned opcode3 : 1;
+    } imm8_3_1;
 
     struct
     {
@@ -164,6 +233,77 @@ union Arm32Opcode
         unsigned rn : 4;
         unsigned opcode : 12;
     } uint32;
+
+    struct
+    {
+        unsigned rm : 4;
+        unsigned opcode3 : 8;
+        unsigned rt : 4;
+        unsigned rn : 4;
+        unsigned opcode2 : 1;
+        unsigned w : 1;
+        unsigned opcode1 : 1;
+        unsigned u : 1;
+        unsigned p : 1;
+        unsigned opcode : 3;
+        unsigned cond : 4;
+    } reg_cond;
+
+    struct
+    {
+        unsigned rm : 4;
+        unsigned opcode3 : 1;
+        unsigned type : 2;
+        unsigned imm5 : 5;
+        unsigned rt : 4;
+        unsigned rn : 4;
+        unsigned opcode2 : 1;
+        unsigned w : 1;
+        unsigned opcode1 : 1;
+        unsigned u : 1;
+        unsigned p : 1;
+        unsigned opcode : 3;
+        unsigned cond : 4;
+    } reg_cond_imm5;
+
+    struct
+    {
+        unsigned imm12 : 12;
+        unsigned rt : 4;
+        unsigned rn : 4;
+        unsigned opcode2 : 1;
+        unsigned w : 1;
+        unsigned opcode1 : 1;
+        unsigned u : 1;
+        unsigned p : 1;
+        unsigned opcode : 3;
+        unsigned cond : 4;
+    } reg_cond_imm12;
+
+    struct
+    {
+        unsigned opcode : 16;
+
+        unsigned opcode2 : 12;
+        unsigned rt : 4;
+    } fpscr;
+
+    struct
+    {
+        unsigned opcode : 16;
+
+        unsigned rm : 4;
+        unsigned rotate : 2;
+        unsigned opcode2 : 2;
+        unsigned rd : 4;
+        unsigned opcode3 : 4;
+    } rotate;
+
+    struct
+    {
+        unsigned opcode : 16;
+        unsigned register_list : 16;
+    } PushPop;
 };
 #pragma warning(pop)
 
