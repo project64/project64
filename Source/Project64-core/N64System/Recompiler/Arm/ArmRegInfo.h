@@ -11,9 +11,11 @@
 #pragma once
 #if defined(__arm__) || defined(_M_ARM)
 #include <Project64-core/N64System/Recompiler/RegBase.h>
+#include <Project64-core/N64System/Recompiler/Arm/ArmOps.h>
 
 class CArmRegInfo :
-    public CRegBase
+    public CRegBase,
+    public CArmOps
 {
 public:
     CArmRegInfo();

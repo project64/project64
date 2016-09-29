@@ -117,13 +117,6 @@ void CArmOps::AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const)
         op.imm8_3_1.opcode3 = 0;
         AddCode32(op.Hex);
     }
-    else if ((Const & 0xFFFF8000) == 0xFFFF8000 || (Const & 0xFFFF0000) == 0)
-    {
-        ArmReg TempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
-        MoveConstToArmReg(TempReg,Const);
-        AddArmRegToArmReg(DestReg, TempReg, SourceReg);
-        m_RegWorkingSet.SetArmRegProtected(TempReg,false);
-    }
     else
     {
         CPU_Message("%s: DestReg = %X Const = %X", __FUNCTION__, DestReg, Const);
@@ -467,6 +460,58 @@ void CArmOps::TestVariable(uint32_t Const, void * Variable, const char * Variabl
     MoveConstToArmReg(Const,Arm_R3);
     AndArmRegToArmReg(Arm_R3,Arm_R2);
     CompareArmRegToArmReg(Arm_R2,Arm_R3);
+}
+
+bool CArmOps::CanThumbCompressConst (uint32_t value)
+{
+    //'nnnnnnnn'
+    if ((value & 0xFFFFFF00) == 0)
+    {
+        return true;
+    }
+
+    //'00000000 nnnnnnnn 00000000 nnnnnnnn'
+    if (((value >> 24) & 0xFF) == 0 &&
+        ((value >> 16) & 0xFF) == (value & 0xFF) &&
+        ((value >> 8) & 0xFF) == 0)
+    {
+        return true;
+    }
+
+    //'nnnnnnnn 00000000 nnnnnnnn 00000000'
+    if (((value >> 24) & 0xFF) == ((value >> 8) & 0xFF) &&
+        ((value >> 16) & 0xFF) == 0 &&
+        (value & 0xFF) == 0)
+    {
+        return true;
+    }
+
+    //'nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn'
+    if (((value >> 24) & 0xFF) == (value & 0xFF) &&
+        ((value >> 16) & 0xFF) == (value & 0xFF) &&
+        ((value >> 8) & 0xFF) == (value & 0xFF))
+    {
+        return true;
+    }
+    return false;
+}
+
+uint16_t CArmOps::ThumbCompressConst (uint32_t value)
+{
+    if ((value & 0xFFFFFF00) == 0)
+    {
+        return (uint16_t)((value & 0xFF));
+    }
+    if (((value >> 24) & 0xFF) == (value & 0xFF) &&
+        ((value >> 16) & 0xFF) == (value & 0xFF) &&
+        ((value >> 8) & 0xFF) == (value & 0xFF))
+    {
+        return (uint16_t)(0x300 | (value & 0xFF));
+    }
+    CPU_Message("%s: value >> 24 = %X value >> 16 = %X value >> 8 = %X value = %X", __FUNCTION__, (value >> 24), (value >> 16), (value >> 8), value);
+    CPU_Message("%s: value = %X", __FUNCTION__, value);
+    g_Notify->BreakPoint(__FILE__,__LINE__);
+    return false;
 }
 
 void CArmOps::SetJump8(uint8_t * Loc, uint8_t * JumpLoc)

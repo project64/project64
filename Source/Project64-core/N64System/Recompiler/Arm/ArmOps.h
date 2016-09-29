@@ -155,6 +155,9 @@ protected:
     static void SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName);
     static void TestVariable(uint32_t Const, void * Variable, const char * VariableName);
 
+    static bool CanThumbCompressConst (uint32_t value);
+    static uint16_t ThumbCompressConst (uint32_t value);
+
     static void * GetAddressOf(int32_t value, ...);
     static void SetJump8(uint8_t * Loc, uint8_t * JumpLoc);
     static void SetJump20(uint32_t * Loc, uint32_t * JumpLoc);
