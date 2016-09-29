@@ -11,6 +11,7 @@
 #include "stdafx.h"
 
 #if defined(__arm__) || defined(_M_ARM)
+#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmRegInfo.h>
 
 CArmRegInfo::CArmRegInfo() :
