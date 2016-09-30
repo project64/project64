@@ -441,6 +441,22 @@
 #1105#  "Ranuras de Guardado"
 
 /*********************************************************************************
+* Support Window                                                                 *
+*********************************************************************************/
+#1200#  "Apoya a Project64"
+#1201#  "Project64 es un paquete de software diseñado para emular un sistema de videojuegos Nintendo64 en un PC basado en Microsoft Windows. Esto te permite jugar con software real de N64 de la misma manera como lo sería en el sistema de hardware original.\n\nSi te gusta Project64 y has conseguido algún valor fuera de este, entonces por favor apoya a project64 como muestra de agradecimiento, o tu deseo de ver que esto sea continuamente mejorado.\n\nSi has apoyado a project64:"
+#1202#  "Introduce el código de notificación"
+#1203#  "Apoya a Project64"
+#1204#  "Continuar"
+#1205#  "Por favor introduce el código de apoyo"
+#1206#  "Código de apoyo incorrecto"
+#1207#  "Gracias"
+#1208#  "Introduce el código"
+#1209#  "Por favor introduce el código del email"
+#1210#  "Aceptar"
+#1211#  "Cancelar"
+
+/*********************************************************************************
 * Messages                                                                       *
 *********************************************************************************/
 #2000#  "*** CPU PAUSADO ***"
