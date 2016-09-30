@@ -461,6 +461,12 @@ void CArmOps::MoveVariableToArmReg(void * Variable, const char * VariableName, A
     LoadArmRegPointerToArmReg(reg,reg,0);
 }
 
+void CArmOps::MoveVariableToFloatReg(void * Variable, const char * VariableName, ArmFpuSingle reg)
+{
+    MoveConstToArmReg(Arm_R0,(uint32_t)Variable,VariableName);
+    LoadArmRegPointerToFloatReg(Arm_R0,reg,0);
+}
+
 void CArmOps::PushArmReg(uint16_t Registers)
 {
     if (Registers == 0)
