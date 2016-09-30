@@ -12,8 +12,8 @@
 
 #if defined(__arm__) || defined(_M_ARM)
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/Recompiler/Arm/ArmOps.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
+#include <Project64-core/N64System/Recompiler/Arm/ArmOps.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmOpCode.h>
 
 /**************************************************************************
@@ -116,6 +116,13 @@ void CArmOps::AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const)
         op.imm8_3_1.imm3 = (CompressedConst >> 8) & 0x3;
         op.imm8_3_1.opcode3 = 0;
         AddCode32(op.Hex);
+    }
+    else if ((Const & 0xFFFF8000) == 0xFFFF8000 || (Const & 0xFFFF0000) == 0)
+    {
+        ArmReg TempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+        MoveConstToArmReg(TempReg,Const);
+        AddArmRegToArmReg(DestReg, TempReg, SourceReg);
+        m_RegWorkingSet.SetArmRegProtected(TempReg,false);
     }
     else
     {
