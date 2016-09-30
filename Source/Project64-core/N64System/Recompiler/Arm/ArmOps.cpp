@@ -497,6 +497,27 @@ void CArmOps::OrArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceR
     AddCode32(op.Hex);
 }
 
+void CArmOps::MulF32(ArmFpuSingle DestReg, ArmFpuSingle SourceReg1, ArmFpuSingle SourceReg2)
+{
+    CPU_Message("      vmul.f32\t%s, %s, %s", ArmFpuSingleName(DestReg), ArmFpuSingleName(SourceReg1), ArmFpuSingleName(SourceReg2));
+    Arm32Opcode op = {0};
+    op.VnVmVd.vn = SourceReg1 >> 1;
+    op.VnVmVd.op1 = 0x2;
+    op.VnVmVd.d = DestReg & 1;
+    op.VnVmVd.op2 = 0x1DC;
+
+    op.VnVmVd.vm = SourceReg2 >> 1;
+    op.VnVmVd.op3 = 0;
+    op.VnVmVd.m = SourceReg2 & 1;
+    op.VnVmVd.op4 = 0;
+    op.VnVmVd.n = SourceReg1 & 1;
+    op.VnVmVd.sz = 0;
+    op.VnVmVd.op5 = 0x5;
+    op.VnVmVd.vd = DestReg >> 1;
+
+    AddCode32(op.Hex);
+}
+
 void CArmOps::PushArmReg(uint16_t Registers)
 {
     if (Registers == 0)
