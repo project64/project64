@@ -144,7 +144,7 @@ protected:
     static void CallFunction(void * Function, const char * FunctionName);
     static void CompareArmRegToConst(ArmReg Reg, uint8_t value);
     static void CompareArmRegToArmReg(ArmReg Reg1, ArmReg Reg2);
-    static void LoadArmRegPointerToArmReg(ArmReg RegPointer, ArmReg Reg, uint8_t offset);
+    static void LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8_t Offset);
     static void MoveArmRegArmReg(ArmReg DestReg, ArmReg SourceReg);
     static void MoveConstToArmReg(ArmReg DestReg, uint16_t Const, const char * comment = NULL);
     static void MoveConstToArmRegTop(ArmReg DestReg, uint16_t Const, const char * comment = NULL);

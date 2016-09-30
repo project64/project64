@@ -267,22 +267,31 @@ void CArmOps::CompareArmRegToArmReg(ArmReg Reg1, ArmReg Reg2)
     AddCode16(op.Hex);
 }
 
-void CArmOps::LoadArmRegPointerToArmReg(ArmReg RegPointer, ArmReg Reg, uint8_t offset)
+void CArmOps::LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8_t Offset)
 {
-    if (Reg > 0x7 || RegPointer > 0x7)
+    if (DestReg > 0x7 || RegPointer > 0x7 || (Offset & (~0x7C)) != 0)
     {
-        if ((offset & (~0xFFF)) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); return; }
-        g_Notify->BreakPoint(__FILE__,__LINE__);
+        if ((Offset & (~0xFFF)) != 0)
+        {
+            CPU_Message("      RegPointer: %d Reg: %d Offset: 0x%X", RegPointer, DestReg, Offset);
+            g_Notify->BreakPoint(__FILE__,__LINE__);
+            return;
+        }
+        CPU_Message("      ldr.w\t%s, [%s, #%d]", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)Offset);
+        Arm32Opcode op = {0};
+        op.imm12.rt = DestReg;
+        op.imm12.rn = RegPointer;
+        op.imm12.imm = Offset;
+        op.imm12.opcode = 0xF8D;
+        AddCode32(op.Hex);
     }
     else
     {
-        if ((offset & (~0x1F)) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); return; }
-
-        CPU_Message("      ldr\t%s, [%s, #%d]", ArmRegName(Reg), ArmRegName(RegPointer), (uint32_t)offset);
+        CPU_Message("      ldr\t%s, [%s, #%d]", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)Offset);
         ArmThumbOpcode op = {0};
-        op.Imm5.rt = Reg;
+        op.Imm5.rt = DestReg;
         op.Imm5.rn = RegPointer;
-        op.Imm5.imm5 = offset;
+        op.Imm5.imm5 = Offset >> 2;
         op.Imm5.opcode = ArmLDR_ThumbImm;
         AddCode16(op.Hex);
     }
@@ -484,7 +493,7 @@ void CArmOps::SubConstFromArmReg(ArmReg Reg, uint32_t Const)
 void CArmOps::SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName)
 {
     MoveConstToArmReg(Arm_R1,(uint32_t)Variable,VariableName);
-    LoadArmRegPointerToArmReg(Arm_R1,Arm_R2,0);
+    LoadArmRegPointerToArmReg(Arm_R2,Arm_R1,0);
     SubConstFromArmReg(Arm_R2,Const);
     StoreArmRegToArmRegPointer(Arm_R2,Arm_R1,0);
 }

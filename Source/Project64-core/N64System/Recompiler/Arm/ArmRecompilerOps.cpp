@@ -1039,7 +1039,7 @@ void CArmRecompilerOps::JAL()
             m_RegWorkingSet.WriteBackRegisters();
 
             MoveConstToArmReg(Arm_R0, (uint32_t)_PROGRAM_COUNTER, "_PROGRAM_COUNTER");
-            LoadArmRegPointerToArmReg(Arm_R0, Arm_R1, 0);
+            LoadArmRegPointerToArmReg(Arm_R1, Arm_R0, 0);
             MoveConstToArmReg(Arm_R2, 0xF0000000);
             MoveConstToArmReg(Arm_R3, (uint32_t)(m_Opcode.target << 2));
             AndArmRegToArmReg(Arm_R2, Arm_R1);
