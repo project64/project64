@@ -207,7 +207,7 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
             }
             else
             {
-                MoveConstToArmReg(GetMipsRegLo(MipsReg), Reg );
+                MoveConstToArmReg(Reg, GetMipsRegLo(MipsReg));
             }
         }
     }
@@ -258,22 +258,22 @@ CArmOps::ArmReg CArmRegInfo::Map_Variable(VARIABLE_MAPPED variable)
     case VARIABLE_GPR:
         CPU_Message("    regcache: allocate %s as pointer to GPR", ArmRegName(Reg));
         m_Variable_MappedTo[Reg] = variable;
-        MoveConstToArmReg((uint32_t)_GPR, Reg, "_GPR");
+        MoveConstToArmReg(Reg, (uint32_t)_GPR, "_GPR");
         break;
     case VARIABLE_FPR:
         CPU_Message("    regcache: allocate %s as pointer to _FPR_S", ArmRegName(Reg));
         m_Variable_MappedTo[Reg] = variable;
-        MoveConstToArmReg((uint32_t)_FPR_S, Reg, "_FPR_S");
+        MoveConstToArmReg(Reg,(uint32_t)_FPR_S,"_FPR_S");
         break;
     case VARIABLE_TLB_READMAP:
         CPU_Message("    regcache: allocate %s as pointer to TLB_READMAP", ArmRegName(Reg));
         m_Variable_MappedTo[Reg] = variable;
-        MoveConstToArmReg((uint32_t)(g_MMU->m_TLB_ReadMap), Reg, "MMU->TLB_ReadMap");
+        MoveConstToArmReg(Reg, (uint32_t)(g_MMU->m_TLB_ReadMap), "MMU->TLB_ReadMap");
         break;
     case VARIABLE_NEXT_TIMER:
         CPU_Message("    regcache: allocate %s as pointer to g_NextTimer", ArmRegName(Reg));
         m_Variable_MappedTo[Reg] = variable;
-        MoveConstToArmReg((uint32_t)(g_NextTimer), Reg, "g_NextTimer");
+        MoveConstToArmReg(Reg, (uint32_t)(g_NextTimer), "g_NextTimer");
         break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);

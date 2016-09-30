@@ -659,7 +659,7 @@ void CArmRecompilerOps::BGTZ_Compare()
         //r0 = low, r1 = high
         //r2 = low, r3 = high
         MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-        MoveConstToArmReg((uint32_t)0, Arm_R2);
+        MoveConstToArmReg(Arm_R2, (uint32_t)0);
         CompareArmRegToArmReg(Arm_R0, Arm_R2);
         if (m_Section->m_Jump.FallThrough)
         {
@@ -684,7 +684,7 @@ void CArmRecompilerOps::BGTZ_Compare()
         uint8_t *Jump = NULL;
 
         MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[1], CRegName::GPR_Hi[m_Opcode.rs], Arm_R0);
-        MoveConstToArmReg((uint32_t)0, Arm_R2);
+        MoveConstToArmReg(Arm_R2, (uint32_t)0);
         CompareArmRegToArmReg(Arm_R0, Arm_R2);
         if (m_Section->m_Jump.FallThrough)
         {
@@ -748,7 +748,7 @@ void CArmRecompilerOps::BLEZ_Compare()
         if (!g_System->b32BitCore())
         {
             MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[1], CRegName::GPR_Hi[m_Opcode.rs], Arm_R0);
-            MoveConstToArmReg((uint32_t)0, Arm_R2);
+            MoveConstToArmReg(Arm_R2, (uint32_t)0);
             CompareArmRegToArmReg(Arm_R0, Arm_R2);
             if (m_Section->m_Jump.FallThrough)
             {
@@ -804,7 +804,7 @@ void CArmRecompilerOps::BLEZ_Compare()
         else
         {
             MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-            MoveConstToArmReg((uint32_t)0, Arm_R2);
+            MoveConstToArmReg(Arm_R2, (uint32_t)0);
             CompareArmRegToArmReg(Arm_R0, Arm_R2);
             if (m_Section->m_Jump.FallThrough)
             {
@@ -843,7 +843,7 @@ void CArmRecompilerOps::BLTZ_Compare()
         {
             MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[1], CRegName::GPR_Hi[m_Opcode.rs], Arm_R0);
         }
-        MoveConstToArmReg((uint32_t)0, Arm_R2);
+        MoveConstToArmReg(Arm_R2, (uint32_t)0);
         CompareArmRegToArmReg(Arm_R0, Arm_R2);
         if (m_Section->m_Jump.FallThrough)
         {
@@ -886,7 +886,7 @@ void CArmRecompilerOps::BGEZ_Compare()
         {
             MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[1], CRegName::GPR_Hi[m_Opcode.rs], Arm_R0);
         }
-        MoveConstToArmReg((uint32_t)0, Arm_R2);
+        MoveConstToArmReg(Arm_R2, (uint32_t)0);
         CompareArmRegToArmReg(Arm_R0, Arm_R2);
         if (m_Section->m_Cont.FallThrough)
         {
@@ -1038,10 +1038,10 @@ void CArmRecompilerOps::JAL()
         {
             m_RegWorkingSet.WriteBackRegisters();
 
-            MoveConstToArmReg((uint32_t)_PROGRAM_COUNTER, Arm_R0, "_PROGRAM_COUNTER");
+            MoveConstToArmReg(Arm_R0, (uint32_t)_PROGRAM_COUNTER, "_PROGRAM_COUNTER");
             LoadArmRegPointerToArmReg(Arm_R0, Arm_R1, 0);
-            MoveConstToArmReg(0xF0000000, Arm_R2);
-            MoveConstToArmReg((uint32_t)(m_Opcode.target << 2), Arm_R3);
+            MoveConstToArmReg(Arm_R2, 0xF0000000);
+            MoveConstToArmReg(Arm_R3, (uint32_t)(m_Opcode.target << 2));
             AndArmRegToArmReg(Arm_R2, Arm_R1);
             AddArmRegToArmReg(Arm_R3, Arm_R1, Arm_R1);
             StoreArmRegToArmRegPointer(Arm_R1, Arm_R0, 0);
@@ -1465,12 +1465,12 @@ void CArmRecompilerOps::CACHE()
     case 0:
     case 16:
         m_RegWorkingSet.BeforeCallDirect();
-        MoveConstToArmReg((uint32_t)CRecompiler::Remove_Cache, Arm_R3, "CRecompiler::Remove_Cache");
-        MoveConstToArmReg((uint32_t)0x20, Arm_R2);
+        MoveConstToArmReg(Arm_R3, (uint32_t)CRecompiler::Remove_Cache, "CRecompiler::Remove_Cache");
+        MoveConstToArmReg(Arm_R2, (uint32_t)0x20);
         MoveVariableToArmReg(&_GPR[m_Opcode.base].UW[0], CRegName::GPR_Lo[m_Opcode.base], Arm_R1);
-        MoveConstToArmReg((uint32_t)((int16_t)m_Opcode.offset), Arm_R0);
+        MoveConstToArmReg(Arm_R0, (uint32_t)((int16_t)m_Opcode.offset));
         AddArmRegToArmReg(Arm_R0, Arm_R1, Arm_R1);
-        MoveConstToArmReg((uint32_t)g_Recompiler, Arm_R0, "g_Recompiler");
+        MoveConstToArmReg(Arm_R0, (uint32_t)g_Recompiler, "g_Recompiler");
         CallFunction((void *)AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
         m_RegWorkingSet.AfterCallDirect();
         break;
@@ -1713,7 +1713,7 @@ void CArmRecompilerOps::SPECIAL_JR()
             {
                 m_RegWorkingSet.WriteBackRegisters();
                 MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-                MoveConstToArmReg((uint32_t)&R4300iOp::m_JumpToLocation, Arm_R1, "R4300iOp::m_JumpToLocation");
+                MoveConstToArmReg(Arm_R1, (uint32_t)&R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
                 StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
             }
             OverflowDelaySlot(true);
@@ -1737,7 +1737,7 @@ void CArmRecompilerOps::SPECIAL_JR()
             else
             {
                 MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-                MoveConstToArmReg((uint32_t)_PROGRAM_COUNTER, Arm_R1, "PROGRAM_COUNTER");
+                MoveConstToArmReg(Arm_R1, (uint32_t)_PROGRAM_COUNTER, "PROGRAM_COUNTER");
                 StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
             }
         }
@@ -1760,7 +1760,7 @@ void CArmRecompilerOps::SPECIAL_JR()
             else
             {
                 MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-                MoveConstToArmReg((uint32_t)_PROGRAM_COUNTER, Arm_R1, "PROGRAM_COUNTER");
+                MoveConstToArmReg(Arm_R1, (uint32_t)_PROGRAM_COUNTER, "PROGRAM_COUNTER");
                 StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
             }
             CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal);
@@ -1789,7 +1789,7 @@ void CArmRecompilerOps::SPECIAL_JALR()
                 return;
             }
             MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-            MoveConstToArmReg((uint32_t)_PROGRAM_COUNTER, Arm_R1, "PROGRAM_COUNTER");
+            MoveConstToArmReg(Arm_R1, (uint32_t)_PROGRAM_COUNTER, "PROGRAM_COUNTER");
             StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
         }
         UnMap_GPR(m_Opcode.rd, false);
@@ -1802,7 +1802,7 @@ void CArmRecompilerOps::SPECIAL_JALR()
                 return;
             }
             MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-            MoveConstToArmReg((uint32_t)&R4300iOp::m_JumpToLocation, Arm_R1, "R4300iOp::m_JumpToLocation");
+            MoveConstToArmReg(Arm_R1, (uint32_t)&R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
             StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
 
             m_RegWorkingSet.WriteBackRegisters();
@@ -1834,7 +1834,7 @@ void CArmRecompilerOps::SPECIAL_JALR()
                 return;
             }
             MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-            MoveConstToArmReg((uint32_t)_PROGRAM_COUNTER, Arm_R1, "PROGRAM_COUNTER");
+            MoveConstToArmReg(Arm_R1, (uint32_t)_PROGRAM_COUNTER, "PROGRAM_COUNTER");
             StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
             CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal);
             if (m_Section->m_JumpSection)
@@ -3184,7 +3184,7 @@ void CArmRecompilerOps::UnknownOpcode()
     MoveConstToVariable(m_CompilePC, &g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
     if (g_SyncSystem)
     {
-        MoveConstToArmReg((uint32_t)g_BaseSystem, Arm_R0, "g_BaseSystem");
+        MoveConstToArmReg(Arm_R0, (uint32_t)g_BaseSystem, "g_BaseSystem");
         CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     }
 
@@ -3203,7 +3203,7 @@ void CArmRecompilerOps::ExitCodeBlock()
 {
     if (g_SyncSystem)
     {
-        MoveConstToArmReg((uint32_t)g_BaseSystem, Arm_R0, "g_BaseSystem");
+        MoveConstToArmReg(Arm_R0, (uint32_t)g_BaseSystem, "g_BaseSystem");
         CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     }
     PopArmReg(ArmPushPop_R3 | ArmPushPop_R4 | ArmPushPop_R5 | ArmPushPop_R6 | ArmPushPop_R7 | ArmPushPop_PC);
@@ -3227,7 +3227,7 @@ void CArmRecompilerOps::CompileCop1Test()
         return;
 
     MoveVariableToArmReg(&g_Reg->STATUS_REGISTER, "STATUS_REGISTER", Arm_R1);
-    MoveConstToArmReg(STATUS_CU1, Arm_R2, "STATUS_REGISTER");
+    MoveConstToArmReg(Arm_R2, STATUS_CU1, "STATUS_REGISTER");
     AndArmRegToArmReg(Arm_R2, Arm_R1);
     CompareArmRegToConst(Arm_R1, 0);
     CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::COP1_Unuseable, ArmBranch_Equal);
@@ -3240,13 +3240,13 @@ void CArmRecompilerOps::CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCou
     RegSet.WriteBackRegisters();
     UpdateCounters(RegSet, false, true);
     CallFunction(AddressOf(CInterpreterCPU::InPermLoop), "CInterpreterCPU::InPermLoop");
-    MoveConstToArmReg((uint32_t)g_SystemTimer, Arm_R0);
+    MoveConstToArmReg(Arm_R0, (uint32_t)g_SystemTimer);
     CallFunction(AddressOf(&CSystemTimer::TimerDone), "CSystemTimer::TimerDone");
     CPU_Message("CompileSystemCheck 3");
     CompileSystemCheck((uint32_t)-1, RegSet);
     if (g_SyncSystem)
     {
-        MoveConstToArmReg((uint32_t)g_BaseSystem, Arm_R0);
+        MoveConstToArmReg(Arm_R0, (uint32_t)g_BaseSystem);
         CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     }
 }
@@ -3260,8 +3260,8 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
 {
     if (TargetPC != (uint32_t)-1)
     {
-        MoveConstToArmReg(TargetPC, Arm_R1);
-        MoveConstToArmReg((uint32_t)&g_Reg->m_PROGRAM_COUNTER, Arm_R2, "PROGRAM_COUNTER");
+        MoveConstToArmReg(Arm_R1, TargetPC);
+        MoveConstToArmReg(Arm_R2, (uint32_t)&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
         StoreArmRegToArmRegPointer(Arm_R1, Arm_R2, 0);
 
         UpdateCounters(ExitRegSet, TargetPC <= JumpPC && JumpPC != -1, reason == CExitInfo::Normal);
@@ -3297,16 +3297,16 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         break;
     case CExitInfo::DoSysCall:
         bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
-        MoveConstToArmReg((uint32_t)bDelay, Arm_R1, bDelay ? "true" : "false");
-        MoveConstToArmReg((uint32_t)g_Reg, Arm_R0);
+        MoveConstToArmReg(Arm_R1, (uint32_t)bDelay, bDelay ? "true" : "false");
+        MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg);
         CallFunction(AddressOf(&CRegisters::DoSysCallException), "CRegisters::DoSysCallException");
         ExitCodeBlock();
         break;
     case CExitInfo::COP1_Unuseable:
         bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
-        MoveConstToArmReg((uint32_t)1, Arm_R2, "1");
-        MoveConstToArmReg((uint32_t)bDelay, Arm_R1, bDelay ? "true" : "false");
-        MoveConstToArmReg((uint32_t)g_Reg, Arm_R0);
+        MoveConstToArmReg(Arm_R2, (uint32_t)1, "1");
+        MoveConstToArmReg(Arm_R1, (uint32_t)bDelay, bDelay ? "true" : "false");
+        MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg);
         CallFunction(AddressOf(&CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
         ExitCodeBlock();
         break;
@@ -3344,7 +3344,7 @@ void CArmRecompilerOps::CompileSystemCheck(uint32_t TargetPC, const CRegInfo & R
     CRegInfo RegSetCopy(RegSet);
     RegSetCopy.WriteBackRegisters();
 
-    MoveConstToArmReg((uint32_t)g_SystemEvents, Arm_R0, "g_SystemEvents");
+    MoveConstToArmReg(Arm_R0, (uint32_t)g_SystemEvents, "g_SystemEvents");
     CallFunction(AddressOf(&CSystemEvents::ExecuteEvents), "CSystemEvents::ExecuteEvents");
     ExitCodeBlock();
     CPU_Message("");
@@ -3484,9 +3484,9 @@ void CArmRecompilerOps::UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles)
     }
     WriteArmComment("Updating Sync CPU");
     RegSet.BeforeCallDirect();
-    MoveConstToArmReg(Cycles, Arm_R2);
-    MoveConstToArmReg((uint32_t)g_SyncSystem, Arm_R1, "g_SyncSystem");
-    MoveConstToArmReg((uint32_t)g_System, Arm_R0);
+    MoveConstToArmReg(Arm_R2, Cycles);
+    MoveConstToArmReg(Arm_R1, (uint32_t)g_SyncSystem, "g_SyncSystem");
+    MoveConstToArmReg(Arm_R0, (uint32_t)g_System);
     CallFunction((void *)AddressOf(&CN64System::UpdateSyncCPU), "CN64System::UpdateSyncCPU");
     RegSet.AfterCallDirect();
 }
@@ -3511,7 +3511,7 @@ void CArmRecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool 
         uint8_t * Jump = *g_RecompPos;
         BranchLabel8(ArmBranch_GreaterThanOrEqual, "Continue_From_Timer_Test");
         RegSet.BeforeCallDirect();
-        MoveConstToArmReg((uint32_t)g_SystemTimer, Arm_R0, "g_SystemTimer");
+        MoveConstToArmReg(Arm_R0, (uint32_t)g_SystemTimer, "g_SystemTimer");
         CallFunction(AddressOf(&CSystemTimer::TimerDone), "CSystemTimer::TimerDone");
         RegSet.AfterCallDirect();
 
@@ -3537,7 +3537,7 @@ void CArmRecompilerOps::OverflowDelaySlot(bool TestTimer)
 
     if (g_SyncSystem)
     {
-        MoveConstToArmReg((uint32_t)g_BaseSystem, Arm_R0, "g_BaseSystem");
+        MoveConstToArmReg(Arm_R0, (uint32_t)g_BaseSystem, "g_BaseSystem");
         CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     }
 
@@ -3548,12 +3548,12 @@ void CArmRecompilerOps::OverflowDelaySlot(bool TestTimer)
         MoveConstToVariable(TestTimer, &R4300iOp::m_TestTimer, "R4300iOp::m_TestTimer");
     }
 
-    MoveConstToArmReg(g_System->CountPerOp(), Arm_R0);
+    MoveConstToArmReg(Arm_R0, g_System->CountPerOp());
     CallFunction((void *)CInterpreterCPU::ExecuteOps, "CInterpreterCPU::ExecuteOps");
 
     if (g_System->bFastSP() && g_Recompiler)
     {
-        MoveConstToArmReg((uint32_t)g_Recompiler, Arm_R0);
+        MoveConstToArmReg(Arm_R0, (uint32_t)g_Recompiler);
         CallFunction(AddressOf(&CRecompiler::ResetMemoryStackPos), "CRecompiler::ResetMemoryStackPos");
     }
     if (g_SyncSystem)

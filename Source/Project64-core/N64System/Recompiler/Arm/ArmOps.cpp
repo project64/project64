@@ -191,8 +191,8 @@ void CArmOps::BranchLabel20(ArmBranchCompare CompareType, const char * Label)
 void CArmOps::CallFunction(void * Function, const char * FunctionName)
 {
     ArmReg reg = Arm_R4;
-    MoveConstToArmReg((uint32_t)Function,reg,FunctionName);
-    int32_t offset=(int32_t)Function-(int32_t)*g_RecompPos;
+    MoveConstToArmReg(reg,(uint32_t)Function,FunctionName);
+    int32_t Offset=(int32_t)Function-(int32_t)*g_RecompPos;
     ArmThumbOpcode op = {0};
     op.Branch.reserved = 0;
     op.Branch.rm = reg;
@@ -201,15 +201,15 @@ void CArmOps::CallFunction(void * Function, const char * FunctionName)
     AddCode16(op.Hex);
 }
 
-void CArmOps::MoveConstToArmReg(uint16_t Const, ArmReg reg, const char * comment)
+void CArmOps::MoveConstToArmReg(ArmReg DestReg, uint16_t Const, const char * comment)
 {
     if (comment != NULL)
     {
-        CPU_Message("      movw\t%s, #0x%X\t; %s", ArmRegName(reg), (uint32_t)Const, comment);
+        CPU_Message("      movw\t%s, #0x%X\t; %s", ArmRegName(DestReg), (uint32_t)Const, comment);
     }
     else
     {
-        CPU_Message("      movw\t%s, #%d\t; 0x%X", ArmRegName(reg), (uint32_t)Const, (uint32_t)Const);
+        CPU_Message("      movw\t%s, #%d\t; 0x%X", ArmRegName(DestReg), (uint32_t)Const, (uint32_t)Const);
     }
     Arm32Opcode op = {0};
     op.imm16.opcode = ArmMOV_IMM16;
@@ -218,20 +218,20 @@ void CArmOps::MoveConstToArmReg(uint16_t Const, ArmReg reg, const char * comment
     op.imm16.imm4 = ((Const >> 12) & 0xF);
     op.imm16.reserved = 0;
     op.imm16.imm3 = ((Const >> 8) & 0x7);
-    op.imm16.rd = reg;
+    op.imm16.rd = DestReg;
     op.imm16.imm8 = (Const & 0xFF);
     AddCode32(op.Hex);
 }
 
-void CArmOps::MoveConstToArmRegTop(uint16_t Const, ArmReg reg, const char * comment)
+void CArmOps::MoveConstToArmRegTop(ArmReg DestReg, uint16_t Const, const char * comment)
 {
     if (comment != NULL)
     {
-        CPU_Message("      movt\t%s, #0x%X\t; %s", ArmRegName(reg), (uint32_t)Const, comment);
+        CPU_Message("      movt\t%s, #0x%X\t; %s", ArmRegName(DestReg), (uint32_t)Const, comment);
     }
     else
     {
-        CPU_Message("      movt\t%s, #%d\t; 0x%X", ArmRegName(reg), (uint32_t)Const, (uint32_t)Const);
+        CPU_Message("      movt\t%s, #%d\t; 0x%X", ArmRegName(DestReg), (uint32_t)Const, (uint32_t)Const);
     }
     Arm32Opcode op = {0};
     op.imm16.opcode = ArmMOV_IMM16;
@@ -240,7 +240,7 @@ void CArmOps::MoveConstToArmRegTop(uint16_t Const, ArmReg reg, const char * comm
     op.imm16.imm4 = ((Const >> 12) & 0xF);
     op.imm16.reserved = 0;
     op.imm16.imm3 = ((Const >> 8) & 0x7);
-    op.imm16.rd = reg;
+    op.imm16.rd = DestReg;
     op.imm16.imm8 = (Const & 0xFF);
     AddCode32(op.Hex);
 }
@@ -288,31 +288,31 @@ void CArmOps::LoadArmRegPointerToArmReg(ArmReg RegPointer, ArmReg Reg, uint8_t o
     }
 }
 
-void CArmOps::MoveArmRegArmReg(ArmReg SourceReg, ArmReg DestReg)
+void CArmOps::MoveArmRegArmReg(ArmReg DestReg, ArmReg SourceReg)
 {
     g_Notify->BreakPoint(__FILE__,__LINE__);
 }
 
-void CArmOps::MoveConstToArmReg(uint32_t Const, ArmReg reg, const char * comment)
+void CArmOps::MoveConstToArmReg(ArmReg DestReg, uint32_t Const, const char * comment)
 {
-    MoveConstToArmReg((uint16_t)(Const & 0xFFFF),reg,comment);
+    MoveConstToArmReg(DestReg,(uint16_t)(Const & 0xFFFF),comment);
     uint16_t TopValue = (uint16_t)((Const >> 16) & 0xFFFF);
     if (TopValue != 0)
     {
-        MoveConstToArmRegTop(TopValue,reg,comment != NULL ? "" : NULL);
+        MoveConstToArmRegTop(DestReg,TopValue,comment != NULL ? "" : NULL);
     }
 }
 
 void CArmOps::MoveConstToVariable(uint32_t Const, void * Variable, const char * VariableName)
 {
-    MoveConstToArmReg(Const,Arm_R1);
-    MoveConstToArmReg((uint32_t)Variable,Arm_R2,VariableName);
+    MoveConstToArmReg(Arm_R1, Const);
+    MoveConstToArmReg(Arm_R2,(uint32_t)Variable,VariableName);
     StoreArmRegToArmRegPointer(Arm_R1,Arm_R2,0);
 }
 
 void CArmOps::MoveVariableToArmReg(void * Variable, const char * VariableName, ArmReg reg)
 {
-    MoveConstToArmReg((uint32_t)Variable,reg,VariableName);
+    MoveConstToArmReg(reg,(uint32_t)Variable,VariableName);
     LoadArmRegPointerToArmReg(reg,reg,0);
 }
 
@@ -483,7 +483,7 @@ void CArmOps::SubConstFromArmReg(ArmReg Reg, uint32_t Const)
 
 void CArmOps::SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName)
 {
-    MoveConstToArmReg((uint32_t)Variable,Arm_R1,VariableName);
+    MoveConstToArmReg(Arm_R1,(uint32_t)Variable,VariableName);
     LoadArmRegPointerToArmReg(Arm_R1,Arm_R2,0);
     SubConstFromArmReg(Arm_R2,Const);
     StoreArmRegToArmRegPointer(Arm_R2,Arm_R1,0);
@@ -492,7 +492,7 @@ void CArmOps::SubConstFromVariable(uint32_t Const, void * Variable, const char *
 void CArmOps::TestVariable(uint32_t Const, void * Variable, const char * VariableName)
 {
     MoveVariableToArmReg(Variable,VariableName, Arm_R2);
-    MoveConstToArmReg(Const,Arm_R3);
+    MoveConstToArmReg(Arm_R3, Const);
     AndArmRegToArmReg(Arm_R3,Arm_R2);
     CompareArmRegToArmReg(Arm_R2,Arm_R3);
 }

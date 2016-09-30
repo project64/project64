@@ -145,10 +145,10 @@ protected:
     static void CompareArmRegToConst(ArmReg Reg, uint8_t value);
     static void CompareArmRegToArmReg(ArmReg Reg1, ArmReg Reg2);
     static void LoadArmRegPointerToArmReg(ArmReg RegPointer, ArmReg Reg, uint8_t offset);
-    static void MoveArmRegArmReg(ArmReg SourceReg, ArmReg DestReg);
-    static void MoveConstToArmReg(uint16_t Const, ArmReg reg, const char * comment = NULL);
-    static void MoveConstToArmRegTop(uint16_t Const, ArmReg reg, const char * comment = NULL);
-    static void MoveConstToArmReg(uint32_t Const, ArmReg reg, const char * comment = NULL);
+    static void MoveArmRegArmReg(ArmReg DestReg, ArmReg SourceReg);
+    static void MoveConstToArmReg(ArmReg DestReg, uint16_t Const, const char * comment = NULL);
+    static void MoveConstToArmRegTop(ArmReg DestReg, uint16_t Const, const char * comment = NULL);
+    static void MoveConstToArmReg(ArmReg DestReg, uint32_t Const, const char * comment = NULL);
     static void MoveConstToVariable(uint32_t Const, void * Variable, const char * VariableName);
     static void MoveVariableToArmReg(void * Variable, const char * VariableName, ArmReg reg);
     static void PushArmReg(uint16_t Registers);
