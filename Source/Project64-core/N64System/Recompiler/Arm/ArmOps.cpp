@@ -422,6 +422,16 @@ void CArmOps::MoveArmRegArmReg(ArmReg DestReg, ArmReg SourceReg)
     g_Notify->BreakPoint(__FILE__,__LINE__);
 }
 
+void CArmOps::LoadFloatingPointControlReg(ArmReg DestReg)
+{
+    CPU_Message("      vmrs\t%s, fpscr", ArmRegName(DestReg));
+    Arm32Opcode op = {0};
+    op.fpscr.opcode2 = 0xA10;
+    op.fpscr.rt = DestReg;
+    op.fpscr.opcode = 0xEEF1;
+    AddCode32(op.Hex);
+}
+
 void CArmOps::MoveConstToArmReg(ArmReg DestReg, uint32_t Const, const char * comment)
 {
     MoveConstToArmReg(DestReg,(uint16_t)(Const & 0xFFFF),comment);

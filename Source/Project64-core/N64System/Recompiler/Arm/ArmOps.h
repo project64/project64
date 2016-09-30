@@ -150,6 +150,7 @@ protected:
     static void LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8_t Offset);
     static void LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift);
     static void LoadArmRegPointerToFloatReg(ArmReg RegPointer, ArmFpuSingle Reg, uint8_t Offset);
+    static void LoadFloatingPointControlReg(ArmReg DestReg);
     static void MoveArmRegArmReg(ArmReg DestReg, ArmReg SourceReg);
     static void MoveConstToArmReg(ArmReg DestReg, uint16_t Const, const char * comment = NULL);
     static void MoveConstToArmRegTop(ArmReg DestReg, uint16_t Const, const char * comment = NULL);
