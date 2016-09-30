@@ -302,6 +302,36 @@ void CArmOps::CompareArmRegToArmReg(ArmReg Reg1, ArmReg Reg2)
     AddCode16(op.Hex);
 }
 
+void CArmOps::LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift)
+{
+    if ((DestReg > 0x7 || RegPointer > 0x7 ||  RegPointer2 > 0x7) && (shift & ~3) == 0)
+    {
+        CPU_Message("      ldrb\t%s, [%s,%s]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2));
+        Arm32Opcode op = {0};
+        op.uint16.rn = RegPointer;
+        op.uint16.opcode = 0xF81;
+        op.uint16.rm = RegPointer2;
+        op.uint16.imm2 = (shift & 3);
+        op.uint16.reserved = 0;
+        op.uint16.rt = DestReg;
+        AddCode32(op.Hex);
+    }
+    else if (shift == 0 && DestReg <= 0x7 && RegPointer <= 0x7 && RegPointer2 <= 0x7)
+    {
+        CPU_Message("      ldrb\t%s, [%s,%s]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2));
+        ArmThumbOpcode op = {0};
+        op.Reg.rm = RegPointer2;
+        op.Reg.rt = DestReg;
+        op.Reg.rn = RegPointer;
+        op.Reg.opcode = 0x2E;
+        AddCode16(op.Hex);
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__,__LINE__);
+    }
+}
+
 void CArmOps::LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8_t Offset)
 {
     if (DestReg > 0x7 || RegPointer > 0x7 || (Offset & (~0x7C)) != 0)
