@@ -149,6 +149,7 @@ protected:
     static void LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift);
     static void LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8_t Offset);
     static void LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift);
+    static void LoadArmRegPointerToFloatReg(ArmReg RegPointer, ArmFpuSingle Reg, uint8_t Offset);
     static void MoveArmRegArmReg(ArmReg DestReg, ArmReg SourceReg);
     static void MoveConstToArmReg(ArmReg DestReg, uint16_t Const, const char * comment = NULL);
     static void MoveConstToArmRegTop(ArmReg DestReg, uint16_t Const, const char * comment = NULL);
@@ -172,6 +173,7 @@ protected:
 
     static const char * ArmBranchSuffix(ArmBranchCompare CompareType);
     static const char * ArmRegName(ArmReg Reg);
+    static const char * ArmFpuSingleName(ArmFpuSingle Reg);
     static void AddCode8(uint8_t value);
     static void AddCode16(uint16_t value);
     static void AddCode32(uint32_t value);

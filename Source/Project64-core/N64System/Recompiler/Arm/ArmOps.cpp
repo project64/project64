@@ -394,6 +394,29 @@ void CArmOps::LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmRe
     }
 }
 
+void CArmOps::LoadArmRegPointerToFloatReg(ArmReg RegPointer, ArmFpuSingle Reg, uint8_t Offset)
+{
+    if (Offset != 0)
+    {
+        CPU_Message("      vldr\t%s, [%s, #%d]", ArmFpuSingleName(Reg), ArmRegName(RegPointer), (uint32_t)Offset);
+    }
+    else
+    {
+        CPU_Message("      vldr\t%s, [%s]", ArmFpuSingleName(Reg), ArmRegName(RegPointer));
+    }
+    Arm32Opcode op = {0};
+    op.RnVdImm8.Rn = RegPointer;
+    op.RnVdImm8.op3 = 1;
+    op.RnVdImm8.D = Reg & 1;
+    op.RnVdImm8.U = 1;
+    op.RnVdImm8.op2 = 0xED;
+
+    op.RnVdImm8.imm8 = Offset;
+    op.RnVdImm8.op1 = 0xA;
+    op.RnVdImm8.vd = Reg >> 1;
+    AddCode32(op.Hex);
+}
+
 void CArmOps::MoveArmRegArmReg(ArmReg DestReg, ArmReg SourceReg)
 {
     g_Notify->BreakPoint(__FILE__,__LINE__);
@@ -764,22 +787,64 @@ const char * CArmOps::ArmRegName(ArmReg Reg)
 {
     switch (Reg)
     {
-    case Arm_R0: return "R0";
-    case Arm_R1: return "R1";
-    case Arm_R2: return "R2";
-    case Arm_R3: return "R3";
-    case Arm_R4: return "R4";
-    case Arm_R5: return "R5";
-    case Arm_R6: return "R6";
-    case Arm_R7: return "R7";
-    case Arm_R8: return "R8";
-    case Arm_R9: return "R9";
-    case Arm_R10: return "R10";
-    case Arm_R11: return "R11";
-    case Arm_R12: return "R12";
-    case ArmRegSP: return "SP";
-    case ArmRegLR: return "LR";
-    case ArmRegPC: return "PC";
+    case Arm_R0: return "r0";
+    case Arm_R1: return "r1";
+    case Arm_R2: return "r2";
+    case Arm_R3: return "r3";
+    case Arm_R4: return "r4";
+    case Arm_R5: return "r5";
+    case Arm_R6: return "r6";
+    case Arm_R7: return "r7";
+    case Arm_R8: return "r8";
+    case Arm_R9: return "r9";
+    case Arm_R10: return "r10";
+    case Arm_R11: return "fp";
+    case Arm_R12: return "ip";
+    case ArmRegSP: return "sp";
+    case ArmRegLR: return "lr";
+    case ArmRegPC: return "pc";
+    default:
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    return "???";
+}
+
+const char * CArmOps::ArmFpuSingleName(ArmFpuSingle Reg)
+{
+    switch (Reg)
+    {
+    case Arm_S0: return "s0";
+    case Arm_S1: return "s1";
+    case Arm_S2: return "s2";
+    case Arm_S3: return "s3";
+    case Arm_S4: return "s4";
+    case Arm_S5: return "s5";
+    case Arm_S6: return "s6";
+    case Arm_S7: return "s7";
+    case Arm_S8: return "s8";
+    case Arm_S9: return "s9";
+    case Arm_S10: return "s10";
+    case Arm_S11: return "s11";
+    case Arm_S12: return "s12";
+    case Arm_S13: return "s13";
+    case Arm_S14: return "s14";
+    case Arm_S15: return "s15";
+    case Arm_S16: return "s16";
+    case Arm_S17: return "s17";
+    case Arm_S18: return "s18";
+    case Arm_S19: return "s19";
+    case Arm_S20: return "s20";
+    case Arm_S21: return "s21";
+    case Arm_S22: return "s22";
+    case Arm_S23: return "s23";
+    case Arm_S24: return "s24";
+    case Arm_S25: return "s25";
+    case Arm_S26: return "s26";
+    case Arm_S27: return "s27";
+    case Arm_S28: return "s28";
+    case Arm_S29: return "s29";
+    case Arm_S30: return "s30";
+    case Arm_S31: return "s31";
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
@@ -788,13 +853,13 @@ const char * CArmOps::ArmRegName(ArmReg Reg)
 
 void CArmOps::AddCode8(uint8_t value)
 {
-    (*((uint8_t *)(*g_RecompPos))=(uint8_t)(value));
+    (*((uint8_t *)(*g_RecompPos)) = (uint8_t)(value));
     *g_RecompPos += 1;
 }
 
 void CArmOps::AddCode16(uint16_t value)
 {
-    (*((uint16_t *)(*g_RecompPos))=(uint16_t)(value));
+    (*((uint16_t *)(*g_RecompPos)) = (uint16_t)(value));
     *g_RecompPos += 2;
 }
 
