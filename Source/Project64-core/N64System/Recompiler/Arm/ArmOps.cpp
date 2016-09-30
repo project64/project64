@@ -362,6 +362,38 @@ void CArmOps::LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8
     }
 }
 
+void CArmOps::LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift)
+{
+    if ((shift & ~3) != 0)
+    {
+        g_Notify->BreakPoint(__FILE__,__LINE__);
+        return;
+    }
+
+    if (shift == 0 && DestReg <= 0x7 && RegPointer <= 0x7 && RegPointer2 <= 0x7)
+    {
+        CPU_Message("      ldr\t%s, [%s,%s]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2));
+        ArmThumbOpcode op = {0};
+        op.Reg.rm = RegPointer2;
+        op.Reg.rt = DestReg;
+        op.Reg.rn = RegPointer;
+        op.Reg.opcode = 0x2C;
+        AddCode16(op.Hex);
+    }
+    else
+    {
+        CPU_Message("      ldr.w\t%s, [%s, %s, lsl #%d]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2),shift);
+        Arm32Opcode op = {0};
+        op.imm2.rm = RegPointer2;
+        op.imm2.imm = shift;
+        op.imm2.Opcode2 = 0;
+        op.imm2.rt = DestReg;
+        op.imm2.rn = RegPointer;
+        op.imm2.opcode = 0xF85;
+        AddCode32(op.Hex);
+    }
+}
+
 void CArmOps::MoveArmRegArmReg(ArmReg DestReg, ArmReg SourceReg)
 {
     g_Notify->BreakPoint(__FILE__,__LINE__);
