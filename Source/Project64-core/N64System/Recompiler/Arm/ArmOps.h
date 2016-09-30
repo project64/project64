@@ -159,6 +159,7 @@ protected:
     static void MoveFloatRegToVariable(ArmFpuSingle reg, void * Variable, const char * VariableName);
     static void MoveVariableToArmReg(void * Variable, const char * VariableName, ArmReg reg);
     static void MoveVariableToFloatReg(void * Variable, const char * VariableName, ArmFpuSingle reg);
+    static void OrArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2, uint32_t shift);
     static void PushArmReg(uint16_t Registers);
     static void PopArmReg(uint16_t Registers);
     static void ShiftRightSignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift);

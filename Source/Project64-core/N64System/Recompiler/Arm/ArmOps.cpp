@@ -467,6 +467,36 @@ void CArmOps::MoveVariableToFloatReg(void * Variable, const char * VariableName,
     LoadArmRegPointerToFloatReg(Arm_R0,reg,0);
 }
 
+void CArmOps::OrArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2, uint32_t shift)
+{
+    if (shift == 0 && SourceReg1 == SourceReg2 && SourceReg1 <= 7 && SourceReg2 <= 7)
+    {
+        g_Notify->BreakPoint(__FILE__,__LINE__);
+        return;
+    }
+    if (shift)
+    {
+        CPU_Message("      orr.w\t%s, %s, %s, lsl #%d", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2), shift);
+    }
+    else
+    {
+        CPU_Message("      orr.w\t%s, %s, %s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
+    }
+    Arm32Opcode op = {0};
+    op.imm5.rn = SourceReg1;
+    op.imm5.s = 0;
+    op.imm5.opcode = 0x752;
+
+    op.imm5.rm = SourceReg2;
+    op.imm5.type = 0;
+    op.imm5.imm2 = (shift & 3);
+    op.imm5.rd = DestReg;
+    op.imm5.imm3 = ((shift >> 2) & 7);
+    op.imm5.opcode2 = 0;
+
+    AddCode32(op.Hex);
+}
+
 void CArmOps::PushArmReg(uint16_t Registers)
 {
     if (Registers == 0)
