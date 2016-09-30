@@ -11,6 +11,8 @@
 #pragma once
 #if defined(__arm__) || defined(_M_ARM)
 
+class CArmRegInfo;
+
 class CArmOps
 {
 public:
@@ -142,7 +144,7 @@ protected:
     static void BranchLabel8(ArmBranchCompare CompareType, const char * Label);
     static void BranchLabel20(ArmBranchCompare CompareType, const char * Label);
     static void CallFunction(void * Function, const char * FunctionName);
-    static void CompareArmRegToConst(ArmReg Reg, uint8_t value);
+    static void CompareArmRegToConst(ArmReg Reg, uint32_t value);
     static void CompareArmRegToArmReg(ArmReg Reg1, ArmReg Reg2);
     static void LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8_t Offset);
     static void MoveArmRegArmReg(ArmReg DestReg, ArmReg SourceReg);
@@ -171,6 +173,8 @@ protected:
     static void AddCode8(uint8_t value);
     static void AddCode16(uint16_t value);
     static void AddCode32(uint32_t value);
+
+    static CArmRegInfo m_RegWorkingSet;
 };
 
 #define AddressOf(Addr) CArmOps::GetAddressOf(5,(Addr))

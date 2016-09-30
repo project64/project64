@@ -15,6 +15,9 @@
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmOps.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmOpCode.h>
+#include <Project64-core/N64System/Recompiler/Arm/ArmRegInfo.h>
+
+CArmRegInfo CArmOps::m_RegWorkingSet;
 
 /**************************************************************************
 * Logging Functions                                                       *
@@ -252,16 +255,41 @@ void CArmOps::MoveConstToArmRegTop(ArmReg DestReg, uint16_t Const, const char * 
     AddCode32(op.Hex);
 }
 
-void CArmOps::CompareArmRegToConst(ArmReg Reg, uint8_t value)
+void CArmOps::CompareArmRegToConst(ArmReg Reg, uint32_t value)
 {
-    if (Reg > 0x7) { g_Notify->BreakPoint(__FILE__,__LINE__); return; }
+    if (Reg <= 0x7 && (value & 0xFFFFFF00) == 0)
+    {
+        CPU_Message("      cmp\t%s, #%d\t; 0x%X", ArmRegName(Reg), value, value);
+        ArmThumbOpcode op = {0};
+        op.Imm8.imm8 = value;
+        op.Imm8.rdn = Reg;
+        op.Imm8.opcode = 0x5;
+        AddCode16(op.Hex);
+    }
+    else if(CanThumbCompressConst(value))
+    {
+        CPU_Message("      cmp\t%s, #%d\t; 0x%X", ArmRegName(Reg), value, value);
+        uint16_t CompressedValue = ThumbCompressConst(value);
+        Arm32Opcode op = {0};
+        op.imm8_3_1.rn = Reg;
+        op.imm8_3_1.s = 1;
+        op.imm8_3_1.opcode = 0xD;
+        op.imm8_3_1.i = (CompressedValue >> 11) & 1;
+        op.imm8_3_1.opcode2 = 0x1E;
 
-    CPU_Message("      cmp\t%s, #%d\t; 0x%X", ArmRegName(Reg), value, value);
-    ArmThumbOpcode op = {0};
-    op.Imm8.imm8 = value;
-    op.Imm8.rdn = Reg;
-    op.Imm8.opcode = 0x5;
-    AddCode16(op.Hex);
+        op.imm8_3_1.imm8 = CompressedValue & 0xFF;
+        op.imm8_3_1.rd = 0xF;
+        op.imm8_3_1.imm3 = (CompressedValue >> 8) & 0x3;
+        op.imm8_3_1.opcode3 = 0;
+        AddCode32(op.Hex);
+    }
+    else
+    {
+        ArmReg TempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+        MoveConstToArmReg(TempReg,value);
+        CompareArmRegToArmReg(Reg, TempReg);
+        m_RegWorkingSet.SetArmRegProtected(TempReg,false);
+    }
 }
 
 void CArmOps::CompareArmRegToArmReg(ArmReg Reg1, ArmReg Reg2)
