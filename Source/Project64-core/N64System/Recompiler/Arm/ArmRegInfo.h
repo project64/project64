@@ -46,19 +46,23 @@ public:
 
     bool operator==(const CArmRegInfo& right) const;
     bool operator!=(const CArmRegInfo& right) const;
-    
+
     void BeforeCallDirect(void);
     void AfterCallDirect(void);
 
     ArmReg FreeArmReg();
     void WriteBackRegisters();
 
+    ArmReg Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadHiWord);
     ArmReg Map_Variable(VARIABLE_MAPPED variable);
+    inline uint32_t GetArmRegMapOrder(ArmReg Reg) const { return m_ArmReg_MapOrder[Reg]; }
     inline bool GetArmRegProtected(ArmReg Reg) const { return m_ArmReg_Protected[Reg]; }
     inline REG_MAPPED GetArmRegMapped(ArmReg Reg) const { return m_ArmReg_MappedTo[Reg]; }
+    inline void SetArmRegMapOrder(ArmReg Reg, uint32_t Order) { m_ArmReg_MapOrder[Reg] = Order; }
     inline void SetArmRegProtected(ArmReg Reg, bool Protected) { m_ArmReg_Protected[Reg] = Protected; }
     inline void SetArmRegMapped(ArmReg Reg, REG_MAPPED Mapping) { m_ArmReg_MappedTo[Reg] = Mapping; }
 private:
+    uint32_t m_ArmReg_MapOrder[16];
     bool m_ArmReg_Protected[16];
     REG_MAPPED m_ArmReg_MappedTo[16];
     VARIABLE_MAPPED m_Variable_MappedTo[16];

@@ -386,6 +386,41 @@ void CArmOps::PopArmReg(uint16_t Registers)
     AddCode16(op.Hex);
 }
 
+void CArmOps::ShiftRightSignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift)
+{
+    if ((shift & (~0x1F)) != 0)
+    {
+        g_Notify->BreakPoint(__FILE__,__LINE__);
+    }
+    else if (DestReg > 0x7 || SourceReg > 0x7)
+    {
+        CPU_Message("      asrs.w\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), (uint32_t)shift);
+        Arm32Opcode op = {0};
+        op.imm5.rn = 0xF;
+        op.imm5.s = 0;
+        op.imm5.opcode = 0x752;
+
+        op.imm5.rm = SourceReg;
+        op.imm5.type = 2;
+        op.imm5.imm2 = shift & 3;
+        op.imm5.rd = DestReg;
+        op.imm5.imm3 = (shift >> 2) & 7;
+        op.imm5.opcode2 = 0;
+        AddCode32(op.Hex);  
+    }
+    else
+    {
+        CPU_Message("      asrs\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), (uint32_t)shift);
+
+        ArmThumbOpcode op = {0};
+        op.Imm5.rt = DestReg;
+        op.Imm5.rn = SourceReg;
+        op.Imm5.imm5 = shift;
+        op.Imm5.opcode = 0x2;
+        AddCode16(op.Hex);
+    }
+}
+
 void CArmOps::StoreArmRegToArmRegPointer(ArmReg Reg, ArmReg RegPointer, uint8_t offset)
 {
     if (Reg > 0x7 || RegPointer > 0x7)

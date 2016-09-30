@@ -153,6 +153,7 @@ protected:
     static void MoveVariableToArmReg(void * Variable, const char * VariableName, ArmReg reg);
     static void PushArmReg(uint16_t Registers);
     static void PopArmReg(uint16_t Registers);
+    static void ShiftRightSignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift);
     static void StoreArmRegToArmRegPointer(ArmReg Reg, ArmReg RegPointer, uint8_t offset);
     static void SubConstFromArmReg(ArmReg Reg, uint32_t Const);
     static void SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName);
