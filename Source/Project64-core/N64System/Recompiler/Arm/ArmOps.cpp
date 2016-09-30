@@ -449,6 +449,12 @@ void CArmOps::MoveConstToVariable(uint32_t Const, void * Variable, const char * 
     StoreArmRegToArmRegPointer(Arm_R1,Arm_R2,0);
 }
 
+void CArmOps::MoveFloatRegToVariable(ArmFpuSingle reg, void * Variable, const char * VariableName)
+{
+    MoveConstToArmReg(Arm_R0,(uint32_t)Variable,VariableName);
+    StoreFloatRegToArmRegPointer(reg,Arm_R0,0);
+}
+
 void CArmOps::MoveVariableToArmReg(void * Variable, const char * VariableName, ArmReg reg)
 {
     MoveConstToArmReg(reg,(uint32_t)Variable,VariableName);
@@ -586,6 +592,29 @@ void CArmOps::StoreArmRegToArmRegPointer(ArmReg Reg, ArmReg RegPointer, uint8_t 
         op.Imm5.opcode = ArmSTR_ThumbImm;
         AddCode16(op.Hex);
     }
+}
+
+void CArmOps::StoreFloatRegToArmRegPointer(ArmFpuSingle Reg, ArmReg RegPointer, uint8_t Offset)
+{
+    if (Offset != 0)
+    {
+        CPU_Message("      vstr\t%s, [%s, #%d]", ArmFpuSingleName(Reg), ArmRegName(RegPointer), (uint32_t)Offset);
+    }
+    else
+    {
+        CPU_Message("      vstr\t%s, [%s]", ArmFpuSingleName(Reg), ArmRegName(RegPointer));
+    }
+    Arm32Opcode op = {0};
+    op.RnVdImm8.Rn = RegPointer;
+    op.RnVdImm8.op3 = 0;
+    op.RnVdImm8.D = Reg & 1;
+    op.RnVdImm8.U = 1;
+    op.RnVdImm8.op2 = 0xED;
+
+    op.RnVdImm8.imm8 = Offset;
+    op.RnVdImm8.op1 = 0xA;
+    op.RnVdImm8.vd = Reg >> 1;
+    AddCode32(op.Hex);
 }
 
 void CArmOps::SubConstFromArmReg(ArmReg Reg, uint32_t Const)
