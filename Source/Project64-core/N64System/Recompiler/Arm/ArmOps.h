@@ -35,6 +35,9 @@ public:
         ArmRegLR = 14,
         Arm_R15 = 15,
         ArmRegPC = 15,
+
+        Arm_Unknown = -1,
+        Arm_Any = -2,
     };
 
     enum ArmFpuSingle

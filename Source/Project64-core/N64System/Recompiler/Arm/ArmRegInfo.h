@@ -12,12 +12,32 @@
 #if defined(__arm__) || defined(_M_ARM)
 #include <Project64-core/N64System/Recompiler/RegBase.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmOps.h>
+#include <Project64-core/N64System/Mips/RegisterClass.h>
 
 class CArmRegInfo :
     public CRegBase,
-    public CArmOps
+    public CArmOps,
+    private CSystemRegisters
 {
 public:
+    //enums
+    enum REG_MAPPED
+    {
+        NotMapped = 0,
+        GPR_Mapped = 1,
+        Temp_Mapped = 2,
+        Variable_Mapped = 3,
+    };
+
+    enum VARIABLE_MAPPED
+    {
+        VARIABLE_UNKNOWN = 0,
+        VARIABLE_GPR = 1,
+        VARIABLE_FPR = 2,
+        VARIABLE_TLB_READMAP = 3,
+        VARIABLE_NEXT_TIMER = 4,
+    };
+
     CArmRegInfo();
     CArmRegInfo(const CArmRegInfo&);
     ~CArmRegInfo();
@@ -30,9 +50,18 @@ public:
     void BeforeCallDirect(void);
     void AfterCallDirect(void);
 
+    ArmReg FreeArmReg();
     void WriteBackRegisters();
 
+    ArmReg Map_Variable(VARIABLE_MAPPED variable);
+    inline bool GetArmRegProtected(ArmReg Reg) const { return m_ArmReg_Protected[Reg]; }
+    inline REG_MAPPED GetArmRegMapped(ArmReg Reg) const { return m_ArmReg_MappedTo[Reg]; }
+    inline void SetArmRegProtected(ArmReg Reg, bool Protected) { m_ArmReg_Protected[Reg] = Protected; }
+    inline void SetArmRegMapped(ArmReg Reg, REG_MAPPED Mapping) { m_ArmReg_MappedTo[Reg] = Mapping; }
 private:
+    bool m_ArmReg_Protected[16];
+    REG_MAPPED m_ArmReg_MappedTo[16];
+    VARIABLE_MAPPED m_Variable_MappedTo[16];
     bool m_InCallDirect;
 };
 #endif
