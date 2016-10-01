@@ -535,6 +535,41 @@ void CArmRegInfo::UnMap_AllFPRs()
     CPU_Message("%s", __FUNCTION__);
 }
 
+CArmOps::ArmReg CArmRegInfo::UnMap_TempReg()
+{
+    if (m_InCallDirect)
+    {
+        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return Arm_Unknown;
+    }
+    ArmReg Reg = Arm_Unknown;
+
+    if (GetArmRegMapped(Arm_R7) == Temp_Mapped && !GetArmRegProtected(Arm_R7)) { return Arm_R7; }
+    if (GetArmRegMapped(Arm_R6) == Temp_Mapped && !GetArmRegProtected(Arm_R6)) { return Arm_R6; }
+    if (GetArmRegMapped(Arm_R5) == Temp_Mapped && !GetArmRegProtected(Arm_R5)) { return Arm_R5; }
+    if (GetArmRegMapped(Arm_R4) == Temp_Mapped && !GetArmRegProtected(Arm_R4)) { return Arm_R4; }
+    if (GetArmRegMapped(Arm_R3) == Temp_Mapped && !GetArmRegProtected(Arm_R3)) { return Arm_R3; }
+    if (GetArmRegMapped(Arm_R2) == Temp_Mapped && !GetArmRegProtected(Arm_R2)) { return Arm_R2; }
+    if (GetArmRegMapped(Arm_R1) == Temp_Mapped && !GetArmRegProtected(Arm_R1)) { return Arm_R1; }
+    if (GetArmRegMapped(Arm_R0) == Temp_Mapped && !GetArmRegProtected(Arm_R0)) { return Arm_R0; }
+    if (GetArmRegMapped(Arm_R12) == Temp_Mapped && !GetArmRegProtected(Arm_R12)) { return Arm_R12; }
+    if (GetArmRegMapped(Arm_R11) == Temp_Mapped && !GetArmRegProtected(Arm_R11)) { return Arm_R11; }
+    if (GetArmRegMapped(Arm_R10) == Temp_Mapped && !GetArmRegProtected(Arm_R10)) { return Arm_R10; }
+    if (GetArmRegMapped(Arm_R9) == Temp_Mapped && !GetArmRegProtected(Arm_R9)) { return Arm_R9; }
+    if (GetArmRegMapped(Arm_R8) == Temp_Mapped && !GetArmRegProtected(Arm_R8)) { return Arm_R8; }
+
+    if (Reg != Arm_Unknown)
+    {
+        if (GetArmRegMapped(Reg) == Temp_Mapped)
+        {
+            CPU_Message("    regcache: unallocate %s from temp storage", ArmRegName(Reg));
+        }
+        SetArmRegMapped(Reg, NotMapped);
+    }
+    return Reg;
+}
+
 bool CArmRegInfo::UnMap_ArmReg(ArmReg Reg)
 {
     if (m_InCallDirect)
@@ -620,6 +655,51 @@ CArmOps::ArmReg CArmRegInfo::FreeArmReg()
     if ((GetArmRegMapped(Arm_R9) == NotMapped || GetArmRegMapped(Arm_R9) == Temp_Mapped) && !GetArmRegProtected(Arm_R9)) { return Arm_R9; }
     if ((GetArmRegMapped(Arm_R8) == NotMapped || GetArmRegMapped(Arm_R8) == Temp_Mapped) && !GetArmRegProtected(Arm_R8)) { return Arm_R8; }
 
+    ArmReg Reg = UnMap_TempReg();
+    if (Reg != Arm_Unknown) { return Reg; }
+
+    int32_t MapCount[sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0])];
+    ArmReg MapReg[sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0])];
+
+    for (int32_t i = 0, n = sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0]); i < n; i++)
+    {
+        MapCount[i] = GetArmRegMapOrder((ArmReg)i);
+        MapReg[i] = (ArmReg)i;
+    }
+    for (int32_t i = 0, n = sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0]); i < n; i++)
+    {
+        bool changed = false;
+        for (int32_t z = 0; z < n - 1; z++)
+        {
+            if (MapCount[z] >= MapCount[z + 1])
+            {
+                continue;
+            }
+            uint32_t temp = MapCount[z];
+            MapCount[z] = MapCount[z + 1];
+            MapCount[z + 1] = temp;
+            ArmReg tempReg = MapReg[z];
+            MapReg[z] = MapReg[z + 1];
+            MapReg[z + 1] = tempReg;
+            changed = true;
+        }
+        if (!changed)
+        {
+            break;
+        }
+    }
+
+    ArmReg StackReg = Arm_Unknown;
+    for (int32_t i = 0, n = sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0]); i < n; i++)
+    {
+        if (MapCount[i] > 0 && GetArmRegMapped(MapReg[i]) == GPR_Mapped && !GetArmRegProtected((ArmReg)MapReg[i]))
+        {
+            if (UnMap_ArmReg((ArmReg)MapReg[i]))
+            {
+                return (ArmReg)MapReg[i];
+            }
+        }
+    }
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return Arm_Unknown;
 }

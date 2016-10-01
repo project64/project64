@@ -62,6 +62,7 @@ public:
     ArmReg Map_Variable(VARIABLE_MAPPED variable);
     void ProtectGPR(uint32_t Reg);
     void UnMap_AllFPRs();
+    ArmReg UnMap_TempReg();
     void UnMap_GPR(uint32_t Reg, bool WriteBackValue);
     bool UnMap_ArmReg(ArmReg Reg);
 
