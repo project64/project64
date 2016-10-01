@@ -2466,17 +2466,23 @@ void CArmRecompilerOps::SPECIAL_JR()
 
         if (DelaySlotEffectsCompare(m_CompilePC, m_Opcode.rs, 0))
         {
-            if (IsKnown(m_Opcode.rs))
+            ArmReg PCTempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+            MoveConstToArmReg(PCTempReg, (uint32_t)_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+            if (IsConst(m_Opcode.rs))
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
-                return;
+            }
+            else if (IsMapped(m_Opcode.rs))
+            {
+                StoreArmRegToArmRegPointer(GetMipsRegMapLo(m_Opcode.rs), PCTempReg, 0);
             }
             else
             {
-                MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-                MoveConstToArmReg(Arm_R1, (uint32_t)_PROGRAM_COUNTER, "PROGRAM_COUNTER");
-                StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
+                ArmReg ValueTempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, m_Opcode.rs, false);
+                StoreArmRegToArmRegPointer(ValueTempReg, PCTempReg, 0);
+                m_RegWorkingSet.SetArmRegProtected(ValueTempReg,false);
             }
+            m_RegWorkingSet.SetArmRegProtected(PCTempReg,false);
         }
         m_NextInstruction = DO_DELAY_SLOT;
     }
@@ -2489,17 +2495,23 @@ void CArmRecompilerOps::SPECIAL_JR()
         else
         {
             UpdateCounters(m_RegWorkingSet, true, true);
-            if (IsKnown(m_Opcode.rs))
+            ArmReg PCTempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+            MoveConstToArmReg(PCTempReg, (uint32_t)_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+            if (IsConst(m_Opcode.rs))
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
-                return;
+            }
+            else if (IsMapped(m_Opcode.rs))
+            {
+                StoreArmRegToArmRegPointer(GetMipsRegMapLo(m_Opcode.rs), PCTempReg, 0);
             }
             else
             {
-                MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-                MoveConstToArmReg(Arm_R1, (uint32_t)_PROGRAM_COUNTER, "PROGRAM_COUNTER");
-                StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
+                ArmReg ValueTempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, m_Opcode.rs, false);
+                StoreArmRegToArmRegPointer(ValueTempReg, PCTempReg, 0);
+                m_RegWorkingSet.SetArmRegProtected(ValueTempReg,false);
             }
+            m_RegWorkingSet.SetArmRegProtected(PCTempReg,false);
             CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal);
             if (m_Section->m_JumpSection)
             {
