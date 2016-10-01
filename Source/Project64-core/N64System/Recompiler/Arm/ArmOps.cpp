@@ -871,10 +871,16 @@ void CArmOps::SubConstFromVariable(uint32_t Const, void * Variable, const char *
 
 void CArmOps::TestVariable(uint32_t Const, void * Variable, const char * VariableName)
 {
-    MoveVariableToArmReg(Variable,VariableName, Arm_R2);
-    MoveConstToArmReg(Arm_R3, Const);
-    AndArmRegToArmReg(Arm_R3,Arm_R2);
-    CompareArmRegToArmReg(Arm_R2,Arm_R3);
+    ArmReg TempReg1 = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+    ArmReg TempReg2 = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+
+    MoveVariableToArmReg(Variable,VariableName, TempReg1);
+    MoveConstToArmReg(TempReg2, Const);
+    AndArmRegToArmReg(TempReg1,TempReg2);
+    CompareArmRegToArmReg(TempReg1,TempReg2);
+
+    m_RegWorkingSet.SetArmRegProtected(TempReg1,false);
+    m_RegWorkingSet.SetArmRegProtected(TempReg2,false);
 }
 
 void CArmOps::XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg)
