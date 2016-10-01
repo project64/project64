@@ -760,29 +760,27 @@ void CArmOps::SignExtendByte(ArmReg Reg)
     }
 }
 
-void CArmOps::StoreArmRegToArmRegPointer(ArmReg Reg, ArmReg RegPointer, uint8_t offset)
+void CArmOps::StoreArmRegToArmRegPointer(ArmReg Reg, ArmReg RegPointer, uint8_t Offset)
 {
-    if (Reg > 0x7 || RegPointer > 0x7)
+    if (Reg > 0x7 || RegPointer > 0x7 || (Offset & (~0x7C)) != 0)
     {
-        if ((offset & (~0xFFF)) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); return; }
+        if ((Offset & (~0xFFF)) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); return; }
 
-        CPU_Message("      str\t%s, [%s, #%d]", ArmRegName(Reg), ArmRegName(RegPointer), (uint32_t)offset);
+        CPU_Message("      str\t%s, [%s, #%d]", ArmRegName(Reg), ArmRegName(RegPointer), (uint32_t)Offset);
         Arm32Opcode op = {0};
         op.imm12.rt = Reg;
         op.imm12.rn = RegPointer;
-        op.imm12.imm = offset;
+        op.imm12.imm = Offset;
         op.imm12.opcode = 0xF8C;
         AddCode32(op.Hex);
     }
     else
     {
-        if ((offset & (~0x1F)) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); return; }
-
-        CPU_Message("      str\t%s, [%s, #%d]", ArmRegName(Reg), ArmRegName(RegPointer), (uint32_t)offset);
+        CPU_Message("      str\t%s, [%s, #%d]", ArmRegName(Reg), ArmRegName(RegPointer), (uint32_t)Offset);
         ArmThumbOpcode op = {0};
         op.Imm5.rt = Reg;
         op.Imm5.rn = RegPointer;
-        op.Imm5.imm5 = offset;
+        op.Imm5.imm5 = Offset >> 2;
         op.Imm5.opcode = ArmSTR_ThumbImm;
         AddCode16(op.Hex);
     }
