@@ -2212,15 +2212,49 @@ void CArmRecompilerOps::LL()
 void CArmRecompilerOps::LWC1()
 {
     CompileCop1Test();
-    UnMap_GPR(m_Opcode.base, true);
-    if (g_Settings->LoadBool(Game_32Bit))
+    if (IsConst(m_Opcode.base))
     {
-        CompileInterpterCall((void *)R4300iOp32::LWC1, "R4300iOp32::LWC1");
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    ArmReg TempRegAddress;
+    if (IsMapped(m_Opcode.base))
+    {
+        TempRegAddress = Map_TempReg(Arm_Any, -1, false);
+        AddConstToArmReg(TempRegAddress, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.immediate);
     }
     else
     {
-        CompileInterpterCall((void *)R4300iOp::LWC1, "R4300iOp::LWC1");
+        TempRegAddress = Map_TempReg(Arm_Any, m_Opcode.base, false);
+        AddConstToArmReg(TempRegAddress,(int16_t)m_Opcode.immediate);
     }
+
+    ArmReg TempRegValue = Arm_Unknown;
+    if (g_System->bUseTlb())
+    {
+        ArmReg TempReg = Map_TempReg(Arm_Any, -1, false);
+        ShiftRightUnsignImmed(TempReg, TempRegAddress, 12);
+        ArmReg ReadMapReg = Map_Variable(CArmRegInfo::VARIABLE_TLB_READMAP);
+        LoadArmRegPointerToArmReg(TempReg,ReadMapReg,TempReg,2);
+        CompileReadTLBMiss(TempRegAddress, TempReg);
+
+        //12:	4408      	add	r0, r1
+        //14:	ed90 7a00 	vldr	s14, [r0]
+
+        TempRegValue = TempReg;
+        LoadArmRegPointerToArmReg(TempRegValue,TempReg,TempRegAddress,0);
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+#ifdef tofix
+        AndConstToX86Reg(TempReg1, 0x1FFFFFFF);
+        TempReg3 = Map_TempReg(x86_Any, -1, false);
+        MoveN64MemToX86reg(TempReg3, TempReg1);
+#endif
+    }
+    ArmReg FprReg = Map_Variable(CArmRegInfo::VARIABLE_FPR);
+    LoadArmRegPointerToArmReg(TempRegAddress,FprReg,(uint8_t)(m_Opcode.ft << 2));
+    StoreArmRegToArmRegPointer(TempRegValue, TempRegAddress, 0);
 }
 
 void CArmRecompilerOps::LDC1()
