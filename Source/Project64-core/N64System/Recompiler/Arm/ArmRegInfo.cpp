@@ -77,6 +77,33 @@ void CArmRegInfo::AfterCallDirect(void)
     m_InCallDirect = false;
 }
 
+void CArmRegInfo::FixRoundModel(FPU_ROUND RoundMethod)
+{
+    if (m_InCallDirect)
+    {
+        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    if (GetRoundingModel() == RoundMethod)
+    {
+        return;
+    }
+    CPU_Message("    FixRoundModel: CurrentRoundingModel: %s  targetRoundModel: %s", RoundingModelName(GetRoundingModel()), RoundingModelName(RoundMethod));
+    if (RoundMethod == RoundDefault)
+    {
+        m_RegWorkingSet.BeforeCallDirect();
+        MoveVariableToArmReg(_RoundingModel, "_RoundingModel", Arm_R0);
+        CallFunction((void *)fesetround, "fesetround");
+        m_RegWorkingSet.AfterCallDirect();
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+}
+
 CArmOps::ArmReg CArmRegInfo::FreeArmReg()
 {
     if (m_InCallDirect)

@@ -50,6 +50,7 @@ public:
     void BeforeCallDirect(void);
     void AfterCallDirect(void);
 
+    void FixRoundModel(FPU_ROUND RoundMethod);
     ArmReg FreeArmReg();
     void WriteBackRegisters();
 
