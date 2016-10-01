@@ -401,6 +401,93 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
     SetMipsRegState(MipsReg, STATE_MAPPED_64);
 }
 
+void CArmRegInfo::UnMap_GPR(uint32_t MipsReg, bool WriteBackValue)
+{
+    if (m_InCallDirect)
+    {
+        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    if (MipsReg == 0)
+    {
+        if (bHaveDebugger())
+        {
+            g_Notify->DisplayError(stdstr_f("%s\n\nWhy are you trying to unmap reg 0", __FUNCTION__).c_str());
+        }
+        return;
+    }
+
+    if (IsUnknown(MipsReg)) { return; }
+    //CPU_Message("UnMap_GPR: State: %X\tReg: %s\tWriteBack: %s",State,CRegName::GPR[Reg],WriteBackValue?"true":"false");
+    if (IsConst(MipsReg))
+    {
+        if (!WriteBackValue)
+        {
+            SetMipsRegState(MipsReg, STATE_UNKNOWN);
+            return;
+        }
+        if (Is64Bit(MipsReg))
+        {
+            MoveConstToVariable(GetMipsRegHi(MipsReg), &_GPR[MipsReg].UW[1], CRegName::GPR_Hi[MipsReg]);
+            MoveConstToVariable(GetMipsRegLo(MipsReg), &_GPR[MipsReg].UW[0], CRegName::GPR_Lo[MipsReg]);
+            SetMipsRegState(MipsReg, STATE_UNKNOWN);
+            return;
+        }
+        if ((GetMipsRegLo(MipsReg) & 0x80000000) != 0)
+        {
+            MoveConstToVariable(0xFFFFFFFF, &_GPR[MipsReg].UW[1], CRegName::GPR_Hi[MipsReg]);
+        }
+        else
+        {
+            MoveConstToVariable(0, &_GPR[MipsReg].UW[1], CRegName::GPR_Hi[MipsReg]);
+        }
+        MoveConstToVariable(GetMipsRegLo(MipsReg), &_GPR[MipsReg].UW[0], CRegName::GPR_Lo[MipsReg]);
+        SetMipsRegState(MipsReg, STATE_UNKNOWN);
+        return;
+    }
+    if (Is64Bit(MipsReg))
+    {
+        CPU_Message("    regcache: unallocate %s from %s", ArmRegName(GetMipsRegMapHi(MipsReg)), CRegName::GPR_Hi[MipsReg]);
+        SetArmRegMapped(GetMipsRegMapHi(MipsReg), NotMapped);
+        SetArmRegProtected(GetMipsRegMapHi(MipsReg), false);
+    }
+    CPU_Message("    regcache: unallocate %s from %s", ArmRegName(GetMipsRegMapLo(MipsReg)), CRegName::GPR_Lo[MipsReg]);
+    SetArmRegMapped(GetMipsRegMapLo(MipsReg), NotMapped);
+    SetArmRegProtected(GetMipsRegMapLo(MipsReg), false);
+    if (!WriteBackValue)
+    {
+        SetMipsRegState(MipsReg, STATE_UNKNOWN);
+        return;
+    }
+    ArmReg GprReg = Map_Variable(VARIABLE_GPR);
+    StoreArmRegToArmRegPointer(GetMipsRegMapLo(MipsReg), GprReg, (uint8_t)(MipsReg << 3));
+    if (Is64Bit(MipsReg))
+    {
+        SetMipsRegMapLo(MipsReg, Arm_Unknown);
+        StoreArmRegToArmRegPointer(GetMipsRegMapHi(MipsReg), GprReg, (uint8_t)(MipsReg << 3) + 4);
+        SetMipsRegMapHi(MipsReg, Arm_Unknown);
+    }
+    else
+    {
+        if (!g_System->b32BitCore())
+        {
+            if (IsSigned(MipsReg))
+            {
+                ShiftRightSignImmed(GetMipsRegMapLo(MipsReg), GetMipsRegMapLo(MipsReg), 31);
+            }
+            else
+            {
+                MoveConstToArmReg(GetMipsRegMapLo(MipsReg),(uint32_t)0);
+            }
+            StoreArmRegToArmRegPointer(GetMipsRegMapLo(MipsReg), GprReg, (uint8_t)(MipsReg << 3) + 4);
+        }
+        SetMipsRegMapLo(MipsReg, Arm_Unknown);
+    }
+    SetMipsRegState(MipsReg, STATE_UNKNOWN);
+    SetArmRegProtected(GprReg, false);
+}
+
 void CArmRegInfo::UnMap_AllFPRs()
 {
     if (m_InCallDirect)
@@ -440,6 +527,101 @@ CArmOps::ArmReg CArmRegInfo::FreeArmReg()
 
 void CArmRegInfo::WriteBackRegisters()
 {
+    if (m_InCallDirect)
+    {
+        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    UnMap_AllFPRs();
+
+    int32_t ArmRegCount = sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0]);
+    for (int32_t i = 1; i < 32; i++) { UnMap_GPR(i,true); }
+    for (int32_t i = 0; i < ArmRegCount; i++) { UnMap_ArmReg((ArmReg)i); }
+    for (int32_t i = 0; i < ArmRegCount; i++) { SetArmRegProtected((ArmReg)i, false); }
+
+    for (int32_t count = 1; count < 32; count++)
+    {
+        switch (GetMipsRegState(count))
+        {
+        case STATE_UNKNOWN: break;
+        case STATE_CONST_32_SIGN:
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            break;
+        case STATE_CONST_32_ZERO:
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            break;
+        case STATE_CONST_64:
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            break;
+        default:
+            CPU_Message("%s: Unknown State: %d reg %d (%s)", __FUNCTION__, GetMipsRegState(count), count, CRegName::GPR[count]);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+}
+
+bool CArmRegInfo::UnMap_ArmReg(ArmReg Reg)
+{
+    if (m_InCallDirect)
+    {
+        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return false;
+    }
+    if (GetArmRegProtected(Reg))
+    {
+        CPU_Message("%s: %s is protected",__FUNCTION__,ArmRegName(Reg));
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return false;
+    }
+    if (GetArmRegMapped(Reg) == NotMapped)
+    {
+        return true;
+    }
+    else if (GetArmRegMapped(Reg) == GPR_Mapped)
+    {
+        for (uint32_t count = 1; count < 32; count++)
+        {
+            if (!IsMapped(count))
+            {
+                continue;
+            }
+
+            if (Is64Bit(count) && GetMipsRegMapHi(count) == Reg)
+            {
+                if (!GetArmRegProtected(Reg))
+                {
+                    UnMap_GPR(count, true);
+                    return true;
+                }
+                break;
+            }
+            if (GetMipsRegMapLo(count) == Reg)
+            {
+                if (!GetArmRegProtected(Reg))
+                {
+                    UnMap_GPR(count, true);
+                    return true;
+                }
+                break;
+            }
+        }
+    }
+    else if (GetArmRegMapped(Reg) == Temp_Mapped)
+    {
+        CPU_Message("    regcache: unallocate %s from temp storage", ArmRegName(Reg));
+        SetArmRegMapped(Reg, NotMapped);
+        return true;
+    }
+    else if (GetArmRegMapped(Reg) == Variable_Mapped)
+    {
+        CPU_Message("    regcache: unallocate %s from variable mapping", ArmRegName(Reg));
+        SetArmRegMapped(Reg, NotMapped);
+        return true;
+    }
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    return false;
 }
 
 CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadHiWord)
