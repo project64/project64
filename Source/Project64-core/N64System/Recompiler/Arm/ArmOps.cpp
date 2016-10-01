@@ -809,6 +809,23 @@ void CArmOps::TestVariable(uint32_t Const, void * Variable, const char * Variabl
     CompareArmRegToArmReg(Arm_R2,Arm_R3);
 }
 
+void CArmOps::XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg)
+{
+    if (SourceReg <= 7 && DestReg <= 7)
+    {
+        CPU_Message("      eors\t%s, %s", ArmRegName(DestReg), ArmRegName(SourceReg));
+        ArmThumbOpcode op = {0};
+        op.Reg2.rn = DestReg;
+        op.Reg2.rm = SourceReg;
+        op.Reg2.opcode = 0x101;
+        AddCode16(op.Hex);
+    }
+    else
+    {
+        XorArmRegToArmReg(DestReg, DestReg, SourceReg);
+    }
+}
+
 void CArmOps::XorConstToArmReg(ArmReg DestReg, uint32_t value)
 {
     if (value == 0)
