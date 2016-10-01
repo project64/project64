@@ -166,6 +166,7 @@ protected:
     static void ShiftRightSignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift);
     static void ShiftRightUnsignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift);
     static void ShiftLeftImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift);
+    static void SignExtendByte(ArmReg Reg);
     static void StoreArmRegToArmRegPointer(ArmReg Reg, ArmReg RegPointer, uint8_t offset);
     static void StoreFloatRegToArmRegPointer(ArmFpuSingle Reg, ArmReg RegPointer, uint8_t Offset);
     static void SubConstFromArmReg(ArmReg Reg, uint32_t Const);

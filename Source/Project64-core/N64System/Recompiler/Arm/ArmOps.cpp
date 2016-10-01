@@ -675,6 +675,31 @@ void CArmOps::ShiftLeftImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift)
     AddCode16(op.Hex);
 }
 
+void CArmOps::SignExtendByte(ArmReg Reg)
+{
+    if (Reg > 0x7)
+    {
+        CPU_Message("      sxtb.w\t%s, %s", ArmRegName(Reg), ArmRegName(Reg));
+        Arm32Opcode op = {0};
+        op.rotate.opcode = 0xFA4F;
+        op.rotate.rm = Reg;
+        op.rotate.rotate = 0;
+        op.rotate.opcode2 = 2;
+        op.rotate.rd = Reg;
+        op.rotate.opcode3 = 0xF;
+        AddCode32(op.Hex);
+    }
+    else
+    {
+        CPU_Message("      sxtb\t%s, %s", ArmRegName(Reg), ArmRegName(Reg));
+        ArmThumbOpcode op = {0};
+        op.Reg2.rn = Reg;
+        op.Reg2.rm = Reg;
+        op.Reg2.opcode = 0x2C9;
+        AddCode16(op.Hex);
+    }
+}
+
 void CArmOps::StoreArmRegToArmRegPointer(ArmReg Reg, ArmReg RegPointer, uint8_t offset)
 {
     if (Reg > 0x7 || RegPointer > 0x7)
