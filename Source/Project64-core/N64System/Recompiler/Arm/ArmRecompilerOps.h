@@ -229,6 +229,7 @@ public:
     static inline ArmReg GetMipsRegMapHi(int32_t Reg) { return m_RegWorkingSet.GetMipsRegMapHi(Reg); }
 
     static inline bool IsKnown(int32_t Reg) { return m_RegWorkingSet.IsKnown(Reg); }
+    static inline bool IsUnknown(int32_t Reg) { return m_RegWorkingSet.IsUnknown(Reg); }
     static inline bool IsMapped(int32_t Reg) { return m_RegWorkingSet.IsMapped(Reg); }
     static inline bool IsConst(int32_t Reg) { return m_RegWorkingSet.IsConst(Reg); }
     static inline bool IsSigned(int32_t Reg) { return m_RegWorkingSet.IsSigned(Reg); }

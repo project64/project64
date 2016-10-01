@@ -1118,18 +1118,38 @@ void CArmRecompilerOps::BEQ_Compare()
 
 void CArmRecompilerOps::BGTZ_Compare()
 {
-    if (IsKnown(m_Opcode.rs) || IsKnown(m_Opcode.rt))
+    if (IsConst(m_Opcode.rs))
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-        CArmRecompilerOps::UnknownOpcode();
+        if (Is64Bit(m_Opcode.rs))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            CArmRecompilerOps::UnknownOpcode();
+        }
+        else
+        {
+            if (GetMipsRegLo_S(m_Opcode.rs) > 0)
+            {
+                m_Section->m_Jump.FallThrough = true;
+                m_Section->m_Cont.FallThrough = false;
+            }
+            else
+            {
+                m_Section->m_Jump.FallThrough = false;
+                m_Section->m_Cont.FallThrough = true;
+            }
+        }
     }
-    else if (g_System->b32BitCore())
+    else if ((IsMapped(m_Opcode.rs) && Is32Bit(m_Opcode.rs)) || (IsUnknown(m_Opcode.rs) && g_System->b32BitCore()) )
     {
-        //r0 = low, r1 = high
-        //r2 = low, r3 = high
-        MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-        MoveConstToArmReg(Arm_R2, (uint32_t)0);
-        CompareArmRegToArmReg(Arm_R0, Arm_R2);
+        if (IsMapped(m_Opcode.rs))
+        {
+            CompareArmRegToConst(GetMipsRegMapLo(m_Opcode.rs),0);
+        }
+        else
+        {
+            ArmReg TempReg = Map_TempReg(Arm_Any, m_Opcode.rs, false);
+            CompareArmRegToConst(TempReg,0);
+        }
         if (m_Section->m_Jump.FallThrough)
         {
             BranchLabel20(ArmBranch_LessThanOrEqual, m_Section->m_Cont.BranchLabel.c_str());
@@ -1137,14 +1157,14 @@ void CArmRecompilerOps::BGTZ_Compare()
         }
         else if (m_Section->m_Cont.FallThrough)
         {
-            BranchLabel20(ArmBranch_GreaterThan, m_Section->m_Cont.BranchLabel.c_str());
+            BranchLabel20(ArmBranch_GreaterThan, m_Section->m_Jump.BranchLabel.c_str());
             m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
         else
         {
             BranchLabel20(ArmBranch_LessThanOrEqual, m_Section->m_Cont.BranchLabel.c_str());
             m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
-            BranchLabel20(ArmBranch_Always, m_Section->m_Cont.BranchLabel.c_str());
+            BranchLabel20(ArmBranch_Always, m_Section->m_Jump.BranchLabel.c_str());
             m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
     }
@@ -1152,9 +1172,16 @@ void CArmRecompilerOps::BGTZ_Compare()
     {
         uint8_t *Jump = NULL;
 
-        MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[1], CRegName::GPR_Hi[m_Opcode.rs], Arm_R0);
-        MoveConstToArmReg(Arm_R2, (uint32_t)0);
-        CompareArmRegToArmReg(Arm_R0, Arm_R2);
+        if (IsMapped(m_Opcode.rs))
+        {
+            CompareArmRegToConst(GetMipsRegMapHi(m_Opcode.rs),0);
+        }
+        else
+        {
+            ArmReg TempReg = Map_TempReg(Arm_Any, m_Opcode.rs, true);
+            CompareArmRegToConst(TempReg,0);
+            m_RegWorkingSet.SetArmRegProtected(TempReg,false);
+        }
         if (m_Section->m_Jump.FallThrough)
         {
             BranchLabel20(ArmBranch_LessThan, m_Section->m_Cont.BranchLabel.c_str());
@@ -1177,8 +1204,16 @@ void CArmRecompilerOps::BGTZ_Compare()
             m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
         }
 
-        MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-        CompareArmRegToArmReg(Arm_R0, Arm_R2);
+        if (IsMapped(m_Opcode.rs))
+        {
+            CompareArmRegToConst(GetMipsRegMapLo(m_Opcode.rs),0);
+        }
+        else
+        {
+            ArmReg TempReg = Map_TempReg(Arm_Any, m_Opcode.rs, false);
+            CompareArmRegToConst(TempReg,0);
+            m_RegWorkingSet.SetArmRegProtected(TempReg,false);
+        }
         if (m_Section->m_Jump.FallThrough)
         {
             BranchLabel20(ArmBranch_Equal, m_Section->m_Cont.BranchLabel.c_str());
