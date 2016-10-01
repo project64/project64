@@ -63,25 +63,84 @@ CArmRegInfo& CArmRegInfo::operator=(const CArmRegInfo& right)
     return *this;
 }
 
+bool CArmRegInfo::ShouldPushPopReg (ArmReg Reg)
+{
+    if (m_ArmReg_MappedTo[Reg] == NotMapped)
+    {
+        return false;
+    }
+    if (m_ArmReg_MappedTo[Reg] == Temp_Mapped && !GetArmRegProtected(Reg))
+    {
+        return false;
+    }
+    return true;
+}
+
 void CArmRegInfo::BeforeCallDirect(void)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        CPU_Message("%s: in CallDirect",__FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
+    UnMap_AllFPRs();
     m_InCallDirect = true;
+    int PushPopRegisters = 0;
+    if (ShouldPushPopReg(Arm_R0)) { PushPopRegisters |= ArmPushPop_R0; }
+    if (ShouldPushPopReg(Arm_R1)) { PushPopRegisters |= ArmPushPop_R1; }
+    if (ShouldPushPopReg(Arm_R2)) { PushPopRegisters |= ArmPushPop_R2; }
+    if (ShouldPushPopReg(Arm_R3)) { PushPopRegisters |= ArmPushPop_R3; }
+    if (ShouldPushPopReg(Arm_R4)) { PushPopRegisters |= ArmPushPop_R4; }
+    if (ShouldPushPopReg(Arm_R5)) { PushPopRegisters |= ArmPushPop_R5; }
+    if (ShouldPushPopReg(Arm_R6)) { PushPopRegisters |= ArmPushPop_R6; }
+    if (ShouldPushPopReg(Arm_R7)) { PushPopRegisters |= ArmPushPop_R7; }
+    if (ShouldPushPopReg(Arm_R8)) { PushPopRegisters |= ArmPushPop_R8; }
+    if (ShouldPushPopReg(Arm_R9)) { PushPopRegisters |= ArmPushPop_R9; }
+    if (ShouldPushPopReg(Arm_R10)) { PushPopRegisters |= ArmPushPop_R10; }
+    if (ShouldPushPopReg(Arm_R11)) { PushPopRegisters |= ArmPushPop_R11; }
+    if (ShouldPushPopReg(Arm_R12)) { PushPopRegisters |= ArmPushPop_R12; }
+    if (ShouldPushPopReg(Arm_R13)) { PushPopRegisters |= ArmPushPop_R13; }
+    if (ShouldPushPopReg(Arm_R14)) { PushPopRegisters |= ArmPushPop_R14; }
+    if (ShouldPushPopReg(Arm_R15)) { PushPopRegisters |= ArmPushPop_R15; }
+
+    if (PushPopRegisters != 0)
+    {
+        PushArmReg(PushPopRegisters);
+    }
 }
 
 void CArmRegInfo::AfterCallDirect(void)
 {
     if (!m_InCallDirect)
     {
-        CPU_Message("%s: Not in CallDirect", __FUNCTION__);
+        CPU_Message("%s: Not in CallDirect",__FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
+    int PushPopRegisters = 0;
+    if (ShouldPushPopReg(Arm_R0)) { PushPopRegisters |= ArmPushPop_R0; }
+    if (ShouldPushPopReg(Arm_R1)) { PushPopRegisters |= ArmPushPop_R1; }
+    if (ShouldPushPopReg(Arm_R2)) { PushPopRegisters |= ArmPushPop_R2; }
+    if (ShouldPushPopReg(Arm_R3)) { PushPopRegisters |= ArmPushPop_R3; }
+    if (ShouldPushPopReg(Arm_R4)) { PushPopRegisters |= ArmPushPop_R4; }
+    if (ShouldPushPopReg(Arm_R5)) { PushPopRegisters |= ArmPushPop_R5; }
+    if (ShouldPushPopReg(Arm_R6)) { PushPopRegisters |= ArmPushPop_R6; }
+    if (ShouldPushPopReg(Arm_R7)) { PushPopRegisters |= ArmPushPop_R7; }
+    if (ShouldPushPopReg(Arm_R8)) { PushPopRegisters |= ArmPushPop_R8; }
+    if (ShouldPushPopReg(Arm_R9)) { PushPopRegisters |= ArmPushPop_R9; }
+    if (ShouldPushPopReg(Arm_R10)) { PushPopRegisters |= ArmPushPop_R10; }
+    if (ShouldPushPopReg(Arm_R11)) { PushPopRegisters |= ArmPushPop_R11; }
+    if (ShouldPushPopReg(Arm_R12)) { PushPopRegisters |= ArmPushPop_R12; }
+    if (ShouldPushPopReg(Arm_R13)) { PushPopRegisters |= ArmPushPop_R13; }
+    if (ShouldPushPopReg(Arm_R14)) { PushPopRegisters |= ArmPushPop_R14; }
+    if (ShouldPushPopReg(Arm_R15)) { PushPopRegisters |= ArmPushPop_R15; }
+
+    if (PushPopRegisters != 0)
+    {
+        PopArmReg(PushPopRegisters);
+    }
+    SetRoundingModel(CRegInfo::RoundUnknown);
     m_InCallDirect = false;
 }
 
@@ -342,6 +401,17 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
     SetMipsRegState(MipsReg, STATE_MAPPED_64);
 }
 
+void CArmRegInfo::UnMap_AllFPRs()
+{
+    if (m_InCallDirect)
+    {
+        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    CPU_Message("%s", __FUNCTION__);
+}
+
 CArmOps::ArmReg CArmRegInfo::FreeArmReg()
 {
     if (m_InCallDirect)
@@ -545,6 +615,25 @@ CArmOps::ArmReg CArmRegInfo::Map_Variable(VARIABLE_MAPPED variable)
         return Arm_Unknown;
     }
     return Reg;
+}
+
+void CArmRegInfo::ProtectGPR(uint32_t Reg)
+{
+    if (m_InCallDirect)
+    {
+        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    if (IsUnknown(Reg) || IsConst(Reg))
+    {
+        return;
+    }
+    if (Is64Bit(Reg))
+    {
+        SetArmRegProtected(GetMipsRegMapHi(Reg), true);
+    }
+    SetArmRegProtected(GetMipsRegMapLo(Reg), true);
 }
 
 #endif

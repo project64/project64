@@ -60,6 +60,8 @@ public:
 
     ArmReg Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadHiWord);
     ArmReg Map_Variable(VARIABLE_MAPPED variable);
+    void ProtectGPR(uint32_t Reg);
+    void UnMap_AllFPRs();
 
     inline ArmReg GetMipsRegMapLo(int32_t Reg) const { return m_RegMapLo[Reg]; }
     inline ArmReg GetMipsRegMapHi(int32_t Reg) const { return m_RegMapHi[Reg]; }
@@ -73,6 +75,8 @@ public:
     inline void SetArmRegProtected(ArmReg Reg, bool Protected) { m_ArmReg_Protected[Reg] = Protected; }
     inline void SetArmRegMapped(ArmReg Reg, REG_MAPPED Mapping) { m_ArmReg_MappedTo[Reg] = Mapping; }
 private:
+    bool ShouldPushPopReg (ArmReg Reg);
+
     ArmReg m_RegMapHi[32];
     ArmReg m_RegMapLo[32];
     uint32_t m_ArmReg_MapOrder[16];
