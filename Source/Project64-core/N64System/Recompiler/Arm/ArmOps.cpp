@@ -728,6 +728,16 @@ void CArmOps::StoreArmRegToArmRegPointer(ArmReg Reg, ArmReg RegPointer, uint8_t 
     }
 }
 
+void CArmOps::StoreFloatingPointControlReg(ArmReg SourceReg)
+{
+    CPU_Message("      vmsr\tfpscr, %s", ArmRegName(SourceReg));
+    Arm32Opcode op = {0};
+    op.fpscr.opcode2 = 0xA10;
+    op.fpscr.rt = SourceReg;
+    op.fpscr.opcode = 0xEEE1;
+    AddCode32(op.Hex);
+}
+
 void CArmOps::StoreFloatRegToArmRegPointer(ArmFpuSingle Reg, ArmReg RegPointer, uint8_t Offset)
 {
     if (Offset != 0)
