@@ -173,6 +173,7 @@ protected:
     static void SubConstFromArmReg(ArmReg Reg, uint32_t Const);
     static void SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName);
     static void TestVariable(uint32_t Const, void * Variable, const char * VariableName);
+    static void XorConstToArmReg(ArmReg DestReg, uint32_t value);
 
     static bool CanThumbCompressConst (uint32_t value);
     static uint16_t ThumbCompressConst (uint32_t value);

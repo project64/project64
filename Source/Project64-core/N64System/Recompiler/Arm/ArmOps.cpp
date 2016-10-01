@@ -809,6 +809,38 @@ void CArmOps::TestVariable(uint32_t Const, void * Variable, const char * Variabl
     CompareArmRegToArmReg(Arm_R2,Arm_R3);
 }
 
+void CArmOps::XorConstToArmReg(ArmReg DestReg, uint32_t value)
+{
+    if (value == 0)
+    {
+        //ignore
+    }
+    else if (CanThumbCompressConst(value))
+    {
+        uint16_t CompressedValue = ThumbCompressConst(value);
+        CPU_Message("      eor\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(DestReg), value);
+        Arm32Opcode op = {0};
+        op.imm8_3_1.rn = DestReg;
+        op.imm8_3_1.s = 0;
+        op.imm8_3_1.opcode = 0x4;
+        op.imm8_3_1.i = (CompressedValue >> 11) & 1;
+        op.imm8_3_1.opcode2 = 0x1E;
+
+        op.imm8_3_1.imm8 = CompressedValue & 0xFF;
+        op.imm8_3_1.rd = DestReg;
+        op.imm8_3_1.imm3 = (CompressedValue >> 8) & 0x3;
+        op.imm8_3_1.opcode3 = 0;
+        AddCode32(op.Hex);
+    }
+    else
+    {
+        ArmReg TempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+        MoveConstToArmReg(TempReg,value);
+        XorArmRegToArmReg(DestReg, TempReg, DestReg);
+        m_RegWorkingSet.SetArmRegProtected(TempReg,false);
+    }
+}
+
 bool CArmOps::CanThumbCompressConst (uint32_t value)
 {
     //'nnnnnnnn'
