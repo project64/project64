@@ -826,6 +826,23 @@ void CArmOps::XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg)
     }
 }
 
+void CArmOps::XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2)
+{
+    CPU_Message("      eor.w\t%s, %s, %s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
+    Arm32Opcode op = {0};
+    op.imm5.rn = SourceReg1;
+    op.imm5.s = 0;
+    op.imm5.opcode = 0x754;
+
+    op.imm5.rm = SourceReg2;
+    op.imm5.type = 0;
+    op.imm5.imm2 = 0;
+    op.imm5.rd = DestReg;
+    op.imm5.imm3 = 0;
+    op.imm5.opcode2 = 0;
+    AddCode32(op.Hex);
+}
+
 void CArmOps::XorConstToArmReg(ArmReg DestReg, uint32_t value)
 {
     if (value == 0)

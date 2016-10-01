@@ -175,6 +175,7 @@ protected:
     static void TestVariable(uint32_t Const, void * Variable, const char * VariableName);
     static void XorConstToArmReg(ArmReg DestReg, uint32_t value);
     static void XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg);
+    static void XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
 
     static bool CanThumbCompressConst (uint32_t value);
     static uint16_t ThumbCompressConst (uint32_t value);
