@@ -1484,27 +1484,86 @@ void CArmRecompilerOps::BLTZ_Compare()
 
 void CArmRecompilerOps::BGEZ_Compare()
 {
-    if (m_Opcode.rs == 0)
+    if (IsConst(m_Opcode.rs))
     {
-        m_Section->m_Jump.FallThrough = true;
-        m_Section->m_Cont.FallThrough = false;
-    }
-    else if (IsKnown(m_Opcode.rs))
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    else
-    {
-        if (g_System->b32BitCore())
+        if (Is64Bit(m_Opcode.rs))
         {
-            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            CArmRecompilerOps::UnknownOpcode();
+        }
+        else if (IsSigned(m_Opcode.rs))
+        {
+            if (GetMipsRegLo_S(m_Opcode.rs) >= 0)
+            {
+                m_Section->m_Jump.FallThrough = true;
+                m_Section->m_Cont.FallThrough = false;
+            }
+            else
+            {
+                m_Section->m_Jump.FallThrough = false;
+                m_Section->m_Cont.FallThrough = true;
+            }
         }
         else
         {
-            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[1], CRegName::GPR_Hi[m_Opcode.rs], Arm_R0);
+            m_Section->m_Jump.FallThrough = true;
+            m_Section->m_Cont.FallThrough = false;
         }
-        MoveConstToArmReg(Arm_R2, (uint32_t)0);
-        CompareArmRegToArmReg(Arm_R0, Arm_R2);
+    }
+    else if (IsMapped(m_Opcode.rs))
+    {
+        if (Is64Bit(m_Opcode.rs))
+        {
+            CompareArmRegToConst(GetMipsRegMapHi(m_Opcode.rs), 0);
+            if (m_Section->m_Cont.FallThrough)
+            {
+                BranchLabel20(ArmBranch_GreaterThanOrEqual, m_Section->m_Jump.BranchLabel.c_str());
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+            }
+            else if (m_Section->m_Jump.FallThrough)
+            {
+                BranchLabel20(ArmBranch_LessThan, m_Section->m_Cont.BranchLabel.c_str());
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+            }
+            else
+            {
+                BranchLabel20(ArmBranch_LessThan, m_Section->m_Cont.BranchLabel.c_str());
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+                BranchLabel20(ArmBranch_Always, m_Section->m_Jump.BranchLabel.c_str());
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+            }
+        }
+        else if (IsSigned(m_Opcode.rs))
+        {
+            CompareArmRegToConst(GetMipsRegMapLo(m_Opcode.rs), 0);
+            if (m_Section->m_Cont.FallThrough)
+            {
+                BranchLabel20(ArmBranch_GreaterThanOrEqual, m_Section->m_Jump.BranchLabel.c_str());
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+            }
+            else if (m_Section->m_Jump.FallThrough)
+            {
+                BranchLabel20(ArmBranch_LessThan, m_Section->m_Cont.BranchLabel.c_str());
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+            }
+            else
+            {
+                BranchLabel20(ArmBranch_LessThan, m_Section->m_Cont.BranchLabel.c_str());
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+                BranchLabel20(ArmBranch_Always, m_Section->m_Jump.BranchLabel.c_str());
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+            }
+        }
+        else
+        {
+            m_Section->m_Jump.FallThrough = true;
+            m_Section->m_Cont.FallThrough = false;
+        }
+    }
+    else
+    {
+        ArmReg TempReg = Map_TempReg(Arm_Any, m_Opcode.rs, !g_System->b32BitCore());
+        CompareArmRegToConst(TempReg, 0);
         if (m_Section->m_Cont.FallThrough)
         {
             BranchLabel20(ArmBranch_GreaterThanOrEqual, m_Section->m_Jump.BranchLabel.c_str());
