@@ -4274,8 +4274,13 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
 
 void CArmRecompilerOps::CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet)
 {
-    MoveVariableToArmReg((void *)&g_SystemEvents->DoSomething(), "g_SystemEvents->DoSomething()", Arm_R2);
-    CompareArmRegToConst(Arm_R2, 0);
+    CRegInfo OriginalWorkingRegSet = GetRegWorkingSet();
+    SetRegWorkingSet(RegSet);
+
+    ArmReg TempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+    MoveVariableToArmReg((void *)&g_SystemEvents->DoSomething(), "g_SystemEvents->DoSomething()", TempReg);
+    CompareArmRegToConst(TempReg, 0);
+    m_RegWorkingSet.SetArmRegProtected(TempReg, false);
     BranchLabel20(ArmBranch_Equal, "Continue_From_Interrupt_Test");
     uint32_t * Jump = (uint32_t *)(*g_RecompPos - 4);
 
@@ -4284,7 +4289,7 @@ void CArmRecompilerOps::CompileSystemCheck(uint32_t TargetPC, const CRegInfo & R
         MoveConstToVariable(TargetPC, &g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
     }
 
-    CRegInfo RegSetCopy(RegSet);
+    CRegInfo RegSetCopy(m_RegWorkingSet);
     RegSetCopy.WriteBackRegisters();
 
     MoveConstToArmReg(Arm_R0, (uint32_t)g_SystemEvents, "g_SystemEvents");
@@ -4293,6 +4298,7 @@ void CArmRecompilerOps::CompileSystemCheck(uint32_t TargetPC, const CRegInfo & R
     CPU_Message("");
     CPU_Message("      $Continue_From_Interrupt_Test:");
     SetJump20(Jump, (uint32_t *)*g_RecompPos);
+    SetRegWorkingSet(OriginalWorkingRegSet);
 }
 
 CRegInfo & CArmRecompilerOps::GetRegWorkingSet(void)
