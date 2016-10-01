@@ -775,7 +775,19 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
             }
             else if (IsMapped(MipsReg))
             {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
+                if (Is64Bit(MipsReg))
+                {
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                    //MoveArmRegToArmReg(GetMipsRegMapHi(MipsReg), Reg);
+                }
+                else if (IsSigned(MipsReg))
+                {
+                    ShiftRightSignImmed(Reg,GetMipsRegMapLo(MipsReg),31);
+                }
+                else
+                {
+                    MoveConstToArmReg(Reg, (uint32_t)0);
+                }
             }
             else
             {
@@ -827,7 +839,7 @@ CArmOps::ArmReg CArmRegInfo::Map_Variable(VARIABLE_MAPPED variable)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        CPU_Message("%s: in CallDirect",__FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return Arm_Unknown;
     }
