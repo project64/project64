@@ -19,6 +19,12 @@
 CArmRegInfo::CArmRegInfo() :
 m_InCallDirect(false)
 {
+    for (int32_t i = 0; i < 32; i++)
+    {
+        m_RegMapLo[i] = Arm_Unknown;
+        m_RegMapHi[i] = Arm_Unknown;
+    }
+
     for (int32_t i = 0, n = sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0]); i < n; i++)
     {
         m_ArmReg_MapOrder[i] = 0;
@@ -42,6 +48,8 @@ CArmRegInfo& CArmRegInfo::operator=(const CArmRegInfo& right)
     CRegBase::operator=(right);
 
     m_InCallDirect = right.m_InCallDirect;
+    memcpy(&m_RegMapLo, &right.m_RegMapLo, sizeof(m_RegMapLo));
+    memcpy(&m_RegMapHi, &right.m_RegMapHi, sizeof(m_RegMapHi));
     memcpy(&m_ArmReg_MapOrder, &right.m_ArmReg_MapOrder, sizeof(m_ArmReg_MapOrder));
     memcpy(&m_ArmReg_Protected, &right.m_ArmReg_Protected, sizeof(m_ArmReg_Protected));
     memcpy(&m_ArmReg_MappedTo, &right.m_ArmReg_MappedTo, sizeof(m_ArmReg_MappedTo));
@@ -102,6 +110,88 @@ void CArmRegInfo::FixRoundModel(FPU_ROUND RoundMethod)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
+}
+
+void CArmRegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsRegToLoad)
+{
+    if (m_InCallDirect)
+    {
+        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    ArmReg Reg;
+    if (MipsReg == 0)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    if (IsUnknown(MipsReg) || IsConst(MipsReg))
+    {
+        Reg = FreeArmReg();
+        if (Reg < 0)
+        {
+            if (bHaveDebugger()) { g_Notify->DisplayError("Map_GPR_32bit\n\nOut of registers"); }
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+        SetArmRegProtected(Reg, true);
+        CPU_Message("    regcache: allocate %s to %s", ArmRegName(Reg), CRegName::GPR[MipsReg]);
+    }
+    else
+    {
+        if (Is64Bit(MipsReg))
+        {
+            CPU_Message("    regcache: unallocate %s from high 32bit of %s", ArmRegName(GetMipsRegMapHi(MipsReg)), CRegName::GPR_Hi[MipsReg]);
+            SetArmRegMapOrder(GetMipsRegMapHi(MipsReg), 0);
+            SetArmRegMapped(GetMipsRegMapHi(MipsReg), NotMapped);
+            SetArmRegProtected(GetMipsRegMapHi(MipsReg), false);
+            SetMipsRegHi(MipsReg, 0);
+        }
+        Reg = GetMipsRegMapLo(MipsReg);
+    }
+    for (int32_t count = 0; count <= Arm_R15; count++)
+    {
+        uint32_t Count = GetArmRegMapOrder((ArmReg)count);
+        if (Count > 0)
+        {
+            SetArmRegMapOrder((ArmReg)count, Count + 1);
+        }
+    }
+    SetArmRegMapOrder(Reg, 1);
+
+    CPU_Message("MipsRegToLoad = %d (%s)", MipsRegToLoad,  CRegName::GPR[MipsRegToLoad]);
+    if (MipsRegToLoad > 0)
+    {
+        if (IsUnknown(MipsRegToLoad))
+        {
+            ArmReg GprReg = Map_Variable(VARIABLE_GPR);
+            LoadArmRegPointerToArmReg(Reg, GprReg, (uint8_t)(MipsRegToLoad << 3));
+            SetArmRegProtected(GprReg, false);
+        }
+        else if (IsMapped(MipsRegToLoad))
+        {
+            if (MipsReg != MipsRegToLoad)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+                //MoveArmRegToArmReg(GetMipsRegMapLo(MipsRegToLoad), Reg);
+            }
+        }
+        else
+        {
+            MoveConstToArmReg(Reg, GetMipsRegLo(MipsRegToLoad));
+        }
+    }
+    else if (MipsRegToLoad == 0)
+    {
+        MoveConstToArmReg(Reg, (uint32_t)0);
+    }
+    SetArmRegMapped(Reg, GPR_Mapped);
+    SetArmRegProtected(Reg, true);
+    SetMipsRegMapLo(MipsReg, Reg);
+    SetMipsRegState(MipsReg, SignValue ? STATE_MAPPED_32_SIGN : STATE_MAPPED_32_ZERO);
 }
 
 CArmOps::ArmReg CArmRegInfo::FreeArmReg()

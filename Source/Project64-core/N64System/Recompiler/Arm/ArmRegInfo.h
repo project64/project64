@@ -13,9 +13,11 @@
 #include <Project64-core/N64System/Recompiler/RegBase.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmOps.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Project64-core/Settings/DebugSettings.h>
 
 class CArmRegInfo :
     public CRegBase,
+    private CDebugSettings,
     public CArmOps,
     private CSystemRegisters
 {
@@ -51,11 +53,18 @@ public:
     void AfterCallDirect(void);
 
     void FixRoundModel(FPU_ROUND RoundMethod);
+    void Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsRegToLoad);
     ArmReg FreeArmReg();
     void WriteBackRegisters();
 
     ArmReg Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadHiWord);
     ArmReg Map_Variable(VARIABLE_MAPPED variable);
+
+    inline ArmReg GetMipsRegMapLo(int32_t Reg) const { return m_RegMapLo[Reg]; }
+    inline ArmReg GetMipsRegMapHi(int32_t Reg) const { return m_RegMapHi[Reg]; }
+    inline void SetMipsRegMapLo(int32_t GetMipsReg, ArmReg Reg) { m_RegMapLo[GetMipsReg] = Reg; }
+    inline void SetMipsRegMapHi(int32_t GetMipsReg, ArmReg Reg) { m_RegMapHi[GetMipsReg] = Reg; }
+
     inline uint32_t GetArmRegMapOrder(ArmReg Reg) const { return m_ArmReg_MapOrder[Reg]; }
     inline bool GetArmRegProtected(ArmReg Reg) const { return m_ArmReg_Protected[Reg]; }
     inline REG_MAPPED GetArmRegMapped(ArmReg Reg) const { return m_ArmReg_MappedTo[Reg]; }
@@ -63,6 +72,8 @@ public:
     inline void SetArmRegProtected(ArmReg Reg, bool Protected) { m_ArmReg_Protected[Reg] = Protected; }
     inline void SetArmRegMapped(ArmReg Reg, REG_MAPPED Mapping) { m_ArmReg_MappedTo[Reg] = Mapping; }
 private:
+    ArmReg m_RegMapHi[32];
+    ArmReg m_RegMapLo[32];
     uint32_t m_ArmReg_MapOrder[16];
     bool m_ArmReg_Protected[16];
     REG_MAPPED m_ArmReg_MappedTo[16];
