@@ -36,17 +36,17 @@ public class GalleryItem
     public final int textColor;
     public final Context context;
     public final boolean isHeading;
-    
+
     public GalleryItem( Context context, String goodName, String fileName, String romPath, int textColor )
     {
         this.goodName = goodName;
         this.fileName = fileName;
-        this.context = context; 
+        this.context = context;
         this.textColor = textColor;
         this.isHeading = false;
         this.romFile = TextUtils.isEmpty( romPath ) ? null : new File( romPath );
     }
-    
+
     public GalleryItem( Context context, String headingName )
     {
         this.goodName = headingName;
@@ -56,7 +56,7 @@ public class GalleryItem
         this.romFile = null;
         this.textColor = 0;
     }
-    
+
     @Override
     public String toString()
     {
@@ -73,7 +73,7 @@ public class GalleryItem
             return "unknown file";
         }
     }
-    
+
     public static class NameComparator implements Comparator<GalleryItem>
     {
         @Override
@@ -82,13 +82,13 @@ public class GalleryItem
             return item1.toString().compareToIgnoreCase( item2.toString() );
         }
     }
-        
+
     public static class ViewHolder extends RecyclerView.ViewHolder implements OnClickListener,
-            OnLongClickListener
+        OnLongClickListener
     {
         public GalleryItem item;
         private Context mContext;
-        
+
         public ViewHolder( Context context, View view )
         {
             super( view );
@@ -96,13 +96,13 @@ public class GalleryItem
             view.setOnClickListener( this );
             view.setOnLongClickListener( this );
         }
-        
+
         @Override
         public String toString()
         {
             return item.toString();
         }
-        
+
         @Override
         public void onClick( View view )
         {
@@ -112,7 +112,7 @@ public class GalleryItem
                 activity.onGalleryItemClick( item );
             }
         }
-        
+
         @Override
         public boolean onLongClick( View view )
         {
@@ -124,52 +124,52 @@ public class GalleryItem
             return false;
         }
     }
-    
+
     public static class Adapter extends RecyclerView.Adapter<ViewHolder>
     {
         private final Context mContext;
         private final List<GalleryItem> mObjects;
-        
+
         public Adapter( Context context, List<GalleryItem> objects )
         {
             mContext = context;
             mObjects = objects;
         }
-        
+
         @Override
         public int getItemCount()
         {
             return mObjects.size();
         }
-        
+
         @Override
         public long getItemId( int position )
         {
             return 0;
         }
-        
+
         @Override
         public int getItemViewType( int position )
         {
             return mObjects.get( position ).isHeading ? 1 : 0;
         }
-        
+
         public void onBindViewHolder( ViewHolder holder, int position )
         {
             // Called by RecyclerView to display the data at the specified position.
             View view = holder.itemView;
             GalleryItem item = mObjects.get( position );
             holder.item = item;
-            
+
             if( item != null )
-            {   
+            {
                 TextView tv1 = (TextView) view.findViewById( R.id.text1 );
                 tv1.setText( item.toString() );
                 tv1.setTextColor(Color.rgb((item.textColor >> 16) & 0xff,(item.textColor >> 8) & 0xff,item.textColor & 0xff));
-                
+
                 LinearLayout linearLayout = (LinearLayout) view.findViewById( R.id.galleryItem );
                 GalleryActivity activity = (GalleryActivity) item.context;
-                
+
                 if( item.isHeading )
                 {
                     view.setClickable( false );
@@ -192,7 +192,7 @@ public class GalleryItem
                 layout.getLayoutParams().width = activity.galleryWidth;
             }
         }
-        
+
         public ViewHolder onCreateViewHolder( ViewGroup parent, int viewType )
         {
             LayoutInflater inflater = (LayoutInflater) mContext
