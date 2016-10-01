@@ -4490,8 +4490,10 @@ void CArmRecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool 
 
 void CArmRecompilerOps::CompileInterpterCall(void * Function, const char * FunctionName)
 {
-    MoveConstToVariable(m_Opcode.Hex, (void *)&R4300iOp::m_Opcode.Hex, "&R4300iOp::m_Opcode.Hex");
     m_RegWorkingSet.BeforeCallDirect();
+    MoveConstToArmReg(Arm_R1, m_Opcode.Hex);
+    MoveConstToArmReg(Arm_R2, (uint32_t)(void *)&R4300iOp::m_Opcode.Hex, "&R4300iOp::m_Opcode.Hex");
+    StoreArmRegToArmRegPointer(Arm_R1, Arm_R2, 0);
     CallFunction(Function, FunctionName);
     m_RegWorkingSet.AfterCallDirect();
 }
