@@ -194,6 +194,154 @@ void CArmRegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
     SetMipsRegState(MipsReg, SignValue ? STATE_MAPPED_32_SIGN : STATE_MAPPED_32_ZERO);
 }
 
+void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
+{
+    if (m_InCallDirect)
+    {
+        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    ArmReg regHi, reglo;
+    int32_t count;
+
+    if (MipsReg == 0)
+    {
+        if (bHaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nWhy are you trying to map reg 0"); }
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    ProtectGPR(MipsReg);
+    if (IsUnknown(MipsReg) || IsConst(MipsReg))
+    {
+        regHi = FreeArmReg();
+        if (regHi < 0)
+        {
+            if (bHaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); }
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+        SetArmRegProtected(regHi, true);
+
+        reglo = FreeArmReg();
+        if (reglo < 0) 
+        {
+            if (bHaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); }
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return; 
+        }
+        SetArmRegProtected(reglo, true);
+
+        CPU_Message("    regcache: allocate %s to hi word of %s", ArmRegName(regHi), CRegName::GPR[MipsReg]);
+        CPU_Message("    regcache: allocate %s to low word of %s", ArmRegName(reglo), CRegName::GPR[MipsReg]);
+    }
+    else
+    {
+        reglo = GetMipsRegMapLo(MipsReg);
+        if (Is32Bit(MipsReg))
+        {
+            SetArmRegProtected(reglo, true);
+            regHi = FreeArmReg();
+            if (regHi < 0) 
+            {
+                if (bHaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); }
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+                return;
+            }
+            SetArmRegProtected(regHi, true);
+
+            CPU_Message("    regcache: allocate %s to hi word of %s", ArmRegName(regHi), CRegName::GPR[MipsReg]);
+        }
+        else
+        {
+            regHi = GetMipsRegMapHi(MipsReg);
+        }
+    }
+
+    for (int32_t count = 0; count <= Arm_R15; count++)
+    {
+        uint32_t Count = GetArmRegMapOrder((ArmReg)count);
+        if (Count > 0)
+        {
+            SetArmRegMapOrder((ArmReg)count, Count + 1);
+        }
+    }
+    SetArmRegMapOrder(regHi, 1);
+    SetArmRegMapOrder(reglo, 1);
+
+    if (MipsRegToLoad > 0)
+    {
+        if (IsUnknown(MipsRegToLoad))
+        {
+            ArmReg GprReg = Map_Variable(VARIABLE_GPR);
+            LoadArmRegPointerToArmReg(regHi, GprReg, (uint8_t)(MipsRegToLoad << 3) + 4);
+            LoadArmRegPointerToArmReg(reglo, GprReg, (uint8_t)(MipsRegToLoad << 3));
+            SetArmRegProtected(GprReg, false);
+        }
+        else if (IsMapped(MipsRegToLoad))
+        {
+            if (Is32Bit(MipsRegToLoad))
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+                /*if (IsSigned(MipsRegToLoad))
+                {
+                    MoveX86RegToX86Reg(GetMipsRegMapLo(MipsRegToLoad), x86Hi);
+                    ShiftRightSignImmed(x86Hi, 31);
+                }
+                else
+                {
+                    XorX86RegToX86Reg(x86Hi, x86Hi);
+                }
+                if (MipsReg != MipsRegToLoad)
+                {
+                    MoveX86RegToX86Reg(GetMipsRegMapLo(MipsRegToLoad), x86lo);
+                }*/
+            }
+            else if (MipsReg != MipsRegToLoad)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+                /*MoveX86RegToX86Reg(GetMipsRegMapHi(MipsRegToLoad), x86Hi);
+                MoveX86RegToX86Reg(GetMipsRegMapLo(MipsRegToLoad), x86lo);*/
+            }
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            /*CPU_Message("Map_GPR_64bit 11");
+            if (Is32Bit(MipsRegToLoad))
+            {
+                if (IsSigned(MipsRegToLoad))
+                {
+                    MoveConstToX86reg(GetMipsRegLo_S(MipsRegToLoad) >> 31, x86Hi);
+                }
+                else
+                {
+                    MoveConstToX86reg(0, x86Hi);
+                }
+            }
+            else
+            {
+                MoveConstToX86reg(GetMipsRegHi(MipsRegToLoad), x86Hi);
+            }
+            MoveConstToX86reg(GetMipsRegLo(MipsRegToLoad), x86lo);*/
+        }
+    }
+    else if (MipsRegToLoad == 0)
+    {
+        MoveConstToArmReg(regHi, (uint32_t)0);
+        MoveConstToArmReg(reglo, (uint32_t)0);
+    }
+    SetArmRegMapped(regHi, GPR_Mapped);
+    SetArmRegMapped(reglo, GPR_Mapped);
+    SetArmRegProtected(regHi, true);
+    SetArmRegProtected(reglo, true);
+    SetMipsRegMapHi(MipsReg, regHi);
+    SetMipsRegMapLo(MipsReg, reglo);
+    SetMipsRegState(MipsReg, STATE_MAPPED_64);
+}
+
 CArmOps::ArmReg CArmRegInfo::FreeArmReg()
 {
     if (m_InCallDirect)

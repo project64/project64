@@ -54,6 +54,7 @@ public:
 
     void FixRoundModel(FPU_ROUND RoundMethod);
     void Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsRegToLoad);
+    void Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad);
     ArmReg FreeArmReg();
     void WriteBackRegisters();
 
