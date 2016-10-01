@@ -488,43 +488,6 @@ void CArmRegInfo::UnMap_GPR(uint32_t MipsReg, bool WriteBackValue)
     SetArmRegProtected(GprReg, false);
 }
 
-void CArmRegInfo::UnMap_AllFPRs()
-{
-    if (m_InCallDirect)
-    {
-        CPU_Message("%s: in CallDirect",__FUNCTION__);
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-        return;
-    }
-    CPU_Message("%s", __FUNCTION__);
-}
-
-CArmOps::ArmReg CArmRegInfo::FreeArmReg()
-{
-    if (m_InCallDirect)
-    {
-        CPU_Message("%s: in CallDirect",__FUNCTION__);
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-        return Arm_Unknown;
-    }
-    if ((GetArmRegMapped(Arm_R7) == NotMapped || GetArmRegMapped(Arm_R7) == Temp_Mapped) && !GetArmRegProtected(Arm_R7)) { return Arm_R7; }
-    if ((GetArmRegMapped(Arm_R6) == NotMapped || GetArmRegMapped(Arm_R6) == Temp_Mapped) && !GetArmRegProtected(Arm_R6)) { return Arm_R6; }
-    if ((GetArmRegMapped(Arm_R5) == NotMapped || GetArmRegMapped(Arm_R5) == Temp_Mapped) && !GetArmRegProtected(Arm_R5)) { return Arm_R5; }
-    if ((GetArmRegMapped(Arm_R4) == NotMapped || GetArmRegMapped(Arm_R4) == Temp_Mapped) && !GetArmRegProtected(Arm_R4)) { return Arm_R4; }
-    if ((GetArmRegMapped(Arm_R3) == NotMapped || GetArmRegMapped(Arm_R3) == Temp_Mapped) && !GetArmRegProtected(Arm_R3)) { return Arm_R3; }
-    if ((GetArmRegMapped(Arm_R2) == NotMapped || GetArmRegMapped(Arm_R2) == Temp_Mapped) && !GetArmRegProtected(Arm_R2)) { return Arm_R2; }
-    if ((GetArmRegMapped(Arm_R1) == NotMapped || GetArmRegMapped(Arm_R1) == Temp_Mapped) && !GetArmRegProtected(Arm_R1)) { return Arm_R1; }
-    if ((GetArmRegMapped(Arm_R0) == NotMapped || GetArmRegMapped(Arm_R0) == Temp_Mapped) && !GetArmRegProtected(Arm_R0)) { return Arm_R0; }
-    if ((GetArmRegMapped(Arm_R12) == NotMapped || GetArmRegMapped(Arm_R12) == Temp_Mapped) && !GetArmRegProtected(Arm_R12)) { return Arm_R12; }
-    if ((GetArmRegMapped(Arm_R11) == NotMapped || GetArmRegMapped(Arm_R11) == Temp_Mapped) && !GetArmRegProtected(Arm_R11)) { return Arm_R11; }
-    if ((GetArmRegMapped(Arm_R10) == NotMapped || GetArmRegMapped(Arm_R10) == Temp_Mapped) && !GetArmRegProtected(Arm_R10)) { return Arm_R10; }
-    if ((GetArmRegMapped(Arm_R9) == NotMapped || GetArmRegMapped(Arm_R9) == Temp_Mapped) && !GetArmRegProtected(Arm_R9)) { return Arm_R9; }
-    if ((GetArmRegMapped(Arm_R8) == NotMapped || GetArmRegMapped(Arm_R8) == Temp_Mapped) && !GetArmRegProtected(Arm_R8)) { return Arm_R8; }
-
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return Arm_Unknown;
-}
-
 void CArmRegInfo::WriteBackRegisters()
 {
     if (m_InCallDirect)
@@ -559,6 +522,17 @@ void CArmRegInfo::WriteBackRegisters()
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
+}
+
+void CArmRegInfo::UnMap_AllFPRs()
+{
+    if (m_InCallDirect)
+    {
+        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    CPU_Message("%s", __FUNCTION__);
 }
 
 bool CArmRegInfo::UnMap_ArmReg(ArmReg Reg)
@@ -622,6 +596,32 @@ bool CArmRegInfo::UnMap_ArmReg(ArmReg Reg)
     }
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
+}
+
+CArmOps::ArmReg CArmRegInfo::FreeArmReg()
+{
+    if (m_InCallDirect)
+    {
+        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return Arm_Unknown;
+    }
+    if ((GetArmRegMapped(Arm_R7) == NotMapped || GetArmRegMapped(Arm_R7) == Temp_Mapped) && !GetArmRegProtected(Arm_R7)) { return Arm_R7; }
+    if ((GetArmRegMapped(Arm_R6) == NotMapped || GetArmRegMapped(Arm_R6) == Temp_Mapped) && !GetArmRegProtected(Arm_R6)) { return Arm_R6; }
+    if ((GetArmRegMapped(Arm_R5) == NotMapped || GetArmRegMapped(Arm_R5) == Temp_Mapped) && !GetArmRegProtected(Arm_R5)) { return Arm_R5; }
+    if ((GetArmRegMapped(Arm_R4) == NotMapped || GetArmRegMapped(Arm_R4) == Temp_Mapped) && !GetArmRegProtected(Arm_R4)) { return Arm_R4; }
+    if ((GetArmRegMapped(Arm_R3) == NotMapped || GetArmRegMapped(Arm_R3) == Temp_Mapped) && !GetArmRegProtected(Arm_R3)) { return Arm_R3; }
+    if ((GetArmRegMapped(Arm_R2) == NotMapped || GetArmRegMapped(Arm_R2) == Temp_Mapped) && !GetArmRegProtected(Arm_R2)) { return Arm_R2; }
+    if ((GetArmRegMapped(Arm_R1) == NotMapped || GetArmRegMapped(Arm_R1) == Temp_Mapped) && !GetArmRegProtected(Arm_R1)) { return Arm_R1; }
+    if ((GetArmRegMapped(Arm_R0) == NotMapped || GetArmRegMapped(Arm_R0) == Temp_Mapped) && !GetArmRegProtected(Arm_R0)) { return Arm_R0; }
+    if ((GetArmRegMapped(Arm_R12) == NotMapped || GetArmRegMapped(Arm_R12) == Temp_Mapped) && !GetArmRegProtected(Arm_R12)) { return Arm_R12; }
+    if ((GetArmRegMapped(Arm_R11) == NotMapped || GetArmRegMapped(Arm_R11) == Temp_Mapped) && !GetArmRegProtected(Arm_R11)) { return Arm_R11; }
+    if ((GetArmRegMapped(Arm_R10) == NotMapped || GetArmRegMapped(Arm_R10) == Temp_Mapped) && !GetArmRegProtected(Arm_R10)) { return Arm_R10; }
+    if ((GetArmRegMapped(Arm_R9) == NotMapped || GetArmRegMapped(Arm_R9) == Temp_Mapped) && !GetArmRegProtected(Arm_R9)) { return Arm_R9; }
+    if ((GetArmRegMapped(Arm_R8) == NotMapped || GetArmRegMapped(Arm_R8) == Temp_Mapped) && !GetArmRegProtected(Arm_R8)) { return Arm_R8; }
+
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    return Arm_Unknown;
 }
 
 CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadHiWord)
