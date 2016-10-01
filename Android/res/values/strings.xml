@@ -67,6 +67,18 @@
     <string name="galleryLibrary">Games</string>
 
     <!-- Settings -->
+    <string name="Hardware">Hardware</string>
+    <string name="Other">Other</string>
+    <string name="input_screen_summary">Controller settings</string>
+    <string name="input_screen_title">Input</string>
+    <string name="video_screen_summary">Graphic settings</string>
+    <string name="video_screen_title">Video</string>
+    <string name="audio_screen_summary">Sound settings</string>
+    <string name="audio_screen_title">Audio</string>
+    <string name="advanced_screen_summary">advanced/debugging settings</string>
+    <string name="advanced_screen_title">Advanced</string>
+    <string name="reset_summary">Restore default settings</string>
+    <string name="reset_title">Reset</string>
     <string name="preferences">Settings</string>
     <string name="settings_title">Settings</string>
     <string name="displayFps_title">Framerate</string>
