@@ -1,4 +1,4 @@
-/****************************************************************************
+x`/****************************************************************************
 *                                                                           *
 * Project64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
@@ -602,15 +602,11 @@ void CArmOps::PopArmReg(uint16_t Registers)
     {
         return;
     }
-    if ((Registers & ArmPushPop_R8) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
-    if ((Registers & ArmPushPop_R9) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
-    if ((Registers & ArmPushPop_R10) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
-    if ((Registers & ArmPushPop_R11) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
-    if ((Registers & ArmPushPop_R12) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
-    if ((Registers & ArmPushPop_R13) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
-    if ((Registers & ArmPushPop_R14) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+    if ((Registers & ArmPushPop_SP) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+    if ((Registers & ArmPushPop_LR) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 
     std::string pushed;
+    if ((Registers & ArmPushPop_R0) != 0) { pushed += pushed.length() > 0 ? ", r0" : "r0"; }
     if ((Registers & ArmPushPop_R1) != 0) { pushed += pushed.length() > 0 ? ", r1" : "r1"; }
     if ((Registers & ArmPushPop_R2) != 0) { pushed += pushed.length() > 0 ? ", r2" : "r2"; }
     if ((Registers & ArmPushPop_R3) != 0) { pushed += pushed.length() > 0 ? ", r3" : "r3"; }
@@ -618,17 +614,38 @@ void CArmOps::PopArmReg(uint16_t Registers)
     if ((Registers & ArmPushPop_R5) != 0) { pushed += pushed.length() > 0 ? ", r5" : "r5"; }
     if ((Registers & ArmPushPop_R6) != 0) { pushed += pushed.length() > 0 ? ", r6" : "r6"; }
     if ((Registers & ArmPushPop_R7) != 0) { pushed += pushed.length() > 0 ? ", r7" : "r7"; }
+    if ((Registers & ArmPushPop_R8) != 0) { pushed += pushed.length() > 0 ? ", r8" : "r8"; }
+    if ((Registers & ArmPushPop_R9) != 0) { pushed += pushed.length() > 0 ? ", r9" : "r9"; }
+    if ((Registers & ArmPushPop_R10) != 0) { pushed += pushed.length() > 0 ? ", r10" : "r10"; }
+    if ((Registers & ArmPushPop_R11) != 0) { pushed += pushed.length() > 0 ? ", fp" : "fp"; }
+    if ((Registers & ArmPushPop_R12) != 0) { pushed += pushed.length() > 0 ? ", ip" : "ip"; }
     if ((Registers & ArmPushPop_PC) != 0) { pushed += pushed.length() > 0 ? ", pc" : "pc"; }
 
-    CPU_Message("      pop\t%s", pushed.c_str());
-    bool pc = (Registers & ArmPushPop_PC) != 0;
-    Registers &= Registers & ~ArmPushPop_PC;
+    if ((Registers & ArmPushPop_R8) != 0 ||
+        (Registers & ArmPushPop_R9) != 0 ||
+        (Registers & ArmPushPop_R10) != 0 ||
+        (Registers & ArmPushPop_R11) != 0 ||
+        (Registers & ArmPushPop_R12) != 0)
+    {
+        CPU_Message("%X      pop\t{%s}", (int32_t)*g_RecompPos, pushed.c_str());
 
-    ArmThumbOpcode op = {0};
-    op.Pop.register_list = (uint8_t)Registers;
-    op.Pop.p = pc ? 1 : 0;
-    op.Pop.opcode = ArmPOP;
-    AddCode16(op.Hex);
+        Arm32Opcode op = {0};
+        op.PushPop.register_list = Registers;
+        op.PushPop.opcode = 0xE8BD;
+        AddCode32(op.Hex);
+    }
+    else
+    {
+        CPU_Message("      pop\t%s", pushed.c_str());
+        bool pc = (Registers & ArmPushPop_PC) != 0;
+        Registers &= Registers & ~ArmPushPop_PC;
+
+        ArmThumbOpcode op = {0};
+        op.Pop.register_list = (uint8_t)Registers;
+        op.Pop.p = pc ? 1 : 0;
+        op.Pop.opcode = ArmPOP;
+        AddCode16(op.Hex);
+    }
 }
 
 void CArmOps::ShiftRightSignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift)
@@ -651,7 +668,7 @@ void CArmOps::ShiftRightSignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shi
         op.imm5.rd = DestReg;
         op.imm5.imm3 = (shift >> 2) & 7;
         op.imm5.opcode2 = 0;
-        AddCode32(op.Hex);  
+        AddCode32(op.Hex);
     }
     else
     {
