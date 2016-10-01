@@ -4131,7 +4131,7 @@ void CArmRecompilerOps::UnknownOpcode()
 
 void CArmRecompilerOps::EnterCodeBlock()
 {
-    PushArmReg(ArmPushPop_R3 | ArmPushPop_R4 | ArmPushPop_R5 | ArmPushPop_R6 | ArmPushPop_R7 | ArmPushPop_LR);
+    PushArmReg(ArmPushPop_R3|ArmPushPop_R4|ArmPushPop_R5|ArmPushPop_R6|ArmPushPop_R7| ArmPushPop_R8|ArmPushPop_R9|ArmPushPop_R10|ArmPushPop_R11|ArmPushPop_R12|ArmPushPop_LR);
 }
 
 void CArmRecompilerOps::ExitCodeBlock()
@@ -4141,7 +4141,7 @@ void CArmRecompilerOps::ExitCodeBlock()
         MoveConstToArmReg(Arm_R0, (uint32_t)g_BaseSystem, "g_BaseSystem");
         CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     }
-    PopArmReg(ArmPushPop_R3 | ArmPushPop_R4 | ArmPushPop_R5 | ArmPushPop_R6 | ArmPushPop_R7 | ArmPushPop_PC);
+    PopArmReg(ArmPushPop_R3|ArmPushPop_R4|ArmPushPop_R5|ArmPushPop_R6|ArmPushPop_R7| ArmPushPop_R8|ArmPushPop_R9|ArmPushPop_R10|ArmPushPop_R11|ArmPushPop_R12|ArmPushPop_PC);
 }
 
 void CArmRecompilerOps::CompileExitCode()
