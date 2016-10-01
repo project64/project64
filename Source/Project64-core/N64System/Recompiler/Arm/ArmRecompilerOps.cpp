@@ -4197,6 +4197,10 @@ void CArmRecompilerOps::SyncRegState(const CRegInfo & SyncTo)
 
 void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason)
 {
+    m_RegWorkingSet = ExitRegSet;
+    m_RegWorkingSet.WriteBackRegisters();
+    ExitRegSet = m_RegWorkingSet;
+
     if (TargetPC != (uint32_t)-1)
     {
         MoveConstToArmReg(Arm_R1, TargetPC);
