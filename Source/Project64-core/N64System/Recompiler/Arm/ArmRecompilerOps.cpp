@@ -4446,17 +4446,35 @@ void CArmRecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool 
     {
         UpdateSyncCPU(RegSet, RegSet.GetBlockCycleCount());
         WriteArmComment("Update Counter");
-        SubConstFromVariable(RegSet.GetBlockCycleCount(), g_NextTimer, "g_NextTimer"); // updates compare flag
+
+        ArmReg NextTimerReg = RegSet.Map_Variable(CArmRegInfo::VARIABLE_NEXT_TIMER);
+        ArmReg TempReg = RegSet.Map_TempReg(Arm_Any, -1, false);
+        LoadArmRegPointerToArmReg(TempReg,NextTimerReg,0);
+        SubConstFromArmReg(TempReg,RegSet.GetBlockCycleCount());
+        StoreArmRegToArmRegPointer(TempReg,NextTimerReg,0);
         if (ClearValues)
         {
             RegSet.SetBlockCycleCount(0);
         }
+        if (CheckTimer)
+        {
+            CompareArmRegToConst(TempReg, 0);
+        }
+        RegSet.SetArmRegProtected(TempReg, false);
+        RegSet.SetArmRegProtected(NextTimerReg, false);
+    }
+    else if (CheckTimer)
+    {
+        ArmReg NextTimerReg = RegSet.Map_Variable(CArmRegInfo::VARIABLE_NEXT_TIMER);
+        ArmReg TempReg = RegSet.Map_TempReg(Arm_Any, -1, false);
+        LoadArmRegPointerToArmReg(TempReg,NextTimerReg,0);
+        CompareArmRegToConst(TempReg, 0);
+        RegSet.SetArmRegProtected(TempReg, false);
+        RegSet.SetArmRegProtected(NextTimerReg, false);
     }
 
     if (CheckTimer)
     {
-        MoveVariableToArmReg(g_NextTimer, "g_NextTimer", Arm_R2);
-        CompareArmRegToConst(Arm_R2, 0);
         uint8_t * Jump = *g_RecompPos;
         BranchLabel8(ArmBranch_GreaterThanOrEqual, "Continue_From_Timer_Test");
         RegSet.BeforeCallDirect();
