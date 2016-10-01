@@ -2537,6 +2537,7 @@ void CArmRecompilerOps::SPECIAL_JALR()
                 g_Notify->BreakPoint(__FILE__, __LINE__);
                 return;
             }
+            g_Notify->BreakPoint(__FILE__, __LINE__);
             MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
             MoveConstToArmReg(Arm_R1, (uint32_t)_PROGRAM_COUNTER, "PROGRAM_COUNTER");
             StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
@@ -2545,14 +2546,24 @@ void CArmRecompilerOps::SPECIAL_JALR()
         MoveConstToVariable(m_CompilePC + 8, &_GPR[m_Opcode.rd].UW[0], CRegName::GPR_Lo[m_Opcode.rd]);
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
-            if (IsKnown(m_Opcode.rs))
+            ArmReg TempRegRs = Arm_Unknown;
+            if (IsKnown(m_Opcode.rs) && IsMapped(m_Opcode.rs))
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
-                return;
             }
-            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-            MoveConstToArmReg(Arm_R1, (uint32_t)&R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
-            StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
+            else if (IsKnown(m_Opcode.rs))
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            else
+            {
+                TempRegRs = m_RegWorkingSet.Map_TempReg(Arm_Any, m_Opcode.rs, false);
+            }
+            ArmReg TempRegVar = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+            MoveConstToArmReg(TempRegVar, (uint32_t)&R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
+            StoreArmRegToArmRegPointer(TempRegRs, TempRegVar, 0);
+            m_RegWorkingSet.SetArmRegProtected(TempRegRs,false);
+            m_RegWorkingSet.SetArmRegProtected(TempRegVar,false);
 
             m_RegWorkingSet.WriteBackRegisters();
             OverflowDelaySlot(true);
@@ -2577,14 +2588,24 @@ void CArmRecompilerOps::SPECIAL_JALR()
         else
         {
             UpdateCounters(m_RegWorkingSet, true, true);
-            if (IsKnown(m_Opcode.rs))
+            ArmReg ArmRegRs = Arm_Unknown;
+            if (IsKnown(m_Opcode.rs) && IsMapped(m_Opcode.rs))
+            {
+                ArmRegRs = GetMipsRegMapLo(m_Opcode.rs);
+            }
+            else if (IsKnown(m_Opcode.rs))
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
-                return;
             }
-            MoveVariableToArmReg(&_GPR[m_Opcode.rs].UW[0], CRegName::GPR_Lo[m_Opcode.rs], Arm_R0);
-            MoveConstToArmReg(Arm_R1, (uint32_t)_PROGRAM_COUNTER, "PROGRAM_COUNTER");
-            StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
+            else
+            {
+                ArmRegRs = m_RegWorkingSet.Map_TempReg(Arm_Any, m_Opcode.rs, false);
+            }
+            ArmReg TempRegPC = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+            MoveConstToArmReg(TempRegPC, (uint32_t)_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+            StoreArmRegToArmRegPointer(ArmRegRs, TempRegPC, 0);
+            m_RegWorkingSet.SetArmRegProtected(ArmRegRs,false);
+            m_RegWorkingSet.SetArmRegProtected(TempRegPC,false);
             CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, CExitInfo::Normal);
             if (m_Section->m_JumpSection)
             {
