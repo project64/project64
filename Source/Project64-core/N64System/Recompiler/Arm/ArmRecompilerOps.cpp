@@ -1748,40 +1748,36 @@ void CArmRecompilerOps::ADDI()
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    UnMap_GPR(m_Opcode.rs, true);
-    UnMap_GPR(m_Opcode.rt, true);
-    if (g_Settings->LoadBool(Game_32Bit))
+    if (IsConst(m_Opcode.rs))
     {
-        CompileInterpterCall((void *)R4300iOp32::ADDI, "R4300iOp32::ADDI");
+        if (IsMapped(m_Opcode.rt))
+        {
+            UnMap_GPR(m_Opcode.rt, false);
+        }
+
+        m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, GetMipsRegLo(m_Opcode.rs) + (int16_t)m_Opcode.immediate);
+        m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, CRegInfo::STATE_CONST_32_SIGN);
+    }
+    else if (IsMapped(m_Opcode.rs))
+    {
+        Map_GPR_32bit(m_Opcode.rt, true, -1);
+        AddConstToArmReg(GetMipsRegMapLo(m_Opcode.rt), GetMipsRegMapLo(m_Opcode.rs), (int16_t)m_Opcode.immediate);
     }
     else
     {
-        CompileInterpterCall((void *)R4300iOp::ADDI, "R4300iOp::ADDI");
+        Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rs);
+        AddConstToArmReg(GetMipsRegMapLo(m_Opcode.rt), (int16_t)m_Opcode.immediate);
+    }
+
+    if (g_System->bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 }
 
 void CArmRecompilerOps::ADDIU()
 {
-    if (m_Opcode.rt == 0 || (m_Opcode.immediate == 0 && m_Opcode.rs == m_Opcode.rt))
-    {
-        return;
-    }
-
-    if (g_System->bFastSP())
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-
-    UnMap_GPR(m_Opcode.rs, true);
-    UnMap_GPR(m_Opcode.rt, true);
-    if (g_Settings->LoadBool(Game_32Bit))
-    {
-        CompileInterpterCall((void *)R4300iOp32::ADDIU, "R4300iOp32::ADDIU");
-    }
-    else
-    {
-        CompileInterpterCall((void *)R4300iOp::ADDIU, "R4300iOp::ADDIU");
-    }
+    ADDI();
 }
 
 void CArmRecompilerOps::SLTI()
