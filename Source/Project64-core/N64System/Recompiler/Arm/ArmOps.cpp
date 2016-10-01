@@ -658,6 +658,23 @@ void CArmOps::ShiftRightUnsignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t s
     }
 }
 
+void CArmOps::ShiftLeftImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift)
+{
+    if (DestReg > 0x7 || SourceReg > 0x7 || (shift & (~0x1F)) != 0)
+    {
+        g_Notify->BreakPoint(__FILE__,__LINE__);
+        return;
+    }
+    CPU_Message("      lsls\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), (uint32_t)shift);
+
+    ArmThumbOpcode op = {0};
+    op.Imm5.rt = DestReg;
+    op.Imm5.rn = SourceReg;
+    op.Imm5.imm5 = shift;
+    op.Imm5.opcode = 0x0;
+    AddCode16(op.Hex);
+}
+
 void CArmOps::StoreArmRegToArmRegPointer(ArmReg Reg, ArmReg RegPointer, uint8_t offset)
 {
     if (Reg > 0x7 || RegPointer > 0x7)
