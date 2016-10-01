@@ -4301,6 +4301,11 @@ void CArmRecompilerOps::CompileSystemCheck(uint32_t TargetPC, const CRegInfo & R
     SetRegWorkingSet(OriginalWorkingRegSet);
 }
 
+void CArmRecompilerOps::CompileReadTLBMiss(ArmReg AddressReg, ArmReg LookUpReg)
+{
+    CPU_Message("%s: todo",__FUNCTION__);
+}
+
 CRegInfo & CArmRecompilerOps::GetRegWorkingSet(void)
 {
     return m_RegWorkingSet;

@@ -221,6 +221,7 @@ public:
     static void UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles);
     void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false);
     void CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet);
+    void CompileReadTLBMiss(ArmReg AddressReg, ArmReg LookUpReg);
 
     static inline uint32_t GetMipsRegLo(int32_t Reg) { return m_RegWorkingSet.GetMipsRegLo(Reg); }
     static inline int32_t GetMipsRegLo_S(int32_t Reg) { return m_RegWorkingSet.GetMipsRegLo_S(Reg); }
@@ -236,10 +237,14 @@ public:
     static inline bool Is32Bit(int32_t Reg) { return m_RegWorkingSet.Is32Bit(Reg); }
     static inline bool Is64Bit(int32_t Reg) { return m_RegWorkingSet.Is64Bit(Reg); }
     static inline void Map_GPR_32bit(int32_t Reg, bool SignValue, int32_t MipsRegToLoad) { m_RegWorkingSet.Map_GPR_32bit(Reg, SignValue, MipsRegToLoad); }
+    static inline void Map_GPR_64bit(int32_t Reg, int32_t MipsRegToLoad) { m_RegWorkingSet.Map_GPR_64bit(Reg, MipsRegToLoad); }
     static inline void UnMap_GPR(uint32_t Reg, bool WriteBackValue){ m_RegWorkingSet.UnMap_GPR(Reg, WriteBackValue); }
     static inline ArmReg Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadHiWord) { return m_RegWorkingSet.Map_TempReg(Reg, MipsReg, LoadHiWord); }
+    static inline ArmReg Map_Variable(CArmRegInfo::VARIABLE_MAPPED variable) { return m_RegWorkingSet.Map_Variable(variable); }
 
     static inline void ResetRegProtection() { m_RegWorkingSet.ResetRegProtection(); }
+    static inline void FixRoundModel(CRegInfo::FPU_ROUND RoundMethod) { m_RegWorkingSet.FixRoundModel(RoundMethod); }
+
     static inline void ProtectGPR(uint32_t Reg) { m_RegWorkingSet.ProtectGPR(Reg); }
 
 private:
