@@ -222,15 +222,24 @@ public:
     void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false);
     void CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet);
 
-    static bool IsKnown(int32_t Reg) { return false; }
-    static void ResetRegProtection()
-    {
-        //m_RegWorkingSet.ResetRegProtection();
-    }
-    inline void UnMap_GPR ( uint32_t Reg, bool WriteBackValue )
-    {
-        //m_RegWorkingSet.UnMap_GPR(Reg,WriteBackValue);
-    }
+    static inline uint32_t GetMipsRegLo(int32_t Reg) { return m_RegWorkingSet.GetMipsRegLo(Reg); }
+    static inline int32_t GetMipsRegLo_S(int32_t Reg) { return m_RegWorkingSet.GetMipsRegLo_S(Reg); }
+    static inline uint32_t GetMipsRegHi(int32_t Reg) { return m_RegWorkingSet.GetMipsRegHi(Reg); }
+    static inline ArmReg GetMipsRegMapLo(int32_t Reg) { return m_RegWorkingSet.GetMipsRegMapLo(Reg); }
+    static inline ArmReg GetMipsRegMapHi(int32_t Reg) { return m_RegWorkingSet.GetMipsRegMapHi(Reg); }
+
+    static inline bool IsKnown(int32_t Reg) { return m_RegWorkingSet.IsKnown(Reg); }
+    static inline bool IsMapped(int32_t Reg) { return m_RegWorkingSet.IsMapped(Reg); }
+    static inline bool IsConst(int32_t Reg) { return m_RegWorkingSet.IsConst(Reg); }
+    static inline bool IsSigned(int32_t Reg) { return m_RegWorkingSet.IsSigned(Reg); }
+    static inline bool Is32Bit(int32_t Reg) { return m_RegWorkingSet.Is32Bit(Reg); }
+    static inline bool Is64Bit(int32_t Reg) { return m_RegWorkingSet.Is64Bit(Reg); }
+    static inline void UnMap_GPR(uint32_t Reg, bool WriteBackValue){ m_RegWorkingSet.UnMap_GPR(Reg, WriteBackValue); }
+    static inline ArmReg Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadHiWord) { return m_RegWorkingSet.Map_TempReg(Reg, MipsReg, LoadHiWord); }
+
+    static inline void ResetRegProtection() { m_RegWorkingSet.ResetRegProtection(); }
+    static inline void ProtectGPR(uint32_t Reg) { m_RegWorkingSet.ProtectGPR(Reg); }
+
 private:
     void CompileInterpterCall (void * Function, const char * FunctionName);
     void OverflowDelaySlot(bool TestTimer);
@@ -239,7 +248,6 @@ private:
     STEP_TYPE m_NextInstruction;
     uint32_t m_CompilePC;
     OPCODE m_Opcode;
-    CArmRegInfo m_RegWorkingSet;
     CCodeSection * m_Section;
 };
 
