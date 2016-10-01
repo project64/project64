@@ -294,12 +294,32 @@ void CArmOps::CompareArmRegToConst(ArmReg Reg, uint32_t value)
 
 void CArmOps::CompareArmRegToArmReg(ArmReg Reg1, ArmReg Reg2)
 {
-    CPU_Message("      cmp\t%s, %s", ArmRegName(Reg1), ArmRegName(Reg2));
-    ArmThumbOpcode op = {0};
-    op.Reg2.rn = Reg1;
-    op.Reg2.rm = Reg2;
-    op.Reg2.opcode = 0x10A;
-    AddCode16(op.Hex);
+    if (Reg1 <= 0x7 && Reg2 <= 0x7 )
+    {
+        CPU_Message("      cmp\t%s, %s", ArmRegName(Reg1), ArmRegName(Reg2));
+        ArmThumbOpcode op = {0};
+        op.Reg2.rn = Reg1;
+        op.Reg2.rm = Reg2;
+        op.Reg2.opcode = 0x10A;
+        AddCode16(op.Hex);
+    }
+    else
+    {
+        CPU_Message("      cmp.w\t%s, %s", ArmRegName(Reg1), ArmRegName(Reg2));
+        Arm32Opcode op = {0};
+        op.imm5.rn = Reg1;
+        op.imm5.s = 1;
+        op.imm5.opcode = 0x75D;
+
+        op.imm5.rm = Reg2;
+        op.imm5.type = 0;
+        op.imm5.imm2 = 0;
+        op.imm5.rd = 0xF;
+        op.imm5.imm3 = 0;
+        op.imm5.opcode2 = 0;
+
+        AddCode32(op.Hex);
+    }
 }
 
 void CArmOps::LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift)
