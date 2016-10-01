@@ -2927,16 +2927,173 @@ void CArmRecompilerOps::SPECIAL_OR()
 
 void CArmRecompilerOps::SPECIAL_XOR()
 {
-    UnMap_GPR(m_Opcode.rd, true);
-    UnMap_GPR(m_Opcode.rt, true);
-    UnMap_GPR(m_Opcode.rs, true);
-    if (g_Settings->LoadBool(Game_32Bit))
+    if (m_Opcode.rd == 0)
+        return;
+
+    if (m_Opcode.rt == m_Opcode.rs)
     {
-        CompileInterpterCall((void *)R4300iOp32::SPECIAL_XOR, "R4300iOp32::SPECIAL_XOR");
+        UnMap_GPR(m_Opcode.rd, false);
+        m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+        m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, 0);
+        return;
+    }
+
+    if (IsKnown(m_Opcode.rt) && IsKnown(m_Opcode.rs))
+    {
+        if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            CArmRecompilerOps::UnknownOpcode();
+            /*if (IsMapped(m_Opcode.rd))
+            {
+            UnMap_GPR(m_Opcode.rd, false);
+            }
+
+            if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs))
+            {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            CX86RecompilerOps::UnknownOpcode();
+            }
+            else
+            {
+            m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+            m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, GetMipsRegLo(m_Opcode.rt) ^ GetMipsRegLo(m_Opcode.rs));
+            }*/
+        }
+        else if (IsMapped(m_Opcode.rt) && IsMapped(m_Opcode.rs))
+        {
+            int source1 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rt : m_Opcode.rs;
+            int source2 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rs : m_Opcode.rt;
+
+            ProtectGPR(source1);
+            ProtectGPR(source2);
+            if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs))
+            {
+                if (m_Opcode.rt != m_Opcode.rd && m_Opcode.rs != m_Opcode.rd)
+                {
+                    Map_GPR_64bit(m_Opcode.rd, -1);
+                    XorArmRegToArmReg(GetMipsRegMapHi(m_Opcode.rd),
+                        Is32Bit(source1) ? Map_TempReg(Arm_Any, source1, true) : GetMipsRegMapHi(source1),
+                        Is32Bit(source2) ? Map_TempReg(Arm_Any, source2, true) : GetMipsRegMapHi(source2));
+                    XorArmRegToArmReg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapLo(source1), GetMipsRegMapLo(source2));
+                }
+                else
+                {
+                    Map_GPR_64bit(m_Opcode.rd, source1);
+                    XorArmRegToArmReg(GetMipsRegMapHi(m_Opcode.rd), Is32Bit(source2) ? Map_TempReg(Arm_Any, source2, true) : GetMipsRegMapHi(source2));
+                    XorArmRegToArmReg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapLo(source2));
+                }
+            }
+            else
+            {
+                Map_GPR_32bit(m_Opcode.rd, IsSigned(m_Opcode.rt) != IsSigned(m_Opcode.rs) ? true : IsSigned(m_Opcode.rt), -1);
+                XorArmRegToArmReg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapLo(source1), GetMipsRegMapLo(source2));
+            }
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            CArmRecompilerOps::UnknownOpcode();
+            /*uint32_t ConstReg = IsConst(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
+            uint32_t MappedReg = IsConst(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
+
+            if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs))
+            {
+            uint32_t ConstHi, ConstLo;
+
+            ConstHi = Is32Bit(ConstReg) ? (uint32_t)(GetMipsRegLo_S(ConstReg) >> 31) : GetMipsRegHi(ConstReg);
+            ConstLo = GetMipsRegLo(ConstReg);
+            Map_GPR_64bit(m_Opcode.rd, MappedReg);
+            if (ConstHi != 0) { XorConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), ConstHi); }
+            if (ConstLo != 0) { XorConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), ConstLo); }
+            }
+            else
+            {
+            int Value = GetMipsRegLo(ConstReg);
+            if (IsSigned(m_Opcode.rt) != IsSigned(m_Opcode.rs))
+            {
+            Map_GPR_32bit(m_Opcode.rd, true, MappedReg);
+            }
+            else
+            {
+            Map_GPR_32bit(m_Opcode.rd, IsSigned(MappedReg), MappedReg);
+            }
+            if (Value != 0) { XorConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), Value); }
+            }*/
+        }
+    }
+    else if (IsKnown(m_Opcode.rt) || IsKnown(m_Opcode.rs))
+    {
+        int KnownReg = IsKnown(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
+        int UnknownReg = IsKnown(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
+
+        if (IsConst(KnownReg))
+        {
+            uint64_t Value;
+
+            if (Is64Bit(KnownReg))
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+                CArmRecompilerOps::UnknownOpcode();
+                /*Value = GetMipsReg(KnownReg);
+                Map_GPR_64bit(m_Opcode.rd, UnknownReg);
+                if ((Value >> 32) != 0)
+                {
+                XorConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), (uint32_t)(Value >> 32));
+                }*/
+            }
+            else
+            {
+                Map_GPR_32bit(m_Opcode.rd, true, UnknownReg);
+                Value = IsSigned(KnownReg) ? GetMipsRegLo_S(KnownReg) : GetMipsRegLo(KnownReg);
+            }
+            uint32_t dwValue = (uint32_t)(Value & 0xFFFFFFFF);
+            XorConstToArmReg(GetMipsRegMapLo(m_Opcode.rd), dwValue);
+        }
+        else
+        {
+            if (g_System->b32BitCore())
+            {
+                if (m_Opcode.rd == KnownReg)
+                {
+                    XorArmRegToArmReg(GetMipsRegMapLo(m_Opcode.rd), Map_TempReg(Arm_Any, UnknownReg, false));
+                }
+                else
+                {
+                    Map_GPR_32bit(m_Opcode.rd, true, UnknownReg);
+                    XorArmRegToArmReg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapLo(KnownReg));
+                }
+            }
+            else
+            {
+                if (m_Opcode.rd == KnownReg)
+                {
+                    ArmReg TempReg = Arm_Any;
+                    if (Is64Bit(KnownReg))
+                    {
+                        TempReg = Map_TempReg(Arm_Any, UnknownReg, true);
+                        XorArmRegToArmReg(GetMipsRegMapHi(m_Opcode.rd), TempReg);
+                        m_RegWorkingSet.SetArmRegProtected(TempReg,false);
+                    }
+                    XorArmRegToArmReg(GetMipsRegMapLo(m_Opcode.rd), Map_TempReg(TempReg, UnknownReg, false));
+                }
+                else
+                {
+                    Map_GPR_64bit(m_Opcode.rd, UnknownReg);
+                    XorArmRegToArmReg(GetMipsRegMapHi(m_Opcode.rd), Is32Bit(KnownReg) ? Map_TempReg(Arm_Any, KnownReg, true) : GetMipsRegMapHi(KnownReg));
+                    XorArmRegToArmReg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapLo(KnownReg));
+                }
+            }
+        }
     }
     else
     {
-        CompileInterpterCall((void *)R4300iOp::SPECIAL_XOR, "R4300iOp::SPECIAL_XOR");
+        Map_GPR_64bit(m_Opcode.rd, m_Opcode.rs == m_Opcode.rd ? m_Opcode.rs : m_Opcode.rt);
+        ArmReg TempReg = Map_TempReg(Arm_Any, m_Opcode.rs == m_Opcode.rd ? m_Opcode.rt : m_Opcode.rs, true);
+        XorArmRegToArmReg(GetMipsRegMapHi(m_Opcode.rd), TempReg);
+        m_RegWorkingSet.SetArmRegProtected(TempReg,false);
+        Map_TempReg(TempReg, m_Opcode.rs == m_Opcode.rd ? m_Opcode.rt : m_Opcode.rs, false);
+        XorArmRegToArmReg(GetMipsRegMapLo(m_Opcode.rd), TempReg);
     }
 }
 
