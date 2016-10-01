@@ -1907,15 +1907,46 @@ void CArmRecompilerOps::LDR()
 
 void CArmRecompilerOps::LB()
 {
-    UnMap_GPR(m_Opcode.base, true);
-    UnMap_GPR(m_Opcode.rt, true);
-    if (g_Settings->LoadBool(Game_32Bit))
+    if (m_Opcode.rt == 0)
     {
-        CompileInterpterCall((void *)R4300iOp32::LB, "R4300iOp32::LB");
+        return;
+    }
+
+    if (IsConst(m_Opcode.base))
+    {
+        g_Notify->BreakPoint(__FILE__,__LINE__);
+    }
+    if (IsMapped(m_Opcode.rt))
+    {
+        ProtectGPR(m_Opcode.rt);
+    }
+
+    ArmReg TempRegAddress;
+    if (IsMapped(m_Opcode.base))
+    {
+        TempRegAddress = Map_TempReg(Arm_Any, -1, false);
+        AddConstToArmReg(TempRegAddress,GetMipsRegMapLo(m_Opcode.base),(int16_t)m_Opcode.immediate);
     }
     else
     {
-        CompileInterpterCall((void *)R4300iOp::LB, "R4300iOp::LB");
+        TempRegAddress = Map_TempReg(Arm_Any, m_Opcode.base, false);
+        AddConstToArmReg(TempRegAddress,(int16_t)m_Opcode.immediate);
+    }
+    if (g_System->bUseTlb())
+    {
+        ArmReg TempReg = Map_TempReg(Arm_Any, -1, false);
+        ShiftRightUnsignImmed(TempReg, TempRegAddress, 12);
+        ArmReg ReadMapReg = Map_Variable(CArmRegInfo::VARIABLE_TLB_READMAP);
+        LoadArmRegPointerToArmReg(TempReg,ReadMapReg,TempReg,2);
+        CompileReadTLBMiss(TempRegAddress, TempReg);
+        XorConstToArmReg(TempRegAddress, 3);
+        Map_GPR_32bit(m_Opcode.rt, true, -1);
+        LoadArmRegPointerByteToArmReg(GetMipsRegMapLo(m_Opcode.rt),TempReg,TempRegAddress,0);
+        SignExtendByte(GetMipsRegMapLo(m_Opcode.rt));
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 }
 
