@@ -3534,6 +3534,7 @@ void CArmRecompilerOps::COP1_CT()
     {
         CompileInterpterCall((void *)R4300iOp::COP1_CT, "R4300iOp::COP1_CT");
     }
+    m_RegWorkingSet.SetRoundingModel(CRegInfo::RoundUnknown);
 }
 
 void CArmRecompilerOps::COP1_S_ADD()
@@ -3565,14 +3566,16 @@ void CArmRecompilerOps::COP1_S_SUB()
 void CArmRecompilerOps::COP1_S_MUL()
 {
     CompileCop1Test();
-    if (g_Settings->LoadBool(Game_32Bit))
-    {
-        CompileInterpterCall((void *)R4300iOp32::COP1_S_MUL, "R4300iOp32::COP1_S_MUL");
-    }
-    else
-    {
-        CompileInterpterCall((void *)R4300iOp::COP1_S_MUL, "R4300iOp::COP1_S_MUL");
-    }
+    FixRoundModel(CRegInfo::RoundDefault);
+    ArmReg FprReg = Map_Variable(CArmRegInfo::VARIABLE_FPR);
+    ArmReg TempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+    LoadArmRegPointerToArmReg(TempReg,FprReg,(uint8_t)(m_Opcode.fs << 2));
+    LoadArmRegPointerToFloatReg(TempReg,Arm_S14,0);
+    LoadArmRegPointerToArmReg(TempReg,FprReg,(uint8_t)(m_Opcode.ft << 2));
+    LoadArmRegPointerToFloatReg(TempReg,Arm_S15,0);
+    MulF32(Arm_S0,Arm_S14,Arm_S15);
+    LoadArmRegPointerToArmReg(TempReg,FprReg,(uint8_t)(m_Opcode.fd << 2));
+    StoreFloatRegToArmRegPointer(Arm_S0,TempReg,0);
 }
 
 void CArmRecompilerOps::COP1_S_DIV()
