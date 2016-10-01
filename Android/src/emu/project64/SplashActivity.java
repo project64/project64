@@ -41,10 +41,10 @@ public class SplashActivity extends Activity implements ExtractAssetsListener
      * Asset version number, used to determine stale assets. Increment this number every time the
      * assets are updated on disk.
      */
-    private static final int ASSET_VERSION = 1;
+    private static final int ASSET_VERSION = 2;
     
     /** The total number of assets to be extracted (for computing progress %). */
-    private static final int TOTAL_ASSETS = 111;
+    private static final int TOTAL_ASSETS = 89;
     
     /** The minimum duration that the splash screen is shown, in milliseconds. */
     private static final int SPLASH_DELAY = 2000;
@@ -108,6 +108,12 @@ public class SplashActivity extends Activity implements ExtractAssetsListener
     public void onBackPressed() 
     {
         moveTaskToBack(true);
+    }
+    
+    static public void Reset ()
+    {
+    	mInit = false;
+    	mAppInit = false;
     }
     
     private void InitProject64()

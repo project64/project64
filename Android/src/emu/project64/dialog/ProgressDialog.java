@@ -64,7 +64,7 @@ public class ProgressDialog implements OnClickListener
         
         // Create canceling dialog
         subtitle = mActivity.getString( R.string.toast_canceling );
-        message = mActivity.getString( R.string.toast_canceling 	 );
+        message = mActivity.getString( R.string.toast_canceling );
         layout = inflater.inflate( R.layout.progress_dialog, null );
         builder = getBuilder( activity, title, subtitle, message, false, layout );
         mAbortDialog = builder.create();
