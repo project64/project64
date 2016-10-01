@@ -65,6 +65,7 @@ public:
     ArmReg UnMap_TempReg();
     void UnMap_GPR(uint32_t Reg, bool WriteBackValue);
     bool UnMap_ArmReg(ArmReg Reg);
+    void ResetRegProtection();
 
     inline ArmReg GetMipsRegMapLo(int32_t Reg) const { return m_RegMapLo[Reg]; }
     inline ArmReg GetMipsRegMapHi(int32_t Reg) const { return m_RegMapHi[Reg]; }

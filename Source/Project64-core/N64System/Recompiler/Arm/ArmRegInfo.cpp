@@ -633,6 +633,20 @@ bool CArmRegInfo::UnMap_ArmReg(ArmReg Reg)
     return false;
 }
 
+void CArmRegInfo::ResetRegProtection()
+{
+    if (m_InCallDirect)
+    {
+        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    for (uint32_t i = 0, n = sizeof(m_ArmReg_Protected) / sizeof(m_ArmReg_Protected[0]); i < n; i++)
+    {
+        SetArmRegProtected((ArmReg)i, false);
+    }
+}
+
 CArmOps::ArmReg CArmRegInfo::FreeArmReg()
 {
     if (m_InCallDirect)
