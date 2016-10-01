@@ -464,9 +464,15 @@ void CArmOps::MoveConstToArmReg(ArmReg DestReg, uint32_t Const, const char * com
 
 void CArmOps::MoveConstToVariable(uint32_t Const, void * Variable, const char * VariableName)
 {
-    MoveConstToArmReg(Arm_R1, Const);
-    MoveConstToArmReg(Arm_R2,(uint32_t)Variable,VariableName);
-    StoreArmRegToArmRegPointer(Arm_R1,Arm_R2,0);
+    ArmReg TempReg1 = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+    ArmReg TempReg2 = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+
+    MoveConstToArmReg(TempReg1,Const);
+    MoveConstToArmReg(TempReg2,(uint32_t)Variable,VariableName);
+    StoreArmRegToArmRegPointer(TempReg1,TempReg2,0);
+
+    m_RegWorkingSet.SetArmRegProtected(TempReg1,false);
+    m_RegWorkingSet.SetArmRegProtected(TempReg2,false);
 }
 
 void CArmOps::MoveFloatRegToVariable(ArmFpuSingle reg, void * Variable, const char * VariableName)
