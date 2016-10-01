@@ -2168,11 +2168,11 @@ void CArmRecompilerOps::CACHE()
     case 0:
     case 16:
         m_RegWorkingSet.BeforeCallDirect();
-        MoveConstToArmReg(Arm_R3, (uint32_t)CRecompiler::Remove_Cache, "CRecompiler::Remove_Cache");
+        MoveConstToArmReg(Arm_R3, (uint32_t)CRecompiler::Remove_Cache,"CRecompiler::Remove_Cache");
         MoveConstToArmReg(Arm_R2, (uint32_t)0x20);
         MoveVariableToArmReg(&_GPR[m_Opcode.base].UW[0], CRegName::GPR_Lo[m_Opcode.base], Arm_R1);
         MoveConstToArmReg(Arm_R0, (uint32_t)((int16_t)m_Opcode.offset));
-        AddArmRegToArmReg(Arm_R0, Arm_R1, Arm_R1);
+        AddArmRegToArmReg(Arm_R1, Arm_R0, Arm_R1);
         MoveConstToArmReg(Arm_R0, (uint32_t)g_Recompiler, "g_Recompiler");
         CallFunction((void *)AddressOf(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
         m_RegWorkingSet.AfterCallDirect();
