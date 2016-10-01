@@ -1718,8 +1718,8 @@ void CArmRecompilerOps::JAL()
             LoadArmRegPointerToArmReg(Arm_R1, Arm_R0, 0);
             MoveConstToArmReg(Arm_R2, 0xF0000000);
             MoveConstToArmReg(Arm_R3, (uint32_t)(m_Opcode.target << 2));
-            AndArmRegToArmReg(Arm_R2, Arm_R1);
-            AddArmRegToArmReg(Arm_R3, Arm_R1, Arm_R1);
+            AndArmRegToArmReg(Arm_R1, Arm_R2);
+            AddArmRegToArmReg(Arm_R1, Arm_R3, Arm_R1);
             StoreArmRegToArmRegPointer(Arm_R1, Arm_R0, 0);
 
             uint32_t TargetPC = (m_CompilePC & 0xF0000000) + (m_Opcode.target << 2);
