@@ -14,6 +14,7 @@
 #include <Project64-core/Version.h>
 #include <Project64-core/TraceModulesProject64.h>
 #include <Project64-core/Settings/SettingsClass.h>
+#include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Plugin.h>
@@ -143,21 +144,20 @@ void AddRecentRom(const char * ImagePath)
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
-void GameLoaded(void * /*NotUsed*/)
-{
-    stdstr FileLoc = g_Settings->LoadStringVal(Game_File);
-    if (FileLoc.length() > 0)
-    {
-        AddRecentRom(FileLoc.c_str());
-    }
-}
-
 void GameCpuRunning(void * /*NotUsed*/)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
     bool Running = g_Settings->LoadBool(GameRunning_CPU_Running);
     WriteTrace(TraceUserInterface, TraceDebug, Running ? "Game Started" : "Game Stopped");
-    if (!Running)
+    if (Running)
+    {
+        stdstr FileLoc = g_Settings->LoadStringVal(Game_File);
+        if (FileLoc.length() > 0)
+        {
+            AddRecentRom(FileLoc.c_str());
+        }
+    }
+    else
     {
         JNIEnv *env = Android_JNI_GetEnv();
         if (env != NULL)
@@ -231,7 +231,6 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv* env, j
 
         RegisterUISettings();
         g_Settings->RegisterChangeCB(GameRunning_CPU_Running, NULL, (CSettings::SettingChangedFunc)GameCpuRunning);
-        g_Settings->RegisterChangeCB(Game_File, NULL, (CSettings::SettingChangedFunc)GameLoaded);
     }
     else
     {
@@ -347,6 +346,13 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_ExternalEvent(JNIEnv* env,
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
+EXPORT void CALL Java_emu_project64_jni_NativeExports_ResetApplicationSettings(JNIEnv* env, jclass cls)
+{
+    WriteTrace(TraceUserInterface, TraceDebug, "start");
+    CSettingTypeApplication::ResetAll();
+    WriteTrace(TraceUserInterface, TraceDebug, "Done");
+}
+
 EXPORT void CALL Java_emu_project64_jni_NativeExports_onSurfaceCreated(JNIEnv * env, jclass cls)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
@@ -393,12 +399,25 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_onSurfaceChanged(JNIEnv * 
 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_UISettingsSaveBool(JNIEnv* env, jclass cls, jint Type, jboolean Value)
 {
+    WriteTrace(TraceUserInterface, TraceDebug, "Saving UI %d value: %s",Type,Value ? "true" : "false");
     UISettingsSaveBool((UISettingID)Type, Value);
+    WriteTrace(TraceUserInterface, TraceDebug, "Saved");
 }
 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_UISettingsSaveDword(JNIEnv* env, jclass cls, jint Type, jint Value)
 {
+    WriteTrace(TraceUserInterface, TraceDebug, "Saving UI %d value: %X",Type,Value);
     UISettingsSaveDword((UISettingID)Type, Value);
+    WriteTrace(TraceUserInterface, TraceDebug, "Saved");
+}
+
+EXPORT void CALL Java_emu_project64_jni_NativeExports_UISettingsSaveString(JNIEnv* env, jclass cls, jint Type, jstring Buffer)
+{
+    const char *value = env->GetStringUTFChars(Buffer, 0);
+    WriteTrace(TraceUserInterface, TraceDebug, "Saving UI %d value: %s",Type,value);
+    UISettingsSaveString((UISettingID)Type, value);
+    WriteTrace(TraceUserInterface, TraceDebug, "Saved");
+    env->ReleaseStringUTFChars(Buffer, value);
 }
 
 EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_UISettingsLoadBool(JNIEnv* env, jclass cls, jint Type)
@@ -409,6 +428,11 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_UISettingsLoadBool(JNI
 EXPORT int CALL Java_emu_project64_jni_NativeExports_UISettingsLoadDword(JNIEnv* env, jclass cls, jint Type)
 {
     return UISettingsLoadDword((UISettingID)Type);
+}
+
+EXPORT jstring CALL Java_emu_project64_jni_NativeExports_UISettingsLoadString(JNIEnv* env, jclass cls, int Type)
+{
+    return env->NewStringUTF(UISettingsLoadStringVal((UISettingID)Type).c_str());
 }
 
 EXPORT jstring CALL Java_emu_project64_jni_NativeExports_UISettingsLoadStringIndex(JNIEnv* env, jclass cls, jint Type, jint Index)
