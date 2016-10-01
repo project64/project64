@@ -20,15 +20,25 @@ enum UISettingID
     //Recent Game
     File_RecentGameFileCount,
     File_RecentGameFileIndex,
+
+    //Touch Screen
+    TouchScreen_ButtonScale,
+    TouchScreen_Layout,
+
+    //Controller Config
+    Controller_ConfigFile,
+    Controller_CurrentProfile,
 };
 
 void RegisterUISettings(void);
 
 void UISettingsSaveBool(UISettingID Type, bool Value);
 void UISettingsSaveDword(UISettingID Type, uint32_t Value);
+void UISettingsSaveString(UISettingID Type, const std::string & Value);
 
 bool UISettingsLoadBool(UISettingID Type);
 uint32_t UISettingsLoadDword(UISettingID Type);
+std::string UISettingsLoadStringVal(UISettingID Type);
 
 /*
 void UISettingsSaveBoolIndex(UISettingID Type, int32_t index, bool Value);
