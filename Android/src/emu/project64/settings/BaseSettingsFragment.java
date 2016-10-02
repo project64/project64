@@ -80,7 +80,11 @@ public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
     @Override
     public boolean onPreferenceTreeClick(Preference preference)
     {
-        if (preference.getKey().equals("settings_reset"))
+        if (preference.getKey().equals("settings_audio"))
+        {
+            loadFragment(new AudioFragment());
+        }
+        else if (preference.getKey().equals("settings_reset"))
         {
             DialogInterface.OnClickListener internalListener = new DialogInterface.OnClickListener()
             {
