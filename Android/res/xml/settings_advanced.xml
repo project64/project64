@@ -23,6 +23,10 @@
         android:summary="@string/CpuUsage_summary"
         android:title="@string/CpuUsage_title" />
     <CheckBoxPreference
+        android:key="Debugger_RecordExecutionTimes"
+        android:summary="@string/RecordExecutionTimes_summary"
+        android:title="@string/RecordExecutionTimes_title" />
+    <CheckBoxPreference
         android:key="Plugin_ForceGfxReset"
         android:summary="@string/ForceGfxReset_summary"
         android:title="@string/ForceGfxReset_title" />

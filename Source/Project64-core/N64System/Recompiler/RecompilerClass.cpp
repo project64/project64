@@ -16,11 +16,10 @@
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/ExceptionHandler.h>
 
-CRecompiler::CRecompiler(CRegisters & Registers, CProfiling & Profile, bool & EndEmulation) :
-    m_Registers(Registers),
-    m_Profile(Profile),
-    m_EndEmulation(EndEmulation),
-    PROGRAM_COUNTER(Registers.m_PROGRAM_COUNTER)
+CRecompiler::CRecompiler(CRegisters & Registers, bool & EndEmulation) :
+m_Registers(Registers),
+m_EndEmulation(EndEmulation),
+PROGRAM_COUNTER(Registers.m_PROGRAM_COUNTER)
 {
     CFunctionMap::AllocateMemory();
     if (g_MMU != NULL)
@@ -695,7 +694,29 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
                     continue;
                 }
             }
-            (info->Function())();
+
+            if (bRecordExecutionTimes())
+            {
+                HighResTimeStamp StartTime, EndTime;
+                StartTime.SetToNow();
+                (info->Function())();
+                EndTime.SetToNow();
+                uint64_t TimeTaken = EndTime.GetMicroSeconds() - StartTime.GetMicroSeconds();
+                FUNCTION_PROFILE::iterator itr = m_BlockProfile.find(info->Function());
+                if (itr == m_BlockProfile.end())
+                {
+                    FUNCTION_PROFILE_DATA data = { 0 };
+                    data.Address = info->EnterPC();
+                    std::pair<FUNCTION_PROFILE::iterator, bool> res = m_BlockProfile.insert(FUNCTION_PROFILE::value_type(info->Function(), data));
+                    itr = res.first;
+                }
+                WriteTrace(TraceN64System, TraceNotice, "EndTime: %X StartTime: %X TimeTaken: %X", (uint32_t)EndTime.GetMicroSeconds(), (uint32_t)StartTime.GetMicroSeconds(), (uint32_t)TimeTaken);
+                itr->second.TimeTaken += TimeTaken;
+            }
+            else
+            {
+                (info->Function())();
+            }
         }
         else
         {
@@ -1108,4 +1129,22 @@ void CRecompiler::ResetMemoryStackPos()
         WriteTrace(TraceRecompiler, TraceError, "Failed to translate SP address (%s)", m_Registers.m_GPR[29].UW[0]);
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
+}
+
+void CRecompiler::DumpFunctionTimes()
+{
+    CPath LogFileName(g_Settings->LoadStringVal(Directory_Log).c_str(), "FunctionTimes.csv");
+
+    CLog Log;
+    Log.Open(LogFileName);
+
+    for (FUNCTION_PROFILE::iterator itr = m_BlockProfile.begin(); itr != m_BlockProfile.end(); itr++)
+    {
+        Log.LogF("%X,0x%X,%d\r\n", (uint32_t)itr->first, itr->second.Address, (uint32_t)itr->second.TimeTaken);
+    }
+}
+
+void CRecompiler::ResetFunctionTimes()
+{
+    m_BlockProfile.clear();
 }

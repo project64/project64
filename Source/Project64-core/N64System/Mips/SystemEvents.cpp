@@ -71,12 +71,12 @@ void CSystemEvents::ExecuteEvents()
         case SysEvent_ResetCPU_Hard:
             m_System->Reset(true, true);
             break;
-        case SysEvent_Profile_GenerateLogs:
-            m_System->m_Profile.GenerateLog();
-            break;
         case SysEvent_Profile_StartStop:
         case SysEvent_Profile_ResetLogs:
-            m_System->m_Profile.ResetCounters();
+            if (g_Recompiler)
+            {
+                g_Recompiler->ResetFunctionTimes();
+            }
             break;
         case SysEvent_ExecuteInterrupt:
             g_Reg->DoIntrException(false);
@@ -120,6 +120,12 @@ void CSystemEvents::ExecuteEvents()
             break;
         case SysEvent_ChangePlugins:
             ChangePluginFunc();
+            break;
+        case SysEvent_DumpFunctionTimes:
+            if (g_Recompiler)
+            {
+                g_Recompiler->DumpFunctionTimes();
+            }
             break;
         case SysEvent_ChangingFullScreen:
             g_Notify->ChangeFullScreen();

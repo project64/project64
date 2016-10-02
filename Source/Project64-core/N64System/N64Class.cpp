@@ -95,7 +95,7 @@ CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem) 
 
         if (CpuType == CPU_Recompiler || CpuType == CPU_SyncCores)
         {
-            m_Recomp = new CRecompiler(m_Reg, m_Profile, m_EndEmulation);
+            m_Recomp = new CRecompiler(m_Reg, m_EndEmulation);
         }
     }
     WriteTrace(TraceN64System, TraceDebug, "Done");
@@ -149,7 +149,6 @@ void CN64System::ExternalEvent(SystemEvent action)
 
     switch (action)
     {
-    case SysEvent_Profile_GenerateLogs:
     case SysEvent_Profile_StartStop:
     case SysEvent_Profile_ResetLogs:
     case SysEvent_ExecuteInterrupt:
@@ -169,6 +168,7 @@ void CN64System::ExternalEvent(SystemEvent action)
     case SysEvent_CloseCPU:
     case SysEvent_ChangePlugins:
     case SysEvent_PauseCPU_FromMenu:
+    case SysEvent_DumpFunctionTimes:
         QueueEvent(action);
         break;
     case SysEvent_PauseCPU_AppLostFocus:
@@ -1892,9 +1892,11 @@ bool CN64System::LoadState(const char * FileName)
     WriteTrace(TraceN64System, TraceDebug, "5");
     m_TLB.Reset(false);
     WriteTrace(TraceN64System, TraceDebug, "6");
-    m_CPU_Usage.ResetCounters();
-    WriteTrace(TraceN64System, TraceDebug, "7");
-    m_Profile.ResetCounters();
+    if (m_Recomp)
+    {
+        m_Recomp->ResetFunctionTimes();
+    }
+    m_CPU_Usage.ResetTimers();
     WriteTrace(TraceN64System, TraceDebug, "8");
     m_FPS.Reset(true);
     WriteTrace(TraceN64System, TraceDebug, "9");
@@ -1943,7 +1945,7 @@ void CN64System::RunRSP()
     {
         if ((m_Reg.SP_STATUS_REG & SP_STATUS_BROKE) == 0)
         {
-            SPECIAL_TIMERS CPU_UsageAddr = Timer_None/*, ProfileAddr = Timer_None*/;
+            HighResTimeStamp StartTime;
 
             uint32_t Task = 0;
             if (m_RspBroke)
@@ -1976,14 +1978,9 @@ void CN64System::RunRSP()
                 {
                     DisplayRSPListCount();
                 }
-                if (bShowCPUPer())
+                if (bRecordExecutionTimes() || bShowCPUPer())
                 {
-                    switch (Task)
-                    {
-                    case 1:  CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_RSP_Dlist); break;
-                    case 2:  CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_RSP_Alist); break;
-                    default: CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_RSP_Unknown); break;
-                    }
+                    StartTime.SetToNow();
                 }
             }
 
@@ -2004,8 +2001,22 @@ void CN64System::RunRSP()
                 g_SystemTimer->SetTimer(CSystemTimer::RSPTimerDlist, 0x1000, false);
                 m_Reg.m_GfxIntrReg &= ~MI_INTR_DP;
             }
-            if (bShowCPUPer())  { m_CPU_Usage.StartTimer(CPU_UsageAddr); }
-            //if (bProfiling) { m_Profile.StartTimer(ProfileAddr); }
+            if (bRecordExecutionTimes() || bShowCPUPer())
+            {
+                HighResTimeStamp EndTime;
+                EndTime.SetToNow();
+                uint32_t TimeTaken = (uint32_t)(EndTime.GetMicroSeconds() - StartTime.GetMicroSeconds());
+
+                if (bShowCPUPer())
+                {
+                    switch (Task)
+                    {
+                    case 1: m_CPU_Usage.RecordTime(Timer_RSP_Dlist, TimeTaken); break;
+                    case 2: m_CPU_Usage.RecordTime(Timer_RSP_Alist, TimeTaken); break;
+                    default: m_CPU_Usage.RecordTime(Timer_RSP_Unknown, TimeTaken); break;
+                    }
+                }
+            }
 
             if ((m_Reg.SP_STATUS_REG & SP_STATUS_HALT) == 0 &&
                 (m_Reg.SP_STATUS_REG & SP_STATUS_BROKE) == 0 &&
@@ -2031,9 +2042,11 @@ void CN64System::SyncToAudio()
     {
         return;
     }
-    SPECIAL_TIMERS CPU_UsageAddr = Timer_None;
-
-    if (bShowCPUPer()) { CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_Idel); }
+    PROFILE_TIMERS PreviousTimer = Timer_None;
+    if (bShowCPUPer())
+    {
+        PreviousTimer = m_CPU_Usage.StartTimer(Timer_Idel);
+    }
 
     for (int i = 0; i < 50; i++)
     {
@@ -2046,13 +2059,13 @@ void CN64System::SyncToAudio()
     }
     if (bShowCPUPer())
     {
-        m_CPU_Usage.StartTimer(CPU_UsageAddr != Timer_None ? CPU_UsageAddr : Timer_R4300);
+        m_CPU_Usage.StartTimer(PreviousTimer);
     }
 }
 
 void CN64System::RefreshScreen()
 {
-    SPECIAL_TIMERS CPU_UsageAddr = Timer_None/*, ProfilingAddr = Timer_None*/;
+    PROFILE_TIMERS CPU_UsageAddr = Timer_None/*, ProfilingAddr = Timer_None*/;
     uint32_t VI_INTR_TIME = 500000;
 
     if (bShowCPUPer()) { CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_RefreshScreen); }

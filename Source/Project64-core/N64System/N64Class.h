@@ -51,7 +51,6 @@ public:
     CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem);
     virtual ~CN64System(void);
 
-    CProfiling m_Profile;
     CCheats    m_Cheats;
     bool  m_EndEmulation;
     SAVE_CHIP_TYPE m_SaveUsing;

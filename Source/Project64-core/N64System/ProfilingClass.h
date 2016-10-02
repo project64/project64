@@ -10,35 +10,31 @@
 ****************************************************************************/
 #pragma once
 #include <Project64-core/N64System/N64Types.h>
-
-typedef std::map<SPECIAL_TIMERS, int64_t >     PROFILE_ENRTIES;
-typedef PROFILE_ENRTIES::iterator     PROFILE_ENRTY;
-typedef PROFILE_ENRTIES::value_type   PROFILE_VALUE;
+#include <Common/HighResTimeStamp.h>
 
 class CProfiling
 {
 public:
     CProfiling();
 
+    void RecordTime(PROFILE_TIMERS timer, uint32_t time);
+    uint64_t TimerTime(PROFILE_TIMERS timer);
+
     //recording timing against current timer, returns the address of the timer stopped
-    SPECIAL_TIMERS StartTimer(SPECIAL_TIMERS Address);
-    SPECIAL_TIMERS StopTimer();
+    PROFILE_TIMERS StartTimer(PROFILE_TIMERS TimerType);
+    PROFILE_TIMERS StopTimer();
 
     //Display the CPU Usage
     void ShowCPU_Usage();
 
-    //Reset all the counters back to 0
-    void ResetCounters();
-
-    //Generate a log file with the current results, this will also reset the counters
-    void GenerateLog();
+    void ResetTimers(void);
 
 private:
     CProfiling(const CProfiling&);            // Disable copy constructor
     CProfiling& operator=(const CProfiling&); // Disable assignment
 
-    SPECIAL_TIMERS m_CurrentTimerAddr;
     uint32_t m_CurrentDisplayCount;
-    uint32_t m_StartTimeHi, m_StartTimeLo; //The Current Timer start time
-    PROFILE_ENRTIES m_Entries;
+    PROFILE_TIMERS m_CurrentTimerType;
+    HighResTimeStamp m_StartTime;
+    uint64_t m_Timers[Timer_Max];
 };

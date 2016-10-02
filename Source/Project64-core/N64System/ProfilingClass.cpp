@@ -17,197 +17,61 @@
 enum { MAX_FRAMES = 13 };
 
 CProfiling::CProfiling() :
-m_CurrentTimerAddr(Timer_None),
 m_CurrentDisplayCount(MAX_FRAMES),
-m_StartTimeHi(0),
-m_StartTimeLo(0)
+m_CurrentTimerType(Timer_None)
 {
+    memset(m_Timers, 0, sizeof(m_Timers));
 }
 
-SPECIAL_TIMERS CProfiling::StartTimer(SPECIAL_TIMERS Address)
+void CProfiling::RecordTime(PROFILE_TIMERS timer, uint32_t TimeTaken)
 {
-    SPECIAL_TIMERS OldTimerAddr = StopTimer();
-    m_CurrentTimerAddr = Address;
-
-#ifdef _M_IX86
-    uint32_t HiValue, LoValue;
-    _asm
-    {
-        pushad;
-        rdtsc;
-        mov HiValue, edx;
-        mov LoValue, eax;
-        popad;
-    }
-    m_StartTimeHi = HiValue;
-    m_StartTimeLo = LoValue;
-#elif !defined(_WIN32)
-	struct timespec now;
-	clock_gettime(CLOCK_MONOTONIC, &now);
-	m_StartTimeLo = (now.tv_sec * 1000) + (now.tv_nsec / 1000000);
-#else
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-#endif
-    return OldTimerAddr;
+    m_Timers[timer] += TimeTaken;
 }
 
-SPECIAL_TIMERS CProfiling::StopTimer()
+PROFILE_TIMERS CProfiling::StartTimer(PROFILE_TIMERS TimerType)
 {
-    uint32_t HiValue, LoValue;
+    PROFILE_TIMERS PreviousType = StopTimer();
+    m_CurrentTimerType = TimerType;
+    m_StartTime.SetToNow();
+    return PreviousType;
+}
 
-    if (m_CurrentTimerAddr == Timer_None) { return m_CurrentTimerAddr; }
+PROFILE_TIMERS CProfiling::StopTimer()
+{
+    if (m_CurrentTimerType == Timer_None) { return m_CurrentTimerType; }
+    HighResTimeStamp EndTime;
+    EndTime.SetToNow();
+    uint64_t TimeTaken = EndTime.GetMicroSeconds() - m_StartTime.GetMicroSeconds();
+    m_Timers[m_CurrentTimerType] += TimeTaken;
 
-#ifdef _M_IX86
-    _asm {
-        pushad;
-        rdtsc;
-        mov HiValue, edx;
-        mov LoValue, eax;
-        popad;
-    }
-#elif !defined(_WIN32)
-	struct timespec now;
-	clock_gettime(CLOCK_MONOTONIC, &now);
-	LoValue = (now.tv_sec * 1000) + (now.tv_nsec / 1000000);
-#else
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-#endif
-
-    int64_t StopTime = ((uint64_t)HiValue << 32) + (uint64_t)LoValue;
-    int64_t StartTime = ((uint64_t)m_StartTimeHi << 32) + (uint64_t)m_StartTimeLo;
-    int64_t TimeTaken = StopTime - StartTime;
-
-    PROFILE_ENRTY Entry = m_Entries.find(m_CurrentTimerAddr);
-    if (Entry != m_Entries.end()) {
-        Entry->second += TimeTaken;
-    }
-    else {
-        m_Entries.insert(PROFILE_ENRTIES::value_type(m_CurrentTimerAddr, TimeTaken));
-    }
-
-    SPECIAL_TIMERS OldTimerAddr = m_CurrentTimerAddr;
-    m_CurrentTimerAddr = Timer_None;
-    return OldTimerAddr;
+    PROFILE_TIMERS CurrentTimerType = m_CurrentTimerType;
+    m_CurrentTimerType = Timer_None;
+    return CurrentTimerType;
 }
 
 void CProfiling::ShowCPU_Usage()
 {
-    int64_t TotalTime, CPU = 0, Alist = 0, Dlist = 0, Idle = 0;
-    PROFILE_ENRTY Entry;
+    uint64_t TotalTime = m_Timers[Timer_R4300] + m_Timers[Timer_RSP_Dlist] + m_Timers[Timer_RSP_Alist] + m_Timers[Timer_Idel];
 
-    if (m_CurrentDisplayCount > 0) { m_CurrentDisplayCount -= 1; return; }
-    m_CurrentDisplayCount = MAX_FRAMES;
-
-    Entry = m_Entries.find(Timer_R4300);
-    if (Entry != m_Entries.end()) { CPU = Entry->second; }
-
-    Entry = m_Entries.find(Timer_RefreshScreen);
-    if (Entry != m_Entries.end()) { CPU += Entry->second; }
-
-    Entry = m_Entries.find(Timer_RSP_Dlist);
-    if (Entry != m_Entries.end()) { Dlist = Entry->second; }
-
-    Entry = m_Entries.find(Timer_UpdateScreen);
-    if (Entry != m_Entries.end()) { Dlist += Entry->second; }
-
-    Entry = m_Entries.find(Timer_RSP_Alist);
-    if (Entry != m_Entries.end()) { Alist = Entry->second; }
-
-    Entry = m_Entries.find(Timer_Idel);
-    if (Entry != m_Entries.end()) { Idle = Entry->second; }
-
-    TotalTime = CPU + Alist + Dlist + Idle;
-
-    g_Notify->DisplayMessage(0, stdstr_f("r4300i: %0.1f%c    GFX: %0.1f%c    Alist: %0.1f%c    Idle: %0.1f%c",
-        (float)(((double)CPU / (double)TotalTime) * 100), '%',
-        (float)(((double)Dlist / (double)TotalTime) * 100), '%',
-        (float)(((double)Alist / (double)TotalTime) * 100), '%',
-        (float)(((double)Idle / (double)TotalTime) * 100), '%').c_str());
-
-    ResetCounters();
-}
-
-void CProfiling::ResetCounters()
-{
-    m_Entries.clear();
-}
-
-struct TIMER_NAME
-{
-    SPECIAL_TIMERS Timer;
-    const char * Name;
-};
-
-void CProfiling::GenerateLog()
-{
-    stdstr LogFileName;
+    if (m_CurrentDisplayCount > 0)
     {
-        CLog Log;
-        Log.Open("Profiling.txt");
-        LogFileName = Log.FileName();
-
-        //Get the total time
-        int64_t TotalTime = 0;
-        for (PROFILE_ENRTY itemTime = m_Entries.begin(); itemTime != m_Entries.end(); itemTime++)
-        {
-            TotalTime += itemTime->second;
-        }
-
-        //Create a sortable list of items
-        std::vector<PROFILE_VALUE *> ItemList;
-        for (PROFILE_ENRTY Entry = m_Entries.begin(); Entry != m_Entries.end(); Entry++)
-        {
-            ItemList.push_back(&(*Entry));
-        }
-
-        //sort the list with a basic bubble sort
-        for (size_t OuterPass = 0; OuterPass < (ItemList.size() - 1); OuterPass++)
-        {
-            for (size_t InnerPass = 0; InnerPass < (ItemList.size() - 1); InnerPass++)
-            {
-                if (ItemList[InnerPass]->second < ItemList[InnerPass + 1]->second)
-                {
-                    PROFILE_VALUE * TempPtr = ItemList[InnerPass];
-                    ItemList[InnerPass] = ItemList[InnerPass + 1];
-                    ItemList[InnerPass + 1] = TempPtr;
-                }
-            }
-        }
-
-        TIMER_NAME TimerNames[] =
-        {
-            { Timer_R4300, "R4300" },
-            { Timer_RSP_Dlist, "RSP: Dlist" },
-            { Timer_RSP_Alist, "RSP: Alist" },
-            { Timer_RSP_Unknown, "RSP: Unknown" },
-            { Timer_RefreshScreen, "Refresh Screen" },
-            { Timer_UpdateScreen, "Update Screen" },
-            { Timer_UpdateFPS, "Update FPS" },
-            { Timer_FuncLookup, "Function Lookup" },
-            { Timer_Done, "Timer_Done" },
-            { Timer_GetBlockInfo, "Timer_GetBlockInfo" },
-            { Timer_AnalyseBlock, "Timer_AnalyseBlock" },
-            { Timer_CompileBlock, "Timer_CompileBlock" },
-            { Timer_CompileDone, "Timer_CompileDone" },
-        };
-
-        for (size_t count = 0; count < ItemList.size(); count++)
-        {
-            char Buffer[255];
-            double CpuUsage = ((double)ItemList[count]->second / (double)TotalTime) * 100;
-            if (CpuUsage <= 0.2) { continue; }
-            sprintf(Buffer, "Func 0x%08X", ItemList[count]->first);
-            for (int NameID = 0; NameID < (sizeof(TimerNames) / sizeof(TIMER_NAME)); NameID++)
-            {
-                if (ItemList[count]->first == TimerNames[NameID].Timer)
-                {
-                    strcpy(Buffer, TimerNames[NameID].Name);
-                    break;
-                }
-            }
-            Log.LogF("%s\t%2.2f", Buffer, CpuUsage);
-        }
+        m_CurrentDisplayCount -= 1;
+        return;
     }
 
-    ResetCounters();
+    uint32_t R4300 = (uint32_t)(m_Timers[Timer_R4300] * 10000 / TotalTime);
+    uint32_t RSP_Dlist = (uint32_t)(m_Timers[Timer_RSP_Dlist] * 10000 / TotalTime);
+    uint32_t RSP_Alist = (uint32_t)(m_Timers[Timer_RSP_Alist] * 10000 / TotalTime);
+    uint32_t Idel = (uint32_t)(m_Timers[Timer_Idel] * 10000 / TotalTime);
+
+    m_CurrentDisplayCount = MAX_FRAMES;
+    g_Notify->DisplayMessage(0, stdstr_f("r4300i: %d.%02d%%    GFX: %d.%02d%%    Alist: %d.%02d%%    Idle: %d.%02d%%",
+        R4300 / 100, R4300 % 100,RSP_Dlist / 100, RSP_Dlist % 100,RSP_Alist / 100, RSP_Alist % 100,Idel / 100, Idel % 100).c_str());
+
+    ResetTimers();
+}
+
+void CProfiling::ResetTimers()
+{
+    memset(m_Timers, 0, sizeof(m_Timers));
 }

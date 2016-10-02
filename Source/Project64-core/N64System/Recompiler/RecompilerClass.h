@@ -40,7 +40,7 @@ public:
     typedef void(*DelayFunc)();
 
 public:
-    CRecompiler(CRegisters & Registers, CProfiling & Profile, bool & EndEmulation);
+    CRecompiler(CRegisters & Registers, bool & EndEmulation);
     ~CRecompiler();
 
     void Run();
@@ -52,6 +52,8 @@ public:
     void ClearRecompCode_Phys(uint32_t PhysicalAddress, int32_t length, REMOVE_REASON Reason);
 
     void ResetMemoryStackPos();
+    void ResetFunctionTimes();
+    void DumpFunctionTimes();
 
     uint32_t& MemoryStackPos() { return m_MemoryStack; }
 
@@ -61,6 +63,14 @@ private:
     CRecompiler& operator=(const CRecompiler&); // Disable assignment
 
     CCompiledFunc * CompileCode();
+
+    typedef struct
+    {
+        uint32_t Address;
+        uint64_t TimeTaken;
+    } FUNCTION_PROFILE_DATA;
+
+    typedef std::map <CCompiledFunc::Func, FUNCTION_PROFILE_DATA> FUNCTION_PROFILE;
 
     // Main loops for the different look up methods
     void RecompilerMain_VirtualTable();
@@ -73,9 +83,9 @@ private:
 
     CCompiledFuncList  m_Functions;
     CRegisters       & m_Registers;
-    CProfiling       & m_Profile;
     bool             & m_EndEmulation;
     uint32_t           m_MemoryStack;
+    FUNCTION_PROFILE m_BlockProfile;
 
     //Quick access to registers
     uint32_t            & PROGRAM_COUNTER;

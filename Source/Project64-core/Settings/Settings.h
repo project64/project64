@@ -221,6 +221,7 @@ enum SettingID
     Debugger_ShowDListAListCount,
     Debugger_ShowRecompMemSize,
     Debugger_DebugLanguage,
+    Debugger_RecordExecutionTimes,
 
     //Trace
     Debugger_TraceMD5,

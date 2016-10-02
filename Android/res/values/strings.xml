@@ -19,6 +19,9 @@
     <string name="menuItem_CurrentSave9">Slot 9</string>
     <string name="menuItem_CurrentSave10">Slot 10</string>
     <string name="menuItem_ConsoleReset">Reset</string>
+    <string name="menuItem_DebuggingOptions">Debugging Options</string>
+    <string name="menuItem_ResetFunctionTimes">Reset Function Times</string>
+    <string name="menuItem_DumpFunctionTimes">Dump Function Times</string>
     
     <!-- Menu Activity -->
     <string name="menuItem_search">Search</string>
@@ -167,6 +170,8 @@
     <string name="DListPerSecond">Display lists per second</string>
     <string name="PercentageOfSpeed">Percentage of full speed</string>
     <string name="VerticalInterruptsPerSecond">Vertical interrupts per second</string>
+    <string name="RecordExecutionTimes_title">Record Execution Times</string>
+    <string name="RecordExecutionTimes_summary">Record how long each block executes for</string>
     <string name="ForceGfxReset_title">Reset GFX Plugin</string>
     <string name="ForceGfxReset_summary">Always reload GFX plugin</string>
     <string name="touchscreenScale_title">Button scale</string>

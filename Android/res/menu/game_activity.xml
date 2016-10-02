@@ -32,6 +32,14 @@
         android:id="@+id/menuItem_settings"
         android:title="@string/menuItem_settings"/>
     <item
+        android:id="@+id/menuItem_DebuggingMenu"
+        android:title="@string/menuItem_DebuggingOptions">
+        <menu>
+            <item android:id="@+id/menuItem_ResetFunctionTimes" android:title="@string/menuItem_ResetFunctionTimes" />
+            <item android:id="@+id/menuItem_DumpFunctionTimes" android:title="@string/menuItem_DumpFunctionTimes" />
+        </menu>
+    </item>
+    <item
         android:id="@+id/menuItem_pause"
         android:title="@string/menuItem_pause"/>
     <item

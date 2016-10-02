@@ -51,7 +51,8 @@ enum SystemEvent
     SysEvent_Interrupt_DP,
     SysEvent_Profile_StartStop,
     SysEvent_Profile_ResetLogs,
-    SysEvent_Profile_GenerateLogs,
+    SysEvent_ResetFunctionTimes,
+    SysEvent_DumpFunctionTimes,
 };
 
 class CN64System;

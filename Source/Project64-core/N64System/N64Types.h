@@ -75,14 +75,18 @@ enum Country
     UnknownCountry = 0
 };
 
-enum SPECIAL_TIMERS
+enum PROFILE_TIMERS
 {
-    Timer_None = 0, Timer_R4300 = -1, Timer_RSP_Dlist = -2,
-    Timer_RSP_Alist = -3, Timer_RSP_Unknown = -5, Timer_RefreshScreen = -6,
-    Timer_UpdateScreen = -7, Timer_UpdateFPS = -9, Timer_Idel = -10,
-    Timer_FuncLookup = -11, Timer_Done = -13, Timer_GetBlockInfo = -14,
-    Timer_AnalyseBlock = -15, Timer_CompileBlock = -17, Timer_CompileDone = -18,
-    Timer_InheritParentInfo = -19, Timer_AddX86Code = -20,
+    Timer_None = 0,
+    Timer_R4300 = 1,
+    Timer_RSP_Dlist = 2,
+    Timer_RSP_Alist = 3,
+    Timer_RSP_Unknown = 4,
+    Timer_RefreshScreen = 5,
+    Timer_UpdateScreen = 6,
+    Timer_UpdateFPS = 7,
+    Timer_Idel = 8,
+    Timer_Max = 9,
 };
 
 enum STEP_TYPE
