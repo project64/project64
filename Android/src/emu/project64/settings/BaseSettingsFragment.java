@@ -24,14 +24,19 @@
 package emu.project64.settings;
 
 import emu.project64.R;
+import emu.project64.SplashActivity;
+import emu.project64.jni.NativeExports;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
-public abstract class BaseSettingsFragment extends PreferenceFragmentCompat 
+public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
 {
     protected abstract int getXml();
     protected abstract int getTitleId();
@@ -47,7 +52,7 @@ public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
     {
         super.onStart();
         final AppCompatActivity activity = (AppCompatActivity)getActivity();
-        if (activity != null && activity.getSupportActionBar() != null) 
+        if (activity != null && activity.getSupportActionBar() != null)
         {
             activity.getSupportActionBar().setTitle(getString(getTitleId()));
         }
@@ -56,8 +61,8 @@ public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
     protected void loadFragment(Fragment fragment)
     {
         getActivity().getSupportFragmentManager().beginTransaction()
-        	.replace(R.id.fragment_placeholder, fragment)
-    		.addToBackStack("main").commit();
+            .replace(R.id.fragment_placeholder, fragment)
+            .addToBackStack("main").commit();
     }
 
     @Override
@@ -70,5 +75,40 @@ public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
             return;
         }*/
         super.onDisplayPreferenceDialog(preference);
+    }
+
+    @Override
+    public boolean onPreferenceTreeClick(Preference preference)
+    {
+        if (preference.getKey().equals("settings_reset"))
+        {
+            DialogInterface.OnClickListener internalListener = new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick( DialogInterface dialog, int which )
+                {
+                    if( which == DialogInterface.BUTTON_POSITIVE )
+                    {
+                        NativeExports.ResetApplicationSettings();
+                        SplashActivity.Reset();
+                        Intent SplashIntent = new Intent(getActivity(), SplashActivity.class);
+                        SplashIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(SplashIntent);
+                    }
+                }
+            };
+
+            String title = getString( R.string.settings_reset_title );
+            String message = getString( R.string.settings_reset_message );
+            AlertDialog.Builder builder = new AlertDialog.Builder( getActivity() ).setTitle( title ).setMessage( message ).setCancelable( false )
+                    .setNegativeButton( getString( android.R.string.cancel ), internalListener )
+                    .setPositiveButton( getString( android.R.string.ok ), internalListener );
+            builder.create().show();
+        }
+        else
+        {
+            return super.onPreferenceTreeClick(preference);
+        }
+        return true;
     }
 }
