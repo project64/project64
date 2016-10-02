@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SupportEnterCode.h"
+#include <time.h>
 
 HWND CSupportWindow::m_hParent = NULL;
 CSupportWindow * CSupportWindow::m_this = NULL;
@@ -89,7 +90,8 @@ LRESULT CSupportWindow::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         SetWindowLong(GWL_STYLE, dwStyle);
 
         ::EnableWindow(GetDlgItem(IDCANCEL), false);
-        SetTimer(0, 30000, NULL);
+        srand (time(NULL));
+        SetTimer(0, ((rand() % 35) + 5) * 1000, NULL);
     }
     return TRUE;
 }
