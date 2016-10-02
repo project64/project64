@@ -80,7 +80,11 @@ public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
     @Override
     public boolean onPreferenceTreeClick(Preference preference)
     {
-        if (preference.getKey().equals("settings_audio"))
+        if (preference.getKey().equals("settings_video"))
+        {
+            loadFragment(new VideoFragment());
+        }
+        else if (preference.getKey().equals("settings_audio"))
         {
             loadFragment(new AudioFragment());
         }
