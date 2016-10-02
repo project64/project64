@@ -15,6 +15,7 @@ import emu.project64.R;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
 import emu.project64.jni.SystemEvent;
+import emu.project64.jni.UISettingID;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -35,21 +36,23 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
             NativeExports.ExternalEvent( SystemEvent.SysEvent_ResumeCPU_FromMenu.getValue());
         }
         setContentView(R.layout.settings_activity);
-        
+
         // Add the tool bar to the activity (which supports the fancy menu/arrow animation)
         Toolbar toolbar = (Toolbar) findViewById( R.id.toolbar );
         toolbar.setTitle( getString(R.string.settings_title) );
         setSupportActionBar( toolbar );
         ActionBar actionbar = getSupportActionBar();
-        
+
         if (AndroidDevice.IS_ICE_CREAM_SANDWICH)
         {
             actionbar.setHomeButtonEnabled(true);
             actionbar.setDisplayHomeAsUpEnabled(true);
     	}
-        
+
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPrefs.edit().clear()
+        .putInt("touchscreenScale",NativeExports.UISettingsLoadDword(UISettingID.TouchScreen_ButtonScale.getValue()))
+        .putString("touchscreenLayout",NativeExports.UISettingsLoadString(UISettingID.TouchScreen_Layout.getValue()))
         .putBoolean("audio_Enabled",NativeExports.SettingsLoadBool(SettingsID.Plugin_EnableAudio.getValue()))
         .putBoolean("Plugin_ForceGfxReset",NativeExports.SettingsLoadBool(SettingsID.Plugin_ForceGfxReset.getValue()))
         .putBoolean("UserInterface_BasicMode",NativeExports.SettingsLoadBool(SettingsID.UserInterface_BasicMode.getValue()))
@@ -81,16 +84,16 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         .putString("Debugger_TraceUserInterface",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Debugger_TraceUserInterface.getValue())))
         .putString("Debugger_TraceRomList",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Debugger_TraceRomList.getValue())))
         .putString("Debugger_TraceExceptionHandler",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Debugger_TraceExceptionHandler.getValue())))
-        .apply();  
+        .apply();
 
         sharedPrefs.registerOnSharedPreferenceChangeListener(this);
-        
+
         if (savedInstanceState == null)
         {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_placeholder, new SettingsFragment()).commit();
         }
     }
-    
+
     @Override
     protected void onStop()
     {
@@ -98,11 +101,11 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
     }
-    
+
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) 
+    public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId()) 
+        switch (item.getItemId())
         {
         case android.R.id.home:
             if (!getSupportFragmentManager().popBackStackImmediate())
@@ -118,8 +121,11 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         if (key.equals("UserInterface_BasicMode"))
         {
             NativeExports.SettingsSaveBool(SettingsID.UserInterface_BasicMode.getValue(), sharedPreferences.getBoolean(key,false));
+            getSupportFragmentManager().popBackStackImmediate();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_placeholder, new SettingsFragment()).commit();
         }
+        else if (key.equals("touchscreenScale")) { NativeExports.UISettingsSaveDword(UISettingID.TouchScreen_ButtonScale.getValue(), sharedPreferences.getInt(key, 100)); }
+        else if (key.equals("touchscreenLayout")) { NativeExports.UISettingsSaveString(UISettingID.TouchScreen_Layout.getValue(), sharedPreferences.getString(key, "Analog")); }
         else if (key.equals("audio_Enabled")) { NativeExports.SettingsSaveBool(SettingsID.Plugin_EnableAudio.getValue(), sharedPreferences.getBoolean(key,false)); }
         else if (key.equals("Plugin_ForceGfxReset")) { NativeExports.SettingsSaveBool(SettingsID.Plugin_ForceGfxReset.getValue(), sharedPreferences.getBoolean(key,false)); }
         else if (key.equals("Debugger_Enabled")) { NativeExports.SettingsSaveBool(SettingsID.Debugger_Enabled.getValue(), sharedPreferences.getBoolean(key,false)); }

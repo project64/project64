@@ -18,6 +18,14 @@ public enum UISettingID
     //Recent Game
     File_RecentGameFileCount,
     File_RecentGameFileIndex,
+
+    //Touch Screen
+    TouchScreen_ButtonScale,
+    TouchScreen_Layout,
+
+    //Controller Config
+    Controller_ConfigFile,
+    Controller_CurrentProfile,
     ;
     
     private int value;
