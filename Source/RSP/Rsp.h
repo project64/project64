@@ -67,6 +67,7 @@ typedef struct {
     void * hInst;
     int MemoryBswaped;    /* If this is set to TRUE, then the memory has been pre
                               bswap on a dword (32 bits) boundry */
+    uint8_t * HEADER;
     uint8_t * RDRAM;
     uint8_t * DMEM;
     uint8_t * IMEM;

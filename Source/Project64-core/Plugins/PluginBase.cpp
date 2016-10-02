@@ -285,6 +285,7 @@ bool CPlugin::ValidPluginVersion(PLUGIN_INFO & PluginInfo)
         if (PluginInfo.Version == 0x0100) { return true; }
         if (PluginInfo.Version == 0x0101) { return true; }
         if (PluginInfo.Version == 0x0102) { return true; }
+        if (PluginInfo.Version == 0x0103) { return true; }
         break;
     case PLUGIN_TYPE_GFX:
         if (!PluginInfo.MemoryBswaped)	  { return false; }
