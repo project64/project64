@@ -6,11 +6,13 @@ LOCAL_PATH := $(JNI_LOCAL_PATH)
 SRCDIR := ./Project64-core
 
 LOCAL_MODULE := Project64-core
+LOCAL_ARM_MODE := arm
 LOCAL_STATIC_LIBRARIES := common   \
                           zlib     \
 
 LOCAL_C_INCLUDES := ../     \
     ../3rdParty/            \
+
                
 LOCAL_SRC_FILES :=                                                     \
     $(SRCDIR)/AppInit.cpp                                              \
@@ -95,15 +97,19 @@ LOCAL_SRC_FILES :=                                                     \
     $(SRCDIR)/Settings/GameSettings.cpp                                \
     $(SRCDIR)/Settings/N64SystemSettings.cpp                           \
 
+LOCAL_CFLAGS := $(COMMON_CFLAGS)
+LOCAL_CPPFLAGS := $(COMMON_CPPFLAGS)
+
 ifeq ($(TARGET_ARCH_ABI), armeabi-v7a)
     # Use for ARM7a:
     LOCAL_SRC_FILES += $(SRCDIR)/N64System/Recompiler/Arm/asm_functions.S
+    LOCAL_CFLAGS += -mfloat-abi=softfp
+    LOCAL_CFLAGS += -mfpu=vfp
+
 else ifeq ($(TARGET_ARCH_ABI), armeabi)
     # Use for ARM7a:
     LOCAL_SRC_FILES += $(SRCDIR)/N64System/Recompiler/Arm/asm_functions.S
-endif
 
-LOCAL_CFLAGS := $(COMMON_CFLAGS)
-LOCAL_CPPFLAGS := $(COMMON_CPPFLAGS)
+endif
 
 include $(BUILD_STATIC_LIBRARY)
