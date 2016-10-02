@@ -44,7 +44,7 @@ public class GameOverlay extends View implements TouchController.OnStateChangedL
         requestFocus();
     }
 
-    public void initialize( VisibleTouchMap touchMap, boolean drawingEnabled, boolean fpsEnabled, boolean joystickAnimated )
+    public void initialize( VisibleTouchMap touchMap, boolean drawingEnabled, boolean joystickAnimated )
     {
         mTouchMap = touchMap;
         mDrawingEnabled = drawingEnabled;

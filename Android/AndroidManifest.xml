@@ -43,6 +43,16 @@
             android:label="@string/ScanRomsActivity_title"
             android:theme="@style/Theme.AppCompat" >
         </activity>
+        <activity
+            android:name="emu.project64.profile.ControllerProfileActivity"
+            android:exported="false"
+            android:label="@string/ControllerProfileActivity_title"
+            android:theme="@style/Theme.Project64.Apearance" >
+            <intent-filter>
+                <action android:name=".profile.ControllerProfileActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <!--
         For the GameActivities, do not restart the activity when the phone's slider

@@ -33,7 +33,6 @@ import android.util.SparseArray;
  * @see TouchController
  */
 @SuppressLint("FloatMath")
-@SuppressWarnings("deprecation")
 public class TouchMap
 {
     /** Map flag: Touch location is not mapped. */

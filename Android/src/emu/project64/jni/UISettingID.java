@@ -26,6 +26,8 @@ public enum UISettingID
     //Controller Config
     Controller_ConfigFile,
     Controller_CurrentProfile,
+    Controller_Deadzone,
+    Controller_Sensitivity,
     ;
     
     private int value;

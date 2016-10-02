@@ -26,6 +26,7 @@ package emu.project64.settings;
 import emu.project64.R;
 import emu.project64.SplashActivity;
 import emu.project64.jni.NativeExports;
+import emu.project64.profile.ControllerProfileActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,6 +39,8 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 
 public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
 {
+    private static final String DIALOG_FRAGMENT_TAG = "android.support.v7.preference.PreferenceFragment.DIALOG";
+
     protected abstract int getXml();
     protected abstract int getTitleId();
 
@@ -68,19 +71,45 @@ public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
     @Override
     public void onDisplayPreferenceDialog(Preference preference)
     {
-        /*if (AndroidUtil.isHoneycombOrLater() && preference instanceof MultiSelectListPreference) {
-            DialogFragment dialogFragment = MultiSelectListPreferenceDialogFragmentCompat.newInstance(preference.getKey());
+        DialogFragment dialogFragment = null;
+        if (preference instanceof SeekBarPreference)
+        {
+            dialogFragment = SeekBarPreferencePreferenceDialogFragmentCompat.newInstance(preference.getKey());
+        }
+        else if (preference instanceof TwoLinesListPreference)
+        {
+            dialogFragment = TwoLinesListPreferenceDialogFragmentCompat.newInstance(preference.getKey());
+        }
+        else
+        {
+            super.onDisplayPreferenceDialog(preference);
+        }
+
+        if (dialogFragment != null)
+        {
             dialogFragment.setTargetFragment(this, 0);
             dialogFragment.show(getFragmentManager(), DIALOG_FRAGMENT_TAG);
-            return;
-        }*/
-        super.onDisplayPreferenceDialog(preference);
+        }
     }
 
     @Override
     public boolean onPreferenceTreeClick(Preference preference)
     {
-        if (preference.getKey().equals("settings_video"))
+        if (preference.getKey().equals("settings_input"))
+        {
+            loadFragment(new InputFragment());
+        }
+        else if (preference.getKey().equals("settings_touch_screen"))
+        {
+            loadFragment(new TouchScreenFragment());
+        }
+        else if (preference.getKey().equals("settings_gamepad_screen"))
+        {
+            final AppCompatActivity activity = (AppCompatActivity)getActivity();
+            Intent intent = new Intent( activity, ControllerProfileActivity.class );
+            activity.startActivity( intent );
+        }
+        else if (preference.getKey().equals("settings_video"))
         {
             loadFragment(new VideoFragment());
         }

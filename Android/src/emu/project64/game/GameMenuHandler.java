@@ -146,7 +146,7 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
             break;
         case R.id.menuItem_settings:
             Intent SettingsIntent = new Intent(mActivity, SettingsActivity.class);
-            mActivity.startActivity( SettingsIntent );
+            mActivity.startActivityForResult( SettingsIntent, GameLifecycleHandler.RC_SETTINGS );
             return true;
         }
         return false;

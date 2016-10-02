@@ -15,6 +15,7 @@ import emu.project64.jni.SystemEvent;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 public class GameActivity extends Activity
@@ -22,16 +23,16 @@ public class GameActivity extends Activity
     private GameLifecycleHandler mLifecycleHandler;
     @SuppressWarnings("unused")
     private GameMenuHandler mMenuHandler;
-    
+
     @Override
     public void onWindowFocusChanged( boolean hasFocus )
     {
         super.onWindowFocusChanged( hasFocus );
         mLifecycleHandler.onWindowFocusChanged( hasFocus );
     }
-    
+
     @Override
-    public void onBackPressed() 
+    public void onBackPressed()
     {
         NativeExports.ExternalEvent( SystemEvent.SysEvent_PauseCPU_AppLostActive.getValue());
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -49,50 +50,59 @@ public class GameActivity extends Activity
                })
                .show();
     }
-    
+
     @Override
     protected void onCreate( Bundle savedInstanceState )
-    {       
+    {
         mLifecycleHandler = new GameLifecycleHandler( this );
         mLifecycleHandler.onCreateBegin( savedInstanceState );
         super.onCreate( savedInstanceState );
         mLifecycleHandler.onCreateEnd( savedInstanceState );
-        
+
         mMenuHandler = new GameMenuHandler( this, mLifecycleHandler );
     }
-    
+
     @Override
     protected void onStart()
     {
         super.onStart();
         mLifecycleHandler.onStart();
     }
-    
+
     @Override
     protected void onResume()
     {
         super.onResume();
         mLifecycleHandler.onResume();
     }
-    
+
     @Override
     protected void onPause()
     {
         super.onPause();
         mLifecycleHandler.onPause();
     }
-    
+
     @Override
     protected void onStop()
     {
         super.onStop();
         mLifecycleHandler.onStop();
     }
-    
+
     @Override
     protected void onDestroy()
     {
         super.onDestroy();
         mLifecycleHandler.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == GameLifecycleHandler.RC_SETTINGS)
+        {
+            mLifecycleHandler.onSettingDone();
+        }
     }
 }

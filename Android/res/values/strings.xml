@@ -66,9 +66,37 @@
     <string name="galleryRecentlyPlayed">Recently played</string>
     <string name="galleryLibrary">Games</string>
 
+    <!-- Seek Bar Preference -->
+    <string name="seekBarPreference_summary">%1$d %2$s</string>
+    
+    <!-- Input Mapping -->
+    <string name="inputMapActivity_popupMessage">Press a button, key, or joystick to map…\n\nCurrent mappings:\n%1$s</string>
+    <string name="inputMapActivity_popupUnmap">Unmap</string>
+    <string name="inputMapActivity_btnA">A</string>
+    <string name="inputMapActivity_btnB">B</string>
+    <string name="inputMapActivity_btnC">C</string>
+    <string name="inputMapActivity_btnL">L</string>
+    <string name="inputMapActivity_btnR">R</string>
+    <string name="inputMapActivity_btnZ">Z</string>
+    <string name="inputMapActivity_btnS">S</string>
+    <string name="inputMapActivity_btnCR">C-pad →</string>
+    <string name="inputMapActivity_btnCL">C-pad ←</string>
+    <string name="inputMapActivity_btnCD">C-pad ↓</string>
+    <string name="inputMapActivity_btnCU">C-pad ↑</string>
+    <string name="inputMapActivity_btnDR">D-pad →</string>
+    <string name="inputMapActivity_btnDL">D-pad ←</string>
+    <string name="inputMapActivity_btnDD">D-pad ↓</string>
+    <string name="inputMapActivity_btnDU">D-pad ↑</string>
+    <string name="inputMapActivity_btnAR">Analog →</string>
+    <string name="inputMapActivity_btnAL">Analog ←</string>
+    <string name="inputMapActivity_btnAD">Analog ↓</string>
+    <string name="inputMapActivity_btnAU">Analog ↑</string>
+    
     <!-- Settings -->
     <string name="Hardware">Hardware</string>
     <string name="Other">Other</string>
+    <string name="touch_screen_summary">On-screen controller setttings</string>
+    <string name="touch_screen_title">Touchscreen</string>
     <string name="input_screen_summary">Controller settings</string>
     <string name="input_screen_title">Input</string>
     <string name="video_screen_summary">Graphic settings</string>
@@ -141,6 +169,10 @@
     <string name="VerticalInterruptsPerSecond">Vertical interrupts per second</string>
     <string name="ForceGfxReset_title">Reset GFX Plugin</string>
     <string name="ForceGfxReset_summary">Always reload GFX plugin</string>
+    <string name="touchscreenScale_title">Button scale</string>
+    <string name="touchscreenLayout_title">Touchscreen layout</string>
+    <string name="gamepad_summary">Configure gamepad to use in game</string>
+    <string name="gamepad_title">Gamepad settings</string>
     <string name="settings_reset_title">Reset settings</string>
     <string name="settings_reset_message">Reset all settings back to their defaults?</string>
         
@@ -190,7 +222,7 @@
     <string name="GetSaveSupport_message">Save support is a one time purchase and the only purchase in Project64.\n\nProject64 may not be perfect and making this as an upgrade it allows you to play and test the emulator before you have to spend any money.\n\nThis is also a good way for you to support and give back to the creation of the emulator..</string>
     <string name="GetSaveSupport_OkButton">Purchase</string>
     
-  <!-- Asset Extractor -->
+    <!-- Asset Extractor -->
     <string name="assetExtractor_startingUp">Starting Up …</string>
     <string name="assetExtractor_version">version</string>
     <string name="assetExtractor_progress">%1$.0f%% done: extracting - %2$s</string>

@@ -25,6 +25,7 @@ import emu.project64.util.Utility;
 import tv.ouya.console.api.OuyaFacade;
 import android.os.Build;
 import android.os.Environment;
+import android.view.KeyEvent;
 
 public class AndroidDevice
 {
@@ -46,6 +47,9 @@ public class AndroidDevice
     /** True if device is running KitKat or later (19 - Android 4.4.x) */
     public static final boolean IS_KITKAT = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     
+    /** True if device is running Lollipop or later (21 - Android 5.0.x) */
+    public static final boolean IS_LOLLIPOP = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+
     /** True if device is an OUYA. */
     public static final boolean IS_OUYA_HARDWARE = OuyaFacade.getInstance().isRunningOnOUYAHardware();
     
@@ -55,6 +59,9 @@ public class AndroidDevice
     public static final boolean IS_ACTION_BAR_AVAILABLE = AndroidDevice.IS_HONEYCOMB && !AndroidDevice.IS_OUYA_HARDWARE;
 
     final static boolean isTv;
+    
+    public static boolean MapVolumeKeys = false;
+    
     static 
     {
         isTv = Project64Application.getAppContext().getPackageManager().hasSystemFeature("android.software.leanback");
@@ -63,6 +70,24 @@ public class AndroidDevice
     public static boolean isAndroidTv() 
     {
         return isTv;
+    }
+    
+    public static List<Integer> getUnmappableKeyCodes ()
+    {
+        List<Integer> unmappables = new ArrayList<Integer>();
+        unmappables.add( KeyEvent.KEYCODE_MENU );
+        if( IS_HONEYCOMB )
+        {
+            // Back key is needed to show/hide the action bar in HC+
+            unmappables.add( KeyEvent.KEYCODE_BACK );
+        }
+        if( !MapVolumeKeys )
+        {
+            unmappables.add( KeyEvent.KEYCODE_VOLUME_UP );
+            unmappables.add( KeyEvent.KEYCODE_VOLUME_DOWN );
+            unmappables.add( KeyEvent.KEYCODE_VOLUME_MUTE );
+        }
+        return unmappables;
     }
     
     public static ArrayList<String> getStorageDirectories() 

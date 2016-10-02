@@ -5,11 +5,13 @@
     <string name="app_name" translatable="false">Project64</string>
     <string name="assetExtractor_uriHelp" translatable="false">www.pj64-emu.com</string>
     <!-- Strings only seen in the eclipse editor -->
+    <string name="inputMapActivity_dummyFeedback" translatable="false">KEYCODE_XXXX</string>
     <string name="galleryItemAdapter_dummyText" translatable="false">Good Name Goes Here</string>
 
     <!-- Activity titles, aliased to other strings -->
     <string name="SplashActivity_title" translatable="false">@string/app_name</string>
     <string name="GalleryActivity_title" translatable="false">@string/app_name</string>
+    <string name="ControllerProfileActivity_title" translatable="false">@string/app_name</string>
     <string name="ScanRomsActivity_title" translatable="false">@string/app_name</string>
     <string name="GameActivity_title" translatable="false">@string/app_name</string>
     

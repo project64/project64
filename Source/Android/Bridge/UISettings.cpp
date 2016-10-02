@@ -24,6 +24,8 @@ void RegisterUISettings(void)
     g_Settings->AddHandler((SettingID)(FirstUISettings + TouchScreen_Layout), new CSettingTypeApplication("Touch Screen", "Layout", "Analog"));
     g_Settings->AddHandler((SettingID)(FirstUISettings + Controller_ConfigFile), new CSettingTypeRelativePath("Config", "Controller.cfg"));
     g_Settings->AddHandler((SettingID)(FirstUISettings + Controller_CurrentProfile), new CSettingTypeApplication("Controller", "Profile", "User"));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Controller_Deadzone), new CSettingTypeApplication("Controller", "Deadzone", (uint32_t)0));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Controller_Sensitivity), new CSettingTypeApplication("Controller", "Sensitivity", (uint32_t)100));
 }
 
 void UISettingsSaveBool(UISettingID Type, bool Value)

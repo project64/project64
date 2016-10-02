@@ -26,7 +26,6 @@ import android.view.View.OnTouchListener;
 /**
  * A class for generating N64 controller commands from a touchscreen.
  */
-@SuppressWarnings("deprecation")
 public class TouchController extends AbstractController implements OnTouchListener
 {
     public interface OnStateChangedListener

@@ -55,4 +55,16 @@
     </style>
     
     <style name="Project64.Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="btnMappable" parent="@android:style/Widget.Button">
+        <item name="android:layout_width">@dimen/inputMapPreferenceButtonSize</item>
+        <item name="android:layout_height">@dimen/inputMapPreferenceButtonSize</item>
+        <item name="android:background">@drawable/button_gray</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:textColor">@android:color/primary_text_dark_nodisable</item>
+    </style>
+
+    <style name="btnMappableNoText" parent="@style/btnMappable">
+        <item name="android:textColor">@android:color/transparent</item>
+    </style>
 </resources>
