@@ -18,7 +18,7 @@ public:
     CProfiling();
 
     void RecordTime(PROFILE_TIMERS timer, uint32_t time);
-    uint64_t TimerTime(PROFILE_TIMERS timer);
+    uint64_t NonCPUTime(void);
 
     //recording timing against current timer, returns the address of the timer stopped
     PROFILE_TIMERS StartTimer(PROFILE_TIMERS TimerType);

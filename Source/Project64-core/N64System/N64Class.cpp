@@ -31,33 +31,33 @@
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
 CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem) :
-    CSystemEvents(this, Plugins),
-    m_EndEmulation(false),
-    m_SaveUsing((SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip)),
-    m_Plugins(Plugins),
-    m_SyncCPU(NULL),
-    m_SyncPlugins(NULL),
-    m_MMU_VM(SavesReadOnly),
-    m_TLB(this),
-    m_Reg(this, this),
-    m_Recomp(NULL),
-    m_InReset(false),
-    m_NextTimer(0),
-    m_SystemTimer(m_NextTimer),
-    m_bCleanFrameBox(true),
-    m_bInitialized(false),
-    m_RspBroke(true),
-    m_DMAUsed(false),
-    m_TestTimer(false),
-    m_NextInstruction(0),
-    m_JumpToLocation(0),
-    m_TLBLoadAddress(0),
-    m_TLBStoreAddress(0),
-    m_SyncCount(0),
-    m_thread(NULL),
-    m_hPauseEvent(true),
-    m_CheatsSlectionChanged(false),
-    m_SyncCpu(SyncSystem)
+CSystemEvents(this, Plugins),
+m_EndEmulation(false),
+m_SaveUsing((SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip)),
+m_Plugins(Plugins),
+m_SyncCPU(NULL),
+m_SyncPlugins(NULL),
+m_MMU_VM(SavesReadOnly),
+m_TLB(this),
+m_Reg(this, this),
+m_Recomp(NULL),
+m_InReset(false),
+m_NextTimer(0),
+m_SystemTimer(m_NextTimer),
+m_bCleanFrameBox(true),
+m_bInitialized(false),
+m_RspBroke(true),
+m_DMAUsed(false),
+m_TestTimer(false),
+m_NextInstruction(0),
+m_JumpToLocation(0),
+m_TLBLoadAddress(0),
+m_TLBStoreAddress(0),
+m_SyncCount(0),
+m_thread(NULL),
+m_hPauseEvent(true),
+m_CheatsSlectionChanged(false),
+m_SyncCpu(SyncSystem)
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
     uint32_t gameHertz = g_Settings->LoadDword(Game_ScreenHertz);
@@ -149,8 +149,6 @@ void CN64System::ExternalEvent(SystemEvent action)
 
     switch (action)
     {
-    case SysEvent_Profile_StartStop:
-    case SysEvent_Profile_ResetLogs:
     case SysEvent_ExecuteInterrupt:
     case SysEvent_SaveMachineState:
     case SysEvent_LoadMachineState:
@@ -168,6 +166,7 @@ void CN64System::ExternalEvent(SystemEvent action)
     case SysEvent_CloseCPU:
     case SysEvent_ChangePlugins:
     case SysEvent_PauseCPU_FromMenu:
+    case SysEvent_ResetFunctionTimes:
     case SysEvent_DumpFunctionTimes:
         QueueEvent(action);
         break;
@@ -1941,6 +1940,9 @@ void CN64System::DisplayRSPListCount()
 void CN64System::RunRSP()
 {
     WriteTrace(TraceRSP, TraceDebug, "Start (SP Status %X)", m_Reg.SP_STATUS_REG);
+
+    PROFILE_TIMERS CPU_UsageAddr = m_CPU_Usage.StopTimer();
+
     if ((m_Reg.SP_STATUS_REG & SP_STATUS_HALT) == 0)
     {
         if ((m_Reg.SP_STATUS_REG & SP_STATUS_BROKE) == 0)
@@ -2007,14 +2009,11 @@ void CN64System::RunRSP()
                 EndTime.SetToNow();
                 uint32_t TimeTaken = (uint32_t)(EndTime.GetMicroSeconds() - StartTime.GetMicroSeconds());
 
-                if (bShowCPUPer())
+                switch (Task)
                 {
-                    switch (Task)
-                    {
-                    case 1: m_CPU_Usage.RecordTime(Timer_RSP_Dlist, TimeTaken); break;
-                    case 2: m_CPU_Usage.RecordTime(Timer_RSP_Alist, TimeTaken); break;
-                    default: m_CPU_Usage.RecordTime(Timer_RSP_Unknown, TimeTaken); break;
-                    }
+                case 1: m_CPU_Usage.RecordTime(Timer_RSP_Dlist, TimeTaken); break;
+                case 2: m_CPU_Usage.RecordTime(Timer_RSP_Alist, TimeTaken); break;
+                default: m_CPU_Usage.RecordTime(Timer_RSP_Unknown, TimeTaken); break;
                 }
             }
 
@@ -2033,6 +2032,11 @@ void CN64System::RunRSP()
             g_Reg->CheckInterrupts();
         }
     }
+    if (bShowCPUPer())
+    {
+        m_CPU_Usage.StartTimer(CPU_UsageAddr);
+    }
+
     WriteTrace(TraceRSP, TraceDebug, "Done (SP Status %X)", m_Reg.SP_STATUS_REG);
 }
 
@@ -2123,6 +2127,7 @@ void CN64System::RefreshScreen()
             m_FPS.DisplayViCounter(FrameRate, 0);
             m_bCleanFrameBox = true;
         }
+        if (bShowCPUPer()) { m_CPU_Usage.StopTimer(); }
     }
     else if (bDisplayFrameRate())
     {
@@ -2139,7 +2144,6 @@ void CN64System::RefreshScreen()
 
     if (bShowCPUPer())
     {
-        m_CPU_Usage.StopTimer();
         m_CPU_Usage.ShowCPU_Usage();
         m_CPU_Usage.StartTimer(CPU_UsageAddr != Timer_None ? CPU_UsageAddr : Timer_R4300);
     }

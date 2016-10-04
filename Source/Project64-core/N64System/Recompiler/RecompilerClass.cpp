@@ -151,7 +151,7 @@ void CRecompiler::RecompilerMain_VirtualTable()
                 WriteTrace(TraceRecompiler, TraceError, "failed to allocate PCCompiledFunc");
                 g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
             }
-            memset(table, 0, sizeof(PCCompiledFunc) * (0x1000 >> 2));
+            memset(table, 0, sizeof(PCCompiledFunc)* (0x1000 >> 2));
             if (g_System->bSMM_Protect())
             {
                 WriteTrace(TraceRecompiler, TraceError, "Create Table (%X): Index = %d", table, PC >> 0xC);
@@ -697,11 +697,21 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
 
             if (bRecordExecutionTimes())
             {
+                uint64_t PreNonCPUTime = g_System->m_CPU_Usage.NonCPUTime();
                 HighResTimeStamp StartTime, EndTime;
                 StartTime.SetToNow();
                 (info->Function())();
                 EndTime.SetToNow();
+                uint64_t PostNonCPUTime = g_System->m_CPU_Usage.NonCPUTime();
                 uint64_t TimeTaken = EndTime.GetMicroSeconds() - StartTime.GetMicroSeconds();
+                if (PostNonCPUTime >= PreNonCPUTime)
+                {
+                    TimeTaken -= PostNonCPUTime - PreNonCPUTime;
+                }
+                else
+                {
+                    TimeTaken -= PostNonCPUTime;
+                }
                 FUNCTION_PROFILE::iterator itr = m_BlockProfile.find(info->Function());
                 if (itr == m_BlockProfile.end())
                 {
@@ -710,7 +720,7 @@ void CRecompiler::RecompilerMain_Lookup_validate_TLB()
                     std::pair<FUNCTION_PROFILE::iterator, bool> res = m_BlockProfile.insert(FUNCTION_PROFILE::value_type(info->Function(), data));
                     itr = res.first;
                 }
-                WriteTrace(TraceN64System, TraceNotice, "EndTime: %X StartTime: %X TimeTaken: %X", (uint32_t)EndTime.GetMicroSeconds(), (uint32_t)StartTime.GetMicroSeconds(), (uint32_t)TimeTaken);
+                WriteTrace(TraceN64System, TraceNotice, "EndTime: %X StartTime: %X TimeTaken: %X", (uint32_t)(EndTime.GetMicroSeconds() & 0xFFFFFFFF), (uint32_t)(StartTime.GetMicroSeconds() & 0xFFFFFFFF), (uint32_t)TimeTaken);
                 itr->second.TimeTaken += TimeTaken;
             }
             else
@@ -1093,13 +1103,13 @@ void CRecompiler::ClearRecompCode_Virt(uint32_t Address, int length, REMOVE_REAS
         }
         break;
     case FuncFind_PhysicalLookup:
-        {
-            uint32_t pAddr = 0;
-            if (g_TransVaddr->TranslateVaddr(Address, pAddr))
-            {
-                ClearRecompCode_Phys(pAddr, length, Reason);
-            }
-        }
+    {
+                                    uint32_t pAddr = 0;
+                                    if (g_TransVaddr->TranslateVaddr(Address, pAddr))
+                                    {
+                                        ClearRecompCode_Phys(pAddr, length, Reason);
+                                    }
+    }
         break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);

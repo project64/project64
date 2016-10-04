@@ -18,11 +18,11 @@ public:
     CDebugSettings();
     virtual ~CDebugSettings();
 
-    static inline bool  bHaveDebugger(void) { return m_bHaveDebugger; }
-    static inline bool  bLogX86Code(void) { return m_bLogX86Code; }
-    static inline bool  bShowTLBMisses(void) { return m_bShowTLBMisses; }
-    static inline bool  bShowDivByZero(void) { return m_bShowDivByZero; }
-    static inline bool  bRecordExecutionTimes(void) { return m_RecordExecutionTimes; }
+    static inline bool bHaveDebugger(void) { return m_bHaveDebugger; }
+    static inline bool bLogX86Code(void) { return m_bLogX86Code; }
+    static inline bool bShowTLBMisses(void) { return m_bShowTLBMisses; }
+    static inline bool bShowDivByZero(void) { return m_bShowDivByZero; }
+    inline static bool bRecordExecutionTimes(void) { return m_RecordExecutionTimes; }
 
 private:
     static void StaticRefreshSettings(CDebugSettings * _this)

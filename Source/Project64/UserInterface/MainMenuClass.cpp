@@ -6,9 +6,9 @@
 #include <commdlg.h>
 
 CMainMenu::CMainMenu(CMainGui * hMainWindow) :
-    CBaseMenu(),
-    m_ResetAccelerators(true),
-    m_Gui(hMainWindow)
+CBaseMenu(),
+m_ResetAccelerators(true),
+m_Gui(hMainWindow)
 {
     ResetMenu();
 
@@ -20,7 +20,7 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     m_ChangeUISettingList.push_back(UserInterface_AlwaysOnTop);
     m_ChangeSettingList.push_back(UserInterface_ShowCPUPer);
     m_ChangeSettingList.push_back(Logging_GenerateLog);
-    m_ChangeSettingList.push_back(Debugger_ProfileCode);
+    m_ChangeSettingList.push_back(Debugger_RecordExecutionTimes);
     m_ChangeSettingList.push_back(Debugger_ShowTLBMisses);
     m_ChangeSettingList.push_back(Debugger_ShowUnhandledMemory);
     m_ChangeSettingList.push_back(Debugger_ShowPifErrors);
@@ -479,10 +479,10 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         break;
     case ID_OPTIONS_SETTINGS: OnSettings(hWnd);  break;
     case ID_PROFILE_PROFILE:
-        g_Settings->SaveBool(Debugger_ProfileCode, !g_Settings->LoadBool(Debugger_ProfileCode));
-        g_BaseSystem->ExternalEvent(SysEvent_Profile_StartStop);
+        g_Settings->SaveBool(Debugger_RecordExecutionTimes, !g_Settings->LoadBool(Debugger_RecordExecutionTimes));
+        g_BaseSystem->ExternalEvent(SysEvent_ResetFunctionTimes);
         break;
-    case ID_PROFILE_RESETCOUNTER: g_BaseSystem->ExternalEvent(SysEvent_Profile_ResetLogs); break;
+    case ID_PROFILE_RESETCOUNTER: g_BaseSystem->ExternalEvent(SysEvent_ResetFunctionTimes); break;
     case ID_PROFILE_GENERATELOG: g_BaseSystem->ExternalEvent(SysEvent_DumpFunctionTimes); break;
     case ID_DEBUG_SHOW_TLB_MISSES:
         g_Settings->SaveBool(Debugger_ShowTLBMisses, !g_Settings->LoadBool(Debugger_ShowTLBMisses));
@@ -996,8 +996,8 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MenuItemList DebugProfileMenu;
     if (bHaveDebugger())
     {
-        Item.Reset(ID_PROFILE_PROFILE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Profile Code");
-        if (g_Settings->LoadBool(Debugger_ProfileCode)) { Item.SetItemTicked(true); }
+        Item.Reset(ID_PROFILE_PROFILE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Record Execution Times");
+        if (g_Settings->LoadBool(Debugger_RecordExecutionTimes)) { Item.SetItemTicked(true); }
         DebugProfileMenu.push_back(Item);
         Item.Reset(ID_PROFILE_RESETCOUNTER, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Reset Counters");
         if (!CPURunning) { Item.SetItemEnabled(false); }

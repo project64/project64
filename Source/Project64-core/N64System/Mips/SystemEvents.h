@@ -49,8 +49,6 @@ enum SystemEvent
     SysEvent_Interrupt_VI,
     SysEvent_Interrupt_PI,
     SysEvent_Interrupt_DP,
-    SysEvent_Profile_StartStop,
-    SysEvent_Profile_ResetLogs,
     SysEvent_ResetFunctionTimes,
     SysEvent_DumpFunctionTimes,
 };

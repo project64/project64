@@ -214,7 +214,6 @@ enum SettingID
     Debugger_ShowPifErrors,
     Debugger_ShowDivByZero,
     Debugger_GenerateLogFiles,
-    Debugger_ProfileCode,
     Debugger_DisableGameFixes,
     Debugger_AppLogLevel,
     Debugger_AppLogFlush,

@@ -14,9 +14,9 @@
 #include <Project64-core/N64System/N64Class.h>
 
 CSystemEvents::CSystemEvents(CN64System * System, CPlugins * Plugins) :
-	m_System(System),
-	m_Plugins(Plugins),
-	m_bDoSomething(false)
+m_System(System),
+m_Plugins(Plugins),
+m_bDoSomething(false)
 {
 }
 
@@ -71,13 +71,6 @@ void CSystemEvents::ExecuteEvents()
         case SysEvent_ResetCPU_Hard:
             m_System->Reset(true, true);
             break;
-        case SysEvent_Profile_StartStop:
-        case SysEvent_Profile_ResetLogs:
-            if (g_Recompiler)
-            {
-                g_Recompiler->ResetFunctionTimes();
-            }
-            break;
         case SysEvent_ExecuteInterrupt:
             g_Reg->DoIntrException(false);
             break;
@@ -120,6 +113,12 @@ void CSystemEvents::ExecuteEvents()
             break;
         case SysEvent_ChangePlugins:
             ChangePluginFunc();
+            break;
+        case SysEvent_ResetFunctionTimes:
+            if (g_Recompiler)
+            {
+                g_Recompiler->ResetFunctionTimes();
+            }
             break;
         case SysEvent_DumpFunctionTimes:
             if (g_Recompiler)
