@@ -285,11 +285,11 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
         SetArmRegProtected(regHi, true);
 
         reglo = FreeArmReg();
-        if (reglo < 0) 
+        if (reglo < 0)
         {
             if (bHaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); }
             g_Notify->BreakPoint(__FILE__, __LINE__);
-            return; 
+            return;
         }
         SetArmRegProtected(reglo, true);
 
@@ -303,7 +303,7 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
         {
             SetArmRegProtected(reglo, true);
             regHi = FreeArmReg();
-            if (regHi < 0) 
+            if (regHi < 0)
             {
                 if (bHaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); }
                 g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -346,16 +346,16 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
                 g_Notify->BreakPoint(__FILE__, __LINE__);
                 /*if (IsSigned(MipsRegToLoad))
                 {
-                    MoveX86RegToX86Reg(GetMipsRegMapLo(MipsRegToLoad), x86Hi);
-                    ShiftRightSignImmed(x86Hi, 31);
+                MoveX86RegToX86Reg(GetMipsRegMapLo(MipsRegToLoad), x86Hi);
+                ShiftRightSignImmed(x86Hi, 31);
                 }
                 else
                 {
-                    XorX86RegToX86Reg(x86Hi, x86Hi);
+                XorX86RegToX86Reg(x86Hi, x86Hi);
                 }
                 if (MipsReg != MipsRegToLoad)
                 {
-                    MoveX86RegToX86Reg(GetMipsRegMapLo(MipsRegToLoad), x86lo);
+                MoveX86RegToX86Reg(GetMipsRegMapLo(MipsRegToLoad), x86lo);
                 }*/
             }
             else if (MipsReg != MipsRegToLoad)
@@ -371,18 +371,18 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
             /*CPU_Message("Map_GPR_64bit 11");
             if (Is32Bit(MipsRegToLoad))
             {
-                if (IsSigned(MipsRegToLoad))
-                {
-                    MoveConstToX86reg(GetMipsRegLo_S(MipsRegToLoad) >> 31, x86Hi);
-                }
-                else
-                {
-                    MoveConstToX86reg(0, x86Hi);
-                }
+            if (IsSigned(MipsRegToLoad))
+            {
+            MoveConstToX86reg(GetMipsRegLo_S(MipsRegToLoad) >> 31, x86Hi);
             }
             else
             {
-                MoveConstToX86reg(GetMipsRegHi(MipsRegToLoad), x86Hi);
+            MoveConstToX86reg(0, x86Hi);
+            }
+            }
+            else
+            {
+            MoveConstToX86reg(GetMipsRegHi(MipsRegToLoad), x86Hi);
             }
             MoveConstToX86reg(GetMipsRegLo(MipsRegToLoad), x86lo);*/
         }
@@ -897,6 +897,11 @@ CArmOps::ArmReg CArmRegInfo::Map_Variable(VARIABLE_MAPPED variable)
         CPU_Message("    regcache: allocate %s as pointer to g_NextTimer", ArmRegName(Reg));
         m_Variable_MappedTo[Reg] = variable;
         MoveConstToArmReg(Reg, (uint32_t)(g_NextTimer), "g_NextTimer");
+        break;
+    case VARIABLE_TLB_LOAD_ADDRESS:
+        CPU_Message("    regcache: allocate %s as pointer to g_TLBLoadAddress", ArmRegName(Reg));
+        m_Variable_MappedTo[Reg] = variable;
+        MoveConstToArmReg(Reg, (uint32_t)(g_TLBLoadAddress), "g_TLBLoadAddress");
         break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);

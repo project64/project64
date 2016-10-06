@@ -4198,6 +4198,10 @@ void CArmRecompilerOps::SyncRegState(const CRegInfo & SyncTo)
 void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason)
 {
     m_RegWorkingSet = ExitRegSet;
+    for (int32_t i = 0; i < 16; i++)
+    {
+        m_RegWorkingSet.SetArmRegProtected((ArmReg)i, false);
+    }
     m_RegWorkingSet.WriteBackRegisters();
     ExitRegSet = m_RegWorkingSet;
 
@@ -4253,6 +4257,14 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         CallFunction(AddressOf(&CRegisters::DoCopUnusableException), "CRegisters::DoCopUnusableException");
         ExitCodeBlock();
         break;
+    case CExitInfo::TLBReadMiss:
+        bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
+        MoveVariableToArmReg(g_TLBLoadAddress, "g_TLBLoadAddress",Arm_R2);
+        MoveConstToArmReg(Arm_R1, (uint32_t)bDelay, bDelay ? "true" : "false");
+        MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg);
+        CallFunction(AddressOf(&CRegisters::DoTLBReadMiss), "CRegisters::DoTLBReadMiss");
+        ExitCodeBlock();
+        break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
@@ -4303,7 +4315,14 @@ void CArmRecompilerOps::CompileSystemCheck(uint32_t TargetPC, const CRegInfo & R
 
 void CArmRecompilerOps::CompileReadTLBMiss(ArmReg AddressReg, ArmReg LookUpReg)
 {
-    CPU_Message("%s: todo",__FUNCTION__);
+    m_RegWorkingSet.SetArmRegProtected(AddressReg, true);
+    m_RegWorkingSet.SetArmRegProtected(LookUpReg, true);
+
+    ArmReg TlbLoadReg = Map_Variable(CArmRegInfo::VARIABLE_TLB_LOAD_ADDRESS);
+    StoreArmRegToArmRegPointer(AddressReg, TlbLoadReg, 0);
+    CompareArmRegToConst(LookUpReg, 0);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, ArmBranch_Equal);
+    m_RegWorkingSet.SetArmRegProtected(TlbLoadReg, false);
 }
 
 CRegInfo & CArmRecompilerOps::GetRegWorkingSet(void)

@@ -38,6 +38,7 @@ public:
         VARIABLE_FPR = 2,
         VARIABLE_TLB_READMAP = 3,
         VARIABLE_NEXT_TIMER = 4,
+        VARIABLE_TLB_LOAD_ADDRESS = 5,
     };
 
     CArmRegInfo();

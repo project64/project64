@@ -380,11 +380,54 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
 {
     if ((int32_t)(MemAddress) < 0 || MemAddress > 0x1FFFFFFF)
     {
+        ArmThumbOpcode * OpCode = (ArmThumbOpcode *)context.arm_pc;
+        Arm32Opcode * OpCode32 = (Arm32Opcode *)context.arm_pc;
         WriteTrace(TraceExceptionHandler, TraceError, "Invalid memory adderess: %X", MemAddress);
-        if (bHaveDebugger())
+        WriteTrace(TraceExceptionHandler, TraceError, "Program Counter 0x%lx", g_Reg->m_PROGRAM_COUNTER);
+        for (int i = 0, n = (sizeof(g_BaseSystem->m_LastSuccessSyncPC) / sizeof(g_BaseSystem->m_LastSuccessSyncPC[0])); i < n; i++)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            WriteTrace(TraceExceptionHandler, TraceError, "m_LastSuccessSyncPC[%d] = 0x%lx", i, g_BaseSystem->m_LastSuccessSyncPC[i]);
         }
+        WriteTrace(TraceExceptionHandler, TraceError, "MemAddress = 0x%lx", MemAddress);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r0 = 0x%lx", context.arm_r0);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r1 = 0x%lx", context.arm_r1);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r2 = 0x%lx", context.arm_r2);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r3 = 0x%lx", context.arm_r3);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r4 = 0x%lx", context.arm_r4);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r5 = 0x%lx", context.arm_r5);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r6 = 0x%lx", context.arm_r6);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r7 = 0x%lx", context.arm_r7);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r8 = 0x%lx", context.arm_r8);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r9 = 0x%lx", context.arm_r9);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r10 = 0x%lx", context.arm_r10);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_fp = 0x%lx", context.arm_fp);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_ip = 0x%lx", context.arm_ip);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_sp = 0x%lx", context.arm_sp);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_lr = 0x%lx", context.arm_lr);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_pc = 0x%lx", context.arm_pc);
+
+        uint8_t * TypePos = (uint8_t *)context.arm_pc;
+        WriteTrace(TraceExceptionHandler, TraceError, "TypePos: %02X %02X %02X %02X %02X %02X %02X %02X %02X",TypePos[0],TypePos[1],TypePos[2],TypePos[3],TypePos[4],TypePos[5],TypePos[6],TypePos[7],TypePos[8]);
+
+        WriteTrace(TraceExceptionHandler, TraceError, "OpCode.Hex: %X",OpCode->Hex);
+        WriteTrace(TraceExceptionHandler, TraceError, "OpCode.opcode: %X",OpCode->Reg.opcode);
+        WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rm: %X",OpCode->Reg.rm);
+        WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rn: %X",OpCode->Reg.rn);
+        WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rt: %X",OpCode->Reg.rt);
+
+        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32.Hex: %X",OpCode32->Hex);
+        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.opcode: %X",OpCode32->uint16.opcode);
+        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.rm: %X",OpCode32->uint16.rm);
+        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.rn: %X",OpCode32->uint16.rn);
+        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.rt: %X",OpCode32->uint16.rt);
+        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.imm2: %X",OpCode32->uint16.imm2);
+
+        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.opcode: %X",OpCode32->uint32.opcode);
+        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.rn: %X",OpCode32->uint32.rn);
+        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.rt: %X",OpCode32->uint32.rt);
+        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.opcode2: %X",OpCode32->uint32.opcode2);
+        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.rm: %X",OpCode32->uint32.rm);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
         return false;
     }
 
@@ -646,16 +689,16 @@ void CMipsMemoryVM::segv_handler(int signal, siginfo_t *siginfo, void *sigcontex
     WriteTrace(TraceExceptionHandler, TraceNotice, "%s: si_addr: %p",__FUNCTION__, siginfo->si_addr);
 
     uint32_t MemAddress = (char *)siginfo->si_addr - (char *)g_MMU->Rdram();
-    WriteTrace(TraceExceptionHandler, TraceNotice, "MemAddress = %X",MemAddress);
+    WriteTrace(TraceExceptionHandler, TraceNotice, "MemAddress = %X", MemAddress);
 #ifdef __i386__
-    for(int i = 0; i < NGREG; i++)
+    for (int i = 0; i < NGREG; i++)
     {
         WriteTrace(TraceExceptionHandler, TraceNotice, "reg[%02d] = 0x%08x", i, ucontext->uc_mcontext.gregs[i]);
     }
     WriteTrace(TraceExceptionHandler, TraceNotice, "REG_EIP  = %X", ucontext->uc_mcontext.gregs[REG_EIP]);
 
     uint8_t * TypePos = (uint8_t *)ucontext->uc_mcontext.gregs[REG_EIP];
-    WriteTrace(TraceExceptionHandler, TraceNotice, "TypePos: %02X %02X %02X %02X %02X %02X %02X %02X %02X",TypePos[0],TypePos[1],TypePos[2],TypePos[3],TypePos[4],TypePos[5],TypePos[6],TypePos[7],TypePos[8]);
+    WriteTrace(TraceExceptionHandler, TraceNotice, "TypePos: %02X %02X %02X %02X %02X %02X %02X %02X %02X", TypePos[0], TypePos[1], TypePos[2], TypePos[3], TypePos[4], TypePos[5], TypePos[6], TypePos[7], TypePos[8]);
 
     X86_CONTEXT context;
     context.Edi = (uint32_t*)&ucontext->uc_mcontext.gregs[REG_EDI];
@@ -668,14 +711,14 @@ void CMipsMemoryVM::segv_handler(int signal, siginfo_t *siginfo, void *sigcontex
     context.Esp = (uint32_t*)&ucontext->uc_mcontext.gregs[REG_ESP];
     context.Ebp = (uint32_t*)&ucontext->uc_mcontext.gregs[REG_EBP];
 
-    if (FilterX86Exception(MemAddress,context))
+    if (FilterX86Exception(MemAddress, context))
     {
         WriteTrace(TraceExceptionHandler, TraceNotice, "Success!");
         WriteTrace(TraceExceptionHandler, TraceNotice, "REG_EIP  = %X", ucontext->uc_mcontext.gregs[REG_EIP]);
         return;
     }
 #elif defined(__arm__)
-    if (FilterArmException(MemAddress,ucontext->uc_mcontext))
+    if (FilterArmException(MemAddress, ucontext->uc_mcontext))
     {
         WriteTrace(TraceExceptionHandler, TraceNotice, "Success!");
         return;
