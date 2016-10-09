@@ -2942,23 +2942,21 @@ void CArmRecompilerOps::SPECIAL_XOR()
     {
         if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            CArmRecompilerOps::UnknownOpcode();
-            /*if (IsMapped(m_Opcode.rd))
+            if (IsMapped(m_Opcode.rd))
             {
-            UnMap_GPR(m_Opcode.rd, false);
+                UnMap_GPR(m_Opcode.rd, false);
             }
 
             if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs))
             {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            CX86RecompilerOps::UnknownOpcode();
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+                CArmRecompilerOps::UnknownOpcode();
             }
             else
             {
-            m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
-            m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, GetMipsRegLo(m_Opcode.rt) ^ GetMipsRegLo(m_Opcode.rs));
-            }*/
+                m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+                m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, GetMipsRegLo(m_Opcode.rt) ^ GetMipsRegLo(m_Opcode.rs));
+            }
         }
         else if (IsMapped(m_Opcode.rt) && IsMapped(m_Opcode.rs))
         {
