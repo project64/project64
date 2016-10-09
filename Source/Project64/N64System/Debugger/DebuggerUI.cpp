@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                       *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -9,9 +9,18 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "DebuggerUI.h"
+#include "Project64/N64System/Debugger/DebuggerUI.h"
+
+#include "Project64/N64System/Debugger/Debugger-MemoryDump.h"
+#include "Project64/N64System/Debugger/Debugger-MemorySearch.h"
+#include "Project64/N64System/Debugger/Debugger-TLB.h"
+#include "Project64/N64System/Debugger/Debugger-ViewMemory.h"
+
+// --------------------------------------------------------------------------
 
 CPj64Module _Module;
+
+// --------------------------------------------------------------------------
 
 CDebuggerUI::CDebuggerUI () :
     m_MemoryDump(NULL),

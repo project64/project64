@@ -10,6 +10,14 @@
 ****************************************************************************/
 #pragma once
 
+#include "Project64/N64System/Debugger/DebugDialog.h"
+
+// ---------------------------------------------------------------------------
+
+class CDebuggerUI;
+
+// ---------------------------------------------------------------------------
+
 class CDebugMemoryView :
     public CDebugDialog < CDebugMemoryView >
 {

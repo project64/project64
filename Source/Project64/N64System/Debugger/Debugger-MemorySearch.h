@@ -10,6 +10,8 @@
 ****************************************************************************/
 #pragma once
 
+#include "Project64/N64System/Debugger/DebugDialog.h"
+
 class CDebugMemorySearch :
     public CDebugDialog < CDebugMemorySearch >
 {
