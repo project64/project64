@@ -12,6 +12,7 @@
 #include "N64DiskClass.h"
 #include "SystemGlobals.h"
 #include <Common/Platform.h>
+#include <Common/SmartPointer.h>
 #include <Common/MemoryManagement.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <memory>
@@ -122,7 +123,7 @@ bool CN64Disk::IsValidDiskImage(uint8_t Test[4])
 bool CN64Disk::AllocateDiskImage(uint32_t DiskFileSize)
 {
     WriteTrace(TraceN64System, TraceDebug, "Allocating memory for disk");
-    std::auto_ptr<uint8_t> ImageBase(new uint8_t[DiskFileSize + 0x1000]);
+    AUTO_PTR<uint8_t> ImageBase(new uint8_t[DiskFileSize + 0x1000]);
     if (ImageBase.get() == NULL)
     {
         SetError(MSG_MEM_ALLOC_ERROR);
@@ -493,7 +494,7 @@ void CN64Disk::ConvertDiskFormatBack()
 
     //SDK DISK RAM
     WriteTrace(TraceN64System, TraceDebug, "Allocating memory for disk SDK format");
-    std::auto_ptr<uint8_t> ImageBase(new uint8_t[SDKFormatSize + 0x1000]);
+    AUTO_PTR<uint8_t> ImageBase(new uint8_t[SDKFormatSize + 0x1000]);
     if (ImageBase.get() == NULL)
     {
         SetError(MSG_MEM_ALLOC_ERROR);
@@ -515,7 +516,7 @@ void CN64Disk::ConvertDiskFormatBack()
     memcpy(&SystemData, m_DiskImage, 0xE8);
 
     disktype = SystemData[5] & 0xF;
-    
+
     //Prepare Input Offsets
     for (zone = 1; zone < 16; zone++)
     {
@@ -528,7 +529,7 @@ void CN64Disk::ConvertDiskFormatBack()
     {
         OutStart[zone] = OutStart[zone - 1] + ZONESIZE(zone - 1);
     }
-    
+
     //Copy Head 0
     for (zone = 0; zone < 8; zone++)
     {
@@ -567,7 +568,7 @@ void CN64Disk::ConvertDiskFormatBack()
             }
         }
     }
-    
+
     //Copy Head 1
     for (zone = 8; zone < 16; zone++)
     {
@@ -606,13 +607,13 @@ void CN64Disk::ConvertDiskFormatBack()
             }
         }
     }
-    
+
     if (!m_DiskFile.Write(s_DiskImage, SDKFormatSize))
     {
         m_DiskFile.Close();
         WriteTrace(TraceN64System, TraceError, "Failed to write file");
     }
-    
+
     WriteTrace(TraceN64System, TraceDebug, "Unallocating disk SDK format memory");
     delete[] s_DiskImageBase;
     s_DiskImageBase = NULL;

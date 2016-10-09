@@ -47,6 +47,7 @@
 #include <Common/path.h>
 #include <png/png.h>
 #include <memory>
+#include <Common/SmartPointer.h>
 
 #include "Config.h"
 #include "Util.h"
@@ -281,7 +282,7 @@ void ConfigWrapper()
 #else
         g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
 #endif
-    );
+        );
 }
 
 void UseUnregisteredSetting(int /*SettingID*/)
@@ -1093,7 +1094,6 @@ void ReleaseGfx()
     rdp.window_changed = TRUE;
 }
 
-
 #ifdef _WIN32
 CriticalSection * g_ProcessDListCS = NULL;
 
@@ -1417,7 +1417,7 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
 #else
         g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
 #endif
-    );
+        );
 
     grGlideInit();
     grSstSelect(0);
@@ -2127,7 +2127,7 @@ void newSwapBuffers()
         info.size = sizeof(GrLfbInfo_t);
         if (grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_565, GR_ORIGIN_UPPER_LEFT, FXFALSE, &info))
         {
-            std::auto_ptr<uint8_t> ssimg_buffer(new uint8_t[image_width * image_height * 3]);
+            AUTO_PTR<uint8_t> ssimg_buffer(new uint8_t[image_width * image_height * 3]);
             uint8_t * ssimg = ssimg_buffer.get();
             int sspos = 0;
             uint32_t offset_src = info.strideInBytes * offset_y;

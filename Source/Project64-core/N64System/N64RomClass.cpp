@@ -15,6 +15,7 @@
 #include <Common/md5.h>
 #include <Common/Platform.h>
 #include <Common/MemoryManagement.h>
+#include <Common/SmartPointer.h>
 #include <memory>
 
 #ifdef _WIN32
@@ -38,7 +39,7 @@ CN64Rom::~CN64Rom()
 bool CN64Rom::AllocateRomImage(uint32_t RomFileSize)
 {
     WriteTrace(TraceN64System, TraceDebug, "Allocating memory for rom");
-    std::auto_ptr<uint8_t> ImageBase(new uint8_t[RomFileSize + 0x1000]);
+    AUTO_PTR<uint8_t> ImageBase(new uint8_t[RomFileSize + 0x1000]);
     if (ImageBase.get() == NULL)
     {
         SetError(MSG_MEM_ALLOC_ERROR);
