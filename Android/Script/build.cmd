@@ -6,6 +6,9 @@ cd /d %~dp0..\..\
 set base_dir=%cd%
 cd /d %origdir%
 
+set VersionName=
+if not "%1" == "" set VersionName= %1
+
 set NDK-BUILDER=
 if exist "C:\Android\android-ndk-r11c\ndk-build.cmd" ( set NDK-BUILDER="C:\Android\android-ndk-r11c\ndk-build.cmd" )
 if %NDK-BUILDER% == "" ( 
@@ -40,10 +43,10 @@ IF NOT DEFINED project64_cert_keystore ( exit /B 0 )
 IF NOT DEFINED project64_cert_password ( exit /B 0 )
 
 :: Sign the APK
-jarsigner -verbose -tsa http://timestamp.digicert.com -keystore "%project64_cert_keystore%" -storepass %project64_cert_password% -keypass %project64_cert_password% "%base_dir%\Android\bin\Project64-release-unsigned.apk" project64
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -tsa http://timestamp.digicert.com -keystore "%project64_cert_keystore%" -storepass %project64_cert_password% -keypass %project64_cert_password% "%base_dir%\Android\bin\Project64-release-unsigned.apk" project64
 
 :: Align the APK
-zipalign -v 4 "%base_dir%\Android\bin\Project64-release-unsigned.apk" "%base_dir%\Package\Project64.apk"
+zipalign -v 4 "%base_dir%\Android\bin\Project64-release-unsigned.apk" "%base_dir%\Package\Project64%VersionName%.apk"
 
 echo Build ok
 goto :end

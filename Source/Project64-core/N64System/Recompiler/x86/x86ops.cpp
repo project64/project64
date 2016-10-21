@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+
+#if defined(__i386__) || defined(_M_IX86)
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Recompiler/x86/x86ops.h>
@@ -2338,6 +2340,10 @@ void CX86Ops::OrConstToVariable(uint32_t Const, void * Variable, const char * Va
 
 void CX86Ops::OrConstToX86Reg(uint32_t Const, x86Reg reg)
 {
+    if (Const == 0)
+    {
+        return;
+    }
     CPU_Message("      or %s, %Xh", x86_Name(reg), Const);
     if ((Const & 0xFFFFFF80) != 0 && (Const & 0xFFFFFF80) != 0xFFFFFF80)
     {
@@ -4325,3 +4331,5 @@ void CX86Ops::AddCode32(uint32_t value)
     (*((uint32_t *)(*g_RecompPos))=(uint32_t)(value));
     *g_RecompPos += 4;
 }
+
+#endif

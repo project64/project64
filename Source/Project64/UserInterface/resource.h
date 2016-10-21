@@ -38,6 +38,8 @@
 #define IDD_Settings_General            144
 #define IDD_Settings_Accelerator        145
 #define IDD_Settings_Config             149
+#define IDD_Support_Project64           150
+#define IDD_Support_EnterCode           151
 #define IDR_POPUP                       155
 #define IDR_CHEAT_MENU                  160
 #define IDD_Lang_Select                 161
@@ -238,10 +240,14 @@
 #define IDC_BORDER                      1099
 #define IDC_CONT_NAME                   1100
 #define IDC_COUNTPERBYTE                1100
+#define ID_SUPPORT_PJ64                 1100
 #define IDC_DIR_FRAME1                  1101
 #define IDC_ROM_FASTSP                  1101
+#define IDC_INFO                        1101
 #define IDC_AUDIO_SIGNAL                1102
 #define IDC_DIR_TEXTURE_FRAME           1102
+#define IDC_ENTER_CODE                  1102
+#define IDC_DESCRIPTION                 1102
 #define IDC_DIR_FRAME3                  1103
 #define IDC_DIR_FRAME4                  1104
 #define IDC_DIR_FRAME5                  1105
@@ -348,9 +354,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        150
+#define _APS_NEXT_RESOURCE_VALUE        152
 #define _APS_NEXT_COMMAND_VALUE         40009
-#define _APS_NEXT_CONTROL_VALUE         1100
+#define _APS_NEXT_CONTROL_VALUE         1104
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

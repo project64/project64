@@ -22,6 +22,10 @@ CThread::CThread(CTHREAD_START_ROUTINE lpStartAddress) :
 CThread::~CThread()
 {
     WriteTrace(TraceThread, TraceDebug, "Start");
+    if (CThread::GetCurrentThreadId() == m_threadID)
+    {
+        WriteTrace(TraceThread, TraceError, "Deleting from thread!!!");
+    }
     if (CThread::GetCurrentThreadId() != m_threadID && isRunning())
     {
         Terminate();
@@ -119,7 +123,7 @@ void CThread::Terminate(void)
         WriteTrace(TraceThread, TraceDebug, "Terminating thread");
         TerminateThread(m_thread, 0);
 #else
-    	WriteTrace(TraceThread, TraceError, "Need to fix");
+        WriteTrace(TraceThread, TraceError, "Need to fix");
 #endif
     }
     WriteTrace(TraceThread, TraceDebug, "Done");

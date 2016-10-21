@@ -9,7 +9,7 @@ LOCAL_MODULE := Project64-bridge
 LOCAL_STATIC_LIBRARIES := common  \
       Project64-core              \
 
-LOCAL_C_INCLUDES := $(SDL_INCLUDES)
+LOCAL_C_INCLUDES :=
 
 LOCAL_SRC_FILES :=                   \
     $(SRCDIR)/JavaBridge.cpp         \
@@ -17,6 +17,7 @@ LOCAL_SRC_FILES :=                   \
     $(SRCDIR)/jniBridge.cpp          \
     $(SRCDIR)/jniBridgeSettings.cpp  \
     $(SRCDIR)/NotificationClass.cpp  \
+    $(SRCDIR)/SyncBridge.cpp         \
     $(SRCDIR)/UISettings.cpp         \
 
 LOCAL_CFLAGS :=         \
@@ -26,7 +27,13 @@ LOCAL_CFLAGS :=         \
 LOCAL_CPPFLAGS := $(COMMON_CPPFLAGS)
 
 LOCAL_LDLIBS :=         \
-    -lGLESv2            \
     -llog               \
+
+ifeq ($(TARGET_ARCH_ABI), armeabi-v7a)
+    # Use for ARM7a:
+    LOCAL_CFLAGS += -mfloat-abi=softfp
+    LOCAL_CFLAGS += -mfpu=vfp
+
+endif
 
 include $(BUILD_SHARED_LIBRARY)

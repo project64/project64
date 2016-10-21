@@ -22,8 +22,6 @@
 #include <stdio.h>
 #include <Common/MemoryManagement.h>
 
-
-
 uint8_t * CMipsMemoryVM::m_Reserve1 = NULL;
 uint8_t * CMipsMemoryVM::m_Reserve2 = NULL;
 uint32_t CMipsMemoryVM::m_MemLookupAddress = 0;
@@ -34,25 +32,25 @@ uint32_t CMipsMemoryVM::RegModValue;
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
 CMipsMemoryVM::CMipsMemoryVM(bool SavesReadOnly) :
-CPifRam(SavesReadOnly),
-CFlashram(SavesReadOnly),
-CSram(SavesReadOnly),
-CDMA(*this, *this),
-m_RomMapped(false),
-m_Rom(NULL),
-m_RomSize(0),
-m_RomWrittenTo(false),
-m_RomWroteValue(0),
-m_HalfLine(0),
-m_HalfLineCheck(false),
-m_FieldSerration(0),
-m_TLB_ReadMap(NULL),
-m_TLB_WriteMap(NULL)
+    CPifRam(SavesReadOnly),
+    CFlashram(SavesReadOnly),
+    CSram(SavesReadOnly),
+    CDMA(*this, *this),
+    m_RomMapped(false),
+    m_Rom(NULL),
+    m_RomSize(0),
+    m_RomWrittenTo(false),
+    m_RomWroteValue(0),
+    m_HalfLine(0),
+    m_HalfLineCheck(false),
+    m_FieldSerration(0),
+    m_TLB_ReadMap(NULL),
+    m_TLB_WriteMap(NULL),
+    m_RDRAM(NULL),
+    m_DMEM(NULL),
+    m_IMEM(NULL)
 {
     g_Settings->RegisterChangeCB(Game_RDRamSize, this, (CSettings::SettingChangedFunc)RdramChanged);
-    m_RDRAM = NULL;
-    m_DMEM = NULL;
-    m_IMEM = NULL;
 }
 
 uint32_t swap32by8(uint32_t word)
@@ -139,11 +137,13 @@ bool CMipsMemoryVM::Initialize()
 
     if (m_Reserve1)
     {
-        m_RDRAM = m_Reserve1; m_Reserve1 = NULL;
+        m_RDRAM = m_Reserve1;
+        m_Reserve1 = NULL;
     }
     if (m_RDRAM == NULL && m_Reserve2)
     {
-        m_RDRAM = m_Reserve2; m_Reserve2 = NULL;
+        m_RDRAM = m_Reserve2;
+        m_Reserve2 = NULL;
     }
     if (m_RDRAM == NULL)
     {
@@ -221,7 +221,7 @@ bool CMipsMemoryVM::Initialize()
             m_DDRomSize = g_DDRom->GetRomSize();
         }
     }
-    
+
     CPifRam::Reset();
 
     m_TLB_ReadMap = new size_t[0x100000];
@@ -592,49 +592,6 @@ bool CMipsMemoryVM::TranslateVaddr(uint32_t VAddr, uint32_t &PAddr) const
     return true;
 }
 
-void CMipsMemoryVM::ResetMemoryStack()
-{
-    x86Reg Reg, TempReg;
-
-    int32_t MipsReg = 29;
-    CPU_Message("    ResetMemoryStack");
-    Reg = Get_MemoryStack();
-    if (Reg == x86_Unknown)
-    {
-        Reg = Map_TempReg(x86_Any, MipsReg, false);
-    }
-    else
-    {
-        if (IsUnknown(MipsReg))
-        {
-            MoveVariableToX86reg(&_GPR[MipsReg].UW[0], CRegName::GPR_Lo[MipsReg], Reg);
-        }
-        else if (IsMapped(MipsReg))
-        {
-            MoveX86RegToX86Reg(GetMipsRegMapLo(MipsReg), Reg);
-        }
-        else
-        {
-            MoveConstToX86reg(GetMipsRegLo(MipsReg), Reg);
-        }
-    }
-
-    if (g_System->bUseTlb())
-    {
-        TempReg = Map_TempReg(x86_Any, -1, false);
-        MoveX86RegToX86Reg(Reg, TempReg);
-        ShiftRightUnsignImmed(TempReg, 12);
-        MoveVariableDispToX86Reg(m_TLB_ReadMap, "m_TLB_ReadMap", TempReg, TempReg, 4);
-        AddX86RegToX86Reg(Reg, TempReg);
-    }
-    else
-    {
-        AndConstToX86Reg(Reg, 0x1FFFFFFF);
-        AddConstToX86Reg(Reg, (uint32_t)m_RDRAM);
-    }
-    MoveX86regToVariable(Reg, &(g_Recompiler->MemoryStackPos()), "MemoryStack");
-}
-
 bool CMipsMemoryVM::LB_NonMemory(uint32_t PAddr, uint32_t* Value, bool /*SignExtend*/)
 {
     if (PAddr < 0x800000)
@@ -748,10 +705,6 @@ bool CMipsMemoryVM::LW_NonMemory(uint32_t PAddr, uint32_t* Value)
         case 0x1FC00000: Load32PifRam(); break;
         case 0x1FF00000: Load32CartridgeDomain1Address3(); break;
         default:
-            if (bHaveDebugger())
-            {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-            }
             m_MemLookupValue.UW[0] = PAddr & 0xFFFF;
             m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
         }
@@ -1420,6 +1373,10 @@ void CMipsMemoryVM::Load32PeripheralInterface(void)
 {
     switch (m_MemLookupAddress & 0x1FFFFFFF)
     {
+    case 0x04600000: m_MemLookupValue.UW[0] = g_Reg->PI_DRAM_ADDR_REG; break;
+    case 0x04600004: m_MemLookupValue.UW[0] = g_Reg->PI_CART_ADDR_REG; break;
+    case 0x04600008: m_MemLookupValue.UW[0] = g_Reg->PI_RD_LEN_REG; break;
+    case 0x0460000C: m_MemLookupValue.UW[0] = g_Reg->PI_WR_LEN_REG; break;
     case 0x04600010: m_MemLookupValue.UW[0] = g_Reg->PI_STATUS_REG; break;
     case 0x04600014: m_MemLookupValue.UW[0] = g_Reg->PI_DOMAIN1_REG; break;
     case 0x04600018: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM1_PWD_REG; break;
@@ -2224,10 +2181,10 @@ void CMipsMemoryVM::Write32CartridgeDomain2Address2(void)
     }
     /*if ((m_MemLookupAddress & 0x1FFFFFFF) != 0x08010000)
     {
-        if (bHaveDebugger())
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
+    if (bHaveDebugger())
+    {
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
     }*/
     if (g_System->m_SaveUsing == SaveChip_Auto)
     {

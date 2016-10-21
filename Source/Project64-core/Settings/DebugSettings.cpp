@@ -18,6 +18,7 @@ bool CDebugSettings::m_bLogX86Code = false;
 bool CDebugSettings::m_bShowTLBMisses = false;
 bool CDebugSettings::m_bShowDivByZero = false;
 bool CDebugSettings::m_Registered = false;
+bool CDebugSettings::m_RecordExecutionTimes = false;
 
 CDebugSettings::CDebugSettings()
 {
@@ -29,6 +30,7 @@ CDebugSettings::CDebugSettings()
         g_Settings->RegisterChangeCB(Debugger_GenerateLogFiles, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_ShowTLBMisses, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_ShowDivByZero, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->RegisterChangeCB(Debugger_RecordExecutionTimes, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
 
         RefreshSettings();
     }
@@ -43,6 +45,7 @@ CDebugSettings::~CDebugSettings()
         g_Settings->UnregisterChangeCB(Debugger_GenerateLogFiles, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_ShowTLBMisses, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_ShowDivByZero, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->UnregisterChangeCB(Debugger_RecordExecutionTimes, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
     }
 }
 
@@ -52,4 +55,5 @@ void CDebugSettings::RefreshSettings()
     m_bLogX86Code = m_bHaveDebugger && g_Settings->LoadBool(Debugger_GenerateLogFiles);
     m_bShowTLBMisses = m_bHaveDebugger && g_Settings->LoadBool(Debugger_ShowTLBMisses);
     m_bShowDivByZero = m_bHaveDebugger && g_Settings->LoadBool(Debugger_ShowDivByZero);
+    m_RecordExecutionTimes = g_Settings->LoadBool(Debugger_RecordExecutionTimes);
 }

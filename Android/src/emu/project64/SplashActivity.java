@@ -20,11 +20,11 @@ import emu.project64.jni.UISettingID;
 import emu.project64.task.ExtractAssetsTask;
 import emu.project64.task.ExtractAssetsTask.ExtractAssetsListener;
 import emu.project64.task.ExtractAssetsTask.Failure;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.Window;
@@ -35,16 +35,16 @@ import android.widget.TextView;
  * The main activity that presents the splash screen, extracts the assets if necessary, and launches
  * the main menu activity.
  */
-public class SplashActivity extends AppCompatActivity implements ExtractAssetsListener
+public class SplashActivity extends Activity implements ExtractAssetsListener
 {
     /**
      * Asset version number, used to determine stale assets. Increment this number every time the
      * assets are updated on disk.
      */
-    private static final int ASSET_VERSION = 1;
+    private static final int ASSET_VERSION = 2;
     
     /** The total number of assets to be extracted (for computing progress %). */
-    private static final int TOTAL_ASSETS = 111;
+    private static final int TOTAL_ASSETS = 89;
     
     /** The minimum duration that the splash screen is shown, in milliseconds. */
     private static final int SPLASH_DELAY = 2000;
@@ -75,7 +75,7 @@ public class SplashActivity extends AppCompatActivity implements ExtractAssetsLi
 
         // Lay out the content
         setContentView( R.layout.splash_activity );
-        ((TextView) findViewById( R.id.versionText )).setText("v1.0");
+        ((TextView) findViewById( R.id.versionText )).setText(NativeExports.appVersion());
         mTextView = (TextView) findViewById( R.id.mainText );
         
         if (!mInit)
@@ -110,6 +110,12 @@ public class SplashActivity extends AppCompatActivity implements ExtractAssetsLi
         moveTaskToBack(true);
     }
     
+    static public void Reset ()
+    {
+    	mInit = false;
+    	mAppInit = false;
+    }
+    
     private void InitProject64()
     {
         String LibsDir = this.getFilesDir().getParentFile().getAbsolutePath() + "/lib/";
@@ -117,9 +123,12 @@ public class SplashActivity extends AppCompatActivity implements ExtractAssetsLi
         {
             LibsDir = this.getApplicationInfo().nativeLibraryDir;            
         }
+        String SyncDir = this.getFilesDir().getParentFile().getAbsolutePath() + "/lib-sync/";
         NativeExports.appInit(AndroidDevice.PACKAGE_DIRECTORY);
         NativeExports.SettingsSaveString(SettingsID.Directory_PluginSelected.getValue(), LibsDir);
         NativeExports.SettingsSaveBool(SettingsID.Directory_PluginUseSelected.getValue(), true);
+        NativeExports.SettingsSaveString(SettingsID.Directory_PluginSyncSelected.getValue(), SyncDir);
+        NativeExports.SettingsSaveBool(SettingsID.Directory_PluginSyncUseSelected.getValue(), true);
         String SaveDir = AndroidDevice.EXTERNAL_PUBLIC_DIRECTORY + "/Project64/Save";
         if (!NativeExports.IsSettingSet(SettingsID.Directory_NativeSave.getValue()))
         {

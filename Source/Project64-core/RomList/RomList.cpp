@@ -24,13 +24,13 @@ static const char* ROM_extensions[] =
 #endif
     "zip",
     "v64",
-    "z64", 
-    "n64", 
-    "rom", 
-    "jap", 
-    "pal", 
-    "usa", 
-    "eur", 
+    "z64",
+    "n64",
+    "rom",
+    "jap",
+    "pal",
+    "usa",
+    "eur",
     "bin",
 };
 
@@ -125,7 +125,7 @@ void CRomList::RefreshRomListThread(void)
 
 void CRomList::AddRomToList(const char * RomLocation)
 {
-    WriteTrace(TraceRomList, TraceVerbose, "Start (RomLocation: \"%s\")",RomLocation);
+    WriteTrace(TraceRomList, TraceVerbose, "Start (RomLocation: \"%s\")", RomLocation);
     ROM_INFO RomInfo = { 0 };
 
     strncpy(RomInfo.szFullFileName, RomLocation, (sizeof(RomInfo.szFullFileName) / sizeof(RomInfo.szFullFileName[0])) - 1);
@@ -144,7 +144,7 @@ void CRomList::AddRomToList(const char * RomLocation)
 
 void CRomList::FillRomList(strlist & FileList, const char * Directory)
 {
-    WriteTrace(TraceRomList, TraceDebug, "Start (m_GameDir = %s, Directory: %s)",(const char *)m_GameDir,Directory);
+    WriteTrace(TraceRomList, TraceDebug, "Start (m_GameDir = %s, Directory: %s)", (const char *)m_GameDir, Directory);
     CPath SearchPath((const char *)m_GameDir, "*");
     SearchPath.AppendDirectory(Directory);
 
@@ -152,7 +152,7 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
     if (!SearchPath.FindFirst(CPath::FIND_ATTRIBUTE_ALLFILES))
     {
         WriteTrace(TraceRomList, TraceVerbose, "No files found");
-        WriteTrace(TraceRomList, TraceDebug, "Done (Directory: %s)",Directory);
+        WriteTrace(TraceRomList, TraceDebug, "Done (Directory: %s)", Directory);
         return;
     }
 
@@ -162,7 +162,7 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
         if (m_StopRefresh)
         {
             WriteTrace(TraceRomList, TraceVerbose, "stop refresh set, stopping");
-            break; 
+            break;
         }
 
         if (SearchPath.IsDirectory())
@@ -323,7 +323,7 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
 #ifdef _WIN32
     m_ZipIniFile->FlushChanges();
 #endif
-    WriteTrace(TraceRomList, TraceDebug, "Done (Directory: %s)",Directory);
+    WriteTrace(TraceRomList, TraceDebug, "Done (Directory: %s)", Directory);
 }
 
 void CRomList::NotificationCB(const char * Status, CRomList * /*_this*/)
@@ -405,16 +405,16 @@ bool CRomList::LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_
             return false;
         }
         File.SeekToBegin();
-        if (!File.Read(Test,sizeof(Test)))
+        if (!File.Read(Test, sizeof(Test)))
         {
             return false;
         }
         if (!CN64Rom::IsValidRomImage(Test))
-        { 
-            return false; 
+        {
+            return false;
         }
         File.SeekToBegin();
-        if (!File.Read(Data,DataLen))
+        if (!File.Read(Data, DataLen))
         {
             return false;
         }
@@ -551,6 +551,7 @@ void CRomList::ByteSwapRomData(uint8_t * Data, int32_t DataLen)
 
 void CRomList::LoadRomList(void)
 {
+    WriteTrace(TraceRomList, TraceVerbose, "Start");
     CPath FileName(g_Settings->LoadStringVal(RomList_RomListCache));
     CFile file(FileName, CFileBase::modeRead | CFileBase::modeNoTruncate);
 
@@ -593,6 +594,7 @@ void CRomList::LoadRomList(void)
         RomAddedToList(ListPos);
     }
     RomListLoaded();
+    WriteTrace(TraceRomList, TraceVerbose, "Done");
 }
 
 /*

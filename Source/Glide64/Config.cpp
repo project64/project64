@@ -328,6 +328,7 @@ public:
     LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
         TTInit();
+		TTSize(400);
         m_WindowRes.Attach(GetDlgItem(IDC_CMB_WINDOW_RES));
         m_WindowRes.SetItemData(m_WindowRes.AddString("320x200"), 0);
         m_WindowRes.SetItemData(m_WindowRes.AddString("320x240"), 1);
@@ -354,11 +355,11 @@ public:
         m_WindowRes.SetItemData(m_WindowRes.AddString("2048x1536"), 22);
         m_WindowRes.SetItemData(m_WindowRes.AddString("2048x2048"), 23);
         SetComboBoxIndex(m_WindowRes, g_settings->res_data);
-        TTSetTxt(IDC_CMB_WINDOW_RES, "Resolution\nThis option selects the windowed resolution\n.\n[Recommended: 640x480, 800x600, 1024x768]");
+        TTSetTxt(IDC_CMB_WINDOW_RES, "Resolution:\n\nThis option selects the windowed resolution.\n\n[Recommended: 640x480, 800x600, 1024x768]");
 
         m_cbxVSync.Attach(GetDlgItem(IDC_CHK_VERTICAL_SYNC));
         m_cbxVSync.SetCheck(g_settings->vsync ? BST_CHECKED : BST_UNCHECKED);
-        TTSetTxt(IDC_CHK_VERTICAL_SYNC, "Vertical sync\nThis option will enable the vertical sync, which will prevent tearing.\nNote: this option will ONLY have effect if vsync is set to \"Software Controlled\".\n");
+        TTSetTxt(IDC_CHK_VERTICAL_SYNC, "Vertical sync:\n\nThis option will enable the vertical sync, which will prevent tearing.\nNote: this option will ONLY have effect if vsync is set to \"Software Controlled\".");
 
         m_cmbScreenShotFormat.Attach(GetDlgItem(IDC_CMB_SCREEN_SHOT_FORMAT));
         for (int f = 0; f < NumOfFormats; f++)
@@ -373,27 +374,27 @@ public:
 
         m_cbxFPS.Attach(GetDlgItem(IDC_CHK_FPS_COUNTER));
         m_cbxFPS.SetCheck((g_settings->show_fps & 1) > 0 ? BST_CHECKED : BST_UNCHECKED);
-        TTSetTxt(IDC_CHK_FPS_COUNTER, "FPS counter\nWhen this option is checked, a FPS (frames per second) counter will be shown\nin the lower left corner of the screen.\n[Recommended: your preference]");
+        TTSetTxt(IDC_CHK_FPS_COUNTER, "FPS counter:\n\nWhen this option is checked, a FPS (frames per second) counter will be shown in the lower left corner of the screen.\n\n[Recommended: your preference]");
 
         m_cbxVIS.Attach(GetDlgItem(IDC_CHK_VIS_COUNTER));
         m_cbxVIS.SetCheck((g_settings->show_fps & 2) > 0 ? BST_CHECKED : BST_UNCHECKED);
-        TTSetTxt(IDC_CHK_VIS_COUNTER, "VI/s counter\nWhen this option is checked, a VI/s (vertical interrupts per second) counter\nwill be shown in the lower left corner of the screen.  This is like the FPS\ncounter but will be consistent at 60 VI/s for full speed on NTSC (U) games and\n50 VI/s for full speed on PAL (E) ones.\n[Recommended: your preference]");
+        TTSetTxt(IDC_CHK_VIS_COUNTER, "VI/s counter:\n\nWhen this option is checked, a VI/s (vertical interrupts per second) counter will be shown in the lower left corner of the screen.\nThis is like the FPS counter but will be consistent at 60 VI/s for full speed on NTSC (U) games and 50 VI/s for full speed on PAL (E) ones.\n\n[Recommended: your preference]");
 
         m_cbxPercent.Attach(GetDlgItem(IDC_CHK_PERCENT_COUNTER));
         m_cbxPercent.SetCheck((g_settings->show_fps & 4) > 0 ? BST_CHECKED : BST_UNCHECKED);
-        TTSetTxt(IDC_CHK_PERCENT_COUNTER, "% speed\nThis displays a percentage of the actual N64 speed in the lower\nleft corner of the screen.\n[Recommended: your preference]");
+        TTSetTxt(IDC_CHK_PERCENT_COUNTER, "% speed:\n\nThis displays a percentage of the actual N64 speed in the lower left corner of the screen.\n\n[Recommended: your preference]");
 
         m_cbxTextTransparent.Attach(GetDlgItem(IDC_CHK_TRANSPARENT));
         m_cbxTextTransparent.SetCheck((g_settings->show_fps & 8) > 0 ? BST_CHECKED : BST_UNCHECKED);
-        TTSetTxt(IDC_CHK_TRANSPARENT, "Transparent text background\nIf this is checked, all on-screen messages will have a transparent background.  Otherwise, it will have a solid black background.\n[Recommended: your preference]");
+        TTSetTxt(IDC_CHK_TRANSPARENT, "Transparent text background:\n\nIf this is checked, all on-screen messages will have a transparent background.\nOtherwise, it will have a solid black background.\n\n[Recommended: your preference]");
 
         m_cbxClockEnabled.Attach(GetDlgItem(IDC_CHK_CLOCK_ENABLED));
         m_cbxClockEnabled.SetCheck(g_settings->clock > 0 ? BST_CHECKED : BST_UNCHECKED);
-        TTSetTxt(IDC_CHK_CLOCK_ENABLED, "Clock enabled\nThis option will put a clock in the lower right corner of the screen, showing the current time.\n[Recommended: your preference]");
+        TTSetTxt(IDC_CHK_CLOCK_ENABLED, "Clock enabled:\n\nThis option will put a clock in the lower right corner of the screen, showing the current time.\n\n[Recommended: your preference]");
 
         m_cbxClock24.Attach(GetDlgItem(IDC_CHK_CLOCK_24));
         m_cbxClock24.SetCheck(g_settings->clock_24_hr > 0 ? BST_CHECKED : BST_UNCHECKED);
-        TTSetTxt(IDC_CHK_CLOCK_24, "Display hours as 24-hour clock.\n[Recommended: your preference]");
+        TTSetTxt(IDC_CHK_CLOCK_24, "Display hours as 24-hour clock.\n\n[Recommended: your preference]");
 
         m_cmbFSResolution.Attach(GetDlgItem(IDC_CMB_FS_RESOLUTION));
         int32_t size = 0;
@@ -406,18 +407,18 @@ public:
             }
             m_cmbFSResolution.SetCurSel(g_settings->wrpResolution < size ? g_settings->wrpResolution : 0);
         }
-        TTSetTxt(IDC_CMB_FS_RESOLUTION, "Full screen resolution : \nThis sets the full screen resolution.\nAll the resolutions that your video card / monitor support should be displayed.\n[Recommended:native(max) resolution of your monitor - unless performance becomes an issue]");
+        TTSetTxt(IDC_CMB_FS_RESOLUTION, "Full screen resolution:\n\nThis sets the full screen resolution.\nAll the resolutions that your video card / monitor support should be displayed.\n\n[Recommended:native(max) resolution of your monitor - unless performance becomes an issue]");
 
         m_cbxAnisotropic.Attach(GetDlgItem(IDC_CBXANISOTROPIC));
         m_cbxAnisotropic.SetCheck(g_settings->wrpAnisotropic > 0 ? BST_CHECKED : BST_UNCHECKED);
-        TTSetTxt(IDC_CBXANISOTROPIC, "Anisotropic filtering:\nThis filter sharpens and brings out the details of textures that recede into the distance.\nWhen activated, it will use the max anisotropy your video card supports.\nHowever, this will override native way of texture filtering and may cause visual artifacts in some games.\n[Recommended: your preference, game dependant]");
+        TTSetTxt(IDC_CBXANISOTROPIC, "Anisotropic filtering:\n\nThis filter sharpens and brings out the details of textures that recede into the distance.\nWhen activated, it will use the max anisotropy your video card supports.\nHowever, this will override native way of texture filtering and may cause visual artifacts in some games.\n\n[Recommended: your preference, game dependant]");
 
         m_cbxFBO.Attach(GetDlgItem(IDC_CHK_USE_FRAME_BUFFER_OBJECT));
-        TTSetTxt(IDC_CHK_USE_FRAME_BUFFER_OBJECT, "Use frame buffer objects:\nChanges the way FB effects are rendered - with or without usage of the OpenGL Frame Buffer Objects (FBO) extension.\nThe choice depends on game and your video card. FBO off is good for NVIDIA cards, while for ATI cards, it's usually best that FBOs are turned on.\nAlso, some FB effects works only with one of the methods, no matter, which card you have.\nOn the whole, with FBO off, compatibility/ accuracy is a bit better (which is the case for Resident Evil 2).\nHowever, with FBO on with some systems, it can actually be a bit faster in cases.\n[Recommended: video card and game dependant]");
+        TTSetTxt(IDC_CHK_USE_FRAME_BUFFER_OBJECT, "Use frame buffer objects:\n\nChanges the way FB effects are rendered - with or without usage of the OpenGL Frame Buffer Objects (FBO) extension.\nThe choice depends on game and your video card. FBO off is good for NVIDIA cards, while for ATI cards, it's usually best that FBOs are turned on.\nAlso, some FB effects works only with one of the methods, no matter, which card you have.\nOn the whole, with FBO off, compatibility/ accuracy is a bit better (which is the case for Resident Evil 2).\nHowever, with FBO on with some systems, it can actually be a bit faster in cases.\n\n[Recommended: video card and game dependant]");
         m_cbxFBO.SetCheck(g_settings->wrpFBO > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxVRAM.Attach(GetDlgItem(IDC_CHK_AUTODETECT_VRAM));
-        TTSetTxt(IDC_CHK_AUTODETECT_VRAM, "Autodetect VRAM Size:\nSince OpenGL cannot do this reliably at the moment, the option to set this manually is available.\nIf checked, plugin will try to autodetect VRAM size.\nBut if this appears wrong, please uncheck and set it to correct value.\n[Recommended: on]");
+        TTSetTxt(IDC_CHK_AUTODETECT_VRAM, "Autodetect VRAM Size:\n\nSince OpenGL cannot do this reliably at the moment, the option to set this manually is available.\nIf checked, plugin will try to autodetect VRAM size.\nBut if this appears wrong, please uncheck and set it to correct value.\n\n[Recommended: on]");
         m_VramSize.Attach(GetDlgItem(IDC_SPIN_VRAM_SIZE));
         m_VramSize.SetBuddy(GetDlgItem(IDC_TXT_VRAM_SIZE));
         m_spinVRAM.Attach(GetDlgItem(IDC_TXT_VRAM_SIZE));
@@ -519,6 +520,7 @@ public:
     LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
         TTInit();
+		TTSize(400);
 
         if (g_romopen)
         {
@@ -529,7 +531,7 @@ public:
             ::SetWindowText(GetDlgItem(IDC_INFO), "Default emulation settings. Not recommended to change!");
         }
 
-        std::string tooltip = "Filtering mode\nThere are three filtering modes possible:\n* Automatic filtering - filter exactly how the N64 specifies.\n* Point-sampled filtering - causes texels to appear square and sharp.\n* Bilinear filtering - interpolates the texture to make it appear more smooth.\n[Recommended: Automatic]";
+        std::string tooltip = "Filtering mode:\n\nThere are three filtering modes possible:\n\n* Automatic filtering - filter exactly how the N64 specifies.\n* Point-sampled filtering - causes texels to appear square and sharp.\n* Bilinear filtering - interpolates the texture to make it appear more smooth.\n\n[Recommended: Automatic]";
         TTSetTxt(IDC_TXT_FILTERING_MODE, tooltip.c_str());
         TTSetTxt(IDC_CMB_FILTERING_MODE, tooltip.c_str());
 
@@ -539,7 +541,7 @@ public:
         m_cmbFiltering.SetItemData(m_cmbFiltering.AddString("Force Point-sampled"), 2);
         SetComboBoxIndex(m_cmbFiltering, g_settings->filtering);
 
-        tooltip = "Buffer swapping method\nThere are 3 buffer swapping methods:\n* old - swap buffers when vertical interrupt has occurred.\n* new - swap buffers when set of conditions is satisfied. Prevents flicker on some games.\n* hybrid - mix of first two methods.\nCan prevent even more flickering then previous method, but also can cause artefacts.\nIf you have flickering problems in a game (or graphics that don't show),\ntry to change swapping method.\n[Recommended: new (hybrid for Paper Mario)]";
+        tooltip = "Buffer swapping method:\n\nThere are 3 buffer swapping methods:\n\n* old - swap buffers when vertical interrupt has occurred.\n* new - swap buffers when set of conditions is satisfied. Prevents flicker on some games.\n* hybrid - mix of first two methods.  Can prevent even more flickering then previous method, but also can cause artefacts.\nIf you have flickering problems in a game (or graphics that don't show), try to change swapping method.\n\n[Recommended: new (hybrid for Paper Mario)]";
         TTSetTxt(IDC_TXT_BUFFER_SWAPPING, tooltip.c_str());
         TTSetTxt(IDC_CMB_BUFFER_SWAPPING, tooltip.c_str());
         m_cmbBufferSwap.Attach(GetDlgItem(IDC_CMB_BUFFER_SWAPPING));
@@ -548,7 +550,7 @@ public:
         m_cmbBufferSwap.SetItemData(m_cmbBufferSwap.AddString("Hybrid"), 2);
         SetComboBoxIndex(m_cmbBufferSwap, g_settings->swapmode);
 
-        tooltip = "Per-pixel level-of-detail calculation\nN64 uses special mechanism for mip-mapping, which nearly impossible to reproduce\ncorrectly on PC hardware. This option enables approximate emulation of this feature.\nFor example, it is required for the Peach/Bowser portrait's transition in Super Mario 64.\nThere are 3 modes:\n* off - LOD is not calculated\n* fast - fast imprecise LOD calculation.\n* precise - most precise LOD calculation possible, but more slow.\n[Recommended: your preference]";
+        tooltip = "Per-pixel level-of-detail calculation:\n\nN64 uses special mechanism for mip-mapping, which nearly impossible to reproduce correctly on PC hardware.\nThis option enables approximate emulation of this feature.\nFor example, it is required for the Peach/Bowser portrait's transition in Super Mario 64.\nThere are 3 modes:\n\n* off - LOD is not calculated\n* fast - fast imprecise LOD calculation.\n* precise - most precise LOD calculation possible, but more slow.\n\n[Recommended: your preference]";
         TTSetTxt(IDC_TXT_LOD_CALC, tooltip.c_str());
         TTSetTxt(IDC_CMB_LOD_CALC, tooltip.c_str());
         m_cmbLOD.Attach(GetDlgItem(IDC_CMB_LOD_CALC));
@@ -557,7 +559,7 @@ public:
         m_cmbLOD.SetItemData(m_cmbLOD.AddString("precise"), 2);
         SetComboBoxIndex(m_cmbLOD, g_settings->lodmode);
 
-        tooltip = "Aspect ratio of the output.\nMost N64 games use 4:3 aspect ratio, but some support widescreen too.\nYou may select appropriate aspect here and set widescreen mode in game g_settings->\nIn \"Stretch\" mode the output will be stretched to the entire screen,\nother modes may add black borders if necessary";
+        tooltip = "Aspect ratio of the output:\n\nMost N64 games use 4:3 aspect ratio, but some support widescreen too.\nYou may select appropriate aspect here and set widescreen mode in game settings->\nIn \"Stretch\" mode the output will be stretched to the entire screen, other modes may add black borders if necessary";
         TTSetTxt(IDC_TXT_ASPECT_RATIO, tooltip.c_str());
         TTSetTxt(IDC_CMB_ASPECT_RATIO, tooltip.c_str());
 
@@ -568,42 +570,42 @@ public:
         m_cmbAspect.SetItemData(m_cmbAspect.AddString("Original"), 3);
         SetComboBoxIndex(m_cmbAspect, g_settings->aspectmode);
 
-        tooltip = "Fog enabled\nSets fog emulation on//off.\n[Recommended: on]";
+        tooltip = "Fog enabled:\n\nSets fog emulation on//off.\n\n[Recommended: on]";
         TTSetTxt(IDC_CHK_FOG, tooltip.c_str());
         m_cbxFog.Attach(GetDlgItem(IDC_CHK_FOG));
         m_cbxFog.SetCheck(g_settings->fog > 0 ? BST_CHECKED : BST_UNCHECKED);
 
-        tooltip = "Buffer clear on every frame\nForces the frame buffer to be cleared every frame drawn.\nUsually frame buffer clear is controlled by the game.\nHowever, in some cases it is not well emulated,\nand some garbage may be left on the screen.\nIn such cases, this option must be set on.\n[Recommended: on]";
+        tooltip = "Buffer clear on every frame:\n\nForces the frame buffer to be cleared every frame drawn.\nUsually frame buffer clear is controlled by the game.\nHowever, in some cases it is not well emulated, and some garbage may be left on the screen.\nIn such cases, this option must be set on.\n\n[Recommended: on]";
         TTSetTxt(IDC_CHK_BUFFER_CLEAR, tooltip.c_str());
         m_cbxBuffer.Attach(GetDlgItem(IDC_CHK_BUFFER_CLEAR));
         m_cbxBuffer.SetCheck(g_settings->buff_clear > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxFBEnable.Attach(GetDlgItem(IDC_CHK_FRAME_BUFFER_EMULATION));
-        TTSetTxt(IDC_CHK_FRAME_BUFFER_EMULATION, "Enable frame buffer emulation\nIf on, plugin will try to detect frame buffer usage and apply appropriate frame buffer emulation.\n[Recommended: on for games which use frame buffer effects]");
+        TTSetTxt(IDC_CHK_FRAME_BUFFER_EMULATION, "Enable frame buffer emulation:\n\nIf on, plugin will try to detect frame buffer usage and apply appropriate frame buffer emulation.\n\n[Recommended: on for games which use frame buffer effects]");
         m_cbxFBEnable.SetCheck((g_settings->frame_buffer&fb_emulation) > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxFBHWFBE.Attach(GetDlgItem(IDC_CHK_HARDWARE_FRAMEBUFFER));
-        TTSetTxt(IDC_CHK_HARDWARE_FRAMEBUFFER, "Enable hardware frame buffer emulation\nIf this option is on, plugin will create auxiliary frame buffers in video memory instead of copying\nframe buffer content into main memory. This allows plugin to run frame buffer effects without slowdown\nand without scaling image down to N64's native resolution. This feature is fully supported by\nVoodoo 4/5 cards and partially by Voodoo3 and Banshee. Modern cards also fully support it.\n[Recommended: on, if supported by your hardware]");
+        TTSetTxt(IDC_CHK_HARDWARE_FRAMEBUFFER, "Enable hardware frame buffer emulation:\n\nIf this option is on, plugin will create auxiliary frame buffers in video memory instead of copying frame buffer content into main memory.\nThis allows plugin to run frame buffer effects without slowdown and without scaling image down to N64's native resolution.\nThis feature is fully supported by Voodoo 4/5 cards and partially by Voodoo3 and Banshee. Modern cards also fully support it.\n\n[Recommended: on, if supported by your hardware]");
         m_cbxFBHWFBE.SetCheck((g_settings->frame_buffer&fb_hwfbe) > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxFBGetFBI.Attach(GetDlgItem(IDC_CHK_GET_FRAMEBUFFER));
-        TTSetTxt(IDC_CHK_GET_FRAMEBUFFER, "Get information about frame buffers\nThis is compatibility option. It must be set on for Mupen64 and off for 1964");
+        TTSetTxt(IDC_CHK_GET_FRAMEBUFFER, "Get information about frame buffers:\n\nThis is compatibility option. It must be set on for Mupen64 and off for 1964");
         m_cbxFBGetFBI.SetCheck((g_settings->frame_buffer&fb_get_info) > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxFBReadEveryFrame.Attach(GetDlgItem(IDC_CHK_READ_EVERY_FRAME));
-        TTSetTxt(IDC_CHK_READ_EVERY_FRAME, "Read every frame\nIn some games plugin can't detect frame buffer usage.\nIn such cases you need to enable this option to see frame buffer effects.\nEvery drawn frame will be read from video card -> it works very slow.\n[Recommended: mostly off (needed only for a few games)]");
+        TTSetTxt(IDC_CHK_READ_EVERY_FRAME, "Read every frame:\n\nIn some games plugin can't detect frame buffer usage.\nIn such cases you need to enable this option to see frame buffer effects.\nEvery drawn frame will be read from video card -> it works very slow.\n\n[Recommended: mostly off (needed only for a few games)]");
         m_cbxFBReadEveryFrame.SetCheck((g_settings->frame_buffer&fb_ref) > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxFBasTex.Attach(GetDlgItem(IDC_RENDER_FRAME_AS_TEXTURE));
-        TTSetTxt(IDC_RENDER_FRAME_AS_TEXTURE, "Render N64 frame buffer as texture\nWhen this option is enabled, content of each N64 frame buffer is rendered\nas texture over the frame, rendered by the plugin. This prevents graphics lost,\nbut may cause slowdowns and various glitches in some games.\n[Recommended: mostly off]");
+        TTSetTxt(IDC_RENDER_FRAME_AS_TEXTURE, "Render N64 frame buffer as texture:\n\nWhen this option is enabled, content of each N64 frame buffer is rendered as texture over the frame, rendered by the plugin.\nThis prevents graphics lost, but may cause slowdowns and various glitches in some games.\n\n[Recommended: mostly off]");
         m_cbxFBasTex.SetCheck((g_settings->frame_buffer&fb_read_back_to_screen) > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxDetect.Attach(GetDlgItem(IDC_CHK_DETECT_CPU_WRITE));
-        TTSetTxt(IDC_CHK_DETECT_CPU_WRITE, "Detect CPU write to the N64 frame buffer\nThis option works as the previous options, but the plugin is trying to detect,\nwhen game uses CPU writes to N64 frame buffer. The N64 frame buffer is rendered\nonly when CPU writes is detected. Use this option for those games, in which you\nsee still image or no image at all for some time with no reason.\n[Recommended: mostly off]");
+        TTSetTxt(IDC_CHK_DETECT_CPU_WRITE, "Detect CPU write to the N64 frame buffer:\n\nThis option works as the previous options, but the plugin is trying to detect, when game uses CPU writes to N64 frame buffer.\nThe N64 frame buffer is rendered only when CPU writes is detected.\nUse this option for those games, in which you see still image or no image at all for some time with no reason.\n\n[Recommended: mostly off]");
         m_cbxDetect.SetCheck((g_settings->frame_buffer&fb_cpu_write_hack) > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxFBDepthBuffer.Attach(GetDlgItem(IDC_SOFTWARE_DEPTH_BUFFER));
-        TTSetTxt(IDC_SOFTWARE_DEPTH_BUFFER, "Enable depth buffer rendering\nThis option is used to fully emulate N64 depth buffer.\nIt is required for correct emulation of depth buffer based effects.\nHowever, it requires fast (>1GHz) CPU to work full speed.\n[Recommended: on for fast PC]");
+        TTSetTxt(IDC_SOFTWARE_DEPTH_BUFFER, "Enable depth buffer rendering:\n\nThis option is used to fully emulate N64 depth buffer.\nIt is required for correct emulation of depth buffer based effects.\nHowever, it requires fast (>1GHz) CPU to work full speed.\n\n[Recommended: on for fast PC]");
         m_cbxFBDepthBuffer.SetCheck((g_settings->frame_buffer&fb_depth_render) > 0 ? BST_CHECKED : BST_UNCHECKED);
         return TRUE;
     }
@@ -676,8 +678,9 @@ public:
     LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
         TTInit();
+		TTSize(400);
 
-        std::string tooltip = "Filters:\nApply a filter to either smooth or sharpen textures.\nThere are 4 different smoothing filters and 2 different sharpening filters.\nThe higher the number, the stronger the effect,\ni.e. \"Smoothing filter 4\" will have a much more noticeable effect than \"Smoothing filter 1\".\nBe aware that performance may have an impact depending on the game and/or the PC.\n[Recommended: your preference]";
+        std::string tooltip = "Filters:\n\nApply a filter to either smooth or sharpen textures.\nThere are 4 different smoothing filters and 2 different sharpening filters.\nThe higher the number, the stronger the effect,\ni.e. \"Smoothing filter 4\" will have a much more noticeable effect than \"Smoothing filter 1\".\nBe aware that performance may have an impact depending on the game and/or the PC.\n\n[Recommended: your preference]";
         TTSetTxt(IDC_TXT_ENH_FILTER, tooltip.c_str());
         TTSetTxt(IDC_CMB_ENH_FILTER, tooltip.c_str());
         m_cmbEnhFilter.Attach(GetDlgItem(IDC_CMB_ENH_FILTER));
@@ -690,7 +693,7 @@ public:
         m_cmbEnhFilter.SetItemData(m_cmbEnhFilter.AddString("Sharp filtering 2"), 6);
         SetComboBoxIndex(m_cmbEnhFilter, g_settings->ghq_fltr);
 
-        tooltip = "Texture enhancement:\n7 different filters are selectable here, each one with a distinctive look.\nBe aware of possible performance impacts.\n\nIMPORTANT: 'Store' mode - saves textures in cache 'as is'. It can improve performance in games, which load many textures.\nDisable 'Ignore backgrounds' option for better result.\n\n[Recommended: your preference]";
+        tooltip = "Texture enhancement:\n\n7 different filters are selectable here, each one with a distinctive look.\nBe aware of possible performance impacts.\n\nIMPORTANT: 'Store' mode - saves textures in cache 'as is'.\nIt can improve performance in games, which load many textures.\nDisable 'Ignore backgrounds' option for better result.\n\n[Recommended: your preference]";
         TTSetTxt(IDC_TXT_ENHANCEMENT, tooltip.c_str());
         TTSetTxt(IDC_CMB_ENHANCEMENT, tooltip.c_str());
         m_cmbEnhEnhancement.Attach(GetDlgItem(IDC_CMB_ENHANCEMENT));
@@ -705,7 +708,7 @@ public:
         m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("HQ4X"), 8);
         SetComboBoxIndex(m_cmbEnhEnhancement, g_settings->ghq_enht);
 
-        tooltip = "Hi-res pack format:\nChoose which method is to be used for loading Hi-res texture packs.\nOnly Rice's format is available currently.\nLeave on \"None\" if you will not be needing to load hi-res packs.\n[Recommended: Rice's format. Default: \"None\"]";
+        tooltip = "Hi-res pack format:\n\nChoose which method is to be used for loading Hi-res texture packs.\nOnly Rice's format is available currently.\nLeave on \"None\" if you will not be needing to load hi-res packs.\n\n[Recommended: Rice's format. Default: \"None\"]";
         TTSetTxt(IDC_TXT_FORMAT_CHOICES, tooltip.c_str());
         TTSetTxt(IDC_CMB_FORMAT_CHOICES, tooltip.c_str());
         m_cmbHrsFormat.Attach(GetDlgItem(IDC_CMB_FORMAT_CHOICES));
@@ -718,7 +721,7 @@ public:
         m_cmbTextureCompression.SetItemData(m_cmbTextureCompression.AddString("FXT1"), 1);
         SetComboBoxIndex(m_cmbTextureCompression, g_settings->ghq_cmpr);
 
-        tooltip = "Texture cache size:\nEnhanced and filtered textures can be cached to aid performance.\nThis setting will adjust how much PC memory will be dedicated for texture cache.\nThis helps boost performance if there are subsequent requests for the same texture (usually the case).\nNormally, 128MB should be more than enough but there is a sweet spot for each game.\nSuper Mario may not need more than 32megs, but Conker streams a lot of textures,\nso setting 256+ megs can boost performance. Adjust accordingly if you are encountering speed issues.\n'0' disables cache.\n[Recommended: PC and game dependant]";
+        tooltip = "Texture cache size:\n\nEnhanced and filtered textures can be cached to aid performance.\nThis setting will adjust how much PC memory will be dedicated for texture cache.\nThis helps boost performance if there are subsequent requests for the same texture (usually the case).\nNormally, 128MB should be more than enough but there is a sweet spot for each game.\nSuper Mario may not need more than 32megs, but Conker streams a lot of textures, so setting 256+ megs can boost performance.\nAdjust accordingly if you are encountering speed issues.\n'0' disables cache.\n\n[Recommended: PC and game dependant]";
         TTSetTxt(IDC_TXT_TEXTURE_CACHE, tooltip.c_str());
         TTSetTxt(IDC_SPIN_TEXTURE_CACHE, tooltip.c_str());
         TTSetTxt(IDC_TEXT_MB, tooltip.c_str());
@@ -727,11 +730,11 @@ public:
         m_spinEnhCacheSize.Attach(GetDlgItem(IDC_SPIN_TEXTURE_CACHE));
         m_spinEnhCacheSize.SetBuddy(m_textTexCache);
 
-        TTSetTxt(IDC_CHK_IGNORE_BACKGROUND, "Ignore Backgrounds:\nIt is used to skip enhancement for long narrow textures, usually used for backgrounds.\nThis may save texture memory greatly and increase performance.\n[Recommended: on (off for 'Store' mode)]");
+        TTSetTxt(IDC_CHK_IGNORE_BACKGROUND, "Ignore Backgrounds:\n\nIt is used to skip enhancement for long narrow textures, usually used for backgrounds.\nThis may save texture memory greatly and increase performance.\n\n[Recommended: on (off for 'Store' mode)]");
         m_cbxEnhIgnoreBG.Attach(GetDlgItem(IDC_CHK_IGNORE_BACKGROUND));
         m_cbxEnhIgnoreBG.SetCheck(g_settings->ghq_enht_nobg > 0 ? BST_CHECKED : BST_UNCHECKED);
 
-        tooltip = "Texture compression:\nTextures will be compressed using selected texture compression method.\nThe overall compression ratio is about 1/6 for FXT1 and 1/4 for S3TC.\nIn addition to saving space on the texture cache,\nthe space occupied on the GFX hardware's texture RAM,\nby the enhanced textures, will be greatly reduced.\nThis minimizes texture RAM usage,\ndecreasing the number of texture swaps to the GFX hardware leading to performance gains.\nHowever, due to the nature of lossy compression of FXT1 and S3TC, using this option can sometimes lead to quality degradation of small size textures and color banding of gradient colored textures.\n[Recommended: off]";
+        tooltip = "Texture compression:\n\nTextures will be compressed using selected texture compression method.\nThe overall compression ratio is about 1/6 for FXT1 and 1/4 for S3TC.\nIn addition to saving space on the texture cache, the space occupied on the GFX hardware's texture RAM, by the enhanced textures, will be greatly reduced.\nThis minimizes texture RAM usage, decreasing the number of texture swaps to the GFX hardware leading to performance gains.\nHowever, due to the nature of lossy compression of FXT1 and S3TC, using this option can sometimes lead to quality degradation of small size textures and color banding of gradient colored textures.\n\n[Recommended: off]";
         TTSetTxt(IDC_CHK_TEX_COMPRESSION, tooltip.c_str());
         TTSetTxt(IDC_CHK_HIRES_TEX_COMPRESSION, tooltip.c_str());
 
@@ -740,24 +743,24 @@ public:
         m_cbxHrsTexCompression.Attach(GetDlgItem(IDC_CHK_HIRES_TEX_COMPRESSION));
         m_cbxHrsTexCompression.SetCheck(g_settings->ghq_hirs_cmpr > 0 ? BST_CHECKED : BST_UNCHECKED);
 
-        TTSetTxt(IDC_CHK_COMPRESS_CACHE, "Compress texture cache:\nMemory will be compressed so that more textures can be held in the texture cache.\nThe compression ratio varies with each texture,\nbut 1/5 of the original size would be a modest approximation.\nThey will be decompressed on-the-fly, before being downloaded to the gfx hardware.\nThis option will still help save memory space even when using texture compression.\n[Recommended: on]");
+        TTSetTxt(IDC_CHK_COMPRESS_CACHE, "Compress texture cache:\n\nMemory will be compressed so that more textures can be held in the texture cache.\nThe compression ratio varies with each texture, but 1/5 of the original size would be a modest approximation.\nThey will be decompressed on-the-fly, before being downloaded to the gfx hardware.\nThis option will still help save memory space even when using texture compression.\n\n[Recommended: on]");
         m_cbxEnhCompressCache.Attach(GetDlgItem(IDC_CHK_COMPRESS_CACHE));
         m_cbxEnhCompressCache.SetCheck(g_settings->ghq_enht_gz > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsTile.Attach(GetDlgItem(IDC_CHK_TILE_TEX));
-        TTSetTxt(IDC_CHK_TILE_TEX, "Tile textures:\nWhen on, wide texture will be split on several tiles to fit in one 256-width texture.\nThis tiled texture takes much less video memory space and thus overall performance will increase.\nHowever, corresponding polygons must be split too, and this is not polished yet\n- various issues are possible, including black lines and polygons distortions.\n[Recommended: off]");
+        TTSetTxt(IDC_CHK_TILE_TEX, "Tile textures:\n\nWhen on, wide texture will be split on several tiles to fit in one 256-width texture.\nThis tiled texture takes much less video memory space and thus overall performance will increase.\nHowever, corresponding polygons must be split too, and this is not polished yet - various issues are possible, including black lines and polygons distortions.\n\n[Recommended: off]");
         m_cbxHrsTile.SetCheck(g_settings->ghq_hirs_tile > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsForce16.Attach(GetDlgItem(IDC_CHK_FORCE_16BPP_TEXT));
-        TTSetTxt(IDC_CHK_FORCE_16BPP_TEXT, "Force 16bpp textures:\nThe color of the textures will be reduced to 16bpp.\nThis is another space saver and performance enhancer.\nThis halves the space used on the texture cache and the GFX hardware's texture RAM.\nColor reduction is done so that the original quality is preserved as much as possible.\nDepending on the texture, this usually is hardly noticeable.\nSometimes though, it can be: skies are a good example.\n[Recommended: off]");
+        TTSetTxt(IDC_CHK_FORCE_16BPP_TEXT, "Force 16bpp textures:\n\nThe color of the textures will be reduced to 16bpp.\nThis is another space saver and performance enhancer.\nThis halves the space used on the texture cache and the GFX hardware's texture RAM.\nColor reduction is done so that the original quality is preserved as much as possible.\nDepending on the texture, this usually is hardly noticeable.\nSometimes though, it can be: skies are a good example.\n\n[Recommended: off]");
         m_cbxHrsForce16.SetCheck(g_settings->ghq_hirs_tile > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsTexEdit.Attach(GetDlgItem(IDC_CHK_TEX_DUMP_EDIT));
-        TTSetTxt(IDC_CHK_TEX_DUMP_EDIT, "Texture dumping mode:\nIn this mode, you have that ability to dump textures on screen to the appropriate folder.\nYou can also reload textures while the game is running to see how they look instantly - big time saver!\n\nHotkeys: \"R\" reloads hires textures from the texture pack - \"D\" toggles texture dumps on/off.");
+        TTSetTxt(IDC_CHK_TEX_DUMP_EDIT, "Texture dumping mode:\n\nIn this mode, you have that ability to dump textures on screen to the appropriate folder.\nYou can also reload textures while the game is running to see how they look instantly - big time saver!\n\nHotkeys:\n\"R\" reloads hires textures from the texture pack\n\"D\" toggles texture dumps on/off.");
         m_cbxHrsTexEdit.SetCheck(g_settings->ghq_hirs_dump > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsAltCRC.Attach(GetDlgItem(IDC_CHK_ALT_CRC));
-        TTSetTxt(IDC_CHK_ALT_CRC, "Alternative CRC calculation:\nThis option enables emulation of a palette CRC calculation bug in RiceVideo.\nIf some textures are not loaded, try to set this option on/off.\n[Recommended: texture pack dependant, mostly on]");
+        TTSetTxt(IDC_CHK_ALT_CRC, "Alternative CRC calculation:\n\nThis option enables emulation of a palette CRC calculation bug in RiceVideo.\nIf some textures are not loaded, try to set this option on/off.\n\n[Recommended: texture pack dependant, mostly on]");
         m_cbxHrsAltCRC.SetCheck(g_settings->ghq_hirs_altcrc > 0 ? BST_CHECKED : BST_UNCHECKED);
         if (g_settings->ghq_hirs_dump)
         {
@@ -765,15 +768,15 @@ public:
         }
 
         m_cbxHrsCompressCache.Attach(GetDlgItem(IDC_CHK_HRS_COMPRESS_CACHE));
-        TTSetTxt(IDC_CHK_HRS_COMPRESS_CACHE, "Compress texture cache:\nWhen game started, plugin loads all its hi-resolution textures into PC memory.\nSince hi-resolution textures are usually large, the whole pack can take hundreds megabytes of memory.\nCache compression allows save memory space greatly.\nTextures will be decompressed on-the-fly, before being downloaded to the gfx hardware.\nThis option will still help save memory space even when using texture compression.\n[Recommended: on]");
+        TTSetTxt(IDC_CHK_HRS_COMPRESS_CACHE, "Compress texture cache:\n\nWhen game started, plugin loads all its hi-resolution textures into PC memory.\nSince hi-resolution textures are usually large, the whole pack can take hundreds megabytes of memory.\nCache compression allows save memory space greatly.\nTextures will be decompressed on-the-fly, before being downloaded to the gfx hardware.\nThis option will still help save memory space even when using texture compression.\n\n[Recommended: on]");
         m_cbxHrsCompressCache.SetCheck(g_settings->ghq_hirs_gz > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsLetFly.Attach(GetDlgItem(IDC_CHK_USE_ALPHA_FULLY));
-        TTSetTxt(IDC_CHK_USE_ALPHA_FULLY, "Use Alpha channel fully:\nWhen this option is off, 16bit rgba textures will be loaded using RiceVideo style\n- with 1bit for alpha channel.\nWhen it is on, GlideHQ will check, how alpha channel is used by the hires texture,\nand select most appropriate format for it.\nThis gives texture designers freedom to play with alpha, as they need,\nregardless of format of original N64 texture.\nFor older and badly designed texture packs it can cause unwanted black borders.\n[Recommended: texture pack dependant]");
+        TTSetTxt(IDC_CHK_USE_ALPHA_FULLY, "Use Alpha channel fully:\n\nWhen this option is off, 16bit rgba textures will be loaded using RiceVideo style, with 1bit for alpha channel.\nWhen it is on, GlideHQ will check, how alpha channel is used by the hires texture, and select most appropriate format for it.\nThis gives texture designers freedom to play with alpha, as they need, regardless of format of original N64 texture.\nFor older and badly designed texture packs it can cause unwanted black borders.\n\n[Recommended: texture pack dependant]");
         m_cbxHrsLetFly.SetCheck(g_settings->ghq_hirs_let_texartists_fly > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxSaveTexCache.Attach(GetDlgItem(IDC_CHK_TEX_CACHE_HD));
-        TTSetTxt(IDC_CHK_TEX_CACHE_HD, "Save texture cache to HD:\n\nFor enhanced textures cache:\nThis will save all previously loaded and enhanced textures to HD.\nSo upon next game launch, all the textures will be instantly loaded, resulting in smoother performance.\n\nFor high-resolution textures cache:\nAfter creation, loading hi-res texture will take only a few seconds upon game launch,\nas opposed to the 5 -60 seconds a pack can take to load without this cache file.\nThe only downside here is upon any changes to the pack, the cache file will need to be manually deleted.\n\nSaved cache files go into a folder called \"Cache\" within the Plugins folder.\n\n[Highly Recommended: on]");
+        TTSetTxt(IDC_CHK_TEX_CACHE_HD, "Save texture cache to HD:\n\nFor enhanced textures cache:\nThis will save all previously loaded and enhanced textures to HD.\nSo upon next game launch, all the textures will be instantly loaded, resulting in smoother performance.\n\nFor high-resolution textures cache:\nAfter creation, loading hi-res texture will take only a few seconds upon game launch, as opposed to the 5 to 60 seconds a pack can take to load without this cache file.\nThe only downside here is upon any changes to the pack, the cache file will need to be manually deleted.\n\nSaved cache files go into a folder called \"Cache\" within the Textures folder.\n\n[Highly Recommended: on]");
         m_cbxSaveTexCache.SetCheck(g_settings->ghq_cache_save > 0 ? BST_CHECKED : BST_UNCHECKED);
         return TRUE;
     }

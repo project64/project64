@@ -14,6 +14,20 @@ public enum UISettingID
 {		
     Asserts_Version,
     Screen_Orientation,
+
+    //Recent Game
+    File_RecentGameFileCount,
+    File_RecentGameFileIndex,
+
+    //Touch Screen
+    TouchScreen_ButtonScale,
+    TouchScreen_Layout,
+
+    //Controller Config
+    Controller_ConfigFile,
+    Controller_CurrentProfile,
+    Controller_Deadzone,
+    Controller_Sensitivity,
     ;
     
     private int value;

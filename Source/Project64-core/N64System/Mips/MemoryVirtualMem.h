@@ -11,7 +11,7 @@
 #pragma once
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include "TranslateVaddr.h"
-#include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
+#include <Project64-core/N64System/Recompiler/RecompilerOps.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps.h>
 #include <Project64-core/N64System/Mips/PifRam.h>
 #include <Project64-core/N64System/Mips/FlashRam.h>
@@ -28,39 +28,22 @@
 #endif
 
 /*
-* 64-bit Windows exception recovery facilities will expect to interact with
-* the 64-bit registers of the Intel architecture (e.g., rax instead of eax).
+* To do:  Have address translation functions here?
+* `return` either the translated address or the mask to XOR by?
 *
-* Attempting to read the 32-bit subsets seems to be erroneous and forbidden.
-* Refer to "MemoryFilter" in `Memory Virtual Mem.cpp`.
+* This will help us gradually be able to port Project64 for big-endian CPUs.
+* Currently it is written to assume 32-bit little-endian, like so:
+*
+* 0xAABBCCDD EEFFGGHH --> 0xDDCCBBAA HHGGFFEE
+*   GPR bits[63..0]         b1b2b3b4 b5b6b7b8
 */
-#ifdef _WIN64
-#define Eax     Rax
-#define Ebx     Rbx
-#define Ecx     Rcx
-#define Edx     Rdx
-#define Esp     Rsp
-#define Ebp     Rbp
-#define Esi     Rsi
-#define Edi     Rdi
 
-#define Eip     Rip
+#if defined(__i386__) || defined(_M_IX86)
+class CX86RecompilerOps;
 #endif
-
-/*
- * To do:  Have address translation functions here?
- * `return` either the translated address or the mask to XOR by?
- *
- * This will help us gradually be able to port Project64 for big-endian CPUs.
- * Currently it is written to assume 32-bit little-endian, like so:
- *
- * 0xAABBCCDD EEFFGGHH --> 0xDDCCBBAA HHGGFFEE
- *   GPR bits[63..0]         b1b2b3b4 b5b6b7b8
- */
 
 class CMipsMemoryVM :
     public CTransVaddr,
-    private CRecompilerOps,
     private R4300iOp,
     private CPifRam,
     private CFlashram,
@@ -114,10 +97,6 @@ public:
     void  ProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr);
     void  UnProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr);
 
-    //Compilation Functions
-    void ResetMemoryStack();
-    void ResetMemoryStack(CRegInfo& RegInfo);
-
     //Functions for TLB notification
     void TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly);
     void TLB_Unmaped(uint32_t Vaddr, uint32_t Len);
@@ -135,9 +114,11 @@ private:
     CMipsMemoryVM(const CMipsMemoryVM&);            // Disable copy constructor
     CMipsMemoryVM& operator=(const CMipsMemoryVM&); // Disable assignment
 
-    friend CRecompilerOps;
-    void Compile_LW(bool ResultSigned, bool bRecordLLbit);
-    void Compile_SW(bool bCheckLLbit);
+#if defined(__i386__) || defined(_M_IX86)
+    friend CX86RecompilerOps;
+#elif defined(__arm__) || defined(_M_ARM)
+    friend CArmRegInfo;
+#endif
 
     static void RdramChanged(CMipsMemoryVM * _this);
     static void ChangeSpStatus();
@@ -182,7 +163,7 @@ private:
 
 #if defined(__i386__) || defined(_M_IX86)
 
-    typedef struct _X86_CONTEXT 
+    typedef struct _X86_CONTEXT
     {
         uint32_t * Edi;
         uint32_t * Esi;

@@ -38,10 +38,10 @@ uint32_t CAudio::GetLength()
     uint32_t TimeLeft = g_SystemTimer->GetTimer(CSystemTimer::AiTimerInterrupt), Res = 0;
     if (TimeLeft > 0)
     {
-        Res = (TimeLeft / m_CountsPerByte);
+        Res = (TimeLeft / m_CountsPerByte)&~7;
     }
     WriteTrace(TraceAudio, TraceDebug, "Done (res = %d, TimeLeft = %d)", Res, TimeLeft);
-    return (Res + 3)&~3;
+    return Res;
 }
 
 uint32_t CAudio::GetStatus()

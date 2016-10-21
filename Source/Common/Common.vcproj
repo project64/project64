@@ -138,6 +138,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\HighResTimeStamp.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\IniFileClass.cpp"
 				>
 			</File>
@@ -220,6 +224,10 @@
 			</File>
 			<File
 				RelativePath=".\FileClass.h"
+				>
+			</File>
+			<File
+				RelativePath=".\HighResTimeStamp.h"
 				>
 			</File>
 			<File

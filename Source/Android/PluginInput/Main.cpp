@@ -16,10 +16,6 @@
 
 #ifdef ANDROID
 #include <jni.h>
-#include <android/log.h>
-
-#define printf(...) __android_log_print(ANDROID_LOG_VERBOSE, "PluginInput", __VA_ARGS__)
-
 #endif
 
 static CONTROL_INFO g_control_info;
@@ -207,7 +203,6 @@ EXPORT void CALL WM_KeyUp( uint32_t /*wParam*/, uint32_t /*lParam*/ )
 #ifdef ANDROID
 EXPORT void CALL Java_emu_project64_jni_NativeInput_setState(JNIEnv* env, jclass jcls, jint controllerNum, jbooleanArray Buttons, jint pXAxis, jint pYAxis)
 {
-    printf("setState controllerNum =  %d",controllerNum);
     jboolean* elements = env->GetBooleanArrayElements(Buttons, NULL);
     if (controllerNum == 0)
     {

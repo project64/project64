@@ -1,27 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:project64="http://schemas.android.com/apk/res-auto" >
 
-    <item
-        android:id="@+id/menuItem_library"
-        android:icon="@drawable/ic_controller"
-        android:title="@string/categoryLibrary_title"/>
     <item
         android:id="@+id/menuItem_settings"
         android:icon="@drawable/ic_settings"
         android:title="@string/menuItem_settings"/>
     <item
+        android:id="@+id/menuItem_forum"
+        android:icon="@drawable/ic_forum"
+        android:title="@string/menuItem_forum" />
+    <item
+        android:id="@+id/menuItem_reportBug"
+        android:icon="@drawable/ic_bug"
+        android:title="@string/menuItem_reportBug" />
+    <item
         android:id="@+id/menuItem_about"
         android:icon="@drawable/ic_about"
-        android:title="@string/menuItem_about">
-        <menu>
-            <item
-                android:id="@+id/menuItem_appVersion"
-                android:title="@string/menuItem_appVersion"/>
-            <item
-                android:id="@+id/menuItem_hardwareInfo"
-                android:title="@string/menuItem_hardwareInfo"/>
-        </menu>
-    </item>
-
+        android:title="@string/menuItem_about" />
 </menu>

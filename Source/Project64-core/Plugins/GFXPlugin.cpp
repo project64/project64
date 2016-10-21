@@ -13,6 +13,7 @@
 #include <Project64-core/N64System/N64RomClass.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Project64-core/N64System/N64Class.h>
 #include "GFXPlugin.h"
 
 CGfxPlugin::CGfxPlugin() :
@@ -107,7 +108,7 @@ bool CGfxPlugin::LoadFunctions(void)
 
 bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 {
-    WriteTrace(TraceGFXPlugin, TraceDebug, "Starting");
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Start");
     if (m_Initialized)
     {
         Close(Window);
@@ -181,7 +182,7 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 #ifdef _WIN32
     if (Window != NULL)
     {
-        Info.hWnd       = Window->GetWindowHandle();
+        Info.hWnd = Window->GetWindowHandle();
         Info.hStatusBar = Window->GetStatusBar();
     }
 #endif
@@ -189,7 +190,7 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 
     // We are initializing the plugin before any rom is loaded so we do not have any correct
     // parameters here.. it's just needed so we can config the DLL.
-    WriteTrace(TraceGFXPlugin, TraceDebug, "System = %X",System);
+    WriteTrace(TraceGFXPlugin, TraceDebug, "System = %X", System);
     if (System == NULL)
     {
         static uint8_t Buffer[100];
@@ -218,33 +219,36 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
     // Send initialization information to the DLL
     else
     {
+        CMipsMemoryVM & MMU = System->m_MMU_VM;
+        CRegisters & Reg = System->m_Reg;
+
         Info.HEADER = g_Rom->GetRomAddress();
-        Info.RDRAM = g_MMU->Rdram();
-        Info.DMEM = g_MMU->Dmem();
-        Info.IMEM = g_MMU->Imem();
-        Info.MI__INTR_REG = &g_Reg->m_GfxIntrReg;
-        Info.DPC__START_REG = &g_Reg->DPC_START_REG;
-        Info.DPC__END_REG = &g_Reg->DPC_END_REG;
-        Info.DPC__CURRENT_REG = &g_Reg->DPC_CURRENT_REG;
-        Info.DPC__STATUS_REG = &g_Reg->DPC_STATUS_REG;
-        Info.DPC__CLOCK_REG = &g_Reg->DPC_CLOCK_REG;
-        Info.DPC__BUFBUSY_REG = &g_Reg->DPC_BUFBUSY_REG;
-        Info.DPC__PIPEBUSY_REG = &g_Reg->DPC_PIPEBUSY_REG;
-        Info.DPC__TMEM_REG = &g_Reg->DPC_TMEM_REG;
-        Info.VI__STATUS_REG = &g_Reg->VI_STATUS_REG;
-        Info.VI__ORIGIN_REG = &g_Reg->VI_ORIGIN_REG;
-        Info.VI__WIDTH_REG = &g_Reg->VI_WIDTH_REG;
-        Info.VI__INTR_REG = &g_Reg->VI_INTR_REG;
-        Info.VI__V_CURRENT_LINE_REG = &g_Reg->VI_CURRENT_REG;
-        Info.VI__TIMING_REG = &g_Reg->VI_TIMING_REG;
-        Info.VI__V_SYNC_REG = &g_Reg->VI_V_SYNC_REG;
-        Info.VI__H_SYNC_REG = &g_Reg->VI_H_SYNC_REG;
-        Info.VI__LEAP_REG = &g_Reg->VI_LEAP_REG;
-        Info.VI__H_START_REG = &g_Reg->VI_H_START_REG;
-        Info.VI__V_START_REG = &g_Reg->VI_V_START_REG;
-        Info.VI__V_BURST_REG = &g_Reg->VI_V_BURST_REG;
-        Info.VI__X_SCALE_REG = &g_Reg->VI_X_SCALE_REG;
-        Info.VI__Y_SCALE_REG = &g_Reg->VI_Y_SCALE_REG;
+        Info.RDRAM = MMU.Rdram();
+        Info.DMEM = MMU.Dmem();
+        Info.IMEM = MMU.Imem();
+        Info.MI__INTR_REG = &Reg.m_GfxIntrReg;
+        Info.DPC__START_REG = &Reg.DPC_START_REG;
+        Info.DPC__END_REG = &Reg.DPC_END_REG;
+        Info.DPC__CURRENT_REG = &Reg.DPC_CURRENT_REG;
+        Info.DPC__STATUS_REG = &Reg.DPC_STATUS_REG;
+        Info.DPC__CLOCK_REG = &Reg.DPC_CLOCK_REG;
+        Info.DPC__BUFBUSY_REG = &Reg.DPC_BUFBUSY_REG;
+        Info.DPC__PIPEBUSY_REG = &Reg.DPC_PIPEBUSY_REG;
+        Info.DPC__TMEM_REG = &Reg.DPC_TMEM_REG;
+        Info.VI__STATUS_REG = &Reg.VI_STATUS_REG;
+        Info.VI__ORIGIN_REG = &Reg.VI_ORIGIN_REG;
+        Info.VI__WIDTH_REG = &Reg.VI_WIDTH_REG;
+        Info.VI__INTR_REG = &Reg.VI_INTR_REG;
+        Info.VI__V_CURRENT_LINE_REG = &Reg.VI_CURRENT_REG;
+        Info.VI__TIMING_REG = &Reg.VI_TIMING_REG;
+        Info.VI__V_SYNC_REG = &Reg.VI_V_SYNC_REG;
+        Info.VI__H_SYNC_REG = &Reg.VI_H_SYNC_REG;
+        Info.VI__LEAP_REG = &Reg.VI_LEAP_REG;
+        Info.VI__H_START_REG = &Reg.VI_H_START_REG;
+        Info.VI__V_START_REG = &Reg.VI_V_START_REG;
+        Info.VI__V_BURST_REG = &Reg.VI_V_BURST_REG;
+        Info.VI__X_SCALE_REG = &Reg.VI_X_SCALE_REG;
+        Info.VI__Y_SCALE_REG = &Reg.VI_Y_SCALE_REG;
     }
 
     WriteTrace(TraceGFXPlugin, TraceDebug, "Calling InitiateGFX");
@@ -255,7 +259,7 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
     pjutil::DynLibCallDllMain();
 #endif
 
-    WriteTrace(TraceGFXPlugin, TraceDebug, "InitiateGFX done (res: %s)", m_Initialized ? "true" : "false");
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Done (res: %s)", m_Initialized ? "true" : "false");
     return m_Initialized;
 }
 

@@ -72,4 +72,11 @@ LOCAL_LDLIBS :=         \
     -lGLESv2            \
     -llog               \
 
+ifeq ($(TARGET_ARCH_ABI), armeabi-v7a)
+    # Use for ARM7a:
+    LOCAL_CFLAGS += -mfpu=vfp
+    LOCAL_CFLAGS += -mfloat-abi=softfp
+    
+endif
+
 include $(BUILD_SHARED_LIBRARY)

@@ -19,17 +19,22 @@
     <string name="menuItem_CurrentSave9">Slot 9</string>
     <string name="menuItem_CurrentSave10">Slot 10</string>
     <string name="menuItem_ConsoleReset">Reset</string>
+    <string name="menuItem_DebuggingOptions">Debugging Options</string>
+    <string name="menuItem_ResetFunctionTimes">Reset Function Times</string>
+    <string name="menuItem_DumpFunctionTimes">Dump Function Times</string>
     
     <!-- Menu Activity -->
     <string name="menuItem_search">Search</string>
     <string name="menuItem_refreshRoms">Refresh ROMs</string>
     <string name="menuItem_gameDir">Game Dir</string>
     <string name="menuItem_settings">Settings</string>
-    <string name="menuItem_globalSettings">Global settings</string>
     <string name="menuItem_about">About</string>
     <string name="menuItem_appVersion">App version</string>
     <string name="menuItem_hardwareInfo">Hardware info</string>
-
+    <string name="menuItem_forum">Help/Forum</string>
+    <string name="menuItem_reportBug">Report Issue</string>
+    <string name="content_description_app_loading_image">App loading image</string>
+   
     <!-- ************************************************************************** -->
     <!-- Toast Messages                                                             -->
     <!-- Developers: Follow punctuation and grammar as shown below                  -->
@@ -48,25 +53,180 @@
     <string name="categoryAudio_title">Audio</string>
     <string name="categoryData_title">Data</string>
 
+    <!-- About -->
+    <string name="info">Information</string>
+    <string name="app_name_full">Project64 for Android</string>
+    <string name="licence">License</string>
+    <string name="revision">Revision</string>
+    <string name="about">About</string>
+    <string name="about_text">Project64 for Android™ is a port of the windows version of project64. The Android™ version can play most N64 games.</string>
+    <string name="Project64_authors">Project64 Authors.</string>
+    <string name="about_link" translatable="false">        &lt;a href=&quot;www.pj64-emu.com&quot;&gt;www.pj64-emu.com&lt;/a&gt;</string>
+    <string name="about_copyright" translatable="false">Copyleft &#169; 1998&#8211;2016 by Project64.\n</string>
+    <string name="authors" translatable="false">Zilmar, Jabo, Smiff, Gent, Jahra!n, Witten, RadeonUser, Trotterwatch, pixi, Azimer, Gonetz, cxd4, AmbientMalice, LegendOfDragoon, Nekokabu, Lithium64, death-droid, LuigiBlood, dsx.</string>
+
     <!-- Gallery sections -->
     <string name="galleryRecentlyPlayed">Recently played</string>
-    <string name="galleryLibrary">Library</string>
+    <string name="galleryLibrary">Games</string>
 
+    <!-- Seek Bar Preference -->
+    <string name="seekBarPreference_summary">%1$d %2$s</string>
+    
+    <!-- Input Mapping -->
+    <string name="inputMapActivity_popupMessage">Press a button, key, or joystick to map…\n\nCurrent mappings:\n%1$s</string>
+    <string name="inputMapActivity_popupUnmap">Unmap</string>
+    <string name="inputMapActivity_btnA">A</string>
+    <string name="inputMapActivity_btnB">B</string>
+    <string name="inputMapActivity_btnC">C</string>
+    <string name="inputMapActivity_btnL">L</string>
+    <string name="inputMapActivity_btnR">R</string>
+    <string name="inputMapActivity_btnZ">Z</string>
+    <string name="inputMapActivity_btnS">S</string>
+    <string name="inputMapActivity_btnCR">C-pad →</string>
+    <string name="inputMapActivity_btnCL">C-pad ←</string>
+    <string name="inputMapActivity_btnCD">C-pad ↓</string>
+    <string name="inputMapActivity_btnCU">C-pad ↑</string>
+    <string name="inputMapActivity_btnDR">D-pad →</string>
+    <string name="inputMapActivity_btnDL">D-pad ←</string>
+    <string name="inputMapActivity_btnDD">D-pad ↓</string>
+    <string name="inputMapActivity_btnDU">D-pad ↑</string>
+    <string name="inputMapActivity_btnAR">Analog →</string>
+    <string name="inputMapActivity_btnAL">Analog ←</string>
+    <string name="inputMapActivity_btnAD">Analog ↓</string>
+    <string name="inputMapActivity_btnAU">Analog ↑</string>
+    
+    <!-- Settings -->
+    <string name="Hardware">Hardware</string>
+    <string name="Other">Other</string>
+    <string name="touch_screen_summary">On-screen controller setttings</string>
+    <string name="touch_screen_title">Touchscreen</string>
+    <string name="input_screen_summary">Controller settings</string>
+    <string name="input_screen_title">Input</string>
+    <string name="video_screen_summary">Graphic settings</string>
+    <string name="video_screen_title">Video</string>
+    <string name="audio_screen_summary">Sound settings</string>
+    <string name="audio_screen_title">Audio</string>
+    <string name="advanced_screen_summary">advanced/debugging settings</string>
+    <string name="advanced_screen_title">Advanced</string>
+    <string name="reset_summary">Restore default settings</string>
+    <string name="reset_title">Reset</string>
+    <string name="preferences">Settings</string>
+    <string name="settings_title">Settings</string>
     <string name="displayFps_title">Framerate</string>
     <string name="displayFps_summary">Display FPS on screen</string>
-    <string name="audioEnabled_title">Enabled</string>
+    <string name="audioEnabled_title">Enable Audio</string>
     <string name="audioEnabled_summary">Enable/Disable audio output</string>
-    <!-- Path Preferences (selected path will become the summary) -->
-    <!-- '~' indicates rel path & use storage dir if path doesn't exist -->
-    <!-- '!' indicates rel path & create parent dirs if path doesn't exist -->
-    <string name="pathPreference_dialogTitle">Selected folder: %1$s</string>
-    <string name="pathGameSaves_title">Game save folder</string>
-    <string name="pathGameSaves_default">!project64</string>
+    <string name="advancedSettings_title">Hide Advanced Settings</string>
+    <string name="advancedSettings_summary">Remove more complex settings that most users will not want to use</string>
+    <string name="debuggerEnabled_title">Enable debugger</string>
+    <string name="debuggerEnabled_summary">Enable/Disable extra options to try and debug why games do not work</string>
+    <string name="BlockLinking_title">Advanced Block Linking</string>
+    <string name="BlockLinking_summary">Precompile blocks together</string>
+    <string name="GenerateLogFiles_title">Generate Log Files</string>
+    <string name="GenerateLogFiles_summary">Log recompiler code</string>
+    <string name="logging">Logging</string>
+    <string name="project64core">Project64 Core</string>
+    <string name="logging_project64core">Logging - Project64 Core</string>
+    <string name="TraceError">Error</string>
+    <string name="TraceWarning">Warning</string>
+    <string name="TraceNotice">Notice</string>
+    <string name="TraceInfo">Info</string>
+    <string name="TraceDebug">Debug</string>
+    <string name="TraceVerbose">Verbose</string>
+    <string name="TraceMD5">MD5</string>
+    <string name="TraceThread">Thread</string>
+    <string name="TracePath">Path</string>
+    <string name="TraceSettings">Settings</string>
+    <string name="TraceUnknown">Unknown</string>
+    <string name="TraceAppInit">App Init</string>
+    <string name="TraceAppCleanup">App Cleanup</string>
+    <string name="TraceN64System">N64 System</string>
+    <string name="TracePlugins">Plugins</string>
+    <string name="TraceGFXPlugin">GFX Plugin</string>
+    <string name="TraceAudioPlugin">Audio Plugin</string>
+    <string name="TraceControllerPlugin">Controller Plugin</string>
+    <string name="TraceRSPPlugin">RSP Plugin</string>
+    <string name="TraceRSP">RSP</string>
+    <string name="TraceAudio">Audio</string>
+    <string name="TraceRegisterCache">Register Cache</string>
+    <string name="TraceRecompiler">Recompiler</string>
+    <string name="TraceTLB">TLB</string>
+    <string name="TraceProtectedMem">Protected Mem</string>
+    <string name="TraceUserInterface">User Interface</string>
+    <string name="TraceRomList">Rom List</string>
+    <string name="TraceExceptionHandler">Exception Handler</string>
+    <string name="CpuType">CPU core style</string>
+    <string name="Interpreter">Interpreter</string>
+    <string name="Recompiler">Recompiler</string>
+    <string name="SyncCores">Synchronize Cores</string>
+    <string name="Advanced">Advanced</string>
+    <string name="CpuUsage_title">CPU Usage</string>
+    <string name="CpuUsage_summary">Show the cpu used by different components</string>
+    <string name="DisplaySpeed_title">Display Speed</string>
+    <string name="LimitFPS_summary">Limit the max speed executed</string>
+    <string name="LimitFPS_title">Limit FPS</string>
+    <string name="DisplaySpeed_summary">Show the speed of the emulation</string>
+    <string name="DisplaySpeedDisplay">Display Speed Display</string>
+    <string name="DListPerSecond">Display lists per second</string>
+    <string name="PercentageOfSpeed">Percentage of full speed</string>
+    <string name="VerticalInterruptsPerSecond">Vertical interrupts per second</string>
+    <string name="RecordExecutionTimes_title">Record Execution Times</string>
+    <string name="RecordExecutionTimes_summary">Record how long each block executes for</string>
+    <string name="ForceGfxReset_title">Reset GFX Plugin</string>
+    <string name="ForceGfxReset_summary">Always reload GFX plugin</string>
+    <string name="touchscreenScale_title">Button scale</string>
+    <string name="touchscreenLayout_title">Touchscreen layout</string>
+    <string name="gamepad_summary">Configure gamepad to use in game</string>
+    <string name="gamepad_title">Gamepad settings</string>
+    <string name="settings_reset_title">Reset settings</string>
+    <string name="settings_reset_message">Reset all settings back to their defaults?</string>
+        
+    <string-array name="DisplaySpeed_list">
+        <item>@string/DListPerSecond</item>
+        <item>@string/PercentageOfSpeed</item>
+        <item>@string/VerticalInterruptsPerSecond</item>
+    </string-array>
+    <string-array name="DisplaySpeed_values" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>0</item>
+    </string-array>
+
+    <string-array name="cpu_core_list">
+        <item>@string/Interpreter</item>
+        <item>@string/Recompiler</item>
+        <item>@string/SyncCores</item>
+    </string-array>
+    <string-array name="cpu_core_values" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    
+    <string-array name="trace_severity_list">
+        <item>@string/TraceError</item>
+        <item>@string/TraceWarning</item>
+        <item>@string/TraceNotice</item>
+        <item>@string/TraceInfo</item>
+        <item>@string/TraceDebug</item>
+        <item>@string/TraceVerbose</item>
+    </string-array>
+    <string-array name="trace_severity_values" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
 
     <!-- Confirmation Dialogs -->
     <string name="confirmResetGame_title">Reset game?</string>
     <string name="confirmResetGame_message">The game will go back to a clear state, all progress made will be lost.</string>
-
+    <string name="GetSaveSupport_title">Save Support</string>
+    <string name="GetSaveSupport_message">Save support is a one time purchase and the only purchase in Project64.\n\nProject64 may not be perfect and making this as an upgrade it allows you to play and test the emulator before you have to spend any money.\n\nThis is also a good way for you to support and give back to the creation of the emulator..</string>
+    <string name="GetSaveSupport_OkButton">Purchase</string>
+    
     <!-- Asset Extractor -->
     <string name="assetExtractor_startingUp">Starting Up …</string>
     <string name="assetExtractor_version">version</string>

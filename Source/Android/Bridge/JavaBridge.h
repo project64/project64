@@ -5,14 +5,14 @@
 #include <Project64-core/Plugins/PluginClass.h>
 #include <jni.h>
 
-class JavaBridge : 
-	public RenderWindow
+class JavaBridge :
+    public RenderWindow
 {
 public:
-	JavaBridge (JavaVM* vm);
+    JavaBridge (JavaVM* vm);
 
     //Render window functions
-	void GfxThreadInit();
+    void GfxThreadInit();
     void GfxThreadDone();
     void SwapWindow();
 
@@ -22,14 +22,17 @@ public:
     void RomListLoaded(void);
 
     //Notification
-    void DisplayMessage(const char * Message);
+    void DisplayError(const char * Message);
+    void DisplayMessage(const char * Message, int DisplayTime);
+    void DisplayMessage2(const char * Message);
+    void EmulationStopped(void);
 
 private:
-	JavaBridge(void);		                    // Disable default constructor
-	JavaBridge(const JavaBridge&);				// Disable copy constructor
+    JavaBridge(void);		                    // Disable default constructor
+    JavaBridge(const JavaBridge&);				// Disable copy constructor
     JavaBridge& operator=(const JavaBridge&);	// Disable assignment
 
-	JavaVM* m_vm;
+    JavaVM* m_vm;
     jclass m_GalleryActivityClass;
     jclass m_NotifierClass;
 };

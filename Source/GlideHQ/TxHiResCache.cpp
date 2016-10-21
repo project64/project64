@@ -75,7 +75,7 @@ TxHiResCache::~TxHiResCache()
         std::string filename = _ident + "_HIRESTEXTURES.dat";
 
         CPath cachepath(_path.c_str(), "");
-        cachepath.AppendDirectory("cache");
+        cachepath.AppendDirectory("Cache");
         int config = _options & (HIRESTEXTURES_MASK | COMPRESS_HIRESTEX | COMPRESSION_MASK | TILE_HIRESTEX | FORCE16BPP_HIRESTEX | GZ_HIRESTEXCACHE | LET_TEXARTISTS_FLY);
 
         TxCache::save(cachepath, filename.c_str(), config);
@@ -118,7 +118,7 @@ TxCache((options & ~GZ_TEXCACHE), 0, path, ident, callback)
         /* find it on disk */
         std::string filename = _ident + "_HIRESTEXTURES.dat";
         CPath cachepath(_path.c_str(), "");
-        cachepath.AppendDirectory("cache");
+        cachepath.AppendDirectory("Cache");
         int config = _options & (HIRESTEXTURES_MASK | COMPRESS_HIRESTEX | COMPRESSION_MASK | TILE_HIRESTEX | FORCE16BPP_HIRESTEX | GZ_HIRESTEXCACHE | LET_TEXARTISTS_FLY);
 
         _haveCache = TxCache::load(cachepath, filename.c_str(), config);

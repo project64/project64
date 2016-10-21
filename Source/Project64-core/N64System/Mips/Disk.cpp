@@ -40,7 +40,7 @@ void DiskCommand()
     ::GetLocalTime(&sysTime);
 
     //BCD format needed for 64DD RTC
-    uint8_t year = (uint8_t)(((sysTime.wYear / 10) << 4) | (sysTime.wYear % 10));
+    uint8_t year = (uint8_t)(((sysTime.wYear / 10 % 10) << 4) | (sysTime.wYear % 10));
     uint8_t month = (uint8_t)(((sysTime.wMonth / 10) << 4) | (sysTime.wMonth % 10));
     uint8_t day = (uint8_t)(((sysTime.wDay / 10) << 4) | (sysTime.wDay % 10));
     uint8_t hour = (uint8_t)(((sysTime.wHour / 10) << 4) | (sysTime.wHour % 10));
@@ -54,7 +54,7 @@ void DiskCommand()
     localtime_r(&ltime, &result);
 
     //BCD format needed for 64DD RTC
-    uint8_t year = (uint8_t)(((result.tm_year / 10) << 4) | (result.tm_year % 10));
+    uint8_t year = (uint8_t)(((result.tm_year / 10 % 10) << 4) | (result.tm_year % 10));
     uint8_t month = (uint8_t)((((result.tm_mon + 1) / 10) << 4) | ((result.tm_mon + 1) % 10));
     uint8_t day = (uint8_t)(((result.tm_mday / 10) << 4) | (result.tm_mday % 10));
     uint8_t hour = (uint8_t)(((result.tm_hour / 10) << 4) | (result.tm_hour % 10));

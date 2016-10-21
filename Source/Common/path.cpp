@@ -13,10 +13,12 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <unistd.h>
+
 #include <libgen.h> /* dirname() */
 #include <limits.h> /* PATH_MAX, realpath() */
 #include <stdlib.h> /* calloc(), realpath() */
 
+#include <errno.h>
 #endif
 #include "Platform.h"
 
@@ -140,7 +142,7 @@ CPath::CPath(const char * lpszPath)
 
 CPath::CPath(const char * lpszPath, const char * NameExten)
 {
-    WriteTrace(TracePath, TraceDebug, "Start (lpszPath: \"%s\" NameExten: \"%s\")",lpszPath ? lpszPath: "(null)",NameExten ? NameExten : "(null)");
+    WriteTrace(TracePath, TraceDebug, "Start (lpszPath: \"%s\" NameExten: \"%s\")", lpszPath ? lpszPath : "(null)", NameExten ? NameExten : "(null)");
     Init();
 #ifdef _WIN32
     SetDriveDirectory(lpszPath);
@@ -148,7 +150,7 @@ CPath::CPath(const char * lpszPath, const char * NameExten)
     SetDirectory(lpszPath);
 #endif
     SetNameExtension(NameExten);
-    WriteTrace(TracePath, TraceDebug, "Done (m_strPath: \"%s\")",m_strPath.c_str());
+    WriteTrace(TracePath, TraceDebug, "Done (m_strPath: \"%s\")", m_strPath.c_str());
 }
 
 //-------------------------------------------------------------
@@ -408,7 +410,7 @@ void CPath::GetComponents(std::string* pDirectory, std::string* pName, std::stri
     if (pExtension)
     {
         *pExtension = buff_ext;
-    }   
+    }
     WriteTrace(TracePath, TraceDebug, "Done (dir: \"%s\" name: \"%s\" ext: \"%s\")",buff_dir,buff_name,buff_ext);
 }
 #endif
@@ -595,6 +597,11 @@ void CPath::SetComponents(const char * lpszDrive, const char * lpszDirectory, co
     char buff_fullname[MAX_PATH];
 
     memset(buff_fullname, 0, sizeof(buff_fullname));
+    if (lpszDirectory == NULL || strlen(lpszDirectory) == 0)
+    {
+        static char empty_dir[] = { DIRECTORY_DELIMITER, '\0' };
+        lpszDirectory = empty_dir;
+    }
 
     _makepath(buff_fullname, lpszDrive, lpszDirectory, lpszName, lpszExtension);
     m_strPath.erase();
@@ -620,7 +627,7 @@ void CPath::SetComponents(const char * lpszDirectory, const char * lpszName, con
     {
         strncat(buff_fullname,lpszName,sizeof(buff_fullname));
     }
-    if (lpszExtension != NULL)
+    if (lpszExtension != NULL && lpszExtension[0] != '\0')
     {
         if (lpszExtension[0] != '.')
         {
@@ -976,6 +983,7 @@ bool CPath::IsDirectory() const
 //-------------------------------------------------------------
 bool CPath::DirectoryExists() const
 {
+    WriteTrace(TracePath, TraceDebug, "m_strPath = %s",m_strPath.c_str());
 #ifdef _WIN32
     // Create test path
     CPath TestPath(m_strPath.c_str());
@@ -985,19 +993,25 @@ bool CPath::DirectoryExists() const
     TestPath.SetNameExtension(DirName.c_str());
 
     WIN32_FIND_DATA	FindData;
-    HANDLE          hFindFile = FindFirstFile((const char *)TestPath, &FindData); // Find anything
-    bool            bGotFile = (hFindFile != INVALID_HANDLE_VALUE);
+    HANDLE hFindFile = FindFirstFile((const char *)TestPath, &FindData); // Find anything
+    bool res = (hFindFile != INVALID_HANDLE_VALUE);
 
     if (hFindFile != NULL)	// Make sure we close the search
     {
         FindClose(hFindFile);
     }
 
-    return bGotFile;
 #else
+    std::string	PathText;
+    GetDirectory(PathText);
+    StripTrailingBackslash(PathText);
+    WriteTrace(TracePath, TraceDebug, "Checking if directory \"%s\" exists",PathText.c_str());
+
     struct stat fileinfo;
-    return stat(m_strPath.c_str(), &fileinfo) == 0 && S_ISDIR(fileinfo.st_mode);
+    bool res = stat(PathText.c_str(), &fileinfo) == 0 && S_ISDIR(fileinfo.st_mode);
 #endif
+    WriteTrace(TracePath, TraceDebug, "Exist = %s",res ? "True" : "False");
+    return res;
 }
 
 //-------------------------------------------------------------
@@ -1046,7 +1060,7 @@ bool CPath::Delete(bool bEvenIfReadOnly) const
     SetFileAttributes(m_strPath.c_str(), FILE_ATTRIBUTE_NORMAL);
     return DeleteFile(m_strPath.c_str()) != 0;
 #else
-    return false;
+    return unlink(m_strPath.c_str()) == 0;
 #endif
 }
 
@@ -1059,6 +1073,11 @@ bool CPath::Delete(bool bEvenIfReadOnly) const
 //-------------------------------------------------------------
 bool CPath::CopyTo(const char * lpcszTargetFile, bool bOverwrite)
 {
+    if (lpcszTargetFile == NULL)
+    {
+        return false;
+    }
+    WriteTrace(TracePath, TraceDebug, "copy \"%s\" to \"%s\"",m_strPath.c_str(),lpcszTargetFile);
 #ifdef _WIN32
     // Check if the target file exists
     CPath TargetFile(lpcszTargetFile);
@@ -1082,7 +1101,89 @@ bool CPath::CopyTo(const char * lpcszTargetFile, bool bOverwrite)
     // the source after copying
     return CopyFile(m_strPath.c_str(), lpcszTargetFile, !bOverwrite) != 0;
 #else
-    return false;
+
+    bool res = true;
+    WriteTrace(TracePath, TraceDebug, "opening \"%s\" for reading",m_strPath.c_str());
+    FILE * infile = fopen(m_strPath.c_str(), "rb");
+    if(infile == NULL)
+    {
+        WriteTrace(TracePath, TraceWarning, "failed to open m_strPath = %s",m_strPath.c_str());
+        res = false;
+    }
+    else
+    {
+        WriteTrace(TracePath, TraceDebug, "opened \"%s\"",m_strPath.c_str());
+    }
+
+    FILE * outfile = NULL;
+    if (res)
+    {
+        WriteTrace(TracePath, TraceDebug, "opening \"%s\" for writing",lpcszTargetFile);
+        outfile = fopen(lpcszTargetFile, "wb");
+        if (outfile == NULL)
+        {
+            WriteTrace(TracePath, TraceWarning, "failed to open m_strPath = %s errno=%d",lpcszTargetFile, errno);
+            res = false;
+        }
+        else
+        {
+            WriteTrace(TracePath, TraceDebug, "opened \"%s\"",lpcszTargetFile);
+        }
+    }
+
+    if (res)
+    {
+        WriteTrace(TracePath, TraceDebug, "copying data");
+        while (!feof(infile))
+        {
+            char buffer[1024];
+            size_t bytes = fread(buffer, 1, sizeof(buffer), infile); 
+            if (ferror(infile))
+            {
+                WriteTrace(TracePath, TraceWarning, "failed to read from %s", m_strPath.c_str());
+                res = false;
+                break;
+            }
+            if (!feof(infile))
+            {
+                size_t written = fwrite(buffer, 1, sizeof(buffer), outfile);
+            }
+            if (ferror(outfile))
+            {
+                WriteTrace(TracePath, TraceWarning, "failed to write to %s, ferror(outfile) = %X", lpcszTargetFile, ferror(outfile));
+                res = false;
+                break;
+            }
+        }
+    }
+
+    struct stat ts;
+    if (res)
+    {
+        if (fstat(fileno(infile), &ts) != 0)
+        {
+            WriteTrace(TracePath, TraceWarning, "fstat failed on %s, ferror(infile) = %X", m_strPath.c_str(), ferror(infile));
+            res = false;
+        }
+    }
+    if (res)
+    {
+        if (fchmod(fileno(outfile),ts.st_mode) != 0)
+        {
+            WriteTrace(TracePath, TraceWarning, "fchmod failed on %s, errno = %X", lpcszTargetFile, errno);
+            res = false;
+        }
+    }
+    if (infile != NULL)
+    {
+        fclose(infile);
+    }
+    if (outfile != NULL)
+    {
+        fclose(outfile);
+    }
+    WriteTrace(TracePath, TraceDebug, "Done, res: %s",res ? "true" : "false");
+    return res;
 #endif
 }
 
@@ -1268,7 +1369,7 @@ bool CPath::FindNext()
     }
 #else
     dirent* pEntry;
-    while ( pEntry = readdir ((DIR*)m_OpenedDir)) 
+    while (pEntry = readdir((DIR*)m_OpenedDir))
     {
         uint32_t dwFileAttributes = pEntry->d_type == DT_DIR ? FIND_ATTRIBUTE_SUBDIR : FIND_ATTRIBUTE_FILES;
 
@@ -1276,7 +1377,7 @@ bool CPath::FindNext()
 
         // ii.) Compare candidate to attributes, and filter out the "." and ".." folders
         if (!AttributesMatch(m_dwFindFileAttributes, dwFileAttributes) ||
-            strcmp(pEntry->d_name,".") == 0 || 
+            strcmp(pEntry->d_name,".") == 0 ||
             strcmp(pEntry->d_name,"..") == 0 ||
             !wildcmp(m_FindWildcard.c_str(),pEntry->d_name))
         {
@@ -1307,7 +1408,7 @@ bool CPath::FindNext()
                 UpDirectory();
             }
             SetNameExtension(pEntry->d_name);
-            WriteTrace(TracePath, TraceVerbose, "m_strPath: %s pEntry->d_name: %s", m_strPath.c_str(),pEntry->d_name);
+            WriteTrace(TracePath, TraceVerbose, "m_strPath: %s pEntry->d_name: %s", m_strPath.c_str(), pEntry->d_name);
         }
         if ((FIND_ATTRIBUTE_SUBDIR & dwFileAttributes) == FIND_ATTRIBUTE_SUBDIR)
         {
@@ -1346,24 +1447,34 @@ bool CPath::ChangeDirectory()
 //-------------------------------------------------------------
 bool CPath::DirectoryCreate(bool bCreateIntermediates /*= TRUE*/)
 {
+    WriteTrace(TracePath, TraceDebug, "m_strPath = %s bCreateIntermediates = %s",m_strPath.c_str(),bCreateIntermediates ? "true" : "false");
     std::string	PathText;
     bool	bSuccess;
+
+    if (DirectoryExists())
+    {
+        WriteTrace(TracePath, TraceDebug, "Directory already exists, res = true");
+        return true;
+    }
 
 #ifdef _WIN32
     GetDriveDirectory(PathText);
     StripTrailingBackslash(PathText);
+    WriteTrace(TracePath, TraceDebug, "Create %s",PathText.c_str());
     bSuccess = ::CreateDirectory(PathText.c_str(), NULL) != 0;
 #else
     GetDirectory(PathText);
     StripTrailingBackslash(PathText);
-    if (DirectoryExists())
+    WriteTrace(TracePath, TraceDebug, "Create %s",PathText.c_str());
+    bSuccess = mkdir(PathText.c_str(), S_IRWXU) == 0;
+    if (!bSuccess)
     {
-        return true;
+        WriteTrace(TracePath, TraceWarning, "failed to create \"%s\" errno: %d",PathText.c_str(), errno);
     }
-    bSuccess = mkdir(PathText.c_str(), 0700) == 0;
 #endif
     if (!bSuccess && bCreateIntermediates)
     {
+        WriteTrace(TracePath, TraceDebug, "failed creating intermediates");
         std::string::size_type nDelimiter = PathText.rfind(DIRECTORY_DELIMITER);
         if (nDelimiter == std::string::npos)
         {
@@ -1375,6 +1486,7 @@ bool CPath::DirectoryCreate(bool bCreateIntermediates /*= TRUE*/)
 
         return SubPath.DirectoryCreate() ? DirectoryCreate(false) : false;
     }
+    WriteTrace(TracePath, TraceDebug, "res = %s",bSuccess ? "true" : "false");
     return bSuccess;
 }
 
@@ -1496,9 +1608,9 @@ bool CPath::wildcmp(const char *wild, const char *string)
 {
     const char *cp = NULL, *mp = NULL;
 
-    while ((*string) && (*wild != '*')) 
+    while ((*string) && (*wild != '*'))
     {
-        if ((*wild != *string) && (*wild != '?')) 
+        if ((*wild != *string) && (*wild != '?'))
         {
             return 0;
         }
@@ -1506,30 +1618,30 @@ bool CPath::wildcmp(const char *wild, const char *string)
         string++;
     }
 
-    while (*string) 
+    while (*string)
     {
-        if (*wild == '*') 
+        if (*wild == '*')
         {
-            if (!*++wild) 
+            if (!*++wild)
             {
                 return 1;
             }
             mp = wild;
             cp = string+1;
-        } 
-        else if ((*wild == *string) || (*wild == '?')) 
+        }
+        else if ((*wild == *string) || (*wild == '?'))
         {
             wild++;
             string++;
-        } 
-        else 
+        }
+        else
         {
             wild = mp;
             string = cp++;
         }
     }
 
-    while (*wild == '*') 
+    while (*wild == '*')
     {
         wild++;
     }

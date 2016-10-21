@@ -12,6 +12,7 @@
 #include <Common/Trace.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Settings/SettingsClass.h>
+#include <Project64-core/N64System/N64Class.h>
 #include "NotificationClass.h"
 #include "JavaBridge.h"
 #if defined(ANDROID)
@@ -35,16 +36,39 @@ CNotificationImp::~CNotificationImp()
 {
 }
 
-void CNotificationImp::DisplayError(const char * /*Message*/) const
+void CNotificationImp::DisplayError(const char * Message) const
 {
+#ifdef ANDROID
+    g_JavaBridge->DisplayError(Message);
+#else
+    Message = NULL; // not used
+#endif
 }
 
-void CNotificationImp::DisplayError(LanguageStringID /*StringID*/) const
+void CNotificationImp::DisplayError(LanguageStringID StringID) const
 {
+    if (g_Lang)
+    {
+        DisplayError(g_Lang->GetString(StringID).c_str());
+    }
 }
 
-void CNotificationImp::FatalError(LanguageStringID /*StringID*/) const
+void CNotificationImp::FatalError(LanguageStringID StringID) const
 {
+    if (g_Lang)
+    {
+        FatalError(g_Lang->GetString(StringID).c_str());
+    }
+}
+
+void CNotificationImp::FatalError(const char * Message) const
+{
+    WriteTrace(TraceUserInterface, TraceError, Message);
+    DisplayError(Message);
+    if (g_BaseSystem)
+    {
+        g_BaseSystem->CloseCpu();
+    }
 }
 
 void CNotificationImp::DisplayMessage(int DisplayTime, LanguageStringID StringID) const
@@ -52,42 +76,29 @@ void CNotificationImp::DisplayMessage(int DisplayTime, LanguageStringID StringID
     DisplayMessage(DisplayTime, g_Lang->GetString(StringID).c_str());
 }
 
-void CNotificationImp::FatalError(const char * Message) const
-{
-    DisplayMessage(0,Message);
-}
-
 //User Feedback
 void CNotificationImp::DisplayMessage(int DisplayTime, const char * Message) const
 {
 #ifdef ANDROID
-    __android_log_print(ANDROID_LOG_VERBOSE, "PJ64-Bridge", "%s", Message);
-
     if (g_JavaBridge == NULL) { return; }
-
-    /*if (m_NextMsg > 0 || DisplayTime > 0)
-    {
-        time_t Now = time(NULL);
-        if (DisplayTime == 0 && Now < m_NextMsg)
-        {
-            return;
-        }
-        if (DisplayTime > 0)
-        {
-            m_NextMsg = Now + DisplayTime;
-        }
-        if (m_NextMsg == 0)
-        {
-            m_NextMsg = 0;
-        }
-    }*/
-
-    g_JavaBridge->DisplayMessage(Message);
+    g_JavaBridge->DisplayMessage(Message, DisplayTime);
+#else
+    // ignore warning usage
+    DisplayTime = DisplayTime;
+    Message = Message;
 #endif
 }
 
-void CNotificationImp::DisplayMessage2(const char * /*Message*/) const
+void CNotificationImp::DisplayMessage2(const char * Message) const
 {
+#ifdef ANDROID
+    if (g_JavaBridge == NULL) { return; }
+
+    g_JavaBridge->DisplayMessage2(Message);
+#else
+    // ignore warning usage
+    Message = Message;
+#endif
 }
 
 // Ask a Yes/No Question to the user, yes = true, no = false
@@ -100,27 +111,12 @@ void CNotificationImp::BreakPoint(const char * FileName, int32_t LineNumber)
 {
     if (g_Settings->LoadBool(Debugger_Enabled))
     {
-        DisplayError(stdstr_f("Break point found at\n%s\n%d", FileName, LineNumber).c_str());
-#ifndef _WIN32
-		__builtin_trap();
-#endif
-#ifdef tofix
-		if (g_BaseSystem) 
-		{
-			g_BaseSystem->CloseCpu();
-		}
-#endif
+        FatalError(stdstr_f("Break point found at\n%s\nLine: %d", FileName, LineNumber).c_str());
     }
     else
     {
-        DisplayError("Fatal Error: Stopping emulation");
-#ifdef tofix
-		if (g_BaseSystem) 
-		{
-			g_BaseSystem->CloseCpu();
-		}
-#endif
-	}
+        FatalError("Fatal Error: Emulation stopped");
+    }
 }
 
 void CNotificationImp::AppInitDone(void)

@@ -351,6 +351,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(STR_FR_VIS, "Vertical interrupts per second");
     DEF_STR(STR_FR_DLS, "Display lists per second");
     DEF_STR(STR_FR_PERCENT, "Percentage of full speed");
+    DEF_STR(STR_FR_DLS_VIS, "VI/s & DL/s");
 
     // Increase speed
     DEF_STR(STR_INSREASE_SPEED, "Increase Game Speed");
@@ -439,6 +440,22 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(STR_SHORTCUT_SAVESLOT, "Save Slots");
 
     /*********************************************************************************
+    * Support Window                                                                       *
+    *********************************************************************************/
+    DEF_STR(MSG_SUPPORT_TITLE, "Support Project64");
+    DEF_STR(MSG_SUPPORT_INFO, "Project64 is a software package designed to emulate a Nintendo64 video game system on a Microsoft Windows based PC. This allows you to play real N64 software in much the same way as it would be on the original hardware system.\n\nIf you like Project64 and have gotten some value out of it then please support project64 as either a thank you, or your desire to see it continually improved.\n\nIf you have supported project64:");
+    DEF_STR(MSG_SUPPORT_ENTER_CODE, "Enter notification code");
+    DEF_STR(MSG_SUPPORT_PROJECT64, "Support Project64");
+    DEF_STR(MSG_SUPPORT_CONTINUE, "Continue");
+    DEF_STR(MSG_SUPPORT_ENTER_SUPPORT_CODE, "Please enter the support code");
+    DEF_STR(MSG_SUPPORT_INCORRECT_CODE, "Incorrect support code");
+    DEF_STR(MSG_SUPPORT_COMPLETE, "Thank you");
+    DEF_STR(MSG_SUPPORT_ENTER_CODE_TITLE, "Enter code");
+    DEF_STR(MSG_SUPPORT_ENTER_CODE_DESC, "Please enter the code in the email");
+    DEF_STR(MSG_SUPPORT_OK, "OK");
+    DEF_STR(MSG_SUPPORT_CANCEL, "Cancel");
+
+    /*********************************************************************************
     * Messages                                                                       *
     *********************************************************************************/
     DEF_STR(MSG_CPU_PAUSED, "*** CPU PAUSED ***");
@@ -522,7 +539,7 @@ bool CLanguage::LoadCurrentStrings(void)
         m_LanguageLoaded = true;
         return true;
     }
-    
+
     LanguageList LangList = GetLangList();
     stdstr       Filename;
 

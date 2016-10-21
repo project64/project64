@@ -43,9 +43,11 @@
 #include "Version.h"
 #include <Settings/Settings.h>
 #include <Common/CriticalSection.h>
+#include <Common/DateTimeClass.h>
 #include <Common/path.h>
 #include <png/png.h>
 #include <memory>
+#include <Common/SmartPointer.h>
 
 #include "Config.h"
 #include "Util.h"
@@ -76,14 +78,7 @@ int evoodoo = 0;
 int ev_fullscreen = 0;
 
 #ifdef _WIN32
-#define WINPROC_OVERRIDE
 HINSTANCE hinstDLL = NULL;
-#endif
-
-#ifdef WINPROC_OVERRIDE
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-WNDPROC oldWndProc = NULL;
-WNDPROC myWndProc = NULL;
 #endif
 
 #ifdef ALTTAB_FIX
@@ -98,8 +93,8 @@ int64 perf_next;
 #endif
 
 #ifdef FPS
-CDateTime  fps_last;
-CDateTime  fps_next;
+HighResTimeStamp fps_last;
+HighResTimeStamp fps_next;
 float      fps = 0.0f;
 uint32_t   fps_count = 0;
 
@@ -287,7 +282,7 @@ void ConfigWrapper()
 #else
         g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
 #endif
-    );
+        );
 }
 
 void UseUnregisteredSetting(int /*SettingID*/)
@@ -1099,7 +1094,6 @@ void ReleaseGfx()
     rdp.window_changed = TRUE;
 }
 
-
 #ifdef _WIN32
 CriticalSection * g_ProcessDListCS = NULL;
 
@@ -1285,11 +1279,6 @@ void CALL CloseDLL(void)
 {
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
-    // re-set the old window proc
-#ifdef WINPROC_OVERRIDE
-    SetWindowLongPtr(gfx.hWnd, GWLP_WNDPROC, (LONG_PTR)oldWndProc);
-#endif
-
 #ifdef ALTTAB_FIX
     if (hhkLowLevelKybd)
     {
@@ -1415,15 +1404,6 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
 
     gfx = Gfx_Info;
 
-#ifdef WINPROC_OVERRIDE
-    // [H.Morii] inject our own winproc so that "alt-enter to fullscreen"
-    // message is shown when the emulator window is activated.
-    WNDPROC curWndProc = (WNDPROC)GetWindowLongPtr(gfx.hWnd, GWLP_WNDPROC);
-    if (curWndProc && curWndProc != (WNDPROC)WndProc) {
-        oldWndProc = (WNDPROC)SetWindowLongPtr(gfx.hWnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
-    }
-#endif
-
     util_init();
     math_init();
     TexCacheInit();
@@ -1437,7 +1417,7 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
 #else
         g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
 #endif
-    );
+        );
 
     grGlideInit();
     grSstSelect(0);
@@ -1817,7 +1797,7 @@ void CALL UpdateScreen(void)
 
     // Check frames per second
     fps_next.SetToNow();
-    double diff_secs = fps_next.DiffernceMilliseconds(fps_last);
+    double diff_secs = (double)(fps_next.GetMicroSeconds() - fps_last.GetMicroSeconds()) / 1000000;
     if (diff_secs > 0.5f)
     {
         fps = (float)(fps_count / diff_secs);
@@ -2039,11 +2019,11 @@ void newSwapBuffers()
     {
         if (g_settings->clock_24_hr)
         {
-            output(956.0f, 0, 1, CDateTime().SetToNow().Format("%H:%M:%S").c_str(), 0);
+            output(956.0f, 0, 1, CDateTime().Format("%H:%M:%S").c_str(), 0);
         }
         else
         {
-            output(930.0f, 0, 1, CDateTime().SetToNow().Format("%I:%M:%S %p").c_str(), 0);
+            output(930.0f, 0, 1, CDateTime().Format("%I:%M:%S %p").c_str(), 0);
         }
     }
     //hotkeys
@@ -2147,7 +2127,7 @@ void newSwapBuffers()
         info.size = sizeof(GrLfbInfo_t);
         if (grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_565, GR_ORIGIN_UPPER_LEFT, FXFALSE, &info))
         {
-            std::auto_ptr<uint8_t> ssimg_buffer(new uint8_t[image_width * image_height * 3]);
+            AUTO_PTR<uint8_t> ssimg_buffer(new uint8_t[image_width * image_height * 3]);
             uint8_t * ssimg = ssimg_buffer.get();
             int sspos = 0;
             uint32_t offset_src = info.strideInBytes * offset_y;
@@ -2388,27 +2368,6 @@ void CALL SurfaceChanged(int width, int height)
 {
     g_width = width;
     g_height = height;
-}
-#endif
-
-#ifdef WINPROC_OVERRIDE
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    switch (msg)
-    {
-    case WM_ACTIVATEAPP:
-        if (wParam == TRUE && !GfxInitDone) rdp.window_changed = TRUE;
-        break;
-    case WM_PAINT:
-        if (!GfxInitDone) rdp.window_changed = TRUE;
-        break;
-
-        /*    case WM_DESTROY:
-        SetWindowLong (gfx.hWnd, GWL_WNDPROC, (long)oldWndProc);
-        break;*/
-    }
-
-    return CallWindowProc(oldWndProc, hwnd, msg, wParam, lParam);
 }
 #endif
 

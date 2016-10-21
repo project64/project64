@@ -10,6 +10,7 @@
 ****************************************************************************/
 #pragma once
 
+#if defined(__i386__) || defined(_M_IX86)
 class CX86Ops
 {
 public:
@@ -304,3 +305,5 @@ private:
 };
 
 #define AddressOf(Addr) CX86Ops::GetAddressOf(5,(Addr))
+
+#endif

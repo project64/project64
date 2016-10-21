@@ -21,6 +21,7 @@ public class NativeExports
     }
     
     public static native void appInit (String BaseDir );
+    public static native String appVersion();
     public static native void StopEmulation();
     public static native void StartEmulation();
     public static native void CloseSystem();
@@ -36,6 +37,7 @@ public class NativeExports
     public static native void LoadRomList();
     public static native void RefreshRomDir(String RomDir, boolean Recursive);
     public static native void ExternalEvent(int Type);
+    public static native void ResetApplicationSettings();
 	
     public static native void onSurfaceCreated();    
     public static native void onSurfaceChanged(int width, int height); 
@@ -43,7 +45,10 @@ public class NativeExports
     
     public static native void UISettingsSaveBool(int Type, boolean Value);
     public static native void UISettingsSaveDword(int Type, int Value);
+    public static native void UISettingsSaveString(int type, String value);
 
     public static native boolean UISettingsLoadBool(int Type);
     public static native int UISettingsLoadDword(int Type);
+    public static native String UISettingsLoadString(int type);
+    public static native String UISettingsLoadStringIndex(int Type, int Index);
 }

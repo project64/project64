@@ -234,8 +234,8 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
 
         SetupTrace();
         FixDirectories();
-#ifdef _WIN32
         CMipsMemoryVM::ReserveMemory();
+#ifdef _WIN32
         IncreaseThreadPriority();
 #else
         if (!CMipsMemoryVM::SetupSegvHandler())
@@ -247,7 +247,7 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
 
         //Create the plugin container
         WriteTrace(TraceAppInit, TraceInfo, "Create Plugins");
-        g_Plugins = new CPlugins(Directory_Plugin);
+        g_Plugins = new CPlugins(Directory_Plugin, false);
 
         g_Lang = new CLanguage();
         g_Lang->LoadCurrentStrings();
@@ -319,7 +319,7 @@ void FixDirectories(void)
     }
 
     Directory.UpDirectory();
-    Directory.AppendDirectory("textures");
+    Directory.AppendDirectory("Textures");
     if (!Directory.DirectoryExists())
     {
         WriteTrace(TraceAppInit, TraceDebug, "Creating %s", (const char *)Directory);

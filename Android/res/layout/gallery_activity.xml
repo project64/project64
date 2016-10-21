@@ -7,17 +7,23 @@
     android:fitsSystemWindows="true" >
 
     <!-- activity view -->
-
-    <LinearLayout
+    <WebView
+        android:id="@+id/screen_wait"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:visibility="gone" />
+        
+    <LinearLayout
+        android:id="@+id/screen_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#4683ec"
+            android:background="?attr/background_actionbar"
             android:minHeight="?attr/actionBarSize" />
 
         <android.support.v7.widget.RecyclerView
@@ -30,7 +36,7 @@
             android:paddingLeft="@dimen/galleryHalfSpacing"
             android:paddingRight="@dimen/galleryHalfSpacing"
             android:paddingTop="@dimen/galleryHalfSpacing"
-			android:background="#F3F3F3"
+            android:background="#F3F3F3"
             android:scrollbars="vertical" />
     </LinearLayout>
 
@@ -47,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize"
-            android:background="#000000"
+            android:background="?attr/background_gallerymenu"
             />
     </RelativeLayout>
 

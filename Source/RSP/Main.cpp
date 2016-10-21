@@ -228,7 +228,7 @@ void FixMenuState(void)
 *******************************************************************/ 
 EXPORT void GetDllInfo(PLUGIN_INFO * PluginInfo)
 {
-	PluginInfo->Version = 0x0102;
+	PluginInfo->Version = 0x0103;
 	PluginInfo->Type = PLUGIN_TYPE_RSP;
 #ifdef _DEBUG
 	sprintf(PluginInfo->Name, "RSP Debug Plugin %s", VER_FILE_VERSION_STR);

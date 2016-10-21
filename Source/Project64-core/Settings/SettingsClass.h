@@ -94,13 +94,15 @@ public:
     // static functions for plugins
     static uint32_t  GetSetting(CSettings * _this, SettingID Type);
     static const char * GetSettingSz(CSettings * _this, SettingID Type, char * Buffer, int32_t BufferSize);
-    static void   SetSetting(CSettings * _this, SettingID ID, uint32_t Value);
-    static void   SetSettingSz(CSettings * _this, SettingID ID, const char * Value);
-    static void   RegisterSetting(CSettings * _this, SettingID ID, SettingID DefaultID, SettingDataType DataType,
+    static void SetSetting(CSettings * _this, SettingID ID, uint32_t Value);
+    static void SetSettingSz(CSettings * _this, SettingID ID, const char * Value);
+    static void RegisterSetting(CSettings * _this, SettingID ID, SettingID DefaultID, SettingDataType DataType,
         SettingType Type, const char * Category, const char * DefaultStr,
         uint32_t Value);
-    static uint32_t  FindSetting(CSettings * _this, const char * Name);
-    static void   FlushSettings(CSettings * _this);
+    static uint32_t FindSetting(CSettings * _this, const char * Name);
+    static void FlushSettings(CSettings * _this);
+    static void sRegisterChangeCB(CSettings * _this, SettingID Type, void * Data, SettingChangedFunc Func);
+    static void sUnregisterChangeCB(CSettings * _this, SettingID Type, void * Data, SettingChangedFunc Func);
 
     //Notification
     void NotifyCallBacks(SettingID Type);

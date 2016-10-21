@@ -47,8 +47,9 @@ public class Profile implements Comparable<Profile>
     {
         List<Profile> profiles = new ArrayList<Profile>();
         for( String name : config.keySet() )
-            if( !ConfigFile.SECTIONLESS_NAME.equals( name ) )
-                profiles.add( new Profile( isBuiltin, config.get( name ) ) );
+        {
+            profiles.add( new Profile( isBuiltin, config.get( name ) ) );      
+        }
         return profiles;
     }
     

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+  	>
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/background_actionbar"
+        android:theme="@style/Project64.Toolbar" />
+    <android.support.design.widget.TabLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/background_actionbar"
+        app:tabMode="scrollable"
+        app:tabSelectedTextColor="?attr/font_actionbar_selected"
+        app:tabTextColor="?attr/font_actionbar"
+        app:tabIndicatorColor="?attr/font_actionbar_selected"/>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+            <include layout="@layout/about_main" />
+            <include layout="@layout/about_licence" />
+        </android.support.v4.view.ViewPager>
+</LinearLayout>

@@ -15,6 +15,7 @@
 #include <Common/md5.h>
 #include <Common/Platform.h>
 #include <Common/MemoryManagement.h>
+#include <Common/SmartPointer.h>
 #include <memory>
 
 #ifdef _WIN32
@@ -38,7 +39,7 @@ CN64Rom::~CN64Rom()
 bool CN64Rom::AllocateRomImage(uint32_t RomFileSize)
 {
     WriteTrace(TraceN64System, TraceDebug, "Allocating memory for rom");
-    std::auto_ptr<uint8_t> ImageBase(new uint8_t[RomFileSize + 0x1000]);
+    AUTO_PTR<uint8_t> ImageBase(new uint8_t[RomFileSize + 0x1000]);
     if (ImageBase.get() == NULL)
     {
         SetError(MSG_MEM_ALLOC_ERROR);
@@ -288,6 +289,8 @@ CICChip CN64Rom::GetCicChipID(uint8_t * RomData, uint64_t * CRC)
     case 0x000000D6D5BE5580: return CIC_NUS_6106;
     case 0x000001053BC19870: return CIC_NUS_5167; //64DD CONVERSION CIC
     case 0x000000D2E53EF008: return CIC_NUS_8303; //64DD IPL
+    case 0x000000D2E53EF39F: return CIC_NUS_8303; //64DD IPL TOOL
+    case 0x000000D2E53E5DDA: return CIC_NUS_DDUS; //64DD IPL US (different CIC)
     default:
         return CIC_UNKNOWN;
     }
@@ -463,6 +466,8 @@ void CN64Rom::NotificationCB(const char * Status, CN64Rom * /*_this*/)
 
 bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
 {
+    WriteTrace(TraceN64System, TraceDebug, "Start (FileLoc: \"%s\" LoadBootCodeOnly: %s)", FileLoc, LoadBootCodeOnly ? "true" : "false");
+
     UnallocateRomImage();
     m_ErrorMsg = EMPTY_STRING;
 
@@ -480,6 +485,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
         {
             //Pop up a dialog and select file
             //allocate memory for sub name and copy selected file name to var
+            WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
             return false; //remove once dialog is done
         }
         else
@@ -515,6 +521,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
 
             if (!AllocateRomImage(RomFileSize))
             {
+                WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
                 return false;
             }
 
@@ -523,12 +530,14 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
             if (!ZipFile.GetFile(i, m_ROMImage, RomFileSize))
             {
                 SetError(MSG_FAIL_IMAGE);
+                WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
                 return false;
             }
 
             if (!IsValidRomImage(m_ROMImage))
             {
                 SetError(MSG_FAIL_IMAGE);
+                WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
                 return false;
             }
             g_Notify->DisplayMessage(5, MSG_BYTESWAP);
@@ -542,6 +551,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
         if (!Loaded7zFile)
         {
             SetError(MSG_7Z_FILE_NOT_FOUND);
+            WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
             return false;
         }
     }
@@ -554,10 +564,12 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
         {
             if (m_ErrorMsg != EMPTY_STRING)
             {
+                WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
                 return false;
             }
             if (!AllocateAndLoadN64Image(FileLoc, LoadBootCodeOnly))
             {
+                WriteTrace(TraceN64System, TraceDebug, "Done (res: false)");
                 return false;
             }
         }
@@ -604,6 +616,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
         CalculateRomCrc();
     }
 
+    WriteTrace(TraceN64System, TraceDebug, "Done (res: true)");
     return true;
 }
 
@@ -757,7 +770,7 @@ void CN64Rom::SaveRomSettingID(bool temp)
     g_Settings->SaveBool(Game_TempLoaded, temp);
     g_Settings->SaveString(Game_GameName, m_RomName.c_str());
     g_Settings->SaveString(Game_IniKey, m_RomIdent.c_str());
-    g_Settings->SaveString(Game_UniqueSaveDir, stdstr_f("%s-%s", m_RomName.c_str(), m_MD5.c_str() ).c_str());
+    g_Settings->SaveString(Game_UniqueSaveDir, stdstr_f("%s-%s", m_RomName.c_str(), m_MD5.c_str()).c_str());
 
     switch (GetCountry())
     {

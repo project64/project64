@@ -169,6 +169,9 @@ enum SettingID
     Directory_PluginSelected,
     Directory_PluginUseSelected,
     Directory_PluginSync,
+    Directory_PluginSyncInitial,
+    Directory_PluginSyncSelected,
+    Directory_PluginSyncUseSelected,
     Directory_SnapShot,
     Directory_SnapShotInitial,
     Directory_SnapShotSelected,
@@ -211,13 +214,13 @@ enum SettingID
     Debugger_ShowPifErrors,
     Debugger_ShowDivByZero,
     Debugger_GenerateLogFiles,
-    Debugger_ProfileCode,
     Debugger_DisableGameFixes,
     Debugger_AppLogLevel,
     Debugger_AppLogFlush,
     Debugger_ShowDListAListCount,
     Debugger_ShowRecompMemSize,
     Debugger_DebugLanguage,
+    Debugger_RecordExecutionTimes,
 
     //Trace
     Debugger_TraceMD5,
@@ -254,6 +257,8 @@ enum SettingID
     Plugin_CONT_CurVer,
     Plugin_UseHleGfx,
     Plugin_UseHleAudio,
+    Plugin_EnableAudio,
+    Plugin_ForceGfxReset,
 
     Logging_GenerateLog,
     Logging_LogRDRamRegisters,

@@ -229,6 +229,14 @@
 					RelativePath=".\UserInterface\SettingsConfig.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\UserInterface\SupportEnterCode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\UserInterface\SupportWindow.cpp"
+					>
+				</File>
 				<Filter
 					Name="Settings Source"
 					>
@@ -457,6 +465,14 @@
 				</File>
 				<File
 					RelativePath=".\UserInterface\SettingsConfig.h"
+					>
+				</File>
+				<File
+					RelativePath=".\UserInterface\SupportEnterCode.h"
+					>
+				</File>
+				<File
+					RelativePath=".\UserInterface\SupportWindow.h"
 					>
 				</File>
 				<Filter

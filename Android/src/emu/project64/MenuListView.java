@@ -14,7 +14,7 @@ import emu.project64.R;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v7.internal.view.menu.MenuBuilder;
+import android.support.v7.view.menu.MenuBuilder;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;

@@ -18,8 +18,10 @@ import emu.project64.R;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
 import emu.project64.jni.SystemEvent;
+import emu.project64.settings.SettingsActivity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,6 +48,13 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
             public void onClick(View view)
             {
                 Boolean GamePaused = NativeExports.SettingsLoadBool(SettingsID.GameRunning_CPU_Paused.getValue());
+                Boolean RecordExecutionTimes = NativeExports.SettingsLoadBool(SettingsID.Debugger_RecordExecutionTimes.getValue());
+                Boolean ShowDebugMenu = NativeExports.SettingsLoadBool(SettingsID.Debugger_Enabled.getValue());
+                
+                if (!RecordExecutionTimes)
+                {
+                    ShowDebugMenu = false;
+                }
 
                 NativeExports.ExternalEvent( SystemEvent.SysEvent_PauseCPU_AppLostActive.getValue());
 
@@ -59,7 +68,10 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
 
                 menu.findItem(R.id.menuItem_pause).setVisible(GamePaused ? false : true);
                 menu.findItem(R.id.menuItem_resume).setVisible(GamePaused ? true : false);
-                
+                menu.findItem(R.id.menuItem_ResetFunctionTimes).setVisible(RecordExecutionTimes);
+                menu.findItem(R.id.menuItem_DumpFunctionTimes).setVisible(RecordExecutionTimes);
+                menu.findItem(R.id.menuItem_DebuggingMenu).setVisible(ShowDebugMenu);
+
                 String SaveDirectory = NativeExports.SettingsLoadString(SettingsID.Directory_InstantSave.getValue());
                 if ( NativeExports.SettingsLoadBool(SettingsID.Setting_UniqueSaveDir.getValue()))
                 {
@@ -87,6 +99,7 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
         switch (item.getItemId()) 
         {
         case R.id.menuItem_CurrentSaveState:
+        case R.id.menuItem_DebuggingMenu:
             mOpeningSubmenu = true;
             break;        
         case R.id.menuItem_SaveState:
@@ -137,12 +150,21 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
         case R.id.menuItem_HardReset:
             NativeExports.ExternalEvent( SystemEvent.SysEvent_ResetCPU_Hard.getValue());
             break;
+        case R.id.menuItem_ResetFunctionTimes:
+            NativeExports.ExternalEvent( SystemEvent.SysEvent_ResetFunctionTimes.getValue());
+            break;
+        case R.id.menuItem_DumpFunctionTimes:
+            NativeExports.ExternalEvent( SystemEvent.SysEvent_DumpFunctionTimes.getValue());
+            break;
         case R.id.menuItem_EndEmulation:
             NativeExports.ExternalEvent( SystemEvent.SysEvent_ResumeCPU_FromMenu.getValue());
             mLifecycleHandler.AutoSave();
             NativeExports.CloseSystem();
-            mActivity.finish();
             break;
+        case R.id.menuItem_settings:
+            Intent SettingsIntent = new Intent(mActivity, SettingsActivity.class);
+            mActivity.startActivityForResult( SettingsIntent, GameLifecycleHandler.RC_SETTINGS );
+            return true;
         }
         return false;
     }

@@ -10,13 +10,13 @@
 ****************************************************************************/
 #pragma once
 #include <Common/md5.h>
-#include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
+#include <Project64-core/N64System/Recompiler/RecompilerOps.h>
 #include <Project64-core/N64System/Recompiler/CodeSection.h>
 
 class CCodeBlock
 {
 public:
-    CCodeBlock(uint32_t VAddrEnter, uint8_t * CompiledLocation );
+    CCodeBlock(uint32_t VAddrEnter, uint8_t * CompiledLocation);
     ~CCodeBlock();
 
     bool Compile();
@@ -25,10 +25,10 @@ public:
     uint32_t    VAddrFirst() const { return m_VAddrFirst; }
     uint32_t    VAddrLast()  const { return m_VAddrLast; }
     uint8_t *   CompiledLocation() const { return m_CompiledLocation; }
-    int32_t     NoOfSections() const { return m_Sections.size() - 1;}
+    int32_t     NoOfSections() const { return (int32_t)m_Sections.size() - 1; }
     const CCodeSection & EnterSection() const { return *m_EnterSection; }
     const MD5Digest & Hash() const { return m_Hash; }
-    CRecompilerOps * RecompilerOps() { return m_EnterSection; }
+    CRecompilerOps *& RecompilerOps() { return m_RecompilerOps; }
     void SetVAddrFirst(uint32_t VAddr) { m_VAddrFirst = VAddr; }
     void SetVAddrLast(uint32_t VAddr) { m_VAddrLast = VAddr; }
 
@@ -47,19 +47,19 @@ private:
 
     bool AnalyseBlock();
 
-    bool CreateBlockLinkage ( CCodeSection * EnterSection );
-    void DetermineLoops     ();
-    void LogSectionInfo     ();
-    bool SetSection         ( CCodeSection * & Section, CCodeSection * CurrentSection, uint32_t TargetPC, bool LinkAllowed, uint32_t CurrentPC );
-    bool AnalyzeInstruction ( uint32_t PC, uint32_t & TargetPC, uint32_t & ContinuePC, bool & LikelyBranch, bool & IncludeDelaySlot,
-        bool & EndBlock, bool & PermLoop );
+    bool CreateBlockLinkage(CCodeSection * EnterSection);
+    void DetermineLoops();
+    void LogSectionInfo();
+    bool SetSection(CCodeSection * & Section, CCodeSection * CurrentSection, uint32_t TargetPC, bool LinkAllowed, uint32_t CurrentPC);
+    bool AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t & ContinuePC, bool & LikelyBranch, bool & IncludeDelaySlot,
+        bool & EndBlock, bool & PermLoop);
 
     uint32_t           m_VAddrEnter;
     uint32_t           m_VAddrFirst;       // the address of the first opcode in the block
     uint32_t           m_VAddrLast;        // the address of the first opcode in the block
     uint8_t*           m_CompiledLocation; // What address is this compiled at
 
-    typedef std::map<uint32_t,CCodeSection *> SectionMap;
+    typedef std::map<uint32_t, CCodeSection *> SectionMap;
     typedef std::list<CCodeSection *>      SectionList;
 
     SectionMap       m_SectionMap;
@@ -69,4 +69,5 @@ private:
     MD5Digest        m_Hash;
     uint64_t         m_MemContents[2];
     uint64_t *       m_MemLocation[2];
+    CRecompilerOps * m_RecompilerOps;
 };

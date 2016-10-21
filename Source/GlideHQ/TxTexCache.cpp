@@ -43,7 +43,7 @@ TxTexCache::~TxTexCache()
         /* dump cache to disk */
         std::string filename = _ident + "_MEMORYCACHE.dat";
         CPath cachepath(_path.c_str(), "");
-        cachepath.AppendDirectory("cache");
+        cachepath.AppendDirectory("Cache");
 
         int config = _options & (FILTER_MASK | ENHANCEMENT_MASK | COMPRESS_TEX | COMPRESSION_MASK | FORCE16BPP_TEX | GZ_TEXCACHE);
 
@@ -67,7 +67,7 @@ TxCache((options & ~GZ_HIRESTEXCACHE), cachesize, path, ident, callback)
         /* find it on disk */
         std::string filename = _ident + "_MEMORYCACHE.dat";
         CPath cachepath(_path.c_str(), "");
-        cachepath.AppendDirectory("cache");
+        cachepath.AppendDirectory("Cache");
         int config = _options & (FILTER_MASK | ENHANCEMENT_MASK | COMPRESS_TEX | COMPRESSION_MASK | FORCE16BPP_TEX | GZ_TEXCACHE);
 
         TxCache::load(cachepath, filename.c_str(), config);

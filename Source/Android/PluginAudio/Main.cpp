@@ -29,12 +29,14 @@
 #ifdef ANDROID
 typedef struct threadLock_
 {
-  pthread_mutex_t mutex;
-  pthread_cond_t  cond;
-  volatile unsigned char value;
-  volatile unsigned char limit;
+    pthread_mutex_t mutex;
+    pthread_cond_t  cond;
+    volatile unsigned char value;
+    volatile unsigned char limit;
 } threadLock;
 #endif
+
+bool g_AudioEnabled = true;
 
 /* Read header for type definition */
 AUDIO_INFO g_AudioInfo;
@@ -102,7 +104,7 @@ SLAndroidSimpleBufferQueueItf g_bufferQueue = NULL;
 
 bool g_PluginInit = false;
 
-void PluginInit ( void )
+void PluginInit(void)
 {
     if (g_PluginInit)
     {
@@ -120,7 +122,7 @@ void queueCallback(SLAndroidSimpleBufferQueueItf caller, void *context)
     threadLock *plock = (threadLock *) context;
 
     pthread_mutex_lock(&(plock->mutex));
-    
+
     if(plock->value < plock->limit)
         plock->value++;
 
@@ -139,27 +141,27 @@ static void CloseAudio(void)
     /* Delete Primary buffer */
     if (g_primaryBuffer != NULL)
     {
-        WriteTrace(TraceAudioInitShutdown, TraceDebug, "Delete g_primaryBuffer (%p)",g_primaryBuffer);
+        WriteTrace(TraceAudioInitShutdown, TraceDebug, "Delete g_primaryBuffer (%p)", g_primaryBuffer);
         g_primaryBufferBytes = 0;
-        delete [] g_primaryBuffer;
+        delete[] g_primaryBuffer;
         g_primaryBuffer = NULL;
     }
 
     /* Delete Secondary buffers */
     if (g_secondaryBuffers != NULL)
     {
-        for(uint32_t i = 0; i < g_SecondaryBufferNbr; i++)
+        for (uint32_t i = 0; i < g_SecondaryBufferNbr; i++)
         {
             if (g_secondaryBuffers[i] != NULL)
             {
-                WriteTrace(TraceAudioInitShutdown, TraceDebug, "Delete g_secondaryBuffers[%d] (%p)",i,g_secondaryBuffers[i]);
-                delete [] g_secondaryBuffers[i];
+                WriteTrace(TraceAudioInitShutdown, TraceDebug, "Delete g_secondaryBuffers[%d] (%p)", i, g_secondaryBuffers[i]);
+                delete[] g_secondaryBuffers[i];
                 g_secondaryBuffers[i] = NULL;
             }
         }
         g_secondaryBufferBytes = 0;
-        WriteTrace(TraceAudioInitShutdown, TraceDebug, "Delete g_secondaryBuffers (%p)",g_secondaryBuffers);
-        delete [] g_secondaryBuffers;
+        WriteTrace(TraceAudioInitShutdown, TraceDebug, "Delete g_secondaryBuffers (%p)", g_secondaryBuffers);
+        delete[] g_secondaryBuffers;
         g_secondaryBuffers = NULL;
     }
 #ifdef ANDROID
@@ -168,7 +170,7 @@ static void CloseAudio(void)
     {
         SLuint32 state = SL_PLAYSTATE_PLAYING;
         (*g_playerPlay)->SetPlayState(g_playerPlay, SL_PLAYSTATE_STOPPED);
-    
+
         while(state != SL_PLAYSTATE_STOPPED)
         {
             (*g_playerPlay)->GetPlayState(g_playerPlay, &state);
@@ -179,7 +181,7 @@ static void CloseAudio(void)
         g_playerPlay = NULL;
         g_bufferQueue = NULL;
     }
-    
+
     /* Destroy output mix object, and invalidate all associated interfaces */
     if (g_outputMixObject != NULL)
     {
@@ -204,11 +206,10 @@ static void CloseAudio(void)
     WriteTrace(TraceAudioInitShutdown, TraceDebug, "Done");
 }
 
-
 static bool CreatePrimaryBuffer(void)
 {
     WriteTrace(TraceAudioInitShutdown, TraceDebug, "Start");
-    unsigned int primaryBytes = (unsigned int) (g_PrimaryBufferSize * N64_SAMPLE_BYTES);
+    unsigned int primaryBytes = (unsigned int)(g_PrimaryBufferSize * N64_SAMPLE_BYTES);
 
     WriteTrace(TraceAudioInitShutdown, TraceDebug, "Allocating memory for primary audio buffer: %i bytes.", primaryBytes);
 
@@ -231,7 +232,7 @@ static bool CreateSecondaryBuffers(void)
 {
     WriteTrace(TraceAudioInitShutdown, TraceDebug, "Start");
     bool status = true;
-    unsigned int secondaryBytes = (unsigned int) (g_SecondaryBufferSize * SLES_SAMPLE_BYTES);
+    unsigned int secondaryBytes = (unsigned int)(g_SecondaryBufferSize * SLES_SAMPLE_BYTES);
 
     WriteTrace(TraceAudioInitShutdown, TraceDebug, "Allocating memory for %d secondary audio buffers: %i bytes.", g_SecondaryBufferNbr, secondaryBytes);
 
@@ -246,7 +247,7 @@ static bool CreateSecondaryBuffers(void)
     }
 
     /* Allocate size of each secondary buffers */
-    for(uint32_t i = 0; i < g_SecondaryBufferNbr; i++)
+    for (uint32_t i = 0; i < g_SecondaryBufferNbr; i++)
     {
         g_secondaryBuffers[i] = new uint8_t[secondaryBytes];
 
@@ -260,23 +261,23 @@ static bool CreateSecondaryBuffers(void)
     }
 
     g_secondaryBufferBytes = secondaryBytes;
-    WriteTrace(TraceAudioInitShutdown, TraceDebug, "Done (res: %s)",status?"True":"False");
+    WriteTrace(TraceAudioInitShutdown, TraceDebug, "Done (res: %s)", status ? "True" : "False");
     return status;
 }
 
 static void InitializeAudio(uint32_t freq)
 {
-    WriteTrace(TraceAudioInitShutdown, TraceDebug, "Start (freq: %d)",freq);
+    WriteTrace(TraceAudioInitShutdown, TraceDebug, "Start (freq: %d)", freq);
     if (freq < 4000)
     {
-        WriteTrace(TraceAudioInitShutdown, TraceInfo, "Sometimes a bad frequency is requested so ignore it (freq: %d)",freq);
+        WriteTrace(TraceAudioInitShutdown, TraceInfo, "Sometimes a bad frequency is requested so ignore it (freq: %d)", freq);
         WriteTrace(TraceAudioInitShutdown, TraceDebug, "Done");
         return;
     }
 
     if (g_GameFreq == freq && g_primaryBuffer != NULL)
     {
-        WriteTrace(TraceAudioInitShutdown, TraceInfo, "we are already using this frequency, so ignore it (freq: %d)",freq);
+        WriteTrace(TraceAudioInitShutdown, TraceInfo, "we are already using this frequency, so ignore it (freq: %d)", freq);
         WriteTrace(TraceAudioInitShutdown, TraceDebug, "Done");
         return;
     }
@@ -326,7 +327,7 @@ static void InitializeAudio(uint32_t freq)
     CloseAudio();
 
     /* Create primary buffer */
-    if(!CreatePrimaryBuffer())
+    if (!CreatePrimaryBuffer())
     {
         WriteTrace(TraceAudioInitShutdown, TraceError, "CreatePrimaryBuffer failed");
         CloseAudio();
@@ -336,7 +337,7 @@ static void InitializeAudio(uint32_t freq)
     }
 
     /* Create secondary buffers */
-    if(!CreateSecondaryBuffers())
+    if (!CreateSecondaryBuffers())
     {
         WriteTrace(TraceAudioInitShutdown, TraceError, "CreateSecondaryBuffers failed");
         CloseAudio();
@@ -348,13 +349,13 @@ static void InitializeAudio(uint32_t freq)
 #ifdef ANDROID
     /* Create thread Locks to ensure synchronization between callback and processing code */
     if (pthread_mutex_init(&(g_lock.mutex), (pthread_mutexattr_t*) NULL) != 0)
-	{
+    {
         WriteTrace(TraceAudioInitShutdown, TraceError, "pthread_mutex_init failed");
         CloseAudio();
         g_critical_failure = true;
         WriteTrace(TraceAudioInitShutdown, TraceDebug, "Done");
         return;
-	}
+    }
     if (pthread_cond_init(&(g_lock.cond), (pthread_condattr_t*) NULL) != 0)
     {
         WriteTrace(TraceAudioInitShutdown, TraceError, "pthread_cond_init failed");
@@ -416,7 +417,7 @@ static void InitializeAudio(uint32_t freq)
         SLDataLocator_AndroidSimpleBufferQueue loc_bufq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, g_SecondaryBufferNbr};
 
         SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM,2, sample_rate, SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
-                       (SL_SPEAKER_FRONT_LEFT | SL_SPEAKER_FRONT_RIGHT), SL_BYTEORDER_LITTLEENDIAN};
+            (SL_SPEAKER_FRONT_LEFT | SL_SPEAKER_FRONT_RIGHT), SL_BYTEORDER_LITTLEENDIAN};
 
         SLDataSource audioSrc = {&loc_bufq, &format_pcm};
 
@@ -574,14 +575,14 @@ static int resample(unsigned char *input, int /*input_avail*/, int oldsamplerate
     if (newsamplerate >= oldsamplerate)
     {
         int sldf = oldsamplerate;
-        int const2 = 2*sldf;
+        int const2 = 2 * sldf;
         int dldf = newsamplerate;
-        int const1 = const2 - 2*dldf;
+        int const1 = const2 - 2 * dldf;
         int criteria = const2 - dldf;
-        for (i = 0; i < output_needed/4; i++)
+        for (i = 0; i < output_needed / 4; i++)
         {
             pdest[i] = psrc[j];
-            if(criteria >= 0)
+            if (criteria >= 0)
             {
                 ++j;
                 criteria += const1;
@@ -591,7 +592,7 @@ static int resample(unsigned char *input, int /*input_avail*/, int oldsamplerate
         return j * 4; //number of bytes consumed
     }
     // newsamplerate < oldsamplerate, this only happens when speed_factor > 1
-    for (i = 0; i < output_needed/4; i++)
+    for (i = 0; i < output_needed / 4; i++)
     {
         j = i * oldsamplerate / newsamplerate;
         pdest[i] = psrc[j];
@@ -607,7 +608,7 @@ EXPORT void CALL PluginLoaded(void)
 
 EXPORT void CALL AiDacrateChanged(int SystemType)
 {
-    WriteTrace(TraceAudioInterface, TraceDebug, "Start (SystemType: %d)",SystemType);
+    WriteTrace(TraceAudioInterface, TraceDebug, "Start (SystemType: %d)", SystemType);
     if (!g_PluginInit)
     {
         WriteTrace(TraceAudioInterface, TraceNotice, "Plugin has not been initilized");
@@ -618,25 +619,28 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
     int f = g_GameFreq != 0 ? g_GameFreq : DEFAULT_FREQUENCY;
     switch (SystemType)
     {
-        case SYSTEM_NTSC:
-            f = 48681812 / (*g_AudioInfo.AI__DACRATE_REG + 1);
-            break;
-        case SYSTEM_PAL:
-            f = 49656530 / (*g_AudioInfo.AI__DACRATE_REG + 1);
-            break;
-        case SYSTEM_MPAL:
-            f = 48628316 / (*g_AudioInfo.AI__DACRATE_REG + 1);
-            break;
+    case SYSTEM_NTSC:
+        f = 48681812 / (*g_AudioInfo.AI__DACRATE_REG + 1);
+        break;
+    case SYSTEM_PAL:
+        f = 49656530 / (*g_AudioInfo.AI__DACRATE_REG + 1);
+        break;
+    case SYSTEM_MPAL:
+        f = 48628316 / (*g_AudioInfo.AI__DACRATE_REG + 1);
+        break;
     }
     InitializeAudio(f);
-    
+
     WriteTrace(TraceAudioInterface, TraceDebug, "Done");
 }
 
 EXPORT void CALL AiLenChanged(void)
 {
     WriteTrace(TraceAudioInterface, TraceDebug, "Start (DRAM_ADDR = 0x%X LenReg = 0x%X)", *g_AudioInfo.AI__LEN_REG, *g_AudioInfo.AI__DRAM_ADDR_REG);
-
+    if (!g_AudioEnabled)
+    {
+        return;
+    }
     uint32_t LenReg = *g_AudioInfo.AI__LEN_REG;
     uint8_t * p = g_AudioInfo.RDRAM + (*g_AudioInfo.AI__DRAM_ADDR_REG & 0xFFFFFF);
 
@@ -644,28 +648,28 @@ EXPORT void CALL AiLenChanged(void)
     if (g_primaryBufferPos + LenReg < g_primaryBufferBytes)
     {
         unsigned int i;
-    
-        for ( i = 0 ; i < LenReg ; i += 4 )
+
+        for (i = 0; i < LenReg; i += 4)
         {
-            if(g_SwapChannels == 0)
+            if (g_SwapChannels == 0)
             {
                 /* Left channel */
-                g_primaryBuffer[ g_primaryBufferPos + i ] = p[ i + 2 ];
-                g_primaryBuffer[ g_primaryBufferPos + i + 1 ] = p[ i + 3 ];
+                g_primaryBuffer[g_primaryBufferPos + i] = p[i + 2];
+                g_primaryBuffer[g_primaryBufferPos + i + 1] = p[i + 3];
 
                 /* Right channel */
-                g_primaryBuffer[ g_primaryBufferPos + i + 2 ] = p[ i ];
-                g_primaryBuffer[ g_primaryBufferPos + i + 3 ] = p[ i + 1 ];
-            } 
-            else 
+                g_primaryBuffer[g_primaryBufferPos + i + 2] = p[i];
+                g_primaryBuffer[g_primaryBufferPos + i + 3] = p[i + 1];
+            }
+            else
             {
                 /* Left channel */
-                g_primaryBuffer[ g_primaryBufferPos + i ] = p[ i ];
-                g_primaryBuffer[ g_primaryBufferPos + i + 1 ] = p[ i + 1 ];
+                g_primaryBuffer[g_primaryBufferPos + i] = p[i];
+                g_primaryBuffer[g_primaryBufferPos + i + 1] = p[i + 1];
 
                 /* Right channel */
-                g_primaryBuffer[ g_primaryBufferPos + i + 2 ] = p[ i + 2];
-                g_primaryBuffer[ g_primaryBufferPos + i + 3 ] = p[ i + 3 ];
+                g_primaryBuffer[g_primaryBufferPos + i + 2] = p[i + 2];
+                g_primaryBuffer[g_primaryBufferPos + i + 3] = p[i + 3];
             }
         }
         g_primaryBufferPos += i;
@@ -674,7 +678,7 @@ EXPORT void CALL AiLenChanged(void)
     {
         WriteTrace(TraceAudioInterface, TraceDebug, "Audio primary buffer overflow. (g_primaryBufferPos: %d LenReg: %d g_primaryBufferBytes: %d)", g_primaryBufferPos, LenReg, g_primaryBufferBytes);
     }
-    
+
     uint32_t newsamplerate = g_OutputFreq * 100 / g_speed_factor;
     uint32_t oldsamplerate = g_GameFreq != 0 ? g_GameFreq : DEFAULT_FREQUENCY;
 
@@ -695,7 +699,7 @@ EXPORT void CALL AiLenChanged(void)
         }
 
         g_lock.value--;
-    
+
         pthread_mutex_unlock(&(g_lock.mutex));
 #endif
         WriteTrace(TraceAudioInterface, TraceDebug, "Finished with lock");
@@ -711,7 +715,7 @@ EXPORT void CALL AiLenChanged(void)
 
         g_secondaryBufferIndex++;
 
-        if(g_secondaryBufferIndex > (g_SecondaryBufferNbr-1))
+        if (g_secondaryBufferIndex > (g_SecondaryBufferNbr - 1))
         {
             g_secondaryBufferIndex = 0;
         }

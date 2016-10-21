@@ -57,9 +57,10 @@ protected:
     void(CALL *RomOpen)             (void);
     void(CALL *RomClosed)           (void);
     void(CALL *PluginOpened)(void);
-    void(CALL *SetSettingInfo)      (PLUGIN_SETTINGS  *);
-    void(CALL *SetSettingInfo2)     (PLUGIN_SETTINGS2 *);
-    void(CALL *SetSettingInfo3)     (PLUGIN_SETTINGS3 *);
+    void(CALL *SetSettingInfo)(PLUGIN_SETTINGS  *);
+    void(CALL *SetSettingInfo2)(PLUGIN_SETTINGS2 *);
+    void(CALL *SetSettingInfo3)(PLUGIN_SETTINGS3 *);
+    void(CALL *SetSettingNotificationInfo)(PLUGIN_SETTINGS_NOTIFICATION *);
 
     pjutil::DynLibHandle m_LibHandle;
     bool m_Initialized, m_RomOpen;

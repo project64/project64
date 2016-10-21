@@ -13,7 +13,15 @@
 #include "trace.h"
 #include "main.h"
 
-void SetupAudioSettings (void)
+short Set_EnableAudio = 0;
+extern bool g_AudioEnabled;
+
+void SettingsChanged(void *)
+{
+    g_AudioEnabled = GetSystemSetting(Set_EnableAudio) != 0;
+}
+
+void SetupAudioSettings(void)
 {
     SetModuleName("AndroidAudio");
     RegisterSetting(Output_SwapChannels, Data_DWORD_General, "SwapChannels", "", 0, NULL);
@@ -29,4 +37,11 @@ void SetupAudioSettings (void)
 
     g_ModuleLogLevel[TraceAudioInitShutdown] = GetSetting(Logging_LogAudioInitShutdown);
     g_ModuleLogLevel[TraceAudioInterface] = GetSetting(Logging_LogAudioInterface);
+
+    Set_EnableAudio = FindSystemSettingId("Enable Audio");
+    if (Set_EnableAudio != 0)
+    {
+        SettingsRegisterChange(true, Set_EnableAudio, NULL, SettingsChanged);
+        g_AudioEnabled = GetSystemSetting(Set_EnableAudio) != 0;
+    }
 }

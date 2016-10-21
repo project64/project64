@@ -7,12 +7,6 @@
 #include <unistd.h>
 #endif
 
-#if defined(ANDROID)
-#include <android/log.h>
-
-#define printf(...) __android_log_print(ANDROID_LOG_VERBOSE, "UI-Console", __VA_ARGS__)
-#endif
-
 #if defined(_MSC_VER)
 #include <crtdbg.h>
 #else
@@ -124,13 +118,14 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
     }
     m_hFile = hFile;
 #else
-
+    if ((nOpenFlags & modeNoTruncate) == 0 && (nOpenFlags & CFileBase::modeCreate) == CFileBase::modeCreate)
+    {
+        CPath(lpszFileName).Delete();
+    }
     if ((nOpenFlags & CFileBase::modeCreate) != CFileBase::modeCreate)
     {
-        printf("Checking if %s exists...\n",lpszFileName);
         if (!CPath(lpszFileName).Exists())
         {
-            printf("%s does not exist.\n",lpszFileName);
             return false;
         }
     }
@@ -155,7 +150,6 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
     if ((nOpenFlags & CFileBase::modeWrite) == CFileBase::modeWrite ||
         (nOpenFlags & CFileBase::modeReadWrite) == CFileBase::modeReadWrite)
     {
-        printf("Trying to open %s (rb+).\n", lpszFileName);
         m_hFile = fopen(lpszFileName, "rb+");
         if (m_hFile != NULL)
         {
@@ -164,7 +158,6 @@ bool CFile::Open(const char * lpszFileName, uint32_t nOpenFlags)
     }
     else if ((nOpenFlags & CFileBase::modeRead) == CFileBase::modeRead)
     {
-        printf("Trying to open %s (rb).\n", lpszFileName);
         m_hFile = fopen(lpszFileName, "rb");
         if (m_hFile != NULL)
         {

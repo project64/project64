@@ -14,6 +14,7 @@
 #include <Project64-core/Version.h>
 #include <Project64-core/TraceModulesProject64.h>
 #include <Project64-core/Settings/SettingsClass.h>
+#include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Plugin.h>
@@ -21,6 +22,7 @@
 #include "jniBridge.h"
 #include "jniBridgeSettings.h"
 #include "JavaBridge.h"
+#include "SyncBridge.h"
 #include "UISettings.h"
 #include "JavaRomList.h"
 
@@ -58,6 +60,7 @@ AndroidLogger * g_Logger = NULL;
 static pthread_key_t g_ThreadKey;
 static JavaVM* g_JavaVM = NULL;
 JavaBridge * g_JavaBridge = NULL;
+SyncBridge * g_SyncBridge = NULL;
 jobject g_Activity = NULL;
 jobject g_GLThread = NULL;
 
@@ -84,7 +87,110 @@ EXPORT jint CALL JNI_OnLoad(JavaVM* vm, void* reserved)
         __android_log_print(ANDROID_LOG_ERROR, "jniBridge", "Error initializing pthread key");
     }
     Android_JNI_SetupThread();
+
     return JNI_VERSION_1_4;
+}
+
+std::string UISettingsLoadStringIndex(UISettingID Type, int32_t index)
+{
+    return g_Settings->LoadStringIndex((SettingID)(FirstUISettings + Type), index);
+}
+
+void UISettingsSaveStringIndex(UISettingID Type, int32_t index, const std::string & Value)
+{
+    g_Settings->SaveStringIndex((SettingID)(FirstUISettings + Type), index, Value);
+}
+
+void AddRecentRom(const char * ImagePath)
+{
+    if (ImagePath == NULL) { return; }
+    WriteTrace(TraceUserInterface, TraceDebug, "Start (ImagePath: %s)",ImagePath);
+
+    //Get Information about the stored rom list
+    size_t MaxRememberedFiles = UISettingsLoadDword(File_RecentGameFileCount);
+    strlist RecentGames;
+    size_t i;
+    for (i = 0; i < MaxRememberedFiles; i++)
+    {
+        stdstr RecentGame = UISettingsLoadStringIndex(File_RecentGameFileIndex, i);
+        if (RecentGame.empty())
+        {
+            break;
+        }
+        RecentGames.push_back(RecentGame);
+    }
+
+    //See if the dir is already in the list if so then move it to the top of the list
+    strlist::iterator iter;
+    for (iter = RecentGames.begin(); iter != RecentGames.end(); iter++)
+    {
+        if (_stricmp(ImagePath, iter->c_str()) != 0)
+        {
+            continue;
+        }
+        RecentGames.erase(iter);
+        break;
+    }
+    RecentGames.push_front(ImagePath);
+    if (RecentGames.size() > MaxRememberedFiles)
+    {
+        RecentGames.pop_back();
+    }
+
+    for (i = 0, iter = RecentGames.begin(); iter != RecentGames.end(); iter++, i++)
+    {
+        UISettingsSaveStringIndex(File_RecentGameFileIndex, i, *iter);
+    }
+    WriteTrace(TraceUserInterface, TraceDebug, "Done");
+}
+
+void GameCpuRunning(void * /*NotUsed*/)
+{
+    WriteTrace(TraceUserInterface, TraceDebug, "Start");
+    bool Running = g_Settings->LoadBool(GameRunning_CPU_Running);
+    WriteTrace(TraceUserInterface, TraceDebug, Running ? "Game Started" : "Game Stopped");
+    if (Running)
+    {
+        stdstr FileLoc = g_Settings->LoadStringVal(Game_File);
+        if (FileLoc.length() > 0)
+        {
+            AddRecentRom(FileLoc.c_str());
+        }
+    }
+    else
+    {
+        JNIEnv *env = Android_JNI_GetEnv();
+        if (env != NULL)
+        {
+            if (g_JavaBridge)
+            {
+                WriteTrace(TraceUserInterface, TraceDebug, "Notify java emulation stopped");
+                g_JavaBridge->EmulationStopped();
+            }
+            else
+            {
+                WriteTrace(TraceUserInterface, TraceError, "No Java bridge");
+            }
+
+            // call in to java that emulation done
+            WriteTrace(TraceUserInterface, TraceDebug, "clean up global activity");
+            env->DeleteGlobalRef(g_Activity);
+            g_Activity = NULL;
+
+            WriteTrace(TraceUserInterface, TraceDebug, "clean up global gl thread");
+            if (g_JavaBridge)
+            {
+                g_JavaBridge->GfxThreadDone();
+            }
+            env->DeleteGlobalRef(g_GLThread);
+            g_GLThread = NULL;
+        }
+        else
+        {
+            WriteTrace(TraceUserInterface, TraceError, "Failed to get java environment");
+        }
+    }
+    WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
 EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv* env, jclass cls, jstring BaseDir)
@@ -113,16 +219,18 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv* env, j
 
     const char *baseDir = env->GetStringUTFChars(BaseDir, 0);
     bool res = AppInit(&Notify(), baseDir, 0, NULL);
-    
+
     env->ReleaseStringUTFChars(BaseDir, baseDir);
     if (res)
     {
         g_JavaBridge = new JavaBridge(g_JavaVM);
-        g_Plugins->SetRenderWindows(g_JavaBridge, NULL);
+        g_SyncBridge = new SyncBridge(g_JavaBridge);
+        g_Plugins->SetRenderWindows(g_JavaBridge, g_SyncBridge);
 
         JniBridegSettings = new CJniBridegSettings();
 
         RegisterUISettings();
+        g_Settings->RegisterChangeCB(GameRunning_CPU_Running, NULL, (CSettings::SettingChangedFunc)GameCpuRunning);
     }
     else
     {
@@ -131,10 +239,16 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv* env, j
     return res;
 }
 
+EXPORT jstring CALL Java_emu_project64_jni_NativeExports_appVersion(JNIEnv* env, jclass cls)
+{
+    return env->NewStringUTF(VER_FILE_VERSION_STR);
+}
+
 EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveBool(JNIEnv* env, jclass cls, int Type, jboolean Value)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Saving %d value: %s",Type,Value ? "true" : "false");
     g_Settings->SaveBool((SettingID)Type, Value);
+    CSettings::FlushSettings(g_Settings);
     WriteTrace(TraceUserInterface, TraceDebug, "Saved");
 }
 
@@ -142,6 +256,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveDword(JNIEnv* 
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Saving %d value: 0x%X",Type,Value);
     g_Settings->SaveDword((SettingID)Type, Value);
+    CSettings::FlushSettings(g_Settings);
     WriteTrace(TraceUserInterface, TraceDebug, "Saved");
 }
 
@@ -150,6 +265,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveString(JNIEnv*
     const char *value = env->GetStringUTFChars(Buffer, 0);
     WriteTrace(TraceUserInterface, TraceDebug, "Saving %d value: %s",Type,value);
     g_Settings->SaveString((SettingID)Type, value);
+    CSettings::FlushSettings(g_Settings);
     WriteTrace(TraceUserInterface, TraceDebug, "Saved");
     env->ReleaseStringUTFChars(Buffer, value);
 }
@@ -186,10 +302,8 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadRomList(JNIEnv* env, j
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
-EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadGame(JNIEnv* env, jclass cls, jstring FileLoc, jobject activity, jobject GLThread)
+EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadGame(JNIEnv* env, jclass cls, jstring FileLoc)
 {
-    g_Activity = env->NewGlobalRef(activity);
-    g_GLThread = env->NewGlobalRef(GLThread);
     const char *fileLoc = env->GetStringUTFChars(FileLoc, 0);
     WriteTrace(TraceUserInterface, TraceDebug, "FileLoc: %s",fileLoc);
     g_Settings->SaveBool(Setting_AutoStart,false);
@@ -198,8 +312,10 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadGame(JNIEnv* env, jcla
     WriteTrace(TraceUserInterface, TraceDebug, "Image loaded");
 }
 
-EXPORT void CALL Java_emu_project64_jni_NativeExports_StartGame(JNIEnv* env, jclass cls)
+EXPORT void CALL Java_emu_project64_jni_NativeExports_StartGame(JNIEnv* env, jclass cls, jobject activity, jobject GLThread)
 {
+    g_Activity = env->NewGlobalRef(activity);
+    g_GLThread = env->NewGlobalRef(GLThread);
     g_BaseSystem->StartEmulation(true);
 }
 
@@ -230,12 +346,31 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_ExternalEvent(JNIEnv* env,
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
+EXPORT void CALL Java_emu_project64_jni_NativeExports_ResetApplicationSettings(JNIEnv* env, jclass cls)
+{
+    WriteTrace(TraceUserInterface, TraceDebug, "start");
+    CSettingTypeApplication::ResetAll();
+    WriteTrace(TraceUserInterface, TraceDebug, "Done");
+}
+
 EXPORT void CALL Java_emu_project64_jni_NativeExports_onSurfaceCreated(JNIEnv * env, jclass cls)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
-    if (g_Plugins != NULL && g_Plugins->Gfx() != NULL && g_Plugins->Gfx()->SurfaceCreated)
+    if (g_BaseSystem != NULL && g_BaseSystem->GetPlugins() != NULL && g_BaseSystem->GetPlugins()->Gfx() != NULL)
     {
-        g_Plugins->Gfx()->SurfaceCreated();
+        CGfxPlugin * GfxPlugin = g_BaseSystem->GetPlugins()->Gfx();
+        if (GfxPlugin->SurfaceCreated != NULL)
+        {
+            GfxPlugin->SurfaceCreated();
+        }
+    }
+    if (g_SyncSystem != NULL && g_SyncSystem->GetPlugins() != NULL && g_SyncSystem->GetPlugins()->Gfx() != NULL)
+    {
+        CGfxPlugin * GfxPlugin = g_SyncSystem->GetPlugins()->Gfx();
+        if (GfxPlugin->SurfaceCreated != NULL)
+        {
+            GfxPlugin->SurfaceCreated();
+        }
     }
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
@@ -243,21 +378,46 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_onSurfaceCreated(JNIEnv * 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_onSurfaceChanged(JNIEnv * env, jclass cls, jint width, jint height)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
-    if (g_Plugins != NULL && g_Plugins->Gfx() != NULL && g_Plugins->Gfx()->SurfaceChanged)
+    if (g_BaseSystem != NULL && g_BaseSystem->GetPlugins() != NULL && g_BaseSystem->GetPlugins()->Gfx() != NULL)
     {
-        g_Plugins->Gfx()->SurfaceChanged(width,height);
+        CGfxPlugin * GfxPlugin = g_BaseSystem->GetPlugins()->Gfx();
+        if (GfxPlugin->SurfaceChanged != NULL)
+        {
+            GfxPlugin->SurfaceChanged(width,height);
+        }
+    }
+    if (g_SyncSystem != NULL && g_SyncSystem->GetPlugins() != NULL && g_SyncSystem->GetPlugins()->Gfx() != NULL)
+    {
+        CGfxPlugin * GfxPlugin = g_SyncSystem->GetPlugins()->Gfx();
+        if (GfxPlugin->SurfaceChanged != NULL)
+        {
+            GfxPlugin->SurfaceChanged(width,height);
+        }
     }
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_UISettingsSaveBool(JNIEnv* env, jclass cls, jint Type, jboolean Value)
 {
+    WriteTrace(TraceUserInterface, TraceDebug, "Saving UI %d value: %s",Type,Value ? "true" : "false");
     UISettingsSaveBool((UISettingID)Type, Value);
+    WriteTrace(TraceUserInterface, TraceDebug, "Saved");
 }
 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_UISettingsSaveDword(JNIEnv* env, jclass cls, jint Type, jint Value)
 {
+    WriteTrace(TraceUserInterface, TraceDebug, "Saving UI %d value: %X",Type,Value);
     UISettingsSaveDword((UISettingID)Type, Value);
+    WriteTrace(TraceUserInterface, TraceDebug, "Saved");
+}
+
+EXPORT void CALL Java_emu_project64_jni_NativeExports_UISettingsSaveString(JNIEnv* env, jclass cls, jint Type, jstring Buffer)
+{
+    const char *value = env->GetStringUTFChars(Buffer, 0);
+    WriteTrace(TraceUserInterface, TraceDebug, "Saving UI %d value: %s",Type,value);
+    UISettingsSaveString((UISettingID)Type, value);
+    WriteTrace(TraceUserInterface, TraceDebug, "Saved");
+    env->ReleaseStringUTFChars(Buffer, value);
 }
 
 EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_UISettingsLoadBool(JNIEnv* env, jclass cls, jint Type)
@@ -268,6 +428,16 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_UISettingsLoadBool(JNI
 EXPORT int CALL Java_emu_project64_jni_NativeExports_UISettingsLoadDword(JNIEnv* env, jclass cls, jint Type)
 {
     return UISettingsLoadDword((UISettingID)Type);
+}
+
+EXPORT jstring CALL Java_emu_project64_jni_NativeExports_UISettingsLoadString(JNIEnv* env, jclass cls, int Type)
+{
+    return env->NewStringUTF(UISettingsLoadStringVal((UISettingID)Type).c_str());
+}
+
+EXPORT jstring CALL Java_emu_project64_jni_NativeExports_UISettingsLoadStringIndex(JNIEnv* env, jclass cls, jint Type, jint Index)
+{
+    return env->NewStringUTF(UISettingsLoadStringIndex((UISettingID)Type, Index).c_str());
 }
 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_StopEmulation(JNIEnv* env, jclass cls)
@@ -293,11 +463,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_StartEmulation(JNIEnv* env
 EXPORT void CALL Java_emu_project64_jni_NativeExports_CloseSystem(JNIEnv* env, jclass cls)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
-    CN64System::CloseSystem();
-    env->DeleteGlobalRef(g_Activity);
-    g_Activity = NULL;
-    env->DeleteGlobalRef(g_GLThread);
-    g_GLThread = NULL;
+    g_BaseSystem->EndEmulation();
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 

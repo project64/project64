@@ -20,6 +20,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         CMainMenu MainMenu(&MainWindow);
         g_Plugins->SetRenderWindows(&MainWindow, &HiddenWindow);
         Notify().SetMainWindow(&MainWindow);
+        CSupportWindow SupportWindow;
 
         if (g_Settings->LoadStringVal(Cmd_RomFile).length() > 0)
         {
@@ -63,6 +64,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         }
         else
         {
+            SupportWindow.Show(reinterpret_cast<HWND>(MainWindow.GetWindowHandle()));
             if (UISettingsLoadBool(RomBrowser_Enabled))
             {
                 WriteTrace(TraceUserInterface, TraceDebug, "Show Rom Browser");

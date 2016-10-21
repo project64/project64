@@ -37,7 +37,7 @@
 CSettings * g_Settings = NULL;
 
 CSettings::CSettings() :
-    m_NextAutoSettingId(0x200000)
+m_NextAutoSettingId(0x200000)
 {
 }
 
@@ -103,8 +103,6 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(SupportFile_ExtInfo, new CSettingTypeApplicationPath("", "ExtInfo", SupportFile_ExtInfoDefault));
     AddHandler(SupportFile_ExtInfoDefault, new CSettingTypeRelativePath("Config", "Project64.rdx"));
 
-    //AddHandler(SyncPluginDir,   new CSettingTypeRelativePath("SyncPlugin",""));
-
     //Settings location
     AddHandler(Setting_ApplicationName, new CSettingTypeTempString(""));
     AddHandler(Setting_UseFromRegistry, new CSettingTypeApplication("Settings", "Use Registry", (uint32_t)false));
@@ -152,7 +150,11 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_ScreenHertz, new CSettingTypeRomDatabase("ScreenHertz", 0));
     AddHandler(Rdb_FuncLookupMode, new CSettingTypeRomDatabase("FuncFind", FuncFind_PhysicalLookup));
     AddHandler(Rdb_RegCache, new CSettingTypeRDBYesNo("Reg Cache", true));
+#ifdef ANDROID
+    AddHandler(Rdb_BlockLinking, new CSettingTypeRDBOnOff("Linking", false));
+#else
     AddHandler(Rdb_BlockLinking, new CSettingTypeRDBOnOff("Linking", true));
+#endif
     AddHandler(Rdb_SMM_Cache, new CSettingTypeRomDatabase("SMM-Cache", true));
     AddHandler(Rdb_SMM_StoreInstruc, new CSettingTypeRomDatabase("SMM-StoreInstr", false));
     AddHandler(Rdb_SMM_PIDMA, new CSettingTypeRomDatabase("SMM-PI DMA", true));
@@ -224,20 +226,34 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 
     //User Interface
     AddHandler(UserInterface_ShowCPUPer, new CSettingTypeApplication("", "Display CPU Usage", (uint32_t)false));
+#ifdef ANDROID
+    AddHandler(UserInterface_DisplayFrameRate, new CSettingTypeApplication("", "Display Frame Rate", (uint32_t)false));
+#else
     AddHandler(UserInterface_DisplayFrameRate, new CSettingTypeApplication("", "Display Frame Rate", (uint32_t)true));
+#endif
     AddHandler(UserInterface_FrameDisplayType, new CSettingTypeApplication("", "Frame Rate Display Type", (uint32_t)FR_VIs));
     AddHandler(Directory_Plugin, new CSettingTypeSelectedDirectory("Dir:Plugin", Directory_PluginInitial, Directory_PluginSelected, Directory_PluginUseSelected, Directory_Plugin));
 #ifndef _M_X64
     AddHandler(Directory_PluginInitial, new CSettingTypeRelativePath("Plugin", ""));
     AddHandler(Directory_PluginSelected, new CSettingTypeApplicationPath("Plugin Directory", "Directory", Directory_PluginInitial));
     AddHandler(Directory_PluginUseSelected, new CSettingTypeApplication("Plugin Directory", "Use Selected", false));
-    AddHandler(Directory_PluginSync, new CSettingTypeRelativePath("SyncPlugin", ""));
+
+    AddHandler(Directory_PluginSyncInitial, new CSettingTypeRelativePath("SyncPlugin", ""));
+    AddHandler(Directory_PluginSyncSelected, new CSettingTypeApplicationPath("Sync Plugin Directory", "Directory", Directory_PluginInitial));
+    AddHandler(Directory_PluginSyncUseSelected, new CSettingTypeApplication("Sync Plugin Directory", "Use Selected", false));
+
 #else
     AddHandler(Directory_PluginInitial, new CSettingTypeRelativePath("Plugin64", ""));
     AddHandler(Directory_PluginSelected, new CSettingTypeApplicationPath("Plugin64 Directory", "Directory", Directory_PluginInitial));
     AddHandler(Directory_PluginUseSelected, new CSettingTypeApplication("Plugin64 Directory", "Use Selected", false));
     AddHandler(Directory_PluginSync, new CSettingTypeRelativePath("SyncPlugin64", ""));
+
+    AddHandler(Directory_PluginSyncInitial, new CSettingTypeRelativePath("SyncPlugin64", ""));
+    AddHandler(Directory_PluginSyncSelected, new CSettingTypeApplicationPath("Sync Plugin Directory64", "Directory", Directory_PluginInitial));
+    AddHandler(Directory_PluginSyncUseSelected, new CSettingTypeApplication("Sync Plugin Directory64", "Use Selected", false));
+
 #endif
+    AddHandler(Directory_PluginSync, new CSettingTypeSelectedDirectory("Dir:SyncPlugin", Directory_PluginSyncInitial, Directory_PluginSyncSelected, Directory_PluginSyncUseSelected, Directory_PluginSync));
 
     AddHandler(Directory_SnapShot, new CSettingTypeSelectedDirectory("Dir:Snapshot", Directory_SnapShotInitial, Directory_SnapShotSelected, Directory_SnapShotUseSelected, Directory_SnapShot));
     AddHandler(Directory_SnapShotInitial, new CSettingTypeRelativePath("Screenshots", ""));
@@ -293,9 +309,9 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Debugger_DisableGameFixes, new CSettingTypeApplication("Debugger", "Disable Game Fixes", false));
     AddHandler(Debugger_ShowDListAListCount, new CSettingTypeApplication("Debugger", "Show Dlist Alist Count", false));
     AddHandler(Debugger_ShowRecompMemSize, new CSettingTypeApplication("Debugger", "Show Recompiler Memory size", false));
+    AddHandler(Debugger_RecordExecutionTimes, new CSettingTypeApplication("Debugger", "Record Execution Times", false));
     AddHandler(Debugger_DebugLanguage, new CSettingTypeApplication("Debugger", "Debug Language", false));
     AddHandler(Debugger_ShowDivByZero, new CSettingTypeApplication("Debugger", "Show Div by zero", false));
-    AddHandler(Debugger_ProfileCode, new CSettingTypeApplication("Debugger", "Profile Code", (uint32_t)false));
     AddHandler(Debugger_AppLogFlush, new CSettingTypeApplication("Logging", "Log Auto Flush", (uint32_t)false));
     AddHandler(Debugger_GenerateLogFiles, new CSettingTypeApplication("Debugger", "Generate Log Files", false));
 
@@ -342,7 +358,12 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 
     AddHandler(Plugin_UseHleGfx, new CSettingTypeApplication("RSP", "HLE GFX", true));
     AddHandler(Plugin_UseHleAudio, new CSettingTypeApplication("RSP", "HLE Audio", false));
-
+    AddHandler(Plugin_EnableAudio, new CSettingTypeApplication("Audio", "Enable Audio", true));
+#ifdef ANDROID
+    AddHandler(Plugin_ForceGfxReset, new CSettingTypeApplication("Plugin", "Force Gfx Reset", true));
+#else
+    AddHandler(Plugin_ForceGfxReset, new CSettingTypeApplication("Plugin", "Force Gfx Reset", false));
+#endif
     //Logging
     AddHandler(Logging_GenerateLog, new CSettingTypeApplication("Logging", "Generate Log Files", false));
     AddHandler(Logging_LogRDRamRegisters, new CSettingTypeApplication("Logging", "Log RDRam Registers", false));
@@ -424,6 +445,16 @@ void CSettings::FlushSettings(CSettings * /*_this*/)
     CSettingTypeApplication::Flush();
 }
 
+void CSettings::sRegisterChangeCB(CSettings * _this, SettingID Type, void * Data, SettingChangedFunc Func)
+{
+    _this->RegisterChangeCB(Type, Data, Func);
+}
+
+void CSettings::sUnregisterChangeCB(CSettings * _this, SettingID Type, void * Data, SettingChangedFunc Func)
+{
+    _this->UnregisterChangeCB(Type, Data, Func);
+}
+
 uint32_t CSettings::GetSetting(CSettings * _this, SettingID Type)
 {
     return _this->LoadDword(Type);
@@ -450,9 +481,12 @@ void CSettings::SetSettingSz(CSettings * _this, SettingID ID, const char * Value
 }
 
 void CSettings::RegisterSetting(CSettings * _this, SettingID ID, SettingID DefaultID, SettingDataType DataType,
-                                SettingType Type, const char * Category, const char * DefaultStr,
-                                uint32_t Value)
+    SettingType Type, const char * Category, const char * DefaultStr,
+    uint32_t Value)
 {
+    SettingID RdbSetting;
+    stdstr Name;
+
     switch (Type)
     {
     case SettingType_ConstValue:
@@ -500,47 +534,41 @@ void CSettings::RegisterSetting(CSettings * _this, SettingID ID, SettingID Defau
         }
         break;
     case SettingType_GameSetting:
-    {
-        stdstr_f Name("%s-%s", Category, DefaultStr);
+        Name.Format("%s-%s", Category, DefaultStr);
         switch (DataType)
         {
         case Data_DWORD:
+            RdbSetting = (SettingID)_this->m_NextAutoSettingId;
+            _this->m_NextAutoSettingId += 1;
+            if (DefaultID == Default_None)
             {
-                SettingID RdbSetting = (SettingID)_this->m_NextAutoSettingId;
-                _this->m_NextAutoSettingId += 1;
-                if (DefaultID == Default_None)
-                {
-                    _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), (int)Value));
-                    _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
-                }
-                else
-                {
-                    _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), DefaultID));
-                    _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
-                }
+                _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), (int)Value));
+                _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
+            }
+            else
+            {
+                _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), DefaultID));
+                _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
             }
             break;
         case Data_String:
+            RdbSetting = (SettingID)_this->m_NextAutoSettingId;
+            _this->m_NextAutoSettingId += 1;
+            if (DefaultID == Default_None)
             {
-                SettingID RdbSetting = (SettingID)_this->m_NextAutoSettingId;
-                _this->m_NextAutoSettingId += 1;
-                if (DefaultID == Default_None)
-                {
-                    _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), ""));
-                    _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
-                }
-                else
-                {
-                    _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), DefaultID));
-                    _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
-                }
+                _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), ""));
+                _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
+            }
+            else
+            {
+                _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), DefaultID));
+                _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
             }
             break;
         default:
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
-    }
-    break;
+        break;
     case SettingType_RomDatabase:
         switch (DataType)
         {

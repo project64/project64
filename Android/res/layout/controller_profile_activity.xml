@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:focusable="false"
+	android:focusableInTouchMode="false"
+	>
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/background_actionbar"
+        android:theme="@style/Project64.Toolbar" />    
+
+<!--
+    ***********************************************************************************
+    IMPORTANT:
+    
+    Except for the root view, all views in this file MUST set these flags to FALSE:
+    
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+    
+    This allows focus to stay in the root view at all times.  This is critical because
+    the root view is the only view that listens to input from gamepads, keyboards, etc.
+    ***********************************************************************************
+-->
+<ScrollView
+    android:id="@+id/inputMapPreference"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:padding="5dp" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/all_pads"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:focusableInTouchMode="false" >
+
+            <include
+                android:id="@+id/include_b_pad"
+                android:layout_width="@dimen/inputMapPreferenceButtonSizeX5"
+                android:layout_height="@dimen/inputMapPreferenceButtonSizeX3"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                layout="@layout/b_pad" />
+
+            <include
+                android:id="@+id/include_d_pad"
+                android:layout_width="@dimen/inputMapPreferenceButtonSizeX3"
+                android:layout_height="@dimen/inputMapPreferenceButtonSizeX3"
+                android:layout_alignTop="@+id/include_b_pad"
+                android:layout_marginTop="@dimen/inputMapPreferenceButtonSize"
+                android:layout_toLeftOf="@+id/include_b_pad"
+                layout="@layout/d_pad"
+                tools:ignore="RtlHardcoded" />
+
+            <include
+                android:id="@+id/include_c_pad"
+                android:layout_width="@dimen/inputMapPreferenceButtonSizeX3"
+                android:layout_height="@dimen/inputMapPreferenceButtonSizeX3"
+                android:layout_alignTop="@+id/include_b_pad"
+                android:layout_marginTop="@dimen/inputMapPreferenceButtonSize"
+                android:layout_toRightOf="@+id/include_b_pad"
+                layout="@layout/c_pad"
+                tools:ignore="RtlHardcoded" />
+
+            <include
+                android:id="@+id/include_a_pad"
+                android:layout_width="@dimen/inputMapPreferenceButtonSizeX3"
+                android:layout_height="@dimen/inputMapPreferenceButtonSizeX3"
+                android:layout_below="@id/include_b_pad"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/inputMapPreferenceButtonSize"
+                layout="@layout/a_pad" />
+
+            <Button
+                android:id="@+id/buttonB"
+                style="@style/btnMappable"
+                android:layout_alignBottom="@+id/include_c_pad"
+                android:layout_toLeftOf="@+id/include_c_pad"
+                android:background="@drawable/button_b"
+                android:text="@string/inputMapActivity_btnB"
+                tools:ignore="RtlHardcoded" />
+
+            <Button
+                android:id="@+id/buttonA"
+                style="@style/btnMappable"
+                android:layout_below="@+id/buttonB"
+                android:layout_toRightOf="@+id/buttonB"
+                android:background="@drawable/button_a"
+                android:text="@string/inputMapActivity_btnA"
+                tools:ignore="RtlHardcoded" />
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/dummyImeListener"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:inputType="text"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/textFeedback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/inputMapPreferenceButtonSize"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:text="@string/inputMapActivity_dummyFeedback"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/primary_text_dark_nodisable" />
+
+    </LinearLayout>
+
+</ScrollView>
+</LinearLayout>

@@ -38,7 +38,7 @@ CPlugin::~CPlugin()
 
 bool CPlugin::Load(const char * FileName)
 {
-    WriteTrace(PluginTraceType(), TraceDebug, "Loading: %s",FileName);
+    WriteTrace(PluginTraceType(), TraceDebug, "Loading: %s", FileName);
 
     // Already loaded, so unload first.
     if (m_LibHandle != NULL)
@@ -49,6 +49,8 @@ bool CPlugin::Load(const char * FileName)
     // Try to load the plugin DLL
     //Try to load the DLL library
     m_LibHandle = pjutil::DynLibOpen(FileName, bHaveDebugger());
+    WriteTrace(PluginTraceType(), TraceDebug, "Loaded: %s LibHandle: %X", FileName, m_LibHandle);
+
     if (m_LibHandle == NULL)
     {
         return false;
@@ -69,6 +71,16 @@ bool CPlugin::Load(const char * FileName)
     _LoadFunction("PluginLoaded", PluginOpened);
     LoadFunction(DllConfig);
     LoadFunction(DllAbout);
+
+    LoadFunction(SetSettingNotificationInfo);
+    if (SetSettingNotificationInfo)
+    {
+        WriteTrace(PluginTraceType(), TraceDebug, "Found SetSettingNotificationInfo");
+        PLUGIN_SETTINGS_NOTIFICATION info;
+        info.RegisterChangeCB = (void(*)(void *, int ID, void * Data, PLUGIN_SETTINGS_NOTIFICATION::SettingChangedFunc Func))CSettings::sRegisterChangeCB;
+        info.UnregisterChangeCB = (void(*)(void *, int ID, void * Data, PLUGIN_SETTINGS_NOTIFICATION::SettingChangedFunc Func))CSettings::sUnregisterChangeCB;
+        SetSettingNotificationInfo(&info);
+    }
 
     LoadFunction(SetSettingInfo3);
     if (SetSettingInfo3)
@@ -260,7 +272,7 @@ TraceModuleProject64 CPlugin::PluginTraceType() const
     case PLUGIN_TYPE_AUDIO: return TraceAudioPlugin;
     case PLUGIN_TYPE_CONTROLLER: return TraceControllerPlugin;
     }
-    return TraceUnknown;
+    return TracePlugins;
 }
 
 bool CPlugin::ValidPluginVersion(PLUGIN_INFO & PluginInfo)
@@ -273,6 +285,7 @@ bool CPlugin::ValidPluginVersion(PLUGIN_INFO & PluginInfo)
         if (PluginInfo.Version == 0x0100) { return true; }
         if (PluginInfo.Version == 0x0101) { return true; }
         if (PluginInfo.Version == 0x0102) { return true; }
+        if (PluginInfo.Version == 0x0103) { return true; }
         break;
     case PLUGIN_TYPE_GFX:
         if (!PluginInfo.MemoryBswaped)	  { return false; }

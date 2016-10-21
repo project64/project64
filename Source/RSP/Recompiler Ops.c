@@ -517,9 +517,17 @@ void Compile_SLTI ( void ) {
 	if (RSPOpC.rt == 0) return;
 
 	Immediate = (short)RSPOpC.immediate;
-	XorX86RegToX86Reg(x86_ECX, x86_ECX);
-	CompConstToVariable(Immediate, &RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs));
-	Setl(x86_ECX);
+	if (Immediate == 0)
+	{
+		MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs), x86_ECX);
+		ShiftRightUnsignImmed(x86_ECX, 31);
+	}
+	else
+	{
+		XorX86RegToX86Reg(x86_ECX, x86_ECX);
+		CompConstToVariable(Immediate, &RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs));
+		Setl(x86_ECX);
+	}
 	MoveX86regToVariable(x86_ECX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 }
 
@@ -555,6 +563,9 @@ void Compile_ANDI ( void ) {
 		AndConstToVariable(Immediate, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 	} else if (RSPOpC.rs == 0) {
 		MoveConstToVariable(0, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
+	} else if (Immediate == 0xFFFF) {
+		MoveZxVariableToX86regHalf(&RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs), x86_EAX);
+		MoveX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
 	} else {
 		MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs), x86_EAX);
 		AndConstToX86Reg(x86_EAX, Immediate);
@@ -910,14 +921,40 @@ void Compile_SB ( void ) {
 
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 
-	MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
-	MoveVariableToX86regByte(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
+	if (IsRegConst(RSPOpC.base) == TRUE) {
+		char Address[32];
+		DWORD Addr = (MipsRegConst(RSPOpC.base) + Offset) ^ 3;
+		Addr &= 0xfff;
+		sprintf(Address, "Dmem + %Xh", Addr);
 
-	if (Offset != 0) AddConstToX86Reg(x86_EBX, Offset);
-	XorConstToX86Reg(x86_EBX, 3);
-	AndConstToX86Reg(x86_EBX, 0x0fff);
+		if (IsRegConst(RSPOpC.rt) == TRUE) {
+			MoveConstByteToVariable(MipsRegConst(RSPOpC.rt), RSPInfo.DMEM + Addr, Address);
+			return;
+		} else {
+			MoveVariableToX86regByte(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
+			MoveX86regByteToVariable(x86_EAX, RSPInfo.DMEM + Addr, Address);
+			return;
+		}
+	}
 
-	MoveX86regByteToN64Mem(x86_EAX, x86_EBX);
+	if (IsRegConst(RSPOpC.rt) == TRUE) {
+		MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
+
+		if (Offset != 0) AddConstToX86Reg(x86_EBX, Offset);
+		XorConstToX86Reg(x86_EBX, 3);
+		AndConstToX86Reg(x86_EBX, 0x0fff);
+
+		MoveConstByteToN64Mem(MipsRegConst(RSPOpC.rt), x86_EBX);
+	} else {
+		MoveVariableToX86reg(&RSP_GPR[RSPOpC.base].UW, GPR_Name(RSPOpC.base), x86_EBX);
+		MoveVariableToX86regByte(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
+
+		if (Offset != 0) AddConstToX86Reg(x86_EBX, Offset);
+		XorConstToX86Reg(x86_EBX, 3);
+		AndConstToX86Reg(x86_EBX, 0x0fff);
+
+		MoveX86regByteToN64Mem(x86_EAX, x86_EBX);
+	}
 }
 
 void Compile_SH ( void ) {
@@ -941,8 +978,12 @@ void Compile_SH ( void ) {
 		} else {
 			char Address[32];
 			sprintf(Address, "Dmem + %Xh", Addr);
-			MoveVariableToX86regHalf(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
-			MoveX86regHalfToVariable(x86_EAX, RSPInfo.DMEM + Addr, Address);
+			if (IsRegConst(RSPOpC.rt) == TRUE) {
+				MoveConstHalfToVariable(MipsRegConst(RSPOpC.rt), RSPInfo.DMEM + Addr, Address);
+			} else {
+				MoveVariableToX86regHalf(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
+				MoveX86regHalfToVariable(x86_EAX, RSPInfo.DMEM + Addr, Address);
+			}
 			return;
 		}
 	}
@@ -968,8 +1009,12 @@ void Compile_SH ( void ) {
 	XorConstToX86Reg(x86_EBX, 2);
 	AndConstToX86Reg(x86_EBX, 0x0fff);
 
-	MoveVariableToX86regHalf(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
-	MoveX86regHalfToN64Mem(x86_EAX, x86_EBX);
+	if (IsRegConst(RSPOpC.rt) == TRUE) {
+		MoveConstHalfToN64Mem(MipsRegConst(RSPOpC.rt), x86_EBX);
+	} else {
+		MoveVariableToX86regHalf(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
+		MoveX86regHalfToN64Mem(x86_EAX, x86_EBX);
+	}
 
 	CPU_Message("   Done:");
 	x86_SetBranch32b(Jump[1], RecompPos);
@@ -986,17 +1031,38 @@ void Compile_SW ( void ) {
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
 
 	if (IsRegConst(RSPOpC.base) == TRUE) {
+		char Address[32];
 		DWORD Addr = (MipsRegConst(RSPOpC.base) + Offset) & 0xfff;
 
 		if ((Addr & 3) != 0) {
-			CompilerWarning("Unaligned SW at constant address PC = %04X", CompilePC);
-			Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SW,"RSP_Opcode_SW");
+			if (Addr > 0xFFC) {
+				DisplayError("hmmmm.... Problem with:\nRSP_SW_DMEM");
+				return;
+			}
+			if (IsRegConst(RSPOpC.rt) == TRUE) {
+				DWORD Value = MipsRegConst(RSPOpC.rt);
+				sprintf(Address, "Dmem + %Xh", (Addr + 0) ^ 3);
+				MoveConstByteToVariable((Value >> 24) & 0xFF, RSPInfo.DMEM + ((Addr + 0) ^ 3), Address);
+				sprintf(Address, "Dmem + %Xh", (Addr + 1) ^ 3);
+				MoveConstByteToVariable((Value >> 16) & 0xFF, RSPInfo.DMEM + ((Addr + 1) ^ 3), Address);
+				sprintf(Address, "Dmem + %Xh", (Addr + 2) ^ 3);
+				MoveConstByteToVariable((Value >> 8) & 0xFF, RSPInfo.DMEM + ((Addr + 2) ^ 3), Address);
+				sprintf(Address, "Dmem + %Xh", (Addr + 3) ^ 3);
+				MoveConstByteToVariable((Value >> 0) & 0xFF, RSPInfo.DMEM + ((Addr + 3) ^ 3), Address);
+			} else {
+				CompilerWarning("Unaligned SW at constant address PC = %04X", CompilePC);
+				Cheat_r4300iOpcodeNoMessage(RSP_Opcode_SW,"RSP_Opcode_SW");
+			}
 			return;
 		} else {
-			char Address[32];
 			sprintf(Address, "Dmem + %Xh", Addr);
-			MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
-			MoveX86regToVariable(x86_EAX, RSPInfo.DMEM + Addr, Address);
+
+			if (IsRegConst(RSPOpC.rt) == TRUE) {
+				MoveConstToVariable(MipsRegConst(RSPOpC.rt), RSPInfo.DMEM + Addr, Address);
+			} else {
+				MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
+				MoveX86regToVariable(x86_EAX, RSPInfo.DMEM + Addr, Address);
+			}
 			return;
 		}
 	} 
@@ -1043,12 +1109,12 @@ void Compile_SW ( void ) {
 
 	CompilerToggleBuffer();
 
-	if (RSPOpC.rt == 0) {
-		XorX86RegToX86Reg(x86_EAX,x86_EAX);
+	if (IsRegConst(RSPOpC.rt) == TRUE) {
+		MoveConstToN64Mem(MipsRegConst(RSPOpC.rt), x86_EBX);
 	} else {
 		MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
+		MoveX86regToN64Mem(x86_EAX, x86_EBX);
 	}
-	MoveX86regToN64Mem(x86_EAX, x86_EBX);
 	
 	CPU_Message("   Done:");
 	x86_SetBranch32b(Jump[1], RecompPos);
@@ -1432,26 +1498,26 @@ void Compile_Special_SLT ( void ) {
 	#endif
 
 	CPU_Message("  %X %s",CompilePC,RSPOpcodeName(RSPOpC.Hex,CompilePC));
-	if (RSPOpC.rt == 0) { return; }
+	if (RSPOpC.rd == 0) { return; }
 
 	if (RSPOpC.rt == RSPOpC.rs) {
 		MoveConstToVariable(0, &RSP_GPR[RSPOpC.rd].UW, GPR_Name(RSPOpC.rd));
 	} else {
-		XorX86RegToX86Reg(x86_EBX, x86_EBX);
 		if (RSPOpC.rs == 0) {
 			MoveVariableToX86reg(&RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt), x86_EAX);
+			XorX86RegToX86Reg(x86_ECX, x86_ECX);
 			CompConstToX86reg(x86_EAX, 0);
-			Setg(x86_EBX);
+			Setg(x86_ECX);
 		} else if (RSPOpC.rt == 0) {
-			MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs), x86_EAX);
-			CompConstToX86reg(x86_EAX, 0);
-			Setl(x86_EBX);
+			MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs), x86_ECX);
+			ShiftRightUnsignImmed(x86_ECX, 31);
 		} else {
 			MoveVariableToX86reg(&RSP_GPR[RSPOpC.rs].UW, GPR_Name(RSPOpC.rs), x86_EAX);
+			XorX86RegToX86Reg(x86_ECX, x86_ECX);
 			CompX86regToVariable(x86_EAX, &RSP_GPR[RSPOpC.rt].UW, GPR_Name(RSPOpC.rt));
-			Setl(x86_EBX);
+			Setl(x86_ECX);
 		}
-		MoveX86regToVariable(x86_EBX, &RSP_GPR[RSPOpC.rd].UW, GPR_Name(RSPOpC.rd));
+		MoveX86regToVariable(x86_ECX, &RSP_GPR[RSPOpC.rd].UW, GPR_Name(RSPOpC.rd));
 	}
 }
 

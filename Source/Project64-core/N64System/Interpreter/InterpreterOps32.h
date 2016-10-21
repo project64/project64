@@ -62,8 +62,6 @@ public:
     static void  SPECIAL_SLT();
     static void  SPECIAL_SLTU();
     static void  SPECIAL_TEQ();
-    static void  SPECIAL_DSRL32();
-    static void  SPECIAL_DSRA32();
 
     /********************** R4300i OpCodes: RegImm **********************/
     static void  REGIMM_BLTZ();

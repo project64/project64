@@ -16,7 +16,7 @@
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/3rdParty/zip.h>
 
-CSystemTimer::CSystemTimer( int32_t & NextTimer ) :
+CSystemTimer::CSystemTimer(int32_t & NextTimer) :
 m_NextTimer(NextTimer),
 m_inFixTimer(false)
 {
@@ -186,16 +186,6 @@ void CSystemTimer::TimerDone()
 {
     UpdateTimers();
 
-    /*	uint32_t LastTimer;
-        if (Profiling)
-        {
-        LastTimer = StartTimer(Timer_Done);
-        }
-        if (LogOptions.GenerateLog && LogOptions.LogExceptions && !LogOptions.NoInterrupts)
-        {
-        LogMessage("%08X: Timer Done (Type: %d CurrentTimer: %d)", *_PROGRAM_COUNTER, m_Current, *_Timer );
-        }
-        */
     switch (m_Current)
     {
     case CSystemTimer::CompareTimer:
@@ -331,7 +321,7 @@ void CSystemTimer::SaveData(CFile & file) const
 {
     uint32_t TimerDetailsSize = sizeof(TIMER_DETAILS);
     uint32_t Entries = sizeof(m_TimerDetatils) / sizeof(m_TimerDetatils[0]);
-    
+
     file.Write(&TimerDetailsSize, sizeof(TimerDetailsSize));
     file.Write(&Entries, sizeof(Entries));
     file.Write((void *)&m_TimerDetatils, sizeof(m_TimerDetatils));
@@ -354,11 +344,21 @@ void CSystemTimer::LoadData(zipFile & file)
     }
     if (Entries != sizeof(m_TimerDetatils) / sizeof(m_TimerDetatils[0]))
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-        return;
+        if (Entries < (sizeof(m_TimerDetatils) / sizeof(m_TimerDetatils[0])))
+        {
+            memset((void *)&m_TimerDetatils, 0, sizeof(m_TimerDetatils));
+            unzReadCurrentFile(file, (void *)&m_TimerDetatils, Entries * sizeof(m_TimerDetatils[0]));
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
     }
-
-    unzReadCurrentFile(file, (void *)&m_TimerDetatils, sizeof(m_TimerDetatils));
+    else
+    {
+        unzReadCurrentFile(file, (void *)&m_TimerDetatils, sizeof(m_TimerDetatils));
+    }
     unzReadCurrentFile(file, (void *)&m_LastUpdate, sizeof(m_LastUpdate));
     unzReadCurrentFile(file, &m_NextTimer, sizeof(m_NextTimer));
     unzReadCurrentFile(file, (void *)&m_Current, sizeof(m_Current));

@@ -70,7 +70,7 @@ the plugin
 #include <stddef.h>		// offsetof
 #include <glide.h>
 #include <Common/MemTest.h>
-#include <Common/DateTimeClass.h>
+#include <Common/HighResTimeStamp.h>
 #include <Settings/Settings.h>
 #include "GlideExtensions.h"
 #include "rdp.h"
@@ -150,8 +150,8 @@ extern "C" {
 #define COLORED_DEBUGGER	// ;) pretty colors
 
 #ifdef FPS
-    extern CDateTime  fps_last;
-    extern CDateTime  fps_next;
+    extern HighResTimeStamp fps_last;
+    extern HighResTimeStamp fps_next;
     extern float      fps;
     extern uint32_t	  fps_count;
 #endif
