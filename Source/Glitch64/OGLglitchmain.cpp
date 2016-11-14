@@ -122,9 +122,18 @@ FullScreenResolutions::~FullScreenResolutions()
     for (unsigned int i = 0; i < dwNumResolutions; i++)
     {
         delete[] aResolutionsStr[i];
+        aResolutionsStr[i] = NULL;
     }
-    delete[] aResolutionsStr;
-    delete[] aResolutions;
+    if (aResolutionsStr)
+    {
+        delete[] aResolutionsStr;
+        aResolutionsStr = NULL;
+    }
+    if (aResolutions)
+    {
+        delete[] aResolutions;
+        aResolutions = NULL;
+    }
 }
 
 void FullScreenResolutions::init()
