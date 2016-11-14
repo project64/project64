@@ -43,6 +43,7 @@ bool CRegBase::operator==(const CRegBase& right) const
     }
     if (m_CycleCount != right.m_CycleCount) { return false; }
     if (m_Fpu_Used != right.m_Fpu_Used) { return false; }
+    if (GetRoundingModel() != right.GetRoundingModel()) { return false; }
     return true;
 }
 
