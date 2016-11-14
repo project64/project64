@@ -9,6 +9,7 @@
 #include "FileClass.h"
 #include "CriticalSection.h"
 #include "StdString.h"
+#include "SmartPointer.h"
 #include <map>
 
 class CIniFileBase
@@ -49,11 +50,8 @@ private:
     CriticalSection m_CS;
     FILELOC m_SectionsPos;
 
-    //void AddItemData ( const char * lpKeyName, const char * lpString);
-    //bool ChangeItemData ( const char * lpKeyName, const char * lpString );
-    //void DeleteItem ( const char * lpKeyName );
     void fInsertSpaces(int Pos, int NoOfSpaces);
-    int  GetStringFromFile(char * & String, char * &Data, int & MaxDataSize, int & DataSize, int & ReadPos);
+    int  GetStringFromFile(char * & String, AUTO_PTR<char> &Data, int & MaxDataSize, int & DataSize, int & ReadPos);
     bool MoveToSectionNameData(const char * lpSectionName, bool ChangeCurrentSection);
     const char * CleanLine(char * Line);
     void ClearSectionPosList(long FilePos);
@@ -76,18 +74,8 @@ public:
     uint32_t GetNumber(const char * lpSectionName, const char * lpKeyName, uint32_t nDefault);
     bool  GetNumber(const char * lpSectionName, const char * lpKeyName, uint32_t nDefault, uint32_t & Value);
 
-#ifdef _UNICODE
-    bool DeleteSection ( LPCWSTR lpSectionName );
-    bool GetString ( LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault, stdstr & Value );
-    stdstr GetString  ( LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault );
-    uint32_t  GetString  ( LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault, LPTSTR lpReturnedString, uint32_t nSize );
-    uint32_t GetNumber ( LPCWSTR lpSectionName, LPCWSTR lpKeyName, uint32_t nDefault );
-    bool  GetNumber ( LPCWSTR lpSectionName, LPCWSTR lpKeyName, uint32_t nDefault, uint32_t & Value );
-
-#endif
-
-    virtual void  SaveString(const char * lpSectionName, const char * lpKeyName, const char * lpString);
-    virtual void  SaveNumber(const char * lpSectionName, const char * lpKeyName, uint32_t Value);
+    virtual void SaveString(const char * lpSectionName, const char * lpKeyName, const char * lpString);
+    virtual void SaveNumber(const char * lpSectionName, const char * lpKeyName, uint32_t Value);
     void SetAutoFlush(bool AutoFlush);
     void FlushChanges(void);
     bool EntryExists(const char * lpSectionName, const char * lpKeyName);
