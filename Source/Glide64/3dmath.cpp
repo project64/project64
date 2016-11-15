@@ -110,8 +110,8 @@ void calc_linear(VERTEX *v)
     if (rdp.cur_cache[0])
     {
         // scale >> 6 is size to map to
-        v->ou = (acosf(x) / 3.141592654f) * (rdp.tiles[rdp.cur_tile].org_s_scale >> 6);
-        v->ov = (acosf(y) / 3.141592654f) * (rdp.tiles[rdp.cur_tile].org_t_scale >> 6);
+        v->ou = (acosf(-x) / 3.141592654f) * (rdp.tiles[rdp.cur_tile].org_s_scale >> 6);
+        v->ov = (acosf(-y) / 3.141592654f) * (rdp.tiles[rdp.cur_tile].org_t_scale >> 6);
     }
     v->uv_scaled = 1;
     WriteTrace(TraceRDP, TraceVerbose, "calc linear u: %f, v: %f", v->ou, v->ov);
