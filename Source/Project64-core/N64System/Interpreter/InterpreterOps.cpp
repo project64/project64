@@ -31,9 +31,7 @@ float roundf(float num)
 {
     return (num - floorf(num) > 0.5) ? ceilf(num) : floorf(num);
 }
-#endif
 
-#if (defined(_MSC_VER) && (_MSC_VER <= 1700))
 double trunc(double num)
 {
     return (num < 0) ? ceil(num) : floor(num);
@@ -483,13 +481,13 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP1_S[5] = COP1_S_ABS;
     Jump_CoP1_S[6] = COP1_S_MOV;
     Jump_CoP1_S[7] = COP1_S_NEG;
-    Jump_CoP1_S[8] = UnknownOpcode;
+    Jump_CoP1_S[8] = COP1_S_ROUND_L;
     Jump_CoP1_S[9] = COP1_S_TRUNC_L;
-    Jump_CoP1_S[10] = COP1_S_CEIL_L;		//added by Witten
-    Jump_CoP1_S[11] = COP1_S_FLOOR_L;		//added by Witten
+    Jump_CoP1_S[10] = COP1_S_CEIL_L;		
+    Jump_CoP1_S[11] = COP1_S_FLOOR_L;		
     Jump_CoP1_S[12] = COP1_S_ROUND_W;
     Jump_CoP1_S[13] = COP1_S_TRUNC_W;
-    Jump_CoP1_S[14] = COP1_S_CEIL_W;		//added by Witten
+    Jump_CoP1_S[14] = COP1_S_CEIL_W;		
     Jump_CoP1_S[15] = COP1_S_FLOOR_W;
     Jump_CoP1_S[16] = UnknownOpcode;
     Jump_CoP1_S[17] = UnknownOpcode;
@@ -548,14 +546,14 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_CoP1_D[5] = COP1_D_ABS;
     Jump_CoP1_D[6] = COP1_D_MOV;
     Jump_CoP1_D[7] = COP1_D_NEG;
-    Jump_CoP1_D[8] = UnknownOpcode;
-    Jump_CoP1_D[9] = COP1_D_TRUNC_L;		//added by Witten
-    Jump_CoP1_D[10] = COP1_D_CEIL_L;		//added by Witten
-    Jump_CoP1_D[11] = COP1_D_FLOOR_L;		//added by Witten
+    Jump_CoP1_D[8] = COP1_D_ROUND_L;
+    Jump_CoP1_D[9] = COP1_D_TRUNC_L;		
+    Jump_CoP1_D[10] = COP1_D_CEIL_L;		
+    Jump_CoP1_D[11] = COP1_D_FLOOR_L;		
     Jump_CoP1_D[12] = COP1_D_ROUND_W;
     Jump_CoP1_D[13] = COP1_D_TRUNC_W;
-    Jump_CoP1_D[14] = COP1_D_CEIL_W;		//added by Witten
-    Jump_CoP1_D[15] = COP1_D_FLOOR_W;		//added by Witten
+    Jump_CoP1_D[14] = COP1_D_CEIL_W;		
+    Jump_CoP1_D[15] = COP1_D_FLOOR_W;		
     Jump_CoP1_D[16] = UnknownOpcode;
     Jump_CoP1_D[17] = UnknownOpcode;
     Jump_CoP1_D[18] = UnknownOpcode;
@@ -2463,6 +2461,12 @@ void R4300iOp::COP1_S_NEG()
     *(float *)_FPR_S[m_Opcode.fd] = (*(float *)_FPR_S[m_Opcode.fs] * -1.0f);
 }
 
+void R4300iOp::COP1_S_ROUND_L()
+{
+    TEST_COP1_USABLE_EXCEPTION();
+    Float_RoundToInteger64(&*(int64_t *)_FPR_D[m_Opcode.fd], &*(float *)_FPR_S[m_Opcode.fs], FE_TONEAREST);
+}
+
 void R4300iOp::COP1_S_TRUNC_L()
 {
     TEST_COP1_USABLE_EXCEPTION();
@@ -2470,13 +2474,13 @@ void R4300iOp::COP1_S_TRUNC_L()
 }
 
 void R4300iOp::COP1_S_CEIL_L()
-{	//added by Witten
+{	
     TEST_COP1_USABLE_EXCEPTION();
     Float_RoundToInteger64(&*(int64_t *)_FPR_D[m_Opcode.fd], &*(float *)_FPR_S[m_Opcode.fs], FE_UPWARD);
 }
 
 void R4300iOp::COP1_S_FLOOR_L()
-{	//added by Witten
+{	
     TEST_COP1_USABLE_EXCEPTION();
     Float_RoundToInteger64(&*(int64_t *)_FPR_D[m_Opcode.fd], &*(float *)_FPR_S[m_Opcode.fs], FE_DOWNWARD);
 }
@@ -2494,7 +2498,7 @@ void R4300iOp::COP1_S_TRUNC_W()
 }
 
 void R4300iOp::COP1_S_CEIL_W()
-{	//added by Witten
+{	
     TEST_COP1_USABLE_EXCEPTION();
     Float_RoundToInteger32(&*(int32_t *)_FPR_S[m_Opcode.fd], &*(float *)_FPR_S[m_Opcode.fs], FE_UPWARD);
 }
@@ -2572,28 +2576,36 @@ void R4300iOp::COP1_S_CMP()
 }
 
 /************************** COP1: D functions ************************/
-__inline void Double_RoundToInteger32(uint32_t * Dest, const double * Source, int RoundType)
+__inline void Double_RoundToInteger32(int32_t * Dest, const double * Source, int RoundType)
 {
 #pragma warning(push)
 #pragma warning(disable:4244) //warning C4244: disabe conversion from 'double' to 'uint32_t', possible loss of data
 
     if (RoundType == FE_TONEAREST) { *Dest = round(*Source); }
-    if (RoundType == FE_TOWARDZERO) { *Dest = trunc(*Source); }
-    if (RoundType == FE_UPWARD) { *Dest = ceil(*Source); }
-    if (RoundType == FE_DOWNWARD) { *Dest = floor(*Source); }
+    else if (RoundType == FE_TOWARDZERO) { *Dest = trunc(*Source); }
+    else if (RoundType == FE_UPWARD) { *Dest = ceil(*Source); }
+    else if (RoundType == FE_DOWNWARD) { *Dest = floor(*Source); }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__,__LINE__);
+    }
 
 #pragma warning(pop)
 }
 
-__inline void Double_RoundToInteger64(uint64_t * Dest, const double * Source, int RoundType)
+__inline void Double_RoundToInteger64(int64_t * Dest, const double * Source, int RoundType)
 {
 #pragma warning(push)
 #pragma warning(disable:4244) //warning C4244: disabe conversion from 'double' to 'uint64_t', possible loss of data
 
     if (RoundType == FE_TONEAREST) { *Dest = round(*Source); }
-    if (RoundType == FE_TOWARDZERO) { *Dest = trunc(*Source); }
-    if (RoundType == FE_UPWARD) { *Dest = ceil(*Source); }
-    if (RoundType == FE_DOWNWARD) { *Dest = floor(*Source); }
+    else if (RoundType == FE_TOWARDZERO) { *Dest = trunc(*Source); }
+    else if (RoundType == FE_UPWARD) { *Dest = ceil(*Source); }
+    else if (RoundType == FE_DOWNWARD) { *Dest = floor(*Source); }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__,__LINE__);
+    }
 
 #pragma warning(pop)
 }
@@ -2654,46 +2666,52 @@ void R4300iOp::COP1_D_NEG()
     *(double *)_FPR_D[m_Opcode.fd] = (*(double *)_FPR_D[m_Opcode.fs] * -1.0);
 }
 
-void R4300iOp::COP1_D_TRUNC_L()
-{	//added by Witten
+void R4300iOp::COP1_D_ROUND_L()
+{
     TEST_COP1_USABLE_EXCEPTION();
-    Double_RoundToInteger64(&*(uint64_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_TOWARDZERO);
+    Double_RoundToInteger64(&*(int64_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_TONEAREST);
+}
+
+void R4300iOp::COP1_D_TRUNC_L()
+{	
+    TEST_COP1_USABLE_EXCEPTION();
+    Double_RoundToInteger64(&*(int64_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_TOWARDZERO);
 }
 
 void R4300iOp::COP1_D_CEIL_L()
-{	//added by Witten
+{	
     TEST_COP1_USABLE_EXCEPTION();
-    Double_RoundToInteger64(&*(uint64_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_UPWARD);
+    Double_RoundToInteger64(&*(int64_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_UPWARD);
 }
 
 void R4300iOp::COP1_D_FLOOR_L()
-{	//added by Witten
+{	
     TEST_COP1_USABLE_EXCEPTION();
-    Double_RoundToInteger64(&*(uint64_t *)_FPR_D[m_Opcode.fd], &*(double *)_FPR_S[m_Opcode.fs], FE_DOWNWARD);
+    Double_RoundToInteger64(&*(int64_t *)_FPR_D[m_Opcode.fd], &*(double *)_FPR_S[m_Opcode.fs], FE_DOWNWARD);
 }
 
 void R4300iOp::COP1_D_ROUND_W()
 {
     TEST_COP1_USABLE_EXCEPTION();
-    Double_RoundToInteger32(&*(uint32_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_TONEAREST);
+    Double_RoundToInteger32(&*(int32_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_TONEAREST);
 }
 
 void R4300iOp::COP1_D_TRUNC_W()
 {
     TEST_COP1_USABLE_EXCEPTION();
-    Double_RoundToInteger32(&*(uint32_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_TOWARDZERO);
+    Double_RoundToInteger32(&*(int32_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_TOWARDZERO);
 }
 
 void R4300iOp::COP1_D_CEIL_W()
-{	//added by Witten
+{	
     TEST_COP1_USABLE_EXCEPTION();
-    Double_RoundToInteger32(&*(uint32_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_UPWARD);
+    Double_RoundToInteger32(&*(int32_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], FE_UPWARD);
 }
 
 void R4300iOp::COP1_D_FLOOR_W()
-{	//added by Witten
+{	
     TEST_COP1_USABLE_EXCEPTION();
-    Double_RoundToInteger32(&*(uint32_t *)_FPR_D[m_Opcode.fd], &*(double *)_FPR_S[m_Opcode.fs], FE_DOWNWARD);
+    Double_RoundToInteger32(&*(int32_t *)_FPR_D[m_Opcode.fd], &*(double *)_FPR_S[m_Opcode.fs], FE_DOWNWARD);
 }
 
 void R4300iOp::COP1_D_CVT_S()
@@ -2706,13 +2724,13 @@ void R4300iOp::COP1_D_CVT_S()
 void R4300iOp::COP1_D_CVT_W()
 {
     TEST_COP1_USABLE_EXCEPTION();
-    Double_RoundToInteger32(&*(uint32_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], *_RoundingModel);
+    Double_RoundToInteger32(&*(int32_t *)_FPR_S[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], *_RoundingModel);
 }
 
 void R4300iOp::COP1_D_CVT_L()
 {
     TEST_COP1_USABLE_EXCEPTION();
-    Double_RoundToInteger64(&*(uint64_t *)_FPR_D[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], *_RoundingModel);
+    Double_RoundToInteger64(&*(int64_t *)_FPR_D[m_Opcode.fd], &*(double *)_FPR_D[m_Opcode.fs], *_RoundingModel);
 }
 
 void R4300iOp::COP1_D_CMP()

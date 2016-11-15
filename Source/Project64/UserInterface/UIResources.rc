@@ -119,7 +119,7 @@ BEGIN
     EDITTEXT        IDC_SNAP_DIR,18,118,170,12,ES_AUTOHSCROLL
     PUSHBUTTON      "...",IDC_SELECT_SNAP_DIR,193,118,14,12
     GROUPBOX        "Texture Directory",IDC_DIR_TEXTURE_FRAME,5,131,208,34
-    CONTROL         "$AppPath\\textures\\",IDC_TEXTURE_DEFAULT,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,6,140,179,8
+    CONTROL         "$AppPath\\Textures\\",IDC_TEXTURE_DEFAULT,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,6,140,179,8
     CONTROL         "",IDC_TEXTURE_OTHER,"Button",BS_AUTORADIOBUTTON,6,150,11,12
     EDITTEXT        IDC_TEXTURE_DIR,18,149,170,12,ES_AUTOHSCROLL
     PUSHBUTTON      "...",IDC_SELECT_TEXTURE_DIR,193,149,14,12
@@ -327,13 +327,17 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     CONTROL         "Start Emulation when rom is opened?",IDC_START_ON_ROM_OPEN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,8,191,10
-    CONTROL         "Automatically compress instant saves",IDC_ZIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,24,191,10
-    CONTROL         "Enable Debugger",IDC_DEBUGGER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,41,191,10
-    CONTROL         "Remember selected cheats",IDC_REMEMBER_CHEAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,57,191,10
+    CONTROL         "Automatically compress instant saves",IDC_ZIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,23,191,10
+    CONTROL         "Enable Debugger",IDC_DEBUGGER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,38,191,10
+    CONTROL         "Remember selected cheats",IDC_REMEMBER_CHEAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,53,191,10
     CONTROL         "Check if project64 is already running",IDC_CHECK_RUNNING,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,73,189,10
-    CONTROL         "Frame rate display",IDC_DISPLAY_FRAMERATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,88,86,10
-    COMBOBOX        IDC_FRAME_DISPLAY_TYPE,101,87,99,57,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,68,189,10
+    CONTROL         "Frame rate display",IDC_DISPLAY_FRAMERATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,98,86,10
+    COMBOBOX        IDC_FRAME_DISPLAY_TYPE,101,97,99,57,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Unique Game Save Directory",IDC_UNIQUE_SAVE_DIR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,83,189,10
+    EDITTEXT        IDC_IPL_DIR,4,125,184,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_SELECT_IPL_DIR,194,125,14,12
+    LTEXT           "64DD IPL ROM Path:",IDC_IPLDIR_TXT,6,115,145,10
 END
 
 IDD_Settings_ShellInt DIALOGEX 0, 0, 231, 206
@@ -635,6 +639,28 @@ BEGIN
     EDITTEXT        IDC_NOTES_PLUGIN,80,62,132,30,ES_AUTOHSCROLL
 END
 
+IDD_Support_Project64 DIALOGEX 0, 0, 233, 207
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Support Project64"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    CONTROL         IDB_ABOUT_LOGO,IDC_STATIC,"Static",SS_BITMAP,0,0,233,74
+    DEFPUSHBUTTON   "Support Project64",ID_SUPPORT_PJ64,19,186,71,14
+    PUSHBUTTON      "Continue",IDCANCEL,139,186,71,14
+    LTEXT           "Project64 is a software package",IDC_INFO,7,76,213,79
+    LTEXT           "Enter notification code",IDC_ENTER_CODE,8,164,213,8
+END
+
+IDD_Support_EnterCode DIALOGEX 0, 0, 161, 68
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Enter Code"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,50,47,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,104,47,50,14
+    LTEXT           "Please enter the code in email",IDC_DESCRIPTION,7,7,147,15
+    EDITTEXT        IDC_CODE,7,25,147,12,ES_AUTOHSCROLL
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -871,6 +897,22 @@ BEGIN
         RIGHTMARGIN, 216
         TOPMARGIN, 4
         BOTTOMMARGIN, 152
+    END
+
+    IDD_Support_Project64, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 170
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 200
+    END
+
+    IDD_Support_EnterCode, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 154
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 61
     END
 END
 #endif    // APSTUDIO_INVOKED

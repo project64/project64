@@ -35,9 +35,6 @@
       <AdditionalInputs>$(OutDir)Project64.exe;%(AdditionalInputs)</AdditionalInputs>
       <Outputs>$(OutDir)Setup Project64 2.2.exe;%(Outputs)</Outputs>
     </CustomBuild>
-    <None Include="binno\binno.iss" />
-    <None Include="binno\it_download.iss" />
-    <None Include="binno\it_download_u.iss" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Project64\Project64.vcxproj">

@@ -21,9 +21,6 @@ enum SettingID
     Default_None,
     Default_Constant,
 
-    //information - temp keys
-    Info_ShortCutsChanged,
-
     //Command Settings
     Cmd_BaseDirectory,
     Cmd_RomFile,
@@ -42,34 +39,25 @@ enum SettingID
     SupportFile_NotesDefault,
     SupportFile_ExtInfo,
     SupportFile_ExtInfoDefault,
-    SupportFile_ShortCuts,
-    SupportFile_ShortCutsDefault,
-    SupportFile_RomListCache,
-    SupportFile_RomListCacheDefault,
-    SupportFile_7zipCache,
-    SupportFile_7zipCacheDefault,
 
     //Settings
     Setting_ApplicationName,
     Setting_UseFromRegistry,
     Setting_RdbEditor,
     Setting_CN64TimeCritical,
-    Setting_PluginPageFirst,
-    Setting_DisableScrSaver,
-    Setting_AutoSleep,
     Setting_AutoStart,
-    Setting_AutoFullscreen,
     Setting_CheckEmuRunning,
     Setting_EraseGameDefaults,
 
     Setting_AutoZipInstantSave,
     Setting_RememberCheats,
+    Setting_UniqueSaveDir,
     Setting_LanguageDir,
     Setting_LanguageDirDefault,
     Setting_CurrentLanguage,
     Setting_EnableDisk,
 
-    //RDB TLB Settings
+    //RDB Settings
     Rdb_GoodName,
     Rdb_SaveChip,
     Rdb_CpuType,
@@ -80,9 +68,6 @@ enum SettingID
     Rdb_DelaySi,
     Rdb_32Bit,
     Rdb_FastSP,
-    Rdb_Status,
-    Rdb_NotesCore,
-    Rdb_NotesPlugin,
     Rdb_FixedAudio,
     Rdb_SyncViaAudio,
     Rdb_RspAudioSignal,
@@ -113,6 +98,7 @@ enum SettingID
     //Individual Game Settings
     Game_IniKey,
     Game_File,
+    Game_UniqueSaveDir,
     Game_GameName,
     Game_GoodName,
     Game_TempLoaded,
@@ -138,6 +124,7 @@ enum SettingID
     Game_SMM_TLB,
     Game_SMM_StoreInstruc,
     Game_CurrentSaveState,
+    Game_LastSaveTime,
     Game_RDRamSize,
     Game_CounterFactor,
     Game_UseTlb,
@@ -174,38 +161,17 @@ enum SettingID
     UserInterface_BasicMode,
     UserInterface_ShowCPUPer,
     UserInterface_DisplayFrameRate,
-    UserInterface_InFullScreen,
     UserInterface_FrameDisplayType,
-    UserInterface_MainWindowTop,
-    UserInterface_MainWindowLeft,
-    UserInterface_AlwaysOnTop,
-
-    RomBrowser_Enabled,
-    RomBrowser_ColoumnsChanged,
-    RomBrowser_Top,
-    RomBrowser_Left,
-    RomBrowser_Width,
-    RomBrowser_Height,
-    RomBrowser_PosIndex,
-    RomBrowser_WidthIndex,
-    RomBrowser_SortFieldIndex,
-    RomBrowser_SortAscendingIndex,
-    RomBrowser_Recursive,
-    RomBrowser_Maximized,
 
     //Directory Info
-    Directory_LastSave,
-    Directory_RecentGameDirCount,
-    Directory_RecentGameDirIndex,
-    Directory_Game,
-    Directory_GameInitial,
-    Directory_GameSelected,
-    Directory_GameUseSelected,
     Directory_Plugin,
     Directory_PluginInitial,
     Directory_PluginSelected,
     Directory_PluginUseSelected,
     Directory_PluginSync,
+    Directory_PluginSyncInitial,
+    Directory_PluginSyncSelected,
+    Directory_PluginSyncUseSelected,
     Directory_SnapShot,
     Directory_SnapShotInitial,
     Directory_SnapShotSelected,
@@ -227,9 +193,18 @@ enum SettingID
     Directory_LogSelected,
     Directory_LogUseSelected,
 
+    //Rom List
+    RomList_RomListCache,
+    RomList_RomListCacheDefault,
+    RomList_GameDir,
+    RomList_GameDirInitial,
+    RomList_GameDirSelected,
+    RomList_GameDirUseSelected,
+    RomList_GameDirRecursive,
+    RomList_7zipCache,
+    RomList_7zipCacheDefault,
+
     //File Info
-    File_RecentGameFileCount,
-    File_RecentGameFileIndex,
     File_DiskIPLPath,
 
     //Debugger
@@ -239,15 +214,18 @@ enum SettingID
     Debugger_ShowPifErrors,
     Debugger_ShowDivByZero,
     Debugger_GenerateLogFiles,
-    Debugger_ProfileCode,
     Debugger_DisableGameFixes,
     Debugger_AppLogLevel,
     Debugger_AppLogFlush,
     Debugger_ShowDListAListCount,
     Debugger_ShowRecompMemSize,
+    Debugger_DebugLanguage,
+    Debugger_RecordExecutionTimes,
 
     //Trace
     Debugger_TraceMD5,
+    Debugger_TraceThread,
+    Debugger_TracePath,
     Debugger_TraceSettings,
     Debugger_TraceUnknown,
     Debugger_TraceAppInit,
@@ -265,6 +243,8 @@ enum SettingID
     Debugger_TraceTLB,
     Debugger_TraceProtectedMEM,
     Debugger_TraceUserInterface,
+    Debugger_TraceRomList,
+    Debugger_TraceExceptionHandler,
 
     //Plugins
     Plugin_RSP_Current,
@@ -277,6 +257,8 @@ enum SettingID
     Plugin_CONT_CurVer,
     Plugin_UseHleGfx,
     Plugin_UseHleAudio,
+    Plugin_EnableAudio,
+    Plugin_ForceGfxReset,
 
     Logging_GenerateLog,
     Logging_LogRDRamRegisters,
@@ -313,6 +295,7 @@ enum SettingID
     Cheat_Range,
     Cheat_RangeNotes,
 
+    FirstUISettings, LastUISettings = FirstUISettings + MaxPluginSetting,
     FirstRSPDefaultSet, LastRSPDefaultSet = FirstRSPDefaultSet + MaxPluginSetting,
     FirstRSPSettings, LastRSPSettings = FirstRSPSettings + MaxPluginSetting,
     FirstGfxDefaultSet, LastGfxDefaultSet = FirstGfxDefaultSet + MaxPluginSetting,

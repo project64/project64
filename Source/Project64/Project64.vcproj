@@ -135,6 +135,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="call &quot;$(Root)Source\Script\sign.cmd&quot; &quot;$(TargetPath)&quot;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -180,6 +181,10 @@
 					RelativePath=".\Settings\NotificationSettings.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\Settings\UISettings.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="User Interface Source"
@@ -222,6 +227,14 @@
 				</File>
 				<File
 					RelativePath=".\UserInterface\SettingsConfig.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\UserInterface\SupportEnterCode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\UserInterface\SupportWindow.cpp"
 					>
 				</File>
 				<Filter
@@ -402,6 +415,10 @@
 					RelativePath=".\Settings\NotificationSettings.h"
 					>
 				</File>
+				<File
+					RelativePath=".\Settings\UISettings.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="User Interface Headers"
@@ -448,6 +465,14 @@
 				</File>
 				<File
 					RelativePath=".\UserInterface\SettingsConfig.h"
+					>
+				</File>
+				<File
+					RelativePath=".\UserInterface\SupportEnterCode.h"
+					>
+				</File>
+				<File
+					RelativePath=".\UserInterface\SupportWindow.h"
 					>
 				</File>
 				<Filter

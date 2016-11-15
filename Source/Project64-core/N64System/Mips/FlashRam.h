@@ -44,5 +44,5 @@ private:
     uint64_t  m_FlashStatus;
     uint32_t  m_FlashRAM_Offset;
     bool      m_ReadOnly;
-    void *    m_hFile;
+    CFile     m_File;
 };

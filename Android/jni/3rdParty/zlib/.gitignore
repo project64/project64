@@ -1,0 +1,12 @@
+*.c
+*.cpp
+*.h
+*.vcproj
+*.vcxproj
+*.vcxproj.filters
+*.dsp
+*.plg
+ChangeLog
+INDEX
+README
+zconf.h.in

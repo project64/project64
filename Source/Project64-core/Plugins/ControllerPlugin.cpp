@@ -29,7 +29,7 @@ CControl_Plugin::CControl_Plugin(void) :
 
 CControl_Plugin::~CControl_Plugin()
 {
-    Close();
+    Close(NULL);
     UnloadPlugin();
 }
 
@@ -64,7 +64,7 @@ bool CControl_Plugin::LoadFunctions(void)
 
 bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
 {
-    uint8_t Buffer[100];
+    static uint8_t Buffer[100];
 
     for (int32_t i = 0; i < 4; i++)
     {
@@ -78,9 +78,13 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
     {
         //Get Function from DLL
         void(CALL *InitiateControllers_1_0)(void * hMainWindow, CONTROL Controls[4]);
-        _LoadFunction("InitiateControllers",InitiateControllers_1_0);
+        _LoadFunction("InitiateControllers", InitiateControllers_1_0);
         if (InitiateControllers_1_0 == NULL) { return false; }
+#ifdef _WIN32
         InitiateControllers_1_0(Window->GetWindowHandle(), m_PluginControllers);
+#else
+        InitiateControllers_1_0(NULL, m_PluginControllers);
+#endif
         m_Initialized = true;
     }
     else if (m_PluginInfo.Version >= 0x0101)
@@ -88,15 +92,20 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
         CONTROL_INFO ControlInfo;
         ControlInfo.Controls = m_PluginControllers;
         ControlInfo.HEADER = (System == NULL ? Buffer : g_Rom->GetRomAddress());
+#ifdef _WIN32
         ControlInfo.hinst = Window ? Window->GetModuleInstance() : NULL;
         ControlInfo.hMainWindow = Window ? Window->GetWindowHandle() : NULL;
+#else
+        ControlInfo.hinst = NULL;
+        ControlInfo.hMainWindow = NULL;
+#endif
         ControlInfo.MemoryBswaped = true;
 
         if (m_PluginInfo.Version == 0x0101)
         {
             //Get Function from DLL
             void(CALL *InitiateControllers_1_1)(CONTROL_INFO ControlInfo);
-            _LoadFunction("InitiateControllers",InitiateControllers_1_1);
+            _LoadFunction("InitiateControllers", InitiateControllers_1_1);
             if (InitiateControllers_1_1 == NULL) { return false; }
 
             InitiateControllers_1_1(ControlInfo);
@@ -106,7 +115,7 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
         {
             //Get Function from DLL
             void(CALL *InitiateControllers_1_2)(CONTROL_INFO * ControlInfo);
-            _LoadFunction("InitiateControllers",InitiateControllers_1_2);
+            _LoadFunction("InitiateControllers", InitiateControllers_1_2);
             if (InitiateControllers_1_2 == NULL) { return false; }
 
             InitiateControllers_1_2(&ControlInfo);
@@ -115,7 +124,7 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
     }
 
 #ifdef _WIN32
-	//jabo had a bug so I call CreateThread so his dllmain gets called again
+    //jabo had a bug so I call CreateThread so his dllmain gets called again
     pjutil::DynLibCallDllMain();
 #endif
 

@@ -376,13 +376,13 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_CoP1_S[5] = R4300iOp::COP1_S_ABS;
     Jump_CoP1_S[6] = R4300iOp::COP1_S_MOV;
     Jump_CoP1_S[7] = R4300iOp::COP1_S_NEG;
-    Jump_CoP1_S[8] = R4300iOp::UnknownOpcode;
+	Jump_CoP1_S[8] = R4300iOp::COP1_S_ROUND_L;
     Jump_CoP1_S[9] = R4300iOp::COP1_S_TRUNC_L;
-    Jump_CoP1_S[10] = R4300iOp::COP1_S_CEIL_L;		//added by Witten
-    Jump_CoP1_S[11] = R4300iOp::COP1_S_FLOOR_L;		//added by Witten
+    Jump_CoP1_S[10] = R4300iOp::COP1_S_CEIL_L;		
+    Jump_CoP1_S[11] = R4300iOp::COP1_S_FLOOR_L;		
     Jump_CoP1_S[12] = R4300iOp::COP1_S_ROUND_W;
     Jump_CoP1_S[13] = R4300iOp::COP1_S_TRUNC_W;
-    Jump_CoP1_S[14] = R4300iOp::COP1_S_CEIL_W;		//added by Witten
+    Jump_CoP1_S[14] = R4300iOp::COP1_S_CEIL_W;		
     Jump_CoP1_S[15] = R4300iOp::COP1_S_FLOOR_W;
     Jump_CoP1_S[16] = R4300iOp::UnknownOpcode;
     Jump_CoP1_S[17] = R4300iOp::UnknownOpcode;
@@ -441,14 +441,14 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_CoP1_D[5] = R4300iOp::COP1_D_ABS;
     Jump_CoP1_D[6] = R4300iOp::COP1_D_MOV;
     Jump_CoP1_D[7] = R4300iOp::COP1_D_NEG;
-    Jump_CoP1_D[8] = R4300iOp::UnknownOpcode;
-    Jump_CoP1_D[9] = R4300iOp::COP1_D_TRUNC_L;		//added by Witten
-    Jump_CoP1_D[10] = R4300iOp::COP1_D_CEIL_L;		//added by Witten
-    Jump_CoP1_D[11] = R4300iOp::COP1_D_FLOOR_L;		//added by Witten
+    Jump_CoP1_D[8] = R4300iOp::COP1_D_ROUND_L;
+    Jump_CoP1_D[9] = R4300iOp::COP1_D_TRUNC_L;		
+    Jump_CoP1_D[10] = R4300iOp::COP1_D_CEIL_L;		
+    Jump_CoP1_D[11] = R4300iOp::COP1_D_FLOOR_L;		
     Jump_CoP1_D[12] = R4300iOp::COP1_D_ROUND_W;
     Jump_CoP1_D[13] = R4300iOp::COP1_D_TRUNC_W;
-    Jump_CoP1_D[14] = R4300iOp::COP1_D_CEIL_W;		//added by Witten
-    Jump_CoP1_D[15] = R4300iOp::COP1_D_FLOOR_W;		//added by Witten
+    Jump_CoP1_D[14] = R4300iOp::COP1_D_CEIL_W;		
+    Jump_CoP1_D[15] = R4300iOp::COP1_D_FLOOR_W;		
     Jump_CoP1_D[16] = R4300iOp::UnknownOpcode;
     Jump_CoP1_D[17] = R4300iOp::UnknownOpcode;
     Jump_CoP1_D[18] = R4300iOp::UnknownOpcode;
@@ -1188,16 +1188,6 @@ void R4300iOp32::SPECIAL_TEQ()
     {
         g_Notify->DisplayError("Should trap this ???");
     }
-}
-
-void R4300iOp32::SPECIAL_DSRL32()
-{
-    _GPR[m_Opcode.rd].UW[0] = (uint32_t)(_GPR[m_Opcode.rt].UDW >> (m_Opcode.sa + 32));
-}
-
-void R4300iOp32::SPECIAL_DSRA32()
-{
-    _GPR[m_Opcode.rd].W[0] = (int32_t)(_GPR[m_Opcode.rt].DW >> (m_Opcode.sa + 32));
 }
 
 /********************** R4300i OpCodes: RegImm **********************/

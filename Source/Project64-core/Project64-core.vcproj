@@ -461,29 +461,37 @@
 						>
 					</File>
 					<File
+						RelativePath=".\N64System\Recompiler\RecompilerCodeLog.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\N64System\Recompiler\RecompilerMemory.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\N64System\Recompiler\RecompilerOps.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\N64System\Recompiler\RegInfo.cpp"
+						RelativePath=".\N64System\Recompiler\RegBase.cpp"
 						>
 					</File>
 					<File
 						RelativePath=".\N64System\Recompiler\SectionInfo.cpp"
 						>
 					</File>
-					<File
-						RelativePath=".\N64System\Recompiler\x86CodeLog.cpp"
+					<Filter
+						Name="x86"
 						>
-					</File>
-					<File
-						RelativePath=".\N64System\Recompiler\X86ops.cpp"
-						>
-					</File>
+						<File
+							RelativePath=".\N64System\Recompiler\x86\x86ops.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\N64System\Recompiler\x86\x86RecompilerOps.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\N64System\Recompiler\x86\x86RegInfo.cpp"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
@@ -508,6 +516,14 @@
 							UsePrecompiledHeader="0"
 						/>
 					</FileConfiguration>
+				</File>
+			</Filter>
+			<Filter
+				Name="Rom List"
+				>
+				<File
+					RelativePath=".\RomList\RomList.cpp"
+					>
 				</File>
 			</Filter>
 		</Filter>
@@ -733,6 +749,14 @@
 				</File>
 				<File
 					RelativePath=".\3rdParty\zip.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Rom List"
+				>
+				<File
+					RelativePath=".\RomList\RomList.h"
 					>
 				</File>
 			</Filter>

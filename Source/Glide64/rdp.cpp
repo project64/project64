@@ -2020,7 +2020,7 @@ static inline void loadTile(uint32_t *src, uint32_t *dst, int width, int height,
             do
             {
                 v16 = __ROL__(v16, 8);
-                *(uint8_t *)v7 = v16;
+                *(uint8_t *)v7 = (v16  & 0xFF);
                 v7 = (uint32_t *)((char *)v7 + 1);
                 --v15;
             } while (v15);
@@ -2048,7 +2048,7 @@ static inline void loadTile(uint32_t *src, uint32_t *dst, int width, int height,
                 do
                 {
                     v20 = __ROL__(v20, 8);
-                    *(uint8_t *)v7 = v20;
+                    *(uint8_t *)v7 = (v20 & 0xFF);
                     v7 = (uint32_t *)((char *)v7 + 1);
                     --v19;
                 } while (v19);

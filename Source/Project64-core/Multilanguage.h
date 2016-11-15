@@ -81,6 +81,7 @@ enum LanguageStringID
     MENU_RESUME = 132,
     MENU_RESET_SOFT = 133, //added in build 1.7.50
     MENU_RESET_HARD = 134, //added in build 1.7.50
+    MENU_SWAPDISK = 135,   //added in build 2.2.????
 
     //Options Menu
     MENU_OPTIONS = 140,
@@ -264,6 +265,8 @@ enum LanguageStringID
     OPTION_DISPLAY_FR = 465,
     OPTION_CHANGE_FR = 466,
     OPTION_CHECK_RUNNING = 467,
+    OPTION_UNIQUE_SAVE_DIR = 468,
+    OPTION_IPL_ROM_PATH = 469,
 
     //Rom Browser Tab
     RB_MAX_ROMS = 480,
@@ -380,6 +383,7 @@ enum LanguageStringID
     STR_FR_VIS = 700,
     STR_FR_DLS = 701,
     STR_FR_PERCENT = 702,
+    STR_FR_DLS_VIS = 703,
 
     // Increase speed
     STR_INSREASE_SPEED = 710,
@@ -466,6 +470,22 @@ enum LanguageStringID
     STR_SHORTCUT_SYSTEMMENU = 1103,
     STR_SHORTCUT_OPTIONS = 1104,
     STR_SHORTCUT_SAVESLOT = 1105,
+
+    /*********************************************************************************
+    * Support Window                                                                       *
+    *********************************************************************************/
+    MSG_SUPPORT_TITLE = 1200,
+    MSG_SUPPORT_INFO = 1201,
+    MSG_SUPPORT_ENTER_CODE = 1202,
+    MSG_SUPPORT_PROJECT64 = 1203,
+    MSG_SUPPORT_CONTINUE = 1204,
+    MSG_SUPPORT_ENTER_SUPPORT_CODE = 1205,
+    MSG_SUPPORT_INCORRECT_CODE = 1206,
+    MSG_SUPPORT_COMPLETE = 1207,
+    MSG_SUPPORT_ENTER_CODE_TITLE = 1208,
+    MSG_SUPPORT_ENTER_CODE_DESC = 1209,
+    MSG_SUPPORT_OK = 1210,
+    MSG_SUPPORT_CANCEL = 1211,
 
     /*********************************************************************************
     * Messages                                                                       *

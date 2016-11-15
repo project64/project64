@@ -10,12 +10,17 @@
 ****************************************************************************/
 #pragma once
 
-class Mempak
+class CMempak
 {
 public:
     static uint8_t CalculateCrc(uint8_t * DataToCrc);
-    static void Load(int32_t Control);
-    static void Format(int32_t Control);
-    static void ReadFrom(int32_t Control, uint32_t address, uint8_t * data);
-    static void WriteTo(int32_t Control, uint32_t address, uint8_t * data);
+    void ReadFrom(int32_t Control, uint32_t address, uint8_t * data);
+    void WriteTo(int32_t Control, uint32_t address, uint8_t * data);
+
+private:
+    void LoadMempak(int32_t Control);
+    void Format(int32_t Control);
+
+    uint8_t m_Mempaks[4][128 * 256]; /* [CONTROLLERS][PAGES][BYTES_PER_PAGE] */
+    CFile m_MempakHandle[4];
 };

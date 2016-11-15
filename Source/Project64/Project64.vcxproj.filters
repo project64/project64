@@ -52,6 +52,9 @@
     <Filter Include="Header Files\N64 System Headers\Debugger Headers">
       <UniqueIdentifier>{c4249d55-df70-4453-b017-b548514ad094}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Settings">
+      <UniqueIdentifier>{8eaf5c00-c88d-418e-a27c-d658c547ab79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -154,6 +157,15 @@
       <Filter>Source Files\Multilanguage Source</Filter>
     </ClCompile>
     <ClCompile Include="UserInterface\RomInformationClass.cpp">
+      <Filter>Source Files\User Interface Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings\UISettings.cpp">
+      <Filter>Source Files\Settings Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\SupportWindow.cpp">
+      <Filter>Source Files\User Interface Source</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\SupportEnterCode.cpp">
       <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -276,6 +288,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UserInterface\RomInformationClass.h">
+      <Filter>Header Files\User Interface Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\GuiSettings.h">
+      <Filter>Header Files\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\NotificationSettings.h">
+      <Filter>Header Files\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\UISettings.h">
+      <Filter>Header Files\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\SupportWindow.h">
+      <Filter>Header Files\User Interface Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\SupportEnterCode.h">
       <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
   </ItemGroup>

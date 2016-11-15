@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                       *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -8,40 +8,27 @@
 * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
 *                                                                           *
 ****************************************************************************/
+
 #include "stdafx.h"
-#include "SpeedLimiterClass.h"
+#include "Project64-Core/N64System/SpeedLimiterClass.h"
+
 #include <Common/Util.h>
-#ifdef _WIN32
-#include <Windows.h>
-#include <Mmsystem.h>
-#pragma comment(lib, "winmm.lib")
-#endif
 
-CSpeedLimiter::CSpeedLimiter()
+// ---------------------------------------------------
+
+const uint32_t CSpeedLimiter::m_DefaultSpeed = 60;
+
+// ---------------------------------------------------
+
+CSpeedLimiter::CSpeedLimiter() :
+m_Frames(0),
+m_Speed(m_DefaultSpeed),
+m_BaseSpeed(m_DefaultSpeed)
 {
-    m_Frames = 0;
-    m_LastTime = 0;
-    m_Speed = 60;
-    m_BaseSpeed = 60;
-    m_Ratio = 1000.0F / (float)m_Speed;
-
-#ifdef _WIN32
-    TIMECAPS Caps;
-    timeGetDevCaps(&Caps, sizeof(Caps));
-    if (timeBeginPeriod(Caps.wPeriodMin) == TIMERR_NOCANDO)
-    {
-        g_Notify->DisplayError("Error during timer begin");
-    }
-#endif
 }
 
 CSpeedLimiter::~CSpeedLimiter()
 {
-#ifdef _WIN32
-    TIMECAPS Caps;
-    timeGetDevCaps(&Caps, sizeof(Caps));
-    timeEndPeriod(Caps.wPeriodMin);
-#endif
 }
 
 void CSpeedLimiter::SetHertz(uint32_t Hertz)
@@ -53,83 +40,65 @@ void CSpeedLimiter::SetHertz(uint32_t Hertz)
 
 void CSpeedLimiter::FixSpeedRatio()
 {
-    m_Ratio = 1000.0f / static_cast<double>(m_Speed);
+    m_MicroSecondsPerFrame = 1000000 / m_Speed;
     m_Frames = 0;
-#ifdef _WIN32
-    m_LastTime = timeGetTime();
-#endif
 }
 
 bool CSpeedLimiter::Timer_Process(uint32_t * FrameRate)
 {
-#ifdef _WIN32
     m_Frames += 1;
-    uint32_t CurrentTime = timeGetTime();
+    HighResTimeStamp CurrentTime;
+    CurrentTime.SetToNow();
 
     /* Calculate time that should of elapsed for this frame */
-    double CalculatedTime = (double)m_LastTime + (m_Ratio * (double)m_Frames);
-    if ((double)CurrentTime < CalculatedTime)
+    uint64_t LastTime = m_LastTime.GetMicroSeconds(), CurrentTimeValue = CurrentTime.GetMicroSeconds();
+    if (LastTime == 0)
     {
-        int32_t time = (int)(CalculatedTime - (double)CurrentTime);
+        m_Frames = 0;
+        m_LastTime = CurrentTime;
+        return true;
+    }
+    uint64_t CalculatedTime = LastTime + (m_MicroSecondsPerFrame * m_Frames);
+    if (CurrentTimeValue < CalculatedTime)
+    {
+        int32_t time = (int)(CalculatedTime - CurrentTimeValue);
         if (time > 0)
         {
-            pjutil::Sleep(time);
+            pjutil::Sleep((time / 1000) + 1);
         }
-
         /* Refresh current time */
-        CurrentTime = timeGetTime();
+        CurrentTime.SetToNow();
+        CurrentTimeValue = CurrentTime.GetMicroSeconds();
     }
-
-    if (CurrentTime - m_LastTime >= 1000)
+    if (CurrentTimeValue - LastTime >= 1000000)
     {
         /* Output FPS */
         if (FrameRate != NULL) { *FrameRate = m_Frames; }
         m_Frames = 0;
         m_LastTime = CurrentTime;
-
         return true;
     }
-    else
-    {
-        return false;
-    }
-#else
     return false;
-#endif
 }
 
-void CSpeedLimiter::IncreaseSpeed()
+void CSpeedLimiter::AlterSpeed( const ESpeedChange SpeedChange )
 {
-    if (m_Speed >= 60)
-    {
-        m_Speed += 10;
-    }
-    else if (m_Speed >= 15)
-    {
-        m_Speed += 5;
-    }
-    else
-    {
-        m_Speed += 1;
-    }
-    SpeedChanged(m_Speed);
-    FixSpeedRatio();
-}
+	int32_t SpeedFactor = 1;
+	if (SpeedChange == DECREASE_SPEED) { SpeedFactor = -1; }
 
-void CSpeedLimiter::DecreaseSpeed()
-{
-    if (m_Speed > 60)
-    {
-        m_Speed -= 10;
-    }
-    else if (m_Speed > 15)
-    {
-        m_Speed -= 5;
-    }
-    else if (m_Speed > 1)
-    {
-        m_Speed -= 1;
-    }
-    SpeedChanged(m_Speed);
-    FixSpeedRatio();
+	if (m_Speed >= m_DefaultSpeed)
+	{
+		m_Speed += 10 * SpeedFactor;
+	}
+	else if (m_Speed >= 15)
+	{
+		m_Speed += 5 * SpeedFactor;
+	}
+	else if (m_Speed > 1 && SpeedChange == DECREASE_SPEED || SpeedChange == INCREASE_SPEED)
+	{
+		m_Speed += 1 * SpeedFactor;
+	}
+
+	SpeedChanged(m_Speed);
+	FixSpeedRatio();
 }

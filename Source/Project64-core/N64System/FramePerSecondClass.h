@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#include <Common/HighResTimeStamp.h>
 
 class CFramePerSecond
 {
@@ -20,8 +21,7 @@ public:
 
     void UpdateDlCounter(void);
     void UpdateViCounter(void);
-    void DisplayDlCounter(uint32_t FrameRate);
-    void DisplayViCounter(uint32_t FrameRate);
+    void DisplayViCounter(int32_t FrameRateWhole, uint32_t FrameRateFraction);
 
 private:
     CFramePerSecond(const CFramePerSecond&);            // Disable copy constructor
@@ -29,11 +29,21 @@ private:
 
     static void FrameRateTypeChanged(CFramePerSecond * _this);
     static void ScreenHertzChanged(CFramePerSecond * _this);
+    void UpdateDisplay(void);
 
     int32_t  m_iFrameRateType, m_ScreenHertz;
 
     enum { NoOfFrames = 7 };
 
-    int64_t m_Frequency, m_Frames[NoOfFrames], m_LastFrame;
-    int32_t m_CurrentFrame;
+    HighResTimeStamp m_LastViFrame;
+    uint64_t m_ViFrames[NoOfFrames];
+    uint32_t m_CurrentViFrame;
+    int32_t m_ViFrameRateWhole;
+    uint32_t m_ViFrameRateFraction;
+
+    //Dlist
+    HighResTimeStamp m_LastDlistFrame;
+    uint64_t m_FramesDlist[NoOfFrames];
+    uint32_t m_CurrentDlistFrame;
+    float m_DlistFrameRate;
 };

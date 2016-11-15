@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <Common/Thread.h>
 #ifdef _WIN32
 #include <Windows.h>
 #else
@@ -171,8 +172,8 @@ const char * TraceModule(uint32_t module)
     return Unknown.c_str();
 }
 
-CTraceFileLog::CTraceFileLog(const char * FileName, bool FlushFile, LOG_OPEN_MODE eMode, size_t dwMaxFileSize) :
-m_FlushFile(FlushFile)
+CTraceFileLog::CTraceFileLog(const char * FileName, bool FlushFile, CLog::LOG_OPEN_MODE eMode, size_t dwMaxFileSize) :
+    m_FlushFile(FlushFile)
 {
     enum { MB = 1024 * 1024 };
 
@@ -199,7 +200,7 @@ void CTraceFileLog::Write(uint32_t module, uint8_t severity, const char * /*file
 #ifdef _WIN32
     SYSTEMTIME sysTime;
     ::GetLocalTime(&sysTime);
-    stdstr_f timestamp("%04d/%02d/%02d %02d:%02d:%02d.%03d %05d,", sysTime.wYear, sysTime.wMonth, sysTime.wDay, sysTime.wHour, sysTime.wMinute, sysTime.wSecond, sysTime.wMilliseconds, GetCurrentThreadId());
+    stdstr_f timestamp("%04d/%02d/%02d %02d:%02d:%02d.%03d %05d,", sysTime.wYear, sysTime.wMonth, sysTime.wDay, sysTime.wHour, sysTime.wMinute, sysTime.wSecond, sysTime.wMilliseconds, CThread::GetCurrentThreadId());
 #else
     time_t ltime;
     ltime=time(&ltime);
@@ -211,7 +212,7 @@ void CTraceFileLog::Write(uint32_t module, uint8_t severity, const char * /*file
     gettimeofday(&curTime, NULL);
     int milliseconds = curTime.tv_usec / 1000;
 
-    stdstr_f timestamp("%04d/%02d/%02d %02d:%02d:%02d.%03d %05d,", result.tm_year+1900, result.tm_mon+1, result.tm_mday, result.tm_hour, result.tm_min, result.tm_sec, milliseconds, GetCurrentThreadId());
+    stdstr_f timestamp("%04d/%02d/%02d %02d:%02d:%02d.%03d %05d,", result.tm_year+1900, result.tm_mon+1, result.tm_mday, result.tm_hour, result.tm_min, result.tm_sec, milliseconds, CThread::GetCurrentThreadId());
 #endif
 
     m_hLogFile.Log(timestamp.c_str());

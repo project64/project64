@@ -10,6 +10,7 @@
 ****************************************************************************/
 #pragma once
 #include <list>
+#include <Project64-core/Settings/SettingsClass.h>
 #include <Project64-core/Settings/DebugSettings.h>
 
 #ifndef PLUGIN_INFO_STRUCT
@@ -71,6 +72,14 @@ typedef struct
     void(*FlushSettings) (void * handle);
 } PLUGIN_SETTINGS3;
 
+typedef struct
+{
+    typedef void(*SettingChangedFunc)(void *);
+
+    void(*RegisterChangeCB)(void * handle, int ID, void * Data, SettingChangedFunc Func);
+    void(*UnregisterChangeCB)(void * handle, int ID, void * Data, SettingChangedFunc Func);
+} PLUGIN_SETTINGS_NOTIFICATION;
+
 enum PLUGIN_TYPE
 {
     PLUGIN_TYPE_NONE = 0,
@@ -85,12 +94,24 @@ class CGfxPlugin; class CAudioPlugin; class CRSP_Plugin; class CControl_Plugin;
 class CN64System;
 class CPlugins;
 
+#if defined(_WIN32)
+#include <objbase.h>
+#else
+#define __interface     struct
+#endif
+
 __interface RenderWindow
 {
+#ifdef _WIN32
     virtual bool ResetPluginsInUiThread(CPlugins * plugins, CN64System * System) = 0;
     virtual void * GetWindowHandle(void) const = 0;
     virtual void * GetStatusBar(void) const = 0;
     virtual void * GetModuleInstance(void) const = 0;
+#else
+    virtual void GfxThreadInit() = 0;
+    virtual void GfxThreadDone() = 0;
+    virtual void SwapWindow() = 0;
+#endif
 };
 
 class CPlugins :
@@ -98,7 +119,7 @@ class CPlugins :
 {
 public:
     //Functions
-    CPlugins(SettingID PluginDirSetting);
+    CPlugins(SettingID PluginDirSetting, bool SyncPlugins);
     ~CPlugins();
 
     bool Initiate(CN64System * System);
@@ -119,6 +140,8 @@ public:
 
     inline RenderWindow * MainWindow(void) const { return m_MainWindow; }
     inline RenderWindow * SyncWindow(void) const { return m_SyncWindow; }
+
+    inline bool initilized(void) const { return m_initilized; }
 
 private:
     CPlugins(void);							// Disable default constructor
@@ -148,6 +171,8 @@ private:
     stdstr m_AudioFile;
     stdstr m_RSPFile;
     stdstr m_ControlFile;
+    bool m_initilized;
+    bool m_SyncPlugins;
 };
 
 //Dummy Functions

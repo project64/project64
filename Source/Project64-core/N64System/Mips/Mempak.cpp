@@ -14,34 +14,38 @@
 #include <stdio.h>
 #include <Common/path.h>
 
-uint8_t Mempaks[4][128 * 256]; /* [CONTROLLERS][PAGES][BYTES_PER_PAGE] */
-CPath MempakNames[4];
-
-void Mempak::Load(int32_t Control)
+void CMempak::LoadMempak(int32_t Control)
 {
     stdstr MempakName;
-
     MempakName.Format("%s_Cont_%d", g_Settings->LoadStringVal(Game_GameName).c_str(), Control + 1);
 
-    MempakNames[Control] = CPath(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.mpk",MempakName.c_str()).c_str());
-    if (!MempakNames[Control].DirectoryExists())
+    CPath MempakPath(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.mpk", MempakName.c_str()).c_str());
+    if (g_Settings->LoadBool(Setting_UniqueSaveDir))
     {
-        MempakNames[Control].DirectoryCreate();
+        MempakPath.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
+    }
+    if (!MempakPath.DirectoryExists())
+    {
+        MempakPath.DirectoryCreate();
     }
 
-    if (MempakNames[Control].Exists())
+    bool formatMempak = !MempakPath.Exists();
+
+    m_MempakHandle[Control].Open(MempakPath, CFileBase::modeReadWrite | CFileBase::modeNoTruncate | CFileBase::modeCreate);
+    m_MempakHandle[Control].SeekToBegin();
+
+    if (formatMempak)
     {
-        FILE *mempak = fopen(MempakNames[Control], "rb");
-        fread(Mempaks[Control], 1, 0x8000, mempak);
-        fclose(mempak);
+        CMempak::Format(Control);
+        m_MempakHandle[Control].Write(m_Mempaks[Control], 0x8000);
     }
     else
     {
-        Mempak::Format(Control);
+        m_MempakHandle[Control].Read(m_Mempaks[Control], 0x8000);
     }
 }
 
-void Mempak::Format(int32_t Control)
+void CMempak::Format(int32_t Control)
 {
     static const uint8_t Initialize[] = {
         0x81, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
@@ -63,16 +67,16 @@ void Mempak::Format(int32_t Control)
         0x00, 0x71, 0x00, 0x03, 0x00, 0x03, 0x00, 0x03, 0x00, 0x03, 0x00, 0x03, 0x00, 0x03, 0x00, 0x03,
     };
 
-    memcpy(&Mempaks[Control][0], &Initialize[0], sizeof(Initialize));
+    memcpy(&m_Mempaks[Control][0], &Initialize[0], sizeof(Initialize));
 
     for (size_t count = sizeof(Initialize); count < 128 * 256; count += 2)
     {
-        Mempaks[Control][count + 0] = 0x00;
-        Mempaks[Control][count + 1] = 0x03;
+        m_Mempaks[Control][count + 0] = 0x00;
+        m_Mempaks[Control][count + 1] = 0x03;
     }
 }
 
-uint8_t Mempak::CalculateCrc(uint8_t * DataToCrc)
+uint8_t CMempak::CalculateCrc(uint8_t * DataToCrc)
 {
     uint32_t Count;
     uint32_t XorTap;
@@ -105,11 +109,16 @@ uint8_t Mempak::CalculateCrc(uint8_t * DataToCrc)
     return CRC;
 }
 
-void Mempak::ReadFrom(int32_t Control, uint32_t address, uint8_t * data)
+void CMempak::ReadFrom(int32_t Control, uint32_t address, uint8_t * data)
 {
     if (address < 0x8000)
     {
-        memcpy(data, &Mempaks[Control][address], 0x20);
+        if (!m_MempakHandle[Control].IsOpen())
+        {
+            LoadMempak(Control);
+        }
+
+        memcpy(data, &m_Mempaks[Control][address], 0x20);
     }
     else
     {
@@ -118,15 +127,19 @@ void Mempak::ReadFrom(int32_t Control, uint32_t address, uint8_t * data)
     }
 }
 
-void Mempak::WriteTo(int32_t Control, uint32_t address, uint8_t * data)
+void CMempak::WriteTo(int32_t Control, uint32_t address, uint8_t * data)
 {
     if (address < 0x8000)
     {
-        memcpy(&Mempaks[Control][address], data, 0x20);
+        if (!m_MempakHandle[Control].IsOpen())
+        {
+            LoadMempak(Control);
+        }
 
-        FILE* mempak = fopen(MempakNames[Control], "wb");
-        fwrite(Mempaks[Control], 1, 0x8000, mempak);
-        fclose(mempak);
+        memcpy(&m_Mempaks[Control][address], data, 0x20);
+
+        m_MempakHandle[Control].Seek(address, CFile::begin);
+        m_MempakHandle[Control].Write(data, 0x20);
     }
     else
     {

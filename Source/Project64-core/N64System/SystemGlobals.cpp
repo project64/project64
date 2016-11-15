@@ -30,5 +30,7 @@ CSystemEvents * g_SystemEvents = NULL;
 uint32_t      * g_TLBLoadAddress = NULL;
 uint32_t      * g_TLBStoreAddress = NULL;
 CDebugger     * g_Debugger = NULL;
+uint8_t      ** g_RecompPos = NULL;
+CMempak       * g_Mempak = NULL;
 
 int * g_NextTimer;

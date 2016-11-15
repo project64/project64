@@ -37,20 +37,21 @@ void InitializeLog(void)
 
 void AddLogModule(void)
 {
-    CPath LogFilePath(g_Settings->LoadStringVal(Directory_Log).c_str(), "");
+    CPath LogFilePath(g_Settings->LoadStringVal(Directory_Log).c_str(), "Project64.log");
     if (!LogFilePath.DirectoryExists())
     {
         LogFilePath.DirectoryCreate();
     }
-    LogFilePath.SetNameExtension("Project64.log");
 
-    g_LogFile = new CTraceFileLog(LogFilePath, g_Settings->LoadDword(Debugger_AppLogFlush) != 0, Log_New, 500);
+    g_LogFile = new CTraceFileLog(LogFilePath, g_Settings->LoadDword(Debugger_AppLogFlush) != 0, CLog::Log_New, 500);
     TraceAddModule(g_LogFile);
 }
 
 void SetTraceModuleNames(void)
 {
     TraceSetModuleName(TraceMD5, "MD5");
+    TraceSetModuleName(TraceThread, "Thread");
+    TraceSetModuleName(TracePath, "Path");
     TraceSetModuleName(TraceSettings, "Settings");
     TraceSetModuleName(TraceUnknown, "Unknown");
     TraceSetModuleName(TraceAppInit, "App Init");
@@ -68,11 +69,15 @@ void SetTraceModuleNames(void)
     TraceSetModuleName(TraceTLB, "TLB");
     TraceSetModuleName(TraceProtectedMem, "Protected Memory");
     TraceSetModuleName(TraceUserInterface, "User Interface");
+    TraceSetModuleName(TraceRomList, "Rom List");
+    TraceSetModuleName(TraceExceptionHandler, "Exception Handler");
 }
 
 void UpdateTraceLevel(void * /*NotUsed*/)
 {
     g_ModuleLogLevel[TraceMD5] = (uint8_t)g_Settings->LoadDword(Debugger_TraceMD5);
+    g_ModuleLogLevel[TraceThread] = (uint8_t)g_Settings->LoadDword(Debugger_TraceThread);
+    g_ModuleLogLevel[TracePath] = (uint8_t)g_Settings->LoadDword(Debugger_TracePath);
     g_ModuleLogLevel[TraceSettings] = (uint8_t)g_Settings->LoadDword(Debugger_TraceSettings);
     g_ModuleLogLevel[TraceUnknown] = (uint8_t)g_Settings->LoadDword(Debugger_TraceUnknown);
     g_ModuleLogLevel[TraceAppInit] = (uint8_t)g_Settings->LoadDword(Debugger_TraceAppInit);
@@ -90,6 +95,8 @@ void UpdateTraceLevel(void * /*NotUsed*/)
     g_ModuleLogLevel[TraceTLB] = (uint8_t)g_Settings->LoadDword(Debugger_TraceTLB);
     g_ModuleLogLevel[TraceProtectedMem] = (uint8_t)g_Settings->LoadDword(Debugger_TraceProtectedMEM);
     g_ModuleLogLevel[TraceUserInterface] = (uint8_t)g_Settings->LoadDword(Debugger_TraceUserInterface);
+    g_ModuleLogLevel[TraceRomList] = (uint8_t)g_Settings->LoadDword(Debugger_TraceRomList);
+    g_ModuleLogLevel[TraceExceptionHandler] = (uint8_t)g_Settings->LoadDword(Debugger_TraceExceptionHandler);
 }
 
 void SetupTrace(void)
@@ -97,6 +104,8 @@ void SetupTrace(void)
     AddLogModule();
 
     g_Settings->RegisterChangeCB(Debugger_TraceMD5, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceThread, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TracePath, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_TraceSettings, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_TraceUnknown, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_TraceAppInit, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
@@ -114,6 +123,8 @@ void SetupTrace(void)
     g_Settings->RegisterChangeCB(Debugger_TraceTLB, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_TraceProtectedMEM, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_TraceUserInterface, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceRomList, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceExceptionHandler, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_AppLogFlush, g_LogFile, (CSettings::SettingChangedFunc)LogFlushChanged);
     UpdateTraceLevel(NULL);
 
@@ -125,6 +136,8 @@ void CleanupTrace(void)
     WriteTrace(TraceAppCleanup, TraceDebug, "Done");
 
     g_Settings->UnregisterChangeCB(Debugger_TraceMD5, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceThread, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TracePath, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TraceSettings, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TraceUnknown, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TraceAppInit, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
@@ -142,6 +155,8 @@ void CleanupTrace(void)
     g_Settings->UnregisterChangeCB(Debugger_TraceTLB, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TraceProtectedMEM, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TraceUserInterface, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceRomList, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceExceptionHandler, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_AppLogFlush, g_LogFile, (CSettings::SettingChangedFunc)LogFlushChanged);
 }
 
@@ -219,14 +234,20 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
 
         SetupTrace();
         FixDirectories();
-#ifdef _WIN32
         CMipsMemoryVM::ReserveMemory();
+#ifdef _WIN32
         IncreaseThreadPriority();
+#else
+        if (!CMipsMemoryVM::SetupSegvHandler())
+        {
+            WriteTrace(TraceAppInit, TraceDebug, "Setup Segv Handler Failed");
+            return false;
+        }
 #endif
 
         //Create the plugin container
         WriteTrace(TraceAppInit, TraceInfo, "Create Plugins");
-        g_Plugins = new CPlugins(Directory_Plugin);
+        g_Plugins = new CPlugins(Directory_Plugin, false);
 
         g_Lang = new CLanguage();
         g_Lang->LoadCurrentStrings();
@@ -270,7 +291,7 @@ void FixDirectories(void)
     }
     else
     {
-        WriteTrace(TraceAppInit, TraceDebug, "%s Already exists", (const char *)Directory);
+        WriteTrace(TraceAppInit, TraceDebug, "%s already exists", (const char *)Directory);
     }
 
     Directory.UpDirectory();
@@ -282,7 +303,7 @@ void FixDirectories(void)
     }
     else
     {
-        WriteTrace(TraceAppInit, TraceDebug, "%s Already exists", (const char *)Directory);
+        WriteTrace(TraceAppInit, TraceDebug, "%s already exists", (const char *)Directory);
     }
 
     Directory.UpDirectory();
@@ -294,11 +315,11 @@ void FixDirectories(void)
     }
     else
     {
-        WriteTrace(TraceAppInit, TraceDebug, "%s Already exists", (const char *)Directory);
+        WriteTrace(TraceAppInit, TraceDebug, "%s already exists", (const char *)Directory);
     }
 
     Directory.UpDirectory();
-    Directory.AppendDirectory("textures");
+    Directory.AppendDirectory("Textures");
     if (!Directory.DirectoryExists())
     {
         WriteTrace(TraceAppInit, TraceDebug, "Creating %s", (const char *)Directory);
@@ -306,7 +327,7 @@ void FixDirectories(void)
     }
     else
     {
-        WriteTrace(TraceAppInit, TraceDebug, "%s Already exists", (const char *)Directory);
+        WriteTrace(TraceAppInit, TraceDebug, "%s already exists", (const char *)Directory);
     }
     WriteTrace(TraceAppInit, TraceDebug, "Done");
 }

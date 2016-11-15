@@ -1,4 +1,4 @@
-/*********************************************************************************
+﻿/*********************************************************************************
 * Meta Information                                                               *
 *********************************************************************************/
 //About DLL
@@ -51,6 +51,7 @@
 #132#  "R&eprendre"
 #133#  "Redémarrage &logiciel"
 #134#  "Redémarrage &matériel"
+#135#  "Changer &disque"
 
 //Options Menu
 #140#  "&Options"
@@ -96,7 +97,7 @@
 #212#  "Éditer les paramètres du jeu"
 #213#  "Éditer les cheats"
 #214#  "Plugin graphique"
-#215#  "Lancer le Jeu avec le Disque"
+#215#  "Lancer le jeu avec un disque"
 
 //Alternate Name to save Slot
 #220#  "Emplacement de sauvegarde - Défaut"
@@ -234,6 +235,8 @@
 #465#  "Afficher la vitesse"
 #466#  "Vitesse affichée :"
 #467#  "Vérifier si Project64 est déjà lancé"
+#468#  "Répertoire de sauvegarde unique"
+#469#  "Chemin vers 64DD IPL ROM:"
 
 //ROM Browser Tab
 #480#  "Max de ROM à retenir (0-10) :"
@@ -436,6 +439,22 @@
 #1103#  "Menu système"
 #1104#  "Options"
 #1105#  "Emplacements de sauvegarde"
+
+/*********************************************************************************
+* Support Window                                                                 *
+*********************************************************************************/
+#1200#  "Support Project64"
+#1201#  "Project64 est un logiciel crée pour émuler le système de jeu vidéo Nintendo64 sur un PC basé sur Microsoft Windows. Ceci vous permet de jouer avec des jeux N64  comme vous le feriez sur avec une vrai console.\n\nSi vous appréciez Project64, alros veuillez supporter Project64 avec soit des remerciements soit en proposant des idées d'améliorations.\n\nSi vous avez supporté Project64 :"
+#1202#  "Entrez un Code de Notification"
+#1203#  "Supporter Project64"
+#1204#  "Continuer"
+#1205#  "Veuillez entrer un Code de Support"
+#1206#  "Code de Support Incorrecte"
+#1207#  "Remerciements"
+#1208#  "Entrez un Code"
+#1209#  "Veuillez entrer le code se trouvant dans l'email"
+#1210#  "OK"
+#1211#  "Annuler"
 
 /*********************************************************************************
 * Messages                                                                       *

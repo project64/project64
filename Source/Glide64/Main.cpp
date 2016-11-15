@@ -43,8 +43,11 @@
 #include "Version.h"
 #include <Settings/Settings.h>
 #include <Common/CriticalSection.h>
+#include <Common/DateTimeClass.h>
 #include <Common/path.h>
 #include <png/png.h>
+#include <memory>
+#include <Common/SmartPointer.h>
 
 #include "Config.h"
 #include "Util.h"
@@ -66,7 +69,7 @@ GFX_INFO gfx;
 
 int to_fullscreen = FALSE;
 int GfxInitDone = FALSE;
-int romopen = FALSE;
+bool g_romopen = false;
 GrContext_t gfx_context = 0;
 int debugging = FALSE;
 int exception = FALSE;
@@ -75,14 +78,7 @@ int evoodoo = 0;
 int ev_fullscreen = 0;
 
 #ifdef _WIN32
-#define WINPROC_OVERRIDE
 HINSTANCE hinstDLL = NULL;
-#endif
-
-#ifdef WINPROC_OVERRIDE
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-WNDPROC oldWndProc = NULL;
-WNDPROC myWndProc = NULL;
 #endif
 
 #ifdef ALTTAB_FIX
@@ -97,8 +93,8 @@ int64 perf_next;
 #endif
 
 #ifdef FPS
-CDateTime  fps_last;
-CDateTime  fps_next;
+HighResTimeStamp fps_last;
+HighResTimeStamp fps_next;
 float      fps = 0.0f;
 uint32_t   fps_count = 0;
 
@@ -154,8 +150,8 @@ CSettings * g_settings;
 HOTKEY_INFO hotkey_info;
 
 VOODOO voodoo = { 0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0
+0, 0, 0, 0,
+0, 0, 0, 0
 };
 
 GrTexInfo fontTex;
@@ -280,7 +276,13 @@ void ChangeSize()
 
 void ConfigWrapper()
 {
-    grConfigWrapperExt(g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic);
+    grConfigWrapperExt(
+#ifdef ANDROID
+        g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
+#else
+        g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
+#endif
+        );
 }
 
 void UseUnregisteredSetting(int /*SettingID*/)
@@ -289,24 +291,35 @@ void UseUnregisteredSetting(int /*SettingID*/)
     DebugBreak();
 #endif
 }
+#ifdef ANDROID
+extern int g_width, g_height;
+#endif
 
 void ReadSettings()
 {
     g_settings->card_id = GetSetting(Set_CardId);
+#ifdef ANDROID
+    g_settings->scr_res_x = g_settings->res_x = g_width;
+    g_settings->scr_res_y = g_settings->res_y = g_height;
+#else
     g_settings->res_data = (uint32_t)GetSetting(Set_Resolution);
     if (g_settings->res_data >= 24) g_settings->res_data = 12;
     g_settings->scr_res_x = g_settings->res_x = resolutions[g_settings->res_data][0];
     g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
+    g_settings->wrpResolution = GetSetting(Set_wrpResolution);
+#endif
     g_settings->vsync = GetSetting(Set_vsync);
     g_settings->ssformat = (uint8_t)GetSetting(Set_ssformat);
     g_settings->show_fps = (uint8_t)GetSetting(Set_ShowFps);
     g_settings->clock = GetSetting(Set_clock);
     g_settings->clock_24_hr = GetSetting(Set_clock_24_hr);
+#ifdef ANDROID
+    g_settings->rotate = GetSetting(Set_Rotate);
+#endif
     g_settings->advanced_options = Set_basic_mode ? !GetSystemSetting(Set_basic_mode) : 0;
     g_settings->texenh_options = GetSetting(Set_texenh_options);
     g_settings->use_hotkeys = GetSetting(Set_hotkeys);
 
-    g_settings->wrpResolution = GetSetting(Set_wrpResolution);
     g_settings->wrpVRAM = GetSetting(Set_wrpVRAM);
     g_settings->wrpFBO = GetSetting(Set_wrpFBO);
     g_settings->wrpAnisotropic = GetSetting(Set_wrpAnisotropic);
@@ -369,9 +382,6 @@ void ReadSettings()
 
 void ReadSpecialSettings(const char * name)
 {
-    //  char buf [256];
-    //  sprintf(buf, "ReadSpecialSettings. Name: %s", name);
-    //  LOG(buf);
     g_settings->hacks = 0;
 
     //detect games which require special hacks
@@ -458,11 +468,10 @@ void ReadSpecialSettings(const char * name)
     g_settings->zmode_compare_less = GetSetting(Set_zmode_compare_less);
     g_settings->old_style_adither = GetSetting(Set_old_style_adither);
     g_settings->n64_z_scale = GetSetting(Set_n64_z_scale);
-    if (g_settings->n64_z_scale)
-        ZLUT_init();
+    ZLUT_init();
 
     //frame buffer
-    int optimize_texrect = GetSetting(Set_optimize_texrect);
+    int optimize_texrect = GetSetting(g_romopen ? Set_optimize_texrect : Set_optimize_texrect_default);
     int ignore_aux_copy = GetSetting(Set_ignore_aux_copy);
     int hires_buf_clear = GetSetting(Set_hires_buf_clear);
     int read_alpha = GetSetting(Set_fb_read_alpha);
@@ -481,65 +490,65 @@ void ReadSpecialSettings(const char * name)
     else g_settings->frame_buffer &= ~fb_useless_is_useless;
     if (fb_crc_mode >= 0) g_settings->fb_crc_mode = (CSettings::FBCRCMODE)fb_crc_mode;
 
-    //  if (g_settings->custom_ini)
-    {
-        g_settings->filtering = GetSetting(Set_filtering);
-        g_settings->fog = GetSetting(Set_fog);
-        g_settings->buff_clear = GetSetting(Set_buff_clear);
-        g_settings->swapmode = GetSetting(Set_swapmode);
-        g_settings->aspectmode = GetSetting(Set_aspect);
-        g_settings->lodmode = GetSetting(Set_lodmode);
-        int resolution = GetSetting(Set_Resolution);
-        if (resolution >= 0)
-        {
-            g_settings->res_data = (uint32_t)resolution;
-            if (g_settings->res_data >= 0x18) g_settings->res_data = 12;
-            g_settings->scr_res_x = g_settings->res_x = resolutions[g_settings->res_data][0];
-            g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
-        }
+    g_settings->filtering = GetSetting(g_romopen ? Set_filtering : Set_filtering_default);
+    g_settings->fog = GetSetting(g_romopen ? Set_fog : Set_fog_default);
+    g_settings->buff_clear = GetSetting(g_romopen ? Set_buff_clear : Set_buff_clear_default);
+    g_settings->swapmode = GetSetting(g_romopen ? Set_swapmode : Set_swapmode_default);
+    g_settings->aspectmode = GetSetting(g_romopen ? Set_aspect : Set_aspect_default);
+    g_settings->lodmode = GetSetting(g_romopen ? Set_lodmode : Set_lodmode_default);
+#ifdef _WIN32
+    g_settings->res_data = GetSetting(Set_Resolution);
+    if (g_settings->res_data < 0 || g_settings->res_data >= 0x18) g_settings->res_data = 12;
+    g_settings->scr_res_x = g_settings->res_x = resolutions[g_settings->res_data][0];
+    g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
+#endif
 
-        //frame buffer
-        int smart_read = GetSetting(Set_fb_smart);
-        int hires = GetSetting(Set_fb_hires);
-        int read_always = GetSetting(Set_fb_read_always);
-        int read_back_to_screen = GetSetting(Set_read_back_to_screen);
-        int cpu_write_hack = GetSetting(Set_detect_cpu_write);
-        int get_fbinfo = GetSetting(Set_fb_get_info);
-        int depth_render = GetSetting(Set_fb_render);
+    //frame buffer
+    int smart_read = GetSetting(g_romopen ? Set_fb_smart : Set_fb_smart_default);
+    int hires = GetSetting(g_romopen ? Set_fb_hires : Set_fb_hires_default);
+    int read_always = GetSetting(g_romopen ? Set_fb_read_always : Set_fb_read_always_default);
+    int read_back_to_screen = GetSetting(g_romopen ? Set_read_back_to_screen : Set_read_back_to_screen_default);
+    int cpu_write_hack = GetSetting(g_romopen ? Set_detect_cpu_write : Set_detect_cpu_write_default);
+    int get_fbinfo = GetSetting(g_romopen ? Set_fb_get_info : Set_fb_get_info_default);
+    int depth_render = GetSetting(g_romopen ? Set_fb_render : Set_fb_render_default);
 
-        if (smart_read > 0) g_settings->frame_buffer |= fb_emulation;
-        else if (smart_read == 0) g_settings->frame_buffer &= ~fb_emulation;
-        if (hires > 0) g_settings->frame_buffer |= fb_hwfbe;
-        else if (hires == 0) g_settings->frame_buffer &= ~fb_hwfbe;
-        if (read_always > 0) g_settings->frame_buffer |= fb_ref;
-        else if (read_always == 0) g_settings->frame_buffer &= ~fb_ref;
-        if (read_back_to_screen == 1) g_settings->frame_buffer |= fb_read_back_to_screen;
-        else if (read_back_to_screen == 2) g_settings->frame_buffer |= fb_read_back_to_screen2;
-        else if (read_back_to_screen == 0) g_settings->frame_buffer &= ~(fb_read_back_to_screen | fb_read_back_to_screen2);
-        if (cpu_write_hack > 0) g_settings->frame_buffer |= fb_cpu_write_hack;
-        else if (cpu_write_hack == 0) g_settings->frame_buffer &= ~fb_cpu_write_hack;
-        if (get_fbinfo > 0) g_settings->frame_buffer |= fb_get_info;
-        else if (get_fbinfo == 0) g_settings->frame_buffer &= ~fb_get_info;
-        if (depth_render > 0) g_settings->frame_buffer |= fb_depth_render;
-        else if (depth_render == 0) g_settings->frame_buffer &= ~fb_depth_render;
-        g_settings->frame_buffer |= fb_motionblur;
-    }
+    if (smart_read > 0) g_settings->frame_buffer |= fb_emulation;
+    else if (smart_read == 0) g_settings->frame_buffer &= ~fb_emulation;
+    if (hires > 0) g_settings->frame_buffer |= fb_hwfbe;
+    else if (hires == 0) g_settings->frame_buffer &= ~fb_hwfbe;
+    if (read_always > 0) g_settings->frame_buffer |= fb_ref;
+    else if (read_always == 0) g_settings->frame_buffer &= ~fb_ref;
+    if (read_back_to_screen == 1) g_settings->frame_buffer |= fb_read_back_to_screen;
+    else if (read_back_to_screen == 2) g_settings->frame_buffer |= fb_read_back_to_screen2;
+    else if (read_back_to_screen == 0) g_settings->frame_buffer &= ~(fb_read_back_to_screen | fb_read_back_to_screen2);
+    if (cpu_write_hack > 0) g_settings->frame_buffer |= fb_cpu_write_hack;
+    else if (cpu_write_hack == 0) g_settings->frame_buffer &= ~fb_cpu_write_hack;
+    if (get_fbinfo > 0) g_settings->frame_buffer |= fb_get_info;
+    else if (get_fbinfo == 0) g_settings->frame_buffer &= ~fb_get_info;
+    if (depth_render > 0) g_settings->frame_buffer |= fb_depth_render;
+    else if (depth_render == 0) g_settings->frame_buffer &= ~fb_depth_render;
+    g_settings->frame_buffer |= fb_motionblur;
     g_settings->flame_corona = (g_settings->hacks & hack_Zelda) && !fb_depth_render_enabled;
 }
 
-void WriteSettings(bool saveEmulationSettings)
+void WriteSettings(void)
 {
     SetSetting(Set_CardId, g_settings->card_id);
+#ifdef _WIN32
     SetSetting(Set_Resolution, (int)g_settings->res_data);
+    SetSetting(Set_wrpResolution, g_settings->wrpResolution);
+#endif
     SetSetting(Set_ssformat, g_settings->ssformat);
     SetSetting(Set_vsync, g_settings->vsync);
     SetSetting(Set_ShowFps, g_settings->show_fps);
     SetSetting(Set_clock, g_settings->clock);
     SetSetting(Set_clock_24_hr, g_settings->clock_24_hr);
+#ifdef ANDROID
+    SetSetting(Set_Rotate, g_settings->rotate);
+#endif
     //SetSetting(Set_advanced_options,g_settings->advanced_options);
     SetSetting(Set_texenh_options, g_settings->texenh_options);
 
-    SetSetting(Set_wrpResolution, g_settings->wrpResolution);
     SetSetting(Set_wrpVRAM, g_settings->wrpVRAM);
     SetSetting(Set_wrpFBO, g_settings->wrpFBO);
     SetSetting(Set_wrpAnisotropic, g_settings->wrpAnisotropic);
@@ -580,27 +589,30 @@ void WriteSettings(bool saveEmulationSettings)
     SetSetting(Set_ghq_hirs_dump, g_settings->ghq_hirs_dump);
 #endif
 
-    if (saveEmulationSettings)
-    {
-        SetSetting(Set_filtering, g_settings->filtering);
-        SetSetting(Set_fog, g_settings->fog);
-        SetSetting(Set_buff_clear, g_settings->buff_clear);
-        SetSetting(Set_swapmode, g_settings->swapmode);
-        SetSetting(Set_lodmode, g_settings->lodmode);
-        SetSetting(Set_aspect, g_settings->aspectmode);
+    SetSetting(g_romopen ? Set_filtering : Set_filtering_default, g_settings->filtering);
+    SetSetting(g_romopen ? Set_fog : Set_fog_default, g_settings->fog);
+    SetSetting(g_romopen ? Set_buff_clear : Set_buff_clear_default, g_settings->buff_clear);
+    SetSetting(g_romopen ? Set_swapmode : Set_swapmode_default, g_settings->swapmode);
+    SetSetting(g_romopen ? Set_lodmode : Set_lodmode_default, g_settings->lodmode);
+    SetSetting(g_romopen ? Set_aspect : Set_aspect_default, g_settings->aspectmode);
 
-        SetSetting(Set_fb_read_always, g_settings->frame_buffer&fb_ref ? 1 : 0);
-        SetSetting(Set_fb_smart, g_settings->frame_buffer & fb_emulation ? 1 : 0);
-        SetSetting(Set_fb_hires, g_settings->frame_buffer & fb_hwfbe ? 1 : 0);
-        SetSetting(Set_fb_get_info, g_settings->frame_buffer & fb_get_info ? 1 : 0);
-        SetSetting(Set_fb_render, g_settings->frame_buffer & fb_depth_render ? 1 : 0);
-        SetSetting(Set_detect_cpu_write, g_settings->frame_buffer & fb_cpu_write_hack ? 1 : 0);
-        if (g_settings->frame_buffer & fb_read_back_to_screen)
-            SetSetting(Set_read_back_to_screen, 1);
-        else if (g_settings->frame_buffer & fb_read_back_to_screen2)
-            SetSetting(Set_read_back_to_screen, 2);
-        else
-            SetSetting(Set_read_back_to_screen, 0);
+    SetSetting(g_romopen ? Set_fb_read_always : Set_fb_read_always_default, g_settings->frame_buffer&fb_ref ? 1 : 0);
+    SetSetting(g_romopen ? Set_fb_smart : Set_fb_smart_default, g_settings->frame_buffer & fb_emulation ? 1 : 0);
+    SetSetting(g_romopen ? Set_fb_hires : Set_fb_hires_default, g_settings->frame_buffer & fb_hwfbe ? 1 : 0);
+    SetSetting(g_romopen ? Set_fb_get_info : Set_fb_get_info_default, g_settings->frame_buffer & fb_get_info ? 1 : 0);
+    SetSetting(g_romopen ? Set_fb_render : Set_fb_render_default, g_settings->frame_buffer & fb_depth_render ? 1 : 0);
+    SetSetting(g_romopen ? Set_detect_cpu_write : Set_detect_cpu_write_default, g_settings->frame_buffer & fb_cpu_write_hack ? 1 : 0);
+    if (g_settings->frame_buffer & fb_read_back_to_screen)
+    {
+        SetSetting(g_romopen ? Set_read_back_to_screen : Set_read_back_to_screen_default, 1);
+    }
+    else if (g_settings->frame_buffer & fb_read_back_to_screen2)
+    {
+        SetSetting(g_romopen ? Set_read_back_to_screen : Set_read_back_to_screen_default, 2);
+    }
+    else
+    {
+        SetSetting(g_romopen ? Set_read_back_to_screen : Set_read_back_to_screen_default, 0);
     }
 
     FlushSettings();
@@ -840,6 +852,7 @@ int InitGfx()
     }
     //*/
 
+#ifndef ANDROID
     uint32_t res_data = g_settings->res_data;
     if (ev_fullscreen)
     {
@@ -857,39 +870,22 @@ int InitGfx()
         res_data = g_settings->res_data | 0x80000000;
     }
 
-    gfx_context = 0;
-
-    // Select the window
-
-    /*if (fb_hwfbe_enabled)
-    {
-    gfx_context = grSstWinOpenExt (uintptr_t(gfx.hWnd),
-    res_data,
-    GR_REFRESH_60Hz,
-    GR_COLORFORMAT_RGBA,
-    GR_ORIGIN_UPPER_LEFT,
-    fb_emulation_enabled?GR_PIXFMT_RGB_565:GR_PIXFMT_ARGB_8888, //32b color is not compatible with fb emulation
-    2,    // Double-buffering
-    1);   // 1 auxillary buffer
-    }*/
-    if (!gfx_context)
-        gfx_context = grSstWinOpen(gfx.hWnd,
-        res_data,
-        GR_REFRESH_60Hz,
-        GR_COLORFORMAT_RGBA,
-        GR_ORIGIN_UPPER_LEFT,
-        2,    // Double-buffering
-        1);   // 1 auxillary buffer
-
+    gfx_context = grSstWinOpen(gfx.hWnd, res_data, GR_REFRESH_60Hz, GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1);
     if (!gfx_context)
     {
 #ifdef _WIN32
         MessageBox(gfx.hWnd, "Error setting display mode", "Error", MB_OK | MB_ICONEXCLAMATION);
+#else
+        fprintf(stderr, "Error setting display mode\n");
 #endif
-        //    grSstWinClose (gfx_context);
         grGlideShutdown();
         return FALSE;
     }
+#else
+    gfx_context = grSstWinOpen(GR_REFRESH_60Hz, GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1);
+    g_settings->scr_res_x = g_settings->res_x = g_width;
+    g_settings->scr_res_y = g_settings->res_y = g_height;
+#endif
 
     GfxInitDone = TRUE;
     to_fullscreen = FALSE;
@@ -1098,57 +1094,7 @@ void ReleaseGfx()
     rdp.window_changed = TRUE;
 }
 
-//
-// DllMain - called when the DLL is loaded, use this to get the DLL's instance
-//
-class wxDLLApp : public wxApp
-{
-public:
-    virtual bool OnInit();
-    virtual void CleanUp();
-};
-
-IMPLEMENT_APP_NO_MAIN(wxDLLApp)
-
-bool wxDLLApp::OnInit()
-{
-    wxImage::AddHandler(new wxPNGHandler);
-    wxImage::AddHandler(new wxJPEGHandler);
-    return true;
-}
-
-void wxDLLApp::CleanUp()
-{
-    wxApp::CleanUp();
-}
-
-#ifndef __WINDOWS__
-int __attribute__((constructor)) DllLoad(void);
-int __attribute__((destructor)) DllUnload(void);
-#endif
-
-// Called when the library is loaded and before dlopen() returns
-int DllLoad(void)
-{
-    int argc = 0;
-    char **argv = NULL;
-    wxEntryStart(argc, argv);
-    if (wxTheApp)
-        return wxTheApp->CallOnInit() ? TRUE : FALSE;
-    return 0;
-}
-
-// Called when the library is unloaded and before dlclose() returns
-int DllUnload(void)
-{
-    if (wxTheApp)
-        wxTheApp->OnExit();
-    wxEntryCleanup();
-    return TRUE;
-}
-
 #ifdef _WIN32
-void wxSetInstance(HINSTANCE hInstance);
 CriticalSection * g_ProcessDListCS = NULL;
 
 extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReserved*/)
@@ -1161,8 +1107,7 @@ extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReser
         {
             g_ProcessDListCS = new CriticalSection();
         }
-        wxSetInstance(hinstDLL);
-        return DllLoad();
+        ConfigInit(hinst);
     }
     else if (fdwReason == DLL_PROCESS_DETACH)
     {
@@ -1170,7 +1115,7 @@ extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReser
         {
             delete g_ProcessDListCS;
         }
-        return DllUnload();
+        ConfigCleanup();
     }
     return TRUE;
 }
@@ -1334,11 +1279,6 @@ void CALL CloseDLL(void)
 {
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
-    // re-set the old window proc
-#ifdef WINPROC_OVERRIDE
-    SetWindowLongPtr(gfx.hWnd, GWLP_WNDPROC, (LONG_PTR)oldWndProc);
-#endif
-
 #ifdef ALTTAB_FIX
     if (hhkLowLevelKybd)
     {
@@ -1452,7 +1392,9 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     ReadSettings();
     char name[21] = "DEFAULT";
     ReadSpecialSettings(name);
+#ifndef ANDROID
     g_settings->res_data_org = g_settings->res_data;
+#endif
 
 #ifdef FPS
     fps_last.SetToNow();
@@ -1462,24 +1404,20 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
 
     gfx = Gfx_Info;
 
-#ifdef WINPROC_OVERRIDE
-    // [H.Morii] inject our own winproc so that "alt-enter to fullscreen"
-    // message is shown when the emulator window is activated.
-    WNDPROC curWndProc = (WNDPROC)GetWindowLongPtr(gfx.hWnd, GWLP_WNDPROC);
-    if (curWndProc && curWndProc != (WNDPROC)WndProc) {
-        oldWndProc = (WNDPROC)SetWindowLongPtr(gfx.hWnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
-    }
-#endif
-
     util_init();
     math_init();
     TexCacheInit();
     CRC_BuildTable();
     CountCombine();
-    if (fb_depth_render_enabled)
-        ZLUT_init();
+    ZLUT_init();
 
-    grConfigWrapperExt(g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic);
+    grConfigWrapperExt(
+#ifdef ANDROID
+        g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
+#else
+        g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
+#endif
+        );
 
     grGlideInit();
     grSstSelect(0);
@@ -1517,6 +1455,10 @@ void CALL MoveScreen(int xpos, int ypos)
     rdp.window_changed = TRUE;
 }
 
+#ifdef _WIN32
+int GetCurrentResIndex(void);
+#endif
+
 void CALL PluginLoaded(void)
 {
     SetModuleName("default");
@@ -1530,7 +1472,10 @@ void CALL PluginLoaded(void)
 
     SetModuleName("Glide64");
     general_setting(Set_CardId, "card_id", 0);
+#ifdef _WIN32
     general_setting(Set_Resolution, "resolution", 7);
+    general_setting(Set_wrpResolution, "wrpResolution", GetCurrentResIndex());
+#endif
     general_setting(Set_vsync, "vsync", 1);
     general_setting(Set_ssformat, "ssformat", 1);
     general_setting(Set_ShowFps, "show_fps", 0);
@@ -1538,9 +1483,13 @@ void CALL PluginLoaded(void)
     general_setting(Set_clock_24_hr, "clock_24_hr", 0);
     general_setting(Set_texenh_options, "texenh_options", 0);
     general_setting(Set_hotkeys, "hotkeys", 1);
-    general_setting(Set_wrpResolution, "wrpResolution", 0);
     general_setting(Set_wrpVRAM, "wrpVRAM", 0);
+#ifndef ANDROID
     general_setting(Set_wrpFBO, "wrpFBO", 0);
+#else
+    general_setting(Set_Rotate, "rotate", 0);
+    general_setting(Set_wrpFBO, "wrpFBO", 1);
+#endif
     general_setting(Set_wrpAnisotropic, "wrpAnisotropic", 0);
     general_setting(Set_autodetect_ucode, "autodetect_ucode", 1);
     general_setting(Set_ucode, "ucode", 2);
@@ -1573,6 +1522,22 @@ void CALL PluginLoaded(void)
     general_setting(Set_ghq_hirs_let_texartists_fly, "ghq_hirs_let_texartists_fly", 0);
     general_setting(Set_ghq_hirs_dump, "ghq_hirs_dump", 0);
 
+    general_setting(Set_optimize_texrect_default, "optimize_texrect", 1);
+    general_setting(Set_filtering_default, "filtering", 0);
+    general_setting(Set_lodmode_default, "lodmode", 0);
+    general_setting(Set_fog_default, "fog", 1);
+    general_setting(Set_buff_clear_default, "buff_clear", 1);
+    general_setting(Set_swapmode_default, "swapmode", 1);
+    general_setting(Set_aspect_default, "aspect", 0);
+
+    general_setting(Set_fb_smart_default, "fb_smart", 1);
+    general_setting(Set_fb_hires_default, "fb_hires", 1);
+    general_setting(Set_fb_read_always_default, "fb_read_always", 0);
+    general_setting(Set_read_back_to_screen_default, "read_back_to_screen", 0);
+    general_setting(Set_detect_cpu_write_default, "detect_cpu_write", 0);
+    general_setting(Set_fb_get_info_default, "fb_get_info", 0);
+    general_setting(Set_fb_render_default, "fb_render", 0);
+
     game_setting(Set_alt_tex_size, "alt_tex_size", 0);
     game_setting(Set_use_sts1_only, "use_sts1_only", 0);
     game_setting(Set_force_calc_sphere, "force_calc_sphere", 0);
@@ -1593,29 +1558,33 @@ void CALL PluginLoaded(void)
     game_setting(Set_zmode_compare_less, "zmode_compare_less", 0);
     game_setting(Set_old_style_adither, "old_style_adither", 0);
     game_setting(Set_n64_z_scale, "n64_z_scale", 0);
-    game_setting(Set_optimize_texrect, "optimize_texrect", 1);
+    game_setting_default(Set_optimize_texrect, "optimize_texrect", Set_optimize_texrect_default);
     game_setting(Set_ignore_aux_copy, "ignore_aux_copy", (unsigned int)-1);
     game_setting(Set_hires_buf_clear, "hires_buf_clear", 1);
     game_setting(Set_fb_read_alpha, "fb_read_alpha", 0);
     game_setting(Set_useless_is_useless, "useless_is_useless", (unsigned int)-1);
     game_setting(Set_fb_crc_mode, "fb_crc_mode", 1);
-    game_setting(Set_filtering, "filtering", 0);
-    game_setting(Set_fog, "fog", 1);
-    game_setting(Set_buff_clear, "buff_clear", 1);
-    game_setting(Set_swapmode, "swapmode", 1);
-    game_setting(Set_aspect, "aspect", 0);
-    game_setting(Set_lodmode, "lodmode", 0);
+    game_setting_default(Set_filtering, "filtering", Set_filtering_default);
+    game_setting_default(Set_fog, "fog", Set_fog_default);
+    game_setting_default(Set_buff_clear, "buff_clear", Set_buff_clear_default);
+    game_setting_default(Set_swapmode, "swapmode", Set_swapmode_default);
+    game_setting_default(Set_aspect, "aspect", Set_aspect_default);
+    game_setting_default(Set_lodmode, "lodmode", Set_lodmode_default);
 
-    game_setting(Set_fb_smart, "fb_smart", 1);
-    game_setting(Set_fb_hires, "fb_hires", 1);
-    game_setting(Set_fb_read_always, "fb_read_always", 0);
-    game_setting(Set_read_back_to_screen, "read_back_to_screen", 0);
-    game_setting(Set_detect_cpu_write, "detect_cpu_write", 0);
-    game_setting(Set_fb_get_info, "fb_get_info", 0);
-    game_setting(Set_fb_render, "fb_render", 0);
+    game_setting_default(Set_fb_smart, "fb_smart", Set_fb_smart_default);
+    game_setting_default(Set_fb_hires, "fb_hires", Set_fb_hires_default);
+    game_setting_default(Set_fb_read_always, "fb_read_always", Set_fb_read_always_default);
+    game_setting_default(Set_read_back_to_screen, "read_back_to_screen", Set_read_back_to_screen_default);
+    game_setting_default(Set_detect_cpu_write, "detect_cpu_write", Set_detect_cpu_write_default);
+    game_setting_default(Set_fb_get_info, "fb_get_info", Set_fb_get_info_default);
+    game_setting_default(Set_fb_render, "fb_render", Set_fb_render_default);
 
     WriteTrace(TraceInterface, TraceDebug, "Done");
 }
+
+#ifdef ANDROID
+void vbo_disable(void);
+#endif
 
 /******************************************************************
 Function: RomClosed
@@ -1627,8 +1596,11 @@ void CALL RomClosed(void)
 {
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
+#ifdef ANDROID
+    vbo_disable();
+#endif
     rdp.window_changed = TRUE;
-    romopen = FALSE;
+    g_romopen = FALSE;
     if (evoodoo)
     {
         ReleaseGfx();
@@ -1667,7 +1639,7 @@ void CALL RomOpen(void)
 {
     WriteTrace(TraceGlide64, TraceDebug, "-");
     no_dlist = true;
-    romopen = TRUE;
+    g_romopen = TRUE;
     ucode_error_report = TRUE;	// allowed to report ucode errors
     rdp_reset();
 
@@ -1680,10 +1652,8 @@ void CALL RomOpen(void)
     if (code == 0x5000) region = 1; // Europe (PAL)
     if (code == 0x5500) region = 0; // Australia (NTSC)
 
-    char name[21] = "DEFAULT";
-    ReadSpecialSettings(name);
-
     // get the name of the ROM
+    char name[21];
     for (int i = 0; i < 20; i++)
     {
         char ch;
@@ -1761,7 +1731,7 @@ void CALL ShowCFB(void)
 
 void drawViRegBG()
 {
-    WriteTrace(TraceGlide64, TraceDebug, "-");
+    WriteTrace(TraceGlide64, TraceDebug, "start");
     const uint32_t VIwidth = *gfx.VI_WIDTH_REG;
     FB_TO_SCREEN_INFO fb_info;
     fb_info.width = VIwidth;
@@ -1789,6 +1759,7 @@ void drawViRegBG()
         newSwapBuffers();
         DrawFrameBufferToScreen(fb_info);
     }
+    WriteTrace(TraceGlide64, TraceDebug, "done");
 }
 
 static void DrawFrameBuffer()
@@ -1826,7 +1797,7 @@ void CALL UpdateScreen(void)
 
     // Check frames per second
     fps_next.SetToNow();
-    double diff_secs = fps_next.DiffernceMilliseconds(fps_last);
+    double diff_secs = (double)(fps_next.GetMicroSeconds() - fps_last.GetMicroSeconds()) / 1000000;
     if (diff_secs > 0.5f)
     {
         fps = (float)(fps_count / diff_secs);
@@ -1972,7 +1943,7 @@ void write_png_file(const char* file_name, int width, int height, uint8_t *buffe
 
     int pixel_size = 3;
     int p = 0;
-    png_bytep * row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * height);
+    png_bytep * row_pointers = (png_bytep*)malloc(sizeof(png_bytep)* height);
     for (int y = 0; y < height; y++)
     {
         row_pointers[y] = (png_byte*)malloc(width*pixel_size);
@@ -2048,11 +2019,11 @@ void newSwapBuffers()
     {
         if (g_settings->clock_24_hr)
         {
-            output(956.0f, 0, 1, CDateTime().SetToNow().Format("%H:%M:%S").c_str(), 0);
+            output(956.0f, 0, 1, CDateTime().Format("%H:%M:%S").c_str(), 0);
         }
         else
         {
-            output(930.0f, 0, 1, CDateTime().SetToNow().Format("%I:%M:%S %p").c_str(), 0);
+            output(930.0f, 0, 1, CDateTime().Format("%I:%M:%S %p").c_str(), 0);
         }
     }
     //hotkeys
@@ -2156,7 +2127,7 @@ void newSwapBuffers()
         info.size = sizeof(GrLfbInfo_t);
         if (grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_565, GR_ORIGIN_UPPER_LEFT, FXFALSE, &info))
         {
-            std::auto_ptr<uint8_t> ssimg_buffer(new uint8_t[image_width * image_height * 3]);
+            AUTO_PTR<uint8_t> ssimg_buffer(new uint8_t[image_width * image_height * 3]);
             uint8_t * ssimg = ssimg_buffer.get();
             int sspos = 0;
             uint32_t offset_src = info.strideInBytes * offset_y;
@@ -2374,24 +2345,29 @@ void CALL ViWidthChanged(void)
 {
 }
 
-#ifdef WINPROC_OVERRIDE
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+#ifdef ANDROID
+/******************************************************************
+Function: SurfaceCreated
+Purpose:  this function is called when the surface is created.
+input:    none
+output:   none
+*******************************************************************/
+void CALL SurfaceCreated(void)
 {
-    switch (msg)
-    {
-    case WM_ACTIVATEAPP:
-        if (wParam == TRUE && !GfxInitDone) rdp.window_changed = TRUE;
-        break;
-    case WM_PAINT:
-        if (!GfxInitDone) rdp.window_changed = TRUE;
-        break;
+}
 
-        /*    case WM_DESTROY:
-        SetWindowLong (gfx.hWnd, GWL_WNDPROC, (long)oldWndProc);
-        break;*/
-    }
+/******************************************************************
+Function: SurfaceChanged
+Purpose:  this function is called when the surface is has changed.
+input:    none
+output:   none
+*******************************************************************/
+void init_combiner();
 
-    return CallWindowProc(oldWndProc, hwnd, msg, wParam, lParam);
+void CALL SurfaceChanged(int width, int height)
+{
+    g_width = width;
+    g_height = height;
 }
 #endif
 
@@ -2438,7 +2414,7 @@ LRESULT CALLBACK LowLevelKeyboardProc(int nCode,
             if (p->vkCode == 46) k_del = 1;
             goto do_it;
 
-do_it:
+        do_it:
             TabKey =
                 ((p->vkCode == VK_TAB) && ((p->flags & LLKHF_ALTDOWN) != 0)) ||
                 ((p->vkCode == VK_ESCAPE) && ((p->flags & LLKHF_ALTDOWN) != 0)) ||
@@ -2458,5 +2434,12 @@ do_it:
     }
 
     return CallNextHookEx(NULL, nCode, wParam, lParam);
+}
+#endif
+
+#ifdef ANDROID
+void Android_JNI_SwapWindow()
+{
+    gfx.SwapBuffers();
 }
 #endif

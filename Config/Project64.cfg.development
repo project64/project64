@@ -13,14 +13,28 @@ ShortCuts=..\..\Config\Project64.sc3
 [Debugger]
 Debugger=1
 
-[Directory]
-Instant Save=..\..\Save\
-Instant Save - Use Selected=1
-Lang=..\..\Lang
-Plugin=..\..\Plugin\
-Plugin64=..\..\Plugin64\
-Plugin - Use Selected=1
-Save=..\..\Save\
-Save - Use Selected=1
-Texture Dir=..\..\Textures\
-Texture Dir - Use Selected=1
+[Plugin Directory]
+Directory=..\..\Plugin\
+Use Selected=1
+
+[Plugin64 Directory]
+Directory=..\..\Plugin64\
+Use Selected=1
+
+[Native Save Directory]
+Directory=..\..\Save\
+Use Selected=1
+
+[Instant Save Directory]
+Directory=..\..\Save\
+Use Selected=1
+
+[Lang Directory]
+Directory=..\..\Lang
+
+[Texture Directory]
+Directory=..\..\Textures\
+Use Selected=1
+
+[Support Project64]
+Run Count=-1

@@ -18,9 +18,7 @@ public:
     CRecompilerSettings();
     virtual ~CRecompilerSettings();
 
-    static bool  bShowRecompMemSize(void) { return m_bShowRecompMemSize; }
-
-    static bool  bProfiling(void) { return m_bProfiling; }
+    static inline bool bShowRecompMemSize(void) { return m_bShowRecompMemSize; }
 
 private:
     static void StaticRefreshSettings(CRecompilerSettings * _this)
@@ -32,7 +30,6 @@ private:
 
     //Settings that can be changed on the fly
     static bool m_bShowRecompMemSize;
-    static bool m_bProfiling;
 
     static int32_t m_RefCount;
 };

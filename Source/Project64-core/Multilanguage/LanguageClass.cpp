@@ -88,6 +88,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MENU_RESUME, "R&esume");
     DEF_STR(MENU_RESET_SOFT, "&Soft Reset");
     DEF_STR(MENU_RESET_HARD, "&Hard Reset");
+    DEF_STR(MENU_SWAPDISK, "Swap &Disk");
 
     //Options Menu
     DEF_STR(MENU_OPTIONS, "&Options");
@@ -231,7 +232,9 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(OPTION_DISABLE_SS, "Disable screen saver when running a ROM");
     DEF_STR(OPTION_DISPLAY_FR, "Display speed");
     DEF_STR(OPTION_CHECK_RUNNING, "Check if Project64 is already running");
+    DEF_STR(OPTION_UNIQUE_SAVE_DIR, "Unique Game Save Directory");
     DEF_STR(OPTION_CHANGE_FR, "Speed display:");
+    DEF_STR(OPTION_IPL_ROM_PATH, "64DD IPL ROM Path:");
 
     //ROM Browser Tab
     DEF_STR(RB_MAX_ROMS, "Max # of ROMs remembered (0-10):");
@@ -348,6 +351,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(STR_FR_VIS, "Vertical interrupts per second");
     DEF_STR(STR_FR_DLS, "Display lists per second");
     DEF_STR(STR_FR_PERCENT, "Percentage of full speed");
+    DEF_STR(STR_FR_DLS_VIS, "VI/s & DL/s");
 
     // Increase speed
     DEF_STR(STR_INSREASE_SPEED, "Increase Game Speed");
@@ -436,6 +440,22 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(STR_SHORTCUT_SAVESLOT, "Save Slots");
 
     /*********************************************************************************
+    * Support Window                                                                       *
+    *********************************************************************************/
+    DEF_STR(MSG_SUPPORT_TITLE, "Support Project64");
+    DEF_STR(MSG_SUPPORT_INFO, "Project64 is a software package designed to emulate a Nintendo64 video game system on a Microsoft Windows based PC. This allows you to play real N64 software in much the same way as it would be on the original hardware system.\n\nIf you like Project64 and have gotten some value out of it then please support project64 as either a thank you, or your desire to see it continually improved.\n\nIf you have supported project64:");
+    DEF_STR(MSG_SUPPORT_ENTER_CODE, "Enter notification code");
+    DEF_STR(MSG_SUPPORT_PROJECT64, "Support Project64");
+    DEF_STR(MSG_SUPPORT_CONTINUE, "Continue");
+    DEF_STR(MSG_SUPPORT_ENTER_SUPPORT_CODE, "Please enter the support code");
+    DEF_STR(MSG_SUPPORT_INCORRECT_CODE, "Incorrect support code");
+    DEF_STR(MSG_SUPPORT_COMPLETE, "Thank you");
+    DEF_STR(MSG_SUPPORT_ENTER_CODE_TITLE, "Enter code");
+    DEF_STR(MSG_SUPPORT_ENTER_CODE_DESC, "Please enter the code in the email");
+    DEF_STR(MSG_SUPPORT_OK, "OK");
+    DEF_STR(MSG_SUPPORT_CANCEL, "Cancel");
+
+    /*********************************************************************************
     * Messages                                                                       *
     *********************************************************************************/
     DEF_STR(MSG_CPU_PAUSED, "*** CPU PAUSED ***");
@@ -499,8 +519,8 @@ void CLanguage::LoadDefaultStrings(void)
 }
 
 CLanguage::CLanguage() :
-m_emptyString(""),
-m_LanguageLoaded(false)
+    m_emptyString(""),
+    m_LanguageLoaded(false)
 {
     LoadDefaultStrings();
     if (g_Settings)
@@ -511,11 +531,17 @@ m_LanguageLoaded(false)
 
 bool CLanguage::LoadCurrentStrings(void)
 {
-    LanguageList LangList = GetLangList();
-    stdstr       Filename;
-
     //clear all the current strings loaded
     m_CurrentStrings.clear();
+
+    if (g_Settings->LoadBool(Debugger_DebugLanguage))
+    {
+        m_LanguageLoaded = true;
+        return true;
+    }
+
+    LanguageList LangList = GetLangList();
+    stdstr       Filename;
 
     //Find the file name of the current language
     for (LanguageList::iterator Language = LangList.begin(); Language != LangList.end(); Language++)
@@ -597,6 +623,15 @@ const std::string & CLanguage::GetString(LanguageStringID StringID)
         return CurrentString->second;
     }
 
+    if (g_Settings->LoadBool(Debugger_DebugLanguage))
+    {
+        std::pair<LANG_STRINGS::iterator, bool> ret = m_CurrentStrings.insert(LANG_STRINGS::value_type(StringID, stdstr_f("#%d#", StringID)));
+        if (ret.second)
+        {
+            return ret.first->second;
+        }
+    }
+
     LANG_STRINGS::iterator DefString = m_DefaultStrings.find(StringID);
     if (DefString != m_DefaultStrings.end())
     {
@@ -643,7 +678,7 @@ std::string CLanguage::GetLangString(const char * FileName, LanguageStringID ID)
 
 LANG_STR CLanguage::GetNextLangString(void * OpenFile)
 {
-    enum { MAX_STRING_LEN = 400 };
+    enum { MAX_STRING_LEN = 800 };
     int32_t  StringID;
     char szString[MAX_STRING_LEN];  //temp store the string from the file
 

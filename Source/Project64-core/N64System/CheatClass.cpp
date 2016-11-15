@@ -114,22 +114,22 @@ void CCheats::LoadPermCheats(CPlugins * Plugins)
             for (size_t i = 0, n = PluginList.size(); i < n; i++)
             {
                 stdstr PluginName = PluginList[i].Trim();
-                if (strstr(Plugins->Gfx()->PluginName(), PluginName.c_str()) != NULL)
+                if (Plugins->Gfx() != NULL && strstr(Plugins->Gfx()->PluginName(), PluginName.c_str()) != NULL)
                 {
                     LoadEntry = true;
                     break;
                 }
-                if (strstr(Plugins->Audio()->PluginName(), PluginName.c_str()) != NULL)
+                if (Plugins->Audio() != NULL && strstr(Plugins->Audio()->PluginName(), PluginName.c_str()) != NULL)
                 {
                     LoadEntry = true;
                     break;
                 }
-                if (strstr(Plugins->RSP()->PluginName(), PluginName.c_str()) != NULL)
+                if (Plugins->RSP() != NULL && strstr(Plugins->RSP()->PluginName(), PluginName.c_str()) != NULL)
                 {
                     LoadEntry = true;
                     break;
                 }
-                if (strstr(Plugins->Control()->PluginName(), PluginName.c_str()) != NULL)
+                if (Plugins->Control() != NULL && strstr(Plugins->Control()->PluginName(), PluginName.c_str()) != NULL)
                 {
                     LoadEntry = true;
                     break;
@@ -282,7 +282,7 @@ bool CCheats::IsValid16BitCode(const char * CheatString)
             break;
         case 0x81000000:
         case 0xA1000000:
-        case 0xD1000000:													// Added by Witten (witten@pj64cheats.net)
+        case 0xD1000000:
         case 0xD3000000:
             if (((CodeEntry.Command & 0xFFFFFF) & 1) == 1)
             {
@@ -348,7 +348,7 @@ int CCheats::ApplyCheatEntry(CMipsMemoryVM * MMU, const CODES & CodeEntry, int C
     switch (Code.Command & 0xFF000000)
     {
         // Gameshark / AR
-    case 0x50000000:													// Added by Witten (witten@pj64cheats.net)
+    case 0x50000000:
     {
         if ((CurrentEntry + 1) >= (int)CodeEntry.size())
         {
@@ -404,22 +404,22 @@ int CCheats::ApplyCheatEntry(CMipsMemoryVM * MMU, const CODES & CodeEntry, int C
         Address = 0xA0000000 | (Code.Command & 0xFFFFFF);
         if (Execute) { MMU->SH_VAddr(Address, Code.Value); }
         break;
-    case 0xD0000000:													// Added by Witten (witten@pj64cheats.net)
+    case 0xD0000000:
         Address = 0x80000000 | (Code.Command & 0xFFFFFF);
         MMU->LB_VAddr(Address, bMemory);
         if (bMemory != Code.Value) { Execute = false; }
         return ApplyCheatEntry(MMU, CodeEntry, CurrentEntry + 1, Execute) + 1;
-    case 0xD1000000:													// Added by Witten (witten@pj64cheats.net)
+    case 0xD1000000:
         Address = 0x80000000 | (Code.Command & 0xFFFFFF);
         MMU->LH_VAddr(Address, wMemory);
         if (wMemory != Code.Value) { Execute = false; }
         return ApplyCheatEntry(MMU, CodeEntry, CurrentEntry + 1, Execute) + 1;
-    case 0xD2000000:													// Added by Witten (witten@pj64cheats.net)
+    case 0xD2000000:
         Address = 0x80000000 | (Code.Command & 0xFFFFFF);
         MMU->LB_VAddr(Address, bMemory);
         if (bMemory == Code.Value) { Execute = false; }
         return ApplyCheatEntry(MMU, CodeEntry, CurrentEntry + 1, Execute) + 1;
-    case 0xD3000000:													// Added by Witten (witten@pj64cheats.net)
+    case 0xD3000000:
         Address = 0x80000000 | (Code.Command & 0xFFFFFF);
         MMU->LH_VAddr(Address, wMemory);
         if (wMemory == Code.Value) { Execute = false; }

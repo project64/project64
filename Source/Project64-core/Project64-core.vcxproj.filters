@@ -70,6 +70,24 @@
     <Filter Include="Header Files\3rd Party\Zlib">
       <UniqueIdentifier>{1478740a-b66b-41bd-833c-917c0cb85047}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Rom List">
+      <UniqueIdentifier>{1cc42db5-377e-4882-9afa-4e6b2a3e389d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Rom List">
+      <UniqueIdentifier>{1030356f-55d6-4fef-9ee2-64c45b9c8ff2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\N64 System\Recompiler\x86">
+      <UniqueIdentifier>{84d10022-4b24-4ba2-bfef-f85d16dfdc09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\N64 System\Recompiler\x86">
+      <UniqueIdentifier>{b6d9fd3a-e8e5-42a2-8bcc-8fa430dd8aaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\N64 System\Recompiler\Arm">
+      <UniqueIdentifier>{cf6a56ff-5e83-49c8-af46-2d0eb9ff5abe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\N64 System\Recompiler\Arm">
+      <UniqueIdentifier>{98453fda-8903-4074-8c4c-831c3f2bd63d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -140,12 +158,6 @@
     </ClCompile>
     <ClCompile Include="3rdParty\7zip.cpp">
       <Filter>Source Files\3rd Party</Filter>
-    </ClCompile>
-    <ClCompile Include="N64System\Recompiler\x86CodeLog.cpp">
-      <Filter>Source Files\N64 System\Recompiler</Filter>
-    </ClCompile>
-    <ClCompile Include="N64System\Recompiler\X86ops.cpp">
-      <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
     <ClCompile Include="Settings\DebugSettings.cpp">
       <Filter>Source Files\Settings</Filter>
@@ -228,12 +240,6 @@
     <ClCompile Include="N64System\Recompiler\RecompilerMemory.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
-    <ClCompile Include="N64System\Recompiler\RecompilerOps.cpp">
-      <Filter>Source Files\N64 System\Recompiler</Filter>
-    </ClCompile>
-    <ClCompile Include="N64System\Recompiler\RegInfo.cpp">
-      <Filter>Source Files\N64 System\Recompiler</Filter>
-    </ClCompile>
     <ClCompile Include="N64System\Recompiler\SectionInfo.cpp">
       <Filter>Source Files\N64 System\Recompiler</Filter>
     </ClCompile>
@@ -291,9 +297,6 @@
     <ClCompile Include="Multilanguage\LanguageClass.cpp">
       <Filter>Source Files\Multilanguage</Filter>
     </ClCompile>
-    <ClCompile Include="MemoryExceptionFilter.cpp">
-      <Filter>Source Files\N64 System</Filter>
-    </ClCompile>
     <ClCompile Include="N64System\Mips\Disk.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
@@ -305,6 +308,36 @@
     </ClCompile>
     <ClCompile Include="N64System\Mips\Transferpak.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
+    </ClCompile>
+    <ClCompile Include="RomList\RomList.cpp">
+      <Filter>Source Files\Rom List</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\RecompilerCodeLog.cpp">
+      <Filter>Source Files\N64 System\Recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\x86\x86RecompilerOps.cpp">
+      <Filter>Source Files\N64 System\Recompiler\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\x86\x86ops.cpp">
+      <Filter>Source Files\N64 System\Recompiler\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\x86\x86RegInfo.cpp">
+      <Filter>Source Files\N64 System\Recompiler\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryExceptionFilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\RegBase.cpp">
+      <Filter>Source Files\N64 System\Recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\Arm\ArmOps.cpp">
+      <Filter>Source Files\N64 System\Recompiler\Arm</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\Arm\ArmRecompilerOps.cpp">
+      <Filter>Source Files\N64 System\Recompiler\Arm</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Recompiler\Arm\ArmRegInfo.cpp">
+      <Filter>Source Files\N64 System\Recompiler\Arm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -506,12 +539,6 @@
     <ClInclude Include="N64System\Recompiler\SectionInfo.h">
       <Filter>Header Files\N64 System\Recompiler</Filter>
     </ClInclude>
-    <ClInclude Include="N64System\Recompiler\X86CodeLog.h">
-      <Filter>Header Files\N64 System\Recompiler</Filter>
-    </ClInclude>
-    <ClInclude Include="N64System\Recompiler\X86ops.h">
-      <Filter>Header Files\N64 System\Recompiler</Filter>
-    </ClInclude>
     <ClInclude Include="N64System\Mips\Audio.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
@@ -592,6 +619,39 @@
     </ClInclude>
     <ClInclude Include="N64System\Mips\GBCart.h">
       <Filter>Header Files\N64 System\Mips</Filter>
+    </ClInclude>
+    <ClInclude Include="RomList\RomList.h">
+      <Filter>Header Files\Rom List</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\RecompilerCodeLog.h">
+      <Filter>Header Files\N64 System\Recompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\x86\x86RecompilerOps.h">
+      <Filter>Header Files\N64 System\Recompiler\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\x86\x86ops.h">
+      <Filter>Header Files\N64 System\Recompiler\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\x86\x86RegInfo.h">
+      <Filter>Header Files\N64 System\Recompiler\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\Arm\ArmOpCode.h">
+      <Filter>Header Files\N64 System\Recompiler\Arm</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\Arm\ArmOps.h">
+      <Filter>Header Files\N64 System\Recompiler\Arm</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\Arm\ArmRecompilerOps.h">
+      <Filter>Header Files\N64 System\Recompiler\Arm</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\Arm\ArmRegInfo.h">
+      <Filter>Header Files\N64 System\Recompiler\Arm</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\RegBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Recompiler\x64-86\x64RegInfo.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

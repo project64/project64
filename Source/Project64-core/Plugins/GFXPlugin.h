@@ -67,6 +67,10 @@ public:
     void(CALL *ViStatusChanged) (void);
     void(CALL *ViWidthChanged)  (void);
     void(CALL *SoftReset)       (void);
+#ifdef ANDROID
+    void(CALL *SurfaceCreated)  (void);
+    void(CALL *SurfaceChanged)  (int w, int h);
+#endif
 
     //Rom Browser
     void *(CALL * GetRomBrowserMenu)(void); /* Items should have an ID between 4101 and 4200 */
@@ -90,6 +94,9 @@ private:
     void(CALL *GetDebugInfo)    (GFXDEBUG_INFO * GFXDebugInfo);
     void(CALL *InitiateDebugger)(DEBUG_INFO DebugInfo);
 
+#ifdef ANDROID
+    static void SwapBuffers(void);
+#endif
     static void CALL DummyDrawScreen(void) {}
     static void CALL DummyMoveScreen(int32_t /*xpos*/, int32_t /*ypos*/) {}
     static void CALL DummyViStatusChanged(void) {}

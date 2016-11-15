@@ -22,7 +22,7 @@ if %MSVC-BUILDER% == "" (
 
 :: Build Win32 version of the software
 IF EXIST "%base_dir%\output.txt" del "%base_dir%\output.txt"
-%MSVC-BUILDER% "%base_dir%\Project64.vs2008.sln" /build "%BuildMode%|Win32" /out "%base_dir%\output.txt"
+%MSVC-BUILDER% "%base_dir%\Project64.vs2008.sln" /rebuild "%BuildMode%|Win32" /out "%base_dir%\output.txt"
 set Result=%ERRORLEVEL%
 type "%base_dir%\output.txt"
 echo Done - ERRORLEVEL: %Result%

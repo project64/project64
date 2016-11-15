@@ -1,22 +1,21 @@
 #define BaseDir ExtractFilePath(ExtractFilePath(ExtractFilePath(SourcePath)))
 #define AppVersion GetFileVersion(BaseDir + "\Bin\" + Configuration + "\Project64.exe")
 
-#include BaseDir+"\Source\Installer\binno\binno.iss"
-
 [Setup]
 AppId={{BEB5FB69-4080-466F-96C4-F15DF271718B}
 AppName=Project64
 AppVersion={#AppVersion}
-DefaultDirName={pf}\Project64 2.2
+DefaultDirName={pf32}\Project64 2.3
 VersionInfoVersion={#AppVersion}
 OutputDir={#BaseDir}\Bin\{#Configuration}
-OutputBaseFilename=Setup Project64 2.2
-VersionInfoDescription=Installation Setup of Project64 2.2
+OutputBaseFilename=Setup Project64 2.3
+VersionInfoDescription=Installation Setup of Project64 2.3
 Compression=lzma2/ultra64
 WizardImageFile=Installer-Sidebar.bmp
 WizardSmallImageFile=Pj64LogoSmallImage.bmp
 DisableProgramGroupPage=yes
 DisableReadyPage=yes
+Uninstallable=not IsTaskSelected('portablemode')
 UninstallDisplayIcon={uninstallexe}
 SetupIconFile={#BaseDir}\Source\Project64\UserInterface\Icons\pj64.ico
 
@@ -37,39 +36,18 @@ Source: "{#BaseDir}\Plugin\Input\PJ64_NRage.dll"; DestDir: "{app}\Plugin\Input"
 Source: "{#BaseDir}\Plugin\RSP\RSP 1.7.dll"; DestDir: "{app}\Plugin\RSP"
 
 [Dirs]
-Name: "{app}\Config"; Permissions: users-modify
-Name: "{app}\Logs"; Permissions: users-modify
-Name: "{app}\Save"; Permissions: users-modify
-Name: "{app}\Screenshots"; Permissions: users-modify
-Name: "{app}\Textures"; Permissions: users-modify
+Name: "{app}\Config"; Permissions: everyone-full
+Name: "{app}\Logs"; Permissions: everyone-full
+Name: "{app}\Save"; Permissions: everyone-full
+Name: "{app}\Screenshots"; Permissions: everyone-full
+Name: "{app}\Textures"; Permissions: everyone-full
 
 [Icons]
-Name: "{commonprograms}\Project64 2.2\Project64"; Filename: "{app}\Project64.exe"
-Name: "{commonprograms}\Project64 2.2\Uninstall Project64 2.2"; Filename: "{uninstallexe}"; Parameters: "/LOG"
-Name: "{commonprograms}\Project64 2.2\Support"; Filename: "http://forum.pj64-emu.com"
+Name: "{commondesktop}\Project64"; Filename: "{app}\Project64.exe"; Tasks: desktopicon
+Name: "{commonprograms}\Project64 2.3\Project64"; Filename: "{app}\Project64.exe"
+Name: "{commonprograms}\Project64 2.3\Uninstall Project64 2.3"; Filename: "{uninstallexe}"; Parameters: "/LOG"; Flags: createonlyiffileexists
+Name: "{commonprograms}\Project64 2.3\Support"; Filename: "http://forum.pj64-emu.com"
 
-[Code]
-function HaveCommandlineParam (inParam: String): Boolean;
-var
-  LoopVar : Integer;
-begin
-  LoopVar := 1;
-  Result := false;
-
-  while LoopVar <= ParamCount do
-  begin
-    if ((ParamStr(LoopVar) = '-' + inParam) or (ParamStr(LoopVar) = '/' + inParam)) then
-    begin
-      Result := true;
-      Break;
-    end;
-    LoopVar := LoopVar + 1;
-  end;
-end;
-
-procedure InitializeWizard();
-begin  
-  if ((WizardSilent() <> true) and (HaveCommandlineParam('noads') <> true)) then begin
-	  CreateBINNOPage(wpSelectTasks,'pj64emu','pj64emu');
-  end;
-end;
+[Tasks]
+Name: desktopicon; Description: "Create a &desktop icon"
+Name: portablemode; Description: "&Portable Mode"; Flags: unchecked

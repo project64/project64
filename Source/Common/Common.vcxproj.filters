@@ -53,6 +53,12 @@
     <ClCompile Include="MemoryManagement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Thread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HighResTimeStamp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="DateTimeClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -107,6 +113,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MemoryManagement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HighResTimeStamp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DateTimeClass.h">

@@ -54,6 +54,7 @@
     <ClCompile Include="Plugins\PluginList.cpp" />
     <ClCompile Include="Settings\GuiSettings.cpp" />
     <ClCompile Include="Settings\NotificationSettings.cpp" />
+    <ClCompile Include="Settings\UISettings.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -78,6 +79,8 @@
     <ClCompile Include="UserInterface\Settings\SettingsPage-Options.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-Plugin.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage.cpp" />
+    <ClCompile Include="UserInterface\SupportEnterCode.cpp" />
+    <ClCompile Include="UserInterface\SupportWindow.cpp" />
     <ClCompile Include="UserInterface\WTLControls\ModifiedEditBox.cpp" />
     <ClCompile Include="UserInterface\WTLControls\PartialGroupBox.cpp" />
   </ItemGroup>
@@ -91,6 +94,9 @@
     <ClInclude Include="N64System\Debugger\Debugger-ViewMemory.h" />
     <ClInclude Include="N64System\Debugger\debugger.h" />
     <ClInclude Include="N64System\Debugger\DebuggerUI.h" />
+    <ClInclude Include="Settings\GuiSettings.h" />
+    <ClInclude Include="Settings\NotificationSettings.h" />
+    <ClInclude Include="Settings\UISettings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Support.h" />
     <ClInclude Include="UserInterface.h" />
@@ -116,6 +122,8 @@
     <ClInclude Include="UserInterface\Settings\SettingsPage-Options.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage-Plugin.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage.h" />
+    <ClInclude Include="UserInterface\SupportEnterCode.h" />
+    <ClInclude Include="UserInterface\SupportWindow.h" />
     <ClInclude Include="UserInterface\WTLControls\ModifiedCheckBox.h" />
     <ClInclude Include="UserInterface\WTLControls\ModifiedComboBox.h" />
     <ClInclude Include="UserInterface\WTLControls\ModifiedEditBox.h" />

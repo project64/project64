@@ -18,6 +18,8 @@ public:
     ~CN64Disk();
 
     bool    LoadDiskImage(const char * FileLoc);
+    bool    SaveDiskImage();
+    void    SwapDiskImage(const char * FileLoc);
     static bool IsValidDiskImage(uint8_t Test[4]);
     uint8_t *  GetDiskAddress() { return m_DiskImage; }
     uint8_t *  GetDiskAddressBuffer() { return m_DiskImage + m_DiskBufAddress; }
@@ -30,11 +32,14 @@ private:
     bool   AllocateDiskImage(uint32_t DiskFileSize);
     bool   AllocateAndLoadDiskImage(const char * FileLoc);
     void   ByteSwapDisk();
+    void   ForceByteSwapDisk();
     void   SetError(LanguageStringID ErrorMsg);
     void   ConvertDiskFormat();
+    void   ConvertDiskFormatBack();
 
     //constant values
-    enum { ReadFromRomSection = 0x400000, MameFormatSize = 0x0435B0C0, SDKFormatSize = 0x03DEC800 };
+    enum { ReadFromRomSection = 0x400000, MameFormatSize = 0x0435B0C0, SDKFormatSize = 0x03DEC800,
+           DiskFormatMAME = 0x0, DiskFormatSDK = 0x1 };
 
     //class variables
     CFile m_DiskFile;
@@ -44,6 +49,7 @@ private:
     uint32_t m_DiskBufAddress;
     LanguageStringID m_ErrorMsg;
     stdstr m_FileName, m_DiskIdent;
+    uint8_t m_DiskFormat; //0 = MAME, 1 = SDK
 
     //disk convert
     #define SECTORS_PER_BLOCK	85

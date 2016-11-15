@@ -13,6 +13,7 @@
 #include <Project64-core/N64System/N64RomClass.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Project64-core/N64System/N64Class.h>
 #include "GFXPlugin.h"
 
 CGfxPlugin::CGfxPlugin() :
@@ -38,8 +39,10 @@ InitiateDebugger(NULL)
 
 CGfxPlugin::~CGfxPlugin()
 {
-    Close();
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Start");
+    Close(NULL);
     UnloadPlugin();
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Done");
 }
 
 bool CGfxPlugin::LoadFunctions(void)
@@ -55,6 +58,10 @@ bool CGfxPlugin::LoadFunctions(void)
     LoadFunction(ViStatusChanged);
     LoadFunction(ViWidthChanged);
     LoadFunction(SoftReset);
+#ifdef ANDROID
+    LoadFunction(SurfaceCreated);
+    LoadFunction(SurfaceChanged);
+#endif
 
     // version 0x104 functions
     _LoadFunction("DrawFullScreenStatus", DrawStatus);
@@ -101,10 +108,10 @@ bool CGfxPlugin::LoadFunctions(void)
 
 bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
 {
-    WriteTrace(TraceGFXPlugin, TraceDebug, "Starting");
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Start");
     if (m_Initialized)
     {
-        Close();
+        Close(Window);
     }
 
     typedef struct
@@ -150,6 +157,9 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
         uint32_t * VI__Y_SCALE_REG;
 
         void(CALL *CheckInterrupts)(void);
+#ifdef ANDROID
+        void(CALL *SwapBuffers)(void);
+#endif
     } GFX_INFO;
 
     //Get Function from DLL
@@ -164,16 +174,27 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
     GFX_INFO Info = { 0 };
 
     Info.MemoryBswaped = true;
-    Info.hWnd = Window ? Window->GetWindowHandle() : NULL;
-    Info.hStatusBar = Window ? Window->GetStatusBar() : NULL;
+#if defined(ANDROID) || defined(__ANDROID__)
+    Info.SwapBuffers = SwapBuffers;
+#endif
+    Info.hWnd = NULL;
+    Info.hStatusBar = NULL;
+#ifdef _WIN32
+    if (Window != NULL)
+    {
+        Info.hWnd = Window->GetWindowHandle();
+        Info.hStatusBar = Window->GetStatusBar();
+    }
+#endif
     Info.CheckInterrupts = DummyCheckInterrupts;
 
     // We are initializing the plugin before any rom is loaded so we do not have any correct
     // parameters here.. it's just needed so we can config the DLL.
+    WriteTrace(TraceGFXPlugin, TraceDebug, "System = %X", System);
     if (System == NULL)
     {
-        uint8_t Buffer[100];
-        uint32_t Value = 0;
+        static uint8_t Buffer[100];
+        static uint32_t Value = 0;
 
         Info.HEADER = Buffer;
         Info.RDRAM = Buffer;
@@ -198,33 +219,36 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
     // Send initialization information to the DLL
     else
     {
+        CMipsMemoryVM & MMU = System->m_MMU_VM;
+        CRegisters & Reg = System->m_Reg;
+
         Info.HEADER = g_Rom->GetRomAddress();
-        Info.RDRAM = g_MMU->Rdram();
-        Info.DMEM = g_MMU->Dmem();
-        Info.IMEM = g_MMU->Imem();
-        Info.MI__INTR_REG = &g_Reg->m_GfxIntrReg;
-        Info.DPC__START_REG = &g_Reg->DPC_START_REG;
-        Info.DPC__END_REG = &g_Reg->DPC_END_REG;
-        Info.DPC__CURRENT_REG = &g_Reg->DPC_CURRENT_REG;
-        Info.DPC__STATUS_REG = &g_Reg->DPC_STATUS_REG;
-        Info.DPC__CLOCK_REG = &g_Reg->DPC_CLOCK_REG;
-        Info.DPC__BUFBUSY_REG = &g_Reg->DPC_BUFBUSY_REG;
-        Info.DPC__PIPEBUSY_REG = &g_Reg->DPC_PIPEBUSY_REG;
-        Info.DPC__TMEM_REG = &g_Reg->DPC_TMEM_REG;
-        Info.VI__STATUS_REG = &g_Reg->VI_STATUS_REG;
-        Info.VI__ORIGIN_REG = &g_Reg->VI_ORIGIN_REG;
-        Info.VI__WIDTH_REG = &g_Reg->VI_WIDTH_REG;
-        Info.VI__INTR_REG = &g_Reg->VI_INTR_REG;
-        Info.VI__V_CURRENT_LINE_REG = &g_Reg->VI_CURRENT_REG;
-        Info.VI__TIMING_REG = &g_Reg->VI_TIMING_REG;
-        Info.VI__V_SYNC_REG = &g_Reg->VI_V_SYNC_REG;
-        Info.VI__H_SYNC_REG = &g_Reg->VI_H_SYNC_REG;
-        Info.VI__LEAP_REG = &g_Reg->VI_LEAP_REG;
-        Info.VI__H_START_REG = &g_Reg->VI_H_START_REG;
-        Info.VI__V_START_REG = &g_Reg->VI_V_START_REG;
-        Info.VI__V_BURST_REG = &g_Reg->VI_V_BURST_REG;
-        Info.VI__X_SCALE_REG = &g_Reg->VI_X_SCALE_REG;
-        Info.VI__Y_SCALE_REG = &g_Reg->VI_Y_SCALE_REG;
+        Info.RDRAM = MMU.Rdram();
+        Info.DMEM = MMU.Dmem();
+        Info.IMEM = MMU.Imem();
+        Info.MI__INTR_REG = &Reg.m_GfxIntrReg;
+        Info.DPC__START_REG = &Reg.DPC_START_REG;
+        Info.DPC__END_REG = &Reg.DPC_END_REG;
+        Info.DPC__CURRENT_REG = &Reg.DPC_CURRENT_REG;
+        Info.DPC__STATUS_REG = &Reg.DPC_STATUS_REG;
+        Info.DPC__CLOCK_REG = &Reg.DPC_CLOCK_REG;
+        Info.DPC__BUFBUSY_REG = &Reg.DPC_BUFBUSY_REG;
+        Info.DPC__PIPEBUSY_REG = &Reg.DPC_PIPEBUSY_REG;
+        Info.DPC__TMEM_REG = &Reg.DPC_TMEM_REG;
+        Info.VI__STATUS_REG = &Reg.VI_STATUS_REG;
+        Info.VI__ORIGIN_REG = &Reg.VI_ORIGIN_REG;
+        Info.VI__WIDTH_REG = &Reg.VI_WIDTH_REG;
+        Info.VI__INTR_REG = &Reg.VI_INTR_REG;
+        Info.VI__V_CURRENT_LINE_REG = &Reg.VI_CURRENT_REG;
+        Info.VI__TIMING_REG = &Reg.VI_TIMING_REG;
+        Info.VI__V_SYNC_REG = &Reg.VI_V_SYNC_REG;
+        Info.VI__H_SYNC_REG = &Reg.VI_H_SYNC_REG;
+        Info.VI__LEAP_REG = &Reg.VI_LEAP_REG;
+        Info.VI__H_START_REG = &Reg.VI_H_START_REG;
+        Info.VI__V_START_REG = &Reg.VI_V_START_REG;
+        Info.VI__V_BURST_REG = &Reg.VI_V_BURST_REG;
+        Info.VI__X_SCALE_REG = &Reg.VI_X_SCALE_REG;
+        Info.VI__Y_SCALE_REG = &Reg.VI_Y_SCALE_REG;
     }
 
     WriteTrace(TraceGFXPlugin, TraceDebug, "Calling InitiateGFX");
@@ -235,12 +259,13 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
     pjutil::DynLibCallDllMain();
 #endif
 
-    WriteTrace(TraceGFXPlugin, TraceDebug, "InitiateGFX done (res: %s)", m_Initialized ? "true" : "false");
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Done (res: %s)", m_Initialized ? "true" : "false");
     return m_Initialized;
 }
 
 void CGfxPlugin::UnloadPluginDetails(void)
 {
+    WriteTrace(TraceGFXPlugin, TraceDebug, "start");
     if (m_LibHandle != NULL)
     {
         pjutil::DynLibClose(m_LibHandle);
@@ -265,6 +290,7 @@ void CGfxPlugin::UnloadPluginDetails(void)
     ViWidthChanged = NULL;
     GetRomBrowserMenu = NULL;
     OnRomBrowserMenuItem = NULL;
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Done");
 }
 
 void CGfxPlugin::ProcessMenuItem(int32_t id)
@@ -274,3 +300,16 @@ void CGfxPlugin::ProcessMenuItem(int32_t id)
         m_GFXDebug.ProcessMenuItem(id);
     }
 }
+
+#ifdef ANDROID
+void CGfxPlugin::SwapBuffers(void)
+{
+    RenderWindow * render = g_Plugins ? g_Plugins->MainWindow() : NULL;
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Start (render: %p)",render);
+    if (render != NULL)
+    {
+        render->SwapWindow();
+    }
+    WriteTrace(TraceGFXPlugin, TraceDebug, "Done");
+}
+#endif

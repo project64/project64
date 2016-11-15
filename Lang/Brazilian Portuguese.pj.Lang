@@ -4,8 +4,8 @@
 //About DLL
 #1  #  "Português Brasileiro"	// LANGUAGE ID
 #2  #  "Project64 team"			// Author
-#3  #  "2.2"					// Version
-#4  #  "Fevereiro, 2016"			// Date
+#3  #  "2.3"					// Version
+#4  #  "Junho, 2016"			// Date
 
 //About DLL Dialog
 #5  #  "Idioma Atual"
@@ -51,6 +51,7 @@
 #132#  "R&esumir"
 #133#  "&Resetar Software"
 #134#  "&Resetar Hardware"
+#135#  "Trocar &Disco"
 
 //Options Menu
 #140#  "&Opções"
@@ -234,6 +235,8 @@
 #465#  "Exibir a velocidade"
 #466#  "Display de velocidade:"
 #467#  "Verificar se o Project64 já está em execução"
+#468#  "&Diretório de Saves Unificado"
+#469#  "Caminho Para a ROM 64DD IPL:"
 
 //ROM Browser Tab
 #480#  "Máx # de ROMs Lembradas (0-10):"
@@ -436,6 +439,22 @@
 #1103#  "Menu do Sistema"
 #1104#  "Opções"
 #1105#  "Slots de Salvamento"
+
+/*********************************************************************************
+* Support Window                                                                 *
+*********************************************************************************/
+#1200#  "Apoie o Project64"
+#1201#  "Project64 é um pacote de software projetado para emular o video game Nintendo64 em um PC com Microsoft Windows. Este permite que você jogue software de N64 da mesma forma que seria no hardware original.\n\nSe você gostou do Project64 e obteve algum valor através do mesmo, então por favor, apoie o project64 como um agradecimento, ou seu desejo de vê-lo continuamente melhorado.\n\nSe você apoiou o project64:"
+#1202#  "Digite o código de notificação"
+#1203#  "Apoie o Project64"
+#1204#  "Continuar"
+#1205#  "Por favor, insira o código de apoio"
+#1206#  "Código de apoio incorreto"
+#1207#  "Obrigado"
+#1208#  "Digite o código"
+#1209#  "Por favor, digite o código que esta no e-mail"
+#1210#  "OK"
+#1211#  "Cancelar"
 
 /*********************************************************************************
 * Messages                                                                       *

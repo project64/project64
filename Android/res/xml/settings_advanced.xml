@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/preferences">
+
+    <CheckBoxPreference
+        android:key="UserInterface_BasicMode"
+        android:summary="@string/advancedSettings_summary"
+        android:title="@string/advancedSettings_title" />
+    <CheckBoxPreference
+        android:key="Debugger_Enabled"
+        android:summary="@string/debuggerEnabled_summary"
+        android:title="@string/debuggerEnabled_title" />
+    <CheckBoxPreference
+        android:key="Debugger_GenerateLogFiles"
+        android:summary="@string/GenerateLogFiles_summary"
+        android:title="@string/GenerateLogFiles_title" />
+    <CheckBoxPreference
+        android:key="Debugger_LimitFPS"
+        android:summary="@string/LimitFPS_summary"
+        android:title="@string/LimitFPS_title" />
+    <CheckBoxPreference
+        android:key="Debugger_CpuUsage"
+        android:summary="@string/CpuUsage_summary"
+        android:title="@string/CpuUsage_title" />
+    <CheckBoxPreference
+        android:key="Debugger_RecordExecutionTimes"
+        android:summary="@string/RecordExecutionTimes_summary"
+        android:title="@string/RecordExecutionTimes_title" />
+    <CheckBoxPreference
+        android:key="Plugin_ForceGfxReset"
+        android:summary="@string/ForceGfxReset_summary"
+        android:title="@string/ForceGfxReset_title" />
+    <PreferenceCategory android:title="@string/logging" >
+        <Preference
+            android:title="@string/project64core"
+            android:key="logging_core" />
+    </PreferenceCategory>   
+ </PreferenceScreen>

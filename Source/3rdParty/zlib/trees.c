@@ -199,7 +199,7 @@ local void send_bits(s, value, length)
      * unused bits in value.
      */
     if (s->bi_valid > (int)Buf_size - length) {
-        s->bi_buf |= (ush)value << s->bi_valid;
+        s->bi_buf |= ((ush)value << s->bi_valid) & 0xFFFF;
         put_short(s, s->bi_buf);
         s->bi_buf = (ush)value >> (Buf_size - s->bi_valid);
         s->bi_valid += length - Buf_size;
@@ -1174,7 +1174,7 @@ local void bi_flush(s)
         s->bi_buf = 0;
         s->bi_valid = 0;
     } else if (s->bi_valid >= 8) {
-        put_byte(s, (Byte)s->bi_buf);
+        put_byte(s, (Byte)(s->bi_buf & 0xFF));
         s->bi_buf >>= 8;
         s->bi_valid -= 8;
     }

@@ -41,3 +41,5 @@ extern OPCODE RSPOpC;
 
 void SetCPU(DWORD core);
 void Build_RSP (void);
+
+extern DWORD Mfc0Count, SemaphoreExit;

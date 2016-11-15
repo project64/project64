@@ -50,7 +50,7 @@ typedef struct _texlist
 static int nbTex = 0;
 static texlist *list = NULL;
 
-#ifdef _WIN32
+#if !defined(__ANDROID__) && !defined(ANDROID)
 extern PFNGLDELETERENDERBUFFERSEXTPROC glDeleteRenderbuffersEXT;
 extern PFNGLDELETEFRAMEBUFFERSEXTPROC glDeleteFramebuffersEXT;
 extern PFNGLCOMPRESSEDTEXIMAGE2DARBPROC glCompressedTexImage2DARB;

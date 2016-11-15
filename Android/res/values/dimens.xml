@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="inputMapPreferenceButtonSize">40dp</dimen>
+    <dimen name="inputMapPreferenceButtonSizeX1_5">60dp</dimen>
+    <dimen name="inputMapPreferenceButtonSizeX3">120dp</dimen>
+    <dimen name="inputMapPreferenceButtonSizeX5">200dp</dimen>
+
+    <dimen name="galleryImageWidth">450dp</dimen>
+    <dimen name="galleryImageHeight">15dp</dimen>
+    <dimen name="galleryHalfSpacing">5dp</dimen>
+    <dimen name="actionBarSize">56dp</dimen>
+</resources>

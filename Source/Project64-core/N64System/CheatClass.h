@@ -43,7 +43,6 @@ private:
 
     void LoadPermCheats(CPlugins * Plugins);
 
-    const CN64Rom * m_Rom;
     CODES_ARRAY   m_Codes;
 
     bool LoadCode(int32_t CheatNo, const char * CheatString);

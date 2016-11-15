@@ -5,6 +5,11 @@
 *.suo
 *.user
 *.opendb
+*.VC.db
+
+# static library output (MSVC, GCC--from core components like Common)
+*.lib
+*.a
 
 # compiler-generated sources (MSVC, GCC)
 *.asm
@@ -26,6 +31,8 @@ Thumbs.db
 /Config/Project64.sc3
 /Config/Project64.zcache
 /ipch
+/Plugin/Audio/AndroidAudio.dll
+/Plugin/Audio/AndroidAudio_d.dll
 /Plugin/GFX/lib
 /Plugin/GFX/map
 /Plugin/GFX/pdb
@@ -34,6 +41,8 @@ Thumbs.db
 /Plugin/Input/lib
 /Plugin/Input/map
 /Plugin/Input/pdb
+/Plugin/Input/AndroidInput.dll
+/Plugin/Input/AndroidInput_d.dll
 /Plugin/Input/PJ64_NRage.dll
 /Plugin/Input/PJ64_NRage_d.dll
 /Plugin/RSP/lib
@@ -41,6 +50,11 @@ Thumbs.db
 /Plugin/RSP/pdb
 /Plugin/RSP/RSP 1.7.dll
 /Plugin/RSP/RSP_d 1.7.dll
+/Plugin/RSP/RSP-HLE.dll
+/Plugin/RSP/RSP-HLE_d.dll
+/Plugin64/AndroidAudio
+/Plugin64/Audio/AndroidAudio.dll
+/Plugin64/Audio/AndroidAudio_d.dll
 /Plugin64/GFX/lib
 /Plugin64/GFX/map
 /Plugin64/GFX/pdb
@@ -49,6 +63,8 @@ Thumbs.db
 /Plugin64/Input/lib
 /Plugin64/Input/map
 /Plugin64/Input/pdb
+/Plugin64/Input/AndroidInput.dll
+/Plugin64/Input/AndroidInput_d.dll
 /Plugin64/Input/PJ64_NRage.dll
 /Plugin64/Input/PJ64_NRage_d.dll
 /Plugin64/RSP/lib
@@ -56,6 +72,8 @@ Thumbs.db
 /Plugin64/RSP/pdb
 /Plugin64/RSP/RSP 1.7.dll
 /Plugin64/RSP/RSP_d 1.7.dll
+/Plugin64/RSP/RSP-HLE.dll
+/Plugin64/RSP/RSP-HLE_d.dll
 /Source/3rdParty/wx/lib/vc_lib/msw/wx/setup.h
 /Source/3rdParty/wx/lib/vc_lib/mswd/wx/setup.h
 /Source/3rdParty/wx/lib/vc_lib/mswu/wx/msw/rcdefs.h

@@ -30,8 +30,11 @@
 #include <commctrl.h>
 #endif
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <Common/StdString.h>
+#include <Common/stdtypes.h>
 #include "../Settings/Settings.h"
 
 extern "C" {
@@ -50,7 +53,10 @@ extern "C" {
 
 void ClearAllx86Code(void);
 void ProcessMenuItem(int ID);
+#ifdef _WIN32
 Boolean CALLBACK CompilerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+HMENU hRSPMenu = NULL;
+#endif
 
 Boolean GraphicsHle = TRUE, AudioHle, ConditionalMove;
 Boolean DebuggingEnabled = FALSE, 
@@ -62,14 +68,13 @@ Boolean DebuggingEnabled = FALSE,
         LogX86Code = FALSE;
 uint32_t CPUCore = RecompilerCPU;
 
-HANDLE hMutex = NULL;
+void * hMutex = NULL;
 
 DEBUG_INFO DebugInfo;
 RSP_INFO RSPInfo;
 void * hinstDLL;
-HMENU hRSPMenu = NULL;
 
-extern BYTE * pLastSecondary;
+extern uint8_t * pLastSecondary;
 }
 
 enum {
@@ -81,7 +86,7 @@ enum {
 	Set_ReOrdering, Set_GPRConstants, Set_Flags, Set_AlignVector,
 
 	//Game Settings
-	Set_JumpTableSize
+	Set_JumpTableSize, Set_Mfc0Count, Set_SemaphoreExit
 };
 
 short Set_AudioHle = 0, Set_GraphicsHle = 0;
@@ -164,7 +169,7 @@ void DisplayError(char* Message, ...)
   input:    none
   output:   none
 *******************************************************************/ 
-__declspec(dllexport) void CloseDLL (void)
+EXPORT void CloseDLL(void)
 {
 	FreeMemory();
 }
@@ -176,9 +181,13 @@ __declspec(dllexport) void CloseDLL (void)
   input:    a handle to the window that calls this function
   output:   none
 *******************************************************************/ 
-__declspec(dllexport) void DllAbout ( HWND hParent )
+EXPORT void DllAbout(void * hParent)
 {
-	MessageBox(hParent,AboutMsg(),"About",MB_OK | MB_ICONINFORMATION );
+#ifdef _WIN32
+    MessageBox((HWND)hParent, AboutMsg(), "About", MB_OK | MB_ICONINFORMATION);
+#else
+    puts(AboutMsg());
+#endif
 }
 
 #ifdef _WIN32
@@ -217,9 +226,9 @@ void FixMenuState(void)
             filled by the function. (see def above)
   output:   none
 *******************************************************************/ 
-__declspec(dllexport) void GetDllInfo ( PLUGIN_INFO * PluginInfo )
+EXPORT void GetDllInfo(PLUGIN_INFO * PluginInfo)
 {
-	PluginInfo->Version = 0x0102;
+	PluginInfo->Version = 0x0103;
 	PluginInfo->Type = PLUGIN_TYPE_RSP;
 #ifdef _DEBUG
 	sprintf(PluginInfo->Name, "RSP Debug Plugin %s", VER_FILE_VERSION_STR);
@@ -240,14 +249,16 @@ __declspec(dllexport) void GetDllInfo ( PLUGIN_INFO * PluginInfo )
   output:   none
 *******************************************************************/ 
 
-__declspec(dllexport) void GetRspDebugInfo ( RSPDEBUG_INFO * DebugInfo ) 
+EXPORT void GetRspDebugInfo(RSPDEBUG_INFO * DebugInfo)
 {
+#ifdef _WIN32
 	if (hRSPMenu == NULL)
 	{
 		hRSPMenu = LoadMenu((HINSTANCE)hinstDLL,MAKEINTRESOURCE(RspMenu));
 		FixMenuState();
 	}
 	DebugInfo->hRSPMenu = hRSPMenu;
+#endif
 	DebugInfo->ProcessMenuItem = ProcessMenuItem;
 
 	DebugInfo->UseBPoints = TRUE;
@@ -260,7 +271,7 @@ __declspec(dllexport) void GetRspDebugInfo ( RSPDEBUG_INFO * DebugInfo )
 	DebugInfo->RemoveAllBpoint = RemoveAllBpoint;
 	DebugInfo->RemoveBpoint = RemoveBpoint;
 	DebugInfo->ShowBPPanel = ShowBPPanel;
-	
+
 	DebugInfo->Enter_RSP_Commands_Window = Enter_RSP_Commands_Window;
 }
 
@@ -339,7 +350,7 @@ void DetectCpuSpecs(void)
 	}
 }
 
-__declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, uint32_t * CycleCount)
+EXPORT void InitiateRSP(RSP_INFO Rsp_Info, uint32_t * CycleCount)
 {
 	RSPInfo = Rsp_Info;
 	AudioHle = GetSystemSetting(Set_AudioHle);
@@ -364,11 +375,12 @@ __declspec(dllexport) void InitiateRSP ( RSP_INFO Rsp_Info, uint32_t * CycleCoun
             above.
   output:   none
 *******************************************************************/ 
-__declspec(dllexport) void InitiateRSPDebugger ( DEBUG_INFO Debug_Info)
+EXPORT void InitiateRSPDebugger(DEBUG_INFO Debug_Info)
 {
 	DebugInfo = Debug_Info;
 }
 
+#ifdef _WIN32
 void ProcessMenuItem(int ID)
 {
 	UINT uState;
@@ -529,6 +541,7 @@ void ProcessMenuItem(int ID)
 		break;
 	}
 }
+#endif
 
 /******************************************************************
   Function: RomOpen
@@ -536,7 +549,7 @@ void ProcessMenuItem(int ID)
   input:    none
   output:   none
 *******************************************************************/ 
-__declspec(dllexport) void RomOpen (void) 
+EXPORT void RomOpen(void)
 {
 	ClearAllx86Code();
 	if (DebuggingEnabled)
@@ -544,6 +557,8 @@ __declspec(dllexport) void RomOpen (void)
 		EnableDebugging(true);
 	}
 	JumpTableSize = GetSetting(Set_JumpTableSize); 
+	Mfc0Count = GetSetting(Set_Mfc0Count);
+	SemaphoreExit = GetSetting(Set_SemaphoreExit);
 }
 
 /******************************************************************
@@ -552,7 +567,8 @@ __declspec(dllexport) void RomOpen (void)
   input:    none
   output:   none
 *******************************************************************/ 
-__declspec(dllexport) void RomClosed (void) {
+EXPORT void RomClosed(void)
+{
 	if (Profiling)
 	{
 		StopTimer();
@@ -698,13 +714,13 @@ BOOL CALLBACK ConfigDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM /*lParam
 }
 #endif
 
-/*__declspec(dllexport) void DllConfig (HWND hWnd)
+/*EXPORT void DllConfig(HWND hWnd)
 {
 	// DialogBox(hinstDLL, "RSPCONFIG", hWnd, ConfigDlgProc);
 	DialogBox(hinstDLL, "RSPCONFIG", GetForegroundWindow(), ConfigDlgProc);
 }*/
 
-__declspec(dllexport) void EnableDebugging(Boolean Enabled)
+EXPORT void EnableDebugging(Boolean Enabled)
 {
 	DebuggingEnabled = Enabled;
 	if (DebuggingEnabled)
@@ -729,7 +745,11 @@ __declspec(dllexport) void EnableDebugging(Boolean Enabled)
 		Compiler.bAlignVector  = GetSetting(Set_AlignVector);
 		SetCPU(CPUCore);
 	}
-	FixMenuState();
+#ifdef _WIN32
+    FixMenuState();
+#else
+    fputs("FixMenuState()\n", stderr);
+#endif
 	if (LogRDP)
 	{
 		StartRDPLog();
@@ -740,7 +760,7 @@ __declspec(dllexport) void EnableDebugging(Boolean Enabled)
 	}
 }
 
-__declspec(dllexport) void PluginLoaded (void) 
+EXPORT void PluginLoaded(void)
 {
 	BreakOnStart   = false;
 	CPUCore        = RecompilerCPU;
@@ -787,16 +807,20 @@ __declspec(dllexport) void PluginLoaded (void)
 	RegisterSetting(Set_AlignVector,    Data_DWORD_General,"Assume Vector loads align", NULL,Compiler.bAlignVector,NULL);
 
 	RegisterSetting(Set_JumpTableSize,  Data_DWORD_Game,"JumpTableSize",NULL,0x800,NULL);
+	RegisterSetting(Set_Mfc0Count, Data_DWORD_Game, "Mfc0Count", NULL, 0x0, NULL);
+	RegisterSetting(Set_SemaphoreExit, Data_DWORD_Game, "SemaphoreExit", NULL, 0x0, NULL);
 
 	AudioHle       = Set_AudioHle != 0 ? GetSystemSetting(Set_AudioHle) : false;
 	GraphicsHle    = Set_GraphicsHle != 0 ? GetSystemSetting(Set_GraphicsHle) : true;
-	
-	hMutex = CreateMutex(NULL, FALSE, NULL);
-
+#ifdef _WIN32
+    hMutex = (HANDLE)CreateMutex(NULL, FALSE, NULL);
+#endif
 	SetCPU(CPUCore);
 }
 
-void UseUnregisteredSetting (int /*SettingID*/)
+#ifdef _WIN32
+void UseUnregisteredSetting(int /*SettingID*/)
 {
-	DebugBreak();
+    DebugBreak();
 }
+#endif

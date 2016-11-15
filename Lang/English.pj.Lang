@@ -51,6 +51,7 @@
 #132#  "R&esume"
 #133#  "&Soft Reset"
 #134#  "&Hard Reset"
+#135#  "Swap &Disk"
 
 //Options Menu
 #140#  "&Options"
@@ -234,6 +235,8 @@
 #465#  "Display speed"
 #466#  "Speed display:"
 #467#  "Check if Project64 is already running"
+#468#  "Unique Game Save Directory"
+#469#  "64DD IPL ROM Path:"
 
 //ROM Browser Tab
 #480#  "Max # of ROMs remembered (0-10):"
@@ -436,6 +439,22 @@
 #1103#  "System Menu"
 #1104#  "Options"
 #1105#  "Save Slots"
+
+/*********************************************************************************
+* Support Window                                                                 *
+*********************************************************************************/
+#1200#  "Support Project64"
+#1201#  "Project64 is a software package designed to emulate a Nintendo64 video game system on a Microsoft Windows based PC. This allows you to play real N64 software in much the same way as it would be on the original hardware system.\n\nIf you like Project64 and have gotten some value out of it then please support project64 as either a thank you, or your desire to see it continually improved.\n\nIf you have supported project64:"
+#1202#  "Enter notification code"
+#1203#  "Support Project64"
+#1204#  "Continue"
+#1205#  "Please enter the support code"
+#1206#  "Incorrect support code"
+#1207#  "Thank you"
+#1208#  "Enter code"
+#1209#  "Please enter the code in the email"
+#1210#  "OK"
+#1211#  "Cancel"
 
 /*********************************************************************************
 * Messages                                                                       *

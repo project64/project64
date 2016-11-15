@@ -24,6 +24,6 @@
 #include <Project64-core/N64System/N64RomClass.h>
 #include <Project64-core/N64System/SpeedLimiterClass.h>
 #include <Project64-core/N64System/Mips/OpCode.h>
-#include <Project64-core/N64System/Recompiler/X86ops.h>
+#include <Project64-core/N64System/Recompiler/x86/x86ops.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/SystemGlobals.h>

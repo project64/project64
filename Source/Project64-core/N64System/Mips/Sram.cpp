@@ -9,56 +9,49 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "Sram.h"
+#include <Project64-core/N64System/Mips/Sram.h>
 #include <Common/path.h>
-#include <Windows.h>
 
 CSram::CSram(bool ReadOnly) :
-m_ReadOnly(ReadOnly),
-m_hFile(NULL)
+m_ReadOnly(ReadOnly)
 {
 }
 
 CSram::~CSram()
 {
-    if (m_hFile)
-    {
-        CloseHandle(m_hFile);
-        m_hFile = NULL;
-    }
 }
 
 bool CSram::LoadSram()
 {
-    CPath FileName;
-
-    FileName.SetDriveDirectory(g_Settings->LoadStringVal(Directory_NativeSave).c_str());
-    FileName.SetName(g_Settings->LoadStringVal(Game_GameName).c_str());
-    FileName.SetExtension("sra");
+    CPath FileName(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.sra", g_Settings->LoadStringVal(Game_GameName).c_str()).c_str());
+    if (g_Settings->LoadBool(Setting_UniqueSaveDir))
+    {
+        FileName.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
+    }
 
     if (!FileName.DirectoryExists())
     {
         FileName.DirectoryCreate();
     }
 
-    m_hFile = CreateFile(FileName, m_ReadOnly ? GENERIC_READ : GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS,
-        FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
-    if (m_hFile == INVALID_HANDLE_VALUE)
+    if (!m_File.Open(FileName, (m_ReadOnly ? CFileBase::modeRead : CFileBase::modeReadWrite) | CFileBase::modeNoTruncate | CFileBase::modeCreate))
     {
-        WriteTrace(TraceN64System, TraceError, "Failed to open (%s), ReadOnly = %d, LastError = %X", (LPCTSTR)FileName, m_ReadOnly, GetLastError());
+#ifdef _WIN32
+        WriteTrace(TraceN64System, TraceError, "Failed to open (%s), ReadOnly = %d, LastError = %X", (const char *)FileName, m_ReadOnly, GetLastError());
+#else
+        WriteTrace(TraceN64System, TraceError, "Failed to open (%s), ReadOnly = %d", (const char *)FileName, m_ReadOnly);
+#endif
         return false;
     }
-    SetFilePointer(m_hFile, 0, NULL, FILE_BEGIN);
+    m_File.SeekToBegin();
     return true;
 }
 
 void CSram::DmaFromSram(uint8_t * dest, int32_t StartOffset, int32_t len)
 {
-    DWORD dwRead;
     uint32_t i;
-    uint8_t tmp[4];
 
-    if (m_hFile == NULL)
+    if (!m_File.IsOpen())
     {
         if (!LoadSram())
         {
@@ -69,82 +62,31 @@ void CSram::DmaFromSram(uint8_t * dest, int32_t StartOffset, int32_t len)
     // Fix Dezaemon 3D saves
     StartOffset = ((StartOffset >> 3) & 0xFFFF8000) | (StartOffset & 0x7FFF);
 
-    uint32_t Offset = StartOffset & 3;
-
-    if (Offset == 0)
+    if (((StartOffset & 3) == 0) && ((((uint32_t)dest) & 3) == 0))
     {
-        SetFilePointer(m_hFile, StartOffset, NULL, FILE_BEGIN);
-        ReadFile(m_hFile, dest, len, &dwRead, NULL);
+        m_File.Seek(StartOffset, CFile::begin);
+        m_File.Read(dest, len);
     }
     else
     {
-        SetFilePointer(m_hFile, StartOffset - Offset, NULL, FILE_BEGIN);
-
-        ReadFile(m_hFile, tmp, 4, &dwRead, NULL);
-        for (i = 0; i < (4 - Offset); i++)
+        for (i = 0; i < len; i++)
         {
-            dest[i + Offset] = tmp[i];
-        }
-        for (i = 4 - Offset; i < len - Offset; i += 4)
-        {
-            ReadFile(m_hFile, tmp, 4, &dwRead, NULL);
-            switch (Offset)
-            {
-            case 1:
-                dest[i + 2] = tmp[0];
-                dest[i + 3] = tmp[1];
-                dest[i + 4] = tmp[2];
-                dest[i - 3] = tmp[3];
-                break;
-            case 2:
-                dest[i + 4] = tmp[0];
-                dest[i + 5] = tmp[1];
-                dest[i - 2] = tmp[2];
-                dest[i - 1] = tmp[3];
-                break;
-            case 3:
-                dest[i + 6] = tmp[0];
-                dest[i - 1] = tmp[1];
-                dest[i] = tmp[2];
-                dest[i + 1] = tmp[3];
-                break;
-            default:
-                break;
-            }
-        }
-        ReadFile(m_hFile, tmp, 4, &dwRead, NULL);
-        switch (Offset)
-        {
-        case 1:
-            dest[i - 3] = tmp[3];
-            break;
-        case 2:
-            dest[i - 2] = tmp[2];
-            dest[i - 1] = tmp[3];
-            break;
-        case 3:
-            dest[i - 1] = tmp[1];
-            dest[i] = tmp[2];
-            dest[i + 1] = tmp[3];
-            break;
-        default:
-            break;
+            m_File.Seek((StartOffset + i) ^ 3, CFile::begin);
+            m_File.Read((uint8_t*)(((uint32_t)dest + i) ^ 3), 1);
         }
     }
 }
 
 void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len)
 {
-    DWORD dwWritten;
     uint32_t i;
-    uint8_t tmp[4];
 
     if (m_ReadOnly)
     {
         return;
     }
 
-    if (m_hFile == NULL)
+    if (!m_File.IsOpen())
     {
         if (!LoadSram())
         {
@@ -155,69 +97,17 @@ void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len)
     // Fix Dezaemon 3D saves
     StartOffset = ((StartOffset >> 3) & 0xFFFF8000) | (StartOffset & 0x7FFF);
 
-    uint32_t Offset = StartOffset & 3;
-
-    if (Offset == 0)
+    if (((StartOffset & 3) == 0) && ((((uint32_t)Source) & 3) == 0) && NULL != NULL)
     {
-        SetFilePointer(m_hFile, StartOffset, NULL, FILE_BEGIN);
-        WriteFile(m_hFile, Source, len, &dwWritten, NULL);
+        m_File.Seek(StartOffset, CFile::begin);
+        m_File.Write(Source, len);
     }
     else
     {
-        for (i = 0; i < (4 - Offset); i++)
+        for (i = 0; i < len; i++)
         {
-            tmp[i] = Source[i + Offset];
+            m_File.Seek((StartOffset + i) ^ 3, CFile::begin);
+            m_File.Write((uint8_t*)(((uint32_t)Source + i) ^ 3), 1);
         }
-        SetFilePointer(m_hFile, StartOffset - Offset, NULL, FILE_BEGIN);
-        WriteFile(m_hFile, tmp, (4 - Offset), &dwWritten, NULL);
-
-        SetFilePointer(m_hFile, Offset, NULL, FILE_CURRENT);
-        for (i = 4 - Offset; i < len - Offset; i += 4)
-        {
-            switch (Offset)
-            {
-            case 1:
-                tmp[0] = Source[i + 2];
-                tmp[1] = Source[i + 3];
-                tmp[2] = Source[i + 4];
-                tmp[3] = Source[i - 3];
-                break;
-            case 2:
-                tmp[0] = Source[i + 4];
-                tmp[1] = Source[i + 5];
-                tmp[2] = Source[i - 2];
-                tmp[3] = Source[i - 1];
-                break;
-            case 3:
-                tmp[0] = Source[i + 6];
-                tmp[1] = Source[i - 1];
-                tmp[2] = Source[i];
-                tmp[3] = Source[i + 1];
-                break;
-            default:
-                break;
-            }
-            WriteFile(m_hFile, tmp, 4, &dwWritten, NULL);
-        }
-        switch (Offset)
-        {
-        case 1:
-            tmp[0] = Source[i - 3];
-            break;
-        case 2:
-            tmp[0] = Source[i - 2];
-            tmp[0] = Source[i - 1];
-            break;
-        case 3:
-            tmp[0] = Source[i - 1];
-            tmp[0] = Source[i];
-            tmp[0] = Source[i + 1];
-            break;
-        default:
-            break;
-        }
-        SetFilePointer(m_hFile, 4 - Offset, NULL, FILE_CURRENT);
-        WriteFile(m_hFile, tmp, Offset, &dwWritten, NULL);
     }
-    FlushFileBuffers(m_hFile);
 }

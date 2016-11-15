@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{593B00E6-1987-415D-A62C-26533FC3E95C}</ProjectGuid>
+    <RootNamespace>Bridge</RootNamespace>
+    <ProjectName>JniBridge</ProjectName>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)PropertySheets\Platform.$(Configuration).props" />
+  </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="JavaBridge.cpp" />
+    <ClCompile Include="JavaRomList.cpp" />
+    <ClCompile Include="jniBridge.cpp" />
+    <ClCompile Include="jniBridgeSettings.cpp" />
+    <ClCompile Include="NotificationClass.cpp" />
+    <ClCompile Include="SyncBridge.cpp" />
+    <ClCompile Include="UISettings.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="JavaBridge.h" />
+    <ClInclude Include="JavaRomList.h" />
+    <ClInclude Include="jniBridge.h" />
+    <ClInclude Include="jniBridgeSettings.h" />
+    <ClInclude Include="NotificationClass.h" />
+    <ClInclude Include="SyncBridge.h" />
+    <ClInclude Include="UISettings.h" />
+  </ItemGroup>
+</Project>

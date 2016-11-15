@@ -55,7 +55,7 @@ private:
     void fInsertSpaces(int Pos, int NoOfSpaces);
     int  GetStringFromFile(char * & String, char * &Data, int & MaxDataSize, int & DataSize, int & ReadPos);
     bool MoveToSectionNameData(const char * lpSectionName, bool ChangeCurrentSection);
-    const char * CleanLine(char * const Line);
+    const char * CleanLine(char * Line);
     void ClearSectionPosList(long FilePos);
 
 protected:
@@ -90,6 +90,7 @@ public:
     virtual void  SaveNumber(const char * lpSectionName, const char * lpKeyName, uint32_t Value);
     void SetAutoFlush(bool AutoFlush);
     void FlushChanges(void);
+    bool EntryExists(const char * lpSectionName, const char * lpKeyName);
     void GetKeyList(const char * lpSectionName, strlist &List);
     void GetKeyValueData(const char * lpSectionName, KeyValueData & List);
 

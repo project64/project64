@@ -1,0 +1,15 @@
+# Generated and temporary files
+assets/project64_data/Config
+assets/project64_data/Lang
+bin/
+gen/
+obj/
+*.d
+*.o
+*.so
+# Eclipse project files
+.settings/
+.classpath
+.cproject
+.project
+

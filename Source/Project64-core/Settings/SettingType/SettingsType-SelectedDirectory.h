@@ -21,6 +21,7 @@ public:
 
     virtual bool        IndexBasedSetting(void) const { return false; }
     virtual SettingType GetSettingType(void) const { return SettingType_SelectedDirectory; }
+    virtual bool        IsSettingSet(void) const;
 
     const char * GetName(void) const { return m_Name.c_str(); }
 

@@ -33,7 +33,9 @@ CRecompMemory::~CRecompMemory()
 
 bool CRecompMemory::AllocateMemory()
 {
+    WriteTrace(TraceRecompiler, TraceDebug, "Start");
     uint8_t * RecompCodeBase = (uint8_t *)AllocateAddressSpace(MaxCompileBufferSize + 4);
+    WriteTrace(TraceRecompiler, TraceDebug, "RecompCodeBase = %X", RecompCodeBase);
     if (RecompCodeBase == NULL)
     {
         WriteTrace(TraceRecompiler, TraceError, "failed to allocate RecompCodeBase");
@@ -52,6 +54,7 @@ bool CRecompMemory::AllocateMemory()
     m_RecompSize = InitialCompileBufferSize;
     m_RecompPos = m_RecompCode;
     memset(m_RecompCode, 0, InitialCompileBufferSize);
+    WriteTrace(TraceRecompiler, TraceDebug, "Done");
     return true;
 }
 

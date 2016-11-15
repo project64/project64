@@ -82,18 +82,18 @@ TxFilter::TxFilter(int maxwidth, int maxheight, int maxbpp, int options,
 
     /* shamelessness :P this first call to the debug output message creates
      * a file in the executable directory. */
-    INFO(0, L"------------------------------------------------------------------\n");
+    INFO(0, "------------------------------------------------------------------\n");
 #ifdef GHQCHK
-    INFO(0, L" GlideHQ Hires Texture Checker 1.02.00.%d\n", 0);
+    INFO(0, " GlideHQ Hires Texture Checker 1.02.00.%d\n", 0);
 #else
-    INFO(0, L" GlideHQ version 1.02.00.%d\n", 0);
+    INFO(0, " GlideHQ version 1.02.00.%d\n", 0);
 #endif
-    INFO(0, L" Copyright (C) 2010  Hiroshi Morii   All Rights Reserved\n");
-    INFO(0, L"    email   : koolsmoky(at)users.sourceforge.net\n");
-    INFO(0, L"    website : http://www.3dfxzone.it/koolsmoky\n");
-    INFO(0, L"\n");
-    INFO(0, L" Glide64 official website : http://glide64.emuxhaven.net\n");
-    INFO(0, L"------------------------------------------------------------------\n");
+    INFO(0, " Copyright (C) 2010  Hiroshi Morii   All Rights Reserved\n");
+    INFO(0, "    email   : koolsmoky(at)users.sourceforge.net\n");
+    INFO(0, "    website : http://www.3dfxzone.it/koolsmoky\n");
+    INFO(0, "\n");
+    INFO(0, " Glide64 official website : http://glide64.emuxhaven.net\n");
+    INFO(0, "------------------------------------------------------------------\n");
 
     _options = options;
 
@@ -189,14 +189,14 @@ TxFilter::filter(uint8 *src, int srcwidth, int srcheight, uint16 srcformat, uint
         if (!g64crc)
             g64crc = (uint64)(_txUtil->checksumTx(texture, srcwidth, srcheight, srcformat));
 
-        DBG_INFO(80, L"filter: crc:%08X %08X %d x %d gfmt:%x\n",
+        DBG_INFO(80, "filter: crc:%08X %08X %d x %d gfmt:%x\n",
             (uint32)(g64crc >> 32), (uint32)(g64crc & 0xffffffff), srcwidth, srcheight, srcformat);
 
 #if 0 /* use hirestex to retrieve cached textures. */
         /* check if we have it in cache */
         if (!(g64crc & 0xffffffff00000000) && /* we reach here only when there is no hires texture for this crc */
             _txTexCache->get(g64crc, info)) {
-            DBG_INFO(80, L"cache hit: %d x %d gfmt:%x\n", info->width, info->height, info->format);
+            DBG_INFO(80, "cache hit: %d x %d gfmt:%x\n", info->width, info->height, info->format);
             return 1; /* yep, we've got it */
         }
 #endif
@@ -215,7 +215,7 @@ TxFilter::filter(uint8 *src, int srcwidth, int srcheight, uint16 srcformat, uint
 #endif
             if (srcformat != GR_TEXFMT_ARGB_8888) {
                 if (!_txQuantize->quantize(texture, tmptex, srcwidth, srcheight, srcformat, GR_TEXFMT_ARGB_8888)) {
-                    DBG_INFO(80, L"Error: unsupported format! gfmt:%x\n", srcformat);
+                    DBG_INFO(80, "Error: unsupported format! gfmt:%x\n", srcformat);
                     return 0;
                 }
                 texture = tmptex;
@@ -336,7 +336,7 @@ TxFilter::filter(uint8 *src, int srcwidth, int srcheight, uint16 srcformat, uint
                 if (srcformat != GR_TEXFMT_ARGB_8888) {
                     tmptex = (texture == _tex1) ? _tex2 : _tex1;
                     if (!_txQuantize->quantize(texture, tmptex, srcwidth, srcheight, GR_TEXFMT_ARGB_8888, srcformat)) {
-                        DBG_INFO(80, L"Error: unsupported format! gfmt:%x\n", srcformat);
+                        DBG_INFO(80, "Error: unsupported format! gfmt:%x\n", srcformat);
                         return 0;
                     }
                     texture = tmptex;
@@ -437,7 +437,7 @@ TxFilter::filter(uint8 *src, int srcwidth, int srcheight, uint16 srcformat, uint
     /* cache the texture. */
     if (_cacheSize) _txTexCache->add(g64crc, info);
 
-    DBG_INFO(80, L"filtered texture: %d x %d gfmt:%x\n", info->width, info->height, info->format);
+    DBG_INFO(80, "filtered texture: %d x %d gfmt:%x\n", info->width, info->height, info->format);
 
     return 1;
 }
@@ -455,7 +455,7 @@ TxFilter::hirestex(uint64 g64crc, uint64 r_crc64, uint16 *palette, GHQTexInfo *i
      *           (can be any other crc if robust)
      */
 
-    DBG_INFO(80, L"hirestex: r_crc64:%08X %08X, g64crc:%08X %08X\n",
+    DBG_INFO(80, "hirestex: r_crc64:%08X %08X, g64crc:%08X %08X\n",
         (uint32)(r_crc64 >> 32), (uint32)(r_crc64 & 0xffffffff),
         (uint32)(g64crc >> 32), (uint32)(g64crc & 0xffffffff));
 
@@ -463,7 +463,7 @@ TxFilter::hirestex(uint64 g64crc, uint64 r_crc64, uint16 *palette, GHQTexInfo *i
     /* check if we have it in hires memory cache. */
     if ((_options & HIRESTEXTURES_MASK) && r_crc64) {
         if (_txHiResCache->get(r_crc64, info)) {
-            DBG_INFO(80, L"hires hit: %d x %d gfmt:%x\n", info->width, info->height, info->format);
+            DBG_INFO(80, "hires hit: %d x %d gfmt:%x\n", info->width, info->height, info->format);
 
             /* TODO: Enable emulation for special N64 combiner modes. There are few ways
              * to get this done. Also applies for CI textures below.
@@ -490,7 +490,7 @@ TxFilter::hirestex(uint64 g64crc, uint64 r_crc64, uint16 *palette, GHQTexInfo *i
             return 1; /* yep, got it */
         }
         if (_txHiResCache->get((r_crc64 & 0xffffffff), info)) {
-            DBG_INFO(80, L"hires hit: %d x %d gfmt:%x\n", info->width, info->height, info->format);
+            DBG_INFO(80, "hires hit: %d x %d gfmt:%x\n", info->width, info->height, info->format);
 
             /* for true CI textures, we use the passed in palette to convert to
              * ARGB1555 and add it to memory cache.
@@ -502,7 +502,7 @@ TxFilter::hirestex(uint64 g64crc, uint64 r_crc64, uint16 *palette, GHQTexInfo *i
              * A comp comes before RGB comp.
              */
             if (palette && info->format == GR_TEXFMT_P_8) {
-                DBG_INFO(80, L"found GR_TEXFMT_P_8 format. Need conversion!!\n");
+                DBG_INFO(80, "found GR_TEXFMT_P_8 format. Need conversion!!\n");
 
                 int width = info->width;
                 int height = info->height;
@@ -534,7 +534,7 @@ TxFilter::hirestex(uint64 g64crc, uint64 r_crc64, uint16 *palette, GHQTexInfo *i
                         }
                         else {
                             /*if (!_txQuantize->quantize(texture, tmptex, info->width, info->height, GR_TEXFMT_ARGB_8888, GR_TEXFMT_ARGB_1555)) {
-                              DBG_INFO(80, L"Error: unsupported format! gfmt:%x\n", format);
+                              DBG_INFO(80, "Error: unsupported format! gfmt:%x\n", format);
                               return 0;
                               }*/
                             texture = tmptex;
@@ -557,7 +557,7 @@ TxFilter::hirestex(uint64 g64crc, uint64 r_crc64, uint16 *palette, GHQTexInfo *i
                 /* XXX: add to hires texture cache!!! */
                 _txHiResCache->add(r_crc64, info);
 
-                DBG_INFO(80, L"GR_TEXFMT_P_8 loaded as gfmt:%x!\n", format);
+                DBG_INFO(80, "GR_TEXFMT_P_8 loaded as gfmt:%x!\n", format);
             }
 
             return 1;
@@ -570,12 +570,12 @@ TxFilter::hirestex(uint64 g64crc, uint64 r_crc64, uint16 *palette, GHQTexInfo *i
     {
         if (_txTexCache->get(g64crc, info))
         {
-            DBG_INFO(80, L"cache hit: %d x %d gfmt:%x\n", info->width, info->height, info->format);
+            DBG_INFO(80, "cache hit: %d x %d gfmt:%x\n", info->width, info->height, info->format);
             return 1; /* yep, we've got it */
         }
     }
 
-    DBG_INFO(80, L"no cache hits.\n");
+    DBG_INFO(80, "no cache hits.\n");
 
     return 0;
 }
@@ -601,8 +601,8 @@ TxFilter::dmptx(uint8 *src, int width, int height, int rowStridePixel, uint16 gf
     {
         return 0;
     }
-    DBG_INFO(80, L"gfmt = %02x n64fmt = %02x\n", gfmt, n64fmt);
-    DBG_INFO(80, L"hirestex: r_crc64:%08X %08X\n",
+    DBG_INFO(80, "gfmt = %02x n64fmt = %02x\n", gfmt, n64fmt);
+    DBG_INFO(80, "hirestex: r_crc64:%08X %08X\n",
         (uint32)(r_crc64 >> 32), (uint32)(r_crc64 & 0xffffffff));
 
     if (!_txQuantize->quantize(src, _tex1, rowStridePixel, height, (gfmt & 0x00ff), GR_TEXFMT_ARGB_8888))
@@ -659,7 +659,7 @@ TxFilter::dmptx(uint8 *src, int width, int height, int rowStridePixel, uint16 gf
 
 boolean TxFilter::reloadhirestex()
 {
-    DBG_INFO(80, L"Reload hires textures from texture pack.\n");
+    DBG_INFO(80, "Reload hires textures from texture pack.\n");
 
     if (_txHiResCache->load(0)) {
         if (_txHiResCache->empty()) _options &= ~HIRESTEXTURES_MASK;

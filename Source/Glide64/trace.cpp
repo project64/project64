@@ -44,17 +44,17 @@ void SetupTrace(void)
         g_AndroidLogger = new AndroidLogger();
     }
     TraceAddModule(g_AndroidLogger);
-
-    TraceSetMaxModule(MaxTraceModuleGlide64, TraceVerbose);
-#else
+#endif
 #ifdef _DEBUG
     TraceSetMaxModule(MaxTraceModuleGlide64, TraceInfo);
 #else
     TraceSetMaxModule(MaxTraceModuleGlide64, TraceError);
 #endif
-#endif
+
 
     TraceSetModuleName(TraceMD5, "MD5");
+    TraceSetModuleName(TraceThread, "Thread");
+    TraceSetModuleName(TracePath, "Path");
     TraceSetModuleName(TraceSettings, "Settings");
     TraceSetModuleName(TraceUnknown, "Unknown");
     TraceSetModuleName(TraceGlide64, "Glide64");
@@ -64,6 +64,7 @@ void SetupTrace(void)
     TraceSetModuleName(TraceRDP, "RDP");
     TraceSetModuleName(TraceTLUT, "TLUT");
     TraceSetModuleName(TracePNG, "PNG");
+    TraceSetModuleName(TraceOGLWrapper, "OGL Wrapper");
 
     char log_dir[260];
     memset(log_dir, 0, sizeof(log_dir));
@@ -77,12 +78,11 @@ void SetupTrace(void)
         return;
     }
 
-    CPath LogFilePath(log_dir);
+    CPath LogFilePath(log_dir, "Glide64.log");
     if (!LogFilePath.DirectoryExists())
     {
         LogFilePath.DirectoryCreate();
     }
-    LogFilePath.SetNameExtension("Glide64.log");
-    g_LogFile = new CTraceFileLog(LogFilePath, GetSystemSetting(Set_log_flush) != 0, Log_New, 500);
+    g_LogFile = new CTraceFileLog(LogFilePath, GetSystemSetting(Set_log_flush) != 0, CLog::Log_New, 500);
     TraceAddModule(g_LogFile);
 }

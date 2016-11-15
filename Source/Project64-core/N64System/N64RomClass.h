@@ -12,6 +12,7 @@
 
 #include <Project64-core/N64System/N64Types.h>
 #include <Project64-core/Settings/DebugSettings.h>
+#include <Project64-core/Multilanguage.h>
 
 class CN64Rom :
     protected CDebugSettings
@@ -36,6 +37,8 @@ public:
 
     //Get a message id for the reason that you failed to load the rom
     LanguageStringID GetError() const { return m_ErrorMsg; }
+    static CICChip GetCicChipID(uint8_t * RomData, uint64_t * CRC = NULL);
+    static void CleanRomName(char * RomName, bool byteswap = true);
 
 private:
     bool   AllocateRomImage(uint32_t RomFileSize);

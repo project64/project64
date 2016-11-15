@@ -138,6 +138,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\HighResTimeStamp.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\IniFileClass.cpp"
 				>
 			</File>
@@ -194,6 +198,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Thread.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Trace.cpp"
 				>
 			</File>
@@ -216,6 +224,10 @@
 			</File>
 			<File
 				RelativePath=".\FileClass.h"
+				>
+			</File>
+			<File
+				RelativePath=".\HighResTimeStamp.h"
 				>
 			</File>
 			<File
@@ -264,6 +276,10 @@
 			</File>
 			<File
 				RelativePath=".\SyncEvent.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Thread.h"
 				>
 			</File>
 			<File

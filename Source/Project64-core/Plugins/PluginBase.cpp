@@ -31,11 +31,15 @@ m_RomOpen(false)
 
 CPlugin::~CPlugin()
 {
+    WriteTrace(PluginTraceType(), TraceDebug, "Start");
     UnloadPlugin();
+    WriteTrace(PluginTraceType(), TraceDebug, "Done");
 }
 
 bool CPlugin::Load(const char * FileName)
 {
+    WriteTrace(PluginTraceType(), TraceDebug, "Loading: %s", FileName);
+
     // Already loaded, so unload first.
     if (m_LibHandle != NULL)
     {
@@ -45,6 +49,8 @@ bool CPlugin::Load(const char * FileName)
     // Try to load the plugin DLL
     //Try to load the DLL library
     m_LibHandle = pjutil::DynLibOpen(FileName, bHaveDebugger());
+    WriteTrace(PluginTraceType(), TraceDebug, "Loaded: %s LibHandle: %X", FileName, m_LibHandle);
+
     if (m_LibHandle == NULL)
     {
         return false;
@@ -66,9 +72,20 @@ bool CPlugin::Load(const char * FileName)
     LoadFunction(DllConfig);
     LoadFunction(DllAbout);
 
+    LoadFunction(SetSettingNotificationInfo);
+    if (SetSettingNotificationInfo)
+    {
+        WriteTrace(PluginTraceType(), TraceDebug, "Found SetSettingNotificationInfo");
+        PLUGIN_SETTINGS_NOTIFICATION info;
+        info.RegisterChangeCB = (void(*)(void *, int ID, void * Data, PLUGIN_SETTINGS_NOTIFICATION::SettingChangedFunc Func))CSettings::sRegisterChangeCB;
+        info.UnregisterChangeCB = (void(*)(void *, int ID, void * Data, PLUGIN_SETTINGS_NOTIFICATION::SettingChangedFunc Func))CSettings::sUnregisterChangeCB;
+        SetSettingNotificationInfo(&info);
+    }
+
     LoadFunction(SetSettingInfo3);
     if (SetSettingInfo3)
     {
+        WriteTrace(PluginTraceType(), TraceDebug, "Found SetSettingInfo3");
         PLUGIN_SETTINGS3 info;
         info.FlushSettings = (void(*)(void * handle))CSettings::FlushSettings;
         SetSettingInfo3(&info);
@@ -77,6 +94,7 @@ bool CPlugin::Load(const char * FileName)
     LoadFunction(SetSettingInfo2);
     if (SetSettingInfo2)
     {
+        WriteTrace(PluginTraceType(), TraceDebug, "Found SetSettingInfo2");
         PLUGIN_SETTINGS2 info;
         info.FindSystemSettingId = (uint32_t(*)(void * handle, const char *))CSettings::FindSetting;
         SetSettingInfo2(&info);
@@ -85,6 +103,7 @@ bool CPlugin::Load(const char * FileName)
     LoadFunction(SetSettingInfo);
     if (SetSettingInfo)
     {
+        WriteTrace(PluginTraceType(), TraceDebug, "Found SetSettingInfo");
         PLUGIN_SETTINGS info;
         info.dwSize = sizeof(PLUGIN_SETTINGS);
         info.DefaultStartRange = GetDefaultSettingStartRange();
@@ -110,6 +129,7 @@ bool CPlugin::Load(const char * FileName)
 
     if (!LoadFunctions())
     {
+        WriteTrace(PluginTraceType(), TraceWarning, "Failed to load functions");
         return false;
     }
     WriteTrace(PluginTraceType(), TraceDebug, "Functions loaded");
@@ -120,15 +140,31 @@ bool CPlugin::Load(const char * FileName)
         PluginOpened();
         WriteTrace(PluginTraceType(), TraceDebug, "After Plugin Opened");
     }
+    WriteTrace(PluginTraceType(), TraceDebug, "Loaded");
     return true;
 }
 
-void CPlugin::RomOpened()
+void CPlugin::RomOpened(RenderWindow * Render)
 {
     if (m_RomOpen)
     {
         return;
     }
+
+#ifdef ANDROID
+    if (m_PluginInfo.Type == PLUGIN_TYPE_GFX)
+    {
+        WriteTrace(PluginTraceType(), TraceDebug, "Render = %p", Render);
+        if (Render != NULL)
+        {
+            WriteTrace(PluginTraceType(), TraceDebug, "Calling GfxThreadInit");
+            Render->GfxThreadInit();
+            WriteTrace(PluginTraceType(), TraceDebug, "GfxThreadInit Done");
+        }
+    }
+#else
+    Render = Render; // used just for andoid
+#endif
 
     if (RomOpen != NULL)
     {
@@ -136,15 +172,31 @@ void CPlugin::RomOpened()
         RomOpen();
         WriteTrace(PluginTraceType(), TraceDebug, "After Rom Open");
     }
+
     m_RomOpen = true;
 }
 
-void CPlugin::RomClose()
+void CPlugin::RomClose(RenderWindow * Render)
 {
     if (!m_RomOpen)
     {
         return;
     }
+
+#ifdef ANDROID
+    if (m_PluginInfo.Type == PLUGIN_TYPE_GFX)
+    {
+        WriteTrace(PluginTraceType(), TraceDebug, "Render = %p", Render);
+        if (Render != NULL)
+        {
+            WriteTrace(PluginTraceType(), TraceDebug, "Calling GfxThreadDone");
+            Render->GfxThreadDone();
+            WriteTrace(PluginTraceType(), TraceDebug, "GfxThreadDone Done");
+        }
+    }
+#else
+    Render = Render; // used just for andoid
+#endif
 
     WriteTrace(PluginTraceType(), TraceDebug, "Before Rom Close");
     RomClosed();
@@ -152,22 +204,19 @@ void CPlugin::RomClose()
     WriteTrace(PluginTraceType(), TraceDebug, "After Rom Close");
 }
 
-void CPlugin::GameReset()
+void CPlugin::GameReset(RenderWindow * Render)
 {
     if (m_RomOpen)
     {
-        RomClose();
-        if (RomOpen)
-        {
-            RomOpen();
-        }
+        RomClose(Render);
+        RomOpened(Render);
     }
 }
 
-void CPlugin::Close()
+void CPlugin::Close(RenderWindow * Render)
 {
     WriteTrace(PluginTraceType(), TraceDebug, "(%s): Start", PluginType());
-    RomClose();
+    RomClose(Render);
     if (m_Initialized)
     {
         CloseDLL();
@@ -178,11 +227,14 @@ void CPlugin::Close()
 
 void CPlugin::UnloadPlugin()
 {
-    WriteTrace(PluginTraceType(), TraceDebug, "(%s): unloading", PluginType());
+    WriteTrace(PluginTraceType(), TraceDebug, "(%s): Start", PluginType());
     memset(&m_PluginInfo, 0, sizeof(m_PluginInfo));
     if (m_LibHandle != NULL)
     {
         UnloadPluginDetails();
+    }
+    if (m_LibHandle != NULL)
+    {
         pjutil::DynLibClose(m_LibHandle);
         m_LibHandle = NULL;
     }
@@ -196,6 +248,7 @@ void CPlugin::UnloadPlugin()
     SetSettingInfo = NULL;
     SetSettingInfo2 = NULL;
     SetSettingInfo3 = NULL;
+    WriteTrace(PluginTraceType(), TraceDebug, "(%s): Done", PluginType());
 }
 
 const char * CPlugin::PluginType() const
@@ -219,7 +272,7 @@ TraceModuleProject64 CPlugin::PluginTraceType() const
     case PLUGIN_TYPE_AUDIO: return TraceAudioPlugin;
     case PLUGIN_TYPE_CONTROLLER: return TraceControllerPlugin;
     }
-    return TraceUnknown;
+    return TracePlugins;
 }
 
 bool CPlugin::ValidPluginVersion(PLUGIN_INFO & PluginInfo)
@@ -232,6 +285,7 @@ bool CPlugin::ValidPluginVersion(PLUGIN_INFO & PluginInfo)
         if (PluginInfo.Version == 0x0100) { return true; }
         if (PluginInfo.Version == 0x0101) { return true; }
         if (PluginInfo.Version == 0x0102) { return true; }
+        if (PluginInfo.Version == 0x0103) { return true; }
         break;
     case PLUGIN_TYPE_GFX:
         if (!PluginInfo.MemoryBswaped)	  { return false; }

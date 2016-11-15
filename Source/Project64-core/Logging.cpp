@@ -614,10 +614,7 @@ void CLogging::StartLog(void)
         return;
     }
 
-    CPath LogFile(g_Settings->LoadStringVal(Cmd_BaseDirectory).c_str(),"");
-    LogFile.AppendDirectory("Logs");
-    LogFile.SetNameExtension("cpudebug.log");
-
+    CPath LogFile(g_Settings->LoadStringVal(Directory_Log).c_str(), "cpudebug.log");
     m_hLogFile = new CFile(LogFile, CFileBase::modeCreate | CFileBase::modeWrite);
 }
 

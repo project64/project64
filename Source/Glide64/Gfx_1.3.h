@@ -70,7 +70,7 @@ the plugin
 #include <stddef.h>		// offsetof
 #include <glide.h>
 #include <Common/MemTest.h>
-#include <Common/DateTimeClass.h>
+#include <Common/HighResTimeStamp.h>
 #include <Settings/Settings.h>
 #include "GlideExtensions.h"
 #include "rdp.h"
@@ -150,8 +150,8 @@ extern "C" {
 #define COLORED_DEBUGGER	// ;) pretty colors
 
 #ifdef FPS
-    extern CDateTime  fps_last;
-    extern CDateTime  fps_next;
+    extern HighResTimeStamp fps_last;
+    extern HighResTimeStamp fps_next;
     extern float      fps;
     extern uint32_t	  fps_count;
 #endif
@@ -174,7 +174,7 @@ extern "C" {
 #endif
 
     extern int GfxInitDone;
-    extern int romopen;
+    extern bool g_romopen;
     extern int to_fullscreen;
     extern int debugging;
 
@@ -261,6 +261,9 @@ extern "C" {
         uint32_t * VI_Y_SCALE_REG;
 
         void(*CheckInterrupts)(void);
+#ifdef ANDROID
+        void(CALL *SwapBuffers)(void);
+#endif
     } GFX_INFO;
 
     extern GFX_INFO gfx;
@@ -309,7 +312,7 @@ extern "C" {
 
     void ReadSettings();
     void ReadSpecialSettings(const char * name);
-    void WriteSettings(bool saveEmulationSettings = false);
+    void WriteSettings(void);
 
     /******************************************************************
     Function: CaptureScreen
@@ -490,6 +493,22 @@ extern "C" {
     *******************************************************************/
     EXPORT void CALL ViWidthChanged(void);
 
+#ifdef ANDROID
+    /******************************************************************
+    Function: SurfaceCreated
+    Purpose:  this function is called when the surface is created.
+    input:    none
+    output:   none
+    *******************************************************************/
+    EXPORT void CALL SurfaceCreated(void);
+    /******************************************************************
+    Function: SurfaceChanged
+    Purpose:  this function is called when the surface is has changed.
+    input:    none
+    output:   none
+    *******************************************************************/
+    EXPORT void CALL SurfaceChanged(int width, int height);
+#endif
     /******************************************************************
     Function: FrameBufferWrite
     Purpose:  This function is called to notify the dll that the

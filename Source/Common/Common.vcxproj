@@ -33,7 +33,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ItemGroup>
     <ClCompile Include="CriticalSection.cpp" />
+    <ClCompile Include="DateTimeClass.cpp" />
     <ClCompile Include="FileClass.cpp" />
+    <ClCompile Include="HighResTimeStamp.cpp" />
     <ClCompile Include="IniFileClass.cpp" />
     <ClCompile Include="LogClass.cpp" />
     <ClCompile Include="md5.cpp" />
@@ -46,13 +48,15 @@
     </ClCompile>
     <ClCompile Include="StdString.cpp" />
     <ClCompile Include="SyncEvent.cpp" />
-    <ClCompile Include="DateTimeClass.cpp" />
+    <ClCompile Include="Thread.cpp" />
     <ClCompile Include="Trace.cpp" />
     <ClCompile Include="Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CriticalSection.h" />
+    <ClInclude Include="DateTimeClass.h" />
     <ClInclude Include="FileClass.h" />
+    <ClInclude Include="HighResTimeStamp.h" />
     <ClInclude Include="IniFileClass.h" />
     <ClInclude Include="LogClass.h" />
     <ClInclude Include="md5.h" />
@@ -65,7 +69,7 @@
     <ClInclude Include="StdString.h" />
     <ClInclude Include="stdtypes.h" />
     <ClInclude Include="SyncEvent.h" />
-    <ClInclude Include="DateTimeClass.h" />
+    <ClInclude Include="Thread.h" />
     <ClInclude Include="Trace.h" />
     <ClInclude Include="TraceModulesCommon.h" />
     <ClInclude Include="Util.h" />

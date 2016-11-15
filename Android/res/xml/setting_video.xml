@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:key="Debugger_DisplaySpeed"
+        android:summary="@string/DisplaySpeed_summary"
+        android:title="@string/DisplaySpeed_title" />
+    <ListPreference
+        android:entries="@array/DisplaySpeed_list"
+        android:entryValues="@array/DisplaySpeed_values"
+        android:key="Debugger_DisplaySpeedType"
+        android:title="@string/DisplaySpeedDisplay" />
+
+</PreferenceScreen>

@@ -5,6 +5,8 @@
 #include <Tlhelp32.h>
 #else
 #include <unistd.h>
+#include <dlfcn.h>
+#include <errno.h>
 #endif
 
 pjutil::DynLibHandle pjutil::DynLibOpen(const char *pccLibraryPath, bool ShowErrors)
@@ -13,9 +15,13 @@ pjutil::DynLibHandle pjutil::DynLibOpen(const char *pccLibraryPath, bool ShowErr
     {
         return NULL;
     }
+#ifdef _WIN32
     UINT LastErrorMode = SetErrorMode(ShowErrors ? 0 : SEM_FAILCRITICALERRORS);
     pjutil::DynLibHandle lib = (pjutil::DynLibHandle)LoadLibrary(pccLibraryPath);
     SetErrorMode(LastErrorMode);
+#else
+    pjutil::DynLibHandle lib = (pjutil::DynLibHandle)dlopen(pccLibraryPath, RTLD_NOW);
+#endif
     return lib;
 }
 
@@ -24,12 +30,23 @@ void * pjutil::DynLibGetProc(pjutil::DynLibHandle LibHandle, const char * Proced
     if (ProcedureName == NULL)
         return NULL;
 
+#ifdef _WIN32
     return GetProcAddress((HMODULE)LibHandle, ProcedureName);
+#else
+    return dlsym(LibHandle, ProcedureName);
+#endif
 }
 
 void pjutil::DynLibClose(pjutil::DynLibHandle LibHandle)
 {
-    FreeLibrary((HMODULE)LibHandle);
+    if (LibHandle != NULL)
+    {
+#ifdef _WIN32
+        FreeLibrary((HMODULE)LibHandle);
+#else
+        dlclose(LibHandle);
+#endif
+    }
 }
 
 #ifdef _WIN32
@@ -51,7 +68,16 @@ void pjutil::Sleep(uint32_t timeout)
 #ifdef _WIN32
     ::Sleep(timeout);
 #else
-	sleep(timeout);
+    int was_error;
+    struct timespec elapsed, tv;
+    elapsed.tv_sec = timeout / 1000;
+    elapsed.tv_nsec = (timeout % 1000) * 1000000;
+    do {
+        errno = 0;
+        tv.tv_sec = elapsed.tv_sec;
+        tv.tv_nsec = elapsed.tv_nsec;
+        was_error = nanosleep(&tv, &elapsed);
+    } while (was_error && (errno == EINTR));
 #endif
 }
 

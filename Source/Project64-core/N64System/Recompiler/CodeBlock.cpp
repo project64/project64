@@ -11,27 +11,53 @@
 #include "stdafx.h"
 #include <string.h>
 #include <Project64-core/N64System/Recompiler/CodeBlock.h>
-#include "x86CodeLog.h"
+#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
+#include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
+#include <Project64-core/N64System/Recompiler/Arm/ArmRecompilerOps.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Mips/TranslateVaddr.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
 
-bool DelaySlotEffectsCompare (uint32_t PC, uint32_t Reg1, uint32_t Reg2);
+bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
 
-CCodeBlock::CCodeBlock(uint32_t VAddrEnter, uint8_t * RecompPos) :
-    m_VAddrEnter(VAddrEnter),
-    m_VAddrFirst(VAddrEnter),
-    m_VAddrLast(VAddrEnter),
-    m_CompiledLocation(RecompPos),
-    m_EnterSection(NULL),
-    m_Test(1)
+#if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
+/* bug-fix to implement __clear_cache (missing in Android; http://code.google.com/p/android/issues/detail?id=1803) */
+extern "C" void __clear_cache_android(uint8_t* begin, uint8_t *end);
+#endif
+
+CCodeBlock::CCodeBlock(uint32_t VAddrEnter, uint8_t * CompiledLocation) :
+m_VAddrEnter(VAddrEnter),
+m_VAddrFirst(VAddrEnter),
+m_VAddrLast(VAddrEnter),
+m_CompiledLocation(CompiledLocation),
+m_EnterSection(NULL),
+m_RecompilerOps(NULL),
+m_Test(1)
 {
+#if defined(__arm__) || defined(_M_ARM)
+    // make sure function starts at odd address so that the system knows it is thumb mode
+    if (((uint32_t)m_CompiledLocation % 2) == 0)
+    {
+        m_CompiledLocation+=1;
+    }
+#endif
+#if defined(__i386__) || defined(_M_IX86)
+    m_RecompilerOps = new CX86RecompilerOps;
+#elif defined(__arm__) || defined(_M_ARM)
+    m_RecompilerOps = new CArmRecompilerOps;
+#endif
+    if (m_RecompilerOps == NULL)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
     CCodeSection * baseSection = new CCodeSection(this, VAddrEnter, 0, false);
     if (baseSection == NULL)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
+
     m_Sections.push_back(baseSection);
     baseSection->AddParent(NULL);
     baseSection->m_CompiledLocation = (uint8_t *)-1;
@@ -45,12 +71,11 @@ CCodeBlock::CCodeBlock(uint32_t VAddrEnter, uint8_t * RecompPos) :
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     baseSection->m_ContinueSection = m_EnterSection;
-
     m_EnterSection->AddParent(baseSection);
     m_Sections.push_back(m_EnterSection);
-    m_SectionMap.insert(SectionMap::value_type(VAddrEnter,m_EnterSection));
+    m_SectionMap.insert(SectionMap::value_type(VAddrEnter, m_EnterSection));
 
-    if (g_TransVaddr->VAddrToRealAddr(VAddrEnter,*(reinterpret_cast<void **>(&m_MemLocation[0]))))
+    if (g_TransVaddr->VAddrToRealAddr(VAddrEnter, *(reinterpret_cast<void **>(&m_MemLocation[0]))))
     {
         m_MemLocation[1] = m_MemLocation[0] + 1;
         m_MemContents[0] = *m_MemLocation[0];
@@ -58,9 +83,10 @@ CCodeBlock::CCodeBlock(uint32_t VAddrEnter, uint8_t * RecompPos) :
     }
     else
     {
-        memset(m_MemLocation,0,sizeof(m_MemLocation));
-        memset(m_MemContents,0,sizeof(m_MemContents));
+        memset(m_MemLocation, 0, sizeof(m_MemLocation));
+        memset(m_MemContents, 0, sizeof(m_MemContents));
     }
+
     AnalyseBlock();
 }
 
@@ -72,9 +98,17 @@ CCodeBlock::~CCodeBlock()
         delete Section;
     }
     m_Sections.clear();
+
+    if (m_RecompilerOps != NULL)
+    {
+#if defined(__i386__) || defined(_M_IX86)
+        delete (CX86RecompilerOps *)m_RecompilerOps;
+#endif
+        m_RecompilerOps = NULL;
+    }
 }
 
-bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSection, uint32_t TargetPC, bool LinkAllowed, uint32_t CurrentPC )
+bool CCodeBlock::SetSection(CCodeSection * & Section, CCodeSection * CurrentSection, uint32_t TargetPC, bool LinkAllowed, uint32_t CurrentPC)
 {
     if (Section != NULL)
     {
@@ -107,7 +141,7 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
 
     if (Section == NULL)
     {
-        Section = new CCodeSection(this,TargetPC,m_Sections.size(),LinkAllowed);
+        Section = new CCodeSection(this, TargetPC, m_Sections.size(), LinkAllowed);
         if (Section == NULL)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -116,7 +150,7 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
         m_Sections.push_back(Section);
         if (LinkAllowed)
         {
-            m_SectionMap.insert(SectionMap::value_type(TargetPC,Section));
+            m_SectionMap.insert(SectionMap::value_type(TargetPC, Section));
         }
         Section->AddParent(CurrentSection);
         if (TargetPC <= CurrentPC && TargetPC != m_VAddrEnter)
@@ -143,30 +177,30 @@ bool CCodeBlock::SetSection ( CCodeSection * & Section, CCodeSection * CurrentSe
                 CPU_Message("%s: Split Section: %d with section: %d", __FUNCTION__, SplitSection->m_SectionID, Section->m_SectionID);
                 CCodeSection * BaseSection = Section;
                 BaseSection->m_EndPC = SplitSection->m_EndPC;
-                BaseSection->SetJumpAddress(SplitSection->m_Jump.JumpPC, SplitSection->m_Jump.TargetPC,SplitSection->m_Jump.PermLoop);
+                BaseSection->SetJumpAddress(SplitSection->m_Jump.JumpPC, SplitSection->m_Jump.TargetPC, SplitSection->m_Jump.PermLoop);
                 BaseSection->m_JumpSection = SplitSection->m_JumpSection;
-                BaseSection->SetContinueAddress(SplitSection->m_Cont.JumpPC,SplitSection->m_Cont.TargetPC);
+                BaseSection->SetContinueAddress(SplitSection->m_Cont.JumpPC, SplitSection->m_Cont.TargetPC);
                 BaseSection->m_ContinueSection = SplitSection->m_ContinueSection;
-                BaseSection->m_JumpSection->SwitchParent(SplitSection,BaseSection);
-                BaseSection->m_ContinueSection->SwitchParent(SplitSection,BaseSection);
+                BaseSection->m_JumpSection->SwitchParent(SplitSection, BaseSection);
+                BaseSection->m_ContinueSection->SwitchParent(SplitSection, BaseSection);
                 BaseSection->AddParent(SplitSection);
 
                 SplitSection->m_EndPC = TargetPC - 4;
                 SplitSection->m_JumpSection = NULL;
                 SplitSection->m_ContinueSection = BaseSection;
                 SplitSection->SetContinueAddress(TargetPC - 4, TargetPC);
-                SplitSection->SetJumpAddress((uint32_t)-1,(uint32_t)-1,false);
+                SplitSection->SetJumpAddress((uint32_t)-1, (uint32_t)-1, false);
             }
         }
     }
     return true;
 }
 
-bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
+bool CCodeBlock::CreateBlockLinkage(CCodeSection * EnterSection)
 {
     CCodeSection * CurrentSection = EnterSection;
 
-    CPU_Message("Section %d",CurrentSection->m_SectionID);
+    CPU_Message("Section %d", CurrentSection->m_SectionID);
     for (uint32_t TestPC = EnterSection->m_EnterPC, EndPC = ((EnterSection->m_EnterPC + 0x1000) & 0xFFFFF000); TestPC <= EndPC; TestPC += 4)
     {
         if (TestPC != EndPC)
@@ -181,13 +215,13 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
                 }
                 if (CurrentSection->m_ContinueSection == NULL)
                 {
-                    SetSection(CurrentSection->m_ContinueSection, CurrentSection, TestPC,true,TestPC);
+                    SetSection(CurrentSection->m_ContinueSection, CurrentSection, TestPC, true, TestPC);
                     CurrentSection->SetContinueAddress(TestPC - 4, TestPC);
                 }
                 CurrentSection->m_EndPC = TestPC - 4;
                 CurrentSection = itr->second;
 
-                CPU_Message("Section %d",CurrentSection->m_SectionID);
+                CPU_Message("Section %d", CurrentSection->m_SectionID);
                 if (EnterSection != m_EnterSection)
                 {
                     if (CurrentSection->m_JumpSection != NULL ||
@@ -240,9 +274,9 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 
         if (ContinuePC != (uint32_t)-1)
         {
-            CPU_Message("%s: SetContinueAddress TestPC = %X ContinuePC = %X", __FUNCTION__,TestPC,ContinuePC);
+            CPU_Message("%s: SetContinueAddress TestPC = %X ContinuePC = %X", __FUNCTION__, TestPC, ContinuePC);
             CurrentSection->SetContinueAddress(TestPC, ContinuePC);
-            if (!SetSection(CurrentSection->m_ContinueSection, CurrentSection, ContinuePC,true,TestPC))
+            if (!SetSection(CurrentSection->m_ContinueSection, CurrentSection, ContinuePC, true, TestPC))
             {
                 ContinuePC = (uint32_t)-1;
             }
@@ -250,9 +284,9 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
 
         if (LikelyBranch)
         {
-            CPU_Message("%s: SetJumpAddress TestPC = %X Target = %X", __FUNCTION__,TestPC,TestPC + 4);
-            CurrentSection->SetJumpAddress(TestPC, TestPC + 4,false);
-            if (SetSection(CurrentSection->m_JumpSection, CurrentSection, TestPC + 4,false,TestPC))
+            CPU_Message("%s: SetJumpAddress TestPC = %X Target = %X", __FUNCTION__, TestPC, TestPC + 4);
+            CurrentSection->SetJumpAddress(TestPC, TestPC + 4, false);
+            if (SetSection(CurrentSection->m_JumpSection, CurrentSection, TestPC + 4, false, TestPC))
             {
                 bool BranchLikelyBranch, BranchEndBlock, BranchIncludeDelaySlot, BranchPermLoop;
                 uint32_t BranchTargetPC, BranchContinuePC;
@@ -279,10 +313,10 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
                 }
                 else
                 {
-                    JumpSection->SetJumpAddress(TestPC, TargetPC,false);
+                    JumpSection->SetJumpAddress(TestPC, TargetPC, false);
                 }
                 JumpSection->SetDelaySlot();
-                SetSection(JumpSection->m_JumpSection,JumpSection,TargetPC,true,TestPC);
+                SetSection(JumpSection->m_JumpSection, JumpSection, TargetPC, true, TestPC);
             }
             else
             {
@@ -291,9 +325,9 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
         }
         else if (TargetPC != ((uint32_t)-1))
         {
-            CPU_Message("%s: SetJumpAddress TestPC = %X Target = %X", __FUNCTION__,TestPC,TargetPC);
-            CurrentSection->SetJumpAddress(TestPC, TargetPC,PermLoop);
-            if (PermLoop || !SetSection(CurrentSection->m_JumpSection, CurrentSection, TargetPC,true,TestPC))
+            CPU_Message("%s: SetJumpAddress TestPC = %X Target = %X", __FUNCTION__, TestPC, TargetPC);
+            CurrentSection->SetJumpAddress(TestPC, TargetPC, PermLoop);
+            if (PermLoop || !SetSection(CurrentSection->m_JumpSection, CurrentSection, TargetPC, true, TestPC))
             {
                 if (ContinuePC == (uint32_t)-1)
                 {
@@ -333,7 +367,7 @@ bool CCodeBlock::CreateBlockLinkage ( CCodeSection * EnterSection )
             break;
         }
         TestPC = CurrentSection->m_EnterPC;
-        CPU_Message("a. Section %d",CurrentSection->m_SectionID);
+        CPU_Message("a. Section %d", CurrentSection->m_SectionID);
         TestPC -= 4;
     }
 
@@ -366,7 +400,7 @@ void CCodeBlock::DetermineLoops()
         CCodeSection * Section = itr->second;
 
         uint32_t Test = NextTest();
-        Section->DetermineLoop(Test,Test,Section->m_SectionID);
+        Section->DetermineLoop(Test, Test, Section->m_SectionID);
     }
 }
 
@@ -394,7 +428,7 @@ bool CCodeBlock::AnalyseBlock()
     return true;
 }
 
-bool CCodeBlock::AnalyzeInstruction ( uint32_t PC, uint32_t & TargetPC, uint32_t & ContinuePC, bool & LikelyBranch, bool & IncludeDelaySlot, bool & EndBlock, bool & PermLoop )
+bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t & ContinuePC, bool & LikelyBranch, bool & IncludeDelaySlot, bool & EndBlock, bool & PermLoop)
 {
     TargetPC = (uint32_t)-1;
     ContinuePC = (uint32_t)-1;
@@ -411,8 +445,8 @@ bool CCodeBlock::AnalyzeInstruction ( uint32_t PC, uint32_t & TargetPC, uint32_t
     }
 
 #ifdef _DEBUG
-    const char * Name = R4300iOpcodeName(Command.Hex,PC);
-    CPU_Message("  0x%08X %s",PC,Name);
+    const char * Name = R4300iOpcodeName(Command.Hex, PC);
+    CPU_Message("  0x%08X %s", PC, Name);
 #endif
     switch (Command.op)
     {
@@ -460,7 +494,7 @@ bool CCodeBlock::AnalyzeInstruction ( uint32_t PC, uint32_t & TargetPC, uint32_t
             }
             else
             {
-                if (TargetPC == PC && !DelaySlotEffectsCompare(PC,Command.rs,0))
+                if (TargetPC == PC && !DelaySlotEffectsCompare(PC, Command.rs, 0))
                 {
                     PermLoop = true;
                 }
@@ -486,7 +520,7 @@ bool CCodeBlock::AnalyzeInstruction ( uint32_t PC, uint32_t & TargetPC, uint32_t
                     }
                     else
                     {
-                        if (!DelaySlotEffectsCompare(PC,Command.rs,Command.rt))
+                        if (!DelaySlotEffectsCompare(PC, Command.rs, Command.rt))
                         {
                             PermLoop = true;
                         }
@@ -504,7 +538,7 @@ bool CCodeBlock::AnalyzeInstruction ( uint32_t PC, uint32_t & TargetPC, uint32_t
             TargetPC = PC + ((int16_t)Command.offset << 2) + 4;
             if (TargetPC == PC)
             {
-                if (!DelaySlotEffectsCompare(PC,Command.rs,0))
+                if (!DelaySlotEffectsCompare(PC, Command.rs, 0))
                 {
                     PermLoop = true;
                 }
@@ -548,7 +582,7 @@ bool CCodeBlock::AnalyzeInstruction ( uint32_t PC, uint32_t & TargetPC, uint32_t
                 ContinuePC = PC + 8;
             }
 
-            if (TargetPC == PC && !DelaySlotEffectsCompare(PC,Command.rs,Command.rt))
+            if (TargetPC == PC && !DelaySlotEffectsCompare(PC, Command.rs, Command.rt))
             {
                 PermLoop = true;
             }
@@ -567,7 +601,7 @@ bool CCodeBlock::AnalyzeInstruction ( uint32_t PC, uint32_t & TargetPC, uint32_t
         {
             if (TargetPC == PC)
             {
-                if (!DelaySlotEffectsCompare(PC,Command.rs,Command.rt))
+                if (!DelaySlotEffectsCompare(PC, Command.rs, Command.rt))
                 {
                     PermLoop = true;
                 }
@@ -582,9 +616,9 @@ bool CCodeBlock::AnalyzeInstruction ( uint32_t PC, uint32_t & TargetPC, uint32_t
         case R4300i_COP0_MT: case R4300i_COP0_MF:
             break;
         default:
-            if ( (Command.rs & 0x10 ) != 0 )
+            if ((Command.rs & 0x10) != 0)
             {
-                switch ( Command.funct )
+                switch (Command.funct)
                 {
                 case R4300i_COP0_CO_TLBR: case R4300i_COP0_CO_TLBWI:
                 case R4300i_COP0_CO_TLBWR: case R4300i_COP0_CO_TLBP:
@@ -665,7 +699,7 @@ bool CCodeBlock::AnalyzeInstruction ( uint32_t PC, uint32_t & TargetPC, uint32_t
         TargetPC = PC + ((int16_t)Command.offset << 2) + 4;
         if (TargetPC == PC)
         {
-            if (!DelaySlotEffectsCompare(PC,Command.rs,Command.rt))
+            if (!DelaySlotEffectsCompare(PC, Command.rs, Command.rt))
             {
                 PermLoop = true;
             }
@@ -684,7 +718,7 @@ bool CCodeBlock::AnalyzeInstruction ( uint32_t PC, uint32_t & TargetPC, uint32_t
         ContinuePC = PC + 8;
         if (TargetPC == PC)
         {
-            if (!DelaySlotEffectsCompare(PC,Command.rs,Command.rt))
+            if (!DelaySlotEffectsCompare(PC, Command.rs, Command.rt))
             {
                 PermLoop = true;
             }
@@ -708,52 +742,33 @@ bool CCodeBlock::AnalyzeInstruction ( uint32_t PC, uint32_t & TargetPC, uint32_t
 bool CCodeBlock::Compile()
 {
     CPU_Message("====== Code Block ======");
-    CPU_Message("x86 code at: %X",CompiledLocation());
-    CPU_Message("Start of Block: %X",VAddrEnter() );
-    CPU_Message("No of Sections: %d",NoOfSections() );
+    CPU_Message("Native entry point: %X", CompiledLocation());
+    CPU_Message("Start of Block: %X", VAddrEnter());
+    CPU_Message("No of Sections: %d", NoOfSections());
     CPU_Message("====== recompiled code ======");
 
-    EnterCodeBlock();
-
-    if (g_SyncSystem)
-    {
-        //if ((uint32_t)BlockInfo.CompiledLocation == 0x60A7B73B)
-        //{
-        //	X86BreakPoint(__FILEW__,__LINE__);
-        //}
-        //MoveConstToVariable((uint32_t)BlockInfo.CompiledLocation,&CurrentBlock,"CurrentBlock");
-    }
-
+    m_RecompilerOps->EnterCodeBlock();
     if (g_System->bLinkBlocks())
     {
-        while (m_EnterSection->GenerateX86Code(NextTest()));
+        while (m_EnterSection->GenerateNativeCode(NextTest()));
     }
     else
     {
-        if (!m_EnterSection->GenerateX86Code(NextTest()))
+        if (!m_EnterSection->GenerateNativeCode(NextTest()))
         {
             return false;
         }
     }
-    CompileExitCode();
+    m_RecompilerOps->CompileExitCode();
 
     uint32_t PAddr;
-    g_TransVaddr->TranslateVaddr(VAddrFirst(),PAddr);
-    MD5(g_MMU->Rdram() + PAddr,(VAddrLast() - VAddrFirst()) + 4).get_digest(m_Hash);
+    g_TransVaddr->TranslateVaddr(VAddrFirst(), PAddr);
+    MD5(g_MMU->Rdram() + PAddr, (VAddrLast() - VAddrFirst()) + 4).get_digest(m_Hash);
 
+#if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
+    __clear_cache_android((uint8_t *)((uint32_t)m_CompiledLocation & ~1), (uint8_t *)(*g_RecompPos));
+#endif
     return true;
-}
-
-void CCodeBlock::CompileExitCode()
-{
-    for (EXIT_LIST::iterator ExitIter = m_ExitInfo.begin(); ExitIter != m_ExitInfo.end(); ExitIter++)
-    {
-        CPU_Message("");
-        CPU_Message("      $Exit_%d",ExitIter->ID);
-        SetJump32(ExitIter->JumpLoc,(uint32_t *)m_RecompPos);
-        m_NextInstruction = ExitIter->NextInstruction;
-        m_EnterSection->CompileExit((uint32_t)-1, ExitIter->TargetPC,ExitIter->ExitRegSet,ExitIter->reason,true,NULL);
-    }
 }
 
 uint32_t CCodeBlock::NextTest()

@@ -18,40 +18,32 @@
 #include <Project64-core/N64System/Mips/Sram.h>
 #include <Project64-core/N64System/Mips/Dma.h>
 
-/*
-* 64-bit Windows exception recovery facilities will expect to interact with
-* the 64-bit registers of the Intel architecture (e.g., rax instead of eax).
-*
-* Attempting to read the 32-bit subsets seems to be erroneous and forbidden.
-* Refer to "MemoryFilter" in `Memory Virtual Mem.cpp`.
-*/
-#ifdef _WIN64
-#define Eax     Rax
-#define Ebx     Rbx
-#define Ecx     Rcx
-#define Edx     Rdx
-#define Esp     Rsp
-#define Ebp     Rbp
-#define Esi     Rsi
-#define Edi     Rdi
+#ifdef __arm__
+#include <sys/ucontext.h>
+#endif
 
-#define Eip     Rip
+#ifndef _WIN32
+#include <signal.h>
+/* siginfo_t */
 #endif
 
 /*
- * To do:  Have address translation functions here?
- * `return` either the translated address or the mask to XOR by?
- *
- * This will help us gradually be able to port Project64 for big-endian CPUs.
- * Currently it is written to assume 32-bit little-endian, like so:
- *
- * 0xAABBCCDD EEFFGGHH --> 0xDDCCBBAA HHGGFFEE
- *   GPR bits[63..0]         b1b2b3b4 b5b6b7b8
- */
+* To do:  Have address translation functions here?
+* `return` either the translated address or the mask to XOR by?
+*
+* This will help us gradually be able to port Project64 for big-endian CPUs.
+* Currently it is written to assume 32-bit little-endian, like so:
+*
+* 0xAABBCCDD EEFFGGHH --> 0xDDCCBBAA HHGGFFEE
+*   GPR bits[63..0]         b1b2b3b4 b5b6b7b8
+*/
+
+#if defined(__i386__) || defined(_M_IX86)
+class CX86RecompilerOps;
+#endif
 
 class CMipsMemoryVM :
     public CTransVaddr,
-    private CRecompilerOps,
     private R4300iOp,
     private CPifRam,
     private CFlashram,
@@ -96,51 +88,14 @@ public:
 
     int32_t   MemoryFilter(uint32_t dwExptCode, void * lpExceptionPointer);
     void  UpdateFieldSerration(uint32_t interlaced);
+#ifndef _WIN32
+    static bool SetupSegvHandler(void);
+    static void segv_handler(int signal, siginfo_t *siginfo, void *sigcontext);
+#endif
 
     //Protect the Memory from being written to
     void  ProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr);
     void  UnProtectMemory(uint32_t StartVaddr, uint32_t EndVaddr);
-
-    //Compilation Functions
-    void ResetMemoryStack();
-
-    void Compile_LB();
-    void Compile_LBU();
-    void Compile_LH();
-    void Compile_LHU();
-    void Compile_LW();
-    void Compile_LL();
-    void Compile_LWC1();
-    void Compile_LWU();
-    void Compile_LWL();
-    void Compile_LWR();
-    void Compile_LD();
-    void Compile_LDC1();
-    void Compile_LDL();
-    void Compile_LDR();
-    void Compile_SB();
-    void Compile_SH();
-    void Compile_SW();
-    void Compile_SWL();
-    void Compile_SWR();
-    void Compile_SD();
-    void Compile_SDL();
-    void Compile_SDR();
-    void Compile_SC();
-    void Compile_SWC1();
-    void Compile_SDC1();
-
-    void ResetMemoryStack(CRegInfo& RegInfo);
-    void Compile_LB(CX86Ops::x86Reg Reg, uint32_t Addr, bool SignExtend);
-    void Compile_LH(CX86Ops::x86Reg Reg, uint32_t Addr, bool SignExtend);
-    void Compile_LW(CX86Ops::x86Reg Reg, uint32_t Addr);
-    void Compile_SB_Const(uint8_t Value, uint32_t Addr);
-    void Compile_SB_Register(CX86Ops::x86Reg Reg, uint32_t Addr);
-    void Compile_SH_Const(uint16_t Value, uint32_t Addr);
-    void Compile_SH_Register(CX86Ops::x86Reg Reg, uint32_t Addr);
-    void Compile_SW_Const(uint32_t Value, uint32_t Addr);
-
-    void Compile_SW_Register(CX86Ops::x86Reg Reg, uint32_t Addr);
 
     //Functions for TLB notification
     void TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly);
@@ -159,8 +114,11 @@ private:
     CMipsMemoryVM(const CMipsMemoryVM&);            // Disable copy constructor
     CMipsMemoryVM& operator=(const CMipsMemoryVM&); // Disable assignment
 
-    void Compile_LW(bool ResultSigned, bool bRecordLLbit);
-    void Compile_SW(bool bCheckLLbit);
+#if defined(__i386__) || defined(_M_IX86)
+    friend CX86RecompilerOps;
+#elif defined(__arm__) || defined(_M_ARM)
+    friend CArmRegInfo;
+#endif
 
     static void RdramChanged(CMipsMemoryVM * _this);
     static void ChangeSpStatus();
@@ -173,8 +131,6 @@ private:
     bool SB_NonMemory(uint32_t PAddr, uint8_t Value);
     bool SH_NonMemory(uint32_t PAddr, uint16_t Value);
     bool SW_NonMemory(uint32_t PAddr, uint32_t Value);
-
-    void Compile_StoreInstructClean(x86Reg AddressReg, int32_t Length);
 
     static void Load32RDRAMRegisters(void);
     static void Load32SPRegisters(void);
@@ -205,6 +161,27 @@ private:
     static void Write32CartridgeDomain2Address2(void);
     static void Write32PifRam(void);
 
+#if defined(__i386__) || defined(_M_IX86)
+
+    typedef struct _X86_CONTEXT
+    {
+        uint32_t * Edi;
+        uint32_t * Esi;
+        uint32_t * Ebx;
+        uint32_t * Edx;
+        uint32_t * Ecx;
+        uint32_t * Eax;
+        uint32_t * Eip;
+        uint32_t * Esp;
+        uint32_t * Ebp;
+    } X86_CONTEXT;
+
+    static bool FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & context);
+#endif
+#ifdef __arm__
+    static bool FilterArmException(uint32_t MemAddress, mcontext_t & context);
+#endif
+
     //Memory Locations
     static uint8_t   * m_Reserve1, *m_Reserve2;
     uint8_t          * m_RDRAM, *m_DMEM, *m_IMEM;
@@ -227,7 +204,6 @@ private:
     uint32_t         m_HalfLine;
     uint32_t         m_HalfLineCheck;
     uint32_t         m_FieldSerration;
-    uint32_t         m_TempValue;
 
     //Initializing and resetting information about the memory system
     void FreeMemory();
@@ -241,4 +217,5 @@ private:
     static uint32_t m_MemLookupAddress;
     static MIPS_DWORD m_MemLookupValue;
     static bool m_MemLookupValid;
+    static uint32_t RegModValue;
 };

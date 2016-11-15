@@ -28,18 +28,26 @@
 #include <stdarg.h>
 #include <Common/StdString.h>
 #include <Common/path.h>
+#include <Glide64/Config.h>
+#include <Settings/Settings.h>
 
 TxDbg::TxDbg()
 {
+
+    char log_dir[260];
+    memset(log_dir, 0, sizeof(log_dir));
+    if (Set_log_dir != 0)
+    {
+        GetSystemSettingSz(Set_log_dir, log_dir, sizeof(log_dir));
+    }
+
     _level = DBG_LEVEL;
-    CPath Dir(CPath::MODULE_DIRECTORY, "");
-    Dir.AppendDirectory("Logs");
 
     if (!_dbgfile)
 #ifdef GHQCHK
-        _dbgfile = fopen(CPath(Dir,"ghqchk.txt"), "w");
+        _dbgfile = fopen(CPath(log_dir, "ghqchk.txt"), "w");
 #else
-        _dbgfile = fopen(CPath((LPCSTR)Dir, "glidehq.dbg"), "w");
+        _dbgfile = fopen(CPath(log_dir, "glidehq.dbg"), "w");
 #endif
 }
 
@@ -54,16 +62,16 @@ TxDbg::~TxDbg()
 }
 
 void
-TxDbg::output(const int level, const wchar_t *format, ...)
+TxDbg::output(const int level, const char *format, ...)
 {
     if (level > _level)
         return;
 
-    stdstr_f newformat("%d:\t%s", level, stdstr().FromUTF16(format).c_str());
+    stdstr_f newformat("%d:\t%s", level, format);
 
     va_list args;
     va_start(args, format);
-    vfwprintf(_dbgfile, newformat.ToUTF16().c_str(), args);
+    vfprintf(_dbgfile, newformat.c_str(), args);
     fflush(_dbgfile);
     va_end(args);
 }

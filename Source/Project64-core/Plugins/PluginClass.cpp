@@ -14,7 +14,7 @@
 #include <Project64-core/Plugins/PluginClass.h>
 #include <Common/path.h>
 
-CPlugins::CPlugins(SettingID PluginDirSetting) :
+CPlugins::CPlugins(SettingID PluginDirSetting, bool SyncPlugins) :
 m_MainWindow(NULL),
 m_SyncWindow(NULL),
 m_PluginDirSetting(PluginDirSetting),
@@ -22,7 +22,9 @@ m_PluginDir(g_Settings->LoadStringVal(PluginDirSetting)),
 m_Gfx(NULL),
 m_Audio(NULL),
 m_RSP(NULL),
-m_Control(NULL)
+m_Control(NULL),
+m_initilized(false),
+m_SyncPlugins(SyncPlugins)
 {
     CreatePlugins();
     g_Settings->RegisterChangeCB(Plugin_RSP_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
@@ -60,6 +62,7 @@ CPlugins::~CPlugins(void)
 
 void CPlugins::PluginChanged(CPlugins * _this)
 {
+    WriteTrace(TracePlugins, TraceDebug, "Start");
     if (g_Settings->LoadBool(Game_TempLoaded) == true)
     {
         WriteTrace(TracePlugins, TraceDebug, "Game is temporary loaded, not changing plugins");
@@ -70,13 +73,20 @@ void CPlugins::PluginChanged(CPlugins * _this)
     bool bAudioChange = _stricmp(_this->m_AudioFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Audio).c_str()) != 0;
     bool bRspChange = _stricmp(_this->m_RSPFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_RSP).c_str()) != 0;
     bool bContChange = _stricmp(_this->m_ControlFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Controller).c_str()) != 0;
-    if (_stricmp(_this->m_PluginDir.c_str(), g_Settings->LoadStringVal(_this->m_PluginDirSetting).c_str()) != 0)
+    bool bDirChange = _stricmp(_this->m_PluginDir.c_str(), g_Settings->LoadStringVal(_this->m_PluginDirSetting).c_str()) != 0;
+    WriteTrace(TracePlugins, TraceVerbose, "m_GfxFile: \"%s\" Game_Plugin_Gfx: \"%s\" changed: %s", _this->m_GfxFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Gfx).c_str(), bGfxChange ? "true" : "false");
+    WriteTrace(TracePlugins, TraceVerbose, "m_AudioFile: \"%s\" Game_Plugin_Audio: \"%s\" changed: %s", _this->m_GfxFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Gfx).c_str(), bAudioChange ? "true" : "false");
+    WriteTrace(TracePlugins, TraceVerbose, "m_RSPFile: \"%s\" Game_Plugin_RSP: \"%s\" changed: %s", _this->m_GfxFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Gfx).c_str(), bRspChange ? "true" : "false");
+    WriteTrace(TracePlugins, TraceVerbose, "m_ControlFile: \"%s\" Game_Plugin_Controller: \"%s\" changed: %s", _this->m_GfxFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Gfx).c_str(), bContChange ? "true" : "false");
+    WriteTrace(TracePlugins, TraceVerbose, "m_PluginDir: \"%s\" m_PluginDirSetting: \"%s\" changed: %s", _this->m_PluginDir.c_str(), g_Settings->LoadStringVal(_this->m_PluginDirSetting).c_str(), bDirChange ? "true" : "false");
+    if (bDirChange)
     {
+        WriteTrace(TracePlugins, TraceDebug, "plugin directory changed");
         bGfxChange = true;
         bAudioChange = true;
         bRspChange = true;
         bContChange = true;
-        WriteTrace(TracePlugins, TraceDebug, "plugin directory changed");
+        _this->m_PluginDir = g_Settings->LoadStringVal(_this->m_PluginDirSetting);
     }
 
     if (bGfxChange || bAudioChange || bRspChange || bContChange)
@@ -102,7 +112,7 @@ void CPlugins::PluginChanged(CPlugins * _this)
 }
 
 template <typename plugin_type>
-static void LoadPlugin(SettingID PluginSettingID, SettingID PluginVerSettingID, plugin_type * & plugin, const char * PluginDir, stdstr & FileName, TraceModuleProject64 TraceLevel, const char * type)
+static void LoadPlugin(SettingID PluginSettingID, SettingID PluginVerSettingID, plugin_type * & plugin, const char * PluginDir, stdstr & FileName, TraceModuleProject64 TraceLevel, const char * type, bool IsCopy)
 {
     if (plugin != NULL)
     {
@@ -110,6 +120,10 @@ static void LoadPlugin(SettingID PluginSettingID, SettingID PluginVerSettingID, 
     }
     FileName = g_Settings->LoadStringVal(PluginSettingID);
     CPath PluginFileName(PluginDir, FileName.c_str());
+    if (IsCopy)
+    {
+        PluginFileName.SetName(stdstr_f("%s-copy", PluginFileName.GetName().c_str()).c_str());
+    }
     plugin = new plugin_type();
     if (plugin)
     {
@@ -135,10 +149,12 @@ static void LoadPlugin(SettingID PluginSettingID, SettingID PluginVerSettingID, 
 
 void CPlugins::CreatePlugins(void)
 {
-    LoadPlugin(Game_Plugin_Gfx, Plugin_GFX_CurVer, m_Gfx, m_PluginDir.c_str(), m_GfxFile, TraceGFXPlugin, "GFX");
-    LoadPlugin(Game_Plugin_Audio, Plugin_AUDIO_CurVer, m_Audio, m_PluginDir.c_str(), m_AudioFile, TraceAudioPlugin, "Audio");
-    LoadPlugin(Game_Plugin_RSP, Plugin_RSP_CurVer, m_RSP, m_PluginDir.c_str(), m_RSPFile, TraceRSPPlugin, "RSP");
-    LoadPlugin(Game_Plugin_Controller, Plugin_CONT_CurVer, m_Control, m_PluginDir.c_str(), m_ControlFile, TraceControllerPlugin, "Control");
+    WriteTrace(TracePlugins, TraceInfo, "Start");
+
+    LoadPlugin(Game_Plugin_Gfx, Plugin_GFX_CurVer, m_Gfx, m_PluginDir.c_str(), m_GfxFile, TraceGFXPlugin, "GFX", m_SyncPlugins);
+    LoadPlugin(Game_Plugin_Audio, Plugin_AUDIO_CurVer, m_Audio, m_PluginDir.c_str(), m_AudioFile, TraceAudioPlugin, "Audio", m_SyncPlugins);
+    LoadPlugin(Game_Plugin_RSP, Plugin_RSP_CurVer, m_RSP, m_PluginDir.c_str(), m_RSPFile, TraceRSPPlugin, "RSP", m_SyncPlugins);
+    LoadPlugin(Game_Plugin_Controller, Plugin_CONT_CurVer, m_Control, m_PluginDir.c_str(), m_ControlFile, TraceControllerPlugin, "Control", m_SyncPlugins);
 
     //Enable debugger
     if (m_RSP != NULL && m_RSP->EnableDebugging)
@@ -147,25 +163,26 @@ void CPlugins::CreatePlugins(void)
         m_RSP->EnableDebugging(bHaveDebugger());
         WriteTrace(TraceRSPPlugin, TraceInfo, "EnableDebugging done");
     }
+    WriteTrace(TracePlugins, TraceInfo, "Done");
 }
 
 void CPlugins::GameReset(void)
 {
     if (m_Gfx)
     {
-        m_Gfx->GameReset();
+        m_Gfx->GameReset(m_MainWindow);
     }
     if (m_Audio)
     {
-        m_Audio->GameReset();
+        m_Audio->GameReset(m_MainWindow);
     }
     if (m_RSP)
     {
-        m_RSP->GameReset();
+        m_RSP->GameReset(m_MainWindow);
     }
     if (m_Control)
     {
-        m_Control->GameReset();
+        m_Control->GameReset(m_MainWindow);
     }
 }
 
@@ -175,12 +192,15 @@ void CPlugins::DestroyGfxPlugin(void)
     {
         return;
     }
-    WriteTrace(TraceGFXPlugin, TraceInfo, "before delete m_Gfx");
+    WriteTrace(TraceGFXPlugin, TraceDebug, "before close");
+    m_Gfx->Close(m_MainWindow);
+    WriteTrace(TraceGFXPlugin, TraceInfo, "deleting");
     delete m_Gfx;
-    WriteTrace(TraceGFXPlugin, TraceInfo, "after delete m_Gfx");
+    WriteTrace(TraceGFXPlugin, TraceInfo, "m_Gfx deleted");
     m_Gfx = NULL;
     //		g_Settings->UnknownSetting_GFX = NULL;
     DestroyRspPlugin();
+    WriteTrace(TraceGFXPlugin, TraceInfo, "Done");
 }
 
 void CPlugins::DestroyAudioPlugin(void)
@@ -190,7 +210,7 @@ void CPlugins::DestroyAudioPlugin(void)
         return;
     }
     WriteTrace(TraceAudioPlugin, TraceDebug, "before close");
-    m_Audio->Close();
+    m_Audio->Close(m_MainWindow);
     WriteTrace(TraceAudioPlugin, TraceDebug, "before delete");
     delete m_Audio;
     WriteTrace(TraceAudioPlugin, TraceDebug, "after delete");
@@ -208,7 +228,7 @@ void CPlugins::DestroyRspPlugin(void)
         return;
     }
     WriteTrace(TraceRSPPlugin, TraceDebug, "before close");
-    m_RSP->Close();
+    m_RSP->Close(m_MainWindow);
     WriteTrace(TraceRSPPlugin, TraceDebug, "before delete");
     delete m_RSP;
     m_RSP = NULL;
@@ -223,7 +243,7 @@ void CPlugins::DestroyControlPlugin(void)
         return;
     }
     WriteTrace(TraceControllerPlugin, TraceDebug, "before close");
-    m_Control->Close();
+    m_Control->Close(m_MainWindow);
     WriteTrace(TraceControllerPlugin, TraceDebug, "before delete");
     delete m_Control;
     m_Control = NULL;
@@ -233,24 +253,33 @@ void CPlugins::DestroyControlPlugin(void)
 
 void CPlugins::SetRenderWindows(RenderWindow * MainWindow, RenderWindow * SyncWindow)
 {
+    WriteTrace(TracePlugins, TraceDebug, "MainWindow = %p SyncWindow = %p", MainWindow, SyncWindow);
     m_MainWindow = MainWindow;
     m_SyncWindow = SyncWindow;
 }
 
 void CPlugins::RomOpened(void)
 {
-    m_Gfx->RomOpened();
-    m_RSP->RomOpened();
-    m_Audio->RomOpened();
-    m_Control->RomOpened();
+    WriteTrace(TracePlugins, TraceDebug, "Start");
+
+    m_Gfx->RomOpened(m_MainWindow);
+    m_RSP->RomOpened(m_MainWindow);
+    m_Audio->RomOpened(m_MainWindow);
+    m_Control->RomOpened(m_MainWindow);
+
+    WriteTrace(TracePlugins, TraceDebug, "Done");
 }
 
 void CPlugins::RomClosed(void)
 {
-    m_Gfx->RomClose();
-    m_RSP->RomClose();
-    m_Audio->RomClose();
-    m_Control->RomClose();
+    WriteTrace(TracePlugins, TraceDebug, "Start");
+
+    m_Gfx->RomClose(m_MainWindow);
+    m_RSP->RomClose(m_MainWindow);
+    m_Audio->RomClose(m_MainWindow);
+    m_Control->RomClose(m_MainWindow);
+
+    WriteTrace(TracePlugins, TraceDebug, "Done");
 }
 
 bool CPlugins::Initiate(CN64System * System)
@@ -275,12 +304,17 @@ bool CPlugins::Initiate(CN64System * System)
     if (!m_RSP->Initiate(this, System))   { return false; }
     WriteTrace(TraceRSPPlugin, TraceDebug, "RSP Initiate Done");
     WriteTrace(TracePlugins, TraceDebug, "Done");
+    m_initilized = true;
     return true;
 }
 
 bool CPlugins::ResetInUiThread(CN64System * System)
 {
+#ifdef _WIN32
     return m_MainWindow->ResetPluginsInUiThread(this, System);
+#else
+    return false;
+#endif
 }
 
 bool CPlugins::Reset(CN64System * System)
@@ -292,9 +326,18 @@ bool CPlugins::Reset(CN64System * System)
     bool bRspChange = _stricmp(m_RSPFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_RSP).c_str()) != 0;
     bool bContChange = _stricmp(m_ControlFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Controller).c_str()) != 0;
 
+
+    if (g_Settings->LoadBool(Plugin_ForceGfxReset))
+    {
+        //this is a hack and should not be here, glide64 is not correctly freeing something on restart, this needs to be fixed but this is a short term workaround
+        bGfxChange = true;
+    }
+
     //if GFX and Audio has changed we also need to force reset of RSP
     if (bGfxChange || bAudioChange)
+    {
         bRspChange = true;
+    }
 
     if (bGfxChange) { DestroyGfxPlugin(); }
     if (bAudioChange) { DestroyAudioPlugin(); }
@@ -395,6 +438,7 @@ bool CPlugins::CopyPlugins(const stdstr & DstDir) const
     //Copy GFX Plugin
     CPath srcGfxPlugin(m_PluginDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_Gfx).c_str());
     CPath dstGfxPlugin(DstDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_Gfx).c_str());
+    dstGfxPlugin.SetName(stdstr_f("%s-copy", dstGfxPlugin.GetName().c_str()).c_str());
 
     if (!dstGfxPlugin.DirectoryExists())
     {
@@ -402,12 +446,14 @@ bool CPlugins::CopyPlugins(const stdstr & DstDir) const
     }
     if (!srcGfxPlugin.CopyTo(dstGfxPlugin))
     {
+        WriteTrace(TracePlugins, TraceError, "failed to copy %s to %s", (const char *)srcGfxPlugin, (const char *)dstGfxPlugin);
         return false;
     }
 
     //Copy m_Audio Plugin
     CPath srcAudioPlugin(m_PluginDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_Audio).c_str());
     CPath dstAudioPlugin(DstDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_Audio).c_str());
+    dstAudioPlugin.SetName(stdstr_f("%s-copy", dstAudioPlugin.GetName().c_str()).c_str());
     if (!dstAudioPlugin.DirectoryExists())
     {
         dstAudioPlugin.DirectoryCreate();
@@ -416,10 +462,10 @@ bool CPlugins::CopyPlugins(const stdstr & DstDir) const
     {
         return false;
     }
-
     //Copy RSP Plugin
     CPath srcRSPPlugin(m_PluginDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_RSP).c_str());
     CPath dstRSPPlugin(DstDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_RSP).c_str());
+    dstRSPPlugin.SetName(stdstr_f("%s-copy", dstRSPPlugin.GetName().c_str()).c_str());
     if (!dstRSPPlugin.DirectoryExists())
     {
         dstRSPPlugin.DirectoryCreate();
@@ -432,6 +478,7 @@ bool CPlugins::CopyPlugins(const stdstr & DstDir) const
     //Copy Controller Plugin
     CPath srcContPlugin(m_PluginDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_Controller).c_str());
     CPath dstContPlugin(DstDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_Controller).c_str());
+    dstContPlugin.SetName(stdstr_f("%s-copy", dstContPlugin.GetName().c_str()).c_str());
     if (!dstContPlugin.DirectoryExists())
     {
         dstContPlugin.DirectoryCreate();

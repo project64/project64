@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?><merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <emu.project64.game.GameSurface
+        android:id="@+id/gameSurface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+
+    <emu.project64.game.GameOverlay
+        android:id="@+id/gameOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+    
+    <ImageButton
+        android:id="@+id/gameMenu"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="top|right"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_menu_moreoverflow_normal_holo_dark"
+        />
+</merge>

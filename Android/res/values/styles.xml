@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="Theme.Project64" parent="@android:style/Theme">
+        <item name="android:alertDialogTheme">@style/Theme.Project64.Dialog</item>
+    </style>
+
+    <style name="Theme.Project64.Apearance" parent="Theme.AppCompat.NoActionBar">
+        <item name="background_actionbar">#4683ec</item>
+        <item name="background_gallerymenu">@color/black</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="font_actionbar">@color/grey600</item>
+        <item name="font_actionbar_selected">@color/grey200</item>
+        <item name="textMenuColor">@color/white</item>
+        <item name="preferenceTheme">@style/Theme.Project64.Preference</item>
+        <item name="android:alertDialogTheme">@style/Theme.Project64.Dialog</item>
+    </style>
+
+    <style name="Theme.Project64.GameActivity">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:colorBackground">@android:color/black</item>
+    </style>
+
+    <style name="Theme.Project64.Splash" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:colorBackground">@android:color/white</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="Theme.Project64.Preference" parent="PreferenceThemeOverlay" />
+
+    <style name="Theme.Project64.About" parent="Theme.Project64.Apearance">
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:colorBackground">@android:color/white</item>
+    </style>
+    <style name="Theme.Project64.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowTitleStyle">@style/Theme.Project64.DialogWindowTitle</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+    </style>
+
+    <style name="Theme.Project64.DialogWindowTitle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAppearance">@style/Theme.Project64.DialogWindowTitleStyle</item>
+    </style>
+    
+    <style name="Theme.Project64.DialogWindowTitleStyle">
+        <item name="android:textSize">25sp</item>
+    </style>
+    
+    <style name="Project64.Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="btnMappable" parent="@android:style/Widget.Button">
+        <item name="android:layout_width">@dimen/inputMapPreferenceButtonSize</item>
+        <item name="android:layout_height">@dimen/inputMapPreferenceButtonSize</item>
+        <item name="android:background">@drawable/button_gray</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:textColor">@android:color/primary_text_dark_nodisable</item>
+    </style>
+
+    <style name="btnMappableNoText" parent="@style/btnMappable">
+        <item name="android:textColor">@android:color/transparent</item>
+    </style>
+</resources>
