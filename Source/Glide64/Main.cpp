@@ -445,6 +445,8 @@ void ReadSpecialSettings(const char * name)
         g_settings->hacks |= hack_GoldenEye;
     else if (strstr(name, (const char *)"PUZZLE LEAGUE"))
         g_settings->hacks |= hack_PPL;
+	else if (strstr(name, (const char *)"WIN BACK") || strstr(name, (const char *)"OPERATION WINBACK"))
+		g_settings->hacks |= hack_Winback;
 
     g_settings->alt_tex_size = GetSetting(Set_alt_tex_size);
     g_settings->use_sts1_only = GetSetting(Set_use_sts1_only);

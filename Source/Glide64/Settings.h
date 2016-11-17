@@ -151,9 +151,10 @@ public:
 #define  hack_TGR         (1<<24)  //Top Gear Rally
 #define  hack_TGR2        (1<<25)  //Top Gear Rally 2
 #define  hack_Tonic       (1<<26)  //tonic trouble
-#define  hack_Yoshi       (1<<27)  //Yoshi Story
-#define  hack_Zelda       (1<<28)  //zeldas hacks
-#define  hack_OoT         (1<<29)  //zelda OoT hacks
+#define  hack_Winback     (1<<27)  //WinBack - Covert Operations
+#define  hack_Yoshi       (1<<28)  //Yoshi Story
+#define  hack_Zelda       (1<<29)  //zeldas hacks
+#define  hack_OoT         (1<<30)  //zelda OoT hacks
     uint32_t hacks;
 
     //wrapper settings
