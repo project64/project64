@@ -1103,13 +1103,13 @@ void CRecompiler::ClearRecompCode_Virt(uint32_t Address, int length, REMOVE_REAS
         }
         break;
     case FuncFind_PhysicalLookup:
-    {
-                                    uint32_t pAddr = 0;
-                                    if (g_TransVaddr->TranslateVaddr(Address, pAddr))
-                                    {
-                                        ClearRecompCode_Phys(pAddr, length, Reason);
-                                    }
-    }
+        {
+            uint32_t pAddr = 0;
+            if (g_TransVaddr->TranslateVaddr(Address, pAddr))
+            {
+                ClearRecompCode_Phys(pAddr, length, Reason);
+            }
+        }
         break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
