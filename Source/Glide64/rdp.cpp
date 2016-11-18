@@ -929,11 +929,17 @@ static void rdp_texrect()
         else
         {
             //gDPTextureRectangle
-            if (g_settings->hacks&hack_ASB)
+			if (g_settings->hacks&hack_Winback) {
+				rdp.pc[rdp.pc_i] += 8;
+				return;
+			}
+
+			if (g_settings->hacks&hack_ASB)
                 rdp.cmd2 = 0;
             else
                 rdp.cmd2 = ((uint32_t*)gfx.RDRAM)[a + 0];
-            rdp.cmd3 = ((uint32_t*)gfx.RDRAM)[a + 1];
+
+			rdp.cmd3 = ((uint32_t*)gfx.RDRAM)[a + 1];
             rdp.pc[rdp.pc_i] += 8;
         }
     }
@@ -943,7 +949,7 @@ static void rdp_texrect()
         return;
     }
 
-    if (rdp.skip_drawing || (!fb_emulation_enabled && (rdp.cimg == rdp.zimg)))
+	if (rdp.skip_drawing || (!fb_emulation_enabled && (rdp.cimg == rdp.zimg)))
     {
         if ((g_settings->hacks&hack_PMario) && rdp.ci_status == ci_useless)
         {
