@@ -11,7 +11,7 @@
 package emu.project64.jni;
 
 public enum SettingsID 
-{		
+{
     //Default values
     Default_None,
     Default_Constant,
@@ -51,6 +51,7 @@ public enum SettingsID
     Setting_LanguageDirDefault,
     Setting_CurrentLanguage,
     Setting_EnableDisk,
+    Setting_PreAllocSyncMem,
 
     //RDB Settings
     Rdb_GoodName,
@@ -290,16 +291,15 @@ public enum SettingsID
     Cheat_Range,
     Cheat_RangeNotes,
 
-    /*, FirstUISettings, LastUISettings = FirstUISettings + MaxPluginSetting,
-    FirstRSPDefaultSet, LastRSPDefaultSet = FirstRSPDefaultSet + MaxPluginSetting,
-    FirstRSPSettings, LastRSPSettings = FirstRSPSettings + MaxPluginSetting,
-    FirstGfxDefaultSet, LastGfxDefaultSet = FirstGfxDefaultSet + MaxPluginSetting,
-    FirstGfxSettings, LastGfxSettings = FirstGfxSettings + MaxPluginSetting,
-    FirstAudioDefaultSet, LastAudioDefaultSet = FirstAudioDefaultSet + MaxPluginSetting,
-    FirstAudioSettings, LastAudioSettings = FirstAudioSettings + MaxPluginSetting,
-    FirstCtrlDefaultSet, LastCtrlDefaultSet = FirstCtrlDefaultSet + MaxPluginSetting,
-    FirstCtrlSettings, LastCtrlSettings = FirstCtrlSettings + MaxPluginSetting,
-    ;*/
+    FirstUISettings, LastUISettings(FirstUISettings.getValue() + 65535),
+    FirstRSPDefaultSet, LastRSPDefaultSet(FirstRSPDefaultSet.getValue() + 65535),
+    FirstRSPSettings, LastRSPSettings(FirstRSPSettings.getValue() + 65535),
+    FirstGfxDefaultSet, LastGfxDefaultSet(FirstGfxDefaultSet.getValue() + 65535),
+    FirstGfxSettings, LastGfxSettings(FirstGfxSettings.getValue() + 65535),
+    FirstAudioDefaultSet, LastAudioDefaultSet(FirstAudioDefaultSet.getValue() + 65535),
+    FirstAudioSettings, LastAudioSettings(FirstAudioSettings.getValue() + 65535),
+    FirstCtrlDefaultSet, LastCtrlDefaultSet(FirstCtrlDefaultSet.getValue() + 65535),
+    FirstCtrlSettings, LastCtrlSettings(FirstCtrlSettings.getValue() + 65535),
     ;
     private int value;
     
@@ -316,5 +316,10 @@ public enum SettingsID
     {
     	this.value = StaticFields.Counter;
     	StaticFields.Counter += 1;
-    }   
+    }
+    private SettingsID(int value)
+    {
+    	this.value = value;
+    	StaticFields.Counter = this.value + 1;
+    } 
 }
