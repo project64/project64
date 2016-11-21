@@ -177,21 +177,24 @@ protected:
     static void XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg);
     static void XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
 
-    static bool CanThumbCompressConst (uint32_t value);
-    static uint16_t ThumbCompressConst (uint32_t value);
-
     static void * GetAddressOf(int32_t value, ...);
     static void SetJump8(uint8_t * Loc, uint8_t * JumpLoc);
     static void SetJump20(uint32_t * Loc, uint32_t * JumpLoc);
 
+    static CArmRegInfo m_RegWorkingSet;
+
+protected:
     static const char * ArmBranchSuffix(ArmBranchCompare CompareType);
     static const char * ArmRegName(ArmReg Reg);
     static const char * ArmFpuSingleName(ArmFpuSingle Reg);
+
+    static bool CanThumbCompressConst (uint32_t value);
+    static uint16_t ThumbCompressConst (uint32_t value);
+
     static void AddCode8(uint8_t value);
     static void AddCode16(uint16_t value);
     static void AddCode32(uint32_t value);
 
-    static CArmRegInfo m_RegWorkingSet;
 };
 
 #define AddressOf(Addr) CArmOps::GetAddressOf(5,(Addr))

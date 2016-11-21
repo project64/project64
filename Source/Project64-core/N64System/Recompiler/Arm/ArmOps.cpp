@@ -989,12 +989,23 @@ uint16_t CArmOps::ThumbCompressConst (uint32_t value)
     {
         return (uint16_t)((value & 0xFF));
     }
+
+    //'nnnnnnnn 00000000 nnnnnnnn 00000000'
+    if (((value >> 24) & 0xFF) == ((value >> 8) & 0xFF) &&
+        ((value >> 16) & 0xFF) == 0 &&
+        (value & 0xFF) == 0)
+    {
+        return (uint16_t)(0x200 | (value & 0xFF));
+    }
+
+    //'nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn'
     if (((value >> 24) & 0xFF) == (value & 0xFF) &&
         ((value >> 16) & 0xFF) == (value & 0xFF) &&
         ((value >> 8) & 0xFF) == (value & 0xFF))
     {
         return (uint16_t)(0x300 | (value & 0xFF));
     }
+
     CPU_Message("%s: value >> 24 = %X value >> 16 = %X value >> 8 = %X value = %X", __FUNCTION__, (value >> 24), (value >> 16), (value >> 8), value);
     CPU_Message("%s: value = %X", __FUNCTION__, value);
     g_Notify->BreakPoint(__FILE__,__LINE__);
