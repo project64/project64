@@ -23,8 +23,8 @@ extern JavaBridge * g_JavaBridge;
 
 CNotificationImp & Notify(void)
 {
-    static CNotificationImp g_Notify;
-    return g_Notify;
+    static CNotificationImp Notify;
+    return Notify;
 }
 
 CNotificationImp::CNotificationImp() :
