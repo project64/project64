@@ -2871,90 +2871,84 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
-    else
+    else if (IsConst(m_Opcode.base))
     {
-        if (IsConst(m_Opcode.base))
+        uint32_t Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
+        Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
+        LW_KnownAddress(GetMipsRegMapLo(m_Opcode.rt), Address);
+        if (bRecordLLBit)
         {
-            uint32_t Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
-            Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
-            LW_KnownAddress(GetMipsRegMapLo(m_Opcode.rt), Address);
-            if (bRecordLLBit)
-            {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-            }
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+    else if (g_System->bUseTlb())
+    {
+        if (IsMapped(m_Opcode.rt))
+        {
+            ProtectGPR(m_Opcode.rt);
+        }
+        if (IsMapped(m_Opcode.base) && m_Opcode.offset == 0)
+        {
+            ProtectGPR(m_Opcode.base);
+            TempReg1 = GetMipsRegMapLo(m_Opcode.base);
         }
         else
         {
-            if (g_System->bUseTlb())
+            if (IsMapped(m_Opcode.base))
             {
-                if (IsMapped(m_Opcode.rt))
-                {
-                    ProtectGPR(m_Opcode.rt);
-                }
-                if (IsMapped(m_Opcode.base) && m_Opcode.offset == 0)
-                {
-                    ProtectGPR(m_Opcode.base);
-                    TempReg1 = GetMipsRegMapLo(m_Opcode.base);
+                ProtectGPR(m_Opcode.base);
+                if (m_Opcode.offset != 0) {
+                    TempReg1 = Map_TempReg(x86_Any, -1, false);
+                    LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
                 }
                 else
                 {
-                    if (IsMapped(m_Opcode.base))
-                    {
-                        ProtectGPR(m_Opcode.base);
-                        if (m_Opcode.offset != 0) {
-                            TempReg1 = Map_TempReg(x86_Any, -1, false);
-                            LeaSourceAndOffset(TempReg1, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-                        }
-                        else
-                        {
-                            TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-                        }
-                    }
-                    else
-                    {
-                        TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
-                        AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
-                    }
-                }
-                TempReg2 = Map_TempReg(x86_Any, -1, false);
-                MoveX86RegToX86Reg(TempReg1, TempReg2);
-                ShiftRightUnsignImmed(TempReg2, 12);
-                MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
-                CompileReadTLBMiss(TempReg1, TempReg2);
-                Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
-                MoveX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
-                if (bRecordLLBit)
-                {
-                    MoveConstToVariable(1, _LLBit, "LLBit");
+                    TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
                 }
             }
             else
             {
-                if (IsMapped(m_Opcode.base))
-                {
-                    ProtectGPR(m_Opcode.base);
-                    if (m_Opcode.offset != 0)
-                    {
-                        Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
-                        LeaSourceAndOffset(GetMipsRegMapLo(m_Opcode.rt), GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
-                    }
-                    else
-                    {
-                        Map_GPR_32bit(m_Opcode.rt, ResultSigned, m_Opcode.base);
-                    }
-                }
-                else
-                {
-                    Map_GPR_32bit(m_Opcode.rt, ResultSigned, m_Opcode.base);
-                    AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rt), (int16_t)m_Opcode.immediate);
-                }
-                AndConstToX86Reg(GetMipsRegMapLo(m_Opcode.rt), 0x1FFFFFFF);
-                MoveN64MemToX86reg(GetMipsRegMapLo(m_Opcode.rt), GetMipsRegMapLo(m_Opcode.rt));
-                if (bRecordLLBit)
-                {
-                    MoveConstToVariable(1, _LLBit, "LLBit");
-                }
+                TempReg1 = Map_TempReg(x86_Any, m_Opcode.base, false);
+                AddConstToX86Reg(TempReg1, (int16_t)m_Opcode.immediate);
             }
+        }
+        TempReg2 = Map_TempReg(x86_Any, -1, false);
+        MoveX86RegToX86Reg(TempReg1, TempReg2);
+        ShiftRightUnsignImmed(TempReg2, 12);
+        MoveVariableDispToX86Reg(g_MMU->m_TLB_ReadMap, "MMU->TLB_ReadMap", TempReg2, TempReg2, 4);
+        CompileReadTLBMiss(TempReg1, TempReg2);
+        Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
+        MoveX86regPointerToX86reg(TempReg1, TempReg2, GetMipsRegMapLo(m_Opcode.rt));
+        if (bRecordLLBit)
+        {
+            MoveConstToVariable(1, _LLBit, "LLBit");
+        }
+    }
+    else
+    {
+        if (IsMapped(m_Opcode.base))
+        {
+            ProtectGPR(m_Opcode.base);
+            if (m_Opcode.offset != 0)
+            {
+                Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
+                LeaSourceAndOffset(GetMipsRegMapLo(m_Opcode.rt), GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
+            }
+            else
+            {
+                Map_GPR_32bit(m_Opcode.rt, ResultSigned, m_Opcode.base);
+            }
+        }
+        else
+        {
+            Map_GPR_32bit(m_Opcode.rt, ResultSigned, m_Opcode.base);
+            AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rt), (int16_t)m_Opcode.immediate);
+        }
+        AndConstToX86Reg(GetMipsRegMapLo(m_Opcode.rt), 0x1FFFFFFF);
+        MoveN64MemToX86reg(GetMipsRegMapLo(m_Opcode.rt), GetMipsRegMapLo(m_Opcode.rt));
+        if (bRecordLLBit)
+        {
+            MoveConstToVariable(1, _LLBit, "LLBit");
         }
     }
     if (g_System->bFastSP() && m_Opcode.rt == 29)
@@ -3240,8 +3234,12 @@ void CX86RecompilerOps::LW_KnownAddress(x86Reg Reg, uint32_t VAddr)
                         g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str());
                     }
                 }
-                break;
             }
+            else
+            {
+                MoveConstToX86reg((uint32_t)((PAddr & 0xFFFF) << 16) | (PAddr & 0xFFFF), Reg);
+            }
+            break;
         case 0x1FC00000:
             sprintf(VarName, "RDRAM + %X", PAddr);
             MoveVariableToX86reg(PAddr + g_MMU->Rdram(), VarName, Reg);
@@ -10974,9 +10972,10 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
         switch (PAddr)
         {
         case 0x04300000:
-            MoveX86regToVariable(Reg, &CMipsMemoryVM::RegModValue, "CMipsMemoryVM::RegModValue");
+            MoveX86regToVariable(Reg, &CMipsMemoryVM::m_MemLookupValue.UW[0], "CMipsMemoryVM::m_MemLookupValue.UW[0]");
+            MoveConstToVariable(PAddr, &CMipsMemoryVM::m_MemLookupAddress, "m_MemLookupAddress");
             m_RegWorkingSet.BeforeCallDirect();
-            Call_Direct((void *)CMipsMemoryVM::ChangeMiIntrMask, "CMipsMemoryVM::ChangeMiModeReg");
+            Call_Direct((void *)CMipsMemoryVM::Write32MIPSInterface, "CMipsMemoryVM::Write32MIPSInterface");
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x0430000C:
@@ -11219,6 +11218,9 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
     case 0x04700000:
         switch (PAddr)
         {
+        case 0x04700000: MoveX86regToVariable(Reg, &g_Reg->RI_MODE_REG, "RI_MODE_REG"); break;
+        case 0x04700004: MoveX86regToVariable(Reg, &g_Reg->RI_CONFIG_REG, "RI_CONFIG_REG"); break;
+        case 0x0470000C: MoveX86regToVariable(Reg, &g_Reg->RI_SELECT_REG, "RI_SELECT_REG"); break;
         case 0x04700010: MoveX86regToVariable(Reg, &g_Reg->RI_REFRESH_REG, "RI_REFRESH_REG"); break;
         default:
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
