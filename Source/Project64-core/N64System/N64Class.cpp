@@ -1518,11 +1518,6 @@ bool CN64System::SaveState()
         SaveFile.DirectoryCreate();
     }
 
-    //delete any old save
-    ExtraInfo.Delete();
-    SaveFile.Delete();
-    ZipFile.Delete();
-
     //Open the file
     if (g_Settings->LoadDword(Game_FuncLookupMode) == FuncFind_ChangeMemory)
     {
@@ -1538,6 +1533,7 @@ bool CN64System::SaveState()
     uint32_t NextViTimer = m_SystemTimer.GetTimer(CSystemTimer::ViTimer);
     if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
     {
+        ZipFile.Delete();
         zipFile file = zipOpen(ZipFile, 0);
         zipOpenNewFileInZip(file, SaveFile.GetNameExtension().c_str(), NULL, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
         zipWriteInFileInZip(file, &SaveID_0, sizeof(SaveID_0));
@@ -1579,6 +1575,8 @@ bool CN64System::SaveState()
     }
     else
     {
+        ExtraInfo.Delete();
+        SaveFile.Delete();
         CFile hSaveFile(SaveFile, CFileBase::modeWrite | CFileBase::modeCreate);
         if (!hSaveFile.IsOpen())
         {
@@ -1662,6 +1660,10 @@ bool CN64System::LoadState()
     CPath ZipFileName;
     ZipFileName = (const std::string &)FileName + ".zip";
 
+    if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
+    {
+        FileName=ZipFileName;
+    }
     if ((g_Settings->LoadDword(Setting_AutoZipInstantSave) && ZipFileName.Exists()) || FileName.Exists())
     {
         if (LoadState(FileName))
