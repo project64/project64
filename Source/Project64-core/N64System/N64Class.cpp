@@ -1845,7 +1845,7 @@ bool CN64System::LoadState(const char * FileName)
 
         CPath ExtraInfo(SaveFile);
         ExtraInfo.SetExtension(".dat");
-        CFile hExtraInfo(ExtraInfo, CFileBase::modeWrite | CFileBase::modeCreate);
+        CFile hExtraInfo(ExtraInfo, CFileBase::modeRead);
         if (hExtraInfo.IsOpen())
         {
             m_SystemTimer.LoadData(hExtraInfo);
