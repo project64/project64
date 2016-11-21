@@ -466,6 +466,34 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         return true;
     }
 
+    if (OpCode32->imm2.opcode == 0xF84 && OpCode32->imm2.Opcode2 == 0)
+    {
+        //42 f8 03 c0 str.w	ip, [r2, r3]
+        if (!g_MMU->SW_NonMemory(MemAddress, *ArmRegisters[OpCode32->imm2.rt]))
+        {
+            if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+            }
+        }
+        context.arm_pc = context.arm_pc + 4;
+        return true;
+    }
+
+    if (OpCode32->imm12.opcode == 0xF8C)
+    {
+        //c9 f8 00 b0 str.w	r11, [r9]
+        if (!g_MMU->SW_NonMemory(MemAddress, *ArmRegisters[OpCode32->imm2.rt]))
+        {
+            if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+            }
+        }
+        context.arm_pc = context.arm_pc + 4;
+        return true;
+    }
+
     if (OpCode32->reg_cond_imm5.opcode == 3 && OpCode32->reg_cond_imm5.opcode1 == 0 && OpCode32->reg_cond_imm5.opcode2 == 0 && OpCode32->reg_cond_imm5.opcode3 == 0)
     {
         //17847001 	strne	r7, [r4, r1]
@@ -508,13 +536,28 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         return true;
     }
 
-    if (OpCode->Reg.opcode == 0x29) //STRH
+    if (OpCode->Reg.opcode == 0x29)
     {
+        // 14 52 strh	r4, [r2, r0]
         if (!g_MMU->SH_NonMemory(MemAddress, *ArmRegisters[OpCode->Reg.rt]))
         {
             if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
             {
                 g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+            }
+        }
+        context.arm_pc = context.arm_pc + 2;
+        return true;
+    }
+
+    if (OpCode->Imm5.opcode == 0xC)
+    {
+        //2e 60 str	r6, [r5, #0]
+        if (!g_MMU->SW_NonMemory(MemAddress, *ArmRegisters[OpCode->Imm5.rt]))
+        {
+            if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to store word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
             }
         }
         context.arm_pc = context.arm_pc + 2;
