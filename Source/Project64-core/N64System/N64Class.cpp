@@ -1518,11 +1518,6 @@ bool CN64System::SaveState()
         SaveFile.DirectoryCreate();
     }
 
-    //delete any old save
-    ExtraInfo.Delete();
-    SaveFile.Delete();
-    ZipFile.Delete();
-
     //Open the file
     if (g_Settings->LoadDword(Game_FuncLookupMode) == FuncFind_ChangeMemory)
     {
@@ -1538,6 +1533,7 @@ bool CN64System::SaveState()
     uint32_t NextViTimer = m_SystemTimer.GetTimer(CSystemTimer::ViTimer);
     if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
     {
+        ZipFile.Delete();
         zipFile file = zipOpen(ZipFile, 0);
         zipOpenNewFileInZip(file, SaveFile.GetNameExtension().c_str(), NULL, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
         zipWriteInFileInZip(file, &SaveID_0, sizeof(SaveID_0));
@@ -1579,6 +1575,8 @@ bool CN64System::SaveState()
     }
     else
     {
+        ExtraInfo.Delete();
+        SaveFile.Delete();
         CFile hSaveFile(SaveFile, CFileBase::modeWrite | CFileBase::modeCreate);
         if (!hSaveFile.IsOpen())
         {
@@ -1627,7 +1625,10 @@ bool CN64System::SaveState()
     m_Reg.MI_INTR_REG = MiInterReg;
     g_Settings->SaveString(GameRunning_InstantSaveFile, "");
     g_Settings->SaveDword(Game_LastSaveTime, (uint32_t)time(NULL));
-
+    if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
+    {
+        SaveFile=ZipFile;
+    }
     g_Notify->DisplayMessage(5, stdstr_f("%s %s", g_Lang->GetString(MSG_SAVED_STATE).c_str(), stdstr(SaveFile.GetNameExtension()).c_str()).c_str());
     WriteTrace(TraceN64System, TraceDebug, "Done");
     return true;
@@ -1662,6 +1663,10 @@ bool CN64System::LoadState()
     CPath ZipFileName;
     ZipFileName = (const std::string &)FileName + ".zip";
 
+    if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
+    {
+        FileName=ZipFileName;
+    }
     if ((g_Settings->LoadDword(Setting_AutoZipInstantSave) && ZipFileName.Exists()) || FileName.Exists())
     {
         if (LoadState(FileName))
@@ -1845,7 +1850,7 @@ bool CN64System::LoadState(const char * FileName)
 
         CPath ExtraInfo(SaveFile);
         ExtraInfo.SetExtension(".dat");
-        CFile hExtraInfo(ExtraInfo, CFileBase::modeWrite | CFileBase::modeCreate);
+        CFile hExtraInfo(ExtraInfo, CFileBase::modeRead);
         if (hExtraInfo.IsOpen())
         {
             m_SystemTimer.LoadData(hExtraInfo);
