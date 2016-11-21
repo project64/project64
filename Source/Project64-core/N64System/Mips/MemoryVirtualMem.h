@@ -40,6 +40,8 @@
 
 #if defined(__i386__) || defined(_M_IX86)
 class CX86RecompilerOps;
+#elif defined(__arm__) || defined(_M_ARM)
+class CArmRecompilerOps;
 #endif
 
 class CMipsMemoryVM :
@@ -118,6 +120,7 @@ private:
     friend CX86RecompilerOps;
 #elif defined(__arm__) || defined(_M_ARM)
     friend CArmRegInfo;
+    friend CArmRecompilerOps;
 #endif
 
     static void RdramChanged(CMipsMemoryVM * _this);
