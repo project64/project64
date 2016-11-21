@@ -102,3 +102,24 @@ void CSpeedLimiter::AlterSpeed( const ESpeedChange SpeedChange )
 	SpeedChanged(m_Speed);
 	FixSpeedRatio();
 }
+
+void CSpeedLimiter::SetSpeed(int Speed)
+{
+    if (Speed < 1)
+    {
+        Speed = 1;
+    }
+    m_Speed = Speed;
+    SpeedChanged(m_Speed);
+    FixSpeedRatio();
+}
+
+int CSpeedLimiter::GetSpeed(void) const
+{
+    return m_Speed;
+}
+
+int CSpeedLimiter::GetBaseSpeed(void) const
+{
+    return m_BaseSpeed;
+}

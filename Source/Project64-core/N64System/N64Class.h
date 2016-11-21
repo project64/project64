@@ -67,6 +67,9 @@ public:
     void   EndEmulation();
     void   SyncToAudio();
     void   AlterSpeed(const CSpeedLimiter::ESpeedChange SpeedChange) { m_Limiter.AlterSpeed(SpeedChange); }
+    void   SetSpeed(int Speed) { m_Limiter.SetSpeed(Speed);  }
+    int    GetSpeed(void) const { return m_Limiter.GetSpeed(); }
+    int    GetBaseSpeed(void) const { return m_Limiter.GetBaseSpeed(); }
     void   Reset(bool bInitReg, bool ClearMenory);
     void   GameReset();
     void   PluginReset();
