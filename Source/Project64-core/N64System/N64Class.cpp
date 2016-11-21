@@ -1627,7 +1627,10 @@ bool CN64System::SaveState()
     m_Reg.MI_INTR_REG = MiInterReg;
     g_Settings->SaveString(GameRunning_InstantSaveFile, "");
     g_Settings->SaveDword(Game_LastSaveTime, (uint32_t)time(NULL));
-
+    if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
+    {
+        SaveFile=ZipFile;
+    }
     g_Notify->DisplayMessage(5, stdstr_f("%s %s", g_Lang->GetString(MSG_SAVED_STATE).c_str(), stdstr(SaveFile.GetNameExtension()).c_str()).c_str());
     WriteTrace(TraceN64System, TraceDebug, "Done");
     return true;
