@@ -156,4 +156,14 @@ void JavaBridge::EmulationStopped(void)
     }
 }
 
+void JavaBridge::RecentRomsUpdated(void)
+{
+    JNIEnv *env = Android_JNI_GetEnv();
+    if (env)
+    {
+        jmethodID midRRecentRomsUpdated = env->GetStaticMethodID(m_GalleryActivityClass, "RecentRomsUpdated", "()V");
+        env->CallStaticVoidMethod(m_GalleryActivityClass, midRRecentRomsUpdated);
+    }
+}
+
 #endif

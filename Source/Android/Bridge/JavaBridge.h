@@ -20,6 +20,7 @@ public:
     void RomListReset(void);
     void RomListAddItem(const char * FullFileName, const char * FileName, const char * GoodName, uint32_t TextColor );
     void RomListLoaded(void);
+    void RecentRomsUpdated(void);
 
     //Notification
     void DisplayError(const char * Message);

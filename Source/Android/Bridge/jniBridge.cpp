@@ -120,7 +120,7 @@ void AddRecentRom(const char * ImagePath)
         RecentGames.push_back(RecentGame);
     }
 
-    //See if the dir is already in the list if so then move it to the top of the list
+    //See if the game is already in the list if so then move it to the top of the list
     strlist::iterator iter;
     for (iter = RecentGames.begin(); iter != RecentGames.end(); iter++)
     {
@@ -141,6 +141,12 @@ void AddRecentRom(const char * ImagePath)
     {
         UISettingsSaveStringIndex(File_RecentGameFileIndex, i, *iter);
     }
+
+    if (g_JavaBridge)
+    {
+        WriteTrace(TraceUserInterface, TraceDebug, "calling RecentRomsUpdated");
+        g_JavaBridge->RecentRomsUpdated();
+    }
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
@@ -156,6 +162,7 @@ void GameCpuRunning(void * /*NotUsed*/)
         {
             AddRecentRom(FileLoc.c_str());
         }
+        g_System->RefreshGameSettings();
     }
     else
     {
@@ -254,7 +261,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveBool(JNIEnv* e
 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveDword(JNIEnv* env, jclass cls, int Type, int Value)
 {
-    WriteTrace(TraceUserInterface, TraceDebug, "Saving %d value: 0x%X",Type,Value);
+    WriteTrace(TraceUserInterface, TraceDebug, "Saving %d value: 0x%X", Type, Value);
     g_Settings->SaveDword((SettingID)Type, Value);
     CSettings::FlushSettings(g_Settings);
     WriteTrace(TraceUserInterface, TraceDebug, "Saved");
