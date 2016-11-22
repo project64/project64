@@ -55,7 +55,7 @@ void CArmRecompilerOps::PostCompileOpcode ( void )
 CArmRecompilerOps::CArmRecompilerOps() :
 m_NextInstruction(NORMAL)
 {
-    memset(&m_Opcode,0,sizeof(m_Opcode));
+    memset(&m_Opcode, 0, sizeof(m_Opcode));
 }
 
 bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
@@ -82,7 +82,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
 {
     static CRegInfo RegBeforeDelay;
     static bool EffectDelaySlot;
-    OPCODE Command = {0};
+    OPCODE Command = { 0 };
 
     if (m_NextInstruction == NORMAL)
     {
@@ -229,7 +229,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
                 {
                     if (DelayLinkLocation != NULL) { g_Notify->BreakPoint(__FILE__, __LINE__); }
                     DelayLinkLocation = *g_RecompPos;
-                    BranchLabel8(ArmBranch_Always,"DoDelaySlot");
+                    BranchLabel8(ArmBranch_Always, "DoDelaySlot");
 
                     CPU_Message("      ");
                     CPU_Message("      %s:", m_Section->m_Jump.BranchLabel.c_str());
@@ -240,7 +240,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
                 {
                     if (DelayLinkLocation != NULL) { g_Notify->BreakPoint(__FILE__, __LINE__); }
                     DelayLinkLocation = *g_RecompPos;
-                    BranchLabel8(ArmBranch_Always,"DoDelaySlot");
+                    BranchLabel8(ArmBranch_Always, "DoDelaySlot");
 
                     CPU_Message("      ");
                     CPU_Message("      %s:", m_Section->m_Cont.BranchLabel.c_str());
@@ -529,8 +529,42 @@ void CArmRecompilerOps::BNE_Compare()
             ProtectGPR(m_Opcode.rt);
             if (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt))
             {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-                CArmRecompilerOps::UnknownOpcode();
+                CompareArmRegToArmReg(
+                    Is32Bit(m_Opcode.rs) ? Map_TempReg(Arm_Any, m_Opcode.rs, true) : GetMipsRegMapHi(m_Opcode.rs),
+                    Is32Bit(m_Opcode.rt) ? Map_TempReg(Arm_Any, m_Opcode.rt, true) : GetMipsRegMapHi(m_Opcode.rt)
+                );
+
+                if (m_Section->m_Jump.FallThrough)
+                {
+                    Jump = *g_RecompPos;
+                    BranchLabel8(ArmBranch_Notequal, "continue");
+                }
+                else
+                {
+                    BranchLabel20(ArmBranch_Notequal, m_Section->m_Jump.BranchLabel.c_str());
+                    m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+                }
+                CompareArmRegToArmReg(GetMipsRegMapLo(m_Opcode.rs), GetMipsRegMapLo(m_Opcode.rt));
+                if (m_Section->m_Cont.FallThrough)
+                {
+                    BranchLabel20(ArmBranch_Notequal, m_Section->m_Jump.BranchLabel.c_str());
+                    m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
+                }
+                else if (m_Section->m_Jump.FallThrough)
+                {
+                    BranchLabel20(ArmBranch_Equal, m_Section->m_Cont.BranchLabel.c_str());
+                    m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+                    CPU_Message("      ");
+                    CPU_Message("      continue:");
+                    SetJump8(Jump, *g_RecompPos);
+                }
+                else
+                {
+                    BranchLabel20(ArmBranch_Equal, m_Section->m_Cont.BranchLabel.c_str());
+                    m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+                    BranchLabel20(ArmBranch_Always, m_Section->m_Jump.BranchLabel.c_str());
+                    m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
+                }
             }
             else
             {
@@ -643,28 +677,29 @@ void CArmRecompilerOps::BNE_Compare()
             ProtectGPR(KnownReg);
         }
 
+        ArmReg TempRegUnknown = Arm_Any;
         if (!g_System->b32BitCore())
         {
-            ArmReg TempReg = Map_TempReg(Arm_Any, UnknownReg, true);
+            TempRegUnknown = Map_TempReg(Arm_Any, UnknownReg, true);
             if (IsConst(KnownReg))
             {
                 if (Is32Bit(KnownReg) && IsSigned(KnownReg))
                 {
-                    CompareArmRegToConst(TempReg, (GetMipsRegLo_S(KnownReg) >> 31));
+                    CompareArmRegToConst(TempRegUnknown, (GetMipsRegLo_S(KnownReg) >> 31));
                 }
                 else if (Is32Bit(KnownReg))
                 {
-                    CompareArmRegToConst(TempReg, 0);
+                    CompareArmRegToConst(TempRegUnknown, 0);
                 }
                 else
                 {
-                    CompareArmRegToConst(TempReg, GetMipsRegHi(KnownReg));
+                    CompareArmRegToConst(TempRegUnknown, GetMipsRegHi(KnownReg));
                 }
             }
             else
             {
                 ProtectGPR(KnownReg);
-                CompareArmRegToArmReg(TempReg, Is32Bit(KnownReg) ? Map_TempReg(Arm_Any, KnownReg, true) : GetMipsRegMapHi(KnownReg));
+                CompareArmRegToArmReg(TempRegUnknown, Is32Bit(KnownReg) ? Map_TempReg(Arm_Any, KnownReg, true) : GetMipsRegMapHi(KnownReg));
             }
             if (m_Section->m_Jump.FallThrough)
             {
@@ -676,17 +711,18 @@ void CArmRecompilerOps::BNE_Compare()
                 BranchLabel20(ArmBranch_Notequal, m_Section->m_Jump.BranchLabel.c_str());
                 m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
+            m_RegWorkingSet.SetArmRegProtected(TempRegUnknown, false);
         }
-        ArmReg TempReg = Map_TempReg(Arm_Any, UnknownReg, false);
+        TempRegUnknown = Map_TempReg(TempRegUnknown, UnknownReg, false);
         if (IsConst(KnownReg))
         {
-            CompareArmRegToConst(TempReg, GetMipsRegLo(KnownReg));
+            CompareArmRegToConst(TempRegUnknown, GetMipsRegLo(KnownReg));
         }
         else
         {
-            CompareArmRegToArmReg(TempReg, GetMipsRegMapLo(KnownReg));
+            CompareArmRegToArmReg(TempRegUnknown, GetMipsRegMapLo(KnownReg));
         }
-        m_RegWorkingSet.SetArmRegProtected(TempReg, false);
+        m_RegWorkingSet.SetArmRegProtected(TempRegUnknown, false);
 
         if (m_Section->m_Cont.FallThrough)
         {
@@ -736,7 +772,7 @@ void CArmRecompilerOps::BNE_Compare()
         {
             ArmReg TempRegRs = Map_TempReg(Arm_Any, m_Opcode.rs, true);
             ArmReg TempRegRt = Map_TempReg(Arm_Any, m_Opcode.rt, true);
-            CompareArmRegToArmReg(TempRegRs,TempRegRt);
+            CompareArmRegToArmReg(TempRegRs, TempRegRt);
             m_RegWorkingSet.SetArmRegProtected(TempRegRs, false);
             m_RegWorkingSet.SetArmRegProtected(TempRegRt, false);
 
@@ -754,7 +790,7 @@ void CArmRecompilerOps::BNE_Compare()
 
         ArmReg TempRegRs = Map_TempReg(Arm_Any, m_Opcode.rs, false);
         ArmReg TempRegRt = Map_TempReg(Arm_Any, m_Opcode.rt, false);
-        CompareArmRegToArmReg(TempRegRs,TempRegRt);
+        CompareArmRegToArmReg(TempRegRs, TempRegRt);
         m_RegWorkingSet.SetArmRegProtected(TempRegRs, false);
         m_RegWorkingSet.SetArmRegProtected(TempRegRt, false);
 
