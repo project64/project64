@@ -2019,7 +2019,10 @@ void CArmRecompilerOps::LB()
 
     if (IsConst(m_Opcode.base))
     {
-        g_Notify->BreakPoint(__FILE__,__LINE__);
+        uint32_t Address = (GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset) ^ 3;
+        Map_GPR_32bit(m_Opcode.rt, true, -1);
+        LB_KnownAddress(GetMipsRegMapLo(m_Opcode.rt), Address, true);
+        return;
     }
     if (IsMapped(m_Opcode.rt))
     {
@@ -4658,6 +4661,46 @@ void CArmRecompilerOps::OverflowDelaySlot(bool TestTimer)
 
     ExitCodeBlock();
     m_NextInstruction = END_BLOCK;
+}
+
+void CArmRecompilerOps::LB_KnownAddress(ArmReg Reg, uint32_t VAddr, bool SignExtend)
+{
+    m_RegWorkingSet.SetArmRegProtected(Reg, true);
+
+    if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
+    {
+        if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        return;
+    }
+
+    uint32_t PAddr;
+    if (!g_TransVaddr->TranslateVaddr(VAddr, PAddr))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    ArmReg TempReg = Arm_Unknown;
+    switch (PAddr & 0xFFF00000)
+    {
+    case 0x00000000:
+    case 0x00100000:
+    case 0x00200000:
+    case 0x00300000:
+    case 0x00400000:
+    case 0x00500000:
+    case 0x00600000:
+    case 0x00700000:
+    case 0x10000000:
+        TempReg = Map_TempReg(Arm_Any, -1, false);
+        MoveConstToArmReg(TempReg, (uint32_t)PAddr + (uint32_t)g_MMU->Rdram(), stdstr_f("RDRAM + %X", PAddr).c_str());
+        LoadArmRegPointerByteToArmReg(Reg, TempReg, 0);
+        SignExtendByte(Reg);
+        break;
+    default:
+        CPU_Message("    Should be loading from %08X ?!?", VAddr);
+        if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+    }
 }
 
 #endif

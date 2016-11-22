@@ -247,6 +247,7 @@ private:
 
     static inline void ProtectGPR(uint32_t Reg) { m_RegWorkingSet.ProtectGPR(Reg); }
 
+    void LB_KnownAddress(ArmReg Reg, uint32_t VAddr, bool SignExtend);
     void CompileInterpterCall (void * Function, const char * FunctionName);
     void OverflowDelaySlot(bool TestTimer);
 
