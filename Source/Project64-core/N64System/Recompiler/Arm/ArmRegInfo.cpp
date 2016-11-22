@@ -656,8 +656,9 @@ bool CArmRegInfo::UnMap_ArmReg(ArmReg Reg)
     }
     else if (GetArmRegMapped(Reg) == Variable_Mapped)
     {
-        CPU_Message("    regcache: unallocate %s from variable mapping", ArmRegName(Reg));
+        CPU_Message("    regcache: unallocate %s from variable mapping (%s)", ArmRegName(Reg), VariableMapName(GetVariableMappedTo(Reg)));
         SetArmRegMapped(Reg, NotMapped);
+        m_Variable_MappedTo[Reg] = VARIABLE_UNKNOWN;
         return true;
     }
     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -958,6 +959,22 @@ void CArmRegInfo::ProtectGPR(uint32_t Reg)
         SetArmRegProtected(GetMipsRegMapHi(Reg), true);
     }
     SetArmRegProtected(GetMipsRegMapLo(Reg), true);
+}
+
+const char * CArmRegInfo::VariableMapName(VARIABLE_MAPPED variable)
+{
+    switch (variable)
+    {
+    case VARIABLE_UNKNOWN: return "UNKNOWN";
+    case VARIABLE_GPR: return "_GPR";
+    case VARIABLE_FPR: return "_FPR_S";
+    case VARIABLE_TLB_READMAP: return "m_TLB_ReadMap";
+    case VARIABLE_TLB_LOAD_ADDRESS: return "g_TLBLoadAddress";
+    case VARIABLE_NEXT_TIMER: return "g_NextTimer";
+    default:
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return "unknown VariableMapName";
+    }
 }
 
 #endif

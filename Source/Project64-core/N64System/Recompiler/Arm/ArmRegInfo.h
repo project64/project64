@@ -75,9 +75,15 @@ public:
     inline uint32_t GetArmRegMapOrder(ArmReg Reg) const { return m_ArmReg_MapOrder[Reg]; }
     inline bool GetArmRegProtected(ArmReg Reg) const { return m_ArmReg_Protected[Reg]; }
     inline REG_MAPPED GetArmRegMapped(ArmReg Reg) const { return m_ArmReg_MappedTo[Reg]; }
+
     inline void SetArmRegMapOrder(ArmReg Reg, uint32_t Order) { m_ArmReg_MapOrder[Reg] = Order; }
     inline void SetArmRegProtected(ArmReg Reg, bool Protected) { m_ArmReg_Protected[Reg] = Protected; }
     inline void SetArmRegMapped(ArmReg Reg, REG_MAPPED Mapping) { m_ArmReg_MappedTo[Reg] = Mapping; }
+
+    inline VARIABLE_MAPPED GetVariableMappedTo(ArmReg Reg) const { return m_Variable_MappedTo[Reg]; }
+    inline void SetVariableMappedTo(ArmReg Reg, VARIABLE_MAPPED variable) { m_Variable_MappedTo[Reg] = variable; }
+    static const char * VariableMapName(VARIABLE_MAPPED variable);
+
 private:
     bool ShouldPushPopReg (ArmReg Reg);
 
