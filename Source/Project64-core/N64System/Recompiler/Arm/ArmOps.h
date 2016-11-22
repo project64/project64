@@ -121,7 +121,7 @@ public:
         ArmPushPop_PC = 0x8000,
     };
 
-    enum ArmBranchCompare
+    enum ArmCompareType
     {
         ArmBranch_Equal = 0,               //Code = 0000
         ArmBranch_Notequal = 1,            //Code = 0001
@@ -160,12 +160,12 @@ protected:
     static void AddConstToArmReg(ArmReg DestReg, uint32_t Const);
     static void AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const);
     static void AndArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg);
-    static void BranchLabel8(ArmBranchCompare CompareType, const char * Label);
-    static void BranchLabel20(ArmBranchCompare CompareType, const char * Label);
+    static void BranchLabel8(ArmCompareType CompareType, const char * Label);
+    static void BranchLabel20(ArmCompareType CompareType, const char * Label);
     static void CallFunction(void * Function, const char * FunctionName);
     static void CompareArmRegToConst(ArmReg Reg, uint32_t value);
     static void CompareArmRegToArmReg(ArmReg Reg1, ArmReg Reg2);
-    static void IfBlock(ArmItMask mask, ArmBranchCompare CompareType);
+    static void IfBlock(ArmItMask mask, ArmCompareType CompareType);
     static void LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift);
     static void LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8_t Offset);
     static void LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift);
@@ -204,9 +204,9 @@ protected:
     static CArmRegInfo m_RegWorkingSet;
 
 protected:
-    static const char * ArmBranchSuffix(ArmBranchCompare CompareType);
     static const char * ArmRegName(ArmReg Reg);
-    static bool ArmCompareInverse(ArmBranchCompare CompareType);
+    static bool ArmCompareInverse(ArmCompareType CompareType);
+    static const char * ArmCompareSuffix(ArmCompareType CompareType);
     static const char * ArmFpuSingleName(ArmFpuSingle Reg);
     static const char * ArmItMaskName(ArmItMask mask);
 
@@ -219,7 +219,7 @@ protected:
 
     static bool mInItBlock;
     static int mItBlockInstruction;
-    static ArmBranchCompare mItBlockCompareType;
+    static ArmCompareType mItBlockCompareType;
     static ArmItMask mItBlockMask;
 };
 

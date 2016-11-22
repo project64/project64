@@ -20,7 +20,7 @@
 CArmRegInfo CArmOps::m_RegWorkingSet;
 bool CArmOps::mInItBlock = false;
 int CArmOps::mItBlockInstruction = 0;
-CArmOps::ArmBranchCompare CArmOps::mItBlockCompareType;
+CArmOps::ArmCompareType CArmOps::mItBlockCompareType;
 CArmOps::ArmItMask CArmOps::mItBlockMask;
 
 /**************************************************************************
@@ -176,11 +176,11 @@ void CArmOps::AndArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg)
     }
 }
 
-void CArmOps::BranchLabel8(ArmBranchCompare CompareType, const char * Label)
+void CArmOps::BranchLabel8(ArmCompareType CompareType, const char * Label)
 {
     if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 
-    CPU_Message("      b%s\t%s", ArmBranchSuffix(CompareType),Label);
+    CPU_Message("      b%s\t%s", ArmCompareSuffix(CompareType),Label);
     ArmThumbOpcode op = {0};
     if (CompareType == ArmBranch_Always)
     {
@@ -196,11 +196,11 @@ void CArmOps::BranchLabel8(ArmBranchCompare CompareType, const char * Label)
     AddCode16(op.Hex);
 }
 
-void CArmOps::BranchLabel20(ArmBranchCompare CompareType, const char * Label)
+void CArmOps::BranchLabel20(ArmCompareType CompareType, const char * Label)
 {
     if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 
-    CPU_Message("      b%s\t%s", ArmBranchSuffix(CompareType),Label);
+    CPU_Message("      b%s\t%s", ArmCompareSuffix(CompareType),Label);
     Arm32Opcode op = {0};
     op.Branch20.imm6 = 0;
     op.Branch20.cond = CompareType == ArmBranch_Always ? 0 : CompareType;
@@ -340,11 +340,11 @@ void CArmOps::CompareArmRegToArmReg(ArmReg Reg1, ArmReg Reg2)
     }
 }
 
-void CArmOps::IfBlock(ArmItMask mask, ArmBranchCompare CompareType)
+void CArmOps::IfBlock(ArmItMask mask, ArmCompareType CompareType)
 {
     if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 
-    CPU_Message("      it%s\t%s", ArmItMaskName(mask), ArmBranchSuffix(CompareType));
+    CPU_Message("      it%s\t%s", ArmItMaskName(mask), ArmCompareSuffix(CompareType));
     mInItBlock = true;
     mItBlockInstruction = 0;
     mItBlockCompareType = CompareType;
@@ -1191,7 +1191,7 @@ void * CArmOps::GetAddressOf(int value, ...)
     return Address;
 }
 
-bool CArmOps::ArmCompareInverse (ArmBranchCompare CompareType)
+bool CArmOps::ArmCompareInverse (ArmCompareType CompareType)
 {
     switch (CompareType)
     {
@@ -1207,7 +1207,7 @@ bool CArmOps::ArmCompareInverse (ArmBranchCompare CompareType)
     return false;
 }
 
-const char * CArmOps::ArmBranchSuffix(ArmBranchCompare CompareType)
+const char * CArmOps::ArmCompareSuffix(ArmCompareType CompareType)
 {
     switch (CompareType)
     {
