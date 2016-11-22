@@ -1674,6 +1674,7 @@ bool CN64System::LoadState()
             return true;
         }
     }
+    CPath NewFileName = FileName;
 
     //Use old file Name
     if (g_Settings->LoadDword(Game_CurrentSaveState) != 0)
@@ -1686,6 +1687,17 @@ bool CN64System::LoadState()
     }
     bool Result = LoadState(FileName);
     WriteTrace(TraceN64System, TraceDebug, "Done (res: %s)", Result ? "True" : "False");
+    if (Result == false)
+    {
+        if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
+        {
+            Result = LoadState(ZipFileName);
+        }
+        else
+        {
+            Result = LoadState(NewFileName);
+        }
+    }
     return Result;
 }
 
