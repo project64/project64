@@ -1177,16 +1177,16 @@ void CArmRecompilerOps::BGTZ_Compare()
             }
         }
     }
-    else if ((IsMapped(m_Opcode.rs) && Is32Bit(m_Opcode.rs)) || (IsUnknown(m_Opcode.rs) && g_System->b32BitCore()) )
+    else if ((IsMapped(m_Opcode.rs) && Is32Bit(m_Opcode.rs)) || (IsUnknown(m_Opcode.rs) && g_System->b32BitCore()))
     {
         if (IsMapped(m_Opcode.rs))
         {
-            CompareArmRegToConst(GetMipsRegMapLo(m_Opcode.rs),0);
+            CompareArmRegToConst(GetMipsRegMapLo(m_Opcode.rs), 0);
         }
         else
         {
             ArmReg TempReg = Map_TempReg(Arm_Any, m_Opcode.rs, false);
-            CompareArmRegToConst(TempReg,0);
+            CompareArmRegToConst(TempReg, 0);
         }
         if (m_Section->m_Jump.FallThrough)
         {
@@ -1212,13 +1212,13 @@ void CArmRecompilerOps::BGTZ_Compare()
 
         if (IsMapped(m_Opcode.rs))
         {
-            CompareArmRegToConst(GetMipsRegMapHi(m_Opcode.rs),0);
+            CompareArmRegToConst(GetMipsRegMapHi(m_Opcode.rs), 0);
         }
         else
         {
             ArmReg TempReg = Map_TempReg(Arm_Any, m_Opcode.rs, true);
-            CompareArmRegToConst(TempReg,0);
-            m_RegWorkingSet.SetArmRegProtected(TempReg,false);
+            CompareArmRegToConst(TempReg, 0);
+            m_RegWorkingSet.SetArmRegProtected(TempReg, false);
         }
         if (m_Section->m_Jump.FallThrough)
         {
@@ -1244,13 +1244,13 @@ void CArmRecompilerOps::BGTZ_Compare()
 
         if (IsMapped(m_Opcode.rs))
         {
-            CompareArmRegToConst(GetMipsRegMapLo(m_Opcode.rs),0);
+            CompareArmRegToConst(GetMipsRegMapLo(m_Opcode.rs), 0);
         }
         else
         {
             ArmReg TempReg = Map_TempReg(Arm_Any, m_Opcode.rs, false);
-            CompareArmRegToConst(TempReg,0);
-            m_RegWorkingSet.SetArmRegProtected(TempReg,false);
+            CompareArmRegToConst(TempReg, 0);
+            m_RegWorkingSet.SetArmRegProtected(TempReg, false);
         }
         if (m_Section->m_Jump.FallThrough)
         {
@@ -1343,8 +1343,72 @@ void CArmRecompilerOps::BLEZ_Compare()
         }
         else
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            CArmRecompilerOps::UnknownOpcode();
+            uint8_t *Jump = NULL;
+
+            ArmReg TempRegRs = Arm_Any;
+            if (IsMapped(m_Opcode.rs))
+            {
+                CompareArmRegToConst(GetMipsRegMapHi(m_Opcode.rs), 0);
+            }
+            else
+            {
+                TempRegRs = Map_TempReg(Arm_Any, m_Opcode.rs, true);
+                CompareArmRegToConst(TempRegRs, 0);
+                m_RegWorkingSet.SetArmRegProtected(TempRegRs, false);
+            }
+            if (m_Section->m_Jump.FallThrough)
+            {
+                BranchLabel20(ArmBranch_GreaterThan, m_Section->m_Cont.BranchLabel.c_str());
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+                Jump = *g_RecompPos;
+                BranchLabel8(ArmBranch_LessThan, "Continue");
+            }
+            else if (m_Section->m_Cont.FallThrough)
+            {
+                Jump = *g_RecompPos;
+                BranchLabel8(ArmBranch_GreaterThan, "Continue");
+                BranchLabel20(ArmBranch_LessThan, m_Section->m_Jump.BranchLabel.c_str());
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+            }
+            else
+            {
+                BranchLabel20(ArmBranch_GreaterThan, m_Section->m_Cont.BranchLabel.c_str());
+                m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+                BranchLabel20(ArmBranch_LessThan, m_Section->m_Jump.BranchLabel.c_str());
+                m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+            }
+
+            if (IsMapped(m_Opcode.rs))
+            {
+                CompareArmRegToConst(GetMipsRegMapLo(m_Opcode.rs), 0);
+            }
+            else
+            {
+                TempRegRs = Map_TempReg(TempRegRs, m_Opcode.rs, false);
+                CompareArmRegToConst(TempRegRs, 0);
+                m_RegWorkingSet.SetArmRegProtected(TempRegRs, false);
+            }
+            if (m_Section->m_Jump.FallThrough)
+            {
+                BranchLabel20(ArmBranch_Notequal, m_Section->m_Cont.BranchLabel.c_str());
+                m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
+                CPU_Message("      continue:");
+                SetJump8(Jump, *g_RecompPos);
+            }
+            else if (m_Section->m_Cont.FallThrough)
+            {
+                BranchLabel20(ArmBranch_Equal, m_Section->m_Jump.BranchLabel.c_str());
+                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
+                CPU_Message("      continue:");
+                SetJump8(Jump, *g_RecompPos);
+            }
+            else
+            {
+                BranchLabel20(ArmBranch_Notequal, m_Section->m_Cont.BranchLabel.c_str());
+                m_Section->m_Cont.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
+                BranchLabel20(ArmBranch_Always, "BranchToJump");
+                m_Section->m_Jump.LinkLocation2 = (uint32_t *)(*g_RecompPos - 4);
+            }
         }
     }
     else
@@ -1354,8 +1418,8 @@ void CArmRecompilerOps::BLEZ_Compare()
         if (!g_System->b32BitCore())
         {
             ArmReg TempReg = Map_TempReg(Arm_Any, m_Opcode.rs, true);
-            CompareArmRegToConst(TempReg,0);
-            m_RegWorkingSet.SetArmRegProtected(TempReg,false);
+            CompareArmRegToConst(TempReg, 0);
+            m_RegWorkingSet.SetArmRegProtected(TempReg, false);
             if (m_Section->m_Jump.FallThrough)
             {
                 BranchLabel20(ArmBranch_GreaterThan, m_Section->m_Cont.BranchLabel.c_str());
@@ -1378,8 +1442,8 @@ void CArmRecompilerOps::BLEZ_Compare()
                 m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
             TempReg = Map_TempReg(Arm_Any, m_Opcode.rs, false);
-            CompareArmRegToConst(TempReg,0);
-            m_RegWorkingSet.SetArmRegProtected(TempReg,false);
+            CompareArmRegToConst(TempReg, 0);
+            m_RegWorkingSet.SetArmRegProtected(TempReg, false);
             if (m_Section->m_Jump.FallThrough)
             {
                 BranchLabel20(ArmBranch_Notequal, m_Section->m_Cont.BranchLabel.c_str());
@@ -1411,8 +1475,8 @@ void CArmRecompilerOps::BLEZ_Compare()
         else
         {
             ArmReg TempReg = Map_TempReg(Arm_Any, m_Opcode.rs, false);
-            CompareArmRegToConst(TempReg,0);
-            m_RegWorkingSet.SetArmRegProtected(TempReg,false);
+            CompareArmRegToConst(TempReg, 0);
+            m_RegWorkingSet.SetArmRegProtected(TempReg, false);
             if (m_Section->m_Jump.FallThrough)
             {
                 BranchLabel20(ArmBranch_GreaterThan, m_Section->m_Cont.BranchLabel.c_str());
