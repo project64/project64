@@ -1029,6 +1029,25 @@ void CArmRegInfo::ProtectGPR(uint32_t Reg)
     SetArmRegProtected(GetMipsRegMapLo(Reg), true);
 }
 
+void CArmRegInfo::UnProtectGPR(uint32_t Reg)
+{
+    if (m_InCallDirect)
+    {
+        CPU_Message("%s: in CallDirect", __FUNCTION__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    if (IsUnknown(Reg) || IsConst(Reg))
+    {
+        return;
+    }
+    if (Is64Bit(Reg))
+    {
+        SetArmRegProtected(GetMipsRegMapHi(Reg), false);
+    }
+    SetArmRegProtected(GetMipsRegMapLo(Reg), false);
+}
+
 const char * CArmRegInfo::VariableMapName(VARIABLE_MAPPED variable)
 {
     switch (variable)
