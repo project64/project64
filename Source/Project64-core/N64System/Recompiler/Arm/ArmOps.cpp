@@ -279,6 +279,26 @@ void CArmOps::CallFunction(void * Function, const char * FunctionName)
     AddCode16(op.Hex);
 }
 
+void CArmOps::MoveArmRegToVariable(ArmReg Reg, void * Variable, const char * VariableName)
+{
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+    bool WasRegProtected = m_RegWorkingSet.GetArmRegProtected(Reg);
+    if (!WasRegProtected)
+    {
+        m_RegWorkingSet.SetArmRegProtected(Reg, true);
+    }
+
+    ArmReg VariableReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+    MoveConstToArmReg(VariableReg, (uint32_t)Variable, VariableName);
+    StoreArmRegToArmRegPointer(Reg, VariableReg, 0);
+
+    m_RegWorkingSet.SetArmRegProtected(VariableReg, false);
+    if (!WasRegProtected)
+    {
+        m_RegWorkingSet.SetArmRegProtected(Reg, false);
+    }
+}
+
 void CArmOps::MoveConstToArmReg(ArmReg DestReg, uint16_t Const, const char * comment)
 {
     if (comment != NULL)
