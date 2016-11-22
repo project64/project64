@@ -749,8 +749,54 @@ CArmOps::ArmReg CArmRegInfo::FreeArmReg(bool TempMapping)
             }
         }
     }
+
+    LogRegisterState();
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return Arm_Unknown;
+}
+
+void CArmRegInfo::LogRegisterState(void)
+{
+    if (!g_bRecompilerLogging)
+    {
+        return;
+    }
+
+    for (uint32_t i = 0; i < 16; i++)
+    {
+        stdstr regname;
+
+        if (GetArmRegMapped((ArmReg)i) == CArmRegInfo::GPR_Mapped)
+        {
+            for (uint32_t count = 1; count < 32; count++)
+            {
+                if (!IsMapped(count))
+                {
+                    continue;
+                }
+
+                if (Is64Bit(count) && GetMipsRegMapHi(count) == (ArmReg)i)
+                {
+                    regname = CRegName::GPR_Hi[count];
+                    break;
+                }
+                if (GetMipsRegMapLo(count) == (ArmReg)i)
+                {
+                    regname = CRegName::GPR_Lo[count];
+                    break;
+                }
+            }
+        }
+
+        CPU_Message("GetArmRegMapped(%s) = %X%s%s Protected: %s MapOrder: %d",
+            ArmRegName((ArmReg)i),
+            GetArmRegMapped((ArmReg)i),
+            GetArmRegMapped((ArmReg)i) == CArmRegInfo::Variable_Mapped ? stdstr_f(" (%s)", CArmRegInfo::VariableMapName(GetVariableMappedTo((ArmReg)i))).c_str() : "",
+            regname.length() > 0 ? stdstr_f(" (%s)", regname.c_str()).c_str() : "",
+            GetArmRegProtected((ArmReg)i) ? "true" : "false",
+            GetArmRegMapOrder((ArmReg)i)
+        );
+    }
 }
 
 CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadHiWord)

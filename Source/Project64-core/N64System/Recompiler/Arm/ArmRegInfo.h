@@ -87,6 +87,8 @@ public:
     inline void SetVariableMappedTo(ArmReg Reg, VARIABLE_MAPPED variable) { m_Variable_MappedTo[Reg] = variable; }
     static const char * VariableMapName(VARIABLE_MAPPED variable);
 
+    void LogRegisterState(void);
+
 private:
     bool ShouldPushPopReg (ArmReg Reg);
 
