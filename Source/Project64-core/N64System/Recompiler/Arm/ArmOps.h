@@ -185,6 +185,7 @@ protected:
     static void MoveVariableToFloatReg(void * Variable, const char * VariableName, ArmFpuSingle reg);
     static void OrArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2, uint32_t shift);
     static void OrConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t value);
+    static void OrConstToVariable(void * Variable, const char * VariableName, uint32_t value);
     static void MulF32(ArmFpuSingle DestReg, ArmFpuSingle SourceReg1, ArmFpuSingle SourceReg2);
     static void PushArmReg(uint16_t Registers);
     static void PopArmReg(uint16_t Registers);

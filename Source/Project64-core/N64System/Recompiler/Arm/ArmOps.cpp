@@ -721,6 +721,27 @@ void CArmOps::OrConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t value)
     }
 }
 
+void CArmOps::OrConstToVariable(void * Variable, const char * VariableName, uint32_t value)
+{
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+
+    ArmReg TempReg1 = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+    ArmReg TempReg2 = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+    if (TempReg1 == Arm_Unknown || TempReg2 == Arm_Unknown)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    MoveConstToArmReg(TempReg1, (uint32_t)Variable, VariableName);
+
+    LoadArmRegPointerToArmReg(TempReg2, TempReg1, 0);
+    OrConstToArmReg(TempReg2, TempReg2, value);
+    StoreArmRegToArmRegPointer(TempReg2, TempReg1, 0);
+
+    m_RegWorkingSet.SetArmRegProtected(TempReg1, false);
+    m_RegWorkingSet.SetArmRegProtected(TempReg2, false);
+}
+
 void CArmOps::MulF32(ArmFpuSingle DestReg, ArmFpuSingle SourceReg1, ArmFpuSingle SourceReg2)
 {
     if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
