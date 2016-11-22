@@ -90,6 +90,13 @@ union ArmThumbOpcode
         unsigned p : 1;
         unsigned opcode : 7;
     } Pop;
+
+    struct
+    {
+        unsigned mask : 4;
+        unsigned firstcond : 4;
+        unsigned opcode : 8;
+    } It;
 };
 
 union Arm32Opcode

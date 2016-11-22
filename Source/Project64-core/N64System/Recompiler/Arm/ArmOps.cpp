@@ -18,6 +18,10 @@
 #include <Project64-core/N64System/Recompiler/Arm/ArmRegInfo.h>
 
 CArmRegInfo CArmOps::m_RegWorkingSet;
+bool CArmOps::mInItBlock = false;
+int CArmOps::mItBlockInstruction = 0;
+CArmOps::ArmBranchCompare CArmOps::mItBlockCompareType;
+CArmOps::ArmItMask CArmOps::mItBlockMask;
 
 /**************************************************************************
 * Logging Functions                                                       *
@@ -36,6 +40,8 @@ void CArmOps::WriteArmLabel(const char * Label)
 
 void CArmOps::AddArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if (DestReg <= 7 && SourceReg1 <=7 && SourceReg2 <= 7)
     {
         CPU_Message("      add\t%s,%s,%s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
@@ -66,11 +72,15 @@ void CArmOps::AddArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg Source
 
 void CArmOps::AddConstToArmReg(ArmReg DestReg, uint32_t Const)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     AddConstToArmReg(DestReg, DestReg, Const);
 }
 
 void CArmOps::AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if (DestReg == SourceReg && Const == 0)
     {
         //ignore
@@ -136,6 +146,8 @@ void CArmOps::AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const)
 
 void CArmOps::AndArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if (DestReg <= 0x7 && SourceReg <= 0x7 )
     {
         CPU_Message("      ands\t%s, %s", ArmRegName(DestReg), ArmRegName(SourceReg));
@@ -166,6 +178,8 @@ void CArmOps::AndArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg)
 
 void CArmOps::BranchLabel8(ArmBranchCompare CompareType, const char * Label)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     CPU_Message("      b%s\t%s", ArmBranchSuffix(CompareType),Label);
     ArmThumbOpcode op = {0};
     if (CompareType == ArmBranch_Always)
@@ -184,6 +198,8 @@ void CArmOps::BranchLabel8(ArmBranchCompare CompareType, const char * Label)
 
 void CArmOps::BranchLabel20(ArmBranchCompare CompareType, const char * Label)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     CPU_Message("      b%s\t%s", ArmBranchSuffix(CompareType),Label);
     Arm32Opcode op = {0};
     op.Branch20.imm6 = 0;
@@ -200,6 +216,8 @@ void CArmOps::BranchLabel20(ArmBranchCompare CompareType, const char * Label)
 
 void CArmOps::CallFunction(void * Function, const char * FunctionName)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     ArmReg reg = Arm_R4;
     MoveConstToArmReg(reg,(uint32_t)Function,FunctionName);
     int32_t Offset=(int32_t)Function-(int32_t)*g_RecompPos;
@@ -235,14 +253,10 @@ void CArmOps::MoveConstToArmReg(ArmReg DestReg, uint16_t Const, const char * com
 
 void CArmOps::MoveConstToArmRegTop(ArmReg DestReg, uint16_t Const, const char * comment)
 {
-    if (comment != NULL)
-    {
-        CPU_Message("      movt\t%s, #0x%X\t; %s", ArmRegName(DestReg), (uint32_t)Const, comment);
-    }
-    else
-    {
-        CPU_Message("      movt\t%s, #%d\t; 0x%X", ArmRegName(DestReg), (uint32_t)Const, (uint32_t)Const);
-    }
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
+    CPU_Message("      movt\t%s, %s", ArmRegName(DestReg), comment != NULL ? stdstr_f("#0x%X\t; %s",(uint32_t)Const, comment).c_str() : stdstr_f("#%d\t; 0x%X", (uint32_t)Const, (uint32_t)Const).c_str());
+
     Arm32Opcode op = {0};
     op.imm16.opcode = ArmMOV_IMM16;
     op.imm16.i = ((Const >> 11) & 0x1);
@@ -257,6 +271,8 @@ void CArmOps::MoveConstToArmRegTop(ArmReg DestReg, uint16_t Const, const char * 
 
 void CArmOps::CompareArmRegToConst(ArmReg Reg, uint32_t value)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if (Reg <= 0x7 && (value & 0xFFFFFF00) == 0)
     {
         CPU_Message("      cmp\t%s, #%d\t; 0x%X", ArmRegName(Reg), value, value);
@@ -294,6 +310,8 @@ void CArmOps::CompareArmRegToConst(ArmReg Reg, uint32_t value)
 
 void CArmOps::CompareArmRegToArmReg(ArmReg Reg1, ArmReg Reg2)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if (Reg1 <= 0x7 && Reg2 <= 0x7 )
     {
         CPU_Message("      cmp\t%s, %s", ArmRegName(Reg1), ArmRegName(Reg2));
@@ -322,8 +340,36 @@ void CArmOps::CompareArmRegToArmReg(ArmReg Reg1, ArmReg Reg2)
     }
 }
 
+void CArmOps::IfBlock(ArmItMask mask, ArmBranchCompare CompareType)
+{
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
+    CPU_Message("      it%s\t%s", ArmItMaskName(mask), ArmBranchSuffix(CompareType));
+    mInItBlock = true;
+    mItBlockInstruction = 0;
+    mItBlockCompareType = CompareType;
+    mItBlockMask = mask;
+
+    uint8_t computed_mask = 0;
+    switch (mask)
+    {
+    case ItMask_None: computed_mask = 0x8; break;
+    case ItMask_E: computed_mask = ArmCompareInverse(CompareType) ? 0x4 : 0xC; break;
+    default:
+        g_Notify->BreakPoint(__FILE__,__LINE__);
+    }
+
+    ArmThumbOpcode op = {0};
+    op.It.mask = computed_mask;
+    op.It.firstcond = CompareType;
+    op.It.opcode = 0xBF;
+    AddCode16(op.Hex);
+}
+
 void CArmOps::LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if ((DestReg > 0x7 || RegPointer > 0x7 ||  RegPointer2 > 0x7) && (shift & ~3) == 0)
     {
         CPU_Message("      ldrb\t%s, [%s,%s]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2));
@@ -354,6 +400,8 @@ void CArmOps::LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, A
 
 void CArmOps::LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8_t Offset)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if (DestReg > 0x7 || RegPointer > 0x7 || (Offset & (~0x7C)) != 0)
     {
         if ((Offset & (~0xFFF)) != 0)
@@ -384,6 +432,8 @@ void CArmOps::LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8
 
 void CArmOps::LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if ((shift & ~3) != 0)
     {
         g_Notify->BreakPoint(__FILE__,__LINE__);
@@ -416,6 +466,8 @@ void CArmOps::LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmRe
 
 void CArmOps::LoadArmRegPointerToFloatReg(ArmReg RegPointer, ArmFpuSingle Reg, uint8_t Offset)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if (Offset != 0)
     {
         CPU_Message("      vldr\t%s, [%s, #%d]", ArmFpuSingleName(Reg), ArmRegName(RegPointer), (uint32_t)Offset);
@@ -439,11 +491,15 @@ void CArmOps::LoadArmRegPointerToFloatReg(ArmReg RegPointer, ArmFpuSingle Reg, u
 
 void CArmOps::MoveArmRegArmReg(ArmReg DestReg, ArmReg SourceReg)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     g_Notify->BreakPoint(__FILE__,__LINE__);
 }
 
 void CArmOps::LoadFloatingPointControlReg(ArmReg DestReg)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     CPU_Message("      vmrs\t%s, fpscr", ArmRegName(DestReg));
     Arm32Opcode op = {0};
     op.fpscr.opcode2 = 0xA10;
@@ -454,6 +510,8 @@ void CArmOps::LoadFloatingPointControlReg(ArmReg DestReg)
 
 void CArmOps::MoveConstToArmReg(ArmReg DestReg, uint32_t Const, const char * comment)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     MoveConstToArmReg(DestReg,(uint16_t)(Const & 0xFFFF),comment);
     uint16_t TopValue = (uint16_t)((Const >> 16) & 0xFFFF);
     if (TopValue != 0)
@@ -464,6 +522,8 @@ void CArmOps::MoveConstToArmReg(ArmReg DestReg, uint32_t Const, const char * com
 
 void CArmOps::MoveConstToVariable(uint32_t Const, void * Variable, const char * VariableName)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     ArmReg TempReg1 = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
     ArmReg TempReg2 = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
 
@@ -477,37 +537,38 @@ void CArmOps::MoveConstToVariable(uint32_t Const, void * Variable, const char * 
 
 void CArmOps::MoveFloatRegToVariable(ArmFpuSingle reg, void * Variable, const char * VariableName)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     MoveConstToArmReg(Arm_R0,(uint32_t)Variable,VariableName);
     StoreFloatRegToArmRegPointer(reg,Arm_R0,0);
 }
 
 void CArmOps::MoveVariableToArmReg(void * Variable, const char * VariableName, ArmReg reg)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     MoveConstToArmReg(reg,(uint32_t)Variable,VariableName);
     LoadArmRegPointerToArmReg(reg,reg,0);
 }
 
 void CArmOps::MoveVariableToFloatReg(void * Variable, const char * VariableName, ArmFpuSingle reg)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     MoveConstToArmReg(Arm_R0,(uint32_t)Variable,VariableName);
     LoadArmRegPointerToFloatReg(Arm_R0,reg,0);
 }
 
 void CArmOps::OrArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2, uint32_t shift)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if (shift == 0 && SourceReg1 == SourceReg2 && SourceReg1 <= 7 && SourceReg2 <= 7)
     {
         g_Notify->BreakPoint(__FILE__,__LINE__);
         return;
     }
-    if (shift)
-    {
-        CPU_Message("      orr.w\t%s, %s, %s, lsl #%d", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2), shift);
-    }
-    else
-    {
-        CPU_Message("      orr.w\t%s, %s, %s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
-    }
+    CPU_Message("      orr.w\t%s, %s, %s%s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2), shift ? stdstr_f(", lsl #%d",shift).c_str() : "");
     Arm32Opcode op = {0};
     op.imm5.rn = SourceReg1;
     op.imm5.s = 0;
@@ -525,6 +586,8 @@ void CArmOps::OrArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceR
 
 void CArmOps::MulF32(ArmFpuSingle DestReg, ArmFpuSingle SourceReg1, ArmFpuSingle SourceReg2)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     CPU_Message("      vmul.f32\t%s, %s, %s", ArmFpuSingleName(DestReg), ArmFpuSingleName(SourceReg1), ArmFpuSingleName(SourceReg2));
     Arm32Opcode op = {0};
     op.VnVmVd.vn = SourceReg1 >> 1;
@@ -546,6 +609,8 @@ void CArmOps::MulF32(ArmFpuSingle DestReg, ArmFpuSingle SourceReg1, ArmFpuSingle
 
 void CArmOps::PushArmReg(uint16_t Registers)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if (Registers == 0)
     {
         return;
@@ -598,6 +663,8 @@ void CArmOps::PushArmReg(uint16_t Registers)
 
 void CArmOps::PopArmReg(uint16_t Registers)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if (Registers == 0)
     {
         return;
@@ -650,6 +717,8 @@ void CArmOps::PopArmReg(uint16_t Registers)
 
 void CArmOps::ShiftRightSignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if ((shift & (~0x1F)) != 0)
     {
         g_Notify->BreakPoint(__FILE__,__LINE__);
@@ -685,6 +754,8 @@ void CArmOps::ShiftRightSignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shi
 
 void CArmOps::ShiftRightUnsignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if ((shift & (~0x1F)) != 0)
     {
         g_Notify->BreakPoint(__FILE__,__LINE__);
@@ -720,6 +791,8 @@ void CArmOps::ShiftRightUnsignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t s
 
 void CArmOps::ShiftLeftImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if (DestReg > 0x7 || SourceReg > 0x7 || (shift & (~0x1F)) != 0)
     {
         g_Notify->BreakPoint(__FILE__,__LINE__);
@@ -762,6 +835,8 @@ void CArmOps::SignExtendByte(ArmReg Reg)
 
 void CArmOps::StoreArmRegToArmRegPointer(ArmReg Reg, ArmReg RegPointer, uint8_t Offset)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if (Reg > 0x7 || RegPointer > 0x7 || (Offset & (~0x7C)) != 0)
     {
         if ((Offset & (~0xFFF)) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); return; }
@@ -788,6 +863,8 @@ void CArmOps::StoreArmRegToArmRegPointer(ArmReg Reg, ArmReg RegPointer, uint8_t 
 
 void CArmOps::StoreFloatingPointControlReg(ArmReg SourceReg)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     CPU_Message("      vmsr\tfpscr, %s", ArmRegName(SourceReg));
     Arm32Opcode op = {0};
     op.fpscr.opcode2 = 0xA10;
@@ -798,6 +875,8 @@ void CArmOps::StoreFloatingPointControlReg(ArmReg SourceReg)
 
 void CArmOps::StoreFloatRegToArmRegPointer(ArmFpuSingle Reg, ArmReg RegPointer, uint8_t Offset)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if (Offset != 0)
     {
         CPU_Message("      vstr\t%s, [%s, #%d]", ArmFpuSingleName(Reg), ArmRegName(RegPointer), (uint32_t)Offset);
@@ -821,6 +900,8 @@ void CArmOps::StoreFloatRegToArmRegPointer(ArmFpuSingle Reg, ArmReg RegPointer, 
 
 void CArmOps::SubConstFromArmReg(ArmReg Reg, uint32_t Const)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if (Reg <= 7 && (Const & (~0xFF)) == 0)
     {
         CPU_Message("      subs\t%s, #0x%X", ArmRegName(Reg), Const);
@@ -853,6 +934,8 @@ void CArmOps::SubConstFromArmReg(ArmReg Reg, uint32_t Const)
 
 void CArmOps::SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     ArmReg TempReg1 = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
     ArmReg TempReg2 = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
     if (TempReg1 == Arm_Unknown || TempReg2 == Arm_Unknown)
@@ -871,6 +954,8 @@ void CArmOps::SubConstFromVariable(uint32_t Const, void * Variable, const char *
 
 void CArmOps::TestVariable(uint32_t Const, void * Variable, const char * VariableName)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     ArmReg TempReg1 = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
     ArmReg TempReg2 = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
 
@@ -885,6 +970,8 @@ void CArmOps::TestVariable(uint32_t Const, void * Variable, const char * Variabl
 
 void CArmOps::XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if (SourceReg <= 7 && DestReg <= 7)
     {
         CPU_Message("      eors\t%s, %s", ArmRegName(DestReg), ArmRegName(SourceReg));
@@ -902,6 +989,8 @@ void CArmOps::XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg)
 
 void CArmOps::XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     CPU_Message("      eor.w\t%s, %s, %s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
     Arm32Opcode op = {0};
     op.imm5.rn = SourceReg1;
@@ -919,6 +1008,8 @@ void CArmOps::XorArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg Source
 
 void CArmOps::XorConstToArmReg(ArmReg DestReg, uint32_t value)
 {
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
     if (value == 0)
     {
         //ignore
@@ -1100,6 +1191,22 @@ void * CArmOps::GetAddressOf(int value, ...)
     return Address;
 }
 
+bool CArmOps::ArmCompareInverse (ArmBranchCompare CompareType)
+{
+    switch (CompareType)
+    {
+    case ArmBranch_Equal: return false;
+    case ArmBranch_Notequal: return true;
+    case ArmBranch_GreaterThanOrEqual: return false;
+    case ArmBranch_LessThan: return true;
+    case ArmBranch_GreaterThan: return false;
+    case ArmBranch_LessThanOrEqual: return true;
+    default:
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    return false;
+}
+
 const char * CArmOps::ArmBranchSuffix(ArmBranchCompare CompareType)
 {
     switch (CompareType)
@@ -1179,6 +1286,31 @@ const char * CArmOps::ArmFpuSingleName(ArmFpuSingle Reg)
     case Arm_S29: return "s29";
     case Arm_S30: return "s30";
     case Arm_S31: return "s31";
+    default:
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    return "???";
+}
+
+const char * CArmOps::ArmItMaskName(ArmItMask mask)
+{
+    switch (mask)
+    {
+    case ItMask_None: return "";
+    case ItMask_T: return "t";
+    case ItMask_E: return "e";
+    case ItMask_TT: return "tt";
+    case ItMask_ET: return "et";
+    case ItMask_TE: return "te";
+    case ItMask_EE: return "ee";
+    case ItMask_TTT: return "ttt";
+    case ItMask_ETT: return "ett";
+    case ItMask_TET: return "tet";
+    case ItMask_EET: return "eet";
+    case ItMask_TTE: return "tte";
+    case ItMask_ETE: return "ete";
+    case ItMask_TEE: return "tee";
+    case ItMask_EEE: return "eee";
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }

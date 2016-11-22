@@ -132,6 +132,25 @@ public:
         ArmBranch_Always = 14,             //Code = 1110
     };
 
+    enum ArmItMask
+    {
+        ItMask_None,
+        ItMask_T,
+        ItMask_E,
+        ItMask_TT,
+        ItMask_ET,
+        ItMask_TE,
+        ItMask_EE,
+        ItMask_TTT,
+        ItMask_ETT,
+        ItMask_TET,
+        ItMask_EET,
+        ItMask_TTE,
+        ItMask_ETE,
+        ItMask_TEE,
+        ItMask_EEE,
+    };
+
 protected:
     //Logging Functions
     static void WriteArmComment(const char * Comment);
@@ -146,6 +165,7 @@ protected:
     static void CallFunction(void * Function, const char * FunctionName);
     static void CompareArmRegToConst(ArmReg Reg, uint32_t value);
     static void CompareArmRegToArmReg(ArmReg Reg1, ArmReg Reg2);
+    static void IfBlock(ArmItMask mask, ArmBranchCompare CompareType);
     static void LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift);
     static void LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8_t Offset);
     static void LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift);
@@ -186,7 +206,9 @@ protected:
 protected:
     static const char * ArmBranchSuffix(ArmBranchCompare CompareType);
     static const char * ArmRegName(ArmReg Reg);
+    static bool ArmCompareInverse(ArmBranchCompare CompareType);
     static const char * ArmFpuSingleName(ArmFpuSingle Reg);
+    static const char * ArmItMaskName(ArmItMask mask);
 
     static bool CanThumbCompressConst (uint32_t value);
     static uint16_t ThumbCompressConst (uint32_t value);
@@ -195,6 +217,10 @@ protected:
     static void AddCode16(uint16_t value);
     static void AddCode32(uint32_t value);
 
+    static bool mInItBlock;
+    static int mItBlockInstruction;
+    static ArmBranchCompare mItBlockCompareType;
+    static ArmItMask mItBlockMask;
 };
 
 #define AddressOf(Addr) CArmOps::GetAddressOf(5,(Addr))
