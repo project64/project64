@@ -1011,7 +1011,7 @@ void CArmOps::TestVariable(uint32_t Const, void * Variable, const char * Variabl
 
     MoveVariableToArmReg(Variable,VariableName, TempReg1);
     MoveConstToArmReg(TempReg2, Const);
-    AndArmRegToArmReg(TempReg1,TempReg2);
+    AndArmRegToArmReg(TempReg1, TempReg1, TempReg2);
     CompareArmRegToArmReg(TempReg1,TempReg2);
 
     m_RegWorkingSet.SetArmRegProtected(TempReg1,false);

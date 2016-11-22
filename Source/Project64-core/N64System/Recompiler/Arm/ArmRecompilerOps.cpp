@@ -1718,7 +1718,7 @@ void CArmRecompilerOps::JAL()
             LoadArmRegPointerToArmReg(Arm_R1, Arm_R0, 0);
             MoveConstToArmReg(Arm_R2, 0xF0000000);
             MoveConstToArmReg(Arm_R3, (uint32_t)(m_Opcode.target << 2));
-            AndArmRegToArmReg(Arm_R1, Arm_R2);
+            AndArmRegToArmReg(Arm_R1, Arm_R1, Arm_R2);
             AddArmRegToArmReg(Arm_R1, Arm_R3, Arm_R1);
             StoreArmRegToArmRegPointer(Arm_R1, Arm_R0, 0);
 
@@ -4163,10 +4163,10 @@ void CArmRecompilerOps::CompileCop1Test()
     ArmReg TempReg2 = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
     MoveVariableToArmReg(&g_Reg->STATUS_REGISTER, "STATUS_REGISTER", TempReg1);
     MoveConstToArmReg(TempReg2, STATUS_CU1, "STATUS_CU1");
-    AndArmRegToArmReg(TempReg1, TempReg2);
+    AndArmRegToArmReg(TempReg1, TempReg1, TempReg2);
     CompareArmRegToConst(TempReg1, 0);
-    m_RegWorkingSet.SetArmRegProtected(TempReg1,false);
-    m_RegWorkingSet.SetArmRegProtected(TempReg2,false);
+    m_RegWorkingSet.SetArmRegProtected(TempReg1, false);
+    m_RegWorkingSet.SetArmRegProtected(TempReg2, false);
     CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::COP1_Unuseable, ArmBranch_Equal);
     m_RegWorkingSet.SetFpuBeenUsed(true);
 }
