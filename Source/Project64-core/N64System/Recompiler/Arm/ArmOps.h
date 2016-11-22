@@ -10,10 +10,12 @@
 ****************************************************************************/
 #pragma once
 #if defined(__arm__) || defined(_M_ARM)
+#include <Project64-core/Settings/DebugSettings.h>
 
 class CArmRegInfo;
 
-class CArmOps
+class CArmOps :
+    protected CDebugSettings
 {
 public:
     enum ArmReg
@@ -217,9 +219,11 @@ protected:
 
     static void BreakPointNotification(const char * FileName, uint32_t LineNumber);
     static bool ArmCompareInverse(ArmCompareType CompareType);
+    static ArmCompareType ArmCompareInverseType(ArmCompareType CompareType);
     static const char * ArmCompareSuffix(ArmCompareType CompareType);
     static const char * ArmFpuSingleName(ArmFpuSingle Reg);
     static const char * ArmItMaskName(ArmItMask mask);
+    static const char * ArmCurrentItCondition();
 
     static void ProgressItBlock ( void );
 

@@ -308,26 +308,67 @@ void CArmOps::MoveArmRegToVariable(ArmReg Reg, void * Variable, const char * Var
     }
 }
 
-void CArmOps::MoveConstToArmReg(ArmReg DestReg, uint16_t Const, const char * comment)
+void CArmOps::MoveConstToArmReg(ArmReg Reg, uint16_t value, const char * comment)
 {
-    if (comment != NULL)
+    if (mInItBlock)
     {
-        CPU_Message("      movw\t%s, #0x%X\t; %s", ArmRegName(DestReg), (uint32_t)Const, comment);
+        if ((value & 0xF0) == 0 && Reg <= 7)
+        {
+            CPU_Message("      mov%s\t%s, #0x%X\t; %s", ArmCurrentItCondition(), ArmRegName(Reg), (uint32_t)value, comment != NULL ? comment : stdstr_f("0x%X",(uint32_t)value).c_str());
+            ArmThumbOpcode op = {0};
+            op.Imm8.imm8 = value;
+            op.Imm8.rdn = Reg;
+            op.Imm8.opcode = 0x4;
+            AddCode16(op.Hex);
+        }
+        else if(CanThumbCompressConst(value))
+        {
+            CPU_Message("      mov%s.w\t%s, #0x%X\t; %s", ArmCurrentItCondition(), ArmRegName(Reg), (uint32_t)value, comment != NULL ? comment : stdstr_f("0x%X",(uint32_t)value).c_str());
+            uint16_t CompressedValue = ThumbCompressConst(value);
+            Arm32Opcode op = {0};
+            op.imm8_3_1.rn = 0xF;
+            op.imm8_3_1.s = 0;
+            op.imm8_3_1.opcode = 0x2;
+            op.imm8_3_1.i = (CompressedValue >> 11) & 1;
+            op.imm8_3_1.opcode2 = 0x1E;
+
+            op.imm8_3_1.imm8 = CompressedValue & 0xFF;
+            op.imm8_3_1.rd = Reg;
+            op.imm8_3_1.imm3 = (CompressedValue >> 8) & 0x3;
+            op.imm8_3_1.opcode3 = 0;
+            AddCode32(op.Hex);
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__,__LINE__);
+        }
+        ProgressItBlock();
     }
     else
     {
-        CPU_Message("      movw\t%s, #%d\t; 0x%X", ArmRegName(DestReg), (uint32_t)Const, (uint32_t)Const);
+        if (bHaveDebugger() && value & 0xF0 == 0)
+        {
+            g_Notify->BreakPoint(__FILE__,__LINE__);
+        }
+        if (comment != NULL)
+        {
+            CPU_Message("      movw\t%s, #0x%X\t; %s", ArmRegName(Reg), (uint32_t)value, comment);
+        }
+        else
+        {
+            CPU_Message("      movw\t%s, #%d\t; 0x%X", ArmRegName(Reg), (uint32_t)value, (uint32_t)value);
+        }
+        Arm32Opcode op = {0};
+        op.imm16.opcode = ArmMOV_IMM16;
+        op.imm16.i = ((value >> 11) & 0x1);
+        op.imm16.opcode2 = ArmMOVW_IMM16;
+        op.imm16.imm4 = ((value >> 12) & 0xF);
+        op.imm16.reserved = 0;
+        op.imm16.imm3 = ((value >> 8) & 0x7);
+        op.imm16.rd = Reg;
+        op.imm16.imm8 = (value & 0xFF);
+        AddCode32(op.Hex);
     }
-    Arm32Opcode op = {0};
-    op.imm16.opcode = ArmMOV_IMM16;
-    op.imm16.i = ((Const >> 11) & 0x1);
-    op.imm16.opcode2 = ArmMOVW_IMM16;
-    op.imm16.imm4 = ((Const >> 12) & 0xF);
-    op.imm16.reserved = 0;
-    op.imm16.imm3 = ((Const >> 8) & 0x7);
-    op.imm16.rd = DestReg;
-    op.imm16.imm8 = (Const & 0xFF);
-    AddCode32(op.Hex);
 }
 
 void CArmOps::MoveConstToArmRegTop(ArmReg DestReg, uint16_t Const, const char * comment)
@@ -1442,6 +1483,18 @@ bool CArmOps::ArmCompareInverse (ArmCompareType CompareType)
     return false;
 }
 
+CArmOps::ArmCompareType CArmOps::ArmCompareInverseType(ArmCompareType CompareType)
+{
+    if (CompareType == ArmBranch_Equal) { return ArmBranch_Notequal; }
+    if (CompareType == ArmBranch_Notequal) { return ArmBranch_Equal; }
+    if (CompareType == ArmBranch_GreaterThanOrEqual) { return ArmBranch_LessThan; }
+    if (CompareType == ArmBranch_LessThan) { return ArmBranch_GreaterThanOrEqual; }
+    if (CompareType == ArmBranch_GreaterThan) { return ArmBranch_LessThanOrEqual; }
+    if (CompareType == ArmBranch_LessThanOrEqual) { return ArmBranch_GreaterThan; }
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    return ArmBranch_Equal;
+}
+
 const char * CArmOps::ArmCompareSuffix(ArmCompareType CompareType)
 {
     switch (CompareType)
@@ -1550,6 +1603,24 @@ const char * CArmOps::ArmItMaskName(ArmItMask mask)
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     return "???";
+}
+
+const char * CArmOps::ArmCurrentItCondition()
+{
+    if (mItBlockInstruction == 0)
+    {
+        return ArmCompareSuffix(mItBlockCompareType);
+    }
+    if (mItBlockInstruction == 1 && mItBlockMask == ItMask_T)
+    {
+        return ArmCompareSuffix(mItBlockCompareType);
+    }
+    if (mItBlockInstruction == 1 && mItBlockMask == ItMask_E)
+    {
+        return ArmCompareSuffix(ArmCompareInverseType(mItBlockCompareType));
+    }
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    return "";
 }
 
 void CArmOps::ProgressItBlock ( void )
