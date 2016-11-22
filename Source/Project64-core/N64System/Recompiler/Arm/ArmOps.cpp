@@ -480,7 +480,7 @@ void CArmOps::LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, A
     }
 }
 
-void CArmOps::LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8_t Offset)
+void CArmOps::LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8_t Offset, const char * comment)
 {
     if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 
@@ -492,7 +492,7 @@ void CArmOps::LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8
             g_Notify->BreakPoint(__FILE__,__LINE__);
             return;
         }
-        CPU_Message("      ldr.w\t%s, [%s, #%d]", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)Offset);
+        CPU_Message("      ldr.w\t%s, [%s, #%d]%s%s", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)Offset, comment != NULL ? "\t; " : "", comment != NULL ? comment : "");
         Arm32Opcode op = {0};
         op.imm12.rt = DestReg;
         op.imm12.rn = RegPointer;
@@ -502,7 +502,7 @@ void CArmOps::LoadArmRegPointerToArmReg(ArmReg DestReg, ArmReg RegPointer, uint8
     }
     else
     {
-        CPU_Message("      ldr\t%s, [%s, #%d]", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)Offset);
+        CPU_Message("      ldr\t%s, [%s, #%d]%s%s", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)Offset, comment != NULL ? "\t; " : "", comment != NULL ? comment : "");
         ArmThumbOpcode op = {0};
         op.Imm5.rt = DestReg;
         op.Imm5.rn = RegPointer;
