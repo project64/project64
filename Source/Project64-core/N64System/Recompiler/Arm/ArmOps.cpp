@@ -194,28 +194,28 @@ void CArmOps::AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const)
     }
 }
 
-void CArmOps::AndArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg)
+void CArmOps::AndArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2)
 {
     if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 
-    if (DestReg <= 0x7 && SourceReg <= 0x7 )
+    if (DestReg <= 0x7 && SourceReg2 <= 0x7 && SourceReg1 == DestReg)
     {
-        CPU_Message("      ands\t%s, %s", ArmRegName(DestReg), ArmRegName(SourceReg));
+        CPU_Message("      ands\t%s, %s", ArmRegName(DestReg), ArmRegName(SourceReg2));
         ArmThumbOpcode op = {0};
         op.Reg2.rn = DestReg;
-        op.Reg2.rm = SourceReg;
+        op.Reg2.rm = SourceReg2;
         op.Reg2.opcode = 0x100;
         AddCode16(op.Hex);
     }
     else
     {
-        CPU_Message("      and.w\t%s, %s, %s", ArmRegName(DestReg), ArmRegName(DestReg), ArmRegName(SourceReg));
+        CPU_Message("      and.w\t%s, %s, %s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
         Arm32Opcode op = {0};
-        op.imm5.rn = DestReg;
+        op.imm5.rn = SourceReg1;
         op.imm5.s = 0;
         op.imm5.opcode = 0x750;
 
-        op.imm5.rm = SourceReg;
+        op.imm5.rm = SourceReg2;
         op.imm5.type = 0;
         op.imm5.imm2 = 0;
         op.imm5.rd = DestReg;
