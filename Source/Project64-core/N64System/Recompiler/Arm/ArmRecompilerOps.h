@@ -237,6 +237,7 @@ public:
     static inline void Map_GPR_32bit(int32_t Reg, bool SignValue, int32_t MipsRegToLoad) { m_RegWorkingSet.Map_GPR_32bit(Reg, SignValue, MipsRegToLoad); }
     static inline void Map_GPR_64bit(int32_t Reg, int32_t MipsRegToLoad) { m_RegWorkingSet.Map_GPR_64bit(Reg, MipsRegToLoad); }
     static inline void UnMap_GPR(uint32_t Reg, bool WriteBackValue){ m_RegWorkingSet.UnMap_GPR(Reg, WriteBackValue); }
+    static inline void WriteBack_GPR(uint32_t Reg, bool Unmapping){ m_RegWorkingSet.WriteBack_GPR(Reg, Unmapping); }
     static inline ArmReg Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadHiWord) { return m_RegWorkingSet.Map_TempReg(Reg, MipsReg, LoadHiWord); }
     static inline ArmReg Map_Variable(CArmRegInfo::VARIABLE_MAPPED variable) { return m_RegWorkingSet.Map_Variable(variable); }
 

@@ -409,6 +409,11 @@ void CArmRegInfo::UnMap_GPR(uint32_t MipsReg, bool WriteBackValue)
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
+    if (WriteBackValue)
+    {
+        WriteBack_GPR(MipsReg,true);
+    }
+
     if (MipsReg == 0)
     {
         if (bHaveDebugger())
@@ -422,27 +427,6 @@ void CArmRegInfo::UnMap_GPR(uint32_t MipsReg, bool WriteBackValue)
     //CPU_Message("UnMap_GPR: State: %X\tReg: %s\tWriteBack: %s",State,CRegName::GPR[Reg],WriteBackValue?"true":"false");
     if (IsConst(MipsReg))
     {
-        if (!WriteBackValue)
-        {
-            SetMipsRegState(MipsReg, STATE_UNKNOWN);
-            return;
-        }
-        if (Is64Bit(MipsReg))
-        {
-            MoveConstToVariable(GetMipsRegHi(MipsReg), &_GPR[MipsReg].UW[1], CRegName::GPR_Hi[MipsReg]);
-            MoveConstToVariable(GetMipsRegLo(MipsReg), &_GPR[MipsReg].UW[0], CRegName::GPR_Lo[MipsReg]);
-            SetMipsRegState(MipsReg, STATE_UNKNOWN);
-            return;
-        }
-        if ((GetMipsRegLo(MipsReg) & 0x80000000) != 0)
-        {
-            MoveConstToVariable(0xFFFFFFFF, &_GPR[MipsReg].UW[1], CRegName::GPR_Hi[MipsReg]);
-        }
-        else
-        {
-            MoveConstToVariable(0, &_GPR[MipsReg].UW[1], CRegName::GPR_Hi[MipsReg]);
-        }
-        MoveConstToVariable(GetMipsRegLo(MipsReg), &_GPR[MipsReg].UW[0], CRegName::GPR_Lo[MipsReg]);
         SetMipsRegState(MipsReg, STATE_UNKNOWN);
         return;
     }
@@ -455,36 +439,83 @@ void CArmRegInfo::UnMap_GPR(uint32_t MipsReg, bool WriteBackValue)
     CPU_Message("    regcache: unallocate %s from %s", ArmRegName(GetMipsRegMapLo(MipsReg)), CRegName::GPR_Lo[MipsReg]);
     SetArmRegMapped(GetMipsRegMapLo(MipsReg), NotMapped);
     SetArmRegProtected(GetMipsRegMapLo(MipsReg), false);
-    if (!WriteBackValue)
+    SetMipsRegState(MipsReg, STATE_UNKNOWN);
+}
+
+void CArmRegInfo::WriteBack_GPR(uint32_t MipsReg, bool Unmapping)
+{
+    if (m_InCallDirect)
     {
-        SetMipsRegState(MipsReg, STATE_UNKNOWN);
+        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
-    ArmReg GprReg = Map_Variable(VARIABLE_GPR);
-    StoreArmRegToArmRegPointer(GetMipsRegMapLo(MipsReg), GprReg, (uint8_t)(MipsReg << 3));
-    if (Is64Bit(MipsReg))
+    if (MipsReg == 0)
     {
-        SetMipsRegMapLo(MipsReg, Arm_Unknown);
-        StoreArmRegToArmRegPointer(GetMipsRegMapHi(MipsReg), GprReg, (uint8_t)(MipsReg << 3) + 4);
-        SetMipsRegMapHi(MipsReg, Arm_Unknown);
+        if (bHaveDebugger())
+        {
+            g_Notify->DisplayError(stdstr_f("%s\n\nWhy are you trying to unmap reg 0", __FUNCTION__).c_str());
+        }
+        return;
+    }
+
+    if (IsUnknown(MipsReg))
+    {
+        return;
+    }
+
+    ArmReg GprReg = Map_Variable(VARIABLE_GPR);
+    if (IsConst(MipsReg))
+    {
+        ArmReg TempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+
+        if (Is64Bit(MipsReg))
+        {
+            MoveConstToArmReg(TempReg, GetMipsRegHi(MipsReg));
+            StoreArmRegToArmRegPointer(TempReg, GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
+        }
+        else if (!g_System->b32BitCore())
+        {
+            MoveConstToArmReg(TempReg, (GetMipsRegLo(MipsReg) & 0x80000000) != 0 ? 0xFFFFFFFF : 0);
+            StoreArmRegToArmRegPointer(TempReg, GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
+        }
+        MoveConstToArmReg(TempReg, GetMipsRegLo(MipsReg));
+        StoreArmRegToArmRegPointer(TempReg, GprReg, (uint8_t)(MipsReg << 3), CRegName::GPR_Lo[MipsReg]);
+        m_RegWorkingSet.SetArmRegProtected(TempReg, false);
     }
     else
     {
-        if (!g_System->b32BitCore())
+        StoreArmRegToArmRegPointer(GetMipsRegMapLo(MipsReg), GprReg, (uint8_t)(MipsReg << 3), CRegName::GPR_Lo[MipsReg]);
+        if (Is64Bit(MipsReg))
         {
-            if (IsSigned(MipsReg))
+            StoreArmRegToArmRegPointer(GetMipsRegMapHi(MipsReg), GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
+        }
+        else if (!g_System->b32BitCore())
+        {
+            bool loProtected = GetArmRegProtected(GetMipsRegMapLo(MipsReg));
+            if (!Unmapping)
             {
-                ShiftRightSignImmed(GetMipsRegMapLo(MipsReg), GetMipsRegMapLo(MipsReg), 31);
+                SetArmRegProtected(GetMipsRegMapLo(MipsReg), true);
+                ArmReg TempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+                if (IsSigned(MipsReg))
+                {
+                    ShiftRightSignImmed(TempReg, GetMipsRegMapLo(MipsReg), 31);
+                }
+                else
+                {
+                    MoveConstToArmReg(TempReg, (uint32_t)0);
+                }
+                StoreArmRegToArmRegPointer(TempReg, GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
+                m_RegWorkingSet.SetArmRegProtected(TempReg, false);
             }
             else
             {
-                MoveConstToArmReg(GetMipsRegMapLo(MipsReg),(uint32_t)0);
+                ShiftRightSignImmed(GetMipsRegMapLo(MipsReg), GetMipsRegMapLo(MipsReg), 31);
+                StoreArmRegToArmRegPointer(GetMipsRegMapLo(MipsReg), GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
             }
-            StoreArmRegToArmRegPointer(GetMipsRegMapLo(MipsReg), GprReg, (uint8_t)(MipsReg << 3) + 4);
+            m_RegWorkingSet.SetArmRegProtected(GetMipsRegMapLo(MipsReg), loProtected);
         }
-        SetMipsRegMapLo(MipsReg, Arm_Unknown);
     }
-    SetMipsRegState(MipsReg, STATE_UNKNOWN);
     SetArmRegProtected(GprReg, false);
 }
 

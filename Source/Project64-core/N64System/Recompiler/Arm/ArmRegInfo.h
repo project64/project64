@@ -63,6 +63,7 @@ public:
     void UnMap_AllFPRs();
     ArmReg UnMap_TempReg();
     void UnMap_GPR(uint32_t Reg, bool WriteBackValue);
+    void WriteBack_GPR(uint32_t MipsReg, bool Unmapping);
     bool UnMap_ArmReg(ArmReg Reg);
     void ResetRegProtection();
 
