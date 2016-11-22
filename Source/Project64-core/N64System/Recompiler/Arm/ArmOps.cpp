@@ -1019,6 +1019,34 @@ void CArmOps::StoreArmRegToArmRegPointer(ArmReg Reg, ArmReg RegPointer, uint8_t 
     }
 }
 
+void CArmOps::StoreArmRegToArmRegPointer(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift)
+{
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+
+    if (DestReg > 0x7 || RegPointer > 0x7 || RegPointer2 > 0x7 || shift != 0)
+    {
+        CPU_Message("      str.w\t%s, [%s, %s%s]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2), shift != 0 ? stdstr_f(", lsl #%d", shift).c_str() : "");
+        Arm32Opcode op = { 0 };
+        op.imm2.rm = RegPointer2;
+        op.imm2.imm = shift;
+        op.imm2.Opcode2 = 0;
+        op.imm2.rt = DestReg;
+        op.imm2.rn = RegPointer;
+        op.imm2.opcode = 0xF84;
+        AddCode32(op.Hex);
+    }
+    else
+    {
+        CPU_Message("      str\t%s, [%s, %s]", ArmRegName(DestReg), ArmRegName(RegPointer), ArmRegName(RegPointer2));
+        ArmThumbOpcode op = { 0 };
+        op.Reg.rt = DestReg;
+        op.Reg.rn = RegPointer;
+        op.Reg.rm = RegPointer2;
+        op.Reg.opcode = 0x28;
+        AddCode16(op.Hex);
+    }
+}
+
 void CArmOps::StoreFloatingPointControlReg(ArmReg SourceReg)
 {
     if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
