@@ -244,21 +244,19 @@ void CArmRegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
     }
     SetArmRegMapOrder(Reg, 1);
 
-    CPU_Message("MipsRegToLoad = %d (%s)", MipsRegToLoad,  CRegName::GPR[MipsRegToLoad]);
     if (MipsRegToLoad > 0)
     {
         if (IsUnknown(MipsRegToLoad))
         {
             ArmReg GprReg = Map_Variable(VARIABLE_GPR);
-            LoadArmRegPointerToArmReg(Reg, GprReg, (uint8_t)(MipsRegToLoad << 3));
+            LoadArmRegPointerToArmReg(Reg, GprReg, (uint8_t)(MipsRegToLoad << 3), CRegName::GPR_Lo[MipsRegToLoad]);
             SetArmRegProtected(GprReg, false);
         }
         else if (IsMapped(MipsRegToLoad))
         {
             if (MipsReg != MipsRegToLoad)
             {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-                //MoveArmRegToArmReg(GetMipsRegMapLo(MipsRegToLoad), Reg);
+                AddConstToArmReg(Reg, GetMipsRegMapLo(MipsRegToLoad), 0);
             }
         }
         else
@@ -358,56 +356,45 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
         if (IsUnknown(MipsRegToLoad))
         {
             ArmReg GprReg = Map_Variable(VARIABLE_GPR);
-            LoadArmRegPointerToArmReg(regHi, GprReg, (uint8_t)(MipsRegToLoad << 3) + 4);
-            LoadArmRegPointerToArmReg(reglo, GprReg, (uint8_t)(MipsRegToLoad << 3));
+            LoadArmRegPointerToArmReg(regHi, GprReg, (uint8_t)(MipsRegToLoad << 3) + 4, CRegName::GPR_Hi[MipsRegToLoad]);
+            LoadArmRegPointerToArmReg(reglo, GprReg, (uint8_t)(MipsRegToLoad << 3), CRegName::GPR_Lo[MipsRegToLoad]);
             SetArmRegProtected(GprReg, false);
         }
         else if (IsMapped(MipsRegToLoad))
         {
             if (Is32Bit(MipsRegToLoad))
             {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-                /*if (IsSigned(MipsRegToLoad))
+                if (IsSigned(MipsRegToLoad))
                 {
-                MoveX86RegToX86Reg(GetMipsRegMapLo(MipsRegToLoad), x86Hi);
-                ShiftRightSignImmed(x86Hi, 31);
+                    ShiftRightSignImmed(regHi, GetMipsRegMapLo(MipsRegToLoad), 31);
                 }
                 else
                 {
-                XorX86RegToX86Reg(x86Hi, x86Hi);
+                    MoveConstToArmReg(regHi, (uint32_t)0);
                 }
                 if (MipsReg != MipsRegToLoad)
                 {
-                MoveX86RegToX86Reg(GetMipsRegMapLo(MipsRegToLoad), x86lo);
-                }*/
+                    AddConstToArmReg(reglo, GetMipsRegMapLo(MipsRegToLoad), 0);
+                }
             }
             else if (MipsReg != MipsRegToLoad)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
-                /*MoveX86RegToX86Reg(GetMipsRegMapHi(MipsRegToLoad), x86Hi);
-                MoveX86RegToX86Reg(GetMipsRegMapLo(MipsRegToLoad), x86lo);*/
+                /*MoveX86RegToX86Reg(GetMipsRegMapHi(MipsRegToLoad), regHi);
+                MoveX86RegToX86Reg(GetMipsRegMapLo(MipsRegToLoad), reglo);*/
             }
         }
         else
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            /*CPU_Message("Map_GPR_64bit 11");
             if (Is32Bit(MipsRegToLoad))
             {
-            if (IsSigned(MipsRegToLoad))
-            {
-            MoveConstToX86reg(GetMipsRegLo_S(MipsRegToLoad) >> 31, x86Hi);
+                MoveConstToArmReg(regHi, (uint32_t)(IsSigned(MipsRegToLoad) ? GetMipsRegLo_S(MipsRegToLoad) >> 31 : 0));
             }
             else
             {
-            MoveConstToX86reg(0, x86Hi);
+                MoveConstToArmReg(regHi, GetMipsRegHi(MipsRegToLoad));
             }
-            }
-            else
-            {
-            MoveConstToX86reg(GetMipsRegHi(MipsRegToLoad), x86Hi);
-            }
-            MoveConstToX86reg(GetMipsRegLo(MipsRegToLoad), x86lo);*/
+            MoveConstToArmReg(reglo, GetMipsRegLo(MipsRegToLoad));
         }
     }
     else if (MipsRegToLoad == 0)
@@ -672,6 +659,7 @@ bool CArmRegInfo::UnMap_ArmReg(ArmReg Reg)
                 break;
             }
         }
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     else if (GetArmRegMapped(Reg) == Temp_Mapped)
     {
@@ -888,7 +876,7 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
         {
             if (IsUnknown(MipsReg))
             {
-                LoadArmRegPointerToArmReg(Reg, GprReg, (uint8_t)(MipsReg << 3) + 4);
+                LoadArmRegPointerToArmReg(Reg, GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
             }
             else if (IsMapped(MipsReg))
             {
@@ -924,12 +912,11 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
         {
             if (IsUnknown(MipsReg))
             {
-                LoadArmRegPointerToArmReg(Reg, GprReg, (uint8_t)(MipsReg << 3));
+                LoadArmRegPointerToArmReg(Reg, GprReg, (uint8_t)(MipsReg << 3), CRegName::GPR_Lo[MipsReg]);
             }
             else if (IsMapped(MipsReg))
             {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-                //MoveArmRegToArmReg(GetMipsRegMapLo(MipsReg), Reg);
+                AddConstToArmReg(Reg,GetMipsRegMapLo(MipsReg),0);
             }
             else
             {
