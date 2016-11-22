@@ -63,6 +63,29 @@ CArmRegInfo& CArmRegInfo::operator=(const CArmRegInfo& right)
     return *this;
 }
 
+bool CArmRegInfo::operator==(const CArmRegInfo& right) const
+{
+    if (!CRegBase::operator==(right))
+    {
+        return false;
+    }
+
+    for (int32_t count = 0; count < 32; count++)
+    {
+        if (m_RegMapHi[count] != right.m_RegMapHi[count]) { return false; }
+        if (m_RegMapLo[count] != right.m_RegMapLo[count]) { return false; }
+    }
+
+    for (int32_t count = 0; count < 16; count++)
+    {
+        if (m_ArmReg_MapOrder[count] != right.m_ArmReg_MapOrder[count]) { return false; }
+        if (m_ArmReg_Protected[count] != right.m_ArmReg_Protected[count]) { return false; }
+        if (m_ArmReg_MappedTo[count] != right.m_ArmReg_MappedTo[count]) { return false; }
+        if (m_Variable_MappedTo[count] != right.m_Variable_MappedTo[count]) { return false; }
+    }
+    return true;
+}
+
 bool CArmRegInfo::ShouldPushPopReg (ArmReg Reg)
 {
     if (m_ArmReg_MappedTo[Reg] == NotMapped)
