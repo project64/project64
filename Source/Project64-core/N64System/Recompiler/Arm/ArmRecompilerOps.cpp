@@ -1860,6 +1860,7 @@ void CArmRecompilerOps::ADDI()
     }
     else if (IsMapped(m_Opcode.rs))
     {
+        ProtectGPR(m_Opcode.rs);
         Map_GPR_32bit(m_Opcode.rt, true, -1);
         AddConstToArmReg(GetMipsRegMapLo(m_Opcode.rt), GetMipsRegMapLo(m_Opcode.rs), (int16_t)m_Opcode.immediate);
     }
