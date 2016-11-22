@@ -686,6 +686,41 @@ void CArmOps::OrArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceR
     AddCode32(op.Hex);
 }
 
+void CArmOps::OrConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t value)
+{
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+   
+    if (value == 0)
+    {
+        return;
+    }
+
+    else if (CanThumbCompressConst(value))
+    {
+        uint16_t CompressedValue = ThumbCompressConst(value);
+        CPU_Message("      orr\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), value);
+        Arm32Opcode op = { 0 };
+        op.imm8_3_1.rn = SourceReg;
+        op.imm8_3_1.s = 0;
+        op.imm8_3_1.opcode = 0x2;
+        op.imm8_3_1.i = (CompressedValue >> 11) & 1;
+        op.imm8_3_1.opcode2 = 0x1E;
+
+        op.imm8_3_1.imm8 = CompressedValue & 0xFF;
+        op.imm8_3_1.rd = DestReg;
+        op.imm8_3_1.imm3 = (CompressedValue >> 8) & 0x3;
+        op.imm8_3_1.opcode3 = 0;
+        AddCode32(op.Hex);
+    }
+    else
+    {
+        ArmReg TempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+        MoveConstToArmReg(TempReg, value);
+        OrArmRegToArmReg(DestReg, SourceReg, TempReg, 0);
+        m_RegWorkingSet.SetArmRegProtected(TempReg, false);
+    }
+}
+
 void CArmOps::MulF32(ArmFpuSingle DestReg, ArmFpuSingle SourceReg1, ArmFpuSingle SourceReg2)
 {
     if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
