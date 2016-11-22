@@ -1773,17 +1773,15 @@ void CArmRecompilerOps::JAL()
 {
     if (m_NextInstruction == NORMAL)
     {
-        if (IsKnown(31))
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            return;
-        }
+        Map_GPR_32bit(31, true, -1);
+        MoveVariableToArmReg(_PROGRAM_COUNTER, "_PROGRAM_COUNTER", GetMipsRegMapLo(31));
+        ArmReg TempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+        MoveConstToArmReg(TempReg, 0xF0000000);
+        AndArmRegToArmReg(GetMipsRegMapLo(31), GetMipsRegMapLo(31), TempReg);
+        MoveConstToArmReg(TempReg, (m_CompilePC + 8) & ~0xF0000000);
+        OrArmRegToArmReg(GetMipsRegMapLo(31), GetMipsRegMapLo(31), TempReg,0);
+        m_RegWorkingSet.SetArmRegProtected(TempReg, false);
 
-        if (!g_System->b32BitCore())
-        {
-            MoveConstToVariable((m_CompilePC & 0x80000000) != 0 ? 0xFFFFFFFF : 0, &_GPR[31].UW[1], CRegName::GPR_Hi[31]);
-        }
-        MoveConstToVariable(m_CompilePC + 8, &_GPR[31].UW[0], CRegName::GPR_Lo[31]);
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
             MoveConstToVariable((m_CompilePC & 0xF0000000) + (m_Opcode.target << 2), &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
