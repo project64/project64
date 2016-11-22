@@ -35,7 +35,7 @@ void CArmRecompilerOps::PreCompileOpcode(void)
     MoveConstToVariable(m_CompilePC, &g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
     if (g_SyncSystem)
     {
-    MoveConstToArmReg((uint32_t)g_BaseSystem, Arm_R0, "g_BaseSystem");
+    MoveConstToArmReg(Arm_R0, (uint32_t)g_BaseSystem, "g_BaseSystem");
     CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     }
     }*/
@@ -43,7 +43,7 @@ void CArmRecompilerOps::PreCompileOpcode(void)
     m_RegWorkingSet.ResetRegProtection();
 }
 
-void CArmRecompilerOps::PostCompileOpcode ( void )
+void CArmRecompilerOps::PostCompileOpcode(void)
 {
     if (!g_System->bRegCaching())
     {
@@ -933,7 +933,7 @@ void CArmRecompilerOps::BEQ_Compare()
             uint32_t ConstReg = IsConst(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
             uint32_t MappedReg = IsConst(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
 
-            if (Is64Bit(ConstReg) || Is64Bit(MappedReg))
+            if (!g_System->b32BitCore() && (Is64Bit(ConstReg) || Is64Bit(MappedReg)))
             {
                 if (Is32Bit(ConstReg) || Is32Bit(MappedReg))
                 {
@@ -1011,9 +1011,10 @@ void CArmRecompilerOps::BEQ_Compare()
         uint32_t KnownReg = IsKnown(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
         uint32_t UnknownReg = IsKnown(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
 
+        ArmReg TempReg = Arm_Any;
         if (!g_System->b32BitCore())
         {
-            ArmReg TempReg = Map_TempReg(Arm_Any, UnknownReg, true);
+            TempReg = Map_TempReg(Arm_Any, UnknownReg, true);
             if (IsConst(KnownReg))
             {
                 if (Is32Bit(KnownReg) && IsSigned(KnownReg))
@@ -1044,8 +1045,9 @@ void CArmRecompilerOps::BEQ_Compare()
                 BranchLabel20(ArmBranch_Notequal, m_Section->m_Cont.BranchLabel.c_str());
                 m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
+            m_RegWorkingSet.SetArmRegProtected(TempReg, false);
         }
-        ArmReg TempReg = Map_TempReg(Arm_Any, UnknownReg, false);
+        TempReg = Map_TempReg(TempReg, UnknownReg, false);
         if (IsConst(KnownReg))
         {
             CompareArmRegToConst(TempReg, GetMipsRegLo(KnownReg));
@@ -1092,7 +1094,7 @@ void CArmRecompilerOps::BEQ_Compare()
         {
             ArmReg TempRegRs = Map_TempReg(Arm_Any, m_Opcode.rs, true);
             ArmReg TempRegRt = Map_TempReg(Arm_Any, m_Opcode.rt, true);
-            CompareArmRegToArmReg(TempRegRs,TempRegRt);
+            CompareArmRegToArmReg(TempRegRs, TempRegRt);
             m_RegWorkingSet.SetArmRegProtected(TempRegRs, false);
             m_RegWorkingSet.SetArmRegProtected(TempRegRt, false);
 
@@ -1109,7 +1111,7 @@ void CArmRecompilerOps::BEQ_Compare()
         }
         ArmReg TempRegRs = Map_TempReg(Arm_Any, m_Opcode.rs, false);
         ArmReg TempRegRt = Map_TempReg(Arm_Any, m_Opcode.rt, false);
-        CompareArmRegToArmReg(TempRegRs,TempRegRt);
+        CompareArmRegToArmReg(TempRegRs, TempRegRt);
         m_RegWorkingSet.SetArmRegProtected(TempRegRs, false);
         m_RegWorkingSet.SetArmRegProtected(TempRegRt, false);
         if (m_Section->m_Cont.FallThrough)
