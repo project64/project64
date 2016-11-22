@@ -194,7 +194,7 @@ protected:
     static void ShiftLeftImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift);
     static void SignExtendByte(ArmReg Reg);
     static void StoreArmRegToArmRegPointer(ArmReg DestReg, ArmReg RegPointer, uint8_t Offset, const char * comment = NULL);
-    static void StoreArmRegToArmRegPointer(ArmReg Reg, ArmReg RegPointer, uint8_t Offset);
+    static void StoreArmRegToArmRegPointer(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift);
     static void StoreFloatingPointControlReg(ArmReg SourceReg);
     static void StoreFloatRegToArmRegPointer(ArmFpuSingle Reg, ArmReg RegPointer, uint8_t Offset);
     static void SubArmRegFromArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);

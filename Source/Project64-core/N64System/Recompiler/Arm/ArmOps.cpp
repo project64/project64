@@ -991,17 +991,17 @@ void CArmOps::SignExtendByte(ArmReg Reg)
     }
 }
 
-void CArmOps::StoreArmRegToArmRegPointer(ArmReg Reg, ArmReg RegPointer, uint8_t Offset)
+void CArmOps::StoreArmRegToArmRegPointer(ArmReg DestReg, ArmReg RegPointer, uint8_t Offset, const char * comment)
 {
     if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 
-    if (Reg > 0x7 || RegPointer > 0x7 || (Offset & (~0x7C)) != 0)
+    if (DestReg > 0x7 || RegPointer > 0x7 || (Offset & (~0x7C)) != 0)
     {
         if ((Offset & (~0xFFF)) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); return; }
 
-        CPU_Message("      str\t%s, [%s, #%d]", ArmRegName(Reg), ArmRegName(RegPointer), (uint32_t)Offset);
+        CPU_Message("      str\t%s, [%s, #%d]%s%s", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)Offset, comment != NULL ? "\t; " : "", comment != NULL ? comment : "");
         Arm32Opcode op = {0};
-        op.imm12.rt = Reg;
+        op.imm12.rt = DestReg;
         op.imm12.rn = RegPointer;
         op.imm12.imm = Offset;
         op.imm12.opcode = 0xF8C;
@@ -1009,9 +1009,9 @@ void CArmOps::StoreArmRegToArmRegPointer(ArmReg Reg, ArmReg RegPointer, uint8_t 
     }
     else
     {
-        CPU_Message("      str\t%s, [%s, #%d]", ArmRegName(Reg), ArmRegName(RegPointer), (uint32_t)Offset);
+        CPU_Message("      str\t%s, [%s, #%d]%s%s", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)Offset, comment != NULL ? "\t; " : "", comment != NULL ? comment : "");
         ArmThumbOpcode op = {0};
-        op.Imm5.rt = Reg;
+        op.Imm5.rt = DestReg;
         op.Imm5.rn = RegPointer;
         op.Imm5.imm5 = Offset >> 2;
         op.Imm5.opcode = ArmSTR_ThumbImm;
