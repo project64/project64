@@ -416,6 +416,38 @@ void CArmOps::IfBlock(ArmItMask mask, ArmCompareType CompareType)
     AddCode16(op.Hex);
 }
 
+void CArmOps::LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, uint16_t offset)
+{
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
+    if ((DestReg > 0x7 || RegPointer > 0x7 || (offset & ~0x1f) != 0))
+    {
+        if ((offset & (~0xFFF)) != 0)
+        {
+            CPU_Message("      RegPointer: %d Reg: %d Offset: 0x%X", RegPointer, DestReg, offset);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+        CPU_Message("      ldrb.w\t%s, [%s, #%d]", ArmRegName(DestReg), ArmRegName(RegPointer), (uint32_t)offset);
+        Arm32Opcode op = { 0 };
+        op.imm12.rt = DestReg;
+        op.imm12.rn = RegPointer;
+        op.imm12.imm = offset;
+        op.imm12.opcode = 0xF89;
+        AddCode32(op.Hex);
+    }
+    else
+    {
+        CPU_Message("      ldrb\t%s, [%s%s%s]", ArmRegName(DestReg), ArmRegName(RegPointer), offset == 0 ? "" : ",", offset == 0 ? "" : stdstr_f("#%d",offset).c_str());
+        ArmThumbOpcode op = {0};
+        op.Imm5.rt = DestReg;
+        op.Imm5.rn = RegPointer;
+        op.Imm5.imm5 = offset;
+        op.Imm5.opcode = 0xF;
+        AddCode16(op.Hex);
+    }
+}
+
 void CArmOps::LoadArmRegPointerByteToArmReg(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift)
 {
     if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
