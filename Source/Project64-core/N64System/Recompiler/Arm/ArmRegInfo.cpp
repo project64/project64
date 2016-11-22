@@ -695,7 +695,6 @@ CArmOps::ArmReg CArmRegInfo::FreeArmReg()
     if ((GetArmRegMapped(Arm_R2) == NotMapped || GetArmRegMapped(Arm_R2) == Temp_Mapped) && !GetArmRegProtected(Arm_R2)) { return Arm_R2; }
     if ((GetArmRegMapped(Arm_R1) == NotMapped || GetArmRegMapped(Arm_R1) == Temp_Mapped) && !GetArmRegProtected(Arm_R1)) { return Arm_R1; }
     if ((GetArmRegMapped(Arm_R0) == NotMapped || GetArmRegMapped(Arm_R0) == Temp_Mapped) && !GetArmRegProtected(Arm_R0)) { return Arm_R0; }
-    if ((GetArmRegMapped(Arm_R12) == NotMapped || GetArmRegMapped(Arm_R12) == Temp_Mapped) && !GetArmRegProtected(Arm_R12)) { return Arm_R12; }
     if ((GetArmRegMapped(Arm_R11) == NotMapped || GetArmRegMapped(Arm_R11) == Temp_Mapped) && !GetArmRegProtected(Arm_R11)) { return Arm_R11; }
     if ((GetArmRegMapped(Arm_R10) == NotMapped || GetArmRegMapped(Arm_R10) == Temp_Mapped) && !GetArmRegProtected(Arm_R10)) { return Arm_R10; }
     if ((GetArmRegMapped(Arm_R9) == NotMapped || GetArmRegMapped(Arm_R9) == Temp_Mapped) && !GetArmRegProtected(Arm_R9)) { return Arm_R9; }
@@ -704,15 +703,15 @@ CArmOps::ArmReg CArmRegInfo::FreeArmReg()
     ArmReg Reg = UnMap_TempReg();
     if (Reg != Arm_Unknown) { return Reg; }
 
-    int32_t MapCount[sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0])];
-    ArmReg MapReg[sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0])];
+    int32_t MapCount[Arm_R12];
+    ArmReg MapReg[Arm_R12];
 
-    for (int32_t i = 0, n = sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0]); i < n; i++)
+    for (int32_t i = 0, n = Arm_R12; i < n; i++)
     {
         MapCount[i] = GetArmRegMapOrder((ArmReg)i);
         MapReg[i] = (ArmReg)i;
     }
-    for (int32_t i = 0, n = sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0]); i < n; i++)
+    for (int32_t i = 0, n = Arm_R12; i < n; i++)
     {
         bool changed = false;
         for (int32_t z = 0; z < n - 1; z++)
@@ -735,10 +734,9 @@ CArmOps::ArmReg CArmRegInfo::FreeArmReg()
         }
     }
 
-    ArmReg StackReg = Arm_Unknown;
-    for (int32_t i = 0, n = sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0]); i < n; i++)
+    for (int32_t i = 0, n = Arm_R12; i < n; i++)
     {
-        if (MapCount[i] > 0 && GetArmRegMapped(MapReg[i]) == GPR_Mapped && !GetArmRegProtected((ArmReg)MapReg[i]))
+        if (((MapCount[i] > 0 && GetArmRegMapped(MapReg[i]) == GPR_Mapped) || GetArmRegMapped(MapReg[i]) == Variable_Mapped) && !GetArmRegProtected((ArmReg)MapReg[i]))
         {
             if (UnMap_ArmReg((ArmReg)MapReg[i]))
             {
@@ -770,7 +768,6 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
         else if (GetArmRegMapped(Arm_R2) == Temp_Mapped && !GetArmRegProtected(Arm_R2)) { Reg = Arm_R2; }
         else if (GetArmRegMapped(Arm_R1) == Temp_Mapped && !GetArmRegProtected(Arm_R1)) { Reg = Arm_R1; }
         else if (GetArmRegMapped(Arm_R0) == Temp_Mapped && !GetArmRegProtected(Arm_R0)) { Reg = Arm_R0; }
-        else if (GetArmRegMapped(Arm_R12) == Temp_Mapped && !GetArmRegProtected(Arm_R12)) { Reg = Arm_R12; }
         else if (GetArmRegMapped(Arm_R11) == Temp_Mapped && !GetArmRegProtected(Arm_R11)) { Reg = Arm_R11; }
         else if (GetArmRegMapped(Arm_R10) == Temp_Mapped && !GetArmRegProtected(Arm_R10)) { Reg = Arm_R10; }
         else if (GetArmRegMapped(Arm_R9) == Temp_Mapped && !GetArmRegProtected(Arm_R9)) { Reg = Arm_R9; }
@@ -881,72 +878,92 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
     return Reg;
 }
 
-CArmOps::ArmReg CArmRegInfo::Map_Variable(VARIABLE_MAPPED variable)
+CArmOps::ArmReg CArmRegInfo::Map_Variable(VARIABLE_MAPPED variable, ArmReg Reg)
 {
+    CPU_Message("%s: variable: %s Reg: %d", __FUNCTION__,VariableMapName(variable), Reg);
+
     if (m_InCallDirect)
     {
         CPU_Message("%s: in CallDirect",__FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return Arm_Unknown;
     }
-    for (int32_t i = 0, n = sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0]); i < n; i++)
-    {
-        if (m_ArmReg_MappedTo[i] == Variable_Mapped && m_Variable_MappedTo[i] == variable)
-        {
-            SetArmRegProtected((ArmReg)i, true);
-            return (ArmReg)i;
-        }
-    }
 
-    ArmReg Reg = FreeArmReg();
     if (Reg == Arm_Unknown)
     {
-        WriteTrace(TraceRegisterCache, TraceError, "Failed to find a free register");
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return Arm_Unknown;
     }
+
+    if (variable == VARIABLE_GPR && Reg != Arm_Any && Reg != Arm_R12)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return Arm_Unknown;
+    }
+
+    if (Reg == Arm_Any)
+    {
+        Reg = GetVariableReg(variable);
+        if (Reg != Arm_Unknown)
+        {
+            SetArmRegProtected(Reg, true);
+            return Reg;
+        }
+        
+        Reg = variable == VARIABLE_GPR ? Arm_R12 : FreeArmReg();
+        if (Reg == Arm_Unknown)
+        {
+            WriteTrace(TraceRegisterCache, TraceError, "Failed to find a free register");
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return Arm_Unknown;
+        }
+    }
+    else if (GetArmRegMapped(Reg) == Variable_Mapped && m_Variable_MappedTo[Reg] == variable)
+    {
+        return Reg;
+    }
+    else if (GetArmRegMapped(Reg) != NotMapped)
+    {
+        UnMap_ArmReg(Reg);
+    }
+
     SetArmRegMapped(Reg, Variable_Mapped);
     SetArmRegProtected(Reg, true);
 
-    switch (variable)
+    CPU_Message("    regcache: allocate %s as pointer to %s", ArmRegName(Reg), VariableMapName(variable));
+    m_Variable_MappedTo[Reg] = variable;
+    if (variable == VARIABLE_GPR) { MoveConstToArmReg(Reg, (uint32_t)_GPR, "_GPR"); }
+    else if (variable == VARIABLE_FPR) { MoveConstToArmReg(Reg, (uint32_t)_FPR_S, "_FPR_S"); }
+    else if (variable == VARIABLE_TLB_READMAP) { MoveConstToArmReg(Reg, (uint32_t)(g_MMU->m_TLB_ReadMap), "MMU->TLB_ReadMap"); }
+    else if (variable == VARIABLE_TLB_WRITEMAP) { MoveConstToArmReg(Reg, (uint32_t)(g_MMU->m_TLB_WriteMap), "MMU->m_TLB_WriteMap"); }
+    else if (variable == VARIABLE_TLB_LOAD_ADDRESS) { MoveConstToArmReg(Reg, (uint32_t)(g_TLBLoadAddress), "g_TLBLoadAddress"); }
+    else if (variable == VARIABLE_TLB_STORE_ADDRESS) { MoveConstToArmReg(Reg, (uint32_t)(g_TLBStoreAddress), "g_TLBStoreAddress"); }
+    else if (variable == VARIABLE_NEXT_TIMER) { MoveConstToArmReg(Reg, (uint32_t)(g_NextTimer), "g_NextTimer"); }
+    else
     {
-    case VARIABLE_GPR:
-        CPU_Message("    regcache: allocate %s as pointer to GPR", ArmRegName(Reg));
-        m_Variable_MappedTo[Reg] = variable;
-        MoveConstToArmReg(Reg, (uint32_t)_GPR, "_GPR");
-        break;
-    case VARIABLE_FPR:
-        CPU_Message("    regcache: allocate %s as pointer to _FPR_S", ArmRegName(Reg));
-        m_Variable_MappedTo[Reg] = variable;
-        MoveConstToArmReg(Reg,(uint32_t)_FPR_S,"_FPR_S");
-        break;
-    case VARIABLE_TLB_READMAP:
-        CPU_Message("    regcache: allocate %s as pointer to TLB_READMAP", ArmRegName(Reg));
-        m_Variable_MappedTo[Reg] = variable;
-        MoveConstToArmReg(Reg, (uint32_t)(g_MMU->m_TLB_ReadMap), "MMU->TLB_ReadMap");
-        break;
-    case VARIABLE_NEXT_TIMER:
-        CPU_Message("    regcache: allocate %s as pointer to g_NextTimer", ArmRegName(Reg));
-        m_Variable_MappedTo[Reg] = variable;
-        MoveConstToArmReg(Reg, (uint32_t)(g_NextTimer), "g_NextTimer");
-        break;
-    case VARIABLE_TLB_LOAD_ADDRESS:
-        CPU_Message("    regcache: allocate %s as pointer to g_TLBLoadAddress", ArmRegName(Reg));
-        m_Variable_MappedTo[Reg] = variable;
-        MoveConstToArmReg(Reg, (uint32_t)(g_TLBLoadAddress), "g_TLBLoadAddress");
-        break;
-    default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return Arm_Unknown;
     }
     return Reg;
 }
 
+CArmOps::ArmReg CArmRegInfo::GetVariableReg(VARIABLE_MAPPED variable) const
+{
+    for (int32_t i = 0, n = sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0]); i < n; i++)
+    {
+        if (m_ArmReg_MappedTo[i] == Variable_Mapped && m_Variable_MappedTo[i] == variable)
+        {
+            return (ArmReg)i;
+        }
+    }
+    return Arm_Unknown;
+}
+
 void CArmRegInfo::ProtectGPR(uint32_t Reg)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        CPU_Message("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -969,7 +986,9 @@ const char * CArmRegInfo::VariableMapName(VARIABLE_MAPPED variable)
     case VARIABLE_GPR: return "_GPR";
     case VARIABLE_FPR: return "_FPR_S";
     case VARIABLE_TLB_READMAP: return "m_TLB_ReadMap";
+    case VARIABLE_TLB_WRITEMAP: return "m_TLB_WriteMap";
     case VARIABLE_TLB_LOAD_ADDRESS: return "g_TLBLoadAddress";
+    case VARIABLE_TLB_STORE_ADDRESS: return "g_TLBStoreAddress";
     case VARIABLE_NEXT_TIMER: return "g_NextTimer";
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);

@@ -35,8 +35,10 @@ public:
         VARIABLE_GPR = 1,
         VARIABLE_FPR = 2,
         VARIABLE_TLB_READMAP = 3,
-        VARIABLE_NEXT_TIMER = 4,
+        VARIABLE_TLB_WRITEMAP = 4,
         VARIABLE_TLB_LOAD_ADDRESS = 5,
+        VARIABLE_TLB_STORE_ADDRESS = 6,
+        VARIABLE_NEXT_TIMER = 7,
     };
 
     CArmRegInfo();
@@ -58,7 +60,8 @@ public:
     void WriteBackRegisters();
 
     ArmReg Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadHiWord);
-    ArmReg Map_Variable(VARIABLE_MAPPED variable);
+    ArmReg Map_Variable(VARIABLE_MAPPED variable, ArmReg Reg = Arm_Any);
+    ArmReg GetVariableReg(VARIABLE_MAPPED variable) const;
     void ProtectGPR(uint32_t Reg);
     void UnMap_AllFPRs();
     ArmReg UnMap_TempReg();
