@@ -1084,6 +1084,38 @@ void CArmOps::StoreFloatRegToArmRegPointer(ArmFpuSingle Reg, ArmReg RegPointer, 
     AddCode32(op.Hex);
 }
 
+void CArmOps::SubArmRegFromArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2)
+{
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+
+    if (DestReg <= 7 && SourceReg1 <= 7 && SourceReg2 <= 7)
+    {
+        CPU_Message("      subs\t%s,%s,%s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
+        ArmThumbOpcode op = {0};
+        op.Reg.rt = DestReg;
+        op.Reg.rn = SourceReg1;
+        op.Reg.rm = SourceReg2;
+        op.Reg.opcode = 0xD;
+        AddCode16(op.Hex);
+    }
+    else
+    {
+        CPU_Message("      sub.w\t%s, %s, %s", ArmRegName(DestReg), ArmRegName(SourceReg1), ArmRegName(SourceReg2));
+        Arm32Opcode op = {0};
+        op.imm5.rn = SourceReg1;
+        op.imm5.s = 0;
+        op.imm5.opcode = 0x75D;
+
+        op.imm5.rm = SourceReg2;
+        op.imm5.type = 0;
+        op.imm5.imm2 = 0;
+        op.imm5.rd = DestReg;
+        op.imm5.imm3 = 0;
+        op.imm5.opcode2 = 0;
+        AddCode32(op.Hex);
+    }
+}
+
 void CArmOps::SubConstFromArmReg(ArmReg Reg, uint32_t Const)
 {
     if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
