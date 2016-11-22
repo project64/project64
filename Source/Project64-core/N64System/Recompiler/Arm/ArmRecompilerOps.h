@@ -194,6 +194,7 @@ public:
     /************************** Other functions **************************/
     void UnknownOpcode  ();
 
+private:
     void EnterCodeBlock();
     void ExitCodeBlock();
     void CompileExitCode();
@@ -246,7 +247,6 @@ public:
 
     static inline void ProtectGPR(uint32_t Reg) { m_RegWorkingSet.ProtectGPR(Reg); }
 
-private:
     void CompileInterpterCall (void * Function, const char * FunctionName);
     void OverflowDelaySlot(bool TestTimer);
 
