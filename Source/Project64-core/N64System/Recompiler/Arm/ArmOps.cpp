@@ -660,15 +660,35 @@ void CArmOps::LoadFloatingPointControlReg(ArmReg DestReg)
     AddCode32(op.Hex);
 }
 
-void CArmOps::MoveConstToArmReg(ArmReg DestReg, uint32_t Const, const char * comment)
+void CArmOps::MoveConstToArmReg(ArmReg DestReg, uint32_t value, const char * comment)
 {
     if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 
-    MoveConstToArmReg(DestReg,(uint16_t)(Const & 0xFFFF),comment);
-    uint16_t TopValue = (uint16_t)((Const >> 16) & 0xFFFF);
-    if (TopValue != 0)
+    if (CanThumbCompressConst(value))
     {
-        MoveConstToArmRegTop(DestReg,TopValue,comment != NULL ? "" : NULL);
+        CPU_Message("      mov.w\t%s, #0x%X\t; %s", ArmRegName(DestReg), (uint32_t)value, comment != NULL ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
+        uint16_t CompressedValue = ThumbCompressConst(value);
+        Arm32Opcode op = { 0 };
+        op.imm8_3_1.rn = 0xF;
+        op.imm8_3_1.s = 0;
+        op.imm8_3_1.opcode = 0x2;
+        op.imm8_3_1.i = (CompressedValue >> 11) & 1;
+        op.imm8_3_1.opcode2 = 0x1E;
+
+        op.imm8_3_1.imm8 = CompressedValue & 0xFF;
+        op.imm8_3_1.rd = DestReg;
+        op.imm8_3_1.imm3 = (CompressedValue >> 8) & 0x3;
+        op.imm8_3_1.opcode3 = 0;
+        AddCode32(op.Hex);
+    }
+    else
+    {
+        MoveConstToArmReg(DestReg, (uint16_t)(value & 0xFFFF), comment);
+        uint16_t TopValue = (uint16_t)((value >> 16) & 0xFFFF);
+        if (TopValue != 0)
+        {
+            MoveConstToArmRegTop(DestReg, TopValue, comment != NULL ? "" : NULL);
+        }
     }
 }
 
