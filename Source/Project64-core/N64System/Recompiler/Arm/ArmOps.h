@@ -162,6 +162,7 @@ protected:
     static void AndConstToVariable(void *Variable, const char * VariableName, uint32_t Const);
     static void AndConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const);
     static void AndArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
+    static void ArmBreakPoint(const char * FileName, uint32_t LineNumber);
     static void BranchLabel8(ArmCompareType CompareType, const char * Label);
     static void BranchLabel20(ArmCompareType CompareType, const char * Label);
     static void CallFunction(void * Function, const char * FunctionName);
@@ -213,6 +214,8 @@ protected:
 
 protected:
     static const char * ArmRegName(ArmReg Reg);
+
+    static void BreakPointNotification(const char * FileName, uint32_t LineNumber);
     static bool ArmCompareInverse(ArmCompareType CompareType);
     static const char * ArmCompareSuffix(ArmCompareType CompareType);
     static const char * ArmFpuSingleName(ArmFpuSingle Reg);

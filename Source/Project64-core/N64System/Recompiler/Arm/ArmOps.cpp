@@ -226,6 +226,15 @@ void CArmOps::AndArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg Source
     }
 }
 
+void CArmOps::ArmBreakPoint(const char * FileName, uint32_t LineNumber)
+{
+    m_RegWorkingSet.BeforeCallDirect();
+    MoveConstToArmReg(Arm_R1, LineNumber);
+    MoveConstToArmReg(Arm_R0, (uint32_t)FileName, FileName);
+    CallFunction(AddressOf(&BreakPointNotification), "BreakPointNotification");
+    m_RegWorkingSet.AfterCallDirect();
+}
+
 void CArmOps::BranchLabel8(ArmCompareType CompareType, const char * Label)
 {
     if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
@@ -1409,6 +1418,11 @@ void * CArmOps::GetAddressOf(int value, ...)
     return Address;
 }
 
+void CArmOps::BreakPointNotification(const char * FileName, uint32_t LineNumber)
+{
+    g_Notify->BreakPoint(FileName, LineNumber);
+}
+
 bool CArmOps::ArmCompareInverse (ArmCompareType CompareType)
 {
     switch (CompareType)
@@ -1432,7 +1446,7 @@ const char * CArmOps::ArmCompareSuffix(ArmCompareType CompareType)
     case ArmBranch_Equal: return "eq";
     case ArmBranch_Notequal: return "ne";
     case ArmBranch_GreaterThanOrEqual: return "ge";
-    case ArmBranch_LessThan: return "l";
+    case ArmBranch_LessThan: return "lt";
     case ArmBranch_GreaterThan: return "g";
     case ArmBranch_LessThanOrEqual: return "le";
     case ArmBranch_Always: return "";
@@ -1457,7 +1471,7 @@ const char * CArmOps::ArmRegName(ArmReg Reg)
     case Arm_R8: return "r8";
     case Arm_R9: return "r9";
     case Arm_R10: return "r10";
-    case Arm_R11: return "fp";
+    case Arm_R11: return "r11";
     case Arm_R12: return "ip";
     case ArmRegSP: return "sp";
     case ArmRegLR: return "lr";
