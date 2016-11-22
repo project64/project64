@@ -1953,15 +1953,19 @@ void CArmRecompilerOps::XORI()
 
 void CArmRecompilerOps::LUI()
 {
-    UnMap_GPR(m_Opcode.rt, true);
-    if (g_Settings->LoadBool(Game_32Bit))
+    if (m_Opcode.rt == 0)
     {
-        CompileInterpterCall((void *)R4300iOp32::LUI, "R4300iOp32::LUI");
+        return;
     }
-    else
+
+    if (g_System->bFastSP() && m_Opcode.rt == 29)
     {
-        CompileInterpterCall((void *)R4300iOp::LUI, "R4300iOp::LUI");
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
+
+    UnMap_GPR(m_Opcode.rt, false);
+    m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, ((int16_t)m_Opcode.offset << 16));
+    m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, CRegInfo::STATE_CONST_32_SIGN);
 }
 
 void CArmRecompilerOps::DADDIU()
