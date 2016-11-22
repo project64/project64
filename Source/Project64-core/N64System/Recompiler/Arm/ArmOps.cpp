@@ -266,9 +266,9 @@ void CArmOps::BranchLabel20(ArmCompareType CompareType, const char * Label)
     op.Branch20.S = 0;
     op.Branch20.Opcode = 0x1E;
     op.Branch20.imm11 = 0;
-    op.Branch20.J2 = CompareType == ArmBranch_Always ? 1 : 0;
+    op.Branch20.J2 = 0;
     op.Branch20.val12 = CompareType == ArmBranch_Always ? 1 : 0;
-    op.Branch20.J1 = CompareType == ArmBranch_Always ? 1 : 0;
+    op.Branch20.J1 = 0;
     op.Branch20.val14 = 0x2;
     AddCode32(op.Hex);
 }
@@ -1415,25 +1415,18 @@ void CArmOps::SetJump20(uint32_t * Loc, uint32_t * JumpLoc)
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
-    uint32_t pc = ((uint32_t)Loc) + 4;
-    uint32_t target = ((uint32_t)JumpLoc);
-    uint32_t immediate = (target - pc) >> 1;
-    uint32_t immediate_check = immediate & ~0xFFFFF;
+    int32_t pc = ((int32_t)Loc) + 4;
+    int32_t target = ((int32_t)JumpLoc);
+    int32_t immediate = (target - pc) >> 1;
+    int32_t immediate_check = immediate & ~0xFFFFF;
     if (immediate_check != 0 && immediate_check != ~0xFFFFF)
     {
+        CPU_Message("%s: target %X pc %X immediate: %X", __FUNCTION__, target,pc, immediate );
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     Arm32Opcode op = {0};
     op.Hex = *Loc;
     if (op.Branch20.val12 == 0)
-    {
-        op.Branch20.imm11 = (immediate & 0x7FF);
-        op.Branch20.imm6 = (immediate >> 11) & 0x37;
-        op.Branch20.J1 = (immediate >> 17) & 0x1;
-        op.Branch20.J2 = (immediate >> 18) & 0x1;
-        op.Branch20.S = (immediate >> 19) & 0x1;
-    }
-    else
     {
         if (immediate < 0)
         {
@@ -1442,7 +1435,20 @@ void CArmOps::SetJump20(uint32_t * Loc, uint32_t * JumpLoc)
         else
         {
             op.Branch20.imm11 = (immediate & 0x7FF);
+            op.Branch20.imm6 = (immediate >> 11) & 0x37;
+            op.Branch20.J1 = (immediate >> 17) & 0x1;
+            op.Branch20.J2 = (immediate >> 18) & 0x1;
+            op.Branch20.S = (immediate >> 19) & 0x1;
         }
+    }
+    else
+    {
+        op.Branch20.S = (immediate >> 23) & 0x1;
+        op.Branch20.J1 = op.Branch20.S == 1 ? (immediate >> 22) & 0x1 : !((immediate >> 22) & 0x1);
+        op.Branch20.J2 = op.Branch20.S == 1 ? (immediate >> 21) & 0x1 : !((immediate >> 21) & 0x1);
+        op.Branch20.cond = (immediate >> 17) & 0xF;
+        op.Branch20.imm6 = (immediate >> 11) & 0x3F;
+        op.Branch20.imm11 = (immediate & 0x7FF);
     }
 
     uint32_t OriginalValue = *Loc;

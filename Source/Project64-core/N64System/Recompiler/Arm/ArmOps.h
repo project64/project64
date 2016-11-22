@@ -217,6 +217,9 @@ protected:
 protected:
     static const char * ArmRegName(ArmReg Reg);
 
+private:
+    friend CArmRegInfo;
+
     static void BreakPointNotification(const char * FileName, uint32_t LineNumber);
     static bool ArmCompareInverse(ArmCompareType CompareType);
     static ArmCompareType ArmCompareInverseType(ArmCompareType CompareType);

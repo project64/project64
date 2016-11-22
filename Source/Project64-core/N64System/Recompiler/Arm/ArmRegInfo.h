@@ -13,11 +13,9 @@
 #include <Project64-core/N64System/Recompiler/RegBase.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmOps.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
-#include <Project64-core/Settings/DebugSettings.h>
 
 class CArmRegInfo :
     public CRegBase,
-    private CDebugSettings,
     public CArmOps,
     private CSystemRegisters
 {
