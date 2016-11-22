@@ -218,6 +218,8 @@ protected:
     static const char * ArmFpuSingleName(ArmFpuSingle Reg);
     static const char * ArmItMaskName(ArmItMask mask);
 
+    static void ProgressItBlock ( void );
+
     static bool CanThumbCompressConst (uint32_t value);
     static uint16_t ThumbCompressConst (uint32_t value);
 

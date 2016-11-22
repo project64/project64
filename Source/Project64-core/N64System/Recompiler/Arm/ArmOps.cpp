@@ -1535,6 +1535,51 @@ const char * CArmOps::ArmItMaskName(ArmItMask mask)
     return "???";
 }
 
+void CArmOps::ProgressItBlock ( void )
+{
+    bool itBlockDone = false;
+    mItBlockInstruction += 1;
+    if (mItBlockInstruction == 1)
+    {
+        if (mItBlockMask == ItMask_None)
+        {
+            itBlockDone = true;
+        }
+    }
+    else if (mItBlockInstruction == 2)
+    {
+        if (mItBlockMask == ItMask_T || mItBlockMask == ItMask_E)
+        {
+            itBlockDone = true;
+        }
+    }
+    else if (mItBlockInstruction == 3)
+    {
+        if (mItBlockMask == ItMask_TT || mItBlockMask == ItMask_ET || mItBlockMask == ItMask_TE || mItBlockMask == ItMask_EE)
+        {
+            itBlockDone = true;
+        }
+    }
+    else if (mItBlockInstruction == 4)
+    {
+        if (mItBlockMask == ItMask_TTT || mItBlockMask == ItMask_ETT || mItBlockMask == ItMask_TET || mItBlockMask == ItMask_EET ||
+            mItBlockMask == ItMask_TTE || mItBlockMask == ItMask_ETE || mItBlockMask == ItMask_TEE || mItBlockMask == ItMask_EEE)
+        {
+            itBlockDone = true;
+        }
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    if (itBlockDone)
+    {
+        mInItBlock = false;
+        mItBlockInstruction = 0;
+    }
+}
+
 void CArmOps::AddCode8(uint8_t value)
 {
     (*((uint8_t *)(*g_RecompPos)) = (uint8_t)(value));
