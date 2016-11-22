@@ -77,6 +77,36 @@ void CArmOps::AddConstToArmReg(ArmReg DestReg, uint32_t Const)
     AddConstToArmReg(DestReg, DestReg, Const);
 }
 
+void CArmOps::AndConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const)
+{
+    if (mInItBlock) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+
+    else if (CanThumbCompressConst(Const))
+    {
+        CPU_Message("      and\t%s, %s, #%d", ArmRegName(DestReg), ArmRegName(SourceReg), Const);
+        uint16_t CompressedConst = ThumbCompressConst(Const);
+        Arm32Opcode op = { 0 };
+        op.imm8_3_1.rn = SourceReg;
+        op.imm8_3_1.s = 0;
+        op.imm8_3_1.opcode = 0;
+        op.imm8_3_1.i = (CompressedConst >> 11) & 1;
+        op.imm8_3_1.opcode2 = 0x1E;
+
+        op.imm8_3_1.imm8 = CompressedConst & 0xFF;
+        op.imm8_3_1.rd = DestReg;
+        op.imm8_3_1.imm3 = (CompressedConst >> 8) & 0x3;
+        op.imm8_3_1.opcode3 = 0;
+        AddCode32(op.Hex);
+    }
+    else
+    {
+        ArmReg TempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+        MoveConstToArmReg(TempReg, Const);
+        AndArmRegToArmReg(DestReg, SourceReg, TempReg );
+        m_RegWorkingSet.SetArmRegProtected(TempReg, false);
+    }
+}
+
 void CArmOps::AndConstToVariable(void *Variable, const char * VariableName, uint32_t Const)
 {
     if (mInItBlock) { g_Notify->BreakPoint(__FILE__, __LINE__); }

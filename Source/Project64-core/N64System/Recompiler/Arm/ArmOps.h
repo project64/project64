@@ -160,6 +160,7 @@ protected:
     static void AddConstToArmReg(ArmReg DestReg, uint32_t Const);
     static void AddConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const);
     static void AndConstToVariable(void *Variable, const char * VariableName, uint32_t Const);
+    static void AndConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const);
     static void AndArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg);
     static void BranchLabel8(ArmCompareType CompareType, const char * Label);
     static void BranchLabel20(ArmCompareType CompareType, const char * Label);
