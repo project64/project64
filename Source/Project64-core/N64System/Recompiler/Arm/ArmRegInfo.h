@@ -56,7 +56,7 @@ public:
     void FixRoundModel(FPU_ROUND RoundMethod);
     void Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsRegToLoad);
     void Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad);
-    ArmReg FreeArmReg();
+    ArmReg FreeArmReg(bool TempMapping);
     void WriteBackRegisters();
 
     ArmReg Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadHiWord);
@@ -64,7 +64,7 @@ public:
     ArmReg GetVariableReg(VARIABLE_MAPPED variable) const;
     void ProtectGPR(uint32_t Reg);
     void UnMap_AllFPRs();
-    ArmReg UnMap_TempReg();
+    ArmReg UnMap_TempReg(bool TempMapping);
     void UnMap_GPR(uint32_t Reg, bool WriteBackValue);
     void WriteBack_GPR(uint32_t MipsReg, bool Unmapping);
     bool UnMap_ArmReg(ArmReg Reg);
