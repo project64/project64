@@ -12,6 +12,7 @@
 
 #if defined(__arm__) || defined(_M_ARM)
 #include <Project64-core/N64System/SystemGlobals.h>
+#include <Project64-core/N64System/Mips/Disk.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Interpreter/InterpreterOps32.h>
@@ -20,6 +21,8 @@
 #include <Project64-core/N64System/Recompiler/Arm/ArmRecompilerOps.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/ExceptionHandler.h>
+
+uint32_t CArmRecompilerOps::m_TempValue = 0;
 
 void CArmRecompilerOps::PreCompileOpcode(void)
 {
@@ -2033,23 +2036,23 @@ void CArmRecompilerOps::LB()
     if (IsMapped(m_Opcode.base))
     {
         TempRegAddress = Map_TempReg(Arm_Any, -1, false);
-        AddConstToArmReg(TempRegAddress,GetMipsRegMapLo(m_Opcode.base),(int16_t)m_Opcode.immediate);
+        AddConstToArmReg(TempRegAddress, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.immediate);
     }
     else
     {
         TempRegAddress = Map_TempReg(Arm_Any, m_Opcode.base, false);
-        AddConstToArmReg(TempRegAddress,(int16_t)m_Opcode.immediate);
+        AddConstToArmReg(TempRegAddress, (int16_t)m_Opcode.immediate);
     }
     if (g_System->bUseTlb())
     {
         ArmReg TempReg = Map_TempReg(Arm_Any, -1, false);
         ShiftRightUnsignImmed(TempReg, TempRegAddress, 12);
         ArmReg ReadMapReg = Map_Variable(CArmRegInfo::VARIABLE_TLB_READMAP);
-        LoadArmRegPointerToArmReg(TempReg,ReadMapReg,TempReg,2);
+        LoadArmRegPointerToArmReg(TempReg, ReadMapReg, TempReg, 2);
         CompileReadTLBMiss(TempRegAddress, TempReg);
         XorConstToArmReg(TempRegAddress, 3);
         Map_GPR_32bit(m_Opcode.rt, true, -1);
-        LoadArmRegPointerByteToArmReg(GetMipsRegMapLo(m_Opcode.rt),TempReg,TempRegAddress,0);
+        LoadArmRegPointerByteToArmReg(GetMipsRegMapLo(m_Opcode.rt), TempReg, TempRegAddress, 0);
         SignExtendByte(GetMipsRegMapLo(m_Opcode.rt));
     }
     else
@@ -2088,19 +2091,104 @@ void CArmRecompilerOps::LWL()
 
 void CArmRecompilerOps::LW()
 {
-    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
-    UpdateCounters(m_RegWorkingSet, false, true);
-    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+    LW(true, false);
+}
 
-    UnMap_GPR(m_Opcode.base, true);
-    UnMap_GPR(m_Opcode.rt, true);
-    if (g_Settings->LoadBool(Game_32Bit))
+void CArmRecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
+{
+    if (m_Opcode.rt == 0) return;
+
+    if (m_Opcode.base == 29 && g_System->bFastSP())
     {
-        CompileInterpterCall((void *)R4300iOp32::LW, "R4300iOp32::LW");
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        /*Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
+        TempReg1 = Map_MemoryStack(x86_Any, true);
+        MoveVariableDispToX86Reg((void *)((uint32_t)(int16_t)m_Opcode.offset), stdstr_f("%Xh", (int16_t)m_Opcode.offset).c_str(), GetMipsRegMapLo(m_Opcode.rt), TempReg1, 1);
+        if (bRecordLLBit)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }*/
+    }
+    else if (IsConst(m_Opcode.base))
+    {
+        uint32_t Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
+        Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
+        LW_KnownAddress(GetMipsRegMapLo(m_Opcode.rt), Address);
+        if (bRecordLLBit)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+    else if (g_System->bUseTlb())
+    {
+        if (IsMapped(m_Opcode.rt))
+        {
+            ProtectGPR(m_Opcode.rt);
+        }
+
+        ArmReg TempRegAddress;
+        if (IsMapped(m_Opcode.base))
+        {
+            ProtectGPR(m_Opcode.base);
+            TempRegAddress = Map_TempReg(Arm_Any, -1, false);
+            AddConstToArmReg(TempRegAddress, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.immediate);
+        }
+        else
+        {
+            TempRegAddress = Map_TempReg(Arm_Any, m_Opcode.base, false);
+            AddConstToArmReg(TempRegAddress, (int16_t)m_Opcode.immediate);
+        }
+
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+        UpdateCounters(m_RegWorkingSet, false, true);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+
+        ArmReg TempRegValue = Arm_Unknown;
+        ArmReg TempReg = Map_TempReg(Arm_Any, -1, false);
+        ShiftRightUnsignImmed(TempReg, TempRegAddress, 12);
+        ArmReg ReadMapReg = Map_Variable(CArmRegInfo::VARIABLE_TLB_READMAP);
+        LoadArmRegPointerToArmReg(TempReg, ReadMapReg, TempReg, 2);
+        CompileReadTLBMiss(TempRegAddress, TempReg);
+        Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
+        LoadArmRegPointerToArmReg(GetMipsRegMapLo(m_Opcode.rt), TempReg, TempRegAddress, 0);
+        if (bRecordLLBit)
+        {
+            MoveConstToVariable(1, _LLBit, "LLBit");
+        }
     }
     else
     {
-        CompileInterpterCall((void *)R4300iOp::LW, "R4300iOp::LW");
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        /*if (IsMapped(m_Opcode.base))
+        {
+            ProtectGPR(m_Opcode.base);
+            if (m_Opcode.offset != 0)
+            {
+                Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
+                LeaSourceAndOffset(GetMipsRegMapLo(m_Opcode.rt), GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.offset);
+            }
+            else
+            {
+                Map_GPR_32bit(m_Opcode.rt, ResultSigned, m_Opcode.base);
+            }
+        }
+        else
+        {
+            Map_GPR_32bit(m_Opcode.rt, ResultSigned, m_Opcode.base);
+            AddConstToX86Reg(GetMipsRegMapLo(m_Opcode.rt), (int16_t)m_Opcode.immediate);
+        }
+        AndConstToX86Reg(GetMipsRegMapLo(m_Opcode.rt), 0x1FFFFFFF);
+        MoveN64MemToX86reg(GetMipsRegMapLo(m_Opcode.rt), GetMipsRegMapLo(m_Opcode.rt));
+        if (bRecordLLBit)
+        {
+            MoveConstToVariable(1, _LLBit, "LLBit");
+        }*/
+    }
+    if (g_System->bFastSP() && m_Opcode.rt == 29)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        /*ResetX86Protection();
+        ResetMemoryStack();*/
     }
 }
 
@@ -4700,6 +4788,305 @@ void CArmRecompilerOps::LB_KnownAddress(ArmReg Reg, uint32_t VAddr, bool SignExt
     default:
         CPU_Message("    Should be loading from %08X ?!?", VAddr);
         if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+    }
+}
+
+void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
+{
+    m_RegWorkingSet.SetArmRegProtected(Reg, true);
+
+    if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
+    {
+        if (!g_System->bUseTlb())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+
+        ArmReg TempReg = Map_TempReg(Arm_Any, -1, false);
+        ArmReg TempRegAddress = Map_TempReg(Arm_Any, -1, false);
+        CPU_Message("%s: TempReg: %s TempRegAddress: %s", __FUNCTION__, ArmRegName(TempReg), ArmRegName(TempRegAddress));
+
+        MoveConstToArmReg(TempRegAddress, VAddr);
+        ShiftRightUnsignImmed(TempReg, TempRegAddress, 12);
+        ArmReg ReadMapReg = Map_Variable(CArmRegInfo::VARIABLE_TLB_READMAP);
+        LoadArmRegPointerToArmReg(TempReg, ReadMapReg, TempReg, 2);
+        CompileReadTLBMiss(TempRegAddress, TempReg);
+        LoadArmRegPointerToArmReg(Reg, TempReg, TempRegAddress, 0);
+        m_RegWorkingSet.SetArmRegProtected(TempReg, false);
+        m_RegWorkingSet.SetArmRegProtected(TempRegAddress, false);
+    }
+    else
+    {
+        uint32_t PAddr;
+        if (!g_TransVaddr->TranslateVaddr(VAddr, PAddr))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+
+        ArmReg TempReg;
+        switch (PAddr & 0xFFF00000)
+        {
+        case 0x00000000:
+        case 0x00100000:
+        case 0x00200000:
+        case 0x00300000:
+        case 0x00400000:
+        case 0x00500000:
+        case 0x00600000:
+        case 0x00700000:
+            TempReg = Map_TempReg(Arm_Any, -1, false);
+            MoveConstToArmReg(TempReg, (uint32_t)PAddr + (uint32_t)g_MMU->Rdram(), stdstr_f("RDRAM + %X", PAddr).c_str());
+            LoadArmRegPointerToArmReg(Reg, TempReg, 0);
+            break;
+        case 0x04000000:
+            if (PAddr < 0x04002000)
+            {
+                MoveVariableToArmReg(PAddr + g_MMU->Rdram(), stdstr_f("RDRAM + %X", PAddr).c_str(), Reg);
+                break;
+            }
+            switch (PAddr)
+            {
+            case 0x04040010: MoveVariableToArmReg(&g_Reg->SP_STATUS_REG, "SP_STATUS_REG", Reg); break;
+            case 0x04040014: MoveVariableToArmReg(&g_Reg->SP_DMA_FULL_REG, "SP_DMA_FULL_REG", Reg); break;
+            case 0x04040018: MoveVariableToArmReg(&g_Reg->SP_DMA_BUSY_REG, "SP_DMA_BUSY_REG", Reg); break;
+            case 0x0404001C:
+                MoveVariableToArmReg(&g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG", Reg);
+                MoveConstToVariable(1, &g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG");
+                break;
+            case 0x04080000: MoveVariableToArmReg(&g_Reg->SP_PC_REG, "SP_PC_REG", Reg); break;
+            default:
+                MoveConstToArmReg(Reg, (uint32_t)0);
+                if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+                {
+                    g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str());
+                }
+                CPU_Message("    Should be loading from %08X ?!?", VAddr);
+                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            }
+            break;
+        case 0x04100000:
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R1, PAddr);
+            MoveConstToArmReg(Arm_R2, (uint32_t)&CMipsMemoryVM::m_MemLookupAddress, "m_MemLookupAddress");
+            StoreArmRegToArmRegPointer(Arm_R1, Arm_R2, 0);
+            CallFunction((void *)CMipsMemoryVM::Load32DPCommand, "CMipsMemoryVM::Load32DPCommand");
+            m_RegWorkingSet.AfterCallDirect();
+            MoveVariableToArmReg(&CMipsMemoryVM::m_MemLookupValue.UW[0], "CMipsMemoryVM::m_MemLookupValue.UW[0]", Reg);
+            break;
+        case 0x04300000:
+            switch (PAddr)
+            {
+            case 0x04300000: MoveVariableToArmReg(&g_Reg->MI_MODE_REG, "MI_MODE_REG", Reg); break;
+            case 0x04300004: MoveVariableToArmReg(&g_Reg->MI_VERSION_REG, "MI_VERSION_REG", Reg); break;
+            case 0x04300008: MoveVariableToArmReg(&g_Reg->MI_INTR_REG, "MI_INTR_REG", Reg); break;
+            case 0x0430000C: MoveVariableToArmReg(&g_Reg->MI_INTR_MASK_REG, "MI_INTR_MASK_REG", Reg); break;
+            default:
+                MoveConstToArmReg(Reg, (uint32_t)0);
+                if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str()); }
+                CPU_Message("    Should be loading from %08X ?!?", VAddr);
+                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            }
+            break;
+        case 0x04400000:
+            switch (PAddr)
+            {
+            case 0x04400010:
+                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+                UpdateCounters(m_RegWorkingSet, false, true);
+                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+                m_RegWorkingSet.BeforeCallDirect();
+                MoveConstToArmReg(Arm_R0, (uint32_t)g_MMU);
+                CallFunction(AddressOf(&CMipsMemoryVM::UpdateHalfLine), "CMipsMemoryVM::UpdateHalfLine");
+                m_RegWorkingSet.AfterCallDirect();
+                MoveVariableToArmReg((void *)&g_MMU->m_HalfLine, "MMU->m_HalfLine", Reg);
+                break;
+            default:
+                MoveConstToArmReg(Reg, (uint32_t)0);
+                if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str()); }
+                CPU_Message("    Should be loading from %08X ?!?", VAddr);
+                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            }
+            break;
+        case 0x04500000: /* AI registers */
+            switch (PAddr)
+            {
+            case 0x04500004:
+                if (g_System->bFixedAudio())
+                {
+                    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+                    UpdateCounters(m_RegWorkingSet, false, true);
+                    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+                    m_RegWorkingSet.BeforeCallDirect();
+                    MoveConstToArmReg(Arm_R0, (uint32_t)g_Audio, "g_Audio");
+                    CallFunction(AddressOf(&CAudio::GetLength), "CAudio::GetLength");
+                    MoveConstToArmReg(Arm_R1, (uint32_t)&m_TempValue, "m_TempValue");
+                    StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
+                    m_RegWorkingSet.AfterCallDirect();
+                    MoveVariableToArmReg(&m_TempValue, "m_TempValue", Reg);
+                }
+                else
+                {
+                    if (g_Plugins->Audio()->AiReadLength != NULL)
+                    {
+                        m_RegWorkingSet.BeforeCallDirect();
+                        CallFunction((void *)g_Plugins->Audio()->AiReadLength, "AiReadLength");
+                        MoveConstToArmReg(Arm_R1, (uint32_t)&m_TempValue, "m_TempValue");
+                        StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
+                        m_RegWorkingSet.AfterCallDirect();
+                        MoveVariableToArmReg(&m_TempValue, "m_TempValue", Reg);
+                    }
+                    else
+                    {
+                        MoveConstToArmReg(Reg, (uint32_t)0);
+                    }
+                }
+                break;
+            case 0x0450000C:
+                if (g_System->bFixedAudio())
+                {
+                    m_RegWorkingSet.BeforeCallDirect();
+                    MoveConstToArmReg(Arm_R0, (uint32_t)g_Audio, "g_Audio");
+                    CallFunction(AddressOf(&CAudio::GetStatus), "CAudio::GetStatus");
+                    MoveConstToArmReg(Arm_R1, (uint32_t)&m_TempValue, "m_TempValue");
+                    StoreArmRegToArmRegPointer(Arm_R0, Arm_R1, 0);
+                    m_RegWorkingSet.AfterCallDirect();
+                    MoveVariableToArmReg(&m_TempValue, "m_TempValue", Reg);
+                }
+                else
+                {
+                    MoveVariableToArmReg(&g_Reg->AI_STATUS_REG, "AI_STATUS_REG", Reg);
+                }
+                break;
+            default:
+                MoveConstToArmReg(Reg, (uint32_t)0);
+                if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str()); }
+                CPU_Message("    Should be loading from %08X ?!?", VAddr);
+                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            }
+            break;
+        case 0x04600000:
+            switch (PAddr)
+            {
+            case 0x04600000: MoveVariableToArmReg(&g_Reg->PI_DRAM_ADDR_REG, "PI_DRAM_ADDR_REG", Reg); break;
+            case 0x04600004: MoveVariableToArmReg(&g_Reg->PI_CART_ADDR_REG, "PI_CART_ADDR_REG", Reg); break;
+            case 0x04600008: MoveVariableToArmReg(&g_Reg->PI_RD_LEN_REG, "PI_RD_LEN_REG", Reg); break;
+            case 0x0460000C: MoveVariableToArmReg(&g_Reg->PI_WR_LEN_REG, "PI_WR_LEN_REG", Reg); break;
+            case 0x04600010: MoveVariableToArmReg(&g_Reg->PI_STATUS_REG, "PI_STATUS_REG", Reg); break;
+            case 0x04600014: MoveVariableToArmReg(&g_Reg->PI_DOMAIN1_REG, "PI_DOMAIN1_REG", Reg); break;
+            case 0x04600018: MoveVariableToArmReg(&g_Reg->PI_BSD_DOM1_PWD_REG, "PI_BSD_DOM1_PWD_REG", Reg); break;
+            case 0x0460001C: MoveVariableToArmReg(&g_Reg->PI_BSD_DOM1_PGS_REG, "PI_BSD_DOM1_PGS_REG", Reg); break;
+            case 0x04600020: MoveVariableToArmReg(&g_Reg->PI_BSD_DOM1_RLS_REG, "PI_BSD_DOM1_RLS_REG", Reg); break;
+            case 0x04600024: MoveVariableToArmReg(&g_Reg->PI_DOMAIN2_REG, "PI_DOMAIN2_REG", Reg); break;
+            case 0x04600028: MoveVariableToArmReg(&g_Reg->PI_BSD_DOM2_PWD_REG, "PI_BSD_DOM2_PWD_REG", Reg); break;
+            case 0x0460002C: MoveVariableToArmReg(&g_Reg->PI_BSD_DOM2_PGS_REG, "PI_BSD_DOM2_PGS_REG", Reg); break;
+            case 0x04600030: MoveVariableToArmReg(&g_Reg->PI_BSD_DOM2_RLS_REG, "PI_BSD_DOM2_RLS_REG", Reg); break;
+            default:
+                MoveConstToArmReg(Reg, (uint32_t)0);
+                if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+                {
+                    g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str());
+                }
+                CPU_Message("    Should be loading from %08X ?!?", VAddr);
+                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            }
+            break;
+        case 0x04700000:
+            switch (PAddr)
+            {
+            case 0x0470000C: MoveVariableToArmReg(&g_Reg->RI_SELECT_REG, "RI_SELECT_REG", Reg); break;
+            case 0x04700010: MoveVariableToArmReg(&g_Reg->RI_REFRESH_REG, "RI_REFRESH_REG", Reg); break;
+            default:
+                MoveConstToArmReg(Reg, (uint32_t)0);
+                if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+                {
+                    g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str());
+                }
+                CPU_Message("    Should be loading from %08X ?!?", VAddr);
+                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            }
+            break;
+        case 0x04800000:
+            switch (PAddr)
+            {
+            case 0x04800000: MoveVariableToArmReg(&g_Reg->SI_DRAM_ADDR_REG, "SI_DRAM_ADDR_REG", Reg); break;
+            case 0x04800018: MoveVariableToArmReg(&g_Reg->SI_STATUS_REG, "SI_STATUS_REG", Reg); break;
+            default:
+                MoveConstToArmReg(Reg, (uint32_t)0);
+                if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+                {
+                    g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str());
+                }
+                CPU_Message("    Should be loading from %08X ?!?", VAddr);
+                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            }
+            break;
+        case 0x05000000:
+            //64DD Registers
+            if (g_Settings->LoadBool(Setting_EnableDisk))
+            {
+                switch (PAddr)
+                {
+                case 0x05000500: MoveVariableToArmReg(&g_Reg->ASIC_DATA, "ASIC_DATA", Reg); break;
+                case 0x05000504: MoveVariableToArmReg(&g_Reg->ASIC_MISC_REG, "ASIC_MISC_REG", Reg); break;
+                case 0x05000508:
+                    MoveVariableToArmReg(&g_Reg->ASIC_STATUS, "ASIC_STATUS", Reg);
+                    m_RegWorkingSet.BeforeCallDirect();
+                    CallFunction(AddressOf(&DiskGapSectorCheck), "DiskGapSectorCheck");
+                    m_RegWorkingSet.AfterCallDirect();
+                    break;
+                case 0x0500050C: MoveVariableToArmReg(&g_Reg->ASIC_CUR_TK, "ASIC_CUR_TK", Reg); break;
+                case 0x05000510: MoveVariableToArmReg(&g_Reg->ASIC_BM_STATUS, "ASIC_BM_STATUS", Reg); break;
+                case 0x05000514: MoveVariableToArmReg(&g_Reg->ASIC_ERR_SECTOR, "ASIC_ERR_SECTOR", Reg); break;
+                case 0x05000518: MoveVariableToArmReg(&g_Reg->ASIC_SEQ_STATUS, "ASIC_SEQ_STATUS", Reg); break;
+                case 0x0500051C: MoveVariableToArmReg(&g_Reg->ASIC_CUR_SECTOR, "ASIC_CUR_SECTOR", Reg); break;
+                case 0x05000520: MoveVariableToArmReg(&g_Reg->ASIC_HARD_RESET, "ASIC_HARD_RESET", Reg); break;
+                case 0x05000524: MoveVariableToArmReg(&g_Reg->ASIC_C1_S0, "ASIC_C1_S0", Reg); break;
+                case 0x05000528: MoveVariableToArmReg(&g_Reg->ASIC_HOST_SECBYTE, "ASIC_HOST_SECBYTE", Reg); break;
+                case 0x0500052C: MoveVariableToArmReg(&g_Reg->ASIC_C1_S2, "ASIC_C1_S2", Reg); break;
+                case 0x05000530: MoveVariableToArmReg(&g_Reg->ASIC_SEC_BYTE, "ASIC_SEC_BYTE", Reg); break;
+                case 0x05000534: MoveVariableToArmReg(&g_Reg->ASIC_C1_S4, "ASIC_C1_S4", Reg); break;
+                case 0x05000538: MoveVariableToArmReg(&g_Reg->ASIC_C1_S6, "ASIC_C1_S6", Reg); break;
+                case 0x0500053C: MoveVariableToArmReg(&g_Reg->ASIC_CUR_ADDR, "ASIC_CUR_ADDR", Reg); break;
+                case 0x05000540: MoveVariableToArmReg(&g_Reg->ASIC_ID_REG, "ASIC_ID_REG", Reg); break;
+                case 0x05000544: MoveVariableToArmReg(&g_Reg->ASIC_TEST_REG, "ASIC_TEST_REG", Reg); break;
+                case 0x05000548: MoveVariableToArmReg(&g_Reg->ASIC_TEST_PIN_SEL, "ASIC_TEST_PIN_SEL", Reg); break;
+                default:
+                    MoveConstToArmReg(Reg, (uint32_t)0);
+                    if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+                    {
+                        g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str());
+                    }
+                    CPU_Message("    Should be loading from %08X ?!?", VAddr);
+                    if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+                }
+            }
+            else
+            {
+                MoveConstToArmReg(Reg, (uint32_t)((PAddr & 0xFFFF) << 16) | (PAddr & 0xFFFF));
+            }
+            break;
+        case 0x06000000:
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R1, PAddr);
+            MoveConstToArmReg(Arm_R2, (uint32_t)&CMipsMemoryVM::m_MemLookupAddress, "m_MemLookupAddress");
+            StoreArmRegToArmRegPointer(Arm_R1, Arm_R2, 0);
+            CallFunction((void *)CMipsMemoryVM::Load32CartridgeDomain1Address1, "CMipsMemoryVM::Load32CartridgeDomain1Address1");
+            m_RegWorkingSet.AfterCallDirect();
+            MoveVariableToArmReg(&CMipsMemoryVM::m_MemLookupValue.UW[0], "CMipsMemoryVM::m_MemLookupValue.UW[0]", Reg);
+            break;
+        default:
+            if ((PAddr & 0xF0000000) == 0x10000000 && (PAddr - 0x10000000) < g_Rom->GetRomSize())
+            {
+                uint32_t RomOffset = PAddr - 0x10000000;
+                MoveVariableToArmReg(RomOffset + g_Rom->GetRomAddress(), stdstr_f("ROM + %X", RomOffset).c_str(), Reg); // read from rom
+            }
+            else
+            {
+                CPU_Message("    Should be loading from %08X ?!?", VAddr);
+                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            }
+        }
     }
 }
 

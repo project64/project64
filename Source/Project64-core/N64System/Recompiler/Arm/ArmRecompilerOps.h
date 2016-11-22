@@ -247,7 +247,9 @@ private:
 
     static inline void ProtectGPR(uint32_t Reg) { m_RegWorkingSet.ProtectGPR(Reg); }
 
+    void LW(bool ResultSigned, bool bRecordLLBit);
     void LB_KnownAddress(ArmReg Reg, uint32_t VAddr, bool SignExtend);
+    void LW_KnownAddress(ArmReg Reg, uint32_t VAddr);
     void CompileInterpterCall (void * Function, const char * FunctionName);
     void OverflowDelaySlot(bool TestTimer);
 
@@ -256,6 +258,8 @@ private:
     uint32_t m_CompilePC;
     OPCODE m_Opcode;
     CCodeSection * m_Section;
+
+    static uint32_t m_TempValue;
 };
 
 #endif
