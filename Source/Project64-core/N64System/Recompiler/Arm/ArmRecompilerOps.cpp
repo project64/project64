@@ -4471,9 +4471,9 @@ void CArmRecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool 
 
         ArmReg NextTimerReg = RegSet.Map_Variable(CArmRegInfo::VARIABLE_NEXT_TIMER);
         ArmReg TempReg = RegSet.Map_TempReg(Arm_Any, -1, false);
-        LoadArmRegPointerToArmReg(TempReg,NextTimerReg,0);
-        SubConstFromArmReg(TempReg,RegSet.GetBlockCycleCount());
-        StoreArmRegToArmRegPointer(TempReg,NextTimerReg,0);
+        LoadArmRegPointerToArmReg(TempReg, NextTimerReg, 0);
+        SubConstFromArmReg(TempReg, TempReg, RegSet.GetBlockCycleCount());
+        StoreArmRegToArmRegPointer(TempReg, NextTimerReg, 0);
         if (ClearValues)
         {
             RegSet.SetBlockCycleCount(0);

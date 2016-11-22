@@ -199,7 +199,7 @@ protected:
     static void StoreFloatingPointControlReg(ArmReg SourceReg);
     static void StoreFloatRegToArmRegPointer(ArmFpuSingle Reg, ArmReg RegPointer, uint8_t Offset);
     static void SubArmRegFromArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
-    static void SubConstFromArmReg(ArmReg Reg, uint32_t Const);
+    static void SubConstFromArmReg(ArmReg Reg, ArmReg SourceReg, uint32_t Const);
     static void SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName);
     static void TestVariable(uint32_t Const, void * Variable, const char * VariableName);
     static void XorConstToArmReg(ArmReg DestReg, uint32_t value);

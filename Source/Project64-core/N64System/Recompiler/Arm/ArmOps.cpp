@@ -1125,37 +1125,40 @@ void CArmOps::SubArmRegFromArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg Sour
     }
 }
 
-void CArmOps::SubConstFromArmReg(ArmReg Reg, uint32_t Const)
+void CArmOps::SubConstFromArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const)
 {
     if (mInItBlock) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 
-    if (Reg <= 7 && (Const & (~0xFF)) == 0)
+    if (DestReg <= 7 && DestReg == SourceReg && (Const & (~0xFF)) == 0)
     {
-        CPU_Message("      subs\t%s, #0x%X", ArmRegName(Reg), Const);
+        CPU_Message("      subs\t%s, #0x%X", ArmRegName(DestReg), Const);
         ArmThumbOpcode op = {0};
         op.Imm8.imm8 = (uint8_t)Const;
-        op.Imm8.rdn = Reg;
+        op.Imm8.rdn = DestReg;
         op.Imm8.opcode = 0x7;
         AddCode16(op.Hex);
     }
     else if ((Const & (~0x7FF)) == 0)
     {
-        CPU_Message("      sub\t%s, #0x%X", ArmRegName(Reg), Const);
+        CPU_Message("      sub.w\t%s, %s, #0x%X", ArmRegName(DestReg), ArmRegName(SourceReg), Const);
         Arm32Opcode op = {0};
-        op.RnRdImm12.Rn = Reg;
+        op.RnRdImm12.Rn = SourceReg;
         op.RnRdImm12.s = 0;
         op.RnRdImm12.opcode = 0x15;
         op.RnRdImm12.i = (Const >> 11) & 1;
         op.RnRdImm12.opcode2 = 0x1E;
         op.RnRdImm12.imm8 = (Const & 0xFF);
-        op.RnRdImm12.rd = Reg;
+        op.RnRdImm12.rd = DestReg;
         op.RnRdImm12.imm3 = (Const >> 8) & 0x7;
         op.RnRdImm12.reserved = 0;
         AddCode32(op.Hex);
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__,__LINE__);
+        ArmReg TempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+        MoveConstToArmReg(TempReg, Const);
+        SubArmRegFromArmReg(DestReg,SourceReg,TempReg);
+        m_RegWorkingSet.SetArmRegProtected(TempReg,false);
     }
 }
 
@@ -1172,7 +1175,7 @@ void CArmOps::SubConstFromVariable(uint32_t Const, void * Variable, const char *
     }
     MoveConstToArmReg(TempReg1,(uint32_t)Variable,VariableName);
     LoadArmRegPointerToArmReg(TempReg2,TempReg1,0);
-    SubConstFromArmReg(TempReg2,Const);
+    SubConstFromArmReg(TempReg2,TempReg2,Const);
     StoreArmRegToArmRegPointer(TempReg2,TempReg1,0);
 
     m_RegWorkingSet.SetArmRegProtected(TempReg1,false);
