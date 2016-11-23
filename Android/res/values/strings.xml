@@ -6,6 +6,7 @@
     <string name="menuItem_EndEmulation">End Emulation</string>
     <string name="menuItem_pause">Pause</string>
     <string name="menuItem_resume">Resume</string>
+    <string name="menuItem_GameSpeed">Game Speed</string>
     <string name="menuItem_CurrentSaveState">Current Save State…</string>
     <string name="menuItem_CurrentSaveAuto">Auto</string>
     <string name="menuItem_CurrentSave1">Slot 1</string>

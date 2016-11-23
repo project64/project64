@@ -43,7 +43,7 @@ public final class Notifier
             @Override
             public void run()
             {
-                new AlertDialog.Builder(finalActivity)
+                final AlertDialog dialog = new AlertDialog.Builder(finalActivity)
                 .setTitle("Error")
                 .setMessage(finalMessage)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() 
@@ -51,14 +51,16 @@ public final class Notifier
                     public void onClick(DialogInterface dialog, int id) 
                     {
                         // You don't have to do anything here if you just want it dismissed when clicked
-                	   synchronized(sDisplayMessager)
-                	   {
-                		   sDisplayMessager.notify();
-                	   };
+                       synchronized(sDisplayMessager)
+                       {
+                           sDisplayMessager.notify();
+                       };
                     }
                 })
-                .create()
-                .show();
+                .setCancelable(false)
+                .create();                
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
             }
         };
         activity.runOnUiThread( sDisplayMessager );
@@ -66,8 +68,8 @@ public final class Notifier
         {
             try 
             {
-            	sDisplayMessager.wait();
-    		}
+                sDisplayMessager.wait();
+            }
             catch (InterruptedException e) 
             {
             }
@@ -85,7 +87,7 @@ public final class Notifier
 
         GameOverlay overlay = (GameOverlay) activity.findViewById(R.id.gameOverlay);
         if (overlay == null)
-        	return;
+            return;
         
         overlay.SetDisplayMessage(message, Duratation);
     }
@@ -109,11 +111,11 @@ public final class Notifier
             @Override
             public void run()
             {
-            	finalActivity.finish();
-        		synchronized(runEmulationStopped)
-        		{
-        			runEmulationStopped.notify();
-    			};
+                finalActivity.finish();
+                synchronized(runEmulationStopped)
+                {
+                    runEmulationStopped.notify();
+                };
             }
         };
         activity.runOnUiThread( runEmulationStopped );
@@ -121,8 +123,8 @@ public final class Notifier
         {
             try 
             {
-            	runEmulationStopped.wait();
-    		}
+                runEmulationStopped.wait();
+            }
             catch (InterruptedException e) 
             {
             }

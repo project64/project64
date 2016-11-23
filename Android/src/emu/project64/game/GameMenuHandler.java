@@ -21,12 +21,16 @@ import emu.project64.jni.SystemEvent;
 import emu.project64.settings.SettingsActivity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, PopupMenu.OnDismissListener
 {
@@ -38,7 +42,7 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
     {
         mActivity = activity;
         mLifecycleHandler = LifecycleHandler;
-        
+
         final ImageButton MenuButton = (ImageButton)activity.findViewById( R.id.gameMenu );
         final Activity activityContext = activity;
         final GameMenuHandler menuHandler = this;
@@ -50,7 +54,7 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
                 Boolean GamePaused = NativeExports.SettingsLoadBool(SettingsID.GameRunning_CPU_Paused.getValue());
                 Boolean RecordExecutionTimes = NativeExports.SettingsLoadBool(SettingsID.Debugger_RecordExecutionTimes.getValue());
                 Boolean ShowDebugMenu = NativeExports.SettingsLoadBool(SettingsID.Debugger_Enabled.getValue());
-                
+
                 if (!RecordExecutionTimes)
                 {
                     ShowDebugMenu = false;
@@ -62,7 +66,7 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
                 popupMenu.setOnDismissListener(menuHandler);
                 popupMenu.setOnMenuItemClickListener(menuHandler);
                 popupMenu.inflate(R.menu.game_activity);
-                
+
                 int CurrentSaveState = NativeExports.SettingsLoadDword(SettingsID.Game_CurrentSaveState.getValue());
                 Menu menu = popupMenu.getMenu();
 
@@ -77,31 +81,35 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
                 {
                     SaveDirectory += "/" + NativeExports.SettingsLoadString(SettingsID.Game_UniqueSaveDir.getValue());
                 }
-                
+
                 FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSaveAuto, 0);
                 FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave1, 1);
-                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave2, 2);                
-                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave3, 3);                
-                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave4, 4);                
-                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave5, 5);                
-                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave6, 6);                
-                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave7, 7);                
-                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave8, 8);                
-                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave9, 9);                
-                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave10, 10);                
+                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave2, 2);
+                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave3, 3);
+                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave4, 4);
+                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave5, 5);
+                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave6, 6);
+                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave7, 7);
+                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave8, 8);
+                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave9, 9);
+                FixSaveStateMenu(SaveDirectory, CurrentSaveState, menu, R.id.menuItem_CurrentSave10, 10);
                 popupMenu.show();
             }
         });
     }
 
-    public boolean onMenuItemClick(MenuItem item) 
+    public boolean onMenuItemClick(MenuItem item)
     {
-        switch (item.getItemId()) 
+        switch (item.getItemId())
         {
         case R.id.menuItem_CurrentSaveState:
         case R.id.menuItem_DebuggingMenu:
             mOpeningSubmenu = true;
-            break;        
+            break;
+        case R.id.menuItem_GameSpeed:
+            mOpeningSubmenu = true;
+            SelectGameSpeed();
+            break;
         case R.id.menuItem_SaveState:
             NativeExports.ExternalEvent(SystemEvent.SysEvent_SaveMachineState.getValue());
             break;
@@ -168,7 +176,7 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
         }
         return false;
     }
-    
+
     public void onDismiss (PopupMenu menu)
     {
         if (!mOpeningSubmenu)
@@ -177,7 +185,7 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
         }
         mOpeningSubmenu = false;
     }
-    
+
     @SuppressLint("SimpleDateFormat")
     private void FixSaveStateMenu(String SaveDirectory, int CurrentSaveState,Menu menu, int MenuId, int SaveSlot )
     {
@@ -204,6 +212,78 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
             Timestamp = new SimpleDateFormat(" [yyyy/MM/dd HH:mm]").format(new Date(LastModified));
         }
         String SlotName = SaveSlot == 0 ? "Auto" : "Slot " + SaveSlot;
-        item.setTitle(SlotName + Timestamp);        
+        item.setTitle(SlotName + Timestamp);
+    }
+    
+    private void SelectGameSpeed()
+    {
+        NativeExports.ExternalEvent( SystemEvent.SysEvent_PauseCPU_AppLostActive.getValue());
+        final int MAX_SPEED = 300;
+        final int MIN_SPEED = 10;
+        final int initial = (NativeExports.GetSpeed() * 100) / NativeExports.GetBaseSpeed();
+        final View layout = View.inflate( mActivity, R.layout.seek_bar_preference, null );
+        final SeekBar seek = (SeekBar) layout.findViewById( R.id.seekbar );
+        final TextView text = (TextView) layout.findViewById( R.id.textFeedback );
+        final String finalFormat = "%1$d %%";
+        
+        text.setText( String.format( finalFormat, initial ) );
+        seek.setMax( MAX_SPEED - MIN_SPEED );
+        seek.setProgress( initial - MIN_SPEED );
+        seek.setOnSeekBarChangeListener( new SeekBar.OnSeekBarChangeListener()
+        {
+            public void onProgressChanged( SeekBar seekBar, int progress, boolean fromUser )
+            {
+                text.setText( String.format( finalFormat, progress + MIN_SPEED ) );
+            }
+            
+            public void onStartTrackingTouch( SeekBar seekBar )
+            {
+            }
+            
+            public void onStopTrackingTouch( SeekBar seekBar )
+            {
+            }
+        });
+
+        Builder builder = new Builder(mActivity);
+        builder.setTitle(mActivity.getText( R.string.menuItem_GameSpeed ));
+        builder.setPositiveButton("Cancel", null);
+        builder.setNeutralButton("OK", null);
+        builder.setNegativeButton("Reset", null);
+        builder.setCancelable(false);
+        builder.setView(layout);
+        
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener( new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                dialog.dismiss();
+                NativeExports.ExternalEvent( SystemEvent.SysEvent_ResumeCPU_AppGainedActive.getValue());
+            }
+        });
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener( new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                int speed = ((seek.getProgress() + MIN_SPEED) * NativeExports.GetBaseSpeed()) / 100;
+                NativeExports.SetSpeed(speed);
+                dialog.dismiss();
+                NativeExports.ExternalEvent( SystemEvent.SysEvent_ResumeCPU_AppGainedActive.getValue());
+            }
+        });
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener( new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                NativeExports.SetSpeed(NativeExports.GetBaseSpeed());
+                dialog.dismiss();
+                NativeExports.ExternalEvent( SystemEvent.SysEvent_ResumeCPU_AppGainedActive.getValue());
+            }
+        });
     }
 }

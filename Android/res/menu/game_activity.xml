@@ -28,7 +28,11 @@
             </group>
         </menu>
     </item>
-    <item
+  <item
+      android:id="@+id/menuItem_GameSpeed"
+      android:title="@string/menuItem_GameSpeed">
+  </item>
+  <item
         android:id="@+id/menuItem_settings"
         android:title="@string/menuItem_settings"/>
     <item
