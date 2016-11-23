@@ -55,6 +55,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         .putInt("touchscreenScale",NativeExports.UISettingsLoadDword(UISettingID.TouchScreen_ButtonScale.getValue()))
         .putString("touchscreenLayout",NativeExports.UISettingsLoadString(UISettingID.TouchScreen_Layout.getValue()))
         .putBoolean("audio_Enabled",NativeExports.SettingsLoadBool(SettingsID.Plugin_EnableAudio.getValue()))
+        .putBoolean("PreAllocSyncMem",NativeExports.SettingsLoadBool(SettingsID.Setting_PreAllocSyncMem.getValue()))
         .putBoolean("Plugin_ForceGfxReset",NativeExports.SettingsLoadBool(SettingsID.Plugin_ForceGfxReset.getValue()))
         .putBoolean("UserInterface_BasicMode",NativeExports.SettingsLoadBool(SettingsID.UserInterface_BasicMode.getValue()))
         .putBoolean("Debugger_Enabled",NativeExports.SettingsLoadBool(SettingsID.Debugger_Enabled.getValue()))
@@ -133,6 +134,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         else if (key.equals("touchscreenLayout")) { NativeExports.UISettingsSaveString(UISettingID.TouchScreen_Layout.getValue(), sharedPreferences.getString(key, "Analog")); }
         else if (key.equals("audio_Enabled")) { NativeExports.SettingsSaveBool(SettingsID.Plugin_EnableAudio.getValue(), sharedPreferences.getBoolean(key,false)); }
         else if (key.equals("Plugin_ForceGfxReset")) { NativeExports.SettingsSaveBool(SettingsID.Plugin_ForceGfxReset.getValue(), sharedPreferences.getBoolean(key,false)); }
+        else if (key.equals("PreAllocSyncMem")) { NativeExports.SettingsSaveBool(SettingsID.Setting_PreAllocSyncMem.getValue(), sharedPreferences.getBoolean(key,false)); }
         else if (key.equals("Debugger_Enabled")) { NativeExports.SettingsSaveBool(SettingsID.Debugger_Enabled.getValue(), sharedPreferences.getBoolean(key,false)); }
         else if (key.equals("Debugger_GenerateLogFiles")) { NativeExports.SettingsSaveBool(SettingsID.Debugger_GenerateLogFiles.getValue(), sharedPreferences.getBoolean(key,false)); }
         else if (key.equals("Debugger_CpuUsage")) { NativeExports.SettingsSaveBool(SettingsID.UserInterface_ShowCPUPer.getValue(), sharedPreferences.getBoolean(key,false)); }

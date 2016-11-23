@@ -30,6 +30,10 @@
         android:key="Plugin_ForceGfxReset"
         android:summary="@string/ForceGfxReset_summary"
         android:title="@string/ForceGfxReset_title" />
+    <CheckBoxPreference
+        android:key="PreAllocSyncMem"
+        android:summary="@string/PreAllocSyncMem_summary"
+        android:title="@string/PreAllocSyncMem_title" />
     <PreferenceCategory android:title="@string/logging" >
       <Preference
           android:title="@string/project64core"

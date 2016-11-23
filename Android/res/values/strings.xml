@@ -181,6 +181,8 @@
     <string name="RecordExecutionTimes_summary">Record how long each block executes for</string>
     <string name="ForceGfxReset_title">Reset GFX Plugin</string>
     <string name="ForceGfxReset_summary">Always reload GFX plugin</string>
+    <string name="PreAllocSyncMem_title">Pre Alloc Sync Mem</string>
+    <string name="PreAllocSyncMem_summary">Allocate sync memory at startup</string>
     <string name="touchscreenScale_title">Button scale</string>
     <string name="touchscreenLayout_title">Touchscreen layout</string>
     <string name="gamepad_summary">Configure gamepad to use in game</string>
