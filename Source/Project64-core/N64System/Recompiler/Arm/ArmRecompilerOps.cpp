@@ -2833,25 +2833,21 @@ void CArmRecompilerOps::SPECIAL_JALR()
         MoveConstToVariable(m_CompilePC + 8, &_GPR[m_Opcode.rd].UW[0], CRegName::GPR_Lo[m_Opcode.rd]);
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
+            ArmReg TempRegVar = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+            MoveConstToArmReg(TempRegVar, (uint32_t)&R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
+
             ArmReg TempRegRs = Arm_Unknown;
             if (IsKnown(m_Opcode.rs) && IsMapped(m_Opcode.rs))
             {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-            }
-            else if (IsKnown(m_Opcode.rs))
-            {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
+                StoreArmRegToArmRegPointer(GetMipsRegMapLo(m_Opcode.rs), TempRegVar, 0);
             }
             else
             {
                 TempRegRs = m_RegWorkingSet.Map_TempReg(Arm_Any, m_Opcode.rs, false);
+                StoreArmRegToArmRegPointer(TempRegRs, TempRegVar, 0);
+                m_RegWorkingSet.SetArmRegProtected(TempRegRs, false);
             }
-            ArmReg TempRegVar = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
-            MoveConstToArmReg(TempRegVar, (uint32_t)&R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
-            StoreArmRegToArmRegPointer(TempRegRs, TempRegVar, 0);
-            m_RegWorkingSet.SetArmRegProtected(TempRegRs,false);
-            m_RegWorkingSet.SetArmRegProtected(TempRegVar,false);
-
+            m_RegWorkingSet.SetArmRegProtected(TempRegVar, false);
             m_RegWorkingSet.WriteBackRegisters();
             OverflowDelaySlot(true);
             return;
@@ -2875,19 +2871,8 @@ void CArmRecompilerOps::SPECIAL_JALR()
         else
         {
             UpdateCounters(m_RegWorkingSet, true, true);
-            ArmReg ArmRegRs = Arm_Unknown;
-            if (IsKnown(m_Opcode.rs) && IsMapped(m_Opcode.rs))
-            {
-                ArmRegRs = GetMipsRegMapLo(m_Opcode.rs);
-            }
-            else if (IsKnown(m_Opcode.rs))
-            {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-            }
-            else
-            {
-                ArmRegRs = m_RegWorkingSet.Map_TempReg(Arm_Any, m_Opcode.rs, false);
-            }
+            ArmReg ArmRegRs = ArmRegRs = IsKnown(m_Opcode.rs) && IsMapped(m_Opcode.rs) ? GetMipsRegMapLo(m_Opcode.rs) : m_RegWorkingSet.Map_TempReg(Arm_Any, m_Opcode.rs, false);
+            m_RegWorkingSet.SetArmRegProtected(ArmRegRs, true);
             ArmReg TempRegPC = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
             MoveConstToArmReg(TempRegPC, (uint32_t)_PROGRAM_COUNTER, "PROGRAM_COUNTER");
             StoreArmRegToArmRegPointer(ArmRegRs, TempRegPC, 0);
