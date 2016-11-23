@@ -18,12 +18,19 @@
 #include <Project64-core/N64System/Interpreter/InterpreterOps32.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
+#include <Project64-core/N64System/Recompiler/SectionInfo.h>
+#include <Project64-core/N64System/Recompiler/LoopAnalysis.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmRecompilerOps.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/ExceptionHandler.h>
 
 uint32_t CArmRecompilerOps::m_TempValue = 0;
 
+/*uint32_t TestValue = 0;
+void TestFunc()
+{
+CPU_Message("%s: %X t2: %X", __FUNCTION__,TestValue, g_Reg->m_GPR[10].UW[0]);
+}*/
 void CArmRecompilerOps::PreCompileOpcode(void)
 {
     if (m_NextInstruction != DELAY_SLOT_DONE)
@@ -31,7 +38,40 @@ void CArmRecompilerOps::PreCompileOpcode(void)
         CPU_Message("  %X %s", m_CompilePC, R4300iOpcodeName(m_Opcode.Hex, m_CompilePC));
     }
 
-    /*if (m_CompilePC == 0x80000138 && m_NextInstruction == NORMAL)
+    /*m_RegWorkingSet.BeforeCallDirect();
+
+    MoveConstToArmReg(Arm_R1,m_CompilePC);
+    MoveConstToArmReg(Arm_R2,(uint32_t)&TestValue, "TestValue");
+    StoreArmRegToArmRegPointer(Arm_R1,Arm_R2,0);
+    CallFunction(AddressOf(&TestFunc), "TestFunc");
+    m_RegWorkingSet.AfterCallDirect();*/
+
+    /*if ((m_CompilePC == 0x8027F564 || m_CompilePC == 0x8027F574) && m_NextInstruction == NORMAL)
+    {
+    m_RegWorkingSet.BeforeCallDirect();
+    MoveConstToArmReg(Arm_R0,(uint32_t)&TestValue, "TestValue");
+    StoreArmRegToArmRegPointer(Arm_R1,Arm_R0,0);
+    CallFunction(AddressOf(&TestFunc), "TestFunc");
+    m_RegWorkingSet.AfterCallDirect();
+
+    for (int32_t i = 1; i < 32; i++)
+    {
+    m_RegWorkingSet.WriteBack_GPR(i,false);
+    }
+    UpdateCounters(m_RegWorkingSet,false,true);
+    if (g_SyncSystem)
+    {
+    m_RegWorkingSet.BeforeCallDirect();
+    MoveConstToArmReg(Arm_R1, m_CompilePC);
+    MoveConstToArmReg(Arm_R2, (uint32_t)&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+    StoreArmRegToArmRegPointer(Arm_R1, Arm_R2, 0);
+    MoveConstToArmReg(Arm_R0, (uint32_t)g_BaseSystem, "g_BaseSystem");
+    CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+    m_RegWorkingSet.AfterCallDirect();
+    }
+    }*/
+
+    /*if (m_CompilePC == 0x8027F564 && m_NextInstruction == NORMAL)
     {
     m_RegWorkingSet.WriteBackRegisters();
     UpdateCounters(m_RegWorkingSet,false,true);
@@ -4699,9 +4739,472 @@ void CArmRecompilerOps::CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCou
     }
 }
 
+bool CArmRecompilerOps::SetupRegisterForLoop(CCodeBlock * BlockInfo, const CRegInfo & RegSet)
+{
+    CRegInfo OriginalReg = m_RegWorkingSet;
+    if (!LoopAnalysis(BlockInfo, m_Section).SetupRegisterForLoop())
+    {
+        return false;
+    }
+    for (int i = 1; i < 32; i++)
+    {
+        if (OriginalReg.GetMipsRegState(i) != RegSet.GetMipsRegState(i))
+        {
+            UnMap_GPR(i, true);
+        }
+    }
+    return true;
+}
+
+void CArmRecompilerOps::OutputRegisterState(const CRegInfo & SyncTo, const CRegInfo & CurrentSet) const
+{
+    if (!g_bRecompilerLogging)
+    {
+        return;
+    }
+
+    for (uint32_t i = 0; i < 16; i++)
+    {
+        stdstr synctoreg, currentreg;
+
+        if (SyncTo.GetArmRegMapped((ArmReg)i) == CArmRegInfo::GPR_Mapped)
+        {
+            for (uint32_t count = 1; count < 32; count++)
+            {
+                if (!SyncTo.IsMapped(count))
+                {
+                    continue;
+                }
+
+                if (SyncTo.Is64Bit(count) && SyncTo.GetMipsRegMapHi(count) == (ArmReg)i)
+                {
+                    synctoreg = CRegName::GPR_Hi[count];
+                    break;
+                }
+                if (SyncTo.GetMipsRegMapLo(count) == (ArmReg)i)
+                {
+                    synctoreg = CRegName::GPR_Lo[count];
+                    break;
+                }
+            }
+        }
+
+        if (CurrentSet.GetArmRegMapped((ArmReg)i) == CArmRegInfo::GPR_Mapped)
+        {
+            for (uint32_t count = 1; count < 32; count++)
+            {
+                if (!CurrentSet.IsMapped(count))
+                {
+                    continue;
+                }
+
+                if (CurrentSet.Is64Bit(count) && CurrentSet.GetMipsRegMapHi(count) == (ArmReg)i)
+                {
+                    currentreg = CRegName::GPR_Hi[count];
+                    break;
+                }
+                if (CurrentSet.GetMipsRegMapLo(count) == (ArmReg)i)
+                {
+                    currentreg = CRegName::GPR_Lo[count];
+                    break;
+                }
+            }
+        }
+
+
+        CPU_Message("SyncTo.GetArmRegMapped(%s) = %X%s%s CurrentSet.GetArmRegMapped(%s) = %X%s%s",
+            ArmRegName((ArmReg)i),
+            SyncTo.GetArmRegMapped((ArmReg)i),
+            SyncTo.GetArmRegMapped((ArmReg)i) == CArmRegInfo::Variable_Mapped ? stdstr_f(" (%s)", CArmRegInfo::VariableMapName(SyncTo.GetVariableMappedTo((ArmReg)i))).c_str() : "",
+            synctoreg.length() > 0 ? stdstr_f(" (%s)",synctoreg.c_str()).c_str() : "",
+            ArmRegName((ArmReg)i),
+            CurrentSet.GetArmRegMapped((ArmReg)i),
+            CurrentSet.GetArmRegMapped((ArmReg)i) == CArmRegInfo::Variable_Mapped ? stdstr_f(" (%s)", CArmRegInfo::VariableMapName(CurrentSet.GetVariableMappedTo((ArmReg)i))).c_str() : "",
+            currentreg.length() > 0 ? stdstr_f(" (%s)", currentreg.c_str()).c_str() : ""
+            );
+    }
+}
+
 void CArmRecompilerOps::SyncRegState(const CRegInfo & SyncTo)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    ResetRegProtection();
+
+    bool changed = false;
+#ifdef tofix
+    UnMap_AllFPRs();
+#endif
+    if (m_RegWorkingSet.GetRoundingModel() != SyncTo.GetRoundingModel()) { m_RegWorkingSet.SetRoundingModel(CRegInfo::RoundUnknown); }
+
+    CPU_Message("Before:");
+    OutputRegisterState(SyncTo, m_RegWorkingSet);
+
+    for (uint32_t i = 0; i < 16; i++)
+    {
+        if (SyncTo.GetArmRegMapped((ArmReg)i) == CArmRegInfo::Variable_Mapped &&
+            m_RegWorkingSet.GetArmRegMapped((ArmReg)i) == CArmRegInfo::Variable_Mapped &&
+            SyncTo.GetVariableMappedTo((ArmReg)i) == m_RegWorkingSet.GetVariableMappedTo((ArmReg)i))
+        {
+            continue;
+        }
+
+        if (SyncTo.GetArmRegMapped((ArmReg)i) == CArmRegInfo::NotMapped ||
+            SyncTo.GetArmRegMapped((ArmReg)i) == CArmRegInfo::Temp_Mapped)
+        {
+            m_RegWorkingSet.UnMap_ArmReg((ArmReg)i);
+            continue;
+        }
+
+        if (SyncTo.GetArmRegMapped((ArmReg)i) == CArmRegInfo::Variable_Mapped)
+        {
+            if (m_RegWorkingSet.GetArmRegMapped((ArmReg)i) == CArmRegInfo::GPR_Mapped)
+            {
+                bool moved_gpr_mapping = false;
+                //See if mapped, if so move it
+                for (uint32_t z = 0; z < 16; z++)
+                {
+                    if (SyncTo.GetArmRegMapped((ArmReg)z) != CArmRegInfo::GPR_Mapped)
+                    {
+                        continue;
+                    }
+                    for (uint32_t count = 1; count < 32; count++)
+                    {
+                        if (!SyncTo.IsMapped(count))
+                        {
+                            continue;
+                        }
+
+                        if (SyncTo.Is64Bit(count) && SyncTo.GetMipsRegMapHi(count) == (ArmReg)i)
+                        {
+                            CPU_Message("    regcache: move %s to %s", ArmRegName((ArmReg)i), ArmRegName((ArmReg)z));
+                            g_Notify->BreakPoint(__FILE__, __LINE__);
+                        }
+                        if (SyncTo.GetMipsRegMapLo(count) == (ArmReg)i)
+                        {
+                            CPU_Message("    regcache: move %s to %s", ArmRegName((ArmReg)i), ArmRegName((ArmReg)z));
+                            g_Notify->BreakPoint(__FILE__, __LINE__);
+                        }
+                    }
+                }
+                if (!moved_gpr_mapping)
+                {
+                    m_RegWorkingSet.UnMap_ArmReg((ArmReg)i);
+                }
+            }
+            bool moved = false;
+            //See if mapped, if so move it
+            for (uint32_t z = i + 1; z < 16; z++)
+            {
+                if (m_RegWorkingSet.GetArmRegMapped((ArmReg)z) == CArmRegInfo::Variable_Mapped &&
+                    m_RegWorkingSet.GetVariableMappedTo((ArmReg)z) == SyncTo.GetVariableMappedTo((ArmReg)i))
+                {
+                    m_RegWorkingSet.UnMap_ArmReg((ArmReg)i);
+
+                    CPU_Message("    regcache: move %s to %s for variable mapping (%s)", ArmRegName((ArmReg)z), ArmRegName((ArmReg)i), CArmRegInfo::VariableMapName(m_RegWorkingSet.GetVariableMappedTo((ArmReg)z)));
+                    AddConstToArmReg((ArmReg)i, (ArmReg)z, 0);
+                    m_RegWorkingSet.SetArmRegMapped((ArmReg)i, m_RegWorkingSet.GetArmRegMapped((ArmReg)z));
+                    m_RegWorkingSet.SetVariableMappedTo((ArmReg)i, m_RegWorkingSet.GetVariableMappedTo((ArmReg)z));
+                    m_RegWorkingSet.SetArmRegMapped((ArmReg)z, CArmRegInfo::NotMapped);
+                    m_RegWorkingSet.SetVariableMappedTo((ArmReg)z, CArmRegInfo::VARIABLE_UNKNOWN);
+                    moved = true;
+                }
+            }
+            if (!moved)
+            {
+                Map_Variable(SyncTo.GetVariableMappedTo((ArmReg)i), (ArmReg)i);
+            }
+        }
+
+        if (m_RegWorkingSet.GetArmRegMapped((ArmReg)i) == CArmRegInfo::Variable_Mapped &&
+            m_RegWorkingSet.GetVariableMappedTo((ArmReg)i) != SyncTo.GetVariableMappedTo((ArmReg)i))
+        {
+            //See if mapped, if so move it
+            for (uint32_t z = i + 1; z < 16; z++)
+            {
+                if (SyncTo.GetArmRegMapped((ArmReg)z) != CArmRegInfo::Variable_Mapped ||
+                    SyncTo.GetVariableMappedTo((ArmReg)z) != m_RegWorkingSet.GetVariableMappedTo((ArmReg)i))
+                {
+                    continue;
+                }
+                m_RegWorkingSet.UnMap_ArmReg((ArmReg)z);
+
+                CPU_Message("    regcache: move %s to %s for variable mapping (%s)", ArmRegName((ArmReg)i), ArmRegName((ArmReg)z), CArmRegInfo::VariableMapName(m_RegWorkingSet.GetVariableMappedTo((ArmReg)i)));
+                AddConstToArmReg((ArmReg)z, (ArmReg)i, 0);
+                m_RegWorkingSet.SetArmRegMapped((ArmReg)z, m_RegWorkingSet.GetArmRegMapped((ArmReg)i));
+                m_RegWorkingSet.SetVariableMappedTo((ArmReg)z, m_RegWorkingSet.GetVariableMappedTo((ArmReg)i));
+                m_RegWorkingSet.SetArmRegMapped((ArmReg)i, CArmRegInfo::NotMapped);
+                m_RegWorkingSet.SetVariableMappedTo((ArmReg)i, CArmRegInfo::VARIABLE_UNKNOWN);
+                break;
+            }
+
+            m_RegWorkingSet.UnMap_ArmReg((ArmReg)i);
+        }
+        if (m_RegWorkingSet.GetArmRegMapped((ArmReg)i) == CArmRegInfo::Variable_Mapped &&
+            m_RegWorkingSet.GetVariableMappedTo((ArmReg)i) != CArmRegInfo::VARIABLE_GPR &&
+            SyncTo.GetArmRegMapped((ArmReg)i) != CArmRegInfo::Variable_Mapped)
+        {
+            m_RegWorkingSet.UnMap_ArmReg((ArmReg)i);
+        }
+    }
+
+#ifdef tofix
+    x86Reg MemStackReg = Get_MemoryStack();
+    x86Reg TargetStackReg = SyncTo.Get_MemoryStack();
+
+    //CPU_Message("MemoryStack for Original State = %s",MemStackReg > 0?x86_Name(MemStackReg):"Not Mapped");
+    if (MemStackReg != TargetStackReg)
+    {
+        if (TargetStackReg == x86_Unknown)
+        {
+            UnMap_X86reg(MemStackReg);
+        }
+        else if (MemStackReg == x86_Unknown)
+        {
+            UnMap_X86reg(TargetStackReg);
+            CPU_Message("    regcache: allocate %s as Memory Stack", x86_Name(TargetStackReg));
+            m_RegWorkingSet.SetX86Mapped(TargetStackReg, CRegInfo::Stack_Mapped);
+            MoveVariableToX86reg(&g_Recompiler->MemoryStackPos(), "MemoryStack", TargetStackReg);
+        }
+        else
+        {
+            UnMap_X86reg(TargetStackReg);
+            CPU_Message("    regcache: change allocation of Memory Stack from %s to %s", x86_Name(MemStackReg), x86_Name(TargetStackReg));
+            m_RegWorkingSet.SetX86Mapped(TargetStackReg, CRegInfo::Stack_Mapped);
+            m_RegWorkingSet.SetX86Mapped(MemStackReg, CRegInfo::NotMapped);
+            MoveX86RegToX86Reg(MemStackReg, TargetStackReg);
+        }
+    }
+#endif
+
+    for (uint32_t i = 1; i < 32; i++)
+    {
+        CPU_Message("SyncTo.GetMipsRegState(%d: %s) = %X GetMipsRegState(%d: %s) = %X", i, CRegName::GPR[i], SyncTo.GetMipsRegState(i), i, CRegName::GPR[i], GetMipsRegState(i));
+        if (IsMapped(i) && Is64Bit(i)) { CPU_Message("GetMipsRegMapHi(%d: %s) = %X", i, CRegName::GPR[i], GetMipsRegMapHi(i)); }
+        if (IsMapped(i)) { CPU_Message("GetMipsRegMapLo(%d: %s) = %X", i, CRegName::GPR[i], GetMipsRegMapLo(i)); }
+
+        if (GetMipsRegState(i) == SyncTo.GetMipsRegState(i) ||
+            (g_System->b32BitCore() && GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO && SyncTo.GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN) ||
+            (g_System->b32BitCore() && GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN && SyncTo.GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO))
+        {
+            switch (GetMipsRegState(i)) {
+            case CRegInfo::STATE_UNKNOWN: continue;
+            case CRegInfo::STATE_MAPPED_64:
+                if (GetMipsRegMapHi(i) == SyncTo.GetMipsRegMapHi(i) &&
+                    GetMipsRegMapLo(i) == SyncTo.GetMipsRegMapLo(i))
+                {
+                    continue;
+                }
+                break;
+            case CRegInfo::STATE_MAPPED_32_ZERO:
+            case CRegInfo::STATE_MAPPED_32_SIGN:
+                if (GetMipsRegMapLo(i) == SyncTo.GetMipsRegMapLo(i))
+                {
+                    continue;
+                }
+                break;
+            case CRegInfo::STATE_CONST_64:
+                if (GetMipsReg(i) != SyncTo.GetMipsReg(i))
+                {
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+                continue;
+            case CRegInfo::STATE_CONST_32_SIGN:
+                if (GetMipsRegLo(i) != SyncTo.GetMipsRegLo(i))
+                {
+                    CPU_Message("Value of const is different Reg %d (%s) Value: 0x%08X to 0x%08X", i, CRegName::GPR[i], GetMipsRegLo(i), SyncTo.GetMipsRegLo(i));
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+                continue;
+            default:
+                CPU_Message("Unhandled Reg state %d\nin SyncRegState", GetMipsRegState(i));
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+        }
+        changed = true;
+
+        ArmReg Reg = Arm_Unknown, RegHi = Arm_Unknown, GprReg = Arm_Unknown;
+        switch (SyncTo.GetMipsRegState(i))
+        {
+        case CRegInfo::STATE_UNKNOWN: UnMap_GPR(i, true);  break;
+        case CRegInfo::STATE_MAPPED_64:
+            Reg = SyncTo.GetMipsRegMapLo(i);
+            RegHi = SyncTo.GetMipsRegMapHi(i);
+            UnMap_ArmReg(Reg);
+            UnMap_ArmReg(RegHi);
+            switch (GetMipsRegState(i))
+            {
+            case CRegInfo::STATE_UNKNOWN:
+                GprReg = m_RegWorkingSet.GetVariableReg(CArmRegInfo::VARIABLE_GPR);
+                if (GprReg == Arm_Unknown)
+                {
+                    MoveVariableToArmReg(&_GPR[i].UW[0], CRegName::GPR_Lo[i], Reg);
+                    MoveVariableToArmReg(&_GPR[i].UW[1], CRegName::GPR_Hi[i], RegHi);
+                }
+                else
+                {
+                    LoadArmRegPointerToArmReg(Reg, GprReg, (uint8_t)(i << 3), CRegName::GPR_Lo[i]);
+                    LoadArmRegPointerToArmReg(RegHi, GprReg, (uint8_t)(i << 3) + 4, CRegName::GPR_Hi[i]);
+                }
+                break;
+            case CRegInfo::STATE_MAPPED_64:
+                AddConstToArmReg(Reg, GetMipsRegMapLo(i), 0);
+                m_RegWorkingSet.SetArmRegMapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                AddConstToArmReg(RegHi, GetMipsRegMapHi(i), 0);
+                m_RegWorkingSet.SetArmRegMapped(GetMipsRegMapHi(i), CRegInfo::NotMapped);
+                break;
+            case CRegInfo::STATE_MAPPED_32_SIGN:
+                ShiftRightSignImmed(RegHi, GetMipsRegMapLo(i), 31);
+                AddConstToArmReg(Reg, GetMipsRegMapLo(i), 0);
+                m_RegWorkingSet.SetArmRegMapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                break;
+            case CRegInfo::STATE_MAPPED_32_ZERO:
+                MoveConstToArmReg(RegHi, (uint32_t)0);
+                AddConstToArmReg(Reg, GetMipsRegMapLo(i), 0);
+                m_RegWorkingSet.SetArmRegMapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                break;
+#ifdef tofix
+            case CRegInfo::STATE_CONST_64:
+                MoveConstToX86reg(GetMipsRegHi(i), x86RegHi);
+                MoveConstToX86reg(GetMipsRegLo(i), Reg);
+                break;
+#endif
+            case CRegInfo::STATE_CONST_32_SIGN:
+                MoveConstToArmReg(RegHi, (uint32_t)(GetMipsRegLo_S(i) >> 31));
+                MoveConstToArmReg(Reg, (uint32_t)(GetMipsRegLo(i)));
+                break;
+            default:
+                CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d", GetMipsRegState(i));
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+                continue;
+            }
+            m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
+            m_RegWorkingSet.SetMipsRegMapHi(i, RegHi);
+            m_RegWorkingSet.SetMipsRegState(i, CRegInfo::STATE_MAPPED_64);
+            m_RegWorkingSet.SetArmRegMapped(Reg, CRegInfo::GPR_Mapped);
+            m_RegWorkingSet.SetArmRegMapped(RegHi, CRegInfo::GPR_Mapped);
+            m_RegWorkingSet.SetArmRegMapOrder(Reg, 1);
+            m_RegWorkingSet.SetArmRegMapOrder(RegHi, 1);
+            m_RegWorkingSet.SetArmRegProtected(Reg, true);
+            m_RegWorkingSet.SetArmRegProtected(RegHi, true);
+            break;
+        case CRegInfo::STATE_MAPPED_32_SIGN:
+            Reg = SyncTo.GetMipsRegMapLo(i);
+            UnMap_ArmReg(Reg);
+            switch (GetMipsRegState(i))
+            {
+            case CRegInfo::STATE_UNKNOWN:
+                GprReg = m_RegWorkingSet.GetVariableReg(CArmRegInfo::VARIABLE_GPR);
+                if (GprReg == Arm_Unknown)
+                {
+                    MoveVariableToArmReg(&_GPR[i].UW[0], CRegName::GPR_Lo[i], Reg);
+                }
+                else
+                {
+                    LoadArmRegPointerToArmReg(Reg, GprReg, (uint8_t)(i << 3), CRegName::GPR_Lo[i]);
+                }
+                break;
+            case CRegInfo::STATE_CONST_32_SIGN:
+                MoveConstToArmReg(Reg, GetMipsRegLo(i));
+                break;
+            case CRegInfo::STATE_MAPPED_32_SIGN:
+            case CRegInfo::STATE_MAPPED_32_ZERO:
+                if (GetMipsRegMapLo(i) != Reg)
+                {
+                    AddConstToArmReg(Reg, GetMipsRegMapLo(i), 0);
+                    m_RegWorkingSet.SetArmRegMapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                }
+                break;
+            case CRegInfo::STATE_MAPPED_64:
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+#ifdef tofix
+                MoveX86RegToX86Reg(GetMipsRegMapLo(i), Reg);
+                m_RegWorkingSet.SetX86Mapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                m_RegWorkingSet.SetX86Mapped(GetMipsRegMapHi(i), CRegInfo::NotMapped);
+#endif
+                break;
+            case CRegInfo::STATE_CONST_64:
+                CPU_Message("hi %X\nLo %X", GetMipsRegHi(i), GetMipsRegLo(i));
+                CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_SIGN\n%d", GetMipsRegState(i));
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+                break;
+            default:
+                CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_SIGN\n%d", GetMipsRegState(i));
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
+            m_RegWorkingSet.SetMipsRegState(i, CRegInfo::STATE_MAPPED_32_SIGN);
+            m_RegWorkingSet.SetArmRegMapped(Reg, CRegInfo::GPR_Mapped);
+            m_RegWorkingSet.SetArmRegMapOrder(Reg, 1);
+            m_RegWorkingSet.SetArmRegProtected(Reg, true);
+            break;
+        case CRegInfo::STATE_MAPPED_32_ZERO:
+            Reg = SyncTo.GetMipsRegMapLo(i);
+            UnMap_ArmReg(Reg);
+            switch (GetMipsRegState(i))
+            {
+            case CRegInfo::STATE_MAPPED_64:
+            case CRegInfo::STATE_UNKNOWN:
+                GprReg = m_RegWorkingSet.GetVariableReg(CArmRegInfo::VARIABLE_GPR);
+                LoadArmRegPointerToArmReg(Reg, GprReg, (uint8_t)(i << 3), CRegName::GPR_Lo[i]);
+                break;
+            case CRegInfo::STATE_MAPPED_32_ZERO:
+                AddConstToArmReg(Reg, GetMipsRegMapLo(i), 0);
+                m_RegWorkingSet.SetArmRegMapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                break;
+            case CRegInfo::STATE_MAPPED_32_SIGN:
+                if (g_System->b32BitCore())
+                {
+                    AddConstToArmReg(Reg, GetMipsRegMapLo(i), 0);
+                    m_RegWorkingSet.SetArmRegMapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
+                }
+                else
+                {
+                    CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d", GetMipsRegState(i));
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+                break;
+            case CRegInfo::STATE_CONST_32_SIGN:
+                if (!g_System->b32BitCore() && GetMipsRegLo_S(i) < 0)
+                {
+                    CPU_Message("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
+                    CPU_Message("%s: %X", CRegName::GPR[i], GetMipsRegLo_S(i));
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+                MoveConstToArmReg(Reg, GetMipsRegLo(i));
+                break;
+            default:
+                CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d", GetMipsRegState(i));
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            m_RegWorkingSet.SetMipsRegMapLo(i, Reg);
+            m_RegWorkingSet.SetMipsRegState(i, SyncTo.GetMipsRegState(i));
+            m_RegWorkingSet.SetArmRegMapped(Reg, CRegInfo::GPR_Mapped);
+            m_RegWorkingSet.SetArmRegMapOrder(Reg, 1);
+            m_RegWorkingSet.SetArmRegProtected(Reg, true);
+            break;
+        default:
+            CPU_Message("%d - %d reg: %s (%d)", SyncTo.GetMipsRegState(i), GetMipsRegState(i), CRegName::GPR[i], i);
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            changed = false;
+        }
+    }
+
+    for (uint32_t i = 0; i < 16; i++)
+    {
+        if (m_RegWorkingSet.GetArmRegMapped((ArmReg)i) == CArmRegInfo::Variable_Mapped &&
+            m_RegWorkingSet.GetVariableMappedTo((ArmReg)i) == CArmRegInfo::VARIABLE_GPR &&
+            SyncTo.GetArmRegMapped((ArmReg)i) != CArmRegInfo::Variable_Mapped)
+        {
+            m_RegWorkingSet.UnMap_ArmReg((ArmReg)i);
+        }
+
+        if (m_RegWorkingSet.GetArmRegMapped((ArmReg)i) == CArmRegInfo::Variable_Mapped && SyncTo.GetArmRegMapped((ArmReg)i) != CArmRegInfo::Variable_Mapped)
+        {
+            CPU_Message("Invalid SyncTo.GetArmRegMapped(%s) = %X m_RegWorkingSet.GetArmRegMapped(%s) = %X", ArmRegName((ArmReg)i), SyncTo.GetArmRegMapped((ArmReg)i), ArmRegName((ArmReg)i), m_RegWorkingSet.GetArmRegMapped((ArmReg)i));
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+    CPU_Message("after:");
+    OutputRegisterState(SyncTo, m_RegWorkingSet);
 }
 
 void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason)
@@ -4768,10 +5271,14 @@ void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         break;
     case CExitInfo::TLBReadMiss:
         bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
-        MoveVariableToArmReg(g_TLBLoadAddress, "g_TLBLoadAddress",Arm_R2);
+        MoveVariableToArmReg(g_TLBLoadAddress, "g_TLBLoadAddress", Arm_R2);
         MoveConstToArmReg(Arm_R1, (uint32_t)bDelay, bDelay ? "true" : "false");
         MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg);
         CallFunction(AddressOf(&CRegisters::DoTLBReadMiss), "CRegisters::DoTLBReadMiss");
+        ExitCodeBlock();
+        break;
+    case CExitInfo::TLBWriteMiss:
+        ArmBreakPoint(__FILE__, __LINE__);
         ExitCodeBlock();
         break;
     default:
@@ -4809,12 +5316,11 @@ void CArmRecompilerOps::CompileSystemCheck(uint32_t TargetPC, const CRegInfo & R
     {
         MoveConstToVariable(TargetPC, &g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
     }
-
-    CRegInfo RegSetCopy(m_RegWorkingSet);
-    RegSetCopy.WriteBackRegisters();
+    m_RegWorkingSet.WriteBackRegisters();
 
     MoveConstToArmReg(Arm_R0, (uint32_t)g_SystemEvents, "g_SystemEvents");
     CallFunction(AddressOf(&CSystemEvents::ExecuteEvents), "CSystemEvents::ExecuteEvents");
+
     ExitCodeBlock();
     CPU_Message("");
     CPU_Message("      $Continue_From_Interrupt_Test:");
@@ -4890,7 +5396,382 @@ bool CArmRecompilerOps::InheritParentInfo()
         return true;
     }
 
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    //Multiple Parents
+    BLOCK_PARENT_LIST ParentList;
+    CCodeSection::SECTION_LIST::iterator iter;
+    for (iter = m_Section->m_ParentSection.begin(); iter != m_Section->m_ParentSection.end(); iter++)
+    {
+        CCodeSection * Parent = *iter;
+        BLOCK_PARENT BlockParent;
+
+        if (Parent->m_CompiledLocation == NULL) { continue; }
+        if (Parent->m_JumpSection != Parent->m_ContinueSection)
+        {
+            BlockParent.Parent = Parent;
+            BlockParent.JumpInfo = m_Section == Parent->m_ContinueSection ? &Parent->m_Cont : &Parent->m_Jump;
+            ParentList.push_back(BlockParent);
+        }
+        else
+        {
+            BlockParent.Parent = Parent;
+            BlockParent.JumpInfo = &Parent->m_Cont;
+            ParentList.push_back(BlockParent);
+            BlockParent.Parent = Parent;
+            BlockParent.JumpInfo = &Parent->m_Jump;
+            ParentList.push_back(BlockParent);
+        }
+    }
+    size_t NoOfCompiledParents = ParentList.size();
+    if (NoOfCompiledParents == 0)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return false;
+    }
+
+    // Add all the uncompiled blocks to the end of the list
+    for (iter = m_Section->m_ParentSection.begin(); iter != m_Section->m_ParentSection.end(); iter++)
+    {
+        CCodeSection * Parent = *iter;
+        BLOCK_PARENT BlockParent;
+
+        if (Parent->m_CompiledLocation != NULL) { continue; }
+        if (Parent->m_JumpSection != Parent->m_ContinueSection)
+        {
+            BlockParent.Parent = Parent;
+            BlockParent.JumpInfo = m_Section == Parent->m_ContinueSection ? &Parent->m_Cont : &Parent->m_Jump;
+            ParentList.push_back(BlockParent);
+        }
+        else
+        {
+            BlockParent.Parent = Parent;
+            BlockParent.JumpInfo = &Parent->m_Cont;
+            ParentList.push_back(BlockParent);
+            BlockParent.Parent = Parent;
+            BlockParent.JumpInfo = &Parent->m_Jump;
+            ParentList.push_back(BlockParent);
+        }
+    }
+    int FirstParent = -1;
+    for (size_t i = 0; i < NoOfCompiledParents; i++)
+    {
+        if (!ParentList[i].JumpInfo->FallThrough)
+        {
+            continue;
+        }
+        if (FirstParent != -1)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        FirstParent = i;
+    }
+    if (FirstParent == -1)
+    {
+        FirstParent = 0;
+    }
+
+    //Link First Parent to start
+    CCodeSection * Parent = ParentList[FirstParent].Parent;
+    CJumpInfo * JumpInfo = ParentList[FirstParent].JumpInfo;
+
+    SetRegWorkingSet(JumpInfo->RegSet);
+    m_RegWorkingSet.ResetRegProtection();
+    LinkJump(*JumpInfo, m_Section->m_SectionID, Parent->m_SectionID);
+
+    if (JumpInfo->ExitReason == CExitInfo::Normal_NoSysCheck)
+    {
+        if (m_RegWorkingSet.GetBlockCycleCount() != 0)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        if (JumpInfo->JumpPC != (uint32_t)-1)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+    else
+    {
+        UpdateCounters(m_RegWorkingSet, m_Section->m_EnterPC < JumpInfo->JumpPC, true);
+        if (JumpInfo->JumpPC == (uint32_t)-1)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        if (m_Section->m_EnterPC <= JumpInfo->JumpPC)
+        {
+            CPU_Message("CompileSystemCheck 10");
+            CompileSystemCheck(m_Section->m_EnterPC, GetRegWorkingSet());
+        }
+    }
+    JumpInfo->FallThrough = false;
+
+    //determine loop reg usage
+    if (m_Section->m_InLoop && ParentList.size() > 1)
+    {
+        if (!SetupRegisterForLoop(m_Section->m_BlockInfo, m_Section->m_RegEnter)) { return false; }
+        m_RegWorkingSet.SetRoundingModel(CRegInfo::RoundUnknown);
+    }
+
+    for (size_t i = 0; i < ParentList.size(); i++)
+    {
+        //x86Reg MemoryStackPos;
+        int i2;
+
+        if (i == (size_t)FirstParent) { continue; }
+        Parent = ParentList[i].Parent;
+        if (Parent->m_CompiledLocation == NULL)
+        {
+            continue;
+        }
+        CRegInfo * RegSet = &ParentList[i].JumpInfo->RegSet;
+
+        if (m_RegWorkingSet.GetRoundingModel() != RegSet->GetRoundingModel()) { m_RegWorkingSet.SetRoundingModel(CRegInfo::RoundUnknown); }
+
+        //Find Parent MapRegState
+        /*MemoryStackPos = x86_Unknown;
+        for (i2 = 0; i2 < sizeof(x86_Registers) / sizeof(x86_Registers[0]); i2++)
+        {
+        if (RegSet->GetArmRegMapped(x86_Registers[i2]) == CRegInfo::Stack_Mapped)
+        {
+        MemoryStackPos = x86_Registers[i2];
+        break;
+        }
+        }
+        if (MemoryStackPos == x86_Unknown)
+        {
+        // if the memory stack position is not mapped then unmap it
+        x86Reg MemStackReg = Get_MemoryStack();
+        if (MemStackReg != x86_Unknown)
+        {
+        UnMap_X86reg(MemStackReg);
+        }
+        }*/
+
+        for (i2 = 1; i2 < 32; i2++)
+        {
+            if (Is32BitMapped(i2))
+            {
+                switch (RegSet->GetMipsRegState(i2))
+                {
+                case CRegInfo::STATE_MAPPED_64: Map_GPR_64bit(i2, i2); break;
+                case CRegInfo::STATE_MAPPED_32_ZERO: break;
+                case CRegInfo::STATE_MAPPED_32_SIGN:
+                    if (IsUnsigned(i2))
+                    {
+                        m_RegWorkingSet.SetMipsRegState(i2, CRegInfo::STATE_MAPPED_32_SIGN);
+                    }
+                    break;
+                case CRegInfo::STATE_CONST_64: Map_GPR_64bit(i2, i2); break;
+                case CRegInfo::STATE_CONST_32_SIGN:
+                    if ((RegSet->GetMipsRegLo_S(i2) < 0) && IsUnsigned(i2))
+                    {
+                        m_RegWorkingSet.SetMipsRegState(i2, CRegInfo::STATE_MAPPED_32_SIGN);
+                    }
+                    break;
+                case CRegInfo::STATE_UNKNOWN:
+                    if (g_System->b32BitCore())
+                    {
+                        Map_GPR_32bit(i2, true, i2);
+                    }
+                    else
+                    {
+                        //Map_GPR_32bit(i2,true,i2);
+                        Map_GPR_64bit(i2, i2); //??
+                        //UnMap_GPR(Section,i2,true); ??
+                    }
+                    break;
+                default:
+                    CPU_Message("Unknown CPU State(%d) in InheritParentInfo", GetMipsRegState(i2));
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+            }
+            if (IsConst(i2)) {
+                if (GetMipsRegState(i2) != RegSet->GetMipsRegState(i2))
+                {
+                    switch (RegSet->GetMipsRegState(i2))
+                    {
+                    case CRegInfo::STATE_MAPPED_64:
+                        Map_GPR_64bit(i2, i2);
+                        break;
+                    case CRegInfo::STATE_MAPPED_32_ZERO:
+                        if (Is32Bit(i2))
+                        {
+                            Map_GPR_32bit(i2, (GetMipsRegLo(i2) & 0x80000000) != 0, i2);
+                        }
+                        else
+                        {
+                            g_Notify->BreakPoint(__FILE__, __LINE__);
+                        }
+                        break;
+                    case CRegInfo::STATE_MAPPED_32_SIGN:
+                        if (Is32Bit(i2))
+                        {
+                            Map_GPR_32bit(i2, true, i2);
+                        }
+                        else
+                        {
+                            g_Notify->BreakPoint(__FILE__, __LINE__);
+                        }
+                        break;
+                    case CRegInfo::STATE_UNKNOWN:
+                        if (g_System->b32BitCore())
+                        {
+                            Map_GPR_32bit(i2, true, i2);
+                        }
+                        else
+                        {
+                            Map_GPR_64bit(i2, i2);
+                        }
+                        break;
+                    default:
+                        CPU_Message("Unknown CPU State(%d) in InheritParentInfo", RegSet->GetMipsRegState(i2));
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
+                        break;
+                    }
+                }
+                else if (Is32Bit(i2) && GetMipsRegLo(i2) != RegSet->GetMipsRegLo(i2))
+                {
+                    Map_GPR_32bit(i2, true, i2);
+                }
+                else if (Is64Bit(i2) && GetMipsReg(i2) != RegSet->GetMipsReg(i2))
+                {
+                    Map_GPR_32bit(i2, true, i2);
+                }
+            }
+            ResetRegProtection();
+        }
+
+#ifdef tofix
+        if (MemoryStackPos > 0)
+        {
+            Map_MemoryStack(MemoryStackPos, true);
+        }
+#endif
+    }
+    m_Section->m_RegEnter = m_RegWorkingSet;
+
+    //Sync registers for different blocks
+    stdstr_f Label("Section_%d", m_Section->m_SectionID);
+    int CurrentParent = FirstParent;
+    bool NeedSync = false;
+    for (size_t i = 0; i < NoOfCompiledParents; i++)
+    {
+        CRegInfo * RegSet;
+        int i2;
+
+        if (i == (size_t)FirstParent) { continue; }
+        Parent = ParentList[i].Parent;
+        JumpInfo = ParentList[i].JumpInfo;
+        RegSet = &ParentList[i].JumpInfo->RegSet;
+
+        if (JumpInfo->RegSet.GetBlockCycleCount() != 0) { NeedSync = true; }
+
+#ifdef tofix
+        for (i2 = 0; !NeedSync && i2 < 8; i2++)
+        {
+            if (m_RegWorkingSet.FpuMappedTo(i2) == (uint32_t)-1)
+            {
+                NeedSync = true;
+            }
+        }
+#endif
+
+#ifdef tofix
+        for (i2 = 0; !NeedSync && i2 < sizeof(x86_Registers) / sizeof(x86_Registers[0]); i2++)
+        {
+            if (m_RegWorkingSet.GetArmRegMapped(x86_Registers[i2]) == CRegInfo::Stack_Mapped)
+            {
+                if (m_RegWorkingSet.GetArmRegMapped(x86_Registers[i2]) != RegSet->GetArmRegMapped(x86_Registers[i2]))
+                {
+                    NeedSync = true;
+                }
+                break;
+            }
+        }
+#endif
+        for (i2 = 0; !NeedSync && i2 < 32; i2++)
+        {
+            if (NeedSync == true)  { break; }
+            if (m_RegWorkingSet.GetMipsRegState(i2) != RegSet->GetMipsRegState(i2))
+            {
+                NeedSync = true;
+                continue;
+            }
+            switch (m_RegWorkingSet.GetMipsRegState(i2))
+            {
+            case CRegInfo::STATE_UNKNOWN: break;
+            case CRegInfo::STATE_MAPPED_64:
+                if (GetMipsRegMapHi(i2) != RegSet->GetMipsRegMapHi(i2) ||
+                    GetMipsRegMapLo(i2) != RegSet->GetMipsRegMapLo(i2))
+                {
+                    NeedSync = true;
+                }
+                break;
+            case CRegInfo::STATE_MAPPED_32_ZERO:
+            case CRegInfo::STATE_MAPPED_32_SIGN:
+                if (GetMipsRegMapLo(i2) != RegSet->GetMipsRegMapLo(i2))
+                {
+                    //DisplayError(L"Parent: %d",Parent->SectionID);
+                    NeedSync = true;
+                }
+                break;
+            case CRegInfo::STATE_CONST_32_SIGN:
+                if (GetMipsRegLo(i2) != RegSet->GetMipsRegLo(i2))
+                {
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                    NeedSync = true;
+                }
+                break;
+            default:
+                WriteTrace(TraceRecompiler, TraceError, "Unhandled Reg state %d\nin InheritParentInfo", GetMipsRegState(i2));
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+        }
+        if (NeedSync == false) { continue; }
+        Parent = ParentList[CurrentParent].Parent;
+        JumpInfo = ParentList[CurrentParent].JumpInfo;
+        BranchLabel20(ArmBranch_Always, Label.c_str());
+        JumpInfo->LinkLocation = (uint32_t *)(*g_RecompPos - 4);
+        JumpInfo->LinkLocation2 = NULL;
+
+        CurrentParent = i;
+        Parent = ParentList[CurrentParent].Parent;
+        JumpInfo = ParentList[CurrentParent].JumpInfo;
+        CPU_Message("   Section_%d (from %d):", m_Section->m_SectionID, Parent->m_SectionID);
+        if (JumpInfo->LinkLocation != NULL)
+        {
+            SetJump20(JumpInfo->LinkLocation, (uint32_t *)*g_RecompPos);
+            JumpInfo->LinkLocation = NULL;
+            if (JumpInfo->LinkLocation2 != NULL)
+            {
+                SetJump20(JumpInfo->LinkLocation2, (uint32_t *)*g_RecompPos);
+                JumpInfo->LinkLocation2 = NULL;
+            }
+        }
+
+        m_RegWorkingSet = JumpInfo->RegSet;
+        if (m_Section->m_EnterPC < JumpInfo->JumpPC)
+        {
+            UpdateCounters(m_RegWorkingSet, true, true);
+            CPU_Message("CompileSystemCheck 11");
+            CompileSystemCheck(m_Section->m_EnterPC, m_RegWorkingSet);
+        }
+        else
+        {
+            UpdateCounters(m_RegWorkingSet, false, true);
+        }
+        SyncRegState(m_Section->m_RegEnter);         //Sync
+        m_Section->m_RegEnter = m_RegWorkingSet;
+    }
+
+    for (size_t i = 0; i < NoOfCompiledParents; i++)
+    {
+        Parent = ParentList[i].Parent;
+        JumpInfo = ParentList[i].JumpInfo;
+        LinkJump(*JumpInfo);
+    }
+
+    CPU_Message("   Section_%d:", m_Section->m_SectionID);
+    m_Section->m_RegEnter.SetBlockCycleCount(0);
+    return true;
 }
 
 void CArmRecompilerOps::LinkJump(CJumpInfo & JumpInfo, uint32_t SectionID, uint32_t FromSectionID)
@@ -4920,12 +5801,14 @@ void CArmRecompilerOps::LinkJump(CJumpInfo & JumpInfo, uint32_t SectionID, uint3
 
 void CArmRecompilerOps::JumpToSection(CCodeSection * Section)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    BranchLabel20(ArmBranch_Always, stdstr_f("Section_%d", Section->m_SectionID).c_str());
+    SetJump20(((uint32_t *)*g_RecompPos) - 1, (uint32_t *)(Section->m_CompiledLocation));
 }
 
 void CArmRecompilerOps::JumpToUnknown(CJumpInfo * JumpInfo)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    BranchLabel20(ArmBranch_Always, JumpInfo->BranchLabel.c_str());
+    JumpInfo->LinkLocation = (uint32_t*)(*g_RecompPos - 4);
 }
 
 void CArmRecompilerOps::SetCurrentPC(uint32_t ProgramCounter)
@@ -5591,7 +6474,24 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
 {
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
-        if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        m_RegWorkingSet.SetArmRegProtected(Reg, true);
+
+        if (!g_System->bUseTlb())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+
+        ArmReg TempReg = Map_TempReg(Arm_Any, -1, false);
+        ArmReg TempRegAddress = Map_TempReg(Arm_Any, -1, false);
+        MoveConstToArmReg(TempRegAddress, VAddr);
+        ShiftRightUnsignImmed(TempReg, TempRegAddress, 12);
+        ArmReg WriteMapReg = Map_Variable(CArmRegInfo::VARIABLE_TLB_WRITEMAP);
+        LoadArmRegPointerToArmReg(TempReg, WriteMapReg, TempReg, 2);
+        CompileWriteTLBMiss(TempRegAddress, TempReg);
+        StoreArmRegToArmRegPointer(Reg, TempReg, TempRegAddress, 0);
+        m_RegWorkingSet.SetArmRegProtected(TempReg, false);
+        m_RegWorkingSet.SetArmRegProtected(TempRegAddress, false);
         return;
     }
 
@@ -6085,8 +6985,6 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
 
         ArmReg TempReg = Map_TempReg(Arm_Any, -1, false);
         ArmReg TempRegAddress = Map_TempReg(Arm_Any, -1, false);
-        CPU_Message("%s: TempReg: %s TempRegAddress: %s", __FUNCTION__, ArmRegName(TempReg), ArmRegName(TempRegAddress));
-
         MoveConstToArmReg(TempRegAddress, VAddr);
         ShiftRightUnsignImmed(TempReg, TempRegAddress, 12);
         ArmReg ReadMapReg = Map_Variable(CArmRegInfo::VARIABLE_TLB_READMAP);
