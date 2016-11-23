@@ -3391,8 +3391,8 @@ void CArmRecompilerOps::SPECIAL_XOR()
 void CArmRecompilerOps::SPECIAL_NOR()
 {
     UnMap_GPR(m_Opcode.rd, true);
-    if (m_Opcode.rs != 0) { UnMap_GPR(m_Opcode.rs, true); }
-    if (m_Opcode.rt != 0) { UnMap_GPR(m_Opcode.rt, true); }
+    if (m_Opcode.rs != 0) { WriteBack_GPR(m_Opcode.rs, false); }
+    if (m_Opcode.rt != 0) { WriteBack_GPR(m_Opcode.rt, false); }
     if (g_Settings->LoadBool(Game_32Bit))
     {
         CompileInterpterCall((void *)R4300iOp32::SPECIAL_NOR, "R4300iOp32::SPECIAL_NOR");
@@ -3405,16 +3405,228 @@ void CArmRecompilerOps::SPECIAL_NOR()
 
 void CArmRecompilerOps::SPECIAL_SLT()
 {
-    UnMap_GPR(m_Opcode.rd, true);
-    if (m_Opcode.rs != 0) { UnMap_GPR(m_Opcode.rs, true); }
-    if (m_Opcode.rt != 0) { UnMap_GPR(m_Opcode.rt, true); }
-    if (g_Settings->LoadBool(Game_32Bit))
+    if (m_Opcode.rd == 0)
     {
-        CompileInterpterCall((void *)R4300iOp32::SPECIAL_SLT, "R4300iOp32::SPECIAL_SLT");
+        return;
+    }
+
+    bool useRdReg = m_Opcode.rd != m_Opcode.rt && m_Opcode.rd != m_Opcode.rs;
+    if (IsKnown(m_Opcode.rt) && IsKnown(m_Opcode.rs))
+    {
+        if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs))
+        {
+            if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs))
+            {
+                if (bHaveDebugger())
+                {
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+                UnMap_GPR(m_Opcode.rd, true);
+                if (m_Opcode.rs != 0) { WriteBack_GPR(m_Opcode.rs, false); }
+                if (m_Opcode.rt != 0) { WriteBack_GPR(m_Opcode.rt, false); }
+                if (g_Settings->LoadBool(Game_32Bit))
+                {
+                    CompileInterpterCall((void *)R4300iOp32::SPECIAL_SLT, "R4300iOp32::SPECIAL_SLT");
+                }
+                else
+                {
+                    CompileInterpterCall((void *)R4300iOp::SPECIAL_SLT, "R4300iOp::SPECIAL_SLT");
+                }
+            }
+            else
+            {
+                if (IsMapped(m_Opcode.rd))
+                {
+                    UnMap_GPR(m_Opcode.rd, false);
+                }
+
+                m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+                if (GetMipsRegLo_S(m_Opcode.rs) < GetMipsRegLo_S(m_Opcode.rt))
+                {
+                    m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, 1);
+                }
+                else
+                {
+                    m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, 0);
+                }
+            }
+        }
+        else if (IsMapped(m_Opcode.rt) && IsMapped(m_Opcode.rs))
+        {
+            ProtectGPR(GetMipsRegMapLo(m_Opcode.rs));
+            ProtectGPR(GetMipsRegMapLo(m_Opcode.rt));
+            if (useRdReg)
+            {
+                Map_GPR_32bit(m_Opcode.rd, false, -1);
+            }
+            ArmReg TempResult = useRdReg ? Arm_Unknown : Map_TempReg(Arm_Any, -1, false);
+            CompareArmRegToArmReg(GetMipsRegMapLo(m_Opcode.rs), GetMipsRegMapLo(m_Opcode.rt));
+            IfBlock(ItMask_E, ArmBranch_LessThan);
+            MoveConstToArmReg(useRdReg ? GetMipsRegMapLo(m_Opcode.rd) : TempResult, (uint16_t)1);
+            MoveConstToArmReg(useRdReg ? GetMipsRegMapLo(m_Opcode.rd) : TempResult, (uint16_t)0);
+            if (!useRdReg)
+            {
+                Map_GPR_32bit(m_Opcode.rd, false, -1);
+                AddConstToArmReg(GetMipsRegMapLo(m_Opcode.rd), TempResult, 0);
+                m_RegWorkingSet.SetArmRegProtected(TempResult, false);
+            }
+        }
+        else
+        {
+            uint32_t ConstReg = IsConst(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
+            uint32_t MappedReg = IsConst(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
+
+            ProtectGPR(MappedReg);
+            Map_GPR_32bit(m_Opcode.rd, false, -1);
+            CompareArmRegToConst(GetMipsRegMapLo(MappedReg), GetMipsRegLo(ConstReg));
+            IfBlock(ItMask_E, m_Opcode.rt == MappedReg ? ArmBranch_GreaterThan : ArmBranch_LessThan);
+            MoveConstToArmReg(GetMipsRegMapLo(m_Opcode.rd), (uint16_t)1);
+            MoveConstToArmReg(GetMipsRegMapLo(m_Opcode.rd), (uint16_t)0);
+        }
+    }
+    else if (IsKnown(m_Opcode.rt) || IsKnown(m_Opcode.rs))
+    {
+        uint32_t KnownReg = IsKnown(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
+        uint32_t UnknownReg = IsKnown(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
+
+        if (IsMapped(KnownReg))
+        {
+            ProtectGPR(KnownReg);
+        }
+
+        if (!g_System->b32BitCore())
+        {
+            if (useRdReg)
+            {
+                Map_GPR_32bit(m_Opcode.rd, false, -1);
+            }
+            ArmReg UnknownArmReg = Map_TempReg(Arm_Any, UnknownReg, true);
+            if (IsConst(KnownReg))
+            {
+                CompareArmRegToConst(UnknownArmReg, Is32Bit(KnownReg) ? (IsSigned(KnownReg) ? (GetMipsRegLo_S(KnownReg) >> 31) : 0) : GetMipsRegHi(KnownReg));
+            }
+            else
+            {
+                CompareArmRegToArmReg(UnknownArmReg, Is32Bit(KnownReg) ? Map_TempReg(Arm_Any, KnownReg, true) : GetMipsRegMapHi(KnownReg));
+            }
+            uint8_t * JumpLow = *g_RecompPos;
+            BranchLabel8(ArmBranch_Equal, "Low Compare");
+
+            IfBlock(ItMask_E, KnownReg == m_Opcode.rt ? ArmBranch_LessThan : ArmBranch_GreaterThan);
+            MoveConstToArmReg(useRdReg ? GetMipsRegMapLo(m_Opcode.rd) : UnknownArmReg, (uint16_t)1);
+            MoveConstToArmReg(useRdReg ? GetMipsRegMapLo(m_Opcode.rd) : UnknownArmReg, (uint16_t)0);
+
+            uint8_t * JumpContinue = *g_RecompPos;
+            BranchLabel8(ArmBranch_Always, "Continue");
+
+            CPU_Message("");
+            CPU_Message("      Low Compare:");
+            SetJump8(JumpLow, *g_RecompPos);
+            m_RegWorkingSet.SetArmRegProtected(UnknownArmReg, false);
+            Map_TempReg(UnknownArmReg, UnknownReg, false);
+            if (IsConst(KnownReg))
+            {
+                CompareArmRegToConst(UnknownArmReg, GetMipsRegLo(KnownReg));
+            }
+            else
+            {
+                CompareArmRegToArmReg(UnknownArmReg, GetMipsRegMapLo(KnownReg));
+            }
+            IfBlock(ItMask_E, KnownReg == m_Opcode.rt ? ArmBranch_LessThan : ArmBranch_GreaterThan);
+            MoveConstToArmReg(useRdReg ? GetMipsRegMapLo(m_Opcode.rd) : UnknownArmReg, (uint16_t)1);
+            MoveConstToArmReg(useRdReg ? GetMipsRegMapLo(m_Opcode.rd) : UnknownArmReg, (uint16_t)0);
+
+            CPU_Message("");
+            CPU_Message("      Continue:");
+            SetJump8(JumpContinue, *g_RecompPos);
+            if (!useRdReg)
+            {
+                Map_GPR_32bit(m_Opcode.rd, false, -1);
+                AddConstToArmReg(GetMipsRegMapLo(m_Opcode.rd), UnknownArmReg, 0);
+            }
+        }
+        else
+        {
+            ArmReg TempResult = useRdReg ? Arm_Unknown : Map_TempReg(Arm_Any, -1, false);
+            if (useRdReg)
+            {
+                Map_GPR_32bit(m_Opcode.rd, false, UnknownReg);
+            }
+            if (IsConst(KnownReg))
+            {
+                ArmReg UnknownArmReg = useRdReg ? GetMipsRegMapLo(m_Opcode.rd) : Map_TempReg(Arm_Any, UnknownReg, false);
+                CompareArmRegToConst(UnknownArmReg, GetMipsRegLo(KnownReg));
+                IfBlock(ItMask_E, KnownReg == m_Opcode.rt ? ArmBranch_LessThan : ArmBranch_GreaterThan);
+            }
+            else
+            {
+                ArmReg UnknownArmReg = useRdReg ? GetMipsRegMapLo(m_Opcode.rd) : Map_TempReg(Arm_Any, UnknownReg, false);
+                CompareArmRegToArmReg(KnownReg == m_Opcode.rs ? GetMipsRegMapLo(KnownReg) : UnknownArmReg, KnownReg == m_Opcode.rs ? UnknownArmReg : GetMipsRegMapLo(KnownReg));
+                IfBlock(ItMask_E, ArmBranch_LessThan);
+            }
+            MoveConstToArmReg(useRdReg ? GetMipsRegMapLo(m_Opcode.rd) : TempResult, (uint16_t)1);
+            MoveConstToArmReg(useRdReg ? GetMipsRegMapLo(m_Opcode.rd) : TempResult, (uint16_t)0);
+            if (!useRdReg)
+            {
+                Map_GPR_32bit(m_Opcode.rd, false, -1);
+                AddConstToArmReg(GetMipsRegMapLo(m_Opcode.rd), TempResult, 0);
+                m_RegWorkingSet.SetArmRegProtected(TempResult, false);
+            }
+        }
+    }
+    else if (g_System->b32BitCore())
+    {
+        if (useRdReg)
+        {
+            Map_GPR_32bit(m_Opcode.rd, false, m_Opcode.rt);
+        }
+        ArmReg TempReg = Map_TempReg(Arm_Any, m_Opcode.rs, false);
+        CompareArmRegToArmReg(TempReg, useRdReg ? GetMipsRegMapLo(m_Opcode.rd) : Map_TempReg(Arm_Any, m_Opcode.rt, false));
+        IfBlock(ItMask_E, ArmBranch_LessThan);
+        MoveConstToArmReg(useRdReg ? GetMipsRegMapLo(m_Opcode.rd) : TempReg, (uint16_t)1);
+        MoveConstToArmReg(useRdReg ? GetMipsRegMapLo(m_Opcode.rd) : TempReg, (uint16_t)0);
+        if (!useRdReg)
+        {
+            Map_GPR_32bit(m_Opcode.rd, false, -1);
+            AddConstToArmReg(GetMipsRegMapLo(m_Opcode.rd), TempReg, 0);
+        }
+        m_RegWorkingSet.SetArmRegProtected(TempReg, false);
     }
     else
     {
-        CompileInterpterCall((void *)R4300iOp::SPECIAL_SLT, "R4300iOp::SPECIAL_SLT");
+        if (useRdReg)
+        {
+            Map_GPR_32bit(m_Opcode.rd, false, -1);
+        }
+        ArmReg TempRegRt = Map_TempReg(Arm_Any, m_Opcode.rt, true);
+        ArmReg TempRegRs = Map_TempReg(Arm_Any, m_Opcode.rs, true);
+        CompareArmRegToArmReg(TempRegRs, TempRegRt);
+        uint8_t * JumpLow = *g_RecompPos;
+        BranchLabel8(ArmBranch_Equal, "Low Compare");
+        IfBlock(ItMask_E, ArmBranch_LessThan);
+        MoveConstToArmReg(useRdReg ? GetMipsRegMapLo(m_Opcode.rd) : TempRegRt, (uint16_t)1);
+        MoveConstToArmReg(useRdReg ? GetMipsRegMapLo(m_Opcode.rd) : TempRegRt, (uint16_t)0);
+        uint8_t * JumpContinue = *g_RecompPos;
+        BranchLabel8(ArmBranch_Always, "Continue");
+        CPU_Message("");
+        CPU_Message("      Low Compare:");
+        SetJump8(JumpLow, *g_RecompPos);
+        m_RegWorkingSet.SetArmRegProtected(TempRegRt, false);
+        Map_TempReg(TempRegRt, m_Opcode.rt, false);
+        m_RegWorkingSet.SetArmRegProtected(TempRegRs, false);
+        Map_TempReg(TempRegRs, m_Opcode.rs, false);
+        CompareArmRegToArmReg(TempRegRs, TempRegRt);
+        IfBlock(ItMask_E, ArmBranch_LessThan);
+        MoveConstToArmReg(useRdReg ? GetMipsRegMapLo(m_Opcode.rd) : TempRegRt, (uint16_t)1);
+        MoveConstToArmReg(useRdReg ? GetMipsRegMapLo(m_Opcode.rd) : TempRegRt, (uint16_t)0);
+        CPU_Message("");
+        CPU_Message("      Continue:");
+        SetJump8(JumpContinue, *g_RecompPos);
+        if (!useRdReg)
+        {
+            Map_GPR_32bit(m_Opcode.rd, false, -1);
+            AddConstToArmReg(GetMipsRegMapLo(m_Opcode.rd), TempRegRt, 0);
+        }
     }
 }
 
