@@ -2495,7 +2495,16 @@ void CArmRecompilerOps::LWC1()
     CompileCop1Test();
     if (IsConst(m_Opcode.base))
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        uint32_t Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
+
+        ArmReg TempRegValue = Map_TempReg(Arm_Any, -1, false);
+        LW_KnownAddress(TempRegValue, Address);
+
+        ArmReg FprReg = Map_Variable(CArmRegInfo::VARIABLE_FPR);
+        ArmReg TempRegAddress = Map_TempReg(Arm_Any, -1, false);
+        LoadArmRegPointerToArmReg(TempRegAddress, FprReg, (uint8_t)(m_Opcode.ft << 2));
+        StoreArmRegToArmRegPointer(TempRegValue, TempRegAddress, 0);
+        return;
     }
     ArmReg TempRegAddress;
     if (IsMapped(m_Opcode.base))
