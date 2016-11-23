@@ -107,6 +107,8 @@
     <string name="video_screen_title">Video</string>
     <string name="audio_screen_summary">Sound settings</string>
     <string name="audio_screen_title">Audio</string>
+    <string name="game_list_summary">Game list settings</string>
+    <string name="game_list_title">Game list</string>
     <string name="advanced_screen_summary">advanced/debugging settings</string>
     <string name="advanced_screen_title">Advanced</string>
     <string name="reset_summary">Restore default settings</string>
@@ -181,7 +183,8 @@
     <string name="gamepad_title">Gamepad settings</string>
     <string name="settings_reset_title">Reset settings</string>
     <string name="settings_reset_message">Reset all settings back to their defaults?</string>
-        
+    <string name="MaxRomsRemembered_title">Max # of games remembered</string>
+
     <string-array name="DisplaySpeed_list">
         <item>@string/DListPerSecond</item>
         <item>@string/PercentageOfSpeed</item>

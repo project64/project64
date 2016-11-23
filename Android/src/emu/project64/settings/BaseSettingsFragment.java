@@ -113,6 +113,10 @@ public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
         {
             loadFragment(new VideoFragment());
         }
+        else if (preference.getKey().equals("settings_game_list"))
+        {
+            loadFragment(new GameListFragment());
+        }
         else if (preference.getKey().equals("settings_audio"))
         {
             loadFragment(new AudioFragment());
