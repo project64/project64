@@ -360,6 +360,40 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_ResetApplicationSettings(J
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
+EXPORT void CALL Java_emu_project64_jni_NativeExports_SetSpeed(JNIEnv* env, jclass cls, int Speed)
+{
+    WriteTrace(TraceUserInterface, TraceDebug, "start (Speed: %d)", Speed);
+    if (g_BaseSystem)
+    {
+        g_BaseSystem->SetSpeed(Speed);
+    }
+    WriteTrace(TraceUserInterface, TraceDebug, "Done");
+}
+
+EXPORT int CALL Java_emu_project64_jni_NativeExports_GetSpeed(JNIEnv* env, jclass cls)
+{
+    int speed = 0;
+    WriteTrace(TraceUserInterface, TraceDebug, "start");
+    if (g_BaseSystem)
+    {
+        speed = g_BaseSystem->GetSpeed();
+    }
+    WriteTrace(TraceUserInterface, TraceDebug, "Done (speed: %d)", speed);
+    return speed;
+}
+
+EXPORT int CALL Java_emu_project64_jni_NativeExports_GetBaseSpeed(JNIEnv* env, jclass cls)
+{
+    int speed = 0;
+    WriteTrace(TraceUserInterface, TraceDebug, "start");
+    if (g_BaseSystem)
+    {
+        speed = g_BaseSystem->GetBaseSpeed();
+    }
+    WriteTrace(TraceUserInterface, TraceDebug, "Done (speed: %d)", speed);
+    return speed;
+}
+
 EXPORT void CALL Java_emu_project64_jni_NativeExports_onSurfaceCreated(JNIEnv * env, jclass cls)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
