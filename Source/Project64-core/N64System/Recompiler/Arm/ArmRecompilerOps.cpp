@@ -3139,31 +3139,58 @@ void CArmRecompilerOps::SPECIAL_ADDU()
 
 void CArmRecompilerOps::SPECIAL_SUB()
 {
-    UnMap_GPR(m_Opcode.rd, true);
-    if (m_Opcode.rs != 0) { UnMap_GPR(m_Opcode.rs, true); }
-    if (m_Opcode.rt != 0) { UnMap_GPR(m_Opcode.rt, true); }
-    if (g_Settings->LoadBool(Game_32Bit))
-    {
-        CompileInterpterCall((void *)R4300iOp32::SPECIAL_SUBU, "R4300iOp32::SPECIAL_SUBU");
-    }
-    else
-    {
-        CompileInterpterCall((void *)R4300iOp::SPECIAL_SUBU, "R4300iOp::SPECIAL_SUBU");
-    }
+    SPECIAL_SUBU();
 }
 
 void CArmRecompilerOps::SPECIAL_SUBU()
 {
-    UnMap_GPR(m_Opcode.rd, true);
-    if (m_Opcode.rs != 0) { UnMap_GPR(m_Opcode.rs, true); }
-    if (m_Opcode.rt != 0) { UnMap_GPR(m_Opcode.rt, true); }
-    if (g_Settings->LoadBool(Game_32Bit))
+    if (m_Opcode.rd == 0)
     {
-        CompileInterpterCall((void *)R4300iOp32::SPECIAL_SUBU, "R4300iOp32::SPECIAL_SUBU");
+        return;
+    }
+
+    if (IsConst(m_Opcode.rt) && IsConst(m_Opcode.rs))
+    {
+        uint32_t temp = GetMipsRegLo(m_Opcode.rs) - GetMipsRegLo(m_Opcode.rt);
+
+        if (IsMapped(m_Opcode.rd))
+        {
+            UnMap_GPR(m_Opcode.rd, false);
+        }
+
+        m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, temp);
+        m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+    }
+    else if (m_Opcode.rd == m_Opcode.rt)
+    {
+        ArmReg Reg = Map_TempReg(Arm_Any, m_Opcode.rt, false);
+        Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rs);
+        SubArmRegFromArmReg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapLo(m_Opcode.rd), Reg);
     }
     else
     {
-        CompileInterpterCall((void *)R4300iOp::SPECIAL_SUBU, "R4300iOp::SPECIAL_SUBU");
+        bool rsMapped = IsMapped(m_Opcode.rs);
+        ProtectGPR(m_Opcode.rs);
+
+        Map_GPR_32bit(m_Opcode.rd, true, rsMapped ? -1 : m_Opcode.rs);
+        ArmReg SouceReg = rsMapped ? GetMipsRegMapLo(m_Opcode.rs) : GetMipsRegMapLo(m_Opcode.rd);
+
+        if (IsConst(m_Opcode.rt))
+        {
+            SubConstFromArmReg(GetMipsRegMapLo(m_Opcode.rd), SouceReg, GetMipsRegLo(m_Opcode.rt));
+        }
+        else
+        {
+            SubArmRegFromArmReg(GetMipsRegMapLo(m_Opcode.rd), SouceReg, IsMapped(m_Opcode.rt) ? GetMipsRegMapLo(m_Opcode.rt) : Map_TempReg(Arm_Any, m_Opcode.rt, false));
+        }
+    }
+
+    if (g_System->bFastSP() && m_Opcode.rd == 29)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+#ifdef tofix
+        ResetMemoryStack();
+#endif
     }
 }
 
