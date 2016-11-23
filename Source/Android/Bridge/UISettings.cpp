@@ -26,6 +26,10 @@ void RegisterUISettings(void)
     g_Settings->AddHandler((SettingID)(FirstUISettings + Controller_CurrentProfile), new CSettingTypeApplication("Controller", "Profile", "User"));
     g_Settings->AddHandler((SettingID)(FirstUISettings + Controller_Deadzone), new CSettingTypeApplication("Controller", "Deadzone", (uint32_t)0));
     g_Settings->AddHandler((SettingID)(FirstUISettings + Controller_Sensitivity), new CSettingTypeApplication("Controller", "Sensitivity", (uint32_t)100));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + SupportWindow_FirstRun), new CSettingTypeApplication("Support Project64", "First Run", ""));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + SupportWindow_AlwaysShow), new CSettingTypeApplication("Support Project64", "Always Show", false));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + SupportWindow_ShowingSupportWindow), new CSettingTypeApplication("Support Project64", "Showing Support Window", false));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + SupportWindow_RunCount), new CSettingTypeApplication("Support Project64", "Run Count", (uint32_t)0));
 }
 
 void UISettingsSaveBool(UISettingID Type, bool Value)

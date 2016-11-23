@@ -11,8 +11,14 @@
 package emu.project64;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import emu.project64.R;
 import emu.project64.dialog.ProgressDialog;
@@ -37,6 +43,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
@@ -89,17 +96,24 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
 
     // The IAB helper object
     IabHelper mIabHelper;
-    private boolean mHasSaveSupport = false;
+    private boolean mHasSaveSupport = true;
+    private boolean mPj64Supporter = false;
 
     // Provides purchase notification while this app is running
     IabBroadcastReceiver mBroadcastReceiver;
 
     public static final int GAME_DIR_REQUEST_CODE = 1;
     static final String SKU_SAVESUPPORT = "save_support";
+    static final String SKU_PJ64SUPPORTOR_2 = "supportproject64_2";
+    static final String SKU_PJ64SUPPORTOR_5 = "supportproject64_5";
+    static final String SKU_PJ64SUPPORTOR_8 = "supportproject64_8";
+    static final String SKU_PJ64SUPPORTOR_10 = "supportproject64_10";
 
     // (arbitrary) request code for the purchase flow
     static final int RC_REQUEST = 10001;
     static final int RC_SETTINGS = 10002;
+
+    static boolean mShownSupportWindow = true;
 
     @Override
     protected void onNewIntent( Intent intent )
@@ -124,6 +138,13 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         super.onCreate( savedInstanceState );
         mActiveGalleryActivity = this;
 
+        String FirstRun = NativeExports.UISettingsLoadString(UISettingID.SupportWindow_FirstRun.getValue());
+        if (FirstRun.length() == 0)
+        {
+            SimpleDateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+            NativeExports.UISettingsSaveString(UISettingID.SupportWindow_FirstRun.getValue(), format.format(new Date()));
+        }
+
         mIabHelper = new IabHelper(this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnfHFIq+X0oIvV+bwcvdqQv5GmpWLL6Bw8xE6MLFzXzUGUIUZBwQS6Cz5IC0UM76ujPDPqQPeGy/8oq/bswB5pHCz2iS4ySGalzFfYfeIDklOe+R1pLEqmHuwsR5o4b8rLePLGmUI7hA0kozOTb0i+epANV3Pj63i5XFZLA7RMi5I+YysoE9Fob6kCx0kb02AATacF0OXI9paE1izvsHhZcOIrT4TRMbGlZjBVE/pcJtoBDh33QKz/JBOXWvwnh+efqhVsq/UfA6jYI+U4Z4tsnWhem8DB6Kqj5EhClC6qCPmkBFiOabyKaqhI/urBtYOwxkW9erwtA6OcDoHm5J/JwIDAQAB");
 
         // enable debug logging (for a production application, you should set this to false).
@@ -142,6 +163,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                     Log.d("GalleryActivity", "Problem setting up in-app billing: " + result);
                     // complain("Problem setting up in-app billing: " + result);
                     mHasSaveSupport = true;
+                    mPj64Supporter = true;
                     return;
                 }
                 // Have we been disposed of in the meantime? If so, quit.
@@ -215,7 +237,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
             {
                 GalleryActivity.this.onOptionsItemSelected( menuItem );
             }
-        } );
+        });
     }
 
     // Enables or disables the "please wait" screen.
@@ -255,14 +277,70 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
              * verifyDeveloperPayload().
              */
 
-            Purchase SaveSupportPurchase = inventory.getPurchase(SKU_SAVESUPPORT);
-            Log.d("GalleryActivity", "Purchased save support " + (SaveSupportPurchase!= null ? "Yes" : "No"));
-            if (SaveSupportPurchase != null)
+            /*IabHelper.OnConsumeFinishedListener listener = new IabHelper.OnConsumeFinishedListener()
             {
-                mHasSaveSupport = true;
+                @Override
+                public
+                void onConsumeFinished(Purchase purchase, IabResult result)
+                {
+                    Log.d("GalleryActivity", "SKU_SAVESUPPORT consumed");
+                }
+            };
+            try {
+                mIabHelper.consumeAsync(inventory.getPurchase(SKU_SAVESUPPORT), listener);
+            } catch (IabAsyncInProgressException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }*/
+            Purchase ItemPurchase = inventory.getPurchase(SKU_SAVESUPPORT);
+            Log.d("GalleryActivity", "Purchased SKU_SAVESUPPORT " + (ItemPurchase!= null ? "Yes" : "No"));
+            if (ItemPurchase != null)
+            {
+                mPj64Supporter = true;
+            }
+            if (!mPj64Supporter)
+            {
+                ItemPurchase = inventory.getPurchase(SKU_PJ64SUPPORTOR_2);
+                Log.d("GalleryActivity", "Purchased SKU_PJ64SUPPORTOR_2 " + (ItemPurchase != null ? "Yes" : "No"));
+                if (ItemPurchase != null)
+                {
+                    mPj64Supporter = true;
+                }
+            }
+            if (!mPj64Supporter)
+            {
+                ItemPurchase = inventory.getPurchase(SKU_PJ64SUPPORTOR_5);
+                Log.d("GalleryActivity", "Purchased SKU_PJ64SUPPORTOR_5 " + (ItemPurchase != null ? "Yes" : "No"));
+                if (ItemPurchase != null)
+                {
+                    mPj64Supporter = true;
+                }
+            }
+            if (!mPj64Supporter)
+            {
+                ItemPurchase = inventory.getPurchase(SKU_PJ64SUPPORTOR_8);
+                Log.d("GalleryActivity", "Purchased SKU_PJ64SUPPORTOR_8 " + (ItemPurchase != null ? "Yes" : "No"));
+                if (ItemPurchase != null)
+                {
+                    mPj64Supporter = true;
+                }
+            }
+            if (!mPj64Supporter)
+            {
+                ItemPurchase = inventory.getPurchase(SKU_PJ64SUPPORTOR_10);
+                Log.d("GalleryActivity", "Purchased SKU_PJ64SUPPORTOR_10 " + (ItemPurchase != null ? "Yes" : "No"));
+                if (ItemPurchase != null)
+                {
+                    mPj64Supporter = true;
+                }
             }
 
             setWaitScreen(false);
+
+            if (!mPj64Supporter && ShouldShowSupportWindow())
+            {
+                ShowSupportWindow();
+            }
         }
     };
 
@@ -279,6 +357,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                 Log.e("GalleryActivity", "**** Purcahse Error: " + result);
                 alert("Save Support Upgrade failed\n\n" + result.getMessage());
                 setWaitScreen(false);
+                ShowSupportWindow();
                 return;
             }
 
@@ -290,6 +369,18 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                 Log.d("GalleryActivity", "Purchase is save support. Congratulating user.");
                 alert("Thank you for upgrading to have save support!");
                 mHasSaveSupport = true;
+                setWaitScreen(false);
+            }
+
+            if (purchase.getSku().equals(SKU_PJ64SUPPORTOR_2) ||
+                purchase.getSku().equals(SKU_PJ64SUPPORTOR_5) ||
+                purchase.getSku().equals(SKU_PJ64SUPPORTOR_8) ||
+                purchase.getSku().equals(SKU_PJ64SUPPORTOR_10))
+            {
+                // bought the premium upgrade!
+                Log.d("GalleryActivity", "Purchase is project64 support. Congratulating user.");
+                alert("Thank you for supporting Project64!");
+                mPj64Supporter = true;
                 setWaitScreen(false);
             }
         }
@@ -659,6 +750,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
 
             items.add( new GalleryItem( this, getString( R.string.galleryLibrary ) ) );
         }
+        Collections.sort( mGalleryItems, new GalleryItem.NameComparator() );
         items.addAll( mGalleryItems );
 
         mGridView.setAdapter( new GalleryItem.Adapter( this, items ) );
@@ -728,6 +820,185 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         }
     }
 
+    public void PurcahseProject64Support(Activity activity, String sku)
+    {
+        setWaitScreen(true);
+        //Purchase save support
+        try
+        {
+            String payload = NativeExports.appVersion();
+            mIabHelper.launchPurchaseFlow(activity, sku, RC_REQUEST, mPurchaseFinishedListener, payload);
+        }
+        catch (IabAsyncInProgressException e)
+        {
+            setWaitScreen(false);
+        }
+    }
+
+    public void ShowPaymentOptions()
+    {
+        ArrayList<String> skuList = new ArrayList<String>();
+        skuList.add(SKU_PJ64SUPPORTOR_2);
+        skuList.add(SKU_PJ64SUPPORTOR_5);
+        skuList.add(SKU_PJ64SUPPORTOR_8);
+        skuList.add(SKU_PJ64SUPPORTOR_10);
+        Bundle querySkus = new Bundle();
+        querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
+
+        final Context context = this;
+        final Activity activity = this;
+        IabHelper.QueryInventoryFinishedListener GotPaymentOptionListener = new IabHelper.QueryInventoryFinishedListener()
+        {
+            public void onQueryInventoryFinished(IabResult result, Inventory inventory)
+            {
+                Log.d("GalleryActivity", "Query inventory finished.");
+
+                // Have we been disposed of in the meantime? If so, quit.
+                if (mIabHelper == null) return;
+
+                // Is it a failure?
+                if (result.isFailure())
+                {
+                    //complain("Failed to query inventory: " + result);
+                    return;
+                }
+
+                Log.d("GalleryActivity", "SKU_PJ64SUPPORTOR_2 price: " + inventory.getSkuDetails(SKU_PJ64SUPPORTOR_2).getPrice());
+                Log.d("GalleryActivity", "SKU_PJ64SUPPORTOR_5 price: " + inventory.getSkuDetails(SKU_PJ64SUPPORTOR_5).getPrice());
+                Log.d("GalleryActivity", "SKU_PJ64SUPPORTOR_8 price: " + inventory.getSkuDetails(SKU_PJ64SUPPORTOR_8).getPrice());
+                Log.d("GalleryActivity", "SKU_PJ64SUPPORTOR_10 price: " + inventory.getSkuDetails(SKU_PJ64SUPPORTOR_10).getPrice());
+
+                CharSequence options[] = new CharSequence[]
+                {
+                    inventory.getSkuDetails(SKU_PJ64SUPPORTOR_10).getPrice(),
+                    inventory.getSkuDetails(SKU_PJ64SUPPORTOR_8).getPrice(),
+                    inventory.getSkuDetails(SKU_PJ64SUPPORTOR_5).getPrice(),
+                    inventory.getSkuDetails(SKU_PJ64SUPPORTOR_2).getPrice()
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Select an amount");
+                builder.setItems(options, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        switch (which)
+                        {
+                        case 0: PurcahseProject64Support(activity,SKU_PJ64SUPPORTOR_10); break;
+                        case 1: PurcahseProject64Support(activity,SKU_PJ64SUPPORTOR_8); break;
+                        case 2: PurcahseProject64Support(activity,SKU_PJ64SUPPORTOR_5); break;
+                        case 3: PurcahseProject64Support(activity,SKU_PJ64SUPPORTOR_2); break;
+                        }
+                    }
+                });
+                final AlertDialog dialog = builder.create();
+                dialog.setOnCancelListener(new OnCancelListener()
+                {
+                    public void onCancel(DialogInterface dialog)
+                    {
+                        ShowSupportWindow();
+                    }
+                });
+                dialog.show();
+            }
+        };
+
+        try
+        {
+            mIabHelper.queryInventoryAsync(true, skuList, null, GotPaymentOptionListener);
+        }
+        catch (IabAsyncInProgressException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean ShouldShowSupportWindow()
+    {
+        Log.d("GalleryActivity", "ShowSupportWindow mShownSupportWindow = " + mShownSupportWindow);
+        if (!mShownSupportWindow)
+        {
+            return false;
+        }
+        mShownSupportWindow = false;
+
+        int RunCount = NativeExports.UISettingsLoadDword(UISettingID.SupportWindow_RunCount.getValue());
+        Log.d("GalleryActivity", "ShowSupportWindow RunCount = " + RunCount);
+        if (RunCount == -1)
+        {
+            return false;
+        }
+        NativeExports.UISettingsSaveDword(UISettingID.SupportWindow_RunCount.getValue(), RunCount + 1);
+        Log.d("GalleryActivity", "ShowSupportWindow Set RunCount to " + (RunCount + 1));
+
+        if (RunCount < 3)
+        {
+            return false;
+        }
+
+        if (((RunCount - 5) % 3) != 0)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public void ShowSupportWindow()
+    {
+        int RunCount = NativeExports.UISettingsLoadDword(UISettingID.SupportWindow_RunCount.getValue());
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Support Project64");
+        builder.setMessage("Project64 is a software package designed to emulate a Nintendo64 video game system on a Android device. This allows you to play real N64 software in much the same way as it would be on the original hardware system.\n\nIf you like Project64 and have gotten some value out of it then please support project64 as either a thank you, or your desire to see it continually improved.");
+        builder.setNeutralButton("Not now", null);
+        builder.setNegativeButton("Support Project64", null);
+        builder.setCancelable(false);
+
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener( new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                dialog.dismiss();
+            }
+        });
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener( new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                ShowPaymentOptions();
+                dialog.dismiss();
+            }
+        });
+        dialog.setCanceledOnTouchOutside(false);
+
+        if (RunCount > 20)
+        {
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setEnabled(false);
+
+            TimerTask task = new TimerTask()
+            {
+                @Override
+                public void run()
+                {
+                    Handler h = new Handler(Looper.getMainLooper());
+                    h.post(new Runnable()
+                    {
+                        public void run()
+                        {
+                            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setEnabled(true);
+                        }
+                    });
+                }
+            };
+            final Timer timer = new Timer();
+            timer.schedule(task, 35 * 1000);
+        }
+    }
+
     public void launchGameActivity()
     {
         // Launch the game activity
@@ -776,7 +1047,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         }
     }
 
-    public static void RomListLoadDone()
+    private static void refreshRecentRoms()
     {
         mRecentItems = new ArrayList<GalleryItem>();
 
@@ -794,11 +1065,15 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                 if (RecentFile.equals(mGalleryItems.get(z).romFile.getAbsolutePath()))
                 {
                     mRecentItems.add(mGalleryItems.get(z));
-                       break;
+                    break;
                 }
             }
         }
+    }
 
+    public static void RomListLoadDone()
+    {
+        refreshRecentRoms();
         if (mActiveGalleryActivity != null && mActiveGalleryActivity.mProgress != null)
         {
             Handler h = new Handler(Looper.getMainLooper());
@@ -811,5 +1086,18 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                 }
             });
         }
+    }
+
+    public static void RecentRomsUpdated()
+    {
+        refreshRecentRoms();
+        Handler h = new Handler(Looper.getMainLooper());
+        h.post(new Runnable()
+        {
+            public void run()
+            {
+                mActiveGalleryActivity.refreshGrid();
+            }
+        });
     }
 }
