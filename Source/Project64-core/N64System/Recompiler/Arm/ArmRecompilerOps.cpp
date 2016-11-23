@@ -2725,13 +2725,10 @@ void CArmRecompilerOps::SPECIAL_JR()
     {
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
-            if (IsKnown(m_Opcode.rs))
+            if (IsKnown(m_Opcode.rs) && IsMapped(m_Opcode.rs))
             {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-#ifdef tofix
-                MoveX86regToVariable(GetMipsRegMapLo(m_Opcode.rs), &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
+                MoveArmRegToVariable(GetMipsRegMapLo(m_Opcode.rs), &R4300iOp::m_JumpToLocation, "R4300iOp::m_JumpToLocation");
                 m_RegWorkingSet.WriteBackRegisters();
-#endif
             }
             else
             {
@@ -2786,7 +2783,10 @@ void CArmRecompilerOps::SPECIAL_JR()
             MoveConstToArmReg(PCTempReg, (uint32_t)_PROGRAM_COUNTER, "PROGRAM_COUNTER");
             if (IsConst(m_Opcode.rs))
             {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
+                ArmReg ValueTempReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+                MoveConstToArmReg(ValueTempReg, GetMipsRegLo(m_Opcode.rs));
+                StoreArmRegToArmRegPointer(ValueTempReg, PCTempReg, 0);
+                m_RegWorkingSet.SetArmRegProtected(ValueTempReg, false);
             }
             else if (IsMapped(m_Opcode.rs))
             {
