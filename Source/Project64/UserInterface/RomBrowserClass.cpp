@@ -331,6 +331,8 @@ void CRomBrowser::HighLightLastRom(void)
     {
         return;
     }
+    m_LastRom = UISettingsLoadStringIndex(File_RecentGameFileIndex, 0);
+
     //Make sure Rom browser is visible
     if (!RomBrowserVisible()) { return; }
 
