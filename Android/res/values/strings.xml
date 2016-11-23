@@ -129,7 +129,9 @@
     <string name="GenerateLogFiles_summary">Log recompiler code</string>
     <string name="logging">Logging</string>
     <string name="project64core">Project64 Core</string>
+    <string name="AudioPlugin">Audio Plugin</string>
     <string name="logging_project64core">Logging - Project64 Core</string>
+    <string name="logging_Audio">Logging - Audio</string>
     <string name="TraceError">Error</string>
     <string name="TraceWarning">Warning</string>
     <string name="TraceNotice">Notice</string>
@@ -158,6 +160,8 @@
     <string name="TraceUserInterface">User Interface</string>
     <string name="TraceRomList">Rom List</string>
     <string name="TraceExceptionHandler">Exception Handler</string>
+    <string name="TraceAudioInitShutdown">Init/Shutdown</string>
+    <string name="TraceAudioAudioInterface">Interface</string>
     <string name="CpuType">CPU core style</string>
     <string name="Interpreter">Interpreter</string>
     <string name="Recompiler">Recompiler</string>

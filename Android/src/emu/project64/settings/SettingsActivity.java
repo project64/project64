@@ -12,6 +12,7 @@ package emu.project64.settings;
 
 import emu.project64.AndroidDevice;
 import emu.project64.R;
+import emu.project64.jni.AudioSettingID;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
 import emu.project64.jni.SystemEvent;
@@ -85,6 +86,8 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         .putString("Debugger_TraceUserInterface",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Debugger_TraceUserInterface.getValue())))
         .putString("Debugger_TraceRomList",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Debugger_TraceRomList.getValue())))
         .putString("Debugger_TraceExceptionHandler",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Debugger_TraceExceptionHandler.getValue())))
+        .putString("Debugger_TraceAudioInitShutdown",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInitShutdown.getValue())))
+        .putString("Debugger_TraceAudioAudioInterface",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInterface.getValue())))
         .putInt("MaxRomsRemembered",NativeExports.UISettingsLoadDword(UISettingID.File_RecentGameFileCount.getValue()))
         .apply();
 
@@ -188,22 +191,12 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         {
             NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceTLB.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1")));
         }
-        else if (key.equals("Debugger_TraceProtectedMEM"))
-        {
-            NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceProtectedMEM.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1")));
-        }
-        else if (key.equals("Debugger_TraceUserInterface"))
-        {
-            NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceUserInterface.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1")));
-        }
-        else if (key.equals("Debugger_TraceRomList"))
-        {
-            NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceRomList.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1")));
-        }
-        else if (key.equals("Debugger_TraceExceptionHandler"))
-        {
-            NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceExceptionHandler.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1")));
-        }
+        else if (key.equals("Debugger_TraceProtectedMEM")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceProtectedMEM.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceUserInterface")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceUserInterface.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceRomList")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceRomList.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceExceptionHandler")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceExceptionHandler.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceAudioInitShutdown")) { NativeExports.SettingsSaveDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInitShutdown.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceAudioAudioInterface")) { NativeExports.SettingsSaveDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInterface.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
         else if (key.equals("MaxRomsRemembered")) { NativeExports.UISettingsSaveDword(UISettingID.File_RecentGameFileCount.getValue(), sharedPreferences.getInt(key, 10)); }
     }
 }

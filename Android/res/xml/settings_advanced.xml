@@ -31,8 +31,11 @@
         android:summary="@string/ForceGfxReset_summary"
         android:title="@string/ForceGfxReset_title" />
     <PreferenceCategory android:title="@string/logging" >
-        <Preference
-            android:title="@string/project64core"
-            android:key="logging_core" />
+      <Preference
+          android:title="@string/project64core"
+          android:key="logging_core" />
+      <Preference
+          android:title="@string/AudioPlugin"
+          android:key="logging_audio" />
     </PreferenceCategory>   
  </PreferenceScreen>

@@ -129,6 +129,10 @@ public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
         {
             loadFragment(new LoggingProject64Core());
         }
+        else if (preference.getKey().equals("logging_audio"))
+        {
+            loadFragment(new LoggingAudio());
+        }
         else if (preference.getKey().equals("settings_reset"))
         {
             DialogInterface.OnClickListener internalListener = new DialogInterface.OnClickListener()
