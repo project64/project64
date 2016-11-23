@@ -3891,14 +3891,20 @@ void CArmRecompilerOps::COP0_CO_TLBWI()
 void CArmRecompilerOps::COP0_CO_TLBWR()
 {
     if (!g_System->bUseTlb()) { return; }
-    if (g_Settings->LoadBool(Game_32Bit))
-    {
-        CompileInterpterCall((void *)R4300iOp32::COP0_CO_TLBWR, "R4300iOp32::COP0_CO_TLBWR");
-    }
-    else
-    {
-        CompileInterpterCall((void *)R4300iOp::COP0_CO_TLBWR, "R4300iOp::COP0_CO_TLBWR");
-    }
+ 
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+    UpdateCounters(m_RegWorkingSet, false, true);
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+    m_RegWorkingSet.BeforeCallDirect();
+    MoveConstToArmReg(Arm_R0, (uint32_t)g_SystemTimer, "g_SystemTimer");
+    CallFunction((void *)AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
+
+    MoveConstToArmReg(Arm_R2, (uint32_t)true, "true");
+    MoveVariableToArmReg(&g_Reg->RANDOM_REGISTER, "RANDOM_REGISTER", Arm_R1);
+    AndConstToArmReg(Arm_R1, Arm_R1, 0x1F);
+    MoveConstToArmReg(Arm_R0, (uint32_t)g_TLB, "g_TLB");
+    CallFunction((void *)AddressOf(&CTLB::WriteEntry), "CTLB::WriteEntry");
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 void CArmRecompilerOps::COP0_CO_TLBP()
