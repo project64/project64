@@ -3289,34 +3289,28 @@ void CArmRecompilerOps::SPECIAL_XOR()
         }
         else
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            CArmRecompilerOps::UnknownOpcode();
-            /*uint32_t ConstReg = IsConst(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
+            uint32_t ConstReg = IsConst(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
             uint32_t MappedReg = IsConst(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
 
             if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs))
             {
-            uint32_t ConstHi, ConstLo;
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+                CArmRecompilerOps::UnknownOpcode();
+                /*uint32_t ConstHi, ConstLo;
 
-            ConstHi = Is32Bit(ConstReg) ? (uint32_t)(GetMipsRegLo_S(ConstReg) >> 31) : GetMipsRegHi(ConstReg);
-            ConstLo = GetMipsRegLo(ConstReg);
-            Map_GPR_64bit(m_Opcode.rd, MappedReg);
-            if (ConstHi != 0) { XorConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), ConstHi); }
-            if (ConstLo != 0) { XorConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), ConstLo); }
+                ConstHi = Is32Bit(ConstReg) ? (uint32_t)(GetMipsRegLo_S(ConstReg) >> 31) : GetMipsRegHi(ConstReg);
+                ConstLo = GetMipsRegLo(ConstReg);
+                Map_GPR_64bit(m_Opcode.rd, MappedReg);
+                if (ConstHi != 0) { XorConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), ConstHi); }
+                if (ConstLo != 0) { XorConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), ConstLo); }
+                */
             }
             else
             {
-            int Value = GetMipsRegLo(ConstReg);
-            if (IsSigned(m_Opcode.rt) != IsSigned(m_Opcode.rs))
-            {
-            Map_GPR_32bit(m_Opcode.rd, true, MappedReg);
+                int Value = GetMipsRegLo(ConstReg);
+                Map_GPR_32bit(m_Opcode.rd, IsSigned(m_Opcode.rt) != IsSigned(m_Opcode.rs) ? true : IsSigned(MappedReg), MappedReg);
+                XorConstToArmReg(GetMipsRegMapLo(m_Opcode.rd), Value);
             }
-            else
-            {
-            Map_GPR_32bit(m_Opcode.rd, IsSigned(MappedReg), MappedReg);
-            }
-            if (Value != 0) { XorConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), Value); }
-            }*/
         }
     }
     else if (IsKnown(m_Opcode.rt) || IsKnown(m_Opcode.rs))
