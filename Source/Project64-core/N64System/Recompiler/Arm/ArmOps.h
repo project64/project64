@@ -165,6 +165,7 @@ protected:
     static void AndConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const);
     static void AndArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg SourceReg2);
     static void ArmBreakPoint(const char * FileName, uint32_t LineNumber);
+    static void ArmNop(void);
     static void BranchLabel8(ArmCompareType CompareType, const char * Label);
     static void BranchLabel20(ArmCompareType CompareType, const char * Label);
     static void CallFunction(void * Function, const char * FunctionName);
@@ -220,6 +221,7 @@ protected:
 private:
     friend CArmRegInfo;
 
+    static void PreOpCheck(bool AllowedInItBlock, const char * FileName, uint32_t LineNumber);
     static void BreakPointNotification(const char * FileName, uint32_t LineNumber);
     static bool ArmCompareInverse(ArmCompareType CompareType);
     static ArmCompareType ArmCompareInverseType(ArmCompareType CompareType);
@@ -241,6 +243,7 @@ private:
     static int mItBlockInstruction;
     static ArmCompareType mItBlockCompareType;
     static ArmItMask mItBlockMask;
+    static ArmReg mLastStoreReg;
 };
 
 #define AddressOf(Addr) CArmOps::GetAddressOf(5,(Addr))
