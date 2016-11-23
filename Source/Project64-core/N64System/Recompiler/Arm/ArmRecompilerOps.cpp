@@ -2292,19 +2292,105 @@ void CArmRecompilerOps::SWL()
 
 void CArmRecompilerOps::SW()
 {
-    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
-    UpdateCounters(m_RegWorkingSet, false, true);
-    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+    SW(false);
+}
 
-    if (m_Opcode.base != 0) { UnMap_GPR(m_Opcode.base, true); }
-    if (m_Opcode.rt != 0) { UnMap_GPR(m_Opcode.rt, true); }
-    if (g_Settings->LoadBool(Game_32Bit))
+void CArmRecompilerOps::SW(bool bCheckLLbit)
+{
+    if (m_Opcode.base == 29 && g_System->bFastSP())
     {
-        CompileInterpterCall((void *)R4300iOp32::SW, "R4300iOp32::SW");
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    if (IsConst(m_Opcode.base))
+    {
+        uint32_t Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
+
+        if (bCheckLLbit)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        if (IsConst(m_Opcode.rt))
+        {
+            SW_Const(GetMipsRegLo(m_Opcode.rt), Address);
+        }
+        else if (IsMapped(m_Opcode.rt))
+        {
+            SW_Register(GetMipsRegMapLo(m_Opcode.rt), Address);
+        }
+        else
+        {
+            SW_Register(Map_TempReg(Arm_Any, m_Opcode.rt, false), Address);
+        }
+        return;
+    }
+
+    if (IsMapped(m_Opcode.rt))
+    {
+        ProtectGPR(m_Opcode.rt);
+    }
+
+    if (g_System->bDelaySI() || g_System->bDelayDP())
+    {
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+        UpdateCounters(m_RegWorkingSet, false, true);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+    }
+
+    if (g_System->bUseTlb())
+    {
+        if (IsMapped(m_Opcode.base)) { ProtectGPR(m_Opcode.base); }
+        ArmReg TempRegAddress = Map_TempReg(Arm_Any, IsMapped(m_Opcode.base) ? -1 : m_Opcode.base, false);
+        if (IsMapped(m_Opcode.base))
+        {
+            AddConstToArmReg(TempRegAddress, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.immediate);
+        }
+        else
+        {
+            AddConstToArmReg(TempRegAddress, (int16_t)m_Opcode.immediate);
+        }
+
+        ArmReg TempRegValue = Arm_Unknown;
+        if (g_System->bUseTlb())
+        {
+            ArmReg TempReg = Map_TempReg(Arm_Any, -1, false);
+            ShiftRightUnsignImmed(TempReg, TempRegAddress, 12);
+            ArmReg WriteMapReg = Map_Variable(CArmRegInfo::VARIABLE_TLB_WRITEMAP);
+            LoadArmRegPointerToArmReg(TempReg, WriteMapReg, TempReg, 2);
+            CompileWriteTLBMiss(TempRegAddress, TempReg);
+            if (bCheckLLbit)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            StoreArmRegToArmRegPointer(IsMapped(m_Opcode.rt) ? GetMipsRegMapLo(m_Opcode.rt) : Map_TempReg(Arm_Any, m_Opcode.rt, false), TempReg, TempRegAddress, 0);
+            if (bCheckLLbit)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
     }
     else
     {
-        CompileInterpterCall((void *)R4300iOp::SW, "R4300iOp::SW");
+        if (bHaveDebugger())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        UnProtectGPR(m_Opcode.rt);
+
+        if (m_Opcode.base != 0) { UnMap_GPR(m_Opcode.base, true); }
+        if (m_Opcode.rt != 0) { UnMap_GPR(m_Opcode.rt, true); }
+        if (g_Settings->LoadBool(Game_32Bit))
+        {
+            CompileInterpterCall((void *)R4300iOp32::SW, "R4300iOp32::SW");
+        }
+        else
+        {
+            CompileInterpterCall((void *)R4300iOp::SW, "R4300iOp::SW");
+        }
     }
 }
 
@@ -4518,6 +4604,18 @@ void CArmRecompilerOps::CompileReadTLBMiss(ArmReg AddressReg, ArmReg LookUpReg)
     m_RegWorkingSet.SetArmRegProtected(TlbLoadReg, false);
 }
 
+void CArmRecompilerOps::CompileWriteTLBMiss(ArmReg AddressReg, ArmReg LookUpReg)
+{
+    m_RegWorkingSet.SetArmRegProtected(AddressReg, true);
+    m_RegWorkingSet.SetArmRegProtected(LookUpReg, true);
+
+    ArmReg TlbStoreReg = Map_Variable(CArmRegInfo::VARIABLE_TLB_STORE_ADDRESS);
+    StoreArmRegToArmRegPointer(AddressReg, TlbStoreReg, 0);
+    CompareArmRegToConst(LookUpReg, 0);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBWriteMiss, ArmBranch_Equal);
+    m_RegWorkingSet.SetArmRegProtected(TlbStoreReg, false);
+}
+
 CRegInfo & CArmRecompilerOps::GetRegWorkingSet(void)
 {
     return m_RegWorkingSet;
@@ -4749,6 +4847,958 @@ void CArmRecompilerOps::OverflowDelaySlot(bool TestTimer)
 
     ExitCodeBlock();
     m_NextInstruction = END_BLOCK;
+}
+
+void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
+{
+    if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
+    {
+        ArmReg TempRegAddress = Map_TempReg(Arm_Any, -1, false);
+        MoveConstToArmReg(TempRegAddress, VAddr);
+        ArmReg TempReg = Map_TempReg(Arm_Any, -1, false);
+        ShiftRightUnsignImmed(TempReg, TempRegAddress, 12);
+        ArmReg WriteMapReg = Map_Variable(CArmRegInfo::VARIABLE_TLB_WRITEMAP);
+        LoadArmRegPointerToArmReg(TempReg, WriteMapReg, TempReg, 2);
+        CompileWriteTLBMiss(TempRegAddress, TempReg);
+        ArmReg TempValueReg = Map_TempReg(Arm_Any, -1, false);
+        MoveConstToArmReg(TempValueReg, Value);
+        StoreArmRegToArmRegPointer(TempValueReg, TempReg, TempRegAddress, 0);
+        return;
+    }
+
+    uint32_t PAddr;
+    if (!g_TransVaddr->TranslateVaddr(VAddr, PAddr))
+    {
+        CPU_Message("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
+        if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+        {
+            g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str());
+        }
+        return;
+    }
+
+    uint32_t ModValue;
+    switch (PAddr & 0xFFF00000)
+    {
+    case 0x00000000:
+    case 0x00100000:
+    case 0x00200000:
+    case 0x00300000:
+    case 0x00400000:
+    case 0x00500000:
+    case 0x00600000:
+    case 0x00700000:
+        MoveConstToVariable(Value, PAddr + g_MMU->Rdram(), stdstr_f("RDRAM + %X", PAddr).c_str());
+        break;
+    case 0x03F00000:
+        switch (PAddr)
+        {
+        case 0x03F00000: MoveConstToVariable(Value, &g_Reg->RDRAM_CONFIG_REG, "RDRAM_CONFIG_REG"); break;
+        case 0x03F00004: MoveConstToVariable(Value, &g_Reg->RDRAM_DEVICE_ID_REG, "RDRAM_DEVICE_ID_REG"); break;
+        case 0x03F00008: MoveConstToVariable(Value, &g_Reg->RDRAM_DELAY_REG, "RDRAM_DELAY_REG"); break;
+        case 0x03F0000C: MoveConstToVariable(Value, &g_Reg->RDRAM_MODE_REG, "RDRAM_MODE_REG"); break;
+        case 0x03F00010: MoveConstToVariable(Value, &g_Reg->RDRAM_REF_INTERVAL_REG, "RDRAM_REF_INTERVAL_REG"); break;
+        case 0x03F00014: MoveConstToVariable(Value, &g_Reg->RDRAM_REF_ROW_REG, "RDRAM_REF_ROW_REG"); break;
+        case 0x03F00018: MoveConstToVariable(Value, &g_Reg->RDRAM_RAS_INTERVAL_REG, "RDRAM_RAS_INTERVAL_REG"); break;
+        case 0x03F0001C: MoveConstToVariable(Value, &g_Reg->RDRAM_MIN_INTERVAL_REG, "RDRAM_MIN_INTERVAL_REG"); break;
+        case 0x03F00020: MoveConstToVariable(Value, &g_Reg->RDRAM_ADDR_SELECT_REG, "RDRAM_ADDR_SELECT_REG"); break;
+        case 0x03F00024: MoveConstToVariable(Value, &g_Reg->RDRAM_DEVICE_MANUF_REG, "RDRAM_DEVICE_MANUF_REG"); break;
+        case 0x03F04004: break;
+        case 0x03F08004: break;
+        case 0x03F80004: break;
+        case 0x03F80008: break;
+        case 0x03F8000C: break;
+        case 0x03F80014: break;
+        default:
+            if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+            }
+        }
+        break;
+    case 0x04000000:
+        if (PAddr < 0x04002000)
+        {
+            MoveConstToVariable(Value, PAddr + g_MMU->Rdram(), stdstr_f("RDRAM + %X", PAddr).c_str());
+            break;
+        }
+        switch (PAddr)
+        {
+        case 0x04040000: MoveConstToVariable(Value, &g_Reg->SP_MEM_ADDR_REG, "SP_MEM_ADDR_REG"); break;
+        case 0x04040004: MoveConstToVariable(Value, &g_Reg->SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG"); break;
+        case 0x04040008:
+            MoveConstToVariable(Value, &g_Reg->SP_RD_LEN_REG, "SP_RD_LEN_REG");
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
+            CallFunction(AddressOf(&CDMA::SP_DMA_READ), "CDMA::SP_DMA_READ");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x04040010:
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            UpdateCounters(m_RegWorkingSet, false, true);
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R2, Value);
+            MoveConstToArmReg(Arm_R1, PAddr);
+            MoveConstToArmReg(Arm_R0, (uint32_t)(g_MMU), "g_MMU");
+            CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x0404001C: MoveConstToVariable(0, &g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG"); break;
+        case 0x04080000: MoveConstToVariable(Value & 0xFFC, &g_Reg->SP_PC_REG, "SP_PC_REG"); break;
+        default:
+            CPU_Message("    Should be moving %X in to %08X ?!?", Value, VAddr);
+            if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+            }
+            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        }
+        break;
+    case 0x04100000:
+        switch (PAddr)
+        {
+        case 0x0410000C:
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R2, Value);
+            MoveConstToArmReg(Arm_R1, PAddr);
+            MoveConstToArmReg(Arm_R0, (uint32_t)(g_MMU), "g_MMU");
+            CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        default:
+            if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+            }
+            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        }
+        break;
+    case 0x04300000:
+        switch (PAddr)
+        {
+        case 0x04300000:
+            ModValue = 0x7F;
+            if ((Value & MI_CLR_INIT) != 0)
+            {
+                ModValue |= MI_MODE_INIT;
+            }
+            if ((Value & MI_CLR_EBUS) != 0)
+            {
+                ModValue |= MI_MODE_EBUS;
+            }
+            if ((Value & MI_CLR_RDRAM) != 0)
+            {
+                ModValue |= MI_MODE_RDRAM;
+            }
+            if (ModValue != 0)
+            {
+                AndConstToVariable(&g_Reg->MI_MODE_REG, "MI_MODE_REG", ~ModValue);
+            }
+
+            ModValue = (Value & 0x7F);
+            if ((Value & MI_SET_INIT) != 0)
+            {
+                ModValue |= MI_MODE_INIT;
+            }
+            if ((Value & MI_SET_EBUS) != 0)
+            {
+                ModValue |= MI_MODE_EBUS;
+            }
+            if ((Value & MI_SET_RDRAM) != 0)
+            {
+                ModValue |= MI_MODE_RDRAM;
+            }
+            if (ModValue != 0)
+            {
+                OrConstToVariable(&g_Reg->MI_MODE_REG, "MI_MODE_REG", ModValue);
+            }
+            if ((Value & MI_CLR_DP_INTR) != 0)
+            {
+                AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_DP);
+                AndConstToVariable(&g_Reg->m_GfxIntrReg, "m_GfxIntrReg", (uint32_t)~MI_INTR_DP);
+            }
+            break;
+        case 0x0430000C:
+            ModValue = 0;
+            if ((Value & MI_INTR_MASK_CLR_SP) != 0)
+            {
+                ModValue |= MI_INTR_MASK_SP;
+            }
+            if ((Value & MI_INTR_MASK_CLR_SI) != 0)
+            {
+                ModValue |= MI_INTR_MASK_SI;
+            }
+            if ((Value & MI_INTR_MASK_CLR_AI) != 0)
+            {
+                ModValue |= MI_INTR_MASK_AI;
+            }
+            if ((Value & MI_INTR_MASK_CLR_VI) != 0)
+            {
+                ModValue |= MI_INTR_MASK_VI;
+            }
+            if ((Value & MI_INTR_MASK_CLR_PI) != 0)
+            {
+                ModValue |= MI_INTR_MASK_PI;
+            }
+            if ((Value & MI_INTR_MASK_CLR_DP) != 0)
+            {
+                ModValue |= MI_INTR_MASK_DP;
+            }
+            if (ModValue != 0)
+            {
+                AndConstToVariable(&g_Reg->MI_INTR_MASK_REG, "MI_INTR_MASK_REG", ~ModValue);
+            }
+
+            ModValue = 0;
+            if ((Value & MI_INTR_MASK_SET_SP) != 0)
+            {
+                ModValue |= MI_INTR_MASK_SP;
+            }
+            if ((Value & MI_INTR_MASK_SET_SI) != 0)
+            {
+                ModValue |= MI_INTR_MASK_SI;
+            }
+            if ((Value & MI_INTR_MASK_SET_AI) != 0)
+            {
+                ModValue |= MI_INTR_MASK_AI;
+            }
+            if ((Value & MI_INTR_MASK_SET_VI) != 0)
+            {
+                ModValue |= MI_INTR_MASK_VI;
+            }
+            if ((Value & MI_INTR_MASK_SET_PI) != 0)
+            {
+                ModValue |= MI_INTR_MASK_PI;
+            }
+            if ((Value & MI_INTR_MASK_SET_DP) != 0)
+            {
+                ModValue |= MI_INTR_MASK_DP;
+            }
+            if (ModValue != 0)
+            {
+                OrConstToVariable(&g_Reg->MI_INTR_MASK_REG, "MI_INTR_MASK_REG", ModValue);
+            }
+            break;
+        default:
+            CPU_Message("    Should be moving %X in to %08X ?!?", Value, VAddr);
+            if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+            }
+            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        }
+        break;
+    case 0x04400000:
+        switch (PAddr)
+        {
+        case 0x04400000:
+            if (g_Plugins->Gfx()->ViStatusChanged != NULL)
+            {
+                ArmReg TempReg = Map_TempReg(Arm_Any, -1, false);
+                MoveVariableToArmReg(&g_Reg->VI_STATUS_REG, "VI_STATUS_REG", TempReg);
+                ArmReg TempValueReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+                MoveConstToArmReg(TempValueReg, Value);
+                CompareArmRegToArmReg(TempReg, TempValueReg);
+
+                uint8_t * Jump = *g_RecompPos;
+                BranchLabel8(ArmBranch_Equal, "continue");
+
+                m_RegWorkingSet.BeforeCallDirect();
+                ArmReg VariableReg = TempValueReg != Arm_R1 ? Arm_R1 : Arm_R2;
+                MoveConstToArmReg(VariableReg, (uint32_t)&g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
+                StoreArmRegToArmRegPointer(TempValueReg, VariableReg, 0);
+                CallFunction((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
+                m_RegWorkingSet.AfterCallDirect();
+                CPU_Message("");
+                CPU_Message("      Continue:");
+                SetJump8(Jump, *g_RecompPos);
+            }
+            break;
+        case 0x04400004: MoveConstToVariable((Value & 0xFFFFFF), &g_Reg->VI_ORIGIN_REG, "VI_ORIGIN_REG"); break;
+        case 0x04400008:
+            if (g_Plugins->Gfx()->ViWidthChanged != NULL)
+            {
+                ArmReg TempReg = Map_TempReg(Arm_Any, -1, false);
+                MoveVariableToArmReg(&g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG", TempReg);
+                ArmReg TempValueReg = m_RegWorkingSet.Map_TempReg(Arm_Any, -1, false);
+                MoveConstToArmReg(TempValueReg, Value);
+                CompareArmRegToArmReg(TempReg, TempValueReg);
+
+                uint8_t * Jump = *g_RecompPos;
+                BranchLabel8(ArmBranch_Equal, "continue");
+
+                MoveArmRegToVariable(TempValueReg, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
+                m_RegWorkingSet.BeforeCallDirect();
+                CallFunction((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
+                m_RegWorkingSet.AfterCallDirect();
+                CPU_Message("");
+                CPU_Message("      Continue:");
+                SetJump8(Jump, *g_RecompPos);
+            }
+            break;
+        case 0x0440000C: MoveConstToVariable(Value, &g_Reg->VI_INTR_REG, "VI_INTR_REG"); break;
+        case 0x04400010:
+            AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_VI);
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg, "g_Reg");
+            CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x04400014: MoveConstToVariable(Value, &g_Reg->VI_BURST_REG, "VI_BURST_REG"); break;
+        case 0x04400018: MoveConstToVariable(Value, &g_Reg->VI_V_SYNC_REG, "VI_V_SYNC_REG"); break;
+        case 0x0440001C: MoveConstToVariable(Value, &g_Reg->VI_H_SYNC_REG, "VI_H_SYNC_REG"); break;
+        case 0x04400020: MoveConstToVariable(Value, &g_Reg->VI_LEAP_REG, "VI_LEAP_REG"); break;
+        case 0x04400024: MoveConstToVariable(Value, &g_Reg->VI_H_START_REG, "VI_H_START_REG"); break;
+        case 0x04400028: MoveConstToVariable(Value, &g_Reg->VI_V_START_REG, "VI_V_START_REG"); break;
+        case 0x0440002C: MoveConstToVariable(Value, &g_Reg->VI_V_BURST_REG, "VI_V_BURST_REG"); break;
+        case 0x04400030: MoveConstToVariable(Value, &g_Reg->VI_X_SCALE_REG, "VI_X_SCALE_REG"); break;
+        case 0x04400034: MoveConstToVariable(Value, &g_Reg->VI_Y_SCALE_REG, "VI_Y_SCALE_REG"); break;
+        default:
+            CPU_Message("    Should be moving %X in to %08X ?!?", Value, VAddr);
+            if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+            }
+            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        }
+        break;
+    case 0x04500000: /* AI registers */
+        switch (PAddr)
+        {
+        case 0x04500000: MoveConstToVariable(Value, &g_Reg->AI_DRAM_ADDR_REG, "AI_DRAM_ADDR_REG"); break;
+        case 0x04500004:
+            MoveConstToVariable(Value, &g_Reg->AI_LEN_REG, "AI_LEN_REG");
+            m_RegWorkingSet.BeforeCallDirect();
+            if (g_System->bFixedAudio())
+            {
+                ArmBreakPoint(__FILE__, __LINE__);
+                MoveConstToArmReg(Arm_R0, (uint32_t)g_Audio, "g_Audio");
+                CallFunction(AddressOf(&CAudio::LenChanged), "LenChanged");
+            }
+            else
+            {
+                CallFunction((void *)g_Plugins->Audio()->AiLenChanged, "AiLenChanged");
+            }
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x04500008: MoveConstToVariable((Value & 1), &g_Reg->AI_CONTROL_REG, "AI_CONTROL_REG"); break;
+        case 0x0450000C:
+            /* Clear Interrupt */;
+            AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_AI);
+            AndConstToVariable(&g_Reg->m_AudioIntrReg, "m_AudioIntrReg", (uint32_t)~MI_INTR_AI);
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg, "g_Reg");
+            CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x04500010:
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R2, Value);
+            MoveConstToArmReg(Arm_R1, PAddr);
+            MoveConstToArmReg(Arm_R0, (uint32_t)(g_MMU), "g_MMU");
+            CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x04500014: MoveConstToVariable(Value, &g_Reg->AI_BITRATE_REG, "AI_BITRATE_REG"); break;
+        default:
+            CPU_Message("    Should be moving %X in to %08X ?!?", Value, VAddr);
+            if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+            }
+            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        }
+        break;
+    case 0x04600000:
+        switch (PAddr)
+        {
+        case 0x04600000: MoveConstToVariable(Value, &g_Reg->PI_DRAM_ADDR_REG, "PI_DRAM_ADDR_REG"); break;
+        case 0x04600004: MoveConstToVariable(Value, &g_Reg->PI_CART_ADDR_REG, "PI_CART_ADDR_REG"); break;
+        case 0x04600008:
+            MoveConstToVariable(Value, &g_Reg->PI_RD_LEN_REG, "PI_RD_LEN_REG");
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
+            CallFunction(AddressOf(&CDMA::PI_DMA_READ), "CDMA::PI_DMA_READ");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x0460000C:
+            MoveConstToVariable(Value, &g_Reg->PI_WR_LEN_REG, "PI_WR_LEN_REG");
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
+            CallFunction(AddressOf(&CDMA::PI_DMA_WRITE), "CDMA::PI_DMA_WRITE");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x04600010:
+            if ((Value & PI_CLR_INTR) != 0)
+            {
+                AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_PI);
+                m_RegWorkingSet.BeforeCallDirect();
+                MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg, "g_Reg");
+                CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+                m_RegWorkingSet.AfterCallDirect();
+            }
+            break;
+        case 0x04600014: MoveConstToVariable((Value & 0xFF), &g_Reg->PI_DOMAIN1_REG, "PI_DOMAIN1_REG"); break;
+        case 0x04600018: MoveConstToVariable((Value & 0xFF), &g_Reg->PI_BSD_DOM1_PWD_REG, "PI_BSD_DOM1_PWD_REG"); break;
+        case 0x0460001C: MoveConstToVariable((Value & 0xFF), &g_Reg->PI_BSD_DOM1_PGS_REG, "PI_BSD_DOM1_PGS_REG"); break;
+        case 0x04600020: MoveConstToVariable((Value & 0xFF), &g_Reg->PI_BSD_DOM1_RLS_REG, "PI_BSD_DOM1_RLS_REG"); break;
+        case 0x04600024: MoveConstToVariable((Value & 0xFF), &g_Reg->PI_DOMAIN2_REG, "PI_DOMAIN2_REG"); break;
+        case 0x04600028: MoveConstToVariable((Value & 0xFF), &g_Reg->PI_BSD_DOM2_PWD_REG, "PI_BSD_DOM2_PWD_REG"); break;
+        case 0x0460002C: MoveConstToVariable((Value & 0xFF), &g_Reg->PI_BSD_DOM2_PGS_REG, "PI_BSD_DOM2_PGS_REG"); break;
+        case 0x04600030: MoveConstToVariable((Value & 0xFF), &g_Reg->PI_BSD_DOM2_RLS_REG, "PI_BSD_DOM2_RLS_REG"); break;
+        default:
+            CPU_Message("    Should be moving %X in to %08X ?!?", Value, VAddr);
+            if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+            }
+            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        }
+        break;
+    case 0x04700000:
+        switch (PAddr)
+        {
+        case 0x04700000: MoveConstToVariable(Value, &g_Reg->RI_MODE_REG, "RI_MODE_REG"); break;
+        case 0x04700004: MoveConstToVariable(Value, &g_Reg->RI_CONFIG_REG, "RI_CONFIG_REG"); break;
+        case 0x04700008: MoveConstToVariable(Value, &g_Reg->RI_CURRENT_LOAD_REG, "RI_CURRENT_LOAD_REG"); break;
+        case 0x0470000C: MoveConstToVariable(Value, &g_Reg->RI_SELECT_REG, "RI_SELECT_REG"); break;
+        default:
+            CPU_Message("    Should be moving %X in to %08X ?!?", Value, VAddr);
+            if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+            }
+            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        }
+        break;
+    case 0x04800000:
+        switch (PAddr)
+        {
+        case 0x04800000: MoveConstToVariable(Value, &g_Reg->SI_DRAM_ADDR_REG, "SI_DRAM_ADDR_REG"); break;
+        case 0x04800004:
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            UpdateCounters(m_RegWorkingSet, false, true);
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            MoveConstToVariable(Value, &g_Reg->SI_PIF_ADDR_RD64B_REG, "SI_PIF_ADDR_RD64B_REG");
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)((CPifRam *)g_MMU), "CPifRam *)g_MMU");
+            CallFunction(AddressOf(&CPifRam::SI_DMA_READ), "CPifRam::SI_DMA_READ");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x04800010:
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            UpdateCounters(m_RegWorkingSet, false, true);
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            MoveConstToVariable(Value, &g_Reg->SI_PIF_ADDR_WR64B_REG, "SI_PIF_ADDR_WR64B_REG");
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)((CPifRam *)g_MMU), "CPifRam *)g_MMU");
+            CallFunction(AddressOf(&CPifRam::SI_DMA_WRITE), "CPifRam::SI_DMA_WRITE");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x04800018:
+            AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_SI );
+            AndConstToVariable(&g_Reg->SI_STATUS_REG, "SI_STATUS_REG", (uint32_t)~SI_STATUS_INTERRUPT);
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg, "g_Reg");
+            CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        default:
+            CPU_Message("    Should be moving %X in to %08X ?!?", Value, VAddr);
+            if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+            }
+            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        }
+        break;
+    case 0x05000000:
+        //64DD Registers
+        if (g_Settings->LoadBool(Setting_EnableDisk))
+        {
+            switch (PAddr)
+            {
+            case 0x05000520:
+                m_RegWorkingSet.BeforeCallDirect();
+                CallFunction(AddressOf(&DiskReset), "DiskReset");
+                m_RegWorkingSet.AfterCallDirect();
+                break;
+            default:
+                CPU_Message("    Should be moving %X in to %08X ?!?", Value, VAddr);
+                if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+                {
+                    g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+                }
+                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            }
+            break;
+        }
+    case 0x1fc00000:
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+        UpdateCounters(m_RegWorkingSet, false, true);
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+
+        m_RegWorkingSet.BeforeCallDirect();
+        MoveConstToArmReg(Arm_R2, Value);
+        MoveConstToArmReg(Arm_R1, PAddr);
+        MoveConstToArmReg(Arm_R0, (uint32_t)(g_MMU), "g_MMU");
+        CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+        m_RegWorkingSet.AfterCallDirect();
+        break;
+    default:
+        CPU_Message("    Should be moving %X in to %08X ?!?", Value, VAddr);
+        if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+        {
+            g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
+        }
+        if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+    }
+}
+
+void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
+{
+    if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
+    {
+        if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        return;
+    }
+
+    uint32_t PAddr;
+    if (!g_TransVaddr->TranslateVaddr(VAddr, PAddr))
+    {
+        CPU_Message("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
+        if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+        {
+            g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str());
+        }
+        return;
+    }
+
+    switch (PAddr & 0xFFF00000)
+    {
+    case 0x00000000:
+    case 0x00100000:
+    case 0x00200000:
+    case 0x00300000:
+    case 0x00400000:
+    case 0x00500000:
+    case 0x00600000:
+    case 0x00700000:
+        MoveArmRegToVariable(Reg, PAddr + g_MMU->Rdram(), stdstr_f("RDRAM + %X", PAddr).c_str());
+        break;
+    case 0x03F00000:
+        switch (PAddr)
+        {
+        case 0x03F04004: break;
+        case 0x03F08004: break;
+        case 0x03F80004: break;
+        case 0x03F80008: break;
+        case 0x03F8000C: break;
+        case 0x03F80014: break;
+        default:
+            CPU_Message("    Should be moving %s in to %08X ?!?", ArmRegName(Reg), VAddr);
+            if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+            }
+            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        }
+        break;
+    case 0x04000000:
+        switch (PAddr)
+        {
+        case 0x04040000: MoveArmRegToVariable(Reg, &g_Reg->SP_MEM_ADDR_REG, "SP_MEM_ADDR_REG"); break;
+        case 0x04040004: MoveArmRegToVariable(Reg, &g_Reg->SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG"); break;
+        case 0x04040008:
+            MoveArmRegToVariable(Reg, &g_Reg->SP_RD_LEN_REG, "SP_RD_LEN_REG");
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
+            CallFunction(AddressOf(&CDMA::SP_DMA_READ), "CDMA::SP_DMA_READ");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x0404000C:
+            MoveArmRegToVariable(Reg, &g_Reg->SP_WR_LEN_REG, "SP_WR_LEN_REG");
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
+            CallFunction(AddressOf(&CDMA::SP_DMA_WRITE), "CDMA::SP_DMA_WRITE");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x04040010:
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            UpdateCounters(m_RegWorkingSet, false, true);
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            MoveArmRegToVariable(Reg, &CMipsMemoryVM::RegModValue, "CMipsMemoryVM::RegModValue");
+            m_RegWorkingSet.BeforeCallDirect();
+            CallFunction(AddressOf(&CMipsMemoryVM::ChangeSpStatus), "CMipsMemoryVM::ChangeSpStatus");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x0404001C: MoveConstToVariable(0, &g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG"); break;
+        case 0x04080000:
+            MoveArmRegToVariable(Reg, &g_Reg->SP_PC_REG, "SP_PC_REG");
+            AndConstToVariable(&g_Reg->SP_PC_REG, "SP_PC_REG", 0xFFC);
+            break;
+        default:
+            if (PAddr < 0x04002000)
+            {
+                MoveArmRegToVariable(Reg, PAddr + g_MMU->Rdram(), stdstr_f("RDRAM + %X", PAddr).c_str());
+            }
+            else
+            {
+                CPU_Message("    Should be moving %s in to %08X ?!?", ArmRegName(Reg), VAddr);
+                if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+                {
+                    g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+                }
+                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            }
+        }
+        break;
+    case 0x04100000:
+        if (PAddr == 0x0410000C)
+        {
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            UpdateCounters(m_RegWorkingSet, false, true);
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+        }
+        m_RegWorkingSet.BeforeCallDirect();
+        if (Reg != Arm_R2)
+        {
+            AddConstToArmReg(Arm_R2, Reg, 0);
+        }
+        MoveConstToArmReg(Arm_R1, PAddr);
+        MoveConstToArmReg(Arm_R0, (uint32_t)(g_MMU), "g_MMU");
+        CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+        m_RegWorkingSet.AfterCallDirect();
+        break;
+    case 0x04300000:
+        switch (PAddr)
+        {
+        case 0x04300000:
+            MoveArmRegToVariable(Reg, &CMipsMemoryVM::m_MemLookupValue.UW[0], "CMipsMemoryVM::m_MemLookupValue.UW[0]");
+            MoveConstToVariable(PAddr, &CMipsMemoryVM::m_MemLookupAddress, "m_MemLookupAddress");
+            m_RegWorkingSet.BeforeCallDirect();
+            CallFunction((void *)CMipsMemoryVM::Write32MIPSInterface, "CMipsMemoryVM::Write32MIPSInterface");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x0430000C:
+            MoveArmRegToVariable(Reg, &CMipsMemoryVM::RegModValue, "CMipsMemoryVM::RegModValue");
+            m_RegWorkingSet.BeforeCallDirect();
+            CallFunction((void *)CMipsMemoryVM::ChangeMiIntrMask, "CMipsMemoryVM::ChangeMiIntrMask");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        default:
+            CPU_Message("    Should be moving %s in to %08X ?!?", ArmRegName(Reg), VAddr);
+            if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+            }
+            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        }
+        break;
+    case 0x04400000:
+        switch (PAddr) {
+        case 0x04400000:
+            if (g_Plugins->Gfx()->ViStatusChanged != NULL)
+            {
+                ArmReg TempReg = Map_TempReg(Arm_Any, -1, false);
+                MoveVariableToArmReg(&g_Reg->VI_STATUS_REG, "VI_STATUS_REG", TempReg);
+                CompareArmRegToArmReg(TempReg, Reg);
+
+                uint8_t * Jump = *g_RecompPos;
+                BranchLabel8(ArmBranch_Equal, "continue");
+
+                MoveArmRegToVariable(Reg, &g_Reg->VI_STATUS_REG, "VI_STATUS_REG");
+                m_RegWorkingSet.BeforeCallDirect();
+                CallFunction((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
+                m_RegWorkingSet.AfterCallDirect();
+                CPU_Message("");
+                CPU_Message("      Continue:");
+                SetJump8(Jump, *g_RecompPos);
+            }
+            break;
+        case 0x04400004:
+            MoveArmRegToVariable(Reg, &g_Reg->VI_ORIGIN_REG, "VI_ORIGIN_REG");
+            AndConstToVariable(&g_Reg->VI_ORIGIN_REG, "VI_ORIGIN_REG", 0xFFFFFF);
+            break;
+        case 0x04400008:
+            if (g_Plugins->Gfx()->ViWidthChanged != NULL)
+            {
+                ArmReg TempReg = Map_TempReg(Arm_Any, -1, false);
+                MoveVariableToArmReg(&g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG", TempReg);
+                CompareArmRegToArmReg(TempReg, Reg);
+
+                uint8_t * Jump = *g_RecompPos;
+                BranchLabel8(ArmBranch_Equal, "continue");
+
+                MoveArmRegToVariable(Reg, &g_Reg->VI_WIDTH_REG, "VI_WIDTH_REG");
+                m_RegWorkingSet.BeforeCallDirect();
+                CallFunction((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
+                m_RegWorkingSet.AfterCallDirect();
+                CPU_Message("");
+                CPU_Message("      Continue:");
+                SetJump8(Jump, *g_RecompPos);
+            }
+            break;
+        case 0x0440000C: MoveArmRegToVariable(Reg, &g_Reg->VI_INTR_REG, "VI_INTR_REG"); break;
+        case 0x04400010:
+            AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_VI);
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg, "g_Reg");
+            CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x04400014: MoveArmRegToVariable(Reg, &g_Reg->VI_BURST_REG, "VI_BURST_REG"); break;
+        case 0x04400018: MoveArmRegToVariable(Reg, &g_Reg->VI_V_SYNC_REG, "VI_V_SYNC_REG"); break;
+        case 0x0440001C: MoveArmRegToVariable(Reg, &g_Reg->VI_H_SYNC_REG, "VI_H_SYNC_REG"); break;
+        case 0x04400020: MoveArmRegToVariable(Reg, &g_Reg->VI_LEAP_REG, "VI_LEAP_REG"); break;
+        case 0x04400024: MoveArmRegToVariable(Reg, &g_Reg->VI_H_START_REG, "VI_H_START_REG"); break;
+        case 0x04400028: MoveArmRegToVariable(Reg, &g_Reg->VI_V_START_REG, "VI_V_START_REG"); break;
+        case 0x0440002C: MoveArmRegToVariable(Reg, &g_Reg->VI_V_BURST_REG, "VI_V_BURST_REG"); break;
+        case 0x04400030: MoveArmRegToVariable(Reg, &g_Reg->VI_X_SCALE_REG, "VI_X_SCALE_REG"); break;
+        case 0x04400034: MoveArmRegToVariable(Reg, &g_Reg->VI_Y_SCALE_REG, "VI_Y_SCALE_REG"); break;
+        default:
+            CPU_Message("    Should be moving %s in to %08X ?!?", ArmRegName(Reg), VAddr);
+            if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+            }
+        }
+        break;
+    case 0x04500000: /* AI registers */
+        switch (PAddr) {
+        case 0x04500000: MoveArmRegToVariable(Reg, &g_Reg->AI_DRAM_ADDR_REG, "AI_DRAM_ADDR_REG"); break;
+        case 0x04500004:
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            UpdateCounters(m_RegWorkingSet, false, true);
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            MoveArmRegToVariable(Reg, &g_Reg->AI_LEN_REG, "AI_LEN_REG");
+            m_RegWorkingSet.BeforeCallDirect();
+            if (g_System->bFixedAudio())
+            {
+                MoveConstToArmReg(Arm_R0, (uint32_t)g_Audio, "g_Audio");
+                CallFunction(AddressOf(&CAudio::LenChanged), "LenChanged");
+            }
+            else
+            {
+                CallFunction((void *)g_Plugins->Audio()->AiLenChanged, "g_Plugins->Audio()->LenChanged");
+            }
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x04500008:
+            MoveArmRegToVariable(Reg, &g_Reg->AI_CONTROL_REG, "AI_CONTROL_REG");
+            AndConstToVariable(&g_Reg->AI_CONTROL_REG, "AI_CONTROL_REG", 1);
+        case 0x0450000C:
+            /* Clear Interrupt */;
+            AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_AI);
+            AndConstToVariable(&g_Reg->m_AudioIntrReg, "m_AudioIntrReg", (uint32_t)~MI_INTR_AI);
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg, "g_Reg");
+            CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x04500010:
+            m_RegWorkingSet.BeforeCallDirect();
+            if (Reg != Arm_R2)
+            {
+                AddConstToArmReg(Arm_R2, Reg, 0);
+            }
+            MoveConstToArmReg(Arm_R1, PAddr);
+            MoveConstToArmReg(Arm_R0, (uint32_t)(g_MMU), "g_MMU");
+            CallFunction(AddressOf(&CMipsMemoryVM::SW_NonMemory), "CMipsMemoryVM::SW_NonMemory");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x04500014: MoveArmRegToVariable(Reg, &g_Reg->AI_BITRATE_REG, "AI_BITRATE_REG"); break;
+        default:
+            MoveArmRegToVariable(Reg, PAddr + g_MMU->Rdram(), stdstr_f("RDRAM + %X", PAddr).c_str());
+            if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+            }
+        }
+        break;
+    case 0x04600000:
+        switch (PAddr)
+        {
+        case 0x04600000: MoveArmRegToVariable(Reg, &g_Reg->PI_DRAM_ADDR_REG, "PI_DRAM_ADDR_REG"); break;
+        case 0x04600004:
+            MoveArmRegToVariable(Reg, &g_Reg->PI_CART_ADDR_REG, "PI_CART_ADDR_REG");
+            if (g_Settings->LoadBool(Setting_EnableDisk))
+            {
+                m_RegWorkingSet.BeforeCallDirect();
+                CallFunction(AddressOf(&DiskDMACheck), "DiskDMACheck");
+                m_RegWorkingSet.AfterCallDirect();
+            }
+            break;
+        case 0x04600008:
+            MoveArmRegToVariable(Reg, &g_Reg->PI_RD_LEN_REG, "PI_RD_LEN_REG");
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
+            CallFunction(AddressOf(&CDMA::PI_DMA_READ), "CDMA::PI_DMA_READ");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x0460000C:
+            MoveArmRegToVariable(Reg, &g_Reg->PI_WR_LEN_REG, "PI_WR_LEN_REG");
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
+            CallFunction(AddressOf(&CDMA::PI_DMA_WRITE), "CDMA::PI_DMA_WRITE");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x04600010:
+            if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+            }
+            AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_PI);
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg, "g_Reg");
+            CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x04600014:
+            MoveArmRegToVariable(Reg, &g_Reg->PI_DOMAIN1_REG, "PI_DOMAIN1_REG");
+            AndConstToVariable(&g_Reg->PI_DOMAIN1_REG, "PI_DOMAIN1_REG", 0xFF);
+            break;
+        case 0x04600018:
+            MoveArmRegToVariable(Reg, &g_Reg->PI_BSD_DOM1_PWD_REG, "PI_BSD_DOM1_PWD_REG");
+            AndConstToVariable(&g_Reg->PI_BSD_DOM1_PWD_REG, "PI_BSD_DOM1_PWD_REG", 0xFF);
+            break;
+        case 0x0460001C:
+            MoveArmRegToVariable(Reg, &g_Reg->PI_BSD_DOM1_PGS_REG, "PI_BSD_DOM1_PGS_REG");
+            AndConstToVariable(&g_Reg->PI_BSD_DOM1_PGS_REG, "PI_BSD_DOM1_PGS_REG", 0xFF);
+            break;
+        case 0x04600020:
+            MoveArmRegToVariable(Reg, &g_Reg->PI_BSD_DOM1_RLS_REG, "PI_BSD_DOM1_RLS_REG");
+            AndConstToVariable(&g_Reg->PI_BSD_DOM1_RLS_REG, "PI_BSD_DOM1_RLS_REG", 0xFF);
+            break;
+        case 0x04600024:
+            MoveArmRegToVariable(Reg, &g_Reg->PI_DOMAIN2_REG, "PI_DOMAIN2_REG");
+            AndConstToVariable(&g_Reg->PI_DOMAIN2_REG, "PI_DOMAIN2_REG", 0xFF);
+            break;
+        case 0x04600028:
+            MoveArmRegToVariable(Reg, &g_Reg->PI_BSD_DOM2_PWD_REG, "PI_BSD_DOM2_PWD_REG");
+            AndConstToVariable(&g_Reg->PI_BSD_DOM2_PWD_REG, "PI_BSD_DOM2_PWD_REG", 0xFF);
+            break;
+        case 0x0460002C:
+            MoveArmRegToVariable(Reg, &g_Reg->PI_BSD_DOM2_PGS_REG, "PI_BSD_DOM2_PGS_REG");
+            AndConstToVariable(&g_Reg->PI_BSD_DOM2_PGS_REG, "PI_BSD_DOM2_PGS_REG", 0xFF);
+            break;
+        case 0x04600030:
+            MoveArmRegToVariable(Reg, &g_Reg->PI_BSD_DOM2_RLS_REG, "PI_BSD_DOM2_RLS_REG");
+            AndConstToVariable(&g_Reg->PI_BSD_DOM2_RLS_REG, "PI_BSD_DOM2_RLS_REG", 0xFF);
+            break;
+        default:
+            CPU_Message("    Should be moving %s in to %08X ?!?", ArmRegName(Reg), VAddr);
+            if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+            }
+            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        }
+        break;
+    case 0x04700000:
+        switch (PAddr)
+        {
+        case 0x04700000: MoveArmRegToVariable(Reg, &g_Reg->RI_MODE_REG, "RI_MODE_REG"); break;
+        case 0x04700004: MoveArmRegToVariable(Reg, &g_Reg->RI_CONFIG_REG, "RI_CONFIG_REG"); break;
+        case 0x0470000C: MoveArmRegToVariable(Reg, &g_Reg->RI_SELECT_REG, "RI_SELECT_REG"); break;
+        case 0x04700010: MoveArmRegToVariable(Reg, &g_Reg->RI_REFRESH_REG, "RI_REFRESH_REG"); break;
+        default:
+            CPU_Message("    Should be moving %s in to %08X ?!?", ArmRegName(Reg), VAddr);
+            if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+            }
+            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        }
+        break;
+    case 0x04800000:
+        switch (PAddr)
+        {
+        case 0x04800000: MoveArmRegToVariable(Reg, &g_Reg->SI_DRAM_ADDR_REG, "SI_DRAM_ADDR_REG"); break;
+        case 0x04800004:
+            MoveArmRegToVariable(Reg, &g_Reg->SI_PIF_ADDR_RD64B_REG, "SI_PIF_ADDR_RD64B_REG");
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)((CPifRam *)g_MMU), "CPifRam *)g_MMU");
+            CallFunction(AddressOf(&CPifRam::SI_DMA_READ), "CPifRam::SI_DMA_READ");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x04800010:
+            MoveArmRegToVariable(Reg, &g_Reg->SI_PIF_ADDR_WR64B_REG, "SI_PIF_ADDR_WR64B_REG");
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)((CPifRam *)g_MMU), "CPifRam *)g_MMU");
+            CallFunction(AddressOf(&CPifRam::SI_DMA_WRITE), "CPifRam::SI_DMA_WRITE");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        case 0x04800018:
+            AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_SI);
+            AndConstToVariable(&g_Reg->SI_STATUS_REG, "SI_STATUS_REG", (uint32_t)~SI_STATUS_INTERRUPT);
+            m_RegWorkingSet.BeforeCallDirect();
+            MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg, "g_Reg");
+            CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        default:
+            CPU_Message("    Should be moving %s in to %08X ?!?", ArmRegName(Reg), VAddr);
+            if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+            }
+            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        }
+        break;
+    case 0x05000000:
+        //64DD Registers
+        if (g_Settings->LoadBool(Setting_EnableDisk))
+        {
+            switch (PAddr)
+            {
+            case 0x05000500: MoveArmRegToVariable(Reg, &g_Reg->ASIC_DATA, "ASIC_DATA"); break;
+            case 0x05000508:
+                //ASIC_CMD
+                MoveArmRegToVariable(Reg, &g_Reg->ASIC_CMD, "ASIC_CMD");
+                m_RegWorkingSet.BeforeCallDirect();
+                CallFunction(AddressOf(&DiskCommand), "DiskCommand");
+                m_RegWorkingSet.AfterCallDirect();
+                OrConstToVariable(&g_Reg->ASIC_STATUS, "ASIC_STATUS", (uint32_t)DD_STATUS_MECHA_INT);
+                OrConstToVariable(&g_Reg->FAKE_CAUSE_REGISTER, "FAKE_CAUSE_REGISTER", (uint32_t)CAUSE_IP3);
+                m_RegWorkingSet.BeforeCallDirect();
+                MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg, "g_Reg");
+                CallFunction(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
+                m_RegWorkingSet.AfterCallDirect();
+                break;
+            case 0x05000510:
+                //ASIC_BM_CTL
+                MoveArmRegToVariable(Reg, &g_Reg->ASIC_BM_CTL, "ASIC_BM_CTL");
+                m_RegWorkingSet.BeforeCallDirect();
+                CallFunction(AddressOf(&DiskBMControl), "DiskBMControl");
+                m_RegWorkingSet.AfterCallDirect();
+                break;
+            case 0x05000518:
+                break;
+            case 0x05000520:
+                m_RegWorkingSet.BeforeCallDirect();
+                CallFunction(AddressOf(&DiskReset), "DiskReset");
+                m_RegWorkingSet.AfterCallDirect();
+                break;
+            case 0x05000528: MoveArmRegToVariable(Reg, &g_Reg->ASIC_HOST_SECBYTE, "ASIC_HOST_SECBYTE"); break;
+            case 0x05000530: MoveArmRegToVariable(Reg, &g_Reg->ASIC_SEC_BYTE, "ASIC_SEC_BYTE"); break;
+            case 0x05000548: MoveArmRegToVariable(Reg, &g_Reg->ASIC_TEST_PIN_SEL, "ASIC_TEST_PIN_SEL"); break;
+            }
+            break;
+        }
+    case 0x1FC00000:
+        MoveArmRegToVariable(Reg, PAddr + g_MMU->Rdram(), stdstr_f("RDRAM + %X", PAddr).c_str());
+        break;
+    default:
+        CPU_Message("    Should be moving %s in to %08X ?!?", ArmRegName(Reg), VAddr);
+        if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+        {
+            g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
+        }
+        if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+    }
 }
 
 void CArmRecompilerOps::LB_KnownAddress(ArmReg Reg, uint32_t VAddr, bool SignExtend)

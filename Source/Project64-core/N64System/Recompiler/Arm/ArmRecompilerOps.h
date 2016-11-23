@@ -221,6 +221,7 @@ private:
     void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false);
     void CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet);
     void CompileReadTLBMiss(ArmReg AddressReg, ArmReg LookUpReg);
+    void CompileWriteTLBMiss(ArmReg AddressReg, ArmReg LookUpReg);
 
     static inline uint32_t GetMipsRegLo(int32_t Reg) { return m_RegWorkingSet.GetMipsRegLo(Reg); }
     static inline int32_t GetMipsRegLo_S(int32_t Reg) { return m_RegWorkingSet.GetMipsRegLo_S(Reg); }
@@ -246,7 +247,11 @@ private:
     static inline void FixRoundModel(CRegInfo::FPU_ROUND RoundMethod) { m_RegWorkingSet.FixRoundModel(RoundMethod); }
 
     static inline void ProtectGPR(uint32_t Reg) { m_RegWorkingSet.ProtectGPR(Reg); }
+    static inline void UnProtectGPR(uint32_t Reg) { m_RegWorkingSet.UnProtectGPR(Reg); }
 
+    void SW(bool bCheckLLbit);
+    void SW_Const(uint32_t Value, uint32_t VAddr);
+    void SW_Register(ArmReg Reg, uint32_t VAddr);
     void LW(bool ResultSigned, bool bRecordLLBit);
     void LB_KnownAddress(ArmReg Reg, uint32_t VAddr, bool SignExtend);
     void LW_KnownAddress(ArmReg Reg, uint32_t VAddr);
