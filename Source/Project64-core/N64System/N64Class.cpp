@@ -2069,7 +2069,8 @@ void CN64System::SyncToAudio()
         PreviousTimer = m_CPU_Usage.StartTimer(Timer_Idel);
     }
 
-    for (int i = 0; i < 50; i++)
+    int gameHertz = g_Settings->LoadDword(GameRunning_ScreenHertz);
+    for (int i = 0; i < gameHertz; i++)
     {
         if (g_Reg->m_AudioIntrReg != 0)
         {
