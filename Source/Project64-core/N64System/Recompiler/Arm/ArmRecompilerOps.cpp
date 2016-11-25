@@ -1961,15 +1961,66 @@ void CArmRecompilerOps::ANDI()
 
 void CArmRecompilerOps::ORI()
 {
-    UnMap_GPR(m_Opcode.rt, true);
-    if (m_Opcode.rs != 0) { WriteBack_GPR(m_Opcode.rs, false); }
-    if (g_Settings->LoadBool(Game_32Bit))
+    if (m_Opcode.rt == 0)
     {
-        CompileInterpterCall((void *)R4300iOp32::ORI, "R4300iOp32::ORI");
+        return;
+    }
+
+    if (g_System->bFastSP() && m_Opcode.rs == 29 && m_Opcode.rt == 29)
+    {
+        //OrConstToX86Reg(m_Opcode.immediate, Map_MemoryStack(x86_Any, true));
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    if (IsConst(m_Opcode.rs))
+    {
+        if (IsMapped(m_Opcode.rt))
+        {
+            UnMap_GPR(m_Opcode.rt, false);
+        }
+
+        m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, GetMipsRegState(m_Opcode.rs));
+        m_RegWorkingSet.SetMipsRegHi(m_Opcode.rt, GetMipsRegHi(m_Opcode.rs));
+        m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, GetMipsRegLo(m_Opcode.rs) | m_Opcode.immediate);
+    }
+    else if (IsMapped(m_Opcode.rs))
+    {
+        ProtectGPR(m_Opcode.rs);
+        if (g_System->b32BitCore())
+        {
+            Map_GPR_32bit(m_Opcode.rt, true, -1);
+        }
+        else
+        {
+            if (Is64Bit(m_Opcode.rs))
+            {
+                Map_GPR_64bit(m_Opcode.rt, m_Opcode.rs);
+            }
+            else
+            {
+                Map_GPR_32bit(m_Opcode.rt, IsSigned(m_Opcode.rs), -1);
+            }
+        }
+        OrConstToArmReg(GetMipsRegMapLo(m_Opcode.rt), GetMipsRegMapLo(m_Opcode.rs), m_Opcode.immediate);
     }
     else
     {
-        CompileInterpterCall((void *)R4300iOp::ORI, "R4300iOp::ORI");
+        if (g_System->b32BitCore())
+        {
+            Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rs);
+        }
+        else
+        {
+            Map_GPR_64bit(m_Opcode.rt, m_Opcode.rs);
+        }
+        OrConstToArmReg(GetMipsRegMapLo(m_Opcode.rt), GetMipsRegMapLo(m_Opcode.rt), m_Opcode.immediate);
+    }
+
+    if (g_System->bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        //ResetX86Protection();
+        //ResetMemoryStack();
     }
 }
 
