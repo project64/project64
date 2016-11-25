@@ -1567,13 +1567,9 @@ void CArmRecompilerOps::BLTZ_Compare()
     }
     else if (IsMapped(m_Opcode.rs))
     {
-        if (Is64Bit(m_Opcode.rs))
+        if (Is64Bit(m_Opcode.rs) || IsSigned(m_Opcode.rs))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-        else if (IsSigned(m_Opcode.rs))
-        {
-            CompareArmRegToConst(GetMipsRegMapLo(m_Opcode.rs), (uint32_t)0);
+            CompareArmRegToConst(Is64Bit(m_Opcode.rs) ? GetMipsRegMapHi(m_Opcode.rs) : GetMipsRegMapLo(m_Opcode.rs), (uint32_t)0);
             if (m_Section->m_Jump.FallThrough)
             {
                 BranchLabel20(ArmBranch_GreaterThanOrEqual, m_Section->m_Cont.BranchLabel.c_str());
