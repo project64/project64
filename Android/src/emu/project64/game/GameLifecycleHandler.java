@@ -326,25 +326,9 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
 
     public void onSettingDone ()
     {
-        float touchscreenScale = ((float)NativeExports.UISettingsLoadDword(UISettingID.TouchScreen_ButtonScale.getValue())) / 100.0f;
-        boolean recreateTouchScreenControls = false;
-        if (touchscreenScale != mtouchscreenScale)
-        {
-            mtouchscreenScale = touchscreenScale;
-            recreateTouchScreenControls = true;
-        }
-
-        String layout = NativeExports.UISettingsLoadString(UISettingID.TouchScreen_Layout.getValue());
-        if (layout != mlayout)
-        {
-            mlayout = layout;
-            recreateTouchScreenControls = true;
-        }
-
-        if (recreateTouchScreenControls)
-        {
-            CreateTouchScreenControls();
-        }
+        mtouchscreenScale = ((float)NativeExports.UISettingsLoadDword(UISettingID.TouchScreen_ButtonScale.getValue())) / 100.0f;
+        mlayout = NativeExports.UISettingsLoadString(UISettingID.TouchScreen_Layout.getValue());
+        CreateTouchScreenControls();
     }
 
     private void CreateTouchScreenControls()
