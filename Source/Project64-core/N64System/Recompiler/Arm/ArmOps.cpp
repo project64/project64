@@ -1386,12 +1386,20 @@ uint16_t CArmOps::ThumbCompressConst (uint32_t value)
         return (uint16_t)((value & 0xFF));
     }
 
+    //'00000000 nnnnnnnn 00000000 nnnnnnnn'
+    if (((value >> 24) & 0xFF) == 0 &&
+        ((value >> 16) & 0xFF) == (value & 0xFF) &&
+        ((value >> 8) & 0xFF) == 0)
+    {
+        return (uint16_t)(0x100 | (value & 0xFF));
+    }
+
     //'nnnnnnnn 00000000 nnnnnnnn 00000000'
     if (((value >> 24) & 0xFF) == ((value >> 8) & 0xFF) &&
         ((value >> 16) & 0xFF) == 0 &&
         (value & 0xFF) == 0)
     {
-        return (uint16_t)(0x200 | (value & 0xFF));
+        return (uint16_t)(0x200 | ((value >> 8) & 0xFF));
     }
 
     //'nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn'
