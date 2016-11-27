@@ -24,7 +24,7 @@
 #define STRINGIZE(s) STRINGIZE2(s)
 
 #define VERSION_MAJOR               2
-#define VERSION_MINOR               4
+#define VERSION_MINOR               5
 #define VERSION_REVISION            2
 #define VERSION_BUILD               9999
 

@@ -13,7 +13,7 @@
 
 #define VERSION_MAJOR               2
 #define VERSION_MINOR               3
-#define VERSION_REVISION            1
+#define VERSION_REVISION            2
 #define VERSION_BUILD               9999
 
 #define VER_FILE_DESCRIPTION_STR    "Project64"
