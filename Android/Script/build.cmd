@@ -9,18 +9,20 @@ cd /d %origdir%
 set VersionName=
 if not "%1" == "" set VersionName= %1
 
-set NDK-BUILDER=
+set NDK-BUILDER=""
+if exist "C:\Android\android-ndk-r10d\ndk-build.cmd" ( set NDK-BUILDER="C:\Android\android-ndk-r10d\ndk-build.cmd" )
 if exist "C:\Android\android-ndk-r11c\ndk-build.cmd" ( set NDK-BUILDER="C:\Android\android-ndk-r11c\ndk-build.cmd" )
+if exist "D:\Android\android-ndk-r13b\ndk-build.cmd" ( set NDK-BUILDER="D:\Android\android-ndk-r13b\ndk-build.cmd" )
 if %NDK-BUILDER% == "" ( 
-	echo can not find android NDK
-	goto :EndErr
+    echo can not find android NDK
+    goto :EndErr
 )
 
-set ANDROID_SDK=
-if exist "C:\Android\android-sdk" ( set ANDROID_SDK="C:\Android\android-sdk" )
-if %NDK-BUILDER% == "" ( 
-	echo can not find android SDK
-	goto :EndErr
+set ANDROID_SDK=""
+if exist "D:\Android\android-sdk" ( set ANDROID_SDK="D:\Android\android-sdk" )
+if %ANDROID_SDK% == "" ( 
+    echo can not find android SDK
+    goto :EndErr
 )
 
 call "%base_dir%\Android\Script\buildAssets.cmd"
