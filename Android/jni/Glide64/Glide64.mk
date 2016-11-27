@@ -71,6 +71,7 @@ LOCAL_LDLIBS :=         \
     -ldl                \
     -lGLESv2            \
     -llog               \
+    -latomic            \
 
 ifeq ($(TARGET_ARCH_ABI), armeabi-v7a)
     # Use for ARM7a:

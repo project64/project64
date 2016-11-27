@@ -26,5 +26,6 @@ LOCAL_CPPFLAGS := $(COMMON_CPPFLAGS) \
 LOCAL_LDLIBS :=         \
     -llog               \
     -lOpenSLES          \
+    -latomic            \
 
 include $(BUILD_SHARED_LIBRARY)
