@@ -8336,12 +8336,12 @@ void CX86RecompilerOps::COP1_S_CMP()
 
         if ((m_Opcode.funct & 1) != 0)
         {
-            x86Reg Reg2 = Map_TempReg(x86_Any8Bit, 0, false);
+            x86Reg _86RegReg2 = Map_TempReg(x86_Any8Bit, 0, false);
             AndConstToX86Reg(x86_EAX, 0x4300);
             CompConstToX86reg(x86_EAX, 0x4300);
-            Setz(Reg2);
+            Setz(_86RegReg2);
 
-            OrX86RegToX86Reg(Reg, Reg2);
+            OrX86RegToX86Reg(Reg, _86RegReg2);
         }
     }
     else if ((m_Opcode.funct & 1) != 0)
@@ -8709,12 +8709,12 @@ void CX86RecompilerOps::COP1_D_CMP()
 
         if ((m_Opcode.funct & 1) != 0)
         {
-            x86Reg Reg2 = Map_TempReg(x86_Any8Bit, 0, false);
+            x86Reg _86RegReg2 = Map_TempReg(x86_Any8Bit, 0, false);
             AndConstToX86Reg(x86_EAX, 0x4300);
             CompConstToX86reg(x86_EAX, 0x4300);
-            Setz(Reg2);
+            Setz(_86RegReg2);
 
-            OrX86RegToX86Reg(Reg, Reg2);
+            OrX86RegToX86Reg(Reg, _86RegReg2);
         }
     }
     else if ((m_Opcode.funct & 1) != 0)

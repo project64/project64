@@ -889,6 +889,14 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
                 m_Reg.m_GPR[5].DW = 0xFFFFFFFFE067221F;
                 m_Reg.m_GPR[14].DW = 0x000000005CD2B70F;
                 break;
+            case CIC_NUS_6101:
+            case CIC_NUS_6104:
+            case CIC_NUS_5167:
+            case CIC_NUS_8303:
+            case CIC_NUS_DDUS:
+            default:
+                //no specific values
+                break;
             }
             m_Reg.m_GPR[20].DW = 0x0000000000000001;
             m_Reg.m_GPR[23].DW = 0x0000000000000000;

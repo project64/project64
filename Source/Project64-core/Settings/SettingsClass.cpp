@@ -603,10 +603,10 @@ void CSettings::RegisterSetting(CSettings * _this, SettingID ID, SettingID Defau
             }
             else
             {
-                SettingID RdbSetting = (SettingID)_this->m_NextAutoSettingId;
+                SettingID AutoRdbSetting = (SettingID)_this->m_NextAutoSettingId;
                 _this->m_NextAutoSettingId += 1;
-                _this->AddHandler(RdbSetting, new CSettingTypeRomDatabaseSetting(Category, DefaultStr, DefaultID, true));
-                _this->AddHandler(ID, new CSettingTypeApplication(Category, DefaultStr, RdbSetting));
+                _this->AddHandler(AutoRdbSetting, new CSettingTypeRomDatabaseSetting(Category, DefaultStr, DefaultID, true));
+                _this->AddHandler(ID, new CSettingTypeApplication(Category, DefaultStr, AutoRdbSetting));
             }
             break;
         default:
@@ -1247,10 +1247,10 @@ void CSettings::UnregisterChangeCB(SettingID Type, void * Data, SettingChangedFu
                 {
                     if (item->Next)
                     {
-                        SettingID Type = Callback->first;
+                        SettingID CallbackType = Callback->first;
                         SETTING_CHANGED_CB * Next = item->Next;
                         m_Callback.erase(Callback);
-                        m_Callback.insert(SETTING_CALLBACK::value_type(Type, Next));
+                        m_Callback.insert(SETTING_CALLBACK::value_type(CallbackType, Next));
                     }
                     else
                     {

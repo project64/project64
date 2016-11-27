@@ -47,11 +47,6 @@ bool CCodeSection::IsAllParentLoops(CCodeSection * Parent, bool IgnoreIfCompiled
 
 void CCodeSection::UnlinkParent( CCodeSection * Parent, bool AllowDelete, bool ContinueSection )
 {
-	if (this == NULL)
-	{
-		return;
-	}
-
 	SECTION_LIST::iterator iter = ParentSection.begin();
 	while ( iter != ParentSection.end())
 	{

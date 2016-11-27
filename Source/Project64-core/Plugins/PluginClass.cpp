@@ -422,6 +422,9 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
         }
         m_Control->DllConfig(hParent);
         break;
+    case PLUGIN_TYPE_NONE:
+    default:
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 }
 

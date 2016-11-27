@@ -167,174 +167,174 @@ void CRecompiler::RecompilerMain_VirtualTable()
 void CRecompiler::RecompilerMain_VirtualTable_validate()
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
-    /*	PCCompiledFunc_TABLE * m_FunctionTable = m_Functions.GetFunctionTable();
+#ifdef legacycode
+    PCCompiledFunc_TABLE * m_FunctionTable = m_Functions.GetFunctionTable();
 
-    while(!m_EndEmulation)
+    while (!m_EndEmulation)
     {
-    /*if (NextInstruction == DELAY_SLOT)
-    {
-    CCompiledFunc * Info = m_FunctionsDelaySlot.FindFunction(PROGRAM_COUNTER);
-    //Find Block on hash table
-    if (Info == NULL)
-    {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    #ifdef legacycode
-    if (!g_TLB->ValidVaddr(PROGRAM_COUNTER))
-    {
-    DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
-    NextInstruction = NORMAL;
-    if (!g_TLB->ValidVaddr(PROGRAM_COUNTER))
-    {
-    g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
-    return;
-    }
-    continue;
-    }
-    #endif
-    //Find Block on hash table
-    Info = CompileDelaySlot(PROGRAM_COUNTER);
+        if (NextInstruction == DELAY_SLOT)
+        {
+            CCompiledFunc * Info = m_FunctionsDelaySlot.FindFunction(PROGRAM_COUNTER);
+            //Find Block on hash table
+            if (Info == NULL)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+#ifdef legacycode
+                if (!g_TLB->ValidVaddr(PROGRAM_COUNTER))
+                {
+                    DoTLBMiss(NextInstruction == DELAY_SLOT, PROGRAM_COUNTER);
+                    NextInstruction = NORMAL;
+                    if (!g_TLB->ValidVaddr(PROGRAM_COUNTER))
+                    {
+                        g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped", PROGRAM_COUNTER);
+                        return;
+                    }
+                    continue;
+                }
+#endif
+                //Find Block on hash table
+                Info = CompileDelaySlot(PROGRAM_COUNTER);
 
-    if (Info == NULL || EndEmulation())
-    {
-    break;
-    }
-    }
-    const uint8_t * Block = Info->FunctionAddr();
-    if ((*Info->MemLocation[0] != Info->MemContents[0]) ||
-    (*Info->MemLocation[1] != Info->MemContents[1]))
-    {
-    ClearRecompCode_Virt((Info->VStartPC() - 0x1000) & ~0xFFF,0x2000,Remove_ValidateFunc);
-    NextInstruction = DELAY_SLOT;
-    Info = NULL;
-    continue;
-    }
-    _asm {
-    pushad
-    call Block
-    popad
-    }
-    continue;
-    }*/
-    /*		PCCompiledFunc_TABLE table = m_FunctionTable[PROGRAM_COUNTER >> 0xC];
-    if (table)
-    {
-    CCompiledFunc * info = table[(PROGRAM_COUNTER & 0xFFF) >> 2];
-    if (info != NULL)
-    {
-    if ((*info->MemLocation[0] != info->MemContents[0]) ||
-    (*info->MemLocation[1] != info->MemContents[1]))
-    {
-    ClearRecompCode_Virt((info->VStartPC() - 0x1000) & ~0xFFF,0x3000,Remove_ValidateFunc);
-    info = NULL;
-    continue;
-    }
-    const uint8_t * Block = info->FunctionAddr();
-    _asm {
-    pushad
-    call Block
-    popad
-    }
-    continue;
-    }
-    }
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    #ifdef legacycode
-    if (!g_TLB->ValidVaddr(PROGRAM_COUNTER))
-    {
-    DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
-    NextInstruction = NORMAL;
-    if (!g_TLB->ValidVaddr(PROGRAM_COUNTER))
-    {
-    g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
-    return;
-    }
-    }
-    #endif
-    CCompiledFunc * info = CompileCode();
+                if (Info == NULL || EndEmulation())
+                {
+                    break;
+                }
+            }
+            const uint8_t * Block = Info->FunctionAddr();
+            if ((*Info->MemLocation[0] != Info->MemContents[0]) ||
+                (*Info->MemLocation[1] != Info->MemContents[1]))
+            {
+                ClearRecompCode_Virt((Info->VStartPC() - 0x1000) & ~0xFFF, 0x2000, Remove_ValidateFunc);
+                NextInstruction = DELAY_SLOT;
+                Info = NULL;
+                continue;
+            }
+            _asm {
+                pushad
+                call Block
+                popad
+            }
+            continue;
+        }
+        PCCompiledFunc_TABLE table = m_FunctionTable[PROGRAM_COUNTER >> 0xC];
+        if (table)
+        {
+            CCompiledFunc * info = table[(PROGRAM_COUNTER & 0xFFF) >> 2];
+            if (info != NULL)
+            {
+                if ((*info->MemLocation[0] != info->MemContents[0]) ||
+                    (*info->MemLocation[1] != info->MemContents[1]))
+                {
+                    ClearRecompCode_Virt((info->VStartPC() - 0x1000) & ~0xFFF, 0x3000, Remove_ValidateFunc);
+                    info = NULL;
+                    continue;
+                }
+                const uint8_t * Block = info->FunctionAddr();
+                _asm {
+                    pushad
+                    call Block
+                    popad
+                }
+                continue;
+            }
+        }
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+#ifdef legacycode
+        if (!g_TLB->ValidVaddr(PROGRAM_COUNTER))
+        {
+            DoTLBMiss(NextInstruction == DELAY_SLOT, PROGRAM_COUNTER);
+            NextInstruction = NORMAL;
+            if (!g_TLB->ValidVaddr(PROGRAM_COUNTER))
+            {
+                g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped", PROGRAM_COUNTER);
+                return;
+            }
+        }
+#endif
+        CCompiledFunc * info = CompileCode();
 
-    if (info == NULL || EndEmulation())
-    {
-    break;
-    }
-    }
-
-    /*
-    while(!m_EndEmulation)
-    {
-    if (!g_MMU->ValidVaddr(PROGRAM_COUNTER))
-    {
-    DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
-    NextInstruction = NORMAL;
-    if (!g_MMU->ValidVaddr(PROGRAM_COUNTER))
-    {
-    g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
-    return;
-    }
-    }
-    if (NextInstruction == DELAY_SLOT)
-    {
-    CCompiledFunc * Info = m_FunctionsDelaySlot.FindFunction(PROGRAM_COUNTER);
-
-    //Find Block on hash table
-    if (Info == NULL)
-    {
-    Info = CompileDelaySlot(PROGRAM_COUNTER);
-
-    if (Info == NULL || EndEmulation())
-    {
-    break;
-    }
-    }
-    if (bSMM_ValidFunc())
-    {
-    if ((*Info->MemLocation[0] != Info->MemContents[0]) ||
-    (*Info->MemLocation[1] != Info->MemContents[1]))
-    {
-    ClearRecompCode_Virt((Info->StartPC() - 0x1000) & ~0xFFF,0x2000,Remove_ValidateFunc);
-    NextInstruction = DELAY_SLOT;
-    Info = NULL;
-    continue;
-    }
-    }
-    const uint8_t * Block = Info->FunctionAddr();
-    _asm {
-    pushad
-    call Block
-    popad
-    }
-    continue;
+        if (info == NULL || EndEmulation())
+        {
+            break;
+        }
     }
 
-    CCompiledFunc * Info = m_Functions.FindFunction(PROGRAM_COUNTER);
+    while (!m_EndEmulation)
+    {
+        if (!g_MMU->ValidVaddr(PROGRAM_COUNTER))
+        {
+            DoTLBMiss(NextInstruction == DELAY_SLOT, PROGRAM_COUNTER);
+            NextInstruction = NORMAL;
+            if (!g_MMU->ValidVaddr(PROGRAM_COUNTER))
+            {
+                g_Notify->DisplayError("Failed to translate PC to a PAddr: %X\n\nEmulation stopped", PROGRAM_COUNTER);
+                return;
+            }
+        }
+        if (NextInstruction == DELAY_SLOT)
+        {
+            CCompiledFunc * Info = m_FunctionsDelaySlot.FindFunction(PROGRAM_COUNTER);
 
-    //Find Block on hash table
-    if (Info == NULL)
-    {
-    Info = CompileCode();
+            //Find Block on hash table
+            if (Info == NULL)
+            {
+                Info = CompileDelaySlot(PROGRAM_COUNTER);
 
-    if (Info == NULL || EndEmulation())
-    {
-    break;
+                if (Info == NULL || EndEmulation())
+                {
+                    break;
+                }
+            }
+            if (bSMM_ValidFunc())
+            {
+                if ((*Info->MemLocation[0] != Info->MemContents[0]) ||
+                    (*Info->MemLocation[1] != Info->MemContents[1]))
+                {
+                    ClearRecompCode_Virt((Info->StartPC() - 0x1000) & ~0xFFF, 0x2000, Remove_ValidateFunc);
+                    NextInstruction = DELAY_SLOT;
+                    Info = NULL;
+                    continue;
+                }
+            }
+            const uint8_t * Block = Info->FunctionAddr();
+            _asm {
+                pushad
+                call Block
+                popad
+            }
+            continue;
+        }
+
+        CCompiledFunc * Info = m_Functions.FindFunction(PROGRAM_COUNTER);
+
+        //Find Block on hash table
+        if (Info == NULL)
+        {
+            Info = CompileCode();
+
+            if (Info == NULL || EndEmulation())
+            {
+                break;
+            }
+        }
+        if (bSMM_ValidFunc())
+        {
+            if ((*Info->MemLocation[0] != Info->MemContents[0]) ||
+                (*Info->MemLocation[1] != Info->MemContents[1]))
+            {
+                ClearRecompCode_Virt((Info->StartPC() - 0x1000) & ~0xFFF, 0x3000, Remove_ValidateFunc);
+                Info = NULL;
+                continue;
+            }
+        }
+        const uint8_t * Block = Info->FunctionAddr();
+        _asm {
+            pushad
+            call Block
+            popad
+        }
     }
-    }
-    if (bSMM_ValidFunc())
-    {
-    if ((*Info->MemLocation[0] != Info->MemContents[0]) ||
-    (*Info->MemLocation[1] != Info->MemContents[1]))
-    {
-    ClearRecompCode_Virt((Info->StartPC() - 0x1000) & ~0xFFF,0x3000,Remove_ValidateFunc);
-    Info = NULL;
-    continue;
-    }
-    }
-    const uint8_t * Block = Info->FunctionAddr();
-    _asm {
-    pushad
-    call Block
-    popad
-    }
-    }
-    */
+#endif
 }
 
 void CRecompiler::RecompilerMain_Lookup()
@@ -384,7 +384,7 @@ void CRecompiler::RecompilerMain_Lookup()
 
     while(!m_EndEmulation)
     {
-    /*if (bUseTlb())
+    if (bUseTlb())
     {
     g_Notify->BreakPoint(__FILE__, __LINE__);
     #ifdef legacycode
@@ -511,14 +511,14 @@ void CRecompiler::RecompilerMain_Lookup()
     sprintf(Label,"PC: %X to %X",ProfAddress,ProfAddress+ 0xFFC);
     //						StartTimer(Label);
     }
-    /*if (PROGRAM_COUNTER >= 0x800DD000 && PROGRAM_COUNTER <= 0x800DDFFC) {
+    if (PROGRAM_COUNTER >= 0x800DD000 && PROGRAM_COUNTER <= 0x800DDFFC) {
     char Label[100];
     sprintf(Label,"PC: %X   Block: %X",PROGRAM_COUNTER,Block);
     StartTimer(Label);
-    }*/
+    }
     //				} else 	if ((Profiling || ShowCPUPer) && ProfilingLabel[0] == 0) {
     //					StartTimer("r4300i Running");
-    /*		}
+    		}
     #endif
     const uint8_t * Block = Info->FunctionAddr();
     _asm {

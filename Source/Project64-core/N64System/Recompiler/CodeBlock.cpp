@@ -181,8 +181,14 @@ bool CCodeBlock::SetSection(CCodeSection * & Section, CCodeSection * CurrentSect
                 BaseSection->m_JumpSection = SplitSection->m_JumpSection;
                 BaseSection->SetContinueAddress(SplitSection->m_Cont.JumpPC, SplitSection->m_Cont.TargetPC);
                 BaseSection->m_ContinueSection = SplitSection->m_ContinueSection;
-                BaseSection->m_JumpSection->SwitchParent(SplitSection, BaseSection);
-                BaseSection->m_ContinueSection->SwitchParent(SplitSection, BaseSection);
+                if (BaseSection->m_JumpSection)
+                {
+                    BaseSection->m_JumpSection->SwitchParent(SplitSection, BaseSection);
+                }
+                if (BaseSection->m_ContinueSection)
+                {
+                    BaseSection->m_ContinueSection->SwitchParent(SplitSection, BaseSection);
+                }
                 BaseSection->AddParent(SplitSection);
 
                 SplitSection->m_EndPC = TargetPC - 4;
@@ -400,7 +406,10 @@ void CCodeBlock::DetermineLoops()
         CCodeSection * Section = itr->second;
 
         uint32_t Test = NextTest();
-        Section->DetermineLoop(Test, Test, Section->m_SectionID);
+        if (Section)
+        {
+            Section->DetermineLoop(Test, Test, Section->m_SectionID);
+        }
     }
 }
 
@@ -750,11 +759,11 @@ bool CCodeBlock::Compile()
     m_RecompilerOps->EnterCodeBlock();
     if (g_System->bLinkBlocks())
     {
-        while (m_EnterSection->GenerateNativeCode(NextTest()));
+        while (m_EnterSection !=NULL && m_EnterSection->GenerateNativeCode(NextTest()));
     }
     else
     {
-        if (!m_EnterSection->GenerateNativeCode(NextTest()))
+        if (m_EnterSection == NULL || !m_EnterSection->GenerateNativeCode(NextTest()))
         {
             return false;
         }

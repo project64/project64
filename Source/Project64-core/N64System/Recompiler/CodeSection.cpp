@@ -341,7 +341,7 @@ void CCodeSection::GenerateSectionLinkage()
 
     for (i = 0; i < 2; i++)
     {
-        if (JumpInfo[i]->FallThrough && !TargetSection[i]->GenerateNativeCode(m_BlockInfo->NextTest()))
+        if (JumpInfo[i]->FallThrough && (TargetSection[i] == NULL || !TargetSection[i]->GenerateNativeCode(m_BlockInfo->NextTest())))
         {
             JumpInfo[i]->FallThrough = false;
             m_RecompilerOps->JumpToUnknown(JumpInfo[i]);
@@ -441,8 +441,6 @@ bool CCodeSection::ParentContinue()
 
 bool CCodeSection::GenerateNativeCode(uint32_t Test)
 {
-    if (this == NULL) { return false; }
-
     if (m_CompiledLocation != NULL)
     {
         if (m_Test == Test)
@@ -450,8 +448,8 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             return false;
         }
         m_Test = Test;
-        if (m_ContinueSection->GenerateNativeCode(Test)) { return true; }
-        if (m_JumpSection->GenerateNativeCode(Test)) { return true; }
+        if (m_ContinueSection != NULL && m_ContinueSection->GenerateNativeCode(Test)) { return true; }
+        if (m_JumpSection != NULL && m_JumpSection->GenerateNativeCode(Test)) { return true; }
         return false;
     }
 
@@ -766,6 +764,14 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             m_RecompilerOps->GetRegWorkingSet().SetBlockCycleCount(m_RecompilerOps->GetRegWorkingSet().GetBlockCycleCount() - g_System->CountPerOp());
             m_RecompilerOps->SetCurrentPC(m_RecompilerOps->GetCurrentPC() - 4);
             break;
+        case JUMP:
+        case END_BLOCK:
+            // Do nothing, block will end
+            break;
+        default:
+            CPU_Message("m_RecompilerOps->GetNextStepType() = %d", m_RecompilerOps->GetNextStepType());
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            break;
         }
 
         if (m_DelaySlot)
@@ -802,7 +808,6 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
 
 void CCodeSection::AddParent(CCodeSection * Parent)
 {
-    if (this == NULL) { return; }
     if (Parent == NULL)
     {
         m_RecompilerOps->SetRegWorkingSet(m_RegEnter);
@@ -850,8 +855,6 @@ void CCodeSection::AddParent(CCodeSection * Parent)
 
 void CCodeSection::SwitchParent(CCodeSection * OldParent, CCodeSection * NewParent)
 {
-    if (this == NULL) { return; }
-
     bool bFoundOldParent = false;
     for (SECTION_LIST::iterator iter = m_ParentSection.begin(); iter != m_ParentSection.end(); iter++)
     {
@@ -901,15 +904,19 @@ void CCodeSection::TestRegConstantStates(CRegInfo & Base, CRegInfo & Reg)
 
 void CCodeSection::DetermineLoop(uint32_t Test, uint32_t Test2, uint32_t TestID)
 {
-    if (this == NULL) { return; }
-
     if (m_SectionID == TestID)
     {
         if (m_Test2 != Test2)
         {
             m_Test2 = Test2;
-            m_ContinueSection->DetermineLoop(Test, Test2, TestID);
-            m_JumpSection->DetermineLoop(Test, Test2, TestID);
+            if (m_ContinueSection)
+            {
+                m_ContinueSection->DetermineLoop(Test, Test2, TestID);
+            }
+            if (m_JumpSection)
+            {
+                m_JumpSection->DetermineLoop(Test, Test2, TestID);
+            }
 
             if (m_Test != Test)
             {
@@ -934,15 +941,20 @@ void CCodeSection::DetermineLoop(uint32_t Test, uint32_t Test2, uint32_t TestID)
         if (m_Test2 != Test2)
         {
             m_Test2 = Test2;
-            m_ContinueSection->DetermineLoop(Test, Test2, TestID);
-            m_JumpSection->DetermineLoop(Test, Test2, TestID);
+            if (m_ContinueSection)
+            {
+                m_ContinueSection->DetermineLoop(Test, Test2, TestID);
+            }
+            if (m_JumpSection)
+            {
+                m_JumpSection->DetermineLoop(Test, Test2, TestID);
+            }
         }
     }
 }
 
 CCodeSection * CCodeSection::ExistingSection(uint32_t Addr, uint32_t Test)
 {
-    if (this == NULL) { return NULL; }
     if (m_EnterPC == Addr && m_LinkAllowed)
     {
         return this;
@@ -950,9 +962,9 @@ CCodeSection * CCodeSection::ExistingSection(uint32_t Addr, uint32_t Test)
     if (m_Test == Test) { return NULL; }
     m_Test = Test;
 
-    CCodeSection * Section = m_JumpSection->ExistingSection(Addr, Test);
+    CCodeSection * Section = m_JumpSection ? m_JumpSection->ExistingSection(Addr, Test) : NULL;
     if (Section != NULL) { return Section; }
-    Section = m_ContinueSection->ExistingSection(Addr, Test);
+    Section = m_ContinueSection ? m_ContinueSection->ExistingSection(Addr, Test) : NULL;
     if (Section != NULL) { return Section; }
 
     return NULL;
@@ -960,7 +972,6 @@ CCodeSection * CCodeSection::ExistingSection(uint32_t Addr, uint32_t Test)
 
 bool CCodeSection::SectionAccessible(uint32_t SectionId, uint32_t Test)
 {
-    if (this == NULL) { return false; }
     if (m_SectionID == SectionId)
     {
         return true;
@@ -969,20 +980,15 @@ bool CCodeSection::SectionAccessible(uint32_t SectionId, uint32_t Test)
     if (m_Test == Test) { return false; }
     m_Test = Test;
 
-    if (m_ContinueSection->SectionAccessible(SectionId, Test))
+    if (m_ContinueSection && m_ContinueSection->SectionAccessible(SectionId, Test))
     {
         return true;
     }
-    return m_JumpSection->SectionAccessible(SectionId, Test);
+    return m_JumpSection && m_JumpSection->SectionAccessible(SectionId, Test);
 }
 
 void CCodeSection::UnlinkParent(CCodeSection * Parent, bool ContinueSection)
 {
-    if (this == NULL)
-    {
-        return;
-    }
-
     CPU_Message("%s: Section %d Parent: %d ContinueSection = %s", __FUNCTION__, m_SectionID, Parent->m_SectionID, ContinueSection ? "Yes" : "No");
     if (Parent->m_ContinueSection == this && Parent->m_JumpSection == this)
     {
@@ -1084,13 +1090,12 @@ bool CCodeSection::DisplaySectionInformation(uint32_t ID, uint32_t Test)
     {
         return false;
     }
-    if (this == NULL) { return false; }
     if (m_Test == Test) { return false; }
     m_Test = Test;
     if (m_SectionID != ID)
     {
-        if (m_ContinueSection->DisplaySectionInformation(ID, Test)) { return true; }
-        if (m_JumpSection->DisplaySectionInformation(ID, Test)) { return true; }
+        if (m_ContinueSection != NULL && m_ContinueSection->DisplaySectionInformation(ID, Test)) { return true; }
+        if (m_JumpSection != NULL && m_JumpSection->DisplaySectionInformation(ID, Test)) { return true; }
         return false;
     }
     DisplaySectionInformation();

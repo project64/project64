@@ -18,7 +18,7 @@
 #include <Project64-core/N64System/Recompiler/RecompilerOps.h>
 #include <Project64-core/N64System/Recompiler/x86/x86ops.h>
 #include <Project64-core/N64System/Recompiler/JumpInfo.h>
-#include <Project64-core/Settings/DebugSettings.h>
+#include <Project64-core/N64System/Interpreter/InterpreterOps.h>
 #include <Project64-core/Settings/N64SystemSettings.h>
 #include <Project64-core/Settings/RecompilerSettings.h>
 
@@ -27,9 +27,8 @@ class CCodeSection;
 
 class CX86RecompilerOps :
     public CRecompilerOps,
-    protected CDebugSettings,
+    protected R4300iOp,
     protected CX86Ops,
-    protected CSystemRegisters,
     protected CN64SystemSettings,
     protected CRecompilerSettings
 {

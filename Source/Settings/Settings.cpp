@@ -148,6 +148,11 @@ void RegisterSetting(short SettingID, SETTING_DATA_TYPE Type, const char * Name,
     case Data_String_RDB_Setting:
         Location = SettingType_RdbSetting;
         break;
+    case Data_DWORD_General:
+    case Data_String_General:
+    default:
+        Location = (SettingLocation)g_PluginSettings.DefaultLocation;
+        break;
     }
 
     switch (Type)
@@ -214,6 +219,11 @@ void RegisterSetting2(short SettingID, SETTING_DATA_TYPE Type, const char * Name
     case Data_DWORD_RDB_Setting:
     case Data_String_RDB_Setting:
         Location = SettingType_RdbSetting;
+        break;
+    case Data_DWORD_General:
+    case Data_String_General:
+    default:
+        Location = (SettingLocation)g_PluginSettings.DefaultLocation;
         break;
     }
 
