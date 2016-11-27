@@ -2633,7 +2633,7 @@ static void rdp_setcolorimage()
         {
             if (rdp.ci_count == 0)
             {
-                if ((rdp.ci_status == ci_aux)) //for PPL
+                if (rdp.ci_status == ci_aux) //for PPL
                 {
                     float sx = rdp.scale_x;
                     float sy = rdp.scale_y;

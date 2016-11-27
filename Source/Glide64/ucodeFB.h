@@ -62,7 +62,7 @@ static void fb_bg_copy()
     if (rdp.main_ci == 0)
         return;
     CI_STATUS status = rdp.frame_buffers[rdp.ci_count - 1].status;
-    if ((status == ci_copy))
+    if (status == ci_copy)
         return;
 
     uint32_t addr = segoffset(rdp.cmd1) >> 1;
