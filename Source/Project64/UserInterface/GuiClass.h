@@ -96,9 +96,9 @@ private:
     CMainGui(const CMainGui&);			// Disable copy constructor
     CMainGui& operator=(const CMainGui&);	// Disable assignment
 
-    friend CGfxPlugin;
-    friend CAudioPlugin;
-    friend CControl_Plugin;
+    friend class CGfxPlugin;
+    friend class CAudioPlugin;
+    friend class CControl_Plugin;
 
     bool RegisterWinClass(void);
     void ChangeWinSize(long width, long height);

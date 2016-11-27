@@ -80,7 +80,7 @@ public:
     inline uint32_t Buttons(void) const { return m_Buttons.Value; }
     inline PluginType Plugin(void) const { return static_cast<PluginType>(m_PlugType); }
 private:
-    friend CControl_Plugin; //controller plugin class has full access
+    friend class CControl_Plugin; //controller plugin class has full access
 
     int32_t & m_Present;
     int32_t & m_RawData;

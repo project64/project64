@@ -99,15 +99,15 @@ public:
     void   SyncSystemPC();
 private:
     //Make sure plugins can directly access this information
-    friend CGfxPlugin;
-    friend CAudioPlugin;
-    friend CRSP_Plugin;
-    friend CControl_Plugin;
+    friend class CGfxPlugin;
+    friend class CAudioPlugin;
+    friend class CRSP_Plugin;
+    friend class CControl_Plugin;
 
     //Recompiler has access to manipulate and call functions
-    friend CSystemTimer;
-    friend CRecompiler;
-    friend CMipsMemoryVM;
+    friend class CSystemTimer;
+    friend class CRecompiler;
+    friend class CMipsMemoryVM;
 
     //Used for loading and potentially executing the CPU in its own thread.
     static void StartEmulationThread(CThread * thread);
