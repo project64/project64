@@ -324,56 +324,37 @@ void CArmOps::MoveConstToArmReg(ArmReg Reg, uint16_t value, const char * comment
         ArmNop();
     }
     PreOpCheck(true,__FILE__,__LINE__);
-
-    if (mInItBlock)
+    if ((value & 0xFF00) == 0 && Reg <= 7)
     {
-        if ((value & 0xF0) == 0 && Reg <= 7)
-        {
-            CPU_Message("      mov%s\t%s, #0x%X\t; %s", ArmCurrentItCondition(), ArmRegName(Reg), (uint32_t)value, comment != NULL ? comment : stdstr_f("0x%X",(uint32_t)value).c_str());
-            ArmThumbOpcode op = {0};
-            op.Imm8.imm8 = value;
-            op.Imm8.rdn = Reg;
-            op.Imm8.opcode = 0x4;
-            AddCode16(op.Hex);
-        }
-        else if(CanThumbCompressConst(value))
-        {
-            CPU_Message("      mov%s.w\t%s, #0x%X\t; %s", ArmCurrentItCondition(), ArmRegName(Reg), (uint32_t)value, comment != NULL ? comment : stdstr_f("0x%X",(uint32_t)value).c_str());
-            uint16_t CompressedValue = ThumbCompressConst(value);
-            Arm32Opcode op = {0};
-            op.imm8_3_1.rn = 0xF;
-            op.imm8_3_1.s = 0;
-            op.imm8_3_1.opcode = 0x2;
-            op.imm8_3_1.i = (CompressedValue >> 11) & 1;
-            op.imm8_3_1.opcode2 = 0x1E;
+        CPU_Message("      mov%s\t%s, #0x%X\t; %s", mInItBlock ? ArmCurrentItCondition() : "s", ArmRegName(Reg), (uint32_t)value, comment != NULL ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
+        ArmThumbOpcode op = { 0 };
+        op.Imm8.imm8 = value;
+        op.Imm8.rdn = Reg;
+        op.Imm8.opcode = 0x4;
+        AddCode16(op.Hex);
+    }
+    else if (CanThumbCompressConst(value))
+    {
+        CPU_Message("      mov%s.w\t%s, #0x%X\t; %s", mInItBlock ? ArmCurrentItCondition() : "", ArmRegName(Reg), (uint32_t)value, comment != NULL ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
+        uint16_t CompressedValue = ThumbCompressConst(value);
+        Arm32Opcode op = { 0 };
+        op.imm8_3_1.rn = 0xF;
+        op.imm8_3_1.s = 0;
+        op.imm8_3_1.opcode = 0x2;
+        op.imm8_3_1.i = (CompressedValue >> 11) & 1;
+        op.imm8_3_1.opcode2 = 0x1E;
 
-            op.imm8_3_1.imm8 = CompressedValue & 0xFF;
-            op.imm8_3_1.rd = Reg;
-            op.imm8_3_1.imm3 = (CompressedValue >> 8) & 0x3;
-            op.imm8_3_1.opcode3 = 0;
-            AddCode32(op.Hex);
-        }
-        else
-        {
-            g_Notify->BreakPoint(__FILE__,__LINE__);
-        }
-        ProgressItBlock();
+        op.imm8_3_1.imm8 = CompressedValue & 0xFF;
+        op.imm8_3_1.rd = Reg;
+        op.imm8_3_1.imm3 = (CompressedValue >> 8) & 0x3;
+        op.imm8_3_1.opcode3 = 0;
+        AddCode32(op.Hex);
     }
     else
     {
-        if (bHaveDebugger() && value & 0xF0 == 0)
-        {
-            g_Notify->BreakPoint(__FILE__,__LINE__);
-        }
-        if (comment != NULL)
-        {
-            CPU_Message("      movw\t%s, #0x%X\t; %s", ArmRegName(Reg), (uint32_t)value, comment);
-        }
-        else
-        {
-            CPU_Message("      movw\t%s, #%d\t; 0x%X", ArmRegName(Reg), (uint32_t)value, (uint32_t)value);
-        }
-        Arm32Opcode op = {0};
+        CPU_Message("      movw%s\t%s, #0x%X\t; %s", mInItBlock ? ArmCurrentItCondition() : "", ArmRegName(Reg), (uint32_t)value, comment != NULL ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
+
+        Arm32Opcode op = { 0 };
         op.imm16.opcode = ArmMOV_IMM16;
         op.imm16.i = ((value >> 11) & 0x1);
         op.imm16.opcode2 = ArmMOVW_IMM16;
@@ -383,6 +364,11 @@ void CArmOps::MoveConstToArmReg(ArmReg Reg, uint16_t value, const char * comment
         op.imm16.rd = Reg;
         op.imm16.imm8 = (value & 0xFF);
         AddCode32(op.Hex);
+    }
+
+    if (mInItBlock)
+    {
+        ProgressItBlock();
     }
 }
 
