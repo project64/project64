@@ -52,6 +52,7 @@ bool SyncEvent::IsTriggered(int32_t iWaitTime)
     }
     m_signalled = false;
     pthread_mutex_unlock((pthread_mutex_t*)m_Event);
+    return true;
 #endif
 }
 

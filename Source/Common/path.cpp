@@ -606,7 +606,7 @@ void CPath::SetComponents(const char * lpszDirectory, const char * lpszName, con
     if (lpszDirectory != NULL && lpszDirectory[0] != '\0')
     {
         if (lpszDirectory[0] != DIRECTORY_DELIMITER)  { buff_fullname[0] = DIRECTORY_DELIMITER; }
-        strncat(buff_fullname,lpszDirectory,sizeof(buff_fullname));
+        strncat(buff_fullname,lpszDirectory,sizeof(buff_fullname) - 1);
         std::string::size_type nLength = strlen(buff_fullname);
         if (buff_fullname[nLength - 1] != DIRECTORY_DELIMITER &&  nLength < sizeof(buff_fullname))
         {
@@ -615,15 +615,15 @@ void CPath::SetComponents(const char * lpszDirectory, const char * lpszName, con
     }
     if (lpszName != NULL)
     {
-        strncat(buff_fullname,lpszName,sizeof(buff_fullname));
+        strncat(buff_fullname,lpszName,sizeof(buff_fullname) - 1);
     }
     if (lpszExtension != NULL && lpszExtension[0] != '\0')
     {
         if (lpszExtension[0] != '.')
         {
-            strncat(buff_fullname,".",sizeof(buff_fullname));
+            strncat(buff_fullname,".",sizeof(buff_fullname)-1);
         }
-        strncat(buff_fullname,lpszExtension,sizeof(buff_fullname));
+        strncat(buff_fullname,lpszExtension,sizeof(buff_fullname)-1);
     }
     buff_fullname[sizeof(buff_fullname) - 1] = 0; //Make sure it is null terminated
     m_strPath.erase();
@@ -1331,7 +1331,7 @@ bool CPath::FindNext()
     }
 #else
     dirent* pEntry;
-    while (pEntry = readdir((DIR*)m_OpenedDir))
+    while ((pEntry = readdir((DIR*)m_OpenedDir)))
     {
         uint32_t dwFileAttributes = pEntry->d_type == DT_DIR ? FIND_ATTRIBUTE_SUBDIR : FIND_ATTRIBUTE_FILES;
 
