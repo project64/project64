@@ -117,10 +117,10 @@ private:
     CMipsMemoryVM& operator=(const CMipsMemoryVM&); // Disable assignment
 
 #if defined(__i386__) || defined(_M_IX86)
-    friend CX86RecompilerOps;
+    friend class CX86RecompilerOps;
 #elif defined(__arm__) || defined(_M_ARM)
-    friend CArmRegInfo;
-    friend CArmRecompilerOps;
+    friend class CArmRegInfo;
+    friend class CArmRecompilerOps;
 #endif
 
     static void RdramChanged(CMipsMemoryVM * _this);

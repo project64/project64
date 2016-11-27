@@ -219,7 +219,7 @@ protected:
     static const char * ArmRegName(ArmReg Reg);
 
 private:
-    friend CArmRegInfo;
+    friend class CArmRegInfo;
 
     static void PreOpCheck(bool AllowedInItBlock, const char * FileName, uint32_t LineNumber);
     static void BreakPointNotification(const char * FileName, uint32_t LineNumber);
