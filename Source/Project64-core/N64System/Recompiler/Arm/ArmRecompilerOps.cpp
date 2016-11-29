@@ -5252,6 +5252,10 @@ void CArmRecompilerOps::SyncRegState(const CRegInfo & SyncTo)
     }
     CPU_Message("after:");
     OutputRegisterState(SyncTo, m_RegWorkingSet);
+    for (int32_t i = 0; i < 16; i++)
+    {
+        m_RegWorkingSet.SetArmRegProtected((ArmReg)i, false);
+    }
 }
 
 void CArmRecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason)
