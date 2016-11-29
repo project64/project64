@@ -536,6 +536,34 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         return true;
     }
 
+    if (OpCode32->reg_cond_imm8.opcode == 0 && OpCode32->reg_cond_imm8.opcode1 == 1 && OpCode32->reg_cond_imm8.opcode2 == 0 && OpCode32->reg_cond_imm8.opcode3 == 0xB)
+    {
+        //11c020b0 	strhne	r2, [r0]
+        if (!g_MMU->SH_NonMemory(MemAddress, *ArmRegisters[OpCode32->reg_cond_imm8.rt]))
+        {
+            if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+            }
+        }
+        context.arm_pc = context.arm_pc + 4;
+        return true;
+    }
+
+    if (OpCode->Imm5.opcode == 0x10)
+    {
+        // 00 80 strh	r0, [r0, #0]
+        if (!g_MMU->SH_NonMemory(MemAddress, *ArmRegisters[OpCode->Imm5.rt]))
+        {
+            if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to store half word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+            }
+        }
+        context.arm_pc = context.arm_pc + 2;
+        return true;
+    }
+
     if (OpCode->Reg.opcode == 0x29)
     {
         // 14 52 strh	r4, [r2, r0]
