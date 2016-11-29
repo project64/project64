@@ -379,9 +379,8 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
             }
             else if (MipsReg != MipsRegToLoad)
             {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-                /*MoveX86RegToX86Reg(GetMipsRegMapHi(MipsRegToLoad), regHi);
-                MoveX86RegToX86Reg(GetMipsRegMapLo(MipsRegToLoad), reglo);*/
+                AddConstToArmReg(regHi, GetMipsRegMapHi(MipsRegToLoad), 0);
+                AddConstToArmReg(reglo, GetMipsRegMapLo(MipsRegToLoad), 0);
             }
         }
         else
