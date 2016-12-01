@@ -2054,7 +2054,7 @@ void newSwapBuffers()
             g_settings->frame_buffer ^= fb_ref;
         }
     }
-    if (g_settings->buff_clear && (hotkey_info.hk_ref || hotkey_info.hk_motionblur || hotkey_info.hk_filtering))
+    if (hotkey_info.hk_ref || hotkey_info.hk_motionblur || hotkey_info.hk_filtering)
     {
         set_message_combiner();
         char buf[256];
