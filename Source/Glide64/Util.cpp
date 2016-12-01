@@ -2087,7 +2087,7 @@ void set_message_combiner()
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
         FXFALSE);
-    if (g_settings->buff_clear && (g_settings->show_fps & 0x08))
+    if (g_settings->show_fps & 0x08)
         grAlphaBlendFunction(GR_BLEND_SRC_ALPHA,
         GR_BLEND_ONE_MINUS_SRC_ALPHA,
         GR_BLEND_ZERO,
