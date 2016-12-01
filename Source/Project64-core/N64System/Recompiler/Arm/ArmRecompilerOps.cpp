@@ -2594,6 +2594,7 @@ void CArmRecompilerOps::LWC1()
     ArmReg TempRegAddress;
     if (IsMapped(m_Opcode.base))
     {
+        ProtectGPR(m_Opcode.base);
         TempRegAddress = Map_TempReg(Arm_Any, -1, false);
         AddConstToArmReg(TempRegAddress, GetMipsRegMapLo(m_Opcode.base), (int16_t)m_Opcode.immediate);
     }
