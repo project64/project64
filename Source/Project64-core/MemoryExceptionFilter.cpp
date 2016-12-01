@@ -494,6 +494,20 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         return true;
     }
 
+    if (OpCode32->imm12.opcode == 0xF8D)
+    {
+        //dc f8 70 70 ldr.w	r7, [ip, #112]
+        if (!g_MMU->LW_NonMemory(MemAddress, ArmRegisters[OpCode32->imm12.rt]))
+        {
+            if (g_Settings->LoadDword(Debugger_ShowUnhandledMemory))
+            {
+                g_Notify->DisplayError(stdstr_f("Failed to load word\n\nMIPS Address: %08X\nPC Address: %08X", MemAddress, context.arm_pc).c_str());
+            }
+        }
+        context.arm_pc = context.arm_pc + 4;
+        return true;
+    }
+
     if (OpCode32->reg_cond_imm5.opcode == 3 && OpCode32->reg_cond_imm5.opcode1 == 0 && OpCode32->reg_cond_imm5.opcode2 == 0 && OpCode32->reg_cond_imm5.opcode3 == 0)
     {
         //17847001 	strne	r7, [r4, r1]
