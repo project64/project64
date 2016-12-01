@@ -3737,8 +3737,8 @@ void CArmRecompilerOps::SPECIAL_SLTU()
 void CArmRecompilerOps::SPECIAL_DADD()
 {
     UnMap_GPR(m_Opcode.rd, true);
-    if (m_Opcode.rs != 0) { UnMap_GPR(m_Opcode.rs, true); }
-    if (m_Opcode.rt != 0) { UnMap_GPR(m_Opcode.rt, true); }
+    if (m_Opcode.rs != 0) { WriteBack_GPR(m_Opcode.rs, false); }
+    if (m_Opcode.rt != 0) { WriteBack_GPR(m_Opcode.rt, false); }
     if (g_Settings->LoadBool(Game_32Bit))
     {
         CompileInterpterCall((void *)R4300iOp32::SPECIAL_DADD, "R4300iOp32::SPECIAL_DADD");
@@ -3752,8 +3752,8 @@ void CArmRecompilerOps::SPECIAL_DADD()
 void CArmRecompilerOps::SPECIAL_DADDU()
 {
     UnMap_GPR(m_Opcode.rd, true);
-    if (m_Opcode.rs != 0) { UnMap_GPR(m_Opcode.rs, true); }
-    if (m_Opcode.rt != 0) { UnMap_GPR(m_Opcode.rt, true); }
+    if (m_Opcode.rs != 0) { WriteBack_GPR(m_Opcode.rs, false); }
+    if (m_Opcode.rt != 0) { WriteBack_GPR(m_Opcode.rt, false); }
     if (g_Settings->LoadBool(Game_32Bit))
     {
         CompileInterpterCall((void *)R4300iOp32::SPECIAL_DADDU, "R4300iOp32::SPECIAL_DADDU");
@@ -3767,8 +3767,8 @@ void CArmRecompilerOps::SPECIAL_DADDU()
 void CArmRecompilerOps::SPECIAL_DSUB()
 {
     UnMap_GPR(m_Opcode.rd, true);
-    if (m_Opcode.rs != 0) { UnMap_GPR(m_Opcode.rs, true); }
-    if (m_Opcode.rt != 0) { UnMap_GPR(m_Opcode.rt, true); }
+    if (m_Opcode.rs != 0) { WriteBack_GPR(m_Opcode.rs, false); }
+    if (m_Opcode.rt != 0) { WriteBack_GPR(m_Opcode.rt, false); }
     if (g_Settings->LoadBool(Game_32Bit))
     {
         CompileInterpterCall((void *)R4300iOp32::SPECIAL_DSUB, "R4300iOp32::SPECIAL_DSUB");
@@ -3782,8 +3782,8 @@ void CArmRecompilerOps::SPECIAL_DSUB()
 void CArmRecompilerOps::SPECIAL_DSUBU()
 {
     UnMap_GPR(m_Opcode.rd, true);
-    if (m_Opcode.rs != 0) { UnMap_GPR(m_Opcode.rs, true); }
-    if (m_Opcode.rt != 0) { UnMap_GPR(m_Opcode.rt, true); }
+    if (m_Opcode.rs != 0) { WriteBack_GPR(m_Opcode.rs, false); }
+    if (m_Opcode.rt != 0) { WriteBack_GPR(m_Opcode.rt, false); }
     if (g_Settings->LoadBool(Game_32Bit))
     {
         CompileInterpterCall((void *)R4300iOp32::SPECIAL_DSUBU, "R4300iOp32::SPECIAL_DSUBU");
@@ -3797,7 +3797,7 @@ void CArmRecompilerOps::SPECIAL_DSUBU()
 void CArmRecompilerOps::SPECIAL_DSLL()
 {
     UnMap_GPR(m_Opcode.rd, true);
-    if (m_Opcode.rt != 0) { UnMap_GPR(m_Opcode.rt, true); }
+    if (m_Opcode.rt != 0) { WriteBack_GPR(m_Opcode.rt, false); }
     if (g_Settings->LoadBool(Game_32Bit))
     {
         CompileInterpterCall((void *)R4300iOp32::SPECIAL_DSLL, "R4300iOp32::SPECIAL_DSLL");
@@ -3811,7 +3811,7 @@ void CArmRecompilerOps::SPECIAL_DSLL()
 void CArmRecompilerOps::SPECIAL_DSRL()
 {
     UnMap_GPR(m_Opcode.rd, true);
-    if (m_Opcode.rt != 0) { UnMap_GPR(m_Opcode.rt, true); }
+    if (m_Opcode.rt != 0) { WriteBack_GPR(m_Opcode.rt, false); }
     if (g_Settings->LoadBool(Game_32Bit))
     {
         CompileInterpterCall((void *)R4300iOp32::SPECIAL_DSRL, "R4300iOp32::SPECIAL_DSRL");
@@ -3839,7 +3839,7 @@ void CArmRecompilerOps::SPECIAL_DSRA()
 void CArmRecompilerOps::SPECIAL_DSLL32()
 {
     UnMap_GPR(m_Opcode.rd, true);
-    if (m_Opcode.rt != 0) { UnMap_GPR(m_Opcode.rt, true); }
+    if (m_Opcode.rt != 0) { WriteBack_GPR(m_Opcode.rt, false); }
     if (g_Settings->LoadBool(Game_32Bit))
     {
         CompileInterpterCall((void *)R4300iOp32::SPECIAL_DSLL32, "R4300iOp32::SPECIAL_DSLL32");
@@ -3853,7 +3853,7 @@ void CArmRecompilerOps::SPECIAL_DSLL32()
 void CArmRecompilerOps::SPECIAL_DSRL32()
 {
     UnMap_GPR(m_Opcode.rd, true);
-    if (m_Opcode.rt != 0) { UnMap_GPR(m_Opcode.rt, true); }
+    if (m_Opcode.rt != 0) { WriteBack_GPR(m_Opcode.rt, false); }
     if (g_Settings->LoadBool(Game_32Bit))
     {
         CompileInterpterCall((void *)R4300iOp32::SPECIAL_DSRL32, "R4300iOp32::SPECIAL_DSRL32");
@@ -3867,7 +3867,7 @@ void CArmRecompilerOps::SPECIAL_DSRL32()
 void CArmRecompilerOps::SPECIAL_DSRA32()
 {
     UnMap_GPR(m_Opcode.rd, true);
-    if (m_Opcode.rt != 0) { UnMap_GPR(m_Opcode.rt, true); }
+    if (m_Opcode.rt != 0) { WriteBack_GPR(m_Opcode.rt, false); }
     if (g_Settings->LoadBool(Game_32Bit))
     {
         CompileInterpterCall((void *)R4300iOp32::SPECIAL_DSRA32, "R4300iOp32::SPECIAL_DSRA32");
