@@ -321,6 +321,7 @@ public:
         COMMAND_HANDLER_EX(IDC_CBXANISOTROPIC, BN_CLICKED, ItemChanged)
         COMMAND_HANDLER_EX(IDC_CHK_SHOW_TEXTURE_ENHANCEMENT, BN_CLICKED, ItemChanged)
         COMMAND_HANDLER_EX(IDC_CHK_AUTODETECT_VRAM, BN_CLICKED, ItemChanged)
+	COMMAND_HANDLER_EX(IDC_CHK_USE_FRAME_BUFFER_OBJECT, BN_CLICKED, ItemChanged)
         CHAIN_MSG_MAP(CToolTipDialog<CConfigBasicPage>)
         CHAIN_MSG_MAP(CPropertyPageImpl<CConfigBasicPage>)
     END_MSG_MAP()
@@ -450,6 +451,7 @@ public:
         g_settings->wrpResolution = m_cmbFSResolution.GetCurSel();
         g_settings->wrpAnisotropic = m_cbxAnisotropic.GetCheck() == BST_CHECKED;
         g_settings->wrpVRAM = m_cbxVRAM.GetCheck() == BST_CHECKED ? 0 : atoi(spinVRAM);
+	g_settings->wrpFBO = m_cbxFBO.GetCheck() == BST_CHECKED;
 
         if (memcmp(&oldsettings, g_settings, sizeof(oldsettings))) //check that settings were changed
         {
