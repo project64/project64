@@ -69,7 +69,7 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
     private GameOverlay mOverlay;
 
     // Input resources
-    private final ArrayList<AbstractController> mControllers;
+    private ArrayList<AbstractController> mControllers;
     private VisibleTouchMap mTouchscreenMap;
     private KeyProvider mKeyProvider;
     private Controller mMogaController;
@@ -328,7 +328,13 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
     {
         mtouchscreenScale = ((float)NativeExports.UISettingsLoadDword(UISettingID.TouchScreen_ButtonScale.getValue())) / 100.0f;
         mlayout = NativeExports.UISettingsLoadString(UISettingID.TouchScreen_Layout.getValue());
+        mControllers = new ArrayList<AbstractController>();
         CreateTouchScreenControls();
+
+        // Initialize user interface devices
+        View inputSource = mIsXperiaPlay ? new NativeXperiaTouchpad(mActivity) : mOverlay;
+        initControllers(inputSource);
+
     }
 
     private void CreateTouchScreenControls()
