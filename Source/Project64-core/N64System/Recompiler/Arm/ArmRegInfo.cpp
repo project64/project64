@@ -17,7 +17,7 @@
 #include <Project64-core/N64System/Recompiler/Arm/ArmRegInfo.h>
 
 CArmRegInfo::CArmRegInfo() :
-m_InCallDirect(false)
+    m_InCallDirect(false)
 {
     for (int32_t i = 0; i < 32; i++)
     {
@@ -596,8 +596,8 @@ CArmOps::ArmReg CArmRegInfo::UnMap_TempReg(bool TempMapping)
     if (TempMapping)
     {
         if (GetArmRegMapped(Arm_R11) == Temp_Mapped && !GetArmRegProtected(Arm_R11)) { return Arm_R11; }
+        if (GetArmRegMapped(Arm_R10) == Temp_Mapped && !GetArmRegProtected(Arm_R10)) { return Arm_R10; }
     }
-    if (GetArmRegMapped(Arm_R10) == Temp_Mapped && !GetArmRegProtected(Arm_R10)) { return Arm_R10; }
     if (GetArmRegMapped(Arm_R9) == Temp_Mapped && !GetArmRegProtected(Arm_R9)) { return Arm_R9; }
     if (GetArmRegMapped(Arm_R8) == Temp_Mapped && !GetArmRegProtected(Arm_R8)) { return Arm_R8; }
 
@@ -710,8 +710,8 @@ CArmOps::ArmReg CArmRegInfo::FreeArmReg(bool TempMapping)
     if (TempMapping)
     {
         if ((GetArmRegMapped(Arm_R11) == NotMapped || GetArmRegMapped(Arm_R11) == Temp_Mapped) && !GetArmRegProtected(Arm_R11)) { return Arm_R11; }
+        if ((GetArmRegMapped(Arm_R10) == NotMapped || GetArmRegMapped(Arm_R10) == Temp_Mapped) && !GetArmRegProtected(Arm_R10)) { return Arm_R10; }
     }
-    if ((GetArmRegMapped(Arm_R10) == NotMapped || GetArmRegMapped(Arm_R10) == Temp_Mapped) && !GetArmRegProtected(Arm_R10)) { return Arm_R10; }
     if ((GetArmRegMapped(Arm_R9) == NotMapped || GetArmRegMapped(Arm_R9) == Temp_Mapped) && !GetArmRegProtected(Arm_R9)) { return Arm_R9; }
     if ((GetArmRegMapped(Arm_R8) == NotMapped || GetArmRegMapped(Arm_R8) == Temp_Mapped) && !GetArmRegProtected(Arm_R8)) { return Arm_R8; }
 
@@ -721,12 +721,12 @@ CArmOps::ArmReg CArmRegInfo::FreeArmReg(bool TempMapping)
     int32_t MapCount[Arm_R12];
     ArmReg MapReg[Arm_R12];
 
-    for (int32_t i = 0, n = TempMapping ? Arm_R12 : Arm_R11; i < n; i++)
+    for (int32_t i = 0, n = TempMapping ? Arm_R12 : Arm_R10; i < n; i++)
     {
         MapCount[i] = GetArmRegMapOrder((ArmReg)i);
         MapReg[i] = (ArmReg)i;
     }
-    for (int32_t i = 0, n = TempMapping ? Arm_R12 : Arm_R11; i < n; i++)
+    for (int32_t i = 0, n = TempMapping ? Arm_R12 : Arm_R10; i < n; i++)
     {
         bool changed = false;
         for (int32_t z = 0; z < n - 1; z++)
@@ -749,7 +749,7 @@ CArmOps::ArmReg CArmRegInfo::FreeArmReg(bool TempMapping)
         }
     }
 
-    for (int32_t i = 0, n = TempMapping ? Arm_R12 : Arm_R11; i < n; i++)
+    for (int32_t i = 0, n = TempMapping ? Arm_R12 : Arm_R10; i < n; i++)
     {
         if (((MapCount[i] > 0 && GetArmRegMapped(MapReg[i]) == GPR_Mapped) || GetArmRegMapped(MapReg[i]) == Variable_Mapped) && !GetArmRegProtected((ArmReg)MapReg[i]))
         {
