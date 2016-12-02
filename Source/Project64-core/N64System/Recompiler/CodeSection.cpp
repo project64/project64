@@ -376,23 +376,22 @@ void CCodeSection::GenerateSectionLinkage()
             m_RecompilerOps->SetRegWorkingSet(JumpInfo[i]->RegSet);
             if (JumpInfo[i]->TargetPC <= JumpInfo[i]->JumpPC)
             {
-                m_RecompilerOps->UpdateCounters(JumpInfo[i]->RegSet, true, true);
+                m_RecompilerOps->UpdateCounters(m_RecompilerOps->GetRegWorkingSet(), true, true);
                 if (JumpInfo[i]->PermLoop)
                 {
                     CPU_Message("PermLoop *** 3");
-                    m_RecompilerOps->CompileInPermLoop(JumpInfo[i]->RegSet, JumpInfo[i]->TargetPC);
+                    m_RecompilerOps->CompileInPermLoop(m_RecompilerOps->GetRegWorkingSet(), JumpInfo[i]->TargetPC);
                 }
                 else
                 {
                     CPU_Message("CompileSystemCheck 9");
-                    m_RecompilerOps->CompileSystemCheck(JumpInfo[i]->TargetPC, JumpInfo[i]->RegSet);
+                    m_RecompilerOps->CompileSystemCheck(JumpInfo[i]->TargetPC, m_RecompilerOps->GetRegWorkingSet());
                 }
             }
             else
             {
                 m_RecompilerOps->UpdateCounters(m_RecompilerOps->GetRegWorkingSet(), false, true);
             }
-            m_RecompilerOps->SetRegWorkingSet(JumpInfo[i]->RegSet);
             m_RecompilerOps->SyncRegState(TargetSection[i]->m_RegEnter);
             m_RecompilerOps->JumpToSection(TargetSection[i]);
         }
