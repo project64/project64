@@ -3542,8 +3542,8 @@ void CArmRecompilerOps::SPECIAL_SLT()
         }
         else if (IsMapped(m_Opcode.rt) && IsMapped(m_Opcode.rs))
         {
-            ProtectGPR(GetMipsRegMapLo(m_Opcode.rs));
-            ProtectGPR(GetMipsRegMapLo(m_Opcode.rt));
+            ProtectGPR(m_Opcode.rs);
+            ProtectGPR(m_Opcode.rt);
             if (useRdReg)
             {
                 Map_GPR_32bit(m_Opcode.rd, false, -1);
