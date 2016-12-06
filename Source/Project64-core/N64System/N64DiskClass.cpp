@@ -76,7 +76,7 @@ bool CN64Disk::SaveDiskImage()
 
     WriteTrace(TraceN64System, TraceDebug, "Trying to open %s (Shadow File)", ShadowFile.c_str());
     m_DiskFile.Close();
-    if (!m_DiskFile.Open(ShadowFile.c_str(), CFileBase::modeWrite | CFileBase::modeCreate))
+    if (!m_DiskFile.Open(ShadowFile.c_str(), CFileBase::modeWrite | CFileBase::modeCreate | CFileBase::modeNoTruncate))
     {
         WriteTrace(TraceN64System, TraceError, "Failed to open %s (Shadow File)", ShadowFile.c_str());
         return false;
