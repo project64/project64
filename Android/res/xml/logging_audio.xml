@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceAudioInitShutdown"
         android:title="@string/TraceAudioInitShutdown" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceAudioAudioInterface"
         android:title="@string/TraceAudioAudioInterface" />
 </PreferenceScreen>
