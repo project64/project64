@@ -888,7 +888,7 @@ void CArmRecompilerOps::BEQ_Compare()
     {
         if (IsConst(m_Opcode.rs) && IsConst(m_Opcode.rt))
         {
-            if (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt))
+            if (!g_System->b32BitCore() && (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)))
             {
                 CArmRecompilerOps::UnknownOpcode();
             }
