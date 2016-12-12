@@ -37,7 +37,7 @@ void CRecompiler::Run()
 {
     WriteTrace(TraceRecompiler, TraceDebug, "Start");
 
-    if (bLogX86Code())
+    if (bRecordRecompilerAsm())
     {
         Start_Recompiler_Log();
     }

@@ -4807,7 +4807,7 @@ bool CArmRecompilerOps::SetupRegisterForLoop(CCodeBlock * BlockInfo, const CRegI
 
 void CArmRecompilerOps::OutputRegisterState(const CRegInfo & SyncTo, const CRegInfo & CurrentSet) const
 {
-    if (!g_bRecompilerLogging)
+    if (!CDebugSettings::bRecordRecompilerAsm())
     {
         return;
     }

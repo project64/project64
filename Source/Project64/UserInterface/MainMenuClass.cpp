@@ -28,7 +28,7 @@ m_Gui(hMainWindow)
     m_ChangeSettingList.push_back(Debugger_DebugLanguage);
     m_ChangeSettingList.push_back(Debugger_ShowRecompMemSize);
     m_ChangeSettingList.push_back(Debugger_ShowDivByZero);
-    m_ChangeSettingList.push_back(Debugger_GenerateLogFiles);
+    m_ChangeSettingList.push_back(Debugger_RecordRecompilerAsm);
     m_ChangeSettingList.push_back(Debugger_DisableGameFixes);
     m_ChangeSettingList.push_back(Debugger_TraceMD5);
     m_ChangeSettingList.push_back(Debugger_TraceSettings);
@@ -508,8 +508,8 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUG_SHOW_DIV_BY_ZERO:
         g_Settings->SaveBool(Debugger_ShowDivByZero, !g_Settings->LoadBool(Debugger_ShowDivByZero));
         break;
-    case ID_DEBUG_GENERATE_LOG_FILES:
-        g_Settings->SaveBool(Debugger_GenerateLogFiles, !g_Settings->LoadBool(Debugger_GenerateLogFiles));
+    case ID_DEBUG_RECORD_RECOMPILER_ASM:
+        g_Settings->SaveBool(Debugger_RecordRecompilerAsm, !g_Settings->LoadBool(Debugger_RecordRecompilerAsm));
         break;
     case ID_DEBUG_DISABLE_GAMEFIX:
         g_Settings->SaveBool(Debugger_DisableGameFixes, !g_Settings->LoadBool(Debugger_DisableGameFixes));
@@ -1240,8 +1240,8 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         }
         DebugMenu.push_back(Item);
         DebugMenu.push_back(MENU_ITEM(SPLITER));
-        Item.Reset(ID_DEBUG_GENERATE_LOG_FILES, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Generate Log Files");
-        if (g_Settings->LoadBool(Debugger_GenerateLogFiles))
+        Item.Reset(ID_DEBUG_RECORD_RECOMPILER_ASM, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Record Recompiler Asm");
+        if (g_Settings->LoadBool(Debugger_RecordRecompilerAsm))
         {
             Item.SetItemTicked(true);
         }

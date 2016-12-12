@@ -1085,7 +1085,7 @@ bool CCodeSection::IsAllParentLoops(CCodeSection * Parent, bool IgnoreIfCompiled
 
 bool CCodeSection::DisplaySectionInformation(uint32_t ID, uint32_t Test)
 {
-    if (!g_bRecompilerLogging)
+    if (!CDebugSettings::bRecordRecompilerAsm())
     {
         return false;
     }
@@ -1109,12 +1109,12 @@ void CCodeSection::DisplaySectionInformation()
     }
 
     CPU_Message("====== Section %d ======", m_SectionID);
-    CPU_Message("Start PC: %X", m_EnterPC);
+    CPU_Message("Start PC: 0x%X", m_EnterPC);
     if (g_System->bLinkBlocks())
     {
-        CPU_Message("End PC: %X", m_EndPC);
+        CPU_Message("End PC: 0x%X", m_EndPC);
     }
-    CPU_Message("CompiledLocation: %X", m_CompiledLocation);
+    CPU_Message("CompiledLocation: 0x%X", m_CompiledLocation);
     if (g_System->bLinkBlocks() && !m_ParentSection.empty())
     {
         stdstr ParentList;

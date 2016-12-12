@@ -19,7 +19,7 @@ public:
     virtual ~CDebugSettings();
 
     static inline bool bHaveDebugger(void) { return m_bHaveDebugger; }
-    static inline bool bLogX86Code(void) { return m_bLogX86Code; }
+    static inline bool bRecordRecompilerAsm(void) { return m_bRecordRecompilerAsm; }
     static inline bool bShowTLBMisses(void) { return m_bShowTLBMisses; }
     static inline bool bShowDivByZero(void) { return m_bShowDivByZero; }
     static inline bool bRecordExecutionTimes(void) { return m_RecordExecutionTimes; }
@@ -34,7 +34,7 @@ private:
 
     //Settings that can be changed on the fly
     static bool m_bHaveDebugger;
-    static bool m_bLogX86Code;
+    static bool m_bRecordRecompilerAsm;
     static bool m_bShowTLBMisses;
     static bool m_bShowDivByZero;
     static bool m_RecordExecutionTimes;

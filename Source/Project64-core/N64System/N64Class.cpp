@@ -1734,7 +1734,6 @@ bool CN64System::LoadState(const char * FileName)
         {
             port = unzGoToFirstFile(file);
         }
-        uint32_t Value;
         while (port == UNZ_OK)
         {
             unz_file_info info;
@@ -1924,7 +1923,7 @@ bool CN64System::LoadState(const char * FileName)
     WriteTrace(TraceN64System, TraceDebug, "8");
     m_FPS.Reset(true);
     WriteTrace(TraceN64System, TraceDebug, "9");
-    if (bLogX86Code())
+    if (bRecordRecompilerAsm())
     {
         Stop_Recompiler_Log();
         Start_Recompiler_Log();

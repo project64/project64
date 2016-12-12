@@ -767,7 +767,7 @@ CArmOps::ArmReg CArmRegInfo::FreeArmReg(bool TempMapping)
 
 void CArmRegInfo::LogRegisterState(void)
 {
-    if (!g_bRecompilerLogging)
+    if (!CDebugSettings::bRecordRecompilerAsm())
     {
         return;
     }
