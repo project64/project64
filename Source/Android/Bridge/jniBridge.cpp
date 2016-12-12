@@ -313,8 +313,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadGame(JNIEnv* env, jcla
 {
     const char *fileLoc = env->GetStringUTFChars(FileLoc, 0);
     WriteTrace(TraceUserInterface, TraceDebug, "FileLoc: %s",fileLoc);
-    g_Settings->SaveBool(Setting_AutoStart,false);
-    CN64System::RunFileImage(fileLoc);
+    CN64System::LoadFileImage(fileLoc);
     env->ReleaseStringUTFChars(FileLoc, fileLoc);
     WriteTrace(TraceUserInterface, TraceDebug, "Image loaded");
 }
@@ -323,7 +322,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_StartGame(JNIEnv* env, jcl
 {
     g_Activity = env->NewGlobalRef(activity);
     g_GLThread = env->NewGlobalRef(GLThread);
-    g_BaseSystem->StartEmulation(true);
+    CN64System::RunLoadedImage();
 }
 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_RefreshRomDir(JNIEnv* env, jclass cls, jstring RomDir, jboolean Recursive)

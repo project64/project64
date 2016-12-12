@@ -56,9 +56,11 @@ public:
     SAVE_CHIP_TYPE m_SaveUsing;
 
     //Methods
+    static bool LoadFileImage(const char * FileLoc);
     static bool RunFileImage(const char * FileLoc);
     static bool RunFileImageIPL(const char * FileLoc);
     static bool RunDiskImage(const char * FileLoc);
+    static void RunLoadedImage(void);
     static void CloseSystem(void);
 
     void   CloseCpu();
