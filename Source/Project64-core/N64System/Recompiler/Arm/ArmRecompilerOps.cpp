@@ -3381,6 +3381,7 @@ void CArmRecompilerOps::SPECIAL_XOR()
             uint32_t ConstReg = IsConst(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
             uint32_t MappedReg = IsConst(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
 
+            ProtectGPR(MappedReg);
             if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs))
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -3432,37 +3433,23 @@ void CArmRecompilerOps::SPECIAL_XOR()
         }
         else
         {
-            if (g_System->b32BitCore())
+            ProtectGPR(KnownReg);
+            if (m_Opcode.rd == KnownReg)
             {
-                if (m_Opcode.rd == KnownReg)
+                ArmReg TempReg = Arm_Any;
+                if (Is64Bit(KnownReg))
                 {
-                    XorArmRegToArmReg(GetMipsRegMapLo(m_Opcode.rd), Map_TempReg(Arm_Any, UnknownReg, false));
+                    TempReg = Map_TempReg(Arm_Any, UnknownReg, true);
+                    XorArmRegToArmReg(GetMipsRegMapHi(m_Opcode.rd), TempReg);
+                    m_RegWorkingSet.SetArmRegProtected(TempReg, false);
                 }
-                else
-                {
-                    Map_GPR_32bit(m_Opcode.rd, true, UnknownReg);
-                    XorArmRegToArmReg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapLo(KnownReg));
-                }
+                XorArmRegToArmReg(GetMipsRegMapLo(m_Opcode.rd), Map_TempReg(TempReg, UnknownReg, false));
             }
             else
             {
-                if (m_Opcode.rd == KnownReg)
-                {
-                    ArmReg TempReg = Arm_Any;
-                    if (Is64Bit(KnownReg))
-                    {
-                        TempReg = Map_TempReg(Arm_Any, UnknownReg, true);
-                        XorArmRegToArmReg(GetMipsRegMapHi(m_Opcode.rd), TempReg);
-                        m_RegWorkingSet.SetArmRegProtected(TempReg, false);
-                    }
-                    XorArmRegToArmReg(GetMipsRegMapLo(m_Opcode.rd), Map_TempReg(TempReg, UnknownReg, false));
-                }
-                else
-                {
-                    Map_GPR_64bit(m_Opcode.rd, UnknownReg);
-                    XorArmRegToArmReg(GetMipsRegMapHi(m_Opcode.rd), Is32Bit(KnownReg) ? Map_TempReg(Arm_Any, KnownReg, true) : GetMipsRegMapHi(KnownReg));
-                    XorArmRegToArmReg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapLo(KnownReg));
-                }
+                Map_GPR_64bit(m_Opcode.rd, UnknownReg);
+                XorArmRegToArmReg(GetMipsRegMapHi(m_Opcode.rd), Is32Bit(KnownReg) ? Map_TempReg(Arm_Any, KnownReg, true) : GetMipsRegMapHi(KnownReg));
+                XorArmRegToArmReg(GetMipsRegMapLo(m_Opcode.rd), GetMipsRegMapLo(KnownReg));
             }
         }
     }
