@@ -994,18 +994,17 @@ void CCodeSection::UnlinkParent(CCodeSection * Parent, bool ContinueSection)
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    SECTION_LIST::iterator iter = m_ParentSection.begin();
-    while (iter != m_ParentSection.end())
+    SECTION_LIST::iterator ParentIter = m_ParentSection.begin();
+    while (ParentIter != m_ParentSection.end())
     {
-        CCodeSection * ParentIter = *iter;
-        if (ParentIter == Parent && (Parent->m_ContinueSection != this || Parent->m_JumpSection != this))
+        if (*ParentIter == Parent && (Parent->m_ContinueSection != this || Parent->m_JumpSection != this))
         {
-            m_ParentSection.erase(iter);
-            iter = m_ParentSection.begin();
+            m_ParentSection.erase(ParentIter);
+            ParentIter = m_ParentSection.begin();
         }
         else
         {
-            iter++;
+            ParentIter++;
         }
     }
 
@@ -1026,23 +1025,23 @@ void CCodeSection::UnlinkParent(CCodeSection * Parent, bool ContinueSection)
         {
             for (SECTION_LIST::iterator iter = m_ParentSection.begin(); iter != m_ParentSection.end(); iter++)
             {
-                CCodeSection * ParentIter = *iter;
-                if (ParentIter->m_ContinueSection == this)
+                CCodeSection * CodeSection = *iter;
+                if (CodeSection->m_ContinueSection == this)
                 {
-                    if (ParentIter->m_CompiledLocation)
+                    if (CodeSection->m_CompiledLocation)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
-                    ParentIter->m_ContinueSection = NULL;
+                    CodeSection->m_ContinueSection = NULL;
                 }
 
-                if (ParentIter->m_JumpSection == this)
+                if (CodeSection->m_JumpSection == this)
                 {
-                    if (ParentIter->m_CompiledLocation)
+                    if (CodeSection->m_CompiledLocation)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
-                    ParentIter->m_JumpSection = NULL;
+                    CodeSection->m_JumpSection = NULL;
                 }
             }
             bRemove = true;
