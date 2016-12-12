@@ -163,8 +163,11 @@ void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
             {
                 return;
             }
-            m_File.Seek(m_FlashRAM_Offset, CFile::begin);
-            m_File.Write(EmptyBlock, sizeof(EmptyBlock));
+            if (!m_ReadOnly)
+            {
+                m_File.Seek(m_FlashRAM_Offset, CFile::begin);
+                m_File.Write(EmptyBlock, sizeof(EmptyBlock));
+            }
             break;
         case FLASHRAM_MODE_WRITE:
             if (!m_File.IsOpen() && !LoadFlashram())
@@ -178,8 +181,11 @@ void CFlashram::WriteToFlashCommand(uint32_t FlashRAM_Command)
                 memset(FlipBuffer, 0, sizeof(FlipBuffer));
                 memcpy(&FlipBuffer[0], FlashRamPointer, sizeof(EmptyBlock));
 
-                m_File.Seek(m_FlashRAM_Offset, CFile::begin);
-                m_File.Write(FlipBuffer, sizeof(EmptyBlock));
+                if (!m_ReadOnly)
+                {
+                    m_File.Seek(m_FlashRAM_Offset, CFile::begin);
+                    m_File.Write(FlipBuffer, sizeof(EmptyBlock));
+                }
             }
             break;
         default:

@@ -185,10 +185,6 @@ void CEeprom::ReadFrom(uint8_t * Buffer, int32_t line)
 
 void CEeprom::WriteTo(uint8_t * Buffer, int32_t line)
 {
-    if (m_ReadOnly)
-    {
-        return;
-    }
     int32_t i;
 
     if (!m_File.IsOpen())
@@ -199,6 +195,9 @@ void CEeprom::WriteTo(uint8_t * Buffer, int32_t line)
     {
         m_EEPROM[line * 8 + i] = Buffer[i];
     }
-    m_File.Seek(line * 8, CFile::begin);
-    m_File.Write(Buffer, 8);
+    if (!m_ReadOnly)
+    {
+        m_File.Seek(line * 8, CFile::begin);
+        m_File.Write(Buffer, 8);
+    }
 }
