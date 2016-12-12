@@ -550,7 +550,7 @@ void CArmRecompilerOps::BNE_Compare()
     {
         if (IsConst(m_Opcode.rs) && IsConst(m_Opcode.rt))
         {
-            if (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt))
+            if (!g_System->b32BitCore() && (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)))
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
                 CArmRecompilerOps::UnknownOpcode();
@@ -570,7 +570,7 @@ void CArmRecompilerOps::BNE_Compare()
         {
             ProtectGPR(m_Opcode.rs);
             ProtectGPR(m_Opcode.rt);
-            if (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt))
+            if (!g_System->b32BitCore() && (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)))
             {
                 CompareArmRegToArmReg(
                     Is32Bit(m_Opcode.rs) ? Map_TempReg(Arm_Any, m_Opcode.rs, true) : GetMipsRegMapHi(m_Opcode.rs),
@@ -636,7 +636,7 @@ void CArmRecompilerOps::BNE_Compare()
             uint32_t ConstReg = IsConst(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
             uint32_t MappedReg = IsConst(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
 
-            if (Is64Bit(ConstReg) || Is64Bit(MappedReg))
+            if (!g_System->b32BitCore() && (Is64Bit(ConstReg) || Is64Bit(MappedReg)))
             {
                 if (Is32Bit(ConstReg) || Is32Bit(MappedReg))
                 {
