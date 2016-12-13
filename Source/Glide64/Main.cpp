@@ -92,21 +92,7 @@ int64 perf_cur;
 int64 perf_next;
 #endif
 
-#ifdef FPS
-HighResTimeStamp fps_last;
-HighResTimeStamp fps_next;
-float      fps = 0.0f;
-uint32_t   fps_count = 0;
-
-uint32_t   vi_count = 0;
-float      vi = 0.0f;
-
 uint32_t   region = 0;
-
-float      ntsc_percent = 0.0f;
-float      pal_percent = 0.0f;
-
-#endif
 
 // Resolutions, MUST be in the correct order (SST1VID.H)
 uint32_t resolutions[0x18][2] = {
@@ -282,7 +268,7 @@ void ConfigWrapper()
 #else
         g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
 #endif
-        );
+    );
 }
 
 void UseUnregisteredSetting(int /*SettingID*/)
@@ -310,7 +296,6 @@ void ReadSettings()
 #endif
     g_settings->vsync = GetSetting(Set_vsync);
     g_settings->ssformat = (uint8_t)GetSetting(Set_ssformat);
-    g_settings->show_fps = (uint8_t)GetSetting(Set_ShowFps);
     g_settings->clock = GetSetting(Set_clock);
     g_settings->clock_24_hr = GetSetting(Set_clock_24_hr);
 #ifdef ANDROID
@@ -542,7 +527,6 @@ void WriteSettings(void)
 #endif
     SetSetting(Set_ssformat, g_settings->ssformat);
     SetSetting(Set_vsync, g_settings->vsync);
-    SetSetting(Set_ShowFps, g_settings->show_fps);
     SetSetting(Set_clock, g_settings->clock);
     SetSetting(Set_clock_24_hr, g_settings->clock_24_hr);
 #ifdef ANDROID
@@ -1398,10 +1382,6 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     g_settings->res_data_org = g_settings->res_data;
 #endif
 
-#ifdef FPS
-    fps_last.SetToNow();
-#endif
-
     debug_init();    // Initialize debugger
 
     gfx = Gfx_Info;
@@ -1419,7 +1399,7 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
 #else
         g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
 #endif
-        );
+    );
 
     grGlideInit();
     grSstSelect(0);
@@ -1480,7 +1460,6 @@ void CALL PluginLoaded(void)
 #endif
     general_setting(Set_vsync, "vsync", 1);
     general_setting(Set_ssformat, "ssformat", 1);
-    general_setting(Set_ShowFps, "show_fps", 0);
     general_setting(Set_clock, "clock", 0);
     general_setting(Set_clock_24_hr, "clock_24_hr", 0);
     general_setting(Set_texenh_options, "texenh_options", 0);
@@ -1793,25 +1772,6 @@ void CALL UpdateScreen(void)
     {
         update_screen_count++;
     }
-#ifdef FPS
-    // vertical interrupt has occurred, increment counter
-    vi_count++;
-
-    // Check frames per second
-    fps_next.SetToNow();
-    double diff_secs = (double)(fps_next.GetMicroSeconds() - fps_last.GetMicroSeconds()) / 1000000;
-    if (diff_secs > 0.5f)
-    {
-        fps = (float)(fps_count / diff_secs);
-        vi = (float)(vi_count / diff_secs);
-        ntsc_percent = vi / 0.6f;
-        pal_percent = vi / 0.5f;
-        fps_last = fps_next;
-        fps_count = 0;
-        vi_count = 0;
-    }
-#endif
-    //*
     uint32_t limit = (g_settings->hacks&hack_Lego) ? 15 : 30;
     if ((g_settings->frame_buffer&fb_cpu_write_hack) && (update_screen_count > limit) && (rdp.last_bg == 0))
     {
@@ -1822,8 +1782,6 @@ void CALL UpdateScreen(void)
         UpdateScreen();
         return;
     }
-    //*/
-    //*
     if (no_dlist)
     {
         if (*gfx.VI_ORIGIN_REG > width)
@@ -1837,7 +1795,6 @@ void CALL UpdateScreen(void)
         }
         return;
     }
-    //*/
     if (g_settings->swapmode == 0)
         newSwapBuffers();
 }
@@ -1993,50 +1950,19 @@ void newSwapBuffers()
     grDepthMask(FXFALSE);
     grCullMode(GR_CULL_DISABLE);
 
-    if ((g_settings->show_fps & 0xF) || g_settings->clock)
-        set_message_combiner();
-#ifdef FPS
-    float y = 0;//(float)g_settings->res_y;
-    if (g_settings->show_fps & 0x0F)
-    {
-        if (g_settings->show_fps & 4)
-        {
-            if (region)   // PAL
-                output(0, y, 1, "%d%% ", (int)pal_percent);
-            else
-                output(0, y, 1, "%d%% ", (int)ntsc_percent);
-            y += 16;
-        }
-        if (g_settings->show_fps & 2)
-        {
-            output(0, y, 1, "VI/s: %.02f ", vi);
-            y += 16;
-        }
-        if (g_settings->show_fps & 1)
-            output(0, y, 1, "FPS: %.02f ", fps);
-    }
-#endif
-
     if (g_settings->clock)
     {
+        set_message_combiner();
         if (g_settings->clock_24_hr)
         {
-            output(956.0f, 0, 1, CDateTime().Format("%H:%M:%S").c_str(), 0);
+            output(956.0f, 0, 1, CDateTime().SetToNow().Format("%H:%M:%S").c_str(), 0);
         }
         else
         {
-            output(930.0f, 0, 1, CDateTime().Format("%I:%M:%S %p").c_str(), 0);
+            output(930.0f, 0, 1, CDateTime().SetToNow().Format("%I:%M:%S %p").c_str(), 0);
         }
     }
     //hotkeys
-    //if (CheckKeyPressed(G64_VK_BACK, 0x0001))
-    //{
-    //hotkey_info.hk_filtering = 100;
-    //if (g_settings->filtering < 2)
-    //g_settings->filtering++;
-    //else
-    //g_settings->filtering = 0;
-    //}
     if ((abs((int)(frame_count - curframe)) > 3) && CheckKeyPressed(G64_VK_ALT, 0x8000))  //alt +
     {
         if (CheckKeyPressed(G64_VK_B, 0x8000))  //b
@@ -2241,7 +2167,6 @@ void newSwapBuffers()
         grAuxBufferExt(GR_BUFFER_AUXBUFFER);
     WriteTrace(TraceGlide64, TraceDebug, "BUFFER SWAPPED");
     grBufferSwap(g_settings->vsync);
-    fps_count++;
     if (*gfx.VI_STATUS_REG & 0x08) //gamma correction is used
     {
         if (!voodoo.gamma_correction)

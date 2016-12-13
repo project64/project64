@@ -2087,13 +2087,7 @@ void set_message_combiner()
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
         FXFALSE);
-    if (g_settings->show_fps & 0x08)
-        grAlphaBlendFunction(GR_BLEND_SRC_ALPHA,
-        GR_BLEND_ONE_MINUS_SRC_ALPHA,
-        GR_BLEND_ZERO,
-        GR_BLEND_ZERO);
-    else
-        grAlphaBlendFunction(GR_BLEND_ONE,
+    grAlphaBlendFunction(GR_BLEND_ONE,
         GR_BLEND_ZERO,
         GR_BLEND_ZERO,
         GR_BLEND_ZERO);

@@ -18,7 +18,6 @@ public:
     int ssformat;
     int vsync;
 
-    int show_fps;
     int clock;
     int clock_24_hr;
 #ifdef ANDROID

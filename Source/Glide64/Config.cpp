@@ -312,12 +312,8 @@ public:
         COMMAND_HANDLER_EX(IDC_CMB_WINDOW_RES, CBN_SELCHANGE, ItemChanged)
         COMMAND_HANDLER_EX(IDC_CMB_FS_RESOLUTION, CBN_SELCHANGE, ItemChanged)
         COMMAND_HANDLER_EX(IDC_CHK_VERTICAL_SYNC, BN_CLICKED, ItemChanged)
-        COMMAND_HANDLER_EX(IDC_CHK_FPS_COUNTER, BN_CLICKED, ItemChanged)
-        COMMAND_HANDLER_EX(IDC_CHK_VIS_COUNTER, BN_CLICKED, ItemChanged)
-        COMMAND_HANDLER_EX(IDC_CHK_PERCENT_COUNTER, BN_CLICKED, ItemChanged)
         COMMAND_HANDLER_EX(IDC_CHK_CLOCK_ENABLED, BN_CLICKED, ItemChanged)
         COMMAND_HANDLER_EX(IDC_CHK_CLOCK_24, BN_CLICKED, ItemChanged)
-        COMMAND_HANDLER_EX(IDC_CHK_TRANSPARENT, BN_CLICKED, ItemChanged)
         COMMAND_HANDLER_EX(IDC_CBXANISOTROPIC, BN_CLICKED, ItemChanged)
         COMMAND_HANDLER_EX(IDC_CHK_SHOW_TEXTURE_ENHANCEMENT, BN_CLICKED, ItemChanged)
         COMMAND_HANDLER_EX(IDC_CHK_AUTODETECT_VRAM, BN_CLICKED, ItemChanged)
@@ -373,22 +369,6 @@ public:
         m_cbxTextureSettings.Attach(GetDlgItem(IDC_CHK_SHOW_TEXTURE_ENHANCEMENT));
         m_cbxTextureSettings.SetCheck(g_settings->texenh_options ? BST_CHECKED : BST_UNCHECKED);
 
-        m_cbxFPS.Attach(GetDlgItem(IDC_CHK_FPS_COUNTER));
-        m_cbxFPS.SetCheck((g_settings->show_fps & 1) > 0 ? BST_CHECKED : BST_UNCHECKED);
-        TTSetTxt(IDC_CHK_FPS_COUNTER, "FPS counter:\n\nWhen this option is checked, a FPS (frames per second) counter will be shown in the lower left corner of the screen.\n\n[Recommended: your preference]");
-
-        m_cbxVIS.Attach(GetDlgItem(IDC_CHK_VIS_COUNTER));
-        m_cbxVIS.SetCheck((g_settings->show_fps & 2) > 0 ? BST_CHECKED : BST_UNCHECKED);
-        TTSetTxt(IDC_CHK_VIS_COUNTER, "VI/s counter:\n\nWhen this option is checked, a VI/s (vertical interrupts per second) counter will be shown in the lower left corner of the screen.\nThis is like the FPS counter but will be consistent at 60 VI/s for full speed on NTSC (U) games and 50 VI/s for full speed on PAL (E) ones.\n\n[Recommended: your preference]");
-
-        m_cbxPercent.Attach(GetDlgItem(IDC_CHK_PERCENT_COUNTER));
-        m_cbxPercent.SetCheck((g_settings->show_fps & 4) > 0 ? BST_CHECKED : BST_UNCHECKED);
-        TTSetTxt(IDC_CHK_PERCENT_COUNTER, "% speed:\n\nThis displays a percentage of the actual N64 speed in the lower left corner of the screen.\n\n[Recommended: your preference]");
-
-        m_cbxTextTransparent.Attach(GetDlgItem(IDC_CHK_TRANSPARENT));
-        m_cbxTextTransparent.SetCheck((g_settings->show_fps & 8) > 0 ? BST_CHECKED : BST_UNCHECKED);
-        TTSetTxt(IDC_CHK_TRANSPARENT, "Transparent text background:\n\nIf this is checked, all on-screen messages will have a transparent background.\nOtherwise, it will have a solid black background.\n\n[Recommended: your preference]");
-
         m_cbxClockEnabled.Attach(GetDlgItem(IDC_CHK_CLOCK_ENABLED));
         m_cbxClockEnabled.SetCheck(g_settings->clock > 0 ? BST_CHECKED : BST_UNCHECKED);
         TTSetTxt(IDC_CHK_CLOCK_ENABLED, "Clock enabled:\n\nThis option will put a clock in the lower right corner of the screen, showing the current time.\n\n[Recommended: your preference]");
@@ -440,11 +420,6 @@ public:
         g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
         g_settings->vsync = m_cbxVSync.GetCheck() == BST_CHECKED;
         g_settings->ssformat = m_cmbScreenShotFormat.GetCurSel();
-        g_settings->show_fps =
-            (m_cbxFPS.GetCheck() == BST_CHECKED ? 1 : 0) |
-            (m_cbxVIS.GetCheck() == BST_CHECKED ? 2 : 0) |
-            (m_cbxPercent.GetCheck() == BST_CHECKED ? 4 : 0) |
-            (m_cbxTextTransparent.GetCheck() == BST_CHECKED ? 8 : 0);
         g_settings->texenh_options = m_cbxTextureSettings.GetCheck() == BST_CHECKED;
         g_settings->clock = m_cbxClockEnabled.GetCheck() == BST_CHECKED;
         g_settings->clock_24_hr = m_cbxClock24.GetCheck() == BST_CHECKED;
@@ -483,7 +458,6 @@ private:
     CComboBox m_cmbScreenShotFormat;
     CButton m_cbxVSync;
     CButton m_cbxTextureSettings;
-    CButton m_cbxFPS, m_cbxVIS, m_cbxPercent, m_cbxTextTransparent;
     CButton m_cbxClockEnabled, m_cbxClock24;
     CButton m_cbxAnisotropic;
     CButton m_cbxFBO;

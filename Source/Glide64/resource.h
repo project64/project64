@@ -17,12 +17,8 @@
 #define IDC_SPIN_TEXTURE_CACHE          1006
 #define IDC_EDIT1                       1007
 #define IDC_CHK_USE_FRAME_BUFFER_OBJECT 1008
-#define IDC_CHK_FPS_COUNTER             1009
-#define IDC_CHK_VIS_COUNTER             1010
-#define IDC_CHK_PERCENT_COUNTER         1011
 #define IDC_CHK_CLOCK_ENABLED           1012
 #define IDC_CHK_CLOCK_24                1013
-#define IDC_CHK_TRANSPARENT             1014
 #define IDC_CMB_SCREEN_SHOT_FORMAT      1015
 #define IDC_CHK_SHOW_TEXTURE_ENHANCEMENT 1016
 #define IDC_INFO                        1017

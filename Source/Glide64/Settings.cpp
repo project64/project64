@@ -15,7 +15,6 @@ texenh_options(0),
 ssformat(0),
 vsync(0),
 
-show_fps(0),
 clock(0),
 clock_24_hr(0),
 #ifdef ANDROID

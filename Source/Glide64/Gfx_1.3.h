@@ -70,7 +70,6 @@ the plugin
 #include <stddef.h>		// offsetof
 #include <glide.h>
 #include <Common/MemTest.h>
-#include <Common/HighResTimeStamp.h>
 #include <Settings/Settings.h>
 #include "GlideExtensions.h"
 #include "rdp.h"
@@ -107,8 +106,6 @@ extern "C" {
 
     // ********************************
 
-#define FPS					// fps counter able? (not enabled necessarily)
-
 #define LOGNOTKEY			 // Log if not pressing:
 #define LOGKEY		0x11 // this key (CONTROL)
 
@@ -123,8 +120,6 @@ extern "C" {
 #ifndef _ENDUSER_RELEASE_
 
 #endif
-
-#define FPS_FRAMES	10		// Number of frames in which to make an FPS count
 
     //#define SHOW_FULL_TEXVIEWER	// shows the entire contents of the texture in the cache viewer,
     // usually used to debug clamping issues.
@@ -148,13 +143,6 @@ extern "C" {
 #endif
 
 #define COLORED_DEBUGGER	// ;) pretty colors
-
-#ifdef FPS
-    extern HighResTimeStamp fps_last;
-    extern HighResTimeStamp fps_next;
-    extern float      fps;
-    extern uint32_t	  fps_count;
-#endif
 
     // rdram mask at 0x400000 bytes (bah, not right for majora's mask)
     //#define BMASK	0x7FFFFF
