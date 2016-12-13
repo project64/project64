@@ -248,7 +248,7 @@ void CSettingTypeApplication::Save(int /*Index*/, bool Value)
 {
     if (m_DefaultSetting != Default_None &&
         ((m_DefaultSetting == Default_Constant && (bool)m_DefaultValue == Value) ||
-        (m_DefaultSetting != Default_Constant && g_Settings->LoadDword(m_DefaultSetting) == Value)))
+        (m_DefaultSetting != Default_Constant && g_Settings->LoadBool(m_DefaultSetting) == Value)))
     {
         m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), NULL);
     }
