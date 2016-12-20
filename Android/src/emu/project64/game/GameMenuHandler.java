@@ -15,10 +15,12 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 
 import emu.project64.R;
+import emu.project64.jni.LanguageStringID;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
 import emu.project64.jni.SystemEvent;
 import emu.project64.settings.SettingsActivity;
+import emu.project64.util.Strings;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -69,6 +71,20 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
 
                 int CurrentSaveState = NativeExports.SettingsLoadDword(SettingsID.Game_CurrentSaveState.getValue());
                 Menu menu = popupMenu.getMenu();
+
+                Strings.SetMenuTitle(menu, R.id.menuItem_SaveState, LanguageStringID.ANDROID_MENU_SAVESTATE);
+                Strings.SetMenuTitle(menu, R.id.menuItem_LoadState, LanguageStringID.ANDROID_MENU_LOADSTATE);
+                Strings.SetMenuTitle(menu, R.id.menuItem_CurrentSaveState, LanguageStringID.ANDROID_MENU_CURRENTSAVESTATE);
+                Strings.SetMenuTitle(menu, R.id.menuItem_CurrentSaveAuto, LanguageStringID.ANDROID_MENU_CURRENTSAVESTATE);
+                Strings.SetMenuTitle(menu, R.id.menuItem_GameSpeed, LanguageStringID.ANDROID_MENU_GAMESPEED);
+                Strings.SetMenuTitle(menu, R.id.menuItem_settings, LanguageStringID.ANDROID_MENU_SETTINGS);
+                Strings.SetMenuTitle(menu, R.id.menuItem_DebuggingMenu, LanguageStringID.ANDROID_MENU_DEBUGGINGOPTIONS);
+                Strings.SetMenuTitle(menu, R.id.menuItem_ResetFunctionTimes, LanguageStringID.ANDROID_MENU_RESETFUNCTIONTIMES);
+                Strings.SetMenuTitle(menu, R.id.menuItem_DumpFunctionTimes, LanguageStringID.ANDROID_MENU_DUMPFUNCTIONTIMES);
+                Strings.SetMenuTitle(menu, R.id.menuItem_pause, LanguageStringID.ANDROID_MENU_PAUSE);
+                Strings.SetMenuTitle(menu, R.id.menuItem_resume, LanguageStringID.ANDROID_MENU_RESUME);
+                Strings.SetMenuTitle(menu, R.id.menuItem_HardReset, LanguageStringID.ANDROID_MENU_CONSOLERESET);
+                Strings.SetMenuTitle(menu, R.id.menuItem_EndEmulation, LanguageStringID.ANDROID_MENU_ENDEMULATION);
 
                 menu.findItem(R.id.menuItem_pause).setVisible(GamePaused ? false : true);
                 menu.findItem(R.id.menuItem_resume).setVisible(GamePaused ? true : false);
@@ -211,10 +227,11 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
         {
             Timestamp = new SimpleDateFormat(" [yyyy/MM/dd HH:mm]").format(new Date(LastModified));
         }
-        String SlotName = SaveSlot == 0 ? "Auto" : "Slot " + SaveSlot;
+        String SlotName = SaveSlot == 0 ? Strings.GetString(LanguageStringID.ANDROID_MENU_CURRENTSAVEAUTO) :
+        	Strings.GetString(LanguageStringID.ANDROID_MENU_CURRENTSAVESLOT) + " " + SaveSlot;
         item.setTitle(SlotName + Timestamp);
     }
-    
+
     private void SelectGameSpeed()
     {
         NativeExports.ExternalEvent( SystemEvent.SysEvent_PauseCPU_AppLostActive.getValue());
@@ -225,7 +242,7 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
         final SeekBar seek = (SeekBar) layout.findViewById( R.id.seekbar );
         final TextView text = (TextView) layout.findViewById( R.id.textFeedback );
         final String finalFormat = "%1$d %%";
-        
+
         text.setText( String.format( finalFormat, initial ) );
         seek.setMax( MAX_SPEED - MIN_SPEED );
         seek.setProgress( initial - MIN_SPEED );
@@ -235,24 +252,24 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
             {
                 text.setText( String.format( finalFormat, progress + MIN_SPEED ) );
             }
-            
+
             public void onStartTrackingTouch( SeekBar seekBar )
             {
             }
-            
+
             public void onStopTrackingTouch( SeekBar seekBar )
             {
             }
         });
 
         Builder builder = new Builder(mActivity);
-        builder.setTitle(mActivity.getText( R.string.menuItem_GameSpeed ));
+        builder.setTitle(Strings.GetString(LanguageStringID.ANDROID_MENU_GAMESPEED));
         builder.setPositiveButton("Cancel", null);
         builder.setNeutralButton("OK", null);
         builder.setNegativeButton("Reset", null);
         builder.setCancelable(false);
         builder.setView(layout);
-        
+
         final AlertDialog dialog = builder.create();
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener( new View.OnClickListener()

@@ -1,77 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- In-Game Menu -->
-    <string name="menuItem_SaveState">Save State</string>
-    <string name="menuItem_LoadState">Load State</string>
-    <string name="menuItem_EndEmulation">End Emulation</string>
-    <string name="menuItem_pause">Pause</string>
-    <string name="menuItem_resume">Resume</string>
-    <string name="menuItem_GameSpeed">Game Speed</string>
-    <string name="menuItem_CurrentSaveState">Current Save State…</string>
-    <string name="menuItem_CurrentSaveAuto">Auto</string>
-    <string name="menuItem_CurrentSave1">Slot 1</string>
-    <string name="menuItem_CurrentSave2">Slot 2</string>
-    <string name="menuItem_CurrentSave3">Slot 3</string>
-    <string name="menuItem_CurrentSave4">Slot 4</string>
-    <string name="menuItem_CurrentSave5">Slot 5</string>
-    <string name="menuItem_CurrentSave6">Slot 6</string>
-    <string name="menuItem_CurrentSave7">Slot 7</string>
-    <string name="menuItem_CurrentSave8">Slot 8</string>
-    <string name="menuItem_CurrentSave9">Slot 9</string>
-    <string name="menuItem_CurrentSave10">Slot 10</string>
-    <string name="menuItem_ConsoleReset">Reset</string>
-    <string name="menuItem_DebuggingOptions">Debugging Options</string>
-    <string name="menuItem_ResetFunctionTimes">Reset Function Times</string>
-    <string name="menuItem_DumpFunctionTimes">Dump Function Times</string>
-    
-    <!-- Menu Activity -->
-    <string name="menuItem_search">Search</string>
-    <string name="menuItem_refreshRoms">Refresh ROMs</string>
-    <string name="menuItem_gameDir">Game Dir</string>
-    <string name="menuItem_settings">Settings</string>
-    <string name="menuItem_about">About</string>
-    <string name="menuItem_appVersion">App version</string>
-    <string name="menuItem_hardwareInfo">Hardware info</string>
-    <string name="menuItem_forum">Help/Forum</string>
-    <string name="menuItem_reportBug">Report Issue</string>
-    <string name="content_description_app_loading_image">App loading image</string>
-   
-    <!-- ************************************************************************** -->
-    <!-- Toast Messages                                                             -->
-    <!-- Developers: Follow punctuation and grammar as shown below                  -->
-    <!-- ************************************************************************** -->
-
+<resources>    
     <!-- Something happening (typically use '-ing' and '…') -->
-    <string name="toast_launchingEmulator">Launching emulator…</string>
     <string name="toast_canceling">Canceling…</string>
     <string name="toast_pleaseWait">Please wait…</string>
-
-    <!-- Something happened (use '.') -->
-    <string name="toast_sdInaccessible">SD card not accessible (disconnect USB cable and try again).</string>
-    <string name="actionShare_title">Share</string>
-    <string name="categoryLibrary_title">Library</string>
-    <string name="categoryDisplay_title">Display</string>
-    <string name="categoryAudio_title">Audio</string>
-    <string name="categoryData_title">Data</string>
-
-    <!-- About -->
-    <string name="info">Information</string>
-    <string name="app_name_full">Project64 for Android</string>
-    <string name="licence">License</string>
-    <string name="revision">Revision</string>
-    <string name="about">About</string>
-    <string name="about_text">Project64 for Android™ is a port of the windows version of project64. The Android™ version can play most N64 games.</string>
-    <string name="Project64_authors">Project64 Authors.</string>
-    <string name="about_link" translatable="false">        &lt;a href=&quot;www.pj64-emu.com&quot;&gt;www.pj64-emu.com&lt;/a&gt;</string>
-    <string name="about_copyright" translatable="false">Copyleft &#169; 1998&#8211;2016 by Project64.\n</string>
-    <string name="authors" translatable="false">Zilmar, Jabo, Smiff, Gent, Jahra!n, Witten, RadeonUser, Trotterwatch, pixi, Azimer, Gonetz, cxd4, AmbientMalice, LegendOfDragoon, Nekokabu, Lithium64, death-droid, LuigiBlood, dsx.</string>
-
-    <!-- Gallery sections -->
-    <string name="galleryRecentlyPlayed">Recently played</string>
-    <string name="galleryLibrary">Games</string>
-
-    <!-- Seek Bar Preference -->
-    <string name="seekBarPreference_summary">%1$d %2$s</string>
     
     <!-- Input Mapping -->
     <string name="inputMapActivity_popupMessage">Press a button, key, or joystick to map…\n\nCurrent mappings:\n%1$s</string>
@@ -125,8 +56,8 @@
     <string name="debuggerEnabled_summary">Enable/Disable extra options to try and debug why games do not work</string>
     <string name="BlockLinking_title">Advanced Block Linking</string>
     <string name="BlockLinking_summary">Precompile blocks together</string>
-    <string name="GenerateLogFiles_title">Generate Log Files</string>
-    <string name="GenerateLogFiles_summary">Log recompiler code</string>
+    <string name="RecordRecompilerAsm_title">Record Recompiler Asm</string>
+    <string name="RecordRecompilerAsm_summary">Create a log file of the asm generated</string>
     <string name="logging">Logging</string>
     <string name="project64core">Project64 Core</string>
     <string name="AudioPlugin">Audio Plugin</string>
@@ -183,6 +114,8 @@
     <string name="ForceGfxReset_summary">Always reload GFX plugin</string>
     <string name="PreAllocSyncMem_title">Pre Alloc Sync Mem</string>
     <string name="PreAllocSyncMem_summary">Allocate sync memory at startup</string>
+    <string name="DebugLanguage_title">Debug Language</string>
+    <string name="DebugLanguage_summary">Show the number id for the language string</string>
     <string name="touchscreenScale_title">Button scale</string>
     <string name="touchscreenLayout_title">Touchscreen layout</string>
     <string name="gamepad_summary">Configure gamepad to use in game</string>
@@ -221,14 +154,6 @@
         <item>@string/TraceDebug</item>
         <item>@string/TraceVerbose</item>
     </string-array>
-    <string-array name="trace_severity_values" translatable="false">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-    </string-array>
 
     <!-- Confirmation Dialogs -->
     <string name="confirmResetGame_title">Reset game?</string>
@@ -245,21 +170,5 @@
     <string name="assetExtractor_failed">Error extracting app data.\nPlease unplug USB cable, reboot device, and re-launch app.\nFor help, please visit %1$s.</string>
 
     <!-- Game Directory Dialog -->
-    <string name="scanRomsDialog_selectDir">Select an folder to scan</string>
-    <string name="scanRomsDialog_scanRecursively">Include subdirectories</string>
-
-    <!-- ROM Scanning -->
     <string name="scanning_title">Scanning…</string>
-    <string name="scanning_directories">Directories</string>
-    <string name="scanning_internal_memory">Internal memory</string>
-        
-    <!-- ROM information calculation -->
-    <string name="cacheRomInfo_searching">Searching…</string>
-    <string name="cacheRomInfo_computingMD5">Computing MD5…</string>
-    <string name="cacheRomInfo_searchingDB">Searching ROM database…</string>
-    <string name="cacheRomInfo_refreshingUI">Refreshing UI…</string>
-
-    <!-- Path Preference -->
-    <string name="pathPreference_parentFolder">Parent folder</string>
-
 </resources>

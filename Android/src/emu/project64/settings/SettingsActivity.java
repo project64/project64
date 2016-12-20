@@ -11,6 +11,7 @@
 package emu.project64.settings;
 
 import emu.project64.AndroidDevice;
+import emu.project64.GalleryActivity;
 import emu.project64.R;
 import emu.project64.jni.AudioSettingID;
 import emu.project64.jni.NativeExports;
@@ -59,11 +60,12 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         .putBoolean("Plugin_ForceGfxReset",NativeExports.SettingsLoadBool(SettingsID.Plugin_ForceGfxReset.getValue()))
         .putBoolean("UserInterface_BasicMode",NativeExports.SettingsLoadBool(SettingsID.UserInterface_BasicMode.getValue()))
         .putBoolean("Debugger_Enabled",NativeExports.SettingsLoadBool(SettingsID.Debugger_Enabled.getValue()))
-        .putBoolean("Debugger_GenerateLogFiles",NativeExports.SettingsLoadBool(SettingsID.Debugger_GenerateLogFiles.getValue()))
+        .putBoolean("Debugger_RecordRecompilerAsm",NativeExports.SettingsLoadBool(SettingsID.Debugger_RecordRecompilerAsm.getValue()))
         .putBoolean("Debugger_LimitFPS",NativeExports.SettingsLoadBool(SettingsID.GameRunning_LimitFPS.getValue()))
         .putBoolean("Debugger_DisplaySpeed",NativeExports.SettingsLoadBool(SettingsID.UserInterface_DisplayFrameRate.getValue()))
         .putBoolean("Debugger_CpuUsage",NativeExports.SettingsLoadBool(SettingsID.UserInterface_ShowCPUPer.getValue()))
         .putBoolean("Debugger_RecordExecutionTimes",NativeExports.SettingsLoadBool(SettingsID.Debugger_RecordExecutionTimes.getValue()))
+        .putBoolean("Debugger_DebugLanguage",NativeExports.SettingsLoadBool(SettingsID.Debugger_DebugLanguage.getValue()))
         .putString("Debugger_DisplaySpeedType",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.UserInterface_FrameDisplayType.getValue())))
         .putString("Debugger_TraceMD5",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Debugger_TraceMD5.getValue())))
         .putString("Debugger_TraceThread",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Debugger_TraceThread.getValue())))
@@ -130,13 +132,18 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
             getSupportFragmentManager().popBackStackImmediate();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_placeholder, new SettingsFragment()).commit();
         }
+        else if (key.equals("Debugger_DebugLanguage"))
+        {
+            NativeExports.SettingsSaveBool(SettingsID.Debugger_DebugLanguage.getValue(), sharedPreferences.getBoolean(key,false));
+            GalleryActivity.LanguageChanged();
+        }
         else if (key.equals("touchscreenScale")) { NativeExports.UISettingsSaveDword(UISettingID.TouchScreen_ButtonScale.getValue(), sharedPreferences.getInt(key, 100)); }
         else if (key.equals("touchscreenLayout")) { NativeExports.UISettingsSaveString(UISettingID.TouchScreen_Layout.getValue(), sharedPreferences.getString(key, "Analog")); }
         else if (key.equals("audio_Enabled")) { NativeExports.SettingsSaveBool(SettingsID.Plugin_EnableAudio.getValue(), sharedPreferences.getBoolean(key,false)); }
         else if (key.equals("Plugin_ForceGfxReset")) { NativeExports.SettingsSaveBool(SettingsID.Plugin_ForceGfxReset.getValue(), sharedPreferences.getBoolean(key,false)); }
         else if (key.equals("PreAllocSyncMem")) { NativeExports.SettingsSaveBool(SettingsID.Setting_PreAllocSyncMem.getValue(), sharedPreferences.getBoolean(key,false)); }
         else if (key.equals("Debugger_Enabled")) { NativeExports.SettingsSaveBool(SettingsID.Debugger_Enabled.getValue(), sharedPreferences.getBoolean(key,false)); }
-        else if (key.equals("Debugger_GenerateLogFiles")) { NativeExports.SettingsSaveBool(SettingsID.Debugger_GenerateLogFiles.getValue(), sharedPreferences.getBoolean(key,false)); }
+        else if (key.equals("Debugger_RecordRecompilerAsm")) { NativeExports.SettingsSaveBool(SettingsID.Debugger_RecordRecompilerAsm.getValue(), sharedPreferences.getBoolean(key,false)); }
         else if (key.equals("Debugger_CpuUsage")) { NativeExports.SettingsSaveBool(SettingsID.UserInterface_ShowCPUPer.getValue(), sharedPreferences.getBoolean(key,false)); }
         else if (key.equals("Debugger_RecordExecutionTimes")) { NativeExports.SettingsSaveBool(SettingsID.Debugger_RecordExecutionTimes.getValue(), sharedPreferences.getBoolean(key,false)); }
         else if (key.equals("Debugger_LimitFPS")) { NativeExports.SettingsSaveBool(SettingsID.GameRunning_LimitFPS.getValue(), sharedPreferences.getBoolean(key,false)); }
@@ -149,50 +156,17 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         else if (key.equals("Debugger_TraceUnknown")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceUnknown.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
         else if (key.equals("Debugger_TraceAppInit")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceAppInit.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
         else if (key.equals("Debugger_TraceAppCleanup")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceAppCleanup.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
-        else if (key.equals("Debugger_TraceN64System"))
-        {
-            NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceN64System.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1")));
-        }
-        else if (key.equals("Debugger_TracePlugins"))
-        {
-            NativeExports.SettingsSaveDword(SettingsID.Debugger_TracePlugins.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1")));
-        }
-        else if (key.equals("Debugger_TraceGFXPlugin"))
-        {
-            NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceGFXPlugin.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1")));
-        }
-        else if (key.equals("Debugger_TraceAudioPlugin"))
-        {
-            NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceAudioPlugin.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1")));
-        }
-        else if (key.equals("Debugger_TraceControllerPlugin"))
-        {
-            NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceControllerPlugin.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1")));
-        }
-        else if (key.equals("Debugger_TraceRSPPlugin"))
-        {
-            NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceRSPPlugin.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1")));
-        }
-        else if (key.equals("Debugger_TraceRSP"))
-        {
-            NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceRSP.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1")));
-        }
-        else if (key.equals("Debugger_TraceAudio"))
-        {
-            NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceAudio.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1")));
-        }
-        else if (key.equals("Debugger_TraceRegisterCache"))
-        {
-            NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceRegisterCache.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1")));
-        }
-        else if (key.equals("Debugger_TraceRecompiler"))
-        {
-            NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceRecompiler.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1")));
-        }
-        else if (key.equals("Debugger_TraceTLB"))
-        {
-            NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceTLB.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1")));
-        }
+        else if (key.equals("Debugger_TraceN64System")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceN64System.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TracePlugins")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TracePlugins.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceGFXPlugin")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceGFXPlugin.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceAudioPlugin")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceAudioPlugin.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceControllerPlugin")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceControllerPlugin.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceRSPPlugin")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceRSPPlugin.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceRSP")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceRSP.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceAudio")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceAudio.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceRegisterCache")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceRegisterCache.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceRecompiler")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceRecompiler.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Debugger_TraceTLB")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceTLB.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
         else if (key.equals("Debugger_TraceProtectedMEM")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceProtectedMEM.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
         else if (key.equals("Debugger_TraceUserInterface")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceUserInterface.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
         else if (key.equals("Debugger_TraceRomList")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceRomList.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }

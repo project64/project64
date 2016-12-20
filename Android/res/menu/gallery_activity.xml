@@ -6,7 +6,6 @@
     <item
         android:id="@+id/menuItem_gameDir"
         android:icon="@drawable/ic_folder"
-        android:title="@string/menuItem_gameDir"
         project64:showAsAction="always|collapseActionView"
         tools:ignore="UnusedAttribute"/>
 </menu>

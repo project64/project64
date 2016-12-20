@@ -31,6 +31,7 @@ class CLanguage
 {
 public:
     CLanguage();
+    ~CLanguage();
 
     const std::string & GetString(LanguageStringID StringID);
     LanguageList & GetLangList(void);
@@ -42,6 +43,13 @@ public:
 private:
     CLanguage(const CLanguage&);				// Disable copy constructor
     CLanguage& operator=(const CLanguage&);		// Disable assignment
+
+    static void StaticResetStrings(CLanguage * _this)
+    {
+        _this->ResetStrings();
+    }
+
+    void ResetStrings(void);
 
     std::string m_SelectedLanguage;
     const std::string m_emptyString;

@@ -31,12 +31,14 @@ import emu.project64.inAppPurchase.IabHelper.IabAsyncInProgressException;
 import emu.project64.inAppPurchase.IabResult;
 import emu.project64.inAppPurchase.Inventory;
 import emu.project64.inAppPurchase.Purchase;
+import emu.project64.jni.LanguageStringID;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
 import emu.project64.jni.SystemEvent;
 import emu.project64.jni.UISettingID;
 import emu.project64.settings.GameSettingsActivity;
 import emu.project64.settings.SettingsActivity;
+import emu.project64.util.Strings;
 import emu.project64.util.Utility;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -224,7 +226,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         // Configure the navigation drawer
         mDrawerLayout = (DrawerLayout) findViewById( R.id.drawerLayout );
         mDrawerToggle = new ActionBarDrawerToggle( this, mDrawerLayout, toolbar, 0, 0 );
-        mDrawerLayout.setDrawerListener( mDrawerToggle );
+        mDrawerLayout.addDrawerListener( mDrawerToggle );
 
         // Configure the list in the navigation drawer
         mDrawerList = (MenuListView) findViewById( R.id.drawerNavigation );
@@ -238,6 +240,15 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                 GalleryActivity.this.onOptionsItemSelected( menuItem );
             }
         });
+        UpdateLanguage();
+    }
+
+    void UpdateLanguage()
+    {
+        Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_settings, LanguageStringID.ANDROID_SETTINGS);
+        Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_forum, LanguageStringID.ANDROID_FORUM);
+        Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_reportBug, LanguageStringID.ANDROID_REPORT_BUG);
+        Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_about, LanguageStringID.ANDROID_ABOUT);
     }
 
     // Enables or disables the "please wait" screen.
@@ -427,6 +438,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
     public boolean onCreateOptionsMenu( Menu menu )
     {
         getMenuInflater().inflate( R.menu.gallery_activity, menu );
+        Strings.SetMenuTitle(menu, R.id.menuItem_gameDir, LanguageStringID.ANDROID_GAMEDIR);
 
         return super.onCreateOptionsMenu( menu );
     }
@@ -745,10 +757,10 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
 
         if (mRecentItems.size() > 0)
         {
-            items.add( new GalleryItem( this, getString( R.string.galleryRecentlyPlayed ) ) );
+            items.add( new GalleryItem( this, Strings.GetString(LanguageStringID.ANDROID_GALLERY_RECENTLYPLAYED)));
             items.addAll( mRecentItems );
 
-            items.add( new GalleryItem( this, getString( R.string.galleryLibrary ) ) );
+            items.add( new GalleryItem( this, Strings.GetString(LanguageStringID.ANDROID_GALLERY_LIBRARY)));
         }
         Collections.sort( mGalleryItems, new GalleryItem.NameComparator() );
         items.addAll( mGalleryItems );
@@ -1006,6 +1018,15 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
 
         Intent intent = isXperiaPlay ? new Intent( this, GameActivityXperiaPlay.class ) : new Intent( this, GameActivity.class );
         this.startActivity( intent );
+    }
+
+    public static void LanguageChanged()
+    {
+        if (mActiveGalleryActivity != null)
+        {
+            mActiveGalleryActivity.finish();
+            mActiveGalleryActivity.startActivity( mActiveGalleryActivity.getIntent() );
+        }
     }
 
     public static void RomListReset ()

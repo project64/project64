@@ -115,6 +115,11 @@ public class MenuListView extends ExpandableListView
         } );
     }
     
+    public Menu getMenu()
+    {
+        return mListData;
+    }
+    
     public void reload()
     {
         mAdapter.notifyDataSetChanged();

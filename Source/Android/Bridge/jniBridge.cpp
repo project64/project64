@@ -443,6 +443,27 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_ResetApplicationSettings(J
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
+EXPORT jbyteArray CALL Java_emu_project64_jni_NativeExports_GetString(JNIEnv* env, jclass cls, int StringID)
+{
+    WriteTrace(TraceUserInterface, TraceDebug, "start (StringID: %d)", StringID);
+    jbyteArray result = NULL;
+    if (g_Lang)
+    {
+        std::string ResultStr = g_Lang->GetString((LanguageStringID)StringID);
+        result = env->NewByteArray(ResultStr.length());
+        if (result)
+        {
+            env->SetByteArrayRegion(result, 0, ResultStr.length(), (const jbyte *)ResultStr.c_str());
+        }
+    }
+    else
+    {
+        WriteTrace(TraceUserInterface, TraceWarning, "g_Lang not set");
+    }
+    WriteTrace(TraceUserInterface, TraceDebug, "Done");
+    return result;
+}
+
 EXPORT void CALL Java_emu_project64_jni_NativeExports_SetSpeed(JNIEnv* env, jclass cls, int Speed)
 {
     WriteTrace(TraceUserInterface, TraceDebug, "start (Speed: %d)", Speed);
