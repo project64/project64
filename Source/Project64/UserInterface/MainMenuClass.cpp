@@ -500,6 +500,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUG_LANGUAGE:
         g_Settings->SaveBool(Debugger_DebugLanguage, !g_Settings->LoadBool(Debugger_DebugLanguage));
         g_Lang->LoadCurrentStrings();
+        m_Gui->ResetRomBrowserColomuns();
         break;
     case ID_DEBUG_SHOW_RECOMP_MEM_SIZE:
         g_Notify->DisplayMessage(0, "");
