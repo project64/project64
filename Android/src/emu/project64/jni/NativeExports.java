@@ -38,6 +38,7 @@ public class NativeExports
     public static native void RefreshRomDir(String RomDir, boolean Recursive);
     public static native void ExternalEvent(int Type);
     public static native void ResetApplicationSettings();
+    public static native byte[] GetString(int StringId);
 	
     public static native void SetSpeed(int Speed);
     public static native int GetSpeed();
