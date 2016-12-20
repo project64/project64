@@ -31,6 +31,7 @@
 #include "glitchmain.h"
 #include <Glide64/trace.h>
 #include <Glide64/Settings.h>
+#include <vector>
 
 void vbo_draw();
 
@@ -68,9 +69,7 @@ int need_to_compile;
 static GLuint fragment_shader_object;
 static GLuint fragment_depth_shader_object;
 static GLuint vertex_shader_object;
-static GLuint program_object_default;
-static GLuint program_object_depth;
-static GLuint program_object;
+static GLuint g_program_object_default = 0;
 static GLuint rotation_matrix_location;
 static int constant_color_location;
 static int ccolor0_location;
@@ -327,25 +326,6 @@ void init_combiner()
     char *fragment_shader;
     int log_length;
 
-#ifndef ANDROID
-    // depth shader
-    fragment_depth_shader_object = glCreateShader(GL_FRAGMENT_SHADER);
-
-    char s[128];
-    // ZIGGY convert a 565 texture into depth component
-    sprintf(s, "gl_FragDepth = dot(texture2D(texture0, vec2(gl_TexCoord[0])), vec4(31*64*32, 63*32, 31, 0))*%g + %g; \n", zscale / 2 / 65535.0, 1 - zscale / 2);
-    fragment_shader = (char*)malloc(strlen(fragment_shader_header) +
-        strlen(s) +
-        strlen(fragment_shader_end) + 1);
-    strcpy(fragment_shader, fragment_shader_header);
-    strcat(fragment_shader, s);
-    strcat(fragment_shader, fragment_shader_end);
-    glShaderSource(fragment_depth_shader_object, 1, (const GLchar**)&fragment_shader, NULL);
-    free(fragment_shader);
-
-    glCompileShader(fragment_depth_shader_object);
-    check_compile(fragment_depth_shader_object);
-#endif
 
     // default shader
     fragment_shader_object = glCreateShader(GL_FRAGMENT_SHADER);
@@ -367,52 +347,25 @@ void init_combiner()
     glCompileShader(vertex_shader_object);
     check_compile(vertex_shader_object);
 
-    // depth program
-#ifndef ANDROID
-    program_object = glCreateProgram();
-    program_object_depth = program_object;
-    glAttachShader(program_object, fragment_depth_shader_object);
-    glAttachShader(program_object, vertex_shader_object);
-
-    glBindAttribLocation(program_object, POSITION_ATTR, "aPosition");
-    glBindAttribLocation(program_object, COLOUR_ATTR, "aColor");
-    glBindAttribLocation(program_object, TEXCOORD_0_ATTR, "aMultiTexCoord0");
-    glBindAttribLocation(program_object, TEXCOORD_1_ATTR, "aMultiTexCoord1");
-    glBindAttribLocation(program_object, FOG_ATTR, "aFog");
-
-    glLinkProgram(program_object);
-    check_link(program_object);
-    glUseProgram(program_object);
-
-    rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
-    set_rotation_matrix(rotation_matrix_location, g_settings->rotate);
-
-    texture0_location = glGetUniformLocation(program_object, "texture0");
-    texture1_location = glGetUniformLocation(program_object, "texture1");
-    glUniform1i(texture0_location, 0);
-    glUniform1i(texture1_location, 1);
-#endif
-
     // default program
-    program_object = glCreateProgram();
-    program_object_default = program_object;
-    glAttachShader(program_object, fragment_shader_object);
-    glAttachShader(program_object, vertex_shader_object);
+    g_program_object_default = glCreateProgram();
+    glAttachShader(g_program_object_default, fragment_shader_object);
+    glAttachShader(g_program_object_default, vertex_shader_object);
 
-    glBindAttribLocation(program_object, POSITION_ATTR, "aPosition");
-    glBindAttribLocation(program_object, COLOUR_ATTR, "aColor");
-    glBindAttribLocation(program_object, TEXCOORD_0_ATTR, "aMultiTexCoord0");
-    glBindAttribLocation(program_object, TEXCOORD_1_ATTR, "aMultiTexCoord1");
-    glBindAttribLocation(program_object, FOG_ATTR, "aFog");
+    glBindAttribLocation(g_program_object_default, POSITION_ATTR, "aPosition");
+    glBindAttribLocation(g_program_object_default, COLOUR_ATTR, "aColor");
+    glBindAttribLocation(g_program_object_default, TEXCOORD_0_ATTR, "aMultiTexCoord0");
+    glBindAttribLocation(g_program_object_default, TEXCOORD_1_ATTR, "aMultiTexCoord1");
+    glBindAttribLocation(g_program_object_default, FOG_ATTR, "aFog");
 
-    glLinkProgram(program_object);
-    check_link(program_object);
-    glUseProgram(program_object);
-    rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
+    glLinkProgram(g_program_object_default);
+    check_link(g_program_object_default);
+    glUseProgram(g_program_object_default);
+    rotation_matrix_location = glGetUniformLocation(g_program_object_default, "rotation_matrix");
     set_rotation_matrix(rotation_matrix_location, g_settings->rotate);
 
-    texture0_location = glGetUniformLocation(program_object, "texture0");
-    texture1_location = glGetUniformLocation(program_object, "texture1");
+    texture0_location = glGetUniformLocation(g_program_object_default, "texture0");
+    texture1_location = glGetUniformLocation(g_program_object_default, "texture1");
     glUniform1i(texture0_location, 0);
     glUniform1i(texture1_location, 1);
 
@@ -498,8 +451,7 @@ typedef struct _shader_program_key
     int chroma_color_location;
 } shader_program_key;
 
-static shader_program_key* shader_programs = NULL;
-static int number_of_programs = 0;
+static std::vector<shader_program_key> g_shader_programs;
 static int color_combiner_key;
 static int alpha_combiner_key;
 static int texture0_combiner_key;
@@ -507,7 +459,7 @@ static int texture1_combiner_key;
 static int texture0_combinera_key;
 static int texture1_combinera_key;
 
-void update_uniforms(shader_program_key prog)
+void update_uniforms(GLuint program_object, const shader_program_key & prog)
 {
     glUniform1i(prog.texture0_location, 0);
     glUniform1i(prog.texture1_location, 1);
@@ -546,7 +498,7 @@ void update_uniforms(shader_program_key prog)
         glUniform1i(prog.ditherTex_location, 2);
     }
 
-    rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
+	rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
     set_rotation_matrix(rotation_matrix_location, g_settings->rotate);
     rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
     set_rotation_matrix(rotation_matrix_location, g_settings->rotate);
@@ -556,28 +508,17 @@ void update_uniforms(shader_program_key prog)
 
 void disable_textureSizes()
 {
-    int textureSizes_location = glGetUniformLocation(program_object_default, "textureSizes");
+    int textureSizes_location = glGetUniformLocation(g_program_object_default, "textureSizes");
     glUniform4f(textureSizes_location, 1, 1, 1, 1);
 }
 
 void compile_shader()
 {
-    int rotation_matrix_location;
-    int texture0_location;
-    int texture1_location;
-    int ditherTex_location;
-    int vertexOffset_location;
-    int textureSizes_location;
-    char *fragment_shader;
-    int i;
-    int chroma_color_location;
-    int log_length;
-
     need_to_compile = 0;
 
-    for (i = 0; i < number_of_programs; i++)
+    for (int i = 0; i < g_shader_programs.size(); i++)
     {
-        shader_program_key prog = shader_programs[i];
+        shader_program_key & prog = g_shader_programs[i];
         if (prog.color_combiner == color_combiner_key &&
             prog.alpha_combiner == alpha_combiner_key &&
             prog.texture0_combiner == texture0_combiner_key &&
@@ -590,30 +531,24 @@ void compile_shader()
             prog.blackandwhite0 == blackandwhite0 &&
             prog.blackandwhite1 == blackandwhite1)
         {
-            program_object = shader_programs[i].program_object;
-            glUseProgram(program_object);
-            update_uniforms(prog);
+            glUseProgram(prog.program_object);
+            update_uniforms(prog.program_object, prog);
             return;
         }
     }
 
-    if (shader_programs != NULL)
-        shader_programs = (shader_program_key*)realloc(shader_programs, (number_of_programs + 1)*sizeof(shader_program_key));
-    else
-        shader_programs = (shader_program_key*)malloc(sizeof(shader_program_key));
-    //printf("number of shaders %d\n", number_of_programs);
-
-    shader_programs[number_of_programs].color_combiner = color_combiner_key;
-    shader_programs[number_of_programs].alpha_combiner = alpha_combiner_key;
-    shader_programs[number_of_programs].texture0_combiner = texture0_combiner_key;
-    shader_programs[number_of_programs].texture1_combiner = texture1_combiner_key;
-    shader_programs[number_of_programs].texture0_combinera = texture0_combinera_key;
-    shader_programs[number_of_programs].texture1_combinera = texture1_combinera_key;
-    shader_programs[number_of_programs].fog_enabled = fog_enabled;
-    shader_programs[number_of_programs].chroma_enabled = chroma_enabled;
-    shader_programs[number_of_programs].dither_enabled = dither_enabled;
-    shader_programs[number_of_programs].blackandwhite0 = blackandwhite0;
-    shader_programs[number_of_programs].blackandwhite1 = blackandwhite1;
+    shader_program_key shader_program;
+    shader_program.color_combiner = color_combiner_key;
+    shader_program.alpha_combiner = alpha_combiner_key;
+    shader_program.texture0_combiner = texture0_combiner_key;
+    shader_program.texture1_combiner = texture1_combiner_key;
+    shader_program.texture0_combinera = texture0_combinera_key;
+    shader_program.texture1_combinera = texture1_combinera_key;
+    shader_program.fog_enabled = fog_enabled;
+    shader_program.chroma_enabled = chroma_enabled;
+    shader_program.dither_enabled = dither_enabled;
+    shader_program.blackandwhite0 = blackandwhite0;
+    shader_program.blackandwhite1 = blackandwhite1;
 
     if (chroma_enabled)
     {
@@ -621,36 +556,47 @@ void compile_shader()
         compile_chroma_shader();
     }
 
-    fragment_shader = (char*)malloc(4096);
+    std::string fragment_shader = fragment_shader_header;
 
-    strcpy(fragment_shader, fragment_shader_header);
-    if (dither_enabled) strcat(fragment_shader, fragment_shader_dither);
-    switch (blackandwhite0) {
-    case 1: strcat(fragment_shader, fragment_shader_readtex0bw); break;
-    case 2: strcat(fragment_shader, fragment_shader_readtex0bw_2); break;
-    default: strcat(fragment_shader, fragment_shader_readtex0color);
+    if (dither_enabled)
+    {
+        fragment_shader += fragment_shader_dither;
     }
-    switch (blackandwhite1) {
-    case 1: strcat(fragment_shader, fragment_shader_readtex1bw); break;
-    case 2: strcat(fragment_shader, fragment_shader_readtex1bw_2); break;
-    default: strcat(fragment_shader, fragment_shader_readtex1color);
+    switch (blackandwhite0) 
+    {
+    case 1: fragment_shader += fragment_shader_readtex0bw; break;
+    case 2: fragment_shader += fragment_shader_readtex0bw_2; break;
+    default: fragment_shader += fragment_shader_readtex0color;
     }
-    strcat(fragment_shader, fragment_shader_texture0);
-    strcat(fragment_shader, fragment_shader_texture1);
-    strcat(fragment_shader, fragment_shader_color_combiner);
-    strcat(fragment_shader, fragment_shader_alpha_combiner);
-    if (fog_enabled) strcat(fragment_shader, fragment_shader_fog);
-    strcat(fragment_shader, fragment_shader_end);
-    if (chroma_enabled) strcat(fragment_shader, fragment_shader_chroma);
+    switch (blackandwhite1)
+    {
+    case 1: fragment_shader += fragment_shader_readtex1bw; break;
+    case 2: fragment_shader += fragment_shader_readtex1bw_2; break;
+    default: fragment_shader += fragment_shader_readtex1color;
+    }
+    fragment_shader += fragment_shader_texture0;
+    fragment_shader += fragment_shader_texture1;
+    fragment_shader += fragment_shader_color_combiner;
+    fragment_shader += fragment_shader_alpha_combiner;
+    if (fog_enabled)
+    {
+        fragment_shader += fragment_shader_fog;
+    }
+    fragment_shader += fragment_shader_end;
+    if (chroma_enabled)
+    {
+        fragment_shader += fragment_shader_chroma;
+    }
 
-    shader_programs[number_of_programs].fragment_shader_object = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(shader_programs[number_of_programs].fragment_shader_object, 1, (const GLchar**)&fragment_shader, NULL);
+    shader_program.fragment_shader_object = glCreateShader(GL_FRAGMENT_SHADER);
+    const GLchar * glfragment_shader = (const GLchar *)fragment_shader.c_str();
+    glShaderSource(shader_program.fragment_shader_object, 1, &glfragment_shader, NULL);
 
-    glCompileShader(shader_programs[number_of_programs].fragment_shader_object);
-    check_compile(shader_programs[number_of_programs].fragment_shader_object);
+    glCompileShader(shader_program.fragment_shader_object);
+    check_compile(shader_program.fragment_shader_object);
 
-    program_object = glCreateProgram();
-    shader_programs[number_of_programs].program_object = program_object;
+    GLuint program_object = glCreateProgram();
+    shader_program.program_object = program_object;
 
     glBindAttribLocation(program_object, POSITION_ATTR, "aPosition");
     glBindAttribLocation(program_object, COLOUR_ATTR, "aColor");
@@ -658,33 +604,40 @@ void compile_shader()
     glBindAttribLocation(program_object, TEXCOORD_1_ATTR, "aMultiTexCoord1");
     glBindAttribLocation(program_object, FOG_ATTR, "aFog");
 
-    glAttachShader(program_object, shader_programs[number_of_programs].fragment_shader_object);
+    glAttachShader(program_object, shader_program.fragment_shader_object);
     glAttachShader(program_object, vertex_shader_object);
 
     glLinkProgram(program_object);
     check_link(program_object);
     glUseProgram(program_object);
 
-    shader_programs[number_of_programs].rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
-    shader_programs[number_of_programs].texture0_location = glGetUniformLocation(program_object, "texture0");
-    shader_programs[number_of_programs].texture1_location = glGetUniformLocation(program_object, "texture1");
-    shader_programs[number_of_programs].vertexOffset_location = glGetUniformLocation(program_object, "vertexOffset");
-    shader_programs[number_of_programs].textureSizes_location = glGetUniformLocation(program_object, "textureSizes");
-    shader_programs[number_of_programs].fogModeEndScale_location = glGetUniformLocation(program_object, "fogModeEndScale");
-    shader_programs[number_of_programs].fogColor_location = glGetUniformLocation(program_object, "fogColor");
-    shader_programs[number_of_programs].alphaRef_location = glGetUniformLocation(program_object, "alphaRef");
-    shader_programs[number_of_programs].chroma_color_location = glGetUniformLocation(program_object, "chroma_color");
+    shader_program.rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
+    shader_program.texture0_location = glGetUniformLocation(program_object, "texture0");
+    shader_program.texture1_location = glGetUniformLocation(program_object, "texture1");
+    shader_program.vertexOffset_location = glGetUniformLocation(program_object, "vertexOffset");
+    shader_program.textureSizes_location = glGetUniformLocation(program_object, "textureSizes");
+    shader_program.fogModeEndScale_location = glGetUniformLocation(program_object, "fogModeEndScale");
+    shader_program.fogColor_location = glGetUniformLocation(program_object, "fogColor");
+    shader_program.alphaRef_location = glGetUniformLocation(program_object, "alphaRef");
+    shader_program.chroma_color_location = glGetUniformLocation(program_object, "chroma_color");
 
-    update_uniforms(shader_programs[number_of_programs]);
-
-    number_of_programs++;
+    update_uniforms(shader_program.program_object, shader_program);
+    g_shader_programs.push_back(shader_program);
 }
 
 void free_combiners()
 {
-    free(shader_programs);
-    shader_programs = NULL;
-    number_of_programs = 0;
+    if (g_program_object_default != 0)
+    {
+        glDeleteProgram(g_program_object_default);
+        g_program_object_default = 0;
+    }
+    for (int i = 0; i < g_shader_programs.size(); i++)
+    {
+        glDeleteProgram(g_shader_programs[i].program_object);
+        g_shader_programs[i].program_object = 0;
+    }
+    g_shader_programs.clear();
 }
 
 void set_copy_shader()
@@ -692,32 +645,24 @@ void set_copy_shader()
     int texture0_location;
     int alphaRef_location;
 
-    glUseProgram(program_object_default);
-    texture0_location = glGetUniformLocation(program_object_default, "texture0");
+    glUseProgram(g_program_object_default);
+    texture0_location = glGetUniformLocation(g_program_object_default, "texture0");
     glUniform1i(texture0_location, 0);
 
-    alphaRef_location = glGetUniformLocation(program_object_default, "alphaRef");
+    alphaRef_location = glGetUniformLocation(g_program_object_default, "alphaRef");
     if (alphaRef_location != -1)
+    {
         glUniform1f(alphaRef_location, alpha_test ? alpha_ref / 255.0f : -1.0f);
+    }
 }
 
 void set_depth_shader()
 {
-    int texture0_location;
-    int alphaRef_location;
-
-    glUseProgram(program_object_depth);
-    texture0_location = glGetUniformLocation(program_object_depth, "texture0");
-    glUniform1i(texture0_location, 0);
-
-    alphaRef_location = glGetUniformLocation(program_object_depth, "alphaRef");
-    if (alphaRef_location != -1)
-        glUniform1f(alphaRef_location, alpha_test ? alpha_ref / 255.0f : -1.0f);
 }
 
 void set_lambda()
 {
-    int lambda_location = glGetUniformLocation(program_object, "lambda");
+    int lambda_location = glGetUniformLocation(g_program_object_default, "lambda");
     glUniform1f(lambda_location, lambda);
 }
 
@@ -745,7 +690,7 @@ grConstantColorValue(GrColor_t value)
 
     vbo_draw();
 
-    constant_color_location = glGetUniformLocation(program_object, "constant_color");
+    constant_color_location = glGetUniformLocation(g_program_object_default, "constant_color");
     glUniform4f(constant_color_location, texture_env_color[0], texture_env_color[1],
         texture_env_color[2], texture_env_color[3]);
 }
@@ -1767,7 +1712,7 @@ grChromakeyValue(GrColor_t value)
         WriteTrace(TraceGlitch, TraceWarning, "grChromakeyValue: unknown color format : %x", lfb_color_fmt);
     }
     vbo_draw();
-    chroma_color_location = glGetUniformLocation(program_object, "chroma_color");
+    chroma_color_location = glGetUniformLocation(g_program_object_default, "chroma_color");
     glUniform4f(chroma_color_location, chroma_color[0], chroma_color[1],
         chroma_color[2], chroma_color[3]);
 }
@@ -2825,9 +2770,7 @@ FxU32 shift, FxBool invert)
     need_to_compile = 1;
 }
 
-FX_ENTRY void FX_CALL
-grConstantColorValueExt(GrChipID_t    tmu,
-GrColor_t     value)
+FX_ENTRY void FX_CALL grConstantColorValueExt(GrChipID_t tmu, GrColor_t value)
 {
     int num_tex;
     WriteTrace(TraceResolution, TraceDebug, "tmu: %d value: %d", tmu, value);
@@ -2876,12 +2819,12 @@ GrColor_t     value)
     vbo_draw();
     if (num_tex == 0)
     {
-        ccolor0_location = glGetUniformLocation(program_object, "ccolor0");
+        ccolor0_location = glGetUniformLocation(g_program_object_default, "ccolor0");
         glUniform4f(ccolor0_location, ccolor0[0], ccolor0[1], ccolor0[2], ccolor0[3]);
     }
     else
     {
-        ccolor1_location = glGetUniformLocation(program_object, "ccolor1");
+        ccolor1_location = glGetUniformLocation(g_program_object_default, "ccolor1");
         glUniform4f(ccolor1_location, ccolor1[0], ccolor1[1], ccolor1[2], ccolor1[3]);
     }
 }
