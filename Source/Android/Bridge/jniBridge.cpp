@@ -9,6 +9,11 @@
 *                                                                           *
 ****************************************************************************/
 #include <stdlib.h>
+#ifdef ANDROID
+#include <unistd.h>
+#include <sys/inotify.h>
+#include <sys/file.h>
+#endif
 #include "NotificationClass.h"
 #include <Project64-core/AppInit.h>
 #include <Project64-core/Version.h>
@@ -67,11 +72,79 @@ jobject g_GLThread = NULL;
 static void Android_JNI_ThreadDestroyed(void*);
 static void Android_JNI_SetupThread(void);
 
+static void watch_uninstall(const char *baseDir)
+{
+    CPath lockfile(baseDir, "uninstall.lock");
+    __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "LockFile = %s", (const char *)lockfile);
+
+    int fd = open(lockfile, O_CREAT);
+    __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "fd = %d", (unsigned int)fd);
+    if (flock(fd, LOCK_EX | LOCK_NB) == 0)
+    {
+        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "I have the lock");
+    }
+    else
+    {
+        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "I don't have the lock");
+        exit(1);
+    }
+
+    CPath TestDir("/data/data/emu.project64", "");
+    for (;;)
+    {
+        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "start");
+        int fileDescriptor = inotify_init();
+        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "fileDescriptor = %d", fileDescriptor);
+        if (fileDescriptor < 0)
+        {
+            __android_log_print(ANDROID_LOG_ERROR, "watch_uninstall", "inotify_init failed !!!");
+            exit(1);
+        }
+
+        int watchDescriptor;
+        watchDescriptor = inotify_add_watch(fileDescriptor, TestDir, IN_DELETE);
+        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "watchDescriptor = %d", watchDescriptor);
+        if (watchDescriptor < 0)
+        {
+            __android_log_print(ANDROID_LOG_ERROR, "watch_uninstall", "inotify_add_watch failed !!!");
+            exit(1);
+        }
+
+        enum 
+        {
+            EVENT_SIZE = sizeof(struct inotify_event),
+            EVENT_BUF_LEN = (1024 * (EVENT_SIZE + 16)) 
+        };
+        struct inotify_event event;
+        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "read event");
+        char buffer[EVENT_BUF_LEN];
+        size_t readBytes = read(fileDescriptor, &buffer, EVENT_BUF_LEN);
+        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "readBytes = %d", readBytes);
+        inotify_rm_watch(fileDescriptor, IN_DELETE);
+        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "closing the INOTIFY instance");
+        close(fileDescriptor);
+        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "Waiting to test if dir removed");
+        pjutil::Sleep(2000);
+        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "Sleep Done");
+
+        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "TestDir.DirectoryExists() = %s", TestDir.DirectoryExists() ? "yes": "no");
+        if (!TestDir.DirectoryExists())
+        {
+            __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "exit loop");
+            break;
+        }
+        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "continue loop");
+    }
+
+    __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "Launching web browser");
+    execlp("am", "am", "start", "--user", "0", "-a", "android.intent.action.VIEW", "-d", "https://www.pj64-emu.com/android-uninstalled.html", (char *)NULL);
+    exit(1);
+}
+
 EXPORT jint CALL JNI_OnLoad(JavaVM* vm, void* reserved)
 {
     __android_log_print(ANDROID_LOG_INFO, "jniBridge", "JNI_OnLoad called");
     g_JavaVM = vm;
-
     JNIEnv *env;
     if (g_JavaVM->GetEnv((void**) &env, JNI_VERSION_1_4) != JNI_OK)
     {
@@ -229,6 +302,13 @@ EXPORT jboolean CALL Java_emu_project64_jni_NativeExports_appInit(JNIEnv* env, j
     }
 
     const char *baseDir = env->GetStringUTFChars(BaseDir, 0);
+    pid_t pid = fork();
+    __android_log_print(ANDROID_LOG_INFO, "jniBridge", "pid = %d", pid);
+    if (pid == 0)
+    {
+        watch_uninstall(baseDir);
+        exit(1);
+    }
     bool res = AppInit(&Notify(), baseDir, 0, NULL);
 
     env->ReleaseStringUTFChars(BaseDir, baseDir);
