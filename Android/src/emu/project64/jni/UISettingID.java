@@ -34,6 +34,9 @@ public enum UISettingID
     SupportWindow_AlwaysShow,
     SupportWindow_ShowingSupportWindow,
     SupportWindow_RunCount,
+
+    //Game Settings
+    Game_RunCount,
     ;
     
     private int value;
