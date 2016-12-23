@@ -960,7 +960,7 @@ CCompiledFunc * CRecompiler::CompileCode()
     CCompiledFuncList::iterator iter = m_Functions.find(PROGRAM_COUNTER);
     if (iter != m_Functions.end())
     {
-        WriteTrace(TraceRecompiler, TraceDebug, "exisiting functions for address");
+        WriteTrace(TraceRecompiler, TraceInfo, "exisiting functions for address (Program Counter: %X pAddr: %X)", PROGRAM_COUNTER, pAddr);
         for (CCompiledFunc * Func = iter->second; Func != NULL; Func = Func->Next())
         {
             uint32_t PAddr;
@@ -970,7 +970,7 @@ CCompiledFunc * CRecompiler::CompileCode()
                 MD5(g_MMU->Rdram() + PAddr, (Func->MaxPC() - Func->MinPC()) + 4).get_digest(Hash);
                 if (memcmp(Hash.digest, Func->Hash().digest, sizeof(Hash.digest)) == 0)
                 {
-                    WriteTrace(TraceRecompiler, TraceDebug, "Using extisting compiled code");
+                    WriteTrace(TraceRecompiler, TraceInfo, "Using extisting compiled code (Program Counter: %X pAddr: %X)", PROGRAM_COUNTER, pAddr);
                     return Func;
                 }
             }
@@ -1041,7 +1041,7 @@ void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REAS
             uint32_t VAddr, Index = 0;
             while (g_TLB->PAddrToVAddr(Address, VAddr, Index))
             {
-                WriteTrace(TraceRecompiler, TraceDebug, "ClearRecompCode Vaddr %X  len: %d", VAddr, length);
+                WriteTrace(TraceRecompiler, TraceInfo, "ClearRecompCode Vaddr %X  len: %d", VAddr, length);
                 ClearRecompCode_Virt(VAddr, length, Reason);
             }
         }
@@ -1056,7 +1056,7 @@ void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REAS
                 g_Notify->BreakPoint(__FILE__, __LINE__);
                 ClearLen = g_System->RdramSize() - Address;
             }
-            WriteTrace(TraceRecompiler, TraceDebug, "Reseting Jump Table, Addr: %X  len: %d", Address, ClearLen);
+            WriteTrace(TraceRecompiler, TraceInfo, "Reseting Jump Table, Addr: %X  len: %d", Address, ClearLen);
             memset((uint8_t *)JumpTable() + Address, 0, ClearLen);
             if (g_System->bSMM_Protect())
             {
@@ -1065,7 +1065,7 @@ void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REAS
         }
         else
         {
-            WriteTrace(TraceRecompiler, TraceDebug, "Ignoring reset of Jump Table, Addr: %X  len: %d", Address, ((length + 3) & ~3));
+            WriteTrace(TraceRecompiler, TraceInfo, "Ignoring reset of Jump Table, Addr: %X  len: %d", Address, ((length + 3) & ~3));
         }
     }
 }
