@@ -25,6 +25,10 @@ class AndroidLogger : public CTraceModule
         default: __android_log_print(ANDROID_LOG_UNKNOWN, TraceModule(module), "%s: %s", function, Message); break;
         }
     }
+
+    void FlushTrace(void)
+    {
+    }
 };
 static AndroidLogger * g_AndroidLogger = NULL;
 #endif

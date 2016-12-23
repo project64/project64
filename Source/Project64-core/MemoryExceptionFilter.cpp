@@ -427,6 +427,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.rt: %X",OpCode32->uint32.rt);
         WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.opcode2: %X",OpCode32->uint32.opcode2);
         WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.rm: %X",OpCode32->uint32.rm);
+        TraceFlushLog();
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return false;
     }

@@ -27,7 +27,8 @@ public:
 
     CTraceModule * AddTraceModule(CTraceModule * TraceModule);
     CTraceModule * RemoveTraceModule(CTraceModule * TraceModule);
-    void           CloseTrace(void);
+    void CloseTrace(void);
+    void FlushTrace(void);
 };
 
 CTraceLog & GetTraceObjet(void)
@@ -54,6 +55,11 @@ void WriteTraceFull(uint32_t module, uint8_t severity, const char * file, int li
         GetTraceObjet().TraceMessage(module, severity, file, line, function, Message);
     }
     va_end(args);
+}
+
+void TraceFlushLog(void)
+{
+    GetTraceObjet().FlushTrace();
 }
 
 void CloseTrace(void)
@@ -116,6 +122,16 @@ void CTraceLog::CloseTrace(void)
 {
     CGuard Guard(m_CS);
     m_Modules.clear();
+}
+
+void CTraceLog::FlushTrace(void)
+{
+    CGuard Guard(m_CS);
+    for (uint32_t i = 0, n = m_Modules.size(); i < n; i++)
+    {
+        m_Modules[i]->FlushTrace();
+    }
+
 }
 
 void CTraceLog::TraceMessage(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char * Message)
@@ -230,7 +246,13 @@ void CTraceFileLog::Write(uint32_t module, uint8_t severity, const char * /*file
     }
 }
 
+void CTraceFileLog::FlushTrace(void)
+{
+    m_hLogFile.Flush();
+}
+
 void CTraceFileLog::SetFlushFile(bool bFlushFile)
 {
     m_FlushFile = bFlushFile;
+    FlushTrace();
 }

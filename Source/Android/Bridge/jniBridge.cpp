@@ -60,6 +60,9 @@ class AndroidLogger : public CTraceModule
         default: __android_log_print(ANDROID_LOG_UNKNOWN, TraceModule(module), "%05d: %s: %s",CThread::GetCurrentThreadId(),function,Message); break;
         }
     }
+    void FlushTrace(void)
+    {
+    }
 };
 AndroidLogger * g_Logger = NULL;
 static pthread_key_t g_ThreadKey;
