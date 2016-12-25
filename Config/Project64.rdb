@@ -2353,12 +2353,14 @@ Good Name=Hoshi no Kirby 64 (J) (V1.2)
 Internal Name=Kirby64
 Status=Compatible
 Culling=1
+Save Type=16kbit Eeprom
 
 [BCB1F89F-060752A2-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (V1.3)
 Internal Name=Kirby64
 Status=Compatible
 Culling=1
+Save Type=16kbit Eeprom
 
 [E7D20193-C1158E93-C:50]
 Good Name=Hot Wheels Turbo Racing (E) (M3)
@@ -2899,12 +2901,14 @@ Good Name=Kirby 64 - The Crystal Shards (E)
 Internal Name=Kirby64
 Status=Compatible
 Culling=1
+Save Type=16kbit Eeprom
 
 [46039FB4-0337822C-C:45]
 Good Name=Kirby 64 - The Crystal Shards (U)
 Internal Name=Kirby64
 Status=Compatible
 Culling=1
+Save Type=16kbit Eeprom
 
 [4A997C74-E2087F99-C:50]
 Good Name=Knife Edge - Nose Gunner (E)
