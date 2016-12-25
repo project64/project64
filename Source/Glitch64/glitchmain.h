@@ -126,7 +126,6 @@ extern PFNGLGETINFOLOGARBPROC glGetInfoLogARB;
 extern PFNGLGETOBJECTPARAMETERIVARBPROC glGetObjectParameterivARB;
 extern PFNGLSECONDARYCOLOR3FPROC glSecondaryColor3f;
 #endif
-void check_compile(GLuint shader);
 void check_link(GLuint program);
 void vbo_enable();
 void vbo_disable();

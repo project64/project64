@@ -2117,7 +2117,8 @@ grAuxBufferExt(GrBuffer_t buffer)
 {
     WriteTrace(TraceGlitch, TraceDebug, "buffer: %d", buffer);
 
-    if (buffer == GR_BUFFER_AUXBUFFER) {
+    if (buffer == GR_BUFFER_AUXBUFFER) 
+    {
         invtex[0] = 0;
         invtex[1] = 0;
         need_to_compile = 0;

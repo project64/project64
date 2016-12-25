@@ -31,6 +31,7 @@
 #include "glitchmain.h"
 #include <Glide64/trace.h>
 #include <Glide64/Settings.h>
+#include <Common/StdString.h>
 #include <vector>
 
 void vbo_draw();
@@ -55,20 +56,12 @@ int blackandwhite1;
 float fogStart, fogEnd;
 float fogColor[4];
 
-#ifdef _WIN32
-static float farF;
-static float nearF;
-#endif // _WIN32
-
 int need_lambda[2];
 float lambda_color[2][4];
 
 // shaders variables
 int need_to_compile;
 
-static GLuint fragment_shader_object;
-static GLuint fragment_depth_shader_object;
-static GLuint vertex_shader_object;
 static GLuint g_program_object_default = 0;
 static GLuint rotation_matrix_location;
 static int constant_color_location;
@@ -171,7 +164,7 @@ static const char* fragment_shader_end =
 static const char* vertex_shader =
 SHADER_HEADER
 "#define Z_MAX 65536.0                                          \n"
-"attribute highp vec4 aVertex;                                  \n"
+"attribute highp vec4 aPosition;                                \n"
 "attribute highp vec4 aColor;                                   \n"
 "attribute highp vec4 aMultiTexCoord0;                          \n"
 "attribute highp vec4 aMultiTexCoord1;                          \n"
@@ -184,11 +177,11 @@ SHADER_VARYING
 "                                                               \n"
 "void main()                                                    \n"
 "{                                                              \n"
-"  float q = aVertex.w;                                                     \n"
+"  float q = aPosition.w;                                                   \n"
 "  float invertY = vertexOffset.z;                                          \n" //Usually 1.0 but -1.0 when rendering to a texture (see inverted_culling grRenderBuffer)
-"  gl_Position.x = (aVertex.x - vertexOffset.x) / vertexOffset.x;           \n"
-"  gl_Position.y = invertY *-(aVertex.y - vertexOffset.y) / vertexOffset.y; \n"
-"  gl_Position.z = aVertex.z / Z_MAX;                                       \n"
+"  gl_Position.x = (aPosition.x - vertexOffset.x) / vertexOffset.x;         \n"
+"  gl_Position.y = invertY *-(aPosition.y - vertexOffset.y) / vertexOffset.y;\n"
+"  gl_Position.z = aPosition.z / Z_MAX;                                     \n"
 "  gl_Position.w = 1.0;                                                     \n"
 "  gl_Position /= q;                                                        \n"
 "  gl_Position = rotation_matrix * gl_Position;                             \n"
@@ -203,10 +196,10 @@ SHADER_VARYING
 "  //}                                                                      \n"
 "                                                                           \n"
 "  float f = (fogModeEndScale[1] - fogV) * fogModeEndScale[2];              \n"
-"  f = clamp(f, 0.0, 1.0);                                      \n"
+"  f = clamp(f, 0.0, 1.0);                                                  \n"
 "  gl_TexCoord[0].b = f;                                                    \n"
-"  gl_TexCoord[2].b = aVertex.x;                                            \n"
-"  gl_TexCoord[2].a = aVertex.y;                                            \n"
+"  gl_TexCoord[2].b = aPosition.x;                                          \n"
+"  gl_TexCoord[2].a = aPosition.y;                                          \n"
 "}                                                                          \n"
 ;
 
@@ -215,18 +208,31 @@ static char fragment_shader_alpha_combiner[1024];
 static char fragment_shader_texture1[1024];
 static char fragment_shader_texture0[1024];
 static char fragment_shader_chroma[1024];
-static char shader_log[2048];
 
-void check_compile(GLuint shader)
+GLuint CompileShader(GLenum type, const std::string &source)
 {
-    GLint success;
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-    if (!success)
+    GLuint shader = glCreateShader(type);
+
+    const char *sourceArray[1] = { source.c_str() };
+    glShaderSource(shader, 1, sourceArray, NULL);
+    glCompileShader(shader);
+
+    GLint compileResult;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &compileResult);
+
+    if (compileResult == 0)
     {
-        char log[1024];
-        glGetShaderInfoLog(shader, 1024, NULL, log);
-        //LOGINFO(log);
+        GLint infoLogLength;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+        std::vector<GLchar> infoLog(infoLogLength);
+        glGetShaderInfoLog(shader, (GLsizei)infoLog.size(), NULL, infoLog.data());
+
+        WriteTrace(TraceGlitch, TraceError, "Shader compilation failed: %s", stdstr().FromUTF16(std::wstring(infoLog.begin(), infoLog.end()).c_str()));
+        return -1;
     }
+
+    return shader;
 }
 
 void check_link(GLuint program)
@@ -323,34 +329,22 @@ void init_combiner()
     int rotation_matrix_location;
     int texture0_location;
     int texture1_location;
-    char *fragment_shader;
     int log_length;
 
-
     // default shader
-    fragment_shader_object = glCreateShader(GL_FRAGMENT_SHADER);
+    std::string fragment_shader = fragment_shader_header;
+    fragment_shader += fragment_shader_default;
+    fragment_shader += fragment_shader_end;
 
-    fragment_shader = (char*)malloc(strlen(fragment_shader_header) +
-        strlen(fragment_shader_default) +
-        strlen(fragment_shader_end) + 1);
-    strcpy(fragment_shader, fragment_shader_header);
-    strcat(fragment_shader, fragment_shader_default);
-    strcat(fragment_shader, fragment_shader_end);
-    glShaderSource(fragment_shader_object, 1, (const GLchar**)&fragment_shader, NULL);
-    free(fragment_shader);
-
-    glCompileShader(fragment_shader_object);
-    check_compile(fragment_shader_object);
-
-    vertex_shader_object = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_shader_object, 1, &vertex_shader, NULL);
-    glCompileShader(vertex_shader_object);
-    check_compile(vertex_shader_object);
+    GLuint fragment_shader_object = CompileShader(GL_FRAGMENT_SHADER, fragment_shader);
+    GLuint vertex_shader_object = CompileShader(GL_VERTEX_SHADER, vertex_shader);
 
     // default program
     g_program_object_default = glCreateProgram();
     glAttachShader(g_program_object_default, fragment_shader_object);
     glAttachShader(g_program_object_default, vertex_shader_object);
+    glDeleteShader(fragment_shader_object);
+    glDeleteShader(vertex_shader_object);
 
     glBindAttribLocation(g_program_object_default, POSITION_ATTR, "aPosition");
     glBindAttribLocation(g_program_object_default, COLOUR_ATTR, "aColor");
@@ -361,8 +355,10 @@ void init_combiner()
     glLinkProgram(g_program_object_default);
     check_link(g_program_object_default);
     glUseProgram(g_program_object_default);
-    rotation_matrix_location = glGetUniformLocation(g_program_object_default, "rotation_matrix");
+#ifdef ANDROID
+    GLuint rotation_matrix_location = glGetUniformLocation(g_program_object_default, "rotation_matrix");
     set_rotation_matrix(rotation_matrix_location, g_settings->rotate);
+#endif
 
     texture0_location = glGetUniformLocation(g_program_object_default, "texture0");
     texture1_location = glGetUniformLocation(g_program_object_default, "texture1");
@@ -437,9 +433,7 @@ typedef struct _shader_program_key
     int dither_enabled;
     int blackandwhite0;
     int blackandwhite1;
-    GLuint fragment_shader_object;
     GLuint program_object;
-    int rotation_matrix_location;
     int texture0_location;
     int texture1_location;
     int vertexOffset_location;
@@ -498,11 +492,10 @@ void update_uniforms(GLuint program_object, const shader_program_key & prog)
         glUniform1i(prog.ditherTex_location, 2);
     }
 
-	rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
+#ifdef ANDROID
+    GLuint rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
     set_rotation_matrix(rotation_matrix_location, g_settings->rotate);
-    rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
-    set_rotation_matrix(rotation_matrix_location, g_settings->rotate);
-
+#endif
     set_lambda();
 }
 
@@ -588,13 +581,8 @@ void compile_shader()
         fragment_shader += fragment_shader_chroma;
     }
 
-    shader_program.fragment_shader_object = glCreateShader(GL_FRAGMENT_SHADER);
-    const GLchar * glfragment_shader = (const GLchar *)fragment_shader.c_str();
-    glShaderSource(shader_program.fragment_shader_object, 1, &glfragment_shader, NULL);
-
-    glCompileShader(shader_program.fragment_shader_object);
-    check_compile(shader_program.fragment_shader_object);
-
+    GLuint fragment_shader_object = CompileShader(GL_FRAGMENT_SHADER, fragment_shader);
+    
     GLuint program_object = glCreateProgram();
     shader_program.program_object = program_object;
 
@@ -604,14 +592,15 @@ void compile_shader()
     glBindAttribLocation(program_object, TEXCOORD_1_ATTR, "aMultiTexCoord1");
     glBindAttribLocation(program_object, FOG_ATTR, "aFog");
 
-    glAttachShader(program_object, shader_program.fragment_shader_object);
+    glAttachShader(program_object, fragment_shader_object);
+    glDeleteShader(fragment_shader_object);
     glAttachShader(program_object, vertex_shader_object);
+    glDeleteShader(vertex_shader_object);
 
     glLinkProgram(program_object);
     check_link(program_object);
     glUseProgram(program_object);
 
-    shader_program.rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
     shader_program.texture0_location = glGetUniformLocation(program_object, "texture0");
     shader_program.texture1_location = glGetUniformLocation(program_object, "texture1");
     shader_program.vertexOffset_location = glGetUniformLocation(program_object, "vertexOffset");
