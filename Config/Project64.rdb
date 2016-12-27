@@ -6794,12 +6794,12 @@ RDRAM Size=8
 Good Name=Wonder Project J2 - Corlo no Mori no Josette (J)
 Internal Name=WONDER PROJECT J2
 Status=Compatible
-Core Note=Intro hang? skip to avoid
+Counter Factor=1
 
 [4F1E88F7-4A5A3F96-C:4A]
 Good Name=Wonder Project J2 [T]
 Status=Compatible
-Core Note=Intro hang? skip to avoid
+Counter Factor=1
 
 [F9FC3090-FF014EC2-C:50]
 Good Name=World Cup 98 (E) (M8)
