@@ -1620,7 +1620,11 @@ grBufferSwap(FxU32 swap_interval)
         return;
     }
 
+#ifdef ANDROID
     Android_JNI_SwapWindow();
+#else
+    SwapBuffers();
+#endif
     for (i = 0; i < nb_fb; i++)
         fbs[i].buff_clear = 1;
 

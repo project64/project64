@@ -31,22 +31,19 @@
 #include "glitchmain.h"
 #include <Glide64/trace.h>
 #include <Glide64/Settings.h>
-#include <Common/StdString.h>
 #include <vector>
 
 void vbo_draw();
 
-static int fct[4], source0[4], operand0[4], source1[4], operand1[4], source2[4], operand2[4];
-static int fcta[4], sourcea0[4], operanda0[4], sourcea1[4], operanda1[4], sourcea2[4], operanda2[4];
-static int alpha_ref, alpha_func;
-bool alpha_test = 0;
+static int g_alpha_ref, g_alpha_func;
+static bool g_alpha_test = 0;
 
-float texture_env_color[4];
-float ccolor0[4];
-float ccolor1[4];
-static float chroma_color[4];
-int fog_enabled;
-static int chroma_enabled;
+static float g_texture_env_color[4];
+static float g_ccolor0[4];
+static float g_ccolor1[4];
+static float g_chroma_color[4];
+static int g_fog_enabled;
+static bool g_chroma_enabled;
 static int chroma_other_color;
 static int chroma_other_alpha;
 static int dither_enabled;
@@ -228,8 +225,8 @@ GLuint CompileShader(GLenum type, const std::string &source)
         std::vector<GLchar> infoLog(infoLogLength);
         glGetShaderInfoLog(shader, (GLsizei)infoLog.size(), NULL, infoLog.data());
 
-        WriteTrace(TraceGlitch, TraceError, "Shader compilation failed: %s", stdstr().FromUTF16(std::wstring(infoLog.begin(), infoLog.end()).c_str()));
-        return -1;
+        WriteTrace(TraceGlitch, TraceError, "Shader compilation failed: %s", std::string(infoLog.begin(), infoLog.end()).c_str());
+        return 0;
     }
 
     return shader;
@@ -326,7 +323,6 @@ void init_combiner()
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, default_texture);
 
-    int rotation_matrix_location;
     int texture0_location;
     int texture1_location;
     int log_length;
@@ -356,7 +352,7 @@ void init_combiner()
     check_link(g_program_object_default);
     glUseProgram(g_program_object_default);
 #ifdef ANDROID
-    GLuint rotation_matrix_location = glGetUniformLocation(g_program_object_default, "rotation_matrix");
+    int rotation_matrix_location = glGetUniformLocation(g_program_object_default, "rotation_matrix");
     set_rotation_matrix(rotation_matrix_location, g_settings->rotate);
 #endif
 
@@ -375,8 +371,8 @@ void init_combiner()
     first_texture0 = 1;
     first_texture1 = 1;
     need_to_compile = 0;
-    fog_enabled = 0;
-    chroma_enabled = 0;
+    g_fog_enabled = 0;
+    g_chroma_enabled = false;
     dither_enabled = 0;
     blackandwhite0 = 0;
     blackandwhite1 = 0;
@@ -429,7 +425,7 @@ typedef struct _shader_program_key
     int texture0_combinera;
     int texture1_combinera;
     int fog_enabled;
-    int chroma_enabled;
+    bool chroma_enabled;
     int dither_enabled;
     int blackandwhite0;
     int blackandwhite1;
@@ -462,7 +458,7 @@ void update_uniforms(GLuint program_object, const shader_program_key & prog)
     glUniform4f(prog.textureSizes_location, tex0_width, tex0_height, tex1_width, tex1_height);
 
     glUniform3f(prog.fogModeEndScale_location,
-        fog_enabled != 2 ? 0.0f : 1.0f,
+        g_fog_enabled != 2 ? 0.0f : 1.0f,
         fogEnd,
         1.0f / (fogEnd - fogStart)
         );
@@ -472,20 +468,20 @@ void update_uniforms(GLuint program_object, const shader_program_key & prog)
         glUniform3f(prog.fogColor_location, fogColor[0], fogColor[1], fogColor[2]);
     }
 
-    glUniform1f(prog.alphaRef_location, alpha_test ? alpha_ref / 255.0f : -1.0f);
+    glUniform1f(prog.alphaRef_location, g_alpha_test ? g_alpha_ref / 255.0f : -1.0f);
 
     constant_color_location = glGetUniformLocation(program_object, "constant_color");
-    glUniform4f(constant_color_location, texture_env_color[0], texture_env_color[1],
-        texture_env_color[2], texture_env_color[3]);
+    glUniform4f(constant_color_location, g_texture_env_color[0], g_texture_env_color[1],
+        g_texture_env_color[2], g_texture_env_color[3]);
 
     ccolor0_location = glGetUniformLocation(program_object, "ccolor0");
-    glUniform4f(ccolor0_location, ccolor0[0], ccolor0[1], ccolor0[2], ccolor0[3]);
+    glUniform4f(ccolor0_location, g_ccolor0[0], g_ccolor0[1], g_ccolor0[2], g_ccolor0[3]);
 
     ccolor1_location = glGetUniformLocation(program_object, "ccolor1");
-    glUniform4f(ccolor1_location, ccolor1[0], ccolor1[1], ccolor1[2], ccolor1[3]);
+    glUniform4f(ccolor1_location, g_ccolor1[0], g_ccolor1[1], g_ccolor1[2], g_ccolor1[3]);
 
-    glUniform4f(prog.chroma_color_location, chroma_color[0], chroma_color[1],
-        chroma_color[2], chroma_color[3]);
+    glUniform4f(prog.chroma_color_location, g_chroma_color[0], g_chroma_color[1],
+        g_chroma_color[2], g_chroma_color[3]);
 
     if (dither_enabled)
     {
@@ -518,8 +514,8 @@ void compile_shader()
             prog.texture1_combiner == texture1_combiner_key &&
             prog.texture0_combinera == texture0_combinera_key &&
             prog.texture1_combinera == texture1_combinera_key &&
-            prog.fog_enabled == fog_enabled &&
-            prog.chroma_enabled == chroma_enabled &&
+            prog.fog_enabled == g_fog_enabled &&
+            prog.chroma_enabled == g_chroma_enabled &&
             prog.dither_enabled == dither_enabled &&
             prog.blackandwhite0 == blackandwhite0 &&
             prog.blackandwhite1 == blackandwhite1)
@@ -537,13 +533,13 @@ void compile_shader()
     shader_program.texture1_combiner = texture1_combiner_key;
     shader_program.texture0_combinera = texture0_combinera_key;
     shader_program.texture1_combinera = texture1_combinera_key;
-    shader_program.fog_enabled = fog_enabled;
-    shader_program.chroma_enabled = chroma_enabled;
+    shader_program.fog_enabled = g_fog_enabled;
+    shader_program.chroma_enabled = g_chroma_enabled;
     shader_program.dither_enabled = dither_enabled;
     shader_program.blackandwhite0 = blackandwhite0;
     shader_program.blackandwhite1 = blackandwhite1;
 
-    if (chroma_enabled)
+    if (g_chroma_enabled)
     {
         strcat(fragment_shader_texture1, "test_chroma(ctexture1); \n");
         compile_chroma_shader();
@@ -571,17 +567,18 @@ void compile_shader()
     fragment_shader += fragment_shader_texture1;
     fragment_shader += fragment_shader_color_combiner;
     fragment_shader += fragment_shader_alpha_combiner;
-    if (fog_enabled)
+    if (g_fog_enabled)
     {
         fragment_shader += fragment_shader_fog;
     }
     fragment_shader += fragment_shader_end;
-    if (chroma_enabled)
+    if (g_chroma_enabled)
     {
         fragment_shader += fragment_shader_chroma;
     }
 
     GLuint fragment_shader_object = CompileShader(GL_FRAGMENT_SHADER, fragment_shader);
+    GLuint vertex_shader_object = CompileShader(GL_VERTEX_SHADER, vertex_shader);
     
     GLuint program_object = glCreateProgram();
     shader_program.program_object = program_object;
@@ -592,9 +589,10 @@ void compile_shader()
     glBindAttribLocation(program_object, TEXCOORD_1_ATTR, "aMultiTexCoord1");
     glBindAttribLocation(program_object, FOG_ATTR, "aFog");
 
-    glAttachShader(program_object, fragment_shader_object);
+    glAttachShader(shader_program.program_object, fragment_shader_object);
     glDeleteShader(fragment_shader_object);
-    glAttachShader(program_object, vertex_shader_object);
+
+    glAttachShader(shader_program.program_object, vertex_shader_object);
     glDeleteShader(vertex_shader_object);
 
     glLinkProgram(program_object);
@@ -641,7 +639,7 @@ void set_copy_shader()
     alphaRef_location = glGetUniformLocation(g_program_object_default, "alphaRef");
     if (alphaRef_location != -1)
     {
-        glUniform1f(alphaRef_location, alpha_test ? alpha_ref / 255.0f : -1.0f);
+        glUniform1f(alphaRef_location, g_alpha_test ? g_alpha_ref / 255.0f : -1.0f);
     }
 }
 
@@ -662,16 +660,16 @@ grConstantColorValue(GrColor_t value)
     switch (lfb_color_fmt)
     {
     case GR_COLORFORMAT_ARGB:
-        texture_env_color[3] = ((value >> 24) & 0xFF) / 255.0f;
-        texture_env_color[0] = ((value >> 16) & 0xFF) / 255.0f;
-        texture_env_color[1] = ((value >> 8) & 0xFF) / 255.0f;
-        texture_env_color[2] = (value & 0xFF) / 255.0f;
+        g_texture_env_color[3] = ((value >> 24) & 0xFF) / 255.0f;
+        g_texture_env_color[0] = ((value >> 16) & 0xFF) / 255.0f;
+        g_texture_env_color[1] = ((value >> 8) & 0xFF) / 255.0f;
+        g_texture_env_color[2] = (value & 0xFF) / 255.0f;
         break;
     case GR_COLORFORMAT_RGBA:
-        texture_env_color[0] = ((value >> 24) & 0xFF) / 255.0f;
-        texture_env_color[1] = ((value >> 16) & 0xFF) / 255.0f;
-        texture_env_color[2] = ((value >> 8) & 0xFF) / 255.0f;
-        texture_env_color[3] = (value & 0xFF) / 255.0f;
+        g_texture_env_color[0] = ((value >> 24) & 0xFF) / 255.0f;
+        g_texture_env_color[1] = ((value >> 16) & 0xFF) / 255.0f;
+        g_texture_env_color[2] = ((value >> 8) & 0xFF) / 255.0f;
+        g_texture_env_color[3] = (value & 0xFF) / 255.0f;
         break;
     default:
         WriteTrace(TraceGlitch, TraceWarning, "grConstantColorValue: unknown color format : %x", lfb_color_fmt);
@@ -680,8 +678,8 @@ grConstantColorValue(GrColor_t value)
     vbo_draw();
 
     constant_color_location = glGetUniformLocation(g_program_object_default, "constant_color");
-    glUniform4f(constant_color_location, texture_env_color[0], texture_env_color[1],
-        texture_env_color[2], texture_env_color[3]);
+    glUniform4f(constant_color_location, g_texture_env_color[0], g_texture_env_color[1],
+        g_texture_env_color[2], g_texture_env_color[3]);
 }
 
 void writeGLSLColorOther(int other)
@@ -1545,34 +1543,34 @@ FX_ENTRY void FX_CALL
 grAlphaTestReferenceValue(GrAlpha_t value)
 {
     WriteTrace(TraceResolution, TraceDebug, "value: %d", value);
-    alpha_ref = value;
-    grAlphaTestFunction(alpha_func);
+    g_alpha_ref = value;
+    grAlphaTestFunction(g_alpha_func);
 }
 
 FX_ENTRY void FX_CALL
 grAlphaTestFunction(GrCmpFnc_t function)
 {
     WriteTrace(TraceResolution, TraceDebug, "function: %d", function);
-    alpha_func = function;
+    g_alpha_func = function;
     switch (function)
     {
     case GR_CMP_GREATER:
-        //glAlphaFunc(GL_GREATER, alpha_ref/255.0f);
+        //glAlphaFunc(GL_GREATER, g_alpha_ref/255.0f);
         break;
     case GR_CMP_GEQUAL:
-        //glAlphaFunc(GL_GEQUAL, alpha_ref/255.0f);
+        //glAlphaFunc(GL_GEQUAL, g_alpha_ref/255.0f);
         break;
     case GR_CMP_ALWAYS:
-        //glAlphaFunc(GL_ALWAYS, alpha_ref/255.0f);
+        //glAlphaFunc(GL_ALWAYS, g_alpha_ref/255.0f);
         //glDisable(GL_ALPHA_TEST);
-        alpha_test = false;
+        g_alpha_test = false;
         return;
         break;
     default:
         WriteTrace(TraceGlitch, TraceWarning, "grAlphaTestFunction : unknown function : %x", function);
     }
     //glEnable(GL_ALPHA_TEST);
-    alpha_test = true;
+    g_alpha_test = true;
 }
 
 // fog
@@ -1585,17 +1583,17 @@ grFogMode(GrFogMode_t mode)
     {
     case GR_FOG_DISABLE:
         //glDisable(GL_FOG);
-        fog_enabled = 0;
+        g_fog_enabled = 0;
         break;
     case GR_FOG_WITH_TABLE_ON_Q:
         //glEnable(GL_FOG);
         //glFogi(GL_FOG_COORDINATE_SOURCE_EXT, GL_FOG_COORDINATE_EXT);
-        fog_enabled = 1;
+        g_fog_enabled = 1;
         break;
     case GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT:
         //glEnable(GL_FOG);
         //glFogi(GL_FOG_COORDINATE_SOURCE_EXT, GL_FOG_COORDINATE_EXT);
-        fog_enabled = 2;
+        g_fog_enabled = 2;
         break;
     default:
         WriteTrace(TraceGlitch, TraceWarning, "grFogMode : unknown mode : %x", mode);
@@ -1666,10 +1664,10 @@ grChromakeyMode(GrChromakeyMode_t mode)
     switch (mode)
     {
     case GR_CHROMAKEY_DISABLE:
-        chroma_enabled = 0;
+        g_chroma_enabled = false;
         break;
     case GR_CHROMAKEY_ENABLE:
-        chroma_enabled = 1;
+        g_chroma_enabled = true;
         break;
     default:
         WriteTrace(TraceGlitch, TraceWarning, "grChromakeyMode : unknown mode : %x", mode);
@@ -1686,24 +1684,24 @@ grChromakeyValue(GrColor_t value)
     switch (lfb_color_fmt)
     {
     case GR_COLORFORMAT_ARGB:
-        chroma_color[3] = 1.0;//((value >> 24) & 0xFF) / 255.0f;
-        chroma_color[0] = ((value >> 16) & 0xFF) / 255.0f;
-        chroma_color[1] = ((value >> 8) & 0xFF) / 255.0f;
-        chroma_color[2] = (value & 0xFF) / 255.0f;
+        g_chroma_color[3] = 1.0;//((value >> 24) & 0xFF) / 255.0f;
+        g_chroma_color[0] = ((value >> 16) & 0xFF) / 255.0f;
+        g_chroma_color[1] = ((value >> 8) & 0xFF) / 255.0f;
+        g_chroma_color[2] = (value & 0xFF) / 255.0f;
         break;
     case GR_COLORFORMAT_RGBA:
-        chroma_color[0] = ((value >> 24) & 0xFF) / 255.0f;
-        chroma_color[1] = ((value >> 16) & 0xFF) / 255.0f;
-        chroma_color[2] = ((value >> 8) & 0xFF) / 255.0f;
-        chroma_color[3] = 1.0;//(value & 0xFF) / 255.0f;
+        g_chroma_color[0] = ((value >> 24) & 0xFF) / 255.0f;
+        g_chroma_color[1] = ((value >> 16) & 0xFF) / 255.0f;
+        g_chroma_color[2] = ((value >> 8) & 0xFF) / 255.0f;
+        g_chroma_color[3] = 1.0;//(value & 0xFF) / 255.0f;
         break;
     default:
         WriteTrace(TraceGlitch, TraceWarning, "grChromakeyValue: unknown color format : %x", lfb_color_fmt);
     }
     vbo_draw();
     chroma_color_location = glGetUniformLocation(g_program_object_default, "chroma_color");
-    glUniform4f(chroma_color_location, chroma_color[0], chroma_color[1],
-        chroma_color[2], chroma_color[3]);
+    glUniform4f(chroma_color_location, g_chroma_color[0], g_chroma_color[1],
+        g_chroma_color[2], g_chroma_color[3]);
 }
 
 static void setPattern()
@@ -2772,33 +2770,33 @@ FX_ENTRY void FX_CALL grConstantColorValueExt(GrChipID_t tmu, GrColor_t value)
     case GR_COLORFORMAT_ARGB:
         if (num_tex == 0)
         {
-            ccolor0[3] = ((value >> 24) & 0xFF) / 255.0f;
-            ccolor0[0] = ((value >> 16) & 0xFF) / 255.0f;
-            ccolor0[1] = ((value >> 8) & 0xFF) / 255.0f;
-            ccolor0[2] = (value & 0xFF) / 255.0f;
+            g_ccolor0[3] = ((value >> 24) & 0xFF) / 255.0f;
+            g_ccolor0[0] = ((value >> 16) & 0xFF) / 255.0f;
+            g_ccolor0[1] = ((value >> 8) & 0xFF) / 255.0f;
+            g_ccolor0[2] = (value & 0xFF) / 255.0f;
         }
         else
         {
-            ccolor1[3] = ((value >> 24) & 0xFF) / 255.0f;
-            ccolor1[0] = ((value >> 16) & 0xFF) / 255.0f;
-            ccolor1[1] = ((value >> 8) & 0xFF) / 255.0f;
-            ccolor1[2] = (value & 0xFF) / 255.0f;
+            g_ccolor1[3] = ((value >> 24) & 0xFF) / 255.0f;
+            g_ccolor1[0] = ((value >> 16) & 0xFF) / 255.0f;
+            g_ccolor1[1] = ((value >> 8) & 0xFF) / 255.0f;
+            g_ccolor1[2] = (value & 0xFF) / 255.0f;
         }
         break;
     case GR_COLORFORMAT_RGBA:
         if (num_tex == 0)
         {
-            ccolor0[0] = ((value >> 24) & 0xFF) / 255.0f;
-            ccolor0[1] = ((value >> 16) & 0xFF) / 255.0f;
-            ccolor0[2] = ((value >> 8) & 0xFF) / 255.0f;
-            ccolor0[3] = (value & 0xFF) / 255.0f;
+            g_ccolor0[0] = ((value >> 24) & 0xFF) / 255.0f;
+            g_ccolor0[1] = ((value >> 16) & 0xFF) / 255.0f;
+            g_ccolor0[2] = ((value >> 8) & 0xFF) / 255.0f;
+            g_ccolor0[3] = (value & 0xFF) / 255.0f;
         }
         else
         {
-            ccolor1[0] = ((value >> 24) & 0xFF) / 255.0f;
-            ccolor1[1] = ((value >> 16) & 0xFF) / 255.0f;
-            ccolor1[2] = ((value >> 8) & 0xFF) / 255.0f;
-            ccolor1[3] = (value & 0xFF) / 255.0f;
+            g_ccolor1[0] = ((value >> 24) & 0xFF) / 255.0f;
+            g_ccolor1[1] = ((value >> 16) & 0xFF) / 255.0f;
+            g_ccolor1[2] = ((value >> 8) & 0xFF) / 255.0f;
+            g_ccolor1[3] = (value & 0xFF) / 255.0f;
         }
         break;
     default:
@@ -2809,11 +2807,11 @@ FX_ENTRY void FX_CALL grConstantColorValueExt(GrChipID_t tmu, GrColor_t value)
     if (num_tex == 0)
     {
         ccolor0_location = glGetUniformLocation(g_program_object_default, "ccolor0");
-        glUniform4f(ccolor0_location, ccolor0[0], ccolor0[1], ccolor0[2], ccolor0[3]);
+        glUniform4f(ccolor0_location, g_ccolor0[0], g_ccolor0[1], g_ccolor0[2], g_ccolor0[3]);
     }
     else
     {
         ccolor1_location = glGetUniformLocation(g_program_object_default, "ccolor1");
-        glUniform4f(ccolor1_location, ccolor1[0], ccolor1[1], ccolor1[2], ccolor1[3]);
+        glUniform4f(ccolor1_location, g_ccolor1[0], g_ccolor1[1], g_ccolor1[2], g_ccolor1[3]);
     }
 }
