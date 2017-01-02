@@ -5,7 +5,7 @@
 #1  #  "Deutsch"	// LANGUAGE ID
 #2  #  "daarky"	    // Author
 #3  #  "2.3"		// Version
-#4  #  "31. Dezember 2016"   // Date
+#4  #  "02. Januar 2017"   // Date
 
 //About DLL Dialog
 #5  #  "Übersetzung (German.pj.Lang)"
@@ -25,14 +25,14 @@
 *********************************************************************************/
 //File Menu
 #100#  "&Datei"
-#101#  "&ROM &öffnen..."
+#101#  "&ROM öffnen..."
 #102#  "ROM-&Info..."
 #103#  "Emulation &starten"
 #104#  "Emulation &beenden"
 #105#  "ROM-Verzeichnis &auswählen..."
-#106#  "ROM-Liste a&ktualisieren"
-#107#  "&Zuletzt verwendet"
-#108#  "&ROM-Verzeichnisse"
+#106#  "ROM-&Liste aktualisieren"
+#107#  "&Zuletzt verwendete ROMs"
+#108#  "Z&uletzt verwendete ROM-Verzeichnisse"
 #109#  "Beende&n"
 
 //System Menu
@@ -41,15 +41,15 @@
 #122#  "&Pause"
 #123#  "Screensho&t"
 #124#  "&FPS begrenzen"
-#125#  "Spie&lstand speichern"
+#125#  "Spielstand &speichern"
 #126#  "Speichern &unter..."
-#127#  "Spielst&and laden"
-#128#  "Laden..."
+#127#  "Spielstand &laden"
+#128#  "L&aden..."
 #129#  "Speicher&block"
 #130#  "&Cheats..."
 #131#  "GS-&Knopf"
-#132#  "&Fortsetzen"
-#133#  "&Soft Reset"
+#132#  "F&ortsetzen"
+#133#  "Soft &Reset"
 #134#  "&Hard Reset"
 #135#  "&Disk wechseln"
 
@@ -74,27 +74,27 @@
 #180#  "&Hilfe"
 #181#  "Benutzte &Dateien"
 #182#  "&Über Project64"
-#183#  "Support &Forum"
+#183#  "Support-&Forum"
 #184#  "Home&page"
 
 //Current Save Slot menu
 #190#  "&Programmeigen (.pj)"
-#191#  "Block&1 (.pj1)"
-#192#  "Block&2 (.pj2)"
-#193#  "Block&3 (.pj3)"
-#194#  "Block&4 (.pj4)"
-#195#  "Block&5 (.pj5)"
-#196#  "Block&6 (.pj6)"
-#197#  "Block&7 (.pj7)"
-#198#  "Block&8 (.pj8)"
-#199#  "Block&9 (.pj9)"
-#200#  "Block1&0 (.pj0)"
+#191#  "Block &1 (.pj1)"
+#192#  "Block &2 (.pj2)"
+#193#  "Block &3 (.pj3)"
+#194#  "Block &4 (.pj4)"
+#195#  "Block &5 (.pj5)"
+#196#  "Block &6 (.pj6)"
+#197#  "Block &7 (.pj7)"
+#198#  "Block &8 (.pj8)"
+#199#  "Block &9 (.pj9)"
+#200#  "Block 1&0 (.pj0)"
 #201#  "Speicher-Block (%ws) ausgewählt"
 
 //Pop up Menu
-#210#  "&Spielen"
+#210#  "&Spiel spielen"
 #211#  "&ROM-Info"
-#212#  "&Spieleinstellungen"
+#212#  "&Spieleinstellungen..."
 #213#  "&Cheats bearbeiten"
 #214#  "Videoplugin"
 #215#  "Spielen mit Disk..."
@@ -192,7 +192,7 @@
 #401#  "Plugins"
 #402#  "Verzeichnisse"
 #403#  "Optionen"
-#404#  "Browser-Spalten"
+#404#  "ROM-Browser"
 #405#  "Zusätzlich"
 #406#  "ROM-Einstellungen"
 #407#  "Shell-Integration"
@@ -230,18 +230,18 @@
 #460#  "&Emulation anhalten, wenn Fenster nicht aktiv"
 #461#  "&Beim Spielstart zu Vollbild umschalten"
 #462#  "&Zusätzliche Optionen verbergen"
-#463#  "&Gewählte Cheats speichern"
-#464#  "Bildschirmschoner während der Emulation deaktivieren"
-#465#  "Geschwindigkeit"
-#466#  "Geschw. anzeigen:"
-#467#  "Auf laufende Project64-Instanzen prüfen"
-#468#  "Eindeutige Verzeichnisnamen für Spielstände"
-#469#  "64DD IPL ROM-Verzeichnis:"
+#463#  "Gewählte &Cheats speichern"
+#464#  "Bildschirmschoner während der Emulation &deaktivieren"
+#465#  "&Geschwindigkeit"
+#466#  "Geschw. &anzeigen:"
+#467#  "Auf laufende &Project64-Instanzen prüfen"
+#468#  "Eindeutige &Verzeichnisnamen für Spielstände"
+#469#  "64DD IPL &ROM-Verzeichnis:"
 
 //ROM Browser Tab
 #480#  "Zuletzt verwendete &ROMs (0-10):"
 #481#  "Stück"
-#482#  "Zuletzt verwendete Verzeichnisse (0-10):"
+#482#  "Zuletzt verwendete &Verzeichnisse (0-10):"
 #483#  "Stück"
 #484#  "&ROM-Browser einschalten"
 #485#  "&Unterordner einbeziehen"
@@ -251,11 +251,11 @@
 #489#  "<- &Zurück"
 #490#  "&Höher"
 #491#  "&Tiefer"
-#492#  "Browser automatisch aktualisieren"
+#492#  "Browser &automatisch aktualisieren"
 
 //Advanced Options
 #500#  "Die meisten Einstellungen werden erst nach einem Rom-Wechsel oder einem Neustart des ROMS wirksam."
-#501#  "&Kern-Standards"
+#501#  "&Kern Default"
 #502#  "CPU-Kern Style:"
 #503#  "&Self-mod. Code-Methode:"
 #504#  "RDRAM-&Grösse:"
@@ -274,7 +274,7 @@
 #520#  "CPU &Kern:"
 #521#  "VI-Aktualisierungsrate:"
 #522#  "RDRAM-&Grösse:"
-#523#  "&Advanced Block-Linking:"
+#523#  "&Advanced Block-Linking"
 #524#  "&Speicherart:"
 #525#  "&Counter-Faktor:"
 #526#  "Größerer &Puffer"
@@ -283,14 +283,14 @@
 #529#  "SI seltener &unterbrechen"
 #530#  "SP-&Hack"
 #531#  "Standard"
-#532#  "RSP Audiosignal"
+#532#  "RSP-Audiosignal"
 #533#  "Audio-Korrektur"
 #534#  "Function lookup Methode:"
 #535#  "Custom self mod Methode"
 #536#  "Sync. mittels Audio"
-#537#  "AI-Count pro Byte"
-#538#  "32bit-Engine"
-#539#  "DP seltener unterbrechen"
+#537#  "AI-Count pro Byte:"
+#538#  "32 bit-Engine"
+#539#  "DP seltener unterbr."
 
 //Core Styles
 #540#  "Interpreter"
@@ -350,9 +350,9 @@
 #692#  "Taste erkennen"
 
 // Frame Rate Option
-#700#  "Vertical Interrupts pro Sek."
+#700#  "Vertical Interrupts/Sek."
 #701#  "Lists pro Sekunde"
-#702#  "Prozentuale Geschwindigkeit"
+#702#  "Geschwindigkeit in %"
 
 // Increase speed
 #710#  "Geschwindigkeit erhöhen"
