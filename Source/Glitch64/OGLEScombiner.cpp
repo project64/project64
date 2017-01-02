@@ -85,7 +85,7 @@ static int a_combiner_ext = 0;
 "varying highp vec4 gl_FrontColor;  \n" \
 "varying highp vec4 gl_TexCoord[4]; \n"
 
-static const char* fragment_shader_header =
+static const char* g_fragment_shader_header =
 SHADER_HEADER
 "precision lowp float;             \n"
 "uniform sampler2D texture0;       \n"
@@ -109,56 +109,56 @@ SHADER_VARYING
 
 // using gl_FragCoord is terribly slow on ATI and varying variables don't work for some unknown
 // reason, so we use the unused components of the texture2 coordinates
-static const char* fragment_shader_dither =
+static const char* g_fragment_shader_dither =
 "  float dithx = (gl_TexCoord[2].b + 1.0)*0.5*1000.0; \n"
 "  float dithy = (gl_TexCoord[2].a + 1.0)*0.5*1000.0; \n"
 "  if(texture2D(ditherTex, vec2((dithx-32.0*floor(dithx/32.0))/32.0, \n"
 "                               (dithy-32.0*floor(dithy/32.0))/32.0)).a > 0.5) discard; \n"
 ;
 
-static const char* fragment_shader_default =
+static const char* g_fragment_shader_default =
 "  gl_FragColor = texture2D(texture0, vec2(gl_TexCoord[0])); \n"
 ;
 
-static const char* fragment_shader_readtex0color =
+static const char* g_fragment_shader_readtex0color =
 "  vec4 readtex0 = texture2D(texture0, vec2(gl_TexCoord[0])); \n"
 ;
 
-static const char* fragment_shader_readtex0bw =
+static const char* g_fragment_shader_readtex0bw =
 "  vec4 readtex0 = texture2D(texture0, vec2(gl_TexCoord[0])); \n"
 "  readtex0 = vec4(vec3(readtex0.b),                          \n"
 "                  readtex0.r + readtex0.g * 8.0 / 256.0);    \n"
 ;
-static const char* fragment_shader_readtex0bw_2 =
+static const char* g_fragment_shader_readtex0bw_2 =
 "  vec4 readtex0 = vec4(dot(texture2D(texture0, vec2(gl_TexCoord[0])), vec4(1.0/3, 1.0/3, 1.0/3, 0)));                        \n"
 ;
 
-static const char* fragment_shader_readtex1color =
+static const char* g_fragment_shader_readtex1color =
 "  vec4 readtex1 = texture2D(texture1, vec2(gl_TexCoord[1])); \n"
 ;
 
-static const char* fragment_shader_readtex1bw =
+static const char* g_fragment_shader_readtex1bw =
 "  vec4 readtex1 = texture2D(texture1, vec2(gl_TexCoord[1])); \n"
 "  readtex1 = vec4(vec3(readtex1.b),                          \n"
 "                  readtex1.r + readtex1.g * 8.0 / 256.0);    \n"
 ;
-static const char* fragment_shader_readtex1bw_2 =
+static const char* g_fragment_shader_readtex1bw_2 =
 "  vec4 readtex1 = vec4(dot(texture2D(texture1, vec2(gl_TexCoord[1])), vec4(1.0/3, 1.0/3, 1.0/3, 0)));                        \n"
 ;
 
-static const char* fragment_shader_fog =
+static const char* g_fragment_shader_fog =
 "  float fog;                                                                         \n"
 "  fog = gl_TexCoord[0].b;                                                            \n"
 "  gl_FragColor.rgb = mix(fogColor, gl_FragColor.rgb, fog); \n"
 ;
 
-static const char* fragment_shader_end =
+static const char* g_fragment_shader_end =
 "if(gl_FragColor.a <= alphaRef) {discard;}   \n"
 "                                \n"
 "}                               \n"
 ;
 
-static const char* vertex_shader =
+static const char* g_vertex_shader =
 SHADER_HEADER
 "#define Z_MAX 65536.0                                          \n"
 "attribute highp vec4 aPosition;                                \n"
@@ -328,12 +328,12 @@ void init_combiner()
     int log_length;
 
     // default shader
-    std::string fragment_shader = fragment_shader_header;
-    fragment_shader += fragment_shader_default;
-    fragment_shader += fragment_shader_end;
+    std::string fragment_shader = g_fragment_shader_header;
+    fragment_shader += g_fragment_shader_default;
+    fragment_shader += g_fragment_shader_end;
 
     GLuint fragment_shader_object = CompileShader(GL_FRAGMENT_SHADER, fragment_shader);
-    GLuint vertex_shader_object = CompileShader(GL_VERTEX_SHADER, vertex_shader);
+    GLuint vertex_shader_object = CompileShader(GL_VERTEX_SHADER, g_vertex_shader);
 
     // default program
     g_program_object_default = glCreateProgram();
@@ -545,23 +545,23 @@ void compile_shader()
         compile_chroma_shader();
     }
 
-    std::string fragment_shader = fragment_shader_header;
+    std::string fragment_shader = g_fragment_shader_header;
 
     if (dither_enabled)
     {
-        fragment_shader += fragment_shader_dither;
+        fragment_shader += g_fragment_shader_dither;
     }
     switch (blackandwhite0) 
     {
-    case 1: fragment_shader += fragment_shader_readtex0bw; break;
-    case 2: fragment_shader += fragment_shader_readtex0bw_2; break;
-    default: fragment_shader += fragment_shader_readtex0color;
+    case 1: fragment_shader += g_fragment_shader_readtex0bw; break;
+    case 2: fragment_shader += g_fragment_shader_readtex0bw_2; break;
+    default: fragment_shader += g_fragment_shader_readtex0color;
     }
     switch (blackandwhite1)
     {
-    case 1: fragment_shader += fragment_shader_readtex1bw; break;
-    case 2: fragment_shader += fragment_shader_readtex1bw_2; break;
-    default: fragment_shader += fragment_shader_readtex1color;
+    case 1: fragment_shader += g_fragment_shader_readtex1bw; break;
+    case 2: fragment_shader += g_fragment_shader_readtex1bw_2; break;
+    default: fragment_shader += g_fragment_shader_readtex1color;
     }
     fragment_shader += fragment_shader_texture0;
     fragment_shader += fragment_shader_texture1;
@@ -569,9 +569,9 @@ void compile_shader()
     fragment_shader += fragment_shader_alpha_combiner;
     if (g_fog_enabled)
     {
-        fragment_shader += fragment_shader_fog;
+        fragment_shader += g_fragment_shader_fog;
     }
-    fragment_shader += fragment_shader_end;
+    fragment_shader += g_fragment_shader_end;
     if (g_chroma_enabled)
     {
         fragment_shader += fragment_shader_chroma;
@@ -579,7 +579,7 @@ void compile_shader()
 
     GLuint fragment_shader_object = CompileShader(GL_FRAGMENT_SHADER, fragment_shader);
     GLuint vertex_shader_object = CompileShader(GL_VERTEX_SHADER, vertex_shader);
-    
+
     GLuint program_object = glCreateProgram();
     shader_program.program_object = program_object;
 
@@ -850,7 +850,7 @@ FxBool invert)
         strcat(fragment_shader_color_combiner, "gl_FragColor = color_factor * (-color_local) + vec4(color_local.a); \n");
         break;
     default:
-        strcpy(fragment_shader_color_combiner, fragment_shader_default);
+        strcpy(fragment_shader_color_combiner, g_fragment_shader_default);
         WriteTrace(TraceGlitch, TraceWarning, "grColorCombine : unknown function : %x", function);
     }
     //compile_shader();

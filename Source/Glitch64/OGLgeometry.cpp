@@ -26,6 +26,7 @@ static int fog_ext_en;
 int w_buffer_mode;
 int inverted_culling;
 int culling_mode;
+extern int fog_enabled;
 
 inline float ZCALC(const float & z, const float & q) {
     float res = z_en ? ((z) / Z_MAX) / (q) : 1.0f;
