@@ -507,15 +507,14 @@ void CN64System::StartEmulation2(bool NewThread)
         g_Settings->SaveDword(Game_CurrentSaveState, g_Settings->LoadDefaultDword(Game_CurrentSaveState));
 
         WriteTrace(TraceN64System, TraceDebug, "Setting system as active");
-        bool bSetActive = true;
-        if (m_SyncCPU)
+        bool bSetActive = SetActiveSystem();
+        if (bSetActive && m_SyncCPU)
         {
             bSetActive = m_SyncCPU->SetActiveSystem();
-        }
-
-        if (bSetActive)
-        {
-            bSetActive = SetActiveSystem();
+            if (bSetActive)
+            {
+                bSetActive = SetActiveSystem();
+            }
         }
 
         WriteTrace(TraceN64System, TraceDebug, "Setting system as active");
@@ -688,7 +687,7 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
         m_Plugins->RomClosed();
         m_Plugins->RomOpened();
     }
-    if (m_SyncCPU)
+    if (m_SyncCPU && m_SyncCPU->m_MMU_VM.Rdram() != NULL)
     {
         m_SyncCPU->Reset(bInitReg, ClearMenory);
     }
@@ -1644,7 +1643,7 @@ bool CN64System::SaveState()
     g_Settings->SaveDword(Game_LastSaveTime, (uint32_t)time(NULL));
     if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
     {
-        SaveFile=ZipFile;
+        SaveFile = ZipFile;
     }
     g_Notify->DisplayMessage(5, stdstr_f("%s %s", g_Lang->GetString(MSG_SAVED_STATE).c_str(), stdstr(SaveFile.GetNameExtension()).c_str()).c_str());
     WriteTrace(TraceN64System, TraceDebug, "Done");
@@ -1682,7 +1681,7 @@ bool CN64System::LoadState()
 
     if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
     {
-        FileName=ZipFileName;
+        FileName = ZipFileName;
     }
     if ((g_Settings->LoadDword(Setting_AutoZipInstantSave) && ZipFileName.Exists()) || FileName.Exists())
     {
