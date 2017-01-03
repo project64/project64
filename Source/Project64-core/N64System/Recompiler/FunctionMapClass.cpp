@@ -29,7 +29,7 @@ bool CFunctionMap::AllocateMemory()
     WriteTrace(TraceRecompiler, TraceDebug, "start");
     if (LookUpMode() == FuncFind_VirtualLookup && m_FunctionTable == NULL)
     {
-        m_FunctionTable = new (std::nothrow) PCCompiledFunc_TABLE[0x100000];
+        m_FunctionTable = new PCCompiledFunc_TABLE[0x100000];
         if (m_FunctionTable == NULL)
         {
             WriteTrace(TraceRecompiler, TraceError, "failed to allocate function table");
@@ -40,7 +40,7 @@ bool CFunctionMap::AllocateMemory()
     }
     if (LookUpMode() == FuncFind_PhysicalLookup && m_JumpTable == NULL)
     {
-        m_JumpTable = new (std::nothrow) PCCompiledFunc[RdramSize() >> 2];
+        m_JumpTable = new PCCompiledFunc[RdramSize() >> 2];
         if (m_JumpTable == NULL)
         {
             WriteTrace(TraceRecompiler, TraceError, "failed to allocate jump table");

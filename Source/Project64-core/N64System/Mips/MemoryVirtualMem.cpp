@@ -48,7 +48,10 @@ CMipsMemoryVM::CMipsMemoryVM(bool SavesReadOnly) :
     m_TLB_WriteMap(NULL),
     m_RDRAM(NULL),
     m_DMEM(NULL),
-    m_IMEM(NULL)
+    m_IMEM(NULL),
+    m_DDRomMapped(false),
+    m_DDRom(NULL),
+    m_DDRomSize(0)
 {
     g_Settings->RegisterChangeCB(Game_RDRamSize, this, (CSettings::SettingChangedFunc)RdramChanged);
 }

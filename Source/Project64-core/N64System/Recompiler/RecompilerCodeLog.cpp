@@ -61,3 +61,11 @@ void Stop_Recompiler_Log (void)
         g_CPULogFile = NULL;
     }
 }
+
+void Flush_Recompiler_Log(void)
+{
+    if (g_CPULogFile != NULL)
+    {
+        g_CPULogFile->Flush();
+    }
+}

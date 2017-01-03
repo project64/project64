@@ -15,4 +15,5 @@
 
 void Recompiler_Log_Message (const char * Message, ...);
 void Start_Recompiler_Log (void);
-void Stop_Recompiler_Log (void);
+void Stop_Recompiler_Log(void); 
+void Flush_Recompiler_Log(void);
