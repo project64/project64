@@ -43,6 +43,7 @@ private:
     bool m_FlushOnWrite;
     std::string m_FileName;
     bool m_TruncateFileLog;
+    uint32_t m_FileSize;
     uint32_t m_MaxFileSize;
     uint32_t m_FileChangeSize;
 };

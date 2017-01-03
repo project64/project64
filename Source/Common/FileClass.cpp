@@ -222,7 +222,9 @@ bool CFile::Flush()
 
     return ::FlushFileBuffers(m_hFile) != 0;
 #else
-    return fflush((FILE *)m_hFile) == 0;
+    fflush((FILE *)m_hFile);
+    fsync(fileno((FILE *)m_hFile));
+    return true;
 #endif
 }
 
