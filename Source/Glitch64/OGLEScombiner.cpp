@@ -191,9 +191,9 @@ SHADER_VARYING
 "                                                                           \n"
 "  float f = (fogModeEndScale[1] - fogV) * fogModeEndScale[2];              \n"
 "  f = clamp(f, 0.0, 1.0);                                                  \n"
-"  vTexCoord[0].b = f;                                                    \n"
-"  vTexCoord[2].b = aPosition.x;                                          \n"
-"  vTexCoord[2].a = aPosition.y;                                          \n"
+"  vTexCoord[0].b = f;                                                      \n"
+"  vTexCoord[2].b = aPosition.x;                                            \n"
+"  vTexCoord[2].a = aPosition.y;                                            \n"
 "}                                                                          \n"
 ;
 
