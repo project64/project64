@@ -578,7 +578,7 @@ void compile_shader()
     }
 
     GLuint fragment_shader_object = CompileShader(GL_FRAGMENT_SHADER, fragment_shader);
-    GLuint vertex_shader_object = CompileShader(GL_VERTEX_SHADER, vertex_shader);
+    GLuint vertex_shader_object = CompileShader(GL_VERTEX_SHADER, g_vertex_shader);
 
     GLuint program_object = glCreateProgram();
     shader_program.program_object = program_object;
