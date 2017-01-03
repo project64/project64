@@ -78,12 +78,11 @@ static int a_combiner_ext = 0;
 #define SHADER_HEADER \
 "#version " GLSL_VERSION "          \n" \
 "#define gl_Color vFrontColor       \n" \
-"#define gl_FrontColor vFrontColor  \n" \
-"#define gl_TexCoord vTexCoord      \n"
+"#define gl_FrontColor vFrontColor  \n"
 
 #define SHADER_VARYING \
 "varying highp vec4 gl_FrontColor;  \n" \
-"varying highp vec4 gl_TexCoord[4]; \n"
+"varying highp vec4 vTexCoord[4]; \n"
 
 static const char* g_fragment_shader_header =
 SHADER_HEADER
@@ -110,45 +109,45 @@ SHADER_VARYING
 // using gl_FragCoord is terribly slow on ATI and varying variables don't work for some unknown
 // reason, so we use the unused components of the texture2 coordinates
 static const char* g_fragment_shader_dither =
-"  float dithx = (gl_TexCoord[2].b + 1.0)*0.5*1000.0; \n"
-"  float dithy = (gl_TexCoord[2].a + 1.0)*0.5*1000.0; \n"
+"  float dithx = (vTexCoord[2].b + 1.0)*0.5*1000.0; \n"
+"  float dithy = (vTexCoord[2].a + 1.0)*0.5*1000.0; \n"
 "  if(texture2D(ditherTex, vec2((dithx-32.0*floor(dithx/32.0))/32.0, \n"
 "                               (dithy-32.0*floor(dithy/32.0))/32.0)).a > 0.5) discard; \n"
 ;
 
 static const char* g_fragment_shader_default =
-"  gl_FragColor = texture2D(texture0, vec2(gl_TexCoord[0])); \n"
+"  gl_FragColor = texture2D(texture0, vec2(vTexCoord[0])); \n"
 ;
 
 static const char* g_fragment_shader_readtex0color =
-"  vec4 readtex0 = texture2D(texture0, vec2(gl_TexCoord[0])); \n"
+"  vec4 readtex0 = texture2D(texture0, vec2(vTexCoord[0])); \n"
 ;
 
 static const char* g_fragment_shader_readtex0bw =
-"  vec4 readtex0 = texture2D(texture0, vec2(gl_TexCoord[0])); \n"
+"  vec4 readtex0 = texture2D(texture0, vec2(vTexCoord[0])); \n"
 "  readtex0 = vec4(vec3(readtex0.b),                          \n"
 "                  readtex0.r + readtex0.g * 8.0 / 256.0);    \n"
 ;
 static const char* g_fragment_shader_readtex0bw_2 =
-"  vec4 readtex0 = vec4(dot(texture2D(texture0, vec2(gl_TexCoord[0])), vec4(1.0/3, 1.0/3, 1.0/3, 0)));                        \n"
+"  vec4 readtex0 = vec4(dot(texture2D(texture0, vec2(vTexCoord[0])), vec4(1.0/3, 1.0/3, 1.0/3, 0)));                        \n"
 ;
 
 static const char* g_fragment_shader_readtex1color =
-"  vec4 readtex1 = texture2D(texture1, vec2(gl_TexCoord[1])); \n"
+"  vec4 readtex1 = texture2D(texture1, vec2(vTexCoord[1])); \n"
 ;
 
 static const char* g_fragment_shader_readtex1bw =
-"  vec4 readtex1 = texture2D(texture1, vec2(gl_TexCoord[1])); \n"
+"  vec4 readtex1 = texture2D(texture1, vec2(vTexCoord[1])); \n"
 "  readtex1 = vec4(vec3(readtex1.b),                          \n"
 "                  readtex1.r + readtex1.g * 8.0 / 256.0);    \n"
 ;
 static const char* g_fragment_shader_readtex1bw_2 =
-"  vec4 readtex1 = vec4(dot(texture2D(texture1, vec2(gl_TexCoord[1])), vec4(1.0/3, 1.0/3, 1.0/3, 0)));                        \n"
+"  vec4 readtex1 = vec4(dot(texture2D(texture1, vec2(vTexCoord[1])), vec4(1.0/3, 1.0/3, 1.0/3, 0)));                        \n"
 ;
 
 static const char* g_fragment_shader_fog =
 "  float fog;                                                                         \n"
-"  fog = gl_TexCoord[0].b;                                                            \n"
+"  fog = vTexCoord[0].b;                                                            \n"
 "  gl_FragColor.rgb = mix(fogColor, gl_FragColor.rgb, fog); \n"
 ;
 
@@ -184,8 +183,8 @@ SHADER_VARYING
 "  gl_Position = rotation_matrix * gl_Position;                             \n"
 "  gl_FrontColor = aColor.bgra;                                             \n"
 "                                                                           \n"
-"  gl_TexCoord[0] = vec4(aMultiTexCoord0.xy / q / textureSizes.xy,0,1);     \n"
-"  gl_TexCoord[1] = vec4(aMultiTexCoord1.xy / q / textureSizes.zw,0,1);     \n"
+"  vTexCoord[0] = vec4(aMultiTexCoord0.xy / q / textureSizes.xy,0,1);     \n"
+"  vTexCoord[1] = vec4(aMultiTexCoord1.xy / q / textureSizes.zw,0,1);     \n"
 "                                                                           \n"
 "  float fogV = (1.0 / mix(q,aFog,fogModeEndScale[0])) / 255.0;             \n"
 "  //if(fogMode == 2) {                                                     \n"
@@ -194,9 +193,9 @@ SHADER_VARYING
 "                                                                           \n"
 "  float f = (fogModeEndScale[1] - fogV) * fogModeEndScale[2];              \n"
 "  f = clamp(f, 0.0, 1.0);                                                  \n"
-"  gl_TexCoord[0].b = f;                                                    \n"
-"  gl_TexCoord[2].b = aPosition.x;                                          \n"
-"  gl_TexCoord[2].a = aPosition.y;                                          \n"
+"  vTexCoord[0].b = f;                                                    \n"
+"  vTexCoord[2].b = aPosition.x;                                          \n"
+"  vTexCoord[2].a = aPosition.y;                                          \n"
 "}                                                                          \n"
 ;
 
@@ -363,7 +362,7 @@ void init_combiner()
 
     strcpy(fragment_shader_color_combiner, "");
     strcpy(fragment_shader_alpha_combiner, "");
-    strcpy(fragment_shader_texture1, "vec4 ctexture1 = texture2D(texture0, vec2(gl_TexCoord[0])); \n");
+    strcpy(fragment_shader_texture1, "vec4 ctexture1 = texture2D(texture0, vec2(vTexCoord[0])); \n");
     strcpy(fragment_shader_texture0, "");
 
     first_color = 1;
