@@ -140,7 +140,7 @@ static void watch_uninstall(const char *baseDir)
     }
 
     __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "Launching web browser");
-    execlp("am", "am", "start", "--user", "0", "-a", "android.intent.action.VIEW", "-d", "https://www.pj64-emu.com/android-uninstalled.html", (char *)NULL);
+    execlp("am", "am", "start", "--user", "0", "-a", "android.intent.action.VIEW", "-d", "http://www.pj64-emu.com/android-uninstalled.html", (char *)NULL);
     exit(1);
 }
 
