@@ -77,11 +77,10 @@ static int a_combiner_ext = 0;
 
 #define SHADER_HEADER \
 "#version " GLSL_VERSION "          \n" \
-"#define gl_Color vFrontColor       \n" \
-"#define gl_FrontColor vFrontColor  \n"
+"#define gl_Color vFrontColor       \n"
 
 #define SHADER_VARYING \
-"varying highp vec4 gl_FrontColor;  \n" \
+"varying highp vec4 vFrontColor;  \n" \
 "varying highp vec4 vTexCoord[4]; \n"
 
 static const char* g_fragment_shader_header =
@@ -181,10 +180,10 @@ SHADER_VARYING
 "  gl_Position.w = 1.0;                                                     \n"
 "  gl_Position /= q;                                                        \n"
 "  gl_Position = rotation_matrix * gl_Position;                             \n"
-"  gl_FrontColor = aColor.bgra;                                             \n"
+"  vFrontColor = aColor.bgra;                                               \n"
 "                                                                           \n"
-"  vTexCoord[0] = vec4(aMultiTexCoord0.xy / q / textureSizes.xy,0,1);     \n"
-"  vTexCoord[1] = vec4(aMultiTexCoord1.xy / q / textureSizes.zw,0,1);     \n"
+"  vTexCoord[0] = vec4(aMultiTexCoord0.xy / q / textureSizes.xy,0,1);       \n"
+"  vTexCoord[1] = vec4(aMultiTexCoord1.xy / q / textureSizes.zw,0,1);       \n"
 "                                                                           \n"
 "  float fogV = (1.0 / mix(q,aFog,fogModeEndScale[0])) / 255.0;             \n"
 "  //if(fogMode == 2) {                                                     \n"
