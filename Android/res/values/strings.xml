@@ -114,6 +114,8 @@
     <string name="ForceGfxReset_summary">Always reload GFX plugin</string>
     <string name="PreAllocSyncMem_title">Pre Alloc Sync Mem</string>
     <string name="PreAllocSyncMem_summary">Allocate sync memory at startup</string>
+    <string name="ReducedSyncMem_title">Reduced Sync Mem</string>
+    <string name="ReducedSyncMem_summary">Allocate a smaller amount of memory for sync cpu</string>
     <string name="DebugLanguage_title">Debug Language</string>
     <string name="DebugLanguage_summary">Show the number id for the language string</string>
     <string name="touchscreenScale_title">Button scale</string>

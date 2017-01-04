@@ -122,6 +122,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Setting_CurrentLanguage, new CSettingTypeApplication("", "Current Language", ""));
     AddHandler(Setting_EnableDisk, new CSettingTypeTempBool(false));
     AddHandler(Setting_PreAllocSyncMem, new CSettingTypeApplication("", "PreAllocSyncMem", true));
+    AddHandler(Setting_ReducedSyncMem, new CSettingTypeApplication("", "ReducedSyncMem", false));
     AddHandler(Setting_LanguageDirDefault, new CSettingTypeRelativePath("Lang", ""));
     AddHandler(Setting_LanguageDir, new CSettingTypeApplicationPath("Lang Directory", "Directory", Setting_LanguageDirDefault));
 

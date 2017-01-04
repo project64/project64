@@ -599,7 +599,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         };
 
         final Context finalContext = this;
-        final Activity finalActivity = this;
         AlertDialog.Builder GameMenu = new AlertDialog.Builder(finalContext);
         GameMenu.setTitle(NativeExports.SettingsLoadString(SettingsID.Game_GoodName.getValue()));
         GameMenu.setAdapter(adapter, new DialogInterface.OnClickListener()
@@ -838,6 +837,13 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
             return false;
         }
 
+        File InstantSaveDir = new File(NativeExports.SettingsLoadString(SettingsID.Directory_InstantSave.getValue()));
+        final File GameSaveDir = new File(InstantSaveDir,NativeExports.SettingsLoadString(SettingsID.Game_UniqueSaveDir.getValue()));
+        if (GameSaveDir.exists() == false)
+        {
+            return false;
+        }
+        		
         int RunCount = NativeExports.UISettingsLoadDword(UISettingID.SupportWindow_RunCount.getValue());
         Log.d("GalleryActivity", "ShowSupportWindow RunCount = " + RunCount);
         if (RunCount == -1)

@@ -52,6 +52,7 @@ public enum SettingsID
     Setting_CurrentLanguage,
     Setting_EnableDisk,
     Setting_PreAllocSyncMem,
+    Setting_ReducedSyncMem,
 
     //RDB Settings
     Rdb_GoodName,

@@ -113,7 +113,7 @@ void CMipsMemoryVM::ReserveMemory()
     m_Reserve1 = (uint8_t *)AllocateAddressSpace(0x20000000);
     if (g_Settings->LoadBool(Debugger_Enabled) && g_Settings->LoadBool(Setting_PreAllocSyncMem))
     {
-        m_Reserve2 = (uint8_t *)AllocateAddressSpace(0x20000000);
+        m_Reserve2 = (uint8_t *)AllocateAddressSpace(g_Settings->LoadBool(Setting_ReducedSyncMem) ? 0x04002000 : 0x20000000);
     }
 }
 
