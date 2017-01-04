@@ -348,10 +348,8 @@ void init_combiner()
     glLinkProgram(g_program_object_default);
     check_link(g_program_object_default);
     glUseProgram(g_program_object_default);
-#ifdef ANDROID
     int rotation_matrix_location = glGetUniformLocation(g_program_object_default, "rotation_matrix");
     set_rotation_matrix(rotation_matrix_location, g_settings->rotate);
-#endif
 
     texture0_location = glGetUniformLocation(g_program_object_default, "texture0");
     texture1_location = glGetUniformLocation(g_program_object_default, "texture1");
@@ -485,10 +483,8 @@ void update_uniforms(GLuint program_object, const shader_program_key & prog)
         glUniform1i(prog.ditherTex_location, 2);
     }
 
-#ifdef ANDROID
     GLuint rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
     set_rotation_matrix(rotation_matrix_location, g_settings->rotate);
-#endif
     set_lambda();
 }
 

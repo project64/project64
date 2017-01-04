@@ -17,9 +17,7 @@ vsync(0),
 
 clock(0),
 clock_24_hr(0),
-#ifdef ANDROID
 rotate(0),
-#endif
 
 filtering(0),
 fog(0),

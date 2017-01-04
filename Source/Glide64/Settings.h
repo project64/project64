@@ -20,9 +20,7 @@ public:
 
     int clock;
     int clock_24_hr;
-#ifdef ANDROID
     int rotate;
-#endif
 
     int filtering;
     int fog;

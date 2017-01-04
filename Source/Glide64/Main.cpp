@@ -277,9 +277,7 @@ void UseUnregisteredSetting(int /*SettingID*/)
     DebugBreak();
 #endif
 }
-#ifdef ANDROID
 extern int g_width, g_height;
-#endif
 
 void ReadSettings()
 {
@@ -298,9 +296,7 @@ void ReadSettings()
     g_settings->ssformat = (uint8_t)GetSetting(Set_ssformat);
     g_settings->clock = GetSetting(Set_clock);
     g_settings->clock_24_hr = GetSetting(Set_clock_24_hr);
-#ifdef ANDROID
     g_settings->rotate = GetSetting(Set_Rotate);
-#endif
     g_settings->advanced_options = Set_basic_mode ? !GetSystemSetting(Set_basic_mode) : 0;
     g_settings->texenh_options = GetSetting(Set_texenh_options);
     g_settings->use_hotkeys = GetSetting(Set_hotkeys);
@@ -529,9 +525,7 @@ void WriteSettings(void)
     SetSetting(Set_vsync, g_settings->vsync);
     SetSetting(Set_clock, g_settings->clock);
     SetSetting(Set_clock_24_hr, g_settings->clock_24_hr);
-#ifdef ANDROID
     SetSetting(Set_Rotate, g_settings->rotate);
-#endif
     //SetSetting(Set_advanced_options,g_settings->advanced_options);
     SetSetting(Set_texenh_options, g_settings->texenh_options);
 
@@ -1468,9 +1462,9 @@ void CALL PluginLoaded(void)
 #ifndef ANDROID
     general_setting(Set_wrpFBO, "wrpFBO", 0);
 #else
-    general_setting(Set_Rotate, "rotate", 0);
     general_setting(Set_wrpFBO, "wrpFBO", 1);
 #endif
+    general_setting(Set_Rotate, "rotate", 0);
     general_setting(Set_wrpAnisotropic, "wrpAnisotropic", 0);
     general_setting(Set_autodetect_ucode, "autodetect_ucode", 1);
     general_setting(Set_ucode, "ucode", 2);

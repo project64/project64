@@ -1237,8 +1237,6 @@ static void render_rectangle(int texture_number,
     int tex_width, int tex_height, int invert)
 {
     //LOGINFO("render_rectangle(%d,%d,%d,%d,%d,%d,%d,%d)",texture_number,dst_x,dst_y,src_width,src_height,tex_width,tex_height,invert);
-    int vertexOffset_location;
-    int textureSizes_location;
     static float data[] = {
         (float)((int)dst_x),                      //X 0
         (float)(invert*-((int)dst_y)),            //Y 0

@@ -394,7 +394,7 @@ FX_ENTRY void FX_CALL
 grDrawTriangle(const void *a, const void *b, const void *c)
 {
     WriteTrace(TraceGlitch, TraceDebug, "start");
-
+    vbo_enable();
     if (nvidia_viewport_hack && !render_to_texture)
     {
         glViewport(0, viewport_offset, viewport_width, viewport_height);
