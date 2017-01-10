@@ -401,8 +401,8 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r8 = 0x%lx", context.arm_r8);
         WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r9 = 0x%lx", context.arm_r9);
         WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r10 = 0x%lx", context.arm_r10);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_fp = 0x%lx", context.arm_fp);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_ip = 0x%lx", context.arm_ip);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r11 = 0x%lx", context.arm_fp);
+        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r12 = 0x%lx", context.arm_ip);
         WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_sp = 0x%lx", context.arm_sp);
         WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_lr = 0x%lx", context.arm_lr);
         WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_pc = 0x%lx", context.arm_pc);
@@ -434,8 +434,6 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
             WriteTrace(TraceExceptionHandler, TraceError, "GPR[%s] 0x%08X%08X", CRegName::GPR[count], g_Reg->m_GPR[count].W[1], g_Reg->m_GPR[count].W[0]);
          }
 
-        Flush_Recompiler_Log();
-        TraceFlushLog();
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return false;
     }
