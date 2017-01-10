@@ -845,22 +845,7 @@ void CArmOps::PushArmReg(uint16_t Registers)
     if ((Registers & ArmPushPop_SP) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
     if ((Registers & ArmPushPop_PC) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 
-    std::string pushed;
-    if ((Registers & ArmPushPop_R0) != 0) { pushed += pushed.length() > 0 ? ", r0" : "r0"; }
-    if ((Registers & ArmPushPop_R1) != 0) { pushed += pushed.length() > 0 ? ", r1" : "r1"; }
-    if ((Registers & ArmPushPop_R2) != 0) { pushed += pushed.length() > 0 ? ", r2" : "r2"; }
-    if ((Registers & ArmPushPop_R3) != 0) { pushed += pushed.length() > 0 ? ", r3" : "r3"; }
-    if ((Registers & ArmPushPop_R4) != 0) { pushed += pushed.length() > 0 ? ", r4" : "r4"; }
-    if ((Registers & ArmPushPop_R5) != 0) { pushed += pushed.length() > 0 ? ", r5" : "r5"; }
-    if ((Registers & ArmPushPop_R6) != 0) { pushed += pushed.length() > 0 ? ", r6" : "r6"; }
-    if ((Registers & ArmPushPop_R7) != 0) { pushed += pushed.length() > 0 ? ", r7" : "r7"; }
-    if ((Registers & ArmPushPop_R8) != 0) { pushed += pushed.length() > 0 ? ", r8" : "r8"; }
-    if ((Registers & ArmPushPop_R9) != 0) { pushed += pushed.length() > 0 ? ", r9" : "r9"; }
-    if ((Registers & ArmPushPop_R10) != 0) { pushed += pushed.length() > 0 ? ", r10" : "r10"; }
-    if ((Registers & ArmPushPop_R11) != 0) { pushed += pushed.length() > 0 ? ", fp" : "fp"; }
-    if ((Registers & ArmPushPop_R12) != 0) { pushed += pushed.length() > 0 ? ", ip" : "ip"; }
-    if ((Registers & ArmPushPop_LR) != 0) { pushed += pushed.length() > 0 ? ", lr" : "lr"; }
-
+    std::string pushed = PushPopRegisterList(Registers);
     if ((Registers & ArmPushPop_R8) != 0 ||
         (Registers & ArmPushPop_R9) != 0 ||
         (Registers & ArmPushPop_R10) != 0 ||
@@ -899,22 +884,8 @@ void CArmOps::PopArmReg(uint16_t Registers)
     if ((Registers & ArmPushPop_SP) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
     if ((Registers & ArmPushPop_LR) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 
-    std::string pushed;
-    if ((Registers & ArmPushPop_R0) != 0) { pushed += pushed.length() > 0 ? ", r0" : "r0"; }
-    if ((Registers & ArmPushPop_R1) != 0) { pushed += pushed.length() > 0 ? ", r1" : "r1"; }
-    if ((Registers & ArmPushPop_R2) != 0) { pushed += pushed.length() > 0 ? ", r2" : "r2"; }
-    if ((Registers & ArmPushPop_R3) != 0) { pushed += pushed.length() > 0 ? ", r3" : "r3"; }
-    if ((Registers & ArmPushPop_R4) != 0) { pushed += pushed.length() > 0 ? ", r4" : "r4"; }
-    if ((Registers & ArmPushPop_R5) != 0) { pushed += pushed.length() > 0 ? ", r5" : "r5"; }
-    if ((Registers & ArmPushPop_R6) != 0) { pushed += pushed.length() > 0 ? ", r6" : "r6"; }
-    if ((Registers & ArmPushPop_R7) != 0) { pushed += pushed.length() > 0 ? ", r7" : "r7"; }
-    if ((Registers & ArmPushPop_R8) != 0) { pushed += pushed.length() > 0 ? ", r8" : "r8"; }
-    if ((Registers & ArmPushPop_R9) != 0) { pushed += pushed.length() > 0 ? ", r9" : "r9"; }
-    if ((Registers & ArmPushPop_R10) != 0) { pushed += pushed.length() > 0 ? ", r10" : "r10"; }
-    if ((Registers & ArmPushPop_R11) != 0) { pushed += pushed.length() > 0 ? ", fp" : "fp"; }
-    if ((Registers & ArmPushPop_R12) != 0) { pushed += pushed.length() > 0 ? ", ip" : "ip"; }
-    if ((Registers & ArmPushPop_PC) != 0) { pushed += pushed.length() > 0 ? ", pc" : "pc"; }
 
+    std::string pushed = PushPopRegisterList(m_PopRegisters);
     if ((Registers & ArmPushPop_R8) != 0 ||
         (Registers & ArmPushPop_R9) != 0 ||
         (Registers & ArmPushPop_R10) != 0 ||
@@ -940,6 +911,27 @@ void CArmOps::PopArmReg(uint16_t Registers)
         op.Pop.opcode = ArmPOP;
         AddCode16(op.Hex);
     }
+}
+
+std::string CArmOps::PushPopRegisterList(uint16_t Registers)
+{
+    std::string RegisterList;
+    if ((Registers & ArmPushPop_R0) != 0) { RegisterList += stdstr_f("%s%s", RegisterList.length() > 0 ? ", " : "", ArmRegName(Arm_R0)); }
+    if ((Registers & ArmPushPop_R1) != 0) { RegisterList += stdstr_f("%s%s", RegisterList.length() > 0 ? ", " : "", ArmRegName(Arm_R1)); }
+    if ((Registers & ArmPushPop_R2) != 0) { RegisterList += stdstr_f("%s%s", RegisterList.length() > 0 ? ", " : "", ArmRegName(Arm_R2)); }
+    if ((Registers & ArmPushPop_R3) != 0) { RegisterList += stdstr_f("%s%s", RegisterList.length() > 0 ? ", " : "", ArmRegName(Arm_R3)); }
+    if ((Registers & ArmPushPop_R4) != 0) { RegisterList += stdstr_f("%s%s", RegisterList.length() > 0 ? ", " : "", ArmRegName(Arm_R4)); }
+    if ((Registers & ArmPushPop_R5) != 0) { RegisterList += stdstr_f("%s%s", RegisterList.length() > 0 ? ", " : "", ArmRegName(Arm_R5)); }
+    if ((Registers & ArmPushPop_R6) != 0) { RegisterList += stdstr_f("%s%s", RegisterList.length() > 0 ? ", " : "", ArmRegName(Arm_R6)); }
+    if ((Registers & ArmPushPop_R7) != 0) { RegisterList += stdstr_f("%s%s", RegisterList.length() > 0 ? ", " : "", ArmRegName(Arm_R7)); }
+    if ((Registers & ArmPushPop_R8) != 0) { RegisterList += stdstr_f("%s%s", RegisterList.length() > 0 ? ", " : "", ArmRegName(Arm_R8)); }
+    if ((Registers & ArmPushPop_R9) != 0) { RegisterList += stdstr_f("%s%s", RegisterList.length() > 0 ? ", " : "", ArmRegName(Arm_R9)); }
+    if ((Registers & ArmPushPop_R10) != 0) { RegisterList += stdstr_f("%s%s", RegisterList.length() > 0 ? ", " : "", ArmRegName(Arm_R10)); }
+    if ((Registers & ArmPushPop_R11) != 0) { RegisterList += stdstr_f("%s%s", RegisterList.length() > 0 ? ", " : "", ArmRegName(Arm_R11)); }
+    if ((Registers & ArmPushPop_R12) != 0) { RegisterList += stdstr_f("%s%s", RegisterList.length() > 0 ? ", " : "", ArmRegName(Arm_R12)); }
+    if ((Registers & ArmPushPop_LR) != 0) { RegisterList += stdstr_f("%s%s", RegisterList.length() > 0 ? ", " : "", ArmRegName(ArmRegLR)); }
+    if ((Registers & ArmPushPop_PC) != 0) { RegisterList += stdstr_f("%s%s", RegisterList.length() > 0 ? ", " : "", ArmRegName(ArmRegPC)); }
+    return RegisterList;
 }
 
 void CArmOps::ShiftRightSignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift)

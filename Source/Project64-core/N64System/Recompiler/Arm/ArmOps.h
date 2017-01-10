@@ -217,6 +217,7 @@ protected:
 
 protected:
     static const char * ArmRegName(ArmReg Reg);
+    static std::string PushPopRegisterList(uint16_t Registers);
 
 private:
     friend class CArmRegInfo;
