@@ -25,6 +25,7 @@ public:
     uint32_t    VAddrFirst() const { return m_VAddrFirst; }
     uint32_t    VAddrLast()  const { return m_VAddrLast; }
     uint8_t *   CompiledLocation() const { return m_CompiledLocation; }
+    uint8_t *   CompiledLocationEnd() const { return m_CompiledLocationEnd; }
     int32_t     NoOfSections() const { return (int32_t)m_Sections.size() - 1; }
     const CCodeSection & EnterSection() const { return *m_EnterSection; }
     const MD5Digest & Hash() const { return m_Hash; }
@@ -58,6 +59,7 @@ private:
     uint32_t           m_VAddrFirst;       // the address of the first opcode in the block
     uint32_t           m_VAddrLast;        // the address of the first opcode in the block
     uint8_t*           m_CompiledLocation; // What address is this compiled at
+    uint8_t*           m_CompiledLocationEnd; // What address is this compiled at
 
     typedef std::map<uint32_t, CCodeSection *> SectionMap;
     typedef std::list<CCodeSection *>      SectionList;

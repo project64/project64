@@ -23,6 +23,7 @@ public:
     const uint32_t MinPC     () const { return m_MinPC; }
     const uint32_t MaxPC     () const { return m_MaxPC; }
     const Func     Function  () const { return m_Function; }
+    const uint8_t *FunctionEnd() const { return m_FunctionEnd; }
     const MD5Digest&    Hash () const { return m_Hash; }
 
     CCompiledFunc*    Next () const { return m_Next; }
@@ -40,6 +41,7 @@ private:
     uint32_t m_EnterPC; // The Entry PC
     uint32_t m_MinPC;   // The Lowest PC in the function
     uint32_t m_MaxPC;   // The Highest PC in the function
+    uint8_t * m_FunctionEnd; // Where the code bytes end
 
     MD5Digest m_Hash;
     //From querying the recompiler get information about the function

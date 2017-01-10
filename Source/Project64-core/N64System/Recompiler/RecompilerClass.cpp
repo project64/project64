@@ -1006,7 +1006,7 @@ CCompiledFunc * CRecompiler::CompileCode()
         WriteTrace(TraceRecompiler, TraceDebug, "info->Function() = %X", Func->Function());
         std::string dumpline;
         uint32_t start_address = (uint32_t)(Func->Function()) & ~1;
-        for (uint8_t * ptr = (uint8_t *)start_address; ptr < (uint8_t *)*g_RecompPos; ptr++)
+        for (uint8_t * ptr = (uint8_t *)start_address; ptr < CodeBlock.CompiledLocationEnd(); ptr++)
         {
             if (dumpline.empty())
             {

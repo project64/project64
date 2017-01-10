@@ -769,13 +769,14 @@ bool CCodeBlock::Compile()
         }
     }
     m_RecompilerOps->CompileExitCode();
+    m_CompiledLocationEnd = *g_RecompPos;
 
     uint32_t PAddr;
     g_TransVaddr->TranslateVaddr(VAddrFirst(), PAddr);
     MD5(g_MMU->Rdram() + PAddr, (VAddrLast() - VAddrFirst()) + 4).get_digest(m_Hash);
 
 #if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
-    __clear_cache_android((uint8_t *)((uint32_t)m_CompiledLocation & ~1), (uint8_t *)(*g_RecompPos));
+    __clear_cache_android((uint8_t *)((uint32_t)m_CompiledLocation & ~1), m_CompiledLocationEnd);
 #endif
     return true;
 }

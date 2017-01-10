@@ -1571,7 +1571,7 @@ const char * CArmOps::ArmRegName(ArmReg Reg)
     case Arm_R9: return "r9";
     case Arm_R10: return "r10";
     case Arm_R11: return "r11";
-    case Arm_R12: return "ip";
+    case Arm_R12: return "r12";
     case ArmRegSP: return "sp";
     case ArmRegLR: return "lr";
     case ArmRegPC: return "pc";
