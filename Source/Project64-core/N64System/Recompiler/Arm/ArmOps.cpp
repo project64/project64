@@ -18,11 +18,11 @@
 #include <Project64-core/N64System/Recompiler/Arm/ArmRegInfo.h>
 
 CArmRegInfo CArmOps::m_RegWorkingSet;
-bool CArmOps::mInItBlock = false;
-int CArmOps::mItBlockInstruction = 0;
-CArmOps::ArmCompareType CArmOps::mItBlockCompareType;
-CArmOps::ArmItMask CArmOps::mItBlockMask;
-CArmOps::ArmReg CArmOps::mLastStoreReg;
+bool CArmOps::m_InItBlock = false;
+int CArmOps::m_ItBlockInstruction = 0;
+CArmOps::ArmCompareType CArmOps::m_ItBlockCompareType;
+CArmOps::ArmItMask CArmOps::m_ItBlockMask;
+CArmOps::ArmReg CArmOps::m_LastStoreReg;
 
 /**************************************************************************
 * Logging Functions                                                       *
@@ -319,14 +319,14 @@ void CArmOps::MoveArmRegToVariable(ArmReg Reg, void * Variable, const char * Var
 
 void CArmOps::MoveConstToArmReg(ArmReg Reg, uint16_t value, const char * comment)
 {
-    if (Reg == mLastStoreReg)
+    if (Reg == m_LastStoreReg)
     {
         ArmNop();
     }
     PreOpCheck(true,__FILE__,__LINE__);
     if ((value & 0xFF00) == 0 && Reg <= 7)
     {
-        CPU_Message("      mov%s\t%s, #0x%X\t; %s", mInItBlock ? ArmCurrentItCondition() : "s", ArmRegName(Reg), (uint32_t)value, comment != NULL ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
+        CPU_Message("      mov%s\t%s, #0x%X\t; %s", m_InItBlock ? ArmCurrentItCondition() : "s", ArmRegName(Reg), (uint32_t)value, comment != NULL ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
         ArmThumbOpcode op = { 0 };
         op.Imm8.imm8 = value;
         op.Imm8.rdn = Reg;
@@ -335,7 +335,7 @@ void CArmOps::MoveConstToArmReg(ArmReg Reg, uint16_t value, const char * comment
     }
     else if (CanThumbCompressConst(value))
     {
-        CPU_Message("      mov%s.w\t%s, #0x%X\t; %s", mInItBlock ? ArmCurrentItCondition() : "", ArmRegName(Reg), (uint32_t)value, comment != NULL ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
+        CPU_Message("      mov%s.w\t%s, #0x%X\t; %s", m_InItBlock ? ArmCurrentItCondition() : "", ArmRegName(Reg), (uint32_t)value, comment != NULL ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
         uint16_t CompressedValue = ThumbCompressConst(value);
         Arm32Opcode op = { 0 };
         op.imm8_3_1.rn = 0xF;
@@ -352,7 +352,7 @@ void CArmOps::MoveConstToArmReg(ArmReg Reg, uint16_t value, const char * comment
     }
     else
     {
-        CPU_Message("      movw%s\t%s, #0x%X\t; %s", mInItBlock ? ArmCurrentItCondition() : "", ArmRegName(Reg), (uint32_t)value, comment != NULL ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
+        CPU_Message("      movw%s\t%s, #0x%X\t; %s", m_InItBlock ? ArmCurrentItCondition() : "", ArmRegName(Reg), (uint32_t)value, comment != NULL ? comment : stdstr_f("0x%X", (uint32_t)value).c_str());
 
         Arm32Opcode op = { 0 };
         op.imm16.opcode = ArmMOV_IMM16;
@@ -366,7 +366,7 @@ void CArmOps::MoveConstToArmReg(ArmReg Reg, uint16_t value, const char * comment
         AddCode32(op.Hex);
     }
 
-    if (mInItBlock)
+    if (m_InItBlock)
     {
         ProgressItBlock();
     }
@@ -466,10 +466,10 @@ void CArmOps::IfBlock(ArmItMask mask, ArmCompareType CompareType)
     PreOpCheck(false,__FILE__,__LINE__);
 
     CPU_Message("      it%s\t%s", ArmItMaskName(mask), ArmCompareSuffix(CompareType));
-    mInItBlock = true;
-    mItBlockInstruction = 0;
-    mItBlockCompareType = CompareType;
-    mItBlockMask = mask;
+    m_InItBlock = true;
+    m_ItBlockInstruction = 0;
+    m_ItBlockCompareType = CompareType;
+    m_ItBlockMask = mask;
 
     uint8_t computed_mask = 0;
     switch (mask)
@@ -1086,7 +1086,7 @@ void CArmOps::StoreArmRegToArmRegPointer(ArmReg DestReg, ArmReg RegPointer, uint
         op.Imm5.opcode = ArmSTR_ThumbImm;
         AddCode16(op.Hex);
     }
-    mLastStoreReg = DestReg;
+    m_LastStoreReg = DestReg;
 }
 
 void CArmOps::StoreArmRegToArmRegPointer(ArmReg DestReg, ArmReg RegPointer, ArmReg RegPointer2, uint8_t shift)
@@ -1498,11 +1498,11 @@ void * CArmOps::GetAddressOf(int value, ...)
 
 void CArmOps::PreOpCheck(bool AllowedInItBlock, const char * FileName, uint32_t LineNumber)
 {
-    if (!AllowedInItBlock && mInItBlock)
+    if (!AllowedInItBlock && m_InItBlock)
     { 
         g_Notify->BreakPoint(FileName, LineNumber);
     }
-    mLastStoreReg = Arm_Unknown;
+    m_LastStoreReg = Arm_Unknown;
 }
 
 void CArmOps::BreakPointNotification(const char * FileName, uint32_t LineNumber)
@@ -1650,17 +1650,17 @@ const char * CArmOps::ArmItMaskName(ArmItMask mask)
 
 const char * CArmOps::ArmCurrentItCondition()
 {
-    if (mItBlockInstruction == 0)
+    if (m_ItBlockInstruction == 0)
     {
-        return ArmCompareSuffix(mItBlockCompareType);
+        return ArmCompareSuffix(m_ItBlockCompareType);
     }
-    if (mItBlockInstruction == 1 && mItBlockMask == ItMask_T)
+    if (m_ItBlockInstruction == 1 && m_ItBlockMask == ItMask_T)
     {
-        return ArmCompareSuffix(mItBlockCompareType);
+        return ArmCompareSuffix(m_ItBlockCompareType);
     }
-    if (mItBlockInstruction == 1 && mItBlockMask == ItMask_E)
+    if (m_ItBlockInstruction == 1 && m_ItBlockMask == ItMask_E)
     {
-        return ArmCompareSuffix(ArmCompareInverseType(mItBlockCompareType));
+        return ArmCompareSuffix(ArmCompareInverseType(m_ItBlockCompareType));
     }
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return "";
@@ -1669,32 +1669,32 @@ const char * CArmOps::ArmCurrentItCondition()
 void CArmOps::ProgressItBlock ( void )
 {
     bool itBlockDone = false;
-    mItBlockInstruction += 1;
-    if (mItBlockInstruction == 1)
+    m_ItBlockInstruction += 1;
+    if (m_ItBlockInstruction == 1)
     {
-        if (mItBlockMask == ItMask_None)
+        if (m_ItBlockMask == ItMask_None)
         {
             itBlockDone = true;
         }
     }
-    else if (mItBlockInstruction == 2)
+    else if (m_ItBlockInstruction == 2)
     {
-        if (mItBlockMask == ItMask_T || mItBlockMask == ItMask_E)
+        if (m_ItBlockMask == ItMask_T || m_ItBlockMask == ItMask_E)
         {
             itBlockDone = true;
         }
     }
-    else if (mItBlockInstruction == 3)
+    else if (m_ItBlockInstruction == 3)
     {
-        if (mItBlockMask == ItMask_TT || mItBlockMask == ItMask_ET || mItBlockMask == ItMask_TE || mItBlockMask == ItMask_EE)
+        if (m_ItBlockMask == ItMask_TT || m_ItBlockMask == ItMask_ET || m_ItBlockMask == ItMask_TE || m_ItBlockMask == ItMask_EE)
         {
             itBlockDone = true;
         }
     }
-    else if (mItBlockInstruction == 4)
+    else if (m_ItBlockInstruction == 4)
     {
-        if (mItBlockMask == ItMask_TTT || mItBlockMask == ItMask_ETT || mItBlockMask == ItMask_TET || mItBlockMask == ItMask_EET ||
-            mItBlockMask == ItMask_TTE || mItBlockMask == ItMask_ETE || mItBlockMask == ItMask_TEE || mItBlockMask == ItMask_EEE)
+        if (m_ItBlockMask == ItMask_TTT || m_ItBlockMask == ItMask_ETT || m_ItBlockMask == ItMask_TET || m_ItBlockMask == ItMask_EET ||
+            m_ItBlockMask == ItMask_TTE || m_ItBlockMask == ItMask_ETE || m_ItBlockMask == ItMask_TEE || m_ItBlockMask == ItMask_EEE)
         {
             itBlockDone = true;
         }
@@ -1706,8 +1706,8 @@ void CArmOps::ProgressItBlock ( void )
 
     if (itBlockDone)
     {
-        mInItBlock = false;
-        mItBlockInstruction = 0;
+        m_InItBlock = false;
+        m_ItBlockInstruction = 0;
     }
 }
 

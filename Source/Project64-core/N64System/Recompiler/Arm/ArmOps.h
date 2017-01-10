@@ -239,11 +239,11 @@ private:
     static void AddCode16(uint16_t value);
     static void AddCode32(uint32_t value);
 
-    static bool mInItBlock;
-    static int mItBlockInstruction;
-    static ArmCompareType mItBlockCompareType;
-    static ArmItMask mItBlockMask;
-    static ArmReg mLastStoreReg;
+    static bool m_InItBlock;
+    static int m_ItBlockInstruction;
+    static ArmCompareType m_ItBlockCompareType;
+    static ArmItMask m_ItBlockMask;
+    static ArmReg m_LastStoreReg;
 };
 
 #define AddressOf(Addr) CArmOps::GetAddressOf(5,(Addr))
