@@ -212,6 +212,7 @@ protected:
     static void * GetAddressOf(int32_t value, ...);
     static void SetJump8(uint8_t * Loc, uint8_t * JumpLoc);
     static void SetJump20(uint32_t * Loc, uint32_t * JumpLoc);
+    static void FlushPopArmReg(void);
 
     static CArmRegInfo m_RegWorkingSet;
 
@@ -245,6 +246,8 @@ private:
     static ArmCompareType m_ItBlockCompareType;
     static ArmItMask m_ItBlockMask;
     static ArmReg m_LastStoreReg;
+    static uint16_t m_PopRegisters;
+    static uint16_t m_PushRegisters;
 };
 
 #define AddressOf(Addr) CArmOps::GetAddressOf(5,(Addr))

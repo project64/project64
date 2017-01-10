@@ -23,6 +23,8 @@ int CArmOps::m_ItBlockInstruction = 0;
 CArmOps::ArmCompareType CArmOps::m_ItBlockCompareType;
 CArmOps::ArmItMask CArmOps::m_ItBlockMask;
 CArmOps::ArmReg CArmOps::m_LastStoreReg;
+uint16_t CArmOps::m_PopRegisters = 0;
+uint16_t CArmOps::m_PushRegisters = 0;
 
 /**************************************************************************
 * Logging Functions                                                       *
@@ -836,6 +838,21 @@ void CArmOps::MulF32(ArmFpuSingle DestReg, ArmFpuSingle SourceReg1, ArmFpuSingle
 
 void CArmOps::PushArmReg(uint16_t Registers)
 {
+    if (m_PopRegisters != 0)
+    {
+        if (Registers == m_PopRegisters)
+        {
+            CPU_Message("%s: Ignoring Push/Pop", __FUNCTION__);
+            m_PopRegisters = 0;
+            PreOpCheck(false, __FILE__, __LINE__);
+            return;
+        }
+        ArmNop();
+    }
+    if (m_PushRegisters != 0)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
     PreOpCheck(false,__FILE__,__LINE__);
 
     if (Registers == 0)
@@ -844,6 +861,10 @@ void CArmOps::PushArmReg(uint16_t Registers)
     }
     if ((Registers & ArmPushPop_SP) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
     if ((Registers & ArmPushPop_PC) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
+    if ((Registers & ArmPushPop_LR) == 0)
+    {
+        m_PushRegisters = Registers;
+    }
 
     std::string pushed = PushPopRegisterList(Registers);
     if ((Registers & ArmPushPop_R8) != 0 ||
@@ -876,41 +897,67 @@ void CArmOps::PushArmReg(uint16_t Registers)
 void CArmOps::PopArmReg(uint16_t Registers)
 {
     PreOpCheck(false, __FILE__, __LINE__);
-    
+
     if (Registers == 0)
     {
         return;
     }
+    if (m_PopRegisters != 0)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    if (m_PushRegisters == 0 && (Registers & ArmPushPop_PC) == 0)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    if (m_PushRegisters != Registers && (Registers & ArmPushPop_PC) == 0)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
     if ((Registers & ArmPushPop_SP) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
     if ((Registers & ArmPushPop_LR) != 0) { g_Notify->BreakPoint(__FILE__,__LINE__); }
 
+    m_PopRegisters = Registers;
+    if ((m_PopRegisters & ArmPushPop_PC) != 0)
+    {
+        FlushPopArmReg();
+    }
+}
 
+void CArmOps::FlushPopArmReg(void)
+{
+    if (m_PopRegisters == 0)
+    {
+        return;
+    }
     std::string pushed = PushPopRegisterList(m_PopRegisters);
-    if ((Registers & ArmPushPop_R8) != 0 ||
-        (Registers & ArmPushPop_R9) != 0 ||
-        (Registers & ArmPushPop_R10) != 0 ||
-        (Registers & ArmPushPop_R11) != 0 ||
-        (Registers & ArmPushPop_R12) != 0)
+    if ((m_PopRegisters & ArmPushPop_R8) != 0 ||
+        (m_PopRegisters & ArmPushPop_R9) != 0 ||
+        (m_PopRegisters & ArmPushPop_R10) != 0 ||
+        (m_PopRegisters & ArmPushPop_R11) != 0 ||
+        (m_PopRegisters & ArmPushPop_R12) != 0)
     {
         CPU_Message("%X      pop\t{%s}", (int32_t)*g_RecompPos, pushed.c_str());
 
-        Arm32Opcode op = {0};
-        op.PushPop.register_list = Registers;
+        Arm32Opcode op = { 0 };
+        op.PushPop.register_list = m_PopRegisters;
         op.PushPop.opcode = 0xE8BD;
         AddCode32(op.Hex);
     }
     else
     {
         CPU_Message("      pop\t%s", pushed.c_str());
-        bool pc = (Registers & ArmPushPop_PC) != 0;
-        Registers &= Registers & ~ArmPushPop_PC;
+        bool pc = (m_PopRegisters & ArmPushPop_PC) != 0;
+        m_PopRegisters &= ~ArmPushPop_PC;
 
-        ArmThumbOpcode op = {0};
-        op.Pop.register_list = (uint8_t)Registers;
+        ArmThumbOpcode op = { 0 };
+        op.Pop.register_list = (uint8_t)m_PopRegisters;
         op.Pop.p = pc ? 1 : 0;
         op.Pop.opcode = ArmPOP;
         AddCode16(op.Hex);
     }
+    m_PopRegisters = 0;
+    m_PushRegisters = 0;
 }
 
 std::string CArmOps::PushPopRegisterList(uint16_t Registers)
@@ -1396,6 +1443,10 @@ uint16_t CArmOps::ThumbCompressConst (uint32_t value)
 
 void CArmOps::SetJump8(uint8_t * Loc, uint8_t * JumpLoc)
 {
+    if (m_PopRegisters != 0)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
     if (Loc == NULL || JumpLoc == NULL)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -1430,6 +1481,10 @@ void CArmOps::SetJump8(uint8_t * Loc, uint8_t * JumpLoc)
 
 void CArmOps::SetJump20(uint32_t * Loc, uint32_t * JumpLoc)
 {
+    if (m_PopRegisters != 0)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
     if (Loc == NULL || JumpLoc == NULL)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -1455,7 +1510,7 @@ void CArmOps::SetJump20(uint32_t * Loc, uint32_t * JumpLoc)
         else
         {
             op.Branch20.imm11 = (immediate & 0x7FF);
-            op.Branch20.imm6 = (immediate >> 11) & 0x37;
+            op.Branch20.imm6 = (immediate >> 11) & 0x3F;
             op.Branch20.J1 = (immediate >> 17) & 0x1;
             op.Branch20.J2 = (immediate >> 18) & 0x1;
             op.Branch20.S = (immediate >> 19) & 0x1;
@@ -1494,6 +1549,7 @@ void CArmOps::PreOpCheck(bool AllowedInItBlock, const char * FileName, uint32_t 
     { 
         g_Notify->BreakPoint(FileName, LineNumber);
     }
+    FlushPopArmReg();
     m_LastStoreReg = Arm_Unknown;
 }
 

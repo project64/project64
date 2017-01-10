@@ -5949,6 +5949,7 @@ void CArmRecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool 
         MoveConstToArmReg(Arm_R0, (uint32_t)g_SystemTimer, "g_SystemTimer");
         CallFunction(AddressOf(&CSystemTimer::TimerDone), "CSystemTimer::TimerDone");
         RegSet.AfterCallDirect();
+        FlushPopArmReg();
 
         CPU_Message("");
         CPU_Message("      $Continue_From_Timer_Test:");
@@ -6264,6 +6265,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
                 StoreArmRegToArmRegPointer(TempValueReg, VariableReg, 0);
                 CallFunction((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
                 m_RegWorkingSet.AfterCallDirect();
+                FlushPopArmReg();
                 CPU_Message("");
                 CPU_Message("      Continue:");
                 SetJump8(Jump, *g_RecompPos);
@@ -6286,6 +6288,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
                 m_RegWorkingSet.BeforeCallDirect();
                 CallFunction((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
                 m_RegWorkingSet.AfterCallDirect();
+                FlushPopArmReg();
                 CPU_Message("");
                 CPU_Message("      Continue:");
                 SetJump8(Jump, *g_RecompPos);
@@ -6683,6 +6686,7 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
                 m_RegWorkingSet.BeforeCallDirect();
                 CallFunction((void *)g_Plugins->Gfx()->ViStatusChanged, "ViStatusChanged");
                 m_RegWorkingSet.AfterCallDirect();
+                FlushPopArmReg();
                 CPU_Message("");
                 CPU_Message("      Continue:");
                 SetJump8(Jump, *g_RecompPos);
@@ -6706,6 +6710,7 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
                 m_RegWorkingSet.BeforeCallDirect();
                 CallFunction((void *)g_Plugins->Gfx()->ViWidthChanged, "ViWidthChanged");
                 m_RegWorkingSet.AfterCallDirect();
+                FlushPopArmReg();
                 CPU_Message("");
                 CPU_Message("      Continue:");
                 SetJump8(Jump, *g_RecompPos);
