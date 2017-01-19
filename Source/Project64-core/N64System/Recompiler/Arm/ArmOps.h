@@ -218,6 +218,7 @@ protected:
 
 protected:
     static const char * ArmRegName(ArmReg Reg);
+    static uint32_t PushPopRegisterSize(uint16_t Registers);
     static std::string PushPopRegisterList(uint16_t Registers);
 
 private:

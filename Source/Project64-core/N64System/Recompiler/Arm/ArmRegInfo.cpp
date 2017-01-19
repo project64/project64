@@ -101,6 +101,20 @@ bool CArmRegInfo::ShouldPushPopReg (ArmReg Reg)
 
 void CArmRegInfo::BeforeCallDirect(void)
 {
+    static uint32_t PushPopRegisterList[] =
+    {
+        ArmPushPop_R0, ArmPushPop_R1, ArmPushPop_R2, ArmPushPop_R3, ArmPushPop_R4,
+        ArmPushPop_R5, ArmPushPop_R6, ArmPushPop_R7, ArmPushPop_R8, ArmPushPop_R9,
+        ArmPushPop_R10, ArmPushPop_R11, ArmPushPop_R12
+    };
+    
+    static ArmReg RegisterList[] =
+    {
+        Arm_R0, Arm_R1, Arm_R2, Arm_R3, Arm_R4,
+        Arm_R5, Arm_R6, Arm_R7, Arm_R8, Arm_R9,
+        Arm_R10, Arm_R11, Arm_R12
+    };
+
     if (m_InCallDirect)
     {
         CPU_Message("%s: in CallDirect",__FUNCTION__);
@@ -108,61 +122,96 @@ void CArmRegInfo::BeforeCallDirect(void)
         return;
     }
     UnMap_AllFPRs();
-    m_InCallDirect = true;
     int PushPopRegisters = 0;
-    if (ShouldPushPopReg(Arm_R0)) { PushPopRegisters |= ArmPushPop_R0; }
-    if (ShouldPushPopReg(Arm_R1)) { PushPopRegisters |= ArmPushPop_R1; }
-    if (ShouldPushPopReg(Arm_R2)) { PushPopRegisters |= ArmPushPop_R2; }
-    if (ShouldPushPopReg(Arm_R3)) { PushPopRegisters |= ArmPushPop_R3; }
-    if (ShouldPushPopReg(Arm_R4)) { PushPopRegisters |= ArmPushPop_R4; }
-    if (ShouldPushPopReg(Arm_R5)) { PushPopRegisters |= ArmPushPop_R5; }
-    if (ShouldPushPopReg(Arm_R6)) { PushPopRegisters |= ArmPushPop_R6; }
-    if (ShouldPushPopReg(Arm_R7)) { PushPopRegisters |= ArmPushPop_R7; }
-    if (ShouldPushPopReg(Arm_R8)) { PushPopRegisters |= ArmPushPop_R8; }
-    if (ShouldPushPopReg(Arm_R9)) { PushPopRegisters |= ArmPushPop_R9; }
-    if (ShouldPushPopReg(Arm_R10)) { PushPopRegisters |= ArmPushPop_R10; }
-    if (ShouldPushPopReg(Arm_R11)) { PushPopRegisters |= ArmPushPop_R11; }
-    if (ShouldPushPopReg(Arm_R12)) { PushPopRegisters |= ArmPushPop_R12; }
-    if (ShouldPushPopReg(Arm_R13)) { PushPopRegisters |= ArmPushPop_R13; }
-    if (ShouldPushPopReg(Arm_R14)) { PushPopRegisters |= ArmPushPop_R14; }
-    if (ShouldPushPopReg(Arm_R15)) { PushPopRegisters |= ArmPushPop_R15; }
-
-    if (PushPopRegisters != 0)
+    for (int i = 0; i < (sizeof(RegisterList) / sizeof(RegisterList[0])); i++)
     {
-        PushArmReg(PushPopRegisters);
+        if (ShouldPushPopReg(RegisterList[i])) { PushPopRegisters |= PushPopRegisterList[i]; }
     }
+
+    if (PushPopRegisters == 0)
+    {
+        m_InCallDirect = true;
+        return;
+    }
+    
+    if ((PushPopRegisterSize(PushPopRegisters) % 8) != 0)
+    {
+        bool Added = false;
+        for (int i = 0; i < (sizeof(RegisterList) / sizeof(RegisterList[0])); i++)
+        {
+            if (ShouldPushPopReg(RegisterList[i])) 
+            {
+                continue;
+            }
+            PushPopRegisters |= PushPopRegisterList[i];
+            Added = true;
+            break;
+        }
+        if (!Added)
+        {
+            ArmReg reg = FreeArmReg(false);
+            CPU_Message("    Freed %s", ArmRegName(reg));
+            PushPopRegisters = 0;
+            for (int i = 0; i < (sizeof(RegisterList) / sizeof(RegisterList[0])); i++)
+            {
+                if (ShouldPushPopReg(RegisterList[i])) { PushPopRegisters |= PushPopRegisterList[i]; }
+            }
+        }
+        if ((PushPopRegisterSize(PushPopRegisters) % 8) != 0)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+    m_InCallDirect = true;
+    PushArmReg(PushPopRegisters);
 }
 
 void CArmRegInfo::AfterCallDirect(void)
 {
+    static uint32_t PushPopRegisterList[] =
+    {
+        ArmPushPop_R0, ArmPushPop_R1, ArmPushPop_R2, ArmPushPop_R3, ArmPushPop_R4,
+        ArmPushPop_R5, ArmPushPop_R6, ArmPushPop_R7, ArmPushPop_R8, ArmPushPop_R9,
+        ArmPushPop_R10, ArmPushPop_R11, ArmPushPop_R12, ArmPushPop_LR, ArmPushPop_PC
+    };
+
+    static ArmReg RegisterList[] =
+    {
+        Arm_R0, Arm_R1, Arm_R2, Arm_R3, Arm_R4,
+        Arm_R5, Arm_R6, Arm_R7, Arm_R8, Arm_R9,
+        Arm_R10, Arm_R11, Arm_R12, ArmRegLR, ArmRegPC,
+    };
+
     if (!m_InCallDirect)
     {
         CPU_Message("%s: Not in CallDirect",__FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
+
     int PushPopRegisters = 0;
-    if (ShouldPushPopReg(Arm_R0)) { PushPopRegisters |= ArmPushPop_R0; }
-    if (ShouldPushPopReg(Arm_R1)) { PushPopRegisters |= ArmPushPop_R1; }
-    if (ShouldPushPopReg(Arm_R2)) { PushPopRegisters |= ArmPushPop_R2; }
-    if (ShouldPushPopReg(Arm_R3)) { PushPopRegisters |= ArmPushPop_R3; }
-    if (ShouldPushPopReg(Arm_R4)) { PushPopRegisters |= ArmPushPop_R4; }
-    if (ShouldPushPopReg(Arm_R5)) { PushPopRegisters |= ArmPushPop_R5; }
-    if (ShouldPushPopReg(Arm_R6)) { PushPopRegisters |= ArmPushPop_R6; }
-    if (ShouldPushPopReg(Arm_R7)) { PushPopRegisters |= ArmPushPop_R7; }
-    if (ShouldPushPopReg(Arm_R8)) { PushPopRegisters |= ArmPushPop_R8; }
-    if (ShouldPushPopReg(Arm_R9)) { PushPopRegisters |= ArmPushPop_R9; }
-    if (ShouldPushPopReg(Arm_R10)) { PushPopRegisters |= ArmPushPop_R10; }
-    if (ShouldPushPopReg(Arm_R11)) { PushPopRegisters |= ArmPushPop_R11; }
-    if (ShouldPushPopReg(Arm_R12)) { PushPopRegisters |= ArmPushPop_R12; }
-    if (ShouldPushPopReg(Arm_R13)) { PushPopRegisters |= ArmPushPop_R13; }
-    if (ShouldPushPopReg(Arm_R14)) { PushPopRegisters |= ArmPushPop_R14; }
-    if (ShouldPushPopReg(Arm_R15)) { PushPopRegisters |= ArmPushPop_R15; }
+    for (int i = 0; i < (sizeof(RegisterList) / sizeof(RegisterList[0])); i++)
+    {
+        if (ShouldPushPopReg(RegisterList[i])) { PushPopRegisters |= PushPopRegisterList[i]; }
+    }
 
     if (PushPopRegisters != 0)
     {
+        if ((PushPopRegisterSize(PushPopRegisters) % 8) != 0)
+        {
+            for (int i = 0; i < (sizeof(RegisterList) / sizeof(RegisterList[0])); i++)
+            {
+                if (ShouldPushPopReg(RegisterList[i]))
+                {
+                    continue;
+                }
+                PushPopRegisters |= PushPopRegisterList[i];
+                break;
+            }
+        }
         PopArmReg(PushPopRegisters);
     }
+
     SetRoundingModel(CRegInfo::RoundUnknown);
     m_InCallDirect = false;
 }
