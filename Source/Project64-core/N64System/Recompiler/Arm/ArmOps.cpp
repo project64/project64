@@ -402,6 +402,10 @@ void CArmOps::MoveConstToArmRegTop(ArmReg DestReg, uint16_t Const, const char * 
 
 void CArmOps::CompareArmRegToConst(ArmReg Reg, uint32_t value)
 {
+    if (Reg == m_LastStoreReg)
+    {
+        ArmNop();
+    }
     PreOpCheck(false,__FILE__,__LINE__);
 
     if (Reg <= 0x7 && (value & 0xFFFFFF00) == 0)
