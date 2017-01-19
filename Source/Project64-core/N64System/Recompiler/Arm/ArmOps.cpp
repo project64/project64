@@ -75,6 +75,10 @@ void CArmOps::AddArmRegToArmReg(ArmReg DestReg, ArmReg SourceReg1, ArmReg Source
 
 void CArmOps::AddConstToArmReg(ArmReg DestReg, uint32_t Const)
 {
+    if (DestReg == m_LastStoreReg)
+    {
+        ArmNop();
+    }
     PreOpCheck(false,__FILE__,__LINE__);
 
     AddConstToArmReg(DestReg, DestReg, Const);
@@ -82,6 +86,10 @@ void CArmOps::AddConstToArmReg(ArmReg DestReg, uint32_t Const)
 
 void CArmOps::AndConstToArmReg(ArmReg DestReg, ArmReg SourceReg, uint32_t Const)
 {
+    if (DestReg == m_LastStoreReg)
+    {
+        ArmNop();
+    }
     PreOpCheck(false,__FILE__,__LINE__);
 
     if (CanThumbCompressConst(Const))
