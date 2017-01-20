@@ -86,7 +86,7 @@ private:
     std::wstring GetSaveSlotString(int Slot);
     stdstr GetFileLastMod(const CPath & FileName);
     void RebuildAccelerators(void);
-    stdstr ChooseFileToOpen(HWND hParent);
+    std::string ChooseFileToOpen(HWND hParent);
     void SetTraceModuleSetttings(SettingID Type);
 
     static void SettingsChanged(CMainMenu * _this);

@@ -5,6 +5,10 @@
 #ifdef _WIN32
 #include <Shlobj.h>
 #include <dos.h>
+#pragma warning(push)
+#pragma warning(disable : 4996) // warning C4091: 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared
+#include <CommDlg.h>
+#pragma warning(pop)
 #else
 #include <sys/stat.h>
 #include <dirent.h>
@@ -998,6 +1002,39 @@ bool CPath::Exists() const
     return stat(m_strPath.c_str(), &statbuf) == 0;
 #endif
 }
+
+#ifdef _WIN32
+bool CPath::SelectFile(void * hwndOwner, const char * InitialDir, const char * FileFilter, bool FileMustExist)
+{
+    CPath CurrentDir(CURRENT_DIRECTORY);
+
+    OPENFILENAME openfilename;
+    char FileName[MAX_PATH];
+    memset(&FileName, 0, sizeof(FileName));
+    memset(&openfilename, 0, sizeof(openfilename));
+
+    openfilename.lStructSize = sizeof(openfilename);
+    openfilename.hwndOwner = (HWND)hwndOwner;
+    openfilename.lpstrFilter = FileFilter;
+    openfilename.lpstrFile = FileName;
+    openfilename.lpstrInitialDir = InitialDir;
+    openfilename.nMaxFile = MAX_PATH;
+    openfilename.Flags = OFN_HIDEREADONLY | (FileMustExist ? OFN_FILEMUSTEXIST : 0);
+
+    bool res = GetOpenFileName(&openfilename);
+    if (CPath(CURRENT_DIRECTORY) != CurrentDir)
+    {
+        CurrentDir.ChangeDirectory();
+    }
+    if (!res)
+    {
+        return false;
+    }
+    m_strPath = FileName;
+    cleanPathString(m_strPath);
+    return true;
+}
+#endif
 
 //-------------------------------------------------------------
 // Post    : Return TRUE on success

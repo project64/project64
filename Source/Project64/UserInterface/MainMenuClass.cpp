@@ -90,29 +90,15 @@ int CMainMenu::ProcessAccelerator(HWND hWnd, void * lpMsg)
     return TranslateAccelerator((HWND)hWnd, (HACCEL)m_AccelTable, (LPMSG)lpMsg);
 }
 
-stdstr CMainMenu::ChooseFileToOpen(HWND hParent)
+std::string CMainMenu::ChooseFileToOpen(HWND hParent)
 {
-    OPENFILENAME openfilename;
-    char FileName[_MAX_PATH], Directory[_MAX_PATH];
-
-    memset(&FileName, 0, sizeof(FileName));
-    memset(&openfilename, 0, sizeof(openfilename));
-
-    strcpy(Directory, g_Settings->LoadStringVal(RomList_GameDir).c_str());
-
-    openfilename.lStructSize = sizeof(openfilename);
-    openfilename.hwndOwner = (HWND)hParent;
-    openfilename.lpstrFilter = "N64 ROMs (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin, *.ndd)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal;*.ndd\0All files (*.*)\0*.*\0";
-    openfilename.lpstrFile = FileName;
-    openfilename.lpstrInitialDir = Directory;
-    openfilename.nMaxFile = MAX_PATH;
-    openfilename.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-
-    if (GetOpenFileName(&openfilename))
+    CPath FileName;
+    const char * Filter = "N64 ROMs (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin, *.ndd)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal;*.ndd\0All files (*.*)\0*.*\0";
+    if (FileName.SelectFile(hParent, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
     {
-        return stdstr(FileName);
+        return FileName;
     }
-    return stdstr("");
+    return "";
 }
 
 void CMainMenu::SetTraceModuleSetttings(SettingID Type)
@@ -123,7 +109,7 @@ void CMainMenu::SetTraceModuleSetttings(SettingID Type)
 
 void CMainMenu::OnOpenRom(HWND hWnd)
 {
-    stdstr File = ChooseFileToOpen(hWnd);
+    std::string File = ChooseFileToOpen(hWnd);
     if (File.length() == 0)
     {
         return;
@@ -144,22 +130,9 @@ void CMainMenu::OnOpenRom(HWND hWnd)
     stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
     if ((IPLROM.length() <= 0) || (!g_BaseSystem->RunFileImage(IPLROM.c_str())))
     {
-        // Open DDROM
-        OPENFILENAME openfilename;
-        char FileName[_MAX_PATH], Directory[_MAX_PATH];
-        memset(&FileName, 0, sizeof(FileName));
-        memset(&openfilename, 0, sizeof(openfilename));
-
-        strcpy(Directory, g_Settings->LoadStringVal(RomList_GameDir).c_str());
-        openfilename.lStructSize = sizeof(openfilename);
-        openfilename.hwndOwner = (HWND)hWnd;
-        openfilename.lpstrFilter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-        openfilename.lpstrFile = FileName;
-        openfilename.lpstrInitialDir = Directory;
-        openfilename.nMaxFile = MAX_PATH;
-        openfilename.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-
-        if (GetOpenFileName(&openfilename))
+        const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+        CPath FileName;
+        if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
         {
             g_BaseSystem->RunFileImage(FileName);
         }
@@ -238,30 +211,21 @@ void CMainMenu::OnSaveAs(HWND hWnd)
 
 void CMainMenu::OnLodState(HWND hWnd)
 {
-    char Directory[255], SaveFile[255];
-    OPENFILENAME openfilename;
+    g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_LoadGame);
 
-    memset(&SaveFile, 0, sizeof(SaveFile));
-    memset(&openfilename, 0, sizeof(openfilename));
-
+    char Directory[255];
     UISettingsLoadStringVal(Directory_LastSave, Directory, sizeof(Directory));
 
-    openfilename.lStructSize = sizeof(openfilename);
-    openfilename.hwndOwner = (HWND)hWnd;
-    openfilename.lpstrFilter = "PJ64 Saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
-    openfilename.lpstrFile = SaveFile;
-    openfilename.lpstrInitialDir = Directory;
-    openfilename.nMaxFile = MAX_PATH;
-    openfilename.Flags = OFN_HIDEREADONLY;
-
-    g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_LoadGame);
-    if (GetOpenFileName(&openfilename))
+    CPath SaveFile;
+    const char * Filter = "PJ64 Saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
+    if (SaveFile.SelectFile(hWnd, Directory, Filter, false))
     {
         g_Settings->SaveString(GameRunning_InstantSaveFile, SaveFile);
-        char SaveDir[MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
-        _splitpath(SaveFile, drive, dir, fname, ext);
-        _makepath(SaveDir, drive, dir, NULL, NULL);
-        UISettingsSaveString(Directory_LastSave, SaveDir);
+        if (!SaveFile.DirectoryExists())
+        {
+            SaveFile.DirectoryCreate();
+        }
+        UISettingsSaveString(Directory_LastSave, SaveFile.GetDriveDirectory());
         g_BaseSystem->ExternalEvent(SysEvent_LoadMachineState);
     }
     g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_LoadGame);
@@ -331,27 +295,15 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         break;
     case ID_SYSTEM_SWAPDISK:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_SWAPDISK");
-        // Open Disk
-        OPENFILENAME openfilename;
-        char FileName[_MAX_PATH], Directory[_MAX_PATH];
-
-        memset(&FileName, 0, sizeof(FileName));
-        memset(&openfilename, 0, sizeof(openfilename));
-
-        strcpy(Directory, g_Settings->LoadStringVal(RomList_GameDir).c_str());
-
-        openfilename.lStructSize = sizeof(openfilename);
-        openfilename.hwndOwner = (HWND)hWnd;
-        openfilename.lpstrFilter = "N64DD Disk Image (*.ndd)\0*.ndd\0All files (*.*)\0*.*\0";
-        openfilename.lpstrFile = FileName;
-        openfilename.lpstrInitialDir = Directory;
-        openfilename.nMaxFile = MAX_PATH;
-        openfilename.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-
-        if (GetOpenFileName(&openfilename))
         {
-            g_Disk->SaveDiskImage();
-            g_Disk->SwapDiskImage(FileName);
+            // Open Disk
+            CPath FileName;
+            const char * Filter = "N64DD Disk Image (*.ndd)\0*.ndd\0All files (*.*)\0*.*\0";
+            if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
+            {
+                g_Disk->SaveDiskImage();
+                g_Disk->SwapDiskImage(FileName);
+            }
         }
         break;
     case ID_SYSTEM_SAVE:
