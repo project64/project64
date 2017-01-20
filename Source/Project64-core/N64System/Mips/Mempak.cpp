@@ -14,7 +14,16 @@
 #include <stdio.h>
 #include <Common/path.h>
 
-void CMempak::LoadMempak(int32_t Control)
+CMempak::CMempak()
+{
+    for (uint32_t i = 0; i < sizeof(m_Formatted) / sizeof(m_Formatted[0]); i++)
+    {
+        m_Formatted[i] = 0;
+    }
+    memset(m_Mempaks, 0, sizeof(m_Mempaks));
+}
+
+void CMempak::LoadMempak(int32_t Control, bool Create)
 {
     stdstr MempakName;
     MempakName.Format("%s_Cont_%d", g_Settings->LoadStringVal(Game_GameName).c_str(), Control + 1);
@@ -24,6 +33,17 @@ void CMempak::LoadMempak(int32_t Control)
     {
         MempakPath.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
     }
+
+    if (!Create && !MempakPath.Exists())
+    {
+        if (!m_Formatted[Control])
+        {
+            CMempak::Format(Control);
+            m_Formatted[Control] = true;
+        }
+        return;
+    }
+
     if (!MempakPath.DirectoryExists())
     {
         MempakPath.DirectoryCreate();
@@ -36,7 +56,11 @@ void CMempak::LoadMempak(int32_t Control)
 
     if (formatMempak)
     {
-        CMempak::Format(Control);
+        if (!m_Formatted[Control])
+        {
+            CMempak::Format(Control);
+            m_Formatted[Control] = true;
+        }
         m_MempakHandle[Control].Write(m_Mempaks[Control], 0x8000);
     }
     else
@@ -113,9 +137,9 @@ void CMempak::ReadFrom(int32_t Control, uint32_t address, uint8_t * data)
 {
     if (address < 0x8000)
     {
-        if (!m_MempakHandle[Control].IsOpen())
+        if (!m_Formatted[Control] && !m_MempakHandle[Control].IsOpen())
         {
-            LoadMempak(Control);
+            LoadMempak(Control, false);
         }
 
         memcpy(data, &m_Mempaks[Control][address], 0x20);
@@ -131,15 +155,22 @@ void CMempak::WriteTo(int32_t Control, uint32_t address, uint8_t * data)
 {
     if (address < 0x8000)
     {
-        if (!m_MempakHandle[Control].IsOpen())
+        if (!m_Formatted[Control])
         {
-            LoadMempak(Control);
+            CMempak::Format(Control);
+            m_Formatted[Control] = true;
         }
+        if (memcmp(&m_Mempaks[Control][address], data, 0x20) != 0)
+        {
+            if (!m_MempakHandle[Control].IsOpen())
+            {
+                LoadMempak(Control, true);
+            }
+            memcpy(&m_Mempaks[Control][address], data, 0x20);
 
-        memcpy(&m_Mempaks[Control][address], data, 0x20);
-
-        m_MempakHandle[Control].Seek(address, CFile::begin);
-        m_MempakHandle[Control].Write(data, 0x20);
+            m_MempakHandle[Control].Seek(address, CFile::begin);
+            m_MempakHandle[Control].Write(data, 0x20);
+        }
     }
     else
     {
