@@ -19,7 +19,8 @@ CMempak::CMempak()
     for (uint32_t i = 0; i < sizeof(m_Formatted) / sizeof(m_Formatted[0]); i++)
     {
         m_Formatted[i] = 0;
-    }
+        m_SaveExists[i] = true;
+     }
     memset(m_Mempaks, 0, sizeof(m_Mempaks));
 }
 
@@ -41,6 +42,7 @@ void CMempak::LoadMempak(int32_t Control, bool Create)
             CMempak::Format(Control);
             m_Formatted[Control] = true;
         }
+        m_SaveExists[Control] = false;
         return;
     }
 
@@ -66,6 +68,7 @@ void CMempak::LoadMempak(int32_t Control, bool Create)
     else
     {
         m_MempakHandle[Control].Read(m_Mempaks[Control], 0x8000);
+        m_Formatted[Control] = true;
     }
 }
 
@@ -137,7 +140,7 @@ void CMempak::ReadFrom(int32_t Control, uint32_t address, uint8_t * data)
 {
     if (address < 0x8000)
     {
-        if (!m_Formatted[Control] && !m_MempakHandle[Control].IsOpen())
+        if (m_SaveExists[Control] && !m_MempakHandle[Control].IsOpen())
         {
             LoadMempak(Control, false);
         }
