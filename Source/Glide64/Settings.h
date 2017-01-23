@@ -161,6 +161,8 @@ public:
     int wrpVRAM;
     int wrpFBO;
     int wrpAnisotropic;
+private:
+    void RegisterSettings(void);
 };
 
 extern CSettings * g_settings;

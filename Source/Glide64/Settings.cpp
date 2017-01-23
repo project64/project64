@@ -98,6 +98,124 @@ wrpVRAM(0),
 wrpFBO(0),
 wrpAnisotropic(0)
 {
+    RegisterSettings();
+}
+
+void CSettings::RegisterSettings(void)
+{
+    SetModuleName("default");
+    Set_basic_mode = FindSystemSettingId("Basic Mode");
+    Set_texture_dir = FindSystemSettingId("Dir:Texture");
+    Set_log_flush = FindSystemSettingId("Log Auto Flush");
+    Set_log_dir = FindSystemSettingId("Dir:Log");
+
+    SetModuleName("Glide64");
+    general_setting(Set_CardId, "card_id", 0);
+#ifdef _WIN32
+    general_setting(Set_Resolution, "resolution", 7);
+    general_setting(Set_wrpResolution, "wrpResolution", GetCurrentResIndex());
+#endif
+    general_setting(Set_vsync, "vsync", 1);
+    general_setting(Set_ssformat, "ssformat", 1);
+    general_setting(Set_clock, "clock", 0);
+    general_setting(Set_clock_24_hr, "clock_24_hr", 0);
+    general_setting(Set_texenh_options, "texenh_options", 0);
+    general_setting(Set_hotkeys, "hotkeys", 1);
+    general_setting(Set_wrpVRAM, "wrpVRAM", 0);
+#ifndef ANDROID
+    general_setting(Set_wrpFBO, "wrpFBO", 0);
+#else
+    general_setting(Set_wrpFBO, "wrpFBO", 1);
+#endif
+    general_setting(Set_Rotate, "rotate", 0);
+    general_setting(Set_wrpAnisotropic, "wrpAnisotropic", 0);
+    general_setting(Set_autodetect_ucode, "autodetect_ucode", 1);
+    general_setting(Set_ucode, "ucode", 2);
+    general_setting(Set_wireframe, "wireframe", 0);
+    general_setting(Set_wfmode, "wfmode", 1);
+    general_setting(Set_logging, "logging", 0);
+    general_setting(Set_log_clear, "log_clear", 0);
+    general_setting(Set_run_in_window, "run_in_window", 0);
+    general_setting(Set_elogging, "elogging", 0);
+    general_setting(Set_filter_cache, "filter_cache", 0);
+    general_setting(Set_unk_as_red, "unk_as_red", 0);
+    general_setting(Set_log_unk, "log_unk", 0);
+    general_setting(Set_unk_clear, "unk_clear", 0);
+    general_setting(Set_ghq_fltr, "ghq_fltr", 0);
+    general_setting(Set_ghq_cmpr, "ghq_cmpr", 0);
+    general_setting(Set_ghq_enht, "ghq_enht", 0);
+    general_setting(Set_ghq_hirs, "ghq_hirs", 0);
+    general_setting(Set_ghq_enht_cmpr, "ghq_enht_cmpr", 0);
+    general_setting(Set_ghq_enht_tile, "ghq_enht_tile", 0);
+    general_setting(Set_ghq_enht_f16bpp, "ghq_enht_f16bpp", 0);
+    general_setting(Set_ghq_enht_gz, "ghq_enht_gz", 1);
+    general_setting(Set_ghq_enht_nobg, "ghq_enht_nobg", 0);
+    general_setting(Set_ghq_hirs_cmpr, "ghq_hirs_cmpr", 0);
+    general_setting(Set_ghq_hirs_tile, "ghq_hirs_tile", 0);
+    general_setting(Set_ghq_hirs_f16bpp, "ghq_hirs_f16bpp", 0);
+    general_setting(Set_ghq_hirs_gz, "ghq_hirs_gz", 1);
+    general_setting(Set_ghq_hirs_altcrc, "ghq_hirs_altcrc", 1);
+    general_setting(Set_ghq_cache_save, "ghq_cache_save", 1);
+    general_setting(Set_ghq_cache_size, "ghq_cache_size", 0);
+    general_setting(Set_ghq_hirs_let_texartists_fly, "ghq_hirs_let_texartists_fly", 0);
+    general_setting(Set_ghq_hirs_dump, "ghq_hirs_dump", 0);
+
+    general_setting(Set_optimize_texrect_default, "optimize_texrect", 1);
+    general_setting(Set_filtering_default, "filtering", 0);
+    general_setting(Set_lodmode_default, "lodmode", 0);
+    general_setting(Set_fog_default, "fog", 1);
+    general_setting(Set_buff_clear_default, "buff_clear", 1);
+    general_setting(Set_swapmode_default, "swapmode", 1);
+    general_setting(Set_aspect_default, "aspect", 0);
+
+    general_setting(Set_fb_smart_default, "fb_smart", 1);
+    general_setting(Set_fb_hires_default, "fb_hires", 1);
+    general_setting(Set_fb_read_always_default, "fb_read_always", 0);
+    general_setting(Set_read_back_to_screen_default, "read_back_to_screen", 0);
+    general_setting(Set_detect_cpu_write_default, "detect_cpu_write", 0);
+    general_setting(Set_fb_get_info_default, "fb_get_info", 0);
+    general_setting(Set_fb_render_default, "fb_render", 0);
+
+    game_setting(Set_alt_tex_size, "alt_tex_size", 0);
+    game_setting(Set_use_sts1_only, "use_sts1_only", 0);
+    game_setting(Set_force_calc_sphere, "force_calc_sphere", 0);
+    game_setting(Set_correct_viewport, "correct_viewport", 0);
+    game_setting(Set_increase_texrect_edge, "increase_texrect_edge", 0);
+    game_setting(Set_decrease_fillrect_edge, "decrease_fillrect_edge", 0);
+    game_setting(Set_texture_correction, "texture_correction", 1);
+    game_setting(Set_pal230, "pal230", 0);
+    game_setting(Set_stipple_mode, "stipple_mode", 2);
+
+    game_setting(Set_stipple_pattern, "stipple_pattern", 0x3E0F83E0);
+    game_setting(Set_force_microcheck, "force_microcheck", 0);
+    game_setting(Set_force_quad3d, "force_quad3d", 0);
+    game_setting(Set_clip_zmin, "clip_zmin", 0);
+    game_setting(Set_clip_zmax, "clip_zmax", 1);
+    game_setting(Set_fast_crc, "fast_crc", 1);
+    game_setting(Set_adjust_aspect, "adjust_aspect", 1);
+    game_setting(Set_zmode_compare_less, "zmode_compare_less", 0);
+    game_setting(Set_old_style_adither, "old_style_adither", 0);
+    game_setting(Set_n64_z_scale, "n64_z_scale", 0);
+    game_setting_default(Set_optimize_texrect, "optimize_texrect", Set_optimize_texrect_default);
+    game_setting(Set_ignore_aux_copy, "ignore_aux_copy", (unsigned int)-1);
+    game_setting(Set_hires_buf_clear, "hires_buf_clear", 1);
+    game_setting(Set_fb_read_alpha, "fb_read_alpha", 0);
+    game_setting(Set_useless_is_useless, "useless_is_useless", (unsigned int)-1);
+    game_setting(Set_fb_crc_mode, "fb_crc_mode", 1);
+    game_setting_default(Set_filtering, "filtering", Set_filtering_default);
+    game_setting_default(Set_fog, "fog", Set_fog_default);
+    game_setting_default(Set_buff_clear, "buff_clear", Set_buff_clear_default);
+    game_setting_default(Set_swapmode, "swapmode", Set_swapmode_default);
+    game_setting_default(Set_aspect, "aspect", Set_aspect_default);
+    game_setting_default(Set_lodmode, "lodmode", Set_lodmode_default);
+
+    game_setting_default(Set_fb_smart, "fb_smart", Set_fb_smart_default);
+    game_setting_default(Set_fb_hires, "fb_hires", Set_fb_hires_default);
+    game_setting_default(Set_fb_read_always, "fb_read_always", Set_fb_read_always_default);
+    game_setting_default(Set_read_back_to_screen, "read_back_to_screen", Set_read_back_to_screen_default);
+    game_setting_default(Set_detect_cpu_write, "detect_cpu_write", Set_detect_cpu_write_default);
+    game_setting_default(Set_fb_get_info, "fb_get_info", Set_fb_get_info_default);
+    game_setting_default(Set_fb_render, "fb_render", Set_fb_render_default);
 }
 
 void ReadSettings()
