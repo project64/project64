@@ -7,6 +7,8 @@
 #include <Common/LogClass.h>
 #include <Settings/Settings.h>
 
+extern short Set_log_dir, Set_log_flush;
+
 #ifdef ANDROID
 #include <android/log.h>
 

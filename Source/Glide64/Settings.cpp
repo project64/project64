@@ -5,6 +5,8 @@
 int GetCurrentResIndex(void);
 #endif
 
+short Set_basic_mode = 0, Set_texture_dir = 0, Set_log_dir = 0, Set_log_flush = 0;
+
 CSettings::CSettings() :
 card_id(0),
 res_x(640),

@@ -31,6 +31,8 @@
 #include <Glide64/Config.h>
 #include <Settings/Settings.h>
 
+extern short Set_log_dir;
+
 TxDbg::TxDbg()
 {
 
