@@ -112,6 +112,12 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
     if (m_Initialized)
     {
         Close(Window);
+        if (PluginOpened)
+        {
+            WriteTrace(PluginTraceType(), TraceDebug, "Before Plugin Opened");
+            PluginOpened();
+            WriteTrace(PluginTraceType(), TraceDebug, "After Plugin Opened");
+        }
     }
 
     typedef struct
