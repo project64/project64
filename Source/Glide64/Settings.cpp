@@ -1,4 +1,5 @@
 #include "Gfx_1.3.h"
+#include "SettingsID.h"
 
 #ifdef _WIN32
 int GetCurrentResIndex(void);

@@ -129,6 +129,7 @@
     <ClInclude Include="Gfx_1.3.h" />
     <ClInclude Include="trace.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="SettingsID.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CRC.cpp">

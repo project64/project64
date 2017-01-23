@@ -51,6 +51,7 @@
 #include "CRC.h"
 #include <Common/StdString.h>
 #include "trace.h"
+#include "SettingsID.h"
 
 #ifdef _WIN32
 #include <Common/CriticalSection.h>

@@ -49,6 +49,7 @@
   <ItemGroup>
     <ClInclude Include="Gfx_1.3.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="SettingsID.h" />
     <ClInclude Include="trace.h" />
     <ClInclude Include="turbo3D.h" />
     <ClInclude Include="ucode.h" />
