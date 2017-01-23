@@ -60,10 +60,8 @@
 #include "DepthBufferRender.h"
 #include "trace.h"
 
-#ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
 #include <stdarg.h>
 int  ghq_dmptex_toggle_key = 0;
-#endif
 
 GFX_INFO gfx;
 
@@ -406,7 +404,6 @@ void guLoadTextures()
     free(cursorTex.data);
 }
 
-#ifdef TEXTURE_FILTER
 void DisplayLoadProgress(const wchar_t *format, ...)
 {
     va_list args;
@@ -431,7 +428,6 @@ void DisplayLoadProgress(const wchar_t *format, ...)
     grColorMask(FXTRUE, FXTRUE);
     grBufferClear(0, 0, 0xFFFF);
 }
-#endif
 
 int InitGfx()
 {
@@ -660,7 +656,6 @@ int InitGfx()
     grClipWindow(0, 0, g_settings->scr_res_x, g_settings->scr_res_y);
     rdp.update |= UPDATE_SCISSOR | UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
 
-#ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
     if (!g_settings->ghq_use)
     {
         g_settings->ghq_use = g_settings->ghq_fltr || g_settings->ghq_enht /*|| g_settings->ghq_cmpr*/ || g_settings->ghq_hirs;
@@ -705,7 +700,6 @@ int InitGfx()
     }
     if (g_settings->ghq_use && strstr(extensions, "TEXMIRROR"))
         voodoo.sup_mirroring = 1;
-#endif
 
     return TRUE;
 }
@@ -919,15 +913,11 @@ void CALL CloseDLL(void)
 {
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
-    //CLOSELOG ();
-
-#ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
     if (g_settings->ghq_use)
     {
         ext_ghq_shutdown();
         g_settings->ghq_use = 0;
     }
-#endif
 
     if (g_settings)
     {

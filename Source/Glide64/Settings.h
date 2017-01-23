@@ -61,7 +61,6 @@ public:
     inline const char * log_dir(void) const { return m_log_dir; }
     inline bool FlushLogs(void) const { return m_FlushLogs; }
 
-#ifdef TEXTURE_FILTER
     //Texture filtering options
     std::string texture_dir;
     int ghq_fltr;
@@ -83,7 +82,6 @@ public:
     int ghq_cache_size;
     int ghq_hirs_let_texartists_fly;
     int ghq_hirs_dump;
-#endif
 
     //Debug
     int autodetect_ucode;

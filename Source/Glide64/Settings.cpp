@@ -33,7 +33,6 @@ swapmode(0),
 lodmode(0),
 aspectmode(0),
 use_hotkeys(0),
-#ifdef TEXTURE_FILTER
 //Texture filtering options
 texture_dir(""),
 ghq_fltr(0),
@@ -55,7 +54,6 @@ ghq_cache_save(0),
 ghq_cache_size(0),
 ghq_hirs_let_texartists_fly(0),
 ghq_hirs_dump(0),
-#endif
 autodetect_ucode(0),
 ucode(0),
 logging(0),
@@ -282,7 +280,6 @@ void CSettings::ReadSettings()
     this->unk_clear = FALSE;
 #endif
 
-#ifdef TEXTURE_FILTER
     char texture_dir[260];
     memset(texture_dir, 0, sizeof(texture_dir));
     GetSystemSettingSz(Set_texture_dir, texture_dir, sizeof(texture_dir));
@@ -305,7 +302,6 @@ void CSettings::ReadSettings()
     this->ghq_cache_size = GetSetting(Set_ghq_cache_size);
     this->ghq_hirs_let_texartists_fly = GetSetting(Set_ghq_hirs_let_texartists_fly);
     this->ghq_hirs_dump = GetSetting(Set_ghq_hirs_dump);
-#endif
 
     if (Set_log_dir != 0)
     {
@@ -500,7 +496,6 @@ void WriteSettings(void)
     SetSetting(Set_unk_clear, g_settings->unk_clear);
 #endif //_ENDUSER_RELEASE_
 
-#ifdef TEXTURE_FILTER
     SetSetting(Set_ghq_fltr, g_settings->ghq_fltr);
     SetSetting(Set_ghq_cmpr, g_settings->ghq_cmpr);
     SetSetting(Set_ghq_enht, g_settings->ghq_enht);
@@ -519,7 +514,6 @@ void WriteSettings(void)
     SetSetting(Set_ghq_cache_size, g_settings->ghq_cache_size);
     SetSetting(Set_ghq_hirs_let_texartists_fly, g_settings->ghq_hirs_let_texartists_fly);
     SetSetting(Set_ghq_hirs_dump, g_settings->ghq_hirs_dump);
-#endif
 
     SetSetting(g_romopen ? Set_filtering : Set_filtering_default, g_settings->filtering);
     SetSetting(g_romopen ? Set_fog : Set_fog_default, g_settings->fog);

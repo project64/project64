@@ -746,13 +746,11 @@ EXPORT void CALL ProcessDList(void)
         {
             ReleaseGfx ();
             rdp_reset();
-#ifdef TEXTURE_FILTER
             if (g_settings->ghq_use)
             {
                 ext_ghq_shutdown();
                 g_settings->ghq_use = 0;
             }
-#endif
         }
         if (MessageBox(gfx.hWnd, "The GFX plugin caused an exception and has been disabled.\nWould you like to turn it back on and attempt to continue?","Glide64 Exception", MB_YESNO|MB_ICONEXCLAMATION) == MB_NO)
         {
@@ -1124,14 +1122,12 @@ static void rdp_texrect()
 
     if (((rdp.cmd0 >> 24) & 0xFF) == 0xE5) //texrectflip
     {
-#ifdef TEXTURE_FILTER
         if (rdp.cur_cache[0]->is_hires_tex)
         {
             off_size_x = (float)((lr_y - ul_y) * dsdx);
             off_size_y = (float)((lr_x - ul_x) * dtdy);
         }
         else
-#endif
         {
             off_size_x = (lr_y - ul_y - 1) * dsdx;
             off_size_y = (lr_x - ul_x - 1) * dtdy;
@@ -1139,14 +1135,12 @@ static void rdp_texrect()
     }
     else
     {
-#ifdef TEXTURE_FILTER
         if (rdp.cur_cache[0]->is_hires_tex)
         {
             off_size_x = (float)((lr_x - ul_x) * dsdx);
             off_size_y = (float)((lr_y - ul_y) * dtdy);
         }
         else
-#endif
         {
             off_size_x = (lr_x - ul_x - 1) * dsdx;
             off_size_y = (lr_y - ul_y - 1) * dtdy;
@@ -1564,9 +1558,7 @@ void load_palette(uint32_t addr, uint16_t start, uint16_t count)
     WriteTrace(TraceRDP, TraceDebug, "Loading palette... ");
     uint16_t *dpal = rdp.pal_8 + start;
     uint16_t end = start + count;
-#ifdef TEXTURE_FILTER
     uint16_t *spal = (uint16_t*)(gfx.RDRAM + (addr & BMASK));
-#endif
 
     for (uint16_t i = start; i < end; i++)
     {
@@ -1575,12 +1567,10 @@ void load_palette(uint32_t addr, uint16_t start, uint16_t count)
 
         WriteTrace(TraceTLUT, TraceDebug, "%d: %08lx", i, *(uint16_t *)(gfx.RDRAM + (addr ^ 2)));
     }
-#ifdef TEXTURE_FILTER
     if (g_settings->ghq_hirs)
     {
         memcpy((uint8_t*)(rdp.pal_8_rice + start), spal, count << 1);
     }
-#endif
     start >>= 4;
     end = start + (count >> 4);
     if (end == start) // it can be if count < 16
@@ -1885,11 +1875,9 @@ static void rdp_loadblock()
 
     rdp.timg.set_by = 0;  // load block
 
-#ifdef TEXTURE_FILTER
     LOAD_TILE_INFO &info = rdp.load_info[rdp.tiles[tile].t_mem];
     info.tile_width = lr_s;
     info.dxt = dxt;
-#endif
 
     // do a quick boundary check before copying to eliminate the possibility for exception
     if (ul_s >= 512) {
@@ -2108,7 +2096,6 @@ static void rdp_loadtile()
     uint32_t height = lr_t - ul_t + 1;   // get height
     uint32_t width = lr_s - ul_s + 1;
 
-#ifdef TEXTURE_FILTER
     LOAD_TILE_INFO &info = rdp.load_info[rdp.tiles[tile].t_mem];
     info.tile_ul_s = ul_s;
     info.tile_ul_t = ul_t;
@@ -2122,7 +2109,6 @@ static void rdp_loadtile()
     }
     info.tex_width = rdp.timg.width;
     info.tex_size = rdp.timg.size;
-#endif
 
     int line_n = rdp.timg.width << rdp.tiles[tile].size >> 1;
     uint32_t offs = ul_t * line_n;

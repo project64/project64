@@ -105,7 +105,6 @@ void ConfigCleanup(void)
 
 void CloseConfig();
 
-#ifdef TEXTURE_FILTER
 uint32_t texfltr[] =
 {
     NO_FILTER, //"None"
@@ -145,7 +144,6 @@ uint32_t texhirs[] =
     //  GHQ_HIRESTEXTURES, //"GlideHQ format"
     //  JABO_HIRESTEXTURES, //"Jabo format"
 };
-#endif
 
 #ifdef _WIN32
 
@@ -870,13 +868,11 @@ void CALL DllConfig(HWND hParent)
             ReleaseGfx();
             rdp_reset();
         }
-#ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
         if (g_settings->ghq_use)
         {
             ext_ghq_shutdown();
             g_settings->ghq_use = 0;
         }
-#endif
     }
     else
     {

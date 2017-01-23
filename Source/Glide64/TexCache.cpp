@@ -59,9 +59,8 @@ uint8_t *texture_buffer = tex1;
 #include "TexMod.h"
 #include "TexModCI.h"
 #include "CRC.h"
-#ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
+
 extern int ghq_dmptex_toggle_key;
-#endif
 
 typedef struct TEXINFO_t {
     int real_image_width, real_image_height;	// FOR ALIGNMENT PURPOSES ONLY!!!
@@ -72,21 +71,17 @@ typedef struct TEXINFO_t {
     uint32_t crc;
     uint32_t flags;
     int splits, splitheight;
-#ifdef TEXTURE_FILTER
     uint64 ricecrc;
-#endif
 } TEXINFO;
 
 TEXINFO texinfo[2];
 int tex_found[2][MAX_TMU];
 
-#ifdef TEXTURE_FILTER
 typedef struct HIRESTEX_t {
     int width, height;
     uint16_t format;
     uint8_t *data;
 } HIRESTEX;
-#endif
 
 //****************************************************************
 // List functions
@@ -940,7 +935,6 @@ void TexCache()
     WriteTrace(TraceRDP, TraceDebug, " | +- TexCache End");
 }
 
-#ifdef TEXTURE_FILTER
 /** cite from RiceVideo */
 inline uint32_t CalculateDXT(uint32_t txl2words)
 {
@@ -974,7 +968,6 @@ inline uint32_t ReverseDXT(uint32_t val, uint32_t /*lrs*/, uint32_t width, uint3
     return	(low + high) / 2;
 }
 /** end RiceVideo cite */
-#endif
 
 //****************************************************************
 // LoadTex - does the actual texture loading after everything is prepared
@@ -1032,10 +1025,8 @@ void LoadTex(int id, int tmu)
     cache->f_mirror_t = FALSE;
     cache->f_wrap_s = FALSE;
     cache->f_wrap_t = FALSE;
-#ifdef TEXTURE_FILTER
     cache->is_hires_tex = FALSE;
     cache->ricecrc = texinfo[id].ricecrc;
-#endif
 
     // Add this cache to the list
     AddToList(&cachelut[cache->crc >> 16], cache->crc, uintptr_t(cache), tmu, rdp.n_cached[tmu]);
@@ -1261,7 +1252,6 @@ void LoadTex(int id, int tmu)
     // when we get passed the texture ram cache and texture buffers for
     // minimal calculation overhead.
     //
-#ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
     GHQTexInfo ghqTexInfo;
     memset(&ghqTexInfo, 0, sizeof(GHQTexInfo));
     uint32_t g64_crc = cache->crc;
@@ -1337,7 +1327,6 @@ void LoadTex(int id, int tmu)
     if (ghqTexInfo.data)
         ;//do nothing
     else
-#endif
         if (splits > 1)
         {
             cache->scale_y = 0.125f;
@@ -1469,11 +1458,7 @@ void LoadTex(int id, int tmu)
         memcpy(rdp.pal_8, tmp_pal, 512);
     }
 
-#ifdef TEXTURE_FILTER
     if (mod && !modifyPalette && !ghqTexInfo.data)
-#else
-    if (mod && !modifyPalette)
-#endif
     {
         // Convert the texture to ARGB 4444
         if (LOWORD(result) == GR_TEXFMT_ARGB_1555)
@@ -1594,7 +1579,6 @@ void LoadTex(int id, int tmu)
 
     if (GfxInitDone)
     {
-#ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
         if (g_settings->ghq_use)
         {
             if (!ghqTexInfo.data && ghq_dmptex_toggle_key) {
@@ -1753,7 +1737,6 @@ void LoadTex(int id, int tmu)
                 }
             }
         }
-#endif
 
         // Load the texture into texture memory
         GrTexInfo *t_info = &cache->t_info;

@@ -47,10 +47,7 @@ extern char out_buf[2048];
 extern uint32_t frame_count; // frame counter
 
 //GlideHQ support
-#define TEXTURE_FILTER
-#ifdef TEXTURE_FILTER
 #include "Ext_TxFilter.h"
-#endif
 
 #define MAX_CACHE   1024*4
 #define MAX_TRI_CACHE 768 // this is actually # of vertices, not triangles
@@ -167,7 +164,6 @@ typedef struct {
     uint32_t lr_y;
 } SCISSOR;
 
-#ifdef TEXTURE_FILTER
 extern uint32_t texfltr[];
 extern uint32_t texenht[];
 extern uint32_t texcmpr[];
@@ -182,7 +178,6 @@ typedef struct {
     uint16_t tex_size;
     uint32_t dxt;
 } LOAD_TILE_INFO;
-#endif
 
 enum rdpBitmapType
 {
@@ -318,10 +313,8 @@ typedef struct {
     float c_scl_y;  // scale to lower-right center-texel y
 
     uint32_t mod, mod_color, mod_color1, mod_color2, mod_factor;
-#ifdef TEXTURE_FILTER
     uint64 ricecrc;
     int is_hires_tex;
-#endif
 } CACHE_LUT;
 
 // Lights
@@ -496,9 +489,7 @@ struct RDP_Base{
     TILE tiles[8];          // 8 tile descriptors
     uint8_t tmem[4096];        // 4k tmem
     uint32_t addr[512];        // 512 addresses (used to determine address loaded from)
-#ifdef TEXTURE_FILTER
     LOAD_TILE_INFO load_info[512];    // 512 addresses. inforamation about tile loading.
-#endif
 
     int     cur_tile;   // current tile
     int     mipmap_level;
@@ -519,9 +510,7 @@ struct RDP_Base{
     int Persp_en;
     int persp_supported;
     int force_wrap;
-#ifdef TEXTURE_FILTER
     uint16_t pal_8_rice[512];
-#endif
 
     // Lighting
     uint32_t num_lights;
