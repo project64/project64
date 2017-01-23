@@ -29,33 +29,28 @@
 #include <Common/StdString.h>
 #include <Common/path.h>
 #include <Glide64/Config.h>
-#include <Settings/Settings.h>
-
-extern short Set_log_dir;
+#include <Glide64/Settings.h>
 
 TxDbg::TxDbg()
 {
-
-    char log_dir[260];
-    memset(log_dir, 0, sizeof(log_dir));
-    if (Set_log_dir != 0)
+    const char * log_dir = g_settings->log_dir();
+    if (log_dir != NULL && log_dir[0] != '\0')
     {
-        GetSystemSettingSz(Set_log_dir, log_dir, sizeof(log_dir));
-    }
+        _level = DBG_LEVEL;
 
-    _level = DBG_LEVEL;
-
-    if (!_dbgfile)
+        if (!_dbgfile)
 #ifdef GHQCHK
-        _dbgfile = fopen(CPath(log_dir, "ghqchk.txt"), "w");
+            _dbgfile = fopen(CPath(log_dir, "ghqchk.txt"), "w");
 #else
-        _dbgfile = fopen(CPath(log_dir, "glidehq.dbg"), "w");
+            _dbgfile = fopen(CPath(log_dir, "glidehq.dbg"), "w");
 #endif
+    }
 }
 
 TxDbg::~TxDbg()
 {
-    if (_dbgfile) {
+    if (_dbgfile) 
+    {
         fclose(_dbgfile);
         _dbgfile = 0;
     }
