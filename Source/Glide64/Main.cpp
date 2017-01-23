@@ -1020,7 +1020,6 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     rdp.scale_x = 1.0f;
     rdp.scale_y = 1.0f;
 
-    ReadSettings();
     char name[21] = "DEFAULT";
     ReadSpecialSettings(name);
     ZLUT_init();

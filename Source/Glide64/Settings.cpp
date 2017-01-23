@@ -108,6 +108,7 @@ m_FlushLogs(false)
 {
     memset(m_log_dir, 0, sizeof(m_log_dir));
     RegisterSettings();
+    ReadSettings();
 }
 
 void CSettings::RegisterSettings(void)
@@ -227,90 +228,90 @@ void CSettings::RegisterSettings(void)
     game_setting_default(Set_fb_render, "fb_render", Set_fb_render_default);
 }
 
-void ReadSettings()
+void CSettings::ReadSettings()
 {
-    g_settings->card_id = GetSetting(Set_CardId);
+    this->card_id = GetSetting(Set_CardId);
 #ifdef ANDROID
-    g_settings->scr_res_x = g_settings->res_x = g_width;
-    g_settings->scr_res_y = g_settings->res_y = g_height;
+    this->scr_res_x = this->res_x = g_width;
+    this->scr_res_y = this->res_y = g_height;
 #else
-    g_settings->res_data = (uint32_t)GetSetting(Set_Resolution);
-    if (g_settings->res_data >= 24) g_settings->res_data = 12;
-    g_settings->scr_res_x = g_settings->res_x = resolutions[g_settings->res_data][0];
-    g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
-    g_settings->wrpResolution = GetSetting(Set_wrpResolution);
+    this->res_data = (uint32_t)GetSetting(Set_Resolution);
+    if (this->res_data >= 24) this->res_data = 12;
+    this->scr_res_x = this->res_x = resolutions[this->res_data][0];
+    this->scr_res_y = this->res_y = resolutions[this->res_data][1];
+    this->wrpResolution = GetSetting(Set_wrpResolution);
 #endif
-    g_settings->vsync = GetSetting(Set_vsync);
-    g_settings->ssformat = (uint8_t)GetSetting(Set_ssformat);
-    g_settings->clock = GetSetting(Set_clock);
-    g_settings->clock_24_hr = GetSetting(Set_clock_24_hr);
-    g_settings->rotate = GetSetting(Set_Rotate);
-    g_settings->advanced_options = Set_basic_mode ? !GetSystemSetting(Set_basic_mode) : 0;
-    g_settings->texenh_options = GetSetting(Set_texenh_options);
-    g_settings->use_hotkeys = GetSetting(Set_hotkeys);
+    this->vsync = GetSetting(Set_vsync);
+    this->ssformat = (uint8_t)GetSetting(Set_ssformat);
+    this->clock = GetSetting(Set_clock);
+    this->clock_24_hr = GetSetting(Set_clock_24_hr);
+    this->rotate = GetSetting(Set_Rotate);
+    this->advanced_options = Set_basic_mode ? !GetSystemSetting(Set_basic_mode) : 0;
+    this->texenh_options = GetSetting(Set_texenh_options);
+    this->use_hotkeys = GetSetting(Set_hotkeys);
 
-    g_settings->wrpVRAM = GetSetting(Set_wrpVRAM);
-    g_settings->wrpFBO = GetSetting(Set_wrpFBO);
-    g_settings->wrpAnisotropic = GetSetting(Set_wrpAnisotropic);
+    this->wrpVRAM = GetSetting(Set_wrpVRAM);
+    this->wrpFBO = GetSetting(Set_wrpFBO);
+    this->wrpAnisotropic = GetSetting(Set_wrpAnisotropic);
 
 #ifndef _ENDUSER_RELEASE_
-    g_settings->autodetect_ucode = GetSetting(Set_autodetect_ucode);
-    g_settings->ucode = GetSetting(Set_ucode);
-    g_settings->wireframe = GetSetting(Set_wireframe);
-    g_settings->wfmode = GetSetting(Set_wfmode);
-    g_settings->logging = GetSetting(Set_logging);
-    g_settings->log_clear = GetSetting(Set_log_clear);
-    g_settings->run_in_window = GetSetting(Set_run_in_window);
-    g_settings->elogging = GetSetting(Set_elogging);
-    g_settings->filter_cache = GetSetting(Set_filter_cache);
-    g_settings->unk_as_red = GetSetting(Set_unk_as_red);
-    g_settings->log_unk = GetSetting(Set_log_unk);
-    g_settings->unk_clear = GetSetting(Set_unk_clear);
+    this->autodetect_ucode = GetSetting(Set_autodetect_ucode);
+    this->ucode = GetSetting(Set_ucode);
+    this->wireframe = GetSetting(Set_wireframe);
+    this->wfmode = GetSetting(Set_wfmode);
+    this->logging = GetSetting(Set_logging);
+    this->log_clear = GetSetting(Set_log_clear);
+    this->run_in_window = GetSetting(Set_run_in_window);
+    this->elogging = GetSetting(Set_elogging);
+    this->filter_cache = GetSetting(Set_filter_cache);
+    this->unk_as_red = GetSetting(Set_unk_as_red);
+    this->log_unk = GetSetting(Set_log_unk);
+    this->unk_clear = GetSetting(Set_unk_clear);
 #else
-    g_settings->autodetect_ucode = TRUE;
-    g_settings->ucode = 2;
-    g_settings->wireframe = FALSE;
-    g_settings->wfmode = 0;
-    g_settings->logging = FALSE;
-    g_settings->log_clear = FALSE;
-    g_settings->run_in_window = FALSE;
-    g_settings->elogging = FALSE;
-    g_settings->filter_cache = FALSE;
-    g_settings->unk_as_red = FALSE;
-    g_settings->log_unk = FALSE;
-    g_settings->unk_clear = FALSE;
+    this->autodetect_ucode = TRUE;
+    this->ucode = 2;
+    this->wireframe = FALSE;
+    this->wfmode = 0;
+    this->logging = FALSE;
+    this->log_clear = FALSE;
+    this->run_in_window = FALSE;
+    this->elogging = FALSE;
+    this->filter_cache = FALSE;
+    this->unk_as_red = FALSE;
+    this->log_unk = FALSE;
+    this->unk_clear = FALSE;
 #endif
 
 #ifdef TEXTURE_FILTER
     char texture_dir[260];
     memset(texture_dir, 0, sizeof(texture_dir));
     GetSystemSettingSz(Set_texture_dir, texture_dir, sizeof(texture_dir));
-    g_settings->texture_dir = texture_dir;
-    g_settings->ghq_fltr = (uint8_t)GetSetting(Set_ghq_fltr);
-    g_settings->ghq_cmpr = (uint8_t)GetSetting(Set_ghq_cmpr);
-    g_settings->ghq_enht = (uint8_t)GetSetting(Set_ghq_enht);
-    g_settings->ghq_hirs = (uint8_t)GetSetting(Set_ghq_hirs);
-    g_settings->ghq_enht_cmpr = GetSetting(Set_ghq_enht_cmpr);
-    g_settings->ghq_enht_tile = GetSetting(Set_ghq_enht_tile);
-    g_settings->ghq_enht_f16bpp = GetSetting(Set_ghq_enht_f16bpp);
-    g_settings->ghq_enht_gz = GetSetting(Set_ghq_enht_gz);
-    g_settings->ghq_enht_nobg = GetSetting(Set_ghq_enht_nobg);
-    g_settings->ghq_hirs_cmpr = GetSetting(Set_ghq_hirs_cmpr);
-    g_settings->ghq_hirs_tile = GetSetting(Set_ghq_hirs_tile);
-    g_settings->ghq_hirs_f16bpp = GetSetting(Set_ghq_hirs_f16bpp);
-    g_settings->ghq_hirs_gz = GetSetting(Set_ghq_hirs_gz);
-    g_settings->ghq_hirs_altcrc = GetSetting(Set_ghq_hirs_altcrc);
-    g_settings->ghq_cache_save = GetSetting(Set_ghq_cache_save);
-    g_settings->ghq_cache_size = GetSetting(Set_ghq_cache_size);
-    g_settings->ghq_hirs_let_texartists_fly = GetSetting(Set_ghq_hirs_let_texartists_fly);
-    g_settings->ghq_hirs_dump = GetSetting(Set_ghq_hirs_dump);
+    this->texture_dir = texture_dir;
+    this->ghq_fltr = (uint8_t)GetSetting(Set_ghq_fltr);
+    this->ghq_cmpr = (uint8_t)GetSetting(Set_ghq_cmpr);
+    this->ghq_enht = (uint8_t)GetSetting(Set_ghq_enht);
+    this->ghq_hirs = (uint8_t)GetSetting(Set_ghq_hirs);
+    this->ghq_enht_cmpr = GetSetting(Set_ghq_enht_cmpr);
+    this->ghq_enht_tile = GetSetting(Set_ghq_enht_tile);
+    this->ghq_enht_f16bpp = GetSetting(Set_ghq_enht_f16bpp);
+    this->ghq_enht_gz = GetSetting(Set_ghq_enht_gz);
+    this->ghq_enht_nobg = GetSetting(Set_ghq_enht_nobg);
+    this->ghq_hirs_cmpr = GetSetting(Set_ghq_hirs_cmpr);
+    this->ghq_hirs_tile = GetSetting(Set_ghq_hirs_tile);
+    this->ghq_hirs_f16bpp = GetSetting(Set_ghq_hirs_f16bpp);
+    this->ghq_hirs_gz = GetSetting(Set_ghq_hirs_gz);
+    this->ghq_hirs_altcrc = GetSetting(Set_ghq_hirs_altcrc);
+    this->ghq_cache_save = GetSetting(Set_ghq_cache_save);
+    this->ghq_cache_size = GetSetting(Set_ghq_cache_size);
+    this->ghq_hirs_let_texartists_fly = GetSetting(Set_ghq_hirs_let_texartists_fly);
+    this->ghq_hirs_dump = GetSetting(Set_ghq_hirs_dump);
 #endif
 
-    if (m_Set_log_dir != 0)
+    if (Set_log_dir != 0)
     {
-        GetSystemSettingSz(m_Set_log_dir, m_log_dir, sizeof(m_log_dir));
+        GetSystemSettingSz(Set_log_dir, m_log_dir, sizeof(m_log_dir));
     }
-    m_FlushLogs = m_Set_log_flush != 0 ? GetSystemSetting(m_Set_log_flush) != 0 : false;
+    m_FlushLogs = Set_log_flush != 0 ? GetSystemSetting(Set_log_flush) != 0 : false;
 }
 
 void ReadSpecialSettings(const char * name)

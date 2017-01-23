@@ -862,7 +862,6 @@ void CALL DllConfig(HWND hParent)
     WriteTrace(TraceGlide64, TraceDebug, "-");
 #ifdef _WIN32
     CGuard guard(*g_ProcessDListCS);
-    ReadSettings();
 
     if (g_romopen)
     {
@@ -883,6 +882,7 @@ void CALL DllConfig(HWND hParent)
     {
         char name[21] = "DEFAULT";
         ReadSpecialSettings(name);
+        ZLUT_init();
     }
 
     COptionsSheet("Glide64 settings").DoModal(hParent);

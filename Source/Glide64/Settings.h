@@ -165,6 +165,7 @@ public:
     int wrpFBO;
     int wrpAnisotropic;
 private:
+    void ReadSettings();
     void RegisterSettings(void);
 
     bool m_FlushLogs;
