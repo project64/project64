@@ -58,6 +58,9 @@ public:
         fbcrcSafe = 2
     } fb_crc_mode;
 
+    inline const char * log_dir(void) const { return m_log_dir; }
+    inline bool FlushLogs(void) const { return m_FlushLogs; }
+
 #ifdef TEXTURE_FILTER
     //Texture filtering options
     std::string texture_dir;
@@ -163,6 +166,9 @@ public:
     int wrpAnisotropic;
 private:
     void RegisterSettings(void);
+
+    bool m_FlushLogs;
+    char m_log_dir[260];
 };
 
 extern CSettings * g_settings;

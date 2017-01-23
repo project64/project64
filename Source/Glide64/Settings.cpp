@@ -103,8 +103,10 @@ wrpResolution(0),
 #endif
 wrpVRAM(0),
 wrpFBO(0),
-wrpAnisotropic(0)
+wrpAnisotropic(0),
+m_FlushLogs(false)
 {
+    memset(m_log_dir, 0, sizeof(m_log_dir));
     RegisterSettings();
 }
 
@@ -303,6 +305,12 @@ void ReadSettings()
     g_settings->ghq_hirs_let_texartists_fly = GetSetting(Set_ghq_hirs_let_texartists_fly);
     g_settings->ghq_hirs_dump = GetSetting(Set_ghq_hirs_dump);
 #endif
+
+    if (m_Set_log_dir != 0)
+    {
+        GetSystemSettingSz(m_Set_log_dir, m_log_dir, sizeof(m_log_dir));
+    }
+    m_FlushLogs = m_Set_log_flush != 0 ? GetSystemSetting(m_Set_log_flush) != 0 : false;
 }
 
 void ReadSpecialSettings(const char * name)
