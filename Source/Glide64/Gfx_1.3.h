@@ -73,7 +73,6 @@ the plugin
 #include <Settings/Settings.h>
 #include "GlideExtensions.h"
 #include "rdp.h"
-#include "Keys.h"
 #include "Config.h"
 #include "Settings.h"
 
@@ -98,8 +97,6 @@ extern "C" {
     // ********************************
     // ** TAKE OUT BEFORE RELEASE!!! **
     //#define LOG_UCODE
-
-    //#define ALTTAB_FIX
 
     //  note that some of these things are inserted/removed
     //  from within the code & may not be changed by this define.
@@ -126,12 +123,6 @@ extern "C" {
 
     // Usually enabled
 #define LARGE_TEXTURE_HANDLING	// allow large-textured objects to be split?
-
-#ifdef ALTTAB_FIX
-    extern HHOOK hhkLowLevelKybd;
-    extern LRESULT CALLBACK LowLevelKeyboardProc(int nCode,
-        WPARAM wParam, LPARAM lParam);
-#endif
 
     // Simulations
     //#define SIMULATE_VOODOO1
@@ -164,7 +155,6 @@ extern "C" {
     extern int GfxInitDone;
     extern bool g_romopen;
     extern int to_fullscreen;
-    extern int debugging;
 
     extern int evoodoo;
     extern int ev_fullscreen;

@@ -527,28 +527,6 @@ void TexCache()
 {
     WriteTrace(TraceRDP, TraceDebug, " |-+ TexCache called");
 
-#ifdef TEXTURE_FILTER /* Hiroshi Morii <koolsmoky@users.sourceforge.net> */ // POSTNAPALM
-    if (g_settings->ghq_use && g_settings->ghq_hirs_dump) {
-        /* Force reload hi-res textures. Useful for texture artists */
-        if (CheckKeyPressed(G64_VK_R, 0x0001)) {
-            if (ext_ghq_reloadhirestex()) ClearCache();
-        }
-        /* Turn on texture dump */
-        else if (CheckKeyPressed(G64_VK_D, 0x0001)) {
-            extern void DisplayLoadProgress(const wchar_t *format, ...);
-            ghq_dmptex_toggle_key = !ghq_dmptex_toggle_key;
-            if (ghq_dmptex_toggle_key) {
-                DisplayLoadProgress(L"Texture dump - ON");
-                ClearCache();
-            }
-            else {
-                DisplayLoadProgress(L"Texture dump - OFF");
-            }
-            pjutil::Sleep(1000);
-        }
-    }
-#endif
-
     if (rdp.tex & 1)
         GetTexInfo(0, rdp.cur_tile);
     if (rdp.tex & 2)

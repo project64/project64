@@ -54,7 +54,6 @@ FX_ENTRY void FX_CALL grConfigWrapperExt(
 );
 FX_ENTRY GrScreenResolution_t FX_CALL grWrapperFullScreenResolutionExt(FxU32*, FxU32*);
 FX_ENTRY char ** FX_CALL grQueryResolutionsExt(int32_t*);
-FX_ENTRY FxBool FX_CALL grKeyPressedExt(FxU32 key);
 FX_ENTRY void FX_CALL grGetGammaTableExt(FxU32, FxU32*, FxU32*, FxU32*);
 
 FX_ENTRY GrContext_t FX_CALL grSstWinOpenExt(

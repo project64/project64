@@ -202,13 +202,6 @@ extern SCREEN_SHOT_FORMAT ScreenShotFormats[];
 
 typedef struct
 {
-    uint8_t hk_ref;
-    uint8_t hk_motionblur;
-    uint8_t hk_filtering;
-} HOTKEY_INFO;
-
-typedef struct
-{
     int num_tmu;
     int max_tex_size;
     int sup_large_tex;
@@ -639,7 +632,6 @@ void ChangeSize();
 void GoToFullScreen();
 
 extern RDP rdp;
-extern HOTKEY_INFO hotkey_info;
 extern VOODOO voodoo;
 
 extern GrTexInfo  fontTex;

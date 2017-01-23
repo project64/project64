@@ -253,14 +253,6 @@ void RDP::Reset()
     rdp.update = UPDATE_SCISSOR | UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
     fog_mode = RDP::fog_enabled;
     maincimg[0].addr = maincimg[1].addr = last_drawn_ci_addr = 0x7FFFFFFF;
-
-    hotkey_info.hk_ref = 90;
-    hotkey_info.hk_motionblur = (g_settings->buff_clear == 0) ? 0 : 90;
-    hotkey_info.hk_filtering = hotkey_info.hk_motionblur;
-
-    CheckKeyPressed(G64_VK_BACK, 1); //BACK
-    CheckKeyPressed(G64_VK_B, 1);
-    CheckKeyPressed(G64_VK_V, 1);
 }
 
 RDP::RDP()
@@ -589,14 +581,6 @@ EXPORT void CALL ProcessDList(void)
     no_dlist = false;
     update_screen_count = 0;
     ChangeSize();
-
-#ifdef ALTTAB_FIX
-    if (!hhkLowLevelKybd)
-    {
-        hhkLowLevelKybd = SetWindowsHookEx(WH_KEYBOARD_LL,
-            LowLevelKeyboardProc, hInstance, 0);
-    }
-#endif
 
     WriteTrace(TraceGlide64, TraceDebug, "ProcessDList");
 
@@ -1444,22 +1428,7 @@ static void rdp_texrect()
         grDrawVertexArrayContiguous(GR_TRIANGLE_STRIP, n_vertices, vptr, sizeof(VERTEX));
     }
 
-    if (_debugger.capture)
-    {
-        VERTEX vl[3];
-        vl[0] = vstd[0];
-        vl[1] = vstd[2];
-        vl[2] = vstd[1];
-        add_tri(vl, 3, TRI_TEXRECT);
-        rdp.tri_n++;
-        vl[0] = vstd[2];
-        vl[1] = vstd[3];
-        vl[2] = vstd[1];
-        add_tri(vl, 3, TRI_TEXRECT);
-        rdp.tri_n++;
-    }
-    else
-        rdp.tri_n += 2;
+    rdp.tri_n += 2;
 
     delete[] vnew;
 }
@@ -2441,23 +2410,7 @@ static void rdp_fillrect()
         grDrawTriangle(&v[2], &v[3], &v[1]);
     }
 
-    if (_debugger.capture)
-    {
-        VERTEX v1[3];
-        v1[0] = v[0];
-        v1[1] = v[2];
-        v1[2] = v[1];
-        add_tri(v1, 3, TRI_FILLRECT);
-        rdp.tri_n++;
-        v1[0] = v[2];
-        v1[1] = v[3];
-        add_tri(v1, 3, TRI_FILLRECT);
-        rdp.tri_n++;
-    }
-    else
-    {
-        rdp.tri_n += 2;
-    }
+    rdp.tri_n += 2;
 }
 
 //
@@ -3844,23 +3797,6 @@ void lle_triangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
     ConvertCoordsConvert(vtxbuf, nbVtxs);
     grCullMode(GR_CULL_DISABLE);
     grDrawVertexArrayContiguous(GR_TRIANGLE_STRIP, nbVtxs - 1, vtxbuf, sizeof(VERTEX));
-    if (_debugger.capture)
-    {
-        VERTEX vl[3];
-        vl[0] = vtxbuf[0];
-        vl[1] = vtxbuf[2];
-        vl[2] = vtxbuf[1];
-        add_tri(vl, 3, TRI_TRIANGLE);
-        rdp.tri_n++;
-        if (nbVtxs > 4)
-        {
-            vl[0] = vtxbuf[2];
-            vl[1] = vtxbuf[3];
-            vl[2] = vtxbuf[1];
-            add_tri(vl, 3, TRI_TRIANGLE);
-            rdp.tri_n++;
-        }
-    }
 }
 
 static void rdp_triangle(int shade, int texture, int zbuffer)

@@ -547,22 +547,7 @@ void DrawImage(DRAWIMAGE & d)
 
                 grDrawVertexArrayContiguous(GR_TRIANGLE_STRIP, 4, v, sizeof(VERTEX));
 
-                if (_debugger.capture)
-                {
-                    VERTEX vl[3];
-                    vl[0] = v[0];
-                    vl[1] = v[2];
-                    vl[2] = v[1];
-                    add_tri(vl, 3, TRI_BACKGROUND);
-                    rdp.tri_n++;
-                    vl[0] = v[2];
-                    vl[1] = v[3];
-                    vl[2] = v[1];
-                    add_tri(vl, 3, TRI_BACKGROUND);
-                    rdp.tri_n++;
-                }
-                else
-                    rdp.tri_n += 2;
+                rdp.tri_n += 2;
             }
             else
             {
@@ -676,22 +661,7 @@ void DrawHiresImage(DRAWIMAGE & d, int screensize = FALSE)
     grDrawTriangle(&v[0], &v[2], &v[1]);
     grDrawTriangle(&v[2], &v[3], &v[1]);
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE | UPDATE_SCISSOR;
-    if (_debugger.capture)
-    {
-        VERTEX vl[3];
-        vl[0] = v[0];
-        vl[1] = v[2];
-        vl[2] = v[1];
-        add_tri(vl, 3, TRI_BACKGROUND);
-        rdp.tri_n++;
-        vl[0] = v[2];
-        vl[1] = v[3];
-        vl[2] = v[1];
-        add_tri(vl, 3, TRI_BACKGROUND);
-        rdp.tri_n++;
-    }
-    else
-        rdp.tri_n += 2;
+    rdp.tri_n += 2;
     rdp.tbuff_tex = tbuff_tex;
 }
 

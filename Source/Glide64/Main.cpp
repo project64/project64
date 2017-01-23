@@ -71,7 +71,6 @@ int to_fullscreen = FALSE;
 int GfxInitDone = FALSE;
 bool g_romopen = false;
 GrContext_t gfx_context = 0;
-int debugging = FALSE;
 int exception = FALSE;
 
 int evoodoo = 0;
@@ -79,12 +78,6 @@ int ev_fullscreen = 0;
 
 #ifdef _WIN32
 HINSTANCE hinstDLL = NULL;
-#endif
-
-#ifdef ALTTAB_FIX
-HHOOK hhkLowLevelKybd = NULL;
-LRESULT CALLBACK LowLevelKeyboardProc(int nCode,
-    WPARAM wParam, LPARAM lParam);
 #endif
 
 #ifdef PERFORMANCE
@@ -132,8 +125,6 @@ unsigned int BMASK = 0x7FFFFF;
 RDP rdp;
 
 CSettings * g_settings;
-
-HOTKEY_INFO hotkey_info;
 
 VOODOO voodoo = { 0, 0, 0, 0,
 0, 0, 0, 0,
@@ -213,11 +204,6 @@ void _ChangeSize()
 
 void ChangeSize()
 {
-    if (debugging)
-    {
-        _ChangeSize();
-        return;
-    }
     switch (g_settings->aspectmode)
     {
     case 0: //4:3
@@ -600,7 +586,6 @@ void WriteSettings(void)
 
 GRSTIPPLE grStippleModeExt = NULL;
 GRSTIPPLE grStipplePatternExt = NULL;
-FxBool(FX_CALL *grKeyPressed)(FxU32) = NULL;
 
 int GetTexAddrUMA(int /*tmu*/, int texsize)
 {
@@ -775,7 +760,6 @@ int InitGfx()
 
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
-    debugging = FALSE;
     rdp_reset();
 
     // Initialize Glide
@@ -920,9 +904,6 @@ int InitGfx()
 
     if (grStipplePatternExt)
         grStipplePatternExt(g_settings->stipple_pattern);
-
-    char strKeyPressedExt[] = "grKeyPressedExt";
-    grKeyPressed = (FxBool(FX_CALL *)(FxU32))grGetProcAddress(strKeyPressedExt);
 
     InitCombine();
 
@@ -1259,14 +1240,6 @@ void CALL CloseDLL(void)
 {
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
-#ifdef ALTTAB_FIX
-    if (hhkLowLevelKybd)
-    {
-        UnhookWindowsHookEx(hhkLowLevelKybd);
-        hhkLowLevelKybd = 0;
-    }
-#endif
-
     //CLOSELOG ();
 
 #ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
@@ -1375,8 +1348,6 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
 #ifndef ANDROID
     g_settings->res_data_org = g_settings->res_data;
 #endif
-
-    debug_init();    // Initialize debugger
 
     gfx = Gfx_Info;
 
@@ -1956,64 +1927,6 @@ void newSwapBuffers()
             output(930.0f, 0, 1, CDateTime().SetToNow().Format("%I:%M:%S %p").c_str(), 0);
         }
     }
-    //hotkeys
-    if ((abs((int)(frame_count - curframe)) > 3) && CheckKeyPressed(G64_VK_ALT, 0x8000))  //alt +
-    {
-        if (CheckKeyPressed(G64_VK_B, 0x8000))  //b
-        {
-            hotkey_info.hk_motionblur = 100;
-            hotkey_info.hk_ref = 0;
-            curframe = frame_count;
-            g_settings->frame_buffer ^= fb_motionblur;
-        }
-        else if (CheckKeyPressed(G64_VK_V, 0x8000))  //v
-        {
-            hotkey_info.hk_ref = 100;
-            hotkey_info.hk_motionblur = 0;
-            curframe = frame_count;
-            g_settings->frame_buffer ^= fb_ref;
-        }
-    }
-    if (hotkey_info.hk_ref || hotkey_info.hk_motionblur || hotkey_info.hk_filtering)
-    {
-        set_message_combiner();
-        char buf[256];
-        buf[0] = 0;
-        char * message = 0;
-        if (hotkey_info.hk_ref)
-        {
-            if (g_settings->frame_buffer & fb_ref)
-                message = strcat(buf, "FB READ ALWAYS: ON");
-            else
-                message = strcat(buf, "FB READ ALWAYS: OFF");
-            hotkey_info.hk_ref--;
-        }
-        if (hotkey_info.hk_motionblur)
-        {
-            if (g_settings->frame_buffer & fb_motionblur)
-                message = strcat(buf, "  MOTION BLUR: ON");
-            else
-                message = strcat(buf, "  MOTION BLUR: OFF");
-            hotkey_info.hk_motionblur--;
-        }
-        if (hotkey_info.hk_filtering)
-        {
-            switch (g_settings->filtering)
-            {
-            case 0:
-                message = strcat(buf, "  FILTERING MODE: AUTOMATIC");
-                break;
-            case 1:
-                message = strcat(buf, "  FILTERING MODE: FORCE BILINEAR");
-                break;
-            case 2:
-                message = strcat(buf, "  FILTERING MODE: FORCE POINT-SAMPLED");
-                break;
-            }
-            hotkey_info.hk_filtering--;
-        }
-        output(120.0f, 0.0f, 1, message, 0);
-    }
 
     if (capture_screen)
     {
@@ -2099,61 +2012,6 @@ void newSwapBuffers()
         }
     }
 
-    // Capture the screen if debug capture is set
-    if (_debugger.capture)
-    {
-        // Allocate the screen
-        _debugger.screen = new uint8_t[(g_settings->res_x*g_settings->res_y) << 1];
-
-        // Lock the backbuffer (already rendered)
-        GrLfbInfo_t info;
-        info.size = sizeof(GrLfbInfo_t);
-        while (!grLfbLock(GR_LFB_READ_ONLY,
-            GR_BUFFER_BACKBUFFER,
-            GR_LFBWRITEMODE_565,
-            GR_ORIGIN_UPPER_LEFT,
-            FXFALSE,
-            &info));
-
-        uint32_t offset_src = 0, offset_dst = 0;
-
-        // Copy the screen
-        for (uint32_t y = 0; y < g_settings->res_y; y++)
-        {
-            if (info.writeMode == GR_LFBWRITEMODE_8888)
-            {
-                uint32_t *src = (uint32_t*)((uint8_t*)info.lfbPtr + offset_src);
-                uint16_t *dst = (uint16_t*)(_debugger.screen + offset_dst);
-                uint8_t r, g, b;
-                uint32_t col;
-                for (unsigned int x = 0; x < g_settings->res_x; x++)
-                {
-                    col = src[x];
-                    r = (uint8_t)((col >> 19) & 0x1F);
-                    g = (uint8_t)((col >> 10) & 0x3F);
-                    b = (uint8_t)((col >> 3) & 0x1F);
-                    dst[x] = (r << 11) | (g << 5) | b;
-                }
-            }
-            else
-            {
-                memcpy(_debugger.screen + offset_dst, (uint8_t*)info.lfbPtr + offset_src, g_settings->res_x << 1);
-            }
-            offset_dst += g_settings->res_x << 1;
-            offset_src += info.strideInBytes;
-        }
-
-        // Unlock the backbuffer
-        grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
-    }
-
-    if (debugging)
-    {
-        debug_keys();
-        debug_cacheviewer();
-        debug_mouse();
-    }
-
     if (g_settings->frame_buffer & fb_read_back_to_screen)
         DrawWholeFrameBufferToScreen();
 
@@ -2183,10 +2041,7 @@ void newSwapBuffers()
         }
     }
 
-    if (_debugger.capture)
-        debug_capture();
-
-    if (debugging || g_settings->wireframe || g_settings->buff_clear || (g_settings->hacks&hack_PPL && g_settings->ucode == 6))
+    if (g_settings->wireframe || g_settings->buff_clear || (g_settings->hacks&hack_PPL && g_settings->ucode == 6))
     {
         if (g_settings->hacks&hack_RE2 && fb_depth_render_enabled)
             grDepthMask(FXFALSE);
@@ -2209,39 +2064,6 @@ void newSwapBuffers()
         DrawWholeFrameBufferToScreen();
     }
     frame_count++;
-
-    // Open/close debugger?
-    if (CheckKeyPressed(G64_VK_SCROLL, 0x0001))
-    {
-        if (!debugging)
-        {
-            //if (g_settings->scr_res_x == 1024 && g_settings->scr_res_y == 768)
-            {
-                debugging = 1;
-
-                // Recalculate screen size, don't resize screen
-                g_settings->res_x = (uint32_t)(g_settings->scr_res_x * 0.625f);
-                g_settings->res_y = (uint32_t)(g_settings->scr_res_y * 0.625f);
-
-                ChangeSize();
-            }
-        }
-        else
-        {
-            debugging = 0;
-
-            g_settings->res_x = g_settings->scr_res_x;
-            g_settings->res_y = g_settings->scr_res_y;
-
-            ChangeSize();
-        }
-    }
-
-    // Debug capture?
-    if (/*fullscreen && */debugging && CheckKeyPressed(G64_VK_INSERT, 0x0001))
-    {
-        _debugger.capture = 1;
-    }
 }
 
 /******************************************************************
@@ -2289,72 +2111,6 @@ void CALL SurfaceChanged(int width, int height)
 {
     g_width = width;
     g_height = height;
-}
-#endif
-
-int CheckKeyPressed(int key, int mask)
-{
-    static Glide64Keys g64Keys;
-    if (g_settings->use_hotkeys == 0)
-        return 0;
-#ifdef __WINDOWS__
-    return (GetAsyncKeyState(g64Keys[key]) & mask);
-#else
-    if (grKeyPressed)
-        return grKeyPressed(g64Keys[key]);
-    return 0;
-#endif
-}
-
-#ifdef ALTTAB_FIX
-int k_ctl = 0, k_alt = 0, k_del = 0;
-
-LRESULT CALLBACK LowLevelKeyboardProc(int nCode,
-    WPARAM wParam, LPARAM lParam)
-{
-    if (!fullscreen) return CallNextHookEx(NULL, nCode, wParam, lParam);
-
-    int TabKey = FALSE;
-
-    PKBDLLHOOKSTRUCT p;
-
-    if (nCode == HC_ACTION)
-    {
-        switch (wParam) {
-        case WM_KEYUP:    case WM_SYSKEYUP:
-            p = (PKBDLLHOOKSTRUCT) lParam;
-            if (p->vkCode == 162) k_ctl = 0;
-            if (p->vkCode == 164) k_alt = 0;
-            if (p->vkCode == 46) k_del = 0;
-            goto do_it;
-
-        case WM_KEYDOWN:  case WM_SYSKEYDOWN:
-            p = (PKBDLLHOOKSTRUCT) lParam;
-            if (p->vkCode == 162) k_ctl = 1;
-            if (p->vkCode == 164) k_alt = 1;
-            if (p->vkCode == 46) k_del = 1;
-            goto do_it;
-
-        do_it:
-            TabKey =
-                ((p->vkCode == VK_TAB) && ((p->flags & LLKHF_ALTDOWN) != 0)) ||
-                ((p->vkCode == VK_ESCAPE) && ((p->flags & LLKHF_ALTDOWN) != 0)) ||
-                ((p->vkCode == VK_ESCAPE) && ((GetKeyState(VK_CONTROL) & 0x8000) != 0)) ||
-                (k_ctl && k_alt && k_del);
-
-            break;
-        }
-    }
-
-    if (TabKey)
-    {
-        k_ctl = 0;
-        k_alt = 0;
-        k_del = 0;
-        ReleaseGfx ();
-    }
-
-    return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 #endif
 
