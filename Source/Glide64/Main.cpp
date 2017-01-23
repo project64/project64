@@ -124,7 +124,7 @@ unsigned int BMASK = 0x7FFFFF;
 // Reality display processor structure
 RDP rdp;
 
-CSettings * g_settings;
+CSettings * g_settings = NULL;
 
 VOODOO voodoo = { 0, 0, 0, 0,
 0, 0, 0, 0,
@@ -1341,7 +1341,6 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     rdp.scale_x = 1.0f;
     rdp.scale_y = 1.0f;
 
-    g_settings = new CSettings;
     ReadSettings();
     char name[21] = "DEFAULT";
     ReadSpecialSettings(name);
@@ -1408,6 +1407,10 @@ int GetCurrentResIndex(void);
 
 void CALL PluginLoaded(void)
 {
+    if (g_settings == NULL)
+    {
+        g_settings = new CSettings;
+    }
     SetModuleName("default");
     Set_basic_mode = FindSystemSettingId("Basic Mode");
     Set_texture_dir = FindSystemSettingId("Dir:Texture");
