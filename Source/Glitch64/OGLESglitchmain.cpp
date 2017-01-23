@@ -309,12 +309,6 @@ grGlideInit(void)
     WriteTrace(TraceGlitch, TraceDebug, "-");
 }
 
-FX_ENTRY void FX_CALL
-grSstSelect(int which_sst)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "which_sst = %d", which_sst);
-}
-
 int isExtensionSupported(const char *extension)
 {
     return 0;

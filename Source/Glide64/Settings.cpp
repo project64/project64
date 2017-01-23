@@ -1,5 +1,9 @@
 #include "Gfx_1.3.h"
 
+#ifdef _WIN32
+int GetCurrentResIndex(void);
+#endif
+
 CSettings::CSettings() :
 card_id(0),
 res_x(640),

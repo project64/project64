@@ -447,13 +447,10 @@ int InitGfx()
     // Initialize Glide
     grGlideInit();
 
-    // Select the Glide device
-    grSstSelect(g_settings->card_id);
-
     // Is mirroring allowed?
     const char *extensions = grGetString(GR_EXTENSION);
 
-    // Check which SST we are using and initialize stuff
+    // Check which SST we are using and initi   alize stuff
     // Hiroshi Morii <koolsmoky@users.sourceforge.net>
     enum {
         GR_SSTTYPE_VOODOO = 0,
@@ -1050,7 +1047,6 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     );
 
     grGlideInit();
-    grSstSelect(0);
     const char *extensions = grGetString(GR_EXTENSION);
     grGlideShutdown();
     if (strstr(extensions, "EVOODOO"))
@@ -1084,10 +1080,6 @@ void CALL MoveScreen(int xpos, int ypos)
     WriteTrace(TraceGlide64, TraceDebug, "xpos: %d ypos: %d", xpos, ypos);
     rdp.window_changed = TRUE;
 }
-
-#ifdef _WIN32
-int GetCurrentResIndex(void);
-#endif
 
 void CALL PluginLoaded(void)
 {
@@ -1210,7 +1202,6 @@ void CALL RomOpen(void)
     if (!GfxInitDone)
     {
         grGlideInit();
-        grSstSelect(0);
     }
     const char *extensions = grGetString(GR_EXTENSION);
     grGlideShutdown();
