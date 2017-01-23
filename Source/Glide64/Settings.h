@@ -5,8 +5,6 @@ class CSettings
 public:
 	CSettings();
 
-    int card_id;
-
     uint32_t res_x, scr_res_x;
     uint32_t res_y, scr_res_y;
 #ifndef ANDROID

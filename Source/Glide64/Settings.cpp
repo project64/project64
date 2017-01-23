@@ -8,7 +8,6 @@ int GetCurrentResIndex(void);
 short Set_basic_mode = 0, Set_texture_dir = 0, Set_log_dir = 0, Set_log_flush = 0;
 
 CSettings::CSettings() :
-card_id(0),
 res_x(640),
 scr_res_x(640),
 res_y(480),
@@ -118,7 +117,6 @@ void CSettings::RegisterSettings(void)
     Set_log_dir = FindSystemSettingId("Dir:Log");
 
     SetModuleName("Glide64");
-    general_setting(Set_CardId, "card_id", 0);
 #ifdef _WIN32
     general_setting(Set_Resolution, "resolution", 7);
     general_setting(Set_wrpResolution, "wrpResolution", GetCurrentResIndex());
@@ -228,7 +226,6 @@ void CSettings::RegisterSettings(void)
 
 void CSettings::ReadSettings()
 {
-    this->card_id = GetSetting(Set_CardId);
 #ifdef ANDROID
     this->scr_res_x = this->res_x = g_width;
     this->scr_res_y = this->res_y = g_height;
@@ -464,7 +461,6 @@ void ReadSpecialSettings(const char * name)
 
 void WriteSettings(void)
 {
-    SetSetting(Set_CardId, g_settings->card_id);
 #ifdef _WIN32
     SetSetting(Set_Resolution, (int)g_settings->res_data);
     SetSetting(Set_wrpResolution, g_settings->wrpResolution);
