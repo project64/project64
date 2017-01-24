@@ -288,7 +288,6 @@ extern "C" {
 #define GR_STIPPLE_ROTATE	0x2
 #endif
 
-    void ReadSpecialSettings(const char * name);
     void WriteSettings(void);
 
     /******************************************************************

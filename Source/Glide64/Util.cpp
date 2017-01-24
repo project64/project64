@@ -289,7 +289,7 @@ VERTEX **org_vtx;
 void draw_tri(VERTEX **vtx, uint16_t linew)
 {
     deltaZ = dzdx = 0;
-    if (linew == 0 && (fb_depth_render_enabled || (rdp.rm & 0xC00) == 0xC00))
+    if (linew == 0 && (g_settings->fb_depth_render_enabled() || (rdp.rm & 0xC00) == 0xC00))
     {
         double X0 = vtx[0]->sx / rdp.scale_x;
         double Y0 = vtx[0]->sy / rdp.scale_y;
@@ -308,12 +308,15 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
             double diffz_02 = vtx[0]->sz - vtx[2]->sz;
             double diffz_12 = vtx[1]->sz - vtx[2]->sz;
             double fdzdx = (diffz_02 * diffy_12 - diffz_12 * diffy_02) / denom;
-            if ((rdp.rm & 0xC00) == 0xC00) {
+            if ((rdp.rm & 0xC00) == 0xC00) 
+            {
                 // Calculate deltaZ per polygon for Decal z-mode
                 double fdzdy = (diffz_02 * diffx_12 - diffz_12 * diffx_02) / denom;
                 double fdz = fabs(fdzdx) + fabs(fdzdy);
                 if ((g_settings->hacks & hack_Zelda) && (rdp.rm & 0x800))
+                {
                     fdz *= 4.0;  // Decal mode in Zelda sometimes needs mutiplied deltaZ to work correct, e.g. roads
+                }
                 deltaZ = maxval(8, (int)fdz);
             }
             dzdx = (int)(fdzdx * 65536.0);
@@ -1033,7 +1036,7 @@ float ScaleZ(float z)
 
 static void DepthBuffer(VERTEX * vtx, int n)
 {
-    if (fb_depth_render_enabled && !(g_settings->hacks&hack_RE2) && dzdx && (rdp.flags & ZBUF_UPDATE))
+    if (g_settings->fb_depth_render_enabled() && !(g_settings->hacks&hack_RE2) && dzdx && (rdp.flags & ZBUF_UPDATE))
     {
         vertexi v[12];
         if (u_cull_mode == 1) //cull front

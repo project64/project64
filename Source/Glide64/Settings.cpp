@@ -8,6 +8,7 @@ int GetCurrentResIndex(void);
 short Set_basic_mode = 0, Set_texture_dir = 0, Set_log_dir = 0, Set_log_flush = 0;
 
 CSettings::CSettings() :
+    m_dirty(false),
 res_x(640),
 scr_res_x(640),
 res_y(480),
@@ -31,6 +32,7 @@ buff_clear(0),
 swapmode(0),
 lodmode(0),
 aspectmode(0),
+    m_frame_buffer(0),
 use_hotkeys(0),
 //Texture filtering options
 texture_dir(""),
@@ -224,6 +226,17 @@ void CSettings::RegisterSettings(void)
     game_setting_default(Set_fb_render, "fb_render", Set_fb_render_default);
 }
 
+void CSettings::UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove)
+{
+    uint32_t frame_buffer_original = m_frame_buffer;
+    m_frame_buffer |= BitsToAdd;
+    m_frame_buffer &= ~BitsToRemove;
+    if (frame_buffer_original != m_frame_buffer)
+    {
+        m_dirty = true;
+    }
+}
+
 void CSettings::ReadSettings()
 {
 #ifdef ANDROID
@@ -305,9 +318,10 @@ void CSettings::ReadSettings()
         GetSystemSettingSz(Set_log_dir, m_log_dir, sizeof(m_log_dir));
     }
     m_FlushLogs = Set_log_flush != 0 ? GetSystemSetting(Set_log_flush) != 0 : false;
+    m_dirty = false;
 }
 
-void ReadSpecialSettings(const char * name)
+void CSettings::ReadGameSettings(const char * name)
 {
     g_settings->hacks = 0;
 
@@ -399,64 +413,57 @@ void ReadSpecialSettings(const char * name)
     g_settings->n64_z_scale = GetSetting(Set_n64_z_scale);
 
     //frame buffer
-    int optimize_texrect = GetSetting(g_romopen ? Set_optimize_texrect : Set_optimize_texrect_default);
-    int ignore_aux_copy = GetSetting(Set_ignore_aux_copy);
-    int hires_buf_clear = GetSetting(Set_hires_buf_clear);
-    int read_alpha = GetSetting(Set_fb_read_alpha);
-    int useless_is_useless = GetSetting(Set_useless_is_useless);
-    int fb_crc_mode = GetSetting(Set_fb_crc_mode);
+    short fb_Settings[] =
+    {
+        g_romopen ? Set_optimize_texrect : Set_optimize_texrect_default,
+        Set_ignore_aux_copy,
+        Set_hires_buf_clear,
+        Set_fb_read_alpha,
+        Set_useless_is_useless,
+        g_romopen ? Set_fb_smart : Set_fb_smart_default,
+        g_romopen ? Set_fb_hires : Set_fb_hires_default,
+        g_romopen ? Set_fb_read_always : Set_fb_read_always_default,
+        g_romopen ? Set_detect_cpu_write : Set_detect_cpu_write_default,
+        g_romopen ? Set_fb_get_info : Set_fb_get_info_default,
+        g_romopen ? Set_fb_render : Set_fb_render_default
+    };
 
-    if (optimize_texrect > 0) g_settings->frame_buffer |= fb_optimize_texrect;
-    else if (optimize_texrect == 0) g_settings->frame_buffer &= ~fb_optimize_texrect;
-    if (ignore_aux_copy > 0) g_settings->frame_buffer |= fb_ignore_aux_copy;
-    else if (ignore_aux_copy == 0) g_settings->frame_buffer &= ~fb_ignore_aux_copy;
-    if (hires_buf_clear > 0) g_settings->frame_buffer |= fb_hwfbe_buf_clear;
-    else if (hires_buf_clear == 0) g_settings->frame_buffer &= ~fb_hwfbe_buf_clear;
-    if (read_alpha > 0) g_settings->frame_buffer |= fb_read_alpha;
-    else if (read_alpha == 0) g_settings->frame_buffer &= ~fb_read_alpha;
-    if (useless_is_useless > 0) g_settings->frame_buffer |= fb_useless_is_useless;
-    else g_settings->frame_buffer &= ~fb_useless_is_useless;
-    if (fb_crc_mode >= 0) g_settings->fb_crc_mode = (CSettings::FBCRCMODE)fb_crc_mode;
+    fb_bits_t bits[] =
+    {
+        fb_optimize_texrect,
+        fb_ignore_aux_copy,
+        fb_hwfbe_buf_clear,
+        fb_read_alpha,
+        fb_useless_is_useless,
+        fb_emulation,
+        fb_hwfbe,
+        fb_ref,
+        fb_cpu_write_hack,
+        fb_get_info,
+        fb_depth_render
+    };
 
-    g_settings->filtering = GetSetting(g_romopen ? Set_filtering : Set_filtering_default);
-    g_settings->fog = GetSetting(g_romopen ? Set_fog : Set_fog_default);
-    g_settings->buff_clear = GetSetting(g_romopen ? Set_buff_clear : Set_buff_clear_default);
-    g_settings->swapmode = GetSetting(g_romopen ? Set_swapmode : Set_swapmode_default);
-    g_settings->aspectmode = GetSetting(g_romopen ? Set_aspect : Set_aspect_default);
-    g_settings->lodmode = GetSetting(g_romopen ? Set_lodmode : Set_lodmode_default);
-#ifdef _WIN32
-    g_settings->res_data = GetSetting(Set_Resolution);
-    if (g_settings->res_data < 0 || g_settings->res_data >= 0x18) g_settings->res_data = 12;
-    g_settings->scr_res_x = g_settings->res_x = resolutions[g_settings->res_data][0];
-    g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
-#endif
+    uint32_t fb_add_bits = 0, fb_remove_bits = 0;
+    for (int i = 0; i < (sizeof(fb_Settings) / sizeof(fb_Settings[0])); i++)
+    {
+        if (GetSetting(fb_Settings[i]) != 0)
+        {
+            fb_add_bits |= bits[i];
+        }
+        else
+        {
+            fb_remove_bits |= bits[i];
+        }
+    }
+    fb_add_bits |= fb_motionblur;
 
-    //frame buffer
-    int smart_read = GetSetting(g_romopen ? Set_fb_smart : Set_fb_smart_default);
-    int hires = GetSetting(g_romopen ? Set_fb_hires : Set_fb_hires_default);
-    int read_always = GetSetting(g_romopen ? Set_fb_read_always : Set_fb_read_always_default);
     int read_back_to_screen = GetSetting(g_romopen ? Set_read_back_to_screen : Set_read_back_to_screen_default);
-    int cpu_write_hack = GetSetting(g_romopen ? Set_detect_cpu_write : Set_detect_cpu_write_default);
-    int get_fbinfo = GetSetting(g_romopen ? Set_fb_get_info : Set_fb_get_info_default);
-    int depth_render = GetSetting(g_romopen ? Set_fb_render : Set_fb_render_default);
+    if (read_back_to_screen == 1) { fb_add_bits |= fb_read_back_to_screen; }
+    else if (read_back_to_screen == 2) { fb_add_bits |= fb_read_back_to_screen2; }
+    else if (read_back_to_screen == 0) { fb_remove_bits |= fb_read_back_to_screen | fb_read_back_to_screen2; }
 
-    if (smart_read > 0) g_settings->frame_buffer |= fb_emulation;
-    else if (smart_read == 0) g_settings->frame_buffer &= ~fb_emulation;
-    if (hires > 0) g_settings->frame_buffer |= fb_hwfbe;
-    else if (hires == 0) g_settings->frame_buffer &= ~fb_hwfbe;
-    if (read_always > 0) g_settings->frame_buffer |= fb_ref;
-    else if (read_always == 0) g_settings->frame_buffer &= ~fb_ref;
-    if (read_back_to_screen == 1) g_settings->frame_buffer |= fb_read_back_to_screen;
-    else if (read_back_to_screen == 2) g_settings->frame_buffer |= fb_read_back_to_screen2;
-    else if (read_back_to_screen == 0) g_settings->frame_buffer &= ~(fb_read_back_to_screen | fb_read_back_to_screen2);
-    if (cpu_write_hack > 0) g_settings->frame_buffer |= fb_cpu_write_hack;
-    else if (cpu_write_hack == 0) g_settings->frame_buffer &= ~fb_cpu_write_hack;
-    if (get_fbinfo > 0) g_settings->frame_buffer |= fb_get_info;
-    else if (get_fbinfo == 0) g_settings->frame_buffer &= ~fb_get_info;
-    if (depth_render > 0) g_settings->frame_buffer |= fb_depth_render;
-    else if (depth_render == 0) g_settings->frame_buffer &= ~fb_depth_render;
-    g_settings->frame_buffer |= fb_motionblur;
-    g_settings->flame_corona = (g_settings->hacks & hack_Zelda) && !fb_depth_render_enabled;
+    g_settings->UpdateFrameBufferBits(fb_add_bits, fb_remove_bits);
+    g_settings->flame_corona = (g_settings->hacks & hack_Zelda) && !fb_depth_render_enabled();
 }
 
 void WriteSettings(void)
@@ -518,17 +525,17 @@ void WriteSettings(void)
     SetSetting(g_romopen ? Set_lodmode : Set_lodmode_default, g_settings->lodmode);
     SetSetting(g_romopen ? Set_aspect : Set_aspect_default, g_settings->aspectmode);
 
-    SetSetting(g_romopen ? Set_fb_read_always : Set_fb_read_always_default, g_settings->frame_buffer&fb_ref ? 1 : 0);
-    SetSetting(g_romopen ? Set_fb_smart : Set_fb_smart_default, g_settings->frame_buffer & fb_emulation ? 1 : 0);
-    SetSetting(g_romopen ? Set_fb_hires : Set_fb_hires_default, g_settings->frame_buffer & fb_hwfbe ? 1 : 0);
-    SetSetting(g_romopen ? Set_fb_get_info : Set_fb_get_info_default, g_settings->frame_buffer & fb_get_info ? 1 : 0);
-    SetSetting(g_romopen ? Set_fb_render : Set_fb_render_default, g_settings->frame_buffer & fb_depth_render ? 1 : 0);
-    SetSetting(g_romopen ? Set_detect_cpu_write : Set_detect_cpu_write_default, g_settings->frame_buffer & fb_cpu_write_hack ? 1 : 0);
-    if (g_settings->frame_buffer & fb_read_back_to_screen)
+    SetSetting(g_romopen ? Set_fb_read_always : Set_fb_read_always_default, g_settings->fb_ref_enabled() ? true : false);
+    SetSetting(g_romopen ? Set_fb_smart : Set_fb_smart_default, g_settings->fb_emulation_enabled() ? true : false);
+    SetSetting(g_romopen ? Set_fb_hires : Set_fb_hires_default, g_settings->fb_hwfbe_set() ? true : false);
+    SetSetting(g_romopen ? Set_fb_get_info : Set_fb_get_info_default, g_settings->fb_get_info_enabled() ? true : false);
+    SetSetting(g_romopen ? Set_fb_render : Set_fb_render_default, g_settings->fb_depth_render_enabled() ? true : false);
+    SetSetting(g_romopen ? Set_detect_cpu_write : Set_detect_cpu_write_default, g_settings->fb_cpu_write_hack_enabled() ? true : false);
+    if (g_settings->fb_read_back_to_screen_enabled())
     {
         SetSetting(g_romopen ? Set_read_back_to_screen : Set_read_back_to_screen_default, 1);
     }
-    else if (g_settings->frame_buffer & fb_read_back_to_screen2)
+    else if (g_settings->fb_read_back_to_screen2_enabled())
     {
         SetSetting(g_romopen ? Set_read_back_to_screen : Set_read_back_to_screen_default, 2);
     }

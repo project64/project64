@@ -578,7 +578,7 @@ void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         DrawDepthBufferToScreen256(fb_info);
         return;
     }
-    if (fb_hwfbe_enabled && !evoodoo)
+    if (g_settings->fb_hwfbe_enabled() && !evoodoo)
     {
         DrawHiresDepthBufferToScreen(fb_info);
         return;

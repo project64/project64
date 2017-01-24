@@ -326,8 +326,8 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
     grRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
     grTextureBufferExt(rdp.cur_image->tmu, rdp.cur_image->tex_addr, rdp.cur_image->info.smallLodLog2, rdp.cur_image->info.largeLodLog2,
         rdp.cur_image->info.aspectRatioLog2, rdp.cur_image->info.format, GR_MIPMAPLEVELMASK_BOTH);
-    ///*
-    if (rdp.cur_image->clear && (g_settings->frame_buffer&fb_hwfbe_buf_clear) && cimage.changed)
+
+    if (rdp.cur_image->clear && g_settings->fb_hwfbe_buf_clear_enabled() && cimage.changed)
     {
         rdp.cur_image->clear = FALSE;
         grDepthMask(FXFALSE);
@@ -665,10 +665,14 @@ int SwapTextureBuffer()
 static uint32_t CalcCRC(TBUFF_COLOR_IMAGE * pTCI)
 {
     uint32_t result = 0;
-    if ((g_settings->frame_buffer&fb_ref) > 0)
+    if (g_settings->fb_ref_enabled())
+    {
         pTCI->crc = 0; //Since fb content changes each frame, crc check is meaningless.
+    }
     else if (g_settings->fb_crc_mode == CSettings::fbcrcFast)
+    {
         result = *((uint32_t*)(gfx.RDRAM + pTCI->addr + (pTCI->end_addr - pTCI->addr) / 2));
+    }
     else if (g_settings->fb_crc_mode == CSettings::fbcrcSafe)
     {
         uint8_t * pSrc = gfx.RDRAM + pTCI->addr;

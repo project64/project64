@@ -554,31 +554,31 @@ public:
 
         m_cbxFBEnable.Attach(GetDlgItem(IDC_CHK_FRAME_BUFFER_EMULATION));
         TTSetTxt(IDC_CHK_FRAME_BUFFER_EMULATION, "Enable frame buffer emulation:\n\nIf on, plugin will try to detect frame buffer usage and apply appropriate frame buffer emulation.\n\n[Recommended: on for games which use frame buffer effects]");
-        m_cbxFBEnable.SetCheck((g_settings->frame_buffer&fb_emulation) > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxFBEnable.SetCheck(g_settings->fb_emulation_enabled() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxFBHWFBE.Attach(GetDlgItem(IDC_CHK_HARDWARE_FRAMEBUFFER));
         TTSetTxt(IDC_CHK_HARDWARE_FRAMEBUFFER, "Enable hardware frame buffer emulation:\n\nIf this option is on, plugin will create auxiliary frame buffers in video memory instead of copying frame buffer content into main memory.\nThis allows plugin to run frame buffer effects without slowdown and without scaling image down to N64's native resolution.\nThis feature is fully supported by Voodoo 4/5 cards and partially by Voodoo3 and Banshee. Modern cards also fully support it.\n\n[Recommended: on, if supported by your hardware]");
-        m_cbxFBHWFBE.SetCheck((g_settings->frame_buffer&fb_hwfbe) > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxFBHWFBE.SetCheck(g_settings->fb_hwfbe_set() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxFBGetFBI.Attach(GetDlgItem(IDC_CHK_GET_FRAMEBUFFER));
         TTSetTxt(IDC_CHK_GET_FRAMEBUFFER, "Get information about frame buffers:\n\nThis is compatibility option. It must be set on for Mupen64 and off for 1964");
-        m_cbxFBGetFBI.SetCheck((g_settings->frame_buffer&fb_get_info) > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxFBGetFBI.SetCheck(g_settings->fb_get_info_enabled() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxFBReadEveryFrame.Attach(GetDlgItem(IDC_CHK_READ_EVERY_FRAME));
         TTSetTxt(IDC_CHK_READ_EVERY_FRAME, "Read every frame:\n\nIn some games plugin can't detect frame buffer usage.\nIn such cases you need to enable this option to see frame buffer effects.\nEvery drawn frame will be read from video card -> it works very slow.\n\n[Recommended: mostly off (needed only for a few games)]");
-        m_cbxFBReadEveryFrame.SetCheck((g_settings->frame_buffer&fb_ref) > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxFBReadEveryFrame.SetCheck(g_settings->fb_ref_enabled() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxFBasTex.Attach(GetDlgItem(IDC_RENDER_FRAME_AS_TEXTURE));
         TTSetTxt(IDC_RENDER_FRAME_AS_TEXTURE, "Render N64 frame buffer as texture:\n\nWhen this option is enabled, content of each N64 frame buffer is rendered as texture over the frame, rendered by the plugin.\nThis prevents graphics lost, but may cause slowdowns and various glitches in some games.\n\n[Recommended: mostly off]");
-        m_cbxFBasTex.SetCheck((g_settings->frame_buffer&fb_read_back_to_screen) > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxFBasTex.SetCheck(g_settings->fb_read_back_to_screen_enabled() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxDetect.Attach(GetDlgItem(IDC_CHK_DETECT_CPU_WRITE));
         TTSetTxt(IDC_CHK_DETECT_CPU_WRITE, "Detect CPU write to the N64 frame buffer:\n\nThis option works as the previous options, but the plugin is trying to detect, when game uses CPU writes to N64 frame buffer.\nThe N64 frame buffer is rendered only when CPU writes is detected.\nUse this option for those games, in which you see still image or no image at all for some time with no reason.\n\n[Recommended: mostly off]");
-        m_cbxDetect.SetCheck((g_settings->frame_buffer&fb_cpu_write_hack) > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxDetect.SetCheck(g_settings->fb_cpu_write_hack_enabled() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxFBDepthBuffer.Attach(GetDlgItem(IDC_SOFTWARE_DEPTH_BUFFER));
         TTSetTxt(IDC_SOFTWARE_DEPTH_BUFFER, "Enable depth buffer rendering:\n\nThis option is used to fully emulate N64 depth buffer.\nIt is required for correct emulation of depth buffer based effects.\nHowever, it requires fast (>1GHz) CPU to work full speed.\n\n[Recommended: on for fast PC]");
-        m_cbxFBDepthBuffer.SetCheck((g_settings->frame_buffer&fb_depth_render) > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxFBDepthBuffer.SetCheck(g_settings->fb_depth_render_enabled() ? BST_CHECKED : BST_UNCHECKED);
         return TRUE;
     }
 
@@ -593,20 +593,34 @@ public:
         g_settings->buff_clear = m_cbxBuffer.GetCheck() == BST_CHECKED;
         g_settings->lodmode = m_cmbLOD.GetItemData(m_cmbLOD.GetCurSel());
 
-        if (m_cbxFBEnable.GetCheck() == BST_CHECKED) g_settings->frame_buffer |= fb_emulation;
-        else g_settings->frame_buffer &= ~fb_emulation;
-        if (m_cbxFBHWFBE.GetCheck() == BST_CHECKED) g_settings->frame_buffer |= fb_hwfbe;
-        else g_settings->frame_buffer &= ~fb_hwfbe;
-        if (m_cbxFBReadEveryFrame.GetCheck() == BST_CHECKED) g_settings->frame_buffer |= fb_ref;
-        else g_settings->frame_buffer &= ~fb_ref;
-        if (m_cbxFBasTex.GetCheck() == BST_CHECKED) g_settings->frame_buffer |= fb_read_back_to_screen;
-        else g_settings->frame_buffer &= ~fb_read_back_to_screen;
-        if (m_cbxDetect.GetCheck() == BST_CHECKED) g_settings->frame_buffer |= fb_cpu_write_hack;
-        else g_settings->frame_buffer &= ~fb_cpu_write_hack;
-        if (m_cbxFBGetFBI.GetCheck() == BST_CHECKED) g_settings->frame_buffer |= fb_get_info;
-        else g_settings->frame_buffer &= ~fb_get_info;
-        if (m_cbxFBDepthBuffer.GetCheck() == BST_CHECKED) g_settings->frame_buffer |= fb_depth_render;
-        else g_settings->frame_buffer &= ~fb_depth_render;
+        CButton * fb_buttons[] =
+        {
+            &m_cbxFBEnable, &m_cbxFBHWFBE, &m_cbxFBReadEveryFrame,
+            &m_cbxFBasTex, &m_cbxDetect,
+            &m_cbxFBGetFBI, &m_cbxFBDepthBuffer
+        };
+
+        CSettings::fb_bits_t bits[] =
+        {
+            CSettings::fb_emulation, CSettings::fb_hwfbe, CSettings::fb_ref,
+            CSettings::fb_read_back_to_screen, CSettings::fb_cpu_write_hack,
+            CSettings::fb_get_info, CSettings::fb_depth_render
+        };
+
+        uint32_t fb_add_bits = 0, fb_remove_bits = 0;
+        for (int i = 0; i < (sizeof(fb_buttons) / sizeof(fb_buttons[0])); i++)
+        {
+            if (fb_buttons[i]->GetCheck() == BST_CHECKED)
+            {
+                fb_add_bits |= bits[i];
+            }
+            else
+            {
+                fb_remove_bits |= bits[i];
+            }
+        }
+
+        g_settings->UpdateFrameBufferBits(fb_add_bits, fb_remove_bits);
         if (memcmp(&oldsettings, g_settings, sizeof(oldsettings))) //check that settings were changed
         {
             WriteSettings();
@@ -877,7 +891,7 @@ void CALL DllConfig(HWND hParent)
     else
     {
         char name[21] = "DEFAULT";
-        ReadSpecialSettings(name);
+        g_settings->ReadGameSettings(name);
         ZLUT_init();
     }
 
@@ -890,8 +904,10 @@ void CloseConfig()
 {
     if (g_romopen)
     {
-        if (fb_depth_render_enabled)
+        if (g_settings->fb_depth_render_enabled())
+        {
             ZLUT_init();
+        }
         // re-init evoodoo graphics to resize window
         if (evoodoo)// && !ev_fullscreen)
             InitGfx();

@@ -5,6 +5,25 @@ class CSettings
 public:
 	CSettings();
 
+    //Frame buffer emulation options
+    enum fb_bits_t
+    {
+        fb_emulation = (1 << 0),              //frame buffer emulation
+        fb_hwfbe = (1 << 1),                  //hardware frame buffer emualtion
+        fb_motionblur = (1 << 2),             //emulate motion blur
+        fb_ref = (1 << 3),                    //read every frame
+        fb_read_alpha = (1 << 4),             //read alpha
+        fb_hwfbe_buf_clear = (1 << 5),        //clear auxiliary texture frame buffers
+        fb_depth_render = (1 << 6),           //enable software depth render
+        fb_optimize_texrect = (1 << 7),       //fast texrect rendering with hwfbe
+        fb_ignore_aux_copy = (1 << 8),        //do not copy auxiliary frame buffers
+        fb_useless_is_useless = (1 << 10),    //
+        fb_get_info = (1 << 11),              //get frame buffer info
+        fb_read_back_to_screen = (1 << 12),   //render N64 frame buffer to screen
+        fb_read_back_to_screen2 = (1 << 13),  //render N64 frame buffer to screen
+        fb_cpu_write_hack = (1 << 14),        //show images writed directly by CPU
+    };
+
     uint32_t res_x, scr_res_x;
     uint32_t res_y, scr_res_y;
 #ifndef ANDROID
@@ -28,33 +47,29 @@ public:
     int aspectmode;
     int use_hotkeys;
 
-    //Frame buffer emulation options
-#define  fb_emulation            (1<<0)   //frame buffer emulation
-#define  fb_hwfbe                (1<<1)   //hardware frame buffer emualtion
-#define  fb_motionblur           (1<<2)   //emulate motion blur
-#define  fb_ref                  (1<<3)   //read every frame
-#define  fb_read_alpha           (1<<4)   //read alpha
-#define  fb_hwfbe_buf_clear      (1<<5)   //clear auxiliary texture frame buffers
-#define  fb_depth_render         (1<<6)   //enable software depth render
-#define  fb_optimize_texrect     (1<<7)   //fast texrect rendering with hwfbe
-#define  fb_ignore_aux_copy      (1<<8)   //do not copy auxiliary frame buffers
-#define  fb_useless_is_useless   (1<<10)  //
-#define  fb_get_info             (1<<11)  //get frame buffer info
-#define  fb_read_back_to_screen  (1<<12)  //render N64 frame buffer to screen
-#define  fb_read_back_to_screen2 (1<<13)  //render N64 frame buffer to screen
-#define  fb_cpu_write_hack       (1<<14)  //show images writed directly by CPU
 
-#define fb_emulation_enabled ((g_settings->frame_buffer&fb_emulation)>0)
-#define fb_hwfbe_enabled ((g_settings->frame_buffer&(fb_emulation|fb_hwfbe))==(fb_emulation|fb_hwfbe))
-#define fb_depth_render_enabled ((g_settings->frame_buffer&fb_depth_render)>0)
-
-    uint32_t frame_buffer;
     enum FBCRCMODE 
 	{
         fbcrcNone = 0,
         fbcrcFast = 1,
         fbcrcSafe = 2
     } fb_crc_mode;
+
+    inline bool fb_emulation_enabled(void) const { return ((m_frame_buffer&fb_emulation) != 0); }
+    inline bool fb_ref_enabled(void) const { return ((m_frame_buffer&fb_ref) != 0); }
+    inline bool fb_hwfbe_enabled(void) const { return ((m_frame_buffer&(fb_emulation |fb_hwfbe)) == (fb_emulation | fb_hwfbe)); }
+    inline bool fb_hwfbe_set(void) const { return ((m_frame_buffer&fb_hwfbe) != 0); }
+    inline bool fb_depth_render_enabled(void) const { return ((m_frame_buffer&fb_depth_render) != 0); }
+    inline bool fb_get_info_enabled(void) const { return ((m_frame_buffer&fb_get_info) != 0); }
+    inline bool fb_read_back_to_screen_enabled(void) const { return ((m_frame_buffer&fb_read_back_to_screen) != 0); }
+    inline bool fb_read_back_to_screen2_enabled(void) const { return ((m_frame_buffer&fb_read_back_to_screen2) != 0); }
+    inline bool fb_cpu_write_hack_enabled(void) const { return ((m_frame_buffer&fb_cpu_write_hack) != 0); }
+    inline bool fb_ignore_aux_copy_enabled(void) const { return ((m_frame_buffer&fb_ignore_aux_copy) != 0); }
+    inline bool fb_hwfbe_buf_clear_enabled(void) const { return ((m_frame_buffer&fb_hwfbe_buf_clear) != 0); }
+    inline bool fb_useless_is_useless_enabled(void) const { return ((m_frame_buffer&fb_useless_is_useless) != 0); }
+    inline bool fb_motionblur_enabled(void) const { return ((m_frame_buffer&fb_motionblur) != 0); }
+    inline bool fb_read_alpha_enabled(void) const { return ((m_frame_buffer&fb_read_alpha) != 0); }
+    inline bool fb_optimize_texrect_enabled(void) const { return ((m_frame_buffer&fb_optimize_texrect) != 0); }
 
     inline const char * log_dir(void) const { return m_log_dir; }
     inline bool FlushLogs(void) const { return m_FlushLogs; }
@@ -160,12 +175,18 @@ public:
     int wrpVRAM;
     int wrpFBO;
     int wrpAnisotropic;
+    void UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove);
+
+    void ReadGameSettings(const char * name);
+
 private:
     void ReadSettings();
     void RegisterSettings(void);
 
+    bool m_dirty;
     bool m_FlushLogs;
     char m_log_dir[260];
+    uint32_t m_frame_buffer;
 };
 
 extern CSettings * g_settings;

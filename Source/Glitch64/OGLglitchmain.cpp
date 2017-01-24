@@ -138,7 +138,6 @@ FullScreenResolutions::~FullScreenResolutions()
 
 void FullScreenResolutions::init()
 {
-    WriteTrace(TraceGlitch, TraceDebug, "executing");
 #ifdef _WIN32
     currentResolutions = -1;
     DEVMODE enumMode , currentMode;

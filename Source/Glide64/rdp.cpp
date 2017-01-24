@@ -421,7 +421,7 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
 
     uint32_t width = rdp.ci_width;//*gfx.VI_WIDTH_REG;
     uint32_t height;
-    if (fb_emulation_enabled && !(g_settings->hacks&hack_PPL))
+    if (g_settings->fb_emulation_enabled() && !(g_settings->hacks&hack_PPL))
     {
         int ind = (rdp.ci_count > 0) ? rdp.ci_count - 1 : 0;
         height = rdp.frame_buffers[ind].height;
@@ -454,7 +454,7 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
                 for (uint32_t x = 0; x < width; x++)
                 {
                     c = ptr_src[x + y * width];
-                    if (g_settings->frame_buffer&fb_read_alpha)
+                    if (g_settings->fb_read_alpha_enabled())
                     {
                         if (c > 0)
                             c = (c & 0xFFC0) | ((c & 0x001F) << 1) | 1;
@@ -479,7 +479,7 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
     }
     else
     {
-        if (rdp.motionblur && fb_hwfbe_enabled)
+        if (rdp.motionblur && g_settings->fb_hwfbe_enabled())
         {
             return;
         }
@@ -505,7 +505,7 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
                 uint16_t c;
                 uint32_t stride = info.strideInBytes >> 1;
 
-                int read_alpha = g_settings->frame_buffer & fb_read_alpha;
+                int read_alpha = g_settings->fb_read_alpha_enabled();
                 if ((g_settings->hacks&hack_PMario) && rdp.frame_buffers[rdp.ci_count - 1].status != ci_aux)
                     read_alpha = FALSE;
                 int x_start = 0, y_start = 0, x_end = width, y_end = height;
@@ -652,7 +652,7 @@ EXPORT void CALL ProcessDList(void)
     depth_buffer_fog = TRUE;
 
     //analize possible frame buffer usage
-    if (fb_emulation_enabled)
+    if (g_settings->fb_emulation_enabled())
         DetectFrameBufferUsage();
     if (!(g_settings->hacks&hack_Lego) || rdp.num_of_ci > 1)
         rdp.last_bg = 0;
@@ -764,19 +764,25 @@ EXPORT void CALL ProcessDList(void)
     }
 #endif
 
-    if (fb_emulation_enabled)
+    if (g_settings->fb_emulation_enabled())
     {
         rdp.scale_x = rdp.scale_x_bak;
         rdp.scale_y = rdp.scale_y_bak;
     }
 
     if (g_settings->hacks & hack_OoT)
+    {
         copyWhiteToRDRAM(); //Subscreen delay fix
-    else if (g_settings->frame_buffer & fb_ref)
+    }
+    else if (g_settings->fb_ref_enabled())
+    {
         CopyFrameBuffer();
+    }
 
     if (rdp.cur_image)
+    {
         CloseTextureBuffer(rdp.read_whole_frame && ((g_settings->hacks&hack_PMario) || rdp.swap_ci_index >= 0));
+    }
 
     if ((g_settings->hacks&hack_TGR2) && rdp.vi_org_reg != *gfx.VI_ORIGIN_REG && CI_SET)
     {
@@ -932,7 +938,7 @@ static void rdp_texrect()
         return;
     }
 
-	if (rdp.skip_drawing || (!fb_emulation_enabled && (rdp.cimg == rdp.zimg)))
+	if (rdp.skip_drawing || (!g_settings->fb_emulation_enabled() && (rdp.cimg == rdp.zimg)))
     {
         if ((g_settings->hacks&hack_PMario) && rdp.ci_status == ci_useless)
         {
@@ -1011,8 +1017,7 @@ static void rdp_texrect()
             lr_y = ceil(lr_y);
     }
 
-    //*
-    if (rdp.tbuff_tex && (g_settings->frame_buffer & fb_optimize_texrect))
+    if (rdp.tbuff_tex && g_settings->fb_optimize_texrect_enabled())
     {
         WriteTrace(TraceRDP, TraceDebug, "Attempt to optimize texrect");
         if (!rdp.tbuff_tex->drawn)
@@ -1050,7 +1055,7 @@ static void rdp_texrect()
     }
     //*
     //hack for Banjo2. it removes black texrects under Banjo
-    if (!fb_hwfbe_enabled && ((rdp.cycle1 << 16) | (rdp.cycle2 & 0xFFFF)) == 0xFFFFFFFF && (rdp.othermode_l & 0xFFFF0000) == 0x00500000)
+    if (!g_settings->fb_hwfbe_enabled() && ((rdp.cycle1 << 16) | (rdp.cycle2 & 0xFFFF)) == 0xFFFFFFFF && (rdp.othermode_l & 0xFFFF0000) == 0x00500000)
     {
         rdp.tri_n += 2;
         return;
@@ -1060,7 +1065,7 @@ static void rdp_texrect()
     //remove motion blur in night vision
     if ((g_settings->ucode == ucode_PerfectDark) && (rdp.maincimg[1].addr != rdp.maincimg[0].addr) && (rdp.timg.addr >= rdp.maincimg[1].addr) && (rdp.timg.addr < (rdp.maincimg[1].addr + rdp.ci_width*rdp.ci_height*rdp.ci_size)))
     {
-        if (fb_emulation_enabled)
+        if (g_settings->fb_emulation_enabled())
             if (rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_copy_self)
             {
                 //WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect. texaddr: %08lx, cimg: %08lx, cimg_end: %08lx", rdp.timg.addr, rdp.maincimg[1], rdp.maincimg[1]+rdp.ci_width*rdp.ci_height*rdp.ci_size);
@@ -1916,8 +1921,10 @@ static void rdp_loadblock()
         tile, ul_s, ul_t, lr_s,
         dxt, _dxt);
 
-    if (fb_hwfbe_enabled)
+    if (g_settings->fb_hwfbe_enabled())
+    {
         setTBufTex(rdp.tiles[tile].t_mem, cnt);
+    }
 }
 
 static inline void loadTile(uint32_t *src, uint32_t *dst, int width, int height, int line, int off, uint32_t *end)
@@ -2101,11 +2108,16 @@ static void rdp_loadtile()
     info.tile_ul_t = ul_t;
     info.tile_width = (rdp.tiles[tile].mask_s ? minval((uint16_t)width, 1 << rdp.tiles[tile].mask_s) : (uint16_t)width);
     info.tile_height = (rdp.tiles[tile].mask_t ? minval((uint16_t)height, 1 << rdp.tiles[tile].mask_t) : (uint16_t)height);
-    if (g_settings->hacks&hack_MK64) {
+    if (g_settings->hacks&hack_MK64)
+    {
         if (info.tile_width % 2)
+        {
             info.tile_width--;
+        }
         if (info.tile_height % 2)
+        {
             info.tile_height--;
+        }
     }
     info.tex_width = rdp.timg.width;
     info.tex_size = rdp.timg.size;
@@ -2137,8 +2149,10 @@ static void rdp_loadtile()
     WriteTrace(TraceRDP, TraceDebug, "loadtile: tile: %d, ul_s: %d, ul_t: %d, lr_s: %d, lr_t: %d", tile,
         ul_s, ul_t, lr_s, lr_t);
 
-    if (fb_hwfbe_enabled)
+    if (g_settings->fb_hwfbe_enabled())
+    {
         setTBufTex(rdp.tiles[tile].t_mem, rdp.tiles[tile].line*height);
+    }
 }
 
 static void rdp_settile()
@@ -2173,7 +2187,7 @@ static void rdp_settile()
         tile->t_mem, tile->palette, str_cm[(tile->clamp_t << 1) | tile->mirror_t], tile->mask_t,
         tile->shift_t, str_cm[(tile->clamp_s << 1) | tile->mirror_s], tile->mask_s, tile->shift_s);
 
-    if (fb_hwfbe_enabled && rdp.last_tile < rdp.cur_tile + 2)
+    if (g_settings->fb_hwfbe_enabled() && rdp.last_tile < rdp.cur_tile + 2)
     {
         for (int i = 0; i < 2; i++)
         {
@@ -2214,7 +2228,7 @@ static void rdp_fillrect()
         return;
     }
     int pd_multiplayer = (g_settings->ucode == ucode_PerfectDark) && (rdp.cycle_mode == 3) && (rdp.fill_color == 0xFFFCFFFC);
-    if ((rdp.cimg == rdp.zimg) || (fb_emulation_enabled && rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_zimg) || pd_multiplayer)
+    if ((rdp.cimg == rdp.zimg) || (g_settings->fb_emulation_enabled() && rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_zimg) || pd_multiplayer)
     {
         WriteTrace(TraceRDP, TraceDebug, "Fillrect - cleared the depth buffer");
         if (!(g_settings->hacks&hack_Hyperbike) || rdp.ci_width > 64) //do not clear main depth buffer for aux depth buffers
@@ -2524,7 +2538,7 @@ static void rdp_settextureimage()
         }
     }
 
-    if (fb_hwfbe_enabled) //search this texture among drawn texture buffers
+    if (g_settings->fb_hwfbe_enabled()) //search this texture among drawn texture buffers
         FindTextureBuffer(rdp.timg.addr, rdp.timg.width);
 
     WriteTrace(TraceRDP, TraceDebug, "settextureimage: format: %s, size: %s, width: %d, addr: %08lx",
@@ -2562,7 +2576,7 @@ static uint32_t swapped_addr = 0;
 
 static void rdp_setcolorimage()
 {
-    if (fb_emulation_enabled && (rdp.num_of_ci < NUMTEXBUF))
+    if (g_settings->fb_emulation_enabled() && (rdp.num_of_ci < NUMTEXBUF))
     {
         COLOR_IMAGE & cur_fb = rdp.frame_buffers[rdp.ci_count];
         COLOR_IMAGE & prev_fb = rdp.frame_buffers[rdp.ci_count ? rdp.ci_count - 1 : 0];
@@ -2583,7 +2597,7 @@ static void rdp_setcolorimage()
                     rdp.scale_x = sx;
                     rdp.scale_y = sy;
                 }
-                if (!fb_hwfbe_enabled)
+                if (!g_settings->fb_hwfbe_enabled())
                 {
                     if ((rdp.num_of_ci > 1) &&
                         (next_fb.status == ci_aux) &&
@@ -2596,14 +2610,14 @@ static void rdp_setcolorimage()
                 else if (rdp.copy_ci_index && (g_settings->hacks&hack_PMario)) //tidal wave
                     OpenTextureBuffer(rdp.frame_buffers[rdp.main_ci_index]);
             }
-            else if (!rdp.motionblur && fb_hwfbe_enabled && !SwapOK && (rdp.ci_count <= rdp.copy_ci_index))
+            else if (!rdp.motionblur && g_settings->fb_hwfbe_enabled() && !SwapOK && (rdp.ci_count <= rdp.copy_ci_index))
             {
                 if (next_fb.status == ci_aux_copy)
                     OpenTextureBuffer(rdp.frame_buffers[rdp.main_ci_index]);
                 else
                     OpenTextureBuffer(rdp.frame_buffers[rdp.copy_ci_index]);
             }
-            else if (fb_hwfbe_enabled && prev_fb.status == ci_aux)
+            else if (g_settings->fb_hwfbe_enabled() && prev_fb.status == ci_aux)
             {
                 if (rdp.motionblur)
                 {
@@ -2625,7 +2639,7 @@ static void rdp_setcolorimage()
         break;
         case ci_copy:
         {
-            if (!rdp.motionblur || (g_settings->frame_buffer&fb_motionblur))
+            if (!rdp.motionblur || g_settings->fb_motionblur_enabled())
             {
                 if (cur_fb.width == rdp.ci_width)
                 {
@@ -2673,13 +2687,13 @@ static void rdp_setcolorimage()
                 CopyFrameBuffer();
                 rdp.fb_drawn = TRUE;
             }
-            if (fb_hwfbe_enabled)
+            if (g_settings->fb_hwfbe_enabled())
                 OpenTextureBuffer(cur_fb);
         }
         break;
         case ci_old_copy:
         {
-            if (!rdp.motionblur || (g_settings->frame_buffer&fb_motionblur))
+            if (!rdp.motionblur || g_settings->fb_motionblur_enabled())
             {
                 if (cur_fb.width == rdp.ci_width)
                 {
@@ -2704,12 +2718,12 @@ static void rdp_setcolorimage()
         */
         case ci_aux:
         {
-            if (!fb_hwfbe_enabled && cur_fb.format != 0)
+            if (!g_settings->fb_hwfbe_enabled() && cur_fb.format != 0)
                 rdp.skip_drawing = TRUE;
             else
             {
                 rdp.skip_drawing = FALSE;
-                if (fb_hwfbe_enabled && OpenTextureBuffer(cur_fb))
+                if (g_settings->fb_hwfbe_enabled() && OpenTextureBuffer(cur_fb))
                     ;
                 else
                 {
@@ -2723,7 +2737,7 @@ static void rdp_setcolorimage()
                         rdp.scale_y = 1.0f;
                         //           }
                     }
-                    else if (!fb_hwfbe_enabled && (prev_fb.status == ci_main) &&
+                    else if (!g_settings->fb_hwfbe_enabled() && (prev_fb.status == ci_main) &&
                         (prev_fb.width == cur_fb.width)) // for Pokemon Stadium
                         CopyFrameBuffer();
                 }
@@ -2734,7 +2748,7 @@ static void rdp_setcolorimage()
         case ci_zimg:
             if (g_settings->ucode != ucode_PerfectDark)
             {
-                if (fb_hwfbe_enabled && !rdp.copy_ci_index && (rdp.copy_zi_index || (g_settings->hacks&hack_BAR)))
+                if (g_settings->fb_hwfbe_enabled() && !rdp.copy_ci_index && (rdp.copy_zi_index || (g_settings->hacks&hack_BAR)))
                 {
                     GrLOD_t LOD = GR_LOD_LOG2_1024;
                     if (g_settings->scr_res_x > 1024)
@@ -2750,7 +2764,7 @@ static void rdp_setcolorimage()
         case ci_zcopy:
             if (g_settings->ucode != ucode_PerfectDark)
             {
-                if (fb_hwfbe_enabled && !rdp.copy_ci_index && rdp.copy_zi_index == rdp.ci_count)
+                if (g_settings->fb_hwfbe_enabled() && !rdp.copy_ci_index && rdp.copy_zi_index == rdp.ci_count)
                 {
                     CopyDepthBuffer();
                 }
@@ -2761,8 +2775,10 @@ static void rdp_setcolorimage()
             rdp.skip_drawing = TRUE;
             break;
         case ci_copy_self:
-            if (fb_hwfbe_enabled && (rdp.ci_count <= rdp.copy_ci_index) && (!SwapOK || g_settings->swapmode == 2))
+            if (g_settings->fb_hwfbe_enabled() && (rdp.ci_count <= rdp.copy_ci_index) && (!SwapOK || g_settings->swapmode == 2))
+            {
                 OpenTextureBuffer(cur_fb);
+            }
             rdp.skip_drawing = FALSE;
             break;
         default:
@@ -2771,19 +2787,19 @@ static void rdp_setcolorimage()
 
         if ((rdp.ci_count > 0) && (prev_fb.status >= ci_aux)) //for Pokemon Stadium
         {
-            if (!fb_hwfbe_enabled && prev_fb.format == 0)
+            if (!g_settings->fb_hwfbe_enabled() && prev_fb.format == 0)
                 CopyFrameBuffer();
             else if ((g_settings->hacks&hack_Knockout) && prev_fb.width < 100)
                 CopyFrameBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
         }
-        if (!fb_hwfbe_enabled && cur_fb.status == ci_copy)
+        if (!g_settings->fb_hwfbe_enabled() && cur_fb.status == ci_copy)
         {
             if (!rdp.motionblur && (rdp.num_of_ci > rdp.ci_count + 1) && (next_fb.status != ci_aux))
             {
                 RestoreScale();
             }
         }
-        if (!fb_hwfbe_enabled && cur_fb.status == ci_aux)
+        if (!g_settings->fb_hwfbe_enabled() && cur_fb.status == ci_aux)
         {
             if (cur_fb.format == 0)
             {
@@ -2840,10 +2856,10 @@ static void rdp_setcolorimage()
                 WriteTrace(TraceRDP, TraceDebug, "return to original scale");
                 rdp.scale_x = rdp.scale_x_bak;
                 rdp.scale_y = rdp.scale_y_bak;
-                if (fb_hwfbe_enabled && !rdp.read_whole_frame)
+                if (g_settings->fb_hwfbe_enabled() && !rdp.read_whole_frame)
                     CloseTextureBuffer();
             }
-            if (fb_hwfbe_enabled && !rdp.read_whole_frame && (prev_fb.status >= ci_aux) && (rdp.ci_count > rdp.copy_ci_index))
+            if (g_settings->fb_hwfbe_enabled() && !rdp.read_whole_frame && (prev_fb.status >= ci_aux) && (rdp.ci_count > rdp.copy_ci_index))
                 CloseTextureBuffer();
         }
         rdp.ci_status = cur_fb.status;
@@ -2853,7 +2869,7 @@ static void rdp_setcolorimage()
     rdp.ocimg = rdp.cimg;
     rdp.cimg = segoffset(rdp.cmd1) & BMASK;
     rdp.ci_width = (rdp.cmd0 & 0xFFF) + 1;
-    if (fb_emulation_enabled && rdp.ci_count > 0)
+    if (g_settings->fb_emulation_enabled() && rdp.ci_count > 0)
         rdp.ci_height = rdp.frame_buffers[rdp.ci_count - 1].height;
     else if (rdp.ci_width == 32)
         rdp.ci_height = 32;
@@ -2875,7 +2891,7 @@ static void rdp_setcolorimage()
     {
         if (!rdp.cur_image)
         {
-            if (fb_hwfbe_enabled && rdp.ci_width <= 64 && rdp.ci_count > 0)
+            if (g_settings->fb_hwfbe_enabled() && rdp.ci_width <= 64 && rdp.ci_count > 0)
                 OpenTextureBuffer(rdp.frame_buffers[rdp.ci_count - 1]);
             else if (format > 2)
                 rdp.skip_drawing = TRUE;
@@ -2884,7 +2900,7 @@ static void rdp_setcolorimage()
     }
     else
     {
-        if (!fb_emulation_enabled)
+        if (!g_settings->fb_emulation_enabled())
             rdp.skip_drawing = FALSE;
     }
 
@@ -2897,16 +2913,20 @@ static void rdp_setcolorimage()
         int viSwapOK = ((g_settings->swapmode == 2) && (rdp.vi_org_reg == *gfx.VI_ORIGIN_REG)) ? FALSE : TRUE;
         if ((rdp.zimg != rdp.cimg) && (rdp.ocimg != rdp.cimg) && SwapOK && viSwapOK && !rdp.cur_image)
         {
-            if (fb_emulation_enabled)
+            if (g_settings->fb_emulation_enabled())
+            {
                 rdp.maincimg[0] = rdp.frame_buffers[rdp.main_ci_index];
+            }
             else
+            {
                 rdp.maincimg[0].addr = rdp.cimg;
+            }
             rdp.last_drawn_ci_addr = (g_settings->swapmode == 2) ? swapped_addr : rdp.maincimg[0].addr;
             swapped_addr = rdp.cimg;
             newSwapBuffers();
             rdp.vi_org_reg = *gfx.VI_ORIGIN_REG;
             SwapOK = FALSE;
-            if (fb_hwfbe_enabled)
+            if (g_settings->fb_hwfbe_enabled())
             {
                 if (rdp.copy_ci_index && (rdp.frame_buffers[rdp.ci_count - 1].status != ci_zimg))
                 {
@@ -3070,7 +3090,7 @@ EXPORT void CALL FBRead(uint32_t addr)
         {
             uint32_t cimg = rdp.cimg;
             rdp.cimg = rdp.maincimg[1].addr;
-            if (fb_emulation_enabled)
+            if (g_settings->fb_emulation_enabled())
             {
                 rdp.ci_width = rdp.maincimg[1].width;
                 rdp.ci_count = 0;
@@ -3171,11 +3191,13 @@ EXPORT void CALL FBGetFrameBufferInfo(void *p)
     WriteTrace(TraceGlide64, TraceDebug, "-");
     FrameBufferInfo * pinfo = (FrameBufferInfo *)p;
     memset(pinfo, 0, sizeof(FrameBufferInfo) * 6);
-    if (!(g_settings->frame_buffer&fb_get_info))
+    if (!g_settings->fb_get_info_enabled())
+    {
         return;
+    }
     WriteTrace(TraceRDP, TraceDebug, "FBGetFrameBufferInfo ()");
-    //*
-    if (fb_emulation_enabled)
+
+    if (g_settings->fb_emulation_enabled())
     {
         pinfo[0].addr = rdp.maincimg[1].addr;
         pinfo[0].size = rdp.maincimg[1].size;
@@ -3338,10 +3360,10 @@ void DetectFrameBufferUsage()
     rdp.num_of_ci = rdp.ci_count;
     if (rdp.read_previous_ci && previous_ci_was_read)
     {
-        if (!fb_hwfbe_enabled || !rdp.copy_ci_index)
+        if (!g_settings->fb_hwfbe_enabled() || !rdp.copy_ci_index)
             rdp.motionblur = TRUE;
     }
-    if (rdp.motionblur || fb_hwfbe_enabled || (rdp.frame_buffers[rdp.copy_ci_index].status == ci_aux_copy))
+    if (rdp.motionblur || g_settings->fb_hwfbe_enabled() || (rdp.frame_buffers[rdp.copy_ci_index].status == ci_aux_copy))
     {
         rdp.scale_x = rdp.scale_x_bak;
         rdp.scale_y = rdp.scale_y_bak;
@@ -3351,7 +3373,7 @@ void DetectFrameBufferUsage()
         rdp.read_whole_frame = TRUE;
     if (rdp.read_whole_frame)
     {
-        if (fb_hwfbe_enabled)
+        if (g_settings->fb_hwfbe_enabled())
         {
             if (rdp.read_previous_ci && !previous_ci_was_read && (g_settings->swapmode != 2) && (g_settings->ucode != ucode_PerfectDark))
             {
@@ -3371,10 +3393,14 @@ void DetectFrameBufferUsage()
         {
             if (rdp.motionblur)
             {
-                if (g_settings->frame_buffer&fb_motionblur)
+                if (g_settings->fb_motionblur_enabled())
+                {
                     CopyFrameBuffer();
+                }
                 else
+                {
                     memset(gfx.RDRAM + rdp.cimg, 0, rdp.ci_width*rdp.ci_height*rdp.ci_size);
+                }
             }
             else //if (ci_width == rdp.frame_buffers[rdp.main_ci_index].width)
             {
@@ -3396,7 +3422,7 @@ void DetectFrameBufferUsage()
         }
     }
 
-    if (fb_hwfbe_enabled)
+    if (g_settings->fb_hwfbe_enabled())
     {
         for (i = 0; i < voodoo.num_tmu; i++)
         {

@@ -446,7 +446,7 @@ int InitGfx()
     // Is mirroring allowed?
     const char *extensions = grGetString(GR_EXTENSION);
 
-    // Check which SST we are using and initi   alize stuff
+    // Check which SST we are using and initialize stuff
     // Hiroshi Morii <koolsmoky@users.sourceforge.net>
     enum {
         GR_SSTTYPE_VOODOO = 0,
@@ -736,7 +736,6 @@ extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReser
     if (fdwReason == DLL_PROCESS_ATTACH)
     {
         hinstDLL = hinst;
-        SetupTrace();
         if (g_ProcessDListCS == NULL)
         {
             g_ProcessDListCS = new CriticalSection();
@@ -1011,7 +1010,7 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     rdp.scale_y = 1.0f;
 
     char name[21] = "DEFAULT";
-    ReadSpecialSettings(name);
+    g_settings->ReadGameSettings(name);
     ZLUT_init();
     ConfigWrapper();
 #ifndef ANDROID
@@ -1182,7 +1181,7 @@ void CALL RomOpen(void)
         g_settings->ghq_use = 0;
     }
     strcpy(rdp.RomName, name);
-    ReadSpecialSettings(name);
+    g_settings->ReadGameSettings(name);
     ClearCache();
 
     CheckDRAMSize();
@@ -1291,7 +1290,7 @@ void CALL UpdateScreen(void)
         update_screen_count++;
     }
     uint32_t limit = (g_settings->hacks&hack_Lego) ? 15 : 30;
-    if ((g_settings->frame_buffer&fb_cpu_write_hack) && (update_screen_count > limit) && (rdp.last_bg == 0))
+    if (g_settings->fb_cpu_write_hack_enabled() && (update_screen_count > limit) && (rdp.last_bg == 0))
     {
         WriteTrace(TraceRDP, TraceDebug, "DirectCPUWrite hack!");
         update_screen_count = 0;
@@ -1338,8 +1337,10 @@ static void DrawWholeFrameBufferToScreen()
     fb_info.lr_y = rdp.ci_height - 1;
     fb_info.opaque = 0;
     DrawFrameBufferToScreen(fb_info);
-    if (!(g_settings->frame_buffer & fb_ref))
+    if (!g_settings->fb_ref_enabled())
+    {
         memset(gfx.RDRAM + rdp.cimg, 0, (rdp.ci_width*rdp.ci_height) << rdp.ci_size >> 1);
+    }
 }
 
 static void GetGammaTable()
@@ -1565,11 +1566,15 @@ void newSwapBuffers()
         }
     }
 
-    if (g_settings->frame_buffer & fb_read_back_to_screen)
+    if (g_settings->fb_read_back_to_screen_enabled())
+    {
         DrawWholeFrameBufferToScreen();
+    }
 
-    if (fb_hwfbe_enabled && !(g_settings->hacks&hack_RE2) && !evoodoo)
+    if (g_settings->fb_hwfbe_enabled() && !(g_settings->hacks&hack_RE2) && !evoodoo)
+    {
         grAuxBufferExt(GR_BUFFER_AUXBUFFER);
+    }
     WriteTrace(TraceGlide64, TraceDebug, "BUFFER SWAPPED");
     grBufferSwap(g_settings->vsync);
     if (*gfx.VI_STATUS_REG & 0x08) //gamma correction is used
@@ -1596,23 +1601,14 @@ void newSwapBuffers()
 
     if (g_settings->wireframe || g_settings->buff_clear || (g_settings->hacks&hack_PPL && g_settings->ucode == 6))
     {
-        if (g_settings->hacks&hack_RE2 && fb_depth_render_enabled)
+        if (g_settings->hacks&hack_RE2 && g_settings->fb_depth_render_enabled())
             grDepthMask(FXFALSE);
         else
             grDepthMask(FXTRUE);
         grBufferClear(0, 0, 0xFFFF);
     }
-    /* //let the game to clear the buffers
-    else
-    {
-    grDepthMask (FXTRUE);
-    grColorMask (FXFALSE, FXFALSE);
-    grBufferClear (0, 0, 0xFFFF);
-    grColorMask (FXTRUE, FXTRUE);
-    }
-    */
 
-    if (g_settings->frame_buffer & fb_read_back_to_screen2)
+    if (g_settings->fb_read_back_to_screen2_enabled())
     {
         DrawWholeFrameBufferToScreen();
     }

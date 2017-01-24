@@ -222,7 +222,7 @@ static void fb_settextureimage()
                             rdp.scale_y = 1.0f;
                         }
                     }
-                    else if (!(g_settings->frame_buffer & fb_ignore_aux_copy) && cur_fb.width < rdp.frame_buffers[rdp.main_ci_index].width)
+                    else if (!g_settings->fb_ignore_aux_copy_enabled() && cur_fb.width < rdp.frame_buffers[rdp.main_ci_index].width)
                     {
                         rdp.copy_ci_index = rdp.ci_count - 1;
                         cur_fb.status = ci_aux_copy;
@@ -268,7 +268,7 @@ static void fb_settextureimage()
                 WriteTrace(TraceRDP, TraceDebug, "read_previous_ci = TRUE");
             }
         }
-        else if (fb_hwfbe_enabled && (cur_fb.status == ci_main))
+        else if (g_settings->fb_hwfbe_enabled() && (cur_fb.status == ci_main))
         {
             if ((addr >= rdp.main_ci) && (addr < rdp.main_ci_end)) //addr within main frame buffer
             {
@@ -407,7 +407,7 @@ static void fb_setcolorimage()
     }
     if (rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_unknown) //status of previous fb was not changed - it is useless
     {
-        if (fb_hwfbe_enabled && !(g_settings->frame_buffer & fb_useless_is_useless))
+        if (g_settings->fb_hwfbe_enabled() && !g_settings->fb_useless_is_useless_enabled())
         {
             rdp.frame_buffers[rdp.ci_count - 1].status = ci_aux;
             rdp.frame_buffers[rdp.ci_count - 1].changed = 0;

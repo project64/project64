@@ -246,12 +246,12 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
 
 void DrawDepthImage(const DRAWIMAGE & d)
 {
-    if (!fb_depth_render_enabled)
+    if (!g_settings->fb_depth_render_enabled())
         return;
     if (d.imageH > d.imageW)
         return;
     WriteTrace(TraceRDP, TraceDebug, "Depth image write");
-    if (fb_hwfbe_enabled)
+    if (g_settings->fb_hwfbe_enabled())
     {
         DrawHiresDepthImage(d);
         return;
@@ -728,7 +728,7 @@ static void uc6_bg(bool bg_1cyc)
     DRAWIMAGE d;
     uc6_read_background_data(d, bg_1cyc);
 
-    if (fb_hwfbe_enabled && FindTextureBuffer(d.imagePtr, d.imageW))
+    if (g_settings->fb_hwfbe_enabled() && FindTextureBuffer(d.imagePtr, d.imageW))
     {
         DrawHiresImage(d);
         return;

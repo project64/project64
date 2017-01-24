@@ -15713,7 +15713,7 @@ void Combine()
         aTBuff[rdp.aTBuffTex[1]->tile] = rdp.aTBuffTex[1];
     if (cmb.tex && (aTBuff[0] || aTBuff[1]))
     {
-        if (aTBuff[0] && (g_settings->frame_buffer&fb_read_alpha))
+        if (aTBuff[0] && g_settings->fb_read_alpha_enabled())
         {
             if ((g_settings->hacks&hack_PMario) && aTBuff[0]->width == rdp.ci_width)
                 ;
