@@ -168,7 +168,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_ghq_hirs_let_texartists_fly, "ghq_hirs_let_texartists_fly", 0);
     general_setting(Set_ghq_hirs_dump, "ghq_hirs_dump", 0);
 
-    general_setting(Set_optimize_texrect_default, "optimize_texrect", 1);
+    general_setting(Set_optimize_texrect_default, "optimize_texrect", true);
     general_setting(Set_filtering_default, "filtering", 0);
     general_setting(Set_lodmode_default, "lodmode", 0);
     general_setting(Set_fog_default, "fog", 1);
@@ -176,13 +176,13 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_swapmode_default, "swapmode", 1);
     general_setting(Set_aspect_default, "aspect", 0);
 
-    general_setting(Set_fb_smart_default, "fb_smart", 1);
-    general_setting(Set_fb_hires_default, "fb_hires", 1);
-    general_setting(Set_fb_read_always_default, "fb_read_always", 0);
-    general_setting(Set_read_back_to_screen_default, "read_back_to_screen", 0);
-    general_setting(Set_detect_cpu_write_default, "detect_cpu_write", 0);
-    general_setting(Set_fb_get_info_default, "fb_get_info", 0);
-    general_setting(Set_fb_render_default, "fb_render", 0);
+    general_setting(Set_fb_smart_default, "fb_smart", true);
+    general_setting(Set_fb_hires_default, "fb_hires", true);
+    general_setting(Set_fb_read_always_default, "fb_read_always", false);
+    general_setting(Set_read_back_to_screen_default, "read_back_to_screen", false);
+    general_setting(Set_detect_cpu_write_default, "detect_cpu_write", false);
+    general_setting(Set_fb_get_info_default, "fb_get_info", false);
+    general_setting(Set_fb_render_default, "fb_render", false);
 
     game_setting(Set_alt_tex_size, "alt_tex_size", 0);
     game_setting(Set_use_sts1_only, "use_sts1_only", 0);
@@ -205,10 +205,10 @@ void CSettings::RegisterSettings(void)
     game_setting(Set_old_style_adither, "old_style_adither", 0);
     game_setting(Set_n64_z_scale, "n64_z_scale", 0);
     game_setting_default(Set_optimize_texrect, "optimize_texrect", Set_optimize_texrect_default);
-    game_setting(Set_ignore_aux_copy, "ignore_aux_copy", (unsigned int)-1);
-    game_setting(Set_hires_buf_clear, "hires_buf_clear", 1);
-    game_setting(Set_fb_read_alpha, "fb_read_alpha", 0);
-    game_setting(Set_useless_is_useless, "useless_is_useless", (unsigned int)-1);
+    game_setting(Set_ignore_aux_copy, "ignore_aux_copy", false);
+    game_setting(Set_hires_buf_clear, "hires_buf_clear", true);
+    game_setting(Set_fb_read_alpha, "fb_read_alpha", false);
+    game_setting(Set_useless_is_useless, "useless_is_useless", false);
     game_setting(Set_fb_crc_mode, "fb_crc_mode", 1);
     game_setting_default(Set_filtering, "filtering", Set_filtering_default);
     game_setting_default(Set_fog, "fog", Set_fog_default);
@@ -411,6 +411,22 @@ void CSettings::ReadGameSettings(const char * name)
     g_settings->zmode_compare_less = GetSetting(Set_zmode_compare_less);
     g_settings->old_style_adither = GetSetting(Set_old_style_adither);
     g_settings->n64_z_scale = GetSetting(Set_n64_z_scale);
+    int fb_crc_mode = GetSetting(Set_fb_crc_mode);
+
+    if (fb_crc_mode >= 0) g_settings->fb_crc_mode = (CSettings::FBCRCMODE)fb_crc_mode;
+
+    g_settings->filtering = GetSetting(g_romopen ? Set_filtering : Set_filtering_default);
+    g_settings->fog = GetSetting(g_romopen ? Set_fog : Set_fog_default);
+    g_settings->buff_clear = GetSetting(g_romopen ? Set_buff_clear : Set_buff_clear_default);
+    g_settings->swapmode = GetSetting(g_romopen ? Set_swapmode : Set_swapmode_default);
+    g_settings->aspectmode = GetSetting(g_romopen ? Set_aspect : Set_aspect_default);
+    g_settings->lodmode = GetSetting(g_romopen ? Set_lodmode : Set_lodmode_default);
+#ifdef _WIN32
+    g_settings->res_data = GetSetting(Set_Resolution);
+    if (g_settings->res_data < 0 || g_settings->res_data >= 0x18) g_settings->res_data = 12;
+    g_settings->scr_res_x = g_settings->res_x = resolutions[g_settings->res_data][0];
+    g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
+#endif
 
     //frame buffer
     short fb_Settings[] =
@@ -546,4 +562,3 @@ void WriteSettings(void)
 
     FlushSettings();
 }
-

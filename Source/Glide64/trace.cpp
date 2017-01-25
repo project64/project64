@@ -69,7 +69,7 @@ void SetupTrace(void)
     TraceSetModuleName(TracePNG, "PNG");
     TraceSetModuleName(TraceOGLWrapper, "OGL Wrapper");
 
-    const char * log_dir = g_settings->log_dir();
+    const char * log_dir = g_settings ? g_settings->log_dir() : NULL;
     if (log_dir == NULL || log_dir[0] == '\0')
     {
         return;

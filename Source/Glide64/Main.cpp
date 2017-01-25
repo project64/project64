@@ -263,7 +263,6 @@ void UseUnregisteredSetting(int /*SettingID*/)
 }
 extern int g_width, g_height;
 
-
 GRSTIPPLE grStippleModeExt = NULL;
 GRSTIPPLE grStipplePatternExt = NULL;
 
