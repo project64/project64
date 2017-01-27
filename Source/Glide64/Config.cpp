@@ -426,7 +426,7 @@ public:
 
         if (memcmp(&oldsettings, g_settings, sizeof(oldsettings))) //check that settings were changed
         {
-            WriteSettings();
+            g_settings->WriteSettings();
         }
         m_options_page->UpdateTextureSettings();
         return true;
@@ -623,7 +623,7 @@ public:
         g_settings->UpdateFrameBufferBits(fb_add_bits, fb_remove_bits);
         if (memcmp(&oldsettings, g_settings, sizeof(oldsettings))) //check that settings were changed
         {
-            WriteSettings();
+            g_settings->WriteSettings();
         }
         return true;
     }
@@ -791,7 +791,7 @@ public:
         g_settings->ghq_cache_save = (int)m_cbxSaveTexCache.GetCheck() == BST_CHECKED;
         if (memcmp(&oldsettings, g_settings, sizeof(oldsettings))) //check that settings were changed
         {
-            WriteSettings();
+            g_settings->WriteSettings();
         }
         return true;
     }

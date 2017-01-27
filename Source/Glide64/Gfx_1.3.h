@@ -288,8 +288,6 @@ extern "C" {
 #define GR_STIPPLE_ROTATE	0x2
 #endif
 
-    void WriteSettings(void);
-
     /******************************************************************
     Function: CaptureScreen
     Purpose:  This function dumps the current frame to a file

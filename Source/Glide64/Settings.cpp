@@ -482,7 +482,7 @@ void CSettings::ReadGameSettings(const char * name)
     g_settings->flame_corona = (g_settings->hacks & hack_Zelda) && !fb_depth_render_enabled();
 }
 
-void WriteSettings(void)
+void CSettings::WriteSettings(void)
 {
 #ifdef _WIN32
     SetSetting(Set_Resolution, (int)g_settings->res_data);

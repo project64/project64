@@ -178,6 +178,7 @@ public:
     void UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove);
 
     void ReadGameSettings(const char * name);
+    void WriteSettings(void);
 
 private:
     void ReadSettings();
