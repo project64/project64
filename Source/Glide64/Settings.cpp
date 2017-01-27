@@ -237,6 +237,39 @@ void CSettings::UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove)
     }
 }
 
+void CSettings::UpdateAspectRatio(void)
+{
+    switch (aspectmode)
+    {
+    case 0: //4:3
+        if (scr_res_x >= scr_res_y * 4.0f / 3.0f) {
+            res_y = scr_res_y;
+            res_x = (uint32_t)(res_y * 4.0f / 3.0f);
+        }
+        else
+        {
+            res_x = scr_res_x;
+            res_y = (uint32_t)(res_x / 4.0f * 3.0f);
+        }
+        break;
+    case 1: //16:9
+        if (scr_res_x >= scr_res_y * 16.0f / 9.0f)
+        {
+            res_y = scr_res_y;
+            res_x = (uint32_t)(res_y * 16.0f / 9.0f);
+        }
+        else
+        {
+            res_x = scr_res_x;
+            res_y = (uint32_t)(res_x / 16.0f * 9.0f);
+        }
+        break;
+    default: //stretch or original
+        res_x = scr_res_x;
+        res_y = scr_res_y;
+    }
+}
+
 void CSettings::ReadSettings()
 {
 #ifdef ANDROID

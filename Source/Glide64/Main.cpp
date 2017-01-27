@@ -202,32 +202,7 @@ void _ChangeSize()
 
 void ChangeSize()
 {
-    switch (g_settings->aspectmode)
-    {
-    case 0: //4:3
-        if (g_settings->scr_res_x >= g_settings->scr_res_y * 4.0f / 3.0f) {
-            g_settings->res_y = g_settings->scr_res_y;
-            g_settings->res_x = (uint32_t)(g_settings->res_y * 4.0f / 3.0f);
-        }
-        else {
-            g_settings->res_x = g_settings->scr_res_x;
-            g_settings->res_y = (uint32_t)(g_settings->res_x / 4.0f * 3.0f);
-        }
-        break;
-    case 1: //16:9
-        if (g_settings->scr_res_x >= g_settings->scr_res_y * 16.0f / 9.0f) {
-            g_settings->res_y = g_settings->scr_res_y;
-            g_settings->res_x = (uint32_t)(g_settings->res_y * 16.0f / 9.0f);
-        }
-        else {
-            g_settings->res_x = g_settings->scr_res_x;
-            g_settings->res_y = (uint32_t)(g_settings->res_x / 16.0f * 9.0f);
-        }
-        break;
-    default: //stretch or original
-        g_settings->res_x = g_settings->scr_res_x;
-        g_settings->res_y = g_settings->scr_res_y;
-    }
+    g_settings->UpdateAspectRatio();
     _ChangeSize();
     rdp.offset_x = (g_settings->scr_res_x - g_settings->res_x) / 2.0f;
     float offset_y = (g_settings->scr_res_y - g_settings->res_y) / 2.0f;

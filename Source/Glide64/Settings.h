@@ -179,6 +179,7 @@ public:
 
     void ReadGameSettings(const char * name);
     void WriteSettings(void);
+    void UpdateAspectRatio(void);
 
 private:
     void ReadSettings();
