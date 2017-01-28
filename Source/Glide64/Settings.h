@@ -97,7 +97,6 @@ public:
     int autodetect_ucode;
     int ucode;
     int elogging;
-    int log_clear;
     int filter_cache;
     int unk_as_red;
     int log_unk;
