@@ -53,17 +53,7 @@ uint32_t grWrapperFullScreenResolutionExt(uint32_t *, uint32_t *);
 char ** grQueryResolutionsExt(int32_t*);
 FX_ENTRY void FX_CALL grGetGammaTableExt(FxU32, FxU32*, FxU32*, FxU32*);
 
-FX_ENTRY GrContext_t FX_CALL grSstWinOpenExt(
-#ifndef ANDROID
-    HWND hWnd,
-#endif
-    GrScreenRefresh_t refresh_rate,
-    GrColorFormat_t color_format,
-    GrOriginLocation_t origin_location,
-    GrPixelFormat_t pixelformat,
-    int nColBuffers,
-    int nAuxBuffers
-);
+FX_ENTRY GrContext_t FX_CALL grSstWinOpenExt(GrColorFormat_t color_format, GrOriginLocation_t origin_location, GrPixelFormat_t pixelformat, int nColBuffers, int nAuxBuffers );
 
 //color combiner
 FX_ENTRY void FX_CALL

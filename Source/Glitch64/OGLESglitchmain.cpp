@@ -367,10 +367,10 @@ int isWglExtensionSupported(const char *extension)
 
 #define GrPixelFormat_t int
 
-FX_ENTRY GrContext_t FX_CALL grSstWinOpenExt(GrScreenRefresh_t refresh_rate, GrColorFormat_t color_format, GrOriginLocation_t origin_location, GrPixelFormat_t pixelformat, int nColBuffers, int nAuxBuffers)
+FX_ENTRY GrContext_t FX_CALL grSstWinOpenExt(GrColorFormat_t color_format, GrOriginLocation_t origin_location, GrPixelFormat_t pixelformat, int nColBuffers, int nAuxBuffers)
 {
-    WriteTrace(TraceGlitch, TraceDebug, "refresh_rate: %d, color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
-    return grSstWinOpen(refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
+    WriteTrace(TraceGlitch, TraceDebug, "color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", color_format, origin_location, nColBuffers, nAuxBuffers);
+    return grSstWinOpen(color_format, origin_location, nColBuffers, nAuxBuffers);
 }
 
 #ifdef _WIN32
@@ -380,7 +380,7 @@ FX_ENTRY GrContext_t FX_CALL grSstWinOpenExt(GrScreenRefresh_t refresh_rate, GrC
 # endif
 #endif
 
-FX_ENTRY GrContext_t FX_CALL grSstWinOpen( GrScreenRefresh_t refresh_rate, GrColorFormat_t color_format, GrOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers)
+FX_ENTRY GrContext_t FX_CALL grSstWinOpen( GrColorFormat_t color_format, GrOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers)
 {
     static int show_warning = 1;
 
@@ -392,7 +392,7 @@ FX_ENTRY GrContext_t FX_CALL grSstWinOpen( GrScreenRefresh_t refresh_rate, GrCol
     color_texture = free_texture++;
     depth_texture = free_texture++;
 
-    WriteTrace(TraceGlitch, TraceDebug, "refresh_rate: %d, color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
+    WriteTrace(TraceGlitch, TraceDebug, "color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", color_format, origin_location, nColBuffers, nAuxBuffers);
     WriteTrace(TraceGlitch, TraceDebug, "g_width: %d, g_height: %d fullscreen: %d", g_width, g_height, fullscreen);
 
     //viewport_offset = ((screen_resolution>>2) > 20) ? screen_resolution >> 2 : 20;
@@ -1061,7 +1061,7 @@ grGet(FxU32 pname, FxU32 plength, FxI32 *params)
         if (plength < 4 || params == NULL) return 0;
         if (!nbTextureUnits)
         {
-            grSstWinOpen(0, GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
+            grSstWinOpen(GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
             grSstWinClose(0);
         }
 #ifdef VOODOO1

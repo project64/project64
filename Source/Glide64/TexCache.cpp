@@ -60,9 +60,8 @@ uint8_t *texture_buffer = tex1;
 #include "TexModCI.h"
 #include "CRC.h"
 
-extern int ghq_dmptex_toggle_key;
-
-typedef struct TEXINFO_t {
+typedef struct TEXINFO_t 
+{
     int real_image_width, real_image_height;	// FOR ALIGNMENT PURPOSES ONLY!!!
     int tile_width, tile_height;
     int mask_width, mask_height;
@@ -1581,41 +1580,6 @@ void LoadTex(int id, int tmu)
     {
         if (g_settings->ghq_use)
         {
-            if (!ghqTexInfo.data && ghq_dmptex_toggle_key) {
-                unsigned char *tmpbuf = (unsigned char*)texture;
-                int tmpwidth = real_x;
-                if (texinfo[id].splits > 1) {
-                    int dstpixoffset, srcpixoffset;
-                    int shift;
-                    switch (LOWORD(result) & 0x7fff) { // XXX is there a better way of determining the pixel color depth?
-                    case GR_TEXFMT_ARGB_8888:
-                        shift = 3;
-                        break;
-                    case GR_TEXFMT_ALPHA_INTENSITY_44:
-                    case GR_TEXFMT_ALPHA_8:
-                        shift = 0;
-                        break;
-                    default:
-                        shift = 1;
-                    }
-                    tmpwidth = texinfo[id].real_image_width;
-                    tmpbuf = (unsigned char*)malloc((256 * 256) << 3); // XXX performance overhead
-                    for (int i = 0; i < cache->splitheight; i++) {
-                        dstpixoffset = texinfo[id].real_image_width * i;
-                        srcpixoffset = 256 * i;
-                        for (int k = 0; k < texinfo[id].splits; k++) {
-                            memcpy(tmpbuf + (dstpixoffset << shift), texture + (srcpixoffset << shift), (256 << shift));
-                            dstpixoffset += 256;
-                            srcpixoffset += (256 * cache->splitheight);
-                        }
-                    }
-                }
-                ext_ghq_dmptx(tmpbuf, (int)texinfo[id].real_image_width, (int)texinfo[id].real_image_height, (int)tmpwidth, (unsigned short)LOWORD(result), (unsigned short)((cache->format << 8) | (cache->size)), cache->ricecrc);
-                if (tmpbuf != texture && tmpbuf) {
-                    free(tmpbuf);
-                }
-            }
-
             if (!ghqTexInfo.data)
                 if (!g_settings->ghq_enht_nobg || !rdp.texrecting || (texinfo[id].splits == 1 && texinfo[id].width <= 256))
                     ext_ghq_txfilter((unsigned char*)texture, (int)real_x, (int)real_y, LOWORD(result), (uint64)g64_crc, &ghqTexInfo);

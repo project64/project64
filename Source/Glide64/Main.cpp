@@ -61,6 +61,10 @@
 #include "trace.h"
 #include "ScreenResolution.h"
 
+#ifdef _WIN32
+#include <commctrl.h>
+#endif
+
 #include <stdarg.h>
 
 GFX_INFO gfx;
@@ -74,8 +78,9 @@ int exception = FALSE;
 int evoodoo = 0;
 int ev_fullscreen = 0;
 
+extern int viewport_offset;
+
 #ifdef _WIN32
-#include <commctrl.h>
 HINSTANCE hinstDLL = NULL;
 #endif
 
@@ -86,15 +91,11 @@ int64 perf_next;
 
 uint32_t   region = 0;
 
-// ref rate
-// 60=0x0, 70=0x1, 72=0x2, 75=0x3, 80=0x4, 90=0x5, 100=0x6, 85=0x7, 120=0x8, none=0xff
-
 unsigned int BMASK = 0x7FFFFF;
 // Reality display processor structure
 RDP rdp;
 
 CSettings * g_settings = NULL;
-extern int viewport_offset;
 
 VOODOO voodoo = { 0, 0, 0, 0,
 0, 0, 0, 0,
@@ -666,7 +667,7 @@ int InitGfx()
 
 #ifndef ANDROID
     SetWindowDisplaySize(gfx.hWnd);
-    gfx_context = grSstWinOpen(gfx.hWnd, GR_REFRESH_60Hz, GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1);
+    gfx_context = grSstWinOpen(GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1);
     if (!gfx_context)
     {
 #ifdef _WIN32
@@ -678,7 +679,7 @@ int InitGfx()
         return FALSE;
     }
 #else
-    gfx_context = grSstWinOpen(GR_REFRESH_60Hz, GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1);
+    gfx_context = grSstWinOpen(GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1);
     g_settings->scr_res_x = g_settings->res_x = g_width;
     g_settings->scr_res_y = g_settings->res_y = g_height;
 #endif

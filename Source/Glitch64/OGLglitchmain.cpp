@@ -472,17 +472,14 @@ int isWglExtensionSupported(const char *extension)
 
 FX_ENTRY GrContext_t FX_CALL
 grSstWinOpenExt(
-HWND                 hWnd,
-GrScreenResolution_t screen_resolution,
-GrScreenRefresh_t    refresh_rate,
 GrColorFormat_t      color_format,
 GrOriginLocation_t   origin_location,
 GrPixelFormat_t    /*pixelformat*/,
 int                  nColBuffers,
 int                  nAuxBuffers)
 {
-    WriteTrace(TraceGlitch, TraceDebug, "hWnd: %d, refresh_rate: %d, color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", hWnd, screen_resolution, refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
-    return grSstWinOpen(hWnd, refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
+    WriteTrace(TraceGlitch, TraceDebug, "color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", color_format, origin_location, nColBuffers, nAuxBuffers);
+    return grSstWinOpen(color_format, origin_location, nColBuffers, nAuxBuffers);
 }
 
 #ifdef _WIN32
@@ -495,8 +492,6 @@ extern HWND g_hwnd_win;
 
 FX_ENTRY GrContext_t FX_CALL
 grSstWinOpen(
-HWND                 hWnd,
-GrScreenRefresh_t    refresh_rate,
 GrColorFormat_t      color_format,
 GrOriginLocation_t   origin_location,
 int                  nColBuffers,
@@ -529,7 +524,7 @@ int                  nAuxBuffers)
     fputs("ERROR:  No GLX yet to start GL on [Free]BSD, Linux etc.\n", stderr);
 #endif // _WIN32
 
-    WriteTrace(TraceGlitch, TraceDebug, "hWnd: %d, refresh_rate: %d, color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", hWnd, refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
+    WriteTrace(TraceGlitch, TraceDebug, "color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", color_format, origin_location, nColBuffers, nAuxBuffers);
 
 #ifdef _WIN32
     TMU_SIZE = (config.vram_size - g_width * g_height * 4 * 3) / 2;
@@ -1315,7 +1310,7 @@ grGet(FxU32 pname, FxU32 plength, FxI32 *params)
         if (plength < 4 || params == NULL) return 0;
         if (!nbTextureUnits)
         {
-            grSstWinOpen((unsigned long)NULL, 0, GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
+            grSstWinOpen(GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
             grSstWinClose(0);
         }
 #ifdef VOODOO1
