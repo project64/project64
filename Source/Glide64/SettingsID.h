@@ -13,8 +13,7 @@
 enum
 {
     // General Settings
-    Set_vsync, Set_clock,
-    Set_clock_24_hr, Set_Rotate, Set_texenh_options, Set_hotkeys, Set_wrpVRAM,
+    Set_vsync, Set_Rotate, Set_texenh_options, Set_hotkeys, Set_wrpVRAM,
     Set_wrpFBO, Set_wrpAnisotropic, Set_autodetect_ucode, Set_ucode, Set_wireframe,
     Set_wfmode, Set_logging, Set_log_clear, Set_elogging, Set_run_in_window,
     Set_filter_cache, Set_unk_as_red, Set_log_unk, Set_unk_clear, Set_ghq_fltr,

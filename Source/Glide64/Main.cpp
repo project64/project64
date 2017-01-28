@@ -1579,19 +1579,6 @@ void newSwapBuffers()
     grDepthMask(FXFALSE);
     grCullMode(GR_CULL_DISABLE);
 
-    if (g_settings->clock)
-    {
-        set_message_combiner();
-        if (g_settings->clock_24_hr)
-        {
-            output(956.0f, 0, 1, CDateTime().SetToNow().Format("%H:%M:%S").c_str(), 0);
-        }
-        else
-        {
-            output(930.0f, 0, 1, CDateTime().SetToNow().Format("%I:%M:%S %p").c_str(), 0);
-        }
-    }
-
     if (capture_screen)
     {
         CPath path(capture_path);

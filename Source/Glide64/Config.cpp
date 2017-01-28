@@ -308,8 +308,6 @@ public:
         COMMAND_HANDLER_EX(IDC_CMB_WINDOW_RES, CBN_SELCHANGE, ItemChanged)
         COMMAND_HANDLER_EX(IDC_CMB_FS_RESOLUTION, CBN_SELCHANGE, ItemChanged)
         COMMAND_HANDLER_EX(IDC_CHK_VERTICAL_SYNC, BN_CLICKED, ItemChanged)
-        COMMAND_HANDLER_EX(IDC_CHK_CLOCK_ENABLED, BN_CLICKED, ItemChanged)
-        COMMAND_HANDLER_EX(IDC_CHK_CLOCK_24, BN_CLICKED, ItemChanged)
         COMMAND_HANDLER_EX(IDC_CBXANISOTROPIC, BN_CLICKED, ItemChanged)
         COMMAND_HANDLER_EX(IDC_CHK_SHOW_TEXTURE_ENHANCEMENT, BN_CLICKED, ItemChanged)
         COMMAND_HANDLER_EX(IDC_CHK_AUTODETECT_VRAM, BN_CLICKED, ItemChanged)
@@ -357,14 +355,6 @@ public:
         m_cbxTextureSettings.Attach(GetDlgItem(IDC_CHK_SHOW_TEXTURE_ENHANCEMENT));
         m_cbxTextureSettings.SetCheck(g_settings->texenh_options ? BST_CHECKED : BST_UNCHECKED);
 
-        m_cbxClockEnabled.Attach(GetDlgItem(IDC_CHK_CLOCK_ENABLED));
-        m_cbxClockEnabled.SetCheck(g_settings->clock > 0 ? BST_CHECKED : BST_UNCHECKED);
-        TTSetTxt(IDC_CHK_CLOCK_ENABLED, "Clock enabled:\n\nThis option will put a clock in the lower right corner of the screen, showing the current time.\n\n[Recommended: your preference]");
-
-        m_cbxClock24.Attach(GetDlgItem(IDC_CHK_CLOCK_24));
-        m_cbxClock24.SetCheck(g_settings->clock_24_hr > 0 ? BST_CHECKED : BST_UNCHECKED);
-        TTSetTxt(IDC_CHK_CLOCK_24, "Display hours as 24-hour clock.\n\n[Recommended: your preference]");
-
         m_cmbFSResolution.Attach(GetDlgItem(IDC_CMB_FS_RESOLUTION));
         int32_t size = 0;
         char ** aRes = grQueryResolutionsExt(&size);
@@ -405,8 +395,6 @@ public:
         g_settings->res_data = m_WindowRes.GetCurSel();
         g_settings->vsync = m_cbxVSync.GetCheck() == BST_CHECKED;
         g_settings->texenh_options = m_cbxTextureSettings.GetCheck() == BST_CHECKED;
-        g_settings->clock = m_cbxClockEnabled.GetCheck() == BST_CHECKED;
-        g_settings->clock_24_hr = m_cbxClock24.GetCheck() == BST_CHECKED;
         g_settings->wrpResolution = m_cmbFSResolution.GetCurSel();
         g_settings->wrpAnisotropic = m_cbxAnisotropic.GetCheck() == BST_CHECKED;
         g_settings->wrpVRAM = m_cbxVRAM.GetCheck() == BST_CHECKED ? 0 : atoi(spinVRAM);
@@ -441,7 +429,6 @@ private:
     CComboBox m_WindowRes, m_cmbFSResolution;
     CButton m_cbxVSync;
     CButton m_cbxTextureSettings;
-    CButton m_cbxClockEnabled, m_cbxClock24;
     CButton m_cbxAnisotropic;
     CButton m_cbxFBO;
     CButton m_cbxVRAM;

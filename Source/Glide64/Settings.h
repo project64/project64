@@ -35,8 +35,6 @@ public:
     int texenh_options;
     int vsync;
 
-    int clock;
-    int clock_24_hr;
     int rotate;
 
     int filtering;

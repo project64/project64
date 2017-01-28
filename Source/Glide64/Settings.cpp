@@ -20,8 +20,6 @@ advanced_options(0),
 texenh_options(0),
 vsync(0),
 
-clock(0),
-clock_24_hr(0),
 rotate(0),
 
 filtering(0),
@@ -122,8 +120,6 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_wrpResolution, "wrpResolution", GetCurrentResIndex());
 #endif
     general_setting(Set_vsync, "vsync", 1);
-    general_setting(Set_clock, "clock", 0);
-    general_setting(Set_clock_24_hr, "clock_24_hr", 0);
     general_setting(Set_texenh_options, "texenh_options", 0);
     general_setting(Set_hotkeys, "hotkeys", 1);
     general_setting(Set_wrpVRAM, "wrpVRAM", 0);
@@ -278,8 +274,6 @@ void CSettings::ReadSettings()
     this->wrpResolution = GetSetting(Set_wrpResolution);
 #endif
     this->vsync = GetSetting(Set_vsync);
-    this->clock = GetSetting(Set_clock);
-    this->clock_24_hr = GetSetting(Set_clock_24_hr);
     this->rotate = GetSetting(Set_Rotate);
     this->advanced_options = Set_basic_mode ? !GetSystemSetting(Set_basic_mode) : 0;
     this->texenh_options = GetSetting(Set_texenh_options);
@@ -514,8 +508,6 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_wrpResolution, g_settings->wrpResolution);
 #endif
     SetSetting(Set_vsync, g_settings->vsync);
-    SetSetting(Set_clock, g_settings->clock);
-    SetSetting(Set_clock_24_hr, g_settings->clock_24_hr);
     SetSetting(Set_Rotate, g_settings->rotate);
     //SetSetting(Set_advanced_options,g_settings->advanced_options);
     SetSetting(Set_texenh_options, g_settings->texenh_options);
