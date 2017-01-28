@@ -171,6 +171,7 @@ Status=Compatible
 Plugin Note=[Glide64] framebuffer:screen
 Culling=1
 Emulate Clear=1
+Linking=Off
 
 [1FBAF161-2C1C54F1-C:41]
 Good Name=1080 Snowboarding (JU) (M2)
@@ -182,6 +183,7 @@ SMM-Cache=0
 SMM-PI DMA=0
 SMM-TLB=0
 Self Texture=1
+Linking=Off
 
 [ABA51D09-C668BAD9-C:58]
 Good Name=40 Winks (E) (M3) (Beta)

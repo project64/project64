@@ -30,4 +30,5 @@ private:
     uint8_t m_Mempaks[4][128 * 256]; /* [CONTROLLERS][PAGES][BYTES_PER_PAGE] */
     CFile m_MempakHandle[4];
     bool m_Formatted[4];
+    bool m_SaveExists[4];
 };

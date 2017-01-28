@@ -272,14 +272,23 @@ void CSettingTypeApplication::Save(int /*Index*/, uint32_t Value)
     }
 }
 
-void CSettingTypeApplication::Save(int /*Index*/, const stdstr & Value)
+void CSettingTypeApplication::Save(int Index, const stdstr & Value)
 {
-    m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), Value.c_str());
+    Save(Index, Value.c_str());
 }
 
 void CSettingTypeApplication::Save(int /*Index*/, const char * Value)
 {
-    m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), Value);
+    if (m_DefaultSetting != Default_None &&
+        ((m_DefaultSetting == Default_Constant && strcmp(m_DefaultStr,Value) == 0) ||
+        (m_DefaultSetting != Default_Constant && strcmp(g_Settings->LoadStringVal(m_DefaultSetting).c_str(),Value) == 0)))
+    {
+        m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), NULL);
+    }
+    else
+    {
+        m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), Value);
+    }
 }
 
 stdstr CSettingTypeApplication::FixSectionName(const char * Section)
