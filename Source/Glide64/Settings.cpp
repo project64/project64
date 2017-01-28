@@ -29,7 +29,6 @@ swapmode(0),
 lodmode(0),
 aspectmode(0),
     m_frame_buffer(0),
-use_hotkeys(0),
 //Texture filtering options
 texture_dir(""),
 ghq_fltr(0),
@@ -121,7 +120,6 @@ void CSettings::RegisterSettings(void)
 #endif
     general_setting(Set_vsync, "vsync", 1);
     general_setting(Set_texenh_options, "texenh_options", 0);
-    general_setting(Set_hotkeys, "hotkeys", 1);
     general_setting(Set_wrpVRAM, "wrpVRAM", 0);
 #ifndef ANDROID
     general_setting(Set_wrpFBO, "wrpFBO", 0);
@@ -277,7 +275,6 @@ void CSettings::ReadSettings()
     this->rotate = GetSetting(Set_Rotate);
     this->advanced_options = Set_basic_mode ? !GetSystemSetting(Set_basic_mode) : 0;
     this->texenh_options = GetSetting(Set_texenh_options);
-    this->use_hotkeys = GetSetting(Set_hotkeys);
 
     this->wrpVRAM = GetSetting(Set_wrpVRAM);
     this->wrpFBO = GetSetting(Set_wrpFBO);

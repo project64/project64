@@ -43,7 +43,6 @@ public:
     int swapmode;
     int lodmode;
     int aspectmode;
-    int use_hotkeys;
 
 
     enum FBCRCMODE 
