@@ -15,7 +15,6 @@ res_y(480),
 scr_res_y(480),
 #ifndef ANDROID
 res_data(GR_RESOLUTION_640x480),
-res_data_org(GR_RESOLUTION_640x480),
 #endif
 advanced_options(0),
 texenh_options(0),
@@ -278,8 +277,6 @@ void CSettings::ReadSettings()
 #else
     this->res_data = (uint32_t)GetSetting(Set_Resolution);
     if (this->res_data >= 24) this->res_data = 12;
-    this->scr_res_x = this->res_x = resolutions[this->res_data][0];
-    this->scr_res_y = this->res_y = resolutions[this->res_data][1];
     this->wrpResolution = GetSetting(Set_wrpResolution);
 #endif
     this->vsync = GetSetting(Set_vsync);
@@ -457,8 +454,6 @@ void CSettings::ReadGameSettings(const char * name)
 #ifdef _WIN32
     g_settings->res_data = GetSetting(Set_Resolution);
     if (g_settings->res_data < 0 || g_settings->res_data >= 0x18) g_settings->res_data = 12;
-    g_settings->scr_res_x = g_settings->res_x = resolutions[g_settings->res_data][0];
-    g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
 #endif
 
     //frame buffer

@@ -130,6 +130,7 @@
     <ClInclude Include="trace.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SettingsID.h" />
+    <ClInclude Include="ScreenResolution.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CRC.cpp">
@@ -153,6 +154,7 @@
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="trace.cpp" />
     <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="ScreenResolution.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="gpl.txt">

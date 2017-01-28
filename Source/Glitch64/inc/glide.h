@@ -627,7 +627,7 @@ FX_ENTRY GrContext_t FX_CALL grSstWinOpen(
 #ifdef ANDROID
     GrScreenRefresh_t refresh_rate, GrColorFormat_t color_format, GrOriginLocation_t origin_location, int  nColBuffers, int nAuxBuffers
 #else
-    HWND hWnd, GrScreenResolution_t screen_resolution, GrScreenRefresh_t refresh_rate, GrColorFormat_t color_format, GrOriginLocation_t origin_location, int  nColBuffers, int nAuxBuffers
+    HWND hWnd, GrScreenRefresh_t refresh_rate, GrColorFormat_t color_format, GrOriginLocation_t origin_location, int  nColBuffers, int nAuxBuffers
 #endif
 );
 

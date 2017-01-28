@@ -59,6 +59,7 @@
 #include "FBtoScreen.h"
 #include "DepthBufferRender.h"
 #include "trace.h"
+#include "ScreenResolution.h"
 
 #include <stdarg.h>
 int  ghq_dmptex_toggle_key = 0;
@@ -75,6 +76,7 @@ int evoodoo = 0;
 int ev_fullscreen = 0;
 
 #ifdef _WIN32
+#include <commctrl.h>
 HINSTANCE hinstDLL = NULL;
 #endif
 
@@ -85,36 +87,6 @@ int64 perf_next;
 
 uint32_t   region = 0;
 
-// Resolutions, MUST be in the correct order (SST1VID.H)
-uint32_t resolutions[0x18][2] = {
-    { 320, 200 },
-    { 320, 240 },
-    { 400, 256 },
-    { 512, 384 },
-    { 640, 200 },
-    { 640, 350 },
-    { 640, 400 },
-    { 640, 480 },
-    { 800, 600 },
-    { 960, 720 },
-    { 856, 480 },
-    { 512, 256 },
-    { 1024, 768 },
-    { 1280, 1024 },
-    { 1600, 1200 },
-    { 400, 300 },
-
-    // 0x10
-    { 1152, 864 },
-    { 1280, 960 },
-    { 1600, 1024 },
-    { 1792, 1344 },
-    { 1856, 1392 },
-    { 1920, 1440 },
-    { 2048, 1536 },
-    { 2048, 2048 }
-};
-
 // ref rate
 // 60=0x0, 70=0x1, 72=0x2, 75=0x3, 80=0x4, 90=0x5, 100=0x6, 85=0x7, 120=0x8, none=0xff
 
@@ -123,6 +95,7 @@ unsigned int BMASK = 0x7FFFFF;
 RDP rdp;
 
 CSettings * g_settings = NULL;
+extern int viewport_offset;
 
 VOODOO voodoo = { 0, 0, 0, 0,
 0, 0, 0, 0,
@@ -138,6 +111,14 @@ uint32_t   offset_texbuf1 = 0;
 
 int    capture_screen = 0;
 std::string capture_path;
+
+#ifdef _WIN32
+HWND g_hwnd_win = NULL;
+static RECT g_windowedRect = { 0 };
+static HMENU g_windowedMenu = 0;
+static unsigned long g_windowedExStyle, g_windowedStyle;
+bool g_fullscreen;
+#endif // _WIN32
 
 void _ChangeSize()
 {
@@ -215,19 +196,11 @@ void ChangeSize()
         rdp.offset_x = (g_settings->scr_res_x - rdp.vi_width) / 2.0f;
         rdp.offset_y = (g_settings->scr_res_y - rdp.vi_height) / 2.0f;
     }
-    //	g_settings->res_x = g_settings->scr_res_x;
-    //	g_settings->res_y = g_settings->scr_res_y;
 }
 
 void ConfigWrapper()
 {
-    grConfigWrapperExt(
-#ifdef ANDROID
-        g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
-#else
-        g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
-#endif
-    );
+    grConfigWrapperExt(g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic);
 }
 
 void UseUnregisteredSetting(int /*SettingID*/)
@@ -403,6 +376,233 @@ void DisplayLoadProgress(const wchar_t *format, ...)
     grBufferClear(0, 0, 0xFFFF);
 }
 
+#ifdef _WIN32
+void SetWindowDisplaySize(HWND hWnd)
+{
+    if ((HWND)hWnd == NULL) hWnd = GetActiveWindow();
+    g_hwnd_win = (HWND)hWnd;
+
+    // Resolutions, MUST be in the correct order (SST1VID.H)
+    uint32_t resolutions[0x18][2] = {
+        { 320, 200 },
+        { 320, 240 },
+        { 400, 256 },
+        { 512, 384 },
+        { 640, 200 },
+        { 640, 350 },
+        { 640, 400 },
+        { 640, 480 },
+        { 800, 600 },
+        { 960, 720 },
+        { 856, 480 },
+        { 512, 256 },
+        { 1024, 768 },
+        { 1280, 1024 },
+        { 1600, 1200 },
+        { 400, 300 },
+
+        // 0x10
+        { 1152, 864 },
+        { 1280, 960 },
+        { 1600, 1024 },
+        { 1792, 1344 },
+        { 1856, 1392 },
+        { 1920, 1440 },
+        { 2048, 1536 },
+        { 2048, 2048 }
+    };
+
+#ifndef ANDROID
+    uint32_t screen_resolution = g_settings->res_data;
+    if (ev_fullscreen)
+    {
+        uint32_t _width, _height = 0;
+        screen_resolution = grWrapperFullScreenResolutionExt(&_width, &_height);
+        g_settings->scr_res_x = g_settings->res_x = _width;
+        g_settings->scr_res_y = g_settings->res_y = _height;
+    }
+    else if (evoodoo)
+    {
+        g_settings->scr_res_x = g_settings->res_x = resolutions[g_settings->res_data][0];
+        g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
+        screen_resolution |= 0x80000000;
+    }
+#endif
+
+    if ((HWND)hWnd == NULL) hWnd = GetActiveWindow();
+    g_width = g_height = 0;
+    if (screen_resolution & 0x80000000)
+    {
+        switch (screen_resolution & ~0x80000000)
+        {
+        case GR_RESOLUTION_320x200:
+            g_width = 320;
+            g_height = 200;
+            break;
+        case GR_RESOLUTION_320x240:
+            g_width = 320;
+            g_height = 240;
+            break;
+        case GR_RESOLUTION_400x256:
+            g_width = 400;
+            g_height = 256;
+            break;
+        case GR_RESOLUTION_512x384:
+            g_width = 512;
+            g_height = 384;
+            break;
+        case GR_RESOLUTION_640x200:
+            g_width = 640;
+            g_height = 200;
+            break;
+        case GR_RESOLUTION_640x350:
+            g_width = 640;
+            g_height = 350;
+            break;
+        case GR_RESOLUTION_640x400:
+            g_width = 640;
+            g_height = 400;
+            break;
+        case GR_RESOLUTION_640x480:
+            g_width = 640;
+            g_height = 480;
+            break;
+        case GR_RESOLUTION_800x600:
+            g_width = 800;
+            g_height = 600;
+            break;
+        case GR_RESOLUTION_960x720:
+            g_width = 960;
+            g_height = 720;
+            break;
+        case GR_RESOLUTION_856x480:
+            g_width = 856;
+            g_height = 480;
+            break;
+        case GR_RESOLUTION_512x256:
+            g_width = 512;
+            g_height = 256;
+            break;
+        case GR_RESOLUTION_1024x768:
+            g_width = 1024;
+            g_height = 768;
+            break;
+        case GR_RESOLUTION_1280x1024:
+            g_width = 1280;
+            g_height = 1024;
+            break;
+        case GR_RESOLUTION_1600x1200:
+            g_width = 1600;
+            g_height = 1200;
+            break;
+        case GR_RESOLUTION_400x300:
+            g_width = 400;
+            g_height = 300;
+            break;
+        case GR_RESOLUTION_1152x864:
+            g_width = 1152;
+            g_height = 864;
+            break;
+        case GR_RESOLUTION_1280x960:
+            g_width = 1280;
+            g_height = 960;
+            break;
+        case GR_RESOLUTION_1600x1024:
+            g_width = 1600;
+            g_height = 1024;
+            break;
+        case GR_RESOLUTION_1792x1344:
+            g_width = 1792;
+            g_height = 1344;
+            break;
+        case GR_RESOLUTION_1856x1392:
+            g_width = 1856;
+            g_height = 1392;
+            break;
+        case GR_RESOLUTION_1920x1440:
+            g_width = 1920;
+            g_height = 1440;
+            break;
+        case GR_RESOLUTION_2048x1536:
+            g_width = 2048;
+            g_height = 1536;
+            break;
+        case GR_RESOLUTION_2048x2048:
+            g_width = 2048;
+            g_height = 2048;
+            break;
+        default:
+            WriteTrace(TraceGlitch, TraceWarning, "unknown SstWinOpen resolution : %x", screen_resolution);
+        }
+    }
+    
+    if (screen_resolution & 0x80000000)
+    {
+        RECT clientRect, toolbarRect, statusbarRect;
+        ZeroMemory(&g_windowedRect, sizeof(RECT));
+        ZeroMemory(&clientRect, sizeof(RECT));
+        ZeroMemory(&toolbarRect, sizeof(RECT));
+        ZeroMemory(&statusbarRect, sizeof(RECT));
+        HWND hToolBar = FindWindowEx(hWnd, NULL, REBARCLASSNAME, NULL);
+        HWND hStatusBar = FindWindowEx(hWnd, NULL, STATUSCLASSNAME, NULL);
+        if (hStatusBar == NULL) hStatusBar = FindWindowEx(hWnd, NULL, "msctls_statusbar32", NULL); // 1964
+        if (hToolBar != NULL) GetWindowRect(hToolBar, &toolbarRect);
+        if (hStatusBar != NULL) GetWindowRect(hStatusBar, &statusbarRect);
+        viewport_offset = statusbarRect.bottom - statusbarRect.top;
+        GetWindowRect(hWnd, &g_windowedRect);
+        GetClientRect(hWnd, &clientRect);
+        g_windowedRect.right += (g_width - (clientRect.right - clientRect.left));
+        g_windowedRect.bottom += (g_height + (toolbarRect.bottom - toolbarRect.top) + (statusbarRect.bottom - statusbarRect.top) - (clientRect.bottom - clientRect.top));
+        SetWindowPos(hWnd, NULL, 0, 0, g_windowedRect.right - g_windowedRect.left,
+            g_windowedRect.bottom - g_windowedRect.top, SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
+
+        g_fullscreen = false;
+    }
+    else
+    {
+        g_width = GetFullScreenResWidth(screen_resolution);
+        g_height = GetFullScreenResHeight(screen_resolution);
+        ZeroMemory(&g_windowedRect, sizeof(RECT));
+        GetWindowRect(hWnd, &g_windowedRect);
+
+        g_windowedExStyle = GetWindowLong(hWnd, GWL_EXSTYLE);
+        g_windowedStyle = GetWindowLong(hWnd, GWL_STYLE);
+
+        // primary monitor only
+        if (!EnterFullScreen(screen_resolution))
+        {
+            WriteTrace(TraceGlitch, TraceWarning, "can't change to fullscreen mode");
+        }
+
+        g_windowedMenu = GetMenu(hWnd);
+        if (g_windowedMenu) SetMenu(hWnd, NULL);
+
+        HWND hStatusBar = FindWindowEx(hWnd, NULL, "msctls_statusbar32", NULL); // 1964
+        if (hStatusBar) ShowWindow(hStatusBar, SW_HIDE);
+
+        SetWindowLong(hWnd, GWL_STYLE, 0);
+        SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_APPWINDOW | WS_EX_TOPMOST);
+        SetWindowPos(hWnd, NULL, 0, 0, g_width, g_height, SWP_NOACTIVATE | SWP_NOZORDER | SWP_SHOWWINDOW);
+
+        viewport_offset = 0;
+        g_fullscreen = true;
+    }
+}
+
+void ExitFullScreen(void)
+{
+    if (g_fullscreen)
+    {
+        ChangeDisplaySettings(NULL, 0);
+        SetWindowPos(g_hwnd_win, NULL, g_windowedRect.left, g_windowedRect.top, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+        SetWindowLong(g_hwnd_win, GWL_STYLE, g_windowedStyle);
+        SetWindowLong(g_hwnd_win, GWL_EXSTYLE, g_windowedExStyle);
+        if (g_windowedMenu) SetMenu(g_hwnd_win, g_windowedMenu);
+        g_fullscreen = false;
+    }
+}
+
+#endif
 int InitGfx()
 {
     if (GfxInitDone)
@@ -466,24 +666,8 @@ int InitGfx()
     //*/
 
 #ifndef ANDROID
-    uint32_t res_data = g_settings->res_data;
-    if (ev_fullscreen)
-    {
-        uint32_t _width, _height = 0;
-        g_settings->res_data = grWrapperFullScreenResolutionExt((FxU32*)&_width, (FxU32*)&_height);
-        g_settings->scr_res_x = g_settings->res_x = _width;
-        g_settings->scr_res_y = g_settings->res_y = _height;
-        res_data = g_settings->res_data;
-    }
-    else if (evoodoo)
-    {
-        g_settings->res_data = g_settings->res_data_org;
-        g_settings->scr_res_x = g_settings->res_x = resolutions[g_settings->res_data][0];
-        g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
-        res_data = g_settings->res_data | 0x80000000;
-    }
-
-    gfx_context = grSstWinOpen(gfx.hWnd, res_data, GR_REFRESH_60Hz, GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1);
+    SetWindowDisplaySize(gfx.hWnd);
+    gfx_context = grSstWinOpen(gfx.hWnd, GR_REFRESH_60Hz, GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1);
     if (!gfx_context)
     {
 #ifdef _WIN32
@@ -502,15 +686,6 @@ int InitGfx()
 
     GfxInitDone = TRUE;
     to_fullscreen = FALSE;
-
-#ifdef __WINDOWS__
-    if (ev_fullscreen)
-    {
-        if (gfx.hStatusBar)
-            ShowWindow(gfx.hStatusBar, SW_HIDE);
-        ShowCursor(FALSE);
-    }
-#endif
 
     // get the # of TMUs available
     grGet(GR_NUM_TMU, 4, (FxI32*)&voodoo.num_tmu);
@@ -825,24 +1000,11 @@ EXPORT void CALL ChangeWindow(void)
         {
             to_fullscreen = TRUE;
             ev_fullscreen = TRUE;
-#ifdef __WINDOWS__
-            if (gfx.hStatusBar)
-                ShowWindow(gfx.hStatusBar, SW_HIDE);
-            ShowCursor(FALSE);
-#endif
         }
         else
         {
             ev_fullscreen = FALSE;
             InitGfx();
-#ifdef __WINDOWS__
-            ShowCursor(TRUE);
-            if (gfx.hStatusBar)
-            {
-                ShowWindow(gfx.hStatusBar, SW_SHOW);
-            }
-            SetWindowLongPtr(gfx.hWnd, GWLP_WNDPROC, (LONG_PTR)oldWndProc);
-#endif
         }
     }
     else
@@ -853,24 +1015,10 @@ EXPORT void CALL ChangeWindow(void)
         if (!GfxInitDone)
         {
             to_fullscreen = TRUE;
-#ifdef __WINDOWS__
-            if (gfx.hStatusBar)
-                ShowWindow(gfx.hStatusBar, SW_HIDE);
-            ShowCursor(FALSE);
-#endif
         }
         else
         {
             ReleaseGfx();
-#ifdef __WINDOWS__
-            ShowCursor(TRUE);
-            if (gfx.hStatusBar)
-                ShowWindow(gfx.hStatusBar, SW_SHOW);
-            // SetWindowLong fixes the following Windows XP Banshee issues:
-            // 1964 crash error when loading another rom.
-            // All N64 emu's minimize, restore crashes.
-            SetWindowLongPtr(gfx.hWnd, GWLP_WNDPROC, (LONG_PTR)oldWndProc);
-#endif
         }
     }
 }
@@ -987,9 +1135,6 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     g_settings->ReadGameSettings(name);
     ZLUT_init();
     ConfigWrapper();
-#ifndef ANDROID
-    g_settings->res_data_org = g_settings->res_data;
-#endif
 
     gfx = Gfx_Info;
 
@@ -1000,14 +1145,7 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     CountCombine();
     ZLUT_init();
 
-    grConfigWrapperExt(
-#ifdef ANDROID
-        g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
-#else
-        g_settings->wrpResolution, g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic
-#endif
-    );
-
+    grConfigWrapperExt(g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic);
     grGlideInit();
     const char *extensions = grGetString(GR_EXTENSION);
     grGlideShutdown();

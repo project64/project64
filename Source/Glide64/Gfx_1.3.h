@@ -142,7 +142,6 @@ extern "C" {
 #define DMASK	0x1FFFFF
 
     extern uint32_t update_screen_count;
-    extern uint32_t resolutions[0x18][2];
 
     int CheckKeyPressed(int key, int mask);
 

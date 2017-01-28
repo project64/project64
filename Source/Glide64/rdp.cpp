@@ -547,11 +547,6 @@ void GoToFullScreen()
         WriteTrace(TraceGlide64, TraceError, "tInitGfx failed");
         return;
     }
-#ifdef __WINDOWS__
-    if (gfx.hStatusBar)
-        ShowWindow(gfx.hStatusBar, SW_HIDE);
-    ShowCursor(FALSE);
-#endif
 }
 
 /******************************************************************
@@ -742,7 +737,7 @@ EXPORT void CALL ProcessDList(void)
 #ifdef CATCH_EXCEPTIONS
     }
     catch (...) {
-        if (fullscreen)
+        if (g_fullscreen)
         {
             ReleaseGfx ();
             rdp_reset();

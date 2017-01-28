@@ -22,7 +22,6 @@
 
 #ifdef _WIN32
 #include <windows.h>
-#include <commctrl.h>
 #else
 #include <stdint.h>
 #include <stdarg.h>
@@ -173,14 +172,8 @@ int UMAmode = 0; //support for VSA-100 UMA mode;
 static HDC hDC = NULL;
 static HGLRC hGLRC = NULL;
 static HWND hToolBar = NULL;
-static HWND hwnd_win = NULL;
-static unsigned long windowedExStyle, windowedStyle;
 #endif // _WIN32
 static unsigned long fullscreen;
-#ifdef _WIN32
-static RECT windowedRect;
-static HMENU windowedMenu;
-#endif // _WIN32
 
 static int savedWidtho, savedHeighto;
 static int savedWidth, savedHeight;
@@ -670,18 +663,7 @@ grSstWinClose(GrContext_t context)
         wglDeleteContext(hGLRC);
         hGLRC = NULL;
     }
-    if (fullscreen)
-    {
-        ChangeDisplaySettings(NULL, 0);
-        SetWindowPos(hwnd_win, NULL,
-            windowedRect.left, windowedRect.top,
-            0, 0,
-            SWP_NOZORDER | SWP_NOSIZE);
-        SetWindowLong(hwnd_win, GWL_STYLE, windowedStyle);
-        SetWindowLong(hwnd_win, GWL_EXSTYLE, windowedExStyle);
-        if (windowedMenu) SetMenu(hwnd_win, windowedMenu);
-        fullscreen = 0;
-    }
+    ExitFullScreen();
 #endif
     return FXTRUE;
 }
@@ -1052,8 +1034,6 @@ grGetProcAddress(char *procName)
         return (GrProc)grTextureAuxBufferExt;
     if (!strcmp(procName, "grAuxBufferExt"))
         return (GrProc)grAuxBufferExt;
-    if (!strcmp(procName, "grWrapperFullScreenResolutionExt"))
-        return (GrProc)grWrapperFullScreenResolutionExt;
     if (!strcmp(procName, "grConfigWrapperExt"))
         return (GrProc)grConfigWrapperExt;
     if (!strcmp(procName, "grKeyPressedExt"))
@@ -1960,16 +1940,6 @@ grQueryResolutionsExt(int32_t * Size)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
     return 0;
- }
-
-FX_ENTRY GrScreenResolution_t FX_CALL grWrapperFullScreenResolutionExt(FxU32* width, FxU32* height)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "-");
-    return 0;
-    /*
-      g_FullScreenResolutions.getResolution(config.res, width, height);
-      return config.res;
-      */
 }
 
 FX_ENTRY FxBool FX_CALL grKeyPressedExt(FxU32 key)
@@ -1977,7 +1947,7 @@ FX_ENTRY FxBool FX_CALL grKeyPressedExt(FxU32 key)
     return 0;
 }
 
-FX_ENTRY void FX_CALL grConfigWrapperExt(FxI32 vram, FxBool fbo, FxBool aniso)
+void grConfigWrapperExt(FxI32 vram, FxBool fbo, FxBool aniso)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
     config.vram_size = vram;
@@ -2230,18 +2200,6 @@ GrTexInfo        *info)
 FX_ENTRY void FX_CALL
 grLoadGammaTable(FxU32 nentries, FxU32 *red, FxU32 *green, FxU32 *blue)
 {
-    //TODO?
-    /*LOG("grLoadGammaTable\r\n");
-    if (!fullscreen)
-    return;
-    FxU16 aGammaRamp[3][256];
-    for (int i = 0; i < 256; i++)
-    {
-    aGammaRamp[0][i] = (FxU16)((red[i] << 8) & 0xFFFF);
-    aGammaRamp[1][i] = (FxU16)((green[i] << 8) & 0xFFFF);
-    aGammaRamp[2][i] = (FxU16)((blue[i] << 8) & 0xFFFF);
-    }
-    CorrectGamma(aGammaRamp);*/
 }
 
 FX_ENTRY void FX_CALL

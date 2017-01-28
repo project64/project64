@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 class CSettings
 {
@@ -27,7 +28,7 @@ public:
     uint32_t res_x, scr_res_x;
     uint32_t res_y, scr_res_y;
 #ifndef ANDROID
-    uint32_t res_data, res_data_org;
+    uint32_t res_data;
 #endif
 
     int advanced_options;

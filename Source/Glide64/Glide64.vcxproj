@@ -48,6 +48,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Gfx_1.3.h" />
+    <ClInclude Include="ScreenResolution.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SettingsID.h" />
     <ClInclude Include="trace.h" />
@@ -96,6 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CRC.cpp" />
+    <ClCompile Include="ScreenResolution.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="TexCache.cpp" />
     <ClCompile Include="Config.cpp" />

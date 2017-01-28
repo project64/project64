@@ -411,9 +411,6 @@ public:
         m_spinVRAM.GetWindowText(spinVRAM, sizeof(spinVRAM));
         CSettings oldsettings = *g_settings;
         g_settings->res_data = m_WindowRes.GetCurSel();
-        g_settings->res_data_org = g_settings->res_data;
-        g_settings->scr_res_x = g_settings->res_x = resolutions[g_settings->res_data][0];
-        g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
         g_settings->vsync = m_cbxVSync.GetCheck() == BST_CHECKED;
         g_settings->ssformat = m_cmbScreenShotFormat.GetCurSel();
         g_settings->texenh_options = m_cbxTextureSettings.GetCheck() == BST_CHECKED;
@@ -877,7 +874,7 @@ void CALL DllConfig(HWND hParent)
 
     if (g_romopen)
     {
-        if (evoodoo)// && fullscreen && !ev_fullscreen)
+        if (evoodoo)// && g_fullscreen && !ev_fullscreen)
         {
             ReleaseGfx();
             rdp_reset();
