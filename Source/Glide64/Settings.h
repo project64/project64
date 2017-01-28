@@ -33,7 +33,6 @@ public:
 
     int advanced_options;
     int texenh_options;
-    int ssformat;
     int vsync;
 
     int clock;

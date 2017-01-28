@@ -354,14 +354,6 @@ public:
         m_cbxVSync.SetCheck(g_settings->vsync ? BST_CHECKED : BST_UNCHECKED);
         TTSetTxt(IDC_CHK_VERTICAL_SYNC, "Vertical sync:\n\nThis option will enable the vertical sync, which will prevent tearing.\nNote: this option will ONLY have effect if vsync is set to \"Software Controlled\".");
 
-        m_cmbScreenShotFormat.Attach(GetDlgItem(IDC_CMB_SCREEN_SHOT_FORMAT));
-        for (int f = 0; f < NumOfFormats; f++)
-        {
-            m_cmbScreenShotFormat.SetItemData(m_cmbScreenShotFormat.AddString(ScreenShotFormats[f].format), ScreenShotFormats[f].type);
-        }
-        SetComboBoxIndex(m_cmbScreenShotFormat, g_settings->ssformat);
-        TTSetTxt(IDC_CMB_SCREEN_SHOT_FORMAT, "Select a format, in which screen shots will be saved");
-
         m_cbxTextureSettings.Attach(GetDlgItem(IDC_CHK_SHOW_TEXTURE_ENHANCEMENT));
         m_cbxTextureSettings.SetCheck(g_settings->texenh_options ? BST_CHECKED : BST_UNCHECKED);
 
@@ -412,7 +404,6 @@ public:
         CSettings oldsettings = *g_settings;
         g_settings->res_data = m_WindowRes.GetCurSel();
         g_settings->vsync = m_cbxVSync.GetCheck() == BST_CHECKED;
-        g_settings->ssformat = m_cmbScreenShotFormat.GetCurSel();
         g_settings->texenh_options = m_cbxTextureSettings.GetCheck() == BST_CHECKED;
         g_settings->clock = m_cbxClockEnabled.GetCheck() == BST_CHECKED;
         g_settings->clock_24_hr = m_cbxClock24.GetCheck() == BST_CHECKED;
@@ -448,7 +439,6 @@ private:
 
     COptionsSheet * m_options_page;
     CComboBox m_WindowRes, m_cmbFSResolution;
-    CComboBox m_cmbScreenShotFormat;
     CButton m_cbxVSync;
     CButton m_cbxTextureSettings;
     CButton m_cbxClockEnabled, m_cbxClock24;

@@ -179,22 +179,6 @@ typedef struct {
     uint32_t dxt;
 } LOAD_TILE_INFO;
 
-enum rdpBitmapType
-{
-    rdpBITMAP_TYPE_INVALID,          // should be == 0 for compatibility!
-    rdpBITMAP_TYPE_PNG,
-};
-
-typedef struct 
-{
-    const char * format;
-    const char * extension;
-    rdpBitmapType type;
-} SCREEN_SHOT_FORMAT;
-
-extern const int NumOfFormats;
-extern SCREEN_SHOT_FORMAT ScreenShotFormats[];
-
 typedef struct
 {
     int num_tmu;

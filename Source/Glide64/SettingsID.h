@@ -13,7 +13,7 @@
 enum
 {
     // General Settings
-    Set_CardId, Set_vsync, Set_ssformat, Set_clock,
+    Set_vsync, Set_clock,
     Set_clock_24_hr, Set_Rotate, Set_texenh_options, Set_hotkeys, Set_wrpVRAM,
     Set_wrpFBO, Set_wrpAnisotropic, Set_autodetect_ucode, Set_ucode, Set_wireframe,
     Set_wfmode, Set_logging, Set_log_clear, Set_elogging, Set_run_in_window,

@@ -59,12 +59,6 @@
 extern CriticalSection * g_ProcessDListCS;
 #endif
 
-const int NumOfFormats = 1;
-SCREEN_SHOT_FORMAT ScreenShotFormats[NumOfFormats] =
-{
-    { "PNG", "png", rdpBITMAP_TYPE_PNG },
-};
-
 const char *ACmp[] = { "NONE", "THRESHOLD", "UNKNOWN", "DITHER" };
 
 const char *Mode0[] = { "COMBINED", "TEXEL0",

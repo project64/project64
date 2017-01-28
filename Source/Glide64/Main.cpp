@@ -1605,13 +1605,9 @@ void newSwapBuffers()
         romName.Replace(" ", "_");
         romName.Replace(":", ";");
 
-        if (g_settings->ssformat >= NumOfFormats)
-        {
-            g_settings->ssformat = 0;
-        }
         for (int i = 1;; i++)
         {
-            stdstr_f filename("Glide64_%s_%s%d.%s", romName.c_str(), i < 10 ? "0" : "", i, ScreenShotFormats[g_settings->ssformat].extension);
+            stdstr_f filename("Glide64_%s_%s%d.png", romName.c_str(), i < 10 ? "0" : "", i);
             path.SetNameExtension(filename.c_str());
             if (!path.Exists())
             {
@@ -1670,10 +1666,7 @@ void newSwapBuffers()
             }
             // Unlock the backbuffer
             grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
-            if (ScreenShotFormats[g_settings->ssformat].type == rdpBITMAP_TYPE_PNG)
-            {
-                write_png_file(path, image_width, image_height, ssimg);
-            }
+            write_png_file(path, image_width, image_height, ssimg);
             capture_screen = 0;
         }
     }

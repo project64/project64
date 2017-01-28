@@ -18,7 +18,6 @@ res_data(GR_RESOLUTION_640x480),
 #endif
 advanced_options(0),
 texenh_options(0),
-ssformat(0),
 vsync(0),
 
 clock(0),
@@ -123,7 +122,6 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_wrpResolution, "wrpResolution", GetCurrentResIndex());
 #endif
     general_setting(Set_vsync, "vsync", 1);
-    general_setting(Set_ssformat, "ssformat", 1);
     general_setting(Set_clock, "clock", 0);
     general_setting(Set_clock_24_hr, "clock_24_hr", 0);
     general_setting(Set_texenh_options, "texenh_options", 0);
@@ -280,7 +278,6 @@ void CSettings::ReadSettings()
     this->wrpResolution = GetSetting(Set_wrpResolution);
 #endif
     this->vsync = GetSetting(Set_vsync);
-    this->ssformat = (uint8_t)GetSetting(Set_ssformat);
     this->clock = GetSetting(Set_clock);
     this->clock_24_hr = GetSetting(Set_clock_24_hr);
     this->rotate = GetSetting(Set_Rotate);
@@ -516,7 +513,6 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_Resolution, (int)g_settings->res_data);
     SetSetting(Set_wrpResolution, g_settings->wrpResolution);
 #endif
-    SetSetting(Set_ssformat, g_settings->ssformat);
     SetSetting(Set_vsync, g_settings->vsync);
     SetSetting(Set_clock, g_settings->clock);
     SetSetting(Set_clock_24_hr, g_settings->clock_24_hr);
