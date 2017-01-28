@@ -96,7 +96,6 @@ public:
     //Debug
     int autodetect_ucode;
     int ucode;
-    int logging;
     int elogging;
     int log_clear;
     int filter_cache;

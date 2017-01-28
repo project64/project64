@@ -52,7 +52,6 @@ ghq_hirs_let_texartists_fly(0),
 ghq_hirs_dump(0),
 autodetect_ucode(0),
 ucode(0),
-logging(0),
 elogging(0),
 log_clear(0),
 filter_cache(0),
@@ -131,7 +130,6 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_ucode, "ucode", 2);
     general_setting(Set_wireframe, "wireframe", 0);
     general_setting(Set_wfmode, "wfmode", 1);
-    general_setting(Set_logging, "logging", 0);
     general_setting(Set_log_clear, "log_clear", 0);
     general_setting(Set_elogging, "elogging", 0);
     general_setting(Set_filter_cache, "filter_cache", 0);
@@ -283,7 +281,6 @@ void CSettings::ReadSettings()
     this->ucode = GetSetting(Set_ucode);
     this->wireframe = GetSetting(Set_wireframe);
     this->wfmode = GetSetting(Set_wfmode);
-    this->logging = GetSetting(Set_logging);
     this->log_clear = GetSetting(Set_log_clear);
     this->elogging = GetSetting(Set_elogging);
     this->filter_cache = GetSetting(Set_filter_cache);
@@ -295,7 +292,6 @@ void CSettings::ReadSettings()
     this->ucode = 2;
     this->wireframe = FALSE;
     this->wfmode = 0;
-    this->logging = FALSE;
     this->log_clear = FALSE;
     this->elogging = FALSE;
     this->filter_cache = FALSE;
@@ -514,7 +510,6 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_ucode, (int)g_settings->ucode);
     SetSetting(Set_wireframe, g_settings->wireframe);
     SetSetting(Set_wfmode, g_settings->wfmode);
-    SetSetting(Set_logging, g_settings->logging);
     SetSetting(Set_log_clear, g_settings->log_clear);
     SetSetting(Set_elogging,g_settings->elogging);
     SetSetting(Set_filter_cache,g_settings->filter_cache);

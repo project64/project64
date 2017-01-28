@@ -15,17 +15,13 @@ enum
     // General Settings
     Set_vsync, Set_Rotate, Set_texenh_options, Set_wrpVRAM,
     Set_wrpFBO, Set_wrpAnisotropic, Set_autodetect_ucode, Set_ucode, Set_wireframe,
-    Set_wfmode, Set_logging, Set_log_clear, Set_elogging, 
-    Set_filter_cache, Set_unk_as_red, Set_log_unk, Set_unk_clear, Set_ghq_fltr,
+    Set_log_clear, Set_elogging, 
+    Set_wfmode, Set_filter_cache, Set_unk_as_red, Set_log_unk, Set_unk_clear, Set_ghq_fltr,
     Set_ghq_cmpr, Set_ghq_enht, Set_ghq_hirs, Set_ghq_enht_cmpr, Set_ghq_enht_tile,
     Set_ghq_enht_f16bpp, Set_ghq_enht_gz, Set_ghq_enht_nobg, Set_ghq_hirs_cmpr,
     Set_ghq_hirs_tile, Set_ghq_hirs_f16bpp, Set_ghq_hirs_gz, Set_ghq_hirs_altcrc,
     Set_ghq_cache_save, Set_ghq_cache_size, Set_ghq_hirs_let_texartists_fly,
-    Set_ghq_hirs_dump,
-
-#ifndef ANDROID
-    Set_Resolution, Set_wrpResolution,
-#endif
+    Set_ghq_hirs_dump, Set_Resolution,
 
     // Default Game Settings
     Set_optimize_texrect_default, Set_filtering_default, Set_lodmode_default,
@@ -47,4 +43,8 @@ enum
 
     //RDB Setting
     Set_ucodeLookup,
+
+#ifdef _WIN32
+    Set_wrpResolution,
+#endif
 };
