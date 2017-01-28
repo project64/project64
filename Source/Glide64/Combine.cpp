@@ -15602,12 +15602,9 @@ void Combine()
     if (actual_combine != current_combine)
     {
         rdp.uncombined |= 1;
-        if (g_settings->log_unk)
-        {
-            WriteTrace(TraceUnknown, TraceDebug, "COLOR combine not found: %08x, #1: (%s-%s)*%s+%s, #2: (%s-%s)*%s+%s", actual_combine,
-                Mode0[rdp.cycle1 & 0xF], Mode1[(rdp.cycle1 >> 4) & 0xF], Mode2[(rdp.cycle1 >> 8) & 0x1F], Mode3[(rdp.cycle1 >> 13) & 7],
-                Mode0[rdp.cycle2 & 0xF], Mode1[(rdp.cycle2 >> 4) & 0xF], Mode2[(rdp.cycle2 >> 8) & 0x1F], Mode3[(rdp.cycle2 >> 13) & 7]);
-        }
+        WriteTrace(TraceUnknown, TraceDebug, "COLOR combine not found: %08x, #1: (%s-%s)*%s+%s, #2: (%s-%s)*%s+%s", actual_combine,
+            Mode0[rdp.cycle1 & 0xF], Mode1[(rdp.cycle1 >> 4) & 0xF], Mode2[(rdp.cycle1 >> 8) & 0x1F], Mode3[(rdp.cycle1 >> 13) & 7],
+            Mode0[rdp.cycle2 & 0xF], Mode1[(rdp.cycle2 >> 4) & 0xF], Mode2[(rdp.cycle2 >> 8) & 0x1F], Mode3[(rdp.cycle2 >> 13) & 7]);
         found = FALSE;
         //tex |= 3;
 
@@ -15653,12 +15650,9 @@ void Combine()
         if (actual_combine != current_combine)
         {
             rdp.uncombined |= 2;
-            if (g_settings->log_unk)
-            {
-                WriteTrace(TraceUnknown, TraceDebug, "ALPHA combine not found: %08x, #1: (%s-%s)*%s+%s, #2: (%s-%s)*%s+%s", actual_combine,
-                    Alpha0[(rdp.cycle1 >> 16) & 7], Alpha1[(rdp.cycle1 >> 19) & 7], Alpha2[(rdp.cycle1 >> 22) & 7], Alpha3[(rdp.cycle1 >> 25) & 7],
-                    Alpha0[(rdp.cycle2 >> 16) & 7], Alpha1[(rdp.cycle2 >> 19) & 7], Alpha2[(rdp.cycle2 >> 22) & 7], Alpha3[(rdp.cycle2 >> 25) & 7]);
-            }
+            WriteTrace(TraceUnknown, TraceDebug, "ALPHA combine not found: %08x, #1: (%s-%s)*%s+%s, #2: (%s-%s)*%s+%s", actual_combine,
+                Alpha0[(rdp.cycle1 >> 16) & 7], Alpha1[(rdp.cycle1 >> 19) & 7], Alpha2[(rdp.cycle1 >> 22) & 7], Alpha3[(rdp.cycle1 >> 25) & 7],
+                Alpha0[(rdp.cycle2 >> 16) & 7], Alpha1[(rdp.cycle2 >> 19) & 7], Alpha2[(rdp.cycle2 >> 22) & 7], Alpha3[(rdp.cycle2 >> 25) & 7]);
         }
         if (g_settings->unk_as_red)
         {

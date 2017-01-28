@@ -53,7 +53,6 @@ ghq_hirs_dump(0),
 autodetect_ucode(0),
 ucode(0),
 unk_as_red(0),
-log_unk(0),
 unk_clear(0),
 wireframe(0),
 wfmode(0),
@@ -128,7 +127,6 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_wireframe, "wireframe", 0);
     general_setting(Set_wfmode, "wfmode", 1);
     general_setting(Set_unk_as_red, "unk_as_red", 0);
-    general_setting(Set_log_unk, "log_unk", 0);
     general_setting(Set_unk_clear, "unk_clear", 0);
     general_setting(Set_ghq_fltr, "ghq_fltr", 0);
     general_setting(Set_ghq_cmpr, "ghq_cmpr", 0);
@@ -276,7 +274,6 @@ void CSettings::ReadSettings()
     this->wireframe = GetSetting(Set_wireframe);
     this->wfmode = GetSetting(Set_wfmode);
     this->unk_as_red = GetSetting(Set_unk_as_red);
-    this->log_unk = GetSetting(Set_log_unk);
     this->unk_clear = GetSetting(Set_unk_clear);
 #else
     this->autodetect_ucode = TRUE;
@@ -284,7 +281,6 @@ void CSettings::ReadSettings()
     this->wireframe = FALSE;
     this->wfmode = 0;
     this->unk_as_red = FALSE;
-    this->log_unk = FALSE;
     this->unk_clear = FALSE;
 #endif
 
@@ -499,7 +495,6 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_wireframe, g_settings->wireframe);
     SetSetting(Set_wfmode, g_settings->wfmode);
     SetSetting(Set_unk_as_red,g_settings->unk_as_red);
-    SetSetting(Set_log_unk,g_settings->log_unk);
     SetSetting(Set_unk_clear, g_settings->unk_clear);
 #endif //_ENDUSER_RELEASE_
 
