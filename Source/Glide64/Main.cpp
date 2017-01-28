@@ -62,7 +62,6 @@
 #include "ScreenResolution.h"
 
 #include <stdarg.h>
-int  ghq_dmptex_toggle_key = 0;
 
 GFX_INFO gfx;
 
@@ -834,8 +833,6 @@ int InitGfx()
                 options |= LET_TEXARTISTS_FLY;
             if (g_settings->ghq_hirs_dump)
                 options |= DUMP_TEX;
-
-            ghq_dmptex_toggle_key = 0;
 
             g_settings->ghq_use = (int)ext_ghq_init(voodoo.max_tex_size, // max texture width supported by hardware
                 voodoo.max_tex_size, // max texture height supported by hardware
