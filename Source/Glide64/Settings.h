@@ -99,7 +99,6 @@ public:
     int logging;
     int elogging;
     int log_clear;
-    int run_in_window;
     int filter_cache;
     int unk_as_red;
     int log_unk;

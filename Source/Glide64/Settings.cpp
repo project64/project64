@@ -55,7 +55,6 @@ ucode(0),
 logging(0),
 elogging(0),
 log_clear(0),
-run_in_window(0),
 filter_cache(0),
 unk_as_red(0),
 log_unk(0),
@@ -134,7 +133,6 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_wfmode, "wfmode", 1);
     general_setting(Set_logging, "logging", 0);
     general_setting(Set_log_clear, "log_clear", 0);
-    general_setting(Set_run_in_window, "run_in_window", 0);
     general_setting(Set_elogging, "elogging", 0);
     general_setting(Set_filter_cache, "filter_cache", 0);
     general_setting(Set_unk_as_red, "unk_as_red", 0);
@@ -287,7 +285,6 @@ void CSettings::ReadSettings()
     this->wfmode = GetSetting(Set_wfmode);
     this->logging = GetSetting(Set_logging);
     this->log_clear = GetSetting(Set_log_clear);
-    this->run_in_window = GetSetting(Set_run_in_window);
     this->elogging = GetSetting(Set_elogging);
     this->filter_cache = GetSetting(Set_filter_cache);
     this->unk_as_red = GetSetting(Set_unk_as_red);
@@ -300,7 +297,6 @@ void CSettings::ReadSettings()
     this->wfmode = 0;
     this->logging = FALSE;
     this->log_clear = FALSE;
-    this->run_in_window = FALSE;
     this->elogging = FALSE;
     this->filter_cache = FALSE;
     this->unk_as_red = FALSE;
@@ -520,7 +516,6 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_wfmode, g_settings->wfmode);
     SetSetting(Set_logging, g_settings->logging);
     SetSetting(Set_log_clear, g_settings->log_clear);
-    SetSetting(Set_run_in_window,g_settings->run_in_window);
     SetSetting(Set_elogging,g_settings->elogging);
     SetSetting(Set_filter_cache,g_settings->filter_cache);
     SetSetting(Set_unk_as_red,g_settings->unk_as_red);
