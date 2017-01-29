@@ -191,7 +191,7 @@ static void DrawRE2Video256(FB_TO_SCREEN_INFO & fb_info)
 
 static void DrawFrameBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
 {
-    if (g_settings->hacks&hack_RE2)
+    if (g_settings->hacks(CSettings::hack_RE2))
     {
         DrawRE2Video256(fb_info);
         return;
@@ -403,7 +403,7 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu],
         GR_MIPMAPLEVELMASK_BOTH,
         &t_info);
-    if (g_settings->hacks&hack_RE2)
+    if (g_settings->hacks(CSettings::hack_RE2))
     {
         DrawRE2Video(fb_info, scale);
     }

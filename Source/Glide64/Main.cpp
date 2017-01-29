@@ -691,7 +691,7 @@ int InitGfx()
     grGet(GR_NUM_TMU, 4, (FxI32*)&voodoo.num_tmu);
     // get maximal texture size
     grGet(GR_MAX_TEXTURE_SIZE, 4, (FxI32*)&voodoo.max_tex_size);
-    voodoo.sup_large_tex = (voodoo.max_tex_size > 256 && !(g_settings->hacks & hack_PPL));
+    voodoo.sup_large_tex = (voodoo.max_tex_size > 256 && !g_settings->hacks(CSettings::hack_PPL));
 
     //num_tmu = 1;
     if (voodoo.tex_UMA)
@@ -709,7 +709,7 @@ int InitGfx()
         voodoo.tex_max_addr[1] = grTexMaxAddress(GR_TMU1);
     }
 
-    if (strstr(extensions, "TEXMIRROR") && !(g_settings->hacks&hack_Zelda)) //zelda's trees suffer from hardware mirroring
+    if (strstr(extensions, "TEXMIRROR") && !g_settings->hacks(CSettings::hack_Zelda)) //zelda's trees suffer from hardware mirroring
         voodoo.sup_mirroring = 1;
     else
         voodoo.sup_mirroring = 0;
@@ -1361,7 +1361,7 @@ void drawViRegBG()
     rdp.last_bg = fb_info.addr;
 
     bool drawn = DrawFrameBufferToScreen(fb_info);
-    if (g_settings->hacks&hack_Lego && drawn)
+    if (g_settings->hacks(CSettings::hack_Lego) && drawn)
     {
         rdp.updatescreen = 1;
         newSwapBuffers();
@@ -1399,7 +1399,7 @@ void CALL UpdateScreen(void)
     {
         update_screen_count++;
     }
-    uint32_t limit = (g_settings->hacks&hack_Lego) ? 15 : 30;
+    uint32_t limit = g_settings->hacks(CSettings::hack_Lego) ? 15 : 30;
     if (g_settings->fb_cpu_write_hack_enabled() && (update_screen_count > limit) && (rdp.last_bg == 0))
     {
         WriteTrace(TraceRDP, TraceDebug, "DirectCPUWrite hack!");
@@ -1661,7 +1661,7 @@ void newSwapBuffers()
         DrawWholeFrameBufferToScreen();
     }
 
-    if (g_settings->fb_hwfbe_enabled() && !(g_settings->hacks&hack_RE2) && !evoodoo)
+    if (g_settings->fb_hwfbe_enabled() && !g_settings->hacks(CSettings::hack_RE2) && !evoodoo)
     {
         grAuxBufferExt(GR_BUFFER_AUXBUFFER);
     }
@@ -1689,12 +1689,9 @@ void newSwapBuffers()
         }
     }
 
-    if (g_settings->wireframe || g_settings->buff_clear || (g_settings->hacks&hack_PPL && g_settings->ucode == 6))
+    if (g_settings->wireframe || g_settings->buff_clear || (g_settings->hacks(CSettings::hack_PPL) && g_settings->ucode == 6))
     {
-        if (g_settings->hacks&hack_RE2 && g_settings->fb_depth_render_enabled())
-            grDepthMask(FXFALSE);
-        else
-            grDepthMask(FXTRUE);
+        grDepthMask((g_settings->hacks(CSettings::hack_RE2) && g_settings->fb_depth_render_enabled()) ? FXFALSE : FXTRUE);
         grBufferClear(0, 0, 0xFFFF);
     }
 

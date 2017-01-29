@@ -83,7 +83,7 @@ zmode_compare_less(0), //force GR_CMP_LESS for zmode=0 (opaque)and zmode=1 (inte
 old_style_adither(0), //apply alpha dither regardless of alpha_dither_mode
 n64_z_scale(0), //scale vertex z value before writing to depth buffer, as N64 does.
 
-hacks(0),
+    m_hacks((hacks_t)0),
 
 //wrapper settings
 #ifndef ANDROID
@@ -317,73 +317,137 @@ void CSettings::ReadSettings()
 
 void CSettings::ReadGameSettings(const char * name)
 {
-    g_settings->hacks = 0;
+    m_hacks = (hacks_t)0;
 
     //detect games which require special hacks
     if (strstr(name, (const char *)"ZELDA"))
-        g_settings->hacks |= (hack_Zelda | hack_OoT);
+    {
+        m_hacks = (hacks_t)(m_hacks | (CSettings::hack_Zelda | CSettings::hack_OoT));
+    }
     else if (strstr(name, (const char *)"MASK"))
-        g_settings->hacks |= hack_Zelda;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Zelda);
+    }
     else if (strstr(name, (const char *)"ROADSTERS TROPHY"))
-        g_settings->hacks |= hack_Zelda;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Zelda);
+    }
     else if (strstr(name, (const char *)"Diddy Kong Racing"))
-        g_settings->hacks |= hack_Diddy;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Diddy);
+    }
     else if (strstr(name, (const char *)"Tonic Trouble"))
-        g_settings->hacks |= hack_Tonic;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Tonic);
+    }
     else if (strstr(name, (const char *)"All") && strstr(name, (const char *)"Star") && strstr(name, (const char *)"Baseball"))
-        g_settings->hacks |= hack_ASB;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_ASB);
+    }
     else if (strstr(name, (const char *)"Beetle") || strstr(name, (const char *)"BEETLE") || strstr(name, (const char *)"HSV"))
-        g_settings->hacks |= hack_BAR;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_BAR);
+    }
     else if (strstr(name, (const char *)"I S S 64") || strstr(name, (const char *)"J WORLD SOCCER3") || strstr(name, (const char *)"PERFECT STRIKER") || strstr(name, (const char *)"RONALDINHO SOCCER"))
-        g_settings->hacks |= hack_ISS64;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_ISS64);
+    }
     else if (strstr(name, (const char *)"MARIOKART64"))
-        g_settings->hacks |= hack_MK64;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_MK64);
+    }
     else if (strstr(name, (const char *)"NITRO64"))
-        g_settings->hacks |= hack_WCWnitro;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_WCWnitro);
+    }
     else if (strstr(name, (const char *)"CHOPPER_ATTACK") || strstr(name, (const char *)"WILD CHOPPERS"))
-        g_settings->hacks |= hack_Chopper;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Chopper);
+    }
     else if (strstr(name, (const char *)"Resident Evil II") || strstr(name, (const char *)"BioHazard II"))
-        g_settings->hacks |= hack_RE2;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_RE2);
+    }
     else if (strstr(name, (const char *)"YOSHI STORY"))
-        g_settings->hacks |= hack_Yoshi;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Yoshi);
+    }
     else if (strstr(name, (const char *)"F-Zero X") || strstr(name, (const char *)"F-ZERO X"))
-        g_settings->hacks |= hack_Fzero;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Fzero);
+    }
     else if (strstr(name, (const char *)"PAPER MARIO") || strstr(name, (const char *)"MARIO STORY"))
-        g_settings->hacks |= hack_PMario;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_PMario);
+    }
     else if (strstr(name, (const char *)"TOP GEAR RALLY 2"))
-        g_settings->hacks |= hack_TGR2;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_TGR2);
+    }
     else if (strstr(name, (const char *)"TOP GEAR RALLY"))
-        g_settings->hacks |= hack_TGR;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_TGR);
+    }
     else if (strstr(name, (const char *)"Top Gear Hyper Bike"))
-        g_settings->hacks |= hack_Hyperbike;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Hyperbike);
+    }
     else if (strstr(name, (const char *)"Killer Instinct Gold") || strstr(name, (const char *)"KILLER INSTINCT GOLD"))
-        g_settings->hacks |= hack_KI;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_KI);
+    }
     else if (strstr(name, (const char *)"Knockout Kings 2000"))
-        g_settings->hacks |= hack_Knockout;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Knockout);
+    }
     else if (strstr(name, (const char *)"LEGORacers"))
-        g_settings->hacks |= hack_Lego;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Lego);
+    }
     else if (strstr(name, (const char *)"OgreBattle64"))
-        g_settings->hacks |= hack_Ogre64;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Ogre64);
+    }
     else if (strstr(name, (const char *)"Pilot Wings64"))
-        g_settings->hacks |= hack_Pilotwings;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Pilotwings);
+    }
     else if (strstr(name, (const char *)"Supercross"))
-        g_settings->hacks |= hack_Supercross;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Supercross);
+    }
     else if (strstr(name, (const char *)"STARCRAFT 64"))
-        g_settings->hacks |= hack_Starcraft;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Starcraft);
+    }
     else if (strstr(name, (const char *)"BANJO KAZOOIE 2") || strstr(name, (const char *)"BANJO TOOIE"))
-        g_settings->hacks |= hack_Banjo2;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Banjo2);
+    }
     else if (strstr(name, (const char *)"FIFA: RTWC 98") || strstr(name, (const char *)"RoadToWorldCup98"))
-        g_settings->hacks |= hack_Fifa98;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Fifa98);
+    }
     else if (strstr(name, (const char *)"Mega Man 64") || strstr(name, (const char *)"RockMan Dash"))
-        g_settings->hacks |= hack_Megaman;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Megaman);
+    }
     else if (strstr(name, (const char *)"MISCHIEF MAKERS") || strstr(name, (const char *)"TROUBLE MAKERS"))
-        g_settings->hacks |= hack_Makers;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Makers);
+    }
     else if (strstr(name, (const char *)"GOLDENEYE"))
-        g_settings->hacks |= hack_GoldenEye;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_GoldenEye);
+    }
     else if (strstr(name, (const char *)"PUZZLE LEAGUE"))
-        g_settings->hacks |= hack_PPL;
-	else if (strstr(name, (const char *)"WIN BACK") || strstr(name, (const char *)"OPERATION WINBACK"))
-		g_settings->hacks |= hack_Winback;
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_PPL);
+    }
+    else if (strstr(name, (const char *)"WIN BACK") || strstr(name, (const char *)"OPERATION WINBACK"))
+    {
+        m_hacks = (hacks_t)(m_hacks | CSettings::hack_Winback);
+    }
 
     g_settings->alt_tex_size = GetSetting(Set_alt_tex_size);
     g_settings->use_sts1_only = GetSetting(Set_use_sts1_only);
@@ -471,7 +535,7 @@ void CSettings::ReadGameSettings(const char * name)
     else if (read_back_to_screen == 0) { fb_remove_bits |= fb_read_back_to_screen | fb_read_back_to_screen2; }
 
     g_settings->UpdateFrameBufferBits(fb_add_bits, fb_remove_bits);
-    g_settings->flame_corona = (g_settings->hacks & hack_Zelda) && !fb_depth_render_enabled();
+    g_settings->flame_corona = g_settings->hacks(hack_Zelda) && !fb_depth_render_enabled();
 }
 
 void CSettings::WriteSettings(void)

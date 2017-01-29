@@ -25,6 +25,41 @@ public:
         fb_cpu_write_hack = (1 << 14),        //show images writed directly by CPU
     };
 
+    enum hacks_t
+    {
+        hack_ASB = (1<<0),         //All-Star Baseball games
+        hack_Banjo2 = (1<<1),      //Banjo Tooie
+        hack_BAR = (1<<2),         //Beetle Adventure Racing
+        hack_Chopper = (1<<3),     //Chopper Attack
+        hack_Diddy = (1<<4),       //diddy kong racing
+        hack_Fifa98 = (1<<5),      //FIFA - Road to World Cup 98
+        hack_Fzero = (1<<6),       //F-Zero
+        hack_GoldenEye = (1<<7),   //Golden Eye
+        hack_Hyperbike = (1<<8),   //Top Gear Hyper Bike
+        hack_ISS64 = (1<<9),       //International Superstar Soccer 64
+        hack_KI = (1<<10),         //Killer Instinct
+        hack_Knockout = (1<<11),   //Knockout Kings 2000
+        hack_Lego = (1<<12),       //LEGO Racers
+        hack_MK64 = (1<<13),       //Mario Kart
+        hack_Megaman = (1<<14),    //Megaman64
+        hack_Makers = (1<<15),     //Mischief-makers
+        hack_WCWnitro = (1<<16),   //WCW Nitro
+        hack_Ogre64 = (1<<17),     //Ogre Battle 64
+        hack_Pilotwings = (1<<18), //Pilotwings
+        hack_PMario = (1<<19),     //Paper Mario
+        hack_PPL = (1<<20),        //pokemon puzzle league requires many special fixes
+        hack_RE2 = (1<<21),        //Resident Evil 2
+        hack_Starcraft = (1<<22),  //StarCraft64
+        hack_Supercross = (1<<23), //Supercross 2000
+        hack_TGR = (1<<24),        //Top Gear Rally
+        hack_TGR2 = (1<<25),       //Top Gear Rally 2
+        hack_Tonic = (1<<26),      //tonic trouble
+        hack_Winback = (1<<27),    //WinBack - Covert Operations
+        hack_Yoshi = (1<<28),      //Yoshi Story
+        hack_Zelda = (1<<29),      //zeldas hacks
+        hack_OoT = (1<<30),        //zelda OoT hacks
+    };
+
     uint32_t res_x, scr_res_x;
     uint32_t res_y, scr_res_y;
 #ifndef ANDROID
@@ -124,41 +159,9 @@ public:
     int zmode_compare_less; //force GR_CMP_LESS for zmode=0 (opaque)and zmode=1 (interpenetrating)
     int old_style_adither; //apply alpha dither regardless of alpha_dither_mode
     int n64_z_scale; //scale vertex z value before writing to depth buffer, as N64 does.
-
-    //Special game hacks
-#define  hack_ASB         (1<<0)   //All-Star Baseball games
-#define  hack_Banjo2      (1<<1)   //Banjo Tooie
-#define  hack_BAR         (1<<2)   //Beetle Adventure Racing
-#define  hack_Chopper     (1<<3)   //Chopper Attack
-#define  hack_Diddy       (1<<4)   //diddy kong racing
-#define  hack_Fifa98      (1<<5)   //FIFA - Road to World Cup 98
-#define  hack_Fzero       (1<<6)   //F-Zero
-#define  hack_GoldenEye   (1<<7)   //Golden Eye
-#define  hack_Hyperbike   (1<<8)   //Top Gear Hyper Bike
-#define  hack_ISS64       (1<<9)   //International Superstar Soccer 64
-#define  hack_KI          (1<<10)  //Killer Instinct
-#define  hack_Knockout    (1<<11)  //Knockout Kings 2000
-#define  hack_Lego        (1<<12)  //LEGO Racers
-#define  hack_MK64        (1<<13)  //Mario Kart
-#define  hack_Megaman     (1<<14)  //Megaman64
-#define  hack_Makers      (1<<15)  //Mischief-makers
-#define  hack_WCWnitro    (1<<16)  //WCW Nitro
-#define  hack_Ogre64      (1<<17)  //Ogre Battle 64
-#define  hack_Pilotwings  (1<<18)  //Pilotwings
-#define  hack_PMario      (1<<19)  //Paper Mario
-#define  hack_PPL         (1<<20)  //pokemon puzzle league requires many special fixes
-#define  hack_RE2         (1<<21)  //Resident Evil 2
-#define  hack_Starcraft   (1<<22)  //StarCraft64
-#define  hack_Supercross  (1<<23)  //Supercross 2000
-#define  hack_TGR         (1<<24)  //Top Gear Rally
-#define  hack_TGR2        (1<<25)  //Top Gear Rally 2
-#define  hack_Tonic       (1<<26)  //tonic trouble
-#define  hack_Winback     (1<<27)  //WinBack - Covert Operations
-#define  hack_Yoshi       (1<<28)  //Yoshi Story
-#define  hack_Zelda       (1<<29)  //zeldas hacks
-#define  hack_OoT         (1<<30)  //zelda OoT hacks
-    uint32_t hacks;
-
+    
+    inline bool hacks(hacks_t hack) const { return (m_hacks & hack) == hack; } //Special game hacks
+    
     //wrapper settings
 #ifndef ANDROID
     int wrpResolution;
@@ -180,6 +183,7 @@ private:
     bool m_FlushLogs;
     char m_log_dir[260];
     uint32_t m_frame_buffer;
+    hacks_t m_hacks;
 };
 
 extern CSettings * g_settings;

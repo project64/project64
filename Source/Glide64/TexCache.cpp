@@ -76,7 +76,8 @@ typedef struct TEXINFO_t
 TEXINFO texinfo[2];
 int tex_found[2][MAX_TMU];
 
-typedef struct HIRESTEX_t {
+typedef struct HIRESTEX_t 
+{
     int width, height;
     uint16_t format;
     uint8_t *data;
@@ -999,7 +1000,7 @@ void LoadTex(int id, int tmu)
 
     //!Hackalert
     //GoldenEye water texture. It has CI format in fact, but the game set it to RGBA
-    if ((g_settings->hacks&hack_GoldenEye) && rdp.tiles[td].format == 0 && rdp.tlut_mode == 2 && rdp.tiles[td].size == 2)
+    if (g_settings->hacks(CSettings::hack_GoldenEye) && rdp.tiles[td].format == 0 && rdp.tlut_mode == 2 && rdp.tiles[td].size == 2)
     {
         rdp.tiles[td].format = 2;
         rdp.tiles[td].size = 1;
@@ -1639,17 +1640,6 @@ void LoadTex(int id, int tmu)
                                     cache->c_scl_y *= mscale;
                                     cache->c_scl_x *= mscale;
                                 }
-                                /*
-                                else
-                                {
-                                if (rdp.tiles[td].mirror_s && sup_mirroring)
-                                cache->f_mirror_s = TRUE;
-                                if (rdp.tiles[td].mirror_t && sup_mirroring)
-                                cache->f_mirror_t = TRUE;
-                                //cache->c_scl_y /= mscale;
-                                //cache->c_scl_x /= mscale;
-                                }
-                                */
                                 if (ghqTexInfo.aspectRatioLog2 >= 0)
                                 {
                                     cache->scale_x = 1.0f;
@@ -1689,7 +1679,6 @@ void LoadTex(int id, int tmu)
                     }
                     else
                     {
-                        //cache->scale = 256.0f / float(1<<lod);
                         cache->c_off = 128.0f / float(1 << lod);
                     }
                     real_x = ghqTexInfo.width;

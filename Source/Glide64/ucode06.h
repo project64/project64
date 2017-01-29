@@ -356,15 +356,19 @@ void DrawImage(DRAWIMAGE & d)
         }
     }
 
-    if ((g_settings->hacks&hack_PPL) > 0)
+    if (g_settings->hacks(CSettings::hack_PPL))
     {
         if (d.imageY > d.imageH)
+        {
             d.imageY = (d.imageY%d.imageH);
+        }
     }
-    else if ((g_settings->hacks&hack_Starcraft) > 0)
+    else if (g_settings->hacks(CSettings::hack_Starcraft))
     {
         if (d.imageH % 2 == 1)
+        {
             d.imageH -= 1;
+        }
     }
     else
     {
@@ -602,7 +606,7 @@ void DrawHiresImage(DRAWIMAGE & d, int screensize = FALSE)
     if (d.imageH % 2 == 1) d.imageH -= 1;
     if (d.imageY > d.imageH) d.imageY = (d.imageY%d.imageH);
 
-    if (!(g_settings->hacks&hack_PPL))
+    if (!g_settings->hacks(CSettings::hack_PPL))
     {
         if ((d.frameX > 0) && (d.frameW == rdp.ci_width))
             d.frameW -= (uint16_t)(2.0f*d.frameX);
@@ -734,7 +738,7 @@ static void uc6_bg(bool bg_1cyc)
         return;
     }
 
-    if (g_settings->ucode == ucode_F3DEX2 || (g_settings->hacks&hack_PPL))
+    if (g_settings->ucode == ucode_F3DEX2 || g_settings->hacks(CSettings::hack_PPL))
     {
         if ((d.imagePtr != rdp.cimg) && (d.imagePtr != rdp.ocimg) && d.imagePtr) //can't draw from framebuffer
             DrawImage(d);
@@ -1246,7 +1250,7 @@ static void uc6_obj_rectangle_r()
     DRAWOBJECT d;
     uc6_read_object_data(d);
 
-    if (d.imageFmt == 1 && (g_settings->hacks&hack_Ogre64)) //Ogre Battle needs to copy YUV texture to frame buffer
+    if (d.imageFmt == 1 && g_settings->hacks(CSettings::hack_Ogre64)) //Ogre Battle needs to copy YUV texture to frame buffer
     {
         float ul_x = d.objX / mat_2d.BaseScaleX + mat_2d.X;
         float lr_x = (d.objX + d.imageW / d.scaleW) / mat_2d.BaseScaleX + mat_2d.X;
@@ -1354,7 +1358,7 @@ static void uc6_obj_loadtxtr()
 
         WriteTrace(TraceRDP, TraceDebug, "tile addr: %08lx, tmem: %08lx, twidth: %d, theight: %d", image, tmem, twidth, theight);
 
-        int line = (twidth + 1) >> 2;
+        uint16_t line = (twidth + 1) >> 2;
 
         rdp.timg.addr = image;
         rdp.timg.width = line << 3;
@@ -1489,7 +1493,7 @@ void uc6_sprite2d()
             d.frameY = ((short)(cmd1 & 0xFFFF)) / 4.0f;
             d.frameW = (uint16_t)(d.imageW / d.scaleX);
             d.frameH = (uint16_t)(d.imageH / d.scaleY);
-            if (g_settings->hacks&hack_WCWnitro)
+            if (g_settings->hacks(CSettings::hack_WCWnitro))
             {
                 int scaleY = (int)d.scaleY;
                 d.imageH /= scaleY;

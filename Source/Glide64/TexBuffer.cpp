@@ -216,7 +216,7 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
     int found = FALSE, search = TRUE;
     TBUFF_COLOR_IMAGE *texbuf = 0;
     uint32_t addr = cimage.addr;
-    if ((g_settings->hacks&hack_Banjo2) && cimage.status == ci_copy_self)
+    if (g_settings->hacks(CSettings::hack_Banjo2) && cimage.status == ci_copy_self)
         addr = rdp.frame_buffers[rdp.copy_ci_index].addr;
     uint32_t end_addr = addr + ((cimage.width*cimage.height) << cimage.size >> 1);
     if (rdp.motionblur)
@@ -227,7 +227,7 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
     }
     if (rdp.read_whole_frame)
     {
-        if (g_settings->hacks&hack_PMario) //motion blur effects in Paper Mario
+        if (g_settings->hacks(CSettings::hack_PMario)) //motion blur effects in Paper Mario
         {
             rdp.cur_tex_buf = rdp.acc_tex_buf;
             WriteTrace(TraceRDP, TraceDebug, "\nread_whole_frame. last allocated bank: %d", rdp.acc_tex_buf);

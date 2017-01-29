@@ -313,7 +313,7 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
                 // Calculate deltaZ per polygon for Decal z-mode
                 double fdzdy = (diffz_02 * diffx_12 - diffz_12 * diffx_02) / denom;
                 double fdz = fabs(fdzdx) + fabs(fdzdy);
-                if ((g_settings->hacks & hack_Zelda) && (rdp.rm & 0x800))
+                if (g_settings->hacks(CSettings::hack_Zelda) && (rdp.rm & 0x800))
                 {
                     fdz *= 4.0;  // Decal mode in Zelda sometimes needs mutiplied deltaZ to work correct, e.g. roads
                 }
@@ -401,7 +401,7 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
                 {
                     if (rdp.aTBuffTex[0]->tile_uls != (int)rdp.tiles[rdp.cur_tile].f_ul_s)
                         v->u0 -= rdp.tiles[rdp.cur_tile].f_ul_s;
-                    if (rdp.aTBuffTex[0]->tile_ult != (int)rdp.tiles[rdp.cur_tile].f_ul_t || (g_settings->hacks&hack_Megaman))
+                    if (rdp.aTBuffTex[0]->tile_ult != (int)rdp.tiles[rdp.cur_tile].f_ul_t || g_settings->hacks(CSettings::hack_Megaman))
                         v->v0 -= rdp.tiles[rdp.cur_tile].f_ul_t; //required for megaman (boss special attack)
                     v->u0 *= rdp.aTBuffTex[0]->u_scale;
                     v->v0 *= rdp.aTBuffTex[0]->v_scale;
@@ -1036,7 +1036,7 @@ float ScaleZ(float z)
 
 static void DepthBuffer(VERTEX * vtx, int n)
 {
-    if (g_settings->fb_depth_render_enabled() && !(g_settings->hacks&hack_RE2) && dzdx && (rdp.flags & ZBUF_UPDATE))
+    if (g_settings->fb_depth_render_enabled() && !g_settings->hacks(CSettings::hack_RE2) && dzdx && (rdp.flags & ZBUF_UPDATE))
     {
         vertexi v[12];
         if (u_cull_mode == 1) //cull front

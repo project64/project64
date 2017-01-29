@@ -535,7 +535,7 @@ static void uc0_tri1()
         &rdp.vtx[((rdp.cmd1 >> 8) & 0xFF) / 10],
         &rdp.vtx[(rdp.cmd1 & 0xFF) / 10]
     };
-    if (g_settings->hacks & hack_Makers)
+    if (g_settings->hacks(CSettings::hack_Makers))
     {
         rdp.force_wrap = FALSE;
         for (int i = 0; i < 3; i++)
@@ -775,7 +775,10 @@ static void uc0_moveword()
 static void uc0_texture()
 {
     int tile = (rdp.cmd0 >> 8) & 0x07;
-    if (tile == 7 && (g_settings->hacks&hack_Supercross)) tile = 0; //fix for supercross 2000
+    if (tile == 7 && g_settings->hacks(CSettings::hack_Supercross))
+    {
+        tile = 0; //fix for supercross 2000
+    }
     rdp.mipmap_level = (rdp.cmd0 >> 11) & 0x07;
     uint32_t on = (rdp.cmd0 & 0xFF);
     rdp.cur_tile = tile;
@@ -932,7 +935,9 @@ static void uc0_setothermode_l()
         rdp.render_mode_changed |= rdp.rm ^ rdp.othermode_l;
         rdp.rm = rdp.othermode_l;
         if (g_settings->flame_corona && (rdp.rm == 0x00504341)) //hack for flame's corona
-            rdp.othermode_l |= /*0x00000020 |*/ 0x00000010;
+        {
+            rdp.othermode_l |= 0x00000010;
+        }
         WriteTrace(TraceRDP, TraceDebug, "rendermode: %08lx", rdp.othermode_l);  // just output whole othermode_l
     }
 

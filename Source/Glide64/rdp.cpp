@@ -415,7 +415,7 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
 
     uint32_t width = rdp.ci_width;//*gfx.VI_WIDTH_REG;
     uint32_t height;
-    if (g_settings->fb_emulation_enabled() && !(g_settings->hacks&hack_PPL))
+    if (g_settings->fb_emulation_enabled() && !g_settings->hacks(CSettings::hack_PPL))
     {
         int ind = (rdp.ci_count > 0) ? rdp.ci_count - 1 : 0;
         height = rdp.frame_buffers[ind].height;
@@ -423,8 +423,10 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
     else
     {
         height = rdp.ci_lower_bound;
-        if (g_settings->hacks&hack_PPL)
+        if (g_settings->hacks(CSettings::hack_PPL))
+        {
             height -= rdp.ci_upper_bound;
+        }
     }
     WriteTrace(TraceRDP, TraceDebug, "width: %d, height: %d...  ", width, height);
 
@@ -500,10 +502,12 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
                 uint32_t stride = info.strideInBytes >> 1;
 
                 int read_alpha = g_settings->fb_read_alpha_enabled();
-                if ((g_settings->hacks&hack_PMario) && rdp.frame_buffers[rdp.ci_count - 1].status != ci_aux)
+                if (g_settings->hacks(CSettings::hack_PMario) && rdp.frame_buffers[rdp.ci_count - 1].status != ci_aux)
+                {
                     read_alpha = FALSE;
+                }
                 int x_start = 0, y_start = 0, x_end = width, y_end = height;
-                if (g_settings->hacks&hack_BAR)
+                if (g_settings->hacks(CSettings::hack_BAR))
                 {
                     x_start = 80, y_start = 24, x_end = 240, y_end = 86;
                 }
@@ -643,7 +647,7 @@ EXPORT void CALL ProcessDList(void)
     //analize possible frame buffer usage
     if (g_settings->fb_emulation_enabled())
         DetectFrameBufferUsage();
-    if (!(g_settings->hacks&hack_Lego) || rdp.num_of_ci > 1)
+    if (!g_settings->hacks(CSettings::hack_Lego) || rdp.num_of_ci > 1)
         rdp.last_bg = 0;
     //* End of set states *//
 
@@ -658,7 +662,7 @@ EXPORT void CALL ProcessDList(void)
 
     if (cpu_fb_write == TRUE)
         DrawPartFrameBufferToScreen();
-    if ((g_settings->hacks&hack_Tonic) && dlist_length < 16)
+    if (g_settings->hacks(CSettings::hack_Tonic) && dlist_length < 16)
     {
         rdp_fullsync();
         WriteTrace(TraceRDP, TraceWarning, "DLIST is too short!");
@@ -759,7 +763,7 @@ EXPORT void CALL ProcessDList(void)
         rdp.scale_y = rdp.scale_y_bak;
     }
 
-    if (g_settings->hacks & hack_OoT)
+    if (g_settings->hacks(CSettings::hack_OoT))
     {
         copyWhiteToRDRAM(); //Subscreen delay fix
     }
@@ -770,10 +774,10 @@ EXPORT void CALL ProcessDList(void)
 
     if (rdp.cur_image)
     {
-        CloseTextureBuffer(rdp.read_whole_frame && ((g_settings->hacks&hack_PMario) || rdp.swap_ci_index >= 0));
+        CloseTextureBuffer(rdp.read_whole_frame && (g_settings->hacks(CSettings::hack_PMario) || rdp.swap_ci_index >= 0));
     }
 
-    if ((g_settings->hacks&hack_TGR2) && rdp.vi_org_reg != *gfx.VI_ORIGIN_REG && CI_SET)
+    if (g_settings->hacks(CSettings::hack_TGR2) && rdp.vi_org_reg != *gfx.VI_ORIGIN_REG && CI_SET)
     {
         newSwapBuffers();
         CI_SET = FALSE;
@@ -907,21 +911,26 @@ static void rdp_texrect()
         else
         {
             //gDPTextureRectangle
-			if (g_settings->hacks&hack_Winback) {
+			if (g_settings->hacks(CSettings::hack_Winback))
+            {
 				rdp.pc[rdp.pc_i] += 8;
 				return;
 			}
 
-			if (g_settings->hacks&hack_ASB)
+            if (g_settings->hacks(CSettings::hack_ASB))
+            {
                 rdp.cmd2 = 0;
+            }
             else
+            {
                 rdp.cmd2 = ((uint32_t*)gfx.RDRAM)[a + 0];
+            }
 
 			rdp.cmd3 = ((uint32_t*)gfx.RDRAM)[a + 1];
             rdp.pc[rdp.pc_i] += 8;
         }
     }
-    if ((g_settings->hacks&hack_Yoshi) && g_settings->ucode == ucode_S2DEX)
+    if (g_settings->hacks(CSettings::hack_Yoshi) && g_settings->ucode == ucode_S2DEX)
     {
         ys_memrect();
         return;
@@ -929,7 +938,7 @@ static void rdp_texrect()
 
 	if (rdp.skip_drawing || (!g_settings->fb_emulation_enabled() && (rdp.cimg == rdp.zimg)))
     {
-        if ((g_settings->hacks&hack_PMario) && rdp.ci_status == ci_useless)
+        if (g_settings->hacks(CSettings::hack_PMario) && rdp.ci_status == ci_useless)
         {
             pm_palette_mod();
         }
@@ -1036,7 +1045,7 @@ static void rdp_texrect()
 
     /*Gonetz*/
     //hack for Zelda MM. it removes black texrects which cover all geometry in "Link meets Zelda" cut scene
-    if ((g_settings->hacks&hack_Zelda) && rdp.timg.addr >= rdp.cimg && rdp.timg.addr < rdp.ci_end)
+    if (g_settings->hacks(CSettings::hack_Zelda) && rdp.timg.addr >= rdp.cimg && rdp.timg.addr < rdp.ci_end)
     {
         WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect. texaddr: %08lx, cimg: %08lx, cimg_end: %08lx", rdp.cur_cache[0]->addr, rdp.cimg, rdp.cimg + rdp.ci_width*rdp.ci_height * 2);
         rdp.tri_n += 2;
@@ -1054,16 +1063,14 @@ static void rdp_texrect()
     //remove motion blur in night vision
     if ((g_settings->ucode == ucode_PerfectDark) && (rdp.maincimg[1].addr != rdp.maincimg[0].addr) && (rdp.timg.addr >= rdp.maincimg[1].addr) && (rdp.timg.addr < (rdp.maincimg[1].addr + rdp.ci_width*rdp.ci_height*rdp.ci_size)))
     {
-        if (g_settings->fb_emulation_enabled())
-            if (rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_copy_self)
-            {
-                //WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect. texaddr: %08lx, cimg: %08lx, cimg_end: %08lx", rdp.timg.addr, rdp.maincimg[1], rdp.maincimg[1]+rdp.ci_width*rdp.ci_height*rdp.ci_size);
-                WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect.");
-                rdp.tri_n += 2;
-                return;
-            }
+        if (g_settings->fb_emulation_enabled() && rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_copy_self)
+        {
+            //WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect. texaddr: %08lx, cimg: %08lx, cimg_end: %08lx", rdp.timg.addr, rdp.maincimg[1], rdp.maincimg[1]+rdp.ci_width*rdp.ci_height*rdp.ci_size);
+            WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect.");
+            rdp.tri_n += 2;
+            return;
+        }
     }
-    //*/
 
     int i;
 
@@ -2081,7 +2088,7 @@ static void rdp_loadtile()
         rdp.tbuff_tex->tile_ult = ul_t;
     }
 
-    if ((g_settings->hacks&hack_Tonic) && tile == 7)
+    if (g_settings->hacks(CSettings::hack_Tonic) && tile == 7)
     {
         rdp.tiles[0].ul_s = ul_s;
         rdp.tiles[0].ul_t = ul_t;
@@ -2097,7 +2104,7 @@ static void rdp_loadtile()
     info.tile_ul_t = ul_t;
     info.tile_width = (rdp.tiles[tile].mask_s ? minval((uint16_t)width, 1 << rdp.tiles[tile].mask_s) : (uint16_t)width);
     info.tile_height = (rdp.tiles[tile].mask_t ? minval((uint16_t)height, 1 << rdp.tiles[tile].mask_t) : (uint16_t)height);
-    if (g_settings->hacks&hack_MK64)
+    if (g_settings->hacks(CSettings::hack_MK64))
     {
         if (info.tile_width % 2)
         {
@@ -2220,7 +2227,7 @@ static void rdp_fillrect()
     if ((rdp.cimg == rdp.zimg) || (g_settings->fb_emulation_enabled() && rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_zimg) || pd_multiplayer)
     {
         WriteTrace(TraceRDP, TraceDebug, "Fillrect - cleared the depth buffer");
-        if (!(g_settings->hacks&hack_Hyperbike) || rdp.ci_width > 64) //do not clear main depth buffer for aux depth buffers
+        if (!g_settings->hacks(CSettings::hack_Hyperbike) || rdp.ci_width > 64) //do not clear main depth buffer for aux depth buffers
         {
             update_scissor();
             grDepthMask(FXTRUE);
@@ -2229,25 +2236,22 @@ static void rdp_fillrect()
             grColorMask(FXTRUE, FXTRUE);
             rdp.update |= UPDATE_ZBUF_ENABLED;
         }
-        //if (g_settings->frame_buffer&fb_depth_clear)
+        ul_x = minval(maxval(ul_x, rdp.scissor_o.ul_x), rdp.scissor_o.lr_x);
+        lr_x = minval(maxval(lr_x, rdp.scissor_o.ul_x), rdp.scissor_o.lr_x);
+        ul_y = minval(maxval(ul_y, rdp.scissor_o.ul_y), rdp.scissor_o.lr_y);
+        lr_y = minval(maxval(lr_y, rdp.scissor_o.ul_y), rdp.scissor_o.lr_y);
+        uint32_t zi_width_in_dwords = rdp.ci_width >> 1;
+        ul_x >>= 1;
+        lr_x >>= 1;
+        uint32_t * dst = (uint32_t*)(gfx.RDRAM + rdp.cimg);
+        dst += ul_y * zi_width_in_dwords;
+        for (uint32_t y = ul_y; y < lr_y; y++)
         {
-            ul_x = minval(maxval(ul_x, rdp.scissor_o.ul_x), rdp.scissor_o.lr_x);
-            lr_x = minval(maxval(lr_x, rdp.scissor_o.ul_x), rdp.scissor_o.lr_x);
-            ul_y = minval(maxval(ul_y, rdp.scissor_o.ul_y), rdp.scissor_o.lr_y);
-            lr_y = minval(maxval(lr_y, rdp.scissor_o.ul_y), rdp.scissor_o.lr_y);
-            uint32_t zi_width_in_dwords = rdp.ci_width >> 1;
-            ul_x >>= 1;
-            lr_x >>= 1;
-            uint32_t * dst = (uint32_t*)(gfx.RDRAM + rdp.cimg);
-            dst += ul_y * zi_width_in_dwords;
-            for (uint32_t y = ul_y; y < lr_y; y++)
+            for (uint32_t x = ul_x; x < lr_x; x++)
             {
-                for (uint32_t x = ul_x; x < lr_x; x++)
-                {
-                    dst[x] = rdp.fill_color;
-                }
-                dst += zi_width_in_dwords;
+                dst[x] = rdp.fill_color;
             }
+            dst += zi_width_in_dwords;
         }
         return;
     }
@@ -2317,7 +2321,7 @@ static void rdp_fillrect()
     {
         uint32_t color = rdp.fill_color;
 
-        if ((g_settings->hacks&hack_PMario) && rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_aux)
+        if (g_settings->hacks(CSettings::hack_PMario) && rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_aux)
         {
             //background of auxiliary frame buffers must have zero alpha.
             //make it black, set 0 alpha to plack pixels on frame buffer read
@@ -2596,7 +2600,7 @@ static void rdp_setcolorimage()
                         rdp.scale_y = 1.0f;
                     }
                 }
-                else if (rdp.copy_ci_index && (g_settings->hacks&hack_PMario)) //tidal wave
+                else if (rdp.copy_ci_index && g_settings->hacks(CSettings::hack_PMario)) //tidal wave
                     OpenTextureBuffer(rdp.frame_buffers[rdp.main_ci_index]);
             }
             else if (!rdp.motionblur && g_settings->fb_hwfbe_enabled() && !SwapOK && (rdp.ci_count <= rdp.copy_ci_index))
@@ -2636,7 +2640,7 @@ static void rdp_setcolorimage()
                     {
                         //                      if (CloseTextureBuffer(TRUE))
                         //*
-                        if ((g_settings->hacks&hack_Zelda) && (rdp.frame_buffers[rdp.ci_count + 2].status == ci_aux) && !rdp.fb_drawn) //hack for photo camera in Zelda MM
+                        if (g_settings->hacks(CSettings::hack_Zelda) && (rdp.frame_buffers[rdp.ci_count + 2].status == ci_aux) && !rdp.fb_drawn) //hack for photo camera in Zelda MM
                         {
                             CopyFrameBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
                             rdp.fb_drawn = TRUE;
@@ -2737,11 +2741,9 @@ static void rdp_setcolorimage()
         case ci_zimg:
             if (g_settings->ucode != ucode_PerfectDark)
             {
-                if (g_settings->fb_hwfbe_enabled() && !rdp.copy_ci_index && (rdp.copy_zi_index || (g_settings->hacks&hack_BAR)))
+                if (g_settings->fb_hwfbe_enabled() && !rdp.copy_ci_index && (rdp.copy_zi_index || g_settings->hacks(CSettings::hack_BAR)))
                 {
-                    GrLOD_t LOD = GR_LOD_LOG2_1024;
-                    if (g_settings->scr_res_x > 1024)
-                        LOD = GR_LOD_LOG2_2048;
+                    GrLOD_t LOD = g_settings->scr_res_x > 1024 ? GR_LOD_LOG2_1024 : GR_LOD_LOG2_2048;
                     grTextureAuxBufferExt(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, LOD, LOD,
                         GR_ASPECT_LOG2_1x1, GR_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
                     grAuxBufferExt(GR_BUFFER_TEXTUREAUXBUFFER_EXT);
@@ -2778,7 +2780,7 @@ static void rdp_setcolorimage()
         {
             if (!g_settings->fb_hwfbe_enabled() && prev_fb.format == 0)
                 CopyFrameBuffer();
-            else if ((g_settings->hacks&hack_Knockout) && prev_fb.width < 100)
+            else if (g_settings->hacks(CSettings::hack_Knockout) && prev_fb.width < 100)
                 CopyFrameBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
         }
         if (!g_settings->fb_hwfbe_enabled() && cur_fb.status == ci_copy)
@@ -2792,7 +2794,7 @@ static void rdp_setcolorimage()
         {
             if (cur_fb.format == 0)
             {
-                if ((g_settings->hacks&hack_PPL) && (rdp.scale_x < 1.1f))  //need to put current image back to frame buffer
+                if (g_settings->hacks(CSettings::hack_PPL) && (rdp.scale_x < 1.1f))  //need to put current image back to frame buffer
                 {
                     int width = cur_fb.width;
                     int height = cur_fb.height;
@@ -3231,7 +3233,7 @@ void DetectFrameBufferUsage()
     uint32_t a;
 
     int tidal = FALSE;
-    if ((g_settings->hacks&hack_PMario) && (rdp.copy_ci_index || rdp.frame_buffers[rdp.copy_ci_index].status == ci_copy_self))
+    if (g_settings->hacks(CSettings::hack_PMario) && (rdp.copy_ci_index || rdp.frame_buffers[rdp.copy_ci_index].status == ci_copy_self))
         tidal = TRUE;
     uint32_t ci = rdp.cimg, zi = rdp.zimg;
     uint32_t ci_height = rdp.frame_buffers[(rdp.ci_count > 0) ? rdp.ci_count - 1 : 0].height;
@@ -3429,8 +3431,10 @@ void DetectFrameBufferUsage()
         }
     }
     rdp.ci_count = 0;
-    if (g_settings->hacks&hack_Banjo2)
+    if (g_settings->hacks(CSettings::hack_Banjo2))
+    {
         rdp.cur_tex_buf = 0;
+    }
     rdp.maincimg[0] = rdp.frame_buffers[rdp.main_ci_index];
     //    rdp.scale_x = rdp.scale_x_bak;
     //    rdp.scale_y = rdp.scale_y_bak;
