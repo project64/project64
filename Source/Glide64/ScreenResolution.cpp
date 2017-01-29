@@ -217,6 +217,7 @@ int GetCurrentResIndex(void)
     return g_FullScreenResolutions.getCurrentResolutions();
 }
 
+#ifndef ANDROID
 char ** grQueryResolutionsExt(int32_t * Size)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
@@ -229,3 +230,4 @@ uint32_t grWrapperFullScreenResolutionExt(uint32_t * width, uint32_t * height)
     g_FullScreenResolutions.getResolution(g_settings->wrpResolution, width, height);
     return g_settings->wrpResolution;
 }
+#endif

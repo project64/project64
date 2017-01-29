@@ -6,6 +6,7 @@ int GetCurrentResIndex(void);
 #endif
 
 short Set_basic_mode = 0, Set_texture_dir = 0, Set_log_dir = 0, Set_log_flush = 0;
+extern int g_width, g_height;
 
 CSettings::CSettings() :
     m_dirty(false),
@@ -19,8 +20,7 @@ res_data(GR_RESOLUTION_640x480),
 advanced_options(0),
 texenh_options(0),
 vsync(0),
-
-rotate(0),
+    m_rotate(Rotate_None),
 
 filtering(0),
 fog(0),
@@ -120,7 +120,7 @@ void CSettings::RegisterSettings(void)
 #else
     general_setting(Set_wrpFBO, "wrpFBO", 1);
 #endif
-    general_setting(Set_Rotate, "rotate", 0);
+    general_setting(Set_Rotate, "rotate", Rotate_None);
     general_setting(Set_wrpAnisotropic, "wrpAnisotropic", 0);
     general_setting(Set_autodetect_ucode, "autodetect_ucode", 1);
     general_setting(Set_ucode, "ucode", 2);
@@ -270,7 +270,7 @@ void CSettings::ReadSettings()
     this->wrpResolution = GetSetting(Set_FullScreenRes);
 #endif
     this->vsync = GetSetting(Set_vsync);
-    this->rotate = GetSetting(Set_Rotate);
+    m_rotate = (ScreenRotate_t)GetSetting(Set_Rotate);
     this->advanced_options = Set_basic_mode ? !GetSystemSetting(Set_basic_mode) : 0;
     this->texenh_options = GetSetting(Set_texenh_options);
 
@@ -555,8 +555,7 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_FullScreenRes, g_settings->wrpResolution);
 #endif
     SetSetting(Set_vsync, g_settings->vsync);
-    SetSetting(Set_Rotate, g_settings->rotate);
-    //SetSetting(Set_advanced_options,g_settings->advanced_options);
+    SetSetting(Set_Rotate, m_rotate);
     SetSetting(Set_texenh_options, g_settings->texenh_options);
 
     SetSetting(Set_wrpVRAM, g_settings->wrpVRAM);

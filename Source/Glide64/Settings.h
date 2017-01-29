@@ -68,6 +68,14 @@ public:
         Aspect_Original = 3,
     };
 
+    enum ScreenRotate_t
+    {
+        Rotate_None = 0,
+        Rotate_90 = 1,
+        Rotate_180 = 2,
+        Rotate_270 = 3,
+    };
+
     uint32_t res_x, scr_res_x;
     uint32_t res_y, scr_res_y;
 #ifndef ANDROID
@@ -78,7 +86,6 @@ public:
     int texenh_options;
     int vsync;
 
-    int rotate;
 
     int filtering;
     int fog;
@@ -112,6 +119,7 @@ public:
 
     inline const char * log_dir(void) const { return m_log_dir; }
     inline bool FlushLogs(void) const { return m_FlushLogs; }
+    inline ScreenRotate_t rotate(void) const { return m_rotate; }
 
     inline AspectMode_t aspectmode(void) const { return m_aspectmode; }
     //Texture filtering options
@@ -193,6 +201,7 @@ private:
     char m_log_dir[260];
     AspectMode_t m_aspectmode;
     uint32_t m_frame_buffer;
+    ScreenRotate_t m_rotate;
     hacks_t m_hacks;
 };
 

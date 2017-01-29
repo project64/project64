@@ -241,7 +241,7 @@ void check_link(GLuint program)
     }
 }
 
-void set_rotation_matrix(GLuint loc, int rotate)
+void set_rotation_matrix(GLuint loc, CSettings::ScreenRotate_t rotate)
 {
     GLfloat mat[16];
 
@@ -252,13 +252,13 @@ void set_rotation_matrix(GLuint loc, int rotate)
      * (0, 0, 0, 1)
      */
 
-    //mat[0] =  cos(angle);
-    //mat[1] =  sin(angle);
+    mat[0] = 1;
+    mat[1] = 0;
     mat[2] = 0;
     mat[3] = 0;
 
-    //mat[4] = -sin(angle);
-    //mat[5] =  cos(angle);
+    mat[4] = 0;
+    mat[5] = 1;
     mat[6] = 0;
     mat[7] = 0;
 
@@ -273,35 +273,27 @@ void set_rotation_matrix(GLuint loc, int rotate)
     mat[15] = 1;
 
     /* now set the actual rotation */
-    if (1 == rotate) // 90 degree
+    if (rotate == CSettings::Rotate_90)
     {
         mat[0] = 0;
         mat[1] = 1;
         mat[4] = -1;
         mat[5] = 0;
     }
-    else if (2 == rotate) // 180 degree
+    else if (rotate == CSettings::Rotate_180)
     {
         mat[0] = -1;
         mat[1] = 0;
         mat[4] = 0;
         mat[5] = -1;
     }
-    else if (3 == rotate) // 270 degree
+    else if (rotate == CSettings::Rotate_270)
     {
         mat[0] = 0;
         mat[1] = -1;
         mat[4] = 1;
         mat[5] = 0;
     }
-    else /* 0 degree, also fallback if input is wrong) */
-    {
-        mat[0] = 1;
-        mat[1] = 0;
-        mat[4] = 0;
-        mat[5] = 1;
-    }
-
     glUniformMatrix4fv(loc, 1, GL_FALSE, mat);
 }
 
@@ -349,7 +341,7 @@ void init_combiner()
     check_link(g_program_object_default);
     glUseProgram(g_program_object_default);
     int rotation_matrix_location = glGetUniformLocation(g_program_object_default, "rotation_matrix");
-    set_rotation_matrix(rotation_matrix_location, g_settings->rotate);
+    set_rotation_matrix(rotation_matrix_location, g_settings->rotate());
 
     texture0_location = glGetUniformLocation(g_program_object_default, "texture0");
     texture1_location = glGetUniformLocation(g_program_object_default, "texture1");
@@ -484,7 +476,7 @@ void update_uniforms(GLuint program_object, const shader_program_key & prog)
     }
 
     GLuint rotation_matrix_location = glGetUniformLocation(program_object, "rotation_matrix");
-    set_rotation_matrix(rotation_matrix_location, g_settings->rotate);
+    set_rotation_matrix(rotation_matrix_location, g_settings->rotate());
     set_lambda();
 }
 
