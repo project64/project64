@@ -1422,17 +1422,23 @@ void CALL UpdateScreen(void)
         }
         return;
     }
-    if (g_settings->swapmode == 0)
+    if (g_settings->swapmode() == CSettings::SwapMode_Old)
+    {
         newSwapBuffers();
+    }
 }
 
 static void DrawWholeFrameBufferToScreen()
 {
     static uint32_t toScreenCI = 0;
     if (rdp.ci_width < 200)
+    {
         return;
+    }
     if (rdp.cimg == toScreenCI)
+    {
         return;
+    }
     toScreenCI = rdp.cimg;
     FB_TO_SCREEN_INFO fb_info;
     fb_info.addr = rdp.cimg;
@@ -1440,7 +1446,9 @@ static void DrawWholeFrameBufferToScreen()
     fb_info.width = rdp.ci_width;
     fb_info.height = rdp.ci_height;
     if (fb_info.height == 0)
+    {
         return;
+    }
     fb_info.ul_x = 0;
     fb_info.lr_x = rdp.ci_width - 1;
     fb_info.ul_y = 0;

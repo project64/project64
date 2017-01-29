@@ -606,8 +606,10 @@ EXPORT void CALL ProcessDList(void)
         GoToFullScreen();
 
     //* Set states *//
-    if (g_settings->swapmode > 0)
+    if (g_settings->swapmode() != CSettings::SwapMode_Old)
+    {
         SwapOK = TRUE;
+    }
     rdp.updatescreen = 1;
 
     rdp.tri_n = 0;  // 0 triangles so far this frame
@@ -697,11 +699,7 @@ EXPORT void CALL ProcessDList(void)
                 // cmd2 and cmd3 are filled only when needed, by the function that needs them
 
                 // Output the address before the command
-#ifdef LOG_COMMANDS
                 WriteTrace(TraceRDP, TraceDebug, "%08lx (c0:%08lx, c1:%08lx): ", a, rdp.cmd0, rdp.cmd1);
-#else
-                WriteTrace(TraceRDP, TraceDebug, "%08lx: ", a);
-#endif
 
                 // Go to the next instruction
                 rdp.pc[rdp.pc_i] = (a + 8) & BMASK;
@@ -2766,7 +2764,7 @@ static void rdp_setcolorimage()
             rdp.skip_drawing = TRUE;
             break;
         case ci_copy_self:
-            if (g_settings->fb_hwfbe_enabled() && (rdp.ci_count <= rdp.copy_ci_index) && (!SwapOK || g_settings->swapmode == 2))
+            if (g_settings->fb_hwfbe_enabled() && (rdp.ci_count <= rdp.copy_ci_index) && (!SwapOK || g_settings->swapmode() == CSettings::SwapMode_Hybrid))
             {
                 OpenTextureBuffer(cur_fb);
             }
@@ -2896,12 +2894,14 @@ static void rdp_setcolorimage()
     }
 
     CI_SET = TRUE;
-    if (g_settings->swapmode > 0)
+    if (g_settings->swapmode() != CSettings::SwapMode_Old)
     {
         if (rdp.zimg == rdp.cimg)
+        {
             rdp.updatescreen = 1;
+        }
 
-        int viSwapOK = ((g_settings->swapmode == 2) && (rdp.vi_org_reg == *gfx.VI_ORIGIN_REG)) ? FALSE : TRUE;
+        int viSwapOK = ((g_settings->swapmode() == CSettings::SwapMode_Hybrid) && (rdp.vi_org_reg == *gfx.VI_ORIGIN_REG)) ? FALSE : TRUE;
         if ((rdp.zimg != rdp.cimg) && (rdp.ocimg != rdp.cimg) && SwapOK && viSwapOK && !rdp.cur_image)
         {
             if (g_settings->fb_emulation_enabled())
@@ -2912,7 +2912,7 @@ static void rdp_setcolorimage()
             {
                 rdp.maincimg[0].addr = rdp.cimg;
             }
-            rdp.last_drawn_ci_addr = (g_settings->swapmode == 2) ? swapped_addr : rdp.maincimg[0].addr;
+            rdp.last_drawn_ci_addr = (g_settings->swapmode() == CSettings::SwapMode_Hybrid) ? swapped_addr : rdp.maincimg[0].addr;
             swapped_addr = rdp.cimg;
             newSwapBuffers();
             rdp.vi_org_reg = *gfx.VI_ORIGIN_REG;
@@ -3366,7 +3366,7 @@ void DetectFrameBufferUsage()
     {
         if (g_settings->fb_hwfbe_enabled())
         {
-            if (rdp.read_previous_ci && !previous_ci_was_read && (g_settings->swapmode != 2) && (g_settings->ucode != ucode_PerfectDark))
+            if (rdp.read_previous_ci && !previous_ci_was_read && (g_settings->swapmode() != CSettings::SwapMode_Hybrid) && (g_settings->ucode != ucode_PerfectDark))
             {
                 int ind = (rdp.ci_count > 0) ? rdp.ci_count - 1 : 0;
                 uint32_t height = rdp.frame_buffers[ind].height;
@@ -4054,8 +4054,10 @@ void CALL ProcessRDPList(void)
         GoToFullScreen();
 
     //* Set states *//
-    if (g_settings->swapmode > 0)
+    if (g_settings->swapmode() != CSettings::SwapMode_Old)
+    {
         SwapOK = TRUE;
+    }
     rdp.updatescreen = 1;
 
     rdp.tri_n = 0;  // 0 triangles so far this frame
@@ -4109,7 +4111,8 @@ void CALL ProcessRDPList(void)
 
     bool setZero = true;
 
-    while (rdp_cmd_cur != rdp_cmd_ptr) {
+    while (rdp_cmd_cur != rdp_cmd_ptr)
+    {
         uint32_t cmd = (rdp_cmd_data[rdp_cmd_cur] >> 24) & 0x3f;
 
         if ((((rdp_cmd_ptr - rdp_cmd_cur)&maxCMDMask) * 4) < rdp_command_length[cmd]) {
@@ -4131,7 +4134,8 @@ void CALL ProcessRDPList(void)
         rdp_cmd_cur = (rdp_cmd_cur + rdp_command_length[cmd] / 4) & maxCMDMask;
     }
 
-    if (setZero) {
+    if (setZero) 
+    {
         rdp_cmd_ptr = 0;
         rdp_cmd_cur = 0;
     }

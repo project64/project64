@@ -430,7 +430,7 @@ static void fb_setcolorimage()
     }
     if (cur_fb.status == ci_main)
     {
-        int viSwapOK = ((g_settings->swapmode == 2) && (rdp.vi_org_reg == *gfx.VI_ORIGIN_REG)) ? FALSE : TRUE;
+        int viSwapOK = ((g_settings->swapmode() == CSettings::SwapMode_Hybrid) && (rdp.vi_org_reg == *gfx.VI_ORIGIN_REG)) ? FALSE : TRUE;
         if ((rdp.maincimg[0].addr != cur_fb.addr) && SwapOK && viSwapOK)
         {
             SwapOK = FALSE;

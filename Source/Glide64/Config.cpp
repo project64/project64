@@ -491,10 +491,10 @@ public:
         TTSetTxt(IDC_TXT_BUFFER_SWAPPING, tooltip.c_str());
         TTSetTxt(IDC_CMB_BUFFER_SWAPPING, tooltip.c_str());
         m_cmbBufferSwap.Attach(GetDlgItem(IDC_CMB_BUFFER_SWAPPING));
-        m_cmbBufferSwap.SetItemData(m_cmbBufferSwap.AddString("Old"), 0);
-        m_cmbBufferSwap.SetItemData(m_cmbBufferSwap.AddString("New"), 1);
-        m_cmbBufferSwap.SetItemData(m_cmbBufferSwap.AddString("Hybrid"), 2);
-        SetComboBoxIndex(m_cmbBufferSwap, g_settings->swapmode);
+        m_cmbBufferSwap.SetItemData(m_cmbBufferSwap.AddString("Old"), CSettings::SwapMode_Old);
+        m_cmbBufferSwap.SetItemData(m_cmbBufferSwap.AddString("New"), CSettings::SwapMode_New);
+        m_cmbBufferSwap.SetItemData(m_cmbBufferSwap.AddString("Hybrid"), CSettings::SwapMode_Hybrid);
+        SetComboBoxIndex(m_cmbBufferSwap, g_settings->swapmode());
 
         tooltip = "Per-pixel level-of-detail calculation:\n\nN64 uses special mechanism for mip-mapping, which nearly impossible to reproduce correctly on PC hardware.\nThis option enables approximate emulation of this feature.\nFor example, it is required for the Peach/Bowser portrait's transition in Super Mario 64.\nThere are 3 modes:\n\n* off - LOD is not calculated\n* fast - fast imprecise LOD calculation.\n* precise - most precise LOD calculation possible, but more slow.\n\n[Recommended: your preference]";
         TTSetTxt(IDC_TXT_LOD_CALC, tooltip.c_str());
@@ -562,7 +562,7 @@ public:
 
         g_settings->SetFiltering((CSettings::Filtering_t)m_cmbFiltering.GetItemData(m_cmbFiltering.GetCurSel()));
         g_settings->SetAspectmode((CSettings::AspectMode_t)m_cmbAspect.GetItemData(m_cmbAspect.GetCurSel()));
-        g_settings->swapmode = m_cmbBufferSwap.GetItemData(m_cmbBufferSwap.GetCurSel());
+        g_settings->SetSwapMode((CSettings::SwapMode_t)m_cmbBufferSwap.GetItemData(m_cmbBufferSwap.GetCurSel()));
         g_settings->fog = m_cbxFog.GetCheck() == BST_CHECKED;
         g_settings->buff_clear = m_cbxBuffer.GetCheck() == BST_CHECKED;
         g_settings->lodmode = m_cmbLOD.GetItemData(m_cmbLOD.GetCurSel());
