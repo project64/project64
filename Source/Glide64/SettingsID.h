@@ -44,6 +44,6 @@ enum
     Set_ucodeLookup,
 
 #ifdef _WIN32
-    Set_wrpResolution,
+    Set_FullScreenRes,
 #endif
 };

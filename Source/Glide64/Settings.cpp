@@ -110,7 +110,7 @@ void CSettings::RegisterSettings(void)
     SetModuleName("Glide64");
 #ifdef _WIN32
     general_setting(Set_Resolution, "resolution", 7);
-    general_setting(Set_wrpResolution, "wrpResolution", GetCurrentResIndex());
+    general_setting(Set_FullScreenRes, "FullScreenRes", GetCurrentResIndex());
 #endif
     general_setting(Set_vsync, "vsync", 1);
     general_setting(Set_texenh_options, "texenh_options", 0);
@@ -257,7 +257,7 @@ void CSettings::ReadSettings()
 #else
     this->res_data = (uint32_t)GetSetting(Set_Resolution);
     if (this->res_data >= 24) this->res_data = 12;
-    this->wrpResolution = GetSetting(Set_wrpResolution);
+    this->wrpResolution = GetSetting(Set_FullScreenRes);
 #endif
     this->vsync = GetSetting(Set_vsync);
     this->rotate = GetSetting(Set_Rotate);
@@ -478,7 +478,7 @@ void CSettings::WriteSettings(void)
 {
 #ifdef _WIN32
     SetSetting(Set_Resolution, (int)g_settings->res_data);
-    SetSetting(Set_wrpResolution, g_settings->wrpResolution);
+    SetSetting(Set_FullScreenRes, g_settings->wrpResolution);
 #endif
     SetSetting(Set_vsync, g_settings->vsync);
     SetSetting(Set_Rotate, g_settings->rotate);
