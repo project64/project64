@@ -26,7 +26,7 @@ vsync(0),
 fog(0),
 buff_clear(0),
     m_swapmode(SwapMode_Old),
-lodmode(0),
+    m_lodmode(LOD_Off),
     m_aspectmode(Aspect_4x3),
     m_frame_buffer(0),
 //Texture filtering options
@@ -149,7 +149,7 @@ void CSettings::RegisterSettings(void)
 
     general_setting(Set_optimize_texrect_default, "optimize_texrect", true);
     general_setting(Set_filtering_default, "filtering", CSettings::Filter_Automatic);
-    general_setting(Set_lodmode_default, "lodmode", 0);
+    general_setting(Set_lodmode_default, "lodmode", CSettings::LOD_Off);
     general_setting(Set_fog_default, "fog", 1);
     general_setting(Set_buff_clear_default, "buff_clear", 1);
     general_setting(Set_swapmode_default, "swapmode", SwapMode_New);
@@ -211,6 +211,15 @@ void CSettings::SetAspectmode(AspectMode_t value)
     {
         m_aspectmode = value;
         UpdateAspectRatio();
+        m_dirty = true;
+    }
+}
+
+void CSettings::SetLODmode(PixelLevelOfDetail_t value)
+{
+    if (value != m_lodmode)
+    {
+        m_lodmode = value;
         m_dirty = true;
     }
 }
@@ -503,7 +512,6 @@ void CSettings::ReadGameSettings(const char * name)
 
     g_settings->fog = GetSetting(g_romopen ? Set_fog : Set_fog_default);
     g_settings->buff_clear = GetSetting(g_romopen ? Set_buff_clear : Set_buff_clear_default);
-    g_settings->lodmode = GetSetting(g_romopen ? Set_lodmode : Set_lodmode_default);
 #ifdef _WIN32
     g_settings->res_data = GetSetting(Set_Resolution);
     if (g_settings->res_data < 0 || g_settings->res_data >= 0x18) g_settings->res_data = 12;
@@ -564,6 +572,7 @@ void CSettings::ReadGameSettings(const char * name)
     SetFiltering((Filtering_t)GetSetting(g_romopen ? Set_filtering : Set_filtering_default));
     SetSwapMode((SwapMode_t)GetSetting(g_romopen ? Set_swapmode : Set_swapmode_default));
     SetAspectmode((AspectMode_t)GetSetting(g_romopen ? Set_aspect : Set_aspect_default));
+    SetLODmode((PixelLevelOfDetail_t)GetSetting(g_romopen ? Set_lodmode : Set_lodmode_default));
     g_settings->flame_corona = g_settings->hacks(hack_Zelda) && !fb_depth_render_enabled();
 }
 
@@ -613,7 +622,7 @@ void CSettings::WriteSettings(void)
     SetSetting(g_romopen ? Set_fog : Set_fog_default, g_settings->fog);
     SetSetting(g_romopen ? Set_buff_clear : Set_buff_clear_default, g_settings->buff_clear);
     SetSetting(g_romopen ? Set_swapmode : Set_swapmode_default, g_settings->swapmode());
-    SetSetting(g_romopen ? Set_lodmode : Set_lodmode_default, g_settings->lodmode);
+    SetSetting(g_romopen ? Set_lodmode : Set_lodmode_default, lodmode());
     SetSetting(g_romopen ? Set_aspect : Set_aspect_default, m_aspectmode);
 
     SetSetting(g_romopen ? Set_fb_read_always : Set_fb_read_always_default, g_settings->fb_ref_enabled() ? true : false);

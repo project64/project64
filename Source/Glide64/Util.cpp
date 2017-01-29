@@ -971,7 +971,7 @@ static void CalculateLOD(VERTEX *v, int n)
     double intptr;
     float s_scale = rdp.tiles[rdp.cur_tile].width / 255.0f;
     float t_scale = rdp.tiles[rdp.cur_tile].height / 255.0f;
-    if (g_settings->lodmode == 1)
+    if (g_settings->lodmode() == CSettings::LOD_Fast)
     {
         deltaS = (v[1].u0 / v[1].q - v[0].u0 / v[0].q) * s_scale;
         deltaT = (v[1].v0 / v[1].q - v[0].v0 / v[0].q) * t_scale;
@@ -1569,20 +1569,13 @@ static void render_tri(uint16_t linew, int old_interpolate)
         }
     }
 
-    if (g_settings->lodmode > 0 && rdp.cur_tile < rdp.mipmap_level)
+    if (g_settings->lodmode() != CSettings::LOD_Off && rdp.cur_tile < rdp.mipmap_level)
+    {
         CalculateLOD(rdp.vtxbuf, n);
+    }
 
     cmb.cmb_ext_use = cmb.tex_cmb_ext_use = 0;
 
-    /*
-    if (rdp.tbuff_tex)
-    {
-    for (int k = 0; k < 3; k++)
-    {
-    WriteTrace(TraceRDP, TraceDebug, "v%d %f->%f, width: %d. height: %d, tex_width: %d, tex_height: %d, lr_u: %f, lr_v: %f", k, vv0[k], pv[k]->v1, rdp.tbuff_tex->width, rdp.tbuff_tex->height, rdp.tbuff_tex->tex_width, rdp.tbuff_tex->tex_height, rdp.tbuff_tex->lr_u, rdp.tbuff_tex->lr_v);
-    }
-    }
-    */
     if (g_settings->wireframe)
     {
         SetWireframeCol();
@@ -1595,11 +1588,6 @@ static void render_tri(uint16_t linew, int old_interpolate)
     }
     else
     {
-        //      VERTEX ** pv = rdp.vtx_buffer?(vtx_list2):(vtx_list1);
-        //      for (int k = 0; k < n; k ++)
-        //			WriteTrace(TraceRDP, TraceDebug, "DRAW[%d]: v.x = %f, v.y = %f, v.z = %f, v.u = %f, v.v = %f", k, pv[k]->x, pv[k]->y, pv[k]->z, pv[k]->coord[rdp.t0<<1], pv[k]->coord[(rdp.t0<<1)+1]);
-        //        pv[k]->y = g_settings->res_y - pv[k]->y;
-
         if (linew > 0)
         {
             VERTEX *V0 = &rdp.vtxbuf[0];

@@ -500,10 +500,10 @@ public:
         TTSetTxt(IDC_TXT_LOD_CALC, tooltip.c_str());
         TTSetTxt(IDC_CMB_LOD_CALC, tooltip.c_str());
         m_cmbLOD.Attach(GetDlgItem(IDC_CMB_LOD_CALC));
-        m_cmbLOD.SetItemData(m_cmbLOD.AddString("off"), 0);
-        m_cmbLOD.SetItemData(m_cmbLOD.AddString("fast"), 1);
-        m_cmbLOD.SetItemData(m_cmbLOD.AddString("precise"), 2);
-        SetComboBoxIndex(m_cmbLOD, g_settings->lodmode);
+        m_cmbLOD.SetItemData(m_cmbLOD.AddString("off"), CSettings::LOD_Off);
+        m_cmbLOD.SetItemData(m_cmbLOD.AddString("fast"), CSettings::LOD_Fast);
+        m_cmbLOD.SetItemData(m_cmbLOD.AddString("precise"), CSettings::LOD_Precise);
+        SetComboBoxIndex(m_cmbLOD, g_settings->lodmode());
 
         tooltip = "Aspect ratio of the output:\n\nMost N64 games use 4:3 aspect ratio, but some support widescreen too.\nYou may select appropriate aspect here and set widescreen mode in game settings->\nIn \"Stretch\" mode the output will be stretched to the entire screen, other modes may add black borders if necessary";
         TTSetTxt(IDC_TXT_ASPECT_RATIO, tooltip.c_str());
@@ -565,7 +565,7 @@ public:
         g_settings->SetSwapMode((CSettings::SwapMode_t)m_cmbBufferSwap.GetItemData(m_cmbBufferSwap.GetCurSel()));
         g_settings->fog = m_cbxFog.GetCheck() == BST_CHECKED;
         g_settings->buff_clear = m_cbxBuffer.GetCheck() == BST_CHECKED;
-        g_settings->lodmode = m_cmbLOD.GetItemData(m_cmbLOD.GetCurSel());
+        g_settings->SetLODmode((CSettings::PixelLevelOfDetail_t)m_cmbLOD.GetItemData(m_cmbLOD.GetCurSel()));
 
         CButton * fb_buttons[] =
         {

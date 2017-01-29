@@ -90,6 +90,13 @@ public:
         SwapMode_Hybrid = 2,
     };
 
+    enum PixelLevelOfDetail_t
+    {
+        LOD_Off = 0,
+        LOD_Fast = 1,
+        LOD_Precise = 2,
+    };
+
     uint32_t res_x, scr_res_x;
     uint32_t res_y, scr_res_y;
 #ifndef ANDROID
@@ -103,7 +110,6 @@ public:
 
     int fog;
     int buff_clear;
-    int lodmode;
 
 
     enum FBCRCMODE 
@@ -135,6 +141,7 @@ public:
     inline Filtering_t filtering(void) const { return m_filtering; }
 
     inline SwapMode_t swapmode(void) const { return m_swapmode; }
+    inline PixelLevelOfDetail_t lodmode(void) const { return m_lodmode; }
     inline AspectMode_t aspectmode(void) const { return m_aspectmode; }
     //Texture filtering options
     std::string texture_dir;
@@ -200,6 +207,7 @@ public:
     int wrpFBO;
     int wrpAnisotropic;
     void SetAspectmode(AspectMode_t value);
+    void SetLODmode(PixelLevelOfDetail_t value);
     void SetFiltering(Filtering_t value);
     void SetSwapMode(SwapMode_t value);
     void UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove);
@@ -220,6 +228,7 @@ private:
     ScreenRotate_t m_rotate;
     Filtering_t m_filtering;
     SwapMode_t m_swapmode;
+    PixelLevelOfDetail_t m_lodmode;
     hacks_t m_hacks;
 };
 

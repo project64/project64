@@ -15521,12 +15521,18 @@ void Combine()
         Alpha0[(rdp.cycle1 >> 16) & 7], Alpha1[(rdp.cycle1 >> 19) & 7], Alpha2[(rdp.cycle1 >> 22) & 7], Alpha3[(rdp.cycle1 >> 25) & 7],
         Alpha0[(rdp.cycle2 >> 16) & 7], Alpha1[(rdp.cycle2 >> 19) & 7], Alpha2[(rdp.cycle2 >> 22) & 7], Alpha3[(rdp.cycle2 >> 25) & 7]);
     if (!rdp.LOD_en || rdp.cur_tile == rdp.mipmap_level)
+    {
         lod_frac = rdp.prim_lodfrac;
-    else if (g_settings->lodmode == 0)
+    }
+    else if (g_settings->lodmode() == CSettings::LOD_Off)
+    {
         lod_frac = 0;
+    }
     else
+    {
         lod_frac = 10;
-
+    }
+     
     rdp.noise = RDP::noise_none;
 
     uint32_t found = TRUE;
