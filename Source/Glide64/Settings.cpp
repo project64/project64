@@ -21,8 +21,8 @@ advanced_options(0),
 texenh_options(0),
 vsync(0),
     m_rotate(Rotate_None),
+    m_filtering(Filter_Automatic),
 
-filtering(0),
 fog(0),
 buff_clear(0),
 swapmode(0),
@@ -148,7 +148,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_ghq_hirs_dump, "ghq_hirs_dump", 0);
 
     general_setting(Set_optimize_texrect_default, "optimize_texrect", true);
-    general_setting(Set_filtering_default, "filtering", 0);
+    general_setting(Set_filtering_default, "filtering", CSettings::Filter_Automatic);
     general_setting(Set_lodmode_default, "lodmode", 0);
     general_setting(Set_fog_default, "fog", 1);
     general_setting(Set_buff_clear_default, "buff_clear", 1);
@@ -211,6 +211,15 @@ void CSettings::SetAspectmode(AspectMode_t value)
     {
         m_aspectmode = value;
         UpdateAspectRatio();
+        m_dirty = true;
+    }
+}
+
+void CSettings::SetFiltering(Filtering_t value)
+{
+    if (value != m_filtering)
+    {
+        m_filtering = value;
         m_dirty = true;
     }
 }
@@ -483,7 +492,6 @@ void CSettings::ReadGameSettings(const char * name)
 
     if (fb_crc_mode >= 0) g_settings->fb_crc_mode = (CSettings::FBCRCMODE)fb_crc_mode;
 
-    g_settings->filtering = GetSetting(g_romopen ? Set_filtering : Set_filtering_default);
     g_settings->fog = GetSetting(g_romopen ? Set_fog : Set_fog_default);
     g_settings->buff_clear = GetSetting(g_romopen ? Set_buff_clear : Set_buff_clear_default);
     g_settings->swapmode = GetSetting(g_romopen ? Set_swapmode : Set_swapmode_default);
@@ -544,6 +552,8 @@ void CSettings::ReadGameSettings(const char * name)
     else if (read_back_to_screen == 0) { fb_remove_bits |= fb_read_back_to_screen | fb_read_back_to_screen2; }
 
     g_settings->UpdateFrameBufferBits(fb_add_bits, fb_remove_bits);
+
+    SetFiltering((Filtering_t)GetSetting(g_romopen ? Set_filtering : Set_filtering_default));
     SetAspectmode((AspectMode_t)GetSetting(g_romopen ? Set_aspect : Set_aspect_default));
     g_settings->flame_corona = g_settings->hacks(hack_Zelda) && !fb_depth_render_enabled();
 }
@@ -590,7 +600,7 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_ghq_hirs_let_texartists_fly, g_settings->ghq_hirs_let_texartists_fly);
     SetSetting(Set_ghq_hirs_dump, g_settings->ghq_hirs_dump);
 
-    SetSetting(g_romopen ? Set_filtering : Set_filtering_default, g_settings->filtering);
+    SetSetting(g_romopen ? Set_filtering : Set_filtering_default, filtering());
     SetSetting(g_romopen ? Set_fog : Set_fog_default, g_settings->fog);
     SetSetting(g_romopen ? Set_buff_clear : Set_buff_clear_default, g_settings->buff_clear);
     SetSetting(g_romopen ? Set_swapmode : Set_swapmode_default, g_settings->swapmode);

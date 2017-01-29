@@ -76,6 +76,13 @@ public:
         Rotate_270 = 3,
     };
 
+    enum Filtering_t
+    {
+        Filter_Automatic = 0,
+        Filter_ForceBilinear = 1,
+        Filter_ForcePointSampled = 2,
+    };
+    
     uint32_t res_x, scr_res_x;
     uint32_t res_y, scr_res_y;
 #ifndef ANDROID
@@ -87,7 +94,6 @@ public:
     int vsync;
 
 
-    int filtering;
     int fog;
     int buff_clear;
     int swapmode;
@@ -120,6 +126,7 @@ public:
     inline const char * log_dir(void) const { return m_log_dir; }
     inline bool FlushLogs(void) const { return m_FlushLogs; }
     inline ScreenRotate_t rotate(void) const { return m_rotate; }
+    inline Filtering_t filtering(void) const { return m_filtering; }
 
     inline AspectMode_t aspectmode(void) const { return m_aspectmode; }
     //Texture filtering options
@@ -186,6 +193,7 @@ public:
     int wrpFBO;
     int wrpAnisotropic;
     void SetAspectmode(AspectMode_t value);
+    void SetFiltering(Filtering_t value);
     void UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove);
 
     void ReadGameSettings(const char * name);
@@ -202,6 +210,7 @@ private:
     AspectMode_t m_aspectmode;
     uint32_t m_frame_buffer;
     ScreenRotate_t m_rotate;
+    Filtering_t m_filtering;
     hacks_t m_hacks;
 };
 

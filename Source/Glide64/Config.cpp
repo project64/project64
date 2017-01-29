@@ -482,10 +482,10 @@ public:
         TTSetTxt(IDC_CMB_FILTERING_MODE, tooltip.c_str());
 
         m_cmbFiltering.Attach(GetDlgItem(IDC_CMB_FILTERING_MODE));
-        m_cmbFiltering.SetItemData(m_cmbFiltering.AddString("Automatic"), 0);
-        m_cmbFiltering.SetItemData(m_cmbFiltering.AddString("Force Bilinear"), 1);
-        m_cmbFiltering.SetItemData(m_cmbFiltering.AddString("Force Point-sampled"), 2);
-        SetComboBoxIndex(m_cmbFiltering, g_settings->filtering);
+        m_cmbFiltering.SetItemData(m_cmbFiltering.AddString("Automatic"), CSettings::Filter_Automatic);
+        m_cmbFiltering.SetItemData(m_cmbFiltering.AddString("Force Bilinear"), CSettings::Filter_ForceBilinear);
+        m_cmbFiltering.SetItemData(m_cmbFiltering.AddString("Force Point-sampled"), CSettings::Filter_ForcePointSampled);
+        SetComboBoxIndex(m_cmbFiltering, (uint32_t)g_settings->filtering());
 
         tooltip = "Buffer swapping method:\n\nThere are 3 buffer swapping methods:\n\n* old - swap buffers when vertical interrupt has occurred.\n* new - swap buffers when set of conditions is satisfied. Prevents flicker on some games.\n* hybrid - mix of first two methods.  Can prevent even more flickering then previous method, but also can cause artefacts.\nIf you have flickering problems in a game (or graphics that don't show), try to change swapping method.\n\n[Recommended: new (hybrid for Paper Mario)]";
         TTSetTxt(IDC_TXT_BUFFER_SWAPPING, tooltip.c_str());
@@ -560,7 +560,7 @@ public:
     {
         CSettings oldsettings = *g_settings;
 
-        g_settings->filtering = m_cmbFiltering.GetItemData(m_cmbFiltering.GetCurSel());
+        g_settings->SetFiltering((CSettings::Filtering_t)m_cmbFiltering.GetItemData(m_cmbFiltering.GetCurSel()));
         g_settings->SetAspectmode((CSettings::AspectMode_t)m_cmbAspect.GetItemData(m_cmbAspect.GetCurSel()));
         g_settings->swapmode = m_cmbBufferSwap.GetItemData(m_cmbBufferSwap.GetCurSel());
         g_settings->fog = m_cbxFog.GetCheck() == BST_CHECKED;
