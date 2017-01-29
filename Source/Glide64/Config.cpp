@@ -510,11 +510,11 @@ public:
         TTSetTxt(IDC_CMB_ASPECT_RATIO, tooltip.c_str());
 
         m_cmbAspect.Attach(GetDlgItem(IDC_CMB_ASPECT_RATIO));
-        m_cmbAspect.SetItemData(m_cmbAspect.AddString("4:3 (default)"), 0);
-        m_cmbAspect.SetItemData(m_cmbAspect.AddString("Force 16:9"), 1);
-        m_cmbAspect.SetItemData(m_cmbAspect.AddString("Stretch"), 2);
-        m_cmbAspect.SetItemData(m_cmbAspect.AddString("Original"), 3);
-        SetComboBoxIndex(m_cmbAspect, g_settings->aspectmode);
+        m_cmbAspect.SetItemData(m_cmbAspect.AddString("4:3 (default)"), CSettings::Aspect_4x3);
+        m_cmbAspect.SetItemData(m_cmbAspect.AddString("Force 16:9"), CSettings::Aspect_16x9);
+        m_cmbAspect.SetItemData(m_cmbAspect.AddString("Stretch"), CSettings::Aspect_Stretch);
+        m_cmbAspect.SetItemData(m_cmbAspect.AddString("Original"), CSettings::Aspect_Original);
+        SetComboBoxIndex(m_cmbAspect, (uint32_t)g_settings->aspectmode());
 
         tooltip = "Fog enabled:\n\nSets fog emulation on//off.\n\n[Recommended: on]";
         TTSetTxt(IDC_CHK_FOG, tooltip.c_str());
@@ -561,7 +561,7 @@ public:
         CSettings oldsettings = *g_settings;
 
         g_settings->filtering = m_cmbFiltering.GetItemData(m_cmbFiltering.GetCurSel());
-        g_settings->aspectmode = m_cmbAspect.GetItemData(m_cmbAspect.GetCurSel());
+        g_settings->SetAspectmode((CSettings::AspectMode_t)m_cmbAspect.GetItemData(m_cmbAspect.GetCurSel()));
         g_settings->swapmode = m_cmbBufferSwap.GetItemData(m_cmbBufferSwap.GetCurSel());
         g_settings->fog = m_cbxFog.GetCheck() == BST_CHECKED;
         g_settings->buff_clear = m_cbxBuffer.GetCheck() == BST_CHECKED;

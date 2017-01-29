@@ -190,7 +190,7 @@ void ChangeSize()
     g_settings->res_x += (uint32_t)rdp.offset_x;
     g_settings->res_y += (uint32_t)offset_y;
     rdp.offset_y += offset_y;
-    if (g_settings->aspectmode == 3) // original
+    if (g_settings->aspectmode() == CSettings::Aspect_Original)
     {
         rdp.scale_x = rdp.scale_y = 1.0f;
         rdp.offset_x = (g_settings->scr_res_x - rdp.vi_width) / 2.0f;

@@ -27,7 +27,7 @@ fog(0),
 buff_clear(0),
 swapmode(0),
 lodmode(0),
-aspectmode(0),
+    m_aspectmode(Aspect_4x3),
     m_frame_buffer(0),
 //Texture filtering options
 texture_dir(""),
@@ -153,7 +153,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_fog_default, "fog", 1);
     general_setting(Set_buff_clear_default, "buff_clear", 1);
     general_setting(Set_swapmode_default, "swapmode", 1);
-    general_setting(Set_aspect_default, "aspect", 0);
+    general_setting(Set_aspect_default, "aspect", Aspect_4x3);
 
     general_setting(Set_fb_smart_default, "fb_smart", true);
     general_setting(Set_fb_hires_default, "fb_hires", true);
@@ -205,6 +205,16 @@ void CSettings::RegisterSettings(void)
     game_setting_default(Set_fb_render, "fb_render", Set_fb_render_default);
 }
 
+void CSettings::SetAspectmode(AspectMode_t value)
+{
+    if (value != m_aspectmode)
+    {
+        m_aspectmode = value;
+        UpdateAspectRatio();
+        m_dirty = true;
+    }
+}
+
 void CSettings::UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove)
 {
     uint32_t frame_buffer_original = m_frame_buffer;
@@ -218,9 +228,9 @@ void CSettings::UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove)
 
 void CSettings::UpdateAspectRatio(void)
 {
-    switch (aspectmode)
+    switch (m_aspectmode)
     {
-    case 0: //4:3
+    case Aspect_4x3:
         if (scr_res_x >= scr_res_y * 4.0f / 3.0f) {
             res_y = scr_res_y;
             res_x = (uint32_t)(res_y * 4.0f / 3.0f);
@@ -231,7 +241,7 @@ void CSettings::UpdateAspectRatio(void)
             res_y = (uint32_t)(res_x / 4.0f * 3.0f);
         }
         break;
-    case 1: //16:9
+    case Aspect_16x9:
         if (scr_res_x >= scr_res_y * 16.0f / 9.0f)
         {
             res_y = scr_res_y;
@@ -477,7 +487,6 @@ void CSettings::ReadGameSettings(const char * name)
     g_settings->fog = GetSetting(g_romopen ? Set_fog : Set_fog_default);
     g_settings->buff_clear = GetSetting(g_romopen ? Set_buff_clear : Set_buff_clear_default);
     g_settings->swapmode = GetSetting(g_romopen ? Set_swapmode : Set_swapmode_default);
-    g_settings->aspectmode = GetSetting(g_romopen ? Set_aspect : Set_aspect_default);
     g_settings->lodmode = GetSetting(g_romopen ? Set_lodmode : Set_lodmode_default);
 #ifdef _WIN32
     g_settings->res_data = GetSetting(Set_Resolution);
@@ -535,6 +544,7 @@ void CSettings::ReadGameSettings(const char * name)
     else if (read_back_to_screen == 0) { fb_remove_bits |= fb_read_back_to_screen | fb_read_back_to_screen2; }
 
     g_settings->UpdateFrameBufferBits(fb_add_bits, fb_remove_bits);
+    SetAspectmode((AspectMode_t)GetSetting(g_romopen ? Set_aspect : Set_aspect_default));
     g_settings->flame_corona = g_settings->hacks(hack_Zelda) && !fb_depth_render_enabled();
 }
 
@@ -586,7 +596,7 @@ void CSettings::WriteSettings(void)
     SetSetting(g_romopen ? Set_buff_clear : Set_buff_clear_default, g_settings->buff_clear);
     SetSetting(g_romopen ? Set_swapmode : Set_swapmode_default, g_settings->swapmode);
     SetSetting(g_romopen ? Set_lodmode : Set_lodmode_default, g_settings->lodmode);
-    SetSetting(g_romopen ? Set_aspect : Set_aspect_default, g_settings->aspectmode);
+    SetSetting(g_romopen ? Set_aspect : Set_aspect_default, m_aspectmode);
 
     SetSetting(g_romopen ? Set_fb_read_always : Set_fb_read_always_default, g_settings->fb_ref_enabled() ? true : false);
     SetSetting(g_romopen ? Set_fb_smart : Set_fb_smart_default, g_settings->fb_emulation_enabled() ? true : false);

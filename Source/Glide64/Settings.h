@@ -60,6 +60,14 @@ public:
         hack_OoT = (1<<30),        //zelda OoT hacks
     };
 
+    enum AspectMode_t
+    {
+        Aspect_4x3 = 0,
+        Aspect_16x9 = 1,
+        Aspect_Stretch = 2,
+        Aspect_Original = 3,
+    };
+
     uint32_t res_x, scr_res_x;
     uint32_t res_y, scr_res_y;
 #ifndef ANDROID
@@ -77,7 +85,6 @@ public:
     int buff_clear;
     int swapmode;
     int lodmode;
-    int aspectmode;
 
 
     enum FBCRCMODE 
@@ -106,6 +113,7 @@ public:
     inline const char * log_dir(void) const { return m_log_dir; }
     inline bool FlushLogs(void) const { return m_FlushLogs; }
 
+    inline AspectMode_t aspectmode(void) const { return m_aspectmode; }
     //Texture filtering options
     std::string texture_dir;
     int ghq_fltr;
@@ -169,6 +177,7 @@ public:
     int wrpVRAM;
     int wrpFBO;
     int wrpAnisotropic;
+    void SetAspectmode(AspectMode_t value);
     void UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove);
 
     void ReadGameSettings(const char * name);
@@ -182,6 +191,7 @@ private:
     bool m_dirty;
     bool m_FlushLogs;
     char m_log_dir[260];
+    AspectMode_t m_aspectmode;
     uint32_t m_frame_buffer;
     hacks_t m_hacks;
 };
