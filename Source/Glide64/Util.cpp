@@ -1880,7 +1880,7 @@ void update()
             {
                 if (g_settings->old_style_adither || rdp.alpha_dither_mode != 3) {
                     WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: dither");
-                    grStippleModeExt(g_settings->stipple_mode);
+                    grStippleModeExt(g_settings->stipple_mode());
                 }
                 else
                     grStippleModeExt(GR_STIPPLE_DISABLE);

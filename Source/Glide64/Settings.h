@@ -97,6 +97,13 @@ public:
         LOD_Precise = 2,
     };
 
+    enum StippleMode_t
+    {
+        STIPPLE_Disable = 0x0,
+        STIPPLE_Pattern = 0x1,
+        STIPPLE_Rotate = 0x2,
+    };
+
     uint32_t res_x, scr_res_x;
     uint32_t res_y, scr_res_y;
 #ifndef ANDROID
@@ -183,7 +190,7 @@ public:
     int increase_texrect_edge; // add 1 to lower right corner coordinates of texrect
     int decrease_fillrect_edge; // sub 1 from lower right corner coordinates of fillrect
     int texture_correction; // enable perspective texture correction emulation. is on by default
-    int stipple_mode;  //used for dithered alpha emulation
+    inline StippleMode_t stipple_mode(void) const { return m_stipple_mode; } //used for dithered alpha emulation
     uint32_t stipple_pattern; //used for dithered alpha emulation
     int force_microcheck; //check microcode each frame, for mixed F3DEX-S2DEX games
     int force_quad3d; //force 0xb5 command to be quad, not line 3d
@@ -229,6 +236,7 @@ private:
     Filtering_t m_filtering;
     SwapMode_t m_swapmode;
     PixelLevelOfDetail_t m_lodmode;
+    StippleMode_t m_stipple_mode;
     hacks_t m_hacks;
 };
 
