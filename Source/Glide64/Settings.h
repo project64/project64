@@ -119,12 +119,12 @@ public:
     int buff_clear;
 
 
-    enum FBCRCMODE 
-	{
+    enum FBCRCMODE_t
+    {
         fbcrcNone = 0,
         fbcrcFast = 1,
         fbcrcSafe = 2
-    } fb_crc_mode;
+    };
 
     inline bool fb_emulation_enabled(void) const { return ((m_frame_buffer&fb_emulation) != 0); }
     inline bool fb_ref_enabled(void) const { return ((m_frame_buffer&fb_ref) != 0); }
@@ -150,6 +150,9 @@ public:
     inline SwapMode_t swapmode(void) const { return m_swapmode; }
     inline PixelLevelOfDetail_t lodmode(void) const { return m_lodmode; }
     inline AspectMode_t aspectmode(void) const { return m_aspectmode; }
+
+    inline FBCRCMODE_t fb_crc_mode(void) const { return m_fb_crc_mode; }
+
     //Texture filtering options
     std::string texture_dir;
     int ghq_fltr;
@@ -232,6 +235,7 @@ private:
     char m_log_dir[260];
     AspectMode_t m_aspectmode;
     uint32_t m_frame_buffer;
+    FBCRCMODE_t m_fb_crc_mode;
     ScreenRotate_t m_rotate;
     Filtering_t m_filtering;
     SwapMode_t m_swapmode;

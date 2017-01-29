@@ -188,7 +188,7 @@ void CSettings::RegisterSettings(void)
     game_setting(Set_hires_buf_clear, "hires_buf_clear", true);
     game_setting(Set_fb_read_alpha, "fb_read_alpha", false);
     game_setting(Set_useless_is_useless, "useless_is_useless", false);
-    game_setting(Set_fb_crc_mode, "fb_crc_mode", 1);
+    game_setting(Set_fb_crc_mode, "fb_crc_mode", fbcrcFast);
     game_setting_default(Set_filtering, "filtering", Set_filtering_default);
     game_setting_default(Set_fog, "fog", Set_fog_default);
     game_setting_default(Set_buff_clear, "buff_clear", Set_buff_clear_default);
@@ -506,9 +506,6 @@ void CSettings::ReadGameSettings(const char * name)
     g_settings->zmode_compare_less = GetSetting(Set_zmode_compare_less);
     g_settings->old_style_adither = GetSetting(Set_old_style_adither);
     g_settings->n64_z_scale = GetSetting(Set_n64_z_scale);
-    int fb_crc_mode = GetSetting(Set_fb_crc_mode);
-
-    if (fb_crc_mode >= 0) g_settings->fb_crc_mode = (CSettings::FBCRCMODE)fb_crc_mode;
 
     g_settings->fog = GetSetting(g_romopen ? Set_fog : Set_fog_default);
     g_settings->buff_clear = GetSetting(g_romopen ? Set_buff_clear : Set_buff_clear_default);
@@ -568,6 +565,7 @@ void CSettings::ReadGameSettings(const char * name)
     else if (read_back_to_screen == 0) { fb_remove_bits |= fb_read_back_to_screen | fb_read_back_to_screen2; }
 
     g_settings->UpdateFrameBufferBits(fb_add_bits, fb_remove_bits);
+    m_fb_crc_mode = (FBCRCMODE_t)GetSetting(Set_fb_crc_mode);
 
     SetFiltering((Filtering_t)GetSetting(g_romopen ? Set_filtering : Set_filtering_default));
     SetSwapMode((SwapMode_t)GetSetting(g_romopen ? Set_swapmode : Set_swapmode_default));
