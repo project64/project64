@@ -127,6 +127,23 @@ public:
         STIPPLE_Rotate = 0x2,
     };
 
+    enum ucode_t
+    {
+        uCode_NotFound = -2,
+        uCode_Unsupported = -1,
+        ucode_Fast3D = 0,
+        ucode_F3DEX = 1,
+        ucode_F3DEX2 = 2,
+        ucode_WaveRace = 3,
+        ucode_StarWars = 4,
+        ucode_DiddyKong = 5,
+        ucode_S2DEX = 6,
+        ucode_PerfectDark = 7,
+        ucode_CBFD = 8,
+        ucode_zSort = 9,
+        ucode_Turbo3d = 21,
+    };
+
     uint32_t res_x, scr_res_x;
     uint32_t res_y, scr_res_y;
 #ifndef ANDROID
@@ -200,7 +217,7 @@ public:
 
     //Debug
     int autodetect_ucode;
-    int ucode;
+    inline ucode_t ucode(void) const { return m_ucode; }
     int unk_as_red;
     int unk_clear;
     int wireframe;
@@ -246,6 +263,8 @@ public:
     void SetGhqFltr(TextureFilter_t value);
     void SetGhqEnht(TextureEnhancement_t value);
     void UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove);
+    ucode_t DetectUCode(uint32_t uc_crc);
+    void SetUcode(ucode_t value);
 
     void ReadGameSettings(const char * name);
     void WriteSettings(void);
@@ -267,6 +286,7 @@ private:
     PixelLevelOfDetail_t m_lodmode;
     TextureFilter_t m_ghq_fltr;
     TextureEnhancement_t m_ghq_enht;
+    ucode_t m_ucode;
     StippleMode_t m_stipple_mode;
     hacks_t m_hacks;
 };

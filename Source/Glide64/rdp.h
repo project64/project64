@@ -612,7 +612,7 @@ extern uint32_t   offset_cursor;
 extern uint32_t   offset_textures;
 extern uint32_t   offset_texbuf1;
 
-extern int	ucode_error_report;
+extern bool	g_ucode_error_report;
 
 // RDP functions
 void rdp_reset();

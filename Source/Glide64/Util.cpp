@@ -1799,7 +1799,7 @@ void update()
                     grDepthBufferFunction(g_settings->zmode_compare_less ? GR_CMP_LESS : GR_CMP_LEQUAL);
                     break;
                 case 2:
-                    grDepthBiasLevel(g_settings->ucode == 7 ? -4 : 0);
+                    grDepthBiasLevel(g_settings->ucode() == CSettings::ucode_PerfectDark ? -4 : 0);
                     grDepthBufferFunction(GR_CMP_LESS);
                     break;
                 case 3:

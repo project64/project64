@@ -8135,8 +8135,7 @@ static void cc__t0_inter_t1_using_primlod__mul_shade()
         cc_t0_mul_shade();
         return;
     }
-    //*/
-    if (g_settings->ucode == 7)
+    if (g_settings->ucode() == CSettings::ucode_PerfectDark)
         lod_frac = rdp.prim_lodfrac;
     CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,

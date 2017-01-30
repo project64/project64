@@ -1249,7 +1249,7 @@ void CALL RomOpen(void)
     WriteTrace(TraceGlide64, TraceDebug, "-");
     no_dlist = true;
     g_romopen = TRUE;
-    ucode_error_report = TRUE;	// allowed to report ucode errors
+    g_ucode_error_report = TRUE;	// allowed to report ucode errors
     rdp_reset();
 
     // Get the country code & translate to NTSC(0) or PAL(1)
@@ -1697,7 +1697,7 @@ void newSwapBuffers()
         }
     }
 
-    if (g_settings->wireframe || g_settings->buff_clear || (g_settings->hacks(CSettings::hack_PPL) && g_settings->ucode == 6))
+    if (g_settings->wireframe || g_settings->buff_clear || (g_settings->hacks(CSettings::hack_PPL) && g_settings->ucode() == CSettings::ucode_S2DEX))
     {
         grDepthMask((g_settings->hacks(CSettings::hack_RE2) && g_settings->fb_depth_render_enabled()) ? FXFALSE : FXTRUE);
         grBufferClear(0, 0, 0xFFFF);

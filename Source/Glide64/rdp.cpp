@@ -148,7 +148,7 @@ char out_buf[2048];
 
 uint32_t frame_count;  // frame counter
 
-int ucode_error_report = TRUE;
+bool g_ucode_error_report = TRUE;
 int wrong_tile = -1;
 
 // ** RDP graphics functions **
@@ -222,7 +222,7 @@ void microcheck();
 #include "turbo3D.h"
 
 static int reset = 0;
-static int old_ucode = -1;
+static CSettings::ucode_t g_old_ucode = CSettings::uCode_Unsupported;
 
 void RDP::Reset()
 {
@@ -315,41 +315,36 @@ void microcheck()
     ucf.close();
 #endif
 
+    g_old_ucode = g_settings->ucode();
     WriteTrace(TraceRDP, TraceDebug, "ucode = %08lx", uc_crc);
-
-    RegisterSetting(Set_ucodeLookup, Data_DWORD_RDB_Setting, stdstr_f("%08lx", uc_crc).c_str(), "ucode", (unsigned int)-2, NULL);
-    int uc = GetSetting(Set_ucodeLookup);
-
-    if (uc == -2 && ucode_error_report)
+    CSettings::ucode_t uc = g_settings->DetectUCode(uc_crc);
+    if (uc == CSettings::uCode_NotFound)
     {
-        g_settings->ucode = GetSetting(Set_ucode);
-
-        ReleaseGfx();
-        WriteTrace(TraceGlide64, TraceError, "uCode crc not found in INI, using currently selected uCode %08lx", (unsigned long)uc_crc);
+        if (g_ucode_error_report)
+        {
+            ReleaseGfx();
+            WriteTrace(TraceGlide64, TraceError, "uCode crc not found in INI, using currently selected uCode %08lx", (unsigned long)uc_crc);
 #ifdef _WIN32
-        MessageBox(gfx.hWnd, stdstr_f("Error: uCode crc not found in INI, using currently selected uCode\n\n%08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
+            MessageBox(gfx.hWnd, stdstr_f("Error: uCode crc not found in INI, using currently selected uCode\n\n%08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
 #endif
-
-        ucode_error_report = FALSE; // don't report any more ucode errors from this game
+            g_ucode_error_report = false; // don't report any more ucode errors from this game
+        }
     }
-    else if (uc == -1 && ucode_error_report)
+    else if (uc == CSettings::uCode_Unsupported)
     {
-        g_settings->ucode = GetSetting(Set_ucode);
-
-        ReleaseGfx();
-        WriteTrace(TraceGlide64, TraceError, "Unsupported uCode! crc: %08lx", (unsigned long)uc_crc);
-
+        if (g_ucode_error_report)
+        {
+            ReleaseGfx();
+            WriteTrace(TraceGlide64, TraceError, "Unsupported uCode! crc: %08lx", (unsigned long)uc_crc);
 #ifdef _WIN32
-        MessageBox(gfx.hWnd, stdstr_f("Error: Unsupported uCode!\n\ncrc: %08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
+            MessageBox(gfx.hWnd, stdstr_f("Error: Unsupported uCode!\n\ncrc: %08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
 #endif
-
-        ucode_error_report = FALSE; // don't report any more ucode errors from this game
+            g_ucode_error_report = FALSE; // don't report any more ucode errors from this game
+        }
     }
     else
     {
-        old_ucode = g_settings->ucode;
-        g_settings->ucode = uc;
-        WriteTrace(TraceRDP, TraceDebug, "microcheck: old ucode: %d,  new ucode: %d", old_ucode, uc);
+        WriteTrace(TraceRDP, TraceDebug, "microcheck: old ucode: %d,  new ucode: %d", g_old_ucode, uc);
         if (uc_crc == 0x8d5735b2 || uc_crc == 0xb1821ed3 || uc_crc == 0x1118b3e0) //F3DLP.Rej ucode. perspective texture correction is not implemented
         {
             rdp.Persp_en = 1;
@@ -591,7 +586,7 @@ EXPORT void CALL ProcessDList(void)
         else
             memset(microcode, 0, 4096);
     }
-    else if (((old_ucode == ucode_S2DEX) && (g_settings->ucode == ucode_F3DEX)) || g_settings->force_microcheck)
+    else if ((g_old_ucode == CSettings::ucode_S2DEX && g_settings->ucode() == CSettings::ucode_F3DEX) || g_settings->force_microcheck)
     {
         uint32_t startUcode = *(uint32_t*)(gfx.DMEM + 0xFD0);
         memcpy(microcode, gfx.RDRAM + startUcode, 4096);
@@ -599,11 +594,15 @@ EXPORT void CALL ProcessDList(void)
     }
 
     if (exception)
+    {
         return;
+    }
 
     // Switch to fullscreen?
     if (to_fullscreen)
+    {
         GoToFullScreen();
+    }
 
     //* Set states *//
     if (g_settings->swapmode() != CSettings::SwapMode_Old)
@@ -656,7 +655,7 @@ EXPORT void CALL ProcessDList(void)
     // Get the start of the display list and the length of it
     uint32_t dlist_start = *(uint32_t*)(gfx.DMEM + 0xFF0);
     uint32_t dlist_length = *(uint32_t*)(gfx.DMEM + 0xFF4);
-    WriteTrace(TraceRDP, TraceDebug, "--- NEW DLIST --- crc: %08lx, ucode: %d, fbuf: %08lx, fbuf_width: %d, dlist start: %08lx, dlist_length: %d, x_scale: %f, y_scale: %f", uc_crc, g_settings->ucode, *gfx.VI_ORIGIN_REG, *gfx.VI_WIDTH_REG, dlist_start, dlist_length, (*gfx.VI_X_SCALE_REG & 0xFFF) / 1024.0f, (*gfx.VI_Y_SCALE_REG & 0xFFF) / 1024.0f);
+    WriteTrace(TraceRDP, TraceDebug, "--- NEW DLIST --- crc: %08lx, ucode: %d, fbuf: %08lx, fbuf_width: %d, dlist start: %08lx, dlist_length: %d, x_scale: %f, y_scale: %f", uc_crc, g_settings->ucode(), *gfx.VI_ORIGIN_REG, *gfx.VI_WIDTH_REG, dlist_start, dlist_length, (*gfx.VI_X_SCALE_REG & 0xFFF) / 1024.0f, (*gfx.VI_Y_SCALE_REG & 0xFFF) / 1024.0f);
 
     // Do nothing if dlist is empty
     if (dlist_start == 0)
@@ -682,14 +681,15 @@ EXPORT void CALL ProcessDList(void)
 #ifdef CATCH_EXCEPTIONS
     try {
 #endif
-        if (g_settings->ucode == ucode_Turbo3d)
+        if (g_settings->ucode() == CSettings::ucode_Turbo3d)
         {
             Turbo3D();
         }
         else
         {
             // MAIN PROCESSING LOOP
-            do {
+            do 
+            {
                 // Get the address of the next command
                 a = rdp.pc[rdp.pc_i] & BMASK;
 
@@ -708,7 +708,7 @@ EXPORT void CALL ProcessDList(void)
                 perf_cur = CDateTime().SetToNow().Value();
 #endif
                 // Process this instruction
-                gfx_instruction[g_settings->ucode][rdp.cmd0 >> 24]();
+                gfx_instruction[g_settings->ucode()][rdp.cmd0 >> 24]();
 
                 // check DL counter
                 if (rdp.dl_count != -1)
@@ -928,7 +928,7 @@ static void rdp_texrect()
             rdp.pc[rdp.pc_i] += 8;
         }
     }
-    if (g_settings->hacks(CSettings::hack_Yoshi) && g_settings->ucode == ucode_S2DEX)
+    if (g_settings->hacks(CSettings::hack_Yoshi) && g_settings->ucode() == CSettings::ucode_S2DEX)
     {
         ys_memrect();
         return;
@@ -947,7 +947,7 @@ static void rdp_texrect()
         return;
     }
 
-    if ((g_settings->ucode == ucode_CBFD) && rdp.cur_image && rdp.cur_image->format)
+    if ((g_settings->ucode() == CSettings::ucode_CBFD) && rdp.cur_image && rdp.cur_image->format)
     {
         //WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect. texaddr: %08lx, cimg: %08lx, cimg_end: %08lx", rdp.timg.addr, rdp.maincimg[1].addr, rdp.maincimg[1].addr+rdp.ci_width*rdp.ci_height*rdp.ci_size);
         WriteTrace(TraceRDP, TraceDebug, "Shadow texrect is skipped.");
@@ -955,7 +955,7 @@ static void rdp_texrect()
         return;
     }
 
-    if ((g_settings->ucode == ucode_PerfectDark) && rdp.ci_count > 0 && (rdp.frame_buffers[rdp.ci_count - 1].status == ci_zcopy))
+    if ((g_settings->ucode() == CSettings::ucode_PerfectDark) && rdp.ci_count > 0 && (rdp.frame_buffers[rdp.ci_count - 1].status == ci_zcopy))
     {
         pd_zcopy();
         WriteTrace(TraceRDP, TraceDebug, "Depth buffer copied.");
@@ -1059,7 +1059,7 @@ static void rdp_texrect()
     //*/
     //*
     //remove motion blur in night vision
-    if ((g_settings->ucode == ucode_PerfectDark) && (rdp.maincimg[1].addr != rdp.maincimg[0].addr) && (rdp.timg.addr >= rdp.maincimg[1].addr) && (rdp.timg.addr < (rdp.maincimg[1].addr + rdp.ci_width*rdp.ci_height*rdp.ci_size)))
+    if (g_settings->ucode() == CSettings::ucode_PerfectDark && (rdp.maincimg[1].addr != rdp.maincimg[0].addr) && (rdp.timg.addr >= rdp.maincimg[1].addr) && (rdp.timg.addr < (rdp.maincimg[1].addr + rdp.ci_width*rdp.ci_height*rdp.ci_size)))
     {
         if (g_settings->fb_emulation_enabled() && rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_copy_self)
         {
@@ -1072,12 +1072,12 @@ static void rdp_texrect()
 
     int i;
 
-    uint32_t tile = (uint16_t)((rdp.cmd1 & 0x07000000) >> 24);
+    uint32_t tile_no = (uint16_t)((rdp.cmd1 & 0x07000000) >> 24);
 
     rdp.texrecting = 1;
 
     uint32_t prev_tile = rdp.cur_tile;
-    rdp.cur_tile = tile;
+    rdp.cur_tile = tile_no;
 
     const float Z = set_sprite_combine_mode();
 
@@ -1112,7 +1112,7 @@ static void rdp_texrect()
     float s_ul_y = ul_y * rdp.scale_y + rdp.offset_y;
     float s_lr_y = lr_y * rdp.scale_y + rdp.offset_y;
 
-    WriteTrace(TraceRDP, TraceDebug, "texrect (%.2f, %.2f, %.2f, %.2f), tile: %d, #%d, #%d", ul_x, ul_y, lr_x, lr_y, tile, rdp.tri_n, rdp.tri_n + 1);
+    WriteTrace(TraceRDP, TraceDebug, "texrect (%.2f, %.2f, %.2f, %.2f), tile: %d, #%d, #%d", ul_x, ul_y, lr_x, lr_y, tile_no, rdp.tri_n, rdp.tri_n + 1);
     WriteTrace(TraceRDP, TraceDebug, "(%f, %f) -> (%f, %f), s: (%d, %d) -> (%d, %d)", s_ul_x, s_ul_y, s_lr_x, s_lr_y, rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
     WriteTrace(TraceRDP, TraceDebug, "\toff_x: %f, off_y: %f, dsdx: %f, dtdy: %f", off_x_i / 32.0f, off_y_i / 32.0f, dsdx, dtdy);
 
@@ -1528,17 +1528,17 @@ static void rdp_setothermode()
 #define F3DEX2_SETOTHERMODE(cmd,sft,len,data) { \
     rdp.cmd0 = (uint32_t)((cmd<<24) | ((32-(sft)-(len))<<8) | (((len)-1))); \
     rdp.cmd1 = (uint32_t)(data); \
-    gfx_instruction[g_settings->ucode][cmd] (); \
+    gfx_instruction[g_settings->ucode()][cmd] (); \
 }
 #define SETOTHERMODE(cmd,sft,len,data) { \
     rdp.cmd0 = (uint32_t)((cmd<<24) | ((sft)<<8) | (len)); \
     rdp.cmd1 = (uint32_t)data; \
-    gfx_instruction[g_settings->ucode][cmd] (); \
+    gfx_instruction[g_settings->ucode()][cmd] (); \
 }
 
     WriteTrace(TraceRDP, TraceDebug, "rdp_setothermode");
 
-    if ((g_settings->ucode == ucode_F3DEX2) || (g_settings->ucode == ucode_CBFD))
+    if (g_settings->ucode() == CSettings::ucode_F3DEX2 || g_settings->ucode() == CSettings::ucode_CBFD)
     {
         int cmd0 = rdp.cmd0;
         F3DEX2_SETOTHERMODE(0xE2, 0, 32, rdp.cmd1);         // SETOTHERMODE_L
@@ -2221,7 +2221,7 @@ static void rdp_fillrect()
         WriteTrace(TraceRDP, TraceDebug, "Fillrect. Wrong coordinates. Skipped");
         return;
     }
-    int pd_multiplayer = (g_settings->ucode == ucode_PerfectDark) && (rdp.cycle_mode == 3) && (rdp.fill_color == 0xFFFCFFFC);
+    bool pd_multiplayer = g_settings->ucode() == CSettings::ucode_PerfectDark && rdp.cycle_mode == 3 && rdp.fill_color == 0xFFFCFFFC;
     if ((rdp.cimg == rdp.zimg) || (g_settings->fb_emulation_enabled() && rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_zimg) || pd_multiplayer)
     {
         WriteTrace(TraceRDP, TraceDebug, "Fillrect - cleared the depth buffer");
@@ -2737,7 +2737,7 @@ static void rdp_setcolorimage()
         }
         break;
         case ci_zimg:
-            if (g_settings->ucode != ucode_PerfectDark)
+            if (g_settings->ucode() != CSettings::ucode_PerfectDark)
             {
                 if (g_settings->fb_hwfbe_enabled() && !rdp.copy_ci_index && (rdp.copy_zi_index || g_settings->hacks(CSettings::hack_BAR)))
                 {
@@ -2751,7 +2751,7 @@ static void rdp_setcolorimage()
             rdp.skip_drawing = TRUE;
             break;
         case ci_zcopy:
-            if (g_settings->ucode != ucode_PerfectDark)
+            if (g_settings->ucode() != CSettings::ucode_PerfectDark)
             {
                 if (g_settings->fb_hwfbe_enabled() && !rdp.copy_ci_index && rdp.copy_zi_index == rdp.ci_count)
                 {
@@ -2938,7 +2938,7 @@ static void rdp_setcolorimage()
 
 static void rsp_reserved0()
 {
-    if (g_settings->ucode == ucode_DiddyKong)
+    if (g_settings->ucode() == CSettings::ucode_DiddyKong)
     {
         ucode5_texshiftaddr = segoffset(rdp.cmd1);
         ucode5_texshiftcount = 0;
@@ -3271,8 +3271,8 @@ void DetectFrameBufferUsage()
         // Go to the next instruction
         rdp.pc[rdp.pc_i] = (a + 8) & BMASK;
 
-        if (uintptr_t(reinterpret_cast<void*>(gfx_instruction_lite[g_settings->ucode][rdp.cmd0 >> 24])))
-            gfx_instruction_lite[g_settings->ucode][rdp.cmd0 >> 24]();
+        if (uintptr_t(reinterpret_cast<void*>(gfx_instruction_lite[g_settings->ucode()][rdp.cmd0 >> 24])))
+            gfx_instruction_lite[g_settings->ucode()][rdp.cmd0 >> 24]();
 
         // check DL counter
         if (rdp.dl_count != -1)
@@ -3366,7 +3366,7 @@ void DetectFrameBufferUsage()
     {
         if (g_settings->fb_hwfbe_enabled())
         {
-            if (rdp.read_previous_ci && !previous_ci_was_read && (g_settings->swapmode() != CSettings::SwapMode_Hybrid) && (g_settings->ucode != ucode_PerfectDark))
+            if (rdp.read_previous_ci && !previous_ci_was_read && (g_settings->swapmode() != CSettings::SwapMode_Hybrid) && (g_settings->ucode() != CSettings::ucode_PerfectDark))
             {
                 int ind = (rdp.ci_count > 0) ? rdp.ci_count - 1 : 0;
                 uint32_t height = rdp.frame_buffers[ind].height;

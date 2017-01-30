@@ -1,3 +1,4 @@
+#include <Common/StdString.h>
 #include "Gfx_1.3.h"
 #include "SettingsID.h"
 
@@ -51,7 +52,7 @@ ghq_cache_size(0),
 ghq_hirs_let_texartists_fly(0),
 ghq_hirs_dump(0),
 autodetect_ucode(0),
-ucode(0),
+    m_ucode(ucode_Fast3D),
 unk_as_red(0),
 unk_clear(0),
 wireframe(0),
@@ -123,7 +124,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_Rotate, "rotate", Rotate_None);
     general_setting(Set_wrpAnisotropic, "wrpAnisotropic", 0);
     general_setting(Set_autodetect_ucode, "autodetect_ucode", 1);
-    general_setting(Set_ucode, "ucode", 2);
+    general_setting(Set_ucode, "ucode", ucode_F3DEX2);
     general_setting(Set_wireframe, "wireframe", 0);
     general_setting(Set_wfmode, "wfmode", 1);
     general_setting(Set_unk_as_red, "unk_as_red", 0);
@@ -271,6 +272,26 @@ void CSettings::UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove)
     }
 }
 
+CSettings::ucode_t CSettings::DetectUCode(uint32_t uc_crc)
+{
+    RegisterSetting(Set_ucodeLookup, Data_DWORD_RDB_Setting, stdstr_f("%08lx", uc_crc).c_str(), "ucode", (unsigned int)-2, NULL);
+    CSettings::ucode_t uc = (CSettings::ucode_t)GetSetting(Set_ucodeLookup);
+    if (uc == CSettings::uCode_NotFound || uc == CSettings::uCode_Unsupported)
+    {
+        m_ucode = (CSettings::ucode_t)GetSetting(Set_ucode);
+    }
+    else
+    {
+        m_ucode = uc;
+    }
+    return uc;
+}
+
+void CSettings::SetUcode(ucode_t value)
+{
+    m_ucode = value;
+}
+
 void CSettings::UpdateAspectRatio(void)
 {
     switch (m_aspectmode)
@@ -325,19 +346,18 @@ void CSettings::ReadSettings()
 
 #ifndef _ENDUSER_RELEASE_
     this->autodetect_ucode = GetSetting(Set_autodetect_ucode);
-    this->ucode = GetSetting(Set_ucode);
     this->wireframe = GetSetting(Set_wireframe);
     this->wfmode = GetSetting(Set_wfmode);
     this->unk_as_red = GetSetting(Set_unk_as_red);
     this->unk_clear = GetSetting(Set_unk_clear);
 #else
     this->autodetect_ucode = TRUE;
-    this->ucode = 2;
     this->wireframe = FALSE;
     this->wfmode = 0;
     this->unk_as_red = FALSE;
     this->unk_clear = FALSE;
 #endif
+    m_ucode = ucode_F3DEX2;
 
     char texture_dir[260];
     memset(texture_dir, 0, sizeof(texture_dir));
