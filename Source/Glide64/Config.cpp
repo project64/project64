@@ -105,17 +105,6 @@ void ConfigCleanup(void)
 
 void CloseConfig();
 
-uint32_t texfltr[] =
-{
-    NO_FILTER, //"None"
-    SMOOTH_FILTER_1, //"Smooth filtering 1"
-    SMOOTH_FILTER_2, //"Smooth filtering 2"
-    SMOOTH_FILTER_3, //"Smooth filtering 3"
-    SMOOTH_FILTER_4, //"Smooth filtering 4"
-    SHARP_FILTER_1,  //"Sharp filtering 1"
-    SHARP_FILTER_2,  //"Sharp filtering 2"
-};
-
 uint32_t texenht[] =
 {
     NO_ENHANCEMENT,    //"None"
@@ -644,14 +633,14 @@ public:
         TTSetTxt(IDC_TXT_ENH_FILTER, tooltip.c_str());
         TTSetTxt(IDC_CMB_ENH_FILTER, tooltip.c_str());
         m_cmbEnhFilter.Attach(GetDlgItem(IDC_CMB_ENH_FILTER));
-        m_cmbEnhFilter.SetItemData(m_cmbEnhFilter.AddString("None"), 0);
-        m_cmbEnhFilter.SetItemData(m_cmbEnhFilter.AddString("Smooth filtering 1"), 1);
-        m_cmbEnhFilter.SetItemData(m_cmbEnhFilter.AddString("Smooth filtering 2"), 2);
-        m_cmbEnhFilter.SetItemData(m_cmbEnhFilter.AddString("Smooth filtering 3"), 3);
-        m_cmbEnhFilter.SetItemData(m_cmbEnhFilter.AddString("Smooth filtering 4"), 4);
-        m_cmbEnhFilter.SetItemData(m_cmbEnhFilter.AddString("Sharp filtering 1"), 5);
-        m_cmbEnhFilter.SetItemData(m_cmbEnhFilter.AddString("Sharp filtering 2"), 6);
-        SetComboBoxIndex(m_cmbEnhFilter, g_settings->ghq_fltr);
+        m_cmbEnhFilter.SetItemData(m_cmbEnhFilter.AddString("None"), CSettings::TextureFilter_None);
+        m_cmbEnhFilter.SetItemData(m_cmbEnhFilter.AddString("Smooth filtering 1"), CSettings::TextureFilter_SmoothFiltering);
+        m_cmbEnhFilter.SetItemData(m_cmbEnhFilter.AddString("Smooth filtering 2"), CSettings::TextureFilter_SmoothFiltering2);
+        m_cmbEnhFilter.SetItemData(m_cmbEnhFilter.AddString("Smooth filtering 3"), CSettings::TextureFilter_SmoothFiltering3);
+        m_cmbEnhFilter.SetItemData(m_cmbEnhFilter.AddString("Smooth filtering 4"), CSettings::TextureFilter_SmoothFiltering4);
+        m_cmbEnhFilter.SetItemData(m_cmbEnhFilter.AddString("Sharp filtering 1"), CSettings::TextureFilter_SharpFiltering1);
+        m_cmbEnhFilter.SetItemData(m_cmbEnhFilter.AddString("Sharp filtering 2"), CSettings::TextureFilter_SharpFiltering2);
+        SetComboBoxIndex(m_cmbEnhFilter, g_settings->ghq_fltr());
 
         tooltip = "Texture enhancement:\n\n7 different filters are selectable here, each one with a distinctive look.\nBe aware of possible performance impacts.\n\nIMPORTANT: 'Store' mode - saves textures in cache 'as is'.\nIt can improve performance in games, which load many textures.\nDisable 'Ignore backgrounds' option for better result.\n\n[Recommended: your preference]";
         TTSetTxt(IDC_TXT_ENHANCEMENT, tooltip.c_str());
@@ -747,7 +736,7 @@ public:
         m_textTexCache.GetWindowText(texcache, sizeof(texcache));
 
         CSettings oldsettings = *g_settings;
-        g_settings->ghq_fltr = m_cmbEnhFilter.GetItemData(m_cmbEnhFilter.GetCurSel());
+        g_settings->SetGhqFltr((CSettings::TextureFilter_t)m_cmbEnhFilter.GetItemData(m_cmbEnhFilter.GetCurSel()));
         g_settings->ghq_enht = m_cmbEnhEnhancement.GetItemData(m_cmbEnhEnhancement.GetCurSel());
         g_settings->ghq_cache_size = atoi(texcache);
         g_settings->ghq_enht_nobg = (int)m_cbxEnhIgnoreBG.GetCheck() == BST_CHECKED;

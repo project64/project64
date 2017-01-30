@@ -807,11 +807,11 @@ int InitGfx()
 
     if (!g_settings->ghq_use)
     {
-        g_settings->ghq_use = g_settings->ghq_fltr || g_settings->ghq_enht /*|| g_settings->ghq_cmpr*/ || g_settings->ghq_hirs;
+        g_settings->ghq_use = g_settings->ghq_fltr() != CSettings::TextureFilter_None || g_settings->ghq_enht /*|| g_settings->ghq_cmpr*/ || g_settings->ghq_hirs;
         if (g_settings->ghq_use)
         {
             /* Plugin path */
-            int options = texfltr[g_settings->ghq_fltr] | texenht[g_settings->ghq_enht] | texcmpr[g_settings->ghq_cmpr] | texhirs[g_settings->ghq_hirs];
+            int options = g_settings->ghq_fltr() | texenht[g_settings->ghq_enht] | texcmpr[g_settings->ghq_cmpr] | texhirs[g_settings->ghq_hirs];
             if (g_settings->ghq_enht_cmpr)
                 options |= COMPRESS_TEX;
             if (g_settings->ghq_hirs_cmpr)
