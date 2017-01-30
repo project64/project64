@@ -164,7 +164,6 @@ typedef struct {
     uint32_t lr_y;
 } SCISSOR;
  
-extern uint32_t texenht[];
 extern uint32_t texcmpr[];
 extern uint32_t texhirs[];
 

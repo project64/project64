@@ -32,7 +32,7 @@ buff_clear(0),
 //Texture filtering options
 texture_dir(""),
     m_ghq_fltr(TextureFilter_None),
-ghq_enht(0),
+    m_ghq_enht(TextureEnht_None),
 ghq_cmpr(0),
 ghq_hirs(0),
 ghq_use(0),
@@ -130,7 +130,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_unk_clear, "unk_clear", 0);
     general_setting(Set_ghq_fltr, "ghq_fltr", TextureFilter_None);
     general_setting(Set_ghq_cmpr, "ghq_cmpr", 0);
-    general_setting(Set_ghq_enht, "ghq_enht", 0);
+    general_setting(Set_ghq_enht, "ghq_enht", TextureEnht_None);
     general_setting(Set_ghq_hirs, "ghq_hirs", 0);
     general_setting(Set_ghq_enht_cmpr, "ghq_enht_cmpr", 0);
     general_setting(Set_ghq_enht_tile, "ghq_enht_tile", 0);
@@ -251,6 +251,15 @@ void CSettings::SetGhqFltr(TextureFilter_t value)
     }
 }
 
+void CSettings::SetGhqEnht(TextureEnhancement_t value)
+{
+    if (value != m_ghq_enht)
+    {
+        m_ghq_enht = value;
+        m_dirty = true;
+    }
+}
+
 void CSettings::UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove)
 {
     uint32_t frame_buffer_original = m_frame_buffer;
@@ -336,7 +345,7 @@ void CSettings::ReadSettings()
     this->texture_dir = texture_dir;
     m_ghq_fltr = (TextureFilter_t)GetSetting(Set_ghq_fltr);
     this->ghq_cmpr = (uint8_t)GetSetting(Set_ghq_cmpr);
-    this->ghq_enht = (uint8_t)GetSetting(Set_ghq_enht);
+    m_ghq_enht = (TextureEnhancement_t)GetSetting(Set_ghq_enht);
     this->ghq_hirs = (uint8_t)GetSetting(Set_ghq_hirs);
     this->ghq_enht_cmpr = GetSetting(Set_ghq_enht_cmpr);
     this->ghq_enht_tile = GetSetting(Set_ghq_enht_tile);
@@ -608,7 +617,7 @@ void CSettings::WriteSettings(void)
 
     SetSetting(Set_ghq_fltr, m_ghq_fltr);
     SetSetting(Set_ghq_cmpr, g_settings->ghq_cmpr);
-    SetSetting(Set_ghq_enht, g_settings->ghq_enht);
+    SetSetting(Set_ghq_enht, m_ghq_enht);
     SetSetting(Set_ghq_hirs, g_settings->ghq_hirs);
     SetSetting(Set_ghq_enht_cmpr, g_settings->ghq_enht_cmpr);
     SetSetting(Set_ghq_enht_tile, g_settings->ghq_enht_tile);

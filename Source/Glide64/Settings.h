@@ -94,6 +94,18 @@ public:
         TextureFilter_SharpFiltering2 = 0x20,
     };
 
+    enum TextureEnhancement_t
+    {
+        TextureEnht_None = 0x00,
+        TextureEnht_X2 = 0x100,
+        TextureEnht_X2SAI = 0x200,
+        TextureEnht_HQ2X = 0x300,
+        TextureEnht_HQ2XS = 0x600,
+        TextureEnht_LQ2X = 0x400,
+        TextureEnht_LQ2XS = 0x700,
+        TextureEnht_HQ4X = 0x500,
+    };
+
     enum SwapMode_t
     {
         SwapMode_Old = 0,
@@ -167,7 +179,7 @@ public:
     //Texture filtering options
     std::string texture_dir;
     inline TextureFilter_t ghq_fltr(void) const { return m_ghq_fltr; }
-    int ghq_enht;
+    inline TextureEnhancement_t ghq_enht(void) const { return m_ghq_enht; }
     int ghq_cmpr;
     int ghq_hirs;
     int ghq_use;
@@ -232,6 +244,7 @@ public:
     void SetFiltering(Filtering_t value);
     void SetSwapMode(SwapMode_t value);
     void SetGhqFltr(TextureFilter_t value);
+    void SetGhqEnht(TextureEnhancement_t value);
     void UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove);
 
     void ReadGameSettings(const char * name);
@@ -253,6 +266,7 @@ private:
     SwapMode_t m_swapmode;
     PixelLevelOfDetail_t m_lodmode;
     TextureFilter_t m_ghq_fltr;
+    TextureEnhancement_t m_ghq_enht;
     StippleMode_t m_stipple_mode;
     hacks_t m_hacks;
 };

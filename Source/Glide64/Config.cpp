@@ -105,19 +105,6 @@ void ConfigCleanup(void)
 
 void CloseConfig();
 
-uint32_t texenht[] =
-{
-    NO_ENHANCEMENT,    //"None"
-    NO_ENHANCEMENT,    //"Store"
-    X2_ENHANCEMENT,    //"X2"
-    X2SAI_ENHANCEMENT, //"X2SAI"
-    HQ2X_ENHANCEMENT,  //"HQ2X"
-    HQ2XS_ENHANCEMENT, //"HQ2XS"
-    LQ2X_ENHANCEMENT,  //"LQ2X"
-    LQ2XS_ENHANCEMENT, //"LQ2XS"
-    HQ4X_ENHANCEMENT,  //"HQ4X"
-};
-
 uint32_t texcmpr[] =
 {
     //NO_COMPRESSION,   //"None"
@@ -646,16 +633,15 @@ public:
         TTSetTxt(IDC_TXT_ENHANCEMENT, tooltip.c_str());
         TTSetTxt(IDC_CMB_ENHANCEMENT, tooltip.c_str());
         m_cmbEnhEnhancement.Attach(GetDlgItem(IDC_CMB_ENHANCEMENT));
-        m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("None"), 0);
-        m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("Store"), 1);
-        m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("X2"), 2);
-        m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("X2SAI"), 3);
-        m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("HQ2X"), 4);
-        m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("HQ2XS"), 5);
-        m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("LQ2X"), 6);
-        m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("LQ2XS"), 7);
-        m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("HQ4X"), 8);
-        SetComboBoxIndex(m_cmbEnhEnhancement, g_settings->ghq_enht);
+        m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("None"), CSettings::TextureEnht_None);
+        m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("X2"), CSettings::TextureEnht_X2);
+        m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("X2SAI"), CSettings::TextureEnht_X2SAI);
+        m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("HQ2X"), CSettings::TextureEnht_HQ2X);
+        m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("HQ2XS"), CSettings::TextureEnht_HQ2XS);
+        m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("LQ2X"), CSettings::TextureEnht_LQ2X);
+        m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("LQ2XS"), CSettings::TextureEnht_LQ2XS);
+        m_cmbEnhEnhancement.SetItemData(m_cmbEnhEnhancement.AddString("HQ4X"), CSettings::TextureEnht_HQ4X);
+        SetComboBoxIndex(m_cmbEnhEnhancement, g_settings->ghq_enht());
 
         tooltip = "Hi-res pack format:\n\nChoose which method is to be used for loading Hi-res texture packs.\nOnly Rice's format is available currently.\nLeave on \"None\" if you will not be needing to load hi-res packs.\n\n[Recommended: Rice's format. Default: \"None\"]";
         TTSetTxt(IDC_TXT_FORMAT_CHOICES, tooltip.c_str());
@@ -737,7 +723,7 @@ public:
 
         CSettings oldsettings = *g_settings;
         g_settings->SetGhqFltr((CSettings::TextureFilter_t)m_cmbEnhFilter.GetItemData(m_cmbEnhFilter.GetCurSel()));
-        g_settings->ghq_enht = m_cmbEnhEnhancement.GetItemData(m_cmbEnhEnhancement.GetCurSel());
+        g_settings->SetGhqEnht((CSettings::TextureEnhancement_t)m_cmbEnhEnhancement.GetItemData(m_cmbEnhEnhancement.GetCurSel()));
         g_settings->ghq_cache_size = atoi(texcache);
         g_settings->ghq_enht_nobg = (int)m_cbxEnhIgnoreBG.GetCheck() == BST_CHECKED;
         g_settings->ghq_enht_cmpr = (int)m_cbxEnhTexCompression.GetCheck() == BST_CHECKED;
