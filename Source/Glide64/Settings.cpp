@@ -207,9 +207,9 @@ void CSettings::RegisterSettings(void)
 
 void CSettings::SetScreenRes(uint32_t value)
 {
-    if (value >= 0x18)
+    if (value >= GetScreenResolutionCount())
     {
-        value = 7;
+        value = GetDefaultScreenRes();
     }
 
     if (value != m_ScreenRes)
@@ -221,36 +221,6 @@ void CSettings::SetScreenRes(uint32_t value)
 
 void CSettings::UpdateScreenSize(bool fullscreen)
 {
-    // Resolutions, MUST be in the correct order (SST1VID.H)
-    uint32_t resolutions[0x18][2] = {
-        { 320, 200 },
-        { 320, 240 },
-        { 400, 256 },
-        { 512, 384 },
-        { 640, 200 },
-        { 640, 350 },
-        { 640, 400 },
-        { 640, 480 },
-        { 800, 600 },
-        { 960, 720 },
-        { 856, 480 },
-        { 512, 256 },
-        { 1024, 768 },
-        { 1280, 1024 },
-        { 1600, 1200 },
-        { 400, 300 },
-
-        // 0x10
-        { 1152, 864 },
-        { 1280, 960 },
-        { 1600, 1024 },
-        { 1792, 1344 },
-        { 1856, 1392 },
-        { 1920, 1440 },
-        { 2048, 1536 },
-        { 2048, 2048 }
-    };
-
 #ifndef ANDROID
     if (fullscreen)
     {
@@ -259,8 +229,8 @@ void CSettings::UpdateScreenSize(bool fullscreen)
     }
     else
     {
-        g_width = resolutions[m_ScreenRes][0];
-        g_height = resolutions[m_ScreenRes][1];
+        g_width = GetScreenResWidth(m_ScreenRes);
+        g_height = GetScreenResHeight(m_ScreenRes);
     }
     m_scr_res_x = m_res_x = g_width;
     m_scr_res_y = m_res_y = g_height;

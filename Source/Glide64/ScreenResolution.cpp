@@ -14,115 +14,203 @@
 
 struct ResolutionInfo
 {
-    unsigned int dwW, dwH, dwF;
-
-    ResolutionInfo() : dwW(0), dwH(0), dwF(0) {}
-
-    ResolutionInfo(unsigned int _w, unsigned int _h, unsigned int _f) : dwW(_w), dwH(_h), dwF(_f) {}
-
-    bool operator == (const ResolutionInfo & _other) const
+    ResolutionInfo(const char * name = NULL, uint32_t width = 0, uint32_t height = 0, uint32_t frequency = 0, bool default_res = false) :
+        m_name(name),
+        m_width(width),
+        m_height(height),
+        m_frequency(frequency),
+        m_default_res(default_res)
     {
-        if (dwW != _other.dwW)
-            return false;
-        if (dwH != _other.dwH)
-            return false;
-        if (dwF != _other.dwF)
-            return false;
-        return true;
     }
 
-    bool operator != (const ResolutionInfo & _other) const
-    {
-        return !(operator==(_other));
-    }
+    const char * Name(void) const { return m_name; }
+    uint32_t width(void) const { return m_width; }
+    uint32_t height(void) const { return m_height; }
+    uint32_t frequency(void) const { return m_frequency; }
+    bool DefaultRes(void) const { return m_default_res; }
 
-    void toString(char * _str) const
+    bool operator == (const ResolutionInfo& rRes) const
     {
-        if (dwF > 0)
-            sprintf(_str, "%ix%i 32bpp %iHz", dwW, dwH, dwF);
-        else
-            sprintf(_str, "%ix%i 32bpp", dwW, dwH);
+        return m_width == rRes.m_width && m_height == rRes.m_height && m_frequency == rRes.m_frequency;
     }
+    bool operator != (const ResolutionInfo& rRes) const
+    {
+        return !(*this == rRes);
+    }
+private:
+    uint32_t m_width, m_height, m_frequency;
+    const char * m_name;
+    bool m_default_res;
 };
+
+#ifdef ANDROID
+static ResolutionInfo g_resolutions[] =
+{
+    ResolutionInfo("#3200#", 0, 0, 0, true),
+    ResolutionInfo("960x720", 960, 720, 0, false),
+    ResolutionInfo("800x600", 800, 600, 0, false),
+    ResolutionInfo("640x480", 640, 480, 0, false),
+    ResolutionInfo("480x360", 480, 360, 0, false),
+    ResolutionInfo("320x240", 320, 240, 0, false),
+};
+
+#else
+static ResolutionInfo g_resolutions[] =
+{
+    { "320x200", 320, 200, 0, false },
+    { "320x240", 320, 240, 0, false },
+    { "400x256", 400, 256, 0, false },
+    { "512x384", 512, 384, 0, false },
+    { "640x200", 640, 200, 0, false },
+    { "640x350", 640, 350, 0, false },
+    { "640x400", 640, 400, 0, false },
+    { "640x480", 640, 480, 0, true },
+    { "800x600", 800, 600, 0, false },
+    { "960x720", 960, 720, 0, false },
+    { "856x480", 856, 480, 0, false },
+    { "512x256", 512, 256, 0, false },
+    { "1024x768", 1024, 768, 0, false },
+    { "1280x1024", 1280, 1024, 0, false },
+    { "1600x1200", 1600, 1200, 0, false },
+    { "400x300", 400, 300, 0, false },
+    { "1152x864", 1152, 864, 0, false },
+    { "1280x960", 1280, 960, 0, false },
+    { "1600x1024", 1600, 1024, 0, false },
+    { "1792x1344", 1792, 1344, 0, false },
+    { "1856x1392", 1856, 1392, 0, false },
+    { "1920x1440", 1920, 1440, 0, false },
+    { "2048x1536", 2048, 1536, 0, false },
+    { "2048x2048", 2048, 2048, 0, false },
+};
+#endif
+
+uint32_t GetScreenResolutionCount()
+{
+    return sizeof(g_resolutions) / sizeof(g_resolutions[0]);
+}
+
+const char * GetScreenResolutionName(uint32_t index)
+{
+    if (index < GetScreenResolutionCount())
+    {
+        return g_resolutions[index].Name();
+    }
+    return "unknown";
+}
+
+uint32_t GetDefaultScreenRes()
+{
+    for (uint32_t i = 0, n = GetScreenResolutionCount(); i < n; i++)
+    {
+        if (g_resolutions[i].DefaultRes())
+        {
+            return i;
+        }
+    }
+    return 0;
+}
+
+uint32_t GetScreenResWidth(uint32_t index)
+{
+    if (index < GetScreenResolutionCount())
+    {
+        return g_resolutions[index].width();
+    }
+    return 0;
+}
+
+uint32_t GetScreenResHeight(uint32_t index)
+{
+    if (index < GetScreenResolutionCount())
+    {
+        return g_resolutions[index].height();
+    }
+    return 0;
+}
 
 class FullScreenResolutions
 {
 public:
-    FullScreenResolutions() : dwNumResolutions(0), aResolutions(0), aResolutionsStr(0) {}
+    FullScreenResolutions() : 
+        m_dwNumResolutions(0),
+        m_aResolutions(0), 
+        m_aResolutionsStr(0)
+    {
+    }
     ~FullScreenResolutions();
 
     void getResolution(uint32_t _idx, uint32_t * _width, uint32_t * _height, uint32_t * _frequency = 0)
     {
         WriteTrace(TraceResolution, TraceDebug, "_idx: %d", _idx);
-        if (dwNumResolutions == 0)
+        if (m_dwNumResolutions == 0)
         {
             init();
         }
-        if (_idx >= dwNumResolutions)
+        if (_idx >= m_dwNumResolutions)
         {
-            WriteTrace(TraceGlitch, TraceError, "NumResolutions = %d", dwNumResolutions);
+            WriteTrace(TraceGlitch, TraceError, "NumResolutions = %d", m_dwNumResolutions);
             _idx = 0;
         }
-        *_width = (uint32_t)aResolutions[_idx].dwW;
-        *_height = (uint32_t)aResolutions[_idx].dwH;
+        *_width = (uint32_t)m_aResolutions[_idx].width();
+        *_height = (uint32_t)m_aResolutions[_idx].height();
         if (_frequency != 0)
         {
-            *_frequency = (uint32_t)aResolutions[_idx].dwF;
+            *_frequency = (uint32_t)m_aResolutions[_idx].frequency();
         }
     }
 
     int getCurrentResolutions(void)
     {
-        if (dwNumResolutions == 0)
+        if (m_dwNumResolutions == 0)
         {
             init();
         }
-        return currentResolutions;
+        return m_currentResolutions;
     }
 
     char ** getResolutionsList(int32_t * Size)
     {
-        if (dwNumResolutions == 0)
+        if (m_dwNumResolutions == 0)
         {
             init();
         }
-        *Size = (int32_t)dwNumResolutions;
-        return aResolutionsStr;
+        *Size = (int32_t)m_dwNumResolutions;
+        return m_aResolutionsStr;
     }
 
     bool changeDisplaySettings(uint32_t _resolution);
 
 private:
     void init();
-    unsigned int dwNumResolutions;
-    ResolutionInfo * aResolutions;
-    char ** aResolutionsStr;
-    int currentResolutions;
+    unsigned int m_dwNumResolutions;
+    ResolutionInfo * m_aResolutions;
+    char ** m_aResolutionsStr;
+    int m_currentResolutions;
 };
 
 FullScreenResolutions::~FullScreenResolutions()
 {
-    for (unsigned int i = 0; i < dwNumResolutions; i++)
+    for (unsigned int i = 0; i < m_dwNumResolutions; i++)
     {
-        delete[] aResolutionsStr[i];
-        aResolutionsStr[i] = NULL;
+        delete[] m_aResolutionsStr[i];
+        m_aResolutionsStr[i] = NULL;
     }
-    if (aResolutionsStr)
+    if (m_aResolutionsStr)
     {
-        delete[] aResolutionsStr;
-        aResolutionsStr = NULL;
+        delete[] m_aResolutionsStr;
+        m_aResolutionsStr = NULL;
     }
-    if (aResolutions)
+    if (m_aResolutions)
     {
-        delete[] aResolutions;
-        aResolutions = NULL;
+        delete[] m_aResolutions;
+        m_aResolutions = NULL;
     }
 }
 
 void FullScreenResolutions::init()
 {
 #ifdef _WIN32
-    currentResolutions = -1;
+    m_currentResolutions = -1;
     DEVMODE enumMode, currentMode;
     int iModeNum = 0;
     memset(&enumMode, 0, sizeof(DEVMODE));
@@ -132,16 +220,16 @@ void FullScreenResolutions::init()
     ResolutionInfo prevInfo;
     while (EnumDisplaySettings(NULL, iModeNum++, &enumMode) != 0)
     {
-        ResolutionInfo curInfo(enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency);
+        ResolutionInfo curInfo("", enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency);
         if (enumMode.dmBitsPerPel == 32 && curInfo != prevInfo)
         {
-            dwNumResolutions++;
+            m_dwNumResolutions++;
             prevInfo = curInfo;
         }
     }
 
-    aResolutions = new ResolutionInfo[dwNumResolutions];
-    aResolutionsStr = new char*[dwNumResolutions];
+    m_aResolutions = new ResolutionInfo[m_dwNumResolutions];
+    m_aResolutionsStr = new char*[m_dwNumResolutions];
     iModeNum = 0;
     int current = 0;
     char smode[256];
@@ -149,17 +237,17 @@ void FullScreenResolutions::init()
     memset(&prevInfo, 0, sizeof(ResolutionInfo));
     while (EnumDisplaySettings(NULL, iModeNum++, &enumMode) != 0)
     {
-        ResolutionInfo curInfo(enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency);
+        ResolutionInfo curInfo(NULL, enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency);
         if (enumMode.dmBitsPerPel == 32 && curInfo != prevInfo)
         {
             if (enumMode.dmPelsHeight == currentMode.dmPelsHeight && enumMode.dmPelsWidth == currentMode.dmPelsWidth)
             {
-                currentResolutions = current;
+                m_currentResolutions = current;
             }
-            aResolutions[current] = curInfo;
-            curInfo.toString(smode);
-            aResolutionsStr[current] = new char[strlen(smode) + 1];
-            strcpy(aResolutionsStr[current], smode);
+            m_aResolutions[current] = curInfo;
+            sprintf(smode, curInfo.frequency() > 0 ? "%ix%i 32bpp %iHz" : "%ix%i 32bpp", curInfo.width(), curInfo.height(), curInfo.frequency());
+            m_aResolutionsStr[current] = new char[strlen(smode) + 1];
+            strcpy(m_aResolutionsStr[current], smode);
             prevInfo = curInfo;
             current++;
         }
@@ -172,13 +260,13 @@ bool FullScreenResolutions::changeDisplaySettings(uint32_t _resolution)
 #ifdef _WIN32
     uint32_t width, height, frequency;
     getResolution(_resolution, &width, &height, &frequency);
-    ResolutionInfo info(width, height, frequency);
+    ResolutionInfo info(NULL, width, height, frequency);
     DEVMODE enumMode;
     int iModeNum = 0;
     memset(&enumMode, 0, sizeof(DEVMODE));
     while (EnumDisplaySettings(NULL, iModeNum++, &enumMode) != 0)
     {
-        ResolutionInfo curInfo(enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency);
+        ResolutionInfo curInfo(NULL, enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency);
         if (enumMode.dmBitsPerPel == 32 && curInfo == info) {
             bool bRes = ChangeDisplaySettings(&enumMode, CDS_FULLSCREEN) == DISP_CHANGE_SUCCESSFUL;
             WriteTrace(TraceGlitch, TraceDebug, "width=%d, height=%d, freq=%d %s\r\n", enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency, bRes ? "Success" : "Failed");

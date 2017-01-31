@@ -48,6 +48,7 @@
 #include "DepthBufferRender.h"
 #include "Config.h"
 #include "trace.h"
+#include "ScreenResolution.h"
 #include <Common/StdString.h>
 
 #ifdef _WIN32
@@ -297,30 +298,10 @@ public:
         TTInit();
 		TTSize(400);
         m_WindowRes.Attach(GetDlgItem(IDC_CMB_WINDOW_RES));
-        m_WindowRes.SetItemData(m_WindowRes.AddString("320x200"), 0);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("320x240"), 1);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("400x256"), 2);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("512x384"), 3);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("640x200"), 4);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("640x350"), 5);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("640x400"), 6);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("640x480"), 7);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("800x600"), 8);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("960x720"), 9);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("856x480"), 10);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("512x256"), 11);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("1024x768"), 12);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("1280x1024"), 13);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("1600x1200"), 14);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("400x300"), 15);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("1152x864"), 16);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("1280x960"), 17);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("1600x1024"), 18);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("1792x1344"), 19);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("1856x1392"), 20);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("1920x1440"), 21);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("2048x1536"), 22);
-        m_WindowRes.SetItemData(m_WindowRes.AddString("2048x2048"), 23);
+        for (uint32_t i = 0, n = GetScreenResolutionCount(); i < n; i++)
+        {
+            m_WindowRes.SetItemData(m_WindowRes.AddString(GetScreenResolutionName(i)), i);
+        }
         SetComboBoxIndex(m_WindowRes, g_settings->ScreenRes());
         TTSetTxt(IDC_CMB_WINDOW_RES, "Resolution:\n\nThis option selects the windowed resolution.\n\n[Recommended: 640x480, 800x600, 1024x768]");
 
