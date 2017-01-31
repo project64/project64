@@ -171,7 +171,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_File, new CSettingTypeTempString(""));
     AddHandler(Game_UniqueSaveDir, new CSettingTypeTempString(""));
     AddHandler(Game_GameName, new CSettingTypeTempString(""));
-    AddHandler(Game_GoodName, new CSettingTypeGame("Good Name", Rdb_GoodName));
+    AddHandler(Cfg_GoodName, new CSettingTypeGame("Good Name", ""));
     AddHandler(Game_TempLoaded, new CSettingTypeTempBool(false));
     AddHandler(Game_SystemType, new CSettingTypeTempNumber(SYSTEM_NTSC));
     AddHandler(Game_EditPlugin_Gfx, new CSettingTypeGame("Plugin-Gfx", Default_None));
