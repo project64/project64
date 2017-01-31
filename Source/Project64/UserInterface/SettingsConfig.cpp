@@ -251,7 +251,7 @@ void CSettingConfig::ApplySettings(bool UpdateScreen)
     if (!GameIni.empty())
     {
         stdstr GoodName;
-        if (!g_Settings->LoadStringVal(Rdb_GoodName, GoodName))
+        if (g_Settings->LoadStringVal(Rdb_GoodName, GoodName))
         {
             g_Settings->SaveString(Cfg_GoodName, GoodName);
         }
