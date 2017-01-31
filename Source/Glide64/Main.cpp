@@ -122,11 +122,11 @@ bool g_fullscreen;
 
 void _ChangeSize()
 {
-    rdp.scale_1024 = g_settings->scr_res_x / 1024.0f;
-    rdp.scale_768 = g_settings->scr_res_y / 768.0f;
+    rdp.scale_1024 = g_settings->scr_res_x() / 1024.0f;
+    rdp.scale_768 = g_settings->scr_res_y() / 768.0f;
 
     //  float res_scl_x = (float)g_settings->res_x / 320.0f;
-    float res_scl_y = (float)g_settings->res_y / 240.0f;
+    float res_scl_y = (float)g_settings->res_y() / 240.0f;
 
     uint32_t scale_x = *gfx.VI_X_SCALE_REG & 0xFFF;
     if (!scale_x) return;
@@ -155,7 +155,7 @@ void _ChangeSize()
     WriteTrace(TraceResolution, TraceDebug, "hstart: %d, hend: %d, vstart: %d, vend: %d", hstart, hend, vstart, vend);
     WriteTrace(TraceResolution, TraceDebug, "size: %d x %d", (int)rdp.vi_width, (int)rdp.vi_height);
 
-    rdp.scale_x = (float)g_settings->res_x / rdp.vi_width;
+    rdp.scale_x = (float)g_settings->res_x() / rdp.vi_width;
     if (region > 0 && g_settings->pal230)
     {
         // odd... but pal games seem to want 230 as height...
@@ -163,13 +163,13 @@ void _ChangeSize()
     }
     else
     {
-        rdp.scale_y = (float)g_settings->res_y / rdp.vi_height * aspect;
+        rdp.scale_y = (float)g_settings->res_y() / rdp.vi_height * aspect;
     }
     //  rdp.offset_x = g_settings->offset_x * res_scl_x;
     //  rdp.offset_y = g_settings->offset_y * res_scl_y;
     //rdp.offset_x = 0;
     //  rdp.offset_y = 0;
-    rdp.offset_y = ((float)g_settings->res_y - rdp.vi_height * rdp.scale_y) * 0.5f;
+    rdp.offset_y = ((float)g_settings->res_y() - rdp.vi_height * rdp.scale_y) * 0.5f;
     if (((uint32_t)rdp.vi_width <= (*gfx.VI_WIDTH_REG) / 2) && (rdp.vi_width > rdp.vi_height))
         rdp.scale_y *= 0.5f;
 
@@ -183,18 +183,16 @@ void _ChangeSize()
 
 void ChangeSize()
 {
-    g_settings->UpdateAspectRatio();
+    g_settings->UpdateScreenSize(ev_fullscreen);
     _ChangeSize();
-    rdp.offset_x = (g_settings->scr_res_x - g_settings->res_x) / 2.0f;
-    float offset_y = (g_settings->scr_res_y - g_settings->res_y) / 2.0f;
-    g_settings->res_x += (uint32_t)rdp.offset_x;
-    g_settings->res_y += (uint32_t)offset_y;
+    rdp.offset_x = (g_settings->scr_res_x() - g_settings->res_x()) / 2.0f;
+    float offset_y = (g_settings->scr_res_y() - g_settings->res_y()) / 2.0f;
     rdp.offset_y += offset_y;
     if (g_settings->aspectmode() == CSettings::Aspect_Original)
     {
         rdp.scale_x = rdp.scale_y = 1.0f;
-        rdp.offset_x = (g_settings->scr_res_x - rdp.vi_width) / 2.0f;
-        rdp.offset_y = (g_settings->scr_res_y - rdp.vi_height) / 2.0f;
+        rdp.offset_x = (g_settings->scr_res_x() - rdp.vi_width) / 2.0f;
+        rdp.offset_y = (g_settings->scr_res_y() - rdp.vi_height) / 2.0f;
     }
 }
 
@@ -240,7 +238,7 @@ void guLoadTextures()
         tbuf_size = 8 * grTexCalcMemRequired(GR_LOD_LOG2_256, GR_LOD_LOG2_256,
             GR_ASPECT_LOG2_1x1, GR_TEXFMT_RGB_565);
     }
-    else if (g_settings->scr_res_x <= 1024)
+    else if (g_settings->scr_res_x() <= 1024)
     {
         grTextureBufferExt(GR_TMU0, voodoo.tex_min_addr[GR_TMU0], GR_LOD_LOG2_1024, GR_LOD_LOG2_1024,
             GR_ASPECT_LOG2_1x1, GR_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
@@ -381,187 +379,9 @@ void SetWindowDisplaySize(HWND hWnd)
 {
     if ((HWND)hWnd == NULL) hWnd = GetActiveWindow();
     g_hwnd_win = (HWND)hWnd;
-
-    // Resolutions, MUST be in the correct order (SST1VID.H)
-    uint32_t resolutions[0x18][2] = {
-        { 320, 200 },
-        { 320, 240 },
-        { 400, 256 },
-        { 512, 384 },
-        { 640, 200 },
-        { 640, 350 },
-        { 640, 400 },
-        { 640, 480 },
-        { 800, 600 },
-        { 960, 720 },
-        { 856, 480 },
-        { 512, 256 },
-        { 1024, 768 },
-        { 1280, 1024 },
-        { 1600, 1200 },
-        { 400, 300 },
-
-        // 0x10
-        { 1152, 864 },
-        { 1280, 960 },
-        { 1600, 1024 },
-        { 1792, 1344 },
-        { 1856, 1392 },
-        { 1920, 1440 },
-        { 2048, 1536 },
-        { 2048, 2048 }
-    };
-
-#ifndef ANDROID
-    uint32_t screen_resolution = g_settings->res_data;
+    
     if (ev_fullscreen)
     {
-        uint32_t _width, _height = 0;
-        screen_resolution = grWrapperFullScreenResolutionExt(&_width, &_height);
-        g_settings->scr_res_x = g_settings->res_x = _width;
-        g_settings->scr_res_y = g_settings->res_y = _height;
-    }
-    else if (evoodoo)
-    {
-        g_settings->scr_res_x = g_settings->res_x = resolutions[g_settings->res_data][0];
-        g_settings->scr_res_y = g_settings->res_y = resolutions[g_settings->res_data][1];
-        screen_resolution |= 0x80000000;
-    }
-#endif
-
-    if ((HWND)hWnd == NULL) hWnd = GetActiveWindow();
-    g_width = g_height = 0;
-    if (screen_resolution & 0x80000000)
-    {
-        switch (screen_resolution & ~0x80000000)
-        {
-        case GR_RESOLUTION_320x200:
-            g_width = 320;
-            g_height = 200;
-            break;
-        case GR_RESOLUTION_320x240:
-            g_width = 320;
-            g_height = 240;
-            break;
-        case GR_RESOLUTION_400x256:
-            g_width = 400;
-            g_height = 256;
-            break;
-        case GR_RESOLUTION_512x384:
-            g_width = 512;
-            g_height = 384;
-            break;
-        case GR_RESOLUTION_640x200:
-            g_width = 640;
-            g_height = 200;
-            break;
-        case GR_RESOLUTION_640x350:
-            g_width = 640;
-            g_height = 350;
-            break;
-        case GR_RESOLUTION_640x400:
-            g_width = 640;
-            g_height = 400;
-            break;
-        case GR_RESOLUTION_640x480:
-            g_width = 640;
-            g_height = 480;
-            break;
-        case GR_RESOLUTION_800x600:
-            g_width = 800;
-            g_height = 600;
-            break;
-        case GR_RESOLUTION_960x720:
-            g_width = 960;
-            g_height = 720;
-            break;
-        case GR_RESOLUTION_856x480:
-            g_width = 856;
-            g_height = 480;
-            break;
-        case GR_RESOLUTION_512x256:
-            g_width = 512;
-            g_height = 256;
-            break;
-        case GR_RESOLUTION_1024x768:
-            g_width = 1024;
-            g_height = 768;
-            break;
-        case GR_RESOLUTION_1280x1024:
-            g_width = 1280;
-            g_height = 1024;
-            break;
-        case GR_RESOLUTION_1600x1200:
-            g_width = 1600;
-            g_height = 1200;
-            break;
-        case GR_RESOLUTION_400x300:
-            g_width = 400;
-            g_height = 300;
-            break;
-        case GR_RESOLUTION_1152x864:
-            g_width = 1152;
-            g_height = 864;
-            break;
-        case GR_RESOLUTION_1280x960:
-            g_width = 1280;
-            g_height = 960;
-            break;
-        case GR_RESOLUTION_1600x1024:
-            g_width = 1600;
-            g_height = 1024;
-            break;
-        case GR_RESOLUTION_1792x1344:
-            g_width = 1792;
-            g_height = 1344;
-            break;
-        case GR_RESOLUTION_1856x1392:
-            g_width = 1856;
-            g_height = 1392;
-            break;
-        case GR_RESOLUTION_1920x1440:
-            g_width = 1920;
-            g_height = 1440;
-            break;
-        case GR_RESOLUTION_2048x1536:
-            g_width = 2048;
-            g_height = 1536;
-            break;
-        case GR_RESOLUTION_2048x2048:
-            g_width = 2048;
-            g_height = 2048;
-            break;
-        default:
-            WriteTrace(TraceGlitch, TraceWarning, "unknown SstWinOpen resolution : %x", screen_resolution);
-        }
-    }
-    
-    if (screen_resolution & 0x80000000)
-    {
-        RECT clientRect, toolbarRect, statusbarRect;
-        ZeroMemory(&g_windowedRect, sizeof(RECT));
-        ZeroMemory(&clientRect, sizeof(RECT));
-        ZeroMemory(&toolbarRect, sizeof(RECT));
-        ZeroMemory(&statusbarRect, sizeof(RECT));
-        HWND hToolBar = FindWindowEx(hWnd, NULL, REBARCLASSNAME, NULL);
-        HWND hStatusBar = FindWindowEx(hWnd, NULL, STATUSCLASSNAME, NULL);
-        if (hStatusBar == NULL) hStatusBar = FindWindowEx(hWnd, NULL, "msctls_statusbar32", NULL); // 1964
-        if (hToolBar != NULL) GetWindowRect(hToolBar, &toolbarRect);
-        if (hStatusBar != NULL) GetWindowRect(hStatusBar, &statusbarRect);
-        viewport_offset = statusbarRect.bottom - statusbarRect.top;
-        GetWindowRect(hWnd, &g_windowedRect);
-        GetClientRect(hWnd, &clientRect);
-        g_windowedRect.right += (g_width - (clientRect.right - clientRect.left));
-        g_windowedRect.bottom += (g_height + (toolbarRect.bottom - toolbarRect.top) + (statusbarRect.bottom - statusbarRect.top) - (clientRect.bottom - clientRect.top));
-        SetWindowPos(hWnd, NULL, 0, 0, g_windowedRect.right - g_windowedRect.left,
-            g_windowedRect.bottom - g_windowedRect.top, SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
-
-        g_fullscreen = false;
-    }
-    else
-    {
-        g_width = GetFullScreenResWidth(screen_resolution);
-        g_height = GetFullScreenResHeight(screen_resolution);
         ZeroMemory(&g_windowedRect, sizeof(RECT));
         GetWindowRect(hWnd, &g_windowedRect);
 
@@ -569,7 +389,7 @@ void SetWindowDisplaySize(HWND hWnd)
         g_windowedStyle = GetWindowLong(hWnd, GWL_STYLE);
 
         // primary monitor only
-        if (!EnterFullScreen(screen_resolution))
+        if (!EnterFullScreen(g_settings->wrpResolution))
         {
             WriteTrace(TraceGlitch, TraceWarning, "can't change to fullscreen mode");
         }
@@ -586,6 +406,33 @@ void SetWindowDisplaySize(HWND hWnd)
 
         viewport_offset = 0;
         g_fullscreen = true;
+    }
+    else
+    {
+        RECT clientRect = { 0 }, toolbarRect = { 0 }, statusbarRect = { 0 }, windowedRect = { 0 };
+        ZeroMemory(&g_windowedRect, sizeof(RECT));
+        HWND hToolBar = FindWindowEx(hWnd, NULL, REBARCLASSNAME, NULL);
+        HWND hStatusBar = FindWindowEx(hWnd, NULL, STATUSCLASSNAME, NULL);
+        if (hStatusBar == NULL)
+        {
+            hStatusBar = FindWindowEx(hWnd, NULL, "msctls_statusbar32", NULL);
+        }
+        if (hToolBar != NULL)
+        {
+            GetWindowRect(hToolBar, &toolbarRect);
+        }
+        if (hStatusBar != NULL)
+        {
+            GetWindowRect(hStatusBar, &statusbarRect);
+        }
+        viewport_offset = statusbarRect.bottom - statusbarRect.top;
+        GetWindowRect(hWnd, &g_windowedRect);
+        GetClientRect(hWnd, &clientRect);
+        g_windowedRect.right += (g_width - (clientRect.right - clientRect.left));
+        g_windowedRect.bottom += (g_height + (toolbarRect.bottom - toolbarRect.top) + (statusbarRect.bottom - statusbarRect.top) - (clientRect.bottom - clientRect.top));
+        SetWindowPos(hWnd, NULL, 0, 0, g_windowedRect.right - g_windowedRect.left, g_windowedRect.bottom - g_windowedRect.top, SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
+
+        g_fullscreen = false;
     }
 }
 
@@ -666,6 +513,7 @@ int InitGfx()
     //*/
 
 #ifndef ANDROID
+    g_settings->UpdateScreenSize(ev_fullscreen);
     SetWindowDisplaySize(gfx.hWnd);
     gfx_context = grSstWinOpen(GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1);
     if (!gfx_context)
@@ -781,8 +629,6 @@ int InitGfx()
     grDepthBufferFunction(GR_CMP_LESS);
     grDepthMask(FXTRUE);
 
-    g_settings->res_x = g_settings->scr_res_x;
-    g_settings->res_y = g_settings->scr_res_y;
     ChangeSize();
 
     guLoadTextures();
@@ -802,7 +648,7 @@ int InitGfx()
     grTexFilterMode(1, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
     grTexClampMode(0, GR_TEXTURECLAMP_CLAMP, GR_TEXTURECLAMP_CLAMP);
     grTexClampMode(1, GR_TEXTURECLAMP_CLAMP, GR_TEXTURECLAMP_CLAMP);
-    grClipWindow(0, 0, g_settings->scr_res_x, g_settings->scr_res_y);
+    grClipWindow(0, 0, g_settings->scr_res_x(), g_settings->scr_res_y());
     rdp.update |= UPDATE_SCISSOR | UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
 
     if (!g_settings->ghq_use)
@@ -813,27 +659,45 @@ int InitGfx()
             /* Plugin path */
             int options = g_settings->ghq_fltr() | g_settings->ghq_enht() | texcmpr[g_settings->ghq_cmpr] | texhirs[g_settings->ghq_hirs];
             if (g_settings->ghq_enht_cmpr)
+            {
                 options |= COMPRESS_TEX;
+            }
             if (g_settings->ghq_hirs_cmpr)
+            {
                 options |= COMPRESS_HIRESTEX;
-            //      if (g_settings->ghq_enht_tile)
-            //        options |= TILE_TEX;
+            }
             if (g_settings->ghq_hirs_tile)
+            {
                 options |= TILE_HIRESTEX;
+            }
             if (g_settings->ghq_enht_f16bpp)
+            {
                 options |= FORCE16BPP_TEX;
+            }
             if (g_settings->ghq_hirs_f16bpp)
+            {
                 options |= FORCE16BPP_HIRESTEX;
+            }
             if (g_settings->ghq_enht_gz)
+            {
                 options |= GZ_TEXCACHE;
+            }
             if (g_settings->ghq_hirs_gz)
+            {
                 options |= GZ_HIRESTEXCACHE;
+            }
             if (g_settings->ghq_cache_save)
+            {
                 options |= (DUMP_TEXCACHE | DUMP_HIRESTEXCACHE);
+            }
             if (g_settings->ghq_hirs_let_texartists_fly)
+            {
                 options |= LET_TEXARTISTS_FLY;
+            }
             if (g_settings->ghq_hirs_dump)
+            {
                 options |= DUMP_TEX;
+            }
 
             g_settings->ghq_use = (int)ext_ghq_init(voodoo.max_tex_size, // max texture width supported by hardware
                 voodoo.max_tex_size, // max texture height supported by hardware
@@ -846,8 +710,9 @@ int InitGfx()
         }
     }
     if (g_settings->ghq_use && strstr(extensions, "TEXMIRROR"))
+    {
         voodoo.sup_mirroring = 1;
-
+    }
     return TRUE;
 }
 
@@ -903,9 +768,9 @@ extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReser
 
 void CALL ReadScreen(void **dest, int *width, int *height)
 {
-    *width = g_settings->res_x;
-    *height = g_settings->res_y;
-    uint8_t * buff = (uint8_t*)malloc(g_settings->res_x * g_settings->res_y * 3);
+    *width = g_settings->res_x();
+    *height = g_settings->res_y();
+    uint8_t * buff = (uint8_t*)malloc(g_settings->res_x() * g_settings->res_y() * 3);
     uint8_t * line = buff;
     *dest = (void*)buff;
 
@@ -918,17 +783,17 @@ void CALL ReadScreen(void **dest, int *width, int *height)
         FXFALSE,
         &info))
     {
-        uint32_t offset_src = info.strideInBytes*(g_settings->scr_res_y - 1);
+        uint32_t offset_src = info.strideInBytes*(g_settings->scr_res_y() - 1);
 
         // Copy the screen
         uint8_t r, g, b;
         if (info.writeMode == GR_LFBWRITEMODE_8888)
         {
             uint32_t col;
-            for (uint32_t y = 0; y < g_settings->res_y; y++)
+            for (uint32_t y = 0; y < g_settings->res_y(); y++)
             {
                 uint32_t *ptr = (uint32_t*)((uint8_t*)info.lfbPtr + offset_src);
-                for (uint32_t x = 0; x < g_settings->res_x; x++)
+                for (uint32_t x = 0; x < g_settings->res_x(); x++)
                 {
                     col = *(ptr++);
                     r = (uint8_t)((col >> 16) & 0xFF);
@@ -938,17 +803,17 @@ void CALL ReadScreen(void **dest, int *width, int *height)
                     line[x * 3 + 1] = g;
                     line[x * 3 + 2] = r;
                 }
-                line += g_settings->res_x * 3;
+                line += g_settings->res_x() * 3;
                 offset_src -= info.strideInBytes;
             }
         }
         else
         {
             uint16_t col;
-            for (uint32_t y = 0; y < g_settings->res_y; y++)
+            for (uint32_t y = 0; y < g_settings->res_y(); y++)
             {
                 uint16_t *ptr = (uint16_t*)((uint8_t*)info.lfbPtr + offset_src);
-                for (uint32_t x = 0; x < g_settings->res_x; x++)
+                for (uint32_t x = 0; x < g_settings->res_x(); x++)
                 {
                     col = *(ptr++);
                     r = (uint8_t)((float)(col >> 11) / 31.0f * 255.0f);
@@ -958,7 +823,7 @@ void CALL ReadScreen(void **dest, int *width, int *height)
                     line[x * 3 + 1] = g;
                     line[x * 3 + 2] = r;
                 }
-                line += g_settings->res_x * 3;
+                line += g_settings->res_x() * 3;
                 offset_src -= info.strideInBytes;
             }
         }
@@ -1582,7 +1447,7 @@ void newSwapBuffers()
     WriteTrace(TraceRDP, TraceDebug, "swapped");
 
     rdp.update |= UPDATE_SCISSOR | UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
-    grClipWindow(0, 0, g_settings->scr_res_x, g_settings->scr_res_y);
+    grClipWindow(0, 0, g_settings->scr_res_x(), g_settings->scr_res_y());
     grDepthBufferFunction(GR_CMP_ALWAYS);
     grDepthMask(FXFALSE);
     grCullMode(GR_CULL_DISABLE);
@@ -1610,8 +1475,8 @@ void newSwapBuffers()
 
         const uint32_t offset_x = (uint32_t)rdp.offset_x;
         const uint32_t offset_y = (uint32_t)rdp.offset_y;
-        const uint32_t image_width = g_settings->scr_res_x - offset_x * 2;
-        const uint32_t image_height = g_settings->scr_res_y - offset_y * 2;
+        const uint32_t image_width = g_settings->scr_res_x() - offset_x * 2;
+        const uint32_t image_height = g_settings->scr_res_y() - offset_y * 2;
 
         GrLfbInfo_t info;
         info.size = sizeof(GrLfbInfo_t);

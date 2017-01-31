@@ -144,11 +144,6 @@ public:
         ucode_Turbo3d = 21,
     };
 
-    uint32_t res_x, scr_res_x;
-    uint32_t res_y, scr_res_y;
-#ifndef ANDROID
-    uint32_t res_data;
-#endif
 
     int advanced_options;
     int texenh_options;
@@ -183,6 +178,11 @@ public:
     inline bool fb_optimize_texrect_enabled(void) const { return ((m_frame_buffer&fb_optimize_texrect) != 0); }
 
     inline const char * log_dir(void) const { return m_log_dir; }
+    inline uint32_t res_x(void) const { return m_res_x; }
+    inline uint32_t res_y(void) const { return m_res_y; }
+    inline uint32_t scr_res_x(void) const { return m_scr_res_x; }
+    inline uint32_t scr_res_y(void) const { return m_scr_res_y; }
+    inline uint32_t ScreenRes(void) const { return m_ScreenRes; }
     inline bool FlushLogs(void) const { return m_FlushLogs; }
     inline ScreenRotate_t rotate(void) const { return m_rotate; }
     inline Filtering_t filtering(void) const { return m_filtering; }
@@ -256,6 +256,7 @@ public:
     int wrpVRAM;
     int wrpFBO;
     int wrpAnisotropic;
+    void SetScreenRes(uint32_t value);
     void SetAspectmode(AspectMode_t value);
     void SetLODmode(PixelLevelOfDetail_t value);
     void SetFiltering(Filtering_t value);
@@ -269,6 +270,8 @@ public:
     void ReadGameSettings(const char * name);
     void WriteSettings(void);
     void UpdateAspectRatio(void);
+    void UpdateScreenSize(bool fullscreen);
+
 
 private:
     void ReadSettings();
@@ -277,6 +280,9 @@ private:
     bool m_dirty;
     bool m_FlushLogs;
     char m_log_dir[260];
+    uint32_t m_ScreenRes;
+    uint32_t m_res_x, m_scr_res_x;
+    uint32_t m_res_y, m_scr_res_y;
     AspectMode_t m_aspectmode;
     uint32_t m_frame_buffer;
     FBCRCMODE_t m_fb_crc_mode;

@@ -1,5 +1,6 @@
 #include <Common/StdString.h>
 #include "Gfx_1.3.h"
+#include "ScreenResolution.h"
 #include "SettingsID.h"
 
 #ifdef _WIN32
@@ -11,13 +12,11 @@ extern int g_width, g_height;
 
 CSettings::CSettings() :
     m_dirty(false),
-res_x(640),
-scr_res_x(640),
-res_y(480),
-scr_res_y(480),
-#ifndef ANDROID
-res_data(GR_RESOLUTION_640x480),
-#endif
+    m_res_x(640),
+    m_scr_res_x(640),
+    m_res_y(480),
+    m_scr_res_y(480),
+    m_ScreenRes(7),
 advanced_options(0),
 texenh_options(0),
 vsync(0),
@@ -109,8 +108,8 @@ void CSettings::RegisterSettings(void)
     Set_log_dir = FindSystemSettingId("Dir:Log");
 
     SetModuleName("Glide64");
-#ifdef _WIN32
     general_setting(Set_Resolution, "resolution", 7);
+#ifdef _WIN32
     general_setting(Set_FullScreenRes, "FullScreenRes", GetCurrentResIndex());
 #endif
     general_setting(Set_vsync, "vsync", 1);
@@ -206,6 +205,69 @@ void CSettings::RegisterSettings(void)
     game_setting_default(Set_fb_render, "fb_render", Set_fb_render_default);
 }
 
+void CSettings::SetScreenRes(uint32_t value)
+{
+    if (value >= 0x18)
+    {
+        value = 7;
+    }
+
+    if (value != m_ScreenRes)
+    {
+        m_ScreenRes = value;
+        m_dirty = true;
+    }
+}
+
+void CSettings::UpdateScreenSize(bool fullscreen)
+{
+    // Resolutions, MUST be in the correct order (SST1VID.H)
+    uint32_t resolutions[0x18][2] = {
+        { 320, 200 },
+        { 320, 240 },
+        { 400, 256 },
+        { 512, 384 },
+        { 640, 200 },
+        { 640, 350 },
+        { 640, 400 },
+        { 640, 480 },
+        { 800, 600 },
+        { 960, 720 },
+        { 856, 480 },
+        { 512, 256 },
+        { 1024, 768 },
+        { 1280, 1024 },
+        { 1600, 1200 },
+        { 400, 300 },
+
+        // 0x10
+        { 1152, 864 },
+        { 1280, 960 },
+        { 1600, 1024 },
+        { 1792, 1344 },
+        { 1856, 1392 },
+        { 1920, 1440 },
+        { 2048, 1536 },
+        { 2048, 2048 }
+    };
+
+#ifndef ANDROID
+    if (fullscreen)
+    {
+        g_width = GetFullScreenResWidth(wrpResolution);
+        g_height = GetFullScreenResHeight(wrpResolution);
+    }
+    else
+    {
+        g_width = resolutions[m_ScreenRes][0];
+        g_height = resolutions[m_ScreenRes][1];
+    }
+    m_scr_res_x = m_res_x = g_width;
+    m_scr_res_y = m_res_y = g_height;
+#endif
+    UpdateAspectRatio();
+}
+
 void CSettings::SetAspectmode(AspectMode_t value)
 {
     if (value != m_aspectmode)
@@ -297,32 +359,36 @@ void CSettings::UpdateAspectRatio(void)
     switch (m_aspectmode)
     {
     case Aspect_4x3:
-        if (scr_res_x >= scr_res_y * 4.0f / 3.0f) {
-            res_y = scr_res_y;
-            res_x = (uint32_t)(res_y * 4.0f / 3.0f);
+        if (m_scr_res_x >= m_scr_res_y * 4.0f / 3.0f) {
+            m_res_y = m_scr_res_y;
+            m_res_x = (uint32_t)(m_res_y * 4.0f / 3.0f);
         }
         else
         {
-            res_x = scr_res_x;
-            res_y = (uint32_t)(res_x / 4.0f * 3.0f);
+            m_res_x = m_scr_res_x;
+            m_res_y = (uint32_t)(m_res_x / 4.0f * 3.0f);
         }
         break;
     case Aspect_16x9:
-        if (scr_res_x >= scr_res_y * 16.0f / 9.0f)
+        if (m_scr_res_x >= m_scr_res_y * 16.0f / 9.0f)
         {
-            res_y = scr_res_y;
-            res_x = (uint32_t)(res_y * 16.0f / 9.0f);
+            m_res_y = m_scr_res_y;
+            m_res_x = (uint32_t)(m_res_y * 16.0f / 9.0f);
         }
         else
         {
-            res_x = scr_res_x;
-            res_y = (uint32_t)(res_x / 16.0f * 9.0f);
+            m_res_x = m_scr_res_x;
+            m_res_y = (uint32_t)(m_res_x / 16.0f * 9.0f);
         }
         break;
     default: //stretch or original
-        res_x = scr_res_x;
-        res_y = scr_res_y;
+        m_res_x = m_scr_res_x;
+        m_res_y = m_scr_res_y;
     }
+
+    m_res_x += (uint32_t)(m_scr_res_x - m_res_x) / 2.0f;
+    m_res_y += (uint32_t)(m_scr_res_y - m_res_y) / 2.0f;
+
 }
 
 void CSettings::ReadSettings()
@@ -331,8 +397,7 @@ void CSettings::ReadSettings()
     this->scr_res_x = this->res_x = g_width;
     this->scr_res_y = this->res_y = g_height;
 #else
-    this->res_data = (uint32_t)GetSetting(Set_Resolution);
-    if (this->res_data >= 24) this->res_data = 12;
+    SetScreenRes(GetSetting(Set_Resolution));
     this->wrpResolution = GetSetting(Set_FullScreenRes);
 #endif
     this->vsync = GetSetting(Set_vsync);
@@ -548,8 +613,8 @@ void CSettings::ReadGameSettings(const char * name)
     g_settings->fog = GetSetting(g_romopen ? Set_fog : Set_fog_default);
     g_settings->buff_clear = GetSetting(g_romopen ? Set_buff_clear : Set_buff_clear_default);
 #ifdef _WIN32
-    g_settings->res_data = GetSetting(Set_Resolution);
-    if (g_settings->res_data < 0 || g_settings->res_data >= 0x18) g_settings->res_data = 12;
+    g_settings->m_ScreenRes = GetSetting(Set_Resolution);
+    if (g_settings->m_ScreenRes < 0 || g_settings->m_ScreenRes >= 0x18) g_settings->m_ScreenRes = 12;
 #endif
 
     //frame buffer
@@ -615,7 +680,7 @@ void CSettings::ReadGameSettings(const char * name)
 void CSettings::WriteSettings(void)
 {
 #ifdef _WIN32
-    SetSetting(Set_Resolution, (int)g_settings->res_data);
+    SetSetting(Set_Resolution, g_settings->m_ScreenRes);
     SetSetting(Set_FullScreenRes, g_settings->wrpResolution);
 #endif
     SetSetting(Set_vsync, g_settings->vsync);

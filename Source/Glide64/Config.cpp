@@ -321,7 +321,7 @@ public:
         m_WindowRes.SetItemData(m_WindowRes.AddString("1920x1440"), 21);
         m_WindowRes.SetItemData(m_WindowRes.AddString("2048x1536"), 22);
         m_WindowRes.SetItemData(m_WindowRes.AddString("2048x2048"), 23);
-        SetComboBoxIndex(m_WindowRes, g_settings->res_data);
+        SetComboBoxIndex(m_WindowRes, g_settings->ScreenRes());
         TTSetTxt(IDC_CMB_WINDOW_RES, "Resolution:\n\nThis option selects the windowed resolution.\n\n[Recommended: 640x480, 800x600, 1024x768]");
 
         m_cbxVSync.Attach(GetDlgItem(IDC_CHK_VERTICAL_SYNC));
@@ -368,7 +368,7 @@ public:
         char spinVRAM[100];
         m_spinVRAM.GetWindowText(spinVRAM, sizeof(spinVRAM));
         CSettings oldsettings = *g_settings;
-        g_settings->res_data = m_WindowRes.GetCurSel();
+        g_settings->SetScreenRes(m_WindowRes.GetCurSel());
         g_settings->vsync = m_cbxVSync.GetCheck() == BST_CHECKED;
         g_settings->texenh_options = m_cbxTextureSettings.GetCheck() == BST_CHECKED;
         g_settings->wrpResolution = m_cmbFSResolution.GetCurSel();
