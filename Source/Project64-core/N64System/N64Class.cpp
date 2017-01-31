@@ -298,7 +298,7 @@ bool CN64System::LoadFileImage(const char * FileLoc)
         g_Settings->SaveString(Game_File, FileLoc);
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
 
-        WriteTrace(TraceN64System, TraceDebug, "Finished Loading (GoodName: %s)", g_Settings->LoadStringVal(Game_GoodName).c_str());
+        WriteTrace(TraceN64System, TraceDebug, "Finished Loading (GoodName: %s)", g_Settings->LoadStringVal(Rdb_GoodName).c_str());
     }
     else
     {
@@ -1513,7 +1513,7 @@ bool CN64System::SaveState()
         {
             SaveFile.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
         }
-        SaveFile.SetName(g_Settings->LoadStringVal(Game_GoodName).c_str());
+        SaveFile.SetName(g_Settings->LoadStringVal(Rdb_GoodName).c_str());
         g_Settings->SaveDword(Game_LastSaveSlot, g_Settings->LoadDword(Game_CurrentSaveState));
     }
     stdstr_f target_ext("pj%s", Slot != 0 ? stdstr_f("%d", Slot).c_str() : "");
@@ -1669,11 +1669,11 @@ bool CN64System::LoadState()
     }
     if (g_Settings->LoadDword(Game_CurrentSaveState) != 0)
     {
-        FileName.SetNameExtension(stdstr_f("%s.pj%d", g_Settings->LoadStringVal(Game_GoodName).c_str(), g_Settings->LoadDword(Game_CurrentSaveState)).c_str());
+        FileName.SetNameExtension(stdstr_f("%s.pj%d", g_Settings->LoadStringVal(Rdb_GoodName).c_str(), g_Settings->LoadDword(Game_CurrentSaveState)).c_str());
     }
     else
     {
-        FileName.SetNameExtension(stdstr_f("%s.pj", g_Settings->LoadStringVal(Game_GoodName).c_str()).c_str());
+        FileName.SetNameExtension(stdstr_f("%s.pj", g_Settings->LoadStringVal(Rdb_GoodName).c_str()).c_str());
     }
 
     CPath ZipFileName;
