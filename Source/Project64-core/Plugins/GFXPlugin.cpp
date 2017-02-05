@@ -260,11 +260,6 @@ bool CGfxPlugin::Initiate(CN64System * System, RenderWindow * Window)
     WriteTrace(TraceGFXPlugin, TraceDebug, "Calling InitiateGFX");
     m_Initialized = InitiateGFX(Info) != 0;
 
-#ifdef _WIN32
-    //jabo had a bug so I call CreateThread so his dllmain gets called again
-    pjutil::DynLibCallDllMain();
-#endif
-
     WriteTrace(TraceGFXPlugin, TraceDebug, "Done (res: %s)", m_Initialized ? "true" : "false");
     return m_Initialized;
 }
