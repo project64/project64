@@ -49,20 +49,6 @@ void pjutil::DynLibClose(pjutil::DynLibHandle LibHandle)
     }
 }
 
-#ifdef _WIN32
-static void EmptyThreadFunction(void)
-{
-}
-
-void pjutil::DynLibCallDllMain(void)
-{
-    //jabo had a bug so I call CreateThread so the dllmain in the plugins will get called again with thread attached
-    DWORD ThreadID;
-    HANDLE hthread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)EmptyThreadFunction, NULL, 0, &ThreadID);
-    CloseHandle(hthread);
-}
-#endif
-
 void pjutil::Sleep(uint32_t timeout)
 {
 #ifdef _WIN32
