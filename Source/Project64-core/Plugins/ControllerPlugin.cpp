@@ -122,12 +122,6 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
             m_Initialized = true;
         }
     }
-
-#ifdef _WIN32
-    //jabo had a bug so I call CreateThread so his dllmain gets called again
-    pjutil::DynLibCallDllMain();
-#endif
-
     return m_Initialized;
 }
 
