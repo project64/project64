@@ -352,10 +352,6 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
 
     m_Initialized = true;
 
-#ifdef _WIN32
-    //jabo had a bug so I call CreateThread so his dllmain gets called again
-    pjutil::DynLibCallDllMain();
-#endif
     WriteTrace(TraceRSPPlugin, TraceDebug, "Done (res: %s)", m_Initialized ? "true" : "false");
     return m_Initialized;
 }
