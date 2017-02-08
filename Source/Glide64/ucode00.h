@@ -37,18 +37,6 @@
 //
 //****************************************************************
 
-#define ucode_Fast3D 0
-#define ucode_F3DEX 1
-#define ucode_F3DEX2 2
-#define ucode_WaveRace 3
-#define ucode_StarWars 4
-#define ucode_DiddyKong 5
-#define ucode_S2DEX 6
-#define ucode_PerfectDark 7
-#define ucode_CBFD 8
-#define ucode_zSort 9
-#define ucode_Turbo3d 21
-
 static void rsp_vertex(int v0, int n)
 {
     uint32_t addr = segoffset(rdp.cmd1) & 0x00FFFFFF;
@@ -535,7 +523,7 @@ static void uc0_tri1()
         &rdp.vtx[((rdp.cmd1 >> 8) & 0xFF) / 10],
         &rdp.vtx[(rdp.cmd1 & 0xFF) / 10]
     };
-    if (g_settings->hacks & hack_Makers)
+    if (g_settings->hacks(CSettings::hack_Makers))
     {
         rdp.force_wrap = FALSE;
         for (int i = 0; i < 3; i++)
@@ -775,7 +763,10 @@ static void uc0_moveword()
 static void uc0_texture()
 {
     int tile = (rdp.cmd0 >> 8) & 0x07;
-    if (tile == 7 && (g_settings->hacks&hack_Supercross)) tile = 0; //fix for supercross 2000
+    if (tile == 7 && g_settings->hacks(CSettings::hack_Supercross))
+    {
+        tile = 0; //fix for supercross 2000
+    }
     rdp.mipmap_level = (rdp.cmd0 >> 11) & 0x07;
     uint32_t on = (rdp.cmd0 & 0xFF);
     rdp.cur_tile = tile;
@@ -811,7 +802,7 @@ static void uc0_setothermode_h()
     WriteTrace(TraceRDP, TraceDebug, "uc0:setothermode_h: ");
 
     int shift, len;
-    if ((g_settings->ucode == ucode_F3DEX2) || (g_settings->ucode == ucode_CBFD))
+    if (g_settings->ucode() == CSettings::ucode_F3DEX2 || g_settings->ucode() == CSettings::ucode_CBFD)
     {
         len = (rdp.cmd0 & 0xFF) + 1;
         shift = 32 - ((rdp.cmd0 >> 8) & 0xFF) - len;
@@ -889,7 +880,7 @@ static void uc0_setothermode_l()
     WriteTrace(TraceRDP, TraceDebug, "uc0:setothermode_l ");
 
     int shift, len;
-    if ((g_settings->ucode == ucode_F3DEX2) || (g_settings->ucode == ucode_CBFD))
+    if (g_settings->ucode() == CSettings::ucode_F3DEX2 || g_settings->ucode() == CSettings::ucode_CBFD)
     {
         len = (rdp.cmd0 & 0xFF) + 1;
         shift = 32 - ((rdp.cmd0 >> 8) & 0xFF) - len;
@@ -932,7 +923,9 @@ static void uc0_setothermode_l()
         rdp.render_mode_changed |= rdp.rm ^ rdp.othermode_l;
         rdp.rm = rdp.othermode_l;
         if (g_settings->flame_corona && (rdp.rm == 0x00504341)) //hack for flame's corona
-            rdp.othermode_l |= /*0x00000020 |*/ 0x00000010;
+        {
+            rdp.othermode_l |= 0x00000010;
+        }
         WriteTrace(TraceRDP, TraceDebug, "rendermode: %08lx", rdp.othermode_l);  // just output whole othermode_l
     }
 

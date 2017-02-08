@@ -63,7 +63,7 @@ void uc9_rpdcmd()
                 a++;
                 rdp.cmd3 = ((uint32_t*)gfx.RDRAM)[a++];
             }
-            gfx_instruction[ucode_zSort][cmd]();
+            gfx_instruction[CSettings::ucode_zSort][cmd]();
         };
         rdp.LLE = 0;
     }

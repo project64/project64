@@ -59,11 +59,9 @@ uint8_t *texture_buffer = tex1;
 #include "TexMod.h"
 #include "TexModCI.h"
 #include "CRC.h"
-#ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
-extern int ghq_dmptex_toggle_key;
-#endif
 
-typedef struct TEXINFO_t {
+typedef struct TEXINFO_t 
+{
     int real_image_width, real_image_height;	// FOR ALIGNMENT PURPOSES ONLY!!!
     int tile_width, tile_height;
     int mask_width, mask_height;
@@ -72,21 +70,18 @@ typedef struct TEXINFO_t {
     uint32_t crc;
     uint32_t flags;
     int splits, splitheight;
-#ifdef TEXTURE_FILTER
     uint64 ricecrc;
-#endif
 } TEXINFO;
 
 TEXINFO texinfo[2];
 int tex_found[2][MAX_TMU];
 
-#ifdef TEXTURE_FILTER
-typedef struct HIRESTEX_t {
+typedef struct HIRESTEX_t 
+{
     int width, height;
     uint16_t format;
     uint8_t *data;
 } HIRESTEX;
-#endif
 
 //****************************************************************
 // List functions
@@ -527,28 +522,6 @@ void TexCache()
 {
     WriteTrace(TraceRDP, TraceDebug, " |-+ TexCache called");
 
-#ifdef TEXTURE_FILTER /* Hiroshi Morii <koolsmoky@users.sourceforge.net> */ // POSTNAPALM
-    if (g_settings->ghq_use && g_settings->ghq_hirs_dump) {
-        /* Force reload hi-res textures. Useful for texture artists */
-        if (CheckKeyPressed(G64_VK_R, 0x0001)) {
-            if (ext_ghq_reloadhirestex()) ClearCache();
-        }
-        /* Turn on texture dump */
-        else if (CheckKeyPressed(G64_VK_D, 0x0001)) {
-            extern void DisplayLoadProgress(const wchar_t *format, ...);
-            ghq_dmptex_toggle_key = !ghq_dmptex_toggle_key;
-            if (ghq_dmptex_toggle_key) {
-                DisplayLoadProgress(L"Texture dump - ON");
-                ClearCache();
-            }
-            else {
-                DisplayLoadProgress(L"Texture dump - OFF");
-            }
-            pjutil::Sleep(1000);
-        }
-    }
-#endif
-
     if (rdp.tex & 1)
         GetTexInfo(0, rdp.cur_tile);
     if (rdp.tex & 2)
@@ -894,14 +867,14 @@ void TexCache()
 
             int tile = rdp.cur_tile + i;
 
-            if (g_settings->filtering == 0)
+            if (g_settings->filtering() == CSettings::Filter_Automatic)
             {
                 int filter = (rdp.filter_mode != 2) ? GR_TEXTUREFILTER_POINT_SAMPLED : GR_TEXTUREFILTER_BILINEAR;
                 grTexFilterMode(tmu, filter, filter);
             }
             else
             {
-                int filter = (g_settings->filtering == 1) ? GR_TEXTUREFILTER_BILINEAR : GR_TEXTUREFILTER_POINT_SAMPLED;
+                int filter = (g_settings->filtering() == CSettings::Filter_ForceBilinear) ? GR_TEXTUREFILTER_BILINEAR : GR_TEXTUREFILTER_POINT_SAMPLED;
                 grTexFilterMode(tmu, filter, filter);
             }
 
@@ -962,7 +935,6 @@ void TexCache()
     WriteTrace(TraceRDP, TraceDebug, " | +- TexCache End");
 }
 
-#ifdef TEXTURE_FILTER
 /** cite from RiceVideo */
 inline uint32_t CalculateDXT(uint32_t txl2words)
 {
@@ -996,7 +968,6 @@ inline uint32_t ReverseDXT(uint32_t val, uint32_t /*lrs*/, uint32_t width, uint3
     return	(low + high) / 2;
 }
 /** end RiceVideo cite */
-#endif
 
 //****************************************************************
 // LoadTex - does the actual texture loading after everything is prepared
@@ -1029,7 +1000,7 @@ void LoadTex(int id, int tmu)
 
     //!Hackalert
     //GoldenEye water texture. It has CI format in fact, but the game set it to RGBA
-    if ((g_settings->hacks&hack_GoldenEye) && rdp.tiles[td].format == 0 && rdp.tlut_mode == 2 && rdp.tiles[td].size == 2)
+    if (g_settings->hacks(CSettings::hack_GoldenEye) && rdp.tiles[td].format == 0 && rdp.tlut_mode == 2 && rdp.tiles[td].size == 2)
     {
         rdp.tiles[td].format = 2;
         rdp.tiles[td].size = 1;
@@ -1054,10 +1025,8 @@ void LoadTex(int id, int tmu)
     cache->f_mirror_t = FALSE;
     cache->f_wrap_s = FALSE;
     cache->f_wrap_t = FALSE;
-#ifdef TEXTURE_FILTER
     cache->is_hires_tex = FALSE;
     cache->ricecrc = texinfo[id].ricecrc;
-#endif
 
     // Add this cache to the list
     AddToList(&cachelut[cache->crc >> 16], cache->crc, uintptr_t(cache), tmu, rdp.n_cached[tmu]);
@@ -1283,7 +1252,6 @@ void LoadTex(int id, int tmu)
     // when we get passed the texture ram cache and texture buffers for
     // minimal calculation overhead.
     //
-#ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
     GHQTexInfo ghqTexInfo;
     memset(&ghqTexInfo, 0, sizeof(GHQTexInfo));
     uint32_t g64_crc = cache->crc;
@@ -1359,7 +1327,6 @@ void LoadTex(int id, int tmu)
     if (ghqTexInfo.data)
         ;//do nothing
     else
-#endif
         if (splits > 1)
         {
             cache->scale_y = 0.125f;
@@ -1491,11 +1458,7 @@ void LoadTex(int id, int tmu)
         memcpy(rdp.pal_8, tmp_pal, 512);
     }
 
-#ifdef TEXTURE_FILTER
     if (mod && !modifyPalette && !ghqTexInfo.data)
-#else
-    if (mod && !modifyPalette)
-#endif
     {
         // Convert the texture to ARGB 4444
         if (LOWORD(result) == GR_TEXFMT_ARGB_1555)
@@ -1616,44 +1579,8 @@ void LoadTex(int id, int tmu)
 
     if (GfxInitDone)
     {
-#ifdef TEXTURE_FILTER // Hiroshi Morii <koolsmoky@users.sourceforge.net>
         if (g_settings->ghq_use)
         {
-            if (!ghqTexInfo.data && ghq_dmptex_toggle_key) {
-                unsigned char *tmpbuf = (unsigned char*)texture;
-                int tmpwidth = real_x;
-                if (texinfo[id].splits > 1) {
-                    int dstpixoffset, srcpixoffset;
-                    int shift;
-                    switch (LOWORD(result) & 0x7fff) { // XXX is there a better way of determining the pixel color depth?
-                    case GR_TEXFMT_ARGB_8888:
-                        shift = 3;
-                        break;
-                    case GR_TEXFMT_ALPHA_INTENSITY_44:
-                    case GR_TEXFMT_ALPHA_8:
-                        shift = 0;
-                        break;
-                    default:
-                        shift = 1;
-                    }
-                    tmpwidth = texinfo[id].real_image_width;
-                    tmpbuf = (unsigned char*)malloc((256 * 256) << 3); // XXX performance overhead
-                    for (int i = 0; i < cache->splitheight; i++) {
-                        dstpixoffset = texinfo[id].real_image_width * i;
-                        srcpixoffset = 256 * i;
-                        for (int k = 0; k < texinfo[id].splits; k++) {
-                            memcpy(tmpbuf + (dstpixoffset << shift), texture + (srcpixoffset << shift), (256 << shift));
-                            dstpixoffset += 256;
-                            srcpixoffset += (256 * cache->splitheight);
-                        }
-                    }
-                }
-                ext_ghq_dmptx(tmpbuf, (int)texinfo[id].real_image_width, (int)texinfo[id].real_image_height, (int)tmpwidth, (unsigned short)LOWORD(result), (unsigned short)((cache->format << 8) | (cache->size)), cache->ricecrc);
-                if (tmpbuf != texture && tmpbuf) {
-                    free(tmpbuf);
-                }
-            }
-
             if (!ghqTexInfo.data)
                 if (!g_settings->ghq_enht_nobg || !rdp.texrecting || (texinfo[id].splits == 1 && texinfo[id].width <= 256))
                     ext_ghq_txfilter((unsigned char*)texture, (int)real_x, (int)real_y, LOWORD(result), (uint64)g64_crc, &ghqTexInfo);
@@ -1713,17 +1640,6 @@ void LoadTex(int id, int tmu)
                                     cache->c_scl_y *= mscale;
                                     cache->c_scl_x *= mscale;
                                 }
-                                /*
-                                else
-                                {
-                                if (rdp.tiles[td].mirror_s && sup_mirroring)
-                                cache->f_mirror_s = TRUE;
-                                if (rdp.tiles[td].mirror_t && sup_mirroring)
-                                cache->f_mirror_t = TRUE;
-                                //cache->c_scl_y /= mscale;
-                                //cache->c_scl_x /= mscale;
-                                }
-                                */
                                 if (ghqTexInfo.aspectRatioLog2 >= 0)
                                 {
                                     cache->scale_x = 1.0f;
@@ -1763,7 +1679,6 @@ void LoadTex(int id, int tmu)
                     }
                     else
                     {
-                        //cache->scale = 256.0f / float(1<<lod);
                         cache->c_off = 128.0f / float(1 << lod);
                     }
                     real_x = ghqTexInfo.width;
@@ -1775,7 +1690,6 @@ void LoadTex(int id, int tmu)
                 }
             }
         }
-#endif
 
         // Load the texture into texture memory
         GrTexInfo *t_info = &cache->t_info;

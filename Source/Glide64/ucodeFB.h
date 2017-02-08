@@ -62,7 +62,7 @@ static void fb_bg_copy()
     if (rdp.main_ci == 0)
         return;
     CI_STATUS status = rdp.frame_buffers[rdp.ci_count - 1].status;
-    if ((status == ci_copy))
+    if (status == ci_copy)
         return;
 
     uint32_t addr = segoffset(rdp.cmd1) >> 1;
@@ -222,7 +222,7 @@ static void fb_settextureimage()
                             rdp.scale_y = 1.0f;
                         }
                     }
-                    else if (!(g_settings->frame_buffer & fb_ignore_aux_copy) && cur_fb.width < rdp.frame_buffers[rdp.main_ci_index].width)
+                    else if (!g_settings->fb_ignore_aux_copy_enabled() && cur_fb.width < rdp.frame_buffers[rdp.main_ci_index].width)
                     {
                         rdp.copy_ci_index = rdp.ci_count - 1;
                         cur_fb.status = ci_aux_copy;
@@ -238,7 +238,6 @@ static void fb_settextureimage()
                 }
                 WriteTrace(TraceRDP, TraceDebug, "Detect FB usage. texture addr is inside framebuffer: %08lx - %08lx ", addr, rdp.main_ci);
             }
-            ///*
             else if ((cur_fb.status != ci_main) && (addr >= rdp.zimg && addr < rdp.zimg_end))
             {
                 cur_fb.status = ci_zcopy;
@@ -246,7 +245,6 @@ static void fb_settextureimage()
                     rdp.copy_zi_index = rdp.ci_count - 1;
                 WriteTrace(TraceRDP, TraceDebug, "fb_settextureimage. rdp.frame_buffers[%d].status = ci_zcopy", rdp.ci_count - 1);
             }
-            //*/
             else if ((rdp.maincimg[0].width > 64) && (addr >= rdp.maincimg[0].addr) && (addr < (rdp.maincimg[0].addr + rdp.maincimg[0].width*rdp.maincimg[0].height * 2)))
             {
                 if (cur_fb.status != ci_main)
@@ -268,7 +266,7 @@ static void fb_settextureimage()
                 WriteTrace(TraceRDP, TraceDebug, "read_previous_ci = TRUE");
             }
         }
-        else if (fb_hwfbe_enabled && (cur_fb.status == ci_main))
+        else if (g_settings->fb_hwfbe_enabled() && (cur_fb.status == ci_main))
         {
             if ((addr >= rdp.main_ci) && (addr < rdp.main_ci_end)) //addr within main frame buffer
             {
@@ -407,7 +405,7 @@ static void fb_setcolorimage()
     }
     if (rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_unknown) //status of previous fb was not changed - it is useless
     {
-        if (fb_hwfbe_enabled && !(g_settings->frame_buffer & fb_useless_is_useless))
+        if (g_settings->fb_hwfbe_enabled() && !g_settings->fb_useless_is_useless_enabled())
         {
             rdp.frame_buffers[rdp.ci_count - 1].status = ci_aux;
             rdp.frame_buffers[rdp.ci_count - 1].changed = 0;
@@ -432,7 +430,7 @@ static void fb_setcolorimage()
     }
     if (cur_fb.status == ci_main)
     {
-        int viSwapOK = ((g_settings->swapmode == 2) && (rdp.vi_org_reg == *gfx.VI_ORIGIN_REG)) ? FALSE : TRUE;
+        int viSwapOK = ((g_settings->swapmode() == CSettings::SwapMode_Hybrid) && (rdp.vi_org_reg == *gfx.VI_ORIGIN_REG)) ? FALSE : TRUE;
         if ((rdp.maincimg[0].addr != cur_fb.addr) && SwapOK && viSwapOK)
         {
             SwapOK = FALSE;

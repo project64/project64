@@ -22,7 +22,6 @@
 
 #ifdef _WIN32
 #include <windows.h>
-#include <commctrl.h>
 #else
 #include <stdint.h>
 #include <stdarg.h>
@@ -173,14 +172,8 @@ int UMAmode = 0; //support for VSA-100 UMA mode;
 static HDC hDC = NULL;
 static HGLRC hGLRC = NULL;
 static HWND hToolBar = NULL;
-static HWND hwnd_win = NULL;
-static unsigned long windowedExStyle, windowedStyle;
 #endif // _WIN32
 static unsigned long fullscreen;
-#ifdef _WIN32
-static RECT windowedRect;
-static HMENU windowedMenu;
-#endif // _WIN32
 
 static int savedWidtho, savedHeighto;
 static int savedWidth, savedHeight;
@@ -309,12 +302,6 @@ grGlideInit(void)
     WriteTrace(TraceGlitch, TraceDebug, "-");
 }
 
-FX_ENTRY void FX_CALL
-grSstSelect(int which_sst)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "which_sst = %d", which_sst);
-}
-
 int isExtensionSupported(const char *extension)
 {
     return 0;
@@ -380,10 +367,10 @@ int isWglExtensionSupported(const char *extension)
 
 #define GrPixelFormat_t int
 
-FX_ENTRY GrContext_t FX_CALL grSstWinOpenExt(GrScreenRefresh_t refresh_rate, GrColorFormat_t color_format, GrOriginLocation_t origin_location, GrPixelFormat_t pixelformat, int nColBuffers, int nAuxBuffers)
+FX_ENTRY GrContext_t FX_CALL grSstWinOpenExt(GrColorFormat_t color_format, GrOriginLocation_t origin_location, GrPixelFormat_t pixelformat, int nColBuffers, int nAuxBuffers)
 {
-    WriteTrace(TraceGlitch, TraceDebug, "refresh_rate: %d, color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
-    return grSstWinOpen(refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
+    WriteTrace(TraceGlitch, TraceDebug, "color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", color_format, origin_location, nColBuffers, nAuxBuffers);
+    return grSstWinOpen(color_format, origin_location, nColBuffers, nAuxBuffers);
 }
 
 #ifdef _WIN32
@@ -393,7 +380,7 @@ FX_ENTRY GrContext_t FX_CALL grSstWinOpenExt(GrScreenRefresh_t refresh_rate, GrC
 # endif
 #endif
 
-FX_ENTRY GrContext_t FX_CALL grSstWinOpen( GrScreenRefresh_t refresh_rate, GrColorFormat_t color_format, GrOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers)
+FX_ENTRY GrContext_t FX_CALL grSstWinOpen( GrColorFormat_t color_format, GrOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers)
 {
     static int show_warning = 1;
 
@@ -405,7 +392,7 @@ FX_ENTRY GrContext_t FX_CALL grSstWinOpen( GrScreenRefresh_t refresh_rate, GrCol
     color_texture = free_texture++;
     depth_texture = free_texture++;
 
-    WriteTrace(TraceGlitch, TraceDebug, "refresh_rate: %d, color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
+    WriteTrace(TraceGlitch, TraceDebug, "color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", color_format, origin_location, nColBuffers, nAuxBuffers);
     WriteTrace(TraceGlitch, TraceDebug, "g_width: %d, g_height: %d fullscreen: %d", g_width, g_height, fullscreen);
 
     //viewport_offset = ((screen_resolution>>2) > 20) ? screen_resolution >> 2 : 20;
@@ -676,18 +663,7 @@ grSstWinClose(GrContext_t context)
         wglDeleteContext(hGLRC);
         hGLRC = NULL;
     }
-    if (fullscreen)
-    {
-        ChangeDisplaySettings(NULL, 0);
-        SetWindowPos(hwnd_win, NULL,
-            windowedRect.left, windowedRect.top,
-            0, 0,
-            SWP_NOZORDER | SWP_NOSIZE);
-        SetWindowLong(hwnd_win, GWL_STYLE, windowedStyle);
-        SetWindowLong(hwnd_win, GWL_EXSTYLE, windowedExStyle);
-        if (windowedMenu) SetMenu(hwnd_win, windowedMenu);
-        fullscreen = 0;
-    }
+    ExitFullScreen();
 #endif
     return FXTRUE;
 }
@@ -1058,8 +1034,6 @@ grGetProcAddress(char *procName)
         return (GrProc)grTextureAuxBufferExt;
     if (!strcmp(procName, "grAuxBufferExt"))
         return (GrProc)grAuxBufferExt;
-    if (!strcmp(procName, "grWrapperFullScreenResolutionExt"))
-        return (GrProc)grWrapperFullScreenResolutionExt;
     if (!strcmp(procName, "grConfigWrapperExt"))
         return (GrProc)grConfigWrapperExt;
     if (!strcmp(procName, "grKeyPressedExt"))
@@ -1087,7 +1061,7 @@ grGet(FxU32 pname, FxU32 plength, FxI32 *params)
         if (plength < 4 || params == NULL) return 0;
         if (!nbTextureUnits)
         {
-            grSstWinOpen(0, GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
+            grSstWinOpen(GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
             grSstWinClose(0);
         }
 #ifdef VOODOO1
@@ -1966,16 +1940,6 @@ grQueryResolutionsExt(int32_t * Size)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
     return 0;
- }
-
-FX_ENTRY GrScreenResolution_t FX_CALL grWrapperFullScreenResolutionExt(FxU32* width, FxU32* height)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "-");
-    return 0;
-    /*
-      g_FullScreenResolutions.getResolution(config.res, width, height);
-      return config.res;
-      */
 }
 
 FX_ENTRY FxBool FX_CALL grKeyPressedExt(FxU32 key)
@@ -1983,7 +1947,7 @@ FX_ENTRY FxBool FX_CALL grKeyPressedExt(FxU32 key)
     return 0;
 }
 
-FX_ENTRY void FX_CALL grConfigWrapperExt(FxI32 vram, FxBool fbo, FxBool aniso)
+void grConfigWrapperExt(FxI32 vram, FxBool fbo, FxBool aniso)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
     config.vram_size = vram;
@@ -2236,18 +2200,6 @@ GrTexInfo        *info)
 FX_ENTRY void FX_CALL
 grLoadGammaTable(FxU32 nentries, FxU32 *red, FxU32 *green, FxU32 *blue)
 {
-    //TODO?
-    /*LOG("grLoadGammaTable\r\n");
-    if (!fullscreen)
-    return;
-    FxU16 aGammaRamp[3][256];
-    for (int i = 0; i < 256; i++)
-    {
-    aGammaRamp[0][i] = (FxU16)((red[i] << 8) & 0xFFFF);
-    aGammaRamp[1][i] = (FxU16)((green[i] << 8) & 0xFFFF);
-    aGammaRamp[2][i] = (FxU16)((blue[i] << 8) & 0xFFFF);
-    }
-    CorrectGamma(aGammaRamp);*/
 }
 
 FX_ENTRY void FX_CALL

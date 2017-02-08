@@ -32,18 +32,15 @@ public class TwoLinesListPreferenceDialogFragmentCompat extends PreferenceDialog
         return (TwoLinesListPreference)this.getPreference();
     }
 
-    class YourAdapter extends ArrayAdapter<String>
+    class TwoLinesListPreferenceAdapter extends ArrayAdapter<String>
     {
-        public YourAdapter(Context context, String[] values)
+        public TwoLinesListPreferenceAdapter(Context context, String[] values)
         {
             super(context, R.layout.two_lines_list_preference_row, values);
         }
 
         class ViewHolder
         {
-            TextView title;
-            TextView subTitle;
-            RadioButton radioBtn;
         }
 
         ViewHolder holder;
@@ -52,33 +49,32 @@ public class TwoLinesListPreferenceDialogFragmentCompat extends PreferenceDialog
         @Override
         public View getView(int position, View convertView, ViewGroup parent)
         {
-            final LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            if (convertView == null)
-            {
-                convertView = inflater.inflate(R.layout.two_lines_list_preference_row, null);
-                holder = new ViewHolder();
-                holder.title = (TextView) convertView.findViewById(R.id.two_lines_list_view_row_text);
-                holder.subTitle = (TextView) convertView.findViewById(R.id.two_lines_list_view_row_subtext);
-                holder.radioBtn = (RadioButton) convertView.findViewById(R.id.two_lines_list_view_row_radiobtn);
-                convertView.setTag(holder);
+            final TwoLinesListPreference preference = getTwoLinesListPreference();
 
-                holder.title.setOnClickListener(listener);
-                holder.subTitle.setOnClickListener(listener);
-                holder.radioBtn.setOnClickListener(listener);
+            final LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.two_lines_list_preference_row, null);
+
+            TextView title = (TextView) convertView.findViewById(R.id.two_lines_list_view_row_text);
+            title.setOnClickListener(listener);
+            title.setText(preference.getEntries()[position]);
+            title.setTag(position);
+
+            TextView subTitle = (TextView) convertView.findViewById(R.id.two_lines_list_view_row_subtext);
+            if (preference.getEntriesSubtitles()[position].length() == 0)
+            {
+                subTitle.setVisibility(View.GONE);
             }
             else
             {
-                holder = (ViewHolder) convertView.getTag();
+                subTitle.setOnClickListener(listener);
+                subTitle.setText(preference.getEntriesSubtitles()[position]);
+                subTitle.setTag(position);
             }
-            final TwoLinesListPreference preference = getTwoLinesListPreference();
 
-            holder.title.setText(preference.getEntries()[position]);
-            holder.title.setTag(position);
-            holder.subTitle.setText(preference.getEntriesSubtitles()[position]);
-            holder.subTitle.setTag(position);
-
-            holder.radioBtn.setChecked(preference.getValueIndex() == position);
-            holder.radioBtn.setTag(position);
+            RadioButton radioBtn = (RadioButton) convertView.findViewById(R.id.two_lines_list_view_row_radiobtn);
+            radioBtn.setOnClickListener(listener);
+            radioBtn.setChecked(preference.getValueIndex() == position);
+            radioBtn.setTag(position);
 
             return convertView;
         }
@@ -96,7 +92,7 @@ public class TwoLinesListPreferenceDialogFragmentCompat extends PreferenceDialog
             values[i] = entries[i].toString();
         }
 
-        ListAdapter adapter = new YourAdapter(builder.getContext(), values);
+        ListAdapter adapter = new TwoLinesListPreferenceAdapter(builder.getContext(), values);
         builder.setAdapter(adapter, new DialogInterface.OnClickListener()
         {
             @Override
@@ -126,7 +122,7 @@ public class TwoLinesListPreferenceDialogFragmentCompat extends PreferenceDialog
         {
             final TwoLinesListPreference preference = getTwoLinesListPreference();
             int EntryIndex = (Integer) v.getTag();
-            preference.setValue(preference.getEntries()[EntryIndex].toString());
+            preference.setValue(preference.getEntryValues()[EntryIndex].toString());
             TwoLinesListPreferenceDialogFragmentCompat.this.getDialog().dismiss();
         }
     }

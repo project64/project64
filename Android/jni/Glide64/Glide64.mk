@@ -22,15 +22,16 @@ LOCAL_SRC_FILES :=                              \
     $(SRCDIR)/Glitch64/OGLEStextures.cpp        \
     $(SRCDIR)/Glitch64/OGLESwrappers.cpp        \
     $(SRCDIR)/Glide64/3dmath.cpp                \
+    $(SRCDIR)/Glide64/Android.cpp               \
     $(SRCDIR)/Glide64/Combine.cpp               \
     $(SRCDIR)/Glide64/Config.cpp                \
     $(SRCDIR)/Glide64/CRC.cpp                   \
     $(SRCDIR)/Glide64/Debugger.cpp              \
     $(SRCDIR)/Glide64/DepthBufferRender.cpp     \
     $(SRCDIR)/Glide64/FBtoScreen.cpp            \
-    $(SRCDIR)/Glide64/Keys.cpp                  \
     $(SRCDIR)/Glide64/Main.cpp                  \
     $(SRCDIR)/Glide64/rdp.cpp                   \
+    $(SRCDIR)/Glide64/ScreenResolution.cpp      \
     $(SRCDIR)/Glide64/Settings.cpp              \
     $(SRCDIR)/Glide64/TexBuffer.cpp             \
     $(SRCDIR)/Glide64/TexCache.cpp              \

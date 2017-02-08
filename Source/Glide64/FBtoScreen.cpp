@@ -130,11 +130,11 @@ static int SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaque)
 static void DrawRE2Video(FB_TO_SCREEN_INFO & fb_info, float scale)
 {
     float scale_y = (float)fb_info.width / rdp.vi_height;
-    float height = g_settings->scr_res_x / scale_y;
+    float height = g_settings->scr_res_x() / scale_y;
     float ul_x = 0.5f;
-    float ul_y = (g_settings->scr_res_y - height) / 2.0f;
-    float lr_y = g_settings->scr_res_y - ul_y - 1.0f;
-    float lr_x = g_settings->scr_res_x - 1.0f;
+    float ul_y = (g_settings->scr_res_y() - height) / 2.0f;
+    float lr_y = g_settings->scr_res_y() - ul_y - 1.0f;
+    float lr_x = g_settings->scr_res_x() - 1.0f;
     float lr_u = (fb_info.width - 1)*scale;
     float lr_v = (fb_info.height - 1)*scale;
     VERTEX v[4] = {
@@ -191,7 +191,7 @@ static void DrawRE2Video256(FB_TO_SCREEN_INFO & fb_info)
 
 static void DrawFrameBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
 {
-    if (g_settings->hacks&hack_RE2)
+    if (g_settings->hacks(CSettings::hack_RE2))
     {
         DrawRE2Video256(fb_info);
         return;
@@ -403,7 +403,7 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu],
         GR_MIPMAPLEVELMASK_BOTH,
         &t_info);
-    if (g_settings->hacks&hack_RE2)
+    if (g_settings->hacks(CSettings::hack_RE2))
     {
         DrawRE2Video(fb_info, scale);
     }
@@ -506,7 +506,7 @@ static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
     GrTexInfo t_info;
     float scale = 0.25f;
     GrLOD_t LOD = GR_LOD_LOG2_1024;
-    if (g_settings->scr_res_x > 1024)
+    if (g_settings->scr_res_x() > 1024)
     {
         scale = 0.125f;
         LOD = GR_LOD_LOG2_2048;
@@ -578,7 +578,7 @@ void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         DrawDepthBufferToScreen256(fb_info);
         return;
     }
-    if (fb_hwfbe_enabled && !evoodoo)
+    if (g_settings->fb_hwfbe_enabled() && !evoodoo)
     {
         DrawHiresDepthBufferToScreen(fb_info);
         return;

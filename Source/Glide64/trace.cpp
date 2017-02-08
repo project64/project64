@@ -1,11 +1,11 @@
 #include "trace.h"
 #include "Config.h"
+#include "settings.h"
 
 #include <string.h>
 #include <Common/Trace.h>
 #include <Common/path.h>
 #include <Common/LogClass.h>
-#include <Settings/Settings.h>
 
 #ifdef ANDROID
 #include <android/log.h>
@@ -55,7 +55,6 @@ void SetupTrace(void)
     TraceSetMaxModule(MaxTraceModuleGlide64, TraceError);
 #endif
 
-
     TraceSetModuleName(TraceMD5, "MD5");
     TraceSetModuleName(TraceThread, "Thread");
     TraceSetModuleName(TracePath, "Path");
@@ -70,14 +69,8 @@ void SetupTrace(void)
     TraceSetModuleName(TracePNG, "PNG");
     TraceSetModuleName(TraceOGLWrapper, "OGL Wrapper");
 
-    char log_dir[260];
-    memset(log_dir, 0, sizeof(log_dir));
-    if (Set_log_dir != 0)
-    {
-        GetSystemSettingSz(Set_log_dir, log_dir, sizeof(log_dir));
-    }
-
-    if (strlen(log_dir) == 0)
+    const char * log_dir = g_settings ? g_settings->log_dir() : NULL;
+    if (log_dir == NULL || log_dir[0] == '\0')
     {
         return;
     }
@@ -87,6 +80,6 @@ void SetupTrace(void)
     {
         LogFilePath.DirectoryCreate();
     }
-    g_LogFile = new CTraceFileLog(LogFilePath, GetSystemSetting(Set_log_flush) != 0, CLog::Log_New, 500);
+    g_LogFile = new CTraceFileLog(LogFilePath, g_settings->FlushLogs(), CLog::Log_New, 500);
     TraceAddModule(g_LogFile);
 }

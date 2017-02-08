@@ -209,9 +209,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
     grDepthBufferFunction(GR_CMP_ALWAYS);
     grDepthMask(FXFALSE);
 
-    GrLOD_t LOD = GR_LOD_LOG2_1024;
-    if (g_settings->scr_res_x > 1024)
-        LOD = GR_LOD_LOG2_2048;
+    GrLOD_t LOD = g_settings->scr_res_x() > 1024 ? GR_LOD_LOG2_2048 : GR_LOD_LOG2_1024;
 
     float lr_x = (float)d.imageW * rdp.scale_x;
     float lr_y = (float)d.imageH * rdp.scale_y;
@@ -246,12 +244,12 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
 
 void DrawDepthImage(const DRAWIMAGE & d)
 {
-    if (!fb_depth_render_enabled)
+    if (!g_settings->fb_depth_render_enabled())
         return;
     if (d.imageH > d.imageW)
         return;
     WriteTrace(TraceRDP, TraceDebug, "Depth image write");
-    if (fb_hwfbe_enabled)
+    if (g_settings->fb_hwfbe_enabled())
     {
         DrawHiresDepthImage(d);
         return;
@@ -262,8 +260,8 @@ void DrawDepthImage(const DRAWIMAGE & d)
     float scale_y_src = 1.0f / rdp.scale_y;
     int src_width = d.imageW;
     int src_height = d.imageH;
-    int dst_width = minval(int(src_width*scale_x_dst), (int)g_settings->scr_res_x);
-    int dst_height = minval(int(src_height*scale_y_dst), (int)g_settings->scr_res_y);
+    int dst_width = minval(int(src_width*scale_x_dst), (int)g_settings->scr_res_x());
+    int dst_height = minval(int(src_height*scale_y_dst), (int)g_settings->scr_res_y());
     uint16_t * src = (uint16_t*)(gfx.RDRAM + d.imagePtr);
     uint16_t * dst = new uint16_t[dst_width*dst_height];
     for (int y = 0; y < dst_height; y++)
@@ -356,15 +354,19 @@ void DrawImage(DRAWIMAGE & d)
         }
     }
 
-    if ((g_settings->hacks&hack_PPL) > 0)
+    if (g_settings->hacks(CSettings::hack_PPL))
     {
         if (d.imageY > d.imageH)
+        {
             d.imageY = (d.imageY%d.imageH);
+        }
     }
-    else if ((g_settings->hacks&hack_Starcraft) > 0)
+    else if (g_settings->hacks(CSettings::hack_Starcraft))
     {
         if (d.imageH % 2 == 1)
+        {
             d.imageH -= 1;
+        }
     }
     else
     {
@@ -443,7 +445,7 @@ void DrawImage(DRAWIMAGE & d)
         rdp.allow_combine = 0;
 
     if (rdp.ci_width == 512 && !no_dlist)
-        grClipWindow(0, 0, g_settings->scr_res_x, g_settings->scr_res_y);
+        grClipWindow(0, 0, g_settings->scr_res_x(), g_settings->scr_res_y());
     else if (d.scaleX == 1.0f && d.scaleY == 1.0f)
         grClipWindow(rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
     else
@@ -546,23 +548,7 @@ void DrawImage(DRAWIMAGE & d)
                 ConvertCoordsConvert(v, 4);
 
                 grDrawVertexArrayContiguous(GR_TRIANGLE_STRIP, 4, v, sizeof(VERTEX));
-
-                if (_debugger.capture)
-                {
-                    VERTEX vl[3];
-                    vl[0] = v[0];
-                    vl[1] = v[2];
-                    vl[2] = v[1];
-                    add_tri(vl, 3, TRI_BACKGROUND);
-                    rdp.tri_n++;
-                    vl[0] = v[2];
-                    vl[1] = v[3];
-                    vl[2] = v[1];
-                    add_tri(vl, 3, TRI_BACKGROUND);
-                    rdp.tri_n++;
-                }
-                else
-                    rdp.tri_n += 2;
+                rdp.tri_n += 2;
             }
             else
             {
@@ -611,13 +597,13 @@ void DrawHiresImage(DRAWIMAGE & d, int screensize = FALSE)
     setTBufTex(rdp.tbuff_tex->t_mem, rdp.tbuff_tex->width << rdp.tbuff_tex->size >> 1);
 
     const float Z = set_sprite_combine_mode();
-    grClipWindow(0, 0, g_settings->res_x, g_settings->res_y);
+    grClipWindow(0, 0, g_settings->res_x(), g_settings->res_y());
 
     if (d.imageW % 2 == 1) d.imageW -= 1;
     if (d.imageH % 2 == 1) d.imageH -= 1;
     if (d.imageY > d.imageH) d.imageY = (d.imageY%d.imageH);
 
-    if (!(g_settings->hacks&hack_PPL))
+    if (!g_settings->hacks(CSettings::hack_PPL))
     {
         if ((d.frameX > 0) && (d.frameW == rdp.ci_width))
             d.frameW -= (uint16_t)(2.0f*d.frameX);
@@ -676,22 +662,7 @@ void DrawHiresImage(DRAWIMAGE & d, int screensize = FALSE)
     grDrawTriangle(&v[0], &v[2], &v[1]);
     grDrawTriangle(&v[2], &v[3], &v[1]);
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE | UPDATE_SCISSOR;
-    if (_debugger.capture)
-    {
-        VERTEX vl[3];
-        vl[0] = v[0];
-        vl[1] = v[2];
-        vl[2] = v[1];
-        add_tri(vl, 3, TRI_BACKGROUND);
-        rdp.tri_n++;
-        vl[0] = v[2];
-        vl[1] = v[3];
-        vl[2] = v[1];
-        add_tri(vl, 3, TRI_BACKGROUND);
-        rdp.tri_n++;
-    }
-    else
-        rdp.tri_n += 2;
+    rdp.tri_n += 2;
     rdp.tbuff_tex = tbuff_tex;
 }
 
@@ -758,13 +729,13 @@ static void uc6_bg(bool bg_1cyc)
     DRAWIMAGE d;
     uc6_read_background_data(d, bg_1cyc);
 
-    if (fb_hwfbe_enabled && FindTextureBuffer(d.imagePtr, d.imageW))
+    if (g_settings->fb_hwfbe_enabled() && FindTextureBuffer(d.imagePtr, d.imageW))
     {
         DrawHiresImage(d);
         return;
     }
 
-    if (g_settings->ucode == ucode_F3DEX2 || (g_settings->hacks&hack_PPL))
+    if (g_settings->ucode() == CSettings::ucode_F3DEX2 || g_settings->hacks(CSettings::hack_PPL))
     {
         if ((d.imagePtr != rdp.cimg) && (d.imagePtr != rdp.ocimg) && d.imagePtr) //can't draw from framebuffer
             DrawImage(d);
@@ -1276,7 +1247,7 @@ static void uc6_obj_rectangle_r()
     DRAWOBJECT d;
     uc6_read_object_data(d);
 
-    if (d.imageFmt == 1 && (g_settings->hacks&hack_Ogre64)) //Ogre Battle needs to copy YUV texture to frame buffer
+    if (d.imageFmt == 1 && g_settings->hacks(CSettings::hack_Ogre64)) //Ogre Battle needs to copy YUV texture to frame buffer
     {
         float ul_x = d.objX / mat_2d.BaseScaleX + mat_2d.X;
         float lr_x = (d.objX + d.imageW / d.scaleW) / mat_2d.BaseScaleX + mat_2d.X;
@@ -1384,7 +1355,7 @@ static void uc6_obj_loadtxtr()
 
         WriteTrace(TraceRDP, TraceDebug, "tile addr: %08lx, tmem: %08lx, twidth: %d, theight: %d", image, tmem, twidth, theight);
 
-        int line = (twidth + 1) >> 2;
+        uint16_t line = (twidth + 1) >> 2;
 
         rdp.timg.addr = image;
         rdp.timg.width = line << 3;
@@ -1519,7 +1490,7 @@ void uc6_sprite2d()
             d.frameY = ((short)(cmd1 & 0xFFFF)) / 4.0f;
             d.frameW = (uint16_t)(d.imageW / d.scaleX);
             d.frameH = (uint16_t)(d.imageH / d.scaleY);
-            if (g_settings->hacks&hack_WCWnitro)
+            if (g_settings->hacks(CSettings::hack_WCWnitro))
             {
                 int scaleY = (int)d.scaleY;
                 d.imageH /= scaleY;

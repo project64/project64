@@ -843,7 +843,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         {
             return false;
         }
-        		
+
         int RunCount = NativeExports.UISettingsLoadDword(UISettingID.SupportWindow_RunCount.getValue());
         Log.d("GalleryActivity", "ShowSupportWindow RunCount = " + RunCount);
         if (RunCount == -1)

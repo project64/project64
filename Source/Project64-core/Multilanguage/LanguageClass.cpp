@@ -557,6 +557,9 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ANDROID_MENU_DEBUGGINGOPTIONS, "Debugging Options");
     DEF_STR(ANDROID_MENU_RESETFUNCTIONTIMES, "Reset Function Times");
     DEF_STR(ANDROID_MENU_DUMPFUNCTIONTIMES, "Dump Function Times");
+
+    //Video plugin
+    DEF_STR(ANDROID_VIDEO_NATIVE_RES, "Native");
 }
 
 CLanguage::CLanguage() :

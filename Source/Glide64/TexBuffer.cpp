@@ -57,7 +57,7 @@ static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
     texbuf.height = cimage.height;
     texbuf.format = cimage.format;
     texbuf.size = cimage.size;
-    texbuf.scr_width = minval(cimage.width * rdp.scale_x, g_settings->scr_res_x);
+    texbuf.scr_width = minval(cimage.width * rdp.scale_x, g_settings->scr_res_x());
     float height = minval(rdp.vi_height, cimage.height);
     if (cimage.status == ci_copy_self || (cimage.status == ci_copy && cimage.width == rdp.frame_buffers[rdp.main_ci_index].width))
         height = rdp.vi_height;
@@ -216,7 +216,7 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
     int found = FALSE, search = TRUE;
     TBUFF_COLOR_IMAGE *texbuf = 0;
     uint32_t addr = cimage.addr;
-    if ((g_settings->hacks&hack_Banjo2) && cimage.status == ci_copy_self)
+    if (g_settings->hacks(CSettings::hack_Banjo2) && cimage.status == ci_copy_self)
         addr = rdp.frame_buffers[rdp.copy_ci_index].addr;
     uint32_t end_addr = addr + ((cimage.width*cimage.height) << cimage.size >> 1);
     if (rdp.motionblur)
@@ -227,7 +227,7 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
     }
     if (rdp.read_whole_frame)
     {
-        if (g_settings->hacks&hack_PMario) //motion blur effects in Paper Mario
+        if (g_settings->hacks(CSettings::hack_PMario)) //motion blur effects in Paper Mario
         {
             rdp.cur_tex_buf = rdp.acc_tex_buf;
             WriteTrace(TraceRDP, TraceDebug, "\nread_whole_frame. last allocated bank: %d", rdp.acc_tex_buf);
@@ -326,8 +326,8 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
     grRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
     grTextureBufferExt(rdp.cur_image->tmu, rdp.cur_image->tex_addr, rdp.cur_image->info.smallLodLog2, rdp.cur_image->info.largeLodLog2,
         rdp.cur_image->info.aspectRatioLog2, rdp.cur_image->info.format, GR_MIPMAPLEVELMASK_BOTH);
-    ///*
-    if (rdp.cur_image->clear && (g_settings->frame_buffer&fb_hwfbe_buf_clear) && cimage.changed)
+
+    if (rdp.cur_image->clear && g_settings->fb_hwfbe_buf_clear_enabled() && cimage.changed)
     {
         rdp.cur_image->clear = FALSE;
         grDepthMask(FXFALSE);
@@ -369,7 +369,7 @@ static GrTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
         GR_BLEND_ZERO,
         GR_BLEND_ONE,
         GR_BLEND_ZERO);
-    grClipWindow(0, 0, g_settings->scr_res_x, g_settings->scr_res_y);
+    grClipWindow(0, 0, g_settings->scr_res_x(), g_settings->scr_res_y());
     grDepthBufferFunction(GR_CMP_ALWAYS);
     grDepthMask(FXFALSE);
     grCullMode(GR_CULL_DISABLE);
@@ -457,7 +457,7 @@ int CloseTextureBuffer(int draw)
     };
 
     grTexSource(rdp.tbuff_tex->tmu, rdp.tbuff_tex->tex_addr, GR_MIPMAPLEVELMASK_BOTH, &(rdp.tbuff_tex->info));
-    grClipWindow(0, 0, g_settings->res_x, g_settings->res_y);
+    grClipWindow(0, 0, g_settings->res_x(), g_settings->res_y());
     grDrawTriangle(&v[0], &v[2], &v[1]);
     grDrawTriangle(&v[2], &v[3], &v[1]);
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE;
@@ -519,7 +519,7 @@ int CopyTextureBuffer(COLOR_IMAGE & fb_from, COLOR_IMAGE & fb_to)
     rdp.offset_y = rdp.offset_y_bak;
     rdp.offset_x_bak = rdp.offset_y_bak = 0;
     AddOffset(v, 4);
-    grClipWindow(0, 0, g_settings->res_x, g_settings->res_y);
+    grClipWindow(0, 0, g_settings->res_x(), g_settings->res_y());
     grDrawTriangle(&v[0], &v[2], &v[1]);
     grDrawTriangle(&v[2], &v[3], &v[1]);
     rdp.tbuff_tex->info.format = buf_format;
@@ -539,7 +539,7 @@ int CopyDepthBuffer()
     WriteTrace(TraceRDP, TraceDebug, "CopyDepthBuffer. ");
     float bound = 1024.0f;
     GrLOD_t LOD = GR_LOD_LOG2_1024;
-    if (g_settings->scr_res_x > 1024)
+    if (g_settings->scr_res_x() > 1024)
     {
         bound = 2048.0f;
         LOD = GR_LOD_LOG2_2048;
@@ -665,11 +665,15 @@ int SwapTextureBuffer()
 static uint32_t CalcCRC(TBUFF_COLOR_IMAGE * pTCI)
 {
     uint32_t result = 0;
-    if ((g_settings->frame_buffer&fb_ref) > 0)
+    if (g_settings->fb_ref_enabled())
+    {
         pTCI->crc = 0; //Since fb content changes each frame, crc check is meaningless.
-    else if (g_settings->fb_crc_mode == CSettings::fbcrcFast)
+    }
+    else if (g_settings->fb_crc_mode() == CSettings::fbcrcFast)
+    {
         result = *((uint32_t*)(gfx.RDRAM + pTCI->addr + (pTCI->end_addr - pTCI->addr) / 2));
-    else if (g_settings->fb_crc_mode == CSettings::fbcrcSafe)
+    }
+    else if (g_settings->fb_crc_mode() == CSettings::fbcrcSafe)
     {
         uint8_t * pSrc = gfx.RDRAM + pTCI->addr;
         const uint32_t nSize = pTCI->end_addr - pTCI->addr;
