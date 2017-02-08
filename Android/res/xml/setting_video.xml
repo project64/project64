@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <emu.project64.settings.TwoLinesListPreference
+        android:defaultValue="0"
+        android:key="video_screenResolution"
+        android:title="@string/screenResolution_title"
+        android:summary="@string/screenResolution_summary"
+        android:dialogTitle="@string/screenResolution_title" />
     <CheckBoxPreference
         android:key="Debugger_DisplaySpeed"
         android:summary="@string/DisplaySpeed_summary"

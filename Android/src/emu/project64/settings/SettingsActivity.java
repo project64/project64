@@ -18,6 +18,7 @@ import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
 import emu.project64.jni.SystemEvent;
 import emu.project64.jni.UISettingID;
+import emu.project64.jni.VideoSettingID;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -92,6 +93,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         .putString("Debugger_TraceExceptionHandler",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.Debugger_TraceExceptionHandler.getValue())))
         .putString("Debugger_TraceAudioInitShutdown",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInitShutdown.getValue())))
         .putString("Debugger_TraceAudioAudioInterface",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInterface.getValue())))
+        .putString("video_screenResolution",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Resolution.getValue())))
         .putInt("MaxRomsRemembered",NativeExports.UISettingsLoadDword(UISettingID.File_RecentGameFileCount.getValue()))
         .apply();
 
@@ -175,6 +177,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         else if (key.equals("Debugger_TraceExceptionHandler")) { NativeExports.SettingsSaveDword(SettingsID.Debugger_TraceExceptionHandler.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
         else if (key.equals("Debugger_TraceAudioInitShutdown")) { NativeExports.SettingsSaveDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInitShutdown.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
         else if (key.equals("Debugger_TraceAudioAudioInterface")) { NativeExports.SettingsSaveDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInterface.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("video_screenResolution")) { NativeExports.SettingsSaveDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Resolution.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
         else if (key.equals("MaxRomsRemembered")) { NativeExports.UISettingsSaveDword(UISettingID.File_RecentGameFileCount.getValue(), sharedPreferences.getInt(key, 10)); }
     }
 }

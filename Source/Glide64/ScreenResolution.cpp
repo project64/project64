@@ -12,6 +12,10 @@
 #include "settings.h"
 #include "trace.h"
 
+#ifdef ANDROID
+extern uint32_t g_NativeWidth, g_NativeHeight;
+#endif
+
 struct ResolutionInfo
 {
     ResolutionInfo(const char * name = NULL, uint32_t width = 0, uint32_t height = 0, uint32_t frequency = 0, bool default_res = false) :
@@ -114,6 +118,12 @@ uint32_t GetScreenResWidth(uint32_t index)
 {
     if (index < GetScreenResolutionCount())
     {
+#ifdef ANDROID
+        if (g_resolutions[index].width() == 0)
+        {
+            return g_NativeWidth;
+        }
+#endif
         return g_resolutions[index].width();
     }
     return 0;
@@ -123,6 +133,12 @@ uint32_t GetScreenResHeight(uint32_t index)
 {
     if (index < GetScreenResolutionCount())
     {
+#ifdef ANDROID
+        if (g_resolutions[index].height() == 0)
+        {
+            return g_NativeHeight;
+        }
+#endif
         return g_resolutions[index].height();
     }
     return 0;

@@ -5,6 +5,7 @@ class CSettings
 {
 public:
 	CSettings();
+    ~CSettings();
 
     //Frame buffer emulation options
     enum fb_bits_t
@@ -272,10 +273,15 @@ public:
     void UpdateAspectRatio(void);
     void UpdateScreenSize(bool fullscreen);
 
-
 private:
     void ReadSettings();
     void RegisterSettings(void);
+    void SettingsChanged(void);
+    
+    static void stSettingsChanged(void * _this)
+    {
+        ((CSettings *)_this)->SettingsChanged();
+    }
 
     bool m_dirty;
     bool m_FlushLogs;

@@ -96,6 +96,7 @@
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Android.cpp" />
     <ClCompile Include="CRC.cpp" />
     <ClCompile Include="ScreenResolution.cpp" />
     <ClCompile Include="Settings.cpp" />

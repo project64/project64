@@ -155,6 +155,7 @@
     <ClCompile Include="trace.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="ScreenResolution.cpp" />
+    <ClCompile Include="Android.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="gpl.txt">

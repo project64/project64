@@ -7,16 +7,20 @@
 int GetCurrentResIndex(void);
 #endif
 
+#ifdef ANDROID
+extern uint32_t g_NativeWidth, g_NativeHeight;
+#endif
+
 short Set_basic_mode = 0, Set_texture_dir = 0, Set_log_dir = 0, Set_log_flush = 0;
 extern int g_width, g_height;
 
 CSettings::CSettings() :
     m_dirty(false),
-    m_res_x(640),
-    m_scr_res_x(640),
-    m_res_y(480),
-    m_scr_res_y(480),
-    m_ScreenRes(7),
+    m_res_x(GetScreenResWidth(GetDefaultScreenRes())),
+    m_scr_res_x(GetScreenResWidth(GetDefaultScreenRes())),
+    m_res_y(GetScreenResHeight(GetDefaultScreenRes())),
+    m_scr_res_y(GetScreenResHeight(GetDefaultScreenRes())),
+    m_ScreenRes(GetDefaultScreenRes()),
 advanced_options(0),
 texenh_options(0),
 vsync(0),
@@ -29,6 +33,7 @@ buff_clear(0),
     m_lodmode(LOD_Off),
     m_aspectmode(Aspect_4x3),
     m_frame_buffer(0),
+    m_fb_crc_mode(fbcrcFast),
 //Texture filtering options
 texture_dir(""),
     m_ghq_fltr(TextureFilter_None),
@@ -99,6 +104,10 @@ m_FlushLogs(false)
     ReadSettings();
 }
 
+CSettings::~CSettings()
+{
+}
+
 void CSettings::RegisterSettings(void)
 {
     SetModuleName("default");
@@ -108,7 +117,7 @@ void CSettings::RegisterSettings(void)
     Set_log_dir = FindSystemSettingId("Dir:Log");
 
     SetModuleName("Glide64");
-    general_setting(Set_Resolution, "resolution", 7);
+    general_setting(Set_Resolution, "resolution", GetDefaultScreenRes());
 #ifdef _WIN32
     general_setting(Set_FullScreenRes, "FullScreenRes", GetCurrentResIndex());
 #endif
@@ -203,6 +212,9 @@ void CSettings::RegisterSettings(void)
     game_setting_default(Set_detect_cpu_write, "detect_cpu_write", Set_detect_cpu_write_default);
     game_setting_default(Set_fb_get_info, "fb_get_info", Set_fb_get_info_default);
     game_setting_default(Set_fb_render, "fb_render", Set_fb_render_default);
+
+    SettingsRegisterChange(false, Set_Resolution, this, stSettingsChanged);
+
 }
 
 void CSettings::SetScreenRes(uint32_t value)
@@ -232,6 +244,11 @@ void CSettings::UpdateScreenSize(bool fullscreen)
         g_width = GetScreenResWidth(m_ScreenRes);
         g_height = GetScreenResHeight(m_ScreenRes);
     }
+    m_scr_res_x = m_res_x = g_width;
+    m_scr_res_y = m_res_y = g_height;
+#else
+    g_width = GetScreenResWidth(m_ScreenRes);
+    g_height = GetScreenResHeight(m_ScreenRes);
     m_scr_res_x = m_res_x = g_width;
     m_scr_res_y = m_res_y = g_height;
 #endif
@@ -363,11 +380,8 @@ void CSettings::UpdateAspectRatio(void)
 
 void CSettings::ReadSettings()
 {
-#ifdef ANDROID
-    this->scr_res_x = this->res_x = g_width;
-    this->scr_res_y = this->res_y = g_height;
-#else
     SetScreenRes(GetSetting(Set_Resolution));
+#ifndef ANDROID
     this->wrpResolution = GetSetting(Set_FullScreenRes);
 #endif
     this->vsync = GetSetting(Set_vsync);
@@ -582,10 +596,8 @@ void CSettings::ReadGameSettings(const char * name)
 
     g_settings->fog = GetSetting(g_romopen ? Set_fog : Set_fog_default);
     g_settings->buff_clear = GetSetting(g_romopen ? Set_buff_clear : Set_buff_clear_default);
-#ifdef _WIN32
-    g_settings->m_ScreenRes = GetSetting(Set_Resolution);
-    if (g_settings->m_ScreenRes < 0 || g_settings->m_ScreenRes >= 0x18) g_settings->m_ScreenRes = 12;
-#endif
+    m_ScreenRes = GetSetting(Set_Resolution);
+    if (m_ScreenRes >= GetScreenResolutionCount()) { m_ScreenRes = GetDefaultScreenRes(); }
 
     //frame buffer
     short fb_Settings[] =
@@ -649,8 +661,8 @@ void CSettings::ReadGameSettings(const char * name)
 
 void CSettings::WriteSettings(void)
 {
-#ifdef _WIN32
     SetSetting(Set_Resolution, g_settings->m_ScreenRes);
+#ifdef _WIN32
     SetSetting(Set_FullScreenRes, g_settings->wrpResolution);
 #endif
     SetSetting(Set_vsync, g_settings->vsync);
@@ -716,4 +728,9 @@ void CSettings::WriteSettings(void)
     }
 
     FlushSettings();
+}
+
+void CSettings::SettingsChanged(void)
+{
+    m_ScreenRes = GetSetting(Set_Resolution);
 }

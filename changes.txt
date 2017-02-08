@@ -1,0 +1,2 @@
+Android Release 9:
+- Add ability to change screen res

@@ -22,6 +22,7 @@ LOCAL_SRC_FILES :=                              \
     $(SRCDIR)/Glitch64/OGLEStextures.cpp        \
     $(SRCDIR)/Glitch64/OGLESwrappers.cpp        \
     $(SRCDIR)/Glide64/3dmath.cpp                \
+    $(SRCDIR)/Glide64/Android.cpp               \
     $(SRCDIR)/Glide64/Combine.cpp               \
     $(SRCDIR)/Glide64/Config.cpp                \
     $(SRCDIR)/Glide64/CRC.cpp                   \

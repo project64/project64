@@ -67,6 +67,10 @@
 
 #include <stdarg.h>
 
+#ifdef ANDROID
+uint32_t g_NativeWidth, g_NativeHeight;
+#endif
+
 GFX_INFO gfx;
 
 int to_fullscreen = FALSE;
@@ -79,6 +83,8 @@ int evoodoo = 0;
 int ev_fullscreen = 0;
 
 extern int viewport_offset;
+extern int g_width, g_height;
+
 
 #ifdef _WIN32
 HINSTANCE hinstDLL = NULL;
@@ -410,7 +416,6 @@ void SetWindowDisplaySize(HWND hWnd)
     else
     {
         RECT clientRect = { 0 }, toolbarRect = { 0 }, statusbarRect = { 0 }, windowedRect = { 0 };
-        ZeroMemory(&g_windowedRect, sizeof(RECT));
         HWND hToolBar = FindWindowEx(hWnd, NULL, REBARCLASSNAME, NULL);
         HWND hStatusBar = FindWindowEx(hWnd, NULL, STATUSCLASSNAME, NULL);
         if (hStatusBar == NULL)
@@ -503,18 +508,18 @@ int InitGfx()
     voodoo.has_2mb_tex_boundary = (SST_type < GR_SSTTYPE_Banshee) && !evoodoo;
     // use UMA if available
     voodoo.tex_UMA = FALSE;
-    //*
-    if (strstr(extensions, " TEXUMA ")) {
+    if (strstr(extensions, " TEXUMA ")) 
+    {
         // we get better texture cache hits with UMA on
         grEnable(GR_TEXTURE_UMA_EXT);
         voodoo.tex_UMA = TRUE;
         WriteTrace(TraceGlide64, TraceDebug, "Using TEXUMA extension");
     }
-    //*/
 
-#ifndef ANDROID
     g_settings->UpdateScreenSize(ev_fullscreen);
+#ifndef ANDROID
     SetWindowDisplaySize(gfx.hWnd);
+#endif
     gfx_context = grSstWinOpen(GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1);
     if (!gfx_context)
     {
@@ -526,11 +531,6 @@ int InitGfx()
         grGlideShutdown();
         return FALSE;
     }
-#else
-    gfx_context = grSstWinOpen(GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1);
-    g_settings->scr_res_x = g_settings->res_x = g_width;
-    g_settings->scr_res_y = g_settings->res_y = g_height;
-#endif
 
     GfxInitDone = TRUE;
     to_fullscreen = FALSE;
@@ -1614,16 +1614,12 @@ Purpose:  this function is called when the surface is has changed.
 input:    none
 output:   none
 *******************************************************************/
-void init_combiner();
-
 void CALL SurfaceChanged(int width, int height)
 {
-    g_width = width;
-    g_height = height;
+    g_NativeWidth = width;
+    g_NativeHeight = height;
 }
-#endif
 
-#ifdef ANDROID
 void Android_JNI_SwapWindow()
 {
     gfx.SwapBuffers();

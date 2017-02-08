@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project64 - A Nintendo 64 emulator.                                       *
+* Project 64 - A Nintendo 64 emulator.                                      *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -8,28 +8,24 @@
 * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
 *                                                                           *
 ****************************************************************************/
-package emu.project64.settings;
+package emu.project64.jni;
 
-import android.os.Bundle;
-import emu.project64.R;
-
-public class GamepadScreenFragment extends BaseSettingsFragment
+/**
+ * Calls made between the native input-android library and Java. Any function names changed here
+ * should also be changed in the corresponding C code, and vice versa.
+ * 
+ * @see /Source/Android/PluginInput/Main.cpp
+ * @see CoreInterface
+ */
+public class NativeVideo
 {
-    @Override
-    protected int getXml() 
+    static
     {
-        return R.xml.setting_gamepad;
-    }
-
-    @Override
-    protected int getTitleId() 
-    {
-        return R.string.gamepad_title;
+        System.loadLibrary( "Project64-gfx-glide64" );
     }
     
-    @Override
-    public void onCreatePreferences(Bundle bundle, String s)
-    {
-        super.onCreatePreferences(bundle, s);
-    }
+    public static native int getResolutionCount();
+    public static native String getResolutionName(int Index);
+    public static native int GetScreenResWidth(int Index);
+    public static native int GetScreenResHeight(int Index);
 }
