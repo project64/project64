@@ -92,7 +92,7 @@
 "احفظ الفتحة(%ws)المختارة” #201#  
 
 //Pop up Menu
-“اللعب اللعبة”#210#  
+“اللعب اللعبة” #210#  
 "معلومات عن الروم” #211#  
 “عدل اعدادات اللعبة” #212#  
  “عدل ملفات الغش” #213# 
@@ -111,18 +111,18 @@
 "احفظ الفتحة - ٨” #228#  
 "احفظ الفتحة - ٩” #229#  
 "احفظ الفتحة - ١٠” #230#  
-
+N
 // Menu Descriptions
-#250#  "Open a N64 ROM image"
-#251#  "Display information about the loaded image"
-#252#  "Start emulation of the loaded ROM image"
-#253#  "Stop emulation of the loaded ROM image"
-#254#  "Select ROM directory"
-#255#  "Refresh current list of ROMs in the ROM browser"
-#256#  "Exit this application"
-#257#  "Reboot the current ROM image (reload any settings changes)"
-#258#  "Pause/resume emulation of the current running ROM"
-#259#  "Generate a bitmap image of the current screen"
+“افتح ملف روم لعبة الن64”  #250#
+"اعرض معلومات عن ملف اللعبة المحمل”  #251#  
+ “ابدا المحاكاه لملف اللعبة المحملة”  #252# 
+“اوقف المحاكاه لملف اللعبة المحملة"  #253#  
+“اختر دليل ملفات الروم”  #254#  
+"حدث القائمة الحالية لمفات الروم في متصفح الروم”  #255#
+“اخرج من هذا البرنامج”  #256#  
+"اعد تحميل ملف الروم الحالي (اعد تحميل اي تعديلات على الاعدادات)” #257#  
+"اوقف\استئنف المحاكاه لملف الروم الجاري” #258#  
+"احدث صورة نقطية بيتماب من الشاشة الحالية” #259#  
 #260#  "Limit FPS to the correct speed of the N64"
 #261#  "Save the current system state"
 #262#  "Save the current system state in a selected file location"
@@ -522,40 +522,40 @@
 /*********************************************************************************
 * Android                                                                        *
 *********************************************************************************/
-#3000#  "Settings"
-#3001#  "Help/Forum"
-#3002#  "Report Issue"
-#3003#  "About"
-#3004#  "Recently played"
-#3005#  "Games"
-#3006#  "Game Dir"
-#3007#  "Select an folder to scan"
-#3008#  "Include subdirectories"
-#3009#  "Parent folder"
-#3010#  "Directories"
-#3011#  "Internal memory"
-#3012#  "Scanning..."
-#3013#  "OK"
-#3014#  "Cancel"
-#3015#  "Information"
-#3016#  "Project64 for Android"
-#3017#  "License"
-#3018#  "Revision"
-#3019#  "Project64 for Android\u2122 is a port of the windows version of project64.The Android\u2122 version can play most N64 games."
-#3020#  "Project64 Authors."
+"الاعدادات"   #3000#  
+“المساعدة\المنتدى”   #3001#  
+“بلغ عن مشكلة”   #3002#  
+“عن”   #3003#  
+"لعبت مؤخرا"   #3004#  
+“العاب”   #3005#  
+“ديليل اللعبة”   #3006#  
+“اختر ملف للتفحص”   #3007#  
+“اشمل الدلائل"   #3008#  
+“الملف الاصل”   #3009#  
+“الدلائل”   #3010#  
+"الذاكرة الداخلية"   #3011#  
+“ فحص…”   #3012#  
+"موافقة"   #3013#  
+"إلغاء"   #3014#  
+"معلومات"   #3015#  
+#3016#   "Project64 للاندرويد”
+"رخصة"   #3017#  
+ “الطبعة المنقحة"   #3018# 
+“. هذاالتطبيق هو نسخة من نسخة الويندوز. نسخة الاندرويد ممكن ان تشغل معظم العاب جهاز الن64 ”   #3019#  
+#3020#   "Project64المؤلفون ل”
 
 //In game menu
-#3100#  "Settings"
-#3101#  "Save State"
-#3102#  "Load State"
-#3103#  "End Emulation"
-#3104#  "Pause"
-#3105#  "Resume"
-#3106#  "Game Speed"
-#3107#  "Current Save State..."
-#3108#  "Auto"
-#3109#  "Slot"
-#3110#  "Reset"
-#3111#  "Debugging Options"
-#3112#  "Reset Function Times"
-#3113#  "Dump Function Times"
+"إعدادات"  #3100#  
+ “احفظ الحالة”  #3101# 
+"حمل الحالة”  #3102#  
+“انهي المحاكاه”  #3103#  
+“اوقف”  #3104#  
+“اعد”  #3105#  
+“سرعة اللعبة”  #3106#  
+“الحالة المحفوضة الحالية…”  #3107#  
+“تلقاءي”  #3108#  
+“فتحة”  #3109#  
+"أعاد التشغيل"  #3110#  
+"خيارات التصحيح"  #3111#  
+"إعادة تعيين اوقات الوظيفة"  #3112#  
+"تفريغ اوقات الوظيفة"  #3113#  
