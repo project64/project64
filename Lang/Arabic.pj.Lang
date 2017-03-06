@@ -155,61 +155,60 @@ N
 * ROM Browser                                                                    *
 *********************************************************************************/
 //ROM Browser Fields
-#300#  "File Name"
-#301#  "Internal Name"
-#302#  "Good Name"
-#303#  "Status"
-#304#  "ROM Size"
-#305#  "Notes (core)"
-#306#  "Notes (default plugins)"
-#307#  "Notes (user)"
-#308#  "Cartridge ID"
-#309#  "Manufacturer"
-#310#  "Country"
-#311#  "Developer"
+ "اسم الملف" #300# 
+"الاسم الداخلي" #301#  
+"اسم جيد" #302#  
+"الحالة" #303#  
+"حجم الروم" #304#  
+"ملاحظات (الأساسية)" #305#  
+"ملاحظات (البلجنز الاساسية)" #306#  
+"ملاحظات (المستخدم)" #307#  
+"معرف الكارتج" #308#  
+"الصانع" #309#  
+"البلد" #310#  
+"المطور" #311#  
 #312#  "CRC1"
 #313#  "CRC2"
 #314#  "CIC Chip"
-#315#  "Release Date"
-#316#  "Genre"
-#317#  "Players"
-#318#  "Force Feedback"
-#319#  "File Format"
+"تاريخ النشر" #315#  
+ "النوع" #316# 
+"اللاعبين" #317#  
+"فرض رد الفعل" #318#  
+"نوع الملف" #319#  
 
 //Select ROM
-#320#  "Select current ROM directory"
+ "حدد دليل الروم الحالي" #320# 
 
 //Messages
-#340#  "Bad ROM? Use GoodN64 & check that the RDB is up-to-date."
-
+"روم سيئة؟ استخدم GoodN64 وتحقق أن RDB هو في اخر نسخته" #340#  
 /*********************************************************************************
 * Options                                                                        *
 *********************************************************************************/
 //Options Title
-#400#  "Settings"
+"إعدادات" #400#  
 
 //Tabs
-#401#  "Plugins"
-#402#  "Directories"
-#403#  "Options"
-#404#  "ROM Selection"
-#405#  "Advanced"
-#406#  "General Settings"
-#407#  "Shell Integration"
-#408#  "Notes"
-#409#  "Keyboard Shortcuts"
-#410#  "Status"
-#411#  "Recompiler"
+“البلجنز”  #401#  
+ "الدلائل"  #402# 
+"خيارات"  #403#  
+"اختيار الروم"  #404#  
+"متقدم"  #405#  
+ "الاعدادات العامة"  #406# 
+"دمج الشيل"  #407#  
+"ملاحظات"  #408#  
+"اختصارات لوحة المفاتيح"  #409#  
+"الحالة"  #410#  
+"معيد الجمع (Recompiler)" #411#  
 
 //Plugin Dialog
-#420#  "About"
-#421#  " RSP (Reality Signal Processor) plugin: "
-#422#  " Video (graphics) plugin: "
-#423#  " Audio (sound) plugin: "
-#424#  " Input (controller) plugin: "
-#425#  "Graphics HLE"
-#426#  "Audio HLE"
-#427#  "** Use System Plugin **"
+"عن"  #420#  
+ " بلجينج RSP (معالج الإشارات الواقعي) :"  #421# 
+" بلجينج الفيديو (الجرافكس) :"  #422#  
+" بلجينج الصوت :"  #423# 
+" بلجينج التحكم (controllers) :"  #424#  
+#425#  " HLE الجرافكس"
+#426#  " HLE الصوت”
+ "** استخدام بلجينج النظامي **"  #427# 
 
 //Directory Dialog
 #440#  " Plugin directory: "
