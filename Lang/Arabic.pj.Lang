@@ -4,7 +4,7 @@
 //About DLL
 #1  #  "Arabic"		// LANGUAGE ID
 #2  #  "Wisam"			// Author
-#3  #  "1.0"			// Version
+#3  #  “0.3”			// Version
 #4  #  “March,2016"		// Date
 
 //About DLL Dialog
@@ -95,8 +95,8 @@
 “اللعب اللعبة” #210#  
 "معلومات عن الروم” #211#  
 “عدل اعدادات اللعبة” #212#  
- “عدل ملفات الغش” #213# 
- “اعدادات الجرافيكس” #214# 
+“عدل ملفات الغش” #213# 
+“اعدادات الجرافيكس” #214# 
 “اللعب اللعبة مع الدسك” #215#  
 
 //Alternate Name to save Slot
@@ -123,33 +123,33 @@ N
 "اعد تحميل ملف الروم الحالي (اعد تحميل اي تعديلات على الاعدادات)” #257#  
 "اوقف\استئنف المحاكاه لملف الروم الجاري” #258#  
 "احدث صورة نقطية بيتماب من الشاشة الحالية” #259#  
-#260#  "Limit FPS to the correct speed of the N64"
-#261#  "Save the current system state"
-#262#  "Save the current system state in a selected file location"
-#263#  "Load the saved system state"
-#264#  "Choose a saved system state file to load"
-#265#  "Enable/disable GameShark cheats"
-#266#  "GameShark button is used with specific cheats."
-#267#  "Change emulation from windowed to full-screen mode."
-#268#  "Make window stay on top of all other windows"
-#269#  "Change settings inside the graphics plugin"
-#270#  "Change settings inside the audio plugin"
-#271#  "Change settings inside the controller plugin (i.e., set keys)"
-#272#  "Change settings inside the RSP plugin"
-#273#  "Show the CPU usage of the emulator split over different resources"
-#274#  "View/change settings for this application"
-#275#  "View manual for application"
-#276#  "View FAQ for application"
-#278#  "About the application and authors"
-#277#  "About the authors of the support files"
-#279#  "Open this previously opened ROM image"
-#280#  "Choose this directory as your ROM directory"
-#281#  "Change application to using this language"
-#282#  "Choose this save location for the saved state"
-#283#  "Play selected game"
-#284#  "Information about selected game"
-#285#  "Edit settings for selected game"
-#286#  "Edit cheats for selected game"
+"حد الFPS لالسرعة الصحيحة للن64” #260#  
+"حفظ حالة النظام الحالية" #261#  
+"حفظ حالة النظام الحالي في مكان ملف محدد" #262#  
+"تحميل حالة النظام المحفوظة" #263#  
+"اختر حالة نضام محفوظة للتحميل” #264#  
+#265#  "GameShark cheats تشغيل\تعطيل ”
+“ زر الجيمشارك مستخدم مع ملف غش معين ” #266#  
+"غير المحاكاه الى شاشة كاملة” #267#  
+"اجعل الويندو فوق كل الويندوز” #268#  
+"تغير الاعدادات داخل بلجينج الكرافكس” #269#  
+ "تغير الاعدادات داخل بلجينج الصوت" #270# 
+"تغير الاعدادات داخل بلجينج التحكم (الكونترولز)" #271# 
+"تغير الاعدادات داخل بلجينج البروسيسور(المعالج)” #272# 
+"اظهر استخدامات المعالج من مختلف الموارد” #273#  
+"اضهر\غير اعدادات هذا البرنامج” #274#  
+"اظهر معلونات الاستخدام لهذا البرنامج” #275#  
+"اظهر الاسئلة الاكثر طرحا عن البرنامج” #276#  
+"عن البرنامج وكتابه“ #278#  
+ "عن كتاب ملفات الاستناد“ #277# 
+"افتح اخر روم تم فتحها” #279#  
+"اختر هذا الدليل كدليل لملفات الروم“ #280#  
+ "غير البرنامج لاستخدام هذه اللغة” #281# 
+"اختر هذا المكان لتخزين ملفات الحالة“ #282#  
+"العب اللعبة المختارة” #283#  
+"معلومات عن اللعبة المختارة” #284#  
+"تغيير الاعدادات لالعبة المختارة” #285#  
+"تغيير ملفات الغش لالعبة المختارة” #286#  
 
 /*********************************************************************************
 * ROM Browser                                                                    *
@@ -204,58 +204,58 @@ N
 "عن"  #420#  
  " بلجينج RSP (معالج الإشارات الواقعي) :"  #421# 
 " بلجينج الفيديو (الجرافكس) :"  #422#  
-" بلجينج الصوت :"  #423# 
+‪:‬” بلجينج الصوت :"  #423# 
 " بلجينج التحكم (controllers) :"  #424#  
 #425#  " HLE الجرافكس"
 #426#  " HLE الصوت”
  "** استخدام بلجينج النظامي **"  #427# 
 
 //Directory Dialog
-#440#  " Plugin directory: "
-#441#  " ROM directory: "
-#442#  " N64 native saves directory: "
-#443#  " Saved states directory: "
-#444#  " Screenshot directory: "
-#445#  "Last folder that a ROM was open from"
-#446#  "Select plugin directory"
-#447#  "Select ROM directory"
-#448#  "Select N64 native saves directory"
-#449#  "Select saved states directory"
-#450#  "Select screenshot directory"
-#451#  " Texture pack directory: "
-#452#  "Select texture pack directory"
+" دليل البلجينجز: " #440#  
+" دليل الروم: " #441#  
+ "دليل الحفظ الفطري للن64:” #442# 
+" دليل الحالات المحفوظة” #443#  
+"دليل السكرين شوت:” #444#  
+"اخر ملف الروم فتحت منه” #445#  
+"اختر دليل للبلجينج” #446#  
+"اختر دليل الروم” #447#  
+"اختر دليل الحفظ الفطري للن64" #448#  
+“اختر دليل الحالات المحفوظة" #449#  
+“اختر دليل السكرين شوت" #450#  
+" دليل حزم التكشرز " #451# 
+“اختر دليل حزم التكشرز" #452# 
 
 //Options (general) Tab
-#460#  "Pause emulation when window is not active"
-#461#  "Enter full-screen mode when loading a ROM"
-#462#  "Hide advanced settings"
-#463#  "Remember selected cheats"
-#464#  "Disable screen saver when running a ROM"
-#465#  "Display speed"
-#466#  "Speed display:"
-#467#  "Check if Project64 is already running"
-#468#  "Unique Game Save Directory"
-#469#  "64DD IPL ROM Path:"
+"اقف المحاكاه عندما تكون الويندو غير نشيطة”  #460#  
+"فعل وضع الشاشة الكاملة عند تحميل الروم”  #461#  
+"إخفاء الإعدادات المتقدمة"  #462#  
+"تذكر الغشش المختارة"  #463#  
+"تعطيل حافظة الشاشة عند تشغيل الروم"  #464#  
+"اعرض السرعة"  #465#  
+“عارض السرعة:”  #466#  
+“تحقق من انProject64 جاري“  #467#   
+"دليل حفض اللعبة فريد من نوعه"  #468#    
+#469#  "64DD IPL مكان الروم:”
 
 //ROM Browser Tab
-#480#  "Max # of ROMs remembered (0-10):"
-#481#  "ROMs"
-#482#  "Max # of ROM dirs remembered (0-10):"
-#483#  "dirs"
-#484#  "Use ROM browser"
-#485#  "Use directory recursion"
-#486#  "Available fields:"
-#487#  "Order of fields:"
-#488#  "Add ->"
-#489#  "<- Remove"
-#490#  "Up"
-#491#  "Down"
-#492#  "Automatically refresh browser"
+"اقصى رقم من الرومات للتذكر(٠-١٠)”  #480#
+“الرومات”  #481#  
+"اقصى رقم من دلائل الرومات للتذكر(٠-١٠):"  #482#  
+“دللائل”  #483#  
+"استخدم متصفح الروم”  #484#  
+“استخدم العودية في دلائل”  #485#  
+“الحقول المتاحة:”  #486#  
+“ ترتيب الحقول:”  #487#  
+“اضف ->"  #488#  
+"<- ازالة”  #489#  
+“فوق”  #490#  
+"أسفل"  #491#  
+"حدث المتصفح تلقائيا”  #492#  
 
 //Advanced Options
-#500#  "Most of these changes will not take effect until a new ROM is opened or current ROM is reset."
-#501#  "Core Defaults"
-#502#  "CPU core style:"
+"معظم هذه التغييرات لن تكون نافذة المفعول حتى يتم فتح ROM جديد أو تتم إعادة تعيين ROM الحالي."  #500#  
+"كور البروسييسر الأساسية”  #501#  
+"نمط نواة المعالج”  #502#  
 #503#  "Self mod methods"
 #504#  "Default memory size:"
 #505#  "Advanced block linking"
@@ -370,13 +370,13 @@ N
 #800#  "ROM Information"
 
 //ROM Info Text
-#801#  "ROM name:"
-#802#  "File name:"
-#803#  "Location:"
-#804#  "ROM size:"
-#805#  "Cartridge ID:"
-#806#  "Manufacturer:"
-#807#  "Country:"
+"اسم الروم:“  #801#  
+“اسم الملف:”  #802#  
+"المكان:”  #803#  
+“حجم الروم:”  #804#  
+“اي دي للكارتج اللعبة:”  #805#  
+"الصانع:"  #806#  
+ “البلد:”  #807# 
 #808#  "CRC1:"
 #809#  "CRC2:"
 #810#  "CIC Chip:"
