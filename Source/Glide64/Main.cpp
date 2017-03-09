@@ -1539,7 +1539,7 @@ void newSwapBuffers()
         grAuxBufferExt(GR_BUFFER_AUXBUFFER);
     }
     WriteTrace(TraceGlide64, TraceDebug, "BUFFER SWAPPED");
-    grBufferSwap(g_settings->vsync);
+    grBufferSwap(g_settings->vsync());
     if (*gfx.VI_STATUS_REG & 0x08) //gamma correction is used
     {
         if (!voodoo.gamma_correction)

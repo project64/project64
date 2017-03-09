@@ -306,7 +306,7 @@ public:
         TTSetTxt(IDC_CMB_WINDOW_RES, "Resolution:\n\nThis option selects the windowed resolution.\n\n[Recommended: 640x480, 800x600, 1024x768]");
 
         m_cbxVSync.Attach(GetDlgItem(IDC_CHK_VERTICAL_SYNC));
-        m_cbxVSync.SetCheck(g_settings->vsync ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxVSync.SetCheck(g_settings->vsync() ? BST_CHECKED : BST_UNCHECKED);
         TTSetTxt(IDC_CHK_VERTICAL_SYNC, "Vertical sync:\n\nThis option will enable the vertical sync, which will prevent tearing.\nNote: this option will ONLY have effect if vsync is set to \"Software Controlled\".");
 
         m_cbxTextureSettings.Attach(GetDlgItem(IDC_CHK_SHOW_TEXTURE_ENHANCEMENT));
@@ -350,7 +350,7 @@ public:
         m_spinVRAM.GetWindowText(spinVRAM, sizeof(spinVRAM));
         CSettings oldsettings = *g_settings;
         g_settings->SetScreenRes(m_WindowRes.GetCurSel());
-        g_settings->vsync = m_cbxVSync.GetCheck() == BST_CHECKED;
+        g_settings->SetVsync(m_cbxVSync.GetCheck() == BST_CHECKED);
         g_settings->SetTexenhOptions(m_cbxTextureSettings.GetCheck() == BST_CHECKED);
         g_settings->wrpResolution = m_cmbFSResolution.GetCurSel();
         g_settings->wrpAnisotropic = m_cbxAnisotropic.GetCheck() == BST_CHECKED;
