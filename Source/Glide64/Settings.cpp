@@ -42,7 +42,6 @@ ghq_cmpr(0),
 ghq_hirs(0),
 ghq_use(0),
 ghq_enht_cmpr(0),
-ghq_enht_tile(0),
 ghq_enht_f16bpp(0),
 ghq_enht_gz(0),
 ghq_enht_nobg(0),
@@ -142,7 +141,6 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_ghq_enht, "ghq_enht", TextureEnht_None);
     general_setting(Set_ghq_hirs, "ghq_hirs", 0);
     general_setting(Set_ghq_enht_cmpr, "ghq_enht_cmpr", 0);
-    general_setting(Set_ghq_enht_tile, "ghq_enht_tile", 0);
     general_setting(Set_ghq_enht_f16bpp, "ghq_enht_f16bpp", 0);
     general_setting(Set_ghq_enht_gz, "ghq_enht_gz", 1);
     general_setting(Set_ghq_enht_nobg, "ghq_enht_nobg", 0);
@@ -417,7 +415,6 @@ void CSettings::ReadSettings()
     m_ghq_enht = (TextureEnhancement_t)GetSetting(Set_ghq_enht);
     this->ghq_hirs = (uint8_t)GetSetting(Set_ghq_hirs);
     this->ghq_enht_cmpr = GetSetting(Set_ghq_enht_cmpr);
-    this->ghq_enht_tile = GetSetting(Set_ghq_enht_tile);
     this->ghq_enht_f16bpp = GetSetting(Set_ghq_enht_f16bpp);
     this->ghq_enht_gz = GetSetting(Set_ghq_enht_gz);
     this->ghq_enht_nobg = GetSetting(Set_ghq_enht_nobg);
@@ -687,7 +684,6 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_ghq_enht, m_ghq_enht);
     SetSetting(Set_ghq_hirs, g_settings->ghq_hirs);
     SetSetting(Set_ghq_enht_cmpr, g_settings->ghq_enht_cmpr);
-    SetSetting(Set_ghq_enht_tile, g_settings->ghq_enht_tile);
     SetSetting(Set_ghq_enht_f16bpp, g_settings->ghq_enht_f16bpp);
     SetSetting(Set_ghq_enht_gz, g_settings->ghq_enht_gz);
     SetSetting(Set_ghq_enht_nobg, g_settings->ghq_enht_nobg);

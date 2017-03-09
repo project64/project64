@@ -202,7 +202,6 @@ public:
     int ghq_hirs;
     int ghq_use;
     int ghq_enht_cmpr;
-    int ghq_enht_tile;
     int ghq_enht_f16bpp;
     int ghq_enht_gz;
     int ghq_enht_nobg;
