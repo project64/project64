@@ -1304,7 +1304,9 @@ Status=Compatible
 [17C54A61-4A83F2E7-C:4A]
 Good Name=Densha de GO! 64 (J)
 Internal Name=ÃÞÝ¼¬ÃÞGO!64
+Save Type=16kbit Eeprom
 Status=Compatible
+Counter Factor=1
 
 [A5F667E1-DA1FBD1F-C:4A]
 Good Name=Derby Stallion 64 (J)

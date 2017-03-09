@@ -80,7 +80,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 
     if (!GameIni.empty())
     {
-        ConfigRomTitle.Format("Config: %s", g_Settings->LoadStringVal(Game_GoodName).c_str());
+        ConfigRomTitle.Format("Config: %s", g_Settings->LoadStringVal(Rdb_GoodName).c_str());
     }
 
     RECT rcSettingInfo;
@@ -251,9 +251,9 @@ void CSettingConfig::ApplySettings(bool UpdateScreen)
     if (!GameIni.empty())
     {
         stdstr GoodName;
-        if (!g_Settings->LoadStringVal(Game_GoodName, GoodName))
+        if (g_Settings->LoadStringVal(Rdb_GoodName, GoodName))
         {
-            g_Settings->SaveString(Game_GoodName, GoodName);
+            g_Settings->SaveString(Cfg_GoodName, GoodName);
         }
     }
 
@@ -279,7 +279,7 @@ void CSettingConfig::ApplySettings(bool UpdateScreen)
         stdstr GoodName = g_Settings->LoadStringVal(Rdb_GoodName);
         if (GoodName.length() > 0)
         {
-            g_Settings->SaveString(Game_GoodName, GoodName);
+            g_Settings->SaveString(Cfg_GoodName, GoodName);
         }
     }
     CSettingTypeApplication::Flush();
