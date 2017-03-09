@@ -22,7 +22,7 @@ CSettings::CSettings() :
     m_scr_res_y(GetScreenResHeight(GetDefaultScreenRes())),
     m_ScreenRes(GetDefaultScreenRes()),
     m_advanced_options(false),
-texenh_options(0),
+    m_texenh_options(false),
 vsync(0),
     m_rotate(Rotate_None),
     m_filtering(Filter_Automatic),
@@ -121,7 +121,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_FullScreenRes, "FullScreenRes", GetCurrentResIndex());
 #endif
     general_setting(Set_vsync, "vsync", 1);
-    general_setting(Set_texenh_options, "texenh_options", 0);
+    general_setting(Set_texenh_options, "texenh_options", false);
     general_setting(Set_wrpVRAM, "wrpVRAM", 0);
 #ifndef ANDROID
     general_setting(Set_wrpFBO, "wrpFBO", 0);
@@ -213,6 +213,15 @@ void CSettings::RegisterSettings(void)
 
     SettingsRegisterChange(false, Set_Resolution, this, stSettingsChanged);
 
+}
+
+void CSettings::SetTexenhOptions(bool value)
+{
+    if (value != m_texenh_options)
+    {
+        m_texenh_options = value;
+        m_dirty = true;
+    }
 }
 
 void CSettings::SetScreenRes(uint32_t value)
@@ -385,7 +394,7 @@ void CSettings::ReadSettings()
     this->vsync = GetSetting(Set_vsync);
     m_rotate = (ScreenRotate_t)GetSetting(Set_Rotate);
     m_advanced_options = Set_basic_mode ? GetSystemSetting(Set_basic_mode) == 0 : false;
-    this->texenh_options = GetSetting(Set_texenh_options);
+    m_texenh_options = GetSetting(Set_texenh_options) != 0;
 
     this->wrpVRAM = GetSetting(Set_wrpVRAM);
     this->wrpFBO = GetSetting(Set_wrpFBO);
@@ -664,7 +673,7 @@ void CSettings::WriteSettings(void)
 #endif
     SetSetting(Set_vsync, g_settings->vsync);
     SetSetting(Set_Rotate, m_rotate);
-    SetSetting(Set_texenh_options, g_settings->texenh_options);
+    SetSetting(Set_texenh_options, m_texenh_options);
 
     SetSetting(Set_wrpVRAM, g_settings->wrpVRAM);
     SetSetting(Set_wrpFBO, g_settings->wrpFBO);

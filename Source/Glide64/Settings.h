@@ -146,7 +146,6 @@ public:
     };
 
 
-    int texenh_options;
     int vsync;
 
 
@@ -184,6 +183,7 @@ public:
     inline uint32_t scr_res_y(void) const { return m_scr_res_y; }
     inline uint32_t ScreenRes(void) const { return m_ScreenRes; }
     inline bool advanced_options(void) const { return m_advanced_options; }
+    inline bool texenh_options(void) const { return m_texenh_options; }
     inline bool FlushLogs(void) const { return m_FlushLogs; }
     inline ScreenRotate_t rotate(void) const { return m_rotate; }
     inline Filtering_t filtering(void) const { return m_filtering; }
@@ -256,6 +256,7 @@ public:
     int wrpVRAM;
     int wrpFBO;
     int wrpAnisotropic;
+    void SetTexenhOptions(bool value);
     void SetScreenRes(uint32_t value);
     void SetAspectmode(AspectMode_t value);
     void SetLODmode(PixelLevelOfDetail_t value);
@@ -296,6 +297,7 @@ private:
     SwapMode_t m_swapmode;
     PixelLevelOfDetail_t m_lodmode;
     bool m_advanced_options;
+    bool m_texenh_options;
     TextureFilter_t m_ghq_fltr;
     TextureEnhancement_t m_ghq_enht;
     ucode_t m_ucode;

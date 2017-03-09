@@ -310,7 +310,7 @@ public:
         TTSetTxt(IDC_CHK_VERTICAL_SYNC, "Vertical sync:\n\nThis option will enable the vertical sync, which will prevent tearing.\nNote: this option will ONLY have effect if vsync is set to \"Software Controlled\".");
 
         m_cbxTextureSettings.Attach(GetDlgItem(IDC_CHK_SHOW_TEXTURE_ENHANCEMENT));
-        m_cbxTextureSettings.SetCheck(g_settings->texenh_options ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxTextureSettings.SetCheck(g_settings->texenh_options() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cmbFSResolution.Attach(GetDlgItem(IDC_CMB_FS_RESOLUTION));
         int32_t size = 0;
@@ -351,7 +351,7 @@ public:
         CSettings oldsettings = *g_settings;
         g_settings->SetScreenRes(m_WindowRes.GetCurSel());
         g_settings->vsync = m_cbxVSync.GetCheck() == BST_CHECKED;
-        g_settings->texenh_options = m_cbxTextureSettings.GetCheck() == BST_CHECKED;
+        g_settings->SetTexenhOptions(m_cbxTextureSettings.GetCheck() == BST_CHECKED);
         g_settings->wrpResolution = m_cmbFSResolution.GetCurSel();
         g_settings->wrpAnisotropic = m_cbxAnisotropic.GetCheck() == BST_CHECKED;
         g_settings->wrpVRAM = m_cbxVRAM.GetCheck() == BST_CHECKED ? 0 : atoi(spinVRAM);
@@ -773,7 +773,7 @@ COptionsSheet::~COptionsSheet()
 
 void COptionsSheet::UpdateTextureSettings(void)
 {
-    if (g_settings->texenh_options)
+    if (g_settings->texenh_options())
     {
         if (m_hTextureEnhancement == NULL)
         {
