@@ -164,7 +164,6 @@ typedef struct {
     uint32_t lr_y;
 } SCISSOR;
 
-extern uint32_t texhirs[];
 
 typedef struct {
     uint16_t tile_ul_s;

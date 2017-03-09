@@ -1569,7 +1569,7 @@ void load_palette(uint32_t addr, uint16_t start, uint16_t count)
 
         WriteTrace(TraceTLUT, TraceDebug, "%d: %08lx", i, *(uint16_t *)(gfx.RDRAM + (addr ^ 2)));
     }
-    if (g_settings->ghq_hirs)
+    if (g_settings->ghq_hirs() != CSettings::HiResPackFormat_None)
     {
         memcpy((uint8_t*)(rdp.pal_8_rice + start), spal, count << 1);
     }

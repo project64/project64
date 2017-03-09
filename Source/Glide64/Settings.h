@@ -113,6 +113,12 @@ public:
         TextureCompression_FXT1 = 0x1000,
     };
 
+    enum HiResPackFormat_t
+    {
+        HiResPackFormat_None = 0,
+        HiResPackFormat_Riceformat = 0x00020000,
+    };
+    
     enum SwapMode_t
     {
         SwapMode_Old = 0,
@@ -200,7 +206,7 @@ public:
     inline TextureFilter_t ghq_fltr(void) const { return m_ghq_fltr; }
     inline TextureEnhancement_t ghq_enht(void) const { return m_ghq_enht; }
     inline TextureCompression_t ghq_cmpr(void) const { return m_ghq_cmpr; }
-    int ghq_hirs;
+    inline HiResPackFormat_t ghq_hirs(void) const { return m_ghq_hirs; }
     int ghq_use;
     int ghq_enht_cmpr;
     int ghq_enht_f16bpp;
@@ -270,6 +276,7 @@ public:
     void SetGhqFltr(TextureFilter_t value);
     void SetGhqEnht(TextureEnhancement_t value);
     void SetGhqCmpr(TextureCompression_t value);
+    void SetGhqHirs(HiResPackFormat_t value);
     void UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove);
     ucode_t DetectUCode(uint32_t uc_crc);
     void SetUcode(ucode_t value);
@@ -313,6 +320,7 @@ private:
     TextureFilter_t m_ghq_fltr;
     TextureEnhancement_t m_ghq_enht;
     TextureCompression_t m_ghq_cmpr;
+    HiResPackFormat_t m_ghq_hirs;
     ucode_t m_ucode;
     StippleMode_t m_stipple_mode;
     hacks_t m_hacks;

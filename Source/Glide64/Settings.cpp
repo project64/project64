@@ -39,7 +39,7 @@ CSettings::CSettings() :
     m_ghq_fltr(TextureFilter_None),
     m_ghq_enht(TextureEnht_None),
     m_ghq_cmpr(TextureCompression_S3TC),
-ghq_hirs(0),
+    m_ghq_hirs(HiResPackFormat_None),
 ghq_use(0),
 ghq_enht_cmpr(0),
 ghq_enht_f16bpp(0),
@@ -139,7 +139,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_ghq_fltr, "ghq_fltr", TextureFilter_None);
     general_setting(Set_ghq_cmpr, "ghq_cmpr", TextureCompression_S3TC);
     general_setting(Set_ghq_enht, "ghq_enht", TextureEnht_None);
-    general_setting(Set_ghq_hirs, "ghq_hirs", 0);
+    general_setting(Set_ghq_hirs, "ghq_hirs", HiResPackFormat_None);
     general_setting(Set_ghq_enht_cmpr, "ghq_enht_cmpr", 0);
     general_setting(Set_ghq_enht_f16bpp, "ghq_enht_f16bpp", 0);
     general_setting(Set_ghq_enht_gz, "ghq_enht_gz", 1);
@@ -353,6 +353,15 @@ void CSettings::SetGhqCmpr(TextureCompression_t value)
     }
 }
 
+void CSettings::SetGhqHirs(HiResPackFormat_t value)
+{
+    if (value != m_ghq_hirs)
+    {
+        m_ghq_hirs = value;
+        m_dirty = true;
+    }
+}
+
 void CSettings::UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove)
 {
     uint32_t frame_buffer_original = m_frame_buffer;
@@ -458,7 +467,7 @@ void CSettings::ReadSettings()
     m_ghq_fltr = (TextureFilter_t)GetSetting(Set_ghq_fltr);
     m_ghq_cmpr = (TextureCompression_t)GetSetting(Set_ghq_cmpr);
     m_ghq_enht = (TextureEnhancement_t)GetSetting(Set_ghq_enht);
-    this->ghq_hirs = (uint8_t)GetSetting(Set_ghq_hirs);
+    m_ghq_hirs = (HiResPackFormat_t)GetSetting(Set_ghq_hirs);
     this->ghq_enht_cmpr = GetSetting(Set_ghq_enht_cmpr);
     this->ghq_enht_f16bpp = GetSetting(Set_ghq_enht_f16bpp);
     this->ghq_enht_gz = GetSetting(Set_ghq_enht_gz);
@@ -727,7 +736,7 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_ghq_fltr, m_ghq_fltr);
     SetSetting(Set_ghq_cmpr, m_ghq_cmpr);
     SetSetting(Set_ghq_enht, m_ghq_enht);
-    SetSetting(Set_ghq_hirs, g_settings->ghq_hirs);
+    SetSetting(Set_ghq_hirs, m_ghq_hirs);
     SetSetting(Set_ghq_enht_cmpr, g_settings->ghq_enht_cmpr);
     SetSetting(Set_ghq_enht_f16bpp, g_settings->ghq_enht_f16bpp);
     SetSetting(Set_ghq_enht_gz, g_settings->ghq_enht_gz);

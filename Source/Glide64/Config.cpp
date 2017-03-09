@@ -106,14 +106,6 @@ void ConfigCleanup(void)
 
 void CloseConfig();
 
-uint32_t texhirs[] =
-{
-    NO_HIRESTEXTURES,   //"Do not use"
-    RICE_HIRESTEXTURES,  //"Rice format"
-    //  GHQ_HIRESTEXTURES, //"GlideHQ format"
-    //  JABO_HIRESTEXTURES, //"Jabo format"
-};
-
 #ifdef _WIN32
 
 template < class T, class TT = CToolTipCtrl >
@@ -620,9 +612,9 @@ public:
         TTSetTxt(IDC_TXT_FORMAT_CHOICES, tooltip.c_str());
         TTSetTxt(IDC_CMB_FORMAT_CHOICES, tooltip.c_str());
         m_cmbHrsFormat.Attach(GetDlgItem(IDC_CMB_FORMAT_CHOICES));
-        m_cmbHrsFormat.SetItemData(m_cmbHrsFormat.AddString("None"), 0);
-        m_cmbHrsFormat.SetItemData(m_cmbHrsFormat.AddString("Rice format"), 1);
-        SetComboBoxIndex(m_cmbHrsFormat, g_settings->ghq_hirs);
+        m_cmbHrsFormat.SetItemData(m_cmbHrsFormat.AddString("None"), CSettings::HiResPackFormat_None);
+        m_cmbHrsFormat.SetItemData(m_cmbHrsFormat.AddString("Rice format"), CSettings::HiResPackFormat_Riceformat);
+        SetComboBoxIndex(m_cmbHrsFormat, g_settings->ghq_hirs());
 
         m_cmbTextureCompression.Attach(GetDlgItem(IDC_CMB_TEX_COMPRESS_MEHTOD));
         m_cmbTextureCompression.SetItemData(m_cmbTextureCompression.AddString("S3TC"), 0);
@@ -701,7 +693,7 @@ public:
         g_settings->ghq_enht_nobg = (int)m_cbxEnhIgnoreBG.GetCheck() == BST_CHECKED;
         g_settings->ghq_enht_cmpr = (int)m_cbxEnhTexCompression.GetCheck() == BST_CHECKED;
         g_settings->ghq_enht_gz = (int)m_cbxEnhCompressCache.GetCheck() == BST_CHECKED;
-        g_settings->ghq_hirs = m_cmbHrsFormat.GetItemData(m_cmbHrsFormat.GetCurSel());
+        g_settings->SetGhqHirs((CSettings::HiResPackFormat_t)m_cmbHrsFormat.GetItemData(m_cmbHrsFormat.GetCurSel()));
         g_settings->ghq_hirs_tile = (int)m_cbxHrsTile.GetCheck() == BST_CHECKED;
         g_settings->ghq_hirs_f16bpp = (int)m_cbxHrsForce16.GetCheck() == BST_CHECKED;
         g_settings->ghq_hirs_dump = (int)m_cbxHrsTexEdit.GetCheck() == BST_CHECKED;
