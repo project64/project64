@@ -190,7 +190,7 @@ public:
     inline FBCRCMODE_t fb_crc_mode(void) const { return m_fb_crc_mode; }
 
     //Texture filtering options
-    std::string texture_dir;
+    inline const char * texture_dir(void) const { return m_texture_dir.c_str(); }
     inline TextureFilter_t ghq_fltr(void) const { return m_ghq_fltr; }
     inline TextureEnhancement_t ghq_enht(void) const { return m_ghq_enht; }
     int ghq_cmpr;
@@ -282,6 +282,8 @@ private:
         ((CSettings *)_this)->SettingsChanged();
     }
 
+    short m_Set_texture_dir;
+
     bool m_dirty;
     bool m_FlushLogs;
     char m_log_dir[260];
@@ -300,6 +302,7 @@ private:
     bool m_advanced_options;
     bool m_texenh_options;
     bool m_vsync;
+    std::string m_texture_dir;
     TextureFilter_t m_ghq_fltr;
     TextureEnhancement_t m_ghq_enht;
     ucode_t m_ucode;

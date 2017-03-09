@@ -11,10 +11,11 @@ int GetCurrentResIndex(void);
 extern uint32_t g_NativeWidth, g_NativeHeight;
 #endif
 
-short Set_basic_mode = 0, Set_texture_dir = 0, Set_log_dir = 0, Set_log_flush = 0;
+short Set_basic_mode = 0, Set_log_dir = 0, Set_log_flush = 0;
 extern int g_width, g_height;
 
 CSettings::CSettings() :
+    m_Set_texture_dir(0),
     m_dirty(false),
     m_res_x(GetScreenResWidth(GetDefaultScreenRes())),
     m_scr_res_x(GetScreenResWidth(GetDefaultScreenRes())),
@@ -34,7 +35,7 @@ CSettings::CSettings() :
     m_frame_buffer(0),
     m_fb_crc_mode(fbcrcFast),
 //Texture filtering options
-texture_dir(""),
+    m_texture_dir(""),
     m_ghq_fltr(TextureFilter_None),
     m_ghq_enht(TextureEnht_None),
 ghq_cmpr(0),
@@ -110,7 +111,7 @@ void CSettings::RegisterSettings(void)
 {
     SetModuleName("default");
     Set_basic_mode = FindSystemSettingId("Basic Mode");
-    Set_texture_dir = FindSystemSettingId("Dir:Texture");
+    m_Set_texture_dir = FindSystemSettingId("Dir:Texture");
     Set_log_flush = FindSystemSettingId("Log Auto Flush");
     Set_log_dir = FindSystemSettingId("Dir:Log");
 
@@ -443,8 +444,8 @@ void CSettings::ReadSettings()
 
     char texture_dir[260];
     memset(texture_dir, 0, sizeof(texture_dir));
-    GetSystemSettingSz(Set_texture_dir, texture_dir, sizeof(texture_dir));
-    this->texture_dir = texture_dir;
+    GetSystemSettingSz(m_Set_texture_dir, texture_dir, sizeof(texture_dir));
+    m_texture_dir = texture_dir;
     m_ghq_fltr = (TextureFilter_t)GetSetting(Set_ghq_fltr);
     this->ghq_cmpr = (uint8_t)GetSetting(Set_ghq_cmpr);
     m_ghq_enht = (TextureEnhancement_t)GetSetting(Set_ghq_enht);
