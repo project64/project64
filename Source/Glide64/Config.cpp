@@ -757,7 +757,7 @@ COptionsSheet::COptionsSheet(_U_STRINGorID /*title*/, UINT /*uStartPage*/, HWND 
     m_hTextureEnhancement(0)
 {
     AddPage(&m_pgBasicPage->m_psp);
-    if (g_settings->advanced_options)
+    if (g_settings->advanced_options())
     {
         AddPage(&m_pgEmuSettings->m_psp);
     }

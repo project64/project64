@@ -21,7 +21,7 @@ CSettings::CSettings() :
     m_res_y(GetScreenResHeight(GetDefaultScreenRes())),
     m_scr_res_y(GetScreenResHeight(GetDefaultScreenRes())),
     m_ScreenRes(GetDefaultScreenRes()),
-advanced_options(0),
+    m_advanced_options(false),
 texenh_options(0),
 vsync(0),
     m_rotate(Rotate_None),
@@ -384,7 +384,7 @@ void CSettings::ReadSettings()
 #endif
     this->vsync = GetSetting(Set_vsync);
     m_rotate = (ScreenRotate_t)GetSetting(Set_Rotate);
-    this->advanced_options = Set_basic_mode ? !GetSystemSetting(Set_basic_mode) : 0;
+    m_advanced_options = Set_basic_mode ? GetSystemSetting(Set_basic_mode) == 0 : false;
     this->texenh_options = GetSetting(Set_texenh_options);
 
     this->wrpVRAM = GetSetting(Set_wrpVRAM);
