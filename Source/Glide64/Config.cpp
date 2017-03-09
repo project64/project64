@@ -481,7 +481,7 @@ public:
         tooltip = "Buffer clear on every frame:\n\nForces the frame buffer to be cleared every frame drawn.\nUsually frame buffer clear is controlled by the game.\nHowever, in some cases it is not well emulated, and some garbage may be left on the screen.\nIn such cases, this option must be set on.\n\n[Recommended: on]";
         TTSetTxt(IDC_CHK_BUFFER_CLEAR, tooltip.c_str());
         m_cbxBuffer.Attach(GetDlgItem(IDC_CHK_BUFFER_CLEAR));
-        m_cbxBuffer.SetCheck(g_settings->buff_clear > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxBuffer.SetCheck(g_settings->buff_clear() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxFBEnable.Attach(GetDlgItem(IDC_CHK_FRAME_BUFFER_EMULATION));
         TTSetTxt(IDC_CHK_FRAME_BUFFER_EMULATION, "Enable frame buffer emulation:\n\nIf on, plugin will try to detect frame buffer usage and apply appropriate frame buffer emulation.\n\n[Recommended: on for games which use frame buffer effects]");
@@ -521,7 +521,7 @@ public:
         g_settings->SetAspectmode((CSettings::AspectMode_t)m_cmbAspect.GetItemData(m_cmbAspect.GetCurSel()));
         g_settings->SetSwapMode((CSettings::SwapMode_t)m_cmbBufferSwap.GetItemData(m_cmbBufferSwap.GetCurSel()));
         g_settings->SetFog(m_cbxFog.GetCheck() == BST_CHECKED);
-        g_settings->buff_clear = m_cbxBuffer.GetCheck() == BST_CHECKED;
+        g_settings->SetBuffClear(m_cbxBuffer.GetCheck() == BST_CHECKED);
         g_settings->SetLODmode((CSettings::PixelLevelOfDetail_t)m_cmbLOD.GetItemData(m_cmbLOD.GetCurSel()));
 
         CButton * fb_buttons[] =

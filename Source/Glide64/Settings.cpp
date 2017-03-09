@@ -27,7 +27,7 @@ CSettings::CSettings() :
     m_rotate(Rotate_None),
     m_filtering(Filter_Automatic),
     m_fog(false),
-buff_clear(0),
+    m_buff_clear(false),
     m_swapmode(SwapMode_Old),
     m_lodmode(LOD_Off),
     m_aspectmode(Aspect_4x3),
@@ -157,7 +157,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_filtering_default, "filtering", CSettings::Filter_Automatic);
     general_setting(Set_lodmode_default, "lodmode", CSettings::LOD_Off);
     general_setting(Set_fog_default, "fog", true);
-    general_setting(Set_buff_clear_default, "buff_clear", 1);
+    general_setting(Set_buff_clear_default, "buff_clear", true);
     general_setting(Set_swapmode_default, "swapmode", SwapMode_New);
     general_setting(Set_aspect_default, "aspect", Aspect_4x3);
 
@@ -312,6 +312,15 @@ void CSettings::SetFog(bool value)
     if (value != m_fog)
     {
         m_fog = value;
+        m_dirty = true;
+    }
+}
+
+void CSettings::SetBuffClear(bool value)
+{
+    if (value != m_buff_clear)
+    {
+        m_buff_clear = value;
         m_dirty = true;
     }
 }
@@ -617,7 +626,6 @@ void CSettings::ReadGameSettings(const char * name)
     g_settings->old_style_adither = GetSetting(Set_old_style_adither);
     g_settings->n64_z_scale = GetSetting(Set_n64_z_scale);
 
-    g_settings->buff_clear = GetSetting(g_romopen ? Set_buff_clear : Set_buff_clear_default);
     m_ScreenRes = GetSetting(Set_Resolution);
     if (m_ScreenRes >= GetScreenResolutionCount()) { m_ScreenRes = GetDefaultScreenRes(); }
 
@@ -676,6 +684,7 @@ void CSettings::ReadGameSettings(const char * name)
 
     SetFiltering((Filtering_t)GetSetting(g_romopen ? Set_filtering : Set_filtering_default));
     SetFog(GetSetting(g_romopen ? Set_fog : Set_fog_default) != 0);
+    SetBuffClear(GetSetting(g_romopen ? Set_buff_clear : Set_buff_clear_default) != 0);
     SetSwapMode((SwapMode_t)GetSetting(g_romopen ? Set_swapmode : Set_swapmode_default));
     SetAspectmode((AspectMode_t)GetSetting(g_romopen ? Set_aspect : Set_aspect_default));
     SetLODmode((PixelLevelOfDetail_t)GetSetting(g_romopen ? Set_lodmode : Set_lodmode_default));
@@ -725,7 +734,7 @@ void CSettings::WriteSettings(void)
 
     SetSetting(g_romopen ? Set_filtering : Set_filtering_default, filtering());
     SetSetting(g_romopen ? Set_fog : Set_fog_default, m_fog);
-    SetSetting(g_romopen ? Set_buff_clear : Set_buff_clear_default, g_settings->buff_clear);
+    SetSetting(g_romopen ? Set_buff_clear : Set_buff_clear_default, m_buff_clear);
     SetSetting(g_romopen ? Set_swapmode : Set_swapmode_default, g_settings->swapmode());
     SetSetting(g_romopen ? Set_lodmode : Set_lodmode_default, lodmode());
     SetSetting(g_romopen ? Set_aspect : Set_aspect_default, m_aspectmode);
