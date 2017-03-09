@@ -106,14 +106,6 @@ void ConfigCleanup(void)
 
 void CloseConfig();
 
-uint32_t texcmpr[] =
-{
-    //NO_COMPRESSION,   //"None"
-    //  NCC_COMPRESSION,  //"NCC"
-    S3TC_COMPRESSION, //"S3TC"
-    FXT1_COMPRESSION, //"FXT1"
-};
-
 uint32_t texhirs[] =
 {
     NO_HIRESTEXTURES,   //"Do not use"
@@ -635,7 +627,7 @@ public:
         m_cmbTextureCompression.Attach(GetDlgItem(IDC_CMB_TEX_COMPRESS_MEHTOD));
         m_cmbTextureCompression.SetItemData(m_cmbTextureCompression.AddString("S3TC"), 0);
         m_cmbTextureCompression.SetItemData(m_cmbTextureCompression.AddString("FXT1"), 1);
-        SetComboBoxIndex(m_cmbTextureCompression, g_settings->ghq_cmpr);
+        SetComboBoxIndex(m_cmbTextureCompression, g_settings->ghq_cmpr());
 
         tooltip = "Texture cache size:\n\nEnhanced and filtered textures can be cached to aid performance.\nThis setting will adjust how much PC memory will be dedicated for texture cache.\nThis helps boost performance if there are subsequent requests for the same texture (usually the case).\nNormally, 128MB should be more than enough but there is a sweet spot for each game.\nSuper Mario may not need more than 32megs, but Conker streams a lot of textures, so setting 256+ megs can boost performance.\nAdjust accordingly if you are encountering speed issues.\n'0' disables cache.\n\n[Recommended: PC and game dependant]";
         TTSetTxt(IDC_TXT_TEXTURE_CACHE, tooltip.c_str());
@@ -717,7 +709,7 @@ public:
         g_settings->ghq_hirs_cmpr = (int)m_cbxHrsTexCompression.GetCheck() == BST_CHECKED;
         g_settings->ghq_hirs_gz = (int)m_cbxHrsCompressCache.GetCheck() == BST_CHECKED;
         g_settings->ghq_hirs_let_texartists_fly = (int)m_cbxHrsLetFly.GetCheck() == BST_CHECKED;
-        g_settings->ghq_cmpr = (int)m_cmbTextureCompression.GetItemData(m_cmbTextureCompression.GetCurSel());
+        g_settings->SetGhqCmpr((CSettings::TextureCompression_t)m_cmbTextureCompression.GetItemData(m_cmbTextureCompression.GetCurSel()));
         g_settings->ghq_cache_save = (int)m_cbxSaveTexCache.GetCheck() == BST_CHECKED;
         if (memcmp(&oldsettings, g_settings, sizeof(oldsettings))) //check that settings were changed
         {

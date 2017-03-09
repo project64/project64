@@ -38,7 +38,7 @@ CSettings::CSettings() :
     m_texture_dir(""),
     m_ghq_fltr(TextureFilter_None),
     m_ghq_enht(TextureEnht_None),
-ghq_cmpr(0),
+    m_ghq_cmpr(TextureCompression_S3TC),
 ghq_hirs(0),
 ghq_use(0),
 ghq_enht_cmpr(0),
@@ -137,7 +137,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_unk_as_red, "unk_as_red", 0);
     general_setting(Set_unk_clear, "unk_clear", 0);
     general_setting(Set_ghq_fltr, "ghq_fltr", TextureFilter_None);
-    general_setting(Set_ghq_cmpr, "ghq_cmpr", 0);
+    general_setting(Set_ghq_cmpr, "ghq_cmpr", TextureCompression_S3TC);
     general_setting(Set_ghq_enht, "ghq_enht", TextureEnht_None);
     general_setting(Set_ghq_hirs, "ghq_hirs", 0);
     general_setting(Set_ghq_enht_cmpr, "ghq_enht_cmpr", 0);
@@ -344,6 +344,15 @@ void CSettings::SetGhqEnht(TextureEnhancement_t value)
     }
 }
 
+void CSettings::SetGhqCmpr(TextureCompression_t value)
+{
+    if (value != m_ghq_cmpr)
+    {
+        m_ghq_cmpr = value;
+        m_dirty = true;
+    }
+}
+
 void CSettings::UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove)
 {
     uint32_t frame_buffer_original = m_frame_buffer;
@@ -447,7 +456,7 @@ void CSettings::ReadSettings()
     GetSystemSettingSz(m_Set_texture_dir, texture_dir, sizeof(texture_dir));
     m_texture_dir = texture_dir;
     m_ghq_fltr = (TextureFilter_t)GetSetting(Set_ghq_fltr);
-    this->ghq_cmpr = (uint8_t)GetSetting(Set_ghq_cmpr);
+    m_ghq_cmpr = (TextureCompression_t)GetSetting(Set_ghq_cmpr);
     m_ghq_enht = (TextureEnhancement_t)GetSetting(Set_ghq_enht);
     this->ghq_hirs = (uint8_t)GetSetting(Set_ghq_hirs);
     this->ghq_enht_cmpr = GetSetting(Set_ghq_enht_cmpr);
@@ -716,7 +725,7 @@ void CSettings::WriteSettings(void)
 #endif //_ENDUSER_RELEASE_
 
     SetSetting(Set_ghq_fltr, m_ghq_fltr);
-    SetSetting(Set_ghq_cmpr, g_settings->ghq_cmpr);
+    SetSetting(Set_ghq_cmpr, m_ghq_cmpr);
     SetSetting(Set_ghq_enht, m_ghq_enht);
     SetSetting(Set_ghq_hirs, g_settings->ghq_hirs);
     SetSetting(Set_ghq_enht_cmpr, g_settings->ghq_enht_cmpr);
