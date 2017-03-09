@@ -476,7 +476,7 @@ public:
         tooltip = "Fog enabled:\n\nSets fog emulation on//off.\n\n[Recommended: on]";
         TTSetTxt(IDC_CHK_FOG, tooltip.c_str());
         m_cbxFog.Attach(GetDlgItem(IDC_CHK_FOG));
-        m_cbxFog.SetCheck(g_settings->fog > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxFog.SetCheck(g_settings->fog() > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         tooltip = "Buffer clear on every frame:\n\nForces the frame buffer to be cleared every frame drawn.\nUsually frame buffer clear is controlled by the game.\nHowever, in some cases it is not well emulated, and some garbage may be left on the screen.\nIn such cases, this option must be set on.\n\n[Recommended: on]";
         TTSetTxt(IDC_CHK_BUFFER_CLEAR, tooltip.c_str());
@@ -520,7 +520,7 @@ public:
         g_settings->SetFiltering((CSettings::Filtering_t)m_cmbFiltering.GetItemData(m_cmbFiltering.GetCurSel()));
         g_settings->SetAspectmode((CSettings::AspectMode_t)m_cmbAspect.GetItemData(m_cmbAspect.GetCurSel()));
         g_settings->SetSwapMode((CSettings::SwapMode_t)m_cmbBufferSwap.GetItemData(m_cmbBufferSwap.GetCurSel()));
-        g_settings->fog = m_cbxFog.GetCheck() == BST_CHECKED;
+        g_settings->SetFog(m_cbxFog.GetCheck() == BST_CHECKED);
         g_settings->buff_clear = m_cbxBuffer.GetCheck() == BST_CHECKED;
         g_settings->SetLODmode((CSettings::PixelLevelOfDetail_t)m_cmbLOD.GetItemData(m_cmbLOD.GetCurSel()));
 

@@ -1919,7 +1919,7 @@ void update()
     }
 
     //Added by Gonetz.
-    if (g_settings->fog && (rdp.update & UPDATE_FOG_ENABLED))
+    if (g_settings->fog() && (rdp.update & UPDATE_FOG_ENABLED))
     {
         rdp.update ^= UPDATE_FOG_ENABLED;
 

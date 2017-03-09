@@ -950,7 +950,7 @@ static void uc6_draw_polygons(VERTEX v[4])
     }
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_VIEWPORT;
 
-    if (g_settings->fog && (rdp.flags & FOG_ENABLED))
+    if (g_settings->fog() && (rdp.flags & FOG_ENABLED))
     {
         grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
     }
@@ -1659,7 +1659,7 @@ void uc6_sprite2d()
             }
             rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_VIEWPORT;
 
-            if (g_settings->fog && (rdp.flags & FOG_ENABLED))
+            if (g_settings->fog() && (rdp.flags & FOG_ENABLED))
             {
                 grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
             }

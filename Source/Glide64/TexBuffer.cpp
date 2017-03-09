@@ -461,7 +461,7 @@ int CloseTextureBuffer(int draw)
     grDrawTriangle(&v[0], &v[2], &v[1]);
     grDrawTriangle(&v[2], &v[3], &v[1]);
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE;
-    if (g_settings->fog && (rdp.flags & FOG_ENABLED))
+    if (g_settings->fog() && (rdp.flags & FOG_ENABLED))
     {
         grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
     }
@@ -526,7 +526,7 @@ int CopyTextureBuffer(COLOR_IMAGE & fb_from, COLOR_IMAGE & fb_to)
 
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE;
     rdp.update |= UPDATE_VIEWPORT | UPDATE_SCISSOR;
-    if (g_settings->fog && (rdp.flags & FOG_ENABLED))
+    if (g_settings->fog() && (rdp.flags & FOG_ENABLED))
         grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
     WriteTrace(TraceRDP, TraceDebug, "CopyTextureBuffer draw, OK");
     rdp.tbuff_tex = 0;
@@ -580,7 +580,7 @@ int CopyDepthBuffer()
     grAuxBufferExt(GR_BUFFER_TEXTUREAUXBUFFER_EXT);
 
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE;
-    if (g_settings->fog && (rdp.flags & FOG_ENABLED))
+    if (g_settings->fog() && (rdp.flags & FOG_ENABLED))
         grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
     WriteTrace(TraceRDP, TraceDebug, "CopyDepthBuffer draw, OK");
     rdp.tbuff_tex = 0;
@@ -654,7 +654,7 @@ int SwapTextureBuffer()
         rdp.update |= UPDATE_VIEWPORT | UPDATE_SCISSOR;
     }
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE;
-    if (g_settings->fog && (rdp.flags & FOG_ENABLED))
+    if (g_settings->fog() && (rdp.flags & FOG_ENABLED))
     {
         grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
     }

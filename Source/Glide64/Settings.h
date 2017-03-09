@@ -145,8 +145,6 @@ public:
         ucode_Turbo3d = 21,
     };
 
-
-    int fog;
     int buff_clear;
 
 
@@ -185,6 +183,7 @@ public:
     inline ScreenRotate_t rotate(void) const { return m_rotate; }
     inline Filtering_t filtering(void) const { return m_filtering; }
 
+    inline bool fog (void) const { return m_fog; }
     inline SwapMode_t swapmode(void) const { return m_swapmode; }
     inline PixelLevelOfDetail_t lodmode(void) const { return m_lodmode; }
     inline AspectMode_t aspectmode(void) const { return m_aspectmode; }
@@ -261,6 +260,7 @@ public:
     void SetVsync(bool value);
     void SetFiltering(Filtering_t value);
     void SetSwapMode(SwapMode_t value);
+    void SetFog(bool value);
     void SetGhqFltr(TextureFilter_t value);
     void SetGhqEnht(TextureEnhancement_t value);
     void UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove);
@@ -293,6 +293,7 @@ private:
     FBCRCMODE_t m_fb_crc_mode;
     ScreenRotate_t m_rotate;
     Filtering_t m_filtering;
+    bool m_fog;
     SwapMode_t m_swapmode;
     PixelLevelOfDetail_t m_lodmode;
     bool m_advanced_options;

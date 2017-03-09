@@ -965,11 +965,14 @@ static void rdp_texrect()
 
     if ((rdp.othermode_l >> 16) == 0x3c18 && rdp.cycle1 == 0x03ffffff && rdp.cycle2 == 0x01ff1fff) //depth image based fog
     {
-        if (!depth_buffer_fog)
-            return;
-        if (g_settings->fog)
-            DrawDepthBufferFog();
-        depth_buffer_fog = FALSE;
+        if (depth_buffer_fog)
+        {
+            if (g_settings->fog())
+            {
+                DrawDepthBufferFog();
+            }
+            depth_buffer_fog = false;
+        }
         return;
     }
 

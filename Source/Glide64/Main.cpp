@@ -599,7 +599,7 @@ int InitGfx()
 
     grCullMode(GR_CULL_NEGATIVE);
 
-    if (g_settings->fog) //"FOGCOORD" extension
+    if (g_settings->fog()) //"FOGCOORD" extension
     {
         if (strstr(extensions, "FOGCOORD"))
         {
@@ -622,7 +622,9 @@ int InitGfx()
             grVertexLayout(GR_PARAM_FOG_EXT, offsetof(VERTEX, f), GR_PARAM_ENABLE);
         }
         else //not supported
-            g_settings->fog = FALSE;
+        {
+            g_settings->SetFog(FALSE);
+        }
     }
 
     grDepthBufferMode(GR_DEPTHBUFFER_ZBUFFER);
