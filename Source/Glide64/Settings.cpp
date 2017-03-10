@@ -48,7 +48,7 @@ CSettings::CSettings() :
     m_ghq_hirs_tile(false),
     m_ghq_hirs_f16bpp(false),
     m_ghq_hirs_gz(false),
-ghq_hirs_altcrc(0),
+    m_ghq_hirs_altcrc(false),
 ghq_cache_save(0),
 ghq_cache_size(0),
 ghq_hirs_let_texartists_fly(0),
@@ -147,7 +147,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_ghq_hirs_tile, "ghq_hirs_tile", false);
     general_setting(Set_ghq_hirs_f16bpp, "ghq_hirs_f16bpp", false);
     general_setting(Set_ghq_hirs_gz, "ghq_hirs_gz", true);
-    general_setting(Set_ghq_hirs_altcrc, "ghq_hirs_altcrc", 1);
+    general_setting(Set_ghq_hirs_altcrc, "ghq_hirs_altcrc", true);
     general_setting(Set_ghq_cache_save, "ghq_cache_save", 1);
     general_setting(Set_ghq_cache_size, "ghq_cache_size", 0);
     general_setting(Set_ghq_hirs_let_texartists_fly, "ghq_hirs_let_texartists_fly", 0);
@@ -406,6 +406,15 @@ void CSettings::SetGhqEnhtCmpr(bool value)
     }
 }
 
+void CSettings::SetGhqHirsAltcrc(bool value)
+{
+    if (value != m_ghq_hirs_altcrc)
+    {
+        m_ghq_hirs_altcrc = value;
+        m_dirty = true;
+    }
+}
+
 void CSettings::SetGhqHirsCmpr(bool value)
 {
     if (value != m_ghq_hirs_cmpr)
@@ -538,7 +547,7 @@ void CSettings::ReadSettings()
     m_ghq_hirs_tile = GetSetting(Set_ghq_hirs_tile) != 0;
     m_ghq_hirs_f16bpp = GetSetting(Set_ghq_hirs_f16bpp) != 0;
     m_ghq_hirs_gz = GetSetting(Set_ghq_hirs_gz) != 0;
-    this->ghq_hirs_altcrc = GetSetting(Set_ghq_hirs_altcrc);
+    m_ghq_hirs_altcrc = GetSetting(Set_ghq_hirs_altcrc) != 0;
     this->ghq_cache_save = GetSetting(Set_ghq_cache_save);
     this->ghq_cache_size = GetSetting(Set_ghq_cache_size);
     this->ghq_hirs_let_texartists_fly = GetSetting(Set_ghq_hirs_let_texartists_fly);
@@ -807,7 +816,7 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_ghq_hirs_tile, m_ghq_hirs_tile);
     SetSetting(Set_ghq_hirs_f16bpp, m_ghq_hirs_f16bpp);
     SetSetting(Set_ghq_hirs_gz, m_ghq_hirs_gz);
-    SetSetting(Set_ghq_hirs_altcrc, g_settings->ghq_hirs_altcrc);
+    SetSetting(Set_ghq_hirs_altcrc, m_ghq_hirs_altcrc);
     SetSetting(Set_ghq_cache_save, g_settings->ghq_cache_save);
     SetSetting(Set_ghq_cache_size, g_settings->ghq_cache_size);
     SetSetting(Set_ghq_hirs_let_texartists_fly, g_settings->ghq_hirs_let_texartists_fly);

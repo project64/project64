@@ -662,7 +662,7 @@ public:
 
         m_cbxHrsAltCRC.Attach(GetDlgItem(IDC_CHK_ALT_CRC));
         TTSetTxt(IDC_CHK_ALT_CRC, "Alternative CRC calculation:\n\nThis option enables emulation of a palette CRC calculation bug in RiceVideo.\nIf some textures are not loaded, try to set this option on/off.\n\n[Recommended: texture pack dependant, mostly on]");
-        m_cbxHrsAltCRC.SetCheck(g_settings->ghq_hirs_altcrc > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxHrsAltCRC.SetCheck(g_settings->ghq_hirs_altcrc() > 0 ? BST_CHECKED : BST_UNCHECKED);
         if (g_settings->ghq_hirs_dump)
         {
             m_cbxHrsAltCRC.EnableWindow(false);
@@ -698,7 +698,7 @@ public:
         g_settings->SetGhqHirsTile(m_cbxHrsTile.GetCheck() == BST_CHECKED);
         g_settings->SetGhqHirsF16bpp(m_cbxHrsForce16.GetCheck() == BST_CHECKED);
         g_settings->ghq_hirs_dump = (int)m_cbxHrsTexEdit.GetCheck() == BST_CHECKED;
-        g_settings->ghq_hirs_altcrc = (int)m_cbxHrsAltCRC.GetCheck() == BST_CHECKED;
+        g_settings->SetGhqHirsAltcrc(m_cbxHrsAltCRC.GetCheck() == BST_CHECKED);
         g_settings->SetGhqHirsCmpr(m_cbxHrsTexCompression.GetCheck() == BST_CHECKED);
         g_settings->SetGhqHirsGz(m_cbxHrsCompressCache.GetCheck() == BST_CHECKED);
         g_settings->ghq_hirs_let_texartists_fly = (int)m_cbxHrsLetFly.GetCheck() == BST_CHECKED;

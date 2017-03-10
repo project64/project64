@@ -1299,7 +1299,7 @@ void LoadTex(int id, int tmu)
         {
             if (rdp.tiles[td].size == 1)
                 paladdr = (uint8_t*)(rdp.pal_8_rice);
-            else if (g_settings->ghq_hirs_altcrc)
+            else if (g_settings->ghq_hirs_altcrc())
                 paladdr = (uint8_t*)(rdp.pal_8_rice + (rdp.tiles[td].palette << 5));
             else
                 paladdr = (uint8_t*)(rdp.pal_8_rice + (rdp.tiles[td].palette << 4));
