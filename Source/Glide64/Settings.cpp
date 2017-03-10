@@ -40,7 +40,6 @@ CSettings::CSettings() :
     m_ghq_enht(TextureEnht_None),
     m_ghq_cmpr(TextureCompression_S3TC),
     m_ghq_hirs(HiResPackFormat_None),
-ghq_use(0),
 ghq_enht_cmpr(0),
 ghq_enht_f16bpp(0),
 ghq_enht_gz(0),

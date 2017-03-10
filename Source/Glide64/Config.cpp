@@ -68,6 +68,7 @@
 #include <wtl/atlcrack.h>
 
 extern HINSTANCE hinstDLL;
+extern bool g_ghq_use;
 
 extern CriticalSection * g_ProcessDListCS;
 
@@ -796,10 +797,10 @@ void CALL DllConfig(HWND hParent)
             ReleaseGfx();
             rdp_reset();
         }
-        if (g_settings->ghq_use)
+        if (g_ghq_use)
         {
             ext_ghq_shutdown();
-            g_settings->ghq_use = 0;
+            g_ghq_use = false;
         }
     }
     else

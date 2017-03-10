@@ -207,7 +207,6 @@ public:
     inline TextureEnhancement_t ghq_enht(void) const { return m_ghq_enht; }
     inline TextureCompression_t ghq_cmpr(void) const { return m_ghq_cmpr; }
     inline HiResPackFormat_t ghq_hirs(void) const { return m_ghq_hirs; }
-    int ghq_use;
     int ghq_enht_cmpr;
     int ghq_enht_f16bpp;
     int ghq_enht_gz;

@@ -60,6 +60,8 @@ uint8_t *texture_buffer = tex1;
 #include "TexModCI.h"
 #include "CRC.h"
 
+extern bool g_ghq_use;
+
 typedef struct TEXINFO_t 
 {
     int real_image_width, real_image_height;	// FOR ALIGNMENT PURPOSES ONLY!!!
@@ -1255,7 +1257,7 @@ void LoadTex(int id, int tmu)
     GHQTexInfo ghqTexInfo;
     memset(&ghqTexInfo, 0, sizeof(GHQTexInfo));
     uint32_t g64_crc = cache->crc;
-    if (g_settings->ghq_use)
+    if (g_ghq_use)
     {
         int bpl;
         uint8_t* addr = (uint8_t*)(gfx.RDRAM + rdp.addr[rdp.tiles[td].t_mem]);
@@ -1579,7 +1581,7 @@ void LoadTex(int id, int tmu)
 
     if (GfxInitDone)
     {
-        if (g_settings->ghq_use)
+        if (g_ghq_use)
         {
             if (!ghqTexInfo.data)
                 if (!g_settings->ghq_enht_nobg || !rdp.texrecting || (texinfo[id].splits == 1 && texinfo[id].width <= 256))

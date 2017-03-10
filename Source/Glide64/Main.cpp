@@ -115,6 +115,7 @@ uint32_t   offset_cursor = 0;
 uint32_t   offset_textures = 0;
 uint32_t   offset_texbuf1 = 0;
 
+bool g_ghq_use = false;
 int    capture_screen = 0;
 std::string capture_path;
 
@@ -653,10 +654,10 @@ int InitGfx()
     grClipWindow(0, 0, g_settings->scr_res_x(), g_settings->scr_res_y());
     rdp.update |= UPDATE_SCISSOR | UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
 
-    if (!g_settings->ghq_use)
+    if (!g_ghq_use)
     {
-        g_settings->ghq_use = g_settings->ghq_fltr() != CSettings::TextureFilter_None || g_settings->ghq_enht() != CSettings::TextureEnht_None || g_settings->ghq_hirs() != CSettings::HiResPackFormat_None;
-        if (g_settings->ghq_use)
+        g_ghq_use = g_settings->ghq_fltr() != CSettings::TextureFilter_None || g_settings->ghq_enht() != CSettings::TextureEnht_None || g_settings->ghq_hirs() != CSettings::HiResPackFormat_None;
+        if (g_ghq_use)
         {
             /* Plugin path */
             int options = g_settings->ghq_fltr() | g_settings->ghq_enht() | g_settings->ghq_cmpr() | g_settings->ghq_hirs();
@@ -701,7 +702,7 @@ int InitGfx()
                 options |= DUMP_TEX;
             }
 
-            g_settings->ghq_use = (int)ext_ghq_init(voodoo.max_tex_size, // max texture width supported by hardware
+            g_ghq_use = (int)ext_ghq_init(voodoo.max_tex_size, // max texture width supported by hardware
                 voodoo.max_tex_size, // max texture height supported by hardware
                 voodoo.sup_32bit_tex ? 32 : 16, // max texture bpp supported by hardware
                 options,
@@ -711,7 +712,7 @@ int InitGfx()
                 DisplayLoadProgress);
         }
     }
-    if (g_settings->ghq_use && strstr(extensions, "TEXMIRROR"))
+    if (g_ghq_use && strstr(extensions, "TEXMIRROR"))
     {
         voodoo.sup_mirroring = 1;
     }
@@ -899,10 +900,10 @@ void CALL CloseDLL(void)
 {
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
-    if (g_settings->ghq_use)
+    if (g_ghq_use)
     {
         ext_ghq_shutdown();
-        g_settings->ghq_use = 0;
+        g_ghq_use = false;
     }
 
     if (g_settings)
@@ -1152,10 +1153,10 @@ void CALL RomOpen(void)
         name[strlen(name) - 1] = 0;
     }
 
-    if (g_settings->ghq_use && strcmp(rdp.RomName, name) != 0)
+    if (g_ghq_use && strcmp(rdp.RomName, name) != 0)
     {
         ext_ghq_shutdown();
-        g_settings->ghq_use = 0;
+        g_ghq_use = false;
     }
     strcpy(rdp.RomName, name);
     g_settings->ReadGameSettings(name);
