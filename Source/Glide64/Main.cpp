@@ -689,7 +689,7 @@ int InitGfx()
             {
                 options |= GZ_HIRESTEXCACHE;
             }
-            if (g_settings->ghq_cache_save)
+            if (g_settings->ghq_cache_save())
             {
                 options |= (DUMP_TEXCACHE | DUMP_HIRESTEXCACHE);
             }
