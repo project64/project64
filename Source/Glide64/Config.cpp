@@ -640,7 +640,7 @@ public:
         TTSetTxt(IDC_CHK_HIRES_TEX_COMPRESSION, tooltip.c_str());
 
         m_cbxEnhTexCompression.Attach(GetDlgItem(IDC_CHK_TEX_COMPRESSION));
-        m_cbxEnhTexCompression.SetCheck(g_settings->ghq_enht_cmpr > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxEnhTexCompression.SetCheck(g_settings->ghq_enht_cmpr() > 0 ? BST_CHECKED : BST_UNCHECKED);
         m_cbxHrsTexCompression.Attach(GetDlgItem(IDC_CHK_HIRES_TEX_COMPRESSION));
         m_cbxHrsTexCompression.SetCheck(g_settings->ghq_hirs_cmpr > 0 ? BST_CHECKED : BST_UNCHECKED);
 
@@ -692,7 +692,7 @@ public:
         g_settings->SetGhqEnht((CSettings::TextureEnhancement_t)m_cmbEnhEnhancement.GetItemData(m_cmbEnhEnhancement.GetCurSel()));
         g_settings->ghq_cache_size = atoi(texcache);
         g_settings->ghq_enht_nobg = (int)m_cbxEnhIgnoreBG.GetCheck() == BST_CHECKED;
-        g_settings->ghq_enht_cmpr = (int)m_cbxEnhTexCompression.GetCheck() == BST_CHECKED;
+        g_settings->SetGhqEnhtCmpr(m_cbxEnhTexCompression.GetCheck() == BST_CHECKED);
         g_settings->ghq_enht_gz = (int)m_cbxEnhCompressCache.GetCheck() == BST_CHECKED;
         g_settings->SetGhqHirs((CSettings::HiResPackFormat_t)m_cmbHrsFormat.GetItemData(m_cmbHrsFormat.GetCurSel()));
         g_settings->ghq_hirs_tile = (int)m_cbxHrsTile.GetCheck() == BST_CHECKED;

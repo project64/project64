@@ -661,7 +661,7 @@ int InitGfx()
         {
             /* Plugin path */
             int options = g_settings->ghq_fltr() | g_settings->ghq_enht() | g_settings->ghq_cmpr() | g_settings->ghq_hirs();
-            if (g_settings->ghq_enht_cmpr)
+            if (g_settings->ghq_enht_cmpr())
             {
                 options |= COMPRESS_TEX;
             }
