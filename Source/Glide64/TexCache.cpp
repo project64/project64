@@ -1584,7 +1584,7 @@ void LoadTex(int id, int tmu)
         if (g_ghq_use)
         {
             if (!ghqTexInfo.data)
-                if (!g_settings->ghq_enht_nobg || !rdp.texrecting || (texinfo[id].splits == 1 && texinfo[id].width <= 256))
+                if (!g_settings->ghq_enht_nobg() || !rdp.texrecting || (texinfo[id].splits == 1 && texinfo[id].width <= 256))
                     ext_ghq_txfilter((unsigned char*)texture, (int)real_x, (int)real_y, LOWORD(result), (uint64)g64_crc, &ghqTexInfo);
 
             if (ghqTexInfo.data)

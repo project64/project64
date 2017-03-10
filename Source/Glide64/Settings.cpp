@@ -43,7 +43,7 @@ CSettings::CSettings() :
     m_ghq_enht_cmpr(false),
     m_ghq_enht_f16bpp(false),
     m_ghq_enht_gz(false),
-ghq_enht_nobg(0),
+    m_ghq_enht_nobg(false),
 ghq_hirs_cmpr(0),
 ghq_hirs_tile(0),
 ghq_hirs_f16bpp(0),
@@ -142,7 +142,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_ghq_enht_cmpr, "ghq_enht_cmpr", false);
     general_setting(Set_ghq_enht_f16bpp, "ghq_enht_f16bpp", false);
     general_setting(Set_ghq_enht_gz, "ghq_enht_gz", true);
-    general_setting(Set_ghq_enht_nobg, "ghq_enht_nobg", 0);
+    general_setting(Set_ghq_enht_nobg, "ghq_enht_nobg", false);
     general_setting(Set_ghq_hirs_cmpr, "ghq_hirs_cmpr", 0);
     general_setting(Set_ghq_hirs_tile, "ghq_hirs_tile", 0);
     general_setting(Set_ghq_hirs_f16bpp, "ghq_hirs_f16bpp", 0);
@@ -370,6 +370,15 @@ void CSettings::SetGhqEnhtGz(bool value)
     }
 }
 
+void CSettings::SetGhqEnhtNobg(bool value)
+{
+    if (value != m_ghq_enht_nobg)
+    {
+        m_ghq_enht_nobg = value;
+        m_dirty = true;
+    }
+}
+
 void CSettings::SetGhqEnhtCmpr(bool value)
 {
     if (value != m_ghq_enht_cmpr)
@@ -488,7 +497,7 @@ void CSettings::ReadSettings()
     m_ghq_enht_cmpr = GetSetting(Set_ghq_enht_cmpr) != 0;
     m_ghq_enht_f16bpp = GetSetting(Set_ghq_enht_f16bpp) !=0;
     m_ghq_enht_gz = GetSetting(Set_ghq_enht_gz) != 0;
-    this->ghq_enht_nobg = GetSetting(Set_ghq_enht_nobg);
+    m_ghq_enht_nobg = GetSetting(Set_ghq_enht_nobg) != 0;
     this->ghq_hirs_cmpr = GetSetting(Set_ghq_hirs_cmpr);
     this->ghq_hirs_tile = GetSetting(Set_ghq_hirs_tile);
     this->ghq_hirs_f16bpp = GetSetting(Set_ghq_hirs_f16bpp);
@@ -757,7 +766,7 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_ghq_enht_cmpr, m_ghq_enht_cmpr);
     SetSetting(Set_ghq_enht_f16bpp, m_ghq_enht_f16bpp);
     SetSetting(Set_ghq_enht_gz, m_ghq_enht_gz);
-    SetSetting(Set_ghq_enht_nobg, g_settings->ghq_enht_nobg);
+    SetSetting(Set_ghq_enht_nobg, m_ghq_enht_nobg);
     SetSetting(Set_ghq_hirs_cmpr, g_settings->ghq_hirs_cmpr);
     SetSetting(Set_ghq_hirs_tile, g_settings->ghq_hirs_tile);
     SetSetting(Set_ghq_hirs_f16bpp, g_settings->ghq_hirs_f16bpp);

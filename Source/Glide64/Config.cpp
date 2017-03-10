@@ -633,7 +633,7 @@ public:
 
         TTSetTxt(IDC_CHK_IGNORE_BACKGROUND, "Ignore Backgrounds:\n\nIt is used to skip enhancement for long narrow textures, usually used for backgrounds.\nThis may save texture memory greatly and increase performance.\n\n[Recommended: on (off for 'Store' mode)]");
         m_cbxEnhIgnoreBG.Attach(GetDlgItem(IDC_CHK_IGNORE_BACKGROUND));
-        m_cbxEnhIgnoreBG.SetCheck(g_settings->ghq_enht_nobg > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxEnhIgnoreBG.SetCheck(g_settings->ghq_enht_nobg() > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         tooltip = "Texture compression:\n\nTextures will be compressed using selected texture compression method.\nThe overall compression ratio is about 1/6 for FXT1 and 1/4 for S3TC.\nIn addition to saving space on the texture cache, the space occupied on the GFX hardware's texture RAM, by the enhanced textures, will be greatly reduced.\nThis minimizes texture RAM usage, decreasing the number of texture swaps to the GFX hardware leading to performance gains.\nHowever, due to the nature of lossy compression of FXT1 and S3TC, using this option can sometimes lead to quality degradation of small size textures and color banding of gradient colored textures.\n\n[Recommended: off]";
         TTSetTxt(IDC_CHK_TEX_COMPRESSION, tooltip.c_str());
@@ -691,7 +691,7 @@ public:
         g_settings->SetGhqFltr((CSettings::TextureFilter_t)m_cmbEnhFilter.GetItemData(m_cmbEnhFilter.GetCurSel()));
         g_settings->SetGhqEnht((CSettings::TextureEnhancement_t)m_cmbEnhEnhancement.GetItemData(m_cmbEnhEnhancement.GetCurSel()));
         g_settings->ghq_cache_size = atoi(texcache);
-        g_settings->ghq_enht_nobg = (int)m_cbxEnhIgnoreBG.GetCheck() == BST_CHECKED;
+        g_settings->SetGhqEnhtNobg(m_cbxEnhIgnoreBG.GetCheck() == BST_CHECKED);
         g_settings->SetGhqEnhtCmpr(m_cbxEnhTexCompression.GetCheck() == BST_CHECKED);
         g_settings->SetGhqEnhtGz(m_cbxEnhCompressCache.GetCheck() == BST_CHECKED);
         g_settings->SetGhqHirs((CSettings::HiResPackFormat_t)m_cmbHrsFormat.GetItemData(m_cmbHrsFormat.GetCurSel()));
