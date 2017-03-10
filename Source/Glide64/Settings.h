@@ -214,7 +214,7 @@ public:
     inline bool ghq_hirs_cmpr(void) const { return m_ghq_hirs_cmpr; }
     inline bool ghq_hirs_tile(void) const { return m_ghq_hirs_tile; }
     inline bool ghq_hirs_f16bpp(void) const { return m_ghq_hirs_f16bpp; }
-    int ghq_hirs_gz;
+    inline bool ghq_hirs_gz(void) const { return m_ghq_hirs_gz; }
     int ghq_hirs_altcrc;
     int ghq_cache_save;
     int ghq_cache_size;
@@ -282,6 +282,7 @@ public:
     void SetGhqEnhtNobg(bool value);
     void SetGhqEnhtCmpr(bool value);    
     void SetGhqHirsCmpr(bool value);
+    void SetGhqHirsGz(bool value);
     void UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove);
     ucode_t DetectUCode(uint32_t uc_crc);
     void SetUcode(ucode_t value);
@@ -333,6 +334,7 @@ private:
     bool m_ghq_hirs_cmpr;
     bool m_ghq_hirs_tile;
     bool m_ghq_hirs_f16bpp;
+    bool m_ghq_hirs_gz;
     ucode_t m_ucode;
     StippleMode_t m_stipple_mode;
     hacks_t m_hacks;

@@ -670,7 +670,7 @@ public:
 
         m_cbxHrsCompressCache.Attach(GetDlgItem(IDC_CHK_HRS_COMPRESS_CACHE));
         TTSetTxt(IDC_CHK_HRS_COMPRESS_CACHE, "Compress texture cache:\n\nWhen game started, plugin loads all its hi-resolution textures into PC memory.\nSince hi-resolution textures are usually large, the whole pack can take hundreds megabytes of memory.\nCache compression allows save memory space greatly.\nTextures will be decompressed on-the-fly, before being downloaded to the gfx hardware.\nThis option will still help save memory space even when using texture compression.\n\n[Recommended: on]");
-        m_cbxHrsCompressCache.SetCheck(g_settings->ghq_hirs_gz > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxHrsCompressCache.SetCheck(g_settings->ghq_hirs_gz() > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsLetFly.Attach(GetDlgItem(IDC_CHK_USE_ALPHA_FULLY));
         TTSetTxt(IDC_CHK_USE_ALPHA_FULLY, "Use Alpha channel fully:\n\nWhen this option is off, 16bit rgba textures will be loaded using RiceVideo style, with 1bit for alpha channel.\nWhen it is on, GlideHQ will check, how alpha channel is used by the hires texture, and select most appropriate format for it.\nThis gives texture designers freedom to play with alpha, as they need, regardless of format of original N64 texture.\nFor older and badly designed texture packs it can cause unwanted black borders.\n\n[Recommended: texture pack dependant]");
@@ -700,7 +700,7 @@ public:
         g_settings->ghq_hirs_dump = (int)m_cbxHrsTexEdit.GetCheck() == BST_CHECKED;
         g_settings->ghq_hirs_altcrc = (int)m_cbxHrsAltCRC.GetCheck() == BST_CHECKED;
         g_settings->SetGhqHirsCmpr(m_cbxHrsTexCompression.GetCheck() == BST_CHECKED);
-        g_settings->ghq_hirs_gz = (int)m_cbxHrsCompressCache.GetCheck() == BST_CHECKED;
+        g_settings->SetGhqHirsGz(m_cbxHrsCompressCache.GetCheck() == BST_CHECKED);
         g_settings->ghq_hirs_let_texartists_fly = (int)m_cbxHrsLetFly.GetCheck() == BST_CHECKED;
         g_settings->SetGhqCmpr((CSettings::TextureCompression_t)m_cmbTextureCompression.GetItemData(m_cmbTextureCompression.GetCurSel()));
         g_settings->ghq_cache_save = (int)m_cbxSaveTexCache.GetCheck() == BST_CHECKED;

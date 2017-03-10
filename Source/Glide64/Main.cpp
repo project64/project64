@@ -685,7 +685,7 @@ int InitGfx()
             {
                 options |= GZ_TEXCACHE;
             }
-            if (g_settings->ghq_hirs_gz)
+            if (g_settings->ghq_hirs_gz())
             {
                 options |= GZ_HIRESTEXCACHE;
             }
