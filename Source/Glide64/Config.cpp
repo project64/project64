@@ -654,7 +654,7 @@ public:
 
         m_cbxHrsForce16.Attach(GetDlgItem(IDC_CHK_FORCE_16BPP_TEXT));
         TTSetTxt(IDC_CHK_FORCE_16BPP_TEXT, "Force 16bpp textures:\n\nThe color of the textures will be reduced to 16bpp.\nThis is another space saver and performance enhancer.\nThis halves the space used on the texture cache and the GFX hardware's texture RAM.\nColor reduction is done so that the original quality is preserved as much as possible.\nDepending on the texture, this usually is hardly noticeable.\nSometimes though, it can be: skies are a good example.\n\n[Recommended: off]");
-        m_cbxHrsForce16.SetCheck(g_settings->ghq_hirs_f16bpp > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxHrsForce16.SetCheck(g_settings->ghq_hirs_f16bpp() > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsTexEdit.Attach(GetDlgItem(IDC_CHK_TEX_DUMP_EDIT));
         TTSetTxt(IDC_CHK_TEX_DUMP_EDIT, "Texture dumping mode:\n\nIn this mode, you have that ability to dump textures on screen to the appropriate folder.\nYou can also reload textures while the game is running to see how they look instantly - big time saver!\n\nHotkeys:\n\"R\" reloads hires textures from the texture pack\n\"D\" toggles texture dumps on/off.");
@@ -696,7 +696,7 @@ public:
         g_settings->SetGhqEnhtGz(m_cbxEnhCompressCache.GetCheck() == BST_CHECKED);
         g_settings->SetGhqHirs((CSettings::HiResPackFormat_t)m_cmbHrsFormat.GetItemData(m_cmbHrsFormat.GetCurSel()));
         g_settings->SetGhqHirsTile(m_cbxHrsTile.GetCheck() == BST_CHECKED);
-        g_settings->ghq_hirs_f16bpp = (int)m_cbxHrsForce16.GetCheck() == BST_CHECKED;
+        g_settings->SetGhqHirsF16bpp(m_cbxHrsForce16.GetCheck() == BST_CHECKED);
         g_settings->ghq_hirs_dump = (int)m_cbxHrsTexEdit.GetCheck() == BST_CHECKED;
         g_settings->ghq_hirs_altcrc = (int)m_cbxHrsAltCRC.GetCheck() == BST_CHECKED;
         g_settings->SetGhqHirsCmpr(m_cbxHrsTexCompression.GetCheck() == BST_CHECKED);

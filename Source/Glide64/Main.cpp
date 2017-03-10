@@ -677,7 +677,7 @@ int InitGfx()
             {
                 options |= FORCE16BPP_TEX;
             }
-            if (g_settings->ghq_hirs_f16bpp)
+            if (g_settings->ghq_hirs_f16bpp())
             {
                 options |= FORCE16BPP_HIRESTEX;
             }

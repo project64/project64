@@ -46,7 +46,7 @@ CSettings::CSettings() :
     m_ghq_enht_nobg(false),
     m_ghq_hirs_cmpr(false),
     m_ghq_hirs_tile(false),
-ghq_hirs_f16bpp(0),
+    m_ghq_hirs_f16bpp(false),
 ghq_hirs_gz(0),
 ghq_hirs_altcrc(0),
 ghq_cache_save(0),
@@ -145,7 +145,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_ghq_enht_nobg, "ghq_enht_nobg", false);
     general_setting(Set_ghq_hirs_cmpr, "ghq_hirs_cmpr", false);
     general_setting(Set_ghq_hirs_tile, "ghq_hirs_tile", false);
-    general_setting(Set_ghq_hirs_f16bpp, "ghq_hirs_f16bpp", 0);
+    general_setting(Set_ghq_hirs_f16bpp, "ghq_hirs_f16bpp", false);
     general_setting(Set_ghq_hirs_gz, "ghq_hirs_gz", 1);
     general_setting(Set_ghq_hirs_altcrc, "ghq_hirs_altcrc", 1);
     general_setting(Set_ghq_cache_save, "ghq_cache_save", 1);
@@ -379,6 +379,15 @@ void CSettings::SetGhqHirsTile(bool value)
     }
 }
 
+void CSettings::SetGhqHirsF16bpp(bool value)
+{
+    if (value != m_ghq_hirs_f16bpp)
+    {
+        m_ghq_hirs_f16bpp = value;
+        m_dirty = true;
+    }
+}
+
 void CSettings::SetGhqEnhtNobg(bool value)
 {
     if (value != m_ghq_enht_nobg)
@@ -518,7 +527,7 @@ void CSettings::ReadSettings()
     m_ghq_enht_nobg = GetSetting(Set_ghq_enht_nobg) != 0;
     m_ghq_hirs_cmpr = GetSetting(Set_ghq_hirs_cmpr) != 0;
     m_ghq_hirs_tile = GetSetting(Set_ghq_hirs_tile) != 0;
-    this->ghq_hirs_f16bpp = GetSetting(Set_ghq_hirs_f16bpp);
+    m_ghq_hirs_f16bpp = GetSetting(Set_ghq_hirs_f16bpp) != 0;
     this->ghq_hirs_gz = GetSetting(Set_ghq_hirs_gz);
     this->ghq_hirs_altcrc = GetSetting(Set_ghq_hirs_altcrc);
     this->ghq_cache_save = GetSetting(Set_ghq_cache_save);
@@ -787,7 +796,7 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_ghq_enht_nobg, m_ghq_enht_nobg);
     SetSetting(Set_ghq_hirs_cmpr, m_ghq_hirs_cmpr);
     SetSetting(Set_ghq_hirs_tile, m_ghq_hirs_tile);
-    SetSetting(Set_ghq_hirs_f16bpp, g_settings->ghq_hirs_f16bpp);
+    SetSetting(Set_ghq_hirs_f16bpp, m_ghq_hirs_f16bpp);
     SetSetting(Set_ghq_hirs_gz, g_settings->ghq_hirs_gz);
     SetSetting(Set_ghq_hirs_altcrc, g_settings->ghq_hirs_altcrc);
     SetSetting(Set_ghq_cache_save, g_settings->ghq_cache_save);

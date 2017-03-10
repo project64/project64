@@ -213,7 +213,7 @@ public:
     inline bool ghq_enht_nobg(void) const { return m_ghq_enht_nobg; }
     inline bool ghq_hirs_cmpr(void) const { return m_ghq_hirs_cmpr; }
     inline bool ghq_hirs_tile(void) const { return m_ghq_hirs_tile; }
-    int ghq_hirs_f16bpp;
+    inline bool ghq_hirs_f16bpp(void) const { return m_ghq_hirs_f16bpp; }
     int ghq_hirs_gz;
     int ghq_hirs_altcrc;
     int ghq_cache_save;
@@ -278,6 +278,7 @@ public:
     void SetGhqHirs(HiResPackFormat_t value);
     void SetGhqEnhtGz(bool value);
     void SetGhqHirsTile(bool value);
+    void SetGhqHirsF16bpp(bool value);
     void SetGhqEnhtNobg(bool value);
     void SetGhqEnhtCmpr(bool value);    
     void SetGhqHirsCmpr(bool value);
@@ -331,6 +332,7 @@ private:
     bool m_ghq_enht_nobg;
     bool m_ghq_hirs_cmpr;
     bool m_ghq_hirs_tile;
+    bool m_ghq_hirs_f16bpp;
     ucode_t m_ucode;
     StippleMode_t m_stipple_mode;
     hacks_t m_hacks;
