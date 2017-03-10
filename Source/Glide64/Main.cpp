@@ -669,7 +669,7 @@ int InitGfx()
             {
                 options |= COMPRESS_HIRESTEX;
             }
-            if (g_settings->ghq_hirs_tile)
+            if (g_settings->ghq_hirs_tile())
             {
                 options |= TILE_HIRESTEX;
             }
