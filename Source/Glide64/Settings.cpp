@@ -41,7 +41,7 @@ CSettings::CSettings() :
     m_ghq_cmpr(TextureCompression_S3TC),
     m_ghq_hirs(HiResPackFormat_None),
     m_ghq_enht_cmpr(false),
-ghq_enht_f16bpp(0),
+    m_ghq_enht_f16bpp(false),
 ghq_enht_gz(0),
 ghq_enht_nobg(0),
 ghq_hirs_cmpr(0),
@@ -140,7 +140,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_ghq_enht, "ghq_enht", TextureEnht_None);
     general_setting(Set_ghq_hirs, "ghq_hirs", HiResPackFormat_None);
     general_setting(Set_ghq_enht_cmpr, "ghq_enht_cmpr", false);
-    general_setting(Set_ghq_enht_f16bpp, "ghq_enht_f16bpp", 0);
+    general_setting(Set_ghq_enht_f16bpp, "ghq_enht_f16bpp", false);
     general_setting(Set_ghq_enht_gz, "ghq_enht_gz", 1);
     general_setting(Set_ghq_enht_nobg, "ghq_enht_nobg", 0);
     general_setting(Set_ghq_hirs_cmpr, "ghq_hirs_cmpr", 0);
@@ -477,7 +477,7 @@ void CSettings::ReadSettings()
     m_ghq_enht = (TextureEnhancement_t)GetSetting(Set_ghq_enht);
     m_ghq_hirs = (HiResPackFormat_t)GetSetting(Set_ghq_hirs);
     m_ghq_enht_cmpr = GetSetting(Set_ghq_enht_cmpr) != 0;
-    this->ghq_enht_f16bpp = GetSetting(Set_ghq_enht_f16bpp);
+    m_ghq_enht_f16bpp = GetSetting(Set_ghq_enht_f16bpp) !=0;
     this->ghq_enht_gz = GetSetting(Set_ghq_enht_gz);
     this->ghq_enht_nobg = GetSetting(Set_ghq_enht_nobg);
     this->ghq_hirs_cmpr = GetSetting(Set_ghq_hirs_cmpr);
@@ -746,7 +746,7 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_ghq_enht, m_ghq_enht);
     SetSetting(Set_ghq_hirs, m_ghq_hirs);
     SetSetting(Set_ghq_enht_cmpr, m_ghq_enht_cmpr);
-    SetSetting(Set_ghq_enht_f16bpp, g_settings->ghq_enht_f16bpp);
+    SetSetting(Set_ghq_enht_f16bpp, m_ghq_enht_f16bpp);
     SetSetting(Set_ghq_enht_gz, g_settings->ghq_enht_gz);
     SetSetting(Set_ghq_enht_nobg, g_settings->ghq_enht_nobg);
     SetSetting(Set_ghq_hirs_cmpr, g_settings->ghq_hirs_cmpr);

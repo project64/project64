@@ -208,7 +208,7 @@ public:
     inline TextureCompression_t ghq_cmpr(void) const { return m_ghq_cmpr; }
     inline HiResPackFormat_t ghq_hirs(void) const { return m_ghq_hirs; }
     inline bool ghq_enht_cmpr(void) const { return m_ghq_enht_cmpr; }
-    int ghq_enht_f16bpp;
+    inline bool ghq_enht_f16bpp(void) const { return m_ghq_enht_f16bpp; }
     int ghq_enht_gz;
     int ghq_enht_nobg;
     int ghq_hirs_cmpr;
@@ -322,6 +322,7 @@ private:
     TextureCompression_t m_ghq_cmpr;
     HiResPackFormat_t m_ghq_hirs;
     bool m_ghq_enht_cmpr;
+    bool m_ghq_enht_f16bpp;
     ucode_t m_ucode;
     StippleMode_t m_stipple_mode;
     hacks_t m_hacks;
