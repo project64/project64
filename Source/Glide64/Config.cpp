@@ -646,7 +646,7 @@ public:
 
         TTSetTxt(IDC_CHK_COMPRESS_CACHE, "Compress texture cache:\n\nMemory will be compressed so that more textures can be held in the texture cache.\nThe compression ratio varies with each texture, but 1/5 of the original size would be a modest approximation.\nThey will be decompressed on-the-fly, before being downloaded to the gfx hardware.\nThis option will still help save memory space even when using texture compression.\n\n[Recommended: on]");
         m_cbxEnhCompressCache.Attach(GetDlgItem(IDC_CHK_COMPRESS_CACHE));
-        m_cbxEnhCompressCache.SetCheck(g_settings->ghq_enht_gz > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxEnhCompressCache.SetCheck(g_settings->ghq_enht_gz() > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsTile.Attach(GetDlgItem(IDC_CHK_TILE_TEX));
         TTSetTxt(IDC_CHK_TILE_TEX, "Tile textures:\n\nWhen on, wide texture will be split on several tiles to fit in one 256-width texture.\nThis tiled texture takes much less video memory space and thus overall performance will increase.\nHowever, corresponding polygons must be split too, and this is not polished yet - various issues are possible, including black lines and polygons distortions.\n\n[Recommended: off]");
@@ -693,7 +693,7 @@ public:
         g_settings->ghq_cache_size = atoi(texcache);
         g_settings->ghq_enht_nobg = (int)m_cbxEnhIgnoreBG.GetCheck() == BST_CHECKED;
         g_settings->SetGhqEnhtCmpr(m_cbxEnhTexCompression.GetCheck() == BST_CHECKED);
-        g_settings->ghq_enht_gz = (int)m_cbxEnhCompressCache.GetCheck() == BST_CHECKED;
+        g_settings->SetGhqEnhtGz(m_cbxEnhCompressCache.GetCheck() == BST_CHECKED);
         g_settings->SetGhqHirs((CSettings::HiResPackFormat_t)m_cmbHrsFormat.GetItemData(m_cmbHrsFormat.GetCurSel()));
         g_settings->ghq_hirs_tile = (int)m_cbxHrsTile.GetCheck() == BST_CHECKED;
         g_settings->ghq_hirs_f16bpp = (int)m_cbxHrsForce16.GetCheck() == BST_CHECKED;

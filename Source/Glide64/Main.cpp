@@ -681,7 +681,7 @@ int InitGfx()
             {
                 options |= FORCE16BPP_HIRESTEX;
             }
-            if (g_settings->ghq_enht_gz)
+            if (g_settings->ghq_enht_gz())
             {
                 options |= GZ_TEXCACHE;
             }

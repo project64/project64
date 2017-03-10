@@ -209,7 +209,7 @@ public:
     inline HiResPackFormat_t ghq_hirs(void) const { return m_ghq_hirs; }
     inline bool ghq_enht_cmpr(void) const { return m_ghq_enht_cmpr; }
     inline bool ghq_enht_f16bpp(void) const { return m_ghq_enht_f16bpp; }
-    int ghq_enht_gz;
+    inline bool ghq_enht_gz(void) const { return m_ghq_enht_gz; }
     int ghq_enht_nobg;
     int ghq_hirs_cmpr;
     int ghq_hirs_tile;
@@ -276,6 +276,7 @@ public:
     void SetGhqEnht(TextureEnhancement_t value);
     void SetGhqCmpr(TextureCompression_t value);
     void SetGhqHirs(HiResPackFormat_t value);
+    void SetGhqEnhtGz(bool value);
     void SetGhqEnhtCmpr(bool value);    
     void UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove);
     ucode_t DetectUCode(uint32_t uc_crc);
@@ -323,6 +324,7 @@ private:
     HiResPackFormat_t m_ghq_hirs;
     bool m_ghq_enht_cmpr;
     bool m_ghq_enht_f16bpp;
+    bool m_ghq_enht_gz;
     ucode_t m_ucode;
     StippleMode_t m_stipple_mode;
     hacks_t m_hacks;
