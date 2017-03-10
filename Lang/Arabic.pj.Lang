@@ -256,34 +256,34 @@ N
 "معظم هذه التغييرات لن تكون نافذة المفعول حتى يتم فتح ROM جديد أو تتم إعادة تعيين ROM الحالي."  #500#  
 "كور البروسييسر الأساسية”  #501#  
 "نمط نواة المعالج”  #502#  
-#503#  "Self mod methods"
-#504#  "Default memory size:"
-#505#  "Advanced block linking"
-#506#  "Start emulation when ROM is opened"
-#507#  "Always override default settings with ones from RDB"
-#508#  "Automatically compress saved states"
-#509#  "Enable debugger"
-#510#  "Cache"
+"الأساليب المودز المصنعة "  #503#  
+"حجم الذاكرة الاساسي:"  #504#  
+"اختيارات منع الربط المتقدمة"  #505#  
+"ابدأ المحاكاه عند فتح الروم”  #506#  
+"تجاوز الإعدادات الافتراضية دائما بأخرى من قائمة بيانات الروم"  #507#  
+"الضغط تلقائيا للحالات المخزونة"  #508#  
+"تمكين المصحح"  #509#  
+"مخبأ"  #510#  
 #511#  "PI DMA"
-#512#  "Start changed"
-#513#  "Protect memory"
-#514#  "TLB unmapping"
+"تغير البدء"  #512#  
+"حماية الذاكرة"  #513#  
+#514#  "TLBعدم توضيح ال”
 
 //ROM Options
-#520#  "CPU core style:"
-#521#  "VI refresh rate:"
-#522#  "Memory size:"
-#523#  "Advanced block linking"
-#524#  "Default save type:"
-#525#  "Counter factor:"
-#526#  "Larger compile buffer"
-#527#  "Use TLB"
-#528#  "Register caching"
-#529#  "Delay SI interrupt"
-#530#  "Fast SP"
-#531#  "Default"
-#532#  "RSP audio signal"
-#533#  "Fixed audio timing"
+"اسلوب المعالج:”  #520#  
+#521#  "VI تحديث الشاشة:”
+"حجم الذاكرة:”  #522#  
+"اعدادات منع الربط المتقدمة”  #523#  
+"نوع الحفظ الاساسي:"  #524#  
+"عامل مضاد:"  #525#  
+"تكبير عازلة الترجمة"  #526#  
+#527#  "TLB استخدم”
+"تسجيل التخزين المؤقت"  #528#  
+#529#  "SI تأخير مقاطعة "
+#530#  "SP سريع"
+“الاساسية”  #531#  
+#532#  "RSPإشارة الصوت ال"
+"تثبيت توقيت الصوت”  #533#  
 #534#  "Function lookup method:"
 #535#  "Custom self mod method"
 #536#  "Sync using audio"
@@ -386,83 +386,88 @@ N
 * Cheats                                                                         *
 *********************************************************************************/
 //Cheat List
-#1000#  "Cheats"
-#1001#  "Cheats:"
-#1002#  " Notes: "
-#1003#  "Mark All"
-#1004#  "Unmark All"
+“تغشيش” #1000#  
+“تغشيش:” #1001#  
+" ملاحظات: " #1002#  
+"حدد الجميع” #1003#  
+"الغي تحديد الجميع” #1004#  
 
 //Add Cheat
-#1005#  "Add Cheat"
-#1006#  "Name:"
-#1007#  "Code:"
-#1008#  "Insert"
-#1009#  "Clear"
-#1010#  " Cheat Notes: "
-#1011#  "Add to DB"
+"اظف تغشيشة” #1005#  
+“اسم:” #1006#  
+“كود:” #1007#  
+“ادخل” #1008#  
+“امحي” #1009#  
+"ملاحظات للتغشيشات: " #1010#  
+#1011#  "Add to DBاظف لل”
 
 //Code extension
-#1012#  "Code Extensions"
-#1013#  "Please choose a value to be used for:"
-#1014#  "OK"
-#1015#  "Cancel"
+#1012#  "امتدادات الكود"
+#1013#  "الرجاء اختيار قيمة لاستخدامها في:"
+“موافق”  #1014#  
+“الغاء”  #1015#  
 
 //Digital Value
-#1016#  "Quantity Digit"
-#1017#  "Please choose a value for:"
-#1018#  "&Value"
-#1019#  "from"
-#1020#  "to"
-#1021#  "&Notes:"
-#1022#  "Add Cheat"
-#1023#  "New Cheat"
-#1024#  "<address> <value>"
-#1025#  "Options:"
-#1026#  "<value> <label>"
+"كمية الأرقام"  #1016#  
+"الرجاء اختيار قيمة ل:"  #1017#  
+“&قيمة”  #1018#  
+“ من”  #1019#  
+“الى”  #1020#  
+"&ملاحظات:"  #1021#  
+"اضف تغشيشة”  #1022#  
+ "تغشيشة جديدة”  #1023# 
+"<العنوان> <القيمة(الرقم)>”  #1024#  
+“الاختيارات:”  #1025#  
+"<القيمة(الرقم)> <ضع الكلمة المناسبة>"  #1026#  
 
 //Edit Cheat
-#1027#  "Edit Cheat"
-#1028#  "Update Cheat"
-#1029#  "Cheat has been changed.\n\nDo you want to update?"
-#1030#  "Cheat updated"
+"تعديل التغشيشة” #1027#  
+"تحديث التغشيشة” #1028#  
+“قد عدلت التغشيشة.هل تريد التحديث؟” #1029#  
+“تم تحديث التغشيشة ” #1030#  
 
 //Cheat Popup Menu
-#1040#  "Add New Cheat..."
-#1041#  "Edit"
-#1042#  "Delete"
+“اظافة تغشيشة جديدة…”  #1040#  
+"تعديل”  #1041#  
+"مسح”  #1042#  
 
 // short-cut editor
-#1100#  "Reset short-cuts"
-#1101#  "Are you sure you want to reset the short-cuts?\n\nThis action cannot be undone."
-#1102#  "File Menu"
-#1103#  "System Menu"
-#1104#  "Options"
-#1105#  "Save Slots"
+"اعادة المختصرات الى الوضع الاساسي”  #1100#  
+هل انت متاكد انت تريد فعل ذللك؟. لا يمكنك اعدة المختصرات مرة اخرى."  #1101#  
+"قائمة الملف”  #1102#  
+"قائمة النظام”  #1103#  
+"الاختيارات”  #1104#  
+"حفظ فتحات”  #1105#  
 
 /*********************************************************************************
 * Support Window                                                                 *
 *********************************************************************************/
-#1200#  "Support Project64"
-#1201#  "Project64 is a software package designed to emulate a Nintendo64 video game system on a Microsoft Windows based PC. This allows you to play real N64 software in much the same way as it would be on the original hardware system.\n\nIf you like Project64 and have gotten some value out of it then please support project64 as either a thank you, or your desire to see it continually improved.\n\nIf you have supported project64:"
-#1202#  "Enter notification code"
-#1203#  "Support Project64"
-#1204#  "Continue"
-#1205#  "Please enter the support code"
-#1206#  "Incorrect support code"
-#1207#  "Thank you"
-#1208#  "Enter code"
-#1209#  "Please enter the code in the email"
-#1210#  "OK"
-#1211#  "Cancel"
+#1200#  "Project64 ادعم”
+#1201#  "Project64 هو مجموعة من البرامج المصممة لمحاكاة جهاز العاب الفيديو ال Nintendo 64 على جهاز الكمبيوتر بنظام تشغيل Microsoft's Windows. هذا يسمح لك للعب برمجيات الN64 الحقيقي بنفس الطريقة كانه على النظام الأصلي. \ n \ n إذا احببت Project64 ولقد حصلت منه بعض القيمة اذا الرجاء دعم project64 إما بالشكر، أو اذا لديك الرغبة للتعليق على البرنماج وهذا لتحسبن البرنامج \ n \n. اذا دعمت project64: "
+
+" أدخل كود الاشعار"  #1202#  
+#1203#  " Project64 ادعم”
+“تابع”  #1204#  
+"الرجاء إدخال رمز الدعم"  #1205#  
+"زمز الدعم خاظئ”  #1206#  
+“شكرا لك”  #1207#  
+"ادخل الكود”  #1208#  
+"الرحاء ادخال الكود الذي في الايميل”  #1209#  
+“موافق”  #1210#  
+“الغاء”  #1211#  
 
 /*********************************************************************************
 * Messages                                                                       *
 *********************************************************************************/
-#2000#  "*** CPU PAUSED ***"
-#2001#  "CPU Resumed"
-#2002#  "In a permanent loop that cannot be exited.\nEmulation will now stop.\n\nVerify ROM and its settings."
-#2003#  "Failed to allocate memory"
-#2004#  "The default or selected video plugin is missing or invalid.\n\nYou need to go into Settings and select a video (graphics) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
+"*** المعالج متوقف ***"  #2000#  
+"المعالج عاد للعمل"  #2001#  
+"في حلقة دائمة لا يمكن أن يخرج منها.  سوف تتوقف المحاكاه الآن.تحقق من الروم وإعداداته."  #2002#  
+
+
+ "فشل في تخصيص الذاكرة"  #2003# 
+"البلجينج  للفيديو الاساسي  مفقود أو غير صالح. تحتاج للذهاب إلى إلاعدادات واختيار بلجينج الفيديو . تأكد من ان لديك ملف البلجينج متوافق واحد على الأقل في مجلد البرنامج ." #2004#
+
+   
 #2005#  "The default or selected audio plugin is missing or invalid.\n\nYou need to go into Settings and select a audio (sound) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
 #2006#  "The default or selected RSP plugin is missing or invalid.\n\nYou need to go into Settings and select a RSP (Reality Signal Processor) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
 #2007#  "The default or selected input plugin is missing or invalid.\n\nYou need to go into Settings and select an input (controller) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
