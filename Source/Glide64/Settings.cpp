@@ -44,7 +44,7 @@ CSettings::CSettings() :
     m_ghq_enht_f16bpp(false),
     m_ghq_enht_gz(false),
     m_ghq_enht_nobg(false),
-ghq_hirs_cmpr(0),
+    m_ghq_hirs_cmpr(false),
 ghq_hirs_tile(0),
 ghq_hirs_f16bpp(0),
 ghq_hirs_gz(0),
@@ -143,7 +143,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_ghq_enht_f16bpp, "ghq_enht_f16bpp", false);
     general_setting(Set_ghq_enht_gz, "ghq_enht_gz", true);
     general_setting(Set_ghq_enht_nobg, "ghq_enht_nobg", false);
-    general_setting(Set_ghq_hirs_cmpr, "ghq_hirs_cmpr", 0);
+    general_setting(Set_ghq_hirs_cmpr, "ghq_hirs_cmpr", false);
     general_setting(Set_ghq_hirs_tile, "ghq_hirs_tile", 0);
     general_setting(Set_ghq_hirs_f16bpp, "ghq_hirs_f16bpp", 0);
     general_setting(Set_ghq_hirs_gz, "ghq_hirs_gz", 1);
@@ -388,6 +388,15 @@ void CSettings::SetGhqEnhtCmpr(bool value)
     }
 }
 
+void CSettings::SetGhqHirsCmpr(bool value)
+{
+    if (value != m_ghq_hirs_cmpr)
+    {
+        m_ghq_hirs_cmpr = value;
+        m_dirty = true;
+    }
+}
+
 void CSettings::UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove)
 {
     uint32_t frame_buffer_original = m_frame_buffer;
@@ -498,7 +507,7 @@ void CSettings::ReadSettings()
     m_ghq_enht_f16bpp = GetSetting(Set_ghq_enht_f16bpp) !=0;
     m_ghq_enht_gz = GetSetting(Set_ghq_enht_gz) != 0;
     m_ghq_enht_nobg = GetSetting(Set_ghq_enht_nobg) != 0;
-    this->ghq_hirs_cmpr = GetSetting(Set_ghq_hirs_cmpr);
+    m_ghq_hirs_cmpr = GetSetting(Set_ghq_hirs_cmpr) != 0;
     this->ghq_hirs_tile = GetSetting(Set_ghq_hirs_tile);
     this->ghq_hirs_f16bpp = GetSetting(Set_ghq_hirs_f16bpp);
     this->ghq_hirs_gz = GetSetting(Set_ghq_hirs_gz);
@@ -767,7 +776,7 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_ghq_enht_f16bpp, m_ghq_enht_f16bpp);
     SetSetting(Set_ghq_enht_gz, m_ghq_enht_gz);
     SetSetting(Set_ghq_enht_nobg, m_ghq_enht_nobg);
-    SetSetting(Set_ghq_hirs_cmpr, g_settings->ghq_hirs_cmpr);
+    SetSetting(Set_ghq_hirs_cmpr, m_ghq_hirs_cmpr);
     SetSetting(Set_ghq_hirs_tile, g_settings->ghq_hirs_tile);
     SetSetting(Set_ghq_hirs_f16bpp, g_settings->ghq_hirs_f16bpp);
     SetSetting(Set_ghq_hirs_gz, g_settings->ghq_hirs_gz);

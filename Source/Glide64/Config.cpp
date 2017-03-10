@@ -642,7 +642,7 @@ public:
         m_cbxEnhTexCompression.Attach(GetDlgItem(IDC_CHK_TEX_COMPRESSION));
         m_cbxEnhTexCompression.SetCheck(g_settings->ghq_enht_cmpr() > 0 ? BST_CHECKED : BST_UNCHECKED);
         m_cbxHrsTexCompression.Attach(GetDlgItem(IDC_CHK_HIRES_TEX_COMPRESSION));
-        m_cbxHrsTexCompression.SetCheck(g_settings->ghq_hirs_cmpr > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxHrsTexCompression.SetCheck(g_settings->ghq_hirs_cmpr() ? BST_CHECKED : BST_UNCHECKED);
 
         TTSetTxt(IDC_CHK_COMPRESS_CACHE, "Compress texture cache:\n\nMemory will be compressed so that more textures can be held in the texture cache.\nThe compression ratio varies with each texture, but 1/5 of the original size would be a modest approximation.\nThey will be decompressed on-the-fly, before being downloaded to the gfx hardware.\nThis option will still help save memory space even when using texture compression.\n\n[Recommended: on]");
         m_cbxEnhCompressCache.Attach(GetDlgItem(IDC_CHK_COMPRESS_CACHE));
@@ -699,7 +699,7 @@ public:
         g_settings->ghq_hirs_f16bpp = (int)m_cbxHrsForce16.GetCheck() == BST_CHECKED;
         g_settings->ghq_hirs_dump = (int)m_cbxHrsTexEdit.GetCheck() == BST_CHECKED;
         g_settings->ghq_hirs_altcrc = (int)m_cbxHrsAltCRC.GetCheck() == BST_CHECKED;
-        g_settings->ghq_hirs_cmpr = (int)m_cbxHrsTexCompression.GetCheck() == BST_CHECKED;
+        g_settings->SetGhqHirsCmpr(m_cbxHrsTexCompression.GetCheck() == BST_CHECKED);
         g_settings->ghq_hirs_gz = (int)m_cbxHrsCompressCache.GetCheck() == BST_CHECKED;
         g_settings->ghq_hirs_let_texartists_fly = (int)m_cbxHrsLetFly.GetCheck() == BST_CHECKED;
         g_settings->SetGhqCmpr((CSettings::TextureCompression_t)m_cmbTextureCompression.GetItemData(m_cmbTextureCompression.GetCurSel()));

@@ -665,7 +665,7 @@ int InitGfx()
             {
                 options |= COMPRESS_TEX;
             }
-            if (g_settings->ghq_hirs_cmpr)
+            if (g_settings->ghq_hirs_cmpr())
             {
                 options |= COMPRESS_HIRESTEX;
             }
