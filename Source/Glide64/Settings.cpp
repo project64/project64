@@ -56,7 +56,6 @@ CSettings::CSettings() :
     m_autodetect_ucode(true),
     m_ucode(ucode_Fast3D),
     m_unk_as_red(false),
-unk_clear(0),
 wireframe(0),
 wfmode(0),
 
@@ -134,7 +133,6 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_wireframe, "wireframe", 0);
     general_setting(Set_wfmode, "wfmode", 1);
     general_setting(Set_unk_as_red, "unk_as_red", false);
-    general_setting(Set_unk_clear, "unk_clear", 0);
     general_setting(Set_ghq_fltr, "ghq_fltr", TextureFilter_None);
     general_setting(Set_ghq_cmpr, "ghq_cmpr", TextureCompression_S3TC);
     general_setting(Set_ghq_enht, "ghq_enht", TextureEnht_None);
@@ -557,11 +555,9 @@ void CSettings::ReadSettings()
 #ifndef _ENDUSER_RELEASE_
     this->wireframe = GetSetting(Set_wireframe);
     this->wfmode = GetSetting(Set_wfmode);
-    this->unk_clear = GetSetting(Set_unk_clear);
 #else
     this->wireframe = FALSE;
     this->wfmode = 0;
-    this->unk_clear = FALSE;
 #endif
     m_ucode = ucode_F3DEX2;
 
@@ -835,7 +831,6 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_ucode, (int)g_settings->ucode);
     SetSetting(Set_wireframe, g_settings->wireframe);
     SetSetting(Set_wfmode, g_settings->wfmode);
-    SetSetting(Set_unk_clear, g_settings->unk_clear);
 #endif //_ENDUSER_RELEASE_
 
     SetSetting(Set_ghq_fltr, m_ghq_fltr);

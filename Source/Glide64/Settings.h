@@ -225,7 +225,6 @@ public:
     inline bool autodetect_ucode(void) const { return m_autodetect_ucode; }
     inline ucode_t ucode(void) const { return m_ucode; }
     inline bool unk_as_red(void) const { return m_unk_as_red; }
-    int unk_clear;
     int wireframe;
     int wfmode;
 
