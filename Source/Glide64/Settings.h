@@ -247,7 +247,7 @@ public:
     inline bool force_quad3d(void) const { return m_force_quad3d; } //force 0xb5 command to be quad, not line 3d
     inline bool clip_zmin(void) const { return m_clip_zmin; } //enable near z clipping
     inline bool clip_zmax(void) const { return m_clip_zmax; } //enable far plane clipping
-    int adjust_aspect; //adjust screen aspect for wide screen mode
+    inline bool adjust_aspect(void) const { return m_adjust_aspect; } //adjust screen aspect for wide screen mode
     int force_calc_sphere; //use spheric mapping only, Ridge Racer 64
     int pal230;    //set special scale for PAL games
     int correct_viewport; //correct viewport values
@@ -366,6 +366,7 @@ private:
     bool m_force_quad3d;
     bool m_clip_zmin;
     bool m_clip_zmax;
+    bool m_adjust_aspect;
     hacks_t m_hacks;
 };
 

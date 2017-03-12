@@ -157,7 +157,7 @@ void _ChangeSize()
 
     rdp.vi_width = (hend - hstart) * fscale_x;
     rdp.vi_height = (vend - vstart) * fscale_y * 1.0126582f;
-    float aspect = (g_settings->adjust_aspect && (fscale_y > fscale_x) && (rdp.vi_width > rdp.vi_height)) ? fscale_x / fscale_y : 1.0f;
+    float aspect = (g_settings->adjust_aspect() && (fscale_y > fscale_x) && (rdp.vi_width > rdp.vi_height)) ? fscale_x / fscale_y : 1.0f;
 
     WriteTrace(TraceResolution, TraceDebug, "hstart: %d, hend: %d, vstart: %d, vend: %d", hstart, hend, vstart, vend);
     WriteTrace(TraceResolution, TraceDebug, "size: %d x %d", (int)rdp.vi_width, (int)rdp.vi_height);
