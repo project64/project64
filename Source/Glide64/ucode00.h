@@ -922,7 +922,7 @@ static void uc0_setothermode_l()
         rdp.update |= UPDATE_FOG_ENABLED; //if blender has no fog bits, fog must be set off
         rdp.render_mode_changed |= rdp.rm ^ rdp.othermode_l;
         rdp.rm = rdp.othermode_l;
-        if (g_settings->flame_corona && (rdp.rm == 0x00504341)) //hack for flame's corona
+        if (g_settings->flame_corona() && (rdp.rm == 0x00504341)) //hack for flame's corona
         {
             rdp.othermode_l |= 0x00000010;
         }

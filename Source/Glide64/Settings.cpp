@@ -63,7 +63,7 @@ CSettings::CSettings() :
     m_fast_crc(false),
     m_alt_tex_size(false),
     m_use_sts1_only(false),
-flame_corona(0), //hack for zeldas flame's corona
+    m_flame_corona(false), //hack for zeldas flame's corona
 increase_texrect_edge(0), // add 1 to lower right corner coordinates of texrect
 decrease_fillrect_edge(0), // sub 1 from lower right corner coordinates of fillrect
 texture_correction(0), // enable perspective texture correction emulation. is on by default
@@ -795,7 +795,7 @@ void CSettings::ReadGameSettings(const char * name)
     SetSwapMode((SwapMode_t)GetSetting(g_romopen ? Set_swapmode : Set_swapmode_default));
     SetAspectmode((AspectMode_t)GetSetting(g_romopen ? Set_aspect : Set_aspect_default));
     SetLODmode((PixelLevelOfDetail_t)GetSetting(g_romopen ? Set_lodmode : Set_lodmode_default));
-    g_settings->flame_corona = g_settings->hacks(hack_Zelda) && !fb_depth_render_enabled();
+    m_flame_corona = g_settings->hacks(hack_Zelda) && !fb_depth_render_enabled();
 }
 
 void CSettings::WriteSettings(void)
