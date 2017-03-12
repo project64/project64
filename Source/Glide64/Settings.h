@@ -243,7 +243,7 @@ public:
     inline bool texture_correction(void) const { return m_texture_correction; } // enable perspective texture correction emulation. is on by default
     inline StippleMode_t stipple_mode(void) const { return m_stipple_mode; } //used for dithered alpha emulation
     inline uint32_t stipple_pattern(void) const { return m_stipple_pattern; } //used for dithered alpha emulation
-    int force_microcheck; //check microcode each frame, for mixed F3DEX-S2DEX games
+    inline bool force_microcheck(void) const { return m_force_microcheck; } //check microcode each frame, for mixed F3DEX-S2DEX games
     int force_quad3d; //force 0xb5 command to be quad, not line 3d
     int clip_zmin; //enable near z clipping
     int clip_zmax; //enable far plane clipping;
@@ -362,6 +362,7 @@ private:
     bool m_texture_correction;
     StippleMode_t m_stipple_mode;
     uint32_t m_stipple_pattern;
+    bool m_force_microcheck;
     hacks_t m_hacks;
 };
 

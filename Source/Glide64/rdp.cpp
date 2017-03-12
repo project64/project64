@@ -586,7 +586,7 @@ EXPORT void CALL ProcessDList(void)
         else
             memset(microcode, 0, 4096);
     }
-    else if ((g_old_ucode == CSettings::ucode_S2DEX && g_settings->ucode() == CSettings::ucode_F3DEX) || g_settings->force_microcheck)
+    else if ((g_old_ucode == CSettings::ucode_S2DEX && g_settings->ucode() == CSettings::ucode_F3DEX) || g_settings->force_microcheck())
     {
         uint32_t startUcode = *(uint32_t*)(gfx.DMEM + 0xFD0);
         memcpy(microcode, gfx.RDRAM + startUcode, 4096);
