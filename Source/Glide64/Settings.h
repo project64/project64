@@ -217,7 +217,7 @@ public:
     inline bool ghq_hirs_gz(void) const { return m_ghq_hirs_gz; }
     inline bool ghq_hirs_altcrc(void) const { return m_ghq_hirs_altcrc; }
     inline bool ghq_cache_save(void) const { return m_ghq_cache_save; }
-    int ghq_cache_size;
+    inline int ghq_cache_size(void) const { return m_ghq_cache_size; }
     int ghq_hirs_let_texartists_fly;
     int ghq_hirs_dump;
 
@@ -261,8 +261,9 @@ public:
 #endif
     int wrpVRAM;
     int wrpFBO;
-    inline bool FlushLogs(void) const { return m_FlushLogs; }
     int wrpAnisotropic;
+    inline bool FlushLogs(void) const { return m_FlushLogs; }
+
     void SetTexenhOptions(bool value);
     void SetScreenRes(uint32_t value);
     void SetAspectmode(AspectMode_t value);
@@ -285,18 +286,19 @@ public:
     void SetGhqHirsCmpr(bool value);
     void SetGhqHirsGz(bool value);
     void SetGhqCacheSave(bool value);
+    void SetGhqCacheSize(int value);
     void UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove);
     ucode_t DetectUCode(uint32_t uc_crc);
     void SetUcode(ucode_t value);
 
+    void ReadSettings();
     void ReadGameSettings(const char * name);
     void WriteSettings(void);
-    void UpdateAspectRatio(void);
     void UpdateScreenSize(bool fullscreen);
 
 private:
-    void ReadSettings();
     void RegisterSettings(void);
+    void UpdateAspectRatio(void);
     void SettingsChanged(void);
     
     static void stSettingsChanged(void * _this)
@@ -339,6 +341,7 @@ private:
     bool m_ghq_hirs_gz;
     bool m_ghq_hirs_altcrc;
     bool m_ghq_cache_save;
+    int m_ghq_cache_size;
     ucode_t m_ucode;
     StippleMode_t m_stipple_mode;
     hacks_t m_hacks;

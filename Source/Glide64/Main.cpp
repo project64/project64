@@ -706,7 +706,7 @@ int InitGfx()
                 voodoo.max_tex_size, // max texture height supported by hardware
                 voodoo.sup_32bit_tex ? 32 : 16, // max texture bpp supported by hardware
                 options,
-                g_settings->ghq_cache_size * 1024 * 1024, // cache texture to system memory
+                g_settings->ghq_cache_size() * 1024 * 1024, // cache texture to system memory
                 g_settings->texture_dir(),
                 rdp.RomName, // name of ROM. must be no longer than 256 characters
                 DisplayLoadProgress);

@@ -50,7 +50,7 @@ CSettings::CSettings() :
     m_ghq_hirs_gz(false),
     m_ghq_hirs_altcrc(false),
     m_ghq_cache_save(false),
-ghq_cache_size(0),
+    m_ghq_cache_size(0),
 ghq_hirs_let_texartists_fly(0),
 ghq_hirs_dump(0),
 autodetect_ucode(0),
@@ -442,6 +442,15 @@ void CSettings::SetGhqCacheSave(bool value)
     }
 }
 
+void CSettings::SetGhqCacheSize(int value)
+{
+    if (value != m_ghq_cache_size)
+    {
+        m_ghq_cache_size = value;
+        m_dirty = true;
+    }
+}
+
 void CSettings::UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove)
 {
     uint32_t frame_buffer_original = m_frame_buffer;
@@ -558,7 +567,7 @@ void CSettings::ReadSettings()
     m_ghq_hirs_gz = GetSetting(Set_ghq_hirs_gz) != 0;
     m_ghq_hirs_altcrc = GetSetting(Set_ghq_hirs_altcrc) != 0;
     m_ghq_cache_save = GetSetting(Set_ghq_cache_save) != 0;
-    this->ghq_cache_size = GetSetting(Set_ghq_cache_size);
+    m_ghq_cache_size = GetSetting(Set_ghq_cache_size);
     this->ghq_hirs_let_texartists_fly = GetSetting(Set_ghq_hirs_let_texartists_fly);
     this->ghq_hirs_dump = GetSetting(Set_ghq_hirs_dump);
 
@@ -827,7 +836,7 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_ghq_hirs_gz, m_ghq_hirs_gz);
     SetSetting(Set_ghq_hirs_altcrc, m_ghq_hirs_altcrc);
     SetSetting(Set_ghq_cache_save, m_ghq_cache_save);
-    SetSetting(Set_ghq_cache_size, g_settings->ghq_cache_size);
+    SetSetting(Set_ghq_cache_size, m_ghq_cache_size);
     SetSetting(Set_ghq_hirs_let_texartists_fly, g_settings->ghq_hirs_let_texartists_fly);
     SetSetting(Set_ghq_hirs_dump, g_settings->ghq_hirs_dump);
 

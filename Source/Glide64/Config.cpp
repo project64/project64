@@ -627,7 +627,7 @@ public:
         TTSetTxt(IDC_SPIN_TEXTURE_CACHE, tooltip.c_str());
         TTSetTxt(IDC_TEXT_MB, tooltip.c_str());
         m_textTexCache.Attach(GetDlgItem(IDC_TXT_TEXTURE_CACHE));
-        m_textTexCache.SetWindowTextA(stdstr_f("%d", g_settings->ghq_cache_size).c_str());
+        m_textTexCache.SetWindowTextA(stdstr_f("%d", g_settings->ghq_cache_size()).c_str());
         m_spinEnhCacheSize.Attach(GetDlgItem(IDC_SPIN_TEXTURE_CACHE));
         m_spinEnhCacheSize.SetBuddy(m_textTexCache);
 
@@ -690,7 +690,7 @@ public:
         CSettings oldsettings = *g_settings;
         g_settings->SetGhqFltr((CSettings::TextureFilter_t)m_cmbEnhFilter.GetItemData(m_cmbEnhFilter.GetCurSel()));
         g_settings->SetGhqEnht((CSettings::TextureEnhancement_t)m_cmbEnhEnhancement.GetItemData(m_cmbEnhEnhancement.GetCurSel()));
-        g_settings->ghq_cache_size = atoi(texcache);
+        g_settings->SetGhqCacheSize(atoi(texcache));
         g_settings->SetGhqEnhtNobg(m_cbxEnhIgnoreBG.GetCheck() == BST_CHECKED);
         g_settings->SetGhqEnhtCmpr(m_cbxEnhTexCompression.GetCheck() == BST_CHECKED);
         g_settings->SetGhqEnhtGz(m_cbxEnhCompressCache.GetCheck() == BST_CHECKED);
