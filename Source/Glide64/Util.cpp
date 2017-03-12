@@ -802,7 +802,7 @@ void do_triangle_stuff(uint16_t linew, int old_interpolate) // what else?? do th
         rdp.clip = 0;
     else
     {
-        if (!g_settings->clip_zmin)
+        if (!g_settings->clip_zmin())
         {
             rdp.clip &= ~CLIP_ZMIN;
         }         

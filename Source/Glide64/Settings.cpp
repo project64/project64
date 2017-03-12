@@ -71,7 +71,7 @@ CSettings::CSettings() :
     m_stipple_pattern(0), //used for dithered alpha emulation
     m_force_microcheck(false), //check microcode each frame, for mixed F3DEX-S2DEX games
     m_force_quad3d(false), //force 0xb5 command to be quad, not line 3d
-clip_zmin(0), //enable near z clipping
+    m_clip_zmin(false), //enable near z clipping
 clip_zmax(0), //enable far plane clipping;
 adjust_aspect(0), //adjust screen aspect for wide screen mode
 force_calc_sphere(0), //use spheric mapping only, Ridge Racer 64
@@ -172,7 +172,7 @@ void CSettings::RegisterSettings(void)
     game_setting(Set_stipple_pattern, "stipple_pattern", 0x3E0F83E0);
     game_setting(Set_force_microcheck, "force_microcheck", false);
     game_setting(Set_force_quad3d, "force_quad3d", false);
-    game_setting(Set_clip_zmin, "clip_zmin", 0);
+    game_setting(Set_clip_zmin, "clip_zmin", false);
     game_setting(Set_clip_zmax, "clip_zmax", 1);
     game_setting(Set_fast_crc, "fast_crc", true);
     game_setting(Set_adjust_aspect, "adjust_aspect", 1);
@@ -725,7 +725,7 @@ void CSettings::ReadGameSettings(const char * name)
     m_stipple_pattern = stipple_pattern > 0 ? (uint32_t)stipple_pattern : 0x3E0F83E0;
     m_force_microcheck = GetSetting(Set_force_microcheck) != 0;
     m_force_quad3d = GetSetting(Set_force_quad3d) != 0;
-    g_settings->clip_zmin = GetSetting(Set_clip_zmin);
+    m_clip_zmin = GetSetting(Set_clip_zmin) != 0;
     g_settings->clip_zmax = GetSetting(Set_clip_zmax);
     m_fast_crc = GetSetting(Set_fast_crc) != 0;
     g_settings->adjust_aspect = GetSetting(Set_adjust_aspect);
