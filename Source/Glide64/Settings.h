@@ -235,7 +235,7 @@ public:
     inline wfmode_t wfmode(void) const { return m_wfmode; }
 
     // Special fixes
-    int fast_crc;
+    inline bool fast_crc(void) const { return m_fast_crc; }
     int alt_tex_size;
     int use_sts1_only;
     int flame_corona; //hack for zeldas flame's corona
@@ -354,6 +354,7 @@ private:
     bool m_wireframe;
     wfmode_t m_wfmode;
     ucode_t m_ucode;
+    bool m_fast_crc;
     StippleMode_t m_stipple_mode;
     hacks_t m_hacks;
 };

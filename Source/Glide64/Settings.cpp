@@ -59,8 +59,8 @@ CSettings::CSettings() :
     m_wireframe(false),
     m_wfmode(wfmode_VertexColors),
 
-// Special fixes
-fast_crc(0),
+    // Special fixes
+    m_fast_crc(false),
 alt_tex_size(0),
 use_sts1_only(0),
 flame_corona(0), //hack for zeldas flame's corona
@@ -178,7 +178,7 @@ void CSettings::RegisterSettings(void)
     game_setting(Set_force_quad3d, "force_quad3d", 0);
     game_setting(Set_clip_zmin, "clip_zmin", 0);
     game_setting(Set_clip_zmax, "clip_zmax", 1);
-    game_setting(Set_fast_crc, "fast_crc", 1);
+    game_setting(Set_fast_crc, "fast_crc", true);
     game_setting(Set_adjust_aspect, "adjust_aspect", 1);
     game_setting(Set_zmode_compare_less, "zmode_compare_less", 0);
     game_setting(Set_old_style_adither, "old_style_adither", 0);
@@ -731,7 +731,7 @@ void CSettings::ReadGameSettings(const char * name)
     g_settings->force_quad3d = GetSetting(Set_force_quad3d);
     g_settings->clip_zmin = GetSetting(Set_clip_zmin);
     g_settings->clip_zmax = GetSetting(Set_clip_zmax);
-    g_settings->fast_crc = GetSetting(Set_fast_crc);
+    m_fast_crc = GetSetting(Set_fast_crc) != 0;
     g_settings->adjust_aspect = GetSetting(Set_adjust_aspect);
     g_settings->zmode_compare_less = GetSetting(Set_zmode_compare_less);
     g_settings->old_style_adither = GetSetting(Set_old_style_adither);

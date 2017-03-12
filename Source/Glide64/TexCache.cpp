@@ -353,7 +353,7 @@ void GetTexInfo(int id, int tile)
     if (rdp.tiles[tile].size == 3)
         line <<= 1;
     uint32_t crc = 0;
-    if (g_settings->fast_crc)
+    if (g_settings->fast_crc())
     {
         line = (line - wid_64) << 3;
         if (wid_64 < 1) wid_64 = 1;
