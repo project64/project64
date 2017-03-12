@@ -236,7 +236,7 @@ public:
     // Special fixes
     inline bool fast_crc(void) const { return m_fast_crc; }
     inline bool alt_tex_size(void) const { return m_alt_tex_size; }
-    int use_sts1_only;
+    inline bool use_sts1_only(void) const { return m_use_sts1_only; }
     int flame_corona; //hack for zeldas flame's corona
     int increase_texrect_edge; // add 1 to lower right corner coordinates of texrect
     int decrease_fillrect_edge; // sub 1 from lower right corner coordinates of fillrect
@@ -355,6 +355,7 @@ private:
     ucode_t m_ucode;
     bool m_fast_crc;
     bool m_alt_tex_size;
+    bool m_use_sts1_only;
     StippleMode_t m_stipple_mode;
     hacks_t m_hacks;
 };

@@ -1643,7 +1643,7 @@ static void rdp_settilesize()
     else if (wrong_tile == (int)tile)
         wrong_tile = -1;
 
-    if (g_settings->use_sts1_only)
+    if (g_settings->use_sts1_only())
     {
         // ** USE FIRST SETTILESIZE ONLY **
         // This option helps certain textures while using the 'Alternate texture size method',

@@ -62,7 +62,7 @@ CSettings::CSettings() :
     // Special fixes
     m_fast_crc(false),
     m_alt_tex_size(false),
-use_sts1_only(0),
+    m_use_sts1_only(false),
 flame_corona(0), //hack for zeldas flame's corona
 increase_texrect_edge(0), // add 1 to lower right corner coordinates of texrect
 decrease_fillrect_edge(0), // sub 1 from lower right corner coordinates of fillrect
@@ -160,7 +160,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_fb_render_default, "fb_render", false);
 
     game_setting(Set_alt_tex_size, "alt_tex_size", false);
-    game_setting(Set_use_sts1_only, "use_sts1_only", 0);
+    game_setting(Set_use_sts1_only, "use_sts1_only", false);
     game_setting(Set_force_calc_sphere, "force_calc_sphere", 0);
     game_setting(Set_correct_viewport, "correct_viewport", 0);
     game_setting(Set_increase_texrect_edge, "increase_texrect_edge", 0);
@@ -713,7 +713,7 @@ void CSettings::ReadGameSettings(const char * name)
     }
 
     m_alt_tex_size = GetSetting(Set_alt_tex_size) != 0;
-    g_settings->use_sts1_only = GetSetting(Set_use_sts1_only);
+    m_use_sts1_only = GetSetting(Set_use_sts1_only) != 0;
     g_settings->force_calc_sphere = GetSetting(Set_force_calc_sphere);
     g_settings->correct_viewport = GetSetting(Set_correct_viewport);
     g_settings->increase_texrect_edge = GetSetting(Set_increase_texrect_edge);
