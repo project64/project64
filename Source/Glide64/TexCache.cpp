@@ -200,7 +200,7 @@ void GetTexInfo(int id, int tile)
     mask_width = (rdp.tiles[tile].mask_s == 0) ? (tile_width) : (1 << rdp.tiles[tile].mask_s);
     mask_height = (rdp.tiles[tile].mask_t == 0) ? (tile_height) : (1 << rdp.tiles[tile].mask_t);
 
-    if (g_settings->alt_tex_size)
+    if (g_settings->alt_tex_size())
     {
         // ** ALTERNATE TEXTURE SIZE METHOD **
         // Helps speed in some games that loaded weird-sized textures, but could break other

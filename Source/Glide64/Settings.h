@@ -5,7 +5,6 @@ class CSettings
 {
 public:
 	CSettings();
-    ~CSettings();
 
     //Frame buffer emulation options
     enum fb_bits_t
@@ -236,7 +235,7 @@ public:
 
     // Special fixes
     inline bool fast_crc(void) const { return m_fast_crc; }
-    int alt_tex_size;
+    inline bool alt_tex_size(void) const { return m_alt_tex_size; }
     int use_sts1_only;
     int flame_corona; //hack for zeldas flame's corona
     int increase_texrect_edge; // add 1 to lower right corner coordinates of texrect
@@ -355,6 +354,7 @@ private:
     wfmode_t m_wfmode;
     ucode_t m_ucode;
     bool m_fast_crc;
+    bool m_alt_tex_size;
     StippleMode_t m_stipple_mode;
     hacks_t m_hacks;
 };
