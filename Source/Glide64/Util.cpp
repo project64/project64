@@ -806,7 +806,7 @@ void do_triangle_stuff(uint16_t linew, int old_interpolate) // what else?? do th
         {
             rdp.clip &= ~CLIP_ZMIN;
         }         
-        if (!g_settings->clip_zmax)
+        if (!g_settings->clip_zmax())
         {
             rdp.clip &= ~CLIP_ZMAX;
         }

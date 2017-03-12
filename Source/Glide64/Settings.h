@@ -246,7 +246,7 @@ public:
     inline bool force_microcheck(void) const { return m_force_microcheck; } //check microcode each frame, for mixed F3DEX-S2DEX games
     inline bool force_quad3d(void) const { return m_force_quad3d; } //force 0xb5 command to be quad, not line 3d
     inline bool clip_zmin(void) const { return m_clip_zmin; } //enable near z clipping
-    int clip_zmax; //enable far plane clipping;
+    inline bool clip_zmax(void) const { return m_clip_zmax; } //enable far plane clipping
     int adjust_aspect; //adjust screen aspect for wide screen mode
     int force_calc_sphere; //use spheric mapping only, Ridge Racer 64
     int pal230;    //set special scale for PAL games
@@ -365,6 +365,7 @@ private:
     bool m_force_microcheck;
     bool m_force_quad3d;
     bool m_clip_zmin;
+    bool m_clip_zmax;
     hacks_t m_hacks;
 };
 
