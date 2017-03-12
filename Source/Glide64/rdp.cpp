@@ -350,7 +350,7 @@ void microcheck()
             rdp.Persp_en = 1;
             rdp.persp_supported = FALSE;
         }
-        else if (g_settings->texture_correction)
+        else if (g_settings->texture_correction())
         {
             rdp.persp_supported = TRUE;
         }
