@@ -238,7 +238,7 @@ public:
     inline bool alt_tex_size(void) const { return m_alt_tex_size; }
     inline bool use_sts1_only(void) const { return m_use_sts1_only; }
     inline bool flame_corona(void) const { return m_flame_corona; } //hack for zeldas flame's corona
-    int increase_texrect_edge; // add 1 to lower right corner coordinates of texrect
+    inline bool increase_texrect_edge(void) const { return m_increase_texrect_edge; }  // add 1 to lower right corner coordinates of texrect
     int decrease_fillrect_edge; // sub 1 from lower right corner coordinates of fillrect
     int texture_correction; // enable perspective texture correction emulation. is on by default
     inline StippleMode_t stipple_mode(void) const { return m_stipple_mode; } //used for dithered alpha emulation
@@ -357,6 +357,7 @@ private:
     bool m_alt_tex_size;
     bool m_use_sts1_only;
     bool m_flame_corona;
+    bool m_increase_texrect_edge;
     StippleMode_t m_stipple_mode;
     hacks_t m_hacks;
 };

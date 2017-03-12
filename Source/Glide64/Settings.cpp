@@ -64,7 +64,7 @@ CSettings::CSettings() :
     m_alt_tex_size(false),
     m_use_sts1_only(false),
     m_flame_corona(false), //hack for zeldas flame's corona
-increase_texrect_edge(0), // add 1 to lower right corner coordinates of texrect
+    m_increase_texrect_edge(false), // add 1 to lower right corner coordinates of texrect
 decrease_fillrect_edge(0), // sub 1 from lower right corner coordinates of fillrect
 texture_correction(0), // enable perspective texture correction emulation. is on by default
     m_stipple_mode(STIPPLE_Disable), //used for dithered alpha emulation
@@ -163,7 +163,7 @@ void CSettings::RegisterSettings(void)
     game_setting(Set_use_sts1_only, "use_sts1_only", false);
     game_setting(Set_force_calc_sphere, "force_calc_sphere", 0);
     game_setting(Set_correct_viewport, "correct_viewport", 0);
-    game_setting(Set_increase_texrect_edge, "increase_texrect_edge", 0);
+    game_setting(Set_increase_texrect_edge, "increase_texrect_edge", false);
     game_setting(Set_decrease_fillrect_edge, "decrease_fillrect_edge", 0);
     game_setting(Set_texture_correction, "texture_correction", 1);
     game_setting(Set_pal230, "pal230", 0);
@@ -716,7 +716,7 @@ void CSettings::ReadGameSettings(const char * name)
     m_use_sts1_only = GetSetting(Set_use_sts1_only) != 0;
     g_settings->force_calc_sphere = GetSetting(Set_force_calc_sphere);
     g_settings->correct_viewport = GetSetting(Set_correct_viewport);
-    g_settings->increase_texrect_edge = GetSetting(Set_increase_texrect_edge);
+    m_increase_texrect_edge = GetSetting(Set_increase_texrect_edge) != 0;
     g_settings->decrease_fillrect_edge = GetSetting(Set_decrease_fillrect_edge);
     g_settings->texture_correction = GetSetting(Set_texture_correction) == 0 ? 0 : 1;
     g_settings->pal230 = GetSetting(Set_pal230) == 1 ? 1 : 0;

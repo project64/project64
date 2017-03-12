@@ -1008,7 +1008,7 @@ static void rdp_texrect()
     else if (lr_y - ul_y < 1.0f)
         lr_y = ceil(lr_y);
 
-    if (g_settings->increase_texrect_edge)
+    if (g_settings->increase_texrect_edge())
     {
         if (floor(lr_x) != lr_x)
             lr_x = ceil(lr_x);
