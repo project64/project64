@@ -1435,24 +1435,24 @@ Save Type=4kbit Eeprom
 Good Name=Donkey Kong 64 (E)
 Internal Name=DONKEY KONG 64
 Status=Compatible
-Core Note=Polygon tearing
 Plugin Note=[Glide64] fairy bug; transitions
 32bit=No
 Counter Factor=1
 Culling=1
 RDRAM Size=8
 Save Type=16kbit Eeprom
+Cheat0=806128E2 0000 // Polygon Tearing Fix
 
 [053C89A7-A5064302-C:4A]
 Good Name=Donkey Kong 64 (J)
 Internal Name=DONKEY KONG 64
 Status=Compatible
-Core Note=Polygon tearing
 Plugin Note=[Glide64] fairy bug; transitions
 32bit=No
 Counter Factor=1
 RDRAM Size=8
 Save Type=16kbit Eeprom
+Cheat0=806170A2 0000 // Polygon Tearing Fix
 
 [EC58EABF-AD7C7169-C:45]
 Good Name=Donkey Kong 64 (U)
