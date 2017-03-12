@@ -216,9 +216,6 @@ void UseUnregisteredSetting(int /*SettingID*/)
 }
 extern int g_width, g_height;
 
-GRSTIPPLE grStippleModeExt = NULL;
-GRSTIPPLE grStipplePatternExt = NULL;
-
 int GetTexAddrUMA(int /*tmu*/, int texsize)
 {
     int addr = voodoo.tex_min_addr[0] + voodoo.tmem_ptr[0];
@@ -456,6 +453,9 @@ void ExitFullScreen(void)
 }
 
 #endif
+
+void setPattern();
+
 int InitGfx()
 {
     if (GfxInitDone)
@@ -572,11 +572,8 @@ int InitGfx()
     if (strstr(extensions, "GETGAMMA"))
         grGet(GR_GAMMA_TABLE_ENTRIES, sizeof(voodoo.gamma_table_size), &voodoo.gamma_table_size);
 
-    grStippleModeExt = (GRSTIPPLE)grStippleMode;
-    grStipplePatternExt = (GRSTIPPLE)grStipplePattern;
-
-    if (grStipplePatternExt)
-        grStipplePatternExt(g_settings->stipple_pattern);
+    srand(g_settings->stipple_pattern());
+    setPattern();
 
     InitCombine();
 

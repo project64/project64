@@ -2353,10 +2353,7 @@ static void rdp_fillrect()
         grAlphaBlendFunction(GR_BLEND_ONE, GR_BLEND_ZERO, GR_BLEND_ONE, GR_BLEND_ZERO);
 
         grAlphaTestFunction(GR_CMP_ALWAYS);
-        if (grStippleModeExt)
-        {
-            grStippleModeExt(GR_STIPPLE_DISABLE);
-        }
+        grStippleMode(GR_STIPPLE_DISABLE);
 
         grCullMode(GR_CULL_DISABLE);
         grFogMode(GR_FOG_DISABLE);

@@ -277,8 +277,6 @@ extern "C" {
 
     typedef int(*GETTEXADDR)(int tmu, int texsize);
 
-    extern GRSTIPPLE            grStippleModeExt;
-    extern GRSTIPPLE            grStipplePatternExt;
     extern GETTEXADDR           GetTexAddr;
 
 #ifndef GR_STIPPLE_DISABLE

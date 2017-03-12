@@ -68,7 +68,7 @@ CSettings::CSettings() :
     m_decrease_fillrect_edge(false), // sub 1 from lower right corner coordinates of fillrect
     m_texture_correction(false), // enable perspective texture correction emulation. is on by default
     m_stipple_mode(STIPPLE_Disable), //used for dithered alpha emulation
-stipple_pattern(0), //used for dithered alpha emulation
+    m_stipple_pattern(0), //used for dithered alpha emulation
 force_microcheck(0), //check microcode each frame, for mixed F3DEX-S2DEX games
 force_quad3d(0), //force 0xb5 command to be quad, not line 3d
 clip_zmin(0), //enable near z clipping
@@ -722,7 +722,7 @@ void CSettings::ReadGameSettings(const char * name)
     g_settings->pal230 = GetSetting(Set_pal230) == 1 ? 1 : 0;
     m_stipple_mode = (StippleMode_t)GetSetting(Set_stipple_mode);
     int stipple_pattern = GetSetting(Set_stipple_pattern);
-    g_settings->stipple_pattern = stipple_pattern > 0 ? (uint32_t)stipple_pattern : 0x3E0F83E0;
+    m_stipple_pattern = stipple_pattern > 0 ? (uint32_t)stipple_pattern : 0x3E0F83E0;
     g_settings->force_microcheck = GetSetting(Set_force_microcheck);
     g_settings->force_quad3d = GetSetting(Set_force_quad3d);
     g_settings->clip_zmin = GetSetting(Set_clip_zmin);

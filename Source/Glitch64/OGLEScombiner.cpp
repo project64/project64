@@ -1689,7 +1689,7 @@ grChromakeyValue(GrColor_t value)
         g_chroma_color[2], g_chroma_color[3]);
 }
 
-static void setPattern()
+void setPattern()
 {
     int i;
     GLubyte stip[32 * 4];
@@ -1722,15 +1722,6 @@ static void setPattern()
     glTexImage2D(GL_TEXTURE_2D, 0, 4, 32, 32, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-}
-
-FX_ENTRY void FX_CALL
-grStipplePattern(
-GrStipplePattern_t stipple)
-{
-    WriteTrace(TraceResolution, TraceDebug, "value: %x", stipple);
-    srand(stipple);
-    setPattern();
 }
 
 FX_ENTRY void FX_CALL
