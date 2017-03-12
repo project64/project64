@@ -53,7 +53,7 @@ CSettings::CSettings() :
     m_ghq_cache_size(0),
     m_ghq_hirs_let_texartists_fly(false),
     m_ghq_hirs_dump(false),
-autodetect_ucode(0),
+    m_autodetect_ucode(true),
     m_ucode(ucode_Fast3D),
 unk_as_red(0),
 unk_clear(0),
@@ -129,7 +129,7 @@ void CSettings::RegisterSettings(void)
 #endif
     general_setting(Set_Rotate, "rotate", Rotate_None);
     general_setting(Set_wrpAnisotropic, "wrpAnisotropic", 0);
-    general_setting(Set_autodetect_ucode, "autodetect_ucode", 1);
+    general_setting(Set_autodetect_ucode, "autodetect_ucode", true);
     general_setting(Set_ucode, "ucode", ucode_F3DEX2);
     general_setting(Set_wireframe, "wireframe", 0);
     general_setting(Set_wfmode, "wfmode", 1);
@@ -552,14 +552,13 @@ void CSettings::ReadSettings()
     this->wrpFBO = GetSetting(Set_wrpFBO);
     this->wrpAnisotropic = GetSetting(Set_wrpAnisotropic);
 
+    m_autodetect_ucode = GetSetting(Set_autodetect_ucode) != 0;
 #ifndef _ENDUSER_RELEASE_
-    this->autodetect_ucode = GetSetting(Set_autodetect_ucode);
     this->wireframe = GetSetting(Set_wireframe);
     this->wfmode = GetSetting(Set_wfmode);
     this->unk_as_red = GetSetting(Set_unk_as_red);
     this->unk_clear = GetSetting(Set_unk_clear);
 #else
-    this->autodetect_ucode = TRUE;
     this->wireframe = FALSE;
     this->wfmode = 0;
     this->unk_as_red = FALSE;
@@ -830,9 +829,9 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_wrpVRAM, g_settings->wrpVRAM);
     SetSetting(Set_wrpFBO, g_settings->wrpFBO);
     SetSetting(Set_wrpAnisotropic, g_settings->wrpAnisotropic);
+    SetSetting(Set_autodetect_ucode, m_autodetect_ucode);
 
 #ifndef _ENDUSER_RELEASE_
-    SetSetting(Set_autodetect_ucode, g_settings->autodetect_ucode);
     SetSetting(Set_ucode, (int)g_settings->ucode);
     SetSetting(Set_wireframe, g_settings->wireframe);
     SetSetting(Set_wfmode, g_settings->wfmode);

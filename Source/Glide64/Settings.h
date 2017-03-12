@@ -222,7 +222,7 @@ public:
     inline bool ghq_hirs_dump(void) const { return m_ghq_hirs_dump; }
 
     //Debug
-    int autodetect_ucode;
+    inline bool autodetect_ucode(void) const { return m_autodetect_ucode; }
     inline ucode_t ucode(void) const { return m_ucode; }
     int unk_as_red;
     int unk_clear;
@@ -346,6 +346,7 @@ private:
     int m_ghq_cache_size;
     bool m_ghq_hirs_let_texartists_fly;
     bool m_ghq_hirs_dump;
+    bool m_autodetect_ucode;
     ucode_t m_ucode;
     StippleMode_t m_stipple_mode;
     hacks_t m_hacks;

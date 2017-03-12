@@ -576,7 +576,7 @@ EXPORT void CALL ProcessDList(void)
     if (reset)
     {
         reset = 0;
-        if (g_settings->autodetect_ucode)
+        if (g_settings->autodetect_ucode())
         {
             // Thanks to ZeZu for ucode autodetection!!!
             uint32_t startUcode = *(uint32_t*)(gfx.DMEM + 0xFD0);
