@@ -57,7 +57,7 @@ CSettings::CSettings() :
     m_ucode(ucode_Fast3D),
     m_unk_as_red(false),
     m_wireframe(false),
-wfmode(0),
+    m_wfmode(wfmode_VertexColors),
 
 // Special fixes
 offset_x(0),
@@ -131,7 +131,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_autodetect_ucode, "autodetect_ucode", true);
     general_setting(Set_ucode, "ucode", ucode_F3DEX2);
     general_setting(Set_wireframe, "wireframe", false);
-    general_setting(Set_wfmode, "wfmode", 1);
+    general_setting(Set_wfmode, "wfmode", wfmode_VertexColors);
     general_setting(Set_unk_as_red, "unk_as_red", false);
     general_setting(Set_ghq_fltr, "ghq_fltr", TextureFilter_None);
     general_setting(Set_ghq_cmpr, "ghq_cmpr", TextureCompression_S3TC);
@@ -553,11 +553,7 @@ void CSettings::ReadSettings()
     m_autodetect_ucode = GetSetting(Set_autodetect_ucode) != 0;
     m_unk_as_red = GetSetting(Set_unk_as_red) != 0;
     m_wireframe = GetSetting(Set_wireframe) != 0;
-#ifndef _ENDUSER_RELEASE_
-    this->wfmode = GetSetting(Set_wfmode);
-#else
-    this->wfmode = 0;
-#endif
+    m_wfmode = (wfmode_t)GetSetting(Set_wfmode);
     m_ucode = ucode_F3DEX2;
 
     char texture_dir[260];
@@ -826,10 +822,10 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_autodetect_ucode, m_autodetect_ucode);
 
     SetSetting(Set_wireframe, m_wireframe);
+    SetSetting(Set_wfmode, m_wfmode);
     SetSetting(Set_unk_as_red, m_unk_as_red);
 #ifndef _ENDUSER_RELEASE_
     SetSetting(Set_ucode, (int)g_settings->ucode);
-    SetSetting(Set_wfmode, g_settings->wfmode);
 #endif //_ENDUSER_RELEASE_
 
     SetSetting(Set_ghq_fltr, m_ghq_fltr);

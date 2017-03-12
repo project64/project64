@@ -157,6 +157,12 @@ public:
         ucode_Turbo3d = 21,
     };
 
+    enum wfmode_t
+    {
+        wfmode_NormalColors = 0,
+        wfmode_VertexColors = 1,
+        wfmode_RedOnly = 2,
+    };
 
     enum FBCRCMODE_t
     {
@@ -226,7 +232,7 @@ public:
     inline ucode_t ucode(void) const { return m_ucode; }
     inline bool unk_as_red(void) const { return m_unk_as_red; }
     inline bool wireframe(void) const { return m_wireframe; }
-    int wfmode;
+    inline wfmode_t wfmode(void) const { return m_wfmode; }
 
     // Special fixes
     int offset_x, offset_y;
@@ -348,6 +354,7 @@ private:
     bool m_autodetect_ucode;
     bool m_unk_as_red;
     bool m_wireframe;
+    wfmode_t m_wfmode;
     ucode_t m_ucode;
     StippleMode_t m_stipple_mode;
     hacks_t m_hacks;

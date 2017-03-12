@@ -2970,10 +2970,10 @@ static void rsp_reserved3()
 
 void SetWireframeCol()
 {
-    switch (g_settings->wfmode)
+    switch (g_settings->wfmode())
     {
-        //case 0: // normal colors, don't do anything
-    case 1: // vertex colors
+    //case CSettings::wfmode_NormalColors: // normal colors, don't do anything
+    case CSettings::wfmode_VertexColors:
         grColorCombine(GR_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_ITERATED,
@@ -3001,7 +3001,7 @@ void SetWireframeCol()
             GR_COMBINE_FACTOR_NONE,
             FXFALSE, FXFALSE);
         break;
-    case 2: // red only
+    case CSettings::wfmode_RedOnly:
         grColorCombine(GR_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_CONSTANT,
