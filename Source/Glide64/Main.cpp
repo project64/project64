@@ -1565,7 +1565,7 @@ void newSwapBuffers()
         }
     }
 
-    if (g_settings->wireframe || g_settings->buff_clear() || (g_settings->hacks(CSettings::hack_PPL) && g_settings->ucode() == CSettings::ucode_S2DEX))
+    if (g_settings->wireframe() || g_settings->buff_clear() || (g_settings->hacks(CSettings::hack_PPL) && g_settings->ucode() == CSettings::ucode_S2DEX))
     {
         grDepthMask((g_settings->hacks(CSettings::hack_RE2) && g_settings->fb_depth_render_enabled()) ? FXFALSE : FXTRUE);
         grBufferClear(0, 0, 0xFFFF);

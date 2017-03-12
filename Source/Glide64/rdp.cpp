@@ -1411,7 +1411,7 @@ static void rdp_texrect()
 
     ConvertCoordsConvert(vptr, n_vertices);
 
-    if (g_settings->wireframe)
+    if (g_settings->wireframe())
     {
         SetWireframeCol();
         grDrawLine(&vstd[0], &vstd[2]);
@@ -2389,7 +2389,7 @@ static void rdp_fillrect()
         }
     }
 
-    if (g_settings->wireframe)
+    if (g_settings->wireframe())
     {
         SetWireframeCol();
         grDrawLine(&v[0], &v[2]);

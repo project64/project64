@@ -225,7 +225,7 @@ public:
     inline bool autodetect_ucode(void) const { return m_autodetect_ucode; }
     inline ucode_t ucode(void) const { return m_ucode; }
     inline bool unk_as_red(void) const { return m_unk_as_red; }
-    int wireframe;
+    inline bool wireframe(void) const { return m_wireframe; }
     int wfmode;
 
     // Special fixes
@@ -347,6 +347,7 @@ private:
     bool m_ghq_hirs_dump;
     bool m_autodetect_ucode;
     bool m_unk_as_red;
+    bool m_wireframe;
     ucode_t m_ucode;
     StippleMode_t m_stipple_mode;
     hacks_t m_hacks;

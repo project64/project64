@@ -1576,7 +1576,7 @@ static void render_tri(uint16_t linew, int old_interpolate)
 
     cmb.cmb_ext_use = cmb.tex_cmb_ext_use = 0;
 
-    if (g_settings->wireframe)
+    if (g_settings->wireframe())
     {
         SetWireframeCol();
         for (i = 0; i < n; i++)

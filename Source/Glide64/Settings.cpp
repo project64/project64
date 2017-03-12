@@ -56,7 +56,7 @@ CSettings::CSettings() :
     m_autodetect_ucode(true),
     m_ucode(ucode_Fast3D),
     m_unk_as_red(false),
-wireframe(0),
+    m_wireframe(false),
 wfmode(0),
 
 // Special fixes
@@ -130,7 +130,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_wrpAnisotropic, "wrpAnisotropic", 0);
     general_setting(Set_autodetect_ucode, "autodetect_ucode", true);
     general_setting(Set_ucode, "ucode", ucode_F3DEX2);
-    general_setting(Set_wireframe, "wireframe", 0);
+    general_setting(Set_wireframe, "wireframe", false);
     general_setting(Set_wfmode, "wfmode", 1);
     general_setting(Set_unk_as_red, "unk_as_red", false);
     general_setting(Set_ghq_fltr, "ghq_fltr", TextureFilter_None);
@@ -552,11 +552,10 @@ void CSettings::ReadSettings()
 
     m_autodetect_ucode = GetSetting(Set_autodetect_ucode) != 0;
     m_unk_as_red = GetSetting(Set_unk_as_red) != 0;
+    m_wireframe = GetSetting(Set_wireframe) != 0;
 #ifndef _ENDUSER_RELEASE_
-    this->wireframe = GetSetting(Set_wireframe);
     this->wfmode = GetSetting(Set_wfmode);
 #else
-    this->wireframe = FALSE;
     this->wfmode = 0;
 #endif
     m_ucode = ucode_F3DEX2;
@@ -826,10 +825,10 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_wrpAnisotropic, g_settings->wrpAnisotropic);
     SetSetting(Set_autodetect_ucode, m_autodetect_ucode);
 
+    SetSetting(Set_wireframe, m_wireframe);
     SetSetting(Set_unk_as_red, m_unk_as_red);
 #ifndef _ENDUSER_RELEASE_
     SetSetting(Set_ucode, (int)g_settings->ucode);
-    SetSetting(Set_wireframe, g_settings->wireframe);
     SetSetting(Set_wfmode, g_settings->wfmode);
 #endif //_ENDUSER_RELEASE_
 
