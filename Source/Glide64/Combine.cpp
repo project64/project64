@@ -15659,7 +15659,7 @@ void Combine()
                 Alpha0[(rdp.cycle1 >> 16) & 7], Alpha1[(rdp.cycle1 >> 19) & 7], Alpha2[(rdp.cycle1 >> 22) & 7], Alpha3[(rdp.cycle1 >> 25) & 7],
                 Alpha0[(rdp.cycle2 >> 16) & 7], Alpha1[(rdp.cycle2 >> 19) & 7], Alpha2[(rdp.cycle2 >> 22) & 7], Alpha3[(rdp.cycle2 >> 25) & 7]);
         }
-        if (g_settings->unk_as_red)
+        if (g_settings->unk_as_red())
         {
             BrightRed();
         }
@@ -15668,7 +15668,6 @@ void Combine()
             // use full alpha as default
             ac_t0();
         }
-        //tex |= 3;
     }
     else
     {
