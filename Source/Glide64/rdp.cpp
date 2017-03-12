@@ -2284,7 +2284,7 @@ static void rdp_fillrect()
     // Update scissor
     update_scissor();
 
-    if (g_settings->decrease_fillrect_edge && rdp.cycle_mode == 0)
+    if (g_settings->decrease_fillrect_edge() && rdp.cycle_mode == 0)
     {
         lr_x--; lr_y--;
     }
