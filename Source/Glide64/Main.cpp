@@ -693,7 +693,7 @@ int InitGfx()
             {
                 options |= (DUMP_TEXCACHE | DUMP_HIRESTEXCACHE);
             }
-            if (g_settings->ghq_hirs_let_texartists_fly)
+            if (g_settings->ghq_hirs_let_texartists_fly())
             {
                 options |= LET_TEXARTISTS_FLY;
             }

@@ -218,7 +218,7 @@ public:
     inline bool ghq_hirs_altcrc(void) const { return m_ghq_hirs_altcrc; }
     inline bool ghq_cache_save(void) const { return m_ghq_cache_save; }
     inline int ghq_cache_size(void) const { return m_ghq_cache_size; }
-    int ghq_hirs_let_texartists_fly;
+    inline bool ghq_hirs_let_texartists_fly(void) const { return m_ghq_hirs_let_texartists_fly; }
     int ghq_hirs_dump;
 
     //Debug
@@ -286,6 +286,7 @@ public:
     void SetGhqHirsCmpr(bool value);
     void SetGhqHirsGz(bool value);
     void SetGhqCacheSave(bool value);
+    void SetGhqHirsLetTexartistsFly(bool value);
     void SetGhqCacheSize(int value);
     void UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove);
     ucode_t DetectUCode(uint32_t uc_crc);
@@ -342,6 +343,7 @@ private:
     bool m_ghq_hirs_altcrc;
     bool m_ghq_cache_save;
     int m_ghq_cache_size;
+    bool m_ghq_hirs_let_texartists_fly;
     ucode_t m_ucode;
     StippleMode_t m_stipple_mode;
     hacks_t m_hacks;

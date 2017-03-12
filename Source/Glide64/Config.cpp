@@ -674,7 +674,7 @@ public:
 
         m_cbxHrsLetFly.Attach(GetDlgItem(IDC_CHK_USE_ALPHA_FULLY));
         TTSetTxt(IDC_CHK_USE_ALPHA_FULLY, "Use Alpha channel fully:\n\nWhen this option is off, 16bit rgba textures will be loaded using RiceVideo style, with 1bit for alpha channel.\nWhen it is on, GlideHQ will check, how alpha channel is used by the hires texture, and select most appropriate format for it.\nThis gives texture designers freedom to play with alpha, as they need, regardless of format of original N64 texture.\nFor older and badly designed texture packs it can cause unwanted black borders.\n\n[Recommended: texture pack dependant]");
-        m_cbxHrsLetFly.SetCheck(g_settings->ghq_hirs_let_texartists_fly > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxHrsLetFly.SetCheck(g_settings->ghq_hirs_let_texartists_fly() > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxSaveTexCache.Attach(GetDlgItem(IDC_CHK_TEX_CACHE_HD));
         TTSetTxt(IDC_CHK_TEX_CACHE_HD, "Save texture cache to HD:\n\nFor enhanced textures cache:\nThis will save all previously loaded and enhanced textures to HD.\nSo upon next game launch, all the textures will be instantly loaded, resulting in smoother performance.\n\nFor high-resolution textures cache:\nAfter creation, loading hi-res texture will take only a few seconds upon game launch, as opposed to the 5 to 60 seconds a pack can take to load without this cache file.\nThe only downside here is upon any changes to the pack, the cache file will need to be manually deleted.\n\nSaved cache files go into a folder called \"Cache\" within the Textures folder.\n\n[Highly Recommended: on]");
@@ -701,7 +701,7 @@ public:
         g_settings->SetGhqHirsAltcrc(m_cbxHrsAltCRC.GetCheck() == BST_CHECKED);
         g_settings->SetGhqHirsCmpr(m_cbxHrsTexCompression.GetCheck() == BST_CHECKED);
         g_settings->SetGhqHirsGz(m_cbxHrsCompressCache.GetCheck() == BST_CHECKED);
-        g_settings->ghq_hirs_let_texartists_fly = (int)m_cbxHrsLetFly.GetCheck() == BST_CHECKED;
+        g_settings->SetGhqHirsLetTexartistsFly(m_cbxHrsLetFly.GetCheck() == BST_CHECKED);
         g_settings->SetGhqCmpr((CSettings::TextureCompression_t)m_cmbTextureCompression.GetItemData(m_cmbTextureCompression.GetCurSel()));
         g_settings->SetGhqCacheSave(m_cbxSaveTexCache.GetCheck() == BST_CHECKED);
         if (memcmp(&oldsettings, g_settings, sizeof(oldsettings))) //check that settings were changed

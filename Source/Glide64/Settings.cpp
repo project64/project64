@@ -51,7 +51,7 @@ CSettings::CSettings() :
     m_ghq_hirs_altcrc(false),
     m_ghq_cache_save(false),
     m_ghq_cache_size(0),
-ghq_hirs_let_texartists_fly(0),
+    m_ghq_hirs_let_texartists_fly(false),
 ghq_hirs_dump(0),
 autodetect_ucode(0),
     m_ucode(ucode_Fast3D),
@@ -150,7 +150,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_ghq_hirs_altcrc, "ghq_hirs_altcrc", true);
     general_setting(Set_ghq_cache_save, "ghq_cache_save", true);
     general_setting(Set_ghq_cache_size, "ghq_cache_size", 0);
-    general_setting(Set_ghq_hirs_let_texartists_fly, "ghq_hirs_let_texartists_fly", 0);
+    general_setting(Set_ghq_hirs_let_texartists_fly, "ghq_hirs_let_texartists_fly", false);
     general_setting(Set_ghq_hirs_dump, "ghq_hirs_dump", 0);
 
     general_setting(Set_optimize_texrect_default, "optimize_texrect", true);
@@ -433,6 +433,15 @@ void CSettings::SetGhqHirsGz(bool value)
     }
 }
 
+void CSettings::SetGhqHirsLetTexartistsFly(bool value)
+{
+    if (value != m_ghq_hirs_let_texartists_fly)
+    {
+        m_ghq_hirs_let_texartists_fly = value;
+        m_dirty = true;
+    }
+}
+
 void CSettings::SetGhqCacheSave(bool value)
 {
     if (value != m_ghq_cache_save)
@@ -568,7 +577,7 @@ void CSettings::ReadSettings()
     m_ghq_hirs_altcrc = GetSetting(Set_ghq_hirs_altcrc) != 0;
     m_ghq_cache_save = GetSetting(Set_ghq_cache_save) != 0;
     m_ghq_cache_size = GetSetting(Set_ghq_cache_size);
-    this->ghq_hirs_let_texartists_fly = GetSetting(Set_ghq_hirs_let_texartists_fly);
+    m_ghq_hirs_let_texartists_fly = GetSetting(Set_ghq_hirs_let_texartists_fly) != 0;
     this->ghq_hirs_dump = GetSetting(Set_ghq_hirs_dump);
 
     if (Set_log_dir != 0)
@@ -837,7 +846,7 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_ghq_hirs_altcrc, m_ghq_hirs_altcrc);
     SetSetting(Set_ghq_cache_save, m_ghq_cache_save);
     SetSetting(Set_ghq_cache_size, m_ghq_cache_size);
-    SetSetting(Set_ghq_hirs_let_texartists_fly, g_settings->ghq_hirs_let_texartists_fly);
+    SetSetting(Set_ghq_hirs_let_texartists_fly, m_ghq_hirs_let_texartists_fly);
     SetSetting(Set_ghq_hirs_dump, g_settings->ghq_hirs_dump);
 
     SetSetting(g_romopen ? Set_filtering : Set_filtering_default, filtering());
