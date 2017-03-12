@@ -52,7 +52,7 @@ CSettings::CSettings() :
     m_ghq_cache_save(false),
     m_ghq_cache_size(0),
     m_ghq_hirs_let_texartists_fly(false),
-ghq_hirs_dump(0),
+    m_ghq_hirs_dump(false),
 autodetect_ucode(0),
     m_ucode(ucode_Fast3D),
 unk_as_red(0),
@@ -151,7 +151,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_ghq_cache_save, "ghq_cache_save", true);
     general_setting(Set_ghq_cache_size, "ghq_cache_size", 0);
     general_setting(Set_ghq_hirs_let_texartists_fly, "ghq_hirs_let_texartists_fly", false);
-    general_setting(Set_ghq_hirs_dump, "ghq_hirs_dump", 0);
+    general_setting(Set_ghq_hirs_dump, "ghq_hirs_dump", false);
 
     general_setting(Set_optimize_texrect_default, "optimize_texrect", true);
     general_setting(Set_filtering_default, "filtering", CSettings::Filter_Automatic);
@@ -388,6 +388,15 @@ void CSettings::SetGhqHirsF16bpp(bool value)
     }
 }
 
+void CSettings::SetGhqHirsDump(bool value)
+{
+    if (value != m_ghq_hirs_dump)
+    {
+        m_ghq_hirs_dump = value;
+        m_dirty = true;
+    }
+}
+
 void CSettings::SetGhqEnhtNobg(bool value)
 {
     if (value != m_ghq_enht_nobg)
@@ -578,7 +587,7 @@ void CSettings::ReadSettings()
     m_ghq_cache_save = GetSetting(Set_ghq_cache_save) != 0;
     m_ghq_cache_size = GetSetting(Set_ghq_cache_size);
     m_ghq_hirs_let_texartists_fly = GetSetting(Set_ghq_hirs_let_texartists_fly) != 0;
-    this->ghq_hirs_dump = GetSetting(Set_ghq_hirs_dump);
+    m_ghq_hirs_dump = GetSetting(Set_ghq_hirs_dump) != 0;
 
     if (Set_log_dir != 0)
     {
@@ -847,7 +856,7 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_ghq_cache_save, m_ghq_cache_save);
     SetSetting(Set_ghq_cache_size, m_ghq_cache_size);
     SetSetting(Set_ghq_hirs_let_texartists_fly, m_ghq_hirs_let_texartists_fly);
-    SetSetting(Set_ghq_hirs_dump, g_settings->ghq_hirs_dump);
+    SetSetting(Set_ghq_hirs_dump, m_ghq_hirs_dump);
 
     SetSetting(g_romopen ? Set_filtering : Set_filtering_default, filtering());
     SetSetting(g_romopen ? Set_fog : Set_fog_default, m_fog);

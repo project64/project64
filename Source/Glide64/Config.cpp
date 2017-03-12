@@ -658,12 +658,12 @@ public:
 
         m_cbxHrsTexEdit.Attach(GetDlgItem(IDC_CHK_TEX_DUMP_EDIT));
         TTSetTxt(IDC_CHK_TEX_DUMP_EDIT, "Texture dumping mode:\n\nIn this mode, you have that ability to dump textures on screen to the appropriate folder.\nYou can also reload textures while the game is running to see how they look instantly - big time saver!\n\nHotkeys:\n\"R\" reloads hires textures from the texture pack\n\"D\" toggles texture dumps on/off.");
-        m_cbxHrsTexEdit.SetCheck(g_settings->ghq_hirs_dump > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxHrsTexEdit.SetCheck(g_settings->ghq_hirs_dump() > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsAltCRC.Attach(GetDlgItem(IDC_CHK_ALT_CRC));
         TTSetTxt(IDC_CHK_ALT_CRC, "Alternative CRC calculation:\n\nThis option enables emulation of a palette CRC calculation bug in RiceVideo.\nIf some textures are not loaded, try to set this option on/off.\n\n[Recommended: texture pack dependant, mostly on]");
         m_cbxHrsAltCRC.SetCheck(g_settings->ghq_hirs_altcrc() > 0 ? BST_CHECKED : BST_UNCHECKED);
-        if (g_settings->ghq_hirs_dump)
+        if (g_settings->ghq_hirs_dump())
         {
             m_cbxHrsAltCRC.EnableWindow(false);
         }
@@ -697,7 +697,7 @@ public:
         g_settings->SetGhqHirs((CSettings::HiResPackFormat_t)m_cmbHrsFormat.GetItemData(m_cmbHrsFormat.GetCurSel()));
         g_settings->SetGhqHirsTile(m_cbxHrsTile.GetCheck() == BST_CHECKED);
         g_settings->SetGhqHirsF16bpp(m_cbxHrsForce16.GetCheck() == BST_CHECKED);
-        g_settings->ghq_hirs_dump = (int)m_cbxHrsTexEdit.GetCheck() == BST_CHECKED;
+        g_settings->SetGhqHirsDump(m_cbxHrsTexEdit.GetCheck() == BST_CHECKED);
         g_settings->SetGhqHirsAltcrc(m_cbxHrsAltCRC.GetCheck() == BST_CHECKED);
         g_settings->SetGhqHirsCmpr(m_cbxHrsTexCompression.GetCheck() == BST_CHECKED);
         g_settings->SetGhqHirsGz(m_cbxHrsCompressCache.GetCheck() == BST_CHECKED);

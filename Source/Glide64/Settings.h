@@ -219,7 +219,7 @@ public:
     inline bool ghq_cache_save(void) const { return m_ghq_cache_save; }
     inline int ghq_cache_size(void) const { return m_ghq_cache_size; }
     inline bool ghq_hirs_let_texartists_fly(void) const { return m_ghq_hirs_let_texartists_fly; }
-    int ghq_hirs_dump;
+    inline bool ghq_hirs_dump(void) const { return m_ghq_hirs_dump; }
 
     //Debug
     int autodetect_ucode;
@@ -280,6 +280,7 @@ public:
     void SetGhqEnhtGz(bool value);
     void SetGhqHirsTile(bool value);
     void SetGhqHirsF16bpp(bool value);
+    void SetGhqHirsDump(bool value);
     void SetGhqEnhtNobg(bool value);
     void SetGhqEnhtCmpr(bool value);    
     void SetGhqHirsAltcrc(bool value);
@@ -344,6 +345,7 @@ private:
     bool m_ghq_cache_save;
     int m_ghq_cache_size;
     bool m_ghq_hirs_let_texartists_fly;
+    bool m_ghq_hirs_dump;
     ucode_t m_ucode;
     StippleMode_t m_stipple_mode;
     hacks_t m_hacks;
