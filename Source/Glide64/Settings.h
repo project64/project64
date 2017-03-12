@@ -235,8 +235,6 @@ public:
     inline wfmode_t wfmode(void) const { return m_wfmode; }
 
     // Special fixes
-    int offset_x, offset_y;
-    int scale_x, scale_y;
     int fast_crc;
     int alt_tex_size;
     int use_sts1_only;

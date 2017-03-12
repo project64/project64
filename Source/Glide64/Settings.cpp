@@ -60,10 +60,6 @@ CSettings::CSettings() :
     m_wfmode(wfmode_VertexColors),
 
 // Special fixes
-offset_x(0),
-offset_y(0),
-scale_x(0),
-scale_y(0),
 fast_crc(0),
 alt_tex_size(0),
 use_sts1_only(0),
