@@ -251,7 +251,7 @@ public:
     inline bool force_calc_sphere(void) const { return m_force_calc_sphere; } //use spheric mapping only, Ridge Racer 64
     inline bool pal230(void) const { return m_pal230; } //use spheric mapping only, Ridge Racer 64
     inline bool correct_viewport(void) const { return m_correct_viewport; } //correct viewport values
-    int zmode_compare_less; //force GR_CMP_LESS for zmode=0 (opaque)and zmode=1 (interpenetrating)
+    inline bool zmode_compare_less(void) const { return m_zmode_compare_less; } //force GR_CMP_LESS for zmode=0 (opaque)and zmode=1 (interpenetrating)
     int old_style_adither; //apply alpha dither regardless of alpha_dither_mode
     int n64_z_scale; //scale vertex z value before writing to depth buffer, as N64 does.
     
@@ -370,6 +370,7 @@ private:
     bool m_force_calc_sphere;
     bool m_pal230;
     bool m_correct_viewport;
+    bool m_zmode_compare_less;
     hacks_t m_hacks;
 };
 

@@ -1792,11 +1792,11 @@ void update()
                 switch ((rdp.rm & 0xC00) >> 10) {
                 case 0:
                     grDepthBiasLevel(0);
-                    grDepthBufferFunction(g_settings->zmode_compare_less ? GR_CMP_LESS : GR_CMP_LEQUAL);
+                    grDepthBufferFunction(g_settings->zmode_compare_less() ? GR_CMP_LESS : GR_CMP_LEQUAL);
                     break;
                 case 1:
                     grDepthBiasLevel(-4);
-                    grDepthBufferFunction(g_settings->zmode_compare_less ? GR_CMP_LESS : GR_CMP_LEQUAL);
+                    grDepthBufferFunction(g_settings->zmode_compare_less() ? GR_CMP_LESS : GR_CMP_LEQUAL);
                     break;
                 case 2:
                     grDepthBiasLevel(g_settings->ucode() == CSettings::ucode_PerfectDark ? -4 : 0);
