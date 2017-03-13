@@ -331,7 +331,7 @@ char ** grQueryResolutionsExt(int32_t * Size)
 uint32_t grWrapperFullScreenResolutionExt(uint32_t * width, uint32_t * height)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
-    g_FullScreenResolutions.getResolution(g_settings->wrpResolution, width, height);
-    return g_settings->wrpResolution;
+    g_FullScreenResolutions.getResolution(g_settings->FullScreenRes(), width, height);
+    return g_settings->FullScreenRes();
 }
 #endif

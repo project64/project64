@@ -85,7 +85,7 @@ CSettings::CSettings() :
 
 //wrapper settings
 #ifndef ANDROID
-wrpResolution(0),
+    m_FullScreenRes(0),
 #endif
 wrpVRAM(0),
 wrpFBO(0),
@@ -232,8 +232,8 @@ void CSettings::UpdateScreenSize(bool fullscreen)
 #ifndef ANDROID
     if (fullscreen)
     {
-        g_width = GetFullScreenResWidth(wrpResolution);
-        g_height = GetFullScreenResHeight(wrpResolution);
+        g_width = GetFullScreenResWidth(m_FullScreenRes);
+        g_height = GetFullScreenResHeight(m_FullScreenRes);
     }
     else
     {
@@ -490,6 +490,17 @@ void CSettings::SetUcode(ucode_t value)
     m_ucode = value;
 }
 
+#ifndef ANDROID
+void CSettings::SetFullScreenRes(uint32_t value)
+{
+    if (value != m_FullScreenRes)
+    {
+        m_FullScreenRes = value;
+        m_dirty = true;
+    }
+}
+#endif
+
 void CSettings::UpdateAspectRatio(void)
 {
     switch (m_aspectmode)
@@ -531,7 +542,7 @@ void CSettings::ReadSettings()
 {
     SetScreenRes(GetSetting(Set_Resolution));
 #ifndef ANDROID
-    this->wrpResolution = GetSetting(Set_FullScreenRes);
+    SetFullScreenRes(GetSetting(Set_FullScreenRes));
 #endif
     m_vsync = GetSetting(Set_vsync) != 0;
     m_rotate = (ScreenRotate_t)GetSetting(Set_Rotate);
@@ -801,8 +812,8 @@ void CSettings::ReadGameSettings(const char * name)
 void CSettings::WriteSettings(void)
 {
     SetSetting(Set_Resolution, g_settings->m_ScreenRes);
-#ifdef _WIN32
-    SetSetting(Set_FullScreenRes, g_settings->wrpResolution);
+#ifndef ANDROID
+    SetSetting(Set_FullScreenRes, m_FullScreenRes);
 #endif
     SetSetting(Set_vsync, m_vsync ? 1 : 0);
     SetSetting(Set_Rotate, m_rotate);

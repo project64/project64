@@ -306,7 +306,7 @@ public:
             {
                 m_cmbFSResolution.AddString(aRes[r]);
             }
-            m_cmbFSResolution.SetCurSel(g_settings->wrpResolution < size ? g_settings->wrpResolution : 0);
+            m_cmbFSResolution.SetCurSel(g_settings->FullScreenRes() < size ? g_settings->FullScreenRes() : 0);
         }
         TTSetTxt(IDC_CMB_FS_RESOLUTION, "Full screen resolution:\n\nThis sets the full screen resolution.\nAll the resolutions that your video card / monitor support should be displayed.\n\n[Recommended:native(max) resolution of your monitor - unless performance becomes an issue]");
 
@@ -337,7 +337,7 @@ public:
         g_settings->SetScreenRes(m_WindowRes.GetCurSel());
         g_settings->SetVsync(m_cbxVSync.GetCheck() == BST_CHECKED);
         g_settings->SetTexenhOptions(m_cbxTextureSettings.GetCheck() == BST_CHECKED);
-        g_settings->wrpResolution = m_cmbFSResolution.GetCurSel();
+        g_settings->SetFullScreenRes(m_cmbFSResolution.GetCurSel());
         g_settings->wrpAnisotropic = m_cbxAnisotropic.GetCheck() == BST_CHECKED;
         g_settings->wrpVRAM = m_cbxVRAM.GetCheck() == BST_CHECKED ? 0 : atoi(spinVRAM);
         g_settings->wrpFBO = m_cbxFBO.GetCheck() == BST_CHECKED;

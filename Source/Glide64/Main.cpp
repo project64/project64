@@ -393,7 +393,7 @@ void SetWindowDisplaySize(HWND hWnd)
         g_windowedStyle = GetWindowLong(hWnd, GWL_STYLE);
 
         // primary monitor only
-        if (!EnterFullScreen(g_settings->wrpResolution))
+        if (!EnterFullScreen(g_settings->FullScreenRes()))
         {
             WriteTrace(TraceGlitch, TraceWarning, "can't change to fullscreen mode");
         }

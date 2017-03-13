@@ -259,7 +259,7 @@ public:
     
     //wrapper settings
 #ifndef ANDROID
-    int wrpResolution;
+    inline uint32_t FullScreenRes(void) const { return m_FullScreenRes; }
 #endif
     int wrpVRAM;
     int wrpFBO;
@@ -294,7 +294,9 @@ public:
     void UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove);
     ucode_t DetectUCode(uint32_t uc_crc);
     void SetUcode(ucode_t value);
-
+#ifndef ANDROID
+    void SetFullScreenRes(uint32_t value);
+#endif
     void ReadSettings();
     void ReadGameSettings(const char * name);
     void WriteSettings(void);
@@ -313,6 +315,9 @@ private:
     short m_Set_texture_dir;
 
     bool m_dirty;
+#ifndef ANDROID
+    uint32_t m_FullScreenRes;
+#endif
     bool m_FlushLogs;
     char m_log_dir[260];
     uint32_t m_ScreenRes;
