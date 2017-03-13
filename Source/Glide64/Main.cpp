@@ -81,7 +81,7 @@ int exception = FALSE;
 int evoodoo = 0;
 int ev_fullscreen = 0;
 
-extern int viewport_offset;
+extern int g_viewport_offset;
 extern int g_width, g_height;
 
 
@@ -207,12 +207,6 @@ void ConfigWrapper()
     grConfigWrapperExt(g_settings->wrpVRAM() * 1024 * 1024, g_settings->wrpFBO(), g_settings->wrpAnisotropic());
 }
 
-void UseUnregisteredSetting(int /*SettingID*/)
-{
-#ifdef _WIN32
-    DebugBreak();
-#endif
-}
 extern int g_width, g_height;
 
 int GetTexAddrUMA(int /*tmu*/, int texsize)
@@ -380,9 +374,12 @@ void DisplayLoadProgress(const wchar_t *format, ...)
 #ifdef _WIN32
 void SetWindowDisplaySize(HWND hWnd)
 {
-    if ((HWND)hWnd == NULL) hWnd = GetActiveWindow();
+    if (hWnd == NULL)
+    {
+        hWnd = GetActiveWindow();
+    }
     g_hwnd_win = (HWND)hWnd;
-    
+
     if (ev_fullscreen)
     {
         ZeroMemory(&g_windowedRect, sizeof(RECT));
@@ -407,7 +404,7 @@ void SetWindowDisplaySize(HWND hWnd)
         SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_APPWINDOW | WS_EX_TOPMOST);
         SetWindowPos(hWnd, NULL, 0, 0, g_width, g_height, SWP_NOACTIVATE | SWP_NOZORDER | SWP_SHOWWINDOW);
 
-        viewport_offset = 0;
+        g_viewport_offset = 0;
         g_fullscreen = true;
     }
     else
@@ -427,7 +424,7 @@ void SetWindowDisplaySize(HWND hWnd)
         {
             GetWindowRect(hStatusBar, &statusbarRect);
         }
-        viewport_offset = statusbarRect.bottom - statusbarRect.top;
+        g_viewport_offset = statusbarRect.bottom - statusbarRect.top;
         GetWindowRect(hWnd, &g_windowedRect);
         GetClientRect(hWnd, &clientRect);
         g_windowedRect.right += (g_width - (clientRect.right - clientRect.left));

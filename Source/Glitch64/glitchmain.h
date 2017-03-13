@@ -155,7 +155,7 @@ extern int fog_coord_support;
 //extern int pbuffer_support;
 extern int glsl_support;
 extern unsigned int pBufferAddress;
-extern int viewport_width, viewport_height, viewport_offset, nvidia_viewport_hack;
+extern int viewport_width, viewport_height, g_viewport_offset, nvidia_viewport_hack;
 extern int UMAmode;
 
 void grChromaRangeExt(GrColor_t color0, GrColor_t color1, FxU32 mode);
