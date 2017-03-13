@@ -261,7 +261,7 @@ public:
 #ifndef ANDROID
     inline uint32_t FullScreenRes(void) const { return m_FullScreenRes; }
 #endif
-    int wrpVRAM;
+    inline int wrpVRAM(void) const { return m_wrpVRAM; }
     int wrpFBO;
     int wrpAnisotropic;
     inline bool FlushLogs(void) const { return m_FlushLogs; }
@@ -275,6 +275,7 @@ public:
     void SetSwapMode(SwapMode_t value);
     void SetFog(bool value);
     void SetBuffClear(bool value);
+    void SetWrpVRAM(int value);
     void SetGhqFltr(TextureFilter_t value);
     void SetGhqEnht(TextureEnhancement_t value);
     void SetGhqCmpr(TextureCompression_t value);
@@ -318,6 +319,7 @@ private:
 #ifndef ANDROID
     uint32_t m_FullScreenRes;
 #endif
+    int m_wrpVRAM;
     bool m_FlushLogs;
     char m_log_dir[260];
     uint32_t m_ScreenRes;

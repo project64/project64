@@ -323,7 +323,7 @@ public:
         m_VramSize.Attach(GetDlgItem(IDC_SPIN_VRAM_SIZE));
         m_VramSize.SetBuddy(GetDlgItem(IDC_TXT_VRAM_SIZE));
         m_spinVRAM.Attach(GetDlgItem(IDC_TXT_VRAM_SIZE));
-        m_cbxVRAM.SetCheck(g_settings->wrpVRAM == 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxVRAM.SetCheck(g_settings->wrpVRAM() == 0 ? BST_CHECKED : BST_UNCHECKED);
         m_lblMb.Attach(GetDlgItem(IDC_LBL_MB));
         AutoDetectChanged();
         return TRUE;
@@ -339,7 +339,7 @@ public:
         g_settings->SetTexenhOptions(m_cbxTextureSettings.GetCheck() == BST_CHECKED);
         g_settings->SetFullScreenRes(m_cmbFSResolution.GetCurSel());
         g_settings->wrpAnisotropic = m_cbxAnisotropic.GetCheck() == BST_CHECKED;
-        g_settings->wrpVRAM = m_cbxVRAM.GetCheck() == BST_CHECKED ? 0 : atoi(spinVRAM);
+        g_settings->SetWrpVRAM(m_cbxVRAM.GetCheck() == BST_CHECKED ? 0 : atoi(spinVRAM));
         g_settings->wrpFBO = m_cbxFBO.GetCheck() == BST_CHECKED;
 
         if (memcmp(&oldsettings, g_settings, sizeof(oldsettings))) //check that settings were changed
@@ -361,7 +361,7 @@ private:
 
     void AutoDetectChanged(void)
     {
-        m_spinVRAM.SetWindowText(m_cbxVRAM.GetCheck() == BST_CHECKED ? " auto" : stdstr_f("%d",g_settings->wrpVRAM ? g_settings->wrpVRAM : 32).c_str());
+        m_spinVRAM.SetWindowText(m_cbxVRAM.GetCheck() == BST_CHECKED ? " auto" : stdstr_f("%d",g_settings->wrpVRAM() != 0 ? g_settings->wrpVRAM() : 32).c_str());
         m_spinVRAM.EnableWindow(m_cbxVRAM.GetCheck() != BST_CHECKED);
         m_VramSize.EnableWindow(m_cbxVRAM.GetCheck() != BST_CHECKED);
         m_lblMb.EnableWindow(m_cbxVRAM.GetCheck() != BST_CHECKED);
