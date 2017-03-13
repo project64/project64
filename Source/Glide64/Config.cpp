@@ -618,8 +618,8 @@ public:
         SetComboBoxIndex(m_cmbHrsFormat, g_settings->ghq_hirs());
 
         m_cmbTextureCompression.Attach(GetDlgItem(IDC_CMB_TEX_COMPRESS_MEHTOD));
-        m_cmbTextureCompression.SetItemData(m_cmbTextureCompression.AddString("S3TC"), 0);
-        m_cmbTextureCompression.SetItemData(m_cmbTextureCompression.AddString("FXT1"), 1);
+        m_cmbTextureCompression.SetItemData(m_cmbTextureCompression.AddString("S3TC"), CSettings::TextureCompression_S3TC);
+        m_cmbTextureCompression.SetItemData(m_cmbTextureCompression.AddString("FXT1"), CSettings::TextureCompression_FXT1);
         SetComboBoxIndex(m_cmbTextureCompression, g_settings->ghq_cmpr());
 
         tooltip = "Texture cache size:\n\nEnhanced and filtered textures can be cached to aid performance.\nThis setting will adjust how much PC memory will be dedicated for texture cache.\nThis helps boost performance if there are subsequent requests for the same texture (usually the case).\nNormally, 128MB should be more than enough but there is a sweet spot for each game.\nSuper Mario may not need more than 32megs, but Conker streams a lot of textures, so setting 256+ megs can boost performance.\nAdjust accordingly if you are encountering speed issues.\n'0' disables cache.\n\n[Recommended: PC and game dependant]";
@@ -792,7 +792,7 @@ void CALL DllConfig(HWND hParent)
 
     if (g_romopen)
     {
-        if (evoodoo)// && g_fullscreen && !ev_fullscreen)
+        if (evoodoo)// && fullscreen && !ev_fullscreen)
         {
             ReleaseGfx();
             rdp_reset();
