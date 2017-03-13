@@ -253,7 +253,7 @@ public:
     inline bool correct_viewport(void) const { return m_correct_viewport; } //correct viewport values
     inline bool zmode_compare_less(void) const { return m_zmode_compare_less; } //force GR_CMP_LESS for zmode=0 (opaque)and zmode=1 (interpenetrating)
     inline bool old_style_adither(void) const { return m_old_style_adither; } //apply alpha dither regardless of alpha_dither_mode
-    int n64_z_scale; //scale vertex z value before writing to depth buffer, as N64 does.
+    inline bool n64_z_scale(void) const { return m_n64_z_scale; } //scale vertex z value before writing to depth buffer, as N64 does.
     
     inline bool hacks(hacks_t hack) const { return (m_hacks & hack) == hack; } //Special game hacks
     
@@ -372,6 +372,7 @@ private:
     bool m_correct_viewport;
     bool m_zmode_compare_less;
     bool m_old_style_adither;
+    bool m_n64_z_scale;
     hacks_t m_hacks;
 };
 

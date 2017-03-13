@@ -1025,7 +1025,7 @@ static void CalculateLOD(VERTEX *v, int n)
 
 float ScaleZ(float z)
 {
-    if (g_settings->n64_z_scale)
+    if (g_settings->n64_z_scale())
     {
         int iz = (int)(z*8.0f + 0.5f);
         if (iz < 0) iz = 0;

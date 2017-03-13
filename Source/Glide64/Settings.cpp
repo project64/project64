@@ -79,7 +79,7 @@ CSettings::CSettings() :
     m_correct_viewport(false), //correct viewport values
     m_zmode_compare_less(false), //force GR_CMP_LESS for zmode=0 (opaque)and zmode=1 (interpenetrating)
     m_old_style_adither(false), //apply alpha dither regardless of alpha_dither_mode
-n64_z_scale(0), //scale vertex z value before writing to depth buffer, as N64 does.
+    m_n64_z_scale(false), //scale vertex z value before writing to depth buffer, as N64 does.
 
     m_hacks((hacks_t)0),
 
@@ -178,7 +178,7 @@ void CSettings::RegisterSettings(void)
     game_setting(Set_adjust_aspect, "adjust_aspect", true);
     game_setting(Set_zmode_compare_less, "zmode_compare_less", false);
     game_setting(Set_old_style_adither, "old_style_adither", false);
-    game_setting(Set_n64_z_scale, "n64_z_scale", 0);
+    game_setting(Set_n64_z_scale, "n64_z_scale", false);
     game_setting_default(Set_optimize_texrect, "optimize_texrect", Set_optimize_texrect_default);
     game_setting(Set_ignore_aux_copy, "ignore_aux_copy", false);
     game_setting(Set_hires_buf_clear, "hires_buf_clear", true);
@@ -731,7 +731,7 @@ void CSettings::ReadGameSettings(const char * name)
     m_adjust_aspect = GetSetting(Set_adjust_aspect);
     m_zmode_compare_less = GetSetting(Set_zmode_compare_less);
     m_old_style_adither = GetSetting(Set_old_style_adither);
-    g_settings->n64_z_scale = GetSetting(Set_n64_z_scale);
+    m_n64_z_scale = GetSetting(Set_n64_z_scale) != 0;
 
     m_ScreenRes = GetSetting(Set_Resolution);
     if (m_ScreenRes >= GetScreenResolutionCount()) { m_ScreenRes = GetDefaultScreenRes(); }
