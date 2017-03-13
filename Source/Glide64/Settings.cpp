@@ -74,7 +74,7 @@ CSettings::CSettings() :
     m_clip_zmin(false), //enable near z clipping
     m_clip_zmax(false), //enable far plane clipping;
     m_adjust_aspect(false), //adjust screen aspect for wide screen mode
-force_calc_sphere(0), //use spheric mapping only, Ridge Racer 64
+    m_force_calc_sphere(false), //use spheric mapping only, Ridge Racer 64
 pal230(0),    //set special scale for PAL games
 correct_viewport(0), //correct viewport values
 zmode_compare_less(0), //force GR_CMP_LESS for zmode=0 (opaque)and zmode=1 (interpenetrating)
@@ -161,7 +161,7 @@ void CSettings::RegisterSettings(void)
 
     game_setting(Set_alt_tex_size, "alt_tex_size", false);
     game_setting(Set_use_sts1_only, "use_sts1_only", false);
-    game_setting(Set_force_calc_sphere, "force_calc_sphere", 0);
+    game_setting(Set_force_calc_sphere, "force_calc_sphere", false);
     game_setting(Set_correct_viewport, "correct_viewport", 0);
     game_setting(Set_increase_texrect_edge, "increase_texrect_edge", false);
     game_setting(Set_decrease_fillrect_edge, "decrease_fillrect_edge", false);
@@ -714,7 +714,7 @@ void CSettings::ReadGameSettings(const char * name)
 
     m_alt_tex_size = GetSetting(Set_alt_tex_size) != 0;
     m_use_sts1_only = GetSetting(Set_use_sts1_only) != 0;
-    g_settings->force_calc_sphere = GetSetting(Set_force_calc_sphere);
+    m_force_calc_sphere = GetSetting(Set_force_calc_sphere) != 0;
     g_settings->correct_viewport = GetSetting(Set_correct_viewport);
     m_increase_texrect_edge = GetSetting(Set_increase_texrect_edge) != 0;
     m_decrease_fillrect_edge = GetSetting(Set_decrease_fillrect_edge) != 0;
