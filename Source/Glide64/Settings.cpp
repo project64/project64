@@ -11,11 +11,13 @@ int GetCurrentResIndex(void);
 extern uint32_t g_NativeWidth, g_NativeHeight;
 #endif
 
-short Set_basic_mode = 0, Set_log_dir = 0, Set_log_flush = 0;
 extern int g_width, g_height;
 
 CSettings::CSettings() :
+    m_Set_basic_mode(0),
     m_Set_texture_dir(0),
+    m_Set_log_dir(0),
+    m_Set_log_flush(0),
     m_dirty(false),
     m_res_x(GetScreenResWidth(GetDefaultScreenRes())),
     m_scr_res_x(GetScreenResWidth(GetDefaultScreenRes())),
@@ -100,10 +102,10 @@ m_FlushLogs(false)
 void CSettings::RegisterSettings(void)
 {
     SetModuleName("default");
-    Set_basic_mode = FindSystemSettingId("Basic Mode");
+    m_Set_basic_mode = FindSystemSettingId("Basic Mode");
     m_Set_texture_dir = FindSystemSettingId("Dir:Texture");
-    Set_log_flush = FindSystemSettingId("Log Auto Flush");
-    Set_log_dir = FindSystemSettingId("Dir:Log");
+    m_Set_log_flush = FindSystemSettingId("Log Auto Flush");
+    m_Set_log_dir = FindSystemSettingId("Dir:Log");
 
     SetModuleName("Glide64");
     general_setting(Set_Resolution, "resolution", GetDefaultScreenRes());
@@ -573,7 +575,7 @@ void CSettings::ReadSettings()
 #endif
     m_vsync = GetSetting(Set_vsync) != 0;
     m_rotate = (ScreenRotate_t)GetSetting(Set_Rotate);
-    m_advanced_options = Set_basic_mode ? GetSystemSetting(Set_basic_mode) == 0 : false;
+    m_advanced_options = m_Set_basic_mode ? GetSystemSetting(m_Set_basic_mode) == 0 : false;
     m_texenh_options = GetSetting(Set_texenh_options) != 0;
 
     m_wrpVRAM = GetSetting(Set_wrpVRAM);
@@ -608,11 +610,11 @@ void CSettings::ReadSettings()
     m_ghq_hirs_let_texartists_fly = GetSetting(Set_ghq_hirs_let_texartists_fly) != 0;
     m_ghq_hirs_dump = GetSetting(Set_ghq_hirs_dump) != 0;
 
-    if (Set_log_dir != 0)
+    if (m_Set_log_dir != 0)
     {
-        GetSystemSettingSz(Set_log_dir, m_log_dir, sizeof(m_log_dir));
+        GetSystemSettingSz(m_Set_log_dir, m_log_dir, sizeof(m_log_dir));
     }
-    m_FlushLogs = Set_log_flush != 0 ? GetSystemSetting(Set_log_flush) != 0 : false;
+    m_FlushLogs = m_Set_log_flush != 0 ? GetSystemSetting(m_Set_log_flush) != 0 : false;
     m_dirty = false;
 }
 

@@ -315,7 +315,10 @@ private:
         ((CSettings *)_this)->SettingsChanged();
     }
 
+    short m_Set_basic_mode;
     short m_Set_texture_dir;
+    short m_Set_log_dir;
+    short m_Set_log_flush;
 
     bool m_dirty;
 #ifndef ANDROID
