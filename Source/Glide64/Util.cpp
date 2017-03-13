@@ -1876,12 +1876,15 @@ void update()
         }
         if (rdp.acmp == 3 && rdp.cycle_mode < 2)
         {
-            if (g_settings->old_style_adither || rdp.alpha_dither_mode != 3) {
+            if (g_settings->old_style_adither() || rdp.alpha_dither_mode != 3) 
+            {
                 WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: dither");
                 grStippleMode(g_settings->stipple_mode());
             }
             else
+            {
                 grStippleMode(GR_STIPPLE_DISABLE);
+            }
         }
         else
         {

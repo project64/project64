@@ -78,7 +78,7 @@ CSettings::CSettings() :
     m_pal230(false),    //set special scale for PAL games
     m_correct_viewport(false), //correct viewport values
     m_zmode_compare_less(false), //force GR_CMP_LESS for zmode=0 (opaque)and zmode=1 (interpenetrating)
-old_style_adither(0), //apply alpha dither regardless of alpha_dither_mode
+    m_old_style_adither(false), //apply alpha dither regardless of alpha_dither_mode
 n64_z_scale(0), //scale vertex z value before writing to depth buffer, as N64 does.
 
     m_hacks((hacks_t)0),
@@ -177,7 +177,7 @@ void CSettings::RegisterSettings(void)
     game_setting(Set_fast_crc, "fast_crc", true);
     game_setting(Set_adjust_aspect, "adjust_aspect", true);
     game_setting(Set_zmode_compare_less, "zmode_compare_less", false);
-    game_setting(Set_old_style_adither, "old_style_adither", 0);
+    game_setting(Set_old_style_adither, "old_style_adither", false);
     game_setting(Set_n64_z_scale, "n64_z_scale", 0);
     game_setting_default(Set_optimize_texrect, "optimize_texrect", Set_optimize_texrect_default);
     game_setting(Set_ignore_aux_copy, "ignore_aux_copy", false);
@@ -730,7 +730,7 @@ void CSettings::ReadGameSettings(const char * name)
     m_fast_crc = GetSetting(Set_fast_crc) != 0;
     m_adjust_aspect = GetSetting(Set_adjust_aspect);
     m_zmode_compare_less = GetSetting(Set_zmode_compare_less);
-    g_settings->old_style_adither = GetSetting(Set_old_style_adither);
+    m_old_style_adither = GetSetting(Set_old_style_adither);
     g_settings->n64_z_scale = GetSetting(Set_n64_z_scale);
 
     m_ScreenRes = GetSetting(Set_Resolution);
