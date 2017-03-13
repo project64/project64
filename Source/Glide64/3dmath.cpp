@@ -76,7 +76,7 @@ void calc_light(VERTEX *v)
 //*
 void calc_linear(VERTEX *v)
 {
-    if (g_settings->force_calc_sphere)
+    if (g_settings->force_calc_sphere())
     {
         calc_sphere(v);
         return;

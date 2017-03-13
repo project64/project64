@@ -68,6 +68,7 @@
 #include <wtl/atlcrack.h>
 
 extern HINSTANCE hinstDLL;
+extern bool g_ghq_use;
 
 extern CriticalSection * g_ProcessDListCS;
 
@@ -105,22 +106,6 @@ void ConfigCleanup(void)
 
 
 void CloseConfig();
-
-uint32_t texcmpr[] =
-{
-    //NO_COMPRESSION,   //"None"
-    //  NCC_COMPRESSION,  //"NCC"
-    S3TC_COMPRESSION, //"S3TC"
-    FXT1_COMPRESSION, //"FXT1"
-};
-
-uint32_t texhirs[] =
-{
-    NO_HIRESTEXTURES,   //"Do not use"
-    RICE_HIRESTEXTURES,  //"Rice format"
-    //  GHQ_HIRESTEXTURES, //"GlideHQ format"
-    //  JABO_HIRESTEXTURES, //"Jabo format"
-};
 
 #ifdef _WIN32
 
@@ -306,11 +291,11 @@ public:
         TTSetTxt(IDC_CMB_WINDOW_RES, "Resolution:\n\nThis option selects the windowed resolution.\n\n[Recommended: 640x480, 800x600, 1024x768]");
 
         m_cbxVSync.Attach(GetDlgItem(IDC_CHK_VERTICAL_SYNC));
-        m_cbxVSync.SetCheck(g_settings->vsync ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxVSync.SetCheck(g_settings->vsync() ? BST_CHECKED : BST_UNCHECKED);
         TTSetTxt(IDC_CHK_VERTICAL_SYNC, "Vertical sync:\n\nThis option will enable the vertical sync, which will prevent tearing.\nNote: this option will ONLY have effect if vsync is set to \"Software Controlled\".");
 
         m_cbxTextureSettings.Attach(GetDlgItem(IDC_CHK_SHOW_TEXTURE_ENHANCEMENT));
-        m_cbxTextureSettings.SetCheck(g_settings->texenh_options ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxTextureSettings.SetCheck(g_settings->texenh_options() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cmbFSResolution.Attach(GetDlgItem(IDC_CMB_FS_RESOLUTION));
         int32_t size = 0;
@@ -321,24 +306,24 @@ public:
             {
                 m_cmbFSResolution.AddString(aRes[r]);
             }
-            m_cmbFSResolution.SetCurSel(g_settings->wrpResolution < size ? g_settings->wrpResolution : 0);
+            m_cmbFSResolution.SetCurSel(g_settings->FullScreenRes() < size ? g_settings->FullScreenRes() : 0);
         }
         TTSetTxt(IDC_CMB_FS_RESOLUTION, "Full screen resolution:\n\nThis sets the full screen resolution.\nAll the resolutions that your video card / monitor support should be displayed.\n\n[Recommended:native(max) resolution of your monitor - unless performance becomes an issue]");
 
         m_cbxAnisotropic.Attach(GetDlgItem(IDC_CBXANISOTROPIC));
-        m_cbxAnisotropic.SetCheck(g_settings->wrpAnisotropic > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxAnisotropic.SetCheck(g_settings->wrpAnisotropic() ? BST_CHECKED : BST_UNCHECKED);
         TTSetTxt(IDC_CBXANISOTROPIC, "Anisotropic filtering:\n\nThis filter sharpens and brings out the details of textures that recede into the distance.\nWhen activated, it will use the max anisotropy your video card supports.\nHowever, this will override native way of texture filtering and may cause visual artifacts in some games.\n\n[Recommended: your preference, game dependant]");
 
         m_cbxFBO.Attach(GetDlgItem(IDC_CHK_USE_FRAME_BUFFER_OBJECT));
         TTSetTxt(IDC_CHK_USE_FRAME_BUFFER_OBJECT, "Use frame buffer objects:\n\nChanges the way FB effects are rendered - with or without usage of the OpenGL Frame Buffer Objects (FBO) extension.\nThe choice depends on game and your video card. FBO off is good for NVIDIA cards, while for ATI cards, it's usually best that FBOs are turned on.\nAlso, some FB effects works only with one of the methods, no matter, which card you have.\nOn the whole, with FBO off, compatibility/ accuracy is a bit better (which is the case for Resident Evil 2).\nHowever, with FBO on with some systems, it can actually be a bit faster in cases.\n\n[Recommended: video card and game dependant]");
-        m_cbxFBO.SetCheck(g_settings->wrpFBO > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxFBO.SetCheck(g_settings->wrpFBO() > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxVRAM.Attach(GetDlgItem(IDC_CHK_AUTODETECT_VRAM));
         TTSetTxt(IDC_CHK_AUTODETECT_VRAM, "Autodetect VRAM Size:\n\nSince OpenGL cannot do this reliably at the moment, the option to set this manually is available.\nIf checked, plugin will try to autodetect VRAM size.\nBut if this appears wrong, please uncheck and set it to correct value.\n\n[Recommended: on]");
         m_VramSize.Attach(GetDlgItem(IDC_SPIN_VRAM_SIZE));
         m_VramSize.SetBuddy(GetDlgItem(IDC_TXT_VRAM_SIZE));
         m_spinVRAM.Attach(GetDlgItem(IDC_TXT_VRAM_SIZE));
-        m_cbxVRAM.SetCheck(g_settings->wrpVRAM == 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxVRAM.SetCheck(g_settings->wrpVRAM() == 0 ? BST_CHECKED : BST_UNCHECKED);
         m_lblMb.Attach(GetDlgItem(IDC_LBL_MB));
         AutoDetectChanged();
         return TRUE;
@@ -350,12 +335,12 @@ public:
         m_spinVRAM.GetWindowText(spinVRAM, sizeof(spinVRAM));
         CSettings oldsettings = *g_settings;
         g_settings->SetScreenRes(m_WindowRes.GetCurSel());
-        g_settings->vsync = m_cbxVSync.GetCheck() == BST_CHECKED;
-        g_settings->texenh_options = m_cbxTextureSettings.GetCheck() == BST_CHECKED;
-        g_settings->wrpResolution = m_cmbFSResolution.GetCurSel();
-        g_settings->wrpAnisotropic = m_cbxAnisotropic.GetCheck() == BST_CHECKED;
-        g_settings->wrpVRAM = m_cbxVRAM.GetCheck() == BST_CHECKED ? 0 : atoi(spinVRAM);
-        g_settings->wrpFBO = m_cbxFBO.GetCheck() == BST_CHECKED;
+        g_settings->SetVsync(m_cbxVSync.GetCheck() == BST_CHECKED);
+        g_settings->SetTexenhOptions(m_cbxTextureSettings.GetCheck() == BST_CHECKED);
+        g_settings->SetFullScreenRes(m_cmbFSResolution.GetCurSel());
+        g_settings->SetWrpAnisotropic(m_cbxAnisotropic.GetCheck() == BST_CHECKED);
+        g_settings->SetWrpVRAM(m_cbxVRAM.GetCheck() == BST_CHECKED ? 0 : atoi(spinVRAM));
+        g_settings->SetWrpFBO(m_cbxFBO.GetCheck() == BST_CHECKED);
 
         if (memcmp(&oldsettings, g_settings, sizeof(oldsettings))) //check that settings were changed
         {
@@ -376,7 +361,7 @@ private:
 
     void AutoDetectChanged(void)
     {
-        m_spinVRAM.SetWindowText(m_cbxVRAM.GetCheck() == BST_CHECKED ? " auto" : stdstr_f("%d",g_settings->wrpVRAM ? g_settings->wrpVRAM : 32).c_str());
+        m_spinVRAM.SetWindowText(m_cbxVRAM.GetCheck() == BST_CHECKED ? " auto" : stdstr_f("%d",g_settings->wrpVRAM() != 0 ? g_settings->wrpVRAM() : 32).c_str());
         m_spinVRAM.EnableWindow(m_cbxVRAM.GetCheck() != BST_CHECKED);
         m_VramSize.EnableWindow(m_cbxVRAM.GetCheck() != BST_CHECKED);
         m_lblMb.EnableWindow(m_cbxVRAM.GetCheck() != BST_CHECKED);
@@ -476,12 +461,12 @@ public:
         tooltip = "Fog enabled:\n\nSets fog emulation on//off.\n\n[Recommended: on]";
         TTSetTxt(IDC_CHK_FOG, tooltip.c_str());
         m_cbxFog.Attach(GetDlgItem(IDC_CHK_FOG));
-        m_cbxFog.SetCheck(g_settings->fog > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxFog.SetCheck(g_settings->fog() > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         tooltip = "Buffer clear on every frame:\n\nForces the frame buffer to be cleared every frame drawn.\nUsually frame buffer clear is controlled by the game.\nHowever, in some cases it is not well emulated, and some garbage may be left on the screen.\nIn such cases, this option must be set on.\n\n[Recommended: on]";
         TTSetTxt(IDC_CHK_BUFFER_CLEAR, tooltip.c_str());
         m_cbxBuffer.Attach(GetDlgItem(IDC_CHK_BUFFER_CLEAR));
-        m_cbxBuffer.SetCheck(g_settings->buff_clear > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxBuffer.SetCheck(g_settings->buff_clear() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxFBEnable.Attach(GetDlgItem(IDC_CHK_FRAME_BUFFER_EMULATION));
         TTSetTxt(IDC_CHK_FRAME_BUFFER_EMULATION, "Enable frame buffer emulation:\n\nIf on, plugin will try to detect frame buffer usage and apply appropriate frame buffer emulation.\n\n[Recommended: on for games which use frame buffer effects]");
@@ -520,8 +505,8 @@ public:
         g_settings->SetFiltering((CSettings::Filtering_t)m_cmbFiltering.GetItemData(m_cmbFiltering.GetCurSel()));
         g_settings->SetAspectmode((CSettings::AspectMode_t)m_cmbAspect.GetItemData(m_cmbAspect.GetCurSel()));
         g_settings->SetSwapMode((CSettings::SwapMode_t)m_cmbBufferSwap.GetItemData(m_cmbBufferSwap.GetCurSel()));
-        g_settings->fog = m_cbxFog.GetCheck() == BST_CHECKED;
-        g_settings->buff_clear = m_cbxBuffer.GetCheck() == BST_CHECKED;
+        g_settings->SetFog(m_cbxFog.GetCheck() == BST_CHECKED);
+        g_settings->SetBuffClear(m_cbxBuffer.GetCheck() == BST_CHECKED);
         g_settings->SetLODmode((CSettings::PixelLevelOfDetail_t)m_cmbLOD.GetItemData(m_cmbLOD.GetCurSel()));
 
         CButton * fb_buttons[] =
@@ -628,72 +613,72 @@ public:
         TTSetTxt(IDC_TXT_FORMAT_CHOICES, tooltip.c_str());
         TTSetTxt(IDC_CMB_FORMAT_CHOICES, tooltip.c_str());
         m_cmbHrsFormat.Attach(GetDlgItem(IDC_CMB_FORMAT_CHOICES));
-        m_cmbHrsFormat.SetItemData(m_cmbHrsFormat.AddString("None"), 0);
-        m_cmbHrsFormat.SetItemData(m_cmbHrsFormat.AddString("Rice format"), 1);
-        SetComboBoxIndex(m_cmbHrsFormat, g_settings->ghq_hirs);
+        m_cmbHrsFormat.SetItemData(m_cmbHrsFormat.AddString("None"), CSettings::HiResPackFormat_None);
+        m_cmbHrsFormat.SetItemData(m_cmbHrsFormat.AddString("Rice format"), CSettings::HiResPackFormat_Riceformat);
+        SetComboBoxIndex(m_cmbHrsFormat, g_settings->ghq_hirs());
 
         m_cmbTextureCompression.Attach(GetDlgItem(IDC_CMB_TEX_COMPRESS_MEHTOD));
-        m_cmbTextureCompression.SetItemData(m_cmbTextureCompression.AddString("S3TC"), 0);
-        m_cmbTextureCompression.SetItemData(m_cmbTextureCompression.AddString("FXT1"), 1);
-        SetComboBoxIndex(m_cmbTextureCompression, g_settings->ghq_cmpr);
+        m_cmbTextureCompression.SetItemData(m_cmbTextureCompression.AddString("S3TC"), CSettings::TextureCompression_S3TC);
+        m_cmbTextureCompression.SetItemData(m_cmbTextureCompression.AddString("FXT1"), CSettings::TextureCompression_FXT1);
+        SetComboBoxIndex(m_cmbTextureCompression, g_settings->ghq_cmpr());
 
         tooltip = "Texture cache size:\n\nEnhanced and filtered textures can be cached to aid performance.\nThis setting will adjust how much PC memory will be dedicated for texture cache.\nThis helps boost performance if there are subsequent requests for the same texture (usually the case).\nNormally, 128MB should be more than enough but there is a sweet spot for each game.\nSuper Mario may not need more than 32megs, but Conker streams a lot of textures, so setting 256+ megs can boost performance.\nAdjust accordingly if you are encountering speed issues.\n'0' disables cache.\n\n[Recommended: PC and game dependant]";
         TTSetTxt(IDC_TXT_TEXTURE_CACHE, tooltip.c_str());
         TTSetTxt(IDC_SPIN_TEXTURE_CACHE, tooltip.c_str());
         TTSetTxt(IDC_TEXT_MB, tooltip.c_str());
         m_textTexCache.Attach(GetDlgItem(IDC_TXT_TEXTURE_CACHE));
-        m_textTexCache.SetWindowTextA(stdstr_f("%d", g_settings->ghq_cache_size).c_str());
+        m_textTexCache.SetWindowTextA(stdstr_f("%d", g_settings->ghq_cache_size()).c_str());
         m_spinEnhCacheSize.Attach(GetDlgItem(IDC_SPIN_TEXTURE_CACHE));
         m_spinEnhCacheSize.SetBuddy(m_textTexCache);
 
         TTSetTxt(IDC_CHK_IGNORE_BACKGROUND, "Ignore Backgrounds:\n\nIt is used to skip enhancement for long narrow textures, usually used for backgrounds.\nThis may save texture memory greatly and increase performance.\n\n[Recommended: on (off for 'Store' mode)]");
         m_cbxEnhIgnoreBG.Attach(GetDlgItem(IDC_CHK_IGNORE_BACKGROUND));
-        m_cbxEnhIgnoreBG.SetCheck(g_settings->ghq_enht_nobg > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxEnhIgnoreBG.SetCheck(g_settings->ghq_enht_nobg() > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         tooltip = "Texture compression:\n\nTextures will be compressed using selected texture compression method.\nThe overall compression ratio is about 1/6 for FXT1 and 1/4 for S3TC.\nIn addition to saving space on the texture cache, the space occupied on the GFX hardware's texture RAM, by the enhanced textures, will be greatly reduced.\nThis minimizes texture RAM usage, decreasing the number of texture swaps to the GFX hardware leading to performance gains.\nHowever, due to the nature of lossy compression of FXT1 and S3TC, using this option can sometimes lead to quality degradation of small size textures and color banding of gradient colored textures.\n\n[Recommended: off]";
         TTSetTxt(IDC_CHK_TEX_COMPRESSION, tooltip.c_str());
         TTSetTxt(IDC_CHK_HIRES_TEX_COMPRESSION, tooltip.c_str());
 
         m_cbxEnhTexCompression.Attach(GetDlgItem(IDC_CHK_TEX_COMPRESSION));
-        m_cbxEnhTexCompression.SetCheck(g_settings->ghq_enht_cmpr > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxEnhTexCompression.SetCheck(g_settings->ghq_enht_cmpr() > 0 ? BST_CHECKED : BST_UNCHECKED);
         m_cbxHrsTexCompression.Attach(GetDlgItem(IDC_CHK_HIRES_TEX_COMPRESSION));
-        m_cbxHrsTexCompression.SetCheck(g_settings->ghq_hirs_cmpr > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxHrsTexCompression.SetCheck(g_settings->ghq_hirs_cmpr() ? BST_CHECKED : BST_UNCHECKED);
 
         TTSetTxt(IDC_CHK_COMPRESS_CACHE, "Compress texture cache:\n\nMemory will be compressed so that more textures can be held in the texture cache.\nThe compression ratio varies with each texture, but 1/5 of the original size would be a modest approximation.\nThey will be decompressed on-the-fly, before being downloaded to the gfx hardware.\nThis option will still help save memory space even when using texture compression.\n\n[Recommended: on]");
         m_cbxEnhCompressCache.Attach(GetDlgItem(IDC_CHK_COMPRESS_CACHE));
-        m_cbxEnhCompressCache.SetCheck(g_settings->ghq_enht_gz > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxEnhCompressCache.SetCheck(g_settings->ghq_enht_gz() > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsTile.Attach(GetDlgItem(IDC_CHK_TILE_TEX));
         TTSetTxt(IDC_CHK_TILE_TEX, "Tile textures:\n\nWhen on, wide texture will be split on several tiles to fit in one 256-width texture.\nThis tiled texture takes much less video memory space and thus overall performance will increase.\nHowever, corresponding polygons must be split too, and this is not polished yet - various issues are possible, including black lines and polygons distortions.\n\n[Recommended: off]");
-        m_cbxHrsTile.SetCheck(g_settings->ghq_hirs_tile > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxHrsTile.SetCheck(g_settings->ghq_hirs_tile() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsForce16.Attach(GetDlgItem(IDC_CHK_FORCE_16BPP_TEXT));
         TTSetTxt(IDC_CHK_FORCE_16BPP_TEXT, "Force 16bpp textures:\n\nThe color of the textures will be reduced to 16bpp.\nThis is another space saver and performance enhancer.\nThis halves the space used on the texture cache and the GFX hardware's texture RAM.\nColor reduction is done so that the original quality is preserved as much as possible.\nDepending on the texture, this usually is hardly noticeable.\nSometimes though, it can be: skies are a good example.\n\n[Recommended: off]");
-        m_cbxHrsForce16.SetCheck(g_settings->ghq_hirs_tile > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxHrsForce16.SetCheck(g_settings->ghq_hirs_f16bpp() > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsTexEdit.Attach(GetDlgItem(IDC_CHK_TEX_DUMP_EDIT));
         TTSetTxt(IDC_CHK_TEX_DUMP_EDIT, "Texture dumping mode:\n\nIn this mode, you have that ability to dump textures on screen to the appropriate folder.\nYou can also reload textures while the game is running to see how they look instantly - big time saver!\n\nHotkeys:\n\"R\" reloads hires textures from the texture pack\n\"D\" toggles texture dumps on/off.");
-        m_cbxHrsTexEdit.SetCheck(g_settings->ghq_hirs_dump > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxHrsTexEdit.SetCheck(g_settings->ghq_hirs_dump() > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsAltCRC.Attach(GetDlgItem(IDC_CHK_ALT_CRC));
         TTSetTxt(IDC_CHK_ALT_CRC, "Alternative CRC calculation:\n\nThis option enables emulation of a palette CRC calculation bug in RiceVideo.\nIf some textures are not loaded, try to set this option on/off.\n\n[Recommended: texture pack dependant, mostly on]");
-        m_cbxHrsAltCRC.SetCheck(g_settings->ghq_hirs_altcrc > 0 ? BST_CHECKED : BST_UNCHECKED);
-        if (g_settings->ghq_hirs_dump)
+        m_cbxHrsAltCRC.SetCheck(g_settings->ghq_hirs_altcrc() > 0 ? BST_CHECKED : BST_UNCHECKED);
+        if (g_settings->ghq_hirs_dump())
         {
             m_cbxHrsAltCRC.EnableWindow(false);
         }
 
         m_cbxHrsCompressCache.Attach(GetDlgItem(IDC_CHK_HRS_COMPRESS_CACHE));
         TTSetTxt(IDC_CHK_HRS_COMPRESS_CACHE, "Compress texture cache:\n\nWhen game started, plugin loads all its hi-resolution textures into PC memory.\nSince hi-resolution textures are usually large, the whole pack can take hundreds megabytes of memory.\nCache compression allows save memory space greatly.\nTextures will be decompressed on-the-fly, before being downloaded to the gfx hardware.\nThis option will still help save memory space even when using texture compression.\n\n[Recommended: on]");
-        m_cbxHrsCompressCache.SetCheck(g_settings->ghq_hirs_gz > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxHrsCompressCache.SetCheck(g_settings->ghq_hirs_gz() > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsLetFly.Attach(GetDlgItem(IDC_CHK_USE_ALPHA_FULLY));
         TTSetTxt(IDC_CHK_USE_ALPHA_FULLY, "Use Alpha channel fully:\n\nWhen this option is off, 16bit rgba textures will be loaded using RiceVideo style, with 1bit for alpha channel.\nWhen it is on, GlideHQ will check, how alpha channel is used by the hires texture, and select most appropriate format for it.\nThis gives texture designers freedom to play with alpha, as they need, regardless of format of original N64 texture.\nFor older and badly designed texture packs it can cause unwanted black borders.\n\n[Recommended: texture pack dependant]");
-        m_cbxHrsLetFly.SetCheck(g_settings->ghq_hirs_let_texartists_fly > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxHrsLetFly.SetCheck(g_settings->ghq_hirs_let_texartists_fly() > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxSaveTexCache.Attach(GetDlgItem(IDC_CHK_TEX_CACHE_HD));
         TTSetTxt(IDC_CHK_TEX_CACHE_HD, "Save texture cache to HD:\n\nFor enhanced textures cache:\nThis will save all previously loaded and enhanced textures to HD.\nSo upon next game launch, all the textures will be instantly loaded, resulting in smoother performance.\n\nFor high-resolution textures cache:\nAfter creation, loading hi-res texture will take only a few seconds upon game launch, as opposed to the 5 to 60 seconds a pack can take to load without this cache file.\nThe only downside here is upon any changes to the pack, the cache file will need to be manually deleted.\n\nSaved cache files go into a folder called \"Cache\" within the Textures folder.\n\n[Highly Recommended: on]");
-        m_cbxSaveTexCache.SetCheck(g_settings->ghq_cache_save > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxSaveTexCache.SetCheck(g_settings->ghq_cache_save() > 0 ? BST_CHECKED : BST_UNCHECKED);
         return TRUE;
     }
 
@@ -705,20 +690,20 @@ public:
         CSettings oldsettings = *g_settings;
         g_settings->SetGhqFltr((CSettings::TextureFilter_t)m_cmbEnhFilter.GetItemData(m_cmbEnhFilter.GetCurSel()));
         g_settings->SetGhqEnht((CSettings::TextureEnhancement_t)m_cmbEnhEnhancement.GetItemData(m_cmbEnhEnhancement.GetCurSel()));
-        g_settings->ghq_cache_size = atoi(texcache);
-        g_settings->ghq_enht_nobg = (int)m_cbxEnhIgnoreBG.GetCheck() == BST_CHECKED;
-        g_settings->ghq_enht_cmpr = (int)m_cbxEnhTexCompression.GetCheck() == BST_CHECKED;
-        g_settings->ghq_enht_gz = (int)m_cbxEnhCompressCache.GetCheck() == BST_CHECKED;
-        g_settings->ghq_hirs = m_cmbHrsFormat.GetItemData(m_cmbHrsFormat.GetCurSel());
-        g_settings->ghq_hirs_tile = (int)m_cbxHrsTile.GetCheck() == BST_CHECKED;
-        g_settings->ghq_hirs_f16bpp = (int)m_cbxHrsForce16.GetCheck() == BST_CHECKED;
-        g_settings->ghq_hirs_dump = (int)m_cbxHrsTexEdit.GetCheck() == BST_CHECKED;
-        g_settings->ghq_hirs_altcrc = (int)m_cbxHrsAltCRC.GetCheck() == BST_CHECKED;
-        g_settings->ghq_hirs_cmpr = (int)m_cbxHrsTexCompression.GetCheck() == BST_CHECKED;
-        g_settings->ghq_hirs_gz = (int)m_cbxHrsCompressCache.GetCheck() == BST_CHECKED;
-        g_settings->ghq_hirs_let_texartists_fly = (int)m_cbxHrsLetFly.GetCheck() == BST_CHECKED;
-        g_settings->ghq_cmpr = (int)m_cmbTextureCompression.GetItemData(m_cmbTextureCompression.GetCurSel());
-        g_settings->ghq_cache_save = (int)m_cbxSaveTexCache.GetCheck() == BST_CHECKED;
+        g_settings->SetGhqCacheSize(atoi(texcache));
+        g_settings->SetGhqEnhtNobg(m_cbxEnhIgnoreBG.GetCheck() == BST_CHECKED);
+        g_settings->SetGhqEnhtCmpr(m_cbxEnhTexCompression.GetCheck() == BST_CHECKED);
+        g_settings->SetGhqEnhtGz(m_cbxEnhCompressCache.GetCheck() == BST_CHECKED);
+        g_settings->SetGhqHirs((CSettings::HiResPackFormat_t)m_cmbHrsFormat.GetItemData(m_cmbHrsFormat.GetCurSel()));
+        g_settings->SetGhqHirsTile(m_cbxHrsTile.GetCheck() == BST_CHECKED);
+        g_settings->SetGhqHirsF16bpp(m_cbxHrsForce16.GetCheck() == BST_CHECKED);
+        g_settings->SetGhqHirsDump(m_cbxHrsTexEdit.GetCheck() == BST_CHECKED);
+        g_settings->SetGhqHirsAltcrc(m_cbxHrsAltCRC.GetCheck() == BST_CHECKED);
+        g_settings->SetGhqHirsCmpr(m_cbxHrsTexCompression.GetCheck() == BST_CHECKED);
+        g_settings->SetGhqHirsGz(m_cbxHrsCompressCache.GetCheck() == BST_CHECKED);
+        g_settings->SetGhqHirsLetTexartistsFly(m_cbxHrsLetFly.GetCheck() == BST_CHECKED);
+        g_settings->SetGhqCmpr((CSettings::TextureCompression_t)m_cmbTextureCompression.GetItemData(m_cmbTextureCompression.GetCurSel()));
+        g_settings->SetGhqCacheSave(m_cbxSaveTexCache.GetCheck() == BST_CHECKED);
         if (memcmp(&oldsettings, g_settings, sizeof(oldsettings))) //check that settings were changed
         {
             g_settings->WriteSettings();
@@ -757,7 +742,7 @@ COptionsSheet::COptionsSheet(_U_STRINGorID /*title*/, UINT /*uStartPage*/, HWND 
     m_hTextureEnhancement(0)
 {
     AddPage(&m_pgBasicPage->m_psp);
-    if (g_settings->advanced_options)
+    if (g_settings->advanced_options())
     {
         AddPage(&m_pgEmuSettings->m_psp);
     }
@@ -773,7 +758,7 @@ COptionsSheet::~COptionsSheet()
 
 void COptionsSheet::UpdateTextureSettings(void)
 {
-    if (g_settings->texenh_options)
+    if (g_settings->texenh_options())
     {
         if (m_hTextureEnhancement == NULL)
         {
@@ -807,15 +792,15 @@ void CALL DllConfig(HWND hParent)
 
     if (g_romopen)
     {
-        if (evoodoo)// && g_fullscreen && !ev_fullscreen)
+        if (evoodoo)// && fullscreen && !ev_fullscreen)
         {
             ReleaseGfx();
             rdp_reset();
         }
-        if (g_settings->ghq_use)
+        if (g_ghq_use)
         {
             ext_ghq_shutdown();
-            g_settings->ghq_use = 0;
+            g_ghq_use = false;
         }
     }
     else
@@ -886,19 +871,4 @@ void CALL DllAbout(HWND /*hParent*/)
     CAboutDlg dlg;
     dlg.DoModal();
 #endif
-}
-
-void general_setting(short setting_ID, const char * name, unsigned int value)
-{
-    RegisterSetting(setting_ID, Data_DWORD_General, name, NULL, value, NULL);
-}
-
-void game_setting(short setting_ID, const char * name, unsigned int value)
-{
-    RegisterSetting(setting_ID, Data_DWORD_Game, name, NULL, value, NULL);
-}
-
-void game_setting_default(short setting_ID, const char * name, short default_setting)
-{
-    RegisterSetting2(setting_ID, Data_DWORD_Game, name, NULL, default_setting);
 }

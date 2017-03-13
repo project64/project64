@@ -357,10 +357,10 @@ static void uc0_movemem()
         short trans_x = ((short*)gfx.RDRAM)[(a + 4) ^ 1] / 4;
         short trans_y = ((short*)gfx.RDRAM)[(a + 5) ^ 1] / 4;
         short trans_z = ((short*)gfx.RDRAM)[(a + 6) ^ 1];
-        if (g_settings->correct_viewport)
+        if (g_settings->correct_viewport())
         {
-            scale_x = abs(scale_x);
-            scale_y = abs(scale_y);
+            scale_x = (short)abs(scale_x);
+            scale_y = (short)abs(scale_y);
         }
         rdp.view_scale[0] = scale_x * rdp.scale_x;
         rdp.view_scale[1] = -scale_y * rdp.scale_y;
@@ -922,7 +922,7 @@ static void uc0_setothermode_l()
         rdp.update |= UPDATE_FOG_ENABLED; //if blender has no fog bits, fog must be set off
         rdp.render_mode_changed |= rdp.rm ^ rdp.othermode_l;
         rdp.rm = rdp.othermode_l;
-        if (g_settings->flame_corona && (rdp.rm == 0x00504341)) //hack for flame's corona
+        if (g_settings->flame_corona() && (rdp.rm == 0x00504341)) //hack for flame's corona
         {
             rdp.othermode_l |= 0x00000010;
         }

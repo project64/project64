@@ -47,9 +47,3 @@
 void ConfigInit(HINSTANCE hinst);
 void ConfigCleanup(void);
 #endif
-
-
-
-extern void general_setting(short setting_ID, const char * name, unsigned int value);
-extern void game_setting(short setting_ID, const char * name, unsigned int value);
-extern void game_setting_default(short setting_ID, const char * name, short default_setting);

@@ -51,8 +51,8 @@ static inline void opt_glCopyTexImage2D(GLenum target,
             width = screen_width - x;
             //printf("resizing w --> %d\n", width);
         }
-        if (y + height >= screen_height + viewport_offset) {
-            height = screen_height + viewport_offset - y;
+        if (y + height >= screen_height + g_viewport_offset) {
+            height = screen_height + g_viewport_offset - y;
             //printf("resizing h --> %d\n", height);
         }
         glCopyTexSubImage2D(target, level, 0, 0, x, y, width, height);
@@ -292,7 +292,7 @@ int default_texture; // the infamous "32*1024*1024" is now configurable
 int current_texture;
 int depth_texture, color_texture;
 int glsl_support = 1;
-int viewport_width, viewport_height, viewport_offset = 0, nvidia_viewport_hack = 0;
+int viewport_width, viewport_height, g_viewport_offset = 0, nvidia_viewport_hack = 0;
 int save_w, save_h;
 int lfb_color_fmt;
 float invtex[2];
@@ -382,11 +382,11 @@ grClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
         if (int(miny) < 0) miny = 0;
         if (maxx < minx) maxx = minx;
         if (maxy < miny) maxy = miny;
-        glScissor(minx, miny + viewport_offset, maxx - minx, maxy - miny);
+        glScissor(minx, miny + g_viewport_offset, maxx - minx, maxy - miny);
         //printf("gl scissor %d %d %d %d\n", minx, miny, maxx, maxy);
     }
     else {
-        glScissor(minx, (viewport_offset)+g_height - maxy, maxx - minx, maxy - miny);
+        glScissor(minx, (g_viewport_offset)+g_height - maxy, maxx - minx, maxy - miny);
     }
     glEnable(GL_SCISSOR_TEST);
     grDisplayGLError("grClipWindow");
@@ -766,12 +766,12 @@ int                  nAuxBuffers)
 #endif
 
 #ifndef ANDROID
-    glViewport(0, viewport_offset, g_width, g_height);
+    glViewport(0, g_viewport_offset, g_width, g_height);
     viewport_width = g_width;
     viewport_height = g_height;
     nvidia_viewport_hack = 1;
 #else
-    glViewport(0, viewport_offset, width, height);
+    glViewport(0, g_viewport_offset, width, height);
     viewport_width = width;
     viewport_height = height;
 #endif // _WIN32
@@ -969,26 +969,26 @@ FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
             if (save_w) {
                 if (tw > save_w && th > save_h) {
                     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, save_h,
-                        0, viewport_offset + save_h, tw, th - save_h);
+                        0, g_viewport_offset + save_h, tw, th - save_h);
                     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, save_w, 0,
-                        save_w, viewport_offset, tw - save_w, save_h);
+                        save_w, g_viewport_offset, tw - save_w, save_h);
                     save_w = tw;
                     save_h = th;
                 }
                 else if (tw > save_w) {
                     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, save_w, 0,
-                        save_w, viewport_offset, tw - save_w, save_h);
+                        save_w, g_viewport_offset, tw - save_w, save_h);
                     save_w = tw;
                 }
                 else if (th > save_h) {
                     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, save_h,
-                        0, viewport_offset + save_h, save_w, th - save_h);
+                        0, g_viewport_offset + save_h, save_w, th - save_h);
                     save_h = th;
                 }
             }
             else {
                 glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
-                    0, viewport_offset, tw, th);
+                    0, g_viewport_offset, tw, th);
                 save_w = tw;
                 save_h = th;
             }
@@ -1037,12 +1037,12 @@ FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
 
         //printf("viewport %dx%d\n", width, height);
         if (g_height > screen_height) {
-            glViewport(0, viewport_offset + screen_height - g_height, g_width, g_height);
+            glViewport(0, g_viewport_offset + screen_height - g_height, g_width, g_height);
         }
         else
-            glViewport(0, viewport_offset, g_width, g_height);
+            glViewport(0, g_viewport_offset, g_width, g_height);
 
-        glScissor(0, viewport_offset, g_width, g_height);
+        glScissor(0, g_viewport_offset, g_width, g_height);
 
         grDisplayGLError("grTextureBufferExt :: A");
     }
@@ -1556,7 +1556,7 @@ void updateTexture()
         //glDeleteTextures( 1, &pBufferAddress );
         glBindTexture(GL_TEXTURE_2D, pBufferAddress);
         glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
-            0, viewport_offset, g_width, g_height, 0);
+            0, g_viewport_offset, g_width, g_height, 0);
 
         glBindTexture(GL_TEXTURE_2D, default_texture);
         glPopAttrib();
@@ -1583,7 +1583,7 @@ FX_ENTRY void FX_CALL grFramebufferCopyExt(int /*x*/, int /*y*/, int /*w*/, int 
             glReadBuffer(current_buffer);
             glBindTexture(GL_TEXTURE_2D, depth_texture);
             glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-                0, viewport_offset, tw, th, 0);
+                0, g_viewport_offset, tw, th, 0);
             glBindTexture(GL_TEXTURE_2D, default_texture);
             grDisplayGLError("grFramebufferCopyExt :: A");
             return;
@@ -1648,8 +1648,8 @@ grRenderBuffer(GrBuffer_t buffer)
             }
             curBufferAddr = 0;
 
-            glViewport(0, viewport_offset, g_width, viewport_height);
-            glScissor(0, viewport_offset, g_width, g_height);
+            glViewport(0, g_viewport_offset, g_width, viewport_height);
+            glScissor(0, g_viewport_offset, g_width, g_height);
 
 #ifdef SAVE_CBUFFER
             if (!use_fbo && render_to_texture == 2) {
@@ -1856,7 +1856,7 @@ GrLfbInfo_t *info)
                 info->strideInBytes = g_width * 4;
                 info->writeMode = GR_LFBWRITEMODE_888;
                 info->origin = origin;
-                glReadPixels(0, viewport_offset, g_width, g_height, GL_BGRA, GL_UNSIGNED_BYTE, frameBuffer);
+                glReadPixels(0, g_viewport_offset, g_width, g_height, GL_BGRA, GL_UNSIGNED_BYTE, frameBuffer);
             }
             else {
                 buf = (unsigned char*)malloc(g_width*g_height * 4);
@@ -1865,7 +1865,7 @@ GrLfbInfo_t *info)
                 info->strideInBytes = g_width * 2;
                 info->writeMode = GR_LFBWRITEMODE_565;
                 info->origin = origin;
-                glReadPixels(0, viewport_offset, g_width, g_height, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+                glReadPixels(0, g_viewport_offset, g_width, g_height, GL_RGBA, GL_UNSIGNED_BYTE, buf);
 
                 for (j = 0; j < g_height; j++)
                 {
@@ -1886,7 +1886,7 @@ GrLfbInfo_t *info)
             info->strideInBytes = g_width * 2;
             info->writeMode = GR_LFBWRITEMODE_ZA16;
             info->origin = origin;
-            glReadPixels(0, viewport_offset, g_width, g_height, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, depthBuffer);
+            glReadPixels(0, g_viewport_offset, g_width, g_height, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, depthBuffer);
         }
     }
 
@@ -1936,7 +1936,7 @@ FxU32 dst_stride, void *dst_data)
     {
         buf = (unsigned char*)malloc(src_width*src_height * 4);
 
-        glReadPixels(src_x, (viewport_offset)+g_height - src_y - src_height, src_width, src_height, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+        glReadPixels(src_x, (g_viewport_offset)+g_height - src_y - src_height, src_width, src_height, GL_RGBA, GL_UNSIGNED_BYTE, buf);
 
         for (j = 0; j < src_height; j++)
         {
@@ -1954,7 +1954,7 @@ FxU32 dst_stride, void *dst_data)
     {
         buf = (unsigned char*)malloc(src_width*src_height * 2);
 
-        glReadPixels(src_x, (viewport_offset)+g_height - src_y - src_height, src_width, src_height, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, depthBuffer);
+        glReadPixels(src_x, (g_viewport_offset)+g_height - src_y - src_height, src_width, src_height, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, depthBuffer);
 
         for (j = 0; j < src_height; j++)
         {
@@ -2082,7 +2082,7 @@ FxI32 src_stride, void *src_data)
     }
     else
     {
-        float *buf = (float*)malloc(src_width*(src_height + (viewport_offset))*sizeof(float));
+        float *buf = (float*)malloc(src_width*(src_height + (g_viewport_offset))*sizeof(float));
 
         if (src_format != GR_LFBWRITEMODE_ZA16)
             WriteTrace(TraceGlitch, TraceWarning, "unknown depth buffer write format:%x", src_format);
@@ -2094,14 +2094,14 @@ FxI32 src_stride, void *src_data)
         {
             for (i = 0; i < src_width; i++)
             {
-                buf[(j + (viewport_offset))*src_width + i] =
+                buf[(j + (g_viewport_offset))*src_width + i] =
                     (frameBuffer[(src_height - j - 1)*(src_stride / 2) + i] / (65536.0f*(2.0f / zscale))) + 1 - zscale / 2.0f;
             }
         }
 
 #ifdef VPDEBUG
         if (dumping) {
-            unsigned char * buf2 = (unsigned char *)malloc(src_width*(src_height + (viewport_offset)));
+            unsigned char * buf2 = (unsigned char *)malloc(src_width*(src_height + (g_viewport_offset)));
             for (i = 0; i < src_width*src_height; i++)
                 buf2[i] = buf[i] * 255.0f;
             ilTexImage(src_width, src_height, 1, 1, IL_LUMINANCE, IL_UNSIGNED_BYTE, buf2);
@@ -2120,7 +2120,7 @@ FxI32 src_stride, void *src_data)
         glDrawBuffer(GL_BACK);
         glClear(GL_DEPTH_BUFFER_BIT);
         glDepthMask(1);
-        glDrawPixels(src_width, src_height + (viewport_offset), GL_DEPTH_COMPONENT, GL_FLOAT, buf);
+        glDrawPixels(src_width, src_height + (g_viewport_offset), GL_DEPTH_COMPONENT, GL_FLOAT, buf);
 
         free(buf);
     }

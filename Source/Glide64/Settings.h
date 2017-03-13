@@ -5,7 +5,6 @@ class CSettings
 {
 public:
 	CSettings();
-    ~CSettings();
 
     //Frame buffer emulation options
     enum fb_bits_t
@@ -107,6 +106,18 @@ public:
         TextureEnht_HQ4X = 0x500,
     };
 
+    enum TextureCompression_t
+    {
+        TextureCompression_S3TC = 0x3000,
+        TextureCompression_FXT1 = 0x1000,
+    };
+
+    enum HiResPackFormat_t
+    {
+        HiResPackFormat_None = 0,
+        HiResPackFormat_Riceformat = 0x00020000,
+    };
+    
     enum SwapMode_t
     {
         SwapMode_Old = 0,
@@ -145,15 +156,12 @@ public:
         ucode_Turbo3d = 21,
     };
 
-
-    int advanced_options;
-    int texenh_options;
-    int vsync;
-
-
-    int fog;
-    int buff_clear;
-
+    enum wfmode_t
+    {
+        wfmode_NormalColors = 0,
+        wfmode_VertexColors = 1,
+        wfmode_RedOnly = 2,
+    };
 
     enum FBCRCMODE_t
     {
@@ -184,10 +192,14 @@ public:
     inline uint32_t scr_res_x(void) const { return m_scr_res_x; }
     inline uint32_t scr_res_y(void) const { return m_scr_res_y; }
     inline uint32_t ScreenRes(void) const { return m_ScreenRes; }
-    inline bool FlushLogs(void) const { return m_FlushLogs; }
+    inline bool advanced_options(void) const { return m_advanced_options; }
+    inline bool texenh_options(void) const { return m_texenh_options; }
+    inline bool vsync(void) const { return m_vsync; }
     inline ScreenRotate_t rotate(void) const { return m_rotate; }
     inline Filtering_t filtering(void) const { return m_filtering; }
 
+    inline bool fog (void) const { return m_fog; }
+    inline bool buff_clear(void) const { return m_buff_clear; }
     inline SwapMode_t swapmode(void) const { return m_swapmode; }
     inline PixelLevelOfDetail_t lodmode(void) const { return m_lodmode; }
     inline AspectMode_t aspectmode(void) const { return m_aspectmode; }
@@ -195,87 +207,111 @@ public:
     inline FBCRCMODE_t fb_crc_mode(void) const { return m_fb_crc_mode; }
 
     //Texture filtering options
-    std::string texture_dir;
+    inline const char * texture_dir(void) const { return m_texture_dir.c_str(); }
     inline TextureFilter_t ghq_fltr(void) const { return m_ghq_fltr; }
     inline TextureEnhancement_t ghq_enht(void) const { return m_ghq_enht; }
-    int ghq_cmpr;
-    int ghq_hirs;
-    int ghq_use;
-    int ghq_enht_cmpr;
-    int ghq_enht_tile;
-    int ghq_enht_f16bpp;
-    int ghq_enht_gz;
-    int ghq_enht_nobg;
-    int ghq_hirs_cmpr;
-    int ghq_hirs_tile;
-    int ghq_hirs_f16bpp;
-    int ghq_hirs_gz;
-    int ghq_hirs_altcrc;
-    int ghq_cache_save;
-    int ghq_cache_size;
-    int ghq_hirs_let_texartists_fly;
-    int ghq_hirs_dump;
+    inline TextureCompression_t ghq_cmpr(void) const { return m_ghq_cmpr; }
+    inline HiResPackFormat_t ghq_hirs(void) const { return m_ghq_hirs; }
+    inline bool ghq_enht_cmpr(void) const { return m_ghq_enht_cmpr; }
+    inline bool ghq_enht_f16bpp(void) const { return m_ghq_enht_f16bpp; }
+    inline bool ghq_enht_gz(void) const { return m_ghq_enht_gz; }
+    inline bool ghq_enht_nobg(void) const { return m_ghq_enht_nobg; }
+    inline bool ghq_hirs_cmpr(void) const { return m_ghq_hirs_cmpr; }
+    inline bool ghq_hirs_tile(void) const { return m_ghq_hirs_tile; }
+    inline bool ghq_hirs_f16bpp(void) const { return m_ghq_hirs_f16bpp; }
+    inline bool ghq_hirs_gz(void) const { return m_ghq_hirs_gz; }
+    inline bool ghq_hirs_altcrc(void) const { return m_ghq_hirs_altcrc; }
+    inline bool ghq_cache_save(void) const { return m_ghq_cache_save; }
+    inline int ghq_cache_size(void) const { return m_ghq_cache_size; }
+    inline bool ghq_hirs_let_texartists_fly(void) const { return m_ghq_hirs_let_texartists_fly; }
+    inline bool ghq_hirs_dump(void) const { return m_ghq_hirs_dump; }
 
     //Debug
-    int autodetect_ucode;
+    inline bool autodetect_ucode(void) const { return m_autodetect_ucode; }
     inline ucode_t ucode(void) const { return m_ucode; }
-    int unk_as_red;
-    int unk_clear;
-    int wireframe;
-    int wfmode;
+    inline bool unk_as_red(void) const { return m_unk_as_red; }
+    inline bool wireframe(void) const { return m_wireframe; }
+    inline wfmode_t wfmode(void) const { return m_wfmode; }
 
     // Special fixes
-    int offset_x, offset_y;
-    int scale_x, scale_y;
-    int fast_crc;
-    int alt_tex_size;
-    int use_sts1_only;
-    int flame_corona; //hack for zeldas flame's corona
-    int increase_texrect_edge; // add 1 to lower right corner coordinates of texrect
-    int decrease_fillrect_edge; // sub 1 from lower right corner coordinates of fillrect
-    int texture_correction; // enable perspective texture correction emulation. is on by default
+    inline bool fast_crc(void) const { return m_fast_crc; }
+    inline bool alt_tex_size(void) const { return m_alt_tex_size; }
+    inline bool use_sts1_only(void) const { return m_use_sts1_only; }
+    inline bool flame_corona(void) const { return m_flame_corona; } //hack for zeldas flame's corona
+    inline bool increase_texrect_edge(void) const { return m_increase_texrect_edge; }  // add 1 to lower right corner coordinates of texrect
+    inline bool decrease_fillrect_edge(void) const { return m_decrease_fillrect_edge; }; // sub 1 from lower right corner coordinates of fillrect
+    inline bool texture_correction(void) const { return m_texture_correction; } // enable perspective texture correction emulation. is on by default
     inline StippleMode_t stipple_mode(void) const { return m_stipple_mode; } //used for dithered alpha emulation
-    uint32_t stipple_pattern; //used for dithered alpha emulation
-    int force_microcheck; //check microcode each frame, for mixed F3DEX-S2DEX games
-    int force_quad3d; //force 0xb5 command to be quad, not line 3d
-    int clip_zmin; //enable near z clipping
-    int clip_zmax; //enable far plane clipping;
-    int adjust_aspect; //adjust screen aspect for wide screen mode
-    int force_calc_sphere; //use spheric mapping only, Ridge Racer 64
-    int pal230;    //set special scale for PAL games
-    int correct_viewport; //correct viewport values
-    int zmode_compare_less; //force GR_CMP_LESS for zmode=0 (opaque)and zmode=1 (interpenetrating)
-    int old_style_adither; //apply alpha dither regardless of alpha_dither_mode
-    int n64_z_scale; //scale vertex z value before writing to depth buffer, as N64 does.
+    inline uint32_t stipple_pattern(void) const { return m_stipple_pattern; } //used for dithered alpha emulation
+    inline bool force_microcheck(void) const { return m_force_microcheck; } //check microcode each frame, for mixed F3DEX-S2DEX games
+    inline bool force_quad3d(void) const { return m_force_quad3d; } //force 0xb5 command to be quad, not line 3d
+    inline bool clip_zmin(void) const { return m_clip_zmin; } //enable near z clipping
+    inline bool clip_zmax(void) const { return m_clip_zmax; } //enable far plane clipping
+    inline bool adjust_aspect(void) const { return m_adjust_aspect; } //adjust screen aspect for wide screen mode
+    inline bool force_calc_sphere(void) const { return m_force_calc_sphere; } //use spheric mapping only, Ridge Racer 64
+    inline bool pal230(void) const { return m_pal230; } //use spheric mapping only, Ridge Racer 64
+    inline bool correct_viewport(void) const { return m_correct_viewport; } //correct viewport values
+    inline bool zmode_compare_less(void) const { return m_zmode_compare_less; } //force GR_CMP_LESS for zmode=0 (opaque)and zmode=1 (interpenetrating)
+    inline bool old_style_adither(void) const { return m_old_style_adither; } //apply alpha dither regardless of alpha_dither_mode
+    inline bool n64_z_scale(void) const { return m_n64_z_scale; } //scale vertex z value before writing to depth buffer, as N64 does.
     
     inline bool hacks(hacks_t hack) const { return (m_hacks & hack) == hack; } //Special game hacks
     
     //wrapper settings
 #ifndef ANDROID
-    int wrpResolution;
+    inline uint32_t FullScreenRes(void) const { return m_FullScreenRes; }
 #endif
-    int wrpVRAM;
-    int wrpFBO;
-    int wrpAnisotropic;
+    inline int wrpVRAM(void) const { return m_wrpVRAM; }
+    inline bool wrpFBO(void) const { return m_wrpFBO; }
+    inline bool wrpAnisotropic(void) const { return m_wrpAnisotropic; }
+    inline bool FlushLogs(void) const { return m_FlushLogs; }
+
+    void SetTexenhOptions(bool value);
     void SetScreenRes(uint32_t value);
     void SetAspectmode(AspectMode_t value);
     void SetLODmode(PixelLevelOfDetail_t value);
+    void SetVsync(bool value);
     void SetFiltering(Filtering_t value);
     void SetSwapMode(SwapMode_t value);
+    void SetFog(bool value);
+    void SetBuffClear(bool value);
+    void SetWrpAnisotropic(bool value);
+    void SetWrpVRAM(int value);
+    void SetWrpFBO(bool value);
     void SetGhqFltr(TextureFilter_t value);
     void SetGhqEnht(TextureEnhancement_t value);
+    void SetGhqCmpr(TextureCompression_t value);
+    void SetGhqHirs(HiResPackFormat_t value);
+    void SetGhqEnhtGz(bool value);
+    void SetGhqHirsTile(bool value);
+    void SetGhqHirsF16bpp(bool value);
+    void SetGhqHirsDump(bool value);
+    void SetGhqEnhtNobg(bool value);
+    void SetGhqEnhtCmpr(bool value);    
+    void SetGhqHirsAltcrc(bool value);
+    void SetGhqHirsCmpr(bool value);
+    void SetGhqHirsGz(bool value);
+    void SetGhqCacheSave(bool value);
+    void SetGhqHirsLetTexartistsFly(bool value);
+    void SetGhqCacheSize(int value);
     void UpdateFrameBufferBits(uint32_t BitsToAdd, uint32_t BitsToRemove);
     ucode_t DetectUCode(uint32_t uc_crc);
     void SetUcode(ucode_t value);
-
+#ifndef ANDROID
+    void SetFullScreenRes(uint32_t value);
+#endif
+    void ReadSettings();
     void ReadGameSettings(const char * name);
     void WriteSettings(void);
-    void UpdateAspectRatio(void);
     void UpdateScreenSize(bool fullscreen);
 
 private:
-    void ReadSettings();
+    static void general_setting(short setting_ID, const char * name, unsigned int value);
+    static void game_setting(short setting_ID, const char * name, unsigned int value);
+    static void game_setting_default(short setting_ID, const char * name, short default_setting);
+
     void RegisterSettings(void);
+    void UpdateAspectRatio(void);
     void SettingsChanged(void);
     
     static void stSettingsChanged(void * _this)
@@ -283,7 +319,18 @@ private:
         ((CSettings *)_this)->SettingsChanged();
     }
 
+    short m_Set_basic_mode;
+    short m_Set_texture_dir;
+    short m_Set_log_dir;
+    short m_Set_log_flush;
+
     bool m_dirty;
+#ifndef ANDROID
+    uint32_t m_FullScreenRes;
+#endif
+    int m_wrpVRAM;
+    bool m_wrpFBO;
+    bool m_wrpAnisotropic;
     bool m_FlushLogs;
     char m_log_dir[260];
     uint32_t m_ScreenRes;
@@ -294,12 +341,56 @@ private:
     FBCRCMODE_t m_fb_crc_mode;
     ScreenRotate_t m_rotate;
     Filtering_t m_filtering;
+    bool m_fog;
+    bool m_buff_clear;
     SwapMode_t m_swapmode;
     PixelLevelOfDetail_t m_lodmode;
+    bool m_advanced_options;
+    bool m_texenh_options;
+    bool m_vsync;
+    std::string m_texture_dir;
     TextureFilter_t m_ghq_fltr;
     TextureEnhancement_t m_ghq_enht;
+    TextureCompression_t m_ghq_cmpr;
+    HiResPackFormat_t m_ghq_hirs;
+    bool m_ghq_enht_cmpr;
+    bool m_ghq_enht_f16bpp;
+    bool m_ghq_enht_gz;
+    bool m_ghq_enht_nobg;
+    bool m_ghq_hirs_cmpr;
+    bool m_ghq_hirs_tile;
+    bool m_ghq_hirs_f16bpp;
+    bool m_ghq_hirs_gz;
+    bool m_ghq_hirs_altcrc;
+    bool m_ghq_cache_save;
+    int m_ghq_cache_size;
+    bool m_ghq_hirs_let_texartists_fly;
+    bool m_ghq_hirs_dump;
+    bool m_autodetect_ucode;
+    bool m_unk_as_red;
+    bool m_wireframe;
+    wfmode_t m_wfmode;
     ucode_t m_ucode;
+    bool m_fast_crc;
+    bool m_alt_tex_size;
+    bool m_use_sts1_only;
+    bool m_flame_corona;
+    bool m_increase_texrect_edge;
+    bool m_decrease_fillrect_edge;
+    bool m_texture_correction;
     StippleMode_t m_stipple_mode;
+    uint32_t m_stipple_pattern;
+    bool m_force_microcheck;
+    bool m_force_quad3d;
+    bool m_clip_zmin;
+    bool m_clip_zmax;
+    bool m_adjust_aspect;
+    bool m_force_calc_sphere;
+    bool m_pal230;
+    bool m_correct_viewport;
+    bool m_zmode_compare_less;
+    bool m_old_style_adither;
+    bool m_n64_z_scale;
     hacks_t m_hacks;
 };
 

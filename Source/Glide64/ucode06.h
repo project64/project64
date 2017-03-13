@@ -231,7 +231,6 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
         GR_ASPECT_LOG2_1x1, GR_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
     grRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
     grAuxBufferExt(GR_BUFFER_AUXBUFFER);
-    grSstOrigin(GR_ORIGIN_UPPER_LEFT);
     grBufferClear(0, 0, 0xFFFF);
     grDrawTriangle(&v[0], &v[2], &v[1]);
     grDrawTriangle(&v[2], &v[3], &v[1]);
@@ -287,7 +286,9 @@ void DrawImage(DRAWIMAGE & d)
 {
     if (d.imageW == 0 || d.imageH == 0 || d.frameH == 0)   return;
 
-    int x_size, y_size, x_shift, y_shift, line;
+    int x_shift, y_shift;
+    uint16_t x_size, y_size, line;
+
     // choose optimum size for the format/size
     switch (d.imageSiz)
     {
@@ -950,7 +951,7 @@ static void uc6_draw_polygons(VERTEX v[4])
     }
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_VIEWPORT;
 
-    if (g_settings->fog && (rdp.flags & FOG_ENABLED))
+    if (g_settings->fog() && (rdp.flags & FOG_ENABLED))
     {
         grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
     }
@@ -1659,7 +1660,7 @@ void uc6_sprite2d()
             }
             rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_VIEWPORT;
 
-            if (g_settings->fog && (rdp.flags & FOG_ENABLED))
+            if (g_settings->fog() && (rdp.flags & FOG_ENABLED))
             {
                 grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
             }

@@ -413,7 +413,7 @@ static void uc2_geom_mode()
     {
         if ((rdp.flags & ZBUF_ENABLED))
         {
-            if (!g_settings->flame_corona || (rdp.rm != 0x00504341)) //hack for flame's corona
+            if (!g_settings->flame_corona() || (rdp.rm != 0x00504341)) //hack for flame's corona
             {
                 rdp.flags ^= ZBUF_ENABLED;
             }

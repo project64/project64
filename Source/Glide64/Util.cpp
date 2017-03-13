@@ -802,11 +802,11 @@ void do_triangle_stuff(uint16_t linew, int old_interpolate) // what else?? do th
         rdp.clip = 0;
     else
     {
-        if (!g_settings->clip_zmin)
+        if (!g_settings->clip_zmin())
         {
             rdp.clip &= ~CLIP_ZMIN;
         }         
-        if (!g_settings->clip_zmax)
+        if (!g_settings->clip_zmax())
         {
             rdp.clip &= ~CLIP_ZMAX;
         }
@@ -1025,7 +1025,7 @@ static void CalculateLOD(VERTEX *v, int n)
 
 float ScaleZ(float z)
 {
-    if (g_settings->n64_z_scale)
+    if (g_settings->n64_z_scale())
     {
         int iz = (int)(z*8.0f + 0.5f);
         if (iz < 0) iz = 0;
@@ -1576,7 +1576,7 @@ static void render_tri(uint16_t linew, int old_interpolate)
 
     cmb.cmb_ext_use = cmb.tex_cmb_ext_use = 0;
 
-    if (g_settings->wireframe)
+    if (g_settings->wireframe())
     {
         SetWireframeCol();
         for (i = 0; i < n; i++)
@@ -1792,11 +1792,11 @@ void update()
                 switch ((rdp.rm & 0xC00) >> 10) {
                 case 0:
                     grDepthBiasLevel(0);
-                    grDepthBufferFunction(g_settings->zmode_compare_less ? GR_CMP_LESS : GR_CMP_LEQUAL);
+                    grDepthBufferFunction(g_settings->zmode_compare_less() ? GR_CMP_LESS : GR_CMP_LEQUAL);
                     break;
                 case 1:
                     grDepthBiasLevel(-4);
-                    grDepthBufferFunction(g_settings->zmode_compare_less ? GR_CMP_LESS : GR_CMP_LEQUAL);
+                    grDepthBufferFunction(g_settings->zmode_compare_less() ? GR_CMP_LESS : GR_CMP_LEQUAL);
                     break;
                 case 2:
                     grDepthBiasLevel(g_settings->ucode() == CSettings::ucode_PerfectDark ? -4 : 0);
@@ -1876,23 +1876,20 @@ void update()
         }
         if (rdp.acmp == 3 && rdp.cycle_mode < 2)
         {
-            if (grStippleModeExt != 0)
+            if (g_settings->old_style_adither() || rdp.alpha_dither_mode != 3) 
             {
-                if (g_settings->old_style_adither || rdp.alpha_dither_mode != 3) {
-                    WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: dither");
-                    grStippleModeExt(g_settings->stipple_mode());
-                }
-                else
-                    grStippleModeExt(GR_STIPPLE_DISABLE);
+                WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: dither");
+                grStippleMode(g_settings->stipple_mode());
+            }
+            else
+            {
+                grStippleMode(GR_STIPPLE_DISABLE);
             }
         }
         else
         {
-            if (grStippleModeExt)
-            {
-                //WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: dither disabled");
-                grStippleModeExt(GR_STIPPLE_DISABLE);
-            }
+            //WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: dither disabled");
+            grStippleMode(GR_STIPPLE_DISABLE);
         }
     }
     // Cull mode (leave this in for z-clipped triangles)
@@ -1919,7 +1916,7 @@ void update()
     }
 
     //Added by Gonetz.
-    if (g_settings->fog && (rdp.update & UPDATE_FOG_ENABLED))
+    if (g_settings->fog() && (rdp.update & UPDATE_FOG_ENABLED))
     {
         rdp.update ^= UPDATE_FOG_ENABLED;
 
@@ -2010,10 +2007,7 @@ void set_message_combiner()
         GR_BLEND_ZERO,
         GR_BLEND_ZERO);
     grAlphaTestFunction(GR_CMP_ALWAYS);
-    if (grStippleModeExt)
-    {
-        grStippleModeExt(GR_STIPPLE_DISABLE);
-    }
+    grStippleMode(GR_STIPPLE_DISABLE);
     grTexFilterMode(0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
     grTexCombine(GR_TMU1,
         GR_COMBINE_FUNCTION_NONE,

@@ -350,7 +350,7 @@ void microcheck()
             rdp.Persp_en = 1;
             rdp.persp_supported = FALSE;
         }
-        else if (g_settings->texture_correction)
+        else if (g_settings->texture_correction())
         {
             rdp.persp_supported = TRUE;
         }
@@ -576,7 +576,7 @@ EXPORT void CALL ProcessDList(void)
     if (reset)
     {
         reset = 0;
-        if (g_settings->autodetect_ucode)
+        if (g_settings->autodetect_ucode())
         {
             // Thanks to ZeZu for ucode autodetection!!!
             uint32_t startUcode = *(uint32_t*)(gfx.DMEM + 0xFD0);
@@ -586,7 +586,7 @@ EXPORT void CALL ProcessDList(void)
         else
             memset(microcode, 0, 4096);
     }
-    else if ((g_old_ucode == CSettings::ucode_S2DEX && g_settings->ucode() == CSettings::ucode_F3DEX) || g_settings->force_microcheck)
+    else if ((g_old_ucode == CSettings::ucode_S2DEX && g_settings->ucode() == CSettings::ucode_F3DEX) || g_settings->force_microcheck())
     {
         uint32_t startUcode = *(uint32_t*)(gfx.DMEM + 0xFD0);
         memcpy(microcode, gfx.RDRAM + startUcode, 4096);
@@ -737,10 +737,10 @@ EXPORT void CALL ProcessDList(void)
         {
             ReleaseGfx ();
             rdp_reset();
-            if (g_settings->ghq_use)
+            if (g_ghq_use)
             {
                 ext_ghq_shutdown();
-                g_settings->ghq_use = 0;
+                g_ghq_use = false;
             }
         }
         if (MessageBox(gfx.hWnd, "The GFX plugin caused an exception and has been disabled.\nWould you like to turn it back on and attempt to continue?","Glide64 Exception", MB_YESNO|MB_ICONEXCLAMATION) == MB_NO)
@@ -965,11 +965,14 @@ static void rdp_texrect()
 
     if ((rdp.othermode_l >> 16) == 0x3c18 && rdp.cycle1 == 0x03ffffff && rdp.cycle2 == 0x01ff1fff) //depth image based fog
     {
-        if (!depth_buffer_fog)
-            return;
-        if (g_settings->fog)
-            DrawDepthBufferFog();
-        depth_buffer_fog = FALSE;
+        if (depth_buffer_fog)
+        {
+            if (g_settings->fog())
+            {
+                DrawDepthBufferFog();
+            }
+            depth_buffer_fog = false;
+        }
         return;
     }
 
@@ -1005,7 +1008,7 @@ static void rdp_texrect()
     else if (lr_y - ul_y < 1.0f)
         lr_y = ceil(lr_y);
 
-    if (g_settings->increase_texrect_edge)
+    if (g_settings->increase_texrect_edge())
     {
         if (floor(lr_x) != lr_x)
             lr_x = ceil(lr_x);
@@ -1408,7 +1411,7 @@ static void rdp_texrect()
 
     ConvertCoordsConvert(vptr, n_vertices);
 
-    if (g_settings->wireframe)
+    if (g_settings->wireframe())
     {
         SetWireframeCol();
         grDrawLine(&vstd[0], &vstd[2]);
@@ -1566,7 +1569,7 @@ void load_palette(uint32_t addr, uint16_t start, uint16_t count)
 
         WriteTrace(TraceTLUT, TraceDebug, "%d: %08lx", i, *(uint16_t *)(gfx.RDRAM + (addr ^ 2)));
     }
-    if (g_settings->ghq_hirs)
+    if (g_settings->ghq_hirs() != CSettings::HiResPackFormat_None)
     {
         memcpy((uint8_t*)(rdp.pal_8_rice + start), spal, count << 1);
     }
@@ -1640,7 +1643,7 @@ static void rdp_settilesize()
     else if (wrong_tile == (int)tile)
         wrong_tile = -1;
 
-    if (g_settings->use_sts1_only)
+    if (g_settings->use_sts1_only())
     {
         // ** USE FIRST SETTILESIZE ONLY **
         // This option helps certain textures while using the 'Alternate texture size method',
@@ -2281,7 +2284,7 @@ static void rdp_fillrect()
     // Update scissor
     update_scissor();
 
-    if (g_settings->decrease_fillrect_edge && rdp.cycle_mode == 0)
+    if (g_settings->decrease_fillrect_edge() && rdp.cycle_mode == 0)
     {
         lr_x--; lr_y--;
     }
@@ -2350,10 +2353,7 @@ static void rdp_fillrect()
         grAlphaBlendFunction(GR_BLEND_ONE, GR_BLEND_ZERO, GR_BLEND_ONE, GR_BLEND_ZERO);
 
         grAlphaTestFunction(GR_CMP_ALWAYS);
-        if (grStippleModeExt)
-        {
-            grStippleModeExt(GR_STIPPLE_DISABLE);
-        }
+        grStippleMode(GR_STIPPLE_DISABLE);
 
         grCullMode(GR_CULL_DISABLE);
         grFogMode(GR_FOG_DISABLE);
@@ -2386,7 +2386,7 @@ static void rdp_fillrect()
         }
     }
 
-    if (g_settings->wireframe)
+    if (g_settings->wireframe())
     {
         SetWireframeCol();
         grDrawLine(&v[0], &v[2]);
@@ -2967,10 +2967,10 @@ static void rsp_reserved3()
 
 void SetWireframeCol()
 {
-    switch (g_settings->wfmode)
+    switch (g_settings->wfmode())
     {
-        //case 0: // normal colors, don't do anything
-    case 1: // vertex colors
+    //case CSettings::wfmode_NormalColors: // normal colors, don't do anything
+    case CSettings::wfmode_VertexColors:
         grColorCombine(GR_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_ITERATED,
@@ -2998,7 +2998,7 @@ void SetWireframeCol()
             GR_COMBINE_FACTOR_NONE,
             FXFALSE, FXFALSE);
         break;
-    case 2: // red only
+    case CSettings::wfmode_RedOnly:
         grColorCombine(GR_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_CONSTANT,

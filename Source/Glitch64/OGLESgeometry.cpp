@@ -350,7 +350,7 @@ void FindBestDepthBias()
         glVertex3f(float(x + 4 - widtho) / (width / 2), float(4 - heighto) / (height / 2), 0.5);
         glVertex3f(float(x - widtho) / (width / 2), float(4 - heighto) / (height / 2), 0.5);
         glEnd();
-        glReadPixels(x + 2, 2 + viewport_offset, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z);
+        glReadPixels(x + 2, 2 + g_viewport_offset, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z);
         z -= 0.75f + 8e-6f;
         if (z < 0.0f) z = -z;
         if (z > 0.01f) continue;
@@ -397,7 +397,7 @@ grDrawTriangle(const void *a, const void *b, const void *c)
     vbo_enable();
     if (nvidia_viewport_hack && !render_to_texture)
     {
-        glViewport(0, viewport_offset, viewport_width, viewport_height);
+        glViewport(0, g_viewport_offset, viewport_width, viewport_height);
         nvidia_viewport_hack = 0;
     }
 
@@ -436,7 +436,7 @@ grDrawPoint(const void *pt)
 
       if(nvidia_viewport_hack && !render_to_texture)
       {
-      glViewport(0, viewport_offset, viewport_width, viewport_height);
+      glViewport(0, g_viewport_offset, viewport_width, viewport_height);
       nvidia_viewport_hack = 0;
       }
 
@@ -506,7 +506,7 @@ grDrawLine(const void *a, const void *b)
 
       if(nvidia_viewport_hack && !render_to_texture)
       {
-      glViewport(0, viewport_offset, viewport_width, viewport_height);
+      glViewport(0, g_viewport_offset, viewport_width, viewport_height);
       nvidia_viewport_hack = 0;
       }
 
@@ -579,7 +579,7 @@ grDrawVertexArray(FxU32 mode, FxU32 Count, void *pointers2)
 
     if (nvidia_viewport_hack && !render_to_texture)
     {
-        glViewport(0, viewport_offset, viewport_width, viewport_height);
+        glViewport(0, g_viewport_offset, viewport_width, viewport_height);
         nvidia_viewport_hack = 0;
     }
 
@@ -603,7 +603,7 @@ grDrawVertexArrayContiguous(FxU32 mode, FxU32 Count, void *pointers, FxU32 strid
 
     if (nvidia_viewport_hack && !render_to_texture)
     {
-        glViewport(0, viewport_offset, viewport_width, viewport_height);
+        glViewport(0, g_viewport_offset, viewport_width, viewport_height);
         nvidia_viewport_hack = 0;
     }
 

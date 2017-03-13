@@ -60,6 +60,8 @@ uint8_t *texture_buffer = tex1;
 #include "TexModCI.h"
 #include "CRC.h"
 
+extern bool g_ghq_use;
+
 typedef struct TEXINFO_t 
 {
     int real_image_width, real_image_height;	// FOR ALIGNMENT PURPOSES ONLY!!!
@@ -198,7 +200,7 @@ void GetTexInfo(int id, int tile)
     mask_width = (rdp.tiles[tile].mask_s == 0) ? (tile_width) : (1 << rdp.tiles[tile].mask_s);
     mask_height = (rdp.tiles[tile].mask_t == 0) ? (tile_height) : (1 << rdp.tiles[tile].mask_t);
 
-    if (g_settings->alt_tex_size)
+    if (g_settings->alt_tex_size())
     {
         // ** ALTERNATE TEXTURE SIZE METHOD **
         // Helps speed in some games that loaded weird-sized textures, but could break other
@@ -351,7 +353,7 @@ void GetTexInfo(int id, int tile)
     if (rdp.tiles[tile].size == 3)
         line <<= 1;
     uint32_t crc = 0;
-    if (g_settings->fast_crc)
+    if (g_settings->fast_crc())
     {
         line = (line - wid_64) << 3;
         if (wid_64 < 1) wid_64 = 1;
@@ -1255,7 +1257,7 @@ void LoadTex(int id, int tmu)
     GHQTexInfo ghqTexInfo;
     memset(&ghqTexInfo, 0, sizeof(GHQTexInfo));
     uint32_t g64_crc = cache->crc;
-    if (g_settings->ghq_use)
+    if (g_ghq_use)
     {
         int bpl;
         uint8_t* addr = (uint8_t*)(gfx.RDRAM + rdp.addr[rdp.tiles[td].t_mem]);
@@ -1297,7 +1299,7 @@ void LoadTex(int id, int tmu)
         {
             if (rdp.tiles[td].size == 1)
                 paladdr = (uint8_t*)(rdp.pal_8_rice);
-            else if (g_settings->ghq_hirs_altcrc)
+            else if (g_settings->ghq_hirs_altcrc())
                 paladdr = (uint8_t*)(rdp.pal_8_rice + (rdp.tiles[td].palette << 5));
             else
                 paladdr = (uint8_t*)(rdp.pal_8_rice + (rdp.tiles[td].palette << 4));
@@ -1579,10 +1581,10 @@ void LoadTex(int id, int tmu)
 
     if (GfxInitDone)
     {
-        if (g_settings->ghq_use)
+        if (g_ghq_use)
         {
             if (!ghqTexInfo.data)
-                if (!g_settings->ghq_enht_nobg || !rdp.texrecting || (texinfo[id].splits == 1 && texinfo[id].width <= 256))
+                if (!g_settings->ghq_enht_nobg() || !rdp.texrecting || (texinfo[id].splits == 1 && texinfo[id].width <= 256))
                     ext_ghq_txfilter((unsigned char*)texture, (int)real_x, (int)real_y, LOWORD(result), (uint64)g64_crc, &ghqTexInfo);
 
             if (ghqTexInfo.data)

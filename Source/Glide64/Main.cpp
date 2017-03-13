@@ -41,7 +41,6 @@
 #include <Common/StdString.h>
 #include "Gfx_1.3.h"
 #include "Version.h"
-#include <Settings/Settings.h>
 #include <Common/CriticalSection.h>
 #include <Common/DateTimeClass.h>
 #include <Common/path.h>
@@ -82,7 +81,7 @@ int exception = FALSE;
 int evoodoo = 0;
 int ev_fullscreen = 0;
 
-extern int viewport_offset;
+extern int g_viewport_offset;
 extern int g_width, g_height;
 
 
@@ -115,8 +114,9 @@ uint32_t   offset_cursor = 0;
 uint32_t   offset_textures = 0;
 uint32_t   offset_texbuf1 = 0;
 
-int    capture_screen = 0;
-std::string capture_path;
+bool g_ghq_use = false;
+bool g_capture_screen = false;
+std::string g_capture_path;
 
 #ifdef _WIN32
 HWND g_hwnd_win = NULL;
@@ -156,13 +156,13 @@ void _ChangeSize()
 
     rdp.vi_width = (hend - hstart) * fscale_x;
     rdp.vi_height = (vend - vstart) * fscale_y * 1.0126582f;
-    float aspect = (g_settings->adjust_aspect && (fscale_y > fscale_x) && (rdp.vi_width > rdp.vi_height)) ? fscale_x / fscale_y : 1.0f;
+    float aspect = (g_settings->adjust_aspect() && (fscale_y > fscale_x) && (rdp.vi_width > rdp.vi_height)) ? fscale_x / fscale_y : 1.0f;
 
     WriteTrace(TraceResolution, TraceDebug, "hstart: %d, hend: %d, vstart: %d, vend: %d", hstart, hend, vstart, vend);
     WriteTrace(TraceResolution, TraceDebug, "size: %d x %d", (int)rdp.vi_width, (int)rdp.vi_height);
 
     rdp.scale_x = (float)g_settings->res_x() / rdp.vi_width;
-    if (region > 0 && g_settings->pal230)
+    if (region > 0 && g_settings->pal230())
     {
         // odd... but pal games seem to want 230 as height...
         rdp.scale_y = res_scl_y * (230.0f / rdp.vi_height)  * aspect;
@@ -204,19 +204,10 @@ void ChangeSize()
 
 void ConfigWrapper()
 {
-    grConfigWrapperExt(g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic);
+    grConfigWrapperExt(g_settings->wrpVRAM() * 1024 * 1024, g_settings->wrpFBO(), g_settings->wrpAnisotropic());
 }
 
-void UseUnregisteredSetting(int /*SettingID*/)
-{
-#ifdef _WIN32
-    DebugBreak();
-#endif
-}
 extern int g_width, g_height;
-
-GRSTIPPLE grStippleModeExt = NULL;
-GRSTIPPLE grStipplePatternExt = NULL;
 
 int GetTexAddrUMA(int /*tmu*/, int texsize)
 {
@@ -383,9 +374,12 @@ void DisplayLoadProgress(const wchar_t *format, ...)
 #ifdef _WIN32
 void SetWindowDisplaySize(HWND hWnd)
 {
-    if ((HWND)hWnd == NULL) hWnd = GetActiveWindow();
+    if (hWnd == NULL)
+    {
+        hWnd = GetActiveWindow();
+    }
     g_hwnd_win = (HWND)hWnd;
-    
+
     if (ev_fullscreen)
     {
         ZeroMemory(&g_windowedRect, sizeof(RECT));
@@ -395,7 +389,7 @@ void SetWindowDisplaySize(HWND hWnd)
         g_windowedStyle = GetWindowLong(hWnd, GWL_STYLE);
 
         // primary monitor only
-        if (!EnterFullScreen(g_settings->wrpResolution))
+        if (!EnterFullScreen(g_settings->FullScreenRes()))
         {
             WriteTrace(TraceGlitch, TraceWarning, "can't change to fullscreen mode");
         }
@@ -410,7 +404,7 @@ void SetWindowDisplaySize(HWND hWnd)
         SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_APPWINDOW | WS_EX_TOPMOST);
         SetWindowPos(hWnd, NULL, 0, 0, g_width, g_height, SWP_NOACTIVATE | SWP_NOZORDER | SWP_SHOWWINDOW);
 
-        viewport_offset = 0;
+        g_viewport_offset = 0;
         g_fullscreen = true;
     }
     else
@@ -430,7 +424,7 @@ void SetWindowDisplaySize(HWND hWnd)
         {
             GetWindowRect(hStatusBar, &statusbarRect);
         }
-        viewport_offset = statusbarRect.bottom - statusbarRect.top;
+        g_viewport_offset = statusbarRect.bottom - statusbarRect.top;
         GetWindowRect(hWnd, &g_windowedRect);
         GetClientRect(hWnd, &clientRect);
         g_windowedRect.right += (g_width - (clientRect.right - clientRect.left));
@@ -455,6 +449,9 @@ void ExitFullScreen(void)
 }
 
 #endif
+
+void setPattern();
+
 int InitGfx()
 {
     if (GfxInitDone)
@@ -571,11 +568,8 @@ int InitGfx()
     if (strstr(extensions, "GETGAMMA"))
         grGet(GR_GAMMA_TABLE_ENTRIES, sizeof(voodoo.gamma_table_size), &voodoo.gamma_table_size);
 
-    grStippleModeExt = (GRSTIPPLE)grStippleMode;
-    grStipplePatternExt = (GRSTIPPLE)grStipplePattern;
-
-    if (grStipplePatternExt)
-        grStipplePatternExt(g_settings->stipple_pattern);
+    srand(g_settings->stipple_pattern());
+    setPattern();
 
     InitCombine();
 
@@ -599,7 +593,7 @@ int InitGfx()
 
     grCullMode(GR_CULL_NEGATIVE);
 
-    if (g_settings->fog) //"FOGCOORD" extension
+    if (g_settings->fog()) //"FOGCOORD" extension
     {
         if (strstr(extensions, "FOGCOORD"))
         {
@@ -622,7 +616,9 @@ int InitGfx()
             grVertexLayout(GR_PARAM_FOG_EXT, offsetof(VERTEX, f), GR_PARAM_ENABLE);
         }
         else //not supported
-            g_settings->fog = FALSE;
+        {
+            g_settings->SetFog(FALSE);
+        }
     }
 
     grDepthBufferMode(GR_DEPTHBUFFER_ZBUFFER);
@@ -651,65 +647,65 @@ int InitGfx()
     grClipWindow(0, 0, g_settings->scr_res_x(), g_settings->scr_res_y());
     rdp.update |= UPDATE_SCISSOR | UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
 
-    if (!g_settings->ghq_use)
+    if (!g_ghq_use)
     {
-        g_settings->ghq_use = g_settings->ghq_fltr() != CSettings::TextureFilter_None || g_settings->ghq_enht() != CSettings::TextureEnht_None || g_settings->ghq_hirs;
-        if (g_settings->ghq_use)
+        g_ghq_use = g_settings->ghq_fltr() != CSettings::TextureFilter_None || g_settings->ghq_enht() != CSettings::TextureEnht_None || g_settings->ghq_hirs() != CSettings::HiResPackFormat_None;
+        if (g_ghq_use)
         {
             /* Plugin path */
-            int options = g_settings->ghq_fltr() | g_settings->ghq_enht() | texcmpr[g_settings->ghq_cmpr] | texhirs[g_settings->ghq_hirs];
-            if (g_settings->ghq_enht_cmpr)
+            int options = g_settings->ghq_fltr() | g_settings->ghq_enht() | g_settings->ghq_cmpr() | g_settings->ghq_hirs();
+            if (g_settings->ghq_enht_cmpr())
             {
                 options |= COMPRESS_TEX;
             }
-            if (g_settings->ghq_hirs_cmpr)
+            if (g_settings->ghq_hirs_cmpr())
             {
                 options |= COMPRESS_HIRESTEX;
             }
-            if (g_settings->ghq_hirs_tile)
+            if (g_settings->ghq_hirs_tile())
             {
                 options |= TILE_HIRESTEX;
             }
-            if (g_settings->ghq_enht_f16bpp)
+            if (g_settings->ghq_enht_f16bpp())
             {
                 options |= FORCE16BPP_TEX;
             }
-            if (g_settings->ghq_hirs_f16bpp)
+            if (g_settings->ghq_hirs_f16bpp())
             {
                 options |= FORCE16BPP_HIRESTEX;
             }
-            if (g_settings->ghq_enht_gz)
+            if (g_settings->ghq_enht_gz())
             {
                 options |= GZ_TEXCACHE;
             }
-            if (g_settings->ghq_hirs_gz)
+            if (g_settings->ghq_hirs_gz())
             {
                 options |= GZ_HIRESTEXCACHE;
             }
-            if (g_settings->ghq_cache_save)
+            if (g_settings->ghq_cache_save())
             {
                 options |= (DUMP_TEXCACHE | DUMP_HIRESTEXCACHE);
             }
-            if (g_settings->ghq_hirs_let_texartists_fly)
+            if (g_settings->ghq_hirs_let_texartists_fly())
             {
                 options |= LET_TEXARTISTS_FLY;
             }
-            if (g_settings->ghq_hirs_dump)
+            if (g_settings->ghq_hirs_dump())
             {
                 options |= DUMP_TEX;
             }
 
-            g_settings->ghq_use = (int)ext_ghq_init(voodoo.max_tex_size, // max texture width supported by hardware
+            g_ghq_use = (int)ext_ghq_init(voodoo.max_tex_size, // max texture width supported by hardware
                 voodoo.max_tex_size, // max texture height supported by hardware
                 voodoo.sup_32bit_tex ? 32 : 16, // max texture bpp supported by hardware
                 options,
-                g_settings->ghq_cache_size * 1024 * 1024, // cache texture to system memory
-                g_settings->texture_dir.c_str(),
+                g_settings->ghq_cache_size() * 1024 * 1024, // cache texture to system memory
+                g_settings->texture_dir(),
                 rdp.RomName, // name of ROM. must be no longer than 256 characters
                 DisplayLoadProgress);
         }
     }
-    if (g_settings->ghq_use && strstr(extensions, "TEXMIRROR"))
+    if (g_ghq_use && strstr(extensions, "TEXMIRROR"))
     {
         voodoo.sup_mirroring = 1;
     }
@@ -841,8 +837,8 @@ output:   none
 *******************************************************************/
 EXPORT void CALL CaptureScreen(char * Directory)
 {
-    capture_screen = 1;
-    capture_path = Directory;
+    g_capture_screen = true;
+    g_capture_path = Directory;
 }
 
 /******************************************************************
@@ -897,10 +893,10 @@ void CALL CloseDLL(void)
 {
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
-    if (g_settings->ghq_use)
+    if (g_ghq_use)
     {
         ext_ghq_shutdown();
-        g_settings->ghq_use = 0;
+        g_ghq_use = false;
     }
 
     if (g_settings)
@@ -1008,7 +1004,7 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     CountCombine();
     ZLUT_init();
 
-    grConfigWrapperExt(g_settings->wrpVRAM * 1024 * 1024, g_settings->wrpFBO, g_settings->wrpAnisotropic);
+    grConfigWrapperExt(g_settings->wrpVRAM() * 1024 * 1024, g_settings->wrpFBO(), g_settings->wrpAnisotropic());
     grGlideInit();
     const char *extensions = grGetString(GR_EXTENSION);
     grGlideShutdown();
@@ -1150,10 +1146,10 @@ void CALL RomOpen(void)
         name[strlen(name) - 1] = 0;
     }
 
-    if (g_settings->ghq_use && strcmp(rdp.RomName, name) != 0)
+    if (g_ghq_use && strcmp(rdp.RomName, name) != 0)
     {
         ext_ghq_shutdown();
-        g_settings->ghq_use = 0;
+        g_ghq_use = false;
     }
     strcpy(rdp.RomName, name);
     g_settings->ReadGameSettings(name);
@@ -1176,15 +1172,6 @@ void CALL RomOpen(void)
 
     if (evoodoo)
         InitGfx();
-
-    if (strstr(extensions, "ROMNAME"))
-    {
-        char strSetRomName[] = "grSetRomName";
-        void (FX_CALL *grSetRomName)(char*);
-        grSetRomName = (void (FX_CALL *)(char*))grGetProcAddress(strSetRomName);
-        grSetRomName(name);
-    }
-    // **
 }
 
 /******************************************************************
@@ -1205,9 +1192,8 @@ void CALL ShowCFB(void)
 void drawViRegBG()
 {
     WriteTrace(TraceGlide64, TraceDebug, "start");
-    const uint32_t VIwidth = *gfx.VI_WIDTH_REG;
     FB_TO_SCREEN_INFO fb_info;
-    fb_info.width = VIwidth;
+    fb_info.width = *gfx.VI_WIDTH_REG;
     fb_info.height = (uint32_t)rdp.vi_height;
     if (fb_info.height == 0)
     {
@@ -1216,7 +1202,7 @@ void drawViRegBG()
     }
     fb_info.ul_x = 0;
 
-    fb_info.lr_x = VIwidth - 1;
+    fb_info.lr_x = fb_info.width - 1;
     //  fb_info.lr_x = (uint32_t)rdp.vi_width - 1;
     fb_info.ul_y = 0;
     fb_info.lr_y = fb_info.height - 1;
@@ -1452,9 +1438,9 @@ void newSwapBuffers()
     grDepthMask(FXFALSE);
     grCullMode(GR_CULL_DISABLE);
 
-    if (capture_screen)
+    if (g_capture_screen)
     {
-        CPath path(capture_path);
+        CPath path(g_capture_path);
         if (!path.DirectoryExists())
         {
             path.DirectoryCreate();
@@ -1525,7 +1511,7 @@ void newSwapBuffers()
             // Unlock the backbuffer
             grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
             write_png_file(path, image_width, image_height, ssimg);
-            capture_screen = 0;
+            g_capture_screen = false;
         }
     }
 
@@ -1539,7 +1525,7 @@ void newSwapBuffers()
         grAuxBufferExt(GR_BUFFER_AUXBUFFER);
     }
     WriteTrace(TraceGlide64, TraceDebug, "BUFFER SWAPPED");
-    grBufferSwap(g_settings->vsync);
+    grBufferSwap(g_settings->vsync());
     if (*gfx.VI_STATUS_REG & 0x08) //gamma correction is used
     {
         if (!voodoo.gamma_correction)
@@ -1562,7 +1548,7 @@ void newSwapBuffers()
         }
     }
 
-    if (g_settings->wireframe || g_settings->buff_clear || (g_settings->hacks(CSettings::hack_PPL) && g_settings->ucode() == CSettings::ucode_S2DEX))
+    if (g_settings->wireframe() || g_settings->buff_clear() || (g_settings->hacks(CSettings::hack_PPL) && g_settings->ucode() == CSettings::ucode_S2DEX))
     {
         grDepthMask((g_settings->hacks(CSettings::hack_RE2) && g_settings->fb_depth_render_enabled()) ? FXFALSE : FXTRUE);
         grBufferClear(0, 0, 0xFFFF);

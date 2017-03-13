@@ -1651,7 +1651,7 @@ grChromakeyValue(GrColor_t value)
     grDisplayGLError("grChromakeyValue");
 }
 
-static void setPattern()
+void setPattern()
 {
     int i;
     GLubyte stip[32 * 4];
@@ -1688,15 +1688,6 @@ static void setPattern()
     glDisable(GL_TEXTURE_2D);
 
     grDisplayGLError("setPattern");
-}
-
-FX_ENTRY void FX_CALL
-grStipplePattern(
-GrStipplePattern_t stipple)
-{
-    WriteTrace(TraceResolution, TraceDebug, "value: %x", stipple);
-    srand(stipple);
-    setPattern();
 }
 
 FX_ENTRY void FX_CALL

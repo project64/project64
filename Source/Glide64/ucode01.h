@@ -104,7 +104,7 @@ static void uc1_tri2()
 
 static void uc1_line3d()
 {
-    if (!g_settings->force_quad3d && ((rdp.cmd1 & 0xFF000000) == 0) && ((rdp.cmd0 & 0x00FFFFFF) == 0))
+    if (!g_settings->force_quad3d() && ((rdp.cmd1 & 0xFF000000) == 0) && ((rdp.cmd0 & 0x00FFFFFF) == 0))
     {
         uint16_t width = (uint16_t)(rdp.cmd1 & 0xFF) + 3;
 
