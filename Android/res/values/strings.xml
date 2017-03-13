@@ -100,9 +100,11 @@
     <string name="Advanced">Advanced</string>
     <string name="CpuUsage_title">CPU Usage</string>
     <string name="CpuUsage_summary">Show the cpu used by different components</string>
-    <string name="DisplaySpeed_title">Display Speed</string>
     <string name="LimitFPS_summary">Limit the max speed executed</string>
     <string name="LimitFPS_title">Limit FPS</string>
+    <string name="screenResolution_title">Rendered Resolution</string>
+    <string name="screenResolution_summary">should show value???</string>
+    <string name="DisplaySpeed_title">Display Speed</string>
     <string name="DisplaySpeed_summary">Show the speed of the emulation</string>
     <string name="DisplaySpeedDisplay">Display Speed Display</string>
     <string name="DListPerSecond">Display lists per second</string>

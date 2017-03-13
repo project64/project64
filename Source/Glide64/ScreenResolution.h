@@ -8,28 +8,16 @@
 * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
 *                                                                           *
 ****************************************************************************/
-package emu.project64.settings;
+#pragma once
+#include <Common/stdtypes.h>
 
-import android.os.Bundle;
-import emu.project64.R;
+uint32_t GetScreenResolutionCount();
+uint32_t GetDefaultScreenRes();
+uint32_t GetScreenResWidth(uint32_t index);
+uint32_t GetScreenResHeight(uint32_t index);
+const char * GetScreenResolutionName(uint32_t index);
 
-public class GamepadScreenFragment extends BaseSettingsFragment
-{
-    @Override
-    protected int getXml() 
-    {
-        return R.xml.setting_gamepad;
-    }
-
-    @Override
-    protected int getTitleId() 
-    {
-        return R.string.gamepad_title;
-    }
-    
-    @Override
-    public void onCreatePreferences(Bundle bundle, String s)
-    {
-        super.onCreatePreferences(bundle, s);
-    }
-}
+int GetCurrentResIndex(void);
+uint32_t GetFullScreenResWidth(uint32_t index);
+uint32_t GetFullScreenResHeight(uint32_t index);
+bool EnterFullScreen(uint32_t index);

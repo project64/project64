@@ -589,6 +589,9 @@ public enum LanguageStringID
     ANDROID_MENU_DEBUGGINGOPTIONS(3111),
     ANDROID_MENU_RESETFUNCTIONTIMES(3112),
     ANDROID_MENU_DUMPFUNCTIONTIMES(3113),
+
+    //Video plugin
+    ANDROID_VIDEO_NATIVE_RES(3200),
     ;
     
     private int value;

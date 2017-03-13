@@ -17,9 +17,6 @@
 #define IDC_SPIN_TEXTURE_CACHE          1006
 #define IDC_EDIT1                       1007
 #define IDC_CHK_USE_FRAME_BUFFER_OBJECT 1008
-#define IDC_CHK_CLOCK_ENABLED           1012
-#define IDC_CHK_CLOCK_24                1013
-#define IDC_CMB_SCREEN_SHOT_FORMAT      1015
 #define IDC_CHK_SHOW_TEXTURE_ENHANCEMENT 1016
 #define IDC_INFO                        1017
 #define IDC_CMB_FILTERING_MODE          1018

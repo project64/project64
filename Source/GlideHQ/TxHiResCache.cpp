@@ -146,8 +146,6 @@ TxHiResCache::load(boolean replace) /* 0 : reload, 1 : replace partial */
 
         switch (_options & HIRESTEXTURES_MASK)
         {
-        case GHQ_HIRESTEXTURES:
-            break;
         case RICE_HIRESTEXTURES:
             INFO(80, "-----\n");
             INFO(80, "using Rice hires texture format...\n");
@@ -163,8 +161,6 @@ TxHiResCache::load(boolean replace) /* 0 : reload, 1 : replace partial */
             dir_path.AppendDirectory(_ident.c_str());
             loadHiResTextures(dir_path, replace);
             break;
-        case JABO_HIRESTEXTURES:
-            ;
         }
 
         return 1;

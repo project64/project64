@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import emu.project64.AndroidDevice;
+import emu.project64.Project64Application;
 import emu.project64.R;
 import emu.project64.hack.MogaHack;
 import emu.project64.input.AbstractController;
@@ -34,10 +35,12 @@ import emu.project64.input.provider.KeyProvider;
 import emu.project64.input.provider.KeyProvider.ImeFormula;
 import emu.project64.input.provider.MogaProvider;
 import emu.project64.jni.NativeExports;
+import emu.project64.jni.NativeVideo;
 import emu.project64.jni.NativeXperiaTouchpad;
 import emu.project64.jni.SettingsID;
 import emu.project64.jni.SystemEvent;
 import emu.project64.jni.UISettingID;
+import emu.project64.jni.VideoSettingID;
 import emu.project64.persistent.ConfigFile;
 import emu.project64.persistent.ConfigFile.ConfigSection;
 import emu.project64.profile.Profile;
@@ -52,11 +55,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
+import android.widget.FrameLayout;
 
 public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.Callback, GameSurface.SurfaceInfo
 {
@@ -92,7 +99,7 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
         mActivity = activity;
         mControllers = new ArrayList<AbstractController>();
         mIsXperiaPlay = !(activity instanceof GameActivity);
-        mMogaController = Controller.getInstance( mActivity );
+        mMogaController = Controller.getInstance(mActivity);
     }
 
     @TargetApi(11)
@@ -105,8 +112,7 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
         // Initialize MOGA controller API
         // TODO: Remove hack after MOGA SDK is fixed
         // mMogaController.init();
-        MogaHack.init( mMogaController, mActivity );
-
+        MogaHack.init(mMogaController, mActivity);
 
         // For Honeycomb, let the action bar overlay the rendered view (rather
         // than squeezing it)
@@ -140,19 +146,34 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
 
         // Lay out content and get the views
         mActivity.setContentView(R.layout.game_activity);
-        mSurface = (GameSurface) mActivity.findViewById( R.id.gameSurface );
+        mSurface = (GameSurface) mActivity.findViewById(R.id.gameSurface);
         mOverlay = (GameOverlay) mActivity.findViewById(R.id.gameOverlay);
 
+        float widthRatio = (float)AndroidDevice.nativeWidth/(float)AndroidDevice.nativeWidthOriginal;
+        float heightRatio = (float)AndroidDevice.nativeHeight/(float)AndroidDevice.nativeHeightOriginal;
+        int ScreenRes = NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Resolution.getValue());
+
+        int videoRenderWidth = Math.round(NativeVideo.GetScreenResWidth(ScreenRes) * (ScreenRes == 0 ? 1 : widthRatio));
+        int videoRenderHeight = Math.round(NativeVideo.GetScreenResHeight(ScreenRes) * (ScreenRes == 0 ? 1 : heightRatio));
+
+        // Update screen res
+        mSurface.getHolder().setFixedSize(videoRenderWidth, videoRenderHeight);
+        final FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mSurface.getLayoutParams();
+        params.width = AndroidDevice.nativeWidth;
+        params.height = AndroidDevice.nativeHeight;
+        params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
+        mSurface.setLayoutParams(params);
+
         // Listen to game surface events (created, changed, destroyed)
-        mSurface.getHolder().addCallback( this );
-        mSurface.createGLContext((ActivityManager)mActivity.getSystemService(Context.ACTIVITY_SERVICE));
+        mSurface.getHolder().addCallback(this);
+        mSurface.createGLContext((ActivityManager) mActivity.getSystemService(Context.ACTIVITY_SERVICE));
 
         // Configure the action bar introduced in higher Android versions
         if (AndroidDevice.IS_ACTION_BAR_AVAILABLE)
         {
             mActivity.getActionBar().hide();
             ColorDrawable color = new ColorDrawable(Color.parseColor("#303030"));
-            color.setAlpha(50 /*mGlobalPrefs.displayActionBarTransparency*/);
+            color.setAlpha(50 /* mGlobalPrefs.displayActionBarTransparency */);
             mActivity.getActionBar().setBackgroundDrawable(color);
         }
 
@@ -162,8 +183,9 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
         View inputSource = mIsXperiaPlay ? new NativeXperiaTouchpad(mActivity) : mOverlay;
         initControllers(inputSource);
 
-        // Override the peripheral controllers' key provider, to add some extra functionality
-        inputSource.setOnKeyListener( this );
+        // Override the peripheral controllers' key provider, to add some extra
+        // functionality
+        inputSource.setOnKeyListener(this);
     }
 
     public void onStart()
@@ -235,7 +257,7 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
             {
                 pause = true;
                 PauseType = NativeExports.SettingsLoadDword(SettingsID.GameRunning_CPU_PausedType.getValue());
-                NativeExports.ExternalEvent( SystemEvent.SysEvent_ResumeCPU_FromMenu.getValue());
+                NativeExports.ExternalEvent(SystemEvent.SysEvent_ResumeCPU_FromMenu.getValue());
             }
             int CurrentSaveState = NativeExports.SettingsLoadDword(SettingsID.Game_CurrentSaveState.getValue());
             int OriginalSaveTime = NativeExports.SettingsLoadDword(SettingsID.Game_LastSaveTime.getValue());
@@ -256,7 +278,7 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
                 {
                     Thread.sleep(100);
                 }
-                catch(InterruptedException ex)
+                catch (InterruptedException ex)
                 {
                     Thread.currentThread().interrupt();
                 }
@@ -264,7 +286,7 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
             NativeExports.SettingsSaveDword(SettingsID.Game_CurrentSaveState.getValue(), CurrentSaveState);
             if (pause)
             {
-                NativeExports.ExternalEvent( SystemEvent.SysEvent_PauseCPU_FromMenu.getValue());
+                NativeExports.ExternalEvent(SystemEvent.SysEvent_PauseCPU_FromMenu.getValue());
                 NativeExports.SettingsSaveDword(SettingsID.GameRunning_CPU_PausedType.getValue(), PauseType);
             }
         }
@@ -324,9 +346,9 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
         mMogaController.exit();
     }
 
-    public void onSettingDone ()
+    public void onSettingDone()
     {
-        mtouchscreenScale = ((float)NativeExports.UISettingsLoadDword(UISettingID.TouchScreen_ButtonScale.getValue())) / 100.0f;
+        mtouchscreenScale = ((float) NativeExports.UISettingsLoadDword(UISettingID.TouchScreen_ButtonScale.getValue())) / 100.0f;
         mlayout = NativeExports.UISettingsLoadString(UISettingID.TouchScreen_Layout.getValue());
         mControllers = new ArrayList<AbstractController>();
         CreateTouchScreenControls();
@@ -339,37 +361,40 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
 
     private void CreateTouchScreenControls()
     {
-        boolean isTouchscreenAnimated = false; //mGlobalPrefs.isTouchscreenAnimated
-        boolean isTouchscreenHidden = false; //!isTouchscreenEnabled || globalPrefs.touchscreenTransparency == 0;
+        boolean isTouchscreenAnimated = false; // mGlobalPrefs.isTouchscreenAnimated
+        boolean isTouchscreenHidden = false; // !isTouchscreenEnabled ||
+                                                // globalPrefs.touchscreenTransparency
+                                                // == 0;
         String profilesDir = AndroidDevice.PACKAGE_DIRECTORY + "/profiles";
         String touchscreenProfiles_cfg = profilesDir + "/touchscreen.cfg";
-        ConfigFile touchscreenConfigFile = new ConfigFile( touchscreenProfiles_cfg );
+        ConfigFile touchscreenConfigFile = new ConfigFile(touchscreenProfiles_cfg);
         ConfigSection section = touchscreenConfigFile.get(mlayout);
         if (section == null)
         {
             mlayout = "Analog";
             section = touchscreenConfigFile.get(mlayout);
         }
-        Profile touchscreenProfile = new Profile( true, section);
+        Profile touchscreenProfile = new Profile(true, section);
         int touchscreenTransparency = 100;
         String touchscreenSkinsDir = AndroidDevice.PACKAGE_DIRECTORY + "/skins/touchscreen";
         String touchscreenSkin = touchscreenSkinsDir + "/Outline";
 
-        // The touch map and overlay are needed to display frame rate and/or controls
-        mTouchscreenMap = new VisibleTouchMap( mActivity.getResources() );
-        mTouchscreenMap.load(touchscreenSkin, touchscreenProfile, isTouchscreenAnimated, mtouchscreenScale, touchscreenTransparency );
-        mOverlay.initialize( mTouchscreenMap, !isTouchscreenHidden, isTouchscreenAnimated );
-     }
+        // The touch map and overlay are needed to display frame rate and/or
+        // controls
+        mTouchscreenMap = new VisibleTouchMap(mActivity.getResources());
+        mTouchscreenMap.load(touchscreenSkin, touchscreenProfile, isTouchscreenAnimated, mtouchscreenScale, touchscreenTransparency);
+        mOverlay.initialize(mTouchscreenMap, !isTouchscreenHidden, isTouchscreenAnimated);
+    }
 
     @Override
-    public boolean onKey( View view, int keyCode, KeyEvent event )
+    public boolean onKey(View view, int keyCode, KeyEvent event)
     {
         // If PeripheralControllers exist and handle the event,
         // they return true. Else they return false, signaling
         // Android to handle the event (menu button, vol keys).
-        if( mKeyProvider != null )
+        if (mKeyProvider != null)
         {
-            return mKeyProvider.onKey( view, keyCode, event );
+            return mKeyProvider.onKey(view, keyCode, event);
         }
         return false;
     }
@@ -378,32 +403,32 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
     private void initControllers(View inputSource)
     {
         // By default, send Player 1 rumbles through phone vibrator
-        Vibrator vibrator = (Vibrator) mActivity.getSystemService( Context.VIBRATOR_SERVICE );
+        Vibrator vibrator = (Vibrator) mActivity.getSystemService(Context.VIBRATOR_SERVICE);
         int touchscreenAutoHold = 0;
         boolean isTouchscreenFeedbackEnabled = false;
         Set<Integer> autoHoldableButtons = null;
 
         // Create the touchscreen controller
-        TouchController touchscreenController = new TouchController( mTouchscreenMap,
-                inputSource, mOverlay, vibrator, touchscreenAutoHold,
-                isTouchscreenFeedbackEnabled, autoHoldableButtons );
-        mControllers.add( touchscreenController );
+        TouchController touchscreenController = new TouchController(mTouchscreenMap, inputSource, mOverlay, vibrator,
+                touchscreenAutoHold, isTouchscreenFeedbackEnabled, autoHoldableButtons);
+        mControllers.add(touchscreenController);
 
         // Create the input providers shared among all peripheral controllers
         String profile_name = NativeExports.UISettingsLoadString(UISettingID.Controller_CurrentProfile.getValue());
-        ConfigFile ControllerConfigFile = new ConfigFile(NativeExports.UISettingsLoadString(UISettingID.Controller_ConfigFile.getValue()));
-        ConfigSection section = ControllerConfigFile.get( profile_name );
+        ConfigFile ControllerConfigFile = new ConfigFile(
+                NativeExports.UISettingsLoadString(UISettingID.Controller_ConfigFile.getValue()));
+        ConfigSection section = ControllerConfigFile.get(profile_name);
         if (section != null)
         {
-            Profile ControllerProfile = new Profile( false, section );
-            InputMap map = new InputMap( ControllerProfile.get( "map" ) );
+            Profile ControllerProfile = new Profile(false, section);
+            InputMap map = new InputMap(ControllerProfile.get("map"));
 
-            mKeyProvider = new KeyProvider( inputSource, ImeFormula.DEFAULT, AndroidDevice.getUnmappableKeyCodes() );
-            MogaProvider mogaProvider = new MogaProvider( mMogaController );
-            AbstractProvider axisProvider = AndroidDevice.IS_HONEYCOMB_MR1 ? new AxisProvider( inputSource ) : null;
+            mKeyProvider = new KeyProvider(inputSource, ImeFormula.DEFAULT, AndroidDevice.getUnmappableKeyCodes());
+            MogaProvider mogaProvider = new MogaProvider(mMogaController);
+            AbstractProvider axisProvider = AndroidDevice.IS_HONEYCOMB_MR1 ? new AxisProvider(inputSource) : null;
             int Deadzone = NativeExports.UISettingsLoadDword(UISettingID.Controller_Deadzone.getValue());
             int Sensitivity = NativeExports.UISettingsLoadDword(UISettingID.Controller_Sensitivity.getValue());
-            mControllers.add( new PeripheralController( 1, map, Deadzone, Sensitivity, mKeyProvider, axisProvider, mogaProvider ) );
+            mControllers.add(new PeripheralController(1, map, Deadzone, Sensitivity, mKeyProvider, axisProvider, mogaProvider));
         }
     }
 

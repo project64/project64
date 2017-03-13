@@ -114,7 +114,7 @@ static void uc5_vertex()
     // 0 = unused
 
     int n = ((rdp.cmd0 >> 19) & 0x1F);// + 1;
-    if (g_settings->hacks&hack_Diddy)
+    if (g_settings->hacks(CSettings::hack_Diddy))
         n++;
 
     if (rdp.cmd0 & 0x00010000)

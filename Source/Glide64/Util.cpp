@@ -289,7 +289,7 @@ VERTEX **org_vtx;
 void draw_tri(VERTEX **vtx, uint16_t linew)
 {
     deltaZ = dzdx = 0;
-    if (linew == 0 && (fb_depth_render_enabled || (rdp.rm & 0xC00) == 0xC00))
+    if (linew == 0 && (g_settings->fb_depth_render_enabled() || (rdp.rm & 0xC00) == 0xC00))
     {
         double X0 = vtx[0]->sx / rdp.scale_x;
         double Y0 = vtx[0]->sy / rdp.scale_y;
@@ -308,12 +308,15 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
             double diffz_02 = vtx[0]->sz - vtx[2]->sz;
             double diffz_12 = vtx[1]->sz - vtx[2]->sz;
             double fdzdx = (diffz_02 * diffy_12 - diffz_12 * diffy_02) / denom;
-            if ((rdp.rm & 0xC00) == 0xC00) {
+            if ((rdp.rm & 0xC00) == 0xC00) 
+            {
                 // Calculate deltaZ per polygon for Decal z-mode
                 double fdzdy = (diffz_02 * diffx_12 - diffz_12 * diffx_02) / denom;
                 double fdz = fabs(fdzdx) + fabs(fdzdy);
-                if ((g_settings->hacks & hack_Zelda) && (rdp.rm & 0x800))
+                if (g_settings->hacks(CSettings::hack_Zelda) && (rdp.rm & 0x800))
+                {
                     fdz *= 4.0;  // Decal mode in Zelda sometimes needs mutiplied deltaZ to work correct, e.g. roads
+                }
                 deltaZ = maxval(8, (int)fdz);
             }
             dzdx = (int)(fdzdx * 65536.0);
@@ -398,7 +401,7 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
                 {
                     if (rdp.aTBuffTex[0]->tile_uls != (int)rdp.tiles[rdp.cur_tile].f_ul_s)
                         v->u0 -= rdp.tiles[rdp.cur_tile].f_ul_s;
-                    if (rdp.aTBuffTex[0]->tile_ult != (int)rdp.tiles[rdp.cur_tile].f_ul_t || (g_settings->hacks&hack_Megaman))
+                    if (rdp.aTBuffTex[0]->tile_ult != (int)rdp.tiles[rdp.cur_tile].f_ul_t || g_settings->hacks(CSettings::hack_Megaman))
                         v->v0 -= rdp.tiles[rdp.cur_tile].f_ul_t; //required for megaman (boss special attack)
                     v->u0 *= rdp.aTBuffTex[0]->u_scale;
                     v->v0 *= rdp.aTBuffTex[0]->v_scale;
@@ -799,10 +802,14 @@ void do_triangle_stuff(uint16_t linew, int old_interpolate) // what else?? do th
         rdp.clip = 0;
     else
     {
-        if (!g_settings->clip_zmin)
+        if (!g_settings->clip_zmin())
+        {
             rdp.clip &= ~CLIP_ZMIN;
-        if (!g_settings->clip_zmax)
+        }         
+        if (!g_settings->clip_zmax())
+        {
             rdp.clip &= ~CLIP_ZMAX;
+        }
     }
     render_tri(linew, old_interpolate);
 }
@@ -964,7 +971,7 @@ static void CalculateLOD(VERTEX *v, int n)
     double intptr;
     float s_scale = rdp.tiles[rdp.cur_tile].width / 255.0f;
     float t_scale = rdp.tiles[rdp.cur_tile].height / 255.0f;
-    if (g_settings->lodmode == 1)
+    if (g_settings->lodmode() == CSettings::LOD_Fast)
     {
         deltaS = (v[1].u0 / v[1].q - v[0].u0 / v[0].q) * s_scale;
         deltaT = (v[1].v0 / v[1].q - v[0].v0 / v[0].q) * t_scale;
@@ -1018,7 +1025,7 @@ static void CalculateLOD(VERTEX *v, int n)
 
 float ScaleZ(float z)
 {
-    if (g_settings->n64_z_scale)
+    if (g_settings->n64_z_scale())
     {
         int iz = (int)(z*8.0f + 0.5f);
         if (iz < 0) iz = 0;
@@ -1033,7 +1040,7 @@ float ScaleZ(float z)
 
 static void DepthBuffer(VERTEX * vtx, int n)
 {
-    if (fb_depth_render_enabled && !(g_settings->hacks&hack_RE2) && dzdx && (rdp.flags & ZBUF_UPDATE))
+    if (g_settings->fb_depth_render_enabled() && !g_settings->hacks(CSettings::hack_RE2) && dzdx && (rdp.flags & ZBUF_UPDATE))
     {
         vertexi v[12];
         if (u_cull_mode == 1) //cull front
@@ -1562,21 +1569,14 @@ static void render_tri(uint16_t linew, int old_interpolate)
         }
     }
 
-    if (g_settings->lodmode > 0 && rdp.cur_tile < rdp.mipmap_level)
+    if (g_settings->lodmode() != CSettings::LOD_Off && rdp.cur_tile < rdp.mipmap_level)
+    {
         CalculateLOD(rdp.vtxbuf, n);
+    }
 
     cmb.cmb_ext_use = cmb.tex_cmb_ext_use = 0;
 
-    /*
-    if (rdp.tbuff_tex)
-    {
-    for (int k = 0; k < 3; k++)
-    {
-    WriteTrace(TraceRDP, TraceDebug, "v%d %f->%f, width: %d. height: %d, tex_width: %d, tex_height: %d, lr_u: %f, lr_v: %f", k, vv0[k], pv[k]->v1, rdp.tbuff_tex->width, rdp.tbuff_tex->height, rdp.tbuff_tex->tex_width, rdp.tbuff_tex->tex_height, rdp.tbuff_tex->lr_u, rdp.tbuff_tex->lr_v);
-    }
-    }
-    */
-    if (g_settings->wireframe)
+    if (g_settings->wireframe())
     {
         SetWireframeCol();
         for (i = 0; i < n; i++)
@@ -1588,11 +1588,6 @@ static void render_tri(uint16_t linew, int old_interpolate)
     }
     else
     {
-        //      VERTEX ** pv = rdp.vtx_buffer?(vtx_list2):(vtx_list1);
-        //      for (int k = 0; k < n; k ++)
-        //			WriteTrace(TraceRDP, TraceDebug, "DRAW[%d]: v.x = %f, v.y = %f, v.z = %f, v.u = %f, v.v = %f", k, pv[k]->x, pv[k]->y, pv[k]->z, pv[k]->coord[rdp.t0<<1], pv[k]->coord[(rdp.t0<<1)+1]);
-        //        pv[k]->y = g_settings->res_y - pv[k]->y;
-
         if (linew > 0)
         {
             VERTEX *V0 = &rdp.vtxbuf[0];
@@ -1652,83 +1647,6 @@ static void render_tri(uint16_t linew, int old_interpolate)
             grDrawVertexArray(GR_TRIANGLE_FAN, n, rdp.vtx_buffer ? (&vtx_list2) : (&vtx_list1));
         }
     }
-
-    if (_debugger.capture) add_tri(rdp.vtxbuf, n, TRI_TRIANGLE);
-}
-
-void add_tri(VERTEX *v, int n, int type)
-{
-    //WriteTrace(TraceRDP, TraceDebug, "ENTER (%f, %f, %f), (%f, %f, %f), (%f, %f, %f)", v[0].x, v[0].y, v[0].w,
-    //  v[1].x, v[1].y, v[1].w, v[2].x, v[2].y, v[2].w);
-
-    // Debug capture
-    if (_debugger.capture)
-    {
-        rdp.debug_n++;
-
-        TRI_INFO *info = new TRI_INFO;
-        info->nv = n;
-        info->v = new VERTEX[n];
-        memcpy(info->v, v, sizeof(VERTEX)*n);
-        info->cycle_mode = rdp.cycle_mode;
-        info->cycle1 = rdp.cycle1;
-        info->cycle2 = rdp.cycle2;
-        info->uncombined = rdp.uncombined;
-        info->geom_mode = rdp.geom_mode;
-        info->othermode_h = rdp.othermode_h;
-        info->othermode_l = rdp.othermode_l;
-        info->tri_n = rdp.tri_n;
-        info->type = type;
-
-        for (int i = 0; i < 2; i++)
-        {
-            int j = rdp.cur_tile + i;
-            if (i == 0)
-                info->t[i].tmu = rdp.t0;
-            else
-                info->t[i].tmu = rdp.t1;
-            info->t[i].cur_cache[0] = rdp.cur_cache_n[rdp.t0];
-            info->t[i].cur_cache[1] = rdp.cur_cache_n[rdp.t1];
-            info->t[i].format = rdp.tiles[j].format;
-            info->t[i].size = rdp.tiles[j].size;
-            info->t[i].width = rdp.tiles[j].width;
-            info->t[i].height = rdp.tiles[j].height;
-            info->t[i].line = rdp.tiles[j].line;
-            info->t[i].palette = rdp.tiles[j].palette;
-            info->t[i].clamp_s = rdp.tiles[j].clamp_s;
-            info->t[i].clamp_t = rdp.tiles[j].clamp_t;
-            info->t[i].mirror_s = rdp.tiles[j].mirror_s;
-            info->t[i].mirror_t = rdp.tiles[j].mirror_t;
-            info->t[i].shift_s = rdp.tiles[j].shift_s;
-            info->t[i].shift_t = rdp.tiles[j].shift_t;
-            info->t[i].mask_s = rdp.tiles[j].mask_s;
-            info->t[i].mask_t = rdp.tiles[j].mask_t;
-            info->t[i].ul_s = rdp.tiles[j].ul_s;
-            info->t[i].ul_t = rdp.tiles[j].ul_t;
-            info->t[i].lr_s = rdp.tiles[j].lr_s;
-            info->t[i].lr_t = rdp.tiles[j].lr_t;
-            info->t[i].t_ul_s = rdp.tiles[7].t_ul_s;
-            info->t[i].t_ul_t = rdp.tiles[7].t_ul_t;
-            info->t[i].t_lr_s = rdp.tiles[7].t_lr_s;
-            info->t[i].t_lr_t = rdp.tiles[7].t_lr_t;
-            info->t[i].scale_s = rdp.tiles[j].s_scale;
-            info->t[i].scale_t = rdp.tiles[j].t_scale;
-        }
-
-        info->fog_color = rdp.fog_color;
-        info->fill_color = rdp.fill_color;
-        info->prim_color = rdp.prim_color;
-        info->blend_color = rdp.blend_color;
-        info->env_color = rdp.env_color;
-        info->prim_lodmin = rdp.prim_lodmin;
-        info->prim_lodfrac = rdp.prim_lodfrac;
-
-        info->pNext = _debugger.tri_list;
-        _debugger.tri_list = info;
-
-        if (_debugger.tri_last == NULL)
-            _debugger.tri_last = _debugger.tri_list;
-    }
 }
 
 void update_scissor()
@@ -1738,10 +1656,10 @@ void update_scissor()
         rdp.update ^= UPDATE_SCISSOR;
 
         // KILL the floating point error with 0.01f
-        rdp.scissor.ul_x = (uint32_t)maxval(minval((rdp.scissor_o.ul_x * rdp.scale_x + rdp.offset_x + 0.01f), g_settings->res_x), 0);
-        rdp.scissor.lr_x = (uint32_t)maxval(minval((rdp.scissor_o.lr_x * rdp.scale_x + rdp.offset_x + 0.01f), g_settings->res_x), 0);
-        rdp.scissor.ul_y = (uint32_t)maxval(minval((rdp.scissor_o.ul_y * rdp.scale_y + rdp.offset_y + 0.01f), g_settings->res_y), 0);
-        rdp.scissor.lr_y = (uint32_t)maxval(minval((rdp.scissor_o.lr_y * rdp.scale_y + rdp.offset_y + 0.01f), g_settings->res_y), 0);
+        rdp.scissor.ul_x = (uint32_t)maxval(minval((rdp.scissor_o.ul_x * rdp.scale_x + rdp.offset_x + 0.01f), g_settings->res_x()), 0);
+        rdp.scissor.lr_x = (uint32_t)maxval(minval((rdp.scissor_o.lr_x * rdp.scale_x + rdp.offset_x + 0.01f), g_settings->res_x()), 0);
+        rdp.scissor.ul_y = (uint32_t)maxval(minval((rdp.scissor_o.ul_y * rdp.scale_y + rdp.offset_y + 0.01f), g_settings->res_y()), 0);
+        rdp.scissor.lr_y = (uint32_t)maxval(minval((rdp.scissor_o.lr_y * rdp.scale_y + rdp.offset_y + 0.01f), g_settings->res_y()), 0);
         //grClipWindow specifies the hardware clipping window. Any pixels outside the clipping window are rejected.
         //Values are inclusive for minimum x and y values and exclusive for maximum x and y values.
         //    grClipWindow (rdp.scissor.ul_x?rdp.scissor.ul_x+1:0, rdp.scissor.ul_y?rdp.scissor.ul_y+1:0, rdp.scissor.lr_x, rdp.scissor.lr_y);
@@ -1874,14 +1792,14 @@ void update()
                 switch ((rdp.rm & 0xC00) >> 10) {
                 case 0:
                     grDepthBiasLevel(0);
-                    grDepthBufferFunction(g_settings->zmode_compare_less ? GR_CMP_LESS : GR_CMP_LEQUAL);
+                    grDepthBufferFunction(g_settings->zmode_compare_less() ? GR_CMP_LESS : GR_CMP_LEQUAL);
                     break;
                 case 1:
                     grDepthBiasLevel(-4);
-                    grDepthBufferFunction(g_settings->zmode_compare_less ? GR_CMP_LESS : GR_CMP_LEQUAL);
+                    grDepthBufferFunction(g_settings->zmode_compare_less() ? GR_CMP_LESS : GR_CMP_LEQUAL);
                     break;
                 case 2:
-                    grDepthBiasLevel(g_settings->ucode == 7 ? -4 : 0);
+                    grDepthBiasLevel(g_settings->ucode() == CSettings::ucode_PerfectDark ? -4 : 0);
                     grDepthBufferFunction(GR_CMP_LESS);
                     break;
                 case 3:
@@ -1958,23 +1876,20 @@ void update()
         }
         if (rdp.acmp == 3 && rdp.cycle_mode < 2)
         {
-            if (grStippleModeExt != 0)
+            if (g_settings->old_style_adither() || rdp.alpha_dither_mode != 3) 
             {
-                if (g_settings->old_style_adither || rdp.alpha_dither_mode != 3) {
-                    WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: dither");
-                    grStippleModeExt(g_settings->stipple_mode);
-                }
-                else
-                    grStippleModeExt(GR_STIPPLE_DISABLE);
+                WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: dither");
+                grStippleMode(g_settings->stipple_mode());
+            }
+            else
+            {
+                grStippleMode(GR_STIPPLE_DISABLE);
             }
         }
         else
         {
-            if (grStippleModeExt)
-            {
-                //WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: dither disabled");
-                grStippleModeExt(GR_STIPPLE_DISABLE);
-            }
+            //WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: dither disabled");
+            grStippleMode(GR_STIPPLE_DISABLE);
         }
     }
     // Cull mode (leave this in for z-clipped triangles)
@@ -2001,7 +1916,7 @@ void update()
     }
 
     //Added by Gonetz.
-    if (g_settings->fog && (rdp.update & UPDATE_FOG_ENABLED))
+    if (g_settings->fog() && (rdp.update & UPDATE_FOG_ENABLED))
     {
         rdp.update ^= UPDATE_FOG_ENABLED;
 
@@ -2053,8 +1968,8 @@ void update()
 
         rdp.clip_min_x = maxval((rdp.view_trans[0] - scale_x + rdp.offset_x) / rdp.clip_ratio, 0.0f);
         rdp.clip_min_y = maxval((rdp.view_trans[1] - scale_y + rdp.offset_y) / rdp.clip_ratio, 0.0f);
-        rdp.clip_max_x = minval((rdp.view_trans[0] + scale_x + rdp.offset_x) * rdp.clip_ratio, g_settings->res_x);
-        rdp.clip_max_y = minval((rdp.view_trans[1] + scale_y + rdp.offset_y) * rdp.clip_ratio, g_settings->res_y);
+        rdp.clip_max_x = minval((rdp.view_trans[0] + scale_x + rdp.offset_x) * rdp.clip_ratio, g_settings->res_x());
+        rdp.clip_max_y = minval((rdp.view_trans[1] + scale_y + rdp.offset_y) * rdp.clip_ratio, g_settings->res_y());
 
         WriteTrace(TraceRDP, TraceDebug, " |- viewport - (%d, %d, %d, %d)", (uint32_t)rdp.clip_min_x, (uint32_t)rdp.clip_min_y, (uint32_t)rdp.clip_max_x, (uint32_t)rdp.clip_max_y);
         if (!rdp.scissor_set)
@@ -2092,10 +2007,7 @@ void set_message_combiner()
         GR_BLEND_ZERO,
         GR_BLEND_ZERO);
     grAlphaTestFunction(GR_CMP_ALWAYS);
-    if (grStippleModeExt)
-    {
-        grStippleModeExt(GR_STIPPLE_DISABLE);
-    }
+    grStippleMode(GR_STIPPLE_DISABLE);
     grTexFilterMode(0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
     grTexCombine(GR_TMU1,
         GR_COMBINE_FUNCTION_NONE,

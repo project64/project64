@@ -70,10 +70,8 @@ the plugin
 #include <stddef.h>		// offsetof
 #include <glide.h>
 #include <Common/MemTest.h>
-#include <Settings/Settings.h>
 #include "GlideExtensions.h"
 #include "rdp.h"
-#include "Keys.h"
 #include "Config.h"
 #include "Settings.h"
 
@@ -99,24 +97,14 @@ extern "C" {
     // ** TAKE OUT BEFORE RELEASE!!! **
     //#define LOG_UCODE
 
-    //#define ALTTAB_FIX
-
     //  note that some of these things are inserted/removed
     //  from within the code & may not be changed by this define.
 
     // ********************************
 
-#define LOGNOTKEY			 // Log if not pressing:
-#define LOGKEY		0x11 // this key (CONTROL)
-
-#define LOG_COMMANDS		// log the whole 64-bit command as (0x........, 0x........)
-
     //#define CATCH_EXCEPTIONS	// catch exceptions so it doesn't freeze and will report
     // "The gfx plugin has caused an exception" instead.
 
-#define FLUSH				// flush the file buffer. slower logging, but makes sure
-    //  the command is logged before continuing (in case of
-    //  crash or exception, the log will not be cut short)
 #ifndef _ENDUSER_RELEASE_
 
 #endif
@@ -127,33 +115,16 @@ extern "C" {
     // Usually enabled
 #define LARGE_TEXTURE_HANDLING	// allow large-textured objects to be split?
 
-#ifdef ALTTAB_FIX
-    extern HHOOK hhkLowLevelKybd;
-    extern LRESULT CALLBACK LowLevelKeyboardProc(int nCode,
-        WPARAM wParam, LPARAM lParam);
-#endif
-
     // Simulations
     //#define SIMULATE_VOODOO1
     //#define SIMULATE_BANSHEE
     //********
 
-#ifndef _ENDUSER_RELEASE_
-#define BRIGHT_RED			// Keep enabled, option in dialog
-#endif
-
-#define COLORED_DEBUGGER	// ;) pretty colors
-
-    // rdram mask at 0x400000 bytes (bah, not right for majora's mask)
-    //#define BMASK	0x7FFFFF
     extern unsigned int BMASK;
 #define WMASK	0x3FFFFF
 #define DMASK	0x1FFFFF
 
     extern uint32_t update_screen_count;
-    extern uint32_t resolutions[0x18][2];
-
-    int CheckKeyPressed(int key, int mask);
 
     //#define PERFORMANCE
 #ifdef PERFORMANCE
@@ -164,7 +135,6 @@ extern "C" {
     extern int GfxInitDone;
     extern bool g_romopen;
     extern int to_fullscreen;
-    extern int debugging;
 
     extern int evoodoo;
     extern int ev_fullscreen;
@@ -288,8 +258,6 @@ extern "C" {
 
     typedef int(*GETTEXADDR)(int tmu, int texsize);
 
-    extern GRSTIPPLE            grStippleModeExt;
-    extern GRSTIPPLE            grStipplePatternExt;
     extern GETTEXADDR           GetTexAddr;
 
 #ifndef GR_STIPPLE_DISABLE
@@ -297,10 +265,6 @@ extern "C" {
 #define GR_STIPPLE_PATTERN	0x1
 #define GR_STIPPLE_ROTATE	0x2
 #endif
-
-    void ReadSettings();
-    void ReadSpecialSettings(const char * name);
-    void WriteSettings(void);
 
     /******************************************************************
     Function: CaptureScreen

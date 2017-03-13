@@ -47,10 +47,7 @@ extern char out_buf[2048];
 extern uint32_t frame_count; // frame counter
 
 //GlideHQ support
-#define TEXTURE_FILTER
-#ifdef TEXTURE_FILTER
 #include "Ext_TxFilter.h"
-#endif
 
 #define MAX_CACHE   1024*4
 #define MAX_TRI_CACHE 768 // this is actually # of vertices, not triangles
@@ -167,12 +164,6 @@ typedef struct {
     uint32_t lr_y;
 } SCISSOR;
 
-#ifdef TEXTURE_FILTER
-extern uint32_t texfltr[];
-extern uint32_t texenht[];
-extern uint32_t texcmpr[];
-extern uint32_t texhirs[];
-
 typedef struct {
     uint16_t tile_ul_s;
     uint16_t tile_ul_t;
@@ -182,30 +173,6 @@ typedef struct {
     uint16_t tex_size;
     uint32_t dxt;
 } LOAD_TILE_INFO;
-#endif
-
-enum rdpBitmapType
-{
-    rdpBITMAP_TYPE_INVALID,          // should be == 0 for compatibility!
-    rdpBITMAP_TYPE_PNG,
-};
-
-typedef struct 
-{
-    const char * format;
-    const char * extension;
-    rdpBitmapType type;
-} SCREEN_SHOT_FORMAT;
-
-extern const int NumOfFormats;
-extern SCREEN_SHOT_FORMAT ScreenShotFormats[];
-
-typedef struct
-{
-    uint8_t hk_ref;
-    uint8_t hk_motionblur;
-    uint8_t hk_filtering;
-} HOTKEY_INFO;
 
 typedef struct
 {
@@ -325,10 +292,8 @@ typedef struct {
     float c_scl_y;  // scale to lower-right center-texel y
 
     uint32_t mod, mod_color, mod_color1, mod_color2, mod_factor;
-#ifdef TEXTURE_FILTER
     uint64 ricecrc;
     int is_hires_tex;
-#endif
 } CACHE_LUT;
 
 // Lights
@@ -503,9 +468,7 @@ struct RDP_Base{
     TILE tiles[8];          // 8 tile descriptors
     uint8_t tmem[4096];        // 4k tmem
     uint32_t addr[512];        // 512 addresses (used to determine address loaded from)
-#ifdef TEXTURE_FILTER
     LOAD_TILE_INFO load_info[512];    // 512 addresses. inforamation about tile loading.
-#endif
 
     int     cur_tile;   // current tile
     int     mipmap_level;
@@ -526,9 +489,7 @@ struct RDP_Base{
     int Persp_en;
     int persp_supported;
     int force_wrap;
-#ifdef TEXTURE_FILTER
     uint16_t pal_8_rice[512];
-#endif
 
     // Lighting
     uint32_t num_lights;
@@ -639,7 +600,6 @@ void ChangeSize();
 void GoToFullScreen();
 
 extern RDP rdp;
-extern HOTKEY_INFO hotkey_info;
 extern VOODOO voodoo;
 
 extern GrTexInfo  fontTex;
@@ -649,7 +609,7 @@ extern uint32_t   offset_cursor;
 extern uint32_t   offset_textures;
 extern uint32_t   offset_texbuf1;
 
-extern int	ucode_error_report;
+extern bool	g_ucode_error_report;
 
 // RDP functions
 void rdp_reset();

@@ -123,7 +123,7 @@ static void uc2_vertex()
     }
 
     uint32_t geom_mode = rdp.geom_mode;
-    if ((g_settings->hacks&hack_Fzero) && (rdp.geom_mode & 0x40000))
+    if (g_settings->hacks(CSettings::hack_Fzero) && (rdp.geom_mode & 0x40000))
     {
         if (((short*)gfx.RDRAM)[(((addr) >> 1) + 4) ^ 1] || ((short*)gfx.RDRAM)[(((addr) >> 1) + 5) ^ 1])
             rdp.geom_mode ^= 0x40000;
@@ -413,8 +413,10 @@ static void uc2_geom_mode()
     {
         if ((rdp.flags & ZBUF_ENABLED))
         {
-            if (!g_settings->flame_corona || (rdp.rm != 0x00504341)) //hack for flame's corona
+            if (!g_settings->flame_corona() || (rdp.rm != 0x00504341)) //hack for flame's corona
+            {
                 rdp.flags ^= ZBUF_ENABLED;
+            }
             rdp.update |= UPDATE_ZBUF_ENABLED;
         }
     }

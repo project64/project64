@@ -122,7 +122,6 @@
     <ClInclude Include="Ext_TxFilter.h" />
     <ClInclude Include="FBtoScreen.h" />
     <ClInclude Include="GlideExtensions.h" />
-    <ClInclude Include="Keys.h" />
     <ClInclude Include="rdp.h" />
     <ClInclude Include="TexBuffer.h" />
     <ClInclude Include="Util.h" />
@@ -130,6 +129,8 @@
     <ClInclude Include="Gfx_1.3.h" />
     <ClInclude Include="trace.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="SettingsID.h" />
+    <ClInclude Include="ScreenResolution.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CRC.cpp">
@@ -147,13 +148,14 @@
     <ClCompile Include="DepthBufferRender.cpp" />
     <ClCompile Include="Ext_TxFilter.cpp" />
     <ClCompile Include="FBtoScreen.cpp" />
-    <ClCompile Include="Keys.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="rdp.cpp" />
     <ClCompile Include="TexBuffer.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="trace.cpp" />
     <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="ScreenResolution.cpp" />
+    <ClCompile Include="Android.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="gpl.txt">

@@ -51,18 +51,13 @@
 #include "CRC.h"
 #include <Common/StdString.h>
 #include "trace.h"
+#include "SettingsID.h"
 
 #ifdef _WIN32
 #include <Common/CriticalSection.h>
 
 extern CriticalSection * g_ProcessDListCS;
 #endif
-
-const int NumOfFormats = 1;
-SCREEN_SHOT_FORMAT ScreenShotFormats[NumOfFormats] =
-{
-    { "PNG", "png", rdpBITMAP_TYPE_PNG },
-};
 
 const char *ACmp[] = { "NONE", "THRESHOLD", "UNKNOWN", "DITHER" };
 
@@ -153,7 +148,7 @@ char out_buf[2048];
 
 uint32_t frame_count;  // frame counter
 
-int ucode_error_report = TRUE;
+bool g_ucode_error_report = TRUE;
 int wrong_tile = -1;
 
 // ** RDP graphics functions **
@@ -227,7 +222,7 @@ void microcheck();
 #include "turbo3D.h"
 
 static int reset = 0;
-static int old_ucode = -1;
+static CSettings::ucode_t g_old_ucode = CSettings::uCode_Unsupported;
 
 void RDP::Reset()
 {
@@ -253,14 +248,6 @@ void RDP::Reset()
     rdp.update = UPDATE_SCISSOR | UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
     fog_mode = RDP::fog_enabled;
     maincimg[0].addr = maincimg[1].addr = last_drawn_ci_addr = 0x7FFFFFFF;
-
-    hotkey_info.hk_ref = 90;
-    hotkey_info.hk_motionblur = (g_settings->buff_clear == 0) ? 0 : 90;
-    hotkey_info.hk_filtering = hotkey_info.hk_motionblur;
-
-    CheckKeyPressed(G64_VK_BACK, 1); //BACK
-    CheckKeyPressed(G64_VK_B, 1);
-    CheckKeyPressed(G64_VK_V, 1);
 }
 
 RDP::RDP()
@@ -328,47 +315,42 @@ void microcheck()
     ucf.close();
 #endif
 
+    g_old_ucode = g_settings->ucode();
     WriteTrace(TraceRDP, TraceDebug, "ucode = %08lx", uc_crc);
-
-    RegisterSetting(Set_ucodeLookup, Data_DWORD_RDB_Setting, stdstr_f("%08lx", uc_crc).c_str(), "ucode", (unsigned int)-2, NULL);
-    int uc = GetSetting(Set_ucodeLookup);
-
-    if (uc == -2 && ucode_error_report)
+    CSettings::ucode_t uc = g_settings->DetectUCode(uc_crc);
+    if (uc == CSettings::uCode_NotFound)
     {
-        g_settings->ucode = GetSetting(Set_ucode);
-
-        ReleaseGfx();
-        WriteTrace(TraceGlide64, TraceError, "uCode crc not found in INI, using currently selected uCode %08lx", (unsigned long)uc_crc);
+        if (g_ucode_error_report)
+        {
+            ReleaseGfx();
+            WriteTrace(TraceGlide64, TraceError, "uCode crc not found in INI, using currently selected uCode %08lx", (unsigned long)uc_crc);
 #ifdef _WIN32
-        MessageBox(gfx.hWnd, stdstr_f("Error: uCode crc not found in INI, using currently selected uCode\n\n%08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
+            MessageBox(gfx.hWnd, stdstr_f("Error: uCode crc not found in INI, using currently selected uCode\n\n%08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
 #endif
-
-        ucode_error_report = FALSE; // don't report any more ucode errors from this game
+            g_ucode_error_report = false; // don't report any more ucode errors from this game
+        }
     }
-    else if (uc == -1 && ucode_error_report)
+    else if (uc == CSettings::uCode_Unsupported)
     {
-        g_settings->ucode = GetSetting(Set_ucode);
-
-        ReleaseGfx();
-        WriteTrace(TraceGlide64, TraceError, "Unsupported uCode! crc: %08lx", (unsigned long)uc_crc);
-
+        if (g_ucode_error_report)
+        {
+            ReleaseGfx();
+            WriteTrace(TraceGlide64, TraceError, "Unsupported uCode! crc: %08lx", (unsigned long)uc_crc);
 #ifdef _WIN32
-        MessageBox(gfx.hWnd, stdstr_f("Error: Unsupported uCode!\n\ncrc: %08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
+            MessageBox(gfx.hWnd, stdstr_f("Error: Unsupported uCode!\n\ncrc: %08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
 #endif
-
-        ucode_error_report = FALSE; // don't report any more ucode errors from this game
+            g_ucode_error_report = FALSE; // don't report any more ucode errors from this game
+        }
     }
     else
     {
-        old_ucode = g_settings->ucode;
-        g_settings->ucode = uc;
-        WriteTrace(TraceRDP, TraceDebug, "microcheck: old ucode: %d,  new ucode: %d", old_ucode, uc);
+        WriteTrace(TraceRDP, TraceDebug, "microcheck: old ucode: %d,  new ucode: %d", g_old_ucode, uc);
         if (uc_crc == 0x8d5735b2 || uc_crc == 0xb1821ed3 || uc_crc == 0x1118b3e0) //F3DLP.Rej ucode. perspective texture correction is not implemented
         {
             rdp.Persp_en = 1;
             rdp.persp_supported = FALSE;
         }
-        else if (g_settings->texture_correction)
+        else if (g_settings->texture_correction())
         {
             rdp.persp_supported = TRUE;
         }
@@ -428,7 +410,7 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
 
     uint32_t width = rdp.ci_width;//*gfx.VI_WIDTH_REG;
     uint32_t height;
-    if (fb_emulation_enabled && !(g_settings->hacks&hack_PPL))
+    if (g_settings->fb_emulation_enabled() && !g_settings->hacks(CSettings::hack_PPL))
     {
         int ind = (rdp.ci_count > 0) ? rdp.ci_count - 1 : 0;
         height = rdp.frame_buffers[ind].height;
@@ -436,8 +418,10 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
     else
     {
         height = rdp.ci_lower_bound;
-        if (g_settings->hacks&hack_PPL)
+        if (g_settings->hacks(CSettings::hack_PPL))
+        {
             height -= rdp.ci_upper_bound;
+        }
     }
     WriteTrace(TraceRDP, TraceDebug, "width: %d, height: %d...  ", width, height);
 
@@ -461,7 +445,7 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
                 for (uint32_t x = 0; x < width; x++)
                 {
                     c = ptr_src[x + y * width];
-                    if (g_settings->frame_buffer&fb_read_alpha)
+                    if (g_settings->fb_read_alpha_enabled())
                     {
                         if (c > 0)
                             c = (c & 0xFFC0) | ((c & 0x001F) << 1) | 1;
@@ -486,14 +470,14 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
     }
     else
     {
-        if (rdp.motionblur && fb_hwfbe_enabled)
+        if (rdp.motionblur && g_settings->fb_hwfbe_enabled())
         {
             return;
         }
         else
         {
-            float scale_x = (g_settings->scr_res_x - rdp.offset_x*2.0f) / maxval(width, rdp.vi_width);
-            float scale_y = (g_settings->scr_res_y - rdp.offset_y*2.0f) / maxval(height, rdp.vi_height);
+            float scale_x = (g_settings->scr_res_x() - rdp.offset_x*2.0f) / maxval(width, rdp.vi_width);
+            float scale_y = (g_settings->scr_res_y() - rdp.offset_y*2.0f) / maxval(height, rdp.vi_height);
 
             WriteTrace(TraceRDP, TraceDebug, "width: %d, height: %d, ul_y: %d, lr_y: %d, scale_x: %f, scale_y: %f, ci_width: %d, ci_height: %d", width, height, rdp.ci_upper_bound, rdp.ci_lower_bound, scale_x, scale_y, rdp.ci_width, rdp.ci_height);
             GrLfbInfo_t info;
@@ -512,11 +496,13 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
                 uint16_t c;
                 uint32_t stride = info.strideInBytes >> 1;
 
-                int read_alpha = g_settings->frame_buffer & fb_read_alpha;
-                if ((g_settings->hacks&hack_PMario) && rdp.frame_buffers[rdp.ci_count - 1].status != ci_aux)
+                int read_alpha = g_settings->fb_read_alpha_enabled();
+                if (g_settings->hacks(CSettings::hack_PMario) && rdp.frame_buffers[rdp.ci_count - 1].status != ci_aux)
+                {
                     read_alpha = FALSE;
+                }
                 int x_start = 0, y_start = 0, x_end = width, y_end = height;
-                if (g_settings->hacks&hack_BAR)
+                if (g_settings->hacks(CSettings::hack_BAR))
                 {
                     x_start = 80, y_start = 24, x_end = 240, y_end = 86;
                 }
@@ -554,11 +540,6 @@ void GoToFullScreen()
         WriteTrace(TraceGlide64, TraceError, "tInitGfx failed");
         return;
     }
-#ifdef __WINDOWS__
-    if (gfx.hStatusBar)
-        ShowWindow(gfx.hStatusBar, SW_HIDE);
-    ShowCursor(FALSE);
-#endif
 }
 
 /******************************************************************
@@ -590,20 +571,12 @@ EXPORT void CALL ProcessDList(void)
     update_screen_count = 0;
     ChangeSize();
 
-#ifdef ALTTAB_FIX
-    if (!hhkLowLevelKybd)
-    {
-        hhkLowLevelKybd = SetWindowsHookEx(WH_KEYBOARD_LL,
-            LowLevelKeyboardProc, hInstance, 0);
-    }
-#endif
-
     WriteTrace(TraceGlide64, TraceDebug, "ProcessDList");
 
     if (reset)
     {
         reset = 0;
-        if (g_settings->autodetect_ucode)
+        if (g_settings->autodetect_ucode())
         {
             // Thanks to ZeZu for ucode autodetection!!!
             uint32_t startUcode = *(uint32_t*)(gfx.DMEM + 0xFD0);
@@ -613,7 +586,7 @@ EXPORT void CALL ProcessDList(void)
         else
             memset(microcode, 0, 4096);
     }
-    else if (((old_ucode == ucode_S2DEX) && (g_settings->ucode == ucode_F3DEX)) || g_settings->force_microcheck)
+    else if ((g_old_ucode == CSettings::ucode_S2DEX && g_settings->ucode() == CSettings::ucode_F3DEX) || g_settings->force_microcheck())
     {
         uint32_t startUcode = *(uint32_t*)(gfx.DMEM + 0xFD0);
         memcpy(microcode, gfx.RDRAM + startUcode, 4096);
@@ -621,15 +594,21 @@ EXPORT void CALL ProcessDList(void)
     }
 
     if (exception)
+    {
         return;
+    }
 
     // Switch to fullscreen?
     if (to_fullscreen)
+    {
         GoToFullScreen();
+    }
 
     //* Set states *//
-    if (g_settings->swapmode > 0)
+    if (g_settings->swapmode() != CSettings::SwapMode_Old)
+    {
         SwapOK = TRUE;
+    }
     rdp.updatescreen = 1;
 
     rdp.tri_n = 0;  // 0 triangles so far this frame
@@ -667,16 +646,16 @@ EXPORT void CALL ProcessDList(void)
     depth_buffer_fog = TRUE;
 
     //analize possible frame buffer usage
-    if (fb_emulation_enabled)
+    if (g_settings->fb_emulation_enabled())
         DetectFrameBufferUsage();
-    if (!(g_settings->hacks&hack_Lego) || rdp.num_of_ci > 1)
+    if (!g_settings->hacks(CSettings::hack_Lego) || rdp.num_of_ci > 1)
         rdp.last_bg = 0;
     //* End of set states *//
 
     // Get the start of the display list and the length of it
     uint32_t dlist_start = *(uint32_t*)(gfx.DMEM + 0xFF0);
     uint32_t dlist_length = *(uint32_t*)(gfx.DMEM + 0xFF4);
-    WriteTrace(TraceRDP, TraceDebug, "--- NEW DLIST --- crc: %08lx, ucode: %d, fbuf: %08lx, fbuf_width: %d, dlist start: %08lx, dlist_length: %d, x_scale: %f, y_scale: %f", uc_crc, g_settings->ucode, *gfx.VI_ORIGIN_REG, *gfx.VI_WIDTH_REG, dlist_start, dlist_length, (*gfx.VI_X_SCALE_REG & 0xFFF) / 1024.0f, (*gfx.VI_Y_SCALE_REG & 0xFFF) / 1024.0f);
+    WriteTrace(TraceRDP, TraceDebug, "--- NEW DLIST --- crc: %08lx, ucode: %d, fbuf: %08lx, fbuf_width: %d, dlist start: %08lx, dlist_length: %d, x_scale: %f, y_scale: %f", uc_crc, g_settings->ucode(), *gfx.VI_ORIGIN_REG, *gfx.VI_WIDTH_REG, dlist_start, dlist_length, (*gfx.VI_X_SCALE_REG & 0xFFF) / 1024.0f, (*gfx.VI_Y_SCALE_REG & 0xFFF) / 1024.0f);
 
     // Do nothing if dlist is empty
     if (dlist_start == 0)
@@ -684,7 +663,7 @@ EXPORT void CALL ProcessDList(void)
 
     if (cpu_fb_write == TRUE)
         DrawPartFrameBufferToScreen();
-    if ((g_settings->hacks&hack_Tonic) && dlist_length < 16)
+    if (g_settings->hacks(CSettings::hack_Tonic) && dlist_length < 16)
     {
         rdp_fullsync();
         WriteTrace(TraceRDP, TraceWarning, "DLIST is too short!");
@@ -702,14 +681,15 @@ EXPORT void CALL ProcessDList(void)
 #ifdef CATCH_EXCEPTIONS
     try {
 #endif
-        if (g_settings->ucode == ucode_Turbo3d)
+        if (g_settings->ucode() == CSettings::ucode_Turbo3d)
         {
             Turbo3D();
         }
         else
         {
             // MAIN PROCESSING LOOP
-            do {
+            do 
+            {
                 // Get the address of the next command
                 a = rdp.pc[rdp.pc_i] & BMASK;
 
@@ -719,11 +699,7 @@ EXPORT void CALL ProcessDList(void)
                 // cmd2 and cmd3 are filled only when needed, by the function that needs them
 
                 // Output the address before the command
-#ifdef LOG_COMMANDS
                 WriteTrace(TraceRDP, TraceDebug, "%08lx (c0:%08lx, c1:%08lx): ", a, rdp.cmd0, rdp.cmd1);
-#else
-                WriteTrace(TraceRDP, TraceDebug, "%08lx: ", a);
-#endif
 
                 // Go to the next instruction
                 rdp.pc[rdp.pc_i] = (a + 8) & BMASK;
@@ -732,7 +708,7 @@ EXPORT void CALL ProcessDList(void)
                 perf_cur = CDateTime().SetToNow().Value();
 #endif
                 // Process this instruction
-                gfx_instruction[g_settings->ucode][rdp.cmd0 >> 24]();
+                gfx_instruction[g_settings->ucode()][rdp.cmd0 >> 24]();
 
                 // check DL counter
                 if (rdp.dl_count != -1)
@@ -757,17 +733,15 @@ EXPORT void CALL ProcessDList(void)
 #ifdef CATCH_EXCEPTIONS
     }
     catch (...) {
-        if (fullscreen)
+        if (g_fullscreen)
         {
             ReleaseGfx ();
             rdp_reset();
-#ifdef TEXTURE_FILTER
-            if (g_settings->ghq_use)
+            if (g_ghq_use)
             {
                 ext_ghq_shutdown();
-                g_settings->ghq_use = 0;
+                g_ghq_use = false;
             }
-#endif
         }
         if (MessageBox(gfx.hWnd, "The GFX plugin caused an exception and has been disabled.\nWould you like to turn it back on and attempt to continue?","Glide64 Exception", MB_YESNO|MB_ICONEXCLAMATION) == MB_NO)
         {
@@ -781,21 +755,27 @@ EXPORT void CALL ProcessDList(void)
     }
 #endif
 
-    if (fb_emulation_enabled)
+    if (g_settings->fb_emulation_enabled())
     {
         rdp.scale_x = rdp.scale_x_bak;
         rdp.scale_y = rdp.scale_y_bak;
     }
 
-    if (g_settings->hacks & hack_OoT)
+    if (g_settings->hacks(CSettings::hack_OoT))
+    {
         copyWhiteToRDRAM(); //Subscreen delay fix
-    else if (g_settings->frame_buffer & fb_ref)
+    }
+    else if (g_settings->fb_ref_enabled())
+    {
         CopyFrameBuffer();
+    }
 
     if (rdp.cur_image)
-        CloseTextureBuffer(rdp.read_whole_frame && ((g_settings->hacks&hack_PMario) || rdp.swap_ci_index >= 0));
+    {
+        CloseTextureBuffer(rdp.read_whole_frame && (g_settings->hacks(CSettings::hack_PMario) || rdp.swap_ci_index >= 0));
+    }
 
-    if ((g_settings->hacks&hack_TGR2) && rdp.vi_org_reg != *gfx.VI_ORIGIN_REG && CI_SET)
+    if (g_settings->hacks(CSettings::hack_TGR2) && rdp.vi_org_reg != *gfx.VI_ORIGIN_REG && CI_SET)
     {
         newSwapBuffers();
         CI_SET = FALSE;
@@ -929,29 +909,34 @@ static void rdp_texrect()
         else
         {
             //gDPTextureRectangle
-			if (g_settings->hacks&hack_Winback) {
+			if (g_settings->hacks(CSettings::hack_Winback))
+            {
 				rdp.pc[rdp.pc_i] += 8;
 				return;
 			}
 
-			if (g_settings->hacks&hack_ASB)
+            if (g_settings->hacks(CSettings::hack_ASB))
+            {
                 rdp.cmd2 = 0;
+            }
             else
+            {
                 rdp.cmd2 = ((uint32_t*)gfx.RDRAM)[a + 0];
+            }
 
 			rdp.cmd3 = ((uint32_t*)gfx.RDRAM)[a + 1];
             rdp.pc[rdp.pc_i] += 8;
         }
     }
-    if ((g_settings->hacks&hack_Yoshi) && g_settings->ucode == ucode_S2DEX)
+    if (g_settings->hacks(CSettings::hack_Yoshi) && g_settings->ucode() == CSettings::ucode_S2DEX)
     {
         ys_memrect();
         return;
     }
 
-	if (rdp.skip_drawing || (!fb_emulation_enabled && (rdp.cimg == rdp.zimg)))
+	if (rdp.skip_drawing || (!g_settings->fb_emulation_enabled() && (rdp.cimg == rdp.zimg)))
     {
-        if ((g_settings->hacks&hack_PMario) && rdp.ci_status == ci_useless)
+        if (g_settings->hacks(CSettings::hack_PMario) && rdp.ci_status == ci_useless)
         {
             pm_palette_mod();
         }
@@ -962,7 +947,7 @@ static void rdp_texrect()
         return;
     }
 
-    if ((g_settings->ucode == ucode_CBFD) && rdp.cur_image && rdp.cur_image->format)
+    if ((g_settings->ucode() == CSettings::ucode_CBFD) && rdp.cur_image && rdp.cur_image->format)
     {
         //WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect. texaddr: %08lx, cimg: %08lx, cimg_end: %08lx", rdp.timg.addr, rdp.maincimg[1].addr, rdp.maincimg[1].addr+rdp.ci_width*rdp.ci_height*rdp.ci_size);
         WriteTrace(TraceRDP, TraceDebug, "Shadow texrect is skipped.");
@@ -970,7 +955,7 @@ static void rdp_texrect()
         return;
     }
 
-    if ((g_settings->ucode == ucode_PerfectDark) && rdp.ci_count > 0 && (rdp.frame_buffers[rdp.ci_count - 1].status == ci_zcopy))
+    if ((g_settings->ucode() == CSettings::ucode_PerfectDark) && rdp.ci_count > 0 && (rdp.frame_buffers[rdp.ci_count - 1].status == ci_zcopy))
     {
         pd_zcopy();
         WriteTrace(TraceRDP, TraceDebug, "Depth buffer copied.");
@@ -980,11 +965,14 @@ static void rdp_texrect()
 
     if ((rdp.othermode_l >> 16) == 0x3c18 && rdp.cycle1 == 0x03ffffff && rdp.cycle2 == 0x01ff1fff) //depth image based fog
     {
-        if (!depth_buffer_fog)
-            return;
-        if (g_settings->fog)
-            DrawDepthBufferFog();
-        depth_buffer_fog = FALSE;
+        if (depth_buffer_fog)
+        {
+            if (g_settings->fog())
+            {
+                DrawDepthBufferFog();
+            }
+            depth_buffer_fog = false;
+        }
         return;
     }
 
@@ -1020,7 +1008,7 @@ static void rdp_texrect()
     else if (lr_y - ul_y < 1.0f)
         lr_y = ceil(lr_y);
 
-    if (g_settings->increase_texrect_edge)
+    if (g_settings->increase_texrect_edge())
     {
         if (floor(lr_x) != lr_x)
             lr_x = ceil(lr_x);
@@ -1028,8 +1016,7 @@ static void rdp_texrect()
             lr_y = ceil(lr_y);
     }
 
-    //*
-    if (rdp.tbuff_tex && (g_settings->frame_buffer & fb_optimize_texrect))
+    if (rdp.tbuff_tex && g_settings->fb_optimize_texrect_enabled())
     {
         WriteTrace(TraceRDP, TraceDebug, "Attempt to optimize texrect");
         if (!rdp.tbuff_tex->drawn)
@@ -1059,7 +1046,7 @@ static void rdp_texrect()
 
     /*Gonetz*/
     //hack for Zelda MM. it removes black texrects which cover all geometry in "Link meets Zelda" cut scene
-    if ((g_settings->hacks&hack_Zelda) && rdp.timg.addr >= rdp.cimg && rdp.timg.addr < rdp.ci_end)
+    if (g_settings->hacks(CSettings::hack_Zelda) && rdp.timg.addr >= rdp.cimg && rdp.timg.addr < rdp.ci_end)
     {
         WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect. texaddr: %08lx, cimg: %08lx, cimg_end: %08lx", rdp.cur_cache[0]->addr, rdp.cimg, rdp.cimg + rdp.ci_width*rdp.ci_height * 2);
         rdp.tri_n += 2;
@@ -1067,7 +1054,7 @@ static void rdp_texrect()
     }
     //*
     //hack for Banjo2. it removes black texrects under Banjo
-    if (!fb_hwfbe_enabled && ((rdp.cycle1 << 16) | (rdp.cycle2 & 0xFFFF)) == 0xFFFFFFFF && (rdp.othermode_l & 0xFFFF0000) == 0x00500000)
+    if (!g_settings->fb_hwfbe_enabled() && ((rdp.cycle1 << 16) | (rdp.cycle2 & 0xFFFF)) == 0xFFFFFFFF && (rdp.othermode_l & 0xFFFF0000) == 0x00500000)
     {
         rdp.tri_n += 2;
         return;
@@ -1075,27 +1062,25 @@ static void rdp_texrect()
     //*/
     //*
     //remove motion blur in night vision
-    if ((g_settings->ucode == ucode_PerfectDark) && (rdp.maincimg[1].addr != rdp.maincimg[0].addr) && (rdp.timg.addr >= rdp.maincimg[1].addr) && (rdp.timg.addr < (rdp.maincimg[1].addr + rdp.ci_width*rdp.ci_height*rdp.ci_size)))
+    if (g_settings->ucode() == CSettings::ucode_PerfectDark && (rdp.maincimg[1].addr != rdp.maincimg[0].addr) && (rdp.timg.addr >= rdp.maincimg[1].addr) && (rdp.timg.addr < (rdp.maincimg[1].addr + rdp.ci_width*rdp.ci_height*rdp.ci_size)))
     {
-        if (fb_emulation_enabled)
-            if (rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_copy_self)
-            {
-                //WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect. texaddr: %08lx, cimg: %08lx, cimg_end: %08lx", rdp.timg.addr, rdp.maincimg[1], rdp.maincimg[1]+rdp.ci_width*rdp.ci_height*rdp.ci_size);
-                WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect.");
-                rdp.tri_n += 2;
-                return;
-            }
+        if (g_settings->fb_emulation_enabled() && rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_copy_self)
+        {
+            //WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect. texaddr: %08lx, cimg: %08lx, cimg_end: %08lx", rdp.timg.addr, rdp.maincimg[1], rdp.maincimg[1]+rdp.ci_width*rdp.ci_height*rdp.ci_size);
+            WriteTrace(TraceRDP, TraceDebug, "Wrong Texrect.");
+            rdp.tri_n += 2;
+            return;
+        }
     }
-    //*/
 
     int i;
 
-    uint32_t tile = (uint16_t)((rdp.cmd1 & 0x07000000) >> 24);
+    uint32_t tile_no = (uint16_t)((rdp.cmd1 & 0x07000000) >> 24);
 
     rdp.texrecting = 1;
 
     uint32_t prev_tile = rdp.cur_tile;
-    rdp.cur_tile = tile;
+    rdp.cur_tile = tile_no;
 
     const float Z = set_sprite_combine_mode();
 
@@ -1130,7 +1115,7 @@ static void rdp_texrect()
     float s_ul_y = ul_y * rdp.scale_y + rdp.offset_y;
     float s_lr_y = lr_y * rdp.scale_y + rdp.offset_y;
 
-    WriteTrace(TraceRDP, TraceDebug, "texrect (%.2f, %.2f, %.2f, %.2f), tile: %d, #%d, #%d", ul_x, ul_y, lr_x, lr_y, tile, rdp.tri_n, rdp.tri_n + 1);
+    WriteTrace(TraceRDP, TraceDebug, "texrect (%.2f, %.2f, %.2f, %.2f), tile: %d, #%d, #%d", ul_x, ul_y, lr_x, lr_y, tile_no, rdp.tri_n, rdp.tri_n + 1);
     WriteTrace(TraceRDP, TraceDebug, "(%f, %f) -> (%f, %f), s: (%d, %d) -> (%d, %d)", s_ul_x, s_ul_y, s_lr_x, s_lr_y, rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
     WriteTrace(TraceRDP, TraceDebug, "\toff_x: %f, off_y: %f, dsdx: %f, dtdy: %f", off_x_i / 32.0f, off_y_i / 32.0f, dsdx, dtdy);
 
@@ -1139,14 +1124,12 @@ static void rdp_texrect()
 
     if (((rdp.cmd0 >> 24) & 0xFF) == 0xE5) //texrectflip
     {
-#ifdef TEXTURE_FILTER
         if (rdp.cur_cache[0]->is_hires_tex)
         {
             off_size_x = (float)((lr_y - ul_y) * dsdx);
             off_size_y = (float)((lr_x - ul_x) * dtdy);
         }
         else
-#endif
         {
             off_size_x = (lr_y - ul_y - 1) * dsdx;
             off_size_y = (lr_x - ul_x - 1) * dtdy;
@@ -1154,14 +1137,12 @@ static void rdp_texrect()
     }
     else
     {
-#ifdef TEXTURE_FILTER
         if (rdp.cur_cache[0]->is_hires_tex)
         {
             off_size_x = (float)((lr_x - ul_x) * dsdx);
             off_size_y = (float)((lr_y - ul_y) * dtdy);
         }
         else
-#endif
         {
             off_size_x = (lr_x - ul_x - 1) * dsdx;
             off_size_y = (lr_y - ul_y - 1) * dtdy;
@@ -1430,7 +1411,7 @@ static void rdp_texrect()
 
     ConvertCoordsConvert(vptr, n_vertices);
 
-    if (g_settings->wireframe)
+    if (g_settings->wireframe())
     {
         SetWireframeCol();
         grDrawLine(&vstd[0], &vstd[2]);
@@ -1444,22 +1425,7 @@ static void rdp_texrect()
         grDrawVertexArrayContiguous(GR_TRIANGLE_STRIP, n_vertices, vptr, sizeof(VERTEX));
     }
 
-    if (_debugger.capture)
-    {
-        VERTEX vl[3];
-        vl[0] = vstd[0];
-        vl[1] = vstd[2];
-        vl[2] = vstd[1];
-        add_tri(vl, 3, TRI_TEXRECT);
-        rdp.tri_n++;
-        vl[0] = vstd[2];
-        vl[1] = vstd[3];
-        vl[2] = vstd[1];
-        add_tri(vl, 3, TRI_TEXRECT);
-        rdp.tri_n++;
-    }
-    else
-        rdp.tri_n += 2;
+    rdp.tri_n += 2;
 
     delete[] vnew;
 }
@@ -1565,17 +1531,17 @@ static void rdp_setothermode()
 #define F3DEX2_SETOTHERMODE(cmd,sft,len,data) { \
     rdp.cmd0 = (uint32_t)((cmd<<24) | ((32-(sft)-(len))<<8) | (((len)-1))); \
     rdp.cmd1 = (uint32_t)(data); \
-    gfx_instruction[g_settings->ucode][cmd] (); \
+    gfx_instruction[g_settings->ucode()][cmd] (); \
 }
 #define SETOTHERMODE(cmd,sft,len,data) { \
     rdp.cmd0 = (uint32_t)((cmd<<24) | ((sft)<<8) | (len)); \
     rdp.cmd1 = (uint32_t)data; \
-    gfx_instruction[g_settings->ucode][cmd] (); \
+    gfx_instruction[g_settings->ucode()][cmd] (); \
 }
 
     WriteTrace(TraceRDP, TraceDebug, "rdp_setothermode");
 
-    if ((g_settings->ucode == ucode_F3DEX2) || (g_settings->ucode == ucode_CBFD))
+    if (g_settings->ucode() == CSettings::ucode_F3DEX2 || g_settings->ucode() == CSettings::ucode_CBFD)
     {
         int cmd0 = rdp.cmd0;
         F3DEX2_SETOTHERMODE(0xE2, 0, 32, rdp.cmd1);         // SETOTHERMODE_L
@@ -1594,9 +1560,7 @@ void load_palette(uint32_t addr, uint16_t start, uint16_t count)
     WriteTrace(TraceRDP, TraceDebug, "Loading palette... ");
     uint16_t *dpal = rdp.pal_8 + start;
     uint16_t end = start + count;
-#ifdef TEXTURE_FILTER
     uint16_t *spal = (uint16_t*)(gfx.RDRAM + (addr & BMASK));
-#endif
 
     for (uint16_t i = start; i < end; i++)
     {
@@ -1605,12 +1569,10 @@ void load_palette(uint32_t addr, uint16_t start, uint16_t count)
 
         WriteTrace(TraceTLUT, TraceDebug, "%d: %08lx", i, *(uint16_t *)(gfx.RDRAM + (addr ^ 2)));
     }
-#ifdef TEXTURE_FILTER
-    if (g_settings->ghq_hirs)
+    if (g_settings->ghq_hirs() != CSettings::HiResPackFormat_None)
     {
         memcpy((uint8_t*)(rdp.pal_8_rice + start), spal, count << 1);
     }
-#endif
     start >>= 4;
     end = start + (count >> 4);
     if (end == start) // it can be if count < 16
@@ -1681,7 +1643,7 @@ static void rdp_settilesize()
     else if (wrong_tile == (int)tile)
         wrong_tile = -1;
 
-    if (g_settings->use_sts1_only)
+    if (g_settings->use_sts1_only())
     {
         // ** USE FIRST SETTILESIZE ONLY **
         // This option helps certain textures while using the 'Alternate texture size method',
@@ -1915,11 +1877,9 @@ static void rdp_loadblock()
 
     rdp.timg.set_by = 0;  // load block
 
-#ifdef TEXTURE_FILTER
     LOAD_TILE_INFO &info = rdp.load_info[rdp.tiles[tile].t_mem];
     info.tile_width = lr_s;
     info.dxt = dxt;
-#endif
 
     // do a quick boundary check before copying to eliminate the possibility for exception
     if (ul_s >= 512) {
@@ -1958,8 +1918,10 @@ static void rdp_loadblock()
         tile, ul_s, ul_t, lr_s,
         dxt, _dxt);
 
-    if (fb_hwfbe_enabled)
+    if (g_settings->fb_hwfbe_enabled())
+    {
         setTBufTex(rdp.tiles[tile].t_mem, cnt);
+    }
 }
 
 static inline void loadTile(uint32_t *src, uint32_t *dst, int width, int height, int line, int off, uint32_t *end)
@@ -2127,7 +2089,7 @@ static void rdp_loadtile()
         rdp.tbuff_tex->tile_ult = ul_t;
     }
 
-    if ((g_settings->hacks&hack_Tonic) && tile == 7)
+    if (g_settings->hacks(CSettings::hack_Tonic) && tile == 7)
     {
         rdp.tiles[0].ul_s = ul_s;
         rdp.tiles[0].ul_t = ul_t;
@@ -2138,21 +2100,24 @@ static void rdp_loadtile()
     uint32_t height = lr_t - ul_t + 1;   // get height
     uint32_t width = lr_s - ul_s + 1;
 
-#ifdef TEXTURE_FILTER
     LOAD_TILE_INFO &info = rdp.load_info[rdp.tiles[tile].t_mem];
     info.tile_ul_s = ul_s;
     info.tile_ul_t = ul_t;
     info.tile_width = (rdp.tiles[tile].mask_s ? minval((uint16_t)width, 1 << rdp.tiles[tile].mask_s) : (uint16_t)width);
     info.tile_height = (rdp.tiles[tile].mask_t ? minval((uint16_t)height, 1 << rdp.tiles[tile].mask_t) : (uint16_t)height);
-    if (g_settings->hacks&hack_MK64) {
+    if (g_settings->hacks(CSettings::hack_MK64))
+    {
         if (info.tile_width % 2)
+        {
             info.tile_width--;
+        }
         if (info.tile_height % 2)
+        {
             info.tile_height--;
+        }
     }
     info.tex_width = rdp.timg.width;
     info.tex_size = rdp.timg.size;
-#endif
 
     int line_n = rdp.timg.width << rdp.tiles[tile].size >> 1;
     uint32_t offs = ul_t * line_n;
@@ -2181,8 +2146,10 @@ static void rdp_loadtile()
     WriteTrace(TraceRDP, TraceDebug, "loadtile: tile: %d, ul_s: %d, ul_t: %d, lr_s: %d, lr_t: %d", tile,
         ul_s, ul_t, lr_s, lr_t);
 
-    if (fb_hwfbe_enabled)
+    if (g_settings->fb_hwfbe_enabled())
+    {
         setTBufTex(rdp.tiles[tile].t_mem, rdp.tiles[tile].line*height);
+    }
 }
 
 static void rdp_settile()
@@ -2217,7 +2184,7 @@ static void rdp_settile()
         tile->t_mem, tile->palette, str_cm[(tile->clamp_t << 1) | tile->mirror_t], tile->mask_t,
         tile->shift_t, str_cm[(tile->clamp_s << 1) | tile->mirror_s], tile->mask_s, tile->shift_s);
 
-    if (fb_hwfbe_enabled && rdp.last_tile < rdp.cur_tile + 2)
+    if (g_settings->fb_hwfbe_enabled() && rdp.last_tile < rdp.cur_tile + 2)
     {
         for (int i = 0; i < 2; i++)
         {
@@ -2257,11 +2224,11 @@ static void rdp_fillrect()
         WriteTrace(TraceRDP, TraceDebug, "Fillrect. Wrong coordinates. Skipped");
         return;
     }
-    int pd_multiplayer = (g_settings->ucode == ucode_PerfectDark) && (rdp.cycle_mode == 3) && (rdp.fill_color == 0xFFFCFFFC);
-    if ((rdp.cimg == rdp.zimg) || (fb_emulation_enabled && rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_zimg) || pd_multiplayer)
+    bool pd_multiplayer = g_settings->ucode() == CSettings::ucode_PerfectDark && rdp.cycle_mode == 3 && rdp.fill_color == 0xFFFCFFFC;
+    if ((rdp.cimg == rdp.zimg) || (g_settings->fb_emulation_enabled() && rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_zimg) || pd_multiplayer)
     {
         WriteTrace(TraceRDP, TraceDebug, "Fillrect - cleared the depth buffer");
-        if (!(g_settings->hacks&hack_Hyperbike) || rdp.ci_width > 64) //do not clear main depth buffer for aux depth buffers
+        if (!g_settings->hacks(CSettings::hack_Hyperbike) || rdp.ci_width > 64) //do not clear main depth buffer for aux depth buffers
         {
             update_scissor();
             grDepthMask(FXTRUE);
@@ -2270,25 +2237,22 @@ static void rdp_fillrect()
             grColorMask(FXTRUE, FXTRUE);
             rdp.update |= UPDATE_ZBUF_ENABLED;
         }
-        //if (g_settings->frame_buffer&fb_depth_clear)
+        ul_x = minval(maxval(ul_x, rdp.scissor_o.ul_x), rdp.scissor_o.lr_x);
+        lr_x = minval(maxval(lr_x, rdp.scissor_o.ul_x), rdp.scissor_o.lr_x);
+        ul_y = minval(maxval(ul_y, rdp.scissor_o.ul_y), rdp.scissor_o.lr_y);
+        lr_y = minval(maxval(lr_y, rdp.scissor_o.ul_y), rdp.scissor_o.lr_y);
+        uint32_t zi_width_in_dwords = rdp.ci_width >> 1;
+        ul_x >>= 1;
+        lr_x >>= 1;
+        uint32_t * dst = (uint32_t*)(gfx.RDRAM + rdp.cimg);
+        dst += ul_y * zi_width_in_dwords;
+        for (uint32_t y = ul_y; y < lr_y; y++)
         {
-            ul_x = minval(maxval(ul_x, rdp.scissor_o.ul_x), rdp.scissor_o.lr_x);
-            lr_x = minval(maxval(lr_x, rdp.scissor_o.ul_x), rdp.scissor_o.lr_x);
-            ul_y = minval(maxval(ul_y, rdp.scissor_o.ul_y), rdp.scissor_o.lr_y);
-            lr_y = minval(maxval(lr_y, rdp.scissor_o.ul_y), rdp.scissor_o.lr_y);
-            uint32_t zi_width_in_dwords = rdp.ci_width >> 1;
-            ul_x >>= 1;
-            lr_x >>= 1;
-            uint32_t * dst = (uint32_t*)(gfx.RDRAM + rdp.cimg);
-            dst += ul_y * zi_width_in_dwords;
-            for (uint32_t y = ul_y; y < lr_y; y++)
+            for (uint32_t x = ul_x; x < lr_x; x++)
             {
-                for (uint32_t x = ul_x; x < lr_x; x++)
-                {
-                    dst[x] = rdp.fill_color;
-                }
-                dst += zi_width_in_dwords;
+                dst[x] = rdp.fill_color;
             }
+            dst += zi_width_in_dwords;
         }
         return;
     }
@@ -2320,7 +2284,7 @@ static void rdp_fillrect()
     // Update scissor
     update_scissor();
 
-    if (g_settings->decrease_fillrect_edge && rdp.cycle_mode == 0)
+    if (g_settings->decrease_fillrect_edge() && rdp.cycle_mode == 0)
     {
         lr_x--; lr_y--;
     }
@@ -2338,8 +2302,8 @@ static void rdp_fillrect()
 
     if (s_lr_x < 0) s_lr_x = 0;
     if (s_lr_y < 0) s_lr_y = 0;
-    if ((uint32_t)s_ul_x > g_settings->res_x) s_ul_x = g_settings->res_x;
-    if ((uint32_t)s_ul_y > g_settings->res_y) s_ul_y = g_settings->res_y;
+    if ((uint32_t)s_ul_x > g_settings->res_x()) { s_ul_x = g_settings->res_x(); }
+    if ((uint32_t)s_ul_y > g_settings->res_y()) { s_ul_y = g_settings->res_y(); }
 
     WriteTrace(TraceRDP, TraceDebug, " - %d, %d, %d, %d", s_ul_x, s_ul_y, s_lr_x, s_lr_y);
 
@@ -2358,7 +2322,7 @@ static void rdp_fillrect()
     {
         uint32_t color = rdp.fill_color;
 
-        if ((g_settings->hacks&hack_PMario) && rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_aux)
+        if (g_settings->hacks(CSettings::hack_PMario) && rdp.ci_count > 0 && rdp.frame_buffers[rdp.ci_count - 1].status == ci_aux)
         {
             //background of auxiliary frame buffers must have zero alpha.
             //make it black, set 0 alpha to plack pixels on frame buffer read
@@ -2389,10 +2353,7 @@ static void rdp_fillrect()
         grAlphaBlendFunction(GR_BLEND_ONE, GR_BLEND_ZERO, GR_BLEND_ONE, GR_BLEND_ZERO);
 
         grAlphaTestFunction(GR_CMP_ALWAYS);
-        if (grStippleModeExt)
-        {
-            grStippleModeExt(GR_STIPPLE_DISABLE);
-        }
+        grStippleMode(GR_STIPPLE_DISABLE);
 
         grCullMode(GR_CULL_DISABLE);
         grFogMode(GR_FOG_DISABLE);
@@ -2425,7 +2386,7 @@ static void rdp_fillrect()
         }
     }
 
-    if (g_settings->wireframe)
+    if (g_settings->wireframe())
     {
         SetWireframeCol();
         grDrawLine(&v[0], &v[2]);
@@ -2441,23 +2402,7 @@ static void rdp_fillrect()
         grDrawTriangle(&v[2], &v[3], &v[1]);
     }
 
-    if (_debugger.capture)
-    {
-        VERTEX v1[3];
-        v1[0] = v[0];
-        v1[1] = v[2];
-        v1[2] = v[1];
-        add_tri(v1, 3, TRI_FILLRECT);
-        rdp.tri_n++;
-        v1[0] = v[2];
-        v1[1] = v[3];
-        add_tri(v1, 3, TRI_FILLRECT);
-        rdp.tri_n++;
-    }
-    else
-    {
-        rdp.tri_n += 2;
-    }
+    rdp.tri_n += 2;
 }
 
 //
@@ -2584,7 +2529,7 @@ static void rdp_settextureimage()
         }
     }
 
-    if (fb_hwfbe_enabled) //search this texture among drawn texture buffers
+    if (g_settings->fb_hwfbe_enabled()) //search this texture among drawn texture buffers
         FindTextureBuffer(rdp.timg.addr, rdp.timg.width);
 
     WriteTrace(TraceRDP, TraceDebug, "settextureimage: format: %s, size: %s, width: %d, addr: %08lx",
@@ -2622,7 +2567,7 @@ static uint32_t swapped_addr = 0;
 
 static void rdp_setcolorimage()
 {
-    if (fb_emulation_enabled && (rdp.num_of_ci < NUMTEXBUF))
+    if (g_settings->fb_emulation_enabled() && (rdp.num_of_ci < NUMTEXBUF))
     {
         COLOR_IMAGE & cur_fb = rdp.frame_buffers[rdp.ci_count];
         COLOR_IMAGE & prev_fb = rdp.frame_buffers[rdp.ci_count ? rdp.ci_count - 1 : 0];
@@ -2643,7 +2588,7 @@ static void rdp_setcolorimage()
                     rdp.scale_x = sx;
                     rdp.scale_y = sy;
                 }
-                if (!fb_hwfbe_enabled)
+                if (!g_settings->fb_hwfbe_enabled())
                 {
                     if ((rdp.num_of_ci > 1) &&
                         (next_fb.status == ci_aux) &&
@@ -2653,17 +2598,17 @@ static void rdp_setcolorimage()
                         rdp.scale_y = 1.0f;
                     }
                 }
-                else if (rdp.copy_ci_index && (g_settings->hacks&hack_PMario)) //tidal wave
+                else if (rdp.copy_ci_index && g_settings->hacks(CSettings::hack_PMario)) //tidal wave
                     OpenTextureBuffer(rdp.frame_buffers[rdp.main_ci_index]);
             }
-            else if (!rdp.motionblur && fb_hwfbe_enabled && !SwapOK && (rdp.ci_count <= rdp.copy_ci_index))
+            else if (!rdp.motionblur && g_settings->fb_hwfbe_enabled() && !SwapOK && (rdp.ci_count <= rdp.copy_ci_index))
             {
                 if (next_fb.status == ci_aux_copy)
                     OpenTextureBuffer(rdp.frame_buffers[rdp.main_ci_index]);
                 else
                     OpenTextureBuffer(rdp.frame_buffers[rdp.copy_ci_index]);
             }
-            else if (fb_hwfbe_enabled && prev_fb.status == ci_aux)
+            else if (g_settings->fb_hwfbe_enabled() && prev_fb.status == ci_aux)
             {
                 if (rdp.motionblur)
                 {
@@ -2685,7 +2630,7 @@ static void rdp_setcolorimage()
         break;
         case ci_copy:
         {
-            if (!rdp.motionblur || (g_settings->frame_buffer&fb_motionblur))
+            if (!rdp.motionblur || g_settings->fb_motionblur_enabled())
             {
                 if (cur_fb.width == rdp.ci_width)
                 {
@@ -2693,7 +2638,7 @@ static void rdp_setcolorimage()
                     {
                         //                      if (CloseTextureBuffer(TRUE))
                         //*
-                        if ((g_settings->hacks&hack_Zelda) && (rdp.frame_buffers[rdp.ci_count + 2].status == ci_aux) && !rdp.fb_drawn) //hack for photo camera in Zelda MM
+                        if (g_settings->hacks(CSettings::hack_Zelda) && (rdp.frame_buffers[rdp.ci_count + 2].status == ci_aux) && !rdp.fb_drawn) //hack for photo camera in Zelda MM
                         {
                             CopyFrameBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
                             rdp.fb_drawn = TRUE;
@@ -2733,13 +2678,13 @@ static void rdp_setcolorimage()
                 CopyFrameBuffer();
                 rdp.fb_drawn = TRUE;
             }
-            if (fb_hwfbe_enabled)
+            if (g_settings->fb_hwfbe_enabled())
                 OpenTextureBuffer(cur_fb);
         }
         break;
         case ci_old_copy:
         {
-            if (!rdp.motionblur || (g_settings->frame_buffer&fb_motionblur))
+            if (!rdp.motionblur || g_settings->fb_motionblur_enabled())
             {
                 if (cur_fb.width == rdp.ci_width)
                 {
@@ -2764,12 +2709,12 @@ static void rdp_setcolorimage()
         */
         case ci_aux:
         {
-            if (!fb_hwfbe_enabled && cur_fb.format != 0)
+            if (!g_settings->fb_hwfbe_enabled() && cur_fb.format != 0)
                 rdp.skip_drawing = TRUE;
             else
             {
                 rdp.skip_drawing = FALSE;
-                if (fb_hwfbe_enabled && OpenTextureBuffer(cur_fb))
+                if (g_settings->fb_hwfbe_enabled() && OpenTextureBuffer(cur_fb))
                     ;
                 else
                 {
@@ -2783,7 +2728,7 @@ static void rdp_setcolorimage()
                         rdp.scale_y = 1.0f;
                         //           }
                     }
-                    else if (!fb_hwfbe_enabled && (prev_fb.status == ci_main) &&
+                    else if (!g_settings->fb_hwfbe_enabled() && (prev_fb.status == ci_main) &&
                         (prev_fb.width == cur_fb.width)) // for Pokemon Stadium
                         CopyFrameBuffer();
                 }
@@ -2792,13 +2737,11 @@ static void rdp_setcolorimage()
         }
         break;
         case ci_zimg:
-            if (g_settings->ucode != ucode_PerfectDark)
+            if (g_settings->ucode() != CSettings::ucode_PerfectDark)
             {
-                if (fb_hwfbe_enabled && !rdp.copy_ci_index && (rdp.copy_zi_index || (g_settings->hacks&hack_BAR)))
+                if (g_settings->fb_hwfbe_enabled() && !rdp.copy_ci_index && (rdp.copy_zi_index || g_settings->hacks(CSettings::hack_BAR)))
                 {
-                    GrLOD_t LOD = GR_LOD_LOG2_1024;
-                    if (g_settings->scr_res_x > 1024)
-                        LOD = GR_LOD_LOG2_2048;
+                    GrLOD_t LOD = g_settings->scr_res_x() > 1024 ? GR_LOD_LOG2_1024 : GR_LOD_LOG2_2048;
                     grTextureAuxBufferExt(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, LOD, LOD,
                         GR_ASPECT_LOG2_1x1, GR_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
                     grAuxBufferExt(GR_BUFFER_TEXTUREAUXBUFFER_EXT);
@@ -2808,9 +2751,9 @@ static void rdp_setcolorimage()
             rdp.skip_drawing = TRUE;
             break;
         case ci_zcopy:
-            if (g_settings->ucode != ucode_PerfectDark)
+            if (g_settings->ucode() != CSettings::ucode_PerfectDark)
             {
-                if (fb_hwfbe_enabled && !rdp.copy_ci_index && rdp.copy_zi_index == rdp.ci_count)
+                if (g_settings->fb_hwfbe_enabled() && !rdp.copy_ci_index && rdp.copy_zi_index == rdp.ci_count)
                 {
                     CopyDepthBuffer();
                 }
@@ -2821,8 +2764,10 @@ static void rdp_setcolorimage()
             rdp.skip_drawing = TRUE;
             break;
         case ci_copy_self:
-            if (fb_hwfbe_enabled && (rdp.ci_count <= rdp.copy_ci_index) && (!SwapOK || g_settings->swapmode == 2))
+            if (g_settings->fb_hwfbe_enabled() && (rdp.ci_count <= rdp.copy_ci_index) && (!SwapOK || g_settings->swapmode() == CSettings::SwapMode_Hybrid))
+            {
                 OpenTextureBuffer(cur_fb);
+            }
             rdp.skip_drawing = FALSE;
             break;
         default:
@@ -2831,23 +2776,23 @@ static void rdp_setcolorimage()
 
         if ((rdp.ci_count > 0) && (prev_fb.status >= ci_aux)) //for Pokemon Stadium
         {
-            if (!fb_hwfbe_enabled && prev_fb.format == 0)
+            if (!g_settings->fb_hwfbe_enabled() && prev_fb.format == 0)
                 CopyFrameBuffer();
-            else if ((g_settings->hacks&hack_Knockout) && prev_fb.width < 100)
+            else if (g_settings->hacks(CSettings::hack_Knockout) && prev_fb.width < 100)
                 CopyFrameBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
         }
-        if (!fb_hwfbe_enabled && cur_fb.status == ci_copy)
+        if (!g_settings->fb_hwfbe_enabled() && cur_fb.status == ci_copy)
         {
             if (!rdp.motionblur && (rdp.num_of_ci > rdp.ci_count + 1) && (next_fb.status != ci_aux))
             {
                 RestoreScale();
             }
         }
-        if (!fb_hwfbe_enabled && cur_fb.status == ci_aux)
+        if (!g_settings->fb_hwfbe_enabled() && cur_fb.status == ci_aux)
         {
             if (cur_fb.format == 0)
             {
-                if ((g_settings->hacks&hack_PPL) && (rdp.scale_x < 1.1f))  //need to put current image back to frame buffer
+                if (g_settings->hacks(CSettings::hack_PPL) && (rdp.scale_x < 1.1f))  //need to put current image back to frame buffer
                 {
                     int width = cur_fb.width;
                     int height = cur_fb.height;
@@ -2900,10 +2845,10 @@ static void rdp_setcolorimage()
                 WriteTrace(TraceRDP, TraceDebug, "return to original scale");
                 rdp.scale_x = rdp.scale_x_bak;
                 rdp.scale_y = rdp.scale_y_bak;
-                if (fb_hwfbe_enabled && !rdp.read_whole_frame)
+                if (g_settings->fb_hwfbe_enabled() && !rdp.read_whole_frame)
                     CloseTextureBuffer();
             }
-            if (fb_hwfbe_enabled && !rdp.read_whole_frame && (prev_fb.status >= ci_aux) && (rdp.ci_count > rdp.copy_ci_index))
+            if (g_settings->fb_hwfbe_enabled() && !rdp.read_whole_frame && (prev_fb.status >= ci_aux) && (rdp.ci_count > rdp.copy_ci_index))
                 CloseTextureBuffer();
         }
         rdp.ci_status = cur_fb.status;
@@ -2913,7 +2858,7 @@ static void rdp_setcolorimage()
     rdp.ocimg = rdp.cimg;
     rdp.cimg = segoffset(rdp.cmd1) & BMASK;
     rdp.ci_width = (rdp.cmd0 & 0xFFF) + 1;
-    if (fb_emulation_enabled && rdp.ci_count > 0)
+    if (g_settings->fb_emulation_enabled() && rdp.ci_count > 0)
         rdp.ci_height = rdp.frame_buffers[rdp.ci_count - 1].height;
     else if (rdp.ci_width == 32)
         rdp.ci_height = 32;
@@ -2935,7 +2880,7 @@ static void rdp_setcolorimage()
     {
         if (!rdp.cur_image)
         {
-            if (fb_hwfbe_enabled && rdp.ci_width <= 64 && rdp.ci_count > 0)
+            if (g_settings->fb_hwfbe_enabled() && rdp.ci_width <= 64 && rdp.ci_count > 0)
                 OpenTextureBuffer(rdp.frame_buffers[rdp.ci_count - 1]);
             else if (format > 2)
                 rdp.skip_drawing = TRUE;
@@ -2944,29 +2889,35 @@ static void rdp_setcolorimage()
     }
     else
     {
-        if (!fb_emulation_enabled)
+        if (!g_settings->fb_emulation_enabled())
             rdp.skip_drawing = FALSE;
     }
 
     CI_SET = TRUE;
-    if (g_settings->swapmode > 0)
+    if (g_settings->swapmode() != CSettings::SwapMode_Old)
     {
         if (rdp.zimg == rdp.cimg)
+        {
             rdp.updatescreen = 1;
+        }
 
-        int viSwapOK = ((g_settings->swapmode == 2) && (rdp.vi_org_reg == *gfx.VI_ORIGIN_REG)) ? FALSE : TRUE;
+        int viSwapOK = ((g_settings->swapmode() == CSettings::SwapMode_Hybrid) && (rdp.vi_org_reg == *gfx.VI_ORIGIN_REG)) ? FALSE : TRUE;
         if ((rdp.zimg != rdp.cimg) && (rdp.ocimg != rdp.cimg) && SwapOK && viSwapOK && !rdp.cur_image)
         {
-            if (fb_emulation_enabled)
+            if (g_settings->fb_emulation_enabled())
+            {
                 rdp.maincimg[0] = rdp.frame_buffers[rdp.main_ci_index];
+            }
             else
+            {
                 rdp.maincimg[0].addr = rdp.cimg;
-            rdp.last_drawn_ci_addr = (g_settings->swapmode == 2) ? swapped_addr : rdp.maincimg[0].addr;
+            }
+            rdp.last_drawn_ci_addr = (g_settings->swapmode() == CSettings::SwapMode_Hybrid) ? swapped_addr : rdp.maincimg[0].addr;
             swapped_addr = rdp.cimg;
             newSwapBuffers();
             rdp.vi_org_reg = *gfx.VI_ORIGIN_REG;
             SwapOK = FALSE;
-            if (fb_hwfbe_enabled)
+            if (g_settings->fb_hwfbe_enabled())
             {
                 if (rdp.copy_ci_index && (rdp.frame_buffers[rdp.ci_count - 1].status != ci_zimg))
                 {
@@ -2987,7 +2938,7 @@ static void rdp_setcolorimage()
 
 static void rsp_reserved0()
 {
-    if (g_settings->ucode == ucode_DiddyKong)
+    if (g_settings->ucode() == CSettings::ucode_DiddyKong)
     {
         ucode5_texshiftaddr = segoffset(rdp.cmd1);
         ucode5_texshiftcount = 0;
@@ -3016,10 +2967,10 @@ static void rsp_reserved3()
 
 void SetWireframeCol()
 {
-    switch (g_settings->wfmode)
+    switch (g_settings->wfmode())
     {
-        //case 0: // normal colors, don't do anything
-    case 1: // vertex colors
+    //case CSettings::wfmode_NormalColors: // normal colors, don't do anything
+    case CSettings::wfmode_VertexColors:
         grColorCombine(GR_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_ITERATED,
@@ -3047,7 +2998,7 @@ void SetWireframeCol()
             GR_COMBINE_FACTOR_NONE,
             FXFALSE, FXFALSE);
         break;
-    case 2: // red only
+    case CSettings::wfmode_RedOnly:
         grColorCombine(GR_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_CONSTANT,
@@ -3130,7 +3081,7 @@ EXPORT void CALL FBRead(uint32_t addr)
         {
             uint32_t cimg = rdp.cimg;
             rdp.cimg = rdp.maincimg[1].addr;
-            if (fb_emulation_enabled)
+            if (g_settings->fb_emulation_enabled())
             {
                 rdp.ci_width = rdp.maincimg[1].width;
                 rdp.ci_count = 0;
@@ -3231,11 +3182,13 @@ EXPORT void CALL FBGetFrameBufferInfo(void *p)
     WriteTrace(TraceGlide64, TraceDebug, "-");
     FrameBufferInfo * pinfo = (FrameBufferInfo *)p;
     memset(pinfo, 0, sizeof(FrameBufferInfo) * 6);
-    if (!(g_settings->frame_buffer&fb_get_info))
+    if (!g_settings->fb_get_info_enabled())
+    {
         return;
+    }
     WriteTrace(TraceRDP, TraceDebug, "FBGetFrameBufferInfo ()");
-    //*
-    if (fb_emulation_enabled)
+
+    if (g_settings->fb_emulation_enabled())
     {
         pinfo[0].addr = rdp.maincimg[1].addr;
         pinfo[0].size = rdp.maincimg[1].size;
@@ -3280,7 +3233,7 @@ void DetectFrameBufferUsage()
     uint32_t a;
 
     int tidal = FALSE;
-    if ((g_settings->hacks&hack_PMario) && (rdp.copy_ci_index || rdp.frame_buffers[rdp.copy_ci_index].status == ci_copy_self))
+    if (g_settings->hacks(CSettings::hack_PMario) && (rdp.copy_ci_index || rdp.frame_buffers[rdp.copy_ci_index].status == ci_copy_self))
         tidal = TRUE;
     uint32_t ci = rdp.cimg, zi = rdp.zimg;
     uint32_t ci_height = rdp.frame_buffers[(rdp.ci_count > 0) ? rdp.ci_count - 1 : 0].height;
@@ -3318,8 +3271,8 @@ void DetectFrameBufferUsage()
         // Go to the next instruction
         rdp.pc[rdp.pc_i] = (a + 8) & BMASK;
 
-        if (uintptr_t(reinterpret_cast<void*>(gfx_instruction_lite[g_settings->ucode][rdp.cmd0 >> 24])))
-            gfx_instruction_lite[g_settings->ucode][rdp.cmd0 >> 24]();
+        if (uintptr_t(reinterpret_cast<void*>(gfx_instruction_lite[g_settings->ucode()][rdp.cmd0 >> 24])))
+            gfx_instruction_lite[g_settings->ucode()][rdp.cmd0 >> 24]();
 
         // check DL counter
         if (rdp.dl_count != -1)
@@ -3398,10 +3351,10 @@ void DetectFrameBufferUsage()
     rdp.num_of_ci = rdp.ci_count;
     if (rdp.read_previous_ci && previous_ci_was_read)
     {
-        if (!fb_hwfbe_enabled || !rdp.copy_ci_index)
+        if (!g_settings->fb_hwfbe_enabled() || !rdp.copy_ci_index)
             rdp.motionblur = TRUE;
     }
-    if (rdp.motionblur || fb_hwfbe_enabled || (rdp.frame_buffers[rdp.copy_ci_index].status == ci_aux_copy))
+    if (rdp.motionblur || g_settings->fb_hwfbe_enabled() || (rdp.frame_buffers[rdp.copy_ci_index].status == ci_aux_copy))
     {
         rdp.scale_x = rdp.scale_x_bak;
         rdp.scale_y = rdp.scale_y_bak;
@@ -3411,9 +3364,9 @@ void DetectFrameBufferUsage()
         rdp.read_whole_frame = TRUE;
     if (rdp.read_whole_frame)
     {
-        if (fb_hwfbe_enabled)
+        if (g_settings->fb_hwfbe_enabled())
         {
-            if (rdp.read_previous_ci && !previous_ci_was_read && (g_settings->swapmode != 2) && (g_settings->ucode != ucode_PerfectDark))
+            if (rdp.read_previous_ci && !previous_ci_was_read && (g_settings->swapmode() != CSettings::SwapMode_Hybrid) && (g_settings->ucode() != CSettings::ucode_PerfectDark))
             {
                 int ind = (rdp.ci_count > 0) ? rdp.ci_count - 1 : 0;
                 uint32_t height = rdp.frame_buffers[ind].height;
@@ -3431,10 +3384,14 @@ void DetectFrameBufferUsage()
         {
             if (rdp.motionblur)
             {
-                if (g_settings->frame_buffer&fb_motionblur)
+                if (g_settings->fb_motionblur_enabled())
+                {
                     CopyFrameBuffer();
+                }
                 else
+                {
                     memset(gfx.RDRAM + rdp.cimg, 0, rdp.ci_width*rdp.ci_height*rdp.ci_size);
+                }
             }
             else //if (ci_width == rdp.frame_buffers[rdp.main_ci_index].width)
             {
@@ -3456,7 +3413,7 @@ void DetectFrameBufferUsage()
         }
     }
 
-    if (fb_hwfbe_enabled)
+    if (g_settings->fb_hwfbe_enabled())
     {
         for (i = 0; i < voodoo.num_tmu; i++)
         {
@@ -3474,8 +3431,10 @@ void DetectFrameBufferUsage()
         }
     }
     rdp.ci_count = 0;
-    if (g_settings->hacks&hack_Banjo2)
+    if (g_settings->hacks(CSettings::hack_Banjo2))
+    {
         rdp.cur_tex_buf = 0;
+    }
     rdp.maincimg[0] = rdp.frame_buffers[rdp.main_ci_index];
     //    rdp.scale_x = rdp.scale_x_bak;
     //    rdp.scale_y = rdp.scale_y_bak;
@@ -3844,23 +3803,6 @@ void lle_triangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
     ConvertCoordsConvert(vtxbuf, nbVtxs);
     grCullMode(GR_CULL_DISABLE);
     grDrawVertexArrayContiguous(GR_TRIANGLE_STRIP, nbVtxs - 1, vtxbuf, sizeof(VERTEX));
-    if (_debugger.capture)
-    {
-        VERTEX vl[3];
-        vl[0] = vtxbuf[0];
-        vl[1] = vtxbuf[2];
-        vl[2] = vtxbuf[1];
-        add_tri(vl, 3, TRI_TRIANGLE);
-        rdp.tri_n++;
-        if (nbVtxs > 4)
-        {
-            vl[0] = vtxbuf[2];
-            vl[1] = vtxbuf[3];
-            vl[2] = vtxbuf[1];
-            add_tri(vl, 3, TRI_TRIANGLE);
-            rdp.tri_n++;
-        }
-    }
 }
 
 static void rdp_triangle(int shade, int texture, int zbuffer)
@@ -4112,8 +4054,10 @@ void CALL ProcessRDPList(void)
         GoToFullScreen();
 
     //* Set states *//
-    if (g_settings->swapmode > 0)
+    if (g_settings->swapmode() != CSettings::SwapMode_Old)
+    {
         SwapOK = TRUE;
+    }
     rdp.updatescreen = 1;
 
     rdp.tri_n = 0;  // 0 triangles so far this frame
@@ -4167,7 +4111,8 @@ void CALL ProcessRDPList(void)
 
     bool setZero = true;
 
-    while (rdp_cmd_cur != rdp_cmd_ptr) {
+    while (rdp_cmd_cur != rdp_cmd_ptr)
+    {
         uint32_t cmd = (rdp_cmd_data[rdp_cmd_cur] >> 24) & 0x3f;
 
         if ((((rdp_cmd_ptr - rdp_cmd_cur)&maxCMDMask) * 4) < rdp_command_length[cmd]) {
@@ -4189,7 +4134,8 @@ void CALL ProcessRDPList(void)
         rdp_cmd_cur = (rdp_cmd_cur + rdp_command_length[cmd] / 4) & maxCMDMask;
     }
 
-    if (setZero) {
+    if (setZero) 
+    {
         rdp_cmd_ptr = 0;
         rdp_cmd_cur = 0;
     }

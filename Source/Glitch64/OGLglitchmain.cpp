@@ -2,7 +2,6 @@
 
 #ifdef _WIN32
 #include <windows.h>
-#include <commctrl.h>
 #else
 #include <stdint.h>
 #include <stdarg.h>
@@ -29,188 +28,7 @@
  */
 #include <Settings/Settings.h>
 
-struct ResolutionInfo
-{
-    unsigned int dwW, dwH, dwF;
-
-    ResolutionInfo() : dwW(0), dwH(0), dwF(0) {}
-
-    ResolutionInfo(unsigned int _w, unsigned int _h, unsigned int _f) : dwW(_w), dwH(_h), dwF(_f) {}
-
-    bool operator == (const ResolutionInfo & _other) const
-    {
-        if (dwW != _other.dwW)
-            return false;
-        if (dwH != _other.dwH)
-            return false;
-        if (dwF != _other.dwF)
-            return false;
-        return true;
-    }
-
-    bool operator != (const ResolutionInfo & _other) const
-    {
-        return !(operator==(_other));
-    }
-
-    void toString(char * _str) const
-    {
-        if (dwF > 0)
-            sprintf(_str, "%ix%i 32bpp %iHz", dwW, dwH, dwF);
-        else
-            sprintf(_str, "%ix%i 32bpp", dwW, dwH);
-    }
-};
-
-class FullScreenResolutions
-{
-public:
-    FullScreenResolutions() : dwNumResolutions(0), aResolutions(0), aResolutionsStr(0) {}
-    ~FullScreenResolutions();
-
-    void getResolution(FxU32 _idx, FxU32 * _width, FxU32 * _height, FxU32 * _frequency = 0)
-    {
-        WriteTrace(TraceResolution, TraceDebug, "_idx: %d", _idx);
-        if (dwNumResolutions == 0)
-        {
-            init();
-        }
-        if (_idx >= dwNumResolutions)
-        {
-            WriteTrace(TraceGlitch, TraceError, "NumResolutions = %d", dwNumResolutions);
-            _idx = 0;
-        }
-        *_width = (FxU32)aResolutions[_idx].dwW;
-        *_height = (FxU32)aResolutions[_idx].dwH;
-        if (_frequency != 0)
-        {
-            *_frequency = (FxU32)aResolutions[_idx].dwF;
-        }
-    }
-    
-    int getCurrentResolutions(void)
-    {
-        if (dwNumResolutions == 0)
-        {
-            init();
-        }
-        return currentResolutions;
-    }
-
-    char ** getResolutionsList(int32_t * Size)
-    {
-        if (dwNumResolutions == 0)
-        {
-            init();
-        }
-        *Size = (int32_t)dwNumResolutions;
-        return aResolutionsStr;
-    }
-
-    bool changeDisplaySettings(FxU32 _resolution);
-
-private:
-    void init();
-    unsigned int dwNumResolutions;
-    ResolutionInfo * aResolutions;
-    char ** aResolutionsStr;
-    int currentResolutions;
-};
-
-FullScreenResolutions::~FullScreenResolutions()
-{
-    for (unsigned int i = 0; i < dwNumResolutions; i++)
-    {
-        delete[] aResolutionsStr[i];
-        aResolutionsStr[i] = NULL;
-    }
-    if (aResolutionsStr)
-    {
-        delete[] aResolutionsStr;
-        aResolutionsStr = NULL;
-    }
-    if (aResolutions)
-    {
-        delete[] aResolutions;
-        aResolutions = NULL;
-    }
-}
-
-void FullScreenResolutions::init()
-{
-    WriteTrace(TraceGlitch, TraceDebug, "executing");
-#ifdef _WIN32
-    currentResolutions = -1;
-    DEVMODE enumMode , currentMode;
-    int iModeNum = 0;
-    memset(&enumMode, 0, sizeof(DEVMODE));
-
-    EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &currentMode);
-
-    ResolutionInfo prevInfo;
-    while (EnumDisplaySettings(NULL, iModeNum++, &enumMode) != 0)
-    {
-        ResolutionInfo curInfo(enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency);
-        if (enumMode.dmBitsPerPel == 32 && curInfo != prevInfo)
-        {
-            dwNumResolutions++;
-            prevInfo = curInfo;
-        }
-    }
-
-    aResolutions = new ResolutionInfo[dwNumResolutions];
-    aResolutionsStr = new char*[dwNumResolutions];
-    iModeNum = 0;
-    int current = 0;
-    char smode[256];
-    memset(&enumMode, 0, sizeof(DEVMODE));
-    memset(&prevInfo, 0, sizeof(ResolutionInfo));
-    while (EnumDisplaySettings(NULL, iModeNum++, &enumMode) != 0)
-    {
-        ResolutionInfo curInfo(enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency);
-        if (enumMode.dmBitsPerPel == 32 && curInfo != prevInfo)
-        {
-            if (enumMode.dmPelsHeight == currentMode.dmPelsHeight && enumMode.dmPelsWidth == currentMode.dmPelsWidth)
-            {
-                currentResolutions = current;
-            }
-            aResolutions[current] = curInfo;
-            curInfo.toString(smode);
-            aResolutionsStr[current] = new char[strlen(smode) + 1];
-            strcpy(aResolutionsStr[current], smode);
-            prevInfo = curInfo;
-            current++;
-        }
-    }
-#endif
-}
-
-bool FullScreenResolutions::changeDisplaySettings(FxU32 _resolution)
-{
-#ifdef _WIN32
-    FxU32 width, height, frequency;
-    getResolution(_resolution, &width, &height, &frequency);
-    ResolutionInfo info(width, height, frequency);
-    DEVMODE enumMode;
-    int iModeNum = 0;
-    memset(&enumMode, 0, sizeof(DEVMODE));
-    while (EnumDisplaySettings(NULL, iModeNum++, &enumMode) != 0)
-    {
-        ResolutionInfo curInfo(enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency);
-        if (enumMode.dmBitsPerPel == 32 && curInfo == info) {
-            bool bRes = ChangeDisplaySettings(&enumMode, CDS_FULLSCREEN) == DISP_CHANGE_SUCCESSFUL;
-            WriteTrace(TraceGlitch, TraceDebug, "width=%d, height=%d, freq=%d %s\r\n", enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency, bRes ? "Success" : "Failed");
-            return bRes;
-        }
-    }
-    return false;
-#else // _WIN32
-    return false;
-#endif // _WIN32
-}
-
-FullScreenResolutions g_FullScreenResolutions;
-wrapper_config config = { 0, 0, 0, 0 };
+wrapper_config config = { 0, 0, 0 };
 int screen_width, screen_height;
 
 static inline void opt_glCopyTexImage2D(GLenum target,
@@ -233,8 +51,8 @@ static inline void opt_glCopyTexImage2D(GLenum target,
             width = screen_width - x;
             //printf("resizing w --> %d\n", width);
         }
-        if (y + height >= screen_height + viewport_offset) {
-            height = screen_height + viewport_offset - y;
+        if (y + height >= screen_height + g_viewport_offset) {
+            height = screen_height + g_viewport_offset - y;
             //printf("resizing h --> %d\n", height);
         }
         glCopyTexSubImage2D(target, level, 0, 0, x, y, width, height);
@@ -474,7 +292,7 @@ int default_texture; // the infamous "32*1024*1024" is now configurable
 int current_texture;
 int depth_texture, color_texture;
 int glsl_support = 1;
-int viewport_width, viewport_height, viewport_offset = 0, nvidia_viewport_hack = 0;
+int viewport_width, viewport_height, g_viewport_offset = 0, nvidia_viewport_hack = 0;
 int save_w, save_h;
 int lfb_color_fmt;
 float invtex[2];
@@ -485,13 +303,6 @@ int UMAmode = 0; //support for VSA-100 UMA mode;
 static HDC hDC = NULL;
 static HGLRC hGLRC = NULL;
 static HWND hToolBar = NULL;
-static HWND hwnd_win = NULL;
-static unsigned long windowedExStyle, windowedStyle;
-#endif // _WIN32
-static unsigned long fullscreen;
-#ifdef _WIN32
-static RECT windowedRect;
-static HMENU windowedMenu;
 #endif // _WIN32
 
 static int savedWidtho, savedHeighto;
@@ -571,11 +382,11 @@ grClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
         if (int(miny) < 0) miny = 0;
         if (maxx < minx) maxx = minx;
         if (maxy < miny) maxy = miny;
-        glScissor(minx, miny + viewport_offset, maxx - minx, maxy - miny);
+        glScissor(minx, miny + g_viewport_offset, maxx - minx, maxy - miny);
         //printf("gl scissor %d %d %d %d\n", minx, miny, maxx, maxy);
     }
     else {
-        glScissor(minx, (viewport_offset)+g_height - maxy, maxx - minx, maxy - miny);
+        glScissor(minx, (g_viewport_offset)+g_height - maxy, maxx - minx, maxy - miny);
     }
     glEnable(GL_SCISSOR_TEST);
     grDisplayGLError("grClipWindow");
@@ -593,12 +404,6 @@ FX_ENTRY void FX_CALL
 grGlideInit(void)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
-}
-
-FX_ENTRY void FX_CALL
-grSstSelect(int which_sst)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "which_sst = %d", which_sst);
 }
 
 int isExtensionSupported(const char *extension)
@@ -667,17 +472,14 @@ int isWglExtensionSupported(const char *extension)
 
 FX_ENTRY GrContext_t FX_CALL
 grSstWinOpenExt(
-HWND                 hWnd,
-GrScreenResolution_t screen_resolution,
-GrScreenRefresh_t    refresh_rate,
 GrColorFormat_t      color_format,
 GrOriginLocation_t   origin_location,
 GrPixelFormat_t    /*pixelformat*/,
 int                  nColBuffers,
 int                  nAuxBuffers)
 {
-    WriteTrace(TraceGlitch, TraceDebug, "hWnd: %d, screen_resolution: %d, refresh_rate: %d, color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", hWnd, screen_resolution, refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
-    return grSstWinOpen(hWnd, screen_resolution, refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
+    WriteTrace(TraceGlitch, TraceDebug, "color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", color_format, origin_location, nColBuffers, nAuxBuffers);
+    return grSstWinOpen(color_format, origin_location, nColBuffers, nAuxBuffers);
 }
 
 #ifdef _WIN32
@@ -685,13 +487,11 @@ int                  nAuxBuffers)
 # ifndef ATTACH_PARENT_PROCESS
 #  define ATTACH_PARENT_PROCESS ((FxU32)-1)
 # endif
+extern HWND g_hwnd_win;
 #endif
 
 FX_ENTRY GrContext_t FX_CALL
 grSstWinOpen(
-HWND                 hWnd,
-GrScreenResolution_t screen_resolution,
-GrScreenRefresh_t    refresh_rate,
 GrColorFormat_t      color_format,
 GrOriginLocation_t   origin_location,
 int                  nColBuffers,
@@ -724,184 +524,16 @@ int                  nAuxBuffers)
     fputs("ERROR:  No GLX yet to start GL on [Free]BSD, Linux etc.\n", stderr);
 #endif // _WIN32
 
-    WriteTrace(TraceGlitch, TraceDebug, "hWnd: %d, screen_resolution: %d, refresh_rate: %d, color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", hWnd, screen_resolution&~0x80000000, refresh_rate, color_format, origin_location, nColBuffers, nAuxBuffers);
+    WriteTrace(TraceGlitch, TraceDebug, "color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", color_format, origin_location, nColBuffers, nAuxBuffers);
 
 #ifdef _WIN32
-    if ((HWND)hWnd == NULL) hWnd = GetActiveWindow();
-    hwnd_win = (HWND)hWnd;
-#endif // _WIN32
-    g_width = g_height = 0;
-    if (screen_resolution & 0x80000000)
-    {
-        switch (screen_resolution & ~0x80000000)
-        {
-        case GR_RESOLUTION_320x200:
-            g_width = 320;
-            g_height = 200;
-            break;
-        case GR_RESOLUTION_320x240:
-            g_width = 320;
-            g_height = 240;
-            break;
-        case GR_RESOLUTION_400x256:
-            g_width = 400;
-            g_height = 256;
-            break;
-        case GR_RESOLUTION_512x384:
-            g_width = 512;
-            g_height = 384;
-            break;
-        case GR_RESOLUTION_640x200:
-            g_width = 640;
-            g_height = 200;
-            break;
-        case GR_RESOLUTION_640x350:
-            g_width = 640;
-            g_height = 350;
-            break;
-        case GR_RESOLUTION_640x400:
-            g_width = 640;
-            g_height = 400;
-            break;
-        case GR_RESOLUTION_640x480:
-            g_width = 640;
-            g_height = 480;
-            break;
-        case GR_RESOLUTION_800x600:
-            g_width = 800;
-            g_height = 600;
-            break;
-        case GR_RESOLUTION_960x720:
-            g_width = 960;
-            g_height = 720;
-            break;
-        case GR_RESOLUTION_856x480:
-            g_width = 856;
-            g_height = 480;
-            break;
-        case GR_RESOLUTION_512x256:
-            g_width = 512;
-            g_height = 256;
-            break;
-        case GR_RESOLUTION_1024x768:
-            g_width = 1024;
-            g_height = 768;
-            break;
-        case GR_RESOLUTION_1280x1024:
-            g_width = 1280;
-            g_height = 1024;
-            break;
-        case GR_RESOLUTION_1600x1200:
-            g_width = 1600;
-            g_height = 1200;
-            break;
-        case GR_RESOLUTION_400x300:
-            g_width = 400;
-            g_height = 300;
-            break;
-        case GR_RESOLUTION_1152x864:
-            g_width = 1152;
-            g_height = 864;
-            break;
-        case GR_RESOLUTION_1280x960:
-            g_width = 1280;
-            g_height = 960;
-            break;
-        case GR_RESOLUTION_1600x1024:
-            g_width = 1600;
-            g_height = 1024;
-            break;
-        case GR_RESOLUTION_1792x1344:
-            g_width = 1792;
-            g_height = 1344;
-            break;
-        case GR_RESOLUTION_1856x1392:
-            g_width = 1856;
-            g_height = 1392;
-            break;
-        case GR_RESOLUTION_1920x1440:
-            g_width = 1920;
-            g_height = 1440;
-            break;
-        case GR_RESOLUTION_2048x1536:
-            g_width = 2048;
-            g_height = 1536;
-            break;
-        case GR_RESOLUTION_2048x2048:
-            g_width = 2048;
-            g_height = 2048;
-            break;
-        default:
-            WriteTrace(TraceGlitch, TraceWarning, "unknown SstWinOpen resolution : %x", screen_resolution);
-        }
-    }
-
-#ifdef _WIN32
-    if (screen_resolution & 0x80000000)
-    {
-        RECT clientRect, toolbarRect, statusbarRect;
-        ZeroMemory(&windowedRect, sizeof(RECT));
-        ZeroMemory(&clientRect, sizeof(RECT));
-        ZeroMemory(&toolbarRect, sizeof(RECT));
-        ZeroMemory(&statusbarRect, sizeof(RECT));
-        HWND hToolBar = FindWindowEx(hwnd_win, NULL, REBARCLASSNAME, NULL);
-        HWND hStatusBar = FindWindowEx(hwnd_win, NULL, STATUSCLASSNAME, NULL);
-        if (hStatusBar == NULL) hStatusBar = FindWindowEx(hwnd_win, NULL, "msctls_statusbar32", NULL); // 1964
-        if (hToolBar != NULL) GetWindowRect(hToolBar, &toolbarRect);
-        if (hStatusBar != NULL) GetWindowRect(hStatusBar, &statusbarRect);
-        viewport_offset = statusbarRect.bottom - statusbarRect.top;
-        GetWindowRect(hwnd_win, &windowedRect);
-        GetClientRect(hwnd_win, &clientRect);
-        windowedRect.right += (g_width - (clientRect.right - clientRect.left));
-        windowedRect.bottom += (g_height + (toolbarRect.bottom - toolbarRect.top) + (statusbarRect.bottom - statusbarRect.top) - (clientRect.bottom - clientRect.top));
-        SetWindowPos(hwnd_win, NULL, 0, 0, windowedRect.right - windowedRect.left,
-            windowedRect.bottom - windowedRect.top, SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
-
-        TMU_SIZE = (config.vram_size - g_width * g_height * 4 * 3) / 2; // XXX - what about windows desktop usage?
-
-        fullscreen = 0;
-    }
-    else
-    {
-        {
-            FxU32 _width, _height;
-            g_FullScreenResolutions.getResolution(screen_resolution, &_width, &_height);
-            g_width = _width;
-            g_height = _height;
-        }
-        ZeroMemory(&windowedRect, sizeof(RECT));
-        GetWindowRect(hwnd_win, &windowedRect);
-
-        windowedExStyle = GetWindowLong(hwnd_win, GWL_EXSTYLE);
-        windowedStyle = GetWindowLong(hwnd_win, GWL_STYLE);
-
-        // primary monitor only
-        if (!g_FullScreenResolutions.changeDisplaySettings(screen_resolution))
-        {
-            WriteTrace(TraceGlitch, TraceWarning, "can't change to fullscreen mode");
-        }
-
-        windowedMenu = GetMenu(hwnd_win);
-        if (windowedMenu) SetMenu(hwnd_win, NULL);
-
-        HWND hStatusBar = FindWindowEx(hwnd_win, NULL, "msctls_statusbar32", NULL); // 1964
-        if (hStatusBar) ShowWindow(hStatusBar, SW_HIDE);
-
-        SetWindowLong(hwnd_win, GWL_STYLE, 0);
-        SetWindowLong(hwnd_win, GWL_EXSTYLE, WS_EX_APPWINDOW | WS_EX_TOPMOST);
-        SetWindowPos(hwnd_win, NULL, 0, 0, g_width, g_height, SWP_NOACTIVATE | SWP_NOZORDER | SWP_SHOWWINDOW);
-
-        viewport_offset = 0;
-        fullscreen = 1;
-    }
-
     TMU_SIZE = (config.vram_size - g_width * g_height * 4 * 3) / 2;
 
     // save screen resolution for hwfbe, after resolution enumeration
     screen_width = g_width;
     screen_height = g_height;
 
-    if ((hDC = GetDC(hwnd_win)) == NULL)
+    if ((hDC = GetDC(g_hwnd_win)) == NULL)
     {
         WriteTrace(TraceGlitch, TraceWarning, "GetDC on main window failed");
         return FXFALSE;
@@ -1134,12 +766,12 @@ int                  nAuxBuffers)
 #endif
 
 #ifndef ANDROID
-    glViewport(0, viewport_offset, g_width, g_height);
+    glViewport(0, g_viewport_offset, g_width, g_height);
     viewport_width = g_width;
     viewport_height = g_height;
     nvidia_viewport_hack = 1;
 #else
-    glViewport(0, viewport_offset, width, height);
+    glViewport(0, g_viewport_offset, width, height);
     viewport_width = width;
     viewport_height = height;
 #endif // _WIN32
@@ -1271,18 +903,7 @@ grSstWinClose(GrContext_t context)
         wglDeleteContext(hGLRC);
         hGLRC = NULL;
     }
-    if (fullscreen)
-    {
-        ChangeDisplaySettings(NULL, 0);
-        SetWindowPos(hwnd_win, NULL,
-            windowedRect.left, windowedRect.top,
-            0, 0,
-            SWP_NOZORDER | SWP_NOSIZE);
-        SetWindowLong(hwnd_win, GWL_STYLE, windowedStyle);
-        SetWindowLong(hwnd_win, GWL_EXSTYLE, windowedExStyle);
-        if (windowedMenu) SetMenu(hwnd_win, windowedMenu);
-        fullscreen = 0;
-    }
+    ExitFullScreen();
 #else
     //SDL_QuitSubSystem(SDL_INIT_VIDEO);
     //sleep(2);
@@ -1348,26 +969,26 @@ FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
             if (save_w) {
                 if (tw > save_w && th > save_h) {
                     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, save_h,
-                        0, viewport_offset + save_h, tw, th - save_h);
+                        0, g_viewport_offset + save_h, tw, th - save_h);
                     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, save_w, 0,
-                        save_w, viewport_offset, tw - save_w, save_h);
+                        save_w, g_viewport_offset, tw - save_w, save_h);
                     save_w = tw;
                     save_h = th;
                 }
                 else if (tw > save_w) {
                     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, save_w, 0,
-                        save_w, viewport_offset, tw - save_w, save_h);
+                        save_w, g_viewport_offset, tw - save_w, save_h);
                     save_w = tw;
                 }
                 else if (th > save_h) {
                     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, save_h,
-                        0, viewport_offset + save_h, save_w, th - save_h);
+                        0, g_viewport_offset + save_h, save_w, th - save_h);
                     save_h = th;
                 }
             }
             else {
                 glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
-                    0, viewport_offset, tw, th);
+                    0, g_viewport_offset, tw, th);
                 save_w = tw;
                 save_h = th;
             }
@@ -1416,12 +1037,12 @@ FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
 
         //printf("viewport %dx%d\n", width, height);
         if (g_height > screen_height) {
-            glViewport(0, viewport_offset + screen_height - g_height, g_width, g_height);
+            glViewport(0, g_viewport_offset + screen_height - g_height, g_width, g_height);
         }
         else
-            glViewport(0, viewport_offset, g_width, g_height);
+            glViewport(0, g_viewport_offset, g_width, g_height);
 
-        glScissor(0, viewport_offset, g_width, g_height);
+        glScissor(0, g_viewport_offset, g_width, g_height);
 
         grDisplayGLError("grTextureBufferExt :: A");
     }
@@ -1689,7 +1310,7 @@ grGet(FxU32 pname, FxU32 plength, FxI32 *params)
         if (plength < 4 || params == NULL) return 0;
         if (!nbTextureUnits)
         {
-            grSstWinOpen((unsigned long)NULL, GR_RESOLUTION_640x480 | 0x80000000, 0, GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
+            grSstWinOpen(GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
             grSstWinClose(0);
         }
 #ifdef VOODOO1
@@ -1935,7 +1556,7 @@ void updateTexture()
         //glDeleteTextures( 1, &pBufferAddress );
         glBindTexture(GL_TEXTURE_2D, pBufferAddress);
         glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
-            0, viewport_offset, g_width, g_height, 0);
+            0, g_viewport_offset, g_width, g_height, 0);
 
         glBindTexture(GL_TEXTURE_2D, default_texture);
         glPopAttrib();
@@ -1962,7 +1583,7 @@ FX_ENTRY void FX_CALL grFramebufferCopyExt(int /*x*/, int /*y*/, int /*w*/, int 
             glReadBuffer(current_buffer);
             glBindTexture(GL_TEXTURE_2D, depth_texture);
             glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-                0, viewport_offset, tw, th, 0);
+                0, g_viewport_offset, tw, th, 0);
             glBindTexture(GL_TEXTURE_2D, default_texture);
             grDisplayGLError("grFramebufferCopyExt :: A");
             return;
@@ -2027,8 +1648,8 @@ grRenderBuffer(GrBuffer_t buffer)
             }
             curBufferAddr = 0;
 
-            glViewport(0, viewport_offset, g_width, viewport_height);
-            glScissor(0, viewport_offset, g_width, g_height);
+            glViewport(0, g_viewport_offset, g_width, viewport_height);
+            glScissor(0, g_viewport_offset, g_width, g_height);
 
 #ifdef SAVE_CBUFFER
             if (!use_fbo && render_to_texture == 2) {
@@ -2235,7 +1856,7 @@ GrLfbInfo_t *info)
                 info->strideInBytes = g_width * 4;
                 info->writeMode = GR_LFBWRITEMODE_888;
                 info->origin = origin;
-                glReadPixels(0, viewport_offset, g_width, g_height, GL_BGRA, GL_UNSIGNED_BYTE, frameBuffer);
+                glReadPixels(0, g_viewport_offset, g_width, g_height, GL_BGRA, GL_UNSIGNED_BYTE, frameBuffer);
             }
             else {
                 buf = (unsigned char*)malloc(g_width*g_height * 4);
@@ -2244,7 +1865,7 @@ GrLfbInfo_t *info)
                 info->strideInBytes = g_width * 2;
                 info->writeMode = GR_LFBWRITEMODE_565;
                 info->origin = origin;
-                glReadPixels(0, viewport_offset, g_width, g_height, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+                glReadPixels(0, g_viewport_offset, g_width, g_height, GL_RGBA, GL_UNSIGNED_BYTE, buf);
 
                 for (j = 0; j < g_height; j++)
                 {
@@ -2265,7 +1886,7 @@ GrLfbInfo_t *info)
             info->strideInBytes = g_width * 2;
             info->writeMode = GR_LFBWRITEMODE_ZA16;
             info->origin = origin;
-            glReadPixels(0, viewport_offset, g_width, g_height, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, depthBuffer);
+            glReadPixels(0, g_viewport_offset, g_width, g_height, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, depthBuffer);
         }
     }
 
@@ -2315,7 +1936,7 @@ FxU32 dst_stride, void *dst_data)
     {
         buf = (unsigned char*)malloc(src_width*src_height * 4);
 
-        glReadPixels(src_x, (viewport_offset)+g_height - src_y - src_height, src_width, src_height, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+        glReadPixels(src_x, (g_viewport_offset)+g_height - src_y - src_height, src_width, src_height, GL_RGBA, GL_UNSIGNED_BYTE, buf);
 
         for (j = 0; j < src_height; j++)
         {
@@ -2333,7 +1954,7 @@ FxU32 dst_stride, void *dst_data)
     {
         buf = (unsigned char*)malloc(src_width*src_height * 2);
 
-        glReadPixels(src_x, (viewport_offset)+g_height - src_y - src_height, src_width, src_height, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, depthBuffer);
+        glReadPixels(src_x, (g_viewport_offset)+g_height - src_y - src_height, src_width, src_height, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, depthBuffer);
 
         for (j = 0; j < src_height; j++)
         {
@@ -2461,7 +2082,7 @@ FxI32 src_stride, void *src_data)
     }
     else
     {
-        float *buf = (float*)malloc(src_width*(src_height + (viewport_offset))*sizeof(float));
+        float *buf = (float*)malloc(src_width*(src_height + (g_viewport_offset))*sizeof(float));
 
         if (src_format != GR_LFBWRITEMODE_ZA16)
             WriteTrace(TraceGlitch, TraceWarning, "unknown depth buffer write format:%x", src_format);
@@ -2473,14 +2094,14 @@ FxI32 src_stride, void *src_data)
         {
             for (i = 0; i < src_width; i++)
             {
-                buf[(j + (viewport_offset))*src_width + i] =
+                buf[(j + (g_viewport_offset))*src_width + i] =
                     (frameBuffer[(src_height - j - 1)*(src_stride / 2) + i] / (65536.0f*(2.0f / zscale))) + 1 - zscale / 2.0f;
             }
         }
 
 #ifdef VPDEBUG
         if (dumping) {
-            unsigned char * buf2 = (unsigned char *)malloc(src_width*(src_height + (viewport_offset)));
+            unsigned char * buf2 = (unsigned char *)malloc(src_width*(src_height + (g_viewport_offset)));
             for (i = 0; i < src_width*src_height; i++)
                 buf2[i] = buf[i] * 255.0f;
             ilTexImage(src_width, src_height, 1, 1, IL_LUMINANCE, IL_UNSIGNED_BYTE, buf2);
@@ -2499,7 +2120,7 @@ FxI32 src_stride, void *src_data)
         glDrawBuffer(GL_BACK);
         glClear(GL_DEPTH_BUFFER_BIT);
         glDepthMask(1);
-        glDrawPixels(src_width, src_height + (viewport_offset), GL_DEPTH_COMPONENT, GL_FLOAT, buf);
+        glDrawPixels(src_width, src_height + (g_viewport_offset), GL_DEPTH_COMPONENT, GL_FLOAT, buf);
 
         free(buf);
     }
@@ -2510,26 +2131,8 @@ FxI32 src_stride, void *src_data)
     return FXTRUE;
 }
 
-int GetCurrentResIndex(void)
-{
-    return g_FullScreenResolutions.getCurrentResolutions();
-}
 
 /* wrapper-specific glide extensions */
-
-FX_ENTRY char ** FX_CALL
-grQueryResolutionsExt(int32_t * Size)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "-");
-    return g_FullScreenResolutions.getResolutionsList(Size);
-}
-
-FX_ENTRY GrScreenResolution_t FX_CALL grWrapperFullScreenResolutionExt(FxU32* width, FxU32* height)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "-");
-    g_FullScreenResolutions.getResolution(config.res, width, height);
-    return config.res;
-}
 
 FX_ENTRY FxBool FX_CALL grKeyPressedExt(FxU32 key)
 {
@@ -2540,10 +2143,9 @@ FX_ENTRY FxBool FX_CALL grKeyPressedExt(FxU32 key)
 #endif
 }
 
-FX_ENTRY void FX_CALL grConfigWrapperExt(FxI32 resolution, FxI32 vram, FxBool fbo, FxBool aniso)
+void grConfigWrapperExt(FxI32 vram, FxBool fbo, FxBool aniso)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
-    config.res = resolution;
     config.vram_size = vram;
     config.fbo = fbo;
     config.anisofilter = aniso;
@@ -2819,8 +2421,6 @@ FX_ENTRY void FX_CALL
 grLoadGammaTable(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
-    if (!fullscreen)
-        return;
     FxU16 aGammaRamp[3][256];
     for (int i = 0; i < 256; i++)
     {
@@ -2829,7 +2429,6 @@ grLoadGammaTable(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
         aGammaRamp[2][i] = (FxU16)((blue[i] << 8) & 0xFFFF);
     }
     CorrectGamma(aGammaRamp);
-    pjutil::Sleep(1000);
 }
 
 FX_ENTRY void FX_CALL
@@ -2862,8 +2461,7 @@ FX_ENTRY void FX_CALL
 guGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
-    if (!fullscreen)
-        return;
+
     FxU16 aGammaRamp[3][256];
     for (int i = 0; i < 256; i++)
     {

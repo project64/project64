@@ -243,9 +243,10 @@ static void t3dLoadObject(uint32_t pstate, uint32_t pvtx, uint32_t ptri)
 static void Turbo3D()
 {
     WriteTrace(TraceRDP, TraceDebug, "Start Turbo3D microcode");
-    g_settings->ucode = ucode_Fast3D;
+    g_settings->SetUcode(CSettings::ucode_Fast3D);
     uint32_t a = 0, pgstate = 0, pstate = 0, pvtx = 0, ptri = 0;
-    do {
+    do 
+    {
         a = rdp.pc[rdp.pc_i] & BMASK;
         pgstate = ((uint32_t*)gfx.RDRAM)[a >> 2];
         pstate = ((uint32_t*)gfx.RDRAM)[(a >> 2) + 1];
@@ -258,11 +259,12 @@ static void Turbo3D()
             break;
         }
         if (pgstate)
+        {
             t3dLoadGlobState(pgstate);
+        }
         t3dLoadObject(pstate, pvtx, ptri);
         // Go to the next instruction
         rdp.pc[rdp.pc_i] += 16;
     } while (pstate);
-    // rdp_fullsync();
-    g_settings->ucode = ucode_Turbo3d;
+    g_settings->SetUcode(CSettings::ucode_Turbo3d);
 }
