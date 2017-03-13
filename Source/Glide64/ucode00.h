@@ -357,10 +357,10 @@ static void uc0_movemem()
         short trans_x = ((short*)gfx.RDRAM)[(a + 4) ^ 1] / 4;
         short trans_y = ((short*)gfx.RDRAM)[(a + 5) ^ 1] / 4;
         short trans_z = ((short*)gfx.RDRAM)[(a + 6) ^ 1];
-        if (g_settings->correct_viewport)
+        if (g_settings->correct_viewport())
         {
-            scale_x = abs(scale_x);
-            scale_y = abs(scale_y);
+            scale_x = (short)abs(scale_x);
+            scale_y = (short)abs(scale_y);
         }
         rdp.view_scale[0] = scale_x * rdp.scale_x;
         rdp.view_scale[1] = -scale_y * rdp.scale_y;

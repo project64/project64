@@ -76,7 +76,7 @@ CSettings::CSettings() :
     m_adjust_aspect(false), //adjust screen aspect for wide screen mode
     m_force_calc_sphere(false), //use spheric mapping only, Ridge Racer 64
     m_pal230(false),    //set special scale for PAL games
-correct_viewport(0), //correct viewport values
+    m_correct_viewport(false), //correct viewport values
 zmode_compare_less(0), //force GR_CMP_LESS for zmode=0 (opaque)and zmode=1 (interpenetrating)
 old_style_adither(0), //apply alpha dither regardless of alpha_dither_mode
 n64_z_scale(0), //scale vertex z value before writing to depth buffer, as N64 does.
@@ -162,7 +162,7 @@ void CSettings::RegisterSettings(void)
     game_setting(Set_alt_tex_size, "alt_tex_size", false);
     game_setting(Set_use_sts1_only, "use_sts1_only", false);
     game_setting(Set_force_calc_sphere, "force_calc_sphere", false);
-    game_setting(Set_correct_viewport, "correct_viewport", 0);
+    game_setting(Set_correct_viewport, "correct_viewport", false);
     game_setting(Set_increase_texrect_edge, "increase_texrect_edge", false);
     game_setting(Set_decrease_fillrect_edge, "decrease_fillrect_edge", false);
     game_setting(Set_texture_correction, "texture_correction", true);
@@ -715,7 +715,7 @@ void CSettings::ReadGameSettings(const char * name)
     m_alt_tex_size = GetSetting(Set_alt_tex_size) != 0;
     m_use_sts1_only = GetSetting(Set_use_sts1_only) != 0;
     m_force_calc_sphere = GetSetting(Set_force_calc_sphere) != 0;
-    g_settings->correct_viewport = GetSetting(Set_correct_viewport);
+    m_correct_viewport = GetSetting(Set_correct_viewport);
     m_increase_texrect_edge = GetSetting(Set_increase_texrect_edge) != 0;
     m_decrease_fillrect_edge = GetSetting(Set_decrease_fillrect_edge) != 0;
     m_texture_correction = GetSetting(Set_texture_correction) != 0;
