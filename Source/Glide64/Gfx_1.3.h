@@ -70,7 +70,6 @@ the plugin
 #include <stddef.h>		// offsetof
 #include <glide.h>
 #include <Common/MemTest.h>
-#include <Settings/Settings.h>
 #include "GlideExtensions.h"
 #include "rdp.h"
 #include "Config.h"

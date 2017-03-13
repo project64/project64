@@ -1,15 +1,8 @@
 #include <Common/StdString.h>
+#include <Settings/Settings.h>
 #include "Gfx_1.3.h"
 #include "ScreenResolution.h"
 #include "SettingsID.h"
-
-#ifdef _WIN32
-int GetCurrentResIndex(void);
-#endif
-
-#ifdef ANDROID
-extern uint32_t g_NativeWidth, g_NativeHeight;
-#endif
 
 extern int g_width, g_height;
 
@@ -36,7 +29,7 @@ CSettings::CSettings() :
     m_aspectmode(Aspect_4x3),
     m_frame_buffer(0),
     m_fb_crc_mode(fbcrcFast),
-//Texture filtering options
+    //Texture filtering options
     m_texture_dir(""),
     m_ghq_fltr(TextureFilter_None),
     m_ghq_enht(TextureEnht_None),
@@ -109,9 +102,6 @@ void CSettings::RegisterSettings(void)
 
     SetModuleName("Glide64");
     general_setting(Set_Resolution, "resolution", GetDefaultScreenRes());
-#ifdef _WIN32
-    general_setting(Set_FullScreenRes, "FullScreenRes", GetCurrentResIndex());
-#endif
     general_setting(Set_vsync, "vsync", true);
     general_setting(Set_texenh_options, "texenh_options", false);
     general_setting(Set_wrpVRAM, "wrpVRAM", 0);
