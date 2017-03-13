@@ -907,6 +907,21 @@ void CSettings::WriteSettings(void)
     FlushSettings();
 }
 
+void CSettings::general_setting(short setting_ID, const char * name, unsigned int value)
+{
+    RegisterSetting(setting_ID, Data_DWORD_General, name, NULL, value, NULL);
+}
+
+void CSettings::game_setting(short setting_ID, const char * name, unsigned int value)
+{
+    RegisterSetting(setting_ID, Data_DWORD_Game, name, NULL, value, NULL);
+}
+
+void CSettings::game_setting_default(short setting_ID, const char * name, short default_setting)
+{
+    RegisterSetting2(setting_ID, Data_DWORD_Game, name, NULL, default_setting);
+}
+
 void CSettings::SettingsChanged(void)
 {
     m_ScreenRes = GetSetting(Set_Resolution);

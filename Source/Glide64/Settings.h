@@ -306,6 +306,10 @@ public:
     void UpdateScreenSize(bool fullscreen);
 
 private:
+    static void general_setting(short setting_ID, const char * name, unsigned int value);
+    static void game_setting(short setting_ID, const char * name, unsigned int value);
+    static void game_setting_default(short setting_ID, const char * name, short default_setting);
+
     void RegisterSettings(void);
     void UpdateAspectRatio(void);
     void SettingsChanged(void);
