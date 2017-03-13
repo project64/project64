@@ -88,7 +88,7 @@ CSettings::CSettings() :
     m_FullScreenRes(0),
 #endif
     m_wrpVRAM(0),
-wrpFBO(0),
+    m_wrpFBO(false),
 wrpAnisotropic(0),
 m_FlushLogs(false)
 {
@@ -114,9 +114,9 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_texenh_options, "texenh_options", false);
     general_setting(Set_wrpVRAM, "wrpVRAM", 0);
 #ifndef ANDROID
-    general_setting(Set_wrpFBO, "wrpFBO", 0);
+    general_setting(Set_wrpFBO, "wrpFBO", false);
 #else
-    general_setting(Set_wrpFBO, "wrpFBO", 1);
+    general_setting(Set_wrpFBO, "wrpFBO", true);
 #endif
     general_setting(Set_Rotate, "rotate", Rotate_None);
     general_setting(Set_wrpAnisotropic, "wrpAnisotropic", 0);
@@ -320,6 +320,15 @@ void CSettings::SetWrpVRAM(int value)
     if (value != m_wrpVRAM)
     {
         m_wrpVRAM = value;
+        m_dirty = true;
+    }
+}
+
+void CSettings::SetWrpFBO(bool value)
+{
+    if (value != m_wrpFBO)
+    {
+        m_wrpFBO = value;
         m_dirty = true;
     }
 }
@@ -559,7 +568,7 @@ void CSettings::ReadSettings()
     m_texenh_options = GetSetting(Set_texenh_options) != 0;
 
     m_wrpVRAM = GetSetting(Set_wrpVRAM);
-    this->wrpFBO = GetSetting(Set_wrpFBO);
+    m_wrpFBO = GetSetting(Set_wrpFBO) != 0;
     this->wrpAnisotropic = GetSetting(Set_wrpAnisotropic);
 
     m_autodetect_ucode = GetSetting(Set_autodetect_ucode) != 0;
@@ -829,7 +838,7 @@ void CSettings::WriteSettings(void)
     SetSetting(Set_texenh_options, m_texenh_options);
 
     SetSetting(Set_wrpVRAM, m_wrpVRAM);
-    SetSetting(Set_wrpFBO, g_settings->wrpFBO);
+    SetSetting(Set_wrpFBO, m_wrpFBO);
     SetSetting(Set_wrpAnisotropic, g_settings->wrpAnisotropic);
     SetSetting(Set_autodetect_ucode, m_autodetect_ucode);
 

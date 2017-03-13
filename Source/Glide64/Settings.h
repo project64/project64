@@ -262,7 +262,7 @@ public:
     inline uint32_t FullScreenRes(void) const { return m_FullScreenRes; }
 #endif
     inline int wrpVRAM(void) const { return m_wrpVRAM; }
-    int wrpFBO;
+    inline bool wrpFBO(void) const { return m_wrpFBO; }
     int wrpAnisotropic;
     inline bool FlushLogs(void) const { return m_FlushLogs; }
 
@@ -276,6 +276,7 @@ public:
     void SetFog(bool value);
     void SetBuffClear(bool value);
     void SetWrpVRAM(int value);
+    void SetWrpFBO(bool value);
     void SetGhqFltr(TextureFilter_t value);
     void SetGhqEnht(TextureEnhancement_t value);
     void SetGhqCmpr(TextureCompression_t value);
@@ -320,6 +321,7 @@ private:
     uint32_t m_FullScreenRes;
 #endif
     int m_wrpVRAM;
+    bool m_wrpFBO;
     bool m_FlushLogs;
     char m_log_dir[260];
     uint32_t m_ScreenRes;

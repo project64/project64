@@ -316,7 +316,7 @@ public:
 
         m_cbxFBO.Attach(GetDlgItem(IDC_CHK_USE_FRAME_BUFFER_OBJECT));
         TTSetTxt(IDC_CHK_USE_FRAME_BUFFER_OBJECT, "Use frame buffer objects:\n\nChanges the way FB effects are rendered - with or without usage of the OpenGL Frame Buffer Objects (FBO) extension.\nThe choice depends on game and your video card. FBO off is good for NVIDIA cards, while for ATI cards, it's usually best that FBOs are turned on.\nAlso, some FB effects works only with one of the methods, no matter, which card you have.\nOn the whole, with FBO off, compatibility/ accuracy is a bit better (which is the case for Resident Evil 2).\nHowever, with FBO on with some systems, it can actually be a bit faster in cases.\n\n[Recommended: video card and game dependant]");
-        m_cbxFBO.SetCheck(g_settings->wrpFBO > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxFBO.SetCheck(g_settings->wrpFBO() > 0 ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxVRAM.Attach(GetDlgItem(IDC_CHK_AUTODETECT_VRAM));
         TTSetTxt(IDC_CHK_AUTODETECT_VRAM, "Autodetect VRAM Size:\n\nSince OpenGL cannot do this reliably at the moment, the option to set this manually is available.\nIf checked, plugin will try to autodetect VRAM size.\nBut if this appears wrong, please uncheck and set it to correct value.\n\n[Recommended: on]");
@@ -340,7 +340,7 @@ public:
         g_settings->SetFullScreenRes(m_cmbFSResolution.GetCurSel());
         g_settings->wrpAnisotropic = m_cbxAnisotropic.GetCheck() == BST_CHECKED;
         g_settings->SetWrpVRAM(m_cbxVRAM.GetCheck() == BST_CHECKED ? 0 : atoi(spinVRAM));
-        g_settings->wrpFBO = m_cbxFBO.GetCheck() == BST_CHECKED;
+        g_settings->SetWrpFBO(m_cbxFBO.GetCheck() == BST_CHECKED);
 
         if (memcmp(&oldsettings, g_settings, sizeof(oldsettings))) //check that settings were changed
         {
