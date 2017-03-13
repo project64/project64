@@ -619,25 +619,7 @@ COMBINE cmb;
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR, \
   percent = (float)(rdp.env_color&0xFF) / 255.0f, \
   cmb.dc0_detailmax = cmb.dc1_detailmax = percent
-
-// Bright red, sets up a bright red combine
-#ifdef BRIGHT_RED
-// Bright red, sets up a bright red combine during the alpha stage
-#define BrightRed() { \
-  CCMB (GR_COMBINE_FUNCTION_LOCAL, \
-  GR_COMBINE_FACTOR_NONE, \
-  GR_COMBINE_LOCAL_CONSTANT, \
-  GR_COMBINE_OTHER_NONE); \
-  ACMB (GR_COMBINE_FUNCTION_LOCAL, \
-  GR_COMBINE_FACTOR_NONE, \
-  GR_COMBINE_LOCAL_CONSTANT, \
-  GR_COMBINE_OTHER_NONE); \
-  cmb.ccolor = 0xFF0000FF; \
-}
-#else
-#define BrightRed()
-#endif
-
+ 
 #define CC(color) cmb.ccolor=(color)&0xFFFFFF00
 #define CC_BYTE(byte) { cmb.ccolor=(byte<<8)|(byte<<16)|(byte<<24); }
 #define CC_C1MULC2(color1, color2) { \
@@ -15659,15 +15641,8 @@ void Combine()
                 Alpha0[(rdp.cycle1 >> 16) & 7], Alpha1[(rdp.cycle1 >> 19) & 7], Alpha2[(rdp.cycle1 >> 22) & 7], Alpha3[(rdp.cycle1 >> 25) & 7],
                 Alpha0[(rdp.cycle2 >> 16) & 7], Alpha1[(rdp.cycle2 >> 19) & 7], Alpha2[(rdp.cycle2 >> 22) & 7], Alpha3[(rdp.cycle2 >> 25) & 7]);
         }
-        if (g_settings->unk_as_red())
-        {
-            BrightRed();
-        }
-        else
-        {
-            // use full alpha as default
-            ac_t0();
-        }
+        // use full alpha as default
+        ac_t0();
     }
     else
     {

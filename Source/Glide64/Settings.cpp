@@ -116,7 +116,6 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_ucode, "ucode", ucode_F3DEX2);
     general_setting(Set_wireframe, "wireframe", false);
     general_setting(Set_wfmode, "wfmode", wfmode_VertexColors);
-    general_setting(Set_unk_as_red, "unk_as_red", false);
     general_setting(Set_ghq_fltr, "ghq_fltr", TextureFilter_None);
     general_setting(Set_ghq_cmpr, "ghq_cmpr", TextureCompression_S3TC);
     general_setting(Set_ghq_enht, "ghq_enht", TextureEnht_None);
@@ -233,17 +232,14 @@ void CSettings::UpdateScreenSize(bool fullscreen)
     }
     else
     {
+#endif
         g_width = GetScreenResWidth(m_ScreenRes);
         g_height = GetScreenResHeight(m_ScreenRes);
+#ifndef ANDROID
     }
-    m_scr_res_x = m_res_x = g_width;
-    m_scr_res_y = m_res_y = g_height;
-#else
-    g_width = GetScreenResWidth(m_ScreenRes);
-    g_height = GetScreenResHeight(m_ScreenRes);
-    m_scr_res_x = m_res_x = g_width;
-    m_scr_res_y = m_res_y = g_height;
 #endif
+    m_scr_res_x = m_res_x = g_width;
+    m_scr_res_y = m_res_y = g_height;
     UpdateAspectRatio();
 }
 
