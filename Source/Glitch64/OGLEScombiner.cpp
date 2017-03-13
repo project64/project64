@@ -60,7 +60,6 @@ float lambda_color[2][4];
 int need_to_compile;
 
 static GLuint g_program_object_default = 0;
-static GLuint rotation_matrix_location;
 static int constant_color_location;
 static int ccolor0_location;
 static int ccolor1_location;
@@ -314,7 +313,6 @@ void init_combiner()
 
     int texture0_location;
     int texture1_location;
-    int log_length;
 
     // default shader
     std::string fragment_shader = g_fragment_shader_header;
@@ -490,7 +488,7 @@ void compile_shader()
 {
     need_to_compile = 0;
 
-    for (int i = 0; i < g_shader_programs.size(); i++)
+    for (size_t i = 0; i < g_shader_programs.size(); i++)
     {
         shader_program_key & prog = g_shader_programs[i];
         if (prog.color_combiner == color_combiner_key &&
@@ -604,12 +602,57 @@ void free_combiners()
         glDeleteProgram(g_program_object_default);
         g_program_object_default = 0;
     }
-    for (int i = 0; i < g_shader_programs.size(); i++)
+    for (size_t i = 0; i < g_shader_programs.size(); i++)
     {
         glDeleteProgram(g_shader_programs[i].program_object);
         g_shader_programs[i].program_object = 0;
     }
     g_shader_programs.clear();
+
+    g_alpha_ref = 0;
+    g_alpha_func = 0;
+    g_alpha_test = 0;
+
+    memset(g_texture_env_color, 0, sizeof(g_texture_env_color));
+    memset(g_ccolor0, 0, sizeof(g_ccolor0));
+    memset(g_ccolor1, 0, sizeof(g_ccolor1));
+    memset(g_chroma_color, 0, sizeof(g_chroma_color));
+    g_fog_enabled = 0;
+    g_chroma_enabled = false;
+    chroma_other_color = 0;
+    chroma_other_alpha = 0;
+    dither_enabled = 0;
+    blackandwhite0 = 0;
+    blackandwhite1 = 0;
+
+    fogStart = 0.0f;
+    fogEnd = 0.0f;
+    for (int i = 0; i < (sizeof(fogColor) / sizeof(fogColor[0])); i++)
+    {
+        fogColor[i] = 0.0f;
+    }
+    memset(need_lambda, 0, sizeof(need_lambda));
+    for (int i = 0; i < (sizeof(lambda_color) / sizeof(lambda_color[0])); i++)
+    {
+        for (int z = 0; z < (sizeof(lambda_color[i]) / sizeof(lambda_color[i][0])); z++)
+        {
+            lambda_color[i][z] = 0.0f;
+        }
+    }
+    need_to_compile = 0;
+
+    g_program_object_default = 0;
+    constant_color_location = 0;
+    ccolor0_location = 0;
+    ccolor1_location = 0;
+    first_color = 1;
+    first_alpha = 1;
+    first_texture0 = 1;
+    first_texture1 = 1;
+    tex0_combiner_ext = 0;
+    tex1_combiner_ext = 0;
+    c_combiner_ext = 0;
+    a_combiner_ext = 0;
 }
 
 void set_copy_shader()
@@ -1516,12 +1559,6 @@ GrAlphaBlendFnc_t alpha_sf, GrAlphaBlendFnc_t alpha_df
     }
     glEnable(GL_BLEND);
     glBlendFuncSeparate(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);
-    /*
-      if (blend_func_separate_support)
-      glBlendFuncSeparateEXT(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);
-      else
-      glBlendFunc(sfactorRGB, dfactorRGB);
-      */
 }
 
 FX_ENTRY void FX_CALL

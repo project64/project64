@@ -57,10 +57,6 @@ static int vertex_buffer_count = 0;
 static GLenum vertex_draw_mode;
 static bool vertex_buffer_enabled = false;
 
-void vbo_init()
-{
-}
-
 void vbo_draw()
 {
     if (vertex_buffer_count)
@@ -152,8 +148,6 @@ void init_geometry()
 
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
-
-    vbo_init();
 }
 
 FX_ENTRY void FX_CALL
@@ -324,47 +318,6 @@ grDepthMask(FxBool mask)
     glDepthMask(mask);
 }
 float biasFactor = 0;
-#if 0
-void FindBestDepthBias()
-{
-    float f, bestz = 0.25f;
-    int x;
-    if (biasFactor) return;
-    biasFactor = 64.0f; // default value
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_ALWAYS);
-    glEnable(GL_POLYGON_OFFSET_FILL);
-    glDrawBuffer(GL_BACK);
-    glReadBuffer(GL_BACK);
-    glDisable(GL_BLEND);
-    glDisable(GL_ALPHA_TEST);
-    glColor4ub(255, 255, 255, 255);
-    glDepthMask(GL_TRUE);
-    for (x = 0, f = 1.0f; f <= 65536.0f; x += 4, f *= 2.0f) {
-        float z;
-        glPolygonOffset(0, f);
-        glBegin(GL_TRIANGLE_STRIP);
-        glVertex3f(float(x + 4 - widtho) / (width / 2), float(0 - heighto) / (height / 2), 0.5);
-        glVertex3f(float(x - widtho) / (width / 2), float(0 - heighto) / (height / 2), 0.5);
-        glVertex3f(float(x + 4 - widtho) / (width / 2), float(4 - heighto) / (height / 2), 0.5);
-        glVertex3f(float(x - widtho) / (width / 2), float(4 - heighto) / (height / 2), 0.5);
-        glEnd();
-        glReadPixels(x + 2, 2 + g_viewport_offset, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z);
-        z -= 0.75f + 8e-6f;
-        if (z < 0.0f) z = -z;
-        if (z > 0.01f) continue;
-        if (z < bestz) {
-            bestz = z;
-            biasFactor = f;
-        }
-        //printf("f %g z %g\n", f, z);
-    }
-    //printf(" --> bias factor %g\n", biasFactor);
-    glPopAttrib();
-}
-#endif
-
 FX_ENTRY void FX_CALL
 grDepthBiasLevel(FxI32 level)
 {
