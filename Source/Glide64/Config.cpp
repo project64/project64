@@ -311,7 +311,7 @@ public:
         TTSetTxt(IDC_CMB_FS_RESOLUTION, "Full screen resolution:\n\nThis sets the full screen resolution.\nAll the resolutions that your video card / monitor support should be displayed.\n\n[Recommended:native(max) resolution of your monitor - unless performance becomes an issue]");
 
         m_cbxAnisotropic.Attach(GetDlgItem(IDC_CBXANISOTROPIC));
-        m_cbxAnisotropic.SetCheck(g_settings->wrpAnisotropic > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxAnisotropic.SetCheck(g_settings->wrpAnisotropic() ? BST_CHECKED : BST_UNCHECKED);
         TTSetTxt(IDC_CBXANISOTROPIC, "Anisotropic filtering:\n\nThis filter sharpens and brings out the details of textures that recede into the distance.\nWhen activated, it will use the max anisotropy your video card supports.\nHowever, this will override native way of texture filtering and may cause visual artifacts in some games.\n\n[Recommended: your preference, game dependant]");
 
         m_cbxFBO.Attach(GetDlgItem(IDC_CHK_USE_FRAME_BUFFER_OBJECT));
@@ -338,7 +338,7 @@ public:
         g_settings->SetVsync(m_cbxVSync.GetCheck() == BST_CHECKED);
         g_settings->SetTexenhOptions(m_cbxTextureSettings.GetCheck() == BST_CHECKED);
         g_settings->SetFullScreenRes(m_cmbFSResolution.GetCurSel());
-        g_settings->wrpAnisotropic = m_cbxAnisotropic.GetCheck() == BST_CHECKED;
+        g_settings->SetWrpAnisotropic(m_cbxAnisotropic.GetCheck() == BST_CHECKED);
         g_settings->SetWrpVRAM(m_cbxVRAM.GetCheck() == BST_CHECKED ? 0 : atoi(spinVRAM));
         g_settings->SetWrpFBO(m_cbxFBO.GetCheck() == BST_CHECKED);
 

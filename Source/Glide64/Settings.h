@@ -263,7 +263,7 @@ public:
 #endif
     inline int wrpVRAM(void) const { return m_wrpVRAM; }
     inline bool wrpFBO(void) const { return m_wrpFBO; }
-    int wrpAnisotropic;
+    inline bool wrpAnisotropic(void) const { return m_wrpAnisotropic; }
     inline bool FlushLogs(void) const { return m_FlushLogs; }
 
     void SetTexenhOptions(bool value);
@@ -275,6 +275,7 @@ public:
     void SetSwapMode(SwapMode_t value);
     void SetFog(bool value);
     void SetBuffClear(bool value);
+    void SetWrpAnisotropic(bool value);
     void SetWrpVRAM(int value);
     void SetWrpFBO(bool value);
     void SetGhqFltr(TextureFilter_t value);
@@ -322,6 +323,7 @@ private:
 #endif
     int m_wrpVRAM;
     bool m_wrpFBO;
+    bool m_wrpAnisotropic;
     bool m_FlushLogs;
     char m_log_dir[260];
     uint32_t m_ScreenRes;

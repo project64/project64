@@ -89,7 +89,7 @@ CSettings::CSettings() :
 #endif
     m_wrpVRAM(0),
     m_wrpFBO(false),
-wrpAnisotropic(0),
+    m_wrpAnisotropic(false),
 m_FlushLogs(false)
 {
     memset(m_log_dir, 0, sizeof(m_log_dir));
@@ -119,7 +119,7 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_wrpFBO, "wrpFBO", true);
 #endif
     general_setting(Set_Rotate, "rotate", Rotate_None);
-    general_setting(Set_wrpAnisotropic, "wrpAnisotropic", 0);
+    general_setting(Set_wrpAnisotropic, "wrpAnisotropic", false);
     general_setting(Set_autodetect_ucode, "autodetect_ucode", true);
     general_setting(Set_ucode, "ucode", ucode_F3DEX2);
     general_setting(Set_wireframe, "wireframe", false);
@@ -311,6 +311,15 @@ void CSettings::SetBuffClear(bool value)
     if (value != m_buff_clear)
     {
         m_buff_clear = value;
+        m_dirty = true;
+    }
+}
+
+void CSettings::SetWrpAnisotropic(bool value)
+{
+    if (value != m_wrpAnisotropic)
+    {
+        m_wrpAnisotropic = value;
         m_dirty = true;
     }
 }
@@ -569,7 +578,7 @@ void CSettings::ReadSettings()
 
     m_wrpVRAM = GetSetting(Set_wrpVRAM);
     m_wrpFBO = GetSetting(Set_wrpFBO) != 0;
-    this->wrpAnisotropic = GetSetting(Set_wrpAnisotropic);
+    m_wrpAnisotropic = GetSetting(Set_wrpAnisotropic) != 0;
 
     m_autodetect_ucode = GetSetting(Set_autodetect_ucode) != 0;
     m_unk_as_red = GetSetting(Set_unk_as_red) != 0;
@@ -839,7 +848,7 @@ void CSettings::WriteSettings(void)
 
     SetSetting(Set_wrpVRAM, m_wrpVRAM);
     SetSetting(Set_wrpFBO, m_wrpFBO);
-    SetSetting(Set_wrpAnisotropic, g_settings->wrpAnisotropic);
+    SetSetting(Set_wrpAnisotropic, m_wrpAnisotropic);
     SetSetting(Set_autodetect_ucode, m_autodetect_ucode);
 
     SetSetting(Set_wireframe, m_wireframe);

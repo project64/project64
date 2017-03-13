@@ -205,7 +205,7 @@ void ChangeSize()
 
 void ConfigWrapper()
 {
-    grConfigWrapperExt(g_settings->wrpVRAM() * 1024 * 1024, g_settings->wrpFBO(), g_settings->wrpAnisotropic);
+    grConfigWrapperExt(g_settings->wrpVRAM() * 1024 * 1024, g_settings->wrpFBO(), g_settings->wrpAnisotropic());
 }
 
 void UseUnregisteredSetting(int /*SettingID*/)
@@ -1008,7 +1008,7 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     CountCombine();
     ZLUT_init();
 
-    grConfigWrapperExt(g_settings->wrpVRAM() * 1024 * 1024, g_settings->wrpFBO(), g_settings->wrpAnisotropic);
+    grConfigWrapperExt(g_settings->wrpVRAM() * 1024 * 1024, g_settings->wrpFBO(), g_settings->wrpAnisotropic());
     grGlideInit();
     const char *extensions = grGetString(GR_EXTENSION);
     grGlideShutdown();
