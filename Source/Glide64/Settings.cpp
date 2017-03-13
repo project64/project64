@@ -75,7 +75,7 @@ CSettings::CSettings() :
     m_clip_zmax(false), //enable far plane clipping;
     m_adjust_aspect(false), //adjust screen aspect for wide screen mode
     m_force_calc_sphere(false), //use spheric mapping only, Ridge Racer 64
-pal230(0),    //set special scale for PAL games
+    m_pal230(false),    //set special scale for PAL games
 correct_viewport(0), //correct viewport values
 zmode_compare_less(0), //force GR_CMP_LESS for zmode=0 (opaque)and zmode=1 (interpenetrating)
 old_style_adither(0), //apply alpha dither regardless of alpha_dither_mode
@@ -166,7 +166,7 @@ void CSettings::RegisterSettings(void)
     game_setting(Set_increase_texrect_edge, "increase_texrect_edge", false);
     game_setting(Set_decrease_fillrect_edge, "decrease_fillrect_edge", false);
     game_setting(Set_texture_correction, "texture_correction", true);
-    game_setting(Set_pal230, "pal230", 0);
+    game_setting(Set_pal230, "pal230", false);
     game_setting(Set_stipple_mode, "stipple_mode", STIPPLE_Rotate);
 
     game_setting(Set_stipple_pattern, "stipple_pattern", 0x3E0F83E0);
@@ -719,7 +719,7 @@ void CSettings::ReadGameSettings(const char * name)
     m_increase_texrect_edge = GetSetting(Set_increase_texrect_edge) != 0;
     m_decrease_fillrect_edge = GetSetting(Set_decrease_fillrect_edge) != 0;
     m_texture_correction = GetSetting(Set_texture_correction) != 0;
-    g_settings->pal230 = GetSetting(Set_pal230) == 1 ? 1 : 0;
+    m_pal230 = GetSetting(Set_pal230) != 0;
     m_stipple_mode = (StippleMode_t)GetSetting(Set_stipple_mode);
     int stipple_pattern = GetSetting(Set_stipple_pattern);
     m_stipple_pattern = stipple_pattern > 0 ? (uint32_t)stipple_pattern : 0x3E0F83E0;

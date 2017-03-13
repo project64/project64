@@ -249,7 +249,7 @@ public:
     inline bool clip_zmax(void) const { return m_clip_zmax; } //enable far plane clipping
     inline bool adjust_aspect(void) const { return m_adjust_aspect; } //adjust screen aspect for wide screen mode
     inline bool force_calc_sphere(void) const { return m_force_calc_sphere; } //use spheric mapping only, Ridge Racer 64
-    int pal230;    //set special scale for PAL games
+    inline bool pal230(void) const { return m_pal230; } //use spheric mapping only, Ridge Racer 64
     int correct_viewport; //correct viewport values
     int zmode_compare_less; //force GR_CMP_LESS for zmode=0 (opaque)and zmode=1 (interpenetrating)
     int old_style_adither; //apply alpha dither regardless of alpha_dither_mode
@@ -368,6 +368,7 @@ private:
     bool m_clip_zmax;
     bool m_adjust_aspect;
     bool m_force_calc_sphere;
+    bool m_pal230;
     hacks_t m_hacks;
 };
 

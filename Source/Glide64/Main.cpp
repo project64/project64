@@ -163,7 +163,7 @@ void _ChangeSize()
     WriteTrace(TraceResolution, TraceDebug, "size: %d x %d", (int)rdp.vi_width, (int)rdp.vi_height);
 
     rdp.scale_x = (float)g_settings->res_x() / rdp.vi_width;
-    if (region > 0 && g_settings->pal230)
+    if (region > 0 && g_settings->pal230())
     {
         // odd... but pal games seem to want 230 as height...
         rdp.scale_y = res_scl_y * (230.0f / rdp.vi_height)  * aspect;
