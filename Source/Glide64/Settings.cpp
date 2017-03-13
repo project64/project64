@@ -573,7 +573,6 @@ void CSettings::ReadSettings()
     m_wrpAnisotropic = GetSetting(Set_wrpAnisotropic) != 0;
 
     m_autodetect_ucode = GetSetting(Set_autodetect_ucode) != 0;
-    m_unk_as_red = GetSetting(Set_unk_as_red) != 0;
     m_wireframe = GetSetting(Set_wireframe) != 0;
     m_wfmode = (wfmode_t)GetSetting(Set_wfmode);
     m_ucode = ucode_F3DEX2;
@@ -845,7 +844,6 @@ void CSettings::WriteSettings(void)
 
     SetSetting(Set_wireframe, m_wireframe);
     SetSetting(Set_wfmode, m_wfmode);
-    SetSetting(Set_unk_as_red, m_unk_as_red);
     SetSetting(Set_ucode, (int)m_ucode);
 
     SetSetting(Set_ghq_fltr, m_ghq_fltr);
@@ -913,4 +911,11 @@ void CSettings::game_setting_default(short setting_ID, const char * name, short 
 void CSettings::SettingsChanged(void)
 {
     m_ScreenRes = GetSetting(Set_Resolution);
+}
+
+void UseUnregisteredSetting(int /*SettingID*/)
+{
+#ifdef _WIN32
+    DebugBreak();
+#endif
 }

@@ -737,10 +737,10 @@ EXPORT void CALL ProcessDList(void)
         {
             ReleaseGfx ();
             rdp_reset();
-            if (g_settings->ghq_use)
+            if (g_ghq_use)
             {
                 ext_ghq_shutdown();
-                g_settings->ghq_use = 0;
+                g_ghq_use = false;
             }
         }
         if (MessageBox(gfx.hWnd, "The GFX plugin caused an exception and has been disabled.\nWould you like to turn it back on and attempt to continue?","Glide64 Exception", MB_YESNO|MB_ICONEXCLAMATION) == MB_NO)

@@ -41,7 +41,6 @@
 #include <Common/StdString.h>
 #include "Gfx_1.3.h"
 #include "Version.h"
-#include <Settings/Settings.h>
 #include <Common/CriticalSection.h>
 #include <Common/DateTimeClass.h>
 #include <Common/path.h>
@@ -116,8 +115,8 @@ uint32_t   offset_textures = 0;
 uint32_t   offset_texbuf1 = 0;
 
 bool g_ghq_use = false;
-int    capture_screen = 0;
-std::string capture_path;
+bool g_capture_screen = false;
+std::string g_capture_path;
 
 #ifdef _WIN32
 HWND g_hwnd_win = NULL;
@@ -841,8 +840,8 @@ output:   none
 *******************************************************************/
 EXPORT void CALL CaptureScreen(char * Directory)
 {
-    capture_screen = 1;
-    capture_path = Directory;
+    g_capture_screen = true;
+    g_capture_path = Directory;
 }
 
 /******************************************************************
@@ -1176,15 +1175,6 @@ void CALL RomOpen(void)
 
     if (evoodoo)
         InitGfx();
-
-    if (strstr(extensions, "ROMNAME"))
-    {
-        char strSetRomName[] = "grSetRomName";
-        void (FX_CALL *grSetRomName)(char*);
-        grSetRomName = (void (FX_CALL *)(char*))grGetProcAddress(strSetRomName);
-        grSetRomName(name);
-    }
-    // **
 }
 
 /******************************************************************
@@ -1205,9 +1195,8 @@ void CALL ShowCFB(void)
 void drawViRegBG()
 {
     WriteTrace(TraceGlide64, TraceDebug, "start");
-    const uint32_t VIwidth = *gfx.VI_WIDTH_REG;
     FB_TO_SCREEN_INFO fb_info;
-    fb_info.width = VIwidth;
+    fb_info.width = *gfx.VI_WIDTH_REG;
     fb_info.height = (uint32_t)rdp.vi_height;
     if (fb_info.height == 0)
     {
@@ -1216,7 +1205,7 @@ void drawViRegBG()
     }
     fb_info.ul_x = 0;
 
-    fb_info.lr_x = VIwidth - 1;
+    fb_info.lr_x = fb_info.width - 1;
     //  fb_info.lr_x = (uint32_t)rdp.vi_width - 1;
     fb_info.ul_y = 0;
     fb_info.lr_y = fb_info.height - 1;
@@ -1452,9 +1441,9 @@ void newSwapBuffers()
     grDepthMask(FXFALSE);
     grCullMode(GR_CULL_DISABLE);
 
-    if (capture_screen)
+    if (g_capture_screen)
     {
-        CPath path(capture_path);
+        CPath path(g_capture_path);
         if (!path.DirectoryExists())
         {
             path.DirectoryCreate();
@@ -1525,7 +1514,7 @@ void newSwapBuffers()
             // Unlock the backbuffer
             grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
             write_png_file(path, image_width, image_height, ssimg);
-            capture_screen = 0;
+            g_capture_screen = false;
         }
     }
 
