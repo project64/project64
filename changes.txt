@@ -1,2 +1,5 @@
 Android Release 9:
 - Add ability to change screen res
+
+Windows 2.4
+- Build with v2015
