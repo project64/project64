@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<VisualStudioPropertySheet
-	ProjectType="Visual C++"
-	Version="8.00"
-	Name="Win32.Debug"
-	InheritedPropertySheets=".\Win32.vsprops;.\Debug.vsprops;"
-	>
-</VisualStudioPropertySheet>
