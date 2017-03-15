@@ -282,11 +282,6 @@ bool CN64System::LoadFileImage(const char * FileLoc)
             g_DDRom->LoadN64ImageIPL(FileLoc);
             g_Settings->SaveString(File_DiskIPLPath, FileLoc);
         }
-        else if (g_DDRom != NULL)
-        {
-            delete g_DDRom;
-            g_DDRom = NULL;
-        }
 
         if (g_DDRom != NULL)
         {
