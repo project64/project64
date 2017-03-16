@@ -24,9 +24,10 @@
 * Menu                                                                           *
 *********************************************************************************/
 //File Menu
-  “&ملف" #100#
+  “&
+" #100#
  “&تصفح الروم” #101# 
-“الرومم &معلومات….” #102#    
+“الروم &معلومات….” #102#    
  "ابدأ المحاكاه“ #103# 
 “&الغي المحاكاه” #104# 
 “اختر دليل ملفات الروم…” #105#  
@@ -284,90 +285,90 @@ N
 “الاساسية”  #531#  
 #532#  "RSPإشارة الصوت ال"
 "تثبيت توقيت الصوت”  #533#  
-#534#  "Function lookup method:"
-#535#  "Custom self mod method"
-#536#  "Sync using audio"
-#537#  "AI count per byte"
-#538#  "32-bit engine"
-#539#  "Delay DP interrupt"
+"وظيفة طريقة البحث:"  #534#  
+"طريقة للمودز المخصصة من المستخدم"  #535#  
+"المزامنة باستخدام الصوت"  #536#  
+"عد الذكاء الاصطناعي لكل بايت"  #537#  
+#538#  "32-bit محرك"
+#539#  "DPتأخير مقاطعة ال"
 
 //Core Styles
-#540#  "Interpreter"
-#541#  "Recompiler"
-#542#  "Synchronize cores"
+"مترجم"  #540#  
+"معيد ترجمة"  #541#  
+"مزامنة وحدات المعالج"  #542#  
 
 //Self Mod Methods
-#560#  "None"
-#561#  "Cache"
-#562#  "Protect memory"
-#563#  "Check memory & cache"
-#564#  "Change memory & cache"
-#565#  "Check memory advance"
-#566#  "Clear code on cache"
+"لا شيء"  #560#  
+“التخزين المؤقت”  #561#  
+"حماية الذاكرة"  #562#  
+"تحقق من الذاكرة وذاكرة التخزين المؤقت"  #563#  
+“غير من الذاكرة وذاكرة التخزين المؤقت"  #564#  
+"تحقق من الذاكرة متقدم”  #565#  
+"مسح الرموز من التخزين المؤقت"  #566#  
 
 //Function Lookup method
-#570#  "Physical lookup table"
-#571#  "Virtual lookup table"
-#572#  "Change memory"
+"جدول بحث البدني"  #570#  
+"جدول البحث الظاهري"  #571#  
+"غير الذاكرة”  #572#  
 
 //RDRAM Size
-#580#  "4 MB"
-#581#  "8 MB"
+"4 ميغابايت”  #580#  
+"8 ميغابايت"  #581#  
 
 //Advanced Block Linking
-#600#  "On"
-#601#  "Off"
+“استعمال”  #600#  
+"إيقاف"  #601#  
 
 //Save Type
-#620#  "Use first-used save type"
+"استخدام نوع الحفظ المستخدم في اول مرة "  #620#  
 #621#  "4-kbit EEPROM"
 #622#  "16-kbit EEPROM"
 #623#  "SRAM"
-#624#  "Flash RAM"
+“فلاش الرام”  #624#  
 
 //Shell Integration Tab
-#640#  "File extension association:"
+"جمعية نوع الملفات:"  #640#  
 
 //ROM Notes
-#660#  "ROM status:"
-#661#  "Core note:"
-#662#  "Plugin note:"
+“حالة الروم:”  #660#  
+"ملاحظة وحدات المعالج:"  #661#  
+“ملاحظة البلجينج”  #662#  
 
 // Accelerator Selector
-#680#  "CPU state:"
-#681#  "Menu item:"
-#682#  "Current keys:"
-#683#  "Select new shortcut key:"
-#684#  "Currently assigned to:"
-#685#  "Assign"
-#686#  "Remove"
-#687#  "Reset All"
-#688#  "Game not playing"
-#689#  "Game playing"
-#690#  "Game playing (windowed)"
-#691#  "Game playing (full-screen)"
-#692#  "Detect Key"
+"حالة المعالج:”  #680#  
+"عنصر القائمة:"  #681#  
+"المفاتيح الحالية:"  #682#  
+"حدد مفتاح الاختصار جديد:"  #683#  
+"المعينة حاليا ل:"  #684#  
+“معينة” #685#  
+"إزالة" #686#  
+"إعادة تعيين الجميع" #687#  
+"لعبة ليست مشغلة" #688#  
+"اللعبة تعمل" #689#  
+"اللعبة تعمل (بأطار)” #690#  
+"اللعبة تعمل (شاشة كاملة)” #691#  
+“اكتشف مفتاح" #692#  
 
 // Frame Rate Option
-#700#  "Vertical interrupts per second"
-#701#  "Display lists per second"
-#702#  "Percentage of full speed"
+"مقاطعة رأسية في كل الثانية" #700#  
+“اضهر القائمة لكل ثانية“ #701#  
+"النسبة المئوية للسرعة الاقصى" #702#  
 
 // Increase speed
-#710#  "Increase Game Speed"
-#711#  "Decrease Game Speed"
+"زيادة سرعة اللعبة" #710#  
+"اخفض سرعة لعبة" #711#  
 
 //Bottom page buttons
-#720#  "Reset Page"
-#721#  "Reset All"
-#722#  "Apply"
-#723#  "Close"
+"إعادة تعيين الصفحة" #720#  
+"إعادة تعيين الجميع" #721#  
+“طبق” #722#  
+"أغلق" #723#  
 
 /*********************************************************************************
 * ROM Information                                                                *
 *********************************************************************************/
 //ROM Info Title
-#800#  "ROM Information"
+ "معلومان عن الروم”  #800# 
 
 //ROM Info Text
 "اسم الروم:“  #801#  
@@ -465,62 +466,60 @@ N
 
 
  "فشل في تخصيص الذاكرة"  #2003# 
-"البلجينج  للفيديو الاساسي  مفقود أو غير صالح. تحتاج للذهاب إلى إلاعدادات واختيار بلجينج الفيديو . تأكد من ان لديك ملف البلجينج متوافق واحد على الأقل في مجلد البرنامج ." #2004#
-
-   
-#2005#  "The default or selected audio plugin is missing or invalid.\n\nYou need to go into Settings and select a audio (sound) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
-#2006#  "The default or selected RSP plugin is missing or invalid.\n\nYou need to go into Settings and select a RSP (Reality Signal Processor) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
-#2007#  "The default or selected input plugin is missing or invalid.\n\nYou need to go into Settings and select an input (controller) plugin.\nCheck that you have at least one compatible plugin file in your plugin folder."
-#2008#  "Failed to load plugin:"
-#2009#  "Failed to load word.\n\nVerify ROM and its settings."
-#2010#  "Failed to open save file"
-#2011#  "Failed to open EEPROM"
-#2012#  "Failed to open flash RAM"
-#2013#  "Failed to open mempak"
-#2014#  "Attempt to open zip file failed.\n\nProbably a corrupt zip file - try unzipping ROM manually."
-#2015#  "Attempt to open file failed."
-#2016#  "Error occurred when trying to open zip file."
-#2017#  "File loaded does not appear to be a valid N64 ROM.\n\nVerify your ROMs with GoodN64."
-#2018#  "Unknown country"
-#2019#  "Unknown CIC chip"
-#2020#  "Unknown file format"
-#2021#  "Unknown memory action\n\nEmulation stopped"
-#2022#  "Unhandled R4300i opcode at"
-#2023#  "Executing from non-mapped space.\n\nVerify ROM and its settings."
-#2024#  "This saved state does not appear to match the running ROM.\n\nStates must be saved & loaded between 100% identical ROMs.\nIn particular, the REGION and VERSION need to be the same.\nLoading this state is likely to cause the game and/or emulator to crash.\n\nAre you sure you want to continue loading?"
-#2025#  "Error"
-#2026#  "Copyright sequence not found in LUT. Game will no longer function."
-#2027#  "Copy Protection Failure"
-#2028#  "Changing a plugin requires Project64 to reset a running ROM.\nIf you don't want to lose your place, answer No and save the current state first.\n\nChange plugins and reset ROM now?"
-#2029#  "Change Plugins"
-#2030#  "Emulation ended"
-#2031#  "Emulation started"
-#2032#  "Unable to load state"
-#2033#  "Loaded state"
-#2034#  "Saved current state to"
-#2035#  "State slot"
-#2036#  "Byte-swapping image"
-#2037#  "Choosing N64 image"
-#2038#  "Loaded"
-#2039#  "Loading image"
-#2040#  "Cannot open a ROM because plugins have not successfully initialized."
-#2041#  "Are you sure you really want to delete this?"
-#2042#  "Delete Cheat"
-#2043#  "Cheat name is already in use."
-#2044#  "You have reached the maximum amount of cheats for this ROM."
-#2045#  "Plugin initializing"
-#2046#  "You have not selected a virtual key to assign to the menu item."
-#2047#  "You need to select a menu item to assign this key to."
-#2048#  "Short-cut has already been assigned to another menu item."
-#2049#  "No shortcut has been selected to be removed."
-#2050#  "ROM loaded. Waiting for emulation to start."
-#2051#  "Project64 beta versions are for members only.\n\nIf you have an account at www.pj64-emu.com, you should not be seeing this error!!\nPlease contact us on the site."
-#2052#  "Program Error"
-#2053#  "Failed to find filename in 7z file"
-#2054#  "Graphics Low-Level Emulation"
-#2055#  "Graphics LLE is not for general use!!!\nIt is advisable that you only use this for testing and not for playing games.\n\nChange to graphics LLE?"
-#2056#  "Audio High-Level Emulation"
-#2057#  "Audio HLE requires a third-party plugin!!!\nIf you do not use a third-party audio plugin that supports HLE, you will hear no sound.\n\nChange to audio HLE?"
+"البلجينج  للفيديو الاساسي  مفقود أو غير صالح. تحتاج للذهاب إلى إلاعدادات واختيار بلجينج الفيديو . تأكد من ان لديك ملف البلجينج متوافق واحد على الأقل في مجلد البرنامج ."  #2004#
+ “البلجينج الصوتي المختار مفقود أو غير صالح. تحتاج إلى الذهاب إلى الاعدادات واختيار بلجينج الصوت .تأكد أن لديك على الاقل ملف بلجينج متوافق واحد  في مجلد البلجينجز بالبرنامج.”  #2005# 
+ “البلجينج المعالج المختار مفقود أو غير صالح. تحتاج إلى الذهاب إلى الاعدادات واختيار بلجينج المعالج .تأكد أن على الاقل ملف بلجينج متوافق واحد  في مجلد البلجينجز بالبرنامج.”  #2006#
+“البلجينج التحكم المختار مفقود أو غير صالح. تحتاج إلى الذهاب إلى الاعدادات واختيار بلجينج التحكم .تأكد أن لديك على الاقل ملف بلجينج متوافق واحد  في مجلد البلجينجز بالبرنامج.”  #2007#
+"فشل في تحميل البلجينج:“  #2008#  
+"فشل في تحميل الكلمة. تاكد من الروم واعاداداتها.”  #2009#  
+"فشل في فتح ملف الحفظ“  #2010#  
+#2011#  " EEPROMفشل في فتح ال”
+#2012#  "flash RAMفشل في فتح ال”
+#2013#  “mempakفشل في فتح ال”
+"فشلت محاولة في فتح الملف المضغوط. من الممكن ان يكون الملف تالف. حاول انت تفتح الملف يدويا.”  #2014#  
+“محاولة فتح الملف فشلت.”  #2015#  
+"حدث خطأ عند محاولة فتح الملف مضغوط.”  #2016#  
+#2017#  "GoodN64 الملف المحمل لا يبدو أنه روم لجاهز الن64 .تحقق من الروم الخاصة بك باستخدام موقع"
+#2018#  "Unknown country بلد غير معروف”
+#2019#  "CIC chip غير معروف ”
+"صيغة ملف غير معروفة ”  #2020#  
+"عمل مجهول للذاكرة. توقفت المحاماه."  #2021#  
+#2022#  “Unhandled R4300i غير معالج"
+"تنفيذ من الفضاء غير معين. تأكد من الروم  وإعداداتها."  #2023#  
+“هذه الحالة المحفوظة لا تتطابق مع الروم المشغلة. يجب ان تتطابق١٠٠٪ لتعمل. كمثال البلد و النسخة. تحميل هذه الحالة ممكن ان يؤدي الى مشكلة. هل تريد ان تكمل؟ ”  #2024#  
+“خطأ”  #2025#  
+"تسلسل حقوق التأليف والنشر لم يتم العثور عليها في اللوت. العبة لن تعمل بعد الان."  #2026#  
+"فشل في حماية حقوق النسخ"  #2027#  
+“تغيير بلجينج سوف يؤدي باعادة تدوير الروم المشغلة. اذا لا تريد ان تخسر مكانك, احفظ الحالة. هل تريد انت تغير البلجينج الان؟”  #2028# 
+"غير البلجينج”  #2029#  
+"المحاكاه انتهت”  #2030#  
+"المحاماه ابتدأت“  #2031#  
+"غير من الامكان تحميل الحالة”  #2032#  
+"الحالة المحملة“  #2033#  
+"تم حفظ الحالة الحالية في ”  #2034#  
+"فتحة الحالة”  #2035#  
+"مبادلة بايت الصور"  #2036#  
+#2037#  " N64اختيار صورة”
+"تم التحميل”  #2038#  
+"تحميل الصورة”  #2039#  
+ "لا يمكن فتح الروم لأن البلجينجز لم تتم تهيئها بنجاح."  #2040# 
+"هل أنت متأكد أنك تريد أن تحذف هذا؟"  #2041#  
+ "امسح التغشيشة”  #2042# 
+“اسم التغشيشة مستعمل.“  #2043#  
+"لقد توصلت إلى الحد الأقصى من من التغشيشات لهذه الروم”  #2044#  
+"تهيئة البلجينج"  #2045#  
+"لم تقم بتحديد مفتاح الظاهري لتعيين عنصر القائمة."  #2046#  
+"تحتاج إلى تحديد عنصر قائمة لتعيين هذا المفتاح ل."  #2047#  
+"قد تم تعيين اختصار لعنصر قائمة أخرى."  #2048#  
+"لم يتم اختيار اختصار المراد إزالتها."  #2049#  
+"قد تم تحميل الروم. انتظار لبدء المحاكاه."  #2050#  
+ "الإصدارات التجريبية لهذا البرنام هي للأعضاء فقط. اذا لديك حساب في pj64-emu، اذا يجب أن ترى هذا الخطأ !! الرجاء الاتصال بنا على الموقع."  #2051# 
+"خطأ في برمجة”  #2052#  
+"فشل في العثور على ملف في الملف المظغوط”  #2053#  
+"دقة محاكاة الجرافيكس المتدنية”  #2054#   
+"رسومات LLE ليست للاستخدام العام !!!  من المستحسن أن تقوم استخدام هذا للاختبار فقط وليس للعب اللعاب.  غير لرسومات الLLE ؟"  #2055#  
+"دقة محاكاة الصوت العالية”  #2056#  
+"بلجينج الصوت يتطلب برنامج مساعد من طرف ثالث !!! ، لن تسمع أي صوت لذلك السبب. غير لHLE الصوت؟"  #2057#  
 
 
 /*********************************************************************************
