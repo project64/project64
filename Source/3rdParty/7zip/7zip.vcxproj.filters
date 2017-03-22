@@ -32,6 +32,8 @@
     <ClInclude Include="7zVersion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Aes.h">
+      <Filter>Header Files</Filter>
     <ClInclude Include="Alloc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -41,12 +43,16 @@
     <ClInclude Include="Bra.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Compiler.h">
+      <Filter>Header Files</Filter>
     <ClInclude Include="CpuArch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Delta.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DllSecur.h">
+      <Filter>Header Files</Filter>
     <ClInclude Include="LzFind.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -83,16 +89,19 @@
     <ClInclude Include="Ppmd7.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Precomp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="RotateDefs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Sha256.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Threads.h">
+    <ClInclude Include="Sort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Types.h">
+    <ClInclude Include="Threads.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Xz.h">
@@ -107,6 +116,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="7zAlloc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="7zArcIn.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="7zBuf.c">
@@ -127,16 +139,22 @@
     <ClCompile Include="7zFile.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="7zIn.c">
+    <ClCompile Include="7zStream.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="7zStream.c">
+    <ClCompile Include="Aes.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AesOpt.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Alloc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bcj2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bcj2Enc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bra.c">
@@ -152,6 +170,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Delta.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DllSecur.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LzFind.c">
@@ -196,6 +217,9 @@
     <ClCompile Include="Sha256.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Sort.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Threads.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -203,6 +227,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="XzCrc64.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XzCrc64Opt.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="XzDec.c">
