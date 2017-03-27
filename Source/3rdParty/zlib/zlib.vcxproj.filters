@@ -78,6 +78,12 @@
     <ClCompile Include="contrib\minizip\zip.c">
       <Filter>Minizip</Filter>
     </ClCompile>
+    <ClCompile Include="contrib\minizip\miniunz.c">
+      <Filter>Minizip</Filter>
+    </ClCompile>
+    <ClCompile Include="contrib\minizip\minizip.c">
+      <Filter>Minizip</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="crc32.h">

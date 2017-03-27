@@ -59,6 +59,8 @@
     <ClCompile Include="zutil.c" />
     <ClCompile Include="contrib\minizip\ioapi.c" />
     <ClCompile Include="contrib\minizip\iowin32.c" />
+    <ClCompile Include="contrib\minizip\miniunz.c" />
+    <ClCompile Include="contrib\minizip\minizip.c" />
     <ClCompile Include="contrib\minizip\mztools.c" />
     <ClCompile Include="contrib\minizip\unzip.c" />
     <ClCompile Include="contrib\minizip\zip.c" />
