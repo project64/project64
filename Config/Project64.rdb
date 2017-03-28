@@ -3680,6 +3680,7 @@ Status=Compatible
 Good Name=Namco Museum 64 (U)
 Internal Name=NAMCOMUSEUM64
 Status=Compatible
+32bit=No
 Culling=1
 RDRAM Size=8
 
