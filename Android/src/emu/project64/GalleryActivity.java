@@ -20,6 +20,9 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import emu.project64.R;
 import emu.project64.dialog.ProgressDialog;
 import emu.project64.game.GameActivity;
@@ -239,6 +242,12 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
             }
         });
         UpdateLanguage();
+        
+        ((Project64Application) getApplication()).getDefaultTracker().send(new HitBuilders.EventBuilder()
+        	    .setCategory("mobile")
+        	    .setAction("start")
+        	    .setLabel(NativeExports.appVersion())
+        	    .build());
     }
 
     void UpdateLanguage()

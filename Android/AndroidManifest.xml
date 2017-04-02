@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="emu.project64" android:versionCode="8" android:versionName="2.3.2" >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="emu.project64" android:versionCode="9" android:versionName="2.3.2" >
     
     <uses-feature android:glEsVersion="0x00020000" android:required="true" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="21" />
     
-	<uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
@@ -83,5 +84,6 @@
          <activity
             android:name="emu.project64.settings.GameSettingsActivity"
             android:theme="@style/Theme.Project64.Apearance" />
+
      </application>
 </manifest>
