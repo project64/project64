@@ -51,13 +51,13 @@ class AndroidLogger : public CTraceModule
     {
         switch (severity)
         {
-        case TraceError: __android_log_print(ANDROID_LOG_ERROR, TraceModule(module), "%05d: %s: %s",CThread::GetCurrentThreadId(),function,Message); break;
-        case TraceWarning:  __android_log_print(ANDROID_LOG_WARN, TraceModule(module), "%05d: %s: %s",CThread::GetCurrentThreadId(),function,Message); break;
-        case TraceNotice: __android_log_print(ANDROID_LOG_INFO, TraceModule(module), "%05d: %s: %s",CThread::GetCurrentThreadId(),function,Message); break;
-        case TraceInfo: __android_log_print(ANDROID_LOG_INFO, TraceModule(module), "%05d: %s: %s",CThread::GetCurrentThreadId(),function,Message); break;
-        case TraceDebug: __android_log_print(ANDROID_LOG_DEBUG, TraceModule(module), "%05d: %s: %s",CThread::GetCurrentThreadId(),function,Message); break;
-        case TraceVerbose: __android_log_print(ANDROID_LOG_VERBOSE, TraceModule(module), "%05d: %s: %s",CThread::GetCurrentThreadId(),function,Message); break;
-        default: __android_log_print(ANDROID_LOG_UNKNOWN, TraceModule(module), "%05d: %s: %s",CThread::GetCurrentThreadId(),function,Message); break;
+        case TraceError: __android_log_print(ANDROID_LOG_ERROR, TraceModule(module), "%05d: %s: %s", CThread::GetCurrentThreadId(), function, Message); break;
+        case TraceWarning:  __android_log_print(ANDROID_LOG_WARN, TraceModule(module), "%05d: %s: %s", CThread::GetCurrentThreadId(), function, Message); break;
+        case TraceNotice: __android_log_print(ANDROID_LOG_INFO, TraceModule(module), "%05d: %s: %s", CThread::GetCurrentThreadId(), function, Message); break;
+        case TraceInfo: __android_log_print(ANDROID_LOG_INFO, TraceModule(module), "%05d: %s: %s", CThread::GetCurrentThreadId(), function, Message); break;
+        case TraceDebug: __android_log_print(ANDROID_LOG_DEBUG, TraceModule(module), "%05d: %s: %s", CThread::GetCurrentThreadId(), function, Message); break;
+        case TraceVerbose: __android_log_print(ANDROID_LOG_VERBOSE, TraceModule(module), "%05d: %s: %s", CThread::GetCurrentThreadId(), function, Message); break;
+        default: __android_log_print(ANDROID_LOG_UNKNOWN, TraceModule(module), "%05d: %s: %s", CThread::GetCurrentThreadId(), function, Message); break;
         }
     }
     void FlushTrace(void)
@@ -113,10 +113,10 @@ static void watch_uninstall(const char *baseDir)
             exit(1);
         }
 
-        enum 
+        enum
         {
             EVENT_SIZE = sizeof(struct inotify_event),
-            EVENT_BUF_LEN = (1024 * (EVENT_SIZE + 16)) 
+            EVENT_BUF_LEN = (1024 * (EVENT_SIZE + 16))
         };
         struct inotify_event event;
         __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "read event");
@@ -130,7 +130,7 @@ static void watch_uninstall(const char *baseDir)
         pjutil::Sleep(2000);
         __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "Sleep Done");
 
-        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "TestDir.DirectoryExists() = %s", TestDir.DirectoryExists() ? "yes": "no");
+        __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "TestDir.DirectoryExists() = %s", TestDir.DirectoryExists() ? "yes" : "no");
         if (!TestDir.DirectoryExists())
         {
             __android_log_print(ANDROID_LOG_INFO, "watch_uninstall", "exit loop");
@@ -149,7 +149,7 @@ EXPORT jint CALL JNI_OnLoad(JavaVM* vm, void* reserved)
     __android_log_print(ANDROID_LOG_INFO, "jniBridge", "JNI_OnLoad called");
     g_JavaVM = vm;
     JNIEnv *env;
-    if (g_JavaVM->GetEnv((void**) &env, JNI_VERSION_1_4) != JNI_OK)
+    if (g_JavaVM->GetEnv((void**)&env, JNI_VERSION_1_4) != JNI_OK)
     {
         __android_log_print(ANDROID_LOG_ERROR, "jniBridge", "Failed to get the environment using GetEnv()");
         return -1;
@@ -180,7 +180,7 @@ void UISettingsSaveStringIndex(UISettingID Type, int32_t index, const std::strin
 void AddRecentRom(const char * ImagePath)
 {
     if (ImagePath == NULL) { return; }
-    WriteTrace(TraceUserInterface, TraceDebug, "Start (ImagePath: %s)",ImagePath);
+    WriteTrace(TraceUserInterface, TraceDebug, "Start (ImagePath: %s)", ImagePath);
 
     //Get Information about the stored rom list
     size_t MaxRememberedFiles = UISettingsLoadDword(File_RecentGameFileCount);
@@ -340,7 +340,7 @@ EXPORT jstring CALL Java_emu_project64_jni_NativeExports_appVersion(JNIEnv* env,
 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveBool(JNIEnv* env, jclass cls, int Type, jboolean Value)
 {
-    WriteTrace(TraceUserInterface, TraceDebug, "Saving %d value: %s",Type,Value ? "true" : "false");
+    WriteTrace(TraceUserInterface, TraceDebug, "Saving %d value: %s", Type, Value ? "true" : "false");
     g_Settings->SaveBool((SettingID)Type, Value);
     CSettings::FlushSettings(g_Settings);
     WriteTrace(TraceUserInterface, TraceDebug, "Saved");
@@ -357,7 +357,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveDword(JNIEnv* 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_SettingsSaveString(JNIEnv* env, jclass cls, int Type, jstring Buffer)
 {
     const char *value = env->GetStringUTFChars(Buffer, 0);
-    WriteTrace(TraceUserInterface, TraceDebug, "Saving %d value: %s",Type,value);
+    WriteTrace(TraceUserInterface, TraceDebug, "Saving %d value: %s", Type, value);
     g_Settings->SaveString((SettingID)Type, value);
     CSettings::FlushSettings(g_Settings);
     WriteTrace(TraceUserInterface, TraceDebug, "Saved");
@@ -399,7 +399,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadRomList(JNIEnv* env, j
 EXPORT void CALL Java_emu_project64_jni_NativeExports_LoadGame(JNIEnv* env, jclass cls, jstring FileLoc)
 {
     const char *fileLoc = env->GetStringUTFChars(FileLoc, 0);
-    WriteTrace(TraceUserInterface, TraceDebug, "FileLoc: %s",fileLoc);
+    WriteTrace(TraceUserInterface, TraceDebug, "FileLoc: %s", fileLoc);
     CN64System::LoadFileImage(fileLoc);
     env->ReleaseStringUTFChars(FileLoc, fileLoc);
     WriteTrace(TraceUserInterface, TraceDebug, "Image loaded");
@@ -416,8 +416,8 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_RefreshRomDir(JNIEnv* env,
 {
     const char *romDir = env->GetStringUTFChars(RomDir, 0);
     WriteTrace(TraceUserInterface, TraceDebug, "romDir = %s Recursive = %s", romDir, Recursive ? "true" : "false");
-    g_Settings->SaveString(RomList_GameDir,romDir);
-    g_Settings->SaveBool(RomList_GameDirRecursive,Recursive);
+    g_Settings->SaveString(RomList_GameDir, romDir);
+    g_Settings->SaveBool(RomList_GameDirRecursive, Recursive);
     env->ReleaseStringUTFChars(RomDir, romDir);
 
     if (g_JavaRomList == NULL)
@@ -431,10 +431,14 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_RefreshRomDir(JNIEnv* env,
 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_ExternalEvent(JNIEnv* env, jclass cls, int Type)
 {
-    WriteTrace(TraceUserInterface, TraceDebug, "Start (Type: %d)",Type);
+    WriteTrace(TraceUserInterface, TraceDebug, "Start (Type: %d)", Type);
     if (g_BaseSystem)
     {
         g_BaseSystem->ExternalEvent((SystemEvent)Type);
+    }
+    else
+    {
+        WriteTrace(TraceUserInterface, TraceWarning, "g_BaseSystem == NULL");
     }
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
@@ -531,7 +535,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_onSurfaceChanged(JNIEnv * 
         CGfxPlugin * GfxPlugin = g_BaseSystem->GetPlugins()->Gfx();
         if (GfxPlugin->SurfaceChanged != NULL)
         {
-            GfxPlugin->SurfaceChanged(width,height);
+            GfxPlugin->SurfaceChanged(width, height);
         }
     }
     if (g_SyncSystem != NULL && g_SyncSystem->GetPlugins() != NULL && g_SyncSystem->GetPlugins()->Gfx() != NULL)
@@ -539,7 +543,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_onSurfaceChanged(JNIEnv * 
         CGfxPlugin * GfxPlugin = g_SyncSystem->GetPlugins()->Gfx();
         if (GfxPlugin->SurfaceChanged != NULL)
         {
-            GfxPlugin->SurfaceChanged(width,height);
+            GfxPlugin->SurfaceChanged(width, height);
         }
     }
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
@@ -547,14 +551,14 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_onSurfaceChanged(JNIEnv * 
 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_UISettingsSaveBool(JNIEnv* env, jclass cls, jint Type, jboolean Value)
 {
-    WriteTrace(TraceUserInterface, TraceDebug, "Saving UI %d value: %s",Type,Value ? "true" : "false");
+    WriteTrace(TraceUserInterface, TraceDebug, "Saving UI %d value: %s", Type, Value ? "true" : "false");
     UISettingsSaveBool((UISettingID)Type, Value);
     WriteTrace(TraceUserInterface, TraceDebug, "Saved");
 }
 
 EXPORT void CALL Java_emu_project64_jni_NativeExports_UISettingsSaveDword(JNIEnv* env, jclass cls, jint Type, jint Value)
 {
-    WriteTrace(TraceUserInterface, TraceDebug, "Saving UI %d value: %X",Type,Value);
+    WriteTrace(TraceUserInterface, TraceDebug, "Saving UI %d value: %X", Type, Value);
     UISettingsSaveDword((UISettingID)Type, Value);
     WriteTrace(TraceUserInterface, TraceDebug, "Saved");
 }
@@ -562,7 +566,7 @@ EXPORT void CALL Java_emu_project64_jni_NativeExports_UISettingsSaveDword(JNIEnv
 EXPORT void CALL Java_emu_project64_jni_NativeExports_UISettingsSaveString(JNIEnv* env, jclass cls, jint Type, jstring Buffer)
 {
     const char *value = env->GetStringUTFChars(Buffer, 0);
-    WriteTrace(TraceUserInterface, TraceDebug, "Saving UI %d value: %s",Type,value);
+    WriteTrace(TraceUserInterface, TraceDebug, "Saving UI %d value: %s", Type, value);
     UISettingsSaveString((UISettingID)Type, value);
     WriteTrace(TraceUserInterface, TraceDebug, "Saved");
     env->ReleaseStringUTFChars(Buffer, value);

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+<Preference android:title="@string/patreon_link_title" android:summary="@string/patreon_link_summary" >
+    <intent android:action="android.intent.action.VIEW"
+            android:data="https://www.patreon.com/bePatron?u=841905" />
+</Preference>
+
+    <EditTextPreference
+        android:defaultValue=""
+        android:dialogTitle="@string/patreon_email_dialogTitle"
+        android:inputType="textUri"
+        android:key="Patreon_email"
+        android:maxLines="1"
+        android:summary="@string/patreon_email_summary"
+        android:title="@string/patreon_email_title"
+        android:persistent="true" />
+
+</PreferenceScreen>

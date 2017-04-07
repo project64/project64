@@ -55,6 +55,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         sharedPrefs.edit().clear()
         .putInt("touchscreenScale",NativeExports.UISettingsLoadDword(UISettingID.TouchScreen_ButtonScale.getValue()))
         .putString("touchscreenLayout",NativeExports.UISettingsLoadString(UISettingID.TouchScreen_Layout.getValue()))
+        .putString("Patreon_email",NativeExports.UISettingsLoadString(UISettingID.SupportWindow_PatreonEmail.getValue()))
         .putBoolean("audio_Enabled",NativeExports.SettingsLoadBool(SettingsID.Plugin_EnableAudio.getValue()))
         .putBoolean("PreAllocSyncMem",NativeExports.SettingsLoadBool(SettingsID.Setting_PreAllocSyncMem.getValue()))
         .putBoolean("ReducedSyncMem",NativeExports.SettingsLoadBool(SettingsID.Setting_ReducedSyncMem.getValue()))
@@ -140,6 +141,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         }
         else if (key.equals("touchscreenScale")) { NativeExports.UISettingsSaveDword(UISettingID.TouchScreen_ButtonScale.getValue(), sharedPreferences.getInt(key, 100)); }
         else if (key.equals("touchscreenLayout")) { NativeExports.UISettingsSaveString(UISettingID.TouchScreen_Layout.getValue(), sharedPreferences.getString(key, "Analog")); }
+        else if (key.equals("Patreon_email")) { NativeExports.UISettingsSaveString(UISettingID.SupportWindow_PatreonEmail.getValue(), sharedPreferences.getString(key, "")); }
         else if (key.equals("audio_Enabled")) { NativeExports.SettingsSaveBool(SettingsID.Plugin_EnableAudio.getValue(), sharedPreferences.getBoolean(key,false)); }
         else if (key.equals("Plugin_ForceGfxReset")) { NativeExports.SettingsSaveBool(SettingsID.Plugin_ForceGfxReset.getValue(), sharedPreferences.getBoolean(key,false)); }
         else if (key.equals("PreAllocSyncMem")) { NativeExports.SettingsSaveBool(SettingsID.Setting_PreAllocSyncMem.getValue(), sharedPreferences.getBoolean(key,false)); }

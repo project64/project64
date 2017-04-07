@@ -101,7 +101,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
 
     // The IAB helper object
     IabHelper mIabHelper;
-    private boolean mHasSaveSupport = false;
     private boolean mPj64Supporter = false;
 
     // Provides purchase notification while this app is running
@@ -165,7 +164,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                     // Oh noes, there was a problem.
                     Log.d("GalleryActivity", "Problem setting up in-app billing: " + result);
                     // complain("Problem setting up in-app billing: " + result);
-                    mHasSaveSupport = true;
                     mPj64Supporter = true;
                     return;
                 }
@@ -354,48 +352,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
             }
 
             setWaitScreen(false);
-        }
-    };
-
-    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener()
-    {
-        public void onIabPurchaseFinished(IabResult result, Purchase purchase)
-        {
-            Log.d("GalleryActivity", "Purchase finished: " + result + ", purchase: " + purchase);
-            // if we were disposed of in the meantime, quit.
-            if (mIabHelper == null) return;
-
-            if (result.isFailure())
-            {
-                Log.e("GalleryActivity", "**** Purcahse Error: " + result);
-                alert("Save Support Upgrade failed\n\n" + result.getMessage());
-                setWaitScreen(false);
-                ShowSupportWindow();
-                return;
-            }
-
-            Log.d("GalleryActivity", "Purchase successful.");
-
-            if (purchase.getSku().equals(SKU_SAVESUPPORT))
-            {
-                // bought the premium upgrade!
-                Log.d("GalleryActivity", "Purchase is save support. Congratulating user.");
-                alert("Thank you for upgrading to have save support!");
-                mHasSaveSupport = true;
-                setWaitScreen(false);
-            }
-
-            if (purchase.getSku().equals(SKU_PJ64SUPPORTOR_2) ||
-                purchase.getSku().equals(SKU_PJ64SUPPORTOR_5) ||
-                purchase.getSku().equals(SKU_PJ64SUPPORTOR_8) ||
-                purchase.getSku().equals(SKU_PJ64SUPPORTOR_10))
-            {
-                // bought the premium upgrade!
-                Log.d("GalleryActivity", "Purchase is project64 support. Congratulating user.");
-                alert("Thank you for supporting Project64!");
-                mPj64Supporter = true;
-                setWaitScreen(false);
-            }
         }
     };
 
@@ -817,29 +773,8 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         }
     }
 
-    public void PurcahseProject64Support(Activity activity, String sku)
-    {
-        setWaitScreen(true);
-        //Purchase save support
-        try
-        {
-            String payload = NativeExports.appVersion();
-            mIabHelper.launchPurchaseFlow(activity, sku, RC_REQUEST, mPurchaseFinishedListener, payload);
-        }
-        catch (IabAsyncInProgressException e)
-        {
-            setWaitScreen(false);
-        }
-    }
-
     private boolean ShouldShowSupportWindow()
     {
-        Log.d("GalleryActivity", "ShowSupportWindow mHasSaveSupport = " + mHasSaveSupport);
-        if (mHasSaveSupport)
-        {
-            return false;
-        }
-
         Log.d("GalleryActivity", "ShowSupportWindow mPj64Supporter = " + mPj64Supporter);
         if (mPj64Supporter)
         {
@@ -852,7 +787,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         {
             return false;
         }
-        		
+
         int RunCount = NativeExports.UISettingsLoadDword(UISettingID.SupportWindow_RunCount.getValue());
         Log.d("GalleryActivity", "ShowSupportWindow RunCount = " + RunCount);
         if (RunCount == -1)
@@ -875,7 +810,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         final Activity activity = this;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getText(R.string.GetSaveSupport_title));
+        builder.setTitle(getText(R.string.SupportProject64_title));
         builder.setMessage(getText(R.string.GetSaveSupport_message));
         builder.setNeutralButton("Not now", null);
         builder.setNegativeButton("Support Project64", null);
@@ -897,17 +832,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
             @Override
             public void onClick(View v)
             {
-                setWaitScreen(true);
-                //Purchase save support
-                try
-                {
-                    String payload = NativeExports.appVersion();
-                    mIabHelper.launchPurchaseFlow(activity, SKU_SAVESUPPORT, RC_REQUEST, mPurchaseFinishedListener, payload);
-                }
-                catch (IabAsyncInProgressException e)
-                {
-                    setWaitScreen(false);
-                }
                 dialog.dismiss();
             }
         });

@@ -36,6 +36,12 @@
             android:icon="@drawable/ic_debug"
             />
         <Preference
+            android:summary="@string/patreon_summary"
+            android:title="@string/patreon_title"
+            android:key="settings_patreon" 
+            android:icon="@drawable/ic_patreon"
+            />
+        <Preference
             android:summary="@string/reset_summary"
             android:title="@string/reset_title"
             android:key="settings_reset" 

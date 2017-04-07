@@ -44,8 +44,15 @@
     <string name="advanced_screen_title">Advanced</string>
     <string name="reset_summary">Restore default settings</string>
     <string name="reset_title">Reset</string>
-    <string name="preferences">Settings</string>
+    <string name="patreon_title">Patreon</string>
+    <string name="patreon_summary">Support Project64 on Patreon</string>
+    <string name="patreon_link_title">Project64 on Patreon</string>
+    <string name="patreon_link_summary">Click here to support Project64 on Patreon</string>
+    <string name="patreon_email_title">Email address on Patreon</string>
+    <string name="patreon_email_summary">What email address using on patreon</string>
+    <string name="patreon_email_dialogTitle">Enter your email address on Patreon</string>
     <string name="settings_title">Settings</string>
+    <string name="preferences">preferences</string>
     <string name="displayFps_title">Framerate</string>
     <string name="displayFps_summary">Display FPS on screen</string>
     <string name="audioEnabled_title">Enable Audio</string>
@@ -160,7 +167,7 @@
     <!-- Confirmation Dialogs -->
     <string name="confirmResetGame_title">Reset game?</string>
     <string name="confirmResetGame_message">The game will go back to a clear state, all progress made will be lost.</string>
-    <string name="GetSaveSupport_title">Save Support</string>
+    <string name="SupportProject64_title">Save Support</string>
     <string name="GetSaveSupport_message">Save support is a one time purchase and the only purchase in Project64.\n\nProject64 may not be perfect and making this as an upgrade it allows you to play and test the emulator before you have to spend any money.\n\nThis is also a good way for you to support and give back to the creation of the emulator..</string>
     <string name="GetSaveSupport_OkButton">Purchase</string>
     

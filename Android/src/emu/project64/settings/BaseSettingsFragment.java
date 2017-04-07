@@ -95,69 +95,80 @@ public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
     @Override
     public boolean onPreferenceTreeClick(Preference preference)
     {
-        if (preference.getKey().equals("settings_input"))
-        {
-            loadFragment(new InputFragment());
-        }
-        else if (preference.getKey().equals("settings_touch_screen"))
-        {
-            loadFragment(new TouchScreenFragment());
-        }
-        else if (preference.getKey().equals("settings_gamepad_screen"))
-        {
-            final AppCompatActivity activity = (AppCompatActivity)getActivity();
-            Intent intent = new Intent( activity, ControllerProfileActivity.class );
-            activity.startActivity( intent );
-        }
-        else if (preference.getKey().equals("settings_video"))
-        {
-            loadFragment(new VideoFragment());
-        }
-        else if (preference.getKey().equals("settings_game_list"))
-        {
-            loadFragment(new GameListFragment());
-        }
-        else if (preference.getKey().equals("settings_audio"))
-        {
-            loadFragment(new AudioFragment());
-        }
-        else if (preference.getKey().equals("settings_advanced"))
-        {
-            loadFragment(new AdvancedFragment());
-        }
-        else if (preference.getKey().equals("logging_core"))
-        {
-            loadFragment(new LoggingProject64Core());
-        }
-        else if (preference.getKey().equals("logging_audio"))
-        {
-            loadFragment(new LoggingAudio());
-        }
-        else if (preference.getKey().equals("settings_reset"))
-        {
-            DialogInterface.OnClickListener internalListener = new DialogInterface.OnClickListener()
+    	if (preference.getKey() != null)
+    	{
+            if (preference.getKey().equals("settings_input"))
             {
-                @Override
-                public void onClick( DialogInterface dialog, int which )
+                loadFragment(new InputFragment());
+            }
+            else if (preference.getKey().equals("settings_touch_screen"))
+            {
+                loadFragment(new TouchScreenFragment());
+            }
+            else if (preference.getKey().equals("settings_gamepad_screen"))
+            {
+                final AppCompatActivity activity = (AppCompatActivity)getActivity();
+                Intent intent = new Intent( activity, ControllerProfileActivity.class );
+                activity.startActivity( intent );
+            }
+            else if (preference.getKey().equals("settings_video"))
+            {
+                loadFragment(new VideoFragment());
+            }
+            else if (preference.getKey().equals("settings_game_list"))
+            {
+                loadFragment(new GameListFragment());
+            }
+            else if (preference.getKey().equals("settings_audio"))
+            {
+                loadFragment(new AudioFragment());
+            }
+            else if (preference.getKey().equals("settings_patreon"))
+            {
+                loadFragment(new PatreonFragment());
+            }
+            else if (preference.getKey().equals("settings_advanced"))
+            {
+                loadFragment(new AdvancedFragment());
+            }
+            else if (preference.getKey().equals("logging_core"))
+            {
+                loadFragment(new LoggingProject64Core());
+            }
+            else if (preference.getKey().equals("logging_audio"))
+            {
+                loadFragment(new LoggingAudio());
+            }
+            else if (preference.getKey().equals("settings_reset"))
+            {
+                DialogInterface.OnClickListener internalListener = new DialogInterface.OnClickListener()
                 {
-                    if( which == DialogInterface.BUTTON_POSITIVE )
+                    @Override
+                    public void onClick( DialogInterface dialog, int which )
                     {
-                        NativeExports.ResetApplicationSettings();
-                        SplashActivity.Reset();
-                        Intent SplashIntent = new Intent(getActivity(), SplashActivity.class);
-                        SplashIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(SplashIntent);
+                        if( which == DialogInterface.BUTTON_POSITIVE )
+                        {
+                            NativeExports.ResetApplicationSettings();
+                            SplashActivity.Reset();
+                            Intent SplashIntent = new Intent(getActivity(), SplashActivity.class);
+                            SplashIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(SplashIntent);
+                        }
                     }
-                }
-            };
+                };
 
-            String title = getString( R.string.settings_reset_title );
-            String message = getString( R.string.settings_reset_message );
-            AlertDialog.Builder builder = new AlertDialog.Builder( getActivity() ).setTitle( title ).setMessage( message ).setCancelable( false )
-                    .setNegativeButton( getString( android.R.string.cancel ), internalListener )
-                    .setPositiveButton( getString( android.R.string.ok ), internalListener );
-            builder.create().show();
-        }
+                String title = getString( R.string.settings_reset_title );
+                String message = getString( R.string.settings_reset_message );
+                AlertDialog.Builder builder = new AlertDialog.Builder( getActivity() ).setTitle( title ).setMessage( message ).setCancelable( false )
+                        .setNegativeButton( getString( android.R.string.cancel ), internalListener )
+                        .setPositiveButton( getString( android.R.string.ok ), internalListener );
+                builder.create().show();
+        	}
+            else
+            {
+                return super.onPreferenceTreeClick(preference);
+            }    		
+    	}
         else
         {
             return super.onPreferenceTreeClick(preference);
