@@ -34,6 +34,7 @@ public enum UISettingID
     SupportWindow_AlwaysShow,
     SupportWindow_ShowingSupportWindow,
     SupportWindow_RunCount,
+    SupportWindow_PatreonEmail,
 
     //Game Settings
     Game_RunCount,

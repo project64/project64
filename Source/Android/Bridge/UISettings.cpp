@@ -31,6 +31,7 @@ void RegisterUISettings(void)
     g_Settings->AddHandler((SettingID)(FirstUISettings + SupportWindow_AlwaysShow), new CSettingTypeApplication("Support Project64", "Always Show", false));
     g_Settings->AddHandler((SettingID)(FirstUISettings + SupportWindow_ShowingSupportWindow), new CSettingTypeApplication("Support Project64", "Showing Support Window", false));
     g_Settings->AddHandler((SettingID)(FirstUISettings + SupportWindow_RunCount), new CSettingTypeApplication("Support Project64", "Run Count", (uint32_t)0));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + SupportWindow_PatreonEmail), new CSettingTypeApplication("Support Project64", "Patreon Email", ""));
     g_Settings->AddHandler((SettingID)(FirstUISettings + Game_RunCount), new CSettingTypeGame("Run Count", (uint32_t)0));
 }
 
