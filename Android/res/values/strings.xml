@@ -167,9 +167,9 @@
     <!-- Confirmation Dialogs -->
     <string name="confirmResetGame_title">Reset game?</string>
     <string name="confirmResetGame_message">The game will go back to a clear state, all progress made will be lost.</string>
-    <string name="SupportProject64_title">Save Support</string>
-    <string name="GetSaveSupport_message">Save support is a one time purchase and the only purchase in Project64.\n\nProject64 may not be perfect and making this as an upgrade it allows you to play and test the emulator before you have to spend any money.\n\nThis is also a good way for you to support and give back to the creation of the emulator..</string>
-    <string name="GetSaveSupport_OkButton">Purchase</string>
+    <string name="SupportProject64_title">Project64 needs your help</string>
+    <string name="SupportProject64_message">Developing a fully functional emulator is a massive time-consuming project. With donations you can show your appreciation for this effort and at the same time support the development.\n\nClick Support Project64 button below to view our patreon page, if you are interested in supporting us!\n\nIf you are a patreon already then &lt;a href=\"#patreon\"&gt;click here to enter your email address&lt;/a&gt; to validate it and Project64 will stop prompting you for support.</string>
+    <string name="SupportProject64_OkButton">Support Project64</string>
     
     <!-- Asset Extractor -->
     <string name="assetExtractor_startingUp">Starting Up …</string>
