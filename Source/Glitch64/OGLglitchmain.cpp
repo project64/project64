@@ -383,6 +383,8 @@ grClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
         if (maxx < minx) maxx = minx;
         if (maxy < miny) maxy = miny;
         glScissor(minx, miny + g_viewport_offset, maxx - minx, maxy - miny);
+		grDisplayGLError("glScissor");
+
         //printf("gl scissor %d %d %d %d\n", minx, miny, maxx, maxy);
     }
     else {
@@ -2546,7 +2548,8 @@ int grDisplayGLError(const char* message)
 #endif
 
 #ifdef _WIN32
-    MessageBoxA(NULL, message, GL_errors[error_index], MB_ICONERROR);
+	// TODO RL: this is a momentery hack to see if maybe GL is acting better than we think it is.
+    //MessageBoxA(NULL, message, GL_errors[error_index], MB_ICONERROR);
 #else
     fprintf(stderr, "%s\n%s\n\n", GL_errors[error_index], message);
 #endif
