@@ -52,6 +52,7 @@
 #include <Common/StdString.h>
 #include "trace.h"
 #include "SettingsID.h"
+#include <Settings/Settings.h>
 
 #ifdef _WIN32
 #include <Common/CriticalSection.h>
@@ -305,12 +306,12 @@ void microcheck()
 
 #ifdef LOG_UCODE
     std::ofstream ucf;
-    ucf.open ("ucode.txt", std::ios::out | std::ios::binary);
+    ucf.open("ucode.txt", std::ios::out | std::ios::binary);
     char d;
-    for (i=0; i<0x400000; i++)
+    for (i = 0; i < 0x400000; i++)
     {
-        d = ((char*)gfx.RDRAM)[i^3];
-        ucf.write (&d, 1);
+        d = ((char*)gfx.RDRAM)[i ^ 3];
+        ucf.write(&d, 1);
     }
     ucf.close();
 #endif
@@ -324,9 +325,7 @@ void microcheck()
         {
             ReleaseGfx();
             WriteTrace(TraceGlide64, TraceError, "uCode crc not found in INI, using currently selected uCode %08lx", (unsigned long)uc_crc);
-#ifdef _WIN32
-            MessageBox(gfx.hWnd, stdstr_f("Error: uCode crc not found in INI, using currently selected uCode\n\n%08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
-#endif
+            g_Notify->DisplayError(stdstr_f("Error: uCode crc not found in INI, using currently selected uCode\n\n%08lx", uc_crc).c_str());
             g_ucode_error_report = false; // don't report any more ucode errors from this game
         }
     }
@@ -336,9 +335,7 @@ void microcheck()
         {
             ReleaseGfx();
             WriteTrace(TraceGlide64, TraceError, "Unsupported uCode! crc: %08lx", (unsigned long)uc_crc);
-#ifdef _WIN32
-            MessageBox(gfx.hWnd, stdstr_f("Error: Unsupported uCode!\n\ncrc: %08lx", uc_crc).c_str(), "Error", MB_OK | MB_ICONEXCLAMATION);
-#endif
+            g_Notify->DisplayError(stdstr_f("Error: Unsupported uCode!\n\ncrc: %08lx", uc_crc).c_str());
             g_ucode_error_report = FALSE; // don't report any more ucode errors from this game
         }
     }
@@ -688,7 +685,7 @@ EXPORT void CALL ProcessDList(void)
         else
         {
             // MAIN PROCESSING LOOP
-            do 
+            do
             {
                 // Get the address of the next command
                 a = rdp.pc[rdp.pc_i] & BMASK;
@@ -735,7 +732,7 @@ EXPORT void CALL ProcessDList(void)
     catch (...) {
         if (g_fullscreen)
         {
-            ReleaseGfx ();
+            ReleaseGfx();
             rdp_reset();
             if (g_ghq_use)
             {
@@ -743,14 +740,8 @@ EXPORT void CALL ProcessDList(void)
                 g_ghq_use = false;
             }
         }
-        if (MessageBox(gfx.hWnd, "The GFX plugin caused an exception and has been disabled.\nWould you like to turn it back on and attempt to continue?","Glide64 Exception", MB_YESNO|MB_ICONEXCLAMATION) == MB_NO)
-        {
-            exception = TRUE;
-        }
-        else
-        {
-            to_fullscreen = TRUE;
-        }
+        DisplayError("The GFX plugin caused an exception and has been disabled");
+        to_fullscreen = TRUE;
         return;
     }
 #endif
@@ -759,7 +750,7 @@ EXPORT void CALL ProcessDList(void)
     {
         rdp.scale_x = rdp.scale_x_bak;
         rdp.scale_y = rdp.scale_y_bak;
-    }
+}
 
     if (g_settings->hacks(CSettings::hack_OoT))
     {
@@ -781,7 +772,7 @@ EXPORT void CALL ProcessDList(void)
         CI_SET = FALSE;
     }
     WriteTrace(TraceRDP, TraceDebug, "ProcessDList end");
-}
+    }
 
 // undef - undefined instruction, always ignore
 static void undef()
@@ -909,11 +900,11 @@ static void rdp_texrect()
         else
         {
             //gDPTextureRectangle
-			if (g_settings->hacks(CSettings::hack_Winback))
+            if (g_settings->hacks(CSettings::hack_Winback))
             {
-				rdp.pc[rdp.pc_i] += 8;
-				return;
-			}
+                rdp.pc[rdp.pc_i] += 8;
+                return;
+            }
 
             if (g_settings->hacks(CSettings::hack_ASB))
             {
@@ -924,7 +915,7 @@ static void rdp_texrect()
                 rdp.cmd2 = ((uint32_t*)gfx.RDRAM)[a + 0];
             }
 
-			rdp.cmd3 = ((uint32_t*)gfx.RDRAM)[a + 1];
+            rdp.cmd3 = ((uint32_t*)gfx.RDRAM)[a + 1];
             rdp.pc[rdp.pc_i] += 8;
         }
     }
@@ -934,7 +925,7 @@ static void rdp_texrect()
         return;
     }
 
-	if (rdp.skip_drawing || (!g_settings->fb_emulation_enabled() && (rdp.cimg == rdp.zimg)))
+    if (rdp.skip_drawing || (!g_settings->fb_emulation_enabled() && (rdp.cimg == rdp.zimg)))
     {
         if (g_settings->hacks(CSettings::hack_PMario) && rdp.ci_status == ci_useless)
         {
@@ -1988,7 +1979,7 @@ static inline void loadTile(uint32_t *src, uint32_t *dst, int width, int height,
             do
             {
                 v16 = __ROL__(v16, 8);
-                *(uint8_t *)v7 = (v16  & 0xFF);
+                *(uint8_t *)v7 = (v16 & 0xFF);
                 v7 = (uint32_t *)((char *)v7 + 1);
                 --v15;
             } while (v15);
@@ -2969,7 +2960,7 @@ void SetWireframeCol()
 {
     switch (g_settings->wfmode())
     {
-    //case CSettings::wfmode_NormalColors: // normal colors, don't do anything
+        //case CSettings::wfmode_NormalColors: // normal colors, don't do anything
     case CSettings::wfmode_VertexColors:
         grColorCombine(GR_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
@@ -4134,7 +4125,7 @@ void CALL ProcessRDPList(void)
         rdp_cmd_cur = (rdp_cmd_cur + rdp_command_length[cmd] / 4) & maxCMDMask;
     }
 
-    if (setZero) 
+    if (setZero)
     {
         rdp_cmd_ptr = 0;
         rdp_cmd_cur = 0;

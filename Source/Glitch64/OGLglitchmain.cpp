@@ -24,7 +24,7 @@
 
 /*
  * `GetSystemSetting` and `FindSystemSettingId` from Project64 debugger
- * used only in DisplayError when OpenGL extension loading fails on WGL
+ * used only in g_Notify->DisplayError when OpenGL extension loading fails on WGL
  */
 #include <Settings/Settings.h>
 
@@ -78,39 +78,31 @@ static inline void opt_glCopyTexImage2D(GLenum target,
  * displaying error information showing the missing OpenGL support.
  */
 
-void DisplayError(const char * message)
-{
-    if (GetSystemSetting(FindSystemSettingId("Debugger")) == 0)
-        return;
-    MessageBoxA(NULL, message, NULL, MB_ICONERROR);
-    return;
-}
-
 PFNGLACTIVETEXTUREARBPROC glActiveTextureARB;
 PFNGLBLENDFUNCSEPARATEEXTPROC glBlendFuncSeparateEXT;
 PFNGLMULTITEXCOORD2FARBPROC glMultiTexCoord2fARB;
 PFNGLFOGCOORDFPROC glFogCoordfEXT;
 void APIENTRY dummy_glActiveTexture(GLenum/*texture*/)
 { /* GLX render opcode 197, req. OpenGL 1.3 (1.2 w/ ARB_multitexture) */
-    DisplayError("glActiveTexture");
+    g_Notify->DisplayError("glActiveTexture");
 }
 void APIENTRY dummy_glMultiTexCoord2f(GLenum/*target*/, GLfloat/*s*/, GLfloat/*t*/)
 { /* GLX render opcode 203, req. OpenGL 1.3 (1.2 w/ ARB_multitexture) */
-    DisplayError("glMultiTexCoord2f");
+    g_Notify->DisplayError("glMultiTexCoord2f");
 }
 void APIENTRY dummy_glFogCoordf(GLfloat/*coord*/)
 { /* GLX render opcode 4124, req. OpenGL 1.4 (1.1 w/ EXT_fog_coord) */
-    DisplayError("glFogCoordf");
+    g_Notify->DisplayError("glFogCoordf");
 }
 void APIENTRY dummy_glBlendFuncSeparate(GLenum, GLenum, GLenum, GLenum)
 { /* GLX render opcode 4134, req. OpenGL 1.0 w/ EXT_blend_func_separate */
-    DisplayError("glBlendFuncSeparate");
+    g_Notify->DisplayError("glBlendFuncSeparate");
 }
 
 PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
 const char * APIENTRY dummy_wglGetExtensionsString(HDC)
 {
-    DisplayError("wglGetExtensionsString");
+    g_Notify->DisplayError("wglGetExtensionsString");
     return NULL;
 }
 
@@ -126,44 +118,44 @@ PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
 PFNGLDELETEFRAMEBUFFERSEXTPROC glDeleteFramebuffersEXT;
 void APIENTRY dummy_glGenRenderbuffers(GLsizei/*n*/, GLuint* /*renderbuffers*/)
 { /* GLX vendor opcode 1423, req. OpenGL 1.2 w/ EXT_framebuffer_object */
-    DisplayError("glGenRenderbuffers");
+    g_Notify->DisplayError("glGenRenderbuffers");
 }
 void APIENTRY dummy_glGenFramebuffers(GLsizei/*n*/, GLuint* /*framebuffers*/)
 { /* GLX vendor opcode 1426, req. OpenGL 1.2 w/ EXT_framebuffer_object */
-    DisplayError("glGenFramebuffers");
+    g_Notify->DisplayError("glGenFramebuffers");
 }
 GLenum APIENTRY dummy_glCheckFramebufferStatus(GLenum/*target*/)
 { /* GLX vendor opcode 1427, req. OpenGL 1.2 w/ EXT_framebuffer_object */
-    DisplayError("glCheckFramebufferStatus");
+    g_Notify->DisplayError("glCheckFramebufferStatus");
     return 0x00008CDD; /* GL_FRAMEBUFFER_UNSUPPORTED */
 }
 void APIENTRY dummy_glBindRenderbuffer(GLenum/*target*/, GLuint/*renderbuffer*/)
 { /* GLX render opcode 4316, req. OpenGL 1.2 w/ EXT_framebuffer_object */
-    DisplayError("glBindRenderbuffer");
+    g_Notify->DisplayError("glBindRenderbuffer");
 }
 void APIENTRY dummy_glDeleteRenderbuffers(GLsizei/*n*/, const GLuint* /*renderbuffers*/)
 { /* GLX render opcode 4317, req. OpenGL 1.2 w/ EXT_framebuffer_object */
-    DisplayError("glDeleteRenderbuffers");
+    g_Notify->DisplayError("glDeleteRenderbuffers");
 }
 void APIENTRY dummy_glRenderbufferStorage(GLenum, GLenum, GLsizei, GLsizei)
 { /* GLX render opcode 4318, req. OpenGL 1.2 w/ EXT_framebuffer_object */
-    DisplayError("glRenderbufferStorage");
+    g_Notify->DisplayError("glRenderbufferStorage");
 }
 void APIENTRY dummy_glBindFramebuffer(GLenum/*target*/, GLuint/*framebuffer*/)
 { /* GLX render opcode 4319, req. OpenGL 1.2 w/ EXT_framebuffer_object */
-    DisplayError("glBindFramebuffer");
+    g_Notify->DisplayError("glBindFramebuffer");
 }
 void APIENTRY dummy_glDeleteFramebuffers(GLsizei/*n*/, const GLuint* /*framebuffers*/)
 { /* GLX render opcode 4320, req. OpenGL 1.2 w/ EXT_framebuffer_object */
-    DisplayError("glDeleteFramebuffers");
+    g_Notify->DisplayError("glDeleteFramebuffers");
 }
 void APIENTRY dummy_glFramebufferTexture2D(GLenum, GLenum, GLenum, GLuint, GLint)
 { /* GLX render opcode 4322, req. OpenGL 1.2 w/ EXT_framebuffer_object */
-    DisplayError("glFramebufferTexture2D");
+    g_Notify->DisplayError("glFramebufferTexture2D");
 }
 void APIENTRY dummy_glFramebufferRenderbuffer(GLenum, GLenum, GLenum, GLuint)
 { /* GLX render opcode 4324, req. OpenGL 1.2 w/ EXT_framebuffer_object */
-    DisplayError("glFramebufferRenderbuffer");
+    g_Notify->DisplayError("glFramebufferRenderbuffer");
 }
 
 PFNGLCREATESHADEROBJECTARBPROC glCreateShaderObjectARB;
@@ -184,70 +176,70 @@ PFNGLGETOBJECTPARAMETERIVARBPROC glGetObjectParameterivARB;
 PFNGLSECONDARYCOLOR3FPROC glSecondaryColor3f;
 void APIENTRY dummy_glSecondaryColor3f(GLfloat/*red*/, GLfloat/*green*/, GLfloat/*blue*/)
 { /* GLX render opcode 4129, req. OpenGL 1.4 (1.1 w/ EXT_secondary_color) */
-    DisplayError("glSecondaryColor3f");
+    g_Notify->DisplayError("glSecondaryColor3f");
 }
 GLuint APIENTRY dummy_glCreateShader(GLenum/*type*/)
 { /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
-    DisplayError("glCreateShader");
+    g_Notify->DisplayError("glCreateShader");
     return ((GLuint)(NULL));
 }
 void APIENTRY dummy_glShaderSource(GLuint, GLsizei, const GLchar **, GLint *)
 { /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
-    DisplayError("glShaderSource");
+    g_Notify->DisplayError("glShaderSource");
 }
 void APIENTRY dummy_glCompileShader(GLuint/*shader*/)
 { /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
-    DisplayError("glCompileShader");
+    g_Notify->DisplayError("glCompileShader");
 }
 GLuint APIENTRY dummy_glCreateProgram(void)
 { /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
-    DisplayError("glCreateProgram");
+    g_Notify->DisplayError("glCreateProgram");
     return ((GLuint)(NULL));
 }
 void APIENTRY dummy_glAttachObject(GLhandleARB, GLhandleARB)
 { /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
-    DisplayError("glAttachObject");
+    g_Notify->DisplayError("glAttachObject");
 }
 void APIENTRY dummy_glLinkProgram(GLuint/*program*/)
 { /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
-    DisplayError("glLinkProgram");
+    g_Notify->DisplayError("glLinkProgram");
 }
 void APIENTRY dummy_glUseProgram(GLuint/*program*/)
 { /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
-    DisplayError("glUseProgram");
+    g_Notify->DisplayError("glUseProgram");
 }
 GLint APIENTRY dummy_glGetUniformLocation(GLuint/*program*/, GLchar* /*name*/)
 { /* GLX single opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
-    DisplayError("glGetUniformLocation");
+    g_Notify->DisplayError("glGetUniformLocation");
     return -1;
 }
 void APIENTRY dummy_glUniform1i(GLint/*location*/, GLint/*v0*/)
 { /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
-    DisplayError("glUniform1i");
+    g_Notify->DisplayError("glUniform1i");
 }
 void APIENTRY dummy_glUniform4i(GLint/*location*/, GLint, GLint, GLint, GLint)
 { /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
-    DisplayError("glUniform4i");
+    g_Notify->DisplayError("glUniform4i");
 }
 void APIENTRY dummy_glUniform1f(GLint/*location*/, GLfloat/*v0*/)
 { /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
-    DisplayError("glUniform1f");
+    g_Notify->DisplayError("glUniform1f");
 }
 void APIENTRY dummy_glUniform4f(GLint/*location*/, GLfloat, GLfloat, GLfloat, GLfloat)
 { /* GLX render opcode ?, req. OpenGL 2.0 (1.2 w/ ARB_shader_objects) */
-    DisplayError("glUniform4f");
+    g_Notify->DisplayError("glUniform4f");
 }
 void APIENTRY dummy_glDeleteObject(GLhandleARB/*obj*/)
 { /* GLX render opcode ?, req. OpenGL 1.2 w/ ARB_shader_objects */
-    DisplayError("glDeleteObject");
+    g_Notify->DisplayError("glDeleteObject");
 }
 void APIENTRY dummy_glGetInfoLog(GLhandleARB, GLsizei, GLsizei *, GLcharARB *)
 { /* GLX single opcode ?, req. OpenGL 1.2 w/ ARB_shader_objects */
-    DisplayError("glGetInfoLog");
+    g_Notify->DisplayError("glGetInfoLog");
 }
 void APIENTRY dummy_glGetObjectParameteriv(GLhandleARB, GLenum, GLint *)
 { /* GLX single opcode ?, req. OpenGL 1.2 w/ ARB_shader_objects */
-    DisplayError("glGetObjectParameteriv");
+    g_Notify->DisplayError("glGetObjectParameteriv");
 }
 
 // FXT1,DXT1,DXT5 support - Hiroshi Morii <koolsmoky(at)users.sourceforge.net>
@@ -259,7 +251,7 @@ void APIENTRY dummy_glGetObjectParameteriv(GLhandleARB, GLenum, GLint *)
 PFNGLCOMPRESSEDTEXIMAGE2DPROC glCompressedTexImage2DARB;
 void APIENTRY dummy_glCompressedTexImage2D(GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, const GLvoid *)
 { /* GLX render opcode 215, req. OpenGL 1.3 (1.2 w/ ARB_texture_compression) */
-    DisplayError("glCompressedTexImage2D");
+    g_Notify->DisplayError("glCompressedTexImage2D");
 }
 #endif // _WIN32
 
@@ -331,19 +323,6 @@ unsigned short frameBuffer[2048 * 2048];
 unsigned short depthBuffer[2048 * 2048];
 
 //#define VOODOO1
-
-#ifdef _WIN32
-void display_error()
-{
-    LPVOID lpMsgBuf;
-    if (!FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, NULL))
-    {
-        return;
-    }
-    MessageBox(NULL, (LPCTSTR)lpMsgBuf, "Error", MB_OK | MB_ICONINFORMATION);
-    LocalFree(lpMsgBuf);
-}
-#endif // _WIN32
 
 FX_ENTRY void FX_CALL
 grSstOrigin(GrOriginLocation_t  origin)
@@ -472,11 +451,11 @@ int isWglExtensionSupported(const char *extension)
 
 FX_ENTRY GrContext_t FX_CALL
 grSstWinOpenExt(
-GrColorFormat_t      color_format,
-GrOriginLocation_t   origin_location,
-GrPixelFormat_t    /*pixelformat*/,
-int                  nColBuffers,
-int                  nAuxBuffers)
+    GrColorFormat_t      color_format,
+    GrOriginLocation_t   origin_location,
+    GrPixelFormat_t    /*pixelformat*/,
+    int                  nColBuffers,
+    int                  nAuxBuffers)
 {
     WriteTrace(TraceGlitch, TraceDebug, "color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", color_format, origin_location, nColBuffers, nAuxBuffers);
     return grSstWinOpen(color_format, origin_location, nColBuffers, nAuxBuffers);
@@ -492,10 +471,10 @@ extern HWND g_hwnd_win;
 
 FX_ENTRY GrContext_t FX_CALL
 grSstWinOpen(
-GrColorFormat_t      color_format,
-GrOriginLocation_t   origin_location,
-int                  nColBuffers,
-int                  nAuxBuffers)
+    GrColorFormat_t      color_format,
+    GrOriginLocation_t   origin_location,
+    int                  nColBuffers,
+    int                  nAuxBuffers)
 {
     static int show_warning = 1;
 
@@ -1236,12 +1215,12 @@ int CheckTextureBufferFormat(GrChipID_t tmu, FxU32 startAddress, GrTexInfo *info
 
 FX_ENTRY void FX_CALL
 grTextureAuxBufferExt(GrChipID_t tmu,
-FxU32      startAddress,
-GrLOD_t    thisLOD,
-GrLOD_t    largeLOD,
-GrAspectRatio_t aspectRatio,
-GrTextureFormat_t format,
-FxU32      odd_even_mask)
+    FxU32      startAddress,
+    GrLOD_t    thisLOD,
+    GrLOD_t    largeLOD,
+    GrAspectRatio_t aspectRatio,
+    GrTextureFormat_t format,
+    FxU32      odd_even_mask)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu: %d startAddress: %d thisLOD: %d largeLOD: %d aspectRatio: %d format: %d odd_even_mask: %d", tmu, startAddress, thisLOD, largeLOD, aspectRatio, format, odd_even_mask);
 }
@@ -1703,30 +1682,30 @@ grRenderBuffer(GrBuffer_t buffer)
             savedHeighto = heighto;
         }
 
-    {
-        if (!use_fbo) {
-            glMatrixMode(GL_MODELVIEW);
-            glLoadIdentity();
-            glTranslatef(0, 0, 1 - zscale);
-            glScalef(1, 1, zscale);
-            inverted_culling = 0;
+        {
+            if (!use_fbo) {
+                glMatrixMode(GL_MODELVIEW);
+                glLoadIdentity();
+                glTranslatef(0, 0, 1 - zscale);
+                glScalef(1, 1, zscale);
+                inverted_culling = 0;
+            }
+            else {
+                float m[4 * 4] = { 1.0f, 0.0f, 0.0f, 0.0f,
+                    0.0f, -1.0f, 0.0f, 0.0f,
+                    0.0f, 0.0f, 1.0f, 0.0f,
+                    0.0f, 0.0f, 0.0f, 1.0f };
+                glMatrixMode(GL_MODELVIEW);
+                glLoadMatrixf(m);
+                // VP z fix
+                glTranslatef(0, 0, 1 - zscale);
+                glScalef(1, 1 * 1, zscale);
+                inverted_culling = 1;
+                grCullMode(culling_mode);
+            }
         }
-        else {
-            float m[4 * 4] = { 1.0f, 0.0f, 0.0f, 0.0f,
-                0.0f, -1.0f, 0.0f, 0.0f,
-                0.0f, 0.0f, 1.0f, 0.0f,
-                0.0f, 0.0f, 0.0f, 1.0f };
-            glMatrixMode(GL_MODELVIEW);
-            glLoadMatrixf(m);
-            // VP z fix
-            glTranslatef(0, 0, 1 - zscale);
-            glScalef(1, 1 * 1, zscale);
-            inverted_culling = 1;
-            grCullMode(culling_mode);
-        }
-    }
-    render_to_texture = 1;
-    break;
+        render_to_texture = 1;
+        break;
     default:
         WriteTrace(TraceGlitch, TraceWarning, "grRenderBuffer : unknown buffer : %x", buffer);
     }
@@ -1738,7 +1717,7 @@ grAuxBufferExt(GrBuffer_t buffer)
 {
     WriteTrace(TraceGlitch, TraceDebug, "buffer: %d", buffer);
 
-    if (buffer == GR_BUFFER_AUXBUFFER) 
+    if (buffer == GR_BUFFER_AUXBUFFER)
     {
         invtex[0] = 0;
         invtex[1] = 0;
@@ -1823,8 +1802,8 @@ grBufferSwap(FxU32 swap_interval)
 
 FX_ENTRY FxBool FX_CALL
 grLfbLock(GrLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode,
-GrOriginLocation_t origin, FxBool pixelPipeline,
-GrLfbInfo_t *info)
+    GrOriginLocation_t origin, FxBool pixelPipeline,
+    GrLfbInfo_t *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "type: %d buffer: %d writeMode: %d origin: %d pixelPipeline: %d", type, buffer, writeMode, origin, pixelPipeline);
     if (type == GR_LFB_WRITE_ONLY)
@@ -1907,9 +1886,9 @@ grLfbUnlock(GrLock_t type, GrBuffer_t buffer)
 
 FX_ENTRY FxBool FX_CALL
 grLfbReadRegion(GrBuffer_t src_buffer,
-FxU32 src_x, FxU32 src_y,
-FxU32 src_width, FxU32 src_height,
-FxU32 dst_stride, void *dst_data)
+    FxU32 src_x, FxU32 src_y,
+    FxU32 src_width, FxU32 src_height,
+    FxU32 dst_stride, void *dst_data)
 {
     unsigned char *buf;
     unsigned int i, j;
@@ -1973,11 +1952,11 @@ FxU32 dst_stride, void *dst_data)
 
 FX_ENTRY FxBool FX_CALL
 grLfbWriteRegion(GrBuffer_t dst_buffer,
-FxU32 dst_x, FxU32 dst_y,
-GrLfbSrcFmt_t src_format,
-FxU32 src_width, FxU32 src_height,
-FxBool pixelPipeline,
-FxI32 src_stride, void *src_data)
+    FxU32 dst_x, FxU32 dst_y,
+    GrLfbSrcFmt_t src_format,
+    FxU32 src_width, FxU32 src_height,
+    FxBool pixelPipeline,
+    FxI32 src_stride, void *src_data)
 {
     unsigned char *buf;
     unsigned int i, j;
@@ -2082,7 +2061,7 @@ FxI32 src_stride, void *src_data)
     }
     else
     {
-        float *buf = (float*)malloc(src_width*(src_height + (g_viewport_offset))*sizeof(float));
+        float *buf = (float*)malloc(src_width*(src_height + (g_viewport_offset)) * sizeof(float));
 
         if (src_format != GR_LFBWRITEMODE_ZA16)
             WriteTrace(TraceGlitch, TraceWarning, "unknown depth buffer write format:%x", src_format);
@@ -2130,7 +2109,6 @@ FxI32 src_stride, void *src_data)
     grDisplayGLError("grLfbWriteRegion");
     return FXTRUE;
 }
-
 
 /* wrapper-specific glide extensions */
 
@@ -2233,46 +2211,46 @@ grFlush(void)
 
 FX_ENTRY void FX_CALL
 grTexMultibase(GrChipID_t /*tmu*/,
-FxBool     /*enable*/)
+    FxBool     /*enable*/)
 {
     WriteTrace(TraceGlitch, TraceWarning, "grTexMultibase");
 }
 
 FX_ENTRY void FX_CALL
 grTexMipMapMode(GrChipID_t    /*tmu*/,
-GrMipMapMode_t /*mode*/,
-FxBool         /*lodBlend*/)
+    GrMipMapMode_t /*mode*/,
+    FxBool         /*lodBlend*/)
 {
     WriteTrace(TraceGlitch, TraceWarning, "grTexMipMapMode");
 }
 
 FX_ENTRY void FX_CALL
 grTexDownloadTablePartial(GrTexTable_t /*type*/,
-void      * /*data*/,
-int         /*start*/,
-int         /*end*/)
+    void      * /*data*/,
+    int         /*start*/,
+    int         /*end*/)
 {
     WriteTrace(TraceGlitch, TraceWarning, "grTexDownloadTablePartial");
 }
 
 FX_ENTRY void FX_CALL
 grTexDownloadTable(GrTexTable_t /*type*/,
-void        * /*data*/)
+    void        * /*data*/)
 {
     WriteTrace(TraceGlitch, TraceWarning, "grTexDownloadTable");
 }
 
 FX_ENTRY FxBool FX_CALL
 grTexDownloadMipMapLevelPartial(GrChipID_t        /*tmu*/,
-FxU32             /*startAddress*/,
-GrLOD_t           /*thisLod*/,
-GrLOD_t           /*largeLod*/,
-GrAspectRatio_t   /*aspectRatio*/,
-GrTextureFormat_t /*format*/,
-FxU32             /*evenOdd*/,
-void *            /*data*/,
-int               /*start*/,
-int               /*end*/)
+    FxU32             /*startAddress*/,
+    GrLOD_t           /*thisLod*/,
+    GrLOD_t           /*largeLod*/,
+    GrAspectRatio_t   /*aspectRatio*/,
+    GrTextureFormat_t /*format*/,
+    FxU32             /*evenOdd*/,
+    void *            /*data*/,
+    int               /*start*/,
+    int               /*end*/)
 {
     WriteTrace(TraceGlitch, TraceWarning, "grTexDownloadMipMapLevelPartial");
     return 1;
@@ -2280,13 +2258,13 @@ int               /*end*/)
 
 FX_ENTRY void FX_CALL
 grTexDownloadMipMapLevel(GrChipID_t       /*tmu*/,
-FxU32             /*startAddress*/,
-GrLOD_t           /*thisLod*/,
-GrLOD_t           /*largeLod*/,
-GrAspectRatio_t   /*aspectRatio*/,
-GrTextureFormat_t /*format*/,
-FxU32             /*evenOdd*/,
-void            * /*data*/)
+    FxU32             /*startAddress*/,
+    GrLOD_t           /*thisLod*/,
+    GrLOD_t           /*largeLod*/,
+    GrAspectRatio_t   /*aspectRatio*/,
+    GrTextureFormat_t /*format*/,
+    FxU32             /*evenOdd*/,
+    void            * /*data*/)
 {
     WriteTrace(TraceGlitch, TraceWarning, "grTexDownloadMipMapLevel");
 }
@@ -2324,8 +2302,8 @@ grSelectContext(GrContext_t /*context*/)
 
 FX_ENTRY void FX_CALL
 grAADrawTriangle(
-const void * /*a*/, const void * /*b*/, const void * /*c*/,
-FxBool /*ab_antialias*/, FxBool /*bc_antialias*/, FxBool /*ca_antialias*/
+    const void * /*a*/, const void * /*b*/, const void * /*c*/,
+    FxBool /*ab_antialias*/, FxBool /*bc_antialias*/, FxBool /*ca_antialias*/
 )
 {
     WriteTrace(TraceGlitch, TraceWarning, "grAADrawTriangle");
@@ -2387,10 +2365,10 @@ grLfbConstantAlpha(GrAlpha_t /*alpha*/)
 
 FX_ENTRY void FX_CALL
 grTexMultibaseAddress(GrChipID_t      /*tmu*/,
-GrTexBaseRange_t /*range*/,
-FxU32            /*startAddress*/,
-FxU32            /*evenOdd*/,
-GrTexInfo *      /*info*/)
+    GrTexBaseRange_t /*range*/,
+    FxU32            /*startAddress*/,
+    FxU32            /*evenOdd*/,
+    GrTexInfo *      /*info*/)
 {
     WriteTrace(TraceGlitch, TraceWarning, "grTexMultibaseAddress");
 }
@@ -2410,7 +2388,7 @@ static void CorrectGamma(const FxU16 aGammaRamp[3][256])
 {
     int res;
 
- /* res = SDL_SetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]); */
+    /* res = SDL_SetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]); */
     res = -1;
     fputs("ERROR:  Replacement for SDL_SetGammaRamp unimplemented.\n", stderr);
     WriteTrace(TraceGlitch, TraceDebug, "SDL_SetGammaRamp returned %d\r\n", res);
@@ -2445,7 +2423,7 @@ grGetGammaTableExt(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
         ReleaseDC(NULL, hdc);
 #else
     fputs("ERROR:  Replacement for SDL_GetGammaRamp unimplemented.\n", stderr);
- /* if (SDL_GetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]) != -1) */
+    /* if (SDL_GetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]) != -1) */
     {
 #endif
         for (int i = 0; i < 256; i++)
@@ -2648,7 +2626,7 @@ void dump_tex(int id)
 
     int n;
     // yes, it's inefficient
-    for (n=0; n<tl_i; n++)
+    for (n = 0; n < tl_i; n++)
         if (tl[n] == id)
             return;
 

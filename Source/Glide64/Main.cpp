@@ -47,6 +47,7 @@
 #include <png/png.h>
 #include <memory>
 #include <Common/SmartPointer.h>
+#include <Settings/Settings.h>
 
 #include "Config.h"
 #include "Util.h"
@@ -83,7 +84,6 @@ int ev_fullscreen = 0;
 
 extern int g_viewport_offset;
 extern int g_width, g_height;
-
 
 #ifdef _WIN32
 HINSTANCE hinstDLL = NULL;
@@ -505,7 +505,7 @@ int InitGfx()
     voodoo.has_2mb_tex_boundary = (SST_type < GR_SSTTYPE_Banshee) && !evoodoo;
     // use UMA if available
     voodoo.tex_UMA = FALSE;
-    if (strstr(extensions, " TEXUMA ")) 
+    if (strstr(extensions, " TEXUMA "))
     {
         // we get better texture cache hits with UMA on
         grEnable(GR_TEXTURE_UMA_EXT);
@@ -520,11 +520,7 @@ int InitGfx()
     gfx_context = grSstWinOpen(GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1);
     if (!gfx_context)
     {
-#ifdef _WIN32
-        MessageBox(gfx.hWnd, "Error setting display mode", "Error", MB_OK | MB_ICONEXCLAMATION);
-#else
-        fprintf(stderr, "Error setting display mode\n");
-#endif
+        g_Notify->DisplayError("Error setting display mode");
         grGlideShutdown();
         return FALSE;
     }
@@ -710,7 +706,7 @@ int InitGfx()
         voodoo.sup_mirroring = 1;
     }
     return TRUE;
-}
+    }
 
 void ReleaseGfx()
 {
@@ -1074,7 +1070,7 @@ void CALL RomClosed(void)
     if (evoodoo)
     {
         ReleaseGfx();
-    }
+}
 }
 
 static void CheckDRAMSize()
@@ -1084,14 +1080,14 @@ static void CheckDRAMSize()
     {
         test = gfx.RDRAM[0x007FFFFF] + 1;
     }
-    GLIDE64_CATCH
+        GLIDE64_CATCH
     {
         test = 0;
     }
-    if (test)
-        BMASK = 0x7FFFFF;
-    else
-        BMASK = WMASK;
+        if (test)
+            BMASK = 0x7FFFFF;
+        else
+            BMASK = WMASK;
 #ifdef LOGGING
     sprintf(out_buf, "Detected RDRAM size: %08lx", BMASK);
     LOG(out_buf);

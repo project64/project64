@@ -12,6 +12,9 @@
 #define CALL
 #endif
 
+CNotification g_NotifyLocal;
+CNotification * g_Notify = &g_NotifyLocal;
+
 enum SettingLocation
 {
     SettingType_ConstString = 0,
@@ -72,16 +75,27 @@ typedef struct
     void(*UnregisterChangeCB)(void * handle, int ID, void * Data, SettingChangedFunc Func);
 } PLUGIN_SETTINGS_NOTIFICATION;
 
+typedef struct
+{
+    void (*DisplayError)(const char * Message);
+    void (*FatalError)(const char * Message);
+    void (*DisplayMessage)(int DisplayTime, const char * Message);
+    void (*DisplayMessage2)(const char * Message);
+    void (*BreakPoint)(const char * FileName, int32_t LineNumber);
+} PLUGIN_NOTIFICATION;
+
 static PLUGIN_SETTINGS  g_PluginSettings;
 static PLUGIN_SETTINGS2 g_PluginSettings2;
 static PLUGIN_SETTINGS3 g_PluginSettings3;
 static PLUGIN_SETTINGS_NOTIFICATION g_PluginSettingsNotification;
+static PLUGIN_NOTIFICATION g_PluginNotification;
 static bool g_PluginInitilized = false;
 static char g_PluginSettingName[300];
 
 EXPORT void SetSettingInfo(PLUGIN_SETTINGS * info);
 EXPORT void SetSettingInfo2(PLUGIN_SETTINGS2 * info);
 EXPORT void SetSettingInfo3(PLUGIN_SETTINGS3 * info);
+EXPORT void SetPluginNotification(PLUGIN_NOTIFICATION * info);
 
 EXPORT void SetSettingInfo(PLUGIN_SETTINGS * info)
 {
@@ -103,6 +117,11 @@ EXPORT void SetSettingInfo3(PLUGIN_SETTINGS3 * info)
 EXPORT void SetSettingNotificationInfo(PLUGIN_SETTINGS_NOTIFICATION * info)
 {
     g_PluginSettingsNotification = *info;
+}
+
+EXPORT void SetPluginNotification(PLUGIN_NOTIFICATION * info)
+{
+    g_PluginNotification = *info;
 }
 
 int32_t SettingsInitilized(void)
@@ -314,5 +333,45 @@ void SettingsUnregisterChange(bool SystemSetting, int SettingID, void * Data, Se
     if (g_PluginSettingsNotification.UnregisterChangeCB && g_PluginSettings.handle)
     {
         g_PluginSettingsNotification.UnregisterChangeCB(g_PluginSettings.handle, SettingID + (SystemSetting ? 0 : g_PluginSettings.SettingStartRange), Data, Func);
+    }
+}
+
+void CNotification::DisplayError(const char * Message)
+{
+    if (g_PluginNotification.BreakPoint != NULL)
+    {
+        g_PluginNotification.DisplayError(Message);
+    }
+}
+
+void CNotification::FatalError(const char * Message)
+{
+    if (g_PluginNotification.BreakPoint != NULL)
+    {
+        g_PluginNotification.FatalError(Message);
+    }
+}
+
+void CNotification::DisplayMessage(int DisplayTime, const char * Message)
+{
+    if (g_PluginNotification.BreakPoint != NULL)
+    {
+        g_PluginNotification.DisplayMessage(DisplayTime, Message);
+    }
+}
+
+void CNotification::DisplayMessage2(const char * Message)
+{
+    if (g_PluginNotification.BreakPoint != NULL)
+    {
+        g_PluginNotification.DisplayMessage2(Message);
+    }
+}
+
+void CNotification::BreakPoint(const char * FileName, int LineNumber)
+{
+    if (g_PluginNotification.BreakPoint != NULL)
+    {
+        g_PluginNotification.BreakPoint(FileName, LineNumber);
     }
 }

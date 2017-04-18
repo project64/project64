@@ -61,6 +61,7 @@ protected:
     void(CALL *SetSettingInfo2)(PLUGIN_SETTINGS2 *);
     void(CALL *SetSettingInfo3)(PLUGIN_SETTINGS3 *);
     void(CALL *SetSettingNotificationInfo)(PLUGIN_SETTINGS_NOTIFICATION *);
+    void(CALL *SetPluginNotification)(PLUGIN_NOTIFICATION *);
 
     pjutil::DynLibHandle m_LibHandle;
     bool m_Initialized, m_RomOpen;
@@ -76,4 +77,11 @@ protected:
     // i.e. _LoadFunction("CloseDLL", CloseDLL);
 #define LoadFunction(functionName) _LoadFunctionVoid(#functionName, (void **)&functionName)
 #define _LoadFunction(functionName,function) _LoadFunctionVoid(functionName, (void **)&function)
+
+private:
+    static void DisplayError(const char * Message);
+    static void FatalError(const char * Message);
+    static void DisplayMessage(int DisplayTime, const char * Message);
+    static void DisplayMessage2(const char * Message);
+    static void BreakPoint(const char * FileName, int32_t LineNumber);
 };
