@@ -44,6 +44,6 @@
 #pragma once
 
 #ifdef _WIN32
-void ConfigInit(HINSTANCE hinst);
+void ConfigInit(void * hinst);
 void ConfigCleanup(void);
 #endif

@@ -14,7 +14,9 @@ enum TraceModuleGlide64
     TraceTLUT,
     TracePNG,
     TraceOGLWrapper,
+    TraceRDPCommands,
     MaxTraceModuleGlide64,
 };
 
 void SetupTrace(void);
+void StartTrace(void);

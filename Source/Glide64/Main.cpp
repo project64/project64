@@ -515,7 +515,7 @@ int InitGfx()
 
     g_settings->UpdateScreenSize(ev_fullscreen);
 #ifndef ANDROID
-    SetWindowDisplaySize(gfx.hWnd);
+    SetWindowDisplaySize((HWND)gfx.hWnd);
 #endif
     gfx_context = grSstWinOpen(GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1);
     if (!gfx_context)
@@ -706,7 +706,7 @@ int InitGfx()
         voodoo.sup_mirroring = 1;
     }
     return TRUE;
-    }
+}
 
 void ReleaseGfx()
 {
@@ -1038,11 +1038,12 @@ void CALL MoveScreen(int xpos, int ypos)
 
 void CALL PluginLoaded(void)
 {
+    SetupTrace();
     if (g_settings == NULL)
     {
         g_settings = new CSettings;
     }
-    SetupTrace();
+    StartTrace();
 
     WriteTrace(TraceInterface, TraceDebug, "Start");
     WriteTrace(TraceInterface, TraceDebug, "Done");
@@ -1070,7 +1071,7 @@ void CALL RomClosed(void)
     if (evoodoo)
     {
         ReleaseGfx();
-}
+    }
 }
 
 static void CheckDRAMSize()

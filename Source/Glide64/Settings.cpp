@@ -1,5 +1,6 @@
 #include <Common/StdString.h>
 #include <Settings/Settings.h>
+#include <Glide64/trace.h>
 #include "Gfx_1.3.h"
 #include "ScreenResolution.h"
 #include "SettingsID.h"
@@ -8,6 +9,7 @@ extern int g_width, g_height;
 
 CSettings::CSettings() :
     m_Set_basic_mode(0),
+    m_Set_debugger(0),
     m_Set_texture_dir(0),
     m_Set_log_dir(0),
     m_Set_log_flush(0),
@@ -18,6 +20,7 @@ CSettings::CSettings() :
     m_scr_res_y(GetScreenResHeight(GetDefaultScreenRes())),
     m_ScreenRes(GetDefaultScreenRes()),
     m_advanced_options(false),
+    m_debugger_enabled(false),
     m_texenh_options(false),
     m_vsync(false),
     m_rotate(Rotate_None),
@@ -78,7 +81,7 @@ CSettings::CSettings() :
 
     m_hacks((hacks_t)0),
 
-//wrapper settings
+    //wrapper settings
 #ifndef ANDROID
     m_FullScreenRes(0),
 #endif
@@ -96,6 +99,7 @@ void CSettings::RegisterSettings(void)
 {
     SetModuleName("default");
     m_Set_basic_mode = FindSystemSettingId("Basic Mode");
+    m_Set_debugger = FindSystemSettingId("Debugger");
     m_Set_texture_dir = FindSystemSettingId("Dir:Texture");
     m_Set_log_flush = FindSystemSettingId("Log Auto Flush");
     m_Set_log_dir = FindSystemSettingId("Dir:Log");
@@ -150,6 +154,21 @@ void CSettings::RegisterSettings(void)
     general_setting(Set_fb_get_info_default, "fb_get_info", false);
     general_setting(Set_fb_render_default, "fb_render", false);
 
+    RegisterSetting(Set_Logging_MD5, Data_DWORD_General, "MD5", "Logging", g_ModuleLogLevel[TraceMD5], NULL);
+    RegisterSetting(Set_Logging_Thread, Data_DWORD_General, "Thread", "Logging", g_ModuleLogLevel[TraceThread], NULL);
+    RegisterSetting(Set_Logging_Path, Data_DWORD_General, "Path", "Logging", g_ModuleLogLevel[TracePath], NULL);
+    RegisterSetting(Set_Logging_Settings, Data_DWORD_General, "Settings", "Logging", g_ModuleLogLevel[TraceSettings], NULL);
+    RegisterSetting(Set_Logging_Unknown, Data_DWORD_General, "Unknown", "Logging", g_ModuleLogLevel[TraceUnknown], NULL);
+    RegisterSetting(Set_Logging_Glide64, Data_DWORD_General, "Glide64", "Logging", g_ModuleLogLevel[TraceGlide64], NULL);
+    RegisterSetting(Set_Logging_Interface, Data_DWORD_General, "Interface", "Logging", g_ModuleLogLevel[TraceInterface], NULL);
+    RegisterSetting(Set_Logging_Resolution, Data_DWORD_General, "Resolution", "Logging", g_ModuleLogLevel[TraceResolution], NULL);
+    RegisterSetting(Set_Logging_Glitch, Data_DWORD_General, "Glitch", "Logging", g_ModuleLogLevel[TraceGlitch], NULL);
+    RegisterSetting(Set_Logging_VideoRDP, Data_DWORD_General, "VideoRDP", "Logging", g_ModuleLogLevel[TraceRDP], NULL);
+    RegisterSetting(Set_Logging_TLUT, Data_DWORD_General, "TLUT", "Logging", g_ModuleLogLevel[TraceTLUT], NULL);
+    RegisterSetting(Set_Logging_PNG, Data_DWORD_General, "PNG", "Logging", g_ModuleLogLevel[TracePNG], NULL);
+    RegisterSetting(Set_Logging_OGLWrapper, Data_DWORD_General, "OGLWrapper", "Logging", g_ModuleLogLevel[TraceOGLWrapper], NULL);
+    RegisterSetting(Set_Logging_RDPCommands, Data_DWORD_General, "RDPCommands", "Logging", g_ModuleLogLevel[TraceRDPCommands], NULL);
+
 #ifndef ANDROID
     general_setting(Set_FullScreenRes, "FullScreenRes", GetCurrentResIndex());
 #endif
@@ -197,6 +216,20 @@ void CSettings::RegisterSettings(void)
 
     SettingsRegisterChange(false, Set_Resolution, this, stSettingsChanged);
 
+    LogLevelChanged();
+    SettingsRegisterChange(false, Set_Logging_MD5, this, stLogLevelChanged);
+    SettingsRegisterChange(false, Set_Logging_Thread, this, stLogLevelChanged);
+    SettingsRegisterChange(false, Set_Logging_Path, this, stLogLevelChanged);
+    SettingsRegisterChange(false, Set_Logging_Settings, this, stLogLevelChanged);
+    SettingsRegisterChange(false, Set_Logging_Unknown, this, stLogLevelChanged);
+    SettingsRegisterChange(false, Set_Logging_Glide64, this, stLogLevelChanged);
+    SettingsRegisterChange(false, Set_Logging_Interface, this, stLogLevelChanged);
+    SettingsRegisterChange(false, Set_Logging_Resolution, this, stLogLevelChanged);
+    SettingsRegisterChange(false, Set_Logging_Glitch, this, stLogLevelChanged);
+    SettingsRegisterChange(false, Set_Logging_VideoRDP, this, stLogLevelChanged);
+    SettingsRegisterChange(false, Set_Logging_TLUT, this, stLogLevelChanged);
+    SettingsRegisterChange(false, Set_Logging_OGLWrapper, this, stLogLevelChanged);
+    SettingsRegisterChange(false, Set_Logging_RDPCommands, this, stLogLevelChanged);
 }
 
 void CSettings::SetTexenhOptions(bool value)
@@ -554,7 +587,6 @@ void CSettings::UpdateAspectRatio(void)
 
     m_res_x += (uint32_t)(m_scr_res_x - m_res_x) / 2.0f;
     m_res_y += (uint32_t)(m_scr_res_y - m_res_y) / 2.0f;
-
 }
 
 void CSettings::ReadSettings()
@@ -566,6 +598,7 @@ void CSettings::ReadSettings()
     m_vsync = GetSetting(Set_vsync) != 0;
     m_rotate = (ScreenRotate_t)GetSetting(Set_Rotate);
     m_advanced_options = m_Set_basic_mode ? GetSystemSetting(m_Set_basic_mode) == 0 : false;
+    m_debugger_enabled = m_advanced_options && m_Set_debugger ? GetSystemSetting(m_Set_debugger) == 1 : false;
     m_texenh_options = GetSetting(Set_texenh_options) != 0;
 
     m_wrpVRAM = GetSetting(Set_wrpVRAM);
@@ -586,7 +619,7 @@ void CSettings::ReadSettings()
     m_ghq_enht = (TextureEnhancement_t)GetSetting(Set_ghq_enht);
     m_ghq_hirs = (HiResPackFormat_t)GetSetting(Set_ghq_hirs);
     m_ghq_enht_cmpr = GetSetting(Set_ghq_enht_cmpr) != 0;
-    m_ghq_enht_f16bpp = GetSetting(Set_ghq_enht_f16bpp) !=0;
+    m_ghq_enht_f16bpp = GetSetting(Set_ghq_enht_f16bpp) != 0;
     m_ghq_enht_gz = GetSetting(Set_ghq_enht_gz) != 0;
     m_ghq_enht_nobg = GetSetting(Set_ghq_enht_nobg) != 0;
     m_ghq_hirs_cmpr = GetSetting(Set_ghq_hirs_cmpr) != 0;
@@ -913,6 +946,27 @@ void CSettings::SettingsChanged(void)
     m_ScreenRes = GetSetting(Set_Resolution);
 }
 
+void CSettings::LogLevelChanged(void)
+{
+    g_ModuleLogLevel[TraceMD5] = GetSetting(Set_Logging_MD5);
+    g_ModuleLogLevel[TraceThread] = GetSetting(Set_Logging_Thread);
+    g_ModuleLogLevel[TracePath] = GetSetting(Set_Logging_Path);
+    g_ModuleLogLevel[TraceSettings] = GetSetting(Set_Logging_Settings);
+    g_ModuleLogLevel[TraceUnknown] = GetSetting(Set_Logging_Unknown);
+    g_ModuleLogLevel[TraceGlide64] = GetSetting(Set_Logging_Glide64);
+    g_ModuleLogLevel[TraceInterface] = GetSetting(Set_Logging_Interface);
+    g_ModuleLogLevel[TraceResolution] = GetSetting(Set_Logging_Resolution);
+    g_ModuleLogLevel[TraceGlitch] = GetSetting(Set_Logging_Glitch);
+    g_ModuleLogLevel[TraceRDP] = GetSetting(Set_Logging_VideoRDP);
+    g_ModuleLogLevel[TraceTLUT] = GetSetting(Set_Logging_TLUT);
+    g_ModuleLogLevel[TracePNG] = GetSetting(Set_Logging_PNG);
+    g_ModuleLogLevel[TraceOGLWrapper] = GetSetting(Set_Logging_OGLWrapper);
+    g_ModuleLogLevel[TraceRDPCommands] = GetSetting(Set_Logging_RDPCommands);
+}
+
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 void UseUnregisteredSetting(int /*SettingID*/)
 {
 #ifdef _WIN32

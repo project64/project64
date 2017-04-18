@@ -50,22 +50,29 @@
 #include "trace.h"
 #include "ScreenResolution.h"
 #include <Common/StdString.h>
+#include <Settings/Settings.h>
+#include "SettingsID.h"
 
 #ifdef _WIN32
 #include <Common/CriticalSection.h>
 #include "resource.h"
 
+#pragma warning(push)
+#pragma warning(disable : 4091) // warning C4091: 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared
+#pragma warning(disable : 4302) // warning C4302: 'type cast': truncation from 'LPCTSTR' to 'WORD'
+#pragma warning(disable : 4458) // warning C4458: declaration of 'dwCommonButtons' hides class member
+#pragma warning(disable : 4838) // warning C4838: conversion from 'int' to 'UINT' requires a narrowing conversion
+#pragma warning(disable : 4996) // warning C4996: 'GetVersionExA': was declared deprecated
+#pragma warning(disable : 4302) // warning C4302: 'type cast': truncation from 'LPCTSTR' to 'WORD'
 #define _ATL_DISABLE_NOTHROW_NEW
 #include <atlbase.h>
-#pragma warning(push)
-#pragma warning(disable : 4996) // warning C4996: 'GetVersionExA': was declared deprecated
 #include <wtl/atlapp.h>
-#pragma warning(pop)
 
 #include <atlwin.h>
 #include <wtl/atldlgs.h>
 #include <wtl/atlctrls.h>
 #include <wtl/atlcrack.h>
+#pragma warning(pop)
 
 extern HINSTANCE hinstDLL;
 extern bool g_ghq_use;
@@ -88,9 +95,9 @@ public:
 
 CGlide64WtlModule * WtlModule = NULL;
 
-void ConfigInit(HINSTANCE hinst)
+void ConfigInit(void * hinst)
 {
-    WtlModule = new CGlide64WtlModule(hinst);
+    WtlModule = new CGlide64WtlModule((HINSTANCE)hinst);
 }
 
 void ConfigCleanup(void)
@@ -104,7 +111,6 @@ void ConfigCleanup(void)
 
 #endif
 
-
 void CloseConfig();
 
 #ifdef _WIN32
@@ -114,7 +120,7 @@ class CToolTipDialog
 {
     // Data declarations and members
 public:
-    TT& GetTT(){ return m_TT; }
+    TT& GetTT() { return m_TT; }
 protected:
     TT m_TT;
     UINT m_uTTStyle;
@@ -229,6 +235,7 @@ void SetComboBoxIndex(CComboBox & cmb, uint32_t data)
 
 class CConfigBasicPage;
 class CConfigEmuSettings;
+class CDebugSettings;
 class CConfigTextureEnhancement;
 
 class COptionsSheet : public CPropertySheetImpl < COptionsSheet >
@@ -249,6 +256,7 @@ private:
     // Property pages
     CConfigBasicPage * m_pgBasicPage;
     CConfigEmuSettings * m_pgEmuSettings;
+    CDebugSettings * m_pgDebugSettings;
     CConfigTextureEnhancement * m_pgTextureEnhancement;
     HPROPSHEETPAGE m_hTextureEnhancement;
 };
@@ -281,7 +289,7 @@ public:
     LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
         TTInit();
-		TTSize(400);
+        TTSize(400);
         m_WindowRes.Attach(GetDlgItem(IDC_CMB_WINDOW_RES));
         for (uint32_t i = 0, n = GetScreenResolutionCount(); i < n; i++)
         {
@@ -316,7 +324,7 @@ public:
 
         m_cbxFBO.Attach(GetDlgItem(IDC_CHK_USE_FRAME_BUFFER_OBJECT));
         TTSetTxt(IDC_CHK_USE_FRAME_BUFFER_OBJECT, "Use frame buffer objects:\n\nChanges the way FB effects are rendered - with or without usage of the OpenGL Frame Buffer Objects (FBO) extension.\nThe choice depends on game and your video card. FBO off is good for NVIDIA cards, while for ATI cards, it's usually best that FBOs are turned on.\nAlso, some FB effects works only with one of the methods, no matter, which card you have.\nOn the whole, with FBO off, compatibility/ accuracy is a bit better (which is the case for Resident Evil 2).\nHowever, with FBO on with some systems, it can actually be a bit faster in cases.\n\n[Recommended: video card and game dependant]");
-        m_cbxFBO.SetCheck(g_settings->wrpFBO() > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxFBO.SetCheck(g_settings->wrpFBO() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxVRAM.Attach(GetDlgItem(IDC_CHK_AUTODETECT_VRAM));
         TTSetTxt(IDC_CHK_AUTODETECT_VRAM, "Autodetect VRAM Size:\n\nSince OpenGL cannot do this reliably at the moment, the option to set this manually is available.\nIf checked, plugin will try to autodetect VRAM size.\nBut if this appears wrong, please uncheck and set it to correct value.\n\n[Recommended: on]");
@@ -361,7 +369,7 @@ private:
 
     void AutoDetectChanged(void)
     {
-        m_spinVRAM.SetWindowText(m_cbxVRAM.GetCheck() == BST_CHECKED ? " auto" : stdstr_f("%d",g_settings->wrpVRAM() != 0 ? g_settings->wrpVRAM() : 32).c_str());
+        m_spinVRAM.SetWindowText(m_cbxVRAM.GetCheck() == BST_CHECKED ? " auto" : stdstr_f("%d", g_settings->wrpVRAM() != 0 ? g_settings->wrpVRAM() : 32).c_str());
         m_spinVRAM.EnableWindow(m_cbxVRAM.GetCheck() != BST_CHECKED);
         m_VramSize.EnableWindow(m_cbxVRAM.GetCheck() != BST_CHECKED);
         m_lblMb.EnableWindow(m_cbxVRAM.GetCheck() != BST_CHECKED);
@@ -408,7 +416,7 @@ public:
     LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
         TTInit();
-		TTSize(400);
+        TTSize(400);
 
         if (g_romopen)
         {
@@ -461,7 +469,7 @@ public:
         tooltip = "Fog enabled:\n\nSets fog emulation on//off.\n\n[Recommended: on]";
         TTSetTxt(IDC_CHK_FOG, tooltip.c_str());
         m_cbxFog.Attach(GetDlgItem(IDC_CHK_FOG));
-        m_cbxFog.SetCheck(g_settings->fog() > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxFog.SetCheck(g_settings->fog() ? BST_CHECKED : BST_UNCHECKED);
 
         tooltip = "Buffer clear on every frame:\n\nForces the frame buffer to be cleared every frame drawn.\nUsually frame buffer clear is controlled by the game.\nHowever, in some cases it is not well emulated, and some garbage may be left on the screen.\nIn such cases, this option must be set on.\n\n[Recommended: on]";
         TTSetTxt(IDC_CHK_BUFFER_CLEAR, tooltip.c_str());
@@ -473,7 +481,7 @@ public:
         m_cbxFBEnable.SetCheck(g_settings->fb_emulation_enabled() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxFBHWFBE.Attach(GetDlgItem(IDC_CHK_HARDWARE_FRAMEBUFFER));
-        TTSetTxt(IDC_CHK_HARDWARE_FRAMEBUFFER, "Enable hardware frame buffer emulation:\n\nIf this option is on, plugin will create auxiliary frame buffers in video memory instead of copying frame buffer content into main memory.\nThis allows plugin to run frame buffer effects without slowdown and without scaling image down to N64's native resolution.\nThis feature is fully supported by Voodoo 4/5 cards and partially by Voodoo3 and Banshee. Modern cards also fully support it.\n\n[Recommended: on, if supported by your hardware]");
+        TTSetTxt(IDC_CHK_HARDWARE_FRAMEBUFFER, "Enable hardware frame buffer emulation:\n\nIf this option is on, plugin will create auxiliary frame buffers in video memory instead of copying frame buffer content into main memory.\nThis allows plugin to run frame buffer effects without slowdown and without scaling image down to N64's native resolution.\nModern cards also fully support it.\n\n[Recommended: on, if supported by your hardware]");
         m_cbxFBHWFBE.SetCheck(g_settings->fb_hwfbe_set() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxFBGetFBI.Attach(GetDlgItem(IDC_CHK_GET_FRAMEBUFFER));
@@ -564,6 +572,121 @@ private:
     CButton m_cbxFBDepthBuffer;
 };
 
+class CDebugSettings :
+    public CPropertyPageImpl<CDebugSettings>,
+    public CToolTipDialog<CDebugSettings>
+{
+public:
+    enum { IDD = IDD_DEBUG_SETTINGS };
+
+    BEGIN_MSG_MAP(CDebugSettings)
+        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+        COMMAND_HANDLER_EX(IDC_CMB_TRACE_SETTINGS, CBN_SELCHANGE, ItemChanged)
+        COMMAND_HANDLER_EX(IDC_CMB_TRACE_UNKNOWN, CBN_SELCHANGE, ItemChanged)
+        COMMAND_HANDLER_EX(IDC_CMB_TRACE_GLIDE64, CBN_SELCHANGE, ItemChanged)
+        COMMAND_HANDLER_EX(IDC_CMB_TRACE_INTERFACE, CBN_SELCHANGE, ItemChanged)
+        COMMAND_HANDLER_EX(IDC_CMB_TRACE_RESOLUTION, CBN_SELCHANGE, ItemChanged)
+        COMMAND_HANDLER_EX(IDC_CMB_TRACE_GLITCH, CBN_SELCHANGE, ItemChanged)
+        COMMAND_HANDLER_EX(IDC_CMB_TRACE_RDP, CBN_SELCHANGE, ItemChanged)
+        COMMAND_HANDLER_EX(IDC_CMB_TRACE_TLUT, CBN_SELCHANGE, ItemChanged)
+        COMMAND_HANDLER_EX(IDC_CMB_TRACE_PNG, CBN_SELCHANGE, ItemChanged)
+        COMMAND_HANDLER_EX(IDC_CMB_TRACE_OGLWRAPPER, CBN_SELCHANGE, ItemChanged)
+        CHAIN_MSG_MAP(CToolTipDialog<CDebugSettings>)
+        CHAIN_MSG_MAP(CPropertyPageImpl<CDebugSettings>)
+    END_MSG_MAP()
+
+    LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+    {
+        TTInit();
+        TTSize(400);
+
+        m_cmbTraceSettings.Attach(GetDlgItem(IDC_CMB_TRACE_SETTINGS));
+        m_cmbTraceUnknown.Attach(GetDlgItem(IDC_CMB_TRACE_UNKNOWN));
+        m_cmbTraceGlide64.Attach(GetDlgItem(IDC_CMB_TRACE_GLIDE64));
+        m_cmbTraceInterface.Attach(GetDlgItem(IDC_CMB_TRACE_INTERFACE));
+        m_cmbTraceresolution.Attach(GetDlgItem(IDC_CMB_TRACE_RESOLUTION));
+        m_cmbTraceGlitch.Attach(GetDlgItem(IDC_CMB_TRACE_GLITCH));
+        m_cmbTraceRDP.Attach(GetDlgItem(IDC_CMB_TRACE_RDP));
+        m_cmbTraceTLUT.Attach(GetDlgItem(IDC_CMB_TRACE_TLUT));
+        m_cmbTracePNG.Attach(GetDlgItem(IDC_CMB_TRACE_PNG));
+        m_cmbTraceOGLWrapper.Attach(GetDlgItem(IDC_CMB_TRACE_OGLWRAPPER));
+        m_cmbTraceRDPCommands.Attach(GetDlgItem(IDC_CMB_TRACE_RDP_COMMANDS));
+
+        struct {
+            CComboBox & cmb;
+            uint16_t SettingId;
+        } TraceCMB[] =
+        { 
+            { m_cmbTraceSettings, Set_Logging_Settings },
+            { m_cmbTraceUnknown, Set_Logging_Unknown },
+            { m_cmbTraceGlide64, Set_Logging_Glide64 },
+            { m_cmbTraceInterface, Set_Logging_Interface },
+            { m_cmbTraceresolution, Set_Logging_Resolution },
+            { m_cmbTraceGlitch, Set_Logging_Glitch },
+            { m_cmbTraceRDP, Set_Logging_VideoRDP },
+            { m_cmbTraceTLUT, Set_Logging_TLUT },
+            { m_cmbTracePNG, Set_Logging_PNG },
+            { m_cmbTraceOGLWrapper, Set_Logging_OGLWrapper },
+            { m_cmbTraceRDPCommands, Set_Logging_RDPCommands },
+        };
+
+        for (size_t i = 0, n = sizeof(TraceCMB) / sizeof(TraceCMB[0]); i < n; i++)
+        {
+            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString("Error"), TraceError);
+            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString("Warning"), TraceWarning);
+            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString("Notice"), TraceNotice);
+            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString("Info"), TraceInfo);
+            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString("Debug"), TraceDebug);
+            TraceCMB[i].cmb.SetItemData(TraceCMB[i].cmb.AddString("Verbose"), TraceVerbose);
+            SetComboBoxIndex(TraceCMB[i].cmb, (uint32_t)GetSetting(TraceCMB[i].SettingId));
+        }
+        return TRUE;
+    }
+
+    bool OnApply()
+    {
+        struct {
+            CComboBox & cmb;
+            uint16_t SettingId;
+        } TraceCMB[] =
+        {
+            { m_cmbTraceSettings, Set_Logging_Settings },
+            { m_cmbTraceUnknown, Set_Logging_Unknown },
+            { m_cmbTraceGlide64, Set_Logging_Glide64 },
+            { m_cmbTraceInterface, Set_Logging_Interface },
+            { m_cmbTraceresolution, Set_Logging_Resolution },
+            { m_cmbTraceGlitch, Set_Logging_Glitch },
+            { m_cmbTraceRDP, Set_Logging_VideoRDP },
+            { m_cmbTraceTLUT, Set_Logging_TLUT },
+            { m_cmbTracePNG, Set_Logging_PNG },
+            { m_cmbTraceOGLWrapper, Set_Logging_OGLWrapper },
+            { m_cmbTraceRDPCommands, Set_Logging_RDPCommands },
+        };
+        for (size_t i = 0, n = sizeof(TraceCMB) / sizeof(TraceCMB[0]); i < n; i++)
+        {
+            SetSetting(TraceCMB[i].SettingId, TraceCMB[i].cmb.GetItemData(TraceCMB[i].cmb.GetCurSel()));
+        }
+        return true;
+    }
+private:
+    void ItemChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
+    {
+        SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
+    }
+
+    CComboBox m_cmbTraceSettings;
+    CComboBox m_cmbTraceUnknown;
+    CComboBox m_cmbTraceGlide64;
+    CComboBox m_cmbTraceInterface;
+    CComboBox m_cmbTraceresolution;
+    CComboBox m_cmbTraceGlitch;
+    CComboBox m_cmbTraceRDP;
+    CComboBox m_cmbTraceTLUT;
+    CComboBox m_cmbTracePNG;
+    CComboBox m_cmbTraceOGLWrapper;
+    CComboBox m_cmbTraceRDPCommands;
+};
+
 class CConfigTextureEnhancement :
     public CPropertyPageImpl<CConfigTextureEnhancement>,
     public CToolTipDialog < CConfigTextureEnhancement >
@@ -580,7 +703,7 @@ public:
     LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
         TTInit();
-		TTSize(400);
+        TTSize(400);
 
         std::string tooltip = "Filters:\n\nApply a filter to either smooth or sharpen textures.\nThere are 4 different smoothing filters and 2 different sharpening filters.\nThe higher the number, the stronger the effect,\ni.e. \"Smoothing filter 4\" will have a much more noticeable effect than \"Smoothing filter 1\".\nBe aware that performance may have an impact depending on the game and/or the PC.\n\n[Recommended: your preference]";
         TTSetTxt(IDC_TXT_ENH_FILTER, tooltip.c_str());
@@ -633,20 +756,20 @@ public:
 
         TTSetTxt(IDC_CHK_IGNORE_BACKGROUND, "Ignore Backgrounds:\n\nIt is used to skip enhancement for long narrow textures, usually used for backgrounds.\nThis may save texture memory greatly and increase performance.\n\n[Recommended: on (off for 'Store' mode)]");
         m_cbxEnhIgnoreBG.Attach(GetDlgItem(IDC_CHK_IGNORE_BACKGROUND));
-        m_cbxEnhIgnoreBG.SetCheck(g_settings->ghq_enht_nobg() > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxEnhIgnoreBG.SetCheck(g_settings->ghq_enht_nobg() ? BST_CHECKED : BST_UNCHECKED);
 
         tooltip = "Texture compression:\n\nTextures will be compressed using selected texture compression method.\nThe overall compression ratio is about 1/6 for FXT1 and 1/4 for S3TC.\nIn addition to saving space on the texture cache, the space occupied on the GFX hardware's texture RAM, by the enhanced textures, will be greatly reduced.\nThis minimizes texture RAM usage, decreasing the number of texture swaps to the GFX hardware leading to performance gains.\nHowever, due to the nature of lossy compression of FXT1 and S3TC, using this option can sometimes lead to quality degradation of small size textures and color banding of gradient colored textures.\n\n[Recommended: off]";
         TTSetTxt(IDC_CHK_TEX_COMPRESSION, tooltip.c_str());
         TTSetTxt(IDC_CHK_HIRES_TEX_COMPRESSION, tooltip.c_str());
 
         m_cbxEnhTexCompression.Attach(GetDlgItem(IDC_CHK_TEX_COMPRESSION));
-        m_cbxEnhTexCompression.SetCheck(g_settings->ghq_enht_cmpr() > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxEnhTexCompression.SetCheck(g_settings->ghq_enht_cmpr() ? BST_CHECKED : BST_UNCHECKED);
         m_cbxHrsTexCompression.Attach(GetDlgItem(IDC_CHK_HIRES_TEX_COMPRESSION));
         m_cbxHrsTexCompression.SetCheck(g_settings->ghq_hirs_cmpr() ? BST_CHECKED : BST_UNCHECKED);
 
         TTSetTxt(IDC_CHK_COMPRESS_CACHE, "Compress texture cache:\n\nMemory will be compressed so that more textures can be held in the texture cache.\nThe compression ratio varies with each texture, but 1/5 of the original size would be a modest approximation.\nThey will be decompressed on-the-fly, before being downloaded to the gfx hardware.\nThis option will still help save memory space even when using texture compression.\n\n[Recommended: on]");
         m_cbxEnhCompressCache.Attach(GetDlgItem(IDC_CHK_COMPRESS_CACHE));
-        m_cbxEnhCompressCache.SetCheck(g_settings->ghq_enht_gz() > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxEnhCompressCache.SetCheck(g_settings->ghq_enht_gz() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsTile.Attach(GetDlgItem(IDC_CHK_TILE_TEX));
         TTSetTxt(IDC_CHK_TILE_TEX, "Tile textures:\n\nWhen on, wide texture will be split on several tiles to fit in one 256-width texture.\nThis tiled texture takes much less video memory space and thus overall performance will increase.\nHowever, corresponding polygons must be split too, and this is not polished yet - various issues are possible, including black lines and polygons distortions.\n\n[Recommended: off]");
@@ -654,15 +777,15 @@ public:
 
         m_cbxHrsForce16.Attach(GetDlgItem(IDC_CHK_FORCE_16BPP_TEXT));
         TTSetTxt(IDC_CHK_FORCE_16BPP_TEXT, "Force 16bpp textures:\n\nThe color of the textures will be reduced to 16bpp.\nThis is another space saver and performance enhancer.\nThis halves the space used on the texture cache and the GFX hardware's texture RAM.\nColor reduction is done so that the original quality is preserved as much as possible.\nDepending on the texture, this usually is hardly noticeable.\nSometimes though, it can be: skies are a good example.\n\n[Recommended: off]");
-        m_cbxHrsForce16.SetCheck(g_settings->ghq_hirs_f16bpp() > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxHrsForce16.SetCheck(g_settings->ghq_hirs_f16bpp() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsTexEdit.Attach(GetDlgItem(IDC_CHK_TEX_DUMP_EDIT));
         TTSetTxt(IDC_CHK_TEX_DUMP_EDIT, "Texture dumping mode:\n\nIn this mode, you have that ability to dump textures on screen to the appropriate folder.\nYou can also reload textures while the game is running to see how they look instantly - big time saver!\n\nHotkeys:\n\"R\" reloads hires textures from the texture pack\n\"D\" toggles texture dumps on/off.");
-        m_cbxHrsTexEdit.SetCheck(g_settings->ghq_hirs_dump() > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxHrsTexEdit.SetCheck(g_settings->ghq_hirs_dump() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsAltCRC.Attach(GetDlgItem(IDC_CHK_ALT_CRC));
         TTSetTxt(IDC_CHK_ALT_CRC, "Alternative CRC calculation:\n\nThis option enables emulation of a palette CRC calculation bug in RiceVideo.\nIf some textures are not loaded, try to set this option on/off.\n\n[Recommended: texture pack dependant, mostly on]");
-        m_cbxHrsAltCRC.SetCheck(g_settings->ghq_hirs_altcrc() > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxHrsAltCRC.SetCheck(g_settings->ghq_hirs_altcrc() ? BST_CHECKED : BST_UNCHECKED);
         if (g_settings->ghq_hirs_dump())
         {
             m_cbxHrsAltCRC.EnableWindow(false);
@@ -670,15 +793,15 @@ public:
 
         m_cbxHrsCompressCache.Attach(GetDlgItem(IDC_CHK_HRS_COMPRESS_CACHE));
         TTSetTxt(IDC_CHK_HRS_COMPRESS_CACHE, "Compress texture cache:\n\nWhen game started, plugin loads all its hi-resolution textures into PC memory.\nSince hi-resolution textures are usually large, the whole pack can take hundreds megabytes of memory.\nCache compression allows save memory space greatly.\nTextures will be decompressed on-the-fly, before being downloaded to the gfx hardware.\nThis option will still help save memory space even when using texture compression.\n\n[Recommended: on]");
-        m_cbxHrsCompressCache.SetCheck(g_settings->ghq_hirs_gz() > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxHrsCompressCache.SetCheck(g_settings->ghq_hirs_gz() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxHrsLetFly.Attach(GetDlgItem(IDC_CHK_USE_ALPHA_FULLY));
         TTSetTxt(IDC_CHK_USE_ALPHA_FULLY, "Use Alpha channel fully:\n\nWhen this option is off, 16bit rgba textures will be loaded using RiceVideo style, with 1bit for alpha channel.\nWhen it is on, GlideHQ will check, how alpha channel is used by the hires texture, and select most appropriate format for it.\nThis gives texture designers freedom to play with alpha, as they need, regardless of format of original N64 texture.\nFor older and badly designed texture packs it can cause unwanted black borders.\n\n[Recommended: texture pack dependant]");
-        m_cbxHrsLetFly.SetCheck(g_settings->ghq_hirs_let_texartists_fly() > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxHrsLetFly.SetCheck(g_settings->ghq_hirs_let_texartists_fly() ? BST_CHECKED : BST_UNCHECKED);
 
         m_cbxSaveTexCache.Attach(GetDlgItem(IDC_CHK_TEX_CACHE_HD));
         TTSetTxt(IDC_CHK_TEX_CACHE_HD, "Save texture cache to HD:\n\nFor enhanced textures cache:\nThis will save all previously loaded and enhanced textures to HD.\nSo upon next game launch, all the textures will be instantly loaded, resulting in smoother performance.\n\nFor high-resolution textures cache:\nAfter creation, loading hi-res texture will take only a few seconds upon game launch, as opposed to the 5 to 60 seconds a pack can take to load without this cache file.\nThe only downside here is upon any changes to the pack, the cache file will need to be manually deleted.\n\nSaved cache files go into a folder called \"Cache\" within the Textures folder.\n\n[Highly Recommended: on]");
-        m_cbxSaveTexCache.SetCheck(g_settings->ghq_cache_save() > 0 ? BST_CHECKED : BST_UNCHECKED);
+        m_cbxSaveTexCache.SetCheck(g_settings->ghq_cache_save() ? BST_CHECKED : BST_UNCHECKED);
         return TRUE;
     }
 
@@ -738,6 +861,7 @@ private:
 COptionsSheet::COptionsSheet(_U_STRINGorID /*title*/, UINT /*uStartPage*/, HWND /*hWndParent*/) :
     m_pgBasicPage(new CConfigBasicPage(this)),
     m_pgEmuSettings(new CConfigEmuSettings),
+    m_pgDebugSettings(new CDebugSettings),
     m_pgTextureEnhancement(NULL),
     m_hTextureEnhancement(0)
 {
@@ -746,6 +870,10 @@ COptionsSheet::COptionsSheet(_U_STRINGorID /*title*/, UINT /*uStartPage*/, HWND 
     {
         AddPage(&m_pgEmuSettings->m_psp);
     }
+    if (g_settings->debugger_enabled())
+    {
+        AddPage(&m_pgDebugSettings->m_psp);
+    }
     UpdateTextureSettings();
 }
 
@@ -753,6 +881,7 @@ COptionsSheet::~COptionsSheet()
 {
     delete m_pgBasicPage;
     delete m_pgEmuSettings;
+    delete m_pgDebugSettings;
     delete m_pgTextureEnhancement;
 }
 
@@ -784,7 +913,7 @@ to allow the user to configure the dll
 input:    a handle to the window that calls this function
 output:   none
 *******************************************************************/
-void CALL DllConfig(HWND hParent)
+void CALL DllConfig(void * hParent)
 {
     WriteTrace(TraceGlide64, TraceDebug, "-");
 #ifdef _WIN32
@@ -810,7 +939,7 @@ void CALL DllConfig(HWND hParent)
         ZLUT_init();
     }
 
-    COptionsSheet("Glide64 settings").DoModal(hParent);
+    COptionsSheet("Glide64 settings").DoModal((HWND)hParent);
     CloseConfig();
 #endif
 }
@@ -865,7 +994,7 @@ to give further information about the DLL.
 input:    a handle to the window that calls this function
 output:   none
 *******************************************************************/
-void CALL DllAbout(HWND /*hParent*/)
+void CALL DllAbout(void * /*hParent*/)
 {
 #ifdef _WIN32
     CAboutDlg dlg;

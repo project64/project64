@@ -193,6 +193,7 @@ public:
     inline uint32_t scr_res_y(void) const { return m_scr_res_y; }
     inline uint32_t ScreenRes(void) const { return m_ScreenRes; }
     inline bool advanced_options(void) const { return m_advanced_options; }
+    inline bool debugger_enabled(void) const { return m_debugger_enabled; }
     inline bool texenh_options(void) const { return m_texenh_options; }
     inline bool vsync(void) const { return m_vsync; }
     inline ScreenRotate_t rotate(void) const { return m_rotate; }
@@ -313,13 +314,20 @@ private:
     void RegisterSettings(void);
     void UpdateAspectRatio(void);
     void SettingsChanged(void);
-    
+    void LogLevelChanged(void);
+
     static void stSettingsChanged(void * _this)
     {
         ((CSettings *)_this)->SettingsChanged();
     }
 
+    static void stLogLevelChanged(void * _this)
+    {
+        ((CSettings *)_this)->LogLevelChanged();
+    }
+
     short m_Set_basic_mode;
+    short m_Set_debugger;
     short m_Set_texture_dir;
     short m_Set_log_dir;
     short m_Set_log_flush;
@@ -346,6 +354,7 @@ private:
     SwapMode_t m_swapmode;
     PixelLevelOfDetail_t m_lodmode;
     bool m_advanced_options;
+    bool m_debugger_enabled;
     bool m_texenh_options;
     bool m_vsync;
     std::string m_texture_dir;

@@ -7,6 +7,7 @@
 #define IDD_TEXTURE_ENHANCEMENT         103
 #define IDD_ABOUT                       104
 #define IDD_ABOUTBOX                    104
+#define IDD_DEBUG_SETTINGS              105
 #define IDC_CMB_FS_RESOLUTION           1001
 #define IDC_CHK_VERTICAL_SYNC           1002
 #define IDC_CMB_WINDOW_RES              1003
@@ -21,15 +22,26 @@
 #define IDC_INFO                        1017
 #define IDC_CMB_FILTERING_MODE          1018
 #define IDC_CMB_BUFFER_SWAPPING         1019
+#define IDC_CMB_TRACE_UNKNOWN           1019
 #define IDC_CMB_LOD_CALC                1020
+#define IDC_CMB_TRACE_GLIDE64           1020
 #define IDC_CMB_ASPECT_RATIO            1021
+#define IDC_CMB_TRACE_INTERFACE         1021
 #define IDC_CHK_FOG                     1022
+#define IDC_CMB_TRACE_RESOLUTION        1022
 #define IDC_CHK_BUFFER_CLEAR            1023
+#define IDC_CMB_TRACE_GLITCH            1023
 #define IDC_TXT_FILTERING_MODE          1024
+#define IDC_CMB_TRACE_RDP               1024
 #define IDC_CHK_FRAME_BUFFER_EMULATION  1025
+#define IDC_CMB_TRACE_TLUT              1025
 #define IDC_CHK_HARDWARE_FRAMEBUFFER    1026
+#define IDC_CMB_TRACE_PNG               1026
 #define IDC_CHK_READ_EVERY_FRAME        1027
+#define IDC_CMB_TRACE_OGLWRAPPER        1027
 #define IDC_CHK_GET_FRAMEBUFFER         1028
+#define IDC_CMB_TRACE_OGLWRAPPER2       1028
+#define IDC_CMB_TRACE_RDP_COMMANDS      1028
 #define IDC_RENDER_FRAME_AS_TEXTURE     1029
 #define IDC_CHK_DETECT_CPU_WRITE        1030
 #define IDC_SOFTWARE_DEPTH_BUFFER       1031
@@ -62,14 +74,27 @@
 #define IDC_LBL_MB                      1076
 #define IDC_TEXT_MB                     1077
 #define IDC_TXT_TEXTURE_CACHE           1078
+#define IDC_TXT_TRACE_SETTINGS          1079
+#define IDC_TXT_TRACE_UNKNOWN           1080
+#define IDC_TXT_TRACE_GLIDE64           1081
+#define IDC_TXT_TRACE_INTERFACE         1082
+#define IDC_TXT_TRACE_RESOLUTION        1083
+#define IDC_TXT_TRACE_GLITCH            1084
+#define IDC_TXT_TRACE_RDP               1085
+#define IDC_TXT_TRACE_TLUT              1086
+#define IDC_TXT_TRACE_PNG               1087
+#define IDC_TXT_TRACE_OGLWRAPPER        1088
+#define IDC_TXT_TRACE_OGLWRAPPER2       1089
+#define IDC_CMB_TRACE_SETTINGS          1090
+#define IDC_SOFTWARE_RENDERING          1091
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        105
+#define _APS_NEXT_RESOURCE_VALUE        107
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1079
+#define _APS_NEXT_CONTROL_VALUE         1092
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

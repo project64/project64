@@ -68,7 +68,11 @@ void SetupTrace(void)
     TraceSetModuleName(TraceTLUT, "TLUT");
     TraceSetModuleName(TracePNG, "PNG");
     TraceSetModuleName(TraceOGLWrapper, "OGL Wrapper");
+    TraceSetModuleName(TraceRDPCommands, "RDP Command");
+}
 
+void StartTrace(void)
+{
     const char * log_dir = g_settings ? g_settings->log_dir() : NULL;
     if (log_dir == NULL || log_dir[0] == '\0')
     {
