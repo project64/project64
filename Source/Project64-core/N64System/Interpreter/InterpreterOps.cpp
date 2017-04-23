@@ -22,16 +22,6 @@
 #include <math.h>
 
 #if (defined(_MSC_VER) && (_MSC_VER < 1800))
-double round(double num)
-{
-    return (num - floor(num) > 0.5) ? ceil(num) : floor(num);
-}
-
-float roundf(float num)
-{
-    return (num - floorf(num) > 0.5) ? ceilf(num) : floorf(num);
-}
-
 double trunc(double num)
 {
     return (num < 0) ? ceil(num) : floor(num);
@@ -2383,10 +2373,29 @@ __inline void Float_RoundToInteger32(int32_t * Dest, const float * Source, int R
 #pragma warning(push)
 #pragma warning(disable:4244) //warning C4244: disabe conversion from 'float' to 'int32_t', possible loss of data
 
-    if (RoundType == FE_TONEAREST) { *Dest = roundf(*Source); }
-    if (RoundType == FE_TOWARDZERO) { *Dest = truncf(*Source); }
-    if (RoundType == FE_UPWARD) { *Dest = ceilf(*Source); }
-    if (RoundType == FE_DOWNWARD) { *Dest = floorf(*Source); }
+    if (RoundType == FE_TONEAREST)
+    {
+        float reminder = *Source - floorf(*Source);
+        if (reminder == 0.5)
+        {
+            //make any decimal point in even to go to odd and any decimal point in odd stay as odd
+            if (*Source < 0)
+            {
+                *Dest = (int)truncf(*Source) % 2 != 0 ? floorf(*Source) : ceilf(*Source);
+            }
+            else
+            {
+                *Dest = (int)truncf(*Source) % 2 != 0 ? ceilf(*Source) : floorf(*Source);
+            }
+        }
+        else
+        {
+            *Dest = roundf(*Source);
+        }
+    }
+    else if (RoundType == FE_TOWARDZERO) { *Dest = truncf(*Source); }
+    else if (RoundType == FE_UPWARD) { *Dest = ceilf(*Source); }
+    else if (RoundType == FE_DOWNWARD) { *Dest = floorf(*Source); }
 
 #pragma warning(pop)
 }
@@ -2396,10 +2405,29 @@ __inline void Float_RoundToInteger64(int64_t * Dest, const float * Source, int R
 #pragma warning(push)
 #pragma warning(disable:4244) //warning C4244: disabe conversion from 'float' to 'int64_t', possible loss of data
 
-    if (RoundType == FE_TONEAREST) { *Dest = roundf(*Source); }
-    if (RoundType == FE_TOWARDZERO) { *Dest = truncf(*Source); }
-    if (RoundType == FE_UPWARD) { *Dest = ceilf(*Source); }
-    if (RoundType == FE_DOWNWARD) { *Dest = floorf(*Source); }
+    if (RoundType == FE_TONEAREST)
+    {
+        float reminder = *Source - floorf(*Source);
+        if (reminder == 0.5)
+        {
+            //make any decimal point in even to go to odd and any decimal point in odd stay as odd
+            if (*Source < 0)
+            {
+                *Dest = (int)truncf(*Source) % 2 != 0 ? floorf(*Source) : ceilf(*Source);
+            }
+            else
+            {
+                *Dest = (int)truncf(*Source) % 2 != 0 ? ceilf(*Source) : floorf(*Source);
+            }
+        }
+        else
+        {
+            *Dest = roundf(*Source);
+        }
+    }
+    else if (RoundType == FE_TOWARDZERO) { *Dest = truncf(*Source); }
+    else if (RoundType == FE_UPWARD) { *Dest = ceilf(*Source); }
+    else if (RoundType == FE_DOWNWARD) { *Dest = floorf(*Source); }
 
 #pragma warning(pop)
 }
@@ -2581,7 +2609,26 @@ __inline void Double_RoundToInteger32(int32_t * Dest, const double * Source, int
 #pragma warning(push)
 #pragma warning(disable:4244) //warning C4244: disabe conversion from 'double' to 'uint32_t', possible loss of data
 
-    if (RoundType == FE_TONEAREST) { *Dest = round(*Source); }
+    if (RoundType == FE_TONEAREST)
+    {
+        double reminder = *Source - floor(*Source);
+        if (reminder == 0.5)
+        {
+            //make any decimal point in even to go to odd and any decimal point in odd stay as odd
+            if (*Source < 0)
+            {
+                *Dest = (int)truncf(*Source) % 2 != 0 ? floor(*Source) : ceil(*Source);
+            }
+            else
+            {
+                *Dest = (int)truncf(*Source) % 2 != 0 ? ceil(*Source) : floor(*Source);
+            }
+        }
+        else
+        {
+            *Dest = round(*Source);
+        }
+    }
     else if (RoundType == FE_TOWARDZERO) { *Dest = trunc(*Source); }
     else if (RoundType == FE_UPWARD) { *Dest = ceil(*Source); }
     else if (RoundType == FE_DOWNWARD) { *Dest = floor(*Source); }
@@ -2598,7 +2645,26 @@ __inline void Double_RoundToInteger64(int64_t * Dest, const double * Source, int
 #pragma warning(push)
 #pragma warning(disable:4244) //warning C4244: disabe conversion from 'double' to 'uint64_t', possible loss of data
 
-    if (RoundType == FE_TONEAREST) { *Dest = round(*Source); }
+    if (RoundType == FE_TONEAREST)
+    {
+        double reminder = *Source - floor(*Source);
+        if (reminder == 0.5)
+        {
+            //make any decimal point in even to go to odd and any decimal point in odd stay as odd
+            if (*Source < 0)
+            {
+                *Dest = (int)truncf(*Source) % 2 != 0 ? floor(*Source) : ceil(*Source);
+            }
+            else
+            {
+                *Dest = (int)truncf(*Source) % 2 != 0 ? ceil(*Source) : floor(*Source);
+            }
+        }
+        else
+        {
+            *Dest = round(*Source);
+        }
+    }
     else if (RoundType == FE_TOWARDZERO) { *Dest = trunc(*Source); }
     else if (RoundType == FE_UPWARD) { *Dest = ceil(*Source); }
     else if (RoundType == FE_DOWNWARD) { *Dest = floor(*Source); }
