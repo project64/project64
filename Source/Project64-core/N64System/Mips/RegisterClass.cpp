@@ -390,7 +390,7 @@ void CRegisters::DoAddressError(bool DelaySlot, uint32_t BadVaddr, bool FromRead
     m_PROGRAM_COUNTER = 0x80000180;
 }
 
-void  ()
+void CRegisters::FixFpuLocations()
 {
     if ((STATUS_REGISTER & STATUS_FR) == 0)
     {
