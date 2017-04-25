@@ -22,6 +22,7 @@ static int st1_off;
 static int st1_en;
 static int fog_ext_off;
 static int fog_ext_en;
+static int fog_enabled;
 
 int w_buffer_mode;
 int inverted_culling;
