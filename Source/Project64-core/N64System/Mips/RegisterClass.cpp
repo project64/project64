@@ -396,8 +396,8 @@ void CRegisters::FixFpuLocations()
     {
         for (int count = 0; count < 32; count++)
         {
-            m_FPR_S[count] = &m_FPR[count >> 1].F[count & 1];
-            m_FPR_D[count] = &m_FPR[count >> 1].D;
+            m_FPR_S[count] = &m_FPR[count & ~1].F[count & 1];
+            m_FPR_D[count] = &m_FPR[count & ~1].D;
         }
     }
     else
