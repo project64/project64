@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A4D13408-A794-4199-8FC7-4A9A32505005}</ProjectGuid>
-    <RootNamespace>n64Glide</RootNamespace>
+    <RootNamespace>Project64-video</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -32,8 +32,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <PropertyGroup>
-    <TargetName>PJ64Glide64</TargetName>
-    <TargetName Condition="'$(Configuration)'=='Debug'">PJ64Glide64_d</TargetName>
+    <TargetName>Project64-Video</TargetName>
+    <TargetName Condition="'$(Configuration)'=='Debug'">Project64-Video_d</TargetName>
     <OutDir>$(SolutionDir)Plugin\GFX\</OutDir>
     <OutDir Condition="'$(Platform)'=='x64'">$(SolutionDir)Plugin64\GFX\</OutDir>
   </PropertyGroup>
@@ -51,6 +51,26 @@
     <ClInclude Include="ScreenResolution.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SettingsID.h" />
+    <ClInclude Include="TextureEnhancer\Ext_TxFilter.h" />
+    <ClInclude Include="TextureEnhancer\tc-1.1+\dxtn.h" />
+    <ClInclude Include="TextureEnhancer\tc-1.1+\fxt1.h" />
+    <ClInclude Include="TextureEnhancer\tc-1.1+\internal.h" />
+    <ClInclude Include="TextureEnhancer\tc-1.1+\types.h" />
+    <ClInclude Include="TextureEnhancer\TextureFilters.h" />
+    <ClInclude Include="TextureEnhancer\TextureFilters_2xsai.h" />
+    <ClInclude Include="TextureEnhancer\TextureFilters_hq2x.h" />
+    <ClInclude Include="TextureEnhancer\TextureFilters_hq4x.h" />
+    <ClInclude Include="TextureEnhancer\TextureFilters_lq2x.h" />
+    <ClInclude Include="TextureEnhancer\TxCache.h" />
+    <ClInclude Include="TextureEnhancer\TxDbg.h" />
+    <ClInclude Include="TextureEnhancer\TxFilter.h" />
+    <ClInclude Include="TextureEnhancer\TxHiResCache.h" />
+    <ClInclude Include="TextureEnhancer\TxImage.h" />
+    <ClInclude Include="TextureEnhancer\TxInternal.h" />
+    <ClInclude Include="TextureEnhancer\TxQuantize.h" />
+    <ClInclude Include="TextureEnhancer\TxReSample.h" />
+    <ClInclude Include="TextureEnhancer\TxTexCache.h" />
+    <ClInclude Include="TextureEnhancer\TxUtil.h" />
     <ClInclude Include="trace.h" />
     <ClInclude Include="turbo3D.h" />
     <ClInclude Include="ucode.h" />
@@ -98,6 +118,10 @@
   <ItemGroup>
     <ClCompile Include="Android.cpp" />
     <ClCompile Include="CRC.cpp" />
+    <ClCompile Include="Renderer\OGLcombiner.cpp" />
+    <ClCompile Include="Renderer\OGLgeometry.cpp" />
+    <ClCompile Include="Renderer\OGLglitchmain.cpp" />
+    <ClCompile Include="Renderer\OGLtextures.cpp" />
     <ClCompile Include="ScreenResolution.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="TexCache.cpp" />
@@ -111,6 +135,24 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="rdp.cpp" />
     <ClCompile Include="TexBuffer.cpp" />
+    <ClCompile Include="TextureEnhancer\tc-1.1+\dxtn.c" />
+    <ClCompile Include="TextureEnhancer\tc-1.1+\fxt1.c" />
+    <ClCompile Include="TextureEnhancer\tc-1.1+\texstore.c" />
+    <ClCompile Include="TextureEnhancer\tc-1.1+\wrapper.c" />
+    <ClCompile Include="TextureEnhancer\TextureFilters.cpp" />
+    <ClCompile Include="TextureEnhancer\TextureFilters_2xsai.cpp" />
+    <ClCompile Include="TextureEnhancer\TextureFilters_hq2x.cpp" />
+    <ClCompile Include="TextureEnhancer\TextureFilters_hq4x.cpp" />
+    <ClCompile Include="TextureEnhancer\TxCache.cpp" />
+    <ClCompile Include="TextureEnhancer\TxDbg.cpp" />
+    <ClCompile Include="TextureEnhancer\TxFilter.cpp" />
+    <ClCompile Include="TextureEnhancer\TxFilterExport.cpp" />
+    <ClCompile Include="TextureEnhancer\TxHiResCache.cpp" />
+    <ClCompile Include="TextureEnhancer\TxImage.cpp" />
+    <ClCompile Include="TextureEnhancer\TxQuantize.cpp" />
+    <ClCompile Include="TextureEnhancer\TxReSample.cpp" />
+    <ClCompile Include="TextureEnhancer\TxTexCache.cpp" />
+    <ClCompile Include="TextureEnhancer\TxUtil.cpp" />
     <ClCompile Include="trace.cpp" />
     <ClCompile Include="Util.cpp" />
   </ItemGroup>
@@ -143,12 +185,6 @@
     <ProjectReference Include="..\Settings\Settings.vcxproj">
       <Project>{8b9961b1-88d9-4ea3-a752-507a00dd9f3d}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="Renderer\Glitch64.vcxproj">
-      <Project>{462c2608-182f-452c-944f-af201e19300b}</Project>
-    </ProjectReference>
-    <ProjectReference Include="TextureEnhancer\GlideHQ.vcxproj">
-      <Project>{2daddaa5-0f57-46ed-a974-747908ddc7f3}</Project>
     </ProjectReference>
   </ItemGroup>
 </Project>

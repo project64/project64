@@ -29,8 +29,8 @@
 #include <stdlib.h>
 #include "glide.h"
 #include "glitchmain.h"
-#include <Glide64/trace.h>
-#include <Glide64/Settings.h>
+#include <Project64-video/trace.h>
+#include <Project64-video/Settings.h>
 #include <vector>
 
 void vbo_draw();

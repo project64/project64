@@ -20,6 +20,9 @@
     <Filter Include="Res">
       <UniqueIdentifier>{f0e9ed7a-3046-4b82-a4b1-5f58e1fe7446}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Renderer">
+      <UniqueIdentifier>{2f56a742-ee60-47e1-ae68-6d19d9be996a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="turbo3D.h">
@@ -131,6 +134,26 @@
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SettingsID.h" />
     <ClInclude Include="ScreenResolution.h" />
+    <ClInclude Include="TextureEnhancer\Ext_TxFilter.h" />
+    <ClInclude Include="TextureEnhancer\tc-1.1+\dxtn.h" />
+    <ClInclude Include="TextureEnhancer\tc-1.1+\fxt1.h" />
+    <ClInclude Include="TextureEnhancer\tc-1.1+\internal.h" />
+    <ClInclude Include="TextureEnhancer\tc-1.1+\types.h" />
+    <ClInclude Include="TextureEnhancer\TextureFilters.h" />
+    <ClInclude Include="TextureEnhancer\TextureFilters_2xsai.h" />
+    <ClInclude Include="TextureEnhancer\TextureFilters_hq2x.h" />
+    <ClInclude Include="TextureEnhancer\TextureFilters_hq4x.h" />
+    <ClInclude Include="TextureEnhancer\TextureFilters_lq2x.h" />
+    <ClInclude Include="TextureEnhancer\TxCache.h" />
+    <ClInclude Include="TextureEnhancer\TxDbg.h" />
+    <ClInclude Include="TextureEnhancer\TxFilter.h" />
+    <ClInclude Include="TextureEnhancer\TxHiResCache.h" />
+    <ClInclude Include="TextureEnhancer\TxImage.h" />
+    <ClInclude Include="TextureEnhancer\TxInternal.h" />
+    <ClInclude Include="TextureEnhancer\TxQuantize.h" />
+    <ClInclude Include="TextureEnhancer\TxReSample.h" />
+    <ClInclude Include="TextureEnhancer\TxTexCache.h" />
+    <ClInclude Include="TextureEnhancer\TxUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CRC.cpp">
@@ -156,6 +179,36 @@
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="ScreenResolution.cpp" />
     <ClCompile Include="Android.cpp" />
+    <ClCompile Include="TextureEnhancer\tc-1.1+\dxtn.c" />
+    <ClCompile Include="TextureEnhancer\tc-1.1+\fxt1.c" />
+    <ClCompile Include="TextureEnhancer\tc-1.1+\texstore.c" />
+    <ClCompile Include="TextureEnhancer\tc-1.1+\wrapper.c" />
+    <ClCompile Include="TextureEnhancer\TextureFilters.cpp" />
+    <ClCompile Include="TextureEnhancer\TextureFilters_2xsai.cpp" />
+    <ClCompile Include="TextureEnhancer\TextureFilters_hq2x.cpp" />
+    <ClCompile Include="TextureEnhancer\TextureFilters_hq4x.cpp" />
+    <ClCompile Include="TextureEnhancer\TxCache.cpp" />
+    <ClCompile Include="TextureEnhancer\TxDbg.cpp" />
+    <ClCompile Include="TextureEnhancer\TxFilter.cpp" />
+    <ClCompile Include="TextureEnhancer\TxFilterExport.cpp" />
+    <ClCompile Include="TextureEnhancer\TxHiResCache.cpp" />
+    <ClCompile Include="TextureEnhancer\TxImage.cpp" />
+    <ClCompile Include="TextureEnhancer\TxQuantize.cpp" />
+    <ClCompile Include="TextureEnhancer\TxReSample.cpp" />
+    <ClCompile Include="TextureEnhancer\TxTexCache.cpp" />
+    <ClCompile Include="TextureEnhancer\TxUtil.cpp" />
+    <ClCompile Include="Renderer\OGLcombiner.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\OGLgeometry.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\OGLglitchmain.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\OGLtextures.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="gpl.txt">

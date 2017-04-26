@@ -13,15 +13,6 @@
 		<copy todir="./jni/Common/">
 		    <fileset dir="../Source/Common"/>
 		</copy>
-		<copy todir="./jni/Glide64/">
-		    <fileset dir="../Source/Glide64"/>
-		</copy>
-		<copy todir="./jni/GlideHQ/">
-		    <fileset dir="../Source/GlideHQ"/>
-		</copy>
-		<copy todir="./jni/Glitch64/">
-		    <fileset dir="../Source/Glitch64"/>
-		</copy>
 		<copy todir="./jni/PluginAudio/">
 		    <fileset dir="../Source/Android/PluginAudio"/>
 		</copy>
@@ -36,6 +27,9 @@
 		</copy>
 		<copy todir="./jni/Project64-core/">
 		    <fileset dir="../Source/Project64-core"/>
+		</copy>
+		<copy todir="./jni/Project64-video/">
+		    <fileset dir="../Source/Project64-video"/>
 		</copy>
 		<copy todir="./jni/Settings/">
 		    <fileset dir="../Source/Settings"/>
