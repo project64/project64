@@ -19,7 +19,6 @@
 /* NOTE: The codes are not optimized. They can be made faster. */
 
 #include "TxQuantize.h"
-#include <Project64-video/Renderer/types.h>
 
 TxQuantize::TxQuantize()
 {
@@ -1730,29 +1729,29 @@ TxQuantize::quantize(uint8* src, uint8* dest, int width, int height, uint16 srcf
     quantizerFunc quantizer;
     int bpp_shift = 0;
 
-    if (destformat == GFX_TEXFMT_ARGB_8888) {
+    if (destformat == GR_TEXFMT_ARGB_8888) {
         switch (srcformat) {
-        case GFX_TEXFMT_ARGB_1555:
+        case GR_TEXFMT_ARGB_1555:
             quantizer = &TxQuantize::ARGB1555_ARGB8888;
             bpp_shift = 1;
             break;
-        case GFX_TEXFMT_ARGB_4444:
+        case GR_TEXFMT_ARGB_4444:
             quantizer = &TxQuantize::ARGB4444_ARGB8888;
             bpp_shift = 1;
             break;
-        case GFX_TEXFMT_RGB_565:
+        case GR_TEXFMT_RGB_565:
             quantizer = &TxQuantize::RGB565_ARGB8888;
             bpp_shift = 1;
             break;
-        case GFX_TEXFMT_ALPHA_8:
+        case GR_TEXFMT_ALPHA_8:
             quantizer = &TxQuantize::A8_ARGB8888;
             bpp_shift = 2;
             break;
-        case GFX_TEXFMT_ALPHA_INTENSITY_44:
+        case GR_TEXFMT_ALPHA_INTENSITY_44:
             quantizer = &TxQuantize::AI44_ARGB8888;
             bpp_shift = 2;
             break;
-        case GFX_TEXFMT_ALPHA_INTENSITY_88:
+        case GR_TEXFMT_ALPHA_INTENSITY_88:
             quantizer = &TxQuantize::AI88_ARGB8888;
             bpp_shift = 1;
             break;
@@ -1768,30 +1767,30 @@ TxQuantize::quantize(uint8* src, uint8* dest, int width, int height, uint16 srcf
         }
         (*this.*quantizer)((uint32*)src, (uint32*)dest, width, height);
     }
-    else if (srcformat == GFX_TEXFMT_ARGB_8888) {
+    else if (srcformat == GR_TEXFMT_ARGB_8888) {
         switch (destformat) {
-        case GFX_TEXFMT_ARGB_1555:
+        case GR_TEXFMT_ARGB_1555:
             quantizer = fastQuantizer ? &TxQuantize::ARGB8888_ARGB1555 : &TxQuantize::ARGB8888_ARGB1555_ErrD;
             bpp_shift = 1;
             break;
-        case GFX_TEXFMT_ARGB_4444:
+        case GR_TEXFMT_ARGB_4444:
             quantizer = fastQuantizer ? &TxQuantize::ARGB8888_ARGB4444 : &TxQuantize::ARGB8888_ARGB4444_ErrD;
             bpp_shift = 1;
             break;
-        case GFX_TEXFMT_RGB_565:
+        case GR_TEXFMT_RGB_565:
             quantizer = fastQuantizer ? &TxQuantize::ARGB8888_RGB565 : &TxQuantize::ARGB8888_RGB565_ErrD;
             bpp_shift = 1;
             break;
-        case GFX_TEXFMT_ALPHA_8:
-        case GFX_TEXFMT_INTENSITY_8:
+        case GR_TEXFMT_ALPHA_8:
+        case GR_TEXFMT_INTENSITY_8:
             quantizer = fastQuantizer ? &TxQuantize::ARGB8888_A8 : &TxQuantize::ARGB8888_I8_Slow;
             bpp_shift = 2;
             break;
-        case GFX_TEXFMT_ALPHA_INTENSITY_44:
+        case GR_TEXFMT_ALPHA_INTENSITY_44:
             quantizer = fastQuantizer ? &TxQuantize::ARGB8888_AI44 : &TxQuantize::ARGB8888_AI44_ErrD;
             bpp_shift = 2;
             break;
-        case GFX_TEXFMT_ALPHA_INTENSITY_88:
+        case GR_TEXFMT_ALPHA_INTENSITY_88:
             quantizer = fastQuantizer ? &TxQuantize::ARGB8888_AI88 : &TxQuantize::ARGB8888_AI88_Slow;
             bpp_shift = 1;
             break;
@@ -1847,7 +1846,7 @@ TxQuantize::FXT1(uint8 *src, uint8 *dest,
 /* dxtn adjusts width and height to M8 and M4 respectively by replication */
         *destwidth = (srcwidth + 7) & ~7;
         *destheight = (srcheight + 3) & ~3;
-        *destformat = GFX_TEXFMT_ARGB_CMP_FXT1;
+        *destformat = GR_TEXFMT_ARGB_CMP_FXT1;
 
         bRet = 1;
     }
@@ -1877,33 +1876,33 @@ TxQuantize::DXTn(uint8 *src, uint8 *dest,
          */
 
          /* skip formats that DXTn won't help in size. */
-        if (srcformat == GFX_TEXFMT_ALPHA_8 ||
-            srcformat == GFX_TEXFMT_ALPHA_INTENSITY_44) {
+        if (srcformat == GR_TEXFMT_ALPHA_8 ||
+            srcformat == GR_TEXFMT_ALPHA_INTENSITY_44) {
             ; /* shutup compiler */
         }
         else {
             int dstRowStride = ((srcwidth + 3) & ~3) << 2;
             int compression = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
 
-            *destformat = GFX_TEXFMT_ARGB_CMP_DXT5;
+            *destformat = GR_TEXFMT_ARGB_CMP_DXT5;
 
 #if !GLIDE64_DXTN
             /* okay... we are going to disable DXT1 with 1bit alpha
              * for Glide64. some textures have all 0 alpha values.
              * see "N64 Kobe Bryant in NBA Courtside"
              */
-            if (srcformat == GFX_TEXFMT_ARGB_1555) {
+            if (srcformat == GR_TEXFMT_ARGB_1555) {
                 dstRowStride >>= 1;
                 compression = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-                *destformat = GFX_TEXFMT_ARGB_CMP_DXT1;
+                *destformat = GR_TEXFMT_ARGB_CMP_DXT1;
             }
             else
 #endif
-                if (srcformat == GFX_TEXFMT_RGB_565 ||
-                    srcformat == GFX_TEXFMT_INTENSITY_8) {
+                if (srcformat == GR_TEXFMT_RGB_565 ||
+                    srcformat == GR_TEXFMT_INTENSITY_8) {
                     dstRowStride >>= 1;
                     compression = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
-                    *destformat = GFX_TEXFMT_ARGB_CMP_DXT1;
+                    *destformat = GR_TEXFMT_ARGB_CMP_DXT1;
                 }
 
             unsigned int numcore = _numcore;

@@ -23,7 +23,6 @@
 #include "TxReSample.h"
 #include "TxDbg.h"
 #include <stdlib.h>
-#include <Project64-video/Renderer/types.h>
 
 bool TxImage::getPNGInfo(FILE *fp, png_structp *png_ptr, png_infop *info_ptr)
 {
@@ -67,7 +66,7 @@ bool TxImage::getPNGInfo(FILE *fp, png_structp *png_ptr, png_infop *info_ptr)
 uint8*
 TxImage::readPNG(FILE* fp, int* width, int* height, uint16* format)
 {
-    /* NOTE: returned image format is GFX_TEXFMT_ARGB_8888 */
+    /* NOTE: returned image format is GR_TEXFMT_ARGB_8888 */
 
     png_structp png_ptr;
     png_infop info_ptr;
@@ -194,7 +193,7 @@ TxImage::readPNG(FILE* fp, int* width, int* height, uint16* format)
 
         *width = (row_bytes >> 2);
         *height = o_height;
-        *format = GFX_TEXFMT_ARGB_8888;
+        *format = GR_TEXFMT_ARGB_8888;
 
 #if POW2_TEXTURES
         /* next power of 2 size conversions */
@@ -481,8 +480,8 @@ uint8*
 TxImage::readBMP(FILE* fp, int* width, int* height, uint16* format)
 {
     /* NOTE: returned image format;
-     *       4, 8bit palette bmp -> GFX_TEXFMT_P_8
-     *       24, 32bit bmp -> GFX_TEXFMT_ARGB_8888
+     *       4, 8bit palette bmp -> GR_TEXFMT_P_8
+     *       24, 32bit bmp -> GR_TEXFMT_ARGB_8888
      */
 
     uint8 *image = NULL;
@@ -605,11 +604,11 @@ TxImage::readBMP(FILE* fp, int* width, int* height, uint16* format)
         switch (bmp_ihdr.biBitCount) {
         case 8:
         case 4:
-            *format = GFX_TEXFMT_P_8;
+            *format = GR_TEXFMT_P_8;
             break;
         case 32:
         case 24:
-            *format = GFX_TEXFMT_ARGB_8888;
+            *format = GR_TEXFMT_ARGB_8888;
         }
 
 #if POW2_TEXTURES
@@ -765,17 +764,17 @@ TxImage::readDDS(FILE* fp, int* width, int* height, uint16* format)
         DBG_INFO(80, "DXT1 format\n");
         /* compensate for missing LinearSize */
         dds_fhdr.dwLinearSize = (dds_fhdr.dwWidth * dds_fhdr.dwHeight) >> 1;
-        tmpformat = GFX_TEXFMT_ARGB_CMP_DXT1;
+        tmpformat = GR_TEXFMT_ARGB_CMP_DXT1;
     }
     else if (memcmp(&dds_fhdr.ddpf.dwFourCC, "DXT3", 4) == 0) {
         DBG_INFO(80, "DXT3 format\n");
         dds_fhdr.dwLinearSize = dds_fhdr.dwWidth * dds_fhdr.dwHeight;
-        tmpformat = GFX_TEXFMT_ARGB_CMP_DXT3;
+        tmpformat = GR_TEXFMT_ARGB_CMP_DXT3;
     }
     else if (memcmp(&dds_fhdr.ddpf.dwFourCC, "DXT5", 4) == 0) {
         DBG_INFO(80, "DXT5 format\n");
         dds_fhdr.dwLinearSize = dds_fhdr.dwWidth * dds_fhdr.dwHeight;
-        tmpformat = GFX_TEXFMT_ARGB_CMP_DXT5;
+        tmpformat = GR_TEXFMT_ARGB_CMP_DXT5;
     }
     else {
         DBG_INFO(80, "Error: not DXT1 or DXT3 or DXT5 format!\n");
