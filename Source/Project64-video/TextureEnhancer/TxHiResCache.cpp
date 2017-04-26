@@ -1,28 +1,17 @@
-/*
- * Texture Filtering
- * Version:  1.0
- *
- * Copyright (C) 2007  Hiroshi Morii   All Rights Reserved.
- * Email koolsmoky(at)users.sourceforge.net
- * Web   http://www.3dfxzone.it/koolsmoky
- *
- * this is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * this is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with GNU Make; see the file COPYING.  If not, write to
- * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- */
-
-/* 2007 Gonetz <gonetz(at)ngs.ru>
- * Added callback to display hires texture info. */
+/***************************************************************************
+*                                                                          *
+* Project64-video - A Nintendo 64 gfx plugin.                              *
+* http://www.pj64-emu.com/                                                 *
+* Copyright (C) 2017 Project64. All rights reserved.                       *
+* Copyright (C) 2003-2009  Sergey 'Gonetz' Lipski                          *
+* Copyright (C) 2007 Hiroshi Morii                                         *
+* Copyright (C) 2003 Rice1964                                              *
+*                                                                          *
+* License:                                                                 *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                       *
+* version 2 of the License, or (at your option) any later version.         *
+*                                                                          *
+****************************************************************************/
 
 #ifdef _WIN32
 #pragma warning(disable: 4786)
@@ -32,14 +21,14 @@
  * (0:disable, 1:enable) */
 #define DUMP_CACHE 1
 
-/* handle oversized textures by
- *   0: minification
- *   1: Glide64 style tiling
- */
+ /* handle oversized textures by
+  *   0: minification
+  *   1: Glide64 style tiling
+  */
 #define TEXTURE_TILING 1
 
-/* use power of 2 texture size
- * (0:disable, 1:enable, 2:3dfx) */
+  /* use power of 2 texture size
+   * (0:disable, 1:enable, 2:3dfx) */
 #define POW2_TEXTURES 2
 
 #if TEXTURE_TILING
@@ -47,13 +36,13 @@
 #define POW2_TEXTURES 2
 #endif
 
-/* hack to reduce texture footprint to achieve
- * better performace on midrange gfx cards.
- * (0:disable, 1:enable) */
+   /* hack to reduce texture footprint to achieve
+    * better performace on midrange gfx cards.
+    * (0:disable, 1:enable) */
 #define REDUCE_TEXTURE_FOOTPRINT 0
 
-/* use aggressive format assumption for quantization
- * (0:disable, 1:enable, 2:extreme) */
+    /* use aggressive format assumption for quantization
+     * (0:disable, 1:enable, 2:extreme) */
 #define AGGRESSIVE_QUANTIZATION 1
 
 #include "TxHiResCache.h"
@@ -62,6 +51,7 @@
 #include <string>
 #include <Common/path.h>
 #include <Common/StdString.h>
+#include <Project64-video/Renderer/types.h>
 #ifdef _WIN32
 #include <io.h>
 #endif
@@ -88,7 +78,7 @@ TxHiResCache::~TxHiResCache()
 }
 
 TxHiResCache::TxHiResCache(int maxwidth, int maxheight, int maxbpp, int options, const char *path, const char *ident, dispInfoFuncExt callback) :
-TxCache((options & ~GZ_TEXCACHE), 0, path, ident, callback)
+    TxCache((options & ~GZ_TEXCACHE), 0, path, ident, callback)
 {
     _txImage = new TxImage();
     _txQuantize = new TxQuantize();
@@ -129,14 +119,14 @@ TxCache((options & ~GZ_TEXCACHE), 0, path, ident, callback)
     if (!_haveCache) TxHiResCache::load(0);
 }
 
-boolean
+bool
 TxHiResCache::empty()
 {
     return _cache.empty();
 }
 
-boolean
-TxHiResCache::load(boolean replace) /* 0 : reload, 1 : replace partial */
+bool
+TxHiResCache::load(bool replace) /* 0 : reload, 1 : replace partial */
 {
     if (!_path.empty() && !_ident.empty())
     {
@@ -168,7 +158,7 @@ TxHiResCache::load(boolean replace) /* 0 : reload, 1 : replace partial */
     return 0;
 }
 
-boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
+bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
 {
 #ifdef _WIN32
     DBG_INFO(80, "-----\n");
@@ -198,12 +188,6 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
     {
         do
         {
-            if (KBHIT(0x1B))
-            {
-                _abortLoad = 1;
-                if (_callback) (*_callback)("Aborted loading hiresolution texture!\n");
-                INFO(80, "Error: aborted loading hiresolution texture!\n");
-            }
             if (_abortLoad) break;
 
             DBG_INFO(80, "-----\n");
@@ -221,7 +205,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
             /* Rice hi-res textures: begin
             */
             uint32 chksum = 0, fmt = 0, siz = 0, palchksum = 0;
-            char *pfname = NULL, fname[MAX_PATH];
+            char *pfname = NULL, fname[260];
             std::string ident;
             FILE *fp = NULL;
 
@@ -240,7 +224,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
             /* read in Rice's file naming convention */
 #define CRCFMTSIZ_LEN 13
 #define PALCRC_LEN 9
-            wcstombs(fname, stdstr(TextureDir.GetNameExtension()).ToUTF16().c_str(), MAX_PATH);
+            wcstombs(fname, stdstr(TextureDir.GetNameExtension()).ToUTF16().c_str(), 260);
             /* XXX case sensitivity fiasco!
             * files must use _a, _rgb, _all, _allciByRGBA, _ciByRGBA, _ci
             * and file extensions must be in lower case letters! */
@@ -294,9 +278,9 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
 
             /* check if we already have it in hires texture cache */
             if (!replace) {
-                uint64 chksum64 = (uint64)palchksum;
+                uint64_t chksum64 = (uint64_t)palchksum;
                 chksum64 <<= 32;
-                chksum64 |= (uint64)chksum;
+                chksum64 |= (uint64_t)chksum;
                 if (TxCache::is_cached(chksum64)) {
 #if !DEBUG
                     INFO(80, "-----\n");
@@ -382,7 +366,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                 if (tmptex) {
                     /* check if _rgb.* and _a.* have matching size and format. */
                     if (!tex || width != tmpwidth || height != tmpheight ||
-                        format != GR_TEXFMT_ARGB_8888 || tmpformat != GR_TEXFMT_ARGB_8888) {
+                        format != GFX_TEXFMT_ARGB_8888 || tmpformat != GFX_TEXFMT_ARGB_8888) {
 #if !DEBUG
                         INFO(80, "-----\n");
                         INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
@@ -394,7 +378,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                         else if (width != tmpwidth || height != tmpheight) {
                             INFO(80, "Error: _rgb.* and _a.* have mismatched width or height!\n");
                         }
-                        else if (format != GR_TEXFMT_ARGB_8888 || tmpformat != GR_TEXFMT_ARGB_8888) {
+                        else if (format != GFX_TEXFMT_ARGB_8888 || tmpformat != GFX_TEXFMT_ARGB_8888) {
                             INFO(80, "Error: _rgb.* or _a.* not in 32bit color!\n");
                         }
                         if (tex) free(tex);
@@ -421,7 +405,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                             uint32 texel = ((uint32*)tmptex)[i];
                             uint32 acomp = (((texel >> 16) & 0xff) * 6969 +
                                 ((texel >> 8) & 0xff) * 23434 +
-                                ((texel)& 0xff) * 2365) / 32768;
+                                ((texel) & 0xff) * 2365) / 32768;
                             ((uint32*)tex)[i] = (acomp << 24) | (((uint32*)tex)[i] & 0x00ffffff);
 #endif
 #if 0
@@ -429,7 +413,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                             uint32 texel = ((uint32*)tmptex)[i];
                             uint32 acomp = (((texel >> 16) & 0xff) * 299 +
                                 ((texel >> 8) & 0xff) * 587 +
-                                ((texel)& 0xff) * 114) / 1000;
+                                ((texel) & 0xff) * 114) / 1000;
                             ((uint32*)tex)[i] = (acomp << 24) | (((uint32*)tex)[i] & 0x00ffffff);
 #endif
                         }
@@ -457,58 +441,58 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                  * read in _all.png, _all.dds, _allciByRGBA.png, _allciByRGBA.dds
                  * _ciByRGBA.png, _ciByRGBA.dds, _ci.bmp
                  */
-                 if (pfname == strstr(fname, "_all.png") ||
-                     pfname == strstr(fname, "_all.dds") ||
+                if (pfname == strstr(fname, "_all.png") ||
+                    pfname == strstr(fname, "_all.dds") ||
 #ifdef _WIN32
-                     pfname == strstr(fname, "_allcibyrgba.png") ||
-                     pfname == strstr(fname, "_allcibyrgba.dds") ||
-                     pfname == strstr(fname, "_cibyrgba.png") ||
-                     pfname == strstr(fname, "_cibyrgba.dds") ||
+                    pfname == strstr(fname, "_allcibyrgba.png") ||
+                    pfname == strstr(fname, "_allcibyrgba.dds") ||
+                    pfname == strstr(fname, "_cibyrgba.png") ||
+                    pfname == strstr(fname, "_cibyrgba.dds") ||
 #else
-                     pfname == strstr(fname, "_allciByRGBA.png") ||
-                     pfname == strstr(fname, "_allciByRGBA.dds") ||
-                     pfname == strstr(fname, "_ciByRGBA.png") ||
-                     pfname == strstr(fname, "_ciByRGBA.dds") ||
+                    pfname == strstr(fname, "_allciByRGBA.png") ||
+                    pfname == strstr(fname, "_allciByRGBA.dds") ||
+                    pfname == strstr(fname, "_ciByRGBA.png") ||
+                    pfname == strstr(fname, "_ciByRGBA.dds") ||
 #endif
-                     pfname == strstr(fname, "_ci.bmp")) {
-                     CPath TargetFile(dir_path, fname);
-                     if ((fp = fopen(TargetFile, "rb")) != NULL) {
-                         if (strstr(fname, ".png")) tex = _txImage->readPNG(fp, &width, &height, &format);
-                         else if (strstr(fname, ".dds")) tex = _txImage->readDDS(fp, &width, &height, &format);
-                         else                            tex = _txImage->readBMP(fp, &width, &height, &format);
-                         fclose(fp);
-                     }
-                     /* XXX: auto-adjustment of dxt dds textures unsupported for now */
-                     if (tex && strstr(fname, ".dds")) {
-                         const float aspectratio = (width > height) ? (float)width / (float)height : (float)height / (float)width;
-                         if (!(aspectratio == 1.0 ||
-                             aspectratio == 2.0 ||
-                             aspectratio == 4.0 ||
-                             aspectratio == 8.0)) {
-                             free(tex);
-                             tex = NULL;
+                    pfname == strstr(fname, "_ci.bmp")) {
+                    CPath TargetFile(dir_path, fname);
+                    if ((fp = fopen(TargetFile, "rb")) != NULL) {
+                        if (strstr(fname, ".png")) tex = _txImage->readPNG(fp, &width, &height, &format);
+                        else if (strstr(fname, ".dds")) tex = _txImage->readDDS(fp, &width, &height, &format);
+                        else                            tex = _txImage->readBMP(fp, &width, &height, &format);
+                        fclose(fp);
+                    }
+                    /* XXX: auto-adjustment of dxt dds textures unsupported for now */
+                    if (tex && strstr(fname, ".dds")) {
+                        const float aspectratio = (width > height) ? (float)width / (float)height : (float)height / (float)width;
+                        if (!(aspectratio == 1.0 ||
+                            aspectratio == 2.0 ||
+                            aspectratio == 4.0 ||
+                            aspectratio == 8.0)) {
+                            free(tex);
+                            tex = NULL;
 #if !DEBUG
-                             INFO(80, "-----\n");
-                             INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
-                             INFO(80, "file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+                            INFO(80, "-----\n");
+                            INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+                            INFO(80, "file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
-                             INFO(80, "Error: W:H aspect ratio range not 8:1 - 1:8!\n");
-                             continue;
-                         }
-                         if (width != _txReSample->nextPow2(width) ||
-                             height != _txReSample->nextPow2(height)) {
-                             free(tex);
-                             tex = NULL;
+                            INFO(80, "Error: W:H aspect ratio range not 8:1 - 1:8!\n");
+                            continue;
+                        }
+                        if (width != _txReSample->nextPow2(width) ||
+                            height != _txReSample->nextPow2(height)) {
+                            free(tex);
+                            tex = NULL;
 #if !DEBUG
-                             INFO(80, "-----\n");
-                             INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
-                             INFO(80, "file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
+                            INFO(80, "-----\n");
+                            INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
+                            INFO(80, "file: %ls\n", TextureDir.GetNameExtension().ToUTF16().c_str());
 #endif
-                             INFO(80, "Error: not power of 2 size!\n");
-                             continue;
-                         }
-                     }
-                 }
+                            INFO(80, "Error: not power of 2 size!\n");
+                            continue;
+                        }
+                    }
+                }
 
             /* if we do not have a texture at this point we are screwed */
             if (!tex) {
@@ -523,11 +507,11 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
             DBG_INFO(80, "read in as %d x %d gfmt:%x\n", tmpwidth, tmpheight, tmpformat);
 
             /* check if size and format are OK */
-            if (!(format == GR_TEXFMT_ARGB_8888 ||
-                format == GR_TEXFMT_P_8 ||
-                format == GR_TEXFMT_ARGB_CMP_DXT1 ||
-                format == GR_TEXFMT_ARGB_CMP_DXT3 ||
-                format == GR_TEXFMT_ARGB_CMP_DXT5) ||
+            if (!(format == GFX_TEXFMT_ARGB_8888 ||
+                format == GFX_TEXFMT_P_8 ||
+                format == GFX_TEXFMT_ARGB_CMP_DXT1 ||
+                format == GFX_TEXFMT_ARGB_CMP_DXT3 ||
+                format == GFX_TEXFMT_ARGB_CMP_DXT5) ||
                 (width * height) < 4) { /* TxQuantize requirement: width * height must be 4 or larger. */
                 free(tex);
                 tex = NULL;
@@ -541,11 +525,11 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
             }
 
             /* analyze and determine best format to quantize */
-            if (format == GR_TEXFMT_ARGB_8888) {
+            if (format == GFX_TEXFMT_ARGB_8888) {
                 int i;
                 int alphabits = 0;
                 int fullalpha = 0;
-                boolean intensity = 1;
+                bool intensity = 1;
 
                 if (!(_options & LET_TEXARTISTS_FLY)) {
                     /* HACK ALERT! */
@@ -634,7 +618,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                     if (intensity) {
                         int rcomp = (texel >> 16) & 0xff;
                         int gcomp = (texel >> 8) & 0xff;
-                        int bcomp = (texel)& 0xff;
+                        int bcomp = (texel) & 0xff;
 #if AGGRESSIVE_QUANTIZATION
                         if (abs(rcomp - gcomp) > 8 || abs(rcomp - bcomp) > 8 || abs(gcomp - bcomp) > 8) intensity = 0;
 #else
@@ -649,33 +633,33 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
 #if !REDUCE_TEXTURE_FOOTPRINT
                 if (_maxbpp < 32 || _options & (FORCE16BPP_HIRESTEX | COMPRESSION_MASK)) {
 #endif
-                    if (alphabits == 0) destformat = GR_TEXFMT_RGB_565;
-                    else if (alphabits == 1) destformat = GR_TEXFMT_ARGB_1555;
-                    else                     destformat = GR_TEXFMT_ARGB_8888;
+                    if (alphabits == 0) destformat = GFX_TEXFMT_RGB_565;
+                    else if (alphabits == 1) destformat = GFX_TEXFMT_ARGB_1555;
+                    else                     destformat = GFX_TEXFMT_ARGB_8888;
 #if !REDUCE_TEXTURE_FOOTPRINT
                 }
                 else {
-                    destformat = GR_TEXFMT_ARGB_8888;
+                    destformat = GFX_TEXFMT_ARGB_8888;
                 }
 #endif
                 if (fmt == 4 && alphabits == 0) {
-                    destformat = GR_TEXFMT_ARGB_8888;
+                    destformat = GFX_TEXFMT_ARGB_8888;
                     /* Rice I format; I = (R + G + B) / 3 */
                     for (i = 0; i < height * width; i++) {
                         uint32 texel = ((uint32*)tex)[i];
                         uint32 icomp = (((texel >> 16) & 0xff) +
                             ((texel >> 8) & 0xff) +
-                            ((texel)& 0xff)) / 3;
+                            ((texel) & 0xff)) / 3;
                         ((uint32*)tex)[i] = (icomp << 24) | (texel & 0x00ffffff);
                     }
                 }
                 if (intensity) {
                     if (alphabits == 0) {
-                        if (fmt == 4) destformat = GR_TEXFMT_ALPHA_8;
-                        else          destformat = GR_TEXFMT_INTENSITY_8;
+                        if (fmt == 4) destformat = GFX_TEXFMT_ALPHA_8;
+                        else          destformat = GFX_TEXFMT_INTENSITY_8;
                     }
                     else {
-                        destformat = GR_TEXFMT_ALPHA_INTENSITY_88;
+                        destformat = GFX_TEXFMT_ALPHA_INTENSITY_88;
                     }
                 }
 
@@ -684,8 +668,8 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
             /*
              * Rice hi-res textures: end */
 
-            /* XXX: only ARGB8888 for now. comeback to this later... */
-            if (format == GR_TEXFMT_ARGB_8888) {
+             /* XXX: only ARGB8888 for now. comeback to this later... */
+            if (format == GFX_TEXFMT_ARGB_8888) {
 #if TEXTURE_TILING
 
                 /* Glide64 style texture tiling */
@@ -695,136 +679,136 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                 /* NOTE: we skip this for palette textures that need minification
                  * becasue it will look ugly. */
 
-                /* minification */
-      {
-          int ratio = 1;
+                 /* minification */
+                {
+                    int ratio = 1;
 
-          /* minification to enable glide64 style texture tiling */
-          /* determine the minification ratio to tile the texture into 256x256 size */
-          if ((_options & TILE_HIRESTEX) && _maxwidth >= 256 && _maxheight >= 256) {
-              DBG_INFO(80, "determine minification ratio to tile\n");
-              tmpwidth = width;
-              tmpheight = height;
-              if (height > 256) {
-                  ratio = ((height - 1) >> 8) + 1;
-                  tmpwidth = width / ratio;
-                  tmpheight = height / ratio;
-                  DBG_INFO(80, "height > 256, minification ratio:%d %d x %d -> %d x %d\n",
-                      ratio, width, height, tmpwidth, tmpheight);
-              }
-              if (tmpwidth > 256 && (((tmpwidth - 1) >> 8) + 1) * tmpheight > 256) {
-                  ratio *= ((((((tmpwidth - 1) >> 8) + 1) * tmpheight) - 1) >> 8) + 1;
-                  DBG_INFO(80, "width > 256, minification ratio:%d %d x %d -> %d x %d\n",
-                      ratio, width, height, width / ratio, height / ratio);
-              }
-          }
-          else {
-              /* normal minification to fit max texture size */
-              if (width > _maxwidth || height > _maxheight) {
-                  DBG_INFO(80, "determine minification ratio to fit max texture size\n");
-                  tmpwidth = width;
-                  tmpheight = height;
-                  while (tmpwidth > _maxwidth) {
-                      tmpheight >>= 1;
-                      tmpwidth >>= 1;
-                      ratio <<= 1;
-                  }
-                  while (tmpheight > _maxheight) {
-                      tmpheight >>= 1;
-                      tmpwidth >>= 1;
-                      ratio <<= 1;
-                  }
-                  DBG_INFO(80, "minification ratio:%d %d x %d -> %d x %d\n",
-                      ratio, width, height, tmpwidth, tmpheight);
-              }
-          }
+                    /* minification to enable glide64 style texture tiling */
+                    /* determine the minification ratio to tile the texture into 256x256 size */
+                    if ((_options & TILE_HIRESTEX) && _maxwidth >= 256 && _maxheight >= 256) {
+                        DBG_INFO(80, "determine minification ratio to tile\n");
+                        tmpwidth = width;
+                        tmpheight = height;
+                        if (height > 256) {
+                            ratio = ((height - 1) >> 8) + 1;
+                            tmpwidth = width / ratio;
+                            tmpheight = height / ratio;
+                            DBG_INFO(80, "height > 256, minification ratio:%d %d x %d -> %d x %d\n",
+                                ratio, width, height, tmpwidth, tmpheight);
+                        }
+                        if (tmpwidth > 256 && (((tmpwidth - 1) >> 8) + 1) * tmpheight > 256) {
+                            ratio *= ((((((tmpwidth - 1) >> 8) + 1) * tmpheight) - 1) >> 8) + 1;
+                            DBG_INFO(80, "width > 256, minification ratio:%d %d x %d -> %d x %d\n",
+                                ratio, width, height, width / ratio, height / ratio);
+                        }
+                    }
+                    else {
+                        /* normal minification to fit max texture size */
+                        if (width > _maxwidth || height > _maxheight) {
+                            DBG_INFO(80, "determine minification ratio to fit max texture size\n");
+                            tmpwidth = width;
+                            tmpheight = height;
+                            while (tmpwidth > _maxwidth) {
+                                tmpheight >>= 1;
+                                tmpwidth >>= 1;
+                                ratio <<= 1;
+                            }
+                            while (tmpheight > _maxheight) {
+                                tmpheight >>= 1;
+                                tmpwidth >>= 1;
+                                ratio <<= 1;
+                            }
+                            DBG_INFO(80, "minification ratio:%d %d x %d -> %d x %d\n",
+                                ratio, width, height, tmpwidth, tmpheight);
+                        }
+                    }
 
-          if (ratio > 1) {
-              if (!_txReSample->minify(&tex, &width, &height, ratio)) {
-                  free(tex);
-                  tex = NULL;
-                  DBG_INFO(80, "Error: minification failed!\n");
-                  continue;
-              }
-          }
-      }
+                    if (ratio > 1) {
+                        if (!_txReSample->minify(&tex, &width, &height, ratio)) {
+                            free(tex);
+                            tex = NULL;
+                            DBG_INFO(80, "Error: minification failed!\n");
+                            continue;
+                        }
+                    }
+                }
 
-      /* tiling */
-      if ((_options & TILE_HIRESTEX) && _maxwidth >= 256 && _maxheight >= 256) {
-          boolean usetile = 0;
+                /* tiling */
+                if ((_options & TILE_HIRESTEX) && _maxwidth >= 256 && _maxheight >= 256) {
+                    bool usetile = 0;
 
-          /* to tile or not to tile, that is the question */
-          if (width > 256 && height <= 128 && (((width - 1) >> 8) + 1) * height <= 256) {
-              if (width > _maxwidth) usetile = 1;
-              else {
-                  /* tile if the tiled texture memory footprint is smaller */
-                  int tilewidth = 256;
-                  int tileheight = _txReSample->nextPow2((((width - 1) >> 8) + 1) * height);
-                  tmpwidth = width;
-                  tmpheight = height;
+                    /* to tile or not to tile, that is the question */
+                    if (width > 256 && height <= 128 && (((width - 1) >> 8) + 1) * height <= 256) {
+                        if (width > _maxwidth) usetile = 1;
+                        else {
+                            /* tile if the tiled texture memory footprint is smaller */
+                            int tilewidth = 256;
+                            int tileheight = _txReSample->nextPow2((((width - 1) >> 8) + 1) * height);
+                            tmpwidth = width;
+                            tmpheight = height;
 
-                  /* 3dfx Glide3 tmpheight, W:H aspect ratio range (8:1 - 1:8) */
-                  if (tilewidth > (tileheight << 3)) tileheight = tilewidth >> 3;
+                            /* 3dfx Glide3 tmpheight, W:H aspect ratio range (8:1 - 1:8) */
+                            if (tilewidth > (tileheight << 3)) tileheight = tilewidth >> 3;
 
-                  /* HACKALERT: see TxReSample::pow2(); */
-                  if (tmpwidth > 64) tmpwidth -= 4;
-                  else if (tmpwidth > 16) tmpwidth -= 2;
-                  else if (tmpwidth > 4) tmpwidth -= 1;
+                            /* HACKALERT: see TxReSample::pow2(); */
+                            if (tmpwidth > 64) tmpwidth -= 4;
+                            else if (tmpwidth > 16) tmpwidth -= 2;
+                            else if (tmpwidth > 4) tmpwidth -= 1;
 
-                  if (tmpheight > 64) tmpheight -= 4;
-                  else if (tmpheight > 16) tmpheight -= 2;
-                  else if (tmpheight > 4) tmpheight -= 1;
+                            if (tmpheight > 64) tmpheight -= 4;
+                            else if (tmpheight > 16) tmpheight -= 2;
+                            else if (tmpheight > 4) tmpheight -= 1;
 
-                  tmpwidth = _txReSample->nextPow2(tmpwidth);
-                  tmpheight = _txReSample->nextPow2(tmpheight);
+                            tmpwidth = _txReSample->nextPow2(tmpwidth);
+                            tmpheight = _txReSample->nextPow2(tmpheight);
 
-                  /* 3dfx Glide3 tmpheight, W:H aspect ratio range (8:1 - 1:8) */
-                  if (tmpwidth > tmpheight) {
-                      if (tmpwidth > (tmpheight << 3)) tmpheight = tmpwidth >> 3;
-                  }
-                  else {
-                      if (tmpheight > (tmpwidth << 3)) tmpwidth = tmpheight >> 3;
-                  }
+                            /* 3dfx Glide3 tmpheight, W:H aspect ratio range (8:1 - 1:8) */
+                            if (tmpwidth > tmpheight) {
+                                if (tmpwidth > (tmpheight << 3)) tmpheight = tmpwidth >> 3;
+                            }
+                            else {
+                                if (tmpheight > (tmpwidth << 3)) tmpwidth = tmpheight >> 3;
+                            }
 
-                  usetile = (tilewidth * tileheight < tmpwidth * tmpheight);
-              }
-          }
+                            usetile = (tilewidth * tileheight < tmpwidth * tmpheight);
+                        }
+                    }
 
-          /* tile it! do the actual tiling into 256x256 size */
-          if (usetile) {
-              DBG_INFO(80, "Glide64 style texture tiling\n");
+                    /* tile it! do the actual tiling into 256x256 size */
+                    if (usetile) {
+                        DBG_INFO(80, "Glide64 style texture tiling\n");
 
-              int x, y, z, ratio, offset;
-              offset = 0;
-              ratio = ((width - 1) >> 8) + 1;
-              tmptex = (uint8 *)malloc(_txUtil->sizeofTx(256, height * ratio, format));
-              if (tmptex) {
-                  for (x = 0; x < ratio; x++) {
-                      for (y = 0; y < height; y++) {
-                          if (x < ratio - 1) {
-                              memcpy(&tmptex[offset << 2], &tex[(x * 256 + y * width) << 2], 256 << 2);
-                          }
-                          else {
-                              for (z = 0; z < width - 256 * (ratio - 1); z++) {
-                                  ((uint32*)tmptex)[offset + z] = ((uint32*)tex)[x * 256 + y * width + z];
-                              }
-                              for (; z < 256; z++) {
-                                  ((uint32*)tmptex)[offset + z] = ((uint32*)tmptex)[offset + z - 1];
-                              }
-                          }
-                          offset += 256;
-                      }
-                  }
-                  free(tex);
-                  tex = tmptex;
-                  untiled_width = width;
-                  untiled_height = height;
-                  width = 256;
-                  height *= ratio;
-                  DBG_INFO(80, "Tiled: %d x %d -> %d x %d\n", untiled_width, untiled_height, width, height);
-              }
-          }
-      }
+                        int x, y, z, ratio, offset;
+                        offset = 0;
+                        ratio = ((width - 1) >> 8) + 1;
+                        tmptex = (uint8 *)malloc(_txUtil->sizeofTx(256, height * ratio, format));
+                        if (tmptex) {
+                            for (x = 0; x < ratio; x++) {
+                                for (y = 0; y < height; y++) {
+                                    if (x < ratio - 1) {
+                                        memcpy(&tmptex[offset << 2], &tex[(x * 256 + y * width) << 2], 256 << 2);
+                                    }
+                                    else {
+                                        for (z = 0; z < width - 256 * (ratio - 1); z++) {
+                                            ((uint32*)tmptex)[offset + z] = ((uint32*)tex)[x * 256 + y * width + z];
+                                        }
+                                        for (; z < 256; z++) {
+                                            ((uint32*)tmptex)[offset + z] = ((uint32*)tmptex)[offset + z - 1];
+                                        }
+                                    }
+                                    offset += 256;
+                                }
+                            }
+                            free(tex);
+                            tex = tmptex;
+                            untiled_width = width;
+                            untiled_height = height;
+                            width = 256;
+                            height *= ratio;
+                            DBG_INFO(80, "Tiled: %d x %d -> %d x %d\n", untiled_width, untiled_height, width, height);
+                        }
+                    }
+                }
 
 #else  /* TEXTURE_TILING */
 
@@ -833,7 +817,8 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                     int ratio = 1;
                     if (width / _maxwidth > height / _maxheight) {
                         ratio = (int)ceil((double)width / _maxwidth);
-                    } else {
+                    }
+                    else {
                         ratio = (int)ceil((double)height / _maxheight);
                     }
                     if (!_txReSample->minify(&tex, &width, &height, ratio)) {
@@ -858,7 +843,7 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                                                    *
                                                    * NOTE: texture size must be checked before expanding to pow2 size.
                                                    */
-                                                   ) {
+                    ) {
                     int dataSize = 0;
                     int compressionType = _options & COMPRESSION_MASK;
 
@@ -880,40 +865,40 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                     switch (_options & COMPRESSION_MASK) {
                     case S3TC_COMPRESSION:
                         switch (destformat) {
-                        case GR_TEXFMT_ARGB_8888:
+                        case GFX_TEXFMT_ARGB_8888:
 #if GLIDE64_DXTN
-                        case GR_TEXFMT_ARGB_1555: /* for ARGB1555 use DXT5 instead of DXT1 */
+                        case GFX_TEXFMT_ARGB_1555: /* for ARGB1555 use DXT5 instead of DXT1 */
 #endif
-                        case GR_TEXFMT_ALPHA_INTENSITY_88:
+                        case GFX_TEXFMT_ALPHA_INTENSITY_88:
                             dataSize = width * height;
                             break;
 #if !GLIDE64_DXTN
-                        case GR_TEXFMT_ARGB_1555:
+                        case GFX_TEXFMT_ARGB_1555:
 #endif
-                        case GR_TEXFMT_RGB_565:
-                        case GR_TEXFMT_INTENSITY_8:
+                        case GFX_TEXFMT_RGB_565:
+                        case GFX_TEXFMT_INTENSITY_8:
                             dataSize = (width * height) >> 1;
                             break;
-                        case GR_TEXFMT_ALPHA_8: /* no size benefit with dxtn */
+                        case GFX_TEXFMT_ALPHA_8: /* no size benefit with dxtn */
                             ;
                         }
                         break;
                     case FXT1_COMPRESSION:
                         switch (destformat) {
-                        case GR_TEXFMT_ARGB_1555:
-                        case GR_TEXFMT_RGB_565:
-                        case GR_TEXFMT_INTENSITY_8:
+                        case GFX_TEXFMT_ARGB_1555:
+                        case GFX_TEXFMT_RGB_565:
+                        case GFX_TEXFMT_INTENSITY_8:
                             dataSize = (width * height) >> 1;
                             break;
                             /* XXX: textures that use 8bit alpha channel look bad with the current
                              * fxt1 library, so we substitute it with dxtn for now. afaik all gfx
                              * cards that support fxt1 also support dxtn. (3dfx and Intel) */
-                        case GR_TEXFMT_ALPHA_INTENSITY_88:
-                        case GR_TEXFMT_ARGB_8888:
+                        case GFX_TEXFMT_ALPHA_INTENSITY_88:
+                        case GFX_TEXFMT_ARGB_8888:
                             compressionType = S3TC_COMPRESSION;
                             dataSize = width * height;
                             break;
-                        case GR_TEXFMT_ALPHA_8: /* no size benefit with dxtn */
+                        case GFX_TEXFMT_ALPHA_8: /* no size benefit with dxtn */
                             ;
                         }
                     }
@@ -922,8 +907,8 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
 #if 0 /* TEST: dither before compression for better results with gradients */
                         tmptex = (uint8 *)malloc(_txUtil->sizeofTx(width, height, destformat));
                         if (tmptex) {
-                            if (_txQuantize->quantize(tex, tmptex, width, height, GR_TEXFMT_ARGB_8888, destformat, 0))
-                                _txQuantize->quantize(tmptex, tex, width, height, destformat, GR_TEXFMT_ARGB_8888, 0);
+                            if (_txQuantize->quantize(tex, tmptex, width, height, GFX_TEXFMT_ARGB_8888, destformat, 0))
+                                _txQuantize->quantize(tmptex, tex, width, height, destformat, GFX_TEXFMT_ARGB_8888, 0);
                             free(tmptex);
                         }
 #endif
@@ -963,50 +948,50 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
                 }
 
                 /* quantize */
-      {
-          tmptex = (uint8 *)malloc(_txUtil->sizeofTx(width, height, destformat));
-          if (tmptex) {
-              switch (destformat) {
-              case GR_TEXFMT_ARGB_8888:
-              case GR_TEXFMT_ARGB_4444:
+                {
+                    tmptex = (uint8 *)malloc(_txUtil->sizeofTx(width, height, destformat));
+                    if (tmptex) {
+                        switch (destformat) {
+                        case GFX_TEXFMT_ARGB_8888:
+                        case GFX_TEXFMT_ARGB_4444:
 #if !REDUCE_TEXTURE_FOOTPRINT
-                  if (_maxbpp < 32 || _options & FORCE16BPP_HIRESTEX)
+                            if (_maxbpp < 32 || _options & FORCE16BPP_HIRESTEX)
 #endif
-                      destformat = GR_TEXFMT_ARGB_4444;
-                  break;
-              case GR_TEXFMT_ARGB_1555:
+                                destformat = GFX_TEXFMT_ARGB_4444;
+                            break;
+                        case GFX_TEXFMT_ARGB_1555:
 #if !REDUCE_TEXTURE_FOOTPRINT
-                  if (_maxbpp < 32 || _options & FORCE16BPP_HIRESTEX)
+                            if (_maxbpp < 32 || _options & FORCE16BPP_HIRESTEX)
 #endif
-                      destformat = GR_TEXFMT_ARGB_1555;
-                  break;
-              case GR_TEXFMT_RGB_565:
+                                destformat = GFX_TEXFMT_ARGB_1555;
+                            break;
+                        case GFX_TEXFMT_RGB_565:
 #if !REDUCE_TEXTURE_FOOTPRINT
-                  if (_maxbpp < 32 || _options & FORCE16BPP_HIRESTEX)
+                            if (_maxbpp < 32 || _options & FORCE16BPP_HIRESTEX)
 #endif
-                      destformat = GR_TEXFMT_RGB_565;
-                  break;
-              case GR_TEXFMT_ALPHA_INTENSITY_88:
-              case GR_TEXFMT_ALPHA_INTENSITY_44:
+                                destformat = GFX_TEXFMT_RGB_565;
+                            break;
+                        case GFX_TEXFMT_ALPHA_INTENSITY_88:
+                        case GFX_TEXFMT_ALPHA_INTENSITY_44:
 #if !REDUCE_TEXTURE_FOOTPRINT
-                  destformat = GR_TEXFMT_ALPHA_INTENSITY_88;
+                            destformat = GFX_TEXFMT_ALPHA_INTENSITY_88;
 #else
-                  destformat = GR_TEXFMT_ALPHA_INTENSITY_44;
+                            destformat = GFX_TEXFMT_ALPHA_INTENSITY_44;
 #endif
-                  break;
-              case GR_TEXFMT_ALPHA_8:
-                  destformat = GR_TEXFMT_ALPHA_8; /* yes, this is correct. ALPHA_8 instead of INTENSITY_8 */
-                  break;
-              case GR_TEXFMT_INTENSITY_8:
-                  destformat = GR_TEXFMT_INTENSITY_8;
-              }
-              if (_txQuantize->quantize(tex, tmptex, width, height, GR_TEXFMT_ARGB_8888, destformat, 0)) {
-                  format = destformat;
-                  free(tex);
-                  tex = tmptex;
-              }
-          }
-      }
+                            break;
+                        case GFX_TEXFMT_ALPHA_8:
+                            destformat = GFX_TEXFMT_ALPHA_8; /* yes, this is correct. ALPHA_8 instead of INTENSITY_8 */
+                            break;
+                        case GFX_TEXFMT_INTENSITY_8:
+                            destformat = GFX_TEXFMT_INTENSITY_8;
+                        }
+                        if (_txQuantize->quantize(tex, tmptex, width, height, GFX_TEXFMT_ARGB_8888, destformat, 0)) {
+                            format = destformat;
+                            free(tex);
+                            tex = tmptex;
+                        }
+                    }
+                }
             }
 
             /* last minute validations */
@@ -1029,9 +1014,9 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
 
             /* load it into hires texture cache. */
             {
-                uint64 chksum64 = (uint64)palchksum;
+                uint64_t chksum64 = (uint64_t)palchksum;
                 chksum64 <<= 32;
-                chksum64 |= (uint64)chksum;
+                chksum64 |= (uint64_t)chksum;
 
                 GHQTexInfo tmpInfo;
                 memset(&tmpInfo, 0, sizeof(GHQTexInfo));
@@ -1047,7 +1032,8 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
 
 #if TEXTURE_TILING
                 /* Glide64 style texture tiling. */
-                if (untiled_width && untiled_height) {
+                if (untiled_width && untiled_height)
+                {
                     tmpInfo.tiles = ((untiled_width - 1) >> 8) + 1;
                     tmpInfo.untiled_width = untiled_width;
                     tmpInfo.untiled_height = untiled_height;
@@ -1055,17 +1041,20 @@ boolean TxHiResCache::loadHiResTextures(const char * dir_path, boolean replace)
 #endif
 
                 /* remove redundant in cache */
-                if (replace && TxCache::del(chksum64)) {
+                if (replace && TxCache::del(chksum64))
+                {
                     DBG_INFO(80, "removed duplicate old cache.\n");
                 }
 
                 /* add to cache */
-                if (TxCache::add(chksum64, &tmpInfo)) {
+                if (TxCache::add(chksum64, &tmpInfo))
+                {
                     /* Callback to display hires texture info.
                      * Gonetz <gonetz(at)ngs.ru> */
-                    if (_callback) {
-                        wchar_t tmpbuf[MAX_PATH];
-                        mbstowcs(tmpbuf, fname, MAX_PATH);
+                    if (_callback)
+                    {
+                        wchar_t tmpbuf[260];
+                        mbstowcs(tmpbuf, fname, 260);
                         (*_callback)("[%d] total mem:%.2fmb - %ls\n", _cache.size(), (float)_totalSize / 1000000, tmpbuf);
                     }
                     DBG_INFO(80, "texture loaded!\n");

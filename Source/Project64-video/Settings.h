@@ -1,10 +1,20 @@
+/****************************************************************************
+*                                                                           *
+* Project64-video - A Nintendo 64 gfx plugin.                               *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2017 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
 #pragma once
 #include <string>
 
 class CSettings
 {
 public:
-	CSettings();
+    CSettings();
 
     //Frame buffer emulation options
     enum fb_bits_t
@@ -27,37 +37,37 @@ public:
 
     enum hacks_t
     {
-        hack_ASB = (1<<0),         //All-Star Baseball games
-        hack_Banjo2 = (1<<1),      //Banjo Tooie
-        hack_BAR = (1<<2),         //Beetle Adventure Racing
-        hack_Chopper = (1<<3),     //Chopper Attack
-        hack_Diddy = (1<<4),       //diddy kong racing
-        hack_Fifa98 = (1<<5),      //FIFA - Road to World Cup 98
-        hack_Fzero = (1<<6),       //F-Zero
-        hack_GoldenEye = (1<<7),   //Golden Eye
-        hack_Hyperbike = (1<<8),   //Top Gear Hyper Bike
-        hack_ISS64 = (1<<9),       //International Superstar Soccer 64
-        hack_KI = (1<<10),         //Killer Instinct
-        hack_Knockout = (1<<11),   //Knockout Kings 2000
-        hack_Lego = (1<<12),       //LEGO Racers
-        hack_MK64 = (1<<13),       //Mario Kart
-        hack_Megaman = (1<<14),    //Megaman64
-        hack_Makers = (1<<15),     //Mischief-makers
-        hack_WCWnitro = (1<<16),   //WCW Nitro
-        hack_Ogre64 = (1<<17),     //Ogre Battle 64
-        hack_Pilotwings = (1<<18), //Pilotwings
-        hack_PMario = (1<<19),     //Paper Mario
-        hack_PPL = (1<<20),        //pokemon puzzle league requires many special fixes
-        hack_RE2 = (1<<21),        //Resident Evil 2
-        hack_Starcraft = (1<<22),  //StarCraft64
-        hack_Supercross = (1<<23), //Supercross 2000
-        hack_TGR = (1<<24),        //Top Gear Rally
-        hack_TGR2 = (1<<25),       //Top Gear Rally 2
-        hack_Tonic = (1<<26),      //tonic trouble
-        hack_Winback = (1<<27),    //WinBack - Covert Operations
-        hack_Yoshi = (1<<28),      //Yoshi Story
-        hack_Zelda = (1<<29),      //zeldas hacks
-        hack_OoT = (1<<30),        //zelda OoT hacks
+        hack_ASB = (1 << 0),         //All-Star Baseball games
+        hack_Banjo2 = (1 << 1),      //Banjo Tooie
+        hack_BAR = (1 << 2),         //Beetle Adventure Racing
+        hack_Chopper = (1 << 3),     //Chopper Attack
+        hack_Diddy = (1 << 4),       //diddy kong racing
+        hack_Fifa98 = (1 << 5),      //FIFA - Road to World Cup 98
+        hack_Fzero = (1 << 6),       //F-Zero
+        hack_GoldenEye = (1 << 7),   //Golden Eye
+        hack_Hyperbike = (1 << 8),   //Top Gear Hyper Bike
+        hack_ISS64 = (1 << 9),       //International Superstar Soccer 64
+        hack_KI = (1 << 10),         //Killer Instinct
+        hack_Knockout = (1 << 11),   //Knockout Kings 2000
+        hack_Lego = (1 << 12),       //LEGO Racers
+        hack_MK64 = (1 << 13),       //Mario Kart
+        hack_Megaman = (1 << 14),    //Megaman64
+        hack_Makers = (1 << 15),     //Mischief-makers
+        hack_WCWnitro = (1 << 16),   //WCW Nitro
+        hack_Ogre64 = (1 << 17),     //Ogre Battle 64
+        hack_Pilotwings = (1 << 18), //Pilotwings
+        hack_PMario = (1 << 19),     //Paper Mario
+        hack_PPL = (1 << 20),        //pokemon puzzle league requires many special fixes
+        hack_RE2 = (1 << 21),        //Resident Evil 2
+        hack_Starcraft = (1 << 22),  //StarCraft64
+        hack_Supercross = (1 << 23), //Supercross 2000
+        hack_TGR = (1 << 24),        //Top Gear Rally
+        hack_TGR2 = (1 << 25),       //Top Gear Rally 2
+        hack_Tonic = (1 << 26),      //tonic trouble
+        hack_Winback = (1 << 27),    //WinBack - Covert Operations
+        hack_Yoshi = (1 << 28),      //Yoshi Story
+        hack_Zelda = (1 << 29),      //zeldas hacks
+        hack_OoT = (1 << 30),        //zelda OoT hacks
     };
 
     enum AspectMode_t
@@ -117,7 +127,7 @@ public:
         HiResPackFormat_None = 0,
         HiResPackFormat_Riceformat = 0x00020000,
     };
-    
+
     enum SwapMode_t
     {
         SwapMode_Old = 0,
@@ -172,7 +182,7 @@ public:
 
     inline bool fb_emulation_enabled(void) const { return ((m_frame_buffer&fb_emulation) != 0); }
     inline bool fb_ref_enabled(void) const { return ((m_frame_buffer&fb_ref) != 0); }
-    inline bool fb_hwfbe_enabled(void) const { return ((m_frame_buffer&(fb_emulation |fb_hwfbe)) == (fb_emulation | fb_hwfbe)); }
+    inline bool fb_hwfbe_enabled(void) const { return ((m_frame_buffer&(fb_emulation | fb_hwfbe)) == (fb_emulation | fb_hwfbe)); }
     inline bool fb_hwfbe_set(void) const { return ((m_frame_buffer&fb_hwfbe) != 0); }
     inline bool fb_depth_render_enabled(void) const { return ((m_frame_buffer&fb_depth_render) != 0); }
     inline bool fb_get_info_enabled(void) const { return ((m_frame_buffer&fb_get_info) != 0); }
@@ -199,7 +209,7 @@ public:
     inline ScreenRotate_t rotate(void) const { return m_rotate; }
     inline Filtering_t filtering(void) const { return m_filtering; }
 
-    inline bool fog (void) const { return m_fog; }
+    inline bool fog(void) const { return m_fog; }
     inline bool buff_clear(void) const { return m_buff_clear; }
     inline SwapMode_t swapmode(void) const { return m_swapmode; }
     inline PixelLevelOfDetail_t lodmode(void) const { return m_lodmode; }
@@ -255,9 +265,9 @@ public:
     inline bool zmode_compare_less(void) const { return m_zmode_compare_less; } //force GR_CMP_LESS for zmode=0 (opaque)and zmode=1 (interpenetrating)
     inline bool old_style_adither(void) const { return m_old_style_adither; } //apply alpha dither regardless of alpha_dither_mode
     inline bool n64_z_scale(void) const { return m_n64_z_scale; } //scale vertex z value before writing to depth buffer, as N64 does.
-    
+
     inline bool hacks(hacks_t hack) const { return (m_hacks & hack) == hack; } //Special game hacks
-    
+
     //wrapper settings
 #ifndef ANDROID
     inline uint32_t FullScreenRes(void) const { return m_FullScreenRes; }
@@ -288,7 +298,7 @@ public:
     void SetGhqHirsF16bpp(bool value);
     void SetGhqHirsDump(bool value);
     void SetGhqEnhtNobg(bool value);
-    void SetGhqEnhtCmpr(bool value);    
+    void SetGhqEnhtCmpr(bool value);
     void SetGhqHirsAltcrc(bool value);
     void SetGhqHirsCmpr(bool value);
     void SetGhqHirsGz(bool value);

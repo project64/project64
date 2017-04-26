@@ -1,28 +1,16 @@
-/*
- * Texture Filtering
- * Version:  1.0
- *
- * Copyright (C) 2007  Hiroshi Morii   All Rights Reserved.
- * Email koolsmoky(at)users.sourceforge.net
- * Web   http://www.3dfxzone.it/koolsmoky
- *
- * this is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * this is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with GNU Make; see the file COPYING.  If not, write to
- * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- */
-
-/*  Based on Maxim Stepin and Rice1964 hq4x code */
-
+/***************************************************************************
+*                                                                          *
+* Project64-video - A Nintendo 64 gfx plugin.                              *
+* http://www.pj64-emu.com/                                                 *
+* Copyright (C) 2017 Project64. All rights reserved.                       *
+* Copyright (C) 2007 Hiroshi Morii                                         *
+* Copyright (C) 2003 Rice1964                                              *
+*                                                                          *
+* License:                                                                 *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                       *
+* version 2 of the License, or (at your option) any later version.         *
+*                                                                          *
+****************************************************************************/
 #include <math.h>
 #include <stdlib.h>
 #include "TextureFilters.h"
@@ -51,92 +39,92 @@ static uint32 RGB444toYUV[4096];
 
 static uint32 RGB555toYUV(uint32 val)
 {
-  uint32 r, g, b, Y, u, v;
+    uint32 r, g, b, Y, u, v;
 
-  r = (val & 0x7C00) >> 7;
-  g = (val & 0x03E0) >> 2;
-  b = (val & 0x001F) << 3;
-  r |= r >> 5;
-  g |= g >> 5;
-  b |= b >> 5;
+    r = (val & 0x7C00) >> 7;
+    g = (val & 0x03E0) >> 2;
+    b = (val & 0x001F) << 3;
+    r |= r >> 5;
+    g |= g >> 5;
+    b |= b >> 5;
 
-  Y = (r + g + b) >> 2;
-  u = 128 + ((r - b) >> 2);
-  v = 128 + ((2*g - r - b)>>3);
+    Y = (r + g + b) >> 2;
+    u = 128 + ((r - b) >> 2);
+    v = 128 + ((2 * g - r - b) >> 3);
 
-  return ((Y << 16) | (u << 8) | v);
+    return ((Y << 16) | (u << 8) | v);
 }
 
 static uint32 RGB565toYUV(uint32 val)
 {
-  uint32 r, g, b, Y, u, v;
+    uint32 r, g, b, Y, u, v;
 
-  r = (val & 0xF800) >> 8;
-  g = (val & 0x07E0) >> 3;
-  b = (val & 0x001F) << 3;
-  r |= r >> 5;
-  g |= g >> 6;
-  b |= b >> 5;
+    r = (val & 0xF800) >> 8;
+    g = (val & 0x07E0) >> 3;
+    b = (val & 0x001F) << 3;
+    r |= r >> 5;
+    g |= g >> 6;
+    b |= b >> 5;
 
-  Y = (r + g + b) >> 2;
-  u = 128 + ((r - b) >> 2);
-  v = 128 + ((2*g - r - b)>>3);
+    Y = (r + g + b) >> 2;
+    u = 128 + ((r - b) >> 2);
+    v = 128 + ((2 * g - r - b) >> 3);
 
-  return ((Y << 16) | (u << 8) | v);
+    return ((Y << 16) | (u << 8) | v);
 }
 #endif /* !_16BPP_HACK */
 
 static uint32 RGB888toYUV(uint32 val)
 {
 #if 0
-  uint32 Yuv;
+    uint32 Yuv;
 
-  __asm {
-    mov eax, dword ptr [val];
-    mov ebx, eax;
-    mov ecx, eax;
-    and ebx, 0x000000ff; // b
-    and eax, 0x00ff0000; // r
-    and ecx, 0x0000ff00; // g
-    shl ebx, 14;
-    shr eax, 2;
-    shl ecx, 6;
-    mov edx, ebx;
-    add edx, eax;
-    add edx, ecx;
-    and edx, 0xffff0000;
+    __asm {
+        mov eax, dword ptr[val];
+        mov ebx, eax;
+        mov ecx, eax;
+        and ebx, 0x000000ff; // b
+        and eax, 0x00ff0000; // r
+        and ecx, 0x0000ff00; // g
+        shl ebx, 14;
+        shr eax, 2;
+        shl ecx, 6;
+        mov edx, ebx;
+        add edx, eax;
+        add edx, ecx;
+        and edx, 0xffff0000;
 
-    sub eax, ebx;
-    add eax, 0x00800000;
-    shr eax, 8;
-    or  edx, eax;
-    sub eax, 0x00800000;
-    and edx, 0xffffff00;
+        sub eax, ebx;
+        add eax, 0x00800000;
+        shr eax, 8;
+        or edx, eax;
+        sub eax, 0x00800000;
+        and edx, 0xffffff00;
 
-    add ecx, 0x00800000;
-    shr ecx, 5;
-    shr ebx, 7;
-    add eax, ebx;
-    sub ecx, eax;
-    shr ecx, 11;
-    or  edx, ecx;
+        add ecx, 0x00800000;
+        shr ecx, 5;
+        shr ebx, 7;
+        add eax, ebx;
+        sub ecx, eax;
+        shr ecx, 11;
+        or edx, ecx;
 
-    mov dword ptr [Yuv], edx;
-  }
+        mov dword ptr[Yuv], edx;
+    }
 
-  return Yuv;
+    return Yuv;
 #else
-  uint32 r, g, b, Y, u, v;
+    uint32 r, g, b, Y, u, v;
 
-  r = (val & 0x00ff0000) >> 16;
-  g = (val & 0x0000ff00) >> 8;
-  b = val & 0x000000ff;
+    r = (val & 0x00ff0000) >> 16;
+    g = (val & 0x0000ff00) >> 8;
+    b = val & 0x000000ff;
 
-  Y = (r + g + b) >> 2;
-  u = (0x00000200 + r - b) >> 2;
-  v = (0x00000400 + (g << 1) - r - b) >> 3;
+    Y = (r + g + b) >> 2;
+    u = (0x00000200 + r - b) >> 2;
+    v = (0x00000400 + (g << 1) - r - b) >> 3;
 
-  return ((Y << 16) | (u << 8) | v);
+    return ((Y << 16) | (u << 8) | v);
 #endif
 }
 
@@ -423,88 +411,90 @@ void hq4x_4444(unsigned char * pIn, unsigned char * pOut, int Xres, int Yres, in
 #define BPP2  4
 #define BPP3  6
 
-  int  i, j, k;
-  int  prevline, nextline;
-  uint16  w[10];
-  uint16  c[10];
+    int  i, j, k;
+    int  prevline, nextline;
+    uint16  w[10];
+    uint16  c[10];
 
-  int pattern;
-  int flag;
+    int pattern;
+    int flag;
 
-  int YUV1, YUV2;
+    int YUV1, YUV2;
 
-  //   +----+----+----+
-  //   |    |    |    |
-  //   | w1 | w2 | w3 |
-  //   +----+----+----+
-  //   |    |    |    |
-  //   | w4 | w5 | w6 |
-  //   +----+----+----+
-  //   |    |    |    |
-  //   | w7 | w8 | w9 |
-  //   +----+----+----+
+    //   +----+----+----+
+    //   |    |    |    |
+    //   | w1 | w2 | w3 |
+    //   +----+----+----+
+    //   |    |    |    |
+    //   | w4 | w5 | w6 |
+    //   +----+----+----+
+    //   |    |    |    |
+    //   | w7 | w8 | w9 |
+    //   +----+----+----+
 
-  for (j = 0; j < Yres; j++) {
-    if (j>0)      prevline = -SrcPPL*2; else prevline = 0;
-    if (j<Yres-1) nextline =  SrcPPL*2; else nextline = 0;
+    for (j = 0; j < Yres; j++) {
+        if (j > 0)      prevline = -SrcPPL * 2; else prevline = 0;
+        if (j < Yres - 1) nextline = SrcPPL * 2; else nextline = 0;
 
-    for (i=0; i<Xres; i++) {
-      w[2] = *((uint16*)(pIn + prevline));
-      w[5] = *((uint16*)pIn);
-      w[8] = *((uint16*)(pIn + nextline));
+        for (i = 0; i < Xres; i++) {
+            w[2] = *((uint16*)(pIn + prevline));
+            w[5] = *((uint16*)pIn);
+            w[8] = *((uint16*)(pIn + nextline));
 
-      if (i>0) {
-        w[1] = *((uint16*)(pIn + prevline - 2));
-        w[4] = *((uint16*)(pIn - 2));
-        w[7] = *((uint16*)(pIn + nextline - 2));
-      } else {
-        w[1] = w[2];
-        w[4] = w[5];
-        w[7] = w[8];
-      }
+            if (i > 0) {
+                w[1] = *((uint16*)(pIn + prevline - 2));
+                w[4] = *((uint16*)(pIn - 2));
+                w[7] = *((uint16*)(pIn + nextline - 2));
+            }
+            else {
+                w[1] = w[2];
+                w[4] = w[5];
+                w[7] = w[8];
+            }
 
-      if (i<Xres-1) {
-        w[3] = *((uint16*)(pIn + prevline + 2));
-        w[6] = *((uint16*)(pIn + 2));
-        w[9] = *((uint16*)(pIn + nextline + 2));
-      }   else {
-        w[3] = w[2];
-        w[6] = w[5];
-        w[9] = w[8];
-      }
+            if (i < Xres - 1) {
+                w[3] = *((uint16*)(pIn + prevline + 2));
+                w[6] = *((uint16*)(pIn + 2));
+                w[9] = *((uint16*)(pIn + nextline + 2));
+            }
+            else {
+                w[3] = w[2];
+                w[6] = w[5];
+                w[9] = w[8];
+            }
 
-      pattern = 0;
-      flag = 1;
+            pattern = 0;
+            flag = 1;
 
-      YUV1 = RGB444toYUV(w[5]);
+            YUV1 = RGB444toYUV(w[5]);
 
-      for (k=1; k<=9; k++) {
-        if (k==5) continue;
+            for (k = 1; k <= 9; k++) {
+                if (k == 5) continue;
 
-        if ( w[k] != w[5] ) {
-          YUV2 = RGB444toYUV(w[k]);
-          if ( ( abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY ) ||
-               ( abs((YUV1 & Umask) - (YUV2 & Umask)) > trU ) ||
-               ( abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV ) )
-            pattern |= flag;
-        }
-        flag <<= 1;
-      }
+                if (w[k] != w[5]) {
+                    YUV2 = RGB444toYUV(w[k]);
+                    if ((abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY) ||
+                        (abs((YUV1 & Umask) - (YUV2 & Umask)) > trU) ||
+                        (abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV))
+                        pattern |= flag;
+                }
+                flag <<= 1;
+            }
 
-      for (k=1; k<=9; k++)
-        c[k] = w[k];
+            for (k = 1; k <= 9; k++)
+                c[k] = w[k];
 
 #include "TextureFilters_hq4x.h"
 
-      pIn+=2;
-      pOut+=8;
+            pIn += 2;
+            pOut += 8;
+        }
+        pIn += 2 * (SrcPPL - Xres);
+        pOut += 8 * (SrcPPL - Xres);
+        pOut += BpL;
+        pOut += BpL;
+        pOut += BpL;
     }
-    pIn += 2*(SrcPPL-Xres);
-    pOut+= 8*(SrcPPL-Xres);
-    pOut+=BpL;
-    pOut+=BpL;
-    pOut+=BpL;
-  }
 
 #undef BPP
 #undef BPP2
@@ -535,88 +525,90 @@ void hq4x_1555(unsigned char * pIn, unsigned char * pOut, int Xres, int Yres, in
 #define BPP2  4
 #define BPP3  6
 
-  int  i, j, k;
-  int  prevline, nextline;
-  uint16  w[10];
-  uint16  c[10];
+    int  i, j, k;
+    int  prevline, nextline;
+    uint16  w[10];
+    uint16  c[10];
 
-  int pattern;
-  int flag;
+    int pattern;
+    int flag;
 
-  int YUV1, YUV2;
+    int YUV1, YUV2;
 
-  //   +----+----+----+
-  //   |    |    |    |
-  //   | w1 | w2 | w3 |
-  //   +----+----+----+
-  //   |    |    |    |
-  //   | w4 | w5 | w6 |
-  //   +----+----+----+
-  //   |    |    |    |
-  //   | w7 | w8 | w9 |
-  //   +----+----+----+
+    //   +----+----+----+
+    //   |    |    |    |
+    //   | w1 | w2 | w3 |
+    //   +----+----+----+
+    //   |    |    |    |
+    //   | w4 | w5 | w6 |
+    //   +----+----+----+
+    //   |    |    |    |
+    //   | w7 | w8 | w9 |
+    //   +----+----+----+
 
-  for (j = 0; j < Yres; j++) {
-    if (j>0)      prevline = -SrcPPL*2; else prevline = 0;
-    if (j<Yres-1) nextline =  SrcPPL*2; else nextline = 0;
+    for (j = 0; j < Yres; j++) {
+        if (j > 0)      prevline = -SrcPPL * 2; else prevline = 0;
+        if (j < Yres - 1) nextline = SrcPPL * 2; else nextline = 0;
 
-    for (i=0; i<Xres; i++) {
-      w[2] = *((uint16*)(pIn + prevline));
-      w[5] = *((uint16*)pIn);
-      w[8] = *((uint16*)(pIn + nextline));
+        for (i = 0; i < Xres; i++) {
+            w[2] = *((uint16*)(pIn + prevline));
+            w[5] = *((uint16*)pIn);
+            w[8] = *((uint16*)(pIn + nextline));
 
-      if (i>0) {
-        w[1] = *((uint16*)(pIn + prevline - 2));
-        w[4] = *((uint16*)(pIn - 2));
-        w[7] = *((uint16*)(pIn + nextline - 2));
-      } else {
-        w[1] = w[2];
-        w[4] = w[5];
-        w[7] = w[8];
-      }
+            if (i > 0) {
+                w[1] = *((uint16*)(pIn + prevline - 2));
+                w[4] = *((uint16*)(pIn - 2));
+                w[7] = *((uint16*)(pIn + nextline - 2));
+            }
+            else {
+                w[1] = w[2];
+                w[4] = w[5];
+                w[7] = w[8];
+            }
 
-      if (i<Xres-1) {
-        w[3] = *((uint16*)(pIn + prevline + 2));
-        w[6] = *((uint16*)(pIn + 2));
-        w[9] = *((uint16*)(pIn + nextline + 2));
-      }   else {
-        w[3] = w[2];
-        w[6] = w[5];
-        w[9] = w[8];
-      }
+            if (i < Xres - 1) {
+                w[3] = *((uint16*)(pIn + prevline + 2));
+                w[6] = *((uint16*)(pIn + 2));
+                w[9] = *((uint16*)(pIn + nextline + 2));
+            }
+            else {
+                w[3] = w[2];
+                w[6] = w[5];
+                w[9] = w[8];
+            }
 
-      pattern = 0;
-      flag = 1;
+            pattern = 0;
+            flag = 1;
 
-      YUV1 = RGB555toYUV(w[5]);
+            YUV1 = RGB555toYUV(w[5]);
 
-      for (k=1; k<=9; k++) {
-        if (k==5) continue;
+            for (k = 1; k <= 9; k++) {
+                if (k == 5) continue;
 
-        if ( w[k] != w[5] ) {
-          YUV2 = RGB555toYUV(w[k]);
-          if ( ( abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY ) ||
-               ( abs((YUV1 & Umask) - (YUV2 & Umask)) > trU ) ||
-               ( abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV ) )
-            pattern |= flag;
-        }
-        flag <<= 1;
-      }
+                if (w[k] != w[5]) {
+                    YUV2 = RGB555toYUV(w[k]);
+                    if ((abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY) ||
+                        (abs((YUV1 & Umask) - (YUV2 & Umask)) > trU) ||
+                        (abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV))
+                        pattern |= flag;
+                }
+                flag <<= 1;
+            }
 
-      for (k=1; k<=9; k++)
-        c[k] = w[k];
+            for (k = 1; k <= 9; k++)
+                c[k] = w[k];
 
 #include "TextureFilters_hq4x.h"
 
-      pIn+=2;
-      pOut+=8;
+            pIn += 2;
+            pOut += 8;
+        }
+        pIn += 2 * (SrcPPL - Xres);
+        pOut += 8 * (SrcPPL - Xres);
+        pOut += BpL;
+        pOut += BpL;
+        pOut += BpL;
     }
-    pIn += 2*(SrcPPL-Xres);
-    pOut+= 8*(SrcPPL-Xres);
-    pOut+=BpL;
-    pOut+=BpL;
-    pOut+=BpL;
-  }
 
 #undef BPP
 #undef BPP2
@@ -647,88 +639,90 @@ void hq4x_565(unsigned char * pIn, unsigned char * pOut, int Xres, int Yres, int
 #define BPP2  4
 #define BPP3  6
 
-  int  i, j, k;
-  int  prevline, nextline;
-  uint16  w[10];
-  uint16  c[10];
+    int  i, j, k;
+    int  prevline, nextline;
+    uint16  w[10];
+    uint16  c[10];
 
-  int pattern;
-  int flag;
+    int pattern;
+    int flag;
 
-  int YUV1, YUV2;
+    int YUV1, YUV2;
 
-  //   +----+----+----+
-  //   |    |    |    |
-  //   | w1 | w2 | w3 |
-  //   +----+----+----+
-  //   |    |    |    |
-  //   | w4 | w5 | w6 |
-  //   +----+----+----+
-  //   |    |    |    |
-  //   | w7 | w8 | w9 |
-  //   +----+----+----+
+    //   +----+----+----+
+    //   |    |    |    |
+    //   | w1 | w2 | w3 |
+    //   +----+----+----+
+    //   |    |    |    |
+    //   | w4 | w5 | w6 |
+    //   +----+----+----+
+    //   |    |    |    |
+    //   | w7 | w8 | w9 |
+    //   +----+----+----+
 
-  for (j = 0; j < Yres; j++) {
-    if (j>0)      prevline = -SrcPPL*2; else prevline = 0;
-    if (j<Yres-1) nextline =  SrcPPL*2; else nextline = 0;
+    for (j = 0; j < Yres; j++) {
+        if (j > 0)      prevline = -SrcPPL * 2; else prevline = 0;
+        if (j < Yres - 1) nextline = SrcPPL * 2; else nextline = 0;
 
-    for (i=0; i<Xres; i++) {
-      w[2] = *((uint16*)(pIn + prevline));
-      w[5] = *((uint16*)pIn);
-      w[8] = *((uint16*)(pIn + nextline));
+        for (i = 0; i < Xres; i++) {
+            w[2] = *((uint16*)(pIn + prevline));
+            w[5] = *((uint16*)pIn);
+            w[8] = *((uint16*)(pIn + nextline));
 
-      if (i>0) {
-        w[1] = *((uint16*)(pIn + prevline - 2));
-        w[4] = *((uint16*)(pIn - 2));
-        w[7] = *((uint16*)(pIn + nextline - 2));
-      } else {
-        w[1] = w[2];
-        w[4] = w[5];
-        w[7] = w[8];
-      }
+            if (i > 0) {
+                w[1] = *((uint16*)(pIn + prevline - 2));
+                w[4] = *((uint16*)(pIn - 2));
+                w[7] = *((uint16*)(pIn + nextline - 2));
+            }
+            else {
+                w[1] = w[2];
+                w[4] = w[5];
+                w[7] = w[8];
+            }
 
-      if (i<Xres-1) {
-        w[3] = *((uint16*)(pIn + prevline + 2));
-        w[6] = *((uint16*)(pIn + 2));
-        w[9] = *((uint16*)(pIn + nextline + 2));
-      } else {
-        w[3] = w[2];
-        w[6] = w[5];
-        w[9] = w[8];
-      }
+            if (i < Xres - 1) {
+                w[3] = *((uint16*)(pIn + prevline + 2));
+                w[6] = *((uint16*)(pIn + 2));
+                w[9] = *((uint16*)(pIn + nextline + 2));
+            }
+            else {
+                w[3] = w[2];
+                w[6] = w[5];
+                w[9] = w[8];
+            }
 
-      pattern = 0;
-      flag = 1;
+            pattern = 0;
+            flag = 1;
 
-      YUV1 = RGB565toYUV(w[5]);
+            YUV1 = RGB565toYUV(w[5]);
 
-      for (k=1; k<=9; k++) {
-        if (k==5) continue;
+            for (k = 1; k <= 9; k++) {
+                if (k == 5) continue;
 
-        if ( w[k] != w[5] ) {
-          YUV2 = RGB565toYUV(w[k]);
-          if ( ( abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY ) ||
-               ( abs((YUV1 & Umask) - (YUV2 & Umask)) > trU ) ||
-               ( abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV ) )
-            pattern |= flag;
-        }
-        flag <<= 1;
-      }
+                if (w[k] != w[5]) {
+                    YUV2 = RGB565toYUV(w[k]);
+                    if ((abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY) ||
+                        (abs((YUV1 & Umask) - (YUV2 & Umask)) > trU) ||
+                        (abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV))
+                        pattern |= flag;
+                }
+                flag <<= 1;
+            }
 
-      for (k=1; k<=9; k++)
-        c[k] = w[k];
+            for (k = 1; k <= 9; k++)
+                c[k] = w[k];
 
 #include "TextureFilters_hq4x.h"
 
-      pIn+=2;
-      pOut+=8;
+            pIn += 2;
+            pOut += 8;
+        }
+        pIn += 2 * (SrcPPL - Xres);
+        pOut += 8 * (SrcPPL - Xres);
+        pOut += BpL;
+        pOut += BpL;
+        pOut += BpL;
     }
-    pIn += 2*(SrcPPL-Xres);
-    pOut+= 8*(SrcPPL-Xres);
-    pOut+=BpL;
-    pOut+=BpL;
-    pOut+=BpL;
-  }
 
 #undef BPP
 #undef BPP2
@@ -760,89 +754,91 @@ void hq4x_8888(unsigned char * pIn, unsigned char * pOut, int Xres, int Yres, in
 #define BPP2 8
 #define BPP3 12
 
-  int  i, j, k;
-  int  prevline, nextline;
-  uint32  w[10];
-  uint32  c[10];
+    int  i, j, k;
+    int  prevline, nextline;
+    uint32  w[10];
+    uint32  c[10];
 
-  int pattern;
-  int flag;
+    int pattern;
+    int flag;
 
-  int YUV1, YUV2;
+    int YUV1, YUV2;
 
-  //   +----+----+----+
-  //   |    |    |    |
-  //   | w1 | w2 | w3 |
-  //   +----+----+----+
-  //   |    |    |    |
-  //   | w4 | w5 | w6 |
-  //   +----+----+----+
-  //   |    |    |    |
-  //   | w7 | w8 | w9 |
-  //   +----+----+----+
+    //   +----+----+----+
+    //   |    |    |    |
+    //   | w1 | w2 | w3 |
+    //   +----+----+----+
+    //   |    |    |    |
+    //   | w4 | w5 | w6 |
+    //   +----+----+----+
+    //   |    |    |    |
+    //   | w7 | w8 | w9 |
+    //   +----+----+----+
 
-  for (j = 0; j < Yres; j++) {
-    if (j>0)      prevline = -SrcPPL*4; else prevline = 0;
-    if (j<Yres-1) nextline =  SrcPPL*4; else nextline = 0;
+    for (j = 0; j < Yres; j++) {
+        if (j > 0)      prevline = -SrcPPL * 4; else prevline = 0;
+        if (j < Yres - 1) nextline = SrcPPL * 4; else nextline = 0;
 
-    for (i=0; i<Xres; i++) {
-      w[2] = *((uint32*)(pIn + prevline));
-      w[5] = *((uint32*)pIn);
-      w[8] = *((uint32*)(pIn + nextline));
+        for (i = 0; i < Xres; i++) {
+            w[2] = *((uint32*)(pIn + prevline));
+            w[5] = *((uint32*)pIn);
+            w[8] = *((uint32*)(pIn + nextline));
 
-      if (i>0) {
-        w[1] = *((uint32*)(pIn + prevline - 4));
-        w[4] = *((uint32*)(pIn - 4));
-        w[7] = *((uint32*)(pIn + nextline - 4));
-      } else {
-        w[1] = w[2];
-        w[4] = w[5];
-        w[7] = w[8];
-      }
+            if (i > 0) {
+                w[1] = *((uint32*)(pIn + prevline - 4));
+                w[4] = *((uint32*)(pIn - 4));
+                w[7] = *((uint32*)(pIn + nextline - 4));
+            }
+            else {
+                w[1] = w[2];
+                w[4] = w[5];
+                w[7] = w[8];
+            }
 
-      if (i<Xres-1) {
-        w[3] = *((uint32*)(pIn + prevline + 4));
-        w[6] = *((uint32*)(pIn + 4));
-        w[9] = *((uint32*)(pIn + nextline + 4));
-      } else {
-        w[3] = w[2];
-        w[6] = w[5];
-        w[9] = w[8];
-      }
+            if (i < Xres - 1) {
+                w[3] = *((uint32*)(pIn + prevline + 4));
+                w[6] = *((uint32*)(pIn + 4));
+                w[9] = *((uint32*)(pIn + nextline + 4));
+            }
+            else {
+                w[3] = w[2];
+                w[6] = w[5];
+                w[9] = w[8];
+            }
 
-      pattern = 0;
-      flag = 1;
+            pattern = 0;
+            flag = 1;
 
-      YUV1 = RGB888toYUV(w[5]);
+            YUV1 = RGB888toYUV(w[5]);
 
-      for (k=1; k<=9; k++) {
-        if (k==5) continue;
+            for (k = 1; k <= 9; k++) {
+                if (k == 5) continue;
 
-        if ( w[k] != w[5] ) {
-          YUV2 = RGB888toYUV(w[k]);
-          if ( ( abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY ) ||
-               ( abs((YUV1 & Umask) - (YUV2 & Umask)) > trU ) ||
-               ( abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV ) )
-            pattern |= flag;
-        }
-        flag <<= 1;
-      }
+                if (w[k] != w[5]) {
+                    YUV2 = RGB888toYUV(w[k]);
+                    if ((abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY) ||
+                        (abs((YUV1 & Umask) - (YUV2 & Umask)) > trU) ||
+                        (abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV))
+                        pattern |= flag;
+                }
+                flag <<= 1;
+            }
 
-      for (k=1; k<=9; k++)
-        c[k] = w[k];
+            for (k = 1; k <= 9; k++)
+                c[k] = w[k];
 
 #include "TextureFilters_hq4x.h"
 
-      pIn+=4;
-      pOut+=16;
-    }
+            pIn += 4;
+            pOut += 16;
+        }
 
-    pIn += 4*(SrcPPL-Xres);
-    pOut+= 16*(SrcPPL-Xres);
-    pOut+=BpL;
-    pOut+=BpL;
-    pOut+=BpL;
-  }
+        pIn += 4 * (SrcPPL - Xres);
+        pOut += 16 * (SrcPPL - Xres);
+        pOut += BpL;
+        pOut += BpL;
+        pOut += BpL;
+    }
 
 #undef BPP
 #undef BPP2
@@ -861,32 +857,32 @@ void hq4x_8888(unsigned char * pIn, unsigned char * pOut, int Xres, int Yres, in
 #if !_16BPP_HACK
 void hq4x_init(void)
 {
-  static int done = 0;
-  int r, g, b, Y, u, v, i, j, k;
+    static int done = 0;
+    int r, g, b, Y, u, v, i, j, k;
 
-  if (done ) return;
+    if (done) return;
 
-  for (i = 0; i < 16; i++) {
-    for (j = 0; j < 16; j++) {
-      for (k = 0; k < 16; k++) {
-        r = (i << 4) | i;
-        g = (j << 4) | j;
-        b = (k << 4) | k;
+    for (i = 0; i < 16; i++) {
+        for (j = 0; j < 16; j++) {
+            for (k = 0; k < 16; k++) {
+                r = (i << 4) | i;
+                g = (j << 4) | j;
+                b = (k << 4) | k;
 
-        /* Microsoft's RGB888->YUV conversion */
-        /*Y = (((  66 * r + 129 * g +  25 * b + 128) >> 8) + 16) & 0xFF;
-        u = ((( -38 * r -  74 * g + 112 * b + 128) >> 8) + 128) & 0xFF;
-        v = ((( 112 * r -  94 * g -  18 * b + 128) >> 8) + 128) & 0xFF;*/
+                /* Microsoft's RGB888->YUV conversion */
+                /*Y = (((  66 * r + 129 * g +  25 * b + 128) >> 8) + 16) & 0xFF;
+                u = ((( -38 * r -  74 * g + 112 * b + 128) >> 8) + 128) & 0xFF;
+                v = ((( 112 * r -  94 * g -  18 * b + 128) >> 8) + 128) & 0xFF;*/
 
-        Y = (r + g + b) >> 2;
-        u = 128 + ((r - b) >> 2);
-        v = 128 + ((-r + 2*g -b)>>3);
+                Y = (r + g + b) >> 2;
+                u = 128 + ((r - b) >> 2);
+                v = 128 + ((-r + 2 * g - b) >> 3);
 
-        RGB444toYUV[(i << 8) | (j << 4) | k] = (Y << 16) | (u << 8) | v;
-      }
+                RGB444toYUV[(i << 8) | (j << 4) | k] = (Y << 16) | (u << 8) | v;
+            }
+        }
     }
-  }
 
-  done = 1;
+    done = 1;
 }
 #endif /* !_16BPP_HACK */

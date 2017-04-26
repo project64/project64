@@ -1,25 +1,16 @@
-/*
- * Texture Filtering
- * Version:  1.0
- *
- * Copyright (C) 2007  Hiroshi Morii   All Rights Reserved.
- * Email koolsmoky(at)users.sourceforge.net
- * Web   http://www.3dfxzone.it/koolsmoky
- *
- * this is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * this is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with GNU Make; see the file COPYING.  If not, write to
- * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- */
+/***************************************************************************
+*                                                                          *
+* Project64-video - A Nintendo 64 gfx plugin.                              *
+* http://www.pj64-emu.com/                                                 *
+* Copyright (C) 2017 Project64. All rights reserved.                       *
+* Copyright (C) 2007 Hiroshi Morii                                         *
+* Copyright (C) 2003 Rice1964                                              *
+*                                                                          *
+* License:                                                                 *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                       *
+* version 2 of the License, or (at your option) any later version.         *
+*                                                                          *
+****************************************************************************/
 
 #ifndef __TXFILTER_H__
 #define __TXFILTER_H__
@@ -35,47 +26,47 @@
 class TxFilter
 {
 private:
-  int _numcore;
+    int _numcore;
 
-  uint8 *_tex1;
-  uint8 *_tex2;
-  int _maxwidth;
-  int _maxheight;
-  int _maxbpp;
-  int _options;
-  int _cacheSize;
-  std::string _ident;
-  std::string _path;
-  TxQuantize *_txQuantize;
-  TxTexCache *_txTexCache;
-  TxHiResCache *_txHiResCache;
-  TxUtil *_txUtil;
-  TxImage *_txImage;
-  boolean _initialized;
-  void clear();
+    uint8 *_tex1;
+    uint8 *_tex2;
+    int _maxwidth;
+    int _maxheight;
+    int _maxbpp;
+    int _options;
+    int _cacheSize;
+    std::string _ident;
+    std::string _path;
+    TxQuantize *_txQuantize;
+    TxTexCache *_txTexCache;
+    TxHiResCache *_txHiResCache;
+    TxUtil *_txUtil;
+    TxImage *_txImage;
+    bool _initialized;
+    void clear();
 public:
-  ~TxFilter();
-  TxFilter(int maxwidth,
-           int maxheight,
-           int maxbpp,
-           int options,
-           int cachesize,
-           const char *path,
-           const char *ident,
-           dispInfoFuncExt callback);
-  boolean filter(uint8 *src,
-                  int srcwidth,
-                  int srcheight,
-                  uint16 srcformat,
-                  uint64 g64crc, /* glide64 crc, 64bit for future use */
-                  GHQTexInfo *info);
-  boolean hirestex(uint64 g64crc, /* glide64 crc, 64bit for future use */
-                      uint64 r_crc64,   /* checksum hi:palette low:texture */
-                      uint16 *palette,
-                      GHQTexInfo *info);
-  uint64 checksum64(uint8 *src, int width, int height, int size, int rowStride, uint8 *palette);
-  boolean dmptx(uint8 *src, int width, int height, int rowStridePixel, uint16 gfmt, uint16 n64fmt, uint64 r_crc64);
-  boolean reloadhirestex();
+    ~TxFilter();
+    TxFilter(int maxwidth,
+        int maxheight,
+        int maxbpp,
+        int options,
+        int cachesize,
+        const char *path,
+        const char *ident,
+        dispInfoFuncExt callback);
+    bool filter(uint8 *src,
+        int srcwidth,
+        int srcheight,
+        uint16 srcformat,
+        uint64_t g64crc, /* glide64 crc, 64bit for future use */
+        GHQTexInfo *info);
+    bool hirestex(uint64_t g64crc, /* glide64 crc, 64bit for future use */
+        uint64_t r_crc64,   /* checksum hi:palette low:texture */
+        uint16 *palette,
+        GHQTexInfo *info);
+    uint64_t checksum64(uint8 *src, int width, int height, int size, int rowStride, uint8 *palette);
+    bool dmptx(uint8 *src, int width, int height, int rowStridePixel, uint16 gfmt, uint16 n64fmt, uint64_t r_crc64);
+    bool reloadhirestex();
 };
 
 #endif /* __TXFILTER_H__ */

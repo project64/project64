@@ -1,25 +1,16 @@
-/*
- * Texture Filtering
- * Version:  1.0
- *
- * Copyright (C) 2007  Hiroshi Morii   All Rights Reserved.
- * Email koolsmoky(at)users.sourceforge.net
- * Web   http://www.3dfxzone.it/koolsmoky
- *
- * this is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * this is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with GNU Make; see the file COPYING.  If not, write to
- * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- */
+/***************************************************************************
+*                                                                          *
+* Project64-video - A Nintendo 64 gfx plugin.                              *
+* http://www.pj64-emu.com/                                                 *
+* Copyright (C) 2017 Project64. All rights reserved.                       *
+* Copyright (C) 2007 Hiroshi Morii                                         *
+* Copyright (C) 2003 Rice1964                                              *
+*                                                                          *
+* License:                                                                 *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                       *
+* version 2 of the License, or (at your option) any later version.         *
+*                                                                          *
+****************************************************************************/
 
 #ifdef WIN32
 #pragma warning(disable: 4786)
@@ -33,6 +24,7 @@
 #include <zlib/zlib.h>
 #include <Common/path.h>
 #include <Common/StdString.h>
+#include <Project64-video/Renderer/types.h>
 
 TxCache::~TxCache()
 {
@@ -82,8 +74,8 @@ TxCache::TxCache(int options, int cachesize, const char *path, const char *ident
     }
 }
 
-boolean
-TxCache::add(uint64 checksum, GHQTexInfo *info, int dataSize)
+bool
+TxCache::add(uint64_t checksum, GHQTexInfo *info, int dataSize)
 {
     /* NOTE: dataSize must be provided if info->data is zlib compressed. */
 
@@ -112,7 +104,7 @@ TxCache::add(uint64 checksum, GHQTexInfo *info, int dataSize)
             {
                 DBG_INFO(80, "zlib compressed: %.02fkb->%.02fkb\n", (float)dataSize / 1000, (float)destLen / 1000);
                 dataSize = destLen;
-                format |= GR_TEXFMT_GZ;
+                format |= GFX_TEXFMT_GZ;
             }
         }
     }
@@ -124,11 +116,11 @@ TxCache::add(uint64 checksum, GHQTexInfo *info, int dataSize)
         if ((_totalSize > _cacheSize) && !_cachelist.empty())
         {
             /* _cachelist is arranged so that frequently used textures are in the back */
-            std::list<uint64>::iterator itList = _cachelist.begin();
+            std::list<uint64_t>::iterator itList = _cachelist.begin();
             while (itList != _cachelist.end())
             {
                 /* find it in _cache */
-                std::map<uint64, TXCACHE*>::iterator itMap = _cache.find(*itList);
+                std::map<uint64_t, TXCACHE*>::iterator itMap = _cache.find(*itList);
                 if (itMap != _cache.end())
                 {
                     /* yep we have it. remove it. */
@@ -176,7 +168,7 @@ TxCache::add(uint64 checksum, GHQTexInfo *info, int dataSize)
                 txCache->it = --(_cachelist.end());
             }
             /* _cache[checksum] = txCache; */
-            _cache.insert(std::map<uint64, TXCACHE*>::value_type(checksum, txCache));
+            _cache.insert(std::map<uint64_t, TXCACHE*>::value_type(checksum, txCache));
 
 #ifdef DEBUG
             DBG_INFO(80, "[%5d] added!! crc:%08X %08X %d x %d gfmt:%x total:%.02fmb\n",
@@ -213,13 +205,13 @@ TxCache::add(uint64 checksum, GHQTexInfo *info, int dataSize)
     return 0;
 }
 
-boolean
-TxCache::get(uint64 checksum, GHQTexInfo *info)
+bool
+TxCache::get(uint64_t checksum, GHQTexInfo *info)
 {
     if (!checksum || _cache.empty()) return 0;
 
     /* find a match in cache */
-    std::map<uint64, TXCACHE*>::iterator itMap = _cache.find(checksum);
+    std::map<uint64_t, TXCACHE*>::iterator itMap = _cache.find(checksum);
     if (itMap != _cache.end())
     {
         /* yep, we've got it. */
@@ -234,7 +226,7 @@ TxCache::get(uint64 checksum, GHQTexInfo *info)
         }
 
         /* zlib decompress it */
-        if (info->format & GR_TEXFMT_GZ)
+        if (info->format & GFX_TEXFMT_GZ)
         {
             uLongf destLen = _gzdestLen;
             uint8 *dest = (_gzdest0 == info->data) ? _gzdest1 : _gzdest0;
@@ -244,7 +236,7 @@ TxCache::get(uint64 checksum, GHQTexInfo *info)
                 return 0;
             }
             info->data = dest;
-            info->format &= ~GR_TEXFMT_GZ;
+            info->format &= ~GFX_TEXFMT_GZ;
             DBG_INFO(80, "zlib decompressed: %.02fkb->%.02fkb\n", (float)(((*itMap).second)->size) / 1000, (float)destLen / 1000);
         }
         return 1;
@@ -252,7 +244,7 @@ TxCache::get(uint64 checksum, GHQTexInfo *info)
     return 0;
 }
 
-boolean TxCache::save(const char *path, const char *filename, int config)
+bool TxCache::save(const char *path, const char *filename, int config)
 {
     if (!_cache.empty())
     {
@@ -265,7 +257,7 @@ boolean TxCache::save(const char *path, const char *filename, int config)
             /* write header to determine config match */
             gzwrite(gzfp, &config, 4);
 
-            std::map<uint64, TXCACHE*>::iterator itMap = _cache.begin();
+            std::map<uint64_t, TXCACHE*>::iterator itMap = _cache.begin();
             while (itMap != _cache.end())
             {
                 uint8 *dest = (*itMap).second->info.data;
@@ -277,17 +269,17 @@ boolean TxCache::save(const char *path, const char *filename, int config)
                  * texture data in a zlib compressed state. if the GZ_TEXCACHE or GZ_HIRESTEXCACHE
                  * option is toggled, the cache will need to be rebuilt.
                  */
-                /*if (format & GR_TEXFMT_GZ) {
-                  dest = _gzdest0;
-                  destLen = _gzdestLen;
-                  if (dest && destLen) {
-                  if (uncompress(dest, &destLen, (*itMap).second->info.data, (*itMap).second->size) != Z_OK) {
-                  dest = NULL;
-                  destLen = 0;
-                  }
-                  format &= ~GR_TEXFMT_GZ;
-                  }
-                  }*/
+                 /*if (format & GFX_TEXFMT_GZ) {
+                   dest = _gzdest0;
+                   destLen = _gzdestLen;
+                   if (dest && destLen) {
+                   if (uncompress(dest, &destLen, (*itMap).second->info.data, (*itMap).second->size) != Z_OK) {
+                   dest = NULL;
+                   destLen = 0;
+                   }
+                   format &= ~GFX_TEXFMT_GZ;
+                   }
+                   }*/
 
                 if (dest && destLen)
                 {
@@ -325,7 +317,7 @@ boolean TxCache::save(const char *path, const char *filename, int config)
     return _cache.empty();
 }
 
-boolean TxCache::load(const char *path, const char *filename, int config)
+bool TxCache::load(const char *path, const char *filename, int config)
 {
     /* find it on disk */
     CPath cbuf(path, filename);
@@ -336,7 +328,7 @@ boolean TxCache::load(const char *path, const char *filename, int config)
     {
         /* yep, we have it. load it into memory cache. */
         int dataSize;
-        uint64 checksum;
+        uint64_t checksum;
         GHQTexInfo tmpInfo;
         int tmpconfig;
         /* read header to determine config match */
@@ -372,7 +364,7 @@ boolean TxCache::load(const char *path, const char *filename, int config)
                     gzread(gzfp, tmpInfo.data, dataSize);
 
                     /* add to memory cache */
-                    add(checksum, &tmpInfo, (tmpInfo.format & GR_TEXFMT_GZ) ? dataSize : 0);
+                    add(checksum, &tmpInfo, (tmpInfo.format & GFX_TEXFMT_GZ) ? dataSize : 0);
 
                     free(tmpInfo.data);
                 }
@@ -391,11 +383,11 @@ boolean TxCache::load(const char *path, const char *filename, int config)
     return !_cache.empty();
 }
 
-boolean TxCache::del(uint64 checksum)
+bool TxCache::del(uint64_t checksum)
 {
     if (!checksum || _cache.empty()) return 0;
 
-    std::map<uint64, TXCACHE*>::iterator itMap = _cache.find(checksum);
+    std::map<uint64_t, TXCACHE*>::iterator itMap = _cache.find(checksum);
     if (itMap != _cache.end())
     {
         /* for texture cache (not hi-res cache) */
@@ -415,9 +407,9 @@ boolean TxCache::del(uint64 checksum)
     return 0;
 }
 
-boolean TxCache::is_cached(uint64 checksum)
+bool TxCache::is_cached(uint64_t checksum)
 {
-    std::map<uint64, TXCACHE*>::iterator itMap = _cache.find(checksum);
+    std::map<uint64_t, TXCACHE*>::iterator itMap = _cache.find(checksum);
     if (itMap != _cache.end()) return 1;
 
     return 0;
@@ -427,7 +419,7 @@ void TxCache::clear()
 {
     if (!_cache.empty())
     {
-        std::map<uint64, TXCACHE*>::iterator itMap = _cache.begin();
+        std::map<uint64_t, TXCACHE*>::iterator itMap = _cache.begin();
         while (itMap != _cache.end())
         {
             free((*itMap).second->info.data);

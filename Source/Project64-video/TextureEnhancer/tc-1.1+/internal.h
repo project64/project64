@@ -1,28 +1,19 @@
-/*
- * Texture compression
- * Version:  1.0
- *
- * Copyright (C) 2004  Daniel Borca   All Rights Reserved.
- *
- * this is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * this is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with GNU Make; see the file COPYING.  If not, write to
- * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.	
- */
-
+/***************************************************************************
+*                                                                          *
+* Project64-video - A Nintendo 64 gfx plugin.                              *
+* http://www.pj64-emu.com/                                                 *
+* Copyright (C) 2017 Project64. All rights reserved.                       *
+* Copyright (C) 2007  Hiroshi Morii                                        *
+* Copyright (C) 2004  Daniel Borca                                         *
+*                                                                          *
+* License:                                                                 *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                       *
+* version 2 of the License, or (at your option) any later version.         *
+*                                                                          *
+****************************************************************************/
 
 #ifndef INTERNAL_H_included
 #define INTERNAL_H_included
-
 
 /*****************************************************************************\
 * Texture compression stuff
@@ -31,19 +22,12 @@
 #define YUV
 #define ARGB
 
-
 /*****************************************************************************\
  * DLL stuff
 \*****************************************************************************/
 
-#ifdef __WIN32__
-#define TAPI __declspec(dllexport)
-#define TAPIENTRY /*__stdcall*/
-#else
 #define TAPI
 #define TAPIENTRY
-#endif
-
 
 /*****************************************************************************\
  * 64bit types on 32bit machine
@@ -77,7 +61,6 @@ typedef struct {
     } while (0)
 
 #endif /* !__GNUC__ */
-
 
 /*****************************************************************************\
  * Config
@@ -131,16 +114,15 @@ typedef struct {
 	}				\
     } while (0)
 
-
 /*****************************************************************************\
  * Utility functions
 \*****************************************************************************/
 
 void
-_mesa_upscale_teximage2d (unsigned int inWidth, unsigned int inHeight,
-			  unsigned int outWidth, unsigned int outHeight,
-			  unsigned int comps,
-			  const byte *src, int srcRowStride,
-			  unsigned char *dest);
+_mesa_upscale_teximage2d(unsigned int inWidth, unsigned int inHeight,
+    unsigned int outWidth, unsigned int outHeight,
+    unsigned int comps,
+    const byte *src, int srcRowStride,
+    unsigned char *dest);
 
 #endif

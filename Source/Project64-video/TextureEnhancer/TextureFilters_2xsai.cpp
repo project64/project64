@@ -1,28 +1,16 @@
-/*
- * Texture Filtering
- * Version:  1.0
- *
- * Copyright (C) 2007  Hiroshi Morii   All Rights Reserved.
- * Email koolsmoky(at)users.sourceforge.net
- * Web   http://www.3dfxzone.it/koolsmoky
- *
- * this is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * this is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with GNU Make; see the file COPYING.  If not, write to
- * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- */
-
-/* Based on Derek Liauw Kie Fa and Rice1964 Super2xSaI code */
-
+/***************************************************************************
+*                                                                          *
+* Project64-video - A Nintendo 64 gfx plugin.                              *
+* http://www.pj64-emu.com/                                                 *
+* Copyright (C) 2017 Project64. All rights reserved.                       *
+* Copyright (C) 2007 Hiroshi Morii                                         *
+* Copyright (C) 2003 Rice1964                                              *
+*                                                                          *
+* License:                                                                 *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                       *
+* version 2 of the License, or (at your option) any later version.         *
+*                                                                          *
+****************************************************************************/
 #include "TextureFilters.h"
 
 #define GET_RESULT(A, B, C, D) ((A != C || A != D) - (B != C || B != D))
@@ -36,14 +24,14 @@ void Super2xSaI_8888(uint32 *srcPtr, uint32 *destPtr, uint32 width, uint32 heigh
 #define SAI_INTERPOLATE SAI_INTERPOLATE_8888
 #define SAI_Q_INTERPOLATE SAI_Q_INTERPOLATE_8888
 
-  uint32 destWidth = width << 1;
-  
-  uint32 color4, color5, color6;
-  uint32 color1, color2, color3;
-  uint32 colorA0, colorA1, colorA2, colorA3;
-  uint32 colorB0, colorB1, colorB2, colorB3;
-  uint32 colorS1, colorS2;
-  uint32 product1a, product1b, product2a, product2b;
+    uint32 destWidth = width << 1;
+
+    uint32 color4, color5, color6;
+    uint32 color1, color2, color3;
+    uint32 colorA0, colorA1, colorA2, colorA3;
+    uint32 colorB0, colorB1, colorB2, colorB3;
+    uint32 colorS1, colorS2;
+    uint32 product1a, product1b, product2a, product2b;
 
 #include "TextureFilters_2xsai.h"
 
@@ -61,15 +49,15 @@ void Super2xSaI_4444(uint16 *srcPtr, uint16 *destPtr, uint32 width, uint32 heigh
 #define SAI_INTERPOLATE SAI_INTERPOLATE_4444
 #define SAI_Q_INTERPOLATE SAI_Q_INTERPOLATE_4444
 
-  uint32 destWidth = width << 1;
-  uint32 destHeight = height << 1;
+    uint32 destWidth = width << 1;
+    uint32 destHeight = height << 1;
 
-  uint16 color4, color5, color6;
-  uint16 color1, color2, color3;
-  uint16 colorA0, colorA1, colorA2, colorA3;
-  uint16 colorB0, colorB1, colorB2, colorB3;
-  uint16 colorS1, colorS2;
-  uint16 product1a, product1b, product2a, product2b;
+    uint16 color4, color5, color6;
+    uint16 color1, color2, color3;
+    uint16 colorA0, colorA1, colorA2, colorA3;
+    uint16 colorB0, colorB1, colorB2, colorB3;
+    uint16 colorS1, colorS2;
+    uint16 product1a, product1b, product2a, product2b;
 
 #include "TextureFilters_2xsai.h"
 
@@ -86,15 +74,15 @@ void Super2xSaI_1555(uint16 *srcPtr, uint16 *destPtr, uint32 width, uint32 heigh
 #define SAI_INTERPOLATE SAI_INTERPOLATE_1555
 #define SAI_Q_INTERPOLATE SAI_Q_INTERPOLATE_1555
 
-  uint32 destWidth = width << 1;
-  uint32 destHeight = height << 1;
+    uint32 destWidth = width << 1;
+    uint32 destHeight = height << 1;
 
-  uint16 color4, color5, color6;
-  uint16 color1, color2, color3;
-  uint16 colorA0, colorA1, colorA2, colorA3;
-  uint16 colorB0, colorB1, colorB2, colorB3;
-  uint16 colorS1, colorS2;
-  uint16 product1a, product1b, product2a, product2b;
+    uint16 color4, color5, color6;
+    uint16 color1, color2, color3;
+    uint16 colorA0, colorA1, colorA2, colorA3;
+    uint16 colorB0, colorB1, colorB2, colorB3;
+    uint16 colorS1, colorS2;
+    uint16 product1a, product1b, product2a, product2b;
 
 #include "TextureFilters_2xsai.h"
 
@@ -111,15 +99,15 @@ void Super2xSaI_565(uint16 *srcPtr, uint16 *destPtr, uint32 width, uint32 height
 #define SAI_INTERPOLATE SAI_INTERPOLATE_565
 #define SAI_Q_INTERPOLATE SAI_Q_INTERPOLATE_565
 
-  uint32 destWidth = width << 1;
-  uint32 destHeight = height << 1;
+    uint32 destWidth = width << 1;
+    uint32 destHeight = height << 1;
 
-  uint16 color4, color5, color6;
-  uint16 color1, color2, color3;
-  uint16 colorA0, colorA1, colorA2, colorA3;
-  uint16 colorB0, colorB1, colorB2, colorB3;
-  uint16 colorS1, colorS2;
-  uint16 product1a, product1b, product2a, product2b;
+    uint16 color4, color5, color6;
+    uint16 color1, color2, color3;
+    uint16 colorA0, colorA1, colorA2, colorA3;
+    uint16 colorB0, colorB1, colorB2, colorB3;
+    uint16 colorS1, colorS2;
+    uint16 product1a, product1b, product2a, product2b;
 
 #include "TextureFilters_2xsai.h"
 
@@ -136,15 +124,15 @@ void Super2xSaI_8(uint8 *srcPtr, uint8 *destPtr, uint32 width, uint32 height, ui
 #define SAI_INTERPOLATE SAI_INTERPOLATE_8
 #define SAI_Q_INTERPOLATE SAI_Q_INTERPOLATE_8
 
-  uint32 destWidth = width << 1;
-  uint32 destHeight = height << 1;
+    uint32 destWidth = width << 1;
+    uint32 destHeight = height << 1;
 
-  uint8 color4, color5, color6;
-  uint8 color1, color2, color3;
-  uint8 colorA0, colorA1, colorA2, colorA3;
-  uint8 colorB0, colorB1, colorB2, colorB3;
-  uint8 colorS1, colorS2;
-  uint8 product1a, product1b, product2a, product2b;
+    uint8 color4, color5, color6;
+    uint8 color1, color2, color3;
+    uint8 colorA0, colorA1, colorA2, colorA3;
+    uint8 colorB0, colorB1, colorB2, colorB3;
+    uint8 colorS1, colorS2;
+    uint8 product1a, product1b, product2a, product2b;
 
 #include "TextureFilters_2xsai.h"
 
