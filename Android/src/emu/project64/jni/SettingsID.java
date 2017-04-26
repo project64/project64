@@ -97,7 +97,7 @@ public enum SettingsID
     Game_File,
     Game_UniqueSaveDir,
     Game_GameName,
-    Game_GoodName,
+    Cfg_GoodName,
     Game_TempLoaded,
     Game_SystemType,
     Game_EditPlugin_Gfx,
@@ -255,7 +255,6 @@ public enum SettingsID
     Plugin_UseHleGfx,
     Plugin_UseHleAudio,
     Plugin_EnableAudio,
-    Plugin_ForceGfxReset,
 
     Logging_GenerateLog,
     Logging_LogRDRamRegisters,

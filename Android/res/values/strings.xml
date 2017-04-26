@@ -119,8 +119,6 @@
     <string name="VerticalInterruptsPerSecond">Vertical interrupts per second</string>
     <string name="RecordExecutionTimes_title">Record Execution Times</string>
     <string name="RecordExecutionTimes_summary">Record how long each block executes for</string>
-    <string name="ForceGfxReset_title">Reset GFX Plugin</string>
-    <string name="ForceGfxReset_summary">Always reload GFX plugin</string>
     <string name="PreAllocSyncMem_title">Pre Alloc Sync Mem</string>
     <string name="PreAllocSyncMem_summary">Allocate sync memory at startup</string>
     <string name="ReducedSyncMem_title">Reduced Sync Mem</string>

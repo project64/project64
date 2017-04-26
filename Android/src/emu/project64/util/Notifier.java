@@ -106,15 +106,15 @@ public final class Notifier
         GameOverlay overlay = (GameOverlay) activity.findViewById(R.id.gameOverlay);
         overlay.SetDisplayMessage2(message);
     }
-	
-	public static void EmulationStarted (Activity activity)
+    
+    public static void EmulationStarted (Activity activity)
     {
         ((Project64Application) activity.getApplication()).getDefaultTracker().send(new HitBuilders.EventBuilder()
-        	    .setCategory("mobile")
-        	    .setAction("game")
-        	    .setLabel(NativeExports.SettingsLoadString(SettingsID.Rdb_GoodName.getValue()))
-        	    .build());
-	}
+                .setCategory("mobile")
+                .setAction("game")
+                .setLabel(NativeExports.SettingsLoadString(SettingsID.Rdb_GoodName.getValue()))
+                .build());
+    }
 
     private static Runnable runEmulationStopped = null;
     public static void EmulationStopped (Activity activity)

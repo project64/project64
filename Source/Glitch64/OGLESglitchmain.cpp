@@ -356,6 +356,8 @@ FX_ENTRY GrContext_t FX_CALL grSstWinOpen(GrColorFormat_t color_format, GrOrigin
 {
     static int show_warning = 1;
 
+    GLCache::ResetCache();
+    
     // ZIGGY
     // allocate static texture names
     // the initial value should be big enough to support the maximal resolution

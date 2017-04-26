@@ -550,7 +550,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
 
         final Context finalContext = this;
         AlertDialog.Builder GameMenu = new AlertDialog.Builder(finalContext);
-        GameMenu.setTitle(NativeExports.SettingsLoadString(SettingsID.Game_GoodName.getValue()));
+        GameMenu.setTitle(NativeExports.SettingsLoadString(SettingsID.Rdb_GoodName.getValue()));
         GameMenu.setAdapter(adapter, new DialogInterface.OnClickListener()
         {
             @Override

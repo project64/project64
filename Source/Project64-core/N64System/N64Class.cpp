@@ -675,10 +675,6 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
     }
     if (m_Plugins && g_Settings->LoadBool(GameRunning_CPU_Running))
     {
-        if (g_Settings->LoadBool(Plugin_ForceGfxReset))
-        {
-            m_Plugins->Reset(this);
-        }
         m_Plugins->RomClosed();
         m_Plugins->RomOpened();
     }

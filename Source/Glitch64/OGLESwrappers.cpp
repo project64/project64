@@ -42,313 +42,351 @@
 
 void vbo_draw();
 
-void cache_glActiveTexture (GLenum texture)
-{
-    static GLenum cached_texture;
+GLenum GLCache::m_cached_texture;
+GLenum GLCache::m_cached_mode;
+GLenum GLCache::m_cached_modeRGB;
+GLenum GLCache::m_cached_modeAlpha;
+GLenum GLCache::m_cached_sfactor;
+GLenum GLCache::m_cached_dfactor;
+GLenum GLCache::m_cached_BlendFuncSeparate_srcRGB;
+GLenum GLCache::m_cached_BlendFuncSeparate_dstRGB;
+GLenum GLCache::m_cached_BlendFuncSeparate_srcAlpha;
+GLenum GLCache::m_cached_BlendFuncSeparate_dstAlpha;
+GLclampf GLCache::m_cached_depth;
+GLenum GLCache::m_cached_CullFace_mode;
+GLenum GLCache::m_cached_func;
+GLboolean GLCache::m_cached_DepthMask_flag;
+GLclampf GLCache::m_cached_zNear;
+GLclampf GLCache::m_cached_zFar;
+bool GLCache::m_cached_BLEND = false;
+bool GLCache::m_cached_CULL_FACE = false;
+bool GLCache::m_cached_DEPTH_TEST = false;
+bool GLCache::m_cached_DITHER = false;
+bool GLCache::m_cached_POLYGON_OFFSET_FILL = false;
+bool GLCache::m_cached_SAMPLE_ALPHA_TO_COVERAGE = false;
+bool GLCache::m_cached_SAMPLE_COVERAGE = false;
+bool GLCache::m_cached_SCISSOR_TEST = false;
+bool GLCache::m_cached_STENCIL_TEST = false;
+GLenum GLCache::m_cached_FrontFace_mode;
+GLfloat GLCache::m_cached_factor;
+GLfloat GLCache::m_cached_units;
+GLclampf GLCache::m_cached_red, GLCache::m_cached_green, GLCache::m_cached_blue, GLCache::m_cached_alpha;
+GLint GLCache::m_cached_x, GLCache::m_cached_y;
+GLsizei GLCache::m_cached_width, GLCache::m_cached_height;
+GLuint GLCache::m_cached_program;
+GLint GLCache::m_Viewport_cached_x = 0, GLCache::m_Viewport_cached_y = 0;
+GLsizei GLCache::m_Viewport_cached_width = 0, GLCache::m_Viewport_cached_height = 0;
 
-    if(texture != cached_texture)
+void GLCache::ResetCache(void)
+{
+    m_cached_texture = 0;
+    m_cached_mode = 0;
+    m_cached_modeRGB = 0;
+    m_cached_modeAlpha = 0;
+    m_cached_sfactor = 0;
+    m_cached_dfactor = 0;
+    m_cached_BlendFuncSeparate_srcRGB = 0;
+    m_cached_BlendFuncSeparate_dstRGB = 0;
+    m_cached_BlendFuncSeparate_srcAlpha = 0;
+    m_cached_BlendFuncSeparate_dstAlpha = 0;
+    m_cached_depth = 0;
+    m_cached_CullFace_mode = 0;
+    m_cached_func = 0;
+    m_cached_DepthMask_flag = 0;
+    m_cached_zNear = 0;
+    m_cached_zFar = 0;
+    m_cached_BLEND = false;
+    m_cached_CULL_FACE = false;
+    m_cached_DEPTH_TEST = false;
+    m_cached_DITHER = false;
+    m_cached_POLYGON_OFFSET_FILL = false;
+    m_cached_SAMPLE_ALPHA_TO_COVERAGE = false;
+    m_cached_SAMPLE_COVERAGE = false;
+    m_cached_SCISSOR_TEST = false;
+    m_cached_STENCIL_TEST = false;
+    m_cached_FrontFace_mode = 0;
+    m_cached_factor = 0;
+    m_cached_units = 0;
+    m_cached_red = 0;
+    m_cached_green = 0;
+    m_cached_blue = 0;
+    m_cached_alpha = 0;
+    m_cached_x = 0;
+    m_cached_y = 0;
+    m_cached_width = 0;
+    m_cached_height = 0;
+    m_cached_program = 0;
+    m_Viewport_cached_x = 0;
+    m_Viewport_cached_y = 0;
+    m_Viewport_cached_width = 0;
+    m_Viewport_cached_height = 0;
+}
+
+void GLCache::glActiveTexture(GLenum texture)
+{
+    if (texture != m_cached_texture)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "texture: %d",texture);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "texture: %d", texture);
         vbo_draw();
-        glActiveTexture(texture);
-        cached_texture = texture;
+        ::glActiveTexture(texture);
+        m_cached_texture = texture;
     }
     else
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - texture: %d",texture);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - texture: %d", texture);
     }
 }
 
-void cache_glBindTexture (GLenum target, GLuint texture)
+void GLCache::glBindTexture(GLenum target, GLuint texture)
 {
-    WriteTrace(TraceOGLWrapper, TraceDebug, "target: %d texture: %d",target, texture);
+    WriteTrace(TraceOGLWrapper, TraceDebug, "target: %d texture: %d", target, texture);
     vbo_draw();
-    glBindTexture(target, texture);
+    ::glBindTexture(target, texture);
 }
 
-void cache_glBlendEquation ( GLenum mode )
+void GLCache::glBlendEquation(GLenum mode)
 {
-    static GLenum cached_mode;
-
-    if(mode != cached_mode)
+    if (mode != m_cached_mode)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "mode: %d",mode);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "mode: %d", mode);
         vbo_draw();
-        glBlendEquation(mode);
-        cached_mode = mode;
+        ::glBlendEquation(mode);
+        m_cached_mode = mode;
     }
     else
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - mode: %d",mode);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - mode: %d", mode);
     }
 }
 
-void cache_glBlendEquationSeparate (GLenum modeRGB, GLenum modeAlpha)
+void GLCache::glBlendEquationSeparate(GLenum modeRGB, GLenum modeAlpha)
 {
-    static GLenum cached_modeRGB;
-    static GLenum cached_modeAlpha;
-
-    if(modeRGB != cached_modeRGB || modeAlpha != cached_modeAlpha)
+    if (modeRGB != m_cached_modeRGB || modeAlpha != m_cached_modeAlpha)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "modeRGB: %d cached_modeAlpha: %d",modeRGB, cached_modeAlpha);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "modeRGB: %d cached_modeAlpha: %d", modeRGB, m_cached_modeAlpha);
         vbo_draw();
-        glBlendEquationSeparate(modeRGB, modeAlpha);
-        cached_modeRGB = modeRGB;
-        cached_modeAlpha = modeAlpha;
+        ::glBlendEquationSeparate(modeRGB, modeAlpha);
+        m_cached_modeRGB = modeRGB;
+        m_cached_modeAlpha = modeAlpha;
     }
     else
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - modeRGB: %d cached_modeAlpha: %d",modeRGB, cached_modeAlpha);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - modeRGB: %d cached_modeAlpha: %d", modeRGB, m_cached_modeAlpha);
     }
-
 }
 
-void cache_glBlendFunc (GLenum sfactor, GLenum dfactor)
+void GLCache::glBlendFunc(GLenum sfactor, GLenum dfactor)
 {
-    static GLenum cached_sfactor;
-    static GLenum cached_dfactor;
-
-    if(sfactor != cached_sfactor || dfactor != cached_dfactor)
+    if (sfactor != m_cached_sfactor || dfactor != m_cached_dfactor)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "sfactor: %d dfactor: %d",sfactor, dfactor);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "sfactor: %d dfactor: %d", sfactor, dfactor);
         vbo_draw();
-        glBlendFunc(sfactor, dfactor);
-        cached_sfactor = sfactor;
-        cached_dfactor = dfactor;
+        ::glBlendFunc(sfactor, dfactor);
+        m_cached_sfactor = sfactor;
+        m_cached_dfactor = dfactor;
     }
     else
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - sfactor: %d dfactor: %d",sfactor, dfactor);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - sfactor: %d dfactor: %d", sfactor, dfactor);
     }
 }
 
-void cache_glBlendFuncSeparate (GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
+void GLCache::glBlendFuncSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
 {
-    static GLenum cached_BlendFuncSeparate_srcRGB;
-    static GLenum cached_BlendFuncSeparate_dstRGB;
-    static GLenum cached_BlendFuncSeparate_srcAlpha;
-    static GLenum cached_BlendFuncSeparate_dstAlpha;
-
-    if(srcRGB != cached_BlendFuncSeparate_srcRGB || dstRGB != cached_BlendFuncSeparate_dstRGB || srcAlpha != cached_BlendFuncSeparate_srcAlpha || dstAlpha != cached_BlendFuncSeparate_dstAlpha)
+    if (srcRGB != m_cached_BlendFuncSeparate_srcRGB || dstRGB != m_cached_BlendFuncSeparate_dstRGB || srcAlpha != m_cached_BlendFuncSeparate_srcAlpha || dstAlpha != m_cached_BlendFuncSeparate_dstAlpha)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "srcRGB: %d dstRGB: %d srcAlpha: %d dstAlpha: %d",srcRGB, dstRGB, srcAlpha, dstAlpha);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "srcRGB: %d dstRGB: %d srcAlpha: %d dstAlpha: %d", srcRGB, dstRGB, srcAlpha, dstAlpha);
         vbo_draw();
-        glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
-        cached_BlendFuncSeparate_srcRGB = srcRGB;
-        cached_BlendFuncSeparate_dstRGB = dstRGB;
-        cached_BlendFuncSeparate_srcAlpha = srcAlpha;
-        cached_BlendFuncSeparate_dstAlpha = dstAlpha;
+        ::glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
+        m_cached_BlendFuncSeparate_srcRGB = srcRGB;
+        m_cached_BlendFuncSeparate_dstRGB = dstRGB;
+        m_cached_BlendFuncSeparate_srcAlpha = srcAlpha;
+        m_cached_BlendFuncSeparate_dstAlpha = dstAlpha;
     }
     else
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - srcRGB: %d dstRGB: %d srcAlpha: %d dstAlpha: %d",srcRGB, dstRGB, srcAlpha, dstAlpha);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - srcRGB: %d dstRGB: %d srcAlpha: %d dstAlpha: %d", srcRGB, dstRGB, srcAlpha, dstAlpha);
     }
 }
 
-void cache_glClearDepthf (GLclampf depth)
+void GLCache::glClearDepthf(GLclampf depth)
 {
-    static GLclampf cached_depth;
-
-    if(depth != cached_depth)
+    if (depth != m_cached_depth)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "depth: %d",depth);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "depth: %d", depth);
         vbo_draw();
-        glClearDepthf(depth);
-        cached_depth = depth;
+        ::glClearDepthf(depth);
+        m_cached_depth = depth;
     }
     else
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - depth: %d",depth);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - depth: %d", depth);
     }
 }
 
-void cache_glCullFace (GLenum mode)
+void GLCache::glCullFace(GLenum mode)
 {
-    static GLenum cached_CullFace_mode;
-
-    if(mode != cached_CullFace_mode)
+    if (mode != m_cached_CullFace_mode)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "mode: %d",mode);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "mode: %d", mode);
         vbo_draw();
-        glCullFace(mode);
-        cached_CullFace_mode = mode;
+        ::glCullFace(mode);
+        m_cached_CullFace_mode = mode;
     }
     else
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - mode: %d",mode);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - mode: %d", mode);
     }
 }
 
-void cache_glDepthFunc (GLenum func)
+void GLCache::glDepthFunc(GLenum func)
 {
-    static GLenum cached_func;
-
-    if(func != cached_func)
+    if (func != m_cached_func)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "func: %d",func);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "func: %d", func);
         vbo_draw();
-        glDepthFunc(func);
-        cached_func = func;
+        ::glDepthFunc(func);
+        m_cached_func = func;
     }
     else
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - func: %d",func);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - func: %d", func);
     }
 }
 
-void cache_glDepthMask (GLboolean flag)
+void GLCache::glDepthMask(GLboolean flag)
 {
-    static GLboolean cached_DepthMask_flag;
-
-    if(flag != cached_DepthMask_flag)
+    if (flag != m_cached_DepthMask_flag)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "flag: %d",(int)flag);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "flag: %d", (int)flag);
         vbo_draw();
-        glDepthMask(flag);
-        cached_DepthMask_flag = flag;
+        ::glDepthMask(flag);
+        m_cached_DepthMask_flag = flag;
     }
     else
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - flag: %d",(int)flag);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - flag: %d", (int)flag);
     }
 }
 
-void cache_glDepthRangef (GLclampf zNear, GLclampf zFar)
+void GLCache::glDepthRangef(GLclampf zNear, GLclampf zFar)
 {
-    static GLclampf cached_zNear;
-    static GLclampf cached_zFar;
-    if(zNear != cached_zNear || zFar != cached_zFar)
+    if (zNear != m_cached_zNear || zFar != m_cached_zFar)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "zNear: %d zFar: %d",zNear, zFar);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "zNear: %d zFar: %d", zNear, zFar);
         vbo_draw();
-        glDepthRangef(zNear, zFar);
-        cached_zNear = zNear;
-        cached_zFar = zFar;
+        ::glDepthRangef(zNear, zFar);
+        m_cached_zNear = zNear;
+        m_cached_zFar = zFar;
     }
     else
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - zNear: %d zFar: %d",zNear, zFar);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - zNear: %d zFar: %d", zNear, zFar);
     }
 }
 
-
-void cache_glEnableDisableItem (GLenum cap, bool enable, bool & cached_state, const char * StateName)
+void GLCache::glEnableDisableItem(GLenum cap, bool enable, bool & cached_state, const char * StateName)
 {
     if (enable)
     {
-        if(!cached_state)
+        if (!cached_state)
         {
-            WriteTrace(TraceOGLWrapper, TraceDebug, "glEnable(%s)",StateName);
+            WriteTrace(TraceOGLWrapper, TraceDebug, "glEnable(%s)", StateName);
             vbo_draw();
-            glEnable(cap);
+            ::glEnable(cap);
             cached_state = true;
         }
         else
         {
-            WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - glEnable(%s)",StateName);
+            WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - glEnable(%s)", StateName);
         }
     }
     else
     {
         if (cached_state)
         {
-            WriteTrace(TraceOGLWrapper, TraceDebug, "glDisable(%s)",StateName);
+            WriteTrace(TraceOGLWrapper, TraceDebug, "glDisable(%s)", StateName);
             vbo_draw();
-            glDisable(cap);
+            ::glDisable(cap);
             cached_state = false;
         }
         else
         {
-            WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - glEnable(%s)",StateName);
+            WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - glEnable(%s)", StateName);
         }
     }
 }
 
-void cache_glEnableDisable (GLenum cap, bool enable)
+void GLCache::glEnableDisable(GLenum cap, bool enable)
 {
-    static bool cached_BLEND = false;
-    static bool cached_CULL_FACE = false;
-    static bool cached_DEPTH_TEST = false;
-    static bool cached_DITHER = false;
-    static bool cached_POLYGON_OFFSET_FILL = false;
-    static bool cached_SAMPLE_ALPHA_TO_COVERAGE = false;
-    static bool cached_SAMPLE_COVERAGE = false;
-    static bool cached_SCISSOR_TEST = false;
-    static bool cached_STENCIL_TEST = false;
-    
-    if(cap == GL_BLEND) { cache_glEnableDisableItem(cap, enable, cached_BLEND, "GL_BLEND"); } 
-    else if(cap == GL_CULL_FACE) { cache_glEnableDisableItem(cap, enable, cached_CULL_FACE, "GL_CULL_FACE"); } 
-    else if(cap == GL_DEPTH_TEST) { cache_glEnableDisableItem(cap, enable, cached_DEPTH_TEST, "GL_DEPTH_TEST"); } 
-    else if(cap == GL_DITHER) { cache_glEnableDisableItem(cap, enable, cached_DITHER, "GL_DITHER"); } 
-    else if(cap == GL_POLYGON_OFFSET_FILL) { cache_glEnableDisableItem(cap, enable, cached_POLYGON_OFFSET_FILL, "GL_POLYGON_OFFSET_FILL"); } 
-    else if(cap == GL_SAMPLE_ALPHA_TO_COVERAGE) { cache_glEnableDisableItem(cap, enable, cached_SAMPLE_ALPHA_TO_COVERAGE, "GL_SAMPLE_ALPHA_TO_COVERAGE"); } 
-    else if(cap == GL_SAMPLE_COVERAGE) { cache_glEnableDisableItem(cap, enable, cached_SAMPLE_COVERAGE, "GL_SAMPLE_COVERAGE"); } 
-    else if(cap == GL_SCISSOR_TEST) { cache_glEnableDisableItem(cap, enable, cached_SCISSOR_TEST, "GL_SCISSOR_TEST"); } 
-    else if(cap == GL_STENCIL_TEST) { cache_glEnableDisableItem(cap, enable, cached_STENCIL_TEST, "GL_STENCIL_TEST"); } 
+    if (cap == GL_BLEND) { GLCache::glEnableDisableItem(cap, enable, m_cached_BLEND, "GL_BLEND"); }
+    else if (cap == GL_CULL_FACE) { GLCache::glEnableDisableItem(cap, enable, m_cached_CULL_FACE, "GL_CULL_FACE"); }
+    else if (cap == GL_DEPTH_TEST) { GLCache::glEnableDisableItem(cap, enable, m_cached_DEPTH_TEST, "GL_DEPTH_TEST"); }
+    else if (cap == GL_DITHER) { GLCache::glEnableDisableItem(cap, enable, m_cached_DITHER, "GL_DITHER"); }
+    else if (cap == GL_POLYGON_OFFSET_FILL) { GLCache::glEnableDisableItem(cap, enable, m_cached_POLYGON_OFFSET_FILL, "GL_POLYGON_OFFSET_FILL"); }
+    else if (cap == GL_SAMPLE_ALPHA_TO_COVERAGE) { GLCache::glEnableDisableItem(cap, enable, m_cached_SAMPLE_ALPHA_TO_COVERAGE, "GL_SAMPLE_ALPHA_TO_COVERAGE"); }
+    else if (cap == GL_SAMPLE_COVERAGE) { GLCache::glEnableDisableItem(cap, enable, m_cached_SAMPLE_COVERAGE, "GL_SAMPLE_COVERAGE"); }
+    else if (cap == GL_SCISSOR_TEST) { GLCache::glEnableDisableItem(cap, enable, m_cached_SCISSOR_TEST, "GL_SCISSOR_TEST"); }
+    else if (cap == GL_STENCIL_TEST) { GLCache::glEnableDisableItem(cap, enable, m_cached_STENCIL_TEST, "GL_STENCIL_TEST"); }
     else
     {
         if (enable)
         {
-            WriteTrace(TraceOGLWrapper, TraceDebug, "glEnable(%d)",cap);
+            WriteTrace(TraceOGLWrapper, TraceDebug, "glEnable(%d)", cap);
             vbo_draw();
-            glEnable(cap);
+            ::glEnable(cap);
         }
         else
         {
-            WriteTrace(TraceOGLWrapper, TraceDebug, "glDisable(%d)",cap);
+            WriteTrace(TraceOGLWrapper, TraceDebug, "glDisable(%d)", cap);
             vbo_draw();
-            glDisable(cap);
+            ::glDisable(cap);
         }
     }
 }
 
-void cache_glFrontFace (GLenum mode)
+void GLCache::glFrontFace(GLenum mode)
 {
-    static GLenum cached_FrontFace_mode;
-    if(mode != cached_FrontFace_mode)
+    if (mode != m_cached_FrontFace_mode)
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "mode: %d",mode);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "mode: %d", mode);
         vbo_draw();
-        glFrontFace(mode);
-        cached_FrontFace_mode = mode;
+        ::glFrontFace(mode);
+        m_cached_FrontFace_mode = mode;
     }
     else
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - mode: %d",mode);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - mode: %d", mode);
     }
 }
 
-void cache_glPolygonOffset (GLfloat factor, GLfloat units)
+void GLCache::glPolygonOffset(GLfloat factor, GLfloat units)
 {
-    static GLfloat cached_factor;
-    static GLfloat cached_units;
-    if(factor != cached_factor || units != cached_units)
+    if (factor != m_cached_factor || units != m_cached_units)
     {
         vbo_draw();
-        WriteTrace(TraceOGLWrapper, TraceDebug, "factor: %f units: %f",factor, units);
-        glPolygonOffset(factor, units);
-        cached_factor = factor;
-        cached_units = units;
+        WriteTrace(TraceOGLWrapper, TraceDebug, "factor: %f units: %f", factor, units);
+        ::glPolygonOffset(factor, units);
+        m_cached_factor = factor;
+        m_cached_units = units;
     }
     else
     {
-        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - factor: %f units: %f",factor, units);
+        WriteTrace(TraceOGLWrapper, TraceDebug, "Ignored - factor: %f units: %f", factor, units);
     }
 }
 
-void cache_glClearColor (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
+void GLCache::glClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
 {
-    static GLclampf cached_red, cached_green, cached_blue, cached_alpha;
-
-    if(red != cached_red || green != cached_green || blue != cached_blue || alpha != cached_alpha)
+    if (red != m_cached_red || green != m_cached_green || blue != m_cached_blue || alpha != m_cached_alpha)
     {
         WriteTrace(TraceOGLWrapper, TraceDebug, "red: %f, green: %f, blue: %f, alpha: %f", red, green, blue, alpha);
         vbo_draw();
-        glClearColor(red, green, blue, alpha);
-        cached_red = red;
-        cached_green = green;
-        cached_blue = blue;
-        cached_alpha = alpha;
+        ::glClearColor(red, green, blue, alpha);
+        m_cached_red = red;
+        m_cached_green = green;
+        m_cached_blue = blue;
+        m_cached_alpha = alpha;
     }
     else
     {
@@ -356,20 +394,17 @@ void cache_glClearColor (GLclampf red, GLclampf green, GLclampf blue, GLclampf a
     }
 }
 
-void cache_glScissor (GLint x, GLint y, GLsizei width, GLsizei height)
+void GLCache::glScissor(GLint x, GLint y, GLsizei width, GLsizei height)
 {
-    static GLint cached_x, cached_y;
-    static GLsizei cached_width, cached_height;
-
-    if(x != cached_x || y != cached_y || width != cached_width || height != cached_height)
+    if (x != m_cached_x || y != m_cached_y || width != m_cached_width || height != m_cached_height)
     {
         WriteTrace(TraceOGLWrapper, TraceDebug, "x: %d, y: %d, width: %d, height: %d", x, y, width, height);
         vbo_draw();
-        glScissor(x, y, width, height);
-        cached_x = x;
-        cached_y = y;
-        cached_width = width;
-        cached_height = height;
+        ::glScissor(x, y, width, height);
+        m_cached_x = x;
+        m_cached_y = y;
+        m_cached_width = width;
+        m_cached_height = height;
     }
     else
     {
@@ -377,15 +412,14 @@ void cache_glScissor (GLint x, GLint y, GLsizei width, GLsizei height)
     }
 }
 
-void cache_glUseProgram (GLuint program)
+void GLCache::glUseProgram(GLuint program)
 {
-    static GLuint cached_program;
-    if(program != cached_program)
+    if (program != m_cached_program)
     {
         WriteTrace(TraceOGLWrapper, TraceDebug, "program: %d", program);
         vbo_draw();
-        glUseProgram(program);
-        cached_program = program;
+        ::glUseProgram(program);
+        m_cached_program = program;
     }
     else
     {
@@ -393,24 +427,20 @@ void cache_glUseProgram (GLuint program)
     }
 }
 
-void cache_glViewport (GLint x, GLint y, GLsizei width, GLsizei height)
+void GLCache::glViewport(GLint x, GLint y, GLsizei width, GLsizei height)
 {
-    static GLint cached_x = 0, cached_y = 0;
-    static GLsizei cached_width = 0, cached_height = 0;
-
-    if(x != cached_x || y != cached_y || width != cached_width || height != cached_height)
+    if (x != m_Viewport_cached_x || y != m_Viewport_cached_y || width != m_Viewport_cached_width || height != m_Viewport_cached_height)
     {
         WriteTrace(TraceOGLWrapper, TraceDebug, "x: %d, y: %d, width: %d, height: %d", x, y, width, height);
         vbo_draw();
-        glViewport(x, y, width, height);
-        cached_x = x;
-        cached_y = y;
-        cached_width = width;
-        cached_height = height;
+        ::glViewport(x, y, width, height);
+        m_Viewport_cached_x = x;
+        m_Viewport_cached_y = y;
+        m_Viewport_cached_width = width;
+        m_Viewport_cached_height = height;
     }
     else
     {
         WriteTrace(TraceOGLWrapper, TraceDebug, "ignored x: %d, y: %d, width: %d, height: %d", x, y, width, height);
     }
 }
-

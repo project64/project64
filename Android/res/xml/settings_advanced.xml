@@ -27,10 +27,6 @@
         android:summary="@string/RecordExecutionTimes_summary"
         android:title="@string/RecordExecutionTimes_title" />
     <CheckBoxPreference
-        android:key="Plugin_ForceGfxReset"
-        android:summary="@string/ForceGfxReset_summary"
-        android:title="@string/ForceGfxReset_title" />
-    <CheckBoxPreference
         android:key="PreAllocSyncMem"
         android:summary="@string/PreAllocSyncMem_summary"
         android:title="@string/PreAllocSyncMem_title" />

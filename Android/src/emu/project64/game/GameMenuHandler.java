@@ -210,7 +210,7 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
         {
             item.setChecked(true);
         }
-        String SaveFileName = SaveDirectory + "/" + NativeExports.SettingsLoadString(SettingsID.Game_GoodName.getValue()) + ".pj";
+        String SaveFileName = SaveDirectory + "/" + NativeExports.SettingsLoadString(SettingsID.Rdb_GoodName.getValue()) + ".pj";
         String Timestamp = "";
         if (SaveSlot != 0)
         {
@@ -228,7 +228,7 @@ public class GameMenuHandler implements PopupMenu.OnMenuItemClickListener, Popup
             Timestamp = new SimpleDateFormat(" [yyyy/MM/dd HH:mm]").format(new Date(LastModified));
         }
         String SlotName = SaveSlot == 0 ? Strings.GetString(LanguageStringID.ANDROID_MENU_CURRENTSAVEAUTO) :
-        	Strings.GetString(LanguageStringID.ANDROID_MENU_CURRENTSAVESLOT) + " " + SaveSlot;
+        Strings.GetString(LanguageStringID.ANDROID_MENU_CURRENTSAVESLOT) + " " + SaveSlot;
         item.setTitle(SlotName + Timestamp);
     }
 
