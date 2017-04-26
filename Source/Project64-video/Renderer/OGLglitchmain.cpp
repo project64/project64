@@ -15,7 +15,7 @@
 #include "glide.h"
 #include "g3ext.h"
 #include "glitchmain.h"
-#include <Glide64/trace.h>
+#include <Project64-video/trace.h>
 #include <Common/Util.h>
 
 #ifdef VPDEBUG

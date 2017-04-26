@@ -1,6 +1,6 @@
 #include <Common/StdString.h>
 #include <Settings/Settings.h>
-#include <Glide64/trace.h>
+#include <Project64-video/trace.h>
 #include "Gfx_1.3.h"
 #include "ScreenResolution.h"
 #include "SettingsID.h"

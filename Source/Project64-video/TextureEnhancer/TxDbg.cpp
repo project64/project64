@@ -28,8 +28,8 @@
 #include <stdarg.h>
 #include <Common/StdString.h>
 #include <Common/path.h>
-#include <Glide64/Config.h>
-#include <Glide64/Settings.h>
+#include <Project64-video/Config.h>
+#include <Project64-video/Settings.h>
 
 TxDbg::TxDbg()
 {

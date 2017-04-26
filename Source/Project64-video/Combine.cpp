@@ -42,7 +42,7 @@
 #include "Util.h"
 #include "Combine.h"
 #include "trace.h"
-#include <Glide64/trace.h>
+#include <Project64-video/trace.h>
 
 #define FASTSEARCH  // Enable fast combine mode searching algorithm
 
@@ -619,7 +619,7 @@ COMBINE cmb;
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR, \
   percent = (float)(rdp.env_color&0xFF) / 255.0f, \
   cmb.dc0_detailmax = cmb.dc1_detailmax = percent
- 
+
 #define CC(color) cmb.ccolor=(color)&0xFFFFFF00
 #define CC_BYTE(byte) { cmb.ccolor=(byte<<8)|(byte<<16)|(byte<<24); }
 #define CC_C1MULC2(color1, color2) { \
@@ -15513,7 +15513,7 @@ void Combine()
     {
         lod_frac = 10;
     }
-     
+
     rdp.noise = RDP::noise_none;
 
     uint32_t found = TRUE;
@@ -15842,7 +15842,7 @@ void CombineBlender()
         case 0x5000: /* Vigilante 8 explosions */
             A_BLEND(GR_BLEND_ONE_MINUS_SRC_ALPHA, GR_BLEND_SRC_ALPHA);
             break;
-            
+
         case 0xFA00: // Bomberman second attack
             A_BLEND(GR_BLEND_ONE, GR_BLEND_ZERO);
             break;
@@ -15853,7 +15853,7 @@ void CombineBlender()
                 A_BLEND(GR_BLEND_ONE, GR_BLEND_ZERO);
             else
                 A_BLEND(GR_BLEND_ZERO, GR_BLEND_ONE);
-			break;
+            break;
 
         default:
             A_BLEND(GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA);

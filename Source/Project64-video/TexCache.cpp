@@ -42,7 +42,7 @@
 #include "Combine.h"
 #include "Util.h"
 #include <Common/Util.h>
-#include <Glide64/trace.h>
+#include <Project64-video/trace.h>
 
 void LoadTex(int id, int tmu);
 

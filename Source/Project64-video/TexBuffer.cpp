@@ -46,7 +46,7 @@
 #include "Gfx_1.3.h"
 #include "TexBuffer.h"
 #include "CRC.h"
-#include <Glide64/trace.h>
+#include <Project64-video/trace.h>
 
 static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
 {

@@ -45,7 +45,7 @@
 #include "Gfx_1.3.h"
 #include "FBtoScreen.h"
 #include "TexCache.h"
-#include <Glide64/trace.h>
+#include <Project64-video/trace.h>
 
 static int SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaque)
 {

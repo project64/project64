@@ -7,7 +7,7 @@
 #include "glitchmain.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <Glide64/trace.h>
+#include <Project64-video/trace.h>
 
 /* Napalm extensions to GrTextureFormat_t */
 #define GR_TEXFMT_ARGB_CMP_FXT1           0x11
@@ -66,7 +66,7 @@ void remove_tex(unsigned int idmin, unsigned int idmax)
     while (aux && aux->id >= idmin && aux->id < idmax)
     {
         if (n >= sz)
-            t = (unsigned int *)realloc(t, ++sz*sizeof(int));
+            t = (unsigned int *)realloc(t, ++sz * sizeof(int));
         t[n++] = aux->id;
         aux = aux->next;
         free(list);
@@ -79,7 +79,7 @@ void remove_tex(unsigned int idmin, unsigned int idmax)
         {
             texlist *aux2 = aux->next->next;
             if (n >= sz)
-                t = (unsigned int *)realloc(t, ++sz*sizeof(int));
+                t = (unsigned int *)realloc(t, ++sz * sizeof(int));
             t[n++] = aux->next->id;
             free(aux->next);
             aux->next = aux2;
@@ -160,7 +160,7 @@ grTexMaxAddress(GrChipID_t tmu)
 
 FX_ENTRY FxU32 FX_CALL
 grTexTextureMemRequired(FxU32     evenOdd,
-GrTexInfo *info)
+    GrTexInfo *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "evenOdd = %d", evenOdd);
     int width, height;
@@ -209,8 +209,8 @@ GrTexInfo *info)
 
 FX_ENTRY FxU32 FX_CALL
 grTexCalcMemRequired(
-GrLOD_t lodmin, GrLOD_t lodmax,
-GrAspectRatio_t aspect, GrTextureFormat_t fmt)
+    GrLOD_t lodmin, GrLOD_t lodmax,
+    GrAspectRatio_t aspect, GrTextureFormat_t fmt)
 {
     WriteTrace(TraceGlitch, TraceDebug, "lodmin = %d, lodmax: %d aspect: %d fmt: %d", lodmin, lodmax, aspect, fmt);
     int width, height;
@@ -384,9 +384,9 @@ int grTexFormat2GLPackedFmt(int fmt, int * gltexfmt, int * glpixfmt, int * glpac
 
 FX_ENTRY void FX_CALL
 grTexDownloadMipMap(GrChipID_t tmu,
-FxU32      startAddress,
-FxU32      evenOdd,
-GrTexInfo  *info)
+    FxU32      startAddress,
+    FxU32      evenOdd,
+    GrTexInfo  *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, startAddress: %d evenOdd: %d", tmu, startAddress, evenOdd);
 
@@ -647,9 +647,9 @@ int CheckTextureBufferFormat(GrChipID_t tmu, FxU32 startAddress, GrTexInfo *info
 
 FX_ENTRY void FX_CALL
 grTexSource(GrChipID_t tmu,
-FxU32      startAddress,
-FxU32      evenOdd,
-GrTexInfo  *info)
+    FxU32      startAddress,
+    FxU32      evenOdd,
+    GrTexInfo  *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, startAddress: %d evenOdd: %d", tmu, startAddress, evenOdd);
 
@@ -719,7 +719,7 @@ GrTexInfo  *info)
 #if 0
     extern int auxbuffer;
     static int oldbuffer;
-    FX_ENTRY void FX_CALL grAuxBufferExt( GrBuffer_t buffer );
+    FX_ENTRY void FX_CALL grAuxBufferExt(GrBuffer_t buffer);
     if (auxbuffer == GR_BUFFER_AUXBUFFER && auxbuffer != oldbuffer)
         grAuxBufferExt(auxbuffer);
     oldbuffer = auxbuffer;
@@ -729,10 +729,10 @@ GrTexInfo  *info)
 
 FX_ENTRY void FX_CALL
 grTexDetailControl(
-GrChipID_t tmu,
-int lod_bias,
-FxU8 detail_scale,
-float detail_max
+    GrChipID_t tmu,
+    int lod_bias,
+    FxU8 detail_scale,
+    float detail_max
 )
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, lod_bias: %d detail_scale: %d detail_max: %d", tmu, lod_bias, detail_scale, detail_max);
@@ -760,9 +760,9 @@ grTexLodBiasValue(GrChipID_t tmu, float bias)
 
 FX_ENTRY void FX_CALL
 grTexFilterMode(
-GrChipID_t tmu,
-GrTextureFilterMode_t minfilter_mode,
-GrTextureFilterMode_t magfilter_mode
+    GrChipID_t tmu,
+    GrTextureFilterMode_t minfilter_mode,
+    GrTextureFilterMode_t magfilter_mode
 )
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, bias: %d magfilter_mode: %d", tmu, minfilter_mode, magfilter_mode);
@@ -796,9 +796,9 @@ GrTextureFilterMode_t magfilter_mode
 
 FX_ENTRY void FX_CALL
 grTexClampMode(
-GrChipID_t tmu,
-GrTextureClampMode_t s_clampmode,
-GrTextureClampMode_t t_clampmode
+    GrChipID_t tmu,
+    GrTextureClampMode_t s_clampmode,
+    GrTextureClampMode_t t_clampmode
 )
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, s_clampmode: %d t_clampmode: %d", tmu, s_clampmode, t_clampmode);

@@ -4,7 +4,7 @@
 #endif // _WIN32
 #include "glide.h"
 #include "glitchmain.h"
-#include <Glide64/trace.h>
+#include <Project64-video/trace.h>
 
 #define Z_MAX (65536.0f)
 
@@ -368,16 +368,16 @@ grDrawTriangle(const void *a, const void *b, const void *c)
     {
         if (st0_en)
             glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *a_s0 / *a_q / (float)tex1_width,
-            ytex(0, *a_t0 / *a_q / (float)tex1_height));
+                ytex(0, *a_t0 / *a_q / (float)tex1_height));
         if (st1_en)
             glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *a_s1 / *a_q / (float)tex0_width,
-            ytex(1, *a_t1 / *a_q / (float)tex0_height));
+                ytex(1, *a_t1 / *a_q / (float)tex0_height));
     }
     else
     {
         if (st0_en)
             glTexCoord2f(*a_s0 / *a_q / (float)tex0_width,
-            ytex(0, *a_t0 / *a_q / (float)tex0_height));
+                ytex(0, *a_t0 / *a_q / (float)tex0_height));
     }
     if (pargb_en)
         glColor4f(a_pargb[2] / 255.0f, a_pargb[1] / 255.0f, a_pargb[0] / 255.0f, a_pargb[3] / 255.0f);
@@ -395,16 +395,16 @@ grDrawTriangle(const void *a, const void *b, const void *c)
     {
         if (st0_en)
             glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *b_s0 / *b_q / (float)tex1_width,
-            ytex(0, *b_t0 / *b_q / (float)tex1_height));
+                ytex(0, *b_t0 / *b_q / (float)tex1_height));
         if (st1_en)
             glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *b_s1 / *b_q / (float)tex0_width,
-            ytex(1, *b_t1 / *b_q / (float)tex0_height));
+                ytex(1, *b_t1 / *b_q / (float)tex0_height));
     }
     else
     {
         if (st0_en)
             glTexCoord2f(*b_s0 / *b_q / (float)tex0_width,
-            ytex(0, *b_t0 / *b_q / (float)tex0_height));
+                ytex(0, *b_t0 / *b_q / (float)tex0_height));
     }
     if (pargb_en)
         glColor4f(b_pargb[2] / 255.0f, b_pargb[1] / 255.0f, b_pargb[0] / 255.0f, b_pargb[3] / 255.0f);
@@ -423,16 +423,16 @@ grDrawTriangle(const void *a, const void *b, const void *c)
     {
         if (st0_en)
             glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *c_s0 / *c_q / (float)tex1_width,
-            ytex(0, *c_t0 / *c_q / (float)tex1_height));
+                ytex(0, *c_t0 / *c_q / (float)tex1_height));
         if (st1_en)
             glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *c_s1 / *c_q / (float)tex0_width,
-            ytex(1, *c_t1 / *c_q / (float)tex0_height));
+                ytex(1, *c_t1 / *c_q / (float)tex0_height));
     }
     else
     {
         if (st0_en)
             glTexCoord2f(*c_s0 / *c_q / (float)tex0_width,
-            ytex(0, *c_t0 / *c_q / (float)tex0_height));
+                ytex(0, *c_t0 / *c_q / (float)tex0_height));
     }
     if (pargb_en)
         glColor4f(c_pargb[2] / 255.0f, c_pargb[1] / 255.0f, c_pargb[0] / 255.0f, c_pargb[3] / 255.0f);
@@ -481,16 +481,16 @@ grDrawPoint(const void *pt)
     {
         if (st0_en)
             glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *s0 / *q / (float)tex1_width,
-            ytex(0, *t0 / *q / (float)tex1_height));
+                ytex(0, *t0 / *q / (float)tex1_height));
         if (st1_en)
             glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *s1 / *q / (float)tex0_width,
-            ytex(1, *t1 / *q / (float)tex0_height));
+                ytex(1, *t1 / *q / (float)tex0_height));
     }
     else
     {
         if (st0_en)
             glTexCoord2f(*s0 / *q / (float)tex0_width,
-            ytex(0, *t0 / *q / (float)tex0_height));
+                ytex(0, *t0 / *q / (float)tex0_height));
     }
     if (pargb_en)
         glColor4f(pargb[2] / 255.0f, pargb[1] / 255.0f, pargb[0] / 255.0f, pargb[3] / 255.0f);
@@ -574,16 +574,16 @@ grDrawLine(const void *a, const void *b)
     {
         if (st0_en)
             glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *b_s0 / *b_q / (float)tex1_width,
-            ytex(0, *b_t0 / *b_q / (float)tex1_height));
+                ytex(0, *b_t0 / *b_q / (float)tex1_height));
         if (st1_en)
             glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *b_s1 / *b_q / (float)tex0_width,
-            ytex(1, *b_t1 / *b_q / (float)tex0_height));
+                ytex(1, *b_t1 / *b_q / (float)tex0_height));
     }
     else
     {
         if (st0_en)
             glTexCoord2f(*b_s0 / *b_q / (float)tex0_width,
-            ytex(0, *b_t0 / *b_q / (float)tex0_height));
+                ytex(0, *b_t0 / *b_q / (float)tex0_height));
     }
     if (pargb_en)
         glColor4f(b_pargb[2] / 255.0f, b_pargb[1] / 255.0f, b_pargb[0] / 255.0f, b_pargb[3] / 255.0f);
@@ -646,16 +646,16 @@ grDrawVertexArray(FxU32 mode, FxU32 Count, void *pointers2)
         {
             if (st0_en)
                 glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *s0 / *q / (float)tex1_width,
-                ytex(0, *t0 / *q / (float)tex1_height));
+                    ytex(0, *t0 / *q / (float)tex1_height));
             if (st1_en)
                 glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *s1 / *q / (float)tex0_width,
-                ytex(1, *t1 / *q / (float)tex0_height));
+                    ytex(1, *t1 / *q / (float)tex0_height));
         }
         else
         {
             if (st0_en)
                 glTexCoord2f(*s0 / *q / (float)tex0_width,
-                ytex(0, *t0 / *q / (float)tex0_height));
+                    ytex(0, *t0 / *q / (float)tex0_height));
         }
         if (pargb_en)
             glColor4f(pargb[2] / 255.0f, pargb[1] / 255.0f, pargb[0] / 255.0f, pargb[3] / 255.0f);
@@ -723,16 +723,16 @@ grDrawVertexArrayContiguous(FxU32 mode, FxU32 Count, void *pointers, FxU32 strid
         {
             if (st0_en)
                 glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *s0 / *q / (float)tex1_width,
-                ytex(0, *t0 / *q / (float)tex1_height));
+                    ytex(0, *t0 / *q / (float)tex1_height));
             if (st1_en)
                 glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *s1 / *q / (float)tex0_width,
-                ytex(1, *t1 / *q / (float)tex0_height));
+                    ytex(1, *t1 / *q / (float)tex0_height));
         }
         else
         {
             if (st0_en)
                 glTexCoord2f(*s0 / *q / (float)tex0_width,
-                ytex(0, *t0 / *q / (float)tex0_height));
+                    ytex(0, *t0 / *q / (float)tex0_height));
         }
         if (pargb_en)
             glColor4f(pargb[2] / 255.0f, pargb[1] / 255.0f, pargb[0] / 255.0f, pargb[3] / 255.0f);

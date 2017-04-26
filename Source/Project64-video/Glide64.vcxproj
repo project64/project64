@@ -39,7 +39,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(Root)Source/Glitch64/inc;inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(Root)Source/Project64-video/Renderer/inc;inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__MSC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Platform)'=='x64'">NO_ASM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)'=='Debug'">RDP_LOGGING;RDP_ERROR_LOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -133,21 +133,22 @@
     <ProjectReference Include="..\3rdParty\png\png.vcxproj">
       <Project>{17836496-31b0-46f2-b1b1-366d7df6f04c}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\3rdParty\zlib\zlib.vcxproj">
+      <Project>{731bd205-2826-4631-b7af-117658e88dbc}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Common.vcxproj">
       <Project>{b4a4b994-9111-42b1-93c2-6f1ca8bc4421}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\GlideHQ\GlideHQ.vcxproj">
-      <Project>{2daddaa5-0f57-46ed-a974-747908ddc7f3}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\Glitch64\Glitch64.vcxproj">
-      <Project>{462c2608-182f-452c-944f-af201e19300b}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\Settings\Settings.vcxproj">
       <Project>{8b9961b1-88d9-4ea3-a752-507a00dd9f3d}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="Renderer\Glitch64.vcxproj">
+      <Project>{462c2608-182f-452c-944f-af201e19300b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="TextureEnhancer\GlideHQ.vcxproj">
+      <Project>{2daddaa5-0f57-46ed-a974-747908ddc7f3}</Project>
     </ProjectReference>
   </ItemGroup>
 </Project>

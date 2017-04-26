@@ -11,7 +11,7 @@ void dump_stop();
 extern int dumping;
 #endif
 
-#include <Glide64/trace.h>
+#include <Project64-video/trace.h>
 
 #define zscale 1.0f
 

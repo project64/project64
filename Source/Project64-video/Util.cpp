@@ -47,7 +47,7 @@
 #include "Debugger.h"
 #include "TexCache.h"
 #include "DepthBufferRender.h"
-#include <Glide64/trace.h>
+#include <Project64-video/trace.h>
 
 #define Vj rdp.vtxbuf2[j]
 #define Vi rdp.vtxbuf2[i]
