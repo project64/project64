@@ -11,6 +11,9 @@
 #pragma once
 #include <Common/stdtypes.h>
 
+#ifdef ANDROID
+void UpdateScreenResolution(int ScreenWidth, int ScreenHeight);
+#endif
 uint32_t GetScreenResolutionCount();
 uint32_t GetDefaultScreenRes();
 uint32_t GetScreenResWidth(uint32_t index);

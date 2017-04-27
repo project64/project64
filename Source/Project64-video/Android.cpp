@@ -16,6 +16,11 @@
 #define EXPORT      extern "C"  __attribute__((visibility("default")))
 #define CALL
 
+EXPORT void CALL Java_emu_project64_jni_NativeVideo_UpdateScreenRes(JNIEnv* env, jclass cls, int ScreenWidth, int ScreenHeight)
+{
+    UpdateScreenResolution(ScreenWidth, ScreenHeight);
+}
+
 EXPORT jint CALL Java_emu_project64_jni_NativeVideo_getResolutionCount(JNIEnv* env, jclass cls)
 {
     return GetScreenResolutionCount();

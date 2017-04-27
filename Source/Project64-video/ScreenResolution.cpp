@@ -13,13 +13,14 @@
 #include "trace.h"
 
 #ifdef ANDROID
-extern uint32_t g_NativeWidth, g_NativeHeight;
+#include <Common/StdString.h>
+#include <vector>
 #endif
 
 struct ResolutionInfo
 {
     ResolutionInfo(const char * name = NULL, uint32_t width = 0, uint32_t height = 0, uint32_t frequency = 0, bool default_res = false) :
-        m_name(name),
+        m_name(name ? name : ""),
         m_width(width),
         m_height(height),
         m_frequency(frequency),
@@ -27,7 +28,7 @@ struct ResolutionInfo
     {
     }
 
-    const char * Name(void) const { return m_name; }
+    const char * Name(void) const { return m_name.c_str(); }
     uint32_t width(void) const { return m_width; }
     uint32_t height(void) const { return m_height; }
     uint32_t frequency(void) const { return m_frequency; }
@@ -43,21 +44,12 @@ struct ResolutionInfo
     }
 private:
     uint32_t m_width, m_height, m_frequency;
-    const char * m_name;
+    std::string m_name;
     bool m_default_res;
 };
 
 #ifdef ANDROID
-static ResolutionInfo g_resolutions[] =
-{
-    ResolutionInfo("#3200#", 0, 0, 0, true),
-    ResolutionInfo("960x720", 960, 720, 0, false),
-    ResolutionInfo("800x600", 800, 600, 0, false),
-    ResolutionInfo("640x480", 640, 480, 0, false),
-    ResolutionInfo("480x360", 480, 360, 0, false),
-    ResolutionInfo("320x240", 320, 240, 0, false),
-};
-
+std::vector<ResolutionInfo> g_resolutions;
 #else
 static ResolutionInfo g_resolutions[] =
 {
@@ -88,9 +80,47 @@ static ResolutionInfo g_resolutions[] =
 };
 #endif
 
+#ifdef ANDROID
+void UpdateScreenResolution(int ScreenWidth, int ScreenHeight)
+{
+    WriteTrace(TraceResolution, TraceError, "aspectmode: %d", g_settings->aspectmode());
+    g_resolutions.clear();
+    switch (g_settings->aspectmode())
+    {
+    case CSettings::Aspect_4x3:
+        g_resolutions.push_back(ResolutionInfo(stdstr_f("%dx%d", ScreenHeight * 4/3, ScreenHeight).c_str(), ScreenHeight * 4 / 3, ScreenHeight, 0, true));
+        g_resolutions.push_back(ResolutionInfo("960x720", 960, 720, 0, false));
+        g_resolutions.push_back(ResolutionInfo("800x600", 800, 600, 0, false));
+        g_resolutions.push_back(ResolutionInfo("640x480", 640, 480, 0, false));
+        g_resolutions.push_back(ResolutionInfo("480x360", 480, 360, 0, false));
+        g_resolutions.push_back(ResolutionInfo("320x240", 320, 240, 0, false));
+        break;
+    case CSettings::Aspect_16x9:
+        g_resolutions.push_back(ResolutionInfo(stdstr_f("%dx%d", ScreenHeight * 16 / 9, ScreenHeight).c_str(), ScreenHeight * 16 / 9, ScreenHeight, 0, true));
+        g_resolutions.push_back(ResolutionInfo("1280x720", 1280, 720, 0, false));
+        g_resolutions.push_back(ResolutionInfo("1067x600", 1067, 600, 0, false));
+        g_resolutions.push_back(ResolutionInfo("854x480", 854, 480, 0, false));
+        g_resolutions.push_back(ResolutionInfo("640x360", 640, 360, 0, false));
+        g_resolutions.push_back(ResolutionInfo("426x240", 426, 240, 0, false));
+        break;
+    case CSettings::Aspect_Original:
+        g_resolutions.push_back(ResolutionInfo("Original", ScreenWidth, ScreenHeight, 0, true));
+        break;
+    case CSettings::Aspect_Stretch:
+    default: //stretch
+        g_resolutions.push_back(ResolutionInfo(stdstr_f("%dx%d", ScreenWidth, ScreenHeight).c_str(), ScreenWidth, ScreenHeight, 0, true));
+        break;
+    }
+}
+#endif
+
 uint32_t GetScreenResolutionCount()
 {
+#ifdef ANDROID
+    return g_resolutions.size();
+#else
     return sizeof(g_resolutions) / sizeof(g_resolutions[0]);
+#endif
 }
 
 const char * GetScreenResolutionName(uint32_t index)
@@ -118,12 +148,6 @@ uint32_t GetScreenResWidth(uint32_t index)
 {
     if (index < GetScreenResolutionCount())
     {
-#ifdef ANDROID
-        if (g_resolutions[index].width() == 0)
-        {
-            return g_NativeWidth;
-        }
-#endif
         return g_resolutions[index].width();
     }
     return 0;
@@ -133,12 +157,6 @@ uint32_t GetScreenResHeight(uint32_t index)
 {
     if (index < GetScreenResolutionCount())
     {
-#ifdef ANDROID
-        if (g_resolutions[index].height() == 0)
-        {
-            return g_NativeHeight;
-        }
-#endif
         return g_resolutions[index].height();
     }
     return 0;

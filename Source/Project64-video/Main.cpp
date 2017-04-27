@@ -42,7 +42,7 @@
 #include <stdarg.h>
 
 #ifdef ANDROID
-uint32_t g_NativeWidth, g_NativeHeight;
+uint32_t g_ScreenWidth, g_ScreenHeight;
 #endif
 
 GFX_INFO gfx;
@@ -1605,8 +1605,8 @@ output:   none
 *******************************************************************/
 void CALL SurfaceChanged(int width, int height)
 {
-    g_NativeWidth = width;
-    g_NativeHeight = height;
+    g_ScreenWidth = width;
+    g_ScreenHeight = height;
 }
 
 void Android_JNI_SwapWindow()
