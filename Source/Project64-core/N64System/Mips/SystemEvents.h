@@ -53,6 +53,8 @@ enum SystemEvent
     SysEvent_DumpFunctionTimes,
 };
 
+const char * SystemEventName(SystemEvent event);
+
 class CN64System;
 class CPlugins;
 

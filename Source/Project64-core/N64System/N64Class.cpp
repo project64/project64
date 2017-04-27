@@ -98,6 +98,7 @@ CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem) 
             m_Recomp = new CRecompiler(m_MMU_VM, m_Reg, m_EndEmulation);
         }
     }
+    
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
@@ -131,11 +132,14 @@ CN64System::~CN64System()
 
 void CN64System::ExternalEvent(SystemEvent action)
 {
+    WriteTrace(TraceN64System, TraceDebug, "action: %s", SystemEventName(action));
+
     if (action == SysEvent_LoadMachineState &&
         !g_Settings->LoadBool(GameRunning_CPU_Running) &&
         g_BaseSystem != NULL &&
         g_BaseSystem->LoadState())
     {
+        WriteTrace(TraceN64System, TraceDebug, "ignore event, manualy loaded save");
         return;
     }
 
@@ -144,6 +148,7 @@ void CN64System::ExternalEvent(SystemEvent action)
         g_BaseSystem != NULL &&
         g_BaseSystem->SaveState())
     {
+        WriteTrace(TraceN64System, TraceDebug, "ignore event, manualy saved event");
         return;
     }
 
@@ -1582,6 +1587,7 @@ bool CN64System::SaveState()
     }
     else
     {
+        WriteTrace(TraceN64System, TraceDebug, "SaveFile: %s", (const char *)SaveFile);
         ExtraInfo.Delete();
         SaveFile.Delete();
         CFile hSaveFile(SaveFile, CFileBase::modeWrite | CFileBase::modeCreate);
@@ -1907,27 +1913,21 @@ bool CN64System::LoadState(const char * FileName)
         m_Reg.RANDOM_REGISTER += 32 - m_Reg.WIRED_REGISTER;
     }
     //Fix up timer
-    WriteTrace(TraceN64System, TraceDebug, "2");
     m_SystemTimer.SetTimer(CSystemTimer::CompareTimer, m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER, false);
     m_SystemTimer.SetTimer(CSystemTimer::ViTimer, NextVITimer, false);
     m_Reg.FixFpuLocations();
-    WriteTrace(TraceN64System, TraceDebug, "5");
     m_TLB.Reset(false);
-    WriteTrace(TraceN64System, TraceDebug, "6");
     if (m_Recomp)
     {
         m_Recomp->ResetFunctionTimes();
     }
     m_CPU_Usage.ResetTimers();
-    WriteTrace(TraceN64System, TraceDebug, "8");
     m_FPS.Reset(true);
-    WriteTrace(TraceN64System, TraceDebug, "9");
     if (bRecordRecompilerAsm())
     {
         Stop_Recompiler_Log();
         Start_Recompiler_Log();
     }
-    WriteTrace(TraceN64System, TraceDebug, "Done");
 
 #ifdef TEST_SP_TRACKING
     m_CurrentSP = GPR[29].UW[0];
@@ -1948,7 +1948,6 @@ bool CN64System::LoadState(const char * FileName)
             SyncCPU(m_SyncCPU);
         }
     }
-    WriteTrace(TraceN64System, TraceDebug, "13");
     std::string LoadMsg = g_Lang->GetString(MSG_LOADED_STATE);
     g_Notify->DisplayMessage(5, stdstr_f("%s %s", LoadMsg.c_str(), stdstr(SaveFile.GetNameExtension()).c_str()).c_str());
     WriteTrace(TraceN64System, TraceDebug, "Done");
