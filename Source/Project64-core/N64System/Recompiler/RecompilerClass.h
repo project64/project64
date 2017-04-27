@@ -11,6 +11,7 @@
 #pragma once
 
 #include <Project64-core/N64System/Mips/RegisterClass.h>
+#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Recompiler/FunctionMapClass.h>
 #include <Project64-core/N64System/Recompiler/RecompilerMemory.h>
 #include <Project64-core/N64System/ProfilingClass.h>
@@ -40,7 +41,7 @@ public:
     typedef void(*DelayFunc)();
 
 public:
-    CRecompiler(CRegisters & Registers, bool & EndEmulation);
+    CRecompiler(CMipsMemoryVM & MMU, CRegisters & Registers, bool & EndEmulation);
     ~CRecompiler();
 
     void Run();
@@ -82,6 +83,7 @@ private:
     void RecompilerMain_Lookup_validate_TLB();
 
     CCompiledFuncList  m_Functions;
+    CMipsMemoryVM    & m_MMU;
     CRegisters       & m_Registers;
     bool             & m_EndEmulation;
     uint32_t           m_MemoryStack;

@@ -95,7 +95,7 @@ CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem) 
 
         if (CpuType == CPU_Recompiler || CpuType == CPU_SyncCores)
         {
-            m_Recomp = new CRecompiler(m_Reg, m_EndEmulation);
+            m_Recomp = new CRecompiler(m_MMU_VM, m_Reg, m_EndEmulation);
         }
     }
     WriteTrace(TraceN64System, TraceDebug, "Done");
