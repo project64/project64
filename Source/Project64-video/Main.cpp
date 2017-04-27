@@ -146,9 +146,6 @@ void ChangeSize()
         g_res_y = g_scr_res_y;
     }
 
-    rdp.scale_1024 = g_scr_res_x / 1024.0f;
-    rdp.scale_768 = g_scr_res_y / 768.0f;
-
     float res_scl_y = (float)g_res_y / 240.0f;
 
     uint32_t scale_x = *gfx.VI_X_SCALE_REG & 0xFFF;
