@@ -31,33 +31,33 @@
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
 CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem) :
-CSystemEvents(this, Plugins),
-m_EndEmulation(false),
-m_SaveUsing((SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip)),
-m_Plugins(Plugins),
-m_SyncCPU(NULL),
-m_SyncPlugins(NULL),
-m_MMU_VM(SavesReadOnly),
-m_TLB(this),
-m_Reg(this, this),
-m_Recomp(NULL),
-m_InReset(false),
-m_NextTimer(0),
-m_SystemTimer(m_NextTimer),
-m_bCleanFrameBox(true),
-m_bInitialized(false),
-m_RspBroke(true),
-m_DMAUsed(false),
-m_TestTimer(false),
-m_NextInstruction(0),
-m_JumpToLocation(0),
-m_TLBLoadAddress(0),
-m_TLBStoreAddress(0),
-m_SyncCount(0),
-m_thread(NULL),
-m_hPauseEvent(true),
-m_CheatsSlectionChanged(false),
-m_SyncCpu(SyncSystem)
+    CSystemEvents(this, Plugins),
+    m_EndEmulation(false),
+    m_SaveUsing((SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip)),
+    m_Plugins(Plugins),
+    m_SyncCPU(NULL),
+    m_SyncPlugins(NULL),
+    m_MMU_VM(SavesReadOnly),
+    m_TLB(this),
+    m_Reg(this, this),
+    m_Recomp(NULL),
+    m_InReset(false),
+    m_NextTimer(0),
+    m_SystemTimer(m_Reg, m_NextTimer),
+    m_bCleanFrameBox(true),
+    m_bInitialized(false),
+    m_RspBroke(true),
+    m_DMAUsed(false),
+    m_TestTimer(false),
+    m_NextInstruction(0),
+    m_JumpToLocation(0),
+    m_TLBLoadAddress(0),
+    m_TLBStoreAddress(0),
+    m_SyncCount(0),
+    m_thread(NULL),
+    m_hPauseEvent(true),
+    m_CheatsSlectionChanged(false),
+    m_SyncCpu(SyncSystem)
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
     uint32_t gameHertz = g_Settings->LoadDword(Game_ScreenHertz);
@@ -1455,7 +1455,7 @@ void CN64System::DumpSyncErrors(CN64System * SecondCPU)
             Error.LogF("TLB[%2d], %08X,  %08X, %08X,  %08X\r\n", count,
                 m_TLB.TlbEntry(count).EntryHi.Value, m_TLB.TlbEntry(count).PageMask.Value,
                 SecondCPU->m_TLB.TlbEntry(count).EntryHi.Value, SecondCPU->m_TLB.TlbEntry(count).PageMask.Value
-                );
+            );
         }
         Error.Log("\r\n");
         Error.Log("Code at PC:\r\n");
@@ -1548,21 +1548,21 @@ bool CN64System::SaveState()
         zipWriteInFileInZip(file, g_Rom->GetRomAddress(), 0x40);
         zipWriteInFileInZip(file, &NextViTimer, sizeof(uint32_t));
         zipWriteInFileInZip(file, &m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER));
-        zipWriteInFileInZip(file, m_Reg.m_GPR, sizeof(int64_t)* 32);
-        zipWriteInFileInZip(file, m_Reg.m_FPR, sizeof(int64_t)* 32);
-        zipWriteInFileInZip(file, m_Reg.m_CP0, sizeof(uint32_t)* 32);
-        zipWriteInFileInZip(file, m_Reg.m_FPCR, sizeof(uint32_t)* 32);
+        zipWriteInFileInZip(file, m_Reg.m_GPR, sizeof(int64_t) * 32);
+        zipWriteInFileInZip(file, m_Reg.m_FPR, sizeof(int64_t) * 32);
+        zipWriteInFileInZip(file, m_Reg.m_CP0, sizeof(uint32_t) * 32);
+        zipWriteInFileInZip(file, m_Reg.m_FPCR, sizeof(uint32_t) * 32);
         zipWriteInFileInZip(file, &m_Reg.m_HI, sizeof(int64_t));
         zipWriteInFileInZip(file, &m_Reg.m_LO, sizeof(int64_t));
-        zipWriteInFileInZip(file, m_Reg.m_RDRAM_Registers, sizeof(uint32_t)* 10);
-        zipWriteInFileInZip(file, m_Reg.m_SigProcessor_Interface, sizeof(uint32_t)* 10);
-        zipWriteInFileInZip(file, m_Reg.m_Display_ControlReg, sizeof(uint32_t)* 10);
-        zipWriteInFileInZip(file, m_Reg.m_Mips_Interface, sizeof(uint32_t)* 4);
-        zipWriteInFileInZip(file, m_Reg.m_Video_Interface, sizeof(uint32_t)* 14);
-        zipWriteInFileInZip(file, m_Reg.m_Audio_Interface, sizeof(uint32_t)* 6);
-        zipWriteInFileInZip(file, m_Reg.m_Peripheral_Interface, sizeof(uint32_t)* 13);
-        zipWriteInFileInZip(file, m_Reg.m_RDRAM_Interface, sizeof(uint32_t)* 8);
-        zipWriteInFileInZip(file, m_Reg.m_SerialInterface, sizeof(uint32_t)* 4);
+        zipWriteInFileInZip(file, m_Reg.m_RDRAM_Registers, sizeof(uint32_t) * 10);
+        zipWriteInFileInZip(file, m_Reg.m_SigProcessor_Interface, sizeof(uint32_t) * 10);
+        zipWriteInFileInZip(file, m_Reg.m_Display_ControlReg, sizeof(uint32_t) * 10);
+        zipWriteInFileInZip(file, m_Reg.m_Mips_Interface, sizeof(uint32_t) * 4);
+        zipWriteInFileInZip(file, m_Reg.m_Video_Interface, sizeof(uint32_t) * 14);
+        zipWriteInFileInZip(file, m_Reg.m_Audio_Interface, sizeof(uint32_t) * 6);
+        zipWriteInFileInZip(file, m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13);
+        zipWriteInFileInZip(file, m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
+        zipWriteInFileInZip(file, m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
         zipWriteInFileInZip(file, (void *const)&m_TLB.TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
         zipWriteInFileInZip(file, m_MMU_VM.PifRam(), 0x40);
         zipWriteInFileInZip(file, m_MMU_VM.Rdram(), RdramSize);
@@ -1600,21 +1600,21 @@ bool CN64System::SaveState()
         hSaveFile.Write(g_Rom->GetRomAddress(), 0x40);
         hSaveFile.Write(&NextViTimer, sizeof(uint32_t));
         hSaveFile.Write(&m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER));
-        hSaveFile.Write(m_Reg.m_GPR, sizeof(int64_t)* 32);
-        hSaveFile.Write(m_Reg.m_FPR, sizeof(int64_t)* 32);
-        hSaveFile.Write(m_Reg.m_CP0, sizeof(uint32_t)* 32);
-        hSaveFile.Write(m_Reg.m_FPCR, sizeof(uint32_t)* 32);
+        hSaveFile.Write(m_Reg.m_GPR, sizeof(int64_t) * 32);
+        hSaveFile.Write(m_Reg.m_FPR, sizeof(int64_t) * 32);
+        hSaveFile.Write(m_Reg.m_CP0, sizeof(uint32_t) * 32);
+        hSaveFile.Write(m_Reg.m_FPCR, sizeof(uint32_t) * 32);
         hSaveFile.Write(&m_Reg.m_HI, sizeof(int64_t));
         hSaveFile.Write(&m_Reg.m_LO, sizeof(int64_t));
-        hSaveFile.Write(m_Reg.m_RDRAM_Registers, sizeof(uint32_t)* 10);
-        hSaveFile.Write(m_Reg.m_SigProcessor_Interface, sizeof(uint32_t)* 10);
-        hSaveFile.Write(m_Reg.m_Display_ControlReg, sizeof(uint32_t)* 10);
-        hSaveFile.Write(m_Reg.m_Mips_Interface, sizeof(uint32_t)* 4);
-        hSaveFile.Write(m_Reg.m_Video_Interface, sizeof(uint32_t)* 14);
-        hSaveFile.Write(m_Reg.m_Audio_Interface, sizeof(uint32_t)* 6);
-        hSaveFile.Write(m_Reg.m_Peripheral_Interface, sizeof(uint32_t)* 13);
-        hSaveFile.Write(m_Reg.m_RDRAM_Interface, sizeof(uint32_t)* 8);
-        hSaveFile.Write(m_Reg.m_SerialInterface, sizeof(uint32_t)* 4);
+        hSaveFile.Write(m_Reg.m_RDRAM_Registers, sizeof(uint32_t) * 10);
+        hSaveFile.Write(m_Reg.m_SigProcessor_Interface, sizeof(uint32_t) * 10);
+        hSaveFile.Write(m_Reg.m_Display_ControlReg, sizeof(uint32_t) * 10);
+        hSaveFile.Write(m_Reg.m_Mips_Interface, sizeof(uint32_t) * 4);
+        hSaveFile.Write(m_Reg.m_Video_Interface, sizeof(uint32_t) * 14);
+        hSaveFile.Write(m_Reg.m_Audio_Interface, sizeof(uint32_t) * 6);
+        hSaveFile.Write(m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13);
+        hSaveFile.Write(m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
+        hSaveFile.Write(m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
         hSaveFile.Write(&g_TLB->TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
         hSaveFile.Write(g_MMU->PifRam(), 0x40);
         hSaveFile.Write(g_MMU->Rdram(), RdramSize);
@@ -1777,21 +1777,21 @@ bool CN64System::LoadState(const char * FileName)
                 g_Settings->SaveDword(Game_RDRamSize, SaveRDRAMSize);
                 unzReadCurrentFile(file, &NextVITimer, sizeof(NextVITimer));
                 unzReadCurrentFile(file, &m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER));
-                unzReadCurrentFile(file, m_Reg.m_GPR, sizeof(int64_t)* 32);
-                unzReadCurrentFile(file, m_Reg.m_FPR, sizeof(int64_t)* 32);
-                unzReadCurrentFile(file, m_Reg.m_CP0, sizeof(uint32_t)* 32);
-                unzReadCurrentFile(file, m_Reg.m_FPCR, sizeof(uint32_t)* 32);
+                unzReadCurrentFile(file, m_Reg.m_GPR, sizeof(int64_t) * 32);
+                unzReadCurrentFile(file, m_Reg.m_FPR, sizeof(int64_t) * 32);
+                unzReadCurrentFile(file, m_Reg.m_CP0, sizeof(uint32_t) * 32);
+                unzReadCurrentFile(file, m_Reg.m_FPCR, sizeof(uint32_t) * 32);
                 unzReadCurrentFile(file, &m_Reg.m_HI, sizeof(int64_t));
                 unzReadCurrentFile(file, &m_Reg.m_LO, sizeof(int64_t));
-                unzReadCurrentFile(file, m_Reg.m_RDRAM_Registers, sizeof(uint32_t)* 10);
-                unzReadCurrentFile(file, m_Reg.m_SigProcessor_Interface, sizeof(uint32_t)* 10);
-                unzReadCurrentFile(file, m_Reg.m_Display_ControlReg, sizeof(uint32_t)* 10);
-                unzReadCurrentFile(file, m_Reg.m_Mips_Interface, sizeof(uint32_t)* 4);
-                unzReadCurrentFile(file, m_Reg.m_Video_Interface, sizeof(uint32_t)* 14);
-                unzReadCurrentFile(file, m_Reg.m_Audio_Interface, sizeof(uint32_t)* 6);
-                unzReadCurrentFile(file, m_Reg.m_Peripheral_Interface, sizeof(uint32_t)* 13);
-                unzReadCurrentFile(file, m_Reg.m_RDRAM_Interface, sizeof(uint32_t)* 8);
-                unzReadCurrentFile(file, m_Reg.m_SerialInterface, sizeof(uint32_t)* 4);
+                unzReadCurrentFile(file, m_Reg.m_RDRAM_Registers, sizeof(uint32_t) * 10);
+                unzReadCurrentFile(file, m_Reg.m_SigProcessor_Interface, sizeof(uint32_t) * 10);
+                unzReadCurrentFile(file, m_Reg.m_Display_ControlReg, sizeof(uint32_t) * 10);
+                unzReadCurrentFile(file, m_Reg.m_Mips_Interface, sizeof(uint32_t) * 4);
+                unzReadCurrentFile(file, m_Reg.m_Video_Interface, sizeof(uint32_t) * 14);
+                unzReadCurrentFile(file, m_Reg.m_Audio_Interface, sizeof(uint32_t) * 6);
+                unzReadCurrentFile(file, m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13);
+                unzReadCurrentFile(file, m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
+                unzReadCurrentFile(file, m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
                 unzReadCurrentFile(file, (void *const)&g_TLB->TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
                 unzReadCurrentFile(file, m_MMU_VM.PifRam(), 0x40);
                 unzReadCurrentFile(file, m_MMU_VM.Rdram(), SaveRDRAMSize);
@@ -1844,21 +1844,21 @@ bool CN64System::LoadState(const char * FileName)
 
         hSaveFile.Read(&NextVITimer, sizeof(NextVITimer));
         hSaveFile.Read(&m_Reg.m_PROGRAM_COUNTER, sizeof(m_Reg.m_PROGRAM_COUNTER));
-        hSaveFile.Read(m_Reg.m_GPR, sizeof(int64_t)* 32);
-        hSaveFile.Read(m_Reg.m_FPR, sizeof(int64_t)* 32);
-        hSaveFile.Read(m_Reg.m_CP0, sizeof(uint32_t)* 32);
-        hSaveFile.Read(m_Reg.m_FPCR, sizeof(uint32_t)* 32);
+        hSaveFile.Read(m_Reg.m_GPR, sizeof(int64_t) * 32);
+        hSaveFile.Read(m_Reg.m_FPR, sizeof(int64_t) * 32);
+        hSaveFile.Read(m_Reg.m_CP0, sizeof(uint32_t) * 32);
+        hSaveFile.Read(m_Reg.m_FPCR, sizeof(uint32_t) * 32);
         hSaveFile.Read(&m_Reg.m_HI, sizeof(int64_t));
         hSaveFile.Read(&m_Reg.m_LO, sizeof(int64_t));
-        hSaveFile.Read(m_Reg.m_RDRAM_Registers, sizeof(uint32_t)* 10);
-        hSaveFile.Read(m_Reg.m_SigProcessor_Interface, sizeof(uint32_t)* 10);
-        hSaveFile.Read(m_Reg.m_Display_ControlReg, sizeof(uint32_t)* 10);
-        hSaveFile.Read(m_Reg.m_Mips_Interface, sizeof(uint32_t)* 4);
-        hSaveFile.Read(m_Reg.m_Video_Interface, sizeof(uint32_t)* 14);
-        hSaveFile.Read(m_Reg.m_Audio_Interface, sizeof(uint32_t)* 6);
-        hSaveFile.Read(m_Reg.m_Peripheral_Interface, sizeof(uint32_t)* 13);
-        hSaveFile.Read(m_Reg.m_RDRAM_Interface, sizeof(uint32_t)* 8);
-        hSaveFile.Read(m_Reg.m_SerialInterface, sizeof(uint32_t)* 4);
+        hSaveFile.Read(m_Reg.m_RDRAM_Registers, sizeof(uint32_t) * 10);
+        hSaveFile.Read(m_Reg.m_SigProcessor_Interface, sizeof(uint32_t) * 10);
+        hSaveFile.Read(m_Reg.m_Display_ControlReg, sizeof(uint32_t) * 10);
+        hSaveFile.Read(m_Reg.m_Mips_Interface, sizeof(uint32_t) * 4);
+        hSaveFile.Read(m_Reg.m_Video_Interface, sizeof(uint32_t) * 14);
+        hSaveFile.Read(m_Reg.m_Audio_Interface, sizeof(uint32_t) * 6);
+        hSaveFile.Read(m_Reg.m_Peripheral_Interface, sizeof(uint32_t) * 13);
+        hSaveFile.Read(m_Reg.m_RDRAM_Interface, sizeof(uint32_t) * 8);
+        hSaveFile.Read(m_Reg.m_SerialInterface, sizeof(uint32_t) * 4);
         hSaveFile.Read((void *const)&g_TLB->TlbEntry(0), sizeof(CTLB::TLB_ENTRY) * 32);
         hSaveFile.Read(m_MMU_VM.PifRam(), 0x40);
         hSaveFile.Read(m_MMU_VM.Rdram(), SaveRDRAMSize);

@@ -16,10 +16,14 @@
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/3rdParty/zip.h>
 
-CSystemTimer::CSystemTimer(int32_t & NextTimer) :
-m_NextTimer(NextTimer),
-m_inFixTimer(false)
+CSystemTimer::CSystemTimer(CRegisters &Reg, int32_t & NextTimer) :
+    m_LastUpdate(0),
+    m_NextTimer(NextTimer),
+    m_Current(UnknownTimer),
+    m_inFixTimer(false),
+    m_Reg(Reg)
 {
+    memset(m_TimerDetatils, 0, sizeof(m_TimerDetatils));
 }
 
 void CSystemTimer::Reset()
@@ -163,9 +167,9 @@ void CSystemTimer::UpdateTimers()
     {
         int32_t random, wired;
         m_LastUpdate = m_NextTimer;
-        g_Reg->COUNT_REGISTER += TimeTaken;
-        random = g_Reg->RANDOM_REGISTER - (TimeTaken / g_System->CountPerOp());
-        wired = g_Reg->WIRED_REGISTER;
+        m_Reg.COUNT_REGISTER += TimeTaken;
+        random = m_Reg.RANDOM_REGISTER - (TimeTaken / g_System->CountPerOp());
+        wired = m_Reg.WIRED_REGISTER;
         if (random < wired)
         {
             if (wired == 0)
@@ -178,7 +182,7 @@ void CSystemTimer::UpdateTimers()
                 random += ((wired - random + increment - 1) / increment) * increment;
             }
         }
-        g_Reg->RANDOM_REGISTER = random;
+        m_Reg.RANDOM_REGISTER = random;
     }
 }
 
@@ -189,8 +193,8 @@ void CSystemTimer::TimerDone()
     switch (m_Current)
     {
     case CSystemTimer::CompareTimer:
-        g_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP7;
-        g_Reg->CheckInterrupts();
+        m_Reg.FAKE_CAUSE_REGISTER |= CAUSE_IP7;
+        m_Reg.CheckInterrupts();
         UpdateCompareTimer();
         break;
     case CSystemTimer::SoftResetTimer:
@@ -199,22 +203,22 @@ void CSystemTimer::TimerDone()
         break;
     case CSystemTimer::SiTimer:
         g_SystemTimer->StopTimer(CSystemTimer::SiTimer);
-        g_Reg->MI_INTR_REG |= MI_INTR_SI;
-        g_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
-        g_Reg->CheckInterrupts();
+        m_Reg.MI_INTR_REG |= MI_INTR_SI;
+        m_Reg.SI_STATUS_REG |= SI_STATUS_INTERRUPT;
+        m_Reg.CheckInterrupts();
         break;
     case CSystemTimer::PiTimer:
         g_SystemTimer->StopTimer(CSystemTimer::PiTimer);
-        g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-        g_Reg->MI_INTR_REG |= MI_INTR_PI;
-        g_Reg->CheckInterrupts();
+        m_Reg.PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+        m_Reg.MI_INTR_REG |= MI_INTR_PI;
+        m_Reg.CheckInterrupts();
         break;
     case CSystemTimer::DDPiTimer:
         g_SystemTimer->StopTimer(CSystemTimer::DDPiTimer);
-        g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+        m_Reg.PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         DiskBMUpdate();
-        g_Reg->MI_INTR_REG |= MI_INTR_PI;
-        g_Reg->CheckInterrupts();
+        m_Reg.MI_INTR_REG |= MI_INTR_PI;
+        m_Reg.CheckInterrupts();
         break;
     case CSystemTimer::ViTimer:
         try
@@ -225,8 +229,8 @@ void CSystemTimer::TimerDone()
         {
             WriteTrace(TraceN64System, TraceError, "Exception caught\nFile: %s\nLine: %d", __FILE__, __LINE__);
         }
-        g_Reg->MI_INTR_REG |= MI_INTR_VI;
-        g_Reg->CheckInterrupts();
+        m_Reg.MI_INTR_REG |= MI_INTR_VI;
+        m_Reg.CheckInterrupts();
         break;
     case CSystemTimer::RspTimer:
         g_SystemTimer->StopTimer(CSystemTimer::RspTimer);
@@ -241,8 +245,8 @@ void CSystemTimer::TimerDone()
         break;
     case CSystemTimer::RSPTimerDlist:
         g_SystemTimer->StopTimer(CSystemTimer::RSPTimerDlist);
-        g_Reg->m_GfxIntrReg |= MI_INTR_DP;
-        g_Reg->CheckInterrupts();
+        m_Reg.m_GfxIntrReg |= MI_INTR_DP;
+        m_Reg.CheckInterrupts();
         break;
     case CSystemTimer::AiTimerInterrupt:
         g_SystemTimer->StopTimer(CSystemTimer::AiTimerInterrupt);
@@ -267,7 +271,7 @@ void CSystemTimer::SetCompareTimer()
     uint32_t NextCompare = 0x7FFFFFFF;
     if (g_Reg)
     {
-        NextCompare = g_Reg->COMPARE_REGISTER - g_Reg->COUNT_REGISTER;
+        NextCompare = m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER;
         if ((NextCompare & 0x80000000) != 0)
         {
             NextCompare = 0x7FFFFFFF;
