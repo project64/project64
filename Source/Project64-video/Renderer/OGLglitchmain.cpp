@@ -281,7 +281,8 @@ typedef struct
 
 int nbTextureUnits;
 int nbAuxBuffers, current_buffer;
-int g_width, widtho, heighto, g_height;
+int g_scr_res_x, g_width, widtho, heighto, g_scr_res_y, g_height;
+int g_res_x, g_res_y;
 int saved_width, saved_height;
 int blend_func_separate_support;
 int npot_support;

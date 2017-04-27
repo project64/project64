@@ -17,6 +17,8 @@
 #include "CRC.h"
 #include <Project64-video/trace.h>
 
+extern int g_scr_res_x, g_res_x, g_scr_res_y, g_res_y;
+
 static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
 {
     TBUFF_COLOR_IMAGE texbuf;
@@ -26,7 +28,7 @@ static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
     texbuf.height = cimage.height;
     texbuf.format = cimage.format;
     texbuf.size = cimage.size;
-    texbuf.scr_width = minval(cimage.width * rdp.scale_x, g_settings->scr_res_x());
+    texbuf.scr_width = minval(cimage.width * rdp.scale_x, g_scr_res_x);
     float height = minval(rdp.vi_height, cimage.height);
     if (cimage.status == ci_copy_self || (cimage.status == ci_copy && cimage.width == rdp.frame_buffers[rdp.main_ci_index].width))
         height = rdp.vi_height;
@@ -338,7 +340,7 @@ static GrTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
         GR_BLEND_ZERO,
         GR_BLEND_ONE,
         GR_BLEND_ZERO);
-    grClipWindow(0, 0, g_settings->scr_res_x(), g_settings->scr_res_y());
+    grClipWindow(0, 0, g_scr_res_x, g_scr_res_y);
     grDepthBufferFunction(GR_CMP_ALWAYS);
     grDepthMask(FXFALSE);
     grCullMode(GR_CULL_DISABLE);
@@ -426,7 +428,7 @@ int CloseTextureBuffer(int draw)
     };
 
     grTexSource(rdp.tbuff_tex->tmu, rdp.tbuff_tex->tex_addr, GR_MIPMAPLEVELMASK_BOTH, &(rdp.tbuff_tex->info));
-    grClipWindow(0, 0, g_settings->res_x(), g_settings->res_y());
+    grClipWindow(0, 0, g_res_x, g_res_y);
     grDrawTriangle(&v[0], &v[2], &v[1]);
     grDrawTriangle(&v[2], &v[3], &v[1]);
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE;
@@ -488,7 +490,7 @@ int CopyTextureBuffer(COLOR_IMAGE & fb_from, COLOR_IMAGE & fb_to)
     rdp.offset_y = rdp.offset_y_bak;
     rdp.offset_x_bak = rdp.offset_y_bak = 0;
     AddOffset(v, 4);
-    grClipWindow(0, 0, g_settings->res_x(), g_settings->res_y());
+    grClipWindow(0, 0, g_res_x, g_res_y);
     grDrawTriangle(&v[0], &v[2], &v[1]);
     grDrawTriangle(&v[2], &v[3], &v[1]);
     rdp.tbuff_tex->info.format = buf_format;
@@ -508,7 +510,7 @@ int CopyDepthBuffer()
     WriteTrace(TraceRDP, TraceDebug, "CopyDepthBuffer. ");
     float bound = 1024.0f;
     GrLOD_t LOD = GR_LOD_LOG2_1024;
-    if (g_settings->scr_res_x() > 1024)
+    if (g_scr_res_x > 1024)
     {
         bound = 2048.0f;
         LOD = GR_LOD_LOG2_2048;

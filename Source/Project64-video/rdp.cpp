@@ -447,8 +447,8 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
         }
         else
         {
-            float scale_x = (g_settings->scr_res_x() - rdp.offset_x*2.0f) / maxval(width, rdp.vi_width);
-            float scale_y = (g_settings->scr_res_y() - rdp.offset_y*2.0f) / maxval(height, rdp.vi_height);
+            float scale_x = (g_scr_res_x - rdp.offset_x*2.0f) / maxval(width, rdp.vi_width);
+            float scale_y = (g_scr_res_y - rdp.offset_y*2.0f) / maxval(height, rdp.vi_height);
 
             WriteTrace(TraceRDP, TraceDebug, "width: %d, height: %d, ul_y: %d, lr_y: %d, scale_x: %f, scale_y: %f, ci_width: %d, ci_height: %d", width, height, rdp.ci_upper_bound, rdp.ci_lower_bound, scale_x, scale_y, rdp.ci_width, rdp.ci_height);
             GrLfbInfo_t info;
@@ -2267,8 +2267,8 @@ static void rdp_fillrect()
 
     if (s_lr_x < 0) s_lr_x = 0;
     if (s_lr_y < 0) s_lr_y = 0;
-    if ((uint32_t)s_ul_x > g_settings->res_x()) { s_ul_x = g_settings->res_x(); }
-    if ((uint32_t)s_ul_y > g_settings->res_y()) { s_ul_y = g_settings->res_y(); }
+    if ((uint32_t)s_ul_x > g_res_x) { s_ul_x = g_res_x; }
+    if ((uint32_t)s_ul_y > g_res_y) { s_ul_y = g_res_y; }
 
     WriteTrace(TraceRDP, TraceDebug, " - %d, %d, %d, %d", s_ul_x, s_ul_y, s_lr_x, s_lr_y);
 
@@ -2706,7 +2706,7 @@ static void rdp_setcolorimage()
             {
                 if (g_settings->fb_hwfbe_enabled() && !rdp.copy_ci_index && (rdp.copy_zi_index || g_settings->hacks(CSettings::hack_BAR)))
                 {
-                    GrLOD_t LOD = g_settings->scr_res_x() > 1024 ? GR_LOD_LOG2_1024 : GR_LOD_LOG2_2048;
+                    GrLOD_t LOD = g_scr_res_x > 1024 ? GR_LOD_LOG2_1024 : GR_LOD_LOG2_2048;
                     grTextureAuxBufferExt(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, LOD, LOD,
                         GR_ASPECT_LOG2_1x1, GR_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
                     grAuxBufferExt(GR_BUFFER_TEXTUREAUXBUFFER_EXT);

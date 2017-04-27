@@ -16,6 +16,8 @@
 #include "TexCache.h"
 #include <Project64-video/trace.h>
 
+extern int g_scr_res_x, g_scr_res_y;
+
 static int SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaque)
 {
     int tmu;
@@ -99,11 +101,11 @@ static int SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaque)
 static void DrawRE2Video(FB_TO_SCREEN_INFO & fb_info, float scale)
 {
     float scale_y = (float)fb_info.width / rdp.vi_height;
-    float height = g_settings->scr_res_x() / scale_y;
+    float height = g_scr_res_x / scale_y;
     float ul_x = 0.5f;
-    float ul_y = (g_settings->scr_res_y() - height) / 2.0f;
-    float lr_y = g_settings->scr_res_y() - ul_y - 1.0f;
-    float lr_x = g_settings->scr_res_x() - 1.0f;
+    float ul_y = (g_scr_res_y - height) / 2.0f;
+    float lr_y = g_scr_res_y - ul_y - 1.0f;
+    float lr_x = g_scr_res_x - 1.0f;
     float lr_u = (fb_info.width - 1)*scale;
     float lr_v = (fb_info.height - 1)*scale;
     VERTEX v[4] = {
@@ -475,7 +477,7 @@ static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
     GrTexInfo t_info;
     float scale = 0.25f;
     GrLOD_t LOD = GR_LOD_LOG2_1024;
-    if (g_settings->scr_res_x() > 1024)
+    if (g_scr_res_x > 1024)
     {
         scale = 0.125f;
         LOD = GR_LOD_LOG2_2048;

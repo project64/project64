@@ -100,80 +100,115 @@ static unsigned long g_windowedExStyle, g_windowedStyle;
 bool g_fullscreen;
 #endif // _WIN32
 
-void _ChangeSize()
-{
-    rdp.scale_1024 = g_settings->scr_res_x() / 1024.0f;
-    rdp.scale_768 = g_settings->scr_res_y() / 768.0f;
-
-    //  float res_scl_x = (float)g_settings->res_x / 320.0f;
-    float res_scl_y = (float)g_settings->res_y() / 240.0f;
-
-    uint32_t scale_x = *gfx.VI_X_SCALE_REG & 0xFFF;
-    if (!scale_x) return;
-    uint32_t scale_y = *gfx.VI_Y_SCALE_REG & 0xFFF;
-    if (!scale_y) return;
-
-    float fscale_x = (float)scale_x / 1024.0f;
-    float fscale_y = (float)scale_y / 2048.0f;
-
-    uint32_t dwHStartReg = *gfx.VI_H_START_REG;
-    uint32_t dwVStartReg = *gfx.VI_V_START_REG;
-
-    uint32_t hstart = dwHStartReg >> 16;
-    uint32_t hend = dwHStartReg & 0xFFFF;
-
-    // dunno... but sometimes this happens
-    if (hend == hstart) hend = (int)(*gfx.VI_WIDTH_REG / fscale_x);
-
-    uint32_t vstart = dwVStartReg >> 16;
-    uint32_t vend = dwVStartReg & 0xFFFF;
-
-    rdp.vi_width = (hend - hstart) * fscale_x;
-    rdp.vi_height = (vend - vstart) * fscale_y * 1.0126582f;
-    float aspect = (g_settings->adjust_aspect() && (fscale_y > fscale_x) && (rdp.vi_width > rdp.vi_height)) ? fscale_x / fscale_y : 1.0f;
-
-    WriteTrace(TraceResolution, TraceDebug, "hstart: %d, hend: %d, vstart: %d, vend: %d", hstart, hend, vstart, vend);
-    WriteTrace(TraceResolution, TraceDebug, "size: %d x %d", (int)rdp.vi_width, (int)rdp.vi_height);
-
-    rdp.scale_x = (float)g_settings->res_x() / rdp.vi_width;
-    if (region > 0 && g_settings->pal230())
-    {
-        // odd... but pal games seem to want 230 as height...
-        rdp.scale_y = res_scl_y * (230.0f / rdp.vi_height)  * aspect;
-    }
-    else
-    {
-        rdp.scale_y = (float)g_settings->res_y() / rdp.vi_height * aspect;
-    }
-    //  rdp.offset_x = g_settings->offset_x * res_scl_x;
-    //  rdp.offset_y = g_settings->offset_y * res_scl_y;
-    //rdp.offset_x = 0;
-    //  rdp.offset_y = 0;
-    rdp.offset_y = ((float)g_settings->res_y() - rdp.vi_height * rdp.scale_y) * 0.5f;
-    if (((uint32_t)rdp.vi_width <= (*gfx.VI_WIDTH_REG) / 2) && (rdp.vi_width > rdp.vi_height))
-        rdp.scale_y *= 0.5f;
-
-    rdp.scissor_o.ul_x = 0;
-    rdp.scissor_o.ul_y = 0;
-    rdp.scissor_o.lr_x = (uint32_t)rdp.vi_width;
-    rdp.scissor_o.lr_y = (uint32_t)rdp.vi_height;
-
-    rdp.update |= UPDATE_VIEWPORT | UPDATE_SCISSOR;
-}
+extern int g_scr_res_x, g_res_x, g_scr_res_y, g_res_y;
 
 void ChangeSize()
 {
-    g_settings->UpdateScreenSize(ev_fullscreen);
-    _ChangeSize();
-    rdp.offset_x = (g_settings->scr_res_x() - g_settings->res_x()) / 2.0f;
-    float offset_y = (g_settings->scr_res_y() - g_settings->res_y()) / 2.0f;
+    WriteTrace(TraceResolution, TraceDebug, "Start");
+#ifdef ANDROID
+    g_width = g_ScreenWidth;
+    g_height = g_ScreenHeight;
+#else
+    g_width = ev_fullscreen ? GetFullScreenResWidth(g_settings->FullScreenRes()) : GetScreenResWidth(g_settings->ScreenRes());
+    g_height = ev_fullscreen ? GetFullScreenResHeight(g_settings->FullScreenRes()) : GetScreenResHeight(g_settings->ScreenRes());
+#endif
+    g_scr_res_x = g_res_x = g_width;
+    g_scr_res_y = g_res_y = g_height;
+
+    switch (g_settings->aspectmode())
+    {
+    case CSettings::Aspect_4x3:
+        if (g_scr_res_x >= g_scr_res_y * 4.0f / 3.0f)
+        {
+            g_res_y = g_scr_res_y;
+            g_res_x = (uint32_t)(g_res_y * 4.0f / 3.0f);
+        }
+        else
+        {
+            g_res_x = g_scr_res_x;
+            g_res_y = (uint32_t)(g_res_x / 4.0f * 3.0f);
+        }
+        break;
+    case CSettings::Aspect_16x9:
+        if (g_scr_res_x >= g_scr_res_y * 16.0f / 9.0f)
+        {
+            g_res_y = g_scr_res_y;
+            g_res_x = (uint32_t)(g_res_y * 16.0f / 9.0f);
+        }
+        else
+        {
+            g_res_x = g_scr_res_x;
+            g_res_y = (uint32_t)(g_res_x / 16.0f * 9.0f);
+        }
+        break;
+    default: //stretch or original
+        g_res_x = g_scr_res_x;
+        g_res_y = g_scr_res_y;
+    }
+
+    rdp.scale_1024 = g_scr_res_x / 1024.0f;
+    rdp.scale_768 = g_scr_res_y / 768.0f;
+
+    float res_scl_y = (float)g_res_y / 240.0f;
+
+    uint32_t scale_x = *gfx.VI_X_SCALE_REG & 0xFFF;
+    uint32_t scale_y = *gfx.VI_Y_SCALE_REG & 0xFFF;
+    if (scale_x != 0 && scale_y != 0)
+    {
+        float fscale_x = (float)scale_x / 1024.0f;
+        float fscale_y = (float)scale_y / 2048.0f;
+
+        uint32_t dwHStartReg = *gfx.VI_H_START_REG;
+        uint32_t dwVStartReg = *gfx.VI_V_START_REG;
+
+        uint32_t hstart = dwHStartReg >> 16;
+        uint32_t hend = dwHStartReg & 0xFFFF;
+
+        // dunno... but sometimes this happens
+        if (hend == hstart) hend = (int)(*gfx.VI_WIDTH_REG / fscale_x);
+
+        uint32_t vstart = dwVStartReg >> 16;
+        uint32_t vend = dwVStartReg & 0xFFFF;
+
+        rdp.vi_width = (hend - hstart) * fscale_x;
+        rdp.vi_height = (vend - vstart) * fscale_y * 1.0126582f;
+        float aspect = (g_settings->adjust_aspect() && (fscale_y > fscale_x) && (rdp.vi_width > rdp.vi_height)) ? fscale_x / fscale_y : 1.0f;
+
+        WriteTrace(TraceResolution, TraceDebug, "hstart: %d, hend: %d, vstart: %d, vend: %d", hstart, hend, vstart, vend);
+        WriteTrace(TraceResolution, TraceDebug, "size: %d x %d", (int)rdp.vi_width, (int)rdp.vi_height);
+
+        rdp.scale_x = (float)g_res_x / rdp.vi_width;
+        if (region > 0 && g_settings->pal230())
+        {
+            // odd... but pal games seem to want 230 as height...
+            rdp.scale_y = res_scl_y * (230.0f / rdp.vi_height)  * aspect;
+        }
+        else
+        {
+            rdp.scale_y = (float)g_res_y / rdp.vi_height * aspect;
+        }
+        rdp.offset_y = ((float)g_res_y - rdp.vi_height * rdp.scale_y) * 0.5f;
+        if (((uint32_t)rdp.vi_width <= (*gfx.VI_WIDTH_REG) / 2) && (rdp.vi_width > rdp.vi_height))
+            rdp.scale_y *= 0.5f;
+
+        rdp.scissor_o.ul_x = 0;
+        rdp.scissor_o.ul_y = 0;
+        rdp.scissor_o.lr_x = (uint32_t)rdp.vi_width;
+        rdp.scissor_o.lr_y = (uint32_t)rdp.vi_height;
+
+        rdp.update |= UPDATE_VIEWPORT | UPDATE_SCISSOR;
+    }
+    rdp.offset_x = (g_scr_res_x - g_res_x) / 2.0f;
+    float offset_y = (g_scr_res_y - g_res_y) / 2.0f;
     rdp.offset_y += offset_y;
     if (g_settings->aspectmode() == CSettings::Aspect_Original)
     {
         rdp.scale_x = rdp.scale_y = 1.0f;
-        rdp.offset_x = (g_settings->scr_res_x() - rdp.vi_width) / 2.0f;
-        rdp.offset_y = (g_settings->scr_res_y() - rdp.vi_height) / 2.0f;
+        rdp.offset_x = (g_scr_res_x - rdp.vi_width) / 2.0f;
+        rdp.offset_y = (g_scr_res_y - rdp.vi_height) / 2.0f;
     }
+    WriteTrace(TraceResolution, TraceDebug, "rdp.offset_x = %f rdp.offset_y = %f rdp.scale_x = %f, rdp.scale_y = %f", rdp.offset_x, rdp.offset_y, rdp.scale_x, rdp.scale_y);
+    WriteTrace(TraceResolution, TraceDebug, "Done");
 }
 
 void ConfigWrapper()
@@ -209,7 +244,7 @@ void guLoadTextures()
         tbuf_size = 8 * grTexCalcMemRequired(GR_LOD_LOG2_256, GR_LOD_LOG2_256,
             GR_ASPECT_LOG2_1x1, GR_TEXFMT_RGB_565);
     }
-    else if (g_settings->scr_res_x() <= 1024)
+    else if (g_scr_res_x <= 1024)
     {
         grTextureBufferExt(GR_TMU0, voodoo.tex_min_addr[GR_TMU0], GR_LOD_LOG2_1024, GR_LOD_LOG2_1024,
             GR_ASPECT_LOG2_1x1, GR_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
@@ -487,7 +522,7 @@ int InitGfx()
         WriteTrace(TraceGlide64, TraceDebug, "Using TEXUMA extension");
     }
 
-    g_settings->UpdateScreenSize(ev_fullscreen);
+    ChangeSize();
 #ifndef ANDROID
     SetWindowDisplaySize((HWND)gfx.hWnd);
 #endif
@@ -614,7 +649,7 @@ int InitGfx()
     grTexFilterMode(1, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
     grTexClampMode(0, GR_TEXTURECLAMP_CLAMP, GR_TEXTURECLAMP_CLAMP);
     grTexClampMode(1, GR_TEXTURECLAMP_CLAMP, GR_TEXTURECLAMP_CLAMP);
-    grClipWindow(0, 0, g_settings->scr_res_x(), g_settings->scr_res_y());
+    grClipWindow(0, 0, g_scr_res_x, g_scr_res_y);
     rdp.update |= UPDATE_SCISSOR | UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
 
     if (!g_ghq_use)
@@ -734,9 +769,9 @@ extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReser
 
 void CALL ReadScreen(void **dest, int *width, int *height)
 {
-    *width = g_settings->res_x();
-    *height = g_settings->res_y();
-    uint8_t * buff = (uint8_t*)malloc(g_settings->res_x() * g_settings->res_y() * 3);
+    *width = g_res_x;
+    *height = g_res_y;
+    uint8_t * buff = (uint8_t*)malloc(g_res_x * g_res_y * 3);
     uint8_t * line = buff;
     *dest = (void*)buff;
 
@@ -749,17 +784,17 @@ void CALL ReadScreen(void **dest, int *width, int *height)
         FXFALSE,
         &info))
     {
-        uint32_t offset_src = info.strideInBytes*(g_settings->scr_res_y() - 1);
+        uint32_t offset_src = info.strideInBytes*(g_scr_res_y - 1);
 
         // Copy the screen
         uint8_t r, g, b;
         if (info.writeMode == GR_LFBWRITEMODE_8888)
         {
             uint32_t col;
-            for (uint32_t y = 0; y < g_settings->res_y(); y++)
+            for (uint32_t y = 0; y < g_res_y; y++)
             {
                 uint32_t *ptr = (uint32_t*)((uint8_t*)info.lfbPtr + offset_src);
-                for (uint32_t x = 0; x < g_settings->res_x(); x++)
+                for (uint32_t x = 0; x < g_res_x; x++)
                 {
                     col = *(ptr++);
                     r = (uint8_t)((col >> 16) & 0xFF);
@@ -769,17 +804,17 @@ void CALL ReadScreen(void **dest, int *width, int *height)
                     line[x * 3 + 1] = g;
                     line[x * 3 + 2] = r;
                 }
-                line += g_settings->res_x() * 3;
+                line += g_res_x * 3;
                 offset_src -= info.strideInBytes;
             }
         }
         else
         {
             uint16_t col;
-            for (uint32_t y = 0; y < g_settings->res_y(); y++)
+            for (uint32_t y = 0; y < g_res_y; y++)
             {
                 uint16_t *ptr = (uint16_t*)((uint8_t*)info.lfbPtr + offset_src);
-                for (uint32_t x = 0; x < g_settings->res_x(); x++)
+                for (uint32_t x = 0; x < g_res_x; x++)
                 {
                     col = *(ptr++);
                     r = (uint8_t)((float)(col >> 11) / 31.0f * 255.0f);
@@ -789,7 +824,7 @@ void CALL ReadScreen(void **dest, int *width, int *height)
                     line[x * 3 + 1] = g;
                     line[x * 3 + 2] = r;
                 }
-                line += g_settings->res_x() * 3;
+                line += g_res_x * 3;
                 offset_src -= info.strideInBytes;
             }
         }
@@ -923,9 +958,9 @@ void CALL GetDllInfo(PLUGIN_INFO * PluginInfo)
     PluginInfo->Version = 0x0104;     // Set to 0x0104
     PluginInfo->Type = PLUGIN_TYPE_GFX;  // Set to PLUGIN_TYPE_GFX
 #ifdef _DEBUG
-    sprintf(PluginInfo->Name, "Glide64 For PJ64 (Debug): %s", VER_FILE_VERSION_STR);
+    sprintf(PluginInfo->Name, "Project64 Video Plugin (Debug): %s", VER_FILE_VERSION_STR);
 #else
-    sprintf(PluginInfo->Name, "Glide64 For PJ64: %s", VER_FILE_VERSION_STR);
+    sprintf(PluginInfo->Name, "Project64 Video Plugin: %s", VER_FILE_VERSION_STR);
 #endif
 
     // If DLL supports memory these memory options then set them to TRUE or FALSE
@@ -1404,7 +1439,7 @@ void newSwapBuffers()
     WriteTrace(TraceRDP, TraceDebug, "swapped");
 
     rdp.update |= UPDATE_SCISSOR | UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
-    grClipWindow(0, 0, g_settings->scr_res_x(), g_settings->scr_res_y());
+    grClipWindow(0, 0, g_scr_res_x, g_scr_res_y);
     grDepthBufferFunction(GR_CMP_ALWAYS);
     grDepthMask(FXFALSE);
     grCullMode(GR_CULL_DISABLE);
@@ -1432,8 +1467,8 @@ void newSwapBuffers()
 
         const uint32_t offset_x = (uint32_t)rdp.offset_x;
         const uint32_t offset_y = (uint32_t)rdp.offset_y;
-        const uint32_t image_width = g_settings->scr_res_x() - offset_x * 2;
-        const uint32_t image_height = g_settings->scr_res_y() - offset_y * 2;
+        const uint32_t image_width = g_scr_res_x - offset_x * 2;
+        const uint32_t image_height = g_scr_res_y - offset_y * 2;
 
         GrLfbInfo_t info;
         info.size = sizeof(GrLfbInfo_t);

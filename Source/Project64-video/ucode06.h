@@ -12,6 +12,7 @@
 *                                                                          *
 ****************************************************************************/
 #pragma once
+extern int g_scr_res_x, g_res_x, g_scr_res_y, g_res_y;
 
 static float set_sprite_combine_mode()
 {
@@ -183,7 +184,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
     grDepthBufferFunction(GR_CMP_ALWAYS);
     grDepthMask(FXFALSE);
 
-    GrLOD_t LOD = g_settings->scr_res_x() > 1024 ? GR_LOD_LOG2_2048 : GR_LOD_LOG2_1024;
+    GrLOD_t LOD = g_scr_res_x > 1024 ? GR_LOD_LOG2_2048 : GR_LOD_LOG2_1024;
 
     float lr_x = (float)d.imageW * rdp.scale_x;
     float lr_y = (float)d.imageH * rdp.scale_y;
@@ -233,8 +234,8 @@ void DrawDepthImage(const DRAWIMAGE & d)
     float scale_y_src = 1.0f / rdp.scale_y;
     int src_width = d.imageW;
     int src_height = d.imageH;
-    int dst_width = minval(int(src_width*scale_x_dst), (int)g_settings->scr_res_x());
-    int dst_height = minval(int(src_height*scale_y_dst), (int)g_settings->scr_res_y());
+    int dst_width = minval(int(src_width*scale_x_dst), (int)g_scr_res_x);
+    int dst_height = minval(int(src_height*scale_y_dst), (int)g_scr_res_y);
     uint16_t * src = (uint16_t*)(gfx.RDRAM + d.imagePtr);
     uint16_t * dst = new uint16_t[dst_width*dst_height];
     for (int y = 0; y < dst_height; y++)
@@ -420,7 +421,7 @@ void DrawImage(DRAWIMAGE & d)
         rdp.allow_combine = 0;
 
     if (rdp.ci_width == 512 && !no_dlist)
-        grClipWindow(0, 0, g_settings->scr_res_x(), g_settings->scr_res_y());
+        grClipWindow(0, 0, g_scr_res_x, g_scr_res_y);
     else if (d.scaleX == 1.0f && d.scaleY == 1.0f)
         grClipWindow(rdp.scissor.ul_x, rdp.scissor.ul_y, rdp.scissor.lr_x, rdp.scissor.lr_y);
     else
@@ -572,7 +573,7 @@ void DrawHiresImage(DRAWIMAGE & d, int screensize = FALSE)
     setTBufTex(rdp.tbuff_tex->t_mem, rdp.tbuff_tex->width << rdp.tbuff_tex->size >> 1);
 
     const float Z = set_sprite_combine_mode();
-    grClipWindow(0, 0, g_settings->res_x(), g_settings->res_y());
+    grClipWindow(0, 0, g_res_x, g_res_y);
 
     if (d.imageW % 2 == 1) d.imageW -= 1;
     if (d.imageH % 2 == 1) d.imageH -= 1;

@@ -14,8 +14,7 @@
 #include "Gfx_1.3.h"
 #include "ScreenResolution.h"
 #include "SettingsID.h"
-
-extern int g_width, g_height;
+#include "trace.h"
 
 CSettings::CSettings() :
     m_Set_basic_mode(0),
@@ -24,10 +23,6 @@ CSettings::CSettings() :
     m_Set_log_dir(0),
     m_Set_log_flush(0),
     m_dirty(false),
-    m_res_x(GetScreenResWidth(GetDefaultScreenRes())),
-    m_scr_res_x(GetScreenResWidth(GetDefaultScreenRes())),
-    m_res_y(GetScreenResHeight(GetDefaultScreenRes())),
-    m_scr_res_y(GetScreenResHeight(GetDefaultScreenRes())),
     m_ScreenRes(GetDefaultScreenRes()),
     m_advanced_options(false),
     m_debugger_enabled(false),
@@ -265,33 +260,11 @@ void CSettings::SetScreenRes(uint32_t value)
     }
 }
 
-void CSettings::UpdateScreenSize(bool fullscreen)
-{
-#ifndef ANDROID
-    if (fullscreen)
-    {
-        g_width = GetFullScreenResWidth(m_FullScreenRes);
-        g_height = GetFullScreenResHeight(m_FullScreenRes);
-    }
-    else
-    {
-#endif
-        g_width = GetScreenResWidth(m_ScreenRes);
-        g_height = GetScreenResHeight(m_ScreenRes);
-#ifndef ANDROID
-    }
-#endif
-    m_scr_res_x = m_res_x = g_width;
-    m_scr_res_y = m_res_y = g_height;
-    UpdateAspectRatio();
-}
-
 void CSettings::SetAspectmode(AspectMode_t value)
 {
     if (value != m_aspectmode)
     {
         m_aspectmode = value;
-        UpdateAspectRatio();
         m_dirty = true;
     }
 }
@@ -562,42 +535,6 @@ void CSettings::SetFullScreenRes(uint32_t value)
     }
 }
 #endif
-
-void CSettings::UpdateAspectRatio(void)
-{
-    switch (m_aspectmode)
-    {
-    case Aspect_4x3:
-        if (m_scr_res_x >= m_scr_res_y * 4.0f / 3.0f) {
-            m_res_y = m_scr_res_y;
-            m_res_x = (uint32_t)(m_res_y * 4.0f / 3.0f);
-        }
-        else
-        {
-            m_res_x = m_scr_res_x;
-            m_res_y = (uint32_t)(m_res_x / 4.0f * 3.0f);
-        }
-        break;
-    case Aspect_16x9:
-        if (m_scr_res_x >= m_scr_res_y * 16.0f / 9.0f)
-        {
-            m_res_y = m_scr_res_y;
-            m_res_x = (uint32_t)(m_res_y * 16.0f / 9.0f);
-        }
-        else
-        {
-            m_res_x = m_scr_res_x;
-            m_res_y = (uint32_t)(m_res_x / 16.0f * 9.0f);
-        }
-        break;
-    default: //stretch or original
-        m_res_x = m_scr_res_x;
-        m_res_y = m_scr_res_y;
-    }
-
-    m_res_x += (uint32_t)(m_scr_res_x - m_res_x) / 2.0f;
-    m_res_y += (uint32_t)(m_scr_res_y - m_res_y) / 2.0f;
-}
 
 void CSettings::ReadSettings()
 {
