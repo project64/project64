@@ -100,6 +100,25 @@ CSettings::CSettings() :
     ReadSettings();
 }
 
+CSettings::~CSettings()
+{
+    SettingsUnregisterChange(false, Set_Resolution, this, stSettingsChanged);
+    SettingsUnregisterChange(false, Set_aspect, this, stSettingsChanged);
+    SettingsUnregisterChange(false, Set_Logging_MD5, this, stLogLevelChanged);
+    SettingsUnregisterChange(false, Set_Logging_Thread, this, stLogLevelChanged);
+    SettingsUnregisterChange(false, Set_Logging_Path, this, stLogLevelChanged);
+    SettingsUnregisterChange(false, Set_Logging_Settings, this, stLogLevelChanged);
+    SettingsUnregisterChange(false, Set_Logging_Unknown, this, stLogLevelChanged);
+    SettingsUnregisterChange(false, Set_Logging_Glide64, this, stLogLevelChanged);
+    SettingsUnregisterChange(false, Set_Logging_Interface, this, stLogLevelChanged);
+    SettingsUnregisterChange(false, Set_Logging_Resolution, this, stLogLevelChanged);
+    SettingsUnregisterChange(false, Set_Logging_Glitch, this, stLogLevelChanged);
+    SettingsUnregisterChange(false, Set_Logging_VideoRDP, this, stLogLevelChanged);
+    SettingsUnregisterChange(false, Set_Logging_TLUT, this, stLogLevelChanged);
+    SettingsUnregisterChange(false, Set_Logging_OGLWrapper, this, stLogLevelChanged);
+    SettingsUnregisterChange(false, Set_Logging_RDPCommands, this, stLogLevelChanged);
+}
+
 void CSettings::RegisterSettings(void)
 {
     SetModuleName("default");
@@ -220,6 +239,7 @@ void CSettings::RegisterSettings(void)
     game_setting_default(Set_fb_render, "fb_render", Set_fb_render_default);
 
     SettingsRegisterChange(false, Set_Resolution, this, stSettingsChanged);
+    SettingsRegisterChange(false, Set_aspect, this, stSettingsChanged);
 
     LogLevelChanged();
     SettingsRegisterChange(false, Set_Logging_MD5, this, stLogLevelChanged);
@@ -547,7 +567,8 @@ void CSettings::ReadSettings()
     m_advanced_options = m_Set_basic_mode ? GetSystemSetting(m_Set_basic_mode) == 0 : false;
     m_debugger_enabled = m_advanced_options && m_Set_debugger ? GetSystemSetting(m_Set_debugger) == 1 : false;
     m_texenh_options = GetSetting(Set_texenh_options) != 0;
-
+    m_aspectmode = (AspectMode_t)GetSetting(Set_aspect);
+    
     m_wrpVRAM = GetSetting(Set_wrpVRAM);
     m_wrpFBO = GetSetting(Set_wrpFBO) != 0;
     m_wrpAnisotropic = GetSetting(Set_wrpAnisotropic) != 0;
@@ -805,6 +826,7 @@ void CSettings::ReadGameSettings(const char * name)
     SetAspectmode((AspectMode_t)GetSetting(g_romopen ? Set_aspect : Set_aspect_default));
     SetLODmode((PixelLevelOfDetail_t)GetSetting(g_romopen ? Set_lodmode : Set_lodmode_default));
     m_flame_corona = hacks(hack_Zelda) && !fb_depth_render_enabled();
+    m_aspectmode = (AspectMode_t)GetSetting(g_romopen ? Set_aspect : Set_aspect_default);
 }
 
 void CSettings::WriteSettings(void)
@@ -891,6 +913,7 @@ void CSettings::game_setting_default(short setting_ID, const char * name, short 
 void CSettings::SettingsChanged(void)
 {
     m_ScreenRes = GetSetting(Set_Resolution);
+    m_aspectmode = (AspectMode_t)GetSetting(Set_aspect);
 }
 
 void CSettings::LogLevelChanged(void)

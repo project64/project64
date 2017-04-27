@@ -15,6 +15,7 @@ class CSettings
 {
 public:
     CSettings();
+    ~CSettings();
 
     //Frame buffer emulation options
     enum fb_bits_t
