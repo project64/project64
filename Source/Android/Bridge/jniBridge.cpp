@@ -231,6 +231,7 @@ void GameCpuRunning(void * /*NotUsed*/)
     WriteTrace(TraceUserInterface, TraceDebug, "Start");
     bool Running = g_Settings->LoadBool(GameRunning_CPU_Running);
     WriteTrace(TraceUserInterface, TraceDebug, Running ? "Game Started" : "Game Stopped");
+    JNIEnv *env = Android_JNI_GetEnv();
     if (Running)
     {
         stdstr FileLoc = g_Settings->LoadStringVal(Game_File);
@@ -243,10 +244,25 @@ void GameCpuRunning(void * /*NotUsed*/)
         int RunCount = UISettingsLoadDword(Game_RunCount);
         WriteTrace(TraceUserInterface, TraceDebug, "Setting Run Count to %d", RunCount + 1);
         UISettingsSaveDword(Game_RunCount, RunCount + 1);
+        if (env != NULL)
+        {
+            if (g_JavaBridge)
+            {
+                WriteTrace(TraceUserInterface, TraceDebug, "Notify java emulation stopped");
+                g_JavaBridge->EmulationStarted();
+            }
+            else
+            {
+                WriteTrace(TraceUserInterface, TraceError, "No Java bridge");
+            }
+        }
+        else
+        {
+            WriteTrace(TraceUserInterface, TraceError, "Failed to get java environment");
+        }
     }
     else
     {
-        JNIEnv *env = Android_JNI_GetEnv();
         if (env != NULL)
         {
             if (g_JavaBridge)

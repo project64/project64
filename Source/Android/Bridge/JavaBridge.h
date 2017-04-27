@@ -9,7 +9,7 @@ class JavaBridge :
     public RenderWindow
 {
 public:
-    JavaBridge (JavaVM* vm);
+    JavaBridge(JavaVM* vm);
 
     //Render window functions
     void GfxThreadInit();
@@ -18,7 +18,7 @@ public:
 
     //Rom List
     void RomListReset(void);
-    void RomListAddItem(const char * FullFileName, const char * FileName, const char * GoodName, uint32_t TextColor );
+    void RomListAddItem(const char * FullFileName, const char * FileName, const char * GoodName, uint32_t TextColor);
     void RomListLoaded(void);
     void RecentRomsUpdated(void);
 
@@ -26,6 +26,7 @@ public:
     void DisplayError(const char * Message);
     void DisplayMessage(const char * Message, int DisplayTime);
     void DisplayMessage2(const char * Message);
+    void EmulationStarted(void);
     void EmulationStopped(void);
 
 private:
