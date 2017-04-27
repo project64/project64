@@ -14,6 +14,7 @@
 
 #ifndef __TXUTIL_H__
 #define __TXUTIL_H__
+#include <Common/stdtypes.h>
 
 /* maximum number of CPU cores allowed */
 #define MAX_NUMCORE 8

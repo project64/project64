@@ -17,8 +17,9 @@
 #include <zlib/zlib.h>
 #include <malloc.h>
 #include <stdlib.h>
-#include <Common/stdtypes.h>
+#ifdef _WIN32
 #include <windows.h>
+#endif
 
 /*
  * External libraries
