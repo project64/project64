@@ -221,7 +221,7 @@ grSstOrigin(GrOriginLocation_t  origin)
 FX_ENTRY void FX_CALL
 grClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
 {
-    WriteTrace(TraceGlitch, TraceDebug, "minx = %d, miny: %d maxy: %d", minx, miny, maxy);
+    WriteTrace(TraceGlitch, TraceDebug, "minx = %d, miny: %d maxx: %d maxy: %d", minx, miny, maxx, maxy);
 
     if (use_fbo && render_to_texture) {
         if (int(minx) < 0) minx = 0;

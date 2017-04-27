@@ -350,7 +350,8 @@ grClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
 {
     WriteTrace(TraceGlitch, TraceDebug, "minx = %d, miny: %d maxy: %d", minx, miny, maxy);
 
-    if (use_fbo && render_to_texture) {
+    if (use_fbo && render_to_texture) 
+    {
         if (int(minx) < 0) minx = 0;
         if (int(miny) < 0) miny = 0;
         if (maxx < minx) maxx = minx;
@@ -1634,7 +1635,8 @@ grRenderBuffer(GrBuffer_t buffer)
             g_height = savedHeight;
             widtho = savedWidtho;
             heighto = savedHeighto;
-            if (use_fbo) {
+            if (use_fbo)
+            {
                 glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
                 glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
             }
