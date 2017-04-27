@@ -64,8 +64,8 @@ public class AndroidDevice
     public static final boolean IS_ACTION_BAR_AVAILABLE = AndroidDevice.IS_HONEYCOMB && !AndroidDevice.IS_OUYA_HARDWARE;
 
     final static boolean isTv;
-    public final static int nativeWidth, nativeWidthOriginal;
-    public final static int nativeHeight, nativeHeightOriginal;
+    public final static int nativeWidth;
+    public final static int nativeHeight;
 
     public static boolean MapVolumeKeys = false;
 
@@ -91,11 +91,6 @@ public class AndroidDevice
         }
         nativeWidth = _nativeWidth;
         nativeHeight = _nativeHeight;
-
-        final float aspect = 0.75f;
-        final boolean isLetterboxed = ( (float) nativeHeight / (float) nativeWidth ) > aspect;
-        nativeWidthOriginal = isLetterboxed ? nativeWidth : Math.round( nativeHeight / aspect );
-        nativeHeightOriginal = isLetterboxed ? Math.round( nativeWidth * aspect ) : nativeHeight;
     }
 
     public static boolean isAndroidTv()

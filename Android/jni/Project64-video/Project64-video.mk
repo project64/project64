@@ -5,7 +5,7 @@ include $(CLEAR_VARS)
 LOCAL_PATH := $(JNI_LOCAL_PATH)
 SRCDIR := ./
 
-LOCAL_MODULE := Project64-gfx-Project64
+LOCAL_MODULE := Project64-gfx
 LOCAL_STATIC_LIBRARIES := common                \
                           zlib                  \
                           Settings              \

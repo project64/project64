@@ -21,9 +21,10 @@ public class NativeVideo
 {
     static
     {
-        System.loadLibrary( "Project64-gfx-glide64" );
+        System.loadLibrary( "Project64-gfx" );
     }
     
+    public static native void UpdateScreenRes(int ScreenWidth, int ScreenHeight);
     public static native int getResolutionCount();
     public static native String getResolutionName(int Index);
     public static native int GetScreenResWidth(int Index);
