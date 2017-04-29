@@ -107,6 +107,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         .putString("Debugger_TraceAudioInitShutdown",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInitShutdown.getValue())))
         .putString("Debugger_TraceAudioAudioInterface",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInterface.getValue())))
         .putString("video_screenResolution",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Resolution.getValue())))
+        .putString("video_AspectRatio",String.valueOf(NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_aspect.getValue())))
         .putInt("MaxRomsRemembered",NativeExports.UISettingsLoadDword(UISettingID.File_RecentGameFileCount.getValue()))
         .apply();
 
@@ -204,6 +205,12 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         else if (key.equals("Debugger_TraceAudioInitShutdown")) { NativeExports.SettingsSaveDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInitShutdown.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
         else if (key.equals("Debugger_TraceAudioAudioInterface")) { NativeExports.SettingsSaveDword(SettingsID.FirstAudioSettings.getValue() + AudioSettingID.Logging_LogAudioInterface.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
         else if (key.equals("video_screenResolution")) { NativeExports.SettingsSaveDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Resolution.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("video_AspectRatio"))
+        {
+            NativeExports.SettingsSaveDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_aspect.getValue(), Integer.valueOf(sharedPreferences.getString(key, "0")));
+            getSupportFragmentManager().popBackStackImmediate();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_placeholder, new VideoFragment()).addToBackStack("main").commit();
+        }
         else if (key.equals("MaxRomsRemembered")) { NativeExports.UISettingsSaveDword(UISettingID.File_RecentGameFileCount.getValue(), sharedPreferences.getInt(key, 10)); }
     }
 }

@@ -135,6 +135,10 @@ public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
             {
                 loadFragment(new LoggingProject64Core());
             }
+            else if (preference.getKey().equals("logging_video"))
+            {
+                loadFragment(new LoggingVideo());
+            }
             else if (preference.getKey().equals("logging_audio"))
             {
                 loadFragment(new LoggingAudio());

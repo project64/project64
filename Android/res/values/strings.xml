@@ -125,6 +125,12 @@
     <string name="LimitFPS_title">Limit FPS</string>
     <string name="screenResolution_title">Rendered Resolution</string>
     <string name="screenResolution_summary">should show value???</string>
+    <string name="AspectRatio_title">Aspect ratio</string>
+    <string name="AspectRatio_summary">Select the display aspect ratio</string>
+    <string name="AspectRatio_4x3">4:3 (default)</string>
+    <string name="AspectRatio_16x9">Force 16:9</string>
+    <string name="AspectRatio_Stretch">Stretch</string>
+    <string name="AspectRatio_Original">Original</string>
     <string name="DisplaySpeed_title">Display Speed</string>
     <string name="DisplaySpeed_summary">Show the speed of the emulation</string>
     <string name="DisplaySpeedDisplay">Display Speed Display</string>
@@ -157,7 +163,18 @@
         <item>2</item>
         <item>0</item>
     </string-array>
-
+    <string-array name="AspectRatio_list">
+        <item>@string/AspectRatio_4x3</item>
+        <item>@string/AspectRatio_16x9</item>
+        <item>@string/AspectRatio_Stretch</item>
+        <item>@string/AspectRatio_Original</item>
+    </string-array>
+    <string-array name="AspectRatio_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
     <string-array name="cpu_core_list">
         <item>@string/Interpreter</item>
         <item>@string/Recompiler</item>

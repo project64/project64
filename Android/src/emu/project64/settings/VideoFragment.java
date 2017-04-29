@@ -10,18 +10,11 @@
 ****************************************************************************/
 package emu.project64.settings;
 
-import android.content.Context;
-import android.graphics.Point;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.WindowManager;
 import emu.project64.AndroidDevice;
 import emu.project64.R;
-import emu.project64.jni.LanguageStringID;
 import emu.project64.jni.NativeVideo;
-import emu.project64.util.Strings;
 
 public class VideoFragment extends BaseSettingsFragment
 {
@@ -42,6 +35,9 @@ public class VideoFragment extends BaseSettingsFragment
     {
         super.onCreatePreferences(bundle, s);
 
+        Log.d("VideoFragment", "onCreatePreferences");
+        NativeVideo.UpdateScreenRes(AndroidDevice.nativeWidth, AndroidDevice.nativeHeight);
+        
         int ResCount = NativeVideo.getResolutionCount();
         CharSequence[] ResEntries = new CharSequence[ResCount];
         String[] ResEntryValues = new String[ResCount];
@@ -52,11 +48,6 @@ public class VideoFragment extends BaseSettingsFragment
             ResEntries[i] = NativeVideo.getResolutionName(i);
             ResEntryValues[i] = Integer.toString(i);
             ResEntrySubtitles[i] = "";
-            if (ResEntries[i].equals("#3200#"))
-            {
-                ResEntries[i] = Strings.GetString(LanguageStringID.ANDROID_VIDEO_NATIVE_RES);
-                ResEntrySubtitles[i] = AndroidDevice.nativeWidth+"x"+AndroidDevice.nativeHeight;
-            }
         }
 
         final TwoLinesListPreference listPreference = (TwoLinesListPreference) findPreference("video_screenResolution");

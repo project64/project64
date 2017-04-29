@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:tag="unique_tag">
 
     <emu.project64.settings.TwoLinesListPreference
         android:defaultValue="0"
@@ -7,6 +7,12 @@
         android:title="@string/screenResolution_title"
         android:summary="@string/screenResolution_summary"
         android:dialogTitle="@string/screenResolution_title" />
+    <ListPreference
+        android:entries="@array/AspectRatio_list"
+        android:entryValues="@array/AspectRatio_values"
+        android:key="video_AspectRatio"
+        android:title="@string/AspectRatio_title"
+        android:summary="@string/AspectRatio_summary"  />
     <CheckBoxPreference
         android:key="Debugger_DisplaySpeed"
         android:summary="@string/DisplaySpeed_summary"
