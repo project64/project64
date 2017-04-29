@@ -98,7 +98,7 @@ CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem) 
             m_Recomp = new CRecompiler(m_MMU_VM, m_Reg, m_EndEmulation);
         }
     }
-    
+
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 

@@ -37,7 +37,7 @@
 CSettings * g_Settings = NULL;
 
 CSettings::CSettings() :
-m_NextAutoSettingId(0x200000)
+    m_NextAutoSettingId(0x200000)
 {
 }
 

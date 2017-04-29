@@ -1,5 +1,9 @@
 Android Release 9:
 - Add ability to change screen res
+- Fix multiple pause/resume
+- minor bug fixes
 
 Windows 2.4
 - Build with v2015
+- fixed fpu issue - Indiana Jones (#76) 
+- Fix bug in key assignment (#1309)
