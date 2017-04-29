@@ -149,12 +149,10 @@ public class GameLifecycleHandler implements View.OnKeyListener, SurfaceHolder.C
         mSurface = (GameSurface) mActivity.findViewById(R.id.gameSurface);
         mOverlay = (GameOverlay) mActivity.findViewById(R.id.gameOverlay);
 
-        float widthRatio = (float)AndroidDevice.nativeWidth/(float)AndroidDevice.nativeWidthOriginal;
-        float heightRatio = (float)AndroidDevice.nativeHeight/(float)AndroidDevice.nativeHeightOriginal;
+        float widthRatio = (float)AndroidDevice.nativeWidth/(float)AndroidDevice.nativeHeight;
         int ScreenRes = NativeExports.SettingsLoadDword(SettingsID.FirstGfxSettings.getValue() + VideoSettingID.Set_Resolution.getValue());
-
-        int videoRenderWidth = Math.round(NativeVideo.GetScreenResWidth(ScreenRes) * (ScreenRes == 0 ? 1 : widthRatio));
-        int videoRenderHeight = Math.round(NativeVideo.GetScreenResHeight(ScreenRes) * (ScreenRes == 0 ? 1 : heightRatio));
+        int videoRenderWidth = Math.round(NativeVideo.GetScreenResHeight(ScreenRes) * widthRatio);
+        int videoRenderHeight = Math.round(NativeVideo.GetScreenResHeight(ScreenRes));
 
         // Update screen res
         mSurface.getHolder().setFixedSize(videoRenderWidth, videoRenderHeight);
