@@ -43,6 +43,9 @@
           android:title="@string/project64core"
           android:key="logging_core" />
       <Preference
+          android:title="@string/VideoPlugin"
+          android:key="logging_video" />
+      <Preference
           android:title="@string/AudioPlugin"
           android:key="logging_audio" />
     </PreferenceCategory>   
