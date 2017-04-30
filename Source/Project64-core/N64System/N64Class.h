@@ -153,7 +153,6 @@ private:
     int32_t         m_NextTimer;
     CSystemTimer    m_SystemTimer;
     bool            m_bCleanFrameBox;
-    bool            m_bInitialized;
     bool            m_RspBroke;
     bool            m_DMAUsed;
     uint32_t        m_Buttons[4];

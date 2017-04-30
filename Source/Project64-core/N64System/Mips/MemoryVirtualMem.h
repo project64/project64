@@ -59,7 +59,7 @@ public:
     static void ReserveMemory();
     static void FreeReservedMemory();
 
-    bool   Initialize();
+    bool   Initialize(bool SyncSystem);
     void   Reset(bool EraseMemory);
 
     uint8_t * Rdram();

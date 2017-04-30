@@ -131,19 +131,19 @@ void CMipsMemoryVM::FreeReservedMemory()
     }
 }
 
-bool CMipsMemoryVM::Initialize()
+bool CMipsMemoryVM::Initialize(bool SyncSystem)
 {
     if (m_RDRAM != NULL)
     {
         return true;
     }
 
-    if (m_Reserve1)
+    if (!SyncSystem && m_RDRAM == NULL && m_Reserve1 != NULL)
     {
         m_RDRAM = m_Reserve1;
         m_Reserve1 = NULL;
     }
-    if (m_RDRAM == NULL && m_Reserve2)
+    if (SyncSystem && m_RDRAM == NULL && m_Reserve2 != NULL)
     {
         m_RDRAM = m_Reserve2;
         m_Reserve2 = NULL;
