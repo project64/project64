@@ -148,6 +148,7 @@ enum SettingID
     Game_CRC_Recalc,
     Game_Transferpak_ROM,
     Game_Transferpak_Sav,
+    Game_LoadSaveAtStart,
 
     // General Game running info
     GameRunning_LoadingInProgress,

@@ -929,8 +929,8 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         if (ResumeGame)
         {
             NativeExports.SettingsSaveDword(SettingsID.Game_CurrentSaveState.getValue(), 0);
-            NativeExports.ExternalEvent(SystemEvent.SysEvent_LoadMachineState.getValue());
         }
+        NativeExports.SettingsSaveBool(SettingsID.Game_LoadSaveAtStart.getValue(), ResumeGame);
         // Launch the game activity
         boolean isXperiaPlay = false;
 
