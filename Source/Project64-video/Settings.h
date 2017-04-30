@@ -265,6 +265,8 @@ public:
 
     inline bool hacks(hacks_t hack) const { return (m_hacks & hack) == hack; } //Special game hacks
 
+    inline bool dirty(void) { return m_dirty; }
+
     //wrapper settings
 #ifndef ANDROID
     inline uint32_t FullScreenRes(void) const { return m_FullScreenRes; }

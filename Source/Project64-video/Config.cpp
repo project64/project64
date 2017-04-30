@@ -308,7 +308,6 @@ public:
     {
         char spinVRAM[100];
         m_spinVRAM.GetWindowText(spinVRAM, sizeof(spinVRAM));
-        CSettings oldsettings = *g_settings;
         g_settings->SetScreenRes(m_WindowRes.GetCurSel());
         g_settings->SetVsync(m_cbxVSync.GetCheck() == BST_CHECKED);
         g_settings->SetTexenhOptions(m_cbxTextureSettings.GetCheck() == BST_CHECKED);
@@ -317,7 +316,7 @@ public:
         g_settings->SetWrpVRAM(m_cbxVRAM.GetCheck() == BST_CHECKED ? 0 : atoi(spinVRAM));
         g_settings->SetWrpFBO(m_cbxFBO.GetCheck() == BST_CHECKED);
 
-        if (memcmp(&oldsettings, g_settings, sizeof(oldsettings))) //check that settings were changed
+        if (g_settings->dirty())
         {
             g_settings->WriteSettings();
         }
@@ -475,8 +474,6 @@ public:
 
     bool OnApply()
     {
-        CSettings oldsettings = *g_settings;
-
         g_settings->SetFiltering((CSettings::Filtering_t)m_cmbFiltering.GetItemData(m_cmbFiltering.GetCurSel()));
         g_settings->SetAspectmode((CSettings::AspectMode_t)m_cmbAspect.GetItemData(m_cmbAspect.GetCurSel()));
         g_settings->SetSwapMode((CSettings::SwapMode_t)m_cmbBufferSwap.GetItemData(m_cmbBufferSwap.GetCurSel()));
@@ -512,7 +509,7 @@ public:
         }
 
         g_settings->UpdateFrameBufferBits(fb_add_bits, fb_remove_bits);
-        if (memcmp(&oldsettings, g_settings, sizeof(oldsettings))) //check that settings were changed
+        if (g_settings->dirty())
         {
             g_settings->WriteSettings();
         }
@@ -583,7 +580,7 @@ public:
             CComboBox & cmb;
             uint16_t SettingId;
         } TraceCMB[] =
-        { 
+        {
             { m_cmbTraceSettings, Set_Logging_Settings },
             { m_cmbTraceUnknown, Set_Logging_Unknown },
             { m_cmbTraceGlide64, Set_Logging_Glide64 },
@@ -777,7 +774,6 @@ public:
         char texcache[100];
         m_textTexCache.GetWindowText(texcache, sizeof(texcache));
 
-        CSettings oldsettings = *g_settings;
         g_settings->SetGhqFltr((CSettings::TextureFilter_t)m_cmbEnhFilter.GetItemData(m_cmbEnhFilter.GetCurSel()));
         g_settings->SetGhqEnht((CSettings::TextureEnhancement_t)m_cmbEnhEnhancement.GetItemData(m_cmbEnhEnhancement.GetCurSel()));
         g_settings->SetGhqCacheSize(atoi(texcache));
@@ -794,7 +790,7 @@ public:
         g_settings->SetGhqHirsLetTexartistsFly(m_cbxHrsLetFly.GetCheck() == BST_CHECKED);
         g_settings->SetGhqCmpr((CSettings::TextureCompression_t)m_cmbTextureCompression.GetItemData(m_cmbTextureCompression.GetCurSel()));
         g_settings->SetGhqCacheSave(m_cbxSaveTexCache.GetCheck() == BST_CHECKED);
-        if (memcmp(&oldsettings, g_settings, sizeof(oldsettings))) //check that settings were changed
+        if (g_settings->dirty())
         {
             g_settings->WriteSettings();
         }
