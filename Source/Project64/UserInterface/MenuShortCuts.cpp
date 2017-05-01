@@ -237,6 +237,13 @@ bool CMenuShortCutKey::Active(RUNNING_STATE RunningState) const
         }
         break;
     case CMenuShortCutKey::RUNNING_STATE_FULLSCREEN:
+        if (m_AccessMode == CMenuShortCutKey::ACCESS_GAME_RUNNING_FULLSCREEN ||
+            m_AccessMode == CMenuShortCutKey::ACCESS_GAME_RUNNING ||
+            m_AccessMode == CMenuShortCutKey::ACCESS_ANYTIME)
+        {
+            return true;
+        }
+        break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
