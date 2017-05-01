@@ -7,6 +7,7 @@ FLAGS_x86="\
  -I$src/.. \
  -S \
  -fPIC \
+ -D_DEBUG \
  -masm=intel \
  -march=native \
  -Os"
