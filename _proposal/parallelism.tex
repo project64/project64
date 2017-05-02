@@ -1,0 +1,27 @@
+\chapter*{Optimization Plan}
+
+\section{Primary Sequential Constraint -- Video Game Time-steps}
+There is a serial bottleneck in that our game AI works in a world where each scene depends on the prior.
+This is kin to a serial physics simulation, and is an inherit limitation to building a video game AI.
+To get more parallelization at this level, we could instead perform multiple simulations in parallel (although this is out of the scope of this project).
+
+\section{Sequential Constraint -- Gathering State}
+Gathering state is the action of getting the state from the current memory space of the video game.
+This will be quite limited as each state depends on the video game.
+There is a direct per-frame dependency on the video game.
+Additionally, the parallelization of reads is limited by the underlying system's bandwidth/latency.
+
+\section{Parallel -- Artificial Intelligence}
+Determining the next action for Kirby to perform is the main task in this work.
+This process will include a deep neural network (4+ layers where hidden layers containing ~128 neurons).
+Neural networks using a forward feed approach when implemented following a basic design have a straightforward path to parallelization. 
+Using a pipelining pattern between network layers, and a map pattern (with a parameterized elemental function) within each layer, the parallel execution time is the max execution of all the neurons in the network.
+A serial implementation would have execution time of roughly the sum of execution of all neurons in the network.
+Assume our network will have roughly 300+ neurons, this has potential for a linear speedup of 300 times.
+
+\ssbFigure{ANN.png}
+
+Using the pipelined implementation will result in multiple frames of delay from the state gathering to the response action.
+This will manifest as input lag for our AI engine. 
+
+We will initially look at an OpenMP parallelization solution which will use more heavy weight CPU threads to leverage parallelization. 

@@ -1,0 +1,28 @@
+\chapter*{Highlevel Architecture}
+
+Development will be performed on the Windows platform using Visual Studio 2015.
+We will base our project off of the open source Project64 emulator.
+Modifications will be made to the emulator for the process of state gathering and enacting actions.
+An independent AI library (SSBAI) will be constructed to perform the AI calculations and ultimately decide what action Kirby will take.
+
+\url{https://github.com/terminalstderr/SuperSmashBrosAI}
+
+Below is a serial psuedocode perspective of all of the tasks that must be completed per frame.
+This is in essence the critical path of our implementation.
+\begin{verbatim}
+Emulator.processInputs(ControllerInputs);
+Emulator.updateGameState();
+State = StateGatherer(Emulator.memory);
+State.preprocess();
+NextAction = SsbaiEngine.predict(State);
+ControllerInputs = ActionPusher(NextAction);
+\end{verbatim}
+
+Below is the overlying software architecture which indicates the data flow.
+
+\ssbFigure{SSBAI_dll.png}
+
+We explode this data flow to reveal critical tasks that are completed per frame.
+
+\ssbFigure{SSBAI_tasks.png}
+
