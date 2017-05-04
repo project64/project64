@@ -58,8 +58,6 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         .putString("touchscreenLayout",NativeExports.UISettingsLoadString(UISettingID.TouchScreen_Layout.getValue()))
         .putString("Patreon_email",NativeExports.UISettingsLoadString(UISettingID.SupportWindow_PatreonEmail.getValue()))
         .putBoolean("audio_Enabled",NativeExports.SettingsLoadBool(SettingsID.Plugin_EnableAudio.getValue()))
-        .putBoolean("PreAllocSyncMem",NativeExports.SettingsLoadBool(SettingsID.Setting_PreAllocSyncMem.getValue()))
-        .putBoolean("ReducedSyncMem",NativeExports.SettingsLoadBool(SettingsID.Setting_ReducedSyncMem.getValue()))
         .putBoolean("UserInterface_BasicMode",NativeExports.SettingsLoadBool(SettingsID.UserInterface_BasicMode.getValue()))
         .putBoolean("Debugger_Enabled",NativeExports.SettingsLoadBool(SettingsID.Debugger_Enabled.getValue()))
         .putBoolean("Debugger_RecordRecompilerAsm",NativeExports.SettingsLoadBool(SettingsID.Debugger_RecordRecompilerAsm.getValue()))
@@ -158,8 +156,6 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         else if (key.equals("touchscreenLayout")) { NativeExports.UISettingsSaveString(UISettingID.TouchScreen_Layout.getValue(), sharedPreferences.getString(key, "Analog")); }
         else if (key.equals("Patreon_email")) { NativeExports.UISettingsSaveString(UISettingID.SupportWindow_PatreonEmail.getValue(), sharedPreferences.getString(key, "")); }
         else if (key.equals("audio_Enabled")) { NativeExports.SettingsSaveBool(SettingsID.Plugin_EnableAudio.getValue(), sharedPreferences.getBoolean(key,false)); }
-        else if (key.equals("PreAllocSyncMem")) { NativeExports.SettingsSaveBool(SettingsID.Setting_PreAllocSyncMem.getValue(), sharedPreferences.getBoolean(key,false)); }
-        else if (key.equals("ReducedSyncMem")) { NativeExports.SettingsSaveBool(SettingsID.Setting_ReducedSyncMem.getValue(), sharedPreferences.getBoolean(key,false)); }
         else if (key.equals("Debugger_Enabled")) { NativeExports.SettingsSaveBool(SettingsID.Debugger_Enabled.getValue(), sharedPreferences.getBoolean(key,false)); }
         else if (key.equals("Debugger_RecordRecompilerAsm")) { NativeExports.SettingsSaveBool(SettingsID.Debugger_RecordRecompilerAsm.getValue(), sharedPreferences.getBoolean(key,false)); }
         else if (key.equals("Debugger_CpuUsage")) { NativeExports.SettingsSaveBool(SettingsID.UserInterface_ShowCPUPer.getValue(), sharedPreferences.getBoolean(key,false)); }

@@ -26,14 +26,6 @@
         android:key="Debugger_RecordExecutionTimes"
         android:summary="@string/RecordExecutionTimes_summary"
         android:title="@string/RecordExecutionTimes_title" />
-    <CheckBoxPreference
-        android:key="PreAllocSyncMem"
-        android:summary="@string/PreAllocSyncMem_summary"
-        android:title="@string/PreAllocSyncMem_title" />
-  <CheckBoxPreference
-      android:key="ReducedSyncMem"
-      android:summary="@string/ReducedSyncMem_summary"
-      android:title="@string/ReducedSyncMem_title" />
   <CheckBoxPreference
       android:key="Debugger_DebugLanguage"
       android:summary="@string/DebugLanguage_summary"
