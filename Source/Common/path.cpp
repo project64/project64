@@ -7,7 +7,10 @@
 
 #include <Shlobj.h>
 #include <dos.h>
-
+#pragma warning(push)
+#pragma warning(disable : 4996) // warning C4091: 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared
+#include <CommDlg.h>
+#pragma warning(pop)
 #else
 
 #include <sys/stat.h>
@@ -616,7 +619,7 @@ void CPath::SetComponents(const char * lpszDirectory, const char * lpszName, con
     if (lpszDirectory != NULL && lpszDirectory[0] != '\0')
     {
         if (lpszDirectory[0] != DIRECTORY_DELIMITER)  { buff_fullname[0] = DIRECTORY_DELIMITER; }
-        strncat(buff_fullname,lpszDirectory,sizeof(buff_fullname));
+        strncat(buff_fullname,lpszDirectory,sizeof(buff_fullname) - 1);
         std::string::size_type nLength = strlen(buff_fullname);
         if (buff_fullname[nLength - 1] != DIRECTORY_DELIMITER &&  nLength < sizeof(buff_fullname))
         {
@@ -625,15 +628,15 @@ void CPath::SetComponents(const char * lpszDirectory, const char * lpszName, con
     }
     if (lpszName != NULL)
     {
-        strncat(buff_fullname,lpszName,sizeof(buff_fullname));
+        strncat(buff_fullname,lpszName,sizeof(buff_fullname) - 1);
     }
     if (lpszExtension != NULL && lpszExtension[0] != '\0')
     {
         if (lpszExtension[0] != '.')
         {
-            strncat(buff_fullname,".",sizeof(buff_fullname));
+            strncat(buff_fullname,".",sizeof(buff_fullname)-1);
         }
-        strncat(buff_fullname,lpszExtension,sizeof(buff_fullname));
+        strncat(buff_fullname,lpszExtension,sizeof(buff_fullname)-1);
     }
     buff_fullname[sizeof(buff_fullname) - 1] = 0; //Make sure it is null terminated
     m_strPath.erase();
@@ -1037,6 +1040,39 @@ bool CPath::Exists() const
 #endif
 }
 
+#ifdef _WIN32
+bool CPath::SelectFile(void * hwndOwner, const char * InitialDir, const char * FileFilter, bool FileMustExist)
+{
+    CPath CurrentDir(CURRENT_DIRECTORY);
+
+    OPENFILENAME openfilename;
+    char FileName[MAX_PATH];
+    memset(&FileName, 0, sizeof(FileName));
+    memset(&openfilename, 0, sizeof(openfilename));
+
+    openfilename.lStructSize = sizeof(openfilename);
+    openfilename.hwndOwner = (HWND)hwndOwner;
+    openfilename.lpstrFilter = FileFilter;
+    openfilename.lpstrFile = FileName;
+    openfilename.lpstrInitialDir = InitialDir;
+    openfilename.nMaxFile = MAX_PATH;
+    openfilename.Flags = OFN_HIDEREADONLY | (FileMustExist ? OFN_FILEMUSTEXIST : 0);
+
+    bool res = GetOpenFileName(&openfilename);
+    if (CPath(CURRENT_DIRECTORY) != CurrentDir)
+    {
+        CurrentDir.ChangeDirectory();
+    }
+    if (!res)
+    {
+        return false;
+    }
+    m_strPath = FileName;
+    cleanPathString(m_strPath);
+    return true;
+}
+#endif
+
 //-------------------------------------------------------------
 // Post    : Return TRUE on success
 // Task    : Delete file
@@ -1369,7 +1405,7 @@ bool CPath::FindNext()
     }
 #else
     dirent* pEntry;
-    while (pEntry = readdir((DIR*)m_OpenedDir))
+    while ((pEntry = readdir((DIR*)m_OpenedDir)))
     {
         uint32_t dwFileAttributes = pEntry->d_type == DT_DIR ? FIND_ATTRIBUTE_SUBDIR : FIND_ATTRIBUTE_FILES;
 

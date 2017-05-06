@@ -13,11 +13,9 @@
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <Project64-core/N64System/Recompiler/RecompilerOps.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmOps.h>
-#include <Project64-core/Settings/DebugSettings.h>
 
 class CArmRecompilerOps :
     public CRecompilerOps,
-    protected CDebugSettings,
     private CArmOps,
     protected CSystemRegisters
 {
@@ -196,12 +194,15 @@ public:
     /************************** Other functions **************************/
     void UnknownOpcode  ();
 
+private:
     void EnterCodeBlock();
     void ExitCodeBlock();
     void CompileExitCode();
     void CompileCop1Test();
     void CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCounter);
+    void OutputRegisterState(const CRegInfo & SyncTo, const CRegInfo & CurrentSet) const;
     void SyncRegState(const CRegInfo & SyncTo);
+    bool SetupRegisterForLoop(CCodeBlock * BlockInfo, const CRegInfo & RegSet);
     CRegInfo & GetRegWorkingSet(void);
     void SetRegWorkingSet(const CRegInfo & RegInfo);
     bool InheritParentInfo();
@@ -217,15 +218,22 @@ public:
     void PreCompileOpcode(void);
     void PostCompileOpcode ( void );
     void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason);
-    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, CArmOps::ArmBranchCompare CompareType);
+    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo &ExitRegSet, CExitInfo::EXIT_REASON reason, CArmOps::ArmCompareType CompareType);
     static void UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles);
     void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false);
     void CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet);
     void CompileReadTLBMiss(ArmReg AddressReg, ArmReg LookUpReg);
+    void CompileWriteTLBMiss(ArmReg AddressReg, ArmReg LookUpReg);
 
+    /********* Helper Functions *********/
+    typedef CRegInfo::REG_STATE REG_STATE;
+
+    static inline REG_STATE GetMipsRegState(int32_t Reg) { return m_RegWorkingSet.GetMipsRegState(Reg); }
+    static inline uint64_t GetMipsReg(int32_t Reg) { return m_RegWorkingSet.GetMipsReg(Reg); }
     static inline uint32_t GetMipsRegLo(int32_t Reg) { return m_RegWorkingSet.GetMipsRegLo(Reg); }
     static inline int32_t GetMipsRegLo_S(int32_t Reg) { return m_RegWorkingSet.GetMipsRegLo_S(Reg); }
     static inline uint32_t GetMipsRegHi(int32_t Reg) { return m_RegWorkingSet.GetMipsRegHi(Reg); }
+    static inline int32_t GetMipsRegHi_S(int32_t Reg) { return m_RegWorkingSet.GetMipsRegHi_S(Reg); }
     static inline ArmReg GetMipsRegMapLo(int32_t Reg) { return m_RegWorkingSet.GetMipsRegMapLo(Reg); }
     static inline ArmReg GetMipsRegMapHi(int32_t Reg) { return m_RegWorkingSet.GetMipsRegMapHi(Reg); }
 
@@ -234,20 +242,31 @@ public:
     static inline bool IsMapped(int32_t Reg) { return m_RegWorkingSet.IsMapped(Reg); }
     static inline bool IsConst(int32_t Reg) { return m_RegWorkingSet.IsConst(Reg); }
     static inline bool IsSigned(int32_t Reg) { return m_RegWorkingSet.IsSigned(Reg); }
+    static inline bool IsUnsigned(int32_t Reg) { return m_RegWorkingSet.IsUnsigned(Reg); }
     static inline bool Is32Bit(int32_t Reg) { return m_RegWorkingSet.Is32Bit(Reg); }
     static inline bool Is64Bit(int32_t Reg) { return m_RegWorkingSet.Is64Bit(Reg); }
+    static inline bool Is32BitMapped(int32_t Reg) { return m_RegWorkingSet.Is32BitMapped(Reg); }
+    static inline bool Is64BitMapped(int32_t Reg) { return m_RegWorkingSet.Is64BitMapped(Reg); }
     static inline void Map_GPR_32bit(int32_t Reg, bool SignValue, int32_t MipsRegToLoad) { m_RegWorkingSet.Map_GPR_32bit(Reg, SignValue, MipsRegToLoad); }
     static inline void Map_GPR_64bit(int32_t Reg, int32_t MipsRegToLoad) { m_RegWorkingSet.Map_GPR_64bit(Reg, MipsRegToLoad); }
     static inline void UnMap_GPR(uint32_t Reg, bool WriteBackValue){ m_RegWorkingSet.UnMap_GPR(Reg, WriteBackValue); }
+    static inline void WriteBack_GPR(uint32_t Reg, bool Unmapping){ m_RegWorkingSet.WriteBack_GPR(Reg, Unmapping); }
     static inline ArmReg Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadHiWord) { return m_RegWorkingSet.Map_TempReg(Reg, MipsReg, LoadHiWord); }
-    static inline ArmReg Map_Variable(CArmRegInfo::VARIABLE_MAPPED variable) { return m_RegWorkingSet.Map_Variable(variable); }
+    static inline ArmReg Map_Variable(CArmRegInfo::VARIABLE_MAPPED variable, ArmReg Reg = Arm_Any) { return m_RegWorkingSet.Map_Variable(variable, Reg); }
 
     static inline void ResetRegProtection() { m_RegWorkingSet.ResetRegProtection(); }
     static inline void FixRoundModel(CRegInfo::FPU_ROUND RoundMethod) { m_RegWorkingSet.FixRoundModel(RoundMethod); }
 
     static inline void ProtectGPR(uint32_t Reg) { m_RegWorkingSet.ProtectGPR(Reg); }
+    static inline void UnProtectGPR(uint32_t Reg) { m_RegWorkingSet.UnProtectGPR(Reg); }
+    static inline bool UnMap_ArmReg(ArmReg Reg) { return m_RegWorkingSet.UnMap_ArmReg(Reg); }
 
-private:
+    void SW(bool bCheckLLbit);
+    void SW_Const(uint32_t Value, uint32_t VAddr);
+    void SW_Register(ArmReg Reg, uint32_t VAddr);
+    void LW(bool ResultSigned, bool bRecordLLBit);
+    void LB_KnownAddress(ArmReg Reg, uint32_t VAddr, bool SignExtend);
+    void LW_KnownAddress(ArmReg Reg, uint32_t VAddr);
     void CompileInterpterCall (void * Function, const char * FunctionName);
     void OverflowDelaySlot(bool TestTimer);
 
@@ -256,6 +275,8 @@ private:
     uint32_t m_CompilePC;
     OPCODE m_Opcode;
     CCodeSection * m_Section;
+
+    static uint32_t m_TempValue;
 };
 
 #endif

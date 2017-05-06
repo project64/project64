@@ -14,7 +14,6 @@
 #include <Common/Platform.h>
 
 static CLog * g_CPULogFile = NULL;
-bool g_bRecompilerLogging = false;
 
 void Recompiler_Log_Message(const char * strFormat, ...)
 {
@@ -45,7 +44,6 @@ void Start_Recompiler_Log (void)
         if (g_CPULogFile->Open(LogFileName))
         {
             g_CPULogFile->SetMaxFileSize(300 * CLog::MB);
-            g_bRecompilerLogging = true;
         }
         else
         {
@@ -57,10 +55,17 @@ void Start_Recompiler_Log (void)
 
 void Stop_Recompiler_Log (void)
 {
-    g_bRecompilerLogging = false;
     if (g_CPULogFile != NULL)
     {
         delete g_CPULogFile;
         g_CPULogFile = NULL;
+    }
+}
+
+void Flush_Recompiler_Log(void)
+{
+    if (g_CPULogFile != NULL)
+    {
+        g_CPULogFile->Flush();
     }
 }

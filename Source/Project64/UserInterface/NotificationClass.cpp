@@ -3,8 +3,8 @@
 
 CNotificationImp & Notify(void)
 {
-    static CNotificationImp g_Notify;
-    return g_Notify;
+    static CNotificationImp Notify;
+    return Notify;
 }
 
 CNotificationImp::CNotificationImp() :
@@ -56,8 +56,6 @@ void CNotificationImp::DisplayError(LanguageStringID StringID) const
 
 void CNotificationImp::DisplayError(const char * Message) const
 {
-    if (this == NULL) { return; }
-
     WriteTrace(TraceUserInterface, TraceError, Message);
     WindowMode();
 
@@ -119,8 +117,6 @@ void CNotificationImp::DisplayMessage2(const char * Message) const
 
 bool CNotificationImp::AskYesNoQuestion(const char * Question) const
 {
-    if (this == NULL) { return false; }
-
     WriteTrace(TraceUserInterface, TraceError, Question);
     WindowMode();
 

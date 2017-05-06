@@ -36,6 +36,9 @@
       <PrecompiledHeader />
       <WarningLevel>Level4</WarningLevel>
       <DisableSpecificWarnings>4100;4127;4131;4189;4244;4701;4703;4996</DisableSpecificWarnings>
+
+      <!-- Fix for later VC versions on XP: 45KB + 436 -->
+      <PreprocessorDefinitions>Z_BUFSIZE=46516;$(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -56,6 +59,8 @@
     <ClCompile Include="zutil.c" />
     <ClCompile Include="contrib\minizip\ioapi.c" />
     <ClCompile Include="contrib\minizip\iowin32.c" />
+    <ClCompile Include="contrib\minizip\miniunz.c" />
+    <ClCompile Include="contrib\minizip\minizip.c" />
     <ClCompile Include="contrib\minizip\mztools.c" />
     <ClCompile Include="contrib\minizip\unzip.c" />
     <ClCompile Include="contrib\minizip\zip.c" />

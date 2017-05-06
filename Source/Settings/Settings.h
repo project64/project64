@@ -48,3 +48,15 @@ extern "C" {
 #if defined(__cplusplus)
 }
 #endif
+
+class CNotification
+{
+public:
+    static void DisplayError(const char * Message);
+    static void FatalError(const char * Message);
+    static void DisplayMessage(int DisplayTime, const char * Message);
+    static void DisplayMessage2(const char * Message);
+    static void BreakPoint(const char * FileName, int LineNumber);
+};
+
+extern CNotification * g_Notify;

@@ -13,3 +13,9 @@ std::string CDateTime::Format(const char * format)
     strftime(buffer, sizeof(buffer), format, localtime(&m_time));
     return std::string(buffer);
 }
+
+CDateTime & CDateTime::SetToNow(void)
+{
+    m_time = time(NULL);
+    return *this;
+}

@@ -12,6 +12,7 @@
 
 #include <Common/LogClass.h>
 #include <Project64-core/N64System/N64Types.h>
+#include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <Project64-core/3rdParty/zip.h>
 
 class CSystemTimer
@@ -45,7 +46,7 @@ public:
     };
 
 public:
-    CSystemTimer(int32_t & NextTimer);
+    CSystemTimer(CRegisters &Reg, int32_t & NextTimer);
     void      SetTimer(TimerType Type, uint32_t Cycles, bool bRelative);
     uint32_t  GetTimer(TimerType Type);
     void      StopTimer(TimerType Type);
@@ -77,6 +78,7 @@ private:
     int32_t     & m_NextTimer;
     TimerType     m_Current;
     bool          m_inFixTimer;
+    CRegisters  & m_Reg;
 
     void SetCompareTimer();
     void FixTimers();

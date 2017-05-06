@@ -186,8 +186,8 @@ CMenuShortCutKey::CMenuShortCutKey(WORD key, bool bCtrl, bool bAlt, bool bShift,
         }
     }
     if (m_bShift) { m_ShortCutName.Format("Shift+%s", m_ShortCutName.c_str()); }
-    if (m_bCtrl)  { m_ShortCutName.Format("Ctrl+%s", m_ShortCutName.c_str()); }
-    if (m_bAlt)   { m_ShortCutName.Format("Alt+%s", m_ShortCutName.c_str()); }
+    if (m_bCtrl) { m_ShortCutName.Format("Ctrl+%s", m_ShortCutName.c_str()); }
+    if (m_bAlt) { m_ShortCutName.Format("Alt+%s", m_ShortCutName.c_str()); }
 }
 
 VIRTUAL_KEY * CMenuShortCutKey::VirtualKeyList(int &Size)
@@ -196,14 +196,58 @@ VIRTUAL_KEY * CMenuShortCutKey::VirtualKeyList(int &Size)
     return (VIRTUAL_KEY *)m_VirtualKeyList;
 }
 
-bool CMenuShortCutKey::Same(WORD key, bool bCtrl, bool bAlt, bool bShift, ACCESS_MODE AccessMode) const
+CMenuShortCutKey::RUNNING_STATE CMenuShortCutKey::RunningState(void)
 {
-    if (key != m_key)       { return false; }
+    if (g_Settings->LoadBool(GameRunning_CPU_Running))
+    {
+        return UISettingsLoadBool(UserInterface_InFullScreen) ? CMenuShortCutKey::RUNNING_STATE_FULLSCREEN : CMenuShortCutKey::RUNNING_STATE_WINDOWED;
+    }
+    return RUNNING_STATE_NOT_RUNNING;
+}
+
+bool CMenuShortCutKey::Match(WORD key, bool bCtrl, bool bAlt, bool bShift, RUNNING_STATE RunningState) const
+{
+    if (key != m_key) { return false; }
     if (bShift != m_bShift) { return false; }
-    if (bCtrl != m_bCtrl)   { return false; }
-    if (bAlt != m_bAlt)     { return false; }
-    if ((m_AccessMode & AccessMode) != AccessMode) { return false; }
+    if (bCtrl != m_bCtrl) { return false; }
+    if (bAlt != m_bAlt) { return false; }
+    if (!Active(RunningState)) { return false; }
     return true;
+}
+
+bool CMenuShortCutKey::Active(RUNNING_STATE RunningState) const
+{
+    switch (RunningState)
+    {
+    case CMenuShortCutKey::RUNNING_STATE_NOT_RUNNING:
+        if (m_AccessMode == CMenuShortCutKey::ACCESS_GAME_NOT_RUNNING ||
+            m_AccessMode == CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN ||
+            m_AccessMode == CMenuShortCutKey::ACCESS_ANYTIME)
+        {
+            return true;
+        }
+        break;
+    case CMenuShortCutKey::RUNNING_STATE_WINDOWED:
+        if (m_AccessMode == CMenuShortCutKey::ACCESS_GAME_RUNNING_WINDOW ||
+            m_AccessMode == CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN ||
+            m_AccessMode == CMenuShortCutKey::ACCESS_GAME_RUNNING ||
+            m_AccessMode == CMenuShortCutKey::ACCESS_ANYTIME)
+        {
+            return true;
+        }
+        break;
+    case CMenuShortCutKey::RUNNING_STATE_FULLSCREEN:
+        if (m_AccessMode == CMenuShortCutKey::ACCESS_GAME_RUNNING_FULLSCREEN ||
+            m_AccessMode == CMenuShortCutKey::ACCESS_GAME_RUNNING ||
+            m_AccessMode == CMenuShortCutKey::ACCESS_ANYTIME)
+        {
+            return true;
+        }
+        break;
+    default:
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    return false;
 }
 
 CShortCutItem::CShortCutItem(LanguageStringID Section, LanguageStringID Title, ACCESS_MODE Access)
@@ -213,9 +257,9 @@ CShortCutItem::CShortCutItem(LanguageStringID Section, LanguageStringID Title, A
 
 void CShortCutItem::Reset(LanguageStringID Section, LanguageStringID Title, ACCESS_MODE Access)
 {
-    this->m_Section = Section;
-    this->m_Title = Title;
-    this->m_Access = Access;
+    m_Section = Section;
+    m_Title = Title;
+    m_Access = Access;
 }
 
 void CShortCutItem::AddShortCut(WORD key, bool bCtrl, bool bAlt, bool bShift, ACCESS_MODE AccessMode, bool bUserAdded, bool bInactive)
@@ -242,6 +286,41 @@ void CShortCutItem::RemoveItem(CMenuShortCutKey * ShortCut)
     }
 }
 
+bool CShortCutItem::Avaliable(CMenuShortCutKey::RUNNING_STATE RunningState)
+{
+    switch (RunningState)
+    {
+    case CMenuShortCutKey::RUNNING_STATE_NOT_RUNNING:
+        if (m_Access == CMenuShortCutKey::ACCESS_GAME_NOT_RUNNING ||
+            m_Access == CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN ||
+            m_Access == CMenuShortCutKey::ACCESS_ANYTIME)
+        {
+            return true;
+        }
+        break;
+    case CMenuShortCutKey::RUNNING_STATE_WINDOWED:
+        if (m_Access == CMenuShortCutKey::ACCESS_GAME_RUNNING_WINDOW ||
+            m_Access == CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN ||
+            m_Access == CMenuShortCutKey::ACCESS_GAME_RUNNING ||
+            m_Access == CMenuShortCutKey::ACCESS_ANYTIME)
+        {
+            return true;
+        }
+        break;
+    case CMenuShortCutKey::RUNNING_STATE_FULLSCREEN:
+        if (m_Access == CMenuShortCutKey::ACCESS_GAME_RUNNING_FULLSCREEN ||
+            m_Access == CMenuShortCutKey::ACCESS_GAME_RUNNING ||
+            m_Access == CMenuShortCutKey::ACCESS_ANYTIME)
+        {
+            return true;
+        }
+        break;
+    default:
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    return false;
+}
+
 CShortCuts::CShortCuts()
 {
     Load();
@@ -251,7 +330,7 @@ CShortCuts::~CShortCuts()
 {
 }
 
-std::wstring CShortCuts::ShortCutString(int MenuID, CMenuShortCutKey::ACCESS_MODE AccessLevel)
+std::wstring CShortCuts::ShortCutString(int MenuID, CMenuShortCutKey::RUNNING_STATE RunningState)
 {
     CGuard CS(m_CS);
 
@@ -261,12 +340,7 @@ std::wstring CShortCuts::ShortCutString(int MenuID, CMenuShortCutKey::ACCESS_MOD
     const SHORTCUT_KEY_LIST & ShortCutList = MenuItem->second.GetAccelItems();
     for (SHORTCUT_KEY_LIST::const_iterator item = ShortCutList.begin(); item != ShortCutList.end(); item++)
     {
-        ACCESS_MODE ItemMode = item->AccessMode();
-        if ((ItemMode & AccessLevel) != AccessLevel)
-        {
-            continue;
-        }
-        if (item->Inactive())
+        if (!item->Active(RunningState) || item->Inactive())
         {
             continue;
         }
@@ -275,7 +349,7 @@ std::wstring CShortCuts::ShortCutString(int MenuID, CMenuShortCutKey::ACCESS_MOD
     return L"";
 }
 
-LanguageStringID CShortCuts::GetMenuItemName(WORD key, bool bCtrl, bool bAlt, bool bShift, ACCESS_MODE Access)
+LanguageStringID CShortCuts::GetMenuItemName(WORD key, bool bCtrl, bool bAlt, bool bShift, RUNNING_STATE RunningState)
 {
     CGuard CS(m_CS);
 
@@ -285,7 +359,8 @@ LanguageStringID CShortCuts::GetMenuItemName(WORD key, bool bCtrl, bool bAlt, bo
 
         for (SHORTCUT_KEY_LIST::const_iterator AccelItem = short_cut.GetAccelItems().begin(); AccelItem != short_cut.GetAccelItems().end(); AccelItem++)
         {
-            if (!AccelItem->Same(key, bCtrl, bAlt, bShift, Access)) { continue; }
+            if (AccelItem->Inactive()) { continue; }
+            if (!AccelItem->Match(key, bCtrl, bAlt, bShift, RunningState)) { continue; }
             return short_cut.Title();
         }
     }
@@ -303,96 +378,96 @@ void CShortCuts::Load(bool InitialValues)
 
     m_ShortCuts.clear();
 
-    AddShortCut(ID_FILE_OPEN_ROM, STR_SHORTCUT_FILEMENU, MENU_OPEN, CMenuShortCutKey::NOT_IN_FULLSCREEN);
-    AddShortCut(ID_FILE_ROM_INFO, STR_SHORTCUT_FILEMENU, MENU_ROM_INFO, CMenuShortCutKey::NOT_IN_FULLSCREEN);
-    AddShortCut(ID_FILE_STARTEMULATION, STR_SHORTCUT_FILEMENU, MENU_START, CMenuShortCutKey::NOT_IN_FULLSCREEN);
-    AddShortCut(ID_FILE_ENDEMULATION, STR_SHORTCUT_FILEMENU, MENU_END, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_FILE_ROMDIRECTORY, STR_SHORTCUT_FILEMENU, MENU_CHOOSE_ROM, CMenuShortCutKey::GAME_NOT_RUNNING);
-    AddShortCut(ID_FILE_REFRESHROMLIST, STR_SHORTCUT_FILEMENU, MENU_REFRESH, CMenuShortCutKey::GAME_NOT_RUNNING);
-    AddShortCut(ID_FILE_EXIT, STR_SHORTCUT_FILEMENU, MENU_EXIT, CMenuShortCutKey::ANYTIME);
+    AddShortCut(ID_FILE_OPEN_ROM, STR_SHORTCUT_FILEMENU, MENU_OPEN, CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN);
+    AddShortCut(ID_FILE_ROM_INFO, STR_SHORTCUT_FILEMENU, MENU_ROM_INFO, CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN);
+    AddShortCut(ID_FILE_STARTEMULATION, STR_SHORTCUT_FILEMENU, MENU_START, CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN);
+    AddShortCut(ID_FILE_ENDEMULATION, STR_SHORTCUT_FILEMENU, MENU_END, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_FILE_ROMDIRECTORY, STR_SHORTCUT_FILEMENU, MENU_CHOOSE_ROM, CMenuShortCutKey::ACCESS_GAME_NOT_RUNNING);
+    AddShortCut(ID_FILE_REFRESHROMLIST, STR_SHORTCUT_FILEMENU, MENU_REFRESH, CMenuShortCutKey::ACCESS_GAME_NOT_RUNNING);
+    AddShortCut(ID_FILE_EXIT, STR_SHORTCUT_FILEMENU, MENU_EXIT, CMenuShortCutKey::ACCESS_ANYTIME);
 
-    AddShortCut(ID_SYSTEM_RESET_SOFT, STR_SHORTCUT_SYSTEMMENU, MENU_RESET_SOFT, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_SYSTEM_RESET_HARD, STR_SHORTCUT_SYSTEMMENU, MENU_RESET_HARD, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_SYSTEM_PAUSE, STR_SHORTCUT_SYSTEMMENU, MENU_PAUSE, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_SYSTEM_BITMAP, STR_SHORTCUT_SYSTEMMENU, MENU_BITMAP, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_SYSTEM_LIMITFPS, STR_SHORTCUT_SYSTEMMENU, MENU_LIMIT_FPS, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_SYSTEM_SWAPDISK, STR_SHORTCUT_SYSTEMMENU, MENU_SWAPDISK, CMenuShortCutKey::GAME_RUNNING_WINDOW);
-    AddShortCut(ID_SYSTEM_SAVE, STR_SHORTCUT_SYSTEMMENU, MENU_SAVE, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_SYSTEM_SAVEAS, STR_SHORTCUT_SYSTEMMENU, MENU_SAVE_AS, CMenuShortCutKey::GAME_RUNNING_WINDOW);
-    AddShortCut(ID_SYSTEM_RESTORE, STR_SHORTCUT_SYSTEMMENU, MENU_RESTORE, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_SYSTEM_LOAD, STR_SHORTCUT_SYSTEMMENU, MENU_LOAD, CMenuShortCutKey::GAME_RUNNING_WINDOW);
-    AddShortCut(ID_SYSTEM_CHEAT, STR_SHORTCUT_SYSTEMMENU, MENU_CHEAT, CMenuShortCutKey::NOT_IN_FULLSCREEN);
-    AddShortCut(ID_SYSTEM_GSBUTTON, STR_SHORTCUT_SYSTEMMENU, MENU_GS_BUTTON, CMenuShortCutKey::GAME_RUNNING);
+    AddShortCut(ID_SYSTEM_RESET_SOFT, STR_SHORTCUT_SYSTEMMENU, MENU_RESET_SOFT, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_SYSTEM_RESET_HARD, STR_SHORTCUT_SYSTEMMENU, MENU_RESET_HARD, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_SYSTEM_PAUSE, STR_SHORTCUT_SYSTEMMENU, MENU_PAUSE, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_SYSTEM_BITMAP, STR_SHORTCUT_SYSTEMMENU, MENU_BITMAP, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_SYSTEM_LIMITFPS, STR_SHORTCUT_SYSTEMMENU, MENU_LIMIT_FPS, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_SYSTEM_SWAPDISK, STR_SHORTCUT_SYSTEMMENU, MENU_SWAPDISK, CMenuShortCutKey::ACCESS_GAME_RUNNING_WINDOW);
+    AddShortCut(ID_SYSTEM_SAVE, STR_SHORTCUT_SYSTEMMENU, MENU_SAVE, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_SYSTEM_SAVEAS, STR_SHORTCUT_SYSTEMMENU, MENU_SAVE_AS, CMenuShortCutKey::ACCESS_GAME_RUNNING_WINDOW);
+    AddShortCut(ID_SYSTEM_RESTORE, STR_SHORTCUT_SYSTEMMENU, MENU_RESTORE, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_SYSTEM_LOAD, STR_SHORTCUT_SYSTEMMENU, MENU_LOAD, CMenuShortCutKey::ACCESS_GAME_RUNNING_WINDOW);
+    AddShortCut(ID_SYSTEM_CHEAT, STR_SHORTCUT_SYSTEMMENU, MENU_CHEAT, CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN);
+    AddShortCut(ID_SYSTEM_GSBUTTON, STR_SHORTCUT_SYSTEMMENU, MENU_GS_BUTTON, CMenuShortCutKey::ACCESS_GAME_RUNNING);
 
-    AddShortCut(ID_OPTIONS_DISPLAY_FR, STR_SHORTCUT_OPTIONS, OPTION_DISPLAY_FR, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_OPTIONS_CHANGE_FR, STR_SHORTCUT_OPTIONS, OPTION_CHANGE_FR, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_OPTIONS_INCREASE_SPEED, STR_SHORTCUT_OPTIONS, STR_INSREASE_SPEED, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_OPTIONS_DECREASE_SPEED, STR_SHORTCUT_OPTIONS, STR_DECREASE_SPEED, CMenuShortCutKey::GAME_RUNNING);
+    AddShortCut(ID_OPTIONS_DISPLAY_FR, STR_SHORTCUT_OPTIONS, OPTION_DISPLAY_FR, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_OPTIONS_CHANGE_FR, STR_SHORTCUT_OPTIONS, OPTION_CHANGE_FR, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_OPTIONS_INCREASE_SPEED, STR_SHORTCUT_OPTIONS, STR_INSREASE_SPEED, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_OPTIONS_DECREASE_SPEED, STR_SHORTCUT_OPTIONS, STR_DECREASE_SPEED, CMenuShortCutKey::ACCESS_GAME_RUNNING);
 
-    AddShortCut(ID_CURRENT_SAVE_DEFAULT, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_DEFAULT, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_CURRENT_SAVE_1, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_1, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_CURRENT_SAVE_2, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_2, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_CURRENT_SAVE_3, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_3, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_CURRENT_SAVE_4, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_4, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_CURRENT_SAVE_5, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_5, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_CURRENT_SAVE_6, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_6, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_CURRENT_SAVE_7, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_7, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_CURRENT_SAVE_8, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_8, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_CURRENT_SAVE_9, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_9, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_CURRENT_SAVE_10, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_10, CMenuShortCutKey::GAME_RUNNING);
+    AddShortCut(ID_CURRENT_SAVE_DEFAULT, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_DEFAULT, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_CURRENT_SAVE_1, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_1, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_CURRENT_SAVE_2, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_2, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_CURRENT_SAVE_3, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_3, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_CURRENT_SAVE_4, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_4, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_CURRENT_SAVE_5, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_5, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_CURRENT_SAVE_6, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_6, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_CURRENT_SAVE_7, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_7, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_CURRENT_SAVE_8, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_8, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_CURRENT_SAVE_9, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_9, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_CURRENT_SAVE_10, STR_SHORTCUT_SAVESLOT, SAVE_SLOT_10, CMenuShortCutKey::ACCESS_GAME_RUNNING);
 
     //Option Menu
-    AddShortCut(ID_OPTIONS_FULLSCREEN, STR_SHORTCUT_OPTIONS, MENU_FULL_SCREEN, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_OPTIONS_ALWAYSONTOP, STR_SHORTCUT_OPTIONS, MENU_ON_TOP, CMenuShortCutKey::NOT_IN_FULLSCREEN);
-    AddShortCut(ID_OPTIONS_CONFIG_GFX, STR_SHORTCUT_OPTIONS, MENU_CONFG_GFX, CMenuShortCutKey::NOT_IN_FULLSCREEN);
-    AddShortCut(ID_OPTIONS_CONFIG_AUDIO, STR_SHORTCUT_OPTIONS, MENU_CONFG_AUDIO, CMenuShortCutKey::NOT_IN_FULLSCREEN);
-    AddShortCut(ID_OPTIONS_CONFIG_CONT, STR_SHORTCUT_OPTIONS, MENU_CONFG_CTRL, CMenuShortCutKey::NOT_IN_FULLSCREEN);
-    AddShortCut(ID_OPTIONS_CONFIG_RSP, STR_SHORTCUT_OPTIONS, MENU_CONFG_RSP, CMenuShortCutKey::NOT_IN_FULLSCREEN);
-    AddShortCut(ID_OPTIONS_CPU_USAGE, STR_SHORTCUT_OPTIONS, MENU_SHOW_CPU, CMenuShortCutKey::GAME_RUNNING);
-    AddShortCut(ID_OPTIONS_SETTINGS, STR_SHORTCUT_OPTIONS, MENU_SETTINGS, CMenuShortCutKey::NOT_IN_FULLSCREEN);
+    AddShortCut(ID_OPTIONS_FULLSCREEN, STR_SHORTCUT_OPTIONS, MENU_FULL_SCREEN, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_OPTIONS_ALWAYSONTOP, STR_SHORTCUT_OPTIONS, MENU_ON_TOP, CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN);
+    AddShortCut(ID_OPTIONS_CONFIG_GFX, STR_SHORTCUT_OPTIONS, MENU_CONFG_GFX, CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN);
+    AddShortCut(ID_OPTIONS_CONFIG_AUDIO, STR_SHORTCUT_OPTIONS, MENU_CONFG_AUDIO, CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN);
+    AddShortCut(ID_OPTIONS_CONFIG_CONT, STR_SHORTCUT_OPTIONS, MENU_CONFG_CTRL, CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN);
+    AddShortCut(ID_OPTIONS_CONFIG_RSP, STR_SHORTCUT_OPTIONS, MENU_CONFG_RSP, CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN);
+    AddShortCut(ID_OPTIONS_CPU_USAGE, STR_SHORTCUT_OPTIONS, MENU_SHOW_CPU, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+    AddShortCut(ID_OPTIONS_SETTINGS, STR_SHORTCUT_OPTIONS, MENU_SETTINGS, CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN);
 
     CPath ShortCutFile = UISettingsLoadStringVal(SupportFile_ShortCuts);
     if (!ShortCutFile.Exists() || InitialValues)
     {
-        m_ShortCuts.find(ID_FILE_OPEN_ROM)->second.AddShortCut('O', TRUE, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_FILE_OPEN_ROM)->second.AddShortCut('O', TRUE, false, false, CMenuShortCutKey::GAME_NOT_RUNNING);
-        m_ShortCuts.find(ID_FILE_STARTEMULATION)->second.AddShortCut(VK_F11, false, false, false, CMenuShortCutKey::GAME_NOT_RUNNING);
-        m_ShortCuts.find(ID_FILE_ENDEMULATION)->second.AddShortCut(VK_F12, false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_FILE_REFRESHROMLIST)->second.AddShortCut(VK_F5, false, false, false, CMenuShortCutKey::GAME_NOT_RUNNING);
-        m_ShortCuts.find(ID_FILE_EXIT)->second.AddShortCut(VK_F4, false, true, false, CMenuShortCutKey::GAME_NOT_RUNNING);
-        m_ShortCuts.find(ID_FILE_EXIT)->second.AddShortCut(VK_F4, false, true, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_CURRENT_SAVE_DEFAULT)->second.AddShortCut(0xC0, false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_CURRENT_SAVE_1)->second.AddShortCut('1', false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_CURRENT_SAVE_2)->second.AddShortCut('2', false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_CURRENT_SAVE_3)->second.AddShortCut('3', false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_CURRENT_SAVE_4)->second.AddShortCut('4', false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_CURRENT_SAVE_5)->second.AddShortCut('5', false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_CURRENT_SAVE_6)->second.AddShortCut('6', false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_CURRENT_SAVE_7)->second.AddShortCut('7', false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_CURRENT_SAVE_8)->second.AddShortCut('8', false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_CURRENT_SAVE_9)->second.AddShortCut('9', false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_CURRENT_SAVE_10)->second.AddShortCut('0', false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_OPTIONS_FULLSCREEN)->second.AddShortCut(VK_RETURN, false, true, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_OPTIONS_FULLSCREEN)->second.AddShortCut(VK_ESCAPE, false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_OPTIONS_ALWAYSONTOP)->second.AddShortCut('A', true, false, false, CMenuShortCutKey::GAME_NOT_RUNNING);
-        m_ShortCuts.find(ID_OPTIONS_ALWAYSONTOP)->second.AddShortCut('A', true, false, false, CMenuShortCutKey::GAME_RUNNING_WINDOW);
-        m_ShortCuts.find(ID_OPTIONS_SETTINGS)->second.AddShortCut('T', true, false, false, CMenuShortCutKey::GAME_NOT_RUNNING);
-        m_ShortCuts.find(ID_OPTIONS_SETTINGS)->second.AddShortCut('T', true, false, false, CMenuShortCutKey::GAME_RUNNING_WINDOW);
-        m_ShortCuts.find(ID_SYSTEM_RESET_SOFT)->second.AddShortCut(VK_F1, false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_SYSTEM_RESET_HARD)->second.AddShortCut(VK_F1, false, false, true, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_SYSTEM_PAUSE)->second.AddShortCut(VK_F2, false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_SYSTEM_PAUSE)->second.AddShortCut(VK_PAUSE, false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_SYSTEM_BITMAP)->second.AddShortCut(VK_F3, false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_SYSTEM_LIMITFPS)->second.AddShortCut(VK_F4, false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_SYSTEM_SWAPDISK)->second.AddShortCut('D', true, false, false, CMenuShortCutKey::GAME_RUNNING_WINDOW);
-        m_ShortCuts.find(ID_SYSTEM_SAVE)->second.AddShortCut(VK_F5, false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_SYSTEM_RESTORE)->second.AddShortCut(VK_F7, false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_SYSTEM_LOAD)->second.AddShortCut('L', true, false, false, CMenuShortCutKey::GAME_RUNNING_WINDOW);
-        m_ShortCuts.find(ID_SYSTEM_SAVEAS)->second.AddShortCut('S', true, false, false, CMenuShortCutKey::GAME_RUNNING_WINDOW);
-        m_ShortCuts.find(ID_SYSTEM_CHEAT)->second.AddShortCut('C', true, false, false, CMenuShortCutKey::GAME_RUNNING_WINDOW);
-        m_ShortCuts.find(ID_SYSTEM_GSBUTTON)->second.AddShortCut(VK_F9, false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_OPTIONS_INCREASE_SPEED)->second.AddShortCut(VK_OEM_PLUS, false, false, false, CMenuShortCutKey::GAME_RUNNING);
-        m_ShortCuts.find(ID_OPTIONS_DECREASE_SPEED)->second.AddShortCut(VK_OEM_MINUS, false, false, false, CMenuShortCutKey::GAME_RUNNING);
+        m_ShortCuts.find(ID_FILE_OPEN_ROM)->second.AddShortCut('O', TRUE, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_FILE_OPEN_ROM)->second.AddShortCut('O', TRUE, false, false, CMenuShortCutKey::ACCESS_GAME_NOT_RUNNING);
+        m_ShortCuts.find(ID_FILE_STARTEMULATION)->second.AddShortCut(VK_F11, false, false, false, CMenuShortCutKey::ACCESS_GAME_NOT_RUNNING);
+        m_ShortCuts.find(ID_FILE_ENDEMULATION)->second.AddShortCut(VK_F12, false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_FILE_REFRESHROMLIST)->second.AddShortCut(VK_F5, false, false, false, CMenuShortCutKey::ACCESS_GAME_NOT_RUNNING);
+        m_ShortCuts.find(ID_FILE_EXIT)->second.AddShortCut(VK_F4, false, true, false, CMenuShortCutKey::ACCESS_GAME_NOT_RUNNING);
+        m_ShortCuts.find(ID_FILE_EXIT)->second.AddShortCut(VK_F4, false, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_DEFAULT)->second.AddShortCut(0xC0, false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_1)->second.AddShortCut('1', false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_2)->second.AddShortCut('2', false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_3)->second.AddShortCut('3', false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_4)->second.AddShortCut('4', false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_5)->second.AddShortCut('5', false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_6)->second.AddShortCut('6', false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_7)->second.AddShortCut('7', false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_8)->second.AddShortCut('8', false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_9)->second.AddShortCut('9', false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_CURRENT_SAVE_10)->second.AddShortCut('0', false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_OPTIONS_FULLSCREEN)->second.AddShortCut(VK_RETURN, false, true, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_OPTIONS_FULLSCREEN)->second.AddShortCut(VK_ESCAPE, false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_OPTIONS_ALWAYSONTOP)->second.AddShortCut('A', true, false, false, CMenuShortCutKey::ACCESS_GAME_NOT_RUNNING);
+        m_ShortCuts.find(ID_OPTIONS_ALWAYSONTOP)->second.AddShortCut('A', true, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING_WINDOW);
+        m_ShortCuts.find(ID_OPTIONS_SETTINGS)->second.AddShortCut('T', true, false, false, CMenuShortCutKey::ACCESS_GAME_NOT_RUNNING);
+        m_ShortCuts.find(ID_OPTIONS_SETTINGS)->second.AddShortCut('T', true, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING_WINDOW);
+        m_ShortCuts.find(ID_SYSTEM_RESET_SOFT)->second.AddShortCut(VK_F1, false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_SYSTEM_RESET_HARD)->second.AddShortCut(VK_F1, false, false, true, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_SYSTEM_PAUSE)->second.AddShortCut(VK_F2, false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_SYSTEM_PAUSE)->second.AddShortCut(VK_PAUSE, false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_SYSTEM_BITMAP)->second.AddShortCut(VK_F3, false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_SYSTEM_LIMITFPS)->second.AddShortCut(VK_F4, false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_SYSTEM_SWAPDISK)->second.AddShortCut('D', true, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING_WINDOW);
+        m_ShortCuts.find(ID_SYSTEM_SAVE)->second.AddShortCut(VK_F5, false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_SYSTEM_RESTORE)->second.AddShortCut(VK_F7, false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_SYSTEM_LOAD)->second.AddShortCut('L', true, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING_WINDOW);
+        m_ShortCuts.find(ID_SYSTEM_SAVEAS)->second.AddShortCut('S', true, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING_WINDOW);
+        m_ShortCuts.find(ID_SYSTEM_CHEAT)->second.AddShortCut('C', true, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING_WINDOW);
+        m_ShortCuts.find(ID_SYSTEM_GSBUTTON)->second.AddShortCut(VK_F9, false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_OPTIONS_INCREASE_SPEED)->second.AddShortCut(VK_OEM_PLUS, false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_OPTIONS_DECREASE_SPEED)->second.AddShortCut(VK_OEM_MINUS, false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
     }
     else
     {
@@ -454,21 +529,14 @@ HACCEL CShortCuts::GetAcceleratorTable(void)
     CGuard CS(m_CS);
 
     //Generate a ACCEL list
-    CMenuShortCutKey::ACCESS_MODE AccessLevel = CMenuShortCutKey::GAME_NOT_RUNNING;
-    if (g_Settings->LoadBool(GameRunning_CPU_Running))
-    {
-        AccessLevel = UISettingsLoadBool(UserInterface_InFullScreen) ? CMenuShortCutKey::GAME_RUNNING_FULLSCREEN : CMenuShortCutKey::GAME_RUNNING_WINDOW;
-    }
-
     int size = 0, MaxSize = m_ShortCuts.size() * 5;
     ACCEL * AccelList = new ACCEL[MaxSize];
+    CMenuShortCutKey::RUNNING_STATE RunningState = CMenuShortCutKey::RunningState();
 
     for (MSC_MAP::iterator Item = m_ShortCuts.begin(); Item != m_ShortCuts.end(); Item++)
     {
         CShortCutItem & short_cut = Item->second;
-
-        CMenuShortCutKey::ACCESS_MODE ItemMode = short_cut.AccessMode();
-        if ((ItemMode & AccessLevel) != AccessLevel)
+        if (!short_cut.Avaliable(RunningState))
         {
             continue;
         }
@@ -481,7 +549,7 @@ HACCEL CShortCuts::GetAcceleratorTable(void)
             {
                 continue;
             }
-            if ((Key.AccessMode() & AccessLevel) != AccessLevel)
+            if (!Key.Active(RunningState))
             {
                 continue;
             }
@@ -489,8 +557,8 @@ HACCEL CShortCuts::GetAcceleratorTable(void)
             AccelList[size].cmd = (WORD)Item->first;
             AccelList[size].key = Key.Key();
             AccelList[size].fVirt = FVIRTKEY;
-            if (Key.Alt())   { AccelList[size].fVirt |= FALT; }
-            if (Key.Ctrl())  { AccelList[size].fVirt |= FCONTROL; }
+            if (Key.Alt()) { AccelList[size].fVirt |= FALT; }
+            if (Key.Ctrl()) { AccelList[size].fVirt |= FCONTROL; }
             if (Key.Shift()) { AccelList[size].fVirt |= FSHIFT; }
             size += 1;
         }

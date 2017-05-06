@@ -23,12 +23,12 @@
                 android:id="@+id/logo"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:contentDescription="@string/info"
                 android:focusable="false"
                 android:clickable="false"
                 android:src="@drawable/icon" />
 
             <TextView
+                android:id="@+id/app_name_full"
                 android:textSize="29sp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="10dp"
@@ -37,18 +37,17 @@
                 android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/app_name_full"
                 android:onClick="onAppNameClick"
                 android:clickable="true"
                  />
         </RelativeLayout>
 
         <TextView
+            android:id="@+id/about_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:text="@string/about_text"
             android:textSize="16sp" />
 
         <TextView
@@ -60,18 +59,18 @@
             android:text="@string/about_copyright"
             android:textSize="14sp" />
 
-        <TextView
+      <TextView
+          android:id="@+id/Project64_authors"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:textSize="12sp" />
+      <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:gravity="center"
             android:text="@string/authors"
-            android:textSize="12sp" />
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/Project64_authors"
             android:textSize="12sp" />
 
         <TextView

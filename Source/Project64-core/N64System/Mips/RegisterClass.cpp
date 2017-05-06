@@ -63,196 +63,196 @@ uint32_t      * CSystemRegisters::_LLBit = NULL;
 int32_t       * CSystemRegisters::_RoundingModel = NULL;
 
 CP0registers::CP0registers(uint32_t * _CP0) :
-INDEX_REGISTER(_CP0[0]),
-RANDOM_REGISTER(_CP0[1]),
-ENTRYLO0_REGISTER(_CP0[2]),
-ENTRYLO1_REGISTER(_CP0[3]),
-CONTEXT_REGISTER(_CP0[4]),
-PAGE_MASK_REGISTER(_CP0[5]),
-WIRED_REGISTER(_CP0[6]),
-BAD_VADDR_REGISTER(_CP0[8]),
-COUNT_REGISTER(_CP0[9]),
-ENTRYHI_REGISTER(_CP0[10]),
-COMPARE_REGISTER(_CP0[11]),
-STATUS_REGISTER(_CP0[12]),
-CAUSE_REGISTER(_CP0[13]),
-EPC_REGISTER(_CP0[14]),
-CONFIG_REGISTER(_CP0[16]),
-TAGLO_REGISTER(_CP0[28]),
-TAGHI_REGISTER(_CP0[29]),
-ERROREPC_REGISTER(_CP0[30]),
-FAKE_CAUSE_REGISTER(_CP0[32])
+    INDEX_REGISTER(_CP0[0]),
+    RANDOM_REGISTER(_CP0[1]),
+    ENTRYLO0_REGISTER(_CP0[2]),
+    ENTRYLO1_REGISTER(_CP0[3]),
+    CONTEXT_REGISTER(_CP0[4]),
+    PAGE_MASK_REGISTER(_CP0[5]),
+    WIRED_REGISTER(_CP0[6]),
+    BAD_VADDR_REGISTER(_CP0[8]),
+    COUNT_REGISTER(_CP0[9]),
+    ENTRYHI_REGISTER(_CP0[10]),
+    COMPARE_REGISTER(_CP0[11]),
+    STATUS_REGISTER(_CP0[12]),
+    CAUSE_REGISTER(_CP0[13]),
+    EPC_REGISTER(_CP0[14]),
+    CONFIG_REGISTER(_CP0[16]),
+    TAGLO_REGISTER(_CP0[28]),
+    TAGHI_REGISTER(_CP0[29]),
+    ERROREPC_REGISTER(_CP0[30]),
+    FAKE_CAUSE_REGISTER(_CP0[32])
 {
 }
 
 Rdram_InterfaceReg::Rdram_InterfaceReg(uint32_t * _RdramInterface) :
-RDRAM_CONFIG_REG(_RdramInterface[0]),
-RDRAM_DEVICE_TYPE_REG(_RdramInterface[0]),
-RDRAM_DEVICE_ID_REG(_RdramInterface[1]),
-RDRAM_DELAY_REG(_RdramInterface[2]),
-RDRAM_MODE_REG(_RdramInterface[3]),
-RDRAM_REF_INTERVAL_REG(_RdramInterface[4]),
-RDRAM_REF_ROW_REG(_RdramInterface[5]),
-RDRAM_RAS_INTERVAL_REG(_RdramInterface[6]),
-RDRAM_MIN_INTERVAL_REG(_RdramInterface[7]),
-RDRAM_ADDR_SELECT_REG(_RdramInterface[8]),
-RDRAM_DEVICE_MANUF_REG(_RdramInterface[9])
+    RDRAM_CONFIG_REG(_RdramInterface[0]),
+    RDRAM_DEVICE_TYPE_REG(_RdramInterface[0]),
+    RDRAM_DEVICE_ID_REG(_RdramInterface[1]),
+    RDRAM_DELAY_REG(_RdramInterface[2]),
+    RDRAM_MODE_REG(_RdramInterface[3]),
+    RDRAM_REF_INTERVAL_REG(_RdramInterface[4]),
+    RDRAM_REF_ROW_REG(_RdramInterface[5]),
+    RDRAM_RAS_INTERVAL_REG(_RdramInterface[6]),
+    RDRAM_MIN_INTERVAL_REG(_RdramInterface[7]),
+    RDRAM_ADDR_SELECT_REG(_RdramInterface[8]),
+    RDRAM_DEVICE_MANUF_REG(_RdramInterface[9])
 {
 }
 
 Mips_InterfaceReg::Mips_InterfaceReg(uint32_t * _MipsInterface) :
-MI_INIT_MODE_REG(_MipsInterface[0]),
-MI_MODE_REG(_MipsInterface[0]),
-MI_VERSION_REG(_MipsInterface[1]),
-MI_NOOP_REG(_MipsInterface[1]),
-MI_INTR_REG(_MipsInterface[2]),
-MI_INTR_MASK_REG(_MipsInterface[3])
+    MI_INIT_MODE_REG(_MipsInterface[0]),
+    MI_MODE_REG(_MipsInterface[0]),
+    MI_VERSION_REG(_MipsInterface[1]),
+    MI_NOOP_REG(_MipsInterface[1]),
+    MI_INTR_REG(_MipsInterface[2]),
+    MI_INTR_MASK_REG(_MipsInterface[3])
 {
 }
 
 Video_InterfaceReg::Video_InterfaceReg(uint32_t * _VideoInterface) :
-VI_STATUS_REG(_VideoInterface[0]),
-VI_CONTROL_REG(_VideoInterface[0]),
-VI_ORIGIN_REG(_VideoInterface[1]),
-VI_DRAM_ADDR_REG(_VideoInterface[1]),
-VI_WIDTH_REG(_VideoInterface[2]),
-VI_H_WIDTH_REG(_VideoInterface[2]),
-VI_INTR_REG(_VideoInterface[3]),
-VI_V_INTR_REG(_VideoInterface[3]),
-VI_CURRENT_REG(_VideoInterface[4]),
-VI_V_CURRENT_LINE_REG(_VideoInterface[4]),
-VI_BURST_REG(_VideoInterface[5]),
-VI_TIMING_REG(_VideoInterface[5]),
-VI_V_SYNC_REG(_VideoInterface[6]),
-VI_H_SYNC_REG(_VideoInterface[7]),
-VI_LEAP_REG(_VideoInterface[8]),
-VI_H_SYNC_LEAP_REG(_VideoInterface[8]),
-VI_H_START_REG(_VideoInterface[9]),
-VI_H_VIDEO_REG(_VideoInterface[9]),
-VI_V_START_REG(_VideoInterface[10]),
-VI_V_VIDEO_REG(_VideoInterface[10]),
-VI_V_BURST_REG(_VideoInterface[11]),
-VI_X_SCALE_REG(_VideoInterface[12]),
-VI_Y_SCALE_REG(_VideoInterface[13])
+    VI_STATUS_REG(_VideoInterface[0]),
+    VI_CONTROL_REG(_VideoInterface[0]),
+    VI_ORIGIN_REG(_VideoInterface[1]),
+    VI_DRAM_ADDR_REG(_VideoInterface[1]),
+    VI_WIDTH_REG(_VideoInterface[2]),
+    VI_H_WIDTH_REG(_VideoInterface[2]),
+    VI_INTR_REG(_VideoInterface[3]),
+    VI_V_INTR_REG(_VideoInterface[3]),
+    VI_CURRENT_REG(_VideoInterface[4]),
+    VI_V_CURRENT_LINE_REG(_VideoInterface[4]),
+    VI_BURST_REG(_VideoInterface[5]),
+    VI_TIMING_REG(_VideoInterface[5]),
+    VI_V_SYNC_REG(_VideoInterface[6]),
+    VI_H_SYNC_REG(_VideoInterface[7]),
+    VI_LEAP_REG(_VideoInterface[8]),
+    VI_H_SYNC_LEAP_REG(_VideoInterface[8]),
+    VI_H_START_REG(_VideoInterface[9]),
+    VI_H_VIDEO_REG(_VideoInterface[9]),
+    VI_V_START_REG(_VideoInterface[10]),
+    VI_V_VIDEO_REG(_VideoInterface[10]),
+    VI_V_BURST_REG(_VideoInterface[11]),
+    VI_X_SCALE_REG(_VideoInterface[12]),
+    VI_Y_SCALE_REG(_VideoInterface[13])
 {
 }
 
 AudioInterfaceReg::AudioInterfaceReg(uint32_t * _AudioInterface) :
-AI_DRAM_ADDR_REG(_AudioInterface[0]),
-AI_LEN_REG(_AudioInterface[1]),
-AI_CONTROL_REG(_AudioInterface[2]),
-AI_STATUS_REG(_AudioInterface[3]),
-AI_DACRATE_REG(_AudioInterface[4]),
-AI_BITRATE_REG(_AudioInterface[5])
+    AI_DRAM_ADDR_REG(_AudioInterface[0]),
+    AI_LEN_REG(_AudioInterface[1]),
+    AI_CONTROL_REG(_AudioInterface[2]),
+    AI_STATUS_REG(_AudioInterface[3]),
+    AI_DACRATE_REG(_AudioInterface[4]),
+    AI_BITRATE_REG(_AudioInterface[5])
 {
 }
 
 PeripheralInterfaceReg::PeripheralInterfaceReg(uint32_t * PeripheralInterface) :
-PI_DRAM_ADDR_REG(PeripheralInterface[0]),
-PI_CART_ADDR_REG(PeripheralInterface[1]),
-PI_RD_LEN_REG(PeripheralInterface[2]),
-PI_WR_LEN_REG(PeripheralInterface[3]),
-PI_STATUS_REG(PeripheralInterface[4]),
-PI_BSD_DOM1_LAT_REG(PeripheralInterface[5]),
-PI_DOMAIN1_REG(PeripheralInterface[5]),
-PI_BSD_DOM1_PWD_REG(PeripheralInterface[6]),
-PI_BSD_DOM1_PGS_REG(PeripheralInterface[7]),
-PI_BSD_DOM1_RLS_REG(PeripheralInterface[8]),
-PI_BSD_DOM2_LAT_REG(PeripheralInterface[9]),
-PI_DOMAIN2_REG(PeripheralInterface[9]),
-PI_BSD_DOM2_PWD_REG(PeripheralInterface[10]),
-PI_BSD_DOM2_PGS_REG(PeripheralInterface[11]),
-PI_BSD_DOM2_RLS_REG(PeripheralInterface[12])
+    PI_DRAM_ADDR_REG(PeripheralInterface[0]),
+    PI_CART_ADDR_REG(PeripheralInterface[1]),
+    PI_RD_LEN_REG(PeripheralInterface[2]),
+    PI_WR_LEN_REG(PeripheralInterface[3]),
+    PI_STATUS_REG(PeripheralInterface[4]),
+    PI_BSD_DOM1_LAT_REG(PeripheralInterface[5]),
+    PI_DOMAIN1_REG(PeripheralInterface[5]),
+    PI_BSD_DOM1_PWD_REG(PeripheralInterface[6]),
+    PI_BSD_DOM1_PGS_REG(PeripheralInterface[7]),
+    PI_BSD_DOM1_RLS_REG(PeripheralInterface[8]),
+    PI_BSD_DOM2_LAT_REG(PeripheralInterface[9]),
+    PI_DOMAIN2_REG(PeripheralInterface[9]),
+    PI_BSD_DOM2_PWD_REG(PeripheralInterface[10]),
+    PI_BSD_DOM2_PGS_REG(PeripheralInterface[11]),
+    PI_BSD_DOM2_RLS_REG(PeripheralInterface[12])
 {
 }
 
 RDRAMInt_InterfaceReg::RDRAMInt_InterfaceReg(uint32_t * RdramInterface) :
-RI_MODE_REG(RdramInterface[0]),
-RI_CONFIG_REG(RdramInterface[1]),
-RI_CURRENT_LOAD_REG(RdramInterface[2]),
-RI_SELECT_REG(RdramInterface[3]),
-RI_COUNT_REG(RdramInterface[4]),
-RI_REFRESH_REG(RdramInterface[4]),
-RI_LATENCY_REG(RdramInterface[5]),
-RI_RERROR_REG(RdramInterface[6]),
-RI_WERROR_REG(RdramInterface[7])
+    RI_MODE_REG(RdramInterface[0]),
+    RI_CONFIG_REG(RdramInterface[1]),
+    RI_CURRENT_LOAD_REG(RdramInterface[2]),
+    RI_SELECT_REG(RdramInterface[3]),
+    RI_COUNT_REG(RdramInterface[4]),
+    RI_REFRESH_REG(RdramInterface[4]),
+    RI_LATENCY_REG(RdramInterface[5]),
+    RI_RERROR_REG(RdramInterface[6]),
+    RI_WERROR_REG(RdramInterface[7])
 {
 }
 
 DisplayControlReg::DisplayControlReg(uint32_t * _DisplayProcessor) :
-DPC_START_REG(_DisplayProcessor[0]),
-DPC_END_REG(_DisplayProcessor[1]),
-DPC_CURRENT_REG(_DisplayProcessor[2]),
-DPC_STATUS_REG(_DisplayProcessor[3]),
-DPC_CLOCK_REG(_DisplayProcessor[4]),
-DPC_BUFBUSY_REG(_DisplayProcessor[5]),
-DPC_PIPEBUSY_REG(_DisplayProcessor[6]),
-DPC_TMEM_REG(_DisplayProcessor[7])
+    DPC_START_REG(_DisplayProcessor[0]),
+    DPC_END_REG(_DisplayProcessor[1]),
+    DPC_CURRENT_REG(_DisplayProcessor[2]),
+    DPC_STATUS_REG(_DisplayProcessor[3]),
+    DPC_CLOCK_REG(_DisplayProcessor[4]),
+    DPC_BUFBUSY_REG(_DisplayProcessor[5]),
+    DPC_PIPEBUSY_REG(_DisplayProcessor[6]),
+    DPC_TMEM_REG(_DisplayProcessor[7])
 {
 }
 
 SigProcessor_InterfaceReg::SigProcessor_InterfaceReg(uint32_t * _SignalProcessorInterface) :
-SP_MEM_ADDR_REG(_SignalProcessorInterface[0]),
-SP_DRAM_ADDR_REG(_SignalProcessorInterface[1]),
-SP_RD_LEN_REG(_SignalProcessorInterface[2]),
-SP_WR_LEN_REG(_SignalProcessorInterface[3]),
-SP_STATUS_REG(_SignalProcessorInterface[4]),
-SP_DMA_FULL_REG(_SignalProcessorInterface[5]),
-SP_DMA_BUSY_REG(_SignalProcessorInterface[6]),
-SP_SEMAPHORE_REG(_SignalProcessorInterface[7]),
-SP_PC_REG(_SignalProcessorInterface[8]),
-SP_IBIST_REG(_SignalProcessorInterface[9])
+    SP_MEM_ADDR_REG(_SignalProcessorInterface[0]),
+    SP_DRAM_ADDR_REG(_SignalProcessorInterface[1]),
+    SP_RD_LEN_REG(_SignalProcessorInterface[2]),
+    SP_WR_LEN_REG(_SignalProcessorInterface[3]),
+    SP_STATUS_REG(_SignalProcessorInterface[4]),
+    SP_DMA_FULL_REG(_SignalProcessorInterface[5]),
+    SP_DMA_BUSY_REG(_SignalProcessorInterface[6]),
+    SP_SEMAPHORE_REG(_SignalProcessorInterface[7]),
+    SP_PC_REG(_SignalProcessorInterface[8]),
+    SP_IBIST_REG(_SignalProcessorInterface[9])
 {
 }
 
 Serial_InterfaceReg::Serial_InterfaceReg(uint32_t * SerialInterface) :
-SI_DRAM_ADDR_REG(SerialInterface[0]),
-SI_PIF_ADDR_RD64B_REG(SerialInterface[1]),
-SI_PIF_ADDR_WR64B_REG(SerialInterface[2]),
-SI_STATUS_REG(SerialInterface[3])
+    SI_DRAM_ADDR_REG(SerialInterface[0]),
+    SI_PIF_ADDR_RD64B_REG(SerialInterface[1]),
+    SI_PIF_ADDR_WR64B_REG(SerialInterface[2]),
+    SI_STATUS_REG(SerialInterface[3])
 {
 }
 
 Disk_InterfaceReg::Disk_InterfaceReg(uint32_t * DiskInterface) :
-ASIC_DATA(DiskInterface[0]),
-ASIC_MISC_REG(DiskInterface[1]),
-ASIC_STATUS(DiskInterface[2]),
-ASIC_CUR_TK(DiskInterface[3]),
-ASIC_BM_STATUS(DiskInterface[4]),
-ASIC_ERR_SECTOR(DiskInterface[5]),
-ASIC_SEQ_STATUS(DiskInterface[6]),
-ASIC_CUR_SECTOR(DiskInterface[7]),
-ASIC_HARD_RESET(DiskInterface[8]),
-ASIC_C1_S0(DiskInterface[9]),
-ASIC_HOST_SECBYTE(DiskInterface[10]),
-ASIC_C1_S2(DiskInterface[11]),
-ASIC_SEC_BYTE(DiskInterface[12]),
-ASIC_C1_S4(DiskInterface[13]),
-ASIC_C1_S6(DiskInterface[14]),
-ASIC_CUR_ADDR(DiskInterface[15]),
-ASIC_ID_REG(DiskInterface[16]),
-ASIC_TEST_REG(DiskInterface[17]),
-ASIC_TEST_PIN_SEL(DiskInterface[18]),
-ASIC_CMD(DiskInterface[19]),
-ASIC_BM_CTL(DiskInterface[20]),
-ASIC_SEQ_CTL(DiskInterface[21])
+    ASIC_DATA(DiskInterface[0]),
+    ASIC_MISC_REG(DiskInterface[1]),
+    ASIC_STATUS(DiskInterface[2]),
+    ASIC_CUR_TK(DiskInterface[3]),
+    ASIC_BM_STATUS(DiskInterface[4]),
+    ASIC_ERR_SECTOR(DiskInterface[5]),
+    ASIC_SEQ_STATUS(DiskInterface[6]),
+    ASIC_CUR_SECTOR(DiskInterface[7]),
+    ASIC_HARD_RESET(DiskInterface[8]),
+    ASIC_C1_S0(DiskInterface[9]),
+    ASIC_HOST_SECBYTE(DiskInterface[10]),
+    ASIC_C1_S2(DiskInterface[11]),
+    ASIC_SEC_BYTE(DiskInterface[12]),
+    ASIC_C1_S4(DiskInterface[13]),
+    ASIC_C1_S6(DiskInterface[14]),
+    ASIC_CUR_ADDR(DiskInterface[15]),
+    ASIC_ID_REG(DiskInterface[16]),
+    ASIC_TEST_REG(DiskInterface[17]),
+    ASIC_TEST_PIN_SEL(DiskInterface[18]),
+    ASIC_CMD(DiskInterface[19]),
+    ASIC_BM_CTL(DiskInterface[20]),
+    ASIC_SEQ_CTL(DiskInterface[21])
 {
 }
 
 CRegisters::CRegisters(CN64System * System, CSystemEvents * SystemEvents) :
-CP0registers(m_CP0),
-Rdram_InterfaceReg(m_RDRAM_Registers),
-Mips_InterfaceReg(m_Mips_Interface),
-Video_InterfaceReg(m_Video_Interface),
-AudioInterfaceReg(m_Audio_Interface),
-PeripheralInterfaceReg(m_Peripheral_Interface),
-RDRAMInt_InterfaceReg(m_RDRAM_Interface),
-SigProcessor_InterfaceReg(m_SigProcessor_Interface),
-DisplayControlReg(m_Display_ControlReg),
-Serial_InterfaceReg(m_SerialInterface),
-Disk_InterfaceReg(m_DiskInterface),
-m_System(System),
-m_SystemEvents(SystemEvents)
+    CP0registers(m_CP0),
+    Rdram_InterfaceReg(m_RDRAM_Registers),
+    Mips_InterfaceReg(m_Mips_Interface),
+    Video_InterfaceReg(m_Video_Interface),
+    AudioInterfaceReg(m_Audio_Interface),
+    PeripheralInterfaceReg(m_Peripheral_Interface),
+    RDRAMInt_InterfaceReg(m_RDRAM_Interface),
+    SigProcessor_InterfaceReg(m_SigProcessor_Interface),
+    DisplayControlReg(m_Display_ControlReg),
+    Serial_InterfaceReg(m_SerialInterface),
+    Disk_InterfaceReg(m_DiskInterface),
+    m_System(System),
+    m_SystemEvents(SystemEvents)
 {
     Reset();
 }
@@ -396,14 +396,15 @@ void CRegisters::FixFpuLocations()
     {
         for (int count = 0; count < 32; count++)
         {
-            m_FPR_S[count] = &m_FPR[count >> 1].F[count & 1];
-            m_FPR_D[count] = &m_FPR[count >> 1].D;
+            m_FPR_S[count] = &m_FPR[count & ~1].F[count & 1];
+            m_FPR_D[count] = &m_FPR[count & ~1].D;
         }
     }
     else
     {
-        for (int count = 0; count < 32; count++) {
-            m_FPR_S[count] = &m_FPR[count].F[1];
+        for (int count = 0; count < 32; count++)
+        {
+            m_FPR_S[count] = &m_FPR[count].F[0];
             m_FPR_D[count] = &m_FPR[count].D;
         }
     }

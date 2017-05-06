@@ -440,7 +440,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(STR_SHORTCUT_SAVESLOT, "Save Slots");
 
     /*********************************************************************************
-    * Support Window                                                                       *
+    * Support Window                                                                 *
     *********************************************************************************/
     DEF_STR(MSG_SUPPORT_TITLE, "Support Project64");
     DEF_STR(MSG_SUPPORT_INFO, "Project64 is a software package designed to emulate a Nintendo64 video game system on a Microsoft Windows based PC. This allows you to play real N64 software in much the same way as it would be on the original hardware system.\n\nIf you like Project64 and have gotten some value out of it then please support project64 as either a thank you, or your desire to see it continually improved.\n\nIf you have supported project64:");
@@ -516,6 +516,50 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_SET_LLE_GFX_MSG, "Graphics LLE is not for general use!!!\nIt is advisable that you only use this for testing and not for playing games.\n\nChange to graphics LLE?");
     DEF_STR(MSG_SET_HLE_AUD_TITLE, "Audio High-Level Emulation");
     DEF_STR(MSG_SET_HLE_AUD_MSG, "Audio HLE requires a third-party plugin!!!\nIf you do not use a third-party audio plugin that supports HLE, you will hear no sound.\n\nChange to audio HLE?");
+
+    /*********************************************************************************
+    * Android                                                                        *
+    *********************************************************************************/
+    DEF_STR(ANDROID_SETTINGS, "Settings");
+    DEF_STR(ANDROID_FORUM, "Help/Forum");
+    DEF_STR(ANDROID_REPORT_BUG, "Report Issue");
+    DEF_STR(ANDROID_ABOUT, "About");
+    DEF_STR(ANDROID_GALLERY_RECENTLYPLAYED, "Recently played");
+    DEF_STR(ANDROID_GALLERY_LIBRARY, "Games");
+    DEF_STR(ANDROID_GAMEDIR, "Game Dir");
+    DEF_STR(ANDROID_SELECTDIR, "Select an folder to scan");
+    DEF_STR(ANDROID_INCLUDE_SUBDIRECTORIES, "Include subdirectories");
+    DEF_STR(ANDROID_PARENTFOLDER, "Parent folder");
+    DEF_STR(ANDROID_DIRECTORIES, "Directories");
+    DEF_STR(ANDROID_INTERNAL_MEMORY, "Internal memory");
+    DEF_STR(ANDROID_TITLE, "Scanning...");
+    DEF_STR(ANDROID_OK, "OK");
+    DEF_STR(ANDROID_CANCEL, "Cancel");
+    DEF_STR(ANDROID_ABOUT_INFO, "Information");
+    DEF_STR(ANDROID_ABOUT_APP_NAME, "Project64 for Android");
+    DEF_STR(ANDROID_ABOUT_LICENCE, "License");
+    DEF_STR(ANDROID_ABOUT_REVISION, "Revision");
+    DEF_STR(ANDROID_ABOUT_TEXT, "Project64 for Android\u2122 is a port of the windows version of project64.The Android\u2122 version can play most N64 games.");
+    DEF_STR(ANDROID_ABOUT_PJ64_AUTHORS, "Project64 Authors.");
+
+    //In game menu
+    DEF_STR(ANDROID_MENU_SETTINGS, "Settings");
+    DEF_STR(ANDROID_MENU_SAVESTATE, "Save State");
+    DEF_STR(ANDROID_MENU_LOADSTATE, "Load State");
+    DEF_STR(ANDROID_MENU_ENDEMULATION, "End Emulation");
+    DEF_STR(ANDROID_MENU_PAUSE, "Pause");
+    DEF_STR(ANDROID_MENU_RESUME, "Resume");
+    DEF_STR(ANDROID_MENU_GAMESPEED, "Game Speed");
+    DEF_STR(ANDROID_MENU_CURRENTSAVESTATE, "Current Save State...");
+    DEF_STR(ANDROID_MENU_CURRENTSAVEAUTO, "Auto");
+    DEF_STR(ANDROID_MENU_CURRENTSAVESLOT, "Slot");
+    DEF_STR(ANDROID_MENU_CONSOLERESET, "Reset");
+    DEF_STR(ANDROID_MENU_DEBUGGINGOPTIONS, "Debugging Options");
+    DEF_STR(ANDROID_MENU_RESETFUNCTIONTIMES, "Reset Function Times");
+    DEF_STR(ANDROID_MENU_DUMPFUNCTIONTIMES, "Dump Function Times");
+
+    //Video plugin
+    DEF_STR(ANDROID_VIDEO_NATIVE_RES, "Native");
 }
 
 CLanguage::CLanguage() :
@@ -526,6 +570,15 @@ CLanguage::CLanguage() :
     if (g_Settings)
     {
         m_SelectedLanguage = g_Settings->LoadStringVal(Setting_CurrentLanguage);
+        g_Settings->RegisterChangeCB(Debugger_DebugLanguage, this, (CSettings::SettingChangedFunc)StaticResetStrings);
+    }
+}
+
+CLanguage::~CLanguage()
+{
+    if (g_Settings)
+    {
+        g_Settings->UnregisterChangeCB(Debugger_DebugLanguage, this, (CSettings::SettingChangedFunc)StaticResetStrings);
     }
 }
 
@@ -541,7 +594,7 @@ bool CLanguage::LoadCurrentStrings(void)
     }
 
     LanguageList LangList = GetLangList();
-    stdstr       Filename;
+    stdstr Filename;
 
     //Find the file name of the current language
     for (LanguageList::iterator Language = LangList.begin(); Language != LangList.end(); Language++)
@@ -757,6 +810,11 @@ bool CLanguage::IsCurrentLang(LanguageFile & File)
         return true;
     }
     return false;
+}
+
+void CLanguage::ResetStrings(void)
+{
+    m_CurrentStrings.clear();
 }
 
 #ifdef _WIN32

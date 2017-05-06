@@ -13,11 +13,9 @@
 #include <Project64-core/N64System/Recompiler/RegBase.h>
 #include <Project64-core/N64System/Recompiler/Arm/ArmOps.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
-#include <Project64-core/Settings/DebugSettings.h>
 
 class CArmRegInfo :
     public CRegBase,
-    private CDebugSettings,
     public CArmOps,
     private CSystemRegisters
 {
@@ -37,8 +35,10 @@ public:
         VARIABLE_GPR = 1,
         VARIABLE_FPR = 2,
         VARIABLE_TLB_READMAP = 3,
-        VARIABLE_NEXT_TIMER = 4,
+        VARIABLE_TLB_WRITEMAP = 4,
         VARIABLE_TLB_LOAD_ADDRESS = 5,
+        VARIABLE_TLB_STORE_ADDRESS = 6,
+        VARIABLE_NEXT_TIMER = 7,
     };
 
     CArmRegInfo();
@@ -56,15 +56,18 @@ public:
     void FixRoundModel(FPU_ROUND RoundMethod);
     void Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsRegToLoad);
     void Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad);
-    ArmReg FreeArmReg();
+    ArmReg FreeArmReg(bool TempMapping);
     void WriteBackRegisters();
 
     ArmReg Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadHiWord);
-    ArmReg Map_Variable(VARIABLE_MAPPED variable);
+    ArmReg Map_Variable(VARIABLE_MAPPED variable, ArmReg Reg = Arm_Any);
+    ArmReg GetVariableReg(VARIABLE_MAPPED variable) const;
     void ProtectGPR(uint32_t Reg);
+    void UnProtectGPR(uint32_t Reg);
     void UnMap_AllFPRs();
-    ArmReg UnMap_TempReg();
+    ArmReg UnMap_TempReg(bool TempMapping);
     void UnMap_GPR(uint32_t Reg, bool WriteBackValue);
+    void WriteBack_GPR(uint32_t MipsReg, bool Unmapping);
     bool UnMap_ArmReg(ArmReg Reg);
     void ResetRegProtection();
 
@@ -76,9 +79,17 @@ public:
     inline uint32_t GetArmRegMapOrder(ArmReg Reg) const { return m_ArmReg_MapOrder[Reg]; }
     inline bool GetArmRegProtected(ArmReg Reg) const { return m_ArmReg_Protected[Reg]; }
     inline REG_MAPPED GetArmRegMapped(ArmReg Reg) const { return m_ArmReg_MappedTo[Reg]; }
+
     inline void SetArmRegMapOrder(ArmReg Reg, uint32_t Order) { m_ArmReg_MapOrder[Reg] = Order; }
     inline void SetArmRegProtected(ArmReg Reg, bool Protected) { m_ArmReg_Protected[Reg] = Protected; }
     inline void SetArmRegMapped(ArmReg Reg, REG_MAPPED Mapping) { m_ArmReg_MappedTo[Reg] = Mapping; }
+
+    inline VARIABLE_MAPPED GetVariableMappedTo(ArmReg Reg) const { return m_Variable_MappedTo[Reg]; }
+    inline void SetVariableMappedTo(ArmReg Reg, VARIABLE_MAPPED variable) { m_Variable_MappedTo[Reg] = variable; }
+    static const char * VariableMapName(VARIABLE_MAPPED variable);
+
+    void LogRegisterState(void);
+
 private:
     bool ShouldPushPopReg (ArmReg Reg);
 

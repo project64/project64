@@ -11,7 +11,7 @@
 package emu.project64.jni;
 
 public enum SettingsID 
-{		
+{
     //Default values
     Default_None,
     Default_Constant,
@@ -95,7 +95,7 @@ public enum SettingsID
     Game_File,
     Game_UniqueSaveDir,
     Game_GameName,
-    Game_GoodName,
+    Cfg_GoodName,
     Game_TempLoaded,
     Game_SystemType,
     Game_EditPlugin_Gfx,
@@ -141,6 +141,7 @@ public enum SettingsID
     Game_CRC_Recalc,
     Game_Transferpak_ROM,
     Game_Transferpak_Sav,
+    Game_LoadSaveAtStart,
 
     // General Game running info
     GameRunning_LoadingInProgress,
@@ -208,7 +209,7 @@ public enum SettingsID
     Debugger_ShowUnhandledMemory,
     Debugger_ShowPifErrors,
     Debugger_ShowDivByZero,
-    Debugger_GenerateLogFiles,
+    Debugger_RecordRecompilerAsm,
     Debugger_DisableGameFixes,
     Debugger_AppLogLevel,
     Debugger_AppLogFlush,
@@ -253,7 +254,6 @@ public enum SettingsID
     Plugin_UseHleGfx,
     Plugin_UseHleAudio,
     Plugin_EnableAudio,
-    Plugin_ForceGfxReset,
 
     Logging_GenerateLog,
     Logging_LogRDRamRegisters,
@@ -290,16 +290,15 @@ public enum SettingsID
     Cheat_Range,
     Cheat_RangeNotes,
 
-    /*, FirstUISettings, LastUISettings = FirstUISettings + MaxPluginSetting,
-    FirstRSPDefaultSet, LastRSPDefaultSet = FirstRSPDefaultSet + MaxPluginSetting,
-    FirstRSPSettings, LastRSPSettings = FirstRSPSettings + MaxPluginSetting,
-    FirstGfxDefaultSet, LastGfxDefaultSet = FirstGfxDefaultSet + MaxPluginSetting,
-    FirstGfxSettings, LastGfxSettings = FirstGfxSettings + MaxPluginSetting,
-    FirstAudioDefaultSet, LastAudioDefaultSet = FirstAudioDefaultSet + MaxPluginSetting,
-    FirstAudioSettings, LastAudioSettings = FirstAudioSettings + MaxPluginSetting,
-    FirstCtrlDefaultSet, LastCtrlDefaultSet = FirstCtrlDefaultSet + MaxPluginSetting,
-    FirstCtrlSettings, LastCtrlSettings = FirstCtrlSettings + MaxPluginSetting,
-    ;*/
+    FirstUISettings, LastUISettings(FirstUISettings.getValue() + 65535),
+    FirstRSPDefaultSet, LastRSPDefaultSet(FirstRSPDefaultSet.getValue() + 65535),
+    FirstRSPSettings, LastRSPSettings(FirstRSPSettings.getValue() + 65535),
+    FirstGfxDefaultSet, LastGfxDefaultSet(FirstGfxDefaultSet.getValue() + 65535),
+    FirstGfxSettings, LastGfxSettings(FirstGfxSettings.getValue() + 65535),
+    FirstAudioDefaultSet, LastAudioDefaultSet(FirstAudioDefaultSet.getValue() + 65535),
+    FirstAudioSettings, LastAudioSettings(FirstAudioSettings.getValue() + 65535),
+    FirstCtrlDefaultSet, LastCtrlDefaultSet(FirstCtrlDefaultSet.getValue() + 65535),
+    FirstCtrlSettings, LastCtrlSettings(FirstCtrlSettings.getValue() + 65535),
     ;
     private int value;
     
@@ -316,5 +315,10 @@ public enum SettingsID
     {
     	this.value = StaticFields.Counter;
     	StaticFields.Counter += 1;
-    }   
+    }
+    private SettingsID(int value)
+    {
+    	this.value = value;
+    	StaticFields.Counter = this.value + 1;
+    } 
 }

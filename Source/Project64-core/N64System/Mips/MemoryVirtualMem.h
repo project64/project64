@@ -40,6 +40,8 @@
 
 #if defined(__i386__) || defined(_M_IX86)
 class CX86RecompilerOps;
+#elif defined(__arm__) || defined(_M_ARM)
+class CArmRecompilerOps;
 #endif
 
 class CMipsMemoryVM :
@@ -57,7 +59,7 @@ public:
     static void ReserveMemory();
     static void FreeReservedMemory();
 
-    bool   Initialize();
+    bool   Initialize(bool SyncSystem);
     void   Reset(bool EraseMemory);
 
     uint8_t * Rdram();
@@ -115,9 +117,10 @@ private:
     CMipsMemoryVM& operator=(const CMipsMemoryVM&); // Disable assignment
 
 #if defined(__i386__) || defined(_M_IX86)
-    friend CX86RecompilerOps;
+    friend class CX86RecompilerOps;
 #elif defined(__arm__) || defined(_M_ARM)
-    friend CArmRegInfo;
+    friend class CArmRegInfo;
+    friend class CArmRecompilerOps;
 #endif
 
     static void RdramChanged(CMipsMemoryVM * _this);
@@ -179,6 +182,7 @@ private:
     static bool FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & context);
 #endif
 #ifdef __arm__
+    static bool DumpArmExceptionInfo(uint32_t MemAddress, mcontext_t & context);
     static bool FilterArmException(uint32_t MemAddress, mcontext_t & context);
 #endif
 

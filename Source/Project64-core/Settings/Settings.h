@@ -100,7 +100,7 @@ enum SettingID
     Game_File,
     Game_UniqueSaveDir,
     Game_GameName,
-    Game_GoodName,
+    Cfg_GoodName,
     Game_TempLoaded,
     Game_SystemType,
     Game_EditPlugin_Gfx,
@@ -146,6 +146,7 @@ enum SettingID
     Game_CRC_Recalc,
     Game_Transferpak_ROM,
     Game_Transferpak_Sav,
+    Game_LoadSaveAtStart,
 
     // General Game running info
     GameRunning_LoadingInProgress,
@@ -213,7 +214,7 @@ enum SettingID
     Debugger_ShowUnhandledMemory,
     Debugger_ShowPifErrors,
     Debugger_ShowDivByZero,
-    Debugger_GenerateLogFiles,
+    Debugger_RecordRecompilerAsm,
     Debugger_DisableGameFixes,
     Debugger_AppLogLevel,
     Debugger_AppLogFlush,
@@ -258,7 +259,6 @@ enum SettingID
     Plugin_UseHleGfx,
     Plugin_UseHleAudio,
     Plugin_EnableAudio,
-    Plugin_ForceGfxReset,
 
     Logging_GenerateLog,
     Logging_LogRDRamRegisters,

@@ -94,11 +94,32 @@ void CSpeedLimiter::AlterSpeed( const ESpeedChange SpeedChange )
 	{
 		m_Speed += 5 * SpeedFactor;
 	}
-	else if (m_Speed > 1 && SpeedChange == DECREASE_SPEED || SpeedChange == INCREASE_SPEED)
+	else if ((m_Speed > 1 && SpeedChange == DECREASE_SPEED) || SpeedChange == INCREASE_SPEED)
 	{
 		m_Speed += 1 * SpeedFactor;
 	}
 
 	SpeedChanged(m_Speed);
 	FixSpeedRatio();
+}
+
+void CSpeedLimiter::SetSpeed(int Speed)
+{
+    if (Speed < 1)
+    {
+        Speed = 1;
+    }
+    m_Speed = Speed;
+    SpeedChanged(m_Speed);
+    FixSpeedRatio();
+}
+
+int CSpeedLimiter::GetSpeed(void) const
+{
+    return m_Speed;
+}
+
+int CSpeedLimiter::GetBaseSpeed(void) const
+{
+    return m_BaseSpeed;
 }

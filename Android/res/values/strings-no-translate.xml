@@ -14,5 +14,22 @@
     <string name="ControllerProfileActivity_title" translatable="false">@string/app_name</string>
     <string name="ScanRomsActivity_title" translatable="false">@string/app_name</string>
     <string name="GameActivity_title" translatable="false">@string/app_name</string>
-    
+
+    <!-- About -->
+    <string name="about_link" translatable="false">        &lt;a href=&quot;www.pj64-emu.com&quot;&gt;www.pj64-emu.com&lt;/a&gt;</string>
+    <string name="about_copyright" translatable="false">Copyleft &#169; 1998&#8211;2016 by Project64.\n</string>
+    <string name="authors" translatable="false">Zilmar, Jabo, Smiff, Gent, Jahra!n, Witten, RadeonUser, Trotterwatch, pixi, Azimer, Gonetz, cxd4, AmbientMalice, LegendOfDragoon, Nekokabu, Lithium64, death-droid, LuigiBlood, dsx.</string>
+
+    <!-- Seek Bar Preference -->
+    <string name="seekBarPreference_summary" translatable="false">%1$d %2$s</string>
+
+    <!-- Settings -->
+    <string-array name="trace_severity_values" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
 </resources>

@@ -341,7 +341,7 @@ void CCodeSection::GenerateSectionLinkage()
 
     for (i = 0; i < 2; i++)
     {
-        if (JumpInfo[i]->FallThrough && !TargetSection[i]->GenerateNativeCode(m_BlockInfo->NextTest()))
+        if (JumpInfo[i]->FallThrough && (TargetSection[i] == NULL || !TargetSection[i]->GenerateNativeCode(m_BlockInfo->NextTest())))
         {
             JumpInfo[i]->FallThrough = false;
             m_RecompilerOps->JumpToUnknown(JumpInfo[i]);
@@ -376,23 +376,22 @@ void CCodeSection::GenerateSectionLinkage()
             m_RecompilerOps->SetRegWorkingSet(JumpInfo[i]->RegSet);
             if (JumpInfo[i]->TargetPC <= JumpInfo[i]->JumpPC)
             {
-                m_RecompilerOps->UpdateCounters(JumpInfo[i]->RegSet, true, true);
+                m_RecompilerOps->UpdateCounters(m_RecompilerOps->GetRegWorkingSet(), true, true);
                 if (JumpInfo[i]->PermLoop)
                 {
                     CPU_Message("PermLoop *** 3");
-                    m_RecompilerOps->CompileInPermLoop(JumpInfo[i]->RegSet, JumpInfo[i]->TargetPC);
+                    m_RecompilerOps->CompileInPermLoop(m_RecompilerOps->GetRegWorkingSet(), JumpInfo[i]->TargetPC);
                 }
                 else
                 {
                     CPU_Message("CompileSystemCheck 9");
-                    m_RecompilerOps->CompileSystemCheck(JumpInfo[i]->TargetPC, JumpInfo[i]->RegSet);
+                    m_RecompilerOps->CompileSystemCheck(JumpInfo[i]->TargetPC, m_RecompilerOps->GetRegWorkingSet());
                 }
             }
             else
             {
                 m_RecompilerOps->UpdateCounters(m_RecompilerOps->GetRegWorkingSet(), false, true);
             }
-            m_RecompilerOps->SetRegWorkingSet(JumpInfo[i]->RegSet);
             m_RecompilerOps->SyncRegState(TargetSection[i]->m_RegEnter);
             m_RecompilerOps->JumpToSection(TargetSection[i]);
         }
@@ -441,8 +440,6 @@ bool CCodeSection::ParentContinue()
 
 bool CCodeSection::GenerateNativeCode(uint32_t Test)
 {
-    if (this == NULL) { return false; }
-
     if (m_CompiledLocation != NULL)
     {
         if (m_Test == Test)
@@ -450,8 +447,8 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             return false;
         }
         m_Test = Test;
-        if (m_ContinueSection->GenerateNativeCode(Test)) { return true; }
-        if (m_JumpSection->GenerateNativeCode(Test)) { return true; }
+        if (m_ContinueSection != NULL && m_ContinueSection->GenerateNativeCode(Test)) { return true; }
+        if (m_JumpSection != NULL && m_JumpSection->GenerateNativeCode(Test)) { return true; }
         return false;
     }
 
@@ -766,6 +763,14 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             m_RecompilerOps->GetRegWorkingSet().SetBlockCycleCount(m_RecompilerOps->GetRegWorkingSet().GetBlockCycleCount() - g_System->CountPerOp());
             m_RecompilerOps->SetCurrentPC(m_RecompilerOps->GetCurrentPC() - 4);
             break;
+        case JUMP:
+        case END_BLOCK:
+            // Do nothing, block will end
+            break;
+        default:
+            CPU_Message("m_RecompilerOps->GetNextStepType() = %d", m_RecompilerOps->GetNextStepType());
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            break;
         }
 
         if (m_DelaySlot)
@@ -802,7 +807,6 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
 
 void CCodeSection::AddParent(CCodeSection * Parent)
 {
-    if (this == NULL) { return; }
     if (Parent == NULL)
     {
         m_RecompilerOps->SetRegWorkingSet(m_RegEnter);
@@ -850,8 +854,6 @@ void CCodeSection::AddParent(CCodeSection * Parent)
 
 void CCodeSection::SwitchParent(CCodeSection * OldParent, CCodeSection * NewParent)
 {
-    if (this == NULL) { return; }
-
     bool bFoundOldParent = false;
     for (SECTION_LIST::iterator iter = m_ParentSection.begin(); iter != m_ParentSection.end(); iter++)
     {
@@ -901,15 +903,19 @@ void CCodeSection::TestRegConstantStates(CRegInfo & Base, CRegInfo & Reg)
 
 void CCodeSection::DetermineLoop(uint32_t Test, uint32_t Test2, uint32_t TestID)
 {
-    if (this == NULL) { return; }
-
     if (m_SectionID == TestID)
     {
         if (m_Test2 != Test2)
         {
             m_Test2 = Test2;
-            m_ContinueSection->DetermineLoop(Test, Test2, TestID);
-            m_JumpSection->DetermineLoop(Test, Test2, TestID);
+            if (m_ContinueSection)
+            {
+                m_ContinueSection->DetermineLoop(Test, Test2, TestID);
+            }
+            if (m_JumpSection)
+            {
+                m_JumpSection->DetermineLoop(Test, Test2, TestID);
+            }
 
             if (m_Test != Test)
             {
@@ -934,15 +940,20 @@ void CCodeSection::DetermineLoop(uint32_t Test, uint32_t Test2, uint32_t TestID)
         if (m_Test2 != Test2)
         {
             m_Test2 = Test2;
-            m_ContinueSection->DetermineLoop(Test, Test2, TestID);
-            m_JumpSection->DetermineLoop(Test, Test2, TestID);
+            if (m_ContinueSection)
+            {
+                m_ContinueSection->DetermineLoop(Test, Test2, TestID);
+            }
+            if (m_JumpSection)
+            {
+                m_JumpSection->DetermineLoop(Test, Test2, TestID);
+            }
         }
     }
 }
 
 CCodeSection * CCodeSection::ExistingSection(uint32_t Addr, uint32_t Test)
 {
-    if (this == NULL) { return NULL; }
     if (m_EnterPC == Addr && m_LinkAllowed)
     {
         return this;
@@ -950,9 +961,9 @@ CCodeSection * CCodeSection::ExistingSection(uint32_t Addr, uint32_t Test)
     if (m_Test == Test) { return NULL; }
     m_Test = Test;
 
-    CCodeSection * Section = m_JumpSection->ExistingSection(Addr, Test);
+    CCodeSection * Section = m_JumpSection ? m_JumpSection->ExistingSection(Addr, Test) : NULL;
     if (Section != NULL) { return Section; }
-    Section = m_ContinueSection->ExistingSection(Addr, Test);
+    Section = m_ContinueSection ? m_ContinueSection->ExistingSection(Addr, Test) : NULL;
     if (Section != NULL) { return Section; }
 
     return NULL;
@@ -960,7 +971,6 @@ CCodeSection * CCodeSection::ExistingSection(uint32_t Addr, uint32_t Test)
 
 bool CCodeSection::SectionAccessible(uint32_t SectionId, uint32_t Test)
 {
-    if (this == NULL) { return false; }
     if (m_SectionID == SectionId)
     {
         return true;
@@ -969,38 +979,32 @@ bool CCodeSection::SectionAccessible(uint32_t SectionId, uint32_t Test)
     if (m_Test == Test) { return false; }
     m_Test = Test;
 
-    if (m_ContinueSection->SectionAccessible(SectionId, Test))
+    if (m_ContinueSection && m_ContinueSection->SectionAccessible(SectionId, Test))
     {
         return true;
     }
-    return m_JumpSection->SectionAccessible(SectionId, Test);
+    return m_JumpSection && m_JumpSection->SectionAccessible(SectionId, Test);
 }
 
 void CCodeSection::UnlinkParent(CCodeSection * Parent, bool ContinueSection)
 {
-    if (this == NULL)
-    {
-        return;
-    }
-
     CPU_Message("%s: Section %d Parent: %d ContinueSection = %s", __FUNCTION__, m_SectionID, Parent->m_SectionID, ContinueSection ? "Yes" : "No");
     if (Parent->m_ContinueSection == this && Parent->m_JumpSection == this)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    SECTION_LIST::iterator iter = m_ParentSection.begin();
-    while (iter != m_ParentSection.end())
+    SECTION_LIST::iterator ParentIter = m_ParentSection.begin();
+    while (ParentIter != m_ParentSection.end())
     {
-        CCodeSection * ParentIter = *iter;
-        if (ParentIter == Parent && (Parent->m_ContinueSection != this || Parent->m_JumpSection != this))
+        if (*ParentIter == Parent && (Parent->m_ContinueSection != this || Parent->m_JumpSection != this))
         {
-            m_ParentSection.erase(iter);
-            iter = m_ParentSection.begin();
+            m_ParentSection.erase(ParentIter);
+            ParentIter = m_ParentSection.begin();
         }
         else
         {
-            iter++;
+            ParentIter++;
         }
     }
 
@@ -1021,23 +1025,23 @@ void CCodeSection::UnlinkParent(CCodeSection * Parent, bool ContinueSection)
         {
             for (SECTION_LIST::iterator iter = m_ParentSection.begin(); iter != m_ParentSection.end(); iter++)
             {
-                CCodeSection * ParentIter = *iter;
-                if (ParentIter->m_ContinueSection == this)
+                CCodeSection * CodeSection = *iter;
+                if (CodeSection->m_ContinueSection == this)
                 {
-                    if (ParentIter->m_CompiledLocation)
+                    if (CodeSection->m_CompiledLocation)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
-                    ParentIter->m_ContinueSection = NULL;
+                    CodeSection->m_ContinueSection = NULL;
                 }
 
-                if (ParentIter->m_JumpSection == this)
+                if (CodeSection->m_JumpSection == this)
                 {
-                    if (ParentIter->m_CompiledLocation)
+                    if (CodeSection->m_CompiledLocation)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
-                    ParentIter->m_JumpSection = NULL;
+                    CodeSection->m_JumpSection = NULL;
                 }
             }
             bRemove = true;
@@ -1080,17 +1084,16 @@ bool CCodeSection::IsAllParentLoops(CCodeSection * Parent, bool IgnoreIfCompiled
 
 bool CCodeSection::DisplaySectionInformation(uint32_t ID, uint32_t Test)
 {
-    if (!g_bRecompilerLogging)
+    if (!CDebugSettings::bRecordRecompilerAsm())
     {
         return false;
     }
-    if (this == NULL) { return false; }
     if (m_Test == Test) { return false; }
     m_Test = Test;
     if (m_SectionID != ID)
     {
-        if (m_ContinueSection->DisplaySectionInformation(ID, Test)) { return true; }
-        if (m_JumpSection->DisplaySectionInformation(ID, Test)) { return true; }
+        if (m_ContinueSection != NULL && m_ContinueSection->DisplaySectionInformation(ID, Test)) { return true; }
+        if (m_JumpSection != NULL && m_JumpSection->DisplaySectionInformation(ID, Test)) { return true; }
         return false;
     }
     DisplaySectionInformation();
@@ -1105,12 +1108,12 @@ void CCodeSection::DisplaySectionInformation()
     }
 
     CPU_Message("====== Section %d ======", m_SectionID);
-    CPU_Message("Start PC: %X", m_EnterPC);
+    CPU_Message("Start PC: 0x%X", m_EnterPC);
     if (g_System->bLinkBlocks())
     {
-        CPU_Message("End PC: %X", m_EndPC);
+        CPU_Message("End PC: 0x%X", m_EndPC);
     }
-    CPU_Message("CompiledLocation: %X", m_CompiledLocation);
+    CPU_Message("CompiledLocation: 0x%X", m_CompiledLocation);
     if (g_System->bLinkBlocks() && !m_ParentSection.empty())
     {
         stdstr ParentList;

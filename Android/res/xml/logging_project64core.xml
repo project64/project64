@@ -1,114 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceMD5"
         android:title="@string/TraceMD5" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceThread"
         android:title="@string/TraceThread" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TracePath"
         android:title="@string/TracePath" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceSettings"
         android:title="@string/TraceSettings" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceUnknown"
         android:title="@string/TraceUnknown" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceAppInit"
         android:title="@string/TraceAppInit" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceAppCleanup"
         android:title="@string/TraceAppCleanup" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceN64System"
         android:title="@string/TraceN64System" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TracePlugins"
         android:title="@string/TracePlugins" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceGFXPlugin"
         android:title="@string/TraceGFXPlugin" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceAudioPlugin"
         android:title="@string/TraceAudioPlugin" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceControllerPlugin"
         android:title="@string/TraceControllerPlugin" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceRSPPlugin"
         android:title="@string/TraceRSPPlugin" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceRSP"
         android:title="@string/TraceRSP" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceAudio"
         android:title="@string/TraceAudio" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceRegisterCache"
         android:title="@string/TraceRegisterCache" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceRecompiler"
         android:title="@string/TraceRecompiler" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceTLB"
         android:title="@string/TraceTLB" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceProtectedMEM"
         android:title="@string/TraceProtectedMem" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceUserInterface"
         android:title="@string/TraceUserInterface" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceRomList"
         android:title="@string/TraceRomList" />
-    <ListPreference
-        android:entries="@array/trace_severity_list"
-        android:entryValues="@array/trace_severity_values"
+    <emu.project64.settings.LogLevelPreference
         android:key="Debugger_TraceExceptionHandler"
         android:title="@string/TraceExceptionHandler" />
 </PreferenceScreen>

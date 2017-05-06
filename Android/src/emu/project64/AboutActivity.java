@@ -13,8 +13,10 @@ package emu.project64;
 import java.util.Arrays;
 import java.util.List;
 
+import emu.project64.jni.LanguageStringID;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
+import emu.project64.util.Strings;
 import emu.project64.util.Utility;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -58,7 +60,7 @@ public class AboutActivity extends AppCompatActivity
         WebView webView = (WebView)findViewById(R.id.webview);
 
         List<View> lists = Arrays.asList(aboutMain, webView);
-        String[] titles = new String[] {getString(R.string.about), getString(R.string.licence)};
+        String[] titles = new String[] {Strings.GetString(LanguageStringID.ANDROID_ABOUT), Strings.GetString(LanguageStringID.ANDROID_ABOUT_LICENCE)};
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setOffscreenPageLimit(MODE_TOTAL-1);
         viewPager.setAdapter(new AboutPagerAdapter(lists, titles));
@@ -69,6 +71,15 @@ public class AboutActivity extends AppCompatActivity
         TextView link = (TextView)findViewById(R.id.main_link);
         link.setText(Html.fromHtml(getString(R.string.about_link)));
         
+        TextView app_name_full = (TextView)findViewById(R.id.app_name_full);
+        app_name_full.setText(Strings.GetString(LanguageStringID.ANDROID_ABOUT_APP_NAME));
+
+        TextView about_text = (TextView)findViewById(R.id.about_text);
+        about_text.setText(Strings.GetString(LanguageStringID.ANDROID_ABOUT_TEXT));
+
+        TextView Project64_authors = (TextView)findViewById(R.id.Project64_authors);
+        Project64_authors.setText(Strings.GetString(LanguageStringID.ANDROID_ABOUT_PJ64_AUTHORS));
+
         webView.loadData(Utility.readAsset("licence.htm", ""), "text/html", "UTF8");
     }
     

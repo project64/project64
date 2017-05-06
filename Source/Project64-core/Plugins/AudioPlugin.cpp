@@ -148,9 +148,6 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
     m_Initialized = InitiateAudio(Info) != 0;
 
 #ifdef _WIN32
-    //jabo had a bug so I call CreateThread so his dllmain gets called again
-    pjutil::DynLibCallDllMain();
-
     if (System != NULL)
     {
         if (AiUpdate)

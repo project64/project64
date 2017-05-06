@@ -171,6 +171,7 @@ Status=Compatible
 Plugin Note=[Glide64] framebuffer:screen
 Culling=1
 Emulate Clear=1
+Linking=Off
 
 [1FBAF161-2C1C54F1-C:41]
 Good Name=1080 Snowboarding (JU) (M2)
@@ -182,6 +183,7 @@ SMM-Cache=0
 SMM-PI DMA=0
 SMM-TLB=0
 Self Texture=1
+Linking=Off
 
 [ABA51D09-C668BAD9-C:58]
 Good Name=40 Winks (E) (M3) (Beta)
@@ -770,6 +772,12 @@ Internal Name=BOMBERMAN64
 Status=Compatible
 Culling=1
 
+[9780C9FB-67CF6B4A-C:45]
+Good Name=Bomberman 64 (J) [T]
+Internal Name=BOMBERMAN64
+Status=Compatible
+Culling=1
+
 [F568D51E-7E49BA1E-C:45]
 Good Name=Bomberman 64 (U)
 Internal Name=BOMBERMAN64U
@@ -995,6 +1003,12 @@ Plugin Note=[input] disable Memory Pak
 
 [A4F2F521-F0EB168E-C:4A]
 Good Name=Chameleon Twist (J)
+Internal Name=Chameleon Twist
+Status=Compatible
+Plugin Note=[input] disable Memory Pak
+
+[D0443A6B-C0B89972-C:41]
+Good Name=Chameleon Twist (J) [T]
 Internal Name=Chameleon Twist
 Status=Compatible
 Plugin Note=[input] disable Memory Pak
@@ -1302,7 +1316,9 @@ Status=Compatible
 [17C54A61-4A83F2E7-C:4A]
 Good Name=Densha de GO! 64 (J)
 Internal Name=ÃÞÝ¼¬ÃÞGO!64
+Save Type=16kbit Eeprom
 Status=Compatible
+Counter Factor=1
 
 [A5F667E1-DA1FBD1F-C:4A]
 Good Name=Derby Stallion 64 (J)
@@ -1431,30 +1447,29 @@ Save Type=4kbit Eeprom
 Good Name=Donkey Kong 64 (E)
 Internal Name=DONKEY KONG 64
 Status=Compatible
-Core Note=Polygon tearing
 Plugin Note=[Glide64] fairy bug; transitions
 32bit=No
 Counter Factor=1
 Culling=1
 RDRAM Size=8
 Save Type=16kbit Eeprom
+Cheat0=806128E2 0000 // Polygon Tearing Fix
 
 [053C89A7-A5064302-C:4A]
 Good Name=Donkey Kong 64 (J)
 Internal Name=DONKEY KONG 64
 Status=Compatible
-Core Note=Polygon tearing
 Plugin Note=[Glide64] fairy bug; transitions
 32bit=No
 Counter Factor=1
 RDRAM Size=8
 Save Type=16kbit Eeprom
+Cheat0=806170A2 0000 // Polygon Tearing Fix
 
 [EC58EABF-AD7C7169-C:45]
 Good Name=Donkey Kong 64 (U)
 Internal Name=DONKEY KONG 64
 Status=Compatible
-Core Note=Polygon tearing
 Plugin Note=[Glide64] fairy bug; transitions
 32bit=No
 Counter Factor=1
@@ -1463,6 +1478,7 @@ Emulate Clear=1
 Primary Frame Buffer=1
 RDRAM Size=8
 Save Type=16kbit Eeprom
+Cheat0=80619632 0000 // Polygon Tearing Fix
 
 [0DD4ABAB-B5A2A91E-C:45]
 Good Name=Donkey Kong 64 (U) (Kiosk Demo)
@@ -2353,12 +2369,14 @@ Good Name=Hoshi no Kirby 64 (J) (V1.2)
 Internal Name=Kirby64
 Status=Compatible
 Culling=1
+Save Type=16kbit Eeprom
 
 [BCB1F89F-060752A2-C:4A]
 Good Name=Hoshi no Kirby 64 (J) (V1.3)
 Internal Name=Kirby64
 Status=Compatible
 Culling=1
+Save Type=16kbit Eeprom
 
 [E7D20193-C1158E93-C:50]
 Good Name=Hot Wheels Turbo Racing (E) (M3)
@@ -2899,12 +2917,14 @@ Good Name=Kirby 64 - The Crystal Shards (E)
 Internal Name=Kirby64
 Status=Compatible
 Culling=1
+Save Type=16kbit Eeprom
 
 [46039FB4-0337822C-C:45]
 Good Name=Kirby 64 - The Crystal Shards (U)
 Internal Name=Kirby64
 Status=Compatible
 Culling=1
+Save Type=16kbit Eeprom
 
 [4A997C74-E2087F99-C:50]
 Good Name=Knife Edge - Nose Gunner (E)
@@ -2988,6 +3008,14 @@ RDRAM Size=8
 //================  L  ================
 [7F304099-52CF5276-C:4A]
 Good Name=Last Legion UX (J)
+Internal Name=LASTLEGION UX
+Status=Issues (plugin)
+Plugin Note=[video] HLE not supported
+HLE GFX=No
+RDRAM Size=8
+
+[0160E9E5-29A4CB68-C:45]
+Good Name=Last Legion UX (J) [T]
 Internal Name=LASTLEGION UX
 Status=Issues (plugin)
 Plugin Note=[video] HLE not supported
@@ -3652,7 +3680,7 @@ Status=Compatible
 Good Name=Namco Museum 64 (U)
 Internal Name=NAMCOMUSEUM64
 Status=Compatible
-Culling=1
+32bit=No
 RDRAM Size=8
 
 [DF331A18-5FD4E044-C:45]
@@ -6790,12 +6818,12 @@ RDRAM Size=8
 Good Name=Wonder Project J2 - Corlo no Mori no Josette (J)
 Internal Name=WONDER PROJECT J2
 Status=Compatible
-Core Note=Intro hang? skip to avoid
+Counter Factor=1
 
 [4F1E88F7-4A5A3F96-C:4A]
 Good Name=Wonder Project J2 [T]
 Status=Compatible
-Core Note=Intro hang? skip to avoid
+Counter Factor=1
 
 [F9FC3090-FF014EC2-C:50]
 Good Name=World Cup 98 (E) (M8)

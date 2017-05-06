@@ -181,8 +181,14 @@ bool CCodeBlock::SetSection(CCodeSection * & Section, CCodeSection * CurrentSect
                 BaseSection->m_JumpSection = SplitSection->m_JumpSection;
                 BaseSection->SetContinueAddress(SplitSection->m_Cont.JumpPC, SplitSection->m_Cont.TargetPC);
                 BaseSection->m_ContinueSection = SplitSection->m_ContinueSection;
-                BaseSection->m_JumpSection->SwitchParent(SplitSection, BaseSection);
-                BaseSection->m_ContinueSection->SwitchParent(SplitSection, BaseSection);
+                if (BaseSection->m_JumpSection)
+                {
+                    BaseSection->m_JumpSection->SwitchParent(SplitSection, BaseSection);
+                }
+                if (BaseSection->m_ContinueSection)
+                {
+                    BaseSection->m_ContinueSection->SwitchParent(SplitSection, BaseSection);
+                }
                 BaseSection->AddParent(SplitSection);
 
                 SplitSection->m_EndPC = TargetPC - 4;
@@ -400,7 +406,10 @@ void CCodeBlock::DetermineLoops()
         CCodeSection * Section = itr->second;
 
         uint32_t Test = NextTest();
-        Section->DetermineLoop(Test, Test, Section->m_SectionID);
+        if (Section)
+        {
+            Section->DetermineLoop(Test, Test, Section->m_SectionID);
+        }
     }
 }
 
@@ -750,23 +759,24 @@ bool CCodeBlock::Compile()
     m_RecompilerOps->EnterCodeBlock();
     if (g_System->bLinkBlocks())
     {
-        while (m_EnterSection->GenerateNativeCode(NextTest()));
+        while (m_EnterSection !=NULL && m_EnterSection->GenerateNativeCode(NextTest()));
     }
     else
     {
-        if (!m_EnterSection->GenerateNativeCode(NextTest()))
+        if (m_EnterSection == NULL || !m_EnterSection->GenerateNativeCode(NextTest()))
         {
             return false;
         }
     }
     m_RecompilerOps->CompileExitCode();
+    m_CompiledLocationEnd = *g_RecompPos;
 
     uint32_t PAddr;
     g_TransVaddr->TranslateVaddr(VAddrFirst(), PAddr);
     MD5(g_MMU->Rdram() + PAddr, (VAddrLast() - VAddrFirst()) + 4).get_digest(m_Hash);
 
 #if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
-    __clear_cache_android((uint8_t *)((uint32_t)m_CompiledLocation & ~1), (uint8_t *)(*g_RecompPos));
+    __clear_cache_android((uint8_t *)((uint32_t)m_CompiledLocation & ~1), m_CompiledLocationEnd);
 #endif
     return true;
 }

@@ -9,15 +9,11 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#include <Project64-core/Settings/DebugSettings.h>
 
-/* vsprintf() needs to have both of these included. */
-#include <stdio.h>
-#include <stdarg.h>
-
-#define CPU_Message(Message,... )  if (g_bRecompilerLogging) { Recompiler_Log_Message(Message,## __VA_ARGS__); }
+#define CPU_Message(Message,... )  if (CDebugSettings::bRecordRecompilerAsm()) { Recompiler_Log_Message(Message,## __VA_ARGS__); }
 
 void Recompiler_Log_Message (const char * Message, ...);
 void Start_Recompiler_Log (void);
-void Stop_Recompiler_Log (void);
-
-extern bool g_bRecompilerLogging;
+void Stop_Recompiler_Log(void); 
+void Flush_Recompiler_Log(void);

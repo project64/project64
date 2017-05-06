@@ -17,6 +17,7 @@ CCompiledFunc::CCompiledFunc( const CCodeBlock & CodeBlock ) :
     m_MaxPC(CodeBlock.VAddrLast()),
     m_Hash(CodeBlock.Hash()),
     m_Function((Func)CodeBlock.CompiledLocation()),
+    m_FunctionEnd(CodeBlock.CompiledLocationEnd()),
     m_Next(NULL)
 {
     m_MemContents[0] = CodeBlock.MemContents(0);

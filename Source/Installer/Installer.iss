@@ -31,7 +31,7 @@ Source: "{#BaseDir}\Config\Project64.rdx"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Lang\*.pj.Lang"; DestDir: "{app}\Lang"
 Source: "{#BaseDir}\Plugin\Audio\Jabo_Dsound.dll"; DestDir: "{app}\Plugin\Audio"
 Source: "{#BaseDir}\Plugin\GFX\Jabo_Direct3D8.dll"; DestDir: "{app}\Plugin\GFX"
-Source: "{#BaseDir}\Plugin\GFX\PJ64Glide64.dll"; DestDir: "{app}\Plugin\GFX"
+Source: "{#BaseDir}\Plugin\GFX\Project64-Video.dll"; DestDir: "{app}\Plugin\GFX"
 Source: "{#BaseDir}\Plugin\Input\PJ64_NRage.dll"; DestDir: "{app}\Plugin\Input"
 Source: "{#BaseDir}\Plugin\RSP\RSP 1.7.dll"; DestDir: "{app}\Plugin\RSP"
 

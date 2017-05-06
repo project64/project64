@@ -13,10 +13,57 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64Class.h>
 
+const char * SystemEventName(SystemEvent event)
+{
+    switch (event)
+    {
+    case SysEvent_ExecuteInterrupt: return "SysEvent_ExecuteInterrupt";
+    case SysEvent_GSButtonPressed: return "SysEvent_GSButtonPressed";
+    case SysEvent_ResetCPU_Soft: return "SysEvent_ResetCPU_Soft";
+    case SysEvent_ResetCPU_SoftDone: return "SysEvent_ResetCPU_SoftDone";
+    case SysEvent_ResetCPU_Hard: return "SysEvent_ResetCPU_Hard";
+    case SysEvent_CloseCPU: return "SysEvent_CloseCPU";
+    case SysEvent_PauseCPU_FromMenu: return "SysEvent_PauseCPU_FromMenu";
+    case SysEvent_PauseCPU_AppLostActive: return "SysEvent_PauseCPU_AppLostActive";
+    case SysEvent_PauseCPU_AppLostActiveDelay: return "SysEvent_PauseCPU_AppLostActiveDelay";
+    case SysEvent_PauseCPU_AppLostFocus: return "SysEvent_PauseCPU_AppLostFocus";
+    case SysEvent_PauseCPU_SaveGame: return "SysEvent_PauseCPU_SaveGame";
+    case SysEvent_PauseCPU_LoadGame: return "SysEvent_PauseCPU_LoadGame";
+    case SysEvent_PauseCPU_DumpMemory: return "SysEvent_PauseCPU_DumpMemory";
+    case SysEvent_PauseCPU_SearchMemory: return "SysEvent_PauseCPU_SearchMemory";
+    case SysEvent_PauseCPU_Settings: return "SysEvent_PauseCPU_Settings";
+    case SysEvent_PauseCPU_Cheats: return "SysEvent_PauseCPU_Cheats";
+    case SysEvent_ResumeCPU_FromMenu: return "SysEvent_ResumeCPU_FromMenu";
+    case SysEvent_ResumeCPU_AppGainedActive: return "SysEvent_ResumeCPU_AppGainedActive";
+    case SysEvent_ResumeCPU_AppGainedFocus: return "SysEvent_ResumeCPU_AppGainedFocus";
+    case SysEvent_ResumeCPU_SaveGame: return "SysEvent_ResumeCPU_SaveGame";
+    case SysEvent_ResumeCPU_LoadGame: return "SysEvent_ResumeCPU_LoadGame";
+    case SysEvent_ResumeCPU_DumpMemory: return "SysEvent_ResumeCPU_DumpMemory";
+    case SysEvent_ResumeCPU_SearchMemory: return "SysEvent_ResumeCPU_SearchMemory";
+    case SysEvent_ResumeCPU_Settings: return "SysEvent_ResumeCPU_Settings";
+    case SysEvent_ResumeCPU_Cheats: return "SysEvent_ResumeCPU_Cheats";
+    case SysEvent_ChangingFullScreen: return "SysEvent_ChangingFullScreen";
+    case SysEvent_ChangePlugins: return "SysEvent_ChangePlugins";
+    case SysEvent_SaveMachineState: return "SysEvent_SaveMachineState";
+    case SysEvent_LoadMachineState: return "SysEvent_LoadMachineState";
+    case SysEvent_Interrupt_SP: return "SysEvent_Interrupt_SP";
+    case SysEvent_Interrupt_SI: return "SysEvent_Interrupt_SI";
+    case SysEvent_Interrupt_AI: return "SysEvent_Interrupt_AI";
+    case SysEvent_Interrupt_VI: return "SysEvent_Interrupt_VI";
+    case SysEvent_Interrupt_PI: return "SysEvent_Interrupt_PI";
+    case SysEvent_Interrupt_DP: return "SysEvent_Interrupt_DP";
+    case SysEvent_ResetFunctionTimes: return "SysEvent_ResetFunctionTimes";
+    case SysEvent_DumpFunctionTimes: return "SysEvent_DumpFunctionTimes";
+    }
+    static char unknown[100];
+    sprintf(unknown, "unknown(%d)", event);
+    return unknown;
+}
+
 CSystemEvents::CSystemEvents(CN64System * System, CPlugins * Plugins) :
-m_System(System),
-m_Plugins(Plugins),
-m_bDoSomething(false)
+    m_System(System),
+    m_Plugins(Plugins),
+    m_bDoSomething(false)
 {
 }
 

@@ -90,7 +90,7 @@ LRESULT CSupportWindow::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         SetWindowLong(GWL_STYLE, dwStyle);
 
         ::EnableWindow(GetDlgItem(IDCANCEL), false);
-        srand (time(NULL));
+        srand ((uint32_t)time(NULL));
         SetTimer(0, ((rand() % 35) + 5) * 1000, NULL);
     }
     return TRUE;

@@ -72,6 +72,19 @@ bool CPlugin::Load(const char * FileName)
     LoadFunction(DllConfig);
     LoadFunction(DllAbout);
 
+    LoadFunction(SetPluginNotification);
+    if (SetPluginNotification)
+    {
+        WriteTrace(PluginTraceType(), TraceDebug, "Found SetPluginNotification");
+        PLUGIN_NOTIFICATION info;
+        info.DisplayError = DisplayError;
+        info.FatalError = FatalError;
+        info.DisplayMessage = DisplayMessage;
+        info.DisplayMessage2 = DisplayMessage2;
+        info.BreakPoint = BreakPoint;
+        SetPluginNotification(&info);
+    }
+
     LoadFunction(SetSettingNotificationInfo);
     if (SetSettingNotificationInfo)
     {
@@ -305,4 +318,29 @@ bool CPlugin::ValidPluginVersion(PLUGIN_INFO & PluginInfo)
         break;
     }
     return false;
+}
+
+void CPlugin::DisplayError(const char * Message)
+{
+    g_Notify->DisplayError(Message);
+}
+
+void CPlugin::FatalError(const char * Message)
+{
+    g_Notify->FatalError(Message);
+}
+
+void CPlugin::DisplayMessage(int DisplayTime, const char * Message)
+{
+    g_Notify->DisplayMessage(DisplayTime, Message);
+}
+
+void CPlugin::DisplayMessage2(const char * Message)
+{
+    g_Notify->DisplayMessage2(Message);
+}
+
+void CPlugin::BreakPoint(const char * FileName, int32_t LineNumber)
+{
+    g_Notify->BreakPoint(FileName, LineNumber);
 }

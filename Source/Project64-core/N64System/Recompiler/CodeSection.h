@@ -28,7 +28,6 @@ public:
     bool GenerateNativeCode(uint32_t Test);
     void GenerateSectionLinkage();
     void DetermineLoop(uint32_t Test, uint32_t Test2, uint32_t TestID);
-    bool FixConstants(uint32_t Test);
     CCodeSection * ExistingSection(uint32_t Addr, uint32_t Test);
     bool SectionAccessible(uint32_t SectionId, uint32_t Test);
     bool DisplaySectionInformation(uint32_t ID, uint32_t Test);

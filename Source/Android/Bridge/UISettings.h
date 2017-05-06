@@ -30,6 +30,16 @@ enum UISettingID
     Controller_CurrentProfile,
     Controller_Deadzone,
     Controller_Sensitivity,
+
+    //Support Window
+    SupportWindow_FirstRun,
+    SupportWindow_AlwaysShow,
+    SupportWindow_ShowingSupportWindow,
+    SupportWindow_RunCount,
+    SupportWindow_PatreonEmail,
+
+    //Game Settings
+    Game_RunCount,
 };
 
 void RegisterUISettings(void);

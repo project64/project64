@@ -745,7 +745,8 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
             m_NextInstruction = END_BLOCK;
             SetJumpRegSet(Section, m_Reg);
         }
-        else {
+        else 
+        {
             switch (m_NextInstruction)
             {
             case NORMAL:
@@ -760,29 +761,17 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                 }
                 break;
             case LIKELY_DELAY_SLOT:
-            {
                 SetContinueRegSet(Section, m_Reg);
                 SetJumpRegSet(Section, m_Reg);
-            }
-            m_NextInstruction = END_BLOCK;
-            break;
+                m_NextInstruction = END_BLOCK;
+                break;
             case DELAY_SLOT_DONE:
-            {
                 SetContinueRegSet(Section, m_Reg);
                 SetJumpRegSet(Section, m_Reg);
-            }
-            m_NextInstruction = END_BLOCK;
-            break;
+                m_NextInstruction = END_BLOCK;
+                break;
             case LIKELY_DELAY_SLOT_DONE:
                 g_Notify->BreakPoint(__FILE__, __LINE__);
-                if (Section->m_CompiledLocation)
-                {
-                }
-                else
-                {
-                    //Section->m_Jump.RegSet = m_Reg;
-                    //Section->m_Jump.DoneDelaySlot = true;
-                }
                 m_NextInstruction = END_BLOCK;
                 break;
             }
@@ -1146,8 +1135,8 @@ void LoopAnalysis::SPECIAL_DADD()
     if (m_Reg.IsConst(m_Command.rt) && m_Reg.IsConst(m_Command.rs))
     {
         m_Reg.SetMipsReg(m_Command.rd,
-            m_Reg.Is64Bit(m_Command.rs) ? m_Reg.GetMipsReg(m_Command.rs) : (int64_t)m_Reg.GetMipsRegLo_S(m_Command.rs) +
-            m_Reg.Is64Bit(m_Command.rt) ? m_Reg.GetMipsReg(m_Command.rt) : (int64_t)m_Reg.GetMipsRegLo_S(m_Command.rt)
+            (m_Reg.Is64Bit(m_Command.rs) ? m_Reg.GetMipsReg(m_Command.rs) : (int64_t)m_Reg.GetMipsRegLo_S(m_Command.rs)) +
+            (m_Reg.Is64Bit(m_Command.rt) ? m_Reg.GetMipsReg(m_Command.rt) : (int64_t)m_Reg.GetMipsRegLo_S(m_Command.rt))
             );
         m_Reg.SetMipsRegState(m_Command.rd, CRegInfo::STATE_CONST_64);
     }
@@ -1167,8 +1156,8 @@ void LoopAnalysis::SPECIAL_DADDU()
     if (m_Reg.IsConst(m_Command.rt) && m_Reg.IsConst(m_Command.rs))
     {
         m_Reg.SetMipsReg(m_Command.rd,
-            m_Reg.Is64Bit(m_Command.rs) ? m_Reg.GetMipsReg(m_Command.rs) : (int64_t)m_Reg.GetMipsRegLo_S(m_Command.rs) +
-            m_Reg.Is64Bit(m_Command.rt) ? m_Reg.GetMipsReg(m_Command.rt) : (int64_t)m_Reg.GetMipsRegLo_S(m_Command.rt)
+            (m_Reg.Is64Bit(m_Command.rs) ? m_Reg.GetMipsReg(m_Command.rs) : (int64_t)m_Reg.GetMipsRegLo_S(m_Command.rs)) +
+            (m_Reg.Is64Bit(m_Command.rt) ? m_Reg.GetMipsReg(m_Command.rt) : (int64_t)m_Reg.GetMipsRegLo_S(m_Command.rt))
             );
         m_Reg.SetMipsRegState(m_Command.rd, CRegInfo::STATE_CONST_64);
     }
@@ -1188,8 +1177,8 @@ void LoopAnalysis::SPECIAL_DSUB()
     if (m_Reg.IsConst(m_Command.rt) && m_Reg.IsConst(m_Command.rs))
     {
         m_Reg.SetMipsReg(m_Command.rd,
-            m_Reg.Is64Bit(m_Command.rs) ? m_Reg.GetMipsReg(m_Command.rs) : (int64_t)m_Reg.GetMipsRegLo_S(m_Command.rs) -
-            m_Reg.Is64Bit(m_Command.rt) ? m_Reg.GetMipsReg(m_Command.rt) : (int64_t)m_Reg.GetMipsRegLo_S(m_Command.rt)
+            (m_Reg.Is64Bit(m_Command.rs) ? m_Reg.GetMipsReg(m_Command.rs) : (int64_t)m_Reg.GetMipsRegLo_S(m_Command.rs)) -
+            (m_Reg.Is64Bit(m_Command.rt) ? m_Reg.GetMipsReg(m_Command.rt) : (int64_t)m_Reg.GetMipsRegLo_S(m_Command.rt))
             );
         m_Reg.SetMipsRegState(m_Command.rd, CRegInfo::STATE_CONST_64);
     }
@@ -1209,8 +1198,8 @@ void LoopAnalysis::SPECIAL_DSUBU()
     if (m_Reg.IsConst(m_Command.rt) && m_Reg.IsConst(m_Command.rs))
     {
         m_Reg.SetMipsReg(m_Command.rd,
-            m_Reg.Is64Bit(m_Command.rs) ? m_Reg.GetMipsReg(m_Command.rs) : (int64_t)m_Reg.GetMipsRegLo_S(m_Command.rs) -
-            m_Reg.Is64Bit(m_Command.rt) ? m_Reg.GetMipsReg(m_Command.rt) : (int64_t)m_Reg.GetMipsRegLo_S(m_Command.rt)
+            (m_Reg.Is64Bit(m_Command.rs) ? m_Reg.GetMipsReg(m_Command.rs) : (int64_t)m_Reg.GetMipsRegLo_S(m_Command.rs)) -
+            (m_Reg.Is64Bit(m_Command.rt) ? m_Reg.GetMipsReg(m_Command.rt) : (int64_t)m_Reg.GetMipsRegLo_S(m_Command.rt))
             );
         m_Reg.SetMipsRegState(m_Command.rd, CRegInfo::STATE_CONST_64);
     }

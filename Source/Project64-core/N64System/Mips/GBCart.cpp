@@ -294,7 +294,7 @@ static void read_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, uint8_t
     {
         if (gb_cart->ram != NULL)
         {
-            if (gb_cart->ram_bank >= 0x00 && gb_cart->ram_bank <= 0x03)
+            if (gb_cart->ram_bank <= 0x03)
             {
                 offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
                 if (offset < gb_cart->ram_size)
@@ -373,7 +373,7 @@ static void write_gb_cart_mbc3(struct gb_cart* gb_cart, uint16_t address, const 
     {
         if (gb_cart->ram != NULL)
         {
-            if (gb_cart->ram_bank >= 0x00 && gb_cart->ram_bank <= 0x03)
+            if (gb_cart->ram_bank <= 0x03)
             {
                 offset = (address - 0xA000) + (gb_cart->ram_bank * 0x2000);
                 if (offset < gb_cart->ram_size)

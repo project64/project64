@@ -80,6 +80,15 @@ typedef struct
     void(*UnregisterChangeCB)(void * handle, int ID, void * Data, SettingChangedFunc Func);
 } PLUGIN_SETTINGS_NOTIFICATION;
 
+typedef struct
+{
+    void(*DisplayError)(const char * Message);
+    void(*FatalError)(const char * Message);
+    void(*DisplayMessage)(int DisplayTime, const char * Message);
+    void(*DisplayMessage2)(const char * Message);
+    void(*BreakPoint)(const char * FileName, int32_t LineNumber);
+} PLUGIN_NOTIFICATION;
+
 enum PLUGIN_TYPE
 {
     PLUGIN_TYPE_NONE = 0,

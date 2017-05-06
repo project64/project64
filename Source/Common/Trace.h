@@ -20,6 +20,7 @@ enum TraceSeverity
 __interface CTraceModule
 {
     virtual void Write(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char * Message) = 0;
+    virtual void FlushTrace() = 0;
 };
 
 class CTraceFileLog : public CTraceModule
@@ -30,6 +31,7 @@ public:
 
     void SetFlushFile(bool bFlushFile);
     void Write(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char * Message);
+    void FlushTrace (void);
 
 private:
     CLog m_hLogFile;
@@ -50,6 +52,7 @@ void TraceSetModuleName(uint8_t module, const char * Name);
 void CloseTrace(void);
 
 void WriteTraceFull(uint32_t module, uint8_t severity, const char * file, int line, const char * function, const char *format, ...);
+void TraceFlushLog(void);
 void TraceSetMaxModule(uint32_t MaxModule, uint8_t DefaultSeverity);
 
 extern uint32_t * g_ModuleLogLevel;

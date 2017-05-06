@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:project64="http://schemas.android.com/apk/res/emu.project64"
+    android:key="screenRoot" >
+
+    <emu.project64.settings.SeekBarPreference
+        android:defaultValue="10"
+        android:key="MaxRomsRemembered"
+        android:title="@string/MaxRomsRemembered_title"
+        project64:maximumValue="20"
+        project64:minimumValue="0"
+        project64:stepSize="1"
+        project64:units=""
+    /> 
+
+	</PreferenceScreen>

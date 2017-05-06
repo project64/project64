@@ -14,8 +14,8 @@ class COptionsShortCutsPage :
 	public CSettingsPageImpl<COptionsShortCutsPage>,
 	public CSettingsPage
 {
-	typedef CMenuShortCutKey::ACCESS_MODE     ACCESS_MODE;
-	typedef CShortCutItem::SHORTCUT_KEY_LIST  SHORTCUT_KEY_LIST;
+	typedef CMenuShortCutKey::RUNNING_STATE RUNNING_STATE;
+	typedef CShortCutItem::SHORTCUT_KEY_LIST SHORTCUT_KEY_LIST;
 
 	BEGIN_MSG_MAP_EX(COptionsShortCutsPage)
 		COMMAND_HANDLER_EX(IDC_C_CPU_STATE,LBN_SELCHANGE,OnCpuStateChanged);

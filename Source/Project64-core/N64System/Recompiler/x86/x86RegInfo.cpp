@@ -105,8 +105,6 @@ bool CX86RegInfo::operator==(const CX86RegInfo& right) const
         if (m_x86fpu_State[count] != right.m_x86fpu_State[count]) { return false; }
         if (m_x86fpu_RoundingModel[count] != right.m_x86fpu_RoundingModel[count]) { return false; }
     }
-    if (m_Fpu_Used != right.m_Fpu_Used) { return false; }
-    if (GetRoundingModel() != right.GetRoundingModel()) { return false; }
     return true;
 }
 

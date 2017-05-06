@@ -11,7 +11,13 @@
 package emu.project64.util;
 
 import emu.project64.game.GameOverlay;
+import emu.project64.jni.NativeExports;
+import emu.project64.jni.SettingsID;
+import emu.project64.Project64Application;
 import emu.project64.R;
+
+import com.google.android.gms.analytics.HitBuilders;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -43,7 +49,7 @@ public final class Notifier
             @Override
             public void run()
             {
-                new AlertDialog.Builder(finalActivity)
+                final AlertDialog dialog = new AlertDialog.Builder(finalActivity)
                 .setTitle("Error")
                 .setMessage(finalMessage)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() 
@@ -51,14 +57,16 @@ public final class Notifier
                     public void onClick(DialogInterface dialog, int id) 
                     {
                         // You don't have to do anything here if you just want it dismissed when clicked
-                	   synchronized(sDisplayMessager)
-                	   {
-                		   sDisplayMessager.notify();
-                	   };
+                       synchronized(sDisplayMessager)
+                       {
+                           sDisplayMessager.notify();
+                       };
                     }
                 })
-                .create()
-                .show();
+                .setCancelable(false)
+                .create();                
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
             }
         };
         activity.runOnUiThread( sDisplayMessager );
@@ -66,8 +74,8 @@ public final class Notifier
         {
             try 
             {
-            	sDisplayMessager.wait();
-    		}
+                sDisplayMessager.wait();
+            }
             catch (InterruptedException e) 
             {
             }
@@ -85,7 +93,7 @@ public final class Notifier
 
         GameOverlay overlay = (GameOverlay) activity.findViewById(R.id.gameOverlay);
         if (overlay == null)
-        	return;
+            return;
         
         overlay.SetDisplayMessage(message, Duratation);
     }
@@ -98,6 +106,15 @@ public final class Notifier
         GameOverlay overlay = (GameOverlay) activity.findViewById(R.id.gameOverlay);
         overlay.SetDisplayMessage2(message);
     }
+    
+    public static void EmulationStarted (Activity activity)
+    {
+        ((Project64Application) activity.getApplication()).getDefaultTracker().send(new HitBuilders.EventBuilder()
+                .setCategory("mobile")
+                .setAction("game")
+                .setLabel(NativeExports.SettingsLoadString(SettingsID.Rdb_GoodName.getValue()))
+                .build());
+    }
 
     private static Runnable runEmulationStopped = null;
     public static void EmulationStopped (Activity activity)
@@ -109,11 +126,11 @@ public final class Notifier
             @Override
             public void run()
             {
-            	finalActivity.finish();
-        		synchronized(runEmulationStopped)
-        		{
-        			runEmulationStopped.notify();
-    			};
+                finalActivity.finish();
+                synchronized(runEmulationStopped)
+                {
+                    runEmulationStopped.notify();
+                };
             }
         };
         activity.runOnUiThread( runEmulationStopped );
@@ -121,8 +138,8 @@ public final class Notifier
         {
             try 
             {
-            	runEmulationStopped.wait();
-    		}
+                runEmulationStopped.wait();
+            }
             catch (InterruptedException e) 
             {
             }

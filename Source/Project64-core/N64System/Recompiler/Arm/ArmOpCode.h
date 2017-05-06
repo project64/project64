@@ -90,6 +90,13 @@ union ArmThumbOpcode
         unsigned p : 1;
         unsigned opcode : 7;
     } Pop;
+
+    struct
+    {
+        unsigned mask : 4;
+        unsigned firstcond : 4;
+        unsigned opcode : 8;
+    } It;
 };
 
 union Arm32Opcode
@@ -265,6 +272,22 @@ union Arm32Opcode
         unsigned opcode : 3;
         unsigned cond : 4;
     } reg_cond_imm5;
+
+    struct
+    {
+        unsigned imm4l : 4;
+        unsigned opcode3 : 4;
+        unsigned imm4h : 4;
+        unsigned rt : 4;
+        unsigned rn : 4;
+        unsigned opcode2 : 1;
+        unsigned w : 1;
+        unsigned opcode1 : 1;
+        unsigned u : 1;
+        unsigned p : 1;
+        unsigned opcode : 3;
+        unsigned cond : 4;
+    } reg_cond_imm8;
 
     struct
     {

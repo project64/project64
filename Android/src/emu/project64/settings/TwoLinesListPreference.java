@@ -41,8 +41,8 @@ public class TwoLinesListPreference extends ListPreference
     @Override
     public void setValue(String value) 
     {
-    	super.setValue(value);
-    	mValueIndex = getValueIndex();
+        super.setValue(value);
+        mValueIndex = getValueIndex();
         updateSummary();
     }
     /**
@@ -53,7 +53,7 @@ public class TwoLinesListPreference extends ListPreference
     */
     public int findIndexOfValue(String value)
     {
-    	CharSequence[] EntryValues = getEntryValues();
+        CharSequence[] EntryValues = getEntryValues();
         if (value != null && EntryValues != null)
         {
             for (int i = EntryValues.length - 1; i >= 0; i--)
@@ -80,14 +80,14 @@ public class TwoLinesListPreference extends ListPreference
     @Override
     public void setEntries(CharSequence[] Entries)
     {
-    	super.setEntries(Entries);
+        super.setEntries(Entries);
         updateSummary();
     }
 
     @Override
     public void setEntryValues(CharSequence[] EntryValues)
     {
-    	super.setEntryValues(EntryValues);
+        super.setEntryValues(EntryValues);
         mValueIndex = getValueIndex();
         updateSummary();
     }
@@ -100,20 +100,20 @@ public class TwoLinesListPreference extends ListPreference
 
     private void updateSummary()
     {
-    	if (mValueIndex < 0)
-    	{
-    		return;
-    	}
-    	CharSequence[] Entries = getEntries();
-    	String summary = Entries[mValueIndex].toString();
-    	if (mEntriesSubtitles != null && mEntriesSubtitles.length > mValueIndex)
-    	{
-        	String subtitle = mEntriesSubtitles[mValueIndex].toString();
-        	if (summary.length() > 0 && subtitle.length() > 0)
-        	{
-        		summary += " - " + subtitle;
-        	}    		
-    	}
+        if (mValueIndex < 0)
+        {
+            return;
+        }
+        CharSequence[] Entries = getEntries();
+        String summary = Entries[mValueIndex].toString();
+        if (mEntriesSubtitles != null && mEntriesSubtitles.length > mValueIndex)
+        {
+            String subtitle = mEntriesSubtitles[mValueIndex].toString();
+            if (summary.length() > 0 && subtitle.length() > 0)
+            {
+                summary += " - " + subtitle;
+            }            
+        }
         setSummary( summary );
     }
 }

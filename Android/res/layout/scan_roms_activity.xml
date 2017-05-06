@@ -5,10 +5,9 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/text1"
+        android:id="@+id/scanRomsDialog_selectDir"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/scanRomsDialog_selectDir"
         android:padding="10dp"
         android:textAppearance="?android:attr/textAppearanceMedium" />
         
@@ -21,11 +20,10 @@
     </ListView>
 
     <CheckBox
-        android:id="@+id/checkBox1"
+        android:id="@+id/ScanRecursively"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:text="@string/scanRomsDialog_scanRecursively" />
+        android:padding="10dp" />
     <RelativeLayout
         android:id="@+id/linearLayoutButtons"
         android:layout_width="match_parent"

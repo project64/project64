@@ -40,21 +40,10 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
                     stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
                     if ((IPLROM.length() <= 0) || (!CN64System::RunFileImage(IPLROM.c_str())))
                     {
-                        // Open DDROM
-                        OPENFILENAME openfilename;
-                        char FileName[_MAX_PATH], Directory[_MAX_PATH];
-                        memset(&FileName, 0, sizeof(FileName));
-                        memset(&openfilename, 0, sizeof(openfilename));
 
-                        openfilename.lStructSize = sizeof(openfilename);
-                        //openfilename.hwndOwner = (HWND)hWnd;
-                        openfilename.lpstrFilter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-                        openfilename.lpstrFile = FileName;
-                        openfilename.lpstrInitialDir = Directory;
-                        openfilename.nMaxFile = MAX_PATH;
-                        openfilename.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-
-                        if (GetOpenFileName(&openfilename))
+                        CPath FileName;
+                        const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+                        if (FileName.SelectFile(NULL, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
                         {
                             CN64System::RunFileImage(FileName);
                         }

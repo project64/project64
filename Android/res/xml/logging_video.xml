@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <emu.project64.settings.LogLevelPreference android:key="Debugger_TraceVideoMD5" android:title="@string/TraceVideoMD5" />
+    <emu.project64.settings.LogLevelPreference android:key="Debugger_TraceVideoThread" android:title="@string/TraceAudioAudioInterface" />
+    <emu.project64.settings.LogLevelPreference android:key="Debugger_TraceVideoPath" android:title="@string/TraceVideoPath" />
+    <emu.project64.settings.LogLevelPreference android:key="Debugger_TraceVideoSettings" android:title="@string/TraceVideoSettings" />
+    <emu.project64.settings.LogLevelPreference android:key="Debugger_TraceVideoUnknown" android:title="@string/TraceVideoUnknown" />
+    <emu.project64.settings.LogLevelPreference android:key="Debugger_TraceVideoGlide64" android:title="@string/TraceVideoGlide64" />
+    <emu.project64.settings.LogLevelPreference android:key="Debugger_TraceVideoInterface" android:title="@string/TraceVideoInterface" />
+    <emu.project64.settings.LogLevelPreference android:key="Debugger_TraceVideoResolution" android:title="@string/TraceVideoResolution" />
+    <emu.project64.settings.LogLevelPreference android:key="Debugger_TraceVideoGlitch" android:title="@string/TraceVideoGlitch" />
+    <emu.project64.settings.LogLevelPreference android:key="Debugger_TraceTraceVideoRDP" android:title="@string/TraceVideoRDP" />
+    <emu.project64.settings.LogLevelPreference android:key="Debugger_TraceVideoTLUT" android:title="@string/TraceVideoTLUT" />
+    <emu.project64.settings.LogLevelPreference android:key="Debugger_TraceVideoPNG" android:title="@string/TraceVideoPNG" />
+    <emu.project64.settings.LogLevelPreference android:key="Debugger_TraceVideoOGLWrapper" android:title="@string/TraceVideoOGLWrapper" />
+</PreferenceScreen>

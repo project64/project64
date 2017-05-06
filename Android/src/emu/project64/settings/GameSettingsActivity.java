@@ -41,7 +41,7 @@ public class GameSettingsActivity extends AppCompatActivity implements SharedPre
         {
             actionbar.setHomeButtonEnabled(true);
             actionbar.setDisplayHomeAsUpEnabled(true);
-    	}
+        }
         
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPrefs.edit().clear()
@@ -81,7 +81,7 @@ public class GameSettingsActivity extends AppCompatActivity implements SharedPre
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
     {
-    	if (key.equals("Game_CpuType")) { NativeExports.SettingsSaveDword(SettingsID.Game_CpuType.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
-    	else if (key.equals("Game_BlockLinking")) { NativeExports.SettingsSaveBool(SettingsID.Game_BlockLinking.getValue(), sharedPreferences.getBoolean(key,false)); }
+        if (key.equals("Game_CpuType")) { NativeExports.SettingsSaveDword(SettingsID.Game_CpuType.getValue(), Integer.valueOf(sharedPreferences.getString(key, "1"))); }
+        else if (key.equals("Game_BlockLinking")) { NativeExports.SettingsSaveBool(SettingsID.Game_BlockLinking.getValue(), sharedPreferences.getBoolean(key,false)); }
     }
 }

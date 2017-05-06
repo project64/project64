@@ -156,4 +156,24 @@ void JavaBridge::EmulationStopped(void)
     }
 }
 
+void JavaBridge::EmulationStarted(void)
+{
+    JNIEnv *env = Android_JNI_GetEnv();
+    if (g_Activity != NULL && env != NULL)
+    {
+        jmethodID midEmulationStarted = env->GetStaticMethodID(m_NotifierClass, "EmulationStarted", "(Landroid/app/Activity;)V");
+        env->CallStaticVoidMethod(m_NotifierClass, midEmulationStarted, g_Activity);
+    }
+}
+
+void JavaBridge::RecentRomsUpdated(void)
+{
+    JNIEnv *env = Android_JNI_GetEnv();
+    if (env)
+    {
+        jmethodID midRRecentRomsUpdated = env->GetStaticMethodID(m_GalleryActivityClass, "RecentRomsUpdated", "()V");
+        env->CallStaticVoidMethod(m_GalleryActivityClass, midRRecentRomsUpdated);
+    }
+}
+
 #endif

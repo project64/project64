@@ -134,7 +134,7 @@ private:
         bool  Probed;
     };
 
-    friend CDebugTlb; // enable debug window to read class
+    friend class CDebugTlb; // enable debug window to read class
 
     CTLB_CB * const m_CB;
 

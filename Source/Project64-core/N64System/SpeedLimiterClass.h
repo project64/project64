@@ -28,6 +28,10 @@ public:
 
 	void AlterSpeed(const ESpeedChange SpeedChange);
 
+    void SetSpeed(int Speed);
+    int GetSpeed(void) const;
+    int GetBaseSpeed(void) const;
+
 private:
     CSpeedLimiter(const CSpeedLimiter&);            // Disable copy constructor
     CSpeedLimiter& operator=(const CSpeedLimiter&); // Disable assignment

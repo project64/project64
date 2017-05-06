@@ -70,6 +70,7 @@ bool FreeAddressSpace(void* addr, size_t size)
 #else
     msync(addr, size, MS_SYNC);
     munmap(addr, size);
+    return true;
 #endif
 }
 

@@ -52,29 +52,16 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
         break;
     case IDC_BTN_CHOOSE_FILE:
     {
-        char FileName[_MAX_PATH], Directory[_MAX_PATH];
-        OPENFILENAME openfilename;
-
-        memset(&FileName, 0, sizeof(FileName));
-        memset(&openfilename, 0, sizeof(openfilename));
-        strcpy(Directory, CPath(CPath::MODULE_DIRECTORY));
-        openfilename.lStructSize = sizeof(openfilename);
-        openfilename.hwndOwner = m_hWnd;
-        openfilename.lpstrFilter = "Text file (*.txt)\0*.txt;\0All files (*.*)\0*.*\0";
-        openfilename.lpstrFile = FileName;
-        openfilename.lpstrInitialDir = Directory;
-        openfilename.nMaxFile = MAX_PATH;
-        openfilename.Flags = OFN_HIDEREADONLY;
         g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_DumpMemory);
-        if (GetOpenFileName(&openfilename))
+
+        CPath FileName;
+        if (FileName.SelectFile(m_hWnd, CPath(CPath::MODULE_DIRECTORY), "Text file (*.txt)\0*.txt;\0All files (*.*)\0*.*\0", false))
         {
-            char drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
-            _splitpath(FileName, drive, dir, fname, ext);
-            if (strlen(ext) == 0)
+            if (FileName.GetExtension().length() == 0)
             {
-                strcat(FileName, ".txt");
+                FileName.SetExtension("txt");
+                SetDlgItemText(IDC_FILENAME, FileName);
             }
-            SetDlgItemText(IDC_FILENAME, FileName);
         }
         g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_DumpMemory);
     }

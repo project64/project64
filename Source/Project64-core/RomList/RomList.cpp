@@ -206,16 +206,16 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
                     SectionName.ToLower();
 
                     WriteTrace(TraceUserInterface, TraceDebug, "4 %s", SectionName.c_str());
-                    for (int32_t i = 0; i < ZipFile.NumFiles(); i++)
+                    for (int32_t zi = 0; zi < ZipFile.NumFiles(); zi++)
                     {
-                        CSzFileItem * f = ZipFile.FileItem(i);
+                        CSzFileItem * f = ZipFile.FileItem(zi);
                         if (f->IsDir)
                         {
                             continue;
                         }
                         ROM_INFO RomInfo;
 
-                        std::wstring FileNameW = ZipFile.FileNameIndex(i);
+                        std::wstring FileNameW = ZipFile.FileNameIndex(zi);
                         if (FileNameW.length() == 0)
                         {
                             continue;
@@ -313,7 +313,7 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
                 }
                 catch (...)
                 {
-                    WriteTrace(TraceUserInterface, TraceError, "execpetion processing %s", (LPCSTR)SearchPath);
+                    WriteTrace(TraceUserInterface, TraceError, "exception processing %s", (LPCSTR)SearchPath);
                 }
             }
 #endif

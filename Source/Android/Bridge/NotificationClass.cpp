@@ -13,6 +13,7 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Settings/SettingsClass.h>
 #include <Project64-core/N64System/N64Class.h>
+#include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include "NotificationClass.h"
 #include "JavaBridge.h"
 #if defined(ANDROID)
@@ -23,8 +24,8 @@ extern JavaBridge * g_JavaBridge;
 
 CNotificationImp & Notify(void)
 {
-    static CNotificationImp g_Notify;
-    return g_Notify;
+    static CNotificationImp Notify;
+    return Notify;
 }
 
 CNotificationImp::CNotificationImp() :
@@ -109,6 +110,8 @@ bool CNotificationImp::AskYesNoQuestion(const char * /*Question*/) const
 
 void CNotificationImp::BreakPoint(const char * FileName, int32_t LineNumber)
 {
+    Flush_Recompiler_Log();
+    TraceFlushLog();
     if (g_Settings->LoadBool(Debugger_Enabled))
     {
         FatalError(stdstr_f("Break point found at\n%s\nLine: %d", FileName, LineNumber).c_str());
