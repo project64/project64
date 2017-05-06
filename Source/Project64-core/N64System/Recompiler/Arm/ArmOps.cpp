@@ -1069,6 +1069,10 @@ void CArmOps::ShiftRightSignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shi
 
 void CArmOps::ShiftRightUnsignImmed(ArmReg DestReg, ArmReg SourceReg, uint32_t shift)
 {
+    if (DestReg == m_LastStoreReg)
+    {
+        ArmNop();
+    }
     PreOpCheck(false, __FILE__, __LINE__);
 
     if ((shift & (~0x1F)) != 0)
