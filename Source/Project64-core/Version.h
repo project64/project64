@@ -11,9 +11,15 @@
 #define STRINGIZE2(s) #s
 #define STRINGIZE(s) STRINGIZE2(s)
 
+#ifdef ANDROID
+#define VERSION_MAJOR               2
+#define VERSION_MINOR               3
+#define VERSION_REVISION            3
+#else
 #define VERSION_MAJOR               2
 #define VERSION_MINOR               4
 #define VERSION_REVISION            0
+#endif
 #define VERSION_BUILD               9999
 
 #define VER_FILE_DESCRIPTION_STR    "Project64"
