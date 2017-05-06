@@ -98,7 +98,7 @@ void CArmRecompilerOps::PostCompileOpcode(void)
 }
 
 CArmRecompilerOps::CArmRecompilerOps() :
-m_NextInstruction(NORMAL)
+    m_NextInstruction(NORMAL)
 {
     memset(&m_Opcode, 0, sizeof(m_Opcode));
 }
@@ -1817,7 +1817,7 @@ void CArmRecompilerOps::JAL()
         MoveConstToArmReg(TempReg, 0xF0000000);
         AndArmRegToArmReg(GetMipsRegMapLo(31), GetMipsRegMapLo(31), TempReg);
         MoveConstToArmReg(TempReg, (m_CompilePC + 8) & ~0xF0000000);
-        OrArmRegToArmReg(GetMipsRegMapLo(31), GetMipsRegMapLo(31), TempReg,0);
+        OrArmRegToArmReg(GetMipsRegMapLo(31), GetMipsRegMapLo(31), TempReg, 0);
         m_RegWorkingSet.SetArmRegProtected(TempReg, false);
 
         if ((m_CompilePC & 0xFFC) == 0xFFC)
@@ -3969,7 +3969,7 @@ void CArmRecompilerOps::COP0_CO_TLBWI()
 void CArmRecompilerOps::COP0_CO_TLBWR()
 {
     if (!g_System->bUseTlb()) { return; }
- 
+
     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
     UpdateCounters(m_RegWorkingSet, false, true);
     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
@@ -4849,17 +4849,16 @@ void CArmRecompilerOps::OutputRegisterState(const CRegInfo & SyncTo, const CRegI
             }
         }
 
-
         CPU_Message("SyncTo.GetArmRegMapped(%s) = %X%s%s CurrentSet.GetArmRegMapped(%s) = %X%s%s",
             ArmRegName((ArmReg)i),
             SyncTo.GetArmRegMapped((ArmReg)i),
             SyncTo.GetArmRegMapped((ArmReg)i) == CArmRegInfo::Variable_Mapped ? stdstr_f(" (%s)", CArmRegInfo::VariableMapName(SyncTo.GetVariableMappedTo((ArmReg)i))).c_str() : "",
-            synctoreg.length() > 0 ? stdstr_f(" (%s)",synctoreg.c_str()).c_str() : "",
+            synctoreg.length() > 0 ? stdstr_f(" (%s)", synctoreg.c_str()).c_str() : "",
             ArmRegName((ArmReg)i),
             CurrentSet.GetArmRegMapped((ArmReg)i),
             CurrentSet.GetArmRegMapped((ArmReg)i) == CArmRegInfo::Variable_Mapped ? stdstr_f(" (%s)", CArmRegInfo::VariableMapName(CurrentSet.GetVariableMappedTo((ArmReg)i))).c_str() : "",
             currentreg.length() > 0 ? stdstr_f(" (%s)", currentreg.c_str()).c_str() : ""
-            );
+        );
     }
 }
 
@@ -5731,7 +5730,7 @@ bool CArmRecompilerOps::InheritParentInfo()
 #endif
         for (i2 = 0; !NeedSync && i2 < 32; i2++)
         {
-            if (NeedSync == true)  { break; }
+            if (NeedSync == true) { break; }
             if (m_RegWorkingSet.GetMipsRegState(i2) != RegSet->GetMipsRegState(i2))
             {
                 NeedSync = true;
@@ -6456,7 +6455,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04800018:
-            AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_SI );
+            AndConstToVariable(&g_Reg->MI_INTR_REG, "MI_INTR_REG", (uint32_t)~MI_INTR_SI);
             AndConstToVariable(&g_Reg->SI_STATUS_REG, "SI_STATUS_REG", (uint32_t)~SI_STATUS_INTERRUPT);
             m_RegWorkingSet.BeforeCallDirect();
             MoveConstToArmReg(Arm_R0, (uint32_t)g_Reg, "g_Reg");

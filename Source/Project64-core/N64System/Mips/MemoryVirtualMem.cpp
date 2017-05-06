@@ -1573,7 +1573,7 @@ void CMipsMemoryVM::Load32Rom(void)
         m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
         m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
     }
-        }
+}
 
 void CMipsMemoryVM::Write32RDRAMRegisters(void)
 {
@@ -1836,8 +1836,8 @@ void CMipsMemoryVM::Write32DPCommandRegisters(void)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
-        }
     }
+}
 
 void CMipsMemoryVM::Write32MIPSInterface(void)
 {
@@ -1991,8 +1991,8 @@ void CMipsMemoryVM::Write32VideoInterface(void)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
-        }
     }
+}
 
 void CMipsMemoryVM::Write32AudioInterface(void)
 {

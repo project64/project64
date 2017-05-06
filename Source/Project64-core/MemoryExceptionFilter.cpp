@@ -377,63 +377,86 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
 #endif
 
 #ifdef __arm__
+bool CMipsMemoryVM::DumpArmExceptionInfo(uint32_t MemAddress, mcontext_t & context)
+{
+    ArmThumbOpcode * OpCode = (ArmThumbOpcode *)context.arm_pc;
+    Arm32Opcode * OpCode32 = (Arm32Opcode *)context.arm_pc;
+    WriteTrace(TraceExceptionHandler, TraceError, "Program Counter 0x%lx", g_Reg->m_PROGRAM_COUNTER);
+    for (int i = 0, n = (sizeof(g_BaseSystem->m_LastSuccessSyncPC) / sizeof(g_BaseSystem->m_LastSuccessSyncPC[0])); i < n; i++)
+    {
+        WriteTrace(TraceExceptionHandler, TraceError, "m_LastSuccessSyncPC[%d] = 0x%lx", i, g_BaseSystem->m_LastSuccessSyncPC[i]);
+    }
+    WriteTrace(TraceExceptionHandler, TraceError, "MemAddress = 0x%lx", MemAddress);
+    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r0 = 0x%lx", context.arm_r0);
+    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r1 = 0x%lx", context.arm_r1);
+    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r2 = 0x%lx", context.arm_r2);
+    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r3 = 0x%lx", context.arm_r3);
+    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r4 = 0x%lx", context.arm_r4);
+    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r5 = 0x%lx", context.arm_r5);
+    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r6 = 0x%lx", context.arm_r6);
+    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r7 = 0x%lx", context.arm_r7);
+    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r8 = 0x%lx", context.arm_r8);
+    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r9 = 0x%lx", context.arm_r9);
+    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r10 = 0x%lx", context.arm_r10);
+    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_fp = 0x%lx", context.arm_fp);
+    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_ip = 0x%lx", context.arm_ip);
+    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_sp = 0x%lx", context.arm_sp);
+    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_lr = 0x%lx", context.arm_lr);
+    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_pc = 0x%lx", context.arm_pc);
+
+    uint8_t * TypePos = (uint8_t *)context.arm_pc;
+    WriteTrace(TraceExceptionHandler, TraceError, "TypePos: %02X %02X %02X %02X %02X %02X %02X %02X %02X", TypePos[0], TypePos[1], TypePos[2], TypePos[3], TypePos[4], TypePos[5], TypePos[6], TypePos[7], TypePos[8]);
+
+    TypePos = (uint8_t *)context.arm_pc - 0x40;
+    WriteTrace(TraceExceptionHandler, TraceError, "code:");
+    WriteTrace(TraceExceptionHandler, TraceError, "%02X %02X %02X %02X %02X %02X %02X %02X", TypePos[0x00], TypePos[0x01], TypePos[0x02], TypePos[0x03], TypePos[0x04], TypePos[0x05], TypePos[0x06], TypePos[0x07]);
+    WriteTrace(TraceExceptionHandler, TraceError, "%02X %02X %02X %02X %02X %02X %02X %02X", TypePos[0x08], TypePos[0x09], TypePos[0x0A], TypePos[0x0B], TypePos[0x0C], TypePos[0x0D], TypePos[0x0E], TypePos[0x0F]);
+    WriteTrace(TraceExceptionHandler, TraceError, "%02X %02X %02X %02X %02X %02X %02X %02X", TypePos[0x10], TypePos[0x11], TypePos[0x12], TypePos[0x13], TypePos[0x14], TypePos[0x15], TypePos[0x16], TypePos[0x17]);
+    WriteTrace(TraceExceptionHandler, TraceError, "%02X %02X %02X %02X %02X %02X %02X %02X", TypePos[0x18], TypePos[0x19], TypePos[0x1A], TypePos[0x1B], TypePos[0x1C], TypePos[0x1D], TypePos[0x1E], TypePos[0x1F]);
+    WriteTrace(TraceExceptionHandler, TraceError, "%02X %02X %02X %02X %02X %02X %02X %02X", TypePos[0x20], TypePos[0x21], TypePos[0x22], TypePos[0x23], TypePos[0x24], TypePos[0x25], TypePos[0x26], TypePos[0x27]);
+    WriteTrace(TraceExceptionHandler, TraceError, "%02X %02X %02X %02X %02X %02X %02X %02X", TypePos[0x28], TypePos[0x29], TypePos[0x2A], TypePos[0x2B], TypePos[0x2C], TypePos[0x2D], TypePos[0x2E], TypePos[0x2F]);
+    WriteTrace(TraceExceptionHandler, TraceError, "%02X %02X %02X %02X %02X %02X %02X %02X", TypePos[0x30], TypePos[0x31], TypePos[0x32], TypePos[0x33], TypePos[0x34], TypePos[0x35], TypePos[0x36], TypePos[0x37]);
+    WriteTrace(TraceExceptionHandler, TraceError, "%02X %02X %02X %02X %02X %02X %02X %02X", TypePos[0x38], TypePos[0x39], TypePos[0x3A], TypePos[0x3B], TypePos[0x3C], TypePos[0x3D], TypePos[0x3E], TypePos[0x3F]);
+    WriteTrace(TraceExceptionHandler, TraceError, "%02X %02X %02X %02X %02X %02X %02X %02X", TypePos[0x40], TypePos[0x41], TypePos[0x42], TypePos[0x43], TypePos[0x44], TypePos[0x45], TypePos[0x46], TypePos[0x47]);
+    WriteTrace(TraceExceptionHandler, TraceError, "%02X %02X %02X %02X %02X %02X %02X %02X", TypePos[0x48], TypePos[0x49], TypePos[0x4A], TypePos[0x4B], TypePos[0x4C], TypePos[0x4D], TypePos[0x4E], TypePos[0x4F]);
+    WriteTrace(TraceExceptionHandler, TraceError, "%02X %02X %02X %02X %02X %02X %02X %02X", TypePos[0x50], TypePos[0x51], TypePos[0x52], TypePos[0x53], TypePos[0x54], TypePos[0x55], TypePos[0x56], TypePos[0x57]);
+    WriteTrace(TraceExceptionHandler, TraceError, "%02X %02X %02X %02X %02X %02X %02X %02X", TypePos[0x58], TypePos[0x59], TypePos[0x5A], TypePos[0x5B], TypePos[0x5C], TypePos[0x5D], TypePos[0x5E], TypePos[0x5F]);
+    WriteTrace(TraceExceptionHandler, TraceError, "%02X %02X %02X %02X %02X %02X %02X %02X", TypePos[0x60], TypePos[0x61], TypePos[0x62], TypePos[0x63], TypePos[0x64], TypePos[0x65], TypePos[0x66], TypePos[0x67]);
+    WriteTrace(TraceExceptionHandler, TraceError, "%02X %02X %02X %02X %02X %02X %02X %02X", TypePos[0x68], TypePos[0x69], TypePos[0x6A], TypePos[0x6B], TypePos[0x6C], TypePos[0x6D], TypePos[0x6E], TypePos[0x6F]);
+
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.Hex: %X", OpCode->Hex);
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.opcode: %X", OpCode->Reg.opcode);
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rm: %X", OpCode->Reg.rm);
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rn: %X", OpCode->Reg.rn);
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rt: %X", OpCode->Reg.rt);
+
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32.Hex: %X", OpCode32->Hex);
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.opcode: %X", OpCode32->uint16.opcode);
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.rm: %X", OpCode32->uint16.rm);
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.rn: %X", OpCode32->uint16.rn);
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.rt: %X", OpCode32->uint16.rt);
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.imm2: %X", OpCode32->uint16.imm2);
+
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.opcode: %X", OpCode32->uint32.opcode);
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.rn: %X", OpCode32->uint32.rn);
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.rt: %X", OpCode32->uint32.rt);
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.opcode2: %X", OpCode32->uint32.opcode2);
+    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.rm: %X", OpCode32->uint32.rm);
+
+    for (int count = 0; count < 32; count++)
+    {
+        WriteTrace(TraceExceptionHandler, TraceError, "GPR[%s] 0x%08X%08X", CRegName::GPR[count], g_Reg->m_GPR[count].W[1], g_Reg->m_GPR[count].W[0]);
+    }
+    Flush_Recompiler_Log();
+    TraceFlushLog();
+}
+
 bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context)
 {
     if ((int32_t)(MemAddress) < 0 || MemAddress > 0x1FFFFFFF)
     {
-        ArmThumbOpcode * OpCode = (ArmThumbOpcode *)context.arm_pc;
-        Arm32Opcode * OpCode32 = (Arm32Opcode *)context.arm_pc;
         WriteTrace(TraceExceptionHandler, TraceError, "Invalid memory adderess: %X", MemAddress);
-        WriteTrace(TraceExceptionHandler, TraceError, "Program Counter 0x%lx", g_Reg->m_PROGRAM_COUNTER);
-        for (int i = 0, n = (sizeof(g_BaseSystem->m_LastSuccessSyncPC) / sizeof(g_BaseSystem->m_LastSuccessSyncPC[0])); i < n; i++)
-        {
-            WriteTrace(TraceExceptionHandler, TraceError, "m_LastSuccessSyncPC[%d] = 0x%lx", i, g_BaseSystem->m_LastSuccessSyncPC[i]);
-        }
-        WriteTrace(TraceExceptionHandler, TraceError, "MemAddress = 0x%lx", MemAddress);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r0 = 0x%lx", context.arm_r0);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r1 = 0x%lx", context.arm_r1);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r2 = 0x%lx", context.arm_r2);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r3 = 0x%lx", context.arm_r3);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r4 = 0x%lx", context.arm_r4);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r5 = 0x%lx", context.arm_r5);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r6 = 0x%lx", context.arm_r6);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r7 = 0x%lx", context.arm_r7);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r8 = 0x%lx", context.arm_r8);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r9 = 0x%lx", context.arm_r9);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r10 = 0x%lx", context.arm_r10);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r11 = 0x%lx", context.arm_fp);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r12 = 0x%lx", context.arm_ip);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_sp = 0x%lx", context.arm_sp);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_lr = 0x%lx", context.arm_lr);
-        WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_pc = 0x%lx", context.arm_pc);
-
-        uint8_t * TypePos = (uint8_t *)context.arm_pc;
-        WriteTrace(TraceExceptionHandler, TraceError, "TypePos: %02X %02X %02X %02X %02X %02X %02X %02X %02X",TypePos[0],TypePos[1],TypePos[2],TypePos[3],TypePos[4],TypePos[5],TypePos[6],TypePos[7],TypePos[8]);
-
-        WriteTrace(TraceExceptionHandler, TraceError, "OpCode.Hex: %X",OpCode->Hex);
-        WriteTrace(TraceExceptionHandler, TraceError, "OpCode.opcode: %X",OpCode->Reg.opcode);
-        WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rm: %X",OpCode->Reg.rm);
-        WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rn: %X",OpCode->Reg.rn);
-        WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rt: %X",OpCode->Reg.rt);
-
-        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32.Hex: %X",OpCode32->Hex);
-        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.opcode: %X",OpCode32->uint16.opcode);
-        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.rm: %X",OpCode32->uint16.rm);
-        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.rn: %X",OpCode32->uint16.rn);
-        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.rt: %X",OpCode32->uint16.rt);
-        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.imm2: %X",OpCode32->uint16.imm2);
-
-        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.opcode: %X",OpCode32->uint32.opcode);
-        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.rn: %X",OpCode32->uint32.rn);
-        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.rt: %X",OpCode32->uint32.rt);
-        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.opcode2: %X",OpCode32->uint32.opcode2);
-        WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.rm: %X",OpCode32->uint32.rm);
-
-        for (int count = 0; count < 32; count++)
-        {
-            WriteTrace(TraceExceptionHandler, TraceError, "GPR[%s] 0x%08X%08X", CRegName::GPR[count], g_Reg->m_GPR[count].W[1], g_Reg->m_GPR[count].W[0]);
-         }
-
+        DumpArmExceptionInfo(MemAddress, context);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return false;
     }
@@ -616,7 +639,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
     if (OpCode->Imm5.opcode == 0xD)
     {
         //3F 68 ldr	r7, [r7, #0]
-        if (!g_MMU->LW_NonMemory(MemAddress,ArmRegisters[OpCode->Imm5.rt]))
+        if (!g_MMU->LW_NonMemory(MemAddress, ArmRegisters[OpCode->Imm5.rt]))
         {
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
             {
@@ -739,64 +762,18 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
         return true;
     }
 
-    WriteTrace(TraceExceptionHandler, TraceError, "Program Counter 0x%lx", g_Reg->m_PROGRAM_COUNTER);
-    for (int i = 0, n = (sizeof(g_BaseSystem->m_LastSuccessSyncPC) / sizeof(g_BaseSystem->m_LastSuccessSyncPC[0])); i < n; i++)
-    {
-        WriteTrace(TraceExceptionHandler, TraceError, "m_LastSuccessSyncPC[%d] = 0x%lx", i, g_BaseSystem->m_LastSuccessSyncPC[i]);
-    }
-    WriteTrace(TraceExceptionHandler, TraceError, "MemAddress = 0x%lx", MemAddress);
-    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r0 = 0x%lx", context.arm_r0);
-    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r1 = 0x%lx", context.arm_r1);
-    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r2 = 0x%lx", context.arm_r2);
-    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r3 = 0x%lx", context.arm_r3);
-    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r4 = 0x%lx", context.arm_r4);
-    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r5 = 0x%lx", context.arm_r5);
-    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r6 = 0x%lx", context.arm_r6);
-    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r7 = 0x%lx", context.arm_r7);
-    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r8 = 0x%lx", context.arm_r8);
-    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r9 = 0x%lx", context.arm_r9);
-    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_r10 = 0x%lx", context.arm_r10);
-    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_fp = 0x%lx", context.arm_fp);
-    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_ip = 0x%lx", context.arm_ip);
-    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_sp = 0x%lx", context.arm_sp);
-    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_lr = 0x%lx", context.arm_lr);
-    WriteTrace(TraceExceptionHandler, TraceError, "uc->uc_mcontext.arm_pc = 0x%lx", context.arm_pc);
-
-    uint8_t * TypePos = (uint8_t *)context.arm_pc;
-    WriteTrace(TraceExceptionHandler, TraceError, "TypePos: %02X %02X %02X %02X %02X %02X %02X %02X %02X",TypePos[0],TypePos[1],TypePos[2],TypePos[3],TypePos[4],TypePos[5],TypePos[6],TypePos[7],TypePos[8]);
-
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.Hex: %X",OpCode->Hex);
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.opcode: %X",OpCode->Reg.opcode);
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rm: %X",OpCode->Reg.rm);
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rn: %X",OpCode->Reg.rn);
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode.rt: %X",OpCode->Reg.rt);
-
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32.Hex: %X",OpCode32->Hex);
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.opcode: %X",OpCode32->uint16.opcode);
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.rm: %X",OpCode32->uint16.rm);
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.rn: %X",OpCode32->uint16.rn);
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.rt: %X",OpCode32->uint16.rt);
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint16.imm2: %X",OpCode32->uint16.imm2);
-
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.opcode: %X",OpCode32->uint32.opcode);
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.rn: %X",OpCode32->uint32.rn);
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.rt: %X",OpCode32->uint32.rt);
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.opcode2: %X",OpCode32->uint32.opcode2);
-    WriteTrace(TraceExceptionHandler, TraceError, "OpCode32->uint32.rm: %X",OpCode32->uint32.rm);
-
-    Flush_Recompiler_Log();
-    TraceFlushLog();
+    DumpArmExceptionInfo(MemAddress, context);
     return false;
 }
 #endif
 
 #ifndef _WIN32
-bool CMipsMemoryVM::SetupSegvHandler (void)
+bool CMipsMemoryVM::SetupSegvHandler(void)
 {
     struct sigaction sig_act;
     sig_act.sa_flags = SA_SIGINFO | SA_RESTART;
     sig_act.sa_sigaction = segv_handler;
-    return sigaction( SIGSEGV, &sig_act, NULL ) == 0;
+    return sigaction(SIGSEGV, &sig_act, NULL) == 0;
 }
 
 void CMipsMemoryVM::segv_handler(int signal, siginfo_t *siginfo, void *sigcontext)
@@ -809,7 +786,7 @@ void CMipsMemoryVM::segv_handler(int signal, siginfo_t *siginfo, void *sigcontex
     WriteTrace(TraceExceptionHandler, TraceNotice, "info.si_code  = %d", siginfo->si_code);
     WriteTrace(TraceExceptionHandler, TraceNotice, "info.si_addr  = %p", siginfo->si_addr);
 
-    WriteTrace(TraceExceptionHandler, TraceNotice, "%s: si_addr: %p",__FUNCTION__, siginfo->si_addr);
+    WriteTrace(TraceExceptionHandler, TraceNotice, "%s: si_addr: %p", __FUNCTION__, siginfo->si_addr);
 
     uint32_t MemAddress = (char *)siginfo->si_addr - (char *)g_MMU->Rdram();
     WriteTrace(TraceExceptionHandler, TraceNotice, "MemAddress = %X", MemAddress);

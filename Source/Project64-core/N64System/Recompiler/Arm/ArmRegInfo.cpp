@@ -86,7 +86,7 @@ bool CArmRegInfo::operator==(const CArmRegInfo& right) const
     return true;
 }
 
-bool CArmRegInfo::ShouldPushPopReg (ArmReg Reg)
+bool CArmRegInfo::ShouldPushPopReg(ArmReg Reg)
 {
     if (m_ArmReg_MappedTo[Reg] == NotMapped)
     {
@@ -107,7 +107,7 @@ void CArmRegInfo::BeforeCallDirect(void)
         ArmPushPop_R5, ArmPushPop_R6, ArmPushPop_R7, ArmPushPop_R8, ArmPushPop_R9,
         ArmPushPop_R10, ArmPushPop_R11, ArmPushPop_R12
     };
-    
+
     static ArmReg RegisterList[] =
     {
         Arm_R0, Arm_R1, Arm_R2, Arm_R3, Arm_R4,
@@ -117,7 +117,7 @@ void CArmRegInfo::BeforeCallDirect(void)
 
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        CPU_Message("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -133,13 +133,13 @@ void CArmRegInfo::BeforeCallDirect(void)
         m_InCallDirect = true;
         return;
     }
-    
+
     if ((PushPopRegisterSize(PushPopRegisters) % 8) != 0)
     {
         bool Added = false;
         for (int i = 0; i < (sizeof(RegisterList) / sizeof(RegisterList[0])); i++)
         {
-            if (ShouldPushPopReg(RegisterList[i])) 
+            if (ShouldPushPopReg(RegisterList[i]))
             {
                 continue;
             }
@@ -184,7 +184,7 @@ void CArmRegInfo::AfterCallDirect(void)
 
     if (!m_InCallDirect)
     {
-        CPU_Message("%s: Not in CallDirect",__FUNCTION__);
+        CPU_Message("%s: Not in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -220,7 +220,7 @@ void CArmRegInfo::FixRoundModel(FPU_ROUND RoundMethod)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        CPU_Message("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -247,7 +247,7 @@ void CArmRegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        CPU_Message("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -327,7 +327,7 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        CPU_Message("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -463,13 +463,13 @@ void CArmRegInfo::UnMap_GPR(uint32_t MipsReg, bool WriteBackValue)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        CPU_Message("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
     if (WriteBackValue)
     {
-        WriteBack_GPR(MipsReg,true);
+        WriteBack_GPR(MipsReg, true);
     }
 
     if (MipsReg == 0)
@@ -504,7 +504,7 @@ void CArmRegInfo::WriteBack_GPR(uint32_t MipsReg, bool Unmapping)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        CPU_Message("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -581,14 +581,14 @@ void CArmRegInfo::WriteBackRegisters()
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        CPU_Message("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
     UnMap_AllFPRs();
 
     int32_t ArmRegCount = sizeof(m_ArmReg_MappedTo) / sizeof(m_ArmReg_MappedTo[0]);
-    for (int32_t i = 1; i < 32; i++) { UnMap_GPR(i,true); }
+    for (int32_t i = 1; i < 32; i++) { UnMap_GPR(i, true); }
     for (int32_t i = 0; i < ArmRegCount; i++) { UnMap_ArmReg((ArmReg)i); }
     for (int32_t i = 0; i < ArmRegCount; i++) { SetArmRegProtected((ArmReg)i, false); }
 
@@ -617,7 +617,7 @@ void CArmRegInfo::UnMap_AllFPRs()
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        CPU_Message("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -628,7 +628,7 @@ CArmOps::ArmReg CArmRegInfo::UnMap_TempReg(bool TempMapping)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        CPU_Message("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return Arm_Unknown;
     }
@@ -665,13 +665,13 @@ bool CArmRegInfo::UnMap_ArmReg(ArmReg Reg)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        CPU_Message("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return false;
     }
     if (GetArmRegProtected(Reg))
     {
-        CPU_Message("%s: %s is protected",__FUNCTION__,ArmRegName(Reg));
+        CPU_Message("%s: %s is protected", __FUNCTION__, ArmRegName(Reg));
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return false;
     }
@@ -730,7 +730,7 @@ void CArmRegInfo::ResetRegProtection()
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        CPU_Message("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -744,7 +744,7 @@ CArmOps::ArmReg CArmRegInfo::FreeArmReg(bool TempMapping)
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        CPU_Message("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return Arm_Unknown;
     }
@@ -862,7 +862,7 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
 {
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        CPU_Message("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return Arm_Unknown;
     }
@@ -935,7 +935,7 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
                 }
                 else if (IsSigned(MipsReg))
                 {
-                    ShiftRightSignImmed(Reg,GetMipsRegMapLo(MipsReg),31);
+                    ShiftRightSignImmed(Reg, GetMipsRegMapLo(MipsReg), 31);
                 }
                 else
                 {
@@ -964,7 +964,7 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
             }
             else if (IsMapped(MipsReg))
             {
-                AddConstToArmReg(Reg,GetMipsRegMapLo(MipsReg),0);
+                AddConstToArmReg(Reg, GetMipsRegMapLo(MipsReg), 0);
             }
             else
             {
@@ -989,11 +989,11 @@ CArmOps::ArmReg CArmRegInfo::Map_TempReg(ArmReg Reg, int32_t MipsReg, bool LoadH
 
 CArmOps::ArmReg CArmRegInfo::Map_Variable(VARIABLE_MAPPED variable, ArmReg Reg)
 {
-    CPU_Message("%s: variable: %s Reg: %d", __FUNCTION__,VariableMapName(variable), Reg);
+    CPU_Message("%s: variable: %s Reg: %d", __FUNCTION__, VariableMapName(variable), Reg);
 
     if (m_InCallDirect)
     {
-        CPU_Message("%s: in CallDirect",__FUNCTION__);
+        CPU_Message("%s: in CallDirect", __FUNCTION__);
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return Arm_Unknown;
     }
@@ -1018,7 +1018,7 @@ CArmOps::ArmReg CArmRegInfo::Map_Variable(VARIABLE_MAPPED variable, ArmReg Reg)
             SetArmRegProtected(Reg, true);
             return Reg;
         }
-        
+
         Reg = variable == VARIABLE_GPR ? Arm_R12 : FreeArmReg(false);
         if (Reg == Arm_Unknown)
         {
