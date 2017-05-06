@@ -27,12 +27,12 @@ import android.util.Log;
  * A small class to encapsulate the notification process for Mupen64PlusAE.
  */
 public final class Notifier
-{   
+{
     private static Runnable sDisplayMessager = null;
-   
+
     /**
      * Pop up a temporary message on the device.
-     * 
+     *
      * @param activity The activity to display from
      * @param message  The message string to display.
      */
@@ -52,9 +52,9 @@ public final class Notifier
                 final AlertDialog dialog = new AlertDialog.Builder(finalActivity)
                 .setTitle("Error")
                 .setMessage(finalMessage)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() 
+                .setPositiveButton("OK", new DialogInterface.OnClickListener()
                 {
-                    public void onClick(DialogInterface dialog, int id) 
+                    public void onClick(DialogInterface dialog, int id)
                     {
                         // You don't have to do anything here if you just want it dismissed when clicked
                        synchronized(sDisplayMessager)
@@ -64,7 +64,7 @@ public final class Notifier
                     }
                 })
                 .setCancelable(false)
-                .create();                
+                .create();
                 dialog.setCanceledOnTouchOutside(false);
                 dialog.show();
             }
@@ -72,11 +72,11 @@ public final class Notifier
         activity.runOnUiThread( sDisplayMessager );
         synchronized(sDisplayMessager)
         {
-            try 
+            try
             {
                 sDisplayMessager.wait();
             }
-            catch (InterruptedException e) 
+            catch (InterruptedException e)
             {
             }
             catch (IllegalMonitorStateException e)
@@ -85,7 +85,7 @@ public final class Notifier
         }
         Log.d("DisplayError", "Done");
     }
-    
+
     public static void showMessage( Activity activity, String message, int Duratation )
     {
         if( activity == null )
@@ -94,10 +94,10 @@ public final class Notifier
         GameOverlay overlay = (GameOverlay) activity.findViewById(R.id.gameOverlay);
         if (overlay == null)
             return;
-        
+
         overlay.SetDisplayMessage(message, Duratation);
     }
-    
+
     public static void showMessage2( Activity activity, String message )
     {
         if( activity == null )
@@ -106,14 +106,14 @@ public final class Notifier
         GameOverlay overlay = (GameOverlay) activity.findViewById(R.id.gameOverlay);
         overlay.SetDisplayMessage2(message);
     }
-    
+
     public static void EmulationStarted (Activity activity)
     {
         ((Project64Application) activity.getApplication()).getDefaultTracker().send(new HitBuilders.EventBuilder()
-                .setCategory("mobile")
-                .setAction("game")
-                .setLabel(NativeExports.SettingsLoadString(SettingsID.Rdb_GoodName.getValue()))
-                .build());
+            .setCategory("game")
+            .setAction(NativeExports.SettingsLoadString(SettingsID.Rdb_GoodName.getValue()))
+            .setLabel(NativeExports.appVersion())
+            .build());
     }
 
     private static Runnable runEmulationStopped = null;
@@ -136,11 +136,11 @@ public final class Notifier
         activity.runOnUiThread( runEmulationStopped );
         synchronized(runEmulationStopped)
         {
-            try 
+            try
             {
                 runEmulationStopped.wait();
             }
-            catch (InterruptedException e) 
+            catch (InterruptedException e)
             {
             }
             catch (IllegalMonitorStateException e)

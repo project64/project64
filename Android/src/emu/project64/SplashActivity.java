@@ -13,6 +13,8 @@ package emu.project64;
 import java.io.File;
 import java.util.List;
 
+import com.google.android.gms.analytics.HitBuilders;
+
 import emu.project64.R;
 import emu.project64.jni.NativeExports;
 import emu.project64.jni.SettingsID;
@@ -88,6 +90,11 @@ public class SplashActivity extends Activity implements ExtractAssetsListener
             {
                 InitProject64();
             }
+
+            ((Project64Application) getApplication()).getDefaultTracker().send(new HitBuilders.EventBuilder()
+                .setCategory("start")
+                .setLabel(NativeExports.appVersion())
+                .build());
 
             // Extract the assets in a separate thread and launch the menu activity
             // Handler.postDelayed ensures this runs only after activity has resumed

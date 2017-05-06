@@ -247,12 +247,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
             }
         });
         UpdateLanguage();
-
-        ((Project64Application) getApplication()).getDefaultTracker().send(new HitBuilders.EventBuilder()
-                .setCategory("mobile")
-                .setAction("start")
-                .setLabel(NativeExports.appVersion())
-                .build());
     }
 
     void UpdateLanguage()
@@ -839,6 +833,11 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
 
     public void ShowSupportWindow(final Boolean ResumeGame)
     {
+        ((Project64Application) getApplication()).getDefaultTracker().send(new HitBuilders.EventBuilder()
+            .setCategory("Patreon Window")
+            .setLabel(NativeExports.appVersion())
+            .build());
+
         Boolean TimeDelayed = NativeExports.UISettingsLoadDword(UISettingID.Game_RunCount.getValue()) > 15;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -917,6 +916,10 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
             @Override
             public void onClick(View v)
             {
+                ((Project64Application) getApplication()).getDefaultTracker().send(new HitBuilders.EventBuilder()
+                    .setCategory("Patreon page")
+                    .setLabel(NativeExports.appVersion())
+                    .build());
                 Intent browse = new Intent( Intent.ACTION_VIEW , Uri.parse( "https://www.patreon.com/bePatron?u=841905" ) );
                 startActivity( browse );
             }
