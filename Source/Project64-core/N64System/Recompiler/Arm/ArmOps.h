@@ -224,7 +224,7 @@ protected:
 private:
     friend class CArmRegInfo;
 
-    static void PreOpCheck(bool AllowedInItBlock, const char * FileName, uint32_t LineNumber);
+    static void PreOpCheck(ArmReg DestReg, bool AllowedInItBlock, const char * FileName, uint32_t LineNumber);
     static void BreakPointNotification(const char * FileName, uint32_t LineNumber);
     static bool ArmCompareInverse(ArmCompareType CompareType);
     static ArmCompareType ArmCompareInverseType(ArmCompareType CompareType);
@@ -233,10 +233,10 @@ private:
     static const char * ArmItMaskName(ArmItMask mask);
     static const char * ArmCurrentItCondition();
 
-    static void ProgressItBlock ( void );
+    static void ProgressItBlock(void);
 
-    static bool CanThumbCompressConst (uint32_t value);
-    static uint16_t ThumbCompressConst (uint32_t value);
+    static bool CanThumbCompressConst(uint32_t value);
+    static uint16_t ThumbCompressConst(uint32_t value);
 
     static void AddCode8(uint8_t value);
     static void AddCode16(uint16_t value);
