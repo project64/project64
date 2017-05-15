@@ -38,8 +38,6 @@ typedef unsigned char boolean;
 extern "C" {
 #endif
 
-#define _ENDUSER_RELEASE_
-
     //********
     // Logging
 
@@ -54,10 +52,6 @@ extern "C" {
 
     //#define CATCH_EXCEPTIONS	// catch exceptions so it doesn't freeze and will report
     // "The gfx plugin has caused an exception" instead.
-
-#ifndef _ENDUSER_RELEASE_
-
-#endif
 
     //#define SHOW_FULL_TEXVIEWER	// shows the entire contents of the texture in the cache viewer,
     // usually used to debug clamping issues.
@@ -202,7 +196,7 @@ extern "C" {
 
     typedef void (FX_CALL *GRCONSTANTCOLORVALUEEXT)
         (GrChipID_t       tmu,
-        GrColor_t        value);
+            GrColor_t        value);
 
     typedef void (FX_CALL *GRSTIPPLE)(FxI32 mode);
 
@@ -481,5 +475,5 @@ extern "C" {
     EXPORT void CALL PluginLoaded(void);
 
 #if defined(__cplusplus)
-}
+    }
 #endif
