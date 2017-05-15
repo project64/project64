@@ -645,7 +645,7 @@ EXPORT void CALL ProcessDList(void)
     rdp.pc_i = 0;
     rdp.pc[rdp.pc_i] = dlist_start;
     rdp.dl_count = -1;
-    rdp.halt = 0;
+    rdp.halt = false;
     uint32_t a;
 
     // catches exceptions so that it doesn't freeze
@@ -724,7 +724,7 @@ EXPORT void CALL ProcessDList(void)
     {
         rdp.scale_x = rdp.scale_x_bak;
         rdp.scale_y = rdp.scale_y_bak;
-}
+    }
 
     if (g_settings->hacks(CSettings::hack_OoT))
     {
@@ -746,17 +746,15 @@ EXPORT void CALL ProcessDList(void)
         CI_SET = FALSE;
     }
     WriteTrace(TraceRDP, TraceDebug, "ProcessDList end");
-    }
+}
 
 // undef - undefined instruction, always ignore
 static void undef()
 {
     WriteTrace(TraceRDP, TraceWarning, "** undefined ** (%08lx) - IGNORED", rdp.cmd0);
-#ifdef _ENDUSER_RELEASE_
     *gfx.MI_INTR_REG |= 0x20;
     gfx.CheckInterrupts();
-    rdp.halt = 1;
-#endif
+    rdp.halt = true;
 }
 
 // spnoop - no operation, always ignore
@@ -3218,7 +3216,7 @@ void DetectFrameBufferUsage()
     rdp.pc_i = 0;
     rdp.pc[rdp.pc_i] = dlist_start;
     rdp.dl_count = -1;
-    rdp.halt = 0;
+    rdp.halt = false;
     rdp.scale_x_bak = rdp.scale_x;
     rdp.scale_y_bak = rdp.scale_y;
 

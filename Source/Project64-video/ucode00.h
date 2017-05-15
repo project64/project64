@@ -525,7 +525,7 @@ static void uc0_enddl()
         WriteTrace(TraceRDP, TraceDebug, "RDP end");
 
         // Halt execution here
-        rdp.halt = 1;
+        rdp.halt = true;
     }
 
     rdp.pc_i--;

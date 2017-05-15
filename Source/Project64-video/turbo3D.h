@@ -44,7 +44,7 @@ struct t3dState {
     uint32_t	othermode1;
 };
 
-struct t3dTriN{
+struct t3dTriN {
     uint8_t	flag, v2, v1, v0;	/* flag is which one for flat shade */
 };
 
@@ -215,7 +215,7 @@ static void Turbo3D()
     WriteTrace(TraceRDP, TraceDebug, "Start Turbo3D microcode");
     g_settings->SetUcode(CSettings::ucode_Fast3D);
     uint32_t a = 0, pgstate = 0, pstate = 0, pvtx = 0, ptri = 0;
-    do 
+    do
     {
         a = rdp.pc[rdp.pc_i] & BMASK;
         pgstate = ((uint32_t*)gfx.RDRAM)[a >> 2];
@@ -225,7 +225,7 @@ static void Turbo3D()
         WriteTrace(TraceRDP, TraceDebug, "GlobalState: %08lx, Object: %08lx, Vertices: %08lx, Triangles: %08lx", pgstate, pstate, pvtx, ptri);
         if (!pstate)
         {
-            rdp.halt = 1;
+            rdp.halt = true;
             break;
         }
         if (pgstate)
