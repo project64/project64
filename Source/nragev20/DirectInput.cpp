@@ -678,8 +678,23 @@ BOOL CALLBACK EnumGetEffectTypes( LPCDIEFFECTINFO pdei, LPVOID pvRef )
 // EnumMakeDeviceList has been rewritten. --rabid
 BOOL CALLBACK EnumMakeDeviceList( LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef )
 {
-	if( IsXInputDevice( &lpddi->guidProduct ) )		// Check if is XInput device --tecnicors
-        return DIENUM_CONTINUE;
+	switch (GET_DIDEVICE_TYPE(lpddi->dwDevType)) {
+	// we don't need to do anything with these generic devices
+	case DI8DEVTYPE_DEVICE:
+		return DIENUM_CONTINUE;
+		break;
+	// these are potential xinput controllers, check them
+	case DI8DEVTYPE_GAMEPAD:
+	case DI8DEVTYPE_DRIVING:
+	case DI8DEVTYPE_JOYSTICK:
+	case DI8DEVTYPE_FLIGHT:
+		if (IsXInputDevice(&lpddi->guidProduct))		// Check if is XInput device --tecnicors
+			return DIENUM_CONTINUE;
+		break;
+	// for all other devices, continue on
+	default:
+		break;
+	}
 
 	if (IsEqualGUID(g_sysMouse.guidInstance, lpddi->guidInstance))
 		return DIENUM_CONTINUE;
