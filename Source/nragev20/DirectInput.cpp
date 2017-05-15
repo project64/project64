@@ -691,7 +691,7 @@ BOOL CALLBACK EnumMakeDeviceList( LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef )
 		if (IsXInputDevice(&lpddi->guidProduct))		// Check if is XInput device --tecnicors
 			return DIENUM_CONTINUE;
 		break;
-	// for all other devices, contine on
+	// for all other devices, continue on
 	default:
 		break;
 	}
