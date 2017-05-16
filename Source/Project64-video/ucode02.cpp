@@ -11,7 +11,14 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
-#pragma once
+#include <Project64-video/rdp.h>
+#include <Project64-video/Gfx_1.3.h>
+#include <Project64-video/trace.h>
+#include <Project64-video/ucode.h>
+#include <math.h>
+#include "3dmath.h"
+#include "ucode00.h"
+
 static void calc_point_light(VERTEX *v, float * vpos)
 {
     float light_intensity = 0.0f;
@@ -53,9 +60,9 @@ static void calc_point_light(VERTEX *v, float * vpos)
     v->b = (uint8_t)(color[2] * 255.0f);
 }
 
-static void uc6_obj_rectangle();
+void uc6_obj_rectangle();
 
-static void uc2_vertex()
+void uc2_vertex()
 {
     if (!(rdp.cmd0 & 0x00FFFFFF))
     {
@@ -183,7 +190,7 @@ static void uc2_vertex()
     rdp.geom_mode = geom_mode;
 }
 
-static void uc2_modifyvtx()
+void uc2_modifyvtx()
 {
     uint8_t where = (uint8_t)((rdp.cmd0 >> 16) & 0xFF);
     uint16_t vtx = (uint16_t)((rdp.cmd0 >> 1) & 0xFFFF);
@@ -192,7 +199,7 @@ static void uc2_modifyvtx()
     uc0_modifyvtx(where, vtx, rdp.cmd1);
 }
 
-static void uc2_culldl()
+void uc2_culldl()
 {
     uint16_t vStart = (uint16_t)(rdp.cmd0 & 0xFFFF) >> 1;
     uint16_t vEnd = (uint16_t)(rdp.cmd1 & 0xFFFF) >> 1;
@@ -231,9 +238,9 @@ static void uc2_culldl()
     uc0_enddl();
 }
 
-static void uc6_obj_loadtxtr();
+void uc6_obj_loadtxtr();
 
-static void uc2_tri1()
+void uc2_tri1()
 {
     if ((rdp.cmd0 & 0x00FFFFFF) == 0x17)
     {
@@ -260,10 +267,10 @@ static void uc2_tri1()
     rsp_tri1(v);
 }
 
-static void uc6_obj_ldtx_sprite();
-static void uc6_obj_ldtx_rect();
+void uc6_obj_ldtx_sprite();
+void uc6_obj_ldtx_rect();
 
-static void uc2_quad()
+void uc2_quad()
 {
     if ((rdp.cmd0 & 0x00FFFFFF) == 0x2F)
     {
@@ -308,9 +315,9 @@ static void uc2_quad()
     rsp_tri2(v);
 }
 
-static void uc6_ldtx_rect_r();
+void uc6_ldtx_rect_r();
 
-static void uc2_line3d()
+void uc2_line3d()
 {
     if ((rdp.cmd0 & 0xFF) == 0x2F)
         uc6_ldtx_rect_r();
@@ -336,22 +343,22 @@ static void uc2_line3d()
     }
 }
 
-static void uc2_special3()
+void uc2_special3()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc2:special3");
 }
 
-static void uc2_special2()
+void uc2_special2()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc2:special2");
 }
 
-static void uc2_dma_io()
+void uc2_dma_io()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc2:dma_io");
 }
 
-static void uc2_pop_matrix()
+void uc2_pop_matrix()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc2:pop_matrix %08lx, %08lx", rdp.cmd0, rdp.cmd1);
 
@@ -359,7 +366,7 @@ static void uc2_pop_matrix()
     modelview_pop(rdp.cmd1 >> 6);
 }
 
-static void uc2_geom_mode()
+void uc2_geom_mode()
 {
     // Switch around some things
     uint32_t clr_mode = (rdp.cmd0 & 0x00DFC9FF) |
@@ -447,9 +454,9 @@ static void uc2_geom_mode()
     }
 }
 
-static void uc6_obj_rectangle_r();
+void uc6_obj_rectangle_r();
 
-static void uc2_matrix()
+void uc2_matrix()
 {
     if (!(rdp.cmd0 & 0x00FFFFFF))
     {
@@ -514,7 +521,7 @@ static void uc2_matrix()
     WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", rdp.proj[3][0], rdp.proj[3][1], rdp.proj[3][2], rdp.proj[3][3]);
 }
 
-static void uc2_moveword()
+void uc2_moveword()
 {
     uint8_t index = (uint8_t)((rdp.cmd0 >> 16) & 0xFF);
     uint16_t offset = (uint16_t)(rdp.cmd0 & 0xFFFF);
@@ -625,9 +632,9 @@ static void uc2_moveword()
     }
 }
 
-static void uc6_obj_movemem();
+void uc6_obj_movemem();
 
-static void uc2_movemem()
+void uc2_movemem()
 {
     int idx = rdp.cmd0 & 0xFF;
     uint32_t addr = segoffset(rdp.cmd1);
@@ -739,17 +746,17 @@ static void uc2_movemem()
     }
 }
 
-static void uc2_load_ucode()
+void uc2_load_ucode()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc2:load_ucode");
 }
 
-static void uc2_rdphalf_2()
+void uc2_rdphalf_2()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc2:rdphalf_2");
 }
 
-static void uc2_dlist_cnt()
+void uc2_dlist_cnt()
 {
     uint32_t addr = segoffset(rdp.cmd1) & BMASK;
     int count = rdp.cmd0 & 0x000000FF;

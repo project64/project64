@@ -11,9 +11,17 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
-#pragma once
+#include <Project64-video/rdp.h>
+#include <Project64-video/Gfx_1.3.h>
+#include <Project64-video/trace.h>
+#include <Project64-video/ucode.h>
+#include "ucode00.h"
 
-static void uc3_vertex()
+//
+// vertex - loads vertices
+//
+
+void uc3_vertex()
 {
     int v0 = ((rdp.cmd0 >> 16) & 0xFF) / 5;      // Current vertex
     int n = (uint16_t)((rdp.cmd0 & 0xFFFF) + 1) / 0x210;    // Number to copy
@@ -31,7 +39,7 @@ static void uc3_vertex()
 // tri1 - renders a triangle
 //
 
-static void uc3_tri1()
+void uc3_tri1()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc3:tri1 #%d - %d, %d, %d - %08lx - %08lx", rdp.tri_n,
         ((rdp.cmd1 >> 16) & 0xFF) / 5,
@@ -47,7 +55,7 @@ static void uc3_tri1()
     rsp_tri1(v);
 }
 
-static void uc3_tri2()
+void uc3_tri2()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc3:tri2 #%d, #%d - %d, %d, %d - %d, %d, %d", rdp.tri_n, rdp.tri_n + 1,
         ((rdp.cmd0 >> 16) & 0xFF) / 5,
@@ -69,7 +77,7 @@ static void uc3_tri2()
     rsp_tri2(v);
 }
 
-static void uc3_quad3d()
+void uc3_quad3d()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc3:quad3d #%d, #%d", rdp.tri_n, rdp.tri_n + 1);
 

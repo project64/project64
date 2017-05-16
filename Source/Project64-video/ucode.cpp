@@ -11,13 +11,22 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
-#pragma once
+#include <Project64-video/rdp.h>
+#include <Project64-video/Gfx_1.3.h>
+#include <Project64-video/trace.h>
+#include <Project64-video/ucode.h>
+#include "ucode00.h"
+#include "ucode01.h"
+#include "ucode02.h"
+#include "ucode03.h"
+#include "ucode04.h"
+#include "ucode05.h"
+#include "ucode06.h"
+#include "ucode07.h"
+#include "ucode08.h"
+#include "ucode09.h"
 
-typedef void(*rdp_instr)();
-
-// RDP graphic instructions pointer table
-
-static rdp_instr gfx_instruction[10][256] =
+rdp_instr gfx_instruction[10][256] =
 {
     {
         // uCode 0 - RSP SW 2.0X

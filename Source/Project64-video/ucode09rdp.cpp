@@ -11,7 +11,10 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
-#pragma once
+#include <Project64-video/rdp.h>
+#include <Project64-video/Gfx_1.3.h>
+#include <Project64-video/trace.h>
+#include <Project64-video/ucode.h>
 
 void uc9_rpdcmd()
 {

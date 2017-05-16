@@ -11,16 +11,24 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
-#pragma once
 
-static void uc4_vertex()
+//****************************************************************
+// uCode 4 - RSP SW 2.0D EXT
+//****************************************************************
+#include <Project64-video/rdp.h>
+#include <Project64-video/Gfx_1.3.h>
+#include <Project64-video/trace.h>
+#include <Project64-video/ucode.h>
+#include "ucode00.h"
+
+void uc4_vertex()
 {
     int v0 = 0;     // Current vertex
     int n = ((rdp.cmd0 >> 4) & 0xFFF) / 33 + 1; // Number of vertices to copy
     rsp_vertex(v0, n);
 }
 
-static void uc4_tri1()
+void uc4_tri1()
 {
     int v1 = ((rdp.cmd1 >> 16) & 0xFF) / 5;
     int v2 = ((rdp.cmd1 >> 8) & 0xFF) / 5;
@@ -37,7 +45,7 @@ static void uc4_tri1()
     rsp_tri1(v);
 }
 
-static void uc4_quad3d()
+void uc4_quad3d()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc4:quad3d #%d, #%d", rdp.tri_n, rdp.tri_n + 1);
 

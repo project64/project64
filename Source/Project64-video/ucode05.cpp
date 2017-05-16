@@ -11,7 +11,14 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
-#pragma once
+#include <Project64-video/rdp.h>
+#include <Project64-video/Gfx_1.3.h>
+#include <Project64-video/trace.h>
+#include <Project64-video/ucode.h>
+#include <math.h>
+#include "3dmath.h"
+#include "ucode00.h"
+#include "util.h"
 
 int cur_mtx = 0;
 int billboarding = 0;
@@ -19,7 +26,7 @@ int vtx_last = 0;
 uint32_t dma_offset_mtx = 0;
 uint32_t dma_offset_vtx = 0;
 
-static void uc5_dma_offsets()
+void uc5_dma_offsets()
 {
     dma_offset_mtx = rdp.cmd0 & 0x00FFFFFF;
     dma_offset_vtx = rdp.cmd1 & 0x00FFFFFF;
@@ -27,7 +34,7 @@ static void uc5_dma_offsets()
     WriteTrace(TraceRDP, TraceDebug, "uc5:dma_offsets - mtx: %08lx, vtx: %08lx", dma_offset_mtx, dma_offset_vtx);
 }
 
-static void uc5_matrix()
+void uc5_matrix()
 {
     // Use segment offset to get the address
     uint32_t addr = dma_offset_mtx + (segoffset(rdp.cmd1) & BMASK);
@@ -78,7 +85,7 @@ static void uc5_matrix()
     }
 }
 
-static void uc5_vertex()
+void uc5_vertex()
 {
     uint32_t addr = dma_offset_vtx + (segoffset(rdp.cmd1) & BMASK);
 
@@ -159,7 +166,7 @@ static void uc5_vertex()
     vtx_last += n;
 }
 
-static void uc5_tridma()
+void uc5_tridma()
 {
     vtx_last = 0;    // we've drawn something, so the vertex index needs resetting
     if (rdp.skip_drawing)
@@ -234,7 +241,7 @@ static void uc5_tridma()
     }
 }
 
-static void uc5_dl_in_mem()
+void uc5_dl_in_mem()
 {
     uint32_t addr = segoffset(rdp.cmd1) & BMASK;
     int count = (rdp.cmd0 & 0x00FF0000) >> 16;
@@ -250,7 +257,7 @@ static void uc5_dl_in_mem()
     rdp.dl_count = count + 1;
 }
 
-static void uc5_moveword()
+void uc5_moveword()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc5:moveword ");
 
@@ -295,7 +302,7 @@ static void uc5_moveword()
     }
 }
 
-static void uc5_setgeometrymode()
+void uc5_setgeometrymode()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc0:setgeometrymode %08lx", rdp.cmd1);
 
@@ -321,7 +328,7 @@ static void uc5_setgeometrymode()
     }
 }
 
-static void uc5_cleargeometrymode()
+void uc5_cleargeometrymode()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc0:cleargeometrymode %08lx", rdp.cmd1);
 

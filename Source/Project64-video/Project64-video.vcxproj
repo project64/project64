@@ -169,6 +169,20 @@
     <ClCompile Include="TextureEnhancer\TxTexCache.cpp" />
     <ClCompile Include="TextureEnhancer\TxUtil.cpp" />
     <ClCompile Include="trace.cpp" />
+    <ClCompile Include="turbo3D.cpp" />
+    <ClCompile Include="ucode.cpp" />
+    <ClCompile Include="ucode00.cpp" />
+    <ClCompile Include="ucode01.cpp" />
+    <ClCompile Include="ucode02.cpp" />
+    <ClCompile Include="ucode03.cpp" />
+    <ClCompile Include="ucode04.cpp" />
+    <ClCompile Include="ucode05.cpp" />
+    <ClCompile Include="ucode06.cpp" />
+    <ClCompile Include="ucode07.cpp" />
+    <ClCompile Include="ucode08.cpp" />
+    <ClCompile Include="ucode09.cpp" />
+    <ClCompile Include="ucode09rdp.cpp" />
+    <ClCompile Include="ucodeFB.cpp" />
     <ClCompile Include="Util.cpp" />
   </ItemGroup>
   <ItemGroup>

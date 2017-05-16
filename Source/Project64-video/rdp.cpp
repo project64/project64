@@ -125,58 +125,6 @@ uint32_t frame_count;  // frame counter
 
 bool g_ucode_error_report = TRUE;
 int wrong_tile = -1;
-
-// ** RDP graphics functions **
-static void undef();
-static void spnoop();
-
-static void rdp_noop();
-static void rdp_texrect();
-//static void rdp_texrectflip();
-static void rdp_loadsync();
-static void rdp_pipesync();
-static void rdp_tilesync();
-static void rdp_fullsync();
-static void rdp_setkeygb();
-static void rdp_setkeyr();
-static void rdp_setconvert();
-static void rdp_setscissor();
-static void rdp_setprimdepth();
-static void rdp_setothermode();
-static void rdp_loadtlut();
-static void rdp_settilesize();
-static void rdp_loadblock();
-static void rdp_loadtile();
-static void rdp_settile();
-static void rdp_fillrect();
-static void rdp_setfillcolor();
-static void rdp_setfogcolor();
-static void rdp_setblendcolor();
-static void rdp_setprimcolor();
-static void rdp_setenvcolor();
-static void rdp_setcombine();
-static void rdp_settextureimage();
-static void rdp_setdepthimage();
-static void rdp_setcolorimage();
-static void rdp_trifill();
-static void rdp_trishade();
-static void rdp_tritxtr();
-static void rdp_trishadetxtr();
-static void rdp_trifillz();
-static void rdp_trishadez();
-static void rdp_tritxtrz();
-static void rdp_trishadetxtrz();
-static void rdphalf_1();
-static void rdphalf_2();
-static void rdphalf_cont();
-
-static void rsp_reserved0();
-static void rsp_reserved1();
-static void rsp_reserved2();
-static void rsp_reserved3();
-
-static void ys_memrect();
-
 uint8_t microcode[4096];
 uint32_t uc_crc;
 void microcheck();
@@ -198,6 +146,8 @@ void microcheck();
 
 static int reset = 0;
 static CSettings::ucode_t g_old_ucode = CSettings::uCode_Unsupported;
+
+extern int g_scr_res_x, g_res_x, g_scr_res_y, g_res_y;
 
 void RDP::Reset()
 {
@@ -749,7 +699,7 @@ EXPORT void CALL ProcessDList(void)
 }
 
 // undef - undefined instruction, always ignore
-static void undef()
+void undef()
 {
     WriteTrace(TraceRDP, TraceWarning, "** undefined ** (%08lx) - IGNORED", rdp.cmd0);
     *gfx.MI_INTR_REG |= 0x20;
@@ -758,13 +708,13 @@ static void undef()
 }
 
 // spnoop - no operation, always ignore
-static void spnoop()
+void spnoop()
 {
     WriteTrace(TraceRDP, TraceDebug, "spnoop");
 }
 
 // noop - no operation, always ignore
-static void rdp_noop()
+void rdp_noop()
 {
     WriteTrace(TraceRDP, TraceDebug, "noop");
 }
@@ -854,7 +804,7 @@ static void DrawDepthBufferFog()
     DrawDepthBufferToScreen(fb_info);
 }
 
-static void rdp_texrect()
+void rdp_texrect()
 {
     if (!rdp.LLE)
     {
@@ -1393,22 +1343,22 @@ static void rdp_texrect()
     delete[] vnew;
 }
 
-static void rdp_loadsync()
+void rdp_loadsync()
 {
     WriteTrace(TraceRDP, TraceDebug, "loadsync - ignored");
 }
 
-static void rdp_pipesync()
+void rdp_pipesync()
 {
     WriteTrace(TraceRDP, TraceDebug, "pipesync - ignored");
 }
 
-static void rdp_tilesync()
+void rdp_tilesync()
 {
     WriteTrace(TraceRDP, TraceDebug, "tilesync - ignored");
 }
 
-static void rdp_fullsync()
+void rdp_fullsync()
 {
     // Set an interrupt to allow the game to continue
     *gfx.MI_INTR_REG |= 0x20;
@@ -1416,7 +1366,7 @@ static void rdp_fullsync()
     WriteTrace(TraceRDP, TraceDebug, "fullsync");
 }
 
-static void rdp_setkeygb()
+void rdp_setkeygb()
 {
     uint32_t sB = rdp.cmd1 & 0xFF;
     uint32_t cB = (rdp.cmd1 >> 8) & 0xFF;
@@ -1427,7 +1377,7 @@ static void rdp_setkeygb()
     WriteTrace(TraceRDP, TraceDebug, "setkeygb. cG=%02lx, sG=%02lx, cB=%02lx, sB=%02lx", cG, sG, cB, sB);
 }
 
-static void rdp_setkeyr()
+void rdp_setkeyr()
 {
     uint32_t sR = rdp.cmd1 & 0xFF;
     uint32_t cR = (rdp.cmd1 >> 8) & 0xFF;
@@ -1436,7 +1386,7 @@ static void rdp_setkeyr()
     WriteTrace(TraceRDP, TraceDebug, "setkeyr. cR=%02lx, sR=%02lx", cR, sR);
 }
 
-static void rdp_setconvert()
+void rdp_setconvert()
 {
     /*
     rdp.YUV_C0 = 1.1647f  ;
@@ -1454,7 +1404,7 @@ static void rdp_setconvert()
 // setscissor - sets the screen clipping rectangle
 //
 
-static void rdp_setscissor()
+void rdp_setscissor()
 {
     // clipper resolution is 320x240, scale based on computer resolution
     rdp.scissor_o.ul_x = /*minval(*/(uint32_t)(((rdp.cmd0 & 0x00FFF000) >> 14))/*, 320)*/;
@@ -1481,7 +1431,7 @@ static void rdp_setscissor()
     }
 }
 
-static void rdp_setprimdepth()
+void rdp_setprimdepth()
 {
     rdp.prim_depth = (uint16_t)((rdp.cmd1 >> 16) & 0x7FFF);
     rdp.prim_dz = (uint16_t)(rdp.cmd1 & 0x7FFF);
@@ -1489,7 +1439,7 @@ static void rdp_setprimdepth()
     WriteTrace(TraceRDP, TraceDebug, "setprimdepth: %d", rdp.prim_depth);
 }
 
-static void rdp_setothermode()
+void rdp_setothermode()
 {
 #define F3DEX2_SETOTHERMODE(cmd,sft,len,data) { \
     rdp.cmd0 = (uint32_t)((cmd<<24) | ((32-(sft)-(len))<<8) | (((len)-1))); \
@@ -1548,7 +1498,7 @@ void load_palette(uint32_t addr, uint16_t start, uint16_t count)
     WriteTrace(TraceRDP, TraceDebug, "Done.");
 }
 
-static void rdp_loadtlut()
+void rdp_loadtlut()
 {
     uint32_t tile = (rdp.cmd1 >> 24) & 0x07;
     uint16_t start = rdp.tiles[tile].t_mem - 256; // starting location in the palettes
@@ -1588,7 +1538,7 @@ static void rdp_loadtlut()
 }
 
 int tile_set = 0;
-static void rdp_settilesize()
+void rdp_settilesize()
 {
     uint32_t tile = (rdp.cmd1 >> 24) & 0x07;
     rdp.last_tile_size = tile;
@@ -1795,7 +1745,7 @@ end_dxt_test:
 }
 
 void LoadBlock32b(uint32_t tile, uint32_t ul_s, uint32_t ul_t, uint32_t lr_s, uint32_t dxt);
-static void rdp_loadblock()
+void rdp_loadblock()
 {
     if (rdp.skip_drawing)
     {
@@ -2012,7 +1962,7 @@ static inline void loadTile(uint32_t *src, uint32_t *dst, int width, int height,
 }
 
 void LoadTile32b(uint32_t tile, uint32_t ul_s, uint32_t ul_t, uint32_t width, uint32_t height);
-static void rdp_loadtile()
+void rdp_loadtile()
 {
     if (rdp.skip_drawing)
     {
@@ -2115,7 +2065,7 @@ static void rdp_loadtile()
     }
 }
 
-static void rdp_settile()
+void rdp_settile()
 {
     tile_set = 1; // used to check if we only load the first settilesize
 
@@ -2176,7 +2126,7 @@ static void rdp_settile()
 // fillrect - fills a rectangle
 //
 
-static void rdp_fillrect()
+void rdp_fillrect()
 {
     uint32_t ul_x = ((rdp.cmd1 & 0x00FFF000) >> 14);
     uint32_t ul_y = (rdp.cmd1 & 0x00000FFF) >> 2;
@@ -2372,7 +2322,7 @@ static void rdp_fillrect()
 // setfillcolor - sets the filling color
 //
 
-static void rdp_setfillcolor()
+void rdp_setfillcolor()
 {
     rdp.fill_color = rdp.cmd1;
     rdp.update |= UPDATE_ALPHA_COMPARE | UPDATE_COMBINE;
@@ -2380,7 +2330,7 @@ static void rdp_setfillcolor()
     WriteTrace(TraceRDP, TraceDebug, "setfillcolor: %08lx", rdp.cmd1);
 }
 
-static void rdp_setfogcolor()
+void rdp_setfogcolor()
 {
     rdp.fog_color = rdp.cmd1;
     rdp.update |= UPDATE_COMBINE | UPDATE_FOG_ENABLED;
@@ -2388,7 +2338,7 @@ static void rdp_setfogcolor()
     WriteTrace(TraceRDP, TraceDebug, "setfogcolor - %08lx", rdp.cmd1);
 }
 
-static void rdp_setblendcolor()
+void rdp_setblendcolor()
 {
     rdp.blend_color = rdp.cmd1;
     rdp.update |= UPDATE_COMBINE;
@@ -2396,7 +2346,7 @@ static void rdp_setblendcolor()
     WriteTrace(TraceRDP, TraceDebug, "setblendcolor: %08lx", rdp.cmd1);
 }
 
-static void rdp_setprimcolor()
+void rdp_setprimcolor()
 {
     rdp.prim_color = rdp.cmd1;
     rdp.prim_lodmin = (rdp.cmd0 >> 8) & 0xFF;
@@ -2407,7 +2357,7 @@ static void rdp_setprimcolor()
         rdp.prim_lodfrac);
 }
 
-static void rdp_setenvcolor()
+void rdp_setenvcolor()
 {
     rdp.env_color = rdp.cmd1;
     rdp.update |= UPDATE_COMBINE;
@@ -2415,7 +2365,7 @@ static void rdp_setenvcolor()
     WriteTrace(TraceRDP, TraceDebug, "setenvcolor: %08lx", rdp.cmd1);
 }
 
-static void rdp_setcombine()
+void rdp_setcombine()
 {
     rdp.c_a0 = (uint8_t)((rdp.cmd0 >> 20) & 0xF);
     rdp.c_b0 = (uint8_t)((rdp.cmd1 >> 28) & 0xF);
@@ -2453,7 +2403,7 @@ static void rdp_setcombine()
 // settextureimage - sets the source for an image copy
 //
 
-static void rdp_settextureimage()
+void rdp_settextureimage()
 {
     static const char *format[] = { "RGBA", "YUV", "CI", "IA", "I", "?", "?", "?" };
     static const char *size[] = { "4bit", "8bit", "16bit", "32bit" };
@@ -2500,7 +2450,7 @@ static void rdp_settextureimage()
         rdp.timg.width, rdp.timg.addr);
 }
 
-static void rdp_setdepthimage()
+void rdp_setdepthimage()
 {
     rdp.zimg = segoffset(rdp.cmd1) & BMASK;
     rdp.zi_width = rdp.ci_width;
@@ -2528,7 +2478,7 @@ static void RestoreScale()
 
 static uint32_t swapped_addr = 0;
 
-static void rdp_setcolorimage()
+void rdp_setcolorimage()
 {
     if (g_settings->fb_emulation_enabled() && (rdp.num_of_ci < NUMTEXBUF))
     {
@@ -2899,7 +2849,7 @@ static void rdp_setcolorimage()
     }
 }
 
-static void rsp_reserved0()
+void rsp_reserved0()
 {
     if (g_settings->ucode() == CSettings::ucode_DiddyKong)
     {
@@ -2913,17 +2863,17 @@ static void rsp_reserved0()
     }
 }
 
-static void rsp_reserved1()
+void rsp_reserved1()
 {
     WriteTrace(TraceRDP, TraceDebug, "reserved1 - ignored");
 }
 
-static void rsp_reserved2()
+void rsp_reserved2()
 {
     WriteTrace(TraceRDP, TraceDebug, "reserved2");
 }
 
-static void rsp_reserved3()
+void rsp_reserved3()
 {
     WriteTrace(TraceRDP, TraceDebug, "reserved3 - ignored");
 }
@@ -3768,54 +3718,54 @@ void lle_triangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
     grDrawVertexArrayContiguous(GR_TRIANGLE_STRIP, nbVtxs - 1, vtxbuf, sizeof(VERTEX));
 }
 
-static void rdp_triangle(int shade, int texture, int zbuffer)
+void rdp_triangle(int shade, int texture, int zbuffer)
 {
     lle_triangle(rdp.cmd0, rdp.cmd1, shade, texture, zbuffer, rdp_cmd_data + rdp_cmd_cur);
 }
 
-static void rdp_trifill()
+void rdp_trifill()
 {
     rdp_triangle(0, 0, 0);
     WriteTrace(TraceRDP, TraceDebug, "trifill");
 }
 
-static void rdp_trishade()
+void rdp_trishade()
 {
     rdp_triangle(1, 0, 0);
     WriteTrace(TraceRDP, TraceDebug, "trishade");
 }
 
-static void rdp_tritxtr()
+void rdp_tritxtr()
 {
     rdp_triangle(0, 1, 0);
     WriteTrace(TraceRDP, TraceDebug, "tritxtr");
 }
 
-static void rdp_trishadetxtr()
+void rdp_trishadetxtr()
 {
     rdp_triangle(1, 1, 0);
     WriteTrace(TraceRDP, TraceDebug, "trishadetxtr");
 }
 
-static void rdp_trifillz()
+void rdp_trifillz()
 {
     rdp_triangle(0, 0, 1);
     WriteTrace(TraceRDP, TraceDebug, "trifillz");
 }
 
-static void rdp_trishadez()
+void rdp_trishadez()
 {
     rdp_triangle(1, 0, 1);
     WriteTrace(TraceRDP, TraceDebug, "trishadez");
 }
 
-static void rdp_tritxtrz()
+void rdp_tritxtrz()
 {
     rdp_triangle(0, 1, 1);
     WriteTrace(TraceRDP, TraceDebug, "tritxtrz");
 }
 
-static void rdp_trishadetxtrz()
+void rdp_trishadetxtrz()
 {
     rdp_triangle(1, 1, 1);
     WriteTrace(TraceRDP, TraceDebug, "trishadetxtrz");
@@ -3929,7 +3879,7 @@ inline uint32_t READ_RDP_DATA(uint32_t address)
         return rdram[address >> 2];
 }
 
-static void rdphalf_1()
+void rdphalf_1()
 {
     uint32_t cmd = rdp.cmd1 >> 24;
     if (cmd >= 0xc8 && cmd <= 0xcf) //triangle command
@@ -3984,12 +3934,12 @@ static void rdphalf_1()
     }
 }
 
-static void rdphalf_2()
+void rdphalf_2()
 {
     WriteTrace(TraceRDP, TraceWarning, "rdphalf_2 - IGNORED");
 }
 
-static void rdphalf_cont()
+void rdphalf_cont()
 {
     WriteTrace(TraceRDP, TraceWarning, "rdphalf_cont - IGNORED");
 }

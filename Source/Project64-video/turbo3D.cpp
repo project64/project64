@@ -11,9 +11,17 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
-#pragma once
+#include <Project64-video/rdp.h>
+#include <Project64-video/Gfx_1.3.h>
+#include <Project64-video/trace.h>
+#include <Project64-video/ucode.h>
+#include <math.h>
+#include "ucode00.h"
+#include "util.h"
 
-struct t3dGlobState {
+/******************Turbo3D microcode*************************/
+struct t3dGlobState
+{
     uint16_t		pad0;
     uint16_t		perspNorm;
     uint32_t		flag;
@@ -210,7 +218,7 @@ static void t3dLoadObject(uint32_t pstate, uint32_t pvtx, uint32_t ptri)
     }
 }
 
-static void Turbo3D()
+void Turbo3D()
 {
     WriteTrace(TraceRDP, TraceDebug, "Start Turbo3D microcode");
     g_settings->SetUcode(CSettings::ucode_Fast3D);

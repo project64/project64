@@ -14,6 +14,7 @@
 #pragma once
 
 #include <Common/stdtypes.h>
+#include "glide.h"
 
 extern char out_buf[2048];
 
@@ -700,3 +701,57 @@ extern int SwapOK;
 // ** utility functions
 void load_palette(uint32_t addr, uint16_t start, uint16_t count);
 void setTBufTex(uint16_t t_mem, uint32_t cnt);
+// ** RDP graphics functions **
+void undef();
+void spnoop();
+
+void rdp_noop();
+void rdp_texrect();
+//void rdp_texrectflip();
+void rdp_loadsync();
+void rdp_pipesync();
+void rdp_tilesync();
+void rdp_fullsync();
+void rdp_setkeygb();
+void rdp_setkeyr();
+void rdp_setconvert();
+void rdp_setscissor();
+void rdp_setprimdepth();
+void rdp_loadtlut();
+void rdp_settilesize();
+void rdp_loadblock();
+void rdp_loadtile();
+void rdp_settile();
+void rdp_fillrect();
+void rdp_setfillcolor();
+void rdp_setfogcolor();
+void rdp_setblendcolor();
+void rdp_setprimcolor();
+void rdp_setenvcolor();
+void rdp_setcombine();
+void rdp_settextureimage();
+void rdp_setdepthimage();
+void rdp_setcolorimage();
+void rdp_setothermode();
+void rdp_trifill();
+void rdp_trishade();
+void rdp_tritxtr();
+void rdp_trishadetxtr();
+void rdp_trifillz();
+void rdp_trishadez();
+void rdp_tritxtrz();
+void rdp_trishadetxtrz();
+void rdphalf_1();
+void rdphalf_2();
+void rdphalf_cont();
+
+void rsp_reserved0();
+void rsp_reserved1();
+void rsp_reserved2();
+void rsp_reserved3();
+
+void ys_memrect();
+void microcheck();
+
+extern const char *str_dither[];
+extern uint8_t microcode[4096];

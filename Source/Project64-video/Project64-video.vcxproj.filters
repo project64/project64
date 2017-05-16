@@ -224,6 +224,48 @@
     <ClCompile Include="Renderer\OGLESwrappers.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="turbo3D.cpp">
+      <Filter>ucode</Filter>
+    </ClCompile>
+    <ClCompile Include="ucode.cpp">
+      <Filter>ucode</Filter>
+    </ClCompile>
+    <ClCompile Include="ucode00.cpp">
+      <Filter>ucode</Filter>
+    </ClCompile>
+    <ClCompile Include="ucode01.cpp">
+      <Filter>ucode</Filter>
+    </ClCompile>
+    <ClCompile Include="ucode02.cpp">
+      <Filter>ucode</Filter>
+    </ClCompile>
+    <ClCompile Include="ucode03.cpp">
+      <Filter>ucode</Filter>
+    </ClCompile>
+    <ClCompile Include="ucode04.cpp">
+      <Filter>ucode</Filter>
+    </ClCompile>
+    <ClCompile Include="ucode05.cpp">
+      <Filter>ucode</Filter>
+    </ClCompile>
+    <ClCompile Include="ucode06.cpp">
+      <Filter>ucode</Filter>
+    </ClCompile>
+    <ClCompile Include="ucode07.cpp">
+      <Filter>ucode</Filter>
+    </ClCompile>
+    <ClCompile Include="ucode08.cpp">
+      <Filter>ucode</Filter>
+    </ClCompile>
+    <ClCompile Include="ucode09.cpp">
+      <Filter>ucode</Filter>
+    </ClCompile>
+    <ClCompile Include="ucode09rdp.cpp">
+      <Filter>ucode</Filter>
+    </ClCompile>
+    <ClCompile Include="ucodeFB.cpp">
+      <Filter>ucode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="gpl.txt">

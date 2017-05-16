@@ -11,7 +11,14 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
-#pragma once
+#include <Project64-video/rdp.h>
+#include <Project64-video/Gfx_1.3.h>
+#include <Project64-video/trace.h>
+#include <Project64-video/ucode.h>
+#include <math.h>
+#include "Util.h"
+#include "3dmath.h"
+#include "ucode00.h"
 
 void uc9_rpdcmd();
 
@@ -207,7 +214,7 @@ static uint32_t uc9_load_object(uint32_t zHeader, uint32_t * rdpcmds)
     return segoffset(((uint32_t*)addr)[0]);
 }
 
-static void uc9_object()
+void uc9_object()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc9:object");
     uint32_t rdpcmds[3] = { 0, 0, 0 };
@@ -220,12 +227,12 @@ static void uc9_object()
         zHeader = uc9_load_object(zHeader, rdpcmds);
 }
 
-static void uc9_mix()
+void uc9_mix()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc9:mix IGNORED");
 }
 
-static void uc9_fmlight()
+void uc9_fmlight()
 {
     int mid = rdp.cmd0 & 0xFF;
     rdp.num_lights = 1 + ((rdp.cmd1 >> 12) & 0xFF);
@@ -293,7 +300,7 @@ static void uc9_fmlight()
     rdp.use_lookat = TRUE;
 }
 
-static void uc9_light()
+void uc9_light()
 {
     uint32_t csrs = -1024 + ((rdp.cmd0 >> 12) & 0xFFF);
     uint32_t nsrs = -1024 + (rdp.cmd0 & 0xFFF);
@@ -330,7 +337,7 @@ static void uc9_light()
     }
 }
 
-static void uc9_mtxtrnsp()
+void uc9_mtxtrnsp()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc9:mtxtrnsp - ignored");
     /*
@@ -362,7 +369,7 @@ static void uc9_mtxtrnsp()
     */
 }
 
-static void uc9_mtxcat()
+void uc9_mtxcat()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc9:mtxcat ");
     M44 *s = NULL;
@@ -437,7 +444,7 @@ static void uc9_mtxcat()
     WriteTrace(TraceRDP, TraceVerbose, "{%f,%f,%f,%f}", rdp.combined[3][0], rdp.combined[3][1], rdp.combined[3][2], rdp.combined[3][3]);
 }
 
-typedef struct  {
+typedef struct {
     short sy;
     short sx;
     int   invw;
@@ -448,7 +455,7 @@ typedef struct  {
     uint8_t cc;
 } zSortVDest;
 
-static void uc9_mult_mpmtx()
+void uc9_mult_mpmtx()
 {
     //int id = rdp.cmd0&0xFF;
     int num = 1 + ((rdp.cmd1 >> 24) & 0xFF);
@@ -503,22 +510,22 @@ static void uc9_mult_mpmtx()
     }
 }
 
-static void uc9_link_subdl()
+void uc9_link_subdl()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc9:link_subdl IGNORED");
 }
 
-static void uc9_set_subdl()
+void uc9_set_subdl()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc9:set_subdl IGNORED");
 }
 
-static void uc9_wait_signal()
+void uc9_wait_signal()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc9:wait_signal IGNORED");
 }
 
-static void uc9_send_signal()
+void uc9_send_signal()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc9:send_signal IGNORED");
 }
@@ -638,7 +645,7 @@ void uc9_movemem()
     }
 }
 
-static void uc9_setscissor()
+void uc9_setscissor()
 {
     rdp_setscissor();
 

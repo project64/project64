@@ -11,12 +11,18 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
-#pragma once
+#include <Project64-video/rdp.h>
+#include <Project64-video/Gfx_1.3.h>
+#include <Project64-video/trace.h>
+#include <Project64-video/ucode.h>
+#include <math.h>
+#include "3dmath.h"
+#include "Util.h"
 
 uint32_t uc8_normale_addr = 0;
 float uc8_coord_mod[16];
 
-static void uc8_vertex()
+void uc8_vertex()
 {
     if (rdp.update & UPDATE_MULT_MAT)
     {
@@ -189,7 +195,7 @@ static void uc8_vertex()
     }
 }
 
-static void uc8_moveword()
+void uc8_moveword()
 {
     uint8_t index = (uint8_t)((rdp.cmd0 >> 16) & 0xFF);
     uint16_t offset = (uint16_t)(rdp.cmd0 & 0xFFFF);
@@ -282,7 +288,7 @@ static void uc8_moveword()
     }
 }
 
-static void uc8_movemem()
+void uc8_movemem()
 {
     int idx = rdp.cmd0 & 0xFF;
     uint32_t addr = segoffset(rdp.cmd1);
@@ -394,7 +400,7 @@ static void uc8_movemem()
     }
 }
 
-static void uc8_tri4() //by Gugaman Apr 19 2002
+void uc8_tri4() //by Gugaman Apr 19 2002
 {
     if (rdp.skip_drawing)
     {

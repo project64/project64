@@ -11,8 +11,15 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
-#pragma once
-static void rsp_vertex(int v0, int n)
+#include <Project64-video/rdp.h>
+#include <Project64-video/Gfx_1.3.h>
+#include <Project64-video/trace.h>
+#include <Project64-video/ucode.h>
+#include <math.h>
+#include "3dmath.h"
+#include "Util.h"
+
+void rsp_vertex(int v0, int n)
 {
     uint32_t addr = segoffset(rdp.cmd1) & 0x00FFFFFF;
     int i;
@@ -107,7 +114,7 @@ static void rsp_vertex(int v0, int n)
     }
 }
 
-static void rsp_tri1(VERTEX **v, uint16_t linew = 0)
+void rsp_tri1(VERTEX **v, uint16_t linew = 0)
 {
     if (cull_tri(v))
         rdp.tri_n++;
@@ -119,7 +126,7 @@ static void rsp_tri1(VERTEX **v, uint16_t linew = 0)
     }
 }
 
-static void rsp_tri2(VERTEX **v)
+void rsp_tri2(VERTEX **v)
 {
     int updated = 0;
 
@@ -149,7 +156,7 @@ static void rsp_tri2(VERTEX **v)
 //
 // uc0:vertex - loads vertices
 //
-static void uc0_vertex()
+void uc0_vertex()
 {
     int v0 = (rdp.cmd0 >> 16) & 0xF;      // Current vertex
     int n = ((rdp.cmd0 >> 20) & 0xF) + 1; // Number of vertices to copy
@@ -246,7 +253,7 @@ void load_matrix(float m[4][4], uint32_t addr)
 //
 // uc0:matrix - performs matrix operations
 //
-static void uc0_matrix()
+void uc0_matrix()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc0:matrix ");
 
@@ -313,7 +320,7 @@ static void uc0_matrix()
 //
 // uc0:movemem - loads a structure with data
 //
-static void uc0_movemem()
+void uc0_movemem()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc0:movemem ");
 
@@ -450,7 +457,7 @@ static void uc0_movemem()
 //
 // uc0:displaylist - makes a call to another section of code
 //
-static void uc0_displaylist()
+void uc0_displaylist()
 {
     uint32_t addr = segoffset(rdp.cmd1) & 0x00FFFFFF;
 
@@ -486,7 +493,7 @@ static void uc0_displaylist()
 //
 // tri1 - renders a triangle
 //
-static void uc0_tri1()
+void uc0_tri1()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc0:tri1 #%d - %d, %d, %d", rdp.tri_n,
         ((rdp.cmd1 >> 16) & 0xFF) / 10,
@@ -516,7 +523,7 @@ static void uc0_tri1()
 //
 // uc0:enddl - ends a call made by uc0:displaylist
 //
-static void uc0_enddl()
+void uc0_enddl()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc0:enddl");
 
@@ -531,7 +538,7 @@ static void uc0_enddl()
     rdp.pc_i--;
 }
 
-static void uc0_culldl()
+void uc0_culldl()
 {
     uint8_t vStart = (uint8_t)((rdp.cmd0 & 0x00FFFFFF) / 40) & 0xF;
     uint8_t vEnd = (uint8_t)(rdp.cmd1 / 40) & 0x0F;
@@ -564,7 +571,7 @@ static void uc0_culldl()
     uc0_enddl();
 }
 
-static void uc0_popmatrix()
+void uc0_popmatrix()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc0:popmatrix");
 
@@ -584,9 +591,9 @@ static void uc0_popmatrix()
     }
 }
 
-static void uc6_obj_sprite();
+void uc6_obj_sprite();
 
-static void uc0_modifyvtx(uint8_t where, uint16_t vtx, uint32_t val)
+void uc0_modifyvtx(uint8_t where, uint16_t vtx, uint32_t val)
 {
     VERTEX *v = &rdp.vtx[vtx];
 
@@ -662,7 +669,7 @@ static void uc0_modifyvtx(uint8_t where, uint16_t vtx, uint32_t val)
 //
 // uc0:moveword - moves a word to someplace, like the segment pointers
 //
-static void uc0_moveword()
+void uc0_moveword()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc0:moveword ");
 
@@ -735,7 +742,7 @@ static void uc0_moveword()
     }
 }
 
-static void uc0_texture()
+void uc0_texture()
 {
     int tile = (rdp.cmd0 >> 8) & 0x07;
     if (tile == 7 && g_settings->hacks(CSettings::hack_Supercross))
@@ -772,7 +779,7 @@ static void uc0_texture()
     }
 }
 
-static void uc0_setothermode_h()
+void uc0_setothermode_h()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc0:setothermode_h: ");
 
@@ -850,7 +857,7 @@ static void uc0_setothermode_h()
     }
 }
 
-static void uc0_setothermode_l()
+void uc0_setothermode_l()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc0:setothermode_l ");
 
@@ -907,7 +914,7 @@ static void uc0_setothermode_l()
     // there is not one setothermode_l that's not handled :)
 }
 
-static void uc0_setgeometrymode()
+void uc0_setgeometrymode()
 {
     rdp.geom_mode |= rdp.cmd1;
     WriteTrace(TraceRDP, TraceDebug, "uc0:setgeometrymode %08lx; result: %08lx", rdp.cmd1, rdp.geom_mode);
@@ -948,7 +955,7 @@ static void uc0_setgeometrymode()
     }
 }
 
-static void uc0_cleargeometrymode()
+void uc0_cleargeometrymode()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc0:cleargeometrymode %08lx", rdp.cmd1);
 
@@ -990,7 +997,7 @@ static void uc0_cleargeometrymode()
     }
 }
 
-static void uc0_line3d()
+void uc0_line3d()
 {
     uint32_t v0 = ((rdp.cmd1 >> 16) & 0xff) / 10;
     uint32_t v1 = ((rdp.cmd1 >> 8) & 0xff) / 10;
@@ -1012,7 +1019,7 @@ static void uc0_line3d()
     WriteTrace(TraceRDP, TraceDebug, "uc0:line3d v0:%d, v1:%d, width:%d", v0, v1, width);
 }
 
-static void uc0_tri4()
+void uc0_tri4()
 {
     // c0: 0000 0123, c1: 456789ab
     // becomes: 405 617 829 a3b

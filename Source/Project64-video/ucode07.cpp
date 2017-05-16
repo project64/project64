@@ -11,11 +11,16 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
-#pragma once
+#include <Project64-video/rdp.h>
+#include <Project64-video/Gfx_1.3.h>
+#include <Project64-video/trace.h>
+#include <Project64-video/ucode.h>
+#include <math.h>
+#include "3dmath.h"
 
 uint32_t pd_col_addr = 0;
 
-static void uc7_colorbase()
+void uc7_colorbase()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc7_colorbase");
     pd_col_addr = segoffset(rdp.cmd1);
@@ -33,7 +38,7 @@ typedef struct
     short s;
 } vtx_uc7;
 
-static void uc7_vertex()
+void uc7_vertex()
 {
     if (rdp.update & UPDATE_MULT_MAT)
     {

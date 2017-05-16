@@ -11,9 +11,18 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
-#pragma once
+#include <Project64-video/rdp.h>
+#include <Project64-video/Gfx_1.3.h>
+#include <Project64-video/trace.h>
+#include <Project64-video/ucode.h>
+#include <math.h>
+#include "ucode00.h"
 
-static void uc1_vertex()
+//
+// vertex - loads vertices
+//
+
+void uc1_vertex()
 {
     int v0 = (rdp.cmd0 >> 17) & 0x7F;     // Current vertex
     int n = (rdp.cmd0 >> 10) & 0x3F;    // Number to copy
@@ -24,7 +33,7 @@ static void uc1_vertex()
 // tri1 - renders a triangle
 //
 
-static void uc1_tri1()
+void uc1_tri1()
 {
     if (rdp.skip_drawing)
     {
@@ -45,7 +54,7 @@ static void uc1_tri1()
     rsp_tri1(v);
 }
 
-static void uc1_tri2()
+void uc1_tri2()
 {
     if (rdp.skip_drawing)
     {
@@ -74,7 +83,7 @@ static void uc1_tri2()
     rsp_tri2(v);
 }
 
-static void uc1_line3d()
+void uc1_line3d()
 {
     if (!g_settings->force_quad3d() && ((rdp.cmd1 & 0xFF000000) == 0) && ((rdp.cmd0 & 0x00FFFFFF) == 0))
     {
@@ -116,14 +125,14 @@ static void uc1_line3d()
 
 uint32_t branch_dl = 0;
 
-static void uc1_rdphalf_1()
+void uc1_rdphalf_1()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc1:rdphalf_1");
     branch_dl = rdp.cmd1;
     rdphalf_1();
 }
 
-static void uc1_branch_z()
+void uc1_branch_z()
 {
     uint32_t addr = segoffset(branch_dl);
     WriteTrace(TraceRDP, TraceDebug, "uc1:branch_less_z, addr: %08lx", addr);
