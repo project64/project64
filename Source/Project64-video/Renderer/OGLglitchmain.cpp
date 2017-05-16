@@ -11,6 +11,8 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
+#include <Project64-video/Renderer/types.h>
+
 #define SAVE_CBUFFER
 
 #ifdef _WIN32
@@ -351,7 +353,7 @@ grClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
 {
     WriteTrace(TraceGlitch, TraceDebug, "minx = %d, miny: %d maxy: %d", minx, miny, maxy);
 
-    if (use_fbo && render_to_texture) 
+    if (use_fbo && render_to_texture)
     {
         if (int(minx) < 0) minx = 0;
         if (int(miny) < 0) miny = 0;
@@ -1755,7 +1757,7 @@ grAuxBufferExt(GrBuffer_t buffer)
 }
 
 FX_ENTRY void FX_CALL
-grBufferClear(GrColor_t color, GrAlpha_t alpha, FxU32 depth)
+grBufferClear(GrColor_t color, gfxAlpha_t alpha, FxU32 depth)
 {
     WriteTrace(TraceGlitch, TraceDebug, "color: %X alpha: %X depth: %X", color, alpha, depth);
     switch (lfb_color_fmt)
@@ -2374,7 +2376,7 @@ grLfbConstantDepth(FxU32 /*depth*/)
 }
 
 FX_ENTRY void FX_CALL
-grLfbConstantAlpha(GrAlpha_t /*alpha*/)
+grLfbConstantAlpha(gfxAlpha_t /*alpha*/)
 {
     WriteTrace(TraceGlitch, TraceWarning, "grLfbConstantAlpha");
 }

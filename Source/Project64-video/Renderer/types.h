@@ -15,3 +15,4 @@
 #pragma once
 #include <Common/stdtypes.h>
 
+typedef uint8_t gfxAlpha_t;

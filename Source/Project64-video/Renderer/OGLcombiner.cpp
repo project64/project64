@@ -11,6 +11,8 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
+#include <Project64-video/Renderer/types.h>
+
 #ifdef _WIN32
 #include <windows.h>
 #else // _WIN32
@@ -1496,7 +1498,7 @@ grAlphaBlendFunction(
 }
 
 FX_ENTRY void FX_CALL
-grAlphaTestReferenceValue(GrAlpha_t value)
+grAlphaTestReferenceValue(gfxAlpha_t value)
 {
     WriteTrace(TraceGlitch, TraceDebug, "value: %d", value);
     alpha_ref = value;

@@ -719,7 +719,7 @@ void rdp_noop()
     WriteTrace(TraceRDP, TraceDebug, "noop");
 }
 
-static void ys_memrect()
+void ys_memrect()
 {
     uint32_t tile = (uint16_t)((rdp.cmd1 & 0x07000000) >> 24);
 

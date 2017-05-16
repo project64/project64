@@ -11,6 +11,7 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
+#include <Project64-video/Renderer/types.h>
 
 #define SAVE_CBUFFER
 
@@ -352,7 +353,7 @@ FX_ENTRY GrContext_t FX_CALL grSstWinOpen(GrColorFormat_t color_format, GrOrigin
     static int show_warning = 1;
 
     GLCache::ResetCache();
-    
+
     // ZIGGY
     // allocate static texture names
     // the initial value should be big enough to support the maximal resolution
@@ -614,7 +615,7 @@ grSstWinClose(GrContext_t context)
             glDeleteFramebuffers(1, &(fbs[i].fbid));
             glDeleteRenderbuffers(1, &(fbs[i].zbid));
         }
-    }
+}
 #endif
     nb_fb = 0;
 
@@ -1128,9 +1129,9 @@ grGet(FxU32 pname, FxU32 plength, FxI32 *params)
         break;
     default:
         WriteTrace(TraceGlitch, TraceWarning, "unknown pname in grGet : %x", pname);
-    }
+        }
     return 0;
-}
+    }
 
 FX_ENTRY const char * FX_CALL
 grGetString(FxU32 pname)
@@ -1503,7 +1504,7 @@ grAuxBufferExt(GrBuffer_t buffer)
 }
 
 FX_ENTRY void FX_CALL
-grBufferClear(GrColor_t color, GrAlpha_t alpha, FxU32 depth)
+grBufferClear(GrColor_t color, gfxAlpha_t alpha, FxU32 depth)
 {
     WriteTrace(TraceGlitch, TraceDebug, "color: %d alpha: %d depth: %d", color, alpha, depth);
     vbo_draw();
@@ -1590,9 +1591,9 @@ grBufferSwap(FxU32 swap_interval)
             }
             break;
         }
-    }
+}
 #endif
-        }
+}
 
 // frame buffer
 
@@ -1621,7 +1622,7 @@ grLfbLock(GrLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode,
             break;
         default:
             WriteTrace(TraceGlitch, TraceWarning, "grLfbLock : unknown buffer : %x", buffer);
-    }
+        }
 
         if (buffer != GR_BUFFER_AUXBUFFER)
         {
@@ -1663,7 +1664,7 @@ grLfbLock(GrLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode,
             info->origin = origin;
             glReadPixels(0, g_viewport_offset, g_width, g_height, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, depthBuffer);
         }
-}
+    }
 
     return FXTRUE;
 }
@@ -1837,7 +1838,7 @@ grLfbWriteRegion(GrBuffer_t dst_buffer,
             sprintf(name, "dump/writecolor%d.png", id++);
             ilSaveImage(name);
             //printf("dumped gdLfbWriteRegion %s\n", name);
-        }
+    }
 #endif
 
         glBindTexture(GL_TEXTURE_2D, default_texture);
@@ -1852,7 +1853,7 @@ grLfbWriteRegion(GrBuffer_t dst_buffer,
             dst_x, dst_y,
             src_width, src_height,
             tex_width, tex_height, +1);
-    }
+}
     else
     {
         float *buf = (float*)malloc(src_width*(src_height + (g_viewport_offset)) * sizeof(float));
@@ -1870,7 +1871,7 @@ grLfbWriteRegion(GrBuffer_t dst_buffer,
                 buf[(j + (g_viewport_offset))*src_width + i] =
                     (frameBuffer[(src_height - j - 1)*(src_stride / 2) + i] / (65536.0f*(2.0f / zscale))) + 1 - zscale / 2.0f;
             }
-    }
+        }
 
 #ifdef VPDEBUG
         if (dumping) {
@@ -1884,7 +1885,7 @@ grLfbWriteRegion(GrBuffer_t dst_buffer,
             ilSaveImage(name);
             //printf("dumped gdLfbWriteRegion %s\n", name);
             free(buf2);
-        }
+    }
 #endif
 
         glEnable(GL_DEPTH_TEST);
@@ -1896,7 +1897,7 @@ grLfbWriteRegion(GrBuffer_t dst_buffer,
         //glDrawPixels(src_width, src_height+(g_viewport_offset), GL_DEPTH_COMPONENT, GL_FLOAT, buf);
 
         free(buf);
-}
+    }
     //glDrawBuffer(current_buffer);
     //glPopAttrib();
     return FXTRUE;
@@ -2151,7 +2152,7 @@ grLfbConstantDepth(FxU32 depth)
 }
 
 FX_ENTRY void FX_CALL
-grLfbConstantAlpha(GrAlpha_t alpha)
+grLfbConstantAlpha(gfxAlpha_t alpha)
 {
     WriteTrace(TraceGlitch, TraceWarning, "grLfbConstantAlpha");
 }
@@ -2375,5 +2376,5 @@ void CHECK_FRAMEBUFFER_STATUS(void)
         break;
         /* programming error; will fail on all hardware */
         /*assert(0);*/
-}
+    }
 }
