@@ -1244,53 +1244,6 @@ grTextureAuxBufferExt(GrChipID_t tmu,
 
 FX_ENTRY void FX_CALL grAuxBufferExt(GrBuffer_t buffer);
 
-FX_ENTRY GrProc FX_CALL
-grGetProcAddress(char *procName)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "procName: %s", procName);
-    if (!strcmp(procName, "grSstWinOpenExt"))
-        return (GrProc)grSstWinOpenExt;
-    if (!strcmp(procName, "grTextureBufferExt"))
-        return (GrProc)grTextureBufferExt;
-    if (!strcmp(procName, "grChromaRangeExt"))
-        return (GrProc)grChromaRangeExt;
-    if (!strcmp(procName, "grChromaRangeModeExt"))
-        return (GrProc)grChromaRangeModeExt;
-    if (!strcmp(procName, "grTexChromaRangeExt"))
-        return (GrProc)grTexChromaRangeExt;
-    if (!strcmp(procName, "grTexChromaModeExt"))
-        return (GrProc)grTexChromaModeExt;
-    // ZIGGY framebuffer copy extension
-    if (!strcmp(procName, "grFramebufferCopyExt"))
-        return (GrProc)grFramebufferCopyExt;
-    if (!strcmp(procName, "grColorCombineExt"))
-        return (GrProc)grColorCombineExt;
-    if (!strcmp(procName, "grAlphaCombineExt"))
-        return (GrProc)grAlphaCombineExt;
-    if (!strcmp(procName, "grTexColorCombineExt"))
-        return (GrProc)grTexColorCombineExt;
-    if (!strcmp(procName, "grTexAlphaCombineExt"))
-        return (GrProc)grTexAlphaCombineExt;
-    if (!strcmp(procName, "grConstantColorValueExt"))
-        return (GrProc)grConstantColorValueExt;
-    if (!strcmp(procName, "grTextureAuxBufferExt"))
-        return (GrProc)grTextureAuxBufferExt;
-    if (!strcmp(procName, "grAuxBufferExt"))
-        return (GrProc)grAuxBufferExt;
-    if (!strcmp(procName, "grWrapperFullScreenResolutionExt"))
-        return (GrProc)grWrapperFullScreenResolutionExt;
-    if (!strcmp(procName, "grConfigWrapperExt"))
-        return (GrProc)grConfigWrapperExt;
-    if (!strcmp(procName, "grKeyPressedExt"))
-        return (GrProc)grKeyPressedExt;
-    if (!strcmp(procName, "grQueryResolutionsExt"))
-        return (GrProc)grQueryResolutionsExt;
-    if (!strcmp(procName, "grGetGammaTableExt"))
-        return (GrProc)grGetGammaTableExt;
-    WriteTrace(TraceGlitch, TraceWarning, "grGetProcAddress : %s", procName);
-    return 0;
-}
-
 FX_ENTRY FxU32 FX_CALL
 grGet(FxU32 pname, FxU32 plength, FxI32 *params)
 {
@@ -2120,13 +2073,13 @@ grLfbWriteRegion(GrBuffer_t dst_buffer,
         glDrawPixels(src_width, src_height + (g_viewport_offset), GL_DEPTH_COMPONENT, GL_FLOAT, buf);
 
         free(buf);
-    }
+        }
     glDrawBuffer(current_buffer);
     glPopAttrib();
 
     grDisplayGLError("grLfbWriteRegion");
     return FXTRUE;
-}
+    }
 
 /* wrapper-specific glide extensions */
 
@@ -2451,7 +2404,7 @@ grGetGammaTableExt(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
             blue[i] = aGammaRamp[2][i] >> 8;
         }
     }
-}
+    }
 
 FX_ENTRY void FX_CALL
 guGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB)
@@ -2466,7 +2419,7 @@ guGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB)
         aGammaRamp[2][i] = (((FxU16)((pow(i / 255.0F, 1.0F / gammaB)) * 255.0F + 0.5F)) << 8) & 0xFFFF;
     }
     CorrectGamma(aGammaRamp);
-}
+        }
 
 FX_ENTRY void FX_CALL
 grDitherMode(GrDitherMode_t /*mode*/)
@@ -2597,7 +2550,7 @@ void dump_stop()
             ((unsigned char *)frameBuffer)[(i + j*width) * 3] = d & 0xff;
             ((unsigned char *)frameBuffer)[(i + j*width) * 3 + 1] = d >> 8;
             ((unsigned char *)frameBuffer)[(i + j*width) * 3 + 2] = c & 0xff;
-        }
+    }
     }
     ilTexImage(width, height, 1, 3, IL_RGB, IL_UNSIGNED_BYTE, frameBuffer);
     ilSaveImage("dump/framedepth.png");
