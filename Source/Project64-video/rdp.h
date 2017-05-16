@@ -23,11 +23,13 @@ extern uint32_t frame_count; // frame counter
 //GlideHQ support
 #include "Ext_TxFilter.h"
 
-#define MAX_CACHE   1024*4
-#define MAX_TRI_CACHE 768 // this is actually # of vertices, not triangles
-#define MAX_VTX     256
-
-#define MAX_TMU     2
+enum
+{
+    MAX_CACHE = 1024 * 4,
+    MAX_TRI_CACHE = 768, // this is actually # of vertices, not triangles
+    MAX_VTX = 256,
+    MAX_TMU = 2,
+};
 
 #define MAXCMD 0x100000
 const unsigned int maxCMDMask = MAXCMD - 1;
@@ -131,7 +133,8 @@ typedef struct
 } VERTEX;
 
 // Clipping (scissors)
-typedef struct {
+typedef struct 
+{
     uint32_t ul_x;
     uint32_t ul_y;
     uint32_t lr_x;
