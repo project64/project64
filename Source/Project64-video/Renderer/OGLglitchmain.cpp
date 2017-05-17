@@ -1203,7 +1203,7 @@ int CheckTextureBufferFormat(GrChipID_t tmu, FxU32 startAddress, GrTexInfo *info
     else
         invtex[tmu] = 0;
 
-    if (info->format == GR_TEXFMT_ALPHA_INTENSITY_88) {
+    if (info->format == GFX_TEXFMT_ALPHA_INTENSITY_88) {
         if (!found) {
             return 0;
         }

@@ -60,9 +60,9 @@ uint32_t Load32bRGBA(uintptr_t dst, uintptr_t src, int wid_64, int height, int l
             b = (c >> 4) & 0xF;
             tex16[i] = (a << 12) | (r << 8) | (g << 4) | b;
         }
-        return (1 << 16) | GR_TEXFMT_ARGB_4444;
+        return (1 << 16) | GFX_TEXFMT_ARGB_4444;
     }
-    return (2 << 16) | GR_TEXFMT_ARGB_8888;
+    return (2 << 16) | GFX_TEXFMT_ARGB_8888;
 }
 
 //****************************************************************

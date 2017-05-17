@@ -51,6 +51,7 @@
 #include <string>
 #include <Common/path.h>
 #include <Common/StdString.h>
+#include <Project64-video/Renderer/types.h>
 #ifdef _WIN32
 #include <io.h>
 #endif
@@ -365,7 +366,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                 if (tmptex) {
                     /* check if _rgb.* and _a.* have matching size and format. */
                     if (!tex || width != tmpwidth || height != tmpheight ||
-                        format != GR_TEXFMT_ARGB_8888 || tmpformat != GR_TEXFMT_ARGB_8888) {
+                        format != GFX_TEXFMT_ARGB_8888 || tmpformat != GFX_TEXFMT_ARGB_8888) {
 #if !DEBUG
                         INFO(80, "-----\n");
                         INFO(80, "path: %ls\n", stdstr(dir_path).ToUTF16().c_str());
@@ -377,7 +378,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                         else if (width != tmpwidth || height != tmpheight) {
                             INFO(80, "Error: _rgb.* and _a.* have mismatched width or height!\n");
                         }
-                        else if (format != GR_TEXFMT_ARGB_8888 || tmpformat != GR_TEXFMT_ARGB_8888) {
+                        else if (format != GFX_TEXFMT_ARGB_8888 || tmpformat != GFX_TEXFMT_ARGB_8888) {
                             INFO(80, "Error: _rgb.* or _a.* not in 32bit color!\n");
                         }
                         if (tex) free(tex);
@@ -506,11 +507,11 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
             DBG_INFO(80, "read in as %d x %d gfmt:%x\n", tmpwidth, tmpheight, tmpformat);
 
             /* check if size and format are OK */
-            if (!(format == GR_TEXFMT_ARGB_8888 ||
-                format == GR_TEXFMT_P_8 ||
-                format == GR_TEXFMT_ARGB_CMP_DXT1 ||
-                format == GR_TEXFMT_ARGB_CMP_DXT3 ||
-                format == GR_TEXFMT_ARGB_CMP_DXT5) ||
+            if (!(format == GFX_TEXFMT_ARGB_8888 ||
+                format == GFX_TEXFMT_P_8 ||
+                format == GFX_TEXFMT_ARGB_CMP_DXT1 ||
+                format == GFX_TEXFMT_ARGB_CMP_DXT3 ||
+                format == GFX_TEXFMT_ARGB_CMP_DXT5) ||
                 (width * height) < 4) { /* TxQuantize requirement: width * height must be 4 or larger. */
                 free(tex);
                 tex = NULL;
@@ -524,7 +525,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
             }
 
             /* analyze and determine best format to quantize */
-            if (format == GR_TEXFMT_ARGB_8888) {
+            if (format == GFX_TEXFMT_ARGB_8888) {
                 int i;
                 int alphabits = 0;
                 int fullalpha = 0;
@@ -632,17 +633,17 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
 #if !REDUCE_TEXTURE_FOOTPRINT
                 if (_maxbpp < 32 || _options & (FORCE16BPP_HIRESTEX | COMPRESSION_MASK)) {
 #endif
-                    if (alphabits == 0) destformat = GR_TEXFMT_RGB_565;
-                    else if (alphabits == 1) destformat = GR_TEXFMT_ARGB_1555;
-                    else                     destformat = GR_TEXFMT_ARGB_8888;
+                    if (alphabits == 0) destformat = GFX_TEXFMT_RGB_565;
+                    else if (alphabits == 1) destformat = GFX_TEXFMT_ARGB_1555;
+                    else                     destformat = GFX_TEXFMT_ARGB_8888;
 #if !REDUCE_TEXTURE_FOOTPRINT
                 }
                 else {
-                    destformat = GR_TEXFMT_ARGB_8888;
+                    destformat = GFX_TEXFMT_ARGB_8888;
                 }
 #endif
                 if (fmt == 4 && alphabits == 0) {
-                    destformat = GR_TEXFMT_ARGB_8888;
+                    destformat = GFX_TEXFMT_ARGB_8888;
                     /* Rice I format; I = (R + G + B) / 3 */
                     for (i = 0; i < height * width; i++) {
                         uint32 texel = ((uint32*)tex)[i];
@@ -654,11 +655,11 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                 }
                 if (intensity) {
                     if (alphabits == 0) {
-                        if (fmt == 4) destformat = GR_TEXFMT_ALPHA_8;
-                        else          destformat = GR_TEXFMT_INTENSITY_8;
+                        if (fmt == 4) destformat = GFX_TEXFMT_ALPHA_8;
+                        else          destformat = GFX_TEXFMT_INTENSITY_8;
                     }
                     else {
-                        destformat = GR_TEXFMT_ALPHA_INTENSITY_88;
+                        destformat = GFX_TEXFMT_ALPHA_INTENSITY_88;
                     }
                 }
 
@@ -668,7 +669,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
              * Rice hi-res textures: end */
 
              /* XXX: only ARGB8888 for now. comeback to this later... */
-            if (format == GR_TEXFMT_ARGB_8888) {
+            if (format == GFX_TEXFMT_ARGB_8888) {
 #if TEXTURE_TILING
 
                 /* Glide64 style texture tiling */
@@ -864,40 +865,40 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                     switch (_options & COMPRESSION_MASK) {
                     case S3TC_COMPRESSION:
                         switch (destformat) {
-                        case GR_TEXFMT_ARGB_8888:
+                        case GFX_TEXFMT_ARGB_8888:
 #if GLIDE64_DXTN
-                        case GR_TEXFMT_ARGB_1555: /* for ARGB1555 use DXT5 instead of DXT1 */
+                        case GFX_TEXFMT_ARGB_1555: /* for ARGB1555 use DXT5 instead of DXT1 */
 #endif
-                        case GR_TEXFMT_ALPHA_INTENSITY_88:
+                        case GFX_TEXFMT_ALPHA_INTENSITY_88:
                             dataSize = width * height;
                             break;
 #if !GLIDE64_DXTN
-                        case GR_TEXFMT_ARGB_1555:
+                        case GFX_TEXFMT_ARGB_1555:
 #endif
-                        case GR_TEXFMT_RGB_565:
-                        case GR_TEXFMT_INTENSITY_8:
+                        case GFX_TEXFMT_RGB_565:
+                        case GFX_TEXFMT_INTENSITY_8:
                             dataSize = (width * height) >> 1;
                             break;
-                        case GR_TEXFMT_ALPHA_8: /* no size benefit with dxtn */
+                        case GFX_TEXFMT_ALPHA_8: /* no size benefit with dxtn */
                             ;
                         }
                         break;
                     case FXT1_COMPRESSION:
                         switch (destformat) {
-                        case GR_TEXFMT_ARGB_1555:
-                        case GR_TEXFMT_RGB_565:
-                        case GR_TEXFMT_INTENSITY_8:
+                        case GFX_TEXFMT_ARGB_1555:
+                        case GFX_TEXFMT_RGB_565:
+                        case GFX_TEXFMT_INTENSITY_8:
                             dataSize = (width * height) >> 1;
                             break;
                             /* XXX: textures that use 8bit alpha channel look bad with the current
                              * fxt1 library, so we substitute it with dxtn for now. afaik all gfx
                              * cards that support fxt1 also support dxtn. (3dfx and Intel) */
-                        case GR_TEXFMT_ALPHA_INTENSITY_88:
-                        case GR_TEXFMT_ARGB_8888:
+                        case GFX_TEXFMT_ALPHA_INTENSITY_88:
+                        case GFX_TEXFMT_ARGB_8888:
                             compressionType = S3TC_COMPRESSION;
                             dataSize = width * height;
                             break;
-                        case GR_TEXFMT_ALPHA_8: /* no size benefit with dxtn */
+                        case GFX_TEXFMT_ALPHA_8: /* no size benefit with dxtn */
                             ;
                         }
                     }
@@ -906,8 +907,8 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
 #if 0 /* TEST: dither before compression for better results with gradients */
                         tmptex = (uint8 *)malloc(_txUtil->sizeofTx(width, height, destformat));
                         if (tmptex) {
-                            if (_txQuantize->quantize(tex, tmptex, width, height, GR_TEXFMT_ARGB_8888, destformat, 0))
-                                _txQuantize->quantize(tmptex, tex, width, height, destformat, GR_TEXFMT_ARGB_8888, 0);
+                            if (_txQuantize->quantize(tex, tmptex, width, height, GFX_TEXFMT_ARGB_8888, destformat, 0))
+                                _txQuantize->quantize(tmptex, tex, width, height, destformat, GFX_TEXFMT_ARGB_8888, 0);
                             free(tmptex);
                         }
 #endif
@@ -951,40 +952,40 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                     tmptex = (uint8 *)malloc(_txUtil->sizeofTx(width, height, destformat));
                     if (tmptex) {
                         switch (destformat) {
-                        case GR_TEXFMT_ARGB_8888:
-                        case GR_TEXFMT_ARGB_4444:
+                        case GFX_TEXFMT_ARGB_8888:
+                        case GFX_TEXFMT_ARGB_4444:
 #if !REDUCE_TEXTURE_FOOTPRINT
                             if (_maxbpp < 32 || _options & FORCE16BPP_HIRESTEX)
 #endif
-                                destformat = GR_TEXFMT_ARGB_4444;
+                                destformat = GFX_TEXFMT_ARGB_4444;
                             break;
-                        case GR_TEXFMT_ARGB_1555:
+                        case GFX_TEXFMT_ARGB_1555:
 #if !REDUCE_TEXTURE_FOOTPRINT
                             if (_maxbpp < 32 || _options & FORCE16BPP_HIRESTEX)
 #endif
-                                destformat = GR_TEXFMT_ARGB_1555;
+                                destformat = GFX_TEXFMT_ARGB_1555;
                             break;
-                        case GR_TEXFMT_RGB_565:
+                        case GFX_TEXFMT_RGB_565:
 #if !REDUCE_TEXTURE_FOOTPRINT
                             if (_maxbpp < 32 || _options & FORCE16BPP_HIRESTEX)
 #endif
-                                destformat = GR_TEXFMT_RGB_565;
+                                destformat = GFX_TEXFMT_RGB_565;
                             break;
-                        case GR_TEXFMT_ALPHA_INTENSITY_88:
-                        case GR_TEXFMT_ALPHA_INTENSITY_44:
+                        case GFX_TEXFMT_ALPHA_INTENSITY_88:
+                        case GFX_TEXFMT_ALPHA_INTENSITY_44:
 #if !REDUCE_TEXTURE_FOOTPRINT
-                            destformat = GR_TEXFMT_ALPHA_INTENSITY_88;
+                            destformat = GFX_TEXFMT_ALPHA_INTENSITY_88;
 #else
-                            destformat = GR_TEXFMT_ALPHA_INTENSITY_44;
+                            destformat = GFX_TEXFMT_ALPHA_INTENSITY_44;
 #endif
                             break;
-                        case GR_TEXFMT_ALPHA_8:
-                            destformat = GR_TEXFMT_ALPHA_8; /* yes, this is correct. ALPHA_8 instead of INTENSITY_8 */
+                        case GFX_TEXFMT_ALPHA_8:
+                            destformat = GFX_TEXFMT_ALPHA_8; /* yes, this is correct. ALPHA_8 instead of INTENSITY_8 */
                             break;
-                        case GR_TEXFMT_INTENSITY_8:
-                            destformat = GR_TEXFMT_INTENSITY_8;
+                        case GFX_TEXFMT_INTENSITY_8:
+                            destformat = GFX_TEXFMT_INTENSITY_8;
                         }
-                        if (_txQuantize->quantize(tex, tmptex, width, height, GR_TEXFMT_ARGB_8888, destformat, 0)) {
+                        if (_txQuantize->quantize(tex, tmptex, width, height, GFX_TEXFMT_ARGB_8888, destformat, 0)) {
                             format = destformat;
                             free(tex);
                             tex = tmptex;

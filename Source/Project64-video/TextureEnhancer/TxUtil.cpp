@@ -17,6 +17,8 @@
 #include <zlib/zlib.h>
 #include <malloc.h>
 #include <stdlib.h>
+#include <Project64-video/Renderer/types.h>
+
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -66,29 +68,29 @@ int TxUtil::sizeofTx(int width, int height, uint16 format)
 
     /* a lookup table for the shifts would be better */
     switch (format) {
-    case GR_TEXFMT_ARGB_CMP_FXT1:
+    case GFX_TEXFMT_ARGB_CMP_FXT1:
         dataSize = (((width + 0x7) & ~0x7) * ((height + 0x3) & ~0x3)) >> 1;
         break;
-    case GR_TEXFMT_ARGB_CMP_DXT1:
+    case GFX_TEXFMT_ARGB_CMP_DXT1:
         dataSize = (((width + 0x3) & ~0x3) * ((height + 0x3) & ~0x3)) >> 1;
         break;
-    case GR_TEXFMT_ARGB_CMP_DXT3:
-    case GR_TEXFMT_ARGB_CMP_DXT5:
+    case GFX_TEXFMT_ARGB_CMP_DXT3:
+    case GFX_TEXFMT_ARGB_CMP_DXT5:
         dataSize = ((width + 0x3) & ~0x3) * ((height + 0x3) & ~0x3);
         break;
-    case GR_TEXFMT_ALPHA_INTENSITY_44:
-    case GR_TEXFMT_ALPHA_8:
-    case GR_TEXFMT_INTENSITY_8:
-    case GR_TEXFMT_P_8:
+    case GFX_TEXFMT_ALPHA_INTENSITY_44:
+    case GFX_TEXFMT_ALPHA_8:
+    case GFX_TEXFMT_INTENSITY_8:
+    case GFX_TEXFMT_P_8:
         dataSize = width * height;
         break;
-    case GR_TEXFMT_ARGB_4444:
-    case GR_TEXFMT_ARGB_1555:
-    case GR_TEXFMT_RGB_565:
-    case GR_TEXFMT_ALPHA_INTENSITY_88:
+    case GFX_TEXFMT_ARGB_4444:
+    case GFX_TEXFMT_ARGB_1555:
+    case GFX_TEXFMT_RGB_565:
+    case GFX_TEXFMT_ALPHA_INTENSITY_88:
         dataSize = (width * height) << 1;
         break;
-    case GR_TEXFMT_ARGB_8888:
+    case GFX_TEXFMT_ARGB_8888:
         dataSize = (width * height) << 2;
         break;
     default:

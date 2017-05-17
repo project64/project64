@@ -32,7 +32,7 @@ float set_sprite_combine_mode()
         rdp.allow_combine = 0;
         // Now actually combine !
         GrCombineFunction_t color_source = GR_COMBINE_FUNCTION_LOCAL;
-        if (rdp.tbuff_tex && rdp.tbuff_tex->info.format == GR_TEXFMT_ALPHA_INTENSITY_88)
+        if (rdp.tbuff_tex && rdp.tbuff_tex->info.format == GFX_TEXFMT_ALPHA_INTENSITY_88)
             color_source = GR_COMBINE_FUNCTION_LOCAL_ALPHA;
         cmb.tmu1_func = cmb.tmu0_func = color_source;
         cmb.tmu1_fac = cmb.tmu0_fac = GR_COMBINE_FACTOR_NONE;
@@ -130,7 +130,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
         dst += (512 - d.imageW);
     }
     GrTexInfo t_info;
-    t_info.format = GR_TEXFMT_RGB_565;
+    t_info.format = GFX_TEXFMT_RGB_565;
     t_info.data = image;
     t_info.smallLodLog2 = GR_LOD_LOG2_512;
     t_info.largeLodLog2 = GR_LOD_LOG2_512;
@@ -194,7 +194,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
         v[i].vc(0) = v[i].vc(1) = v[i].v0;
     }
     grTextureBufferExt(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, LOD, LOD,
-        GR_ASPECT_LOG2_1x1, GR_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
+        GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
     grRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
     grAuxBufferExt(GR_BUFFER_AUXBUFFER);
     grBufferClear(0, 0, 0xFFFF);
@@ -202,7 +202,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
     grDrawTriangle(&v[2], &v[3], &v[1]);
     grRenderBuffer(GR_BUFFER_BACKBUFFER);
     grTextureAuxBufferExt(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, LOD, LOD,
-        GR_ASPECT_LOG2_1x1, GR_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
+        GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
     grAuxBufferExt(GR_BUFFER_TEXTUREAUXBUFFER_EXT);
     grDepthMask(FXTRUE);
 }

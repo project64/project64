@@ -642,7 +642,7 @@ EXPORT void CALL ProcessDList(void)
             } while (!rdp.halt);
         }
 #ifdef CATCH_EXCEPTIONS
-}
+    }
     catch (...) {
         if (g_fullscreen)
         {
@@ -686,7 +686,7 @@ EXPORT void CALL ProcessDList(void)
         CI_SET = FALSE;
     }
     WriteTrace(TraceRDP, TraceDebug, "ProcessDList end");
-            }
+}
 
 // undef - undefined instruction, always ignore
 void undef()
@@ -2098,7 +2098,7 @@ void rdp_settile()
                     if (rdp.aTBuffTex[i]->size == tile->size)
                     {
                         rdp.aTBuffTex[i]->tile = rdp.last_tile;
-                        rdp.aTBuffTex[i]->info.format = tile->format == 0 ? GR_TEXFMT_RGB_565 : GR_TEXFMT_ALPHA_INTENSITY_88;
+                        rdp.aTBuffTex[i]->info.format = tile->format == 0 ? GFX_TEXFMT_RGB_565 : GFX_TEXFMT_ALPHA_INTENSITY_88;
                         WriteTrace(TraceRDP, TraceDebug, "rdp.aTBuffTex[%d] tile=%d, format=%s", i, rdp.last_tile, tile->format == 0 ? "RGB565" : "Alpha88");
                     }
                     else
@@ -2646,7 +2646,7 @@ void rdp_setcolorimage()
                 {
                     GrLOD_t LOD = g_scr_res_x > 1024 ? GR_LOD_LOG2_1024 : GR_LOD_LOG2_2048;
                     grTextureAuxBufferExt(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, LOD, LOD,
-                        GR_ASPECT_LOG2_1x1, GR_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
+                        GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
                     grAuxBufferExt(GR_BUFFER_TEXTUREAUXBUFFER_EXT);
                     WriteTrace(TraceRDP, TraceDebug, "rdp_setcolorimage - set texture depth buffer to TMU0");
                 }

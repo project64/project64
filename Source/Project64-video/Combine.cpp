@@ -15674,7 +15674,7 @@ void Combine()
         else
             grChromakeyMode(GR_CHROMAKEY_DISABLE);
 
-        if (aTBuff[0] && aTBuff[0]->info.format == GR_TEXFMT_ALPHA_INTENSITY_88)
+        if (aTBuff[0] && aTBuff[0]->info.format == GFX_TEXFMT_ALPHA_INTENSITY_88)
         {
             if (cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_COLOR)
             {
@@ -15689,7 +15689,7 @@ void Combine()
                 cmb.tmu0_func = GR_COMBINE_FUNCTION_LOCAL_ALPHA;
         }
 
-        if (aTBuff[1] && aTBuff[1]->info.format == GR_TEXFMT_ALPHA_INTENSITY_88)
+        if (aTBuff[1] && aTBuff[1]->info.format == GFX_TEXFMT_ALPHA_INTENSITY_88)
         {
             if (cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_COLOR)
             {

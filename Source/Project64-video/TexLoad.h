@@ -22,7 +22,7 @@
 uint32_t LoadNone(uintptr_t /*dst*/, uintptr_t /*src*/, int /*wid_64*/, int /*height*/, int /*line*/, int /*real_width*/, int /*tile*/)
 {
     memset(texture, 0, 4096 * 4);
-    return (1 << 16) | GR_TEXFMT_ARGB_1555;
+    return (1 << 16) | GFX_TEXFMT_ARGB_1555;
 }
 
 typedef uint32_t(*texfunc)(uintptr_t, uintptr_t, int, int, int, int, int);

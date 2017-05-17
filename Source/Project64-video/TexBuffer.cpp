@@ -106,9 +106,9 @@ static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
         }
     }
     if ((cimage.format != 0))// && (cimage.width <= 64))
-        texbuf.info.format = GR_TEXFMT_ALPHA_INTENSITY_88;
+        texbuf.info.format = GFX_TEXFMT_ALPHA_INTENSITY_88;
     else
-        texbuf.info.format = GR_TEXFMT_RGB_565;
+        texbuf.info.format = GFX_TEXFMT_RGB_565;
 
     texbuf.lr_u = 256.0f * texbuf.scr_width / (float)tex_size;// + 1.0f;
     texbuf.lr_v = 256.0f * texbuf.scr_height / (float)tex_size;// + 1.0f;
@@ -241,9 +241,9 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
                     texbuf->drawn = FALSE;
                     texbuf->format = (uint16_t)cimage.format;
                     if ((cimage.format != 0))
-                        texbuf->info.format = GR_TEXFMT_ALPHA_INTENSITY_88;
+                        texbuf->info.format = GFX_TEXFMT_ALPHA_INTENSITY_88;
                     else
-                        texbuf->info.format = GR_TEXFMT_RGB_565;
+                        texbuf->info.format = GFX_TEXFMT_RGB_565;
                     texbuf->crc = 0;
                     texbuf->t_mem = 0;
                     texbuf->tile = 0;
@@ -344,12 +344,12 @@ static GrTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
     grDepthMask(FXFALSE);
     grCullMode(GR_CULL_DISABLE);
     grFogMode(GR_FOG_DISABLE);
-    GrTextureFormat_t buf_format = (rdp.tbuff_tex) ? rdp.tbuff_tex->info.format : GR_TEXFMT_RGB_565;
+    GrTextureFormat_t buf_format = (rdp.tbuff_tex) ? rdp.tbuff_tex->info.format : GFX_TEXFMT_RGB_565;
     GrCombineFunction_t color_source = GR_COMBINE_FUNCTION_LOCAL;
     if (!force_rgb && rdp.black_ci_index > 0 && rdp.black_ci_index <= rdp.copy_ci_index)
     {
         color_source = GR_COMBINE_FUNCTION_LOCAL_ALPHA;
-        buf_format = GR_TEXFMT_ALPHA_INTENSITY_88;
+        buf_format = GFX_TEXFMT_ALPHA_INTENSITY_88;
     }
     if (rdp.tbuff_tex->tmu == GR_TMU0)
     {
@@ -462,7 +462,7 @@ int CopyTextureBuffer(COLOR_IMAGE & fb_from, COLOR_IMAGE & fb_to)
     }
     rdp.tbuff_tex->crc = 0;
     GrTextureFormat_t buf_format = rdp.tbuff_tex->info.format;
-    rdp.tbuff_tex->info.format = GR_TEXFMT_RGB_565;
+    rdp.tbuff_tex->info.format = GFX_TEXFMT_RGB_565;
     TexBufSetupCombiner(TRUE);
     float ul_x = 0.0f;
     float ul_y = 0.0f;
@@ -516,7 +516,7 @@ int CopyDepthBuffer()
     }
     rdp.tbuff_tex = &(rdp.texbufs[0].images[0]);
     rdp.tbuff_tex->tmu = rdp.texbufs[0].tmu;
-    rdp.tbuff_tex->info.format = GR_TEXFMT_RGB_565;
+    rdp.tbuff_tex->info.format = GFX_TEXFMT_RGB_565;
     rdp.tbuff_tex->info.smallLodLog2 = rdp.tbuff_tex->info.largeLodLog2 = LOD;
     rdp.tbuff_tex->info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
     TexBufSetupCombiner(TRUE);
@@ -541,12 +541,12 @@ int CopyDepthBuffer()
     grTexSource(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, GR_MIPMAPLEVELMASK_BOTH, &(rdp.tbuff_tex->info));
     grRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
     grTextureBufferExt(rdp.texbufs[1].tmu, rdp.texbufs[1].begin, LOD, LOD,
-        GR_ASPECT_LOG2_1x1, GR_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
+        GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
     grDrawTriangle(&v[0], &v[2], &v[1]);
     grDrawTriangle(&v[2], &v[3], &v[1]);
     grRenderBuffer(GR_BUFFER_BACKBUFFER);
     grTextureAuxBufferExt(rdp.texbufs[1].tmu, rdp.texbufs[1].begin, LOD, LOD,
-        GR_ASPECT_LOG2_1x1, GR_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
+        GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
     grAuxBufferExt(GR_BUFFER_TEXTUREAUXBUFFER_EXT);
 
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE;

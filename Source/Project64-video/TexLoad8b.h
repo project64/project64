@@ -348,15 +348,15 @@ uint32_t Load8bCI(uintptr_t dst, uintptr_t src, int wid_64, int height, int line
         //in tlut DISABLE mode load CI texture as plain intensity texture instead of palette dereference.
         //Thanks to angrylion for the advice
         load8bI((uint8_t *)src, (uint8_t *)dst, wid_64, height, line, ext);
-        return /*(0 << 16) | */GR_TEXFMT_ALPHA_8;
+        return /*(0 << 16) | */GFX_TEXFMT_ALPHA_8;
     case 2: //color palette
         ext <<= 1;
         load8bCI((uint8_t *)src, (uint8_t *)dst, wid_64, height, line, ext, pal);
-        return (1 << 16) | GR_TEXFMT_ARGB_1555;
+        return (1 << 16) | GFX_TEXFMT_ARGB_1555;
     default: //IA palette
         ext <<= 1;
         load8bIA8((uint8_t *)src, (uint8_t *)dst, wid_64, height, line, ext, pal);
-        return (1 << 16) | GR_TEXFMT_ALPHA_INTENSITY_88;
+        return (1 << 16) | GFX_TEXFMT_ALPHA_INTENSITY_88;
     }
 }
 
@@ -373,7 +373,7 @@ uint32_t Load8bIA(uintptr_t dst, uintptr_t src, int wid_64, int height, int line
     if (height < 1) height = 1;
     int ext = (real_width - (wid_64 << 3));
     load8bIA4((uint8_t *)src, (uint8_t *)dst, wid_64, height, line, ext);
-    return /*(0 << 16) | */GR_TEXFMT_ALPHA_INTENSITY_44;
+    return /*(0 << 16) | */GFX_TEXFMT_ALPHA_INTENSITY_44;
 }
 
 //****************************************************************
@@ -389,5 +389,5 @@ uint32_t Load8bI(uintptr_t dst, uintptr_t src, int wid_64, int height, int line,
     if (height < 1) height = 1;
     int ext = (real_width - (wid_64 << 3));
     load8bI((uint8_t *)src, (uint8_t *)dst, wid_64, height, line, ext);
-    return /*(0 << 16) | */GR_TEXFMT_ALPHA_8;
+    return /*(0 << 16) | */GFX_TEXFMT_ALPHA_8;
 }

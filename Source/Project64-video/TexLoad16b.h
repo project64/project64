@@ -142,7 +142,7 @@ uint32_t Load16bRGBA(uintptr_t dst, uintptr_t src, int wid_64, int height, int l
 
     load16bRGBA((uint8_t *)src, (uint8_t *)dst, wid_64, height, line, ext);
 
-    return (1 << 16) | GR_TEXFMT_ARGB_1555;
+    return (1 << 16) | GFX_TEXFMT_ARGB_1555;
 }
 
 //****************************************************************
@@ -157,7 +157,7 @@ uint32_t Load16bIA(uintptr_t dst, uintptr_t src, int wid_64, int height, int lin
 
     load16bIA((uint8_t *)src, (uint8_t *)dst, wid_64, height, line, ext);
 
-    return (1 << 16) | GR_TEXFMT_ALPHA_INTENSITY_88;
+    return (1 << 16) | GFX_TEXFMT_ALPHA_INTENSITY_88;
 }
 
 //****************************************************************
@@ -221,5 +221,5 @@ uint32_t Load16bYUV(uintptr_t dst, uintptr_t /*src*/, int /*wid_64*/, int /*heig
         c = yuv_to_rgb565(y1, u, v);
         *(tex++) = c;
     }
-    return (1 << 16) | GR_TEXFMT_RGB_565;
+    return (1 << 16) | GFX_TEXFMT_RGB_565;
 }

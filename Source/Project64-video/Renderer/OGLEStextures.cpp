@@ -21,18 +21,6 @@
 #include <stdio.h>
 #include <Project64-video/trace.h>
 
-/* Napalm extensions to GrTextureFormat_t */
-#define GR_TEXFMT_ARGB_CMP_FXT1           0x11
-#define GR_TEXFMT_ARGB_8888               0x12
-#define GR_TEXFMT_YUYV_422                0x13
-#define GR_TEXFMT_UYVY_422                0x14
-#define GR_TEXFMT_AYUV_444                0x15
-#define GR_TEXFMT_ARGB_CMP_DXT1           0x16
-#define GR_TEXFMT_ARGB_CMP_DXT2           0x17
-#define GR_TEXFMT_ARGB_CMP_DXT3           0x18
-#define GR_TEXFMT_ARGB_CMP_DXT4           0x19
-#define GR_TEXFMT_ARGB_CMP_DXT5           0x1A
-#define GR_TEXTFMT_RGB_888                0xFF
 
 int TMU_SIZE = 8 * 2048 * 2048;
 static unsigned char* texture = NULL;
@@ -191,27 +179,27 @@ grTexTextureMemRequired(FxU32     evenOdd,
 
     switch (info->format)
     {
-    case GR_TEXFMT_ALPHA_8:
-    case GR_TEXFMT_INTENSITY_8: // I8 support - H.Morii
-    case GR_TEXFMT_ALPHA_INTENSITY_44:
+    case GFX_TEXFMT_ALPHA_8:
+    case GFX_TEXFMT_INTENSITY_8: // I8 support - H.Morii
+    case GFX_TEXFMT_ALPHA_INTENSITY_44:
         return width*height;
         break;
-    case GR_TEXFMT_ARGB_1555:
-    case GR_TEXFMT_ARGB_4444:
-    case GR_TEXFMT_ALPHA_INTENSITY_88:
-    case GR_TEXFMT_RGB_565:
+    case GFX_TEXFMT_ARGB_1555:
+    case GFX_TEXFMT_ARGB_4444:
+    case GFX_TEXFMT_ALPHA_INTENSITY_88:
+    case GFX_TEXFMT_RGB_565:
         return (width*height) << 1;
         break;
-    case GR_TEXFMT_ARGB_8888:
+    case GFX_TEXFMT_ARGB_8888:
         return (width*height) << 2;
         break;
-    case GR_TEXFMT_ARGB_CMP_DXT1:  // FXT1,DXT1,5 support - H.Morii
+    case GFX_TEXFMT_ARGB_CMP_DXT1:  // FXT1,DXT1,5 support - H.Morii
         return ((((width + 0x3)&~0x3)*((height + 0x3)&~0x3)) >> 1);
-    case GR_TEXFMT_ARGB_CMP_DXT3:
+    case GFX_TEXFMT_ARGB_CMP_DXT3:
         return ((width + 0x3)&~0x3)*((height + 0x3)&~0x3);
-    case GR_TEXFMT_ARGB_CMP_DXT5:
+    case GFX_TEXFMT_ARGB_CMP_DXT5:
         return ((width + 0x3)&~0x3)*((height + 0x3)&~0x3);
-    case GR_TEXFMT_ARGB_CMP_FXT1:
+    case GFX_TEXFMT_ARGB_CMP_FXT1:
         return ((((width + 0x7)&~0x7)*((height + 0x3)&~0x3)) >> 1);
     default:
         WriteTrace(TraceGlitch, TraceWarning, "grTexTextureMemRequired : unknown texture format: %x", info->format);
@@ -241,27 +229,27 @@ grTexCalcMemRequired(
 
     switch (fmt)
     {
-    case GR_TEXFMT_ALPHA_8:
-    case GR_TEXFMT_INTENSITY_8: // I8 support - H.Morii
-    case GR_TEXFMT_ALPHA_INTENSITY_44:
+    case GFX_TEXFMT_ALPHA_8:
+    case GFX_TEXFMT_INTENSITY_8: // I8 support - H.Morii
+    case GFX_TEXFMT_ALPHA_INTENSITY_44:
         return width*height;
         break;
-    case GR_TEXFMT_ARGB_1555:
-    case GR_TEXFMT_ARGB_4444:
-    case GR_TEXFMT_ALPHA_INTENSITY_88:
-    case GR_TEXFMT_RGB_565:
+    case GFX_TEXFMT_ARGB_1555:
+    case GFX_TEXFMT_ARGB_4444:
+    case GFX_TEXFMT_ALPHA_INTENSITY_88:
+    case GFX_TEXFMT_RGB_565:
         return (width*height) << 1;
         break;
-    case GR_TEXFMT_ARGB_8888:
+    case GFX_TEXFMT_ARGB_8888:
         return (width*height) << 2;
         break;
-    case GR_TEXFMT_ARGB_CMP_DXT1:  // FXT1,DXT1,5 support - H.Morii
+    case GFX_TEXFMT_ARGB_CMP_DXT1:  // FXT1,DXT1,5 support - H.Morii
         return ((((width + 0x3)&~0x3)*((height + 0x3)&~0x3)) >> 1);
-    case GR_TEXFMT_ARGB_CMP_DXT3:
+    case GFX_TEXFMT_ARGB_CMP_DXT3:
         return ((width + 0x3)&~0x3)*((height + 0x3)&~0x3);
-    case GR_TEXFMT_ARGB_CMP_DXT5:
+    case GFX_TEXFMT_ARGB_CMP_DXT5:
         return ((width + 0x3)&~0x3)*((height + 0x3)&~0x3);
-    case GR_TEXFMT_ARGB_CMP_FXT1:
+    case GFX_TEXFMT_ARGB_CMP_FXT1:
         return ((((width + 0x7)&~0x7)*((height + 0x3)&~0x3)) >> 1);
     default:
         WriteTrace(TraceGlitch, TraceWarning, "grTexTextureMemRequired : unknown texture format: %x", fmt);
@@ -273,38 +261,38 @@ int grTexFormatSize(int fmt)
 {
     int factor = -1;
     switch (fmt) {
-    case GR_TEXFMT_ALPHA_8:
-    case GR_TEXFMT_INTENSITY_8: // I8 support - H.Morii
+    case GFX_TEXFMT_ALPHA_8:
+    case GFX_TEXFMT_INTENSITY_8: // I8 support - H.Morii
         factor = 1;
         break;
-    case GR_TEXFMT_ALPHA_INTENSITY_44:
+    case GFX_TEXFMT_ALPHA_INTENSITY_44:
         factor = 1;
         break;
-    case GR_TEXFMT_RGB_565:
+    case GFX_TEXFMT_RGB_565:
         factor = 2;
         break;
-    case GR_TEXFMT_ARGB_1555:
+    case GFX_TEXFMT_ARGB_1555:
         factor = 2;
         break;
-    case GR_TEXFMT_ALPHA_INTENSITY_88:
+    case GFX_TEXFMT_ALPHA_INTENSITY_88:
         factor = 2;
         break;
-    case GR_TEXFMT_ARGB_4444:
+    case GFX_TEXFMT_ARGB_4444:
         factor = 2;
         break;
-    case GR_TEXFMT_ARGB_8888:
+    case GFX_TEXFMT_ARGB_8888:
         factor = 4;
         break;
-    case GR_TEXFMT_ARGB_CMP_DXT1:  // FXT1,DXT1,5 support - H.Morii
+    case GFX_TEXFMT_ARGB_CMP_DXT1:  // FXT1,DXT1,5 support - H.Morii
         factor = 8;                  // HACKALERT: factor holds block bytes
         break;
-    case GR_TEXFMT_ARGB_CMP_DXT3:  // FXT1,DXT1,5 support - H.Morii
+    case GFX_TEXFMT_ARGB_CMP_DXT3:  // FXT1,DXT1,5 support - H.Morii
         factor = 16;                  // HACKALERT: factor holds block bytes
         break;
-    case GR_TEXFMT_ARGB_CMP_DXT5:
+    case GFX_TEXFMT_ARGB_CMP_DXT5:
         factor = 16;
         break;
-    case GR_TEXFMT_ARGB_CMP_FXT1:
+    case GFX_TEXFMT_ARGB_CMP_FXT1:
         factor = 8;
         break;
     default:
@@ -322,72 +310,72 @@ int grTexFormat2GLPackedFmt(int fmt, int * gltexfmt, int * glpixfmt, int * glpac
     /*
       int factor = -1;
       switch(fmt) {
-      case GR_TEXFMT_ALPHA_8:
+      case GFX_TEXFMT_ALPHA_8:
         factor = 1;
         *gltexfmt = GL_INTENSITY8;
         *glpixfmt = GL_LUMINANCE;
         *glpackfmt = GL_UNSIGNED_BYTE;
         break;
-      case GR_TEXFMT_INTENSITY_8: // I8 support - H.Morii
+      case GFX_TEXFMT_INTENSITY_8: // I8 support - H.Morii
         factor = 1;
         *gltexfmt = GL_LUMINANCE8;
         *glpixfmt = GL_LUMINANCE;
         *glpackfmt = GL_UNSIGNED_BYTE;
         break;
-      case GR_TEXFMT_ALPHA_INTENSITY_44:
+      case GFX_TEXFMT_ALPHA_INTENSITY_44:
         break;
-      case GR_TEXFMT_RGB_565:
+      case GFX_TEXFMT_RGB_565:
         factor = 2;
         *gltexfmt = GL_RGB;
         *glpixfmt = GL_RGB;
         *glpackfmt = GL_UNSIGNED_SHORT_5_6_5;
         break;
-      case GR_TEXFMT_ARGB_1555:
+      case GFX_TEXFMT_ARGB_1555:
         if (ati_sucks > 0) return -1; // ATI sucks as usual (fixes slowdown on ATI)
         factor = 2;
         *gltexfmt = GL_RGB5_A1;
         *glpixfmt = GL_BGRA;
         *glpackfmt = GL_UNSIGNED_SHORT_1_5_5_5_REV;
         break;
-      case GR_TEXFMT_ALPHA_INTENSITY_88:
+      case GFX_TEXFMT_ALPHA_INTENSITY_88:
         factor = 2;
         *gltexfmt = GL_LUMINANCE8_ALPHA8;
         *glpixfmt = GL_LUMINANCE_ALPHA;
         *glpackfmt = GL_UNSIGNED_BYTE;
         break;
-      case GR_TEXFMT_ARGB_4444:
+      case GFX_TEXFMT_ARGB_4444:
         factor = 2;
         *gltexfmt = GL_RGBA4;
         *glpixfmt = GL_BGRA;
         *glpackfmt = GL_UNSIGNED_SHORT_4_4_4_4_REV;
         break;
-      case GR_TEXFMT_ARGB_8888:
+      case GFX_TEXFMT_ARGB_8888:
         factor = 4;
         *gltexfmt = GL_RGBA8;
         *glpixfmt = GL_BGRA;
         *glpackfmt = GL_UNSIGNED_INT_8_8_8_8_REV;
         break;
-      case GR_TEXFMT_ARGB_CMP_DXT1:  // FXT1,DXT1,5 support - H.Morii
-        // HACKALERT: 3Dfx Glide uses GR_TEXFMT_ARGB_CMP_DXT1 for both opaque DXT1 and DXT1 with 1bit alpha.
+      case GFX_TEXFMT_ARGB_CMP_DXT1:  // FXT1,DXT1,5 support - H.Morii
+        // HACKALERT: 3Dfx Glide uses GFX_TEXFMT_ARGB_CMP_DXT1 for both opaque DXT1 and DXT1 with 1bit alpha.
         // GlideHQ compiled with GLIDE64_DXTN option enabled, uses opaqe DXT1 only.
         factor = 8; // HACKALERT: factor holds block bytes
         *gltexfmt = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; // these variables aren't used
         *glpixfmt = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
         *glpackfmt = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
         break;
-      case GR_TEXFMT_ARGB_CMP_DXT3:
+      case GFX_TEXFMT_ARGB_CMP_DXT3:
         factor = 16;
         *gltexfmt = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
         *glpixfmt = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
         *glpackfmt = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
         break;
-      case GR_TEXFMT_ARGB_CMP_DXT5:
+      case GFX_TEXFMT_ARGB_CMP_DXT5:
         factor = 16;
         *gltexfmt = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
         *glpixfmt = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
         *glpackfmt = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
         break;
-      case GR_TEXFMT_ARGB_CMP_FXT1:
+      case GFX_TEXFMT_ARGB_CMP_FXT1:
         factor = 8;
         *gltexfmt = GL_COMPRESSED_RGBA_FXT1_3DFX;
         *glpixfmt = GL_COMPRESSED_RGBA_FXT1_3DFX;
@@ -435,7 +423,7 @@ grTexDownloadMipMap(GrChipID_t tmu,
         register int n = 0, m = 0;
         switch (info->format)
         {
-        case GR_TEXFMT_ALPHA_8:
+        case GFX_TEXFMT_ALPHA_8:
             for (i = 0; i < height; i++)
             {
                 for (j = 0; j < width; j++)
@@ -451,7 +439,7 @@ grTexDownloadMipMap(GrChipID_t tmu,
             factor = 1;
             glformat = GL_RGBA;
             break;
-        case GR_TEXFMT_INTENSITY_8: // I8 support - H.Morii
+        case GFX_TEXFMT_INTENSITY_8: // I8 support - H.Morii
             for (i = 0; i < height; i++)
             {
                 for (j = 0; j < width; j++)
@@ -466,7 +454,7 @@ grTexDownloadMipMap(GrChipID_t tmu,
             factor = 1;
             glformat = GL_ALPHA;
             break;
-        case GR_TEXFMT_ALPHA_INTENSITY_44:
+        case GFX_TEXFMT_ALPHA_INTENSITY_44:
 #if 1
             for (i = 0; i < height; i++)
             {
@@ -493,7 +481,7 @@ grTexDownloadMipMap(GrChipID_t tmu,
             glformat = GL_LUMINANCE_ALPHA;
 #endif
             break;
-        case GR_TEXFMT_RGB_565:
+        case GFX_TEXFMT_RGB_565:
             for (i = 0; i < height; i++)
             {
                 for (j = 0; j < width; j++)
@@ -515,7 +503,7 @@ grTexDownloadMipMap(GrChipID_t tmu,
             factor = 2;
             glformat = GL_RGB;
             break;
-        case GR_TEXFMT_ARGB_1555:
+        case GFX_TEXFMT_ARGB_1555:
             for (i = 0; i < height; i++)
             {
                 for (j = 0; j < width; j++)
@@ -538,7 +526,7 @@ grTexDownloadMipMap(GrChipID_t tmu,
             factor = 2;
             glformat = GL_RGBA;
             break;
-        case GR_TEXFMT_ALPHA_INTENSITY_88:
+        case GFX_TEXFMT_ALPHA_INTENSITY_88:
             for (i = 0; i < height; i++)
             {
                 for (j = 0; j < width; j++)
@@ -553,7 +541,7 @@ grTexDownloadMipMap(GrChipID_t tmu,
             factor = 2;
             glformat = GL_LUMINANCE_ALPHA;
             break;
-        case GR_TEXFMT_ARGB_4444:
+        case GFX_TEXFMT_ARGB_4444:
 
             for (i = 0; i < height; i++)
             {
@@ -577,7 +565,7 @@ grTexDownloadMipMap(GrChipID_t tmu,
             factor = 2;
             glformat = GL_RGBA;
             break;
-        case GR_TEXFMT_ARGB_8888:
+        case GFX_TEXFMT_ARGB_8888:
             for (i = 0; i < height; i++)
             {
                 for (j = 0; j < width; j++)
@@ -596,19 +584,19 @@ grTexDownloadMipMap(GrChipID_t tmu,
             glformat = GL_RGBA;
             break;
             /*
-                case GR_TEXFMT_ARGB_CMP_DXT1: // FXT1,DXT1,5 support - H.Morii
+                case GFX_TEXFMT_ARGB_CMP_DXT1: // FXT1,DXT1,5 support - H.Morii
                   factor = 8;                 // HACKALERT: factor holds block bytes
                   glformat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
                   break;
-                case GR_TEXFMT_ARGB_CMP_DXT3: // FXT1,DXT1,5 support - H.Morii
+                case GFX_TEXFMT_ARGB_CMP_DXT3: // FXT1,DXT1,5 support - H.Morii
                   factor = 16;                 // HACKALERT: factor holds block bytes
                   glformat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
                   break;
-                case GR_TEXFMT_ARGB_CMP_DXT5:
+                case GFX_TEXFMT_ARGB_CMP_DXT5:
                   factor = 16;
                   glformat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
                   break;
-                case GR_TEXFMT_ARGB_CMP_FXT1:
+                case GFX_TEXFMT_ARGB_CMP_FXT1:
                   factor = 8;
                   glformat = GL_COMPRESSED_RGBA_FXT1_3DFX;
                   break;
@@ -623,10 +611,10 @@ grTexDownloadMipMap(GrChipID_t tmu,
 
     switch (info->format)
     {
-    case GR_TEXFMT_ARGB_CMP_DXT1:
-    case GR_TEXFMT_ARGB_CMP_DXT3:
-    case GR_TEXFMT_ARGB_CMP_DXT5:
-    case GR_TEXFMT_ARGB_CMP_FXT1:
+    case GFX_TEXFMT_ARGB_CMP_DXT1:
+    case GFX_TEXFMT_ARGB_CMP_DXT3:
+    case GFX_TEXFMT_ARGB_CMP_DXT5:
+    case GFX_TEXFMT_ARGB_CMP_FXT1:
         remove_tex(startAddress + 1, startAddress + 1 + ((width*height*factor) >> 4));
         break;
     default:
@@ -643,10 +631,10 @@ grTexDownloadMipMap(GrChipID_t tmu,
     /*
       switch(info->format)
       {
-      case GR_TEXFMT_ARGB_CMP_DXT1:
-      case GR_TEXFMT_ARGB_CMP_DXT3:
-      case GR_TEXFMT_ARGB_CMP_DXT5:
-      case GR_TEXFMT_ARGB_CMP_FXT1:
+      case GFX_TEXFMT_ARGB_CMP_DXT1:
+      case GFX_TEXFMT_ARGB_CMP_DXT3:
+      case GFX_TEXFMT_ARGB_CMP_DXT5:
+      case GFX_TEXFMT_ARGB_CMP_FXT1:
         glCompressedTexImage2DARB(GL_TEXTURE_2D, 0, (glformat ? glformat : gltexfmt), width, height, 0, (width*height*factor)>>4, info->data);
         break;
       default:

@@ -1010,7 +1010,7 @@ void LoadTex(int id, int tmu)
     AddToList(&cachelut[cache->crc >> 16], cache->crc, uintptr_t(cache), tmu, rdp.n_cached[tmu]);
 
     // temporary
-    cache->t_info.format = GR_TEXFMT_ARGB_1555;
+    cache->t_info.format = GFX_TEXFMT_ARGB_1555;
 
     // Calculate lod and aspect
     uint32_t size_x = rdp.tiles[td].width;
@@ -1439,34 +1439,34 @@ void LoadTex(int id, int tmu)
     if (mod && !modifyPalette && !ghqTexInfo.data)
     {
         // Convert the texture to ARGB 4444
-        if (LOWORD(result) == GR_TEXFMT_ARGB_1555)
+        if (LOWORD(result) == GFX_TEXFMT_ARGB_1555)
         {
             TexConv_ARGB1555_ARGB4444((texture), (tex2), real_x, real_y);
             texture = tex2;
         }
-        else if (LOWORD(result) == GR_TEXFMT_ALPHA_INTENSITY_88)
+        else if (LOWORD(result) == GFX_TEXFMT_ALPHA_INTENSITY_88)
         {
             TexConv_AI88_ARGB4444((texture), (tex2), real_x, real_y);
             texture = tex2;
         }
-        else if (LOWORD(result) == GR_TEXFMT_ALPHA_INTENSITY_44)
+        else if (LOWORD(result) == GFX_TEXFMT_ALPHA_INTENSITY_44)
         {
             TexConv_AI44_ARGB4444((texture), (tex2), real_x, real_y);
             texture = tex2;
         }
-        else if (LOWORD(result) == GR_TEXFMT_ALPHA_8)
+        else if (LOWORD(result) == GFX_TEXFMT_ALPHA_8)
         {
             TexConv_A8_ARGB4444((texture), (tex2), real_x, real_y);
             texture = tex2;
         }
-        /*else if (LOWORD(result) == GR_TEXFMT_ARGB_4444)
+        /*else if (LOWORD(result) == GFX_TEXFMT_ARGB_4444)
         {
         memcpy (tex2, texture, (real_x*real_y) << 1);
         texture = tex2;
         }*/ // we can skip memcpy since "texture" won't be swapped between "tex1" and "tex2" after this.
         // Hiroshi Morii <koolsmoky@users.sourceoforge.net>
 
-        result = (1 << 16) | GR_TEXFMT_ARGB_4444;
+        result = (1 << 16) | GFX_TEXFMT_ARGB_4444;
 
         // Now convert the color to the same
         modcolor = ((modcolor & 0xF0000000) >> 16) | ((modcolor & 0x00F00000) >> 12) |
