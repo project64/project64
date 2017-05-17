@@ -305,7 +305,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Glide64.rc">
+    <ResourceCompile Include="Project64-video.rc">
       <Filter>Res</Filter>
     </ResourceCompile>
   </ItemGroup>

@@ -201,7 +201,7 @@
     <None Include="usa.xpm" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Glide64.rc" />
+    <ResourceCompile Include="Project64-video.rc" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3rdParty\png\png.vcxproj">
