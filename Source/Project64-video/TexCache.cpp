@@ -11,6 +11,7 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
+#include <Project64-video/Renderer/Renderer.h>
 #include "Gfx_1.3.h"
 
 #include "TexCache.h"
@@ -37,7 +38,7 @@ uint8_t *texture_buffer = tex1;
 
 extern bool g_ghq_use;
 
-typedef struct TEXINFO_t 
+typedef struct TEXINFO_t
 {
     int real_image_width, real_image_height;	// FOR ALIGNMENT PURPOSES ONLY!!!
     int tile_width, tile_height;
@@ -53,7 +54,7 @@ typedef struct TEXINFO_t
 TEXINFO texinfo[2];
 int tex_found[2][MAX_TMU];
 
-typedef struct HIRESTEX_t 
+typedef struct HIRESTEX_t
 {
     int width, height;
     uint16_t format;
@@ -474,8 +475,8 @@ int ChooseBestTmu(int tmu1, int tmu2)
     if (!GfxInitDone) return tmu1;
     if (voodoo.tex_UMA) return 0;
 
-    if (tmu1 >= voodoo.num_tmu) return tmu2;
-    if (tmu2 >= voodoo.num_tmu) return tmu1;
+    if (tmu1 >= (nbTextureUnits > 2 ? 2 : 1)) return tmu2;
+    if (tmu2 >= (nbTextureUnits > 2 ? 2 : 1)) return tmu1;
 
     if (voodoo.tex_max_addr[tmu1] - voodoo.tmem_ptr[tmu1] >
         voodoo.tex_max_addr[tmu2] - voodoo.tmem_ptr[tmu2])
@@ -655,7 +656,7 @@ void TexCache()
 
     // little change to make single-tmu cards look better, use first texture no matter what
 
-    if (voodoo.num_tmu == 1)
+    if ((nbTextureUnits > 2 ? 2 : 1) == 1)
     {
         if (rdp.best_tex == 0)
         {
@@ -709,7 +710,7 @@ void TexCache()
                 return;
         }
 
-        if (tmu_1 < voodoo.num_tmu)
+        if (tmu_1 < (nbTextureUnits > 2 ? 2 : 1))
         {
             if (cmb.tex_cmb_ext_use)
             {
@@ -737,7 +738,7 @@ void TexCache()
             grTexDetailControl(tmu_1, cmb.dc1_lodbias, cmb.dc1_detailscale, cmb.dc1_detailmax);
             grTexLodBiasValue(tmu_1, cmb.lodbias1);
         }
-        if (tmu_0 < voodoo.num_tmu)
+        if (tmu_0 < (nbTextureUnits > 2 ? 2 : 1))
         {
             if (cmb.tex_cmb_ext_use)
             {
@@ -767,7 +768,7 @@ void TexCache()
         }
     }
 
-    if ((rdp.tex & 1) && tmu_0 < voodoo.num_tmu)
+    if ((rdp.tex & 1) && tmu_0 < (nbTextureUnits > 2 ? 2 : 1))
     {
         if (aTBuff[0] && aTBuff[0]->cache)
         {
@@ -798,7 +799,7 @@ void TexCache()
         else
             LoadTex(0, tmu_0);
     }
-    if ((rdp.tex & 2) && tmu_1 < voodoo.num_tmu)
+    if ((rdp.tex & 2) && tmu_1 < (nbTextureUnits > 2 ? 2 : 1))
     {
         if (aTBuff[1] && aTBuff[1]->cache)
         {
@@ -840,7 +841,7 @@ void TexCache()
         {
             const int tmu = tmu_v[i];
 
-            if (tmu >= voodoo.num_tmu) continue;
+            if (tmu >= (nbTextureUnits > 2 ? 2 : 1)) continue;
 
             int tile = rdp.cur_tile + i;
 
@@ -1320,7 +1321,7 @@ void LoadTex(int id, int tmu)
                     start_src >>= 1;
 
                 result = load_table[rdp.tiles[td].size][rdp.tiles[td].format]
-                    (uintptr_t(texture) + start_dst, uintptr_t(rdp.tmem) + (rdp.tiles[td].t_mem << 3) + start_src,
+                (uintptr_t(texture) + start_dst, uintptr_t(rdp.tmem) + (rdp.tiles[td].t_mem << 3) + start_src,
                     texinfo[id].wid_64, texinfo[id].height, texinfo[id].line, real_x, td);
 
                 uint32_t size = HIWORD(result);
@@ -1337,7 +1338,7 @@ void LoadTex(int id, int tmu)
         else
         {
             result = load_table[rdp.tiles[td].size][rdp.tiles[td].format]
-                (uintptr_t(texture), uintptr_t(rdp.tmem) + (rdp.tiles[td].t_mem << 3),
+            (uintptr_t(texture), uintptr_t(rdp.tmem) + (rdp.tiles[td].t_mem << 3),
                 texinfo[id].wid_64, texinfo[id].height, texinfo[id].line, real_x, td);
 
             uint32_t size = HIWORD(result);
@@ -1369,25 +1370,25 @@ void LoadTex(int id, int tmu)
                 {
                     if (size == 1)
                         Mirror16bS((texture), rdp.tiles[td].mask_s,
-                        real_x, real_x, texinfo[id].height);
+                            real_x, real_x, texinfo[id].height);
                     else if (size != 2)
                         Mirror8bS((texture), rdp.tiles[td].mask_s,
-                        real_x, real_x, texinfo[id].height);
+                            real_x, real_x, texinfo[id].height);
                     else
                         Mirror32bS((texture), rdp.tiles[td].mask_s,
-                        real_x, real_x, texinfo[id].height);
+                            real_x, real_x, texinfo[id].height);
                 }
                 else
                 {
                     if (size == 1)
                         Wrap16bS((texture), rdp.tiles[td].mask_s,
-                        real_x, real_x, texinfo[id].height);
+                            real_x, real_x, texinfo[id].height);
                     else if (size != 2)
                         Wrap8bS((texture), rdp.tiles[td].mask_s,
-                        real_x, real_x, texinfo[id].height);
+                            real_x, real_x, texinfo[id].height);
                     else
                         Wrap32bS((texture), rdp.tiles[td].mask_s,
-                        real_x, real_x, texinfo[id].height);
+                            real_x, real_x, texinfo[id].height);
                 }
             }
 
@@ -1407,25 +1408,25 @@ void LoadTex(int id, int tmu)
                 {
                     if (size == 1)
                         Mirror16bT((texture), rdp.tiles[td].mask_t,
-                        real_y, real_x);
+                            real_y, real_x);
                     else if (size != 2)
                         Mirror8bT((texture), rdp.tiles[td].mask_t,
-                        real_y, real_x);
+                            real_y, real_x);
                     else
                         Mirror32bT((texture), rdp.tiles[td].mask_t,
-                        real_y, real_x);
+                            real_y, real_x);
                 }
                 else
                 {
                     if (size == 1)
                         Wrap16bT((texture), rdp.tiles[td].mask_t,
-                        real_y, real_x);
+                            real_y, real_x);
                     else if (size != 2)
                         Wrap8bT((texture), rdp.tiles[td].mask_t,
-                        real_y, real_x);
+                            real_y, real_x);
                     else
                         Wrap32bT((texture), rdp.tiles[td].mask_t,
-                        real_y, real_x);
+                            real_y, real_x);
                 }
             }
         }

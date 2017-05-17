@@ -133,7 +133,7 @@ typedef struct
 } VERTEX;
 
 // Clipping (scissors)
-typedef struct 
+typedef struct
 {
     uint32_t ul_x;
     uint32_t ul_y;
@@ -153,7 +153,6 @@ typedef struct {
 
 typedef struct
 {
-    int num_tmu;
     int max_tex_size;
     int sup_large_tex;
     int sup_mirroring;

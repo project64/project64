@@ -48,6 +48,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Gfx_1.3.h" />
+    <ClInclude Include="Renderer\Renderer.h" />
+    <ClInclude Include="Renderer\types.h" />
     <ClInclude Include="ScreenResolution.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SettingsID.h" />
@@ -137,6 +139,7 @@
     <ClCompile Include="Renderer\OGLgeometry.cpp" />
     <ClCompile Include="Renderer\OGLglitchmain.cpp" />
     <ClCompile Include="Renderer\OGLtextures.cpp" />
+    <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="ScreenResolution.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="TexCache.cpp" />

@@ -11,7 +11,7 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
-#include <Project64-video/Renderer/types.h>
+#include <Project64-video/Renderer/Renderer.h>
 
 #define SAVE_CBUFFER
 
@@ -281,7 +281,6 @@ typedef struct
     int buff_clear;
 } fb;
 
-int nbTextureUnits;
 int nbAuxBuffers, current_buffer;
 int g_scr_res_x, g_width, widtho, heighto, g_scr_res_y, g_height;
 int g_res_x, g_res_y;
@@ -2073,13 +2072,13 @@ grLfbWriteRegion(GrBuffer_t dst_buffer,
         glDrawPixels(src_width, src_height + (g_viewport_offset), GL_DEPTH_COMPONENT, GL_FLOAT, buf);
 
         free(buf);
-        }
+    }
     glDrawBuffer(current_buffer);
     glPopAttrib();
 
     grDisplayGLError("grLfbWriteRegion");
     return FXTRUE;
-    }
+}
 
 /* wrapper-specific glide extensions */
 
@@ -2404,7 +2403,7 @@ grGetGammaTableExt(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
             blue[i] = aGammaRamp[2][i] >> 8;
         }
     }
-    }
+}
 
 FX_ENTRY void FX_CALL
 guGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB)
@@ -2419,7 +2418,7 @@ guGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB)
         aGammaRamp[2][i] = (((FxU16)((pow(i / 255.0F, 1.0F / gammaB)) * 255.0F + 0.5F)) << 8) & 0xFFFF;
     }
     CorrectGamma(aGammaRamp);
-        }
+}
 
 FX_ENTRY void FX_CALL
 grDitherMode(GrDitherMode_t /*mode*/)
@@ -2550,7 +2549,7 @@ void dump_stop()
             ((unsigned char *)frameBuffer)[(i + j*width) * 3] = d & 0xff;
             ((unsigned char *)frameBuffer)[(i + j*width) * 3 + 1] = d >> 8;
             ((unsigned char *)frameBuffer)[(i + j*width) * 3 + 2] = c & 0xff;
-    }
+        }
     }
     ilTexImage(width, height, 1, 3, IL_RGB, IL_UNSIGNED_BYTE, frameBuffer);
     ilSaveImage("dump/framedepth.png");

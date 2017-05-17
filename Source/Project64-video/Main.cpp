@@ -11,6 +11,7 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
+#include <Project64-video/Renderer/Renderer.h>
 #include <string.h>
 #include <Common/StdString.h>
 #include "Gfx_1.3.h"
@@ -268,7 +269,7 @@ void guLoadTextures()
     rdp.texbufs[0].count = 0;
     rdp.texbufs[0].clear_allowed = TRUE;
     offset_font = tbuf_size;
-    if (voodoo.num_tmu > 1)
+    if ((nbTextureUnits > 2 ? 2 : 1) > 1)
     {
         rdp.texbufs[1].tmu = GR_TMU1;
         rdp.texbufs[1].begin = voodoo.tex_UMA ? rdp.texbufs[0].end : voodoo.tex_min_addr[GR_TMU1];
@@ -534,13 +535,10 @@ int InitGfx()
     GfxInitDone = TRUE;
     to_fullscreen = FALSE;
 
-    // get the # of TMUs available
-    grGet(GR_NUM_TMU, 4, (FxI32*)&voodoo.num_tmu);
     // get maximal texture size
     grGet(GR_MAX_TEXTURE_SIZE, 4, (FxI32*)&voodoo.max_tex_size);
     voodoo.sup_large_tex = (voodoo.max_tex_size > 256 && !g_settings->hacks(CSettings::hack_PPL));
 
-    //num_tmu = 1;
     if (voodoo.tex_UMA)
     {
         GetTexAddr = GetTexAddrUMA;
@@ -576,12 +574,10 @@ int InitGfx()
     InitCombine();
 
 #ifdef SIMULATE_VOODOO1
-    voodoo.num_tmu = 1;
     voodoo.sup_mirroring = 0;
 #endif
 
 #ifdef SIMULATE_BANSHEE
-    voodoo.num_tmu = 1;
     voodoo.sup_mirroring = 1;
 #endif
 
@@ -986,7 +982,6 @@ that there is a waiting interrupt.
 int CALL InitiateGFX(GFX_INFO Gfx_Info)
 {
     WriteTrace(TraceInterface, TraceDebug, "Start");
-    voodoo.num_tmu = 2;
 
     // Assume scale of 1 for debug purposes
     rdp.scale_x = 1.0f;

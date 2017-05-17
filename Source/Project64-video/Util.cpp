@@ -11,6 +11,7 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
+#include <Project64-video/Renderer/Renderer.h>
 #include <math.h>
 #include <string.h>
 
@@ -118,7 +119,7 @@ int cull_tri(VERTEX **v) // type changed to VERTEX** [Dave2001]
     {
     case 1: // cull front
         //    if ((x1*y2 - y1*x2) < 0.0f) //counter-clockwise, positive
-        if ((y1*x2-x1*y2) < 0.0f) //counter-clockwise, positive
+        if ((y1*x2 - x1*y2) < 0.0f) //counter-clockwise, positive
         {
             WriteTrace(TraceRDP, TraceDebug, " culled!");
             return TRUE;
@@ -126,7 +127,7 @@ int cull_tri(VERTEX **v) // type changed to VERTEX** [Dave2001]
         return FALSE;
     case 2: // cull back
         //    if ((x1*y2 - y1*x2) >= 0.0f) //clockwise, negative
-        if ((y1*x2-x1*y2) >= 0.0f) //clockwise, negative
+        if ((y1*x2 - x1*y2) >= 0.0f) //clockwise, negative
         {
             WriteTrace(TraceRDP, TraceDebug, " culled!");
             return TRUE;
@@ -284,7 +285,7 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
             double diffz_02 = vtx[0]->sz - vtx[2]->sz;
             double diffz_12 = vtx[1]->sz - vtx[2]->sz;
             double fdzdx = (diffz_02 * diffy_12 - diffz_12 * diffy_02) / denom;
-            if ((rdp.rm & 0xC00) == 0xC00) 
+            if ((rdp.rm & 0xC00) == 0xC00)
             {
                 // Calculate deltaZ per polygon for Decal z-mode
                 double fdzdy = (diffz_02 * diffx_12 - diffz_12 * diffx_02) / denom;
@@ -781,7 +782,7 @@ void do_triangle_stuff(uint16_t linew, int old_interpolate) // what else?? do th
         if (!g_settings->clip_zmin())
         {
             rdp.clip &= ~CLIP_ZMIN;
-        }         
+        }
         if (!g_settings->clip_zmax())
         {
             rdp.clip &= ~CLIP_ZMAX;
@@ -926,21 +927,6 @@ static void InterpolateColors3(VERTEX &v1, VERTEX &v2, VERTEX &v3, VERTEX &out)
 
 static void CalculateLOD(VERTEX *v, int n)
 {
-    //rdp.update |= UPDATE_TEXTURE;
-    /*
-    if (rdp.lod_calculated)
-    {
-    float detailmax;
-    if (dc0_detailmax < 0.5)
-    detailmax = rdp.lod_fraction;
-    else
-    detailmax = 1.0f - rdp.lod_fraction;
-    grTexDetailControl (GR_TMU0, dc0_lodbias, dc0_detailscale, detailmax);
-    if (num_tmu == 2)
-    grTexDetailControl (GR_TMU1, dc1_lodbias, dc1_detailscale, detailmax);
-    return;
-    }
-    */
     float deltaS, deltaT;
     float deltaX, deltaY;
     double deltaTexels, deltaPixels, lodFactor = 0;
@@ -994,7 +980,7 @@ static void CalculateLOD(VERTEX *v, int n)
     else
         detailmax = 1.0f - lod_fraction;
     grTexDetailControl(GR_TMU0, cmb.dc0_lodbias, cmb.dc0_detailscale, detailmax);
-    if (voodoo.num_tmu == 2)
+    if ((nbTextureUnits > 2 ? 2 : 1) == 2)
         grTexDetailControl(GR_TMU1, cmb.dc1_lodbias, cmb.dc1_detailscale, detailmax);
     WriteTrace(TraceRDP, TraceDebug, "CalculateLOD factor: %f, tile: %d, lod_fraction: %f", (float)lodFactor, lod_tile, lod_fraction);
 }
@@ -1852,7 +1838,7 @@ void update()
         }
         if (rdp.acmp == 3 && rdp.cycle_mode < 2)
         {
-            if (g_settings->old_style_adither() || rdp.alpha_dither_mode != 3) 
+            if (g_settings->old_style_adither() || rdp.alpha_dither_mode != 3)
             {
                 WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: dither");
                 grStippleMode(g_settings->stipple_mode());

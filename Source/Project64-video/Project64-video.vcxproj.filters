@@ -154,6 +154,12 @@
     <ClInclude Include="TextureEnhancer\TxReSample.h" />
     <ClInclude Include="TextureEnhancer\TxTexCache.h" />
     <ClInclude Include="TextureEnhancer\TxUtil.h" />
+    <ClInclude Include="Renderer\Renderer.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\types.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CRC.cpp">
@@ -265,6 +271,9 @@
     </ClCompile>
     <ClCompile Include="ucodeFB.cpp">
       <Filter>ucode</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Renderer.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

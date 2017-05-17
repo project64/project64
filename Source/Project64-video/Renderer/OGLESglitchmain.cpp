@@ -11,7 +11,7 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
-#include <Project64-video/Renderer/types.h>
+#include <Project64-video/Renderer/Renderer.h>
 
 #define SAVE_CBUFFER
 
@@ -138,7 +138,6 @@ typedef struct
     int buff_clear;
 } fb;
 
-int nbTextureUnits;
 int nbAuxBuffers, current_buffer;
 int g_scr_res_x, g_width, widtho, heighto, g_scr_res_y, g_height;
 int g_res_x, g_res_y;
@@ -393,32 +392,13 @@ FX_ENTRY GrContext_t FX_CALL grSstWinOpen(GrColorFormat_t color_format, GrOrigin
 #endif // _WIN32
 
     nbTextureUnits = 4;
-    //glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, &nbTextureUnits);
-    if (nbTextureUnits == 1) WriteTrace(TraceGlitch, TraceWarning, "You need a video card that has at least 2 texture units");
-
     nbAuxBuffers = 4;
     //glGetIntegerv(GL_AUX_BUFFERS, &nbAuxBuffers);
     if (nbAuxBuffers > 0)
         printf("Congratulations, you have %d auxilliary buffers, we'll use them wisely !\n", nbAuxBuffers);
-#ifdef VOODOO1
-    nbTextureUnits = 2;
-#endif
 
     blend_func_separate_support = 1;
     packed_pixels_support = 0;
-    /*
-      if (isExtensionSupported("GL_EXT_blend_func_separate") == 0)
-      blend_func_separate_support = 0;
-      else
-      blend_func_separate_support = 1;
-
-      if (isExtensionSupported("GL_EXT_packed_pixels") == 0)
-      packed_pixels_support = 0;
-      else {
-      printf("packed pixels extension used\n");
-      packed_pixels_support = 1;
-      }
-      */
 
     if (isExtensionSupported("GL_ARB_texture_non_power_of_two") == 0)
         npot_support = 0;
@@ -984,19 +964,7 @@ grGet(FxU32 pname, FxU32 plength, FxI32 *params)
         break;
     case GR_NUM_TMU:
         if (plength < 4 || params == NULL) return 0;
-        if (!nbTextureUnits)
-        {
-            grSstWinOpen(GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
-            grSstWinClose(0);
-        }
-#ifdef VOODOO1
-        params[0] = 1;
-#else
-        if (nbTextureUnits > 2)
-            params[0] = 2;
-        else
-            params[0] = 1;
-#endif
+        params[0] = 2;
         return 4;
         break;
     case GR_NUM_BOARDS:
@@ -1019,7 +987,7 @@ grGet(FxU32 pname, FxU32 plength, FxI32 *params)
         break;
     case GR_MEMORY_UMA:
         if (plength < 4 || params == NULL) return 0;
-        params[0] = 16 * 1024 * 1024 * nbTextureUnits;
+        params[0] = 16 * 1024 * 1024 * 4;
         return 4;
         break;
     case GR_BITS_RGBA:
@@ -1622,7 +1590,7 @@ grLfbLock(GrLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode,
     }
 
     return FXTRUE;
-}
+            }
 
 FX_ENTRY FxBool FX_CALL
 grLfbUnlock(GrLock_t type, GrBuffer_t buffer)
@@ -1856,7 +1824,7 @@ grLfbWriteRegion(GrBuffer_t dst_buffer,
     //glDrawBuffer(current_buffer);
     //glPopAttrib();
     return FXTRUE;
-}
+        }
 
 /* wrapper-specific glide extensions */
 

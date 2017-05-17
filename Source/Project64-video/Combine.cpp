@@ -11,6 +11,7 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
+#include <Project64-video/Renderer/Renderer.h>
 #include <string.h>
 #include "Gfx_1.3.h"
 #include "Util.h"
@@ -122,7 +123,7 @@ COMBINE cmb;
   cmb.tex |= 1, \
   cmb.tmu0_func = GR_COMBINE_FUNCTION_LOCAL
 #define USE_T1() \
-  if (voodoo.num_tmu > 1) { \
+  if ((nbTextureUnits > 2 ? 2 : 1) > 1) { \
   rdp.best_tex = 1; \
   cmb.tex |= 2, \
   cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
@@ -467,7 +468,7 @@ COMBINE cmb;
   cmb.tex |= 1, \
   cmb.tmu0_a_func = GR_COMBINE_FUNCTION_LOCAL
 #define A_USE_T1() \
-  if (voodoo.num_tmu > 1) { \
+  if ((nbTextureUnits > 2 ? 2 : 1) > 1) { \
   cmb.tex |= 2, \
   cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL, \
   cmb.tmu0_a_func = GR_COMBINE_FUNCTION_SCALE_OTHER, \

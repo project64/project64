@@ -11,6 +11,7 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
+#include <Project64-video/Renderer/Renderer.h>
 #include <math.h>
 #include <string.h>
 
@@ -667,7 +668,7 @@ EXPORT void CALL ProcessDList(void)
         DisplayError("The GFX plugin caused an exception and has been disabled");
         to_fullscreen = TRUE;
         return;
-    }
+        }
 #endif
 
     if (g_settings->fb_emulation_enabled())
@@ -696,7 +697,7 @@ EXPORT void CALL ProcessDList(void)
         CI_SET = FALSE;
     }
     WriteTrace(TraceRDP, TraceDebug, "ProcessDList end");
-}
+    }
 
 // undef - undefined instruction, always ignore
 void undef()
@@ -1521,7 +1522,7 @@ void rdp_loadtlut()
     {
         //the buffer is definitely wrong, as there must be no CI frame buffers
         //find and remove it
-        for (int i = 0; i < voodoo.num_tmu; i++)
+        for (int i = 0; i < (nbTextureUnits > 2 ? 2 : 1); i++)
         {
             for (int j = 0; j < rdp.texbufs[i].count; j++)
             {
@@ -3328,7 +3329,7 @@ void DetectFrameBufferUsage()
 
     if (g_settings->fb_hwfbe_enabled())
     {
-        for (i = 0; i < voodoo.num_tmu; i++)
+        for (i = 0; i < (nbTextureUnits > 2 ? 2 : 1); i++)
         {
             rdp.texbufs[i].clear_allowed = TRUE;
             for (int j = 0; j < 256; j++)
