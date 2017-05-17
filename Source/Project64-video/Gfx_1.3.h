@@ -12,7 +12,6 @@
 *                                                                          *
 ****************************************************************************/
 #pragma once
-#include "winlnxdefs.h"
 
 #include <stdio.h>
 #include <fstream>

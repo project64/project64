@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by Glide64.rc
+// Used by Project64-video.rc
 //
 #define IDD_CONFIG_BASIC                101
 #define IDD_EMULATION_SETTINGS          102

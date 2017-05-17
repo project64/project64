@@ -20,6 +20,7 @@
 #include "glitchmain.h"
 #include <stdio.h>
 #include <Project64-video/trace.h>
+#include <Project64-video/Renderer/Renderer.h>
 
 
 int TMU_SIZE = 8 * 2048 * 2048;

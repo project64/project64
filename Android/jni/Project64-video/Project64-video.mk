@@ -31,6 +31,20 @@ LOCAL_SRC_FILES :=                              \
     $(SRCDIR)/Project64-video/TexBuffer.cpp             \
     $(SRCDIR)/Project64-video/TexCache.cpp              \
     $(SRCDIR)/Project64-video/trace.cpp                 \
+    $(SRCDIR)/Project64-video/turbo3D.cpp               \
+    $(SRCDIR)/Project64-video/ucode.cpp                 \
+    $(SRCDIR)/Project64-video/ucode00.cpp               \
+    $(SRCDIR)/Project64-video/ucode01.cpp               \
+    $(SRCDIR)/Project64-video/ucode02.cpp               \
+    $(SRCDIR)/Project64-video/ucode03.cpp               \
+    $(SRCDIR)/Project64-video/ucode04.cpp               \
+    $(SRCDIR)/Project64-video/ucode05.cpp               \
+    $(SRCDIR)/Project64-video/ucode06.cpp               \
+    $(SRCDIR)/Project64-video/ucode07.cpp               \
+    $(SRCDIR)/Project64-video/ucode08.cpp               \
+    $(SRCDIR)/Project64-video/ucode09.cpp               \
+    $(SRCDIR)/Project64-video/ucode09rdp.cpp            \
+    $(SRCDIR)/Project64-video/ucodeFB.cpp                  \
     $(SRCDIR)/Project64-video/Util.cpp                  \
     $(SRCDIR)/Project64-video/Ext_TxFilter.cpp          \
     $(SRCDIR)/Project64-video/Renderer/OGLEScombiner.cpp        \
@@ -38,6 +52,7 @@ LOCAL_SRC_FILES :=                              \
     $(SRCDIR)/Project64-video/Renderer/OGLESglitchmain.cpp      \
     $(SRCDIR)/Project64-video/Renderer/OGLEStextures.cpp        \
     $(SRCDIR)/Project64-video/Renderer/OGLESwrappers.cpp        \
+    $(SRCDIR)/Project64-video/Renderer/Renderer.cpp        \
     $(SRCDIR)/Project64-video/TextureEnhancer/TxFilterExport.cpp        \
     $(SRCDIR)/Project64-video/TextureEnhancer/TxFilter.cpp              \
     $(SRCDIR)/Project64-video/TextureEnhancer/TxCache.cpp               \
