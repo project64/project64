@@ -18,8 +18,6 @@
 #include "CRC.h"
 #include <Project64-video/trace.h>
 
-extern int g_scr_res_x, g_res_x, g_scr_res_y, g_res_y;
-
 static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
 {
     TBUFF_COLOR_IMAGE texbuf;

@@ -139,8 +139,7 @@ typedef struct
 } fb;
 
 int nbAuxBuffers, current_buffer;
-int g_scr_res_x, g_width, widtho, heighto, g_scr_res_y, g_height;
-int g_res_x, g_res_y;
+int g_width, widtho, heighto, g_height;
 int saved_width, saved_height;
 int blend_func_separate_support;
 int npot_support;
@@ -1590,7 +1589,7 @@ grLfbLock(GrLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode,
     }
 
     return FXTRUE;
-            }
+}
 
 FX_ENTRY FxBool FX_CALL
 grLfbUnlock(GrLock_t type, GrBuffer_t buffer)
@@ -1824,7 +1823,7 @@ grLfbWriteRegion(GrBuffer_t dst_buffer,
     //glDrawBuffer(current_buffer);
     //glPopAttrib();
     return FXTRUE;
-        }
+}
 
 /* wrapper-specific glide extensions */
 

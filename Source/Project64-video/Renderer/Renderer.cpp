@@ -13,4 +13,5 @@
 ****************************************************************************/
 #include <Project64-video/Renderer/Renderer.h>
 
-int32_t nbTextureUnits = 0;
+uint32_t nbTextureUnits = 0;
+uint32_t g_scr_res_x, g_scr_res_y, g_res_x, g_res_y;

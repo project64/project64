@@ -282,8 +282,7 @@ typedef struct
 } fb;
 
 int nbAuxBuffers, current_buffer;
-int g_scr_res_x, g_width, widtho, heighto, g_scr_res_y, g_height;
-int g_res_x, g_res_y;
+int g_width, widtho, heighto, g_height;
 int saved_width, saved_height;
 int blend_func_separate_support;
 int npot_support;
@@ -595,7 +594,7 @@ grSstWinOpen(
 #endif // _WIN32
 
     nbTextureUnits = 0;
-    glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, &nbTextureUnits);
+    glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, (GLint *)&nbTextureUnits);
     if (nbTextureUnits == 1) WriteTrace(TraceGlitch, TraceWarning, "You need a video card that has at least 2 texture units");
 
     nbAuxBuffers = 0;

@@ -11,6 +11,7 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
+#include <Project64-video/Renderer/Renderer.h>
 #include <stdio.h>
 #ifdef _WIN32
 #include <windows.h>

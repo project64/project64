@@ -101,8 +101,6 @@ static unsigned long g_windowedExStyle, g_windowedStyle;
 bool g_fullscreen;
 #endif // _WIN32
 
-extern int g_scr_res_x, g_res_x, g_scr_res_y, g_res_y;
-
 void ChangeSize()
 {
     WriteTrace(TraceResolution, TraceDebug, "Start");

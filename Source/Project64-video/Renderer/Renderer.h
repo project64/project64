@@ -14,4 +14,5 @@
 #pragma once
 #include <Project64-video/Renderer/types.h>
 
-extern int32_t nbTextureUnits;
+extern uint32_t nbTextureUnits;
+extern uint32_t g_scr_res_x, g_scr_res_y, g_res_x, g_res_y;

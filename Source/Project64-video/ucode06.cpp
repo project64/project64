@@ -11,6 +11,7 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
+#include <Project64-video/Renderer/Renderer.h>
 #include <Project64-video/rdp.h>
 #include <Project64-video/Gfx_1.3.h>
 #include <Project64-video/trace.h>
@@ -20,8 +21,6 @@
 #include "TexCache.h"
 #include "TexBuffer.h"
 #include "ucode06.h"
-
-extern int g_scr_res_x, g_res_x, g_scr_res_y, g_res_y;
 
 // STANDARD DRAWIMAGE - draws a 2d image based on the following structure
 

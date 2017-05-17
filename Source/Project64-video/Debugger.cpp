@@ -11,6 +11,7 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
+#include <Project64-video/Renderer/Renderer.h>
 #include <stdarg.h>
 #include <string.h>
 
@@ -21,8 +22,6 @@
 //
 // output - output debugger text
 //
-extern int g_scr_res_x, g_scr_res_y;
-
 void output(float x, float y, int scale, const char *fmt, ...)
 {
     float scale_1024 = g_scr_res_x / 1024.0f;

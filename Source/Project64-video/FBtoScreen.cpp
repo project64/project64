@@ -11,12 +11,11 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
+#include <Project64-video/Renderer/Renderer.h>
 #include "Gfx_1.3.h"
 #include "FBtoScreen.h"
 #include "TexCache.h"
 #include <Project64-video/trace.h>
-
-extern int g_scr_res_x, g_scr_res_y;
 
 static int SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaque)
 {
@@ -280,7 +279,7 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
     uint32_t width = fb_info.lr_x - fb_info.ul_x + 1;
     uint32_t height = fb_info.lr_y - fb_info.ul_y + 1;
     uint32_t max_size = minval(voodoo.max_tex_size, 512);
-    if (width >(uint32_t)max_size || height > (uint32_t)max_size)
+    if (width > (uint32_t)max_size || height > (uint32_t)max_size)
     {
         DrawFrameBufferToScreen256(fb_info);
         return true;

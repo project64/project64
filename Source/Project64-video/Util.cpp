@@ -30,8 +30,6 @@
 VERTEX *vtx_list1[32];  // vertex indexing
 VERTEX *vtx_list2[32];
 
-extern int g_scr_res_x, g_scr_res_y;
-
 //
 // util_init - initialize data for the functions in this file
 //

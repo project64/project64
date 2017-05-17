@@ -148,8 +148,6 @@ void microcheck();
 static int reset = 0;
 static CSettings::ucode_t g_old_ucode = CSettings::uCode_Unsupported;
 
-extern int g_scr_res_x, g_res_x, g_scr_res_y, g_res_y;
-
 void RDP::Reset()
 {
     memset(this, 0, sizeof(RDP_Base));
@@ -651,9 +649,9 @@ EXPORT void CALL ProcessDList(void)
                 rdp_log << out_buf;
 #endif
             } while (!rdp.halt);
-        }
+            }
 #ifdef CATCH_EXCEPTIONS
-    }
+        }
     catch (...) {
         if (g_fullscreen)
         {
@@ -668,7 +666,7 @@ EXPORT void CALL ProcessDList(void)
         DisplayError("The GFX plugin caused an exception and has been disabled");
         to_fullscreen = TRUE;
         return;
-        }
+    }
 #endif
 
     if (g_settings->fb_emulation_enabled())
