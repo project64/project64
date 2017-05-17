@@ -70,12 +70,6 @@ extern "C" {
 
     extern uint32_t update_screen_count;
 
-    //#define PERFORMANCE
-#ifdef PERFORMANCE
-    extern int64 perf_cur;
-    extern int64 perf_next;
-#endif
-
     extern int GfxInitDone;
     extern bool g_romopen;
     extern int to_fullscreen;
@@ -118,7 +112,7 @@ extern "C" {
         int NormalMemory;    /* a normal uint8_t array */
         int MemoryBswaped;  /* a normal uint8_t array where the memory has been pre
                             bswap on a dword (32 bits) boundry */
-    } PLUGIN_INFO;
+} PLUGIN_INFO;
 
     typedef struct
     {

@@ -64,11 +64,6 @@ extern int g_width, g_height;
 HINSTANCE hinstDLL = NULL;
 #endif
 
-#ifdef PERFORMANCE
-int64 perf_cur;
-int64 perf_next;
-#endif
-
 uint32_t   region = 0;
 
 unsigned int BMASK = 0x7FFFFF;
@@ -1070,7 +1065,7 @@ void CALL RomClosed(void)
     if (evoodoo)
     {
         ReleaseGfx();
-    }
+}
 }
 
 static void CheckDRAMSize()
