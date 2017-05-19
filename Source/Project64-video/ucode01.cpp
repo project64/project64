@@ -45,13 +45,13 @@ void uc1_tri1()
         ((rdp.cmd1 >> 9) & 0x7F),
         ((rdp.cmd1 >> 1) & 0x7F), rdp.cmd0, rdp.cmd1);
 
-    VERTEX *v[3] = {
-        &rdp.vtx[(rdp.cmd1 >> 17) & 0x7F],
-        &rdp.vtx[(rdp.cmd1 >> 9) & 0x7F],
-        &rdp.vtx[(rdp.cmd1 >> 1) & 0x7F]
+    VERTEX *vtx[3] = {
+        &rdp.vtx((rdp.cmd1 >> 17) & 0x7F),
+        &rdp.vtx((rdp.cmd1 >> 9) & 0x7F),
+        &rdp.vtx((rdp.cmd1 >> 1) & 0x7F)
     };
 
-    rsp_tri1(v);
+    rsp_tri1(vtx);
 }
 
 void uc1_tri2()
@@ -71,16 +71,16 @@ void uc1_tri2()
         ((rdp.cmd1 >> 9) & 0x7F),
         ((rdp.cmd1 >> 1) & 0x7F));
 
-    VERTEX *v[6] = {
-        &rdp.vtx[(rdp.cmd0 >> 17) & 0x7F],
-        &rdp.vtx[(rdp.cmd0 >> 9) & 0x7F],
-        &rdp.vtx[(rdp.cmd0 >> 1) & 0x7F],
-        &rdp.vtx[(rdp.cmd1 >> 17) & 0x7F],
-        &rdp.vtx[(rdp.cmd1 >> 9) & 0x7F],
-        &rdp.vtx[(rdp.cmd1 >> 1) & 0x7F]
+    VERTEX *vtx[6] = {
+        &rdp.vtx((rdp.cmd0 >> 17) & 0x7F),
+        &rdp.vtx((rdp.cmd0 >> 9) & 0x7F),
+        &rdp.vtx((rdp.cmd0 >> 1) & 0x7F),
+        &rdp.vtx((rdp.cmd1 >> 17) & 0x7F),
+        &rdp.vtx((rdp.cmd1 >> 9) & 0x7F),
+        &rdp.vtx((rdp.cmd1 >> 1) & 0x7F)
     };
 
-    rsp_tri2(v);
+    rsp_tri2(vtx);
 }
 
 void uc1_line3d()
@@ -93,15 +93,15 @@ void uc1_line3d()
             (rdp.cmd1 >> 17) & 0x7F,
             (rdp.cmd1 >> 9) & 0x7F);
 
-        VERTEX *v[3] = {
-            &rdp.vtx[(rdp.cmd1 >> 17) & 0x7F],
-            &rdp.vtx[(rdp.cmd1 >> 9) & 0x7F],
-            &rdp.vtx[(rdp.cmd1 >> 9) & 0x7F]
+        VERTEX *vtx[3] = {
+            &rdp.vtx((rdp.cmd1 >> 17) & 0x7F),
+            &rdp.vtx((rdp.cmd1 >> 9) & 0x7F),
+            &rdp.vtx((rdp.cmd1 >> 9) & 0x7F)
         };
         uint32_t cull_mode = (rdp.flags & CULLMASK) >> CULLSHIFT;
         rdp.flags |= CULLMASK;
         rdp.update |= UPDATE_CULL_MODE;
-        rsp_tri1(v, width);
+        rsp_tri1(vtx, width);
         rdp.flags ^= CULLMASK;
         rdp.flags |= cull_mode << CULLSHIFT;
         rdp.update |= UPDATE_CULL_MODE;
@@ -110,16 +110,16 @@ void uc1_line3d()
     {
         WriteTrace(TraceRDP, TraceDebug, "uc1:quad3d #%d, #%d", rdp.tri_n, rdp.tri_n + 1);
 
-        VERTEX *v[6] = {
-            &rdp.vtx[(rdp.cmd1 >> 25) & 0x7F],
-            &rdp.vtx[(rdp.cmd1 >> 17) & 0x7F],
-            &rdp.vtx[(rdp.cmd1 >> 9) & 0x7F],
-            &rdp.vtx[(rdp.cmd1 >> 1) & 0x7F],
-            &rdp.vtx[(rdp.cmd1 >> 25) & 0x7F],
-            &rdp.vtx[(rdp.cmd1 >> 9) & 0x7F]
+        VERTEX *vtx[6] = {
+            &rdp.vtx((rdp.cmd1 >> 25) & 0x7F),
+            &rdp.vtx((rdp.cmd1 >> 17) & 0x7F),
+            &rdp.vtx((rdp.cmd1 >> 9) & 0x7F),
+            &rdp.vtx((rdp.cmd1 >> 1) & 0x7F),
+            &rdp.vtx((rdp.cmd1 >> 25) & 0x7F),
+            &rdp.vtx((rdp.cmd1 >> 9) & 0x7F)
         };
 
-        rsp_tri2(v);
+        rsp_tri2(vtx);
     }
 }
 
@@ -137,7 +137,7 @@ void uc1_branch_z()
     uint32_t addr = segoffset(branch_dl);
     WriteTrace(TraceRDP, TraceDebug, "uc1:branch_less_z, addr: %08lx", addr);
     uint32_t vtx = (rdp.cmd0 & 0xFFF) >> 1;
-    if (fabs(rdp.vtx[vtx].z) <= (rdp.cmd1/*&0xFFFF*/))
+    if (fabs(rdp.vtx(vtx).z) <= (rdp.cmd1/*&0xFFFF*/))
     {
         rdp.pc[rdp.pc_i] = addr;
     }

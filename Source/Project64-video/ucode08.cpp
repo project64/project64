@@ -61,86 +61,86 @@ void uc8_vertex()
     //*/
     for (i = 0; i < (n << 4); i += 16)
     {
-        VERTEX *v = &rdp.vtx[v0 + (i >> 4)];
+        VERTEX & v = rdp.vtx(v0 + (i >> 4));
         x = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 0) ^ 1];
         y = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 1) ^ 1];
         z = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 2) ^ 1];
-        v->flags = ((uint16_t*)gfx.RDRAM)[(((addr + i) >> 1) + 3) ^ 1];
-        v->ou = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 4) ^ 1];
-        v->ov = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 5) ^ 1];
-        v->uv_scaled = 0;
-        v->a = ((uint8_t*)gfx.RDRAM)[(addr + i + 15) ^ 3];
+        v.flags = ((uint16_t*)gfx.RDRAM)[(((addr + i) >> 1) + 3) ^ 1];
+        v.ou = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 4) ^ 1];
+        v.ov = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 5) ^ 1];
+        v.uv_scaled = 0;
+        v.a = ((uint8_t*)gfx.RDRAM)[(addr + i + 15) ^ 3];
 
         WriteTrace(TraceRDP, TraceVerbose, "before v%d - x: %f, y: %f, z: %f", i >> 4, x, y, z);
-        v->x = x*rdp.combined[0][0] + y*rdp.combined[1][0] + z*rdp.combined[2][0] + rdp.combined[3][0];
-        v->y = x*rdp.combined[0][1] + y*rdp.combined[1][1] + z*rdp.combined[2][1] + rdp.combined[3][1];
-        v->z = x*rdp.combined[0][2] + y*rdp.combined[1][2] + z*rdp.combined[2][2] + rdp.combined[3][2];
-        v->w = x*rdp.combined[0][3] + y*rdp.combined[1][3] + z*rdp.combined[2][3] + rdp.combined[3][3];
+        v.x = x*rdp.combined[0][0] + y*rdp.combined[1][0] + z*rdp.combined[2][0] + rdp.combined[3][0];
+        v.y = x*rdp.combined[0][1] + y*rdp.combined[1][1] + z*rdp.combined[2][1] + rdp.combined[3][1];
+        v.z = x*rdp.combined[0][2] + y*rdp.combined[1][2] + z*rdp.combined[2][2] + rdp.combined[3][2];
+        v.w = x*rdp.combined[0][3] + y*rdp.combined[1][3] + z*rdp.combined[2][3] + rdp.combined[3][3];
 
-        WriteTrace(TraceRDP, TraceVerbose, "v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f, flags: %d", i >> 4, v->x, v->y, v->z, v->w, v->ou, v->ov, v->flags);
+        WriteTrace(TraceRDP, TraceVerbose, "v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f, flags: %d", i >> 4, v.x, v.y, v.z, v.w, v.ou, v.ov, v.flags);
 
-        if (fabs(v->w) < 0.001) v->w = 0.001f;
-        v->oow = 1.0f / v->w;
-        v->x_w = v->x * v->oow;
-        v->y_w = v->y * v->oow;
-        v->z_w = v->z * v->oow;
+        if (fabs(v.w) < 0.001) v.w = 0.001f;
+        v.oow = 1.0f / v.w;
+        v.x_w = v.x * v.oow;
+        v.y_w = v.y * v.oow;
+        v.z_w = v.z * v.oow;
 
-        v->uv_calculated = 0xFFFFFFFF;
-        v->screen_translated = 0;
-        v->shade_mod = 0;
+        v.uv_calculated = 0xFFFFFFFF;
+        v.screen_translated = 0;
+        v.shade_mod = 0;
 
-        v->scr_off = 0;
-        if (v->x < -v->w) v->scr_off |= 1;
-        if (v->x > v->w) v->scr_off |= 2;
-        if (v->y < -v->w) v->scr_off |= 4;
-        if (v->y > v->w) v->scr_off |= 8;
-        if (v->w < 0.1f) v->scr_off |= 16;
+        v.scr_off = 0;
+        if (v.x < -v.w) v.scr_off |= 1;
+        if (v.x > v.w) v.scr_off |= 2;
+        if (v.y < -v.w) v.scr_off |= 4;
+        if (v.y > v.w) v.scr_off |= 8;
+        if (v.w < 0.1f) v.scr_off |= 16;
         ///*
-        v->r = ((uint8_t*)gfx.RDRAM)[(addr + i + 12) ^ 3];
-        v->g = ((uint8_t*)gfx.RDRAM)[(addr + i + 13) ^ 3];
-        v->b = ((uint8_t*)gfx.RDRAM)[(addr + i + 14) ^ 3];
-        WriteTrace(TraceRDP, TraceVerbose, "r: %02lx, g: %02lx, b: %02lx, a: %02lx", v->r, v->g, v->b, v->a);
+        v.r = ((uint8_t*)gfx.RDRAM)[(addr + i + 12) ^ 3];
+        v.g = ((uint8_t*)gfx.RDRAM)[(addr + i + 13) ^ 3];
+        v.b = ((uint8_t*)gfx.RDRAM)[(addr + i + 14) ^ 3];
+        WriteTrace(TraceRDP, TraceVerbose, "r: %02lx, g: %02lx, b: %02lx, a: %02lx", v.r, v.g, v.b, v.a);
 
         if ((rdp.geom_mode & 0x00020000))
         {
             uint32_t shift = v0 << 1;
-            v->vec[0] = ((char*)gfx.RDRAM)[(uc8_normale_addr + (i >> 3) + shift + 0) ^ 3];
-            v->vec[1] = ((char*)gfx.RDRAM)[(uc8_normale_addr + (i >> 3) + shift + 1) ^ 3];
-            v->vec[2] = (char)(v->flags & 0xff);
+            v.vec[0] = ((char*)gfx.RDRAM)[(uc8_normale_addr + (i >> 3) + shift + 0) ^ 3];
+            v.vec[1] = ((char*)gfx.RDRAM)[(uc8_normale_addr + (i >> 3) + shift + 1) ^ 3];
+            v.vec[2] = (char)(v.flags & 0xff);
 
             if (rdp.geom_mode & 0x80000)
             {
                 calc_linear(v);
-                WriteTrace(TraceRDP, TraceVerbose, "calc linear: v%d - u: %f, v: %f", i >> 4, v->ou, v->ov);
+                WriteTrace(TraceRDP, TraceVerbose, "calc linear: v%d - u: %f, v: %f", i >> 4, v.ou, v.ov);
             }
             else if (rdp.geom_mode & 0x40000)
             {
                 calc_sphere(v);
-                WriteTrace(TraceRDP, TraceVerbose, "calc sphere: v%d - u: %f, v: %f", i >> 4, v->ou, v->ov);
+                WriteTrace(TraceRDP, TraceVerbose, "calc sphere: v%d - u: %f, v: %f", i >> 4, v.ou, v.ov);
             }
-            WriteTrace(TraceRDP, TraceDebug, "v[%d] calc light. r: 0x%02lx, g: 0x%02lx, b: 0x%02lx", i >> 4, v->r, v->g, v->b);
+            WriteTrace(TraceRDP, TraceDebug, "v[%d] calc light. r: 0x%02lx, g: 0x%02lx, b: 0x%02lx", i >> 4, v.r, v.g, v.b);
             float color[3] = { rdp.light[rdp.num_lights].r, rdp.light[rdp.num_lights].g, rdp.light[rdp.num_lights].b };
             WriteTrace(TraceRDP, TraceDebug, "ambient light. r: %f, g: %f, b: %f", color[0], color[1], color[2]);
             float light_intensity = 0.0f;
             uint32_t l;
             if (rdp.geom_mode & 0x00400000)
             {
-                NormalizeVector(v->vec);
+                NormalizeVector(v.vec);
                 for (l = 0; l < rdp.num_lights - 1; l++)
                 {
                     if (!rdp.light[l].nonblack)
                         continue;
-                    light_intensity = DotProduct(rdp.light_vector[l], v->vec);
+                    light_intensity = DotProduct(rdp.light_vector[l], v.vec);
                     WriteTrace(TraceRDP, TraceDebug, "light %d, intensity : %f", l, light_intensity);
                     if (light_intensity < 0.0f)
                         continue;
                     //*
                     if (rdp.light[l].ca > 0.0f)
                     {
-                        float vx = (v->x + uc8_coord_mod[8])*uc8_coord_mod[12] - rdp.light[l].x;
-                        float vy = (v->y + uc8_coord_mod[9])*uc8_coord_mod[13] - rdp.light[l].y;
-                        float vz = (v->z + uc8_coord_mod[10])*uc8_coord_mod[14] - rdp.light[l].z;
-                        float vw = (v->w + uc8_coord_mod[11])*uc8_coord_mod[15] - rdp.light[l].w;
+                        float vx = (v.x + uc8_coord_mod[8])*uc8_coord_mod[12] - rdp.light[l].x;
+                        float vy = (v.y + uc8_coord_mod[9])*uc8_coord_mod[13] - rdp.light[l].y;
+                        float vz = (v.z + uc8_coord_mod[10])*uc8_coord_mod[14] - rdp.light[l].z;
+                        float vw = (v.w + uc8_coord_mod[11])*uc8_coord_mod[15] - rdp.light[l].w;
                         float len = (vx*vx + vy*vy + vz*vz + vw*vw) / 65536.0f;
                         float p_i = rdp.light[l].ca / len;
                         if (p_i > 1.0f) p_i = 1.0f;
@@ -153,7 +153,7 @@ void uc8_vertex()
                     color[2] += rdp.light[l].b * light_intensity;
                     WriteTrace(TraceRDP, TraceDebug, "light %d r: %f, g: %f, b: %f", l, color[0], color[1], color[2]);
                 }
-                light_intensity = DotProduct(rdp.light_vector[l], v->vec);
+                light_intensity = DotProduct(rdp.light_vector[l], v.vec);
                 WriteTrace(TraceRDP, TraceDebug, "light %d, intensity : %f", l, light_intensity);
                 if (light_intensity > 0.0f)
                 {
@@ -169,10 +169,10 @@ void uc8_vertex()
                 {
                     if (rdp.light[l].nonblack && rdp.light[l].nonzero)
                     {
-                        float vx = (v->x + uc8_coord_mod[8])*uc8_coord_mod[12] - rdp.light[l].x;
-                        float vy = (v->y + uc8_coord_mod[9])*uc8_coord_mod[13] - rdp.light[l].y;
-                        float vz = (v->z + uc8_coord_mod[10])*uc8_coord_mod[14] - rdp.light[l].z;
-                        float vw = (v->w + uc8_coord_mod[11])*uc8_coord_mod[15] - rdp.light[l].w;
+                        float vx = (v.x + uc8_coord_mod[8])*uc8_coord_mod[12] - rdp.light[l].x;
+                        float vy = (v.y + uc8_coord_mod[9])*uc8_coord_mod[13] - rdp.light[l].y;
+                        float vz = (v.z + uc8_coord_mod[10])*uc8_coord_mod[14] - rdp.light[l].z;
+                        float vw = (v.w + uc8_coord_mod[11])*uc8_coord_mod[15] - rdp.light[l].w;
                         float len = (vx*vx + vy*vy + vz*vz + vw*vw) / 65536.0f;
                         light_intensity = rdp.light[l].ca / len;
                         if (light_intensity > 1.0f) light_intensity = 1.0f;
@@ -187,10 +187,10 @@ void uc8_vertex()
             if (color[0] > 1.0f) color[0] = 1.0f;
             if (color[1] > 1.0f) color[1] = 1.0f;
             if (color[2] > 1.0f) color[2] = 1.0f;
-            v->r = (uint8_t)(((float)v->r)*color[0]);
-            v->g = (uint8_t)(((float)v->g)*color[1]);
-            v->b = (uint8_t)(((float)v->b)*color[2]);
-            WriteTrace(TraceRDP, TraceVerbose, "color after light: r: 0x%02lx, g: 0x%02lx, b: 0x%02lx", v->r, v->g, v->b);
+            v.r = (uint8_t)(((float)v.r)*color[0]);
+            v.g = (uint8_t)(((float)v.g)*color[1]);
+            v.b = (uint8_t)(((float)v.b)*color[2]);
+            WriteTrace(TraceRDP, TraceVerbose, "color after light: r: 0x%02lx, g: 0x%02lx, b: 0x%02lx", v.r, v.g, v.b);
         }
     }
 }
@@ -425,18 +425,18 @@ void uc8_tri4() //by Gugaman Apr 19 2002
         ((rdp.cmd1 >> 0) & 0x1F));
 
     VERTEX *v[12] = {
-        &rdp.vtx[(rdp.cmd0 >> 23) & 0x1F],
-        &rdp.vtx[(rdp.cmd0 >> 18) & 0x1F],
-        &rdp.vtx[((((rdp.cmd0 >> 15) & 0x7) << 2) | ((rdp.cmd1 >> 30) & 0x3))],
-        &rdp.vtx[(rdp.cmd0 >> 10) & 0x1F],
-        &rdp.vtx[(rdp.cmd0 >> 5) & 0x1F],
-        &rdp.vtx[(rdp.cmd0 >> 0) & 0x1F],
-        &rdp.vtx[(rdp.cmd1 >> 25) & 0x1F],
-        &rdp.vtx[(rdp.cmd1 >> 20) & 0x1F],
-        &rdp.vtx[(rdp.cmd1 >> 15) & 0x1F],
-        &rdp.vtx[(rdp.cmd1 >> 10) & 0x1F],
-        &rdp.vtx[(rdp.cmd1 >> 5) & 0x1F],
-        &rdp.vtx[(rdp.cmd1 >> 0) & 0x1F]
+        &rdp.vtx((rdp.cmd0 >> 23) & 0x1F),
+        &rdp.vtx((rdp.cmd0 >> 18) & 0x1F),
+        &rdp.vtx(((((rdp.cmd0 >> 15) & 0x7) << 2) | ((rdp.cmd1 >> 30) & 0x3))),
+        &rdp.vtx((rdp.cmd0 >> 10) & 0x1F),
+        &rdp.vtx((rdp.cmd0 >> 5) & 0x1F),
+        &rdp.vtx((rdp.cmd0 >> 0) & 0x1F),
+        &rdp.vtx((rdp.cmd1 >> 25) & 0x1F),
+        &rdp.vtx((rdp.cmd1 >> 20) & 0x1F),
+        &rdp.vtx((rdp.cmd1 >> 15) & 0x1F),
+        &rdp.vtx((rdp.cmd1 >> 10) & 0x1F),
+        &rdp.vtx((rdp.cmd1 >> 5) & 0x1F),
+        &rdp.vtx((rdp.cmd1 >> 0) & 0x1F)
     };
 
     int updated = 0;

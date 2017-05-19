@@ -359,6 +359,7 @@ public:
     bool init();
     void free();
 
+    inline VERTEX & vtx(int index) const { return m_vtx[index]; }
     inline TILE & tiles(int index) { return m_tiles[index]; }
     // Clipping
     int clip;     // clipping flags
@@ -375,7 +376,9 @@ public:
     int     n_cached[MAX_TMU];
 
     // Vertices
-    VERTEX *vtx; //[MAX_VTX]
+private:
+    VERTEX * m_vtx; //[MAX_VTX]
+public:
     int v0, vn;
 
     COLOR_IMAGE *frame_buffers; //[NUMTEXBUF+2]
@@ -683,19 +686,19 @@ __inline void AddOffset(VERTEX *v, int n)
     }
 }
 
-__inline void CalculateFog(VERTEX *v)
+__inline void CalculateFog(VERTEX &v)
 {
     if (rdp.flags & FOG_ENABLED)
     {
-        if (v->w < 0.0f)
-            v->f = 0.0f;
+        if (v.w < 0.0f)
+            v.f = 0.0f;
         else
-            v->f = minval(255.0f, maxval(0.0f, v->z_w * rdp.fog_multiplier + rdp.fog_offset));
-        v->a = (uint8_t)v->f;
+            v.f = minval(255.0f, maxval(0.0f, v.z_w * rdp.fog_multiplier + rdp.fog_offset));
+        v.a = (uint8_t)v.f;
     }
     else
     {
-        v->f = 1.0f;
+        v.f = 1.0f;
     }
 }
 

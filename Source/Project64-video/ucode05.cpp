@@ -118,49 +118,49 @@ void uc5_vertex()
     for (int i = first; i < first + n; i++)
     {
         start = (i - first) * 10;
-        VERTEX *v = &rdp.vtx[i];
+        VERTEX &v = rdp.vtx(i);
         x = (float)((short*)gfx.RDRAM)[(((addr + start) >> 1) + 0) ^ 1];
         y = (float)((short*)gfx.RDRAM)[(((addr + start) >> 1) + 1) ^ 1];
         z = (float)((short*)gfx.RDRAM)[(((addr + start) >> 1) + 2) ^ 1];
 
-        v->x = x*rdp.dkrproj[prj][0][0] + y*rdp.dkrproj[prj][1][0] + z*rdp.dkrproj[prj][2][0] + rdp.dkrproj[prj][3][0];
-        v->y = x*rdp.dkrproj[prj][0][1] + y*rdp.dkrproj[prj][1][1] + z*rdp.dkrproj[prj][2][1] + rdp.dkrproj[prj][3][1];
-        v->z = x*rdp.dkrproj[prj][0][2] + y*rdp.dkrproj[prj][1][2] + z*rdp.dkrproj[prj][2][2] + rdp.dkrproj[prj][3][2];
-        v->w = x*rdp.dkrproj[prj][0][3] + y*rdp.dkrproj[prj][1][3] + z*rdp.dkrproj[prj][2][3] + rdp.dkrproj[prj][3][3];
+        v.x = x*rdp.dkrproj[prj][0][0] + y*rdp.dkrproj[prj][1][0] + z*rdp.dkrproj[prj][2][0] + rdp.dkrproj[prj][3][0];
+        v.y = x*rdp.dkrproj[prj][0][1] + y*rdp.dkrproj[prj][1][1] + z*rdp.dkrproj[prj][2][1] + rdp.dkrproj[prj][3][1];
+        v.z = x*rdp.dkrproj[prj][0][2] + y*rdp.dkrproj[prj][1][2] + z*rdp.dkrproj[prj][2][2] + rdp.dkrproj[prj][3][2];
+        v.w = x*rdp.dkrproj[prj][0][3] + y*rdp.dkrproj[prj][1][3] + z*rdp.dkrproj[prj][2][3] + rdp.dkrproj[prj][3][3];
 
         if (billboarding)
         {
-            v->x += rdp.vtx[0].x;
-            v->y += rdp.vtx[0].y;
-            v->z += rdp.vtx[0].z;
-            v->w += rdp.vtx[0].w;
+            v.x += rdp.vtx(0).x;
+            v.y += rdp.vtx(0).y;
+            v.z += rdp.vtx(0).z;
+            v.w += rdp.vtx(0).w;
         }
 
-        if (fabs(v->w) < 0.001) v->w = 0.001f;
-        v->oow = 1.0f / v->w;
-        v->x_w = v->x * v->oow;
-        v->y_w = v->y * v->oow;
-        v->z_w = v->z * v->oow;
+        if (fabs(v.w) < 0.001) v.w = 0.001f;
+        v.oow = 1.0f / v.w;
+        v.x_w = v.x * v.oow;
+        v.y_w = v.y * v.oow;
+        v.z_w = v.z * v.oow;
 
-        v->uv_calculated = 0xFFFFFFFF;
-        v->screen_translated = 0;
-        v->shade_mod = 0;
+        v.uv_calculated = 0xFFFFFFFF;
+        v.screen_translated = 0;
+        v.shade_mod = 0;
 
-        v->scr_off = 0;
-        if (v->x < -v->w) v->scr_off |= 1;
-        if (v->x > v->w) v->scr_off |= 2;
-        if (v->y < -v->w) v->scr_off |= 4;
-        if (v->y > v->w) v->scr_off |= 8;
-        if (v->w < 0.1f) v->scr_off |= 16;
-        if (fabs(v->z_w) > 1.0) v->scr_off |= 32;
+        v.scr_off = 0;
+        if (v.x < -v.w) v.scr_off |= 1;
+        if (v.x > v.w) v.scr_off |= 2;
+        if (v.y < -v.w) v.scr_off |= 4;
+        if (v.y > v.w) v.scr_off |= 8;
+        if (v.w < 0.1f) v.scr_off |= 16;
+        if (fabs(v.z_w) > 1.0) v.scr_off |= 32;
 
-        v->r = ((uint8_t*)gfx.RDRAM)[(addr + start + 6) ^ 3];
-        v->g = ((uint8_t*)gfx.RDRAM)[(addr + start + 7) ^ 3];
-        v->b = ((uint8_t*)gfx.RDRAM)[(addr + start + 8) ^ 3];
-        v->a = ((uint8_t*)gfx.RDRAM)[(addr + start + 9) ^ 3];
+        v.r = ((uint8_t*)gfx.RDRAM)[(addr + start + 6) ^ 3];
+        v.g = ((uint8_t*)gfx.RDRAM)[(addr + start + 7) ^ 3];
+        v.b = ((uint8_t*)gfx.RDRAM)[(addr + start + 8) ^ 3];
+        v.a = ((uint8_t*)gfx.RDRAM)[(addr + start + 9) ^ 3];
         CalculateFog(v);
 
-        WriteTrace(TraceRDP, TraceVerbose, "v%d - x: %f, y: %f, z: %f, w: %f, z_w: %f, r=%d, g=%d, b=%d, a=%d", i, v->x, v->y, v->z, v->w, v->z_w, v->r, v->g, v->b, v->a);
+        WriteTrace(TraceRDP, TraceVerbose, "v%d - x: %f, y: %f, z: %f, w: %f, z_w: %f, r=%d, g=%d, b=%d, a=%d", i, v.x, v.y, v.z, v.w, v.z_w, v.r, v.g, v.b, v.a);
     }
 
     vtx_last += n;
@@ -193,10 +193,10 @@ void uc5_tridma()
 
         WriteTrace(TraceRDP, TraceDebug, "tri #%d - %d, %d, %d", rdp.tri_n, v0, v1, v2);
 
-        VERTEX *v[3] = {
-            &rdp.vtx[v0],
-            &rdp.vtx[v1],
-            &rdp.vtx[v2]
+        VERTEX *vtx[3] = {
+            &rdp.vtx(v0),
+            &rdp.vtx(v1),
+            &rdp.vtx(v2)
         };
 
         flags = gfx.RDRAM[addr + start + 3];
@@ -218,24 +218,24 @@ void uc5_tridma()
         }
         start += 4;
 
-        v[0]->ou = (float)((short*)gfx.RDRAM)[((addr + start) >> 1) + 5] / 32.0f;
-        v[0]->ov = (float)((short*)gfx.RDRAM)[((addr + start) >> 1) + 4] / 32.0f;
-        v[1]->ou = (float)((short*)gfx.RDRAM)[((addr + start) >> 1) + 3] / 32.0f;
-        v[1]->ov = (float)((short*)gfx.RDRAM)[((addr + start) >> 1) + 2] / 32.0f;
-        v[2]->ou = (float)((short*)gfx.RDRAM)[((addr + start) >> 1) + 1] / 32.0f;
-        v[2]->ov = (float)((short*)gfx.RDRAM)[((addr + start) >> 1) + 0] / 32.0f;
+        vtx[0]->ou = (float)((short*)gfx.RDRAM)[((addr + start) >> 1) + 5] / 32.0f;
+        vtx[0]->ov = (float)((short*)gfx.RDRAM)[((addr + start) >> 1) + 4] / 32.0f;
+        vtx[1]->ou = (float)((short*)gfx.RDRAM)[((addr + start) >> 1) + 3] / 32.0f;
+        vtx[1]->ov = (float)((short*)gfx.RDRAM)[((addr + start) >> 1) + 2] / 32.0f;
+        vtx[2]->ou = (float)((short*)gfx.RDRAM)[((addr + start) >> 1) + 1] / 32.0f;
+        vtx[2]->ov = (float)((short*)gfx.RDRAM)[((addr + start) >> 1) + 0] / 32.0f;
 
-        v[0]->uv_calculated = 0xFFFFFFFF;
-        v[1]->uv_calculated = 0xFFFFFFFF;
-        v[2]->uv_calculated = 0xFFFFFFFF;
+        vtx[0]->uv_calculated = 0xFFFFFFFF;
+        vtx[1]->uv_calculated = 0xFFFFFFFF;
+        vtx[2]->uv_calculated = 0xFFFFFFFF;
 
-        if (cull_tri(v))
+        if (cull_tri(vtx))
             rdp.tri_n++;
         else
         {
             update();
 
-            draw_tri(v);
+            draw_tri(vtx);
             rdp.tri_n++;
         }
     }

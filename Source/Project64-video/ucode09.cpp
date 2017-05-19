@@ -316,10 +316,10 @@ void uc9_light()
         v.vec[0] = ((char*)gfx.DMEM)[(nsrs++) ^ 3];
         v.vec[1] = ((char*)gfx.DMEM)[(nsrs++) ^ 3];
         v.vec[2] = ((char*)gfx.DMEM)[(nsrs++) ^ 3];
-        calc_sphere(&v);
+        calc_sphere(v);
         //    calc_linear (&v);
         NormalizeVector(v.vec);
-        calc_light(&v);
+        calc_light(v);
         v.a = 0xFF;
         if (use_material)
         {

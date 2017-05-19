@@ -72,71 +72,71 @@ void uc7_vertex()
 
     for (i = 0; i < n; i++)
     {
-        VERTEX *v = &rdp.vtx[v0 + i];
+        VERTEX &v = rdp.vtx(v0 + i);
         x = (float)vertex->x;
         y = (float)vertex->y;
         z = (float)vertex->z;
-        v->flags = 0;
-        v->ou = (float)vertex->s;
-        v->ov = (float)vertex->t;
-        v->uv_scaled = 0;
+        v.flags = 0;
+        v.ou = (float)vertex->s;
+        v.ov = (float)vertex->t;
+        v.uv_scaled = 0;
 
-        WriteTrace(TraceRDP, TraceVerbose, "before: v%d - x: %f, y: %f, z: %f, flags: %04lx, ou: %f, ov: %f", i >> 4, x, y, z, v->flags, v->ou, v->ov);
+        WriteTrace(TraceRDP, TraceVerbose, "before: v%d - x: %f, y: %f, z: %f, flags: %04lx, ou: %f, ov: %f", i >> 4, x, y, z, v.flags, v.ou, v.ov);
 
-        v->x = x*rdp.combined[0][0] + y*rdp.combined[1][0] + z*rdp.combined[2][0] + rdp.combined[3][0];
-        v->y = x*rdp.combined[0][1] + y*rdp.combined[1][1] + z*rdp.combined[2][1] + rdp.combined[3][1];
-        v->z = x*rdp.combined[0][2] + y*rdp.combined[1][2] + z*rdp.combined[2][2] + rdp.combined[3][2];
-        v->w = x*rdp.combined[0][3] + y*rdp.combined[1][3] + z*rdp.combined[2][3] + rdp.combined[3][3];
+        v.x = x*rdp.combined[0][0] + y*rdp.combined[1][0] + z*rdp.combined[2][0] + rdp.combined[3][0];
+        v.y = x*rdp.combined[0][1] + y*rdp.combined[1][1] + z*rdp.combined[2][1] + rdp.combined[3][1];
+        v.z = x*rdp.combined[0][2] + y*rdp.combined[1][2] + z*rdp.combined[2][2] + rdp.combined[3][2];
+        v.w = x*rdp.combined[0][3] + y*rdp.combined[1][3] + z*rdp.combined[2][3] + rdp.combined[3][3];
 
-        if (fabs(v->w) < 0.001) v->w = 0.001f;
-        v->oow = 1.0f / v->w;
-        v->x_w = v->x * v->oow;
-        v->y_w = v->y * v->oow;
-        v->z_w = v->z * v->oow;
+        if (fabs(v.w) < 0.001) v.w = 0.001f;
+        v.oow = 1.0f / v.w;
+        v.x_w = v.x * v.oow;
+        v.y_w = v.y * v.oow;
+        v.z_w = v.z * v.oow;
 
-        v->uv_calculated = 0xFFFFFFFF;
-        v->screen_translated = 0;
+        v.uv_calculated = 0xFFFFFFFF;
+        v.screen_translated = 0;
 
-        v->scr_off = 0;
-        if (v->x < -v->w) v->scr_off |= 1;
-        if (v->x > v->w) v->scr_off |= 2;
-        if (v->y < -v->w) v->scr_off |= 4;
-        if (v->y > v->w) v->scr_off |= 8;
-        if (v->w < 0.1f) v->scr_off |= 16;
+        v.scr_off = 0;
+        if (v.x < -v.w) v.scr_off |= 1;
+        if (v.x > v.w) v.scr_off |= 2;
+        if (v.y < -v.w) v.scr_off |= 4;
+        if (v.y > v.w) v.scr_off |= 8;
+        if (v.w < 0.1f) v.scr_off |= 16;
 
         uint8_t *color = &gfx.RDRAM[pd_col_addr + (vertex->idx & 0xff)];
 
-        v->a = color[0];
+        v.a = color[0];
         CalculateFog(v);
 
         if (rdp.geom_mode & 0x00020000)
         {
-            v->vec[0] = (char)color[3];
-            v->vec[1] = (char)color[2];
-            v->vec[2] = (char)color[1];
+            v.vec[0] = (char)color[3];
+            v.vec[1] = (char)color[2];
+            v.vec[2] = (char)color[1];
 
             if (rdp.geom_mode & 0x80000)
             {
                 calc_linear(v);
-                WriteTrace(TraceRDP, TraceVerbose, "calc linear: v%d - u: %f, v: %f", i >> 4, v->ou, v->ov);
+                WriteTrace(TraceRDP, TraceVerbose, "calc linear: v%d - u: %f, v: %f", i >> 4, v.ou, v.ov);
             }
             else if (rdp.geom_mode & 0x40000)
             {
                 calc_sphere(v);
-                WriteTrace(TraceRDP, TraceVerbose, "calc sphere: v%d - u: %f, v: %f", i >> 4, v->ou, v->ov);
+                WriteTrace(TraceRDP, TraceVerbose, "calc sphere: v%d - u: %f, v: %f", i >> 4, v.ou, v.ov);
             }
 
-            NormalizeVector(v->vec);
+            NormalizeVector(v.vec);
 
             calc_light(v);
         }
         else
         {
-            v->r = color[3];
-            v->g = color[2];
-            v->b = color[1];
+            v.r = color[3];
+            v.g = color[2];
+            v.b = color[1];
         }
-        WriteTrace(TraceRDP, TraceVerbose, "v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f", i >> 4, v->x, v->y, v->z, v->w, v->ou, v->ov);
+        WriteTrace(TraceRDP, TraceVerbose, "v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f", i >> 4, v.x, v.y, v.z, v.w, v.ou, v.ov);
         vertex++;
     }
 }

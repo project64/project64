@@ -191,17 +191,17 @@ bool CRDP::init()
             return false;
         }
     };
-    vtx = new VERTEX[MAX_VTX];
-    if (vtx == NULL)
+    m_vtx = new VERTEX[MAX_VTX];
+    if (m_vtx == NULL)
     {
         free();
         return false;
     }
-    memset(vtx, 0, sizeof(VERTEX)*MAX_VTX);
+    memset(m_vtx, 0, sizeof(VERTEX)*MAX_VTX);
     // set all vertex numbers
     for (int i = 0; i < MAX_VTX; i++)
     {
-        vtx[i].number = i;
+        m_vtx[i].number = i;
     }
 
     frame_buffers = new COLOR_IMAGE[NUMTEXBUF + 2];
@@ -239,10 +239,10 @@ void CRDP::free()
         cur_cache[i] = 0;
         cur_cache_n[i] = 0;
     }
-    if (vtx != NULL)
+    if (m_vtx != NULL)
     {
-        delete[] vtx;
-        vtx = NULL;
+        delete[] m_vtx;
+        m_vtx = NULL;
     }
 
     if (frame_buffers != NULL)

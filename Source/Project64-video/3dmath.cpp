@@ -22,13 +22,13 @@ extern "C" {
 #include "3dmath.h"
 #include "trace.h"
 
-void calc_light(VERTEX *v)
+void calc_light(VERTEX &v)
 {
     float light_intensity = 0.0f;
     register float color[3] = { rdp.light[rdp.num_lights].r, rdp.light[rdp.num_lights].g, rdp.light[rdp.num_lights].b };
     for (uint32_t l = 0; l < rdp.num_lights; l++)
     {
-        light_intensity = DotProduct(rdp.light_vector[l], v->vec);
+        light_intensity = DotProduct(rdp.light_vector[l], v.vec);
 
         if (light_intensity > 0.0f)
         {
@@ -42,13 +42,12 @@ void calc_light(VERTEX *v)
     if (color[1] > 1.0f) color[1] = 1.0f;
     if (color[2] > 1.0f) color[2] = 1.0f;
 
-    v->r = (uint8_t)(color[0] * 255.0f);
-    v->g = (uint8_t)(color[1] * 255.0f);
-    v->b = (uint8_t)(color[2] * 255.0f);
+    v.r = (uint8_t)(color[0] * 255.0f);
+    v.g = (uint8_t)(color[1] * 255.0f);
+    v.b = (uint8_t)(color[2] * 255.0f);
 }
 
-//*
-void calc_linear(VERTEX *v)
+void calc_linear(VERTEX &v)
 {
     if (g_settings->force_calc_sphere())
     {
@@ -57,8 +56,8 @@ void calc_linear(VERTEX *v)
     }
     DECLAREALIGN16VAR(vec[3]);
 
-    TransformVector(v->vec, vec, rdp.model);
-    //    TransformVector (v->vec, vec, rdp.combined);
+    TransformVector(v.vec, vec, rdp.model);
+    //    TransformVector (v.vec, vec, rdp.combined);
     NormalizeVector(vec);
     float x, y;
     if (!rdp.use_lookat)
@@ -84,14 +83,14 @@ void calc_linear(VERTEX *v)
     if (rdp.cur_cache[0])
     {
         // scale >> 6 is size to map to
-        v->ou = (acosf(-x) / 3.141592654f) * (rdp.tiles(rdp.cur_tile).org_s_scale >> 6);
-        v->ov = (acosf(-y) / 3.141592654f) * (rdp.tiles(rdp.cur_tile).org_t_scale >> 6);
+        v.ou = (acosf(-x) / 3.141592654f) * (rdp.tiles(rdp.cur_tile).org_s_scale >> 6);
+        v.ov = (acosf(-y) / 3.141592654f) * (rdp.tiles(rdp.cur_tile).org_t_scale >> 6);
     }
-    v->uv_scaled = 1;
-    WriteTrace(TraceRDP, TraceVerbose, "calc linear u: %f, v: %f", v->ou, v->ov);
+    v.uv_scaled = 1;
+    WriteTrace(TraceRDP, TraceVerbose, "calc linear u: %f, v: %f", v.ou, v.ov);
 }
 
-void calc_sphere(VERTEX *v)
+void calc_sphere(VERTEX &v)
 {
     WriteTrace(TraceRDP, TraceDebug, "calc_sphere");
     DECLAREALIGN16VAR(vec[3]);
@@ -106,8 +105,8 @@ void calc_sphere(VERTEX *v)
         s_scale = rdp.tiles(rdp.cur_tile).org_s_scale >> 6;
         t_scale = rdp.tiles(rdp.cur_tile).org_t_scale >> 6;
     }
-    TransformVector(v->vec, vec, rdp.model);
-    //    TransformVector (v->vec, vec, rdp.combined);
+    TransformVector(v.vec, vec, rdp.model);
+    //    TransformVector (v.vec, vec, rdp.combined);
     NormalizeVector(vec);
     float x, y;
     if (!rdp.use_lookat)
@@ -120,10 +119,10 @@ void calc_sphere(VERTEX *v)
         x = DotProduct(rdp.lookat[0], vec);
         y = DotProduct(rdp.lookat[1], vec);
     }
-    v->ou = (x * 0.5f + 0.5f) * s_scale;
-    v->ov = (y * 0.5f + 0.5f) * t_scale;
-    v->uv_scaled = 1;
-    WriteTrace(TraceRDP, TraceVerbose, "calc sphere u: %f, v: %f", v->ou, v->ov);
+    v.ou = (x * 0.5f + 0.5f) * s_scale;
+    v.ov = (y * 0.5f + 0.5f) * t_scale;
+    v.uv_scaled = 1;
+    WriteTrace(TraceRDP, TraceVerbose, "calc sphere u: %f, v: %f", v.ou, v.ov);
 }
 
 float DotProductC(register float *v1, register float *v2)

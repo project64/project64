@@ -46,13 +46,13 @@ void uc3_tri1()
         ((rdp.cmd1 >> 8) & 0xFF) / 5,
         ((rdp.cmd1) & 0xFF) / 5, rdp.cmd0, rdp.cmd1);
 
-    VERTEX *v[3] = {
-        &rdp.vtx[((rdp.cmd1 >> 16) & 0xFF) / 5],
-        &rdp.vtx[((rdp.cmd1 >> 8) & 0xFF) / 5],
-        &rdp.vtx[(rdp.cmd1 & 0xFF) / 5]
+    VERTEX *vtx[3] = {
+        &rdp.vtx(((rdp.cmd1 >> 16) & 0xFF) / 5),
+        &rdp.vtx(((rdp.cmd1 >> 8) & 0xFF) / 5),
+        &rdp.vtx((rdp.cmd1 & 0xFF) / 5)
     };
 
-    rsp_tri1(v);
+    rsp_tri1(vtx);
 }
 
 void uc3_tri2()
@@ -65,30 +65,30 @@ void uc3_tri2()
         ((rdp.cmd1 >> 8) & 0xFF) / 5,
         ((rdp.cmd1) & 0xFF) / 5);
 
-    VERTEX *v[6] = {
-        &rdp.vtx[((rdp.cmd0 >> 16) & 0xFF) / 5],
-        &rdp.vtx[((rdp.cmd0 >> 8) & 0xFF) / 5],
-        &rdp.vtx[(rdp.cmd0 & 0xFF) / 5],
-        &rdp.vtx[((rdp.cmd1 >> 16) & 0xFF) / 5],
-        &rdp.vtx[((rdp.cmd1 >> 8) & 0xFF) / 5],
-        &rdp.vtx[(rdp.cmd1 & 0xFF) / 5]
+    VERTEX *vtx[6] = {
+        &rdp.vtx(((rdp.cmd0 >> 16) & 0xFF) / 5),
+        &rdp.vtx(((rdp.cmd0 >> 8) & 0xFF) / 5),
+        &rdp.vtx((rdp.cmd0 & 0xFF) / 5),
+        &rdp.vtx(((rdp.cmd1 >> 16) & 0xFF) / 5),
+        &rdp.vtx(((rdp.cmd1 >> 8) & 0xFF) / 5),
+        &rdp.vtx((rdp.cmd1 & 0xFF) / 5)
     };
 
-    rsp_tri2(v);
+    rsp_tri2(vtx);
 }
 
 void uc3_quad3d()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc3:quad3d #%d, #%d", rdp.tri_n, rdp.tri_n + 1);
 
-    VERTEX *v[6] = {
-        &rdp.vtx[((rdp.cmd1 >> 24) & 0xFF) / 5],
-        &rdp.vtx[((rdp.cmd1 >> 16) & 0xFF) / 5],
-        &rdp.vtx[((rdp.cmd1 >> 8) & 0xFF) / 5],
-        &rdp.vtx[(rdp.cmd1 & 0xFF) / 5],
-        &rdp.vtx[((rdp.cmd1 >> 24) & 0xFF) / 5],
-        &rdp.vtx[((rdp.cmd1 >> 8) & 0xFF) / 5]
+    VERTEX *vtx[6] = {
+        &rdp.vtx(((rdp.cmd1 >> 24) & 0xFF) / 5),
+        &rdp.vtx(((rdp.cmd1 >> 16) & 0xFF) / 5),
+        &rdp.vtx(((rdp.cmd1 >> 8) & 0xFF) / 5),
+        &rdp.vtx((rdp.cmd1 & 0xFF) / 5),
+        &rdp.vtx(((rdp.cmd1 >> 24) & 0xFF) / 5),
+        &rdp.vtx(((rdp.cmd1 >> 8) & 0xFF) / 5)
     };
 
-    rsp_tri2(v);
+    rsp_tri2(vtx);
 }

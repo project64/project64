@@ -19,7 +19,7 @@
 #include "3dmath.h"
 #include "ucode00.h"
 
-static void calc_point_light(VERTEX *v, float * vpos)
+static void calc_point_light(VERTEX & v, float * vpos)
 {
     float light_intensity = 0.0f;
     register float color[3] = { rdp.light[rdp.num_lights].r, rdp.light[rdp.num_lights].g, rdp.light[rdp.num_lights].b };
@@ -55,9 +55,9 @@ static void calc_point_light(VERTEX *v, float * vpos)
     if (color[1] > 1.0f) color[1] = 1.0f;
     if (color[2] > 1.0f) color[2] = 1.0f;
 
-    v->r = (uint8_t)(color[0] * 255.0f);
-    v->g = (uint8_t)(color[1] * 255.0f);
-    v->b = (uint8_t)(color[2] * 255.0f);
+    v.r = (uint8_t)(color[0] * 255.0f);
+    v.g = (uint8_t)(color[1] * 255.0f);
+    v.b = (uint8_t)(color[2] * 255.0f);
 }
 
 void uc6_obj_rectangle();
@@ -112,46 +112,46 @@ void uc2_vertex()
     }
     for (i = 0; i < (n << 4); i += 16)
     {
-        VERTEX *v = &rdp.vtx[v0 + (i >> 4)];
+        VERTEX & v = rdp.vtx(v0 + (i >> 4));
         x = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 0) ^ 1];
         y = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 1) ^ 1];
         z = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 2) ^ 1];
-        v->flags = ((uint16_t*)gfx.RDRAM)[(((addr + i) >> 1) + 3) ^ 1];
-        v->ou = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 4) ^ 1];
-        v->ov = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 5) ^ 1];
-        v->uv_scaled = 0;
-        v->a = ((uint8_t*)gfx.RDRAM)[(addr + i + 15) ^ 3];
+        v.flags = ((uint16_t*)gfx.RDRAM)[(((addr + i) >> 1) + 3) ^ 1];
+        v.ou = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 4) ^ 1];
+        v.ov = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 5) ^ 1];
+        v.uv_scaled = 0;
+        v.a = ((uint8_t*)gfx.RDRAM)[(addr + i + 15) ^ 3];
 
-        v->x = x*rdp.combined[0][0] + y*rdp.combined[1][0] + z*rdp.combined[2][0] + rdp.combined[3][0];
-        v->y = x*rdp.combined[0][1] + y*rdp.combined[1][1] + z*rdp.combined[2][1] + rdp.combined[3][1];
-        v->z = x*rdp.combined[0][2] + y*rdp.combined[1][2] + z*rdp.combined[2][2] + rdp.combined[3][2];
-        v->w = x*rdp.combined[0][3] + y*rdp.combined[1][3] + z*rdp.combined[2][3] + rdp.combined[3][3];
+        v.x = x*rdp.combined[0][0] + y*rdp.combined[1][0] + z*rdp.combined[2][0] + rdp.combined[3][0];
+        v.y = x*rdp.combined[0][1] + y*rdp.combined[1][1] + z*rdp.combined[2][1] + rdp.combined[3][1];
+        v.z = x*rdp.combined[0][2] + y*rdp.combined[1][2] + z*rdp.combined[2][2] + rdp.combined[3][2];
+        v.w = x*rdp.combined[0][3] + y*rdp.combined[1][3] + z*rdp.combined[2][3] + rdp.combined[3][3];
 
-        if (fabs(v->w) < 0.001) v->w = 0.001f;
-        v->oow = 1.0f / v->w;
-        v->x_w = v->x * v->oow;
-        v->y_w = v->y * v->oow;
-        v->z_w = v->z * v->oow;
+        if (fabs(v.w) < 0.001) v.w = 0.001f;
+        v.oow = 1.0f / v.w;
+        v.x_w = v.x * v.oow;
+        v.y_w = v.y * v.oow;
+        v.z_w = v.z * v.oow;
         CalculateFog(v);
 
-        v->uv_calculated = 0xFFFFFFFF;
-        v->screen_translated = 0;
-        v->shade_mod = 0;
+        v.uv_calculated = 0xFFFFFFFF;
+        v.screen_translated = 0;
+        v.shade_mod = 0;
 
-        v->scr_off = 0;
-        if (v->x < -v->w) v->scr_off |= 1;
-        if (v->x > v->w) v->scr_off |= 2;
-        if (v->y < -v->w) v->scr_off |= 4;
-        if (v->y > v->w) v->scr_off |= 8;
-        if (v->w < 0.1f) v->scr_off |= 16;
-        //    if (v->z_w > 1.0f) v->scr_off |= 32;
+        v.scr_off = 0;
+        if (v.x < -v.w) v.scr_off |= 1;
+        if (v.x > v.w) v.scr_off |= 2;
+        if (v.y < -v.w) v.scr_off |= 4;
+        if (v.y > v.w) v.scr_off |= 8;
+        if (v.w < 0.1f) v.scr_off |= 16;
+        //    if (v.z_w > 1.0f) v.scr_off |= 32;
 
         if (rdp.geom_mode & 0x00020000)
         {
-            v->vec[0] = ((char*)gfx.RDRAM)[(addr + i + 12) ^ 3];
-            v->vec[1] = ((char*)gfx.RDRAM)[(addr + i + 13) ^ 3];
-            v->vec[2] = ((char*)gfx.RDRAM)[(addr + i + 14) ^ 3];
-            //	  WriteTrace(TraceRDP, TraceDebug, "Calc light. x: %f, y: %f z: %f", v->vec[0], v->vec[1], v->vec[2]);
+            v.vec[0] = ((char*)gfx.RDRAM)[(addr + i + 12) ^ 3];
+            v.vec[1] = ((char*)gfx.RDRAM)[(addr + i + 13) ^ 3];
+            v.vec[2] = ((char*)gfx.RDRAM)[(addr + i + 14) ^ 3];
+            //	  WriteTrace(TraceRDP, TraceDebug, "Calc light. x: %f, y: %f z: %f", v.vec[0], v.vec[1], v.vec[2]);
             //      if (!(rdp.geom_mode & 0x800000))
             {
                 if (rdp.geom_mode & 0x40000)
@@ -159,12 +159,12 @@ void uc2_vertex()
                     if (rdp.geom_mode & 0x80000)
                     {
                         calc_linear(v);
-                        WriteTrace(TraceRDP, TraceVerbose, "calc linear: v%d - u: %f, v: %f", i >> 4, v->ou, v->ov);
+                        WriteTrace(TraceRDP, TraceVerbose, "calc linear: v%d - u: %f, v: %f", i >> 4, v.ou, v.ov);
                     }
                     else
                     {
                         calc_sphere(v);
-                        WriteTrace(TraceRDP, TraceVerbose, "calc sphere: v%d - u: %f, v: %f", i >> 4, v->ou, v->ov);
+                        WriteTrace(TraceRDP, TraceVerbose, "calc sphere: v%d - u: %f, v: %f", i >> 4, v.ou, v.ov);
                     }
                 }
             }
@@ -175,17 +175,17 @@ void uc2_vertex()
             }
             else
             {
-                NormalizeVector(v->vec);
+                NormalizeVector(v.vec);
                 calc_light(v);
             }
         }
         else
         {
-            v->r = ((uint8_t*)gfx.RDRAM)[(addr + i + 12) ^ 3];
-            v->g = ((uint8_t*)gfx.RDRAM)[(addr + i + 13) ^ 3];
-            v->b = ((uint8_t*)gfx.RDRAM)[(addr + i + 14) ^ 3];
+            v.r = ((uint8_t*)gfx.RDRAM)[(addr + i + 12) ^ 3];
+            v.g = ((uint8_t*)gfx.RDRAM)[(addr + i + 13) ^ 3];
+            v.b = ((uint8_t*)gfx.RDRAM)[(addr + i + 14) ^ 3];
         }
-        WriteTrace(TraceRDP, TraceVerbose, "v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f, f: %f, z_w: %f, r=%d, g=%d, b=%d, a=%d", i >> 4, v->x, v->y, v->z, v->w, v->ou*rdp.tiles(rdp.cur_tile).s_scale, v->ov*rdp.tiles(rdp.cur_tile).t_scale, v->f, v->z_w, v->r, v->g, v->b, v->a);
+        WriteTrace(TraceRDP, TraceVerbose, "v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f, f: %f, z_w: %f, r=%d, g=%d, b=%d, a=%d", i >> 4, v.x, v.y, v.z, v.w, v.ou*rdp.tiles(rdp.cur_tile).s_scale, v.ov*rdp.tiles(rdp.cur_tile).t_scale, v.f, v.z_w, v.r, v.g, v.b, v.a);
     }
     rdp.geom_mode = geom_mode;
 }
@@ -209,29 +209,31 @@ void uc2_culldl()
     if (vEnd < vStart) return;
     for (uint16_t i = vStart; i <= vEnd; i++)
     {
+        VERTEX & v = rdp.vtx(i);
         /*
-        VERTEX v = &rdp.vtx[i];
         // Check if completely off the screen (quick frustrum clipping for 90 FOV)
-        if (v->x >= -v->w)
+        if (v.x >= -v.w)
         cond |= 0x01;
-        if (v->x <= v->w)
+        if (v.x <= v.w)
         cond |= 0x02;
-        if (v->y >= -v->w)
+        if (v.y >= -v.w)
         cond |= 0x04;
-        if (v->y <= v->w)
+        if (v.y <= v.w)
         cond |= 0x08;
-        if (v->w >= 0.1f)
+        if (v.w >= 0.1f)
         cond |= 0x10;
 
         if (cond == 0x1F)
         return;
         //*/
 
-        WriteTrace(TraceRDP, TraceVerbose, " v[%d] = (%02f, %02f, %02f, 0x%02lx)", i, rdp.vtx[i].x, rdp.vtx[i].y, rdp.vtx[i].w, rdp.vtx[i].scr_off);
+        WriteTrace(TraceRDP, TraceVerbose, " v[%d] = (%02f, %02f, %02f, 0x%02lx)", i, v.x, v.y, v.w, v.scr_off);
 
-        cond |= (~rdp.vtx[i].scr_off) & 0x1F;
+        cond |= (~v.scr_off) & 0x1F;
         if (cond == 0x1F)
+        {
             return;
+        }
     }
 
     WriteTrace(TraceRDP, TraceDebug, " - ");  // specify that the enddl is not a real command
@@ -258,13 +260,13 @@ void uc2_tri1()
         ((rdp.cmd0 >> 9) & 0x7F),
         ((rdp.cmd0 >> 1) & 0x7F));
 
-    VERTEX *v[3] = {
-        &rdp.vtx[(rdp.cmd0 >> 17) & 0x7F],
-        &rdp.vtx[(rdp.cmd0 >> 9) & 0x7F],
-        &rdp.vtx[(rdp.cmd0 >> 1) & 0x7F]
+    VERTEX *vtx[3] = {
+        &rdp.vtx((rdp.cmd0 >> 17) & 0x7F),
+        &rdp.vtx((rdp.cmd0 >> 9) & 0x7F),
+        &rdp.vtx((rdp.cmd0 >> 1) & 0x7F)
     };
 
-    rsp_tri1(v);
+    rsp_tri1(vtx);
 }
 
 void uc6_obj_ldtx_sprite();
@@ -303,16 +305,17 @@ void uc2_quad()
         ((rdp.cmd1 >> 9) & 0x7F),
         ((rdp.cmd1 >> 1) & 0x7F));
 
-    VERTEX *v[6] = {
-        &rdp.vtx[(rdp.cmd0 >> 17) & 0x7F],
-        &rdp.vtx[(rdp.cmd0 >> 9) & 0x7F],
-        &rdp.vtx[(rdp.cmd0 >> 1) & 0x7F],
-        &rdp.vtx[(rdp.cmd1 >> 17) & 0x7F],
-        &rdp.vtx[(rdp.cmd1 >> 9) & 0x7F],
-        &rdp.vtx[(rdp.cmd1 >> 1) & 0x7F]
+    VERTEX *vtx[6] =
+    {
+        &rdp.vtx((rdp.cmd0 >> 17) & 0x7F),
+        &rdp.vtx((rdp.cmd0 >> 9) & 0x7F),
+        &rdp.vtx((rdp.cmd0 >> 1) & 0x7F),
+        &rdp.vtx((rdp.cmd1 >> 17) & 0x7F),
+        &rdp.vtx((rdp.cmd1 >> 9) & 0x7F),
+        &rdp.vtx((rdp.cmd1 >> 1) & 0x7F)
     };
 
-    rsp_tri2(v);
+    rsp_tri2(vtx);
 }
 
 void uc6_ldtx_rect_r();
@@ -327,16 +330,17 @@ void uc2_line3d()
             (rdp.cmd0 >> 17) & 0x7F,
             (rdp.cmd0 >> 9) & 0x7F);
 
-        VERTEX *v[3] = {
-            &rdp.vtx[(rdp.cmd0 >> 17) & 0x7F],
-            &rdp.vtx[(rdp.cmd0 >> 9) & 0x7F],
-            &rdp.vtx[(rdp.cmd0 >> 9) & 0x7F]
+        VERTEX *vtx[3] =
+        {
+            &rdp.vtx((rdp.cmd0 >> 17) & 0x7F),
+            &rdp.vtx((rdp.cmd0 >> 9) & 0x7F),
+            &rdp.vtx((rdp.cmd0 >> 9) & 0x7F)
         };
         uint16_t width = (uint16_t)(rdp.cmd0 + 3) & 0xFF;
         uint32_t cull_mode = (rdp.flags & CULLMASK) >> CULLSHIFT;
         rdp.flags |= CULLMASK;
         rdp.update |= UPDATE_CULL_MODE;
-        rsp_tri1(v, width);
+        rsp_tri1(vtx, width);
         rdp.flags ^= CULLMASK;
         rdp.flags |= cull_mode << CULLSHIFT;
         rdp.update |= UPDATE_CULL_MODE;

@@ -54,45 +54,45 @@ void rsp_vertex(int v0, int n)
 
     for (i = 0; i < (n << 4); i += 16)
     {
-        VERTEX *v = &rdp.vtx[v0 + (i >> 4)];
+        VERTEX &v = rdp.vtx(v0 + (i >> 4));
         x = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 0) ^ 1];
         y = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 1) ^ 1];
         z = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 2) ^ 1];
-        v->flags = ((uint16_t*)gfx.RDRAM)[(((addr + i) >> 1) + 3) ^ 1];
-        v->ou = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 4) ^ 1];
-        v->ov = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 5) ^ 1];
-        v->uv_scaled = 0;
-        v->a = ((uint8_t*)gfx.RDRAM)[(addr + i + 15) ^ 3];
+        v.flags = ((uint16_t*)gfx.RDRAM)[(((addr + i) >> 1) + 3) ^ 1];
+        v.ou = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 4) ^ 1];
+        v.ov = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 5) ^ 1];
+        v.uv_scaled = 0;
+        v.a = ((uint8_t*)gfx.RDRAM)[(addr + i + 15) ^ 3];
 
-        v->x = x*rdp.combined[0][0] + y*rdp.combined[1][0] + z*rdp.combined[2][0] + rdp.combined[3][0];
-        v->y = x*rdp.combined[0][1] + y*rdp.combined[1][1] + z*rdp.combined[2][1] + rdp.combined[3][1];
-        v->z = x*rdp.combined[0][2] + y*rdp.combined[1][2] + z*rdp.combined[2][2] + rdp.combined[3][2];
-        v->w = x*rdp.combined[0][3] + y*rdp.combined[1][3] + z*rdp.combined[2][3] + rdp.combined[3][3];
+        v.x = x*rdp.combined[0][0] + y*rdp.combined[1][0] + z*rdp.combined[2][0] + rdp.combined[3][0];
+        v.y = x*rdp.combined[0][1] + y*rdp.combined[1][1] + z*rdp.combined[2][1] + rdp.combined[3][1];
+        v.z = x*rdp.combined[0][2] + y*rdp.combined[1][2] + z*rdp.combined[2][2] + rdp.combined[3][2];
+        v.w = x*rdp.combined[0][3] + y*rdp.combined[1][3] + z*rdp.combined[2][3] + rdp.combined[3][3];
 
-        if (fabs(v->w) < 0.001) v->w = 0.001f;
-        v->oow = 1.0f / v->w;
-        v->x_w = v->x * v->oow;
-        v->y_w = v->y * v->oow;
-        v->z_w = v->z * v->oow;
+        if (fabs(v.w) < 0.001) v.w = 0.001f;
+        v.oow = 1.0f / v.w;
+        v.x_w = v.x * v.oow;
+        v.y_w = v.y * v.oow;
+        v.z_w = v.z * v.oow;
         CalculateFog(v);
 
-        v->uv_calculated = 0xFFFFFFFF;
-        v->screen_translated = 0;
-        v->shade_mod = 0;
+        v.uv_calculated = 0xFFFFFFFF;
+        v.screen_translated = 0;
+        v.shade_mod = 0;
 
-        v->scr_off = 0;
-        if (v->x < -v->w) v->scr_off |= 1;
-        if (v->x > v->w) v->scr_off |= 2;
-        if (v->y < -v->w) v->scr_off |= 4;
-        if (v->y > v->w) v->scr_off |= 8;
-        if (v->w < 0.1f) v->scr_off |= 16;
-        //    if (v->z_w > 1.0f) v->scr_off |= 32;
+        v.scr_off = 0;
+        if (v.x < -v.w) v.scr_off |= 1;
+        if (v.x > v.w) v.scr_off |= 2;
+        if (v.y < -v.w) v.scr_off |= 4;
+        if (v.y > v.w) v.scr_off |= 8;
+        if (v.w < 0.1f) v.scr_off |= 16;
+        //    if (v.z_w > 1.0f) v.scr_off |= 32;
 
         if (rdp.geom_mode & 0x00020000)
         {
-            v->vec[0] = ((char*)gfx.RDRAM)[(addr + i + 12) ^ 3];
-            v->vec[1] = ((char*)gfx.RDRAM)[(addr + i + 13) ^ 3];
-            v->vec[2] = ((char*)gfx.RDRAM)[(addr + i + 14) ^ 3];
+            v.vec[0] = ((char*)gfx.RDRAM)[(addr + i + 12) ^ 3];
+            v.vec[1] = ((char*)gfx.RDRAM)[(addr + i + 13) ^ 3];
+            v.vec[2] = ((char*)gfx.RDRAM)[(addr + i + 14) ^ 3];
             if (rdp.geom_mode & 0x40000)
             {
                 if (rdp.geom_mode & 0x80000)
@@ -100,17 +100,17 @@ void rsp_vertex(int v0, int n)
                 else
                     calc_sphere(v);
             }
-            NormalizeVector(v->vec);
+            NormalizeVector(v.vec);
 
             calc_light(v);
         }
         else
         {
-            v->r = ((uint8_t*)gfx.RDRAM)[(addr + i + 12) ^ 3];
-            v->g = ((uint8_t*)gfx.RDRAM)[(addr + i + 13) ^ 3];
-            v->b = ((uint8_t*)gfx.RDRAM)[(addr + i + 14) ^ 3];
+            v.r = ((uint8_t*)gfx.RDRAM)[(addr + i + 12) ^ 3];
+            v.g = ((uint8_t*)gfx.RDRAM)[(addr + i + 13) ^ 3];
+            v.b = ((uint8_t*)gfx.RDRAM)[(addr + i + 14) ^ 3];
         }
-        WriteTrace(TraceRDP, TraceVerbose, "v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f, f: %f, z_w: %f, r=%d, g=%d, b=%d, a=%d", i >> 4, v->x, v->y, v->z, v->w, v->ou*rdp.tiles(rdp.cur_tile).s_scale, v->ov*rdp.tiles(rdp.cur_tile).t_scale, v->f, v->z_w, v->r, v->g, v->b, v->a);
+        WriteTrace(TraceRDP, TraceVerbose, "v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f, f: %f, z_w: %f, r=%d, g=%d, b=%d, a=%d", i >> 4, v.x, v.y, v.z, v.w, v.ou*rdp.tiles(rdp.cur_tile).s_scale, v.ov*rdp.tiles(rdp.cur_tile).t_scale, v.f, v.z_w, v.r, v.g, v.b, v.a);
     }
 }
 
@@ -500,24 +500,24 @@ void uc0_tri1()
         ((rdp.cmd1 >> 8) & 0xFF) / 10,
         (rdp.cmd1 & 0xFF) / 10);
 
-    VERTEX *v[3] = {
-        &rdp.vtx[((rdp.cmd1 >> 16) & 0xFF) / 10],
-        &rdp.vtx[((rdp.cmd1 >> 8) & 0xFF) / 10],
-        &rdp.vtx[(rdp.cmd1 & 0xFF) / 10]
+    VERTEX *vtx[3] = {
+        &rdp.vtx(((rdp.cmd1 >> 16) & 0xFF) / 10),
+        &rdp.vtx(((rdp.cmd1 >> 8) & 0xFF) / 10),
+        &rdp.vtx((rdp.cmd1 & 0xFF) / 10)
     };
     if (g_settings->hacks(CSettings::hack_Makers))
     {
         rdp.force_wrap = FALSE;
         for (int i = 0; i < 3; i++)
         {
-            if (v[i]->ou < 0.0f || v[i]->ov < 0.0f)
+            if (vtx[i]->ou < 0.0f || vtx[i]->ov < 0.0f)
             {
                 rdp.force_wrap = TRUE;
                 break;
             }
         }
     }
-    rsp_tri1(v);
+    rsp_tri1(vtx);
 }
 
 //
@@ -543,24 +543,23 @@ void uc0_culldl()
     uint8_t vStart = (uint8_t)((rdp.cmd0 & 0x00FFFFFF) / 40) & 0xF;
     uint8_t vEnd = (uint8_t)(rdp.cmd1 / 40) & 0x0F;
     uint32_t cond = 0;
-    VERTEX *v;
 
     WriteTrace(TraceRDP, TraceDebug, "uc0:culldl start: %d, end: %d", vStart, vEnd);
 
     if (vEnd < vStart) return;
     for (uint16_t i = vStart; i <= vEnd; i++)
     {
-        v = &rdp.vtx[i];
+        VERTEX &v = rdp.vtx(i);
         // Check if completely off the screen (quick frustrum clipping for 90 FOV)
-        if (v->x >= -v->w)
+        if (v.x >= -v.w)
             cond |= 0x01;
-        if (v->x <= v->w)
+        if (v.x <= v.w)
             cond |= 0x02;
-        if (v->y >= -v->w)
+        if (v.y >= -v.w)
             cond |= 0x04;
-        if (v->y <= v->w)
+        if (v.y <= v.w)
             cond |= 0x08;
-        if (v->w >= 0.1f)
+        if (v.w >= 0.1f)
             cond |= 0x10;
 
         if (cond == 0x1F)
@@ -595,7 +594,7 @@ void uc6_obj_sprite();
 
 void uc0_modifyvtx(uint8_t where, uint16_t vtx, uint32_t val)
 {
-    VERTEX *v = &rdp.vtx[vtx];
+    VERTEX &v = rdp.vtx(vtx);
 
     switch (where)
     {
@@ -604,48 +603,48 @@ void uc0_modifyvtx(uint8_t where, uint16_t vtx, uint32_t val)
         break;
 
     case 0x10:    // RGBA
-        v->r = (uint8_t)(val >> 24);
-        v->g = (uint8_t)((val >> 16) & 0xFF);
-        v->b = (uint8_t)((val >> 8) & 0xFF);
-        v->a = (uint8_t)(val & 0xFF);
-        v->shade_mod = 0;
+        v.r = (uint8_t)(val >> 24);
+        v.g = (uint8_t)((val >> 16) & 0xFF);
+        v.b = (uint8_t)((val >> 8) & 0xFF);
+        v.a = (uint8_t)(val & 0xFF);
+        v.shade_mod = 0;
 
-        WriteTrace(TraceRDP, TraceDebug, "RGBA: %d, %d, %d, %d", v->r, v->g, v->b, v->a);
+        WriteTrace(TraceRDP, TraceDebug, "RGBA: %d, %d, %d, %d", v.r, v.g, v.b, v.a);
         break;
 
     case 0x14:    // ST
     {
         float scale = rdp.Persp_en ? 0.03125f : 0.015625f;
-        v->ou = (float)((short)(val >> 16)) * scale;
-        v->ov = (float)((short)(val & 0xFFFF)) * scale;
-        v->uv_calculated = 0xFFFFFFFF;
-        v->uv_scaled = 1;
+        v.ou = (float)((short)(val >> 16)) * scale;
+        v.ov = (float)((short)(val & 0xFFFF)) * scale;
+        v.uv_calculated = 0xFFFFFFFF;
+        v.uv_scaled = 1;
     }
     WriteTrace(TraceRDP, TraceDebug, "u/v: (%04lx, %04lx), (%f, %f)", (short)(val >> 16), (short)(val & 0xFFFF),
-        v->ou, v->ov);
+        v.ou, v.ov);
     break;
 
     case 0x18:    // XY screen
     {
         float scr_x = (float)((short)(val >> 16)) / 4.0f;
         float scr_y = (float)((short)(val & 0xFFFF)) / 4.0f;
-        v->screen_translated = 2;
-        v->sx = scr_x * rdp.scale_x + rdp.offset_x;
-        v->sy = scr_y * rdp.scale_y + rdp.offset_y;
-        if (v->w < 0.01f)
+        v.screen_translated = 2;
+        v.sx = scr_x * rdp.scale_x + rdp.offset_x;
+        v.sy = scr_y * rdp.scale_y + rdp.offset_y;
+        if (v.w < 0.01f)
         {
-            v->w = 1.0f;
-            v->oow = 1.0f;
-            v->z_w = 1.0f;
+            v.w = 1.0f;
+            v.oow = 1.0f;
+            v.z_w = 1.0f;
         }
-        v->sz = rdp.view_trans[2] + v->z_w * rdp.view_scale[2];
+        v.sz = rdp.view_trans[2] + v.z_w * rdp.view_scale[2];
 
-        v->scr_off = 0;
-        if (scr_x < 0) v->scr_off |= 1;
-        if (scr_x > rdp.vi_width) v->scr_off |= 2;
-        if (scr_y < 0) v->scr_off |= 4;
-        if (scr_y > rdp.vi_height) v->scr_off |= 8;
-        if (v->w < 0.1f) v->scr_off |= 16;
+        v.scr_off = 0;
+        if (scr_x < 0) v.scr_off |= 1;
+        if (scr_x > rdp.vi_width) v.scr_off |= 2;
+        if (scr_y < 0) v.scr_off |= 4;
+        if (scr_y > rdp.vi_height) v.scr_off |= 8;
+        if (v.w < 0.1f) v.scr_off |= 16;
 
         WriteTrace(TraceRDP, TraceDebug, "x/y: (%f, %f)", scr_x, scr_y);
     }
@@ -654,8 +653,8 @@ void uc0_modifyvtx(uint8_t where, uint16_t vtx, uint32_t val)
     case 0x1C:    // Z screen
     {
         float scr_z = (float)((short)(val >> 16));
-        v->z_w = (scr_z - rdp.view_trans[2]) / rdp.view_scale[2];
-        v->z = v->z_w * v->w;
+        v.z_w = (scr_z - rdp.view_trans[2]) / rdp.view_scale[2];
+        v.z = v.z_w * v.w;
         WriteTrace(TraceRDP, TraceDebug, "z: %f", scr_z);
     }
     break;
@@ -769,8 +768,7 @@ void uc0_texture()
 
         rdp.update |= UPDATE_TEXTURE;
 
-        WriteTrace(TraceRDP, TraceDebug, "uc0:texture: tile: %d, mipmap_lvl: %d, on: %d, s_scale: %f, t_scale: %f",
-            tile, rdp.mipmap_level, on, tmp_tile->s_scale, tmp_tile->t_scale);
+        WriteTrace(TraceRDP, TraceDebug, "uc0:texture: tile: %d, mipmap_lvl: %d, on: %d, s_scale: %f, t_scale: %f", tile, rdp.mipmap_level, on, tmp_tile->s_scale, tmp_tile->t_scale);
     }
     else
     {
@@ -1003,15 +1001,15 @@ void uc0_line3d()
     uint32_t v1 = ((rdp.cmd1 >> 8) & 0xff) / 10;
     uint16_t width = (uint16_t)(rdp.cmd1 & 0xFF) + 3;
 
-    VERTEX *v[3] = {
-        &rdp.vtx[v1],
-        &rdp.vtx[v0],
-        &rdp.vtx[v0]
+    VERTEX *vtx[3] = {
+        &rdp.vtx(v1),
+        &rdp.vtx(v0),
+        &rdp.vtx(v0)
     };
     uint32_t cull_mode = (rdp.flags & CULLMASK) >> CULLSHIFT;
     rdp.flags |= CULLMASK;
     rdp.update |= UPDATE_CULL_MODE;
-    rsp_tri1(v, width);
+    rsp_tri1(vtx, width);
     rdp.flags ^= CULLMASK;
     rdp.flags |= cull_mode << CULLSHIFT;
     rdp.update |= UPDATE_CULL_MODE;
@@ -1039,35 +1037,35 @@ void uc0_tri4()
         (rdp.cmd0 >> 0) & 0xF,
         (rdp.cmd1 >> 0) & 0xF);
 
-    VERTEX *v[12] = {
-        &rdp.vtx[(rdp.cmd1 >> 28) & 0xF],
-        &rdp.vtx[(rdp.cmd0 >> 12) & 0xF],
-        &rdp.vtx[(rdp.cmd1 >> 24) & 0xF],
-        &rdp.vtx[(rdp.cmd1 >> 20) & 0xF],
-        &rdp.vtx[(rdp.cmd0 >> 8) & 0xF],
-        &rdp.vtx[(rdp.cmd1 >> 16) & 0xF],
-        &rdp.vtx[(rdp.cmd1 >> 12) & 0xF],
-        &rdp.vtx[(rdp.cmd0 >> 4) & 0xF],
-        &rdp.vtx[(rdp.cmd1 >> 8) & 0xF],
-        &rdp.vtx[(rdp.cmd1 >> 4) & 0xF],
-        &rdp.vtx[(rdp.cmd0 >> 0) & 0xF],
-        &rdp.vtx[(rdp.cmd1 >> 0) & 0xF],
+    VERTEX *vtx[12] = {
+        &rdp.vtx((rdp.cmd1 >> 28) & 0xF),
+        &rdp.vtx((rdp.cmd0 >> 12) & 0xF),
+        &rdp.vtx((rdp.cmd1 >> 24) & 0xF),
+        &rdp.vtx((rdp.cmd1 >> 20) & 0xF),
+        &rdp.vtx((rdp.cmd0 >> 8) & 0xF),
+        &rdp.vtx((rdp.cmd1 >> 16) & 0xF),
+        &rdp.vtx((rdp.cmd1 >> 12) & 0xF),
+        &rdp.vtx((rdp.cmd0 >> 4) & 0xF),
+        &rdp.vtx((rdp.cmd1 >> 8) & 0xF),
+        &rdp.vtx((rdp.cmd1 >> 4) & 0xF),
+        &rdp.vtx((rdp.cmd0 >> 0) & 0xF),
+        &rdp.vtx((rdp.cmd1 >> 0) & 0xF),
     };
 
     int updated = 0;
 
-    if (cull_tri(v))
+    if (cull_tri(vtx))
         rdp.tri_n++;
     else
     {
         updated = 1;
         update();
 
-        draw_tri(v);
+        draw_tri(vtx);
         rdp.tri_n++;
     }
 
-    if (cull_tri(v + 3))
+    if (cull_tri(vtx + 3))
         rdp.tri_n++;
     else
     {
@@ -1077,11 +1075,11 @@ void uc0_tri4()
             update();
         }
 
-        draw_tri(v + 3);
+        draw_tri(vtx + 3);
         rdp.tri_n++;
     }
 
-    if (cull_tri(v + 6))
+    if (cull_tri(vtx + 6))
         rdp.tri_n++;
     else
     {
@@ -1091,11 +1089,11 @@ void uc0_tri4()
             update();
         }
 
-        draw_tri(v + 6);
+        draw_tri(vtx + 6);
         rdp.tri_n++;
     }
 
-    if (cull_tri(v + 9))
+    if (cull_tri(vtx + 9))
         rdp.tri_n++;
     else
     {
@@ -1105,7 +1103,7 @@ void uc0_tri4()
             update();
         }
 
-        draw_tri(v + 9);
+        draw_tri(vtx + 9);
         rdp.tri_n++;
     }
 }
