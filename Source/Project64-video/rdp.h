@@ -359,6 +359,7 @@ public:
     bool init();
     void free();
 
+    inline TILE & tiles(int index) { return m_tiles[index]; }
     // Clipping
     int clip;     // clipping flags
     VERTEX *vtx1; //[256] copy vertex buffer #1 (used for clipping)
@@ -470,7 +471,9 @@ public:
 
     // Textures
     TEXTURE_IMAGE timg;       // 1 for each tmem address
-    TILE tiles[8];          // 8 tile descriptors
+private:
+    TILE m_tiles[8];          // 8 tile descriptors
+public:
     uint8_t tmem[4096];        // 4k tmem
     uint32_t addr[512];        // 512 addresses (used to determine address loaded from)
     LOAD_TILE_INFO load_info[512];    // 512 addresses. inforamation about tile loading.

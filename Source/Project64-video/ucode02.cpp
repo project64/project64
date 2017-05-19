@@ -185,7 +185,7 @@ void uc2_vertex()
             v->g = ((uint8_t*)gfx.RDRAM)[(addr + i + 13) ^ 3];
             v->b = ((uint8_t*)gfx.RDRAM)[(addr + i + 14) ^ 3];
         }
-        WriteTrace(TraceRDP, TraceVerbose, "v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f, f: %f, z_w: %f, r=%d, g=%d, b=%d, a=%d", i >> 4, v->x, v->y, v->z, v->w, v->ou*rdp.tiles[rdp.cur_tile].s_scale, v->ov*rdp.tiles[rdp.cur_tile].t_scale, v->f, v->z_w, v->r, v->g, v->b, v->a);
+        WriteTrace(TraceRDP, TraceVerbose, "v%d - x: %f, y: %f, z: %f, w: %f, u: %f, v: %f, f: %f, z_w: %f, r=%d, g=%d, b=%d, a=%d", i >> 4, v->x, v->y, v->z, v->w, v->ou*rdp.tiles(rdp.cur_tile).s_scale, v->ov*rdp.tiles(rdp.cur_tile).t_scale, v->f, v->z_w, v->r, v->g, v->b, v->a);
     }
     rdp.geom_mode = geom_mode;
 }

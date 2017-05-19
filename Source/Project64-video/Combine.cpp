@@ -4665,7 +4665,7 @@ static void cc__t0_sub_prim_mul_shade_add_env__mul_shadea()
 
 static void cc__t0_mul_shade__sub_env_mul_shadea_add_env()  //Aded by Gonetz
 {
-    if (rdp.tiles[rdp.cur_tile].format == 4)
+    if (rdp.tiles(rdp.cur_tile).format == 4)
     {
         CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
             GR_COMBINE_FACTOR_OTHER_ALPHA,
@@ -4673,7 +4673,7 @@ static void cc__t0_mul_shade__sub_env_mul_shadea_add_env()  //Aded by Gonetz
             GR_COMBINE_OTHER_ITERATED);
         CC_ENV();
     }
-    else if (rdp.tiles[rdp.cur_tile].format == 2)
+    else if (rdp.tiles(rdp.cur_tile).format == 2)
     {
         CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
@@ -5820,7 +5820,7 @@ static void cc_prim_sub_env_mul__t1_sub_prim_mul_enva_add_t0__add_env()
     SETSHADE_PRIM();
     if (cmb.combine_ext)
     {
-        if (rdp.tiles[rdp.cur_tile].format > 2)
+        if (rdp.tiles(rdp.cur_tile).format > 2)
         {
             T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GR_FUNC_MODE_ZERO,
                 GR_CMBX_LOCAL_TEXTURE_RGB, GR_FUNC_MODE_ZERO,
@@ -8769,7 +8769,7 @@ static void ac_t1()
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
-    if (g_settings->hacks(CSettings::hack_BAR) && rdp.tiles[rdp.cur_tile].format == 3)
+    if (g_settings->hacks(CSettings::hack_BAR) && rdp.tiles(rdp.cur_tile).format == 3)
         A_USE_T0();
     else
         A_USE_T1();
@@ -10038,7 +10038,7 @@ static void ac__t0_mul_t1__mul_prim()
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
     CA_PRIM();
-    if (voodoo.sup_large_tex || rdp.tiles[1].lr_s < 256) //hack for RR64 pause screen
+    if (voodoo.sup_large_tex || rdp.tiles(1).lr_s < 256) //hack for RR64 pause screen
     {
         A_T0_MUL_T1();
     }

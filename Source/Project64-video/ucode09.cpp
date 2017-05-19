@@ -132,7 +132,7 @@ static void uc9_draw_object(uint8_t * addr, uint32_t type)
             v.ov = ((short*)addr)[5 ^ 1];
             v.w = Calc_invw(((int*)addr)[3]) / 31.0f;
             v.oow = 1.0f / v.w;
-            WriteTrace(TraceRDP, TraceDebug, "v%d - sx: %f, sy: %f ou: %f, ov: %f, w: %f, r=%d, g=%d, b=%d, a=%d", i, v.sx / rdp.scale_x, v.sy / rdp.scale_y, v.ou*rdp.tiles[rdp.cur_tile].s_scale, v.ov*rdp.tiles[rdp.cur_tile].t_scale, v.w, v.r, v.g, v.b, v.a);
+            WriteTrace(TraceRDP, TraceDebug, "v%d - sx: %f, sy: %f ou: %f, ov: %f, w: %f, r=%d, g=%d, b=%d, a=%d", i, v.sx / rdp.scale_x, v.sy / rdp.scale_y, v.ou*rdp.tiles(rdp.cur_tile).s_scale, v.ov*rdp.tiles(rdp.cur_tile).t_scale, v.w, v.r, v.g, v.b, v.a);
         }
         else
         {
@@ -625,7 +625,7 @@ void uc9_movemem()
 
         rdp.mipmap_level = 0;
         rdp.cur_tile = 0;
-        TILE *tmp_tile = &rdp.tiles[0];
+        TILE *tmp_tile = &rdp.tiles(0);
         tmp_tile->on = 1;
         tmp_tile->org_s_scale = 0xFFFF;
         tmp_tile->org_t_scale = 0xFFFF;
@@ -667,7 +667,7 @@ void uc9_setscissor()
 
         rdp.mipmap_level = 0;
         rdp.cur_tile = 0;
-        TILE *tmp_tile = &rdp.tiles[0];
+        TILE *tmp_tile = &rdp.tiles(0);
         tmp_tile->on = 1;
         tmp_tile->org_s_scale = 0xFFFF;
         tmp_tile->org_t_scale = 0xFFFF;

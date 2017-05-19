@@ -84,8 +84,8 @@ void calc_linear(VERTEX *v)
     if (rdp.cur_cache[0])
     {
         // scale >> 6 is size to map to
-        v->ou = (acosf(-x) / 3.141592654f) * (rdp.tiles[rdp.cur_tile].org_s_scale >> 6);
-        v->ov = (acosf(-y) / 3.141592654f) * (rdp.tiles[rdp.cur_tile].org_t_scale >> 6);
+        v->ou = (acosf(-x) / 3.141592654f) * (rdp.tiles(rdp.cur_tile).org_s_scale >> 6);
+        v->ov = (acosf(-y) / 3.141592654f) * (rdp.tiles(rdp.cur_tile).org_t_scale >> 6);
     }
     v->uv_scaled = 1;
     WriteTrace(TraceRDP, TraceVerbose, "calc linear u: %f, v: %f", v->ou, v->ov);
@@ -98,13 +98,13 @@ void calc_sphere(VERTEX *v)
     int s_scale, t_scale;
     if (g_settings->hacks(CSettings::hack_Chopper))
     {
-        s_scale = minval(rdp.tiles[rdp.cur_tile].org_s_scale >> 6, rdp.tiles[rdp.cur_tile].lr_s);
-        t_scale = minval(rdp.tiles[rdp.cur_tile].org_t_scale >> 6, rdp.tiles[rdp.cur_tile].lr_t);
+        s_scale = minval(rdp.tiles(rdp.cur_tile).org_s_scale >> 6, rdp.tiles(rdp.cur_tile).lr_s);
+        t_scale = minval(rdp.tiles(rdp.cur_tile).org_t_scale >> 6, rdp.tiles(rdp.cur_tile).lr_t);
     }
     else
     {
-        s_scale = rdp.tiles[rdp.cur_tile].org_s_scale >> 6;
-        t_scale = rdp.tiles[rdp.cur_tile].org_t_scale >> 6;
+        s_scale = rdp.tiles(rdp.cur_tile).org_s_scale >> 6;
+        t_scale = rdp.tiles(rdp.cur_tile).org_t_scale >> 6;
     }
     TransformVector(v->vec, vec, rdp.model);
     //    TransformVector (v->vec, vec, rdp.combined);
@@ -215,7 +215,7 @@ void MulMatricesSSE(float m1[4][4], float m2[4][4], float r[4][4])
 {
 #if defined(__GNUC__) && !defined(NO_ASM) && !defined(NOSSE)
     /* [row][col]*/
-    typedef float v4sf __attribute__ ((vector_size (16)));
+    typedef float v4sf __attribute__((vector_size(16)));
     v4sf row0 = _mm_loadu_ps(m2[0]);
     v4sf row1 = _mm_loadu_ps(m2[1]);
     v4sf row2 = _mm_loadu_ps(m2[2]);
@@ -227,23 +227,23 @@ void MulMatricesSSE(float m1[4][4], float m2[4][4], float r[4][4])
 
         // Fill tmp with four copies of leftrow[0]
         v4sf tmp = leftrow;
-        tmp = _mm_shuffle_ps (tmp, tmp, 0);
+        tmp = _mm_shuffle_ps(tmp, tmp, 0);
         // Calculate the four first summands
         v4sf destrow = tmp * row0;
 
         // Fill tmp with four copies of leftrow[1]
         tmp = leftrow;
-        tmp = _mm_shuffle_ps (tmp, tmp, 1 + (1 << 2) + (1 << 4) + (1 << 6));
+        tmp = _mm_shuffle_ps(tmp, tmp, 1 + (1 << 2) + (1 << 4) + (1 << 6));
         destrow += tmp * row1;
 
         // Fill tmp with four copies of leftrow[2]
         tmp = leftrow;
-        tmp = _mm_shuffle_ps (tmp, tmp, 2 + (2 << 2) + (2 << 4) + (2 << 6));
+        tmp = _mm_shuffle_ps(tmp, tmp, 2 + (2 << 2) + (2 << 4) + (2 << 6));
         destrow += tmp * row2;
 
         // Fill tmp with four copies of leftrow[3]
         tmp = leftrow;
-        tmp = _mm_shuffle_ps (tmp, tmp, 3 + (3 << 2) + (3 << 4) + (3 << 6));
+        tmp = _mm_shuffle_ps(tmp, tmp, 3 + (3 << 2) + (3 << 4) + (3 << 6));
         destrow += tmp * row3;
 
         __builtin_ia32_storeups(r[i], destrow);
@@ -252,105 +252,105 @@ void MulMatricesSSE(float m1[4][4], float m2[4][4], float r[4][4])
     __asm
     {
         mov     eax, dword ptr[r]
-            mov     ecx, dword ptr[m1]
-            mov     edx, dword ptr[m2]
+        mov     ecx, dword ptr[m1]
+        mov     edx, dword ptr[m2]
 
-            movaps  xmm0, [edx]
-            movaps  xmm1, [edx + 16]
-            movaps  xmm2, [edx + 32]
-            movaps  xmm3, [edx + 48]
+        movaps  xmm0, [edx]
+        movaps  xmm1, [edx + 16]
+        movaps  xmm2, [edx + 32]
+        movaps  xmm3, [edx + 48]
 
-            // r[0][0],r[0][1],r[0][2],r[0][3]
+        // r[0][0],r[0][1],r[0][2],r[0][3]
 
-            movaps  xmm4, xmmword ptr[ecx]
-            movaps  xmm5, xmm4
-            movaps  xmm6, xmm4
-            movaps  xmm7, xmm4
+        movaps  xmm4, xmmword ptr[ecx]
+        movaps  xmm5, xmm4
+        movaps  xmm6, xmm4
+        movaps  xmm7, xmm4
 
-            shufps  xmm4, xmm4, 00000000b
-            shufps  xmm5, xmm5, 01010101b
-            shufps  xmm6, xmm6, 10101010b
-            shufps  xmm7, xmm7, 11111111b
+        shufps  xmm4, xmm4, 00000000b
+        shufps  xmm5, xmm5, 01010101b
+        shufps  xmm6, xmm6, 10101010b
+        shufps  xmm7, xmm7, 11111111b
 
-            mulps   xmm4, xmm0
-            mulps   xmm5, xmm1
-            mulps   xmm6, xmm2
-            mulps   xmm7, xmm3
+        mulps   xmm4, xmm0
+        mulps   xmm5, xmm1
+        mulps   xmm6, xmm2
+        mulps   xmm7, xmm3
 
-            addps   xmm4, xmm5
-            addps   xmm4, xmm6
-            addps   xmm4, xmm7
+        addps   xmm4, xmm5
+        addps   xmm4, xmm6
+        addps   xmm4, xmm7
 
-            movaps  xmmword ptr[eax], xmm4
+        movaps  xmmword ptr[eax], xmm4
 
-            // r[1][0],r[1][1],r[1][2],r[1][3]
+        // r[1][0],r[1][1],r[1][2],r[1][3]
 
-            movaps  xmm4, xmmword ptr[ecx + 16]
-            movaps  xmm5, xmm4
-            movaps  xmm6, xmm4
-            movaps  xmm7, xmm4
+        movaps  xmm4, xmmword ptr[ecx + 16]
+        movaps  xmm5, xmm4
+        movaps  xmm6, xmm4
+        movaps  xmm7, xmm4
 
-            shufps  xmm4, xmm4, 00000000b
-            shufps  xmm5, xmm5, 01010101b
-            shufps  xmm6, xmm6, 10101010b
-            shufps  xmm7, xmm7, 11111111b
+        shufps  xmm4, xmm4, 00000000b
+        shufps  xmm5, xmm5, 01010101b
+        shufps  xmm6, xmm6, 10101010b
+        shufps  xmm7, xmm7, 11111111b
 
-            mulps   xmm4, xmm0
-            mulps   xmm5, xmm1
-            mulps   xmm6, xmm2
-            mulps   xmm7, xmm3
+        mulps   xmm4, xmm0
+        mulps   xmm5, xmm1
+        mulps   xmm6, xmm2
+        mulps   xmm7, xmm3
 
-            addps   xmm4, xmm5
-            addps   xmm4, xmm6
-            addps   xmm4, xmm7
+        addps   xmm4, xmm5
+        addps   xmm4, xmm6
+        addps   xmm4, xmm7
 
-            movaps  xmmword ptr[eax + 16], xmm4
+        movaps  xmmword ptr[eax + 16], xmm4
 
-            // r[2][0],r[2][1],r[2][2],r[2][3]
+        // r[2][0],r[2][1],r[2][2],r[2][3]
 
-            movaps  xmm4, xmmword ptr[ecx + 32]
-            movaps  xmm5, xmm4
-            movaps  xmm6, xmm4
-            movaps  xmm7, xmm4
+        movaps  xmm4, xmmword ptr[ecx + 32]
+        movaps  xmm5, xmm4
+        movaps  xmm6, xmm4
+        movaps  xmm7, xmm4
 
-            shufps  xmm4, xmm4, 00000000b
-            shufps  xmm5, xmm5, 01010101b
-            shufps  xmm6, xmm6, 10101010b
-            shufps  xmm7, xmm7, 11111111b
+        shufps  xmm4, xmm4, 00000000b
+        shufps  xmm5, xmm5, 01010101b
+        shufps  xmm6, xmm6, 10101010b
+        shufps  xmm7, xmm7, 11111111b
 
-            mulps   xmm4, xmm0
-            mulps   xmm5, xmm1
-            mulps   xmm6, xmm2
-            mulps   xmm7, xmm3
+        mulps   xmm4, xmm0
+        mulps   xmm5, xmm1
+        mulps   xmm6, xmm2
+        mulps   xmm7, xmm3
 
-            addps   xmm4, xmm5
-            addps   xmm4, xmm6
-            addps   xmm4, xmm7
+        addps   xmm4, xmm5
+        addps   xmm4, xmm6
+        addps   xmm4, xmm7
 
-            movaps  xmmword ptr[eax + 32], xmm4
+        movaps  xmmword ptr[eax + 32], xmm4
 
-            // r[3][0],r[3][1],r[3][2],r[3][3]
+        // r[3][0],r[3][1],r[3][2],r[3][3]
 
-            movaps  xmm4, xmmword ptr[ecx + 48]
-            movaps  xmm5, xmm4
-            movaps  xmm6, xmm4
-            movaps  xmm7, xmm4
+        movaps  xmm4, xmmword ptr[ecx + 48]
+        movaps  xmm5, xmm4
+        movaps  xmm6, xmm4
+        movaps  xmm7, xmm4
 
-            shufps  xmm4, xmm4, 00000000b
-            shufps  xmm5, xmm5, 01010101b
-            shufps  xmm6, xmm6, 10101010b
-            shufps  xmm7, xmm7, 11111111b
+        shufps  xmm4, xmm4, 00000000b
+        shufps  xmm5, xmm5, 01010101b
+        shufps  xmm6, xmm6, 10101010b
+        shufps  xmm7, xmm7, 11111111b
 
-            mulps   xmm4, xmm0
-            mulps   xmm5, xmm1
-            mulps   xmm6, xmm2
-            mulps   xmm7, xmm3
+        mulps   xmm4, xmm0
+        mulps   xmm5, xmm1
+        mulps   xmm6, xmm2
+        mulps   xmm7, xmm3
 
-            addps   xmm4, xmm5
-            addps   xmm4, xmm6
-            addps   xmm4, xmm7
+        addps   xmm4, xmm5
+        addps   xmm4, xmm6
+        addps   xmm4, xmm7
 
-            movaps  xmmword ptr[eax + 48], xmm4
+        movaps  xmmword ptr[eax + 48], xmm4
     }
 #endif // _WIN32
 }
@@ -383,9 +383,9 @@ void math_init()
     }
         GLIDE64_CATCH
     { return; }
-    // Check for SSE
-    if (edx & (1 << 25))
-        IsSSE = TRUE;
+        // Check for SSE
+        if (edx & (1 << 25))
+            IsSSE = TRUE;
 #elif !defined(NO_ASM) && !defined(NOSSE)
     DWORD dwEdx;
     __try
@@ -393,8 +393,8 @@ void math_init()
         __asm
         {
             mov  eax, 1
-                cpuid
-                mov dwEdx, edx
+            cpuid
+            mov dwEdx, edx
         }
     }
     __except (EXCEPTION_EXECUTE_HANDLER)

@@ -336,8 +336,8 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
             // Fix texture coordinates
             if (!v->uv_scaled)
             {
-                v->ou *= rdp.tiles[rdp.cur_tile].s_scale;
-                v->ov *= rdp.tiles[rdp.cur_tile].t_scale;
+                v->ou *= rdp.tiles(rdp.cur_tile).s_scale;
+                v->ov *= rdp.tiles(rdp.cur_tile).t_scale;
                 v->uv_scaled = 1;
                 if (!rdp.Persp_en)
                 {
@@ -357,35 +357,35 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
                     v->v0 += rdp.aTBuffTex[0]->v_shift + rdp.aTBuffTex[0]->tile_ult;
                 }
 
-                if (rdp.tiles[rdp.cur_tile].shift_s)
+                if (rdp.tiles(rdp.cur_tile).shift_s)
                 {
-                    if (rdp.tiles[rdp.cur_tile].shift_s > 10)
-                        v->u0 *= (float)(1 << (16 - rdp.tiles[rdp.cur_tile].shift_s));
+                    if (rdp.tiles(rdp.cur_tile).shift_s > 10)
+                        v->u0 *= (float)(1 << (16 - rdp.tiles(rdp.cur_tile).shift_s));
                     else
-                        v->u0 /= (float)(1 << rdp.tiles[rdp.cur_tile].shift_s);
+                        v->u0 /= (float)(1 << rdp.tiles(rdp.cur_tile).shift_s);
                 }
-                if (rdp.tiles[rdp.cur_tile].shift_t)
+                if (rdp.tiles(rdp.cur_tile).shift_t)
                 {
-                    if (rdp.tiles[rdp.cur_tile].shift_t > 10)
-                        v->v0 *= (float)(1 << (16 - rdp.tiles[rdp.cur_tile].shift_t));
+                    if (rdp.tiles(rdp.cur_tile).shift_t > 10)
+                        v->v0 *= (float)(1 << (16 - rdp.tiles(rdp.cur_tile).shift_t));
                     else
-                        v->v0 /= (float)(1 << rdp.tiles[rdp.cur_tile].shift_t);
+                        v->v0 /= (float)(1 << rdp.tiles(rdp.cur_tile).shift_t);
                 }
 
                 if (rdp.aTBuffTex[0])
                 {
-                    if (rdp.aTBuffTex[0]->tile_uls != (int)rdp.tiles[rdp.cur_tile].f_ul_s)
-                        v->u0 -= rdp.tiles[rdp.cur_tile].f_ul_s;
-                    if (rdp.aTBuffTex[0]->tile_ult != (int)rdp.tiles[rdp.cur_tile].f_ul_t || g_settings->hacks(CSettings::hack_Megaman))
-                        v->v0 -= rdp.tiles[rdp.cur_tile].f_ul_t; //required for megaman (boss special attack)
+                    if (rdp.aTBuffTex[0]->tile_uls != (int)rdp.tiles(rdp.cur_tile).f_ul_s)
+                        v->u0 -= rdp.tiles(rdp.cur_tile).f_ul_s;
+                    if (rdp.aTBuffTex[0]->tile_ult != (int)rdp.tiles(rdp.cur_tile).f_ul_t || g_settings->hacks(CSettings::hack_Megaman))
+                        v->v0 -= rdp.tiles(rdp.cur_tile).f_ul_t; //required for megaman (boss special attack)
                     v->u0 *= rdp.aTBuffTex[0]->u_scale;
                     v->v0 *= rdp.aTBuffTex[0]->v_scale;
                     WriteTrace(TraceRDP, TraceVerbose, "tbuff_tex t0: (%f, %f)->(%f, %f)", v->ou, v->ov, v->u0, v->v0);
                 }
                 else
                 {
-                    v->u0 -= rdp.tiles[rdp.cur_tile].f_ul_s;
-                    v->v0 -= rdp.tiles[rdp.cur_tile].f_ul_t;
+                    v->u0 -= rdp.tiles(rdp.cur_tile).f_ul_s;
+                    v->v0 -= rdp.tiles(rdp.cur_tile).f_ul_t;
                     v->u0 = rdp.cur_cache[0]->c_off + rdp.cur_cache[0]->c_scl_x * v->u0;
                     v->v0 = rdp.cur_cache[0]->c_off + rdp.cur_cache[0]->c_scl_y * v->v0;
                 }
@@ -400,33 +400,33 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
                     v->u1 += rdp.aTBuffTex[1]->u_shift + rdp.aTBuffTex[1]->tile_uls;
                     v->v1 += rdp.aTBuffTex[1]->v_shift + rdp.aTBuffTex[1]->tile_ult;
                 }
-                if (rdp.tiles[rdp.cur_tile + 1].shift_s)
+                if (rdp.tiles(rdp.cur_tile + 1).shift_s)
                 {
-                    if (rdp.tiles[rdp.cur_tile + 1].shift_s > 10)
-                        v->u1 *= (float)(1 << (16 - rdp.tiles[rdp.cur_tile + 1].shift_s));
+                    if (rdp.tiles(rdp.cur_tile + 1).shift_s > 10)
+                        v->u1 *= (float)(1 << (16 - rdp.tiles(rdp.cur_tile + 1).shift_s));
                     else
-                        v->u1 /= (float)(1 << rdp.tiles[rdp.cur_tile + 1].shift_s);
+                        v->u1 /= (float)(1 << rdp.tiles(rdp.cur_tile + 1).shift_s);
                 }
-                if (rdp.tiles[rdp.cur_tile + 1].shift_t)
+                if (rdp.tiles(rdp.cur_tile + 1).shift_t)
                 {
-                    if (rdp.tiles[rdp.cur_tile + 1].shift_t > 10)
-                        v->v1 *= (float)(1 << (16 - rdp.tiles[rdp.cur_tile + 1].shift_t));
+                    if (rdp.tiles(rdp.cur_tile + 1).shift_t > 10)
+                        v->v1 *= (float)(1 << (16 - rdp.tiles(rdp.cur_tile + 1).shift_t));
                     else
-                        v->v1 /= (float)(1 << rdp.tiles[rdp.cur_tile + 1].shift_t);
+                        v->v1 /= (float)(1 << rdp.tiles(rdp.cur_tile + 1).shift_t);
                 }
 
                 if (rdp.aTBuffTex[1])
                 {
-                    if (rdp.aTBuffTex[1]->tile_uls != (int)rdp.tiles[rdp.cur_tile].f_ul_s)
-                        v->u1 -= rdp.tiles[rdp.cur_tile].f_ul_s;
+                    if (rdp.aTBuffTex[1]->tile_uls != (int)rdp.tiles(rdp.cur_tile).f_ul_s)
+                        v->u1 -= rdp.tiles(rdp.cur_tile).f_ul_s;
                     v->u1 *= rdp.aTBuffTex[1]->u_scale;
                     v->v1 *= rdp.aTBuffTex[1]->v_scale;
                     WriteTrace(TraceRDP, TraceVerbose, "tbuff_tex t1: (%f, %f)->(%f, %f)", v->ou, v->ov, v->u1, v->v1);
                 }
                 else
                 {
-                    v->u1 -= rdp.tiles[rdp.cur_tile + 1].f_ul_s;
-                    v->v1 -= rdp.tiles[rdp.cur_tile + 1].f_ul_t;
+                    v->u1 -= rdp.tiles(rdp.cur_tile + 1).f_ul_s;
+                    v->v1 -= rdp.tiles(rdp.cur_tile + 1).f_ul_t;
                     v->u1 = rdp.cur_cache[1]->c_off + rdp.cur_cache[1]->c_scl_x * v->u1;
                     v->v1 = rdp.cur_cache[1]->c_off + rdp.cur_cache[1]->c_scl_y * v->v1;
                 }
@@ -929,8 +929,8 @@ static void CalculateLOD(VERTEX *v, int n)
     float deltaX, deltaY;
     double deltaTexels, deltaPixels, lodFactor = 0;
     double intptr;
-    float s_scale = rdp.tiles[rdp.cur_tile].width / 255.0f;
-    float t_scale = rdp.tiles[rdp.cur_tile].height / 255.0f;
+    float s_scale = rdp.tiles(rdp.cur_tile).width / 255.0f;
+    float t_scale = rdp.tiles(rdp.cur_tile).height / 255.0f;
     if (g_settings->lodmode() == CSettings::LOD_Fast)
     {
         deltaS = (v[1].u0 / v[1].q - v[0].u0 / v[0].q) * s_scale;
