@@ -884,11 +884,9 @@ void CALL DllConfig(void * hParent)
 
     if (g_romopen)
     {
-        if (evoodoo)// && fullscreen && !ev_fullscreen)
-        {
-            ReleaseGfx();
-            rdp_reset();
-        }
+        ReleaseGfx();
+        rdp.free();
+        rdp.init();
         if (g_ghq_use)
         {
             ext_ghq_shutdown();
@@ -915,11 +913,7 @@ void CloseConfig()
         {
             ZLUT_init();
         }
-        // re-init evoodoo graphics to resize window
-        if (evoodoo)// && !ev_fullscreen)
-            InitGfx();
-        else
-            rdp_reset();
+        InitGfx();
     }
 }
 

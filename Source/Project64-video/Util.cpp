@@ -1505,14 +1505,14 @@ static void render_tri(uint16_t linew, int old_interpolate)
     }
 
     ConvertCoordsConvert(rdp.vtxbuf, n);
-    if (rdp.fog_mode == RDP::fog_enabled)
+    if (rdp.fog_mode == CRDP::fog_enabled)
     {
         for (i = 0; i < n; i++)
         {
             rdp.vtxbuf[i].f = 1.0f / maxval(4.0f, rdp.vtxbuf[i].f);
         }
     }
-    else if (rdp.fog_mode == RDP::fog_blend)
+    else if (rdp.fog_mode == CRDP::fog_blend)
     {
         float fog = 1.0f / maxval(1, rdp.fog_color & 0xFF);
         for (i = 0; i < n; i++)
@@ -1520,7 +1520,7 @@ static void render_tri(uint16_t linew, int old_interpolate)
             rdp.vtxbuf[i].f = fog;
         }
     }
-    else if (rdp.fog_mode == RDP::fog_blend_inverse)
+    else if (rdp.fog_mode == CRDP::fog_blend_inverse)
     {
         float fog = 1.0f / maxval(1, (~rdp.fog_color) & 0xFF);
         for (i = 0; i < n; i++)
@@ -1735,7 +1735,7 @@ void update()
             rdp.tex_ctr = 0;
 
         TexCache();
-        if (rdp.noise == RDP::noise_none)
+        if (rdp.noise == CRDP::noise_none)
             rdp.update ^= UPDATE_TEXTURE;
     }
 
@@ -1888,13 +1888,13 @@ void update()
             {
                 grFogColorValue(rdp.fog_color);
                 grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
-                rdp.fog_mode = RDP::fog_enabled;
+                rdp.fog_mode = CRDP::fog_enabled;
                 WriteTrace(TraceRDP, TraceDebug, "fog enabled ");
             }
             else
             {
                 WriteTrace(TraceRDP, TraceDebug, "fog disabled in blender");
-                rdp.fog_mode = RDP::fog_disabled;
+                rdp.fog_mode = CRDP::fog_disabled;
                 grFogMode(GR_FOG_DISABLE);
             }
         }
@@ -1902,20 +1902,20 @@ void update()
         {
             grFogColorValue(rdp.fog_color);
             grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
-            rdp.fog_mode = RDP::fog_blend;
+            rdp.fog_mode = CRDP::fog_blend;
             WriteTrace(TraceRDP, TraceDebug, "fog blend ");
         }
         else if (blender == 0x04d1)
         {
             grFogColorValue(rdp.fog_color);
             grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
-            rdp.fog_mode = RDP::fog_blend_inverse;
+            rdp.fog_mode = CRDP::fog_blend_inverse;
             WriteTrace(TraceRDP, TraceDebug, "fog blend ");
         }
         else
         {
             WriteTrace(TraceRDP, TraceDebug, "fog disabled");
-            rdp.fog_mode = RDP::fog_disabled;
+            rdp.fog_mode = CRDP::fog_disabled;
             grFogMode(GR_FOG_DISABLE);
         }
     }

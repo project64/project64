@@ -281,7 +281,7 @@ static void mod_tex_sub_col_mul_fac_add_tex(uint16_t *dst, int size, uint32_t co
     cg = (color >> 8) & 0xF;
     cb = (color >> 4) & 0xF;
 
-    for (int i = 0; i<size; i++)
+    for (int i = 0; i < size; i++)
     {
         col = *dst;
         a = col & 0xF000;
@@ -409,7 +409,7 @@ static void mod_tex_sub_col_mul_fac(uint16_t *dst, int size, uint32_t color, uin
     cg = (color >> 8) & 0xF;
     cb = (color >> 4) & 0xF;
 
-    for (int i = 0; i<size; i++)
+    for (int i = 0; i < size; i++)
     {
         col = *dst;
         a = (uint8_t)((col >> 12) & 0xF);

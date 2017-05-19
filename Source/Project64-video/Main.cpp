@@ -68,7 +68,7 @@ uint32_t   region = 0;
 
 unsigned int BMASK = 0x7FFFFF;
 // Reality display processor structure
-RDP rdp;
+CRDP rdp;
 
 CSettings * g_settings = NULL;
 
@@ -461,8 +461,6 @@ int InitGfx()
 
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
-    rdp_reset();
-
     // Initialize Glide
     grGlideInit();
 
@@ -524,6 +522,8 @@ int InitGfx()
         grGlideShutdown();
         return FALSE;
     }
+    rdp.init();
+    util_init();
 
     GfxInitDone = TRUE;
     to_fullscreen = FALSE;
@@ -706,6 +706,8 @@ int InitGfx()
 void ReleaseGfx()
 {
     WriteTrace(TraceGlide64, TraceDebug, "-");
+
+    rdp.free();
 
     // Restore gamma settings
     if (voodoo.gamma_correction)
@@ -987,7 +989,10 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
 
     gfx = Gfx_Info;
 
-    util_init();
+    if (!rdp.init())
+    {
+        return false;
+    }
     math_init();
     TexCacheInit();
     CRC_BuildTable();
@@ -1062,10 +1067,7 @@ void CALL RomClosed(void)
 #endif
     rdp.window_changed = TRUE;
     g_romopen = FALSE;
-    if (evoodoo)
-    {
-        ReleaseGfx();
-    }
+    ReleaseGfx();
 }
 
 static void CheckDRAMSize()
@@ -1102,7 +1104,6 @@ void CALL RomOpen(void)
     no_dlist = true;
     g_romopen = TRUE;
     g_ucode_error_report = TRUE;	// allowed to report ucode errors
-    rdp_reset();
 
     // Get the country code & translate to NTSC(0) or PAL(1)
     uint16_t code = ((uint16_t*)gfx.HEADER)[0x1F ^ 1];
@@ -1147,7 +1148,6 @@ void CALL RomOpen(void)
     ClearCache();
 
     CheckDRAMSize();
-
     // ** EVOODOO EXTENSIONS **
     if (!GfxInitDone)
     {
@@ -1161,8 +1161,7 @@ void CALL RomOpen(void)
     else
         evoodoo = 0;
 
-    if (evoodoo)
-        InitGfx();
+    InitGfx();
 }
 
 /******************************************************************

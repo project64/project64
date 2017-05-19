@@ -148,19 +148,313 @@ void microcheck();
 static int reset = 0;
 static CSettings::ucode_t g_old_ucode = CSettings::uCode_Unsupported;
 
-void RDP::Reset()
+CRDP::CRDP() :
+    vtx1(NULL),
+    vtx2(NULL)
 {
-    memset(this, 0, sizeof(RDP_Base));
+    free();
+}
+
+CRDP::~CRDP()
+{
+    free();
+}
+
+bool CRDP::init()
+{
+    if (vtx1 != NULL)
+    {
+        return true;
+    }
+
+    vtx1 = new VERTEX[256];
+    if (vtx1 == NULL)
+    {
+        free();
+        return false;
+    }
+    memset(vtx1, 0, sizeof(VERTEX) * 256);
+    vtx2 = new VERTEX[256];
+    if (vtx2 == NULL)
+    {
+        free();
+        return false;
+    }
+    memset(vtx2, 0, sizeof(VERTEX) * 256);
+
+    for (int i = 0; i < MAX_TMU; i++)
+    {
+        cache[i] = new CACHE_LUT[MAX_CACHE];
+        if (cache[i] == NULL)
+        {
+            free();
+            return false;
+        }
+    };
+    vtx = new VERTEX[MAX_VTX];
+    if (vtx == NULL)
+    {
+        free();
+        return false;
+    }
+    memset(vtx, 0, sizeof(VERTEX)*MAX_VTX);
     // set all vertex numbers
     for (int i = 0; i < MAX_VTX; i++)
+    {
         vtx[i].number = i;
+    }
 
-    scissor_o.ul_x = 0;
-    scissor_o.ul_y = 0;
-    scissor_o.lr_x = 320;
-    scissor_o.lr_y = 240;
+    frame_buffers = new COLOR_IMAGE[NUMTEXBUF + 2];
+    if (frame_buffers == NULL)
+    {
+        free();
+        return false;
+    }
+    return true;
+}
 
-    vi_org_reg = *gfx.VI_ORIGIN_REG;
+void CRDP::free()
+{
+    if (vtx1)
+    {
+        delete vtx1;
+        vtx1 = NULL;
+    }
+    if (vtx2)
+    {
+        delete vtx2;
+        vtx2 = NULL;
+    }
+    clip = 0;
+    vtxbuf = NULL;
+    vtxbuf2 = NULL;
+
+    for (int i = 0; i < MAX_TMU; i++)
+    {
+        if (cache[i] != NULL)
+        {
+            delete cache[i];
+            cache[i] = NULL;
+        }
+        cur_cache[i] = 0;
+        cur_cache_n[i] = 0;
+    }
+    if (vtx != NULL)
+    {
+        delete[] vtx;
+        vtx = NULL;
+    }
+
+    if (frame_buffers != NULL)
+    {
+        delete[] frame_buffers;
+        frame_buffers = NULL;
+    }
+
+    n_global = 0;
+    vtx_buffer = 0;
+    v0 = 0;
+    vn = 0;
+    memset(RomName, 0, sizeof(RomName));
+    vi_width = 0;
+    vi_height = 0;
+
+    window_changed = 0;
+
+    offset_x = 0;
+    offset_y = 0;
+    offset_x_bak = 0;
+    offset_y_bak = 0;
+
+    scale_x = 0;
+    scale_x_bak = 0;
+
+    scale_y = 0;
+    scale_y_bak = 0;
+
+    memset(view_scale, 0, sizeof(view_scale));
+    memset(view_trans, 0, sizeof(view_trans));
+    clip_min_x = 0;
+    clip_max_x = 0;
+    clip_min_y = 0;
+    clip_max_y = 0;
+    clip_ratio = 0;
+
+    updatescreen = 0;
+
+    tri_n = 0;
+    debug_n = 0;
+
+    memset(pc, 0, sizeof(pc));
+    pc_i = 0;
+    dl_count = 0;
+    LLE = 0;
+
+    memset(segment, 0, sizeof(segment));
+    halt = 0;
+
+    cmd0 = 0;
+    cmd1 = 0;
+    cmd2 = 0;
+    cmd3 = 0;
+
+    memset(&scissor_o, 0, sizeof(scissor_o));
+    memset(&scissor, 0, sizeof(scissor));
+    fog_color = 0;
+    fill_color = 0;
+    prim_color = 0;
+    blend_color = 0;
+    env_color = 0;
+    SCALE = 0;
+    CENTER = 0;
+    prim_lodmin = 0;
+    prim_lodfrac = 0;
+    prim_depth = 0;
+    prim_dz = 0;
+    K4 = 0;
+    K5 = 0;
+    noise = noise_none;
+
+    memset(col, 0, sizeof(col));
+    memset(col_2, 0, sizeof(col_2));
+    memset(coladd, 0, sizeof(coladd));
+    shade_factor = 0;
+    cmb_flags = 0;
+    cmb_flags_2 = 0;
+
+    memset(model, 0, sizeof(model));
+    memset(proj, 0, sizeof(proj));
+    memset(combined, 0, sizeof(combined));
+    memset(dkrproj, 0, sizeof(dkrproj));
+    memset(model_stack, 0, sizeof(model_stack));
+
+    model_i = 0;
+    model_stack_size = 0;
+    cur_tile = 0;
+    mipmap_level = 0;
+    last_tile = 0;
+    last_tile_size = 0;
+
+    t0 = GR_TMU0;
+    t1 = GR_TMU0;
+    best_tex = 0;
+    tex = 0;
+    filter_mode = 0;
+
+    memset(pal_8, 0, sizeof(pal_8));
+    memset(pal_8_crc, 0, sizeof(pal_8_crc));
+    pal_256_crc = 0;
+    tlut_mode = 0;
+    LOD_en = 0;
+    Persp_en = 0;
+    persp_supported = 0;
+    force_wrap = 0;
+    memset(pal_8_rice, 0, sizeof(pal_8_rice));
+    num_lights = 0;
+    memset(light, 0, sizeof(light));
+    memset(light_vector, 0, sizeof(light_vector));
+    memset(lookat, 0, sizeof(lookat));
+    use_lookat = 0;
+
+    cycle1 = 0;
+    cycle2 = 0;
+    cycle_mode = 0;
+    c_a0 = 0;
+    c_b0 = 0;
+    c_c0 = 0;
+    c_d0 = 0;
+    c_Aa0 = 0;
+    c_Ab0 = 0;
+    c_Ac0 = 0;
+    c_Ad0 = 0;
+    c_a1 = 0;
+    c_b1 = 0;
+    c_c1 = 0;
+    c_d1 = 0;
+    c_Aa1 = 0;
+    c_Ab1 = 0;
+    c_Ac1 = 0;
+    c_Ad1 = 0;
+
+    fbl_a0 = 0;
+    fbl_b0 = 0;
+    fbl_c0 = 0;
+    fbl_d0 = 0;
+    fbl_a1 = 0;
+    fbl_b1 = 0;
+    fbl_c1 = 0;
+    fbl_d1 = 0;
+
+    uncombined = 0;
+    update = 0;
+    flags = 0;
+
+    first = 0;
+
+    tex_ctr = 0;
+
+    allow_combine = 0;
+
+    s2dex_tex_loaded = 0;
+    bg_image_height = 0;
+
+    rm = 0;
+    render_mode_changed = 0;
+    geom_mode = 0;
+
+    othermode_h = 0;
+    othermode_l = 0;
+
+    texrecting = 0;
+
+    cimg = 0;
+    ocimg = 0;
+    zimg = 0;
+    tmpzimg = 0;
+    vi_org_reg = 0;
+    memset(maincimg, 0, sizeof(maincimg));
+    last_drawn_ci_addr = 0;
+    main_ci = 0;
+    main_ci_end = 0;
+    main_ci_bg = 0;
+    main_ci_last_tex_addr = 0;
+    zimg_end = 0;
+    last_bg = 0;
+    ci_width = 0;
+    ci_height = 0;
+    ci_size = 0;
+    ci_end = 0;
+    zi_width = 0;
+    zi_lrx = 0;
+    zi_lry = 0;
+    ci_count = 0;
+    num_of_ci = 0;
+    main_ci_index = 0;
+    copy_ci_index = 0;
+    copy_zi_index = 0;
+    swap_ci_index = 0;
+    black_ci_index = 0;
+    motionblur = 0;
+    fb_drawn = 0;
+    fb_drawn_front = 0;
+    read_previous_ci = 0;
+    read_whole_frame = 0;
+    ci_status = ci_main;
+    cur_image = NULL;
+    tbuff_tex = NULL;
+    memset(aTBuffTex, 0, sizeof(aTBuffTex));
+    cur_tex_buf = 0;
+    acc_tex_buf = 0;
+    skip_drawing = 0;
+    fog_multiplier = 0;
+    fog_offset = 0;
+    fog_mode = fog_disabled;
+
+    reset = 1;
+
+    v0 = vn = 0;
+
+    //vi_org_reg = *gfx.VI_ORIGIN_REG;
     view_scale[2] = 32.0f * 511.0f;
     view_trans[2] = 32.0f * 511.0f;
     clip_ratio = 1.0f;
@@ -170,48 +464,14 @@ void RDP::Reset()
     cycle_mode = 2;
     allow_combine = 1;
     rdp.update = UPDATE_SCISSOR | UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
-    fog_mode = RDP::fog_enabled;
+    fog_mode = CRDP::fog_enabled;
     maincimg[0].addr = maincimg[1].addr = last_drawn_ci_addr = 0x7FFFFFFF;
-}
 
-RDP::RDP()
-{
-    vtx1 = new VERTEX[256];
-    memset(vtx1, 0, sizeof(VERTEX) * 256);
-    vtx2 = new VERTEX[256];
-    memset(vtx2, 0, sizeof(VERTEX) * 256);
-    vtxbuf = vtxbuf2 = 0;
-    vtx_buffer = n_global = 0;
-
-    for (int i = 0; i < MAX_TMU; i++)
-    {
-        cache[i] = new CACHE_LUT[MAX_CACHE];
-        cur_cache[i] = 0;
-        cur_cache_n[i] = 0;
-    };
-
-    vtx = new VERTEX[MAX_VTX];
-    memset(vtx, 0, sizeof(VERTEX)*MAX_VTX);
-    v0 = vn = 0;
-
-    frame_buffers = new COLOR_IMAGE[NUMTEXBUF + 2];
-}
-
-RDP::~RDP()
-{
-    delete[] vtx1;
-    delete[] vtx2;
-    for (int i = 0; i < MAX_TMU; i++)
-        delete[] cache[i];
-
-    delete[] vtx;
-    delete[] frame_buffers;
-}
-
-void rdp_reset()
-{
-    reset = 1;
-    rdp.Reset();
+    memset(&timg, 0, sizeof(timg));
+    memset(tiles, 0, sizeof(tiles));
+    memset(tmem, 0, sizeof(tmem));
+    memset(addr, 0, sizeof(addr));
+    memset(load_info, 0, sizeof(load_info));
 }
 
 void microcheck()
@@ -604,7 +864,7 @@ EXPORT void CALL ProcessDList(void)
         if (g_settings->ucode() == CSettings::ucode_Turbo3d)
         {
             Turbo3D();
-        }
+    }
         else
         {
             // MAIN PROCESSING LOOP
@@ -686,7 +946,7 @@ EXPORT void CALL ProcessDList(void)
         CI_SET = FALSE;
     }
     WriteTrace(TraceRDP, TraceDebug, "ProcessDList end");
-}
+    }
 
 // undef - undefined instruction, always ignore
 void undef()
@@ -719,7 +979,9 @@ void ys_memrect()
     uint32_t ul_y = (uint16_t)((rdp.cmd1 & 0x00000FFF) >> 2);
 
     if (lr_y > rdp.scissor_o.lr_y)
+    {
         lr_y = rdp.scissor_o.lr_y;
+    }
     uint32_t off_x = ((rdp.cmd2 & 0xFFFF0000) >> 16) >> 5;
     uint32_t off_y = (rdp.cmd2 & 0x0000FFFF) >> 5;
 
@@ -955,15 +1217,14 @@ void rdp_texrect()
         rdp.tri_n += 2;
         return;
     }
-    //*
+
     //hack for Banjo2. it removes black texrects under Banjo
     if (!g_settings->fb_hwfbe_enabled() && ((rdp.cycle1 << 16) | (rdp.cycle2 & 0xFFFF)) == 0xFFFFFFFF && (rdp.othermode_l & 0xFFFF0000) == 0x00500000)
     {
         rdp.tri_n += 2;
         return;
     }
-    //*/
-    //*
+
     //remove motion blur in night vision
     if (g_settings->ucode() == CSettings::ucode_PerfectDark && (rdp.maincimg[1].addr != rdp.maincimg[0].addr) && (rdp.timg.addr >= rdp.maincimg[1].addr) && (rdp.timg.addr < (rdp.maincimg[1].addr + rdp.ci_width*rdp.ci_height*rdp.ci_size)))
     {
@@ -1298,10 +1559,10 @@ void rdp_texrect()
         apply_shade_mods(&vptr[i]);
     }
 
-    if (rdp.fog_mode >= RDP::fog_blend)
+    if (rdp.fog_mode >= CRDP::fog_blend)
     {
         float fog;
-        if (rdp.fog_mode == RDP::fog_blend)
+        if (rdp.fog_mode == CRDP::fog_blend)
             fog = 1.0f / maxval(1, rdp.fog_color & 0xFF);
         else
             fog = 1.0f / maxval(1, (~rdp.fog_color) & 0xFF);

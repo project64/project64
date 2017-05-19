@@ -350,7 +350,36 @@ typedef struct
 
 #define NUMTEXBUF 92
 
-struct RDP_Base {
+class CRDP
+{
+public:
+    CRDP();
+    ~CRDP();
+
+    bool init();
+    void free();
+
+    // Clipping
+    int clip;     // clipping flags
+    VERTEX *vtx1; //[256] copy vertex buffer #1 (used for clipping)
+    VERTEX *vtx2; //[256] copy vertex buffer #2
+    VERTEX *vtxbuf;   // current vertex buffer (reset to vtx, used to determine current vertex buffer)
+    VERTEX *vtxbuf2;
+    int n_global;   // Used to pass the number of vertices from clip_z to clip_tri
+    int vtx_buffer;
+
+    CACHE_LUT *cache[MAX_TMU]; //[MAX_CACHE]
+    CACHE_LUT *cur_cache[MAX_TMU];
+    uint32_t   cur_cache_n[MAX_TMU];
+    int     n_cached[MAX_TMU];
+
+    // Vertices
+    VERTEX *vtx; //[MAX_VTX]
+    int v0, vn;
+
+    COLOR_IMAGE *frame_buffers; //[NUMTEXBUF+2]
+    TEXTURE_BUFFER texbufs[2];
+    char RomName[21];
     float vi_width;
     float vi_height;
 
@@ -541,41 +570,11 @@ struct RDP_Base {
     fog_mode;
 };
 
-struct RDP : public RDP_Base
-{
-    // Clipping
-    int clip;     // clipping flags
-    VERTEX *vtx1; //[256] copy vertex buffer #1 (used for clipping)
-    VERTEX *vtx2; //[256] copy vertex buffer #2
-    VERTEX *vtxbuf;   // current vertex buffer (reset to vtx, used to determine current vertex buffer)
-    VERTEX *vtxbuf2;
-    int n_global;   // Used to pass the number of vertices from clip_z to clip_tri
-    int vtx_buffer;
-
-    CACHE_LUT *cache[MAX_TMU]; //[MAX_CACHE]
-    CACHE_LUT *cur_cache[MAX_TMU];
-    uint32_t   cur_cache_n[MAX_TMU];
-    int     n_cached[MAX_TMU];
-
-    // Vertices
-    VERTEX *vtx; //[MAX_VTX]
-    int v0, vn;
-
-    COLOR_IMAGE *frame_buffers; //[NUMTEXBUF+2]
-    TEXTURE_BUFFER texbufs[2];
-
-    char RomName[21];
-
-    RDP();
-    ~RDP();
-    void Reset();
-};
-
 void SetWireframeCol();
 void ChangeSize();
 void GoToFullScreen();
 
-extern RDP rdp;
+extern CRDP rdp;
 extern VOODOO voodoo;
 
 extern GrTexInfo  fontTex;

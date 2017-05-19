@@ -111,7 +111,7 @@ extern "C" {
         int NormalMemory;    /* a normal uint8_t array */
         int MemoryBswaped;  /* a normal uint8_t array where the memory has been pre
                             bswap on a dword (32 bits) boundry */
-} PLUGIN_INFO;
+    } PLUGIN_INFO;
 
     typedef struct
     {
