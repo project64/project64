@@ -464,9 +464,6 @@ int InitGfx()
     // Initialize Glide
     grGlideInit();
 
-    // Is mirroring allowed?
-    const char *extensions = grGetString(GR_EXTENSION);
-
     // Check which SST we are using and initialize stuff
     // Hiroshi Morii <koolsmoky@users.sourceforge.net>
     enum {
@@ -479,37 +476,15 @@ int InitGfx()
         GR_SSTTYPE_Voodoo4 = 6,
         GR_SSTTYPE_Voodoo5 = 7
     };
-    const char *hardware = grGetString(GR_HARDWARE);
-    unsigned int SST_type = GR_SSTTYPE_VOODOO;
-    if (strstr(hardware, "Rush")) {
-        SST_type = GR_SSTTYPE_SST96;
-    }
-    else if (strstr(hardware, "Voodoo2")) {
-        SST_type = GR_SSTTYPE_Voodoo2;
-    }
-    else if (strstr(hardware, "Voodoo Banshee")) {
-        SST_type = GR_SSTTYPE_Banshee;
-    }
-    else if (strstr(hardware, "Voodoo3")) {
-        SST_type = GR_SSTTYPE_Voodoo3;
-    }
-    else if (strstr(hardware, "Voodoo4")) {
-        SST_type = GR_SSTTYPE_Voodoo4;
-    }
-    else if (strstr(hardware, "Voodoo5")) {
-        SST_type = GR_SSTTYPE_Voodoo5;
-    }
+    unsigned int SST_type = GR_SSTTYPE_Voodoo5;
     // 2Mb Texture boundary
     voodoo.has_2mb_tex_boundary = (SST_type < GR_SSTTYPE_Banshee) && !evoodoo;
     // use UMA if available
     voodoo.tex_UMA = FALSE;
-    if (strstr(extensions, " TEXUMA "))
-    {
-        // we get better texture cache hits with UMA on
-        grEnable(GR_TEXTURE_UMA_EXT);
-        voodoo.tex_UMA = TRUE;
-        WriteTrace(TraceGlide64, TraceDebug, "Using TEXUMA extension");
-    }
+    // we get better texture cache hits with UMA on
+    grEnable(GR_TEXTURE_UMA_EXT);
+    voodoo.tex_UMA = TRUE;
+    WriteTrace(TraceGlide64, TraceDebug, "Using TEXUMA extension");
 
     ChangeSize();
 #ifndef ANDROID
@@ -547,19 +522,15 @@ int InitGfx()
         voodoo.tex_max_addr[1] = grTexMaxAddress(GR_TMU1);
     }
 
-    if (strstr(extensions, "TEXMIRROR") && !g_settings->hacks(CSettings::hack_Zelda)) //zelda's trees suffer from hardware mirroring
+    // Is mirroring allowed?
+    if (!g_settings->hacks(CSettings::hack_Zelda)) //zelda's trees suffer from hardware mirroring
         voodoo.sup_mirroring = 1;
     else
         voodoo.sup_mirroring = 0;
 
-    if (strstr(extensions, "TEXFMT"))  //VSA100 texture format extension
-        voodoo.sup_32bit_tex = TRUE;
-    else
-        voodoo.sup_32bit_tex = FALSE;
-
+    voodoo.sup_32bit_tex = TRUE;
     voodoo.gamma_correction = 0;
-    if (strstr(extensions, "GETGAMMA"))
-        grGet(GR_GAMMA_TABLE_ENTRIES, sizeof(voodoo.gamma_table_size), &voodoo.gamma_table_size);
+    grGet(GR_GAMMA_TABLE_ENTRIES, sizeof(voodoo.gamma_table_size), &voodoo.gamma_table_size);
 
     srand(g_settings->stipple_pattern());
     setPattern();
@@ -586,30 +557,23 @@ int InitGfx()
 
     if (g_settings->fog()) //"FOGCOORD" extension
     {
-        if (strstr(extensions, "FOGCOORD"))
-        {
-            GrFog_t fog_t[64];
-            guFogGenerateLinear(fog_t, 0.0f, 255.0f);//(float)rdp.fog_multiplier + (float)rdp.fog_offset);//256.0f);
+        GrFog_t fog_t[64];
+        guFogGenerateLinear(fog_t, 0.0f, 255.0f);//(float)rdp.fog_multiplier + (float)rdp.fog_offset);//256.0f);
 
-            for (int i = 63; i > 0; i--)
-            {
-                if (fog_t[i] - fog_t[i - 1] > 63)
-                {
-                    fog_t[i - 1] = fog_t[i] - 63;
-                }
-            }
-            fog_t[0] = 0;
-            //      for (int f = 0; f < 64; f++)
-            //      {
-            //        WriteTrace(TraceRDP, TraceDebug, "fog[%d]=%d->%f", f, fog_t[f], guFogTableIndexToW(f));
-            //      }
-            grFogTable(fog_t);
-            grVertexLayout(GR_PARAM_FOG_EXT, offsetof(VERTEX, f), GR_PARAM_ENABLE);
-        }
-        else //not supported
+        for (int i = 63; i > 0; i--)
         {
-            g_settings->SetFog(FALSE);
+            if (fog_t[i] - fog_t[i - 1] > 63)
+            {
+                fog_t[i - 1] = fog_t[i] - 63;
+            }
         }
+        fog_t[0] = 0;
+        //      for (int f = 0; f < 64; f++)
+        //      {
+        //        WriteTrace(TraceRDP, TraceDebug, "fog[%d]=%d->%f", f, fog_t[f], guFogTableIndexToW(f));
+        //      }
+        grFogTable(fog_t);
+        grVertexLayout(GR_PARAM_FOG_EXT, offsetof(VERTEX, f), GR_PARAM_ENABLE);
     }
 
     grDepthBufferMode(GR_DEPTHBUFFER_ZBUFFER);
@@ -696,7 +660,7 @@ int InitGfx()
                 DisplayLoadProgress);
         }
     }
-    if (g_ghq_use && strstr(extensions, "TEXMIRROR"))
+    if (g_ghq_use)
     {
         voodoo.sup_mirroring = 1;
     }
@@ -1001,18 +965,9 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
 
     grConfigWrapperExt(g_settings->wrpVRAM() * 1024 * 1024, g_settings->wrpFBO(), g_settings->wrpAnisotropic());
     grGlideInit();
-    const char *extensions = grGetString(GR_EXTENSION);
     grGlideShutdown();
-    if (strstr(extensions, "EVOODOO"))
-    {
-        evoodoo = 1;
-        voodoo.has_2mb_tex_boundary = 0;
-    }
-    else
-    {
-        evoodoo = 0;
-        voodoo.has_2mb_tex_boundary = 1;
-    }
+    evoodoo = 1;
+    voodoo.has_2mb_tex_boundary = 0;
     return TRUE;
 }
 
@@ -1153,14 +1108,8 @@ void CALL RomOpen(void)
     {
         grGlideInit();
     }
-    const char *extensions = grGetString(GR_EXTENSION);
     grGlideShutdown();
-
-    if (strstr(extensions, "EVOODOO"))
-        evoodoo = 1;
-    else
-        evoodoo = 0;
-
+    evoodoo = 1;
     InitGfx();
 }
 

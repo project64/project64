@@ -1359,48 +1359,6 @@ grGet(FxU32 pname, FxU32 plength, FxI32 *params)
     return 0;
 }
 
-FX_ENTRY const char * FX_CALL
-grGetString(FxU32 pname)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "pname: %d", pname);
-    switch (pname)
-    {
-    case GR_EXTENSION:
-    {
-        static char extension[] = "CHROMARANGE TEXCHROMA TEXMIRROR PALETTE6666 FOGCOORD EVOODOO TEXTUREBUFFER TEXUMA TEXFMT COMBINE GETGAMMA";
-        return extension;
-    }
-    break;
-    case GR_HARDWARE:
-    {
-        static char hardware[] = "Voodoo5 (tm)";
-        return hardware;
-    }
-    break;
-    case GR_VENDOR:
-    {
-        static char vendor[] = "3Dfx Interactive";
-        return vendor;
-    }
-    break;
-    case GR_RENDERER:
-    {
-        static char renderer[] = "Glide";
-        return renderer;
-    }
-    break;
-    case GR_VERSION:
-    {
-        static char version[] = "3.0";
-        return version;
-    }
-    break;
-    default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown grGetString selector : %x", pname);
-    }
-    return NULL;
-}
-
 static void render_rectangle(int texture_number,
     int dst_x, int dst_y,
     int src_width, int src_height,
