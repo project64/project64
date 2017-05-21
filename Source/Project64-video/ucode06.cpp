@@ -132,8 +132,8 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
     GrTexInfo t_info;
     t_info.format = GFX_TEXFMT_RGB_565;
     t_info.data = image;
-    t_info.smallLodLog2 = GR_LOD_LOG2_512;
-    t_info.largeLodLog2 = GR_LOD_LOG2_512;
+    t_info.smallLodLog2 = GFX_LOD_LOG2_512;
+    t_info.largeLodLog2 = GFX_LOD_LOG2_512;
     t_info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
 
     grTexDownloadMipMap(rdp.texbufs[1].tmu,
@@ -175,7 +175,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
     grDepthBufferFunction(GR_CMP_ALWAYS);
     grDepthMask(FXFALSE);
 
-    GrLOD_t LOD = g_scr_res_x > 1024 ? GR_LOD_LOG2_2048 : GR_LOD_LOG2_1024;
+    GrLOD_t LOD = g_scr_res_x > 1024 ? GFX_LOD_LOG2_2048 : GFX_LOD_LOG2_1024;
 
     float lr_x = (float)d.imageW * rdp.scale_x;
     float lr_y = (float)d.imageH * rdp.scale_y;

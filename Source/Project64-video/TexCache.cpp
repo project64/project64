@@ -1021,47 +1021,47 @@ void LoadTex(int id, int tmu)
     switch (size_max)
     {
     case 1:
-        lod = GR_LOD_LOG2_1;
+        lod = GFX_LOD_LOG2_1;
         cache->scale = 256.0f;
         break;
     case 2:
-        lod = GR_LOD_LOG2_2;
+        lod = GFX_LOD_LOG2_2;
         cache->scale = 128.0f;
         break;
     case 4:
-        lod = GR_LOD_LOG2_4;
+        lod = GFX_LOD_LOG2_4;
         cache->scale = 64.0f;
         break;
     case 8:
-        lod = GR_LOD_LOG2_8;
+        lod = GFX_LOD_LOG2_8;
         cache->scale = 32.0f;
         break;
     case 16:
-        lod = GR_LOD_LOG2_16;
+        lod = GFX_LOD_LOG2_16;
         cache->scale = 16.0f;
         break;
     case 32:
-        lod = GR_LOD_LOG2_32;
+        lod = GFX_LOD_LOG2_32;
         cache->scale = 8.0f;
         break;
     case 64:
-        lod = GR_LOD_LOG2_64;
+        lod = GFX_LOD_LOG2_64;
         cache->scale = 4.0f;
         break;
     case 128:
-        lod = GR_LOD_LOG2_128;
+        lod = GFX_LOD_LOG2_128;
         cache->scale = 2.0f;
         break;
     case 256:
-        lod = GR_LOD_LOG2_256;
+        lod = GFX_LOD_LOG2_256;
         cache->scale = 1.0f;
         break;
     case 512:
-        lod = GR_LOD_LOG2_512;
+        lod = GFX_LOD_LOG2_512;
         cache->scale = 0.5f;
         break;
     default:
-        lod = GR_LOD_LOG2_1024;
+        lod = GFX_LOD_LOG2_1024;
         cache->scale = 0.25f;
         break;
     }
@@ -1544,8 +1544,8 @@ void LoadTex(int id, int tmu)
             {
                 if (ghqTexInfo.aspectRatioLog2 < GR_ASPECT_LOG2_1x8 ||
                     ghqTexInfo.aspectRatioLog2 > GR_ASPECT_LOG2_8x1 ||
-                    ghqTexInfo.largeLodLog2 > GR_LOD_LOG2_2048 ||
-                    ghqTexInfo.largeLodLog2 < GR_LOD_LOG2_1)
+                    ghqTexInfo.largeLodLog2 > GFX_LOD_LOG2_2048 ||
+                    ghqTexInfo.largeLodLog2 < GFX_LOD_LOG2_1)
                 {
                     /* invalid dimensions */
                 }

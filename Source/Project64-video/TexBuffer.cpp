@@ -42,23 +42,23 @@ static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
     switch ((max_size - 1) >> 6)
     {
     case 0:
-        texbuf.info.smallLodLog2 = texbuf.info.largeLodLog2 = GR_LOD_LOG2_64;
+        texbuf.info.smallLodLog2 = texbuf.info.largeLodLog2 = GFX_LOD_LOG2_64;
         tex_size = 64;
         break;
     case 1:
-        texbuf.info.smallLodLog2 = texbuf.info.largeLodLog2 = GR_LOD_LOG2_128;
+        texbuf.info.smallLodLog2 = texbuf.info.largeLodLog2 = GFX_LOD_LOG2_128;
         tex_size = 128;
         break;
     case 2:
     case 3:
-        texbuf.info.smallLodLog2 = texbuf.info.largeLodLog2 = GR_LOD_LOG2_256;
+        texbuf.info.smallLodLog2 = texbuf.info.largeLodLog2 = GFX_LOD_LOG2_256;
         tex_size = 256;
         break;
     case 4:
     case 5:
     case 6:
     case 7:
-        texbuf.info.smallLodLog2 = texbuf.info.largeLodLog2 = GR_LOD_LOG2_512;
+        texbuf.info.smallLodLog2 = texbuf.info.largeLodLog2 = GFX_LOD_LOG2_512;
         tex_size = 512;
         break;
     case 8:
@@ -69,11 +69,11 @@ static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
     case 13:
     case 14:
     case 15:
-        texbuf.info.smallLodLog2 = texbuf.info.largeLodLog2 = GR_LOD_LOG2_1024;
+        texbuf.info.smallLodLog2 = texbuf.info.largeLodLog2 = GFX_LOD_LOG2_1024;
         tex_size = 1024;
         break;
     default:
-        texbuf.info.smallLodLog2 = texbuf.info.largeLodLog2 = GR_LOD_LOG2_2048;
+        texbuf.info.smallLodLog2 = texbuf.info.largeLodLog2 = GFX_LOD_LOG2_2048;
         tex_size = 2048;
     }
     //calculate aspect
@@ -508,11 +508,11 @@ int CopyDepthBuffer()
 {
     WriteTrace(TraceRDP, TraceDebug, "CopyDepthBuffer. ");
     float bound = 1024.0f;
-    GrLOD_t LOD = GR_LOD_LOG2_1024;
+    GrLOD_t LOD = GFX_LOD_LOG2_1024;
     if (g_scr_res_x > 1024)
     {
         bound = 2048.0f;
-        LOD = GR_LOD_LOG2_2048;
+        LOD = GFX_LOD_LOG2_2048;
     }
     rdp.tbuff_tex = &(rdp.texbufs[0].images[0]);
     rdp.tbuff_tex->tmu = rdp.texbufs[0].tmu;

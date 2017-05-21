@@ -16,6 +16,22 @@
 #include <Common/stdtypes.h>
 
 typedef uint8_t gfxAlpha_t;
+enum gfxLOD_t
+{
+    GFX_LOD_LOG2_1 = 0x0,
+    GFX_LOD_LOG2_2 = 0x1,
+    GFX_LOD_LOG2_4 = 0x2,
+    GFX_LOD_LOG2_8 = 0x3,
+    GFX_LOD_LOG2_16 = 0x4,
+    GFX_LOD_LOG2_32 = 0x5,
+    GFX_LOD_LOG2_64 = 0x6,
+    GFX_LOD_LOG2_128 = 0x7,
+    GFX_LOD_LOG2_256 = 0x8,
+    GFX_LOD_LOG2_512 = 0x9,
+    GFX_LOD_LOG2_1024 = 0xa,
+    GFX_LOD_LOG2_2048 = 0xb,
+};
+
 enum gfxTextureFormat_t
 {
     GFX_TEXFMT_8BIT = 0x0,
