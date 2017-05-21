@@ -15908,21 +15908,8 @@ void InitCombine()
 {
     WriteTrace(TraceGlide64, TraceDebug, "-");
     memset(&cmb, 0, sizeof(cmb));
-    cmb.grColorCombineExt = (GRCOLORCOMBINEEXT)grColorCombineExt;
-    cmb.grAlphaCombineExt = (GRCOLORCOMBINEEXT)grAlphaCombineExt;
-    cmb.grTexColorCombineExt = (GRTEXCOLORCOMBINEEXT)grTexColorCombineExt;
-    cmb.grTexAlphaCombineExt = (GRTEXCOLORCOMBINEEXT)grTexAlphaCombineExt;
-    cmb.grConstantColorValueExt = (GRCONSTANTCOLORVALUEEXT)grConstantColorValueExt;
-    if (cmb.grColorCombineExt && cmb.grAlphaCombineExt &&
-        cmb.grTexColorCombineExt && cmb.grTexAlphaCombineExt)
-    {
-        cmb.combine_ext = TRUE;
-        WriteTrace(TraceGlide64, TraceDebug, "initialized.");
-    }
-    else
-    {
-        cmb.combine_ext = FALSE;
-    }
+    cmb.combine_ext = TRUE;
+    WriteTrace(TraceGlide64, TraceDebug, "initialized.");
     cmb.dc0_lodbias = cmb.dc1_lodbias = 31;
     cmb.dc0_detailscale = cmb.dc1_detailscale = 7;
     cmb.lodbias0 = cmb.lodbias1 = 1.0f;

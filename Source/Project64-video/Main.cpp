@@ -222,7 +222,6 @@ int GetTexAddrNonUMA(int tmu, int texsize)
     voodoo.tmem_ptr[tmu] += texsize;
     return addr;
 }
-GETTEXADDR GetTexAddr = GetTexAddrNonUMA;
 
 // guLoadTextures - used to load the cursor and font textures
 void guLoadTextures()
@@ -265,14 +264,11 @@ void guLoadTextures()
     if ((nbTextureUnits > 2 ? 2 : 1) > 1)
     {
         rdp.texbufs[1].tmu = GR_TMU1;
-        rdp.texbufs[1].begin = voodoo.tex_UMA ? rdp.texbufs[0].end : voodoo.tex_min_addr[GR_TMU1];
+        rdp.texbufs[1].begin = rdp.texbufs[0].end;
         rdp.texbufs[1].end = rdp.texbufs[1].begin + tbuf_size;
         rdp.texbufs[1].count = 0;
         rdp.texbufs[1].clear_allowed = TRUE;
-        if (voodoo.tex_UMA)
-            offset_font += tbuf_size;
-        else
-            offset_texbuf1 = tbuf_size;
+        offset_font += tbuf_size;
     }
 
 #include "font.h"
@@ -479,11 +475,8 @@ int InitGfx()
     unsigned int SST_type = GR_SSTTYPE_Voodoo5;
     // 2Mb Texture boundary
     voodoo.has_2mb_tex_boundary = (SST_type < GR_SSTTYPE_Banshee) && !evoodoo;
-    // use UMA if available
-    voodoo.tex_UMA = FALSE;
     // we get better texture cache hits with UMA on
     grEnable(GR_TEXTURE_UMA_EXT);
-    voodoo.tex_UMA = TRUE;
     WriteTrace(TraceGlide64, TraceDebug, "Using TEXUMA extension");
 
     ChangeSize();
@@ -507,20 +500,8 @@ int InitGfx()
     grGet(GR_MAX_TEXTURE_SIZE, 4, (FxI32*)&voodoo.max_tex_size);
     voodoo.sup_large_tex = (voodoo.max_tex_size > 256 && !g_settings->hacks(CSettings::hack_PPL));
 
-    if (voodoo.tex_UMA)
-    {
-        GetTexAddr = GetTexAddrUMA;
-        voodoo.tex_min_addr[0] = voodoo.tex_min_addr[1] = grTexMinAddress(GR_TMU0);
-        voodoo.tex_max_addr[0] = voodoo.tex_max_addr[1] = grTexMaxAddress(GR_TMU0);
-    }
-    else
-    {
-        GetTexAddr = GetTexAddrNonUMA;
-        voodoo.tex_min_addr[0] = grTexMinAddress(GR_TMU0);
-        voodoo.tex_min_addr[1] = grTexMinAddress(GR_TMU1);
-        voodoo.tex_max_addr[0] = grTexMaxAddress(GR_TMU0);
-        voodoo.tex_max_addr[1] = grTexMaxAddress(GR_TMU1);
-    }
+    voodoo.tex_min_addr[0] = voodoo.tex_min_addr[1] = grTexMinAddress(GR_TMU0);
+    voodoo.tex_max_addr[0] = voodoo.tex_max_addr[1] = grTexMaxAddress(GR_TMU0);
 
     // Is mirroring allowed?
     if (!g_settings->hacks(CSettings::hack_Zelda)) //zelda's trees suffer from hardware mirroring

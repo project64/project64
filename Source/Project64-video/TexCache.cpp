@@ -84,8 +84,7 @@ void AddToList(NODE **list, uint32_t crc, uintptr_t data, int tmu, int number)
     node->pNext = *list;
     *list = node;
     rdp.n_cached[tmu] ++;
-    if (voodoo.tex_UMA)
-        rdp.n_cached[tmu ^ 1] = rdp.n_cached[tmu];
+    rdp.n_cached[tmu ^ 1] = rdp.n_cached[tmu];
 }
 
 void DeleteList(NODE **list)
@@ -113,7 +112,7 @@ void ClearCache()
 {
     voodoo.tmem_ptr[0] = offset_textures;
     rdp.n_cached[0] = 0;
-    voodoo.tmem_ptr[1] = voodoo.tex_UMA ? offset_textures : offset_texbuf1;
+    voodoo.tmem_ptr[1] = offset_textures;
     rdp.n_cached[1] = 0;
 
     for (int i = 0; i < 65536; i++)
@@ -453,11 +452,8 @@ void GetTexInfo(int id, int tile)
                 {
                     WriteTrace(TraceRDP, TraceDebug, " | | | |- Texture found in cache (tmu=%d).", node->tmu);
                     tex_found[id][node->tmu] = node->number;
-                    if (voodoo.tex_UMA)
-                    {
-                        tex_found[id][node->tmu ^ 1] = node->number;
-                        return;
-                    }
+                    tex_found[id][node->tmu ^ 1] = node->number;
+                    return;
                 }
             }
         }
@@ -473,16 +469,7 @@ void GetTexInfo(int id, int tile)
 int ChooseBestTmu(int tmu1, int tmu2)
 {
     if (!GfxInitDone) return tmu1;
-    if (voodoo.tex_UMA) return 0;
-
-    if (tmu1 >= (nbTextureUnits > 2 ? 2 : 1)) return tmu2;
-    if (tmu2 >= (nbTextureUnits > 2 ? 2 : 1)) return tmu1;
-
-    if (voodoo.tex_max_addr[tmu1] - voodoo.tmem_ptr[tmu1] >
-        voodoo.tex_max_addr[tmu2] - voodoo.tmem_ptr[tmu2])
-        return tmu1;
-    else
-        return tmu2;
+    return 0;
 }
 
 //****************************************************************
@@ -690,14 +677,8 @@ void TexCache()
                     ColorCombinerToExtension();
                 if (!(cmb.cmb_ext_use & COMBINE_EXT_ALPHA))
                     AlphaCombinerToExtension();
-                cmb.grColorCombineExt(cmb.c_ext_a, cmb.c_ext_a_mode,
-                    cmb.c_ext_b, cmb.c_ext_b_mode,
-                    cmb.c_ext_c, cmb.c_ext_c_invert,
-                    cmb.c_ext_d, cmb.c_ext_d_invert, 0, 0);
-                cmb.grAlphaCombineExt(cmb.a_ext_a, cmb.a_ext_a_mode,
-                    cmb.a_ext_b, cmb.a_ext_b_mode,
-                    cmb.a_ext_c, cmb.a_ext_c_invert,
-                    cmb.a_ext_d, cmb.a_ext_d_invert, 0, 0);
+                grColorCombineExt(cmb.c_ext_a, cmb.c_ext_a_mode, cmb.c_ext_b, cmb.c_ext_b_mode, cmb.c_ext_c, cmb.c_ext_c_invert, cmb.c_ext_d, cmb.c_ext_d_invert, 0, 0);
+                grAlphaCombineExt(cmb.a_ext_a, cmb.a_ext_a_mode, cmb.a_ext_b, cmb.a_ext_b_mode, cmb.a_ext_c, cmb.a_ext_c_invert, cmb.a_ext_d, cmb.a_ext_d_invert, 0, 0);
             }
             else
             {
@@ -719,21 +700,17 @@ void TexCache()
                     TexColorCombinerToExtension(GR_TMU1);
                 if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_ALPHA))
                     TexAlphaCombinerToExtension(GR_TMU1);
-                cmb.grTexColorCombineExt(tmu_1, cmb.t1c_ext_a, cmb.t1c_ext_a_mode,
-                    cmb.t1c_ext_b, cmb.t1c_ext_b_mode,
-                    cmb.t1c_ext_c, cmb.t1c_ext_c_invert,
-                    cmb.t1c_ext_d, cmb.t1c_ext_d_invert, 0, 0);
-                cmb.grTexAlphaCombineExt(tmu_1, cmb.t1a_ext_a, cmb.t1a_ext_a_mode,
-                    cmb.t1a_ext_b, cmb.t1a_ext_b_mode,
-                    cmb.t1a_ext_c, cmb.t1a_ext_c_invert,
-                    cmb.t1a_ext_d, cmb.t1a_ext_d_invert, 0, 0);
-                cmb.grConstantColorValueExt(tmu_1, cmb.tex_ccolor);
+                grTexColorCombineExt(tmu_1, cmb.t1c_ext_a, cmb.t1c_ext_a_mode, cmb.t1c_ext_b, cmb.t1c_ext_b_mode, cmb.t1c_ext_c, cmb.t1c_ext_c_invert, cmb.t1c_ext_d, cmb.t1c_ext_d_invert, 0, 0);
+                grTexAlphaCombineExt(tmu_1, cmb.t1a_ext_a, cmb.t1a_ext_a_mode, cmb.t1a_ext_b, cmb.t1a_ext_b_mode, cmb.t1a_ext_c, cmb.t1a_ext_c_invert, cmb.t1a_ext_d, cmb.t1a_ext_d_invert, 0, 0);
+                grConstantColorValueExt(tmu_1, cmb.tex_ccolor);
             }
             else
             {
                 grTexCombine(tmu_1, cmb.tmu1_func, cmb.tmu1_fac, cmb.tmu1_a_func, cmb.tmu1_a_fac, cmb.tmu1_invert, cmb.tmu1_a_invert);
                 if (cmb.combine_ext)
-                    cmb.grConstantColorValueExt(tmu_1, 0);
+                {
+                    grConstantColorValueExt(tmu_1, 0);
+                }
             }
             grTexDetailControl(tmu_1, cmb.dc1_lodbias, cmb.dc1_detailscale, cmb.dc1_detailmax);
             grTexLodBiasValue(tmu_1, cmb.lodbias1);
@@ -744,24 +721,24 @@ void TexCache()
             {
                 WriteTrace(TraceRDP, TraceDebug, " | | | |- combiner extension tmu0");
                 if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_COLOR))
+                {
                     TexColorCombinerToExtension(GR_TMU0);
+                }
                 if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_ALPHA))
+                {
                     TexAlphaCombinerToExtension(GR_TMU0);
-                cmb.grTexColorCombineExt(tmu_0, cmb.t0c_ext_a, cmb.t0c_ext_a_mode,
-                    cmb.t0c_ext_b, cmb.t0c_ext_b_mode,
-                    cmb.t0c_ext_c, cmb.t0c_ext_c_invert,
-                    cmb.t0c_ext_d, cmb.t0c_ext_d_invert, 0, 0);
-                cmb.grTexAlphaCombineExt(tmu_0, cmb.t0a_ext_a, cmb.t0a_ext_a_mode,
-                    cmb.t0a_ext_b, cmb.t0a_ext_b_mode,
-                    cmb.t0a_ext_c, cmb.t0a_ext_c_invert,
-                    cmb.t0a_ext_d, cmb.t0a_ext_d_invert, 0, 0);
-                cmb.grConstantColorValueExt(tmu_0, cmb.tex_ccolor);
+                }
+                grTexColorCombineExt(tmu_0, cmb.t0c_ext_a, cmb.t0c_ext_a_mode, cmb.t0c_ext_b, cmb.t0c_ext_b_mode, cmb.t0c_ext_c, cmb.t0c_ext_c_invert, cmb.t0c_ext_d, cmb.t0c_ext_d_invert, 0, 0);
+                grTexAlphaCombineExt(tmu_0, cmb.t0a_ext_a, cmb.t0a_ext_a_mode, cmb.t0a_ext_b, cmb.t0a_ext_b_mode, cmb.t0a_ext_c, cmb.t0a_ext_c_invert, cmb.t0a_ext_d, cmb.t0a_ext_d_invert, 0, 0);
+                grConstantColorValueExt(tmu_0, cmb.tex_ccolor);
             }
             else
             {
                 grTexCombine(tmu_0, cmb.tmu0_func, cmb.tmu0_fac, cmb.tmu0_a_func, cmb.tmu0_a_fac, cmb.tmu0_invert, cmb.tmu0_a_invert);
                 if (cmb.combine_ext)
-                    cmb.grConstantColorValueExt(tmu_0, 0);
+                {
+                    grConstantColorValueExt(tmu_0, 0);
+                }
             }
             grTexDetailControl(tmu_0, cmb.dc0_lodbias, cmb.dc0_detailscale, cmb.dc0_detailmax);
             grTexLodBiasValue(tmu_0, cmb.lodbias0);
@@ -785,7 +762,7 @@ void TexCache()
             WriteTrace(TraceRDP, TraceDebug, " | |- T0 found in cache.");
             if (GfxInitDone)
             {
-                CACHE_LUT *cache = voodoo.tex_UMA ? &rdp.cache[0][tex_found[0][0]] : &rdp.cache[tmu_0][tex_found[0][tmu_0]];
+                CACHE_LUT *cache = &rdp.cache[0][tex_found[0][0]];
                 rdp.cur_cache_n[0] = tex_found[0][tmu_0];
                 rdp.cur_cache[0] = cache;
                 rdp.cur_cache[0]->last_used = frame_count;
@@ -816,7 +793,7 @@ void TexCache()
             WriteTrace(TraceRDP, TraceDebug, " | |- T1 found in cache.");
             if (GfxInitDone)
             {
-                CACHE_LUT *cache = voodoo.tex_UMA ? &rdp.cache[0][tex_found[1][0]] : &rdp.cache[tmu_1][tex_found[1][tmu_1]];
+                CACHE_LUT *cache = &rdp.cache[0][tex_found[1][0]];
                 rdp.cur_cache_n[1] = tex_found[1][tmu_1];
                 rdp.cur_cache[1] = cache;
                 rdp.cur_cache[1]->last_used = frame_count;
@@ -971,7 +948,7 @@ void LoadTex(int id, int tmu)
     }
 
     // Get this cache object
-    cache = voodoo.tex_UMA ? &rdp.cache[0][rdp.n_cached[0]] : &rdp.cache[tmu][rdp.n_cached[tmu]];
+    cache = &rdp.cache[0][rdp.n_cached[0]];
     memset(cache, 0, sizeof(*cache));
     rdp.cur_cache[id] = cache;
     rdp.cur_cache_n[id] = rdp.n_cached[tmu];
@@ -1701,17 +1678,11 @@ void LoadTex(int id, int tmu)
             // DON'T CONTINUE (already done)
         }
 
-        uint32_t tex_addr = GetTexAddr(tmu, texture_size);
-        grTexDownloadMipMap(tmu,
-            tex_addr,
-            GR_MIPMAPLEVELMASK_BOTH,
-            t_info);
-
-        grTexSource(tmu,
-            tex_addr,
-            GR_MIPMAPLEVELMASK_BOTH,
-            t_info);
+        uint32_t tex_addr = voodoo.tex_min_addr[0] + voodoo.tmem_ptr[0];
+        voodoo.tmem_ptr[0] += texture_size;
+        voodoo.tmem_ptr[1] = voodoo.tmem_ptr[0];
+        grTexDownloadMipMap(tmu, tex_addr, GR_MIPMAPLEVELMASK_BOTH, t_info);
+        grTexSource(tmu, tex_addr, GR_MIPMAPLEVELMASK_BOTH, t_info);
     }
-
     WriteTrace(TraceRDP, TraceDebug, " | | +- LoadTex end");
 }

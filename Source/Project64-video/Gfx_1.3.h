@@ -25,7 +25,6 @@
 #include "Settings.h"
 
 #if defined __VISUALC__
-typedef unsigned char boolean;
 #define GLIDE64_TRY __try
 #define GLIDE64_CATCH __except (EXCEPTION_EXECUTE_HANDLER)
 #else
@@ -164,44 +163,12 @@ extern "C" {
     extern GFX_INFO gfx;
     extern bool no_dlist;
 
-    typedef void (FX_CALL *GRCOLORCOMBINEEXT) (GrCCUColor_t     a,
-        GrCombineMode_t  a_mode,
-        GrCCUColor_t     b,
-        GrCombineMode_t  b_mode,
-        GrCCUColor_t     c,
-        FxBool           c_invert,
-        GrCCUColor_t     d,
-        FxBool           d_invert,
-        FxU32            shift,
-        FxBool           invert);
-
-    typedef void (FX_CALL *GRTEXCOLORCOMBINEEXT) (GrChipID_t       tmu,
-        GrTCCUColor_t    a,
-        GrCombineMode_t  a_mode,
-        GrTCCUColor_t    b,
-        GrCombineMode_t  b_mode,
-        GrTCCUColor_t    c,
-        FxBool           c_invert,
-        GrTCCUColor_t    d,
-        FxBool           d_invert,
-        FxU32            shift,
-        FxBool           invert);
-
-    typedef void (FX_CALL *GRCONSTANTCOLORVALUEEXT)
-        (GrChipID_t       tmu,
-            GrColor_t        value);
-
-    typedef void (FX_CALL *GRSTIPPLE)(FxI32 mode);
-
-    typedef int(*GETTEXADDR)(int tmu, int texsize);
-
-    extern GETTEXADDR           GetTexAddr;
-
-#ifndef GR_STIPPLE_DISABLE
-#define GR_STIPPLE_DISABLE	0x0
-#define GR_STIPPLE_PATTERN	0x1
-#define GR_STIPPLE_ROTATE	0x2
-#endif
+    enum
+    {
+        GFX_STIPPLE_DISABLE = 0x0,
+        GFX_STIPPLE_PATTERN = 0x1,
+        GFX_STIPPLE_ROTATE = 0x2,
+    };
 
     /******************************************************************
     Function: CaptureScreen
@@ -468,5 +435,5 @@ extern "C" {
     EXPORT void CALL PluginLoaded(void);
 
 #if defined(__cplusplus)
-    }
+}
 #endif
