@@ -18,6 +18,7 @@
 
 void gfxClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy);
 FxU32 gfxTexMinAddress(GrChipID_t tmu);
+void gfxColorMask(FxBool rgb, FxBool a);
 
 extern uint32_t nbTextureUnits;
 extern uint32_t g_scr_res_x, g_scr_res_y, g_res_x, g_res_y;

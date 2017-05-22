@@ -366,25 +366,19 @@ void gfxClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
         glScissor(minx, miny + g_viewport_offset, maxx - minx, maxy - miny);
         //printf("gl scissor %d %d %d %d\n", minx, miny, maxx, maxy);
     }
-    else {
+    else
+    {
         glScissor(minx, (g_viewport_offset)+g_height - maxy, maxx - minx, maxy - miny);
     }
     glEnable(GL_SCISSOR_TEST);
     grDisplayGLError("gfxClipWindow");
 }
 
-FX_ENTRY void FX_CALL
-grColorMask(FxBool rgb, FxBool a)
+void gfxColorMask(FxBool rgb, FxBool a)
 {
     WriteTrace(TraceGlitch, TraceDebug, "rgb = %d, a: %d", rgb, a);
     glColorMask((GLboolean)rgb, (GLboolean)rgb, (GLboolean)rgb, (GLboolean)a);
-    grDisplayGLError("grColorMask");
-}
-
-FX_ENTRY void FX_CALL
-grGlideInit(void)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "-");
+    grDisplayGLError("gfxColorMask");
 }
 
 int isExtensionSupported(const char *extension)
@@ -822,12 +816,6 @@ grSstWinOpen(
 
     grDisplayGLError("grSstWinOpen");
     return 1;
-}
-
-FX_ENTRY void FX_CALL
-grGlideShutdown(void)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "-");
 }
 
 FX_ENTRY FxBool FX_CALL

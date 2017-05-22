@@ -363,7 +363,7 @@ void DisplayLoadProgress(const wchar_t *format, ...)
     x = (1024 - len) / 2.0f;
     output(x, 360, 1, buf);
     grBufferSwap(0);
-    grColorMask(FXTRUE, FXTRUE);
+    gfxColorMask(FXTRUE, FXTRUE);
     grBufferClear(0, 0, 0xFFFF);
 }
 
@@ -457,9 +457,6 @@ int InitGfx()
 
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
-    // Initialize Glide
-    grGlideInit();
-
     // Check which SST we are using and initialize stuff
     // Hiroshi Morii <koolsmoky@users.sourceforge.net>
     enum {
@@ -487,7 +484,6 @@ int InitGfx()
     if (!gfx_context)
     {
         g_Notify->DisplayError("Error setting display mode");
-        grGlideShutdown();
         return FALSE;
     }
     rdp.init();
@@ -570,7 +566,7 @@ int InitGfx()
     grDepthBufferMode(GR_DEPTHBUFFER_ZBUFFER);
     grDepthBufferFunction(GR_CMP_ALWAYS);
     grRenderBuffer(GR_BUFFER_BACKBUFFER);
-    grColorMask(FXTRUE, FXTRUE);
+    gfxColorMask(FXTRUE, FXTRUE);
     grDepthMask(FXTRUE);
     grBufferClear(0, 0, 0xFFFF);
     grBufferSwap(0);
@@ -666,9 +662,6 @@ void ReleaseGfx()
 
     // Release graphics
     grSstWinClose(gfx_context);
-
-    // Shutdown glide
-    grGlideShutdown();
 
     GfxInitDone = FALSE;
     rdp.window_changed = TRUE;
@@ -945,8 +938,6 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     ZLUT_init();
 
     grConfigWrapperExt(g_settings->wrpVRAM() * 1024 * 1024, g_settings->wrpFBO(), g_settings->wrpAnisotropic());
-    grGlideInit();
-    grGlideShutdown();
     evoodoo = 1;
     voodoo.has_2mb_tex_boundary = 0;
     return TRUE;
@@ -1085,11 +1076,6 @@ void CALL RomOpen(void)
 
     CheckDRAMSize();
     // ** EVOODOO EXTENSIONS **
-    if (!GfxInitDone)
-    {
-        grGlideInit();
-    }
-    grGlideShutdown();
     evoodoo = 1;
     InitGfx();
 }
@@ -1147,7 +1133,7 @@ static void DrawFrameBuffer()
         GoToFullScreen();
 
     grDepthMask(FXTRUE);
-    grColorMask(FXTRUE, FXTRUE);
+    gfxColorMask(FXTRUE, FXTRUE);
     grBufferClear(0, 0, 0xFFFF);
     drawViRegBG();
 }
