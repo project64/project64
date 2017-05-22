@@ -661,7 +661,7 @@ void ReleaseGfx()
     }
 
     // Release graphics
-    grSstWinClose(gfx_context);
+    gfxSstWinClose(gfx_context);
 
     GfxInitDone = FALSE;
     rdp.window_changed = TRUE;

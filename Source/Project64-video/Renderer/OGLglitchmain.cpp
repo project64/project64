@@ -533,7 +533,7 @@ grSstWinOpen(
     if ((hGLRC = wglCreateContext(hDC)) == 0)
     {
         WriteTrace(TraceGlitch, TraceWarning, "wglCreateContext failed!");
-        grSstWinClose(0);
+        gfxSstWinClose(0);
         return FXFALSE;
     }
 
@@ -544,7 +544,7 @@ grSstWinOpen(
         if (!wglMakeCurrent(hDC, hGLRC))
         {
             WriteTrace(TraceGlitch, TraceWarning, "wglMakeCurrent failed!");
-            grSstWinClose(0);
+            gfxSstWinClose(0);
             return FXFALSE;
         }
     }
@@ -818,8 +818,7 @@ grSstWinOpen(
     return 1;
 }
 
-FX_ENTRY FxBool FX_CALL
-grSstWinClose(GrContext_t context)
+FxBool gfxSstWinClose(GrContext_t context)
 {
     int i;
 #ifndef WIN32
@@ -1233,7 +1232,7 @@ grGet(FxU32 pname, FxU32 plength, FxI32 *params)
         if (!nbTextureUnits)
         {
             grSstWinOpen(GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
-            grSstWinClose(0);
+            gfxSstWinClose(0);
         }
 #ifdef VOODOO1
         params[0] = 1;

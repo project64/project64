@@ -536,8 +536,7 @@ FX_ENTRY GrContext_t FX_CALL grSstWinOpen(GrColorFormat_t color_format, GrOrigin
     return 1;
 }
 
-FX_ENTRY FxBool FX_CALL
-grSstWinClose(GrContext_t context)
+FxBool gfxSstWinClose(GrContext_t context)
 {
     int i, clear_texbuff = use_fbo;
     WriteTrace(TraceGlitch, TraceDebug, "context: %d", context);
@@ -579,7 +578,6 @@ grSstWinClose(GrContext_t context)
     remove_tex(0, 0xfffffff);
 #endif
 
-    //*/
 #ifdef _WIN32
     if (hGLRC)
     {
