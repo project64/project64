@@ -902,19 +902,6 @@ int CheckTextureBufferFormat(GrChipID_t tmu, FxU32 startAddress, GrTexInfo *info
     return 0;
 }
 
-FX_ENTRY void FX_CALL
-grTextureAuxBufferExt(GrChipID_t tmu,
-    FxU32      startAddress,
-    GrLOD_t    thisLOD,
-    GrLOD_t    largeLOD,
-    GrAspectRatio_t aspectRatio,
-    GrTextureFormat_t format,
-    FxU32      odd_even_mask)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "tmu: %d startAddress: %d thisLOD: %d largeLOD: %d aspectRatio: %d format: %d odd_even_mask: %d", tmu, startAddress, thisLOD, largeLOD, aspectRatio, format, odd_even_mask);
-    //WriteTrace(TraceGlitch, TraceWarning, "grTextureAuxBufferExt");
-}
-
 FX_ENTRY void FX_CALL grAuxBufferExt(GrBuffer_t buffer);
 
 FX_ENTRY FxU32 FX_CALL

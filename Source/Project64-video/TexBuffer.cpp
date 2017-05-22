@@ -545,8 +545,6 @@ int CopyDepthBuffer()
     grDrawTriangle(&v[0], &v[2], &v[1]);
     grDrawTriangle(&v[2], &v[3], &v[1]);
     grRenderBuffer(GR_BUFFER_BACKBUFFER);
-    grTextureAuxBufferExt(rdp.texbufs[1].tmu, rdp.texbufs[1].begin, LOD, LOD,
-        GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
     grAuxBufferExt(GR_BUFFER_TEXTUREAUXBUFFER_EXT);
 
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE;
