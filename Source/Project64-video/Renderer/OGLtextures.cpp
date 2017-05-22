@@ -670,9 +670,6 @@ grTexSource(GrChipID_t tmu,
         }
 
         glBindTexture(GL_TEXTURE_2D, startAddress + 1);
-#ifdef VPDEBUG
-        dump_tex(startAddress + 1);
-#endif
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s0);
@@ -694,9 +691,6 @@ grTexSource(GrChipID_t tmu,
         }
 
         glBindTexture(GL_TEXTURE_2D, startAddress + 1);
-#ifdef VPDEBUG
-        dump_tex(startAddress + 1);
-#endif
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter1);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter1);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s1);
