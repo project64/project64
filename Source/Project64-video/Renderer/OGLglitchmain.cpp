@@ -334,16 +334,7 @@ unsigned short depthBuffer[2048 * 2048];
 
 //#define VOODOO1
 
-FX_ENTRY void FX_CALL
-grSstOrigin(GrOriginLocation_t  origin)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "origin = %d", origin);
-    if (origin != GR_ORIGIN_UPPER_LEFT)
-        WriteTrace(TraceGlitch, TraceWarning, "grSstOrigin : %x", origin);
-}
-
-FX_ENTRY void FX_CALL
-grClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
+void gfxClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
 {
     WriteTrace(TraceGlitch, TraceDebug, "minx = %d, miny: %d maxy: %d", minx, miny, maxy);
 
@@ -355,7 +346,7 @@ grClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
         if (maxy < miny) maxy = miny;
         glScissor(minx, miny, maxx - minx, maxy - miny);
         glEnable(GL_SCISSOR_TEST);
-        grDisplayGLError("grClipWindow :: use_fbo");
+        grDisplayGLError("gfxClipWindow :: use_fbo");
         return;
     }
 
@@ -379,7 +370,7 @@ grClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
         glScissor(minx, (g_viewport_offset)+g_height - maxy, maxx - minx, maxy - miny);
     }
     glEnable(GL_SCISSOR_TEST);
-    grDisplayGLError("grClipWindow");
+    grDisplayGLError("gfxClipWindow");
 }
 
 FX_ENTRY void FX_CALL

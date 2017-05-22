@@ -206,20 +206,12 @@ void display_warning(const char *text, ...)
     }
 }
 
-FX_ENTRY void FX_CALL
-grSstOrigin(GrOriginLocation_t  origin)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "origin = %d", origin);
-    if (origin != GR_ORIGIN_UPPER_LEFT)
-        WriteTrace(TraceGlitch, TraceWarning, "grSstOrigin : %x", origin);
-}
-
-FX_ENTRY void FX_CALL
-grClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
+void gfxClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
 {
     WriteTrace(TraceGlitch, TraceDebug, "minx = %d, miny: %d maxx: %d maxy: %d", minx, miny, maxx, maxy);
 
-    if (use_fbo && render_to_texture) {
+    if (use_fbo && render_to_texture)
+    {
         if (int(minx) < 0) minx = 0;
         if (int(miny) < 0) miny = 0;
         if (maxx < minx) maxx = minx;

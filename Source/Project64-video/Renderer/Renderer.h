@@ -16,6 +16,7 @@
 #include <glide.h>
 #include "../GlideExtensions.h"
 
+void gfxClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy);
 FxU32 gfxTexMinAddress(GrChipID_t tmu);
 
 extern uint32_t nbTextureUnits;
