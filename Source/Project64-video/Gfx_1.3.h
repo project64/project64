@@ -17,9 +17,7 @@
 #include <fstream>
 #include <stdlib.h>
 #include <stddef.h>		// offsetof
-#include <glide.h>
 #include <Common/MemTest.h>
-#include "GlideExtensions.h"
 #include "rdp.h"
 #include "Config.h"
 #include "Settings.h"

@@ -19,6 +19,7 @@
 #include <Common/StdString.h>
 #include <Settings/Settings.h>
 #include "SettingsID.h"
+#include "ScreenResolution.h"
 
 #ifdef _WIN32
 #include <Common/CriticalSection.h>
@@ -274,7 +275,7 @@ public:
 
         m_cmbFSResolution.Attach(GetDlgItem(IDC_CMB_FS_RESOLUTION));
         int32_t size = 0;
-        char ** aRes = grQueryResolutionsExt(&size);
+        const char ** aRes = getFullScreenResList(&size);
         if (aRes && size)
         {
             for (int r = 0; r < size; r++)

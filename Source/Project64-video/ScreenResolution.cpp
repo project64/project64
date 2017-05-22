@@ -88,7 +88,7 @@ void UpdateScreenResolution(int ScreenWidth, int ScreenHeight)
     switch (g_settings->aspectmode())
     {
     case CSettings::Aspect_4x3:
-        g_resolutions.push_back(ResolutionInfo(stdstr_f("%dx%d", ScreenHeight * 4/3, ScreenHeight).c_str(), ScreenHeight * 4 / 3, ScreenHeight, 0, true));
+        g_resolutions.push_back(ResolutionInfo(stdstr_f("%dx%d", ScreenHeight * 4 / 3, ScreenHeight).c_str(), ScreenHeight * 4 / 3, ScreenHeight, 0, true));
         g_resolutions.push_back(ResolutionInfo("960x720", 960, 720, 0, false));
         g_resolutions.push_back(ResolutionInfo("800x600", 800, 600, 0, false));
         g_resolutions.push_back(ResolutionInfo("640x480", 640, 480, 0, false));
@@ -165,9 +165,9 @@ uint32_t GetScreenResHeight(uint32_t index)
 class FullScreenResolutions
 {
 public:
-    FullScreenResolutions() : 
+    FullScreenResolutions() :
         m_dwNumResolutions(0),
-        m_aResolutions(0), 
+        m_aResolutions(0),
         m_aResolutionsStr(0)
     {
     }
@@ -202,14 +202,14 @@ public:
         return m_currentResolutions;
     }
 
-    char ** getResolutionsList(int32_t * Size)
+    const char ** getResolutionsList(int32_t * Size)
     {
         if (m_dwNumResolutions == 0)
         {
             init();
         }
         *Size = (int32_t)m_dwNumResolutions;
-        return m_aResolutionsStr;
+        return (const char **)m_aResolutionsStr;
     }
 
     bool changeDisplaySettings(uint32_t _resolution);
@@ -340,13 +340,13 @@ int GetCurrentResIndex(void)
 }
 
 #ifndef ANDROID
-char ** grQueryResolutionsExt(int32_t * Size)
+const char ** getFullScreenResList(int32_t * Size)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
     return g_FullScreenResolutions.getResolutionsList(Size);
 }
 
-uint32_t grWrapperFullScreenResolutionExt(uint32_t * width, uint32_t * height)
+uint32_t getFullScreenRes(uint32_t * width, uint32_t * height)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
     g_FullScreenResolutions.getResolution(g_settings->FullScreenRes(), width, height);

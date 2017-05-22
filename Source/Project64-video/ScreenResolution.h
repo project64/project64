@@ -13,7 +13,11 @@
 
 #ifdef ANDROID
 void UpdateScreenResolution(int ScreenWidth, int ScreenHeight);
+#else
+const char ** getFullScreenResList(int32_t * Size);
+uint32_t getFullScreenRes(uint32_t * width, uint32_t * height);
 #endif
+
 uint32_t GetScreenResolutionCount();
 uint32_t GetDefaultScreenRes();
 uint32_t GetScreenResWidth(uint32_t index);

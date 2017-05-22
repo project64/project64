@@ -708,7 +708,7 @@ FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
         curBufferAddr = pBufferAddress = startAddress + 1;
         pBufferFmt = fmt;
 
-        int rtmu = startAddress < grTexMinAddress(GR_TMU1) ? 0 : 1;
+        int rtmu = startAddress < gfxTexMinAddress(GR_TMU1) ? 0 : 1;
         int size = pBufferWidth*pBufferHeight * 2; //grTexFormatSize(fmt);
         if ((unsigned int)tmu_usage[rtmu].min > pBufferAddress)
             tmu_usage[rtmu].min = pBufferAddress;

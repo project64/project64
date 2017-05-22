@@ -500,7 +500,7 @@ int InitGfx()
     grGet(GR_MAX_TEXTURE_SIZE, 4, (FxI32*)&voodoo.max_tex_size);
     voodoo.sup_large_tex = (voodoo.max_tex_size > 256 && !g_settings->hacks(CSettings::hack_PPL));
 
-    voodoo.tex_min_addr[0] = voodoo.tex_min_addr[1] = grTexMinAddress(GR_TMU0);
+    voodoo.tex_min_addr[0] = voodoo.tex_min_addr[1] = gfxTexMinAddress(GR_TMU0);
     voodoo.tex_max_addr[0] = voodoo.tex_max_addr[1] = grTexMaxAddress(GR_TMU0);
 
     // Is mirroring allowed?

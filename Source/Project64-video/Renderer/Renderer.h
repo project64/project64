@@ -13,6 +13,10 @@
 ****************************************************************************/
 #pragma once
 #include <Project64-video/Renderer/types.h>
+#include <glide.h>
+#include "../GlideExtensions.h"
+
+FxU32 gfxTexMinAddress(GrChipID_t tmu);
 
 extern uint32_t nbTextureUnits;
 extern uint32_t g_scr_res_x, g_scr_res_y, g_res_x, g_res_y;

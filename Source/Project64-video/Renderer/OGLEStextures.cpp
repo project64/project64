@@ -22,7 +22,6 @@
 #include <Project64-video/trace.h>
 #include <Project64-video/Renderer/Renderer.h>
 
-
 int TMU_SIZE = 8 * 2048 * 2048;
 static unsigned char* texture = NULL;
 
@@ -139,8 +138,7 @@ void free_textures()
     }
 }
 
-FX_ENTRY FxU32 FX_CALL
-grTexMinAddress(GrChipID_t tmu)
+FxU32 gfxTexMinAddress(GrChipID_t tmu)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d", tmu);
     if (UMAmode)
