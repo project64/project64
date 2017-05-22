@@ -256,7 +256,7 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
                     if (!((end_addr <= texbuf->addr) || (addr >= texbuf->end_addr))) //intersected, remove
                     {
                         grRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
-                        grTextureBufferExt(texbuf->tmu, texbuf->tex_addr, texbuf->info.smallLodLog2, texbuf->info.largeLodLog2,
+                        gfxTextureBufferExt(texbuf->tmu, texbuf->tex_addr, texbuf->info.smallLodLog2, texbuf->info.largeLodLog2,
                             texbuf->info.aspectRatioLog2, texbuf->info.format, GR_MIPMAPLEVELMASK_BOTH);
                         grDepthMask(FXFALSE);
                         grBufferClear(0, 0, 0xFFFF);
@@ -294,7 +294,7 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
     rdp.acc_tex_buf = rdp.cur_tex_buf;
     rdp.cur_image = texbuf;
     grRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
-    grTextureBufferExt(rdp.cur_image->tmu, rdp.cur_image->tex_addr, rdp.cur_image->info.smallLodLog2, rdp.cur_image->info.largeLodLog2,
+    gfxTextureBufferExt(rdp.cur_image->tmu, rdp.cur_image->tex_addr, rdp.cur_image->info.smallLodLog2, rdp.cur_image->info.largeLodLog2,
         rdp.cur_image->info.aspectRatioLog2, rdp.cur_image->info.format, GR_MIPMAPLEVELMASK_BOTH);
 
     if (rdp.cur_image->clear && g_settings->fb_hwfbe_buf_clear_enabled() && cimage.changed)
@@ -540,7 +540,7 @@ int CopyDepthBuffer()
     grAuxBufferExt(GR_BUFFER_AUXBUFFER);
     grTexSource(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, GR_MIPMAPLEVELMASK_BOTH, &(rdp.tbuff_tex->info));
     grRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
-    grTextureBufferExt(rdp.texbufs[1].tmu, rdp.texbufs[1].begin, LOD, LOD,
+    gfxTextureBufferExt(rdp.texbufs[1].tmu, rdp.texbufs[1].begin, LOD, LOD,
         GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
     grDrawTriangle(&v[0], &v[2], &v[1]);
     grDrawTriangle(&v[2], &v[3], &v[1]);
@@ -599,7 +599,7 @@ int SwapTextureBuffer()
     texbuf->tile_ult = rdp.tbuff_tex->tile_ult;
     texbuf->v_shift = rdp.tbuff_tex->v_shift;
     grRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
-    grTextureBufferExt(texbuf->tmu, texbuf->tex_addr, texbuf->info.smallLodLog2, texbuf->info.largeLodLog2,
+    gfxTextureBufferExt(texbuf->tmu, texbuf->tex_addr, texbuf->info.smallLodLog2, texbuf->info.largeLodLog2,
         texbuf->info.aspectRatioLog2, texbuf->info.format, GR_MIPMAPLEVELMASK_BOTH);
     grDrawTriangle(&v[0], &v[2], &v[1]);
     grDrawTriangle(&v[2], &v[3], &v[1]);
@@ -612,7 +612,7 @@ int SwapTextureBuffer()
     rdp.tbuff_tex = texbuf;
     if (rdp.cur_image)
     {
-        grTextureBufferExt(rdp.cur_image->tmu, rdp.cur_image->tex_addr, rdp.cur_image->info.smallLodLog2, rdp.cur_image->info.largeLodLog2,
+        gfxTextureBufferExt(rdp.cur_image->tmu, rdp.cur_image->tex_addr, rdp.cur_image->info.smallLodLog2, rdp.cur_image->info.largeLodLog2,
             rdp.cur_image->info.aspectRatioLog2, rdp.cur_image->info.format, GR_MIPMAPLEVELMASK_BOTH);
     }
     else

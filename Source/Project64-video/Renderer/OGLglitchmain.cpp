@@ -880,19 +880,13 @@ FxBool gfxSstWinClose(GrContext_t context)
     return FXTRUE;
 }
 
-FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
-    FxU32 				startAddress,
-    GrLOD_t 			lodmin,
-    GrLOD_t 			lodmax,
-    GrAspectRatio_t 	aspect,
-    GrTextureFormat_t 	fmt,
-    FxU32 				evenOdd)
+void gfxTextureBufferExt(GrChipID_t tmu, FxU32 startAddress, GrLOD_t lodmin, GrLOD_t lodmax, GrAspectRatio_t aspect, GrTextureFormat_t fmt, FxU32 evenOdd)
 {
     int i;
     static int fbs_init = 0;
 
     WriteTrace(TraceGlitch, TraceDebug, "tmu: %d startAddress: %d lodmin: %d lodmax: %d aspect: %d fmt: %d evenOdd: %d", tmu, startAddress, lodmin, lodmax, aspect, fmt, evenOdd);
-    if (lodmin != lodmax) WriteTrace(TraceGlitch, TraceWarning, "grTextureBufferExt : loading more than one LOD");
+    if (lodmin != lodmax) WriteTrace(TraceGlitch, TraceWarning, "gfxTextureBufferExt : loading more than one LOD");
     if (!use_fbo) {
         if (!render_to_texture) { //initialization
             return;
@@ -1012,7 +1006,7 @@ FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
 
         glScissor(0, g_viewport_offset, g_width, g_height);
 
-        grDisplayGLError("grTextureBufferExt :: A");
+        grDisplayGLError("gfxTextureBufferExt :: A");
     }
     else {
         if (!render_to_texture) //initialization
@@ -1067,7 +1061,7 @@ FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
                     }
                     CHECK_FRAMEBUFFER_STATUS();
                     curBufferAddr = pBufferAddress;
-                    grDisplayGLError("grTextureBufferExt :: C");
+                    grDisplayGLError("gfxTextureBufferExt :: C");
                     return;
                 }
                 else //create new FBO at the same address, delete old one
@@ -1112,7 +1106,7 @@ FX_ENTRY void FX_CALL grTextureBufferExt(GrChipID_t  		tmu,
         CHECK_FRAMEBUFFER_STATUS();
         curBufferAddr = pBufferAddress;
         nb_fb++;
-        grDisplayGLError("grTextureBufferExt :: B");
+        grDisplayGLError("gfxTextureBufferExt :: B");
     }
 }
 

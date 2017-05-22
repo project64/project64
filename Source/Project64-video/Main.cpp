@@ -229,14 +229,14 @@ void guLoadTextures()
     int tbuf_size = 0;
     if (voodoo.max_tex_size <= 256)
     {
-        grTextureBufferExt(GR_TMU1, voodoo.tex_min_addr[GR_TMU1], GFX_LOD_LOG2_256, GFX_LOD_LOG2_256,
+        gfxTextureBufferExt(GR_TMU1, voodoo.tex_min_addr[GR_TMU1], GFX_LOD_LOG2_256, GFX_LOD_LOG2_256,
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
         tbuf_size = 8 * grTexCalcMemRequired(GFX_LOD_LOG2_256, GFX_LOD_LOG2_256,
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565);
     }
     else if (g_scr_res_x <= 1024)
     {
-        grTextureBufferExt(GR_TMU0, voodoo.tex_min_addr[GR_TMU0], GFX_LOD_LOG2_1024, GFX_LOD_LOG2_1024,
+        gfxTextureBufferExt(GR_TMU0, voodoo.tex_min_addr[GR_TMU0], GFX_LOD_LOG2_1024, GFX_LOD_LOG2_1024,
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
         tbuf_size = grTexCalcMemRequired(GFX_LOD_LOG2_1024, GFX_LOD_LOG2_1024,
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565);
@@ -246,7 +246,7 @@ void guLoadTextures()
     }
     else
     {
-        grTextureBufferExt(GR_TMU0, voodoo.tex_min_addr[GR_TMU0], GFX_LOD_LOG2_2048, GFX_LOD_LOG2_2048,
+        gfxTextureBufferExt(GR_TMU0, voodoo.tex_min_addr[GR_TMU0], GFX_LOD_LOG2_2048, GFX_LOD_LOG2_2048,
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
         tbuf_size = grTexCalcMemRequired(GFX_LOD_LOG2_2048, GFX_LOD_LOG2_2048,
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565);

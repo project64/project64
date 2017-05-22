@@ -193,7 +193,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
         v[i].uc(0) = v[i].uc(1) = v[i].u0;
         v[i].vc(0) = v[i].vc(1) = v[i].v0;
     }
-    grTextureBufferExt(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, LOD, LOD,
+    gfxTextureBufferExt(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, LOD, LOD,
         GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
     grRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
     grAuxBufferExt(GR_BUFFER_AUXBUFFER);
