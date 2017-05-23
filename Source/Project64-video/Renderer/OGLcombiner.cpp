@@ -1401,11 +1401,7 @@ void gfxTexCombine(GrChipID_t tmu, GrCombineFunction_t rgb_function, GrCombineFa
     need_to_compile = 1;
 }
 
-FX_ENTRY void FX_CALL
-grAlphaBlendFunction(
-    GrAlphaBlendFnc_t rgb_sf, GrAlphaBlendFnc_t rgb_df,
-    GrAlphaBlendFnc_t alpha_sf, GrAlphaBlendFnc_t alpha_df
-)
+void gfxAlphaBlendFunction(GrAlphaBlendFnc_t rgb_sf, GrAlphaBlendFnc_t rgb_df, GrAlphaBlendFnc_t alpha_sf, GrAlphaBlendFnc_t alpha_df)
 {
     int sfactorRGB = 0, dfactorRGB = 0, sfactorAlpha = 0, dfactorAlpha = 0;
     WriteTrace(TraceGlitch, TraceDebug, "rgb_sf: %d rgb_df: %d alpha_sf: %d alpha_df: %d", rgb_sf, rgb_df, alpha_sf, alpha_df);
@@ -1425,7 +1421,7 @@ grAlphaBlendFunction(
         sfactorRGB = GL_ONE_MINUS_SRC_ALPHA;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grAlphaBlendFunction : rgb_sf = %x", rgb_sf);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaBlendFunction : rgb_sf = %x", rgb_sf);
     }
 
     switch (rgb_df)
@@ -1443,7 +1439,7 @@ grAlphaBlendFunction(
         dfactorRGB = GL_ONE_MINUS_SRC_ALPHA;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grAlphaBlendFunction : rgb_df = %x", rgb_df);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaBlendFunction : rgb_df = %x", rgb_df);
     }
 
     switch (alpha_sf)
@@ -1455,7 +1451,7 @@ grAlphaBlendFunction(
         sfactorAlpha = GL_ONE;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grAlphaBlendFunction : alpha_sf = %x", alpha_sf);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaBlendFunction : alpha_sf = %x", alpha_sf);
     }
 
     switch (alpha_df)
@@ -1467,7 +1463,7 @@ grAlphaBlendFunction(
         dfactorAlpha = GL_ONE;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grAlphaBlendFunction : alpha_df = %x", alpha_df);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaBlendFunction : alpha_df = %x", alpha_df);
     }
     glEnable(GL_BLEND);
     if (blend_func_separate_support)
@@ -1475,7 +1471,7 @@ grAlphaBlendFunction(
     else
         glBlendFunc(sfactorRGB, dfactorRGB);
 
-    grDisplayGLError("grAlphaBlendFunction");
+    grDisplayGLError("gfxAlphaBlendFunction");
 }
 
 FX_ENTRY void FX_CALL

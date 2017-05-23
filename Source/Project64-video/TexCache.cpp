@@ -686,7 +686,7 @@ void TexCache()
                 gfxAlphaCombine(cmb.a_fnc, cmb.a_fac, cmb.a_loc, cmb.a_oth, FXFALSE);
             }
             gfxConstantColorValue(cmb.ccolor);
-            grAlphaBlendFunction(cmb.abf1, cmb.abf2, GR_BLEND_ZERO, GR_BLEND_ZERO);
+            gfxAlphaBlendFunction(cmb.abf1, cmb.abf2, GR_BLEND_ZERO, GR_BLEND_ZERO);
             if (!rdp.tex) //nothing more to do
                 return;
         }

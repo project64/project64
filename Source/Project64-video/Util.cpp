@@ -1962,7 +1962,7 @@ void set_message_combiner()
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
         FXFALSE);
-    grAlphaBlendFunction(GR_BLEND_ONE,
+    gfxAlphaBlendFunction(GR_BLEND_ONE,
         GR_BLEND_ZERO,
         GR_BLEND_ZERO,
         GR_BLEND_ZERO);

@@ -2514,7 +2514,7 @@ void rdp_fillrect()
             GR_COMBINE_OTHER_NONE,
             FXFALSE);
 
-        grAlphaBlendFunction(GR_BLEND_ONE, GR_BLEND_ZERO, GR_BLEND_ONE, GR_BLEND_ZERO);
+        gfxAlphaBlendFunction(GR_BLEND_ONE, GR_BLEND_ZERO, GR_BLEND_ONE, GR_BLEND_ZERO);
 
         grAlphaTestFunction(GR_CMP_ALWAYS);
         grStippleMode(GR_STIPPLE_DISABLE);
@@ -3143,7 +3143,7 @@ void SetWireframeCol()
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_NONE,
             FXFALSE);
-        grAlphaBlendFunction(GR_BLEND_ONE,
+        gfxAlphaBlendFunction(GR_BLEND_ONE,
             GR_BLEND_ZERO,
             GR_BLEND_ZERO,
             GR_BLEND_ZERO);
@@ -3172,7 +3172,7 @@ void SetWireframeCol()
             GR_COMBINE_OTHER_NONE,
             FXFALSE);
         gfxConstantColorValue(0xFF0000FF);
-        grAlphaBlendFunction(GR_BLEND_ONE,
+        gfxAlphaBlendFunction(GR_BLEND_ONE,
             GR_BLEND_ZERO,
             GR_BLEND_ZERO,
             GR_BLEND_ZERO);

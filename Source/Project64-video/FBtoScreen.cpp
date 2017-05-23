@@ -78,14 +78,14 @@ static int SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaque)
     if (opaque)
     {
         grAlphaTestFunction(GR_CMP_ALWAYS);
-        grAlphaBlendFunction(GR_BLEND_ONE,
+        gfxAlphaBlendFunction(GR_BLEND_ONE,
             GR_BLEND_ZERO,
             GR_BLEND_ONE,
             GR_BLEND_ZERO);
     }
     else
     {
-        grAlphaBlendFunction(GR_BLEND_SRC_ALPHA,
+        gfxAlphaBlendFunction(GR_BLEND_SRC_ALPHA,
             GR_BLEND_ONE_MINUS_SRC_ALPHA,
             GR_BLEND_ONE,
             GR_BLEND_ZERO);
@@ -495,7 +495,7 @@ static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
         FXFALSE);
-    grAlphaBlendFunction(GR_BLEND_SRC_ALPHA,
+    gfxAlphaBlendFunction(GR_BLEND_SRC_ALPHA,
         GR_BLEND_ONE_MINUS_SRC_ALPHA,
         GR_BLEND_ONE,
         GR_BLEND_ZERO);

@@ -82,7 +82,7 @@ float set_sprite_combine_mode()
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE,
             FXFALSE);
-        grAlphaBlendFunction(GR_BLEND_ONE,
+        gfxAlphaBlendFunction(GR_BLEND_ONE,
             GR_BLEND_ZERO,
             GR_BLEND_ZERO,
             GR_BLEND_ZERO);
@@ -168,7 +168,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
         FXFALSE);
-    grAlphaBlendFunction(GR_BLEND_ONE,
+    gfxAlphaBlendFunction(GR_BLEND_ONE,
         GR_BLEND_ZERO,
         GR_BLEND_ONE,
         GR_BLEND_ZERO);
