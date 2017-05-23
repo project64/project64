@@ -24,6 +24,7 @@ void gfxTextureBufferExt(GrChipID_t tmu, FxU32 startAddress, GrLOD_t lodmin, GrL
 FxU32 gfxTexMaxAddress(GrChipID_t tmu);
 FxU32 gfxTexTextureMemRequired(FxU32 evenOdd, GrTexInfo *info);
 void gfxConstantColorValue(GrColor_t value);
+void gfxColorCombine(GrCombineFunction_t function, GrCombineFactor_t factor, GrCombineLocal_t local, GrCombineOther_t other, FxBool invert);
 
 extern uint32_t nbTextureUnits;
 extern uint32_t g_scr_res_x, g_scr_res_y, g_res_x, g_res_y;

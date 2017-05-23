@@ -45,7 +45,7 @@
 typedef struct
 {
     uint32_t ccolor;  // constant color to set at the end, color and alpha
-    uint32_t c_fnc, c_fac, c_loc, c_oth;  // grColorCombine flags
+    uint32_t c_fnc, c_fac, c_loc, c_oth;  // gfxColorCombine flags
     uint32_t a_fnc, a_fac, a_loc, a_oth;  // grAlphaCombine flags
     uint32_t tex, tmu0_func, tmu0_fac, tmu0_invert, tmu1_func, tmu1_fac, tmu1_invert;
     uint32_t tmu0_a_func, tmu0_a_fac, tmu0_a_invert, tmu1_a_func, tmu1_a_fac, tmu1_a_invert;

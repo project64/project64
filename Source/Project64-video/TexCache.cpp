@@ -682,7 +682,7 @@ void TexCache()
             }
             else
             {
-                grColorCombine(cmb.c_fnc, cmb.c_fac, cmb.c_loc, cmb.c_oth, FXFALSE);
+                gfxColorCombine(cmb.c_fnc, cmb.c_fac, cmb.c_loc, cmb.c_oth, FXFALSE);
                 grAlphaCombine(cmb.a_fnc, cmb.a_fac, cmb.a_loc, cmb.a_oth, FXFALSE);
             }
             gfxConstantColorValue(cmb.ccolor);

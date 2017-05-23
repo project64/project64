@@ -722,11 +722,7 @@ void writeGLSLColorFactor(int factor, int local, int need_local, int other, int 
     }
 }
 
-FX_ENTRY void FX_CALL
-grColorCombine(
-    GrCombineFunction_t function, GrCombineFactor_t factor,
-    GrCombineLocal_t local, GrCombineOther_t other,
-    FxBool invert)
+void gfxColorCombine(GrCombineFunction_t function, GrCombineFactor_t factor, GrCombineLocal_t local, GrCombineOther_t other, FxBool invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "function: %d factor: %d local: %d other: %d invert: %d", function, factor, local, other, invert);
 

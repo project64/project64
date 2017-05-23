@@ -2502,7 +2502,7 @@ void rdp_fillrect()
 
         gfxConstantColorValue(color);
 
-        grColorCombine(GR_COMBINE_FUNCTION_LOCAL,
+        gfxColorCombine(GR_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_NONE,
@@ -3133,7 +3133,7 @@ void SetWireframeCol()
     {
         //case CSettings::wfmode_NormalColors: // normal colors, don't do anything
     case CSettings::wfmode_VertexColors:
-        grColorCombine(GR_COMBINE_FUNCTION_LOCAL,
+        gfxColorCombine(GR_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_NONE,
@@ -3161,7 +3161,7 @@ void SetWireframeCol()
             FXFALSE, FXFALSE);
         break;
     case CSettings::wfmode_RedOnly:
-        grColorCombine(GR_COMBINE_FUNCTION_LOCAL,
+        gfxColorCombine(GR_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_NONE,

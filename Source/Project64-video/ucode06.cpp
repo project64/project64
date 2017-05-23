@@ -72,7 +72,7 @@ float set_sprite_combine_mode()
 
     if (rdp.cycle_mode == 2)
     {
-        grColorCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        gfxColorCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE,
@@ -158,7 +158,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
         GR_COMBINE_FACTOR_ONE,
         FXFALSE,
         FXFALSE);
-    grColorCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    gfxColorCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
