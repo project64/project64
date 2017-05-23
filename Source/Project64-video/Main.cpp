@@ -535,7 +535,7 @@ int InitGfx()
     if (g_settings->fog()) //"FOGCOORD" extension
     {
         GrFog_t fog_t[64];
-        guFogGenerateLinear(fog_t, 0.0f, 255.0f);//(float)rdp.fog_multiplier + (float)rdp.fog_offset);//256.0f);
+        gfxFogGenerateLinear(fog_t, 0.0f, 255.0f);
 
         for (int i = 63; i > 0; i--)
         {

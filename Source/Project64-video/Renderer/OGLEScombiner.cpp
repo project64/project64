@@ -1591,9 +1591,7 @@ void gfxFogMode(GrFogMode_t mode)
     need_to_compile = 1;
 }
 
-FX_ENTRY void FX_CALL
-guFogGenerateLinear(GrFog_t *fogtable,
-    float nearZ, float farZ)
+void gfxFogGenerateLinear(GrFog_t *fogtable, float nearZ, float farZ)
 {
     WriteTrace(TraceGlitch, TraceDebug, "nearZ: %f farZ: %f", nearZ, farZ);
     /*
