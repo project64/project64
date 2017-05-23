@@ -1155,16 +1155,7 @@ void writeGLSLTextureAlphaFactor(int num_tex, int factor)
     }
 }
 
-FX_ENTRY void FX_CALL
-grTexCombine(
-    GrChipID_t tmu,
-    GrCombineFunction_t rgb_function,
-    GrCombineFactor_t rgb_factor,
-    GrCombineFunction_t alpha_function,
-    GrCombineFactor_t alpha_factor,
-    FxBool rgb_invert,
-    FxBool alpha_invert
-)
+void gfxTexCombine(GrChipID_t tmu, GrCombineFunction_t rgb_function, GrCombineFactor_t rgb_factor, GrCombineFunction_t alpha_function, GrCombineFactor_t alpha_factor, FxBool rgb_invert, FxBool alpha_invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu: %d rgb_function: %d rgb_factor: %d alpha_function: %d alpha_factor: %d rgb_invert: %d alpha_invert: %d", tmu, rgb_function, rgb_factor, alpha_function, alpha_factor, rgb_invert, alpha_invert);
     int num_tex;

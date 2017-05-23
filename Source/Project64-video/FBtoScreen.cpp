@@ -23,14 +23,14 @@ static int SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaque)
     if (voodoo.tmem_ptr[GR_TMU0] + texture_size < voodoo.tex_max_addr[0])
     {
         tmu = GR_TMU0;
-        grTexCombine(GR_TMU1,
+        gfxTexCombine(GR_TMU1,
             GR_COMBINE_FUNCTION_NONE,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_FUNCTION_NONE,
             GR_COMBINE_FACTOR_NONE,
             FXFALSE,
             FXFALSE);
-        grTexCombine(GR_TMU0,
+        gfxTexCombine(GR_TMU0,
             GR_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_FUNCTION_LOCAL,
@@ -43,14 +43,14 @@ static int SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaque)
         if (voodoo.tmem_ptr[GR_TMU1] + texture_size >= voodoo.tex_max_addr[1])
             ClearCache();
         tmu = GR_TMU1;
-        grTexCombine(GR_TMU1,
+        gfxTexCombine(GR_TMU1,
             GR_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             FXFALSE,
             FXFALSE);
-        grTexCombine(GR_TMU0,
+        gfxTexCombine(GR_TMU0,
             GR_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_FUNCTION_SCALE_OTHER,
@@ -502,14 +502,14 @@ static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
     grDepthBufferFunction(GR_CMP_ALWAYS);
     grDepthMask(FXFALSE);
     grCullMode(GR_CULL_DISABLE);
-    grTexCombine(GR_TMU1,
+    gfxTexCombine(GR_TMU1,
         GR_COMBINE_FUNCTION_NONE,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_FUNCTION_NONE,
         GR_COMBINE_FACTOR_NONE,
         FXFALSE,
         FXFALSE);
-    grTexCombine(GR_TMU0,
+    gfxTexCombine(GR_TMU0,
         GR_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_FUNCTION_LOCAL,

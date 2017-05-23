@@ -353,14 +353,14 @@ static GrTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
     }
     if (rdp.tbuff_tex->tmu == GR_TMU0)
     {
-        grTexCombine(GR_TMU1,
+        gfxTexCombine(GR_TMU1,
             GR_COMBINE_FUNCTION_NONE,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_FUNCTION_NONE,
             GR_COMBINE_FACTOR_NONE,
             FXFALSE,
             FXFALSE);
-        grTexCombine(GR_TMU0,
+        gfxTexCombine(GR_TMU0,
             color_source,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_FUNCTION_ZERO,
@@ -370,14 +370,14 @@ static GrTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
     }
     else
     {
-        grTexCombine(GR_TMU1,
+        gfxTexCombine(GR_TMU1,
             color_source,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             FXFALSE,
             FXTRUE);
-        grTexCombine(GR_TMU0,
+        gfxTexCombine(GR_TMU0,
             GR_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_FUNCTION_SCALE_OTHER,

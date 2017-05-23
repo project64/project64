@@ -3147,13 +3147,13 @@ void SetWireframeCol()
             GR_BLEND_ZERO,
             GR_BLEND_ZERO,
             GR_BLEND_ZERO);
-        grTexCombine(GR_TMU0,
+        gfxTexCombine(GR_TMU0,
             GR_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             FXFALSE, FXFALSE);
-        grTexCombine(GR_TMU1,
+        gfxTexCombine(GR_TMU1,
             GR_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_FUNCTION_ZERO,
@@ -3176,13 +3176,13 @@ void SetWireframeCol()
             GR_BLEND_ZERO,
             GR_BLEND_ZERO,
             GR_BLEND_ZERO);
-        grTexCombine(GR_TMU0,
+        gfxTexCombine(GR_TMU0,
             GR_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             FXFALSE, FXFALSE);
-        grTexCombine(GR_TMU1,
+        gfxTexCombine(GR_TMU1,
             GR_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_FUNCTION_ZERO,
