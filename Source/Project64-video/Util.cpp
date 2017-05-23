@@ -1799,7 +1799,7 @@ void update()
         if (rdp.acmp == 1 && !(rdp.othermode_l & 0x00002000) && (!(rdp.othermode_l & 0x00004000) || (rdp.blend_color & 0xFF)))
         {
             uint8_t reference = (uint8_t)(rdp.blend_color & 0xFF);
-            grAlphaTestFunction(reference ? GR_CMP_GEQUAL : GR_CMP_GREATER);
+            gfxAlphaTestFunction(reference ? GR_CMP_GEQUAL : GR_CMP_GREATER);
             gfxAlphaTestReferenceValue(reference);
             WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: blend: %02lx", reference);
         }
@@ -1809,13 +1809,13 @@ void update()
             {
                 if ((rdp.othermode_l & 0x5000) != 0x5000)
                 {
-                    grAlphaTestFunction(GR_CMP_GEQUAL);
+                    gfxAlphaTestFunction(GR_CMP_GEQUAL);
                     gfxAlphaTestReferenceValue(0x20);//0xA0);
                     WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: 0x20");
                 }
                 else
                 {
-                    grAlphaTestFunction(GR_CMP_GREATER);
+                    gfxAlphaTestFunction(GR_CMP_GREATER);
                     if (rdp.acmp == 3)
                     {
                         gfxAlphaTestReferenceValue((uint8_t)(rdp.blend_color & 0xFF));
@@ -1830,7 +1830,7 @@ void update()
             }
             else
             {
-                grAlphaTestFunction(GR_CMP_ALWAYS);
+                gfxAlphaTestFunction(GR_CMP_ALWAYS);
                 WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: none");
             }
         }
@@ -1966,7 +1966,7 @@ void set_message_combiner()
         GR_BLEND_ZERO,
         GR_BLEND_ZERO,
         GR_BLEND_ZERO);
-    grAlphaTestFunction(GR_CMP_ALWAYS);
+    gfxAlphaTestFunction(GR_CMP_ALWAYS);
     grStippleMode(GR_STIPPLE_DISABLE);
     grTexFilterMode(0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
     gfxTexCombine(GR_TMU1,

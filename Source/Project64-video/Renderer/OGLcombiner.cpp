@@ -1478,11 +1478,10 @@ void gfxAlphaTestReferenceValue(gfxAlpha_t value)
 {
     WriteTrace(TraceGlitch, TraceDebug, "value: %d", value);
     alpha_ref = value;
-    grAlphaTestFunction(alpha_func);
+    gfxAlphaTestFunction(alpha_func);
 }
 
-FX_ENTRY void FX_CALL
-grAlphaTestFunction(GrCmpFnc_t function)
+void gfxAlphaTestFunction(GrCmpFnc_t function)
 {
     WriteTrace(TraceGlitch, TraceDebug, "function: %d", function);
     alpha_func = function;
@@ -1497,7 +1496,7 @@ grAlphaTestFunction(GrCmpFnc_t function)
     case GR_CMP_ALWAYS:
         glAlphaFunc(GL_ALWAYS, alpha_ref / 255.0f);
         glDisable(GL_ALPHA_TEST);
-        grDisplayGLError("grAlphaTestFunction :: GR_CMP_ALWAYS");
+        grDisplayGLError("gfxAlphaTestFunction :: GR_CMP_ALWAYS");
         return;
         break;
     default:
@@ -1505,7 +1504,7 @@ grAlphaTestFunction(GrCmpFnc_t function)
     }
 
     glEnable(GL_ALPHA_TEST);
-    grDisplayGLError("grAlphaTestFunction");
+    grDisplayGLError("gfxAlphaTestFunction");
 }
 
 // fog

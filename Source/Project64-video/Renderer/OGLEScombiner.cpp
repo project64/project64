@@ -1536,11 +1536,10 @@ void gfxAlphaTestReferenceValue(gfxAlpha_t value)
 {
     WriteTrace(TraceGlitch, TraceDebug, "value: %d", value);
     g_alpha_ref = value;
-    grAlphaTestFunction(g_alpha_func);
+    gfxAlphaTestFunction(g_alpha_func);
 }
 
-FX_ENTRY void FX_CALL
-grAlphaTestFunction(GrCmpFnc_t function)
+void gfxAlphaTestFunction(GrCmpFnc_t function)
 {
     WriteTrace(TraceGlitch, TraceDebug, "function: %d", function);
     g_alpha_func = function;
@@ -1559,7 +1558,7 @@ grAlphaTestFunction(GrCmpFnc_t function)
         return;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grAlphaTestFunction : unknown function : %x", function);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaTestFunction : unknown function : %x", function);
     }
     //glEnable(GL_ALPHA_TEST);
     g_alpha_test = true;

@@ -77,7 +77,7 @@ static int SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaque)
         FXFALSE);
     if (opaque)
     {
-        grAlphaTestFunction(GR_CMP_ALWAYS);
+        gfxAlphaTestFunction(GR_CMP_ALWAYS);
         gfxAlphaBlendFunction(GR_BLEND_ONE,
             GR_BLEND_ZERO,
             GR_BLEND_ONE,
