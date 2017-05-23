@@ -2508,7 +2508,7 @@ void rdp_fillrect()
             GR_COMBINE_OTHER_NONE,
             FXFALSE);
 
-        grAlphaCombine(GR_COMBINE_FUNCTION_LOCAL,
+        gfxAlphaCombine(GR_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_NONE,
@@ -2540,7 +2540,7 @@ void rdp_fillrect()
         }
         if ((rdp.othermode_l & 0x4000) && ((rdp.othermode_l >> 16) == 0x0550)) //special blender mode for Bomberman64
         {
-            grAlphaCombine(GR_COMBINE_FUNCTION_LOCAL,
+            gfxAlphaCombine(GR_COMBINE_FUNCTION_LOCAL,
                 GR_COMBINE_FACTOR_NONE,
                 GR_COMBINE_LOCAL_CONSTANT,
                 GR_COMBINE_OTHER_NONE,
@@ -3138,7 +3138,7 @@ void SetWireframeCol()
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_NONE,
             FXFALSE);
-        grAlphaCombine(GR_COMBINE_FUNCTION_LOCAL,
+        gfxAlphaCombine(GR_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_NONE,
@@ -3166,7 +3166,7 @@ void SetWireframeCol()
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_NONE,
             FXFALSE);
-        grAlphaCombine(GR_COMBINE_FUNCTION_LOCAL,
+        gfxAlphaCombine(GR_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_NONE,
