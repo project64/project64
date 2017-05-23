@@ -578,8 +578,7 @@ void set_lambda()
     grDisplayGLError("set_lambda");
 }
 
-FX_ENTRY void FX_CALL
-grConstantColorValue(GrColor_t value)
+void gfxConstantColorValue(GrColor_t value)
 {
     WriteTrace(TraceGlitch, TraceDebug, "value: %d", value);
     switch (lfb_color_fmt)
@@ -597,14 +596,14 @@ grConstantColorValue(GrColor_t value)
         texture_env_color[3] = (value & 0xFF) / 255.0f;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grConstantColorValue: unknown color format : %x", lfb_color_fmt);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxConstantColorValue: unknown color format : %x", lfb_color_fmt);
     }
 
     constant_color_location = glGetUniformLocationARB(program_object, "constant_color");
     glUniform4fARB(constant_color_location, texture_env_color[0], texture_env_color[1],
         texture_env_color[2], texture_env_color[3]);
 
-    grDisplayGLError("grConstantColorValue");
+    grDisplayGLError("gfxConstantColorValue");
 }
 
 int setOtherColorSource(int other)
@@ -2764,7 +2763,7 @@ grConstantColorValueExt(GrChipID_t    tmu,
         }
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grConstantColorValue: unknown color format : %x", lfb_color_fmt);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxConstantColorValue: unknown color format : %x", lfb_color_fmt);
     }
 
     if (num_tex == 0)

@@ -2500,7 +2500,7 @@ void rdp_fillrect()
                 ((uint32_t)((float)((color & 0x003E) >> 1) / 31.0f * 255.0f) << 8);
         }
 
-        grConstantColorValue(color);
+        gfxConstantColorValue(color);
 
         grColorCombine(GR_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
@@ -2545,7 +2545,7 @@ void rdp_fillrect()
                 GR_COMBINE_LOCAL_CONSTANT,
                 GR_COMBINE_OTHER_NONE,
                 FXFALSE);
-            grConstantColorValue((cmb.ccolor & 0xFFFFFF00) | (rdp.fog_color & 0xFF));
+            gfxConstantColorValue((cmb.ccolor & 0xFFFFFF00) | (rdp.fog_color & 0xFF));
             rdp.update |= UPDATE_COMBINE;
         }
     }
@@ -3171,7 +3171,7 @@ void SetWireframeCol()
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_NONE,
             FXFALSE);
-        grConstantColorValue(0xFF0000FF);
+        gfxConstantColorValue(0xFF0000FF);
         grAlphaBlendFunction(GR_BLEND_ONE,
             GR_BLEND_ZERO,
             GR_BLEND_ZERO,

@@ -334,7 +334,7 @@ static GrTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
         FXFALSE);
-    //  grConstantColorValue (0xFFFFFFFF);
+    //  gfxConstantColorValue (0xFFFFFFFF);
     grAlphaBlendFunction(GR_BLEND_ONE,	// use alpha compare, but not T0 alpha
         GR_BLEND_ZERO,
         GR_BLEND_ONE,
