@@ -308,7 +308,7 @@ void guLoadTextures()
         GR_MIPMAPLEVELMASK_BOTH,
         &fontTex);
 
-    offset_cursor = offset_font + grTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, &fontTex);
+    offset_cursor = offset_font + gfxTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, &fontTex);
 
     free(fontTex.data);
 
@@ -337,7 +337,7 @@ void guLoadTextures()
         &cursorTex);
 
     // Round to higher 16
-    offset_textures = ((offset_cursor + grTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, &cursorTex))
+    offset_textures = ((offset_cursor + gfxTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, &cursorTex))
         & 0xFFFFFFF0) + 16;
     free(cursorTex.data);
 }

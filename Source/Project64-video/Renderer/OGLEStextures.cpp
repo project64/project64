@@ -156,13 +156,11 @@ FxU32 gfxTexMaxAddress(GrChipID_t tmu)
         return tmu*TMU_SIZE + TMU_SIZE - 1;
 }
 
-FX_ENTRY FxU32 FX_CALL
-grTexTextureMemRequired(FxU32     evenOdd,
-    GrTexInfo *info)
+FxU32 gfxTexTextureMemRequired(FxU32 evenOdd, GrTexInfo *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "evenOdd = %d", evenOdd);
     int width, height;
-    if (info->largeLodLog2 != info->smallLodLog2) WriteTrace(TraceGlitch, TraceWarning, "grTexTextureMemRequired : loading more than one LOD");
+    if (info->largeLodLog2 != info->smallLodLog2) WriteTrace(TraceGlitch, TraceWarning, "gfxTexTextureMemRequired : loading more than one LOD");
 
     if (info->aspectRatioLog2 < 0)
     {
@@ -200,7 +198,7 @@ grTexTextureMemRequired(FxU32     evenOdd,
     case GFX_TEXFMT_ARGB_CMP_FXT1:
         return ((((width + 0x7)&~0x7)*((height + 0x3)&~0x3)) >> 1);
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grTexTextureMemRequired : unknown texture format: %x", info->format);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexTextureMemRequired : unknown texture format: %x", info->format);
     }
     return 0;
 }
@@ -250,7 +248,7 @@ grTexCalcMemRequired(
     case GFX_TEXFMT_ARGB_CMP_FXT1:
         return ((((width + 0x7)&~0x7)*((height + 0x3)&~0x3)) >> 1);
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grTexTextureMemRequired : unknown texture format: %x", fmt);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexTextureMemRequired : unknown texture format: %x", fmt);
     }
     return 0;
 }

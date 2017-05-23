@@ -1653,7 +1653,7 @@ void LoadTex(int id, int tmu)
         t_info->largeLodLog2 = lod;
         t_info->aspectRatioLog2 = aspect;
 
-        uint32_t texture_size = grTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, t_info);
+        uint32_t texture_size = gfxTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, t_info);
 
         // Check for 2mb boundary
         // Hiroshi Morii <koolsmoky@users.sourceforge.net> required only for V1,Rush, and V2
