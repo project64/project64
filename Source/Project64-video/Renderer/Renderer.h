@@ -21,6 +21,7 @@ void gfxColorMask(FxBool rgb, FxBool a);
 FxU32 gfxTexMinAddress(GrChipID_t tmu);
 FxBool gfxSstWinClose(GrContext_t context);
 void gfxTextureBufferExt(GrChipID_t tmu, FxU32 startAddress, GrLOD_t lodmin, GrLOD_t lodmax, GrAspectRatio_t aspect, GrTextureFormat_t fmt, FxU32 evenOdd);
+FxU32 gfxTexMaxAddress(GrChipID_t tmu);
 
 extern uint32_t nbTextureUnits;
 extern uint32_t g_scr_res_x, g_scr_res_y, g_res_x, g_res_y;

@@ -148,8 +148,7 @@ FxU32 gfxTexMinAddress(GrChipID_t tmu)
         return tmu*TMU_SIZE;
 }
 
-FX_ENTRY FxU32 FX_CALL
-grTexMaxAddress(GrChipID_t tmu)
+FxU32 gfxTexMaxAddress(GrChipID_t tmu)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d", tmu);
     if (UMAmode)
@@ -709,15 +708,6 @@ grTexSource(GrChipID_t tmu,
             need_to_compile = 1;
         }
     }
-
-#if 0
-    extern int auxbuffer;
-    static int oldbuffer;
-    FX_ENTRY void FX_CALL grAuxBufferExt(GrBuffer_t buffer);
-    if (auxbuffer == GR_BUFFER_AUXBUFFER && auxbuffer != oldbuffer)
-        grAuxBufferExt(auxbuffer);
-    oldbuffer = auxbuffer;
-#endif
     grDisplayGLError("grTexSource");
 }
 

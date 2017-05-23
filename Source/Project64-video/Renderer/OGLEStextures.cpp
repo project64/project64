@@ -147,8 +147,7 @@ FxU32 gfxTexMinAddress(GrChipID_t tmu)
         return tmu*TMU_SIZE;
 }
 
-FX_ENTRY FxU32 FX_CALL
-grTexMaxAddress(GrChipID_t tmu)
+FxU32 gfxTexMaxAddress(GrChipID_t tmu)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d", tmu);
     if (UMAmode)
