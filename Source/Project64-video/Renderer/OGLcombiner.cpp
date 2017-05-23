@@ -1509,8 +1509,7 @@ void gfxAlphaTestFunction(GrCmpFnc_t function)
 
 // fog
 
-FX_ENTRY void FX_CALL
-grFogMode(GrFogMode_t mode)
+void gfxFogMode(GrFogMode_t mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
     switch (mode)
@@ -1534,7 +1533,7 @@ grFogMode(GrFogMode_t mode)
     }
     need_to_compile = 1;
 
-    grDisplayGLError("grFogMode");
+    grDisplayGLError("gfxFogMode");
 }
 
 FX_ENTRY float FX_CALL

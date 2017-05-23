@@ -1570,7 +1570,7 @@ void rdp_texrect()
         {
             vptr[i].f = fog;
         }
-        grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
+        gfxFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
     }
 
     ConvertCoordsConvert(vptr, n_vertices);
@@ -2471,7 +2471,7 @@ void rdp_fillrect()
 
     WriteTrace(TraceRDP, TraceDebug, " - %d, %d, %d, %d", s_ul_x, s_ul_y, s_lr_x, s_lr_y);
 
-    grFogMode(GR_FOG_DISABLE);
+    gfxFogMode(GR_FOG_DISABLE);
 
     const float Z = (rdp.cycle_mode == 3) ? 0.0f : set_sprite_combine_mode();
 
@@ -2520,7 +2520,7 @@ void rdp_fillrect()
         grStippleMode(GR_STIPPLE_DISABLE);
 
         grCullMode(GR_CULL_DISABLE);
-        grFogMode(GR_FOG_DISABLE);
+        gfxFogMode(GR_FOG_DISABLE);
         grDepthBufferFunction(GR_CMP_ALWAYS);
         grDepthMask(FXFALSE);
 

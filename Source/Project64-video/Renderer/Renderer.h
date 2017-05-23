@@ -30,6 +30,7 @@ void gfxTexCombine(GrChipID_t tmu, GrCombineFunction_t rgb_function, GrCombineFa
 void gfxAlphaBlendFunction(GrAlphaBlendFnc_t rgb_sf, GrAlphaBlendFnc_t rgb_df, GrAlphaBlendFnc_t alpha_sf, GrAlphaBlendFnc_t alpha_df);
 void gfxAlphaTestReferenceValue(gfxAlpha_t value);
 void gfxAlphaTestFunction(GrCmpFnc_t function);
+void gfxFogMode(GrFogMode_t mode);
 
 extern uint32_t nbTextureUnits;
 extern uint32_t g_scr_res_x, g_scr_res_y, g_res_x, g_res_y;

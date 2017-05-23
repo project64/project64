@@ -67,7 +67,7 @@ float set_sprite_combine_mode()
     }
 
     grCullMode(GR_CULL_DISABLE);
-    grFogMode(GR_FOG_DISABLE);
+    gfxFogMode(GR_FOG_DISABLE);
     rdp.update |= UPDATE_CULL_MODE | UPDATE_FOG_ENABLED;
 
     if (rdp.cycle_mode == 2)
@@ -917,7 +917,7 @@ static void uc6_draw_polygons(VERTEX v[4])
 
     if (g_settings->fog() && (rdp.flags & FOG_ENABLED))
     {
-        grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
+        gfxFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
     }
 }
 
@@ -1626,7 +1626,7 @@ void uc6_sprite2d()
 
             if (g_settings->fog() && (rdp.flags & FOG_ENABLED))
             {
-                grFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
+                gfxFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
             }
         }
         a = rdp.pc[rdp.pc_i] & BMASK;
