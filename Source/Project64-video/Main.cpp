@@ -545,10 +545,6 @@ int InitGfx()
             }
         }
         fog_t[0] = 0;
-        //      for (int f = 0; f < 64; f++)
-        //      {
-        //        WriteTrace(TraceRDP, TraceDebug, "fog[%d]=%d->%f", f, fog_t[f], guFogTableIndexToW(f));
-        //      }
         grFogTable(fog_t);
         grVertexLayout(GR_PARAM_FOG_EXT, offsetof(VERTEX, f), GR_PARAM_ENABLE);
     }

@@ -1536,13 +1536,6 @@ void gfxFogMode(GrFogMode_t mode)
     grDisplayGLError("gfxFogMode");
 }
 
-FX_ENTRY float FX_CALL
-guFogTableIndexToW(int i)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "i: %d", i);
-    return (float)(pow(2.0, 3.0 + (double)(i >> 2)) / (8 - (i & 3)));
-}
-
 FX_ENTRY void FX_CALL
 guFogGenerateLinear(GrFog_t * /*fogtable*/,
     float nearZ, float farZ)
