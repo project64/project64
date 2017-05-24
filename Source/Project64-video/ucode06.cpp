@@ -481,7 +481,6 @@ void DrawImage(DRAWIMAGE & d)
             rdp_loadtile();
 
             TexCache();
-            // **
 
             ful_u = (float)nul_u - cb_u;
             flr_u = (float)nlr_u - cb_u;

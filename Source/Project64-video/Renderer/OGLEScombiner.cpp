@@ -2051,19 +2051,13 @@ void gfxAlphaCombineExt(GrACUColor_t a, GrCombineMode_t a_mode, GrACUColor_t b, 
     need_to_compile = 1;
 }
 
-FX_ENTRY void FX_CALL
-grTexColorCombineExt(GrChipID_t       tmu,
-    GrTCCUColor_t a, GrCombineMode_t a_mode,
-    GrTCCUColor_t b, GrCombineMode_t b_mode,
-    GrTCCUColor_t c, FxBool c_invert,
-    GrTCCUColor_t d, FxBool d_invert,
-    FxU32 shift, FxBool invert)
+void gfxTexColorCombineExt(GrChipID_t tmu, GrTCCUColor_t a, GrCombineMode_t a_mode, GrTCCUColor_t b, GrCombineMode_t b_mode, GrTCCUColor_t c, FxBool c_invert, GrTCCUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert)
 {
     int num_tex;
     WriteTrace(TraceGlitch, TraceDebug, "tmu: %d a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift: %d invert: %d", tmu, a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
 
-    if (invert) WriteTrace(TraceGlitch, TraceWarning, "grTexColorCombineExt : inverted result");
-    if (shift) WriteTrace(TraceGlitch, TraceWarning, "grTexColorCombineExt : shift = %d", shift);
+    if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt : inverted result");
+    if (shift) WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt : shift = %d", shift);
 
     if (tmu == GR_TMU0) num_tex = 1;
     else num_tex = 0;
@@ -2144,7 +2138,7 @@ grTexColorCombineExt(GrChipID_t       tmu,
             strcat(fragment_shader_texture1, "vec4 ctex1s_a = vec4(ccolor1.a); \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grTexColorCombineExt : a = %x", a);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt : a = %x", a);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_a = vec4(0.0); \n");
         else
@@ -2178,7 +2172,7 @@ grTexColorCombineExt(GrChipID_t       tmu,
             strcat(fragment_shader_texture1, "vec4 ctex1_a = -ctex1s_a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grTexColorCombineExt : a_mode = %x", a_mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt : a_mode = %x", a_mode);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_a = vec4(0.0); \n");
         else
@@ -2242,7 +2236,7 @@ grTexColorCombineExt(GrChipID_t       tmu,
             strcat(fragment_shader_texture1, "vec4 ctex1s_b = ccolor1; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grTexColorCombineExt : b = %x", b);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt : b = %x", b);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_b = vec4(0.0); \n");
         else
@@ -2276,7 +2270,7 @@ grTexColorCombineExt(GrChipID_t       tmu,
             strcat(fragment_shader_texture1, "vec4 ctex1_b = -ctex1s_b; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grTexColorCombineExt : b_mode = %x", b_mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt : b_mode = %x", b_mode);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_b = vec4(0.0); \n");
         else
@@ -2352,7 +2346,7 @@ grTexColorCombineExt(GrChipID_t       tmu,
             strcat(fragment_shader_texture1, "vec4 ctex1_c = ccolor1; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grTexColorCombineExt : c = %x", c);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt : c = %x", c);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_c = vec4(0.0); \n");
         else
@@ -2394,7 +2388,7 @@ grTexColorCombineExt(GrChipID_t       tmu,
             strcat(fragment_shader_texture1, "vec4 ctex1_d = vec4(readtex1.a); \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grTexColorCombineExt : d = %x", d);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexColorCombineExt : d = %x", d);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_d = vec4(0.0); \n");
         else
