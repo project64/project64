@@ -1886,7 +1886,7 @@ void update()
             rdp_blender_setting &bl = *(rdp_blender_setting*)(&(blender));
             if ((rdp.fog_multiplier > 0) && (bl.c1_m1a == 3 || bl.c1_m2a == 3 || bl.c2_m1a == 3 || bl.c2_m2a == 3))
             {
-                grFogColorValue(rdp.fog_color);
+                gfxFogColorValue(rdp.fog_color);
                 gfxFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
                 rdp.fog_mode = CRDP::fog_enabled;
                 WriteTrace(TraceRDP, TraceDebug, "fog enabled ");
@@ -1900,14 +1900,14 @@ void update()
         }
         else if (blender == 0xc410 || blender == 0xc411 || blender == 0xf500)
         {
-            grFogColorValue(rdp.fog_color);
+            gfxFogColorValue(rdp.fog_color);
             gfxFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
             rdp.fog_mode = CRDP::fog_blend;
             WriteTrace(TraceRDP, TraceDebug, "fog blend ");
         }
         else if (blender == 0x04d1)
         {
-            grFogColorValue(rdp.fog_color);
+            gfxFogColorValue(rdp.fog_color);
             gfxFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
             rdp.fog_mode = CRDP::fog_blend_inverse;
             WriteTrace(TraceRDP, TraceDebug, "fog blend ");

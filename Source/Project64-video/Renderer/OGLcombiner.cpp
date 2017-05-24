@@ -1547,8 +1547,7 @@ void gfxFogGenerateLinear(float nearZ, float farZ)
     grDisplayGLError("gfxFogGenerateLinear");
 }
 
-FX_ENTRY void FX_CALL
-grFogColorValue(GrColor_t fogcolor)
+void gfxFogColorValue(GrColor_t fogcolor)
 {
     float color[4];
     WriteTrace(TraceGlitch, TraceDebug, "fogcolor: %x", fogcolor);

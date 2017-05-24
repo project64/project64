@@ -1594,18 +1594,11 @@ void gfxFogMode(GrFogMode_t mode)
 void gfxFogGenerateLinear(float nearZ, float farZ)
 {
     WriteTrace(TraceGlitch, TraceDebug, "nearZ: %f farZ: %f", nearZ, farZ);
-    /*
-      glFogi(GL_FOG_MODE, GL_LINEAR);
-      glFogi(GL_FOG_COORDINATE_SOURCE_EXT, GL_FOG_COORDINATE_EXT);
-      glFogf(GL_FOG_START, nearZ / 255.0f);
-      glFogf(GL_FOG_END, farZ / 255.0f);
-      */
     fogStart = nearZ / 255.0f;
     fogEnd = farZ / 255.0f;
 }
 
-FX_ENTRY void FX_CALL
-grFogColorValue(GrColor_t fogcolor)
+void gfxFogColorValue(GrColor_t fogcolor)
 {
     WriteTrace(TraceGlitch, TraceDebug, "fogcolor: %x", fogcolor);
 
@@ -1624,10 +1617,8 @@ grFogColorValue(GrColor_t fogcolor)
         fogColor[3] = (fogcolor & 0xFF) / 255.0f;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grFogColorValue: unknown color format : %x", lfb_color_fmt);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxFogColorValue: unknown color format : %x", lfb_color_fmt);
     }
-
-    //glFogfv(GL_FOG_COLOR, color);
 }
 
 // chroma

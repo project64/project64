@@ -32,6 +32,7 @@ void gfxAlphaTestReferenceValue(gfxAlpha_t value);
 void gfxAlphaTestFunction(GrCmpFnc_t function);
 void gfxFogMode(GrFogMode_t mode);
 void gfxFogGenerateLinear(float nearZ, float farZ);
+void gfxFogColorValue(GrColor_t fogcolor);
 
 extern uint32_t nbTextureUnits;
 extern uint32_t g_scr_res_x, g_scr_res_y, g_res_x, g_res_y;
