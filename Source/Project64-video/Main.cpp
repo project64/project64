@@ -534,18 +534,7 @@ int InitGfx()
 
     if (g_settings->fog()) //"FOGCOORD" extension
     {
-        GrFog_t fog_t[64];
-        gfxFogGenerateLinear(fog_t, 0.0f, 255.0f);
-
-        for (int i = 63; i > 0; i--)
-        {
-            if (fog_t[i] - fog_t[i - 1] > 63)
-            {
-                fog_t[i - 1] = fog_t[i] - 63;
-            }
-        }
-        fog_t[0] = 0;
-        grFogTable(fog_t);
+        gfxFogGenerateLinear(0.0f, 255.0f);
         grVertexLayout(GR_PARAM_FOG_EXT, offsetof(VERTEX, f), GR_PARAM_ENABLE);
     }
 

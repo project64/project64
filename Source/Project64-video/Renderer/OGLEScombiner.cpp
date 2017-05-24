@@ -1591,7 +1591,7 @@ void gfxFogMode(GrFogMode_t mode)
     need_to_compile = 1;
 }
 
-void gfxFogGenerateLinear(GrFog_t *fogtable, float nearZ, float farZ)
+void gfxFogGenerateLinear(float nearZ, float farZ)
 {
     WriteTrace(TraceGlitch, TraceDebug, "nearZ: %f farZ: %f", nearZ, farZ);
     /*
@@ -1602,12 +1602,6 @@ void gfxFogGenerateLinear(GrFog_t *fogtable, float nearZ, float farZ)
       */
     fogStart = nearZ / 255.0f;
     fogEnd = farZ / 255.0f;
-}
-
-FX_ENTRY void FX_CALL
-grFogTable(const GrFog_t /*ft */[])
-{
-    WriteTrace(TraceGlitch, TraceDebug, "-");
 }
 
 FX_ENTRY void FX_CALL
