@@ -677,7 +677,7 @@ void TexCache()
                     ColorCombinerToExtension();
                 if (!(cmb.cmb_ext_use & COMBINE_EXT_ALPHA))
                     AlphaCombinerToExtension();
-                grColorCombineExt(cmb.c_ext_a, cmb.c_ext_a_mode, cmb.c_ext_b, cmb.c_ext_b_mode, cmb.c_ext_c, cmb.c_ext_c_invert, cmb.c_ext_d, cmb.c_ext_d_invert, 0, 0);
+                gfxColorCombineExt(cmb.c_ext_a, cmb.c_ext_a_mode, cmb.c_ext_b, cmb.c_ext_b_mode, cmb.c_ext_c, cmb.c_ext_c_invert, cmb.c_ext_d, cmb.c_ext_d_invert, 0, 0);
                 grAlphaCombineExt(cmb.a_ext_a, cmb.a_ext_a_mode, cmb.a_ext_b, cmb.a_ext_b_mode, cmb.a_ext_c, cmb.a_ext_c_invert, cmb.a_ext_d, cmb.a_ext_d_invert, 0, 0);
             }
             else
