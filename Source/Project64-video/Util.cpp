@@ -1839,17 +1839,17 @@ void update()
             if (g_settings->old_style_adither() || rdp.alpha_dither_mode != 3)
             {
                 WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: dither");
-                grStippleMode(g_settings->stipple_mode());
+                gfxStippleMode(g_settings->stipple_mode());
             }
             else
             {
-                grStippleMode(GR_STIPPLE_DISABLE);
+                gfxStippleMode(GR_STIPPLE_DISABLE);
             }
         }
         else
         {
             //WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: dither disabled");
-            grStippleMode(GR_STIPPLE_DISABLE);
+            gfxStippleMode(GR_STIPPLE_DISABLE);
         }
     }
     // Cull mode (leave this in for z-clipped triangles)
@@ -1967,7 +1967,7 @@ void set_message_combiner()
         GR_BLEND_ZERO,
         GR_BLEND_ZERO);
     gfxAlphaTestFunction(GR_CMP_ALWAYS);
-    grStippleMode(GR_STIPPLE_DISABLE);
+    gfxStippleMode(GR_STIPPLE_DISABLE);
     grTexFilterMode(0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
     gfxTexCombine(GR_TMU1,
         GR_COMBINE_FUNCTION_NONE,

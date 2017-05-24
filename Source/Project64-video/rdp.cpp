@@ -2517,7 +2517,7 @@ void rdp_fillrect()
         gfxAlphaBlendFunction(GR_BLEND_ONE, GR_BLEND_ZERO, GR_BLEND_ONE, GR_BLEND_ZERO);
 
         gfxAlphaTestFunction(GR_CMP_ALWAYS);
-        grStippleMode(GR_STIPPLE_DISABLE);
+        gfxStippleMode(GR_STIPPLE_DISABLE);
 
         grCullMode(GR_CULL_DISABLE);
         gfxFogMode(GR_FOG_DISABLE);

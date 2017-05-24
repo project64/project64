@@ -1702,8 +1702,7 @@ void setPattern()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
-FX_ENTRY void FX_CALL
-grStippleMode(GrStippleMode_t mode)
+void gfxStippleMode(GrStippleMode_t mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
     switch (mode)
@@ -1723,7 +1722,7 @@ grStippleMode(GrStippleMode_t mode)
         glActiveTexture(GL_TEXTURE2);
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grStippleMode:%x", mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxStippleMode:%x", mode);
     }
     need_to_compile = 1;
 }

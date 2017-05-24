@@ -1660,8 +1660,7 @@ void setPattern()
     grDisplayGLError("setPattern");
 }
 
-FX_ENTRY void FX_CALL
-grStippleMode(GrStippleMode_t mode)
+void gfxStippleMode(GrStippleMode_t mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
     switch (mode)
@@ -1684,11 +1683,11 @@ grStippleMode(GrStippleMode_t mode)
         glEnable(GL_TEXTURE_2D);
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grStippleMode:%x", mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxStippleMode:%x", mode);
     }
 
     need_to_compile = 1;
-    grDisplayGLError("grStippleMode");
+    grDisplayGLError("gfxStippleMode");
 }
 
 FX_ENTRY void FX_CALL
