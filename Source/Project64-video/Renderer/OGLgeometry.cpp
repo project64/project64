@@ -146,9 +146,7 @@ void gfxCullMode(GrCullMode_t mode)
 }
 
 // Depth buffer
-
-FX_ENTRY void FX_CALL
-grDepthBufferMode(GrDepthBufferMode_t mode)
+void gfxDepthBufferMode(GrDepthBufferMode_t mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
     switch (mode)
@@ -170,7 +168,7 @@ grDepthBufferMode(GrDepthBufferMode_t mode)
     default:
         WriteTrace(TraceGlitch, TraceWarning, "unknown depth buffer mode : %x", mode);
     }
-    grDisplayGLError("grDepthBufferMode");
+    grDisplayGLError("gfxDepthBufferMode");
 }
 
 FX_ENTRY void FX_CALL

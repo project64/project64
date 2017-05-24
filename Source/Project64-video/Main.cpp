@@ -537,7 +537,7 @@ int InitGfx()
         gfxVertexLayout(GR_PARAM_FOG_EXT, offsetof(VERTEX, f), GR_PARAM_ENABLE);
     }
 
-    grDepthBufferMode(GR_DEPTHBUFFER_ZBUFFER);
+    gfxDepthBufferMode(GR_DEPTHBUFFER_ZBUFFER);
     grDepthBufferFunction(GR_CMP_LESS);
     grDepthMask(FXTRUE);
 
@@ -547,7 +547,7 @@ int InitGfx()
     ClearCache();
 
     gfxCullMode(GR_CULL_DISABLE);
-    grDepthBufferMode(GR_DEPTHBUFFER_ZBUFFER);
+    gfxDepthBufferMode(GR_DEPTHBUFFER_ZBUFFER);
     grDepthBufferFunction(GR_CMP_ALWAYS);
     grRenderBuffer(GR_BUFFER_BACKBUFFER);
     gfxColorMask(FXTRUE, FXTRUE);
