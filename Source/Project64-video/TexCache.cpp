@@ -701,7 +701,7 @@ void TexCache()
                 if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_ALPHA))
                     TexAlphaCombinerToExtension(GR_TMU1);
                 gfxTexColorCombineExt(tmu_1, cmb.t1c_ext_a, cmb.t1c_ext_a_mode, cmb.t1c_ext_b, cmb.t1c_ext_b_mode, cmb.t1c_ext_c, cmb.t1c_ext_c_invert, cmb.t1c_ext_d, cmb.t1c_ext_d_invert, 0, 0);
-                grTexAlphaCombineExt(tmu_1, cmb.t1a_ext_a, cmb.t1a_ext_a_mode, cmb.t1a_ext_b, cmb.t1a_ext_b_mode, cmb.t1a_ext_c, cmb.t1a_ext_c_invert, cmb.t1a_ext_d, cmb.t1a_ext_d_invert, 0, 0);
+                gfxTexAlphaCombineExt(tmu_1, cmb.t1a_ext_a, cmb.t1a_ext_a_mode, cmb.t1a_ext_b, cmb.t1a_ext_b_mode, cmb.t1a_ext_c, cmb.t1a_ext_c_invert, cmb.t1a_ext_d, cmb.t1a_ext_d_invert, 0, 0);
                 grConstantColorValueExt(tmu_1, cmb.tex_ccolor);
             }
             else
@@ -729,7 +729,7 @@ void TexCache()
                     TexAlphaCombinerToExtension(GR_TMU0);
                 }
                 gfxTexColorCombineExt(tmu_0, cmb.t0c_ext_a, cmb.t0c_ext_a_mode, cmb.t0c_ext_b, cmb.t0c_ext_b_mode, cmb.t0c_ext_c, cmb.t0c_ext_c_invert, cmb.t0c_ext_d, cmb.t0c_ext_d_invert, 0, 0);
-                grTexAlphaCombineExt(tmu_0, cmb.t0a_ext_a, cmb.t0a_ext_a_mode, cmb.t0a_ext_b, cmb.t0a_ext_b_mode, cmb.t0a_ext_c, cmb.t0a_ext_c_invert, cmb.t0a_ext_d, cmb.t0a_ext_d_invert, 0, 0);
+                gfxTexAlphaCombineExt(tmu_0, cmb.t0a_ext_a, cmb.t0a_ext_a_mode, cmb.t0a_ext_b, cmb.t0a_ext_b_mode, cmb.t0a_ext_c, cmb.t0a_ext_c_invert, cmb.t0a_ext_d, cmb.t0a_ext_d_invert, 0, 0);
                 grConstantColorValueExt(tmu_0, cmb.tex_ccolor);
             }
             else

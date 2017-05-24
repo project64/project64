@@ -2373,19 +2373,13 @@ void gfxTexColorCombineExt(GrChipID_t tmu, GrTCCUColor_t a, GrCombineMode_t a_mo
     need_to_compile = 1;
 }
 
-FX_ENTRY void FX_CALL
-grTexAlphaCombineExt(GrChipID_t       tmu,
-    GrTACUColor_t a, GrCombineMode_t a_mode,
-    GrTACUColor_t b, GrCombineMode_t b_mode,
-    GrTACUColor_t c, FxBool c_invert,
-    GrTACUColor_t d, FxBool d_invert,
-    FxU32 shift, FxBool invert)
+void gfxTexAlphaCombineExt(GrChipID_t tmu, GrTACUColor_t a, GrCombineMode_t a_mode, GrTACUColor_t b, GrCombineMode_t b_mode, GrTACUColor_t c, FxBool c_invert, GrTACUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert)
 {
     int num_tex;
     WriteTrace(TraceGlitch, TraceDebug, "tmu: %d a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift, invert: %d", tmu, a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
 
-    if (invert) WriteTrace(TraceGlitch, TraceWarning, "grTexAlphaCombineExt : inverted result");
-    if (shift) WriteTrace(TraceGlitch, TraceWarning, "grTexAlphaCombineExt : shift = %d", shift);
+    if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt : inverted result");
+    if (shift) WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt : shift = %d", shift);
 
     if (tmu == GR_TMU0) num_tex = 1;
     else num_tex = 0;
@@ -2432,7 +2426,7 @@ grTexAlphaCombineExt(GrChipID_t       tmu,
             strcat(fragment_shader_texture1, "ctex1s_a.a = ccolor1.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grTexAlphaCombineExt : a = %x", a);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt : a = %x", a);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0s_a.a = 0.0; \n");
         else
@@ -2466,7 +2460,7 @@ grTexAlphaCombineExt(GrChipID_t       tmu,
             strcat(fragment_shader_texture1, "ctex1_a.a = -ctex1s_a.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grTexAlphaCombineExt : a_mode = %x", a_mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt : a_mode = %x", a_mode);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_a.a = 0.0; \n");
         else
@@ -2500,7 +2494,7 @@ grTexAlphaCombineExt(GrChipID_t       tmu,
             strcat(fragment_shader_texture1, "ctex1s_b.a = ccolor1.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grTexAlphaCombineExt : b = %x", b);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt : b = %x", b);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0s_b.a = 0.0; \n");
         else
@@ -2534,7 +2528,7 @@ grTexAlphaCombineExt(GrChipID_t       tmu,
             strcat(fragment_shader_texture1, "ctex1_b.a = -ctex1s_b.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grTexAlphaCombineExt : b_mode = %x", b_mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt : b_mode = %x", b_mode);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_b.a = 0.0; \n");
         else
@@ -2586,7 +2580,7 @@ grTexAlphaCombineExt(GrChipID_t       tmu,
             strcat(fragment_shader_texture1, "ctex1_c.a = ccolor1.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grTexAlphaCombineExt : c = %x", c);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt : c = %x", c);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_c.a = 0.0; \n");
         else
@@ -2634,7 +2628,7 @@ grTexAlphaCombineExt(GrChipID_t       tmu,
             strcat(fragment_shader_texture1, "ctex1_d.a = readtex1.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grTexAlphaCombineExt : d = %x", d);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxTexAlphaCombineExt : d = %x", d);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_d.a = 0.0; \n");
         else
