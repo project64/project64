@@ -342,7 +342,7 @@ static GrTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
     gfxClipWindow(0, 0, g_scr_res_x, g_scr_res_y);
     grDepthBufferFunction(GR_CMP_ALWAYS);
     grDepthMask(FXFALSE);
-    grCullMode(GR_CULL_DISABLE);
+    gfxCullMode(GR_CULL_DISABLE);
     gfxFogMode(GR_FOG_DISABLE);
     GrTextureFormat_t buf_format = (rdp.tbuff_tex) ? rdp.tbuff_tex->info.format : GFX_TEXFMT_RGB_565;
     GrCombineFunction_t color_source = GR_COMBINE_FUNCTION_LOCAL;

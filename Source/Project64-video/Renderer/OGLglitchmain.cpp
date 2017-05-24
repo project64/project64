@@ -1497,7 +1497,7 @@ grRenderBuffer(GrBuffer_t buffer)
             glTranslatef(0, 0, 1 - zscale);
             glScalef(1, 1, zscale);
             inverted_culling = 0;
-            grCullMode(culling_mode);
+            gfxCullMode(culling_mode);
 
             g_width = savedWidth;
             g_height = savedHeight;
@@ -1584,7 +1584,7 @@ grRenderBuffer(GrBuffer_t buffer)
                 glTranslatef(0, 0, 1 - zscale);
                 glScalef(1, 1 * 1, zscale);
                 inverted_culling = 1;
-                grCullMode(culling_mode);
+                gfxCullMode(culling_mode);
             }
         }
         render_to_texture = 1;

@@ -11,6 +11,7 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
+#include <Project64-video/Renderer/Renderer.h>
 #include <Project64-video/rdp.h>
 #include <Project64-video/Gfx_1.3.h>
 #include <Project64-video/trace.h>
@@ -203,17 +204,17 @@ void uc5_tridma()
 
         if (flags & 0x40) { // no cull
             rdp.flags &= ~CULLMASK;
-            grCullMode(GR_CULL_DISABLE);
+            gfxCullMode(GR_CULL_DISABLE);
         }
         else {        // front cull
             rdp.flags &= ~CULLMASK;
             if (rdp.view_scale[0] < 0) {
                 rdp.flags |= CULL_BACK;   // agh, backwards culling
-                grCullMode(GR_CULL_POSITIVE);
+                gfxCullMode(GR_CULL_POSITIVE);
             }
             else {
                 rdp.flags |= CULL_FRONT;
-                grCullMode(GR_CULL_NEGATIVE);
+                gfxCullMode(GR_CULL_NEGATIVE);
             }
         }
         start += 4;

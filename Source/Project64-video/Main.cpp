@@ -529,7 +529,7 @@ int InitGfx()
     gfxVertexLayout(GR_PARAM_ST1, offsetof(VERTEX, coord[2]), GR_PARAM_ENABLE);
     gfxVertexLayout(GR_PARAM_PARGB, offsetof(VERTEX, b), GR_PARAM_ENABLE);
 
-    grCullMode(GR_CULL_NEGATIVE);
+    gfxCullMode(GR_CULL_NEGATIVE);
 
     if (g_settings->fog()) //"FOGCOORD" extension
     {
@@ -546,7 +546,7 @@ int InitGfx()
     guLoadTextures();
     ClearCache();
 
-    grCullMode(GR_CULL_DISABLE);
+    gfxCullMode(GR_CULL_DISABLE);
     grDepthBufferMode(GR_DEPTHBUFFER_ZBUFFER);
     grDepthBufferFunction(GR_CMP_ALWAYS);
     grRenderBuffer(GR_BUFFER_BACKBUFFER);
@@ -1320,7 +1320,7 @@ void newSwapBuffers()
     gfxClipWindow(0, 0, g_scr_res_x, g_scr_res_y);
     grDepthBufferFunction(GR_CMP_ALWAYS);
     grDepthMask(FXFALSE);
-    grCullMode(GR_CULL_DISABLE);
+    gfxCullMode(GR_CULL_DISABLE);
 
     if (g_capture_screen)
     {

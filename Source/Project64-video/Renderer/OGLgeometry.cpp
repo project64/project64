@@ -111,8 +111,7 @@ void gfxVertexLayout(FxU32 param, FxI32 offset, FxU32 mode)
     }
 }
 
-FX_ENTRY void FX_CALL
-grCullMode(GrCullMode_t mode)
+void gfxCullMode(GrCullMode_t mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
     static int oldmode = -1, oldinv = -1;
@@ -143,7 +142,7 @@ grCullMode(GrCullMode_t mode)
     default:
         WriteTrace(TraceGlitch, TraceWarning, "unknown cull mode : %x", mode);
     }
-    grDisplayGLError("grCullMode");
+    grDisplayGLError("gfxCullMode");
 }
 
 // Depth buffer

@@ -66,7 +66,7 @@ float set_sprite_combine_mode()
         WriteTrace(TraceRDP, TraceDebug, "z compare not used, using 0");
     }
 
-    grCullMode(GR_CULL_DISABLE);
+    gfxCullMode(GR_CULL_DISABLE);
     gfxFogMode(GR_FOG_DISABLE);
     rdp.update |= UPDATE_CULL_MODE | UPDATE_FOG_ENABLED;
 
