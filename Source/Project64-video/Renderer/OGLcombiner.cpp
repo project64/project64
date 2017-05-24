@@ -1867,16 +1867,11 @@ void gfxColorCombineExt(GrCCUColor_t a, GrCombineMode_t a_mode, GrCCUColor_t b, 
     need_to_compile = 1;
 }
 
-FX_ENTRY void FX_CALL
-grAlphaCombineExt(GrACUColor_t a, GrCombineMode_t a_mode,
-    GrACUColor_t b, GrCombineMode_t b_mode,
-    GrACUColor_t c, FxBool c_invert,
-    GrACUColor_t d, FxBool d_invert,
-    FxU32 shift, FxBool invert)
+void gfxAlphaCombineExt(GrACUColor_t a, GrCombineMode_t a_mode, GrACUColor_t b, GrCombineMode_t b_mode, GrACUColor_t c, FxBool c_invert, GrACUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift: %d invert: %d", a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
-    if (invert) WriteTrace(TraceGlitch, TraceWarning, "grAlphaCombineExt : inverted result");
-    if (shift) WriteTrace(TraceGlitch, TraceWarning, "grAlphaCombineExt : shift = %d", shift);
+    if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : inverted result");
+    if (shift) WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : shift = %d", shift);
 
     alpha_combiner_key = 0x80000000 | (a & 0x1F) | ((a_mode & 3) << 5) |
         ((b & 0x1F) << 7) | ((b_mode & 3) << 12) |
@@ -1900,7 +1895,7 @@ grAlphaCombineExt(GrACUColor_t a, GrCombineMode_t a_mode,
         strcat(fragment_shader_alpha_combiner, "float as_a = gl_Color.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grAlphaCombineExt : a = %x", a);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : a = %x", a);
         strcat(fragment_shader_alpha_combiner, "float as_a = 0.0; \n");
     }
 
@@ -1919,7 +1914,7 @@ grAlphaCombineExt(GrACUColor_t a, GrCombineMode_t a_mode,
         strcat(fragment_shader_alpha_combiner, "float a_a = -as_a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grAlphaCombineExt : a_mode = %x", a_mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : a_mode = %x", a_mode);
         strcat(fragment_shader_alpha_combiner, "float a_a = 0.0; \n");
     }
 
@@ -1938,7 +1933,7 @@ grAlphaCombineExt(GrACUColor_t a, GrCombineMode_t a_mode,
         strcat(fragment_shader_alpha_combiner, "float as_b = gl_Color.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grAlphaCombineExt : b = %x", b);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : b = %x", b);
         strcat(fragment_shader_alpha_combiner, "float as_b = 0.0; \n");
     }
 
@@ -1957,7 +1952,7 @@ grAlphaCombineExt(GrACUColor_t a, GrCombineMode_t a_mode,
         strcat(fragment_shader_alpha_combiner, "float a_b = -as_b; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grAlphaCombineExt : b_mode = %x", b_mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : b_mode = %x", b_mode);
         strcat(fragment_shader_alpha_combiner, "float a_b = 0.0; \n");
     }
 
@@ -1985,7 +1980,7 @@ grAlphaCombineExt(GrACUColor_t a, GrCombineMode_t a_mode,
         strcat(fragment_shader_alpha_combiner, "float a_c = gl_Color.a; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grAlphaCombineExt : c = %x", c);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : c = %x", c);
         strcat(fragment_shader_alpha_combiner, "float a_c = 0.0; \n");
     }
 
@@ -2007,7 +2002,7 @@ grAlphaCombineExt(GrACUColor_t a, GrCombineMode_t a_mode,
         strcat(fragment_shader_alpha_combiner, "float a_d = as_b; \n");
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grAlphaCombineExt : d = %x", d);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : d = %x", d);
         strcat(fragment_shader_alpha_combiner, "float a_d = 0.0; \n");
     }
 
