@@ -1575,9 +1575,7 @@ void gfxFogColorValue(GrColor_t fogcolor)
 }
 
 // chroma
-
-FX_ENTRY void FX_CALL
-grChromakeyMode(GrChromakeyMode_t mode)
+void gfxChromakeyMode(GrChromakeyMode_t mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
     switch (mode)

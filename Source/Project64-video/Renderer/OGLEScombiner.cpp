@@ -1622,9 +1622,7 @@ void gfxFogColorValue(GrColor_t fogcolor)
 }
 
 // chroma
-
-FX_ENTRY void FX_CALL
-grChromakeyMode(GrChromakeyMode_t mode)
+void gfxChromakeyMode(GrChromakeyMode_t mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
     switch (mode)
@@ -1636,7 +1634,7 @@ grChromakeyMode(GrChromakeyMode_t mode)
         g_chroma_enabled = true;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grChromakeyMode : unknown mode : %x", mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxChromakeyMode : unknown mode : %x", mode);
     }
     need_to_compile = 1;
 }

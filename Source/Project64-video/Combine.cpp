@@ -15668,11 +15668,11 @@ void Combine()
             else
             {
                 grChromakeyValue(0);
-                grChromakeyMode(GR_CHROMAKEY_ENABLE);
+                gfxChromakeyMode(GR_CHROMAKEY_ENABLE);
             }
         }
         else
-            grChromakeyMode(GR_CHROMAKEY_DISABLE);
+            gfxChromakeyMode(GR_CHROMAKEY_DISABLE);
 
         if (aTBuff[0] && aTBuff[0]->info.format == GFX_TEXFMT_ALPHA_INTENSITY_88)
         {
@@ -15705,7 +15705,7 @@ void Combine()
         }
     }
     else
-        grChromakeyMode(GR_CHROMAKEY_DISABLE);
+        gfxChromakeyMode(GR_CHROMAKEY_DISABLE);
     cmb.shade_mod_hash = (rdp.cmb_flags + rdp.cmb_flags_2) * (rdp.prim_color + rdp.env_color + rdp.K5);
 
     WriteTrace(TraceRDP, TraceDebug, " | + Combine end");
