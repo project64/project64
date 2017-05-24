@@ -318,9 +318,7 @@ grDepthBiasLevel(FxI32 level)
 }
 
 // draw
-
-FX_ENTRY void FX_CALL
-grDrawTriangle(const void *a, const void *b, const void *c)
+void gfxDrawTriangle(const void *a, const void *b, const void *c)
 {
     WriteTrace(TraceGlitch, TraceDebug, "start");
     vbo_enable();

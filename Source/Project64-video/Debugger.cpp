@@ -56,8 +56,8 @@ void output(float x, float y, int scale, const char *fmt, ...)
 
         ConvertCoordsKeep(v, 4);
 
-        grDrawTriangle(&v[0], &v[1], &v[2]);
-        grDrawTriangle(&v[1], &v[3], &v[2]);
+        gfxDrawTriangle(&v[0], &v[1], &v[2]);
+        gfxDrawTriangle(&v[1], &v[3], &v[2]);
 
         x += 8;
     }

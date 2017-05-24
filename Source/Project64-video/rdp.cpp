@@ -2562,8 +2562,8 @@ void rdp_fillrect()
     }
     else
     {
-        grDrawTriangle(&v[0], &v[2], &v[1]);
-        grDrawTriangle(&v[2], &v[3], &v[1]);
+        gfxDrawTriangle(&v[0], &v[2], &v[1]);
+        gfxDrawTriangle(&v[2], &v[3], &v[1]);
     }
 
     rdp.tri_n += 2;

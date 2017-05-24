@@ -198,8 +198,8 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
     grRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
     grAuxBufferExt(GR_BUFFER_AUXBUFFER);
     grBufferClear(0, 0, 0xFFFF);
-    grDrawTriangle(&v[0], &v[2], &v[1]);
-    grDrawTriangle(&v[2], &v[3], &v[1]);
+    gfxDrawTriangle(&v[0], &v[2], &v[1]);
+    gfxDrawTriangle(&v[2], &v[3], &v[1]);
     grRenderBuffer(GR_BUFFER_BACKBUFFER);
     grAuxBufferExt(GR_BUFFER_TEXTUREAUXBUFFER_EXT);
     gfxDepthMask(FXTRUE);
@@ -623,8 +623,8 @@ void DrawHiresImage(DRAWIMAGE & d, int screensize)
     AddOffset(v, 4);
     for (int s = 0; s < 4; s++)
         apply_shade_mods(&(v[s]));
-    grDrawTriangle(&v[0], &v[2], &v[1]);
-    grDrawTriangle(&v[2], &v[3], &v[1]);
+    gfxDrawTriangle(&v[0], &v[2], &v[1]);
+    gfxDrawTriangle(&v[2], &v[3], &v[1]);
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE | UPDATE_SCISSOR;
     rdp.tri_n += 2;
     rdp.tbuff_tex = tbuff_tex;

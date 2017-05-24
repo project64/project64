@@ -307,9 +307,7 @@ grDepthBiasLevel(FxI32 level)
 }
 
 // draw
-
-FX_ENTRY void FX_CALL
-grDrawTriangle(const void *a, const void *b, const void *c)
+void gfxDrawTriangle(const void *a, const void *b, const void *c)
 {
     float *a_x = (float*)a + xy_off / sizeof(float);
     float *a_y = (float*)a + xy_off / sizeof(float) + 1;
@@ -442,7 +440,7 @@ grDrawTriangle(const void *a, const void *b, const void *c)
         -(*c_y - (float)heighto) / (float)(g_height / 2) / *c_q, ZCALC(*c_z, *c_q), 1.0f / *c_q);
 
     glEnd();
-    grDisplayGLError("grDrawTriangle");
+    grDisplayGLError("gfxDrawTriangle");
 }
 
 FX_ENTRY void FX_CALL

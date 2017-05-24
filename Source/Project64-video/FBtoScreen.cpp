@@ -113,8 +113,8 @@ static void DrawRE2Video(FB_TO_SCREEN_INFO & fb_info, float scale)
         { ul_x, lr_y, 1, 1, 0.5f, lr_v, 0.5f, lr_v, { 0.5f, lr_v, 0.5f, lr_v } },
         { lr_x, lr_y, 1, 1, lr_u, lr_v, lr_u, lr_v, { lr_u, lr_v, lr_u, lr_v } }
     };
-    grDrawTriangle(&v[0], &v[2], &v[1]);
-    grDrawTriangle(&v[2], &v[3], &v[1]);
+    gfxDrawTriangle(&v[0], &v[2], &v[1]);
+    gfxDrawTriangle(&v[2], &v[3], &v[1]);
 }
 
 static void DrawRE2Video256(FB_TO_SCREEN_INFO & fb_info)
@@ -266,8 +266,8 @@ static void DrawFrameBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
                 { ul_x, lr_y, 1, 1, 0.5f, lr_v, 0.5f, lr_v, { 0.5f, lr_v, 0.5f, lr_v } },
                 { lr_x, lr_y, 1, 1, lr_u, lr_v, lr_u, lr_v, { lr_u, lr_v, lr_u, lr_v } }
             };
-            grDrawTriangle(&v[0], &v[2], &v[1]);
-            grDrawTriangle(&v[2], &v[3], &v[1]);
+            gfxDrawTriangle(&v[0], &v[2], &v[1]);
+            gfxDrawTriangle(&v[2], &v[3], &v[1]);
         }
     }
 }
@@ -392,8 +392,8 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
             { ul_x, lr_y, 1, 1, 0.5f, lr_v, 0.5f, lr_v, { 0.5f, lr_v, 0.5f, lr_v } },
             { lr_x, lr_y, 1, 1, lr_u, lr_v, lr_u, lr_v, { lr_u, lr_v, lr_u, lr_v } }
         };
-        grDrawTriangle(&v[0], &v[2], &v[1]);
-        grDrawTriangle(&v[2], &v[3], &v[1]);
+        gfxDrawTriangle(&v[0], &v[2], &v[1]);
+        gfxDrawTriangle(&v[2], &v[3], &v[1]);
     }
     return true;
 }
@@ -464,8 +464,8 @@ static void DrawDepthBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
                 { ul_x, lr_y, 1, 1, 0.5f, lr_v, 0.5f, lr_v, { 0.5f, lr_v, 0.5f, lr_v } },
                 { lr_x, lr_y, 1, 1, lr_u, lr_v, lr_u, lr_v, { lr_u, lr_v, lr_u, lr_v } }
             };
-            grDrawTriangle(&v[0], &v[2], &v[1]);
-            grDrawTriangle(&v[2], &v[3], &v[1]);
+            gfxDrawTriangle(&v[0], &v[2], &v[1]);
+            gfxDrawTriangle(&v[2], &v[3], &v[1]);
         }
     }
 }
@@ -533,8 +533,8 @@ static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         { ul_x, lr_y, 1, 1, ul_u, lr_v, ul_u, lr_v, { ul_u, lr_v, ul_u, lr_v } },
         { lr_x, lr_y, 1, 1, lr_u, lr_v, lr_u, lr_v, { lr_u, lr_v, lr_u, lr_v } }
     };
-    grDrawTriangle(&v[0], &v[2], &v[1]);
-    grDrawTriangle(&v[2], &v[3], &v[1]);
+    gfxDrawTriangle(&v[0], &v[2], &v[1]);
+    gfxDrawTriangle(&v[2], &v[3], &v[1]);
     //  grAuxBufferExt( GR_BUFFER_TEXTUREAUXBUFFER_EXT );
     rdp.update |= UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
 }
@@ -624,6 +624,6 @@ void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         { ul_x, lr_y, 1, 1, zero, lr_v, zero, lr_v, { zero, lr_v, zero, lr_v } },
         { lr_x, lr_y, 1, 1, lr_u, lr_v, lr_u, lr_v, { lr_u, lr_v, lr_u, lr_v } }
     };
-    grDrawTriangle(&v[0], &v[2], &v[1]);
-    grDrawTriangle(&v[2], &v[3], &v[1]);
+    gfxDrawTriangle(&v[0], &v[2], &v[1]);
+    gfxDrawTriangle(&v[2], &v[3], &v[1]);
 }
