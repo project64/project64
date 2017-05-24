@@ -240,8 +240,7 @@ void gfxDepthBufferMode(GrDepthBufferMode_t mode)
     }
 }
 
-FX_ENTRY void FX_CALL
-grDepthBufferFunction(GrCmpFnc_t function)
+void gfxDepthBufferFunction(GrCmpFnc_t function)
 {
     WriteTrace(TraceGlitch, TraceDebug, "function: %d", function);
     switch (function)

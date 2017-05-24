@@ -90,7 +90,7 @@ static int SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaque)
             GR_BLEND_ONE,
             GR_BLEND_ZERO);
     }
-    grDepthBufferFunction(GR_CMP_ALWAYS);
+    gfxDepthBufferFunction(GR_CMP_ALWAYS);
     gfxCullMode(GR_CULL_DISABLE);
     grDepthMask(FXFALSE);
     rdp.update |= UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
@@ -499,7 +499,7 @@ static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         GR_BLEND_ONE_MINUS_SRC_ALPHA,
         GR_BLEND_ONE,
         GR_BLEND_ZERO);
-    grDepthBufferFunction(GR_CMP_ALWAYS);
+    gfxDepthBufferFunction(GR_CMP_ALWAYS);
     grDepthMask(FXFALSE);
     gfxCullMode(GR_CULL_DISABLE);
     gfxTexCombine(GR_TMU1,

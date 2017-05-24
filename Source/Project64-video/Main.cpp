@@ -538,7 +538,7 @@ int InitGfx()
     }
 
     gfxDepthBufferMode(GR_DEPTHBUFFER_ZBUFFER);
-    grDepthBufferFunction(GR_CMP_LESS);
+    gfxDepthBufferFunction(GR_CMP_LESS);
     grDepthMask(FXTRUE);
 
     ChangeSize();
@@ -548,7 +548,7 @@ int InitGfx()
 
     gfxCullMode(GR_CULL_DISABLE);
     gfxDepthBufferMode(GR_DEPTHBUFFER_ZBUFFER);
-    grDepthBufferFunction(GR_CMP_ALWAYS);
+    gfxDepthBufferFunction(GR_CMP_ALWAYS);
     grRenderBuffer(GR_BUFFER_BACKBUFFER);
     gfxColorMask(FXTRUE, FXTRUE);
     grDepthMask(FXTRUE);
@@ -1318,7 +1318,7 @@ void newSwapBuffers()
 
     rdp.update |= UPDATE_SCISSOR | UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
     gfxClipWindow(0, 0, g_scr_res_x, g_scr_res_y);
-    grDepthBufferFunction(GR_CMP_ALWAYS);
+    gfxDepthBufferFunction(GR_CMP_ALWAYS);
     grDepthMask(FXFALSE);
     gfxCullMode(GR_CULL_DISABLE);
 

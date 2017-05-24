@@ -340,7 +340,7 @@ static GrTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
         GR_BLEND_ONE,
         GR_BLEND_ZERO);
     gfxClipWindow(0, 0, g_scr_res_x, g_scr_res_y);
-    grDepthBufferFunction(GR_CMP_ALWAYS);
+    gfxDepthBufferFunction(GR_CMP_ALWAYS);
     grDepthMask(FXFALSE);
     gfxCullMode(GR_CULL_DISABLE);
     gfxFogMode(GR_FOG_DISABLE);

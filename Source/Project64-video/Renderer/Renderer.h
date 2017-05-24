@@ -44,6 +44,7 @@ void gfxConstantColorValueExt(GrChipID_t tmu, GrColor_t value);
 void gfxVertexLayout(FxU32 param, FxI32 offset, FxU32 mode);
 void gfxCullMode(GrCullMode_t mode);
 void gfxDepthBufferMode(GrDepthBufferMode_t mode);
+void gfxDepthBufferFunction(GrCmpFnc_t function);
 
 extern uint32_t nbTextureUnits;
 extern uint32_t g_scr_res_x, g_scr_res_y, g_res_x, g_res_y;

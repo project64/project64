@@ -2521,7 +2521,7 @@ void rdp_fillrect()
 
         gfxCullMode(GR_CULL_DISABLE);
         gfxFogMode(GR_FOG_DISABLE);
-        grDepthBufferFunction(GR_CMP_ALWAYS);
+        gfxDepthBufferFunction(GR_CMP_ALWAYS);
         grDepthMask(FXFALSE);
 
         rdp.update |= UPDATE_COMBINE | UPDATE_CULL_MODE | UPDATE_FOG_ENABLED | UPDATE_ZBUF_ENABLED;

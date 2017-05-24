@@ -1752,27 +1752,27 @@ void update()
                 switch ((rdp.rm & 0xC00) >> 10) {
                 case 0:
                     grDepthBiasLevel(0);
-                    grDepthBufferFunction(g_settings->zmode_compare_less() ? GR_CMP_LESS : GR_CMP_LEQUAL);
+                    gfxDepthBufferFunction(g_settings->zmode_compare_less() ? GR_CMP_LESS : GR_CMP_LEQUAL);
                     break;
                 case 1:
                     grDepthBiasLevel(-4);
-                    grDepthBufferFunction(g_settings->zmode_compare_less() ? GR_CMP_LESS : GR_CMP_LEQUAL);
+                    gfxDepthBufferFunction(g_settings->zmode_compare_less() ? GR_CMP_LESS : GR_CMP_LEQUAL);
                     break;
                 case 2:
                     grDepthBiasLevel(g_settings->ucode() == CSettings::ucode_PerfectDark ? -4 : 0);
-                    grDepthBufferFunction(GR_CMP_LESS);
+                    gfxDepthBufferFunction(GR_CMP_LESS);
                     break;
                 case 3:
                     // will be set dynamically per polygon
                     //grDepthBiasLevel(-deltaZ);
-                    grDepthBufferFunction(GR_CMP_LEQUAL);
+                    gfxDepthBufferFunction(GR_CMP_LEQUAL);
                     break;
                 }
             }
             else
             {
                 grDepthBiasLevel(0);
-                grDepthBufferFunction(GR_CMP_ALWAYS);
+                gfxDepthBufferFunction(GR_CMP_ALWAYS);
             }
 
             if (rdp.flags & ZBUF_UPDATE)
@@ -1783,7 +1783,7 @@ void update()
         else
         {
             grDepthBiasLevel(0);
-            grDepthBufferFunction(GR_CMP_ALWAYS);
+            gfxDepthBufferFunction(GR_CMP_ALWAYS);
             grDepthMask(FXFALSE);
         }
     }
