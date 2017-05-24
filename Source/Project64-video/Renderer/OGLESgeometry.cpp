@@ -144,19 +144,6 @@ void init_geometry()
 }
 
 FX_ENTRY void FX_CALL
-grCoordinateSpace(GrCoordinateSpaceMode_t mode)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
-    switch (mode)
-    {
-    case GR_WINDOW_COORDS:
-        break;
-    default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknwown coordinate space : %x", mode);
-    }
-}
-
-FX_ENTRY void FX_CALL
 grVertexLayout(FxU32 param, FxI32 offset, FxU32 mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "param: %d offset: %d mode: %d", param, offset, mode);
