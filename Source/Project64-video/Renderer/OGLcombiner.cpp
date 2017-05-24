@@ -2651,9 +2651,7 @@ void gfxTexAlphaCombineExt(GrChipID_t tmu, GrTACUColor_t a, GrCombineMode_t a_mo
     need_to_compile = 1;
 }
 
-FX_ENTRY void FX_CALL
-grConstantColorValueExt(GrChipID_t    tmu,
-    GrColor_t     value)
+void gfxConstantColorValueExt(GrChipID_t tmu, GrColor_t value)
 {
     int num_tex;
     WriteTrace(TraceGlitch, TraceDebug, "tmu: %d value: %d", tmu, value);
@@ -2709,5 +2707,5 @@ grConstantColorValueExt(GrChipID_t    tmu,
         ccolor1_location = glGetUniformLocationARB(program_object, "ccolor1");
         glUniform4fARB(ccolor1_location, ccolor1[0], ccolor1[1], ccolor1[2], ccolor1[3]);
     }
-    grDisplayGLError("grConstantColorValueExt");
+    grDisplayGLError("gfxConstantColorValueExt");
 }
