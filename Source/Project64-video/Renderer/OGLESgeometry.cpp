@@ -143,8 +143,7 @@ void init_geometry()
     glDisable(GL_DEPTH_TEST);
 }
 
-FX_ENTRY void FX_CALL
-grVertexLayout(FxU32 param, FxI32 offset, FxU32 mode)
+void gfxVertexLayout(FxU32 param, FxI32 offset, FxU32 mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "param: %d offset: %d mode: %d", param, offset, mode);
     switch (param)
@@ -178,7 +177,7 @@ grVertexLayout(FxU32 param, FxI32 offset, FxU32 mode)
         st1_off = offset;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown grVertexLayout parameter : %x", param);
+        WriteTrace(TraceGlitch, TraceWarning, "unknown gfxVertexLayout parameter : %x", param);
     }
 }
 
