@@ -15667,7 +15667,7 @@ void Combine()
                 ;
             else
             {
-                grChromakeyValue(0);
+                gfxChromakeyValue(0);
                 gfxChromakeyMode(GR_CHROMAKEY_ENABLE);
             }
         }
