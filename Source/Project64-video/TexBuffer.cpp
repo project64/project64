@@ -258,9 +258,9 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
                         grRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
                         gfxTextureBufferExt(texbuf->tmu, texbuf->tex_addr, texbuf->info.smallLodLog2, texbuf->info.largeLodLog2,
                             texbuf->info.aspectRatioLog2, texbuf->info.format, GR_MIPMAPLEVELMASK_BOTH);
-                        grDepthMask(FXFALSE);
+                        gfxDepthMask(FXFALSE);
                         grBufferClear(0, 0, 0xFFFF);
-                        grDepthMask(FXTRUE);
+                        gfxDepthMask(FXTRUE);
                         grRenderBuffer(GR_BUFFER_BACKBUFFER);
                         rdp.texbufs[i].count--;
                         if (j < rdp.texbufs[i].count)
@@ -300,9 +300,9 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
     if (rdp.cur_image->clear && g_settings->fb_hwfbe_buf_clear_enabled() && cimage.changed)
     {
         rdp.cur_image->clear = FALSE;
-        grDepthMask(FXFALSE);
+        gfxDepthMask(FXFALSE);
         grBufferClear(0, 0, 0xFFFF);
-        grDepthMask(FXTRUE);
+        gfxDepthMask(FXTRUE);
     }
     //*/
     //  memset(gfx.RDRAM+cimage.addr, 0, cimage.width*cimage.height*cimage.size);
@@ -341,7 +341,7 @@ static GrTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
         GR_BLEND_ZERO);
     gfxClipWindow(0, 0, g_scr_res_x, g_scr_res_y);
     gfxDepthBufferFunction(GR_CMP_ALWAYS);
-    grDepthMask(FXFALSE);
+    gfxDepthMask(FXFALSE);
     gfxCullMode(GR_CULL_DISABLE);
     gfxFogMode(GR_FOG_DISABLE);
     GrTextureFormat_t buf_format = (rdp.tbuff_tex) ? rdp.tbuff_tex->info.format : GFX_TEXFMT_RGB_565;

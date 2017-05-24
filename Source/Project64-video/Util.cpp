@@ -1776,15 +1776,15 @@ void update()
             }
 
             if (rdp.flags & ZBUF_UPDATE)
-                grDepthMask(FXTRUE);
+                gfxDepthMask(FXTRUE);
             else
-                grDepthMask(FXFALSE);
+                gfxDepthMask(FXFALSE);
         }
         else
         {
             grDepthBiasLevel(0);
             gfxDepthBufferFunction(GR_CMP_ALWAYS);
-            grDepthMask(FXFALSE);
+            gfxDepthMask(FXFALSE);
         }
     }
 

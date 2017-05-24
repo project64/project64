@@ -539,7 +539,7 @@ int InitGfx()
 
     gfxDepthBufferMode(GR_DEPTHBUFFER_ZBUFFER);
     gfxDepthBufferFunction(GR_CMP_LESS);
-    grDepthMask(FXTRUE);
+    gfxDepthMask(FXTRUE);
 
     ChangeSize();
 
@@ -551,11 +551,11 @@ int InitGfx()
     gfxDepthBufferFunction(GR_CMP_ALWAYS);
     grRenderBuffer(GR_BUFFER_BACKBUFFER);
     gfxColorMask(FXTRUE, FXTRUE);
-    grDepthMask(FXTRUE);
+    gfxDepthMask(FXTRUE);
     grBufferClear(0, 0, 0xFFFF);
     grBufferSwap(0);
     grBufferClear(0, 0, 0xFFFF);
-    grDepthMask(FXFALSE);
+    gfxDepthMask(FXFALSE);
     grTexFilterMode(0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
     grTexFilterMode(1, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
     grTexClampMode(0, GR_TEXTURECLAMP_CLAMP, GR_TEXTURECLAMP_CLAMP);
@@ -1116,7 +1116,7 @@ static void DrawFrameBuffer()
     if (to_fullscreen)
         GoToFullScreen();
 
-    grDepthMask(FXTRUE);
+    gfxDepthMask(FXTRUE);
     gfxColorMask(FXTRUE, FXTRUE);
     grBufferClear(0, 0, 0xFFFF);
     drawViRegBG();
@@ -1319,7 +1319,7 @@ void newSwapBuffers()
     rdp.update |= UPDATE_SCISSOR | UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
     gfxClipWindow(0, 0, g_scr_res_x, g_scr_res_y);
     gfxDepthBufferFunction(GR_CMP_ALWAYS);
-    grDepthMask(FXFALSE);
+    gfxDepthMask(FXFALSE);
     gfxCullMode(GR_CULL_DISABLE);
 
     if (g_capture_screen)
@@ -1434,7 +1434,7 @@ void newSwapBuffers()
 
     if (g_settings->wireframe() || g_settings->buff_clear() || (g_settings->hacks(CSettings::hack_PPL) && g_settings->ucode() == CSettings::ucode_S2DEX))
     {
-        grDepthMask((g_settings->hacks(CSettings::hack_RE2) && g_settings->fb_depth_render_enabled()) ? FXFALSE : FXTRUE);
+        gfxDepthMask((g_settings->hacks(CSettings::hack_RE2) && g_settings->fb_depth_render_enabled()) ? FXFALSE : FXTRUE);
         grBufferClear(0, 0, 0xFFFF);
     }
 

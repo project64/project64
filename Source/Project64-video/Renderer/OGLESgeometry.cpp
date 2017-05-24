@@ -287,12 +287,12 @@ void gfxDepthBufferFunction(GrCmpFnc_t function)
     }
 }
 
-FX_ENTRY void FX_CALL
-grDepthMask(FxBool mask)
+void gfxDepthMask(FxBool mask)
 {
     WriteTrace(TraceGlitch, TraceDebug, "mask: %d", mask);
     glDepthMask(mask);
 }
+
 float biasFactor = 0;
 FX_ENTRY void FX_CALL
 grDepthBiasLevel(FxI32 level)

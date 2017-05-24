@@ -2395,7 +2395,7 @@ void rdp_fillrect()
         if (!g_settings->hacks(CSettings::hack_Hyperbike) || rdp.ci_width > 64) //do not clear main depth buffer for aux depth buffers
         {
             update_scissor();
-            grDepthMask(FXTRUE);
+            gfxDepthMask(FXTRUE);
             gfxColorMask(FXFALSE, FXFALSE);
             grBufferClear(0, 0, rdp.fill_color ? rdp.fill_color & 0xFFFF : 0xFFFF);
             gfxColorMask(FXTRUE, FXTRUE);
@@ -2437,9 +2437,9 @@ void rdp_fillrect()
                 ((uint32_t)((float)((color & 0x07C0) >> 6) / 31.0f * 255.0f) << 16) |
                 ((uint32_t)((float)((color & 0x003E) >> 1) / 31.0f * 255.0f) << 8);
         }
-        grDepthMask(FXFALSE);
+        gfxDepthMask(FXFALSE);
         grBufferClear(color, 0, 0xFFFF);
-        grDepthMask(FXTRUE);
+        gfxDepthMask(FXTRUE);
         rdp.update |= UPDATE_ZBUF_ENABLED;
         WriteTrace(TraceRDP, TraceDebug, "Fillrect - cleared the texture buffer");
         return;
@@ -2522,7 +2522,7 @@ void rdp_fillrect()
         gfxCullMode(GR_CULL_DISABLE);
         gfxFogMode(GR_FOG_DISABLE);
         gfxDepthBufferFunction(GR_CMP_ALWAYS);
-        grDepthMask(FXFALSE);
+        gfxDepthMask(FXFALSE);
 
         rdp.update |= UPDATE_COMBINE | UPDATE_CULL_MODE | UPDATE_FOG_ENABLED | UPDATE_ZBUF_ENABLED;
     }
@@ -2721,9 +2721,9 @@ static void RestoreScale()
     rdp.view_trans[1] *= rdp.scale_y;
     rdp.update |= UPDATE_VIEWPORT | UPDATE_SCISSOR;
     //*
-    grDepthMask(FXFALSE);
+    gfxDepthMask(FXFALSE);
     grBufferClear(0, 0, 0xFFFF);
-    grDepthMask(FXTRUE);
+    gfxDepthMask(FXTRUE);
     //*/
 }
 
