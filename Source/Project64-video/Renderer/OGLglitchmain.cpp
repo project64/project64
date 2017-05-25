@@ -1631,9 +1631,7 @@ void gfxBufferClear(GrColor_t color, gfxAlpha_t alpha, FxU32 depth)
     grDisplayGLError("gfxBufferClear");
 }
 
-// #include <unistd.h>
-FX_ENTRY void FX_CALL
-grBufferSwap(FxU32 swap_interval)
+void gfxBufferSwap(FxU32 swap_interval)
 {
     int i;
     WriteTrace(TraceGlitch, TraceDebug, "swap_interval: %d", swap_interval);

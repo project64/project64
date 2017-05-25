@@ -1359,9 +1359,7 @@ void gfxBufferClear(GrColor_t color, gfxAlpha_t alpha, FxU32 depth)
     buffer_cleared = 1;
 }
 
-// #include <unistd.h>
-FX_ENTRY void FX_CALL
-grBufferSwap(FxU32 swap_interval)
+void gfxBufferSwap(FxU32 swap_interval)
 {
     //   GLuint program;
 

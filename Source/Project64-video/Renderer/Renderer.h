@@ -58,6 +58,7 @@ FxU32 gfxGet(FxU32 pname, FxU32 plength, FxI32 *params);
 void gfxFramebufferCopyExt(int x, int y, int w, int h, int from, int to, int mode);
 void gfxRenderBuffer(GrBuffer_t buffer);
 void gfxBufferClear(GrColor_t color, gfxAlpha_t alpha, FxU32 depth);
+void gfxBufferSwap(FxU32 swap_interval);
 
 extern uint32_t nbTextureUnits;
 extern uint32_t g_scr_res_x, g_scr_res_y, g_res_x, g_res_y;

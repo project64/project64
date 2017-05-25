@@ -362,7 +362,7 @@ void DisplayLoadProgress(const wchar_t *format, ...)
     int len = minval((int)strlen(buf) * 8, 1024);
     x = (1024 - len) / 2.0f;
     output(x, 360, 1, buf);
-    grBufferSwap(0);
+    gfxBufferSwap(0);
     gfxColorMask(FXTRUE, FXTRUE);
     gfxBufferClear(0, 0, 0xFFFF);
 }
@@ -553,7 +553,7 @@ int InitGfx()
     gfxColorMask(FXTRUE, FXTRUE);
     gfxDepthMask(FXTRUE);
     gfxBufferClear(0, 0, 0xFFFF);
-    grBufferSwap(0);
+    gfxBufferSwap(0);
     gfxBufferClear(0, 0, 0xFFFF);
     gfxDepthMask(FXFALSE);
     grTexFilterMode(0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
@@ -1409,7 +1409,7 @@ void newSwapBuffers()
         gfxAuxBufferExt(GR_BUFFER_AUXBUFFER);
     }
     WriteTrace(TraceGlide64, TraceDebug, "BUFFER SWAPPED");
-    grBufferSwap(g_settings->vsync());
+    gfxBufferSwap(g_settings->vsync());
     if (*gfx.VI_STATUS_REG & 0x08) //gamma correction is used
     {
         if (!voodoo.gamma_correction)
