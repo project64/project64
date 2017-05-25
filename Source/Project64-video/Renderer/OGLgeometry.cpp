@@ -606,8 +606,7 @@ void gfxDrawVertexArray(FxU32 mode, FxU32 Count, void *pointers2)
     grDisplayGLError("gfxDrawVertexArray");
 }
 
-FX_ENTRY void FX_CALL
-grDrawVertexArrayContiguous(FxU32 mode, FxU32 Count, void *pointers, FxU32 stride)
+void gfxDrawVertexArrayContiguous(FxU32 mode, FxU32 Count, void *pointers, FxU32 stride)
 {
     unsigned int i;
     float *x, *y, *q, *s0, *t0, *s1, *t1, *z, *fog;
@@ -633,7 +632,7 @@ grDrawVertexArrayContiguous(FxU32 mode, FxU32 Count, void *pointers, FxU32 strid
         glBegin(GL_TRIANGLE_FAN);
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grDrawVertexArrayContiguous : unknown mode : %x", mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxDrawVertexArrayContiguous : unknown mode : %x", mode);
     }
 
     for (i = 0; i < Count; i++)
@@ -681,5 +680,5 @@ grDrawVertexArrayContiguous(FxU32 mode, FxU32 Count, void *pointers, FxU32 strid
     }
     glEnd();
 
-    grDisplayGLError("grDrawVertexArrayContiguous");
+    grDisplayGLError("gfxDrawVertexArrayContiguous");
 }
