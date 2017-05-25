@@ -59,7 +59,7 @@ float set_sprite_combine_mode()
         Z = ScaleZ(Z);
 
         if (rdp.othermode_l & 0x00000400)
-            grDepthBiasLevel(rdp.prim_dz);
+            gfxDepthBiasLevel(rdp.prim_dz);
     }
     else
     {

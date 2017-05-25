@@ -1603,7 +1603,7 @@ static void render_tri(uint16_t linew, int old_interpolate)
         {
             DepthBuffer(rdp.vtxbuf, n);
             if ((rdp.rm & 0xC10) == 0xC10)
-                grDepthBiasLevel(-deltaZ);
+                gfxDepthBiasLevel(-deltaZ);
             grDrawVertexArray(GR_TRIANGLE_FAN, n, rdp.vtx_buffer ? (&vtx_list2) : (&vtx_list1));
         }
     }
@@ -1751,27 +1751,27 @@ void update()
             {
                 switch ((rdp.rm & 0xC00) >> 10) {
                 case 0:
-                    grDepthBiasLevel(0);
+                    gfxDepthBiasLevel(0);
                     gfxDepthBufferFunction(g_settings->zmode_compare_less() ? GR_CMP_LESS : GR_CMP_LEQUAL);
                     break;
                 case 1:
-                    grDepthBiasLevel(-4);
+                    gfxDepthBiasLevel(-4);
                     gfxDepthBufferFunction(g_settings->zmode_compare_less() ? GR_CMP_LESS : GR_CMP_LEQUAL);
                     break;
                 case 2:
-                    grDepthBiasLevel(g_settings->ucode() == CSettings::ucode_PerfectDark ? -4 : 0);
+                    gfxDepthBiasLevel(g_settings->ucode() == CSettings::ucode_PerfectDark ? -4 : 0);
                     gfxDepthBufferFunction(GR_CMP_LESS);
                     break;
                 case 3:
                     // will be set dynamically per polygon
-                    //grDepthBiasLevel(-deltaZ);
+                    //gfxDepthBiasLevel(-deltaZ);
                     gfxDepthBufferFunction(GR_CMP_LEQUAL);
                     break;
                 }
             }
             else
             {
-                grDepthBiasLevel(0);
+                gfxDepthBiasLevel(0);
                 gfxDepthBufferFunction(GR_CMP_ALWAYS);
             }
 
@@ -1782,7 +1782,7 @@ void update()
         }
         else
         {
-            grDepthBiasLevel(0);
+            gfxDepthBiasLevel(0);
             gfxDepthBufferFunction(GR_CMP_ALWAYS);
             gfxDepthMask(FXFALSE);
         }

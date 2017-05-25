@@ -294,8 +294,7 @@ void gfxDepthMask(FxBool mask)
 }
 
 float biasFactor = 0;
-FX_ENTRY void FX_CALL
-grDepthBiasLevel(FxI32 level)
+void gfxDepthBiasLevel(FxI32 level)
 {
     WriteTrace(TraceGlitch, TraceDebug, "level: %d", level);
     if (level)

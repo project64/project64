@@ -47,6 +47,7 @@ void gfxDepthBufferMode(GrDepthBufferMode_t mode);
 void gfxDepthBufferFunction(GrCmpFnc_t function);
 void gfxDepthMask(FxBool mask);
 void gfxDrawTriangle(const void *a, const void *b, const void *c);
+void gfxDepthBiasLevel(FxI32 level);
 
 extern uint32_t nbTextureUnits;
 extern uint32_t g_scr_res_x, g_scr_res_y, g_res_x, g_res_y;

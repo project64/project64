@@ -286,8 +286,7 @@ void FindBestDepthBias()
     grDisplayGLError("FindBestDepthBias");
 }
 
-FX_ENTRY void FX_CALL
-grDepthBiasLevel(FxI32 level)
+void gfxDepthBiasLevel(FxI32 level)
 {
     WriteTrace(TraceGlitch, TraceDebug, "level: %d", level);
     if (level)
@@ -303,7 +302,7 @@ grDepthBiasLevel(FxI32 level)
         glPolygonOffset(0, 0);
         glDisable(GL_POLYGON_OFFSET_FILL);
     }
-    grDisplayGLError("grDepthBiasLevel");
+    grDisplayGLError("gfxDepthBiasLevel");
 }
 
 // draw
