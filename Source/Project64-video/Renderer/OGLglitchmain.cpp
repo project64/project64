@@ -445,18 +445,6 @@ int isWglExtensionSupported(const char *extension)
 
 #define GrPixelFormat_t int
 
-FX_ENTRY GrContext_t FX_CALL
-grSstWinOpenExt(
-    GrColorFormat_t      color_format,
-    GrOriginLocation_t   origin_location,
-    GrPixelFormat_t    /*pixelformat*/,
-    int                  nColBuffers,
-    int                  nAuxBuffers)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", color_format, origin_location, nColBuffers, nAuxBuffers);
-    return grSstWinOpen(color_format, origin_location, nColBuffers, nAuxBuffers);
-}
-
 #ifdef _WIN32
 # include <fcntl.h>
 # ifndef ATTACH_PARENT_PROCESS
@@ -878,7 +866,7 @@ FxBool gfxSstWinClose(GrContext_t context)
     //m_pScreen = NULL;
 #endif
     return FXTRUE;
-}
+    }
 
 void gfxTextureBufferExt(GrChipID_t tmu, FxU32 startAddress, GrLOD_t lodmin, GrLOD_t lodmax, GrAspectRatio_t aspect, GrTextureFormat_t fmt, FxU32 evenOdd)
 {
@@ -1007,7 +995,7 @@ void gfxTextureBufferExt(GrChipID_t tmu, FxU32 startAddress, GrLOD_t lodmin, GrL
         glScissor(0, g_viewport_offset, g_width, g_height);
 
         grDisplayGLError("gfxTextureBufferExt :: A");
-    }
+}
     else {
         if (!render_to_texture) //initialization
         {
@@ -2041,7 +2029,7 @@ grGetGammaTableExt(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
             blue[i] = aGammaRamp[2][i] >> 8;
         }
     }
-}
+    }
 
 FX_ENTRY void FX_CALL
 guGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB)
@@ -2156,5 +2144,5 @@ void CHECK_FRAMEBUFFER_STATUS()
         break;
         /* programming error; will fail on all hardware */
         /*assert(0);*/
-    }
 }
+    }
