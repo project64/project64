@@ -534,8 +534,7 @@ void gfxDrawLine(const void *a, const void *b)
     grDisplayGLError("gfxDrawLine");
 }
 
-FX_ENTRY void FX_CALL
-grDrawVertexArray(FxU32 mode, FxU32 Count, void *pointers2)
+void gfxDrawVertexArray(FxU32 mode, FxU32 Count, void *pointers2)
 {
     unsigned int i;
     float *x, *y, *q, *s0, *t0, *s1, *t1, *z, *fog;
@@ -559,7 +558,7 @@ grDrawVertexArray(FxU32 mode, FxU32 Count, void *pointers2)
         glBegin(GL_TRIANGLE_FAN);
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grDrawVertexArray : unknown mode : %x", mode);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxDrawVertexArray : unknown mode : %x", mode);
     }
 
     for (i = 0; i < Count; i++)
@@ -604,7 +603,7 @@ grDrawVertexArray(FxU32 mode, FxU32 Count, void *pointers2)
     }
     glEnd();
 
-    grDisplayGLError("grDrawVertexArray");
+    grDisplayGLError("gfxDrawVertexArray");
 }
 
 FX_ENTRY void FX_CALL

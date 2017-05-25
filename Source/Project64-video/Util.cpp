@@ -1604,7 +1604,7 @@ static void render_tri(uint16_t linew, int old_interpolate)
             DepthBuffer(rdp.vtxbuf, n);
             if ((rdp.rm & 0xC10) == 0xC10)
                 gfxDepthBiasLevel(-deltaZ);
-            grDrawVertexArray(GR_TRIANGLE_FAN, n, rdp.vtx_buffer ? (&vtx_list2) : (&vtx_list1));
+            gfxDrawVertexArray(GR_TRIANGLE_FAN, n, rdp.vtx_buffer ? (&vtx_list2) : (&vtx_list1));
         }
     }
 }
