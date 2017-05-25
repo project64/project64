@@ -442,8 +442,7 @@ void gfxDrawTriangle(const void *a, const void *b, const void *c)
     grDisplayGLError("gfxDrawTriangle");
 }
 
-FX_ENTRY void FX_CALL
-grDrawLine(const void *a, const void *b)
+void gfxDrawLine(const void *a, const void *b)
 {
     float *a_x = (float*)a + xy_off / sizeof(float);
     float *a_y = (float*)a + xy_off / sizeof(float) + 1;
@@ -532,7 +531,7 @@ grDrawLine(const void *a, const void *b)
         -(*b_y - (float)heighto) / (float)(g_height / 2) / *b_q, ZCALC(*b_z, *b_q), 1.0f / *b_q);
 
     glEnd();
-    grDisplayGLError("grDrawLine");
+    grDisplayGLError("gfxDrawLine");
 }
 
 FX_ENTRY void FX_CALL

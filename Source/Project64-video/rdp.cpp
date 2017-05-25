@@ -1578,11 +1578,11 @@ void rdp_texrect()
     if (g_settings->wireframe())
     {
         SetWireframeCol();
-        grDrawLine(&vstd[0], &vstd[2]);
-        grDrawLine(&vstd[2], &vstd[1]);
-        grDrawLine(&vstd[1], &vstd[0]);
-        grDrawLine(&vstd[2], &vstd[3]);
-        grDrawLine(&vstd[3], &vstd[1]);
+        gfxDrawLine(&vstd[0], &vstd[2]);
+        gfxDrawLine(&vstd[2], &vstd[1]);
+        gfxDrawLine(&vstd[1], &vstd[0]);
+        gfxDrawLine(&vstd[2], &vstd[3]);
+        gfxDrawLine(&vstd[3], &vstd[1]);
     }
     else
     {
@@ -2553,12 +2553,12 @@ void rdp_fillrect()
     if (g_settings->wireframe())
     {
         SetWireframeCol();
-        grDrawLine(&v[0], &v[2]);
-        grDrawLine(&v[2], &v[1]);
-        grDrawLine(&v[1], &v[0]);
-        grDrawLine(&v[2], &v[3]);
-        grDrawLine(&v[3], &v[1]);
-        //grDrawLine (&v[1], &v[2]);
+        gfxDrawLine(&v[0], &v[2]);
+        gfxDrawLine(&v[2], &v[1]);
+        gfxDrawLine(&v[1], &v[0]);
+        gfxDrawLine(&v[2], &v[3]);
+        gfxDrawLine(&v[3], &v[1]);
+        //gfxDrawLine (&v[1], &v[2]);
     }
     else
     {

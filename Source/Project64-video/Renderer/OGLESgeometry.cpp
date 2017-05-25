@@ -344,8 +344,7 @@ void gfxDrawTriangle(const void *a, const void *b, const void *c)
     WriteTrace(TraceGlitch, TraceDebug, "Done");
 }
 
-FX_ENTRY void FX_CALL
-grDrawLine(const void *a, const void *b)
+void gfxDrawLine(const void *a, const void *b)
 {
 }
 
