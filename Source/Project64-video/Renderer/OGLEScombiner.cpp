@@ -166,7 +166,7 @@ SHADER_VARYING
 "void main()                                                    \n"
 "{                                                              \n"
 "  float q = aPosition.w;                                                   \n"
-"  float invertY = vertexOffset.z;                                          \n" //Usually 1.0 but -1.0 when rendering to a texture (see inverted_culling grRenderBuffer)
+"  float invertY = vertexOffset.z;                                          \n" //Usually 1.0 but -1.0 when rendering to a texture (see inverted_culling gfxRenderBuffer)
 "  gl_Position.x = (aPosition.x - vertexOffset.x) / vertexOffset.x;         \n"
 "  gl_Position.y = invertY *-(aPosition.y - vertexOffset.y) / vertexOffset.y;\n"
 "  gl_Position.z = aPosition.z / Z_MAX;                                     \n"

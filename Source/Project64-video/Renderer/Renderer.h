@@ -56,6 +56,7 @@ GrContext_t gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origi
 void gfxAuxBufferExt(GrBuffer_t buffer);
 FxU32 gfxGet(FxU32 pname, FxU32 plength, FxI32 *params);
 void gfxFramebufferCopyExt(int x, int y, int w, int h, int from, int to, int mode);
+void gfxRenderBuffer(GrBuffer_t buffer);
 
 extern uint32_t nbTextureUnits;
 extern uint32_t g_scr_res_x, g_scr_res_y, g_res_x, g_res_y;

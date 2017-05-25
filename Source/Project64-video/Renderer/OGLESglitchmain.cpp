@@ -1181,15 +1181,14 @@ void gfxFramebufferCopyExt(int x, int y, int w, int h, int from, int to, int mod
     }
 }
 
-FX_ENTRY void FX_CALL
-grRenderBuffer(GrBuffer_t buffer)
+void gfxRenderBuffer(GrBuffer_t buffer)
 {
 #ifdef _WIN32
     static HANDLE region = NULL;
     int realWidth = pBufferWidth, realHeight = pBufferHeight;
 #endif // _WIN32
     WriteTrace(TraceGlitch, TraceDebug, "buffer: %d", buffer);
-    //printf("grRenderBuffer(%d)\n", buffer);
+    //printf("gfxRenderBuffer(%d)\n", buffer);
 
     switch (buffer)
     {
@@ -1298,7 +1297,7 @@ grRenderBuffer(GrBuffer_t buffer)
         render_to_texture = 1;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grRenderBuffer : unknown buffer : %x", buffer);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxRenderBuffer : unknown buffer : %x", buffer);
     }
 }
 

@@ -2777,7 +2777,7 @@ void rdp_setcolorimage()
                 if (rdp.motionblur)
                 {
                     rdp.cur_image = &(rdp.texbufs[rdp.cur_tex_buf].images[0]);
-                    grRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
+                    gfxRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
                     gfxTextureBufferExt(rdp.cur_image->tmu, rdp.cur_image->tex_addr, rdp.cur_image->info.smallLodLog2, rdp.cur_image->info.largeLodLog2,
                         rdp.cur_image->info.aspectRatioLog2, rdp.cur_image->info.format, GR_MIPMAPLEVELMASK_BOTH);
                 }
