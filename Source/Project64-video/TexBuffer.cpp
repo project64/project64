@@ -537,7 +537,7 @@ int CopyDepthBuffer()
         { lr_x, lr_y, 1, 1, lr_u, lr_v, lr_u, lr_v, { lr_u, lr_v, lr_u, lr_v } }
     };
 
-    grAuxBufferExt(GR_BUFFER_AUXBUFFER);
+    gfxAuxBufferExt(GR_BUFFER_AUXBUFFER);
     grTexSource(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, GR_MIPMAPLEVELMASK_BOTH, &(rdp.tbuff_tex->info));
     grRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
     gfxTextureBufferExt(rdp.texbufs[1].tmu, rdp.texbufs[1].begin, LOD, LOD,
@@ -545,7 +545,7 @@ int CopyDepthBuffer()
     gfxDrawTriangle(&v[0], &v[2], &v[1]);
     gfxDrawTriangle(&v[2], &v[3], &v[1]);
     grRenderBuffer(GR_BUFFER_BACKBUFFER);
-    grAuxBufferExt(GR_BUFFER_TEXTUREAUXBUFFER_EXT);
+    gfxAuxBufferExt(GR_BUFFER_TEXTUREAUXBUFFER_EXT);
 
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE;
     if (g_settings->fog() && (rdp.flags & FOG_ENABLED))

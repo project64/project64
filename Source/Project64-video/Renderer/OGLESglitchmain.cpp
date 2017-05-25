@@ -896,8 +896,6 @@ int CheckTextureBufferFormat(GrChipID_t tmu, FxU32 startAddress, GrTexInfo *info
     return 0;
 }
 
-FX_ENTRY void FX_CALL grAuxBufferExt(GrBuffer_t buffer);
-
 FX_ENTRY FxU32 FX_CALL
 grGet(FxU32 pname, FxU32 plength, FxI32 *params)
 {
@@ -1306,11 +1304,10 @@ grRenderBuffer(GrBuffer_t buffer)
     }
 }
 
-FX_ENTRY void FX_CALL
-grAuxBufferExt(GrBuffer_t buffer)
+void gfxAuxBufferExt(GrBuffer_t buffer)
 {
     WriteTrace(TraceGlitch, TraceDebug, "buffer: %d", buffer);
-    //WriteTrace(TraceGlitch, TraceWarning, "grAuxBufferExt");
+    //WriteTrace(TraceGlitch, TraceWarning, "gfxAuxBufferExt");
 
     if (buffer == GR_BUFFER_AUXBUFFER) {
         invtex[0] = 0;

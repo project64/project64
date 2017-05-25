@@ -516,7 +516,7 @@ static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         GR_COMBINE_FACTOR_NONE,
         FXFALSE,
         FXFALSE);
-    //  grAuxBufferExt( GR_BUFFER_AUXBUFFER );
+    //  gfxAuxBufferExt( GR_BUFFER_AUXBUFFER );
     grTexSource(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, GR_MIPMAPLEVELMASK_BOTH, &(t_info));
     float ul_x = (float)rdp.scissor.ul_x;
     float ul_y = (float)rdp.scissor.ul_y;
@@ -535,7 +535,7 @@ static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
     };
     gfxDrawTriangle(&v[0], &v[2], &v[1]);
     gfxDrawTriangle(&v[2], &v[3], &v[1]);
-    //  grAuxBufferExt( GR_BUFFER_TEXTUREAUXBUFFER_EXT );
+    //  gfxAuxBufferExt( GR_BUFFER_TEXTUREAUXBUFFER_EXT );
     rdp.update |= UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
 }
 

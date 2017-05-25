@@ -1179,8 +1179,6 @@ int CheckTextureBufferFormat(GrChipID_t tmu, FxU32 startAddress, GrTexInfo *info
     return 0;
 }
 
-FX_ENTRY void FX_CALL grAuxBufferExt(GrBuffer_t buffer);
-
 FX_ENTRY FxU32 FX_CALL
 grGet(FxU32 pname, FxU32 plength, FxI32 *params)
 {
@@ -1578,8 +1576,7 @@ grRenderBuffer(GrBuffer_t buffer)
     grDisplayGLError("grRenderBuffer");
 }
 
-FX_ENTRY void FX_CALL
-grAuxBufferExt(GrBuffer_t buffer)
+void gfxAuxBufferExt(GrBuffer_t buffer)
 {
     WriteTrace(TraceGlitch, TraceDebug, "buffer: %d", buffer);
 
@@ -1601,7 +1598,7 @@ grAuxBufferExt(GrBuffer_t buffer)
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
         need_to_compile = 1;
     }
-    grDisplayGLError("grAuxBufferExt");
+    grDisplayGLError("gfxAuxBufferExt");
 }
 
 FX_ENTRY void FX_CALL

@@ -709,15 +709,6 @@ grTexSource(GrChipID_t tmu,
             need_to_compile = 1;
         }
     }
-
-#if 0
-    extern int auxbuffer;
-    static int oldbuffer;
-    FX_ENTRY void FX_CALL grAuxBufferExt(GrBuffer_t buffer);
-    if (auxbuffer == GR_BUFFER_AUXBUFFER && auxbuffer != oldbuffer)
-        grAuxBufferExt(auxbuffer);
-    oldbuffer = auxbuffer;
-#endif
 }
 
 FX_ENTRY void FX_CALL

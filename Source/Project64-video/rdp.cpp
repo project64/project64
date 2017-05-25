@@ -2906,7 +2906,7 @@ void rdp_setcolorimage()
                 if (g_settings->fb_hwfbe_enabled() && !rdp.copy_ci_index && (rdp.copy_zi_index || g_settings->hacks(CSettings::hack_BAR)))
                 {
                     GrLOD_t LOD = g_scr_res_x > 1024 ? GFX_LOD_LOG2_1024 : GFX_LOD_LOG2_2048;
-                    grAuxBufferExt(GR_BUFFER_TEXTUREAUXBUFFER_EXT);
+                    gfxAuxBufferExt(GR_BUFFER_TEXTUREAUXBUFFER_EXT);
                     WriteTrace(TraceRDP, TraceDebug, "rdp_setcolorimage - set texture depth buffer to TMU0");
                 }
             }
