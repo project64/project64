@@ -1179,8 +1179,7 @@ int CheckTextureBufferFormat(GrChipID_t tmu, FxU32 startAddress, GrTexInfo *info
     return 0;
 }
 
-FX_ENTRY FxU32 FX_CALL
-grGet(FxU32 pname, FxU32 plength, FxI32 *params)
+FxU32 gfxGet(FxU32 pname, FxU32 plength, FxI32 *params)
 {
     WriteTrace(TraceGlitch, TraceDebug, "pname: %d plength: %d", pname, plength);
     switch (pname)
@@ -1291,7 +1290,7 @@ grGet(FxU32 pname, FxU32 plength, FxI32 *params)
         return 4;
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown pname in grGet : %x", pname);
+        WriteTrace(TraceGlitch, TraceWarning, "unknown pname in gfxGet : %x", pname);
     }
     return 0;
 }
@@ -1406,8 +1405,7 @@ void updateTexture()
     grDisplayGLError("updateTexture");
 }
 
-FX_ENTRY void FX_CALL grFramebufferCopyExt(int /*x*/, int /*y*/, int /*w*/, int /*h*/,
-    int from, int to, int mode)
+void gfxFramebufferCopyExt(int x, int y, int w, int h, int from, int to, int mode)
 {
     if (mode == GR_FBCOPY_MODE_DEPTH) {
         int tw = 1, th = 1;
@@ -1427,7 +1425,7 @@ FX_ENTRY void FX_CALL grFramebufferCopyExt(int /*x*/, int /*y*/, int /*w*/, int 
             glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
                 0, g_viewport_offset, tw, th, 0);
             glBindTexture(GL_TEXTURE_2D, default_texture);
-            grDisplayGLError("grFramebufferCopyExt :: A");
+            grDisplayGLError("gfxFramebufferCopyExt :: A");
             return;
         }
         if (from == GR_FBCOPY_BUFFER_FRONT && to == GR_FBCOPY_BUFFER_BACK) {
@@ -1449,7 +1447,7 @@ FX_ENTRY void FX_CALL grFramebufferCopyExt(int /*x*/, int /*y*/, int /*w*/, int 
             glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
             glBindTexture(GL_TEXTURE_2D, default_texture);
             glPopAttrib();
-            grDisplayGLError("grFramebufferCopyExt :: B");
+            grDisplayGLError("gfxFramebufferCopyExt :: B");
             return;
         }
     }
