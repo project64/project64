@@ -443,64 +443,6 @@ void gfxDrawTriangle(const void *a, const void *b, const void *c)
 }
 
 FX_ENTRY void FX_CALL
-grDrawPoint(const void *pt)
-{
-    float *x = (float*)pt + xy_off / sizeof(float);
-    float *y = (float*)pt + xy_off / sizeof(float) + 1;
-    float *z = (float*)pt + z_off / sizeof(float);
-    float *q = (float*)pt + q_off / sizeof(float);
-    unsigned char *pargb = (unsigned char*)pt + pargb_off;
-    float *s0 = (float*)pt + st0_off / sizeof(float);
-    float *t0 = (float*)pt + st0_off / sizeof(float) + 1;
-    float *s1 = (float*)pt + st1_off / sizeof(float);
-    float *t1 = (float*)pt + st1_off / sizeof(float) + 1;
-    float *fog = (float*)pt + fog_ext_off / sizeof(float);
-    WriteTrace(TraceGlitch, TraceDebug, "-");
-
-    if (nvidia_viewport_hack && !render_to_texture)
-    {
-        glViewport(0, g_viewport_offset, viewport_width, viewport_height);
-        nvidia_viewport_hack = 0;
-    }
-
-    reloadTexture();
-
-    if (need_to_compile) compile_shader();
-
-    glBegin(GL_POINTS);
-
-    if (nbTextureUnits > 2)
-    {
-        if (st0_en)
-            glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *s0 / *q / (float)tex1_width,
-                ytex(0, *t0 / *q / (float)tex1_height));
-        if (st1_en)
-            glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *s1 / *q / (float)tex0_width,
-                ytex(1, *t1 / *q / (float)tex0_height));
-    }
-    else
-    {
-        if (st0_en)
-            glTexCoord2f(*s0 / *q / (float)tex0_width,
-                ytex(0, *t0 / *q / (float)tex0_height));
-    }
-    if (pargb_en)
-        glColor4f(pargb[2] / 255.0f, pargb[1] / 255.0f, pargb[0] / 255.0f, pargb[3] / 255.0f);
-    if (fog_enabled && fog_coord_support)
-    {
-        if (!fog_ext_en || fog_enabled != 2)
-            glSecondaryColor3f((1.0f / *q) / 255.0f, 0.0f, 0.0f);
-        else
-            glSecondaryColor3f((1.0f / *fog) / 255.0f, 0.0f, 0.0f);
-    }
-    glVertex4f((*x - (float)widtho) / (float)(g_width / 2) / *q,
-        -(*y - (float)heighto) / (float)(g_height / 2) / *q, ZCALC(*z, *q), 1.0f / *q);
-
-    glEnd();
-    grDisplayGLError("grDrawPoint");
-}
-
-FX_ENTRY void FX_CALL
 grDrawLine(const void *a, const void *b)
 {
     float *a_x = (float*)a + xy_off / sizeof(float);

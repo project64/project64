@@ -345,11 +345,6 @@ void gfxDrawTriangle(const void *a, const void *b, const void *c)
 }
 
 FX_ENTRY void FX_CALL
-grDrawPoint(const void *pt)
-{
-}
-
-FX_ENTRY void FX_CALL
 grDrawLine(const void *a, const void *b)
 {
 }
