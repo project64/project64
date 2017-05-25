@@ -663,7 +663,7 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
             GrLfbInfo_t info;
             info.size = sizeof(GrLfbInfo_t);
 
-            if (grLfbLock(GR_LFB_READ_ONLY,
+            if (gfxLfbLock(GR_LFB_READ_ONLY,
                 buffer,
                 GR_LFBWRITEMODE_565,
                 GR_ORIGIN_UPPER_LEFT,
