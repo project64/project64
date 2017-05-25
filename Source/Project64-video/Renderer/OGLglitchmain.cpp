@@ -453,12 +453,7 @@ int isWglExtensionSupported(const char *extension)
 extern HWND g_hwnd_win;
 #endif
 
-FX_ENTRY GrContext_t FX_CALL
-grSstWinOpen(
-    GrColorFormat_t      color_format,
-    GrOriginLocation_t   origin_location,
-    int                  nColBuffers,
-    int                  nAuxBuffers)
+GrContext_t gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers)
 {
     static int show_warning = 1;
 
@@ -802,7 +797,7 @@ grSstWinOpen(
             ati_sucks = 0;
     }
 
-    grDisplayGLError("grSstWinOpen");
+    grDisplayGLError("gfxSstWinOpen");
     return 1;
 }
 
@@ -866,7 +861,7 @@ FxBool gfxSstWinClose(GrContext_t context)
     //m_pScreen = NULL;
 #endif
     return FXTRUE;
-    }
+}
 
 void gfxTextureBufferExt(GrChipID_t tmu, FxU32 startAddress, GrLOD_t lodmin, GrLOD_t lodmax, GrAspectRatio_t aspect, GrTextureFormat_t fmt, FxU32 evenOdd)
 {
@@ -995,7 +990,7 @@ void gfxTextureBufferExt(GrChipID_t tmu, FxU32 startAddress, GrLOD_t lodmin, GrL
         glScissor(0, g_viewport_offset, g_width, g_height);
 
         grDisplayGLError("gfxTextureBufferExt :: A");
-}
+    }
     else {
         if (!render_to_texture) //initialization
         {
@@ -1201,7 +1196,7 @@ grGet(FxU32 pname, FxU32 plength, FxI32 *params)
         if (plength < 4 || params == NULL) return 0;
         if (!nbTextureUnits)
         {
-            grSstWinOpen(GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
+            gfxSstWinOpen(GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
             gfxSstWinClose(0);
         }
 #ifdef VOODOO1
@@ -2029,7 +2024,7 @@ grGetGammaTableExt(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
             blue[i] = aGammaRamp[2][i] >> 8;
         }
     }
-    }
+}
 
 FX_ENTRY void FX_CALL
 guGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB)
@@ -2144,5 +2139,5 @@ void CHECK_FRAMEBUFFER_STATUS()
         break;
         /* programming error; will fail on all hardware */
         /*assert(0);*/
-}
     }
+}

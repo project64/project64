@@ -52,5 +52,7 @@ void gfxDrawLine(const void *a, const void *b);
 void gfxDrawVertexArray(FxU32 mode, FxU32 Count, void *pointers2);
 void gfxDrawVertexArrayContiguous(FxU32 mode, FxU32 Count, void *pointers, FxU32 stride);
 
+GrContext_t gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers);
+
 extern uint32_t nbTextureUnits;
 extern uint32_t g_scr_res_x, g_scr_res_y, g_res_x, g_res_y;
