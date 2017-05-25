@@ -1598,8 +1598,7 @@ void gfxAuxBufferExt(GrBuffer_t buffer)
     grDisplayGLError("gfxAuxBufferExt");
 }
 
-FX_ENTRY void FX_CALL
-grBufferClear(GrColor_t color, gfxAlpha_t alpha, FxU32 depth)
+void gfxBufferClear(GrColor_t color, gfxAlpha_t alpha, FxU32 depth)
 {
     WriteTrace(TraceGlitch, TraceDebug, "color: %X alpha: %X depth: %X", color, alpha, depth);
     switch (lfb_color_fmt)
@@ -1617,7 +1616,7 @@ grBufferClear(GrColor_t color, gfxAlpha_t alpha, FxU32 depth)
             alpha / 255.0f);
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grBufferClear: unknown color format : %x", lfb_color_fmt);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxBufferClear: unknown color format : %x", lfb_color_fmt);
     }
 
     if (w_buffer_mode)
@@ -1629,7 +1628,7 @@ grBufferClear(GrColor_t color, gfxAlpha_t alpha, FxU32 depth)
     // ZIGGY TODO check that color mask is on
     buffer_cleared = 1;
 
-    grDisplayGLError("grBufferClear");
+    grDisplayGLError("gfxBufferClear");
 }
 
 // #include <unistd.h>

@@ -2397,7 +2397,7 @@ void rdp_fillrect()
             update_scissor();
             gfxDepthMask(FXTRUE);
             gfxColorMask(FXFALSE, FXFALSE);
-            grBufferClear(0, 0, rdp.fill_color ? rdp.fill_color & 0xFFFF : 0xFFFF);
+            gfxBufferClear(0, 0, rdp.fill_color ? rdp.fill_color & 0xFFFF : 0xFFFF);
             gfxColorMask(FXTRUE, FXTRUE);
             rdp.update |= UPDATE_ZBUF_ENABLED;
         }
@@ -2438,7 +2438,7 @@ void rdp_fillrect()
                 ((uint32_t)((float)((color & 0x003E) >> 1) / 31.0f * 255.0f) << 8);
         }
         gfxDepthMask(FXFALSE);
-        grBufferClear(color, 0, 0xFFFF);
+        gfxBufferClear(color, 0, 0xFFFF);
         gfxDepthMask(FXTRUE);
         rdp.update |= UPDATE_ZBUF_ENABLED;
         WriteTrace(TraceRDP, TraceDebug, "Fillrect - cleared the texture buffer");
@@ -2722,7 +2722,7 @@ static void RestoreScale()
     rdp.update |= UPDATE_VIEWPORT | UPDATE_SCISSOR;
     //*
     gfxDepthMask(FXFALSE);
-    grBufferClear(0, 0, 0xFFFF);
+    gfxBufferClear(0, 0, 0xFFFF);
     gfxDepthMask(FXTRUE);
     //*/
 }
@@ -2985,7 +2985,7 @@ void rdp_setcolorimage()
                 else  //just clear buffer
                 {
                 gfxColorMask(FXTRUE, FXTRUE);
-                grBufferClear (0, 0, 0xFFFF);
+                gfxBufferClear (0, 0, 0xFFFF);
                 }
                 */
             }

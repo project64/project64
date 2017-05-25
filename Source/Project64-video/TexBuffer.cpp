@@ -259,7 +259,7 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
                         gfxTextureBufferExt(texbuf->tmu, texbuf->tex_addr, texbuf->info.smallLodLog2, texbuf->info.largeLodLog2,
                             texbuf->info.aspectRatioLog2, texbuf->info.format, GR_MIPMAPLEVELMASK_BOTH);
                         gfxDepthMask(FXFALSE);
-                        grBufferClear(0, 0, 0xFFFF);
+                        gfxBufferClear(0, 0, 0xFFFF);
                         gfxDepthMask(FXTRUE);
                         gfxRenderBuffer(GR_BUFFER_BACKBUFFER);
                         rdp.texbufs[i].count--;
@@ -301,7 +301,7 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
     {
         rdp.cur_image->clear = FALSE;
         gfxDepthMask(FXFALSE);
-        grBufferClear(0, 0, 0xFFFF);
+        gfxBufferClear(0, 0, 0xFFFF);
         gfxDepthMask(FXTRUE);
     }
     //*/

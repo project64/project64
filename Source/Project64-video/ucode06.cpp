@@ -197,7 +197,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
         GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
     gfxRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
     gfxAuxBufferExt(GR_BUFFER_AUXBUFFER);
-    grBufferClear(0, 0, 0xFFFF);
+    gfxBufferClear(0, 0, 0xFFFF);
     gfxDrawTriangle(&v[0], &v[2], &v[1]);
     gfxDrawTriangle(&v[2], &v[3], &v[1]);
     gfxRenderBuffer(GR_BUFFER_BACKBUFFER);

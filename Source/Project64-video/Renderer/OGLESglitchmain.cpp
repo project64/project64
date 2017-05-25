@@ -1325,8 +1325,7 @@ void gfxAuxBufferExt(GrBuffer_t buffer)
     }
 }
 
-FX_ENTRY void FX_CALL
-grBufferClear(GrColor_t color, gfxAlpha_t alpha, FxU32 depth)
+void gfxBufferClear(GrColor_t color, gfxAlpha_t alpha, FxU32 depth)
 {
     WriteTrace(TraceGlitch, TraceDebug, "color: %d alpha: %d depth: %d", color, alpha, depth);
     vbo_draw();
@@ -1345,7 +1344,7 @@ grBufferClear(GrColor_t color, gfxAlpha_t alpha, FxU32 depth)
             alpha / 255.0f);
         break;
     default:
-        WriteTrace(TraceGlitch, TraceWarning, "grBufferClear: unknown color format : %x", lfb_color_fmt);
+        WriteTrace(TraceGlitch, TraceWarning, "gfxBufferClear: unknown color format : %x", lfb_color_fmt);
     }
 
     glClear(GL_COLOR_BUFFER_BIT);

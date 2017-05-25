@@ -241,7 +241,7 @@ void guLoadTextures()
         tbuf_size = grTexCalcMemRequired(GFX_LOD_LOG2_1024, GFX_LOD_LOG2_1024,
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565);
         gfxRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
-        grBufferClear(0, 0, 0xFFFF);
+        gfxBufferClear(0, 0, 0xFFFF);
         gfxRenderBuffer(GR_BUFFER_BACKBUFFER);
     }
     else
@@ -251,7 +251,7 @@ void guLoadTextures()
         tbuf_size = grTexCalcMemRequired(GFX_LOD_LOG2_2048, GFX_LOD_LOG2_2048,
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565);
         gfxRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
-        grBufferClear(0, 0, 0xFFFF);
+        gfxBufferClear(0, 0, 0xFFFF);
         gfxRenderBuffer(GR_BUFFER_BACKBUFFER);
     }
 
@@ -364,7 +364,7 @@ void DisplayLoadProgress(const wchar_t *format, ...)
     output(x, 360, 1, buf);
     grBufferSwap(0);
     gfxColorMask(FXTRUE, FXTRUE);
-    grBufferClear(0, 0, 0xFFFF);
+    gfxBufferClear(0, 0, 0xFFFF);
 }
 
 #ifdef _WIN32
@@ -552,9 +552,9 @@ int InitGfx()
     gfxRenderBuffer(GR_BUFFER_BACKBUFFER);
     gfxColorMask(FXTRUE, FXTRUE);
     gfxDepthMask(FXTRUE);
-    grBufferClear(0, 0, 0xFFFF);
+    gfxBufferClear(0, 0, 0xFFFF);
     grBufferSwap(0);
-    grBufferClear(0, 0, 0xFFFF);
+    gfxBufferClear(0, 0, 0xFFFF);
     gfxDepthMask(FXFALSE);
     grTexFilterMode(0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
     grTexFilterMode(1, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
@@ -1118,7 +1118,7 @@ static void DrawFrameBuffer()
 
     gfxDepthMask(FXTRUE);
     gfxColorMask(FXTRUE, FXTRUE);
-    grBufferClear(0, 0, 0xFFFF);
+    gfxBufferClear(0, 0, 0xFFFF);
     drawViRegBG();
 }
 
@@ -1435,7 +1435,7 @@ void newSwapBuffers()
     if (g_settings->wireframe() || g_settings->buff_clear() || (g_settings->hacks(CSettings::hack_PPL) && g_settings->ucode() == CSettings::ucode_S2DEX))
     {
         gfxDepthMask((g_settings->hacks(CSettings::hack_RE2) && g_settings->fb_depth_render_enabled()) ? FXFALSE : FXTRUE);
-        grBufferClear(0, 0, 0xFFFF);
+        gfxBufferClear(0, 0, 0xFFFF);
     }
 
     if (g_settings->fb_read_back_to_screen2_enabled())
