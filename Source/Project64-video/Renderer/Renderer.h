@@ -60,6 +60,7 @@ void gfxRenderBuffer(GrBuffer_t buffer);
 void gfxBufferClear(GrColor_t color, gfxAlpha_t alpha, FxU32 depth);
 void gfxBufferSwap(FxU32 swap_interval);
 FxBool gfxLfbLock(GrLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode, GrOriginLocation_t origin, FxBool pixelPipeline, GrLfbInfo_t *info);
+FxBool gfxLfbUnlock(GrLock_t type, GrBuffer_t buffer);
 
 extern uint32_t nbTextureUnits;
 extern uint32_t g_scr_res_x, g_scr_res_y, g_res_x, g_res_y;

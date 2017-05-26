@@ -702,7 +702,7 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
                 }
 
                 // Unlock the backbuffer
-                grLfbUnlock(GR_LFB_READ_ONLY, buffer);
+                gfxLfbUnlock(GR_LFB_READ_ONLY, buffer);
                 WriteTrace(TraceRDP, TraceDebug, "LfbLock.  Framebuffer copy complete.");
             }
             else

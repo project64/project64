@@ -1460,13 +1460,12 @@ FxBool gfxLfbLock(GrLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode, 
     return FXTRUE;
 }
 
-FX_ENTRY FxBool FX_CALL
-grLfbUnlock(GrLock_t type, GrBuffer_t buffer)
+FxBool gfxLfbUnlock(GrLock_t type, GrBuffer_t buffer)
 {
     WriteTrace(TraceGlitch, TraceDebug, "type: %d, buffer: %d", type, buffer);
     if (type == GR_LFB_WRITE_ONLY)
     {
-        WriteTrace(TraceGlitch, TraceWarning, "grLfbUnlock : write only");
+        WriteTrace(TraceGlitch, TraceWarning, "gfxLfbUnlock : write only");
     }
     return FXTRUE;
 }

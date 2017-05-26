@@ -687,7 +687,7 @@ void CALL ReadScreen(void **dest, int *width, int *height)
 
     GrLfbInfo_t info;
     info.size = sizeof(GrLfbInfo_t);
-    if (grLfbLock(GR_LFB_READ_ONLY,
+    if (gfxLfbLock(GR_LFB_READ_ONLY,
         GR_BUFFER_FRONTBUFFER,
         GR_LFBWRITEMODE_565,
         GR_ORIGIN_UPPER_LEFT,
@@ -739,7 +739,7 @@ void CALL ReadScreen(void **dest, int *width, int *height)
             }
         }
         // Unlock the frontbuffer
-        grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_FRONTBUFFER);
+        gfxLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_FRONTBUFFER);
     }
     WriteTrace(TraceGlide64, TraceDebug, "Success");
 }
@@ -1350,7 +1350,7 @@ void newSwapBuffers()
 
         GrLfbInfo_t info;
         info.size = sizeof(GrLfbInfo_t);
-        if (grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_565, GR_ORIGIN_UPPER_LEFT, FXFALSE, &info))
+        if (gfxLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_565, GR_ORIGIN_UPPER_LEFT, FXFALSE, &info))
         {
             AUTO_PTR<uint8_t> ssimg_buffer(new uint8_t[image_width * image_height * 3]);
             uint8_t * ssimg = ssimg_buffer.get();
@@ -1393,7 +1393,7 @@ void newSwapBuffers()
                 }
             }
             // Unlock the backbuffer
-            grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
+            gfxLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
             write_png_file(path, image_width, image_height, ssimg);
             g_capture_screen = false;
         }
