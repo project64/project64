@@ -1266,20 +1266,27 @@ void CMipsMemoryVM::Load32SPRegisters(void)
 
 void CMipsMemoryVM::Load32DPCommand(void)
 {
-    switch (m_MemLookupAddress & 0x1FFFFFFF)
+    uint32_t addr;
+    static const uint32_t* DPC_regs[] = {
+        &(g_Reg -> DPC_STATUS_REG),
+        &(g_Reg -> DPC_CLOCK_REG),
+        &(g_Reg -> DPC_BUFBUSY_REG),
+        &(g_Reg -> DPC_PIPEBUSY_REG),
+        &(g_Reg -> DPC_TMEM_REG),
+    };
+
+    addr  = m_MemLookupAddress & 0x1FFFFFFF;
+    addr -= 0x0410000C; /* virtual memory address of DPC_STATUS_REG */
+    if (addr & 0x00000003 || (addr >> 2) >= sizeof(DPC_regs) / sizeof(DPC_regs[0]))
     {
-    case 0x0410000C: m_MemLookupValue.UW[0] = g_Reg->DPC_STATUS_REG; break;
-    case 0x04100010: m_MemLookupValue.UW[0] = g_Reg->DPC_CLOCK_REG; break;
-    case 0x04100014: m_MemLookupValue.UW[0] = g_Reg->DPC_BUFBUSY_REG; break;
-    case 0x04100018: m_MemLookupValue.UW[0] = g_Reg->DPC_PIPEBUSY_REG; break;
-    case 0x0410001C: m_MemLookupValue.UW[0] = g_Reg->DPC_TMEM_REG; break;
-    default:
         m_MemLookupValue.UW[0] = 0;
         if (bHaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
+        return;
     }
+    m_MemLookupValue.UW[0] = *(DPC_regs[addr >> 2]);
 }
 
 void CMipsMemoryVM::Load32MIPSInterface(void)
