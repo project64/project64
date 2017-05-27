@@ -138,7 +138,7 @@ void CTraceLog::TraceMessage(uint32_t module, uint8_t severity, const char * fil
 {
     CGuard Guard(m_CS);
 
-    for (uint32_t i = 0, n = m_Modules.size(); i < n; i++)
+    for (size_t i = 0, n = m_Modules.size(); i < n; i++)
     {
         m_Modules[i]->Write(module, severity, file, line, function, Message);
     }

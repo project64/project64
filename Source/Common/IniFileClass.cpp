@@ -55,7 +55,7 @@ void CIniFileBase::fInsertSpaces(int Pos, int NoOfSpaces)
     if (NoOfSpaces < 0)
     {
         int ReadPos = Pos + (NoOfSpaces * -1);
-        int WritePos = Pos;
+        int localWritePos = Pos;
 
         do
         {
@@ -63,17 +63,17 @@ void CIniFileBase::fInsertSpaces(int Pos, int NoOfSpaces)
             if (SizeToRead > fIS_MvSize) { SizeToRead = fIS_MvSize; }
             m_File.Seek(ReadPos, CFileBase::begin);
             m_File.Read(Data, SizeToRead);
-            m_File.Seek(WritePos, CFileBase::begin);
+            m_File.Seek(localWritePos, CFileBase::begin);
             m_File.Write(Data, SizeToRead);
             ReadPos += SizeToRead;
-            WritePos += SizeToRead;
+            localWritePos += SizeToRead;
         } while (SizeToRead > 0);
 
-        m_File.Seek(WritePos, CFileBase::begin);
+        m_File.Seek(localWritePos, CFileBase::begin);
         stdstr_f SpaceBuffer("%*c", (NoOfSpaces * -1), ' ');
         m_File.Write(SpaceBuffer.c_str(), (uint32_t)SpaceBuffer.length());
 
-        m_File.Seek(WritePos, CFileBase::begin);
+        m_File.Seek(localWritePos, CFileBase::begin);
         m_File.SetEndOfFile();
         m_File.Seek(0, CFileBase::begin);
     }
