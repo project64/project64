@@ -608,7 +608,7 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
     if (rdp.scale_x < 1.1f)
     {
         uint16_t * ptr_src = new uint16_t[width*height];
-        if (grLfbReadRegion(buffer,
+        if (gfxLfbReadRegion(buffer,
             (uint32_t)rdp.offset_x,
             (uint32_t)rdp.offset_y,//rdp.ci_upper_bound,
             width,

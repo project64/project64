@@ -1470,11 +1470,7 @@ FxBool gfxLfbUnlock(GrLock_t type, GrBuffer_t buffer)
     return FXTRUE;
 }
 
-FX_ENTRY FxBool FX_CALL
-grLfbReadRegion(GrBuffer_t src_buffer,
-    FxU32 src_x, FxU32 src_y,
-    FxU32 src_width, FxU32 src_height,
-    FxU32 dst_stride, void *dst_data)
+FxBool gfxLfbReadRegion(GrBuffer_t src_buffer, FxU32 src_x, FxU32 src_y, FxU32 src_width, FxU32 src_height, FxU32 dst_stride, void *dst_data)
 {
     unsigned char *buf;
     unsigned int i, j;
