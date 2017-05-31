@@ -63,7 +63,7 @@ void* AllocateAddressSpace(size_t size)
 #endif
 }
 
-bool FreeAddressSpace(void* addr, size_t size)
+bool FreeAddressSpace(void* addr, size_t /*size*/)
 {
 #ifdef _WIN32
     return VirtualFree(addr, 0, MEM_RELEASE) != 0;

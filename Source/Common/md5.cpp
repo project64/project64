@@ -54,7 +54,7 @@ MD5::~MD5()
 // MD5 block update operation. Continues an MD5 message-digest
 // operation, processing another message block, and updating the
 // context.
-void MD5::update(const uint1 *input, uint4 input_length)
+void MD5::update(const unsigned char *input, uint32_t input_length)
 {
     uint4 input_index, buffer_index;
     uint4 buffer_space;                // how much space is left in buffer
@@ -107,15 +107,15 @@ void MD5::update(const uint1 *input, uint4 input_length)
 
 void MD5::update(FILE *file)
 {
-    unsigned char buffer[1024];
+    unsigned char updateBuffer[1024];
     int len;
 
     do
     {
-        len = (int)fread(buffer, 1, 1024, file);
+        len = (int)fread(updateBuffer, 1, 1024, file);
         if (len)
         {
-            update(buffer, len);
+            update(updateBuffer, len);
         }
     } while (len);
 
@@ -193,7 +193,7 @@ MD5::MD5(const unsigned char *input, unsigned int input_length)
 MD5::MD5(const stdstr & string)
 {
     init();  // must called by all constructors
-    update((const unsigned char *)string.c_str(), string.length());
+    update((const unsigned char *)string.c_str(), static_cast<uint32_t>(string.length()));
     finalize();
 }
 

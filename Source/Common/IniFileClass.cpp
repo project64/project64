@@ -55,7 +55,7 @@ void CIniFileBase::fInsertSpaces(int Pos, int NoOfSpaces)
     if (NoOfSpaces < 0)
     {
         int ReadPos = Pos + (NoOfSpaces * -1);
-        int WritePos = Pos;
+        WritePos = Pos;
 
         do
         {
