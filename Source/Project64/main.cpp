@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include <Project64-core/AppInit.h>
-#include "Multilanguage\LanguageSelector.h"
+#include "Multilanguage/LanguageSelector.h"
 #include "Settings/UISettings.h"
 
+#if defined(_WIN32)
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
     try
@@ -91,3 +92,11 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     CoUninitialize();
     return true;
 }
+#else
+int main(int argc, char* argv[])
+{
+    printf("%s:  %i arguments\n", argv[0], argc);
+    return 0;
+}
+#endif
+
