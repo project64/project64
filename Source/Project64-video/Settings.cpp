@@ -93,7 +93,8 @@ CSettings::CSettings() :
     m_wrpVRAM(0),
     m_wrpFBO(false),
     m_wrpAnisotropic(false),
-    m_FlushLogs(false)
+    m_FlushLogs(false),
+    m_InWriteSettings(false)
 {
     memset(m_log_dir, 0, sizeof(m_log_dir));
     RegisterSettings();
@@ -568,7 +569,7 @@ void CSettings::ReadSettings()
     m_debugger_enabled = m_advanced_options && m_Set_debugger ? GetSystemSetting(m_Set_debugger) == 1 : false;
     m_texenh_options = GetSetting(Set_texenh_options) != 0;
     m_aspectmode = (AspectMode_t)GetSetting(Set_aspect);
-    
+
     m_wrpVRAM = GetSetting(Set_wrpVRAM);
     m_wrpFBO = GetSetting(Set_wrpFBO) != 0;
     m_wrpAnisotropic = GetSetting(Set_wrpAnisotropic) != 0;
@@ -831,6 +832,7 @@ void CSettings::ReadGameSettings(const char * name)
 
 void CSettings::WriteSettings(void)
 {
+    m_InWriteSettings = true;
     SetSetting(Set_Resolution, m_ScreenRes);
 #ifndef ANDROID
     SetSetting(Set_FullScreenRes, m_FullScreenRes);
@@ -893,6 +895,7 @@ void CSettings::WriteSettings(void)
     }
 
     FlushSettings();
+    m_InWriteSettings = false;
 }
 
 void CSettings::general_setting(short setting_ID, const char * name, unsigned int value)
@@ -912,6 +915,10 @@ void CSettings::game_setting_default(short setting_ID, const char * name, short 
 
 void CSettings::SettingsChanged(void)
 {
+    if (m_InWriteSettings)
+    {
+        return;
+    }
     m_ScreenRes = GetSetting(Set_Resolution);
     m_aspectmode = (AspectMode_t)GetSetting(Set_aspect);
 }

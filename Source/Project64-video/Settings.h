@@ -406,6 +406,7 @@ private:
     bool m_old_style_adither;
     bool m_n64_z_scale;
     hacks_t m_hacks;
+    bool m_InWriteSettings;
 };
 
 extern CSettings * g_settings;
