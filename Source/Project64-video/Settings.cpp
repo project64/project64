@@ -913,7 +913,6 @@ void CSettings::game_setting_default(short setting_ID, const char * name, short 
 void CSettings::SettingsChanged(void)
 {
     m_ScreenRes = GetSetting(Set_Resolution);
-    m_aspectmode = (AspectMode_t)GetSetting(Set_aspect);
 }
 
 void CSettings::LogLevelChanged(void)
