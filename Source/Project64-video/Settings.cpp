@@ -920,7 +920,6 @@ void CSettings::SettingsChanged(void)
         return;
     }
     m_ScreenRes = GetSetting(Set_Resolution);
-    m_aspectmode = (AspectMode_t)GetSetting(Set_aspect);
 }
 
 void CSettings::LogLevelChanged(void)
