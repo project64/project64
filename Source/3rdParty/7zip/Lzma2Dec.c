@@ -1,7 +1,9 @@
 /* Lzma2Dec.c -- LZMA2 Decoder
-2009-05-03 : Igor Pavlov : Public domain */
+2015-11-09 : Igor Pavlov : Public domain */
 
 /* #define SHOW_DEBUG_INFO */
+
+#include "Precomp.h"
 
 #ifdef SHOW_DEBUG_INFO
 #include <stdio.h>
@@ -65,10 +67,10 @@ static SRes Lzma2Dec_GetOldProps(Byte prop, Byte *props)
     return SZ_ERROR_UNSUPPORTED;
   dicSize = (prop == 40) ? 0xFFFFFFFF : LZMA2_DIC_SIZE_FROM_PROP(prop);
   props[0] = (Byte)LZMA2_LCLP_MAX;
-  props[1] = (Byte)((dicSize)& 0xFF);
-  props[2] = (Byte)((dicSize >> 8) & 0xFF);
-  props[3] = (Byte)((dicSize >> 16) & 0xFF);
-  props[4] = (Byte)((dicSize >> 24) & 0xFF);
+  props[1] = (Byte)(dicSize);
+  props[2] = (Byte)(dicSize >> 8);
+  props[3] = (Byte)(dicSize >> 16);
+  props[4] = (Byte)(dicSize >> 24);
   return SZ_OK;
 }
 
@@ -97,12 +99,12 @@ void Lzma2Dec_Init(CLzma2Dec *p)
 
 static ELzma2State Lzma2Dec_UpdateState(CLzma2Dec *p, Byte b)
 {
-  switch(p->state)
+  switch (p->state)
   {
     case LZMA2_STATE_CONTROL:
       p->control = b;
-      PRF(printf("\n %4X ", p->decoder.dicPos));
-      PRF(printf(" %2X", b));
+      PRF(printf("\n %4X ", (unsigned)p->decoder.dicPos));
+      PRF(printf(" %2X", (unsigned)b));
       if (p->control == 0)
         return LZMA2_STATE_FINISHED;
       if (LZMA2_IS_UNCOMPRESSED_STATE(p))
@@ -122,7 +124,7 @@ static ELzma2State Lzma2Dec_UpdateState(CLzma2Dec *p, Byte b)
     case LZMA2_STATE_UNPACK1:
       p->unpackSize |= (UInt32)b;
       p->unpackSize++;
-      PRF(printf(" %8d", p->unpackSize));
+      PRF(printf(" %8u", (unsigned)p->unpackSize));
       return (LZMA2_IS_UNCOMPRESSED_STATE(p)) ? LZMA2_STATE_DATA : LZMA2_STATE_PACK0;
     
     case LZMA2_STATE_PACK0:
@@ -132,13 +134,13 @@ static ELzma2State Lzma2Dec_UpdateState(CLzma2Dec *p, Byte b)
     case LZMA2_STATE_PACK1:
       p->packSize |= (UInt32)b;
       p->packSize++;
-      PRF(printf(" %8d", p->packSize));
+      PRF(printf(" %8u", (unsigned)p->packSize));
       return LZMA2_IS_THERE_PROP(LZMA2_GET_LZMA_MODE(p)) ? LZMA2_STATE_PROP:
         (p->needInitProp ? LZMA2_STATE_ERROR : LZMA2_STATE_DATA);
 
     case LZMA2_STATE_PROP:
     {
-      int lc, lp;
+      unsigned lc, lp;
       if (b >= (9 * 5 * 5))
         return LZMA2_STATE_ERROR;
       lc = b % 9;
@@ -177,13 +179,16 @@ SRes Lzma2Dec_DecodeToDic(CLzma2Dec *p, SizeT dicLimit,
   while (p->state != LZMA2_STATE_FINISHED)
   {
     SizeT dicPos = p->decoder.dicPos;
+    
     if (p->state == LZMA2_STATE_ERROR)
       return SZ_ERROR_DATA;
+    
     if (dicPos == dicLimit && finishMode == LZMA_FINISH_ANY)
     {
       *status = LZMA_STATUS_NOT_FINISHED;
       return SZ_OK;
     }
+
     if (p->state != LZMA2_STATE_DATA && p->state != LZMA2_STATE_DATA_CONT)
     {
       if (*srcLen == inSize)
@@ -193,8 +198,15 @@ SRes Lzma2Dec_DecodeToDic(CLzma2Dec *p, SizeT dicLimit,
       }
       (*srcLen)++;
       p->state = Lzma2Dec_UpdateState(p, *src++);
+
+      if (dicPos == dicLimit && p->state != LZMA2_STATE_FINISHED)
+      {
+        p->state = LZMA2_STATE_ERROR;
+        return SZ_ERROR_DATA;
+      }
       continue;
     }
+    
     {
       SizeT destSizeCur = dicLimit - dicPos;
       SizeT srcSizeCur = inSize - *srcLen;
@@ -220,7 +232,10 @@ SRes Lzma2Dec_DecodeToDic(CLzma2Dec *p, SizeT dicLimit,
           if (initDic)
             p->needInitProp = p->needInitState = True;
           else if (p->needInitDic)
+          {
+            p->state = LZMA2_STATE_ERROR;
             return SZ_ERROR_DATA;
+          }
           p->needInitDic = False;
           LzmaDec_InitDicAndState(&p->decoder, initDic, False);
         }
@@ -229,7 +244,10 @@ SRes Lzma2Dec_DecodeToDic(CLzma2Dec *p, SizeT dicLimit,
           srcSizeCur = destSizeCur;
 
         if (srcSizeCur == 0)
+        {
+          p->state = LZMA2_STATE_ERROR;
           return SZ_ERROR_DATA;
+        }
 
         LzmaDec_UpdateWithUncompressed(&p->decoder, src, srcSizeCur);
 
@@ -245,17 +263,21 @@ SRes Lzma2Dec_DecodeToDic(CLzma2Dec *p, SizeT dicLimit,
 
         if (p->state == LZMA2_STATE_DATA)
         {
-          int mode = LZMA2_GET_LZMA_MODE(p);
+          unsigned mode = LZMA2_GET_LZMA_MODE(p);
           Bool initDic = (mode == 3);
-          Bool initState = (mode > 0);
+          Bool initState = (mode != 0);
           if ((!initDic && p->needInitDic) || (!initState && p->needInitState))
+          {
+            p->state = LZMA2_STATE_ERROR;
             return SZ_ERROR_DATA;
+          }
           
           LzmaDec_InitDicAndState(&p->decoder, initDic, initState);
           p->needInitDic = False;
           p->needInitState = False;
           p->state = LZMA2_STATE_DATA_CONT;
         }
+  
         if (srcSizeCur > p->packSize)
           srcSizeCur = (SizeT)p->packSize;
           
@@ -274,16 +296,22 @@ SRes Lzma2Dec_DecodeToDic(CLzma2Dec *p, SizeT dicLimit,
 
         if (srcSizeCur == 0 && outSizeProcessed == 0)
         {
-          if (*status != LZMA_STATUS_MAYBE_FINISHED_WITHOUT_MARK ||
-              p->unpackSize != 0 || p->packSize != 0)
+          if (*status != LZMA_STATUS_MAYBE_FINISHED_WITHOUT_MARK
+              || p->unpackSize != 0
+              || p->packSize != 0)
+          {
+            p->state = LZMA2_STATE_ERROR;
             return SZ_ERROR_DATA;
+          }
           p->state = LZMA2_STATE_CONTROL;
         }
+        
         if (*status == LZMA_STATUS_MAYBE_FINISHED_WITHOUT_MARK)
           *status = LZMA_STATUS_NOT_FINISHED;
       }
     }
   }
+  
   *status = LZMA_STATUS_FINISHED_WITH_MARK;
   return SZ_OK;
 }
@@ -330,27 +358,21 @@ SRes Lzma2Dec_DecodeToBuf(CLzma2Dec *p, Byte *dest, SizeT *destLen, const Byte *
 SRes Lzma2Decode(Byte *dest, SizeT *destLen, const Byte *src, SizeT *srcLen,
     Byte prop, ELzmaFinishMode finishMode, ELzmaStatus *status, ISzAlloc *alloc)
 {
-  CLzma2Dec decoder;
+  CLzma2Dec p;
   SRes res;
   SizeT outSize = *destLen, inSize = *srcLen;
-  Byte props[LZMA_PROPS_SIZE];
-
-  Lzma2Dec_Construct(&decoder);
-
   *destLen = *srcLen = 0;
   *status = LZMA_STATUS_NOT_SPECIFIED;
-  decoder.decoder.dic = dest;
-  decoder.decoder.dicBufSize = outSize;
-
-  RINOK(Lzma2Dec_GetOldProps(prop, props));
-  RINOK(LzmaDec_AllocateProbs(&decoder.decoder, props, LZMA_PROPS_SIZE, alloc));
-  
+  Lzma2Dec_Construct(&p);
+  RINOK(Lzma2Dec_AllocateProbs(&p, prop, alloc));
+  p.decoder.dic = dest;
+  p.decoder.dicBufSize = outSize;
+  Lzma2Dec_Init(&p);
   *srcLen = inSize;
-  res = Lzma2Dec_DecodeToDic(&decoder, outSize, src, srcLen, finishMode, status);
-  *destLen = decoder.decoder.dicPos;
+  res = Lzma2Dec_DecodeToDic(&p, outSize, src, srcLen, finishMode, status);
+  *destLen = p.decoder.dicPos;
   if (res == SZ_OK && *status == LZMA_STATUS_NEEDS_MORE_INPUT)
     res = SZ_ERROR_INPUT_EOF;
-
-  LzmaDec_FreeProbs(&decoder.decoder, alloc);
+  Lzma2Dec_FreeProbs(&p, alloc);
   return res;
 }
