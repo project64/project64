@@ -40,6 +40,7 @@ public:
     inline static bool  bSMM_TLB(void) { return m_bSMM_TLB; }
     inline static SYSTEM_TYPE SystemType(void) { return m_SystemType; }
     inline static CPU_TYPE CpuType(void) { return m_CpuType; }
+    inline static uint32_t OverClockModifier(void) { return m_OverClockModifier; }
 
 protected:
     static void SpeedChanged(int32_t SpeedLimit);
@@ -50,24 +51,25 @@ private:
     static bool  m_RegCaching;
     static bool  m_bLinkBlocks;
     static uint32_t m_LookUpMode; //FUNC_LOOKUP_METHOD
-    static bool  m_bUseTlb;
+    static bool m_bUseTlb;
     static uint32_t m_CountPerOp;
     static uint32_t m_ViRefreshRate;
     static uint32_t m_AiCountPerBytes;
-    static bool  m_DelayDP;
-    static bool  m_DelaySI;
+    static bool m_DelayDP;
+    static bool m_DelaySI;
     static uint32_t m_RdramSize;
-    static bool  m_bFixedAudio;
-    static bool  m_bSyncingToAudio;
-    static bool  m_bSyncToAudio;
-    static bool  m_bFastSP;
-    static bool  m_b32Bit;
-    static bool  m_RspAudioSignal;
-    static bool  m_bSMM_StoreInstruc;
-    static bool  m_bSMM_Protect;
-    static bool  m_bSMM_ValidFunc;
-    static bool  m_bSMM_PIDMA;
-    static bool  m_bSMM_TLB;
+    static bool m_bFixedAudio;
+    static bool m_bSyncingToAudio;
+    static bool m_bSyncToAudio;
+    static bool m_bFastSP;
+    static bool m_b32Bit;
+    static bool m_RspAudioSignal;
+    static bool m_bSMM_StoreInstruc;
+    static bool m_bSMM_Protect;
+    static bool m_bSMM_ValidFunc;
+    static bool m_bSMM_PIDMA;
+    static bool m_bSMM_TLB;
     static SYSTEM_TYPE m_SystemType;
     static CPU_TYPE m_CpuType;
+    static uint32_t m_OverClockModifier;
 };

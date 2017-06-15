@@ -151,11 +151,22 @@
   <ItemGroup>
     <None Include="res\divider.cur" />
     <None Include="res\hand.cur" />
+    <None Include="UserInterface\Icons\divider.cur" />
+    <None Include="UserInterface\Icons\hand.cur" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ListItems.bmp" />
+    <Image Include="UserInterface\Bitmaps\AboutScreenLogo.bmp" />
+    <Image Include="UserInterface\Bitmaps\ListItems.bmp" />
+    <Image Include="UserInterface\Bitmaps\tri-state.bmp" />
+    <Image Include="UserInterface\Icons\left.ico" />
+    <Image Include="UserInterface\Icons\PJ64.ICO" />
+    <Image Include="UserInterface\Icons\right.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UserInterface\UIResources.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="Project64.exe.manifest" />
   </ItemGroup>
 </Project>
