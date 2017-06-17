@@ -164,6 +164,7 @@ public:
         ucode_PerfectDark = 7,
         ucode_CBFD = 8,
         ucode_zSort = 9,
+        ucode_F3DTEXA = 10,
         ucode_Turbo3d = 21,
     };
 
