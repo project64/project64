@@ -13,32 +13,31 @@
 
 CPj64Module _Module;
 
-CDebuggerUI::CDebuggerUI () :
+CDebuggerUI::CDebuggerUI() :
     m_MemoryDump(NULL),
     m_MemoryView(NULL),
     m_MemorySearch(NULL),
     m_DebugTLB(NULL)
 {
-	g_Settings->RegisterChangeCB(GameRunning_InReset,this,(CSettings::SettingChangedFunc)GameReset);
-	g_Debugger = this;
+    g_Settings->RegisterChangeCB(GameRunning_InReset, this, (CSettings::SettingChangedFunc)GameReset);
 }
 
-CDebuggerUI::~CDebuggerUI (void)
+CDebuggerUI::~CDebuggerUI(void)
 {
-	g_Settings->UnregisterChangeCB(GameRunning_InReset,this,(CSettings::SettingChangedFunc)GameReset);
+    g_Settings->UnregisterChangeCB(GameRunning_InReset, this, (CSettings::SettingChangedFunc)GameReset);
     Debug_Reset();
 }
 
-void CDebuggerUI::GameReset ( CDebuggerUI * _this )
+void CDebuggerUI::GameReset(CDebuggerUI * _this)
 {
-	if (!g_Settings->LoadBool(GameRunning_InReset))
-	{
-		return;
-	}
-	_this->Debug_Reset();
+    if (!g_Settings->LoadBool(GameRunning_InReset))
+    {
+        return;
+    }
+    _this->Debug_Reset();
 }
 
-void CDebuggerUI::Debug_Reset ( void )
+void CDebuggerUI::Debug_Reset(void)
 {
     if (m_MemoryDump)
     {
@@ -82,7 +81,7 @@ void CDebuggerUI::Debug_ShowMemoryDump()
     }
 }
 
-void CDebuggerUI::Debug_ShowMemoryWindow ( void )
+void CDebuggerUI::Debug_ShowMemoryWindow(void)
 {
     if (g_MMU == NULL)
     {
@@ -98,16 +97,16 @@ void CDebuggerUI::Debug_ShowMemoryWindow ( void )
     }
 }
 
-void CDebuggerUI::Debug_ShowMemoryLocation ( uint32_t Address, bool VAddr )
+void CDebuggerUI::Debug_ShowMemoryLocation(uint32_t Address, bool VAddr)
 {
     Debug_ShowMemoryWindow();
     if (m_MemoryView)
     {
-        m_MemoryView->ShowAddress(Address,VAddr);
+        m_MemoryView->ShowAddress(Address, VAddr);
     }
 }
 
-void CDebuggerUI::Debug_ShowTLBWindow (void)
+void CDebuggerUI::Debug_ShowTLBWindow(void)
 {
     if (g_MMU == NULL)
     {

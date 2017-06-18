@@ -16,8 +16,9 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 
         //Create the main window with Menu
         WriteTrace(TraceUserInterface, TraceDebug, "Create Main Window");
-        CMainGui  MainWindow(true, stdstr_f("Project64 %s", VER_FILE_VERSION_STR).c_str()), HiddenWindow(false);
+        CMainGui MainWindow(true, stdstr_f("Project64 %s", VER_FILE_VERSION_STR).c_str()), HiddenWindow(false);
         CMainMenu MainMenu(&MainWindow);
+        g_Debugger = &MainWindow;
         g_Plugins->SetRenderWindows(&MainWindow, &HiddenWindow);
         Notify().SetMainWindow(&MainWindow);
         CSupportWindow SupportWindow;
@@ -40,7 +41,6 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
                     stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
                     if ((IPLROM.length() <= 0) || (!CN64System::RunFileImage(IPLROM.c_str())))
                     {
-
                         CPath FileName;
                         const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
                         if (FileName.SelectFile(NULL, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
