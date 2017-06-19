@@ -2004,8 +2004,7 @@ Culling=1
 [F774EAEE-F0D8B13E-C:4A]
 Good Name=Fushigi no Dungeon - Fuurai no Shiren 2 - Oni Shuurai! Shiren Jou! (J)
 Internal Name=F3 ﾌｳﾗｲﾉｼﾚﾝ2
-Status=Issues (Core)
-Core Note=Constant SRAM use
+Status=Compatible
 Counter Factor=1
 32bit=No
 
@@ -2491,9 +2490,8 @@ Counter Factor=1
 [3A6F8C6B-2897BAEB-C:50]
 Good Name=Indiana Jones and the Infernal Machine (E) (Unreleased)
 Internal Name=Indiana Jones
-Status=Only intro/part OK
-Core Note=Camera issue; can't play
-Plugin Note=[Glide64] errors:various
+Status=Issues (plugin)
+Plugin Note=[video] HLE not supported
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -2511,9 +2509,8 @@ ViRefresh=1800
 [AF9DCC15-1A723D88-C:45]
 Good Name=Indiana Jones and the Infernal Machine (U)
 Internal Name=Indiana Jones
-Status=Only intro/part OK
-Core Note=Camera issue; can't play
-Plugin Note=[Glide64] errors:various
+Status=Issues (plugin)
+Plugin Note=[video] HLE not supported
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5425,9 +5422,8 @@ RDRAM Size=8
 [EAE6ACE2-020B4384-C:50]
 Good Name=Star Wars Episode I - Battle for Naboo (E)
 Internal Name=Battle for Naboo
-Status=Only intro/part OK
-Core Note=Camera issue; can't play
-Plugin Note=[Glide64] errors:various
+Status=Issues (plugin)
+Plugin Note=[video] HLE not supported
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5438,9 +5434,8 @@ SMM-FUNC=0
 [3D02989B-D4A381E2-C:45]
 Good Name=Star Wars Episode I - Battle for Naboo (U)
 Internal Name=Battle for Naboo
-Status=Only intro/part OK
-Core Note=Camera issue; can't play
-Plugin Note=[Glide64] errors:various
+Status=Issues (plugin)
+Plugin Note=[video] HLE not supported
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
