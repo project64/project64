@@ -160,6 +160,9 @@
     <ClInclude Include="Renderer\types.h">
       <Filter>Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="F3DTEXA.h">
+      <Filter>ucode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CRC.cpp">
@@ -274,6 +277,9 @@
     </ClCompile>
     <ClCompile Include="Renderer\Renderer.cpp">
       <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="F3DTEXA.cpp">
+      <Filter>ucode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
