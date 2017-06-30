@@ -313,9 +313,33 @@
     <None Include="res\hand.cur">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="UserInterface\Icons\divider.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="UserInterface\Icons\hand.cur">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ListItems.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="UserInterface\Icons\PJ64.ICO">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="UserInterface\Icons\right.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="UserInterface\Icons\left.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="UserInterface\Bitmaps\tri-state.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="UserInterface\Bitmaps\ListItems.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="UserInterface\Bitmaps\AboutScreenLogo.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -323,5 +347,8 @@
     <ResourceCompile Include="UserInterface\UIResources.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="Project64.exe.manifest" />
   </ItemGroup>
 </Project>

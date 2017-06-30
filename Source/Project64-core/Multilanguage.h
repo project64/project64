@@ -321,6 +321,7 @@ enum LanguageStringID
     ROM_COUNTPERBYTE = 537,
     ROM_32BIT = 538,
     ROM_DELAY_DP = 539,
+    ROM_OVER_CLOCK_MODIFIER = 5400,
 
     //Core Styles
     CORE_INTERPTER = 540,
@@ -535,7 +536,7 @@ enum LanguageStringID
     MSG_DEL_TITLE = 2042,
     MSG_CHEAT_NAME_IN_USE = 2043,
     MSG_MAX_CHEATS = 2044,
-    MSG_PLUGIN_INIT = 2045,	
+    MSG_PLUGIN_INIT = 2045,
     MSG_NO_SHORTCUT_SEL = 2046,
     MSG_NO_MENUITEM_SEL = 2047,
     MSG_MENUITEM_ASSIGNED = 2048,
@@ -591,7 +592,7 @@ enum LanguageStringID
     ANDROID_MENU_DUMPFUNCTIONTIMES = 3113,
 
     //Video plugin
-    ANDROID_VIDEO_NATIVE_RES = 3200, 
+    ANDROID_VIDEO_NATIVE_RES = 3200,
 };
 
 #include "Multilanguage/LanguageClass.h"
