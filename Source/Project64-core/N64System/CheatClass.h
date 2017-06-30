@@ -16,7 +16,7 @@
 class CCheats
 {
 public:
-    CCheats();
+    CCheats(CMipsMemoryVM & MMU);
     ~CCheats(void);
 
     enum
@@ -25,8 +25,8 @@ public:
         MaxGSEntries = 100,
     };
 
-    void ApplyCheats(CMipsMemoryVM * MMU);
-    void ApplyGSButton(CMipsMemoryVM * MMU);
+    void ApplyCheats();
+    void ApplyGSButton();
     void LoadCheats(bool DisableSelected, CPlugins * Plugins);
 
     static bool IsValid16BitCode(const char * CheatString);
@@ -38,13 +38,34 @@ private:
         uint16_t Value;
     };
 
+    struct MEM_VALUE16
+    {
+        uint16_t Original;
+        uint16_t Changed;
+    };
+
+    struct MEM_VALUE8
+    {
+        uint8_t Original;
+        uint8_t Changed;
+    };
+
     typedef std::vector<GAMESHARK_CODE> CODES;
-    typedef std::vector<CODES>          CODES_ARRAY;
+    typedef std::vector<CODES> CODES_ARRAY;
+    typedef std::map<uint32_t, MEM_VALUE16> ORIGINAL_VALUES16;
+    typedef std::map<uint32_t, MEM_VALUE8> ORIGINAL_VALUES8;
 
     void LoadPermCheats(CPlugins * Plugins);
+    int32_t EntrySize(const CODES & CodeEntry, int32_t CurrentEntry);
 
-    CODES_ARRAY   m_Codes;
+    CMipsMemoryVM & m_MMU;
+    CODES_ARRAY m_Codes;
+    ORIGINAL_VALUES16 m_OriginalValues16;
+    ORIGINAL_VALUES8 m_OriginalValues8;
 
-    bool LoadCode(int32_t CheatNo, const char * CheatString);
-    int32_t ApplyCheatEntry(CMipsMemoryVM * MMU, const CODES & CodeEntry, int32_t CurrentEntry, bool Execute);
+    bool LoadCode(const stdstr & CheatEntry, SettingID ExtensionSetting, int ExtensionIndex);
+    void ApplyCheatEntry(CODES & CodeEntry, int32_t CurrentEntry);
+    void ModifyMemory8(uint32_t Address, uint8_t Value);
+    void ModifyMemory16(uint32_t Address, uint16_t Value);
+    void ResetCodes(void);
 };

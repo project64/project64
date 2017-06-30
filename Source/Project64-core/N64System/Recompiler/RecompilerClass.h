@@ -36,6 +36,7 @@ public:
         Remove_TLB,
         Remove_DMA,
         Remove_StoreInstruc,
+        Remove_Cheats,
     };
 
     typedef void(*DelayFunc)();
