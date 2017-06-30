@@ -350,7 +350,7 @@ void CCheats::ModifyMemory8(uint32_t Address, uint8_t Value)
         return;
     }
     OriginalValue.Changed = Value;
-    ORIGINAL_VALUES8::_Pairib itr = m_OriginalValues8.insert(ORIGINAL_VALUES8::value_type(Address, OriginalValue));
+    std::pair<ORIGINAL_VALUES8::iterator, bool> itr = m_OriginalValues8.insert(ORIGINAL_VALUES8::value_type(Address, OriginalValue));
     m_MMU.SB_VAddr(Address, OriginalValue.Changed);
     if (g_Recompiler)
     {
@@ -370,7 +370,7 @@ void CCheats::ModifyMemory16(uint32_t Address, uint16_t Value)
         return;
     }
     OriginalValue.Changed = Value;
-    ORIGINAL_VALUES16::_Pairib itr = m_OriginalValues16.insert(ORIGINAL_VALUES16::value_type(Address, OriginalValue));
+    std::pair<ORIGINAL_VALUES16::iterator, bool> itr = m_OriginalValues16.insert(ORIGINAL_VALUES16::value_type(Address, OriginalValue));
     m_MMU.SH_VAddr(Address, OriginalValue.Changed);
     if (g_Recompiler)
     {
