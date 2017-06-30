@@ -289,6 +289,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ROM_COUNTPERBYTE, "AI count per byte:");
     DEF_STR(ROM_32BIT, "32-bit engine:");
     DEF_STR(ROM_DELAY_DP, "Delay DP interrupt:");
+    DEF_STR(ROM_OVER_CLOCK_MODIFIER, "Over Clock Modifier:");
 
     //Core Styles
     DEF_STR(CORE_INTERPTER, "Interpreter");
