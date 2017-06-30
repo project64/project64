@@ -23,6 +23,7 @@ LOCAL_SRC_FILES :=                              \
     $(SRCDIR)/Project64-video/CRC.cpp                   \
     $(SRCDIR)/Project64-video/Debugger.cpp              \
     $(SRCDIR)/Project64-video/DepthBufferRender.cpp     \
+    $(SRCDIR)/Project64-video/F3DTEXA.cpp               \
     $(SRCDIR)/Project64-video/FBtoScreen.cpp            \
     $(SRCDIR)/Project64-video/Main.cpp                  \
     $(SRCDIR)/Project64-video/rdp.cpp                   \
