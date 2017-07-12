@@ -1,19 +1,19 @@
 if WScript.Arguments.Count < 3 then
-	ShowUsage()
+    ShowUsage()
 ElseIf StrComp("--create",WScript.Arguments(0)) = 0 Then
-	if WScript.Arguments.Count < 4 then
-		ShowUsage()
-	else
-		CreateUploadTarget()
-	end if
+    if WScript.Arguments.Count < 4 then
+        ShowUsage()
+    else
+        CreateUploadTarget()
+    end if
 ElseIf StrComp("--files",WScript.Arguments(0)) = 0 Then
-	if WScript.Arguments.Count < 4 then
-		ShowUsage()
-	else
-		UploadFiles()
-	end if
+    if WScript.Arguments.Count < 4 then
+        ShowUsage()
+    else
+        UploadFiles()
+    end if
 Else
-	ShowUsage()
+    ShowUsage()
 End if
 
 sub ShowUsage()
@@ -24,12 +24,12 @@ sub ShowUsage()
 end sub
 
 function Project64Url()
-	Project64Url = "http://www.local.pj64-emu.com"
+    Project64Url = "http://www.pj64-emu.com"
 End Function
 
 sub CreateUploadTarget()
-	dim BuildUrl
-	BuildUrl = WScript.Arguments(2)
+    dim BuildUrl
+    BuildUrl = WScript.Arguments(2)
 
     Dim objHTTP
     Set objHTTP = CreateObject("MSXML2.XMLHTTP")
@@ -39,21 +39,21 @@ sub CreateUploadTarget()
         WScript.StdOut.WriteLine "failed to get job timestamp (" & BuildUrl & "buildTimestamp)"
         WScript.Quit 1
     end if
-	dim d
+    dim d
 
-	SetLocale 1033
-	build_date=CDate(objHTTP.responseText)
-	
+    SetLocale 1033
+    build_date=CDate(objHTTP.responseText)
+    
     Set objHTTP = CreateObject("MSXML2.XMLHTTP")
     objHTTP.open "GET", BuildUrl & "api/xml?wrapper=changes", False
     objHTTP.send
-	
-	if (objHTTP.status <> 200) then
+    
+    if (objHTTP.status <> 200) then
         WScript.StdOut.WriteLine "failed to get job details (" & BuildUrl & "api/xml?wrapper=changes)"
         WScript.Quit 1
     end if
 
-	Dim xmlDoc
+    Dim xmlDoc
     Set xmlDoc = objHTTP.responseXML
     Set objLst = xmlDoc.getElementsByTagName("freeStyleBuild")
 
@@ -89,44 +89,43 @@ sub CreateUploadTarget()
     else
         ProductDescription = "No code changes"
     end if
-			
-	Dim url
+            
+    Dim url
     url = Project64Url() + "/index.php"
 
-	dim data
-	data = "option=com_betafile"
-	data = data & "&task=CreateProduct"
-	data = data & "&password="&WScript.Arguments(1)
-	data = data & "&jform[product_name]="&WScript.Arguments(3)
-	data = data & "&jform[product_desc]="&ProductDescription
-	data = data & "&jform[product_date]="&Year(build_date) & "-" & Month(build_date) & "-" & Day(build_date)
-	
-	Set objHTTP = CreateObject("Microsoft.XMLHTTP")
-	objHTTP.open "POST", url, False
+    dim data
+    data = "option=com_betafile"
+    data = data & "&task=CreateProduct"
+    data = data & "&password="&WScript.Arguments(1)
+    data = data & "&jform[product_name]="&WScript.Arguments(3)
+    data = data & "&jform[product_desc]="&ProductDescription
+    data = data & "&jform[product_date]="&Year(build_date) & "-" & Month(build_date) & "-" & Day(build_date)
+    
+    Set objHTTP = CreateObject("Microsoft.XMLHTTP")
+    objHTTP.open "POST", url, False
 
-	objHTTP.setRequestHeader "Content-Type", "application/x-www-form-urlencoded"
-	objHTTP.send data
+    objHTTP.setRequestHeader "Content-Type", "application/x-www-form-urlencoded"
+    objHTTP.send data
 
-	if objHTTP.Status <> 200 then
-		WScript.StdOut.WriteLine "Create beta file failed"
-		WScript.StdOut.WriteLine "status: " & objHTTP.Status
-		WScript.StdOut.WriteLine objHTTP.responseText
-		WScript.Quit 1
-	end if
-	WScript.StdOut.WriteLine objHTTP.responseText
+    if objHTTP.Status <> 200 then
+        WScript.StdOut.WriteLine "Create beta file failed"
+        WScript.StdOut.WriteLine "status: " & objHTTP.Status
+        WScript.StdOut.WriteLine objHTTP.responseText
+        WScript.Quit 1
+    end if
 
-	Set objHTTP = Nothing
+    Set objHTTP = Nothing
 end sub
 
 sub UploadFiles()
-	DirToUpload = WScript.Arguments(2)
+    DirToUpload = WScript.Arguments(2)
     WScript.StdOut.WriteLine "UploadDirectory start - " & DirToUpload
     Set objFSO = CreateObject("Scripting.FileSystemObject")
     Set objFolder = objFSO.GetFolder(DirToUpload)
     Set colFiles = objFolder.Files
     For Each objFile in colFiles
         UploadFile DirToUpload & "\" & objFile.Name
-	Next
+    Next
     WScript.StdOut.WriteLine "UploadDirectory Finished"
 end sub
 
@@ -157,23 +156,23 @@ sub UploadFile(FileToUpload)
         WScript.Quit 1
     end if    
 
-	Dim url
+    Dim url
     url = Project64Url() + "/index.php"
 
     dim fileContents
     fileContents = ReadBinaryFile(FileToUpload)
 
-    dim PreFormData, PostFormData	
-	PreFormData = PreFormData & "--AaB03x" & vbCrLf & "Content-Disposition: form-data; name=""option""" & vbCrLf & vbCrLf & "com_betafile"& vbCrLf   
-	PreFormData = PreFormData & "--AaB03x" & vbCrLf & "Content-Disposition: form-data; name=""task""" & vbCrLf & vbCrLf & "AddFile"& vbCrLf   
-	PreFormData = PreFormData & "--AaB03x" & vbCrLf & "Content-Disposition: form-data; name=""password""" & vbCrLf & vbCrLf & WScript.Arguments(1) & vbCrLf   
-	PreFormData = PreFormData & "--AaB03x" & vbCrLf & "Content-Disposition: form-data; name=""jform[product_name]""" & vbCrLf & vbCrLf & WScript.Arguments(3) & vbCrLf   
+    dim PreFormData, PostFormData    
+    PreFormData = PreFormData & "--AaB03x" & vbCrLf & "Content-Disposition: form-data; name=""option""" & vbCrLf & vbCrLf & "com_betafile"& vbCrLf   
+    PreFormData = PreFormData & "--AaB03x" & vbCrLf & "Content-Disposition: form-data; name=""task""" & vbCrLf & vbCrLf & "AddFile"& vbCrLf   
+    PreFormData = PreFormData & "--AaB03x" & vbCrLf & "Content-Disposition: form-data; name=""password""" & vbCrLf & vbCrLf & WScript.Arguments(1) & vbCrLf   
+    PreFormData = PreFormData & "--AaB03x" & vbCrLf & "Content-Disposition: form-data; name=""jform[product_name]""" & vbCrLf & vbCrLf & WScript.Arguments(3) & vbCrLf   
     PreFormData = PreFormData & "--AaB03x" & vbCrLf & "Content-Disposition: form-data; name=""jform[add_file]""; filename=""" & fileName & """" & vbCrLf
     PreFormData = PreFormData & "Content-Type: application/zip" & vbCrLf & vbCrLf
     PostFormData = vbCrLf & "--AaB03x" & vbCrLf & "Content-Disposition: form-data; name=""upload""" & vbCrLf & vbCrLf & "Upload" & vbCrLf   
     PostFormData = PostFormData & vbCrLf & vbCrLf & "--AaB03x--"& vbCrLf
 
-	Dim DataToPOSTStream
+    Dim DataToPOSTStream
     Set DataToPOSTStream = CreateObject("ADODB.Stream")  
 
     DataToPOSTStream.type=adTypeBinary
@@ -188,19 +187,19 @@ sub UploadFile(FileToUpload)
     Dim DataToPOST
     DataToPOST = DataToPOSTStream.Read
 
-	Set objHTTP = CreateObject("Microsoft.XMLHTTP")
-	objHTTP.open "POST", url, False
+    Set objHTTP = CreateObject("Microsoft.XMLHTTP")
+    objHTTP.open "POST", url, False
 
-	objHTTP.setRequestHeader "Content-Type", "multipart/form-data; boundary=AaB03x"
-	objHTTP.setRequestHeader "Content-Length", Len(fileContents)
-	objHTTP.send DataToPOST
-	
-	if objHTTP.Status <> 200 then
-		WScript.StdOut.WriteLine "Failed to upload file"
-		WScript.StdOut.WriteLine "status: " & objHTTP.Status
-		WScript.StdOut.WriteLine objHTTP.responseText
-		WScript.Quit 1
-	end if
+    objHTTP.setRequestHeader "Content-Type", "multipart/form-data; boundary=AaB03x"
+    objHTTP.setRequestHeader "Content-Length", Len(fileContents)
+    objHTTP.send DataToPOST
+    
+    if objHTTP.Status <> 200 then
+        WScript.StdOut.WriteLine "Failed to upload file"
+        WScript.StdOut.WriteLine "status: " & objHTTP.Status
+        WScript.StdOut.WriteLine objHTTP.responseText
+        WScript.Quit 1
+    end if
     WScript.StdOut.WriteLine "UploadFile Finished"
 end sub
 
