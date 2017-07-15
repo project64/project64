@@ -534,6 +534,9 @@ int32_t CCheats::EntrySize(const CODES & CodeEntry, int32_t CurrentEntry)
         }
         break;
     case 0xD0000000:
+    case 0xD1000000:
+    case 0xD2000000:
+    case 0xD3000000:
     case 0xB8000000:
     case 0xB9000000:
     case 0xBA000000:
