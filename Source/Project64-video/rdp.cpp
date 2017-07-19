@@ -2970,24 +2970,9 @@ void rdp_setcolorimage()
                             ptr_dst[x + y * width] = c;
                         }
                     }
-                    grLfbWriteRegion(GR_BUFFER_BACKBUFFER,
-                        (uint32_t)rdp.offset_x,
-                        (uint32_t)rdp.offset_y,
-                        GR_LFB_SRC_FMT_555,
-                        width,
-                        height,
-                        FXFALSE,
-                        width << 1,
-                        ptr_dst);
+                    gfxLfbWriteRegion(GR_BUFFER_BACKBUFFER, (uint32_t)rdp.offset_x, (uint32_t)rdp.offset_y, GR_LFB_SRC_FMT_555, width, height, FXFALSE, width << 1, ptr_dst);
                     delete[] ptr_dst;
                 }
-                /*
-                else  //just clear buffer
-                {
-                gfxColorMask(FXTRUE, FXTRUE);
-                gfxBufferClear (0, 0, 0xFFFF);
-                }
-                */
             }
         }
 

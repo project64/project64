@@ -62,6 +62,7 @@ void gfxBufferSwap(FxU32 swap_interval);
 FxBool gfxLfbLock(GrLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode, GrOriginLocation_t origin, FxBool pixelPipeline, GrLfbInfo_t *info);
 FxBool gfxLfbUnlock(GrLock_t type, GrBuffer_t buffer);
 FxBool gfxLfbReadRegion(GrBuffer_t src_buffer, FxU32 src_x, FxU32 src_y, FxU32 src_width, FxU32 src_height, FxU32 dst_stride, void *dst_data);
+FxBool gfxLfbWriteRegion(GrBuffer_t dst_buffer, FxU32 dst_x, FxU32 dst_y, GrLfbSrcFmt_t src_format, FxU32 src_width, FxU32 src_height, FxBool pixelPipeline, FxI32 src_stride, void *src_data);
 
 extern uint32_t nbTextureUnits;
 extern uint32_t g_scr_res_x, g_scr_res_y, g_res_x, g_res_y;
