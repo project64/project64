@@ -41,7 +41,7 @@ copy "%base_dir%\Config\Project64.rdx" "%base_dir%\Bin\Package\Config"
 copy "%base_dir%\Lang\*.pj.Lang" "%base_dir%\Bin\Package\Lang"
 copy "%base_dir%\Plugin\Audio\Jabo_Dsound.dll" "%base_dir%\Bin\Package\Plugin\Audio"
 copy "%base_dir%\Plugin\GFX\Jabo_Direct3D8.dll" "%base_dir%\Bin\Package\Plugin\GFX"
-copy "%base_dir%\Plugin\GFX\PJ64Glide64.dll" "%base_dir%\Bin\Package\Plugin\GFX"
+copy "%base_dir%\Plugin\GFX\Project64-Video.dll" "%base_dir%\Bin\Package\Plugin\GFX"
 copy "%base_dir%\Plugin\Input\PJ64_NRage.dll" "%base_dir%\Bin\Package\Plugin\Input"
 copy "%base_dir%\Plugin\RSP\RSP 1.7.dll" "%base_dir%\Bin\Package\Plugin\RSP"
 

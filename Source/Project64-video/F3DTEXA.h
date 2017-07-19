@@ -13,6 +13,5 @@
 ****************************************************************************/
 #pragma once
 
-typedef void(*rdp_instr)();
-
-extern rdp_instr gfx_instruction[11][256];
+void f3dttexa_loadtex();
+void f3dttexa_settilesize();

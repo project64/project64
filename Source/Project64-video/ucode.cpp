@@ -25,8 +25,9 @@
 #include "ucode07.h"
 #include "ucode08.h"
 #include "ucode09.h"
+#include "F3DTEXA.h"
 
-rdp_instr gfx_instruction[10][256] =
+rdp_instr gfx_instruction[11][256] =
 {
     {
         // uCode 0 - RSP SW 2.0X
@@ -770,6 +771,83 @@ rdp_instr gfx_instruction[10][256] =
         rdp_setconvert, uc9_setscissor, rdp_setprimdepth, rdp_setothermode,
 
         rdp_loadtlut, rdphalf_2, rdp_settilesize, rdp_loadblock,
+        rdp_loadtile, rdp_settile, rdp_fillrect, rdp_setfillcolor,
+        rdp_setfogcolor, rdp_setblendcolor, rdp_setprimcolor, rdp_setenvcolor,
+        rdp_setcombine, rdp_settextureimage, rdp_setdepthimage, rdp_setcolorimage
+    },
+
+	{
+        // uCode 10 - F3DTEXA
+        // games: 64 de Hakken 
+        // 00-3f
+        spnoop, uc0_matrix, rsp_reserved0, uc0_movemem,
+        uc1_vertex, rsp_reserved1, uc0_displaylist, rsp_reserved2,
+        rsp_reserved3, uc6_sprite2d, undef, undef,
+        undef, undef, undef, undef,
+
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        // 40-7f: unused
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        // 80-bf
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, uc2_load_ucode,
+
+        uc1_branch_z, uc2_quad, uc2_modifyvtx, rdphalf_2,
+        rdphalf_1, f3dttexa_loadtex, uc0_cleargeometrymode, uc0_setgeometrymode,
+        uc0_enddl, uc0_setothermode_l, uc0_setothermode_h, uc0_texture,
+        uc0_moveword, uc0_popmatrix, f3dttexa_settilesize, uc1_tri1,
+        // c0-ff: RDP commands
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+        undef, undef, undef, undef,
+
+        undef, undef, undef, undef,
+        rdp_texrect, rdp_texrect, rdp_loadsync, rdp_pipesync,
+        rdp_tilesync, rdp_fullsync, rdp_setkeygb, rdp_setkeyr,
+        rdp_setconvert, rdp_setscissor, rdp_setprimdepth, rdp_setothermode,
+
+        rdp_loadtlut, undef, rdp_settilesize, rdp_loadblock,
         rdp_loadtile, rdp_settile, rdp_fillrect, rdp_setfillcolor,
         rdp_setfogcolor, rdp_setblendcolor, rdp_setprimcolor, rdp_setenvcolor,
         rdp_setcombine, rdp_settextureimage, rdp_setdepthimage, rdp_setcolorimage

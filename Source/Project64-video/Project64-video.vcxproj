@@ -47,6 +47,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="F3DTEXA.h" />
     <ClInclude Include="Gfx_1.3.h" />
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="Renderer\types.h" />
@@ -120,6 +121,7 @@
   <ItemGroup>
     <ClCompile Include="Android.cpp" />
     <ClCompile Include="CRC.cpp" />
+    <ClCompile Include="F3DTEXA.cpp" />
     <ClCompile Include="Renderer\OGLcombiner.cpp" />
     <ClCompile Include="Renderer\OGLEScombiner.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>

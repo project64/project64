@@ -107,6 +107,7 @@ bool pjutil::TerminatedExistingExe()
                     if (TerminateProcess(hHandle, 0))
                     {
                         bTerminated = true;
+                        WaitForSingleObject(hHandle, 30 * 1000);
                     }
                     else
                     {

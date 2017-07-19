@@ -38,6 +38,7 @@ CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem) 
     m_SyncCPU(NULL),
     m_SyncPlugins(NULL),
     m_MMU_VM(SavesReadOnly),
+    m_Cheats(m_MMU_VM),
     m_TLB(this),
     m_Reg(this, this),
     m_Recomp(NULL),
@@ -2175,7 +2176,7 @@ void CN64System::RefreshScreen()
             SetCheatsSlectionChanged(false);
             m_Cheats.LoadCheats(false, g_BaseSystem->m_Plugins);
         }
-        m_Cheats.ApplyCheats(g_MMU);
+        m_Cheats.ApplyCheats();
     }
     //    if (bProfiling)    { m_Profile.StartTimer(ProfilingAddr != Timer_None ? ProfilingAddr : Timer_R4300); }
 }
