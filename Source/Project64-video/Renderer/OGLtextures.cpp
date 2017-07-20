@@ -635,11 +635,7 @@ void gfxTexDownloadMipMap(GrChipID_t tmu, FxU32 startAddress, FxU32 evenOdd, GrT
 
 int CheckTextureBufferFormat(GrChipID_t tmu, FxU32 startAddress, GrTexInfo *info);
 
-FX_ENTRY void FX_CALL
-grTexSource(GrChipID_t tmu,
-    FxU32      startAddress,
-    FxU32      evenOdd,
-    GrTexInfo  *info)
+void gfxTexSource(GrChipID_t tmu, FxU32 startAddress, FxU32 evenOdd, GrTexInfo *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, startAddress: %d evenOdd: %d", tmu, startAddress, evenOdd);
 
@@ -699,7 +695,7 @@ grTexSource(GrChipID_t tmu,
             need_to_compile = 1;
         }
     }
-    grDisplayGLError("grTexSource");
+    grDisplayGLError("gfxTexSource");
 }
 
 FX_ENTRY void FX_CALL

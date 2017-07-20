@@ -1981,7 +1981,7 @@ void set_message_combiner()
         GR_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         FXFALSE, FXFALSE);
-    grTexSource(GR_TMU0,
+    gfxTexSource(GR_TMU0,
         voodoo.tex_min_addr[GR_TMU0] + offset_font,
         GR_MIPMAPLEVELMASK_BOTH,
         &fontTex);

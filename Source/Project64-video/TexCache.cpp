@@ -477,7 +477,7 @@ int ChooseBestTmu(int tmu1, int tmu2)
 static void SelectTBuffTex(TBUFF_COLOR_IMAGE * pTBuffTex)
 {
     WriteTrace(TraceRDP, TraceDebug, "SelectTBuffTex: tex: %d, tmu: %d, tile: %d", rdp.tex, pTBuffTex->tmu, pTBuffTex->tile);
-    grTexSource(pTBuffTex->tile, pTBuffTex->tex_addr, GR_MIPMAPLEVELMASK_BOTH, &(pTBuffTex->info));
+    gfxTexSource(pTBuffTex->tile, pTBuffTex->tex_addr, GR_MIPMAPLEVELMASK_BOTH, &(pTBuffTex->info));
 }
 
 //****************************************************************
@@ -767,7 +767,7 @@ void TexCache()
                 rdp.cur_cache[0] = cache;
                 rdp.cur_cache[0]->last_used = frame_count;
                 rdp.cur_cache[0]->uses = rdp.debug_n;
-                grTexSource(tmu_0,
+                gfxTexSource(tmu_0,
                     (voodoo.tex_min_addr[tmu_0] + cache->tmem_addr),
                     GR_MIPMAPLEVELMASK_BOTH,
                     &cache->t_info);
@@ -798,7 +798,7 @@ void TexCache()
                 rdp.cur_cache[1] = cache;
                 rdp.cur_cache[1]->last_used = frame_count;
                 rdp.cur_cache[1]->uses = rdp.debug_n;
-                grTexSource(tmu_1,
+                gfxTexSource(tmu_1,
                     (voodoo.tex_min_addr[tmu_1] + cache->tmem_addr),
                     GR_MIPMAPLEVELMASK_BOTH,
                     &cache->t_info);
@@ -1682,7 +1682,7 @@ void LoadTex(int id, int tmu)
         voodoo.tmem_ptr[0] += texture_size;
         voodoo.tmem_ptr[1] = voodoo.tmem_ptr[0];
         gfxTexDownloadMipMap(tmu, tex_addr, GR_MIPMAPLEVELMASK_BOTH, t_info);
-        grTexSource(tmu, tex_addr, GR_MIPMAPLEVELMASK_BOTH, t_info);
+        gfxTexSource(tmu, tex_addr, GR_MIPMAPLEVELMASK_BOTH, t_info);
     }
     WriteTrace(TraceRDP, TraceDebug, " | | +- LoadTex end");
 }

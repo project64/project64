@@ -152,7 +152,7 @@ static void DrawRE2Video256(FB_TO_SCREEN_INFO & fb_info)
         voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu],
         GR_MIPMAPLEVELMASK_BOTH,
         &t_info);
-    grTexSource(tmu,
+    gfxTexSource(tmu,
         voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu],
         GR_MIPMAPLEVELMASK_BOTH,
         &t_info);
@@ -244,7 +244,7 @@ static void DrawFrameBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
                 }
             }
             gfxTexDownloadMipMap(tmu, tex_adr, GR_MIPMAPLEVELMASK_BOTH, &t_info);
-            grTexSource(tmu, tex_adr, GR_MIPMAPLEVELMASK_BOTH, &t_info);
+            gfxTexSource(tmu, tex_adr, GR_MIPMAPLEVELMASK_BOTH, &t_info);
             tex_adr += tex_size;
             float ul_x = (float)(fb_info.ul_x + 256 * w);
             float ul_y = (float)(fb_info.ul_y + 256 * h);
@@ -369,7 +369,7 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu],
         GR_MIPMAPLEVELMASK_BOTH,
         &t_info);
-    grTexSource(tmu,
+    gfxTexSource(tmu,
         voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu],
         GR_MIPMAPLEVELMASK_BOTH,
         &t_info);
@@ -447,7 +447,7 @@ static void DrawDepthBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
                 dst += cur_tail;
             }
             gfxTexDownloadMipMap(tmu, tex_adr, GR_MIPMAPLEVELMASK_BOTH, &t_info);
-            grTexSource(tmu, tex_adr, GR_MIPMAPLEVELMASK_BOTH, &t_info);
+            gfxTexSource(tmu, tex_adr, GR_MIPMAPLEVELMASK_BOTH, &t_info);
             tex_adr += tex_size;
             float ul_x = (float)(fb_info.ul_x + 256 * w);
             float ul_y = (float)(fb_info.ul_y + 256 * h);
@@ -517,7 +517,7 @@ static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         FXFALSE,
         FXFALSE);
     //  gfxAuxBufferExt( GR_BUFFER_AUXBUFFER );
-    grTexSource(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, GR_MIPMAPLEVELMASK_BOTH, &(t_info));
+    gfxTexSource(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, GR_MIPMAPLEVELMASK_BOTH, &(t_info));
     float ul_x = (float)rdp.scissor.ul_x;
     float ul_y = (float)rdp.scissor.ul_y;
     float lr_x = (float)rdp.scissor.lr_x;
@@ -606,7 +606,7 @@ void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu],
         GR_MIPMAPLEVELMASK_BOTH,
         &t_info);
-    grTexSource(tmu,
+    gfxTexSource(tmu,
         voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu],
         GR_MIPMAPLEVELMASK_BOTH,
         &t_info);

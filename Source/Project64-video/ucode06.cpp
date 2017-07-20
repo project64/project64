@@ -140,7 +140,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
         rdp.texbufs[1].begin,
         GR_MIPMAPLEVELMASK_BOTH,
         &t_info);
-    grTexSource(rdp.texbufs[1].tmu,
+    gfxTexSource(rdp.texbufs[1].tmu,
         rdp.texbufs[1].begin,
         GR_MIPMAPLEVELMASK_BOTH,
         &t_info);
