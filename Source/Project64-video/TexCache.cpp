@@ -1681,7 +1681,7 @@ void LoadTex(int id, int tmu)
         uint32_t tex_addr = voodoo.tex_min_addr[0] + voodoo.tmem_ptr[0];
         voodoo.tmem_ptr[0] += texture_size;
         voodoo.tmem_ptr[1] = voodoo.tmem_ptr[0];
-        grTexDownloadMipMap(tmu, tex_addr, GR_MIPMAPLEVELMASK_BOTH, t_info);
+        gfxTexDownloadMipMap(tmu, tex_addr, GR_MIPMAPLEVELMASK_BOTH, t_info);
         grTexSource(tmu, tex_addr, GR_MIPMAPLEVELMASK_BOTH, t_info);
     }
     WriteTrace(TraceRDP, TraceDebug, " | | +- LoadTex end");

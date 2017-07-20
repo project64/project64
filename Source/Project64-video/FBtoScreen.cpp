@@ -148,7 +148,7 @@ static void DrawRE2Video256(FB_TO_SCREEN_INFO & fb_info)
     t_info.format = GFX_TEXFMT_RGB_565;
     t_info.data = tex;
     int tmu = SetupFBtoScreenCombiner(gfxTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, &t_info), fb_info.opaque);
-    grTexDownloadMipMap(tmu,
+    gfxTexDownloadMipMap(tmu,
         voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu],
         GR_MIPMAPLEVELMASK_BOTH,
         &t_info);
@@ -243,7 +243,7 @@ static void DrawFrameBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
                     dst += cur_tail;
                 }
             }
-            grTexDownloadMipMap(tmu, tex_adr, GR_MIPMAPLEVELMASK_BOTH, &t_info);
+            gfxTexDownloadMipMap(tmu, tex_adr, GR_MIPMAPLEVELMASK_BOTH, &t_info);
             grTexSource(tmu, tex_adr, GR_MIPMAPLEVELMASK_BOTH, &t_info);
             tex_adr += tex_size;
             float ul_x = (float)(fb_info.ul_x + 256 * w);
@@ -365,7 +365,7 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
     }
 
     int tmu = SetupFBtoScreenCombiner(gfxTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, &t_info), fb_info.opaque);
-    grTexDownloadMipMap(tmu,
+    gfxTexDownloadMipMap(tmu,
         voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu],
         GR_MIPMAPLEVELMASK_BOTH,
         &t_info);
@@ -446,7 +446,7 @@ static void DrawDepthBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
                 }
                 dst += cur_tail;
             }
-            grTexDownloadMipMap(tmu, tex_adr, GR_MIPMAPLEVELMASK_BOTH, &t_info);
+            gfxTexDownloadMipMap(tmu, tex_adr, GR_MIPMAPLEVELMASK_BOTH, &t_info);
             grTexSource(tmu, tex_adr, GR_MIPMAPLEVELMASK_BOTH, &t_info);
             tex_adr += tex_size;
             float ul_x = (float)(fb_info.ul_x + 256 * w);
@@ -602,7 +602,7 @@ void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_CONSTANT,
         FXFALSE);
-    grTexDownloadMipMap(tmu,
+    gfxTexDownloadMipMap(tmu,
         voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu],
         GR_MIPMAPLEVELMASK_BOTH,
         &t_info);

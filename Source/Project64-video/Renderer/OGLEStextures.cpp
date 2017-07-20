@@ -381,18 +381,14 @@ int grTexFormat2GLPackedFmt(int fmt, int * gltexfmt, int * glpixfmt, int * glpac
     */
 }
 
-FX_ENTRY void FX_CALL
-grTexDownloadMipMap(GrChipID_t tmu,
-    FxU32      startAddress,
-    FxU32      evenOdd,
-    GrTexInfo  *info)
+void gfxTexDownloadMipMap(GrChipID_t tmu, FxU32 startAddress, FxU32 evenOdd, GrTexInfo *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, startAddress: %d evenOdd: %d", tmu, startAddress, evenOdd);
     int width, height, i, j;
     int factor;
     int glformat = 0;
     int gltexfmt, glpixfmt, glpackfmt;
-    if (info->largeLodLog2 != info->smallLodLog2) WriteTrace(TraceGlitch, TraceWarning, "grTexDownloadMipMap : loading more than one LOD");
+    if (info->largeLodLog2 != info->smallLodLog2) WriteTrace(TraceGlitch, TraceWarning, "gfxTexDownloadMipMap : loading more than one LOD");
 
     if (info->aspectRatioLog2 < 0)
     {
@@ -595,7 +591,7 @@ grTexDownloadMipMap(GrChipID_t tmu,
                   break;
             */
         default:
-            WriteTrace(TraceGlitch, TraceWarning, "grTexDownloadMipMap : unknown texture format: %x", info->format);
+            WriteTrace(TraceGlitch, TraceWarning, "gfxTexDownloadMipMap : unknown texture format: %x", info->format);
             factor = 0;
         }
     }

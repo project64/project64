@@ -303,7 +303,7 @@ void guLoadTextures()
         }
     }
 
-    grTexDownloadMipMap(GR_TMU0,
+    gfxTexDownloadMipMap(GR_TMU0,
         voodoo.tex_min_addr[GR_TMU0] + offset_font,
         GR_MIPMAPLEVELMASK_BOTH,
         &fontTex);
@@ -331,7 +331,7 @@ void guLoadTextures()
         *(tex16++) = (uint16_t)(((cur & 0x00FF0000) >> 8) | ((cur & 0xFF000000) >> 24));
     }
 
-    grTexDownloadMipMap(GR_TMU0,
+    gfxTexDownloadMipMap(GR_TMU0,
         voodoo.tex_min_addr[GR_TMU0] + offset_cursor,
         GR_MIPMAPLEVELMASK_BOTH,
         &cursorTex);

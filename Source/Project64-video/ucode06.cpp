@@ -136,7 +136,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
     t_info.largeLodLog2 = GFX_LOD_LOG2_512;
     t_info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
 
-    grTexDownloadMipMap(rdp.texbufs[1].tmu,
+    gfxTexDownloadMipMap(rdp.texbufs[1].tmu,
         rdp.texbufs[1].begin,
         GR_MIPMAPLEVELMASK_BOTH,
         &t_info);

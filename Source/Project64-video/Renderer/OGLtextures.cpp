@@ -376,11 +376,7 @@ int grTexFormat2GLPackedFmt(int fmt, int * gltexfmt, int * glpixfmt, int * glpac
     return factor;
 }
 
-FX_ENTRY void FX_CALL
-grTexDownloadMipMap(GrChipID_t tmu,
-    FxU32      startAddress,
-    FxU32      evenOdd,
-    GrTexInfo  *info)
+void gfxTexDownloadMipMap(GrChipID_t tmu, FxU32 startAddress, FxU32 evenOdd, GrTexInfo *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, startAddress: %d evenOdd: %d", tmu, startAddress, evenOdd);
 
@@ -388,7 +384,7 @@ grTexDownloadMipMap(GrChipID_t tmu,
     int factor;
     int glformat = 0;
     int gltexfmt = 0, glpixfmt = 0, glpackfmt = 0;
-    if (info->largeLodLog2 != info->smallLodLog2) WriteTrace(TraceGlitch, TraceWarning, "grTexDownloadMipMap : loading more than one LOD");
+    if (info->largeLodLog2 != info->smallLodLog2) WriteTrace(TraceGlitch, TraceWarning, "gfxTexDownloadMipMap : loading more than one LOD");
 
     if (info->aspectRatioLog2 < 0)
     {
@@ -589,7 +585,7 @@ grTexDownloadMipMap(GrChipID_t tmu,
             glformat = GL_COMPRESSED_RGBA_FXT1_3DFX;
             break;
         default:
-            WriteTrace(TraceGlitch, TraceWarning, "grTexDownloadMipMap : unknown texture format: %x", info->format);
+            WriteTrace(TraceGlitch, TraceWarning, "gfxTexDownloadMipMap : unknown texture format: %x", info->format);
             factor = 0;
         }
     }
@@ -634,7 +630,7 @@ grTexDownloadMipMap(GrChipID_t tmu,
     }
 
     glBindTexture(GL_TEXTURE_2D, default_texture);
-    grDisplayGLError("grTexDownloadMipMap");
+    grDisplayGLError("gfxTexDownloadMipMap");
 }
 
 int CheckTextureBufferFormat(GrChipID_t tmu, FxU32 startAddress, GrTexInfo *info);
