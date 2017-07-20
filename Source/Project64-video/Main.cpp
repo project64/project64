@@ -640,7 +640,7 @@ void ReleaseGfx()
         if (voodoo.gamma_table_r)
             gfxLoadGammaTable(voodoo.gamma_table_size, voodoo.gamma_table_r, voodoo.gamma_table_g, voodoo.gamma_table_b);
         else
-            guGammaCorrectionRGB(1.3f, 1.3f, 1.3f); //1.3f is default 3dfx gamma for everything but desktop
+            gfxGammaCorrectionRGB(1.3f, 1.3f, 1.3f); //1.3f is default 3dfx gamma for everything but desktop
         voodoo.gamma_correction = 0;
     }
 
@@ -1416,7 +1416,7 @@ void newSwapBuffers()
         {
             if (voodoo.gamma_table_size && !voodoo.gamma_table_r)
                 GetGammaTable(); //save initial gamma tables
-            guGammaCorrectionRGB(2.0f, 2.0f, 2.0f); //with gamma=2.0 gamma table is the same, as in N64
+            gfxGammaCorrectionRGB(2.0f, 2.0f, 2.0f); //with gamma=2.0 gamma table is the same, as in N64
             voodoo.gamma_correction = 1;
         }
     }
@@ -1427,7 +1427,7 @@ void newSwapBuffers()
             if (voodoo.gamma_table_r)
                 gfxLoadGammaTable(voodoo.gamma_table_size, voodoo.gamma_table_r, voodoo.gamma_table_g, voodoo.gamma_table_b);
             else
-                guGammaCorrectionRGB(1.3f, 1.3f, 1.3f); //1.3f is default 3dfx gamma for everything but desktop
+                gfxGammaCorrectionRGB(1.3f, 1.3f, 1.3f); //1.3f is default 3dfx gamma for everything but desktop
             voodoo.gamma_correction = 0;
         }
     }

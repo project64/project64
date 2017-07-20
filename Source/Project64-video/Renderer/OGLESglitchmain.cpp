@@ -1706,12 +1706,11 @@ void gfxGetGammaTableExt(FxU32 nentries, FxU32 *red, FxU32 *green, FxU32 *blue)
     */
 }
 
-FX_ENTRY void FX_CALL
-guGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB)
+void gfxGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB)
 {
     //TODO?
     /*
-    LOG("guGammaCorrectionRGB()\r\n");
+    LOG("gfxGammaCorrectionRGB()\r\n");
     if (!fullscreen)
     return;
     FxU16 aGammaRamp[3][256];
