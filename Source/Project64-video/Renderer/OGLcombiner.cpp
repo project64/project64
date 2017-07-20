@@ -1690,7 +1690,7 @@ void gfxStippleMode(GrStippleMode_t mode)
     grDisplayGLError("gfxStippleMode");
 }
 
-void gfxColorCombineExt(gfxCCUColor_t a, GrCombineMode_t a_mode, gfxCCUColor_t b, GrCombineMode_t b_mode, gfxCCUColor_t c, FxBool c_invert, gfxCCUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert)
+void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t b, gfxCombineMode_t b_mode, gfxCCUColor_t c, FxBool c_invert, gfxCCUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift: %d invert: %d", a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
     if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt : inverted result");
@@ -1733,16 +1733,16 @@ void gfxColorCombineExt(gfxCCUColor_t a, GrCombineMode_t a_mode, gfxCCUColor_t b
 
     switch (a_mode)
     {
-    case GR_FUNC_MODE_ZERO:
+    case GFX_FUNC_MODE_ZERO:
         strcat(fragment_shader_color_combiner, "vec4 c_a = vec4(0.0); \n");
         break;
-    case GR_FUNC_MODE_X:
+    case GFX_FUNC_MODE_X:
         strcat(fragment_shader_color_combiner, "vec4 c_a = cs_a; \n");
         break;
-    case GR_FUNC_MODE_ONE_MINUS_X:
+    case GFX_FUNC_MODE_ONE_MINUS_X:
         strcat(fragment_shader_color_combiner, "vec4 c_a = vec4(1.0) - cs_a; \n");
         break;
-    case GR_FUNC_MODE_NEGATIVE_X:
+    case GFX_FUNC_MODE_NEGATIVE_X:
         strcat(fragment_shader_color_combiner, "vec4 c_a = -cs_a; \n");
         break;
     default:
@@ -1780,16 +1780,16 @@ void gfxColorCombineExt(gfxCCUColor_t a, GrCombineMode_t a_mode, gfxCCUColor_t b
 
     switch (b_mode)
     {
-    case GR_FUNC_MODE_ZERO:
+    case GFX_FUNC_MODE_ZERO:
         strcat(fragment_shader_color_combiner, "vec4 c_b = vec4(0.0); \n");
         break;
-    case GR_FUNC_MODE_X:
+    case GFX_FUNC_MODE_X:
         strcat(fragment_shader_color_combiner, "vec4 c_b = cs_b; \n");
         break;
-    case GR_FUNC_MODE_ONE_MINUS_X:
+    case GFX_FUNC_MODE_ONE_MINUS_X:
         strcat(fragment_shader_color_combiner, "vec4 c_b = vec4(1.0) - cs_b; \n");
         break;
-    case GR_FUNC_MODE_NEGATIVE_X:
+    case GFX_FUNC_MODE_NEGATIVE_X:
         strcat(fragment_shader_color_combiner, "vec4 c_b = -cs_b; \n");
         break;
     default:
@@ -1867,7 +1867,7 @@ void gfxColorCombineExt(gfxCCUColor_t a, GrCombineMode_t a_mode, gfxCCUColor_t b
     need_to_compile = 1;
 }
 
-void gfxAlphaCombineExt(GrACUColor_t a, GrCombineMode_t a_mode, GrACUColor_t b, GrCombineMode_t b_mode, GrACUColor_t c, FxBool c_invert, GrACUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert)
+void gfxAlphaCombineExt(GrACUColor_t a, gfxCombineMode_t a_mode, GrACUColor_t b, gfxCombineMode_t b_mode, GrACUColor_t c, FxBool c_invert, GrACUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift: %d invert: %d", a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
     if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : inverted result");
@@ -1901,16 +1901,16 @@ void gfxAlphaCombineExt(GrACUColor_t a, GrCombineMode_t a_mode, GrACUColor_t b, 
 
     switch (a_mode)
     {
-    case GR_FUNC_MODE_ZERO:
+    case GFX_FUNC_MODE_ZERO:
         strcat(fragment_shader_alpha_combiner, "float a_a = 0.0; \n");
         break;
-    case GR_FUNC_MODE_X:
+    case GFX_FUNC_MODE_X:
         strcat(fragment_shader_alpha_combiner, "float a_a = as_a; \n");
         break;
-    case GR_FUNC_MODE_ONE_MINUS_X:
+    case GFX_FUNC_MODE_ONE_MINUS_X:
         strcat(fragment_shader_alpha_combiner, "float a_a = 1.0 - as_a; \n");
         break;
-    case GR_FUNC_MODE_NEGATIVE_X:
+    case GFX_FUNC_MODE_NEGATIVE_X:
         strcat(fragment_shader_alpha_combiner, "float a_a = -as_a; \n");
         break;
     default:
@@ -1939,16 +1939,16 @@ void gfxAlphaCombineExt(GrACUColor_t a, GrCombineMode_t a_mode, GrACUColor_t b, 
 
     switch (b_mode)
     {
-    case GR_FUNC_MODE_ZERO:
+    case GFX_FUNC_MODE_ZERO:
         strcat(fragment_shader_alpha_combiner, "float a_b = 0.0; \n");
         break;
-    case GR_FUNC_MODE_X:
+    case GFX_FUNC_MODE_X:
         strcat(fragment_shader_alpha_combiner, "float a_b = as_b; \n");
         break;
-    case GR_FUNC_MODE_ONE_MINUS_X:
+    case GFX_FUNC_MODE_ONE_MINUS_X:
         strcat(fragment_shader_alpha_combiner, "float a_b = 1.0 - as_b; \n");
         break;
-    case GR_FUNC_MODE_NEGATIVE_X:
+    case GFX_FUNC_MODE_NEGATIVE_X:
         strcat(fragment_shader_alpha_combiner, "float a_b = -as_b; \n");
         break;
     default:
@@ -2014,7 +2014,7 @@ void gfxAlphaCombineExt(GrACUColor_t a, GrCombineMode_t a_mode, GrACUColor_t b, 
     need_to_compile = 1;
 }
 
-void gfxTexColorCombineExt(GrChipID_t tmu, GrTCCUColor_t a, GrCombineMode_t a_mode, GrTCCUColor_t b, GrCombineMode_t b_mode, GrTCCUColor_t c, FxBool c_invert, GrTCCUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert)
+void gfxTexColorCombineExt(GrChipID_t tmu, GrTCCUColor_t a, gfxCombineMode_t a_mode, GrTCCUColor_t b, gfxCombineMode_t b_mode, GrTCCUColor_t c, FxBool c_invert, GrTCCUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert)
 {
     int num_tex;
     WriteTrace(TraceGlitch, TraceDebug, "tmu: %d a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift: %d invert: %d", tmu, a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
@@ -2110,25 +2110,25 @@ void gfxTexColorCombineExt(GrChipID_t tmu, GrTCCUColor_t a, GrCombineMode_t a_mo
 
     switch (a_mode)
     {
-    case GR_FUNC_MODE_ZERO:
+    case GFX_FUNC_MODE_ZERO:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_a = vec4(0.0); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_a = vec4(0.0); \n");
         break;
-    case GR_FUNC_MODE_X:
+    case GFX_FUNC_MODE_X:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_a = ctex0s_a; \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_a = ctex1s_a; \n");
         break;
-    case GR_FUNC_MODE_ONE_MINUS_X:
+    case GFX_FUNC_MODE_ONE_MINUS_X:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_a = vec4(1.0) - ctex0s_a; \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_a = vec4(1.0) - ctex1s_a; \n");
         break;
-    case GR_FUNC_MODE_NEGATIVE_X:
+    case GFX_FUNC_MODE_NEGATIVE_X:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_a = -ctex0s_a; \n");
         else
@@ -2208,25 +2208,25 @@ void gfxTexColorCombineExt(GrChipID_t tmu, GrTCCUColor_t a, GrCombineMode_t a_mo
 
     switch (b_mode)
     {
-    case GR_FUNC_MODE_ZERO:
+    case GFX_FUNC_MODE_ZERO:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_b = vec4(0.0); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_b = vec4(0.0); \n");
         break;
-    case GR_FUNC_MODE_X:
+    case GFX_FUNC_MODE_X:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_b = ctex0s_b; \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_b = ctex1s_b; \n");
         break;
-    case GR_FUNC_MODE_ONE_MINUS_X:
+    case GFX_FUNC_MODE_ONE_MINUS_X:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_b = vec4(1.0) - ctex0s_b; \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_b = vec4(1.0) - ctex1s_b; \n");
         break;
-    case GR_FUNC_MODE_NEGATIVE_X:
+    case GFX_FUNC_MODE_NEGATIVE_X:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_b = -ctex0s_b; \n");
         else
@@ -2373,7 +2373,7 @@ void gfxTexColorCombineExt(GrChipID_t tmu, GrTCCUColor_t a, GrCombineMode_t a_mo
     need_to_compile = 1;
 }
 
-void gfxTexAlphaCombineExt(GrChipID_t tmu, GrTACUColor_t a, GrCombineMode_t a_mode, GrTACUColor_t b, GrCombineMode_t b_mode, GrTACUColor_t c, FxBool c_invert, GrTACUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert)
+void gfxTexAlphaCombineExt(GrChipID_t tmu, GrTACUColor_t a, gfxCombineMode_t a_mode, GrTACUColor_t b, gfxCombineMode_t b_mode, GrTACUColor_t c, FxBool c_invert, GrTACUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert)
 {
     int num_tex;
     WriteTrace(TraceGlitch, TraceDebug, "tmu: %d a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift, invert: %d", tmu, a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
@@ -2435,25 +2435,25 @@ void gfxTexAlphaCombineExt(GrChipID_t tmu, GrTACUColor_t a, GrCombineMode_t a_mo
 
     switch (a_mode)
     {
-    case GR_FUNC_MODE_ZERO:
+    case GFX_FUNC_MODE_ZERO:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_a.a = 0.0; \n");
         else
             strcat(fragment_shader_texture1, "ctex1_a.a = 0.0; \n");
         break;
-    case GR_FUNC_MODE_X:
+    case GFX_FUNC_MODE_X:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_a.a = ctex0s_a.a; \n");
         else
             strcat(fragment_shader_texture1, "ctex1_a.a = ctex1s_a.a; \n");
         break;
-    case GR_FUNC_MODE_ONE_MINUS_X:
+    case GFX_FUNC_MODE_ONE_MINUS_X:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_a.a = 1.0 - ctex0s_a.a; \n");
         else
             strcat(fragment_shader_texture1, "ctex1_a.a = 1.0 - ctex1s_a.a; \n");
         break;
-    case GR_FUNC_MODE_NEGATIVE_X:
+    case GFX_FUNC_MODE_NEGATIVE_X:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_a.a = -ctex0s_a.a; \n");
         else
@@ -2503,25 +2503,25 @@ void gfxTexAlphaCombineExt(GrChipID_t tmu, GrTACUColor_t a, GrCombineMode_t a_mo
 
     switch (b_mode)
     {
-    case GR_FUNC_MODE_ZERO:
+    case GFX_FUNC_MODE_ZERO:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_b.a = 0.0; \n");
         else
             strcat(fragment_shader_texture1, "ctex1_b.a = 0.0; \n");
         break;
-    case GR_FUNC_MODE_X:
+    case GFX_FUNC_MODE_X:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_b.a = ctex0s_b.a; \n");
         else
             strcat(fragment_shader_texture1, "ctex1_b.a = ctex1s_b.a; \n");
         break;
-    case GR_FUNC_MODE_ONE_MINUS_X:
+    case GFX_FUNC_MODE_ONE_MINUS_X:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_b.a = 1.0 - ctex0s_b.a; \n");
         else
             strcat(fragment_shader_texture1, "ctex1_b.a = 1.0 - ctex1s_b.a; \n");
         break;
-    case GR_FUNC_MODE_NEGATIVE_X:
+    case GFX_FUNC_MODE_NEGATIVE_X:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_b.a = -ctex0s_b.a; \n");
         else

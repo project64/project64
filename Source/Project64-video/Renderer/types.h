@@ -17,6 +17,16 @@
 
 typedef uint8_t gfxAlpha_t;
 typedef uint32_t gfxCCUColor_t;
+
+enum gfxCombineMode_t
+{
+    GFX_FUNC_MODE_ZERO = 0x00,
+    GFX_FUNC_MODE_X = 0x01,
+    GFX_FUNC_MODE_ONE_MINUS_X = 0x02,
+    GFX_FUNC_MODE_NEGATIVE_X = 0x03,
+    GFX_FUNC_MODE_X_MINUS_HALF = 0x04,
+};
+
 enum gfxLOD_t
 {
     GFX_LOD_LOG2_1 = 0x0,
@@ -69,4 +79,3 @@ enum gfxTextureFormat_t
     GFX_TEXFMT_RGB_888 = 0xFF,
     GFX_TEXFMT_GZ = 0x8000,
 };
-
