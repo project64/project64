@@ -38,7 +38,7 @@ void gfxChromakeyValue(GrColor_t value);
 void gfxStippleMode(GrStippleMode_t mode);
 void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t b, gfxCombineMode_t b_mode, gfxCCUColor_t c, FxBool c_invert, gfxCCUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert);
 void gfxAlphaCombineExt(gfxACUColor_t a, gfxCombineMode_t a_mode, gfxACUColor_t b, gfxCombineMode_t b_mode, gfxACUColor_t c, FxBool c_invert, gfxACUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert);
-void gfxTexColorCombineExt(GrChipID_t tmu, GrTCCUColor_t a, gfxCombineMode_t a_mode, GrTCCUColor_t b, gfxCombineMode_t b_mode, GrTCCUColor_t c, FxBool c_invert, GrTCCUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert);
+void gfxTexColorCombineExt(GrChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a_mode, gfxTCCUColor_t b, gfxCombineMode_t b_mode, gfxTCCUColor_t c, FxBool c_invert, gfxTCCUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert);
 void gfxTexAlphaCombineExt(GrChipID_t tmu, GrTACUColor_t a, gfxCombineMode_t a_mode, GrTACUColor_t b, gfxCombineMode_t b_mode, GrTACUColor_t c, FxBool c_invert, GrTACUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert);
 void gfxConstantColorValueExt(GrChipID_t tmu, GrColor_t value);
 void gfxVertexLayout(FxU32 param, FxI32 offset, FxU32 mode);
