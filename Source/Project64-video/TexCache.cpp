@@ -876,7 +876,7 @@ void TexCache()
                         mode_t = GR_TEXTURECLAMP_WRAP;
                 }
 
-                grTexClampMode(tmu,
+                gfxTexClampMode(tmu,
                     mode_s,
                     mode_t);
             }
