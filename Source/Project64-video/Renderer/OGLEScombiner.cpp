@@ -1904,7 +1904,7 @@ void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t 
     need_to_compile = 1;
 }
 
-void gfxAlphaCombineExt(GrACUColor_t a, gfxCombineMode_t a_mode, GrACUColor_t b, gfxCombineMode_t b_mode, GrACUColor_t c, FxBool c_invert, GrACUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert)
+void gfxAlphaCombineExt(gfxACUColor_t a, gfxCombineMode_t a_mode, gfxACUColor_t b, gfxCombineMode_t b_mode, gfxACUColor_t c, FxBool c_invert, gfxACUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift: %d invert: %d", a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
     if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : inverted result");
