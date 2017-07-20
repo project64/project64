@@ -1974,8 +1974,7 @@ void gfxLoadGammaTable(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue
     CorrectGamma(aGammaRamp);
 }
 
-FX_ENTRY void FX_CALL
-grGetGammaTableExt(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
+void gfxGetGammaTableExt(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
     FxU16 aGammaRamp[3][256];

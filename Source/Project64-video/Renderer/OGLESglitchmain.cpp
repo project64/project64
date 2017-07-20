@@ -1678,13 +1678,12 @@ void gfxLoadGammaTable(FxU32 nentries, FxU32 *red, FxU32 *green, FxU32 *blue)
 {
 }
 
-FX_ENTRY void FX_CALL
-grGetGammaTableExt(FxU32 nentries, FxU32 *red, FxU32 *green, FxU32 *blue)
+void gfxGetGammaTableExt(FxU32 nentries, FxU32 *red, FxU32 *green, FxU32 *blue)
 {
     return;
     //TODO?
     /*
-    LOG("grGetGammaTableExt()\r\n");
+    LOG("gfxGetGammaTableExt()\r\n");
     FxU16 aGammaRamp[3][256];
     #ifdef _WIN32
     HDC hdc = GetDC(NULL);

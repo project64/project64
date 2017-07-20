@@ -1207,7 +1207,7 @@ static void GetGammaTable()
     voodoo.gamma_table_r = new FxU32[voodoo.gamma_table_size];
     voodoo.gamma_table_g = new FxU32[voodoo.gamma_table_size];
     voodoo.gamma_table_b = new FxU32[voodoo.gamma_table_size];
-    grGetGammaTableExt(voodoo.gamma_table_size, voodoo.gamma_table_r, voodoo.gamma_table_g, voodoo.gamma_table_b);
+    gfxGetGammaTableExt(voodoo.gamma_table_size, voodoo.gamma_table_r, voodoo.gamma_table_g, voodoo.gamma_table_b);
 }
 
 void write_png_file(const char* file_name, int width, int height, uint8_t *buffer)
