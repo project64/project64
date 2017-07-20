@@ -1690,7 +1690,7 @@ void gfxStippleMode(GrStippleMode_t mode)
     grDisplayGLError("gfxStippleMode");
 }
 
-void gfxColorCombineExt(GrCCUColor_t a, GrCombineMode_t a_mode, GrCCUColor_t b, GrCombineMode_t b_mode, GrCCUColor_t c, FxBool c_invert, GrCCUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert)
+void gfxColorCombineExt(gfxCCUColor_t a, GrCombineMode_t a_mode, gfxCCUColor_t b, GrCombineMode_t b_mode, gfxCCUColor_t c, FxBool c_invert, gfxCCUColor_t d, FxBool d_invert, FxU32 shift, FxBool invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift: %d invert: %d", a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
     if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt : inverted result");

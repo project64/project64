@@ -16,6 +16,7 @@
 #include <Common/stdtypes.h>
 
 typedef uint8_t gfxAlpha_t;
+typedef uint32_t gfxCCUColor_t;
 enum gfxLOD_t
 {
     GFX_LOD_LOG2_1 = 0x0,
