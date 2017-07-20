@@ -1674,8 +1674,7 @@ void gfxEnable(GrEnableMode_t mode)
         UMAmode = 1;
 }
 
-FX_ENTRY void FX_CALL
-grLoadGammaTable(FxU32 nentries, FxU32 *red, FxU32 *green, FxU32 *blue)
+void gfxLoadGammaTable(FxU32 nentries, FxU32 *red, FxU32 *green, FxU32 *blue)
 {
 }
 

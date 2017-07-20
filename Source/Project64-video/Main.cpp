@@ -638,7 +638,7 @@ void ReleaseGfx()
     if (voodoo.gamma_correction)
     {
         if (voodoo.gamma_table_r)
-            grLoadGammaTable(voodoo.gamma_table_size, voodoo.gamma_table_r, voodoo.gamma_table_g, voodoo.gamma_table_b);
+            gfxLoadGammaTable(voodoo.gamma_table_size, voodoo.gamma_table_r, voodoo.gamma_table_g, voodoo.gamma_table_b);
         else
             guGammaCorrectionRGB(1.3f, 1.3f, 1.3f); //1.3f is default 3dfx gamma for everything but desktop
         voodoo.gamma_correction = 0;
@@ -1425,7 +1425,7 @@ void newSwapBuffers()
         if (voodoo.gamma_correction)
         {
             if (voodoo.gamma_table_r)
-                grLoadGammaTable(voodoo.gamma_table_size, voodoo.gamma_table_r, voodoo.gamma_table_g, voodoo.gamma_table_b);
+                gfxLoadGammaTable(voodoo.gamma_table_size, voodoo.gamma_table_r, voodoo.gamma_table_g, voodoo.gamma_table_b);
             else
                 guGammaCorrectionRGB(1.3f, 1.3f, 1.3f); //1.3f is default 3dfx gamma for everything but desktop
             voodoo.gamma_correction = 0;
