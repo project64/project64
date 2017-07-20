@@ -1968,7 +1968,7 @@ void set_message_combiner()
         GR_BLEND_ZERO);
     gfxAlphaTestFunction(GR_CMP_ALWAYS);
     gfxStippleMode(GR_STIPPLE_DISABLE);
-    grTexFilterMode(0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
+    gfxTexFilterMode(0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
     gfxTexCombine(GR_TMU1,
         GR_COMBINE_FUNCTION_NONE,
         GR_COMBINE_FACTOR_NONE,

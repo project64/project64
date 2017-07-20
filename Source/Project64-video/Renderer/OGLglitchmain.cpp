@@ -1589,7 +1589,7 @@ void gfxAuxBufferExt(GrBuffer_t buffer)
         glDisable(GL_CULL_FACE);
         glDisable(GL_ALPHA_TEST);
         glDepthMask(GL_TRUE);
-        grTexFilterMode(GR_TMU1, GR_TEXTUREFILTER_POINT_SAMPLED, GR_TEXTUREFILTER_POINT_SAMPLED);
+        gfxTexFilterMode(GR_TMU1, GR_TEXTUREFILTER_POINT_SAMPLED, GR_TEXTUREFILTER_POINT_SAMPLED);
     }
     else {
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);

@@ -719,12 +719,7 @@ void gfxTexDetailControl(GrChipID_t tmu, int lod_bias, FxU8 detail_scale, float 
     set_lambda();
 }
 
-FX_ENTRY void FX_CALL
-grTexFilterMode(
-    GrChipID_t tmu,
-    GrTextureFilterMode_t minfilter_mode,
-    GrTextureFilterMode_t magfilter_mode
-)
+void gfxTexFilterMode(GrChipID_t tmu, GrTextureFilterMode_t minfilter_mode, GrTextureFilterMode_t magfilter_mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, bias: %d magfilter_mode: %d", tmu, minfilter_mode, magfilter_mode);
     if (tmu == GR_TMU1)

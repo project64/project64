@@ -59,7 +59,7 @@ static int SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaque)
             FXFALSE);
     }
     int filter = (rdp.filter_mode != 2) ? GR_TEXTUREFILTER_POINT_SAMPLED : GR_TEXTUREFILTER_BILINEAR;
-    grTexFilterMode(tmu, filter, filter);
+    gfxTexFilterMode(tmu, filter, filter);
     gfxTexClampMode(tmu,
         GR_TEXTURECLAMP_CLAMP,
         GR_TEXTURECLAMP_CLAMP);

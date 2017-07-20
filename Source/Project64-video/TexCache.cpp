@@ -823,12 +823,12 @@ void TexCache()
             if (g_settings->filtering() == CSettings::Filter_Automatic)
             {
                 int filter = (rdp.filter_mode != 2) ? GR_TEXTUREFILTER_POINT_SAMPLED : GR_TEXTUREFILTER_BILINEAR;
-                grTexFilterMode(tmu, filter, filter);
+                gfxTexFilterMode(tmu, filter, filter);
             }
             else
             {
                 int filter = (g_settings->filtering() == CSettings::Filter_ForceBilinear) ? GR_TEXTUREFILTER_BILINEAR : GR_TEXTUREFILTER_POINT_SAMPLED;
-                grTexFilterMode(tmu, filter, filter);
+                gfxTexFilterMode(tmu, filter, filter);
             }
 
             if (rdp.cur_cache[i])
