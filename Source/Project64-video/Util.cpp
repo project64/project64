@@ -977,9 +977,9 @@ static void CalculateLOD(VERTEX *v, int n)
         detailmax = lod_fraction;
     else
         detailmax = 1.0f - lod_fraction;
-    grTexDetailControl(GR_TMU0, cmb.dc0_lodbias, cmb.dc0_detailscale, detailmax);
+    gfxTexDetailControl(GR_TMU0, cmb.dc0_lodbias, cmb.dc0_detailscale, detailmax);
     if ((nbTextureUnits > 2 ? 2 : 1) == 2)
-        grTexDetailControl(GR_TMU1, cmb.dc1_lodbias, cmb.dc1_detailscale, detailmax);
+        gfxTexDetailControl(GR_TMU1, cmb.dc1_lodbias, cmb.dc1_detailscale, detailmax);
     WriteTrace(TraceRDP, TraceDebug, "CalculateLOD factor: %f, tile: %d, lod_fraction: %f", (float)lodFactor, lod_tile, lod_fraction);
 }
 

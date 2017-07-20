@@ -698,20 +698,14 @@ void gfxTexSource(GrChipID_t tmu, FxU32 startAddress, FxU32 evenOdd, GrTexInfo *
     grDisplayGLError("gfxTexSource");
 }
 
-FX_ENTRY void FX_CALL
-grTexDetailControl(
-    GrChipID_t tmu,
-    int lod_bias,
-    FxU8 detail_scale,
-    float detail_max
-)
+void gfxTexDetailControl(GrChipID_t tmu, int lod_bias, FxU8 detail_scale, float detail_max)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, lod_bias: %d detail_scale: %d detail_max: %d", tmu, lod_bias, detail_scale, detail_max);
     if (lod_bias != 31 && detail_scale != 7)
     {
         if (!lod_bias && !detail_scale && !detail_max) return;
         else
-            WriteTrace(TraceGlitch, TraceWarning, "grTexDetailControl : %d, %d, %f", lod_bias, detail_scale, detail_max);
+            WriteTrace(TraceGlitch, TraceWarning, "gfxTexDetailControl : %d, %d, %f", lod_bias, detail_scale, detail_max);
     }
     lambda = detail_max;
     if (lambda > 1.0f)
