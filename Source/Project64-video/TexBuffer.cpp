@@ -126,7 +126,7 @@ static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
 
     WriteTrace(TraceRDP, TraceDebug, "\nAllocateTextureBuffer. width: %d, height: %d, scr_width: %f, scr_height: %f, vi_width: %f, vi_height:%f, scale_x: %f, scale_y: %f, lr_u: %f, lr_v: %f, u_scale: %f, v_scale: %f", texbuf.width, texbuf.height, texbuf.scr_width, texbuf.scr_height, rdp.vi_width, rdp.vi_height, rdp.scale_x, rdp.scale_y, texbuf.lr_u, texbuf.lr_v, texbuf.u_scale, texbuf.v_scale);
 
-    uint32_t required = grTexCalcMemRequired(texbuf.info.smallLodLog2, texbuf.info.largeLodLog2,
+    uint32_t required = gfxTexCalcMemRequired(texbuf.info.smallLodLog2, texbuf.info.largeLodLog2,
         texbuf.info.aspectRatioLog2, texbuf.info.format);
     //find free space
     for (int i = 0; i < (nbTextureUnits > 2 ? 2 : 1); i++)

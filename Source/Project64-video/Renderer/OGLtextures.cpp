@@ -204,14 +204,11 @@ FxU32 gfxTexTextureMemRequired(FxU32 evenOdd, GrTexInfo *info)
     return 0;
 }
 
-FX_ENTRY FxU32 FX_CALL
-grTexCalcMemRequired(
-    GrLOD_t lodmin, GrLOD_t lodmax,
-    GrAspectRatio_t aspect, GrTextureFormat_t fmt)
+FxU32 gfxTexCalcMemRequired(GrLOD_t lodmin, GrLOD_t lodmax, GrAspectRatio_t aspect, GrTextureFormat_t fmt)
 {
     WriteTrace(TraceGlitch, TraceDebug, "lodmin = %d, lodmax: %d aspect: %d fmt: %d", lodmin, lodmax, aspect, fmt);
     int width, height;
-    if (lodmax != lodmin) WriteTrace(TraceGlitch, TraceWarning, "grTexCalcMemRequired : loading more than one LOD");
+    if (lodmax != lodmin) WriteTrace(TraceGlitch, TraceWarning, "gfxTexCalcMemRequired : loading more than one LOD");
 
     if (aspect < 0)
     {
