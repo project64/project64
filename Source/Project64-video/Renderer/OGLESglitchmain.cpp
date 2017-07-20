@@ -1667,8 +1667,7 @@ void grConfigWrapperExt(FxI32 vram, FxBool fbo, FxBool aniso)
     config.anisofilter = aniso;
 }
 
-FX_ENTRY void FX_CALL
-grEnable(GrEnableMode_t mode)
+void gfxEnable(GrEnableMode_t mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
     if (mode == GR_TEXTURE_UMA_EXT)

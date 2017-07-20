@@ -473,7 +473,7 @@ int InitGfx()
     // 2Mb Texture boundary
     voodoo.has_2mb_tex_boundary = (SST_type < GR_SSTTYPE_Banshee) && !evoodoo;
     // we get better texture cache hits with UMA on
-    grEnable(GR_TEXTURE_UMA_EXT);
+    gfxEnable(GR_TEXTURE_UMA_EXT);
     WriteTrace(TraceGlide64, TraceDebug, "Using TEXUMA extension");
 
     ChangeSize();
