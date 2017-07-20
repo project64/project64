@@ -718,12 +718,6 @@ void gfxTexDetailControl(GrChipID_t tmu, int lod_bias, FxU8 detail_scale, float 
 }
 
 FX_ENTRY void FX_CALL
-grTexLodBiasValue(GrChipID_t tmu, float bias)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, bias: %f", tmu, bias);
-}
-
-FX_ENTRY void FX_CALL
 grTexFilterMode(
     GrChipID_t tmu,
     GrTextureFilterMode_t minfilter_mode,
