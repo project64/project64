@@ -1742,25 +1742,25 @@ void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t 
 
     switch (a)
     {
-    case GR_CMBX_ZERO:
+    case GFX_CMBX_ZERO:
         strcat(fragment_shader_color_combiner, "vec4 cs_a = vec4(0.0); \n");
         break;
-    case GR_CMBX_TEXTURE_ALPHA:
+    case GFX_CMBX_TEXTURE_ALPHA:
         strcat(fragment_shader_color_combiner, "vec4 cs_a = vec4(ctexture1.a); \n");
         break;
-    case GR_CMBX_CONSTANT_ALPHA:
+    case GFX_CMBX_CONSTANT_ALPHA:
         strcat(fragment_shader_color_combiner, "vec4 cs_a = vec4(constant_color.a); \n");
         break;
-    case GR_CMBX_CONSTANT_COLOR:
+    case GFX_CMBX_CONSTANT_COLOR:
         strcat(fragment_shader_color_combiner, "vec4 cs_a = constant_color; \n");
         break;
-    case GR_CMBX_ITALPHA:
+    case GFX_CMBX_ITALPHA:
         strcat(fragment_shader_color_combiner, "vec4 cs_a = vec4(vFrontColor.a); \n");
         break;
-    case GR_CMBX_ITRGB:
+    case GFX_CMBX_ITRGB:
         strcat(fragment_shader_color_combiner, "vec4 cs_a = vFrontColor; \n");
         break;
-    case GR_CMBX_TEXTURE_RGB:
+    case GFX_CMBX_TEXTURE_RGB:
         strcat(fragment_shader_color_combiner, "vec4 cs_a = ctexture1; \n");
         break;
     default:
@@ -1789,25 +1789,25 @@ void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t 
 
     switch (b)
     {
-    case GR_CMBX_ZERO:
+    case GFX_CMBX_ZERO:
         strcat(fragment_shader_color_combiner, "vec4 cs_b = vec4(0.0); \n");
         break;
-    case GR_CMBX_TEXTURE_ALPHA:
+    case GFX_CMBX_TEXTURE_ALPHA:
         strcat(fragment_shader_color_combiner, "vec4 cs_b = vec4(ctexture1.a); \n");
         break;
-    case GR_CMBX_CONSTANT_ALPHA:
+    case GFX_CMBX_CONSTANT_ALPHA:
         strcat(fragment_shader_color_combiner, "vec4 cs_b = vec4(constant_color.a); \n");
         break;
-    case GR_CMBX_CONSTANT_COLOR:
+    case GFX_CMBX_CONSTANT_COLOR:
         strcat(fragment_shader_color_combiner, "vec4 cs_b = constant_color; \n");
         break;
-    case GR_CMBX_ITALPHA:
+    case GFX_CMBX_ITALPHA:
         strcat(fragment_shader_color_combiner, "vec4 cs_b = vec4(vFrontColor.a); \n");
         break;
-    case GR_CMBX_ITRGB:
+    case GFX_CMBX_ITRGB:
         strcat(fragment_shader_color_combiner, "vec4 cs_b = vFrontColor; \n");
         break;
-    case GR_CMBX_TEXTURE_RGB:
+    case GFX_CMBX_TEXTURE_RGB:
         strcat(fragment_shader_color_combiner, "vec4 cs_b = ctexture1; \n");
         break;
     default:
@@ -1836,34 +1836,34 @@ void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t 
 
     switch (c)
     {
-    case GR_CMBX_ZERO:
+    case GFX_CMBX_ZERO:
         strcat(fragment_shader_color_combiner, "vec4 c_c = vec4(0.0); \n");
         break;
-    case GR_CMBX_TEXTURE_ALPHA:
+    case GFX_CMBX_TEXTURE_ALPHA:
         strcat(fragment_shader_color_combiner, "vec4 c_c = vec4(ctexture1.a); \n");
         break;
-    case GR_CMBX_ALOCAL:
+    case GFX_CMBX_ALOCAL:
         strcat(fragment_shader_color_combiner, "vec4 c_c = vec4(c_b.a); \n");
         break;
-    case GR_CMBX_AOTHER:
+    case GFX_CMBX_AOTHER:
         strcat(fragment_shader_color_combiner, "vec4 c_c = vec4(c_a.a); \n");
         break;
-    case GR_CMBX_B:
+    case GFX_CMBX_B:
         strcat(fragment_shader_color_combiner, "vec4 c_c = cs_b; \n");
         break;
-    case GR_CMBX_CONSTANT_ALPHA:
+    case GFX_CMBX_CONSTANT_ALPHA:
         strcat(fragment_shader_color_combiner, "vec4 c_c = vec4(constant_color.a); \n");
         break;
-    case GR_CMBX_CONSTANT_COLOR:
+    case GFX_CMBX_CONSTANT_COLOR:
         strcat(fragment_shader_color_combiner, "vec4 c_c = constant_color; \n");
         break;
-    case GR_CMBX_ITALPHA:
+    case GFX_CMBX_ITALPHA:
         strcat(fragment_shader_color_combiner, "vec4 c_c = vec4(vFrontColor.a); \n");
         break;
-    case GR_CMBX_ITRGB:
+    case GFX_CMBX_ITRGB:
         strcat(fragment_shader_color_combiner, "vec4 c_c = vFrontColor; \n");
         break;
-    case GR_CMBX_TEXTURE_RGB:
+    case GFX_CMBX_TEXTURE_RGB:
         strcat(fragment_shader_color_combiner, "vec4 c_c = ctexture1; \n");
         break;
     default:
@@ -1876,19 +1876,19 @@ void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t 
 
     switch (d)
     {
-    case GR_CMBX_ZERO:
+    case GFX_CMBX_ZERO:
         strcat(fragment_shader_color_combiner, "vec4 c_d = vec4(0.0); \n");
         break;
-    case GR_CMBX_ALOCAL:
+    case GFX_CMBX_ALOCAL:
         strcat(fragment_shader_color_combiner, "vec4 c_d = vec4(c_b.a); \n");
         break;
-    case GR_CMBX_B:
+    case GFX_CMBX_B:
         strcat(fragment_shader_color_combiner, "vec4 c_d = cs_b; \n");
         break;
-    case GR_CMBX_TEXTURE_RGB:
+    case GFX_CMBX_TEXTURE_RGB:
         strcat(fragment_shader_color_combiner, "vec4 c_d = ctexture1; \n");
         break;
-    case GR_CMBX_ITRGB:
+    case GFX_CMBX_ITRGB:
         strcat(fragment_shader_color_combiner, "vec4 c_d = vFrontColor; \n");
         break;
     default:
@@ -1919,16 +1919,16 @@ void gfxAlphaCombineExt(gfxACUColor_t a, gfxCombineMode_t a_mode, gfxACUColor_t 
 
     switch (a)
     {
-    case GR_CMBX_ZERO:
+    case GFX_CMBX_ZERO:
         strcat(fragment_shader_alpha_combiner, "float as_a = 0.0; \n");
         break;
-    case GR_CMBX_TEXTURE_ALPHA:
+    case GFX_CMBX_TEXTURE_ALPHA:
         strcat(fragment_shader_alpha_combiner, "float as_a = ctexture1.a; \n");
         break;
-    case GR_CMBX_CONSTANT_ALPHA:
+    case GFX_CMBX_CONSTANT_ALPHA:
         strcat(fragment_shader_alpha_combiner, "float as_a = constant_color.a; \n");
         break;
-    case GR_CMBX_ITALPHA:
+    case GFX_CMBX_ITALPHA:
         strcat(fragment_shader_alpha_combiner, "float as_a = vFrontColor.a; \n");
         break;
     default:
@@ -1957,16 +1957,16 @@ void gfxAlphaCombineExt(gfxACUColor_t a, gfxCombineMode_t a_mode, gfxACUColor_t 
 
     switch (b)
     {
-    case GR_CMBX_ZERO:
+    case GFX_CMBX_ZERO:
         strcat(fragment_shader_alpha_combiner, "float as_b = 0.0; \n");
         break;
-    case GR_CMBX_TEXTURE_ALPHA:
+    case GFX_CMBX_TEXTURE_ALPHA:
         strcat(fragment_shader_alpha_combiner, "float as_b = ctexture1.a; \n");
         break;
-    case GR_CMBX_CONSTANT_ALPHA:
+    case GFX_CMBX_CONSTANT_ALPHA:
         strcat(fragment_shader_alpha_combiner, "float as_b = constant_color.a; \n");
         break;
-    case GR_CMBX_ITALPHA:
+    case GFX_CMBX_ITALPHA:
         strcat(fragment_shader_alpha_combiner, "float as_b = vFrontColor.a; \n");
         break;
     default:
@@ -1995,25 +1995,25 @@ void gfxAlphaCombineExt(gfxACUColor_t a, gfxCombineMode_t a_mode, gfxACUColor_t 
 
     switch (c)
     {
-    case GR_CMBX_ZERO:
+    case GFX_CMBX_ZERO:
         strcat(fragment_shader_alpha_combiner, "float a_c = 0.0; \n");
         break;
-    case GR_CMBX_TEXTURE_ALPHA:
+    case GFX_CMBX_TEXTURE_ALPHA:
         strcat(fragment_shader_alpha_combiner, "float a_c = ctexture1.a; \n");
         break;
-    case GR_CMBX_ALOCAL:
+    case GFX_CMBX_ALOCAL:
         strcat(fragment_shader_alpha_combiner, "float a_c = as_b; \n");
         break;
-    case GR_CMBX_AOTHER:
+    case GFX_CMBX_AOTHER:
         strcat(fragment_shader_alpha_combiner, "float a_c = as_a; \n");
         break;
-    case GR_CMBX_B:
+    case GFX_CMBX_B:
         strcat(fragment_shader_alpha_combiner, "float a_c = as_b; \n");
         break;
-    case GR_CMBX_CONSTANT_ALPHA:
+    case GFX_CMBX_CONSTANT_ALPHA:
         strcat(fragment_shader_alpha_combiner, "float a_c = constant_color.a; \n");
         break;
-    case GR_CMBX_ITALPHA:
+    case GFX_CMBX_ITALPHA:
         strcat(fragment_shader_alpha_combiner, "float a_c = vFrontColor.a; \n");
         break;
     default:
@@ -2026,16 +2026,16 @@ void gfxAlphaCombineExt(gfxACUColor_t a, gfxCombineMode_t a_mode, gfxACUColor_t 
 
     switch (d)
     {
-    case GR_CMBX_ZERO:
+    case GFX_CMBX_ZERO:
         strcat(fragment_shader_alpha_combiner, "float a_d = 0.0; \n");
         break;
-    case GR_CMBX_TEXTURE_ALPHA:
+    case GFX_CMBX_TEXTURE_ALPHA:
         strcat(fragment_shader_alpha_combiner, "float a_d = ctexture1.a; \n");
         break;
-    case GR_CMBX_ALOCAL:
+    case GFX_CMBX_ALOCAL:
         strcat(fragment_shader_alpha_combiner, "float a_d = as_b; \n");
         break;
-    case GR_CMBX_B:
+    case GFX_CMBX_B:
         strcat(fragment_shader_alpha_combiner, "float a_d = as_b; \n");
         break;
     default:
@@ -2083,25 +2083,25 @@ void gfxTexColorCombineExt(GrChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a_
 
     switch (a)
     {
-    case GR_CMBX_ZERO:
+    case GFX_CMBX_ZERO:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_a = vec4(0.0); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1s_a = vec4(0.0); \n");
         break;
-    case GR_CMBX_ITALPHA:
+    case GFX_CMBX_ITALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_a = vec4(vFrontColor.a); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1s_a = vec4(vFrontColor.a); \n");
         break;
-    case GR_CMBX_ITRGB:
+    case GFX_CMBX_ITRGB:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_a = vFrontColor; \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1s_a = vFrontColor; \n");
         break;
-    case GR_CMBX_LOCAL_TEXTURE_ALPHA:
+    case GFX_CMBX_LOCAL_TEXTURE_ALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_a = vec4(readtex0.a); \n");
         else
@@ -2113,25 +2113,25 @@ void gfxTexColorCombineExt(GrChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a_
         else
             strcat(fragment_shader_texture1, "vec4 ctex1s_a = readtex1; \n");
         break;
-    case GR_CMBX_OTHER_TEXTURE_ALPHA:
+    case GFX_CMBX_OTHER_TEXTURE_ALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_a = vec4(0.0); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1s_a = vec4(ctexture0.a); \n");
         break;
-    case GR_CMBX_OTHER_TEXTURE_RGB:
+    case GFX_CMBX_OTHER_TEXTURE_RGB:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_a = vec4(0.0); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1s_a = ctexture0; \n");
         break;
-    case GR_CMBX_TMU_CCOLOR:
+    case GFX_CMBX_TMU_CCOLOR:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_a = ccolor0; \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1s_a = ccolor1; \n");
         break;
-    case GR_CMBX_TMU_CALPHA:
+    case GFX_CMBX_TMU_CALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_a = vec4(ccolor0.a); \n");
         else
@@ -2181,25 +2181,25 @@ void gfxTexColorCombineExt(GrChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a_
 
     switch (b)
     {
-    case GR_CMBX_ZERO:
+    case GFX_CMBX_ZERO:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_b = vec4(0.0); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1s_b = vec4(0.0); \n");
         break;
-    case GR_CMBX_ITALPHA:
+    case GFX_CMBX_ITALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_b = vec4(vFrontColor.a); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1s_b = vec4(vFrontColor.a); \n");
         break;
-    case GR_CMBX_ITRGB:
+    case GFX_CMBX_ITRGB:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_b = vFrontColor; \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1s_b = vFrontColor; \n");
         break;
-    case GR_CMBX_LOCAL_TEXTURE_ALPHA:
+    case GFX_CMBX_LOCAL_TEXTURE_ALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_b = vec4(readtex0.a); \n");
         else
@@ -2211,25 +2211,25 @@ void gfxTexColorCombineExt(GrChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a_
         else
             strcat(fragment_shader_texture1, "vec4 ctex1s_b = readtex1; \n");
         break;
-    case GR_CMBX_OTHER_TEXTURE_ALPHA:
+    case GFX_CMBX_OTHER_TEXTURE_ALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_b = vec4(0.0); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1s_b = vec4(ctexture0.a); \n");
         break;
-    case GR_CMBX_OTHER_TEXTURE_RGB:
+    case GFX_CMBX_OTHER_TEXTURE_RGB:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_b = vec4(0.0); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1s_b = ctexture0; \n");
         break;
-    case GR_CMBX_TMU_CALPHA:
+    case GFX_CMBX_TMU_CALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_b = vec4(ccolor0.a); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1s_b = vec4(ccolor1.a); \n");
         break;
-    case GR_CMBX_TMU_CCOLOR:
+    case GFX_CMBX_TMU_CCOLOR:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_b = ccolor0; \n");
         else
@@ -2279,37 +2279,37 @@ void gfxTexColorCombineExt(GrChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a_
 
     switch (c)
     {
-    case GR_CMBX_ZERO:
+    case GFX_CMBX_ZERO:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_c = vec4(0.0); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_c = vec4(0.0); \n");
         break;
-    case GR_CMBX_B:
+    case GFX_CMBX_B:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_c = ctex0s_b; \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_c = ctex1s_b; \n");
         break;
-    case GR_CMBX_DETAIL_FACTOR:
+    case GFX_CMBX_DETAIL_FACTOR:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_c = vec4(lambda); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_c = vec4(lambda); \n");
         break;
-    case GR_CMBX_ITRGB:
+    case GFX_CMBX_ITRGB:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_c = vFrontColor; \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_c = vFrontColor; \n");
         break;
-    case GR_CMBX_ITALPHA:
+    case GFX_CMBX_ITALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_c = vec4(vFrontColor.a); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_c = vec4(vFrontColor.a); \n");
         break;
-    case GR_CMBX_LOCAL_TEXTURE_ALPHA:
+    case GFX_CMBX_LOCAL_TEXTURE_ALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_c = vec4(readtex0.a); \n");
         else
@@ -2321,25 +2321,25 @@ void gfxTexColorCombineExt(GrChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a_
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_c = readtex1; \n");
         break;
-    case GR_CMBX_OTHER_TEXTURE_ALPHA:
+    case GFX_CMBX_OTHER_TEXTURE_ALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_c = vec4(0.0); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_c = vec4(ctexture0.a); \n");
         break;
-    case GR_CMBX_OTHER_TEXTURE_RGB:
+    case GFX_CMBX_OTHER_TEXTURE_RGB:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_c = vec4(0.0); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_c = ctexture0; \n");
         break;
-    case GR_CMBX_TMU_CALPHA:
+    case GFX_CMBX_TMU_CALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_c = vec4(ccolor0.a); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_c = vec4(ccolor1.a); \n");
         break;
-    case GR_CMBX_TMU_CCOLOR:
+    case GFX_CMBX_TMU_CCOLOR:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_c = ccolor0; \n");
         else
@@ -2363,25 +2363,25 @@ void gfxTexColorCombineExt(GrChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a_
 
     switch (d)
     {
-    case GR_CMBX_ZERO:
+    case GFX_CMBX_ZERO:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_d = vec4(0.0); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_d = vec4(0.0); \n");
         break;
-    case GR_CMBX_B:
+    case GFX_CMBX_B:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_d = ctex0s_b; \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_d = ctex1s_b; \n");
         break;
-    case GR_CMBX_ITRGB:
+    case GFX_CMBX_ITRGB:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_d = vFrontColor; \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_d = vFrontColor; \n");
         break;
-    case GR_CMBX_LOCAL_TEXTURE_ALPHA:
+    case GFX_CMBX_LOCAL_TEXTURE_ALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_d = vec4(readtex0.a); \n");
         else
@@ -2438,25 +2438,25 @@ void gfxTexAlphaCombineExt(GrChipID_t tmu, gfxTACUColor_t a, gfxCombineMode_t a_
 
     switch (a)
     {
-    case GR_CMBX_ITALPHA:
+    case GFX_CMBX_ITALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0s_a.a = vFrontColor.a; \n");
         else
             strcat(fragment_shader_texture1, "ctex1s_a.a = vFrontColor.a; \n");
         break;
-    case GR_CMBX_LOCAL_TEXTURE_ALPHA:
+    case GFX_CMBX_LOCAL_TEXTURE_ALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0s_a.a = readtex0.a; \n");
         else
             strcat(fragment_shader_texture1, "ctex1s_a.a = readtex1.a; \n");
         break;
-    case GR_CMBX_OTHER_TEXTURE_ALPHA:
+    case GFX_CMBX_OTHER_TEXTURE_ALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0s_a.a = 0.0; \n");
         else
             strcat(fragment_shader_texture1, "ctex1s_a.a = ctexture0.a; \n");
         break;
-    case GR_CMBX_TMU_CALPHA:
+    case GFX_CMBX_TMU_CALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0s_a.a = ccolor0.a; \n");
         else
@@ -2506,25 +2506,25 @@ void gfxTexAlphaCombineExt(GrChipID_t tmu, gfxTACUColor_t a, gfxCombineMode_t a_
 
     switch (b)
     {
-    case GR_CMBX_ITALPHA:
+    case GFX_CMBX_ITALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0s_b.a = vFrontColor.a; \n");
         else
             strcat(fragment_shader_texture1, "ctex1s_b.a = vFrontColor.a; \n");
         break;
-    case GR_CMBX_LOCAL_TEXTURE_ALPHA:
+    case GFX_CMBX_LOCAL_TEXTURE_ALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0s_b.a = readtex0.a; \n");
         else
             strcat(fragment_shader_texture1, "ctex1s_b.a = readtex1.a; \n");
         break;
-    case GR_CMBX_OTHER_TEXTURE_ALPHA:
+    case GFX_CMBX_OTHER_TEXTURE_ALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0s_b.a = 0.0; \n");
         else
             strcat(fragment_shader_texture1, "ctex1s_b.a = ctexture0.a; \n");
         break;
-    case GR_CMBX_TMU_CALPHA:
+    case GFX_CMBX_TMU_CALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0s_b.a = ccolor0.a; \n");
         else
@@ -2574,43 +2574,43 @@ void gfxTexAlphaCombineExt(GrChipID_t tmu, gfxTACUColor_t a, gfxCombineMode_t a_
 
     switch (c)
     {
-    case GR_CMBX_ZERO:
+    case GFX_CMBX_ZERO:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_c.a = 0.0; \n");
         else
             strcat(fragment_shader_texture1, "ctex1_c.a = 0.0; \n");
         break;
-    case GR_CMBX_B:
+    case GFX_CMBX_B:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_c.a = ctex0s_b.a; \n");
         else
             strcat(fragment_shader_texture1, "ctex1_c.a = ctex1s_b.a; \n");
         break;
-    case GR_CMBX_DETAIL_FACTOR:
+    case GFX_CMBX_DETAIL_FACTOR:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_c.a = lambda; \n");
         else
             strcat(fragment_shader_texture1, "ctex1_c.a = lambda; \n");
         break;
-    case GR_CMBX_ITALPHA:
+    case GFX_CMBX_ITALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_c.a = vFrontColor.a; \n");
         else
             strcat(fragment_shader_texture1, "ctex1_c.a = vFrontColor.a; \n");
         break;
-    case GR_CMBX_LOCAL_TEXTURE_ALPHA:
+    case GFX_CMBX_LOCAL_TEXTURE_ALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_c.a = readtex0.a; \n");
         else
             strcat(fragment_shader_texture1, "ctex1_c.a = readtex1.a; \n");
         break;
-    case GR_CMBX_OTHER_TEXTURE_ALPHA:
+    case GFX_CMBX_OTHER_TEXTURE_ALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_c.a = 0.0; \n");
         else
             strcat(fragment_shader_texture1, "ctex1_c.a = ctexture0.a; \n");
         break;
-    case GR_CMBX_TMU_CALPHA:
+    case GFX_CMBX_TMU_CALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_c.a = ccolor0.a; \n");
         else
@@ -2634,31 +2634,31 @@ void gfxTexAlphaCombineExt(GrChipID_t tmu, gfxTACUColor_t a, gfxCombineMode_t a_
 
     switch (d)
     {
-    case GR_CMBX_ZERO:
+    case GFX_CMBX_ZERO:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_d.a = 0.0; \n");
         else
             strcat(fragment_shader_texture1, "ctex1_d.a = 0.0; \n");
         break;
-    case GR_CMBX_B:
+    case GFX_CMBX_B:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_d.a = ctex0s_b.a; \n");
         else
             strcat(fragment_shader_texture1, "ctex1_d.a = ctex1s_b.a; \n");
         break;
-    case GR_CMBX_ITALPHA:
+    case GFX_CMBX_ITALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_d.a = vFrontColor.a; \n");
         else
             strcat(fragment_shader_texture1, "ctex1_d.a = vFrontColor.a; \n");
         break;
-    case GR_CMBX_ITRGB:
+    case GFX_CMBX_ITRGB:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_d.a = vFrontColor.a; \n");
         else
             strcat(fragment_shader_texture1, "ctex1_d.a = vFrontColor.a; \n");
         break;
-    case GR_CMBX_LOCAL_TEXTURE_ALPHA:
+    case GFX_CMBX_LOCAL_TEXTURE_ALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctex0_d.a = readtex0.a; \n");
         else
