@@ -219,7 +219,7 @@ void gfxDepthBufferFunction(GrCmpFnc_t function)
     grDisplayGLError("gfxDepthBufferFunction");
 }
 
-void gfxDepthMask(FxBool mask)
+void gfxDepthMask(bool mask)
 {
     WriteTrace(TraceGlitch, TraceDebug, "mask: %d", mask);
     glDepthMask((GLboolean)mask);

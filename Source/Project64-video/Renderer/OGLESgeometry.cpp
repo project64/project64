@@ -287,7 +287,7 @@ void gfxDepthBufferFunction(GrCmpFnc_t function)
     }
 }
 
-void gfxDepthMask(FxBool mask)
+void gfxDepthMask(bool mask)
 {
     WriteTrace(TraceGlitch, TraceDebug, "mask: %d", mask);
     glDepthMask(mask);

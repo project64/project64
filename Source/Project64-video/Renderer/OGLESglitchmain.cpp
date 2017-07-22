@@ -241,7 +241,7 @@ void gfxClipWindow(uint32_t minx, uint32_t miny, uint32_t maxx, uint32_t maxy)
     glEnable(GL_SCISSOR_TEST);
 }
 
-void gfxColorMask(FxBool rgb, FxBool a)
+void gfxColorMask(bool rgb, bool a)
 {
     WriteTrace(TraceGlitch, TraceDebug, "rgb = %d, a: %d", rgb, a);
     glColorMask(rgb, rgb, rgb, a);
@@ -509,7 +509,7 @@ GrContext_t gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origi
     return 1;
 }
 
-FxBool gfxSstWinClose(GrContext_t context)
+bool gfxSstWinClose(GrContext_t context)
 {
     int i, clear_texbuff = use_fbo;
     WriteTrace(TraceGlitch, TraceDebug, "context: %d", context);
@@ -1370,7 +1370,7 @@ void gfxBufferSwap(uint32_t swap_interval)
 }
 
 // frame buffer
-FxBool gfxLfbLock(GrLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode, GrOriginLocation_t origin, FxBool pixelPipeline, GrLfbInfo_t *info)
+bool gfxLfbLock(GrLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode, GrOriginLocation_t origin, bool pixelPipeline, GrLfbInfo_t *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "type: %d buffer: %d writeMode: %d origin: %d pixelPipeline: %d", type, buffer, writeMode, origin, pixelPipeline);
     if (type == GR_LFB_WRITE_ONLY)
@@ -1439,7 +1439,7 @@ FxBool gfxLfbLock(GrLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode, 
     return FXTRUE;
 }
 
-FxBool gfxLfbUnlock(GrLock_t type, GrBuffer_t buffer)
+bool gfxLfbUnlock(GrLock_t type, GrBuffer_t buffer)
 {
     WriteTrace(TraceGlitch, TraceDebug, "type: %d, buffer: %d", type, buffer);
     if (type == GR_LFB_WRITE_ONLY)
@@ -1449,7 +1449,7 @@ FxBool gfxLfbUnlock(GrLock_t type, GrBuffer_t buffer)
     return FXTRUE;
 }
 
-FxBool gfxLfbReadRegion(GrBuffer_t src_buffer, uint32_t src_x, uint32_t src_y, uint32_t src_width, uint32_t src_height, uint32_t dst_stride, void *dst_data)
+bool gfxLfbReadRegion(GrBuffer_t src_buffer, uint32_t src_x, uint32_t src_y, uint32_t src_width, uint32_t src_height, uint32_t dst_stride, void *dst_data)
 {
     unsigned char *buf;
     unsigned int i, j;
@@ -1510,7 +1510,7 @@ FxBool gfxLfbReadRegion(GrBuffer_t src_buffer, uint32_t src_x, uint32_t src_y, u
     return FXTRUE;
 }
 
-FxBool gfxLfbWriteRegion(GrBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, GrLfbSrcFmt_t src_format, uint32_t src_width, uint32_t src_height, FxBool pixelPipeline, FxI32 src_stride, void *src_data)
+bool gfxLfbWriteRegion(GrBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, GrLfbSrcFmt_t src_format, uint32_t src_width, uint32_t src_height, bool pixelPipeline, FxI32 src_stride, void *src_data)
 {
     unsigned char *buf;
     unsigned int i, j;

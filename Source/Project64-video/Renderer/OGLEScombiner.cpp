@@ -784,7 +784,7 @@ void writeGLSLColorFactor(int factor, int local, int need_local, int other, int 
     }
 }
 
-void gfxColorCombine(GrCombineFunction_t function, GrCombineFactor_t factor, GrCombineLocal_t local, GrCombineOther_t other, FxBool invert)
+void gfxColorCombine(GrCombineFunction_t function, GrCombineFactor_t factor, GrCombineLocal_t local, GrCombineOther_t other, bool invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "function: %d factor: %d local: %d other: %d invert: %d", function, factor, local, other, invert);
     static int last_function = 0;
@@ -989,7 +989,7 @@ void writeGLSLAlphaFactor(int factor, int local, int need_local, int other, int 
     }
 }
 
-void gfxAlphaCombine(GrCombineFunction_t function, GrCombineFactor_t factor, GrCombineLocal_t local, GrCombineOther_t other, FxBool invert)
+void gfxAlphaCombine(GrCombineFunction_t function, GrCombineFactor_t factor, GrCombineLocal_t local, GrCombineOther_t other, bool invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "function: %d factor: %d local: %d other: %d invert: %d", function, factor, local, other, invert);
     static int last_function = 0;
@@ -1218,7 +1218,7 @@ void writeGLSLTextureAlphaFactor(int num_tex, int factor)
     }
 }
 
-void gfxTexCombine(GrChipID_t tmu, GrCombineFunction_t rgb_function, GrCombineFactor_t rgb_factor, GrCombineFunction_t alpha_function, GrCombineFactor_t alpha_factor, FxBool rgb_invert, FxBool alpha_invert)
+void gfxTexCombine(GrChipID_t tmu, GrCombineFunction_t rgb_function, GrCombineFactor_t rgb_factor, GrCombineFunction_t alpha_function, GrCombineFactor_t alpha_factor, bool rgb_invert, bool alpha_invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu: %d rgb_function: %d rgb_factor: %d alpha_function: %d alpha_factor: %d rgb_invert: %d alpha_invert: %d", tmu, rgb_function, rgb_factor, alpha_function, alpha_factor, rgb_invert, alpha_invert);
     int num_tex;
@@ -1727,7 +1727,7 @@ void gfxStippleMode(GrStippleMode_t mode)
     need_to_compile = 1;
 }
 
-void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t b, gfxCombineMode_t b_mode, gfxCCUColor_t c, FxBool c_invert, gfxCCUColor_t d, FxBool d_invert, uint32_t shift, FxBool invert)
+void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t b, gfxCombineMode_t b_mode, gfxCCUColor_t c, bool c_invert, gfxCCUColor_t d, bool d_invert, uint32_t shift, bool invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift: %d invert: %d", a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
     if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxColorCombineExt : inverted result");
@@ -1904,7 +1904,7 @@ void gfxColorCombineExt(gfxCCUColor_t a, gfxCombineMode_t a_mode, gfxCCUColor_t 
     need_to_compile = 1;
 }
 
-void gfxAlphaCombineExt(gfxACUColor_t a, gfxCombineMode_t a_mode, gfxACUColor_t b, gfxCombineMode_t b_mode, gfxACUColor_t c, FxBool c_invert, gfxACUColor_t d, FxBool d_invert, uint32_t shift, FxBool invert)
+void gfxAlphaCombineExt(gfxACUColor_t a, gfxCombineMode_t a_mode, gfxACUColor_t b, gfxCombineMode_t b_mode, gfxACUColor_t c, bool c_invert, gfxACUColor_t d, bool d_invert, uint32_t shift, bool invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift: %d invert: %d", a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
     if (invert) WriteTrace(TraceGlitch, TraceWarning, "gfxAlphaCombineExt : inverted result");
@@ -2051,7 +2051,7 @@ void gfxAlphaCombineExt(gfxACUColor_t a, gfxCombineMode_t a_mode, gfxACUColor_t 
     need_to_compile = 1;
 }
 
-void gfxTexColorCombineExt(GrChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a_mode, gfxTCCUColor_t b, gfxCombineMode_t b_mode, gfxTCCUColor_t c, FxBool c_invert, gfxTCCUColor_t d, FxBool d_invert, uint32_t shift, FxBool invert)
+void gfxTexColorCombineExt(GrChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a_mode, gfxTCCUColor_t b, gfxCombineMode_t b_mode, gfxTCCUColor_t c, bool c_invert, gfxTCCUColor_t d, bool d_invert, uint32_t shift, bool invert)
 {
     int num_tex;
     WriteTrace(TraceGlitch, TraceDebug, "tmu: %d a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift: %d invert: %d", tmu, a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
@@ -2410,7 +2410,7 @@ void gfxTexColorCombineExt(GrChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a_
     need_to_compile = 1;
 }
 
-void gfxTexAlphaCombineExt(GrChipID_t tmu, gfxTACUColor_t a, gfxCombineMode_t a_mode, gfxTACUColor_t b, gfxCombineMode_t b_mode, gfxTACUColor_t c, FxBool c_invert, gfxTACUColor_t d, FxBool d_invert, uint32_t shift, FxBool invert)
+void gfxTexAlphaCombineExt(GrChipID_t tmu, gfxTACUColor_t a, gfxCombineMode_t a_mode, gfxTACUColor_t b, gfxCombineMode_t b_mode, gfxTACUColor_t c, bool c_invert, gfxTACUColor_t d, bool d_invert, uint32_t shift, bool invert)
 {
     int num_tex;
     WriteTrace(TraceGlitch, TraceDebug, "tmu: %d a: %d a_mode: %d b: %d b_mode: %d c: %d c_invert: %d d: %d d_invert: %d shift, invert: %d", tmu, a, a_mode, b, b_mode, c, c_invert, d, d_invert, shift, invert);
