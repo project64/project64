@@ -1196,9 +1196,9 @@ static void DrawWholeFrameBufferToScreen()
 
 static void GetGammaTable()
 {
-    voodoo.gamma_table_r = new FxU32[voodoo.gamma_table_size];
-    voodoo.gamma_table_g = new FxU32[voodoo.gamma_table_size];
-    voodoo.gamma_table_b = new FxU32[voodoo.gamma_table_size];
+    voodoo.gamma_table_r = new uint32_t[voodoo.gamma_table_size];
+    voodoo.gamma_table_g = new uint32_t[voodoo.gamma_table_size];
+    voodoo.gamma_table_b = new uint32_t[voodoo.gamma_table_size];
     gfxGetGammaTableExt(voodoo.gamma_table_size, voodoo.gamma_table_r, voodoo.gamma_table_g, voodoo.gamma_table_b);
 }
 

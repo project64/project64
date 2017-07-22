@@ -73,7 +73,7 @@ void init_geometry()
     grDisplayGLError("init_geometry");
 }
 
-void gfxVertexLayout(FxU32 param, FxI32 offset, FxU32 mode)
+void gfxVertexLayout(uint32_t param, FxI32 offset, uint32_t mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "param: %d offset: %d mode: %d", param, offset, mode);
     switch (param)
@@ -534,7 +534,7 @@ void gfxDrawLine(const void *a, const void *b)
     grDisplayGLError("gfxDrawLine");
 }
 
-void gfxDrawVertexArray(FxU32 mode, FxU32 Count, void *pointers2)
+void gfxDrawVertexArray(uint32_t mode, uint32_t Count, void *pointers2)
 {
     unsigned int i;
     float *x, *y, *q, *s0, *t0, *s1, *t1, *z, *fog;
@@ -606,7 +606,7 @@ void gfxDrawVertexArray(FxU32 mode, FxU32 Count, void *pointers2)
     grDisplayGLError("gfxDrawVertexArray");
 }
 
-void gfxDrawVertexArrayContiguous(FxU32 mode, FxU32 Count, void *pointers, FxU32 stride)
+void gfxDrawVertexArrayContiguous(uint32_t mode, uint32_t Count, void *pointers, uint32_t stride)
 {
     unsigned int i;
     float *x, *y, *q, *s0, *t0, *s1, *t1, *z, *fog;

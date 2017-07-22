@@ -143,7 +143,7 @@ void init_geometry()
     glDisable(GL_DEPTH_TEST);
 }
 
-void gfxVertexLayout(FxU32 param, FxI32 offset, FxU32 mode)
+void gfxVertexLayout(uint32_t param, FxI32 offset, uint32_t mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "param: %d offset: %d mode: %d", param, offset, mode);
     switch (param)
@@ -348,7 +348,7 @@ void gfxDrawLine(const void *a, const void *b)
 {
 }
 
-void gfxDrawVertexArray(FxU32 mode, FxU32 Count, void *pointers2)
+void gfxDrawVertexArray(uint32_t mode, uint32_t Count, void *pointers2)
 {
     void **pointers = (void**)pointers2;
     WriteTrace(TraceGlitch, TraceDebug, "gfxDrawVertexArray(%d,%d)\r\n", mode, Count);
@@ -372,7 +372,7 @@ void gfxDrawVertexArray(FxU32 mode, FxU32 Count, void *pointers2)
     vbo_buffer(GL_TRIANGLE_FAN, 0, Count, pointers[0]);
 }
 
-void gfxDrawVertexArrayContiguous(FxU32 mode, FxU32 Count, void *pointers, FxU32 stride)
+void gfxDrawVertexArrayContiguous(uint32_t mode, uint32_t Count, void *pointers, uint32_t stride)
 {
     WriteTrace(TraceGlitch, TraceDebug, "gfxDrawVertexArrayContiguous(%d,%d,%d)\r\n", mode, Count, stride);
 

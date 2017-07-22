@@ -160,9 +160,9 @@ typedef struct
     int has_2mb_tex_boundary;
     int gamma_correction;
     FxI32 gamma_table_size;
-    FxU32 *gamma_table_r;
-    FxU32 *gamma_table_g;
-    FxU32 *gamma_table_b;
+    uint32_t *gamma_table_r;
+    uint32_t *gamma_table_g;
+    uint32_t *gamma_table_b;
     uint32_t tmem_ptr[MAX_TMU];
     uint32_t tex_min_addr[MAX_TMU];
     uint32_t tex_max_addr[MAX_TMU];

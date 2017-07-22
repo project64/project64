@@ -320,7 +320,7 @@ struct TMU_USAGE { unsigned long min, max; } tmu_usage[2] = {
 };
 
 struct texbuf_t {
-    FxU32 start, end;
+    uint32_t start, end;
     int fmt;
 };
 #define NB_TEXBUFS 128 // MUST be a power of two
@@ -332,7 +332,7 @@ unsigned short depthBuffer[2048 * 2048];
 
 //#define VOODOO1
 
-void gfxClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
+void gfxClipWindow(uint32_t minx, uint32_t miny, uint32_t maxx, uint32_t maxy)
 {
     WriteTrace(TraceGlitch, TraceDebug, "minx = %d, miny: %d maxy: %d", minx, miny, maxy);
 
@@ -354,7 +354,7 @@ void gfxClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy)
             th = screen_height;
         maxy = th - maxy;
         miny = th - miny;
-        FxU32 tmp = maxy; maxy = miny; miny = tmp;
+        uint32_t tmp = maxy; maxy = miny; miny = tmp;
         if ((FxI32)maxx > g_width) maxx = g_width;
         if ((FxI32)maxy > g_height) maxy = g_height;
         if (int(minx) < 0) minx = 0;
@@ -446,7 +446,7 @@ int isWglExtensionSupported(const char *extension)
 #ifdef _WIN32
 # include <fcntl.h>
 # ifndef ATTACH_PARENT_PROCESS
-#  define ATTACH_PARENT_PROCESS ((FxU32)-1)
+#  define ATTACH_PARENT_PROCESS ((uint32_t)-1)
 # endif
 extern HWND g_hwnd_win;
 #endif
@@ -863,7 +863,7 @@ FxBool gfxSstWinClose(GrContext_t context)
     return FXTRUE;
 }
 
-void gfxTextureBufferExt(GrChipID_t tmu, FxU32 startAddress, GrLOD_t lodmin, GrLOD_t lodmax, GrAspectRatio_t aspect, GrTextureFormat_t fmt, FxU32 evenOdd)
+void gfxTextureBufferExt(GrChipID_t tmu, uint32_t startAddress, GrLOD_t lodmin, GrLOD_t lodmax, GrAspectRatio_t aspect, GrTextureFormat_t fmt, uint32_t evenOdd)
 {
     int i;
     static int fbs_init = 0;
@@ -1093,7 +1093,7 @@ void gfxTextureBufferExt(GrChipID_t tmu, FxU32 startAddress, GrLOD_t lodmin, GrL
     }
 }
 
-int CheckTextureBufferFormat(GrChipID_t tmu, FxU32 startAddress, GrTexInfo *info)
+int CheckTextureBufferFormat(GrChipID_t tmu, uint32_t startAddress, GrTexInfo *info)
 {
     int found, i;
     if (!use_fbo) {
@@ -1179,7 +1179,7 @@ int CheckTextureBufferFormat(GrChipID_t tmu, FxU32 startAddress, GrTexInfo *info
     return 0;
 }
 
-FxU32 gfxGet(FxU32 pname, FxU32 plength, FxI32 *params)
+uint32_t gfxGet(uint32_t pname, uint32_t plength, FxI32 *params)
 {
     WriteTrace(TraceGlitch, TraceDebug, "pname: %d plength: %d", pname, plength);
     switch (pname)
@@ -1598,7 +1598,7 @@ void gfxAuxBufferExt(GrBuffer_t buffer)
     grDisplayGLError("gfxAuxBufferExt");
 }
 
-void gfxBufferClear(GrColor_t color, gfxAlpha_t alpha, FxU32 depth)
+void gfxBufferClear(GrColor_t color, gfxAlpha_t alpha, uint32_t depth)
 {
     WriteTrace(TraceGlitch, TraceDebug, "color: %X alpha: %X depth: %X", color, alpha, depth);
     switch (lfb_color_fmt)
@@ -1631,7 +1631,7 @@ void gfxBufferClear(GrColor_t color, gfxAlpha_t alpha, FxU32 depth)
     grDisplayGLError("gfxBufferClear");
 }
 
-void gfxBufferSwap(FxU32 swap_interval)
+void gfxBufferSwap(uint32_t swap_interval)
 {
     int i;
     WriteTrace(TraceGlitch, TraceDebug, "swap_interval: %d", swap_interval);
@@ -1732,7 +1732,7 @@ FxBool gfxLfbUnlock(GrLock_t type, GrBuffer_t buffer)
     return FXTRUE;
 }
 
-FxBool gfxLfbReadRegion(GrBuffer_t src_buffer, FxU32 src_x, FxU32 src_y, FxU32 src_width, FxU32 src_height, FxU32 dst_stride, void *dst_data)
+FxBool gfxLfbReadRegion(GrBuffer_t src_buffer, uint32_t src_x, uint32_t src_y, uint32_t src_width, uint32_t src_height, uint32_t dst_stride, void *dst_data)
 {
     unsigned char *buf;
     unsigned int i, j;
@@ -1794,7 +1794,7 @@ FxBool gfxLfbReadRegion(GrBuffer_t src_buffer, FxU32 src_x, FxU32 src_y, FxU32 s
     return FXTRUE;
 }
 
-FxBool gfxLfbWriteRegion(GrBuffer_t dst_buffer, FxU32 dst_x, FxU32 dst_y, GrLfbSrcFmt_t src_format, FxU32 src_width, FxU32 src_height, FxBool pixelPipeline, FxI32 src_stride, void *src_data)
+FxBool gfxLfbWriteRegion(GrBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, GrLfbSrcFmt_t src_format, uint32_t src_width, uint32_t src_height, FxBool pixelPipeline, FxI32 src_stride, void *src_data)
 {
     unsigned char *buf;
     unsigned int i, j;
@@ -1945,7 +1945,7 @@ static void CorrectGamma(const FxU16 aGammaRamp[3][256])
 }
 #endif
 
-void gfxLoadGammaTable(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
+void gfxLoadGammaTable(uint32_t /*nentries*/, uint32_t *red, uint32_t *green, uint32_t *blue)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
     FxU16 aGammaRamp[3][256];
@@ -1958,7 +1958,7 @@ void gfxLoadGammaTable(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue
     CorrectGamma(aGammaRamp);
 }
 
-void gfxGetGammaTableExt(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *blue)
+void gfxGetGammaTableExt(uint32_t /*nentries*/, uint32_t *red, uint32_t *green, uint32_t *blue)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
     FxU16 aGammaRamp[3][256];
