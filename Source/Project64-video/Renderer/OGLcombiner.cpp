@@ -2070,7 +2070,7 @@ void gfxTexColorCombineExt(GrChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a_
         else
             strcat(fragment_shader_texture1, "vec4 ctex1s_a = vec4(readtex1.a); \n");
         break;
-    case GR_CMBX_LOCAL_TEXTURE_RGB:
+    case GFX_CMBX_LOCAL_TEXTURE_RGB:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_a = readtex0; \n");
         else
@@ -2168,7 +2168,7 @@ void gfxTexColorCombineExt(GrChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a_
         else
             strcat(fragment_shader_texture1, "vec4 ctex1s_b = vec4(readtex1.a); \n");
         break;
-    case GR_CMBX_LOCAL_TEXTURE_RGB:
+    case GFX_CMBX_LOCAL_TEXTURE_RGB:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0s_b = readtex0; \n");
         else
@@ -2278,7 +2278,7 @@ void gfxTexColorCombineExt(GrChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a_
         else
             strcat(fragment_shader_texture1, "vec4 ctex1_c = vec4(readtex1.a); \n");
         break;
-    case GR_CMBX_LOCAL_TEXTURE_RGB:
+    case GFX_CMBX_LOCAL_TEXTURE_RGB:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctex0_c = readtex0; \n");
         else

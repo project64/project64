@@ -205,9 +205,9 @@ COMBINE cmb;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 else {\
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.t1c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t1c_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t1c_ext_a_mode = GFX_FUNC_MODE_ZERO, \
-  cmb.t1c_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t1c_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t1c_ext_b_mode = GFX_FUNC_MODE_ZERO, \
   cmb.t1c_ext_c = GR_CMBX_ZERO, \
   cmb.t1c_ext_c_invert = 0, \
@@ -215,7 +215,7 @@ COMBINE cmb;
   cmb.t1c_ext_d_invert = 0, \
   cmb.t0c_ext_a = GR_CMBX_OTHER_TEXTURE_RGB, \
   cmb.t0c_ext_a_mode = GFX_FUNC_MODE_X, \
-  cmb.t0c_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t0c_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t0c_ext_b_mode = GFX_FUNC_MODE_NEGATIVE_X, \
   cmb.t0c_ext_c = GR_CMBX_OTHER_TEXTURE_RGB, \
   cmb.t0c_ext_c_invert = 0, \
@@ -236,9 +236,9 @@ COMBINE cmb;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 else {\
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.t1c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t1c_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t1c_ext_a_mode = GFX_FUNC_MODE_ZERO, \
-  cmb.t1c_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t1c_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t1c_ext_b_mode = GFX_FUNC_MODE_ZERO, \
   cmb.t1c_ext_c = GR_CMBX_ZERO, \
   cmb.t1c_ext_c_invert = 0, \
@@ -246,7 +246,7 @@ COMBINE cmb;
   cmb.t1c_ext_d_invert = 0, \
   cmb.t0c_ext_a = GR_CMBX_OTHER_TEXTURE_RGB, \
   cmb.t0c_ext_a_mode = GFX_FUNC_MODE_X, \
-  cmb.t0c_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t0c_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t0c_ext_b_mode = GFX_FUNC_MODE_NEGATIVE_X, \
   cmb.t0c_ext_c = GR_CMBX_TMU_CCOLOR, \
   cmb.t0c_ext_c_invert = 0, \
@@ -262,15 +262,15 @@ COMBINE cmb;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 else {\
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.t1c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t1c_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t1c_ext_a_mode = GFX_FUNC_MODE_ZERO, \
-  cmb.t1c_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t1c_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t1c_ext_b_mode = GFX_FUNC_MODE_ZERO, \
   cmb.t1c_ext_c = GR_CMBX_ZERO, \
   cmb.t1c_ext_c_invert = 0, \
   cmb.t1c_ext_d= GR_CMBX_B, \
   cmb.t1c_ext_d_invert = 0, \
-  cmb.t0c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t0c_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t0c_ext_a_mode = GFX_FUNC_MODE_X, \
   cmb.t0c_ext_b = GR_CMBX_OTHER_TEXTURE_RGB, \
   cmb.t0c_ext_b_mode = GFX_FUNC_MODE_NEGATIVE_X, \
@@ -288,9 +288,9 @@ COMBINE cmb;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 else {\
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.t1c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t1c_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t1c_ext_a_mode = GFX_FUNC_MODE_ZERO, \
-  cmb.t1c_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t1c_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t1c_ext_b_mode = GFX_FUNC_MODE_ZERO, \
   cmb.t1c_ext_c = GR_CMBX_ZERO, \
   cmb.t1c_ext_c_invert = 0, \
@@ -298,7 +298,7 @@ COMBINE cmb;
   cmb.t1c_ext_d_invert = 0, \
   cmb.t0c_ext_a = GR_CMBX_OTHER_TEXTURE_RGB, \
   cmb.t0c_ext_a_mode = GFX_FUNC_MODE_X, \
-  cmb.t0c_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t0c_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t0c_ext_b_mode = GFX_FUNC_MODE_NEGATIVE_X, \
   cmb.t0c_ext_c = GR_CMBX_TMU_CCOLOR, \
   cmb.t0c_ext_c_invert = 0, \
@@ -315,9 +315,9 @@ COMBINE cmb;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 else {\
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.t1c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t1c_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t1c_ext_a_mode = GFX_FUNC_MODE_ZERO, \
-  cmb.t1c_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t1c_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t1c_ext_b_mode = GFX_FUNC_MODE_ZERO, \
   cmb.t1c_ext_c = GR_CMBX_ZERO, \
   cmb.t1c_ext_c_invert = 0, \
@@ -325,7 +325,7 @@ COMBINE cmb;
   cmb.t1c_ext_d_invert = 0, \
   cmb.t0c_ext_a = GR_CMBX_OTHER_TEXTURE_RGB, \
   cmb.t0c_ext_a_mode = GFX_FUNC_MODE_X, \
-  cmb.t0c_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t0c_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t0c_ext_b_mode = GFX_FUNC_MODE_NEGATIVE_X, \
   cmb.t0c_ext_c = GR_CMBX_ITALPHA, \
   cmb.t0c_ext_c_invert = 0, \
@@ -338,15 +338,15 @@ COMBINE cmb;
   T0_INTER_T1_USING_FACTOR (0x7F); } else {\
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.t1c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t1c_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t1c_ext_a_mode = GFX_FUNC_MODE_ZERO, \
-  cmb.t1c_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t1c_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t1c_ext_b_mode = GFX_FUNC_MODE_ZERO, \
   cmb.t1c_ext_c = GR_CMBX_ZERO, \
   cmb.t1c_ext_c_invert = 0, \
   cmb.t1c_ext_d= GR_CMBX_B, \
   cmb.t1c_ext_d_invert = 0, \
-  cmb.t0c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t0c_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t0c_ext_a_mode = GFX_FUNC_MODE_X, \
   cmb.t0c_ext_b = GR_CMBX_OTHER_TEXTURE_RGB, \
   cmb.t0c_ext_b_mode = GFX_FUNC_MODE_NEGATIVE_X, \
@@ -400,12 +400,12 @@ COMBINE cmb;
 #define T1_SUB_PRIM_MUL_PRIMLOD_ADD_T0() \
   if (cmb.combine_ext) \
                           { \
-  T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X, \
+  T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X, \
   GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X, \
   GR_CMBX_DETAIL_FACTOR, 0, \
   GR_CMBX_ZERO, 0); \
   T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X, \
-  GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X, \
+  GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X, \
   GR_CMBX_ZERO, 1, \
   GR_CMBX_ZERO, 0); \
   cmb.tex_ccolor = rdp.prim_color; \
@@ -427,7 +427,7 @@ COMBINE cmb;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 else {\
   rdp.best_tex = 0; \
   cmb.tex |= 1, \
-  cmb.t0c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB, \
+  cmb.t0c_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB, \
   cmb.t0c_ext_a_mode = GFX_FUNC_MODE_X, \
   cmb.t0c_ext_b = GR_CMBX_TMU_CCOLOR, \
   cmb.t0c_ext_b_mode = GFX_FUNC_MODE_NEGATIVE_X, \
@@ -897,15 +897,15 @@ static void cc_t1_inter_t0_using_env()
     {
         rdp.best_tex = 0;
         cmb.tex |= 3;
-        cmb.t1c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB;
+        cmb.t1c_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB;
         cmb.t1c_ext_a_mode = GFX_FUNC_MODE_ZERO;
-        cmb.t1c_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB;
+        cmb.t1c_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
         cmb.t1c_ext_b_mode = GFX_FUNC_MODE_ZERO;
         cmb.t1c_ext_c = GR_CMBX_ZERO;
         cmb.t1c_ext_c_invert = 0;
         cmb.t1c_ext_d = GR_CMBX_B;
         cmb.t1c_ext_d_invert = 0;
-        cmb.t0c_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB;
+        cmb.t0c_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB;
         cmb.t0c_ext_a_mode = GFX_FUNC_MODE_X;
         cmb.t0c_ext_b = GR_CMBX_OTHER_TEXTURE_RGB;
         cmb.t0c_ext_b_mode = GFX_FUNC_MODE_NEGATIVE_X;
@@ -1061,7 +1061,7 @@ static void cc__t0_inter_one_using_primlod__mul_prim()
     if (cmb.combine_ext)
     {
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ONE_MINUS_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ONE_MINUS_X,
             GR_CMBX_DETAIL_FACTOR, 0,
             GR_CMBX_B, 0);
         cmb.tex |= 1;
@@ -1087,11 +1087,11 @@ static void cc__t1_inter_one_using_env__mul_prim()
     if (cmb.combine_ext)
     {
         T1CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 1,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 1,
             GR_CMBX_B, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 1,
             GR_CMBX_ZERO, 0);
         cmb.tex |= 2;
@@ -1112,12 +1112,12 @@ static void cc__t1_inter_one_using_enva__mul_t0()
     if (cmb.combine_ext)
     {
         T1CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_TMU_CALPHA, 0,
             GR_CMBX_B, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_ZERO, 0);
         cmb.tex |= 3;
         cmb.tex_ccolor = 0xFFFFFF00 | (rdp.env_color & 0xFF);
@@ -1293,8 +1293,8 @@ static void cc__t0_mul_shade__add__t1_mul_shade()
     //combiner is used in Spiderman. It seems that t0 is used instead of t1
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ITRGB, 0,
             GR_CMBX_ZERO, 0);
         cmb.tex |= 1;
@@ -1322,7 +1322,7 @@ static void cc__t0_mul_prim__inter_env_using_enva()
         cc_t0_mul_prim();
     else if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CCOLOR, 0,
             GR_CMBX_ZERO, 0);
@@ -1358,11 +1358,11 @@ static void cc__t1_inter_t0_using_t1__mul_shade()
         GR_COMBINE_OTHER_TEXTURE);
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_B, 0,
             GR_CMBX_B, 0);
@@ -1411,7 +1411,7 @@ static void cc__t0_inter_one_using_prim__mul_shade()
     {
         T0CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ONE_MINUS_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_B, 0);
         cmb.tex |= 1;
         cmb.tex_ccolor = rdp.prim_color;
@@ -1434,7 +1434,7 @@ static void cc__t0_inter_one_using_primlod__mul_shade()
     if (cmb.combine_ext)
     {
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ONE_MINUS_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ONE_MINUS_X,
             GR_CMBX_DETAIL_FACTOR, 0,
             GR_CMBX_B, 0);
         cmb.tex |= 1;
@@ -1461,7 +1461,7 @@ static void cc__t0_inter_env_using_enva__mul_shade()
     if (cmb.combine_ext)
     {
         T0CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_TMU_CALPHA, 0,
             GR_CMBX_B, 0);
         cmb.tex |= 1;
@@ -1483,7 +1483,7 @@ static void cc__t0_inter_env_using_shadea__mul_shade()
     if (cmb.combine_ext)
     {
         T0CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ITALPHA, 0,
             GR_CMBX_B, 0);
         cmb.tex |= 1;
@@ -1503,8 +1503,8 @@ static void cc__t0_mul_prim_add_env__mul_shade()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CCOLOR, 0,
             GR_CMBX_ZERO, 0);
         cmb.tex |= 1;
@@ -1532,12 +1532,12 @@ static void cc__t1_sub_t0_mul_primlod_add_prim__mul_shade()
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_DETAIL_FACTOR, 0,
             GR_CMBX_ZERO, 0);
         cmb.tex |= 3;
@@ -1567,13 +1567,13 @@ static void cc__t1_sub_prim_mul_t0__mul_shade()
         GR_COMBINE_OTHER_TEXTURE);
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_ZERO, 0);
         cmb.tex_ccolor = rdp.prim_color;
         cmb.tex |= 3;
@@ -1592,13 +1592,13 @@ static void cc__t1_sub_t0_mul_t0_add_shade__mul_shade() //Aded by Gonetz
         GR_COMBINE_OTHER_TEXTURE);
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_ITRGB, 0);
         cmb.tex |= 3;
     }
@@ -1612,9 +1612,9 @@ static void cc__one_sub_shade_mul_t0_add_shade__mul_shade()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ITRGB, GFX_FUNC_MODE_ONE_MINUS_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_B, 0);
         cmb.tex |= 1;
         CCMBEXT(GR_CMBX_TEXTURE_RGB, GFX_FUNC_MODE_X,
@@ -1645,13 +1645,13 @@ static void cc__t0_sub_prim_mul_t1_add_t1__mul_shade()
     }
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_B, 0);
         cmb.tex |= 3;
     }
@@ -1669,13 +1669,13 @@ static void cc__t1_sub_env_mul_t0_add_t0__mul_shade()
         GR_COMBINE_OTHER_TEXTURE);
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ZERO, 1,
             GR_CMBX_ZERO, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_B, 0);
         cmb.tex_ccolor = rdp.env_color;
         cmb.tex |= 3;
@@ -1696,7 +1696,7 @@ static void cc__t0_mul_prima_add_prim_mul__shade()
         GR_COMBINE_OTHER_TEXTURE);
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CALPHA, 0,
             GR_CMBX_B, 0);
@@ -1717,7 +1717,7 @@ static void cc__t0_inter_prim_using_prima__inter_env_using_enva()
     if (cmb.combine_ext)
     {
         T0CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_TMU_CALPHA, 0,
             GR_CMBX_B, 0);
         cmb.tex_ccolor = rdp.prim_color;
@@ -1749,12 +1749,12 @@ static void cc_prim_inter_t1_mul_shade_using_texa()
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ITRGB, 0,
             GR_CMBX_ZERO, 0);
         cmb.tex |= 3;
@@ -1777,7 +1777,7 @@ static void cc__prim_inter_t0_using_t0a__mul_shade()
         GR_COMBINE_OTHER_TEXTURE);
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_LOCAL_TEXTURE_ALPHA, 0,
             GR_CMBX_B, 0);
@@ -1796,7 +1796,7 @@ static void cc__prim_inter_t0_using_t0a__inter_env_using_enva()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_LOCAL_TEXTURE_ALPHA, 0,
             GR_CMBX_B, 0);
@@ -1840,7 +1840,7 @@ static void cc__shade_inter_t0_using_shadea__mul_shade()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_ITRGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ITALPHA, 0,
             GR_CMBX_B, 0);
@@ -1982,13 +1982,13 @@ static void cc__t0_mul_t1__add_env_mul__t0_mul_t1__add_env()
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_B, 0);
         cmb.tex_ccolor = rdp.env_color;
         cmb.tex |= 3;
@@ -2034,8 +2034,8 @@ static void cc_t0_add_prim_mul_one_sub_t0_add_t0() //Aded by Gonetz
     if (cmb.combine_ext)
     {
         T0CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 1,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 1,
             GR_CMBX_B, 0);
         CCMBEXT(GR_CMBX_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_ZERO, GFX_FUNC_MODE_ZERO,
@@ -2055,7 +2055,7 @@ static void cc__one_sub_prim_mul_t0_add_prim__mul_prima_add__one_sub_prim_mul_t0
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CCOLOR, 1,
             GR_CMBX_B, 0);
@@ -2127,11 +2127,11 @@ static void cc_env_sub__t0_sub_t1_mul_primlod__mul_prim() //Aded by Gonetz
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ITRGB, 0,
             GR_CMBX_ZERO, 0);
@@ -2160,7 +2160,7 @@ static void cc_env_sub__t0_mul_scale_add_env__mul_prim()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_ITRGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CCOLOR, 0,
             GR_CMBX_B, 0);
@@ -2181,7 +2181,7 @@ static void cc_one_sub__one_sub_t0_mul_enva_add_prim__mul_prim() //Aded by Gonet
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ONE_MINUS_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ONE_MINUS_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
             GR_CMBX_DETAIL_FACTOR, 0,
             GR_CMBX_B, 0);
@@ -2248,7 +2248,7 @@ static void cc__t0_sub_env_mul_enva__add_prim_mul_shade()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_DETAIL_FACTOR, 0,
             GR_CMBX_ZERO, 0);
@@ -2286,11 +2286,11 @@ static void cc_t0_mul_prim_add_t1()
         GR_COMBINE_OTHER_TEXTURE);
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CCOLOR, 0,
             GR_CMBX_B, 0);
@@ -2315,20 +2315,20 @@ static void cc_shirt()
     if (cmb.combine_ext)
     {
         /*
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
-        GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
         GR_CMBX_TMU_CCOLOR, 0,
         GR_CMBX_ZERO, 0);
         //*/
         //*
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
         //*/
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 1,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 1,
             GR_CMBX_B, 0);
         cmb.tex |= 3;
         cmb.tex_ccolor = rdp.prim_color;
@@ -2380,7 +2380,7 @@ static void cc__t0_add_primlod__mul_prim_add_env()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
             GR_CMBX_ZERO, 1,
             GR_CMBX_ZERO, 0);
@@ -2442,12 +2442,12 @@ static void cc__t1_sub_prim_mul_enva_add_t0__mul_prim_add_env()
     SETSHADE_ENV();
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_DETAIL_FACTOR, 0,
             GR_CMBX_ZERO, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_ZERO, 1,
             GR_CMBX_ZERO, 0);
         cmb.tex_ccolor = rdp.prim_color;
@@ -2504,13 +2504,13 @@ static void cc__t0_mul_t1__sub_prim_mul_env_add_shade()
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CCOLOR, 0,
             GR_CMBX_ZERO, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_ITRGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_B, 0);
         cmb.tex_ccolor = rdp.env_color;
         cmb.tex |= 3;
@@ -2545,13 +2545,13 @@ static void cc__t0_sub_prim_mul_t1_add_t1__mul_env_add_shade()
     }
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_B, 0);
         cmb.tex |= 3;
     }
@@ -2575,7 +2575,7 @@ static void cc__t0_mul_shadea_add_env__mul_shade_add_prim()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ITALPHA, 0,
             GR_CMBX_B, 0);
@@ -2726,12 +2726,12 @@ static void cc__t1_sub_t0_mul_primlod_add_prim__mul_shade_add_shade()
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_DETAIL_FACTOR, 0,
             GR_CMBX_ZERO, 0);
         cmb.tex |= 3;
@@ -2930,11 +2930,11 @@ static void cc__t0_mul_enva_add_t1__mul_shade_add_prim()
     CC_PRIM();
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_ZERO, 1,
             GR_CMBX_ZERO, 0);
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_DETAIL_FACTOR, 0,
             GR_CMBX_B, 0);
@@ -3004,11 +3004,11 @@ static void cc__t0_add_prim__mul_shade_add_t1()
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ITRGB, 0,
             GR_CMBX_B, 0);
@@ -3034,11 +3034,11 @@ static void cc__t0_add_primlod__mul_shade_add_env()
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
             GR_CMBX_ZERO, 1,
             GR_CMBX_ZERO, 0);
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
             GR_CMBX_ZERO, 1,
             GR_CMBX_ZERO, 0);
@@ -3074,7 +3074,7 @@ static void cc__t0_mul_prima_add_prim_mul__shade_add_env()
     CC_ENV();
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CALPHA, 0,
             GR_CMBX_B, 0);
@@ -3325,12 +3325,12 @@ static void cc__t1_mul_t1_add_t0__mul_prim()
     CC_PRIM();
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_OTHER_TEXTURE_RGB, 0,
             GR_CMBX_B, 0);
         cmb.tex |= 3;
@@ -3572,7 +3572,7 @@ static void cc__t0_mul_prim_add_shade__mul_env()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_ITRGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CCOLOR, 0,
             GR_CMBX_B, 0);
@@ -3628,7 +3628,7 @@ static void cc__prim_mul_shade_add_env__mul_shade() //Aded by Gonetz
         return;
     }
     T0CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
-        GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
         GR_CMBX_ITRGB, 0,
         GR_CMBX_ZERO, 0);
     cmb.tex |= 1;
@@ -3646,11 +3646,11 @@ static void cc__t0_sub_t1__mul_prim_mul_shade_add_prim_mul_env()
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ZERO, 1,
             GR_CMBX_ZERO, 0);
@@ -3761,8 +3761,8 @@ static void cc_t0_mul_scale_add_prim__mul_shade() //Aded by Gonetz
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CCOLOR, 0,
             GR_CMBX_ZERO, 0);
         cmb.tex |= 1;
@@ -3840,7 +3840,7 @@ static void cc__t0_mul_prim_add_shade__sub_env_mul_shade()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_ITRGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CCOLOR, 0,
             GR_CMBX_B, 0);
@@ -3873,7 +3873,7 @@ static void cc__t0_sub_env_mul_shade__sub_prim_mul_shade()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ITRGB, 0,
             GR_CMBX_ZERO, 0);
@@ -3965,8 +3965,8 @@ static void cc__t0_mul_prima_add_t0__sub_center_mul_scale()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CCOLOR, 0,
             GR_CMBX_B, 0);
         uint32_t prima = rdp.prim_color & 0xFF;
@@ -4141,8 +4141,8 @@ static void cc_one_sub__t0_mul_shadea__mul_shade() //Aded by Gonetz
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ITALPHA, 0,
             GR_CMBX_ZERO, 0);
         cmb.tex |= 1;
@@ -4250,11 +4250,11 @@ static void cc_t0_sub_t1_mul_prim_mul_shade_add_t1()  //Aded by Gonetz
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ITRGB, 0,
             GR_CMBX_B, 0);
@@ -4290,11 +4290,11 @@ static void cc_t0_sub_prim_mul_t1_add_shade()  //Aded by Gonetz
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_OTHER_TEXTURE_RGB, 0,
             GR_CMBX_ZERO, 0);
@@ -4370,7 +4370,7 @@ static void cc_t0_sub_prim_mul_env_add_shade()  //Aded by Gonetz
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ZERO, 1,
             GR_CMBX_ZERO, 0);
@@ -4515,7 +4515,7 @@ static void cc_t0_sub_prim_mul_shade_add_env()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ZERO, 1,
             GR_CMBX_ZERO, 0);
@@ -4544,8 +4544,8 @@ static void cc_t1_sub_prim_mul_shade_add_env()
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 1,
             GR_CMBX_ZERO, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
@@ -4577,12 +4577,12 @@ static void cc_t1_sub_k4_mul_prima_add_t0()
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_DETAIL_FACTOR, 1,
             GR_CMBX_ZERO, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_ZERO, 1,
             GR_CMBX_ZERO, 0);
         cmb.tex |= 3;
@@ -4609,7 +4609,7 @@ static void cc__t0_sub_prim_mul_shade_add_env__mul_shade()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ITRGB, 0,
             GR_CMBX_ZERO, 0);
@@ -4638,7 +4638,7 @@ static void cc__t0_sub_prim_mul_shade_add_env__mul_shadea()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ITRGB, 0,
             GR_CMBX_ZERO, 0);
@@ -4773,7 +4773,7 @@ static void cc_t0_sub_env_mul_prima_add_env()  //Aded by Gonetz
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_DETAIL_FACTOR, 0,
             GR_CMBX_B, 0);
@@ -4826,7 +4826,7 @@ static void cc_t0_sub_env_mul_shade_add_prim()  //Aded by Gonetz
     CC_PRIM();
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ZERO, 1,
             GR_CMBX_ZERO, 0);
@@ -4846,11 +4846,11 @@ static void cc__t0_sub_t1_mul_enva_add_shade__sub_env_mul_prim()
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_TMU_CCOLOR, 0,
             GR_CMBX_ITRGB, 0);
@@ -4902,7 +4902,7 @@ static void cc__t0_sub_env_mul_shade_add_prim__mul_shade()  //Aded by Gonetz
         cc_t0_sub_env_mul_shade_add_prim();
         return;
     }
-    T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+    T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
         GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
         GR_CMBX_ITRGB, 0,
         GR_CMBX_ZERO, 0);
@@ -4922,7 +4922,7 @@ static void cc__t0_sub_env_mul_shade_add_prim__mul_shadea()  //Aded by Gonetz
         cc_t0_sub_env_mul_shade_add_prim();
         return;
     }
-    T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+    T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
         GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
         GR_CMBX_ITRGB, 0,
         GR_CMBX_B, 0);
@@ -5158,9 +5158,9 @@ static void cc__t0_mul_t0__sub_prim_mul_shade_add_shade()  //Aded by Gonetz
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_ZERO, 0);
         cmb.tex |= 1;
         CCMBEXT(GR_CMBX_TEXTURE_RGB, GFX_FUNC_MODE_X,
@@ -5245,7 +5245,7 @@ static void cc_t0_inter_env_using_enva()
     if (cmb.combine_ext)
     {
         T0CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_TMU_CALPHA, 0,
             GR_CMBX_B, 0);
         cmb.tex_ccolor = rdp.env_color;
@@ -5444,8 +5444,8 @@ static void cc_one_sub_shade_mul__t0_mul_shadea__add_shade()
         GR_COMBINE_OTHER_TEXTURE);
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_ITALPHA, 0,
             GR_CMBX_ZERO, 0);
         cmb.tex |= 1;
@@ -5533,13 +5533,13 @@ static void cc__t0_mul_t1_add_env__mul_shadea_add_shade()
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_B, 0);
         cmb.tex_ccolor = rdp.env_color;
         cmb.tex |= 3;
@@ -5575,12 +5575,12 @@ static void cc_prim_sub_t0_mul_t1_add_t0()  //Aded by Gonetz
         cc_t0_mul_t1();
         return;
     }
-    T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-        GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+    T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
         GR_CMBX_ZERO, 0,
         GR_CMBX_B, 0);
     T0CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
-        GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
+        GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
         GR_CMBX_OTHER_TEXTURE_RGB, 0,
         GR_CMBX_B, 0);
     cmb.tex_ccolor = rdp.prim_color;
@@ -5648,7 +5648,7 @@ static void cc__prim_sub_env_mul_t0_add_env__add_primlod()
         cc_prim_sub_env_mul_t0_add_env();
         return;
     }
-    T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+    T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
         GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
         GR_CMBX_ITRGB, 0,
         GR_CMBX_B, 0);
@@ -5669,7 +5669,7 @@ static void cc__prim_sub_env_mul_t0_add_env__add_shadea()
         cc_prim_sub_env_mul_t0_add_env();
         return;
     }
-    T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+    T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
         GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
         GR_CMBX_ITRGB, 0,
         GR_CMBX_B, 0);
@@ -5703,8 +5703,8 @@ static void cc_prim_sub_env_mul__t0_mul_prim__add_env()
     SETSHADE_ENV();
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CCOLOR, 0,
             GR_CMBX_ZERO, 0);
         cmb.tex_ccolor = rdp.prim_color;
@@ -5720,8 +5720,8 @@ static void cc_prim_sub_env_mul_t0_mul_shade_add_env()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CCOLOR, 0,
             GR_CMBX_ZERO, 0);
         CC_PRIMSUBENV();
@@ -5765,7 +5765,7 @@ static void cc_prim_sub_env_mul__one_sub_t0_mul_primlod_add_prim__add_env()
     SETSHADE_PRIM();
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ONE_MINUS_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ONE_MINUS_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
             GR_CMBX_DETAIL_FACTOR, 0,
             GR_CMBX_B, 0);
@@ -5823,8 +5823,8 @@ static void cc_prim_sub_env_mul__t1_sub_prim_mul_enva_add_t0__add_env()
     {
         if (rdp.tiles(rdp.cur_tile).format > 2)
         {
-            T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-                GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+                GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
                 GR_CMBX_ZERO, 0,
                 GR_CMBX_B, 0);
             T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
@@ -5834,12 +5834,12 @@ static void cc_prim_sub_env_mul__t1_sub_prim_mul_enva_add_t0__add_env()
         }
         else
         {
-            T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+            T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
                 GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
                 GR_CMBX_DETAIL_FACTOR, 0,
                 GR_CMBX_ZERO, 0);
             T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
-                GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+                GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
                 GR_CMBX_ZERO, 1,
                 GR_CMBX_ZERO, 0);
         }
@@ -5867,12 +5867,12 @@ static void cc_prim_sub_env_mul__t1_sub_prim_mul_prima_add_t0__add_env()
     SETSHADE_PRIM();
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ZERO, 1,
             GR_CMBX_ZERO, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_DETAIL_FACTOR, 0,
             GR_CMBX_B, 0);
         cmb.tex_ccolor = rdp.prim_color;
@@ -5966,7 +5966,7 @@ static void cc_prim_sub_env_mul_t0a_add_t0()
     if (cmb.combine_ext)
     {
         T0CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_LOCAL_TEXTURE_ALPHA, 0,
             GR_CMBX_B, 0);
         cmb.tex_ccolor = cmb.ccolor;
@@ -6086,7 +6086,7 @@ static void cc_prim_sub_env_mul__t0_sub_prim_mul_primlod_add_t0__add_env()
     if (cmb.combine_ext)
     {
         T0CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_DETAIL_FACTOR, 0,
             GR_CMBX_B, 0);
         cmb.tex_ccolor = rdp.prim_color;
@@ -6110,7 +6110,7 @@ static void cc_prim_sub_env_mul__t0_sub_prim_mul_primlod_add_shade__add_env()
         cc_prim_sub_env_mul_t0_add_env();
         return;
     }
-    T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+    T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
         GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
         GR_CMBX_DETAIL_FACTOR, 0,
         GR_CMBX_ITRGB, 0);
@@ -6133,7 +6133,7 @@ static void cc_prim_sub_env_mul__t0_sub_shade_mul_primlod_add_shade__add_env()
         cc_prim_sub_env_mul_t0_add_env();
         return;
     }
-    T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+    T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
         GR_CMBX_ITRGB, GFX_FUNC_MODE_NEGATIVE_X,
         GR_CMBX_DETAIL_FACTOR, 0,
         GR_CMBX_B, 0);
@@ -6237,7 +6237,7 @@ static void cc__env_inter_prim_using_t0__sub_shade_mul_t0a_add_shade()
     }
     else
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
             GR_CMBX_DETAIL_FACTOR, 0,
             GR_CMBX_B, 0);
@@ -6398,11 +6398,11 @@ static void cc_prim_sub_env_mul__t0_mul_enva_add_t1__add_env()
     SETSHADE_PRIM();
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_ZERO, 1,
             GR_CMBX_ZERO, 0);
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_DETAIL_FACTOR, 0,
             GR_CMBX_B, 0);
@@ -6482,13 +6482,13 @@ static void cc_prim_sub_env_mul__t1_sub_prim_mul_t0_add_t0__add_env()
     SETSHADE_PRIM();
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ZERO, 1,
             GR_CMBX_ZERO, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_B, 0);
         cmb.tex_ccolor = rdp.prim_color;
         cmb.tex |= 3;
@@ -6506,7 +6506,7 @@ static void cc__prim_sub_env_mul_prim_add_t0__mul_prim()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_ITRGB, GFX_FUNC_MODE_X,
             GR_CMBX_ZERO, 1,
             GR_CMBX_ZERO, 0);
@@ -6559,7 +6559,7 @@ static void cc_prim_sub_env_mul_primlod_add_env()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
@@ -6601,7 +6601,7 @@ static void cc_prim_sub_env_mul_enva_add_env()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
@@ -6917,7 +6917,7 @@ static void cc__t0_sub_env_mul_shade__sub_prim_mul_shade_add_prim()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ITRGB, 0,
             GR_CMBX_ZERO, 0);
@@ -7019,7 +7019,7 @@ static void cc__env_sub_shade_mul_t0_add_shade__mul_prim()
     {
         T0CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
             GR_CMBX_ITRGB, GFX_FUNC_MODE_NEGATIVE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_B, 0);
         cmb.tex |= 1;
         cmb.tex_ccolor = rdp.prim_color;
@@ -7098,11 +7098,11 @@ static void cc__t0_mul_shade_mul_shadea__add__t1_mul_one_sub_shadea()
     // (t0-0)*shade+0, (cmb-t0)*shadea+t0
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ITALPHA, 1,
             GR_CMBX_ZERO, 0);
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ITRGB, 0,
             GR_CMBX_B, 0);
@@ -7287,11 +7287,11 @@ static void cc__t0_add_prim_mul_shade__mul_shade_add_env()
         return;
     }
     T1CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
-        GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
         GR_CMBX_ITRGB, 0,
         GR_CMBX_B, 0);
     T0CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
-        GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
         GR_CMBX_ITRGB, 0,
         GR_CMBX_B, 0);
     CCMBEXT(GR_CMBX_TEXTURE_RGB, GFX_FUNC_MODE_X,
@@ -7311,7 +7311,7 @@ static void cc__t0_add_prim_mul_shade__mul_shade()
         return;
     }
     T0CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
-        GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
         GR_CMBX_ITRGB, 0,
         GR_CMBX_B, 0);
     CCMBEXT(GR_CMBX_TEXTURE_RGB, GFX_FUNC_MODE_X,
@@ -7426,12 +7426,12 @@ static void cc__t0_inter_t1_using_prim__inter_env_using_enva()
         cc_t0_inter_t1_using_prima();
         return;
     }
-    T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-        GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+    T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
         GR_CMBX_ZERO, 0,
         GR_CMBX_B, 0);
     T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
-        GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
+        GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
         GR_CMBX_TMU_CCOLOR, 0,
         GR_CMBX_B, 0);
     cmb.tex_ccolor = rdp.prim_color;
@@ -7451,12 +7451,12 @@ static void cc__t0_inter_t1_using_shade__inter_env_using_enva()
         cc_t0_inter_t1_using_enva();
         return;
     }
-    T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-        GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+    T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
         GR_CMBX_ZERO, 0,
         GR_CMBX_B, 0);
     T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
-        GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
+        GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
         GR_CMBX_ITRGB, 0,
         GR_CMBX_B, 0);
     cmb.tex |= 3;
@@ -7472,12 +7472,12 @@ static void cc_t0_inter_t1_using_shade()
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ITRGB, 0,
             GR_CMBX_B, 0);
         cmb.tex |= 3;
@@ -7501,11 +7501,11 @@ static void cc_t1_inter_t0_using_shade()
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ITRGB, 0,
             GR_CMBX_B, 0);
@@ -7675,7 +7675,7 @@ static void cc__env_inter_t0_using_shadea__mul_shade()
         cc_t0_mul_shade();
         return;
     }
-    T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+    T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
         GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
         GR_CMBX_ITALPHA, 0,
         GR_CMBX_B, 0);
@@ -7716,13 +7716,13 @@ static void cc_prim_inter__t0_mul_t1_add_env__using_shadea()
 {
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_B, 0);
         cmb.tex_ccolor = rdp.env_color;
         cmb.tex |= 3;
@@ -7748,7 +7748,7 @@ static void cc_env_inter__prim_inter_shade_using_t0__using_shadea()
     }
     T0CCMBEXT(GR_CMBX_ITRGB, GFX_FUNC_MODE_X,
         GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
-        GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+        GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
         GR_CMBX_B, 0);
     cmb.tex_ccolor = rdp.prim_color;
     cmb.tex |= 1;
@@ -7768,7 +7768,7 @@ static void cc_shade_inter__prim_inter_shade_using_t0__using_shadea()
     }
     T0CCMBEXT(GR_CMBX_ITRGB, GFX_FUNC_MODE_X,
         GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
-        GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+        GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
         GR_CMBX_B, 0);
     cmb.tex_ccolor = rdp.prim_color;
     cmb.tex |= 1;
@@ -7797,7 +7797,7 @@ static void cc_t0_sub_env_mul_prim_mul_shade_add_prim_mul_shade() //Aded by Gone
     //(t0-env)*shade+shade, (cmb-0)*prim+0
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_ITRGB, 0,
             GR_CMBX_ZERO, 0);
@@ -7830,13 +7830,13 @@ static void cc__t1_sub_prim_mul_t0_add_env__mul_shade() //Aded by Gonetz
     // (t1-prim)*t0+env, (cmb-0)*shade+0
     if (cmb.combine_ext)
     {
-        T1CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T1CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ZERO, 0,
             GR_CMBX_B, 0);
         T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_NEGATIVE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_ZERO, 0);
         cmb.tex_ccolor = rdp.prim_color;
         cmb.tex |= 3;
@@ -8030,9 +8030,9 @@ static void cc__one_sub_shade_mul_t0_add_shade__mul_prim()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ITRGB, GFX_FUNC_MODE_ONE_MINUS_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_B, 0);
         cmb.tex |= 1;
         CCMBEXT(GR_CMBX_TEXTURE_RGB, GFX_FUNC_MODE_X,
@@ -8055,9 +8055,9 @@ static void cc__one_sub_shade_mul_t0_add_shade__mul_env()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ITRGB, GFX_FUNC_MODE_ONE_MINUS_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_B, 0);
         cmb.tex |= 1;
         CCMBEXT(GR_CMBX_TEXTURE_RGB, GFX_FUNC_MODE_X,
@@ -8180,7 +8180,7 @@ static void cc_t0_inter_prim_using_prima()
     if (cmb.combine_ext)
     {
         T0CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_TMU_CALPHA, 0,
             GR_CMBX_B, 0);
         cmb.tex_ccolor = rdp.prim_color;
@@ -8265,9 +8265,9 @@ static void cc__env_inter_one_using_t0__mul_shade()
     //(one-env)*t0+env, (cmb-0)*shade+0
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ONE_MINUS_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
             GR_CMBX_B, 0);
         cmb.tex_ccolor = rdp.env_color & 0xFFFFFF00;
         cmb.tex |= 1;
@@ -8291,7 +8291,7 @@ static void cc_env_inter_one_using__one_sub_t0_mul_primlod()
     {
         // (noise-t0)*primlod+0, (1-env)*cmb+env
         T0CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_DETAIL_FACTOR, 0,
             GR_CMBX_ZERO, 0);
         cmb.tex_ccolor = rand() & 0xFFFFFF00;
@@ -8339,8 +8339,8 @@ static void cc__prim_inter_t0_using_env__mul_shade()
     }
     else if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
             GR_CMBX_TMU_CCOLOR, 0,
             GR_CMBX_ZERO, 0);
         cmb.tex_ccolor = rdp.env_color & 0xFFFFFF00;
@@ -8373,7 +8373,7 @@ static void cc__one_inter_prim_using_t1__mul_shade()
         {
             T0CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
                 GR_CMBX_TMU_CALPHA, GFX_FUNC_MODE_NEGATIVE_X,
-                GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+                GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
                 GR_CMBX_ZERO, 1);
             cmb.tex |= 1;
         }
@@ -8381,7 +8381,7 @@ static void cc__one_inter_prim_using_t1__mul_shade()
         {
             T1CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
                 GR_CMBX_TMU_CALPHA, GFX_FUNC_MODE_NEGATIVE_X,
-                GR_CMBX_LOCAL_TEXTURE_RGB, 0,
+                GFX_CMBX_LOCAL_TEXTURE_RGB, 0,
                 GR_CMBX_ZERO, 1);
             T0CCMBEXT(GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
                 GR_CMBX_OTHER_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
@@ -8424,7 +8424,7 @@ static void cc_prim_sub__prim_sub_t0_mul_prima__mul_shade()
     if (cmb.combine_ext)
     {
         T0CCMBEXT(GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_X,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GR_CMBX_TMU_CALPHA, 0,
             GR_CMBX_ZERO, 0);
         cmb.tex_ccolor = rdp.prim_color;
@@ -8526,7 +8526,7 @@ static void cc__env_inter_prim_using__t0_sub_shade_mul_primlod_add_env()
     // (t0-shade)*lodf+env, (prim-env)*cmb+env
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
             GR_CMBX_DETAIL_FACTOR, 0,
             GR_CMBX_B, 0);
@@ -8620,7 +8620,7 @@ static void cc__t0_mul_shade__inter_env_using_enva()
         cc_t0_mul_shade();
     else if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_TMU_CCOLOR, GFX_FUNC_MODE_ZERO,
             GR_CMBX_ITRGB, 0,
             GR_CMBX_B, 0);
@@ -8662,8 +8662,8 @@ static void cc__t0_mul_shade__inter_one_using_shadea()
 {
     if (cmb.combine_ext)
     {
-        T0CCMBEXT(GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
-            GR_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
+        T0CCMBEXT(GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_ZERO,
+            GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_X,
             GR_CMBX_ITRGB, 0,
             GR_CMBX_ZERO, 0);
         cmb.tex |= 1;
@@ -15670,11 +15670,11 @@ void Combine()
         {
             if (cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_COLOR)
             {
-                if (cmb.t0c_ext_a == GR_CMBX_LOCAL_TEXTURE_RGB)
+                if (cmb.t0c_ext_a == GFX_CMBX_LOCAL_TEXTURE_RGB)
                     cmb.t0c_ext_a = GR_CMBX_LOCAL_TEXTURE_ALPHA;
-                if (cmb.t0c_ext_b == GR_CMBX_LOCAL_TEXTURE_RGB)
+                if (cmb.t0c_ext_b == GFX_CMBX_LOCAL_TEXTURE_RGB)
                     cmb.t0c_ext_b = GR_CMBX_LOCAL_TEXTURE_ALPHA;
-                if (cmb.t0c_ext_c == GR_CMBX_LOCAL_TEXTURE_RGB)
+                if (cmb.t0c_ext_c == GFX_CMBX_LOCAL_TEXTURE_RGB)
                     cmb.t0c_ext_c = GR_CMBX_LOCAL_TEXTURE_ALPHA;
             }
             else
@@ -15685,11 +15685,11 @@ void Combine()
         {
             if (cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_COLOR)
             {
-                if (cmb.t1c_ext_a == GR_CMBX_LOCAL_TEXTURE_RGB)
+                if (cmb.t1c_ext_a == GFX_CMBX_LOCAL_TEXTURE_RGB)
                     cmb.t1c_ext_a = GR_CMBX_LOCAL_TEXTURE_ALPHA;
-                if (cmb.t1c_ext_b == GR_CMBX_LOCAL_TEXTURE_RGB)
+                if (cmb.t1c_ext_b == GFX_CMBX_LOCAL_TEXTURE_RGB)
                     cmb.t1c_ext_b = GR_CMBX_LOCAL_TEXTURE_ALPHA;
-                if (cmb.t1c_ext_c == GR_CMBX_LOCAL_TEXTURE_RGB)
+                if (cmb.t1c_ext_c == GFX_CMBX_LOCAL_TEXTURE_RGB)
                     cmb.t1c_ext_c = GR_CMBX_LOCAL_TEXTURE_ALPHA;
             }
             else
@@ -16259,7 +16259,7 @@ void TexColorCombinerToExtension(GrChipID_t tmu)
         tc_ext_c_invert = 0;
         break;
     case GR_COMBINE_FACTOR_LOCAL:
-        tc_ext_c = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_c = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_c_invert = 0;
         break;
     case GR_COMBINE_FACTOR_LOCAL_ALPHA:
@@ -16279,7 +16279,7 @@ void TexColorCombinerToExtension(GrChipID_t tmu)
         tc_ext_c_invert = 1;
         break;
     case GR_COMBINE_FACTOR_ONE_MINUS_LOCAL:
-        tc_ext_c = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_c = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_c_invert = 1;
         break;
     case GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA:
@@ -16304,9 +16304,9 @@ void TexColorCombinerToExtension(GrChipID_t tmu)
     switch (tmu_func)
     {
     case GR_COMBINE_FUNCTION_ZERO:
-        tc_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_ZERO;
-        tc_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_b_mode = GFX_FUNC_MODE_ZERO;
         tc_ext_c = GR_CMBX_ZERO;
         tc_ext_c_invert = 0;
@@ -16314,9 +16314,9 @@ void TexColorCombinerToExtension(GrChipID_t tmu)
         tc_ext_d_invert = 0;
         break;
     case GR_COMBINE_FUNCTION_LOCAL:
-        tc_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_X;
-        tc_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_b_mode = GFX_FUNC_MODE_ZERO;
         tc_ext_c = GR_CMBX_ZERO;
         tc_ext_c_invert = 1;
@@ -16326,7 +16326,7 @@ void TexColorCombinerToExtension(GrChipID_t tmu)
     case GR_COMBINE_FUNCTION_LOCAL_ALPHA:
         tc_ext_a = GR_CMBX_LOCAL_TEXTURE_ALPHA;
         tc_ext_a_mode = GFX_FUNC_MODE_X;
-        tc_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_b_mode = GFX_FUNC_MODE_ZERO;
         tc_ext_c = GR_CMBX_ZERO;
         tc_ext_c_invert = 1;
@@ -16336,7 +16336,7 @@ void TexColorCombinerToExtension(GrChipID_t tmu)
     case GR_COMBINE_FUNCTION_SCALE_OTHER:
         tc_ext_a = GR_CMBX_OTHER_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_X;
-        tc_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_b_mode = GFX_FUNC_MODE_ZERO;
         tc_ext_d = GR_CMBX_ZERO;
         tc_ext_d_invert = 0;
@@ -16344,7 +16344,7 @@ void TexColorCombinerToExtension(GrChipID_t tmu)
     case GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL:
         tc_ext_a = GR_CMBX_OTHER_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_X;
-        tc_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_b_mode = GFX_FUNC_MODE_ZERO;
         tc_ext_d = GR_CMBX_B;
         tc_ext_d_invert = 0;
@@ -16360,7 +16360,7 @@ void TexColorCombinerToExtension(GrChipID_t tmu)
     case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL:
         tc_ext_a = GR_CMBX_OTHER_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_X;
-        tc_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_b_mode = GFX_FUNC_MODE_NEGATIVE_X;
         tc_ext_d = GR_CMBX_ZERO;
         tc_ext_d_invert = 0;
@@ -16368,7 +16368,7 @@ void TexColorCombinerToExtension(GrChipID_t tmu)
     case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL:
         tc_ext_a = GR_CMBX_OTHER_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_X;
-        tc_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_b_mode = GFX_FUNC_MODE_NEGATIVE_X;
         tc_ext_d = GR_CMBX_B;
         tc_ext_d_invert = 0;
@@ -16376,32 +16376,32 @@ void TexColorCombinerToExtension(GrChipID_t tmu)
     case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL_ALPHA:
         tc_ext_a = GR_CMBX_OTHER_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_X;
-        tc_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_b_mode = GFX_FUNC_MODE_NEGATIVE_X;
         tc_ext_d = GR_CMBX_LOCAL_TEXTURE_ALPHA;
         tc_ext_d_invert = 0;
         break;
     case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
-        tc_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_ZERO;
-        tc_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_b_mode = GFX_FUNC_MODE_NEGATIVE_X;
         tc_ext_d = GR_CMBX_B;
         tc_ext_d_invert = 0;
         break;
     case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
-        tc_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_ZERO;
-        tc_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_b_mode = GFX_FUNC_MODE_NEGATIVE_X;
         tc_ext_d = GR_CMBX_LOCAL_TEXTURE_ALPHA;
         tc_ext_d_invert = 0;
         break;
     default:
         WriteTrace(TraceRDP, TraceWarning, "Invalid combiner TMU function %u.", tmu_func);
-        tc_ext_a = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_ZERO;
-        tc_ext_b = GR_CMBX_LOCAL_TEXTURE_RGB;
+        tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_b_mode = GFX_FUNC_MODE_ZERO;
         tc_ext_c = GR_CMBX_ZERO;
         tc_ext_c_invert = 0;
