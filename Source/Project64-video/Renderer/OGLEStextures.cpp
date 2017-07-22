@@ -141,19 +141,13 @@ void free_textures()
 FxU32 gfxTexMinAddress(GrChipID_t tmu)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d", tmu);
-    if (UMAmode)
-        return 0;
-    else
-        return tmu*TMU_SIZE;
+    return 0;
 }
 
 FxU32 gfxTexMaxAddress(GrChipID_t tmu)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d", tmu);
-    if (UMAmode)
-        return TMU_SIZE * 2 - 1;
-    else
-        return tmu*TMU_SIZE + TMU_SIZE - 1;
+    return TMU_SIZE * 2 - 1;
 }
 
 FxU32 gfxTexTextureMemRequired(FxU32 evenOdd, GrTexInfo *info)
@@ -488,7 +482,7 @@ void gfxTexDownloadMipMap(GrChipID_t tmu, FxU32 startAddress, FxU32 evenOdd, GrT
                     m++;
                     n++;
                 }
-            }
+                }
             factor = 2;
             glformat = GL_RGB;
             break;
@@ -511,7 +505,7 @@ void gfxTexDownloadMipMap(GrChipID_t tmu, FxU32 startAddress, FxU32 evenOdd, GrT
                     m++;
                     n++;
                 }
-            }
+                }
             factor = 2;
             glformat = GL_RGBA;
             break;
@@ -550,7 +544,7 @@ void gfxTexDownloadMipMap(GrChipID_t tmu, FxU32 startAddress, FxU32 evenOdd, GrT
                     m++;
                     n++;
                 }
-            }
+                }
             factor = 2;
             glformat = GL_RGBA;
             break;
@@ -593,8 +587,8 @@ void gfxTexDownloadMipMap(GrChipID_t tmu, FxU32 startAddress, FxU32 evenOdd, GrT
         default:
             WriteTrace(TraceGlitch, TraceWarning, "gfxTexDownloadMipMap : unknown texture format: %x", info->format);
             factor = 0;
-        }
-    }
+            }
+            }
 
     glActiveTexture(GL_TEXTURE2);
 
@@ -635,7 +629,7 @@ void gfxTexDownloadMipMap(GrChipID_t tmu, FxU32 startAddress, FxU32 evenOdd, GrT
     */
 
     glBindTexture(GL_TEXTURE_2D, default_texture);
-}
+            }
 
 int CheckTextureBufferFormat(GrChipID_t tmu, FxU32 startAddress, GrTexInfo *info);
 

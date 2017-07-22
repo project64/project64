@@ -298,8 +298,6 @@ int viewport_width, viewport_height, g_viewport_offset = 0, nvidia_viewport_hack
 int save_w, save_h;
 int lfb_color_fmt;
 float invtex[2];
-//Gonetz
-int UMAmode = 0; //support for VSA-100 UMA mode;
 
 #ifdef _WIN32
 static HDC hDC = NULL;
@@ -1930,13 +1928,6 @@ void grConfigWrapperExt(FxI32 vram, FxBool fbo, FxBool aniso)
     config.vram_size = vram;
     config.fbo = fbo;
     config.anisofilter = aniso;
-}
-
-void gfxEnable(GrEnableMode_t mode)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "-");
-    if (mode == GR_TEXTURE_UMA_EXT)
-        UMAmode = 1;
 }
 
 #ifdef _WIN32
