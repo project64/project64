@@ -14,7 +14,6 @@
 #pragma once
 #include <Project64-video/Renderer/types.h>
 #include <glide.h>
-#include "../GlideExtensions.h"
 
 void gfxClipWindow(FxU32 minx, FxU32 miny, FxU32 maxx, FxU32 maxy);
 void gfxColorMask(FxBool rgb, FxBool a);
