@@ -408,9 +408,9 @@ GrContext_t gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origi
     glGenRenderbuffersEXT = (PFNGLGENRENDERBUFFERSEXTPROC)wglGetProcAddress("glGenRenderbuffersEXT");
     glRenderbufferStorageEXT = (PFNGLRENDERBUFFERSTORAGEEXTPROC)wglGetProcAddress("glRenderbufferStorageEXT");
     glFramebufferRenderbufferEXT = (PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC)wglGetProcAddress("glFramebufferRenderbufferEXT");
-    use_fbo = config.fbo && (glFramebufferRenderbufferEXT != NULL);
+    use_fbo = g_settings->wrpFBO() && (glFramebufferRenderbufferEXT != NULL);
 #else
-    use_fbo = config.fbo;
+    use_fbo = g_settings->wrpFBO();
 #endif // _WIN32
 
     //LOGINFO("use_fbo %d\n", use_fbo);
@@ -505,25 +505,6 @@ GrContext_t gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origi
     init_geometry();
     init_textures();
     init_combiner();
-
-    /*
-      // Aniso filter check
-      if (config.anisofilter > 0 )
-      glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &largest_supported_anisotropy);
-
-      // ATI hack - certain texture formats are slow on ATI?
-      // Hmm, perhaps the internal format need to be specified explicitly...
-      {
-      GLint ifmt;
-      glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGBA, 16, 16, 0, GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV, NULL);
-      glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &ifmt);
-      if (ifmt != GL_RGB5_A1) {
-      WriteTrace(TraceGlitch, TraceWarning, "ATI SUCKS %x\n", ifmt);
-      ati_sucks = 1;
-      } else
-      ati_sucks = 0;
-      }
-      */
 
     return 1;
 }
@@ -1656,15 +1637,6 @@ FxBool gfxLfbWriteRegion(GrBuffer_t dst_buffer, FxU32 dst_x, FxU32 dst_y, GrLfbS
 }
 
 /* wrapper-specific glide extensions */
-
-void grConfigWrapperExt(FxI32 vram, FxBool fbo, FxBool aniso)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "-");
-    config.vram_size = vram;
-    config.fbo = fbo;
-    config.anisofilter = aniso;
-}
-
 void gfxLoadGammaTable(FxU32 nentries, FxU32 *red, FxU32 *green, FxU32 *blue)
 {
 }
@@ -1672,46 +1644,10 @@ void gfxLoadGammaTable(FxU32 nentries, FxU32 *red, FxU32 *green, FxU32 *blue)
 void gfxGetGammaTableExt(FxU32 nentries, FxU32 *red, FxU32 *green, FxU32 *blue)
 {
     return;
-    //TODO?
-    /*
-    LOG("gfxGetGammaTableExt()\r\n");
-    FxU16 aGammaRamp[3][256];
-    #ifdef _WIN32
-    HDC hdc = GetDC(NULL);
-    if (hdc == NULL)
-    return;
-    if (GetDeviceGammaRamp(hdc, aGammaRamp) == TRUE)
-    {
-    ReleaseDC(NULL, hdc);
-    #else
-    if (SDL_GetGammaRamp(aGammaRamp[0], aGammaRamp[1], aGammaRamp[2]) != -1)
-    {
-    #endif
-    for (int i = 0; i < 256; i++)
-    {
-    red[i] = aGammaRamp[0][i] >> 8;
-    green[i] = aGammaRamp[1][i] >> 8;
-    blue[i] = aGammaRamp[2][i] >> 8;
-    }
-    }
-    */
 }
 
 void gfxGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB)
 {
-    //TODO?
-    /*
-    LOG("gfxGammaCorrectionRGB()\r\n");
-    if (!fullscreen)
-    return;
-    FxU16 aGammaRamp[3][256];
-    for (int i = 0; i < 256; i++)
-    {
-    aGammaRamp[0][i] = (((FxU16)((pow(i/255.0F, 1.0F/gammaR)) * 255.0F + 0.5F)) << 8) & 0xFFFF;
-    aGammaRamp[1][i] = (((FxU16)((pow(i/255.0F, 1.0F/gammaG)) * 255.0F + 0.5F)) << 8) & 0xFFFF;
-    aGammaRamp[2][i] = (((FxU16)((pow(i/255.0F, 1.0F/gammaB)) * 255.0F + 0.5F)) << 8) & 0xFFFF;
-    }
-    CorrectGamma(aGammaRamp);*/
 }
 
 void CHECK_FRAMEBUFFER_STATUS(void)

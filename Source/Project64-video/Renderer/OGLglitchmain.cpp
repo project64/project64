@@ -31,6 +31,7 @@
 #include "g3ext.h"
 #include "glitchmain.h"
 #include <Project64-video/trace.h>
+#include <Project64-video/Settings.h>
 #include <Common/Util.h>
 
 /*
@@ -39,7 +40,6 @@
  */
 #include <Settings/Settings.h>
 
-wrapper_config config = { 0, 0, 0 };
 int screen_width, screen_height;
 
 static inline void opt_glCopyTexImage2D(GLenum target,
@@ -483,7 +483,7 @@ GrContext_t gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origi
     WriteTrace(TraceGlitch, TraceDebug, "color_format: %d, origin_location: %d, nColBuffers: %d, nAuxBuffers: %d", color_format, origin_location, nColBuffers, nAuxBuffers);
 
 #ifdef _WIN32
-    TMU_SIZE = (config.vram_size - g_width * g_height * 4 * 3) / 2;
+    TMU_SIZE = ((g_settings->wrpVRAM() * 1024 * 1024) - g_width * g_height * 4 * 3) / 2;
 
     // save screen resolution for hwfbe, after resolution enumeration
     screen_width = g_width;
@@ -646,7 +646,7 @@ GrContext_t gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origi
         glFramebufferRenderbufferEXT = (PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC)dummy_glFramebufferRenderbuffer;
 #endif // _WIN32
 
-    use_fbo = config.fbo && glFramebufferRenderbufferEXT;
+    use_fbo = g_settings->wrpFBO() && glFramebufferRenderbufferEXT;
 
     printf("use_fbo %d\n", use_fbo);
 
@@ -778,8 +778,10 @@ GrContext_t gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origi
     init_combiner();
 
     // Aniso filter check
-    if (config.anisofilter > 0)
+    if (g_settings->wrpAnisotropic())
+    {
         glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &largest_supported_anisotropy);
+    }
 
     // ATI hack - certain texture formats are slow on ATI?
     // Hmm, perhaps the internal format need to be specified explicitly...
@@ -1921,15 +1923,6 @@ FxBool gfxLfbWriteRegion(GrBuffer_t dst_buffer, FxU32 dst_x, FxU32 dst_y, GrLfbS
 }
 
 /* wrapper-specific glide extensions */
-
-void grConfigWrapperExt(FxI32 vram, FxBool fbo, FxBool aniso)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "-");
-    config.vram_size = vram;
-    config.fbo = fbo;
-    config.anisofilter = aniso;
-}
-
 #ifdef _WIN32
 static void CorrectGamma(LPVOID apGammaRamp)
 {
@@ -1987,8 +1980,8 @@ void gfxGetGammaTableExt(FxU32 /*nentries*/, FxU32 *red, FxU32 *green, FxU32 *bl
             green[i] = aGammaRamp[1][i] >> 8;
             blue[i] = aGammaRamp[2][i] >> 8;
         }
+        }
     }
-}
 
 void gfxGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB)
 {
@@ -2057,7 +2050,7 @@ int grDisplayGLError(const char* message)
     fprintf(stderr, "%s\n%s\n\n", GL_errors[error_index], message);
 #endif
     return (failure);
-}
+    }
 #endif
 
 void CHECK_FRAMEBUFFER_STATUS()

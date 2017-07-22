@@ -27,14 +27,6 @@ extern int dumping;
 
 #define zscale 1.0f
 
-typedef struct _wrapper_config
-{
-    int fbo;
-    int anisofilter;
-    int vram_size;
-} wrapper_config;
-extern wrapper_config config;
-
 // VP added this utility function
 // returns the bytes per pixel of a given GR texture format
 int grTexFormatSize(int fmt);

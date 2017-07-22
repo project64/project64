@@ -202,11 +202,6 @@ void ChangeSize()
     WriteTrace(TraceResolution, TraceDebug, "Done");
 }
 
-void ConfigWrapper()
-{
-    grConfigWrapperExt(g_settings->wrpVRAM() * 1024 * 1024, g_settings->wrpFBO(), g_settings->wrpAnisotropic());
-}
-
 extern int g_width, g_height;
 
 int GetTexAddrUMA(int /*tmu*/, int texsize)
@@ -906,7 +901,6 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     char name[21] = "DEFAULT";
     g_settings->ReadGameSettings(name);
     ZLUT_init();
-    ConfigWrapper();
 
     gfx = Gfx_Info;
 
@@ -920,7 +914,6 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     CountCombine();
     ZLUT_init();
 
-    grConfigWrapperExt(g_settings->wrpVRAM() * 1024 * 1024, g_settings->wrpFBO(), g_settings->wrpAnisotropic());
     evoodoo = 1;
     voodoo.has_2mb_tex_boundary = 0;
     return TRUE;
