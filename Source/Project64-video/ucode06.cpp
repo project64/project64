@@ -195,13 +195,13 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
     }
     gfxTextureBufferExt(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, LOD, LOD,
         GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
-    gfxRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
-    gfxAuxBufferExt(GR_BUFFER_AUXBUFFER);
+    gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
+    gfxAuxBufferExt(GFX_BUFFER_AUXBUFFER);
     gfxBufferClear(0, 0, 0xFFFF);
     gfxDrawTriangle(&v[0], &v[2], &v[1]);
     gfxDrawTriangle(&v[2], &v[3], &v[1]);
-    gfxRenderBuffer(GR_BUFFER_BACKBUFFER);
-    gfxAuxBufferExt(GR_BUFFER_TEXTUREAUXBUFFER_EXT);
+    gfxRenderBuffer(GFX_BUFFER_BACKBUFFER);
+    gfxAuxBufferExt(GFX_BUFFER_TEXTUREAUXBUFFER_EXT);
     gfxDepthMask(FXTRUE);
 }
 
@@ -234,7 +234,7 @@ void DrawDepthImage(const DRAWIMAGE & d)
             dst[x + y*dst_width] = src[(int(x*scale_x_src) + int(y*scale_y_src)*src_width) ^ 1];
         }
     }
-    gfxLfbWriteRegion(GR_BUFFER_AUXBUFFER, 0, 0, GR_LFB_SRC_FMT_ZA16, dst_width, dst_height, FXFALSE, dst_width << 1, dst);
+    gfxLfbWriteRegion(GFX_BUFFER_AUXBUFFER, 0, 0, GR_LFB_SRC_FMT_ZA16, dst_width, dst_height, FXFALSE, dst_width << 1, dst);
     delete[] dst;
 }
 

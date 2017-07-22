@@ -581,7 +581,7 @@ static void copyWhiteToRDRAM()
     }
 }
 
-static void CopyFrameBuffer(GrBuffer_t buffer = GR_BUFFER_BACKBUFFER)
+static void CopyFrameBuffer(GrBuffer_t buffer = GFX_BUFFER_BACKBUFFER)
 {
     WriteTrace(TraceRDP, TraceDebug, "CopyFrameBuffer: %08lx... ", rdp.cimg);
 
@@ -2777,7 +2777,7 @@ void rdp_setcolorimage()
                 if (rdp.motionblur)
                 {
                     rdp.cur_image = &(rdp.texbufs[rdp.cur_tex_buf].images[0]);
-                    gfxRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
+                    gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
                     gfxTextureBufferExt(rdp.cur_image->tmu, rdp.cur_image->tex_addr, rdp.cur_image->info.smallLodLog2, rdp.cur_image->info.largeLodLog2,
                         rdp.cur_image->info.aspectRatioLog2, rdp.cur_image->info.format, GR_MIPMAPLEVELMASK_BOTH);
                 }
@@ -2804,7 +2804,7 @@ void rdp_setcolorimage()
                         //*
                         if (g_settings->hacks(CSettings::hack_Zelda) && (rdp.frame_buffers[rdp.ci_count + 2].status == ci_aux) && !rdp.fb_drawn) //hack for photo camera in Zelda MM
                         {
-                            CopyFrameBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
+                            CopyFrameBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
                             rdp.fb_drawn = TRUE;
                             memcpy(gfx.RDRAM + cur_fb.addr, gfx.RDRAM + rdp.cimg, (cur_fb.width*cur_fb.height) << cur_fb.size >> 1);
                         }
@@ -2906,7 +2906,7 @@ void rdp_setcolorimage()
                 if (g_settings->fb_hwfbe_enabled() && !rdp.copy_ci_index && (rdp.copy_zi_index || g_settings->hacks(CSettings::hack_BAR)))
                 {
                     GrLOD_t LOD = g_scr_res_x > 1024 ? GFX_LOD_LOG2_1024 : GFX_LOD_LOG2_2048;
-                    gfxAuxBufferExt(GR_BUFFER_TEXTUREAUXBUFFER_EXT);
+                    gfxAuxBufferExt(GFX_BUFFER_TEXTUREAUXBUFFER_EXT);
                     WriteTrace(TraceRDP, TraceDebug, "rdp_setcolorimage - set texture depth buffer to TMU0");
                 }
             }
@@ -2941,7 +2941,7 @@ void rdp_setcolorimage()
             if (!g_settings->fb_hwfbe_enabled() && prev_fb.format == 0)
                 CopyFrameBuffer();
             else if (g_settings->hacks(CSettings::hack_Knockout) && prev_fb.width < 100)
-                CopyFrameBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
+                CopyFrameBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
         }
         if (!g_settings->fb_hwfbe_enabled() && cur_fb.status == ci_copy)
         {
@@ -2970,7 +2970,7 @@ void rdp_setcolorimage()
                             ptr_dst[x + y * width] = c;
                         }
                     }
-                    gfxLfbWriteRegion(GR_BUFFER_BACKBUFFER, (uint32_t)rdp.offset_x, (uint32_t)rdp.offset_y, GR_LFB_SRC_FMT_555, width, height, FXFALSE, width << 1, ptr_dst);
+                    gfxLfbWriteRegion(GFX_BUFFER_BACKBUFFER, (uint32_t)rdp.offset_x, (uint32_t)rdp.offset_y, GR_LFB_SRC_FMT_555, width, height, FXFALSE, width << 1, ptr_dst);
                     delete[] ptr_dst;
                 }
             }
@@ -3234,12 +3234,12 @@ EXPORT void CALL FBRead(uint32_t addr)
                 rdp.ci_count = 0;
                 uint32_t h = rdp.frame_buffers[0].height;
                 rdp.frame_buffers[0].height = rdp.maincimg[1].height;
-                CopyFrameBuffer(GR_BUFFER_FRONTBUFFER);
+                CopyFrameBuffer(GFX_BUFFER_FRONTBUFFER);
                 rdp.frame_buffers[0].height = h;
             }
             else
             {
-                CopyFrameBuffer(GR_BUFFER_FRONTBUFFER);
+                CopyFrameBuffer(GFX_BUFFER_FRONTBUFFER);
             }
             rdp.cimg = cimg;
             rdp.fb_drawn_front = TRUE;

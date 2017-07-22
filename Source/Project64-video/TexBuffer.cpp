@@ -255,13 +255,13 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
                 {
                     if (!((end_addr <= texbuf->addr) || (addr >= texbuf->end_addr))) //intersected, remove
                     {
-                        gfxRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
+                        gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
                         gfxTextureBufferExt(texbuf->tmu, texbuf->tex_addr, texbuf->info.smallLodLog2, texbuf->info.largeLodLog2,
                             texbuf->info.aspectRatioLog2, texbuf->info.format, GR_MIPMAPLEVELMASK_BOTH);
                         gfxDepthMask(FXFALSE);
                         gfxBufferClear(0, 0, 0xFFFF);
                         gfxDepthMask(FXTRUE);
-                        gfxRenderBuffer(GR_BUFFER_BACKBUFFER);
+                        gfxRenderBuffer(GFX_BUFFER_BACKBUFFER);
                         rdp.texbufs[i].count--;
                         if (j < rdp.texbufs[i].count)
                             memmove(&(rdp.texbufs[i].images[j]), &(rdp.texbufs[i].images[j + 1]), sizeof(TBUFF_COLOR_IMAGE)*(rdp.texbufs[i].count - j));
@@ -293,7 +293,7 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
 
     rdp.acc_tex_buf = rdp.cur_tex_buf;
     rdp.cur_image = texbuf;
-    gfxRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
+    gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
     gfxTextureBufferExt(rdp.cur_image->tmu, rdp.cur_image->tex_addr, rdp.cur_image->info.smallLodLog2, rdp.cur_image->info.largeLodLog2,
         rdp.cur_image->info.aspectRatioLog2, rdp.cur_image->info.format, GR_MIPMAPLEVELMASK_BOTH);
 
@@ -395,7 +395,7 @@ int CloseTextureBuffer(int draw)
         WriteTrace(TraceRDP, TraceDebug, "CloseTextureBuffer KO");
         return FALSE;
     }
-    gfxRenderBuffer(GR_BUFFER_BACKBUFFER);
+    gfxRenderBuffer(GFX_BUFFER_BACKBUFFER);
     rdp.offset_x = rdp.offset_x_bak;
     rdp.offset_y = rdp.offset_y_bak;
     rdp.offset_x_bak = rdp.offset_y_bak = 0;
@@ -484,7 +484,7 @@ int CopyTextureBuffer(COLOR_IMAGE & fb_from, COLOR_IMAGE & fb_to)
     gfxTexSource(rdp.tbuff_tex->tmu, rdp.tbuff_tex->tex_addr, GR_MIPMAPLEVELMASK_BOTH, &(rdp.tbuff_tex->info));
     gfxDrawTriangle(&v[0], &v[2], &v[1]);
     gfxDrawTriangle(&v[2], &v[3], &v[1]);
-    gfxRenderBuffer(GR_BUFFER_BACKBUFFER);
+    gfxRenderBuffer(GFX_BUFFER_BACKBUFFER);
     rdp.offset_x = rdp.offset_x_bak;
     rdp.offset_y = rdp.offset_y_bak;
     rdp.offset_x_bak = rdp.offset_y_bak = 0;
@@ -537,15 +537,15 @@ int CopyDepthBuffer()
         { lr_x, lr_y, 1, 1, lr_u, lr_v, lr_u, lr_v, { lr_u, lr_v, lr_u, lr_v } }
     };
 
-    gfxAuxBufferExt(GR_BUFFER_AUXBUFFER);
+    gfxAuxBufferExt(GFX_BUFFER_AUXBUFFER);
     gfxTexSource(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, GR_MIPMAPLEVELMASK_BOTH, &(rdp.tbuff_tex->info));
-    gfxRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
+    gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
     gfxTextureBufferExt(rdp.texbufs[1].tmu, rdp.texbufs[1].begin, LOD, LOD,
         GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
     gfxDrawTriangle(&v[0], &v[2], &v[1]);
     gfxDrawTriangle(&v[2], &v[3], &v[1]);
-    gfxRenderBuffer(GR_BUFFER_BACKBUFFER);
-    gfxAuxBufferExt(GR_BUFFER_TEXTUREAUXBUFFER_EXT);
+    gfxRenderBuffer(GFX_BUFFER_BACKBUFFER);
+    gfxAuxBufferExt(GFX_BUFFER_TEXTUREAUXBUFFER_EXT);
 
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE;
     if (g_settings->fog() && (rdp.flags & FOG_ENABLED))
@@ -596,7 +596,7 @@ int SwapTextureBuffer()
     texbuf->tile_uls = rdp.tbuff_tex->tile_uls;
     texbuf->tile_ult = rdp.tbuff_tex->tile_ult;
     texbuf->v_shift = rdp.tbuff_tex->v_shift;
-    gfxRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
+    gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
     gfxTextureBufferExt(texbuf->tmu, texbuf->tex_addr, texbuf->info.smallLodLog2, texbuf->info.largeLodLog2,
         texbuf->info.aspectRatioLog2, texbuf->info.format, GR_MIPMAPLEVELMASK_BOTH);
     gfxDrawTriangle(&v[0], &v[2], &v[1]);
@@ -615,7 +615,7 @@ int SwapTextureBuffer()
     }
     else
     {
-        gfxRenderBuffer(GR_BUFFER_BACKBUFFER);
+        gfxRenderBuffer(GFX_BUFFER_BACKBUFFER);
         rdp.offset_x = rdp.offset_x_bak;
         rdp.offset_y = rdp.offset_y_bak;
         rdp.offset_x_bak = rdp.offset_y_bak = 0;

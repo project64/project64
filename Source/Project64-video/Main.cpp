@@ -240,9 +240,9 @@ void guLoadTextures()
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
         tbuf_size = gfxTexCalcMemRequired(GFX_LOD_LOG2_1024, GFX_LOD_LOG2_1024,
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565);
-        gfxRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
+        gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
         gfxBufferClear(0, 0, 0xFFFF);
-        gfxRenderBuffer(GR_BUFFER_BACKBUFFER);
+        gfxRenderBuffer(GFX_BUFFER_BACKBUFFER);
     }
     else
     {
@@ -250,9 +250,9 @@ void guLoadTextures()
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
         tbuf_size = gfxTexCalcMemRequired(GFX_LOD_LOG2_2048, GFX_LOD_LOG2_2048,
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565);
-        gfxRenderBuffer(GR_BUFFER_TEXTUREBUFFER_EXT);
+        gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
         gfxBufferClear(0, 0, 0xFFFF);
-        gfxRenderBuffer(GR_BUFFER_BACKBUFFER);
+        gfxRenderBuffer(GFX_BUFFER_BACKBUFFER);
     }
 
     rdp.texbufs[0].tmu = GR_TMU0;
@@ -549,7 +549,7 @@ int InitGfx()
     gfxCullMode(GR_CULL_DISABLE);
     gfxDepthBufferMode(GR_DEPTHBUFFER_ZBUFFER);
     gfxDepthBufferFunction(GR_CMP_ALWAYS);
-    gfxRenderBuffer(GR_BUFFER_BACKBUFFER);
+    gfxRenderBuffer(GFX_BUFFER_BACKBUFFER);
     gfxColorMask(FXTRUE, FXTRUE);
     gfxDepthMask(FXTRUE);
     gfxBufferClear(0, 0, 0xFFFF);
@@ -688,7 +688,7 @@ void CALL ReadScreen(void **dest, int *width, int *height)
     GrLfbInfo_t info;
     info.size = sizeof(GrLfbInfo_t);
     if (gfxLfbLock(GR_LFB_READ_ONLY,
-        GR_BUFFER_FRONTBUFFER,
+        GFX_BUFFER_FRONTBUFFER,
         GR_LFBWRITEMODE_565,
         GR_ORIGIN_UPPER_LEFT,
         FXFALSE,
@@ -739,7 +739,7 @@ void CALL ReadScreen(void **dest, int *width, int *height)
             }
         }
         // Unlock the frontbuffer
-        gfxLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_FRONTBUFFER);
+        gfxLfbUnlock(GR_LFB_READ_ONLY, GFX_BUFFER_FRONTBUFFER);
     }
     WriteTrace(TraceGlide64, TraceDebug, "Success");
 }
@@ -1350,7 +1350,7 @@ void newSwapBuffers()
 
         GrLfbInfo_t info;
         info.size = sizeof(GrLfbInfo_t);
-        if (gfxLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_565, GR_ORIGIN_UPPER_LEFT, FXFALSE, &info))
+        if (gfxLfbLock(GR_LFB_READ_ONLY, GFX_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_565, GR_ORIGIN_UPPER_LEFT, FXFALSE, &info))
         {
             AUTO_PTR<uint8_t> ssimg_buffer(new uint8_t[image_width * image_height * 3]);
             uint8_t * ssimg = ssimg_buffer.get();
@@ -1393,7 +1393,7 @@ void newSwapBuffers()
                 }
             }
             // Unlock the backbuffer
-            gfxLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
+            gfxLfbUnlock(GR_LFB_READ_ONLY, GFX_BUFFER_BACKBUFFER);
             write_png_file(path, image_width, image_height, ssimg);
             g_capture_screen = false;
         }
@@ -1406,7 +1406,7 @@ void newSwapBuffers()
 
     if (g_settings->fb_hwfbe_enabled() && !g_settings->hacks(CSettings::hack_RE2) && !evoodoo)
     {
-        gfxAuxBufferExt(GR_BUFFER_AUXBUFFER);
+        gfxAuxBufferExt(GFX_BUFFER_AUXBUFFER);
     }
     WriteTrace(TraceGlide64, TraceDebug, "BUFFER SWAPPED");
     gfxBufferSwap(g_settings->vsync());
