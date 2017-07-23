@@ -451,7 +451,7 @@ int isWglExtensionSupported(const char *extension)
 extern HWND g_hwnd_win;
 #endif
 
-GrContext_t gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers)
+bool gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers)
 {
     static int show_warning = 1;
 
@@ -514,7 +514,7 @@ GrContext_t gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origi
     if ((hGLRC = wglCreateContext(hDC)) == 0)
     {
         WriteTrace(TraceGlitch, TraceWarning, "wglCreateContext failed!");
-        gfxSstWinClose(0);
+        gfxSstWinClose();
         return FXFALSE;
     }
 
@@ -525,7 +525,7 @@ GrContext_t gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origi
         if (!wglMakeCurrent(hDC, hGLRC))
         {
             WriteTrace(TraceGlitch, TraceWarning, "wglMakeCurrent failed!");
-            gfxSstWinClose(0);
+            gfxSstWinClose();
             return FXFALSE;
         }
     }
@@ -801,13 +801,13 @@ GrContext_t gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origi
     return 1;
 }
 
-bool gfxSstWinClose(GrContext_t context)
+bool gfxSstWinClose()
 {
+    WriteTrace(TraceGlitch, TraceDebug, "-");
     int i;
 #ifndef WIN32
     int clear_texbuff = use_fbo;
 #endif
-    WriteTrace(TraceGlitch, TraceDebug, "context: %d", context);
 
     for (i = 0; i < 2; i++) {
         tmu_usage[i].min = 0x0FFFFFFFul;
@@ -1194,7 +1194,7 @@ uint32_t gfxGet(uint32_t pname, uint32_t plength, FxI32 *params)
         if (!nbTextureUnits)
         {
             gfxSstWinOpen(GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
-            gfxSstWinClose(0);
+            gfxSstWinClose();
         }
 #ifdef VOODOO1
         params[0] = 1;
@@ -1980,8 +1980,8 @@ void gfxGetGammaTableExt(uint32_t /*nentries*/, uint32_t *red, uint32_t *green, 
             green[i] = aGammaRamp[1][i] >> 8;
             blue[i] = aGammaRamp[2][i] >> 8;
         }
-        }
     }
+}
 
 void gfxGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB)
 {
@@ -2050,7 +2050,7 @@ int grDisplayGLError(const char* message)
     fprintf(stderr, "%s\n%s\n\n", GL_errors[error_index], message);
 #endif
     return (failure);
-    }
+}
 #endif
 
 void CHECK_FRAMEBUFFER_STATUS()

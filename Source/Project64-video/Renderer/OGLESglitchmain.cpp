@@ -319,7 +319,7 @@ int isWglExtensionSupported(const char *extension)
 # endif
 #endif
 
-GrContext_t gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers)
+bool gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers)
 {
     static int show_warning = 1;
 
@@ -509,10 +509,10 @@ GrContext_t gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origi
     return 1;
 }
 
-bool gfxSstWinClose(GrContext_t context)
+bool gfxSstWinClose()
 {
+    WriteTrace(TraceGlitch, TraceDebug, "-");
     int i, clear_texbuff = use_fbo;
-    WriteTrace(TraceGlitch, TraceDebug, "context: %d", context);
 
     for (i = 0; i < 2; i++) {
         tmu_usage[i].min = 0xfffffff;

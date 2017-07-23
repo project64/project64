@@ -18,7 +18,7 @@
 void gfxClipWindow(uint32_t minx, uint32_t miny, uint32_t maxx, uint32_t maxy);
 void gfxColorMask(bool rgb, bool a);
 uint32_t gfxTexMinAddress(gfxChipID_t tmu);
-bool gfxSstWinClose(GrContext_t context);
+bool gfxSstWinClose();
 void gfxTextureBufferExt(gfxChipID_t tmu, uint32_t startAddress, GrLOD_t lodmin, GrLOD_t lodmax, GrAspectRatio_t aspect, GrTextureFormat_t fmt, uint32_t evenOdd);
 uint32_t gfxTexMaxAddress(gfxChipID_t tmu);
 uint32_t gfxTexTextureMemRequired(uint32_t evenOdd, GrTexInfo *info);
@@ -51,7 +51,7 @@ void gfxDrawLine(const void *a, const void *b);
 void gfxDrawVertexArray(uint32_t mode, uint32_t Count, void *pointers2);
 void gfxDrawVertexArrayContiguous(uint32_t mode, uint32_t Count, void *pointers, uint32_t stride);
 
-GrContext_t gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers);
+bool gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers);
 void gfxAuxBufferExt(GrBuffer_t buffer);
 uint32_t gfxGet(uint32_t pname, uint32_t plength, FxI32 *params);
 void gfxFramebufferCopyExt(int x, int y, int w, int h, int from, int to, int mode);

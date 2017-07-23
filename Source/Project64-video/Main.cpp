@@ -51,7 +51,6 @@ GFX_INFO gfx;
 int to_fullscreen = FALSE;
 int GfxInitDone = FALSE;
 bool g_romopen = false;
-GrContext_t gfx_context = 0;
 int exception = FALSE;
 
 int evoodoo = 0;
@@ -474,8 +473,7 @@ int InitGfx()
 #ifndef ANDROID
     SetWindowDisplaySize((HWND)gfx.hWnd);
 #endif
-    gfx_context = gfxSstWinOpen(GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1);
-    if (!gfx_context)
+    if (!gfxSstWinOpen(GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1))
     {
         g_Notify->DisplayError("Error setting display mode");
         return FALSE;
@@ -639,7 +637,7 @@ void ReleaseGfx()
     }
 
     // Release graphics
-    gfxSstWinClose(gfx_context);
+    gfxSstWinClose();
 
     GfxInitDone = FALSE;
     rdp.window_changed = TRUE;
