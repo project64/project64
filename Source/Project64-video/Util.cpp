@@ -977,9 +977,9 @@ static void CalculateLOD(VERTEX *v, int n)
         detailmax = lod_fraction;
     else
         detailmax = 1.0f - lod_fraction;
-    gfxTexDetailControl(GR_TMU0, cmb.dc0_lodbias, cmb.dc0_detailscale, detailmax);
+    gfxTexDetailControl(GFX_TMU0, cmb.dc0_lodbias, cmb.dc0_detailscale, detailmax);
     if ((nbTextureUnits > 2 ? 2 : 1) == 2)
-        gfxTexDetailControl(GR_TMU1, cmb.dc1_lodbias, cmb.dc1_detailscale, detailmax);
+        gfxTexDetailControl(GFX_TMU1, cmb.dc1_lodbias, cmb.dc1_detailscale, detailmax);
     WriteTrace(TraceRDP, TraceDebug, "CalculateLOD factor: %f, tile: %d, lod_fraction: %f", (float)lodFactor, lod_tile, lod_fraction);
 }
 
@@ -1968,21 +1968,21 @@ void set_message_combiner()
         GR_BLEND_ZERO);
     gfxAlphaTestFunction(GR_CMP_ALWAYS);
     gfxStippleMode(GR_STIPPLE_DISABLE);
-    gfxTexFilterMode(0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
-    gfxTexCombine(GR_TMU1,
+    gfxTexFilterMode(GFX_TMU0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
+    gfxTexCombine(GFX_TMU1,
         GR_COMBINE_FUNCTION_NONE,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_FUNCTION_NONE,
         GR_COMBINE_FACTOR_NONE,
         FXFALSE, FXFALSE);
-    gfxTexCombine(GR_TMU0,
+    gfxTexCombine(GFX_TMU0,
         GR_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         FXFALSE, FXFALSE);
-    gfxTexSource(GR_TMU0,
-        voodoo.tex_min_addr[GR_TMU0] + offset_font,
+    gfxTexSource(GFX_TMU0,
+        voodoo.tex_min_addr[GFX_TMU0] + offset_font,
         GR_MIPMAPLEVELMASK_BOTH,
         &fontTex);
     gfxFogMode(GR_FOG_DISABLE);

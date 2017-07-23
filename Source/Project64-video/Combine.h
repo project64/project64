@@ -96,7 +96,7 @@ void CountCombine();
 void InitCombine();
 void ColorCombinerToExtension();
 void AlphaCombinerToExtension();
-void TexColorCombinerToExtension(GrChipID_t tmu);
-void TexAlphaCombinerToExtension(GrChipID_t tmu);
+void TexColorCombinerToExtension(gfxChipID_t tmu);
+void TexAlphaCombinerToExtension(gfxChipID_t tmu);
 
 #endif //COMBINE _H

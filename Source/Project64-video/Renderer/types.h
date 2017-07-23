@@ -117,3 +117,10 @@ enum GFX_CMBX
     GFX_CMBX_TMU_CCOLOR = 0x11,
 };
 
+enum gfxChipID_t
+{
+    GFX_TMU0 = 0x0,
+    GFX_TMU1 = 0x1,
+    GFX_TMU2 = 0x2,
+};
+

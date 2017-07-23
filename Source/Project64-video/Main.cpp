@@ -224,14 +224,14 @@ void guLoadTextures()
     int tbuf_size = 0;
     if (voodoo.max_tex_size <= 256)
     {
-        gfxTextureBufferExt(GR_TMU1, voodoo.tex_min_addr[GR_TMU1], GFX_LOD_LOG2_256, GFX_LOD_LOG2_256,
+        gfxTextureBufferExt(GFX_TMU1, voodoo.tex_min_addr[GFX_TMU1], GFX_LOD_LOG2_256, GFX_LOD_LOG2_256,
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
         tbuf_size = 8 * gfxTexCalcMemRequired(GFX_LOD_LOG2_256, GFX_LOD_LOG2_256,
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565);
     }
     else if (g_scr_res_x <= 1024)
     {
-        gfxTextureBufferExt(GR_TMU0, voodoo.tex_min_addr[GR_TMU0], GFX_LOD_LOG2_1024, GFX_LOD_LOG2_1024,
+        gfxTextureBufferExt(GFX_TMU0, voodoo.tex_min_addr[GFX_TMU0], GFX_LOD_LOG2_1024, GFX_LOD_LOG2_1024,
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
         tbuf_size = gfxTexCalcMemRequired(GFX_LOD_LOG2_1024, GFX_LOD_LOG2_1024,
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565);
@@ -241,7 +241,7 @@ void guLoadTextures()
     }
     else
     {
-        gfxTextureBufferExt(GR_TMU0, voodoo.tex_min_addr[GR_TMU0], GFX_LOD_LOG2_2048, GFX_LOD_LOG2_2048,
+        gfxTextureBufferExt(GFX_TMU0, voodoo.tex_min_addr[GFX_TMU0], GFX_LOD_LOG2_2048, GFX_LOD_LOG2_2048,
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
         tbuf_size = gfxTexCalcMemRequired(GFX_LOD_LOG2_2048, GFX_LOD_LOG2_2048,
             GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565);
@@ -250,15 +250,15 @@ void guLoadTextures()
         gfxRenderBuffer(GFX_BUFFER_BACKBUFFER);
     }
 
-    rdp.texbufs[0].tmu = GR_TMU0;
-    rdp.texbufs[0].begin = voodoo.tex_min_addr[GR_TMU0];
+    rdp.texbufs[0].tmu = GFX_TMU0;
+    rdp.texbufs[0].begin = voodoo.tex_min_addr[GFX_TMU0];
     rdp.texbufs[0].end = rdp.texbufs[0].begin + tbuf_size;
     rdp.texbufs[0].count = 0;
     rdp.texbufs[0].clear_allowed = TRUE;
     offset_font = tbuf_size;
     if ((nbTextureUnits > 2 ? 2 : 1) > 1)
     {
-        rdp.texbufs[1].tmu = GR_TMU1;
+        rdp.texbufs[1].tmu = GFX_TMU1;
         rdp.texbufs[1].begin = rdp.texbufs[0].end;
         rdp.texbufs[1].end = rdp.texbufs[1].begin + tbuf_size;
         rdp.texbufs[1].count = 0;
@@ -298,8 +298,8 @@ void guLoadTextures()
         }
     }
 
-    gfxTexDownloadMipMap(GR_TMU0,
-        voodoo.tex_min_addr[GR_TMU0] + offset_font,
+    gfxTexDownloadMipMap(GFX_TMU0,
+        voodoo.tex_min_addr[GFX_TMU0] + offset_font,
         GR_MIPMAPLEVELMASK_BOTH,
         &fontTex);
 
@@ -326,8 +326,8 @@ void guLoadTextures()
         *(tex16++) = (uint16_t)(((cur & 0x00FF0000) >> 8) | ((cur & 0xFF000000) >> 24));
     }
 
-    gfxTexDownloadMipMap(GR_TMU0,
-        voodoo.tex_min_addr[GR_TMU0] + offset_cursor,
+    gfxTexDownloadMipMap(GFX_TMU0,
+        voodoo.tex_min_addr[GFX_TMU0] + offset_cursor,
         GR_MIPMAPLEVELMASK_BOTH,
         &cursorTex);
 
@@ -490,8 +490,8 @@ int InitGfx()
     gfxGet(GR_MAX_TEXTURE_SIZE, 4, (FxI32*)&voodoo.max_tex_size);
     voodoo.sup_large_tex = (voodoo.max_tex_size > 256 && !g_settings->hacks(CSettings::hack_PPL));
 
-    voodoo.tex_min_addr[0] = voodoo.tex_min_addr[1] = gfxTexMinAddress(GR_TMU0);
-    voodoo.tex_max_addr[0] = voodoo.tex_max_addr[1] = gfxTexMaxAddress(GR_TMU0);
+    voodoo.tex_min_addr[0] = voodoo.tex_min_addr[1] = gfxTexMinAddress(GFX_TMU0);
+    voodoo.tex_max_addr[0] = voodoo.tex_max_addr[1] = gfxTexMaxAddress(GFX_TMU0);
 
     // Is mirroring allowed?
     if (!g_settings->hacks(CSettings::hack_Zelda)) //zelda's trees suffer from hardware mirroring
@@ -550,10 +550,10 @@ int InitGfx()
     gfxBufferSwap(0);
     gfxBufferClear(0, 0, 0xFFFF);
     gfxDepthMask(FXFALSE);
-    gfxTexFilterMode(0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
-    gfxTexFilterMode(1, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
-    gfxTexClampMode(0, GR_TEXTURECLAMP_CLAMP, GR_TEXTURECLAMP_CLAMP);
-    gfxTexClampMode(1, GR_TEXTURECLAMP_CLAMP, GR_TEXTURECLAMP_CLAMP);
+    gfxTexFilterMode(GFX_TMU0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
+    gfxTexFilterMode(GFX_TMU1, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
+    gfxTexClampMode(GFX_TMU0, GR_TEXTURECLAMP_CLAMP, GR_TEXTURECLAMP_CLAMP);
+    gfxTexClampMode(GFX_TMU1, GR_TEXTURECLAMP_CLAMP, GR_TEXTURECLAMP_CLAMP);
     gfxClipWindow(0, 0, g_scr_res_x, g_scr_res_y);
     rdp.update |= UPDATE_SCISSOR | UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
 

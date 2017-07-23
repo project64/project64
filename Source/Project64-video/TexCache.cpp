@@ -20,7 +20,7 @@
 #include <Common/Util.h>
 #include <Project64-video/trace.h>
 
-void LoadTex(int id, int tmu);
+void LoadTex(int id, gfxChipID_t tmu);
 
 uint8_t tex1[1024 * 1024 * 4];		// temporary texture
 uint8_t tex2[1024 * 1024 * 4];
@@ -464,20 +464,11 @@ void GetTexInfo(int id, int tile)
 }
 
 //****************************************************************
-// ChooseBestTmu - chooses the best TMU to load to (the one with the most memory)
-
-int ChooseBestTmu(int tmu1, int tmu2)
-{
-    if (!GfxInitDone) return tmu1;
-    return 0;
-}
-
-//****************************************************************
 // SelectTBuffTex - select texture from texture buffer
 static void SelectTBuffTex(TBUFF_COLOR_IMAGE * pTBuffTex)
 {
     WriteTrace(TraceRDP, TraceDebug, "SelectTBuffTex: tex: %d, tmu: %d, tile: %d", rdp.tex, pTBuffTex->tmu, pTBuffTex->tile);
-    gfxTexSource(pTBuffTex->tile, pTBuffTex->tex_addr, GR_MIPMAPLEVELMASK_BOTH, &(pTBuffTex->info));
+    gfxTexSource(pTBuffTex->tmu, pTBuffTex->tex_addr, GR_MIPMAPLEVELMASK_BOTH, &(pTBuffTex->info));
 }
 
 //****************************************************************
@@ -502,53 +493,52 @@ void TexCache()
 #define TMUMODE_PASSTHRU	1
 #define TMUMODE_NONE		2
 
-    int tmu_0, tmu_1;
+    gfxChipID_t tmu_0, tmu_1;
     int tmu_0_mode = 0, tmu_1_mode = 0;
 
     // Select the best TMUs to use (removed 3 tmu support, unnecessary)
     if (rdp.tex == 3)	// T0 and T1
     {
-        tmu_0 = 0;
-        tmu_1 = 1;
+        tmu_0 = GFX_TMU0;
+        tmu_1 = GFX_TMU1;
     }
     else if (rdp.tex == 2)	// T1
     {
         if (tex_found[1][0] != -1)	// T1 found in tmu 0
-            tmu_1 = 0;
+            tmu_1 = GFX_TMU0;
         else if (tex_found[1][1] != -1)	// T1 found in tmu 1
-            tmu_1 = 1;
+            tmu_1 = GFX_TMU1;
         else	// T1 not found
-            tmu_1 = ChooseBestTmu(0, 1);
+            tmu_1 = GFX_TMU0;
 
-        tmu_0 = !tmu_1;
+        tmu_0 = tmu_1 == GFX_TMU0 ? GFX_TMU0 : GFX_TMU1;
         tmu_0_mode = (tmu_0 == 1) ? TMUMODE_NONE : TMUMODE_PASSTHRU;
     }
     else if (rdp.tex == 1)	// T0
     {
         if (tex_found[0][0] != -1)	// T0 found in tmu 0
-            tmu_0 = 0;
+            tmu_0 = GFX_TMU0;
         else if (tex_found[0][1] != -1)	// T0 found in tmu 1
-            tmu_0 = 1;
+            tmu_0 = GFX_TMU1;
         else	// T0 not found
-            tmu_0 = ChooseBestTmu(0, 1);
+            tmu_0 = GFX_TMU0;
 
-        tmu_1 = !tmu_0;
+        tmu_1 = tmu_0 == GFX_TMU0 ? GFX_TMU1 : GFX_TMU0;
         tmu_1_mode = (tmu_1 == 1) ? TMUMODE_NONE : TMUMODE_PASSTHRU;
     }
     else	// no texture
     {
-        tmu_0 = 0;
+        tmu_0 = GFX_TMU0;
         tmu_0_mode = TMUMODE_NONE;
-        tmu_1 = 0;
+        tmu_1 = GFX_TMU0;
         tmu_1_mode = TMUMODE_NONE;
     }
 
-    WriteTrace(TraceRDP, TraceDebug, " | |-+ Modes set:\n | | |- tmu_0 = %d\n | | |- tmu_1 = %d",
-        tmu_0, tmu_1);
-    WriteTrace(TraceRDP, TraceDebug, " | | |- tmu_0_mode = %d\n | | |- tmu_1_mode = %d",
-        tmu_0_mode, tmu_1_mode);
+    WriteTrace(TraceRDP, TraceDebug, " | |-+ Modes set:\n | | |- tmu_0 = %d\n | | |- tmu_1 = %d", tmu_0, tmu_1);
+    WriteTrace(TraceRDP, TraceDebug, " | | |- tmu_0_mode = %d\n | | |- tmu_1_mode = %d", tmu_0_mode, tmu_1_mode);
 
-    if (tmu_0_mode == TMUMODE_PASSTHRU) {
+    if (tmu_0_mode == TMUMODE_PASSTHRU)
+    {
         cmb.tmu0_func = cmb.tmu0_a_func = GR_COMBINE_FUNCTION_SCALE_OTHER;
         cmb.tmu0_fac = cmb.tmu0_a_fac = GR_COMBINE_FACTOR_ONE;
         if (cmb.tex_cmb_ext_use)
@@ -571,7 +561,8 @@ void TexCache()
             cmb.t0a_ext_d_invert = 0;
         }
     }
-    else if (tmu_0_mode == TMUMODE_NONE) {
+    else if (tmu_0_mode == TMUMODE_NONE)
+    {
         cmb.tmu0_func = cmb.tmu0_a_func = GR_COMBINE_FUNCTION_NONE;
         cmb.tmu0_fac = cmb.tmu0_a_fac = GR_COMBINE_FACTOR_NONE;
         if (cmb.tex_cmb_ext_use)
@@ -594,7 +585,8 @@ void TexCache()
             cmb.t0a_ext_d_invert = 0;
         }
     }
-    if (tmu_1_mode == TMUMODE_PASSTHRU) {
+    if (tmu_1_mode == TMUMODE_PASSTHRU)
+    {
         cmb.tmu1_func = cmb.tmu1_a_func = GR_COMBINE_FUNCTION_SCALE_OTHER;
         cmb.tmu1_fac = cmb.tmu1_a_fac = GR_COMBINE_FACTOR_ONE;
         if (cmb.tex_cmb_ext_use)
@@ -617,7 +609,8 @@ void TexCache()
             cmb.t1a_ext_d_invert = 0;
         }
     }
-    else if (tmu_1_mode == TMUMODE_NONE) {
+    else if (tmu_1_mode == TMUMODE_NONE)
+    {
         cmb.tmu1_func = cmb.tmu1_a_func = GR_COMBINE_FUNCTION_NONE;
         cmb.tmu1_fac = cmb.tmu1_a_fac = GR_COMBINE_FACTOR_NONE;
         if (cmb.tex_cmb_ext_use)
@@ -649,15 +642,15 @@ void TexCache()
         {
             cmb.tmu0_func = cmb.tmu0_a_func = GR_COMBINE_FUNCTION_LOCAL;
             cmb.tmu0_fac = cmb.tmu0_a_fac = GR_COMBINE_FACTOR_NONE;
-            tmu_0 = 0;
-            tmu_1 = 1;
+            tmu_0 = GFX_TMU0;
+            tmu_1 = GFX_TMU1;
         }
         else
         {
             cmb.tmu1_func = cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL;
             cmb.tmu1_fac = cmb.tmu1_a_fac = GR_COMBINE_FACTOR_NONE;
-            tmu_1 = 0;
-            tmu_0 = 1;
+            tmu_1 = GFX_TMU0;
+            tmu_0 = GFX_TMU1;
         }
     }
 
@@ -697,9 +690,9 @@ void TexCache()
             {
                 WriteTrace(TraceRDP, TraceDebug, " | | | |- combiner extension tmu1");
                 if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_COLOR))
-                    TexColorCombinerToExtension(GR_TMU1);
+                    TexColorCombinerToExtension(GFX_TMU1);
                 if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_ALPHA))
-                    TexAlphaCombinerToExtension(GR_TMU1);
+                    TexAlphaCombinerToExtension(GFX_TMU1);
                 gfxTexColorCombineExt(tmu_1, cmb.t1c_ext_a, cmb.t1c_ext_a_mode, cmb.t1c_ext_b, cmb.t1c_ext_b_mode, cmb.t1c_ext_c, cmb.t1c_ext_c_invert, cmb.t1c_ext_d, cmb.t1c_ext_d_invert, 0, 0);
                 gfxTexAlphaCombineExt(tmu_1, cmb.t1a_ext_a, cmb.t1a_ext_a_mode, cmb.t1a_ext_b, cmb.t1a_ext_b_mode, cmb.t1a_ext_c, cmb.t1a_ext_c_invert, cmb.t1a_ext_d, cmb.t1a_ext_d_invert, 0, 0);
                 gfxConstantColorValueExt(tmu_1, cmb.tex_ccolor);
@@ -721,11 +714,11 @@ void TexCache()
                 WriteTrace(TraceRDP, TraceDebug, " | | | |- combiner extension tmu0");
                 if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_COLOR))
                 {
-                    TexColorCombinerToExtension(GR_TMU0);
+                    TexColorCombinerToExtension(GFX_TMU0);
                 }
                 if (!(cmb.tex_cmb_ext_use & TEX_COMBINE_EXT_ALPHA))
                 {
-                    TexAlphaCombinerToExtension(GR_TMU0);
+                    TexAlphaCombinerToExtension(GFX_TMU0);
                 }
                 gfxTexColorCombineExt(tmu_0, cmb.t0c_ext_a, cmb.t0c_ext_a_mode, cmb.t0c_ext_b, cmb.t0c_ext_b_mode, cmb.t0c_ext_c, cmb.t0c_ext_c_invert, cmb.t0c_ext_d, cmb.t0c_ext_d_invert, 0, 0);
                 gfxTexAlphaCombineExt(tmu_0, cmb.t0a_ext_a, cmb.t0a_ext_a_mode, cmb.t0a_ext_b, cmb.t0a_ext_b_mode, cmb.t0a_ext_c, cmb.t0a_ext_c_invert, cmb.t0a_ext_d, cmb.t0a_ext_d_invert, 0, 0);
@@ -808,13 +801,13 @@ void TexCache()
 
     if (GfxInitDone)
     {
-        int tmu_v[2];
+        gfxChipID_t tmu_v[2];
 
         tmu_v[0] = tmu_0;
         tmu_v[1] = tmu_1;
         for (int i = 0; i < 2; i++)
         {
-            const int tmu = tmu_v[i];
+            const gfxChipID_t tmu = tmu_v[i];
 
             if (tmu >= (nbTextureUnits > 2 ? 2 : 1)) continue;
 
@@ -925,7 +918,7 @@ inline uint32_t ReverseDXT(uint32_t val, uint32_t /*lrs*/, uint32_t width, uint3
 //****************************************************************
 // LoadTex - does the actual texture loading after everything is prepared
 
-void LoadTex(int id, int tmu)
+void LoadTex(int id, gfxChipID_t tmu)
 {
     WriteTrace(TraceRDP, TraceDebug, " | |-+ LoadTex (id: %d, tmu: %d)", id, tmu);
 

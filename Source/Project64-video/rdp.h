@@ -14,7 +14,7 @@
 #pragma once
 
 #include <Common/stdtypes.h>
-#include "glide.h"
+#include <Project64-video/Renderer/Renderer.h>
 
 extern char out_buf[2048];
 
@@ -308,7 +308,7 @@ typedef struct
 
 typedef struct
 {
-    GrChipID_t tmu;
+    gfxChipID_t tmu;
     uint32_t addr;  //address of color image
     uint32_t end_addr;
     uint32_t tex_addr; //address in video memory
@@ -339,7 +339,7 @@ typedef struct
 
 typedef struct
 {
-    GrChipID_t tmu;
+    gfxChipID_t tmu;
     uint32_t begin; //start of the block in video memory
     uint32_t end;   //end of the block in video memory
     uint8_t count;  //number of allocated texture buffers
@@ -485,7 +485,7 @@ public:
     int     last_tile;   // last tile set
     int     last_tile_size;   // last tile size set
 
-    int     t0, t1;
+    gfxChipID_t t0, t1;
     int     best_tex; // if no 2-tmus, which texture? (0 or 1)
     int     tex;
     int     filter_mode;

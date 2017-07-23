@@ -16236,14 +16236,14 @@ void AlphaCombinerToExtension()
     }
 }
 
-void TexColorCombinerToExtension(GrChipID_t tmu)
+void TexColorCombinerToExtension(gfxChipID_t tmu)
 {
     uint32_t tc_ext_a, tc_ext_b, tc_ext_c, tc_ext_d;
     gfxCombineMode_t tc_ext_a_mode, tc_ext_b_mode;
     int  tc_ext_c_invert, tc_ext_d_invert;
     uint32_t tmu_func, tmu_fac;
 
-    if (tmu == GR_TMU0)
+    if (tmu == GFX_TMU0)
     {
         tmu_func = cmb.tmu0_func;
         tmu_fac = cmb.tmu0_fac;
@@ -16412,7 +16412,7 @@ void TexColorCombinerToExtension(GrChipID_t tmu)
         break;
     }
 
-    if (tmu == GR_TMU0)
+    if (tmu == GFX_TMU0)
     {
         cmb.t0c_ext_a = tc_ext_a;
         cmb.t0c_ext_a_mode = tc_ext_a_mode;
@@ -16436,14 +16436,14 @@ void TexColorCombinerToExtension(GrChipID_t tmu)
     }
 }
 
-void TexAlphaCombinerToExtension(GrChipID_t tmu)
+void TexAlphaCombinerToExtension(gfxChipID_t tmu)
 {
     uint32_t ta_ext_a, ta_ext_b, ta_ext_c, ta_ext_d;
     gfxCombineMode_t ta_ext_a_mode, ta_ext_b_mode;
     int  ta_ext_c_invert, ta_ext_d_invert;
     uint32_t tmu_a_func, tmu_a_fac;
 
-    if (tmu == GR_TMU0)
+    if (tmu == GFX_TMU0)
     {
         tmu_a_func = cmb.tmu0_a_func;
         tmu_a_fac = cmb.tmu0_a_fac;
@@ -16576,7 +16576,7 @@ void TexAlphaCombinerToExtension(GrChipID_t tmu)
         break;
     }
 
-    if (tmu == GR_TMU0)
+    if (tmu == GFX_TMU0)
     {
         cmb.t0a_ext_a = ta_ext_a;
         cmb.t0a_ext_a_mode = ta_ext_a_mode;

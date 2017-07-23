@@ -863,7 +863,7 @@ bool gfxSstWinClose(GrContext_t context)
     return FXTRUE;
 }
 
-void gfxTextureBufferExt(GrChipID_t tmu, uint32_t startAddress, GrLOD_t lodmin, GrLOD_t lodmax, GrAspectRatio_t aspect, GrTextureFormat_t fmt, uint32_t evenOdd)
+void gfxTextureBufferExt(gfxChipID_t tmu, uint32_t startAddress, GrLOD_t lodmin, GrLOD_t lodmax, GrAspectRatio_t aspect, GrTextureFormat_t fmt, uint32_t evenOdd)
 {
     int i;
     static int fbs_init = 0;
@@ -948,7 +948,7 @@ void gfxTextureBufferExt(GrChipID_t tmu, uint32_t startAddress, GrLOD_t lodmin, 
         curBufferAddr = pBufferAddress = startAddress + 1;
         pBufferFmt = fmt;
 
-        int rtmu = startAddress < gfxTexMinAddress(GR_TMU1) ? 0 : 1;
+        int rtmu = startAddress < gfxTexMinAddress(GFX_TMU1) ? 0 : 1;
         int size = pBufferWidth*pBufferHeight * 2; //grTexFormatSize(fmt);
         if (tmu_usage[rtmu].min > pBufferAddress + 0)
             tmu_usage[rtmu].min = pBufferAddress + 0;
@@ -1093,7 +1093,7 @@ void gfxTextureBufferExt(GrChipID_t tmu, uint32_t startAddress, GrLOD_t lodmin, 
     }
 }
 
-int CheckTextureBufferFormat(GrChipID_t tmu, uint32_t startAddress, GrTexInfo *info)
+int CheckTextureBufferFormat(gfxChipID_t tmu, uint32_t startAddress, GrTexInfo *info)
 {
     int found, i;
     if (!use_fbo) {
@@ -1589,7 +1589,7 @@ void gfxAuxBufferExt(GrBuffer_t buffer)
         glDisable(GL_CULL_FACE);
         glDisable(GL_ALPHA_TEST);
         glDepthMask(GL_TRUE);
-        gfxTexFilterMode(GR_TMU1, GR_TEXTUREFILTER_POINT_SAMPLED, GR_TEXTUREFILTER_POINT_SAMPLED);
+        gfxTexFilterMode(GFX_TMU1, GR_TEXTUREFILTER_POINT_SAMPLED, GR_TEXTUREFILTER_POINT_SAMPLED);
     }
     else {
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);

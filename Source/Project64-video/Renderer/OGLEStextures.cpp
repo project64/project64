@@ -138,13 +138,13 @@ void free_textures()
     }
 }
 
-uint32_t gfxTexMinAddress(GrChipID_t tmu)
+uint32_t gfxTexMinAddress(gfxChipID_t tmu)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d", tmu);
     return 0;
 }
 
-uint32_t gfxTexMaxAddress(GrChipID_t tmu)
+uint32_t gfxTexMaxAddress(gfxChipID_t tmu)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d", tmu);
     return TMU_SIZE * 2 - 1;
@@ -375,7 +375,7 @@ int grTexFormat2GLPackedFmt(int fmt, int * gltexfmt, int * glpixfmt, int * glpac
     */
 }
 
-void gfxTexDownloadMipMap(GrChipID_t tmu, uint32_t startAddress, uint32_t evenOdd, GrTexInfo *info)
+void gfxTexDownloadMipMap(gfxChipID_t tmu, uint32_t startAddress, uint32_t evenOdd, GrTexInfo *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, startAddress: %d evenOdd: %d", tmu, startAddress, evenOdd);
     int width, height, i, j;
@@ -631,13 +631,13 @@ void gfxTexDownloadMipMap(GrChipID_t tmu, uint32_t startAddress, uint32_t evenOd
     glBindTexture(GL_TEXTURE_2D, default_texture);
 }
 
-int CheckTextureBufferFormat(GrChipID_t tmu, uint32_t startAddress, GrTexInfo *info);
+int CheckTextureBufferFormat(gfxChipID_t tmu, uint32_t startAddress, GrTexInfo *info);
 
-void gfxTexSource(GrChipID_t tmu, uint32_t startAddress, uint32_t evenOdd, GrTexInfo *info)
+void gfxTexSource(gfxChipID_t tmu, uint32_t startAddress, uint32_t evenOdd, GrTexInfo *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, startAddress: %d evenOdd: %d", tmu, startAddress, evenOdd);
 
-    if (tmu == GR_TMU1)
+    if (tmu == GFX_TMU1)
     {
         glActiveTexture(GL_TEXTURE0);
 
@@ -694,7 +694,7 @@ void gfxTexSource(GrChipID_t tmu, uint32_t startAddress, uint32_t evenOdd, GrTex
     }
 }
 
-void gfxTexDetailControl(GrChipID_t tmu, int lod_bias, FxU8 detail_scale, float detail_max)
+void gfxTexDetailControl(gfxChipID_t tmu, int lod_bias, FxU8 detail_scale, float detail_max)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, lod_bias: %d detail_scale: %d detail_max: %d", tmu, lod_bias, detail_scale, detail_max);
     if (lod_bias != 31 && detail_scale != 7)
@@ -713,10 +713,10 @@ void gfxTexDetailControl(GrChipID_t tmu, int lod_bias, FxU8 detail_scale, float 
     set_lambda();
 }
 
-void gfxTexFilterMode(GrChipID_t tmu, GrTextureFilterMode_t minfilter_mode, GrTextureFilterMode_t magfilter_mode)
+void gfxTexFilterMode(gfxChipID_t tmu, GrTextureFilterMode_t minfilter_mode, GrTextureFilterMode_t magfilter_mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, bias: %d magfilter_mode: %d", tmu, minfilter_mode, magfilter_mode);
-    if (tmu == GR_TMU1)
+    if (tmu == GFX_TMU1)
     {
         if (minfilter_mode == GR_TEXTUREFILTER_POINT_SAMPLED) min_filter0 = GL_NEAREST;
         else min_filter0 = GL_LINEAR;
@@ -742,10 +742,10 @@ void gfxTexFilterMode(GrChipID_t tmu, GrTextureFilterMode_t minfilter_mode, GrTe
     }
 }
 
-void gfxTexClampMode(GrChipID_t tmu, GrTextureClampMode_t s_clampmode, GrTextureClampMode_t t_clampmode)
+void gfxTexClampMode(gfxChipID_t tmu, GrTextureClampMode_t s_clampmode, GrTextureClampMode_t t_clampmode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, s_clampmode: %d t_clampmode: %d", tmu, s_clampmode, t_clampmode);
-    if (tmu == GR_TMU1)
+    if (tmu == GFX_TMU1)
     {
         switch (s_clampmode)
         {

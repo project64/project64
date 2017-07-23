@@ -335,8 +335,8 @@ void CRDP::free()
     last_tile = 0;
     last_tile_size = 0;
 
-    t0 = GR_TMU0;
-    t1 = GR_TMU0;
+    t0 = GFX_TMU0;
+    t1 = GFX_TMU0;
     best_tex = 0;
     tex = 0;
     filter_mode = 0;
@@ -3132,13 +3132,13 @@ void SetWireframeCol()
             GR_BLEND_ZERO,
             GR_BLEND_ZERO,
             GR_BLEND_ZERO);
-        gfxTexCombine(GR_TMU0,
+        gfxTexCombine(GFX_TMU0,
             GR_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             FXFALSE, FXFALSE);
-        gfxTexCombine(GR_TMU1,
+        gfxTexCombine(GFX_TMU1,
             GR_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_FUNCTION_ZERO,
@@ -3161,13 +3161,13 @@ void SetWireframeCol()
             GR_BLEND_ZERO,
             GR_BLEND_ZERO,
             GR_BLEND_ZERO);
-        gfxTexCombine(GR_TMU0,
+        gfxTexCombine(GFX_TMU0,
             GR_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             FXFALSE, FXFALSE);
-        gfxTexCombine(GR_TMU1,
+        gfxTexCombine(GFX_TMU1,
             GR_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_FUNCTION_ZERO,

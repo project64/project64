@@ -144,14 +144,14 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
         rdp.texbufs[1].begin,
         GR_MIPMAPLEVELMASK_BOTH,
         &t_info);
-    gfxTexCombine(GR_TMU1,
+    gfxTexCombine(GFX_TMU1,
         GR_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         FXFALSE,
         FXFALSE);
-    gfxTexCombine(GR_TMU0,
+    gfxTexCombine(GFX_TMU0,
         GR_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_FUNCTION_SCALE_OTHER,
