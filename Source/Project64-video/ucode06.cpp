@@ -129,12 +129,12 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
         }
         dst += (512 - d.imageW);
     }
-    GrTexInfo t_info;
+    gfxTexInfo t_info;
     t_info.format = GFX_TEXFMT_RGB_565;
     t_info.data = image;
     t_info.smallLodLog2 = GFX_LOD_LOG2_512;
     t_info.largeLodLog2 = GFX_LOD_LOG2_512;
-    t_info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
+    t_info.aspectRatioLog2 = GFX_ASPECT_LOG2_1x1;
 
     gfxTexDownloadMipMap(rdp.texbufs[1].tmu,
         rdp.texbufs[1].begin,
@@ -175,7 +175,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
     gfxDepthBufferFunction(GR_CMP_ALWAYS);
     gfxDepthMask(FXFALSE);
 
-    GrLOD_t LOD = g_scr_res_x > 1024 ? GFX_LOD_LOG2_2048 : GFX_LOD_LOG2_1024;
+    gfxLOD_t LOD = g_scr_res_x > 1024 ? GFX_LOD_LOG2_2048 : GFX_LOD_LOG2_1024;
 
     float lr_x = (float)d.imageW * rdp.scale_x;
     float lr_y = (float)d.imageH * rdp.scale_y;
@@ -194,7 +194,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
         v[i].vc(0) = v[i].vc(1) = v[i].v0;
     }
     gfxTextureBufferExt(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, LOD, LOD,
-        GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
+        GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
     gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
     gfxAuxBufferExt(GFX_BUFFER_AUXBUFFER);
     gfxBufferClear(0, 0, 0xFFFF);

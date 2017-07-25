@@ -923,7 +923,8 @@ void LoadTex(int id, gfxChipID_t tmu)
     WriteTrace(TraceRDP, TraceDebug, " | |-+ LoadTex (id: %d, tmu: %d)", id, tmu);
 
     int td = rdp.cur_tile + id;
-    int lod, aspect;
+    gfxLOD_t lod;
+    gfxAspectRatio_t aspect;
     CACHE_LUT *cache;
 
     if (texinfo[id].width < 0 || texinfo[id].height < 0)
@@ -1064,24 +1065,24 @@ void LoadTex(int id, gfxChipID_t tmu)
         switch (ratio)
         {
         case 1:
-            aspect = GR_ASPECT_LOG2_1x1;
+            aspect = GFX_ASPECT_LOG2_1x1;
             cache->scale_x = 1.0f;
             cache->scale_y = 1.0f;
             break;
         case 2:
-            aspect = GR_ASPECT_LOG2_2x1;
+            aspect = GFX_ASPECT_LOG2_2x1;
             cache->scale_x = 1.0f;
             cache->scale_y = 0.5f;
             real_y >>= 1;
             break;
         case 4:
-            aspect = GR_ASPECT_LOG2_4x1;
+            aspect = GFX_ASPECT_LOG2_4x1;
             cache->scale_x = 1.0f;
             cache->scale_y = 0.25f;
             real_y >>= 2;
             break;
         default:
-            aspect = GR_ASPECT_LOG2_8x1;
+            aspect = GFX_ASPECT_LOG2_8x1;
             cache->scale_x = 1.0f;
             cache->scale_y = 0.125f;
             real_y >>= 3;
@@ -1094,19 +1095,19 @@ void LoadTex(int id, gfxChipID_t tmu)
         switch (ratio)
         {
         case 2:
-            aspect = GR_ASPECT_LOG2_1x2;
+            aspect = GFX_ASPECT_LOG2_1x2;
             cache->scale_x = 0.5f;
             cache->scale_y = 1.0f;
             real_x >>= 1;
             break;
         case 4:
-            aspect = GR_ASPECT_LOG2_1x4;
+            aspect = GFX_ASPECT_LOG2_1x4;
             cache->scale_x = 0.25f;
             cache->scale_y = 1.0f;
             real_x >>= 2;
             break;
         default:
-            aspect = GR_ASPECT_LOG2_1x8;
+            aspect = GFX_ASPECT_LOG2_1x8;
             cache->scale_x = 0.125f;
             cache->scale_y = 1.0f;
             real_x >>= 3;
@@ -1516,7 +1517,7 @@ void LoadTex(int id, gfxChipID_t tmu)
         }
     }
 
-    cache->t_info.format = LOWORD(result);
+    cache->t_info.format = (gfxTextureFormat_t)LOWORD(result);
 
     cache->realwidth = real_x;
     cache->realheight = real_y;
@@ -1533,8 +1534,8 @@ void LoadTex(int id, gfxChipID_t tmu)
 
             if (ghqTexInfo.data)
             {
-                if (ghqTexInfo.aspectRatioLog2 < GR_ASPECT_LOG2_1x8 ||
-                    ghqTexInfo.aspectRatioLog2 > GR_ASPECT_LOG2_8x1 ||
+                if (ghqTexInfo.aspectRatioLog2 < GFX_ASPECT_LOG2_1x8 ||
+                    ghqTexInfo.aspectRatioLog2 > GFX_ASPECT_LOG2_8x1 ||
                     ghqTexInfo.largeLodLog2 > GFX_LOD_LOG2_2048 ||
                     ghqTexInfo.largeLodLog2 < GFX_LOD_LOG2_1)
                 {
@@ -1543,7 +1544,7 @@ void LoadTex(int id, gfxChipID_t tmu)
                 else
                 {
                     texture = (uint8_t *)ghqTexInfo.data;
-                    lod = ghqTexInfo.largeLodLog2;
+                    lod = (gfxLOD_t)ghqTexInfo.largeLodLog2;
                     int splits = cache->splits;
                     if (ghqTexInfo.is_hires_tex)
                     {
@@ -1619,7 +1620,7 @@ void LoadTex(int id, gfxChipID_t tmu)
                                 cache->c_scl_y *= 2.0f;
                             }
                         }
-                        aspect = ghqTexInfo.aspectRatioLog2;
+                        aspect = (gfxAspectRatio_t)ghqTexInfo.aspectRatioLog2;
                         cache->lod = lod;
                         cache->aspect = aspect;
                     }
@@ -1630,7 +1631,7 @@ void LoadTex(int id, gfxChipID_t tmu)
                     real_x = ghqTexInfo.width;
                     real_y = ghqTexInfo.height;
                     result = (1 << 16) | ghqTexInfo.format;
-                    cache->t_info.format = ghqTexInfo.format;
+                    cache->t_info.format = (gfxTextureFormat_t)ghqTexInfo.format;
                     cache->realwidth = real_x;
                     cache->realheight = real_y;
                 }
@@ -1638,7 +1639,7 @@ void LoadTex(int id, gfxChipID_t tmu)
         }
 
         // Load the texture into texture memory
-        GrTexInfo *t_info = &cache->t_info;
+        gfxTexInfo *t_info = &cache->t_info;
         t_info->data = texture;
         t_info->smallLodLog2 = lod;
         t_info->largeLodLog2 = lod;

@@ -109,10 +109,10 @@ static void DrawRE2Video256(FB_TO_SCREEN_INFO & fb_info)
 {
     WriteTrace(TraceRDP, TraceDebug, "DrawRE2Video256. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
     uint32_t * src = (uint32_t*)(gfx.RDRAM + fb_info.addr);
-    GrTexInfo t_info;
+    gfxTexInfo t_info;
     t_info.smallLodLog2 = GFX_LOD_LOG2_256;
     t_info.largeLodLog2 = GFX_LOD_LOG2_256;
-    t_info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
+    t_info.aspectRatioLog2 = GFX_ASPECT_LOG2_1x1;
     uint16_t * tex = (uint16_t*)texture_buffer;
     uint16_t * dst = tex;
     uint32_t col;
@@ -157,12 +157,12 @@ static void DrawFrameBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
     WriteTrace(TraceRDP, TraceDebug, "DrawFrameBufferToScreen256. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
     uint32_t width = fb_info.lr_x - fb_info.ul_x + 1;
     uint32_t height = fb_info.lr_y - fb_info.ul_y + 1;
-    GrTexInfo t_info;
+    gfxTexInfo t_info;
     uint8_t * image = gfx.RDRAM + fb_info.addr;
     uint32_t width256 = ((width - 1) >> 8) + 1;
     uint32_t height256 = ((height - 1) >> 8) + 1;
     t_info.smallLodLog2 = t_info.largeLodLog2 = GFX_LOD_LOG2_256;
-    t_info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
+    t_info.aspectRatioLog2 = GFX_ASPECT_LOG2_1x1;
     t_info.format = GFX_TEXFMT_ARGB_1555;
     uint16_t * tex = (uint16_t*)texture_buffer;
     t_info.data = tex;
@@ -273,7 +273,7 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         return true;
     }
     WriteTrace(TraceRDP, TraceDebug, "DrawFrameBufferToScreen. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
-    GrTexInfo t_info;
+    gfxTexInfo t_info;
     uint8_t * image = gfx.RDRAM + fb_info.addr;
     uint32_t texwidth;
     float scale;
@@ -292,11 +292,11 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
 
     if (height <= (texwidth >> 1))
     {
-        t_info.aspectRatioLog2 = GR_ASPECT_LOG2_2x1;
+        t_info.aspectRatioLog2 = GFX_ASPECT_LOG2_2x1;
     }
     else
     {
-        t_info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
+        t_info.aspectRatioLog2 = GFX_ASPECT_LOG2_1x1;
     }
 
     if (fb_info.size == 2)
@@ -385,12 +385,12 @@ static void DrawDepthBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
     WriteTrace(TraceRDP, TraceDebug, "DrawDepthBufferToScreen256. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
     uint32_t width = fb_info.lr_x - fb_info.ul_x + 1;
     uint32_t height = fb_info.lr_y - fb_info.ul_y + 1;
-    GrTexInfo t_info;
+    gfxTexInfo t_info;
     uint8_t * image = gfx.RDRAM + fb_info.addr;
     uint32_t width256 = ((width - 1) >> 8) + 1;
     uint32_t height256 = ((height - 1) >> 8) + 1;
     t_info.smallLodLog2 = t_info.largeLodLog2 = GFX_LOD_LOG2_256;
-    t_info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
+    t_info.aspectRatioLog2 = GFX_ASPECT_LOG2_1x1;
     t_info.format = GFX_TEXFMT_ALPHA_INTENSITY_88;
     uint16_t * tex = (uint16_t*)texture_buffer;
     t_info.data = tex;
@@ -455,9 +455,9 @@ static void DrawDepthBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
 static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
 {
     WriteTrace(TraceRDP, TraceDebug, "DrawHiresDepthBufferToScreen. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
-    GrTexInfo t_info;
+    gfxTexInfo t_info;
     float scale = 0.25f;
-    GrLOD_t LOD = GFX_LOD_LOG2_1024;
+    gfxLOD_t LOD = GFX_LOD_LOG2_1024;
     if (g_scr_res_x > 1024)
     {
         scale = 0.125f;
@@ -465,7 +465,7 @@ static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
     }
     t_info.format = GFX_TEXFMT_ALPHA_INTENSITY_88;
     t_info.smallLodLog2 = t_info.largeLodLog2 = LOD;
-    t_info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
+    t_info.aspectRatioLog2 = GFX_ASPECT_LOG2_1x1;
     gfxConstantColorValue(rdp.fog_color);
     gfxColorCombine(GR_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
@@ -536,7 +536,7 @@ void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         return;
     }
     WriteTrace(TraceRDP, TraceDebug, "DrawDepthBufferToScreen. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
-    GrTexInfo t_info;
+    gfxTexInfo t_info;
     uint8_t * image = gfx.RDRAM + fb_info.addr;
     uint32_t texwidth;
     float scale;
@@ -555,11 +555,11 @@ void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
 
     if (height <= (texwidth >> 1))
     {
-        t_info.aspectRatioLog2 = GR_ASPECT_LOG2_2x1;
+        t_info.aspectRatioLog2 = GFX_ASPECT_LOG2_2x1;
     }
     else
     {
-        t_info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
+        t_info.aspectRatioLog2 = GFX_ASPECT_LOG2_1x1;
     }
 
     uint16_t * tex = (uint16_t*)texture_buffer;

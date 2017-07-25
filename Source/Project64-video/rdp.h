@@ -254,7 +254,7 @@ typedef struct {
     float scale_y;
     float scale;    // general scale to 256
 
-    GrTexInfo t_info; // texture info (glide)
+    gfxTexInfo t_info; // texture info (glide)
     uint32_t tmem_addr;  // addres in texture memory (glide)
 
     int uses;   // 1 triangle that uses this texture
@@ -333,7 +333,7 @@ typedef struct
     float u_scale; //used to map vertex u,v coordinates into hires texture
     float v_scale; //used to map vertex u,v coordinates into hires texture
     CACHE_LUT * cache; //pointer to texture cache item
-    GrTexInfo info;
+    gfxTexInfo info;
     uint16_t t_mem;
 } TBUFF_COLOR_IMAGE;
 
@@ -582,8 +582,8 @@ void GoToFullScreen();
 extern CRDP rdp;
 extern VOODOO voodoo;
 
-extern GrTexInfo  fontTex;
-extern GrTexInfo  cursorTex;
+extern gfxTexInfo  fontTex;
+extern gfxTexInfo  cursorTex;
 extern uint32_t   offset_font;
 extern uint32_t   offset_cursor;
 extern uint32_t   offset_textures;

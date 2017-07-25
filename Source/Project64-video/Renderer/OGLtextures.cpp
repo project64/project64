@@ -151,7 +151,7 @@ uint32_t gfxTexMaxAddress(gfxChipID_t tmu)
     return TMU_SIZE * 2 - 1;
 }
 
-uint32_t gfxTexTextureMemRequired(uint32_t evenOdd, GrTexInfo *info)
+uint32_t gfxTexTextureMemRequired(uint32_t evenOdd, gfxTexInfo *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "evenOdd = %d", evenOdd);
     int width, height;
@@ -198,7 +198,7 @@ uint32_t gfxTexTextureMemRequired(uint32_t evenOdd, GrTexInfo *info)
     return 0;
 }
 
-uint32_t gfxTexCalcMemRequired(GrLOD_t lodmin, GrLOD_t lodmax, GrAspectRatio_t aspect, GrTextureFormat_t fmt)
+uint32_t gfxTexCalcMemRequired(gfxLOD_t lodmin, gfxLOD_t lodmax, GrAspectRatio_t aspect, GrTextureFormat_t fmt)
 {
     WriteTrace(TraceGlitch, TraceDebug, "lodmin = %d, lodmax: %d aspect: %d fmt: %d", lodmin, lodmax, aspect, fmt);
     int width, height;
@@ -370,7 +370,7 @@ int grTexFormat2GLPackedFmt(int fmt, int * gltexfmt, int * glpixfmt, int * glpac
     return factor;
 }
 
-void gfxTexDownloadMipMap(gfxChipID_t tmu, uint32_t startAddress, uint32_t evenOdd, GrTexInfo *info)
+void gfxTexDownloadMipMap(gfxChipID_t tmu, uint32_t startAddress, uint32_t evenOdd, gfxTexInfo *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, startAddress: %d evenOdd: %d", tmu, startAddress, evenOdd);
 
@@ -627,9 +627,9 @@ void gfxTexDownloadMipMap(gfxChipID_t tmu, uint32_t startAddress, uint32_t evenO
     grDisplayGLError("gfxTexDownloadMipMap");
 }
 
-int CheckTextureBufferFormat(gfxChipID_t tmu, uint32_t startAddress, GrTexInfo *info);
+int CheckTextureBufferFormat(gfxChipID_t tmu, uint32_t startAddress, gfxTexInfo *info);
 
-void gfxTexSource(gfxChipID_t tmu, uint32_t startAddress, uint32_t evenOdd, GrTexInfo *info)
+void gfxTexSource(gfxChipID_t tmu, uint32_t startAddress, uint32_t evenOdd, gfxTexInfo *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, startAddress: %d evenOdd: %d", tmu, startAddress, evenOdd);
 

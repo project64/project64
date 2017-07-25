@@ -563,7 +563,7 @@ bool gfxSstWinClose()
     return FXTRUE;
 }
 
-void gfxTextureBufferExt(gfxChipID_t tmu, uint32_t startAddress, GrLOD_t lodmin, GrLOD_t lodmax, GrAspectRatio_t aspect, GrTextureFormat_t fmt, uint32_t evenOdd)
+void gfxTextureBufferExt(gfxChipID_t tmu, uint32_t startAddress, gfxLOD_t lodmin, gfxLOD_t lodmax, GrAspectRatio_t aspect, GrTextureFormat_t fmt, uint32_t evenOdd)
 {
     int i;
     static int fbs_init = 0;
@@ -789,7 +789,7 @@ void gfxTextureBufferExt(gfxChipID_t tmu, uint32_t startAddress, GrLOD_t lodmin,
     }
 }
 
-int CheckTextureBufferFormat(gfxChipID_t tmu, uint32_t startAddress, GrTexInfo *info)
+int CheckTextureBufferFormat(gfxChipID_t tmu, uint32_t startAddress, gfxTexInfo *info)
 {
     int found, i;
     if (!use_fbo) {

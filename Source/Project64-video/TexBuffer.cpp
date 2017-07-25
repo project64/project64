@@ -81,13 +81,13 @@ static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
     {
         if ((texbuf.scr_width / texbuf.scr_height) >= 2)
         {
-            texbuf.info.aspectRatioLog2 = GR_ASPECT_LOG2_2x1;
+            texbuf.info.aspectRatioLog2 = GFX_ASPECT_LOG2_2x1;
             texbuf.tex_width = tex_size;
             texbuf.tex_height = tex_size >> 1;
         }
         else
         {
-            texbuf.info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
+            texbuf.info.aspectRatioLog2 = GFX_ASPECT_LOG2_1x1;
             texbuf.tex_width = texbuf.tex_height = tex_size;
         }
     }
@@ -95,13 +95,13 @@ static TBUFF_COLOR_IMAGE * AllocateTextureBuffer(COLOR_IMAGE & cimage)
     {
         if ((texbuf.scr_height / texbuf.scr_width) >= 2)
         {
-            texbuf.info.aspectRatioLog2 = GR_ASPECT_LOG2_1x2;
+            texbuf.info.aspectRatioLog2 = GFX_ASPECT_LOG2_1x2;
             texbuf.tex_width = tex_size >> 1;
             texbuf.tex_height = tex_size;
         }
         else
         {
-            texbuf.info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
+            texbuf.info.aspectRatioLog2 = GFX_ASPECT_LOG2_1x1;
             texbuf.tex_width = texbuf.tex_height = tex_size;
         }
     }
@@ -321,7 +321,7 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
     return TRUE;
 }
 
-static GrTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
+static gfxTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
 {
     gfxColorCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
@@ -344,7 +344,7 @@ static GrTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
     gfxDepthMask(FXFALSE);
     gfxCullMode(GR_CULL_DISABLE);
     gfxFogMode(GR_FOG_DISABLE);
-    GrTextureFormat_t buf_format = (rdp.tbuff_tex) ? rdp.tbuff_tex->info.format : GFX_TEXFMT_RGB_565;
+    gfxTextureFormat_t buf_format = (rdp.tbuff_tex) ? rdp.tbuff_tex->info.format : GFX_TEXFMT_RGB_565;
     GrCombineFunction_t color_source = GR_COMBINE_FUNCTION_LOCAL;
     if (!force_rgb && rdp.black_ci_index > 0 && rdp.black_ci_index <= rdp.copy_ci_index)
     {
@@ -461,7 +461,7 @@ int CopyTextureBuffer(COLOR_IMAGE & fb_from, COLOR_IMAGE & fb_to)
         return CloseTextureBuffer(TRUE);
     }
     rdp.tbuff_tex->crc = 0;
-    GrTextureFormat_t buf_format = rdp.tbuff_tex->info.format;
+    gfxTextureFormat_t buf_format = rdp.tbuff_tex->info.format;
     rdp.tbuff_tex->info.format = GFX_TEXFMT_RGB_565;
     TexBufSetupCombiner(TRUE);
     float ul_x = 0.0f;
@@ -508,7 +508,7 @@ int CopyDepthBuffer()
 {
     WriteTrace(TraceRDP, TraceDebug, "CopyDepthBuffer. ");
     float bound = 1024.0f;
-    GrLOD_t LOD = GFX_LOD_LOG2_1024;
+    gfxLOD_t LOD = GFX_LOD_LOG2_1024;
     if (g_scr_res_x > 1024)
     {
         bound = 2048.0f;
@@ -518,7 +518,7 @@ int CopyDepthBuffer()
     rdp.tbuff_tex->tmu = rdp.texbufs[0].tmu;
     rdp.tbuff_tex->info.format = GFX_TEXFMT_RGB_565;
     rdp.tbuff_tex->info.smallLodLog2 = rdp.tbuff_tex->info.largeLodLog2 = LOD;
-    rdp.tbuff_tex->info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
+    rdp.tbuff_tex->info.aspectRatioLog2 = GFX_ASPECT_LOG2_1x1;
     TexBufSetupCombiner(TRUE);
     float ul_x = 0.0f;
     float ul_y = 0.0f;
@@ -541,7 +541,7 @@ int CopyDepthBuffer()
     gfxTexSource(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, GR_MIPMAPLEVELMASK_BOTH, &(rdp.tbuff_tex->info));
     gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
     gfxTextureBufferExt(rdp.texbufs[1].tmu, rdp.texbufs[1].begin, LOD, LOD,
-        GR_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
+        GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
     gfxDrawTriangle(&v[0], &v[2], &v[1]);
     gfxDrawTriangle(&v[2], &v[3], &v[1]);
     gfxRenderBuffer(GFX_BUFFER_BACKBUFFER);

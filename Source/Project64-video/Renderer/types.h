@@ -95,6 +95,17 @@ enum gfxTextureFormat_t
     GFX_TEXFMT_GZ = 0x8000,
 };
 
+enum gfxAspectRatio_t
+{
+    GFX_ASPECT_LOG2_8x1 = 3,       /* 8W x 1H */
+    GFX_ASPECT_LOG2_4x1 = 2,       /* 4W x 1H */
+    GFX_ASPECT_LOG2_2x1 = 1,       /* 2W x 1H */
+    GFX_ASPECT_LOG2_1x1 = 0,       /* 1W x 1H */
+    GFX_ASPECT_LOG2_1x2 = -1,       /* 1W x 2H */
+    GFX_ASPECT_LOG2_1x4 = -2,       /* 1W x 4H */
+    GFX_ASPECT_LOG2_1x8 = -3,       /* 1W x 8H */
+};
+
 enum GFX_CMBX
 {
     GFX_CMBX_ZERO = 0x00,
@@ -124,3 +135,11 @@ enum gfxChipID_t
     GFX_TMU2 = 0x2,
 };
 
+typedef struct
+{
+    gfxLOD_t           smallLodLog2;
+    gfxLOD_t           largeLodLog2;
+    gfxAspectRatio_t   aspectRatioLog2;
+    gfxTextureFormat_t format;
+    void               *data;
+} gfxTexInfo;
