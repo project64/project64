@@ -863,7 +863,7 @@ bool gfxSstWinClose()
     return FXTRUE;
 }
 
-void gfxTextureBufferExt(gfxChipID_t tmu, uint32_t startAddress, gfxLOD_t lodmin, gfxLOD_t lodmax, gfxAspectRatio_t aspect, GrTextureFormat_t fmt, uint32_t evenOdd)
+void gfxTextureBufferExt(gfxChipID_t tmu, uint32_t startAddress, gfxLOD_t lodmin, gfxLOD_t lodmax, gfxAspectRatio_t aspect, gfxTextureFormat_t fmt, uint32_t evenOdd)
 {
     int i;
     static int fbs_init = 0;
