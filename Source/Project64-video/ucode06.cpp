@@ -31,12 +31,12 @@ float set_sprite_combine_mode()
         rdp.tex = 1;
         rdp.allow_combine = 0;
         // Now actually combine !
-        GrCombineFunction_t color_source = GR_COMBINE_FUNCTION_LOCAL;
+        gfxCombineFunction_t color_source = GFX_COMBINE_FUNCTION_LOCAL;
         if (rdp.tbuff_tex && rdp.tbuff_tex->info.format == GFX_TEXFMT_ALPHA_INTENSITY_88)
-            color_source = GR_COMBINE_FUNCTION_LOCAL_ALPHA;
+            color_source = GFX_COMBINE_FUNCTION_LOCAL_ALPHA;
         cmb.tmu1_func = cmb.tmu0_func = color_source;
         cmb.tmu1_fac = cmb.tmu0_fac = GR_COMBINE_FACTOR_NONE;
-        cmb.tmu1_a_func = cmb.tmu0_a_func = GR_COMBINE_FUNCTION_LOCAL;
+        cmb.tmu1_a_func = cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_LOCAL;
         cmb.tmu1_a_fac = cmb.tmu0_a_fac = GR_COMBINE_FACTOR_NONE;
         cmb.tmu1_invert = cmb.tmu0_invert = FXFALSE;
         cmb.tmu1_a_invert = cmb.tmu0_a_invert = FXFALSE;
@@ -72,12 +72,12 @@ float set_sprite_combine_mode()
 
     if (rdp.cycle_mode == 2)
     {
-        gfxColorCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE,
             FXFALSE);
-        gfxAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        gfxAlphaCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE,
@@ -145,25 +145,25 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
         GR_MIPMAPLEVELMASK_BOTH,
         &t_info);
     gfxTexCombine(GFX_TMU1,
-        GR_COMBINE_FUNCTION_LOCAL,
+        GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
-        GR_COMBINE_FUNCTION_LOCAL,
+        GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         FXFALSE,
         FXFALSE);
     gfxTexCombine(GFX_TMU0,
-        GR_COMBINE_FUNCTION_SCALE_OTHER,
+        GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
-        GR_COMBINE_FUNCTION_SCALE_OTHER,
+        GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         FXFALSE,
         FXFALSE);
-    gfxColorCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
         FXFALSE);
-    gfxAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    gfxAlphaCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,

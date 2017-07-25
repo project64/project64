@@ -722,7 +722,7 @@ void writeGLSLColorFactor(int factor, int local, int need_local, int other, int 
     }
 }
 
-void gfxColorCombine(GrCombineFunction_t function, GrCombineFactor_t factor, GrCombineLocal_t local, GrCombineOther_t other, bool invert)
+void gfxColorCombine(gfxCombineFunction_t function, GrCombineFactor_t factor, GrCombineLocal_t local, GrCombineOther_t other, bool invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "function: %d factor: %d local: %d other: %d invert: %d", function, factor, local, other, invert);
 
@@ -749,58 +749,58 @@ void gfxColorCombine(GrCombineFunction_t function, GrCombineFactor_t factor, GrC
     strcpy(fragment_shader_color_combiner, "");
     switch (function)
     {
-    case GR_COMBINE_FUNCTION_ZERO:
+    case GFX_COMBINE_FUNCTION_ZERO:
         strcat(fragment_shader_color_combiner, "gl_FragColor = vec4(0.0); \n");
         break;
-    case GR_COMBINE_FUNCTION_LOCAL:
+    case GFX_COMBINE_FUNCTION_LOCAL:
         writeGLSLColorLocal(local);
         strcat(fragment_shader_color_combiner, "gl_FragColor = color_local; \n");
         break;
-    case GR_COMBINE_FUNCTION_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_LOCAL_ALPHA:
         writeGLSLColorLocal(local);
         strcat(fragment_shader_color_combiner, "gl_FragColor = vec4(color_local.a); \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER:
         writeGLSLColorOther(other);
         writeGLSLColorFactor(factor, local, 1, other, 0);
         strcat(fragment_shader_color_combiner, "gl_FragColor = color_factor * color_other; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL:
         writeGLSLColorLocal(local);
         writeGLSLColorOther(other);
         writeGLSLColorFactor(factor, local, 0, other, 0);
         strcat(fragment_shader_color_combiner, "gl_FragColor = color_factor * color_other + color_local; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA:
         writeGLSLColorLocal(local);
         writeGLSLColorOther(other);
         writeGLSLColorFactor(factor, local, 0, other, 0);
         strcat(fragment_shader_color_combiner, "gl_FragColor = color_factor * color_other + vec4(color_local.a); \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL:
         writeGLSLColorLocal(local);
         writeGLSLColorOther(other);
         writeGLSLColorFactor(factor, local, 0, other, 0);
         strcat(fragment_shader_color_combiner, "gl_FragColor = color_factor * (color_other - color_local); \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL:
         writeGLSLColorLocal(local);
         writeGLSLColorOther(other);
         writeGLSLColorFactor(factor, local, 0, other, 0);
         strcat(fragment_shader_color_combiner, "gl_FragColor = color_factor * (color_other - color_local) + color_local; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL_ALPHA:
         writeGLSLColorLocal(local);
         writeGLSLColorOther(other);
         writeGLSLColorFactor(factor, local, 0, other, 0);
         strcat(fragment_shader_color_combiner, "gl_FragColor = color_factor * (color_other - color_local) + vec4(color_local.a); \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
         writeGLSLColorLocal(local);
         writeGLSLColorFactor(factor, local, 0, other, 1);
         strcat(fragment_shader_color_combiner, "gl_FragColor = color_factor * (-color_local) + color_local; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
         writeGLSLColorLocal(local);
         writeGLSLColorFactor(factor, local, 0, other, 1);
         strcat(fragment_shader_color_combiner, "gl_FragColor = color_factor * (-color_local) + vec4(color_local.a); \n");
@@ -926,7 +926,7 @@ void writeGLSLAlphaFactor(int factor, int local, int need_local, int other, int 
     }
 }
 
-void gfxAlphaCombine(GrCombineFunction_t function, GrCombineFactor_t factor, GrCombineLocal_t local, GrCombineOther_t other, bool invert)
+void gfxAlphaCombine(gfxCombineFunction_t function, GrCombineFactor_t factor, GrCombineLocal_t local, GrCombineOther_t other, bool invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "function: %d factor: %d local: %d other: %d invert: %d", function, factor, local, other, invert);
     static int last_function = 0;
@@ -953,58 +953,58 @@ void gfxAlphaCombine(GrCombineFunction_t function, GrCombineFactor_t factor, GrC
 
     switch (function)
     {
-    case GR_COMBINE_FUNCTION_ZERO:
+    case GFX_COMBINE_FUNCTION_ZERO:
         strcat(fragment_shader_alpha_combiner, "gl_FragColor.a = 0.0; \n");
         break;
-    case GR_COMBINE_FUNCTION_LOCAL:
+    case GFX_COMBINE_FUNCTION_LOCAL:
         writeGLSLAlphaLocal(local);
         strcat(fragment_shader_alpha_combiner, "gl_FragColor.a = alpha_local; \n");
         break;
-    case GR_COMBINE_FUNCTION_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_LOCAL_ALPHA:
         writeGLSLAlphaLocal(local);
         strcat(fragment_shader_alpha_combiner, "gl_FragColor.a = alpha_local; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER:
         writeGLSLAlphaOther(other);
         writeGLSLAlphaFactor(factor, local, 1, other, 0);
         strcat(fragment_shader_alpha_combiner, "gl_FragColor.a = alpha_factor * alpha_other; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL:
         writeGLSLAlphaLocal(local);
         writeGLSLAlphaOther(other);
         writeGLSLAlphaFactor(factor, local, 0, other, 0);
         strcat(fragment_shader_alpha_combiner, "gl_FragColor.a = alpha_factor * alpha_other + alpha_local; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA:
         writeGLSLAlphaLocal(local);
         writeGLSLAlphaOther(other);
         writeGLSLAlphaFactor(factor, local, 0, other, 0);
         strcat(fragment_shader_alpha_combiner, "gl_FragColor.a = alpha_factor * alpha_other + alpha_local; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL:
         writeGLSLAlphaLocal(local);
         writeGLSLAlphaOther(other);
         writeGLSLAlphaFactor(factor, local, 0, other, 0);
         strcat(fragment_shader_alpha_combiner, "gl_FragColor.a = alpha_factor * (alpha_other - alpha_local); \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL:
         writeGLSLAlphaLocal(local);
         writeGLSLAlphaOther(other);
         writeGLSLAlphaFactor(factor, local, 0, other, 0);
         strcat(fragment_shader_alpha_combiner, "gl_FragColor.a = alpha_factor * (alpha_other - alpha_local) + alpha_local; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL_ALPHA:
         writeGLSLAlphaLocal(local);
         writeGLSLAlphaOther(other);
         writeGLSLAlphaFactor(factor, local, 0, other, 0);
         strcat(fragment_shader_alpha_combiner, "gl_FragColor.a = alpha_factor * (alpha_other - alpha_local) + alpha_local; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
         writeGLSLAlphaLocal(local);
         writeGLSLAlphaFactor(factor, local, 0, other, 1);
         strcat(fragment_shader_alpha_combiner, "gl_FragColor.a = alpha_factor * (-alpha_local) + alpha_local; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
         writeGLSLAlphaLocal(local);
         writeGLSLAlphaFactor(factor, local, 0, other, 1);
         strcat(fragment_shader_alpha_combiner, "gl_FragColor.a = alpha_factor * (-alpha_local) + alpha_local; \n");
@@ -1155,7 +1155,7 @@ void writeGLSLTextureAlphaFactor(int num_tex, int factor)
     }
 }
 
-void gfxTexCombine(gfxChipID_t tmu, GrCombineFunction_t rgb_function, GrCombineFactor_t rgb_factor, GrCombineFunction_t alpha_function, GrCombineFactor_t alpha_factor, bool rgb_invert, bool alpha_invert)
+void gfxTexCombine(gfxChipID_t tmu, gfxCombineFunction_t rgb_function, GrCombineFactor_t rgb_factor, gfxCombineFunction_t alpha_function, GrCombineFactor_t alpha_factor, bool rgb_invert, bool alpha_invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu: %d rgb_function: %d rgb_factor: %d alpha_function: %d alpha_factor: %d rgb_invert: %d alpha_invert: %d", tmu, rgb_function, rgb_factor, alpha_function, alpha_factor, rgb_invert, alpha_invert);
     int num_tex;
@@ -1217,74 +1217,74 @@ void gfxTexCombine(gfxChipID_t tmu, GrCombineFunction_t rgb_function, GrCombineF
 
     switch (rgb_function)
     {
-    case GR_COMBINE_FUNCTION_ZERO:
+    case GFX_COMBINE_FUNCTION_ZERO:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctexture0 = vec4(0.0); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctexture1 = vec4(0.0); \n");
         break;
-    case GR_COMBINE_FUNCTION_LOCAL:
+    case GFX_COMBINE_FUNCTION_LOCAL:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctexture0 = readtex0; \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctexture1 = readtex1; \n");
         break;
-    case GR_COMBINE_FUNCTION_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_LOCAL_ALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctexture0 = vec4(readtex0.a); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctexture1 = vec4(readtex1.a); \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER:
         writeGLSLTextureColorFactor(num_tex, rgb_factor);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctexture0 = texture0_color_factor * vec4(0.0); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctexture1 = texture1_color_factor * ctexture0; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL:
         writeGLSLTextureColorFactor(num_tex, rgb_factor);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctexture0 = texture0_color_factor * vec4(0.0) + readtex0; \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctexture1 = texture1_color_factor * ctexture0 + readtex1; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA:
         writeGLSLTextureColorFactor(num_tex, rgb_factor);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctexture0 = texture0_color_factor * vec4(0.0) + vec4(readtex0.a); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctexture1 = texture1_color_factor * ctexture0 + vec4(readtex1.a); \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL:
         writeGLSLTextureColorFactor(num_tex, rgb_factor);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctexture0 = texture0_color_factor * (vec4(0.0) - readtex0); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctexture1 = texture1_color_factor * (ctexture0 - readtex1); \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL:
         writeGLSLTextureColorFactor(num_tex, rgb_factor);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctexture0 = texture0_color_factor * (vec4(0.0) - readtex0) + readtex0; \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctexture1 = texture1_color_factor * (ctexture0 - readtex1) + readtex1; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL_ALPHA:
         writeGLSLTextureColorFactor(num_tex, rgb_factor);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctexture0 = texture0_color_factor * (vec4(0.0) - readtex0) + vec4(readtex0.a); \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctexture1 = texture1_color_factor * (ctexture0 - readtex1) + vec4(readtex1.a); \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
         writeGLSLTextureColorFactor(num_tex, rgb_factor);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctexture0 = texture0_color_factor * (-readtex0) + readtex0; \n");
         else
             strcat(fragment_shader_texture1, "vec4 ctexture1 = texture1_color_factor * (-readtex1) + readtex1; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
         writeGLSLTextureColorFactor(num_tex, rgb_factor);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "vec4 ctexture0 = texture0_color_factor * (-readtex0) + vec4(readtex0.a); \n");
@@ -1315,68 +1315,68 @@ void gfxTexCombine(gfxChipID_t tmu, GrCombineFunction_t rgb_function, GrCombineF
         else
             strcat(fragment_shader_texture1, "ctexture1.a = 0.0; \n");
         break;
-    case GR_COMBINE_FUNCTION_LOCAL:
+    case GFX_COMBINE_FUNCTION_LOCAL:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctexture0.a = readtex0.a; \n");
         else
             strcat(fragment_shader_texture1, "ctexture1.a = readtex1.a; \n");
         break;
-    case GR_COMBINE_FUNCTION_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_LOCAL_ALPHA:
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctexture0.a = readtex0.a; \n");
         else
             strcat(fragment_shader_texture1, "ctexture1.a = readtex1.a; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER:
         writeGLSLTextureAlphaFactor(num_tex, alpha_factor);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctexture0.a = texture0_alpha_factor * 0.0; \n");
         else
             strcat(fragment_shader_texture1, "ctexture1.a = texture1_alpha_factor * ctexture0.a; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL:
         writeGLSLTextureAlphaFactor(num_tex, alpha_factor);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctexture0.a = texture0_alpha_factor * 0.0 + readtex0.a; \n");
         else
             strcat(fragment_shader_texture1, "ctexture1.a = texture1_alpha_factor * ctexture0.a + readtex1.a; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA:
         writeGLSLTextureAlphaFactor(num_tex, alpha_factor);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctexture0.a = texture0_alpha_factor * 0.0 + readtex0.a; \n");
         else
             strcat(fragment_shader_texture1, "ctexture1.a = texture1_alpha_factor * ctexture0.a + readtex1.a; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL:
         writeGLSLTextureAlphaFactor(num_tex, alpha_factor);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctexture0.a = texture0_alpha_factor * (0.0 - readtex0.a); \n");
         else
             strcat(fragment_shader_texture1, "ctexture1.a = texture1_alpha_factor * (ctexture0.a - readtex1.a); \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL:
         writeGLSLTextureAlphaFactor(num_tex, alpha_factor);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctexture0.a = texture0_alpha_factor * (0.0 - readtex0.a) + readtex0.a; \n");
         else
             strcat(fragment_shader_texture1, "ctexture1.a = texture1_alpha_factor * (ctexture0.a - readtex1.a) + readtex1.a; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL_ALPHA:
         writeGLSLTextureAlphaFactor(num_tex, alpha_factor);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctexture0.a = texture0_alpha_factor * (0.0 - readtex0.a) + readtex0.a; \n");
         else
             strcat(fragment_shader_texture1, "ctexture1.a = texture1_alpha_factor * (ctexture0.a - readtex1.a) + readtex1.a; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
         writeGLSLTextureAlphaFactor(num_tex, alpha_factor);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctexture0.a = texture0_alpha_factor * (-readtex0.a) + readtex0.a; \n");
         else
             strcat(fragment_shader_texture1, "ctexture1.a = texture1_alpha_factor * (-readtex1.a) + readtex1.a; \n");
         break;
-    case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
         writeGLSLTextureAlphaFactor(num_tex, alpha_factor);
         if (num_tex == 0)
             strcat(fragment_shader_texture0, "ctexture0.a = texture0_alpha_factor * (-readtex0.a) + readtex0.a; \n");

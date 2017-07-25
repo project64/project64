@@ -45,10 +45,16 @@
 typedef struct
 {
     uint32_t ccolor;  // constant color to set at the end, color and alpha
-    uint32_t c_fnc, c_fac, c_loc, c_oth;  // gfxColorCombine flags
-    uint32_t a_fnc, a_fac, a_loc, a_oth;  // gfxAlphaCombine flags
-    uint32_t tex, tmu0_func, tmu0_fac, tmu0_invert, tmu1_func, tmu1_fac, tmu1_invert;
-    uint32_t tmu0_a_func, tmu0_a_fac, tmu0_a_invert, tmu1_a_func, tmu1_a_fac, tmu1_a_invert;
+    gfxCombineFunction_t c_fnc;
+    uint32_t c_fac, c_loc, c_oth;  // gfxColorCombine flags
+    gfxCombineFunction_t a_fnc;
+    gfxCombineFunction_t tmu0_func;
+    gfxCombineFunction_t tmu1_func;
+    gfxCombineFunction_t tmu0_a_func;
+    gfxCombineFunction_t tmu1_a_func;
+    uint32_t a_fac, a_loc, a_oth;  // gfxAlphaCombine flags
+    uint32_t tex, tmu0_fac, tmu0_invert, tmu1_fac, tmu1_invert;
+    uint32_t tmu0_a_fac, tmu0_a_invert, tmu1_a_fac, tmu1_a_invert;
     int   dc0_lodbias, dc1_lodbias;
     uint8_t  dc0_detailscale, dc1_detailscale;
     float dc0_detailmax, dc1_detailmax;

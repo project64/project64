@@ -121,51 +121,51 @@ COMBINE cmb;
 #define USE_T0() \
   rdp.best_tex = 0; \
   cmb.tex |= 1, \
-  cmb.tmu0_func = GR_COMBINE_FUNCTION_LOCAL
+  cmb.tmu0_func = GFX_COMBINE_FUNCTION_LOCAL
 #define USE_T1() \
   if ((nbTextureUnits > 2 ? 2 : 1) > 1) { \
   rdp.best_tex = 1; \
   cmb.tex |= 2, \
-  cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER, \
+  cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_func = GFX_COMBINE_FUNCTION_SCALE_OTHER, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_ONE; } else { USE_T0(); }
 
 #define T0_ADD_T1() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
+  cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_ONE
 #define T0_MUL_T1() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER, \
+  cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_func = GFX_COMBINE_FUNCTION_SCALE_OTHER, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_LOCAL
 #define T0_MUL_T1_ADD_T0() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
+  cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_LOCAL
 #define T0A_MUL_T1() \
   rdp.best_tex = 1; \
   cmb.tex |= 3, \
-  cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER, \
+  cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_func = GFX_COMBINE_FUNCTION_SCALE_OTHER, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_LOCAL_ALPHA
 #define T0_MUL_T1A() \
   rdp.best_tex = 1; \
   cmb.tex |= 3, \
-  cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL_ALPHA, \
-  cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER, \
+  cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL_ALPHA, \
+  cmb.tmu0_func = GFX_COMBINE_FUNCTION_SCALE_OTHER, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_LOCAL
 #define T0_INTER_T1_USING_FACTOR(factor) \
   if (factor == 0xFF) { USE_T1(); } else if (factor == 0x00) { USE_T0(); } else { \
   if (factor <= 0x80) { rdp.best_tex = 0; } else { rdp.best_tex = 1; } \
   cmb.tex |= 3, \
-  cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_func = GR_COMBINE_FUNCTION_BLEND, \
+  cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_func = GFX_COMBINE_FUNCTION_BLEND, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR, \
   percent = (float)factor / 255.0f, \
   cmb.dc0_detailmax = cmb.dc1_detailmax = percent; }
@@ -180,8 +180,8 @@ COMBINE cmb;
   if (factor <= 0x80) rdp.best_tex = 0; \
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 else rdp.best_tex = 1; \
   cmb.tex |= 3, \
-  cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_func = GR_COMBINE_FUNCTION_BLEND, \
+  cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_func = GFX_COMBINE_FUNCTION_BLEND, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR, \
   percent = (255 - factor) / 255.0f, \
   cmb.dc0_detailmax = cmb.dc1_detailmax = percent; \
@@ -189,14 +189,14 @@ COMBINE cmb;
 #define T0_INTER_T1_USING_T0() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_func = GR_COMBINE_FUNCTION_BLEND, \
+  cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_func = GFX_COMBINE_FUNCTION_BLEND, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_LOCAL
 #define T1_INTER_T0_USING_T0() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_func = GR_COMBINE_FUNCTION_BLEND, \
+  cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_func = GFX_COMBINE_FUNCTION_BLEND, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_ONE_MINUS_LOCAL
 #define T0_INTER_T1_USING_T1() \
   if (!cmb.combine_ext) { \
@@ -226,8 +226,8 @@ COMBINE cmb;
 #define T0_INTER_T1_USING_T1A() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_func = GR_COMBINE_FUNCTION_BLEND, \
+  cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_func = GFX_COMBINE_FUNCTION_BLEND, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_OTHER_ALPHA
 #define T0_INTER_T1_USING_PRIM() \
   if (!cmb.combine_ext) { \
@@ -359,36 +359,36 @@ COMBINE cmb;
 #define T1_SUB_T0() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL, \
+  cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_ONE
 #define T1_SUB_T0_MUL_T0() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL, \
+  cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_LOCAL
 #define T1_MUL_PRIMLOD_ADD_T0() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
+  cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR, \
   percent = (float)(lod_frac) / 255.0f, \
   cmb.dc0_detailmax = cmb.dc1_detailmax = percent
 #define T1_MUL_PRIMA_ADD_T0() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
+  cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR, \
   percent = (float)(rdp.prim_color&0xFF) / 255.0f, \
   cmb.dc0_detailmax = cmb.dc1_detailmax = percent
 #define T1_MUL_ENVA_ADD_T0() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
+  cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
   cmb.tmu0_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR, \
   percent = (float)(rdp.env_color&0xFF) / 255.0f, \
   cmb.dc0_detailmax = cmb.dc1_detailmax = percent
@@ -441,12 +441,12 @@ COMBINE cmb;
 
 #define A_USE_T0() \
   cmb.tex |= 1, \
-  cmb.tmu0_a_func = GR_COMBINE_FUNCTION_LOCAL
+  cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_LOCAL
 #define A_USE_T1() \
   if ((nbTextureUnits > 2 ? 2 : 1) > 1) { \
   cmb.tex |= 2, \
-  cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_a_func = GR_COMBINE_FUNCTION_SCALE_OTHER, \
+  cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_SCALE_OTHER, \
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_ONE; \
                             } \
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 else { \
@@ -454,41 +454,41 @@ COMBINE cmb;
 }
 #define A_T0_ADD_T1() \
   cmb.tex |= 3, \
-  cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_a_func = GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
+  cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_ONE
 #define A_T1_SUB_T0() \
   cmb.tex |= 3, \
-  cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_a_func = GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL, \
+  cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL, \
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_ONE
 #define A_T0_SUB_T1() \
   cmb.tex |= 3, \
-  cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_a_func = GR_COMBINE_FUNCTION_BLEND_LOCAL, \
+  cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_BLEND_LOCAL, \
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_OTHER_ALPHA
 #define A_T0_MUL_T1() \
   cmb.tex |= 3, \
-  cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_a_func = GR_COMBINE_FUNCTION_SCALE_OTHER, \
+  cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_SCALE_OTHER, \
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_LOCAL
 #define A_T0_INTER_T1_USING_T0A() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_a_func = GR_COMBINE_FUNCTION_BLEND, \
+  cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_BLEND, \
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_LOCAL_ALPHA
 #define A_T1_INTER_T0_USING_T0A() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_a_func = GR_COMBINE_FUNCTION_BLEND, \
+  cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_BLEND, \
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA
 #define A_T0_INTER_T1_USING_T1A() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_a_func = GR_COMBINE_FUNCTION_BLEND, \
+  cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_BLEND, \
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_OTHER_ALPHA
 #define A_T0_INTER_T1_USING_FACTOR(factor) \
   if (factor == 0xFF) { \
@@ -499,8 +499,8 @@ COMBINE cmb;
 }\
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 else { \
   cmb.tex |= 3, \
-  cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_a_func = GR_COMBINE_FUNCTION_BLEND, \
+  cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_BLEND, \
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR, \
   percent = (float)factor / 255.0f, \
   cmb.dc0_detailmax = cmb.dc1_detailmax = percent; \
@@ -514,8 +514,8 @@ COMBINE cmb;
 }\
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 else { \
   cmb.tex |= 3, \
-  cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_a_func = GR_COMBINE_FUNCTION_BLEND, \
+  cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_BLEND, \
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR, \
   percent = (255 - factor) / 255.0f, \
   cmb.dc0_detailmax = cmb.dc1_detailmax = percent; \
@@ -548,24 +548,24 @@ COMBINE cmb;
 #define A_T1_MUL_PRIMLOD_ADD_T0() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_a_func = GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
+  cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR, \
   percent = (float)(lod_frac) / 255.0f, \
   cmb.dc0_detailmax = cmb.dc1_detailmax = percent
 #define A_T1_MUL_PRIMA_ADD_T0() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_a_func = GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
+  cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR, \
   percent = (float)(rdp.prim_color&0xFF) / 255.0f, \
   cmb.dc0_detailmax = cmb.dc1_detailmax = percent
 #define A_T1_MUL_ENVA_ADD_T0() \
   rdp.best_tex = 0; \
   cmb.tex |= 3, \
-  cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL, \
-  cmb.tmu0_a_func = GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
+  cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_LOCAL, \
+  cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, \
   cmb.tmu0_a_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR, \
   percent = (float)(rdp.env_color&0xFF) / 255.0f, \
   cmb.dc0_detailmax = cmb.dc1_detailmax = percent
@@ -764,7 +764,7 @@ COMBINE cmb;
 
 static void cc_one()
 {
-    CCMB(GR_COMBINE_FUNCTION_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_NONE);
@@ -774,7 +774,7 @@ static void cc_one()
 
 static void cc_zero()
 {
-    CCMB(GR_COMBINE_FUNCTION_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_NONE);
@@ -788,7 +788,7 @@ static void cc_t0()
         uint32_t blend_mode = (rdp.othermode_l >> 16);
         if (blend_mode == 0xa500)
         {
-            CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+            CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
                 GR_COMBINE_FACTOR_ONE,
                 GR_COMBINE_LOCAL_CONSTANT,
                 GR_COMBINE_OTHER_TEXTURE);
@@ -800,7 +800,7 @@ static void cc_t0()
         }
         else if (blend_mode == 0x55f0) //cmem*afog + cfog*1ma
         {
-            CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+            CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
                 GR_COMBINE_FACTOR_ONE_MINUS_TEXTURE_ALPHA,
                 GR_COMBINE_LOCAL_NONE,
                 GR_COMBINE_OTHER_CONSTANT);
@@ -809,7 +809,7 @@ static void cc_t0()
         }
         else
         {
-            CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+            CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
                 GR_COMBINE_FACTOR_ONE,
                 GR_COMBINE_LOCAL_NONE,
                 GR_COMBINE_OTHER_TEXTURE);
@@ -817,7 +817,7 @@ static void cc_t0()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE);
@@ -827,7 +827,7 @@ static void cc_t0()
 
 static void cc_t0a()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_CONSTANT);
@@ -838,7 +838,7 @@ static void cc_t0a()
 
 static void cc_t1() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -847,7 +847,7 @@ static void cc_t1() //Added by Gonetz
 
 static void cc_t0_mul_t1()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -856,7 +856,7 @@ static void cc_t0_mul_t1()
 
 static void cc_t0_mul_t1_add_t0() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -866,7 +866,7 @@ static void cc_t0_mul_t1_add_t0() //Added by Gonetz
 /*
 static void cc_t1_inter__env_inter_t0_using_k5__using_t1a ()
 {
-CCMB (GR_COMBINE_FUNCTION_SCALE_OTHER,
+CCMB (GFX_COMBINE_FUNCTION_SCALE_OTHER,
 GR_COMBINE_FACTOR_ONE,
 GR_COMBINE_LOCAL_NONE,
 GR_COMBINE_OTHER_TEXTURE);
@@ -876,16 +876,16 @@ MOD_0_COL (rdp.env_color & 0xFFFFFF00);
 MOD_0_COL1 (col1 & 0xFFFFFF00);
 rdp.best_tex = 0;
 cmb.tex |= 3;
-cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL;
-cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL;
-cmb.tmu0_func = GR_COMBINE_FUNCTION_BLEND;
+cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL;
+cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_LOCAL;
+cmb.tmu0_func = GFX_COMBINE_FUNCTION_BLEND;
 cmb.tmu0_fac = GR_COMBINE_FACTOR_ONE_MINUS_OTHER_ALPHA;
 }
 */
 
 static void cc_t1_inter_t0_using_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -920,7 +920,7 @@ static void cc_t1_inter_t0_using_env()
 
 static void cc_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_NONE);
@@ -929,7 +929,7 @@ static void cc_prim()
 
 static void cc_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_NONE);
@@ -938,7 +938,7 @@ static void cc_env()
 
 static void cc_scale()
 {
-    CCMB(GR_COMBINE_FUNCTION_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_NONE);
@@ -947,7 +947,7 @@ static void cc_scale()
 
 static void cc_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_NONE);
@@ -957,7 +957,7 @@ static void cc_one_mul_shade()
 {
     if (g_settings->hacks(CSettings::hack_Knockout) && (rdp.aTBuffTex[0] || rdp.aTBuffTex[1] || rdp.cur_image)) //hack for boxer shadow
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_TEXTURE);
@@ -972,7 +972,7 @@ static void cc_one_mul_shade()
 
 static void cc_shadea()
 {
-    CCMB(GR_COMBINE_FUNCTION_LOCAL_ALPHA,
+    CCMB(GFX_COMBINE_FUNCTION_LOCAL_ALPHA,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_NONE);
@@ -980,7 +980,7 @@ static void cc_shadea()
 
 static void cc_t0_mul_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -990,7 +990,7 @@ static void cc_t0_mul_prim()
 
 static void cc_t0_mul_prima()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1000,7 +1000,7 @@ static void cc_t0_mul_prima()
 
 static void cc_t1_mul_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1017,7 +1017,7 @@ static void cc_t1_mul_prim()
 
 static void cc_t0a_mul_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_CONSTANT);
@@ -1028,7 +1028,7 @@ static void cc_t0a_mul_prim()
 //Added by Gonetz
 static void cc__t1_inter_t0_using_enva__mul_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1039,21 +1039,21 @@ static void cc__t1_inter_t0_using_enva__mul_prim()
 
 static void cc__t0_inter_one_using_t1__mul_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
     CC_PRIM();
     rdp.best_tex = 0;
     cmb.tex |= 3;
-    cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL;
-    cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL;
+    cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL;
+    cmb.tmu0_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL;
     cmb.tmu0_fac = GR_COMBINE_FACTOR_ONE_MINUS_LOCAL;
 }
 
 static void cc__t0_inter_one_using_primlod__mul_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1079,7 +1079,7 @@ static void cc__t0_inter_one_using_primlod__mul_prim()
 
 static void cc__t1_inter_one_using_env__mul_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1105,7 +1105,7 @@ static void cc__t1_inter_one_using_env__mul_prim()
 
 static void cc__t1_inter_one_using_enva__mul_t0()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1138,7 +1138,7 @@ static void cc__t1_inter_one_using_enva__mul_t0()
 //Added by Gonetz
 static void cc_prim_mul_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -1148,7 +1148,7 @@ static void cc_prim_mul_prim()
 
 static void cc_prim_mul_prima()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -1158,7 +1158,7 @@ static void cc_prim_mul_prima()
 
 static void cc_t1_mul_prima()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1168,7 +1168,7 @@ static void cc_t1_mul_prima()
 
 static void cc_t1_mul_enva()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1178,7 +1178,7 @@ static void cc_t1_mul_enva()
 
 static void cc_t0_mul_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1188,7 +1188,7 @@ static void cc_t0_mul_env()
 
 static void cc_t1_mul_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1199,7 +1199,7 @@ static void cc_t1_mul_env()
 //Added by Gonetz
 static void cc_t0_mul_enva()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1209,7 +1209,7 @@ static void cc_t0_mul_enva()
 
 static void cc_t0_mul_scale()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1219,7 +1219,7 @@ static void cc_t0_mul_scale()
 
 static void cc_t0_mul_enva_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -1230,7 +1230,7 @@ static void cc_t0_mul_enva_add_prim()
 
 static void cc_t0_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1239,7 +1239,7 @@ static void cc_t0_mul_shade()
 
 static void cc_f1_sky()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -1251,7 +1251,7 @@ static void cc_f1_sky()
 
 static void cc_t0_mul_shadea()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1261,7 +1261,7 @@ static void cc_t0_mul_shadea()
 
 static void cc_t0_mul_k5()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1271,7 +1271,7 @@ static void cc_t0_mul_k5()
 
 static void cc_t1_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1281,7 +1281,7 @@ static void cc_t1_mul_shade()
 //Added by Gonetz
 static void cc__t0_add_t1__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1305,7 +1305,7 @@ static void cc__t0_mul_shade__add__t1_mul_shade()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -1337,7 +1337,7 @@ static void cc__t0_mul_prim__inter_env_using_enva()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -1352,7 +1352,7 @@ static void cc__t0_mul_prim__inter_env_using_enva()
 
 static void cc__t1_inter_t0_using_t1__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1377,7 +1377,7 @@ static void cc__t1_inter_t0_using_t1__mul_shade()
 //Added by Gonetz
 static void cc__t1_inter_t0_using_enva__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1403,7 +1403,7 @@ static void cc__t1_inter_t0_using_shadea__mul_shade()
 static void cc__t0_inter_one_using_prim__mul_shade()
 {
     // (1-t0)*prim+t0, (cmb-0)*shade+0
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1427,7 +1427,7 @@ static void cc__t0_inter_one_using_prim__mul_shade()
 
 static void cc__t0_inter_one_using_primlod__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1454,7 +1454,7 @@ static void cc__t0_inter_one_using_primlod__mul_shade()
 static void cc__t0_inter_env_using_enva__mul_shade()
 {
     // (env-t0)*env_a+t0, (cmb-0)*shade+0
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1517,7 +1517,7 @@ static void cc__t0_mul_prim_add_env__mul_shade()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -1551,7 +1551,7 @@ static void cc__t1_sub_t0_mul_primlod_add_prim__mul_shade()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -1561,7 +1561,7 @@ static void cc__t1_sub_t0_mul_primlod_add_prim__mul_shade()
 
 static void cc__t1_sub_prim_mul_t0__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1586,7 +1586,7 @@ static void cc__t1_sub_prim_mul_t0__mul_shade()
 
 static void cc__t1_sub_t0_mul_t0_add_shade__mul_shade() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1624,7 +1624,7 @@ static void cc__one_sub_shade_mul_t0_add_shade__mul_shade()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -1634,7 +1634,7 @@ static void cc__one_sub_shade_mul_t0_add_shade__mul_shade()
 
 static void cc__t0_sub_prim_mul_t1_add_t1__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1663,7 +1663,7 @@ static void cc__t0_sub_prim_mul_t1_add_t1__mul_shade()
 
 static void cc__t1_sub_env_mul_t0_add_t0__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1690,7 +1690,7 @@ static void cc__t1_sub_env_mul_t0_add_t0__mul_shade()
 
 static void cc__t0_mul_prima_add_prim_mul__shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1731,7 +1731,7 @@ static void cc__t0_inter_prim_using_prima__inter_env_using_enva()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_CONSTANT);
@@ -1771,7 +1771,7 @@ static void cc_prim_inter_t1_mul_shade_using_texa()
 
 static void cc__prim_inter_t0_using_t0a__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1811,7 +1811,7 @@ static void cc__prim_inter_t0_using_t0a__inter_env_using_enva()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_CONSTANT);
@@ -1828,7 +1828,7 @@ static void cc__prim_inter_t0_using_t0a__inter_env_using_enva()
 
 static void cc__prim_inter_t0_using_shadea__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1870,7 +1870,7 @@ static void cc__prim_inter_env_using_enva__mul_shade()
     uint32_t g = minval(255, (uint32_t)(eg*ea + pg*ea_i));
     uint32_t b = minval(255, (uint32_t)(eb*ea + pb*ea_i));
     uint32_t col = (r << 24) | (g << 16) | (b << 8) | 0xFF;
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -1880,7 +1880,7 @@ static void cc__prim_inter_env_using_enva__mul_shade()
 //Added by Gonetz
 static void cc_prim_mul_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -1890,7 +1890,7 @@ static void cc_prim_mul_env()
 
 static void cc_prim_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -1899,7 +1899,7 @@ static void cc_prim_mul_shade()
 
 static void cc_prim_mul_shadea()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -1909,7 +1909,7 @@ static void cc_prim_mul_shadea()
 
 static void cc_env_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -1918,7 +1918,7 @@ static void cc_env_mul_shade()
 
 static void cc_env_mul_enva()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_OTHER_ALPHA,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_CONSTANT);
@@ -1928,7 +1928,7 @@ static void cc_env_mul_enva()
 
 static void cc_scale_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -1939,7 +1939,7 @@ static void cc_scale_mul_shade()
 
 static void cc_t0_add_prim() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1949,7 +1949,7 @@ static void cc_t0_add_prim() //Aded by Gonetz
 
 static void cc__t0_mul_t1__add_prim() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1959,7 +1959,7 @@ static void cc__t0_mul_t1__add_prim() //Aded by Gonetz
 
 static void cc_t0_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -1970,7 +1970,7 @@ static void cc_t0_add_env()
 //Added by Gonetz
 static void cc__t0_mul_t1__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -2003,7 +2003,7 @@ static void cc__t0_mul_t1__add_env_mul__t0_mul_t1__add_env()
 
 static void cc_t0_add_shade() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -2012,7 +2012,7 @@ static void cc_t0_add_shade() //Aded by Gonetz
 
 static void cc__t0_mul_t1__add_shade() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -2021,7 +2021,7 @@ static void cc__t0_mul_t1__add_shade() //Aded by Gonetz
 
 static void cc_prim_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2076,7 +2076,7 @@ static void cc__one_sub_prim_mul_t0_add_prim__mul_prima_add__one_sub_prim_mul_t0
 
 static void cc_prim_add_shade() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -2085,7 +2085,7 @@ static void cc_prim_add_shade() //Aded by Gonetz
 
 static void cc_env_add_shade() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -2094,7 +2094,7 @@ static void cc_env_add_shade() //Aded by Gonetz
 
 static void cc_shade_add_shade() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_ITERATED);
@@ -2103,7 +2103,7 @@ static void cc_shade_add_shade() //Aded by Gonetz
 // ** A-B **
 static void cc__t0_inter_t1_using_enva__sub_env() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -2114,7 +2114,7 @@ static void cc__t0_inter_t1_using_enva__sub_env() //Aded by Gonetz
 
 static void cc_t0_sub__shade_mul_center()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -2146,7 +2146,7 @@ static void cc_env_sub__t0_sub_t1_mul_primlod__mul_prim() //Aded by Gonetz
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_ITERATED);
@@ -2205,7 +2205,7 @@ static void cc_one_sub__one_sub_t0_mul_enva_add_prim__mul_prim() //Aded by Gonet
 //Aded by Gonetz
 static void cc_t0_add_env_mul_k5()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -2222,7 +2222,7 @@ static void cc_t0_add_env_mul_k5()
 
 static void cc_t0_add_shade_mul_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -2232,15 +2232,15 @@ static void cc_t0_add_shade_mul_env()
 
 static void cc__t1_mul_t0_add_t0__add_prim_mul_shade() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
     MULSHADE_PRIM();
     rdp.best_tex = 0;
     cmb.tex |= 3;
-    cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL;
-    cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL;
+    cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL;
+    cmb.tmu0_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL;
     cmb.tmu0_fac = GR_COMBINE_FACTOR_LOCAL;
 }
 
@@ -2264,7 +2264,7 @@ static void cc__t0_sub_env_mul_enva__add_prim_mul_shade()
         CC_PRIM();
     }
     else {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -2280,7 +2280,7 @@ static void cc__t0_sub_env_mul_enva__add_prim_mul_shade()
 //Added by Gonetz
 static void cc_t0_mul_prim_add_t1()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -2308,7 +2308,7 @@ static void cc_t0_mul_prim_add_t1()
 static void cc_shirt()
 {
     // (t1-0)*prim+0, (1-t0)*t1+cmb
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -2343,7 +2343,7 @@ static void cc_shirt()
 
 static void cc_t1_mul_prim_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2355,7 +2355,7 @@ static void cc_t1_mul_prim_add_prim()
 //Added by Gonetz
 static void cc_t0_mul_prim_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2367,7 +2367,7 @@ static void cc_t0_mul_prim_add_env()
 //Added by Gonetz
 static void cc_t1_mul_prim_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2396,7 +2396,7 @@ static void cc__t0_add_primlod__mul_prim_add_env()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_ITERATED);
@@ -2412,7 +2412,7 @@ static void cc__t0_add_primlod__mul_prim_add_env()
 //Added by Gonetz
 static void cc_t0_mul_prim_mul_shade_add_prim_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -2423,7 +2423,7 @@ static void cc_t0_mul_prim_mul_shade_add_prim_mul_shade()
 //Added by Gonetz
 static void cc__t0_inter_t1_using_primlod__mul_prim_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2434,7 +2434,7 @@ static void cc__t0_inter_t1_using_primlod__mul_prim_add_env()
 
 static void cc__t1_sub_prim_mul_enva_add_t0__mul_prim_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -2467,7 +2467,7 @@ static void cc__t1_sub_prim_mul_enva_add_t0__mul_prim_add_env()
 //Added by Gonetz
 static void cc__t0_inter_t1_using_primlod__mul_shade_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2478,7 +2478,7 @@ static void cc__t0_inter_t1_using_primlod__mul_shade_add_env()
 //Added by Gonetz
 static void cc__t1_sub_prim_mul_primlod_add_t0__mul_prim_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2490,7 +2490,7 @@ static void cc__t1_sub_prim_mul_primlod_add_t0__mul_prim_add_env()
 //Aded by Gonetz
 static void cc__t0_mul_t1__mul_prim_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2522,7 +2522,7 @@ static void cc__t0_mul_t1__sub_prim_mul_env_add_shade()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_CONSTANT);
@@ -2533,7 +2533,7 @@ static void cc__t0_mul_t1__sub_prim_mul_env_add_shade()
 
 static void cc__t0_sub_prim_mul_t1_add_t1__mul_env_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -2563,7 +2563,7 @@ static void cc__t0_sub_prim_mul_t1_add_t1__mul_env_add_shade()
 
 static void cc__t0_mul_t1__mul_shade_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2589,7 +2589,7 @@ static void cc__t0_mul_shadea_add_env__mul_shade_add_prim()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_ITERATED);
@@ -2601,7 +2601,7 @@ static void cc__t0_mul_shadea_add_env__mul_shade_add_prim()
 
 static void cc__t0_mul_t1__mul_shade_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2612,7 +2612,7 @@ static void cc__t0_mul_t1__mul_shade_add_env()
 //Added by Gonetz
 static void cc__t0_add_t1__mul_shade_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2622,7 +2622,7 @@ static void cc__t0_add_t1__mul_shade_add_env()
 
 static void cc__t1_mul_prima_add_t0__mul_shade_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2632,7 +2632,7 @@ static void cc__t1_mul_prima_add_t0__mul_shade_add_env()
 
 static void cc__t0_inter_t1_using_enva__mul_shade_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2643,7 +2643,7 @@ static void cc__t0_inter_t1_using_enva__mul_shade_add_prim()
 
 static void cc__t0_inter_t1_using_enva__mul_shade_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2655,7 +2655,7 @@ static void cc__t0_inter_t1_using_enva__mul_shade_add_env()
 //Added by Gonetz
 static void cc_t0_mul_primlod_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -2666,7 +2666,7 @@ static void cc_t0_mul_primlod_add_prim()
 
 static void cc__t0_mul_primlod__add__prim_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -2678,7 +2678,7 @@ static void cc__t0_mul_primlod__add__prim_mul_shade()
 //Added by Gonetz
 static void cc_t0_mul_primlod_add_prim_mul_shade_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -2691,7 +2691,7 @@ static void cc_t0_mul_primlod_add_prim_mul_shade_add_env()
 //Added by Gonetz
 static void cc_t1_mul_primlod_add_prim_mul_shade_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -2703,7 +2703,7 @@ static void cc_t1_mul_primlod_add_prim_mul_shade_add_env()
 
 static void cc__t0_inter_t1_using_primlod__mul_shade_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2713,7 +2713,7 @@ static void cc__t0_inter_t1_using_primlod__mul_shade_add_prim()
 
 static void cc__t1_inter_t0_using_primlod__mul_shade_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2745,7 +2745,7 @@ static void cc__t1_sub_t0_mul_primlod_add_prim__mul_shade_add_shade()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -2756,7 +2756,7 @@ static void cc__t1_sub_t0_mul_primlod_add_prim__mul_shade_add_shade()
 //Added by Gonetz
 static void cc__t0_inter_t1_using_half__mul_prim_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2768,7 +2768,7 @@ static void cc__t0_inter_t1_using_half__mul_prim_add_env()
 //Added by Gonetz
 static void cc__t0_inter_t1_using_t1__mul_prim_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -2779,7 +2779,7 @@ static void cc__t0_inter_t1_using_t1__mul_prim_add_shade()
 //Added by Gonetz
 static void cc_one_sub_t1_mul_t0a_add_t0_mul_env_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -2788,16 +2788,16 @@ static void cc_one_sub_t1_mul_t0a_add_t0_mul_env_add_prim()
     MOD_0_COL(rdp.env_color & 0xFFFFFF00);
     rdp.best_tex = 0;
     cmb.tex |= 3;
-    cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL;
+    cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL;
     cmb.tmu1_invert = 1;
-    cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL;
+    cmb.tmu0_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL;
     cmb.tmu0_fac = GR_COMBINE_FACTOR_LOCAL_ALPHA;
 }
 
 //Added by Gonetz
 static void cc__t0_inter_t1_using_t1__mul_shade_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2808,7 +2808,7 @@ static void cc__t0_inter_t1_using_t1__mul_shade_add_prim()
 //Added by Gonetz
 static void cc_t0_mul_prim_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -2818,7 +2818,7 @@ static void cc_t0_mul_prim_add_shade()
 
 static void cc_t1_mul_prim_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -2829,7 +2829,7 @@ static void cc_t1_mul_prim_add_shade()
 //Added by Gonetz
 static void cc_t0_mul_env_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2841,7 +2841,7 @@ static void cc_t0_mul_env_add_prim()
 //Added by Gonetz
 static void cc_t1_mul_env_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2852,7 +2852,7 @@ static void cc_t1_mul_env_add_prim()
 
 static void cc_t0_mul_scale_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2864,7 +2864,7 @@ static void cc_t0_mul_scale_add_prim()
 //Added by Gonetz
 static void cc__t0_mul_t1__mul_env_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2877,7 +2877,7 @@ static void cc__t0_mul_t1__mul_env_add_prim()
 static void cc__t0_add__t1_mul_scale__mul_env_sub_center_add_prim()
 {
     // (t1-0)*scale+t0, (env-center)*cmb+prim
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -2891,7 +2891,7 @@ static void cc__t0_add__t1_mul_scale__mul_env_sub_center_add_prim()
 //Added by Gonetz
 static void cc__t1_sub_t0__mul_env_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2903,7 +2903,7 @@ static void cc__t1_sub_t0__mul_env_add_prim()
 //Added by Gonetz
 static void cc_t0_mul_env_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -2913,7 +2913,7 @@ static void cc_t0_mul_env_add_shade()
 
 static void cc_t0_mul_shade_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2923,7 +2923,7 @@ static void cc_t0_mul_shade_add_prim()
 
 static void cc__t0_mul_enva_add_t1__mul_shade_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2950,7 +2950,7 @@ static void cc__t0_mul_enva_add_t1__mul_shade_add_prim()
 
 static void cc_t0_mul_shade_add_prima()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2960,7 +2960,7 @@ static void cc_t0_mul_shade_add_prima()
 
 static void cc_t1_mul_shade_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2970,7 +2970,7 @@ static void cc_t1_mul_shade_add_prim()
 
 static void cc_t0_mul_shade_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -2990,7 +2990,7 @@ static void cc__t0_add_prim__mul_shade_add_t0()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -3021,7 +3021,7 @@ static void cc__t0_add_prim__mul_shade_add_t1()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -3053,7 +3053,7 @@ static void cc__t0_add_primlod__mul_shade_add_env()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_ITERATED);
@@ -3067,7 +3067,7 @@ static void cc__t0_add_primlod__mul_shade_add_env()
 
 static void cc__t0_mul_prima_add_prim_mul__shade_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -3093,7 +3093,7 @@ static void cc__t0_mul_prima_add_prim_mul__shade_add_env()
 //Added by Gonetz
 static void cc_t0_mul_shadea_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3102,7 +3102,7 @@ static void cc_t0_mul_shadea_add_shade()
 
 static void cc_prim_mul_prima_add_prim() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -3113,7 +3113,7 @@ static void cc_prim_mul_prima_add_prim() //Added by Gonetz
 
 static void cc_prim_mul_prima_add_t0() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3124,7 +3124,7 @@ static void cc_prim_mul_prima_add_t0() //Added by Gonetz
 
 static void cc_prim_mul_env_add_t0() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3135,7 +3135,7 @@ static void cc_prim_mul_env_add_t0() //Added by Gonetz
 
 static void cc_prim_mul_shade_add_t0()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3145,7 +3145,7 @@ static void cc_prim_mul_shade_add_t0()
 
 static void cc_prim_mul_shade_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -3155,7 +3155,7 @@ static void cc_prim_mul_shade_add_env()
 
 static void cc_env_mul_shade_add_env()  //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -3166,7 +3166,7 @@ static void cc_env_mul_shade_add_env()  //Added by Gonetz
 // ** A*B+C*D **
 static void cc_t0_mul_prim_add_one_sub_prim_mul_shade() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -3177,7 +3177,7 @@ static void cc_t0_mul_prim_add_one_sub_prim_mul_shade() //Added by Gonetz
 
 static void cc_t0_mul_prim_add_shade_sub_env_mul_prim() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -3189,7 +3189,7 @@ static void cc_t0_mul_prim_add_shade_sub_env_mul_prim() //Added by Gonetz
 
 static void cc_t0_mul_prim_add_shade_mul_shadea_mul_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -3201,7 +3201,7 @@ static void cc_t0_mul_prim_add_shade_mul_shadea_mul_prim()
 
 static void cc__t0_mul_t1__mul_prim_add_prim_mul_shade() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -3212,7 +3212,7 @@ static void cc__t0_mul_t1__mul_prim_add_prim_mul_shade() //Added by Gonetz
 
 static void cc_t0_mul_env_add_prim_mul_shade() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -3223,7 +3223,7 @@ static void cc_t0_mul_env_add_prim_mul_shade() //Added by Gonetz
 
 static void cc_t0_mul_enva_add_prim_mul_shade() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -3234,7 +3234,7 @@ static void cc_t0_mul_enva_add_prim_mul_shade() //Added by Gonetz
 
 static void cc_t0_mul_shade_add_prim_mul_env() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -3244,7 +3244,7 @@ static void cc_t0_mul_shade_add_prim_mul_env() //Added by Gonetz
 
 static void cc_prim_mul_env_add_one_sub_prim_mul_shade() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -3256,7 +3256,7 @@ static void cc_prim_mul_env_add_one_sub_prim_mul_shade() //Added by Gonetz
 
 static void cc_t0_mul_prim_mul_prim() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3267,7 +3267,7 @@ static void cc_t0_mul_prim_mul_prim() //Added by Gonetz
 
 static void cc_t0_mul_prim_mul_prima() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3278,7 +3278,7 @@ static void cc_t0_mul_prim_mul_prima() //Added by Gonetz
 
 static void cc_t0_mul_enva_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3288,7 +3288,7 @@ static void cc_t0_mul_enva_mul_shade()
 
 static void cc_t0_mul_primlod_mul_prim() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3298,7 +3298,7 @@ static void cc_t0_mul_primlod_mul_prim() //Added by Gonetz
 
 static void cc_t0_mul_primlod_mul_shade() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3308,7 +3308,7 @@ static void cc_t0_mul_primlod_mul_shade() //Added by Gonetz
 
 static void cc__t0_mul_t1__mul_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3318,7 +3318,7 @@ static void cc__t0_mul_t1__mul_prim()
 
 static void cc__t1_mul_t1_add_t0__mul_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3343,7 +3343,7 @@ static void cc__t1_mul_t1_add_t0__mul_prim()
 
 static void cc__t0_mul_t1__mul_prima() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3353,7 +3353,7 @@ static void cc__t0_mul_t1__mul_prima() //Added by Gonetz
 
 static void cc__t0_mul_t1__mul_env() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3363,7 +3363,7 @@ static void cc__t0_mul_t1__mul_env() //Added by Gonetz
 
 static void cc__t0_mul_t1__mul_enva() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3373,7 +3373,7 @@ static void cc__t0_mul_t1__mul_enva() //Added by Gonetz
 
 static void cc__t0_mul_t1__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3382,7 +3382,7 @@ static void cc__t0_mul_t1__mul_shade()
 
 static void cc__t0a_mul_t1__mul_prim() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3392,7 +3392,7 @@ static void cc__t0a_mul_t1__mul_prim() //Added by Gonetz
 
 static void cc__t0_mul_t1a__mul_shade() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3401,7 +3401,7 @@ static void cc__t0_mul_t1a__mul_shade() //Added by Gonetz
 
 static void cc__t0a_mul_t1__mul_shade() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3410,7 +3410,7 @@ static void cc__t0a_mul_t1__mul_shade() //Added by Gonetz
 
 static void cc_t0_mul_prim_mul_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3421,7 +3421,7 @@ static void cc_t0_mul_prim_mul_env()
 
 static void cc_t0_mul_prim_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3431,7 +3431,7 @@ static void cc_t0_mul_prim_mul_shade()
 
 static void cc_t0_mul_prim_mul_shadea()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3442,7 +3442,7 @@ static void cc_t0_mul_prim_mul_shadea()
 
 static void cc_t0_mul_prima_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3452,7 +3452,7 @@ static void cc_t0_mul_prima_mul_shade()
 
 static void cc_t1_mul__one_sub_prim_mul_shade_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3463,7 +3463,7 @@ static void cc_t1_mul__one_sub_prim_mul_shade_add_prim()
 
 static void cc_t0_mul_one_sub_env_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3473,7 +3473,7 @@ static void cc_t0_mul_one_sub_env_mul_shade()
 
 static void cc_t1_mul_prim_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3484,7 +3484,7 @@ static void cc_t1_mul_prim_mul_shade()
 //Added by Gonetz
 static void cc_t0_mul_1mprim_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3494,7 +3494,7 @@ static void cc_t0_mul_1mprim_mul_shade()
 
 static void cc_t0_mul_env_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3504,7 +3504,7 @@ static void cc_t0_mul_env_mul_shade()
 
 static void cc_t0_mul_scale_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3514,7 +3514,7 @@ static void cc_t0_mul_scale_mul_shade()
 
 static void cc_t0_mul_shade_mul_shadea()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3524,7 +3524,7 @@ static void cc_t0_mul_shade_mul_shadea()
 
 static void cc_prim_mul_env_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -3534,7 +3534,7 @@ static void cc_prim_mul_env_mul_shade()
 
 static void cc_prim_mul_one_sub_env_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -3545,7 +3545,7 @@ static void cc_prim_mul_one_sub_env_mul_shade()
 // ** A*B*C+D **
 static void cc_t0_mul_prim_mul_shade_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -3557,7 +3557,7 @@ static void cc_t0_mul_prim_mul_shade_add_env()
 //Added by Gonetz
 static void cc_t0_mul_prim_mul_shadea_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3586,7 +3586,7 @@ static void cc__t0_mul_prim_add_shade__mul_env()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -3600,7 +3600,7 @@ static void cc__t0_mul_prim_add_shade__mul_env()
 
 static void cc__t0a_mul_prim_add_t0__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3611,7 +3611,7 @@ static void cc__t0a_mul_prim_add_t0__mul_shade()
 
 static void cc__t0a_mul_env_add_t0__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3661,7 +3661,7 @@ static void cc__t0_sub_t1__mul_prim_mul_shade_add_prim_mul_env()
         USE_T0();
     }
 
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -3671,7 +3671,7 @@ static void cc__t0_sub_t1__mul_prim_mul_shade_add_prim_mul_env()
 
 static void cc__t0_mul_prim_mul_env__add__prim_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -3682,7 +3682,7 @@ static void cc__t0_mul_prim_mul_env__add__prim_mul_shade()
 
 static void cc__t1_mul_prim_mul_env__add__prim_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -3694,7 +3694,7 @@ static void cc__t1_mul_prim_mul_env__add__prim_mul_shade()
 //Added by Gonetz
 static void cc_t0_mul_one_sub_prim_mul_shade_add_prim_mul_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -3706,7 +3706,7 @@ static void cc_t0_mul_one_sub_prim_mul_shade_add_prim_mul_env()
 //Added by Gonetz
 static void cc_t0_mul_one_sub_prim_mul_shadea_add_prim_mul_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -3719,7 +3719,7 @@ static void cc_t0_mul_one_sub_prim_mul_shadea_add_prim_mul_env()
 //Added by Gonetz
 static void cc_t0_mul_one_sub_env_mul_shade_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -3730,7 +3730,7 @@ static void cc_t0_mul_one_sub_env_mul_shade_add_env()
 
 static void cc_t0_mul_prima_mul_shade_add_prim_mul_one_sub_prima()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -3747,7 +3747,7 @@ static void cc_t0_mul_prima_mul_shade_add_prim_mul_one_sub_prima()  //Aded by Go
 // ** A*(1-B)+C **
 static void cc_t0_mul_1menv_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -3775,7 +3775,7 @@ static void cc_t0_mul_scale_add_prim__mul_shade() //Aded by Gonetz
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -3797,7 +3797,7 @@ static void cc__t0_mul_t1_add_prim__mul_shade() //Aded by Gonetz
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -3808,7 +3808,7 @@ static void cc__t0_mul_t1_add_prim__mul_shade() //Aded by Gonetz
 
 static void cc_t0_mul__prim_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3822,7 +3822,7 @@ static void cc_t0_mul__prim_mul_primlod_add_env() //Aded by Gonetz
     // forest behind window, Dobutsu no Mori.
     // (prim-0)*prim_lod+env, (t1-0)*cmb+0
     //actually, the game uses t0 instead of t1 here. t1 does not set at all this moment.
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3861,7 +3861,7 @@ static void cc__t0_mul_prim_add_shade__sub_env_mul_shade()
 static void cc_t0_sub_prim_mul_shadea()  //Aded by Gonetz
 {
     // * not guaranteed to work if another iterated alpha is set
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -3903,7 +3903,7 @@ static void cc_t0_sub_prim_mul_shade()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -3928,7 +3928,7 @@ static void cc__t0_mul_t1__sub_prim_mul_shade()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -3948,7 +3948,7 @@ static void cc_t0_sub_env_mul_shade()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -3997,7 +3997,7 @@ static void cc__t1_inter_t0_using_primlod__sub_shade_mul_prim()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -4018,7 +4018,7 @@ static void cc__t0_inter_t1_using_enva__sub_shade_mul_prim()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -4031,7 +4031,7 @@ static void cc__t0_inter_t1_using_enva__sub_shade_mul_prim()
 static void cc_t0_sub_shade_mul_shadea()  //Aded by Gonetz
 {
     // * not guaranteed to work if another iterated alpha is set
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -4040,7 +4040,7 @@ static void cc_t0_sub_shade_mul_shadea()  //Aded by Gonetz
 
 static void cc_one_sub_t0_mul_prim() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_BLEND_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_NONE);
@@ -4050,7 +4050,7 @@ static void cc_one_sub_t0_mul_prim() //Added by Gonetz
 
 static void cc_one_sub_prim_mul_prima() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -4060,7 +4060,7 @@ static void cc_one_sub_prim_mul_prima() //Added by Gonetz
 
 static void cc_shade_sub_prim_mul_t0() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -4070,7 +4070,7 @@ static void cc_shade_sub_prim_mul_t0() //Aded by Gonetz
 
 static void cc_shade_sub_prim_mul_env() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -4080,7 +4080,7 @@ static void cc_shade_sub_prim_mul_env() //Aded by Gonetz
 
 static void cc_shade_sub_env_mul_t0() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -4090,7 +4090,7 @@ static void cc_shade_sub_env_mul_t0() //Aded by Gonetz
 
 static void cc_shade_sub_prim_mul__t0_inter_t1_using_primlod() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -4100,7 +4100,7 @@ static void cc_shade_sub_prim_mul__t0_inter_t1_using_primlod() //Aded by Gonetz
 
 static void cc_shade_sub_env_mul__t0_inter_t1_using_primlod() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -4110,7 +4110,7 @@ static void cc_shade_sub_env_mul__t0_inter_t1_using_primlod() //Aded by Gonetz
 
 static void cc_shade_sub_env_mul_prim() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -4120,7 +4120,7 @@ static void cc_shade_sub_env_mul_prim() //Aded by Gonetz
 
 static void cc_shade_sub__prim_mul_prima() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -4129,7 +4129,7 @@ static void cc_shade_sub__prim_mul_prima() //Aded by Gonetz
 
 static void cc_one_sub__t0_mul_t1__mul_shade() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -4154,7 +4154,7 @@ static void cc_one_sub__t0_mul_shadea__mul_shade() //Aded by Gonetz
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -4165,7 +4165,7 @@ static void cc_one_sub__t0_mul_shadea__mul_shade() //Aded by Gonetz
 
 static void cc_one_sub_env_mul_t0() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -4175,7 +4175,7 @@ static void cc_one_sub_env_mul_t0() //Aded by Gonetz
 
 static void cc_one_sub_env_mul__t0_inter_t1_using_primlod() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -4185,7 +4185,7 @@ static void cc_one_sub_env_mul__t0_inter_t1_using_primlod() //Aded by Gonetz
 
 static void cc_one_sub_env_mul_prim() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -4195,7 +4195,7 @@ static void cc_one_sub_env_mul_prim() //Aded by Gonetz
 
 static void cc_one_sub_env_mul_shade() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -4205,7 +4205,7 @@ static void cc_one_sub_env_mul_shade() //Aded by Gonetz
 // ** (1-A)*B + A*C **
 static void cc_t0_mul_env_add_1mt0_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -4216,7 +4216,7 @@ static void cc_t0_mul_env_add_1mt0_mul_shade()
 // ** (1-A)*B+C **
 static void cc_one_sub_shade_mul__t1_sub_prim_mul_primlod_add_t0__add_shade() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -4226,7 +4226,7 @@ static void cc_one_sub_shade_mul__t1_sub_prim_mul_primlod_add_t0__add_shade() //
 // ** (1-A)*B*C **
 static void cc_one_sub_t0_mul_prim_mul_shade() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_BLEND_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_NONE);
@@ -4237,7 +4237,7 @@ static void cc_one_sub_t0_mul_prim_mul_shade() //Added by Gonetz
 // ** (A-B)*C*D **
 static void cc_prim_sub_env_mul_t0_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_ITERATED);
@@ -4267,7 +4267,7 @@ static void cc_t0_sub_t1_mul_prim_mul_shade_add_t1()  //Aded by Gonetz
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_TEXTURE);
@@ -4278,7 +4278,7 @@ static void cc_t0_sub_t1_mul_prim_mul_shade_add_t1()  //Aded by Gonetz
 
 static void cc_t0_sub_prim_mul_t0a_add_prim()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -4307,7 +4307,7 @@ static void cc_t0_sub_prim_mul_t1_add_shade()  //Aded by Gonetz
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -4331,7 +4331,7 @@ static void cc_t0_sub_prim_mul_primlod_add_prim()  //Aded by Gonetz
     else
     {
         // * not guaranteed to work if another iterated alpha is set
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_CONSTANT);
@@ -4345,7 +4345,7 @@ static void cc_t0_sub_prim_mul_primlod_add_prim()  //Aded by Gonetz
 static void cc_t0_sub_prim_mul_prima_add_prim()  //Aded by Gonetz
 {
     // * not guaranteed to work if another iterated alpha is set
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -4358,7 +4358,7 @@ static void cc_t0_sub_prim_mul_prima_add_prim()  //Aded by Gonetz
 static void cc_t0_sub_prim_mul_shadea_add_prim()  //Aded by Gonetz
 {
     // * not guaranteed to work if another iterated alpha is set
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -4404,7 +4404,7 @@ static void cc__t0_inter_t1_using_shadea__sub_prim_mul_env_add_shade()  //Aded b
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_CONSTANT);
@@ -4416,7 +4416,7 @@ static void cc__t0_inter_t1_using_shadea__sub_prim_mul_env_add_shade()  //Aded b
 
 static void cc_t0_sub_prim_mul_env_add_prim()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -4439,7 +4439,7 @@ static void cc_t0_sub_prim_mul_enva_add_prim()  //Aded by Gonetz41
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_TEXTURE);
@@ -4453,7 +4453,7 @@ static void cc_t0_sub_prim_mul_enva_add_prim()  //Aded by Gonetz41
 
 static void cc_t0_sub_prim_mul_primlod_add_env()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -4468,7 +4468,7 @@ static void cc_t0_sub__prim_mul_env()  //Aded by Gonetz
 {
     if ((rdp.prim_color & 0xFFFFFF00) == 0xFFFFFF00 && (rdp.env_color & 0xFFFFFF00) == 0xFFFFFF00)
     {
-        CCMB(GR_COMBINE_FUNCTION_BLEND_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_BLEND_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_NONE);
@@ -4476,7 +4476,7 @@ static void cc_t0_sub__prim_mul_env()  //Aded by Gonetz
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -4489,7 +4489,7 @@ static void cc_t0_sub__prim_mul_env()  //Aded by Gonetz
 static void cc__t0_mul_t1__sub_prim_mul__t0t1a__add_prim()  //Aded by Gonetz
 {
     // * not guaranteed to work if another iterated alpha is set
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -4501,7 +4501,7 @@ static void cc__t0_mul_t1__sub_prim_mul__t0t1a__add_prim()  //Aded by Gonetz
 static void cc__t1_inter_t0_using_enva__sub_prim_mul_prima_add_prim()  //Aded by Gonetz
 {
     // * not guaranteed to work if another iterated alpha is set
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -4529,7 +4529,7 @@ static void cc_t0_sub_prim_mul_shade_add_env()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_ITERATED);
@@ -4562,7 +4562,7 @@ static void cc_t1_sub_prim_mul_shade_add_env()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_ITERATED);
@@ -4597,7 +4597,7 @@ static void cc_t1_sub_k4_mul_prima_add_t0()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE);
@@ -4623,7 +4623,7 @@ static void cc__t0_sub_prim_mul_shade_add_env__mul_shade()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_ITERATED);
@@ -4652,7 +4652,7 @@ static void cc__t0_sub_prim_mul_shade_add_env__mul_shadea()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_ITERATED);
@@ -4668,7 +4668,7 @@ static void cc__t0_mul_shade__sub_env_mul_shadea_add_env()  //Aded by Gonetz
 {
     if (rdp.tiles(rdp.cur_tile).format == 4)
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
             GR_COMBINE_FACTOR_OTHER_ALPHA,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_ITERATED);
@@ -4676,7 +4676,7 @@ static void cc__t0_mul_shade__sub_env_mul_shadea_add_env()  //Aded by Gonetz
     }
     else if (rdp.tiles(rdp.cur_tile).format == 2)
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -4690,7 +4690,7 @@ static void cc__t0_mul_shade__sub_env_mul_shadea_add_env()  //Aded by Gonetz
 
 static void cc_t0_sub_env_mul_k5_add_prim()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -4737,7 +4737,7 @@ static void cc__t0_inter_t1_using_t0__sub_shade_mul_prima_add_shade()  //Aded by
     else
     {
         // * not guaranteed to work if another iterated alpha is set
-        CCMB(GR_COMBINE_FUNCTION_BLEND,
+        CCMB(GFX_COMBINE_FUNCTION_BLEND,
             GR_COMBINE_FACTOR_LOCAL_ALPHA,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -4749,7 +4749,7 @@ static void cc__t0_inter_t1_using_t0__sub_shade_mul_prima_add_shade()  //Aded by
 static void cc_t0_sub__prim_mul_shade__mul_enva_add__prim_mul_shade()  //Aded by Gonetz
 {
     // * not guaranteed to work if another iterated alpha is set
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -4760,7 +4760,7 @@ static void cc_t0_sub__prim_mul_shade__mul_enva_add__prim_mul_shade()  //Aded by
 
 static void cc_t0_sub_env_mul_t0_add_env()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -4789,7 +4789,7 @@ static void cc_t0_sub_env_mul_prima_add_env()  //Aded by Gonetz
         MOD_0_COL1((prima << 24) | (prima | 16) | (prima << 8));
         USE_T0();
     }
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -4797,7 +4797,7 @@ static void cc_t0_sub_env_mul_prima_add_env()  //Aded by Gonetz
 
 static void cc_t0_sub_env_mul_k5_add_env()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -4807,7 +4807,7 @@ static void cc_t0_sub_env_mul_k5_add_env()  //Aded by Gonetz
 
 static void cc_t0_sub_env_mul_prim_add_shade()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -4819,7 +4819,7 @@ static void cc_t0_sub_env_mul_prim_add_shade()  //Aded by Gonetz
 
 static void cc_t0_sub_env_mul_shade_add_prim()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -4949,7 +4949,7 @@ static void cc__t0_inter_t1_using_primlod__sub_env_mul_shade_add_env()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_ITERATED);
@@ -4960,7 +4960,7 @@ static void cc__t0_inter_t1_using_primlod__sub_env_mul_shade_add_env()
 
 static void cc_t0_sub_env_mul_enva_add_prim()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -4973,7 +4973,7 @@ static void cc_t0_sub_env_mul_enva_add_prim()  //Aded by Gonetz
 
 static void cc_one_sub_t0_mul_prim_add_t0()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -4984,7 +4984,7 @@ static void cc_one_sub_t0_mul_prim_add_t0()  //Aded by Gonetz
 
 static void cc_one_sub_t1_mul_prim_add_t1()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -4995,7 +4995,7 @@ static void cc_one_sub_t1_mul_prim_add_t1()  //Aded by Gonetz
 
 static void cc_one_sub_t1_mul_env_add_t1()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5006,7 +5006,7 @@ static void cc_one_sub_t1_mul_env_add_t1()  //Aded by Gonetz
 
 static void cc_one_sub_t0_mul_primlod_add_t0()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5017,7 +5017,7 @@ static void cc_one_sub_t0_mul_primlod_add_t0()  //Aded by Gonetz
 
 static void cc_one_sub_t0_mul_prima_add_t0()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5028,7 +5028,7 @@ static void cc_one_sub_t0_mul_prima_add_t0()  //Aded by Gonetz
 
 static void cc_one_sub__t0_inter_t1_using_enva__mul_prim_add__t0_inter_t1_using_enva()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5040,7 +5040,7 @@ static void cc_one_sub__t0_inter_t1_using_enva__mul_prim_add__t0_inter_t1_using_
 
 static void cc_one_sub_t0_mul_shade_add_t0()
 {
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5050,7 +5050,7 @@ static void cc_one_sub_t0_mul_shade_add_t0()
 
 static void cc_one_sub_prim_mul_t0_add_prim() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5069,7 +5069,7 @@ static void cc_one_sub_prim_mul_t0a_add_prim()
         CC_PRIM();
     }
     else {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE);
@@ -5082,7 +5082,7 @@ static void cc_one_sub_prim_mul_t0a_add_prim()
 
 static void cc_one_sub_prim_mul__t0_inter_t1_using_primlod__add_prim() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5092,7 +5092,7 @@ static void cc_one_sub_prim_mul__t0_inter_t1_using_primlod__add_prim() //Aded by
 
 static void cc__one_sub_prim_mul_shade__mul_t0_add__prim_mul_shade() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5102,7 +5102,7 @@ static void cc__one_sub_prim_mul_shade__mul_t0_add__prim_mul_shade() //Aded by G
 
 static void cc_one_sub_shade_mul__t0_inter_t1_using_primlod__add_shade() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5111,7 +5111,7 @@ static void cc_one_sub_shade_mul__t0_inter_t1_using_primlod__add_shade() //Aded 
 
 static void cc_one_sub_prim_mul_t1_add_prim() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5121,7 +5121,7 @@ static void cc_one_sub_prim_mul_t1_add_prim() //Aded by Gonetz
 
 static void cc_one_sub_prim_mul_env_add_prim()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -5141,7 +5141,7 @@ static void cc_t0_sub_prim_mul_shade_add_shade()  //Aded by Gonetz
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -5185,7 +5185,7 @@ static void cc__t0_mul_t1__sub_prim_mul_shade_add_shade()  //Aded by Gonetz
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -5205,7 +5205,7 @@ static void cc__t0_mul_t1__sub_env_mul_shade_add_shade()  //Aded by Gonetz
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -5215,7 +5215,7 @@ static void cc__t0_mul_t1__sub_env_mul_shade_add_shade()  //Aded by Gonetz
 
 static void cc_one_sub_prim_mul_shade_add_shade()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5224,7 +5224,7 @@ static void cc_one_sub_prim_mul_shade_add_shade()  //Aded by Gonetz
 
 static void cc_t0_inter_env_using_prima()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5238,7 +5238,7 @@ static void cc_t0_inter_env_using_prima()
 static void cc_t0_inter_env_using_enva()
 {
     //(env-t0)*env_a+t0
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5262,7 +5262,7 @@ static void cc_t0_inter_env_using_enva()
 
 static void cc_t0_inter_noise_using_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5275,7 +5275,7 @@ static void cc_t0_inter_noise_using_prim()
 
 static void cc_t0_inter_noise_using_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5288,7 +5288,7 @@ static void cc_t0_inter_noise_using_env()
 
 static void cc_t0_sub_env_mul_enva_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5300,7 +5300,7 @@ static void cc_t0_sub_env_mul_enva_add_env()
 //Added by Gonetz
 static void cc_one_sub_prim_mul__t0_mul_t1__add__prim_mul_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5313,7 +5313,7 @@ static void cc_one_sub_prim_mul__t0_mul_t1__add__prim_mul_env()
 //Added by Gonetz
 static void cc_one_sub_prim_mul__t0_mul_t1__add__prim_mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5325,7 +5325,7 @@ static void cc_one_sub_prim_mul__t0_mul_t1__add__prim_mul_shade()
 //Added by Gonetz
 static void cc_one_sub_prim_mul__t0_inter_t1_using_enva__add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5337,7 +5337,7 @@ static void cc_one_sub_prim_mul__t0_inter_t1_using_enva__add_prim()
 
 static void cc_one_sub_env_mul__t0_inter_t1_using_primlod__add_env() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5347,7 +5347,7 @@ static void cc_one_sub_env_mul__t0_inter_t1_using_primlod__add_env() //Aded by G
 
 static void cc_one_sub_env_mul__t1_sub_prim_mul_primlod_add_t0__add_env() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5357,7 +5357,7 @@ static void cc_one_sub_env_mul__t1_sub_prim_mul_primlod_add_t0__add_env() //Aded
 
 static void cc_one_sub_env_mul_t0_add_prim_mul_env() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5369,7 +5369,7 @@ static void cc_one_sub_env_mul_t0_add_prim_mul_env() //Aded by Gonetz
 
 static void cc_one_sub_env_mul_t0_add_env() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5379,7 +5379,7 @@ static void cc_one_sub_env_mul_t0_add_env() //Aded by Gonetz
 
 static void cc_one_sub_env_mul_t0_add_shade() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5389,7 +5389,7 @@ static void cc_one_sub_env_mul_t0_add_shade() //Aded by Gonetz
 
 static void cc_one_sub_env_mul_prim_add_env() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -5399,7 +5399,7 @@ static void cc_one_sub_env_mul_prim_add_env() //Aded by Gonetz
 
 static void cc_one_sub_env_mul_prim_add_shade() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5409,7 +5409,7 @@ static void cc_one_sub_env_mul_prim_add_shade() //Aded by Gonetz
 
 static void cc_one_sub_env_mul_shade_add_env() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -5418,7 +5418,7 @@ static void cc_one_sub_env_mul_shade_add_env() //Aded by Gonetz
 
 static void cc_one_sub_env_mul_prim_add__t0_inter_t1_using_env() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5429,7 +5429,7 @@ static void cc_one_sub_env_mul_prim_add__t0_inter_t1_using_env() //Aded by Gonet
 
 static void cc_one_sub_shade_mul_t0_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5438,7 +5438,7 @@ static void cc_one_sub_shade_mul_t0_add_shade()
 
 static void cc_one_sub_shade_mul__t0_mul_shadea__add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5458,7 +5458,7 @@ static void cc_one_sub_shade_mul__t0_mul_shadea__add_shade()
 
 static void cc_one_sub_shade_mul_env_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5467,7 +5467,7 @@ static void cc_one_sub_shade_mul_env_add_shade()
 
 static void cc_one_sub_shade_mul_shadea_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5477,7 +5477,7 @@ static void cc_one_sub_shade_mul_shadea_add_shade()
 ///*
 static void cc_t0_sub_env_mul_prim_add_env()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5490,7 +5490,7 @@ static void cc_t0_sub_env_mul_prim_add_env()  //Aded by Gonetz
 //*/
 static void cc__t0_inter_t1_using_t1a__sub_env_mul_enva_add_env()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5500,7 +5500,7 @@ static void cc__t0_inter_t1_using_t1a__sub_env_mul_enva_add_env()  //Aded by Gon
 
 static void cc_t0_sub_shade_mul_t0a_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5511,7 +5511,7 @@ static void cc_t0_sub_shade_mul_t0a_add_shade()
 static void cc_t0_sub_shade_mul_prima_add_shade()  //Aded by Gonetz
 {
     // * not guaranteed to work if another iterated alpha is set
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5522,7 +5522,7 @@ static void cc_t0_sub_shade_mul_prima_add_shade()  //Aded by Gonetz
 static void cc_t0_sub_shade_mul_shadea_add_shade()  //Aded by Gonetz
 {
     // * not guaranteed to work if another iterated alpha is set
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5549,7 +5549,7 @@ static void cc__t0_mul_t1_add_env__mul_shadea_add_shade()
         T0_MUL_T1();
     }
     // * not guaranteed to work if another iterated alpha is set
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5557,7 +5557,7 @@ static void cc__t0_mul_t1_add_env__mul_shadea_add_shade()
 
 static void cc_prim_sub_t0_mul_env_add_t0()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5593,7 +5593,7 @@ static void cc_prim_sub_t0_mul_t1_add_t0()  //Aded by Gonetz
 
 static void cc_env_sub_t0_mul_prim_add_t0()  //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5621,7 +5621,7 @@ static void cc_env_sub_t0_mul_shade_add_t0()  //Aded by Gonetz
 
 static void cc_prim_sub_env_mul_t0_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -5632,7 +5632,7 @@ static void cc_prim_sub_env_mul_t0_add_prim()
 
 static void cc_prim_sub_env_mul_t0_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5684,7 +5684,7 @@ static void cc__prim_sub_env_mul_t0_add_env__add_shadea()
 
 static void cc_prim_sub_env_mul__t0_mul_t1a__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5695,7 +5695,7 @@ static void cc_prim_sub_env_mul__t0_mul_t1a__add_env()
 
 static void cc_prim_sub_env_mul__t0_mul_prim__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5727,7 +5727,7 @@ static void cc_prim_sub_env_mul_t0_mul_shade_add_env()
         CC_PRIMSUBENV();
         cmb.tex_ccolor = cmb.ccolor;
         cmb.tex |= 1;
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_ITERATED);
@@ -5741,7 +5741,7 @@ static void cc_prim_sub_env_mul_t0_mul_shade_add_env()
 
 static void cc_prim_sub_env_mul__t0_sub_t0_mul_prima__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5749,7 +5749,7 @@ static void cc_prim_sub_env_mul__t0_sub_t0_mul_prima__add_env()
     SETSHADE_ENV();
     rdp.best_tex = 0;
     cmb.tex |= 1;
-    cmb.tmu0_func = GR_COMBINE_FUNCTION_BLEND_LOCAL;
+    cmb.tmu0_func = GFX_COMBINE_FUNCTION_BLEND_LOCAL;
     cmb.tmu0_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR;
     percent = (float)(rdp.prim_color & 0xFF) / 255.0f;
     cmb.dc0_detailmax = cmb.dc1_detailmax = percent;
@@ -5757,7 +5757,7 @@ static void cc_prim_sub_env_mul__t0_sub_t0_mul_prima__add_env()
 
 static void cc_prim_sub_env_mul__one_sub_t0_mul_primlod_add_prim__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -5781,7 +5781,7 @@ static void cc_prim_sub_env_mul__one_sub_t0_mul_primlod_add_prim__add_env()
 
 static void cc_prim_sub_env_mul__t0_add_t1a__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5789,15 +5789,15 @@ static void cc_prim_sub_env_mul__t0_add_t1a__add_env()
     SETSHADE_ENV();
     rdp.best_tex = 0;
     cmb.tex |= 3;
-    cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL_ALPHA;
-    cmb.tmu0_func = GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL;
+    cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL_ALPHA;
+    cmb.tmu0_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL;
     cmb.tmu0_fac = GR_COMBINE_FACTOR_ONE;
 }
 
 static void cc_prim_sub_env_mul__t0_sub_prim_mul_enva_add_t0__add_env()
 {
     // (t0-prim)*env_a+t0, (prim-env)*cmb+env
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -5813,7 +5813,7 @@ static void cc_prim_sub_env_mul__t0_sub_prim_mul_enva_add_t0__add_env()
 static void cc_prim_sub_env_mul__t1_sub_prim_mul_enva_add_t0__add_env()
 {
     //(t1-prim)*env_a+t0, (prim-env)*cmb+env
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -5859,7 +5859,7 @@ static void cc_prim_sub_env_mul__t1_sub_prim_mul_enva_add_t0__add_env()
 static void cc_prim_sub_env_mul__t1_sub_prim_mul_prima_add_t0__add_env()
 {
     // (t1-prim)*prim_a+t0, (prim-env)*cmb+env
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -5890,7 +5890,7 @@ static void cc_prim_sub_env_mul__t1_sub_prim_mul_prima_add_t0__add_env()
 
 static void cc__prim_sub_env_mul_t0_add_env__mul_primlod()
 {
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5909,7 +5909,7 @@ static void cc__prim_sub_env_mul_t0_add_env__mul_primlod()
 
 static void cc__prim_sub_env_mul_t0_add_env__mul_k5()
 {
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5928,7 +5928,7 @@ static void cc__prim_sub_env_mul_t0_add_env__mul_k5()
 
 static void cc_prim_sub_env_mul_t1_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -5946,7 +5946,7 @@ static void cc_prim_sub_env_mul_t1_add_env()
 
 static void cc_prim_sub_env_mul_t1_add_env_mul_t0()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5958,7 +5958,7 @@ static void cc_prim_sub_env_mul_t1_add_env_mul_t0()
 
 static void cc_prim_sub_env_mul_t0a_add_t0()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -5983,7 +5983,7 @@ static void cc_prim_sub_env_mul_t0a_add_t0()
 //Added by Gonetz
 static void cc_prim_sub_env_mul_t0a_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -5995,7 +5995,7 @@ static void cc_prim_sub_env_mul_t0a_add_env()
 //Added by Gonetz
 static void cc_prim_sub_env_mul_t1a_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6007,7 +6007,7 @@ static void cc_prim_sub_env_mul_t1a_add_env()
 //Added by Gonetz
 static void cc_prim_sub_env_mul__t0_mul_t1__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6019,7 +6019,7 @@ static void cc_prim_sub_env_mul__t0_mul_t1__add_env()
 //Added by Gonetz
 static void cc_prim_sub_env_mul__t0_add_t1__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6031,7 +6031,7 @@ static void cc_prim_sub_env_mul__t0_add_t1__add_env()
 //Added by Gonetz
 static void cc_prim_sub_env_mul__t0_mul_enva__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6044,7 +6044,7 @@ static void cc_prim_sub_env_mul__t0_mul_enva__add_env()
 //Added by Gonetz
 static void cc_prim_sub_env_mul__t0_mul_shade__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6056,7 +6056,7 @@ static void cc_prim_sub_env_mul__t0_mul_shade__add_env()
 //Added by Gonetz
 static void cc_prim_sub_env_mul__prim_inter_t0_using_shadea__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6077,7 +6077,7 @@ static void cc_prim_sub_env_mul__prim_inter_t0_using_shadea__add_env()
 //Added by Gonetz
 static void cc_prim_sub_env_mul__t0_sub_prim_mul_primlod_add_t0__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6162,7 +6162,7 @@ static void cc_lavatex_sub_prim_mul_shade_add_lavatex()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE);
@@ -6173,7 +6173,7 @@ static void cc_lavatex_sub_prim_mul_shade_add_lavatex()
 //Added by Gonetz
 static void cc_prim_sub_env_mul__t0_sub_prim_mul_primlod_add_t1__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6185,7 +6185,7 @@ static void cc_prim_sub_env_mul__t0_sub_prim_mul_primlod_add_t1__add_env()
 //Added by Gonetz
 static void cc_prim_sub_env_mul__t1_sub_prim_mul_primlod_add_t0__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6197,7 +6197,7 @@ static void cc_prim_sub_env_mul__t1_sub_prim_mul_primlod_add_t0__add_env()
 //Added by Gonetz
 static void cc_prim_sub_env_mul__t0_inter_t1_using_t1__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6209,7 +6209,7 @@ static void cc_prim_sub_env_mul__t0_inter_t1_using_t1__add_env()
 //Added by Gonetz
 static void cc_prim_sub_env_mul__t0_inter_t1_using_enva_alpha__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6225,7 +6225,7 @@ static void cc__env_inter_prim_using_t0__sub_shade_mul_t0a_add_shade()
 {
     if (!cmb.combine_ext)
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_ALPHA,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -6256,7 +6256,7 @@ static void cc__env_inter_prim_using_t0__sub_shade_mul_t0a_add_shade()
 //Added by Gonetz
 static void cc_prim_sub_env_mul_shade_add_t0()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -6280,7 +6280,7 @@ static void cc_prim_sub_env_mul_prima_add_t0()
         }
         else
         {
-            CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+            CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
                 GR_COMBINE_FACTOR_ONE,
                 GR_COMBINE_LOCAL_ITERATED,
                 GR_COMBINE_OTHER_TEXTURE);
@@ -6295,7 +6295,7 @@ static void cc_prim_sub_env_mul_prima_add_t0()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_TEXTURE);
@@ -6307,7 +6307,7 @@ static void cc_prim_sub_env_mul_prima_add_t0()
 //Added by Gonetz
 static void cc_prim_sub_env_mul_shade_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6318,7 +6318,7 @@ static void cc_prim_sub_env_mul_shade_add_env()
 static void cc_prim_sub_env_mul_shadea_add_env()
 {
     // * not guaranteed to work if another iterated alpha is set
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_OTHER_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6329,7 +6329,7 @@ static void cc_prim_sub_env_mul_shadea_add_env()
 //Added by Gonetz
 static void cc_prim_sub_env_mul__t0_inter_t1_using_prima__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6342,7 +6342,7 @@ static void cc_prim_sub_env_mul__t0_inter_t1_using_prima__add_env()
 //Added by Gonetz
 static void cc_prim_sub_env_mul__t1_inter_t0_using_prima__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6354,7 +6354,7 @@ static void cc_prim_sub_env_mul__t1_inter_t0_using_prima__add_env()
 
 static void cc_prim_sub_env_mul__t0_inter_t1_using_enva__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6366,7 +6366,7 @@ static void cc_prim_sub_env_mul__t0_inter_t1_using_enva__add_env()
 
 static void cc_prim_sub_center_mul__t0_inter_t1_using_enva__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6378,7 +6378,7 @@ static void cc_prim_sub_center_mul__t0_inter_t1_using_enva__add_env()
 
 static void cc_prim_sub_env_mul__t1_inter_t0_using_enva__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6390,7 +6390,7 @@ static void cc_prim_sub_env_mul__t1_inter_t0_using_enva__add_env()
 
 static void cc_prim_sub_env_mul__t0_mul_enva_add_t1__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6418,7 +6418,7 @@ static void cc_prim_sub_env_mul__t0_mul_enva_add_t1__add_env()
 
 static void cc_prim_sub_env_mul__t1_mul_enva_add_t0__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6430,7 +6430,7 @@ static void cc_prim_sub_env_mul__t1_mul_enva_add_t0__add_env()
 //Added by Gonetz
 static void cc_prim_sub_env_mul_primlod_add__t0_inter_t1_using_primlod()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -6441,7 +6441,7 @@ static void cc_prim_sub_env_mul_primlod_add__t0_inter_t1_using_primlod()
 
 static void cc_prim_sub_env_mul__t0_inter_t1_using_primlod__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6452,7 +6452,7 @@ static void cc_prim_sub_env_mul__t0_inter_t1_using_primlod__add_env()
 
 static void cc_prim_sub_env_mul__t1_inter_t0_using_primlod__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6463,7 +6463,7 @@ static void cc_prim_sub_env_mul__t1_inter_t0_using_primlod__add_env()
 
 static void cc_prim_sub_env_mul__t1_mul_primlod_add_t0__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6474,7 +6474,7 @@ static void cc_prim_sub_env_mul__t1_mul_primlod_add_t0__add_env()
 
 static void cc_prim_sub_env_mul__t1_sub_prim_mul_t0_add_t0__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6521,7 +6521,7 @@ static void cc__prim_sub_env_mul_prim_add_t0__mul_prim()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -6545,7 +6545,7 @@ static void cc_prim_sub_env_mul_prim_add_env()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_ITERATED);
@@ -6575,7 +6575,7 @@ static void cc_prim_sub_env_mul_primlod_add_env()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_ITERATED);
@@ -6588,7 +6588,7 @@ static void cc_prim_sub_env_mul_primlod_add_env()
 //Added by Gonetz
 static void cc_prim_sub_env_mul_enva_add_t0()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -6617,7 +6617,7 @@ static void cc_prim_sub_env_mul_enva_add_env()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_ITERATED);
@@ -6630,7 +6630,7 @@ static void cc_prim_sub_env_mul_enva_add_env()
 //Added by Gonetz
 static void cc_prim_sub_shade_mul_t0_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6642,7 +6642,7 @@ static void cc_prim_sub_shade_mul_t0_add_env()
 //Added by Gonetz
 static void cc_prim_sub_shade_mul__t1_sub_prim_mul_primlod_add_t0__add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6652,7 +6652,7 @@ static void cc_prim_sub_shade_mul__t1_sub_prim_mul_primlod_add_t0__add_shade()
 
 static void cc_prim_sub_shade_mul_t1a_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6663,7 +6663,7 @@ static void cc_prim_sub_shade_mul_t1a_add_shade()
 //Added by Gonetz
 static void cc_prim_sub_shade_mul_t0_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6674,7 +6674,7 @@ static void cc_prim_sub_shade_mul_t0_add_shade()
 //Added by Gonetz
 static void cc_prim_sub_shade_mul_t1_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6685,7 +6685,7 @@ static void cc_prim_sub_shade_mul_t1_add_shade()
 //Added by Gonetz
 static void cc_prim_sub_shade_mul__t0a_mul_t1__add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6696,7 +6696,7 @@ static void cc_prim_sub_shade_mul__t0a_mul_t1__add_shade()
 //Added by Gonetz
 static void cc_prim_sub_shade_mul__t0_inter_t1_using_enva__add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6717,7 +6717,7 @@ static void cc_prim_sub_shade_mul__t0_inter_t1_using_shadea__add_shade()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_CONSTANT);
@@ -6729,7 +6729,7 @@ static void cc_prim_sub_shade_mul__t0_inter_t1_using_shadea__add_shade()
 //Added by Gonetz
 static void cc_prim_sub_shade_mul_prima_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_OTHER_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6740,7 +6740,7 @@ static void cc_prim_sub_shade_mul_prima_add_shade()
 //Added by Gonetz
 static void cc_prim_sub_shade_mul_env_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6751,7 +6751,7 @@ static void cc_prim_sub_shade_mul_env_add_shade()
 //Added by Gonetz
 static void cc_prim_sub_shade_mul_shadea_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6760,7 +6760,7 @@ static void cc_prim_sub_shade_mul_shadea_add_shade()
 
 static void cc_env_sub_prim_mul_t0_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6771,7 +6771,7 @@ static void cc_env_sub_prim_mul_t0_add_prim()
 
 static void cc_env_sub_prim_mul_t1_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6782,7 +6782,7 @@ static void cc_env_sub_prim_mul_t1_add_prim()
 
 static void cc_env_sub_prim_mul_t0a_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6793,7 +6793,7 @@ static void cc_env_sub_prim_mul_t0a_add_prim()
 
 static void cc_env_sub_prim_mul_t1a_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6804,7 +6804,7 @@ static void cc_env_sub_prim_mul_t1a_add_prim()
 
 static void cc_env_sub_prim_mul__t0_add_t1__add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6815,7 +6815,7 @@ static void cc_env_sub_prim_mul__t0_add_t1__add_prim()
 
 static void cc_env_sub_prim_mul__t0_mul_t1__add_prim() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6826,7 +6826,7 @@ static void cc_env_sub_prim_mul__t0_mul_t1__add_prim() //Added by Gonetz
 
 static void cc_env_sub_prim_mul__t0t1a__add_prim() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6837,7 +6837,7 @@ static void cc_env_sub_prim_mul__t0t1a__add_prim() //Added by Gonetz
 
 static void cc_env_sub_prim_mul__t0_inter_t1_using_t1__add_prim() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6848,7 +6848,7 @@ static void cc_env_sub_prim_mul__t0_inter_t1_using_t1__add_prim() //Added by Gon
 
 static void cc_env_sub_prim_mul__t0_inter_t1_using_half__add_prim() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6859,7 +6859,7 @@ static void cc_env_sub_prim_mul__t0_inter_t1_using_half__add_prim() //Added by G
 
 static void cc_env_sub_prim_mul__t1_inter_t0_using_t0__add_prim() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6870,7 +6870,7 @@ static void cc_env_sub_prim_mul__t1_inter_t0_using_t0__add_prim() //Added by Gon
 
 static void cc_env_sub_shade_mul__t0_mul_t1__add_shade() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6880,7 +6880,7 @@ static void cc_env_sub_shade_mul__t0_mul_t1__add_shade() //Added by Gonetz
 
 static void cc_env_sub_prim_mul__t0a_mul_t1a__add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6892,7 +6892,7 @@ static void cc_env_sub_prim_mul__t0a_mul_t1a__add_prim()
 static void cc_env_sub_prim_mul_prima_add_prim()  //Aded by Gonetz
 {
     // * not guaranteed to work if another iterated alpha is set
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6904,7 +6904,7 @@ static void cc_env_sub_prim_mul_prima_add_prim()  //Aded by Gonetz
 static void cc_env_sub_prim_mul_enva_add_prim()  //Aded by Gonetz
 {
     // * not guaranteed to work if another iterated alpha is set
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_OTHER_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6937,7 +6937,7 @@ static void cc__t0_sub_env_mul_shade__sub_prim_mul_shade_add_prim()
 
 static void cc_env_sub_prim_mul_shade_add_prim() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6947,7 +6947,7 @@ static void cc_env_sub_prim_mul_shade_add_prim() //Added by Gonetz
 
 static void cc_env_sub_prim_mul_shadea_add_prim() //Added by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -6958,7 +6958,7 @@ static void cc_env_sub_prim_mul_shadea_add_prim() //Added by Gonetz
 
 static void cc_env_sub_prim_mul__t0_inter_t1_using_prima__add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6970,7 +6970,7 @@ static void cc_env_sub_prim_mul__t0_inter_t1_using_prima__add_prim()
 
 static void cc_env_sub_prim_mul__t0_inter_t1_using_primlod__add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6981,7 +6981,7 @@ static void cc_env_sub_prim_mul__t0_inter_t1_using_primlod__add_prim()
 
 static void cc_env_sub_primshade_mul_t0_add_primshade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -6994,7 +6994,7 @@ static void cc_env_sub_primshade_mul_t1_add_primshade()
 {
     //  cc_prim_mul_shade();
     //  return;
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -7005,7 +7005,7 @@ static void cc_env_sub_primshade_mul_t1_add_primshade()
 
 static void cc_env_sub_shade_mul_t0_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -7031,7 +7031,7 @@ static void cc__env_sub_shade_mul_t0_add_shade__mul_prim()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_CONSTANT);
@@ -7043,7 +7043,7 @@ static void cc__env_sub_shade_mul_t0_add_shade__mul_prim()
 
 static void cc_env_sub_shade_mul_t1_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -7063,7 +7063,7 @@ static void cc_env_sub_shade_mul__t0_inter_t1_using_shadea__add_shade()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_CONSTANT);
@@ -7075,7 +7075,7 @@ static void cc_env_sub_shade_mul__t0_inter_t1_using_shadea__add_shade()
 //Added by Gonetz
 static void cc_env_sub_shade_mul_enva_add_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_OTHER_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -7085,7 +7085,7 @@ static void cc_env_sub_shade_mul_enva_add_shade()
 //Added by Gonetz
 static void cc_shade_sub_t0_mul_shadea_add_t0()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7121,7 +7121,7 @@ static void cc__t0_mul_shade_mul_shadea__add__t1_mul_one_sub_shadea()
 
 static void cc_shade_sub_prim_mul__t0_inter_t1_using_primlod__add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -7131,7 +7131,7 @@ static void cc_shade_sub_prim_mul__t0_inter_t1_using_primlod__add_prim()
 
 static void cc_shade_sub_prim_mul_t0_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -7142,7 +7142,7 @@ static void cc_shade_sub_prim_mul_t0_add_prim()
 //Added by Gonetz
 static void cc_shade_sub_prim_mul_t1_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -7177,7 +7177,7 @@ static void cc_shade_sub_env_mul_t0_add_prim()
         return;
     }
 
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -7189,7 +7189,7 @@ static void cc_shade_sub_env_mul_t0_add_prim()
 //Added by Gonetz
 static void cc_shade_sub_env_mul__t0_inter_t1_using_primlod__add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -7201,7 +7201,7 @@ static void cc_shade_sub_env_mul__t0_inter_t1_using_primlod__add_prim()
 //Added by Gonetz
 static void cc_shade_sub_env_mul__t0_inter_t1_using_primlod__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -7212,7 +7212,7 @@ static void cc_shade_sub_env_mul__t0_inter_t1_using_primlod__add_env()
 //Added by Gonetz
 static void cc_shade_sub_env_mul__t0_mul_t1__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -7223,7 +7223,7 @@ static void cc_shade_sub_env_mul__t0_mul_t1__add_env()
 //Added by Gonetz
 static void cc_shade_sub_env_mul__t1_sub_prim_mul_primlod_add_t0__add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -7235,7 +7235,7 @@ static void cc_shade_sub_env_mul__t1_sub_prim_mul_primlod_add_t0__add_env()
 //Added by Gonetz
 static void cc_shade_sub_env_mul_t0_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -7246,7 +7246,7 @@ static void cc_shade_sub_env_mul_t0_add_env()
 //Added by Gonetz
 static void cc_shade_sub_env_mul_t0_mul_prim_add_prim_mul_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -7259,7 +7259,7 @@ static void cc_shade_sub_env_mul_t0_mul_prim_add_prim_mul_env()
 //Added by Gonetz
 static void cc_shade_sub_env_mul_t1_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -7270,7 +7270,7 @@ static void cc_shade_sub_env_mul_t1_add_env()
 //Added by Gonetz
 static void cc_shade_sub_env_mul_prim_add_t0()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7325,7 +7325,7 @@ static void cc__t0_add_prim_mul_shade__mul_shade()
 //Added by Gonetz
 static void cc_shade_sub_env_mul_prim_add_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -7337,7 +7337,7 @@ static void cc_shade_sub_env_mul_prim_add_env()
 //Added by Gonetz
 static void cc_shade_sub_env_mul_prima_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -7348,7 +7348,7 @@ static void cc_shade_sub_env_mul_prima_add_prim()
 
 static void cc_shade_sub_env_mul_k5_add_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -7363,7 +7363,7 @@ static void cc_shade_sub_env_mul_k5_add_prim()
 // ** A inter B using C **
 static void cc_t0_inter_t1_using_t1a()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7372,7 +7372,7 @@ static void cc_t0_inter_t1_using_t1a()
 
 static void cc_t0_inter_t1_using_prima()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7382,7 +7382,7 @@ static void cc_t0_inter_t1_using_prima()
 
 static void cc_t1_inter_t0_using_prima()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7392,7 +7392,7 @@ static void cc_t1_inter_t0_using_prima()
 
 static void cc_t1_inter_t0_using_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7401,7 +7401,7 @@ static void cc_t1_inter_t0_using_prim()
 
 static void cc_t0_inter_t1_using_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7410,7 +7410,7 @@ static void cc_t0_inter_t1_using_env()
 
 static void cc_t0_inter_t1_using_enva()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7488,7 +7488,7 @@ static void cc_t0_inter_t1_using_shade()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE);
@@ -7517,7 +7517,7 @@ static void cc_t1_inter_t0_using_shade()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE);
@@ -7537,7 +7537,7 @@ static void cc_t1_inter_t0_using_shadea()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE);
@@ -7548,7 +7548,7 @@ static void cc_t1_inter_t0_using_shadea()
 //Added by Gonetz
 static void cc_t0_inter_t1_using_primlod()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7558,7 +7558,7 @@ static void cc_t0_inter_t1_using_primlod()
 //Added by Gonetz
 static void cc_t1_inter_t0_using_primlod()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7568,7 +7568,7 @@ static void cc_t1_inter_t0_using_primlod()
 //Added by Gonetz
 static void cc_t1_inter_t0_using_t0()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7578,7 +7578,7 @@ static void cc_t1_inter_t0_using_t0()
 //Added by Gonetz
 static void cc_t0_inter_t1_using_k5()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7587,7 +7587,7 @@ static void cc_t0_inter_t1_using_k5()
 
 static void cc_t0_inter_env_using_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7601,7 +7601,7 @@ static void cc_t0_inter_env_using_prim()
 //Added by Gonetz
 static void cc_t0_inter_prim_using_primlod()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7626,20 +7626,20 @@ static void cc_t0_inter_shade_using_t0a()
     else
     {
         //(shade-t0)*t0a+t0 = t0*(1-t0a)+shade*t0a
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
         rdp.best_tex = 1;
         cmb.tex = 1;
-        cmb.tmu0_func = GR_COMBINE_FUNCTION_BLEND_LOCAL;
+        cmb.tmu0_func = GFX_COMBINE_FUNCTION_BLEND_LOCAL;
         cmb.tmu0_fac = GR_COMBINE_FACTOR_LOCAL_ALPHA;
     }
 }
 
 static void cc_t0_inter_shade_using_primlod()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -7654,7 +7654,7 @@ static void cc_t0_inter_shade_using_primlod()
 static void cc__env_inter_t0_using_primlod__mul_prim()
 {
     //((t0-env)*primlod+env)*prim = t0*prim*primlod+env*prim*(1-primlod);
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -7692,7 +7692,7 @@ static void cc_env_inter_prim_using_primlod()
 {
     if (rdp.prim_color & 0xFFFFFF00)
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_ITERATED);
@@ -7702,7 +7702,7 @@ static void cc_env_inter_prim_using_primlod()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_CONSTANT);
@@ -7732,7 +7732,7 @@ static void cc_prim_inter__t0_mul_t1_add_env__using_shadea()
         T0_MUL_T1();
     }
     // * not guaranteed to work if another iterated alpha is set
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7781,7 +7781,7 @@ static void cc_shade_inter__prim_inter_shade_using_t0__using_shadea()
 // ** (A-B)*C+D*E **
 static void cc_one_sub_env_mul_prim_add__t0_mul_env() //Aded by Gonetz
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -7811,7 +7811,7 @@ static void cc_t0_sub_env_mul_prim_mul_shade_add_prim_mul_shade() //Aded by Gone
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -7848,7 +7848,7 @@ static void cc__t1_sub_prim_mul_t0_add_env__mul_shade() //Aded by Gonetz
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -7865,7 +7865,7 @@ static void cc__t1_sub_prim_mul_t0_add_env__mul_shade() //Aded by Gonetz
 //Added by Gonetz
 static void cc__t0_inter_t1_using_prima__mul_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7877,7 +7877,7 @@ static void cc__t0_inter_t1_using_prima__mul_prim()
 //Added by Gonetz
 static void cc__t1_inter_t0_using_prima__mul_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7889,7 +7889,7 @@ static void cc__t1_inter_t0_using_prima__mul_prim()
 //Added by Gonetz
 static void cc__t0_inter_t1_using_prim__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7899,7 +7899,7 @@ static void cc__t0_inter_t1_using_prim__mul_shade()
 //Added by Gonetz
 static void cc__t0_inter_t1_using_prima__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7910,7 +7910,7 @@ static void cc__t0_inter_t1_using_prima__mul_shade()
 //Added by Gonetz
 static void cc__t1_inter_t0_using_prima__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7920,7 +7920,7 @@ static void cc__t1_inter_t0_using_prima__mul_shade()
 
 static void cc__t0_inter_t1_using_env__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7929,7 +7929,7 @@ static void cc__t0_inter_t1_using_env__mul_shade()
 
 static void cc__t0_inter_t1_using_enva__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7939,7 +7939,7 @@ static void cc__t0_inter_t1_using_enva__mul_shade()
 
 static void cc__t0_inter_t1_using_enva__mul_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7951,7 +7951,7 @@ static void cc__t0_inter_t1_using_enva__mul_prim()
 //Added by Gonetz
 static void cc__t0_inter_t1_using_enva__mul_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7963,7 +7963,7 @@ static void cc__t0_inter_t1_using_enva__mul_env()
 //Added by Gonetz
 static void cc__t0_inter_t1_using_primlod__mul_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7974,7 +7974,7 @@ static void cc__t0_inter_t1_using_primlod__mul_prim()
 //Added by Gonetz
 static void cc__t0_inter_t1_using_primlod__mul_prima()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7985,7 +7985,7 @@ static void cc__t0_inter_t1_using_primlod__mul_prima()
 //Added by Gonetz
 static void cc__t1_mul_primlod_add_t0__mul_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -7996,7 +7996,7 @@ static void cc__t1_mul_primlod_add_t0__mul_prim()
 //Added by Gonetz
 static void cc__t0_inter_t1_using_primlod__mul_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8007,7 +8007,7 @@ static void cc__t0_inter_t1_using_primlod__mul_env()
 //Added by Gonetz
 static void cc__t1_mul_primlod_add_t0__mul_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8018,7 +8018,7 @@ static void cc__t1_mul_primlod_add_t0__mul_env()
 //Added by Gonetz
 static void cc__t1_inter_t0_using_prim__mul_env()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8043,7 +8043,7 @@ static void cc__one_sub_shade_mul_t0_add_shade__mul_prim()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -8068,7 +8068,7 @@ static void cc__one_sub_shade_mul_t0_add_shade__mul_env()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -8078,7 +8078,7 @@ static void cc__one_sub_shade_mul_t0_add_shade__mul_env()
 
 static void cc__t1_inter_t0_using_prim__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8095,7 +8095,7 @@ static void cc__t0_inter_t1_using_primlod__mul_shade()
     }
     if (g_settings->ucode() == CSettings::ucode_PerfectDark)
         lod_frac = rdp.prim_lodfrac;
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8104,7 +8104,7 @@ static void cc__t0_inter_t1_using_primlod__mul_shade()
 
 static void cc__t1_inter_t0_using_primlod__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8113,7 +8113,7 @@ static void cc__t1_inter_t0_using_primlod__mul_shade()
 
 static void cc__t0_inter_t1_using_half__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8122,7 +8122,7 @@ static void cc__t0_inter_t1_using_half__mul_shade()
 
 static void cc__t0_inter_t1_using_t0__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8131,7 +8131,7 @@ static void cc__t0_inter_t1_using_t0__mul_shade()
 
 static void cc__t0_inter_t1_using_t1a__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8149,7 +8149,7 @@ static void cc__t0_inter_t1_using_shadea__mul_shade()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -8159,7 +8159,7 @@ static void cc__t0_inter_t1_using_shadea__mul_shade()
 
 static void cc__t0_inter_t1_using_k5__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8168,7 +8168,7 @@ static void cc__t0_inter_t1_using_k5__mul_shade()
 
 static void cc__t1_inter_t0_using_k5__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8185,14 +8185,14 @@ static void cc_t0_inter_prim_using_prima()
             GFX_CMBX_B, 0);
         cmb.tex_ccolor = rdp.prim_color;
         cmb.tex |= 1;
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE);
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_CONSTANT);
@@ -8205,7 +8205,7 @@ static void cc_t0_inter_prim_using_prima()
 
 static void cc__t0_inter_prim_using_t0a__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8217,7 +8217,7 @@ static void cc__t0_inter_prim_using_t0a__mul_shade()
 static void cc__env_inter_prim_using_t0__mul_prim()
 {
     // (prim-env)*t0+env, (cmb-0)*prim+0
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8238,7 +8238,7 @@ static void cc__env_inter_prim_using_t0__mul_shade()
         //  1ST = CLR_IN * A_IN + CLR_BL * 1MA
         //  OUT = 1ST * 0 + 1ST * 1
 
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -8254,7 +8254,7 @@ static void cc__env_inter_prim_using_t0__mul_shade()
     MOD_0_COL(rdp.env_color & 0xFFFFFF00);
     MOD_0_COL1(rdp.prim_color & 0xFFFFFF00);
     USE_T0();
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8279,7 +8279,7 @@ static void cc__env_inter_one_using_t0__mul_shade()
         MOD_0_COL1(0xFFFFFF00);
         USE_T0();
     }
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8304,7 +8304,7 @@ static void cc_env_inter_one_using__one_sub_t0_mul_primlod()
     {
         USE_T0();
     }
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8324,7 +8324,7 @@ static void cc__env_inter_prim_using_prima__mul_shade()
     int g = (((primg - envg)*prima) / 256) + envg;
     int b = (((primb - envb)*prima) / 256) + envb;
     cmb.ccolor = (r << 24) | (g << 16) | (b << 8);
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -8354,7 +8354,7 @@ static void cc__prim_inter_t0_using_env__mul_shade()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -8397,7 +8397,7 @@ static void cc__one_inter_prim_using_t1__mul_shade()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -8442,7 +8442,7 @@ static void cc_prim_sub__prim_sub_t0_mul_prima__mul_shade()
             cc_t0_mul_prima_mul_shade();
             return;
         }
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -8457,7 +8457,7 @@ static void cc_prim_sub__prim_sub_t0_mul_prima__mul_shade()
 static void cc__prim_inter_env_using_t0__mul_shade()
 {
     // (env-prim)*t0+prim, (cmb-0)*shade+0
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8485,7 +8485,7 @@ static void cc__prim_inter_one_using_env__mul_shade()
         cc_shade();
         return;
     }
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -8498,7 +8498,7 @@ static void cc__prim_inter_one_using_env__mul_shade()
 
 static void cc__env_inter_prim_using_t0a__mul_t0()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8510,7 +8510,7 @@ static void cc__env_inter_prim_using_t0a__mul_t0()
 
 static void cc__env_inter_prim_using_t0a__mul_prim()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8534,7 +8534,7 @@ static void cc__env_inter_prim_using__t0_sub_shade_mul_primlod_add_env()
         percent = (float)lod_frac / 255.0f;
         cmb.dc0_detailmax = cmb.dc1_detailmax = percent;
         cmb.tex |= 1;
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_RGB,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_CONSTANT);
@@ -8543,7 +8543,7 @@ static void cc__env_inter_prim_using__t0_sub_shade_mul_primlod_add_env()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
             GR_COMBINE_FACTOR_ONE,//TEXTURE_RGB,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);//CONSTANT);
@@ -8559,7 +8559,7 @@ static void cc__env_inter_prim_using__t0_sub_shade_mul_primlod_add_env()
 
 static void cc__prim_inter_t0_using_t0__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8570,7 +8570,7 @@ static void cc__prim_inter_t0_using_t0__mul_shade()
 
 static void cc__env_inter_t0_using_t0a__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8581,7 +8581,7 @@ static void cc__env_inter_t0_using_t0a__mul_shade()
 
 static void cc__env_inter_t0_using_prima__mul_shade()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8594,7 +8594,7 @@ static void cc__env_inter_t0_using_prima__mul_shade()
 
 static void cc_shade_mul_prima()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_ITERATED);
@@ -8603,7 +8603,7 @@ static void cc_shade_mul_prima()
 
 static void cc_shade_mul_shadea()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_ITERATED);
@@ -8635,7 +8635,7 @@ static void cc__t0_mul_shade__inter_env_using_enva()
     }
     else
     {
-        CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -8649,7 +8649,7 @@ static void cc__t0_mul_shade__inter_env_using_enva()
 
 static void cc__t0_mul_shade__inter_one_using_enva()
 {
-    CCMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    CCMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_RGB,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -8680,7 +8680,7 @@ static void cc__t0_mul_shade__inter_one_using_shadea()
 
 static void cc__prim_mul_shade__inter_env_using_enva()
 {
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -8691,7 +8691,7 @@ static void cc__prim_mul_shade__inter_env_using_enva()
 
 static void cc__prim_mul_shade__inter_env_using__prim_mul_shade_alpha()
 {
-    CCMB(GR_COMBINE_FUNCTION_BLEND,
+    CCMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -8704,7 +8704,7 @@ static void cc__prim_mul_shade__inter_env_using__prim_mul_shade_alpha()
 
 static void ac_one()
 {
-    ACMB(GR_COMBINE_FUNCTION_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_NONE);
@@ -8718,7 +8718,7 @@ static void ac_t0()
         uint32_t blend_mode = (rdp.othermode_l >> 16);
         if (blend_mode == 0x0550)
         {
-            ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+            ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
                 GR_COMBINE_FACTOR_LOCAL,
                 GR_COMBINE_LOCAL_CONSTANT,
                 GR_COMBINE_OTHER_TEXTURE);
@@ -8726,7 +8726,7 @@ static void ac_t0()
         }
         else if (blend_mode == 0x55f0) //cmem*afog + cfog*1ma
         {
-            ACMB(GR_COMBINE_FUNCTION_LOCAL,
+            ACMB(GFX_COMBINE_FUNCTION_LOCAL,
                 GR_COMBINE_FACTOR_ONE,
                 GR_COMBINE_LOCAL_CONSTANT,
                 GR_COMBINE_OTHER_NONE);
@@ -8734,7 +8734,7 @@ static void ac_t0()
         }
         else
         {
-            ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+            ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
                 GR_COMBINE_FACTOR_ONE,
                 GR_COMBINE_LOCAL_NONE,
                 GR_COMBINE_OTHER_TEXTURE);
@@ -8742,7 +8742,7 @@ static void ac_t0()
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE);
@@ -8757,7 +8757,7 @@ static void ac_zero()
         ac_t0();
         return;
     }
-    ACMB(GR_COMBINE_FUNCTION_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_NONE);
@@ -8766,7 +8766,7 @@ static void ac_zero()
 
 static void ac_t1()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8778,7 +8778,7 @@ static void ac_t1()
 
 static void ac_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_NONE);
@@ -8787,7 +8787,7 @@ static void ac_prim()
 
 static void ac_primlod()
 {
-    ACMB(GR_COMBINE_FUNCTION_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_NONE);
@@ -8796,7 +8796,7 @@ static void ac_primlod()
 
 static void ac_one_sub_t0()
 {
-    ACMB(GR_COMBINE_FUNCTION_BLEND_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_BLEND_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_NONE);
@@ -8806,7 +8806,7 @@ static void ac_one_sub_t0()
 
 static void ac_one_sub_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_NONE);
@@ -8815,7 +8815,7 @@ static void ac_one_sub_prim()
 
 static void ac_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_NONE);
@@ -8824,7 +8824,7 @@ static void ac_env()
 
 static void ac_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_NONE);
@@ -8833,7 +8833,7 @@ static void ac_shade()
 // ** A+B **
 static void ac_t0_add_t1()  //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8844,7 +8844,7 @@ static void ac__t0_mul_prim__add__t1_mul_primlod()  //Aded by Gonetz
 {
     if (lod_frac == 0)
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_TEXTURE);
@@ -8853,7 +8853,7 @@ static void ac__t0_mul_prim__add__t1_mul_primlod()  //Aded by Gonetz
     }
     else if ((rdp.prim_color & 0xFF) == 0)
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_TEXTURE);
@@ -8862,7 +8862,7 @@ static void ac__t0_mul_prim__add__t1_mul_primlod()  //Aded by Gonetz
     }
     else if ((rdp.prim_color & 0xFF) == 0xFF)
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE);
@@ -8870,7 +8870,7 @@ static void ac__t0_mul_prim__add__t1_mul_primlod()  //Aded by Gonetz
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_TEXTURE);
@@ -8881,7 +8881,7 @@ static void ac__t0_mul_prim__add__t1_mul_primlod()  //Aded by Gonetz
 
 static void ac_t0_add_prim() //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8891,7 +8891,7 @@ static void ac_t0_add_prim() //Aded by Gonetz
 
 static void ac_t0_add_env() //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8901,7 +8901,7 @@ static void ac_t0_add_env() //Aded by Gonetz
 
 static void ac_t1_add_env()  //Added by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8911,7 +8911,7 @@ static void ac_t1_add_env()  //Added by Gonetz
 
 static void ac__t0_add_t1__add_prim() //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8921,7 +8921,7 @@ static void ac__t0_add_t1__add_prim() //Aded by Gonetz
 
 static void ac_prim_add_shade() //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -8930,7 +8930,7 @@ static void ac_prim_add_shade() //Aded by Gonetz
 
 static void ac_env_add_shade() //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -8940,7 +8940,7 @@ static void ac_env_add_shade() //Aded by Gonetz
 // ** A*B **
 static void ac_t0_mul_t0() //Added by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8949,7 +8949,7 @@ static void ac_t0_mul_t0() //Added by Gonetz
 
 static void ac_t0_mul_t1()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8958,7 +8958,7 @@ static void ac_t0_mul_t1()
 
 static void ac_t0_mul_t1_add_t1()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8982,7 +8982,7 @@ static void ac_t0_mul_t1_add_t1()
 
 static void ac_t0_mul_t1_add_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -8992,7 +8992,7 @@ static void ac_t0_mul_t1_add_prim()
 
 static void ac_t0_mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9002,7 +9002,7 @@ static void ac_t0_mul_prim()
 
 static void ac_t0_mul_prim_mul_primlod()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9012,7 +9012,7 @@ static void ac_t0_mul_prim_mul_primlod()
 
 static void ac_t1_mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9041,13 +9041,13 @@ static void ac__t1_sub_one_mul_primlod_add_t0__mul_prim()
     }
     else
     {
-        cmb.tmu1_a_func = GR_COMBINE_FUNCTION_BLEND_LOCAL;
+        cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_BLEND_LOCAL;
         cmb.tmu1_a_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR;
         percent = (255 - lod_frac) / 255.0f;
-        cmb.tmu0_a_func = GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA;
+        cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA;
         cmb.tmu0_a_fac = GR_COMBINE_FACTOR_OTHER_ALPHA;
     }
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9058,7 +9058,7 @@ static void ac__t1_sub_one_mul_primlod_add_t0__mul_prim()
 
 static void ac__t0_sub_t1_mul_enva_add_t0__mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9084,7 +9084,7 @@ static void ac__t0_sub_t1_mul_enva_add_t0__mul_prim()
 
 static void ac__t0_sub_one_mul_enva_add_t0__mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9107,7 +9107,7 @@ static void ac__t0_sub_one_mul_enva_add_t0__mul_prim()
 
 static void ac__t0_sub_t1_mul_primlod_add_t0__mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9134,7 +9134,7 @@ static void ac__t0_sub_t1_mul_primlod_add_t0__mul_prim()
 
 static void ac__t1_sub_prim_mul_primlod_add_t0__mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9162,7 +9162,7 @@ static void ac__t1_sub_prim_mul_primlod_add_t0__mul_prim()
 
 static void ac__t1_sub_t0_mul_enva_add_t1__mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9189,7 +9189,7 @@ static void ac__t1_sub_t0_mul_enva_add_t1__mul_prim()
 
 static void ac__t1_sub_t0_mul_primlod__mul_env_add_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9208,8 +9208,8 @@ static void ac__t1_sub_t0_mul_primlod__mul_env_add_prim()
     }
     else
     {
-        cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL;
-        cmb.tmu0_a_func = GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL;
+        cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_LOCAL;
+        cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL;
         cmb.tmu0_a_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR;
         percent = (rdp.prim_lodfrac * (rdp.env_color & 0xFF)) / 65025.0f;
         cmb.dc0_detailmax = cmb.dc1_detailmax = percent; \
@@ -9240,7 +9240,7 @@ static void ac__t0_sub_one_mul_enva_add_t1__mul_prim()
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -9252,7 +9252,7 @@ static void ac__t0_sub_one_mul_enva_add_t1__mul_prim()
 
 static void ac__t1_mul_prima_add_t0__mul_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9262,7 +9262,7 @@ static void ac__t1_mul_prima_add_t0__mul_env()
 
 static void ac__t1_mul_enva_add_t0__mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9272,7 +9272,7 @@ static void ac__t1_mul_enva_add_t0__mul_prim()
 
 static void ac_t0_mul_primlod()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9282,7 +9282,7 @@ static void ac_t0_mul_primlod()
 
 static void ac_t1_mul_primlod()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9293,7 +9293,7 @@ static void ac_t1_mul_primlod()
 //Added by Gonetz
 static void ac__t0_add_t1__mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9304,7 +9304,7 @@ static void ac__t0_add_t1__mul_prim()
 //Added by Gonetz
 static void ac__t0_add_t1__mul_primlod()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9315,7 +9315,7 @@ static void ac__t0_add_t1__mul_primlod()
 //Added by Gonetz
 static void ac__t0_mul_t1__mul_primlod()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9325,7 +9325,7 @@ static void ac__t0_mul_t1__mul_primlod()
 
 static void ac_t0_mul_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9335,7 +9335,7 @@ static void ac_t0_mul_env()
 
 static void ac_t0_mul_env_mul_primlod()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9345,7 +9345,7 @@ static void ac_t0_mul_env_mul_primlod()
 
 static void ac_t1_mul_env() //Added by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9374,13 +9374,13 @@ static void ac__t1_sub_one_mul_primlod_add_t0__mul_env()
     }
     else
     {
-        cmb.tmu1_a_func = GR_COMBINE_FUNCTION_BLEND_LOCAL;
+        cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_BLEND_LOCAL;
         cmb.tmu1_a_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR;
         percent = (255 - lod_frac) / 255.0f;
-        cmb.tmu0_a_func = GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA;
+        cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA;
         cmb.tmu0_a_fac = GR_COMBINE_FACTOR_OTHER_ALPHA;
     }
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9391,7 +9391,7 @@ static void ac__t1_sub_one_mul_primlod_add_t0__mul_env()
 
 static void ac_t0_mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9400,7 +9400,7 @@ static void ac_t0_mul_shade()
 
 static void ac_t1_mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9410,7 +9410,7 @@ static void ac_t1_mul_shade()
 //Added by Gonetz
 static void ac__t0_add_t1__mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9419,7 +9419,7 @@ static void ac__t0_add_t1__mul_shade()
 
 static void ac__t0_mul_primlod_add_t0__mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9441,7 +9441,7 @@ static void ac__t0_mul_primlod_add_t0__mul_shade()
 
 static void ac__t1_mul_prima_add_t0__mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9451,7 +9451,7 @@ static void ac__t1_mul_prima_add_t0__mul_shade()
 //Added by Gonetz
 static void ac__t0_sub_t1__mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9475,7 +9475,7 @@ static void ac__t0_sub_t1__mul_shade()
 
 static void ac__t1_mul_t1_add_t1__mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9499,7 +9499,7 @@ static void ac__t1_mul_t1_add_t1__mul_shade()
 
 static void ac__t1_mul_enva_add_t0__mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9523,13 +9523,13 @@ static void ac__t1_sub_one_mul_primlod_add_t0__mul_shade()
     }
     else
     {
-        cmb.tmu1_a_func = GR_COMBINE_FUNCTION_BLEND_LOCAL;
+        cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_BLEND_LOCAL;
         cmb.tmu1_a_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR;
         percent = (255 - lod_frac) / 255.0f;
-        cmb.tmu0_a_func = GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA;
+        cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA;
         cmb.tmu0_a_fac = GR_COMBINE_FACTOR_OTHER_ALPHA;
     }
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9539,7 +9539,7 @@ static void ac__t1_sub_one_mul_primlod_add_t0__mul_shade()
 
 static void ac__t1_sub_shade_mul_primlod_add_t0__mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9567,7 +9567,7 @@ static void ac__t1_sub_shade_mul_primlod_add_t0__mul_shade()
 //Added by Gonetz
 static void ac_prim_mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -9578,7 +9578,7 @@ static void ac_prim_mul_prim()
 //Added by Gonetz
 static void ac_prim_mul_primlod()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -9588,7 +9588,7 @@ static void ac_prim_mul_primlod()
 
 static void ac_prim_mul_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -9614,7 +9614,7 @@ static void ac__prim_sub_one_mul_primlod_add_t0__mul_env()
     {
         A_USE_T0();
     }
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9623,7 +9623,7 @@ static void ac__prim_sub_one_mul_primlod_add_t0__mul_env()
 
 static void ac_prim_mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -9632,7 +9632,7 @@ static void ac_prim_mul_shade()
 
 static void ac_env_mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -9641,7 +9641,7 @@ static void ac_env_mul_shade()
 
 static void ac_primlod_mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -9651,7 +9651,7 @@ static void ac_primlod_mul_shade()
 // ** A-B **
 static void ac_prim_sub_t0()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9679,7 +9679,7 @@ static void ac_t0_mul_prim_add_t0()
 
 static void ac_t1_mul_prim_add_t0()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9698,7 +9698,7 @@ static void ac__t0_inter_t1_using_t1a__mul_prim_add__t0_inter_t1_using_t1a()
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_TEXTURE);
@@ -9719,7 +9719,7 @@ static void ac__t1_inter_t0_using_t0a__mul_prim_add__t1_inter_t0_using_t0a()
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_TEXTURE);
@@ -9731,7 +9731,7 @@ static void ac__t1_inter_t0_using_t0a__mul_prim_add__t1_inter_t0_using_t0a()
 //Added by Gonetz
 static void ac_t0_mul_prim_add_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -9743,7 +9743,7 @@ static void ac_t0_mul_prim_add_env()
 //Added by Gonetz
 static void ac__t0_add_t1__mul_prim_add_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -9755,7 +9755,7 @@ static void ac__t0_add_t1__mul_prim_add_env()
 //Aded by Gonetz
 static void ac__t0_inter_t1_using_enva__mul_prim_add_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -9768,7 +9768,7 @@ static void ac__t0_inter_t1_using_enva__mul_prim_add_env()
 //Aded by Gonetz
 static void ac_t0_mul_primlod_add_t0()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9791,7 +9791,7 @@ static void ac_t0_mul_primlod_add_t0()
 //Aded by Gonetz
 static void ac_t1_mul_primlod_add_t0()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -9801,7 +9801,7 @@ static void ac_t1_mul_primlod_add_t0()
 //Aded by Gonetz
 static void ac_t0_mul_primlod_add_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -9812,7 +9812,7 @@ static void ac_t0_mul_primlod_add_prim()
 
 static void ac_t0_mul_primlod_add_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -9824,7 +9824,7 @@ static void ac_t0_mul_primlod_add_env()
 //Aded by Gonetz
 static void ac__t0_add_t1__mul_primlod_add_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -9836,7 +9836,7 @@ static void ac__t0_add_t1__mul_primlod_add_prim()
 //Added by Gonetz
 static void ac_t0_mul_env_add_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -9848,7 +9848,7 @@ static void ac_t0_mul_env_add_prim()
 //Added by Gonetz
 static void ac_t1_mul_prim_add_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -9860,7 +9860,7 @@ static void ac_t1_mul_prim_add_prim()
 //Added by Gonetz
 static void ac_prim_mul_shade_add_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -9870,7 +9870,7 @@ static void ac_prim_mul_shade_add_shade()
 //Added by Gonetz
 static void ac_t0_mul_shade_add_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -9880,7 +9880,7 @@ static void ac_t0_mul_shade_add_prim()
 
 static void ac_t0_mul_shade_add_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -9890,7 +9890,7 @@ static void ac_t0_mul_shade_add_env()
 
 static void ac_one_sub_prim_mul__t0_mul_t1__add__prim_mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -9902,7 +9902,7 @@ static void ac_one_sub_prim_mul__t0_mul_t1__add__prim_mul_shade()
 // ** A*B+C*D **
 static void ac_t0_mul_prim_add_shade_mul_one_minus_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -9930,7 +9930,7 @@ static void ac__t0_mul_primlod_add_shade__mul_shade()
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -9960,7 +9960,7 @@ static void ac__t1_mul_primlod_add_shade__mul_shade()
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -9991,7 +9991,7 @@ static void ac__t0_sub_t1_mul_prim_add_shade__mul_shade()
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA,
             GR_COMBINE_FACTOR_TEXTURE_ALPHA,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_CONSTANT);
@@ -10022,7 +10022,7 @@ static void ac__t1_sub_t0_mul_prim_add_shade__mul_shade()
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA,
             GR_COMBINE_FACTOR_TEXTURE_ALPHA,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_CONSTANT);
@@ -10034,7 +10034,7 @@ static void ac__t1_sub_t0_mul_prim_add_shade__mul_shade()
 // ** A*B*C **
 static void ac__t0_mul_t1__mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10051,7 +10051,7 @@ static void ac__t0_mul_t1__mul_prim()
 
 static void ac__t0_mul_t1__mul_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10061,7 +10061,7 @@ static void ac__t0_mul_t1__mul_env()
 
 static void ac__t0_mul_t1__mul_env_mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10071,7 +10071,7 @@ static void ac__t0_mul_t1__mul_env_mul_shade()
 
 static void ac__t0_mul_t1__mul_prim_mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10081,7 +10081,7 @@ static void ac__t0_mul_t1__mul_prim_mul_shade()
 
 static void ac__t0_mul_t1__mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10106,7 +10106,7 @@ static void ac__t0_add_prim_mul_shade__mul_shade()
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -10118,7 +10118,7 @@ static void ac__t0_add_prim_mul_shade__mul_shade()
 //Added by Gonetz
 static void ac_t0_mul_prim_mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10129,7 +10129,7 @@ static void ac_t0_mul_prim_mul_prim()
 
 static void ac_t0_mul_prim_mul_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10139,7 +10139,7 @@ static void ac_t0_mul_prim_mul_env()
 
 static void ac_t0_mul_prim_mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10149,7 +10149,7 @@ static void ac_t0_mul_prim_mul_shade()
 
 static void ac_t1_mul_prim_mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10165,7 +10165,7 @@ static void ac_t0_mul_env_mul_shade()
         return;
     }
 
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10175,7 +10175,7 @@ static void ac_t0_mul_env_mul_shade()
 
 static void ac_t1_mul_env_mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10185,7 +10185,7 @@ static void ac_t1_mul_env_mul_shade()
 
 static void ac_t0_mul_primlod_mul_prim() //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10196,7 +10196,7 @@ static void ac_t0_mul_primlod_mul_prim() //Aded by Gonetz
 // ** (A+B)*C **
 static void ac_prim_add_env_mul_t0() //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10207,7 +10207,7 @@ static void ac_prim_add_env_mul_t0() //Aded by Gonetz
 
 static void ac_t1_add_prim_mul_env() //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -10235,7 +10235,7 @@ static void ac_t0_sub_prim_mul_shade()
             GFX_CMBX_ZERO, 0);
     }
     else {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -10261,7 +10261,7 @@ static void ac_t0_sub_prim_mul_shade_mul_env()
         CA_ENV();
     }
     else {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -10287,7 +10287,7 @@ static void ac_t0_sub_shade_mul_prim()
             GFX_CMBX_ZERO, 0);
     }
     else {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -10308,7 +10308,7 @@ static void ac__t0_mul_t1__sub_prim_mul_shade()  //Aded by Gonetz
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -10338,7 +10338,7 @@ static void ac__one_sub_t1_mul_t0_add_shade__sub_prim_mul_shade()  //Aded by Gon
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -10358,7 +10358,7 @@ static void ac__t1_mul_primlod_add_t0__sub_prim_mul_shade()
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -10379,7 +10379,7 @@ static void ac__t1_mul_primlod_add_t0__sub_env_mul_prim()  //Aded by Gonetz
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_TEXTURE);
@@ -10400,7 +10400,7 @@ static void ac__t1_mul_prima_add_t0__sub_env_mul_shade()  //Aded by Gonetz
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -10410,7 +10410,7 @@ static void ac__t1_mul_prima_add_t0__sub_env_mul_shade()  //Aded by Gonetz
 
 static void ac_one_sub_t0_mul_prim()  //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_BLEND_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_BLEND_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_NONE);
@@ -10422,7 +10422,7 @@ static void ac_one_sub_t0_mul_shade()  //Aded by Gonetz
 {
     if (rdp.aTBuffTex[0] || rdp.aTBuffTex[1])
     {
-        ACMB(GR_COMBINE_FUNCTION_BLEND_LOCAL,
+        ACMB(GFX_COMBINE_FUNCTION_BLEND_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_ALPHA,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_NONE);
@@ -10434,7 +10434,7 @@ static void ac_one_sub_t0_mul_shade()  //Aded by Gonetz
 
 static void ac_one_sub_prim_mul_t0()  //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10444,7 +10444,7 @@ static void ac_one_sub_prim_mul_t0()  //Aded by Gonetz
 
 static void ac_one_sub_env_mul_t0()  //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10454,7 +10454,7 @@ static void ac_one_sub_env_mul_t0()  //Aded by Gonetz
 
 static void ac_one_sub_shade_mul_t0()  //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10463,7 +10463,7 @@ static void ac_one_sub_shade_mul_t0()  //Aded by Gonetz
 
 static void ac_one_sub_shade_mul_env()  //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -10472,7 +10472,7 @@ static void ac_one_sub_shade_mul_env()  //Aded by Gonetz
 
 static void ac_prim_sub_shade_mul_t0()  //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -10498,7 +10498,7 @@ static void ac_prim_sub_shade_mul_prim()  //Aded by Gonetz
         }
         else
         {
-            ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+            ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
                 GR_COMBINE_FACTOR_ONE,
                 GR_COMBINE_LOCAL_ITERATED,
                 GR_COMBINE_OTHER_CONSTANT);
@@ -10509,7 +10509,7 @@ static void ac_prim_sub_shade_mul_prim()  //Aded by Gonetz
 
 static void ac_shade_sub_env_mul_t0()  //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -10520,7 +10520,7 @@ static void ac_shade_sub_env_mul_t0()  //Aded by Gonetz
 // ** (A-B)*C*D **
 static void ac_one_sub_t0_mul_prim_mul_shade()  //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_BLEND_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_BLEND_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_NONE);
@@ -10558,7 +10558,7 @@ static void ac__t0_mul_t1__sub_env_mul_prim_add__t0_mul_t1()  //Aded by Gonetz
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE);
@@ -10585,7 +10585,7 @@ static void ac__t0_sub_prim_mul_shade_add_shade__mul_env()  //Aded by Gonetz
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -10598,7 +10598,7 @@ static void ac__t0_sub_prim_mul_shade_add_shade__mul_env()  //Aded by Gonetz
 
 static void ac_t0_sub_t1_mul_env_add_env()  //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10620,7 +10620,7 @@ static void ac_t0_sub_one_mul_enva_add_t1()  //Aded by Gonetz
             GFX_CMBX_B, 0);
         cmb.tex_ccolor = (cmb.tex_ccolor & 0xFFFFFF00) | (rdp.env_color & 0xFF);
         cmb.tex |= 3;
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_TEXTURE);
@@ -10654,7 +10654,7 @@ static void ac_t1_sub_one_mul_enva_add_t0()  //Aded by Gonetz
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE);
@@ -10664,7 +10664,7 @@ static void ac_t1_sub_one_mul_enva_add_t0()  //Aded by Gonetz
 
 static void ac_t1_sub_one_mul_primlod_add_t0()  //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10687,10 +10687,10 @@ static void ac_t1_sub_one_mul_primlod_add_t0()  //Aded by Gonetz
     {
         //    A_T0_MUL_T1 ();
         //    A_T1_MUL_PRIMLOD_ADD_T0 ();
-        cmb.tmu1_a_func = GR_COMBINE_FUNCTION_BLEND_LOCAL;
+        cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_BLEND_LOCAL;
         cmb.tmu1_a_fac = GR_COMBINE_FACTOR_DETAIL_FACTOR;
         percent = (255 - lod_frac) / 255.0f;
-        cmb.tmu0_a_func = GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA;
+        cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA;
         cmb.tmu0_a_fac = GR_COMBINE_FACTOR_OTHER_ALPHA;
         cmb.dc0_detailmax = cmb.dc1_detailmax = percent;
         cmb.tex |= 3;
@@ -10718,7 +10718,7 @@ static void ac_t1_sub_prim_mul_shade_add_prim()  //Aded by Gonetz
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
             GR_COMBINE_FACTOR_TEXTURE_ALPHA,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_ITERATED);
@@ -10731,7 +10731,7 @@ static void ac_t1_sub_prim_mul_shade_add_prim()  //Aded by Gonetz
 
 static void ac_t0_sub_env_mul_prim_add_env()  //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -10762,21 +10762,21 @@ static void ac_t0_sub_env_mul_shadea_add_env()  //Aded by Gonetz
 
 static void ac__one_sub_t0_mul_t1_add_t0__mul_prim()  //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
     CA_PRIM();
     rdp.best_tex = 0;
     cmb.tex |= 3;
-    cmb.tmu1_a_func = GR_COMBINE_FUNCTION_LOCAL;
-    cmb.tmu0_a_func = GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL;
+    cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_LOCAL;
+    cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL;
     cmb.tmu0_a_fac = GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA;
 }
 
 static void ac_one_sub_t0_mul_prim_add_t0()  //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_BLEND,
+    ACMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -10787,7 +10787,7 @@ static void ac_one_sub_t0_mul_prim_add_t0()  //Aded by Gonetz
 
 static void ac_one_sub_t0_mul_env_add_t0()  //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_BLEND,
+    ACMB(GFX_COMBINE_FUNCTION_BLEND,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -10798,7 +10798,7 @@ static void ac_one_sub_t0_mul_env_add_t0()  //Aded by Gonetz
 
 static void ac_one_sub_t0_mul_primlod_add_prim()  //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -10809,7 +10809,7 @@ static void ac_one_sub_t0_mul_primlod_add_prim()  //Aded by Gonetz
 
 static void ac_prim_sub_t0_mul_env_add_t0()  //Aded by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -10822,7 +10822,7 @@ static void ac_prim_sub_t0_mul_env_add_t0()  //Aded by Gonetz
 
 static void ac_prim_sub_env_mul_t0_add_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -10833,7 +10833,7 @@ static void ac_prim_sub_env_mul_t0_add_env()
 
 static void ac_prim_sub_env_mul_t1_add_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -10844,7 +10844,7 @@ static void ac_prim_sub_env_mul_t1_add_env()
 
 static void ac_prim_sub_env_mul_t0_add_one()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -10856,7 +10856,7 @@ static void ac_prim_sub_env_mul_t0_add_one()
 //Added by Gonetz
 static void ac_prim_sub_env_mul_shade_add_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -10867,7 +10867,7 @@ static void ac_prim_sub_env_mul_shade_add_env()
 //Added by Gonetz
 static void ac_prim_sub_env_mul_shade_add_env_mul_t1()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -10879,7 +10879,7 @@ static void ac_prim_sub_env_mul_shade_add_env_mul_t1()
 //Added by Gonetz
 static void ac_prim_sub_shade_mul_t0_add_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -10890,7 +10890,7 @@ static void ac_prim_sub_shade_mul_t0_add_shade()
 //Added by Gonetz
 static void ac_one_sub_shade_mul_t1_add_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -10900,7 +10900,7 @@ static void ac_one_sub_shade_mul_t1_add_shade()
 //Added by Gonetz
 static void ac_one_sub_env_mul_shade_add_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -10910,7 +10910,7 @@ static void ac_one_sub_env_mul_shade_add_env()
 //Added by Gonetz
 static void ac_env_sub_prim_mul_t0_add_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -10933,14 +10933,14 @@ static void ac_one_sub_t1_add_t0_mul_env()
             GFX_CMBX_B, 1);
         cmb.tex_ccolor = (cmb.tex_ccolor & 0xFFFFFF00) | (rdp.env_color & 0xFF);
         cmb.tex |= 3;
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE);
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_TEXTURE);
@@ -10952,7 +10952,7 @@ static void ac_one_sub_t1_add_t0_mul_env()
 
 static void ac_env_sub_prim_mul_shade_add_prim() //Added by Gonetz
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -10962,7 +10962,7 @@ static void ac_env_sub_prim_mul_shade_add_prim() //Added by Gonetz
 
 static void ac_env_sub_primshade_mul_t1_add_primshade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -10973,7 +10973,7 @@ static void ac_env_sub_primshade_mul_t1_add_primshade()
 
 static void ac_one_sub_prim_mul_t0_add_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -10984,7 +10984,7 @@ static void ac_one_sub_prim_mul_t0_add_prim()
 
 static void ac_one_sub_prim_mul_t0_add__prim_mul_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_CONSTANT);
@@ -11016,7 +11016,7 @@ static void ac_shade_sub_t0_mul_primlod_add_prim()
 
 static void ac_shade_sub_env_mul_t0_add_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -11028,7 +11028,7 @@ static void ac_shade_sub_env_mul_t0_add_prim()
 // ** A inter B using C **
 static void ac_t0_inter_t1_using_prima()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11038,7 +11038,7 @@ static void ac_t0_inter_t1_using_prima()
 
 static void ac_t1_inter_t0_using_prima()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11048,7 +11048,7 @@ static void ac_t1_inter_t0_using_prima()
 
 static void ac_t0_inter_t1_using_primlod()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11057,7 +11057,7 @@ static void ac_t0_inter_t1_using_primlod()
 
 static void ac_t0_inter_t1_using_enva()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11067,7 +11067,7 @@ static void ac_t0_inter_t1_using_enva()
 
 static void ac_t1_inter_t0_using_enva()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11078,7 +11078,7 @@ static void ac_t1_inter_t0_using_enva()
 //Added by Gonetz
 static void ac_t0_inter_t1_using_t0a()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11088,7 +11088,7 @@ static void ac_t0_inter_t1_using_t0a()
 //Added by Gonetz
 static void ac_t0_inter_t1_using_t1a()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11107,7 +11107,7 @@ static void ac_t0_inter_t1_using_shadea()
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             GR_COMBINE_LOCAL_NONE,
             GR_COMBINE_OTHER_TEXTURE);
@@ -11119,7 +11119,7 @@ static void ac_t0_inter_t1_using_shadea()
 
 static void ac__t0_inter_t1_using_primlod__mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11129,7 +11129,7 @@ static void ac__t0_inter_t1_using_primlod__mul_prim()
 
 static void ac__t1_mul_primlod_add_t0__mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11139,7 +11139,7 @@ static void ac__t1_mul_primlod_add_t0__mul_prim()
 
 static void ac__t0_inter_t1_using_primlod__mul_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11149,7 +11149,7 @@ static void ac__t0_inter_t1_using_primlod__mul_env()
 
 static void ac__t1_mul_primlod_add_t0__mul_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11165,7 +11165,7 @@ static void ac__t0_inter_t1_using_primlod__mul_shade()
         ac_t0_inter_t1_using_primlod();
         return;
     }
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11174,7 +11174,7 @@ static void ac__t0_inter_t1_using_primlod__mul_shade()
 
 static void ac__t1_mul_primlod_add_t0__mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11184,7 +11184,7 @@ static void ac__t1_mul_primlod_add_t0__mul_shade()
 //Added by Gonetz
 static void ac__t0_inter_t1_using_prima__mul_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11196,7 +11196,7 @@ static void ac__t0_inter_t1_using_prima__mul_env()
 //Added by Gonetz
 static void ac__t1_inter_t0_using_t0a__mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11206,7 +11206,7 @@ static void ac__t1_inter_t0_using_t0a__mul_prim()
 
 static void ac__t1_inter_t0_using_primlod__mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11216,7 +11216,7 @@ static void ac__t1_inter_t0_using_primlod__mul_prim()
 
 static void ac__t1_inter_t0_using_prima__mul_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11228,7 +11228,7 @@ static void ac__t1_inter_t0_using_prima__mul_env()
 //Added by Gonetz
 static void ac__t0_inter_t1_using_prima__mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11238,7 +11238,7 @@ static void ac__t0_inter_t1_using_prima__mul_shade()
 
 static void ac__t1_inter_t0_using_prima__mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11248,7 +11248,7 @@ static void ac__t1_inter_t0_using_prima__mul_shade()
 
 static void ac__t0_inter_t1_using_enva__mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11259,7 +11259,7 @@ static void ac__t0_inter_t1_using_enva__mul_prim()
 
 static void ac__env_sub_one_mul_t1_add_t0__mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11287,7 +11287,7 @@ static void ac__env_sub_one_mul_t1_add_t0__mul_prim()
 
 static void ac__t0_inter_t1_using_enva__mul_primlod()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11308,7 +11308,7 @@ static void ac__t1_mul_enva_add_t0__sub_prim_mul_shade()
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_TEXTURE);
@@ -11320,7 +11320,7 @@ static void ac__t1_mul_enva_add_t0__sub_prim_mul_shade()
 //Added by Gonetz
 static void ac__t0_inter_t1_using_t0a__mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11331,7 +11331,7 @@ static void ac__t0_inter_t1_using_t0a__mul_prim()
 //Added by Gonetz
 static void ac__t0_inter_t1_using_t1a__mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11341,7 +11341,7 @@ static void ac__t0_inter_t1_using_t1a__mul_prim()
 
 static void ac__t0_inter_t1_using_t1a__mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11361,7 +11361,7 @@ static void ac__t0_inter_t1_using_shadea__mul_prim()
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_TEXTURE);
@@ -11383,7 +11383,7 @@ static void ac__t0_inter_t1_using_shadea__mul_env()
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+        ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_LOCAL,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_TEXTURE);
@@ -11410,7 +11410,7 @@ static void ac__t0_inter_t1_using_primlod__sub_env_mul_shade_add_shade()
 //Added by Gonetz
 static void ac__t0_inter_t1_using_enva__mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11420,7 +11420,7 @@ static void ac__t0_inter_t1_using_enva__mul_shade()
 
 static void ac__t0_inter_t1_using_primlod__mul_prim_add_env()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -11432,7 +11432,7 @@ static void ac__t0_inter_t1_using_primlod__mul_prim_add_env()
 //Added by Gonetz
 static void ac__t0_inter_t1_using_primlod__mul_shade_add_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -11453,7 +11453,7 @@ static void ac__t0_inter_t1_using_primlod__mul_env_add__t0_inter_t1_using_primlo
     }
     else
     {
-        ACMB(GR_COMBINE_FUNCTION_BLEND,
+        ACMB(GFX_COMBINE_FUNCTION_BLEND,
             GR_COMBINE_FACTOR_TEXTURE_ALPHA,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_ITERATED);
@@ -11465,7 +11465,7 @@ static void ac__t0_inter_t1_using_primlod__mul_env_add__t0_inter_t1_using_primlo
 
 static void ac__t1_sub_one_mul_enva_add_t0__mul_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11519,7 +11519,7 @@ static void ac__one_inter_t0_using_prim__mul_env()
 
 static void ac__t1_sub_one_mul_enva_add_t0__mul_shade()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_LOCAL,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_TEXTURE);
@@ -11548,7 +11548,7 @@ static void ac__t1_sub_one_mul_enva_add_t0__mul_shade()
 
 static void ac_zero_sub_prim_mul_t0_add_prim()
 {
-    ACMB(GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_ITERATED);
@@ -11559,7 +11559,7 @@ static void ac_zero_sub_prim_mul_t0_add_prim()
 
 static void ac_one_sub_t0_mul_primshade()
 {
-    ACMB(GR_COMBINE_FUNCTION_BLEND_LOCAL,
+    ACMB(GFX_COMBINE_FUNCTION_BLEND_LOCAL,
         GR_COMBINE_FACTOR_TEXTURE_ALPHA,
         GR_COMBINE_LOCAL_ITERATED,
         GR_COMBINE_OTHER_NONE);
@@ -15501,7 +15501,7 @@ void Combine()
     rdp.uncombined = 0;
 
     cmb.tex = 0;
-    cmb.tmu0_func = cmb.tmu1_func = cmb.tmu0_a_func = cmb.tmu1_a_func = GR_COMBINE_FUNCTION_ZERO;
+    cmb.tmu0_func = cmb.tmu1_func = cmb.tmu0_a_func = cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_ZERO;
     cmb.tmu0_fac = cmb.tmu1_fac = cmb.tmu0_a_fac = cmb.tmu1_a_fac = GR_COMBINE_FACTOR_NONE;
     cmb.tmu0_invert = cmb.tmu0_a_invert = cmb.tmu1_invert = cmb.tmu1_a_invert = FXFALSE;
 
@@ -15638,7 +15638,7 @@ void Combine()
     CombineBlender();
     //*
     // Update textures?
-    //    if (tex == 2 && rdp.texrecting && (cmb.tmu1_func != GR_COMBINE_FUNCTION_ZERO) && (rdp.last_tile_size == 0))
+    //    if (tex == 2 && rdp.texrecting && (cmb.tmu1_func != GFX_COMBINE_FUNCTION_ZERO) && (rdp.last_tile_size == 0))
     if (cmb.tex == 2 && rdp.texrecting && (rdp.cur_tile == rdp.last_tile_size))
     {
         cmb.tex = 0;
@@ -15680,7 +15680,7 @@ void Combine()
                     cmb.t0c_ext_c = GFX_CMBX_LOCAL_TEXTURE_ALPHA;
             }
             else
-                cmb.tmu0_func = GR_COMBINE_FUNCTION_LOCAL_ALPHA;
+                cmb.tmu0_func = GFX_COMBINE_FUNCTION_LOCAL_ALPHA;
         }
 
         if (aTBuff[1] && aTBuff[1]->info.format == GFX_TEXFMT_ALPHA_INTENSITY_88)
@@ -15695,7 +15695,7 @@ void Combine()
                     cmb.t1c_ext_c = GFX_CMBX_LOCAL_TEXTURE_ALPHA;
             }
             else
-                cmb.tmu1_func = GR_COMBINE_FUNCTION_LOCAL_ALPHA;
+                cmb.tmu1_func = GFX_COMBINE_FUNCTION_LOCAL_ALPHA;
         }
     }
     else
@@ -16000,7 +16000,7 @@ void ColorCombinerToExtension()
 
     switch (cmb.c_fnc)
     {
-    case GR_COMBINE_FUNCTION_ZERO:
+    case GFX_COMBINE_FUNCTION_ZERO:
         cmb.c_ext_a = GFX_CMBX_ZERO;
         cmb.c_ext_a_mode = GFX_FUNC_MODE_X;
         cmb.c_ext_b = GFX_CMBX_ZERO;
@@ -16010,7 +16010,7 @@ void ColorCombinerToExtension()
         cmb.c_ext_d = GFX_CMBX_ZERO;
         cmb.c_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_LOCAL:
+    case GFX_COMBINE_FUNCTION_LOCAL:
         cmb.c_ext_a = ext_local;
         cmb.c_ext_a_mode = GFX_FUNC_MODE_X;
         cmb.c_ext_b = GFX_CMBX_ZERO;
@@ -16020,7 +16020,7 @@ void ColorCombinerToExtension()
         cmb.c_ext_d = GFX_CMBX_ZERO;
         cmb.c_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_LOCAL_ALPHA:
         cmb.c_ext_a = ext_local_a;
         cmb.c_ext_a_mode = GFX_FUNC_MODE_X;
         cmb.c_ext_b = GFX_CMBX_ZERO;
@@ -16030,7 +16030,7 @@ void ColorCombinerToExtension()
         cmb.c_ext_d = GFX_CMBX_ZERO;
         cmb.c_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER:
         cmb.c_ext_a = ext_other;
         cmb.c_ext_a_mode = GFX_FUNC_MODE_X;
         cmb.c_ext_b = GFX_CMBX_ZERO;
@@ -16038,7 +16038,7 @@ void ColorCombinerToExtension()
         cmb.c_ext_d = GFX_CMBX_ZERO;
         cmb.c_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL:
         cmb.c_ext_a = ext_other;
         cmb.c_ext_a_mode = GFX_FUNC_MODE_X;
         cmb.c_ext_b = ext_local;
@@ -16046,7 +16046,7 @@ void ColorCombinerToExtension()
         cmb.c_ext_d = GFX_CMBX_B;
         cmb.c_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA:
         cmb.c_ext_a = ext_other;
         cmb.c_ext_a_mode = GFX_FUNC_MODE_X;
         cmb.c_ext_b = ext_local_a;
@@ -16054,7 +16054,7 @@ void ColorCombinerToExtension()
         cmb.c_ext_d = GFX_CMBX_B;
         cmb.c_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL:
         cmb.c_ext_a = ext_other;
         cmb.c_ext_a_mode = GFX_FUNC_MODE_X;
         cmb.c_ext_b = ext_local;
@@ -16062,7 +16062,7 @@ void ColorCombinerToExtension()
         cmb.c_ext_d = GFX_CMBX_ZERO;
         cmb.c_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL:
         cmb.c_ext_a = ext_other;
         cmb.c_ext_a_mode = GFX_FUNC_MODE_X;
         cmb.c_ext_b = ext_local;
@@ -16070,7 +16070,7 @@ void ColorCombinerToExtension()
         cmb.c_ext_d = GFX_CMBX_B;
         cmb.c_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL_ALPHA:
         cmb.c_ext_a = ext_other;
         cmb.c_ext_a_mode = GFX_FUNC_MODE_X;
         cmb.c_ext_b = ext_local;
@@ -16078,7 +16078,7 @@ void ColorCombinerToExtension()
         cmb.c_ext_d = GFX_CMBX_ALOCAL;
         cmb.c_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
         cmb.c_ext_a = GFX_CMBX_ZERO;
         cmb.c_ext_a_mode = GFX_FUNC_MODE_ZERO;
         cmb.c_ext_b = ext_local;
@@ -16086,7 +16086,7 @@ void ColorCombinerToExtension()
         cmb.c_ext_d = GFX_CMBX_B;
         cmb.c_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
     default:
         cmb.c_ext_a = GFX_CMBX_ZERO;
         cmb.c_ext_a_mode = GFX_FUNC_MODE_ZERO;
@@ -16169,7 +16169,7 @@ void AlphaCombinerToExtension()
 
     switch (cmb.a_fnc)
     {
-    case GR_COMBINE_FUNCTION_ZERO:
+    case GFX_COMBINE_FUNCTION_ZERO:
         cmb.a_ext_a = GFX_CMBX_ZERO;
         cmb.a_ext_a_mode = GFX_FUNC_MODE_X;
         cmb.a_ext_b = GFX_CMBX_ZERO;
@@ -16179,8 +16179,8 @@ void AlphaCombinerToExtension()
         cmb.a_ext_d = GFX_CMBX_ZERO;
         cmb.a_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_LOCAL:
-    case GR_COMBINE_FUNCTION_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_LOCAL:
+    case GFX_COMBINE_FUNCTION_LOCAL_ALPHA:
         cmb.a_ext_a = GFX_CMBX_ZERO;
         cmb.a_ext_a_mode = GFX_FUNC_MODE_ZERO;
         cmb.a_ext_b = ext_local;
@@ -16190,7 +16190,7 @@ void AlphaCombinerToExtension()
         cmb.a_ext_d = GFX_CMBX_ZERO;
         cmb.a_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER:
         cmb.a_ext_a = ext_other;
         cmb.a_ext_a_mode = GFX_FUNC_MODE_X;
         cmb.a_ext_b = GFX_CMBX_ZERO;
@@ -16198,8 +16198,8 @@ void AlphaCombinerToExtension()
         cmb.a_ext_d = GFX_CMBX_ZERO;
         cmb.a_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL:
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA:
         cmb.a_ext_a = ext_other;
         cmb.a_ext_a_mode = GFX_FUNC_MODE_X;
         cmb.a_ext_b = ext_local;
@@ -16207,7 +16207,7 @@ void AlphaCombinerToExtension()
         cmb.a_ext_d = GFX_CMBX_B;
         cmb.a_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL:
         cmb.a_ext_a = ext_other;
         cmb.a_ext_a_mode = GFX_FUNC_MODE_X;
         cmb.a_ext_b = ext_local;
@@ -16215,8 +16215,8 @@ void AlphaCombinerToExtension()
         cmb.a_ext_d = GFX_CMBX_ZERO;
         cmb.a_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL:
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL_ALPHA:
         cmb.a_ext_a = ext_other;
         cmb.a_ext_a_mode = GFX_FUNC_MODE_X;
         cmb.a_ext_b = ext_local;
@@ -16224,8 +16224,8 @@ void AlphaCombinerToExtension()
         cmb.a_ext_d = GFX_CMBX_B;
         cmb.a_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
-    case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
         cmb.a_ext_a = GFX_CMBX_ZERO;
         cmb.a_ext_a_mode = GFX_FUNC_MODE_ZERO;
         cmb.a_ext_b = ext_local;
@@ -16305,7 +16305,7 @@ void TexColorCombinerToExtension(gfxChipID_t tmu)
 
     switch (tmu_func)
     {
-    case GR_COMBINE_FUNCTION_ZERO:
+    case GFX_COMBINE_FUNCTION_ZERO:
         tc_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_ZERO;
         tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
@@ -16315,7 +16315,7 @@ void TexColorCombinerToExtension(gfxChipID_t tmu)
         tc_ext_d = GFX_CMBX_ZERO;
         tc_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_LOCAL:
+    case GFX_COMBINE_FUNCTION_LOCAL:
         tc_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_X;
         tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
@@ -16325,7 +16325,7 @@ void TexColorCombinerToExtension(gfxChipID_t tmu)
         tc_ext_d = GFX_CMBX_ZERO;
         tc_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_LOCAL_ALPHA:
         tc_ext_a = GFX_CMBX_LOCAL_TEXTURE_ALPHA;
         tc_ext_a_mode = GFX_FUNC_MODE_X;
         tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
@@ -16335,7 +16335,7 @@ void TexColorCombinerToExtension(gfxChipID_t tmu)
         tc_ext_d = GFX_CMBX_ZERO;
         tc_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER:
         tc_ext_a = GFX_CMBX_OTHER_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_X;
         tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
@@ -16343,7 +16343,7 @@ void TexColorCombinerToExtension(gfxChipID_t tmu)
         tc_ext_d = GFX_CMBX_ZERO;
         tc_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL:
         tc_ext_a = GFX_CMBX_OTHER_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_X;
         tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
@@ -16351,7 +16351,7 @@ void TexColorCombinerToExtension(gfxChipID_t tmu)
         tc_ext_d = GFX_CMBX_B;
         tc_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA:
         tc_ext_a = GFX_CMBX_OTHER_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_X;
         tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_ALPHA;
@@ -16359,7 +16359,7 @@ void TexColorCombinerToExtension(gfxChipID_t tmu)
         tc_ext_d = GFX_CMBX_B;
         tc_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL:
         tc_ext_a = GFX_CMBX_OTHER_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_X;
         tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
@@ -16367,7 +16367,7 @@ void TexColorCombinerToExtension(gfxChipID_t tmu)
         tc_ext_d = GFX_CMBX_ZERO;
         tc_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL:
         tc_ext_a = GFX_CMBX_OTHER_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_X;
         tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
@@ -16375,7 +16375,7 @@ void TexColorCombinerToExtension(gfxChipID_t tmu)
         tc_ext_d = GFX_CMBX_B;
         tc_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL_ALPHA:
         tc_ext_a = GFX_CMBX_OTHER_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_X;
         tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
@@ -16383,7 +16383,7 @@ void TexColorCombinerToExtension(gfxChipID_t tmu)
         tc_ext_d = GFX_CMBX_LOCAL_TEXTURE_ALPHA;
         tc_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
         tc_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_ZERO;
         tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
@@ -16391,7 +16391,7 @@ void TexColorCombinerToExtension(gfxChipID_t tmu)
         tc_ext_d = GFX_CMBX_B;
         tc_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
         tc_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB;
         tc_ext_a_mode = GFX_FUNC_MODE_ZERO;
         tc_ext_b = GFX_CMBX_LOCAL_TEXTURE_RGB;
@@ -16499,7 +16499,7 @@ void TexAlphaCombinerToExtension(gfxChipID_t tmu)
 
     switch (tmu_a_func)
     {
-    case GR_COMBINE_FUNCTION_ZERO:
+    case GFX_COMBINE_FUNCTION_ZERO:
         ta_ext_a = GFX_CMBX_LOCAL_TEXTURE_ALPHA;
         ta_ext_a_mode = GFX_FUNC_MODE_ZERO;
         ta_ext_b = GFX_CMBX_LOCAL_TEXTURE_ALPHA;
@@ -16509,8 +16509,8 @@ void TexAlphaCombinerToExtension(gfxChipID_t tmu)
         ta_ext_d = GFX_CMBX_ZERO;
         ta_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_LOCAL:
-    case GR_COMBINE_FUNCTION_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_LOCAL:
+    case GFX_COMBINE_FUNCTION_LOCAL_ALPHA:
         ta_ext_a = GFX_CMBX_LOCAL_TEXTURE_ALPHA;
         ta_ext_a_mode = GFX_FUNC_MODE_X;
         ta_ext_b = GFX_CMBX_LOCAL_TEXTURE_ALPHA;
@@ -16520,7 +16520,7 @@ void TexAlphaCombinerToExtension(gfxChipID_t tmu)
         ta_ext_d = GFX_CMBX_ZERO;
         ta_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER:
         ta_ext_a = GFX_CMBX_OTHER_TEXTURE_ALPHA;
         ta_ext_a_mode = GFX_FUNC_MODE_X;
         ta_ext_b = GFX_CMBX_LOCAL_TEXTURE_ALPHA;
@@ -16528,8 +16528,8 @@ void TexAlphaCombinerToExtension(gfxChipID_t tmu)
         ta_ext_d = GFX_CMBX_ZERO;
         ta_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL:
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL_ALPHA:
         ta_ext_a = GFX_CMBX_OTHER_TEXTURE_ALPHA;
         ta_ext_a_mode = GFX_FUNC_MODE_X;
         ta_ext_b = GFX_CMBX_LOCAL_TEXTURE_ALPHA;
@@ -16537,7 +16537,7 @@ void TexAlphaCombinerToExtension(gfxChipID_t tmu)
         ta_ext_d = GFX_CMBX_B;
         ta_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL:
         ta_ext_a = GFX_CMBX_OTHER_TEXTURE_ALPHA;
         ta_ext_a_mode = GFX_FUNC_MODE_X;
         ta_ext_b = GFX_CMBX_LOCAL_TEXTURE_ALPHA;
@@ -16545,8 +16545,8 @@ void TexAlphaCombinerToExtension(gfxChipID_t tmu)
         ta_ext_d = GFX_CMBX_ZERO;
         ta_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL:
-    case GR_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_OTHER_MINUS_LOCAL_ADD_LOCAL_ALPHA:
         ta_ext_a = GFX_CMBX_OTHER_TEXTURE_ALPHA;
         ta_ext_a_mode = GFX_FUNC_MODE_X;
         ta_ext_b = GFX_CMBX_LOCAL_TEXTURE_ALPHA;
@@ -16554,8 +16554,8 @@ void TexAlphaCombinerToExtension(gfxChipID_t tmu)
         ta_ext_d = GFX_CMBX_B;
         ta_ext_d_invert = 0;
         break;
-    case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
-    case GR_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
+    case GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL:
+    case GFX_COMBINE_FUNCTION_SCALE_MINUS_LOCAL_ADD_LOCAL_ALPHA:
         ta_ext_a = GFX_CMBX_LOCAL_TEXTURE_ALPHA;
         ta_ext_a_mode = GFX_FUNC_MODE_ZERO;
         ta_ext_b = GFX_CMBX_LOCAL_TEXTURE_ALPHA;

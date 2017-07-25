@@ -2502,13 +2502,13 @@ void rdp_fillrect()
 
         gfxConstantColorValue(color);
 
-        gfxColorCombine(GR_COMBINE_FUNCTION_LOCAL,
+        gfxColorCombine(GFX_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_NONE,
             FXFALSE);
 
-        gfxAlphaCombine(GR_COMBINE_FUNCTION_LOCAL,
+        gfxAlphaCombine(GFX_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_NONE,
@@ -2540,7 +2540,7 @@ void rdp_fillrect()
         }
         if ((rdp.othermode_l & 0x4000) && ((rdp.othermode_l >> 16) == 0x0550)) //special blender mode for Bomberman64
         {
-            gfxAlphaCombine(GR_COMBINE_FUNCTION_LOCAL,
+            gfxAlphaCombine(GFX_COMBINE_FUNCTION_LOCAL,
                 GR_COMBINE_FACTOR_NONE,
                 GR_COMBINE_LOCAL_CONSTANT,
                 GR_COMBINE_OTHER_NONE,
@@ -3118,12 +3118,12 @@ void SetWireframeCol()
     {
         //case CSettings::wfmode_NormalColors: // normal colors, don't do anything
     case CSettings::wfmode_VertexColors:
-        gfxColorCombine(GR_COMBINE_FUNCTION_LOCAL,
+        gfxColorCombine(GFX_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_NONE,
             FXFALSE);
-        gfxAlphaCombine(GR_COMBINE_FUNCTION_LOCAL,
+        gfxAlphaCombine(GFX_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_ITERATED,
             GR_COMBINE_OTHER_NONE,
@@ -3133,25 +3133,25 @@ void SetWireframeCol()
             GR_BLEND_ZERO,
             GR_BLEND_ZERO);
         gfxTexCombine(GFX_TMU0,
-            GR_COMBINE_FUNCTION_ZERO,
+            GFX_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
-            GR_COMBINE_FUNCTION_ZERO,
+            GFX_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             FXFALSE, FXFALSE);
         gfxTexCombine(GFX_TMU1,
-            GR_COMBINE_FUNCTION_ZERO,
+            GFX_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
-            GR_COMBINE_FUNCTION_ZERO,
+            GFX_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             FXFALSE, FXFALSE);
         break;
     case CSettings::wfmode_RedOnly:
-        gfxColorCombine(GR_COMBINE_FUNCTION_LOCAL,
+        gfxColorCombine(GFX_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_NONE,
             FXFALSE);
-        gfxAlphaCombine(GR_COMBINE_FUNCTION_LOCAL,
+        gfxAlphaCombine(GFX_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             GR_COMBINE_LOCAL_CONSTANT,
             GR_COMBINE_OTHER_NONE,
@@ -3162,15 +3162,15 @@ void SetWireframeCol()
             GR_BLEND_ZERO,
             GR_BLEND_ZERO);
         gfxTexCombine(GFX_TMU0,
-            GR_COMBINE_FUNCTION_ZERO,
+            GFX_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
-            GR_COMBINE_FUNCTION_ZERO,
+            GFX_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             FXFALSE, FXFALSE);
         gfxTexCombine(GFX_TMU1,
-            GR_COMBINE_FUNCTION_ZERO,
+            GFX_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
-            GR_COMBINE_FUNCTION_ZERO,
+            GFX_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             FXFALSE, FXFALSE);
         break;

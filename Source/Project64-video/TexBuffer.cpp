@@ -323,13 +323,13 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
 
 static gfxTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
 {
-    gfxColorCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
         //    GR_COMBINE_OTHER_CONSTANT,
         FXFALSE);
-    gfxAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    gfxAlphaCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
@@ -345,25 +345,25 @@ static gfxTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
     gfxCullMode(GR_CULL_DISABLE);
     gfxFogMode(GR_FOG_DISABLE);
     gfxTextureFormat_t buf_format = (rdp.tbuff_tex) ? rdp.tbuff_tex->info.format : GFX_TEXFMT_RGB_565;
-    GrCombineFunction_t color_source = GR_COMBINE_FUNCTION_LOCAL;
+    gfxCombineFunction_t color_source = GFX_COMBINE_FUNCTION_LOCAL;
     if (!force_rgb && rdp.black_ci_index > 0 && rdp.black_ci_index <= rdp.copy_ci_index)
     {
-        color_source = GR_COMBINE_FUNCTION_LOCAL_ALPHA;
+        color_source = GFX_COMBINE_FUNCTION_LOCAL_ALPHA;
         buf_format = GFX_TEXFMT_ALPHA_INTENSITY_88;
     }
     if (rdp.tbuff_tex->tmu == GFX_TMU0)
     {
         gfxTexCombine(GFX_TMU1,
-            GR_COMBINE_FUNCTION_NONE,
+            GFX_COMBINE_FUNCTION_NONE,
             GR_COMBINE_FACTOR_NONE,
-            GR_COMBINE_FUNCTION_NONE,
+            GFX_COMBINE_FUNCTION_NONE,
             GR_COMBINE_FACTOR_NONE,
             FXFALSE,
             FXFALSE);
         gfxTexCombine(GFX_TMU0,
             color_source,
             GR_COMBINE_FACTOR_NONE,
-            GR_COMBINE_FUNCTION_ZERO,
+            GFX_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             FXFALSE,
             FXTRUE);
@@ -373,14 +373,14 @@ static gfxTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
         gfxTexCombine(GFX_TMU1,
             color_source,
             GR_COMBINE_FACTOR_NONE,
-            GR_COMBINE_FUNCTION_ZERO,
+            GFX_COMBINE_FUNCTION_ZERO,
             GR_COMBINE_FACTOR_NONE,
             FXFALSE,
             FXTRUE);
         gfxTexCombine(GFX_TMU0,
-            GR_COMBINE_FUNCTION_SCALE_OTHER,
+            GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
-            GR_COMBINE_FUNCTION_SCALE_OTHER,
+            GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             FXFALSE,
             FXFALSE);

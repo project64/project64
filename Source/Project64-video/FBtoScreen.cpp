@@ -23,8 +23,8 @@ static gfxChipID_t SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaqu
     if (voodoo.tmem_ptr[GFX_TMU0] + texture_size < voodoo.tex_max_addr[0])
     {
         tmu = GFX_TMU0;
-        gfxTexCombine(GFX_TMU1, GR_COMBINE_FUNCTION_NONE, GR_COMBINE_FACTOR_NONE, GR_COMBINE_FUNCTION_NONE, GR_COMBINE_FACTOR_NONE, FXFALSE, FXFALSE);
-        gfxTexCombine(GFX_TMU0, GR_COMBINE_FUNCTION_LOCAL, GR_COMBINE_FACTOR_NONE, GR_COMBINE_FUNCTION_LOCAL, GR_COMBINE_FACTOR_NONE, FXFALSE, FXFALSE);
+        gfxTexCombine(GFX_TMU1, GFX_COMBINE_FUNCTION_NONE, GR_COMBINE_FACTOR_NONE, GFX_COMBINE_FUNCTION_NONE, GR_COMBINE_FACTOR_NONE, FXFALSE, FXFALSE);
+        gfxTexCombine(GFX_TMU0, GFX_COMBINE_FUNCTION_LOCAL, GR_COMBINE_FACTOR_NONE, GFX_COMBINE_FUNCTION_LOCAL, GR_COMBINE_FACTOR_NONE, FXFALSE, FXFALSE);
     }
     else
     {
@@ -32,16 +32,16 @@ static gfxChipID_t SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaqu
             ClearCache();
         tmu = GFX_TMU1;
         gfxTexCombine(GFX_TMU1,
-            GR_COMBINE_FUNCTION_LOCAL,
+            GFX_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
-            GR_COMBINE_FUNCTION_LOCAL,
+            GFX_COMBINE_FUNCTION_LOCAL,
             GR_COMBINE_FACTOR_NONE,
             FXFALSE,
             FXFALSE);
         gfxTexCombine(GFX_TMU0,
-            GR_COMBINE_FUNCTION_SCALE_OTHER,
+            GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
-            GR_COMBINE_FUNCTION_SCALE_OTHER,
+            GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GR_COMBINE_FACTOR_ONE,
             FXFALSE,
             FXFALSE);
@@ -52,13 +52,13 @@ static gfxChipID_t SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaqu
         GR_TEXTURECLAMP_CLAMP,
         GR_TEXTURECLAMP_CLAMP);
     //  gfxConstantColorValue (0xFFFFFFFF);
-    gfxColorCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
         //    GR_COMBINE_OTHER_CONSTANT,
         FXFALSE);
-    gfxAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    gfxAlphaCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
@@ -397,7 +397,7 @@ static void DrawDepthBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
     uint32_t tex_size = gfxTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, &t_info);
     gfxChipID_t tmu = SetupFBtoScreenCombiner(tex_size*width256*height256, fb_info.opaque);
     gfxConstantColorValue(rdp.fog_color);
-    gfxColorCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_CONSTANT,
@@ -467,12 +467,12 @@ static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
     t_info.smallLodLog2 = t_info.largeLodLog2 = LOD;
     t_info.aspectRatioLog2 = GFX_ASPECT_LOG2_1x1;
     gfxConstantColorValue(rdp.fog_color);
-    gfxColorCombine(GR_COMBINE_FUNCTION_LOCAL,
+    gfxColorCombine(GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         GR_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_NONE,
         FXFALSE);
-    gfxAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    gfxAlphaCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
@@ -485,16 +485,16 @@ static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
     gfxDepthMask(FXFALSE);
     gfxCullMode(GR_CULL_DISABLE);
     gfxTexCombine(GFX_TMU1,
-        GR_COMBINE_FUNCTION_NONE,
+        GFX_COMBINE_FUNCTION_NONE,
         GR_COMBINE_FACTOR_NONE,
-        GR_COMBINE_FUNCTION_NONE,
+        GFX_COMBINE_FUNCTION_NONE,
         GR_COMBINE_FACTOR_NONE,
         FXFALSE,
         FXFALSE);
     gfxTexCombine(GFX_TMU0,
-        GR_COMBINE_FUNCTION_LOCAL,
+        GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
-        GR_COMBINE_FUNCTION_LOCAL,
+        GFX_COMBINE_FUNCTION_LOCAL,
         GR_COMBINE_FACTOR_NONE,
         FXFALSE,
         FXFALSE);
@@ -579,7 +579,7 @@ void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
 
     gfxChipID_t tmu = SetupFBtoScreenCombiner(gfxTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, &t_info), fb_info.opaque);
     gfxConstantColorValue(rdp.fog_color);
-    gfxColorCombine(GR_COMBINE_FUNCTION_SCALE_OTHER,
+    gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GR_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_CONSTANT,
