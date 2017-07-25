@@ -676,7 +676,7 @@ void set_lambda()
     glUniform1f(lambda_location, lambda);
 }
 
-void gfxConstantColorValue(GrColor_t value)
+void gfxConstantColorValue(gfxColor_t value)
 {
     WriteTrace(TraceGlitch, TraceDebug, "value: %d", value);
     switch (lfb_color_fmt)
@@ -1598,7 +1598,7 @@ void gfxFogGenerateLinear(float nearZ, float farZ)
     fogEnd = farZ / 255.0f;
 }
 
-void gfxFogColorValue(GrColor_t fogcolor)
+void gfxFogColorValue(gfxColor_t fogcolor)
 {
     WriteTrace(TraceGlitch, TraceDebug, "fogcolor: %x", fogcolor);
 
@@ -1639,7 +1639,7 @@ void gfxChromakeyMode(GrChromakeyMode_t mode)
     need_to_compile = 1;
 }
 
-void gfxChromakeyValue(GrColor_t value)
+void gfxChromakeyValue(gfxColor_t value)
 {
     WriteTrace(TraceGlitch, TraceDebug, "value: %d", value);
     int chroma_color_location;
@@ -2688,7 +2688,7 @@ void gfxTexAlphaCombineExt(gfxChipID_t tmu, gfxTACUColor_t a, gfxCombineMode_t a
     need_to_compile = 1;
 }
 
-void gfxConstantColorValueExt(gfxChipID_t tmu, GrColor_t value)
+void gfxConstantColorValueExt(gfxChipID_t tmu, gfxColor_t value)
 {
     int num_tex;
     WriteTrace(TraceGlitch, TraceDebug, "tmu: %d value: %d", tmu, value);

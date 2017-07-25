@@ -1598,7 +1598,7 @@ void gfxAuxBufferExt(GrBuffer_t buffer)
     grDisplayGLError("gfxAuxBufferExt");
 }
 
-void gfxBufferClear(GrColor_t color, gfxAlpha_t alpha, uint32_t depth)
+void gfxBufferClear(gfxColor_t color, gfxAlpha_t alpha, uint32_t depth)
 {
     WriteTrace(TraceGlitch, TraceDebug, "color: %X alpha: %X depth: %X", color, alpha, depth);
     switch (lfb_color_fmt)

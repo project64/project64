@@ -16,6 +16,7 @@
 #include <Common/stdtypes.h>
 
 typedef uint8_t gfxAlpha_t;
+typedef uint32_t gfxColor_t;
 typedef uint32_t gfxCCUColor_t;
 typedef uint32_t gfxACUColor_t;
 typedef uint32_t gfxTCCUColor_t;

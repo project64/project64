@@ -1304,7 +1304,7 @@ void gfxAuxBufferExt(GrBuffer_t buffer)
     }
 }
 
-void gfxBufferClear(GrColor_t color, gfxAlpha_t alpha, uint32_t depth)
+void gfxBufferClear(gfxColor_t color, gfxAlpha_t alpha, uint32_t depth)
 {
     WriteTrace(TraceGlitch, TraceDebug, "color: %d alpha: %d depth: %d", color, alpha, depth);
     vbo_draw();
