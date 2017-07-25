@@ -198,7 +198,7 @@ uint32_t gfxTexTextureMemRequired(uint32_t evenOdd, gfxTexInfo *info)
     return 0;
 }
 
-uint32_t gfxTexCalcMemRequired(gfxLOD_t lodmin, gfxLOD_t lodmax, GrAspectRatio_t aspect, GrTextureFormat_t fmt)
+uint32_t gfxTexCalcMemRequired(gfxLOD_t lodmin, gfxLOD_t lodmax, gfxAspectRatio_t aspect, GrTextureFormat_t fmt)
 {
     WriteTrace(TraceGlitch, TraceDebug, "lodmin = %d, lodmax: %d aspect: %d fmt: %d", lodmin, lodmax, aspect, fmt);
     int width, height;

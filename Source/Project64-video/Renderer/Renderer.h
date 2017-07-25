@@ -19,7 +19,7 @@ void gfxClipWindow(uint32_t minx, uint32_t miny, uint32_t maxx, uint32_t maxy);
 void gfxColorMask(bool rgb, bool a);
 uint32_t gfxTexMinAddress(gfxChipID_t tmu);
 bool gfxSstWinClose();
-void gfxTextureBufferExt(gfxChipID_t tmu, uint32_t startAddress, gfxLOD_t lodmin, gfxLOD_t lodmax, GrAspectRatio_t aspect, GrTextureFormat_t fmt, uint32_t evenOdd);
+void gfxTextureBufferExt(gfxChipID_t tmu, uint32_t startAddress, gfxLOD_t lodmin, gfxLOD_t lodmax, gfxAspectRatio_t aspect, GrTextureFormat_t fmt, uint32_t evenOdd);
 uint32_t gfxTexMaxAddress(gfxChipID_t tmu);
 uint32_t gfxTexTextureMemRequired(uint32_t evenOdd, gfxTexInfo *info);
 void gfxConstantColorValue(GrColor_t value);
@@ -62,7 +62,7 @@ bool gfxLfbLock(GrLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode, Gr
 bool gfxLfbUnlock(GrLock_t type, GrBuffer_t buffer);
 bool gfxLfbReadRegion(GrBuffer_t src_buffer, uint32_t src_x, uint32_t src_y, uint32_t src_width, uint32_t src_height, uint32_t dst_stride, void *dst_data);
 bool gfxLfbWriteRegion(GrBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, GrLfbSrcFmt_t src_format, uint32_t src_width, uint32_t src_height, bool pixelPipeline, FxI32 src_stride, void *src_data);
-uint32_t gfxTexCalcMemRequired(gfxLOD_t lodmin, gfxLOD_t lodmax, GrAspectRatio_t aspect, GrTextureFormat_t fmt);
+uint32_t gfxTexCalcMemRequired(gfxLOD_t lodmin, gfxLOD_t lodmax, gfxAspectRatio_t aspect, GrTextureFormat_t fmt);
 void gfxLoadGammaTable(uint32_t nentries, uint32_t *red, uint32_t *green, uint32_t *blue);
 void gfxGetGammaTableExt(uint32_t /*nentries*/, uint32_t *red, uint32_t *green, uint32_t *blue);
 void gfxGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB);
