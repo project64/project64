@@ -31,12 +31,12 @@
 #include "g3ext.h"
 #include "glitchmain.h"
 #include <Project64-video/trace.h>
+#include <Project64-video/Settings.h>
 
 #define OPENGL_CHECK_ERRORS { const GLenum errcode = glGetError(); if (errcode != GL_NO_ERROR) LOG("OpenGL Error code %i in '%s' line %i\n", errcode, __FILE__, __LINE__-1); }
 
 extern void(*renderCallback)(int);
 
-wrapper_config config = { 0, 0, 0 };
 int screen_width, screen_height;
 
 void Android_JNI_SwapWindow(void);
