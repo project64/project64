@@ -540,7 +540,7 @@ void TexCache()
     if (tmu_0_mode == TMUMODE_PASSTHRU)
     {
         cmb.tmu0_func = cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_SCALE_OTHER;
-        cmb.tmu0_fac = cmb.tmu0_a_fac = GR_COMBINE_FACTOR_ONE;
+        cmb.tmu0_fac = cmb.tmu0_a_fac = GFX_COMBINE_FACTOR_ONE;
         if (cmb.tex_cmb_ext_use)
         {
             cmb.t0c_ext_a = GFX_CMBX_OTHER_TEXTURE_RGB;
@@ -564,7 +564,7 @@ void TexCache()
     else if (tmu_0_mode == TMUMODE_NONE)
     {
         cmb.tmu0_func = cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_NONE;
-        cmb.tmu0_fac = cmb.tmu0_a_fac = GR_COMBINE_FACTOR_NONE;
+        cmb.tmu0_fac = cmb.tmu0_a_fac = GFX_COMBINE_FACTOR_NONE;
         if (cmb.tex_cmb_ext_use)
         {
             cmb.t0c_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB;
@@ -588,7 +588,7 @@ void TexCache()
     if (tmu_1_mode == TMUMODE_PASSTHRU)
     {
         cmb.tmu1_func = cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_SCALE_OTHER;
-        cmb.tmu1_fac = cmb.tmu1_a_fac = GR_COMBINE_FACTOR_ONE;
+        cmb.tmu1_fac = cmb.tmu1_a_fac = GFX_COMBINE_FACTOR_ONE;
         if (cmb.tex_cmb_ext_use)
         {
             cmb.t1c_ext_a = GFX_CMBX_OTHER_TEXTURE_RGB;
@@ -612,7 +612,7 @@ void TexCache()
     else if (tmu_1_mode == TMUMODE_NONE)
     {
         cmb.tmu1_func = cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_NONE;
-        cmb.tmu1_fac = cmb.tmu1_a_fac = GR_COMBINE_FACTOR_NONE;
+        cmb.tmu1_fac = cmb.tmu1_a_fac = GFX_COMBINE_FACTOR_NONE;
         if (cmb.tex_cmb_ext_use)
         {
             cmb.t1c_ext_a = GFX_CMBX_LOCAL_TEXTURE_RGB;
@@ -641,14 +641,14 @@ void TexCache()
         if (rdp.best_tex == 0)
         {
             cmb.tmu0_func = cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_LOCAL;
-            cmb.tmu0_fac = cmb.tmu0_a_fac = GR_COMBINE_FACTOR_NONE;
+            cmb.tmu0_fac = cmb.tmu0_a_fac = GFX_COMBINE_FACTOR_NONE;
             tmu_0 = GFX_TMU0;
             tmu_1 = GFX_TMU1;
         }
         else
         {
             cmb.tmu1_func = cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_LOCAL;
-            cmb.tmu1_fac = cmb.tmu1_a_fac = GR_COMBINE_FACTOR_NONE;
+            cmb.tmu1_fac = cmb.tmu1_a_fac = GFX_COMBINE_FACTOR_NONE;
             tmu_1 = GFX_TMU0;
             tmu_0 = GFX_TMU1;
         }

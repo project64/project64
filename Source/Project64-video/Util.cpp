@@ -1953,12 +1953,12 @@ void update()
 void set_message_combiner()
 {
     gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
-        GR_COMBINE_FACTOR_ONE,
+        GFX_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
         FXFALSE);
     gfxAlphaCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
-        GR_COMBINE_FACTOR_ONE,
+        GFX_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
         FXFALSE);
@@ -1971,15 +1971,15 @@ void set_message_combiner()
     gfxTexFilterMode(GFX_TMU0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
     gfxTexCombine(GFX_TMU1,
         GFX_COMBINE_FUNCTION_NONE,
-        GR_COMBINE_FACTOR_NONE,
+        GFX_COMBINE_FACTOR_NONE,
         GFX_COMBINE_FUNCTION_NONE,
-        GR_COMBINE_FACTOR_NONE,
+        GFX_COMBINE_FACTOR_NONE,
         FXFALSE, FXFALSE);
     gfxTexCombine(GFX_TMU0,
         GFX_COMBINE_FUNCTION_LOCAL,
-        GR_COMBINE_FACTOR_NONE,
+        GFX_COMBINE_FACTOR_NONE,
         GFX_COMBINE_FUNCTION_LOCAL,
-        GR_COMBINE_FACTOR_NONE,
+        GFX_COMBINE_FACTOR_NONE,
         FXFALSE, FXFALSE);
     gfxTexSource(GFX_TMU0,
         voodoo.tex_min_addr[GFX_TMU0] + offset_font,

@@ -324,13 +324,13 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
 static gfxTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
 {
     gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
-        GR_COMBINE_FACTOR_ONE,
+        GFX_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
         //    GR_COMBINE_OTHER_CONSTANT,
         FXFALSE);
     gfxAlphaCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
-        GR_COMBINE_FACTOR_ONE,
+        GFX_COMBINE_FACTOR_ONE,
         GR_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
         FXFALSE);
@@ -355,16 +355,16 @@ static gfxTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
     {
         gfxTexCombine(GFX_TMU1,
             GFX_COMBINE_FUNCTION_NONE,
-            GR_COMBINE_FACTOR_NONE,
+            GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_FUNCTION_NONE,
-            GR_COMBINE_FACTOR_NONE,
+            GFX_COMBINE_FACTOR_NONE,
             FXFALSE,
             FXFALSE);
         gfxTexCombine(GFX_TMU0,
             color_source,
-            GR_COMBINE_FACTOR_NONE,
+            GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_FUNCTION_ZERO,
-            GR_COMBINE_FACTOR_NONE,
+            GFX_COMBINE_FACTOR_NONE,
             FXFALSE,
             FXTRUE);
     }
@@ -372,16 +372,16 @@ static gfxTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
     {
         gfxTexCombine(GFX_TMU1,
             color_source,
-            GR_COMBINE_FACTOR_NONE,
+            GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_FUNCTION_ZERO,
-            GR_COMBINE_FACTOR_NONE,
+            GFX_COMBINE_FACTOR_NONE,
             FXFALSE,
             FXTRUE);
         gfxTexCombine(GFX_TMU0,
             GFX_COMBINE_FUNCTION_SCALE_OTHER,
-            GR_COMBINE_FACTOR_ONE,
+            GFX_COMBINE_FACTOR_ONE,
             GFX_COMBINE_FUNCTION_SCALE_OTHER,
-            GR_COMBINE_FACTOR_ONE,
+            GFX_COMBINE_FACTOR_ONE,
             FXFALSE,
             FXFALSE);
     }
