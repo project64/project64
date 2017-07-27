@@ -23,8 +23,8 @@ void gfxTextureBufferExt(gfxChipID_t tmu, uint32_t startAddress, gfxLOD_t lodmin
 uint32_t gfxTexMaxAddress(gfxChipID_t tmu);
 uint32_t gfxTexTextureMemRequired(uint32_t evenOdd, gfxTexInfo *info);
 void gfxConstantColorValue(gfxColor_t value);
-void gfxColorCombine(gfxCombineFunction_t function, gfxCombineFactor_t factor, GrCombineLocal_t local, GrCombineOther_t other, bool invert);
-void gfxAlphaCombine(gfxCombineFunction_t function, gfxCombineFactor_t factor, GrCombineLocal_t local, GrCombineOther_t other, bool invert);
+void gfxColorCombine(gfxCombineFunction_t function, gfxCombineFactor_t factor, gfxCombineLocal_t local, GrCombineOther_t other, bool invert);
+void gfxAlphaCombine(gfxCombineFunction_t function, gfxCombineFactor_t factor, gfxCombineLocal_t local, GrCombineOther_t other, bool invert);
 void gfxTexCombine(gfxChipID_t tmu, gfxCombineFunction_t rgb_function, gfxCombineFactor_t rgb_factor, gfxCombineFunction_t alpha_function, gfxCombineFactor_t alpha_factor, bool rgb_invert, bool alpha_invert);
 void gfxAlphaBlendFunction(GrAlphaBlendFnc_t rgb_sf, GrAlphaBlendFnc_t rgb_df, GrAlphaBlendFnc_t alpha_sf, GrAlphaBlendFnc_t alpha_df);
 void gfxAlphaTestReferenceValue(gfxAlpha_t value);

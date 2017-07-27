@@ -629,10 +629,10 @@ int setLocalColorSource(int local)
 {
     switch (local)
     {
-    case GR_COMBINE_LOCAL_ITERATED:
+    case GFX_COMBINE_LOCAL_ITERATED:
         return GL_PRIMARY_COLOR_ARB;
         break;
-    case GR_COMBINE_LOCAL_CONSTANT:
+    case GFX_COMBINE_LOCAL_CONSTANT:
         return GL_CONSTANT_ARB;
         break;
     default:
@@ -663,10 +663,10 @@ void writeGLSLColorLocal(int local)
 {
     switch (local)
     {
-    case GR_COMBINE_LOCAL_ITERATED:
+    case GFX_COMBINE_LOCAL_ITERATED:
         strcat(fragment_shader_color_combiner, "vec4 color_local = gl_Color; \n");
         break;
-    case GR_COMBINE_LOCAL_CONSTANT:
+    case GFX_COMBINE_LOCAL_CONSTANT:
         strcat(fragment_shader_color_combiner, "vec4 color_local = constant_color; \n");
         break;
     default:
@@ -722,7 +722,7 @@ void writeGLSLColorFactor(int factor, int local, int need_local, int other, int 
     }
 }
 
-void gfxColorCombine(gfxCombineFunction_t function, gfxCombineFactor_t factor, GrCombineLocal_t local, GrCombineOther_t other, bool invert)
+void gfxColorCombine(gfxCombineFunction_t function, gfxCombineFactor_t factor, gfxCombineLocal_t local, GrCombineOther_t other, bool invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "function: %d factor: %d local: %d other: %d invert: %d", function, factor, local, other, invert);
 
@@ -836,10 +836,10 @@ int setLocalAlphaSource(int local)
 {
     switch (local)
     {
-    case GR_COMBINE_LOCAL_ITERATED:
+    case GFX_COMBINE_LOCAL_ITERATED:
         return GL_PRIMARY_COLOR_ARB;
         break;
-    case GR_COMBINE_LOCAL_CONSTANT:
+    case GFX_COMBINE_LOCAL_CONSTANT:
         return GL_CONSTANT_ARB;
         break;
     default:
@@ -870,10 +870,10 @@ void writeGLSLAlphaLocal(int local)
 {
     switch (local)
     {
-    case GR_COMBINE_LOCAL_ITERATED:
+    case GFX_COMBINE_LOCAL_ITERATED:
         strcat(fragment_shader_alpha_combiner, "float alpha_local = gl_Color.a; \n");
         break;
-    case GR_COMBINE_LOCAL_CONSTANT:
+    case GFX_COMBINE_LOCAL_CONSTANT:
         strcat(fragment_shader_alpha_combiner, "float alpha_local = constant_color.a; \n");
         break;
     default:
@@ -926,7 +926,7 @@ void writeGLSLAlphaFactor(int factor, int local, int need_local, int other, int 
     }
 }
 
-void gfxAlphaCombine(gfxCombineFunction_t function, gfxCombineFactor_t factor, GrCombineLocal_t local, GrCombineOther_t other, bool invert)
+void gfxAlphaCombine(gfxCombineFunction_t function, gfxCombineFactor_t factor, gfxCombineLocal_t local, GrCombineOther_t other, bool invert)
 {
     WriteTrace(TraceGlitch, TraceDebug, "function: %d factor: %d local: %d other: %d invert: %d", function, factor, local, other, invert);
     static int last_function = 0;

@@ -54,13 +54,13 @@ static gfxChipID_t SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaqu
     //  gfxConstantColorValue (0xFFFFFFFF);
     gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GFX_COMBINE_FACTOR_ONE,
-        GR_COMBINE_LOCAL_NONE,
+        GFX_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
         //    GR_COMBINE_OTHER_CONSTANT,
         FXFALSE);
     gfxAlphaCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GFX_COMBINE_FACTOR_ONE,
-        GR_COMBINE_LOCAL_NONE,
+        GFX_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
         FXFALSE);
     if (opaque)
@@ -399,7 +399,7 @@ static void DrawDepthBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
     gfxConstantColorValue(rdp.fog_color);
     gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GFX_COMBINE_FACTOR_ONE,
-        GR_COMBINE_LOCAL_NONE,
+        GFX_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_CONSTANT,
         FXFALSE);
     uint16_t * src = (uint16_t*)image;
@@ -469,12 +469,12 @@ static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
     gfxConstantColorValue(rdp.fog_color);
     gfxColorCombine(GFX_COMBINE_FUNCTION_LOCAL,
         GFX_COMBINE_FACTOR_NONE,
-        GR_COMBINE_LOCAL_CONSTANT,
+        GFX_COMBINE_LOCAL_CONSTANT,
         GR_COMBINE_OTHER_NONE,
         FXFALSE);
     gfxAlphaCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GFX_COMBINE_FACTOR_ONE,
-        GR_COMBINE_LOCAL_NONE,
+        GFX_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_TEXTURE,
         FXFALSE);
     gfxAlphaBlendFunction(GR_BLEND_SRC_ALPHA,
@@ -581,7 +581,7 @@ void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
     gfxConstantColorValue(rdp.fog_color);
     gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GFX_COMBINE_FACTOR_ONE,
-        GR_COMBINE_LOCAL_NONE,
+        GFX_COMBINE_LOCAL_NONE,
         GR_COMBINE_OTHER_CONSTANT,
         FXFALSE);
     gfxTexDownloadMipMap(tmu, voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu], GR_MIPMAPLEVELMASK_BOTH, &t_info);
