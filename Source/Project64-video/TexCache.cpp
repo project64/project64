@@ -468,7 +468,7 @@ void GetTexInfo(int id, int tile)
 static void SelectTBuffTex(TBUFF_COLOR_IMAGE * pTBuffTex)
 {
     WriteTrace(TraceRDP, TraceDebug, "SelectTBuffTex: tex: %d, tmu: %d, tile: %d", rdp.tex, pTBuffTex->tmu, pTBuffTex->tile);
-    gfxTexSource(pTBuffTex->tmu, pTBuffTex->tex_addr, GR_MIPMAPLEVELMASK_BOTH, &(pTBuffTex->info));
+    gfxTexSource((gfxChipID_t)pTBuffTex->tile, pTBuffTex->tex_addr, GR_MIPMAPLEVELMASK_BOTH, &(pTBuffTex->info));
 }
 
 //****************************************************************
