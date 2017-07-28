@@ -48,10 +48,11 @@ typedef struct
     gfxCombineFunction_t c_fnc;
     gfxCombineFactor_t c_fac;
     gfxCombineLocal_t c_loc;
-    uint32_t c_oth;  // gfxColorCombine flags
+    gfxCombineOther_t c_oth;  // grColorCombine flags
     gfxCombineFunction_t a_fnc;
     gfxCombineFactor_t a_fac;
     gfxCombineLocal_t a_loc;
+    gfxCombineOther_t a_oth;  // gfxAlphaCombine flags
     gfxCombineFunction_t tmu0_func;
     gfxCombineFactor_t tmu0_fac;
     gfxCombineFunction_t tmu1_func;
@@ -60,7 +61,6 @@ typedef struct
     gfxCombineFactor_t tmu0_a_fac;
     gfxCombineFunction_t tmu1_a_func;
     gfxCombineFactor_t tmu1_a_fac;
-    uint32_t a_oth;  // gfxAlphaCombine flags
     uint32_t tex, tmu0_invert, tmu1_invert;
     uint32_t tmu0_a_invert, tmu1_a_invert;
     int   dc0_lodbias, dc1_lodbias;

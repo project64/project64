@@ -326,13 +326,13 @@ static gfxTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
     gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GFX_COMBINE_FACTOR_ONE,
         GFX_COMBINE_LOCAL_NONE,
-        GR_COMBINE_OTHER_TEXTURE,
-        //    GR_COMBINE_OTHER_CONSTANT,
+        GFX_COMBINE_OTHER_TEXTURE,
+        //    GFX_COMBINE_OTHER_CONSTANT,
         FXFALSE);
     gfxAlphaCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GFX_COMBINE_FACTOR_ONE,
         GFX_COMBINE_LOCAL_NONE,
-        GR_COMBINE_OTHER_TEXTURE,
+        GFX_COMBINE_OTHER_TEXTURE,
         FXFALSE);
     //  gfxConstantColorValue (0xFFFFFFFF);
     gfxAlphaBlendFunction(GR_BLEND_ONE,	// use alpha compare, but not T0 alpha

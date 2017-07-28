@@ -2505,13 +2505,13 @@ void rdp_fillrect()
         gfxColorCombine(GFX_COMBINE_FUNCTION_LOCAL,
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_LOCAL_CONSTANT,
-            GR_COMBINE_OTHER_NONE,
+            GFX_COMBINE_OTHER_NONE,
             FXFALSE);
 
         gfxAlphaCombine(GFX_COMBINE_FUNCTION_LOCAL,
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_LOCAL_CONSTANT,
-            GR_COMBINE_OTHER_NONE,
+            GFX_COMBINE_OTHER_NONE,
             FXFALSE);
 
         gfxAlphaBlendFunction(GR_BLEND_ONE, GR_BLEND_ZERO, GR_BLEND_ONE, GR_BLEND_ZERO);
@@ -2543,7 +2543,7 @@ void rdp_fillrect()
             gfxAlphaCombine(GFX_COMBINE_FUNCTION_LOCAL,
                 GFX_COMBINE_FACTOR_NONE,
                 GFX_COMBINE_LOCAL_CONSTANT,
-                GR_COMBINE_OTHER_NONE,
+                GFX_COMBINE_OTHER_NONE,
                 FXFALSE);
             gfxConstantColorValue((cmb.ccolor & 0xFFFFFF00) | (rdp.fog_color & 0xFF));
             rdp.update |= UPDATE_COMBINE;
@@ -3121,12 +3121,12 @@ void SetWireframeCol()
         gfxColorCombine(GFX_COMBINE_FUNCTION_LOCAL,
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_LOCAL_ITERATED,
-            GR_COMBINE_OTHER_NONE,
+            GFX_COMBINE_OTHER_NONE,
             FXFALSE);
         gfxAlphaCombine(GFX_COMBINE_FUNCTION_LOCAL,
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_LOCAL_ITERATED,
-            GR_COMBINE_OTHER_NONE,
+            GFX_COMBINE_OTHER_NONE,
             FXFALSE);
         gfxAlphaBlendFunction(GR_BLEND_ONE,
             GR_BLEND_ZERO,
@@ -3149,12 +3149,12 @@ void SetWireframeCol()
         gfxColorCombine(GFX_COMBINE_FUNCTION_LOCAL,
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_LOCAL_CONSTANT,
-            GR_COMBINE_OTHER_NONE,
+            GFX_COMBINE_OTHER_NONE,
             FXFALSE);
         gfxAlphaCombine(GFX_COMBINE_FUNCTION_LOCAL,
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_LOCAL_CONSTANT,
-            GR_COMBINE_OTHER_NONE,
+            GFX_COMBINE_OTHER_NONE,
             FXFALSE);
         gfxConstantColorValue(0xFF0000FF);
         gfxAlphaBlendFunction(GR_BLEND_ONE,
