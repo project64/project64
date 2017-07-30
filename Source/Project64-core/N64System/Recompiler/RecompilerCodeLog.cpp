@@ -13,6 +13,10 @@
 #include <Common/path.h>
 #include <Common/Platform.h>
 
+/* vsprintf() */
+#include <stdio.h>
+#include <stdarg.h>
+
 static CLog * g_CPULogFile = NULL;
 
 void Recompiler_Log_Message(const char * strFormat, ...)
