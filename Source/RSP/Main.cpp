@@ -28,6 +28,7 @@
 #include <Windows.h>
 #include <windowsx.h>
 #include <commctrl.h>
+#include <intrin.h>
 #endif
 #include <stdio.h>
 #include <stdlib.h>
