@@ -13,7 +13,7 @@
 #include <Project64-core/3rdParty/zip.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/N64System/Mips/Mempak.H>
+#include <Project64-core/N64System/Mips/Mempak.h>
 #include <Project64-core/N64System/Mips/Transferpak.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/N64System/Mips/OpcodeName.h>
