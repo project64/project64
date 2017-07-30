@@ -10,7 +10,7 @@
 ****************************************************************************/
 
 #include "stdafx.h"
-#include "Project64-Core/N64System/SpeedLimiterClass.h"
+#include "Project64-core/N64System/SpeedLimiterClass.h"
 
 #include <Common/Util.h>
 
