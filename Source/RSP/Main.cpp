@@ -29,6 +29,9 @@
 #include <windowsx.h>
 #include <commctrl.h>
 #endif
+#if defined(_MSC_VER) && _MSC_VER >= 1910
+#include <intrin.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
