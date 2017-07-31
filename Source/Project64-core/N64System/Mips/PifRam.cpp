@@ -19,7 +19,7 @@
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/Mips/Transferpak.h>
 #include <Project64-core/N64System/Mips/Rumblepak.h>
-#include <Project64-core/N64System/Mips/Mempak.H>
+#include <Project64-core/N64System/Mips/Mempak.h>
 #include <Project64-core/Logging.h>
 
 int32_t CPifRamSettings::m_RefCount = 0;

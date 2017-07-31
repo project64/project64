@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
-#include "Mempak.H"
+#include "Mempak.h"
 
 #include <stdio.h>
 #include <Common/path.h>
