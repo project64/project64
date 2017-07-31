@@ -511,7 +511,7 @@ void TexCache()
         else	// T1 not found
             tmu_1 = GFX_TMU0;
 
-        tmu_0 = tmu_1 == GFX_TMU0 ? GFX_TMU0 : GFX_TMU1;
+        tmu_0 = tmu_1 == GFX_TMU0 ? GFX_TMU1 : GFX_TMU0;
         tmu_0_mode = (tmu_0 == 1) ? TMUMODE_NONE : TMUMODE_PASSTHRU;
     }
     else if (rdp.tex == 1)	// T0
