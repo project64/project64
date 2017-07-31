@@ -14,7 +14,7 @@ namespace Project64.ClickOnce
 			{
 				Environment.SpecialFolder folder = Environment.SpecialFolder.LocalApplicationData;
 				string localPath = Environment.GetFolderPath(folder);
-				string localAppPath = Path.Combine(localPath, "Hyvart Software", "Project64Dev");
+				string localAppPath = Path.Combine(localPath, "Project64", "Project64Dev");
 				string configPath = Path.Combine(localAppPath, "Config");
 
 				// If local config folder exists, offer to keep/overwrite.
