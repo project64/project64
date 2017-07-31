@@ -1661,7 +1661,7 @@ void setPattern()
     grDisplayGLError("setPattern");
 }
 
-void gfxStippleMode(GrStippleMode_t mode)
+void gfxStippleMode(gfxStippleMode_t mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
     switch (mode)
