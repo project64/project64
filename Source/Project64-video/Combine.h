@@ -67,7 +67,7 @@ typedef struct
     uint8_t  dc0_detailscale, dc1_detailscale;
     float dc0_detailmax, dc1_detailmax;
     float lodbias0, lodbias1;
-    uint32_t abf1, abf2;
+    gfxAlphaBlendFnc_t abf1, abf2;
     uint32_t mod_0, modcolor_0, modcolor1_0, modcolor2_0, modfactor_0;
     uint32_t mod_1, modcolor_1, modcolor1_1, modcolor2_1, modfactor_1;
     //combine extensions

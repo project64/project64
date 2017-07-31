@@ -1401,23 +1401,23 @@ void gfxTexCombine(gfxChipID_t tmu, gfxCombineFunction_t rgb_function, gfxCombin
     need_to_compile = 1;
 }
 
-void gfxAlphaBlendFunction(GrAlphaBlendFnc_t rgb_sf, GrAlphaBlendFnc_t rgb_df, GrAlphaBlendFnc_t alpha_sf, GrAlphaBlendFnc_t alpha_df)
+void gfxAlphaBlendFunction(gfxAlphaBlendFnc_t rgb_sf, gfxAlphaBlendFnc_t rgb_df, gfxAlphaBlendFnc_t alpha_sf, gfxAlphaBlendFnc_t alpha_df)
 {
     int sfactorRGB = 0, dfactorRGB = 0, sfactorAlpha = 0, dfactorAlpha = 0;
     WriteTrace(TraceGlitch, TraceDebug, "rgb_sf: %d rgb_df: %d alpha_sf: %d alpha_df: %d", rgb_sf, rgb_df, alpha_sf, alpha_df);
 
     switch (rgb_sf)
     {
-    case GR_BLEND_ZERO:
+    case GFX_BLEND_ZERO:
         sfactorRGB = GL_ZERO;
         break;
-    case GR_BLEND_SRC_ALPHA:
+    case GFX_BLEND_SRC_ALPHA:
         sfactorRGB = GL_SRC_ALPHA;
         break;
-    case GR_BLEND_ONE:
+    case GFX_BLEND_ONE:
         sfactorRGB = GL_ONE;
         break;
-    case GR_BLEND_ONE_MINUS_SRC_ALPHA:
+    case GFX_BLEND_ONE_MINUS_SRC_ALPHA:
         sfactorRGB = GL_ONE_MINUS_SRC_ALPHA;
         break;
     default:
@@ -1426,16 +1426,16 @@ void gfxAlphaBlendFunction(GrAlphaBlendFnc_t rgb_sf, GrAlphaBlendFnc_t rgb_df, G
 
     switch (rgb_df)
     {
-    case GR_BLEND_ZERO:
+    case GFX_BLEND_ZERO:
         dfactorRGB = GL_ZERO;
         break;
-    case GR_BLEND_SRC_ALPHA:
+    case GFX_BLEND_SRC_ALPHA:
         dfactorRGB = GL_SRC_ALPHA;
         break;
-    case GR_BLEND_ONE:
+    case GFX_BLEND_ONE:
         dfactorRGB = GL_ONE;
         break;
-    case GR_BLEND_ONE_MINUS_SRC_ALPHA:
+    case GFX_BLEND_ONE_MINUS_SRC_ALPHA:
         dfactorRGB = GL_ONE_MINUS_SRC_ALPHA;
         break;
     default:
@@ -1444,10 +1444,10 @@ void gfxAlphaBlendFunction(GrAlphaBlendFnc_t rgb_sf, GrAlphaBlendFnc_t rgb_df, G
 
     switch (alpha_sf)
     {
-    case GR_BLEND_ZERO:
+    case GFX_BLEND_ZERO:
         sfactorAlpha = GL_ZERO;
         break;
-    case GR_BLEND_ONE:
+    case GFX_BLEND_ONE:
         sfactorAlpha = GL_ONE;
         break;
     default:
@@ -1456,10 +1456,10 @@ void gfxAlphaBlendFunction(GrAlphaBlendFnc_t rgb_sf, GrAlphaBlendFnc_t rgb_df, G
 
     switch (alpha_df)
     {
-    case GR_BLEND_ZERO:
+    case GFX_BLEND_ZERO:
         dfactorAlpha = GL_ZERO;
         break;
-    case GR_BLEND_ONE:
+    case GFX_BLEND_ONE:
         dfactorAlpha = GL_ONE;
         break;
     default:

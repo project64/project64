@@ -2514,7 +2514,7 @@ void rdp_fillrect()
             GFX_COMBINE_OTHER_NONE,
             FXFALSE);
 
-        gfxAlphaBlendFunction(GR_BLEND_ONE, GR_BLEND_ZERO, GR_BLEND_ONE, GR_BLEND_ZERO);
+        gfxAlphaBlendFunction(GFX_BLEND_ONE, GFX_BLEND_ZERO, GFX_BLEND_ONE, GFX_BLEND_ZERO);
 
         gfxAlphaTestFunction(GR_CMP_ALWAYS);
         gfxStippleMode(GR_STIPPLE_DISABLE);
@@ -3128,10 +3128,10 @@ void SetWireframeCol()
             GFX_COMBINE_LOCAL_ITERATED,
             GFX_COMBINE_OTHER_NONE,
             FXFALSE);
-        gfxAlphaBlendFunction(GR_BLEND_ONE,
-            GR_BLEND_ZERO,
-            GR_BLEND_ZERO,
-            GR_BLEND_ZERO);
+        gfxAlphaBlendFunction(GFX_BLEND_ONE,
+            GFX_BLEND_ZERO,
+            GFX_BLEND_ZERO,
+            GFX_BLEND_ZERO);
         gfxTexCombine(GFX_TMU0,
             GFX_COMBINE_FUNCTION_ZERO,
             GFX_COMBINE_FACTOR_NONE,
@@ -3157,10 +3157,10 @@ void SetWireframeCol()
             GFX_COMBINE_OTHER_NONE,
             FXFALSE);
         gfxConstantColorValue(0xFF0000FF);
-        gfxAlphaBlendFunction(GR_BLEND_ONE,
-            GR_BLEND_ZERO,
-            GR_BLEND_ZERO,
-            GR_BLEND_ZERO);
+        gfxAlphaBlendFunction(GFX_BLEND_ONE,
+            GFX_BLEND_ZERO,
+            GFX_BLEND_ZERO,
+            GFX_BLEND_ZERO);
         gfxTexCombine(GFX_TMU0,
             GFX_COMBINE_FUNCTION_ZERO,
             GFX_COMBINE_FACTOR_NONE,

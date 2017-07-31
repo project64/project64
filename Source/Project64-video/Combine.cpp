@@ -15518,8 +15518,8 @@ void Combine()
     uint32_t cmb_mode_c = (rdp.cycle1 << 16) | (rdp.cycle2 & 0xFFFF);
     uint32_t cmb_mode_a = (rdp.cycle1 & 0x0FFF0000) | ((rdp.cycle2 >> 16) & 0x00000FFF);
 
-    cmb.abf1 = GR_BLEND_SRC_ALPHA;
-    cmb.abf2 = GR_BLEND_ONE_MINUS_SRC_ALPHA;
+    cmb.abf1 = GFX_BLEND_SRC_ALPHA;
+    cmb.abf2 = GFX_BLEND_ONE_MINUS_SRC_ALPHA;
 
 #ifdef FASTSEARCH
     // Fast, ordered search
@@ -15732,13 +15732,13 @@ void CombineBlender()
         case 0x00c0:
             //ISS64
         case 0xc302:
-            A_BLEND(GR_BLEND_ONE, GR_BLEND_ZERO);
+            A_BLEND(GFX_BLEND_ONE, GFX_BLEND_ZERO);
             break;
 
             //Space Invaders
         case 0x0448:
         case 0x055a:
-            A_BLEND(GR_BLEND_ONE, GR_BLEND_ONE);
+            A_BLEND(GFX_BLEND_ONE, GFX_BLEND_ONE);
             break;
 
             //Pokemon Stadium
@@ -15746,11 +15746,11 @@ void CombineBlender()
             // LOT in Zelda: MM
         case 0xaf50:
         case 0x0f5a: //clr_in * 0 + clr_mem * 1
-            A_BLEND(GR_BLEND_ZERO, GR_BLEND_ONE);
+            A_BLEND(GFX_BLEND_ZERO, GFX_BLEND_ONE);
             break;
 
         case 0x5f50: //clr_mem * 0 + clr_mem * (1-a)
-            A_BLEND(GR_BLEND_ZERO, GR_BLEND_ONE_MINUS_SRC_ALPHA);
+            A_BLEND(GFX_BLEND_ZERO, GFX_BLEND_ONE_MINUS_SRC_ALPHA);
             break;
 
             /*
@@ -15771,12 +15771,12 @@ void CombineBlender()
             rdp.col[0] = rdp.col[0] * (1.0f-percent) + ((rdp.fog_color>>24) & 0xFF) / 255.0f * percent;
             rdp.col[1] = rdp.col[1] * (1.0f-percent) + ((rdp.fog_color>>16) & 0xFF) / 255.0f * percent;
             rdp.col[2] = rdp.col[2] * (1.0f-percent) + ((rdp.fog_color>>8) & 0xFF) / 255.0f * percent;
-            A_BLEND (GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA);
+            A_BLEND (GFX_BLEND_SRC_ALPHA, GFX_BLEND_ONE_MINUS_SRC_ALPHA);
             }
             break;
             */
         case 0xf550: //clr_fog * a_fog + clr_mem * (1-a)
-            A_BLEND(GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA);
+            A_BLEND(GFX_BLEND_SRC_ALPHA, GFX_BLEND_ONE_MINUS_SRC_ALPHA);
             {
                 uint32_t prim = rdp.prim_color;
                 rdp.prim_color = rdp.fog_color;
@@ -15788,7 +15788,7 @@ void CombineBlender()
 
         case 0x0150: //spiderman
         case 0x0d18: //clr_in * a_fog + clr_mem * (1-a)
-            A_BLEND(GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA);
+            A_BLEND(GFX_BLEND_SRC_ALPHA, GFX_BLEND_ONE_MINUS_SRC_ALPHA);
             if (rdp.cycle_mode == 1 && rdp.cycle2 != 0x01ff1fff)
             {
                 uint32_t prim = rdp.prim_color;
@@ -15805,27 +15805,27 @@ void CombineBlender()
             ac_prim();
             rdp.prim_color = prim;
         }
-        A_BLEND(GR_BLEND_SRC_ALPHA, GR_BLEND_ONE);
+        A_BLEND(GFX_BLEND_SRC_ALPHA, GFX_BLEND_ONE);
         break;
 
         case 0x5000: /* Vigilante 8 explosions */
-            A_BLEND(GR_BLEND_ONE_MINUS_SRC_ALPHA, GR_BLEND_SRC_ALPHA);
+            A_BLEND(GFX_BLEND_ONE_MINUS_SRC_ALPHA, GFX_BLEND_SRC_ALPHA);
             break;
 
         case 0xFA00: // Bomberman second attack
-            A_BLEND(GR_BLEND_ONE, GR_BLEND_ZERO);
+            A_BLEND(GFX_BLEND_ONE, GFX_BLEND_ZERO);
             break;
 
             //Pokemon Stadium
         case 0x0F1A:
             if (rdp.cycle_mode == 0)
-                A_BLEND(GR_BLEND_ONE, GR_BLEND_ZERO);
+                A_BLEND(GFX_BLEND_ONE, GFX_BLEND_ZERO);
             else
-                A_BLEND(GR_BLEND_ZERO, GR_BLEND_ONE);
+                A_BLEND(GFX_BLEND_ZERO, GFX_BLEND_ONE);
             break;
 
         default:
-            A_BLEND(GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA);
+            A_BLEND(GFX_BLEND_SRC_ALPHA, GFX_BLEND_ONE_MINUS_SRC_ALPHA);
         }
     }
     /*
@@ -15846,15 +15846,15 @@ void CombineBlender()
     rdp.col[0] = rdp.col[0] * (1.0f-percent) + ((rdp.fog_color>>24) & 0xFF) / 255.0f * percent;
     rdp.col[1] = rdp.col[1] * (1.0f-percent) + ((rdp.fog_color>>16) & 0xFF) / 255.0f * percent;
     rdp.col[2] = rdp.col[2] * (1.0f-percent) + ((rdp.fog_color>>8) & 0xFF) / 255.0f * percent;
-    A_BLEND (GR_BLEND_ONE, GR_BLEND_ZERO);
+    A_BLEND (GFX_BLEND_ONE, GFX_BLEND_ZERO);
     }
     */
     else if (blendmode == 0x0040) // Mia Soccer Lights
-        A_BLEND(GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA);
+        A_BLEND(GFX_BLEND_SRC_ALPHA, GFX_BLEND_ONE_MINUS_SRC_ALPHA);
     else if (g_settings->hacks(CSettings::hack_Pilotwings) && (rdp.othermode_l & 0x80)) //CLR_ON_CVG without FORCE_BL
-        A_BLEND(GR_BLEND_ZERO, GR_BLEND_ONE);
+        A_BLEND(GFX_BLEND_ZERO, GFX_BLEND_ONE);
     else
-        A_BLEND(GR_BLEND_ONE, GR_BLEND_ZERO);
+        A_BLEND(GFX_BLEND_ONE, GFX_BLEND_ZERO);
 
     // ALPHA_CVG_SEL means full alpha
     // The reason it wasn't working before was because I wasn't handling rdp:setothermode
@@ -15863,15 +15863,15 @@ void CombineBlender()
     {
         if (g_settings->hacks(CSettings::hack_PMario) && (blendmode == 0x5055))
         {
-            A_BLEND(GR_BLEND_ZERO, GR_BLEND_ONE);
+            A_BLEND(GFX_BLEND_ZERO, GFX_BLEND_ONE);
         }
         else if (blendmode == 0x4055) // Mario Golf
         {
-            A_BLEND(GR_BLEND_ZERO, GR_BLEND_ONE);
+            A_BLEND(GFX_BLEND_ZERO, GFX_BLEND_ONE);
         }
         else
         {
-            A_BLEND(GR_BLEND_ONE, GR_BLEND_ZERO);
+            A_BLEND(GFX_BLEND_ONE, GFX_BLEND_ZERO);
         }
     }
 
@@ -15881,18 +15881,18 @@ void CombineBlender()
     {
         if (rdp.othermode_l == 0xff5a6379)
         {
-            A_BLEND(GR_BLEND_ZERO, GR_BLEND_SRC_ALPHA);
+            A_BLEND(GFX_BLEND_ZERO, GFX_BLEND_SRC_ALPHA);
         }
         else if (rdp.othermode_l == 0x00504dd9) //players shadows. CVG_DST_WRAP
         {
-            A_BLEND(GR_BLEND_ZERO, GR_BLEND_ONE);
+            A_BLEND(GFX_BLEND_ZERO, GFX_BLEND_ONE);
         }
     }
     else if (g_settings->hacks(CSettings::hack_TGR))
     {
         if (rdp.othermode_l == 0x0f0a0235)
         {
-            A_BLEND(GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA);
+            A_BLEND(GFX_BLEND_SRC_ALPHA, GFX_BLEND_ONE_MINUS_SRC_ALPHA);
         }
     }
     //*/

@@ -82,10 +82,10 @@ float set_sprite_combine_mode()
             GFX_COMBINE_LOCAL_NONE,
             GFX_COMBINE_OTHER_TEXTURE,
             FXFALSE);
-        gfxAlphaBlendFunction(GR_BLEND_ONE,
-            GR_BLEND_ZERO,
-            GR_BLEND_ZERO,
-            GR_BLEND_ZERO);
+        gfxAlphaBlendFunction(GFX_BLEND_ONE,
+            GFX_BLEND_ZERO,
+            GFX_BLEND_ZERO,
+            GFX_BLEND_ZERO);
         if (rdp.othermode_l & 1)
         {
             gfxAlphaTestFunction(GR_CMP_GEQUAL);
@@ -168,10 +168,10 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
         GFX_COMBINE_LOCAL_NONE,
         GFX_COMBINE_OTHER_TEXTURE,
         FXFALSE);
-    gfxAlphaBlendFunction(GR_BLEND_ONE,
-        GR_BLEND_ZERO,
-        GR_BLEND_ONE,
-        GR_BLEND_ZERO);
+    gfxAlphaBlendFunction(GFX_BLEND_ONE,
+        GFX_BLEND_ZERO,
+        GFX_BLEND_ONE,
+        GFX_BLEND_ZERO);
     gfxDepthBufferFunction(GR_CMP_ALWAYS);
     gfxDepthMask(FXFALSE);
 

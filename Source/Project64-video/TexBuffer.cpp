@@ -335,10 +335,10 @@ static gfxTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
         GFX_COMBINE_OTHER_TEXTURE,
         FXFALSE);
     //  gfxConstantColorValue (0xFFFFFFFF);
-    gfxAlphaBlendFunction(GR_BLEND_ONE,	// use alpha compare, but not T0 alpha
-        GR_BLEND_ZERO,
-        GR_BLEND_ONE,
-        GR_BLEND_ZERO);
+    gfxAlphaBlendFunction(GFX_BLEND_ONE,	// use alpha compare, but not T0 alpha
+        GFX_BLEND_ZERO,
+        GFX_BLEND_ONE,
+        GFX_BLEND_ZERO);
     gfxClipWindow(0, 0, g_scr_res_x, g_scr_res_y);
     gfxDepthBufferFunction(GR_CMP_ALWAYS);
     gfxDepthMask(FXFALSE);
