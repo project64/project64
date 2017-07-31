@@ -1622,15 +1622,15 @@ void gfxFogColorValue(gfxColor_t fogcolor)
 }
 
 // chroma
-void gfxChromakeyMode(GrChromakeyMode_t mode)
+void gfxChromakeyMode(gfxChromakeyMode_t mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
     switch (mode)
     {
-    case GR_CHROMAKEY_DISABLE:
+    case GFX_CHROMAKEY_DISABLE:
         g_chroma_enabled = false;
         break;
-    case GR_CHROMAKEY_ENABLE:
+    case GFX_CHROMAKEY_ENABLE:
         g_chroma_enabled = true;
         break;
     default:

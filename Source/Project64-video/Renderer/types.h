@@ -238,6 +238,12 @@ enum gfxChipID_t
     GFX_TMU2 = 0x2,
 };
 
+enum gfxChromakeyMode_t
+{
+    GFX_CHROMAKEY_DISABLE = 0x0,
+    GFX_CHROMAKEY_ENABLE = 0x1,
+};
+
 typedef struct
 {
     gfxLOD_t           smallLodLog2;
