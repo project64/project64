@@ -1566,21 +1566,21 @@ void gfxAlphaTestFunction(gfxCmpFnc_t function)
 
 // fog
 
-void gfxFogMode(GrFogMode_t mode)
+void gfxFogMode(gfxFogMode_t mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
     switch (mode)
     {
-    case GR_FOG_DISABLE:
+    case GFX_FOG_DISABLE:
         //glDisable(GL_FOG);
         g_fog_enabled = 0;
         break;
-    case GR_FOG_WITH_TABLE_ON_Q:
+    case GFX_FOG_WITH_TABLE_ON_Q:
         //glEnable(GL_FOG);
         //glFogi(GL_FOG_COORDINATE_SOURCE_EXT, GL_FOG_COORDINATE_EXT);
         g_fog_enabled = 1;
         break;
-    case GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT:
+    case GFX_FOG_WITH_TABLE_ON_FOGCOORD_EXT:
         //glEnable(GL_FOG);
         //glFogi(GL_FOG_COORDINATE_SOURCE_EXT, GL_FOG_COORDINATE_EXT);
         g_fog_enabled = 2;

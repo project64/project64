@@ -343,7 +343,7 @@ static gfxTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
     gfxDepthBufferFunction(GFX_CMP_ALWAYS);
     gfxDepthMask(FXFALSE);
     gfxCullMode(GR_CULL_DISABLE);
-    gfxFogMode(GR_FOG_DISABLE);
+    gfxFogMode(GFX_FOG_DISABLE);
     gfxTextureFormat_t buf_format = (rdp.tbuff_tex) ? rdp.tbuff_tex->info.format : GFX_TEXFMT_RGB_565;
     gfxCombineFunction_t color_source = GFX_COMBINE_FUNCTION_LOCAL;
     if (!force_rgb && rdp.black_ci_index > 0 && rdp.black_ci_index <= rdp.copy_ci_index)
@@ -433,7 +433,7 @@ int CloseTextureBuffer(int draw)
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE;
     if (g_settings->fog() && (rdp.flags & FOG_ENABLED))
     {
-        gfxFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
+        gfxFogMode(GFX_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
     }
     WriteTrace(TraceRDP, TraceDebug, "CloseTextureBuffer draw, OK");
     rdp.tbuff_tex = 0;
@@ -497,7 +497,7 @@ int CopyTextureBuffer(COLOR_IMAGE & fb_from, COLOR_IMAGE & fb_to)
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE;
     rdp.update |= UPDATE_VIEWPORT | UPDATE_SCISSOR;
     if (g_settings->fog() && (rdp.flags & FOG_ENABLED))
-        gfxFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
+        gfxFogMode(GFX_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
     WriteTrace(TraceRDP, TraceDebug, "CopyTextureBuffer draw, OK");
     rdp.tbuff_tex = 0;
     rdp.cur_image = 0;
@@ -549,7 +549,7 @@ int CopyDepthBuffer()
 
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE;
     if (g_settings->fog() && (rdp.flags & FOG_ENABLED))
-        gfxFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
+        gfxFogMode(GFX_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
     WriteTrace(TraceRDP, TraceDebug, "CopyDepthBuffer draw, OK");
     rdp.tbuff_tex = 0;
     return TRUE;
@@ -624,7 +624,7 @@ int SwapTextureBuffer()
     rdp.update |= UPDATE_ZBUF_ENABLED | UPDATE_COMBINE | UPDATE_TEXTURE | UPDATE_ALPHA_COMPARE;
     if (g_settings->fog() && (rdp.flags & FOG_ENABLED))
     {
-        gfxFogMode(GR_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
+        gfxFogMode(GFX_FOG_WITH_TABLE_ON_FOGCOORD_EXT);
     }
     WriteTrace(TraceRDP, TraceDebug, "SwapTextureBuffer draw, OK");
     return TRUE;

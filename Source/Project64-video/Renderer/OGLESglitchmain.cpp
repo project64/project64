@@ -936,7 +936,7 @@ uint32_t gfxGet(uint32_t pname, uint32_t plength, FxI32 *params)
         params[0] = 256;
         return 4;
         break;
-    case GR_FOG_TABLE_ENTRIES:
+    case GFX_FOG_TABLE_ENTRIES:
         if (plength < 4 || params == NULL) return 0;
         params[0] = 64;
         return 4;

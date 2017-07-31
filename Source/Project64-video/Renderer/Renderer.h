@@ -29,7 +29,7 @@ void gfxTexCombine(gfxChipID_t tmu, gfxCombineFunction_t rgb_function, gfxCombin
 void gfxAlphaBlendFunction(gfxAlphaBlendFnc_t rgb_sf, gfxAlphaBlendFnc_t rgb_df, gfxAlphaBlendFnc_t alpha_sf, gfxAlphaBlendFnc_t alpha_df);
 void gfxAlphaTestReferenceValue(gfxAlpha_t value);
 void gfxAlphaTestFunction(gfxCmpFnc_t function);
-void gfxFogMode(GrFogMode_t mode);
+void gfxFogMode(gfxFogMode_t mode);
 void gfxFogGenerateLinear(float nearZ, float farZ);
 void gfxFogColorValue(gfxColor_t fogcolor);
 void gfxChromakeyMode(GrChromakeyMode_t mode);
