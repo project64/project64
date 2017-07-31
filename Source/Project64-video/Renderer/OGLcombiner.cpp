@@ -28,7 +28,8 @@
 
 static int fct[4], source0[4], operand0[4], source1[4], operand1[4], source2[4], operand2[4];
 static int fcta[4], sourcea0[4], operanda0[4], sourcea1[4], operanda1[4], sourcea2[4], operanda2[4];
-static int alpha_ref, alpha_func;
+static int alpha_ref;
+static gfxCmpFnc_t alpha_func;
 
 float texture_env_color[4];
 float ccolor0[4];
@@ -1481,22 +1482,22 @@ void gfxAlphaTestReferenceValue(gfxAlpha_t value)
     gfxAlphaTestFunction(alpha_func);
 }
 
-void gfxAlphaTestFunction(GrCmpFnc_t function)
+void gfxAlphaTestFunction(gfxCmpFnc_t function)
 {
     WriteTrace(TraceGlitch, TraceDebug, "function: %d", function);
     alpha_func = function;
     switch (function)
     {
-    case GR_CMP_GREATER:
+    case GFX_CMP_GREATER:
         glAlphaFunc(GL_GREATER, alpha_ref / 255.0f);
         break;
-    case GR_CMP_GEQUAL:
+    case GFX_CMP_GEQUAL:
         glAlphaFunc(GL_GEQUAL, alpha_ref / 255.0f);
         break;
-    case GR_CMP_ALWAYS:
+    case GFX_CMP_ALWAYS:
         glAlphaFunc(GL_ALWAYS, alpha_ref / 255.0f);
         glDisable(GL_ALPHA_TEST);
-        grDisplayGLError("gfxAlphaTestFunction :: GR_CMP_ALWAYS");
+        grDisplayGLError("gfxAlphaTestFunction :: GFX_CMP_ALWAYS");
         return;
         break;
     default:

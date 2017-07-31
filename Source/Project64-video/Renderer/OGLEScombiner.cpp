@@ -1539,19 +1539,19 @@ void gfxAlphaTestReferenceValue(gfxAlpha_t value)
     gfxAlphaTestFunction(g_alpha_func);
 }
 
-void gfxAlphaTestFunction(GrCmpFnc_t function)
+void gfxAlphaTestFunction(gfxCmpFnc_t function)
 {
     WriteTrace(TraceGlitch, TraceDebug, "function: %d", function);
     g_alpha_func = function;
     switch (function)
     {
-    case GR_CMP_GREATER:
+    case GFX_CMP_GREATER:
         //glAlphaFunc(GL_GREATER, g_alpha_ref/255.0f);
         break;
-    case GR_CMP_GEQUAL:
+    case GFX_CMP_GEQUAL:
         //glAlphaFunc(GL_GEQUAL, g_alpha_ref/255.0f);
         break;
-    case GR_CMP_ALWAYS:
+    case GFX_CMP_ALWAYS:
         //glAlphaFunc(GL_ALWAYS, g_alpha_ref/255.0f);
         //glDisable(GL_ALPHA_TEST);
         g_alpha_test = false;

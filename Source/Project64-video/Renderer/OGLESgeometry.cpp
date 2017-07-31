@@ -240,45 +240,45 @@ void gfxDepthBufferMode(GrDepthBufferMode_t mode)
     }
 }
 
-void gfxDepthBufferFunction(GrCmpFnc_t function)
+void gfxDepthBufferFunction(gfxCmpFnc_t function)
 {
     WriteTrace(TraceGlitch, TraceDebug, "function: %d", function);
     switch (function)
     {
-    case GR_CMP_GEQUAL:
+    case GFX_CMP_GEQUAL:
         if (w_buffer_mode)
             glDepthFunc(GL_LEQUAL);
         else
             glDepthFunc(GL_GEQUAL);
         break;
-    case GR_CMP_LEQUAL:
+    case GFX_CMP_LEQUAL:
         if (w_buffer_mode)
             glDepthFunc(GL_GEQUAL);
         else
             glDepthFunc(GL_LEQUAL);
         break;
-    case GR_CMP_LESS:
+    case GFX_CMP_LESS:
         if (w_buffer_mode)
             glDepthFunc(GL_GREATER);
         else
             glDepthFunc(GL_LESS);
         break;
-    case GR_CMP_ALWAYS:
+    case GFX_CMP_ALWAYS:
         glDepthFunc(GL_ALWAYS);
         break;
-    case GR_CMP_EQUAL:
+    case GFX_CMP_EQUAL:
         glDepthFunc(GL_EQUAL);
         break;
-    case GR_CMP_GREATER:
+    case GFX_CMP_GREATER:
         if (w_buffer_mode)
             glDepthFunc(GL_LESS);
         else
             glDepthFunc(GL_GREATER);
         break;
-    case GR_CMP_NEVER:
+    case GFX_CMP_NEVER:
         glDepthFunc(GL_NEVER);
         break;
-    case GR_CMP_NOTEQUAL:
+    case GFX_CMP_NOTEQUAL:
         glDepthFunc(GL_NOTEQUAL);
         break;
 

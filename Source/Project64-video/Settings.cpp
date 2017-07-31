@@ -80,7 +80,7 @@ CSettings::CSettings() :
     m_force_calc_sphere(false), //use spheric mapping only, Ridge Racer 64
     m_pal230(false),    //set special scale for PAL games
     m_correct_viewport(false), //correct viewport values
-    m_zmode_compare_less(false), //force GR_CMP_LESS for zmode=0 (opaque)and zmode=1 (interpenetrating)
+    m_zmode_compare_less(false), //force GFX_CMP_LESS for zmode=0 (opaque)and zmode=1 (interpenetrating)
     m_old_style_adither(false), //apply alpha dither regardless of alpha_dither_mode
     m_n64_z_scale(false), //scale vertex z value before writing to depth buffer, as N64 does.
 

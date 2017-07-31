@@ -2516,12 +2516,12 @@ void rdp_fillrect()
 
         gfxAlphaBlendFunction(GFX_BLEND_ONE, GFX_BLEND_ZERO, GFX_BLEND_ONE, GFX_BLEND_ZERO);
 
-        gfxAlphaTestFunction(GR_CMP_ALWAYS);
+        gfxAlphaTestFunction(GFX_CMP_ALWAYS);
         gfxStippleMode(GR_STIPPLE_DISABLE);
 
         gfxCullMode(GR_CULL_DISABLE);
         gfxFogMode(GR_FOG_DISABLE);
-        gfxDepthBufferFunction(GR_CMP_ALWAYS);
+        gfxDepthBufferFunction(GFX_CMP_ALWAYS);
         gfxDepthMask(FXFALSE);
 
         rdp.update |= UPDATE_COMBINE | UPDATE_CULL_MODE | UPDATE_FOG_ENABLED | UPDATE_ZBUF_ENABLED;
@@ -3176,7 +3176,7 @@ void SetWireframeCol()
         break;
     }
 
-    gfxAlphaTestFunction(GR_CMP_ALWAYS);
+    gfxAlphaTestFunction(GFX_CMP_ALWAYS);
     gfxCullMode(GR_CULL_DISABLE);
 
     rdp.update |= UPDATE_COMBINE | UPDATE_ALPHA_COMPARE;

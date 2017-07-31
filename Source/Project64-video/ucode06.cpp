@@ -88,11 +88,11 @@ float set_sprite_combine_mode()
             GFX_BLEND_ZERO);
         if (rdp.othermode_l & 1)
         {
-            gfxAlphaTestFunction(GR_CMP_GEQUAL);
+            gfxAlphaTestFunction(GFX_CMP_GEQUAL);
             gfxAlphaTestReferenceValue(0x80);
         }
         else
-            gfxAlphaTestFunction(GR_CMP_ALWAYS);
+            gfxAlphaTestFunction(GFX_CMP_ALWAYS);
         rdp.update |= UPDATE_ALPHA_COMPARE | UPDATE_COMBINE;
     }
     return Z;
@@ -172,7 +172,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
         GFX_BLEND_ZERO,
         GFX_BLEND_ONE,
         GFX_BLEND_ZERO);
-    gfxDepthBufferFunction(GR_CMP_ALWAYS);
+    gfxDepthBufferFunction(GFX_CMP_ALWAYS);
     gfxDepthMask(FXFALSE);
 
     gfxLOD_t LOD = g_scr_res_x > 1024 ? GFX_LOD_LOG2_2048 : GFX_LOD_LOG2_1024;

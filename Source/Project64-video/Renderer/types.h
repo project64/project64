@@ -185,6 +185,18 @@ enum gfxAlphaBlendFnc_t
     GFX_BLEND_PREFOG_COLOR = GFX_BLEND_ALPHA_SATURATE,
 };
 
+enum gfxCmpFnc_t
+{
+    GFX_CMP_NEVER = 0x0,
+    GFX_CMP_LESS = 0x1,
+    GFX_CMP_EQUAL = 0x2,
+    GFX_CMP_LEQUAL = 0x3,
+    GFX_CMP_GREATER = 0x4,
+    GFX_CMP_NOTEQUAL = 0x5,
+    GFX_CMP_GEQUAL = 0x6,
+    GFX_CMP_ALWAYS = 0x7,
+};
+
 enum GFX_CMBX
 {
     GFX_CMBX_ZERO = 0x00,

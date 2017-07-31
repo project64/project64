@@ -28,7 +28,7 @@ void gfxAlphaCombine(gfxCombineFunction_t function, gfxCombineFactor_t factor, g
 void gfxTexCombine(gfxChipID_t tmu, gfxCombineFunction_t rgb_function, gfxCombineFactor_t rgb_factor, gfxCombineFunction_t alpha_function, gfxCombineFactor_t alpha_factor, bool rgb_invert, bool alpha_invert);
 void gfxAlphaBlendFunction(gfxAlphaBlendFnc_t rgb_sf, gfxAlphaBlendFnc_t rgb_df, gfxAlphaBlendFnc_t alpha_sf, gfxAlphaBlendFnc_t alpha_df);
 void gfxAlphaTestReferenceValue(gfxAlpha_t value);
-void gfxAlphaTestFunction(GrCmpFnc_t function);
+void gfxAlphaTestFunction(gfxCmpFnc_t function);
 void gfxFogMode(GrFogMode_t mode);
 void gfxFogGenerateLinear(float nearZ, float farZ);
 void gfxFogColorValue(gfxColor_t fogcolor);
@@ -43,7 +43,7 @@ void gfxConstantColorValueExt(gfxChipID_t tmu, gfxColor_t value);
 void gfxVertexLayout(uint32_t param, FxI32 offset, uint32_t mode);
 void gfxCullMode(GrCullMode_t mode);
 void gfxDepthBufferMode(GrDepthBufferMode_t mode);
-void gfxDepthBufferFunction(GrCmpFnc_t function);
+void gfxDepthBufferFunction(gfxCmpFnc_t function);
 void gfxDepthMask(bool mask);
 void gfxDrawTriangle(const void *a, const void *b, const void *c);
 void gfxDepthBiasLevel(FxI32 level);

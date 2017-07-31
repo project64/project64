@@ -65,7 +65,7 @@ static gfxChipID_t SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaqu
         FXFALSE);
     if (opaque)
     {
-        gfxAlphaTestFunction(GR_CMP_ALWAYS);
+        gfxAlphaTestFunction(GFX_CMP_ALWAYS);
         gfxAlphaBlendFunction(GFX_BLEND_ONE,
             GFX_BLEND_ZERO,
             GFX_BLEND_ONE,
@@ -78,7 +78,7 @@ static gfxChipID_t SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaqu
             GFX_BLEND_ONE,
             GFX_BLEND_ZERO);
     }
-    gfxDepthBufferFunction(GR_CMP_ALWAYS);
+    gfxDepthBufferFunction(GFX_CMP_ALWAYS);
     gfxCullMode(GR_CULL_DISABLE);
     gfxDepthMask(FXFALSE);
     rdp.update |= UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
@@ -481,7 +481,7 @@ static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         GFX_BLEND_ONE_MINUS_SRC_ALPHA,
         GFX_BLEND_ONE,
         GFX_BLEND_ZERO);
-    gfxDepthBufferFunction(GR_CMP_ALWAYS);
+    gfxDepthBufferFunction(GFX_CMP_ALWAYS);
     gfxDepthMask(FXFALSE);
     gfxCullMode(GR_CULL_DISABLE);
     gfxTexCombine(GFX_TMU1,
