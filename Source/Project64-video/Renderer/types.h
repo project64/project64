@@ -159,6 +159,13 @@ enum gfxCombineFactor_t
     GFX_COMBINE_FACTOR_ONE_MINUS_LOD_FRACTION = 0xd,
 };
 
+enum gfxCullMode_t
+{
+    GFX_CULL_DISABLE = 0x0,
+    GFX_CULL_NEGATIVE = 0x1,
+    GFX_CULL_POSITIVE = 0x2,
+};
+
 enum gfxCombineLocal_t
 {
     GFX_COMBINE_LOCAL_ITERATED = 0x0,

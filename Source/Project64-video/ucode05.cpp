@@ -204,17 +204,17 @@ void uc5_tridma()
 
         if (flags & 0x40) { // no cull
             rdp.flags &= ~CULLMASK;
-            gfxCullMode(GR_CULL_DISABLE);
+            gfxCullMode(GFX_CULL_DISABLE);
         }
         else {        // front cull
             rdp.flags &= ~CULLMASK;
             if (rdp.view_scale[0] < 0) {
                 rdp.flags |= CULL_BACK;   // agh, backwards culling
-                gfxCullMode(GR_CULL_POSITIVE);
+                gfxCullMode(GFX_CULL_POSITIVE);
             }
             else {
                 rdp.flags |= CULL_FRONT;
-                gfxCullMode(GR_CULL_NEGATIVE);
+                gfxCullMode(GFX_CULL_NEGATIVE);
             }
         }
         start += 4;

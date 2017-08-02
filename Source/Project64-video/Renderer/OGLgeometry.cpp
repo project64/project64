@@ -39,7 +39,7 @@ static int fog_ext_en;
 
 int w_buffer_mode;
 int inverted_culling;
-int culling_mode;
+gfxCullMode_t culling_mode;
 extern int fog_enabled;
 
 inline float ZCALC(const float & z, const float & q) {
@@ -111,7 +111,7 @@ void gfxVertexLayout(uint32_t param, FxI32 offset, uint32_t mode)
     }
 }
 
-void gfxCullMode(GrCullMode_t mode)
+void gfxCullMode(gfxCullMode_t mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
     static int oldmode = -1, oldinv = -1;
@@ -122,17 +122,17 @@ void gfxCullMode(GrCullMode_t mode)
     oldinv = inverted_culling;
     switch (mode)
     {
-    case GR_CULL_DISABLE:
+    case GFX_CULL_DISABLE:
         glDisable(GL_CULL_FACE);
         break;
-    case GR_CULL_NEGATIVE:
+    case GFX_CULL_NEGATIVE:
         if (!inverted_culling)
             glCullFace(GL_FRONT);
         else
             glCullFace(GL_BACK);
         glEnable(GL_CULL_FACE);
         break;
-    case GR_CULL_POSITIVE:
+    case GFX_CULL_POSITIVE:
         if (!inverted_culling)
             glCullFace(GL_BACK);
         else

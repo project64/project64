@@ -1862,15 +1862,15 @@ void update()
         {
         case 0: // cull none
         case 3: // cull both
-            gfxCullMode(GR_CULL_DISABLE);
+            gfxCullMode(GFX_CULL_DISABLE);
             break;
         case 1: // cull front
-            //        gfxCullMode(GR_CULL_POSITIVE);
-            gfxCullMode(GR_CULL_NEGATIVE);
+            //        gfxCullMode(GFX_CULL_POSITIVE);
+            gfxCullMode(GFX_CULL_NEGATIVE);
             break;
         case 2: // cull back
-            //        gfxCullMode (GR_CULL_NEGATIVE);
-            gfxCullMode(GR_CULL_POSITIVE);
+            //        gfxCullMode (GFX_CULL_NEGATIVE);
+            gfxCullMode(GFX_CULL_POSITIVE);
             break;
         }
     }

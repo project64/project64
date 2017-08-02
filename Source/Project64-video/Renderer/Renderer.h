@@ -41,7 +41,7 @@ void gfxTexColorCombineExt(gfxChipID_t tmu, gfxTCCUColor_t a, gfxCombineMode_t a
 void gfxTexAlphaCombineExt(gfxChipID_t tmu, gfxTACUColor_t a, gfxCombineMode_t a_mode, gfxTACUColor_t b, gfxCombineMode_t b_mode, gfxTACUColor_t c, bool c_invert, gfxTACUColor_t d, bool d_invert, uint32_t shift, bool invert);
 void gfxConstantColorValueExt(gfxChipID_t tmu, gfxColor_t value);
 void gfxVertexLayout(uint32_t param, FxI32 offset, uint32_t mode);
-void gfxCullMode(GrCullMode_t mode);
+void gfxCullMode(gfxCullMode_t mode);
 void gfxDepthBufferMode(GrDepthBufferMode_t mode);
 void gfxDepthBufferFunction(gfxCmpFnc_t function);
 void gfxDepthMask(bool mask);
