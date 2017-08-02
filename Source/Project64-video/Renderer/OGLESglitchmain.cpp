@@ -1114,52 +1114,6 @@ void updateTexture()
     }
 }
 
-void gfxFramebufferCopyExt(int x, int y, int w, int h, int from, int to, int mode)
-{
-    if (mode == GR_FBCOPY_MODE_DEPTH) {
-        int tw = 1, th = 1;
-        if (npot_support) {
-            tw = g_width; th = g_height;
-        }
-        else {
-            while (tw < g_width) tw <<= 1;
-            while (th < g_height) th <<= 1;
-        }
-
-        if (from == GR_FBCOPY_BUFFER_BACK && to == GR_FBCOPY_BUFFER_FRONT) {
-            //printf("save depth buffer %d\n", render_to_texture);
-            // save the depth image in a texture
-            //glReadBuffer(current_buffer);
-            glBindTexture(GL_TEXTURE_2D, depth_texture);
-            glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-                0, g_viewport_offset, tw, th, 0);
-            glBindTexture(GL_TEXTURE_2D, default_texture);
-            return;
-        }
-        if (from == GR_FBCOPY_BUFFER_FRONT && to == GR_FBCOPY_BUFFER_BACK) {
-            //printf("writing to depth buffer %d\n", render_to_texture);
-            //glPushAttrib(GL_ALL_ATTRIB_BITS);
-            //glDisable(GL_ALPHA_TEST);
-            //glDrawBuffer(current_buffer);
-            glActiveTexture(texture_unit);
-            glBindTexture(GL_TEXTURE_2D, depth_texture);
-            glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-            set_depth_shader();
-            glEnable(GL_DEPTH_TEST);
-            glDepthFunc(GL_ALWAYS);
-            glDisable(GL_CULL_FACE);
-            render_rectangle(texture_unit,
-                0, 0,
-                g_width, g_height,
-                tw, th, -1);
-            glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-            glBindTexture(GL_TEXTURE_2D, default_texture);
-            //glPopAttrib();
-            return;
-        }
-    }
-}
-
 void gfxRenderBuffer(GrBuffer_t buffer)
 {
 #ifdef _WIN32

@@ -169,11 +169,4 @@ void set_copy_shader();
 void disable_textureSizes();
 void ExitFullScreen();
 
-// ZIGGY framebuffer copy extension
-// allow to copy the depth or color buffer from back/front to front/back
-#define GR_FBCOPY_MODE_DEPTH 0
-#define GR_FBCOPY_MODE_COLOR 1
-#define GR_FBCOPY_BUFFER_BACK 0
-#define GR_FBCOPY_BUFFER_FRONT 1
-
 void CHECK_FRAMEBUFFER_STATUS(void);
