@@ -216,22 +216,22 @@ void gfxCullMode(gfxCullMode_t mode)
 
 // Depth buffer
 
-void gfxDepthBufferMode(GrDepthBufferMode_t mode)
+void gfxDepthBufferMode(gfxDepthBufferMode_t mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
     switch (mode)
     {
-    case GR_DEPTHBUFFER_DISABLE:
+    case GFX_DEPTHBUFFER_DISABLE:
         glDisable(GL_DEPTH_TEST);
         w_buffer_mode = 0;
         return;
-    case GR_DEPTHBUFFER_WBUFFER:
-    case GR_DEPTHBUFFER_WBUFFER_COMPARE_TO_BIAS:
+    case GFX_DEPTHBUFFER_WBUFFER:
+    case GFX_DEPTHBUFFER_WBUFFER_COMPARE_TO_BIAS:
         glEnable(GL_DEPTH_TEST);
         w_buffer_mode = 1;
         break;
-    case GR_DEPTHBUFFER_ZBUFFER:
-    case GR_DEPTHBUFFER_ZBUFFER_COMPARE_TO_BIAS:
+    case GFX_DEPTHBUFFER_ZBUFFER:
+    case GFX_DEPTHBUFFER_ZBUFFER_COMPARE_TO_BIAS:
         glEnable(GL_DEPTH_TEST);
         w_buffer_mode = 0;
         break;

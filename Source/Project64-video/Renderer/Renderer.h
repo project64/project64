@@ -42,7 +42,7 @@ void gfxTexAlphaCombineExt(gfxChipID_t tmu, gfxTACUColor_t a, gfxCombineMode_t a
 void gfxConstantColorValueExt(gfxChipID_t tmu, gfxColor_t value);
 void gfxVertexLayout(uint32_t param, FxI32 offset, uint32_t mode);
 void gfxCullMode(gfxCullMode_t mode);
-void gfxDepthBufferMode(GrDepthBufferMode_t mode);
+void gfxDepthBufferMode(gfxDepthBufferMode_t mode);
 void gfxDepthBufferFunction(gfxCmpFnc_t function);
 void gfxDepthMask(bool mask);
 void gfxDrawTriangle(const void *a, const void *b, const void *c);
