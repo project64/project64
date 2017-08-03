@@ -669,73 +669,6 @@ extern "C" int WINAPI DllMain(HINSTANCE hinst, DWORD fdwReason, LPVOID /*lpReser
 }
 #endif
 
-void CALL ReadScreen(void **dest, int *width, int *height)
-{
-    *width = g_res_x;
-    *height = g_res_y;
-    uint8_t * buff = (uint8_t*)malloc(g_res_x * g_res_y * 3);
-    uint8_t * line = buff;
-    *dest = (void*)buff;
-
-    GrLfbInfo_t info;
-    info.size = sizeof(GrLfbInfo_t);
-    if (gfxLfbLock(GR_LFB_READ_ONLY,
-        GFX_BUFFER_FRONTBUFFER,
-        GR_LFBWRITEMODE_565,
-        GR_ORIGIN_UPPER_LEFT,
-        FXFALSE,
-        &info))
-    {
-        uint32_t offset_src = info.strideInBytes*(g_scr_res_y - 1);
-
-        // Copy the screen
-        uint8_t r, g, b;
-        if (info.writeMode == GR_LFBWRITEMODE_8888)
-        {
-            uint32_t col;
-            for (uint32_t y = 0; y < g_res_y; y++)
-            {
-                uint32_t *ptr = (uint32_t*)((uint8_t*)info.lfbPtr + offset_src);
-                for (uint32_t x = 0; x < g_res_x; x++)
-                {
-                    col = *(ptr++);
-                    r = (uint8_t)((col >> 16) & 0xFF);
-                    g = (uint8_t)((col >> 8) & 0xFF);
-                    b = (uint8_t)(col & 0xFF);
-                    line[x * 3] = b;
-                    line[x * 3 + 1] = g;
-                    line[x * 3 + 2] = r;
-                }
-                line += g_res_x * 3;
-                offset_src -= info.strideInBytes;
-            }
-        }
-        else
-        {
-            uint16_t col;
-            for (uint32_t y = 0; y < g_res_y; y++)
-            {
-                uint16_t *ptr = (uint16_t*)((uint8_t*)info.lfbPtr + offset_src);
-                for (uint32_t x = 0; x < g_res_x; x++)
-                {
-                    col = *(ptr++);
-                    r = (uint8_t)((float)(col >> 11) / 31.0f * 255.0f);
-                    g = (uint8_t)((float)((col >> 5) & 0x3F) / 63.0f * 255.0f);
-                    b = (uint8_t)((float)(col & 0x1F) / 31.0f * 255.0f);
-                    line[x * 3] = b;
-                    line[x * 3 + 1] = g;
-                    line[x * 3 + 2] = r;
-                }
-                line += g_res_x * 3;
-                offset_src -= info.strideInBytes;
-            }
-        }
-        // Unlock the frontbuffer
-        gfxLfbUnlock(GR_LFB_READ_ONLY, GFX_BUFFER_FRONTBUFFER);
-    }
-    WriteTrace(TraceGlide64, TraceDebug, "Success");
-}
-
 /******************************************************************
 Function: CaptureScreen
 Purpose:  This function dumps the current frame to a file
@@ -1052,7 +985,7 @@ void CALL RomOpen(void)
     // ** EVOODOO EXTENSIONS **
     evoodoo = 1;
     InitGfx();
-}
+    }
 
 /******************************************************************
 Function: ShowCFB
