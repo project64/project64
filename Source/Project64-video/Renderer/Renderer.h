@@ -51,7 +51,7 @@ void gfxDrawLine(const void *a, const void *b);
 void gfxDrawVertexArray(uint32_t mode, uint32_t Count, void *pointers2);
 void gfxDrawVertexArrayContiguous(uint32_t mode, uint32_t Count, void *pointers, uint32_t stride);
 
-bool gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers);
+bool gfxSstWinOpen(gfxColorFormat_t color_format, GrOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers);
 void gfxAuxBufferExt(GrBuffer_t buffer);
 uint32_t gfxGet(uint32_t pname, uint32_t plength, FxI32 *params);
 void gfxRenderBuffer(GrBuffer_t buffer);

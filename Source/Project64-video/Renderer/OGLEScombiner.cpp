@@ -681,13 +681,13 @@ void gfxConstantColorValue(gfxColor_t value)
     WriteTrace(TraceGlitch, TraceDebug, "value: %d", value);
     switch (lfb_color_fmt)
     {
-    case GR_COLORFORMAT_ARGB:
+    case GFX_COLORFORMAT_ARGB:
         g_texture_env_color[3] = ((value >> 24) & 0xFF) / 255.0f;
         g_texture_env_color[0] = ((value >> 16) & 0xFF) / 255.0f;
         g_texture_env_color[1] = ((value >> 8) & 0xFF) / 255.0f;
         g_texture_env_color[2] = (value & 0xFF) / 255.0f;
         break;
-    case GR_COLORFORMAT_RGBA:
+    case GFX_COLORFORMAT_RGBA:
         g_texture_env_color[0] = ((value >> 24) & 0xFF) / 255.0f;
         g_texture_env_color[1] = ((value >> 16) & 0xFF) / 255.0f;
         g_texture_env_color[2] = ((value >> 8) & 0xFF) / 255.0f;
@@ -1604,13 +1604,13 @@ void gfxFogColorValue(gfxColor_t fogcolor)
 
     switch (lfb_color_fmt)
     {
-    case GR_COLORFORMAT_ARGB:
+    case GFX_COLORFORMAT_ARGB:
         fogColor[3] = ((fogcolor >> 24) & 0xFF) / 255.0f;
         fogColor[0] = ((fogcolor >> 16) & 0xFF) / 255.0f;
         fogColor[1] = ((fogcolor >> 8) & 0xFF) / 255.0f;
         fogColor[2] = (fogcolor & 0xFF) / 255.0f;
         break;
-    case GR_COLORFORMAT_RGBA:
+    case GFX_COLORFORMAT_RGBA:
         fogColor[0] = ((fogcolor >> 24) & 0xFF) / 255.0f;
         fogColor[1] = ((fogcolor >> 16) & 0xFF) / 255.0f;
         fogColor[2] = ((fogcolor >> 8) & 0xFF) / 255.0f;
@@ -1646,13 +1646,13 @@ void gfxChromakeyValue(gfxColor_t value)
 
     switch (lfb_color_fmt)
     {
-    case GR_COLORFORMAT_ARGB:
+    case GFX_COLORFORMAT_ARGB:
         g_chroma_color[3] = 1.0;//((value >> 24) & 0xFF) / 255.0f;
         g_chroma_color[0] = ((value >> 16) & 0xFF) / 255.0f;
         g_chroma_color[1] = ((value >> 8) & 0xFF) / 255.0f;
         g_chroma_color[2] = (value & 0xFF) / 255.0f;
         break;
-    case GR_COLORFORMAT_RGBA:
+    case GFX_COLORFORMAT_RGBA:
         g_chroma_color[0] = ((value >> 24) & 0xFF) / 255.0f;
         g_chroma_color[1] = ((value >> 16) & 0xFF) / 255.0f;
         g_chroma_color[2] = ((value >> 8) & 0xFF) / 255.0f;
@@ -2698,7 +2698,7 @@ void gfxConstantColorValueExt(gfxChipID_t tmu, gfxColor_t value)
 
     switch (lfb_color_fmt)
     {
-    case GR_COLORFORMAT_ARGB:
+    case GFX_COLORFORMAT_ARGB:
         if (num_tex == 0)
         {
             g_ccolor0[3] = ((value >> 24) & 0xFF) / 255.0f;
@@ -2714,7 +2714,7 @@ void gfxConstantColorValueExt(gfxChipID_t tmu, gfxColor_t value)
             g_ccolor1[2] = (value & 0xFF) / 255.0f;
         }
         break;
-    case GR_COLORFORMAT_RGBA:
+    case GFX_COLORFORMAT_RGBA:
         if (num_tex == 0)
         {
             g_ccolor0[0] = ((value >> 24) & 0xFF) / 255.0f;

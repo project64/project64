@@ -473,7 +473,7 @@ int InitGfx()
 #ifndef ANDROID
     SetWindowDisplaySize((HWND)gfx.hWnd);
 #endif
-    if (!gfxSstWinOpen(GR_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1))
+    if (!gfxSstWinOpen(GFX_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1))
     {
         g_Notify->DisplayError("Error setting display mode");
         return FALSE;

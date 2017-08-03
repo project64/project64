@@ -451,7 +451,7 @@ int isWglExtensionSupported(const char *extension)
 extern HWND g_hwnd_win;
 #endif
 
-bool gfxSstWinOpen(GrColorFormat_t color_format, GrOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers)
+bool gfxSstWinOpen(gfxColorFormat_t color_format, GrOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers)
 {
     static int show_warning = 1;
 
@@ -1193,7 +1193,7 @@ uint32_t gfxGet(uint32_t pname, uint32_t plength, FxI32 *params)
         if (plength < 4 || params == NULL) return 0;
         if (!nbTextureUnits)
         {
-            gfxSstWinOpen(GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
+            gfxSstWinOpen(GFX_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
             gfxSstWinClose();
         }
 #ifdef VOODOO1
@@ -1555,13 +1555,13 @@ void gfxBufferClear(gfxColor_t color, gfxAlpha_t alpha, uint32_t depth)
     WriteTrace(TraceGlitch, TraceDebug, "color: %X alpha: %X depth: %X", color, alpha, depth);
     switch (lfb_color_fmt)
     {
-    case GR_COLORFORMAT_ARGB:
+    case GFX_COLORFORMAT_ARGB:
         glClearColor(((color >> 16) & 0xFF) / 255.0f,
             ((color >> 8) & 0xFF) / 255.0f,
             (color & 0xFF) / 255.0f,
             alpha / 255.0f);
         break;
-    case GR_COLORFORMAT_RGBA:
+    case GFX_COLORFORMAT_RGBA:
         glClearColor(((color >> 24) & 0xFF) / 255.0f,
             ((color >> 16) & 0xFF) / 255.0f,
             (color & 0xFF) / 255.0f,

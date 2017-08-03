@@ -255,6 +255,14 @@ enum gfxDepthBufferMode_t
     GFX_DEPTHBUFFER_WBUFFER_COMPARE_TO_BIAS = 0x4,
 };
 
+enum gfxColorFormat_t
+{
+    GFX_COLORFORMAT_ARGB = 0x0,
+    GFX_COLORFORMAT_ABGR = 0x1,
+    GFX_COLORFORMAT_RGBA = 0x2,
+    GFX_COLORFORMAT_BGRA = 0x3,
+};
+
 enum gfxChromakeyMode_t
 {
     GFX_CHROMAKEY_DISABLE = 0x0,
