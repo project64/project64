@@ -953,7 +953,7 @@ uint32_t gfxGet(uint32_t pname, uint32_t plength, FxI32 *params)
         params[1] = 65535;
         return 8;
         break;
-    case GR_LFB_PIXEL_PIPE:
+    case GFX_LFB_PIXEL_PIPE:
         if (plength < 4 || params == NULL) return 0;
         params[0] = FXFALSE;
         return 4;
@@ -1324,10 +1324,10 @@ void gfxBufferSwap(uint32_t swap_interval)
 }
 
 // frame buffer
-bool gfxLfbLock(GrLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode, GrOriginLocation_t origin, bool pixelPipeline, GrLfbInfo_t *info)
+bool gfxLfbLock(gfxLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode, GrOriginLocation_t origin, bool pixelPipeline, GrLfbInfo_t *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "type: %d buffer: %d writeMode: %d origin: %d pixelPipeline: %d", type, buffer, writeMode, origin, pixelPipeline);
-    if (type == GR_LFB_WRITE_ONLY)
+    if (type == GFX_LFB_WRITE_ONLY)
     {
         WriteTrace(TraceGlitch, TraceWarning, "gfxLfbLock : write only");
     }
@@ -1393,10 +1393,10 @@ bool gfxLfbLock(GrLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode, Gr
     return FXTRUE;
 }
 
-bool gfxLfbUnlock(GrLock_t type, GrBuffer_t buffer)
+bool gfxLfbUnlock(gfxLock_t type, GrBuffer_t buffer)
 {
     WriteTrace(TraceGlitch, TraceDebug, "type: %d, buffer: %d", type, buffer);
-    if (type == GR_LFB_WRITE_ONLY)
+    if (type == GFX_LFB_WRITE_ONLY)
     {
         WriteTrace(TraceGlitch, TraceWarning, "gfxLfbUnlock : write only");
     }
@@ -1500,7 +1500,7 @@ bool gfxLfbWriteRegion(GrBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, Gr
         const unsigned int half_stride = src_stride / 2;
         switch (src_format)
         {
-        case GR_LFB_SRC_FMT_1555:
+        case GFX_LFB_SRC_FMT_1555:
             for (j = 0; j < src_height; j++)
             {
                 for (i = 0; i < src_width; i++)

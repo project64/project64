@@ -663,7 +663,7 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GFX_BUFFER_BACKBUFFER)
             GrLfbInfo_t info;
             info.size = sizeof(GrLfbInfo_t);
 
-            if (gfxLfbLock(GR_LFB_READ_ONLY,
+            if (gfxLfbLock(GFX_LFB_READ_ONLY,
                 buffer,
                 GR_LFBWRITEMODE_565,
                 GR_ORIGIN_UPPER_LEFT,
@@ -702,7 +702,7 @@ static void CopyFrameBuffer(GrBuffer_t buffer = GFX_BUFFER_BACKBUFFER)
                 }
 
                 // Unlock the backbuffer
-                gfxLfbUnlock(GR_LFB_READ_ONLY, buffer);
+                gfxLfbUnlock(GFX_LFB_READ_ONLY, buffer);
                 WriteTrace(TraceRDP, TraceDebug, "LfbLock.  Framebuffer copy complete.");
             }
             else
@@ -2970,7 +2970,7 @@ void rdp_setcolorimage()
                             ptr_dst[x + y * width] = c;
                         }
                     }
-                    gfxLfbWriteRegion(GFX_BUFFER_BACKBUFFER, (uint32_t)rdp.offset_x, (uint32_t)rdp.offset_y, GR_LFB_SRC_FMT_555, width, height, FXFALSE, width << 1, ptr_dst);
+                    gfxLfbWriteRegion(GFX_BUFFER_BACKBUFFER, (uint32_t)rdp.offset_x, (uint32_t)rdp.offset_y, GFX_LFB_SRC_FMT_555, width, height, FXFALSE, width << 1, ptr_dst);
                     delete[] ptr_dst;
                 }
             }

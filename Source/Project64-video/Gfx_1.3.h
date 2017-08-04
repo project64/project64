@@ -222,8 +222,6 @@ extern "C" {
     *******************************************************************/
     EXPORT void CALL DllTest(void * hParent);
 
-    EXPORT void CALL ReadScreen(void **dest, int *width, int *height);
-
     /******************************************************************
     Function: DrawScreen
     Purpose:  This function is called when the emulator receives a

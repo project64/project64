@@ -985,7 +985,7 @@ void CALL RomOpen(void)
     // ** EVOODOO EXTENSIONS **
     evoodoo = 1;
     InitGfx();
-    }
+}
 
 /******************************************************************
 Function: ShowCFB
@@ -1273,7 +1273,7 @@ void newSwapBuffers()
 
         GrLfbInfo_t info;
         info.size = sizeof(GrLfbInfo_t);
-        if (gfxLfbLock(GR_LFB_READ_ONLY, GFX_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_565, GR_ORIGIN_UPPER_LEFT, FXFALSE, &info))
+        if (gfxLfbLock(GFX_LFB_READ_ONLY, GFX_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_565, GR_ORIGIN_UPPER_LEFT, FXFALSE, &info))
         {
             AUTO_PTR<uint8_t> ssimg_buffer(new uint8_t[image_width * image_height * 3]);
             uint8_t * ssimg = ssimg_buffer.get();
@@ -1316,7 +1316,7 @@ void newSwapBuffers()
                 }
             }
             // Unlock the backbuffer
-            gfxLfbUnlock(GR_LFB_READ_ONLY, GFX_BUFFER_BACKBUFFER);
+            gfxLfbUnlock(GFX_LFB_READ_ONLY, GFX_BUFFER_BACKBUFFER);
             write_png_file(path, image_width, image_height, ssimg);
             g_capture_screen = false;
         }
