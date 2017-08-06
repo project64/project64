@@ -581,7 +581,7 @@ static void copyWhiteToRDRAM()
     }
 }
 
-static void CopyFrameBuffer(GrBuffer_t buffer = GFX_BUFFER_BACKBUFFER)
+static void CopyFrameBuffer(gfxBuffer_t buffer = GFX_BUFFER_BACKBUFFER)
 {
     WriteTrace(TraceRDP, TraceDebug, "CopyFrameBuffer: %08lx... ", rdp.cimg);
 

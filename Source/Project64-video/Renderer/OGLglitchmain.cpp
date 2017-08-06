@@ -1405,7 +1405,7 @@ void updateTexture()
     grDisplayGLError("updateTexture");
 }
 
-void gfxRenderBuffer(GrBuffer_t buffer)
+void gfxRenderBuffer(gfxBuffer_t buffer)
 {
 #ifdef _WIN32
     static HANDLE region = NULL;
@@ -1525,7 +1525,7 @@ void gfxRenderBuffer(GrBuffer_t buffer)
     grDisplayGLError("gfxRenderBuffer");
 }
 
-void gfxAuxBufferExt(GrBuffer_t buffer)
+void gfxAuxBufferExt(gfxBuffer_t buffer)
 {
     WriteTrace(TraceGlitch, TraceDebug, "buffer: %d", buffer);
 
@@ -1604,7 +1604,7 @@ void gfxBufferSwap(uint32_t swap_interval)
 }
 
 // frame buffer
-bool gfxLfbLock(gfxLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode, GrOriginLocation_t origin, bool pixelPipeline, GrLfbInfo_t *info)
+bool gfxLfbLock(gfxLock_t type, gfxBuffer_t buffer, GrLfbWriteMode_t writeMode, GrOriginLocation_t origin, bool pixelPipeline, GrLfbInfo_t *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "type: %d buffer: %d writeMode: %d origin: %d pixelPipeline: %d", type, buffer, writeMode, origin, pixelPipeline);
     if (type == GFX_LFB_WRITE_ONLY)
@@ -1674,7 +1674,7 @@ bool gfxLfbLock(gfxLock_t type, GrBuffer_t buffer, GrLfbWriteMode_t writeMode, G
     return FXTRUE;
 }
 
-bool gfxLfbUnlock(gfxLock_t type, GrBuffer_t buffer)
+bool gfxLfbUnlock(gfxLock_t type, gfxBuffer_t buffer)
 {
     WriteTrace(TraceGlitch, TraceDebug, "type: %d, buffer: %d", type, buffer);
     if (type == GFX_LFB_WRITE_ONLY)
@@ -1684,7 +1684,7 @@ bool gfxLfbUnlock(gfxLock_t type, GrBuffer_t buffer)
     return FXTRUE;
 }
 
-bool gfxLfbReadRegion(GrBuffer_t src_buffer, uint32_t src_x, uint32_t src_y, uint32_t src_width, uint32_t src_height, uint32_t dst_stride, void *dst_data)
+bool gfxLfbReadRegion(gfxBuffer_t src_buffer, uint32_t src_x, uint32_t src_y, uint32_t src_width, uint32_t src_height, uint32_t dst_stride, void *dst_data)
 {
     unsigned char *buf;
     unsigned int i, j;
@@ -1746,7 +1746,7 @@ bool gfxLfbReadRegion(GrBuffer_t src_buffer, uint32_t src_x, uint32_t src_y, uin
     return FXTRUE;
 }
 
-bool gfxLfbWriteRegion(GrBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, GrLfbSrcFmt_t src_format, uint32_t src_width, uint32_t src_height, bool pixelPipeline, FxI32 src_stride, void *src_data)
+bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, GrLfbSrcFmt_t src_format, uint32_t src_width, uint32_t src_height, bool pixelPipeline, FxI32 src_stride, void *src_data)
 {
     unsigned char *buf;
     unsigned int i, j;
