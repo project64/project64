@@ -49,6 +49,7 @@
   <ItemGroup>
     <ClInclude Include="F3DTEXA.h" />
     <ClInclude Include="Gfx_1.3.h" />
+    <ClInclude Include="Renderer\glitchmain.h" />
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="Renderer\types.h" />
     <ClInclude Include="ScreenResolution.h" />

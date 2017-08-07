@@ -24,6 +24,7 @@ extern int dumping;
 #endif
 
 #include <Project64-video/trace.h>
+#include "types.h"
 
 #define zscale 1.0f
 

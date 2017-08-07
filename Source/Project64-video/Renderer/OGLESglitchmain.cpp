@@ -936,7 +936,7 @@ uint32_t gfxGet(uint32_t pname, uint32_t plength, FxI32 *params)
         params[0] = 256;
         return 4;
         break;
-    case GFX_FOG_TABLE_ENTRIES:
+    case GR_FOG_TABLE_ENTRIES:
         if (plength < 4 || params == NULL) return 0;
         params[0] = 64;
         return 4;
@@ -953,7 +953,7 @@ uint32_t gfxGet(uint32_t pname, uint32_t plength, FxI32 *params)
         params[1] = 65535;
         return 8;
         break;
-    case GFX_LFB_PIXEL_PIPE:
+    case GR_LFB_PIXEL_PIPE:
         if (plength < 4 || params == NULL) return 0;
         params[0] = FXFALSE;
         return 4;

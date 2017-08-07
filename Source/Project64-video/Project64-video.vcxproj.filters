@@ -163,6 +163,9 @@
     <ClInclude Include="F3DTEXA.h">
       <Filter>ucode</Filter>
     </ClInclude>
+    <ClInclude Include="Renderer\glitchmain.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CRC.cpp">

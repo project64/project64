@@ -30,7 +30,8 @@
 
 void vbo_draw();
 
-static int g_alpha_ref, g_alpha_func;
+static gfxCmpFnc_t g_alpha_func;
+static int g_alpha_ref;
 static bool g_alpha_test = 0;
 
 static float g_texture_env_color[4];
@@ -605,7 +606,7 @@ void free_combiners()
     g_shader_programs.clear();
 
     g_alpha_ref = 0;
-    g_alpha_func = 0;
+    g_alpha_func = GFX_CMP_NEVER;
     g_alpha_test = 0;
 
     memset(g_texture_env_color, 0, sizeof(g_texture_env_color));
