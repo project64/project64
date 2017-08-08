@@ -1271,8 +1271,8 @@ void newSwapBuffers()
         const uint32_t image_width = g_scr_res_x - offset_x * 2;
         const uint32_t image_height = g_scr_res_y - offset_y * 2;
 
-        GrLfbInfo_t info;
-        info.size = sizeof(GrLfbInfo_t);
+        gfxLfbInfo_t info;
+        info.size = sizeof(gfxLfbInfo_t);
         if (gfxLfbLock(GFX_LFB_READ_ONLY, GFX_BUFFER_BACKBUFFER, GFX_LFBWRITEMODE_565, GFX_ORIGIN_UPPER_LEFT, FXFALSE, &info))
         {
             AUTO_PTR<uint8_t> ssimg_buffer(new uint8_t[image_width * image_height * 3]);

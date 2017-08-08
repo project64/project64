@@ -660,8 +660,8 @@ static void CopyFrameBuffer(gfxBuffer_t buffer = GFX_BUFFER_BACKBUFFER)
             float scale_y = (g_scr_res_y - rdp.offset_y*2.0f) / maxval(height, rdp.vi_height);
 
             WriteTrace(TraceRDP, TraceDebug, "width: %d, height: %d, ul_y: %d, lr_y: %d, scale_x: %f, scale_y: %f, ci_width: %d, ci_height: %d", width, height, rdp.ci_upper_bound, rdp.ci_lower_bound, scale_x, scale_y, rdp.ci_width, rdp.ci_height);
-            GrLfbInfo_t info;
-            info.size = sizeof(GrLfbInfo_t);
+            gfxLfbInfo_t info;
+            info.size = sizeof(gfxLfbInfo_t);
 
             if (gfxLfbLock(GFX_LFB_READ_ONLY,
                 buffer,

@@ -327,3 +327,11 @@ typedef struct
     gfxTextureFormat_t format;
     void               *data;
 } gfxTexInfo;
+
+typedef struct {
+    int32_t            size;
+    void               *lfbPtr;
+    uint32_t           strideInBytes;
+    gfxLfbWriteMode_t   writeMode;
+    gfxOriginLocation_t origin;
+} gfxLfbInfo_t;
