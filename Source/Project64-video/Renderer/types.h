@@ -299,6 +299,12 @@ enum gfxOriginLocation_t
     GFX_ORIGIN_ANY = 0xFF,
 };
 
+enum gfxTextureFilterMode_t
+{
+    GFX_TEXTUREFILTER_POINT_SAMPLED = 0x0,
+    GFX_TEXTUREFILTER_BILINEAR = 0x1,
+};
+
 enum gfxTextureClampMode_t
 {
     GFX_TEXTURECLAMP_WRAP = 0x0,

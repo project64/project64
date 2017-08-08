@@ -815,12 +815,12 @@ void TexCache()
 
             if (g_settings->filtering() == CSettings::Filter_Automatic)
             {
-                int filter = (rdp.filter_mode != 2) ? GR_TEXTUREFILTER_POINT_SAMPLED : GR_TEXTUREFILTER_BILINEAR;
+                gfxTextureFilterMode_t filter = (rdp.filter_mode != 2) ? GFX_TEXTUREFILTER_POINT_SAMPLED : GFX_TEXTUREFILTER_BILINEAR;
                 gfxTexFilterMode(tmu, filter, filter);
             }
             else
             {
-                int filter = (g_settings->filtering() == CSettings::Filter_ForceBilinear) ? GR_TEXTUREFILTER_BILINEAR : GR_TEXTUREFILTER_POINT_SAMPLED;
+                gfxTextureFilterMode_t filter = (g_settings->filtering() == CSettings::Filter_ForceBilinear) ? GFX_TEXTUREFILTER_BILINEAR : GFX_TEXTUREFILTER_POINT_SAMPLED;
                 gfxTexFilterMode(tmu, filter, filter);
             }
 

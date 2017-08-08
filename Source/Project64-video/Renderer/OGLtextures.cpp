@@ -711,16 +711,16 @@ void gfxTexDetailControl(gfxChipID_t tmu, int lod_bias, FxU8 detail_scale, float
     set_lambda();
 }
 
-void gfxTexFilterMode(gfxChipID_t tmu, GrTextureFilterMode_t minfilter_mode, GrTextureFilterMode_t magfilter_mode)
+void gfxTexFilterMode(gfxChipID_t tmu, gfxTextureFilterMode_t minfilter_mode, gfxTextureFilterMode_t magfilter_mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, bias: %d magfilter_mode: %d", tmu, minfilter_mode, magfilter_mode);
     if (tmu == GFX_TMU1 || nbTextureUnits <= 2)
     {
         if (tmu == GFX_TMU1 && nbTextureUnits <= 2) return;
-        if (minfilter_mode == GR_TEXTUREFILTER_POINT_SAMPLED) min_filter0 = GL_NEAREST;
+        if (minfilter_mode == GFX_TEXTUREFILTER_POINT_SAMPLED) min_filter0 = GL_NEAREST;
         else min_filter0 = GL_LINEAR;
 
-        if (magfilter_mode == GR_TEXTUREFILTER_POINT_SAMPLED) mag_filter0 = GL_NEAREST;
+        if (magfilter_mode == GFX_TEXTUREFILTER_POINT_SAMPLED) mag_filter0 = GL_NEAREST;
         else mag_filter0 = GL_LINEAR;
 
         glActiveTextureARB(GL_TEXTURE0_ARB);
@@ -729,10 +729,10 @@ void gfxTexFilterMode(gfxChipID_t tmu, GrTextureFilterMode_t minfilter_mode, GrT
     }
     else
     {
-        if (minfilter_mode == GR_TEXTUREFILTER_POINT_SAMPLED) min_filter1 = GL_NEAREST;
+        if (minfilter_mode == GFX_TEXTUREFILTER_POINT_SAMPLED) min_filter1 = GL_NEAREST;
         else min_filter1 = GL_LINEAR;
 
-        if (magfilter_mode == GR_TEXTUREFILTER_POINT_SAMPLED) mag_filter1 = GL_NEAREST;
+        if (magfilter_mode == GFX_TEXTUREFILTER_POINT_SAMPLED) mag_filter1 = GL_NEAREST;
         else mag_filter1 = GL_LINEAR;
 
         glActiveTextureARB(GL_TEXTURE1_ARB);
