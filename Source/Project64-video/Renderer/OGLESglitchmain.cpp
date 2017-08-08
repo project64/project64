@@ -875,7 +875,7 @@ int CheckTextureBufferFormat(gfxChipID_t tmu, uint32_t startAddress, gfxTexInfo 
     return 0;
 }
 
-uint32_t gfxGet(uint32_t pname, uint32_t plength, FxI32 *params)
+uint32_t gfxGet(uint32_t pname, uint32_t plength, int32_t *params)
 {
     WriteTrace(TraceGlitch, TraceDebug, "pname: %d plength: %d", pname, plength);
     switch (pname)
@@ -1464,7 +1464,7 @@ bool gfxLfbReadRegion(gfxBuffer_t src_buffer, uint32_t src_x, uint32_t src_y, ui
     return FXTRUE;
 }
 
-bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, gfxLfbSrcFmt_t src_format, uint32_t src_width, uint32_t src_height, bool pixelPipeline, FxI32 src_stride, void *src_data)
+bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, gfxLfbSrcFmt_t src_format, uint32_t src_width, uint32_t src_height, bool pixelPipeline, int32_t src_stride, void *src_data)
 {
     unsigned char *buf;
     unsigned int i, j;

@@ -159,7 +159,7 @@ typedef struct
     int sup_32bit_tex;
     int has_2mb_tex_boundary;
     int gamma_correction;
-    FxI32 gamma_table_size;
+    int32_t gamma_table_size;
     uint32_t *gamma_table_r;
     uint32_t *gamma_table_g;
     uint32_t *gamma_table_b;

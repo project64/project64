@@ -73,7 +73,7 @@ void init_geometry()
     grDisplayGLError("init_geometry");
 }
 
-void gfxVertexLayout(uint32_t param, FxI32 offset, uint32_t mode)
+void gfxVertexLayout(uint32_t param, int32_t offset, uint32_t mode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "param: %d offset: %d mode: %d", param, offset, mode);
     switch (param)
@@ -286,7 +286,7 @@ void FindBestDepthBias()
     grDisplayGLError("FindBestDepthBias");
 }
 
-void gfxDepthBiasLevel(FxI32 level)
+void gfxDepthBiasLevel(int32_t level)
 {
     WriteTrace(TraceGlitch, TraceDebug, "level: %d", level);
     if (level)
