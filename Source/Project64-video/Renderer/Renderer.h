@@ -64,7 +64,7 @@ bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, g
 uint32_t gfxTexCalcMemRequired(gfxLOD_t lodmin, gfxLOD_t lodmax, gfxAspectRatio_t aspect, gfxTextureFormat_t fmt);
 void gfxLoadGammaTable(uint32_t nentries, uint32_t *red, uint32_t *green, uint32_t *blue);
 void gfxGetGammaTableExt(uint32_t /*nentries*/, uint32_t *red, uint32_t *green, uint32_t *blue);
-void gfxGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB);
+void gfxGammaCorrectionRGB(float gammaR, float gammaG, float gammaB);
 void gfxTexDownloadMipMap(gfxChipID_t tmu, uint32_t startAddress, uint32_t evenOdd, gfxTexInfo *info);
 void gfxTexSource(gfxChipID_t tmu, uint32_t startAddress, uint32_t evenOdd, gfxTexInfo *info);
 void gfxTexDetailControl(gfxChipID_t tmu, int lod_bias, FxU8 detail_scale, float detail_max);

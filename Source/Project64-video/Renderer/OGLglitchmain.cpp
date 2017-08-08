@@ -1935,7 +1935,7 @@ void gfxGetGammaTableExt(uint32_t /*nentries*/, uint32_t *red, uint32_t *green, 
     }
 }
 
-void gfxGammaCorrectionRGB(FxFloat gammaR, FxFloat gammaG, FxFloat gammaB)
+void gfxGammaCorrectionRGB(float gammaR, float gammaG, float gammaB)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
 
