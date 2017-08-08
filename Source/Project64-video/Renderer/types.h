@@ -271,6 +271,13 @@ enum gfxLock_t
     GFX_LFB_NOIDLE = 0x10,
 };
 
+enum gfxOriginLocation_t
+{
+    GFX_ORIGIN_UPPER_LEFT = 0x0,
+    GFX_ORIGIN_LOWER_LEFT = 0x1,
+    GFX_ORIGIN_ANY = 0xFF,
+};
+
 enum gfxLfbSrcFmt_t
 {
     GFX_LFB_SRC_FMT_565 = 0x00,

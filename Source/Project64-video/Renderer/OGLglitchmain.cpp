@@ -451,7 +451,7 @@ int isWglExtensionSupported(const char *extension)
 extern HWND g_hwnd_win;
 #endif
 
-bool gfxSstWinOpen(gfxColorFormat_t color_format, GrOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers)
+bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers)
 {
     static int show_warning = 1;
 
@@ -531,7 +531,7 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, GrOriginLocation_t origin_loca
     }
 #endif // _WIN32
     lfb_color_fmt = color_format;
-    if (origin_location != GR_ORIGIN_UPPER_LEFT) WriteTrace(TraceGlitch, TraceWarning, "origin must be in upper left corner");
+    if (origin_location != GFX_ORIGIN_UPPER_LEFT) WriteTrace(TraceGlitch, TraceWarning, "origin must be in upper left corner");
     if (nColBuffers != 2) WriteTrace(TraceGlitch, TraceWarning, "number of color buffer is not 2");
     if (nAuxBuffers != 1) WriteTrace(TraceGlitch, TraceWarning, "number of auxiliary buffer is not 1");
 
@@ -1193,7 +1193,7 @@ uint32_t gfxGet(uint32_t pname, uint32_t plength, FxI32 *params)
         if (plength < 4 || params == NULL) return 0;
         if (!nbTextureUnits)
         {
-            gfxSstWinOpen(GFX_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
+            gfxSstWinOpen(GFX_COLORFORMAT_ARGB, GFX_ORIGIN_UPPER_LEFT, 2, 1);
             gfxSstWinClose();
         }
 #ifdef VOODOO1
@@ -1604,7 +1604,7 @@ void gfxBufferSwap(uint32_t swap_interval)
 }
 
 // frame buffer
-bool gfxLfbLock(gfxLock_t type, gfxBuffer_t buffer, GrLfbWriteMode_t writeMode, GrOriginLocation_t origin, bool pixelPipeline, GrLfbInfo_t *info)
+bool gfxLfbLock(gfxLock_t type, gfxBuffer_t buffer, GrLfbWriteMode_t writeMode, gfxOriginLocation_t origin, bool pixelPipeline, GrLfbInfo_t *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "type: %d buffer: %d writeMode: %d origin: %d pixelPipeline: %d", type, buffer, writeMode, origin, pixelPipeline);
     if (type == GFX_LFB_WRITE_ONLY)

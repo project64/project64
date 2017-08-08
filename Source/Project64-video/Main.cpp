@@ -473,7 +473,7 @@ int InitGfx()
 #ifndef ANDROID
     SetWindowDisplaySize((HWND)gfx.hWnd);
 #endif
-    if (!gfxSstWinOpen(GFX_COLORFORMAT_RGBA, GR_ORIGIN_UPPER_LEFT, 2, 1))
+    if (!gfxSstWinOpen(GFX_COLORFORMAT_RGBA, GFX_ORIGIN_UPPER_LEFT, 2, 1))
     {
         g_Notify->DisplayError("Error setting display mode");
         return FALSE;
@@ -1273,7 +1273,7 @@ void newSwapBuffers()
 
         GrLfbInfo_t info;
         info.size = sizeof(GrLfbInfo_t);
-        if (gfxLfbLock(GFX_LFB_READ_ONLY, GFX_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_565, GR_ORIGIN_UPPER_LEFT, FXFALSE, &info))
+        if (gfxLfbLock(GFX_LFB_READ_ONLY, GFX_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_565, GFX_ORIGIN_UPPER_LEFT, FXFALSE, &info))
         {
             AUTO_PTR<uint8_t> ssimg_buffer(new uint8_t[image_width * image_height * 3]);
             uint8_t * ssimg = ssimg_buffer.get();
