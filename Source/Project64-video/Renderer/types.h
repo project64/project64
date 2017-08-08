@@ -299,6 +299,13 @@ enum gfxOriginLocation_t
     GFX_ORIGIN_ANY = 0xFF,
 };
 
+enum gfxTextureClampMode_t
+{
+    GFX_TEXTURECLAMP_WRAP = 0x0,
+    GFX_TEXTURECLAMP_CLAMP = 0x1,
+    GFX_TEXTURECLAMP_MIRROR_EXT = 0x2,
+};
+
 enum gfxLfbSrcFmt_t
 {
     GFX_LFB_SRC_FMT_565 = 0x00,

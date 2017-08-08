@@ -826,7 +826,7 @@ void TexCache()
 
             if (rdp.cur_cache[i])
             {
-                uint32_t mode_s, mode_t;
+                gfxTextureClampMode_t mode_s, mode_t;
                 int clamp_s, clamp_t;
                 if (rdp.force_wrap && !rdp.texrecting)
                 {
@@ -842,31 +842,31 @@ void TexCache()
                 }
 
                 if (rdp.cur_cache[i]->f_mirror_s)
-                    mode_s = GR_TEXTURECLAMP_MIRROR_EXT;
+                    mode_s = GFX_TEXTURECLAMP_MIRROR_EXT;
                 else if (rdp.cur_cache[i]->f_wrap_s)
-                    mode_s = GR_TEXTURECLAMP_WRAP;
+                    mode_s = GFX_TEXTURECLAMP_WRAP;
                 else if (clamp_s)
-                    mode_s = GR_TEXTURECLAMP_CLAMP;
+                    mode_s = GFX_TEXTURECLAMP_CLAMP;
                 else
                 {
                     if (rdp.tiles(tile).mirror_s && voodoo.sup_mirroring)
-                        mode_s = GR_TEXTURECLAMP_MIRROR_EXT;
+                        mode_s = GFX_TEXTURECLAMP_MIRROR_EXT;
                     else
-                        mode_s = GR_TEXTURECLAMP_WRAP;
+                        mode_s = GFX_TEXTURECLAMP_WRAP;
                 }
 
                 if (rdp.cur_cache[i]->f_mirror_t)
-                    mode_t = GR_TEXTURECLAMP_MIRROR_EXT;
+                    mode_t = GFX_TEXTURECLAMP_MIRROR_EXT;
                 else if (rdp.cur_cache[i]->f_wrap_t)
-                    mode_t = GR_TEXTURECLAMP_WRAP;
+                    mode_t = GFX_TEXTURECLAMP_WRAP;
                 else if (clamp_t)
-                    mode_t = GR_TEXTURECLAMP_CLAMP;
+                    mode_t = GFX_TEXTURECLAMP_CLAMP;
                 else
                 {
                     if (rdp.tiles(tile).mirror_t && voodoo.sup_mirroring)
-                        mode_t = GR_TEXTURECLAMP_MIRROR_EXT;
+                        mode_t = GFX_TEXTURECLAMP_MIRROR_EXT;
                     else
-                        mode_t = GR_TEXTURECLAMP_WRAP;
+                        mode_t = GFX_TEXTURECLAMP_WRAP;
                 }
 
                 gfxTexClampMode(tmu,

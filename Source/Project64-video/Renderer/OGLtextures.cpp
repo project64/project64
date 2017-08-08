@@ -742,7 +742,7 @@ void gfxTexFilterMode(gfxChipID_t tmu, GrTextureFilterMode_t minfilter_mode, GrT
     grDisplayGLError("gfxTexFilterMode");
 }
 
-void gfxTexClampMode(gfxChipID_t tmu, GrTextureClampMode_t s_clampmode, GrTextureClampMode_t t_clampmode)
+void gfxTexClampMode(gfxChipID_t tmu, gfxTextureClampMode_t s_clampmode, gfxTextureClampMode_t t_clampmode)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, s_clampmode: %d t_clampmode: %d", tmu, s_clampmode, t_clampmode);
     if (tmu == GFX_TMU1 || nbTextureUnits <= 2)
@@ -750,13 +750,13 @@ void gfxTexClampMode(gfxChipID_t tmu, GrTextureClampMode_t s_clampmode, GrTextur
         if (tmu == GFX_TMU1 && nbTextureUnits <= 2) return;
         switch (s_clampmode)
         {
-        case GR_TEXTURECLAMP_WRAP:
+        case GFX_TEXTURECLAMP_WRAP:
             wrap_s0 = GL_REPEAT;
             break;
-        case GR_TEXTURECLAMP_CLAMP:
+        case GFX_TEXTURECLAMP_CLAMP:
             wrap_s0 = GL_CLAMP_TO_EDGE;
             break;
-        case GR_TEXTURECLAMP_MIRROR_EXT:
+        case GFX_TEXTURECLAMP_MIRROR_EXT:
             wrap_s0 = GL_MIRRORED_REPEAT_ARB;
             break;
         default:
@@ -764,13 +764,13 @@ void gfxTexClampMode(gfxChipID_t tmu, GrTextureClampMode_t s_clampmode, GrTextur
         }
         switch (t_clampmode)
         {
-        case GR_TEXTURECLAMP_WRAP:
+        case GFX_TEXTURECLAMP_WRAP:
             wrap_t0 = GL_REPEAT;
             break;
-        case GR_TEXTURECLAMP_CLAMP:
+        case GFX_TEXTURECLAMP_CLAMP:
             wrap_t0 = GL_CLAMP_TO_EDGE;
             break;
-        case GR_TEXTURECLAMP_MIRROR_EXT:
+        case GFX_TEXTURECLAMP_MIRROR_EXT:
             wrap_t0 = GL_MIRRORED_REPEAT_ARB;
             break;
         default:
@@ -784,13 +784,13 @@ void gfxTexClampMode(gfxChipID_t tmu, GrTextureClampMode_t s_clampmode, GrTextur
     {
         switch (s_clampmode)
         {
-        case GR_TEXTURECLAMP_WRAP:
+        case GFX_TEXTURECLAMP_WRAP:
             wrap_s1 = GL_REPEAT;
             break;
-        case GR_TEXTURECLAMP_CLAMP:
+        case GFX_TEXTURECLAMP_CLAMP:
             wrap_s1 = GL_CLAMP_TO_EDGE;
             break;
-        case GR_TEXTURECLAMP_MIRROR_EXT:
+        case GFX_TEXTURECLAMP_MIRROR_EXT:
             wrap_s1 = GL_MIRRORED_REPEAT_ARB;
             break;
         default:
@@ -798,13 +798,13 @@ void gfxTexClampMode(gfxChipID_t tmu, GrTextureClampMode_t s_clampmode, GrTextur
         }
         switch (t_clampmode)
         {
-        case GR_TEXTURECLAMP_WRAP:
+        case GFX_TEXTURECLAMP_WRAP:
             wrap_t1 = GL_REPEAT;
             break;
-        case GR_TEXTURECLAMP_CLAMP:
+        case GFX_TEXTURECLAMP_CLAMP:
             wrap_t1 = GL_CLAMP_TO_EDGE;
             break;
-        case GR_TEXTURECLAMP_MIRROR_EXT:
+        case GFX_TEXTURECLAMP_MIRROR_EXT:
             wrap_t1 = GL_MIRRORED_REPEAT_ARB;
             break;
         default:

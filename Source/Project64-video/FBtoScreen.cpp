@@ -49,8 +49,8 @@ static gfxChipID_t SetupFBtoScreenCombiner(uint32_t texture_size, uint32_t opaqu
     int filter = (rdp.filter_mode != 2) ? GR_TEXTUREFILTER_POINT_SAMPLED : GR_TEXTUREFILTER_BILINEAR;
     gfxTexFilterMode(tmu, filter, filter);
     gfxTexClampMode(tmu,
-        GR_TEXTURECLAMP_CLAMP,
-        GR_TEXTURECLAMP_CLAMP);
+        GFX_TEXTURECLAMP_CLAMP,
+        GFX_TEXTURECLAMP_CLAMP);
     //  gfxConstantColorValue (0xFFFFFFFF);
     gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GFX_COMBINE_FACTOR_ONE,
