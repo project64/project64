@@ -1604,7 +1604,7 @@ void gfxBufferSwap(uint32_t swap_interval)
 }
 
 // frame buffer
-bool gfxLfbLock(gfxLock_t type, gfxBuffer_t buffer, GrLfbWriteMode_t writeMode, gfxOriginLocation_t origin, bool pixelPipeline, GrLfbInfo_t *info)
+bool gfxLfbLock(gfxLock_t type, gfxBuffer_t buffer, gfxLfbWriteMode_t writeMode, gfxOriginLocation_t origin, bool pixelPipeline, GrLfbInfo_t *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "type: %d buffer: %d writeMode: %d origin: %d pixelPipeline: %d", type, buffer, writeMode, origin, pixelPipeline);
     if (type == GFX_LFB_WRITE_ONLY)
@@ -1630,11 +1630,11 @@ bool gfxLfbLock(gfxLock_t type, gfxBuffer_t buffer, GrLfbWriteMode_t writeMode, 
 
         if (buffer != GFX_BUFFER_AUXBUFFER)
         {
-            if (writeMode == GR_LFBWRITEMODE_888) {
-                //printf("LfbLock GR_LFBWRITEMODE_888\n");
+            if (writeMode == GFX_LFBWRITEMODE_888) {
+                //printf("LfbLock GFX_LFBWRITEMODE_888\n");
                 info->lfbPtr = frameBuffer;
                 info->strideInBytes = g_width * 4;
-                info->writeMode = GR_LFBWRITEMODE_888;
+                info->writeMode = GFX_LFBWRITEMODE_888;
                 info->origin = origin;
                 glReadPixels(0, g_viewport_offset, g_width, g_height, GL_BGRA, GL_UNSIGNED_BYTE, frameBuffer);
             }
@@ -1643,7 +1643,7 @@ bool gfxLfbLock(gfxLock_t type, gfxBuffer_t buffer, GrLfbWriteMode_t writeMode, 
 
                 info->lfbPtr = frameBuffer;
                 info->strideInBytes = g_width * 2;
-                info->writeMode = GR_LFBWRITEMODE_565;
+                info->writeMode = GFX_LFBWRITEMODE_565;
                 info->origin = origin;
                 glReadPixels(0, g_viewport_offset, g_width, g_height, GL_RGBA, GL_UNSIGNED_BYTE, buf);
 
@@ -1664,7 +1664,7 @@ bool gfxLfbLock(gfxLock_t type, gfxBuffer_t buffer, GrLfbWriteMode_t writeMode, 
         {
             info->lfbPtr = depthBuffer;
             info->strideInBytes = g_width * 2;
-            info->writeMode = GR_LFBWRITEMODE_ZA16;
+            info->writeMode = GFX_LFBWRITEMODE_ZA16;
             info->origin = origin;
             glReadPixels(0, g_viewport_offset, g_width, g_height, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, depthBuffer);
         }
@@ -1795,7 +1795,7 @@ bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, G
                 }
             }
             break;
-        case GR_LFBWRITEMODE_555:
+        case GFX_LFBWRITEMODE_555:
             for (j = 0; j < src_height; j++)
             {
                 for (i = 0; i < src_width; i++)
@@ -1808,7 +1808,7 @@ bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, G
                 }
             }
             break;
-        case GR_LFBWRITEMODE_565:
+        case GFX_LFBWRITEMODE_565:
             for (j = 0; j < src_height; j++)
             {
                 for (i = 0; i < src_width; i++)
@@ -1842,7 +1842,7 @@ bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, G
     {
         float *buf = (float*)malloc(src_width*(src_height + (g_viewport_offset)) * sizeof(float));
 
-        if (src_format != GR_LFBWRITEMODE_ZA16)
+        if (src_format != GFX_LFBWRITEMODE_ZA16)
             WriteTrace(TraceGlitch, TraceWarning, "unknown depth buffer write format:%x", src_format);
 
         if (dst_x || dst_y)

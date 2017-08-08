@@ -1273,7 +1273,7 @@ void newSwapBuffers()
 
         GrLfbInfo_t info;
         info.size = sizeof(GrLfbInfo_t);
-        if (gfxLfbLock(GFX_LFB_READ_ONLY, GFX_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_565, GFX_ORIGIN_UPPER_LEFT, FXFALSE, &info))
+        if (gfxLfbLock(GFX_LFB_READ_ONLY, GFX_BUFFER_BACKBUFFER, GFX_LFBWRITEMODE_565, GFX_ORIGIN_UPPER_LEFT, FXFALSE, &info))
         {
             AUTO_PTR<uint8_t> ssimg_buffer(new uint8_t[image_width * image_height * 3]);
             uint8_t * ssimg = ssimg_buffer.get();
@@ -1281,7 +1281,7 @@ void newSwapBuffers()
             uint32_t offset_src = info.strideInBytes * offset_y;
 
             // Copy the screen
-            if (info.writeMode == GR_LFBWRITEMODE_8888)
+            if (info.writeMode == GFX_LFBWRITEMODE_8888)
             {
                 uint32_t col;
                 for (uint32_t y = 0; y < image_height; y++)

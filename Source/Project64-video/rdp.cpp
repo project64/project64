@@ -665,7 +665,7 @@ static void CopyFrameBuffer(gfxBuffer_t buffer = GFX_BUFFER_BACKBUFFER)
 
             if (gfxLfbLock(GFX_LFB_READ_ONLY,
                 buffer,
-                GR_LFBWRITEMODE_565,
+                GFX_LFBWRITEMODE_565,
                 GFX_ORIGIN_UPPER_LEFT,
                 FXFALSE,
                 &info))
