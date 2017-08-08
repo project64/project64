@@ -692,7 +692,7 @@ void gfxTexSource(gfxChipID_t tmu, uint32_t startAddress, uint32_t evenOdd, gfxT
     grDisplayGLError("gfxTexSource");
 }
 
-void gfxTexDetailControl(gfxChipID_t tmu, int lod_bias, FxU8 detail_scale, float detail_max)
+void gfxTexDetailControl(gfxChipID_t tmu, int lod_bias, uint8_t detail_scale, float detail_max)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, lod_bias: %d detail_scale: %d detail_max: %d", tmu, lod_bias, detail_scale, detail_max);
     if (lod_bias != 31 && detail_scale != 7)
