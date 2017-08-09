@@ -492,7 +492,7 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
     if ((hDC = GetDC(g_hwnd_win)) == NULL)
     {
         WriteTrace(TraceGlitch, TraceWarning, "GetDC on main window failed");
-        return FXFALSE;
+        return false;
     }
 
     if ((pfm = ChoosePixelFormat(hDC, &pfd)) == 0) {
@@ -503,19 +503,19 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
     if (pfm == 0)
     {
         WriteTrace(TraceGlitch, TraceWarning, "ChoosePixelFormat failed");
-        return FXFALSE;
+        return false;
     }
     if (SetPixelFormat(hDC, pfm, &pfd) == 0)
     {
         WriteTrace(TraceGlitch, TraceWarning, "SetPixelFormat failed");
-        return FXFALSE;
+        return false;
     }
 
     if ((hGLRC = wglCreateContext(hDC)) == 0)
     {
         WriteTrace(TraceGlitch, TraceWarning, "wglCreateContext failed!");
         gfxSstWinClose();
-        return FXFALSE;
+        return false;
     }
 
     HGLRC CurrenthGLRC = wglGetCurrentContext();
@@ -526,7 +526,7 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
         {
             WriteTrace(TraceGlitch, TraceWarning, "wglMakeCurrent failed!");
             gfxSstWinClose();
-            return FXFALSE;
+            return false;
         }
     }
 #endif // _WIN32
@@ -860,7 +860,7 @@ bool gfxSstWinClose()
     //sleep(2);
     //m_pScreen = NULL;
 #endif
-    return FXTRUE;
+    return true;
 }
 
 void gfxTextureBufferExt(gfxChipID_t tmu, uint32_t startAddress, gfxLOD_t lodmin, gfxLOD_t lodmax, gfxAspectRatio_t aspect, gfxTextureFormat_t fmt, uint32_t evenOdd)
@@ -1271,7 +1271,7 @@ uint32_t gfxGet(uint32_t pname, uint32_t plength, int32_t *params)
         break;
     case GR_LFB_PIXEL_PIPE:
         if (plength < 4 || params == NULL) return 0;
-        params[0] = FXFALSE;
+        params[0] = false;
         return 4;
         break;
     case GR_MAX_TEXTURE_ASPECT_RATIO:
@@ -1281,7 +1281,7 @@ uint32_t gfxGet(uint32_t pname, uint32_t plength, int32_t *params)
         break;
     case GR_NON_POWER_OF_TWO_TEXTURES:
         if (plength < 4 || params == NULL) return 0;
-        params[0] = FXFALSE;
+        params[0] = false;
         return 4;
         break;
     case GR_TEXTURE_ALIGN:
@@ -1671,7 +1671,7 @@ bool gfxLfbLock(gfxLock_t type, gfxBuffer_t buffer, gfxLfbWriteMode_t writeMode,
     }
 
     grDisplayGLError("gfxLfbLock");
-    return FXTRUE;
+    return true;
 }
 
 bool gfxLfbUnlock(gfxLock_t type, gfxBuffer_t buffer)
@@ -1681,7 +1681,7 @@ bool gfxLfbUnlock(gfxLock_t type, gfxBuffer_t buffer)
     {
         WriteTrace(TraceGlitch, TraceWarning, "gfxLfbUnlock : write only");
     }
-    return FXTRUE;
+    return true;
 }
 
 bool gfxLfbReadRegion(gfxBuffer_t src_buffer, uint32_t src_x, uint32_t src_y, uint32_t src_width, uint32_t src_height, uint32_t dst_stride, void *dst_data)
@@ -1743,7 +1743,7 @@ bool gfxLfbReadRegion(gfxBuffer_t src_buffer, uint32_t src_x, uint32_t src_y, ui
     }
 
     grDisplayGLError("gfxLfbReadRegion");
-    return FXTRUE;
+    return true;
 }
 
 bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, gfxLfbSrcFmt_t src_format, uint32_t src_width, uint32_t src_height, bool pixelPipeline, int32_t src_stride, void *src_data)
@@ -1871,7 +1871,7 @@ bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, g
     glPopAttrib();
 
     grDisplayGLError("gfxLfbWriteRegion");
-    return FXTRUE;
+    return true;
 }
 
 /* wrapper-specific glide extensions */
@@ -1933,7 +1933,7 @@ void gfxGetGammaTableExt(uint32_t /*nentries*/, uint32_t *red, uint32_t *green, 
             blue[i] = aGammaRamp[2][i] >> 8;
         }
     }
-}
+    }
 
 void gfxGammaCorrectionRGB(float gammaR, float gammaG, float gammaB)
 {

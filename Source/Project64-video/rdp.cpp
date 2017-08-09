@@ -667,7 +667,7 @@ static void CopyFrameBuffer(gfxBuffer_t buffer = GFX_BUFFER_BACKBUFFER)
                 buffer,
                 GFX_LFBWRITEMODE_565,
                 GFX_ORIGIN_UPPER_LEFT,
-                FXFALSE,
+                false,
                 &info))
             {
                 uint16_t *ptr_src = (uint16_t*)info.lfbPtr;
@@ -2395,10 +2395,10 @@ void rdp_fillrect()
         if (!g_settings->hacks(CSettings::hack_Hyperbike) || rdp.ci_width > 64) //do not clear main depth buffer for aux depth buffers
         {
             update_scissor();
-            gfxDepthMask(FXTRUE);
-            gfxColorMask(FXFALSE, FXFALSE);
+            gfxDepthMask(true);
+            gfxColorMask(false, false);
             gfxBufferClear(0, 0, rdp.fill_color ? rdp.fill_color & 0xFFFF : 0xFFFF);
-            gfxColorMask(FXTRUE, FXTRUE);
+            gfxColorMask(true, true);
             rdp.update |= UPDATE_ZBUF_ENABLED;
         }
         ul_x = minval(maxval(ul_x, rdp.scissor_o.ul_x), rdp.scissor_o.lr_x);
@@ -2437,9 +2437,9 @@ void rdp_fillrect()
                 ((uint32_t)((float)((color & 0x07C0) >> 6) / 31.0f * 255.0f) << 16) |
                 ((uint32_t)((float)((color & 0x003E) >> 1) / 31.0f * 255.0f) << 8);
         }
-        gfxDepthMask(FXFALSE);
+        gfxDepthMask(false);
         gfxBufferClear(color, 0, 0xFFFF);
-        gfxDepthMask(FXTRUE);
+        gfxDepthMask(true);
         rdp.update |= UPDATE_ZBUF_ENABLED;
         WriteTrace(TraceRDP, TraceDebug, "Fillrect - cleared the texture buffer");
         return;
@@ -2506,13 +2506,13 @@ void rdp_fillrect()
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_LOCAL_CONSTANT,
             GFX_COMBINE_OTHER_NONE,
-            FXFALSE);
+            false);
 
         gfxAlphaCombine(GFX_COMBINE_FUNCTION_LOCAL,
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_LOCAL_CONSTANT,
             GFX_COMBINE_OTHER_NONE,
-            FXFALSE);
+            false);
 
         gfxAlphaBlendFunction(GFX_BLEND_ONE, GFX_BLEND_ZERO, GFX_BLEND_ONE, GFX_BLEND_ZERO);
 
@@ -2522,7 +2522,7 @@ void rdp_fillrect()
         gfxCullMode(GFX_CULL_DISABLE);
         gfxFogMode(GFX_FOG_DISABLE);
         gfxDepthBufferFunction(GFX_CMP_ALWAYS);
-        gfxDepthMask(FXFALSE);
+        gfxDepthMask(false);
 
         rdp.update |= UPDATE_COMBINE | UPDATE_CULL_MODE | UPDATE_FOG_ENABLED | UPDATE_ZBUF_ENABLED;
     }
@@ -2544,7 +2544,7 @@ void rdp_fillrect()
                 GFX_COMBINE_FACTOR_NONE,
                 GFX_COMBINE_LOCAL_CONSTANT,
                 GFX_COMBINE_OTHER_NONE,
-                FXFALSE);
+                false);
             gfxConstantColorValue((cmb.ccolor & 0xFFFFFF00) | (rdp.fog_color & 0xFF));
             rdp.update |= UPDATE_COMBINE;
         }
@@ -2721,9 +2721,9 @@ static void RestoreScale()
     rdp.view_trans[1] *= rdp.scale_y;
     rdp.update |= UPDATE_VIEWPORT | UPDATE_SCISSOR;
     //*
-    gfxDepthMask(FXFALSE);
+    gfxDepthMask(false);
     gfxBufferClear(0, 0, 0xFFFF);
-    gfxDepthMask(FXTRUE);
+    gfxDepthMask(true);
     //*/
 }
 
@@ -2970,7 +2970,7 @@ void rdp_setcolorimage()
                             ptr_dst[x + y * width] = c;
                         }
                     }
-                    gfxLfbWriteRegion(GFX_BUFFER_BACKBUFFER, (uint32_t)rdp.offset_x, (uint32_t)rdp.offset_y, GFX_LFB_SRC_FMT_555, width, height, FXFALSE, width << 1, ptr_dst);
+                    gfxLfbWriteRegion(GFX_BUFFER_BACKBUFFER, (uint32_t)rdp.offset_x, (uint32_t)rdp.offset_y, GFX_LFB_SRC_FMT_555, width, height, false, width << 1, ptr_dst);
                     delete[] ptr_dst;
                 }
             }
@@ -3122,12 +3122,12 @@ void SetWireframeCol()
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_LOCAL_ITERATED,
             GFX_COMBINE_OTHER_NONE,
-            FXFALSE);
+            false);
         gfxAlphaCombine(GFX_COMBINE_FUNCTION_LOCAL,
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_LOCAL_ITERATED,
             GFX_COMBINE_OTHER_NONE,
-            FXFALSE);
+            false);
         gfxAlphaBlendFunction(GFX_BLEND_ONE,
             GFX_BLEND_ZERO,
             GFX_BLEND_ZERO,
@@ -3137,25 +3137,25 @@ void SetWireframeCol()
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_FUNCTION_ZERO,
             GFX_COMBINE_FACTOR_NONE,
-            FXFALSE, FXFALSE);
+            false, false);
         gfxTexCombine(GFX_TMU1,
             GFX_COMBINE_FUNCTION_ZERO,
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_FUNCTION_ZERO,
             GFX_COMBINE_FACTOR_NONE,
-            FXFALSE, FXFALSE);
+            false, false);
         break;
     case CSettings::wfmode_RedOnly:
         gfxColorCombine(GFX_COMBINE_FUNCTION_LOCAL,
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_LOCAL_CONSTANT,
             GFX_COMBINE_OTHER_NONE,
-            FXFALSE);
+            false);
         gfxAlphaCombine(GFX_COMBINE_FUNCTION_LOCAL,
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_LOCAL_CONSTANT,
             GFX_COMBINE_OTHER_NONE,
-            FXFALSE);
+            false);
         gfxConstantColorValue(0xFF0000FF);
         gfxAlphaBlendFunction(GFX_BLEND_ONE,
             GFX_BLEND_ZERO,
@@ -3166,13 +3166,13 @@ void SetWireframeCol()
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_FUNCTION_ZERO,
             GFX_COMBINE_FACTOR_NONE,
-            FXFALSE, FXFALSE);
+            false, false);
         gfxTexCombine(GFX_TMU1,
             GFX_COMBINE_FUNCTION_ZERO,
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_FUNCTION_ZERO,
             GFX_COMBINE_FACTOR_NONE,
-            FXFALSE, FXFALSE);
+            false, false);
         break;
     }
 

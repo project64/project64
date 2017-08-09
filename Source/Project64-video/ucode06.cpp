@@ -38,8 +38,8 @@ float set_sprite_combine_mode()
         cmb.tmu1_fac = cmb.tmu0_fac = GFX_COMBINE_FACTOR_NONE;
         cmb.tmu1_a_func = cmb.tmu0_a_func = GFX_COMBINE_FUNCTION_LOCAL;
         cmb.tmu1_a_fac = cmb.tmu0_a_fac = GFX_COMBINE_FACTOR_NONE;
-        cmb.tmu1_invert = cmb.tmu0_invert = FXFALSE;
-        cmb.tmu1_a_invert = cmb.tmu0_a_invert = FXFALSE;
+        cmb.tmu1_invert = cmb.tmu0_invert = false;
+        cmb.tmu1_a_invert = cmb.tmu0_a_invert = false;
     }
 
     rdp.update |= UPDATE_COMBINE;
@@ -76,12 +76,12 @@ float set_sprite_combine_mode()
             GFX_COMBINE_FACTOR_ONE,
             GFX_COMBINE_LOCAL_NONE,
             GFX_COMBINE_OTHER_TEXTURE,
-            FXFALSE);
+            false);
         gfxAlphaCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GFX_COMBINE_FACTOR_ONE,
             GFX_COMBINE_LOCAL_NONE,
             GFX_COMBINE_OTHER_TEXTURE,
-            FXFALSE);
+            false);
         gfxAlphaBlendFunction(GFX_BLEND_ONE,
             GFX_BLEND_ZERO,
             GFX_BLEND_ZERO,
@@ -149,31 +149,31 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
         GFX_COMBINE_FACTOR_NONE,
         GFX_COMBINE_FUNCTION_LOCAL,
         GFX_COMBINE_FACTOR_NONE,
-        FXFALSE,
-        FXFALSE);
+        false,
+        false);
     gfxTexCombine(GFX_TMU0,
         GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GFX_COMBINE_FACTOR_ONE,
         GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GFX_COMBINE_FACTOR_ONE,
-        FXFALSE,
-        FXFALSE);
+        false,
+        false);
     gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GFX_COMBINE_FACTOR_ONE,
         GFX_COMBINE_LOCAL_NONE,
         GFX_COMBINE_OTHER_TEXTURE,
-        FXFALSE);
+        false);
     gfxAlphaCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GFX_COMBINE_FACTOR_ONE,
         GFX_COMBINE_LOCAL_NONE,
         GFX_COMBINE_OTHER_TEXTURE,
-        FXFALSE);
+        false);
     gfxAlphaBlendFunction(GFX_BLEND_ONE,
         GFX_BLEND_ZERO,
         GFX_BLEND_ONE,
         GFX_BLEND_ZERO);
     gfxDepthBufferFunction(GFX_CMP_ALWAYS);
-    gfxDepthMask(FXFALSE);
+    gfxDepthMask(false);
 
     gfxLOD_t LOD = g_scr_res_x > 1024 ? GFX_LOD_LOG2_2048 : GFX_LOD_LOG2_1024;
 
@@ -202,7 +202,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
     gfxDrawTriangle(&v[2], &v[3], &v[1]);
     gfxRenderBuffer(GFX_BUFFER_BACKBUFFER);
     gfxAuxBufferExt(GFX_BUFFER_TEXTUREAUXBUFFER_EXT);
-    gfxDepthMask(FXTRUE);
+    gfxDepthMask(true);
 }
 
 void DrawDepthImage(const DRAWIMAGE & d)
@@ -234,7 +234,7 @@ void DrawDepthImage(const DRAWIMAGE & d)
             dst[x + y*dst_width] = src[(int(x*scale_x_src) + int(y*scale_y_src)*src_width) ^ 1];
         }
     }
-    gfxLfbWriteRegion(GFX_BUFFER_AUXBUFFER, 0, 0, GFX_LFB_SRC_FMT_ZA16, dst_width, dst_height, FXFALSE, dst_width << 1, dst);
+    gfxLfbWriteRegion(GFX_BUFFER_AUXBUFFER, 0, 0, GFX_LFB_SRC_FMT_ZA16, dst_width, dst_height, false, dst_width << 1, dst);
     delete[] dst;
 }
 

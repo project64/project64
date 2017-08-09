@@ -258,9 +258,9 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
                         gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
                         gfxTextureBufferExt(texbuf->tmu, texbuf->tex_addr, texbuf->info.smallLodLog2, texbuf->info.largeLodLog2,
                             texbuf->info.aspectRatioLog2, texbuf->info.format, GR_MIPMAPLEVELMASK_BOTH);
-                        gfxDepthMask(FXFALSE);
+                        gfxDepthMask(false);
                         gfxBufferClear(0, 0, 0xFFFF);
-                        gfxDepthMask(FXTRUE);
+                        gfxDepthMask(true);
                         gfxRenderBuffer(GFX_BUFFER_BACKBUFFER);
                         rdp.texbufs[i].count--;
                         if (j < rdp.texbufs[i].count)
@@ -300,9 +300,9 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
     if (rdp.cur_image->clear && g_settings->fb_hwfbe_buf_clear_enabled() && cimage.changed)
     {
         rdp.cur_image->clear = FALSE;
-        gfxDepthMask(FXFALSE);
+        gfxDepthMask(false);
         gfxBufferClear(0, 0, 0xFFFF);
-        gfxDepthMask(FXTRUE);
+        gfxDepthMask(true);
     }
     //*/
     //  memset(gfx.RDRAM+cimage.addr, 0, cimage.width*cimage.height*cimage.size);
@@ -328,12 +328,12 @@ static gfxTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
         GFX_COMBINE_LOCAL_NONE,
         GFX_COMBINE_OTHER_TEXTURE,
         //    GFX_COMBINE_OTHER_CONSTANT,
-        FXFALSE);
+        false);
     gfxAlphaCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GFX_COMBINE_FACTOR_ONE,
         GFX_COMBINE_LOCAL_NONE,
         GFX_COMBINE_OTHER_TEXTURE,
-        FXFALSE);
+        false);
     //  gfxConstantColorValue (0xFFFFFFFF);
     gfxAlphaBlendFunction(GFX_BLEND_ONE,	// use alpha compare, but not T0 alpha
         GFX_BLEND_ZERO,
@@ -341,7 +341,7 @@ static gfxTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
         GFX_BLEND_ZERO);
     gfxClipWindow(0, 0, g_scr_res_x, g_scr_res_y);
     gfxDepthBufferFunction(GFX_CMP_ALWAYS);
-    gfxDepthMask(FXFALSE);
+    gfxDepthMask(false);
     gfxCullMode(GFX_CULL_DISABLE);
     gfxFogMode(GFX_FOG_DISABLE);
     gfxTextureFormat_t buf_format = (rdp.tbuff_tex) ? rdp.tbuff_tex->info.format : GFX_TEXFMT_RGB_565;
@@ -358,15 +358,15 @@ static gfxTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_FUNCTION_NONE,
             GFX_COMBINE_FACTOR_NONE,
-            FXFALSE,
-            FXFALSE);
+            false,
+            false);
         gfxTexCombine(GFX_TMU0,
             color_source,
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_FUNCTION_ZERO,
             GFX_COMBINE_FACTOR_NONE,
-            FXFALSE,
-            FXTRUE);
+            false,
+            true);
     }
     else
     {
@@ -375,15 +375,15 @@ static gfxTextureFormat_t TexBufSetupCombiner(int force_rgb = FALSE)
             GFX_COMBINE_FACTOR_NONE,
             GFX_COMBINE_FUNCTION_ZERO,
             GFX_COMBINE_FACTOR_NONE,
-            FXFALSE,
-            FXTRUE);
+            false,
+            true);
         gfxTexCombine(GFX_TMU0,
             GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GFX_COMBINE_FACTOR_ONE,
             GFX_COMBINE_FUNCTION_SCALE_OTHER,
             GFX_COMBINE_FACTOR_ONE,
-            FXFALSE,
-            FXFALSE);
+            false,
+            false);
     }
     return buf_format;
 }

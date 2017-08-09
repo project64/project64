@@ -10946,7 +10946,7 @@ static void ac_one_sub_t1_add_t0_mul_env()
             GFX_COMBINE_OTHER_TEXTURE);
         CA_ENV();
         A_T0_ADD_T1();
-        cmb.tmu1_a_invert = FXTRUE;
+        cmb.tmu1_a_invert = true;
     }
 }
 
@@ -15503,7 +15503,7 @@ void Combine()
     cmb.tex = 0;
     cmb.tmu0_func = cmb.tmu1_func = cmb.tmu0_a_func = cmb.tmu1_a_func = GFX_COMBINE_FUNCTION_ZERO;
     cmb.tmu0_fac = cmb.tmu1_fac = cmb.tmu0_a_fac = cmb.tmu1_a_fac = GFX_COMBINE_FACTOR_NONE;
-    cmb.tmu0_invert = cmb.tmu0_a_invert = cmb.tmu1_invert = cmb.tmu1_a_invert = FXFALSE;
+    cmb.tmu0_invert = cmb.tmu0_a_invert = cmb.tmu1_invert = cmb.tmu1_a_invert = false;
 
     cmb.dc0_detailmax = cmb.dc1_detailmax = 0;
 

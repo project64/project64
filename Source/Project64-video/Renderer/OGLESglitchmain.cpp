@@ -560,7 +560,7 @@ bool gfxSstWinClose()
     }
     ExitFullScreen();
 #endif
-    return FXTRUE;
+    return true;
 }
 
 void gfxTextureBufferExt(gfxChipID_t tmu, uint32_t startAddress, gfxLOD_t lodmin, gfxLOD_t lodmax, gfxAspectRatio_t aspect, gfxTextureFormat_t fmt, uint32_t evenOdd)
@@ -955,7 +955,7 @@ uint32_t gfxGet(uint32_t pname, uint32_t plength, int32_t *params)
         break;
     case GR_LFB_PIXEL_PIPE:
         if (plength < 4 || params == NULL) return 0;
-        params[0] = FXFALSE;
+        params[0] = false;
         return 4;
         break;
     case GR_MAX_TEXTURE_ASPECT_RATIO:
@@ -965,7 +965,7 @@ uint32_t gfxGet(uint32_t pname, uint32_t plength, int32_t *params)
         break;
     case GR_NON_POWER_OF_TWO_TEXTURES:
         if (plength < 4 || params == NULL) return 0;
-        params[0] = FXFALSE;
+        params[0] = false;
         return 4;
         break;
     case GR_TEXTURE_ALIGN:
@@ -1390,7 +1390,7 @@ bool gfxLfbLock(gfxLock_t type, gfxBuffer_t buffer, gfxLfbWriteMode_t writeMode,
         }
     }
 
-    return FXTRUE;
+    return true;
 }
 
 bool gfxLfbUnlock(gfxLock_t type, gfxBuffer_t buffer)
@@ -1400,7 +1400,7 @@ bool gfxLfbUnlock(gfxLock_t type, gfxBuffer_t buffer)
     {
         WriteTrace(TraceGlitch, TraceWarning, "gfxLfbUnlock : write only");
     }
-    return FXTRUE;
+    return true;
 }
 
 bool gfxLfbReadRegion(gfxBuffer_t src_buffer, uint32_t src_x, uint32_t src_y, uint32_t src_width, uint32_t src_height, uint32_t dst_stride, void *dst_data)
@@ -1461,7 +1461,7 @@ bool gfxLfbReadRegion(gfxBuffer_t src_buffer, uint32_t src_x, uint32_t src_y, ui
         free(buf);
     }
 
-    return FXTRUE;
+    return true;
 }
 
 bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, gfxLfbSrcFmt_t src_format, uint32_t src_width, uint32_t src_height, bool pixelPipeline, int32_t src_stride, void *src_data)
@@ -1587,7 +1587,7 @@ bool gfxLfbWriteRegion(gfxBuffer_t dst_buffer, uint32_t dst_x, uint32_t dst_y, g
     }
     //glDrawBuffer(current_buffer);
     //glPopAttrib();
-    return FXTRUE;
+    return true;
 }
 
 /* wrapper-specific glide extensions */

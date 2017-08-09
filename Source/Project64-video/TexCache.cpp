@@ -675,8 +675,8 @@ void TexCache()
             }
             else
             {
-                gfxColorCombine(cmb.c_fnc, cmb.c_fac, cmb.c_loc, cmb.c_oth, FXFALSE);
-                gfxAlphaCombine(cmb.a_fnc, cmb.a_fac, cmb.a_loc, cmb.a_oth, FXFALSE);
+                gfxColorCombine(cmb.c_fnc, cmb.c_fac, cmb.c_loc, cmb.c_oth, false);
+                gfxAlphaCombine(cmb.a_fnc, cmb.a_fac, cmb.a_loc, cmb.a_oth, false);
             }
             gfxConstantColorValue(cmb.ccolor);
             gfxAlphaBlendFunction(cmb.abf1, cmb.abf2, GFX_BLEND_ZERO, GFX_BLEND_ZERO);

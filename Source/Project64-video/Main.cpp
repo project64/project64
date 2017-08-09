@@ -357,7 +357,7 @@ void DisplayLoadProgress(const wchar_t *format, ...)
     x = (1024 - len) / 2.0f;
     output(x, 360, 1, buf);
     gfxBufferSwap(0);
-    gfxColorMask(FXTRUE, FXTRUE);
+    gfxColorMask(true, true);
     gfxBufferClear(0, 0, 0xFFFF);
 }
 
@@ -531,7 +531,7 @@ int InitGfx()
 
     gfxDepthBufferMode(GFX_DEPTHBUFFER_ZBUFFER);
     gfxDepthBufferFunction(GFX_CMP_LESS);
-    gfxDepthMask(FXTRUE);
+    gfxDepthMask(true);
 
     ChangeSize();
 
@@ -542,12 +542,12 @@ int InitGfx()
     gfxDepthBufferMode(GFX_DEPTHBUFFER_ZBUFFER);
     gfxDepthBufferFunction(GFX_CMP_ALWAYS);
     gfxRenderBuffer(GFX_BUFFER_BACKBUFFER);
-    gfxColorMask(FXTRUE, FXTRUE);
-    gfxDepthMask(FXTRUE);
+    gfxColorMask(true, true);
+    gfxDepthMask(true);
     gfxBufferClear(0, 0, 0xFFFF);
     gfxBufferSwap(0);
     gfxBufferClear(0, 0, 0xFFFF);
-    gfxDepthMask(FXFALSE);
+    gfxDepthMask(false);
     gfxTexFilterMode(GFX_TMU0, GFX_TEXTUREFILTER_BILINEAR, GFX_TEXTUREFILTER_BILINEAR);
     gfxTexFilterMode(GFX_TMU1, GFX_TEXTUREFILTER_BILINEAR, GFX_TEXTUREFILTER_BILINEAR);
     gfxTexClampMode(GFX_TMU0, GFX_TEXTURECLAMP_CLAMP, GFX_TEXTURECLAMP_CLAMP);
@@ -1039,8 +1039,8 @@ static void DrawFrameBuffer()
     if (to_fullscreen)
         GoToFullScreen();
 
-    gfxDepthMask(FXTRUE);
-    gfxColorMask(FXTRUE, FXTRUE);
+    gfxDepthMask(true);
+    gfxColorMask(true, true);
     gfxBufferClear(0, 0, 0xFFFF);
     drawViRegBG();
 }
@@ -1242,7 +1242,7 @@ void newSwapBuffers()
     rdp.update |= UPDATE_SCISSOR | UPDATE_COMBINE | UPDATE_ZBUF_ENABLED | UPDATE_CULL_MODE;
     gfxClipWindow(0, 0, g_scr_res_x, g_scr_res_y);
     gfxDepthBufferFunction(GFX_CMP_ALWAYS);
-    gfxDepthMask(FXFALSE);
+    gfxDepthMask(false);
     gfxCullMode(GFX_CULL_DISABLE);
 
     if (g_capture_screen)
@@ -1273,7 +1273,7 @@ void newSwapBuffers()
 
         gfxLfbInfo_t info;
         info.size = sizeof(gfxLfbInfo_t);
-        if (gfxLfbLock(GFX_LFB_READ_ONLY, GFX_BUFFER_BACKBUFFER, GFX_LFBWRITEMODE_565, GFX_ORIGIN_UPPER_LEFT, FXFALSE, &info))
+        if (gfxLfbLock(GFX_LFB_READ_ONLY, GFX_BUFFER_BACKBUFFER, GFX_LFBWRITEMODE_565, GFX_ORIGIN_UPPER_LEFT, false, &info))
         {
             AUTO_PTR<uint8_t> ssimg_buffer(new uint8_t[image_width * image_height * 3]);
             uint8_t * ssimg = ssimg_buffer.get();
@@ -1357,7 +1357,7 @@ void newSwapBuffers()
 
     if (g_settings->wireframe() || g_settings->buff_clear() || (g_settings->hacks(CSettings::hack_PPL) && g_settings->ucode() == CSettings::ucode_S2DEX))
     {
-        gfxDepthMask((g_settings->hacks(CSettings::hack_RE2) && g_settings->fb_depth_render_enabled()) ? FXFALSE : FXTRUE);
+        gfxDepthMask((g_settings->hacks(CSettings::hack_RE2) && g_settings->fb_depth_render_enabled()) ? false : true);
         gfxBufferClear(0, 0, 0xFFFF);
     }
 

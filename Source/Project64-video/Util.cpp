@@ -1776,15 +1776,15 @@ void update()
             }
 
             if (rdp.flags & ZBUF_UPDATE)
-                gfxDepthMask(FXTRUE);
+                gfxDepthMask(true);
             else
-                gfxDepthMask(FXFALSE);
+                gfxDepthMask(false);
         }
         else
         {
             gfxDepthBiasLevel(0);
             gfxDepthBufferFunction(GFX_CMP_ALWAYS);
-            gfxDepthMask(FXFALSE);
+            gfxDepthMask(false);
         }
     }
 
@@ -1956,12 +1956,12 @@ void set_message_combiner()
         GFX_COMBINE_FACTOR_ONE,
         GFX_COMBINE_LOCAL_NONE,
         GFX_COMBINE_OTHER_TEXTURE,
-        FXFALSE);
+        false);
     gfxAlphaCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GFX_COMBINE_FACTOR_ONE,
         GFX_COMBINE_LOCAL_NONE,
         GFX_COMBINE_OTHER_TEXTURE,
-        FXFALSE);
+        false);
     gfxAlphaBlendFunction(GFX_BLEND_ONE,
         GFX_BLEND_ZERO,
         GFX_BLEND_ZERO,
@@ -1974,13 +1974,13 @@ void set_message_combiner()
         GFX_COMBINE_FACTOR_NONE,
         GFX_COMBINE_FUNCTION_NONE,
         GFX_COMBINE_FACTOR_NONE,
-        FXFALSE, FXFALSE);
+        false, false);
     gfxTexCombine(GFX_TMU0,
         GFX_COMBINE_FUNCTION_LOCAL,
         GFX_COMBINE_FACTOR_NONE,
         GFX_COMBINE_FUNCTION_LOCAL,
         GFX_COMBINE_FACTOR_NONE,
-        FXFALSE, FXFALSE);
+        false, false);
     gfxTexSource(GFX_TMU0,
         voodoo.tex_min_addr[GFX_TMU0] + offset_font,
         GR_MIPMAPLEVELMASK_BOTH,
