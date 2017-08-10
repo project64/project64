@@ -53,7 +53,6 @@ void gfxDrawVertexArrayContiguous(gfxDrawMode_t mode, uint32_t Count, void *poin
 
 bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers);
 void gfxAuxBufferExt(gfxBuffer_t buffer);
-uint32_t gfxGet(uint32_t pname, uint32_t plength, int32_t *params);
 void gfxRenderBuffer(gfxBuffer_t buffer);
 void gfxBufferClear(gfxColor_t color, gfxAlpha_t alpha, uint32_t depth);
 void gfxBufferSwap(uint32_t swap_interval);

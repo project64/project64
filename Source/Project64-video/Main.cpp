@@ -485,7 +485,7 @@ int InitGfx()
     to_fullscreen = FALSE;
 
     // get maximal texture size
-    gfxGet(GR_MAX_TEXTURE_SIZE, 4, (int32_t*)&voodoo.max_tex_size);
+    voodoo.max_tex_size = 2048;
     voodoo.sup_large_tex = (voodoo.max_tex_size > 256 && !g_settings->hacks(CSettings::hack_PPL));
 
     voodoo.tex_min_addr[0] = voodoo.tex_min_addr[1] = gfxTexMinAddress(GFX_TMU0);
@@ -499,7 +499,7 @@ int InitGfx()
 
     voodoo.sup_32bit_tex = TRUE;
     voodoo.gamma_correction = 0;
-    gfxGet(GR_GAMMA_TABLE_ENTRIES, sizeof(voodoo.gamma_table_size), &voodoo.gamma_table_size);
+    voodoo.gamma_table_size = 256;
 
     srand(g_settings->stipple_pattern());
     setPattern();
