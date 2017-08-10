@@ -1843,13 +1843,13 @@ void update()
             }
             else
             {
-                gfxStippleMode(GR_STIPPLE_DISABLE);
+                gfxStippleMode(GFX_STIPPLE_DISABLE);
             }
         }
         else
         {
             //WriteTrace(TraceRDP, TraceDebug, " |- alpha compare: dither disabled");
-            gfxStippleMode(GR_STIPPLE_DISABLE);
+            gfxStippleMode(GFX_STIPPLE_DISABLE);
         }
     }
     // Cull mode (leave this in for z-clipped triangles)
@@ -1967,7 +1967,7 @@ void set_message_combiner()
         GFX_BLEND_ZERO,
         GFX_BLEND_ZERO);
     gfxAlphaTestFunction(GFX_CMP_ALWAYS);
-    gfxStippleMode(GR_STIPPLE_DISABLE);
+    gfxStippleMode(GFX_STIPPLE_DISABLE);
     gfxTexFilterMode(GFX_TMU0, GFX_TEXTUREFILTER_BILINEAR, GFX_TEXTUREFILTER_BILINEAR);
     gfxTexCombine(GFX_TMU1,
         GFX_COMBINE_FUNCTION_NONE,

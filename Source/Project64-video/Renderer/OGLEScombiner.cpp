@@ -1708,16 +1708,16 @@ void gfxStippleMode(gfxStippleMode_t mode)
     WriteTrace(TraceGlitch, TraceDebug, "mode: %d", mode);
     switch (mode)
     {
-    case GR_STIPPLE_DISABLE:
+    case GFX_STIPPLE_DISABLE:
         dither_enabled = 0;
         glActiveTexture(GL_TEXTURE2);
         break;
-    case GR_STIPPLE_PATTERN:
+    case GFX_STIPPLE_PATTERN:
         setPattern();
         dither_enabled = 1;
         glActiveTexture(GL_TEXTURE2);
         break;
-    case GR_STIPPLE_ROTATE:
+    case GFX_STIPPLE_ROTATE:
         setPattern();
         dither_enabled = 1;
         glActiveTexture(GL_TEXTURE2);

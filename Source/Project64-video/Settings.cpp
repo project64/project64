@@ -70,7 +70,7 @@ CSettings::CSettings() :
     m_increase_texrect_edge(false), // add 1 to lower right corner coordinates of texrect
     m_decrease_fillrect_edge(false), // sub 1 from lower right corner coordinates of fillrect
     m_texture_correction(false), // enable perspective texture correction emulation. is on by default
-    m_stipple_mode(STIPPLE_Disable), //used for dithered alpha emulation
+    m_stipple_mode(GFX_STIPPLE_DISABLE), //used for dithered alpha emulation
     m_stipple_pattern(0), //used for dithered alpha emulation
     m_force_microcheck(false), //check microcode each frame, for mixed F3DEX-S2DEX games
     m_force_quad3d(false), //force 0xb5 command to be quad, not line 3d
@@ -206,7 +206,7 @@ void CSettings::RegisterSettings(void)
     game_setting(Set_decrease_fillrect_edge, "decrease_fillrect_edge", false);
     game_setting(Set_texture_correction, "texture_correction", true);
     game_setting(Set_pal230, "pal230", false);
-    game_setting(Set_stipple_mode, "stipple_mode", STIPPLE_Rotate);
+    game_setting(Set_stipple_mode, "stipple_mode", GFX_STIPPLE_ROTATE);
 
     game_setting(Set_stipple_pattern, "stipple_pattern", 0x3E0F83E0);
     game_setting(Set_force_microcheck, "force_microcheck", false);
@@ -751,7 +751,7 @@ void CSettings::ReadGameSettings(const char * name)
     m_decrease_fillrect_edge = GetSetting(Set_decrease_fillrect_edge) != 0;
     m_texture_correction = GetSetting(Set_texture_correction) != 0;
     m_pal230 = GetSetting(Set_pal230) != 0;
-    m_stipple_mode = (StippleMode_t)GetSetting(Set_stipple_mode);
+    m_stipple_mode = (gfxStippleMode_t)GetSetting(Set_stipple_mode);
     int stipple_pattern = GetSetting(Set_stipple_pattern);
     m_stipple_pattern = stipple_pattern > 0 ? (uint32_t)stipple_pattern : 0x3E0F83E0;
     m_force_microcheck = GetSetting(Set_force_microcheck) != 0;

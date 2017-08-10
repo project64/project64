@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
+#include <Project64-video/Renderer/types.h>
 #include <string>
 
 class CSettings
@@ -143,13 +144,6 @@ public:
         LOD_Precise = 2,
     };
 
-    enum StippleMode_t
-    {
-        STIPPLE_Disable = 0x0,
-        STIPPLE_Pattern = 0x1,
-        STIPPLE_Rotate = 0x2,
-    };
-
     enum ucode_t
     {
         uCode_NotFound = -2,
@@ -250,7 +244,7 @@ public:
     inline bool increase_texrect_edge(void) const { return m_increase_texrect_edge; }  // add 1 to lower right corner coordinates of texrect
     inline bool decrease_fillrect_edge(void) const { return m_decrease_fillrect_edge; }; // sub 1 from lower right corner coordinates of fillrect
     inline bool texture_correction(void) const { return m_texture_correction; } // enable perspective texture correction emulation. is on by default
-    inline StippleMode_t stipple_mode(void) const { return m_stipple_mode; } //used for dithered alpha emulation
+    inline gfxStippleMode_t stipple_mode(void) const { return m_stipple_mode; } //used for dithered alpha emulation
     inline uint32_t stipple_pattern(void) const { return m_stipple_pattern; } //used for dithered alpha emulation
     inline bool force_microcheck(void) const { return m_force_microcheck; } //check microcode each frame, for mixed F3DEX-S2DEX games
     inline bool force_quad3d(void) const { return m_force_quad3d; } //force 0xb5 command to be quad, not line 3d
@@ -393,7 +387,7 @@ private:
     bool m_increase_texrect_edge;
     bool m_decrease_fillrect_edge;
     bool m_texture_correction;
-    StippleMode_t m_stipple_mode;
+    gfxStippleMode_t m_stipple_mode;
     uint32_t m_stipple_pattern;
     bool m_force_microcheck;
     bool m_force_quad3d;

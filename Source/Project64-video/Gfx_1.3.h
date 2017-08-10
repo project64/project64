@@ -161,13 +161,6 @@ extern "C" {
     extern GFX_INFO gfx;
     extern bool no_dlist;
 
-    enum
-    {
-        GFX_STIPPLE_DISABLE = 0x0,
-        GFX_STIPPLE_PATTERN = 0x1,
-        GFX_STIPPLE_ROTATE = 0x2,
-    };
-
     /******************************************************************
     Function: CaptureScreen
     Purpose:  This function dumps the current frame to a file
