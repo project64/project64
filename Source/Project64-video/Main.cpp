@@ -224,14 +224,14 @@ void guLoadTextures()
     if (voodoo.max_tex_size <= 256)
     {
         gfxTextureBufferExt(GFX_TMU1, voodoo.tex_min_addr[GFX_TMU1], GFX_LOD_LOG2_256, GFX_LOD_LOG2_256,
-            GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
+            GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GFX_MIPMAPLEVELMASK_BOTH);
         tbuf_size = 8 * gfxTexCalcMemRequired(GFX_LOD_LOG2_256, GFX_LOD_LOG2_256,
             GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565);
     }
     else if (g_scr_res_x <= 1024)
     {
         gfxTextureBufferExt(GFX_TMU0, voodoo.tex_min_addr[GFX_TMU0], GFX_LOD_LOG2_1024, GFX_LOD_LOG2_1024,
-            GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
+            GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GFX_MIPMAPLEVELMASK_BOTH);
         tbuf_size = gfxTexCalcMemRequired(GFX_LOD_LOG2_1024, GFX_LOD_LOG2_1024,
             GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565);
         gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
@@ -241,7 +241,7 @@ void guLoadTextures()
     else
     {
         gfxTextureBufferExt(GFX_TMU0, voodoo.tex_min_addr[GFX_TMU0], GFX_LOD_LOG2_2048, GFX_LOD_LOG2_2048,
-            GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
+            GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GFX_MIPMAPLEVELMASK_BOTH);
         tbuf_size = gfxTexCalcMemRequired(GFX_LOD_LOG2_2048, GFX_LOD_LOG2_2048,
             GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565);
         gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
@@ -299,10 +299,10 @@ void guLoadTextures()
 
     gfxTexDownloadMipMap(GFX_TMU0,
         voodoo.tex_min_addr[GFX_TMU0] + offset_font,
-        GR_MIPMAPLEVELMASK_BOTH,
+        GFX_MIPMAPLEVELMASK_BOTH,
         &fontTex);
 
-    offset_cursor = offset_font + gfxTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, &fontTex);
+    offset_cursor = offset_font + gfxTexTextureMemRequired(GFX_MIPMAPLEVELMASK_BOTH, &fontTex);
 
     free(fontTex.data);
 
@@ -327,11 +327,11 @@ void guLoadTextures()
 
     gfxTexDownloadMipMap(GFX_TMU0,
         voodoo.tex_min_addr[GFX_TMU0] + offset_cursor,
-        GR_MIPMAPLEVELMASK_BOTH,
+        GFX_MIPMAPLEVELMASK_BOTH,
         &cursorTex);
 
     // Round to higher 16
-    offset_textures = ((offset_cursor + gfxTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, &cursorTex))
+    offset_textures = ((offset_cursor + gfxTexTextureMemRequired(GFX_MIPMAPLEVELMASK_BOTH, &cursorTex))
         & 0xFFFFFFF0) + 16;
     free(cursorTex.data);
 }

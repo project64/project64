@@ -23,6 +23,13 @@ typedef uint32_t gfxACUColor_t;
 typedef uint32_t gfxTCCUColor_t;
 typedef uint32_t gfxTACUColor_t;
 
+enum gfxMipMapLevelMask_t
+{
+    GFX_MIPMAPLEVELMASK_EVEN = 1L << 0,
+    GFX_MIPMAPLEVELMASK_ODD = 1L << 1,
+    GFX_MIPMAPLEVELMASK_BOTH = (GFX_MIPMAPLEVELMASK_EVEN | GFX_MIPMAPLEVELMASK_ODD),
+};
+
 enum gfxCombineMode_t
 {
     GFX_FUNC_MODE_ZERO = 0x00,

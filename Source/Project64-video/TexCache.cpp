@@ -468,7 +468,7 @@ void GetTexInfo(int id, int tile)
 static void SelectTBuffTex(TBUFF_COLOR_IMAGE * pTBuffTex)
 {
     WriteTrace(TraceRDP, TraceDebug, "SelectTBuffTex: tex: %d, tmu: %d, tile: %d", rdp.tex, pTBuffTex->tmu, pTBuffTex->tile);
-    gfxTexSource((gfxChipID_t)pTBuffTex->tile, pTBuffTex->tex_addr, GR_MIPMAPLEVELMASK_BOTH, &(pTBuffTex->info));
+    gfxTexSource((gfxChipID_t)pTBuffTex->tile, pTBuffTex->tex_addr, GFX_MIPMAPLEVELMASK_BOTH, &(pTBuffTex->info));
 }
 
 //****************************************************************
@@ -760,7 +760,7 @@ void TexCache()
                 rdp.cur_cache[0]->uses = rdp.debug_n;
                 gfxTexSource(tmu_0,
                     (voodoo.tex_min_addr[tmu_0] + cache->tmem_addr),
-                    GR_MIPMAPLEVELMASK_BOTH,
+                    GFX_MIPMAPLEVELMASK_BOTH,
                     &cache->t_info);
             }
         }
@@ -791,7 +791,7 @@ void TexCache()
                 rdp.cur_cache[1]->uses = rdp.debug_n;
                 gfxTexSource(tmu_1,
                     (voodoo.tex_min_addr[tmu_1] + cache->tmem_addr),
-                    GR_MIPMAPLEVELMASK_BOTH,
+                    GFX_MIPMAPLEVELMASK_BOTH,
                     &cache->t_info);
             }
         }
@@ -1645,7 +1645,7 @@ void LoadTex(int id, gfxChipID_t tmu)
         t_info->largeLodLog2 = lod;
         t_info->aspectRatioLog2 = aspect;
 
-        uint32_t texture_size = gfxTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, t_info);
+        uint32_t texture_size = gfxTexTextureMemRequired(GFX_MIPMAPLEVELMASK_BOTH, t_info);
 
         // Check for 2mb boundary
         // Hiroshi Morii <koolsmoky@users.sourceforge.net> required only for V1,Rush, and V2
@@ -1673,8 +1673,8 @@ void LoadTex(int id, gfxChipID_t tmu)
         uint32_t tex_addr = voodoo.tex_min_addr[0] + voodoo.tmem_ptr[0];
         voodoo.tmem_ptr[0] += texture_size;
         voodoo.tmem_ptr[1] = voodoo.tmem_ptr[0];
-        gfxTexDownloadMipMap(tmu, tex_addr, GR_MIPMAPLEVELMASK_BOTH, t_info);
-        gfxTexSource(tmu, tex_addr, GR_MIPMAPLEVELMASK_BOTH, t_info);
+        gfxTexDownloadMipMap(tmu, tex_addr, GFX_MIPMAPLEVELMASK_BOTH, t_info);
+        gfxTexSource(tmu, tex_addr, GFX_MIPMAPLEVELMASK_BOTH, t_info);
     }
     WriteTrace(TraceRDP, TraceDebug, " | | +- LoadTex end");
 }

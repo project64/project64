@@ -257,7 +257,7 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
                     {
                         gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
                         gfxTextureBufferExt(texbuf->tmu, texbuf->tex_addr, texbuf->info.smallLodLog2, texbuf->info.largeLodLog2,
-                            texbuf->info.aspectRatioLog2, texbuf->info.format, GR_MIPMAPLEVELMASK_BOTH);
+                            texbuf->info.aspectRatioLog2, texbuf->info.format, GFX_MIPMAPLEVELMASK_BOTH);
                         gfxDepthMask(false);
                         gfxBufferClear(0, 0, 0xFFFF);
                         gfxDepthMask(true);
@@ -295,7 +295,7 @@ int OpenTextureBuffer(COLOR_IMAGE & cimage)
     rdp.cur_image = texbuf;
     gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
     gfxTextureBufferExt(rdp.cur_image->tmu, rdp.cur_image->tex_addr, rdp.cur_image->info.smallLodLog2, rdp.cur_image->info.largeLodLog2,
-        rdp.cur_image->info.aspectRatioLog2, rdp.cur_image->info.format, GR_MIPMAPLEVELMASK_BOTH);
+        rdp.cur_image->info.aspectRatioLog2, rdp.cur_image->info.format, GFX_MIPMAPLEVELMASK_BOTH);
 
     if (rdp.cur_image->clear && g_settings->fb_hwfbe_buf_clear_enabled() && cimage.changed)
     {
@@ -426,7 +426,7 @@ int CloseTextureBuffer(int draw)
         { lr_x, lr_y, 1, 1, lr_u, lr_v, lr_u, lr_v, { lr_u, lr_v, lr_u, lr_v } }
     };
 
-    gfxTexSource(rdp.tbuff_tex->tmu, rdp.tbuff_tex->tex_addr, GR_MIPMAPLEVELMASK_BOTH, &(rdp.tbuff_tex->info));
+    gfxTexSource(rdp.tbuff_tex->tmu, rdp.tbuff_tex->tex_addr, GFX_MIPMAPLEVELMASK_BOTH, &(rdp.tbuff_tex->info));
     gfxClipWindow(0, 0, g_res_x, g_res_y);
     gfxDrawTriangle(&v[0], &v[2], &v[1]);
     gfxDrawTriangle(&v[2], &v[3], &v[1]);
@@ -481,7 +481,7 @@ int CopyTextureBuffer(COLOR_IMAGE & fb_from, COLOR_IMAGE & fb_to)
         { lr_x, lr_y, 1, 1, lr_u, lr_v, lr_u, lr_v, { lr_u, lr_v, lr_u, lr_v } }
     };
 
-    gfxTexSource(rdp.tbuff_tex->tmu, rdp.tbuff_tex->tex_addr, GR_MIPMAPLEVELMASK_BOTH, &(rdp.tbuff_tex->info));
+    gfxTexSource(rdp.tbuff_tex->tmu, rdp.tbuff_tex->tex_addr, GFX_MIPMAPLEVELMASK_BOTH, &(rdp.tbuff_tex->info));
     gfxDrawTriangle(&v[0], &v[2], &v[1]);
     gfxDrawTriangle(&v[2], &v[3], &v[1]);
     gfxRenderBuffer(GFX_BUFFER_BACKBUFFER);
@@ -538,10 +538,10 @@ int CopyDepthBuffer()
     };
 
     gfxAuxBufferExt(GFX_BUFFER_AUXBUFFER);
-    gfxTexSource(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, GR_MIPMAPLEVELMASK_BOTH, &(rdp.tbuff_tex->info));
+    gfxTexSource(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, GFX_MIPMAPLEVELMASK_BOTH, &(rdp.tbuff_tex->info));
     gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
     gfxTextureBufferExt(rdp.texbufs[1].tmu, rdp.texbufs[1].begin, LOD, LOD,
-        GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
+        GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GFX_MIPMAPLEVELMASK_BOTH);
     gfxDrawTriangle(&v[0], &v[2], &v[1]);
     gfxDrawTriangle(&v[2], &v[3], &v[1]);
     gfxRenderBuffer(GFX_BUFFER_BACKBUFFER);
@@ -592,13 +592,13 @@ int SwapTextureBuffer()
         { lr_x, lr_y, 1, 1, lr_u, lr_v, lr_u, lr_v, { lr_u, lr_v, lr_u, lr_v } }
     };
 
-    gfxTexSource(rdp.tbuff_tex->tmu, rdp.tbuff_tex->tex_addr, GR_MIPMAPLEVELMASK_BOTH, &(rdp.tbuff_tex->info));
+    gfxTexSource(rdp.tbuff_tex->tmu, rdp.tbuff_tex->tex_addr, GFX_MIPMAPLEVELMASK_BOTH, &(rdp.tbuff_tex->info));
     texbuf->tile_uls = rdp.tbuff_tex->tile_uls;
     texbuf->tile_ult = rdp.tbuff_tex->tile_ult;
     texbuf->v_shift = rdp.tbuff_tex->v_shift;
     gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
     gfxTextureBufferExt(texbuf->tmu, texbuf->tex_addr, texbuf->info.smallLodLog2, texbuf->info.largeLodLog2,
-        texbuf->info.aspectRatioLog2, texbuf->info.format, GR_MIPMAPLEVELMASK_BOTH);
+        texbuf->info.aspectRatioLog2, texbuf->info.format, GFX_MIPMAPLEVELMASK_BOTH);
     gfxDrawTriangle(&v[0], &v[2], &v[1]);
     gfxDrawTriangle(&v[2], &v[3], &v[1]);
     rdp.texbufs[rdp.tbuff_tex->tmu].clear_allowed = TRUE;
@@ -611,7 +611,7 @@ int SwapTextureBuffer()
     if (rdp.cur_image)
     {
         gfxTextureBufferExt(rdp.cur_image->tmu, rdp.cur_image->tex_addr, rdp.cur_image->info.smallLodLog2, rdp.cur_image->info.largeLodLog2,
-            rdp.cur_image->info.aspectRatioLog2, rdp.cur_image->info.format, GR_MIPMAPLEVELMASK_BOTH);
+            rdp.cur_image->info.aspectRatioLog2, rdp.cur_image->info.format, GFX_MIPMAPLEVELMASK_BOTH);
     }
     else
     {

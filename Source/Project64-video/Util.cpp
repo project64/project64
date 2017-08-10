@@ -1983,7 +1983,7 @@ void set_message_combiner()
         false, false);
     gfxTexSource(GFX_TMU0,
         voodoo.tex_min_addr[GFX_TMU0] + offset_font,
-        GR_MIPMAPLEVELMASK_BOTH,
+        GFX_MIPMAPLEVELMASK_BOTH,
         &fontTex);
     gfxFogMode(GFX_FOG_DISABLE);
 }

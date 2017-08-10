@@ -135,14 +135,14 @@ static void DrawRE2Video256(FB_TO_SCREEN_INFO & fb_info)
     }
     t_info.format = GFX_TEXFMT_RGB_565;
     t_info.data = tex;
-    gfxChipID_t tmu = SetupFBtoScreenCombiner(gfxTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, &t_info), fb_info.opaque);
+    gfxChipID_t tmu = SetupFBtoScreenCombiner(gfxTexTextureMemRequired(GFX_MIPMAPLEVELMASK_BOTH, &t_info), fb_info.opaque);
     gfxTexDownloadMipMap(tmu,
         voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu],
-        GR_MIPMAPLEVELMASK_BOTH,
+        GFX_MIPMAPLEVELMASK_BOTH,
         &t_info);
     gfxTexSource(tmu,
         voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu],
-        GR_MIPMAPLEVELMASK_BOTH,
+        GFX_MIPMAPLEVELMASK_BOTH,
         &t_info);
     DrawRE2Video(fb_info, 1.0f);
 }
@@ -166,7 +166,7 @@ static void DrawFrameBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
     t_info.format = GFX_TEXFMT_ARGB_1555;
     uint16_t * tex = (uint16_t*)texture_buffer;
     t_info.data = tex;
-    uint32_t tex_size = gfxTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, &t_info);
+    uint32_t tex_size = gfxTexTextureMemRequired(GFX_MIPMAPLEVELMASK_BOTH, &t_info);
     gfxChipID_t tmu = SetupFBtoScreenCombiner(tex_size*width256*height256, fb_info.opaque);
     uint16_t * src = (uint16_t*)image;
     src += fb_info.ul_x + fb_info.ul_y * fb_info.width;
@@ -231,8 +231,8 @@ static void DrawFrameBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
                     dst += cur_tail;
                 }
             }
-            gfxTexDownloadMipMap(tmu, tex_adr, GR_MIPMAPLEVELMASK_BOTH, &t_info);
-            gfxTexSource(tmu, tex_adr, GR_MIPMAPLEVELMASK_BOTH, &t_info);
+            gfxTexDownloadMipMap(tmu, tex_adr, GFX_MIPMAPLEVELMASK_BOTH, &t_info);
+            gfxTexSource(tmu, tex_adr, GFX_MIPMAPLEVELMASK_BOTH, &t_info);
             tex_adr += tex_size;
             float ul_x = (float)(fb_info.ul_x + 256 * w);
             float ul_y = (float)(fb_info.ul_y + 256 * h);
@@ -352,9 +352,9 @@ bool DrawFrameBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         t_info.data = tex;
     }
 
-    gfxChipID_t tmu = SetupFBtoScreenCombiner(gfxTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, &t_info), fb_info.opaque);
-    gfxTexDownloadMipMap(tmu, voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu], GR_MIPMAPLEVELMASK_BOTH, &t_info);
-    gfxTexSource(tmu, voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu], GR_MIPMAPLEVELMASK_BOTH, &t_info);
+    gfxChipID_t tmu = SetupFBtoScreenCombiner(gfxTexTextureMemRequired(GFX_MIPMAPLEVELMASK_BOTH, &t_info), fb_info.opaque);
+    gfxTexDownloadMipMap(tmu, voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu], GFX_MIPMAPLEVELMASK_BOTH, &t_info);
+    gfxTexSource(tmu, voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu], GFX_MIPMAPLEVELMASK_BOTH, &t_info);
     if (g_settings->hacks(CSettings::hack_RE2))
     {
         DrawRE2Video(fb_info, scale);
@@ -394,7 +394,7 @@ static void DrawDepthBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
     t_info.format = GFX_TEXFMT_ALPHA_INTENSITY_88;
     uint16_t * tex = (uint16_t*)texture_buffer;
     t_info.data = tex;
-    uint32_t tex_size = gfxTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, &t_info);
+    uint32_t tex_size = gfxTexTextureMemRequired(GFX_MIPMAPLEVELMASK_BOTH, &t_info);
     gfxChipID_t tmu = SetupFBtoScreenCombiner(tex_size*width256*height256, fb_info.opaque);
     gfxConstantColorValue(rdp.fog_color);
     gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
@@ -428,8 +428,8 @@ static void DrawDepthBufferToScreen256(FB_TO_SCREEN_INFO & fb_info)
                 }
                 dst += cur_tail;
             }
-            gfxTexDownloadMipMap(tmu, tex_adr, GR_MIPMAPLEVELMASK_BOTH, &t_info);
-            gfxTexSource(tmu, tex_adr, GR_MIPMAPLEVELMASK_BOTH, &t_info);
+            gfxTexDownloadMipMap(tmu, tex_adr, GFX_MIPMAPLEVELMASK_BOTH, &t_info);
+            gfxTexSource(tmu, tex_adr, GFX_MIPMAPLEVELMASK_BOTH, &t_info);
             tex_adr += tex_size;
             float ul_x = (float)(fb_info.ul_x + 256 * w);
             float ul_y = (float)(fb_info.ul_y + 256 * h);
@@ -499,7 +499,7 @@ static void DrawHiresDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         false,
         false);
     //  gfxAuxBufferExt( GFX_BUFFER_AUXBUFFER );
-    gfxTexSource(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, GR_MIPMAPLEVELMASK_BOTH, &(t_info));
+    gfxTexSource(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, GFX_MIPMAPLEVELMASK_BOTH, &(t_info));
     float ul_x = (float)rdp.scissor.ul_x;
     float ul_y = (float)rdp.scissor.ul_y;
     float lr_x = (float)rdp.scissor.lr_x;
@@ -577,15 +577,15 @@ void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
     t_info.format = GFX_TEXFMT_ALPHA_INTENSITY_88;
     t_info.data = tex;
 
-    gfxChipID_t tmu = SetupFBtoScreenCombiner(gfxTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, &t_info), fb_info.opaque);
+    gfxChipID_t tmu = SetupFBtoScreenCombiner(gfxTexTextureMemRequired(GFX_MIPMAPLEVELMASK_BOTH, &t_info), fb_info.opaque);
     gfxConstantColorValue(rdp.fog_color);
     gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
         GFX_COMBINE_FACTOR_ONE,
         GFX_COMBINE_LOCAL_NONE,
         GFX_COMBINE_OTHER_CONSTANT,
         false);
-    gfxTexDownloadMipMap(tmu, voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu], GR_MIPMAPLEVELMASK_BOTH, &t_info);
-    gfxTexSource(tmu, voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu], GR_MIPMAPLEVELMASK_BOTH, &t_info);
+    gfxTexDownloadMipMap(tmu, voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu], GFX_MIPMAPLEVELMASK_BOTH, &t_info);
+    gfxTexSource(tmu, voodoo.tex_min_addr[tmu] + voodoo.tmem_ptr[tmu], GFX_MIPMAPLEVELMASK_BOTH, &t_info);
     float ul_x = fb_info.ul_x * rdp.scale_x + rdp.offset_x;
     float ul_y = fb_info.ul_y * rdp.scale_y + rdp.offset_y;
     float lr_x = fb_info.lr_x * rdp.scale_x + rdp.offset_x;

@@ -136,42 +136,13 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
     t_info.largeLodLog2 = GFX_LOD_LOG2_512;
     t_info.aspectRatioLog2 = GFX_ASPECT_LOG2_1x1;
 
-    gfxTexDownloadMipMap(rdp.texbufs[1].tmu,
-        rdp.texbufs[1].begin,
-        GR_MIPMAPLEVELMASK_BOTH,
-        &t_info);
-    gfxTexSource(rdp.texbufs[1].tmu,
-        rdp.texbufs[1].begin,
-        GR_MIPMAPLEVELMASK_BOTH,
-        &t_info);
-    gfxTexCombine(GFX_TMU1,
-        GFX_COMBINE_FUNCTION_LOCAL,
-        GFX_COMBINE_FACTOR_NONE,
-        GFX_COMBINE_FUNCTION_LOCAL,
-        GFX_COMBINE_FACTOR_NONE,
-        false,
-        false);
-    gfxTexCombine(GFX_TMU0,
-        GFX_COMBINE_FUNCTION_SCALE_OTHER,
-        GFX_COMBINE_FACTOR_ONE,
-        GFX_COMBINE_FUNCTION_SCALE_OTHER,
-        GFX_COMBINE_FACTOR_ONE,
-        false,
-        false);
-    gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
-        GFX_COMBINE_FACTOR_ONE,
-        GFX_COMBINE_LOCAL_NONE,
-        GFX_COMBINE_OTHER_TEXTURE,
-        false);
-    gfxAlphaCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER,
-        GFX_COMBINE_FACTOR_ONE,
-        GFX_COMBINE_LOCAL_NONE,
-        GFX_COMBINE_OTHER_TEXTURE,
-        false);
-    gfxAlphaBlendFunction(GFX_BLEND_ONE,
-        GFX_BLEND_ZERO,
-        GFX_BLEND_ONE,
-        GFX_BLEND_ZERO);
+    gfxTexDownloadMipMap(rdp.texbufs[1].tmu, rdp.texbufs[1].begin, GFX_MIPMAPLEVELMASK_BOTH, &t_info);
+    gfxTexSource(rdp.texbufs[1].tmu, rdp.texbufs[1].begin, GFX_MIPMAPLEVELMASK_BOTH, &t_info);
+    gfxTexCombine(GFX_TMU1, GFX_COMBINE_FUNCTION_LOCAL, GFX_COMBINE_FACTOR_NONE, GFX_COMBINE_FUNCTION_LOCAL, GFX_COMBINE_FACTOR_NONE, false, false);
+    gfxTexCombine(GFX_TMU0, GFX_COMBINE_FUNCTION_SCALE_OTHER, GFX_COMBINE_FACTOR_ONE, GFX_COMBINE_FUNCTION_SCALE_OTHER, GFX_COMBINE_FACTOR_ONE, false, false);
+    gfxColorCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER, GFX_COMBINE_FACTOR_ONE, GFX_COMBINE_LOCAL_NONE, GFX_COMBINE_OTHER_TEXTURE, false);
+    gfxAlphaCombine(GFX_COMBINE_FUNCTION_SCALE_OTHER, GFX_COMBINE_FACTOR_ONE, GFX_COMBINE_LOCAL_NONE, GFX_COMBINE_OTHER_TEXTURE, false);
+    gfxAlphaBlendFunction(GFX_BLEND_ONE, GFX_BLEND_ZERO, GFX_BLEND_ONE, GFX_BLEND_ZERO);
     gfxDepthBufferFunction(GFX_CMP_ALWAYS);
     gfxDepthMask(false);
 
@@ -194,7 +165,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
         v[i].vc(0) = v[i].vc(1) = v[i].v0;
     }
     gfxTextureBufferExt(rdp.texbufs[0].tmu, rdp.texbufs[0].begin, LOD, LOD,
-        GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GR_MIPMAPLEVELMASK_BOTH);
+        GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GFX_MIPMAPLEVELMASK_BOTH);
     gfxRenderBuffer(GFX_BUFFER_TEXTUREBUFFER_EXT);
     gfxAuxBufferExt(GFX_BUFFER_AUXBUFFER);
     gfxBufferClear(0, 0, 0xFFFF);

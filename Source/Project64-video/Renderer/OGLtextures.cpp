@@ -370,7 +370,7 @@ int grTexFormat2GLPackedFmt(int fmt, int * gltexfmt, int * glpixfmt, int * glpac
     return factor;
 }
 
-void gfxTexDownloadMipMap(gfxChipID_t tmu, uint32_t startAddress, uint32_t evenOdd, gfxTexInfo *info)
+void gfxTexDownloadMipMap(gfxChipID_t tmu, uint32_t startAddress, gfxMipMapLevelMask_t evenOdd, gfxTexInfo *info)
 {
     WriteTrace(TraceGlitch, TraceDebug, "tmu = %d, startAddress: %d evenOdd: %d", tmu, startAddress, evenOdd);
 
