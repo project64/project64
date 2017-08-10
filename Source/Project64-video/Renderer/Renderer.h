@@ -48,8 +48,8 @@ void gfxDepthMask(bool mask);
 void gfxDrawTriangle(const void *a, const void *b, const void *c);
 void gfxDepthBiasLevel(int32_t level);
 void gfxDrawLine(const void *a, const void *b);
-void gfxDrawVertexArray(uint32_t mode, uint32_t Count, void *pointers2);
-void gfxDrawVertexArrayContiguous(uint32_t mode, uint32_t Count, void *pointers, uint32_t stride);
+void gfxDrawVertexArray(gfxDrawMode_t mode, uint32_t Count, void *pointers2);
+void gfxDrawVertexArrayContiguous(gfxDrawMode_t mode, uint32_t Count, void *pointers, uint32_t stride);
 
 bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers);
 void gfxAuxBufferExt(gfxBuffer_t buffer);

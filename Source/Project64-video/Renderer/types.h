@@ -283,6 +283,19 @@ enum gfxLfbWriteMode_t
     GFX_LFBWRITEMODE_ANY = 0xFF,
 };
 
+enum gfxDrawMode_t
+{
+    GFX_POINTS = 0,
+    GFX_LINE_STRIP = 1,
+    GFX_LINES = 2,
+    GFX_POLYGON = 3,
+    GFX_TRIANGLE_STRIP = 4,
+    GFX_TRIANGLE_FAN = 5,
+    GFX_TRIANGLES = 6,
+    GFX_TRIANGLE_STRIP_CONTINUE = 7,
+    GFX_TRIANGLE_FAN_CONTINUE = 8,
+};
+
 enum gfxColorFormat_t
 {
     GFX_COLORFORMAT_ARGB = 0x0,

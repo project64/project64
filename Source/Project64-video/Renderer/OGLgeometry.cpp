@@ -534,7 +534,7 @@ void gfxDrawLine(const void *a, const void *b)
     grDisplayGLError("gfxDrawLine");
 }
 
-void gfxDrawVertexArray(uint32_t mode, uint32_t Count, void *pointers2)
+void gfxDrawVertexArray(gfxDrawMode_t mode, uint32_t Count, void *pointers2)
 {
     unsigned int i;
     float *x, *y, *q, *s0, *t0, *s1, *t1, *z, *fog;
@@ -554,7 +554,7 @@ void gfxDrawVertexArray(uint32_t mode, uint32_t Count, void *pointers2)
 
     switch (mode)
     {
-    case GR_TRIANGLE_FAN:
+    case GFX_TRIANGLE_FAN:
         glBegin(GL_TRIANGLE_FAN);
         break;
     default:
@@ -606,7 +606,7 @@ void gfxDrawVertexArray(uint32_t mode, uint32_t Count, void *pointers2)
     grDisplayGLError("gfxDrawVertexArray");
 }
 
-void gfxDrawVertexArrayContiguous(uint32_t mode, uint32_t Count, void *pointers, uint32_t stride)
+void gfxDrawVertexArrayContiguous(gfxDrawMode_t mode, uint32_t Count, void *pointers, uint32_t stride)
 {
     unsigned int i;
     float *x, *y, *q, *s0, *t0, *s1, *t1, *z, *fog;
@@ -625,10 +625,10 @@ void gfxDrawVertexArrayContiguous(uint32_t mode, uint32_t Count, void *pointers,
 
     switch (mode)
     {
-    case GR_TRIANGLE_STRIP:
+    case GFX_TRIANGLE_STRIP:
         glBegin(GL_TRIANGLE_STRIP);
         break;
-    case GR_TRIANGLE_FAN:
+    case GFX_TRIANGLE_FAN:
         glBegin(GL_TRIANGLE_FAN);
         break;
     default:

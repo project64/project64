@@ -474,7 +474,7 @@ void DrawImage(DRAWIMAGE & d)
                     apply_shade_mods(&(v[s]));
                 ConvertCoordsConvert(v, 4);
 
-                gfxDrawVertexArrayContiguous(GR_TRIANGLE_STRIP, 4, v, sizeof(VERTEX));
+                gfxDrawVertexArrayContiguous(GFX_TRIANGLE_STRIP, 4, v, sizeof(VERTEX));
                 rdp.tri_n += 2;
             }
             else

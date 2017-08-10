@@ -1586,7 +1586,7 @@ void rdp_texrect()
     }
     else
     {
-        gfxDrawVertexArrayContiguous(GR_TRIANGLE_STRIP, n_vertices, vptr, sizeof(VERTEX));
+        gfxDrawVertexArrayContiguous(GFX_TRIANGLE_STRIP, n_vertices, vptr, sizeof(VERTEX));
     }
 
     rdp.tri_n += 2;
@@ -3949,7 +3949,7 @@ void lle_triangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
     }
     ConvertCoordsConvert(vtxbuf, nbVtxs);
     gfxCullMode(GFX_CULL_DISABLE);
-    gfxDrawVertexArrayContiguous(GR_TRIANGLE_STRIP, nbVtxs - 1, vtxbuf, sizeof(VERTEX));
+    gfxDrawVertexArrayContiguous(GFX_TRIANGLE_STRIP, nbVtxs - 1, vtxbuf, sizeof(VERTEX));
 }
 
 void rdp_triangle(int shade, int texture, int zbuffer)

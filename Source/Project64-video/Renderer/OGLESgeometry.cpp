@@ -348,7 +348,7 @@ void gfxDrawLine(const void *a, const void *b)
 {
 }
 
-void gfxDrawVertexArray(uint32_t mode, uint32_t Count, void *pointers2)
+void gfxDrawVertexArray(gfxDrawMode_t mode, uint32_t Count, void *pointers2)
 {
     void **pointers = (void**)pointers2;
     WriteTrace(TraceGlitch, TraceDebug, "gfxDrawVertexArray(%d,%d)\r\n", mode, Count);
@@ -363,7 +363,7 @@ void gfxDrawVertexArray(uint32_t mode, uint32_t Count, void *pointers2)
 
     if (need_to_compile) compile_shader();
 
-    if (mode != GR_TRIANGLE_FAN)
+    if (mode != GFX_TRIANGLE_FAN)
     {
         WriteTrace(TraceGlitch, TraceWarning, "gfxDrawVertexArray : unknown mode : %x", mode);
     }
@@ -372,7 +372,7 @@ void gfxDrawVertexArray(uint32_t mode, uint32_t Count, void *pointers2)
     vbo_buffer(GL_TRIANGLE_FAN, 0, Count, pointers[0]);
 }
 
-void gfxDrawVertexArrayContiguous(uint32_t mode, uint32_t Count, void *pointers, uint32_t stride)
+void gfxDrawVertexArrayContiguous(gfxDrawMode_t mode, uint32_t Count, void *pointers, uint32_t stride)
 {
     WriteTrace(TraceGlitch, TraceDebug, "gfxDrawVertexArrayContiguous(%d,%d,%d)\r\n", mode, Count, stride);
 
@@ -395,10 +395,10 @@ void gfxDrawVertexArrayContiguous(uint32_t mode, uint32_t Count, void *pointers,
 
     switch (mode)
     {
-    case GR_TRIANGLE_STRIP:
+    case GFX_TRIANGLE_STRIP:
         vbo_buffer(GL_TRIANGLE_STRIP, 0, Count, pointers);
         break;
-    case GR_TRIANGLE_FAN:
+    case GFX_TRIANGLE_FAN:
         vbo_buffer(GL_TRIANGLE_FAN, 0, Count, pointers);
         break;
     default:
