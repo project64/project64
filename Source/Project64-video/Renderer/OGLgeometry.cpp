@@ -12,6 +12,8 @@
 *                                                                          *
 ****************************************************************************/
 #include <Project64-video/Renderer/Renderer.h>
+#include <Project64-video/rdp.h>
+#include <Project64-video/Settings.h>
 #include <stdio.h>
 #ifdef _WIN32
 #include <windows.h>
@@ -22,20 +24,13 @@
 
 #define Z_MAX (65536.0f)
 
-static int xy_off;
-static int xy_en;
-static int z_en;
-static int z_off;
-static int q_off;
-static int q_en;
-static int pargb_off;
-static int pargb_en;
-static int st0_off;
-static int st0_en;
-static int st1_off;
-static int st1_en;
-static int fog_ext_off;
-static int fog_ext_en;
+static int xy_off = offsetof(VERTEX, x);
+static int z_off = offsetof(VERTEX, z);
+static int q_off = offsetof(VERTEX, q);
+static int pargb_off = offsetof(VERTEX, b);
+static int st0_off = offsetof(VERTEX, coord[0]);
+static int st1_off = offsetof(VERTEX, coord[2]);
+static int fog_ext_off = offsetof(VERTEX, f);
 
 int w_buffer_mode;
 int inverted_culling;
@@ -43,7 +38,7 @@ gfxCullMode_t culling_mode;
 extern int fog_enabled;
 
 inline float ZCALC(const float & z, const float & q) {
-    float res = z_en ? ((z) / Z_MAX) / (q) : 1.0f;
+    float res = ((z) / Z_MAX) / (q);
     return res;
 }
 
@@ -64,51 +59,12 @@ static inline float ytex(int tmu, float y) {
 
 void init_geometry()
 {
-    xy_en = q_en = pargb_en = st0_en = st1_en = z_en = 0;
     w_buffer_mode = 0;
     inverted_culling = 0;
 
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
     grDisplayGLError("init_geometry");
-}
-
-void gfxVertexLayout(uint32_t param, int32_t offset, uint32_t mode)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "param: %d offset: %d mode: %d", param, offset, mode);
-    switch (param)
-    {
-    case GR_PARAM_XY:
-        xy_en = mode;
-        xy_off = offset;
-        break;
-    case GR_PARAM_Z:
-        z_en = mode;
-        z_off = offset;
-        break;
-    case GR_PARAM_Q:
-        q_en = mode;
-        q_off = offset;
-        break;
-    case GR_PARAM_FOG_EXT:
-        fog_ext_en = mode;
-        fog_ext_off = offset;
-        break;
-    case GR_PARAM_PARGB:
-        pargb_en = mode;
-        pargb_off = offset;
-        break;
-    case GR_PARAM_ST0:
-        st0_en = mode;
-        st0_off = offset;
-        break;
-    case GR_PARAM_ST1:
-        st1_en = mode;
-        st1_off = offset;
-        break;
-    default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown gfxVertexLayout parameter : %x", param);
-    }
 }
 
 void gfxCullMode(gfxCullMode_t mode)
@@ -358,24 +314,17 @@ void gfxDrawTriangle(const void *a, const void *b, const void *c)
 
     if (nbTextureUnits > 2)
     {
-        if (st0_en)
-            glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *a_s0 / *a_q / (float)tex1_width,
-                ytex(0, *a_t0 / *a_q / (float)tex1_height));
-        if (st1_en)
-            glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *a_s1 / *a_q / (float)tex0_width,
-                ytex(1, *a_t1 / *a_q / (float)tex0_height));
+        glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *a_s0 / *a_q / (float)tex1_width, ytex(0, *a_t0 / *a_q / (float)tex1_height));
+        glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *a_s1 / *a_q / (float)tex0_width, ytex(1, *a_t1 / *a_q / (float)tex0_height));
     }
     else
     {
-        if (st0_en)
-            glTexCoord2f(*a_s0 / *a_q / (float)tex0_width,
-                ytex(0, *a_t0 / *a_q / (float)tex0_height));
+        glTexCoord2f(*a_s0 / *a_q / (float)tex0_width, ytex(0, *a_t0 / *a_q / (float)tex0_height));
     }
-    if (pargb_en)
-        glColor4f(a_pargb[2] / 255.0f, a_pargb[1] / 255.0f, a_pargb[0] / 255.0f, a_pargb[3] / 255.0f);
+    glColor4f(a_pargb[2] / 255.0f, a_pargb[1] / 255.0f, a_pargb[0] / 255.0f, a_pargb[3] / 255.0f);
     if (fog_enabled && fog_coord_support)
     {
-        if (!fog_ext_en || fog_enabled != 2)
+        if (!g_settings->fog() || fog_enabled != 2)
             glSecondaryColor3f((1.0f / *a_q) / 255.0f, 0.0f, 0.0f);
         else
             glSecondaryColor3f((1.0f / *a_fog) / 255.0f, 0.0f, 0.0f);
@@ -385,24 +334,17 @@ void gfxDrawTriangle(const void *a, const void *b, const void *c)
 
     if (nbTextureUnits > 2)
     {
-        if (st0_en)
-            glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *b_s0 / *b_q / (float)tex1_width,
-                ytex(0, *b_t0 / *b_q / (float)tex1_height));
-        if (st1_en)
-            glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *b_s1 / *b_q / (float)tex0_width,
-                ytex(1, *b_t1 / *b_q / (float)tex0_height));
+        glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *b_s0 / *b_q / (float)tex1_width, ytex(0, *b_t0 / *b_q / (float)tex1_height));
+        glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *b_s1 / *b_q / (float)tex0_width, ytex(1, *b_t1 / *b_q / (float)tex0_height));
     }
     else
     {
-        if (st0_en)
-            glTexCoord2f(*b_s0 / *b_q / (float)tex0_width,
-                ytex(0, *b_t0 / *b_q / (float)tex0_height));
+        glTexCoord2f(*b_s0 / *b_q / (float)tex0_width, ytex(0, *b_t0 / *b_q / (float)tex0_height));
     }
-    if (pargb_en)
-        glColor4f(b_pargb[2] / 255.0f, b_pargb[1] / 255.0f, b_pargb[0] / 255.0f, b_pargb[3] / 255.0f);
+    glColor4f(b_pargb[2] / 255.0f, b_pargb[1] / 255.0f, b_pargb[0] / 255.0f, b_pargb[3] / 255.0f);
     if (fog_enabled && fog_coord_support)
     {
-        if (!fog_ext_en || fog_enabled != 2)
+        if (!g_settings->fog() || fog_enabled != 2)
             glSecondaryColor3f((1.0f / *b_q) / 255.0f, 0.0f, 0.0f);
         else
             glSecondaryColor3f((1.0f / *b_fog) / 255.0f, 0.0f, 0.0f);
@@ -413,24 +355,17 @@ void gfxDrawTriangle(const void *a, const void *b, const void *c)
 
     if (nbTextureUnits > 2)
     {
-        if (st0_en)
-            glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *c_s0 / *c_q / (float)tex1_width,
-                ytex(0, *c_t0 / *c_q / (float)tex1_height));
-        if (st1_en)
-            glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *c_s1 / *c_q / (float)tex0_width,
-                ytex(1, *c_t1 / *c_q / (float)tex0_height));
+        glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *c_s0 / *c_q / (float)tex1_width, ytex(0, *c_t0 / *c_q / (float)tex1_height));
+        glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *c_s1 / *c_q / (float)tex0_width, ytex(1, *c_t1 / *c_q / (float)tex0_height));
     }
     else
     {
-        if (st0_en)
-            glTexCoord2f(*c_s0 / *c_q / (float)tex0_width,
-                ytex(0, *c_t0 / *c_q / (float)tex0_height));
+        glTexCoord2f(*c_s0 / *c_q / (float)tex0_width, ytex(0, *c_t0 / *c_q / (float)tex0_height));
     }
-    if (pargb_en)
-        glColor4f(c_pargb[2] / 255.0f, c_pargb[1] / 255.0f, c_pargb[0] / 255.0f, c_pargb[3] / 255.0f);
+    glColor4f(c_pargb[2] / 255.0f, c_pargb[1] / 255.0f, c_pargb[0] / 255.0f, c_pargb[3] / 255.0f);
     if (fog_enabled && fog_coord_support)
     {
-        if (!fog_ext_en || fog_enabled != 2)
+        if (!g_settings->fog() || fog_enabled != 2)
             glSecondaryColor3f((1.0f / *c_q) / 255.0f, 0.0f, 0.0f);
         else
             glSecondaryColor3f((1.0f / *c_fog) / 255.0f, 0.0f, 0.0f);
@@ -481,21 +416,17 @@ void gfxDrawLine(const void *a, const void *b)
 
     if (nbTextureUnits > 2)
     {
-        if (st0_en)
-            glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *a_s0 / *a_q / (float)tex1_width, ytex(0, *a_t0 / *a_q / (float)tex1_height));
-        if (st1_en)
-            glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *a_s1 / *a_q / (float)tex0_width, ytex(1, *a_t1 / *a_q / (float)tex0_height));
+        glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *a_s0 / *a_q / (float)tex1_width, ytex(0, *a_t0 / *a_q / (float)tex1_height));
+        glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *a_s1 / *a_q / (float)tex0_width, ytex(1, *a_t1 / *a_q / (float)tex0_height));
     }
     else
     {
-        if (st0_en)
-            glTexCoord2f(*a_s0 / *a_q / (float)tex0_width, ytex(0, *a_t0 / *a_q / (float)tex0_height));
+        glTexCoord2f(*a_s0 / *a_q / (float)tex0_width, ytex(0, *a_t0 / *a_q / (float)tex0_height));
     }
-    if (pargb_en)
-        glColor4f(a_pargb[2] / 255.0f, a_pargb[1] / 255.0f, a_pargb[0] / 255.0f, a_pargb[3] / 255.0f);
+    glColor4f(a_pargb[2] / 255.0f, a_pargb[1] / 255.0f, a_pargb[0] / 255.0f, a_pargb[3] / 255.0f);
     if (fog_enabled && fog_coord_support)
     {
-        if (!fog_ext_en || fog_enabled != 2)
+        if (!g_settings->fog() || fog_enabled != 2)
             glSecondaryColor3f((1.0f / *a_q) / 255.0f, 0.0f, 0.0f);
         else
             glSecondaryColor3f((1.0f / *a_fog) / 255.0f, 0.0f, 0.0f);
@@ -505,24 +436,17 @@ void gfxDrawLine(const void *a, const void *b)
 
     if (nbTextureUnits > 2)
     {
-        if (st0_en)
-            glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *b_s0 / *b_q / (float)tex1_width,
-                ytex(0, *b_t0 / *b_q / (float)tex1_height));
-        if (st1_en)
-            glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *b_s1 / *b_q / (float)tex0_width,
-                ytex(1, *b_t1 / *b_q / (float)tex0_height));
+        glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *b_s0 / *b_q / (float)tex1_width, ytex(0, *b_t0 / *b_q / (float)tex1_height));
+        glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *b_s1 / *b_q / (float)tex0_width, ytex(1, *b_t1 / *b_q / (float)tex0_height));
     }
     else
     {
-        if (st0_en)
-            glTexCoord2f(*b_s0 / *b_q / (float)tex0_width,
-                ytex(0, *b_t0 / *b_q / (float)tex0_height));
+        glTexCoord2f(*b_s0 / *b_q / (float)tex0_width, ytex(0, *b_t0 / *b_q / (float)tex0_height));
     }
-    if (pargb_en)
-        glColor4f(b_pargb[2] / 255.0f, b_pargb[1] / 255.0f, b_pargb[0] / 255.0f, b_pargb[3] / 255.0f);
+    glColor4f(b_pargb[2] / 255.0f, b_pargb[1] / 255.0f, b_pargb[0] / 255.0f, b_pargb[3] / 255.0f);
     if (fog_enabled && fog_coord_support)
     {
-        if (!fog_ext_en || fog_enabled != 2)
+        if (!g_settings->fog() || fog_enabled != 2)
             glSecondaryColor3f((1.0f / *b_q) / 255.0f, 0.0f, 0.0f);
         else
             glSecondaryColor3f((1.0f / *b_fog) / 255.0f, 0.0f, 0.0f);
@@ -576,24 +500,17 @@ void gfxDrawVertexArray(gfxDrawMode_t mode, uint32_t Count, void *pointers2)
 
         if (nbTextureUnits > 2)
         {
-            if (st0_en)
-                glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *s0 / *q / (float)tex1_width,
-                    ytex(0, *t0 / *q / (float)tex1_height));
-            if (st1_en)
-                glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *s1 / *q / (float)tex0_width,
-                    ytex(1, *t1 / *q / (float)tex0_height));
+            glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *s0 / *q / (float)tex1_width, ytex(0, *t0 / *q / (float)tex1_height));
+            glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *s1 / *q / (float)tex0_width, ytex(1, *t1 / *q / (float)tex0_height));
         }
         else
         {
-            if (st0_en)
-                glTexCoord2f(*s0 / *q / (float)tex0_width,
-                    ytex(0, *t0 / *q / (float)tex0_height));
+            glTexCoord2f(*s0 / *q / (float)tex0_width, ytex(0, *t0 / *q / (float)tex0_height));
         }
-        if (pargb_en)
-            glColor4f(pargb[2] / 255.0f, pargb[1] / 255.0f, pargb[0] / 255.0f, pargb[3] / 255.0f);
+        glColor4f(pargb[2] / 255.0f, pargb[1] / 255.0f, pargb[0] / 255.0f, pargb[3] / 255.0f);
         if (fog_enabled && fog_coord_support)
         {
-            if (!fog_ext_en || fog_enabled != 2)
+            if (!g_settings->fog() || fog_enabled != 2)
                 glSecondaryColor3f((1.0f / *q) / 255.0f, 0.0f, 0.0f);
             else
                 glSecondaryColor3f((1.0f / *fog) / 255.0f, 0.0f, 0.0f);
@@ -648,28 +565,19 @@ void gfxDrawVertexArrayContiguous(gfxDrawMode_t mode, uint32_t Count, void *poin
         t1 = (float*)((unsigned char*)pointers + stride*i) + st1_off / sizeof(float) + 1;
         fog = (float*)((unsigned char*)pointers + stride*i) + fog_ext_off / sizeof(float);
 
-        //if(*fog == 0.0f) *fog = 1.0f;
-
         if (nbTextureUnits > 2)
         {
-            if (st0_en)
-                glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *s0 / *q / (float)tex1_width,
-                    ytex(0, *t0 / *q / (float)tex1_height));
-            if (st1_en)
-                glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *s1 / *q / (float)tex0_width,
-                    ytex(1, *t1 / *q / (float)tex0_height));
+            glMultiTexCoord2fARB(GL_TEXTURE1_ARB, *s0 / *q / (float)tex1_width, ytex(0, *t0 / *q / (float)tex1_height));
+            glMultiTexCoord2fARB(GL_TEXTURE0_ARB, *s1 / *q / (float)tex0_width, ytex(1, *t1 / *q / (float)tex0_height));
         }
         else
         {
-            if (st0_en)
-                glTexCoord2f(*s0 / *q / (float)tex0_width,
-                    ytex(0, *t0 / *q / (float)tex0_height));
+            glTexCoord2f(*s0 / *q / (float)tex0_width, ytex(0, *t0 / *q / (float)tex0_height));
         }
-        if (pargb_en)
-            glColor4f(pargb[2] / 255.0f, pargb[1] / 255.0f, pargb[0] / 255.0f, pargb[3] / 255.0f);
+        glColor4f(pargb[2] / 255.0f, pargb[1] / 255.0f, pargb[0] / 255.0f, pargb[3] / 255.0f);
         if (fog_enabled && fog_coord_support)
         {
-            if (!fog_ext_en || fog_enabled != 2)
+            if (!g_settings->fog() || fog_enabled != 2)
                 glSecondaryColor3f((1.0f / *q) / 255.0f, 0.0f, 0.0f);
             else
                 glSecondaryColor3f((1.0f / *fog) / 255.0f, 0.0f, 0.0f);

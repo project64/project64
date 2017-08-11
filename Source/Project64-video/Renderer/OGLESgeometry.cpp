@@ -25,21 +25,6 @@
 #define Z_MAX (65536.0f)
 #define VERTEX_SIZE sizeof(VERTEX) //Size of vertex struct
 
-static int xy_off;
-static int xy_en;
-static int z_en;
-static int z_off;
-static int q_off;
-static int q_en;
-static int pargb_off;
-static int pargb_en;
-static int st0_off;
-static int st0_en;
-static int st1_off;
-static int st1_en;
-static int fog_ext_off;
-static int fog_ext_en;
-
 int w_buffer_mode;
 int inverted_culling;
 gfxCullMode_t culling_mode;
@@ -112,7 +97,7 @@ void vbo_disable()
 }
 
 inline float ZCALC(const float & z, const float & q) {
-    float res = z_en ? ((z) / Z_MAX) / (q) : 1.0f;
+    float res = ((z) / Z_MAX) / (q);
     return res;
 }
 
@@ -135,50 +120,11 @@ static inline float ytex(int tmu, float y) {
 
 void init_geometry()
 {
-    xy_en = q_en = pargb_en = st0_en = st1_en = z_en = 0;
     w_buffer_mode = 0;
     inverted_culling = 0;
 
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
-}
-
-void gfxVertexLayout(uint32_t param, int32_t offset, uint32_t mode)
-{
-    WriteTrace(TraceGlitch, TraceDebug, "param: %d offset: %d mode: %d", param, offset, mode);
-    switch (param)
-    {
-    case GR_PARAM_XY:
-        xy_en = mode;
-        xy_off = offset;
-        break;
-    case GR_PARAM_Z:
-        z_en = mode;
-        z_off = offset;
-        break;
-    case GR_PARAM_Q:
-        q_en = mode;
-        q_off = offset;
-        break;
-    case GR_PARAM_FOG_EXT:
-        fog_ext_en = mode;
-        fog_ext_off = offset;
-        break;
-    case GR_PARAM_PARGB:
-        pargb_en = mode;
-        pargb_off = offset;
-        break;
-    case GR_PARAM_ST0:
-        st0_en = mode;
-        st0_off = offset;
-        break;
-    case GR_PARAM_ST1:
-        st1_en = mode;
-        st1_off = offset;
-        break;
-    default:
-        WriteTrace(TraceGlitch, TraceWarning, "unknown gfxVertexLayout parameter : %x", param);
-    }
 }
 
 void gfxCullMode(gfxCullMode_t mode)
