@@ -835,7 +835,7 @@ bool gfxSstWinClose()
             glDeleteTextures(1, &(fbs[i].texid));
             glDeleteFramebuffersEXT(1, &(fbs[i].fbid));
             glDeleteRenderbuffersEXT(1, &(fbs[i].zbid));
-        }
+}
     }
 #endif
     nb_fb = 0;
@@ -861,7 +861,7 @@ bool gfxSstWinClose()
     //m_pScreen = NULL;
 #endif
     return true;
-}
+    }
 
 void gfxTextureBufferExt(gfxChipID_t tmu, uint32_t startAddress, gfxLOD_t lodmin, gfxLOD_t lodmax, gfxAspectRatio_t aspect, gfxTextureFormat_t fmt, uint32_t evenOdd)
 {
@@ -1778,7 +1778,7 @@ static void CorrectGamma(const FxU16 aGammaRamp[3][256])
     res = -1;
     fputs("ERROR:  Replacement for SDL_SetGammaRamp unimplemented.\n", stderr);
     WriteTrace(TraceGlitch, TraceDebug, "SDL_SetGammaRamp returned %d\r\n", res);
-}
+    }
 #endif
 
 void gfxLoadGammaTable(uint32_t /*nentries*/, uint32_t *red, uint32_t *green, uint32_t *blue)

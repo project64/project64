@@ -93,8 +93,6 @@ extern "C" {
 }
 #endif
 
-#include "glide.h"
-
 void init_geometry();
 void init_textures();
 void init_combiner();
