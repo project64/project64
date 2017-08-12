@@ -27,8 +27,6 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
-#include "glide.h"
-#include "g3ext.h"
 #include "glitchmain.h"
 #include <Project64-video/trace.h>
 #include <Project64-video/Settings.h>
@@ -835,7 +833,7 @@ bool gfxSstWinClose()
             glDeleteTextures(1, &(fbs[i].texid));
             glDeleteFramebuffersEXT(1, &(fbs[i].fbid));
             glDeleteRenderbuffersEXT(1, &(fbs[i].zbid));
-}
+        }
     }
 #endif
     nb_fb = 0;
@@ -861,7 +859,7 @@ bool gfxSstWinClose()
     //m_pScreen = NULL;
 #endif
     return true;
-    }
+}
 
 void gfxTextureBufferExt(gfxChipID_t tmu, uint32_t startAddress, gfxLOD_t lodmin, gfxLOD_t lodmax, gfxAspectRatio_t aspect, gfxTextureFormat_t fmt, uint32_t evenOdd)
 {
@@ -1770,7 +1768,7 @@ static void CorrectGamma(LPVOID apGammaRamp)
     }
 }
 #else
-static void CorrectGamma(const FxU16 aGammaRamp[3][256])
+static void CorrectGamma(const uint16_t aGammaRamp[3][256])
 {
     int res;
 
@@ -1778,18 +1776,18 @@ static void CorrectGamma(const FxU16 aGammaRamp[3][256])
     res = -1;
     fputs("ERROR:  Replacement for SDL_SetGammaRamp unimplemented.\n", stderr);
     WriteTrace(TraceGlitch, TraceDebug, "SDL_SetGammaRamp returned %d\r\n", res);
-    }
+}
 #endif
 
 void gfxLoadGammaTable(uint32_t /*nentries*/, uint32_t *red, uint32_t *green, uint32_t *blue)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
-    FxU16 aGammaRamp[3][256];
+    uint16_t aGammaRamp[3][256];
     for (int i = 0; i < 256; i++)
     {
-        aGammaRamp[0][i] = (FxU16)((red[i] << 8) & 0xFFFF);
-        aGammaRamp[1][i] = (FxU16)((green[i] << 8) & 0xFFFF);
-        aGammaRamp[2][i] = (FxU16)((blue[i] << 8) & 0xFFFF);
+        aGammaRamp[0][i] = (uint16_t)((red[i] << 8) & 0xFFFF);
+        aGammaRamp[1][i] = (uint16_t)((green[i] << 8) & 0xFFFF);
+        aGammaRamp[2][i] = (uint16_t)((blue[i] << 8) & 0xFFFF);
     }
     CorrectGamma(aGammaRamp);
 }
@@ -1797,7 +1795,7 @@ void gfxLoadGammaTable(uint32_t /*nentries*/, uint32_t *red, uint32_t *green, ui
 void gfxGetGammaTableExt(uint32_t /*nentries*/, uint32_t *red, uint32_t *green, uint32_t *blue)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
-    FxU16 aGammaRamp[3][256];
+    uint16_t aGammaRamp[3][256];
 #ifdef _WIN32
     HDC hdc = GetDC(NULL);
     if (hdc == NULL)
@@ -1823,12 +1821,12 @@ void gfxGammaCorrectionRGB(float gammaR, float gammaG, float gammaB)
 {
     WriteTrace(TraceGlitch, TraceDebug, "-");
 
-    FxU16 aGammaRamp[3][256];
+    uint16_t aGammaRamp[3][256];
     for (int i = 0; i < 256; i++)
     {
-        aGammaRamp[0][i] = (((FxU16)((pow(i / 255.0F, 1.0F / gammaR)) * 255.0F + 0.5F)) << 8) & 0xFFFF;
-        aGammaRamp[1][i] = (((FxU16)((pow(i / 255.0F, 1.0F / gammaG)) * 255.0F + 0.5F)) << 8) & 0xFFFF;
-        aGammaRamp[2][i] = (((FxU16)((pow(i / 255.0F, 1.0F / gammaB)) * 255.0F + 0.5F)) << 8) & 0xFFFF;
+        aGammaRamp[0][i] = (((uint16_t)((pow(i / 255.0F, 1.0F / gammaR)) * 255.0F + 0.5F)) << 8) & 0xFFFF;
+        aGammaRamp[1][i] = (((uint16_t)((pow(i / 255.0F, 1.0F / gammaG)) * 255.0F + 0.5F)) << 8) & 0xFFFF;
+        aGammaRamp[2][i] = (((uint16_t)((pow(i / 255.0F, 1.0F / gammaB)) * 255.0F + 0.5F)) << 8) & 0xFFFF;
     }
     CorrectGamma(aGammaRamp);
 }
