@@ -27,8 +27,6 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
-#include "glide.h"
-#include "g3ext.h"
 #include "glitchmain.h"
 #include <Project64-video/trace.h>
 #include <Project64-video/Settings.h>

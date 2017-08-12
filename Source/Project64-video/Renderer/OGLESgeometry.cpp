@@ -17,7 +17,6 @@
 #ifdef _WIN32
 #include <windows.h>
 #endif // _WIN32
-#include "glide.h"
 #include "glitchmain.h"
 #include <Project64-video/rdp.h>
 #include <Project64-video/trace.h>

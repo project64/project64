@@ -22,7 +22,6 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "glide.h"
 #include "glitchmain.h"
 #include <Project64-video/trace.h>
 #include <Project64-video/Settings.h>

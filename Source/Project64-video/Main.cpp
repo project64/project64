@@ -755,7 +755,7 @@ to allow the user to test the dll
 input:    a handle to the window that calls this function
 output:   none
 *******************************************************************/
-void CALL DllTest(HWND /*hParent*/)
+void CALL DllTest(void * /*hParent*/)
 {
 }
 

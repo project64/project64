@@ -16,7 +16,6 @@
 #else // _WIN32
 #include <stdlib.h>
 #endif // _WIN32
-#include "glide.h"
 #include "glitchmain.h"
 #include <stdio.h>
 #include <Project64-video/trace.h>
