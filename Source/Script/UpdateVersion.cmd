@@ -22,7 +22,7 @@ FOR /F "tokens=1 delims=" %%A in ('echo !current_tag! ^| !sed! "s/v[0-9]*\.[0-9]
 call :setVersion "%base_dir%\Source\Project64-core\version.h" !commits_since_tag!
 call :setVersion "%base_dir%\Source\nragev20\version.h" !commits_since_tag!
 call :setVersion "%base_dir%\Source\RSP\version.h" !commits_since_tag!
-call :setVersion "%base_dir%\Source\Glide64\version.h" !commits_since_tag!
+call :setVersion "%base_dir%\Source\Project64-video\version.h" !commits_since_tag!
 
 ENDLOCAL
 
