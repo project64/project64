@@ -48,7 +48,7 @@ typedef struct TEXINFO_t
     uint32_t crc;
     uint32_t flags;
     int splits, splitheight;
-    uint64 ricecrc;
+    uint64_t ricecrc;
 } TEXINFO;
 
 TEXINFO texinfo[2];
@@ -1262,7 +1262,7 @@ void LoadTex(int id, gfxChipID_t tmu)
 
         cache->ricecrc = ext_ghq_checksum(addr, tile_width, tile_height, (unsigned short)(rdp.tiles(td).format << 8 | rdp.tiles(td).size), bpl, paladdr);
         WriteTrace(TraceRDP, TraceDebug, "CI RICE CRC. format: %d, size: %d, CRC: %08lx, PalCRC: %08lx", rdp.tiles(td).format, rdp.tiles(td).size, (uint32_t)(cache->ricecrc & 0xFFFFFFFF), (uint32_t)(cache->ricecrc >> 32));
-        if (ext_ghq_hirestex((uint64)g64_crc, cache->ricecrc, palette, &ghqTexInfo))
+        if (ext_ghq_hirestex((uint64_t)g64_crc, cache->ricecrc, palette, &ghqTexInfo))
         {
             cache->is_hires_tex = ghqTexInfo.is_hires_tex;
             if (!ghqTexInfo.is_hires_tex && aspect != ghqTexInfo.aspectRatioLog2)
@@ -1530,7 +1530,7 @@ void LoadTex(int id, gfxChipID_t tmu)
         {
             if (!ghqTexInfo.data)
                 if (!g_settings->ghq_enht_nobg() || !rdp.texrecting || (texinfo[id].splits == 1 && texinfo[id].width <= 256))
-                    ext_ghq_txfilter((unsigned char*)texture, (int)real_x, (int)real_y, LOWORD(result), (uint64)g64_crc, &ghqTexInfo);
+                    ext_ghq_txfilter((unsigned char*)texture, (int)real_x, (int)real_y, LOWORD(result), (uint64_t)g64_crc, &ghqTexInfo);
 
             if (ghqTexInfo.data)
             {

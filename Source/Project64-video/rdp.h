@@ -267,7 +267,7 @@ typedef struct {
     float c_scl_y;  // scale to lower-right center-texel y
 
     uint32_t mod, mod_color, mod_color1, mod_color2, mod_factor;
-    uint64 ricecrc;
+    uint64_t ricecrc;
     int is_hires_tex;
 } CACHE_LUT;
 
