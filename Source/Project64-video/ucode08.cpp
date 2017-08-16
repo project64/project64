@@ -61,7 +61,7 @@ void uc8_vertex()
     //*/
     for (i = 0; i < (n << 4); i += 16)
     {
-        VERTEX & v = rdp.vtx(v0 + (i >> 4));
+        gfxVERTEX & v = rdp.vtx(v0 + (i >> 4));
         x = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 0) ^ 1];
         y = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 1) ^ 1];
         z = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 2) ^ 1];
@@ -424,7 +424,7 @@ void uc8_tri4() //by Gugaman Apr 19 2002
         ((rdp.cmd1 >> 5) & 0x1F),
         ((rdp.cmd1 >> 0) & 0x1F));
 
-    VERTEX *v[12] = {
+    gfxVERTEX *v[12] = {
         &rdp.vtx((rdp.cmd0 >> 23) & 0x1F),
         &rdp.vtx((rdp.cmd0 >> 18) & 0x1F),
         &rdp.vtx(((((rdp.cmd0 >> 15) & 0x7) << 2) | ((rdp.cmd1 >> 30) & 0x3))),

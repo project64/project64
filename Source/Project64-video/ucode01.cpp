@@ -45,7 +45,7 @@ void uc1_tri1()
         ((rdp.cmd1 >> 9) & 0x7F),
         ((rdp.cmd1 >> 1) & 0x7F), rdp.cmd0, rdp.cmd1);
 
-    VERTEX *vtx[3] = {
+    gfxVERTEX *vtx[3] = {
         &rdp.vtx((rdp.cmd1 >> 17) & 0x7F),
         &rdp.vtx((rdp.cmd1 >> 9) & 0x7F),
         &rdp.vtx((rdp.cmd1 >> 1) & 0x7F)
@@ -71,7 +71,7 @@ void uc1_tri2()
         ((rdp.cmd1 >> 9) & 0x7F),
         ((rdp.cmd1 >> 1) & 0x7F));
 
-    VERTEX *vtx[6] = {
+    gfxVERTEX *vtx[6] = {
         &rdp.vtx((rdp.cmd0 >> 17) & 0x7F),
         &rdp.vtx((rdp.cmd0 >> 9) & 0x7F),
         &rdp.vtx((rdp.cmd0 >> 1) & 0x7F),
@@ -93,7 +93,7 @@ void uc1_line3d()
             (rdp.cmd1 >> 17) & 0x7F,
             (rdp.cmd1 >> 9) & 0x7F);
 
-        VERTEX *vtx[3] = {
+        gfxVERTEX *vtx[3] = {
             &rdp.vtx((rdp.cmd1 >> 17) & 0x7F),
             &rdp.vtx((rdp.cmd1 >> 9) & 0x7F),
             &rdp.vtx((rdp.cmd1 >> 9) & 0x7F)
@@ -110,7 +110,7 @@ void uc1_line3d()
     {
         WriteTrace(TraceRDP, TraceDebug, "uc1:quad3d #%d, #%d", rdp.tri_n, rdp.tri_n + 1);
 
-        VERTEX *vtx[6] = {
+        gfxVERTEX *vtx[6] = {
             &rdp.vtx((rdp.cmd1 >> 25) & 0x7F),
             &rdp.vtx((rdp.cmd1 >> 17) & 0x7F),
             &rdp.vtx((rdp.cmd1 >> 9) & 0x7F),

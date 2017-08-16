@@ -43,9 +43,9 @@ void gfxCullMode(gfxCullMode_t mode);
 void gfxDepthBufferMode(gfxDepthBufferMode_t mode);
 void gfxDepthBufferFunction(gfxCmpFnc_t function);
 void gfxDepthMask(bool mask);
-void gfxDrawTriangle(const void *a, const void *b, const void *c);
+void gfxDrawTriangle(const gfxVERTEX *a, const gfxVERTEX *b, const gfxVERTEX *c);
 void gfxDepthBiasLevel(int32_t level);
-void gfxDrawLine(const void *a, const void *b);
+void gfxDrawLine(const gfxVERTEX *a, const gfxVERTEX *b);
 void gfxDrawVertexArray(gfxDrawMode_t mode, uint32_t Count, void *pointers2);
 void gfxDrawVertexArrayContiguous(gfxDrawMode_t mode, uint32_t Count, void *pointers, uint32_t stride);
 

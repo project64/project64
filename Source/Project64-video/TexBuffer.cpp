@@ -419,7 +419,7 @@ int CloseTextureBuffer(int draw)
     WriteTrace(TraceRDP, TraceDebug, "lr_x: %f, lr_y: %f, lr_u: %f, lr_v: %f", lr_x, lr_y, lr_u, lr_v);
 
     // Make the vertices
-    VERTEX v[4] = {
+    gfxVERTEX v[4] = {
         { ul_x, ul_y, 1, 1, zero, zero, zero, zero, { zero, zero, zero, zero } },
         { lr_x, ul_y, 1, 1, lr_u, zero, lr_u, zero, { lr_u, zero, lr_u, zero } },
         { ul_x, lr_y, 1, 1, zero, lr_v, zero, lr_v, { zero, lr_v, zero, lr_v } },
@@ -474,7 +474,7 @@ int CopyTextureBuffer(COLOR_IMAGE & fb_from, COLOR_IMAGE & fb_to)
     WriteTrace(TraceRDP, TraceDebug, "lr_x: %f, lr_y: %f", lr_x, lr_y);
 
     // Make the vertices
-    VERTEX v[4] = {
+    gfxVERTEX v[4] = {
         { ul_x, ul_y, 1, 1, zero, zero, zero, zero, { zero, zero, zero, zero } },
         { lr_x, ul_y, 1, 1, lr_u, zero, lr_u, zero, { lr_u, zero, lr_u, zero } },
         { ul_x, lr_y, 1, 1, zero, lr_v, zero, lr_v, { zero, lr_v, zero, lr_v } },
@@ -530,7 +530,7 @@ int CopyDepthBuffer()
     WriteTrace(TraceRDP, TraceDebug, "lr_x: %f, lr_y: %f", lr_x, lr_y);
 
     // Make the vertices
-    VERTEX v[4] = {
+    gfxVERTEX v[4] = {
         { ul_x, ul_y, 1, 1, zero, zero, zero, zero, { zero, zero, zero, zero } },
         { lr_x, ul_y, 1, 1, lr_u, zero, lr_u, zero, { lr_u, zero, lr_u, zero } },
         { ul_x, lr_y, 1, 1, zero, lr_v, zero, lr_v, { zero, lr_v, zero, lr_v } },
@@ -585,7 +585,7 @@ int SwapTextureBuffer()
     float lr_v = rdp.tbuff_tex->lr_v;
 
     // Make the vertices
-    VERTEX v[4] = {
+    gfxVERTEX v[4] = {
         { ul_x, ul_y, 1, 1, zero, zero, zero, zero, { zero, zero, zero, zero } },
         { lr_x, ul_y, 1, 1, lr_u, zero, lr_u, zero, { lr_u, zero, lr_u, zero } },
         { ul_x, lr_y, 1, 1, zero, lr_v, zero, lr_v, { zero, lr_v, zero, lr_v } },

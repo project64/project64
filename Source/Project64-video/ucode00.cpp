@@ -54,7 +54,7 @@ void rsp_vertex(int v0, int n)
 
     for (i = 0; i < (n << 4); i += 16)
     {
-        VERTEX &v = rdp.vtx(v0 + (i >> 4));
+        gfxVERTEX &v = rdp.vtx(v0 + (i >> 4));
         x = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 0) ^ 1];
         y = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 1) ^ 1];
         z = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 2) ^ 1];
@@ -114,7 +114,7 @@ void rsp_vertex(int v0, int n)
     }
 }
 
-void rsp_tri1(VERTEX **v, uint16_t linew = 0)
+void rsp_tri1(gfxVERTEX **v, uint16_t linew = 0)
 {
     if (cull_tri(v))
         rdp.tri_n++;
@@ -126,7 +126,7 @@ void rsp_tri1(VERTEX **v, uint16_t linew = 0)
     }
 }
 
-void rsp_tri2(VERTEX **v)
+void rsp_tri2(gfxVERTEX **v)
 {
     int updated = 0;
 
@@ -500,7 +500,7 @@ void uc0_tri1()
         ((rdp.cmd1 >> 8) & 0xFF) / 10,
         (rdp.cmd1 & 0xFF) / 10);
 
-    VERTEX *vtx[3] = {
+    gfxVERTEX *vtx[3] = {
         &rdp.vtx(((rdp.cmd1 >> 16) & 0xFF) / 10),
         &rdp.vtx(((rdp.cmd1 >> 8) & 0xFF) / 10),
         &rdp.vtx((rdp.cmd1 & 0xFF) / 10)
@@ -549,7 +549,7 @@ void uc0_culldl()
     if (vEnd < vStart) return;
     for (uint16_t i = vStart; i <= vEnd; i++)
     {
-        VERTEX &v = rdp.vtx(i);
+        gfxVERTEX &v = rdp.vtx(i);
         // Check if completely off the screen (quick frustrum clipping for 90 FOV)
         if (v.x >= -v.w)
             cond |= 0x01;
@@ -594,7 +594,7 @@ void uc6_obj_sprite();
 
 void uc0_modifyvtx(uint8_t where, uint16_t vtx, uint32_t val)
 {
-    VERTEX &v = rdp.vtx(vtx);
+    gfxVERTEX &v = rdp.vtx(vtx);
 
     switch (where)
     {
@@ -1001,7 +1001,7 @@ void uc0_line3d()
     uint32_t v1 = ((rdp.cmd1 >> 8) & 0xff) / 10;
     uint16_t width = (uint16_t)(rdp.cmd1 & 0xFF) + 3;
 
-    VERTEX *vtx[3] = {
+    gfxVERTEX *vtx[3] = {
         &rdp.vtx(v1),
         &rdp.vtx(v0),
         &rdp.vtx(v0)
@@ -1037,7 +1037,7 @@ void uc0_tri4()
         (rdp.cmd0 >> 0) & 0xF,
         (rdp.cmd1 >> 0) & 0xF);
 
-    VERTEX *vtx[12] = {
+    gfxVERTEX *vtx[12] = {
         &rdp.vtx((rdp.cmd1 >> 28) & 0xF),
         &rdp.vtx((rdp.cmd0 >> 12) & 0xF),
         &rdp.vtx((rdp.cmd1 >> 24) & 0xF),

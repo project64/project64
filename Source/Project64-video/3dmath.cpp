@@ -22,7 +22,7 @@ extern "C" {
 #include "3dmath.h"
 #include "trace.h"
 
-void calc_light(VERTEX &v)
+void calc_light(gfxVERTEX &v)
 {
     float light_intensity = 0.0f;
     register float color[3] = { rdp.light[rdp.num_lights].r, rdp.light[rdp.num_lights].g, rdp.light[rdp.num_lights].b };
@@ -47,7 +47,7 @@ void calc_light(VERTEX &v)
     v.b = (uint8_t)(color[2] * 255.0f);
 }
 
-void calc_linear(VERTEX &v)
+void calc_linear(gfxVERTEX &v)
 {
     if (g_settings->force_calc_sphere())
     {
@@ -90,7 +90,7 @@ void calc_linear(VERTEX &v)
     WriteTrace(TraceRDP, TraceVerbose, "calc linear u: %f, v: %f", v.ou, v.ov);
 }
 
-void calc_sphere(VERTEX &v)
+void calc_sphere(gfxVERTEX &v)
 {
     WriteTrace(TraceRDP, TraceDebug, "calc_sphere");
     DECLAREALIGN16VAR(vec[3]);

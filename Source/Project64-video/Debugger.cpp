@@ -37,7 +37,7 @@ void output(float x, float y, int scale, const char *fmt, ...)
     {
         c = ((out_buf[i] - 32) & 0x1F) * 8;//<< 3;
         r = (((out_buf[i] - 32) & 0xE0) >> 5) * 16;//<< 4;
-        VERTEX v[4] = { { x * scale_1024, (768 - y) * scale_768, 1, 1,   (float)c, r + 16.0f, 0, 0,{ 0, 0, 0, 0 } },
+        gfxVERTEX v[4] = { { x * scale_1024, (768 - y) * scale_768, 1, 1,   (float)c, r + 16.0f, 0, 0,{ 0, 0, 0, 0 } },
         { (x + 8) * scale_1024, (768 - y) * scale_768, 1, 1,   c + 8.0f, r + 16.0f, 0, 0,{ 0, 0, 0, 0 } },
         { x * scale_1024, (768 - y - 16) * scale_768, 1, 1,  (float)c, (float)r, 0, 0,{ 0, 0, 0, 0 } },
         { (x + 8) * scale_1024, (768 - y - 16) * scale_768, 1, 1,  c + 8.0f, (float)r, 0, 0,{ 0, 0, 0, 0 } }

@@ -109,10 +109,10 @@ static void uc9_draw_object(uint8_t * addr, uint32_t type)
         textured = vnum = vsize = 0;
         break;
     }
-    VERTEX vtx[4];
+    gfxVERTEX vtx[4];
     for (uint32_t i = 0; i < vnum; i++)
     {
-        VERTEX &v = vtx[i];
+        gfxVERTEX &v = vtx[i];
         v.sx = zSortRdp.scale_x * ((short*)addr)[0 ^ 1];
         v.sy = zSortRdp.scale_y * ((short*)addr)[1 ^ 1];
         v.sz = 1.0f;
@@ -142,7 +142,7 @@ static void uc9_draw_object(uint8_t * addr, uint32_t type)
         addr += vsize;
     }
     //*
-    VERTEX *pV[4] = {
+    gfxVERTEX *pV[4] = {
         &vtx[0],
         &vtx[1],
         &vtx[2],
@@ -310,7 +310,7 @@ void uc9_light()
     int use_material = (csrs != 0x0ff0);
     tdest >>= 1;
     WriteTrace(TraceRDP, TraceDebug, "uc9:light n: %d, colsrs: %04lx, normales: %04lx, coldst: %04lx, texdst: %04lx", num, csrs, nsrs, cdest, tdest);
-    VERTEX v;
+    gfxVERTEX v;
     for (uint32_t i = 0; i < num; i++)
     {
         v.vec[0] = ((char*)gfx.DMEM)[(nsrs++) ^ 3];

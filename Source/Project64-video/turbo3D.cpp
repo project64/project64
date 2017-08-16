@@ -121,7 +121,7 @@ static void t3d_vertex(uint32_t addr, uint32_t v0, uint32_t n)
 
     for (uint32_t i = 0; i < n; i += 16)
     {
-        VERTEX &v = rdp.vtx(v0 + (i >> 4));
+        gfxVERTEX &v = rdp.vtx(v0 + (i >> 4));
         x = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 0) ^ 1];
         y = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 1) ^ 1];
         z = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 2) ^ 1];
@@ -206,7 +206,7 @@ static void t3dLoadObject(uint32_t pstate, uint32_t pvtx, uint32_t ptri)
             t3dTriN * tri = (t3dTriN*)&gfx.RDRAM[a];
             a += 4;
             WriteTrace(TraceRDP, TraceDebug, "tri #%d - %d, %d, %d", t, tri->v0, tri->v1, tri->v2);
-            VERTEX *vtx[3] = { &rdp.vtx(tri->v0), &rdp.vtx(tri->v1), &rdp.vtx(tri->v2) };
+            gfxVERTEX *vtx[3] = { &rdp.vtx(tri->v0), &rdp.vtx(tri->v1), &rdp.vtx(tri->v2) };
             if (cull_tri(vtx))
                 rdp.tri_n++;
             else

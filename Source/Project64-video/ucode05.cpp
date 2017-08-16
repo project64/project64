@@ -119,7 +119,7 @@ void uc5_vertex()
     for (int i = first; i < first + n; i++)
     {
         start = (i - first) * 10;
-        VERTEX &v = rdp.vtx(i);
+        gfxVERTEX &v = rdp.vtx(i);
         x = (float)((short*)gfx.RDRAM)[(((addr + start) >> 1) + 0) ^ 1];
         y = (float)((short*)gfx.RDRAM)[(((addr + start) >> 1) + 1) ^ 1];
         z = (float)((short*)gfx.RDRAM)[(((addr + start) >> 1) + 2) ^ 1];
@@ -194,7 +194,7 @@ void uc5_tridma()
 
         WriteTrace(TraceRDP, TraceDebug, "tri #%d - %d, %d, %d", rdp.tri_n, v0, v1, v2);
 
-        VERTEX *vtx[3] = {
+        gfxVERTEX *vtx[3] = {
             &rdp.vtx(v0),
             &rdp.vtx(v1),
             &rdp.vtx(v2)

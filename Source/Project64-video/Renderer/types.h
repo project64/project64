@@ -374,3 +374,35 @@ typedef struct {
     gfxLfbWriteMode_t   writeMode;
     gfxOriginLocation_t origin;
 } gfxLfbInfo_t;
+
+typedef struct
+{
+    float x, y, z, q;
+    float u0, v0, u1, v1;
+    float coord[4];
+    float w;
+    uint16_t  flags;
+
+    uint8_t  b;  // These values are arranged like this so that *(uint32_t*)(gfxVERTEX+?) is
+    uint8_t  g;  // ARGB format that glide can use.
+    uint8_t  r;
+    uint8_t  a;
+
+    float f; //fog
+
+    float vec[3]; // normal vector
+
+    float sx, sy, sz;
+    float x_w, y_w, z_w, u0_w, v0_w, u1_w, v1_w, oow;
+    uint8_t  not_zclipped;
+    uint8_t  screen_translated;
+    uint8_t  uv_scaled;
+    uint32_t uv_calculated;  // like crc
+    uint32_t shade_mod;
+    uint32_t color_backup;
+
+    float ou, ov;
+
+    int   number;   // way to identify it
+    int   scr_off, z_off; // off the screen?
+} gfxVERTEX;

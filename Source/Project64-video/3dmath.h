@@ -11,9 +11,9 @@
 * version 2 of the License, or (at your option) any later version.         *
 *                                                                          *
 ****************************************************************************/
-void calc_light(VERTEX &v);
-void calc_linear(VERTEX &v);
-void calc_sphere(VERTEX &v);
+void calc_light(gfxVERTEX &v);
+void calc_linear(gfxVERTEX &v);
+void calc_sphere(gfxVERTEX &v);
 
 void math_init();
 

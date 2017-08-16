@@ -36,7 +36,7 @@ void uc4_tri1()
     WriteTrace(TraceRDP, TraceDebug, "uc4:tri1 #%d - %d, %d, %d", rdp.tri_n,
         v1, v2, v3);
 
-    VERTEX *vtx[3] = {
+    gfxVERTEX *vtx[3] = {
         &rdp.vtx(v1),
         &rdp.vtx(v2),
         &rdp.vtx(v3)
@@ -49,7 +49,7 @@ void uc4_quad3d()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc4:quad3d #%d, #%d", rdp.tri_n, rdp.tri_n + 1);
 
-    VERTEX *vtx[6] = {
+    gfxVERTEX *vtx[6] = {
         &rdp.vtx(((rdp.cmd1 >> 24) & 0xFF) / 5),
         &rdp.vtx(((rdp.cmd1 >> 16) & 0xFF) / 5),
         &rdp.vtx(((rdp.cmd1 >> 8) & 0xFF) / 5),

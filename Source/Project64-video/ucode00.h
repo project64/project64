@@ -40,8 +40,8 @@ void modelview_load_push(float m[4][4]);
 void projection_load(float m[4][4]);
 void projection_mul(float m[4][4]);
 
-void rsp_tri1(VERTEX **v, uint16_t linew = 0);
-void rsp_tri2(VERTEX **v);
+void rsp_tri1(gfxVERTEX **v, uint16_t linew = 0);
+void rsp_tri2(gfxVERTEX **v);
 void rsp_vertex(int v0, int n);
 
 void load_matrix(float m[4][4], uint32_t addr);

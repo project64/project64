@@ -72,7 +72,7 @@ void uc7_vertex()
 
     for (i = 0; i < n; i++)
     {
-        VERTEX &v = rdp.vtx(v0 + i);
+        gfxVERTEX &v = rdp.vtx(v0 + i);
         x = (float)vertex->x;
         y = (float)vertex->y;
         z = (float)vertex->z;

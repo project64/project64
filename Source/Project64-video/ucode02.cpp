@@ -19,7 +19,7 @@
 #include "3dmath.h"
 #include "ucode00.h"
 
-static void calc_point_light(VERTEX & v, float * vpos)
+static void calc_point_light(gfxVERTEX & v, float * vpos)
 {
     float light_intensity = 0.0f;
     register float color[3] = { rdp.light[rdp.num_lights].r, rdp.light[rdp.num_lights].g, rdp.light[rdp.num_lights].b };
@@ -112,7 +112,7 @@ void uc2_vertex()
     }
     for (i = 0; i < (n << 4); i += 16)
     {
-        VERTEX & v = rdp.vtx(v0 + (i >> 4));
+        gfxVERTEX & v = rdp.vtx(v0 + (i >> 4));
         x = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 0) ^ 1];
         y = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 1) ^ 1];
         z = (float)((short*)gfx.RDRAM)[(((addr + i) >> 1) + 2) ^ 1];
@@ -209,7 +209,7 @@ void uc2_culldl()
     if (vEnd < vStart) return;
     for (uint16_t i = vStart; i <= vEnd; i++)
     {
-        VERTEX & v = rdp.vtx(i);
+        gfxVERTEX & v = rdp.vtx(i);
         /*
         // Check if completely off the screen (quick frustrum clipping for 90 FOV)
         if (v.x >= -v.w)
@@ -260,7 +260,7 @@ void uc2_tri1()
         ((rdp.cmd0 >> 9) & 0x7F),
         ((rdp.cmd0 >> 1) & 0x7F));
 
-    VERTEX *vtx[3] = {
+    gfxVERTEX *vtx[3] = {
         &rdp.vtx((rdp.cmd0 >> 17) & 0x7F),
         &rdp.vtx((rdp.cmd0 >> 9) & 0x7F),
         &rdp.vtx((rdp.cmd0 >> 1) & 0x7F)
@@ -305,7 +305,7 @@ void uc2_quad()
         ((rdp.cmd1 >> 9) & 0x7F),
         ((rdp.cmd1 >> 1) & 0x7F));
 
-    VERTEX *vtx[6] =
+    gfxVERTEX *vtx[6] =
     {
         &rdp.vtx((rdp.cmd0 >> 17) & 0x7F),
         &rdp.vtx((rdp.cmd0 >> 9) & 0x7F),
@@ -330,7 +330,7 @@ void uc2_line3d()
             (rdp.cmd0 >> 17) & 0x7F,
             (rdp.cmd0 >> 9) & 0x7F);
 
-        VERTEX *vtx[3] =
+        gfxVERTEX *vtx[3] =
         {
             &rdp.vtx((rdp.cmd0 >> 17) & 0x7F),
             &rdp.vtx((rdp.cmd0 >> 9) & 0x7F),

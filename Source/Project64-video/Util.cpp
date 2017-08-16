@@ -27,8 +27,8 @@
 #define Vj rdp.vtxbuf2[j]
 #define Vi rdp.vtxbuf2[i]
 
-VERTEX *vtx_list1[32];  // vertex indexing
-VERTEX *vtx_list2[32];
+gfxVERTEX *vtx_list1[32];  // vertex indexing
+gfxVERTEX *vtx_list2[32];
 
 //
 // util_init - initialize data for the functions in this file
@@ -47,7 +47,7 @@ static uint32_t u_cull_mode = 0;
 
 //software backface culling. Gonetz
 // mega modifications by Dave2001
-int cull_tri(VERTEX **v) // type changed to VERTEX** [Dave2001]
+int cull_tri(gfxVERTEX **v) // type changed to gfxVERTEX** [Dave2001]
 {
     int i;
 
@@ -138,7 +138,7 @@ int cull_tri(VERTEX **v) // type changed to VERTEX** [Dave2001]
     return FALSE;
 }
 
-void apply_shade_mods(VERTEX *v)
+void apply_shade_mods(gfxVERTEX *v)
 {
     float col[4];
     uint32_t mod;
@@ -259,9 +259,9 @@ void apply_shade_mods(VERTEX *v)
 
 static int dzdx = 0;
 static int deltaZ = 0;
-VERTEX **org_vtx;
+gfxVERTEX **org_vtx;
 
-void draw_tri(VERTEX **vtx, uint16_t linew)
+void draw_tri(gfxVERTEX **vtx, uint16_t linew)
 {
     deltaZ = dzdx = 0;
     if (linew == 0 && (g_settings->fb_depth_render_enabled() || (rdp.rm & 0xC00) == 0xC00))
@@ -302,11 +302,11 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
 
     for (int i = 0; i < 3; i++)
     {
-        VERTEX *v = vtx[i];
+        gfxVERTEX *v = vtx[i];
 
         if (v->uv_calculated != rdp.tex_ctr)
         {
-            WriteTrace(TraceRDP, TraceVerbose, " * CALCULATING VERTEX U/V: %d", v->number);
+            WriteTrace(TraceRDP, TraceVerbose, " * CALCULATING gfxVERTEX U/V: %d", v->number);
             v->uv_calculated = rdp.tex_ctr;
 
             if (!(rdp.geom_mode & 0x00020000))
@@ -434,7 +434,7 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
                 v->u1_w = v->u1 / v->w;
                 v->v1_w = v->v1 / v->w;
             }
-            //      WriteTrace(TraceRDP, TraceDebug, " * CALCULATING VERTEX U/V: %d  u0: %f, v0: %f, u1: %f, v1: %f", v->number, v->u0, v->v0, v->u1, v->v1);
+            //      WriteTrace(TraceRDP, TraceDebug, " * CALCULATING gfxVERTEX U/V: %d  u0: %f, v0: %f, u1: %f, v1: %f", v->number, v->u0, v->v0, v->u1, v->v1);
         }
         WriteTrace(TraceRDP, TraceVerbose, "draw_tri. v[%d] ou=%f, ov = %f", i, v->ou, v->ov);
         if (v->shade_mod != cmb.shade_mod_hash)
@@ -479,8 +479,8 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
                 j = i + 1;
                 if (j == 3) j = 0;
 
-                VERTEX *v1 = vtx[i];
-                VERTEX *v2 = vtx[j];
+                gfxVERTEX *v1 = vtx[i];
+                gfxVERTEX *v2 = vtx[j];
 
                 if (v1->u0 >= left_256)
                 {
@@ -549,8 +549,8 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
                 j = i + 1;
                 if (j == rdp.n_global) j = 0;
 
-                VERTEX *v1 = &rdp.vtxbuf2[i];
-                VERTEX *v2 = &rdp.vtxbuf2[j];
+                gfxVERTEX *v1 = &rdp.vtxbuf2[i];
+                gfxVERTEX *v2 = &rdp.vtxbuf2[j];
 
                 // ** Right plane **
                 if (v1->u0 <= right_256)
@@ -633,7 +633,7 @@ void draw_tri(VERTEX **vtx, uint16_t linew)
 #define interp2p(a, b, r)  (a + (b - a) * r)
 
 //*
-static void InterpolateColors(VERTEX & va, VERTEX & vb, VERTEX & res, float percent)
+static void InterpolateColors(gfxVERTEX & va, gfxVERTEX & vb, gfxVERTEX & res, float percent)
 {
     res.b = (uint8_t)interp2p(va.b, vb.b, percent);
     res.g = (uint8_t)interp2p(va.g, vb.g, percent);;
@@ -650,7 +650,7 @@ static void clip_w(int interpolate_colors)
     int i, j, index, n = rdp.n_global;
     float percent;
     // Swap vertex buffers
-    VERTEX *tmp = rdp.vtxbuf2;
+    gfxVERTEX *tmp = rdp.vtxbuf2;
     rdp.vtxbuf2 = rdp.vtxbuf;
     rdp.vtxbuf = tmp;
     rdp.vtx_buffer ^= 1;
@@ -811,7 +811,7 @@ __inline uint8_t real_to_char(double x)
 }
 
 //*
-static void InterpolateColors2(VERTEX & va, VERTEX & vb, VERTEX & res, float percent)
+static void InterpolateColors2(gfxVERTEX & va, gfxVERTEX & vb, gfxVERTEX & res, float percent)
 {
     float w = 1.0f / (va.oow + (vb.oow - va.oow) * percent);
     //   res.oow = va.oow + (vb.oow-va.oow) * percent;
@@ -859,7 +859,7 @@ static double EvaLine(LineEuqationType &li, double x, double y)
     return li.x*x + li.y*y + li.d;
 }
 
-static void Create1LineEq(LineEuqationType &l, VERTEX &v1, VERTEX &v2, VERTEX &v3)
+static void Create1LineEq(LineEuqationType &l, gfxVERTEX &v1, gfxVERTEX &v2, gfxVERTEX &v3)
 {
     // Line between (x1,y1) to (x2,y2)
     l.x = v2.sy - v1.sy;
@@ -882,7 +882,7 @@ __inline double interp3p(float a, float b, float c, double r1, double r2)
   (a+(((b)+((c)-(b))*(r2))-(a))*(r1))
   */
 
-static void InterpolateColors3(VERTEX &v1, VERTEX &v2, VERTEX &v3, VERTEX &out)
+static void InterpolateColors3(gfxVERTEX &v1, gfxVERTEX &v2, gfxVERTEX &v3, gfxVERTEX &out)
 {
     LineEuqationType line;
     Create1LineEq(line, v2, v3, v1);
@@ -923,7 +923,7 @@ static void InterpolateColors3(VERTEX &v1, VERTEX &v2, VERTEX &v3, VERTEX &out)
     */
 }
 
-static void CalculateLOD(VERTEX *v, int n)
+static void CalculateLOD(gfxVERTEX *v, int n)
 {
     float deltaS, deltaT;
     float deltaX, deltaY;
@@ -998,7 +998,7 @@ float ScaleZ(float z)
     return z;
 }
 
-static void DepthBuffer(VERTEX * vtx, int n)
+static void DepthBuffer(gfxVERTEX * vtx, int n)
 {
     if (g_settings->fb_depth_render_enabled() && !g_settings->hacks(CSettings::hack_RE2) && dzdx && (rdp.flags & ZBUF_UPDATE))
     {
@@ -1036,7 +1036,7 @@ void clip_tri(int interpolate_colors)
     if (rdp.clip & CLIP_XMAX) // right of the screen
     {
         // Swap vertex buffers
-        VERTEX *tmp = rdp.vtxbuf2;
+        gfxVERTEX *tmp = rdp.vtxbuf2;
         rdp.vtxbuf2 = rdp.vtxbuf;
         rdp.vtxbuf = tmp;
         rdp.vtx_buffer ^= 1;
@@ -1100,7 +1100,7 @@ void clip_tri(int interpolate_colors)
     if (rdp.clip & CLIP_XMIN) // left of the screen
     {
         // Swap vertex buffers
-        VERTEX *tmp = rdp.vtxbuf2;
+        gfxVERTEX *tmp = rdp.vtxbuf2;
         rdp.vtxbuf2 = rdp.vtxbuf;
         rdp.vtxbuf = tmp;
         rdp.vtx_buffer ^= 1;
@@ -1164,7 +1164,7 @@ void clip_tri(int interpolate_colors)
     if (rdp.clip & CLIP_YMAX) // top of the screen
     {
         // Swap vertex buffers
-        VERTEX *tmp = rdp.vtxbuf2;
+        gfxVERTEX *tmp = rdp.vtxbuf2;
         rdp.vtxbuf2 = rdp.vtxbuf;
         rdp.vtxbuf = tmp;
         rdp.vtx_buffer ^= 1;
@@ -1228,7 +1228,7 @@ void clip_tri(int interpolate_colors)
     if (rdp.clip & CLIP_YMIN) // bottom of the screen
     {
         // Swap vertex buffers
-        VERTEX *tmp = rdp.vtxbuf2;
+        gfxVERTEX *tmp = rdp.vtxbuf2;
         rdp.vtxbuf2 = rdp.vtxbuf;
         rdp.vtxbuf = tmp;
         rdp.vtx_buffer ^= 1;
@@ -1292,7 +1292,7 @@ void clip_tri(int interpolate_colors)
     if (rdp.clip & CLIP_ZMAX) // far plane
     {
         // Swap vertex buffers
-        VERTEX *tmp = rdp.vtxbuf2;
+        gfxVERTEX *tmp = rdp.vtxbuf2;
         rdp.vtxbuf2 = rdp.vtxbuf;
         rdp.vtxbuf = tmp;
         rdp.vtx_buffer ^= 1;
@@ -1358,7 +1358,7 @@ void clip_tri(int interpolate_colors)
       if (rdp.clip & CLIP_ZMIN) // near Z
       {
       // Swap vertex buffers
-      VERTEX *tmp = rdp.vtxbuf2;
+      gfxVERTEX *tmp = rdp.vtxbuf2;
       rdp.vtxbuf2 = rdp.vtxbuf;
       rdp.vtxbuf = tmp;
       rdp.vtx_buffer ^= 1;
@@ -1458,7 +1458,7 @@ static void render_tri(uint16_t linew, int old_interpolate)
         for (i = 0; i < n; i++)
         {
             float percent = 101.0f;
-            VERTEX * v1 = 0, *v2 = 0;
+            gfxVERTEX * v1 = 0, *v2 = 0;
             switch (rdp.vtxbuf[i].number & 7)
             {
             case 1:
@@ -1550,13 +1550,13 @@ static void render_tri(uint16_t linew, int old_interpolate)
     {
         if (linew > 0)
         {
-            VERTEX *V0 = &rdp.vtxbuf[0];
-            VERTEX *V1 = &rdp.vtxbuf[1];
+            gfxVERTEX *V0 = &rdp.vtxbuf[0];
+            gfxVERTEX *V1 = &rdp.vtxbuf[1];
             if (fabs(V0->x - V1->x) < 0.01 && fabs(V0->y - V1->y) < 0.01)
                 V1 = &rdp.vtxbuf[2];
             V0->z = ScaleZ(V0->z);
             V1->z = ScaleZ(V1->z);
-            VERTEX v[4];
+            gfxVERTEX v[4];
             v[0] = *V0;
             v[1] = *V0;
             v[2] = *V1;

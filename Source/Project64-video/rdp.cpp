@@ -167,20 +167,20 @@ bool CRDP::init()
         return true;
     }
 
-    vtx1 = new VERTEX[256];
+    vtx1 = new gfxVERTEX[256];
     if (vtx1 == NULL)
     {
         free();
         return false;
     }
-    memset(vtx1, 0, sizeof(VERTEX) * 256);
-    vtx2 = new VERTEX[256];
+    memset(vtx1, 0, sizeof(gfxVERTEX) * 256);
+    vtx2 = new gfxVERTEX[256];
     if (vtx2 == NULL)
     {
         free();
         return false;
     }
-    memset(vtx2, 0, sizeof(VERTEX) * 256);
+    memset(vtx2, 0, sizeof(gfxVERTEX) * 256);
 
     for (int i = 0; i < MAX_TMU; i++)
     {
@@ -191,13 +191,13 @@ bool CRDP::init()
             return false;
         }
     };
-    m_vtx = new VERTEX[MAX_VTX];
+    m_vtx = new gfxVERTEX[MAX_VTX];
     if (m_vtx == NULL)
     {
         free();
         return false;
     }
-    memset(m_vtx, 0, sizeof(VERTEX)*MAX_VTX);
+    memset(m_vtx, 0, sizeof(gfxVERTEX)*MAX_VTX);
     // set all vertex numbers
     for (int i = 0; i < MAX_VTX; i++)
     {
@@ -1422,7 +1422,7 @@ void rdp_texrect()
 
     WriteTrace(TraceRDP, TraceDebug, "  draw at: (%f, %f) -> (%f, %f)", s_ul_x, s_ul_y, s_lr_x, s_lr_y);
 
-    VERTEX vstd[4] = {
+    gfxVERTEX vstd[4] = {
         { s_ul_x, s_ul_y, Z, 1.0f, texUV[0].ul_u, texUV[0].ul_v, texUV[1].ul_u, texUV[1].ul_v, { 0, 0, 0, 0 }, 255 },
         { s_lr_x, s_ul_y, Z, 1.0f, texUV[0].lr_u, texUV[0].ul_v, texUV[1].lr_u, texUV[1].ul_v, { 0, 0, 0, 0 }, 255 },
         { s_ul_x, s_lr_y, Z, 1.0f, texUV[0].ul_u, texUV[0].lr_v, texUV[1].ul_u, texUV[1].lr_v, { 0, 0, 0, 0 }, 255 },
@@ -1441,10 +1441,10 @@ void rdp_texrect()
         vstd[2].v1 = texUV[1].ul_v;
     }
 
-    VERTEX *vptr = vstd;
+    gfxVERTEX *vptr = vstd;
     int n_vertices = 4;
 
-    VERTEX *vnew = 0;
+    gfxVERTEX *vnew = 0;
     //          for (int j =0; j < 4; j++)
     //            WriteTrace(TraceRDP, TraceDebug, "v[%d]  u0: %f, v0: %f, u1: %f, v1: %f", j, vstd[j].u0, vstd[j].v0, vstd[j].u1, vstd[j].v1);
 
@@ -1477,7 +1477,7 @@ void rdp_texrect()
 
         int num_verts_line = 2 + ((end_u_256 - start_u_256) << 1);
         n_vertices = num_verts_line << 1;
-        vnew = new VERTEX[n_vertices];
+        vnew = new gfxVERTEX[n_vertices];
         vptr = vnew;
 
         vnew[0] = vstd[0];
@@ -1586,7 +1586,7 @@ void rdp_texrect()
     }
     else
     {
-        gfxDrawVertexArrayContiguous(GFX_TRIANGLE_STRIP, n_vertices, vptr, sizeof(VERTEX));
+        gfxDrawVertexArrayContiguous(GFX_TRIANGLE_STRIP, n_vertices, vptr, sizeof(gfxVERTEX));
     }
 
     rdp.tri_n += 2;
@@ -2476,7 +2476,7 @@ void rdp_fillrect()
     const float Z = (rdp.cycle_mode == 3) ? 0.0f : set_sprite_combine_mode();
 
     // Draw the rectangle
-    VERTEX v[4] = {
+    gfxVERTEX v[4] = {
         { (float)s_ul_x, (float)s_ul_y, Z, 1.0f, 0, 0, 0, 0, { 0, 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
         { (float)s_lr_x, (float)s_ul_y, Z, 1.0f, 0, 0, 0, 0, { 0, 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
         { (float)s_ul_x, (float)s_lr_y, Z, 1.0f, 0, 0, 0, 0, { 0, 0, 0, 0 }, 0, 0, 0, 0, 0, 0 },
@@ -3707,8 +3707,8 @@ void lle_triangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
 #define TSCALE(s, w) (rdp.Persp_en? float(PERSP(s, w))/(1 << 10) : float(s)/(1<<21))
 
     int nbVtxs = 0;
-    VERTEX vtxbuf[12];
-    VERTEX * vtx = &vtxbuf[nbVtxs++];
+    gfxVERTEX vtxbuf[12];
+    gfxVERTEX * vtx = &vtxbuf[nbVtxs++];
 
     xleft = xm;
     xright = xh;
@@ -3889,7 +3889,7 @@ void lle_triangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
     update();
     for (int k = 0; k < nbVtxs - 1; k++)
     {
-        VERTEX * v = &vtxbuf[k];
+        gfxVERTEX * v = &vtxbuf[k];
         v->x = v->x * rdp.scale_x + rdp.offset_x;
         v->y = v->y * rdp.scale_y + rdp.offset_y;
         //    v->z = 1.0f;///v->w;
@@ -3949,7 +3949,7 @@ void lle_triangle(uint32_t w1, uint32_t w2, int shade, int texture, int zbuffer,
     }
     ConvertCoordsConvert(vtxbuf, nbVtxs);
     gfxCullMode(GFX_CULL_DISABLE);
-    gfxDrawVertexArrayContiguous(GFX_TRIANGLE_STRIP, nbVtxs - 1, vtxbuf, sizeof(VERTEX));
+    gfxDrawVertexArrayContiguous(GFX_TRIANGLE_STRIP, nbVtxs - 1, vtxbuf, sizeof(gfxVERTEX));
 }
 
 void rdp_triangle(int shade, int texture, int zbuffer)

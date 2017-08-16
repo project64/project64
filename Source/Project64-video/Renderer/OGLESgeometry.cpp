@@ -22,14 +22,14 @@
 #include <Project64-video/trace.h>
 
 #define Z_MAX (65536.0f)
-#define VERTEX_SIZE sizeof(VERTEX) //Size of vertex struct
+#define VERTEX_SIZE sizeof(gfxVERTEX) //Size of vertex struct
 
 int w_buffer_mode;
 int inverted_culling;
 gfxCullMode_t culling_mode;
 
 #define VERTEX_BUFFER_SIZE 1500 //Max amount of vertices to buffer, this seems large enough.
-static VERTEX vertex_buffer[VERTEX_BUFFER_SIZE];
+static gfxVERTEX vertex_buffer[VERTEX_BUFFER_SIZE];
 static int vertex_buffer_count = 0;
 static GLenum vertex_draw_mode;
 static bool vertex_buffer_enabled = false;
@@ -262,7 +262,7 @@ void gfxDepthBiasLevel(int32_t level)
 }
 
 // draw
-void gfxDrawTriangle(const void *a, const void *b, const void *c)
+void gfxDrawTriangle(const gfxVERTEX *a, const gfxVERTEX *b, const gfxVERTEX *c)
 {
     WriteTrace(TraceGlitch, TraceDebug, "start");
     vbo_enable();
@@ -289,7 +289,7 @@ void gfxDrawTriangle(const void *a, const void *b, const void *c)
     WriteTrace(TraceGlitch, TraceDebug, "Done");
 }
 
-void gfxDrawLine(const void *a, const void *b)
+void gfxDrawLine(const gfxVERTEX *a, const gfxVERTEX *b)
 {
 }
 

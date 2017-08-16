@@ -23,13 +23,13 @@
 
 #define Z_MAX (65536.0f)
 
-static int xy_off = offsetof(VERTEX, x);
-static int z_off = offsetof(VERTEX, z);
-static int q_off = offsetof(VERTEX, q);
-static int pargb_off = offsetof(VERTEX, b);
-static int st0_off = offsetof(VERTEX, coord[0]);
-static int st1_off = offsetof(VERTEX, coord[2]);
-static int fog_ext_off = offsetof(VERTEX, f);
+static int xy_off = offsetof(gfxVERTEX, x);
+static int z_off = offsetof(gfxVERTEX, z);
+static int q_off = offsetof(gfxVERTEX, q);
+static int pargb_off = offsetof(gfxVERTEX, b);
+static int st0_off = offsetof(gfxVERTEX, coord[0]);
+static int st1_off = offsetof(gfxVERTEX, coord[2]);
+static int fog_ext_off = offsetof(gfxVERTEX, f);
 
 int w_buffer_mode;
 int inverted_culling;
@@ -261,7 +261,7 @@ void gfxDepthBiasLevel(int32_t level)
 }
 
 // draw
-void gfxDrawTriangle(const void *a, const void *b, const void *c)
+void gfxDrawTriangle(const gfxVERTEX *a, const gfxVERTEX *b, const gfxVERTEX *c)
 {
     float *a_x = (float*)a + xy_off / sizeof(float);
     float *a_y = (float*)a + xy_off / sizeof(float) + 1;
@@ -376,7 +376,7 @@ void gfxDrawTriangle(const void *a, const void *b, const void *c)
     grDisplayGLError("gfxDrawTriangle");
 }
 
-void gfxDrawLine(const void *a, const void *b)
+void gfxDrawLine(const gfxVERTEX *a, const gfxVERTEX *b)
 {
     float *a_x = (float*)a + xy_off / sizeof(float);
     float *a_y = (float*)a + xy_off / sizeof(float) + 1;

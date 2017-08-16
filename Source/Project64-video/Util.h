@@ -19,11 +19,11 @@
 
 void util_init();
 
-int cull_tri(VERTEX **v);
-void draw_tri(VERTEX **v, uint16_t linew = 0);
+int cull_tri(gfxVERTEX **v);
+void draw_tri(gfxVERTEX **v, uint16_t linew = 0);
 void do_triangle_stuff(uint16_t linew = 0, int old_interpolate = TRUE);
 void do_triangle_stuff_2(uint16_t linew = 0);
-void apply_shade_mods(VERTEX *v);
+void apply_shade_mods(gfxVERTEX *v);
 
 void update();
 void update_scissor();

@@ -152,7 +152,7 @@ void DrawHiresDepthImage(const DRAWIMAGE & d)
     float lr_y = (float)d.imageH * rdp.scale_y;
     float lr_u = (float)d.imageW * 0.5f;// - 0.5f;
     float lr_v = (float)d.imageH * 0.5f;// - 0.5f;
-    VERTEX v[4] = {
+    gfxVERTEX v[4] = {
         { 0, 0, 1.0f, 1.0f, 0, 0, 0, 0 },
         { lr_x, 0, 1.0f, 1.0f, lr_u, 0, lr_u, 0 },
         { 0, lr_y, 1.0f, 1.0f, 0, lr_v, 0, lr_v },
@@ -464,7 +464,7 @@ void DrawImage(DRAWIMAGE & d)
 
             if ((flr_x <= rdp.scissor.lr_x) || (ful_x < rdp.scissor.lr_x))
             {
-                VERTEX v[4] = {
+                gfxVERTEX v[4] = {
                     { ful_x, ful_y, Z, 1.0f, ful_u, ful_v },
                     { flr_x, ful_y, Z, 1.0f, flr_u, ful_v },
                     { ful_x, flr_y, Z, 1.0f, ful_u, flr_v },
@@ -474,7 +474,7 @@ void DrawImage(DRAWIMAGE & d)
                     apply_shade_mods(&(v[s]));
                 ConvertCoordsConvert(v, 4);
 
-                gfxDrawVertexArrayContiguous(GFX_TRIANGLE_STRIP, 4, v, sizeof(VERTEX));
+                gfxDrawVertexArrayContiguous(GFX_TRIANGLE_STRIP, 4, v, sizeof(gfxVERTEX));
                 rdp.tri_n += 2;
             }
             else
@@ -576,7 +576,7 @@ void DrawHiresImage(DRAWIMAGE & d, int screensize)
         if (lr_y > rdp.scissor.lr_y) lr_y = (float)rdp.scissor.lr_y;
     }
     // Make the vertices
-    VERTEX v[4] = {
+    gfxVERTEX v[4] = {
         { ul_x, ul_y, Z, 1.0f, ul_u, ul_v, ul_u, ul_v },
         { lr_x, ul_y, Z, 1.0f, lr_u, ul_v, lr_u, ul_v },
         { ul_x, lr_y, Z, 1.0f, ul_u, lr_v, ul_u, lr_v },
@@ -687,7 +687,7 @@ void uc6_bg_copy()
     uc6_bg(false);
 }
 
-static void draw_split_triangle(VERTEX **vtx)
+static void draw_split_triangle(gfxVERTEX **vtx)
 {
     vtx[0]->not_zclipped = vtx[1]->not_zclipped = vtx[2]->not_zclipped = 1;
 
@@ -718,8 +718,8 @@ static void draw_split_triangle(VERTEX **vtx)
             j = i + 1;
             if (j == 3) j = 0;
 
-            VERTEX *v1 = vtx[i];
-            VERTEX *v2 = vtx[j];
+            gfxVERTEX *v1 = vtx[i];
+            gfxVERTEX *v2 = vtx[j];
 
             if (v1->u0 >= left_256)
             {
@@ -782,8 +782,8 @@ static void draw_split_triangle(VERTEX **vtx)
             j = i + 1;
             if (j == rdp.n_global) j = 0;
 
-            VERTEX *v1 = &rdp.vtxbuf2[i];
-            VERTEX *v2 = &rdp.vtxbuf2[j];
+            gfxVERTEX *v1 = &rdp.vtxbuf2[i];
+            gfxVERTEX *v2 = &rdp.vtxbuf2[j];
 
             // ** Right plane **
             if (v1->u0 <= 256.0f)
@@ -835,7 +835,7 @@ static void draw_split_triangle(VERTEX **vtx)
     }
 }
 
-static void uc6_draw_polygons(VERTEX v[4])
+static void uc6_draw_polygons(gfxVERTEX v[4])
 {
     AllowShadeMods(v, 4);
     for (int s = 0; s < 4; s++)
@@ -845,7 +845,7 @@ static void uc6_draw_polygons(VERTEX v[4])
     // Set vertex buffers
     if (rdp.cur_cache[0] && rdp.cur_cache[0]->splits > 1)
     {
-        VERTEX *vptr[3];
+        gfxVERTEX *vptr[3];
         int i;
         for (i = 0; i < 3; i++)
             vptr[i] = &v[i];
@@ -863,7 +863,7 @@ static void uc6_draw_polygons(VERTEX v[4])
         rdp.vtxbuf2 = rdp.vtx2;
         rdp.vtx_buffer = 0;
         rdp.n_global = 3;
-        memcpy(rdp.vtxbuf, v, sizeof(VERTEX) * 3);
+        memcpy(rdp.vtxbuf, v, sizeof(gfxVERTEX) * 3);
         do_triangle_stuff_2();
         rdp.tri_n++;
 
@@ -871,7 +871,7 @@ static void uc6_draw_polygons(VERTEX v[4])
         rdp.vtxbuf2 = rdp.vtx2;
         rdp.vtx_buffer = 0;
         rdp.n_global = 3;
-        memcpy(rdp.vtxbuf, v + 1, sizeof(VERTEX) * 3);
+        memcpy(rdp.vtxbuf, v + 1, sizeof(gfxVERTEX) * 3);
         do_triangle_stuff_2();
         rdp.tri_n++;
     }
@@ -991,7 +991,7 @@ void uc6_obj_rectangle()
         ul_v = 0.5f;
 
     // Make the vertices
-    VERTEX v[4] = {
+    gfxVERTEX v[4] = {
         { ul_x, ul_y, Z, 1, ul_u, ul_v },
         { lr_x, ul_y, Z, 1, lr_u, ul_v },
         { ul_x, lr_y, Z, 1, ul_u, lr_v },
@@ -1050,7 +1050,7 @@ void uc6_obj_sprite()
     // Make the vertices
     //    WriteTrace(TraceRDP, TraceDebug, "scale_x: %f, scale_y: %f", rdp.cur_cache[0]->scale_x, rdp.cur_cache[0]->scale_y);
 
-    VERTEX v[4] = {
+    gfxVERTEX v[4] = {
         { ul_x, ul_y, Z, 1, ul_u, ul_v },
         { lr_x, ul_y, Z, 1, lr_u, ul_v },
         { ul_x, lr_y, Z, 1, ul_u, lr_v },
@@ -1221,7 +1221,7 @@ void uc6_obj_rectangle_r()
         ul_v = 0.5f;
 
     // Make the vertices
-    VERTEX v[4] = {
+    gfxVERTEX v[4] = {
         { ul_x, ul_y, Z, 1, ul_u, ul_v },
         { lr_x, ul_y, Z, 1, lr_u, ul_v },
         { ul_x, lr_y, Z, 1, ul_u, lr_v },
@@ -1533,7 +1533,7 @@ void uc6_sprite2d()
             }
 
             // Make the vertices
-            VERTEX v[4] = {
+            gfxVERTEX v[4] = {
                 { ul_x, ul_y, Z, 1, 0.5f, 0.5f },
                 { lr_x, ul_y, Z, 1, lr_u, 0.5f },
                 { ul_x, lr_y, Z, 1, 0.5f, lr_v },
@@ -1554,7 +1554,7 @@ void uc6_sprite2d()
             // Set vertex buffers
             if (rdp.cur_cache[0]->splits > 1)
             {
-                VERTEX *vptr[3];
+                gfxVERTEX *vptr[3];
                 int i;
                 for (i = 0; i < 3; i++)
                     vptr[i] = &v[i];
@@ -1572,7 +1572,7 @@ void uc6_sprite2d()
                 rdp.vtxbuf2 = rdp.vtx2;
                 rdp.vtx_buffer = 0;
                 rdp.n_global = 3;
-                memcpy(rdp.vtxbuf, v, sizeof(VERTEX) * 3);
+                memcpy(rdp.vtxbuf, v, sizeof(gfxVERTEX) * 3);
                 do_triangle_stuff_2();
                 rdp.tri_n++;
 
@@ -1580,7 +1580,7 @@ void uc6_sprite2d()
                 rdp.vtxbuf2 = rdp.vtx2;
                 rdp.vtx_buffer = 0;
                 rdp.n_global = 3;
-                memcpy(rdp.vtxbuf, v + 1, sizeof(VERTEX) * 3);
+                memcpy(rdp.vtxbuf, v + 1, sizeof(gfxVERTEX) * 3);
                 do_triangle_stuff_2();
                 rdp.tri_n++;
             }

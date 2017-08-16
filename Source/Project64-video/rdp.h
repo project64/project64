@@ -99,39 +99,6 @@ const unsigned int maxCMDMask = MAXCMD - 1;
 #define DECLAREALIGN16VAR(var) float (var) __attribute__ ((aligned(16)))
 #endif
 
-// Vertex structure
-typedef struct
-{
-    float x, y, z, q;
-    float u0, v0, u1, v1;
-    float coord[4];
-    float w;
-    uint16_t  flags;
-
-    uint8_t  b;  // These values are arranged like this so that *(uint32_t*)(VERTEX+?) is
-    uint8_t  g;  // ARGB format that glide can use.
-    uint8_t  r;
-    uint8_t  a;
-
-    float f; //fog
-
-    float vec[3]; // normal vector
-
-    float sx, sy, sz;
-    float x_w, y_w, z_w, u0_w, v0_w, u1_w, v1_w, oow;
-    uint8_t  not_zclipped;
-    uint8_t  screen_translated;
-    uint8_t  uv_scaled;
-    uint32_t uv_calculated;  // like crc
-    uint32_t shade_mod;
-    uint32_t color_backup;
-
-    float ou, ov;
-
-    int   number;   // way to identify it
-    int   scr_off, z_off; // off the screen?
-} VERTEX;
-
 // Clipping (scissors)
 typedef struct
 {
@@ -358,14 +325,14 @@ public:
     bool init();
     void free();
 
-    inline VERTEX & vtx(int index) const { return m_vtx[index]; }
+    inline gfxVERTEX & vtx(int index) const { return m_vtx[index]; }
     inline TILE & tiles(int index) { return m_tiles[index]; }
     // Clipping
     int clip;     // clipping flags
-    VERTEX *vtx1; //[256] copy vertex buffer #1 (used for clipping)
-    VERTEX *vtx2; //[256] copy vertex buffer #2
-    VERTEX *vtxbuf;   // current vertex buffer (reset to vtx, used to determine current vertex buffer)
-    VERTEX *vtxbuf2;
+    gfxVERTEX *vtx1; //[256] copy vertex buffer #1 (used for clipping)
+    gfxVERTEX *vtx2; //[256] copy vertex buffer #2
+    gfxVERTEX *vtxbuf;   // current vertex buffer (reset to vtx, used to determine current vertex buffer)
+    gfxVERTEX *vtxbuf2;
     int n_global;   // Used to pass the number of vertices from clip_z to clip_tri
     int vtx_buffer;
 
@@ -376,7 +343,7 @@ public:
 
     // Vertices
 private:
-    VERTEX * m_vtx; //[MAX_VTX]
+    gfxVERTEX * m_vtx; //[MAX_VTX]
 public:
     int v0, vn;
 
@@ -645,7 +612,7 @@ extern const char *CIStatus[];
 #endif
 
 // Convert from u0/v0/u1/v1 to the real coordinates without regard to tmu
-__inline void ConvertCoordsKeep(VERTEX *v, int n)
+__inline void ConvertCoordsKeep(gfxVERTEX *v, int n)
 {
     for (int i = 0; i < n; i++)
     {
@@ -657,7 +624,7 @@ __inline void ConvertCoordsKeep(VERTEX *v, int n)
 }
 
 // Convert from u0/v0/u1/v1 to the real coordinates based on the tmu they are on
-__inline void ConvertCoordsConvert(VERTEX *v, int n)
+__inline void ConvertCoordsConvert(gfxVERTEX *v, int n)
 {
     for (int i = 0; i < n; i++)
     {
@@ -668,7 +635,7 @@ __inline void ConvertCoordsConvert(VERTEX *v, int n)
     }
 }
 
-__inline void AllowShadeMods(VERTEX *v, int n)
+__inline void AllowShadeMods(gfxVERTEX *v, int n)
 {
     for (int i = 0; i < n; i++)
     {
@@ -676,7 +643,7 @@ __inline void AllowShadeMods(VERTEX *v, int n)
     }
 }
 
-__inline void AddOffset(VERTEX *v, int n)
+__inline void AddOffset(gfxVERTEX *v, int n)
 {
     for (int i = 0; i < n; i++)
     {
@@ -685,7 +652,7 @@ __inline void AddOffset(VERTEX *v, int n)
     }
 }
 
-__inline void CalculateFog(VERTEX &v)
+__inline void CalculateFog(gfxVERTEX &v)
 {
     if (rdp.flags & FOG_ENABLED)
     {
