@@ -19,6 +19,7 @@
 CSettings::CSettings() :
     m_Set_basic_mode(0),
     m_Set_debugger(0),
+    m_Set_RDRamSize(0),
     m_Set_texture_dir(0),
     m_Set_log_dir(0),
     m_Set_log_flush(0),
@@ -90,6 +91,7 @@ CSettings::CSettings() :
 #ifndef ANDROID
     m_FullScreenRes(0),
 #endif
+    m_RdramSize(0),
     m_wrpVRAM(0),
     m_wrpFBO(false),
     m_wrpAnisotropic(false),
@@ -125,6 +127,7 @@ void CSettings::RegisterSettings(void)
     SetModuleName("default");
     m_Set_basic_mode = FindSystemSettingId("Basic Mode");
     m_Set_debugger = FindSystemSettingId("Debugger");
+    m_Set_RDRamSize = FindSystemSettingId("RDRamSize");
     m_Set_texture_dir = FindSystemSettingId("Dir:Texture");
     m_Set_log_flush = FindSystemSettingId("Log Auto Flush");
     m_Set_log_dir = FindSystemSettingId("Dir:Log");
@@ -763,6 +766,7 @@ void CSettings::ReadGameSettings(const char * name)
     m_zmode_compare_less = GetSetting(Set_zmode_compare_less);
     m_old_style_adither = GetSetting(Set_old_style_adither);
     m_n64_z_scale = GetSetting(Set_n64_z_scale) != 0;
+    m_RdramSize = GetSystemSetting(m_Set_RDRamSize);
 
     m_ScreenRes = GetSetting(Set_Resolution);
     if (m_ScreenRes >= GetScreenResolutionCount()) { m_ScreenRes = GetDefaultScreenRes(); }

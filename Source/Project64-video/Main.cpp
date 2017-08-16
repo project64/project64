@@ -896,27 +896,6 @@ void CALL RomClosed(void)
     ReleaseGfx();
 }
 
-static void CheckDRAMSize()
-{
-    uint32_t test;
-    GLIDE64_TRY
-    {
-        test = gfx.RDRAM[0x007FFFFF] + 1;
-    }
-        GLIDE64_CATCH
-    {
-        test = 0;
-    }
-        if (test)
-            BMASK = 0x7FFFFF;
-        else
-            BMASK = WMASK;
-#ifdef LOGGING
-    sprintf(out_buf, "Detected RDRAM size: %08lx", BMASK);
-    LOG(out_buf);
-#endif
-}
-
 /******************************************************************
 Function: RomOpen
 Purpose:  This function is called when a rom is open. (from the
@@ -973,7 +952,7 @@ void CALL RomOpen(void)
     g_settings->ReadGameSettings(name);
     ClearCache();
 
-    CheckDRAMSize();
+    BMASK = g_settings->RdramSize() - 1;
     // ** EVOODOO EXTENSIONS **
     evoodoo = 1;
     InitGfx();

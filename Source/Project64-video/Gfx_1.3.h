@@ -61,8 +61,6 @@ extern "C" {
     //********
 
     extern unsigned int BMASK;
-#define WMASK	0x3FFFFF
-#define DMASK	0x1FFFFF
 
     extern uint32_t update_screen_count;
 

@@ -266,6 +266,7 @@ public:
 #ifndef ANDROID
     inline uint32_t FullScreenRes(void) const { return m_FullScreenRes; }
 #endif
+    inline uint32_t RdramSize(void) const { return m_RdramSize; }
     inline int wrpVRAM(void) const { return m_wrpVRAM; }
     inline bool wrpFBO(void) const { return m_wrpFBO; }
     inline bool wrpAnisotropic(void) const { return m_wrpAnisotropic; }
@@ -330,6 +331,7 @@ private:
 
     short m_Set_basic_mode;
     short m_Set_debugger;
+    short m_Set_RDRamSize;
     short m_Set_texture_dir;
     short m_Set_log_dir;
     short m_Set_log_flush;
@@ -338,6 +340,7 @@ private:
 #ifndef ANDROID
     uint32_t m_FullScreenRes;
 #endif
+    uint32_t m_RdramSize;
     int m_wrpVRAM;
     bool m_wrpFBO;
     bool m_wrpAnisotropic;
