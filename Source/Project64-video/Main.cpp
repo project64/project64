@@ -506,14 +506,6 @@ int InitGfx()
 
     InitCombine();
 
-#ifdef SIMULATE_VOODOO1
-    voodoo.sup_mirroring = 0;
-#endif
-
-#ifdef SIMULATE_BANSHEE
-    voodoo.sup_mirroring = 1;
-#endif
-
     gfxCullMode(GFX_CULL_NEGATIVE);
 
     if (g_settings->fog()) //"FOGCOORD" extension
