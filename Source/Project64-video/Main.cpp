@@ -450,19 +450,6 @@ int InitGfx()
 
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
-    // Check which SST we are using and initialize stuff
-    // Hiroshi Morii <koolsmoky@users.sourceforge.net>
-    enum {
-        GR_SSTTYPE_VOODOO = 0,
-        GR_SSTTYPE_SST96 = 1,
-        GR_SSTTYPE_AT3D = 2,
-        GR_SSTTYPE_Voodoo2 = 3,
-        GR_SSTTYPE_Banshee = 4,
-        GR_SSTTYPE_Voodoo3 = 5,
-        GR_SSTTYPE_Voodoo4 = 6,
-        GR_SSTTYPE_Voodoo5 = 7
-    };
-    unsigned int SST_type = GR_SSTTYPE_Voodoo5;
     // 2Mb Texture boundary
     voodoo.has_2mb_tex_boundary = false;
     // we get better texture cache hits with UMA on
