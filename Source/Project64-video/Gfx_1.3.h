@@ -63,7 +63,6 @@ extern "C" {
     extern bool g_romopen;
     extern int to_fullscreen;
 
-    extern int evoodoo;
     extern int ev_fullscreen;
 
     extern int exception;

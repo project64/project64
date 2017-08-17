@@ -53,7 +53,6 @@ int GfxInitDone = FALSE;
 bool g_romopen = false;
 int exception = FALSE;
 
-int evoodoo = 0;
 int ev_fullscreen = 0;
 
 extern int g_viewport_offset;
@@ -465,7 +464,7 @@ int InitGfx()
     };
     unsigned int SST_type = GR_SSTTYPE_Voodoo5;
     // 2Mb Texture boundary
-    voodoo.has_2mb_tex_boundary = (SST_type < GR_SSTTYPE_Banshee) && !evoodoo;
+    voodoo.has_2mb_tex_boundary = false;
     // we get better texture cache hits with UMA on
     WriteTrace(TraceGlide64, TraceDebug, "Using TEXUMA extension");
 
@@ -677,32 +676,15 @@ EXPORT void CALL ChangeWindow(void)
 {
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
-    if (evoodoo)
+    if (!ev_fullscreen)
     {
-        if (!ev_fullscreen)
-        {
-            to_fullscreen = TRUE;
-            ev_fullscreen = TRUE;
-        }
-        else
-        {
-            ev_fullscreen = FALSE;
-            InitGfx();
-        }
+        to_fullscreen = TRUE;
+        ev_fullscreen = TRUE;
     }
     else
     {
-        // Go to fullscreen at next dlist
-        // This is for compatibility with 1964, which reloads the plugin
-        //  when switching to fullscreen
-        if (!GfxInitDone)
-        {
-            to_fullscreen = TRUE;
-        }
-        else
-        {
-            ReleaseGfx();
-        }
+        ev_fullscreen = FALSE;
+        InitGfx();
     }
 }
 
@@ -829,7 +811,6 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     CountCombine();
     ZLUT_init();
 
-    evoodoo = 1;
     voodoo.has_2mb_tex_boundary = 0;
     return TRUE;
 }
@@ -945,8 +926,6 @@ void CALL RomOpen(void)
     ClearCache();
 
     BMASK = g_settings->RdramSize() - 1;
-    // ** EVOODOO EXTENSIONS **
-    evoodoo = 1;
     InitGfx();
 }
 
@@ -1290,10 +1269,6 @@ void newSwapBuffers()
         DrawWholeFrameBufferToScreen();
     }
 
-    if (g_settings->fb_hwfbe_enabled() && !g_settings->hacks(CSettings::hack_RE2) && !evoodoo)
-    {
-        gfxAuxBufferExt(GFX_BUFFER_AUXBUFFER);
-    }
     WriteTrace(TraceGlide64, TraceDebug, "BUFFER SWAPPED");
     gfxBufferSwap(g_settings->vsync());
     if (*gfx.VI_STATUS_REG & 0x08) //gamma correction is used

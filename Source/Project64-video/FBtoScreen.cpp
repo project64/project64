@@ -530,11 +530,6 @@ void DrawDepthBufferToScreen(FB_TO_SCREEN_INFO & fb_info)
         DrawDepthBufferToScreen256(fb_info);
         return;
     }
-    if (g_settings->fb_hwfbe_enabled() && !evoodoo)
-    {
-        DrawHiresDepthBufferToScreen(fb_info);
-        return;
-    }
     WriteTrace(TraceRDP, TraceDebug, "DrawDepthBufferToScreen. ul_x=%d, ul_y=%d, lr_x=%d, lr_y=%d, size=%d, addr=%08lx", fb_info.ul_x, fb_info.ul_y, fb_info.lr_x, fb_info.lr_y, fb_info.size, fb_info.addr);
     gfxTexInfo t_info;
     uint8_t * image = gfx.RDRAM + fb_info.addr;
