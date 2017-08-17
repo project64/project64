@@ -12,6 +12,7 @@
 *                                                                          *
 ****************************************************************************/
 #include <Project64-video/Renderer/Renderer.h>
+#include <Project64-video/Gfx_1.3.h>
 
 #define SAVE_CBUFFER
 
@@ -328,8 +329,6 @@ static int texbuf_i;
 unsigned short frameBuffer[2048 * 2048];
 unsigned short depthBuffer[2048 * 2048];
 
-//#define VOODOO1
-
 void gfxClipWindow(uint32_t minx, uint32_t miny, uint32_t maxx, uint32_t maxy)
 {
     WriteTrace(TraceGlitch, TraceDebug, "minx = %d, miny: %d maxy: %d", minx, miny, maxy);
@@ -441,14 +440,6 @@ int isWglExtensionSupported(const char *extension)
 
 #define GrPixelFormat_t int
 
-#ifdef _WIN32
-# include <fcntl.h>
-# ifndef ATTACH_PARENT_PROCESS
-#  define ATTACH_PARENT_PROCESS ((uint32_t)-1)
-# endif
-extern HWND g_hwnd_win;
-#endif
-
 bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_location, int nColBuffers, int nAuxBuffers)
 {
     static int show_warning = 1;
@@ -487,7 +478,11 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
     screen_width = g_width;
     screen_height = g_height;
 
-    if ((hDC = GetDC(g_hwnd_win)) == NULL)
+    if ((HWND)gfx.hWnd != NULL)
+    {
+        hDC = GetDC((HWND)gfx.hWnd);
+    }
+    if (hDC == NULL)
     {
         WriteTrace(TraceGlitch, TraceWarning, "GetDC on main window failed");
         return false;
@@ -561,10 +556,6 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
     glGetIntegerv(GL_AUX_BUFFERS, &nbAuxBuffers);
     if (nbAuxBuffers > 0)
         printf("Congratulations, you have %d auxilliary buffers, we'll use them wisely !\n", nbAuxBuffers);
-
-#ifdef VOODOO1
-    nbTextureUnits = 2;
-#endif
 
     if (isExtensionSupported("GL_EXT_blend_func_separate") == 0)
         blend_func_separate_support = 0;
@@ -834,7 +825,7 @@ bool gfxSstWinClose()
             glDeleteFramebuffersEXT(1, &(fbs[i].fbid));
             glDeleteRenderbuffersEXT(1, &(fbs[i].zbid));
         }
-    }
+}
 #endif
     nb_fb = 0;
 
@@ -1815,7 +1806,7 @@ void gfxGetGammaTableExt(uint32_t /*nentries*/, uint32_t *red, uint32_t *green, 
             blue[i] = aGammaRamp[2][i] >> 8;
         }
     }
-}
+    }
 
 void gfxGammaCorrectionRGB(float gammaR, float gammaG, float gammaB)
 {

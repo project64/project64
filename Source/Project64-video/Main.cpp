@@ -87,7 +87,6 @@ bool g_capture_screen = false;
 std::string g_capture_path;
 
 #ifdef _WIN32
-HWND g_hwnd_win = NULL;
 static RECT g_windowedRect = { 0 };
 static HMENU g_windowedMenu = 0;
 static unsigned long g_windowedExStyle, g_windowedStyle;
@@ -363,12 +362,6 @@ void DisplayLoadProgress(const wchar_t *format, ...)
 #ifdef _WIN32
 void SetWindowDisplaySize(HWND hWnd)
 {
-    if (hWnd == NULL)
-    {
-        hWnd = GetActiveWindow();
-    }
-    g_hwnd_win = (HWND)hWnd;
-
     if (ev_fullscreen)
     {
         ZeroMemory(&g_windowedRect, sizeof(RECT));
@@ -429,10 +422,10 @@ void ExitFullScreen(void)
     if (g_fullscreen)
     {
         ChangeDisplaySettings(NULL, 0);
-        SetWindowPos(g_hwnd_win, NULL, g_windowedRect.left, g_windowedRect.top, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-        SetWindowLong(g_hwnd_win, GWL_STYLE, g_windowedStyle);
-        SetWindowLong(g_hwnd_win, GWL_EXSTYLE, g_windowedExStyle);
-        if (g_windowedMenu) SetMenu(g_hwnd_win, g_windowedMenu);
+        SetWindowPos((HWND)gfx.hWnd, NULL, g_windowedRect.left, g_windowedRect.top, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+        SetWindowLong((HWND)gfx.hWnd, GWL_STYLE, g_windowedStyle);
+        SetWindowLong((HWND)gfx.hWnd, GWL_EXSTYLE, g_windowedExStyle);
+        if (g_windowedMenu) SetMenu((HWND)gfx.hWnd, g_windowedMenu);
         g_fullscreen = false;
     }
 }

@@ -183,8 +183,6 @@ static int texbuf_i;
 unsigned short frameBuffer[2048 * 2048 * 2]; // Support 2048x2048 screen resolution at 32 bits (RGBA) per pixel
 unsigned short depthBuffer[2048 * 2048];   // Support 2048x2048 screen resolution at 16 bits (depth) per pixel
 
-//#define VOODOO1
-
 void display_warning(const char *text, ...)
 {
     static int first_message = 100;
