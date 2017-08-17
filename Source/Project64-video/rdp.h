@@ -120,7 +120,6 @@ typedef struct {
 
 typedef struct
 {
-    int max_tex_size;
     int sup_large_tex;
     int sup_mirroring;
     int sup_32bit_tex;

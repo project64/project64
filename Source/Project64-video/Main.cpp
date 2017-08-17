@@ -219,14 +219,7 @@ int GetTexAddrNonUMA(int tmu, int texsize)
 void guLoadTextures()
 {
     int tbuf_size = 0;
-    if (voodoo.max_tex_size <= 256)
-    {
-        gfxTextureBufferExt(GFX_TMU1, voodoo.tex_min_addr[GFX_TMU1], GFX_LOD_LOG2_256, GFX_LOD_LOG2_256,
-            GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GFX_MIPMAPLEVELMASK_BOTH);
-        tbuf_size = 8 * gfxTexCalcMemRequired(GFX_LOD_LOG2_256, GFX_LOD_LOG2_256,
-            GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565);
-    }
-    else if (g_scr_res_x <= 1024)
+    if (g_scr_res_x <= 1024)
     {
         gfxTextureBufferExt(GFX_TMU0, voodoo.tex_min_addr[GFX_TMU0], GFX_LOD_LOG2_1024, GFX_LOD_LOG2_1024,
             GFX_ASPECT_LOG2_1x1, GFX_TEXFMT_RGB_565, GFX_MIPMAPLEVELMASK_BOTH);
@@ -464,8 +457,7 @@ int InitGfx()
     to_fullscreen = FALSE;
 
     // get maximal texture size
-    voodoo.max_tex_size = 2048;
-    voodoo.sup_large_tex = (voodoo.max_tex_size > 256 && !g_settings->hacks(CSettings::hack_PPL));
+    voodoo.sup_large_tex = !g_settings->hacks(CSettings::hack_PPL);
 
     voodoo.tex_min_addr[0] = voodoo.tex_min_addr[1] = gfxTexMinAddress(GFX_TMU0);
     voodoo.tex_max_addr[0] = voodoo.tex_max_addr[1] = gfxTexMaxAddress(GFX_TMU0);
@@ -566,8 +558,8 @@ int InitGfx()
                 options |= DUMP_TEX;
             }
 
-            g_ghq_use = (int)ext_ghq_init(voodoo.max_tex_size, // max texture width supported by hardware
-                voodoo.max_tex_size, // max texture height supported by hardware
+            g_ghq_use = (int)ext_ghq_init(2048, // max texture width supported by hardware
+                2048, // max texture height supported by hardware
                 voodoo.sup_32bit_tex ? 32 : 16, // max texture bpp supported by hardware
                 options,
                 g_settings->ghq_cache_size() * 1024 * 1024, // cache texture to system memory
