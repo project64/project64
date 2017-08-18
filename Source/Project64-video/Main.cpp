@@ -460,12 +460,6 @@ int InitGfx()
     voodoo.tex_min_addr[0] = voodoo.tex_min_addr[1] = gfxTexMinAddress(GFX_TMU0);
     voodoo.tex_max_addr[0] = voodoo.tex_max_addr[1] = gfxTexMaxAddress(GFX_TMU0);
 
-    // Is mirroring allowed?
-    if (!g_settings->hacks(CSettings::hack_Zelda)) //zelda's trees suffer from hardware mirroring
-        voodoo.sup_mirroring = 1;
-    else
-        voodoo.sup_mirroring = 0;
-
     voodoo.sup_32bit_tex = TRUE;
     voodoo.gamma_correction = 0;
     voodoo.gamma_table_size = 256;
@@ -565,10 +559,6 @@ int InitGfx()
                 rdp.RomName, // name of ROM. must be no longer than 256 characters
                 DisplayLoadProgress);
         }
-    }
-    if (g_ghq_use)
-    {
-        voodoo.sup_mirroring = 1;
     }
     return TRUE;
 }

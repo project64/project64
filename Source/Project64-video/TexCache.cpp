@@ -849,7 +849,7 @@ void TexCache()
                     mode_s = GFX_TEXTURECLAMP_CLAMP;
                 else
                 {
-                    if (rdp.tiles(tile).mirror_s && voodoo.sup_mirroring)
+                    if (rdp.tiles(tile).mirror_s && !g_settings->hacks(CSettings::hack_Zelda))
                         mode_s = GFX_TEXTURECLAMP_MIRROR_EXT;
                     else
                         mode_s = GFX_TEXTURECLAMP_WRAP;
@@ -863,7 +863,7 @@ void TexCache()
                     mode_t = GFX_TEXTURECLAMP_CLAMP;
                 else
                 {
-                    if (rdp.tiles(tile).mirror_t && voodoo.sup_mirroring)
+                    if (rdp.tiles(tile).mirror_t && !g_settings->hacks(CSettings::hack_Zelda))
                         mode_t = GFX_TEXTURECLAMP_MIRROR_EXT;
                     else
                         mode_t = GFX_TEXTURECLAMP_WRAP;
@@ -998,8 +998,7 @@ void LoadTex(int id, gfxChipID_t tmu)
     for (shift = 0; (1 << shift) < (int)size_y; shift++);
     size_y = 1 << shift;
 
-    // Voodoo 1 support is all here, it will automatically mirror to the full extent.
-    if (!voodoo.sup_mirroring)
+    if (g_settings->hacks(CSettings::hack_Zelda))
     {
         if (rdp.tiles(td).mirror_s && !rdp.tiles(td).clamp_s && (!g_settings->hacks(CSettings::hack_PPL) || size_x <= 128))
             size_x <<= 1;
@@ -1604,7 +1603,7 @@ void LoadTex(int id, gfxChipID_t tmu)
                                 cache->c_scl_y /= splits;
                             }
                         }
-                        if (voodoo.sup_mirroring)
+                        if (!g_settings->hacks(CSettings::hack_Zelda))
                         {
                             if (rdp.tiles(td).mirror_s && texinfo[id].tile_width == 2 * texinfo[id].width)
                                 cache->f_mirror_s = TRUE;
