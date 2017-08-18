@@ -120,7 +120,6 @@ typedef struct {
 
 typedef struct
 {
-    int sup_32bit_tex;
     int has_2mb_tex_boundary;
     int gamma_correction;
     int32_t gamma_table_size;

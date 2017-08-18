@@ -460,7 +460,6 @@ int InitGfx()
     voodoo.tex_min_addr[0] = voodoo.tex_min_addr[1] = gfxTexMinAddress(GFX_TMU0);
     voodoo.tex_max_addr[0] = voodoo.tex_max_addr[1] = gfxTexMaxAddress(GFX_TMU0);
 
-    voodoo.sup_32bit_tex = TRUE;
     voodoo.gamma_correction = 0;
     voodoo.gamma_table_size = 256;
 
@@ -552,7 +551,7 @@ int InitGfx()
 
             g_ghq_use = (int)ext_ghq_init(2048, // max texture width supported by hardware
                 2048, // max texture height supported by hardware
-                voodoo.sup_32bit_tex ? 32 : 16, // max texture bpp supported by hardware
+                32, // max texture bpp supported by hardware
                 options,
                 g_settings->ghq_cache_size() * 1024 * 1024, // cache texture to system memory
                 g_settings->texture_dir(),

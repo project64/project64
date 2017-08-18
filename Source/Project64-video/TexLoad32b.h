@@ -43,25 +43,6 @@ uint32_t Load32bRGBA(uintptr_t dst, uintptr_t src, int wid_64, int height, int l
         }
         tex += ext;
     }
-    int id = tile - rdp.cur_tile;
-    uint32_t mod = (id == 0) ? cmb.mod_0 : cmb.mod_1;
-    if (mod || !voodoo.sup_32bit_tex)
-    {
-        //convert to ARGB_4444
-        const uint32_t tex_size = real_width * height;
-        tex = (uint32_t *)dst;
-        uint16_t *tex16 = (uint16_t*)dst;
-        uint16_t a, r, g, b;
-        for (uint32_t i = 0; i < tex_size; i++) {
-            c = tex[i];
-            a = (c >> 28) & 0xF;
-            r = (c >> 20) & 0xF;
-            g = (c >> 12) & 0xF;
-            b = (c >> 4) & 0xF;
-            tex16[i] = (a << 12) | (r << 8) | (g << 4) | b;
-        }
-        return (1 << 16) | GFX_TEXFMT_ARGB_4444;
-    }
     return (2 << 16) | GFX_TEXFMT_ARGB_8888;
 }
 
