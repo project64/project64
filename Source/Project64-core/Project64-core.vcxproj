@@ -128,6 +128,7 @@
     <ClInclude Include="3rdParty\7zip.h" />
     <ClInclude Include="3rdParty\zip.h" />
     <ClInclude Include="AppInit.h" />
+    <ClInclude Include="Debugger.h" />
     <ClInclude Include="ExceptionHandler.h" />
     <ClInclude Include="Logging.h" />
     <ClInclude Include="Multilanguage.h" />
@@ -234,5 +235,9 @@
       <Project>{3326e128-33af-422c-bb7c-67cc6b915610}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Common\Common.vcxproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>

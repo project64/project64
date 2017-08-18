@@ -48,6 +48,7 @@ enum SettingID
     Setting_AutoStart,
     Setting_CheckEmuRunning,
     Setting_EraseGameDefaults,
+	Setting_ForceInterpreterCPU,
 
     Setting_AutoZipInstantSave,
     Setting_RememberCheats,

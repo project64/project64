@@ -8,7 +8,7 @@ enum MEM_PROTECTION
 	MEM_EXECUTE_READWRITE,
 };
 
-void* AllocateAddressSpace(size_t size);
+void* AllocateAddressSpace(size_t size, LPVOID lpAddress = NULL);
 bool FreeAddressSpace(void* addr, size_t size);
 void* CommitMemory(void* addr, size_t size, MEM_PROTECTION memProtection);
 bool DecommitMemory(void* addr, size_t size);

@@ -368,13 +368,11 @@ LRESULT CALLBACK RefreshRSP_RegProc ( HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 				PaintRSP_Vector2_Panel (hWnd);
 				break;
 			}
-
 		}
 		break;
-	default:
-		return( (*RefreshProc)(hWnd, uMsg, wParam, lParam) );
 	}
-	return( FALSE );
+
+	return CallWindowProc(RefreshProc, hWnd, uMsg, wParam, lParam);
 }
 
 LRESULT CALLBACK RSP_Registers_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {	

@@ -14,34 +14,34 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Logging.h>
 
-const char * CRegName::GPR[32] = { "r0", "at", "v0", "v1", "a0", "a1", "a2", "a3",
-"t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7",
-"s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7",
-"t8", "t9", "k0", "k1", "gp", "sp", "s8", "ra" };
+const char * CRegName::GPR[32] = { "R0", "AT", "V0", "V1", "A0", "A1", "A2", "A3",
+"T0", "T1", "T2", "T3", "T4", "T5", "T6", "T7",
+"S0", "S1", "S2", "S3", "S4", "S5", "S6", "S7",
+"T8", "T9", "K0", "K1", "GP", "SP", "FP", "RA" };
 
 const char *CRegName::GPR_Hi[32] = { "r0.HI", "at.HI", "v0.HI", "v1.HI", "a0.HI", "a1.HI",
 "a2.HI", "a3.HI", "t0.HI", "t1.HI", "t2.HI", "t3.HI",
 "t4.HI", "t5.HI", "t6.HI", "t7.HI", "s0.HI", "s1.HI",
 "s2.HI", "s3.HI", "s4.HI", "s5.HI", "s6.HI", "s7.HI",
 "t8.HI", "t9.HI", "k0.HI", "k1.HI", "gp.HI", "sp.HI",
-"s8.HI", "ra.HI" };
+"fp.HI", "ra.HI" };
 
 const char *CRegName::GPR_Lo[32] = { "r0.LO", "at.LO", "v0.LO", "v1.LO", "a0.LO", "a1.LO",
 "a2.LO", "a3.LO", "t0.LO", "t1.LO", "t2.LO", "t3.LO",
 "t4.LO", "t5.LO", "t6.LO", "t7.LO", "s0.LO", "s1.LO",
 "s2.LO", "s3.LO", "s4.LO", "s5.LO", "s6.LO", "s7.LO",
 "t8.LO", "t9.LO", "k0.LO", "k1.LO", "gp.LO", "sp.LO",
-"s8.LO", "ra.LO" };
+"fp.LO", "ra.LO" };
 
 const char * CRegName::Cop0[32] = { "Index", "Random", "EntryLo0", "EntryLo1", "Context", "PageMask", "Wired", "",
 "BadVAddr", "Count", "EntryHi", "Compare", "Status", "Cause", "EPC", "PRId",
 "Config", "LLAddr", "WatchLo", "WatchHi", "XContext", "", "", "",
 "", "", "ECC", "CacheErr", "TagLo", "TagHi", "ErrEPC", "" };
 
-const char * CRegName::FPR[32] = { "f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7",
-"f8", "f9", "f10", "f11", "f12", "f13", "f14", "f15",
-"f16", "f17", "f18", "f19", "f20", "f21", "f22", "f23",
-"f24", "f25", "f26", "f27", "f28", "f29", "f30", "f31" };
+const char * CRegName::FPR[32] = { "F0", "F1", "F2", "F3", "F4", "F5", "F6", "F7",
+"F8", "F9", "F10", "F11", "F12", "F13", "F14", "F15",
+"F16", "F17", "F18", "F19", "F20", "F21", "F22", "F23",
+"F24", "F25", "F26", "F27", "F28", "F29", "F30", "F31" };
 
 const char * CRegName::FPR_Ctrl[32] = { "Revision", "Unknown", "Unknown", "Unknown", "Unknown",
 "Unknown", "Unknown", "Unknown", "Unknown", "Unknown", "Unknown",

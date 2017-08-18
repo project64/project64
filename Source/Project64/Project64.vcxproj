@@ -31,6 +31,12 @@
   </ImportGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -42,19 +48,53 @@
     <Manifest Condition="'$(PlatformToolset)'!='v90'">
       <EnableDPIAwareness>true</EnableDPIAwareness>
     </Manifest>
+    <ClCompile>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile>
+      <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Speed</FavorSizeOrSpeed>
+    </ClCompile>
+    <ClCompile>
+      <OmitFramePointers Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</OmitFramePointers>
+    </ClCompile>
+    <ClCompile>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MinSpace</Optimization>
+    </ClCompile>
+    <ClCompile>
+      <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Size</FavorSizeOrSpeed>
+    </ClCompile>
+    <ClCompile>
+      <OmitFramePointers Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</OmitFramePointers>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="N64System\Debugger\Debugger-StackView.cpp" />
+    <ClCompile Include="N64System\Debugger\Assembler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Multilanguage\LanguageSelector.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger-AddSymbol.cpp" />
     <ClCompile Include="N64System\Debugger\Debugger-MemoryDump.cpp" />
     <ClCompile Include="N64System\Debugger\Debugger-MemorySearch.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger-RegisterTabs.cpp" />
     <ClCompile Include="N64System\Debugger\Debugger-TLB.cpp" />
     <ClCompile Include="N64System\Debugger\Debugger-ViewMemory.cpp" />
     <ClCompile Include="N64System\Debugger\Debugger.cpp" />
+    <ClCompile Include="N64System\Debugger\Breakpoints.cpp" />
+    <ClCompile Include="N64System\Debugger\DMALog.cpp" />
+    <ClCompile Include="N64System\Debugger\ScriptSystem.cpp" />
     <ClCompile Include="Plugins\PluginList.cpp" />
     <ClCompile Include="Settings\GuiSettings.cpp" />
     <ClCompile Include="Settings\NotificationSettings.cpp" />
     <ClCompile Include="Settings\UISettings.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger-Commands.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger-Scripts.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger-Symbols.cpp" />
+    <ClCompile Include="N64System\Debugger\Symbols.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger-AddBreakpoint.cpp" />
+    <ClCompile Include="N64System\Debugger\ScriptInstance.cpp" />
+    <ClCompile Include="N64System\Debugger\ScriptHook.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger-DMALogView.cpp" />
+    <ClCompile Include="N64System\Debugger\Debugger-StackTrace.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -85,6 +125,22 @@
     <ClCompile Include="UserInterface\WTLControls\PartialGroupBox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="N64System\Debugger\Debugger-StackView.h" />
+    <ClInclude Include="N64System\Debugger\Debugger-AddSymbol.h" />
+    <ClInclude Include="N64System\Debugger\Assembler.h" />
+    <ClInclude Include="N64System\Debugger\Debugger-RegisterTabs.h" />
+    <ClInclude Include="N64System\Debugger\Debugger-StackTrace.h" />
+    <ClInclude Include="N64System\Debugger\Debugger-DMALogView.h" />
+    <ClInclude Include="N64System\Debugger\DMALog.h" />
+    <ClInclude Include="N64System\Debugger\OpInfo.h" />
+    <ClInclude Include="N64System\Debugger\ScriptHook.h" />
+    <ClInclude Include="N64System\Debugger\ScriptInstance.h" />
+    <ClInclude Include="N64System\Debugger\Debugger-AddBreakpoint.h" />
+    <ClInclude Include="N64System\Debugger\Breakpoints.h" />
+    <ClInclude Include="N64System\Debugger\Symbols.h" />
+    <ClInclude Include="N64System\Debugger\Debugger-Symbols.h" />
+    <ClInclude Include="N64System\Debugger\Debugger-Scripts.h" />
+    <ClInclude Include="N64System\Debugger\Debugger-Commands.h" />
     <ClInclude Include="Multilanguage\LanguageSelector.h" />
     <ClInclude Include="N64System.h" />
     <ClInclude Include="N64System\Debugger\DebugDialog.h" />
@@ -94,6 +150,7 @@
     <ClInclude Include="N64System\Debugger\Debugger-ViewMemory.h" />
     <ClInclude Include="N64System\Debugger\debugger.h" />
     <ClInclude Include="N64System\Debugger\DebuggerUI.h" />
+    <ClInclude Include="N64System\Debugger\ScriptSystem.h" />
     <ClInclude Include="Settings\GuiSettings.h" />
     <ClInclude Include="Settings\NotificationSettings.h" />
     <ClInclude Include="Settings\UISettings.h" />
@@ -129,12 +186,16 @@
     <ClInclude Include="UserInterface\WTLControls\ModifiedEditBox.h" />
     <ClInclude Include="UserInterface\WTLControls\numberctrl.h" />
     <ClInclude Include="UserInterface\WTLControls\PartialGroupBox.h" />
+    <ClInclude Include="UserInterface\WTLControls\TooltipDialog.h" />
     <ClInclude Include="WTLApp.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3rdParty\7zip\7zip.vcxproj">
       <Project>{3326e128-33af-422c-bb7c-67cc6b915610}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\3rdParty\duktape\duktape.vcxproj">
+      <Project>{e8d9a652-a354-4374-b6c5-a51ee62749fd}</Project>
     </ProjectReference>
     <ProjectReference Include="..\3rdParty\zlib\zlib.vcxproj">
       <Project>{731bd205-2826-4631-b7af-117658e88dbc}</Project>
@@ -151,8 +212,11 @@
   <ItemGroup>
     <None Include="res\divider.cur" />
     <None Include="res\hand.cur" />
+    <None Include="UserInterface\API.js" />
+    <None Include="UserInterface\icons\bin00001.bin" />
     <None Include="UserInterface\Icons\divider.cur" />
     <None Include="UserInterface\Icons\hand.cur" />
+    <None Include="UserInterface\icons\javascri.bin" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ListItems.bmp" />
@@ -169,4 +233,9 @@
   <ItemGroup>
     <Manifest Include="Project64.exe.manifest" />
   </ItemGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="UserInterface\UIResources.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
