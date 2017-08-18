@@ -147,8 +147,8 @@ int DisplayRSPCommand (DWORD location, int InsertPos)
 		RSPCommandLine[InsertPos].Location = location;
 		RSPCommandLine[InsertPos].status = status;
 		RSPCommandLine[InsertPos].opcode = OpCode;
-		sprintf(RSPCommandLine[InsertPos].String," 0x%03X\t%s",location, 
-			RSPOpcodeName ( OpCode, location ));
+		sprintf(RSPCommandLine[InsertPos].String," 0x%04X\t%s",0x1000 | location, 
+			RSPOpcodeName ( OpCode, 0x1000 | location ));
 		if ( SendMessage(hList,LB_GETCOUNT,0,0) <= InsertPos)
 		{
 			SendMessage(hList,LB_INSERTSTRING,(WPARAM)InsertPos, (LPARAM)location);
@@ -471,7 +471,7 @@ void Paint_RSP_Commands (HWND hDlg)
 	TextOut( ps.hdc, 97,16,"Instruction",11);
 	TextOut( ps.hdc, 180,16,"Arguments",9);
 	TextOut( ps.hdc, 354,2," Address ",9);
-	TextOut( ps.hdc, 358,19,"0x",2);
+	TextOut( ps.hdc, 358,19,"0x1",3);
 	
 	SelectObject( ps.hdc,hOldFont );
 	SetBkMode( ps.hdc, OldBkMode );
@@ -1004,18 +1004,18 @@ char * RSPRegimmName ( DWORD OpCode, DWORD PC )
 	{ /* MIPS pseudo-instruction:  BAL (Branch and Link) */
 		sprintf(
 			CommandName,
-			"BAL\t0x%03X",
-			(PC + ((short)command.offset << 2) + 4) & 0xFFC
+			"BAL\t0x%04X",
+			(PC + ((short)command.offset << 2) + 4) & 0x1FFC
 		);
 	}
 	else
 	{
 		sprintf(
 			CommandName,
-			"%s\t%s, 0x%03X",
+			"%s\t%s, 0x%04X",
 			mnemonics_regimm[command.rt],
 			GPR_Name(command.rs),
-			(PC + ((short)command.offset << 2) + 4) & 0xFFC
+			(PC + ((short)command.offset << 2) + 4) & 0x1FFC
 		);
 	}
 	return CommandName;
@@ -1210,44 +1210,44 @@ char * RSPOpcodeName ( DWORD OpCode, DWORD PC )
 		break;
 	case RSP_J:
 	case RSP_JAL:
-		sprintf(CommandName, "%s\t0x%03X",
+		sprintf(CommandName, "%s\t0x%04X",
 			mnemonics_primary[command.op],
-			(command.target << 2) & 0xFFC
+			(command.target << 2) & 0x1FFC
 		);
 		break;
 	case RSP_BEQ:
 		if (command.rs == 0 && command.rt == 0)
 		{
-			sprintf(CommandName, "%s\t0x%03X",
+			sprintf(CommandName, "%s\t0x%04X",
 				"B",
-				(PC + ((short)command.offset << 2) + 4) & 0xFFC
+				(PC + ((short)command.offset << 2) + 4) & 0x1FFC
 			);
 			break;
 		}
 		else if (command.rs == 0 || command.rt == 0)
 		{
-			sprintf(CommandName, "%s\t%s, 0x%03X",
+			sprintf(CommandName, "%s\t%s, 0x%04X",
 				"BEQZ",
 				GPR_Name(command.rs == 0 ? command.rt : command.rs),
-				(PC + ((short)command.offset << 2) + 4) & 0xFFC
+				(PC + ((short)command.offset << 2) + 4) & 0x1FFC
 			);
 			break;
 		}
 		/* else { fall through to show the full BEQ } */
 	case RSP_BNE:
-		sprintf(CommandName, "%s\t%s, %s, 0x%03X",
+		sprintf(CommandName, "%s\t%s, %s, 0x%04X",
 			mnemonics_primary[command.op],
 			GPR_Name(command.rs),
 			GPR_Name(command.rt),
-			(PC + ((short)command.offset << 2) + 4) & 0xFFC
+			(PC + ((short)command.offset << 2) + 4) & 0x1FFC
 		);
 		break;
 	case RSP_BLEZ:
 	case RSP_BGTZ:
-		sprintf(CommandName, "%s\t%s, 0x%03X",
+		sprintf(CommandName, "%s\t%s, 0x%04X",
 			mnemonics_primary[command.op],
 			GPR_Name(command.rs),
-			(PC + ((short)command.offset << 2) + 4) & 0xFFC
+			(PC + ((short)command.offset << 2) + 4) & 0x1FFC
 		);
 		break;
 	case RSP_ADDI:

@@ -8,8 +8,11 @@
 * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
 *                                                                           *
 ****************************************************************************/
+
 #include "stdafx.h"
 #include "InterpreterCPU.h"
+#include "Debugger.h"
+
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
@@ -295,15 +298,26 @@ void CInterpreterCPU::ExecuteCPU()
                 continue;
             }
 
+			if (!g_Debugger->CPUStepStarted())
+			{
+				// Skip command if instructed by the debugger
+				PROGRAM_COUNTER += 4;
+				continue;
+			}
+			
+			g_Debugger->CPUStep();
+
             /* if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER < 0x80380000)
             {
             WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER));
             // WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s t9: %08X v1: %08X",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER),_GPR[0x19].UW[0],_GPR[0x03].UW[0]);
             // WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
             } */
+
+
             m_R4300i_Opcode[Opcode.op]();
             NextTimer -= CountPerOp;
-
+			
             PROGRAM_COUNTER += 4;
             switch (R4300iOp::m_NextInstruction)
             {
@@ -353,6 +367,8 @@ void CInterpreterCPU::ExecuteCPU()
     }
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
+
+
 
 void CInterpreterCPU::ExecuteOps(int32_t Cycles)
 {

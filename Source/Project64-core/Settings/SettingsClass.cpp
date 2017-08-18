@@ -112,6 +112,8 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Setting_AutoZipInstantSave, new CSettingTypeApplication("", "Auto Zip Saves", (uint32_t)true));
     AddHandler(Setting_EraseGameDefaults, new CSettingTypeApplication("", "Erase on default", (uint32_t)true));
     AddHandler(Setting_CheckEmuRunning, new CSettingTypeApplication("", "Check Running", (uint32_t)true));
+    AddHandler(Setting_ForceInterpreterCPU, new CSettingTypeApplication("", "Force Interpreter CPU", false));
+
 
     AddHandler(Setting_RememberCheats, new CSettingTypeApplication("", "Remember Cheats", (uint32_t)false));
 #ifdef ANDROID

@@ -1302,6 +1302,18 @@ void R4300iOp32::REGIMM_BGEZAL()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
+			if (g_Settings->LoadBool(Debugger_Enabled))
+			{
+				if (g_Reg->m_PROGRAM_COUNTER < 0x80000400)
+				{
+					// Break out of possible checksum halt
+					g_Notify->DisplayMessage(5, "Broke out of permanent loop! Invalid checksum?");
+					m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+					_GPR[31].DW = (int32_t)((*_PROGRAM_COUNTER) + 8);
+					R4300iOp::m_NextInstruction = DELAY_SLOT;
+					return;
+				}
+			}
             if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER), m_Opcode.rs, 0))
             {
                 CInterpreterCPU::InPermLoop();
