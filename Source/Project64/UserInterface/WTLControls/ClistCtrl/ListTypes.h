@@ -81,6 +81,7 @@
 #define LCN_MODIFIED				( LCN_FIRST - 6 )
 #define LCN_HYPERLINK				( LCN_FIRST - 7 )
 #define LCN_HITTEST					( LCN_FIRST - 8 )
+#define LCN_HOTITEMCHANGED			( LCN_FIRST - 9 )
 
 struct CListNotify
 {

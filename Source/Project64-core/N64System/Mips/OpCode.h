@@ -59,6 +59,13 @@ union OPCODE
         unsigned fmt : 5;
         unsigned : 6;
     };
+
+	struct
+	{
+		unsigned : 6;
+		unsigned code : 20;
+		unsigned : 6;
+	};
 };
 #pragma warning(pop)
 

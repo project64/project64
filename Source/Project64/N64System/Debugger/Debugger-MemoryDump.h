@@ -26,7 +26,8 @@ private:
 
     enum DumpFormat
     {
-        DisassemblyWithPC
+        DisassemblyWithPC,
+		RawBigEndian
     };
 
     BEGIN_MSG_MAP_EX(CDumpMemory)
@@ -39,5 +40,7 @@ private:
 
 	bool DumpMemory(LPCSTR FileName, DumpFormat Format, DWORD StartPC, DWORD EndPC, DWORD DumpPC);
 
+	CComboBox   m_FormatList;
+	CEdit       m_FileName;
 	CEditNumber m_StartAddress, m_EndAddress, m_PC;
 };

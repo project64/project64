@@ -162,11 +162,59 @@
     <ClCompile Include="Settings\UISettings.cpp">
       <Filter>Source Files\Settings Files</Filter>
     </ClCompile>
-    <ClCompile Include="UserInterface\SupportWindow.cpp">
-      <Filter>Source Files\User Interface Source</Filter>
-    </ClCompile>
     <ClCompile Include="UserInterface\SupportEnterCode.cpp">
-      <Filter>Source Files\User Interface Source</Filter>
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\SupportWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Debugger\Debugger-Commands.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Debugger\Debugger-Scripts.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Debugger\ScriptSystem.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Debugger\Debugger-Symbols.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Debugger\Breakpoints.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Debugger\Debugger-AddBreakpoint.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Debugger\Symbols.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Debugger\ScriptHook.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Debugger\ScriptInstance.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Debugger\Debugger-StackTrace.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Debugger\Assembler.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Debugger\DMALog.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Debugger\Debugger-AddSymbol.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Debugger\Debugger-DMALogView.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Debugger\Debugger-RegisterTabs.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Debugger\Debugger-StackView.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -299,11 +347,65 @@
     <ClInclude Include="Settings\UISettings.h">
       <Filter>Header Files\Settings</Filter>
     </ClInclude>
-    <ClInclude Include="UserInterface\SupportWindow.h">
-      <Filter>Header Files\User Interface Headers</Filter>
-    </ClInclude>
     <ClInclude Include="UserInterface\SupportEnterCode.h">
-      <Filter>Header Files\User Interface Headers</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\SupportWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Debugger\Debugger-Commands.h">
+      <Filter>Header Files\N64 System Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Debugger\Debugger-Scripts.h">
+      <Filter>Header Files\N64 System Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Debugger\ScriptSystem.h">
+      <Filter>Header Files\N64 System Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Debugger\Debugger-Symbols.h">
+      <Filter>Header Files\N64 System Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Debugger\Breakpoints.h">
+      <Filter>Header Files\N64 System Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Debugger\Symbols.h">
+      <Filter>Header Files\N64 System Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Debugger\Debugger-AddBreakpoint.h">
+      <Filter>Header Files\N64 System Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Debugger\ScriptHook.h">
+      <Filter>Header Files\N64 System Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Debugger\ScriptInstance.h">
+      <Filter>Header Files\N64 System Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Debugger\Debugger-StackTrace.h">
+      <Filter>Header Files\N64 System Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Debugger\Assembler.h">
+      <Filter>Header Files\N64 System Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Debugger\Debugger-AddSymbol.h">
+      <Filter>Header Files\N64 System Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Debugger\DMALog.h">
+      <Filter>Header Files\N64 System Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Debugger\Debugger-DMALogView.h">
+      <Filter>Header Files\N64 System Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Debugger\Debugger-RegisterTabs.h">
+      <Filter>Header Files\N64 System Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Debugger\Debugger-StackView.h">
+      <Filter>Header Files\N64 System Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Debugger\OpInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\WTLControls\TooltipDialog.h">
+      <Filter>Header Files\User Interface Headers\WTL Controls Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -319,6 +421,13 @@
     <None Include="UserInterface\Icons\hand.cur">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="UserInterface\icons\bin00001.bin">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="UserInterface\icons\javascri.bin">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="UserInterface\API.js" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ListItems.bmp">
