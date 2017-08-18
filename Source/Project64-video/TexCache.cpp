@@ -263,7 +263,7 @@ void GetTexInfo(int id, int tile)
 
     // ** COMMENT THIS TO DISABLE LARGE TEXTURES
 #ifdef LARGE_TEXTURE_HANDLING
-    if (!voodoo.sup_large_tex && width > 256)
+    if (g_settings->hacks(CSettings::hack_PPL) && width > 256)
     {
         info->splits = ((width - 1) >> 8) + 1;
         info->splitheight = rdp.tiles(tile).height;
@@ -986,7 +986,7 @@ void LoadTex(int id, gfxChipID_t tmu)
     uint32_t size_y = rdp.tiles(td).height;
 
     // make size_x and size_y both powers of two
-    if (!voodoo.sup_large_tex)
+    if (g_settings->hacks(CSettings::hack_PPL))
     {
         if (size_x > 256) size_x = 256;
         if (size_y > 256) size_y = 256;
@@ -1001,9 +1001,9 @@ void LoadTex(int id, gfxChipID_t tmu)
     // Voodoo 1 support is all here, it will automatically mirror to the full extent.
     if (!voodoo.sup_mirroring)
     {
-        if (rdp.tiles(td).mirror_s && !rdp.tiles(td).clamp_s && (voodoo.sup_large_tex || size_x <= 128))
+        if (rdp.tiles(td).mirror_s && !rdp.tiles(td).clamp_s && (!g_settings->hacks(CSettings::hack_PPL) || size_x <= 128))
             size_x <<= 1;
-        if (rdp.tiles(td).mirror_t && !rdp.tiles(td).clamp_t && (voodoo.sup_large_tex || size_y <= 128))
+        if (rdp.tiles(td).mirror_t && !rdp.tiles(td).clamp_t && (!g_settings->hacks(CSettings::hack_PPL) || size_y <= 128))
             size_y <<= 1;
     }
 

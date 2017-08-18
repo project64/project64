@@ -457,8 +457,6 @@ int InitGfx()
     to_fullscreen = FALSE;
 
     // get maximal texture size
-    voodoo.sup_large_tex = !g_settings->hacks(CSettings::hack_PPL);
-
     voodoo.tex_min_addr[0] = voodoo.tex_min_addr[1] = gfxTexMinAddress(GFX_TMU0);
     voodoo.tex_max_addr[0] = voodoo.tex_max_addr[1] = gfxTexMaxAddress(GFX_TMU0);
 

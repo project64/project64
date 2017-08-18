@@ -10039,7 +10039,7 @@ static void ac__t0_mul_t1__mul_prim()
         GFX_COMBINE_LOCAL_CONSTANT,
         GFX_COMBINE_OTHER_TEXTURE);
     CA_PRIM();
-    if (voodoo.sup_large_tex || rdp.tiles(1).lr_s < 256) //hack for RR64 pause screen
+    if (!g_settings->hacks(CSettings::hack_PPL) || rdp.tiles(1).lr_s < 256) //hack for RR64 pause screen
     {
         A_T0_MUL_T1();
     }
