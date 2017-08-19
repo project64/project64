@@ -11,7 +11,7 @@
 
 REGISTER* lookup_register(char* name);
 
-static int parse_error = 0;
+static ParseError parse_error = ERR_NONE;
 static uint32_t m_Address = 0x00000000;
 
 void to_lower(char* str)
@@ -50,6 +50,12 @@ uint32_t pop_reg()
 uint32_t pop_val()
 {
 	char* v = strtok(NULL, " \t,()");
+
+	if (v == NULL)
+	{
+		parse_error = ERR_EXPECTED_VAL;
+		return 0;
+	}
 
 	if (isalpha(*v))
 	{
@@ -306,6 +312,8 @@ REGISTER* lookup_register(char* name)
 
 bool CAssembler::AssembleLine(char* line, uint32_t* opcode, uint32_t address)
 {
+	parse_error = ERR_NONE;
+
 	m_Address = address;
 	char line_c[128];
 	strncpy(line_c, line, 128);
@@ -338,6 +346,11 @@ bool CAssembler::AssembleLine(char* line, uint32_t* opcode, uint32_t address)
 	for (int i = 0; instruction->syntax[i]; i++)
 	{
 		instruction->syntax[i](opcode);
+
+		if (parse_error != ERR_NONE)
+		{
+			return false;
+		}
 	}
 	return true;
 }
