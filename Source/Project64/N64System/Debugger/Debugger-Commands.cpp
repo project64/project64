@@ -202,11 +202,11 @@ LRESULT	CDebugCommandsView::OnOpKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam,
 		int textLen = m_OpEdit.GetWindowTextLengthA();
 		char text[256];
 		m_OpEdit.GetWindowTextA(text, 255);
-		m_OpEdit.SetWindowTextA("");
 		uint32_t op;
 		bool bValid = CAssembler::AssembleLine(text, &op, m_SelectedAddress);
 		if (bValid)
 		{
+			m_OpEdit.SetWindowTextA("");
 			EditOp(m_SelectedAddress, op);
 			m_SelectedAddress += 4;
 			BeginOpEdit(m_SelectedAddress);
