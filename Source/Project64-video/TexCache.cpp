@@ -1646,15 +1646,6 @@ void LoadTex(int id, gfxChipID_t tmu)
 
         uint32_t texture_size = gfxTexTextureMemRequired(GFX_MIPMAPLEVELMASK_BOTH, t_info);
 
-        // Check for 2mb boundary
-        // Hiroshi Morii <koolsmoky@users.sourceforge.net> required only for V1,Rush, and V2
-        if (voodoo.has_2mb_tex_boundary &&
-            (voodoo.tmem_ptr[tmu] < TEXMEM_2MB_EDGE) && (voodoo.tmem_ptr[tmu] + texture_size > TEXMEM_2MB_EDGE))
-        {
-            voodoo.tmem_ptr[tmu] = TEXMEM_2MB_EDGE;
-            cache->tmem_addr = voodoo.tmem_ptr[tmu];
-        }
-
         // Check for end of memory (too many textures to fit, clear cache)
         if (voodoo.tmem_ptr[tmu] + texture_size >= voodoo.tex_max_addr[tmu])
         {

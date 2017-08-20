@@ -671,15 +671,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
              /* XXX: only ARGB8888 for now. comeback to this later... */
             if (format == GFX_TEXFMT_ARGB_8888) {
 #if TEXTURE_TILING
-
-                /* Glide64 style texture tiling */
-                /* NOTE: narrow wide textures can be tiled into 256x256 size textures */
-
-                /* adjust texture size to allow tiling for V1, Rush, V2, Banshee, V3 */
-                /* NOTE: we skip this for palette textures that need minification
-                 * becasue it will look ugly. */
-
-                 /* minification */
+                /* minification */
                 {
                     int ratio = 1;
 
@@ -901,7 +893,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                         case GFX_TEXFMT_ALPHA_8: /* no size benefit with dxtn */
                             ;
                         }
-                    }
+                        }
                     /* compress it! */
                     if (dataSize) {
 #if 0 /* TEST: dither before compression for better results with gradients */
@@ -923,13 +915,13 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                                 width = tmpwidth;
                                 height = tmpheight;
                                 format = destformat = tmpformat;
-                            }
+                    }
                             else {
                                 free(tmptex);
                             }
-                        }
                     }
-                }
+                    }
+                    }
                 else {
 #if POW2_TEXTURES
 #if (POW2_TEXTURES == 2)
@@ -945,7 +937,7 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                         continue;
                     }
 #endif
-                }
+                    }
 
                 /* quantize */
                 {
@@ -990,9 +982,9 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                             free(tex);
                             tex = tmptex;
                         }
+                        }
                     }
                 }
-            }
 
             /* last minute validations */
             if (!tex || !chksum || !width || !height || !format || width > _maxwidth || height > _maxheight) {
@@ -1061,8 +1053,8 @@ bool TxHiResCache::loadHiResTextures(const char * dir_path, bool replace)
                 }
                 free(tex);
             }
-        } while (TextureDir.FindNext());
-    }
+                    } while (TextureDir.FindNext());
+                    }
 #endif
     return 1;
-}
+                }

@@ -70,7 +70,7 @@ CRDP rdp;
 
 CSettings * g_settings = NULL;
 
-VOODOO voodoo = { 0, 0, 0, 0,
+VOODOO voodoo = { 0, 0, 0,
 0, 0, 0, 0,
 0, 0, 0, 0
 };
@@ -436,11 +436,6 @@ int InitGfx()
 
     WriteTrace(TraceGlide64, TraceDebug, "-");
 
-    // 2Mb Texture boundary
-    voodoo.has_2mb_tex_boundary = false;
-    // we get better texture cache hits with UMA on
-    WriteTrace(TraceGlide64, TraceDebug, "Using TEXUMA extension");
-
     ChangeSize();
 #ifndef ANDROID
     SetWindowDisplaySize((HWND)gfx.hWnd);
@@ -769,8 +764,6 @@ int CALL InitiateGFX(GFX_INFO Gfx_Info)
     CRC_BuildTable();
     CountCombine();
     ZLUT_init();
-
-    voodoo.has_2mb_tex_boundary = 0;
     return TRUE;
 }
 
