@@ -23,8 +23,8 @@ static bool TranslateFromMemProtect(MEM_PROTECTION memProtection, int & OsMemPro
     {
     case MEM_NOACCESS: OsMemProtection = PROT_NONE; break;
     case MEM_READONLY: OsMemProtection = PROT_READ; break;
-    case MEM_READWRITE: OsMemProtection = PROT_READ|PROT_WRITE; break;
-    case MEM_EXECUTE_READWRITE: OsMemProtection = PROT_READ|PROT_WRITE|PROT_EXEC; break;
+    case MEM_READWRITE: OsMemProtection = PROT_READ | PROT_WRITE; break;
+    case MEM_EXECUTE_READWRITE: OsMemProtection = PROT_READ | PROT_WRITE | PROT_EXEC; break;
     default:
         return false;
     }
@@ -48,12 +48,12 @@ static bool TranslateToMemProtect(int OsMemProtection, MEM_PROTECTION & memProte
 }
 #endif
 
-void* AllocateAddressSpace(size_t size, LPVOID lpAddress)
+void* AllocateAddressSpace(size_t size)
 {
 #ifdef _WIN32
-    return VirtualAlloc(lpAddress, size, MEM_RESERVE | MEM_TOP_DOWN, PAGE_NOACCESS);
+    return VirtualAlloc(NULL, size, MEM_RESERVE | MEM_TOP_DOWN, PAGE_NOACCESS);
 #else
-    void * ptr = mmap((void*)0, size, PROT_NONE, MAP_PRIVATE|MAP_ANON, -1, 0);
+    void * ptr = mmap((void*)0, size, PROT_NONE, MAP_PRIVATE | MAP_ANON, -1, 0);
     if (ptr == MAP_FAILED)
     {
         return NULL;

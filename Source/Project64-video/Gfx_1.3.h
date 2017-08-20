@@ -49,9 +49,6 @@ extern "C" {
     //#define CATCH_EXCEPTIONS	// catch exceptions so it doesn't freeze and will report
     // "The gfx plugin has caused an exception" instead.
 
-    //#define SHOW_FULL_TEXVIEWER	// shows the entire contents of the texture in the cache viewer,
-    // usually used to debug clamping issues.
-
     // Usually enabled
 #define LARGE_TEXTURE_HANDLING	// allow large-textured objects to be split?
 

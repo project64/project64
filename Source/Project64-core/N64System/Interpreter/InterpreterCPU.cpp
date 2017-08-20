@@ -11,7 +11,6 @@
 
 #include "stdafx.h"
 #include "InterpreterCPU.h"
-#include "Debugger.h"
 
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64Class.h>
@@ -21,6 +20,7 @@
 #include <Project64-core/Plugins/PluginClass.h>
 #include <Project64-core/Plugins/GFXPlugin.h>
 #include <Project64-core/ExceptionHandler.h>
+#include <Project64-core/Debugger.h>
 
 R4300iOp::Func * CInterpreterCPU::m_R4300i_Opcode = NULL;
 
@@ -298,14 +298,14 @@ void CInterpreterCPU::ExecuteCPU()
                 continue;
             }
 
-			if (!g_Debugger->CPUStepStarted())
-			{
-				// Skip command if instructed by the debugger
-				PROGRAM_COUNTER += 4;
-				continue;
-			}
-			
-			g_Debugger->CPUStep();
+            if (!g_Debugger->CPUStepStarted())
+            {
+                // Skip command if instructed by the debugger
+                PROGRAM_COUNTER += 4;
+                continue;
+            }
+
+            g_Debugger->CPUStep();
 
             /* if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER < 0x80380000)
             {
@@ -314,10 +314,9 @@ void CInterpreterCPU::ExecuteCPU()
             // WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %d %d",*_PROGRAM_COUNTER,*g_NextTimer,g_SystemTimer->CurrentType());
             } */
 
-
             m_R4300i_Opcode[Opcode.op]();
             NextTimer -= CountPerOp;
-			
+
             PROGRAM_COUNTER += 4;
             switch (R4300iOp::m_NextInstruction)
             {
@@ -367,8 +366,6 @@ void CInterpreterCPU::ExecuteCPU()
     }
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
-
-
 
 void CInterpreterCPU::ExecuteOps(int32_t Cycles)
 {
