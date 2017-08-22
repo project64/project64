@@ -47,25 +47,25 @@ extern bool g_ghq_use;
 
 extern CriticalSection * g_ProcessDListCS;
 
-class CGlide64WtlModule :
+class CProject64VideoWtlModule :
     public CAppModule
 {
 public:
-    CGlide64WtlModule(HINSTANCE hinst)
+    CProject64VideoWtlModule(HINSTANCE hinst)
     {
         Init(NULL, hinst);
     }
-    virtual ~CGlide64WtlModule(void)
+    virtual ~CProject64VideoWtlModule(void)
     {
         Term();
     }
 };
 
-CGlide64WtlModule * WtlModule = NULL;
+CProject64VideoWtlModule * WtlModule = NULL;
 
 void ConfigInit(void * hinst)
 {
-    WtlModule = new CGlide64WtlModule((HINSTANCE)hinst);
+    WtlModule = new CProject64VideoWtlModule((HINSTANCE)hinst);
 }
 
 void ConfigCleanup(void)
