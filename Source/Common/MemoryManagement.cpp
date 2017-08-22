@@ -48,10 +48,10 @@ static bool TranslateToMemProtect(int OsMemProtection, MEM_PROTECTION & memProte
 }
 #endif
 
-void* AllocateAddressSpace(size_t size)
+void* AllocateAddressSpace(size_t size, void * base_address)
 {
 #ifdef _WIN32
-    return VirtualAlloc(NULL, size, MEM_RESERVE | MEM_TOP_DOWN, PAGE_NOACCESS);
+    return VirtualAlloc(base_address, size, MEM_RESERVE | MEM_TOP_DOWN, PAGE_NOACCESS);
 #else
     void * ptr = mmap((void*)0, size, PROT_NONE, MAP_PRIVATE | MAP_ANON, -1, 0);
     if (ptr == MAP_FAILED)
