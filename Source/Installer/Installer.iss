@@ -24,7 +24,7 @@ Filename: "{app}\Project64.exe"; Description: "{cm:LaunchProgram,{#StringChange(
 
 [Files]
 Source: "{#BaseDir}\Bin\{#Configuration}\Project64.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#BaseDir}\Config\Glide64.rdb"; DestDir: "{app}\Config"
+Source: "{#BaseDir}\Config\Project64Video.rdb"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Config\Project64.cht"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Config\Project64.rdb"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Config\Project64.rdx"; DestDir: "{app}\Config"
