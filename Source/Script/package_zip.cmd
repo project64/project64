@@ -34,7 +34,7 @@ md "%base_dir%\Bin\Package\Plugin\Input"
 md "%base_dir%\Bin\Package\Plugin\RSP"
 
 copy "%base_dir%\Bin\Release\Project64.exe" "%base_dir%\Bin\Package"
-copy "%base_dir%\Config\Glide64.rdb" "%base_dir%\Bin\Package\Config"
+copy "%base_dir%\Config\Project64Video.rdb" "%base_dir%\Bin\Package\Config"
 copy "%base_dir%\Config\Project64.cht" "%base_dir%\Bin\Package\Config"
 copy "%base_dir%\Config\Project64.rdb" "%base_dir%\Bin\Package\Config"
 copy "%base_dir%\Config\Project64.rdx" "%base_dir%\Bin\Package\Config"

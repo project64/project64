@@ -4,7 +4,7 @@
 		<copy todir="./assets/project64_data/Lang/">
 		    <fileset dir="../Lang"/>
 		</copy>
-		<copy file="../Config/Glide64.rdb" todir="./assets/project64_data/Config"/>
+		<copy file="../Config/Project64Video.rdb" todir="./assets/project64_data/Config"/>
 		<copy file="../Config/Project64.cht" todir="./assets/project64_data/Config"/>
 		<copy file="../Config/Project64.rdb" todir="./assets/project64_data/Config"/>
 		<copy file="../Config/Project64.rdx" todir="./assets/project64_data/Config"/>

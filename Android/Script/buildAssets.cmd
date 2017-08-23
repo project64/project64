@@ -13,7 +13,7 @@ IF %ERRORLEVEL% NEQ 0 (exit /B 1)
 
 echo Copy config files
 IF NOT EXIST "%base_dir%/Android/assets/project64_data/Config/" mkdir "%base_dir%/Android/assets/project64_data/Config/"
-copy "%base_dir%\Config\Glide64.rdb" "%base_dir%\Android\assets\project64_data\Config\"
+copy "%base_dir%\Config\Project64Video.rdb" "%base_dir%\Android\assets\project64_data\Config\"
 IF %ERRORLEVEL% NEQ 0 (exit /B 1)
 
 copy "%base_dir%\Config\Project64.cht" "%base_dir%\Android\assets\project64_data\Config\"
