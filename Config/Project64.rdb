@@ -3911,12 +3911,14 @@ RDRAM Size=8
 Good Name=NHL 99 (E)
 Internal Name=NHL 99
 Status=Compatible
+32bit=No
 RDRAM Size=8
 
 [591A806E-A5E6921D-C:45]
 Good Name=NHL 99 (U)
 Internal Name=NHL 99
 Status=Compatible
+32bit=No
 RDRAM Size=8
 
 [82EFDC30-806A2461-C:45]
