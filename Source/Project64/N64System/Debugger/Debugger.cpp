@@ -27,15 +27,12 @@ CDebuggerUI::CDebuggerUI() :
 	m_Symbols(NULL),
 	m_Breakpoints(NULL),
 	m_ScriptSystem(NULL),
-	m_DMALogView(NULL),
-	m_StackTraceView(NULL),
+	m_StackTrace(NULL),
 	m_StackView(NULL),
+	m_DMALogView(NULL),
 	m_DMALog(NULL)
 {
 	g_Debugger = this;
-
-	//m_DMALog = new vector<DMALogEntry>;
-	m_StackTrace = new vector<uint32_t>;
 
 	m_Breakpoints = new CBreakpoints();
 	m_ScriptSystem = new CScriptSystem(this);
@@ -56,13 +53,12 @@ CDebuggerUI::~CDebuggerUI(void)
 	delete m_ScriptSystem;
 	delete m_Breakpoints;
 	delete m_Symbols;
-	delete m_DMALogView;
 	delete m_MemorySearch;
+	delete m_StackTrace;
+	delete m_DMALogView;
 	delete m_DMALog;
 
 	CSymbols::DeleteCriticalSection();
-	
-	m_StackTrace->clear();
 }
 
 void CDebuggerUI::GameReset(CDebuggerUI * _this)
@@ -82,15 +78,18 @@ void CDebuggerUI::GameReset(CDebuggerUI * _this)
 		_this->m_DMALog->ClearEntries();
 	}
 
+	if (_this->m_StackTrace)
+	{
+		_this->m_StackTrace->ClearEntries();
+	}
+
 	CSymbols::EnterCriticalSection();
 	CSymbols::Load();
 	CSymbols::LeaveCriticalSection();
 
 	if (_this->m_Symbols)
 	{
-		CSymbols::EnterCriticalSection();
 		_this->m_Symbols->Refresh();
-		CSymbols::LeaveCriticalSection();
 	}
 }
 
@@ -144,11 +143,11 @@ void CDebuggerUI::Debug_Reset(void)
 		delete m_DMALogView;
 		m_DMALogView = NULL;
 	}
-	if (m_StackTraceView)
+	if (m_StackTrace)
 	{
-		m_StackTraceView->HideWindow();
-		delete m_StackTraceView;
-		m_StackTraceView = NULL;
+		m_StackTrace->HideWindow();
+		delete m_StackTrace;
+		m_StackTrace = NULL;
 	}
 	if (m_StackView)
 	{
@@ -314,11 +313,11 @@ void CDebuggerUI::Debug_ShowDMALogWindow(void)
 
 void CDebuggerUI::Debug_ShowStackTrace(void)
 {
-	if (m_StackTraceView == NULL)
+	if (m_StackTrace == NULL)
 	{
-		m_StackTraceView = new CDebugStackTrace(this);
+		m_StackTrace = new CDebugStackTrace(this);
 	}
-	m_StackTraceView->ShowWindow();
+	m_StackTrace->ShowWindow();
 }
 
 void CDebuggerUI::Debug_ShowStackWindow(void)
@@ -335,6 +334,14 @@ void CDebuggerUI::Debug_RefreshStackWindow(void)
 	if (m_StackView != NULL)
 	{
 		m_StackView->Refresh();
+	}
+}
+
+void CDebuggerUI::Debug_RefreshStackTraceWindow(void)
+{
+	if (m_StackTrace != NULL)
+	{
+		m_StackTrace->Refresh();
 	}
 }
 
@@ -358,16 +365,13 @@ CDMALog* CDebuggerUI::DMALog()
 	return m_DMALog;
 }
 
-vector<uint32_t> * CDebuggerUI::StackTrace()
-{
-	return m_StackTrace;
-}
-
 
 void CDebuggerUI::BreakpointHit()
 {
 	m_Breakpoints->KeepDebugging();
 	Debug_ShowCommandsLocation(g_Reg->m_PROGRAM_COUNTER, false);
+	Debug_RefreshStackWindow();
+	Debug_RefreshStackTraceWindow();
 	m_Breakpoints->Pause();
 }
 
@@ -472,14 +476,23 @@ void CDebuggerUI::CPUStep()
 	OPCODE Opcode = R4300iOp::m_Opcode;
 	uint32_t op = Opcode.op;
 	uint32_t funct = Opcode.funct;
-	
-	if (op == R4300i_JAL || funct == R4300i_SPECIAL_JALR) // JAL or JALR
+
+	if (m_StackTrace == NULL)
 	{
-		//m_StackTrace->push_back(R4300iOp::m_JumpToLocation);
+		m_StackTrace = new CDebugStackTrace(this);
+	}
+
+	if (op == R4300i_JAL || ((op == R4300i_SPECIAL) && (funct == R4300i_SPECIAL_JALR) && (Opcode.rd == 31))) // JAL or JALR RA, x
+	{
+		m_StackTrace->PushEntry(R4300iOp::m_JumpToLocation, g_Reg->m_PROGRAM_COUNTER);
 	}
 	else if (funct == R4300i_SPECIAL_JR && Opcode.rs == 31) // JR RA
 	{
-		//m_StackTrace->pop_back();
+		m_StackTrace->PopEntry();
+	}
+	else if (op == R4300i_CP0 && funct == R4300i_COP0_CO_ERET) // TODO may need more work
+	{
+		m_StackTrace->ClearEntries();
 	}
 }
 
