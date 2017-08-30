@@ -60,6 +60,12 @@ private:
 
     enum { MemoryToDisplay = 0x100 };
 	
+	static CDebugMemoryView* _this;
+	static HHOOK hWinMessageHook;
+	static LRESULT CALLBACK HookProc(int nCode, WPARAM wParam, LPARAM lParam);
+	
+	void InterceptMouseWheel(WPARAM wParam, LPARAM lParam);
+
     CEditNumber   m_MemAddr;
     CListCtrl   * m_MemoryList;
 	CAddSymbolDlg m_AddSymbolDlg;

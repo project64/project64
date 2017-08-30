@@ -136,6 +136,7 @@ LRESULT	CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
 
 LRESULT CDebugCommandsView::OnDestroy(void)
 {
+	UnhookWindowsHookEx(hWinMessageHook);
 	return 0;
 }
 

@@ -14,6 +14,9 @@
 #include "Symbols.h"
 #include "DMALog.h"
 
+CDebugMemoryView* CDebugMemoryView::_this = NULL;
+HHOOK CDebugMemoryView::hWinMessageHook = NULL;
+
 CDebugMemoryView::CDebugMemoryView(CDebuggerUI * debugger) :
 CDebugDialog<CDebugMemoryView>(debugger),
 m_MemoryList(NULL)
@@ -115,10 +118,15 @@ LRESULT	CDebugMemoryView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	m_SymInfo.Attach(GetDlgItem(IDC_SYM_INFO));
 	m_DMAInfo.Attach(GetDlgItem(IDC_DMA_INFO));
 
+	_this = this;
+
+	DWORD dwThreadID = ::GetCurrentThreadId();
+	hWinMessageHook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)HookProc, NULL, dwThreadID);
+
     WindowCreated();
 
 	m_AutoRefreshThread = CreateThread(NULL, 0, AutoRefreshProc, (void*)this, 0, NULL);
-
+	
     return TRUE;
 }
 
@@ -130,6 +138,33 @@ DWORD WINAPI CDebugMemoryView::AutoRefreshProc(void* _this)
 		self->RefreshMemory(true);
 		Sleep(100);
 	}
+}
+
+void CDebugMemoryView::InterceptMouseWheel(WPARAM wParam, LPARAM lParam)
+{
+	uint32_t newAddress = m_DataStartLoc - ((short)HIWORD(wParam) / WHEEL_DELTA) * 16;
+
+	m_DataStartLoc = newAddress;
+
+	m_MemAddr.SetValue(m_DataStartLoc, false, true);
+}
+
+LRESULT CALLBACK CDebugMemoryView::HookProc(int nCode, WPARAM wParam, LPARAM lParam)
+{
+	MSG *pMsg = (MSG*)lParam;
+
+	if (pMsg->message == WM_MOUSEWHEEL)
+	{
+		BOOL bHandled = TRUE;
+		_this->InterceptMouseWheel(pMsg->wParam, pMsg->lParam);
+	}
+
+	if (nCode < 0)
+	{
+		return CallNextHookEx(hWinMessageHook, nCode, wParam, lParam);
+	}
+
+	return 0;
 }
 
 LRESULT CDebugMemoryView::OnDestroy(void)
@@ -145,6 +180,7 @@ LRESULT CDebugMemoryView::OnDestroy(void)
         delete m_MemoryList;
         m_MemoryList = NULL;
     }
+	UnhookWindowsHookEx(hWinMessageHook);
     return 0;
 }
 
