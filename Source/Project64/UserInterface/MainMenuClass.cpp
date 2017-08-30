@@ -1154,7 +1154,6 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 		/* Debug - Stack Trace
 		*******************/
 		Item.Reset(ID_DEBUGGER_STACKTRACE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Stack Trace...");
-		Item.SetItemEnabled(false);
 		DebugMenu.push_back(Item);
 
 		DebugMenu.push_back(MENU_ITEM(SPLITER));
