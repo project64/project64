@@ -12,6 +12,13 @@
 #pragma once
 #include "DebuggerUI.h"
 
+#define STACKTRACE_MAX_ENTRIES 100
+
+typedef struct {
+	uint32_t routineAddress;
+	uint32_t callingAddress;
+} STACKTRACE_ENTRY;
+
 class CDebugStackTrace :
 	public CDebugDialog<CDebugStackTrace>,
 	public CDialogResize<CDebugStackTrace>
@@ -22,9 +29,16 @@ public:
 	CDebugStackTrace(CDebuggerUI * debugger);
 	virtual ~CDebugStackTrace(void);
 
-	void RefreshList();
+	void Refresh();
+
+	void PushEntry(uint32_t routineAddress, uint32_t callingAddress);
+	void PopEntry();
+	void ClearEntries();
 
 private:
+	
+	STACKTRACE_ENTRY m_Entries[STACKTRACE_MAX_ENTRIES];
+	int m_EntriesIndex;
 	
 	HANDLE m_AutoRefreshThread;
 	static DWORD WINAPI AutoRefreshProc(void* _this);

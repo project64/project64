@@ -305,8 +305,6 @@ void CInterpreterCPU::ExecuteCPU()
                 continue;
             }
 
-            g_Debugger->CPUStep();
-
             /* if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER < 0x80380000)
             {
             WriteTraceF((TraceType)(TraceError | TraceNoHeader),"%X: %s",*_PROGRAM_COUNTER,R4300iOpcodeName(Opcode.Hex,*_PROGRAM_COUNTER));
@@ -316,6 +314,8 @@ void CInterpreterCPU::ExecuteCPU()
 
             m_R4300i_Opcode[Opcode.op]();
             NextTimer -= CountPerOp;
+
+            g_Debugger->CPUStep();
 
             PROGRAM_COUNTER += 4;
             switch (R4300iOp::m_NextInstruction)

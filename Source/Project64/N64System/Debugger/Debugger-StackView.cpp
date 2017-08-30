@@ -11,6 +11,7 @@
 
 #include "stdafx.h"
 #include "DebuggerUI.h"
+#include "Symbols.h"
 
 CDebugStackView::CDebugStackView(CDebuggerUI * debugger) :
 	CDebugDialog<CDebugStackView>(debugger)
@@ -81,6 +82,8 @@ void CDebugStackView::Refresh()
 		m_SPStatic.SetWindowTextA(stdstr_f("SP: %08X", spBase).c_str());
 	}
 
+	CSymbols::EnterCriticalSection();
+
 	for (int i = 0; i < 0x10; i++)
 	{
 		char t[4];
@@ -103,6 +106,8 @@ void CDebugStackView::Refresh()
 			m_StackList.AddItem(i, j + 1, valStr);
 		}
 	}
+
+	CSymbols::LeaveCriticalSection();
 
 	m_StackList.SetRedraw(TRUE);
 }
