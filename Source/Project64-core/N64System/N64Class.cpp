@@ -1006,16 +1006,16 @@ void CN64System::ExecuteCPU()
     _controlfp(_PC_53, _MCW_PC);
 #endif
 
-	CPU_TYPE cpuType;
+    CPU_TYPE cpuType;
 
-	if (g_Settings->LoadBool(Setting_ForceInterpreterCPU))
-	{
-		cpuType = CPU_Interpreter;
-	}
-	else
-	{
-		cpuType = (CPU_TYPE)g_Settings->LoadDword(Game_CpuType);
-	}
+    if (g_Settings->LoadBool(Setting_ForceInterpreterCPU))
+    {
+        cpuType = CPU_Interpreter;
+    }
+    else
+    {
+        cpuType = (CPU_TYPE)g_Settings->LoadDword(Game_CpuType);
+    }
 
     switch (cpuType)
     {
@@ -1982,7 +1982,7 @@ void CN64System::RunRSP()
             if (m_RspBroke)
             {
                 g_MMU->LW_VAddr(0xA4000FC0, Task);
-                if (Task == 1 && (m_Reg.DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0)
+                if (Task == 1 && UseHleGfx() && (m_Reg.DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0)
                 {
                     WriteTrace(TraceRSP, TraceDebug, "Dlist that is frozen");
                     return;

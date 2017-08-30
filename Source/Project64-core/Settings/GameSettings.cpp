@@ -13,6 +13,7 @@
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/Settings/GameSettings.h>
 
+bool CGameSettings::m_UseHleGfx = true;
 bool CGameSettings::m_bSMM_StoreInstruc;
 bool CGameSettings::m_bSMM_Protect;
 bool CGameSettings::m_bSMM_ValidFunc;
@@ -42,6 +43,7 @@ uint32_t CGameSettings::m_OverClockModifier = 1;
 void CGameSettings::RefreshGameSettings()
 {
     WriteTrace(TraceN64System, TraceDebug, "start");
+    m_UseHleGfx = g_Settings->LoadBool(Game_UseHleGfx);
     m_bSMM_StoreInstruc = false /*g_Settings->LoadBool(Game_SMM_StoreInstruc)*/;
     m_bSMM_Protect = g_Settings->LoadBool(Game_SMM_Protect);
     m_bSMM_ValidFunc = g_Settings->LoadBool(Game_SMM_ValidFunc);
