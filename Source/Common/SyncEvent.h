@@ -1,4 +1,5 @@
 #pragma once
+#include "stdtypes.h"
 
 class SyncEvent
 {
