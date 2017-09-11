@@ -1,16 +1,15 @@
 /****************************************************************************
- *                                                                          *
- * Project64 - A Nintendo 64 emulator.                                      *
- * http://www.pj64-emu.com/                                                 *
- * Copyright (C) 2016 Project64. All rights reserved.                       *
- * Copyright (C) 2008-2012 Tillin9, Richard42                               *
- *                                                                          *
- * License:                                                                 *
- * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                       *
- * version 2 of the License, or (at your option) any later version.         *
- *                                                                          *
- ****************************************************************************/
- #pragma once
+*                                                                           *
+* Project64-audio - A Nintendo 64 audio plugin.                             *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2017 Project64. All rights reserved.                        *
+* Copyright (C) 2008-2012 Tillin9, Richard42                                *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
+#pragma once
 
 /* Default start-time size of primary buffer (in equivalent output samples).
    This is the buffer where audio is loaded after it's extracted from n64's memory. */

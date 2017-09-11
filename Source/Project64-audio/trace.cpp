@@ -1,18 +1,17 @@
 /****************************************************************************
- *                                                                          *
- * Project64 - A Nintendo 64 emulator.                                      *
- * http://www.pj64-emu.com/                                                 *
- * Copyright (C) 2016 Project64. All rights reserved.                       *
- *                                                                          *
- * License:                                                                 *
- * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                       *
- * version 2 of the License, or (at your option) any later version.         *
- *                                                                          *
- ****************************************************************************/
- #include "trace.h"
+*                                                                           *
+* Project64-audio - A Nintendo 64 audio plugin.                             *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2017 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
+#include "trace.h"
+#include <Settings/Settings.h>
 #include <Common/path.h>
 #include <Common/LogClass.h>
-#include <Settings/Settings.h>
 
 #ifdef ANDROID
 #include <android/log.h>
