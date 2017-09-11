@@ -56,7 +56,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "duktape", "Source\3rdParty\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-video", "Source\Project64-video\Project64-video.vcxproj", "{A4D13408-A794-4199-8FC7-4A9A32505005}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PluginAudio", "Source\Project64-audio\PluginAudio.vcxproj", "{D233025A-231F-4A43-92B6-E87193C60ACC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-audio", "Source\Project64-audio\Project64-audio.vcxproj", "{D233025A-231F-4A43-92B6-E87193C60ACC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
