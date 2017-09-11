@@ -41,5 +41,8 @@
     <ClInclude Include="AudioMain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SettingsID.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

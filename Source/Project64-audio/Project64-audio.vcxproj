@@ -44,6 +44,7 @@
     <ClInclude Include="AudioMain.h" />
     <ClInclude Include="Audio_1.1.h" />
     <ClInclude Include="AudioSettings.h" />
+    <ClInclude Include="SettingsID.h" />
     <ClInclude Include="trace.h" />
     <ClInclude Include="Version.h" />
   </ItemGroup>

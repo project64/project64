@@ -15,7 +15,7 @@ LOCAL_C_INCLUDES :=
 
 LOCAL_SRC_FILES :=               \
     $(SRCDIR)/AudioSettings.cpp  \
-    $(SRCDIR)/Main.cpp           \
+    $(SRCDIR)/AudioMain.cpp      \
     $(SRCDIR)/trace.cpp          \
 
 LOCAL_CFLAGS := $(COMMON_CFLAGS)

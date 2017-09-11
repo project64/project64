@@ -24,6 +24,7 @@
 #include "AudioSettings.h"
 #include "trace.h"
 #include "AudioMain.h"
+#include "SettingsID.h"
 
 #ifdef ANDROID
 typedef struct threadLock_
@@ -119,11 +120,11 @@ void PluginInit(void)
 #ifdef ANDROID
 void queueCallback(SLAndroidSimpleBufferQueueItf caller, void *context)
 {
-    threadLock *plock = (threadLock *) context;
+    threadLock *plock = (threadLock *)context;
 
     pthread_mutex_lock(&(plock->mutex));
 
-    if(plock->value < plock->limit)
+    if (plock->value < plock->limit)
         plock->value++;
 
     pthread_cond_signal(&(plock->cond));
@@ -171,7 +172,7 @@ static void CloseAudio(void)
         SLuint32 state = SL_PLAYSTATE_PLAYING;
         (*g_playerPlay)->SetPlayState(g_playerPlay, SL_PLAYSTATE_STOPPED);
 
-        while(state != SL_PLAYSTATE_STOPPED)
+        while (state != SL_PLAYSTATE_STOPPED)
         {
             (*g_playerPlay)->GetPlayState(g_playerPlay, &state);
         }
@@ -294,17 +295,17 @@ static void InitializeAudio(uint32_t freq)
 
 #ifdef ANDROID
     SLuint32 sample_rate;
-    if((freq/1000) <= 11)
+    if ((freq / 1000) <= 11)
     {
         g_OutputFreq = 11025;
         sample_rate = SL_SAMPLINGRATE_11_025;
     }
-    else if((freq/1000) <= 22)
+    else if ((freq / 1000) <= 22)
     {
         g_OutputFreq = 22050;
         sample_rate = SL_SAMPLINGRATE_22_05;
     }
-    else if((freq/1000) <= 32)
+    else if ((freq / 1000) <= 32)
     {
         g_OutputFreq = 32000;
         sample_rate = SL_SAMPLINGRATE_32;
@@ -348,7 +349,7 @@ static void InitializeAudio(uint32_t freq)
 
 #ifdef ANDROID
     /* Create thread Locks to ensure synchronization between callback and processing code */
-    if (pthread_mutex_init(&(g_lock.mutex), (pthread_mutexattr_t*) NULL) != 0)
+    if (pthread_mutex_init(&(g_lock.mutex), (pthread_mutexattr_t*)NULL) != 0)
     {
         WriteTrace(TraceAudioInitShutdown, TraceError, "pthread_mutex_init failed");
         CloseAudio();
@@ -356,7 +357,7 @@ static void InitializeAudio(uint32_t freq)
         WriteTrace(TraceAudioInitShutdown, TraceDebug, "Done");
         return;
     }
-    if (pthread_cond_init(&(g_lock.cond), (pthread_condattr_t*) NULL) != 0)
+    if (pthread_cond_init(&(g_lock.cond), (pthread_condattr_t*)NULL) != 0)
     {
         WriteTrace(TraceAudioInitShutdown, TraceError, "pthread_cond_init failed");
         CloseAudio();
@@ -370,122 +371,122 @@ static void InitializeAudio(uint32_t freq)
 
     /* Engine object */
     SLresult result = slCreateEngine(&g_engineObject, 0, NULL, 0, NULL, NULL);
-    if(result != SL_RESULT_SUCCESS)
+    if (result != SL_RESULT_SUCCESS)
     {
-        WriteTrace(TraceAudioInitShutdown, TraceError, "slCreateEngine failed (result: %d)",result);
+        WriteTrace(TraceAudioInitShutdown, TraceError, "slCreateEngine failed (result: %d)", result);
     }
 
-    if(result == SL_RESULT_SUCCESS)
+    if (result == SL_RESULT_SUCCESS)
     {
         result = (*g_engineObject)->Realize(g_engineObject, SL_BOOLEAN_FALSE);
-        if(result != SL_RESULT_SUCCESS)
+        if (result != SL_RESULT_SUCCESS)
         {
-            WriteTrace(TraceAudioInitShutdown, TraceError, "slCreateEngine->Realize failed (result: %d)",result);
+            WriteTrace(TraceAudioInitShutdown, TraceError, "slCreateEngine->Realize failed (result: %d)", result);
         }
     }
 
-    if(result == SL_RESULT_SUCCESS)
+    if (result == SL_RESULT_SUCCESS)
     {
         result = (*g_engineObject)->GetInterface(g_engineObject, SL_IID_ENGINE, &g_engineEngine);
-        if(result != SL_RESULT_SUCCESS)
+        if (result != SL_RESULT_SUCCESS)
         {
-            WriteTrace(TraceAudioInitShutdown, TraceError, "slCreateEngine->GetInterface failed (result: %d)",result);
+            WriteTrace(TraceAudioInitShutdown, TraceError, "slCreateEngine->GetInterface failed (result: %d)", result);
         }
     }
 
-    if(result == SL_RESULT_SUCCESS)
+    if (result == SL_RESULT_SUCCESS)
     {
         /* Output mix object */
         result = (*g_engineEngine)->CreateOutputMix(g_engineEngine, &g_outputMixObject, 0, NULL, NULL);
-        if(result != SL_RESULT_SUCCESS)
+        if (result != SL_RESULT_SUCCESS)
         {
-            WriteTrace(TraceAudioInitShutdown, TraceError, "slCreateEngine->CreateOutputMix failed (result: %d)",result);
+            WriteTrace(TraceAudioInitShutdown, TraceError, "slCreateEngine->CreateOutputMix failed (result: %d)", result);
         }
     }
 
-    if(result == SL_RESULT_SUCCESS)
+    if (result == SL_RESULT_SUCCESS)
     {
         result = (*g_outputMixObject)->Realize(g_outputMixObject, SL_BOOLEAN_FALSE);
-        if(result != SL_RESULT_SUCCESS)
+        if (result != SL_RESULT_SUCCESS)
         {
-            WriteTrace(TraceAudioInitShutdown, TraceError, "g_outputMixObject->Realize failed (result: %d)",result);
+            WriteTrace(TraceAudioInitShutdown, TraceError, "g_outputMixObject->Realize failed (result: %d)", result);
         }
     }
 
-    if(result == SL_RESULT_SUCCESS)
+    if (result == SL_RESULT_SUCCESS)
     {
-        SLDataLocator_AndroidSimpleBufferQueue loc_bufq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, g_SecondaryBufferNbr};
+        SLDataLocator_AndroidSimpleBufferQueue loc_bufq = { SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, g_SecondaryBufferNbr };
 
-        SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM,2, sample_rate, SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
-            (SL_SPEAKER_FRONT_LEFT | SL_SPEAKER_FRONT_RIGHT), SL_BYTEORDER_LITTLEENDIAN};
+        SLDataFormat_PCM format_pcm = { SL_DATAFORMAT_PCM,2, sample_rate, SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
+            (SL_SPEAKER_FRONT_LEFT | SL_SPEAKER_FRONT_RIGHT), SL_BYTEORDER_LITTLEENDIAN };
 
-        SLDataSource audioSrc = {&loc_bufq, &format_pcm};
+        SLDataSource audioSrc = { &loc_bufq, &format_pcm };
 
         /* Configure audio sink */
-        SLDataLocator_OutputMix loc_outmix = {SL_DATALOCATOR_OUTPUTMIX, g_outputMixObject};
-        SLDataSink audioSnk = {&loc_outmix, NULL};
+        SLDataLocator_OutputMix loc_outmix = { SL_DATALOCATOR_OUTPUTMIX, g_outputMixObject };
+        SLDataSink audioSnk = { &loc_outmix, NULL };
 
         /* Create audio player */
-        const SLInterfaceID ids1[] = {SL_IID_ANDROIDSIMPLEBUFFERQUEUE};
-        const SLboolean req1[] = {SL_BOOLEAN_TRUE};
+        const SLInterfaceID ids1[] = { SL_IID_ANDROIDSIMPLEBUFFERQUEUE };
+        const SLboolean req1[] = { SL_BOOLEAN_TRUE };
         result = (*g_engineEngine)->CreateAudioPlayer(g_engineEngine, &(g_playerObject), &audioSrc, &audioSnk, 1, ids1, req1);
-        if(result != SL_RESULT_SUCCESS)
+        if (result != SL_RESULT_SUCCESS)
         {
-            WriteTrace(TraceAudioInitShutdown, TraceError, "g_engineEngine->CreateAudioPlayer failed (result: %d)",result);
+            WriteTrace(TraceAudioInitShutdown, TraceError, "g_engineEngine->CreateAudioPlayer failed (result: %d)", result);
         }
     }
 
     /* Realize the player */
-    if(result == SL_RESULT_SUCCESS)
+    if (result == SL_RESULT_SUCCESS)
     {
         result = (*g_playerObject)->Realize(g_playerObject, SL_BOOLEAN_FALSE);
-        if(result != SL_RESULT_SUCCESS)
+        if (result != SL_RESULT_SUCCESS)
         {
-            WriteTrace(TraceAudioInitShutdown, TraceError, "g_playerObject->Realize failed (result: %d)",result);
+            WriteTrace(TraceAudioInitShutdown, TraceError, "g_playerObject->Realize failed (result: %d)", result);
         }
     }
 
     /* Get the play interface */
-    if(result == SL_RESULT_SUCCESS)
+    if (result == SL_RESULT_SUCCESS)
     {
         result = (*g_playerObject)->GetInterface(g_playerObject, SL_IID_PLAY, &(g_playerPlay));
-        if(result != SL_RESULT_SUCCESS)
+        if (result != SL_RESULT_SUCCESS)
         {
-            WriteTrace(TraceAudioInitShutdown, TraceError, "g_playerObject->GetInterface(SL_IID_PLAY) failed (result: %d)",result);
+            WriteTrace(TraceAudioInitShutdown, TraceError, "g_playerObject->GetInterface(SL_IID_PLAY) failed (result: %d)", result);
         }
     }
 
     /* Get the buffer queue interface */
-    if(result == SL_RESULT_SUCCESS)
+    if (result == SL_RESULT_SUCCESS)
     {
         result = (*g_playerObject)->GetInterface(g_playerObject, SL_IID_ANDROIDSIMPLEBUFFERQUEUE, &(g_bufferQueue));
-        if(result != SL_RESULT_SUCCESS)
+        if (result != SL_RESULT_SUCCESS)
         {
-            WriteTrace(TraceAudioInitShutdown, TraceError, "g_playerObject->GetInterface(SL_IID_ANDROIDSIMPLEBUFFERQUEUE) failed (result: %d)",result);
+            WriteTrace(TraceAudioInitShutdown, TraceError, "g_playerObject->GetInterface(SL_IID_ANDROIDSIMPLEBUFFERQUEUE) failed (result: %d)", result);
         }
     }
 
     /* register callback on the buffer queue */
-    if(result == SL_RESULT_SUCCESS)
+    if (result == SL_RESULT_SUCCESS)
     {
         result = (*g_bufferQueue)->RegisterCallback(g_bufferQueue, queueCallback, &g_lock);
-        if(result != SL_RESULT_SUCCESS)
+        if (result != SL_RESULT_SUCCESS)
         {
-            WriteTrace(TraceAudioInitShutdown, TraceError, "bufferQueue->RegisterCallback() failed (result: %d)",result);
+            WriteTrace(TraceAudioInitShutdown, TraceError, "bufferQueue->RegisterCallback() failed (result: %d)", result);
         }
     }
 
     /* set the player's state to playing */
-    if(result == SL_RESULT_SUCCESS)
+    if (result == SL_RESULT_SUCCESS)
     {
         result = (*g_playerPlay)->SetPlayState(g_playerPlay, SL_PLAYSTATE_PLAYING);
-        if(result != SL_RESULT_SUCCESS)
+        if (result != SL_RESULT_SUCCESS)
         {
-            WriteTrace(TraceAudioInitShutdown, TraceError, "g_playerPlay->SetPlayState(SL_PLAYSTATE_PLAYING) failed (result: %d)",result);
+            WriteTrace(TraceAudioInitShutdown, TraceError, "g_playerPlay->SetPlayState(SL_PLAYSTATE_PLAYING) failed (result: %d)", result);
         }
     }
 
-    if(result != SL_RESULT_SUCCESS)
+    if (result != SL_RESULT_SUCCESS)
     {
         WriteTrace(TraceAudioInitShutdown, TraceNotice, "Couldn't open OpenSLES audio");
         CloseAudio();
@@ -503,12 +504,12 @@ static int resample(unsigned char *input, int /*input_avail*/, int oldsamplerate
 
 #ifdef USE_SPEEX
     spx_uint32_t in_len, out_len;
-    if(Resample == RESAMPLER_SPEEX)
+    if (Resample == RESAMPLER_SPEEX)
     {
-        if(spx_state == NULL)
+        if (spx_state == NULL)
         {
-            spx_state = speex_resampler_init(2, oldsamplerate, newsamplerate, ResampleQuality,  &error);
-            if(spx_state == NULL)
+            spx_state = speex_resampler_init(2, oldsamplerate, newsamplerate, ResampleQuality, &error);
+            if (spx_state == NULL)
             {
                 memset(output, 0, output_needed);
                 return 0;
@@ -527,47 +528,47 @@ static int resample(unsigned char *input, int /*input_avail*/, int oldsamplerate
     }
 #endif
 #ifdef USE_SRC
-    if(Resample == RESAMPLER_SRC)
+    if (Resample == RESAMPLER_SRC)
     {
         // the high quality resampler needs more input than the samplerate ratio would indicate to work properly
         if (input_avail > output_needed * 3 / 2)
             input_avail = output_needed * 3 / 2; // just to avoid too much short-float-short conversion time
-        if (_src_len < input_avail*2 && input_avail > 0)
+        if (_src_len < input_avail * 2 && input_avail > 0)
         {
-            if(_src) free(_src);
-            _src_len = input_avail*2;
+            if (_src) free(_src);
+            _src_len = input_avail * 2;
             _src = malloc(_src_len);
         }
-        if (_dest_len < output_needed*2 && output_needed > 0)
+        if (_dest_len < output_needed * 2 && output_needed > 0)
         {
-            if(_dest) free(_dest);
-            _dest_len = output_needed*2;
+            if (_dest) free(_dest);
+            _dest_len = output_needed * 2;
             _dest = malloc(_dest_len);
         }
-        memset(_src,0,_src_len);
-        memset(_dest,0,_dest_len);
-        if(src_state == NULL)
+        memset(_src, 0, _src_len);
+        memset(_dest, 0, _dest_len);
+        if (src_state == NULL)
         {
-            src_state = src_new (ResampleQuality, 2, &error);
-            if(src_state == NULL)
+            src_state = src_new(ResampleQuality, 2, &error);
+            if (src_state == NULL)
             {
                 memset(output, 0, output_needed);
                 return 0;
             }
         }
-        src_short_to_float_array ((short *) input, _src, input_avail/2);
+        src_short_to_float_array((short *)input, _src, input_avail / 2);
         src_data.end_of_input = 0;
         src_data.data_in = _src;
-        src_data.input_frames = input_avail/4;
-        src_data.src_ratio = (float) newsamplerate / oldsamplerate;
+        src_data.input_frames = input_avail / 4;
+        src_data.src_ratio = (float)newsamplerate / oldsamplerate;
         src_data.data_out = _dest;
-        src_data.output_frames = output_needed/4;
-        if ((error = src_process (src_state, &src_data)))
+        src_data.output_frames = output_needed / 4;
+        if ((error = src_process(src_state, &src_data)))
         {
             memset(output, 0, output_needed);
             return input_avail;  // number of bytes consumed
         }
-        src_float_to_short_array (_dest, (short *) output, output_needed/2);
+        src_float_to_short_array(_dest, (short *)output, output_needed / 2);
         return src_data.input_frames_used * 4;
     }
 #endif

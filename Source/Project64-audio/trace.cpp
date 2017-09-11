@@ -12,6 +12,7 @@
 #include <Settings/Settings.h>
 #include <Common/path.h>
 #include <Common/LogClass.h>
+#include "AudioSettings.h"
 
 #ifdef ANDROID
 #include <android/log.h>

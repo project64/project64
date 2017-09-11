@@ -11,4 +11,13 @@
 #pragma once
 #include <Settings/Settings.h>
 
-void SetupAudioSettings(void);
+enum
+{
+    Logging_LogAudioInitShutdown,
+    Logging_LogAudioInterface,
+    Output_SwapChannels,
+    Output_DefaultFrequency,
+    Buffer_PrimarySize,
+    Buffer_SecondarySize,
+    Buffer_SecondaryNbr,
+};

@@ -8,6 +8,7 @@
 * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
 *                                                                           *
 ****************************************************************************/
+#include "SettingsID.h"
 #include "AudioSettings.h"
 #include "trace.h"
 #include "AudioMain.h"
