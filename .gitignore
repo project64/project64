@@ -34,6 +34,8 @@ Thumbs.db
 /ipch
 /Plugin/Audio/AndroidAudio.dll
 /Plugin/Audio/AndroidAudio_d.dll
+/Plugin/Audio/Project64-Audio.dll
+/Plugin/Audio/Project64-Audio_d.dll
 /Plugin/GFX/lib
 /Plugin/GFX/map
 /Plugin/GFX/pdb
@@ -56,6 +58,8 @@ Thumbs.db
 /Plugin64/AndroidAudio
 /Plugin64/Audio/AndroidAudio.dll
 /Plugin64/Audio/AndroidAudio_d.dll
+/Plugin64/Audio/Project64-Audio.dll
+/Plugin64/Audio/Project64-Audio_d.dll
 /Plugin64/GFX/lib
 /Plugin64/GFX/map
 /Plugin64/GFX/pdb
