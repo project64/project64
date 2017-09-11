@@ -10,7 +10,7 @@
 ****************************************************************************/
 #include "AudioSettings.h"
 #include "trace.h"
-#include "main.h"
+#include "AudioMain.h"
 
 short Set_EnableAudio = 0;
 extern bool g_AudioEnabled;

@@ -23,7 +23,7 @@
 #include <string.h>
 #include "AudioSettings.h"
 #include "trace.h"
-#include "main.h"
+#include "AudioMain.h"
 
 #ifdef ANDROID
 typedef struct threadLock_
