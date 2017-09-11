@@ -10,13 +10,6 @@
     <Filter Include="Config">
       <UniqueIdentifier>{0e996a30-185f-4191-b77d-b88d86055b8c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Doc">
-      <UniqueIdentifier>{a8253215-16b6-4579-9f98-538ad5f4a6c3}</UniqueIdentifier>
-      <Extensions>txt</Extensions>
-    </Filter>
-    <Filter Include="Icons">
-      <UniqueIdentifier>{a4bb9cf1-305d-4c72-bb6e-c494301dcdad}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Res">
       <UniqueIdentifier>{f0e9ed7a-3046-4b82-a4b1-5f58e1fe7446}</UniqueIdentifier>
     </Filter>
@@ -124,7 +117,6 @@
     <ClInclude Include="DepthBufferRender.h" />
     <ClInclude Include="Ext_TxFilter.h" />
     <ClInclude Include="FBtoScreen.h" />
-    <ClInclude Include="GlideExtensions.h" />
     <ClInclude Include="rdp.h" />
     <ClInclude Include="TexBuffer.h" />
     <ClInclude Include="Util.h" />
@@ -284,34 +276,6 @@
     <ClCompile Include="F3DTEXA.cpp">
       <Filter>ucode</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="gpl.txt">
-      <Filter>Doc</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="australia.xpm">
-      <Filter>Icons</Filter>
-    </None>
-    <None Include="brazil.xpm">
-      <Filter>Icons</Filter>
-    </None>
-    <None Include="france.xpm">
-      <Filter>Icons</Filter>
-    </None>
-    <None Include="japan.xpm">
-      <Filter>Icons</Filter>
-    </None>
-    <None Include="logo.xpm">
-      <Filter>Icons</Filter>
-    </None>
-    <None Include="russia.xpm">
-      <Filter>Icons</Filter>
-    </None>
-    <None Include="usa.xpm">
-      <Filter>Icons</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project64-video.rc">

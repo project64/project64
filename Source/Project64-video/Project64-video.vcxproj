@@ -113,7 +113,6 @@
     <ClInclude Include="DepthBufferRender.h" />
     <ClInclude Include="Ext_TxFilter.h" />
     <ClInclude Include="FBtoScreen.h" />
-    <ClInclude Include="GlideExtensions.h" />
     <ClInclude Include="rdp.h" />
     <ClInclude Include="TexBuffer.h" />
     <ClInclude Include="Util.h" />
@@ -190,18 +189,6 @@
     <ClCompile Include="ucode09rdp.cpp" />
     <ClCompile Include="ucodeFB.cpp" />
     <ClCompile Include="Util.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="gpl.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="australia.xpm" />
-    <None Include="brazil.xpm" />
-    <None Include="france.xpm" />
-    <None Include="japan.xpm" />
-    <None Include="logo.xpm" />
-    <None Include="russia.xpm" />
-    <None Include="usa.xpm" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project64-video.rc" />
