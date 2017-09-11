@@ -21,9 +21,9 @@ COMMON_CPPFLAGS :=                  \
 include $(JNI_LOCAL_PATH)/3rdParty/png/png.mk
 include $(JNI_LOCAL_PATH)/3rdParty/zlib/zlib.mk
 include $(JNI_LOCAL_PATH)/Common/common.mk
-include $(JNI_LOCAL_PATH)/PluginAudio/PluginAudio.mk
 include $(JNI_LOCAL_PATH)/PluginInput/PluginInput.mk
 include $(JNI_LOCAL_PATH)/PluginRSP/PluginRSP.mk
+include $(JNI_LOCAL_PATH)/Project64-audio/Project64-audio.mk
 include $(JNI_LOCAL_PATH)/Project64-bridge/Project64-bridge.mk
 include $(JNI_LOCAL_PATH)/Project64-core/Project64-core.mk
 include $(JNI_LOCAL_PATH)/Project64-video/Project64-video.mk

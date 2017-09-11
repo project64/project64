@@ -13,9 +13,6 @@
 		<copy todir="./jni/Common/">
 		    <fileset dir="../Source/Common"/>
 		</copy>
-		<copy todir="./jni/PluginAudio/">
-		    <fileset dir="../Source/Android/PluginAudio"/>
-		</copy>
 		<copy todir="./jni/PluginInput/">
 		    <fileset dir="../Source/Android/PluginInput"/>
 		</copy>
@@ -24,6 +21,9 @@
 		</copy>
 		<copy todir="./jni/Project64-bridge/">
 		    <fileset dir="../Source/Android/Bridge"/>
+		</copy>
+		<copy todir="./jni/Project64-audio/">
+		    <fileset dir="../Source/Project64-audio"/>
 		</copy>
 		<copy todir="./jni/Project64-core/">
 		    <fileset dir="../Source/Project64-core"/>
