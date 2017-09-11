@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D233025A-231F-4A43-92B6-E87193C60ACC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>PluginAudio</RootNamespace>
+    <RootNamespace>Project64-audio</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -25,10 +25,10 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <PropertyGroup>
-    <TargetName>AndroidAudio</TargetName>
-    <TargetName Condition="'$(Configuration)'=='Debug'">AndroidAudio_d</TargetName>
+    <TargetName>Project64-Audio</TargetName>
+    <TargetName Condition="'$(Configuration)'=='Debug'">Project64-Audio_d</TargetName>
     <OutDir>$(SolutionDir)Plugin\Audio\</OutDir>
-    <OutDir Condition="'$(Platform)'=='x64'">$(SolutionDir)Plugin64\AndroidAudio\</OutDir>
+    <OutDir Condition="'$(Platform)'=='x64'">$(SolutionDir)Plugin64\Audio\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
