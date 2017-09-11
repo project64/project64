@@ -60,7 +60,11 @@ void SetupTrace(void)
 #endif
     TraceSetModuleName(TraceAudioInitShutdown, "AudioInitShutdown");
     TraceSetModuleName(TraceAudioInterface, "AudioInterface");
- 
+    TraceSetModuleName(TraceAudioDriver, "AudioDriver");
+}
+
+void StartTrace(void)
+{
     char log_dir[260];
     memset(log_dir, 0, sizeof(log_dir));
     short logDirSetting = FindSystemSettingId("Dir:Log");
@@ -75,7 +79,7 @@ void SetupTrace(void)
         return;
     }
 
-    CPath LogFilePath(log_dir,"PluginAudio.log");
+    CPath LogFilePath(log_dir, "Project64-audio.log");
     if (!LogFilePath.DirectoryExists())
     {
         LogFilePath.DirectoryCreate();

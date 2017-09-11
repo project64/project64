@@ -14,9 +14,9 @@
 
 enum TraceModuleAndroidAudio
 {
-    TraceSettings = MaxTraceModuleCommon,
-    TraceAudioInitShutdown,
+    TraceAudioInitShutdown = MaxTraceModuleCommon,
     TraceAudioInterface,
+    TraceAudioDriver,
     MaxTraceModulePluginAudio,
 };
 

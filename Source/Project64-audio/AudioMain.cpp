@@ -111,6 +111,7 @@ void PluginInit(void)
     }
     SetupTrace();
     SetupAudioSettings();
+    StartTrace();
     g_PluginInit = true;
 }
 
@@ -758,9 +759,9 @@ EXPORT void CALL GetDllInfo(PLUGIN_INFO * PluginInfo)
     PluginInfo->Version = 0x0101;
     PluginInfo->Type = PLUGIN_TYPE_AUDIO;
 #ifdef _DEBUG
-    sprintf(PluginInfo->Name, "Android Audio Debug Plugin %s", VER_FILE_VERSION_STR);
+    sprintf(PluginInfo->Name, "Project64 Audio Plugin (Debug): %s", VER_FILE_VERSION_STR);
 #else
-    sprintf(PluginInfo->Name, "Android Audio Plugin %s", VER_FILE_VERSION_STR);
+    sprintf(PluginInfo->Name, "Project64 Audio Plugin: %s", VER_FILE_VERSION_STR);
 #endif
     PluginInfo->MemoryBswaped = true;
     PluginInfo->NormalMemory = false;
