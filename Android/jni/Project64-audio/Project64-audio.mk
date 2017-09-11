@@ -3,7 +3,7 @@
 ######################
 include $(CLEAR_VARS)
 LOCAL_PATH := $(JNI_LOCAL_PATH)
-SRCDIR := ./PluginAudio
+SRCDIR := ./Project64-audio
 
 LOCAL_MODULE := Project64-audio-android
 LOCAL_STATIC_LIBRARIES := common \
