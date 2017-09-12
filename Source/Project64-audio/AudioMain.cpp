@@ -17,6 +17,7 @@
 #include <SLES/OpenSLES.h>
 #include <SLES/OpenSLES_Android.h>
 #endif
+#include <Project64-audio/Driver/OpenSLES.h>
 #include "audio_1.1.h"
 #include "Version.h"
 #include <stdio.h>
@@ -103,6 +104,8 @@ SLAndroidSimpleBufferQueueItf g_bufferQueue = NULL;
 #endif
 
 bool g_PluginInit = false;
+
+OpenSLESDriver * g_SoundDriver = NULL;
 
 void PluginInit(void)
 {
@@ -771,7 +774,14 @@ EXPORT void CALL GetDllInfo(PLUGIN_INFO * PluginInfo)
 EXPORT int32_t CALL InitiateAudio(AUDIO_INFO Audio_Info)
 {
     WriteTrace(TraceAudioInterface, TraceDebug, "Start");
+    if (g_SoundDriver != NULL)
+    {
+        delete g_SoundDriver;
+    }
     g_AudioInfo = Audio_Info;
+#ifdef ANDROID
+    g_SoundDriver = new OpenSLESDriver;
+#endif
     WriteTrace(TraceAudioInterface, TraceDebug, "Done (res: true)");
     return true;
 }

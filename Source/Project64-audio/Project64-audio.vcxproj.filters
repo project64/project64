@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Driver">
+      <UniqueIdentifier>{a8636856-b6fa-4994-9cf4-13df7c70948e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Driver">
+      <UniqueIdentifier>{32a059b2-0de1-4ec7-b798-75b3e7ed19be}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="trace.cpp">
@@ -23,6 +29,12 @@
     </ClCompile>
     <ClCompile Include="AudioMain.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Driver\SoundBase.cpp">
+      <Filter>Source Files\Driver</Filter>
+    </ClCompile>
+    <ClCompile Include="Driver\OpenSLES.cpp">
+      <Filter>Source Files\Driver</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +55,12 @@
     </ClInclude>
     <ClInclude Include="SettingsID.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Driver\SoundBase.h">
+      <Filter>Header Files\Driver</Filter>
+    </ClInclude>
+    <ClInclude Include="Driver\OpenSLES.h">
+      <Filter>Header Files\Driver</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

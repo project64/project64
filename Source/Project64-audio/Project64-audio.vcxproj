@@ -38,12 +38,16 @@
   <ItemGroup>
     <ClCompile Include="AudioMain.cpp" />
     <ClCompile Include="AudioSettings.cpp" />
+    <ClCompile Include="Driver\OpenSLES.cpp" />
+    <ClCompile Include="Driver\SoundBase.cpp" />
     <ClCompile Include="trace.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioMain.h" />
     <ClInclude Include="Audio_1.1.h" />
     <ClInclude Include="AudioSettings.h" />
+    <ClInclude Include="Driver\OpenSLES.h" />
+    <ClInclude Include="Driver\SoundBase.h" />
     <ClInclude Include="SettingsID.h" />
     <ClInclude Include="trace.h" />
     <ClInclude Include="Version.h" />
