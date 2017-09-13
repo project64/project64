@@ -428,7 +428,6 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="UserInterface\API.js" />
-    <None Include="..\Project64-audio\Project64-audio.vcxproj" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ListItems.bmp">

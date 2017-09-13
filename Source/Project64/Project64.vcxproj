@@ -207,7 +207,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Project64-audio\Project64-audio.vcxproj" />
     <None Include="res\divider.cur" />
     <None Include="res\hand.cur" />
     <None Include="UserInterface\API.js" />

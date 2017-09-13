@@ -1,12 +1,8 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by UIResources.rc
+// Used by UI Resources.rc
 //
-#define VERSION_REVISION                0
-#define VER_VER_DEBUG                   0
-#define VERSION_MAJOR                   2
 #define IDAPPLY                         3
-#define VERSION_MINOR                   3
 #define IDI_PJ64_Icon                   101
 #define IDD_Rom_Information             104
 #define IDD_Key_Prompt                  108
