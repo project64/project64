@@ -153,7 +153,6 @@ int32_t CRomBrowser::CalcSortPosition(uint32_t lParam)
                     }
                     LastTestPos = NewTestPos;
 
-                    LVITEMW lvItem;
                     memset(&lvItem, 0, sizeof(lvItem));
                     lvItem.mask = LVIF_PARAM;
                     lvItem.iItem = NewTestPos;
@@ -162,7 +161,7 @@ int32_t CRomBrowser::CalcSortPosition(uint32_t lParam)
                         return End;
                     }
 
-                    int32_t Result = RomList_CompareItems(lParam, lvItem.lParam, (uint32_t)&SortFieldInfo);
+                    Result = RomList_CompareItems(lParam, lvItem.lParam, (uint32_t)&SortFieldInfo);
                     if (Result <= 0)
                     {
                         if (Right == NewTestPos)
@@ -190,13 +189,12 @@ int32_t CRomBrowser::CalcSortPosition(uint32_t lParam)
                     }
                     LastTestPos = NewTestPos;
 
-                    LVITEMW lvItem;
                     memset(&lvItem, 0, sizeof(lvItem));
                     lvItem.mask = LVIF_PARAM;
                     lvItem.iItem = NewTestPos;
                     if (!SendMessageW(m_hRomList, LVM_GETITEMW, 0, (LPARAM)&lvItem)) { return End; }
 
-                    int32_t Result = RomList_CompareItems(lParam, lvItem.lParam, (uint32_t)&SortFieldInfo);
+                    Result = RomList_CompareItems(lParam, lvItem.lParam, (uint32_t)&SortFieldInfo);
                     if (Result >= 0)
                     {
                         if (Left == NewTestPos)
@@ -386,7 +384,7 @@ void CRomBrowser::MenuSetText(HMENU hMenu, int32_t MenuPos, const wchar_t * Titl
     GetMenuItemInfoW(hMenu, MenuPos, TRUE, &MenuInfo);
     wcscpy(String, Title);
     if (wcschr(String, '\t') != NULL) { *(wcschr(String, '\t')) = '\0'; }
-    if (ShortCut) { swprintf(String, sizeof(String) / sizeof(String[0]), L"%s\t%s", String, ShortCut); }
+    if (ShortCut) { swprintf(String, sizeof(String) / sizeof(String[0]), L"%s\t%s", String, stdstr(ShortCut).ToUTF16().c_str()); }
     SetMenuItemInfoW(hMenu, MenuPos, TRUE, &MenuInfo);
 }
 
@@ -576,14 +574,14 @@ bool CRomBrowser::RomListNotify(int32_t idCtrl, uint32_t pnmh)
     case LVN_GETDISPINFOW: RomList_GetDispInfo(pnmh); break;
     case NM_RCLICK:       RomList_PopupMenu(pnmh); break;
     case NM_CLICK:
+    {
+        LONG iItem = ListView_GetNextItem(m_hRomList, -1, LVNI_SELECTED);
+        if (iItem != -1)
         {
-            LONG iItem = ListView_GetNextItem(m_hRomList, -1, LVNI_SELECTED);
-            if (iItem != -1)
-            {
-                m_AllowSelectionLastRom = false;
-            }
+            m_AllowSelectionLastRom = false;
         }
-        break;
+    }
+    break;
     default:
         return false;
     }
@@ -731,15 +729,15 @@ void CRomBrowser::RomList_GetDispInfo(uint32_t pnmh)
         }
         else if (pRomInfo->CicChip == CIC_NUS_8303)
         {
-            swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"CIC-NUS-8303", pRomInfo->CicChip);
+            swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"CIC-NUS-8303");
         }
         else if (pRomInfo->CicChip == CIC_NUS_5167)
         {
-            swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"CIC-NUS-5167", pRomInfo->CicChip);
+            swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"CIC-NUS-5167");
         }
         else if (pRomInfo->CicChip == CIC_NUS_DDUS)
         {
-            swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"CIC-NUS-????", pRomInfo->CicChip);
+            swprintf(lpdi->item.pszText, lpdi->item.cchTextMax / sizeof(wchar_t), L"CIC-NUS-????");
         }
         else
         {
@@ -1012,7 +1010,7 @@ void CRomBrowser::FixRomListWindow(void)
     int32_t Width = UISettingsLoadDword(RomBrowser_Width);
     int32_t Height = UISettingsLoadDword(RomBrowser_Height);
 
-    if (Width < 200)  { Width = 200; }
+    if (Width < 200) { Width = 200; }
     if (Height < 200) { Height = 200; }
 
     RECT rcClient;
