@@ -9,33 +9,22 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-//#define _WIN32_WINNT 0x0500
 
+#pragma warning(push)
+#pragma warning(disable : 4091) // warning C4091: 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared
+#pragma warning(disable : 4201) // warning C4201: nonstandard extension used: nameless struct/union
+#pragma warning(disable : 4302) // warning C4302: 'type cast': truncation from 'LPCTSTR' to 'WORD'
+#pragma warning(disable : 4458) // warning C4458: declaration of 'dwCommonButtons' hides class member
+#pragma warning(disable : 4838) // warning C4838: conversion from 'int' to 'UINT' requires a narrowing conversion
+#pragma warning(disable : 4996) // warning C4996: 'GetVersionExA': was declared deprecated
 #define _ATL_DISABLE_NOTHROW_NEW
 #include <shellapi.h>
 #include <atlbase.h>
 
-#pragma warning(push)
-#pragma warning(disable : 4996) // warning C4996: 'GetVersionExA': was declared deprecated
-#include <wtl/atlapp.h> 
-#pragma warning(pop)
-
-class CPj64Module :
-	public CAppModule
-{
-public:
-	CPj64Module(void)
-	{
-		Init(NULL, GetModuleHandle(NULL));
-	}
-	virtual ~CPj64Module(void)
-	{
-		Term();
-	}
-};
-
-
-extern CPj64Module _Module;
+#include <wtl/atlapp.h>
+#include <wtl/atldlgs.h>
+#include <wtl/atlframe.h>
+#include <wtl/atlctrls.h>
 
 #define _WTL_NO_CSTRING
 
@@ -43,9 +32,23 @@ extern CPj64Module _Module;
 #include <wtl/atlmisc.h>
 #include <wtl/atlcrack.h>
 
-#include <wtl/atlframe.h>
-#include <wtl/atlctrls.h>
-#include <wtl/atldlgs.h>
+#pragma warning(pop)
+
+class CPj64Module :
+    public CAppModule
+{
+public:
+    CPj64Module(void)
+    {
+        Init(NULL, GetModuleHandle(NULL));
+    }
+    virtual ~CPj64Module(void)
+    {
+        Term();
+    }
+};
+
+extern CPj64Module _Module;
 
 #include <Common/StdString.h>
 
