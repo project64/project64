@@ -16,9 +16,14 @@
 #pragma once
 
 #pragma once
+#include <Project64-audio/Audio_1.1.h>
 #include "SoundBase.h"
 
 class OpenSLESDriver :
     public SoundDriverBase
 {
+public:
+    void AI_Shutdown(void);
+    void AI_SetFrequency(uint32_t freq);
+    void AI_LenChanged(uint8_t *start, uint32_t length);
 };

@@ -32,7 +32,7 @@ void SetupAudioSettings(void)
     RegisterSetting(Logging_LogAudioInitShutdown, Data_DWORD_General, "AudioInitShutdown", "Logging", g_ModuleLogLevel[TraceAudioInitShutdown], NULL);
     RegisterSetting(Logging_LogAudioInterface, Data_DWORD_General, "AudioInterface", "Logging", g_ModuleLogLevel[TraceAudioInterface], NULL);
 
-    g_SwapChannels = GetSetting(Output_SwapChannels);
+    g_SwapChannels = GetSetting(Output_SwapChannels) != 0;
     g_GameFreq = GetSetting(Output_DefaultFrequency);
 
     g_ModuleLogLevel[TraceAudioInitShutdown] = GetSetting(Logging_LogAudioInitShutdown);

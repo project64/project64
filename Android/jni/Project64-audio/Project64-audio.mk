@@ -13,10 +13,12 @@ LOCAL_ARM_MODE := arm
 
 LOCAL_C_INCLUDES :=
 
-LOCAL_SRC_FILES :=               \
-    $(SRCDIR)/AudioSettings.cpp  \
-    $(SRCDIR)/AudioMain.cpp      \
-    $(SRCDIR)/trace.cpp          \
+LOCAL_SRC_FILES :=                 \
+    $(SRCDIR)/Driver/OpenSLES.cpp  \
+    $(SRCDIR)/Driver/SoundBase.cpp \
+    $(SRCDIR)/AudioMain.cpp        \
+    $(SRCDIR)/AudioSettings.cpp    \
+    $(SRCDIR)/trace.cpp            \
 
 LOCAL_CFLAGS := $(COMMON_CFLAGS)
 

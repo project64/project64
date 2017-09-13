@@ -56,14 +56,14 @@ typedef struct
     uint8_t * DMEM;
     uint8_t * IMEM;
 
-    uint32_t * MI__INTR_REG;
+    uint32_t * MI_INTR_REG;
 
-    uint32_t * AI__DRAM_ADDR_REG;
-    uint32_t * AI__LEN_REG;
-    uint32_t * AI__CONTROL_REG;
-    uint32_t * AI__STATUS_REG;
-    uint32_t * AI__DACRATE_REG;
-    uint32_t * AI__BITRATE_REG;
+    uint32_t * AI_DRAM_ADDR_REG;
+    uint32_t * AI_LEN_REG;
+    uint32_t * AI_CONTROL_REG;
+    uint32_t * AI_STATUS_REG;
+    uint32_t * AI_DACRATE_REG;
+    uint32_t * AI_BITRATE_REG;
 
     void(CALL *CheckInterrupts)(void);
 } AUDIO_INFO;
