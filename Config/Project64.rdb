@@ -1453,7 +1453,6 @@ Counter Factor=1
 Culling=1
 RDRAM Size=8
 Save Type=16kbit Eeprom
-Cheat0=806128E2 0000 // Polygon Tearing Fix
 
 [053C89A7-A5064302-C:4A]
 Good Name=Donkey Kong 64 (J)
@@ -1464,7 +1463,6 @@ Plugin Note=[Glide64] fairy bug; transitions
 Counter Factor=1
 RDRAM Size=8
 Save Type=16kbit Eeprom
-Cheat0=806170A2 0000 // Polygon Tearing Fix
 
 [EC58EABF-AD7C7169-C:45]
 Good Name=Donkey Kong 64 (U)
@@ -1478,7 +1476,6 @@ Emulate Clear=1
 Primary Frame Buffer=1
 RDRAM Size=8
 Save Type=16kbit Eeprom
-Cheat0=80619632 0000 // Polygon Tearing Fix
 
 [0DD4ABAB-B5A2A91E-C:45]
 Good Name=Donkey Kong 64 (U) (Kiosk Demo)
