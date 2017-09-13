@@ -11,10 +11,13 @@
 
 #include <set>
 #include <algorithm>
+#pragma warning(push)
+#pragma warning(disable : 4838) // warning C4838: conversion from 'int' to 'UINT' requires a narrowing conversion
 #include <wtl/atlctrlx.h>
 #include <wtl/atlframe.h>
 #include <wtl/atlmisc.h>
 #include <wtl/atlgdi.h>
+#pragma warning(pop)
 
 #include "DragDrop.h"
 #include "DropArrows.h"
@@ -899,7 +902,6 @@ public:
 			if ( !GetColumnRect( nSubItem, rcColumn ) )
 				return FALSE;
 			
-			CRect rcClient;
 			GetClientRect( rcClient );
 
 			int nScrollPos = 0;
