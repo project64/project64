@@ -2094,7 +2094,7 @@ void R4300iOp::REGIMM_BGEZAL()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-            if (g_Settings->LoadBool(Debugger_Enabled))
+            if (CDebugSettings::bHaveDebugger())
             {
                 if (g_Reg->m_PROGRAM_COUNTER < 0x80000400)
                 {

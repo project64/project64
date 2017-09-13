@@ -376,13 +376,13 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_CoP1_S[5] = R4300iOp::COP1_S_ABS;
     Jump_CoP1_S[6] = R4300iOp::COP1_S_MOV;
     Jump_CoP1_S[7] = R4300iOp::COP1_S_NEG;
-	Jump_CoP1_S[8] = R4300iOp::COP1_S_ROUND_L;
+    Jump_CoP1_S[8] = R4300iOp::COP1_S_ROUND_L;
     Jump_CoP1_S[9] = R4300iOp::COP1_S_TRUNC_L;
-    Jump_CoP1_S[10] = R4300iOp::COP1_S_CEIL_L;		
-    Jump_CoP1_S[11] = R4300iOp::COP1_S_FLOOR_L;		
+    Jump_CoP1_S[10] = R4300iOp::COP1_S_CEIL_L;
+    Jump_CoP1_S[11] = R4300iOp::COP1_S_FLOOR_L;
     Jump_CoP1_S[12] = R4300iOp::COP1_S_ROUND_W;
     Jump_CoP1_S[13] = R4300iOp::COP1_S_TRUNC_W;
-    Jump_CoP1_S[14] = R4300iOp::COP1_S_CEIL_W;		
+    Jump_CoP1_S[14] = R4300iOp::COP1_S_CEIL_W;
     Jump_CoP1_S[15] = R4300iOp::COP1_S_FLOOR_W;
     Jump_CoP1_S[16] = R4300iOp::UnknownOpcode;
     Jump_CoP1_S[17] = R4300iOp::UnknownOpcode;
@@ -442,13 +442,13 @@ R4300iOp32::Func * R4300iOp32::BuildInterpreter()
     Jump_CoP1_D[6] = R4300iOp::COP1_D_MOV;
     Jump_CoP1_D[7] = R4300iOp::COP1_D_NEG;
     Jump_CoP1_D[8] = R4300iOp::COP1_D_ROUND_L;
-    Jump_CoP1_D[9] = R4300iOp::COP1_D_TRUNC_L;		
-    Jump_CoP1_D[10] = R4300iOp::COP1_D_CEIL_L;		
-    Jump_CoP1_D[11] = R4300iOp::COP1_D_FLOOR_L;		
+    Jump_CoP1_D[9] = R4300iOp::COP1_D_TRUNC_L;
+    Jump_CoP1_D[10] = R4300iOp::COP1_D_CEIL_L;
+    Jump_CoP1_D[11] = R4300iOp::COP1_D_FLOOR_L;
     Jump_CoP1_D[12] = R4300iOp::COP1_D_ROUND_W;
     Jump_CoP1_D[13] = R4300iOp::COP1_D_TRUNC_W;
-    Jump_CoP1_D[14] = R4300iOp::COP1_D_CEIL_W;		
-    Jump_CoP1_D[15] = R4300iOp::COP1_D_FLOOR_W;		
+    Jump_CoP1_D[14] = R4300iOp::COP1_D_CEIL_W;
+    Jump_CoP1_D[15] = R4300iOp::COP1_D_FLOOR_W;
     Jump_CoP1_D[16] = R4300iOp::UnknownOpcode;
     Jump_CoP1_D[17] = R4300iOp::UnknownOpcode;
     Jump_CoP1_D[18] = R4300iOp::UnknownOpcode;
@@ -1184,7 +1184,7 @@ void R4300iOp32::SPECIAL_SLTU()
 
 void R4300iOp32::SPECIAL_TEQ()
 {
-    if (_GPR[m_Opcode.rs].W[0] == _GPR[m_Opcode.rt].W[0] && g_Settings->LoadBool(Debugger_Enabled))
+    if (_GPR[m_Opcode.rs].W[0] == _GPR[m_Opcode.rt].W[0] && CDebugSettings::bHaveDebugger())
     {
         g_Notify->DisplayError("Should trap this ???");
     }
@@ -1302,18 +1302,18 @@ void R4300iOp32::REGIMM_BGEZAL()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-			if (g_Settings->LoadBool(Debugger_Enabled))
-			{
-				if (g_Reg->m_PROGRAM_COUNTER < 0x80000400)
-				{
-					// Break out of possible checksum halt
-					g_Notify->DisplayMessage(5, "Broke out of permanent loop! Invalid checksum?");
-					m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
-					_GPR[31].DW = (int32_t)((*_PROGRAM_COUNTER) + 8);
-					R4300iOp::m_NextInstruction = DELAY_SLOT;
-					return;
-				}
-			}
+            if (CDebugSettings::bHaveDebugger())
+            {
+                if (g_Reg->m_PROGRAM_COUNTER < 0x80000400)
+                {
+                    // Break out of possible checksum halt
+                    g_Notify->DisplayMessage(5, "Broke out of permanent loop! Invalid checksum?");
+                    m_JumpToLocation = (*_PROGRAM_COUNTER) + 8;
+                    _GPR[31].DW = (int32_t)((*_PROGRAM_COUNTER) + 8);
+                    R4300iOp::m_NextInstruction = DELAY_SLOT;
+                    return;
+                }
+            }
             if (!DelaySlotEffectsCompare((*_PROGRAM_COUNTER), m_Opcode.rs, 0))
             {
                 CInterpreterCPU::InPermLoop();
@@ -1397,7 +1397,7 @@ void R4300iOp32::COP0_MT()
         {
             _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
         }
-        if ((_CP0[m_Opcode.rd] & 0x18) != 0 && g_Settings->LoadBool(Debugger_Enabled))
+        if ((_CP0[m_Opcode.rd] & 0x18) != 0 && CDebugSettings::bHaveDebugger())
         {
             g_Notify->DisplayError("Left kernel mode ??");
         }
@@ -1405,7 +1405,7 @@ void R4300iOp32::COP0_MT()
         break;
     case 13: //cause
         _CP0[m_Opcode.rd] &= 0xFFFFCFF;
-        if ((_GPR[m_Opcode.rt].UW[0] & 0x300) != 0 && g_Settings->LoadBool(Debugger_Enabled))
+        if ((_GPR[m_Opcode.rt].UW[0] & 0x300) != 0 && CDebugSettings::bHaveDebugger())
         {
             g_Notify->DisplayError("Set IP0 or IP1");
         }
@@ -1427,7 +1427,7 @@ void R4300iOp32::COP1_CF()
     TEST_COP1_USABLE_EXCEPTION
         if (m_Opcode.fs != 31 && m_Opcode.fs != 0)
         {
-            if (g_Settings->LoadBool(Debugger_Enabled)) { g_Notify->DisplayError("CFC1 what register are you writing to ?"); }
+            if (CDebugSettings::bHaveDebugger()) { g_Notify->DisplayError("CFC1 what register are you writing to ?"); }
             return;
         }
     _GPR[m_Opcode.rt].W[0] = (int32_t)_FPCR[m_Opcode.fs];

@@ -97,7 +97,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
         case R4300i_SPECIAL_DDIVU:
             break;
         default:
-            if (g_Settings->LoadBool(Debugger_Enabled))
+            if (CDebugSettings::bHaveDebugger())
             {
                 g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?", R4300iOpcodeName(Command.Hex, PC + 4), PC).c_str());
             }
@@ -128,7 +128,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
                 case R4300i_COP0_CO_TLBWR: break;
                 case R4300i_COP0_CO_TLBP: break;
                 default:
-                    if (g_Settings->LoadBool(Debugger_Enabled))
+                    if (CDebugSettings::bHaveDebugger())
                     {
                         g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?\n6", R4300iOpcodeName(Command.Hex, PC + 4), PC).c_str());
                     }
@@ -137,7 +137,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
             }
             else
             {
-                if (g_Settings->LoadBool(Debugger_Enabled))
+                if (CDebugSettings::bHaveDebugger())
                 {
                     g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?\n7", R4300iOpcodeName(Command.Hex, PC + 4), PC).c_str());
                 }
@@ -166,7 +166,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
         case R4300i_COP1_W: break;
         case R4300i_COP1_L: break;
         default:
-            if (g_Settings->LoadBool(Debugger_Enabled))
+            if (CDebugSettings::bHaveDebugger())
             {
                 g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?", R4300iOpcodeName(Command.Hex, PC + 4), PC).c_str());
             }
@@ -214,7 +214,7 @@ bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2)
     case R4300i_SDC1: break;
     case R4300i_SD: break;
     default:
-        if (g_Settings->LoadBool(Debugger_Enabled))
+        if (CDebugSettings::bHaveDebugger())
         {
             g_Notify->DisplayError(stdstr_f("Does %s effect Delay slot at %X?", R4300iOpcodeName(Command.Hex, PC + 4), PC).c_str());
         }
@@ -298,7 +298,7 @@ void CInterpreterCPU::ExecuteCPU()
                 continue;
             }
 
-            if (!g_Debugger->CPUStepStarted())
+            if (CDebugSettings::bHaveDebugger() && !g_Debugger->CPUStepStarted())
             {
                 // Skip command if instructed by the debugger
                 PROGRAM_COUNTER += 4;
@@ -315,7 +315,7 @@ void CInterpreterCPU::ExecuteCPU()
             m_R4300i_Opcode[Opcode.op]();
             NextTimer -= CountPerOp;
 
-            g_Debugger->CPUStep();
+            if (CDebugSettings::bHaveDebugger()) { g_Debugger->CPUStep(); }
 
             PROGRAM_COUNTER += 4;
             switch (R4300iOp::m_NextInstruction)
