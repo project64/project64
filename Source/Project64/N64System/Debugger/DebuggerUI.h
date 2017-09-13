@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include "../../WTLApp.h"
 #include "../../N64System.h"

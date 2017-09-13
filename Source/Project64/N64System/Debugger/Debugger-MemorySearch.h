@@ -53,36 +53,36 @@ private:
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
         COMMAND_CODE_HANDLER(BN_CLICKED, OnClicked)
         NOTIFY_HANDLER_EX(IDC_LST_RESULTS, NM_RCLICK, OnResultRClick)
-		NOTIFY_HANDLER_EX(IDC_LST_RESULTS, NM_DBLCLK, OnResultDblClick)
-	END_MSG_MAP()
+        NOTIFY_HANDLER_EX(IDC_LST_RESULTS, NM_DBLCLK, OnResultDblClick)
+        END_MSG_MAP()
 
-	LRESULT				OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	LRESULT				OnClicked(WORD wNotifyCode, WORD wID, HWND /*hWndCtl*/, BOOL& bHandled);
-	LRESULT             OnResultRClick(LPNMHDR lpnmh);
-	LRESULT             OnResultDblClick(LPNMHDR lpnmh);
+    LRESULT				OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+    LRESULT				OnClicked(WORD wNotifyCode, WORD wID, HWND /*hWndCtl*/, BOOL& bHandled);
+    LRESULT             OnResultRClick(LPNMHDR lpnmh);
+    LRESULT             OnResultDblClick(LPNMHDR lpnmh);
 
-	void EnableUnknownOptions(bool Enable);
-	void EnableValueOptions(bool Enable);
-	void EnableTextOptions(bool Enable);
-	void EnableJalOptions(bool Enable);
-	void AddAlignmentOptions(CComboBox  & ctrl);
+    void EnableUnknownOptions(bool Enable);
+    void EnableValueOptions(bool Enable);
+    void EnableTextOptions(bool Enable);
+    void EnableJalOptions(bool Enable);
+    void AddAlignmentOptions(CComboBox  & ctrl);
 
-	CEditNumber   m_PAddrStart, m_SearchLen, m_SearchValue, m_MaxSearch;
-	CComboBox     m_UnknownOptions, m_ValueSize, m_UnknownSize;
-	CListViewCtrl m_SearchResults;
-	SearchResult  m_SearchResult;
-	bool          m_HaveResults;
+    CEditNumber   m_PAddrStart, m_SearchLen, m_SearchValue, m_MaxSearch;
+    CComboBox     m_UnknownOptions, m_ValueSize, m_UnknownSize;
+    CListViewCtrl m_SearchResults;
+    SearchResult  m_SearchResult;
+    bool          m_HaveResults;
 
-	//Searching memory
-	BYTE  *       m_MemoryState;
-	DWORD         m_MemoryStateSize;
+    //Searching memory
+    BYTE  *       m_MemoryState;
+    DWORD         m_MemoryStateSize;
 
-	void FixUnknownOptions(bool Reset);
-	void SearchForUnknown(void);
-	void SearchForValue(void);
-	void SearchForText(void);
-	void Reset(void);
-	bool SearchSetBaseForChanges(void);
-	bool SearchForChanges(SearchMemChangeState SearchType, MemorySize Size, DWORD &StartAddress, DWORD &Len, DWORD &OldValue, DWORD &NewValue);
-	bool SearchForValue(DWORD Value, MemorySize Size, DWORD &StartAddress, DWORD &Len);
+    void FixUnknownOptions(bool Reset);
+    void SearchForUnknown(void);
+    void SearchForValue(void);
+    void SearchForText(void);
+    void Reset(void);
+    bool SearchSetBaseForChanges(void);
+    bool SearchForChanges(SearchMemChangeState SearchType, MemorySize Size, DWORD &StartAddress, DWORD &Len, DWORD &OldValue, DWORD &NewValue);
+    bool SearchForValue(DWORD Value, MemorySize Size, DWORD &StartAddress, DWORD &Len);
 };
