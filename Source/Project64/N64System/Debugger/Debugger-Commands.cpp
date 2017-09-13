@@ -40,77 +40,58 @@ CDebugCommandsView::~CDebugCommandsView(void)
 
 LRESULT	CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-	DlgResize_Init(false, true);
-	DlgToolTip_Init();
+    m_CommandList.Attach(GetDlgItem(IDC_CMD_LIST));
+    m_BreakpointList.Attach(GetDlgItem(IDC_BP_LIST));
+    m_AddressEdit.Attach(GetDlgItem(IDC_ADDR_EDIT));
+    m_PCEdit.Attach(GetDlgItem(IDC_PC_EDIT));
+    m_ViewPCButton.Attach(GetDlgItem(IDC_VIEWPC_BTN));
+    m_StepButton.Attach(GetDlgItem(IDC_STEP_BTN));
+    m_SkipButton.Attach(GetDlgItem(IDC_SKIP_BTN));
+    m_GoButton.Attach(GetDlgItem(IDC_GO_BTN));
+    m_RegisterTabs.Attach(GetDlgItem(IDC_REG_TABS));
+    m_Scrollbar.Attach(GetDlgItem(IDC_SCRL_BAR));
+    m_BackButton.Attach(GetDlgItem(IDC_BACK_BTN));
+    m_ForwardButton.Attach(GetDlgItem(IDC_FORWARD_BTN));
+    m_OpEdit.Attach(GetDlgItem(IDC_OP_EDIT));
 
-	//m_ptMinTrackSize.x = 580;
-	//m_ptMinTrackSize.y = 495;
+    DlgResize_Init(false, true);
+    DlgToolTip_Init();
 
-	m_CommandListRows = 39;
-	
+    m_CommandListRows = 39;
+
 	CheckCPUType();
 	
-	GetWindowRect(&m_DefaultWindowRect);
+    GetWindowRect(&m_DefaultWindowRect);
 
-	// Setup address input
+    // Setup address input
+    m_AddressEdit.SetDisplayType(CEditNumber::DisplayHex);
+    m_AddressEdit.SetLimitText(8);
 
-	m_AddressEdit.Attach(GetDlgItem(IDC_ADDR_EDIT));
-	m_AddressEdit.SetDisplayType(CEditNumber::DisplayHex);
-	m_AddressEdit.SetLimitText(8);
+    // Setup PC register input
+    m_PCEdit.SetDisplayType(CEditNumber::DisplayHex);
+    m_PCEdit.SetLimitText(8);
 
-	// Setup PC register input
-	
-	m_PCEdit.Attach(GetDlgItem(IDC_PC_EDIT));
-	m_PCEdit.SetDisplayType(CEditNumber::DisplayHex);
-	m_PCEdit.SetLimitText(8);
+    m_bIgnorePCChange = true;
+    m_PCEdit.SetValue(0x80000180, false, true);
 
-	m_bIgnorePCChange = true;
-	m_PCEdit.SetValue(0x80000180, false, true);
+    // Setup View PC button
+    m_ViewPCButton.EnableWindow(FALSE);
+    m_StepButton.EnableWindow(FALSE);
+    m_SkipButton.EnableWindow(FALSE);
+    m_GoButton.EnableWindow(FALSE);
 
-	// Setup View PC button
+    // Setup breakpoint list
+    m_BreakpointList.ModifyStyle(NULL, LBS_NOTIFY);
+    RefreshBreakpointList();
 
-	m_ViewPCButton.Attach(GetDlgItem(IDC_VIEWPC_BTN));
-	m_ViewPCButton.EnableWindow(FALSE);
+    // Setup list scrollbar
+    m_Scrollbar.SetScrollRange(0, 100, FALSE);
+    m_Scrollbar.SetScrollPos(50, TRUE);
 
-	// Setup debugging buttons
+    // Setup history buttons
+    ToggleHistoryButtons();
 
-	m_StepButton.Attach(GetDlgItem(IDC_STEP_BTN));
-	m_StepButton.EnableWindow(FALSE);
-
-	m_SkipButton.Attach(GetDlgItem(IDC_SKIP_BTN));
-	m_SkipButton.EnableWindow(FALSE);
-
-	m_GoButton.Attach(GetDlgItem(IDC_GO_BTN));
-	m_GoButton.EnableWindow(FALSE);
-
-	// Setup register tabs & inputs
-
-	m_RegisterTabs.Attach(GetDlgItem(IDC_REG_TABS));
-
-	// Setup breakpoint list
-
-	m_BreakpointList.Attach(GetDlgItem(IDC_BP_LIST));
-	m_BreakpointList.ModifyStyle(NULL, LBS_NOTIFY);
-	RefreshBreakpointList();
-
-	// Setup list scrollbar
-
-	m_Scrollbar.Attach(GetDlgItem(IDC_SCRL_BAR));
-	m_Scrollbar.SetScrollRange(0, 100, FALSE);
-	m_Scrollbar.SetScrollPos(50, TRUE);
-	//m_Scrollbar.GetScrollInfo(); // todo bigger thumb size
-	//m_Scrollbar.SetScrollInfo();
-
-	// Setup history buttons
-	m_BackButton.Attach(GetDlgItem(IDC_BACK_BTN));
-	m_ForwardButton.Attach(GetDlgItem(IDC_FORWARD_BTN));
-	ToggleHistoryButtons();
-
-	// Setup command list
-	m_CommandList.Attach(GetDlgItem(IDC_CMD_LIST));
-
-	// Op editor
-	m_OpEdit.Attach(GetDlgItem(IDC_OP_EDIT));
+    // Op editor
 	m_OpEdit.SetCommandsWindow(this);
 	
 	m_bIgnoreAddrChange = true;
@@ -137,89 +118,100 @@ LRESULT	CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
 LRESULT CDebugCommandsView::OnDestroy(void)
 {
 	UnhookWindowsHookEx(hWinMessageHook);
-	return 0;
+    m_OpEdit.Detach();
+    m_ForwardButton.Detach();
+    m_BackButton.Detach();
+    m_Scrollbar.Detach();
+    m_RegisterTabs.Detach();
+    m_GoButton.Detach();
+    m_SkipButton.Detach();
+    m_StepButton.Detach();
+    m_ViewPCButton.Detach();
+    m_PCEdit.Detach();
+    m_AddressEdit.Detach();
+    m_BreakpointList.Detach();
+    m_CommandList.Detach();
+    return 0;
 }
 
-void CDebugCommandsView::InterceptKeyDown(WPARAM wParam, LPARAM lParam)
+void CDebugCommandsView::InterceptKeyDown(WPARAM wParam, LPARAM /*lParam*/)
 {
-	switch (wParam)
-	{
-	case VK_F1: CPUSkip(); break;
-	case VK_F2: CPUStepInto(); break;
-	case VK_F3:
-		// reserved step over
-		break;
-	case VK_F4: CPUResume(); break;
-	}
+    switch (wParam)
+    {
+    case VK_F1: CPUSkip(); break;
+    case VK_F2: CPUStepInto(); break;
+    case VK_F3:
+        // reserved step over
+        break;
+    case VK_F4: CPUResume(); break;
+    }
 }
 
-void CDebugCommandsView::InterceptMouseWheel(WPARAM wParam, LPARAM lParam)
+void CDebugCommandsView::InterceptMouseWheel(WPARAM wParam, LPARAM /*lParam*/)
 {
-	uint32_t newAddress = m_StartAddress - ((short)HIWORD(wParam) / WHEEL_DELTA) * 4;
+    uint32_t newAddress = m_StartAddress - ((short)HIWORD(wParam) / WHEEL_DELTA) * 4;
 
-	m_StartAddress = newAddress;
+    m_StartAddress = newAddress;
 
-	m_AddressEdit.SetValue(m_StartAddress, false, true);
+    m_AddressEdit.SetValue(m_StartAddress, false, true);
 }
 
 LRESULT CALLBACK CDebugCommandsView::HookProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-	MSG *pMsg = (MSG*)lParam;
+    MSG *pMsg = (MSG*)lParam;
 
-	if (pMsg->message == WM_KEYDOWN)
-	{
-		_this->InterceptKeyDown(pMsg->wParam, pMsg->lParam);
-	}
-	else if (pMsg->message == WM_MOUSEWHEEL)
-	{
-		BOOL bHandled = TRUE;
-		_this->InterceptMouseWheel(pMsg->wParam, pMsg->lParam);
-	}
+    if (pMsg->message == WM_KEYDOWN)
+    {
+        _this->InterceptKeyDown(pMsg->wParam, pMsg->lParam);
+    }
+    else if (pMsg->message == WM_MOUSEWHEEL)
+    {
+        _this->InterceptMouseWheel(pMsg->wParam, pMsg->lParam);
+    }
 
-	if (nCode < 0)
-	{
-		return CallNextHookEx(hWinMessageHook, nCode, wParam, lParam);
-	}
+    if (nCode < 0)
+    {
+        return CallNextHookEx(hWinMessageHook, nCode, wParam, lParam);
+    }
 
-	return 0;
+    return 0;
 }
 
-LRESULT	CDebugCommandsView::OnOpKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT	CDebugCommandsView::OnOpKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
 {
-	if (wParam == VK_UP)
-	{
-		m_SelectedAddress -= 4;
-		BeginOpEdit(m_SelectedAddress);
-		bHandled = TRUE;
-	}
-	else if (wParam == VK_DOWN)
-	{
-		m_SelectedAddress += 4;
-		BeginOpEdit(m_SelectedAddress);
-		bHandled = TRUE;
-	}
-	else if (wParam == VK_RETURN)
-	{
-		int textLen = m_OpEdit.GetWindowTextLengthA();
-		char text[256];
-		m_OpEdit.GetWindowTextA(text, 255);
-		uint32_t op;
-		bool bValid = CAssembler::AssembleLine(text, &op, m_SelectedAddress);
-		if (bValid)
-		{
-			m_OpEdit.SetWindowTextA("");
-			EditOp(m_SelectedAddress, op);
-			m_SelectedAddress += 4;
-			BeginOpEdit(m_SelectedAddress);
-		}
-		bHandled = TRUE;
-	}
-	else if (wParam == VK_ESCAPE)
-	{
-		EndOpEdit();
-		bHandled = TRUE;
-	}
-	return 1;
+    if (wParam == VK_UP)
+    {
+        m_SelectedAddress -= 4;
+        BeginOpEdit(m_SelectedAddress);
+        bHandled = TRUE;
+    }
+    else if (wParam == VK_DOWN)
+    {
+        m_SelectedAddress += 4;
+        BeginOpEdit(m_SelectedAddress);
+        bHandled = TRUE;
+    }
+    else if (wParam == VK_RETURN)
+    {
+        char text[256] = { 0 };
+        m_OpEdit.GetWindowTextA(text, sizeof(text) - 1);
+        uint32_t op;
+        bool bValid = CAssembler::AssembleLine(text, &op, m_SelectedAddress);
+        if (bValid)
+        {
+            m_OpEdit.SetWindowTextA("");
+            EditOp(m_SelectedAddress, op);
+            m_SelectedAddress += 4;
+            BeginOpEdit(m_SelectedAddress);
+        }
+        bHandled = TRUE;
+    }
+    else if (wParam == VK_ESCAPE)
+    {
+        EndOpEdit();
+        bHandled = TRUE;
+    }
+    return 1;
 }
 
 void CDebugCommandsView::CheckCPUType()
@@ -1536,23 +1528,15 @@ LRESULT CDebugCommandsView::OnRegisterTabChange(NMHDR* pNMHDR)
 
 void CDebugCommandsView::ToggleHistoryButtons()
 {
-	if (m_History.size() != 0 && m_HistoryIndex > 0)
-	{
-		m_BackButton.EnableWindow(TRUE);
-	}
-	else
-	{
-		m_BackButton.EnableWindow(FALSE);
-	}
+    if (m_BackButton.m_hWnd != NULL)
+    {
+        m_BackButton.EnableWindow(m_History.size() != 0 && m_HistoryIndex > 0 ? TRUE : FALSE);
+    }
 
-	if (m_History.size() != 0 && m_HistoryIndex < m_History.size() - 1)
-	{
-		m_ForwardButton.EnableWindow(TRUE);
-	}
-	else
-	{
-		m_ForwardButton.EnableWindow(FALSE);
-	}
+    if (m_ForwardButton.m_hWnd != NULL)
+    {
+        m_ForwardButton.EnableWindow(m_History.size() != 0 && m_HistoryIndex < m_History.size() - 1 ? TRUE : FALSE);
+    }
 }
 
 // Opcode editor

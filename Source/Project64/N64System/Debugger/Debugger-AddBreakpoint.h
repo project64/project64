@@ -43,5 +43,5 @@ private:
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
         COMMAND_CODE_HANDLER(BN_CLICKED, OnClicked)
         MSG_WM_DESTROY(OnDestroy)
-        END_MSG_MAP()
+    END_MSG_MAP()
 };
