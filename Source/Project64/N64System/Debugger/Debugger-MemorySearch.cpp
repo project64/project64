@@ -200,6 +200,7 @@ LRESULT CDebugMemorySearch::OnResultDblClick(LPNMHDR)
 	int ItemId = m_SearchResults.GetItemData(iItem);
 	SearchResultItem & Result = m_SearchResult[ItemId];
 	m_Debugger->Debug_ShowMemoryLocation(Result.PAddr, false);
+    return true;
 }
 
 void CDebugMemorySearch::EnableValueOptions(bool Enable)

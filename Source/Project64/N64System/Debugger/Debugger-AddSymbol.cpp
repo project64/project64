@@ -56,7 +56,7 @@ LRESULT	CAddSymbolDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 	return FALSE;
 }
 
-LRESULT CAddSymbolDlg::OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+LRESULT CAddSymbolDlg::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
 	switch (wID)
 	{

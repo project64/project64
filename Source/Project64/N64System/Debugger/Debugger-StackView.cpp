@@ -49,6 +49,8 @@ LRESULT	CDebugStackView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /
 
 LRESULT CDebugStackView::OnDestroy(void)
 {
+    m_StackList.Detach();
+    m_SPStatic.Detach();
 	return 0;
 }
 

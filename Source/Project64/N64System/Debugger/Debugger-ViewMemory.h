@@ -50,7 +50,7 @@ private:
     void RefreshMemory(bool ResetCompare);
 
     HANDLE m_AutoRefreshThread;
-    static DWORD WINAPI AutoRefreshProc(void* _this);
+    static DWORD WINAPI AutoRefreshProc(void* _self);
 
     void SelectColors(uint32_t address, bool changed, COLORREF& bgColor, COLORREF& fgColor, COLORREF& fgHiColor);
     bool GetItemOffset(LPNMHDR lpNMHDR, uint32_t &offset);

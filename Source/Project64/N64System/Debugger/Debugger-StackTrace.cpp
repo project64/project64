@@ -74,6 +74,7 @@ LRESULT CDebugStackTrace::OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 
 LRESULT CDebugStackTrace::OnDestroy(void)
 {
+    m_List.Detach();
 	return FALSE;
 }
 

@@ -272,6 +272,7 @@ private:
 
 public:
     void Attach(HWND hWndNew);
+    HWND Detach();
     CWindow AddTab(char* caption, int dialogId, DLGPROC dlgProc);
     void ShowTab(int nPage);
     CRect GetPageRect();

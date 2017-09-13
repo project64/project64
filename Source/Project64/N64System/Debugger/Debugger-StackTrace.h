@@ -53,6 +53,7 @@ private:
 
     BEGIN_MSG_MAP_EX(CDebugStackTrace)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+        MSG_WM_DESTROY(OnDestroy)
         MESSAGE_HANDLER(WM_ACTIVATE, OnActivate)
         COMMAND_CODE_HANDLER(BN_CLICKED, OnClicked)
         NOTIFY_HANDLER_EX(IDC_STACKTRACE_LIST, NM_DBLCLK, OnListDblClicked)

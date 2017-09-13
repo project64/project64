@@ -68,7 +68,7 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
 		int CurrentFormatSel = m_FormatList.GetCurSel();
 		DumpFormat Format = (DumpFormat)m_FormatList.GetItemData(CurrentFormatSel);
 
-		const char* FileFilter;
+		const char* FileFilter = "All files (*.*)\0*.*\0";
 
 		if (Format == RawBigEndian)
 		{

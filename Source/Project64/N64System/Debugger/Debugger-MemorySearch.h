@@ -54,7 +54,7 @@ private:
         COMMAND_CODE_HANDLER(BN_CLICKED, OnClicked)
         NOTIFY_HANDLER_EX(IDC_LST_RESULTS, NM_RCLICK, OnResultRClick)
         NOTIFY_HANDLER_EX(IDC_LST_RESULTS, NM_DBLCLK, OnResultDblClick)
-        END_MSG_MAP()
+    END_MSG_MAP()
 
     LRESULT				OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
     LRESULT				OnClicked(WORD wNotifyCode, WORD wID, HWND /*hWndCtl*/, BOOL& bHandled);

@@ -156,7 +156,7 @@ public:
         return (short)m_OpCode.immediate > 0;
     }
 
-    bool ReadsGPR(int nReg)
+    bool ReadsGPR(unsigned int nReg)
     {
         uint32_t op = m_OpCode.op;
 
@@ -224,7 +224,7 @@ public:
         return false;
     }
 
-    bool WritesGPR(int nReg)
+    bool WritesGPR(unsigned int nReg)
     {
         uint32_t op = m_OpCode.op;
 

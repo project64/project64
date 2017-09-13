@@ -63,7 +63,7 @@ private:
     CDebugCommandsView* m_CommandsWindow;
 
     LRESULT OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnKeyUp(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+    LRESULT OnKeyUp(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
     {
         if (wParam == VK_RETURN || wParam == VK_ESCAPE)
         {

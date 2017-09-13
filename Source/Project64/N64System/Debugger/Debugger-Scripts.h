@@ -55,7 +55,7 @@ public:
 class CEditConsole : public CWindowImpl<CEditEval, CEdit>
 {
 private:
-    LRESULT OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+    LRESULT OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
         if (GetKeyState(VK_CONTROL) < 0)
         {
