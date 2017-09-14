@@ -66,16 +66,8 @@ void SetupTrace(void)
 
 void StartTrace(void)
 {
-    char log_dir[260];
-    memset(log_dir, 0, sizeof(log_dir));
-    short logDirSetting = FindSystemSettingId("Dir:Log");
-    short logFlushSetting = FindSystemSettingId("Log Auto Flush");
-    if (logDirSetting != 0)
-    {
-        GetSystemSettingSz(logDirSetting, log_dir, sizeof(log_dir));
-    }
-
-    if (strlen(log_dir) == 0)
+    const char * log_dir = g_settings ? g_settings->log_dir() : NULL;
+    if (log_dir == NULL || log_dir[0] == '\0')
     {
         return;
     }
@@ -85,6 +77,6 @@ void StartTrace(void)
     {
         LogFilePath.DirectoryCreate();
     }
-    g_LogFile = new CTraceFileLog(LogFilePath, GetSystemSetting(logFlushSetting) != 0, CLog::Log_New, 500);
+    g_LogFile = new CTraceFileLog(LogFilePath, g_settings->FlushLogs(), CLog::Log_New, 500);
     TraceAddModule(g_LogFile);
 }

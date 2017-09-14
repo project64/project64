@@ -109,6 +109,7 @@ EXPORT void CALL AiUpdate(int32_t /*Wait*/)
 EXPORT void CALL CloseDLL(void)
 {
     WriteTrace(TraceAudioInterface, TraceDebug, "Called");
+    CleanupAudioSettings();
 }
 
 EXPORT void CALL DllAbout(void * /*hParent*/)
@@ -159,7 +160,7 @@ EXPORT void CALL RomOpen()
     WriteTrace(TraceAudioInterface, TraceDebug, "Start");
     if (g_SoundDriver)
     {
-        g_SoundDriver->AI_SetFrequency(DEFAULT_FREQUENCY);
+        g_SoundDriver->AI_Startup();
     }
     WriteTrace(TraceAudioInterface, TraceDebug, "Done");
 }

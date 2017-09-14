@@ -13,11 +13,10 @@
 
 enum
 {
-    Logging_LogAudioInitShutdown,
-    Logging_LogAudioInterface,
-    Output_SwapChannels,
-    Output_DefaultFrequency,
-    Buffer_PrimarySize,
-    Buffer_SecondarySize,
-    Buffer_SecondaryNbr,
+    Set_Logging_MD5,
+    Set_Logging_Thread,
+    Set_Logging_Path,
+    Set_Logging_InitShutdown,
+    Set_Logging_Interface,
+    Set_Logging_Driver,
 };

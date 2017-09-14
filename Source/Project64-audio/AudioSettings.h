@@ -9,6 +9,37 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-#include <Settings/Settings.h>
+
+class CSettings
+{
+public:
+    CSettings();
+    ~CSettings();
+
+    inline bool AudioEnabled(void) const { return m_AudioEnabled; }
+    inline bool debugger_enabled(void) const { return m_debugger_enabled; }
+    inline bool FlushLogs(void) const { return m_FlushLogs; }
+    inline const char * log_dir(void) const { return m_log_dir; }
+
+    void ReadSettings();
+
+private:
+    void RegisterSettings(void);
+    void LogLevelChanged(void);
+
+    short m_Set_EnableAudio;
+    short m_Set_basic_mode;
+    short m_Set_debugger;
+    short m_Set_log_dir;
+    short m_Set_log_flush;
+    char m_log_dir[260];
+    bool m_FlushLogs;
+    bool m_AudioEnabled;
+    bool m_advanced_options;
+    bool m_debugger_enabled;
+};
+
+extern CSettings * g_settings;
 
 void SetupAudioSettings(void);
+void CleanupAudioSettings(void);

@@ -33,6 +33,23 @@ typedef struct threadLock_
 } threadLock;
 #endif
 
+/* Default start-time size of primary buffer (in equivalent output samples).
+This is the buffer where audio is loaded after it's extracted from n64's memory. */
+enum { PRIMARY_BUFFER_SIZE = 16384 };
+
+/* Size of a single secondary buffer, in output samples. This is the requested size of OpenSLES's
+hardware buffer, this should be a power of two. */
+enum { SECONDARY_BUFFER_SIZE = 1024 };
+
+/* This is the requested number of OpenSLES's hardware buffers */
+enum { SECONDARY_BUFFER_NBR = 2 };
+
+/* This sets default frequency what is used if rom doesn't want to change it.
+Probably only game that needs this is Zelda: Ocarina Of Time Master Quest
+*NOTICE* We should try to find out why Demos' frequencies are always wrong
+They tend to rely on a default frequency, apparently, never the same one ;) */
+enum { DEFAULT_FREQUENCY = 33600 };
+
 /* number of bytes per sample */
 enum
 {
@@ -46,17 +63,11 @@ uint8_t * g_primaryBuffer = NULL;
 /* Size of the primary buffer */
 uint32_t g_primaryBufferBytes = 0;
 
-/* Size of the primary audio buffer in equivalent output samples */
-unsigned int g_PrimaryBufferSize = PRIMARY_BUFFER_SIZE;
-
 /* Pointer to secondary buffers */
 uint8_t ** g_secondaryBuffers = NULL;
 
 /* Size of a single secondary buffer */
 uint32_t g_secondaryBufferBytes = 0;
-
-/* Size of a single secondary audio buffer in output samples */
-uint32_t g_SecondaryBufferSize = SECONDARY_BUFFER_SIZE;
 
 /* Position in the primary buffer where next audio chunk should be placed */
 uint32_t g_primaryBufferPos = 0;
@@ -64,17 +75,11 @@ uint32_t g_primaryBufferPos = 0;
 /* Index of the next secondary buffer available */
 uint32_t g_secondaryBufferIndex = 0;
 
-/* Number of secondary buffers */
-uint32_t g_SecondaryBufferNbr = SECONDARY_BUFFER_NBR;
-
 /* Audio frequency, this is usually obtained from the game, but for compatibility we set default value */
 uint32_t g_GameFreq = DEFAULT_FREQUENCY;
 
 /* SpeedFactor is used to increase/decrease game playback speed */
 uint32_t g_speed_factor = 100;
-
-/* If this is true then left and right channels are swapped */
-bool g_SwapChannels = false;
 
 /* Output Audio frequency */
 int g_OutputFreq = 44100;
@@ -104,7 +109,7 @@ SLAndroidSimpleBufferQueueItf g_bufferQueue = NULL;
 static bool CreatePrimaryBuffer(void)
 {
     WriteTrace(TraceAudioInitShutdown, TraceDebug, "Start");
-    unsigned int primaryBytes = (unsigned int)(g_PrimaryBufferSize * N64_SAMPLE_BYTES);
+    unsigned int primaryBytes = (unsigned int)(PRIMARY_BUFFER_SIZE * N64_SAMPLE_BYTES);
 
     WriteTrace(TraceAudioInitShutdown, TraceDebug, "Allocating memory for primary audio buffer: %i bytes.", primaryBytes);
 
@@ -141,7 +146,7 @@ static void CloseAudio(void)
     /* Delete Secondary buffers */
     if (g_secondaryBuffers != NULL)
     {
-        for (uint32_t i = 0; i < g_SecondaryBufferNbr; i++)
+        for (uint32_t i = 0; i < SECONDARY_BUFFER_NBR; i++)
         {
             if (g_secondaryBuffers[i] != NULL)
             {
@@ -201,12 +206,12 @@ static bool CreateSecondaryBuffers(void)
 {
     WriteTrace(TraceAudioInitShutdown, TraceDebug, "Start");
     bool status = true;
-    unsigned int secondaryBytes = (unsigned int)(g_SecondaryBufferSize * SLES_SAMPLE_BYTES);
+    unsigned int secondaryBytes = (unsigned int)(SECONDARY_BUFFER_SIZE * SLES_SAMPLE_BYTES);
 
-    WriteTrace(TraceAudioInitShutdown, TraceDebug, "Allocating memory for %d secondary audio buffers: %i bytes.", g_SecondaryBufferNbr, secondaryBytes);
+    WriteTrace(TraceAudioInitShutdown, TraceDebug, "Allocating memory for %d secondary audio buffers: %i bytes.", SECONDARY_BUFFER_NBR, secondaryBytes);
 
     /* Allocate number of secondary buffers */
-    g_secondaryBuffers = new uint8_t *[g_SecondaryBufferNbr];
+    g_secondaryBuffers = new uint8_t *[SECONDARY_BUFFER_NBR];
 
     if (g_secondaryBuffers == NULL)
     {
@@ -216,7 +221,7 @@ static bool CreateSecondaryBuffers(void)
     }
 
     /* Allocate size of each secondary buffers */
-    for (uint32_t i = 0; i < g_SecondaryBufferNbr; i++)
+    for (uint32_t i = 0; i < SECONDARY_BUFFER_NBR; i++)
     {
         g_secondaryBuffers[i] = new uint8_t[secondaryBytes];
 
@@ -389,7 +394,7 @@ void OpenSLESDriver::AI_SetFrequency(uint32_t freq)
     {
         g_OutputFreq = 11025;
         sample_rate = SL_SAMPLINGRATE_11_025;
-}
+    }
     else if ((freq / 1000) <= 22)
     {
         g_OutputFreq = 22050;
@@ -408,11 +413,6 @@ void OpenSLESDriver::AI_SetFrequency(uint32_t freq)
 #endif
 
     WriteTrace(TraceAudioInitShutdown, TraceInfo, "Requesting frequency: %iHz.", g_OutputFreq);
-
-    /* reload these because they gets re-assigned from data below, and InitializeAudio can be called more than once */
-    g_PrimaryBufferSize = GetSetting(Buffer_PrimarySize);
-    g_SecondaryBufferSize = GetSetting(Buffer_SecondarySize);
-    g_SecondaryBufferNbr = GetSetting(Buffer_SecondaryNbr);
 
     /* Close everything because InitializeAudio can be called more than once */
     CloseAudio();
@@ -456,7 +456,7 @@ void OpenSLESDriver::AI_SetFrequency(uint32_t freq)
         return;
     }
     pthread_mutex_lock(&(g_lock.mutex));
-    g_lock.value = g_lock.limit = g_SecondaryBufferNbr;
+    g_lock.value = g_lock.limit = SECONDARY_BUFFER_NBR;
     pthread_mutex_unlock(&(g_lock.mutex));
 
     /* Engine object */
@@ -505,7 +505,7 @@ void OpenSLESDriver::AI_SetFrequency(uint32_t freq)
 
     if (result == SL_RESULT_SUCCESS)
     {
-        SLDataLocator_AndroidSimpleBufferQueue loc_bufq = { SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, g_SecondaryBufferNbr };
+        SLDataLocator_AndroidSimpleBufferQueue loc_bufq = { SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, SECONDARY_BUFFER_NBR };
 
         SLDataFormat_PCM format_pcm = { SL_DATAFORMAT_PCM,2, sample_rate, SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
             (SL_SPEAKER_FRONT_LEFT | SL_SPEAKER_FRONT_RIGHT), SL_BYTEORDER_LITTLEENDIAN };
@@ -584,7 +584,12 @@ void OpenSLESDriver::AI_SetFrequency(uint32_t freq)
     }
 #endif
     WriteTrace(TraceAudioInitShutdown, TraceNotice, "Done");
-    }
+}
+
+void OpenSLESDriver::AI_Startup(void)
+{
+    AI_SetFrequency(DEFAULT_FREQUENCY);
+}
 
 void OpenSLESDriver::AI_Shutdown(void)
 {
@@ -601,26 +606,13 @@ void OpenSLESDriver::AI_LenChanged(uint8_t *start, uint32_t length)
 
         for (i = 0; i < length; i += 4)
         {
-            if (g_SwapChannels == 0)
-            {
-                /* Left channel */
-                g_primaryBuffer[g_primaryBufferPos + i] = start[i + 2];
-                g_primaryBuffer[g_primaryBufferPos + i + 1] = start[i + 3];
+            /* Left channel */
+            g_primaryBuffer[g_primaryBufferPos + i] = start[i + 2];
+            g_primaryBuffer[g_primaryBufferPos + i + 1] = start[i + 3];
 
-                /* Right channel */
-                g_primaryBuffer[g_primaryBufferPos + i + 2] = start[i];
-                g_primaryBuffer[g_primaryBufferPos + i + 3] = start[i + 1];
-            }
-            else
-            {
-                /* Left channel */
-                g_primaryBuffer[g_primaryBufferPos + i] = start[i];
-                g_primaryBuffer[g_primaryBufferPos + i + 1] = start[i + 1];
-
-                /* Right channel */
-                g_primaryBuffer[g_primaryBufferPos + i + 2] = start[i + 2];
-                g_primaryBuffer[g_primaryBufferPos + i + 3] = start[i + 3];
-            }
+            /* Right channel */
+            g_primaryBuffer[g_primaryBufferPos + i + 2] = start[i];
+            g_primaryBuffer[g_primaryBufferPos + i + 3] = start[i + 1];
         }
         g_primaryBufferPos += i;
     }
@@ -665,7 +657,7 @@ void OpenSLESDriver::AI_LenChanged(uint8_t *start, uint32_t length)
 
         g_secondaryBufferIndex++;
 
-        if (g_secondaryBufferIndex > (g_SecondaryBufferNbr - 1))
+        if (g_secondaryBufferIndex > (SECONDARY_BUFFER_NBR - 1))
         {
             g_secondaryBufferIndex = 0;
         }
