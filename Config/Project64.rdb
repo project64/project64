@@ -150,6 +150,15 @@ Bad ROM?.AutoFullScreen=False
 
 // ---- END OF HEADER, START OF ROM ENTRIES --------------------------
 //================  0-9  ================
+[B2242748-FFBD61DA-C:45]
+Good Name=007 - Goldfinger (Beta)
+32bit=No
+Counter Factor=1
+Fast SP=0
+Good Name=GOLDFINGER
+Linking=0
+RDRamSize=8388608
+
 [3B941695-F90A5EEB-C:50]
 Good Name=007 - The World is Not Enough (E) (M3)
 Internal Name=TWINE
@@ -2239,15 +2248,6 @@ SMM-FUNC=0
 SMM-PI DMA=0
 SMM-TLB=0
 Save Type=16kbit Eeprom
-
-[B2242748-FFBD61DA-C:45]
-Good Name=Goldfinger (Beta?)
-32bit=No
-Counter Factor=1
-Fast SP=0
-Good Name=GOLDFINGER
-Linking=0
-RDRamSize=8388608
 
 [EE4A0E33-8FD588C9-C:50]
 Good Name=GT 64 - Championship Edition (E) (M3)
