@@ -2512,7 +2512,6 @@ Status=Issues (plugin)
 Plugin Note=[video] HLE not supported
 32bit=No
 AudioResetOnLoad=Yes
-Counter Factor=1
 Fast SP=No
 HLE GFX=No
 Linking=Off
@@ -2531,7 +2530,6 @@ Status=Issues (plugin)
 Plugin Note=[video] HLE not supported
 32bit=No
 AudioResetOnLoad=Yes
-Counter Factor=1
 Fast SP=No
 HLE GFX=No
 Linking=Off
@@ -3025,14 +3023,14 @@ RDRAM Size=8
 Good Name=Last Legion UX (J)
 Internal Name=LASTLEGION UX
 Status=Compatible
-Plugin Note=HLE requires GLideN64
+Plugin Note=[video] HLE requires GLideN64
 RDRAM Size=8
 
 [0160E9E5-29A4CB68-C:45]
 Good Name=Last Legion UX (J) [T]
 Internal Name=LASTLEGION UX
 Status=Compatible
-Plugin Note=HLE requires GLideN64
+Plugin Note=[video] HLE requires GLideN64
 RDRAM Size=8
 
 [F478D8B3-9716DD6D-C:50]
@@ -5108,18 +5106,16 @@ Status=Compatible
 [EF703CA4-4D4A9AC9-C:4A]
 Good Name=Shin Nihon Pro Wrestling Toukon Road - Brave Spirits (J)
 Internal Name=TOUKON ROAD
-Status=Issues (plugin)
-Plugin Note=[video] HLE not supported
+Status=Compatible
+Plugin Note=[video] HLE requires GLideN64
 RDRAM Size=8
 Delay SI=Yes
-HLE GFX=No
 
 [551C7F43-9149831C-C:4A]
 Good Name=Shin Nihon Pro Wrestling Toukon Road 2 - The Next Generation (J)
 Internal Name=TOUKON ROAD2
-Status=Issues (plugin)
-Plugin Note=[video] HLE not supported
-HLE GFX=No
+Status=Compatible
+Plugin Note=[video] HLE requires GLideN64
 RDRAM Size=8
 
 [909535F8-118FEF8F-C:4A]
@@ -5344,48 +5340,44 @@ SMM-TLB=0
 [7EE0E8BB-49E411AA-C:50]
 Good Name=Star Wars - Rogue Squadron (E) (M3) (V1.0)
 Internal Name=Rogue Squadron
-Status=Issues (plugin)
-Plugin Note=[video] errors:various
+Status=Compatible
+Plugin Note=[video] HLE requires GLideN64
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
-HLE GFX=No
 RDRAM Size=8
 RSP-JumpTableSize=3584
 
 [219191C1-33183C61-C:50]
 Good Name=Star Wars - Rogue Squadron (E) (M3) (V1.1)
 Internal Name=Rogue Squadron
-Status=Issues (plugin)
-Plugin Note=[video] errors:various
+Status=Compatible
+Plugin Note=[video] HLE requires GLideN64
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
-HLE GFX=No
 RDRAM Size=8
 RSP-JumpTableSize=3584
 
 [66A24BEC-2EADD94F-C:45]
 Good Name=Star Wars - Rogue Squadron (U) (V1.0)
 Internal Name=Rogue Squadron
-Status=Issues (plugin)
-Plugin Note=[video] errors:various
+Status=Compatible
+Plugin Note=[video] HLE requires GLideN64
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
-HLE GFX=No
 RDRAM Size=8
 RSP-JumpTableSize=3584
 
 [C7F30CFA-ECB0FA36-C:45]
 Good Name=Star Wars - Rogue Squadron (U) (V1.1)
 Internal Name=Rogue Squadron
-Status=Issues (plugin)
-Plugin Note=[video] errors:various
+Status=Compatible
+Plugin Note=HLE requires GLideN64
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
-HLE GFX=No
 RDRAM Size=8
 RSP-JumpTableSize=3584
 
@@ -5426,9 +5418,8 @@ RDRAM Size=8
 Good Name=Star Wars - Shutsugeki! Rogue Chuutai (J)
 Internal Name=rogue squadron
 Status=Issues (plugin)
-Plugin Note=[video] errors:various
+Plugin Note=[video] HLE requires GLideN64
 32bit=No
-HLE GFX=No
 RDRAM Size=8
 RSP-JumpTableSize=3584
 
