@@ -154,10 +154,10 @@ Bad ROM?.AutoFullScreen=False
 Good Name=007 - Goldfinger (Beta)
 32bit=No
 Counter Factor=1
-Fast SP=0
+Fast SP=No
 Good Name=GOLDFINGER
-Linking=0
-RDRamSize=8388608
+Linking=Off
+RDRAM Size=8
 
 [3B941695-F90A5EEB-C:50]
 Good Name=007 - The World is Not Enough (E) (M3)
