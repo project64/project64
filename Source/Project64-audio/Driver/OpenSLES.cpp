@@ -664,3 +664,8 @@ void OpenSLESDriver::AI_LenChanged(uint8_t *start, uint32_t length)
     }
     WriteTrace(TraceAudioInterface, TraceDebug, "Done");
 }
+
+void OpenSLESDriver::AI_Update(bool Wait)
+{
+    m_AiUpdateEvent.IsTriggered(Wait ? SyncEvent::INFINITE_TIMEOUT : 0);
+}

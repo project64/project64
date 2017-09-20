@@ -14,8 +14,7 @@
 *                                                                           *
 ****************************************************************************/
 #pragma once
-
-#pragma once
+#include <Common/SyncEvent.h>
 #include <Project64-audio/Audio_1.1.h>
 #include "SoundBase.h"
 
@@ -27,4 +26,8 @@ public:
     void AI_Shutdown(void);
     void AI_SetFrequency(uint32_t freq);
     void AI_LenChanged(uint8_t *start, uint32_t length);
+    void AI_Update(bool Wait);
+
+private:
+    SyncEvent m_AiUpdateEvent;
 };

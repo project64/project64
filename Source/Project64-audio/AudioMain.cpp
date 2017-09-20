@@ -13,6 +13,7 @@
 * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
 *                                                                           *
 ****************************************************************************/
+#include <Common/Util.h>
 #include <Project64-audio/Driver/OpenSLES.h>
 #include "audio_1.1.h"
 #include "Version.h"
@@ -101,9 +102,18 @@ EXPORT uint32_t CALL AiReadLength(void)
     return 0;
 }
 
-EXPORT void CALL AiUpdate(int32_t /*Wait*/)
+EXPORT void CALL AiUpdate(int32_t Wait)
 {
-    WriteTrace(TraceAudioInterface, TraceDebug, "Called");
+    WriteTrace(TraceAudioInterface, TraceDebug, "Start (Wait: %s)", Wait ? "true" : "false");
+    if (g_SoundDriver)
+    {
+        g_SoundDriver->AI_Update(Wait != 0);
+    }
+    else
+    {
+        pjutil::Sleep(1);
+    }
+    WriteTrace(TraceAudioInterface, TraceDebug, "Done");
 }
 
 EXPORT void CALL CloseDLL(void)
@@ -145,6 +155,7 @@ EXPORT int32_t CALL InitiateAudio(AUDIO_INFO Audio_Info)
     WriteTrace(TraceAudioInterface, TraceDebug, "Start");
     if (g_SoundDriver != NULL)
     {
+        g_SoundDriver->AI_Shutdown();
         delete g_SoundDriver;
     }
     g_AudioInfo = Audio_Info;
