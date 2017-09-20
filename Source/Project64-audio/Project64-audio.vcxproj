@@ -48,6 +48,7 @@
     <ClInclude Include="AudioSettings.h" />
     <ClInclude Include="Driver\OpenSLES.h" />
     <ClInclude Include="Driver\SoundBase.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SettingsID.h" />
     <ClInclude Include="trace.h" />
     <ClInclude Include="Version.h" />
@@ -59,5 +60,8 @@
     <ProjectReference Include="..\Settings\Settings.vcxproj">
       <Project>{8b9961b1-88d9-4ea3-a752-507a00dd9f3d}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Project64-audio.rc" />
   </ItemGroup>
 </Project>
