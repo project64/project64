@@ -14,7 +14,11 @@
 *                                                                           *
 ****************************************************************************/
 #include <Common/Util.h>
+#ifdef _WIN32
+#include <Project64-audio/Driver/DirectSound.h>
+#else
 #include <Project64-audio/Driver/OpenSLES.h>
+#endif
 #include "audio_1.1.h"
 #include "Version.h"
 #include <stdio.h>
@@ -32,7 +36,11 @@ AUDIO_INFO g_AudioInfo;
 bool g_PluginInit = false;
 uint32_t g_Dacrate = 0;
 
+#ifdef _WIN32
+DirectSoundDriver * g_SoundDriver = NULL;
+#else
 OpenSLESDriver * g_SoundDriver = NULL;
+#endif
 
 void PluginInit(void)
 {
@@ -159,7 +167,9 @@ EXPORT int32_t CALL InitiateAudio(AUDIO_INFO Audio_Info)
         delete g_SoundDriver;
     }
     g_AudioInfo = Audio_Info;
-#ifdef ANDROID
+#ifdef _WIN32
+    g_SoundDriver = new DirectSoundDriver;
+#else
     g_SoundDriver = new OpenSLESDriver;
 #endif
     WriteTrace(TraceAudioInterface, TraceDebug, "Done (res: true)");

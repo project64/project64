@@ -33,11 +33,16 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(Root)Source\3rdParty\directx\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AudioMain.cpp" />
     <ClCompile Include="AudioSettings.cpp" />
+    <ClCompile Include="Driver\DirectSound.cpp" />
     <ClCompile Include="Driver\OpenSLES.cpp" />
     <ClCompile Include="Driver\SoundBase.cpp" />
     <ClCompile Include="trace.cpp" />
@@ -46,6 +51,7 @@
     <ClInclude Include="AudioMain.h" />
     <ClInclude Include="Audio_1.1.h" />
     <ClInclude Include="AudioSettings.h" />
+    <ClInclude Include="Driver\DirectSound.h" />
     <ClInclude Include="Driver\OpenSLES.h" />
     <ClInclude Include="Driver\SoundBase.h" />
     <ClInclude Include="resource.h" />
