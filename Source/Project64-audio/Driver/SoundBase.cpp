@@ -106,6 +106,12 @@ void SoundDriverBase::AI_Update(bool Wait)
     m_AiUpdateEvent.IsTriggered(Wait ? SyncEvent::INFINITE_TIMEOUT : 0);
 }
 
+uint32_t SoundDriverBase::AI_ReadLength()
+{
+    CGuard guard(m_CS);
+    return m_AI_DMAPrimaryBytes & ~0x3;
+}
+
 void SoundDriverBase::LoadAiBuffer(uint8_t *start, uint32_t length)
 {
     uint8_t nullBuff[MAX_SIZE];

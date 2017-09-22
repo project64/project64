@@ -106,8 +106,15 @@ EXPORT void CALL AiLenChanged(void)
 
 EXPORT uint32_t CALL AiReadLength(void)
 {
-    WriteTrace(TraceAudioInterface, TraceDebug, "Called");
-    return 0;
+    WriteTrace(TraceAudioInterface, TraceDebug, "Start");
+    uint32_t len = 0;
+    if (g_SoundDriver != NULL)
+    {
+        *g_AudioInfo.AI_LEN_REG = g_SoundDriver->AI_ReadLength();
+        len = *g_AudioInfo.AI_LEN_REG;
+    }
+    WriteTrace(TraceAudioInterface, TraceDebug, "Done (len: 0x%X)", len);
+    return len;
 }
 
 EXPORT void CALL AiUpdate(int32_t Wait)
