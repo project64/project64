@@ -173,17 +173,25 @@ Players=4
 ForceFeedback=No
 
 [2DC4FFCC-C8FF5A21-C:50]
-Good Name=Aidyn Chronicles - The First Mage (E) [!]
+Good Name=Aidyn Chronicles - The First Mage (E)[!]
 Developer=H2O Entertainment
-ReleaseDate=2001/03/20
+ReleaseDate=2001/08/03
 Genre=RPG
 Players=1
 ForceFeedback=No
 
 [E6A95A4F-BAD2EA23-C:45]
-Good Name=Aidyn Chronicles - The First Mage (U) [!]
+Good Name=Aidyn Chronicles - The First Mage (U)[!](V1.0)
 Developer=H2O Entertainment
-ReleaseDate=2001/03/20
+ReleaseDate=2001/03/14
+Genre=RPG
+Players=1
+ForceFeedback=No
+
+[112051D2-68BEF8AC-C:45]
+Good Name=Aidyn Chronicles - The First Mage (U)[!](V1.1)
+Developer=H2O Entertainment
+ReleaseDate=2001/??/??
 Genre=RPG
 Players=1
 ForceFeedback=No
