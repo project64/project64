@@ -182,6 +182,11 @@ void SoundDriverBase::BufferAudio()
     WriteTrace(TraceAudioDriver, TraceVerbose, "Done (m_BufferRemaining: 0x%08X)", m_BufferRemaining);
 }
 
+uint32_t SoundDriverBase::AI_ReadLength()
+{
+	return (m_AI_DMAPrimaryBytes & ~ 3);
+}
+
 void SoundDriverBase::SetFrequency(uint32_t /*Frequency*/)
 {
 }
