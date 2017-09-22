@@ -28,6 +28,7 @@ public:
     void AI_Startup();
     void AI_Shutdown();
     void AI_Update(bool Wait);
+    uint32_t AI_ReadLength();
 
     virtual void SetFrequency(uint32_t Frequency);
     virtual void StartAudio();
