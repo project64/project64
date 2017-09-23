@@ -184,7 +184,7 @@ void SoundDriverBase::BufferAudio()
 
 uint32_t SoundDriverBase::AI_ReadLength()
 {
-	return (m_AI_DMAPrimaryBytes & ~ 3);
+    return (m_AI_DMAPrimaryBytes & ~ 3);
 }
 
 void SoundDriverBase::SetFrequency(uint32_t /*Frequency*/)
