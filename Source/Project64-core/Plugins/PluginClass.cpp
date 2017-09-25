@@ -369,6 +369,11 @@ bool CPlugins::Reset(CN64System * System)
 
 void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
 {
+    if (g_BaseSystem)
+    {
+        g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_Settings);
+    }
+
     switch (Type)
     {
     case PLUGIN_TYPE_RSP:
@@ -418,6 +423,11 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
     case PLUGIN_TYPE_NONE:
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    if (g_BaseSystem)
+    {
+        g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_Settings);
     }
 }
 
