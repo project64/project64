@@ -77,11 +77,11 @@ typedef struct
 
 typedef struct
 {
-    void (*DisplayError)(const char * Message);
-    void (*FatalError)(const char * Message);
-    void (*DisplayMessage)(int DisplayTime, const char * Message);
-    void (*DisplayMessage2)(const char * Message);
-    void (*BreakPoint)(const char * FileName, int32_t LineNumber);
+    void(*DisplayError)(const char * Message);
+    void(*FatalError)(const char * Message);
+    void(*DisplayMessage)(int DisplayTime, const char * Message);
+    void(*DisplayMessage2)(const char * Message);
+    void(*BreakPoint)(const char * FileName, int32_t LineNumber);
 } PLUGIN_NOTIFICATION;
 
 static PLUGIN_SETTINGS  g_PluginSettings;
@@ -318,6 +318,16 @@ void SetSetting(short SettingID, unsigned int Value)
 void SetSettingSz(short SettingID, const char * Value)
 {
     g_PluginSettings.SetSettingSz(g_PluginSettings.handle, SettingID + g_PluginSettings.SettingStartRange, Value);
+}
+
+void SetSystemSetting(short SettingID, unsigned int Value)
+{
+    g_PluginSettings.SetSetting(g_PluginSettings.handle, SettingID, Value);
+}
+
+void SetSystemSettingSz(short SettingID, const char * Value)
+{
+    g_PluginSettings.SetSettingSz(g_PluginSettings.handle, SettingID, Value);
 }
 
 void SettingsRegisterChange(bool SystemSetting, int SettingID, void * Data, SettingChangedFunc Func)

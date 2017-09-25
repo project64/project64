@@ -21,7 +21,8 @@ public:
     bool Initialize();
     void StopAudio();							// Stops the Audio PlayBack (as if paused)
     void StartAudio();							// Starts the Audio PlayBack (as if unpaused)
-    void SetFrequency(uint32_t);
+    void SetFrequency(uint32_t Frequency);
+    void SetVolume(uint32_t Volume);
 
 private:
     static uint32_t __stdcall stAudioThreadProc(DirectSoundDriver * _this) { _this->AudioThreadProc(); return 0; }

@@ -39,6 +39,9 @@
     <ClCompile Include="Driver\DirectSound.cpp">
       <Filter>Source Files\Driver</Filter>
     </ClCompile>
+    <ClCompile Include="ConfigUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio_1.1.h">
@@ -70,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="Driver\DirectSound.h">
       <Filter>Header Files\Driver</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigUI.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

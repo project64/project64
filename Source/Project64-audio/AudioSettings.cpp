@@ -24,15 +24,41 @@ CSettings::CSettings() :
     m_FlushLogs(false),
     m_AudioEnabled(true),
     m_advanced_options(false),
-    m_debugger_enabled(false)
+    m_debugger_enabled(false),
+    m_Volume(100)
 {
     memset(m_log_dir, 0, sizeof(m_log_dir));
     RegisterSettings();
-    ReadSettings();
+    SettingsChanged();
+
+    if (m_Set_EnableAudio != 0) { SettingsRegisterChange(false, m_Set_EnableAudio, this, stSettingsChanged); }
+    if (m_Set_basic_mode != 0) { SettingsRegisterChange(false, m_Set_basic_mode, this, stSettingsChanged); }
+    if (m_Set_debugger != 0) { SettingsRegisterChange(false, m_Set_debugger, this, stSettingsChanged); }
+    if (m_Set_log_flush != 0) { SettingsRegisterChange(false, m_Set_log_flush, this, stSettingsChanged); }
+    SettingsRegisterChange(false, Set_Volume, this, stSettingsChanged);
+
+    SettingsRegisterChange(false, Set_Logging_MD5, this, stLogLevelChanged);
+    SettingsRegisterChange(false, Set_Logging_Thread, this, stLogLevelChanged);
+    SettingsRegisterChange(false, Set_Logging_Path, this, stLogLevelChanged);
+    SettingsRegisterChange(false, Set_Logging_InitShutdown, this, stLogLevelChanged);
+    SettingsRegisterChange(false, Set_Logging_Interface, this, stLogLevelChanged);
+    SettingsRegisterChange(false, Set_Logging_Driver, this, stLogLevelChanged);
 }
 
 CSettings::~CSettings()
 {
+    if (m_Set_EnableAudio != 0) { SettingsUnregisterChange(false, m_Set_EnableAudio, this, stSettingsChanged); }
+    if (m_Set_basic_mode != 0) { SettingsUnregisterChange(false, m_Set_basic_mode, this, stSettingsChanged); }
+    if (m_Set_debugger != 0) { SettingsUnregisterChange(false, m_Set_debugger, this, stSettingsChanged); }
+    if (m_Set_log_flush != 0) { SettingsUnregisterChange(false, m_Set_log_flush, this, stSettingsChanged); }
+    SettingsUnregisterChange(false, Set_Volume, this, stSettingsChanged);
+
+    SettingsUnregisterChange(false, Set_Logging_MD5, this, stLogLevelChanged);
+    SettingsUnregisterChange(false, Set_Logging_Thread, this, stLogLevelChanged);
+    SettingsUnregisterChange(false, Set_Logging_Path, this, stLogLevelChanged);
+    SettingsUnregisterChange(false, Set_Logging_InitShutdown, this, stLogLevelChanged);
+    SettingsUnregisterChange(false, Set_Logging_Interface, this, stLogLevelChanged);
+    SettingsUnregisterChange(false, Set_Logging_Driver, this, stLogLevelChanged);
 }
 
 void CSettings::RegisterSettings(void)
@@ -45,6 +71,7 @@ void CSettings::RegisterSettings(void)
     m_Set_log_dir = FindSystemSettingId("Dir:Log");
 
     SetModuleName("Project64-Audio");
+    RegisterSetting(Set_Volume, Data_DWORD_General, "Volume", "Settings", 100, NULL);
     RegisterSetting(Set_Logging_MD5, Data_DWORD_General, "MD5", "Logging", g_ModuleLogLevel[TraceMD5], NULL);
     RegisterSetting(Set_Logging_Thread, Data_DWORD_General, "Thread", "Logging", g_ModuleLogLevel[TraceThread], NULL);
     RegisterSetting(Set_Logging_Path, Data_DWORD_General, "Path", "Logging", g_ModuleLogLevel[TracePath], NULL);
@@ -54,17 +81,20 @@ void CSettings::RegisterSettings(void)
     LogLevelChanged();
 }
 
-void CSettings::ReadSettings()
+void CSettings::SetAudioEnabled(bool Enabled)
 {
-    m_AudioEnabled = m_Set_EnableAudio ? GetSystemSetting(m_Set_EnableAudio) != 0 : true;
-    m_advanced_options = m_Set_basic_mode ? GetSystemSetting(m_Set_basic_mode) == 0 : false;
-    m_debugger_enabled = m_advanced_options && m_Set_debugger ? GetSystemSetting(m_Set_debugger) == 1 : false;
-
-    if (m_Set_log_dir != 0)
+    if (m_Set_EnableAudio != 0)
     {
-        GetSystemSettingSz(m_Set_log_dir, m_log_dir, sizeof(m_log_dir));
+        SetSystemSetting(m_Set_EnableAudio, Enabled ? 1 : 0);
     }
-    m_FlushLogs = m_Set_log_flush != 0 ? GetSystemSetting(m_Set_log_flush) != 0 : false;
+}
+
+void CSettings::SetVolume(uint32_t Volume)
+{
+    if (m_Set_EnableAudio != 0)
+    {
+        SetSetting(Set_Volume, Volume);
+    }
 }
 
 void CSettings::LogLevelChanged(void)
@@ -75,6 +105,20 @@ void CSettings::LogLevelChanged(void)
     g_ModuleLogLevel[TraceAudioInitShutdown] = GetSetting(Set_Logging_InitShutdown);
     g_ModuleLogLevel[TraceAudioInterface] = GetSetting(Set_Logging_Interface);
     g_ModuleLogLevel[TraceAudioDriver] = GetSetting(Set_Logging_Driver);
+}
+
+void CSettings::SettingsChanged(void)
+{
+    m_Volume = GetSetting(Set_Volume);
+    m_AudioEnabled = m_Set_EnableAudio ? GetSystemSetting(m_Set_EnableAudio) != 0 : true;
+    m_advanced_options = m_Set_basic_mode ? GetSystemSetting(m_Set_basic_mode) == 0 : false;
+    m_debugger_enabled = m_advanced_options && m_Set_debugger ? GetSystemSetting(m_Set_debugger) == 1 : false;
+
+    if (m_Set_log_dir != 0)
+    {
+        GetSystemSettingSz(m_Set_log_dir, m_log_dir, sizeof(m_log_dir));
+    }
+    m_FlushLogs = m_Set_log_flush != 0 ? GetSystemSetting(m_Set_log_flush) != 0 : false;
 }
 
 void SetupAudioSettings(void)

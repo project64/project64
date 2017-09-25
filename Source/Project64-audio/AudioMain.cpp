@@ -26,9 +26,8 @@
 #include "AudioSettings.h"
 #include "trace.h"
 #include "AudioMain.h"
+#include "ConfigUI.h"
 #include "SettingsID.h"
-
-bool g_AudioEnabled = true;
 
 /* Read header for type definition */
 AUDIO_INFO g_AudioInfo;
@@ -94,7 +93,7 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
 EXPORT void CALL AiLenChanged(void)
 {
     WriteTrace(TraceAudioInterface, TraceDebug, "Start (DRAM_ADDR = 0x%X Len = 0x%X)", *g_AudioInfo.AI_DRAM_ADDR_REG, *g_AudioInfo.AI_LEN_REG);
-    if (g_SoundDriver && g_AudioEnabled)
+    if (g_SoundDriver && g_settings->AudioEnabled())
     {
         uint32_t Len = *g_AudioInfo.AI_LEN_REG & 0x3FFF8;
         uint8_t * Buffer = (g_AudioInfo.RDRAM + (*g_AudioInfo.AI_DRAM_ADDR_REG & 0x00FFFFF8));
@@ -142,9 +141,15 @@ EXPORT void CALL DllAbout(void * /*hParent*/)
     WriteTrace(TraceAudioInterface, TraceDebug, "Called");
 }
 
-EXPORT void CALL DllConfig(void * /*hParent*/)
+EXPORT void CALL DllConfig(void * hParent)
 {
-    WriteTrace(TraceAudioInterface, TraceDebug, "Called");
+#ifdef _WIN32
+    ConfigAudio(hParent);
+    if (g_SoundDriver)
+    {
+        g_SoundDriver->SetVolume(g_settings->GetVolume());
+    }
+#endif
 }
 
 EXPORT void CALL DllTest(void * /*hParent*/)

@@ -16,6 +16,9 @@ extern "C" {
     void SetSetting(short SettingID, unsigned int Value);
     void SetSettingSz(short SettingID, const char * Value);
 
+    void SetSystemSetting(short SettingID, unsigned int Value);
+    void SetSystemSettingSz(short SettingID, const char * Value);
+
     // enum's
     enum SETTING_DATA_TYPE
     {
