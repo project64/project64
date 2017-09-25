@@ -3386,16 +3386,11 @@ void CArmRecompilerOps::SPECIAL_XOR()
             ProtectGPR(MappedReg);
             if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs))
             {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-                CArmRecompilerOps::UnknownOpcode();
-                /*uint32_t ConstHi, ConstLo;
-
-                ConstHi = Is32Bit(ConstReg) ? (uint32_t)(GetMipsRegLo_S(ConstReg) >> 31) : GetMipsRegHi(ConstReg);
-                ConstLo = GetMipsRegLo(ConstReg);
+                uint32_t ConstHi = Is32Bit(ConstReg) ? (uint32_t)(GetMipsRegLo_S(ConstReg) >> 31) : GetMipsRegHi(ConstReg);
+                uint32_t ConstLo = GetMipsRegLo(ConstReg);
                 Map_GPR_64bit(m_Opcode.rd, MappedReg);
-                if (ConstHi != 0) { XorConstToX86Reg(GetMipsRegMapHi(m_Opcode.rd), ConstHi); }
-                if (ConstLo != 0) { XorConstToX86Reg(GetMipsRegMapLo(m_Opcode.rd), ConstLo); }
-                */
+                if (ConstHi != 0) { XorConstToArmReg(GetMipsRegMapHi(m_Opcode.rd), ConstHi); }
+                if (ConstLo != 0) { XorConstToArmReg(GetMipsRegMapLo(m_Opcode.rd), ConstLo); }
             }
             else
             {
