@@ -132,7 +132,7 @@ void CSettings::RegisterSettings(void)
     m_Set_log_flush = FindSystemSettingId("Log Auto Flush");
     m_Set_log_dir = FindSystemSettingId("Dir:Log");
 
-    SetModuleName("Glide64");
+    SetModuleName("Video");
     general_setting(Set_Resolution, "resolution", GetDefaultScreenRes());
     general_setting(Set_vsync, "vsync", true);
     general_setting(Set_texenh_options, "texenh_options", false);

@@ -54,7 +54,7 @@ protected:
     static void GameChanged(void * /*Data */);
     static void BaseDirChanged(void * /*Data */);
 
-    static bool IsGlideSetting(const char * Name);
+    static bool IsVideoSetting(const char * Name);
     static const char * StripNameSection(const char * Name);
     virtual const char * Section(void) const { return m_SectionIdent->c_str(); }
 
@@ -63,11 +63,11 @@ protected:
     const int32_t     m_DefaultValue;
     const SettingID   m_DefaultSetting;
     const bool        m_DeleteOnDefault;
-    bool              m_GlideSetting;
+    bool              m_VideoSetting;
 
     static stdstr   * m_SectionIdent;
     static CIniFile * m_SettingsIniFile;
-    static CIniFile * m_Project64IniFile;
+    static CIniFile * m_VideoIniFile;
 
 private:
     CSettingTypeRomDatabase();                                          // Disable default constructor

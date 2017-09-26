@@ -12,7 +12,7 @@
 #include "SettingsType-RomDatabase.h"
 
 CIniFile * CSettingTypeRomDatabase::m_SettingsIniFile = NULL;
-CIniFile * CSettingTypeRomDatabase::m_Project64IniFile = NULL;
+CIniFile * CSettingTypeRomDatabase::m_VideoIniFile = NULL;
 stdstr   * CSettingTypeRomDatabase::m_SectionIdent = NULL;
 
 CSettingTypeRomDatabase::CSettingTypeRomDatabase(const char * Name, int DefaultValue, bool DeleteOnDefault) :
@@ -21,7 +21,7 @@ CSettingTypeRomDatabase::CSettingTypeRomDatabase(const char * Name, int DefaultV
     m_DefaultValue(DefaultValue),
     m_DefaultSetting(Default_Constant),
     m_DeleteOnDefault(DeleteOnDefault),
-    m_GlideSetting(IsGlideSetting(Name))
+    m_VideoSetting(IsVideoSetting(Name))
 {
 }
 
@@ -31,7 +31,7 @@ CSettingTypeRomDatabase::CSettingTypeRomDatabase(const char * Name, bool Default
     m_DefaultValue(DefaultValue),
     m_DefaultSetting(Default_Constant),
     m_DeleteOnDefault(DeleteOnDefault),
-    m_GlideSetting(IsGlideSetting(Name))
+    m_VideoSetting(IsVideoSetting(Name))
 {
 }
 
@@ -41,7 +41,7 @@ CSettingTypeRomDatabase::CSettingTypeRomDatabase(const char * Name, const char *
     m_DefaultValue(0),
     m_DefaultSetting(Default_Constant),
     m_DeleteOnDefault(DeleteOnDefault),
-    m_GlideSetting(IsGlideSetting(Name))
+    m_VideoSetting(IsVideoSetting(Name))
 {
 }
 
@@ -51,7 +51,7 @@ CSettingTypeRomDatabase::CSettingTypeRomDatabase(const char * Name, SettingID De
     m_DefaultValue(0),
     m_DefaultSetting(DefaultSetting),
     m_DeleteOnDefault(DeleteOnDefault),
-    m_GlideSetting(IsGlideSetting(Name))
+    m_VideoSetting(IsVideoSetting(Name))
 {
 }
 
@@ -64,7 +64,7 @@ void CSettingTypeRomDatabase::Initialize(void)
     WriteTrace(TraceAppInit, TraceDebug, "Start");
 
     m_SettingsIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
-    m_Project64IniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_Project64VideoRDB).c_str());
+    m_VideoIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_Project64VideoRDB).c_str());
 
     g_Settings->RegisterChangeCB(Game_IniKey, NULL, GameChanged);
     g_Settings->RegisterChangeCB(Cmd_BaseDirectory, NULL, BaseDirChanged);
@@ -82,10 +82,10 @@ void CSettingTypeRomDatabase::CleanUp(void)
         delete m_SettingsIniFile;
         m_SettingsIniFile = NULL;
     }
-    if (m_Project64IniFile)
+    if (m_VideoIniFile)
     {
-        delete m_Project64IniFile;
-        m_Project64IniFile = NULL;
+        delete m_VideoIniFile;
+        m_VideoIniFile = NULL;
     }
     if (m_SectionIdent)
     {
@@ -101,13 +101,13 @@ void CSettingTypeRomDatabase::BaseDirChanged(void * /*Data */)
         delete m_SettingsIniFile;
         m_SettingsIniFile = NULL;
     }
-    if (m_Project64IniFile)
+    if (m_VideoIniFile)
     {
-        delete m_Project64IniFile;
-        m_Project64IniFile = NULL;
+        delete m_VideoIniFile;
+        m_VideoIniFile = NULL;
     }
     m_SettingsIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
-    m_Project64IniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_Project64VideoRDB).c_str());
+    m_VideoIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_Project64VideoRDB).c_str());
 }
 
 void CSettingTypeRomDatabase::GameChanged(void * /*Data */)
@@ -129,9 +129,9 @@ bool CSettingTypeRomDatabase::Load(int Index, bool & Value) const
 bool CSettingTypeRomDatabase::Load(int Index, uint32_t & Value) const
 {
     bool bRes = false;
-    if (m_GlideSetting)
+    if (m_VideoSetting)
     {
-        bRes = m_Project64IniFile->GetNumber(Section(), m_KeyName.c_str(), Value, Value);
+        bRes = m_VideoIniFile->GetNumber(Section(), m_KeyName.c_str(), Value, Value);
     }
     else
     {
@@ -148,9 +148,9 @@ bool CSettingTypeRomDatabase::Load(int Index, stdstr & Value) const
 {
     stdstr temp_value;
     bool bRes = false;
-    if (m_GlideSetting)
+    if (m_VideoSetting)
     {
-        bRes = m_Project64IniFile->GetString(Section(), m_KeyName.c_str(), m_DefaultStr, temp_value);
+        bRes = m_VideoIniFile->GetString(Section(), m_KeyName.c_str(), m_DefaultStr, temp_value);
     }
     else
     {
@@ -221,9 +221,9 @@ void CSettingTypeRomDatabase::Save(int /*Index*/, bool Value)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-    if (m_GlideSetting)
+    if (m_VideoSetting)
     {
-        m_Project64IniFile->SaveNumber(Section(), m_KeyName.c_str(), Value);
+        m_VideoIniFile->SaveNumber(Section(), m_KeyName.c_str(), Value);
     }
     else
     {
@@ -247,9 +247,9 @@ void CSettingTypeRomDatabase::Save(int Index, uint32_t Value)
             return;
         }
     }
-    if (m_GlideSetting)
+    if (m_VideoSetting)
     {
-        m_Project64IniFile->SaveNumber(Section(), m_KeyName.c_str(), Value);
+        m_VideoIniFile->SaveNumber(Section(), m_KeyName.c_str(), Value);
     }
     else
     {
@@ -263,9 +263,9 @@ void CSettingTypeRomDatabase::Save(int /*Index*/, const stdstr & Value)
     {
         return;
     }
-    if (m_GlideSetting)
+    if (m_VideoSetting)
     {
-        m_Project64IniFile->SaveString(Section(), m_KeyName.c_str(), Value.c_str());
+        m_VideoIniFile->SaveString(Section(), m_KeyName.c_str(), Value.c_str());
     }
     else
     {
@@ -279,9 +279,9 @@ void CSettingTypeRomDatabase::Save(int /*Index*/, const char * Value)
     {
         return;
     }
-    if (m_GlideSetting)
+    if (m_VideoSetting)
     {
-        m_Project64IniFile->SaveString(Section(), m_KeyName.c_str(), Value);
+        m_VideoIniFile->SaveString(Section(), m_KeyName.c_str(), Value);
     }
     else
     {
@@ -295,9 +295,9 @@ void CSettingTypeRomDatabase::Delete(int /*Index*/)
     {
         return;
     }
-    if (m_GlideSetting)
+    if (m_VideoSetting)
     {
-        m_Project64IniFile->SaveString(Section(), m_KeyName.c_str(), NULL);
+        m_VideoIniFile->SaveString(Section(), m_KeyName.c_str(), NULL);
     }
     else
     {
@@ -305,9 +305,9 @@ void CSettingTypeRomDatabase::Delete(int /*Index*/)
     }
 }
 
-bool CSettingTypeRomDatabase::IsGlideSetting(const char * Name)
+bool CSettingTypeRomDatabase::IsVideoSetting(const char * Name)
 {
-    if (_strnicmp(Name, "Glide64-", 8) == 0)
+    if (_strnicmp(Name, "Video-", 6) == 0)
     {
         return true;
     }
@@ -316,9 +316,9 @@ bool CSettingTypeRomDatabase::IsGlideSetting(const char * Name)
 
 const char * CSettingTypeRomDatabase::StripNameSection(const char * Name)
 {
-    if (_strnicmp(Name, "Glide64-", 8) == 0)
+    if (_strnicmp(Name, "Video-", 6) == 0)
     {
-        return &Name[8];
+        return &Name[6];
     }
     return Name;
 }

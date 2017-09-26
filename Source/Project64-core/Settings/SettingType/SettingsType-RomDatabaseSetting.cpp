@@ -16,9 +16,9 @@ CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(const char * Sect
 	m_SectionIdent(SectionIdent)
 {
 	m_SectionIdent.Replace("\\","-");
-	if (!m_GlideSetting)
+	if (!m_VideoSetting)
 	{
-		m_GlideSetting = IsGlideSetting(m_SectionIdent.c_str());
+		m_VideoSetting = IsVideoSetting(m_SectionIdent.c_str());
 		m_SectionIdent = StripNameSection(m_SectionIdent.c_str());
 	}
 }
@@ -28,9 +28,9 @@ CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(const char * Sect
 	m_SectionIdent(SectionIdent)
 {
 	m_SectionIdent.Replace("\\","-");
-	if (!m_GlideSetting)
+	if (!m_VideoSetting)
 	{
-		m_GlideSetting = IsGlideSetting(m_SectionIdent.c_str());
+		m_VideoSetting = IsVideoSetting(m_SectionIdent.c_str());
 		m_SectionIdent = StripNameSection(m_SectionIdent.c_str());
 	}
 }
@@ -40,9 +40,9 @@ CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(const char * Sect
 	m_SectionIdent(SectionIdent)
 {
 	m_SectionIdent.Replace("\\","-");
-	if (!m_GlideSetting)
+	if (!m_VideoSetting)
 	{
-		m_GlideSetting = IsGlideSetting(m_SectionIdent.c_str());
+		m_VideoSetting = IsVideoSetting(m_SectionIdent.c_str());
 		m_SectionIdent = StripNameSection(m_SectionIdent.c_str());
 	}
 }
@@ -52,9 +52,9 @@ CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(const char * Sect
 	m_SectionIdent(SectionIdent)
 {
 	m_SectionIdent.Replace("\\","-");
-	if (!m_GlideSetting)
+	if (!m_VideoSetting)
 	{
-		m_GlideSetting = IsGlideSetting(m_SectionIdent.c_str());
+		m_VideoSetting = IsVideoSetting(m_SectionIdent.c_str());
 		m_SectionIdent = StripNameSection(m_SectionIdent.c_str());
 	}
 }
