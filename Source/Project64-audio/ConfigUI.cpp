@@ -24,10 +24,13 @@
 #include <wtl/atlcrack.h>
 #pragma warning(pop)
 #include <Settings/Settings.h>
+#include <Common/StdString.h>
 #include "trace.h"
 #include "AudioSettings.h"
 #include "SettingsID.h"
 #include "resource.h"
+
+extern bool g_romopen;
 
 void SetComboBoxIndex(CComboBox & cmb, uint32_t data)
 {
@@ -90,6 +93,63 @@ private:
 
     CTrackBarCtrl m_Volume;
     CButton m_btnMute;
+};
+
+class CGameSettings :
+    public CPropertyPageImpl<CGameSettings>
+{
+public:
+    enum { IDD = IDD_GAME_SETTING };
+
+    BEGIN_MSG_MAP(CDebugSettings)
+        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+        COMMAND_HANDLER(IDC_BUFFER_DIVIDER, EN_CHANGE, ItemChanged)
+        COMMAND_HANDLER(IDC_BUFFER_LEVEL, EN_CHANGE, ItemChanged)
+        CHAIN_MSG_MAP(CPropertyPageImpl<CGameSettings>)
+    END_MSG_MAP()
+
+    LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+    {
+        m_BufferDivider.Attach(GetDlgItem(IDC_BUFFER_DIVIDER));
+        m_BufferDivider.SetWindowText(stdstr_f("%d", g_settings->BufferDivider()).c_str());
+
+        m_BufferLevel.Attach(GetDlgItem(IDC_BUFFER_LEVEL));
+        m_BufferLevel.SetWindowText(stdstr_f("%d", g_settings->BufferLevel()).c_str());
+
+        m_btnSyncAudio.Attach(GetDlgItem(IDC_SYNC_AUDIO));
+        m_btnSyncAudio.SetCheck(g_settings->SyncAudio() ? BST_CHECKED : BST_UNCHECKED);
+        return TRUE;
+    }
+
+    bool OnApply()
+    {
+        char buffer[100];
+        m_BufferDivider.GetWindowText(buffer, sizeof(buffer));
+        g_settings->SetBufferDivider(atoi(buffer));
+        m_BufferLevel.GetWindowText(buffer, sizeof(buffer));
+        g_settings->SetBufferLevel(atoi(buffer));
+        g_settings->SetSyncAudio(m_btnSyncAudio.GetCheck() == BST_CHECKED);
+
+        FlushSettings();
+        return true;
+    }
+
+private:
+    CEdit m_BufferDivider;
+    CEdit m_BufferLevel;
+    CButton m_btnSyncAudio;
+
+    LRESULT	ItemChangedNotify(NMHDR* /*pNMHDR*/)
+    {
+        SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
+        return 0;
+    }
+
+    LRESULT ItemChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+    {
+        SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
+        return 0;
+    }
 };
 
 class CLogSettings :
@@ -186,14 +246,20 @@ public:
 
 private:
     CGeneralSettings * m_pgGeneralSettings;
+    CGameSettings * m_pgGameSettings;
     CLogSettings * m_pgLogSettings;
 };
 
 CAudioUI::CAudioUI() :
     m_pgGeneralSettings(new CGeneralSettings),
+    m_pgGameSettings(new CGameSettings),
     m_pgLogSettings(new CLogSettings)
 {
     AddPage(&m_pgGeneralSettings->m_psp);
+    if (g_romopen)
+    {
+        AddPage(&m_pgGameSettings->m_psp);
+    }
     if (g_settings->debugger_enabled())
     {
         AddPage(&m_pgLogSettings->m_psp);
@@ -203,6 +269,7 @@ CAudioUI::CAudioUI() :
 CAudioUI::~CAudioUI()
 {
     delete m_pgLogSettings;
+    delete m_pgGameSettings;
     delete m_pgGeneralSettings;
 }
 

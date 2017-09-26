@@ -33,6 +33,7 @@
 AUDIO_INFO g_AudioInfo;
 
 bool g_PluginInit = false;
+bool g_romopen = false;
 uint32_t g_Dacrate = 0;
 
 #ifdef _WIN32
@@ -191,6 +192,8 @@ EXPORT int32_t CALL InitiateAudio(AUDIO_INFO Audio_Info)
 EXPORT void CALL RomOpen()
 {
     WriteTrace(TraceAudioInterface, TraceDebug, "Start");
+    g_romopen = true;
+    g_settings->ReadSettings();
     if (g_SoundDriver)
     {
         g_SoundDriver->AI_Startup();
@@ -206,6 +209,7 @@ EXPORT void CALL RomClosed(void)
     {
         g_SoundDriver->AI_Shutdown();
     }
+    g_romopen = false;
     WriteTrace(TraceAudioInterface, TraceDebug, "Done");
 }
 

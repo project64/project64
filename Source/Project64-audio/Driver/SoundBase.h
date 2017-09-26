@@ -16,11 +16,6 @@
 class SoundDriverBase
 {
 public:
-    enum
-    {
-        BufferFPS = 90,
-        BufferLevel = 2,
-    };
     SoundDriverBase();
 
     void AI_SetFrequency(uint32_t Frequency);
@@ -52,5 +47,4 @@ private:
     uint32_t m_CurrentReadLoc;  // Currently playing Buffer
     uint32_t m_CurrentWriteLoc; // Currently writing Buffer
     uint8_t m_Buffer[MAX_SIZE]; // Emulated buffers
-    bool m_SyncAudio;
 };

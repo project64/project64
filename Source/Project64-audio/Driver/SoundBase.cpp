@@ -24,8 +24,7 @@ SoundDriverBase::SoundDriverBase() :
     m_AI_DMASecondaryBytes(0),
     m_CurrentReadLoc(0),
     m_CurrentWriteLoc(0),
-    m_BufferRemaining(0),
-    m_SyncAudio(false)
+    m_BufferRemaining(0)
 {
     memset(&m_Buffer, 0, sizeof(m_Buffer));
 }
@@ -38,7 +37,7 @@ bool SoundDriverBase::Initialize()
 void SoundDriverBase::AI_SetFrequency(uint32_t Frequency)
 {
     SetFrequency(Frequency);
-    m_MaxBufferSize = (uint32_t)((Frequency / BufferFPS)) * 4 * BufferLevel;
+    m_MaxBufferSize = (uint32_t)((Frequency / g_settings->BufferDivider())) * 4 * g_settings->BufferLevel();
     m_BufferRemaining = 0;
     m_CurrentReadLoc = m_CurrentWriteLoc = m_BufferRemaining = 0;
 }
@@ -48,7 +47,7 @@ void SoundDriverBase::AI_LenChanged(uint8_t *start, uint32_t length)
     WriteTrace(TraceAudioDriver, TraceDebug, "Start");
 
     // Bleed off some of this buffer to smooth out audio
-    if (length < m_MaxBufferSize && m_SyncAudio)
+    if (length < m_MaxBufferSize && g_settings->SyncAudio())
     {
         while ((m_BufferRemaining) == m_MaxBufferSize)
         {
