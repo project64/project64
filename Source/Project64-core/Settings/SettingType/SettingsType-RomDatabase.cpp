@@ -13,6 +13,7 @@
 
 CIniFile * CSettingTypeRomDatabase::m_SettingsIniFile = NULL;
 CIniFile * CSettingTypeRomDatabase::m_VideoIniFile = NULL;
+CIniFile * CSettingTypeRomDatabase::m_AudioIniFile = NULL;
 stdstr   * CSettingTypeRomDatabase::m_SectionIdent = NULL;
 
 CSettingTypeRomDatabase::CSettingTypeRomDatabase(const char * Name, int DefaultValue, bool DeleteOnDefault) :
@@ -21,7 +22,8 @@ CSettingTypeRomDatabase::CSettingTypeRomDatabase(const char * Name, int DefaultV
     m_DefaultValue(DefaultValue),
     m_DefaultSetting(Default_Constant),
     m_DeleteOnDefault(DeleteOnDefault),
-    m_VideoSetting(IsVideoSetting(Name))
+    m_VideoSetting(IsVideoSetting(Name)),
+    m_AudioSetting(IsAudioSetting(Name))
 {
 }
 
@@ -31,7 +33,8 @@ CSettingTypeRomDatabase::CSettingTypeRomDatabase(const char * Name, bool Default
     m_DefaultValue(DefaultValue),
     m_DefaultSetting(Default_Constant),
     m_DeleteOnDefault(DeleteOnDefault),
-    m_VideoSetting(IsVideoSetting(Name))
+    m_VideoSetting(IsVideoSetting(Name)),
+    m_AudioSetting(IsAudioSetting(Name))
 {
 }
 
@@ -41,7 +44,8 @@ CSettingTypeRomDatabase::CSettingTypeRomDatabase(const char * Name, const char *
     m_DefaultValue(0),
     m_DefaultSetting(Default_Constant),
     m_DeleteOnDefault(DeleteOnDefault),
-    m_VideoSetting(IsVideoSetting(Name))
+    m_VideoSetting(IsVideoSetting(Name)),
+    m_AudioSetting(IsAudioSetting(Name))
 {
 }
 
@@ -51,7 +55,8 @@ CSettingTypeRomDatabase::CSettingTypeRomDatabase(const char * Name, SettingID De
     m_DefaultValue(0),
     m_DefaultSetting(DefaultSetting),
     m_DeleteOnDefault(DeleteOnDefault),
-    m_VideoSetting(IsVideoSetting(Name))
+    m_VideoSetting(IsVideoSetting(Name)),
+    m_AudioSetting(IsAudioSetting(Name))
 {
 }
 
@@ -64,7 +69,8 @@ void CSettingTypeRomDatabase::Initialize(void)
     WriteTrace(TraceAppInit, TraceDebug, "Start");
 
     m_SettingsIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
-    m_VideoIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_Project64VideoRDB).c_str());
+    m_VideoIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_VideoRDB).c_str());
+    m_AudioIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_AudioRDB).c_str());
 
     g_Settings->RegisterChangeCB(Game_IniKey, NULL, GameChanged);
     g_Settings->RegisterChangeCB(Cmd_BaseDirectory, NULL, BaseDirChanged);
@@ -87,6 +93,11 @@ void CSettingTypeRomDatabase::CleanUp(void)
         delete m_VideoIniFile;
         m_VideoIniFile = NULL;
     }
+    if (m_AudioIniFile)
+    {
+        delete m_AudioIniFile;
+        m_AudioIniFile = NULL;
+    }
     if (m_SectionIdent)
     {
         delete m_SectionIdent;
@@ -106,8 +117,14 @@ void CSettingTypeRomDatabase::BaseDirChanged(void * /*Data */)
         delete m_VideoIniFile;
         m_VideoIniFile = NULL;
     }
+    if (m_AudioIniFile)
+    {
+        delete m_AudioIniFile;
+        m_AudioIniFile = NULL;
+    }
     m_SettingsIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
-    m_VideoIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_Project64VideoRDB).c_str());
+    m_VideoIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_VideoRDB).c_str());
+    m_AudioIniFile = new CIniFile(g_Settings->LoadStringVal(SupportFile_AudioRDB).c_str());
 }
 
 void CSettingTypeRomDatabase::GameChanged(void * /*Data */)
@@ -133,6 +150,10 @@ bool CSettingTypeRomDatabase::Load(int Index, uint32_t & Value) const
     {
         bRes = m_VideoIniFile->GetNumber(Section(), m_KeyName.c_str(), Value, Value);
     }
+    else if (m_AudioSetting)
+    {
+        bRes = m_AudioIniFile->GetNumber(Section(), m_KeyName.c_str(), Value, Value);
+    }
     else
     {
         bRes = m_SettingsIniFile->GetNumber(Section(), m_KeyName.c_str(), Value, Value);
@@ -151,6 +172,10 @@ bool CSettingTypeRomDatabase::Load(int Index, stdstr & Value) const
     if (m_VideoSetting)
     {
         bRes = m_VideoIniFile->GetString(Section(), m_KeyName.c_str(), m_DefaultStr, temp_value);
+    }
+    else if (m_AudioSetting)
+    {
+        bRes = m_AudioIniFile->GetString(Section(), m_KeyName.c_str(), m_DefaultStr, temp_value);
     }
     else
     {
@@ -225,6 +250,10 @@ void CSettingTypeRomDatabase::Save(int /*Index*/, bool Value)
     {
         m_VideoIniFile->SaveNumber(Section(), m_KeyName.c_str(), Value);
     }
+    else if (m_AudioSetting)
+    {
+        m_AudioIniFile->SaveNumber(Section(), m_KeyName.c_str(), Value);
+    }
     else
     {
         m_SettingsIniFile->SaveNumber(Section(), m_KeyName.c_str(), Value);
@@ -251,6 +280,10 @@ void CSettingTypeRomDatabase::Save(int Index, uint32_t Value)
     {
         m_VideoIniFile->SaveNumber(Section(), m_KeyName.c_str(), Value);
     }
+    else if (m_AudioSetting)
+    {
+        m_AudioIniFile->SaveNumber(Section(), m_KeyName.c_str(), Value);
+    }
     else
     {
         m_SettingsIniFile->SaveNumber(Section(), m_KeyName.c_str(), Value);
@@ -266,6 +299,10 @@ void CSettingTypeRomDatabase::Save(int /*Index*/, const stdstr & Value)
     if (m_VideoSetting)
     {
         m_VideoIniFile->SaveString(Section(), m_KeyName.c_str(), Value.c_str());
+    }
+    else if (m_AudioSetting)
+    {
+        m_AudioIniFile->SaveString(Section(), m_KeyName.c_str(), Value.c_str());
     }
     else
     {
@@ -283,6 +320,10 @@ void CSettingTypeRomDatabase::Save(int /*Index*/, const char * Value)
     {
         m_VideoIniFile->SaveString(Section(), m_KeyName.c_str(), Value);
     }
+    else if (m_AudioSetting)
+    {
+        m_AudioIniFile->SaveString(Section(), m_KeyName.c_str(), Value);
+    }
     else
     {
         m_SettingsIniFile->SaveString(Section(), m_KeyName.c_str(), Value);
@@ -299,6 +340,10 @@ void CSettingTypeRomDatabase::Delete(int /*Index*/)
     {
         m_VideoIniFile->SaveString(Section(), m_KeyName.c_str(), NULL);
     }
+    else if (m_AudioSetting)
+    {
+        m_AudioIniFile->SaveString(Section(), m_KeyName.c_str(), NULL);
+    }
     else
     {
         m_SettingsIniFile->SaveString(Section(), m_KeyName.c_str(), NULL);
@@ -314,9 +359,22 @@ bool CSettingTypeRomDatabase::IsVideoSetting(const char * Name)
     return false;
 }
 
+bool CSettingTypeRomDatabase::IsAudioSetting(const char * Name)
+{
+    if (_strnicmp(Name, "Audio-", 6) == 0)
+    {
+        return true;
+    }
+    return false;
+}
+
 const char * CSettingTypeRomDatabase::StripNameSection(const char * Name)
 {
     if (_strnicmp(Name, "Video-", 6) == 0)
+    {
+        return &Name[6];
+    }
+    if (_strnicmp(Name, "Audio-", 6) == 0)
     {
         return &Name[6];
     }
