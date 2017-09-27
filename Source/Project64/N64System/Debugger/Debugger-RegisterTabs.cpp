@@ -19,8 +19,10 @@ bool CRegisterTabs::m_bColorsEnabled = false;
 void CRegisterTabs::Attach(HWND hWndNew)
 {
     CTabCtrl::Attach(hWndNew);
+    LOGFONT lf;
+    GetObject((HFONT)GetCurrentObject(GetDC(), OBJ_FONT), sizeof(LOGFONT), &lf);
 
-    HFONT monoFont = CreateFont(-11, 0, 0, 0,
+    HFONT monoFont = CreateFont(lf.lfHeight * -1, 0, 0, 0,
         FW_DONTCARE, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
         OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
         CLEARTYPE_QUALITY, FF_DONTCARE, "Consolas"
