@@ -3504,18 +3504,21 @@ Good Name=Mischief Makers (E)
 Internal Name=MISCHIEF MAKERS
 Status=Compatible
 Plugin Note=[Glide64] some missing graphics
+Counter Factor=1
 
 [0B93051B-603D81F9-C:45]
 Good Name=Mischief Makers (U) (V1.0)
 Internal Name=MISCHIEF MAKERS
 Status=Compatible
 Plugin Note=[Glide64] some missing graphics
+Counter Factor=1
 
 [BFA526B4-0691E430-C:45]
 Good Name=Mischief Makers (U) (V1.1)
 Internal Name=MISCHIEF MAKERS
 Status=Compatible
 Plugin Note=[Glide64] some missing graphics
+Counter Factor=1
 
 [2256ECDA-71AB1B9C-C:50]
 Good Name=Mission Impossible (E)
@@ -6993,6 +6996,7 @@ RDRAM Size=8
 Good Name=Yuke Yuke!! Trouble Makers (J)
 Internal Name=TROUBLE MAKERS
 Status=Compatible
+Counter Factor=1
 
 //================  Z  ================
 [EC417312-EB31DE5F-C:4A]
