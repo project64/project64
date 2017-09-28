@@ -22,6 +22,7 @@ public:
     inline uint32_t BufferDivider(void) const { return m_BufferDivider; }
     inline uint32_t BufferLevel(void) const { return m_BufferLevel; }
     inline bool SyncAudio(void) const { return m_SyncAudio; }
+    inline bool FullSpeed(void) const { return m_FullSpeed; }
     inline bool FlushLogs(void) const { return m_FlushLogs; }
     inline const char * log_dir(void) const { return m_log_dir; }
 
@@ -29,7 +30,6 @@ public:
     void SetVolume(uint32_t Volume);
     void SetBufferDivider(uint32_t BufferDivider);
     void SetBufferLevel(uint32_t BufferLevel);
-    void SetSyncAudio(bool Enabled);
     void ReadSettings();
 
 private:
@@ -46,6 +46,8 @@ private:
     void LogLevelChanged(void);
 
     short m_Set_EnableAudio;
+    short m_Set_SyncAudio;
+    short m_Set_FullSpeed;
     short m_Set_basic_mode;
     short m_Set_debugger;
     short m_Set_log_dir;
@@ -59,6 +61,7 @@ private:
     uint32_t m_BufferDivider;
     uint32_t m_BufferLevel;
     bool m_SyncAudio;
+    bool m_FullSpeed;
 };
 
 extern CSettings * g_settings;

@@ -30,7 +30,8 @@ public:
     inline static bool bDelaySI(void) { return m_DelaySI; }
     inline static uint32_t RdramSize(void) { return m_RdramSize; }
     inline static bool bFixedAudio(void) { return m_bFixedAudio; }
-    inline static bool bSyncToAudio(void) { return m_bSyncingToAudio; }
+    inline static bool bSyncToAudio(void) { return m_bSyncToAudio; }
+    inline static bool FullSpeed(void) { return m_FullSpeed; }
     inline static bool bFastSP(void) { return m_bFastSP; }
     inline static bool b32BitCore(void) { return m_b32Bit; }
     inline static bool RspAudioSignal(void) { return m_RspAudioSignal; }
@@ -61,8 +62,8 @@ private:
     static bool m_DelaySI;
     static uint32_t m_RdramSize;
     static bool m_bFixedAudio;
-    static bool m_bSyncingToAudio;
     static bool m_bSyncToAudio;
+    static bool m_FullSpeed;
     static bool m_bFastSP;
     static bool m_b32Bit;
     static bool m_RspAudioSignal;

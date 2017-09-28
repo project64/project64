@@ -125,7 +125,6 @@ public:
         g_settings->SetBufferDivider(atoi(buffer));
         m_BufferLevel.GetWindowText(buffer, sizeof(buffer));
         g_settings->SetBufferLevel(atoi(buffer));
-        g_settings->SetSyncAudio(m_btnSyncAudio.GetCheck() == BST_CHECKED);
 
         FlushSettings();
         return true;
@@ -134,7 +133,6 @@ public:
 private:
     CEdit m_BufferDivider;
     CEdit m_BufferLevel;
-    CButton m_btnSyncAudio;
 
     LRESULT	ItemChangedNotify(NMHDR* /*pNMHDR*/)
     {

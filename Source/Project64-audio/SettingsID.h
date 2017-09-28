@@ -22,5 +22,4 @@ enum
     Set_Logging_Driver,
     Set_BufferDivider,
     Set_BufferLevel,
-    Set_SyncAudio,
 };

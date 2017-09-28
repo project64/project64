@@ -116,10 +116,6 @@ void CAudio::InterruptTimerDone()
     {
         m_Status &= ~ai_busy;
     }
-    if (g_Reg->m_AudioIntrReg == 0)
-    {
-        g_System->SyncToAudio();
-    }
     WriteTrace(TraceAudio, TraceDebug, "Done");
 }
 

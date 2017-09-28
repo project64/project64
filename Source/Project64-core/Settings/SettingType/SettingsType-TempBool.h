@@ -16,31 +16,33 @@ class CSettingTypeTempBool :
     public CSettingType
 {
 public:
-    CSettingTypeTempBool(bool initialValue );
+    CSettingTypeTempBool(bool initialValue, const char * name = NULL);
     ~CSettingTypeTempBool();
 
-    bool        IndexBasedSetting ( void ) const { return false; }
-    SettingType GetSettingType    ( void ) const { return SettingType_BoolVariable; }
+    bool        IndexBasedSetting(void) const { return false; }
+    SettingType GetSettingType(void) const { return SettingType_BoolVariable; }
     bool        IsSettingSet(void) const { return false; }
 
+    const char * GetName(void) const { return m_Name.c_str(); }
+
     //return the values
-    bool Load   ( int32_t Index, bool & Value   ) const;
-    bool Load   ( int32_t Index, uint32_t & Value  ) const;
-    bool Load   ( int32_t Index, stdstr & Value ) const;
+    bool Load(int32_t Index, bool & Value) const;
+    bool Load(int32_t Index, uint32_t & Value) const;
+    bool Load(int32_t Index, stdstr & Value) const;
 
     //return the default values
-    void LoadDefault ( int32_t Index, bool & Value   ) const;
-    void LoadDefault ( int32_t Index, uint32_t & Value  ) const;
-    void LoadDefault ( int32_t Index, stdstr & Value ) const;
+    void LoadDefault(int32_t Index, bool & Value) const;
+    void LoadDefault(int32_t Index, uint32_t & Value) const;
+    void LoadDefault(int32_t Index, stdstr & Value) const;
 
     //Update the settings
-    void Save   ( int32_t Index, bool Value );
-    void Save   ( int32_t Index, uint32_t Value );
-    void Save   ( int32_t Index, const stdstr & Value );
-    void Save   ( int32_t Index, const char * Value );
+    void Save(int32_t Index, bool Value);
+    void Save(int32_t Index, uint32_t Value);
+    void Save(int32_t Index, const stdstr & Value);
+    void Save(int32_t Index, const char * Value);
 
     // Delete the setting
-    void Delete ( int32_t Index );
+    void Delete(int32_t Index);
 
 private:
     CSettingTypeTempBool(void);                                   // Disable default constructor
@@ -48,4 +50,5 @@ private:
     CSettingTypeTempBool& operator=(const CSettingTypeTempBool&); // Disable assignment
 
     bool m_value;
+    std::string m_Name;
 };

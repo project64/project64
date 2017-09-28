@@ -226,6 +226,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_Transferpak_Sav, new CSettingTypeGame("Tpak-Sav-dir", Default_None));
     AddHandler(Game_LoadSaveAtStart, new CSettingTypeTempBool(false));
     AddHandler(Game_OverClockModifier, new CSettingTypeGame("OverClockModifier", Rdb_OverClockModifier));
+    AddHandler(Game_FullSpeed, new CSettingTypeTempBool(true, "Full Speed"));
 
     //User Interface
     AddHandler(UserInterface_ShowCPUPer, new CSettingTypeApplication("", "Display CPU Usage", (uint32_t)false));
@@ -420,7 +421,7 @@ uint32_t CSettings::FindSetting(CSettings * _this, const char * Name)
             }
             return iter->first;
         }
-        if (Setting->GetSettingType() == SettingType_CfgFile)
+        else if (Setting->GetSettingType() == SettingType_CfgFile)
         {
             CSettingTypeApplication * CfgSetting = (CSettingTypeApplication *)Setting;
             if (_stricmp(CfgSetting->GetKeyName(), Name) != 0)
@@ -429,10 +430,19 @@ uint32_t CSettings::FindSetting(CSettings * _this, const char * Name)
             }
             return iter->first;
         }
-        if (Setting->GetSettingType() == SettingType_SelectedDirectory)
+        else if (Setting->GetSettingType() == SettingType_SelectedDirectory)
         {
             CSettingTypeSelectedDirectory * SelectedDirectory = (CSettingTypeSelectedDirectory *)Setting;
             if (_stricmp(SelectedDirectory->GetName(), Name) != 0)
+            {
+                continue;
+            }
+            return iter->first;
+        }
+        else if (Setting->GetSettingType() == SettingType_BoolVariable)
+        {
+            CSettingTypeTempBool * BoolSetting = (CSettingTypeTempBool *)Setting;
+            if (_stricmp(BoolSetting->GetName(), Name) != 0)
             {
                 continue;
             }
