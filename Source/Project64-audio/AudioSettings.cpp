@@ -25,7 +25,7 @@ CSettings::CSettings() :
     m_AudioEnabled(true),
     m_advanced_options(false),
     m_debugger_enabled(false),
-    m_Volume(100),
+    m_Volume(0),
     m_BufferDivider(90),
     m_BufferLevel(4),
     m_SyncAudio(false)
@@ -74,7 +74,7 @@ void CSettings::RegisterSettings(void)
     m_Set_log_dir = FindSystemSettingId("Dir:Log");
 
     SetModuleName("Audio");
-    RegisterSetting(Set_Volume, Data_DWORD_General, "Volume", "Settings", 100, NULL);
+    RegisterSetting(Set_Volume, Data_DWORD_General, "Volume", "Settings", 0, NULL);
     RegisterSetting(Set_Logging_MD5, Data_DWORD_General, "MD5", "Logging", g_ModuleLogLevel[TraceMD5], NULL);
     RegisterSetting(Set_Logging_Thread, Data_DWORD_General, "Thread", "Logging", g_ModuleLogLevel[TraceThread], NULL);
     RegisterSetting(Set_Logging_Path, Data_DWORD_General, "Path", "Logging", g_ModuleLogLevel[TracePath], NULL);
