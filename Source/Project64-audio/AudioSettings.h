@@ -48,6 +48,7 @@ private:
     short m_Set_EnableAudio;
     short m_Set_SyncAudio;
     short m_Set_FullSpeed;
+    short m_Set_LimitFPS;
     short m_Set_basic_mode;
     short m_Set_debugger;
     short m_Set_log_dir;

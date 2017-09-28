@@ -27,10 +27,10 @@ bool CSettingTypeTempBool::Load(int /*Index*/, bool & Value) const
     return true;
 }
 
-bool CSettingTypeTempBool::Load(int /*Index*/, uint32_t & /*Value*/) const
+bool CSettingTypeTempBool::Load(int /*Index*/, uint32_t & Value) const
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return false;
+    Value = m_value ? 1 : 0;
+    return true;
 }
 
 bool CSettingTypeTempBool::Load(int /*Index*/, stdstr & /*Value*/) const

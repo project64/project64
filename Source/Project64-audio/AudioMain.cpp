@@ -86,6 +86,15 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
         case SYSTEM_MPAL: video_clock = 48628316; break;
         }
         uint32_t Frequency = video_clock / (g_Dacrate + 1);
+
+        if ((Frequency > 7000) && (Frequency < 9000)) { Frequency = 8000; }
+        else if ((Frequency > 10000) && (Frequency < 12000)) { Frequency = 11025; }
+        else if ((Frequency > 15000) && (Frequency < 17000)) { Frequency = 16000; }
+        else if ((Frequency > 21000) && (Frequency < 23000)) { Frequency = 22050; }
+        else if ((Frequency > 31000) && (Frequency < 33000)) { Frequency = 32000; }
+        else if ((Frequency > 43000) && (Frequency < 45000)) { Frequency = 44100; }
+        else if ((Frequency > 47000) && (Frequency < 49000)) { Frequency = 48000; }
+
         g_SoundDriver->AI_SetFrequency(Frequency);
     }
     WriteTrace(TraceAudioInterface, TraceDebug, "Done");

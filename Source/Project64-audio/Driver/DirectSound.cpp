@@ -70,7 +70,7 @@ bool DirectSoundDriver::Initialize()
     WAVEFORMATEX wfm = { 0 };
     wfm.wFormatTag = WAVE_FORMAT_PCM;
     wfm.nChannels = 2;
-    wfm.nSamplesPerSec = 44100;
+    wfm.nSamplesPerSec = 48000;
     wfm.wBitsPerSample = 16;
     wfm.nBlockAlign = wfm.wBitsPerSample / 8 * wfm.nChannels;
     wfm.nAvgBytesPerSec = wfm.nSamplesPerSec * wfm.nBlockAlign;
@@ -206,7 +206,7 @@ void DirectSoundDriver::AudioThreadProc()
                 break;
             }
             // Check to see if the audio pointer moved on to the next segment
-            if (write_pos == last_pos)
+            if (write_pos == 0)
             {
                 WriteTrace(TraceAudioDriver, TraceVerbose, "Sleep");
                 Sleep(1);

@@ -108,7 +108,7 @@ void SoundDriverBase::AI_Update(bool Wait)
 uint32_t SoundDriverBase::AI_ReadLength()
 {
     CGuard guard(m_CS);
-    return m_AI_DMAPrimaryBytes & ~0x3;
+    return m_AI_DMAPrimaryBytes & ~0x7;
 }
 
 void SoundDriverBase::LoadAiBuffer(uint8_t *start, uint32_t length)

@@ -30,7 +30,7 @@ public:
     virtual void StopAudio();
 
 protected:
-    enum { MAX_SIZE = 44100 * 2 * 2 }; // Max Buffer Size (44100Hz * 16bit * Stereo)
+    enum { MAX_SIZE = 48000 * 2 * 2 }; // Max Buffer Size (44100Hz * 16bit * Stereo)
 
     virtual bool Initialize();
     void LoadAiBuffer(uint8_t *start, uint32_t length); // Reads in length amount of audio bytes
