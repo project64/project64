@@ -34,10 +34,10 @@ CSettings::CSettings() :
     RegisterSettings();
     ReadSettings();
 
-    if (m_Set_EnableAudio != 0) { SettingsRegisterChange(false, m_Set_EnableAudio, this, stSettingsChanged); }
-    if (m_Set_basic_mode != 0) { SettingsRegisterChange(false, m_Set_basic_mode, this, stSettingsChanged); }
-    if (m_Set_debugger != 0) { SettingsRegisterChange(false, m_Set_debugger, this, stSettingsChanged); }
-    if (m_Set_log_flush != 0) { SettingsRegisterChange(false, m_Set_log_flush, this, stSettingsChanged); }
+    if (m_Set_EnableAudio != 0) { SettingsRegisterChange(true, m_Set_EnableAudio, this, stSettingsChanged); }
+    if (m_Set_basic_mode != 0) { SettingsRegisterChange(true, m_Set_basic_mode, this, stSettingsChanged); }
+    if (m_Set_debugger != 0) { SettingsRegisterChange(true, m_Set_debugger, this, stSettingsChanged); }
+    if (m_Set_log_flush != 0) { SettingsRegisterChange(true, m_Set_log_flush, this, stSettingsChanged); }
     SettingsRegisterChange(false, Set_Volume, this, stSettingsChanged);
 
     SettingsRegisterChange(false, Set_Logging_MD5, this, stLogLevelChanged);
@@ -50,10 +50,10 @@ CSettings::CSettings() :
 
 CSettings::~CSettings()
 {
-    if (m_Set_EnableAudio != 0) { SettingsUnregisterChange(false, m_Set_EnableAudio, this, stSettingsChanged); }
-    if (m_Set_basic_mode != 0) { SettingsUnregisterChange(false, m_Set_basic_mode, this, stSettingsChanged); }
-    if (m_Set_debugger != 0) { SettingsUnregisterChange(false, m_Set_debugger, this, stSettingsChanged); }
-    if (m_Set_log_flush != 0) { SettingsUnregisterChange(false, m_Set_log_flush, this, stSettingsChanged); }
+    if (m_Set_EnableAudio != 0) { SettingsUnregisterChange(true, m_Set_EnableAudio, this, stSettingsChanged); }
+    if (m_Set_basic_mode != 0) { SettingsUnregisterChange(true, m_Set_basic_mode, this, stSettingsChanged); }
+    if (m_Set_debugger != 0) { SettingsUnregisterChange(true, m_Set_debugger, this, stSettingsChanged); }
+    if (m_Set_log_flush != 0) { SettingsUnregisterChange(true, m_Set_log_flush, this, stSettingsChanged); }
     SettingsUnregisterChange(false, Set_Volume, this, stSettingsChanged);
 
     SettingsUnregisterChange(false, Set_Logging_MD5, this, stLogLevelChanged);
