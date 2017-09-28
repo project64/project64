@@ -64,7 +64,7 @@ public:
         m_btnMute.SetCheck(!g_settings->AudioEnabled() ? BST_CHECKED : BST_UNCHECKED);
 
         m_Volume.Attach(GetDlgItem(IDC_VOLUME));
-        m_Volume.SetPos(100 - g_settings->GetVolume());
+        m_Volume.SetPos(g_settings->GetVolume());
         m_Volume.SetTicFreq(20);
         m_Volume.SetRangeMin(0);
         m_Volume.SetRangeMax(100);
@@ -74,7 +74,7 @@ public:
     bool OnApply()
     {
         g_settings->SetAudioEnabled(m_btnMute.GetCheck() != BST_CHECKED);
-        g_settings->SetVolume(100 - m_Volume.GetPos());
+        g_settings->SetVolume(m_Volume.GetPos());
         FlushSettings();
         return true;
     }
