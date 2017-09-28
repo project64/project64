@@ -115,9 +115,6 @@ public:
 
         m_BufferLevel.Attach(GetDlgItem(IDC_BUFFER_LEVEL));
         m_BufferLevel.SetWindowText(stdstr_f("%d", g_settings->BufferLevel()).c_str());
-
-        m_btnSyncAudio.Attach(GetDlgItem(IDC_SYNC_AUDIO));
-        m_btnSyncAudio.SetCheck(g_settings->SyncAudio() ? BST_CHECKED : BST_UNCHECKED);
         return TRUE;
     }
 
