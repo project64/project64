@@ -132,10 +132,16 @@ void DirectSoundDriver::SetFrequency(uint32_t Frequency)
 
 void DirectSoundDriver::SetVolume(uint32_t Volume)
 {
-    /*DWORD dsVolume = ((DWORD)Volume * -25);
-    if (Volume == 100) dsVolume = (DWORD)DSBVOLUME_MIN;
-    if (Volume == 0) dsVolume = DSBVOLUME_MAX;
-    if (lpdsb != NULL) lpdsb->SetVolume(dsVolume);*/
+    LPDIRECTSOUNDBUFFER & lpdsb = (LPDIRECTSOUNDBUFFER &)m_lpdsb;
+    int32_t dsVolume = - 10 ^ ((100 - Volume) * 33);
+    if (Volume == 0)
+    {
+        dsVolume = DSBVOLUME_MIN;
+    }
+    if (lpdsb != NULL)
+    {
+        lpdsb->SetVolume(dsVolume);
+    }
 }
 
 void DirectSoundDriver::SetSegmentSize(uint32_t length, uint32_t SampleRate)
