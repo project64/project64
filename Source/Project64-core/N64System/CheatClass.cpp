@@ -354,7 +354,7 @@ void CCheats::ModifyMemory8(uint32_t Address, uint8_t Value)
     m_MMU.SB_VAddr(Address, OriginalValue.Changed);
     if (g_Recompiler)
     {
-        g_Recompiler->ClearRecompCode_Virt(Address, 1, CRecompiler::Remove_Cheats);
+        g_Recompiler->ClearRecompCode_Virt(Address & ~0xFFF, 0x1000, CRecompiler::Remove_Cheats);
     }
 }
 
@@ -374,7 +374,7 @@ void CCheats::ModifyMemory16(uint32_t Address, uint16_t Value)
     m_MMU.SH_VAddr(Address, OriginalValue.Changed);
     if (g_Recompiler)
     {
-        g_Recompiler->ClearRecompCode_Virt(Address, 2, CRecompiler::Remove_Cheats);
+        g_Recompiler->ClearRecompCode_Virt(Address & ~0xFFF, 0x1000, CRecompiler::Remove_Cheats);
     }
 }
 
