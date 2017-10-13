@@ -20,6 +20,6 @@ enum
     Set_Logging_InitShutdown,
     Set_Logging_Interface,
     Set_Logging_Driver,
-    Set_BufferDivider,
-    Set_BufferLevel,
+    Set_TinyBuffer,
+	Set_FPSBuffer,
 };
