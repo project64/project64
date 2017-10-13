@@ -156,7 +156,7 @@ EXPORT void CALL AiUpdate(int32_t Wait)
     }
     else
     {
-        pjutil::Sleep(1);
+        pjutil::Sleep(1); // TODO:  Fixme -- Ai Update appears to be problematic
     }
     WriteTrace(TraceAudioInterface, TraceDebug, "Done");
 }
