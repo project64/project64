@@ -130,11 +130,11 @@ private:
     CButton m_btnFPSBuffer;
 
     void ItemChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
-	{
-		SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
-		g_settings->SetTinyBuffer(m_btnTinyBuffer.GetCheck() == BST_CHECKED);
-		g_settings->SetFPSBuffer(m_btnFPSBuffer.GetCheck() == BST_CHECKED);
-	}
+    {
+        SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
+        g_settings->SetTinyBuffer(m_btnTinyBuffer.GetCheck() == BST_CHECKED);
+        g_settings->SetFPSBuffer(m_btnFPSBuffer.GetCheck() == BST_CHECKED);
+    }
 };
 
 class CLogSettings :
