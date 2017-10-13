@@ -21,7 +21,7 @@ public:
     bool Initialize();
     void StopAudio();							// Stops the Audio PlayBack (as if paused)
     void StartAudio();							// Starts the Audio PlayBack (as if unpaused)
-    void SetFrequency(uint32_t Frequency);
+    void SetFrequency(uint32_t Frequency, uint32_t BufferSize);
     void SetVolume(uint32_t Volume);
 
 private:

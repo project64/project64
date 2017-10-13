@@ -34,10 +34,10 @@ bool SoundDriverBase::Initialize()
     return true;
 }
 
-void SoundDriverBase::AI_SetFrequency(uint32_t Frequency)
+void SoundDriverBase::AI_SetFrequency(uint32_t Frequency, uint32_t BufferSize)
 {
-    SetFrequency(Frequency);
-    m_MaxBufferSize = (uint32_t)((Frequency / g_settings->BufferDivider())) * 4 * g_settings->BufferLevel();
+    SetFrequency(Frequency, BufferSize);
+    m_MaxBufferSize = (BufferSize * 4);
     m_BufferRemaining = 0;
     m_CurrentReadLoc = m_CurrentWriteLoc = m_BufferRemaining = 0;
 }
@@ -187,7 +187,7 @@ void SoundDriverBase::BufferAudio()
     WriteTrace(TraceAudioDriver, TraceVerbose, "Done (m_BufferRemaining: 0x%08X)", m_BufferRemaining);
 }
 
-void SoundDriverBase::SetFrequency(uint32_t /*Frequency*/)
+void SoundDriverBase::SetFrequency(uint32_t /*Frequency*/, uint32_t /*Divider*/)
 {
 }
 

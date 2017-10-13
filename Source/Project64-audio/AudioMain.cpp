@@ -87,15 +87,36 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
         }
         uint32_t Frequency = video_clock / (g_Dacrate + 1);
 
-        if ((Frequency > 7000) && (Frequency < 9000)) { Frequency = 8000; }
-        else if ((Frequency > 10000) && (Frequency < 12000)) { Frequency = 11025; }
-        else if ((Frequency > 15000) && (Frequency < 17000)) { Frequency = 16000; }
-        else if ((Frequency > 21000) && (Frequency < 23000)) { Frequency = 22050; }
-        else if ((Frequency > 31000) && (Frequency < 33000)) { Frequency = 32000; }
-        else if ((Frequency > 43000) && (Frequency < 45000)) { Frequency = 44100; }
-        else if ((Frequency > 47000) && (Frequency < 49000)) { Frequency = 48000; }
+		if (Frequency < 4000)
+		{
+			WriteTrace(TraceAudioDriver, TraceDebug, "Not Audio Data!");
+			return;
+		}
+		else
+		{
+			int32_t BufferSize = 0; double audio_clock = 0;
+			double framerate1 = 59.94004; double framerate2 = 64; double framerate = 0;
 
-        g_SoundDriver->AI_SetFrequency(Frequency);
+			if (g_settings->FPSBuffer() == true)
+            {
+                framerate = framerate1;
+            }
+			else
+            {
+                framerate = framerate2;
+            }
+			if (g_settings->TinyBuffer() == true)
+			{
+				audio_clock = ((video_clock / framerate) * 2);
+			}
+			else
+			{
+				audio_clock = ((video_clock / framerate) * 4);
+			}
+
+			BufferSize = (int32_t)audio_clock / (g_Dacrate) + 1 & ~0x1;
+			g_SoundDriver->AI_SetFrequency(Frequency, BufferSize);
+		}
     }
     WriteTrace(TraceAudioInterface, TraceDebug, "Done");
 }
@@ -135,7 +156,7 @@ EXPORT void CALL AiUpdate(int32_t Wait)
     }
     else
     {
-        pjutil::Sleep(1);
+        pjutil::Sleep(1); // TODO:  Fixme -- Ai Update appears to be problematic
     }
     WriteTrace(TraceAudioInterface, TraceDebug, "Done");
 }

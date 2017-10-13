@@ -18,14 +18,14 @@ class SoundDriverBase
 public:
     SoundDriverBase();
 
-    void AI_SetFrequency(uint32_t Frequency);
+    void AI_SetFrequency(uint32_t Frequency, uint32_t BufferSize);
     void AI_LenChanged(uint8_t *start, uint32_t length);
     void AI_Startup();
     void AI_Shutdown();
     void AI_Update(bool Wait);
     uint32_t AI_ReadLength();
 
-    virtual void SetFrequency(uint32_t Frequency);
+    virtual void SetFrequency(uint32_t Frequency, uint32_t BufferSize);
     virtual void StartAudio();
     virtual void StopAudio();
 

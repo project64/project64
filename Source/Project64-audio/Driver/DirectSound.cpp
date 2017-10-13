@@ -119,11 +119,11 @@ void DirectSoundDriver::StartAudio()
     WriteTrace(TraceAudioDriver, TraceDebug, "Done");
 }
 
-void DirectSoundDriver::SetFrequency(uint32_t Frequency)
+void DirectSoundDriver::SetFrequency(uint32_t Frequency, uint32_t BufferSize)
 {
     WriteTrace(TraceAudioDriver, TraceDebug, "Start (Frequency: 0x%08X)", Frequency);
     StopAudio();
-    m_LOCK_SIZE = (uint32_t)((Frequency / g_settings->BufferDivider())) * 4;
+    m_LOCK_SIZE = (BufferSize * 2);
     SetSegmentSize(m_LOCK_SIZE, Frequency);
 
     StartAudio();
@@ -132,10 +132,16 @@ void DirectSoundDriver::SetFrequency(uint32_t Frequency)
 
 void DirectSoundDriver::SetVolume(uint32_t Volume)
 {
-    /*DWORD dsVolume = ((DWORD)Volume * -25);
-    if (Volume == 100) dsVolume = (DWORD)DSBVOLUME_MIN;
-    if (Volume == 0) dsVolume = DSBVOLUME_MAX;
-    if (lpdsb != NULL) lpdsb->SetVolume(dsVolume);*/
+	LPDIRECTSOUNDBUFFER & lpdsb = (LPDIRECTSOUNDBUFFER &)m_lpdsb;
+	int32_t dsVolume = -((100 - (int32_t)Volume) * 25);
+	if (Volume == 0)
+	{
+		dsVolume = DSBVOLUME_MIN;
+	}
+	if (lpdsb != NULL)
+	{
+		lpdsb->SetVolume(dsVolume);
+	}
 }
 
 void DirectSoundDriver::SetSegmentSize(uint32_t length, uint32_t SampleRate)

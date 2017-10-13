@@ -19,8 +19,8 @@ public:
     inline bool AudioEnabled(void) const { return m_AudioEnabled; }
     inline bool debugger_enabled(void) const { return m_debugger_enabled; }
     inline uint32_t GetVolume(void) const { return m_Volume; }
-    inline uint32_t BufferDivider(void) const { return m_BufferDivider; }
-    inline uint32_t BufferLevel(void) const { return m_BufferLevel; }
+    inline bool TinyBuffer(void) const { return m_TinyBuffer; }
+	inline bool FPSBuffer(void) const { return m_FPSBuffer; }
     inline bool SyncAudio(void) const { return m_SyncAudio; }
     inline bool FullSpeed(void) const { return m_FullSpeed; }
     inline bool FlushLogs(void) const { return m_FlushLogs; }
@@ -28,8 +28,8 @@ public:
 
     void SetAudioEnabled(bool Enabled);
     void SetVolume(uint32_t Volume);
-    void SetBufferDivider(uint32_t BufferDivider);
-    void SetBufferLevel(uint32_t BufferLevel);
+	void SetTinyBuffer(bool TinyBuffer);
+	void SetFPSBuffer(bool FPSBuffer);
     void ReadSettings();
 
 private:
@@ -59,8 +59,8 @@ private:
     bool m_advanced_options;
     bool m_debugger_enabled;
     uint32_t m_Volume;
-    uint32_t m_BufferDivider;
-    uint32_t m_BufferLevel;
+    bool m_TinyBuffer;
+	bool m_FPSBuffer;
     bool m_SyncAudio;
     bool m_FullSpeed;
 };
