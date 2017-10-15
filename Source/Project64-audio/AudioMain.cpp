@@ -87,36 +87,36 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
         }
         uint32_t Frequency = video_clock / (g_Dacrate + 1);
 
-		if (Frequency < 4000)
-		{
-			WriteTrace(TraceAudioDriver, TraceDebug, "Not Audio Data!");
-			return;
-		}
-		else
-		{
-			int32_t BufferSize = 0; double audio_clock = 0;
-			double framerate1 = 59.94004; double framerate2 = 64; double framerate = 0;
+        if (Frequency < 4000)
+        {
+            WriteTrace(TraceAudioDriver, TraceDebug, "Not Audio Data!");
+            return;
+        }
+        else
+        {
+            int32_t BufferSize = 0; double audio_clock = 0;
+            double framerate1 = 59.94004; double framerate2 = 64; double framerate = 0;
 
-			if (g_settings->FPSBuffer() == true)
+            if (g_settings->FPSBuffer() == true)
             {
                 framerate = framerate1;
             }
-			else
+            else
             {
                 framerate = framerate2;
             }
-			if (g_settings->TinyBuffer() == true)
-			{
-				audio_clock = ((video_clock / framerate) * 2);
-			}
-			else
-			{
-				audio_clock = ((video_clock / framerate) * 4);
-			}
+            if (g_settings->TinyBuffer() == true)
+            {
+                audio_clock = ((video_clock / framerate) * 2);
+            }
+            else
+            {
+                audio_clock = ((video_clock / framerate) * 4);
+            }
 
-			BufferSize = (int32_t)audio_clock / (g_Dacrate) + 1 & ~0x1;
-			g_SoundDriver->AI_SetFrequency(Frequency, BufferSize);
-		}
+            BufferSize = (int32_t)audio_clock / (g_Dacrate) + 1 & ~0x1;
+            g_SoundDriver->AI_SetFrequency(Frequency, BufferSize);
+        }
     }
     WriteTrace(TraceAudioInterface, TraceDebug, "Done");
 }
