@@ -94,16 +94,17 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
         }
         else
         {
-            int32_t BufferSize = 0; double audio_clock = 0;
-            double framerate1 = 59.94004; double framerate2 = 64; double framerate = 0;
+            int32_t BufferSize = 0; double audio_clock = 0; double framerate = 0;
 
             if (g_settings->FPSBuffer() == true)
             {
-                framerate = framerate1;
+                framerate = 59.94004;
+                if (SystemType == SYSTEM_PAL) { framerate = 50; }
             }
             else
             {
-                framerate = framerate2;
+                framerate = 64;
+                if (SystemType == SYSTEM_PAL) { framerate = 53.33333; }
             }
             if (g_settings->TinyBuffer() == true)
             {
