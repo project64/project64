@@ -211,12 +211,6 @@ void DirectSoundDriver::AudioThreadProc()
             {
                 break;
             }
-            // Check to see if the audio pointer moved on to the next segment
-            if (write_pos == 0)
-            {
-                WriteTrace(TraceAudioDriver, TraceVerbose, "Sleep");
-                Sleep(1);
-            }
             uint32_t play_pos = 0;
             if (lpdsbuff == NULL || FAILED(lpdsbuff->GetCurrentPosition((unsigned long*)&play_pos, NULL)))
             {
@@ -226,6 +220,11 @@ void DirectSoundDriver::AudioThreadProc()
             }
             write_pos = play_pos < m_LOCK_SIZE ? (m_LOCK_SIZE * DS_SEGMENTS) - m_LOCK_SIZE : ((play_pos / m_LOCK_SIZE) * m_LOCK_SIZE) - m_LOCK_SIZE;
             WriteTrace(TraceAudioDriver, TraceVerbose, "play_pos: 0x%08X m_write_pos: 0x%08X next_pos: 0x%08X m_LOCK_SIZE: 0x%08X", play_pos, write_pos, next_pos, m_LOCK_SIZE);
+            if (last_pos == write_pos)
+            {
+                WriteTrace(TraceAudioDriver, TraceVerbose, "Sleep");
+                Sleep(1);
+            }
         }
         // This means we had a buffer segment skipped
         if (next_pos != write_pos)
