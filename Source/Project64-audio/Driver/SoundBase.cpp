@@ -41,7 +41,7 @@ void SoundDriverBase::AI_SetFrequency(uint32_t Frequency, uint32_t BufferSize)
     if (g_settings->TinyBuffer() == true)
     {
         m_MaxBufferSize = m_MaxBufferSize * 2;
-    ]
+    }
     m_BufferRemaining = 0;
     m_CurrentReadLoc = m_CurrentWriteLoc = m_BufferRemaining = 0;
 }
