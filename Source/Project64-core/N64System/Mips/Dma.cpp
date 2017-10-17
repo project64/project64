@@ -461,9 +461,9 @@ void CDMA::PI_DMA_WRITE()
 		g_SystemTimer->SetTimer(g_SystemTimer->PiTimer, PI_WR_LEN_REG/8 + (rand() % 0x40), false);
 
 		//g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
-        //g_Reg->MI_INTR_REG |= MI_INTR_PI;
-        //g_Reg->CheckInterrupts();
-        //ChangeTimer(PiTimer,(int32_t)(PI_WR_LEN_REG * 8.9) + 50);
+		//g_Reg->MI_INTR_REG |= MI_INTR_PI;
+		//g_Reg->CheckInterrupts();
+		//ChangeTimer(PiTimer,(int32_t)(PI_WR_LEN_REG * 8.9) + 50);
         //ChangeTimer(PiTimer,(int32_t)(PI_WR_LEN_REG * 8.9));
         return;
     }
