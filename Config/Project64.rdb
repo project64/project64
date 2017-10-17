@@ -206,7 +206,6 @@ Internal Name=ÐÝÅÃÞÀÏºÞ¯ÁÜ°ÙÄÞ
 Status=Issues (plugin)
 Plugin Note=[video] HLE incorrect sprites
 Counter Factor=1
-Save Type=FlashRam
 
 [36F22FBF-318912F2-C:4A]
 Good Name=64 Hanafuda - Tenshi no Yakusoku (J)
@@ -2265,13 +2264,6 @@ Counter Factor=1
 Delay SI=Yes
 RDRAM Size=8
 
-[B57D4EB4-345E09E5-C:0]
-Counter Factor=1
-Good Name=Guru - Kuru Kuru Fever (J) [ALECK64]
-Status=Compatible
-RDRAM Size=8
-Save Type=4kbit Eeprom
-
 //================  H  ================
 [95A80114-E0B72A7F-C:4A]
 Good Name=Hamster Monogatari 64 (J)
@@ -2988,6 +2980,13 @@ Status=Compatible
 Culling=1
 RDRAM Size=8
 Save Type=16kbit Eeprom
+
+[4248BA87-99BE605D-C:0]
+Counter Factor=1
+Good Name=Kuru Kuru Fever (J) [ALECK64]
+Status=Compatible
+RDRAM Size=8
+Save Type=4kbit Eeprom
 
 [0837F87A-D1436FF8-C:4A]
 Good Name=Kyojin no Doshin 1 (J) [CART HACK]
@@ -3839,7 +3838,6 @@ Status=Issues (core)
 Core Note=Speed/timing issues
 Audio Signal=Yes
 Counter Factor=1
-Save Type=FlashRam
 ViRefresh=500
 
 [147E0EDB-36C5B12C-C:4A]
@@ -6003,13 +6001,11 @@ Counter Factor=1
 Good Name=Tom and Jerry in Fists of Furry (E) (M6)
 Internal Name=TOM AND JERRY
 Status=Compatible
-Save Type=FlashRam
 
 [63E7391C-E6CCEA33-C:45]
 Good Name=Tom and Jerry in Fists of Furry (U)
 Internal Name=TOM AND JERRY
 Status=Compatible
-Save Type=FlashRam
 
 [4875AF3D-9A66D3A2-C:50]
 Good Name=Tom Clancy's Rainbow Six (E)
