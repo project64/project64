@@ -362,10 +362,10 @@ void CPifRam::SI_DMA_READ()
     }
     else
     {
-		g_SystemTimer->SetTimer(CSystemTimer::SiTimer, rand() % 0x40, false);
-		//g_Reg->MI_INTR_REG |= MI_INTR_SI;
-		//g_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
-		//g_Reg->CheckInterrupts();
+        g_SystemTimer->SetTimer(CSystemTimer::SiTimer, rand() % 0x40, false);
+        //g_Reg->MI_INTR_REG |= MI_INTR_SI;
+        //g_Reg->SI_STATUS_REG |= SI_STATUS_INTERRUPT;
+        //g_Reg->CheckInterrupts();
     }
 }
 
