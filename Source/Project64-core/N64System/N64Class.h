@@ -49,7 +49,7 @@ class CN64System :
     protected CDebugSettings
 {
 public:
-    CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem);
+    CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesReadOnly, bool SyncSystem);
     virtual ~CN64System(void);
 
     CCheats    m_Cheats;

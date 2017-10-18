@@ -30,7 +30,7 @@
 
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
 
-CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem) :
+CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesReadOnly, bool SyncSystem) :
     CSystemEvents(this, Plugins),
     m_EndEmulation(false),
     m_SaveUsing((SAVE_CHIP_TYPE)g_Settings->LoadDword(Game_SaveChip)),
@@ -58,7 +58,7 @@ CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem) 
     m_hPauseEvent(true),
     m_CheatsSlectionChanged(false),
     m_SyncCpu(SyncSystem),
-    m_Random((uint32_t)time(NULL))
+    m_Random(randomizer_seed)
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
     memset(m_LastSuccessSyncPC, 0, sizeof(m_LastSuccessSyncPC));
@@ -111,7 +111,7 @@ CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem) 
             g_Plugins->CopyPlugins(g_Settings->LoadStringVal(Directory_PluginSync));
             m_SyncPlugins = new CPlugins(Directory_PluginSync, true);
             m_SyncPlugins->SetRenderWindows(g_Plugins->SyncWindow(), NULL);
-            m_SyncCPU = new CN64System(m_SyncPlugins, true, true);
+            m_SyncCPU = new CN64System(m_SyncPlugins, randomizer_seed, true, true);
         }
 
         Reset(true, true);
@@ -360,7 +360,7 @@ bool CN64System::RunFileImage(const char * FileLoc)
 void CN64System::RunLoadedImage(void)
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
-    g_BaseSystem = new CN64System(g_Plugins, false, false);
+    g_BaseSystem = new CN64System(g_Plugins, (uint32_t)time(NULL), false, false);
     if (g_BaseSystem)
     {
         g_BaseSystem->StartEmulation(true);
