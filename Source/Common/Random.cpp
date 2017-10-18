@@ -21,12 +21,12 @@
 
 CRandom::CRandom()
 {
-    state = (uint32_t)time(NULL);
+    m_state = (uint32_t)time(NULL);
 }
 
 CRandom::CRandom(uint32_t state_value)
 {
-    state = state_value;
+    m_state = state_value;
 }
 
 uint32_t CRandom::randomizer(uint32_t val)
@@ -36,19 +36,19 @@ uint32_t CRandom::randomizer(uint32_t val)
 
 uint32_t CRandom::next()
 {
-    state = randomizer(state);
-    return state;
+    m_state = randomizer(m_state);
+    return m_state;
 }
 
 void CRandom::set_state(uint32_t state_value)
 {
     if (state_value == 0)
-        state = 1;
+        m_state = 1;
     else
-        state = state_value;
+        m_state = state_value;
 }
 
 uint32_t CRandom::get_state()
 {
-    return state;
+    return m_state;
 }

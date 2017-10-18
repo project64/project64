@@ -28,5 +28,5 @@ public:
 
 protected:
     uint32_t randomizer(uint32_t val);
-    uint32_t state;
+    uint32_t m_state;
 };
