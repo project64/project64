@@ -21,6 +21,7 @@ LOCAL_SRC_FILES := \
     $(SRCDIR)/MemoryManagement.cpp       \
     $(SRCDIR)/path.cpp                   \
     $(SRCDIR)/Platform.cpp               \
+    $(SRCDIR)/Random.cpp                 \
     $(SRCDIR)/StdString.cpp              \
     $(SRCDIR)/SyncEvent.cpp              \
     $(SRCDIR)/Thread.cpp                 \
