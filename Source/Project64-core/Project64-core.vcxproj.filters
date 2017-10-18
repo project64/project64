@@ -339,9 +339,6 @@
     <ClCompile Include="N64System\Recompiler\Arm\ArmRegInfo.cpp">
       <Filter>Source Files\N64 System\Recompiler\Arm</Filter>
     </ClCompile>
-    <ClCompile Include="3rdParty\Random.cpp">
-      <Filter>Source Files\3rd Party</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -661,9 +658,6 @@
     </ClInclude>
     <ClInclude Include="Debugger.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="3rdParty\Random.h">
-      <Filter>Header Files\3rd Party</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

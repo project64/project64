@@ -9,40 +9,24 @@
 *                                                                           *
 ****************************************************************************/
 /*
- * Implements the CRandom class.
+ * Defines the CRandom class.
  *
  * This class implements the Lehmer Random Number Generator.
- * 
+ *
  */
+#pragma once
+#include <Common/stdtypes.h>
 
-#include "Random.h"
-#include <time.h>
-
-CRandom::CRandom()
+class CRandom
 {
-    state = (uint32_t)time(NULL);
-}
+public:
+    CRandom();
+    CRandom(uint32_t seed_value);
+    uint32_t next();
+    uint32_t get_state();
+    void set_state(uint32_t state_value);
 
-CRandom::CRandom(uint32_t seed_value)
-{
-    state = seed_value;
-}
-
-uint32_t randomizer(uint32_t val)
-{
-    return ((uint64_t)val * 279470273UL) % 4294967291UL;
-}
-
-uint32_t CRandom::next()
-{
-    state = randomizer(state);
-    return state;
-}
-
-void CRandom::seed(uint32_t seed_value)
-{
-    if (seed_value == 0)
-        state == 1;
-    else
-        state = seed_value;
-}
+protected:
+    uint32_t randomizer(uint32_t val);
+    uint32_t state;
+};

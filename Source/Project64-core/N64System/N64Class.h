@@ -10,6 +10,7 @@
 ****************************************************************************/
 #pragma once
 
+#include <Common/Random.h>
 #include <Common/SyncEvent.h>
 #include <Common/Thread.h>
 #include <Project64-core/Settings/N64SystemSettings.h>
@@ -23,7 +24,6 @@
 #include <Project64-core/Settings/DebugSettings.h>
 #include <Project64-core/Plugin.h>
 #include <Project64-core/Logging.h>
-#include <Project64-core/3rdParty/Random.h>
 
 #include "Mips/TLBClass.h"
 #include "CheatClass.h"

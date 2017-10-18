@@ -35,7 +35,6 @@
     <ClCompile Include="3rdParty\7zip.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="3rdParty\Random.cpp" />
     <ClCompile Include="AppInit.cpp" />
     <ClCompile Include="Logging.cpp" />
     <ClCompile Include="MemoryExceptionFilter.cpp" />
@@ -127,7 +126,6 @@
     <ClInclude Include="..\3rdParty\zlib\zconf.h" />
     <ClInclude Include="..\3rdParty\zlib\zlib.h" />
     <ClInclude Include="3rdParty\7zip.h" />
-    <ClInclude Include="3rdParty\Random.h" />
     <ClInclude Include="3rdParty\zip.h" />
     <ClInclude Include="AppInit.h" />
     <ClInclude Include="Debugger.h" />

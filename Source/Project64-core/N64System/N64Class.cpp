@@ -57,7 +57,8 @@ CN64System::CN64System(CPlugins * Plugins, bool SavesReadOnly, bool SyncSystem) 
     m_thread(NULL),
     m_hPauseEvent(true),
     m_CheatsSlectionChanged(false),
-    m_SyncCpu(SyncSystem)
+    m_SyncCpu(SyncSystem),
+    m_Random((uint32_t)time(NULL))
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
     memset(m_LastSuccessSyncPC, 0, sizeof(m_LastSuccessSyncPC));
