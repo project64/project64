@@ -23,6 +23,7 @@
 #include <Project64-core/Settings/DebugSettings.h>
 #include <Project64-core/Plugin.h>
 #include <Project64-core/Logging.h>
+#include <Project64-core/3rdParty/Random.h>
 
 #include "Mips/TLBClass.h"
 #include "CheatClass.h"
@@ -164,6 +165,7 @@ private:
     uint32_t        m_SyncCount;
     bool            m_SyncCpu;
     bool            m_CheatsSlectionChanged;
+    CRandom         m_Random;
 
     //When Syncing cores this is the PC where it last Sync'ed correctly
     uint32_t m_LastSuccessSyncPC[10];

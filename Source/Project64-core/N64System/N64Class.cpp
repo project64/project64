@@ -716,6 +716,7 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
         m_SyncCPU->Reset(bInitReg, ClearMenory);
     }
     g_Settings->SaveBool(GameRunning_InReset, true);
+
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
@@ -763,6 +764,7 @@ bool CN64System::SetActiveSystem(bool bActive)
         R4300iOp::m_TestTimer = m_TestTimer;
         R4300iOp::m_NextInstruction = m_NextInstruction;
         R4300iOp::m_JumpToLocation = m_JumpToLocation;
+        g_Random = &m_Random;
     }
     else
     {
@@ -782,6 +784,7 @@ bool CN64System::SetActiveSystem(bool bActive)
             g_Plugins = m_Plugins;
             g_TLBLoadAddress = NULL;
             g_TLBStoreAddress = NULL;
+            g_Random = NULL;
         }
     }
 
