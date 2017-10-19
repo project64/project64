@@ -142,7 +142,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_DelaySi, new CSettingTypeRDBYesNo("Delay SI", false));
     AddHandler(Rdb_32Bit, new CSettingTypeRDBYesNo("32bit", true));
     AddHandler(Rdb_FastSP, new CSettingTypeRDBYesNo("Fast SP", true));
-    AddHandler(Rdb_FixedAudio, new CSettingTypeRomDatabase("Fixed Audio", false));
+    AddHandler(Rdb_FixedAudio, new CSettingTypeRomDatabase("Fixed Audio", true));
     AddHandler(Rdb_SyncViaAudio, new CSettingTypeRomDatabase("Audio-Sync Audio", true));
     AddHandler(Rdb_RspAudioSignal, new CSettingTypeRDBYesNo("Audio Signal", false));
     AddHandler(Rdb_TLB_VAddrStart, new CSettingTypeRomDatabase("TLB: Vaddr Start", 0));
