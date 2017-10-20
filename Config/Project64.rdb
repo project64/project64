@@ -364,6 +364,7 @@ Status=Compatible
 Culling=1
 Primary Frame Buffer=1
 RDRAM Size=8
+Save Type=16kbit Eeprom
 
 [A5533106-B9F25E5B-C:4A]
 Good Name=Akumajou Dracula Mokushiroku Gaiden - Legend of Cornell (J)
@@ -372,6 +373,7 @@ Status=Compatible
 Culling=1
 Primary Frame Buffer=1
 RDRAM Size=8
+Save Type=16kbit Eeprom
 
 [DFD784AD-AE426603-C:50]
 Good Name=All Star Tennis '99 (E) (M5)
