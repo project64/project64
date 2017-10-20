@@ -19,14 +19,6 @@ bool CRegisterTabs::m_bColorsEnabled = false;
 void CRegisterTabs::Attach(HWND hWndNew)
 {
     CTabCtrl::Attach(hWndNew);
-    LOGFONT lf;
-    GetObject((HFONT)GetCurrentObject(GetDC(), OBJ_FONT), sizeof(LOGFONT), &lf);
-
-    HFONT monoFont = CreateFont(lf.lfHeight * -1, 0, 0, 0,
-        FW_DONTCARE, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
-        OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-        CLEARTYPE_QUALITY, FF_DONTCARE, "Consolas"
-    );
 
     m_GPRTab = AddTab("GPR", IDD_Debugger_RegGPR, TabProcGPR);
     m_FPRTab = AddTab("FPR", IDD_Debugger_RegFPR, TabProcFPR);
@@ -42,36 +34,36 @@ void CRegisterTabs::Attach(HWND hWndNew)
     m_SITab = AddTab("SI", IDD_Debugger_RegSI, TabProcDefault);
     m_DDTab = AddTab("DD", IDD_Debugger_RegDD, TabProcDefault);
 
-    InitRegisterEdits64(m_GPRTab, m_GPREdits, GPREditIds, monoFont);
-    InitRegisterEdit64(m_GPRTab, m_HIEdit, IDC_HI_EDIT, monoFont);
-    InitRegisterEdit64(m_GPRTab, m_LOEdit, IDC_LO_EDIT, monoFont);
+    InitRegisterEdits64(m_GPRTab, m_GPREdits, GPREditIds);
+    InitRegisterEdit64(m_GPRTab, m_HIEdit, IDC_HI_EDIT);
+    InitRegisterEdit64(m_GPRTab, m_LOEdit, IDC_LO_EDIT);
 
-    InitRegisterEdits(m_FPRTab, m_FPREdits, FPREditIds, monoFont);
-    InitRegisterEdit(m_FPRTab, m_FCSREdit, IDC_FCSR_EDIT, monoFont);
+    InitRegisterEdits(m_FPRTab, m_FPREdits, FPREditIds);
+    InitRegisterEdit(m_FPRTab, m_FCSREdit, IDC_FCSR_EDIT);
 
-    InitRegisterEdits(m_COP0Tab, m_COP0Edits, COP0EditIds, monoFont);
+    InitRegisterEdits(m_COP0Tab, m_COP0Edits, COP0EditIds);
     m_CauseTip.Attach(m_COP0Tab.GetDlgItem(IDC_CAUSE_TIP));
 
-    InitRegisterEdits(m_RDRAMTab, m_RDRAMEdits, RDRAMEditIds, monoFont);
+    InitRegisterEdits(m_RDRAMTab, m_RDRAMEdits, RDRAMEditIds);
 
-    InitRegisterEdits(m_SPTab, m_SPEdits, SPEditIds, monoFont);
-    InitRegisterEdit(m_SPTab, m_SPPCEdit, IDC_SP_PC_EDIT, monoFont);
+    InitRegisterEdits(m_SPTab, m_SPEdits, SPEditIds);
+    InitRegisterEdit(m_SPTab, m_SPPCEdit, IDC_SP_PC_EDIT);
 
-    InitRegisterEdits(m_DPCTab, m_DPCEdits, DPCEditIds, monoFont);
+    InitRegisterEdits(m_DPCTab, m_DPCEdits, DPCEditIds);
 
-    InitRegisterEdits(m_MITab, m_MIEdits, MIEditIds, monoFont);
+    InitRegisterEdits(m_MITab, m_MIEdits, MIEditIds);
 
-    InitRegisterEdits(m_VITab, m_VIEdits, VIEditIds, monoFont);
+    InitRegisterEdits(m_VITab, m_VIEdits, VIEditIds);
 
-    InitRegisterEdits(m_AITab, m_AIEdits, AIEditIds, monoFont);
+    InitRegisterEdits(m_AITab, m_AIEdits, AIEditIds);
 
-    InitRegisterEdits(m_PITab, m_PIEdits, PIEditIds, monoFont);
+    InitRegisterEdits(m_PITab, m_PIEdits, PIEditIds);
 
-    InitRegisterEdits(m_RITab, m_RIEdits, RIEditIds, monoFont);
+    InitRegisterEdits(m_RITab, m_RIEdits, RIEditIds);
 
-    InitRegisterEdits(m_SITab, m_SIEdits, SIEditIds, monoFont);
+    InitRegisterEdits(m_SITab, m_SIEdits, SIEditIds);
 
-    InitRegisterEdits(m_DDTab, m_DDEdits, DDEditIds, monoFont);
+    InitRegisterEdits(m_DDTab, m_DDEdits, DDEditIds);
 
     SetColorsEnabled(false);
     RefreshEdits();
@@ -668,32 +660,30 @@ void CRegisterTabs::SetColorsEnabled(bool bColorsEnabled)
     m_bColorsEnabled = bColorsEnabled;
 }
 
-void CRegisterTabs::InitRegisterEdit(CWindow& tab, CEditNumber& edit, WORD ctrlId, HFONT font)
+void CRegisterTabs::InitRegisterEdit(CWindow& tab, CEditNumber& edit, WORD ctrlId)
 {
     edit.Attach(tab.GetDlgItem(ctrlId));
     edit.SetDisplayType(CEditNumber::DisplayHex);
-    edit.SetFont(font);
 }
 
-void CRegisterTabs::InitRegisterEdits(CWindow& tab, CEditNumber* edits, const DWORD* ctrlIds, HFONT font)
+void CRegisterTabs::InitRegisterEdits(CWindow& tab, CEditNumber* edits, const DWORD* ctrlIds)
 {
     for (int i = 0; i < ctrlIds[i] != 0; i++)
     {
-        InitRegisterEdit(tab, edits[i], ctrlIds[i], font);
+        InitRegisterEdit(tab, edits[i], ctrlIds[i]);
     }
 }
 
-void CRegisterTabs::InitRegisterEdit64(CWindow& tab, CEditReg64& edit, WORD ctrlId, HFONT font)
+void CRegisterTabs::InitRegisterEdit64(CWindow& tab, CEditReg64& edit, WORD ctrlId)
 {
     edit.Attach(tab.GetDlgItem(ctrlId));
-    edit.SetFont(font);
 }
 
-void CRegisterTabs::InitRegisterEdits64(CWindow& tab, CEditReg64* edits, const DWORD* ctrlIds, HFONT font)
+void CRegisterTabs::InitRegisterEdits64(CWindow& tab, CEditReg64* edits, const DWORD* ctrlIds)
 {
     for (int i = 0; i < ctrlIds[i] != 0; i++)
     {
-        InitRegisterEdit64(tab, edits[i], ctrlIds[i], font);
+        InitRegisterEdit64(tab, edits[i], ctrlIds[i]);
     }
 }
 

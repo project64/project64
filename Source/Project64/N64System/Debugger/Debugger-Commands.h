@@ -29,10 +29,6 @@ public:
         COL_SYMBOL
     };
 
-    enum {
-        ROW_HEIGHT = 13,
-    };
-
     void Attach(HWND hWndNew)
     {
         CListViewCtrl::Attach(hWndNew);
@@ -143,6 +139,7 @@ private:
     OPCODE&  m_SelectedOpCode = m_SelectedOpInfo.m_OpCode;
 
     uint32_t m_FollowAddress;
+    uint32_t m_RowHeight;
 
     typedef struct {
         uint32_t address;
