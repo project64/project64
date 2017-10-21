@@ -86,7 +86,38 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
         case SYSTEM_MPAL: video_clock = 48628316; break;
         }
         uint32_t Frequency = video_clock / (g_Dacrate + 1);
-        g_SoundDriver->AI_SetFrequency(Frequency);
+
+        if (Frequency < 4000)
+        {
+            WriteTrace(TraceAudioDriver, TraceDebug, "Not Audio Data!");
+            return;
+        }
+        else
+        {
+            int32_t BufferSize = 0; double audio_clock = 0; double framerate = 0;
+
+            if (g_settings->FPSBuffer() == true)
+            {
+                framerate = 59.94004;
+                if (SystemType == SYSTEM_PAL) { framerate = 50; }
+            }
+            else
+            {
+                framerate = 64;
+                if (SystemType == SYSTEM_PAL) { framerate = 53.33333; }
+            }
+            if (g_settings->TinyBuffer() == true)
+            {
+                audio_clock = ((video_clock / framerate) * 2);
+            }
+            else
+            {
+                audio_clock = ((video_clock / framerate) * 4);
+            }
+
+            BufferSize = (int32_t)audio_clock / (g_Dacrate) + 1 & ~0x1;
+            g_SoundDriver->AI_SetFrequency(Frequency, BufferSize);
+        }
     }
     WriteTrace(TraceAudioInterface, TraceDebug, "Done");
 }
@@ -126,7 +157,7 @@ EXPORT void CALL AiUpdate(int32_t Wait)
     }
     else
     {
-        pjutil::Sleep(1);
+        pjutil::Sleep(1); // TODO:  Fixme -- Ai Update appears to be problematic
     }
     WriteTrace(TraceAudioInterface, TraceDebug, "Done");
 }

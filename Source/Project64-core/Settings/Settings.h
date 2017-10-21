@@ -153,6 +153,7 @@ enum SettingID
     Game_Transferpak_Sav,
     Game_LoadSaveAtStart,
     Game_OverClockModifier,
+    Game_FullSpeed,
 
     // General Game running info
     GameRunning_LoadingInProgress,

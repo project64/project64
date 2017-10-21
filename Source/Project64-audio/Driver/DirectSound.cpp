@@ -70,7 +70,7 @@ bool DirectSoundDriver::Initialize()
     WAVEFORMATEX wfm = { 0 };
     wfm.wFormatTag = WAVE_FORMAT_PCM;
     wfm.nChannels = 2;
-    wfm.nSamplesPerSec = 44100;
+    wfm.nSamplesPerSec = 48000;
     wfm.wBitsPerSample = 16;
     wfm.nBlockAlign = wfm.wBitsPerSample / 8 * wfm.nChannels;
     wfm.nAvgBytesPerSec = wfm.nSamplesPerSec * wfm.nBlockAlign;
@@ -119,11 +119,11 @@ void DirectSoundDriver::StartAudio()
     WriteTrace(TraceAudioDriver, TraceDebug, "Done");
 }
 
-void DirectSoundDriver::SetFrequency(uint32_t Frequency)
+void DirectSoundDriver::SetFrequency(uint32_t Frequency, uint32_t BufferSize)
 {
     WriteTrace(TraceAudioDriver, TraceDebug, "Start (Frequency: 0x%08X)", Frequency);
     StopAudio();
-    m_LOCK_SIZE = (uint32_t)((Frequency / g_settings->BufferDivider())) * 4;
+    m_LOCK_SIZE = (BufferSize * 2);
     SetSegmentSize(m_LOCK_SIZE, Frequency);
 
     StartAudio();
@@ -133,7 +133,7 @@ void DirectSoundDriver::SetFrequency(uint32_t Frequency)
 void DirectSoundDriver::SetVolume(uint32_t Volume)
 {
     LPDIRECTSOUNDBUFFER & lpdsb = (LPDIRECTSOUNDBUFFER &)m_lpdsb;
-    int32_t dsVolume = - 10 ^ ((100 - Volume) * 33);
+    int32_t dsVolume = -((100 - (int32_t)Volume) * 25);
     if (Volume == 0)
     {
         dsVolume = DSBVOLUME_MIN;
@@ -211,12 +211,6 @@ void DirectSoundDriver::AudioThreadProc()
             {
                 break;
             }
-            // Check to see if the audio pointer moved on to the next segment
-            if (write_pos == last_pos)
-            {
-                WriteTrace(TraceAudioDriver, TraceVerbose, "Sleep");
-                Sleep(1);
-            }
             uint32_t play_pos = 0;
             if (lpdsbuff == NULL || FAILED(lpdsbuff->GetCurrentPosition((unsigned long*)&play_pos, NULL)))
             {
@@ -226,6 +220,11 @@ void DirectSoundDriver::AudioThreadProc()
             }
             write_pos = play_pos < m_LOCK_SIZE ? (m_LOCK_SIZE * DS_SEGMENTS) - m_LOCK_SIZE : ((play_pos / m_LOCK_SIZE) * m_LOCK_SIZE) - m_LOCK_SIZE;
             WriteTrace(TraceAudioDriver, TraceVerbose, "play_pos: 0x%08X m_write_pos: 0x%08X next_pos: 0x%08X m_LOCK_SIZE: 0x%08X", play_pos, write_pos, next_pos, m_LOCK_SIZE);
+            if (last_pos == write_pos)
+            {
+                WriteTrace(TraceAudioDriver, TraceVerbose, "Sleep");
+                Sleep(1);
+            }
         }
         // This means we had a buffer segment skipped
         if (next_pos != write_pos)

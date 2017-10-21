@@ -476,6 +476,7 @@ bool CN64System::RunDiskImage(const char * FileLoc)
 void CN64System::CloseSystem()
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
+    g_Settings->SaveBool(Game_FullSpeed, true);
     if (g_BaseSystem)
     {
         g_BaseSystem->CloseCpu();
@@ -2073,33 +2074,6 @@ void CN64System::RunRSP()
     WriteTrace(TraceRSP, TraceDebug, "Done (SP Status %X)", m_Reg.SP_STATUS_REG);
 }
 
-void CN64System::SyncToAudio()
-{
-    if (!bSyncToAudio() || !bLimitFPS())
-    {
-        return;
-    }
-    PROFILE_TIMERS PreviousTimer = Timer_None;
-    if (bShowCPUPer())
-    {
-        PreviousTimer = m_CPU_Usage.StartTimer(Timer_Idel);
-    }
-
-    for (int i = 0; i < 50; i++)
-    {
-        if (g_Reg->m_AudioIntrReg != 0)
-        {
-            WriteTrace(TraceAudio, TraceDebug, "Audio Interrupt done (%d)", i);
-            break;
-        }
-        pjutil::Sleep(1);
-    }
-    if (bShowCPUPer())
-    {
-        m_CPU_Usage.StartTimer(PreviousTimer);
-    }
-}
-
 void CN64System::RefreshScreen()
 {
     PROFILE_TIMERS CPU_UsageAddr = Timer_None/*, ProfilingAddr = Timer_None*/;
@@ -2152,7 +2126,7 @@ void CN64System::RefreshScreen()
     }
     g_MMU->UpdateFieldSerration((m_Reg.VI_STATUS_REG & 0x40) != 0);
 
-    if ((bBasicMode() || bLimitFPS()) && !bSyncToAudio())
+    if ((bBasicMode() || bLimitFPS()) && (!bSyncToAudio() || !FullSpeed()))
     {
         if (bShowCPUPer()) { m_CPU_Usage.StartTimer(Timer_Idel); }
         uint32_t FrameRate;

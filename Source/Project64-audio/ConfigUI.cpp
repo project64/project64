@@ -103,52 +103,37 @@ public:
 
     BEGIN_MSG_MAP(CDebugSettings)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-        COMMAND_HANDLER(IDC_BUFFER_DIVIDER, EN_CHANGE, ItemChanged)
-        COMMAND_HANDLER(IDC_BUFFER_LEVEL, EN_CHANGE, ItemChanged)
+        COMMAND_ID_HANDLER_EX(IDC_TINYBUFFER, ItemChanged)
+        COMMAND_ID_HANDLER_EX(IDC_FPSBUFFER, ItemChanged)
         CHAIN_MSG_MAP(CPropertyPageImpl<CGameSettings>)
     END_MSG_MAP()
 
     LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
-        m_BufferDivider.Attach(GetDlgItem(IDC_BUFFER_DIVIDER));
-        m_BufferDivider.SetWindowText(stdstr_f("%d", g_settings->BufferDivider()).c_str());
-
-        m_BufferLevel.Attach(GetDlgItem(IDC_BUFFER_LEVEL));
-        m_BufferLevel.SetWindowText(stdstr_f("%d", g_settings->BufferLevel()).c_str());
-
-        m_btnSyncAudio.Attach(GetDlgItem(IDC_SYNC_AUDIO));
-        m_btnSyncAudio.SetCheck(g_settings->SyncAudio() ? BST_CHECKED : BST_UNCHECKED);
+        m_btnTinyBuffer.Attach(GetDlgItem(IDC_TINYBUFFER));
+        m_btnTinyBuffer.SetCheck(g_settings->TinyBuffer() ? BST_CHECKED : BST_UNCHECKED);
+        m_btnFPSBuffer.Attach(GetDlgItem(IDC_FPSBUFFER));
+        m_btnFPSBuffer.SetCheck(g_settings->FPSBuffer() ? BST_CHECKED : BST_UNCHECKED);
         return TRUE;
     }
 
     bool OnApply()
     {
-        char buffer[100];
-        m_BufferDivider.GetWindowText(buffer, sizeof(buffer));
-        g_settings->SetBufferDivider(atoi(buffer));
-        m_BufferLevel.GetWindowText(buffer, sizeof(buffer));
-        g_settings->SetBufferLevel(atoi(buffer));
-        g_settings->SetSyncAudio(m_btnSyncAudio.GetCheck() == BST_CHECKED);
-
+        g_settings->SetTinyBuffer(m_btnTinyBuffer.GetCheck() == BST_CHECKED);
+        g_settings->SetFPSBuffer(m_btnFPSBuffer.GetCheck() == BST_CHECKED);
         FlushSettings();
         return true;
     }
 
 private:
-    CEdit m_BufferDivider;
-    CEdit m_BufferLevel;
-    CButton m_btnSyncAudio;
+    CButton m_btnTinyBuffer;
+    CButton m_btnFPSBuffer;
 
-    LRESULT	ItemChangedNotify(NMHDR* /*pNMHDR*/)
+    void ItemChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
     {
         SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
-        return 0;
-    }
-
-    LRESULT ItemChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
-    {
-        SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
-        return 0;
+        g_settings->SetTinyBuffer(m_btnTinyBuffer.GetCheck() == BST_CHECKED);
+        g_settings->SetFPSBuffer(m_btnFPSBuffer.GetCheck() == BST_CHECKED);
     }
 };
 

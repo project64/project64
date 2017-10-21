@@ -143,7 +143,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_32Bit, new CSettingTypeRDBYesNo("32bit", true));
     AddHandler(Rdb_FastSP, new CSettingTypeRDBYesNo("Fast SP", true));
     AddHandler(Rdb_FixedAudio, new CSettingTypeRomDatabase("Fixed Audio", true));
-    AddHandler(Rdb_SyncViaAudio, new CSettingTypeRomDatabase("Sync Audio", false));
+    AddHandler(Rdb_SyncViaAudio, new CSettingTypeRomDatabase("Audio-Sync Audio", true));
     AddHandler(Rdb_RspAudioSignal, new CSettingTypeRDBYesNo("Audio Signal", false));
     AddHandler(Rdb_TLB_VAddrStart, new CSettingTypeRomDatabase("TLB: Vaddr Start", 0));
     AddHandler(Rdb_TLB_VAddrLen, new CSettingTypeRomDatabase("TLB: Vaddr Len", 0));
@@ -226,6 +226,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_Transferpak_Sav, new CSettingTypeGame("Tpak-Sav-dir", Default_None));
     AddHandler(Game_LoadSaveAtStart, new CSettingTypeTempBool(false));
     AddHandler(Game_OverClockModifier, new CSettingTypeGame("OverClockModifier", Rdb_OverClockModifier));
+    AddHandler(Game_FullSpeed, new CSettingTypeTempBool(true, "Full Speed"));
 
     //User Interface
     AddHandler(UserInterface_ShowCPUPer, new CSettingTypeApplication("", "Display CPU Usage", (uint32_t)false));
@@ -298,7 +299,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(GameRunning_CPU_Paused, new CSettingTypeTempBool(false));
     AddHandler(GameRunning_CPU_PausedType, new CSettingTypeTempNumber(Default_None));
     AddHandler(GameRunning_InstantSaveFile, new CSettingTypeTempString(""));
-    AddHandler(GameRunning_LimitFPS, new CSettingTypeTempBool(true));
+    AddHandler(GameRunning_LimitFPS, new CSettingTypeTempBool(true, "Limit FPS"));
     AddHandler(GameRunning_ScreenHertz, new CSettingTypeTempNumber(60));
     AddHandler(GameRunning_InReset, new CSettingTypeTempBool(false));
 
@@ -346,7 +347,11 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 #ifdef _WIN32
     AddHandler(Plugin_RSP_Current, new CSettingTypeApplication("Plugin", "RSP Dll", "RSP\\RSP 1.7.dll"));
     AddHandler(Plugin_GFX_Current, new CSettingTypeApplication("Plugin", "Graphics Dll", "GFX\\Jabo_Direct3D8.dll"));
-    AddHandler(Plugin_AUDIO_Current, new CSettingTypeApplication("Plugin", "Audio Dll", "Audio\\Jabo_Dsound.dll"));
+#ifdef _DEBUG
+    AddHandler(Plugin_AUDIO_Current, new CSettingTypeApplication("Plugin", "Audio Dll", "Audio\\Project64-Audio_d.dll"));
+#else
+    AddHandler(Plugin_AUDIO_Current, new CSettingTypeApplication("Plugin", "Audio Dll", "Audio\\Project64-Audio.dll"));
+#endif
     AddHandler(Plugin_CONT_Current, new CSettingTypeApplication("Plugin", "Controller Dll", "Input\\PJ64_NRage.dll"));
 #else
     AddHandler(Plugin_RSP_Current, new CSettingTypeApplication("Plugin", "RSP Dll", "libProject64-rsp-hle.so"));
@@ -416,7 +421,7 @@ uint32_t CSettings::FindSetting(CSettings * _this, const char * Name)
             }
             return iter->first;
         }
-        if (Setting->GetSettingType() == SettingType_CfgFile)
+        else if (Setting->GetSettingType() == SettingType_CfgFile)
         {
             CSettingTypeApplication * CfgSetting = (CSettingTypeApplication *)Setting;
             if (_stricmp(CfgSetting->GetKeyName(), Name) != 0)
@@ -425,10 +430,19 @@ uint32_t CSettings::FindSetting(CSettings * _this, const char * Name)
             }
             return iter->first;
         }
-        if (Setting->GetSettingType() == SettingType_SelectedDirectory)
+        else if (Setting->GetSettingType() == SettingType_SelectedDirectory)
         {
             CSettingTypeSelectedDirectory * SelectedDirectory = (CSettingTypeSelectedDirectory *)Setting;
             if (_stricmp(SelectedDirectory->GetName(), Name) != 0)
+            {
+                continue;
+            }
+            return iter->first;
+        }
+        else if (Setting->GetSettingType() == SettingType_BoolVariable)
+        {
+            CSettingTypeTempBool * BoolSetting = (CSettingTypeTempBool *)Setting;
+            if (_stricmp(BoolSetting->GetName(), Name) != 0)
             {
                 continue;
             }
