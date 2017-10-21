@@ -261,10 +261,10 @@ private:
     static INT_PTR CALLBACK TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
     static INT_PTR CALLBACK TabProcFPR(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
-    static void InitRegisterEdit(CWindow& tab, CEditNumber& edit, WORD ctrlId, HFONT font);
-    static void InitRegisterEdits(CWindow& tab, CEditNumber* edits, const DWORD* ctrlIds, HFONT font);
-    static void InitRegisterEdit64(CWindow& tab, CEditReg64& edit, WORD ctrlId, HFONT font);
-    static void InitRegisterEdits64(CWindow& tab, CEditReg64* edits, const DWORD* ctrlIds, HFONT font);
+    static void InitRegisterEdit(CWindow& tab, CEditNumber& edit, WORD ctrlId);
+    static void InitRegisterEdits(CWindow& tab, CEditNumber* edits, const DWORD* ctrlIds);
+    static void InitRegisterEdit64(CWindow& tab, CEditReg64& edit, WORD ctrlId);
+    static void InitRegisterEdits64(CWindow& tab, CEditReg64* edits, const DWORD* ctrlIds);
     static void ZeroRegisterEdit(CEditNumber& edit);
     static void ZeroRegisterEdits(CEditNumber* edits, const DWORD* ctrlIds);
     static void ZeroRegisterEdit64(CEditReg64& edit);

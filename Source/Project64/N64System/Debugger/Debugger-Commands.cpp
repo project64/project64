@@ -31,6 +31,8 @@ CToolTipDialog<CDebugCommandsView>()
 	m_StartAddress = 0x80000000;
 	m_Breakpoints = m_Debugger->Breakpoints();
 	m_bEditing = false;
+    m_CommandListRows = 39;
+    m_RowHeight = 13;
 }
 
 CDebugCommandsView::~CDebugCommandsView(void)
@@ -56,8 +58,6 @@ LRESULT	CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
 
     DlgResize_Init(false, true);
     DlgToolTip_Init();
-
-    m_CommandListRows = 39;
 
 	CheckCPUType();
 	
@@ -871,7 +871,19 @@ LRESULT	CDebugCommandsView::OnMeasureItem(UINT uMsg, WPARAM wParam, LPARAM lPara
 	if (wParam == IDC_CMD_LIST)
 	{
 		MEASUREITEMSTRUCT* lpMeasureItem = (MEASUREITEMSTRUCT*)lParam;
-		lpMeasureItem->itemHeight = CCommandList::ROW_HEIGHT;
+        HWND hCmdList = GetDlgItem(IDC_CMD_LIST);
+        HWND hHeader = ListView_GetHeader(hCmdList);
+        RECT header_rc = { 0 }, control_rc = { 0 };
+        if (::GetClientRect(hHeader, &header_rc) && GetClientRect(&control_rc))
+        {
+            int height = (control_rc.bottom - control_rc.top) - (header_rc.bottom - header_rc.top);
+            m_RowHeight = height / m_CommandListRows;
+        }
+        else
+        {
+            m_RowHeight = 13;
+        }
+        lpMeasureItem->itemHeight = m_RowHeight;
 	}
 	return FALSE;
 }
@@ -928,8 +940,8 @@ void CDebugCommandsView::DrawBranchArrows(HDC listDC)
 		int begX = baseX - arrow.startMargin * 3;
 		int endX = baseX - arrow.endMargin * 3;
 
-		int begY = baseY + arrow.startPos * CCommandList::ROW_HEIGHT;
-		int endY = baseY + arrow.endPos * CCommandList::ROW_HEIGHT;
+        int begY = baseY + arrow.startPos * m_RowHeight;
+        int endY = baseY + arrow.endPos * m_RowHeight;
 
 		bool bEndVisible = true;
 
@@ -1405,7 +1417,7 @@ LRESULT	CDebugCommandsView::OnSizing(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 
 	int rowsHeight = listRect.Height() - headRect.Height();
 	
-	int nRows = (rowsHeight / CCommandList::ROW_HEIGHT);
+    int nRows = (rowsHeight / m_RowHeight);
 	
 	if (m_CommandListRows != nRows)
 	{
