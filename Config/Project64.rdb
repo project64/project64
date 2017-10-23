@@ -1110,6 +1110,7 @@ Status=Compatible
 Counter Factor=1
 Delay SI=Yes
 RDRAM Size=8
+Save Type=16kbit Eeprom
 
 [FA5A3DFF-B4C9CDB9-C:45]
 Good Name=Clay Fighter - Sculptor's Cut (U)
@@ -2257,6 +2258,7 @@ Status=Compatible
 Counter Factor=1
 Delay SI=Yes
 RDRAM Size=8
+Save Type=16kbit Eeprom
 
 [C49ADCA2-F1501B62-C:45]
 Good Name=GT 64 - Championship Edition (U)
@@ -2265,6 +2267,7 @@ Status=Compatible
 Counter Factor=1
 Delay SI=Yes
 RDRAM Size=8
+Save Type=16kbit Eeprom
 
 //================  H  ================
 [95A80114-E0B72A7F-C:4A]
