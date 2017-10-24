@@ -23,6 +23,7 @@ call :setVersion "%base_dir%\Source\Project64-core\version.h" !commits_since_tag
 call :setVersion "%base_dir%\Source\nragev20\version.h" !commits_since_tag!
 call :setVersion "%base_dir%\Source\RSP\version.h" !commits_since_tag!
 call :setVersion "%base_dir%\Source\Project64-video\version.h" !commits_since_tag!
+call :setVersion "%base_dir%\Source\Project64-audio\version.h" !commits_since_tag!
 
 ENDLOCAL
 
