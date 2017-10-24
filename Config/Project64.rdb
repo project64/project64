@@ -6606,6 +6606,7 @@ Internal Name=Waialae Country Club
 Status=Compatible
 Culling=1
 Primary Frame Buffer=1
+Save Type=Sram
 
 [0C5057AD-046E126E-C:50]
 Good Name=Waialae Country Club - True Golf Classics (E) (M4) (V1.1)
@@ -6613,6 +6614,7 @@ Internal Name=Waialae Country Club
 Status=Compatible
 Culling=1
 Primary Frame Buffer=1
+Save Type=Sram
 
 [8066D58A-C3DECAC1-C:45]
 Good Name=Waialae Country Club - True Golf Classics (U) (V1.0)
@@ -6620,6 +6622,7 @@ Internal Name=Waialae Country Club
 Status=Compatible
 Culling=1
 Primary Frame Buffer=1
+Save Type=Sram
 
 [DD318CE2-B73798BA-C:45]
 Good Name=Waialae Country Club - True Golf Classics (U) (V1.1)
@@ -6627,6 +6630,7 @@ Internal Name=Waialae Country Club
 Status=Compatible
 Culling=1
 Primary Frame Buffer=1
+Save Type=Sram
 
 [D715CC70-271CF5D6-C:50]
 Good Name=War Gods (E)
