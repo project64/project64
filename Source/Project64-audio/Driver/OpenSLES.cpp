@@ -361,7 +361,7 @@ void queueCallback(SLAndroidSimpleBufferQueueItf caller, void *context)
 }
 #endif
 
-void OpenSLESDriver::AI_SetFrequency(uint32_t freq)
+void OpenSLESDriver::AI_SetFrequency(uint32_t freq, uint32_t BufferSize)
 {
     WriteTrace(TraceAudioInitShutdown, TraceDebug, "Start (freq: %d)", freq);
     if (freq < 4000)
@@ -588,7 +588,7 @@ void OpenSLESDriver::AI_SetFrequency(uint32_t freq)
 
 void OpenSLESDriver::AI_Startup(void)
 {
-    AI_SetFrequency(DEFAULT_FREQUENCY);
+    AI_SetFrequency(DEFAULT_FREQUENCY, 0);
 }
 
 void OpenSLESDriver::AI_Shutdown(void)
