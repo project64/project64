@@ -1849,6 +1849,8 @@ depthmode=1
 fast_crc=0
 stipple_mode=1
 stipple_pattern=4286595040
+fb_read_always=1
+fb_smart=0
 
 [2577C7D4-D18FAAAE-C:50]
 Good Name=Mario Kart 64 (E) (V1.1)
@@ -1857,6 +1859,8 @@ depthmode=1
 fast_crc=0
 stipple_mode=1
 stipple_pattern=4286595040
+fb_read_always=1
+fb_smart=0
 
 [6BFF4758-E5FF5D5E-C:4A]
 Good Name=Mario Kart 64 (J) (V1.0)
@@ -1865,6 +1869,8 @@ depthmode=1
 fast_crc=0
 stipple_mode=1
 stipple_pattern=4286595040
+fb_read_always=1
+fb_smart=0
 
 [C9C3A987-5810344C-C:4A]
 Good Name=Mario Kart 64 (J) (V1.1)
@@ -1873,6 +1879,8 @@ depthmode=1
 fast_crc=0
 stipple_mode=1
 stipple_pattern=4286595040
+fb_read_always=1
+fb_smart=0
 
 [3E5055B6-2E92DA52-C:45]
 Good Name=Mario Kart 64 (U)
@@ -1881,6 +1889,8 @@ depthmode=1
 fast_crc=0
 stipple_mode=1
 stipple_pattern=4286595040
+fb_read_always=1
+fb_smart=0
 
 [9C663069-80F24A80-C:50]
 Good Name=Mario Party (E) (M3)
