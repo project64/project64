@@ -44,7 +44,7 @@
 #define VER_PRODUCT_VERSION_STR     VER_FILE_VERSION_STR
 #define VER_ORIGINAL_FILENAME_STR   VER_PRODUCTNAME_STR ".dll"
 #define VER_INTERNAL_NAME_STR       VER_PRODUCTNAME_STR
-#define VER_COPYRIGHT_STR           "Copyright (C) 2008"
+#define VER_COPYRIGHT_STR           "Copyright (C) 2017"
 
 #ifdef _DEBUG
 #define VER_VER_DEBUG             VS_FF_DEBUG

@@ -126,29 +126,25 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,1,9999
- PRODUCTVERSION 1,0,1,9999
- FILEFLAGSMASK 0x1fL
-#ifdef _DEBUG
- FILEFLAGS 0x1L
-#else
- FILEFLAGS 0x0L
-#endif
- FILEOS 0x40004L
- FILETYPE 0x2L
- FILESUBTYPE 0x0L
+ FILEVERSION        VER_FILE_VERSION
+ PRODUCTVERSION     VER_PRODUCT_VERSION
+ FILEFLAGSMASK      0x1fL
+ FILEFLAGS          VER_FILEFLAGS
+ FILEOS             VER_FILEOS
+ FILETYPE           VER_FILETYPE
+ FILESUBTYPE        0x0L
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "FileDescription", "Project64-audio"
-            VALUE "FileVersion", "1.0.1.9999"
-            VALUE "InternalName", "Project64-audio"
-            VALUE "LegalCopyright", "Copyright (C) 2017"
-            VALUE "OriginalFilename", "Project64-audio.dll"
-            VALUE "ProductName", "Project64-audio"
-            VALUE "ProductVersion", "1.0.1.9999"
+            VALUE "FileDescription",  VER_FILE_DESCRIPTION_STR "\0"
+            VALUE "FileVersion",      VER_FILE_VERSION_STR "\0"
+            VALUE "InternalName",     VER_INTERNAL_NAME_STR "\0"
+            VALUE "LegalCopyright",   VER_COPYRIGHT_STR "\0"
+            VALUE "OriginalFilename", VER_ORIGINAL_FILENAME_STR "\0"
+            VALUE "ProductName",      VER_PRODUCTNAME_STR
+            VALUE "ProductVersion",   VER_PRODUCT_VERSION_STR "\0"
         END
     END
     BLOCK "VarFileInfo"

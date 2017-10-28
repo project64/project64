@@ -25,13 +25,6 @@
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// RT_MANIFEST
-//
-
-CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST             "..\\Project64.exe.manifest"
-
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -1783,17 +1776,13 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,3,0,9999
- PRODUCTVERSION 2,3,0,9999
- FILEFLAGSMASK 0x3fL
-#ifdef _DEBUG
- FILEFLAGS 0x1L
-#else
- FILEFLAGS 0x0L
-#endif
- FILEOS 0x40004L
- FILETYPE 0x1L
- FILESUBTYPE 0x0L
+ FILEVERSION        VER_FILE_VERSION
+ PRODUCTVERSION     VER_PRODUCT_VERSION
+ FILEFLAGSMASK      0x3fL
+ FILEFLAGS          VER_FILEFLAGS
+ FILEOS             VER_FILEOS
+ FILETYPE           VER_FILETYPE
+ FILESUBTYPE        0x0L
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
@@ -1853,127 +1842,6 @@ BEGIN
     0, 0, 0, 0,
     0, 0, 0, 100
 END
-
-IDD_Settings_Config AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_RegGPR AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_AddBreakpoint AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_RegFPR AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_Scripts AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_RegPI AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_Memory AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_Symbols AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_AddSymbol AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_DMALog AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_StackTrace AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_RegCOP0 AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Settings_Advanced AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_Stack AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Cheats_DumpMemory AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_RegSP AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_RegMI AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_RegAI AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_RegSI AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_RegRI AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_RegDPC AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_RegRDRAM AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_RegVI AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_RegDD AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
