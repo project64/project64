@@ -29,22 +29,7 @@ public:
         COL_SYMBOL
     };
 
-    void Attach(HWND hWndNew)
-    {
-        CListViewCtrl::Attach(hWndNew);
-        ModifyStyle(LVS_OWNERDRAWFIXED, 0, 0);
-        SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER | LVS_EX_LABELTIP);
-        AddColumn("", COL_ARROWS);
-        AddColumn("Address", COL_ADDRESS);
-        AddColumn("Command", COL_COMMAND);
-        AddColumn("Parameters", COL_PARAMETERS);
-        AddColumn("Symbol", COL_SYMBOL);
-        SetColumnWidth(COL_ARROWS, 30);
-        SetColumnWidth(COL_ADDRESS, 65);
-        SetColumnWidth(COL_COMMAND, 60);
-        SetColumnWidth(COL_PARAMETERS, 120);
-        SetColumnWidth(COL_SYMBOL, 140);
-    }
+    void Attach(HWND hWndNew);
 
     BEGIN_MSG_MAP_EX(CCommandsList)
     END_MSG_MAP()
