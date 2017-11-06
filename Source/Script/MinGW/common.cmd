@@ -31,6 +31,7 @@ ECHO Compiling common library sources for Project64...
 %CC% -o %obj%\md5.asm                   %src%\md5.cpp %C_FLAGS%
 %CC% -o %obj%\MemTest.asm               %src%\MemTest.cpp %C_FLAGS%
 %CC% -o %obj%\path.asm                  %src%\path.cpp %C_FLAGS%
+%CC% -o %obj%\Random.asm                %src%\Random.cpp %C_FLAGS%
 %CC% -o %obj%\stdstring.asm             %src%\StdString.cpp %C_FLAGS%
 %CC% -o %obj%\SyncEvent.asm             %src%\SyncEvent.cpp %C_FLAGS%
 %CC% -o %obj%\Trace.asm                 %src%\Trace.cpp %C_FLAGS%
@@ -44,6 +45,7 @@ ECHO Assembling common library sources...
 %AS% -o %obj%\md5.o                     %obj%\md5.asm
 %AS% -o %obj%\MemTest.o                 %obj%\MemTest.asm
 %AS% -o %obj%\path.o                    %obj%\path.asm
+%AS% -o %obj%\Random.o                  %obj%\Random.asm
 %AS% -o %obj%\stdstring.o               %obj%\stdstring.asm
 %AS% -o %obj%\SyncEvent.o               %obj%\SyncEvent.asm
 %AS% -o %obj%\Trace.o                   %obj%\Trace.asm
@@ -55,6 +57,7 @@ set OBJ_LIST=^
  %obj%\Trace.o^
  %obj%\SyncEvent.o^
  %obj%\stdstring.o^
+ %obj%\Random.o^
  %obj%\path.o^
  %obj%\MemTest.o^
  %obj%\md5.o^

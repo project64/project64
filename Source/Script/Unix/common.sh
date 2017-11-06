@@ -26,6 +26,7 @@ $CC -o $obj/MemoryManagement.asm        $src/MemoryManagement.cpp $C_FLAGS
 $CC -o $obj/MemTest.asm                 $src/MemTest.cpp $C_FLAGS
 $CC -o $obj/path.asm                    $src/path.cpp $C_FLAGS
 $CC -o $obj/Platform.asm                $src/Platform.cpp $C_FLAGS
+$CC -o $obj/Random.asm                  $src/Random.cpp $C_FLAGS
 $CC -o $obj/stdstring.asm               $src/StdString.cpp $C_FLAGS
 $CC -o $obj/SyncEvent.asm               $src/SyncEvent.cpp $C_FLAGS
 $CC -o $obj/DateTimeClass.asm           $src/DateTimeClass.cpp $C_FLAGS
@@ -43,6 +44,7 @@ $AS -o $obj/MemoryManagement.o          $obj/MemoryManagement.asm
 $AS -o $obj/MemTest.o                   $obj/MemTest.asm
 $AS -o $obj/path.o                      $obj/path.asm
 $AS -o $obj/Platform.o                  $obj/Platform.asm
+$AS -o $obj/Random.o                    $obj/Random.asm
 $AS -o $obj/stdstring.o                 $obj/stdstring.asm
 $AS -o $obj/SyncEvent.o                 $obj/SyncEvent.asm
 $AS -o $obj/DateTimeClass.o             $obj/DateTimeClass.asm
@@ -57,6 +59,7 @@ OBJ_LIST="\
  $obj/DateTimeClass.o \
  $obj/SyncEvent.o \
  $obj/stdstring.o \
+ $obj/Random.o \
  $obj/Platform.o \
  $obj/path.o \
  $obj/MemTest.o \
