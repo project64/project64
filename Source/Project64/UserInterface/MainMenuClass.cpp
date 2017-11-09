@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "RomInformationClass.h"
+#include "Debugger/Breakpoints.h"
+#include "Debugger/ScriptSystem.h"
 #include <Project64-core/N64System/N64DiskClass.h>
-
-#include <Project64/N64System/Debugger/Breakpoints.h>
-#include <Project64/N64System/Debugger/ScriptSystem.h>
 
 #include <windows.h>
 #include <commdlg.h>
@@ -54,7 +53,7 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     m_ChangeSettingList.push_back(Debugger_AppLogFlush);
     m_ChangeSettingList.push_back(Game_CurrentSaveState);
     m_ChangeSettingList.push_back(Setting_CurrentLanguage);
-	
+
     for (UISettingList::const_iterator iter = m_ChangeUISettingList.begin(); iter != m_ChangeUISettingList.end(); iter++)
     {
         g_Settings->RegisterChangeCB((SettingID)(FirstUISettings + *iter), this, (CSettings::SettingChangedFunc)SettingsChanged);
@@ -507,13 +506,13 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUGGER_INTERRUPT_VI: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_VI); break;
     case ID_DEBUGGER_INTERRUPT_PI: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_PI); break;
     case ID_DEBUGGER_INTERRUPT_DP: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_DP); break;
-	case ID_DEBUGGER_BREAKPOINTS: m_Gui->Debug_ShowCommandsWindow(); break;
-	case ID_DEBUGGER_SCRIPTS: m_Gui->Debug_ShowScriptsWindow(); break;
-	case ID_DEBUGGER_SYMBOLS: m_Gui->Debug_ShowSymbolsWindow(); break;
-	case ID_DEBUGGER_DMALOG: m_Gui->Debug_ShowDMALogWindow(); break;
-	case ID_DEBUGGER_STACKTRACE: m_Gui->Debug_ShowStackTrace(); break;
-	case ID_DEBUGGER_STACKVIEW: m_Gui->Debug_ShowStackWindow(); break;
-	case ID_CURRENT_SAVE_DEFAULT:
+    case ID_DEBUGGER_BREAKPOINTS: m_Gui->Debug_ShowCommandsWindow(); break;
+    case ID_DEBUGGER_SCRIPTS: m_Gui->Debug_ShowScriptsWindow(); break;
+    case ID_DEBUGGER_SYMBOLS: m_Gui->Debug_ShowSymbolsWindow(); break;
+    case ID_DEBUGGER_DMALOG: m_Gui->Debug_ShowDMALogWindow(); break;
+    case ID_DEBUGGER_STACKTRACE: m_Gui->Debug_ShowStackTrace(); break;
+    case ID_DEBUGGER_STACKVIEW: m_Gui->Debug_ShowStackWindow(); break;
+    case ID_CURRENT_SAVE_DEFAULT:
         g_Notify->DisplayMessage(3, stdstr_f(GS(MENU_SLOT_SAVE), GetSaveSlotString(MenuID - ID_CURRENT_SAVE_DEFAULT).c_str()).c_str());
         g_Settings->SaveDword(Game_CurrentSaveState, (DWORD)(MenuID - ID_CURRENT_SAVE_DEFAULT));
         break;
@@ -1004,10 +1003,10 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 
         /* Debug - R4300i
         *******************/
-		
-		//ID_DEBUGGER_LOGOPTIONS
+
+        //ID_DEBUGGER_LOGOPTIONS
         Item.Reset(ID_DEBUGGER_BREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"R4300i &Commands...");
-		Item.SetItemEnabled(CPURunning);
+        Item.SetItemEnabled(CPURunning);
 
         DebugR4300Menu.push_back(Item);
         //Item.Reset(ID_DEBUGGER_R4300REGISTERS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"R4300i &Registers...");
@@ -1127,36 +1126,36 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         Item.Reset(ID_DEBUGGER_BREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Breakpoint...");
         //Item.SetItemEnabled(CPURunning);
         DebugMenu.push_back(Item);
-        
-		/* Debugger - Symbols
-		****************/
-		Item.Reset(ID_DEBUGGER_SYMBOLS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Symbols...");
-		//Item.SetItemEnabled(CPURunning);
-		DebugMenu.push_back(Item);
 
-		/* Debug - Scripts
-		*******************/
-		Item.Reset(ID_DEBUGGER_SCRIPTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Scripts...");
-		//Item.SetItemEnabled(CPURunning);
-		DebugMenu.push_back(Item);
-		
-		/* Debug - DMA Log
-		*******************/
-		Item.Reset(ID_DEBUGGER_DMALOG, EMPTY_STRING, EMPTY_STDSTR, NULL, L"DMA Log...");
-		//Item.SetItemEnabled(CPURunning);
-		DebugMenu.push_back(Item);
+        /* Debugger - Symbols
+        ****************/
+        Item.Reset(ID_DEBUGGER_SYMBOLS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Symbols...");
+        //Item.SetItemEnabled(CPURunning);
+        DebugMenu.push_back(Item);
 
-		/* Debug - Stack
-		*******************/
-		Item.Reset(ID_DEBUGGER_STACKVIEW, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Stack...");
-		DebugMenu.push_back(Item);
+        /* Debug - Scripts
+        *******************/
+        Item.Reset(ID_DEBUGGER_SCRIPTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Scripts...");
+        //Item.SetItemEnabled(CPURunning);
+        DebugMenu.push_back(Item);
 
-		/* Debug - Stack Trace
-		*******************/
-		Item.Reset(ID_DEBUGGER_STACKTRACE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Stack Trace...");
-		DebugMenu.push_back(Item);
+        /* Debug - DMA Log
+        *******************/
+        Item.Reset(ID_DEBUGGER_DMALOG, EMPTY_STRING, EMPTY_STDSTR, NULL, L"DMA Log...");
+        //Item.SetItemEnabled(CPURunning);
+        DebugMenu.push_back(Item);
 
-		DebugMenu.push_back(MENU_ITEM(SPLITER));
+        /* Debug - Stack
+        *******************/
+        Item.Reset(ID_DEBUGGER_STACKVIEW, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Stack...");
+        DebugMenu.push_back(Item);
+
+        /* Debug - Stack Trace
+        *******************/
+        Item.Reset(ID_DEBUGGER_STACKTRACE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Stack Trace...");
+        DebugMenu.push_back(Item);
+
+        DebugMenu.push_back(MENU_ITEM(SPLITER));
 
         /* Debug - RSP
         *******************/

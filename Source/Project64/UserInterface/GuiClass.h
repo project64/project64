@@ -11,7 +11,7 @@
 #pragma once
 
 #include "../Settings/GuiSettings.h"
-#include <Project64/N64System/Debugger/debugger.h>
+#include <Project64/UserInterface/Debugger/debugger.h>
 #include <Project64-core/Plugins/PluginClass.h>
 
 class CGfxPlugin;      //Plugin that controls the rendering

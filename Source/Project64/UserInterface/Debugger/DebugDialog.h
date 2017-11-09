@@ -1,3 +1,5 @@
+#pragma once
+
 template <class T>
 class CDebugDialog :
     public CDialogImpl < T >
