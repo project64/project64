@@ -171,13 +171,13 @@ public:
 								break;
 				case _T( '.' ):	if ( !( m_nFlags & ITEM_FLAGS_EDIT_FLOAT ) )
 									return FALSE;
-								nDecimalIndex = nCharIndex;
+								nDecimalIndex = (int)nCharIndex;
 								nDecimalPoint++;
 								break;
 				default:		if ( !_istdigit( nCharValue ) )
 									return FALSE;
 								if ( nDigitIndex < 0 )
-									nDigitIndex = nCharIndex;
+									nDigitIndex = (int)nCharIndex;
 								break;
 			}
 

@@ -2579,7 +2579,7 @@ public:
 		return TRUE;
 	}
 	
-	void OnTimer( UINT nIDEvent )
+	void OnTimer(UINT_PTR nIDEvent )
 	{
 		switch ( nIDEvent )
 		{
@@ -3158,16 +3158,16 @@ public:
 		TRIVERTEX triVertext[ 2 ] = {
 										rcRect.left,
 										rcRect.top,
-										GetRValue( rgbTop ) << 8,
-										GetGValue( rgbTop ) << 8,
-										GetBValue( rgbTop ) << 8,
-										0x0000,			
+										(COLOR16)(GetRValue( rgbTop ) << 8),
+                                        (COLOR16)(GetGValue( rgbTop ) << 8),
+                                        (COLOR16)(GetBValue( rgbTop ) << 8),
+                                        (COLOR16)(0x0000),
 										rcRect.right,
 										rcRect.bottom,
-										GetRValue( rgbBottom ) << 8,
-										GetGValue( rgbBottom ) << 8,
-										GetBValue( rgbBottom ) << 8,
-										0x0000
+                                        (COLOR16)(GetRValue( rgbBottom ) << 8),
+                                        (COLOR16)(GetGValue( rgbBottom ) << 8),
+                                        (COLOR16)(GetBValue( rgbBottom ) << 8),
+                                        (COLOR16)(0x0000)
 									};
 		
 		dcPaint.GradientFill( triVertext, 2, &grdRect, 1, GRADIENT_FILL_RECT_V );
