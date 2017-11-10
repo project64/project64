@@ -34,43 +34,43 @@ void CRegisterTabs::Attach(HWND hWndNew)
     m_SITab = AddTab("SI", IDD_Debugger_RegSI, TabProcDefault);
     m_DDTab = AddTab("DD", IDD_Debugger_RegDD, TabProcDefault);
 
-    InitRegisterEdits64(m_GPRTab, m_GPREdits, GPREditIds);
+    InitRegisterEdits64(m_GPRTab, m_GPREdits, GPREditIds, sizeof(GPREditIds) / sizeof(GPREditIds[0]));
     InitRegisterEdit64(m_GPRTab, m_HIEdit, IDC_HI_EDIT);
     InitRegisterEdit64(m_GPRTab, m_LOEdit, IDC_LO_EDIT);
 
-    InitRegisterEdits(m_FPRTab, m_FPREdits, FPREditIds);
+    InitRegisterEdits(m_FPRTab, m_FPREdits, FPREditIds, sizeof(FPREditIds) / sizeof(FPREditIds[0]));
     InitRegisterEdit(m_FPRTab, m_FCSREdit, IDC_FCSR_EDIT);
 
-    InitRegisterEdits(m_COP0Tab, m_COP0Edits, COP0EditIds);
+    InitRegisterEdits(m_COP0Tab, m_COP0Edits, COP0EditIds, sizeof(COP0EditIds) / sizeof(COP0EditIds[0]));
     m_CauseTip.Attach(m_COP0Tab.GetDlgItem(IDC_CAUSE_TIP));
 
-    InitRegisterEdits(m_RDRAMTab, m_RDRAMEdits, RDRAMEditIds);
+    InitRegisterEdits(m_RDRAMTab, m_RDRAMEdits, RDRAMEditIds, sizeof(RDRAMEditIds) / sizeof(RDRAMEditIds[0]));
 
-    InitRegisterEdits(m_SPTab, m_SPEdits, SPEditIds);
+    InitRegisterEdits(m_SPTab, m_SPEdits, SPEditIds, sizeof(SPEditIds) / sizeof(SPEditIds[0]));
     InitRegisterEdit(m_SPTab, m_SPPCEdit, IDC_SP_PC_EDIT);
 
-    InitRegisterEdits(m_DPCTab, m_DPCEdits, DPCEditIds);
+    InitRegisterEdits(m_DPCTab, m_DPCEdits, DPCEditIds, sizeof(DPCEditIds) / sizeof(DPCEditIds[0]));
 
-    InitRegisterEdits(m_MITab, m_MIEdits, MIEditIds);
+    InitRegisterEdits(m_MITab, m_MIEdits, MIEditIds, sizeof(MIEditIds) / sizeof(MIEditIds[0]));
 
-    InitRegisterEdits(m_VITab, m_VIEdits, VIEditIds);
+    InitRegisterEdits(m_VITab, m_VIEdits, VIEditIds, sizeof(VIEditIds) / sizeof(VIEditIds[0]));
 
-    InitRegisterEdits(m_AITab, m_AIEdits, AIEditIds);
+    InitRegisterEdits(m_AITab, m_AIEdits, AIEditIds, sizeof(AIEditIds) / sizeof(AIEditIds[0]));
 
-    InitRegisterEdits(m_PITab, m_PIEdits, PIEditIds);
+    InitRegisterEdits(m_PITab, m_PIEdits, PIEditIds, sizeof(PIEditIds) / sizeof(PIEditIds[0]));
 
-    InitRegisterEdits(m_RITab, m_RIEdits, RIEditIds);
+    InitRegisterEdits(m_RITab, m_RIEdits, RIEditIds, sizeof(RIEditIds) / sizeof(RIEditIds[0]));
 
-    InitRegisterEdits(m_SITab, m_SIEdits, SIEditIds);
+    InitRegisterEdits(m_SITab, m_SIEdits, SIEditIds, sizeof(SIEditIds) / sizeof(SIEditIds[0]));
 
-    InitRegisterEdits(m_DDTab, m_DDEdits, DDEditIds);
+    InitRegisterEdits(m_DDTab, m_DDEdits, DDEditIds, sizeof(DDEditIds) / sizeof(DDEditIds[0]));
 
     SetColorsEnabled(false);
     RefreshEdits();
     RedrawCurrentTab();
 }
 
-HWND CRegisterTabs::Detach()
+HWND CRegisterTabs::Detach(void)
 {
     m_GPRTab = NULL;
     m_FPRTab = NULL;
@@ -99,36 +99,23 @@ void CRegisterTabs::RefreshEdits()
 {
     if (g_Reg == NULL)
     {
-        ZeroRegisterEdits64(m_GPREdits, GPREditIds);
+        ZeroRegisterEdits64(m_GPREdits, sizeof(m_GPREdits) / sizeof(m_GPREdits[0]));
         ZeroRegisterEdit64(m_HIEdit);
         ZeroRegisterEdit64(m_LOEdit);
-
-        ZeroRegisterEdits(m_FPREdits, FPREditIds);
+        ZeroRegisterEdits(m_FPREdits, sizeof(m_FPREdits) / sizeof(m_FPREdits[0]));
         ZeroRegisterEdit(m_FCSREdit);
-
-        ZeroRegisterEdits(m_COP0Edits, COP0EditIds);
-
-        ZeroRegisterEdits(m_RDRAMEdits, RDRAMEditIds);
-
-        ZeroRegisterEdits(m_SPEdits, SPEditIds);
+        ZeroRegisterEdits(m_COP0Edits, sizeof(m_COP0Edits) / sizeof(m_COP0Edits[0]));
+        ZeroRegisterEdits(m_RDRAMEdits, sizeof(m_RDRAMEdits) / sizeof(m_RDRAMEdits[0]));
+        ZeroRegisterEdits(m_SPEdits, sizeof(m_SPEdits) / sizeof(m_SPEdits[0]));
         ZeroRegisterEdit(m_SPPCEdit);
-
-        ZeroRegisterEdits(m_DPCEdits, DPCEditIds);
-
-        ZeroRegisterEdits(m_MIEdits, MIEditIds);
-
-        ZeroRegisterEdits(m_VIEdits, VIEditIds);
-
-        ZeroRegisterEdits(m_AIEdits, AIEditIds);
-
-        ZeroRegisterEdits(m_PIEdits, PIEditIds);
-
-        ZeroRegisterEdits(m_RIEdits, RIEditIds);
-
-        ZeroRegisterEdits(m_SIEdits, SIEditIds);
-
-        ZeroRegisterEdits(m_DDEdits, DDEditIds);
-
+        ZeroRegisterEdits(m_DPCEdits, sizeof(m_DPCEdits) / sizeof(m_DPCEdits[0]));
+        ZeroRegisterEdits(m_MIEdits, sizeof(m_MIEdits) / sizeof(m_MIEdits[0]));
+        ZeroRegisterEdits(m_VIEdits, sizeof(m_VIEdits) / sizeof(m_VIEdits[0]));
+        ZeroRegisterEdits(m_AIEdits, sizeof(m_AIEdits) / sizeof(m_AIEdits[0]));
+        ZeroRegisterEdits(m_PIEdits, sizeof(m_PIEdits) / sizeof(m_PIEdits[0]));
+        ZeroRegisterEdits(m_RIEdits, sizeof(m_RIEdits) / sizeof(m_RIEdits[0]));
+        ZeroRegisterEdits(m_SIEdits, sizeof(m_SIEdits) / sizeof(m_SIEdits[0]));
+        ZeroRegisterEdits(m_DDEdits, sizeof(m_DDEdits) / sizeof(m_DDEdits[0]));
         return;
     }
 
@@ -302,7 +289,7 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
         }
         else
         {
-            int nReg = MapEditRegNum(ctrlId, GPREditIds);
+            int nReg = MapEditRegNum(ctrlId, GPREditIds, sizeof(GPREditIds) / sizeof(GPREditIds[0]));
             g_Reg->m_GPR[nReg].UDW = value;
         }
         return;
@@ -320,7 +307,7 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
             return;
         }
 
-        int nReg = MapEditRegNum(ctrlId, FPREditIds);
+        int nReg = MapEditRegNum(ctrlId, FPREditIds, sizeof(FPREditIds) / sizeof(FPREditIds[0]));
         *(uint32_t*)g_Reg->m_FPR_S[nReg] = value;
         return;
     }
@@ -517,7 +504,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         }
         else
         {
-            int nReg = MapEditRegNum(ctrlId, GPREditIds);
+            int nReg = MapEditRegNum(ctrlId, GPREditIds, sizeof(GPREditIds) / sizeof(GPREditIds[0]));
             bOpReads = opInfo.ReadsGPR(nReg);
             bOpWrites = opInfo.WritesGPR(nReg);
         }
@@ -621,22 +608,14 @@ CWindow CRegisterTabs::AddTab(char* caption, int dialogId, DLGPROC dlgProc)
 
 void CRegisterTabs::ShowTab(int nPage)
 {
-    for (int i = 0; i < m_TabWindows.size(); i++)
+    for (size_t i = 0; i < m_TabWindows.size(); i++)
     {
         ::ShowWindow(m_TabWindows[i], SW_HIDE);
     }
 
     CRect pageRect = GetPageRect();
 
-    ::SetWindowPos(
-        m_TabWindows[nPage],
-        HWND_TOP,
-        pageRect.left,
-        pageRect.top,
-        pageRect.Width(),
-        pageRect.Height(),
-        SWP_SHOWWINDOW
-    );
+    ::SetWindowPos(m_TabWindows[nPage], HWND_TOP, pageRect.left, pageRect.top, pageRect.Width(), pageRect.Height(), SWP_SHOWWINDOW);
 }
 
 void CRegisterTabs::RedrawCurrentTab()
@@ -644,15 +623,7 @@ void CRegisterTabs::RedrawCurrentTab()
     int nPage = GetCurSel();
     CRect pageRect = GetPageRect();
 
-    ::SetWindowPos(
-        m_TabWindows[nPage],
-        HWND_TOP,
-        pageRect.left,
-        pageRect.top,
-        pageRect.Width(),
-        pageRect.Height(),
-        SWP_SHOWWINDOW
-    );
+    ::SetWindowPos(m_TabWindows[nPage], HWND_TOP, pageRect.left, pageRect.top, pageRect.Width(), pageRect.Height(), SWP_SHOWWINDOW);
 }
 
 void CRegisterTabs::SetColorsEnabled(bool bColorsEnabled)
@@ -666,9 +637,9 @@ void CRegisterTabs::InitRegisterEdit(CWindow& tab, CEditNumber& edit, WORD ctrlI
     edit.SetDisplayType(CEditNumber::DisplayHex);
 }
 
-void CRegisterTabs::InitRegisterEdits(CWindow& tab, CEditNumber* edits, const DWORD* ctrlIds)
+void CRegisterTabs::InitRegisterEdits(CWindow& tab, CEditNumber* edits, const WORD* ctrlIds, uint32_t ctrlIdsCount)
 {
-    for (int i = 0; i < ctrlIds[i] != 0; i++)
+    for (int i = 0, n = ctrlIdsCount; i < n; i++)
     {
         InitRegisterEdit(tab, edits[i], ctrlIds[i]);
     }
@@ -679,9 +650,9 @@ void CRegisterTabs::InitRegisterEdit64(CWindow& tab, CEditReg64& edit, WORD ctrl
     edit.Attach(tab.GetDlgItem(ctrlId));
 }
 
-void CRegisterTabs::InitRegisterEdits64(CWindow& tab, CEditReg64* edits, const DWORD* ctrlIds)
+void CRegisterTabs::InitRegisterEdits64(CWindow& tab, CEditReg64* edits, const WORD* ctrlIds, uint32_t ctrlIdsCount)
 {
-    for (int i = 0; i < ctrlIds[i] != 0; i++)
+    for (int i = 0, n = ctrlIdsCount; i < n; i++)
     {
         InitRegisterEdit64(tab, edits[i], ctrlIds[i]);
     }
@@ -692,9 +663,9 @@ void CRegisterTabs::ZeroRegisterEdit(CEditNumber& edit)
     edit.SetValue(0, false, true);
 }
 
-void CRegisterTabs::ZeroRegisterEdits(CEditNumber* edits, const DWORD* ctrlIds)
+void CRegisterTabs::ZeroRegisterEdits(CEditNumber* edits, uint32_t ctrlIdsCount)
 {
-    for (int i = 0; ctrlIds[i] != 0; i++)
+    for (int i = 0, n = ctrlIdsCount; i < n; i++)
     {
         ZeroRegisterEdit(edits[i]);
     }
@@ -705,9 +676,9 @@ void CRegisterTabs::ZeroRegisterEdit64(CEditReg64& edit)
     edit.SetValue(0);
 }
 
-void CRegisterTabs::ZeroRegisterEdits64(CEditReg64* edits, const DWORD* ctrlIds)
+void CRegisterTabs::ZeroRegisterEdits64(CEditReg64* edits, uint32_t ctrlIdsCount)
 {
-    for (int i = 0; ctrlIds[i] != 0; i++)
+    for (uint32_t i = 0, n = ctrlIdsCount; i < n; i++)
     {
         ZeroRegisterEdit64(edits[i]);
     }
@@ -744,7 +715,7 @@ LRESULT CEditReg64::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandl
         goto canceled;
     }
 
-    char charCode = wParam;
+    char charCode = (char)wParam;
 
     if (!isxdigit(charCode) && charCode != ' ')
     {
@@ -796,7 +767,7 @@ uint64_t CEditReg64::GetValue()
     return ParseValue(text);
 }
 
-LRESULT CEditReg64::OnLostFocus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CEditReg64::OnLostFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 {
     SetValue(GetValue()); // clean up
     bHandled = FALSE;
