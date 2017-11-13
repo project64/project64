@@ -110,7 +110,7 @@ void CMipsMemoryVM::Reset(bool /*EraseMemory*/)
 
 void CMipsMemoryVM::ReserveMemory()
 {
-    m_Reserve1 = (uint8_t *)AllocateAddressSpace(0x20000000, (void *)g_Settings->LoadDword(Setting_FixedRdramAddress));
+    m_Reserve1 = (uint8_t *)AllocateAddressSpace(0x20000000, (void *)(uintptr_t)g_Settings->LoadDword(Setting_FixedRdramAddress));
     m_Reserve2 = (uint8_t *)AllocateAddressSpace(0x04002000);
 }
 

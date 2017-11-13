@@ -1004,7 +1004,7 @@ CCompiledFunc * CRecompiler::CompileCode()
     {
         WriteTrace(TraceRecompiler, TraceDebug, "info->Function() = %X", Func->Function());
         std::string dumpline;
-        uint32_t start_address = (uint32_t)(Func->Function()) & ~1;
+        uintptr_t start_address = (uintptr_t)(Func->Function()) & ~1;
         for (uint8_t * ptr = (uint8_t *)start_address; ptr < CodeBlock.CompiledLocationEnd(); ptr++)
         {
             if (dumpline.empty())
@@ -1012,7 +1012,7 @@ CCompiledFunc * CRecompiler::CompileCode()
                 dumpline += stdstr_f("%X: ", ptr);
             }
             dumpline += stdstr_f(" %02X", *ptr);
-            if ((((uint32_t)ptr - start_address) + 1) % 30 == 0)
+            if ((((uintptr_t)ptr - start_address) + 1) % 30 == 0)
             {
                 WriteTrace(TraceRecompiler, TraceDebug, "%s", dumpline.c_str());
                 dumpline.clear();
@@ -1126,7 +1126,7 @@ void CRecompiler::ResetMemoryStackPos()
     uint32_t pAddr = 0;
     if (m_MMU.TranslateVaddr(m_Registers.m_GPR[29].UW[0], pAddr))
     {
-        m_MemoryStack = (uint32_t)(m_MMU.Rdram() + pAddr);
+        m_MemoryStack = (uintptr_t)(m_MMU.Rdram() + pAddr);
     }
     else
     {
@@ -1144,7 +1144,7 @@ void CRecompiler::DumpFunctionTimes()
 
     for (FUNCTION_PROFILE::iterator itr = m_BlockProfile.begin(); itr != m_BlockProfile.end(); itr++)
     {
-        Log.LogF("%X,0x%X,%d\r\n", (uint32_t)itr->first, itr->second.Address, (uint32_t)itr->second.TimeTaken);
+        Log.LogF("%X,0x%X,%d\r\n", (uintptr_t)itr->first, itr->second.Address, (uint32_t)itr->second.TimeTaken);
     }
 }
 
