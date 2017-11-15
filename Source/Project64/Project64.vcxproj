@@ -63,6 +63,10 @@
     <ClCompile>
       <OmitFramePointers Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</OmitFramePointers>
     </ClCompile>
+    <PreBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

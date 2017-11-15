@@ -9,6 +9,7 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64", "Source\Project64\Project64.vcxproj", "{7E534C8E-1ACE-4A88-8807-39A11ED4DA18}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A4D13408-A794-4199-8FC7-4A9A32505005} = {A4D13408-A794-4199-8FC7-4A9A32505005}
+		{1968162C-0793-491D-91A1-81645A24D399} = {1968162C-0793-491D-91A1-81645A24D399}
 		{D233025A-231F-4A43-92B6-E87193C60ACC} = {D233025A-231F-4A43-92B6-E87193C60ACC}
 		{FD617E80-9E40-4138-85DA-B94633972E6A} = {FD617E80-9E40-4138-85DA-B94633972E6A}
 	EndProjectSection
@@ -42,6 +43,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PropertySheets", "PropertyS
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-core", "Source\Project64-core\Project64-core.vcxproj", "{00C7B43A-DED7-4DF0-B072-9A5783EF866D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1968162C-0793-491D-91A1-81645A24D399} = {1968162C-0793-491D-91A1-81645A24D399}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "png", "Source\3rdParty\png\png.vcxproj", "{17836496-31B0-46F2-B1B1-366D7DF6F04C}"
 EndProject
@@ -58,6 +62,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-video", "Source\Project64-video\Project64-video.vcxproj", "{A4D13408-A794-4199-8FC7-4A9A32505005}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-audio", "Source\Project64-audio\Project64-audio.vcxproj", "{D233025A-231F-4A43-92B6-E87193C60ACC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UpdateVersion", "Source\UpdateVersion\UpdateVersion.vcxproj", "{1968162C-0793-491D-91A1-81645A24D399}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -192,6 +198,14 @@ Global
 		{D233025A-231F-4A43-92B6-E87193C60ACC}.Release|Win32.ActiveCfg = Release|Win32
 		{D233025A-231F-4A43-92B6-E87193C60ACC}.Release|Win32.Build.0 = Release|Win32
 		{D233025A-231F-4A43-92B6-E87193C60ACC}.Release|x64.ActiveCfg = Release|Win32
+		{1968162C-0793-491D-91A1-81645A24D399}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1968162C-0793-491D-91A1-81645A24D399}.Debug|Win32.Build.0 = Debug|Win32
+		{1968162C-0793-491D-91A1-81645A24D399}.Debug|x64.ActiveCfg = Debug|x64
+		{1968162C-0793-491D-91A1-81645A24D399}.Debug|x64.Build.0 = Debug|x64
+		{1968162C-0793-491D-91A1-81645A24D399}.Release|Win32.ActiveCfg = Release|Win32
+		{1968162C-0793-491D-91A1-81645A24D399}.Release|Win32.Build.0 = Release|Win32
+		{1968162C-0793-491D-91A1-81645A24D399}.Release|x64.ActiveCfg = Release|x64
+		{1968162C-0793-491D-91A1-81645A24D399}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

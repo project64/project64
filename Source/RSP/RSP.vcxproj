@@ -45,6 +45,9 @@
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Bscmake>
+    <PreBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(SolutionDir)Source\RSP\Version.h.in" "$(SolutionDir)Source\RSP\Version.h"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="breakpoint.c" />

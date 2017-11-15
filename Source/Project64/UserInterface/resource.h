@@ -601,7 +601,6 @@
 #define IDC_DD40_EDIT                   1442
 #define IDC_DD44_EDIT                   1443
 #define IDC_DD48_EDIT                   1444
-#define VERSION_BUILD                   9999
 #define ID_POPUP_SHOWINMEMORYVIEWER     40005
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ADDSYMBOL          40013

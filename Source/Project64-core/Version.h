@@ -20,7 +20,8 @@
 #define VERSION_MINOR               4
 #define VERSION_REVISION            0
 #endif
-#define VERSION_BUILD               9999
+#define VERSION_BUILD               594
+#define GIT_VERSION                 "g169f9d9-dirty"
 
 #define VER_FILE_DESCRIPTION_STR    "Project64"
 #define VER_FILE_VERSION            VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_BUILD
@@ -28,6 +29,7 @@
                                     "." STRINGIZE(VERSION_MINOR)    \
                                     "." STRINGIZE(VERSION_REVISION) \
                                     "." STRINGIZE(VERSION_BUILD)    \
+                                    "-" GIT_VERSION
 
 #define VER_PRODUCTNAME_STR         "Project64"
 #define VER_PRODUCT_VERSION         VER_FILE_VERSION

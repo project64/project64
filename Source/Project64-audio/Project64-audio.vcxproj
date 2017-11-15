@@ -38,6 +38,9 @@
     <Link>
       <AdditionalDependencies>dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(SolutionDir)Source\Project64-audio\Version.h.in" "$(SolutionDir)Source\Project64-audio\Version.h"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AudioMain.cpp" />

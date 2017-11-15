@@ -81,10 +81,9 @@ Thumbs.db
 /Plugin64/RSP/RSP_d 1.7.dll
 /Plugin64/RSP/RSP-HLE.dll
 /Plugin64/RSP/RSP-HLE_d.dll
-/Source/3rdParty/wx/lib/vc_lib/msw/wx/setup.h
-/Source/3rdParty/wx/lib/vc_lib/mswd/wx/setup.h
-/Source/3rdParty/wx/lib/vc_lib/mswu/wx/msw/rcdefs.h
-/Source/3rdParty/wx/lib/vc_lib/mswu/wx/setup.h
-/Source/3rdParty/wx/lib/vc_lib/mswud/wx/msw/rcdefs.h
-/Source/3rdParty/wx/lib/vc_lib/mswud/wx/setup.h
+/Source/nragev20/Version.h
+/Source/Project64-audio/Version.h
+/Source/Project64-core/Version.h
+/Source/Project64-video/Version.h
+/Source/RSP/Version.h
 /Save

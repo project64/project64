@@ -45,6 +45,9 @@
       <PreprocessorDefinitions Condition="'$(Configuration)'=='Debug'">RDP_LOGGING;RDP_ERROR_LOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader />
     </ClCompile>
+    <PreBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(SolutionDir)Source\Project64-video\Version.h.in" "$(SolutionDir)Source\Project64-video\Version.h"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="F3DTEXA.h" />

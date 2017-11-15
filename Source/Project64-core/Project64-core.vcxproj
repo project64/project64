@@ -31,6 +31,11 @@
   </ImportGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ItemDefinitionGroup>
+    <PreBuildEvent>
+      <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(SolutionDir)Source\Project64-core\Version.h.in" "$(SolutionDir)Source\Project64-core\Version.h"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="3rdParty\7zip.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
