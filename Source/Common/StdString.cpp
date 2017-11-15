@@ -30,11 +30,16 @@ strvector stdstr::Tokenize(const char * delimiter) const
 
     stdstr::size_type lastPos = find_first_not_of(delimiter, 0);
     stdstr::size_type pos = find_first_of(delimiter, lastPos);
-    while (stdstr::npos != pos || stdstr::npos != lastPos)
+    size_t delimiter_len = strlen(delimiter);
+    while (stdstr::npos != pos)
     {
         tokens.push_back(substr(lastPos, pos - lastPos));
-        lastPos = find_first_not_of(delimiter, pos);
+        lastPos = pos + delimiter_len;
         pos = find_first_of(delimiter, lastPos);
+    }
+    if (stdstr::npos != lastPos)
+    {
+        tokens.push_back(substr(lastPos));
     }
     return tokens;
 }
@@ -45,11 +50,15 @@ strvector stdstr::Tokenize(char delimiter) const
 
     stdstr::size_type lastPos = find_first_not_of(delimiter, 0);
     stdstr::size_type pos = find_first_of(delimiter, lastPos);
-    while (stdstr::npos != pos || stdstr::npos != lastPos)
+    while (stdstr::npos != pos)
     {
         tokens.push_back(substr(lastPos, pos - lastPos));
-        lastPos = find_first_not_of(delimiter, pos);
+        lastPos = pos + 1;
         pos = find_first_of(delimiter, lastPos);
+    }
+    if (stdstr::npos != lastPos)
+    {
+        tokens.push_back(substr(lastPos));
     }
     return tokens;
 }
