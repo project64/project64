@@ -17,5 +17,6 @@ if not "%~3" == "" set OutFile="%~3"
 
 FOR /F "tokens=1 delims=" %%A in ('git describe --tags --long --dirty') do SET current_tag=%%A
 
+echo "%base_dir%\Bin\%BuildMode%\UpdateVersion.exe" %InFile% %OutFile% "%current_tag%"
 "%base_dir%\Bin\%BuildMode%\UpdateVersion.exe" %InFile% %OutFile% "%current_tag%"
 
