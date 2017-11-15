@@ -32,6 +32,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64Setup", "Source\In
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PJ64 NRage", "Source\nragev20\NRage_Input_V2.vcxproj", "{FD617E80-9E40-4138-85DA-B94633972E6A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1968162C-0793-491D-91A1-81645A24D399} = {1968162C-0793-491D-91A1-81645A24D399}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PropertySheets", "PropertySheets", "{181AA451-63A7-4E3B-BE0C-F92BE3F3D2F2}"
 	ProjectSection(SolutionItems) = preProject
@@ -60,8 +63,14 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "duktape", "Source\3rdParty\duktape\duktape.vcxproj", "{E8D9A652-A354-4374-B6C5-A51EE62749FD}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-video", "Source\Project64-video\Project64-video.vcxproj", "{A4D13408-A794-4199-8FC7-4A9A32505005}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1968162C-0793-491D-91A1-81645A24D399} = {1968162C-0793-491D-91A1-81645A24D399}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-audio", "Source\Project64-audio\Project64-audio.vcxproj", "{D233025A-231F-4A43-92B6-E87193C60ACC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1968162C-0793-491D-91A1-81645A24D399} = {1968162C-0793-491D-91A1-81645A24D399}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UpdateVersion", "Source\UpdateVersion\UpdateVersion.vcxproj", "{1968162C-0793-491D-91A1-81645A24D399}"
 EndProject
