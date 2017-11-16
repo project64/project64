@@ -59,6 +59,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PluginRSP", "Source\Android\PluginRSP\PluginRSP.vcxproj", "{B685BB34-D700-4FCC-8503-9B6AA1A0C95D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JniBridge", "Source\Android\Bridge\Bridge.vcxproj", "{593B00E6-1987-415D-A62C-26533FC3E95C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{00C7B43A-DED7-4DF0-B072-9A5783EF866D} = {00C7B43A-DED7-4DF0-B072-9A5783EF866D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "duktape", "Source\3rdParty\duktape\duktape.vcxproj", "{E8D9A652-A354-4374-B6C5-A51EE62749FD}"
 EndProject
