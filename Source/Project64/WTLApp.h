@@ -53,7 +53,7 @@ extern CPj64Module _Module;
 #include <Common/StdString.h>
 
 #include "UserInterface/resource.h"
-#include "UserInterface/WTLControls/numberctrl.h"
+#include "UserInterface/WTLControls/EditNumber32.h"
 #include "UserInterface/WTLControls/ClistCtrl/ListCtrl.h"
 #include "UserInterface/WTLControls/ModifiedComboBox.h"
 #include "UserInterface/WTLControls/PartialGroupBox.h"
