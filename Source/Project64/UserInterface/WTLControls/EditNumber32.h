@@ -11,10 +11,9 @@
 #pragma once
 
 #include <wtl/atlctrls.h>
-#include <stdio.h>
 
-class CEditNumber :
-    public CWindowImpl<CEditNumber, CEdit>
+class CEditNumber32 :
+    public CWindowImpl<CEditNumber32, CEdit>
 {
 public:
     enum DisplayType
@@ -22,6 +21,15 @@ public:
         DisplayHex,
         DisplayDec,
     };
+
+    CEditNumber32(void);
+    virtual ~CEditNumber32(void);
+
+    BOOL Attach(HWND hWndNew);
+    BOOL AttachToDlgItem(HWND parent, UINT dlgID);
+    void SetDisplayType(DisplayType Type);
+    uint32_t GetValue(void);
+    void SetValue(uint32_t Value, bool ShowHexIdent = true, bool ZeroExtend = false);
 
 protected:
     enum
@@ -31,7 +39,7 @@ protected:
 
     DisplayType  m_DisplayType;
 
-    BEGIN_MSG_MAP(CEditNumber)
+    BEGIN_MSG_MAP(CEditNumber32)
         MESSAGE_HANDLER(WM_CHAR, OnKeyDown)
         MESSAGE_HANDLER(WM_KEYDOWN, OnKeyDown)
         MESSAGE_HANDLER(WM_PASTE, OnPaste)
@@ -41,17 +49,7 @@ protected:
     bool IsHexConvertableText(LPTSTR _text);
     void FormatClipboard();
 
-    LRESULT OnValidateValue(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
-    LRESULT OnPaste(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);
+    LRESULT OnValidateValue(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnPaste(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-
-public:
-    CEditNumber(void);
-    virtual ~CEditNumber(void);
-
-    BOOL Attach(HWND hWndNew);
-    BOOL AttachToDlgItem(HWND parent, UINT dlgID);
-    void SetDisplayType(DisplayType Type);
-    DWORD GetValue(void);
-    void SetValue(DWORD Value, bool ShowHexIdent = true, bool ZeroExtend = false);
 };

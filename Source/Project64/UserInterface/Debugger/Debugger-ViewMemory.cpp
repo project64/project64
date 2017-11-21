@@ -58,7 +58,7 @@ LRESULT	CDebugMemoryView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
     }
 
     m_MemAddr.Attach(GetDlgItem(IDC_ADDR_EDIT));
-    m_MemAddr.SetDisplayType(CEditNumber::DisplayHex);
+    m_MemAddr.SetDisplayType(CEditNumber32::DisplayHex);
     m_MemAddr.SetValue(0x80000000, false, true);
 
     SendDlgItemMessage(IDC_CHK_VADDR, BM_SETCHECK, BST_CHECKED, 0);

@@ -19,7 +19,7 @@ LRESULT	CAddSymbolDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 	CenterWindow();
 
 	m_AddressEdit.Attach(GetDlgItem(IDC_ADDR_EDIT));
-	m_AddressEdit.SetDisplayType(CEditNumber::DisplayHex);
+	m_AddressEdit.SetDisplayType(CEditNumber32::DisplayHex);
 	m_TypeComboBox.Attach(GetDlgItem(IDC_TYPE_COMBOBOX));
 	m_NameEdit.Attach(GetDlgItem(IDC_NAME_EDIT));
 	m_DescriptionEdit.Attach(GetDlgItem(IDC_DESC_EDIT));

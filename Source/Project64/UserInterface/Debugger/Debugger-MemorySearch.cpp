@@ -41,14 +41,14 @@ void CDebugMemorySearch::AddAlignmentOptions(CComboBox  & ctrl)
 LRESULT	CDebugMemorySearch::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
     m_PAddrStart.Attach(GetDlgItem(IDC_PADDR_START));
-    m_PAddrStart.SetDisplayType(CEditNumber::DisplayHex);
+    m_PAddrStart.SetDisplayType(CEditNumber32::DisplayHex);
     m_SearchLen.Attach(GetDlgItem(IDC_ADDR_END));
-    m_SearchLen.SetDisplayType(CEditNumber::DisplayHex);
+    m_SearchLen.SetDisplayType(CEditNumber32::DisplayHex);
     m_SearchValue.Attach(GetDlgItem(IDC_SEARCH_VALUE));
-    m_SearchValue.SetDisplayType(CEditNumber::DisplayDec);
+    m_SearchValue.SetDisplayType(CEditNumber32::DisplayDec);
     m_SearchValue.SetValue(0);
     m_MaxSearch.Attach(GetDlgItem(IDC_MAX_SEARCH));
-    m_MaxSearch.SetDisplayType(CEditNumber::DisplayDec);
+    m_MaxSearch.SetDisplayType(CEditNumber32::DisplayDec);
     m_MaxSearch.SetValue(50000);
     m_UnknownSize.Attach(GetDlgItem(IDC_UNKNOWN_ALIGN));
     AddAlignmentOptions(m_UnknownSize);
@@ -97,7 +97,7 @@ LRESULT	CDebugMemorySearch::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND hWndC
     case IDC_SEARCH_HEX:
         {
             bool bChecked = (SendMessage(hWndCtl, BM_GETSTATE, 0, 0) & BST_CHECKED) != 0;
-            m_SearchValue.SetDisplayType(bChecked ? CEditNumber::DisplayHex : CEditNumber::DisplayDec);
+            m_SearchValue.SetDisplayType(bChecked ? CEditNumber32::DisplayHex : CEditNumber32::DisplayDec);
         }
         break;
     case ID_POPUP_SHOWINMEMORYVIEWER:

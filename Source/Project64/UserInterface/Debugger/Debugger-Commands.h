@@ -95,10 +95,10 @@ private:
     DWORD m_StartAddress;
     CRect m_DefaultWindowRect;
 
-    CEditNumber m_PCEdit;
+    CEditNumber32 m_PCEdit;
     bool        m_bIgnorePCChange;
 
-    CEditNumber m_AddressEdit;
+    CEditNumber32 m_AddressEdit;
     bool        m_bIgnoreAddrChange;
 
     CCommandList m_CommandList;

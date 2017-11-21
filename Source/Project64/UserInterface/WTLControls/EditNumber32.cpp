@@ -9,17 +9,18 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include "EditNumber32.h"
 
-CEditNumber::CEditNumber(void) :
+CEditNumber32::CEditNumber32(void) :
     m_DisplayType(DisplayDec)
 {
 }
 
-CEditNumber::~CEditNumber(void)
+CEditNumber32::~CEditNumber32(void)
 {
 }
 
-bool CEditNumber::IsHexConvertableText(LPTSTR _text)
+bool CEditNumber32::IsHexConvertableText(LPTSTR _text)
 {
     int start, end;
     GetSel(start, end);
@@ -35,9 +36,11 @@ bool CEditNumber::IsHexConvertableText(LPTSTR _text)
     if (second == 'X' || second == 'x')
     {
         if (end <= 1)
+        {
             bPaste = false;
+        }
     }
-    if (!bPaste) return bPaste;
+    if (!bPaste) { return bPaste; }
     //Check
     unsigned int i = 0;
     if (strlen(_text) >= 2)
@@ -45,11 +48,17 @@ bool CEditNumber::IsHexConvertableText(LPTSTR _text)
         if (_text[0] == '0' && (_text[1] == 'x' || _text[1] == 'X'))
         {
             if ((second == 'x' || second == 'X') && (!(start == 0 && end >= 2)))
+            {
                 bPaste = false;
+            }
             else if (start > 0)
+            {
                 bPaste = false;
+            }
             else
+            {
                 i += 2;
+            }
         }
     }
     if (!bPaste) return bPaste;
@@ -62,9 +71,13 @@ bool CEditNumber::IsHexConvertableText(LPTSTR _text)
         if ((_text[0] == 'x' || _text[0] == 'X'))
         {
             if (head != '0'&&start == 0)
+            {
                 bPaste = false;
+            }
             else if (!(start == 1 && end >= 1 && head == '0'))
+            {
                 bPaste = false;
+            }
         }
     }
     if (!bPaste) return bPaste;
@@ -80,14 +93,14 @@ bool CEditNumber::IsHexConvertableText(LPTSTR _text)
     return bPaste;
 }
 
-void CEditNumber::FormatClipboard()
+void CEditNumber32::FormatClipboard()
 {
     LPTSTR  lptstr, lptstrCopy;
     HGLOBAL hglb;
-    if (!this->OpenClipboard())
+    if (!this->OpenClipboard() || !IsClipboardFormatAvailable(CF_TEXT))
+    {
         return;
-    if (!IsClipboardFormatAvailable(CF_TEXT))
-        return;
+    }
     hglb = GetClipboardData(CF_TEXT);
     if (hglb != NULL)
     {
@@ -95,12 +108,15 @@ void CEditNumber::FormatClipboard()
         for (unsigned int i = 0; i < strlen(lptstr); i++)
         {
             if (lptstr[i] != 'X'&&lptstr[i] != 'x')
+            {
                 lptstr[i] = (char)toupper(lptstr[i]);
+            }
             if (lptstr[i] == 'X')
+            {
                 lptstr[i] = 'x';
+            }
         }
-        hglb = GlobalAlloc(GMEM_MOVEABLE,
-            (strlen(lptstr) + 1) * sizeof(TCHAR));
+        hglb = GlobalAlloc(GMEM_MOVEABLE, (strlen(lptstr) + 1) * sizeof(TCHAR));
         if (hglb == NULL)
         {
             CloseClipboard();
@@ -115,13 +131,13 @@ void CEditNumber::FormatClipboard()
     }
 }
 
-LRESULT CEditNumber::OnValidateValue(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
+LRESULT CEditNumber32::OnValidateValue(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 {
     bHandled = true;
     return true;
 }
 
-LRESULT CEditNumber::OnPaste(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
+LRESULT CEditNumber32::OnPaste(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 {
     //Paste
     bHandled = false;
@@ -156,7 +172,7 @@ LRESULT CEditNumber::OnPaste(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/
     return true;
 }
 
-LRESULT CEditNumber::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
     int start, end;
     GetSel(start, end);
@@ -244,24 +260,24 @@ LRESULT CEditNumber::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
     return false;
 }
 
-BOOL CEditNumber::Attach(HWND hWndNew)
+BOOL CEditNumber32::Attach(HWND hWndNew)
 {
     return SubclassWindow(hWndNew);
 }
 
-BOOL CEditNumber::AttachToDlgItem(HWND parent, UINT dlgID)
+BOOL CEditNumber32::AttachToDlgItem(HWND parent, UINT dlgID)
 {
     return SubclassWindow(::GetDlgItem(parent, dlgID));
 }
 
-void CEditNumber::SetDisplayType(DisplayType Type)
+void CEditNumber32::SetDisplayType(DisplayType Type)
 {
     DWORD lCurrentValue = GetValue();
     m_DisplayType = Type;
     SetValue(lCurrentValue);
 }
 
-DWORD CEditNumber::GetValue(void)
+uint32_t CEditNumber32::GetValue(void)
 {
     char text[200];
     GetWindowText(text, sizeof(text));
@@ -280,7 +296,8 @@ DWORD CEditNumber::GetValue(void)
     for (size_t i = Start; i < Finish; i++)
     {
         Value = (Value << 4);
-        switch (text[i]) {
+        switch (text[i])
+        {
         case '0': break;
         case '1': Value += 1; break;
         case '2': Value += 2; break;
@@ -311,14 +328,15 @@ DWORD CEditNumber::GetValue(void)
     return Value;
 }
 
-void CEditNumber::SetValue(DWORD Value, bool ShowHexIdent, bool ZeroExtend)
+void CEditNumber32::SetValue(uint32_t Value, bool ShowHexIdent, bool ZeroExtend)
 {
     char text[200];
     if (m_DisplayType == DisplayDec)
     {
         sprintf(text, "%d", Value);
     }
-    else {
+    else
+    {
         sprintf(text, "%s%0*X", ShowHexIdent ? "0x" : "", ZeroExtend ? 8 : 0, Value);
     }
     SetWindowText(text);

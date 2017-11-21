@@ -200,43 +200,43 @@ private:
     CEditReg64 m_LOEdit;
 
     CWindow m_FPRTab;
-    CEditNumber m_FPREdits[sizeof(FPREditIds) / sizeof(FPREditIds[0])];
-    CEditNumber m_FCSREdit;
+    CEditNumber32 m_FPREdits[sizeof(FPREditIds) / sizeof(FPREditIds[0])];
+    CEditNumber32 m_FCSREdit;
 
     CWindow m_COP0Tab;
-    CEditNumber m_COP0Edits[sizeof(COP0EditIds) / sizeof(COP0EditIds[0])];
+    CEditNumber32 m_COP0Edits[sizeof(COP0EditIds) / sizeof(COP0EditIds[0])];
     CStatic m_CauseTip;
 
     CWindow m_RDRAMTab;
-    CEditNumber m_RDRAMEdits[sizeof(RDRAMEditIds) / sizeof(RDRAMEditIds[0])];
+    CEditNumber32 m_RDRAMEdits[sizeof(RDRAMEditIds) / sizeof(RDRAMEditIds[0])];
 
     CWindow m_SPTab;
-    CEditNumber m_SPEdits[sizeof(SPEditIds) / sizeof(SPEditIds[0])];
-    CEditNumber m_SPPCEdit;
+    CEditNumber32 m_SPEdits[sizeof(SPEditIds) / sizeof(SPEditIds[0])];
+    CEditNumber32 m_SPPCEdit;
 
     CWindow m_DPCTab;
-    CEditNumber m_DPCEdits[sizeof(DPCEditIds) / sizeof(DPCEditIds[0])];
+    CEditNumber32 m_DPCEdits[sizeof(DPCEditIds) / sizeof(DPCEditIds[0])];
 
     CWindow m_MITab;
-    CEditNumber m_MIEdits[sizeof(MIEditIds) / sizeof(MIEditIds[0])];
+    CEditNumber32 m_MIEdits[sizeof(MIEditIds) / sizeof(MIEditIds[0])];
 
     CWindow m_VITab;
-    CEditNumber m_VIEdits[sizeof(VIEditIds) / sizeof(VIEditIds[0])];
+    CEditNumber32 m_VIEdits[sizeof(VIEditIds) / sizeof(VIEditIds[0])];
 
     CWindow m_AITab;
-    CEditNumber m_AIEdits[sizeof(AIEditIds) / sizeof(AIEditIds[0])];
+    CEditNumber32 m_AIEdits[sizeof(AIEditIds) / sizeof(AIEditIds[0])];
 
     CWindow m_PITab;
-    CEditNumber m_PIEdits[sizeof(PIEditIds) / sizeof(PIEditIds[0])];
+    CEditNumber32 m_PIEdits[sizeof(PIEditIds) / sizeof(PIEditIds[0])];
 
     CWindow m_RITab;
-    CEditNumber m_RIEdits[sizeof(RIEditIds) / sizeof(RIEditIds[0])];
+    CEditNumber32 m_RIEdits[sizeof(RIEditIds) / sizeof(RIEditIds[0])];
 
     CWindow m_SITab;
-    CEditNumber m_SIEdits[sizeof(SIEditIds) / sizeof(SIEditIds[0])];
+    CEditNumber32 m_SIEdits[sizeof(SIEditIds) / sizeof(SIEditIds[0])];
 
     CWindow m_DDTab;
-    CEditNumber m_DDEdits[sizeof(DDEditIds) / sizeof(DDEditIds[0])];
+    CEditNumber32 m_DDEdits[sizeof(DDEditIds) / sizeof(DDEditIds[0])];
 
     static void RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam);
 
@@ -244,12 +244,12 @@ private:
     static INT_PTR CALLBACK TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
     static INT_PTR CALLBACK TabProcFPR(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
-    static void InitRegisterEdit(CWindow& tab, CEditNumber& edit, WORD ctrlId);
-    static void InitRegisterEdits(CWindow& tab, CEditNumber* edits, const WORD* ctrlIds, uint32_t ctrlIdsCount);
+    static void InitRegisterEdit(CWindow& tab, CEditNumber32& edit, WORD ctrlId);
+    static void InitRegisterEdits(CWindow& tab, CEditNumber32* edits, const WORD* ctrlIds, uint32_t ctrlIdsCount);
     static void InitRegisterEdit64(CWindow& tab, CEditReg64& edit, WORD ctrlId);
     static void InitRegisterEdits64(CWindow& tab, CEditReg64* edits, const WORD* ctrlIds, uint32_t ctrlIdsCount);
-    static void ZeroRegisterEdit(CEditNumber& edit);
-    static void ZeroRegisterEdits(CEditNumber* edits, uint32_t ctrlIdsCount);
+    static void ZeroRegisterEdit(CEditNumber32& edit);
+    static void ZeroRegisterEdits(CEditNumber32* edits, uint32_t ctrlIdsCount);
     static void ZeroRegisterEdit64(CEditReg64& edit);
     static void ZeroRegisterEdits64(CEditReg64* edits, uint32_t ctrlIdsCount);
 

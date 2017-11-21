@@ -30,7 +30,7 @@ private:
     uint32_t m_InitAddress;
     int m_InitType;
 
-    CEditNumber m_AddressEdit;
+    CEditNumber32 m_AddressEdit;
     CComboBox   m_TypeComboBox;
     CEdit       m_NameEdit;
     CEdit       m_DescriptionEdit;
@@ -46,5 +46,5 @@ private:
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
         COMMAND_CODE_HANDLER(BN_CLICKED, OnClicked)
         MSG_WM_DESTROY(OnDestroy)
-	END_MSG_MAP()
+        END_MSG_MAP()
 };

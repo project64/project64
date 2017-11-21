@@ -31,9 +31,9 @@ LRESULT	CDumpMemory::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPa
 	m_FormatList.Attach(GetDlgItem(IDC_FORMAT));
 	m_FileName.Attach(GetDlgItem(IDC_FILENAME));
 
-    m_StartAddress.SetDisplayType(CEditNumber::DisplayHex);
-    m_EndAddress.SetDisplayType(CEditNumber::DisplayHex);
-    m_PC.SetDisplayType(CEditNumber::DisplayHex);
+    m_StartAddress.SetDisplayType(CEditNumber32::DisplayHex);
+    m_EndAddress.SetDisplayType(CEditNumber32::DisplayHex);
+    m_PC.SetDisplayType(CEditNumber32::DisplayHex);
 
 	uint32_t startAddress = 0x80000000;
 	uint32_t endAddress = startAddress + (g_MMU ? g_MMU->RdramSize() : 0x400000);

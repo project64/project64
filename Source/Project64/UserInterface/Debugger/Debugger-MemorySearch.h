@@ -54,7 +54,7 @@ private:
         COMMAND_CODE_HANDLER(BN_CLICKED, OnClicked)
         NOTIFY_HANDLER_EX(IDC_LST_RESULTS, NM_RCLICK, OnResultRClick)
         NOTIFY_HANDLER_EX(IDC_LST_RESULTS, NM_DBLCLK, OnResultDblClick)
-    END_MSG_MAP()
+        END_MSG_MAP()
 
     LRESULT				OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
     LRESULT				OnClicked(WORD wNotifyCode, WORD wID, HWND /*hWndCtl*/, BOOL& bHandled);
@@ -67,7 +67,7 @@ private:
     void EnableJalOptions(bool Enable);
     void AddAlignmentOptions(CComboBox  & ctrl);
 
-    CEditNumber   m_PAddrStart, m_SearchLen, m_SearchValue, m_MaxSearch;
+    CEditNumber32 m_PAddrStart, m_SearchLen, m_SearchValue, m_MaxSearch;
     CComboBox     m_UnknownOptions, m_ValueSize, m_UnknownSize;
     CListViewCtrl m_SearchResults;
     SearchResult  m_SearchResult;

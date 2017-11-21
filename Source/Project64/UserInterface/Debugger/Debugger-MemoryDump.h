@@ -42,5 +42,5 @@ private:
 
     CComboBox   m_FormatList;
     CEdit       m_FileName;
-    CEditNumber m_StartAddress, m_EndAddress, m_PC;
+    CEditNumber32 m_StartAddress, m_EndAddress, m_PC;
 };

@@ -66,7 +66,7 @@ private:
 
     void InterceptMouseWheel(WPARAM wParam, LPARAM lParam);
 
-    CEditNumber   m_MemAddr;
+    CEditNumber32 m_MemAddr;
     CListCtrl   * m_MemoryList;
     CAddSymbolDlg m_AddSymbolDlg;
     CStatic       m_SymInfo;

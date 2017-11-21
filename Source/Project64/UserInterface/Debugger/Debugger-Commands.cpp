@@ -86,11 +86,11 @@ LRESULT	CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     GetWindowRect(&m_DefaultWindowRect);
 
     // Setup address input
-    m_AddressEdit.SetDisplayType(CEditNumber::DisplayHex);
+    m_AddressEdit.SetDisplayType(CEditNumber32::DisplayHex);
     m_AddressEdit.SetLimitText(8);
 
     // Setup PC register input
-    m_PCEdit.SetDisplayType(CEditNumber::DisplayHex);
+    m_PCEdit.SetDisplayType(CEditNumber32::DisplayHex);
     m_PCEdit.SetLimitText(8);
 
     m_bIgnorePCChange = true;

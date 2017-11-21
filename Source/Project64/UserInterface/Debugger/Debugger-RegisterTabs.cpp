@@ -631,13 +631,13 @@ void CRegisterTabs::SetColorsEnabled(bool bColorsEnabled)
     m_bColorsEnabled = bColorsEnabled;
 }
 
-void CRegisterTabs::InitRegisterEdit(CWindow& tab, CEditNumber& edit, WORD ctrlId)
+void CRegisterTabs::InitRegisterEdit(CWindow& tab, CEditNumber32& edit, WORD ctrlId)
 {
     edit.Attach(tab.GetDlgItem(ctrlId));
-    edit.SetDisplayType(CEditNumber::DisplayHex);
+    edit.SetDisplayType(CEditNumber32::DisplayHex);
 }
 
-void CRegisterTabs::InitRegisterEdits(CWindow& tab, CEditNumber* edits, const WORD* ctrlIds, uint32_t ctrlIdsCount)
+void CRegisterTabs::InitRegisterEdits(CWindow& tab, CEditNumber32* edits, const WORD* ctrlIds, uint32_t ctrlIdsCount)
 {
     for (int i = 0, n = ctrlIdsCount; i < n; i++)
     {
@@ -658,12 +658,12 @@ void CRegisterTabs::InitRegisterEdits64(CWindow& tab, CEditReg64* edits, const W
     }
 }
 
-void CRegisterTabs::ZeroRegisterEdit(CEditNumber& edit)
+void CRegisterTabs::ZeroRegisterEdit(CEditNumber32& edit)
 {
     edit.SetValue(0, false, true);
 }
 
-void CRegisterTabs::ZeroRegisterEdits(CEditNumber* edits, uint32_t ctrlIdsCount)
+void CRegisterTabs::ZeroRegisterEdits(CEditNumber32* edits, uint32_t ctrlIdsCount)
 {
     for (int i = 0, n = ctrlIdsCount; i < n; i++)
     {
