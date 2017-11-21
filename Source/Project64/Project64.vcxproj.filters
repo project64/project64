@@ -213,6 +213,9 @@
     <ClCompile Include="UserInterface\Debugger\Symbols.cpp">
       <Filter>Source Files\User Interface Source\Debugger Source</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface\WTLControls\EditNumber32.cpp">
+      <Filter>Source Files\User Interface Source\WTL Controls Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserInterface\resource.h">
@@ -255,9 +258,6 @@
       <Filter>Header Files\User Interface Headers\WTL Controls Headers</Filter>
     </ClInclude>
     <ClInclude Include="UserInterface\WTLControls\ModifiedEditBox.h">
-      <Filter>Header Files\User Interface Headers\WTL Controls Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="UserInterface\WTLControls\numberctrl.h">
       <Filter>Header Files\User Interface Headers\WTL Controls Headers</Filter>
     </ClInclude>
     <ClInclude Include="UserInterface\WTLControls\PartialGroupBox.h">
@@ -409,6 +409,9 @@
     </ClInclude>
     <ClInclude Include="UserInterface\Debugger\Symbols.h">
       <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\WTLControls\EditNumber32.h">
+      <Filter>Header Files\User Interface Headers\WTL Controls Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
