@@ -204,10 +204,10 @@ private:
     CRect m_DefaultWindowRect;
 
     CEditNumber32 m_PCEdit;
-    bool        m_bIgnorePCChange;
+    bool m_bIgnorePCChange;
 
     CEditNumber32 m_AddressEdit;
-    bool        m_bIgnoreAddrChange;
+    bool m_bIgnoreAddrChange;
 
     CCommandList m_CommandList;
     int m_CommandListRows;
@@ -234,7 +234,8 @@ private:
     uint32_t m_FollowAddress;
     uint32_t m_RowHeight;
 
-    typedef struct {
+    typedef struct
+    {
         uint32_t address;
         uint32_t originalOp;
     } EditedOp;
