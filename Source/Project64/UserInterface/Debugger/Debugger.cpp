@@ -367,11 +367,15 @@ CDMALog* CDebuggerUI::DMALog()
 
 void CDebuggerUI::BreakpointHit()
 {
+#ifdef tofix
     m_Breakpoints->KeepDebugging();
+#endif
     Debug_ShowCommandsLocation(g_Reg->m_PROGRAM_COUNTER, false);
     Debug_RefreshStackWindow();
     Debug_RefreshStackTraceWindow();
+#ifdef tofix
     m_Breakpoints->Pause();
+#endif
 }
 
 // CDebugger implementation
@@ -392,7 +396,7 @@ bool CDebuggerUI::CPUStepStarted()
 
     // PC breakpoints
 
-    if (m_Breakpoints->EBPExists(PROGRAM_COUNTER, true))
+    if (m_Breakpoints->ExecutionBPExists(PROGRAM_COUNTER, true))
     {
         goto breakpoint_hit;
     }
@@ -410,7 +414,7 @@ bool CDebuggerUI::CPUStepStarted()
         {
             m_ScriptSystem->HookCPURead()->InvokeByParamInRange(memoryAddress);
 
-            if (m_Breakpoints->RBPExists(memoryAddress))
+            if (m_Breakpoints->ReadBPExists(memoryAddress))
             {
                 goto breakpoint_hit;
             }
@@ -419,7 +423,7 @@ bool CDebuggerUI::CPUStepStarted()
         {
             m_ScriptSystem->HookCPUWrite()->InvokeByParamInRange(memoryAddress);
 
-            if (m_Breakpoints->WBPExists(memoryAddress))
+            if (m_Breakpoints->WriteBPExists(memoryAddress))
             {
                 goto breakpoint_hit;
             }
@@ -434,9 +438,10 @@ bool CDebuggerUI::CPUStepStarted()
 
                 m_DMALog->AddEntry(dmaRomAddr, dmaRamAddr, dmaLen);
 
-                for (int i = 0; i < m_Breakpoints->m_nWBP; i++)
+                CBreakpoints::breakpoints_t breakpoints = m_Breakpoints->WriteMem();
+                for (CBreakpoints::breakpoints_t::iterator breakpoint = breakpoints.begin(); breakpoint != breakpoints.end(); breakpoint++)
                 {
-                    uint32_t wbpAddr = m_Breakpoints->m_WBP[i].address;
+                    uint32_t wbpAddr = breakpoint->first;
                     if (wbpAddr >= dmaRamAddr && wbpAddr < endAddr)
                     {
                         goto breakpoint_hit;

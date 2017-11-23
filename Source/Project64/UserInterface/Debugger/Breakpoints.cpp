@@ -30,161 +30,200 @@
 
 CBreakpoints::CBreakpoints()
 {
-	m_Debugging = FALSE;
-	m_Skipping = FALSE;
-	m_nRBP = 0;
-	m_nWBP = 0;
-	m_nEBP = 0;
+    m_Debugging = FALSE;
+    m_Skipping = FALSE;
 }
 
 void CBreakpoints::Pause()
 {
-	KeepDebugging();
-	g_System->Pause();
+    KeepDebugging();
+    g_System->Pause();
 }
 
 void CBreakpoints::Resume()
 {
-	g_System->ExternalEvent(SysEvent_ResumeCPU_FromMenu);
+    g_System->ExternalEvent(SysEvent_ResumeCPU_FromMenu);
 }
 
-BOOL CBreakpoints::isDebugging()
+bool CBreakpoints::isDebugging()
 {
-	return m_Debugging;
+    return m_Debugging;
 }
 
 void CBreakpoints::KeepDebugging()
 {
-	m_Debugging = TRUE;
+    m_Debugging = true;
 }
 
 void CBreakpoints::StopDebugging()
 {
-	m_Debugging = FALSE;
+    m_Debugging = false;
 }
 
+bool CBreakpoints::isSkipping()
+{
+    bool ret = m_Skipping;
+    m_Skipping = FALSE;
+    return ret;
+}
 void CBreakpoints::Skip()
 {
-	m_Skipping = TRUE;
+    m_Skipping = true;
 }
 
 bool CBreakpoints::RBPAdd(uint32_t address, bool bTemporary)
 {
-	if (!RBPExists(address))
-	{
-		m_RBP.push_back({ address, bTemporary });
-		m_nRBP = m_RBP.size();
-		return true;
-	}
-	return false;
+    if (!ReadBPExists(address))
+    {
+        m_ReadMem.insert(breakpoints_t::value_type(address, bTemporary));
+        return true;
+    }
+    return false;
 }
 
 bool CBreakpoints::WBPAdd(uint32_t address, bool bTemporary)
 {
-	if (!WBPExists(address))
-	{
-		m_WBP.push_back({ address, bTemporary });
-		m_nWBP = m_WBP.size();
-		return true;
-	}
-	return false;
+    if (!WriteBPExists(address))
+    {
+        m_WriteMem.insert(breakpoints_t::value_type(address, bTemporary));
+        return true;
+    }
+    return false;
 }
 
 bool CBreakpoints::EBPAdd(uint32_t address, bool bTemporary)
 {
-	if (!EBPExists(address))
-	{
-		m_EBP.push_back({ address, bTemporary });
-		m_nEBP = m_EBP.size();
-		return true;
-	}
-	return false;
+    if (!ExecutionBPExists(address))
+    {
+        m_Execution.insert(breakpoints_t::value_type(address, bTemporary));
+        return true;
+    }
+    return false;
 }
 
 void CBreakpoints::RBPRemove(uint32_t address)
 {
-	for (int i = 0; i < m_nRBP; i++)
-	{
-		if (m_RBP[i].address == address)
-		{
-			m_RBP.erase(m_RBP.begin() + i);
-			m_nRBP = m_RBP.size();
-			return;
-		}
-	}
+    breakpoints_t::iterator itr = m_ReadMem.find(address);
+    if (itr != m_ReadMem.end())
+    {
+        m_ReadMem.erase(itr);
+    }
 }
 
 void CBreakpoints::WBPRemove(uint32_t address)
 {
-	for (int i = 0; i < m_nWBP; i++)
-	{
-		if (m_WBP[i].address == address)
-		{
-			m_WBP.erase(m_WBP.begin() + i);
-			m_nWBP = m_WBP.size();
-			return;
-		}
-	}
+    breakpoints_t::iterator itr = m_WriteMem.find(address);
+    if (itr != m_WriteMem.end())
+    {
+        m_WriteMem.erase(itr);
+    }
 }
 
 void CBreakpoints::EBPRemove(uint32_t address)
 {
-	for (int i = 0; i < m_nEBP; i++)
-	{
-		if (m_EBP[i].address == address)
-		{
-			m_EBP.erase(m_EBP.begin() + i);
-			m_nEBP = m_EBP.size();
-			return;
-		}
-	}
+    breakpoints_t::iterator itr = m_Execution.find(address);
+    if (itr != m_Execution.end())
+    {
+        m_Execution.erase(itr);
+    }
 }
 
 void CBreakpoints::RBPToggle(uint32_t address, bool bTemporary)
 {
-	if (RBPAdd(address, bTemporary) == false)
-	{
-		RBPRemove(address);
-	}
+    if (RBPAdd(address, bTemporary) == false)
+    {
+        RBPRemove(address);
+    }
 }
 
 void CBreakpoints::WBPToggle(uint32_t address, bool bTemporary)
 {
-	if (WBPAdd(address, bTemporary) == false)
-	{
-		WBPRemove(address);
-	}
+    if (WBPAdd(address, bTemporary) == false)
+    {
+        WBPRemove(address);
+    }
 }
 
 void CBreakpoints::EBPToggle(uint32_t address, bool bTemporary)
 {
-	if (EBPAdd(address, bTemporary) == false)
-	{
-		EBPRemove(address);
-	}
+    if (EBPAdd(address, bTemporary) == false)
+    {
+        EBPRemove(address);
+    }
 }
 
 void CBreakpoints::RBPClear()
 {
-	m_RBP.clear();
-	m_nRBP = 0;
+    m_ReadMem.clear();
 }
 
 void CBreakpoints::WBPClear()
 {
-	m_WBP.clear();
-	m_nWBP = 0;
+    m_WriteMem.clear();
 }
 
 void CBreakpoints::EBPClear()
 {
-	m_EBP.clear();
-	m_nEBP = 0;
+    m_Execution.clear();
 }
 
 void CBreakpoints::BPClear()
 {
-	RBPClear();
-	WBPClear();
-	EBPClear();
+    RBPClear();
+    WBPClear();
+    EBPClear();
+}
+
+CBreakpoints::BPSTATE CBreakpoints::ReadBPExists(uint32_t address, bool bRemoveTemp)
+{
+    breakpoints_t::const_iterator itr = m_ReadMem.find(address);
+    if (itr != m_ReadMem.end())
+    {
+        if (itr->second)
+        {
+            if (bRemoveTemp)
+            {
+                m_ReadMem.erase(itr);
+            }
+            return BP_SET_TEMP;
+        }
+        return BP_SET;
+    }
+    return BP_NOT_SET;
+}
+
+CBreakpoints::BPSTATE CBreakpoints::WriteBPExists(uint32_t address, bool bRemoveTemp)
+{
+    breakpoints_t::const_iterator itr = m_WriteMem.find(address);
+    if (itr != m_WriteMem.end())
+    {
+        if (itr->second)
+        {
+            if (bRemoveTemp)
+            {
+                m_ReadMem.erase(itr);
+            }
+            return BP_SET_TEMP;
+        }
+        return BP_SET;
+    }
+    return BP_NOT_SET;
+}
+
+CBreakpoints::BPSTATE CBreakpoints::ExecutionBPExists(uint32_t address, bool bRemoveTemp)
+{
+    breakpoints_t::const_iterator itr = m_Execution.find(address);
+    if (itr != m_Execution.end())
+    {
+        if (itr->second)
+        {
+            if (bRemoveTemp)
+            {
+                m_ReadMem.erase(itr);
+            }
+            return BP_SET_TEMP;
+        }
+        return BP_SET;
+    }
+    return BP_NOT_SET;
 }

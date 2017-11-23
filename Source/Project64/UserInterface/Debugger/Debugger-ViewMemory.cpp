@@ -242,7 +242,7 @@ LRESULT CDebugMemoryView::OnMemoryRightClicked(LPNMHDR lpNMHDR)
     HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MEM_BP_POPUP));
     HMENU hPopupMenu = GetSubMenu(hMenu, 0);
 
-    if (m_Breakpoints->m_RBP.size() == 0 && m_Breakpoints->m_WBP.size() == 0)
+    if (m_Breakpoints->ReadMem().size() == 0 && m_Breakpoints->WriteMem().size() == 0)
     {
         EnableMenuItem(hPopupMenu, ID_POPUPMENU_CLEARALLBPS, MF_DISABLED | MF_GRAYED);
     }
@@ -697,8 +697,8 @@ void CDebugMemoryView::SelectColors(uint32_t vaddr, bool changed, COLORREF& bgCo
 
     CSymbols::LeaveCriticalSection();
 
-    bool bHaveReadBP = m_Breakpoints->RBPExists(vaddr) == CBreakpoints::BP_SET;
-    bool bHaveWriteBP = m_Breakpoints->WBPExists(vaddr) == CBreakpoints::BP_SET;
+    bool bHaveReadBP = m_Breakpoints->ReadBPExists(vaddr) == CBreakpoints::BP_SET;
+    bool bHaveWriteBP = m_Breakpoints->WriteBPExists(vaddr) == CBreakpoints::BP_SET;
 
     fgHiColor = RGB(0x00, 0x00, 0x00);
 

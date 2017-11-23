@@ -285,7 +285,7 @@ void CDebugCommandsView::AddBranchArrow(int startPos, int endPos)
     int endMargin = 0;
     int margin = 0;
 
-    for (int j = 0; j < m_BranchArrows.size(); j++)
+    for (size_t j = 0; j < m_BranchArrows.size(); j++)
     {
         BRANCHARROW arrow = m_BranchArrows[j];
 
@@ -590,15 +590,15 @@ void CDebugCommandsView::ShowAddress(DWORD address, BOOL top)
 
         if (OpInfo.IsLoadStore())
         {
-            for (int i = -4; i > -24; i -= 4)
+            for (int offset = -4; offset > -24; offset -= 4)
             {
-                if (!AddressSafe(opAddr + i))
+                if (!AddressSafe(opAddr + offset))
                 {
                     break;
                 }
 
                 OPCODE OpCodeTest;
-                bAddrOkay = g_MMU->LW_VAddr(opAddr + i, OpCodeTest.Hex);
+                bAddrOkay = g_MMU->LW_VAddr(opAddr + offset, OpCodeTest.Hex);
 
                 if (!bAddrOkay)
                 {
@@ -734,7 +734,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
 
     if (nSubItem == CCommandList::COL_ADDRESS) // addr
     {
-        CBreakpoints::BPSTATE bpState = m_Breakpoints->EBPExists(address);
+        CBreakpoints::BPSTATE bpState = m_Breakpoints->ExecutionBPExists(address);
 
         if (bpState == CBreakpoints::BP_SET)
         {
@@ -947,7 +947,7 @@ void CDebugCommandsView::DrawBranchArrows(HDC listDC)
     CBrush hBrushBg(CreateSolidBrush(bgColor));
     FillRect(listDC, &paneRect, hBrushBg);
 
-    for (int i = 0; i < m_BranchArrows.size(); i++)
+    for (size_t i = 0; i < m_BranchArrows.size(); i++)
     {
         int colorIdx = i % nColors;
         COLORREF color = colors[colorIdx];
@@ -1022,29 +1022,29 @@ void CDebugCommandsView::RefreshBreakpointList()
 {
     m_BreakpointList.ResetContent();
     char rowStr[16];
-    for (int i = 0; i < m_Breakpoints->m_nRBP; i++)
+
+    CBreakpoints::breakpoints_t ReadBreakPoints = m_Breakpoints->ReadMem();
+    for (CBreakpoints::breakpoints_t::iterator itr = ReadBreakPoints.begin(); itr != ReadBreakPoints.end(); itr++)
     {
-        CBreakpoints::BREAKPOINT breakpoint = m_Breakpoints->m_RBP[i];
-        bool bTemp = breakpoint.bTemporary;
-        sprintf(rowStr, "R %s%08X", bTemp ? "T " : "", breakpoint.address);
+        sprintf(rowStr, "R %s%08X", itr->second ? "T " : "", itr->first);
         int index = m_BreakpointList.AddString(rowStr);
-        m_BreakpointList.SetItemData(index, breakpoint.address);
+        m_BreakpointList.SetItemData(index, itr->first);
     }
-    for (int i = 0; i < m_Breakpoints->m_nWBP; i++)
+
+    CBreakpoints::breakpoints_t WriteBreakPoints = m_Breakpoints->WriteMem();
+    for (CBreakpoints::breakpoints_t::iterator itr = WriteBreakPoints.begin(); itr != WriteBreakPoints.end(); itr++)
     {
-        CBreakpoints::BREAKPOINT breakpoint = m_Breakpoints->m_WBP[i];
-        bool bTemp = breakpoint.bTemporary;
-        sprintf(rowStr, "W %s%08X", bTemp ? "T " : "", breakpoint.address);
+        sprintf(rowStr, "W %s%08X", itr->second ? "T " : "", itr->first);
         int index = m_BreakpointList.AddString(rowStr);
-        m_BreakpointList.SetItemData(index, breakpoint.address);
+        m_BreakpointList.SetItemData(index, itr->first);
     }
-    for (int i = 0; i < m_Breakpoints->m_nEBP; i++)
+
+    CBreakpoints::breakpoints_t ExecutionBreakPoints = m_Breakpoints->Execution();
+    for (CBreakpoints::breakpoints_t::iterator itr = ExecutionBreakPoints.begin(); itr != ExecutionBreakPoints.end(); itr++)
     {
-        CBreakpoints::BREAKPOINT breakpoint = m_Breakpoints->m_EBP[i];
-        bool bTemp = breakpoint.bTemporary;
-        sprintf(rowStr, "E %s%08X", bTemp ? "T " : "", breakpoint.address);
+        sprintf(rowStr, "E %s%08X", itr->second ? "T " : "", itr->first);
         int index = m_BreakpointList.AddString(rowStr);
-        m_BreakpointList.SetItemData(index, breakpoint.address);
+        m_BreakpointList.SetItemData(index, itr->first);
     }
 }
 
@@ -1117,7 +1117,7 @@ LRESULT CDebugCommandsView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWn
         }
         break;
     case IDC_FORWARD_BTN:
-        if (m_History.size() > 0 && m_HistoryIndex < m_History.size() - 1)
+        if (m_History.size() > 0 && m_HistoryIndex < (int)m_History.size() - 1)
         {
             m_HistoryIndex++;
             m_AddressEdit.SetValue(m_History[m_HistoryIndex], false, true);
@@ -1278,7 +1278,7 @@ LRESULT CDebugCommandsView::OnPCChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND
     return 0;
 }
 
-LRESULT	CDebugCommandsView::OnCommandListClicked(NMHDR* pNMHDR)
+LRESULT	CDebugCommandsView::OnCommandListClicked(NMHDR* /*pNMHDR*/)
 {
     EndOpEdit();
     return 0;
@@ -1291,7 +1291,7 @@ LRESULT	CDebugCommandsView::OnCommandListDblClicked(NMHDR* pNMHDR)
     int nItem = pIA->iItem;
 
     uint32_t address = m_StartAddress + nItem * 4;
-    if (m_Breakpoints->EBPExists(address))
+    if (m_Breakpoints->ExecutionBPExists(address))
     {
         m_Breakpoints->EBPRemove(address);
     }
@@ -1363,7 +1363,7 @@ LRESULT	CDebugCommandsView::OnCommandListRightClicked(NMHDR* pNMHDR)
         EnableMenuItem(hPopupMenu, ID_POPUPMENU_INSERTNOP, MF_DISABLED | MF_GRAYED);
     }
 
-    if (m_Breakpoints->m_nEBP == 0)
+    if (m_Breakpoints->Execution().size() == 0)
     {
         EnableMenuItem(hPopupMenu, ID_POPUPMENU_CLEARBPS, MF_DISABLED | MF_GRAYED);
     }
@@ -1484,7 +1484,7 @@ void CDebugCommandsView::ClearEditedOps()
 
 BOOL CDebugCommandsView::IsOpEdited(uint32_t address)
 {
-    for (int i = 0; i < m_EditedOps.size(); i++)
+    for (size_t i = 0; i < m_EditedOps.size(); i++)
     {
         if (m_EditedOps[i].address == address)
         {
@@ -1516,7 +1516,7 @@ void CDebugCommandsView::EditOp(uint32_t address, uint32_t op)
 
 void CDebugCommandsView::RestoreOp(uint32_t address)
 {
-    for (int i = 0; i < m_EditedOps.size(); i++)
+    for (size_t i = 0; i < m_EditedOps.size(); i++)
     {
         if (m_EditedOps[i].address == address)
         {

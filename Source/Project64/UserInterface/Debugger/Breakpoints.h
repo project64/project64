@@ -8,52 +8,41 @@
 * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
 *                                                                           *
 ****************************************************************************/
-
 #pragma once
+#include <Common\stdtypes.h>
+#include <map>
 
-#include <stdint.h>
-
-class CBreakpoints {
-private:
-
+class CBreakpoints
+{
 public:
-    typedef struct {
-        uint32_t address;
-        bool bTemporary;
-    } BREAKPOINT;
+    typedef std::map<uint32_t /*address*/, bool /*bTemporary*/> breakpoints_t;
+    typedef breakpoints_t::const_iterator breakpoint_t;
 
-    enum BPSTATE {
-        BP_NOT_SET = FALSE,
+    enum BPSTATE
+    {
+        BP_NOT_SET,
         BP_SET,
         BP_SET_TEMP
     };
 
     CBreakpoints();
 
-    BOOL m_Debugging;
-    BOOL m_Skipping;
+    const breakpoints_t & ReadMem(void) const { return m_ReadMem; }
+    const breakpoints_t & WriteMem(void) const { return m_WriteMem; }
+    const breakpoints_t & Execution(void) const { return m_Execution; }
 
-    std::vector<BREAKPOINT> m_RBP;
-    std::vector<BREAKPOINT> m_WBP;
-    std::vector<BREAKPOINT> m_EBP;
-
-    int m_nRBP;
-    int m_nWBP;
-    int m_nEBP;
+    BPSTATE ReadBPExists(uint32_t address, bool bRemoveTemp = false);
+    BPSTATE WriteBPExists(uint32_t address, bool bRemoveTemp = false);
+    BPSTATE ExecutionBPExists(uint32_t address, bool bRemoveTemp = false);
 
     void Pause();
     void Resume();
     void Skip();
 
-    BOOL isDebugging();
+    bool isDebugging();
     void KeepDebugging();
     void StopDebugging();
-    inline BOOL isSkipping()
-    {
-        BOOL ret = m_Skipping;
-        m_Skipping = FALSE;
-        return ret;
-    }
+    bool isSkipping();
 
     bool RBPAdd(uint32_t address, bool bTemporary = false);
     void RBPRemove(uint32_t address);
@@ -72,71 +61,11 @@ public:
 
     void BPClear();
 
-    // inlines
+private:
+    breakpoints_t m_ReadMem;
+    breakpoints_t m_WriteMem;
+    breakpoints_t m_Execution;
 
-    inline BPSTATE RBPExists(uint32_t address, bool bRemoveTemp = false)
-    {
-        for (int i = 0; i < m_nRBP; i++)
-        {
-            if (m_RBP[i].address != address)
-            {
-                continue;
-            }
-
-            if (m_RBP[i].bTemporary)
-            {
-                if (bRemoveTemp)
-                {
-                    RBPRemove(address);
-                }
-                return BP_SET_TEMP;
-            }
-            return BP_SET;
-        }
-        return BP_NOT_SET;
-    }
-
-    inline BPSTATE WBPExists(uint32_t address, bool bRemoveTemp = false)
-    {
-        for (int i = 0; i < m_nWBP; i++)
-        {
-            if (m_WBP[i].address != address)
-            {
-                continue;
-            }
-
-            if (m_WBP[i].bTemporary)
-            {
-                if (bRemoveTemp)
-                {
-                    WBPRemove(address);
-                }
-                return BP_SET_TEMP;
-            }
-            return BP_SET;
-        }
-        return BP_NOT_SET;
-    }
-
-    inline BPSTATE EBPExists(uint32_t address, bool bRemoveTemp = false)
-    {
-        for (int i = 0; i < m_nEBP; i++)
-        {
-            if (m_EBP[i].address != address)
-            {
-                continue;
-            }
-
-            if (m_EBP[i].bTemporary)
-            {
-                if (bRemoveTemp)
-                {
-                    EBPRemove(address);
-                }
-                return BP_SET_TEMP;
-            }
-            return BP_SET;
-        }
-        return BP_NOT_SET;
-    }
+    bool m_Debugging;
+    bool m_Skipping;
 };
