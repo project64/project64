@@ -211,6 +211,10 @@
     <ProjectReference Include="..\Project64-core\Project64-core.vcxproj">
       <Project>{00c7b43a-ded7-4df0-b072-9a5783ef866d}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\UpdateVersion\UpdateVersion.vcxproj">
+      <Project>{1968162C-0793-491D-91A1-81645A24D399}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\divider.cur" />
