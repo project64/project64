@@ -1065,7 +1065,7 @@ void CDebugCommandsView::RemoveSelectedBreakpoints()
     switch (itemText[0])
     {
     case 'E':
-        m_Breakpoints->EBPRemove(address);
+        m_Breakpoints->RemoveExecution(address);
         break;
     case 'W':
         m_Breakpoints->WBPRemove(address);
@@ -1135,7 +1135,7 @@ LRESULT CDebugCommandsView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWn
         break;
     case ID_POPUPMENU_RUNTO:
         // Add temp bp and resume
-        m_Breakpoints->EBPAdd(m_SelectedAddress, true);
+        m_Breakpoints->AddExecution(m_SelectedAddress, true);
     case IDC_GO_BTN:
         CPUResume();
         m_AddressEdit.SetFocus();
@@ -1293,11 +1293,11 @@ LRESULT	CDebugCommandsView::OnCommandListDblClicked(NMHDR* pNMHDR)
     uint32_t address = m_StartAddress + nItem * 4;
     if (m_Breakpoints->ExecutionBPExists(address))
     {
-        m_Breakpoints->EBPRemove(address);
+        m_Breakpoints->RemoveExecution(address);
     }
     else
     {
-        m_Breakpoints->EBPAdd(address);
+        m_Breakpoints->AddExecution(address);
     }
     // Cancel blue highlight
     m_AddressEdit.SetFocus();

@@ -17,17 +17,6 @@
 #include <Project64-core/N64System/Mips/OpcodeName.h>
 #include <Project64-core/N64System/N64Class.h>
 
-//BOOL CBreakpoints::m_Debugging = FALSE;
-//BOOL CBreakpoints::m_Skipping = FALSE;
-//
-//std::vector<uint32_t> CBreakpoints::m_RBP;
-//std::vector<uint32_t> CBreakpoints::m_WBP;
-//std::vector<uint32_t> CBreakpoints::m_EBP;
-//
-//int CBreakpoints::m_nRBP = 0;
-//int CBreakpoints::m_nWBP = 0;
-//int CBreakpoints::m_nEBP = 0;
-
 CBreakpoints::CBreakpoints()
 {
     m_Debugging = FALSE;
@@ -91,7 +80,7 @@ bool CBreakpoints::WBPAdd(uint32_t address, bool bTemporary)
     return false;
 }
 
-bool CBreakpoints::EBPAdd(uint32_t address, bool bTemporary)
+bool CBreakpoints::AddExecution(uint32_t address, bool bTemporary)
 {
     if (!ExecutionBPExists(address))
     {
@@ -119,7 +108,7 @@ void CBreakpoints::WBPRemove(uint32_t address)
     }
 }
 
-void CBreakpoints::EBPRemove(uint32_t address)
+void CBreakpoints::RemoveExecution(uint32_t address)
 {
     breakpoints_t::iterator itr = m_Execution.find(address);
     if (itr != m_Execution.end())
@@ -146,9 +135,9 @@ void CBreakpoints::WBPToggle(uint32_t address, bool bTemporary)
 
 void CBreakpoints::EBPToggle(uint32_t address, bool bTemporary)
 {
-    if (EBPAdd(address, bTemporary) == false)
+    if (AddExecution(address, bTemporary) == false)
     {
-        EBPRemove(address);
+        RemoveExecution(address);
     }
 }
 
@@ -219,7 +208,7 @@ CBreakpoints::BPSTATE CBreakpoints::ExecutionBPExists(uint32_t address, bool bRe
         {
             if (bRemoveTemp)
             {
-                m_ReadMem.erase(itr);
+                m_Execution.erase(itr);
             }
             return BP_SET_TEMP;
         }

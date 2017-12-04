@@ -45,7 +45,7 @@ LRESULT CAddBreakpointDlg::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL&
 		}
 		if (m_ExecuteCheck.GetCheck())
 		{
-			breakpoints->EBPAdd(address);
+			breakpoints->AddExecution(address);
 		}
 		EndDialog(0);
 		break;

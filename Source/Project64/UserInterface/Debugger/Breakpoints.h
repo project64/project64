@@ -54,8 +54,8 @@ public:
     void WBPToggle(uint32_t address, bool bTemporary = false);
     void WBPClear();
 
-    bool EBPAdd(uint32_t address, bool bTemporary = false);
-    void EBPRemove(uint32_t address);
+    bool AddExecution(uint32_t address, bool bTemporary = false);
+    void RemoveExecution(uint32_t address);
     void EBPToggle(uint32_t address, bool bTemporary = false);
     void EBPClear();
 
