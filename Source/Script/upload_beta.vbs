@@ -24,7 +24,7 @@ sub ShowUsage()
 end sub
 
 function Project64Url()
-    Project64Url = "http://www.pj64-emu.com"
+    Project64Url = "https://www.pj64-emu.com"
 End Function
 
 sub CreateUploadTarget()
