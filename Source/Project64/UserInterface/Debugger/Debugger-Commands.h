@@ -96,7 +96,27 @@ private:
         COMMAND_HANDLER(IDC_ADDR_EDIT, EN_CHANGE, OnAddrChanged)
         COMMAND_HANDLER(IDC_PC_EDIT, EN_CHANGE, OnPCChanged)
         COMMAND_CODE_HANDLER(LBN_DBLCLK, OnListBoxClicked)
-        COMMAND_CODE_HANDLER(BN_CLICKED, OnClicked)
+        COMMAND_HANDLER(IDC_BACK_BTN, BN_CLICKED, OnBackButton)
+        COMMAND_HANDLER(IDC_FORWARD_BTN, BN_CLICKED, OnForwardButton)
+        COMMAND_HANDLER(IDC_VIEWPC_BTN, BN_CLICKED, OnViewPCButton)
+        COMMAND_HANDLER(IDC_SYMBOLS_BTN, BN_CLICKED, OnSymbolsButton)
+        COMMAND_HANDLER(ID_POPUPMENU_RUNTO, BN_CLICKED, OnPopupmenuRunTo)
+        COMMAND_HANDLER(IDC_GO_BTN, BN_CLICKED, OnGoButton)
+        COMMAND_HANDLER(IDC_STEP_BTN, BN_CLICKED, OnStepButton)
+        COMMAND_HANDLER(IDC_SKIP_BTN, BN_CLICKED, OnSkipButton)
+        COMMAND_HANDLER(IDC_CLEARBP_BTN, BN_CLICKED, OnClearBPButton)
+        COMMAND_HANDLER(IDC_ADDBP_BTN, BN_CLICKED, OnAddBPButton)
+        COMMAND_HANDLER(IDC_RMBP_BTN, BN_CLICKED, OnRemoveBPButton)
+        COMMAND_HANDLER(IDCANCEL, BN_CLICKED, OnCancel)
+        COMMAND_HANDLER(ID_POPUPMENU_EDIT, BN_CLICKED, OnPopupmenuEdit)
+        COMMAND_HANDLER(ID_POPUPMENU_INSERTNOP, BN_CLICKED, OnPopupmenuInsertNOP)
+        COMMAND_HANDLER(ID_POPUPMENU_RESTORE, BN_CLICKED, OnPopupmenuRestore)
+        COMMAND_HANDLER(ID_POPUPMENU_RESTOREALL, BN_CLICKED, OnPopupmenuRestoreAll)
+        COMMAND_HANDLER(ID_POPUPMENU_ADDSYMBOL, BN_CLICKED, OnPopupmenuAddSymbol)
+        COMMAND_HANDLER(ID_POPUPMENU_FOLLOWJUMP, BN_CLICKED, OnPopupmenuFollowJump)
+        COMMAND_HANDLER(ID_POPUPMENU_VIEWMEMORY, BN_CLICKED, OnPopupmenuViewMemory)
+        COMMAND_HANDLER(ID_POPUPMENU_TOGGLEBP, BN_CLICKED, OnPopupmenuToggleBP)
+        COMMAND_HANDLER(ID_POPUPMENU_CLEARBPS, BN_CLICKED, OnPopupmenuClearBP   )
         NOTIFY_HANDLER_EX(IDC_CMD_LIST, NM_CLICK, OnCommandListClicked)
         NOTIFY_HANDLER_EX(IDC_CMD_LIST, NM_DBLCLK, OnCommandListDblClicked)
         NOTIFY_HANDLER_EX(IDC_CMD_LIST, NM_RCLICK, OnCommandListRightClicked)
@@ -139,15 +159,36 @@ private:
         TOOLTIP(IDC_SYMBOLS_BTN, "Symbols...")
     END_TOOLTIP_MAP()
 
-    LRESULT	OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT	OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT	OnSizing(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT	OnScroll(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT	OnMeasureItem(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnSizing(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnScroll(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnMeasureItem(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnAddrChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
     LRESULT OnPCChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
     LRESULT OnListBoxClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-    LRESULT	OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+    LRESULT OnBackButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnForwardButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnViewPCButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnSymbolsButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnPopupmenuRunTo(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnGoButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnStepButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnSkipButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnClearBPButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnAddBPButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnRemoveBPButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnCancel(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnPopupmenuEdit(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnPopupmenuInsertNOP(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnPopupmenuRestore(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnPopupmenuRestoreAll(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnPopupmenuAddSymbol(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnPopupmenuFollowJump(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnPopupmenuViewMemory(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnPopupmenuToggleBP(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnPopupmenuClearBP(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 
     LRESULT	OnOpKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
@@ -251,6 +292,6 @@ private:
         int margin;
     } BRANCHARROW;
 
-    vector<BRANCHARROW> m_BranchArrows;
+    std::vector<BRANCHARROW> m_BranchArrows;
     vector<bool> m_bvAnnotatedLines;
 };
