@@ -25,7 +25,7 @@ public:
     BEGIN_MSG_MAP_EX(CRegEdit64)
         MESSAGE_HANDLER(WM_CHAR, OnChar)
         MESSAGE_HANDLER(WM_KILLFOCUS, OnLostFocus)
-        END_MSG_MAP()
+    END_MSG_MAP()
 };
 
 class CRegisterTabs : public CTabCtrl
@@ -67,7 +67,8 @@ private:
         IDC_R28_EDIT, IDC_R29_EDIT, IDC_R30_EDIT, IDC_R31_EDIT,
     };
 
-    static constexpr WORD FPREditIds[] = {
+    static constexpr WORD FPREditIds[] =
+    {
         IDC_F0_EDIT,  IDC_F1_EDIT,  IDC_F2_EDIT,  IDC_F3_EDIT,
         IDC_F4_EDIT,  IDC_F5_EDIT,  IDC_F6_EDIT,  IDC_F7_EDIT,
         IDC_F8_EDIT,  IDC_F9_EDIT,  IDC_F10_EDIT, IDC_F11_EDIT,
@@ -78,7 +79,8 @@ private:
         IDC_F28_EDIT, IDC_F29_EDIT, IDC_F30_EDIT, IDC_F31_EDIT,
     };
 
-    static constexpr WORD COP0EditIds[] = {
+    static constexpr WORD COP0EditIds[] =
+    {
         IDC_COP0_0_EDIT,  IDC_COP0_1_EDIT,  IDC_COP0_2_EDIT,  IDC_COP0_3_EDIT,
         IDC_COP0_4_EDIT,  IDC_COP0_5_EDIT,  IDC_COP0_6_EDIT,  IDC_COP0_7_EDIT,
         IDC_COP0_8_EDIT,  IDC_COP0_9_EDIT,  IDC_COP0_10_EDIT, IDC_COP0_11_EDIT,
@@ -86,55 +88,65 @@ private:
         IDC_COP0_16_EDIT, IDC_COP0_17_EDIT, IDC_COP0_18_EDIT,
     };
 
-    static constexpr WORD RDRAMEditIds[] = {
+    static constexpr WORD RDRAMEditIds[] =
+    {
         IDC_RDRAM00_EDIT, IDC_RDRAM04_EDIT, IDC_RDRAM08_EDIT, IDC_RDRAM0C_EDIT,
         IDC_RDRAM10_EDIT, IDC_RDRAM14_EDIT, IDC_RDRAM18_EDIT, IDC_RDRAM1C_EDIT,
         IDC_RDRAM20_EDIT, IDC_RDRAM24_EDIT,
     };
 
-    static constexpr WORD SPEditIds[] = {
+    static constexpr WORD SPEditIds[] =
+    {
         IDC_SP00_EDIT, IDC_SP04_EDIT, IDC_SP08_EDIT, IDC_SP0C_EDIT,
         IDC_SP10_EDIT, IDC_SP14_EDIT, IDC_SP18_EDIT, IDC_SP1C_EDIT,
     };
 
-    static constexpr WORD DPCEditIds[] = {
+    static constexpr WORD DPCEditIds[] =
+    {
         IDC_DPC00_EDIT, IDC_DPC04_EDIT, IDC_DPC08_EDIT, IDC_DPC0C_EDIT,
         IDC_DPC10_EDIT, IDC_DPC14_EDIT, IDC_DPC18_EDIT, IDC_DPC1C_EDIT,
     };
 
-    static constexpr WORD MIEditIds[] = {
+    static constexpr WORD MIEditIds[] =
+    {
         IDC_MI00_EDIT, IDC_MI04_EDIT, IDC_MI08_EDIT, IDC_MI0C_EDIT,
     };
 
-    static constexpr WORD VIEditIds[] = {
+    static constexpr WORD VIEditIds[] =
+    {
         IDC_VI00_EDIT, IDC_VI04_EDIT, IDC_VI08_EDIT, IDC_VI0C_EDIT,
         IDC_VI10_EDIT, IDC_VI14_EDIT, IDC_VI18_EDIT, IDC_VI1C_EDIT,
         IDC_VI20_EDIT, IDC_VI24_EDIT, IDC_VI28_EDIT, IDC_VI2C_EDIT,
         IDC_VI30_EDIT, IDC_VI34_EDIT,
     };
 
-    static constexpr WORD AIEditIds[] = {
+    static constexpr WORD AIEditIds[] =
+    {
         IDC_AI00_EDIT, IDC_AI04_EDIT, IDC_AI08_EDIT, IDC_AI0C_EDIT,
         IDC_AI10_EDIT, IDC_AI14_EDIT,
     };
 
-    static constexpr WORD PIEditIds[] = {
+    static constexpr WORD PIEditIds[] =
+    {
         IDC_PI00_EDIT, IDC_PI04_EDIT, IDC_PI08_EDIT, IDC_PI0C_EDIT,
         IDC_PI10_EDIT, IDC_PI14_EDIT, IDC_PI18_EDIT, IDC_PI1C_EDIT,
         IDC_PI20_EDIT, IDC_PI24_EDIT, IDC_PI28_EDIT, IDC_PI2C_EDIT,
         IDC_PI30_EDIT,
     };
 
-    static constexpr WORD RIEditIds[] = {
+    static constexpr WORD RIEditIds[] =
+    {
         IDC_RI00_EDIT, IDC_RI04_EDIT, IDC_RI08_EDIT, IDC_RI0C_EDIT,
         IDC_RI10_EDIT, IDC_RI14_EDIT, IDC_RI18_EDIT, IDC_RI1C_EDIT,
     };
 
-    static constexpr WORD SIEditIds[] = {
+    static constexpr WORD SIEditIds[] =
+    {
         IDC_SI00_EDIT, IDC_SI04_EDIT, IDC_SI08_EDIT, IDC_SI0C_EDIT,
     };
 
-    static constexpr WORD DDEditIds[] = {
+    static constexpr WORD DDEditIds[] =
+    {
         IDC_DD00_EDIT, IDC_DD04_EDIT, IDC_DD08_EDIT, IDC_DD0C_EDIT,
         IDC_DD10_EDIT, IDC_DD14_EDIT, IDC_DD18_EDIT, IDC_DD1C_EDIT,
         IDC_DD20_EDIT, IDC_DD24_EDIT, IDC_DD28_EDIT, IDC_DD2C_EDIT,
@@ -154,7 +166,8 @@ private:
         return -1;
     }
 
-    static constexpr char* ExceptionCodes[] = {
+    static constexpr char* ExceptionCodes[] =
+    {
         "Interrupt",
         "TLB mod",
         "TLB load/fetch",

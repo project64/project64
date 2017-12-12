@@ -82,12 +82,16 @@ bool CBreakpoints::WBPAdd(uint32_t address, bool bTemporary)
 
 bool CBreakpoints::AddExecution(uint32_t address, bool bTemporary)
 {
-    if (!ExecutionBPExists(address))
+    breakpoints_t::_Pairib res = m_Execution.insert(breakpoint_t::value_type(address, bTemporary));
+    if (!res.second && !bTemporary)
     {
-        m_Execution.insert(breakpoints_t::value_type(address, bTemporary));
-        return true;
+        res.first->second = true;
     }
-    return false;
+    if (!HaveExecutionBP())
+    {
+        g_Settings->SaveBool(Debugger_HaveExecutionBP, true);
+    }
+    return !res.second;
 }
 
 void CBreakpoints::RBPRemove(uint32_t address)
@@ -114,6 +118,10 @@ void CBreakpoints::RemoveExecution(uint32_t address)
     if (itr != m_Execution.end())
     {
         m_Execution.erase(itr);
+        if (m_Execution.size() == 0)
+        {
+            g_Settings->SaveBool(Debugger_HaveExecutionBP, false);
+        }
     }
 }
 

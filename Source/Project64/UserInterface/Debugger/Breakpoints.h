@@ -12,7 +12,8 @@
 #include <Common\stdtypes.h>
 #include <map>
 
-class CBreakpoints
+class CBreakpoints :
+    private CDebugSettings
 {
 public:
     typedef std::map<uint32_t /*address*/, bool /*bTemporary*/> breakpoints_t;
