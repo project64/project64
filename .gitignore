@@ -18,6 +18,7 @@
 # assembled linker objects (GCC)
 *.o
 
+msbuild.log
 Thumbs.db
 /.vs
 /Bin/Debug

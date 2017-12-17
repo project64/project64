@@ -32,8 +32,11 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ItemDefinitionGroup>
-    <PreBuildEvent>
+    <PreBuildEvent Condition="'$(UpdateVersion)' != '' and $(UpdateVersion)">
       <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(SolutionDir)Source\Project64-core\Version.h.in" "$(SolutionDir)Source\Project64-core\Version.h"</Command>
+    </PreBuildEvent>
+    <PreBuildEvent Condition="'$(UpdateVersion)' == '' or !$(UpdateVersion)">
+      <Command>cp "$(SolutionDir)Source\Project64-core\Version.h.in" "$(SolutionDir)Source\Project64-core\Version.h"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
