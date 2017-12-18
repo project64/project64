@@ -31,6 +31,7 @@
   </ImportGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project="$(SolutionDir)PropertySheets\UpdateVersion.targets" />
   <PropertyGroup>
     <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
@@ -63,10 +64,6 @@
     <ClCompile>
       <OmitFramePointers Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</OmitFramePointers>
     </ClCompile>
-    <PreBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -242,4 +239,14 @@
       <UserProperties RESOURCE_FILE="UserInterface\UIResources.rc" />
     </VisualStudio>
   </ProjectExtensions>
+  <Target Name="PrepareForBuild" Condition="'$(CoreVersion)' != ''">
+    <SetVersion Version="$(CoreVersion)">
+      <Output TaskParameter="Result" PropertyName="PreprocessorDefinitions" />
+    </SetVersion>
+    <ItemGroup>
+      <ClCompile>
+        <PreprocessorDefinitions>$(PreprocessorDefinitions);%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      </ClCompile>
+    </ItemGroup>
+  </Target>
 </Project>

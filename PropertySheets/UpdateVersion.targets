@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<UsingTask TaskName="SetVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<Version ParameterType="System.String" Required="true" />
+			<Result ParameterType="System.String[]" Output="true" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="Microsoft.Build.Utilities" />
+			<Using Namespace="System.Text.RegularExpressions" />
+			
+			<Code Type="Fragment" Language="cs">
+<![CDATA[
+				var regex = new Regex(@"(\d+).(\d+).(\d+).(\d+)(-(\w+))?");
+				var match = regex.Match(Version);
+				if (!match.Success)
+				{
+					throw new Exception("Wrong version format.");
+				}
+
+				Result = new string[]
+				{
+					"VERSION_MAJOR=" + match.Groups[1],
+					"VERSION_MINOR=" + match.Groups[2],
+					"VERSION_REVISION=" + match.Groups[3],
+					"VERSION_BUILD=" + match.Groups[4],
+					"GIT_VERSION=" + match.Groups[6]
+				};
+]]>
+			</Code>
+		</Task>
+	</UsingTask>
+
+</Project>

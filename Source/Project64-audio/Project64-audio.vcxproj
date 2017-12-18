@@ -24,6 +24,7 @@
   </ImportGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project="$(SolutionDir)PropertySheets\UpdateVersion.targets" />
   <PropertyGroup>
     <TargetName>Project64-Audio</TargetName>
     <TargetName Condition="'$(Configuration)'=='Debug'">Project64-Audio_d</TargetName>
@@ -38,10 +39,10 @@
     <Link>
       <AdditionalDependencies>dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PreBuildEvent Condition="'$(UpdateVersion)' != '' and $(UpdateVersion)">
+    <PreBuildEvent Condition="'$(AudioVersion)' == ''">
       <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(SolutionDir)Source\Project64-audio\Version.h.in" "$(SolutionDir)Source\Project64-audio\Version.h"</Command>
     </PreBuildEvent>
-    <PreBuildEvent Condition="'$(UpdateVersion)' == '' or !$(UpdateVersion)">
+    <PreBuildEvent Condition="'$(AudioVersion)' != ''">
       <Command>cp "$(SolutionDir)Source\Project64-audio\Version.h.in" "$(SolutionDir)Source\Project64-audio\Version.h"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -78,4 +79,14 @@
   <ItemGroup>
     <ResourceCompile Include="Project64-audio.rc" />
   </ItemGroup>
+  <Target Name="PrepareForBuild" Condition="'$(AudioVersion)' != ''">
+    <SetVersion Version="$(AudioVersion)">
+      <Output TaskParameter="Result" PropertyName="PreprocessorDefinitions" />
+    </SetVersion>
+    <ItemGroup>
+      <ClCompile>
+        <PreprocessorDefinitions>$(PreprocessorDefinitions);%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      </ClCompile>
+    </ItemGroup>
+  </Target>
 </Project>

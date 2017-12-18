@@ -31,6 +31,7 @@
   </ImportGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project="$(SolutionDir)PropertySheets\UpdateVersion.targets" />
   <PropertyGroup>
     <TargetName>Project64-Video</TargetName>
     <TargetName Condition="'$(Configuration)'=='Debug'">Project64-Video_d</TargetName>
@@ -45,10 +46,10 @@
       <PreprocessorDefinitions Condition="'$(Configuration)'=='Debug'">RDP_LOGGING;RDP_ERROR_LOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader />
     </ClCompile>
-    <PreBuildEvent Condition="'$(UpdateVersion)' != '' and $(UpdateVersion)">
+    <PreBuildEvent Condition="'$(VideoVersion)' == ''">
       <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(SolutionDir)Source\Project64-video\Version.h.in" "$(SolutionDir)Source\Project64-video\Version.h"</Command>
     </PreBuildEvent>
-    <PreBuildEvent Condition="'$(UpdateVersion)' == '' or !$(UpdateVersion)">
+    <PreBuildEvent Condition="'$(VideoVersion)' != ''">
       <Command>cp "$(SolutionDir)Source\Project64-video\Version.h.in" "$(SolutionDir)Source\Project64-video\Version.h"</Command>
     </PreBuildEvent>    
   </ItemDefinitionGroup>
@@ -215,4 +216,14 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
+  <Target Name="PrepareForBuild" Condition="'$(VideoVersion)' != ''">
+    <SetVersion Version="$(VideoVersion)">
+      <Output TaskParameter="Result" PropertyName="PreprocessorDefinitions" />
+    </SetVersion>
+    <ItemGroup>
+      <ClCompile>
+        <PreprocessorDefinitions>$(PreprocessorDefinitions);%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      </ClCompile>
+    </ItemGroup>
+  </Target>
 </Project>

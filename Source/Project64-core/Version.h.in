@@ -16,12 +16,21 @@
 #define VERSION_MINOR               3
 #define VERSION_REVISION            3
 #else
+#ifndef VERSION_MAJOR
 #define VERSION_MAJOR               2
+#endif
+#ifndef VERSION_MINOR
 #define VERSION_MINOR               4
+#endif
+#ifndef VERSION_REVISION
 #define VERSION_REVISION            0
 #endif
+#ifndef VERSION_BUILD
 #define VERSION_BUILD               9999
+#endif
+#ifndef GIT_VERSION
 #define GIT_VERSION                 ""
+#endif
 
 #define VER_FILE_DESCRIPTION_STR    "Project64"
 #define VER_FILE_VERSION            VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_BUILD

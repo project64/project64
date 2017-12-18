@@ -31,6 +31,7 @@
   </ImportGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project="$(SolutionDir)PropertySheets\UpdateVersion.targets" />
   <PropertyGroup>
     <TargetName>RSP 1.7</TargetName>
     <TargetName Condition="'$(Configuration)'=='Debug'">RSP_d 1.7</TargetName>
@@ -45,10 +46,10 @@
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Bscmake>
-    <PreBuildEvent Condition="'$(UpdateVersion)' != '' and $(UpdateVersion)">
+    <PreBuildEvent Condition="'$(RspVersion)' == ''">
       <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(SolutionDir)Source\RSP\Version.h.in" "$(SolutionDir)Source\RSP\Version.h"</Command>
     </PreBuildEvent>
-    <PreBuildEvent Condition="'$(UpdateVersion)' == '' or !$(UpdateVersion)">
+    <PreBuildEvent Condition="'$(RspVersion)' != ''">
       <Command>cp "$(SolutionDir)Source\RSP\Version.h.in" "$(SolutionDir)Source\RSP\Version.h"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -105,4 +106,15 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
+  <Target Name="PrepareForBuild" Condition="'$(RspVersion)' != ''">
+    <SetVersion Version="$(RspVersion)">
+      <Output TaskParameter="Result" PropertyName="PreprocessorDefinitions" />
+    </SetVersion>
+    <ItemGroup>
+      <ClCompile>
+        <PreprocessorDefinitions>$(PreprocessorDefinitions);%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      </ClCompile>
+    </ItemGroup>
+    <Message Text="==| %(ClCompile.PreprocessorDefinitions) |==" />
+  </Target>
 </Project>

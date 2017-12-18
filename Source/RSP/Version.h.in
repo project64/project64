@@ -27,11 +27,21 @@
 #define STRINGIZE2(s) #s
 #define STRINGIZE(s) STRINGIZE2(s)
 
+#ifndef VERSION_MAJOR
 #define VERSION_MAJOR               1
+#endif
+#ifndef VERSION_MINOR
 #define VERSION_MINOR               7
+#endif
+#ifndef VERSION_REVISION
 #define VERSION_REVISION            4
+#endif
+#ifndef VERSION_BUILD
 #define VERSION_BUILD               9999
+#endif
+#ifndef GIT_VERSION
 #define GIT_VERSION                 ""
+#endif
 
 #define VER_FILE_DESCRIPTION_STR    "RSP emulation Plugin"
 #define VER_FILE_VERSION            VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_BUILD

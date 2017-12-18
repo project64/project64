@@ -31,11 +31,12 @@
   </ImportGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <!-- <Import Project="$(SolutionDir)PropertySheets\UpdateVersion.targets" /> -->
   <ItemDefinitionGroup>
-    <PreBuildEvent Condition="'$(UpdateVersion)' != '' and $(UpdateVersion)">
+    <PreBuildEvent Condition="'$(CoreVersion)' == ''">
       <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(SolutionDir)Source\Project64-core\Version.h.in" "$(SolutionDir)Source\Project64-core\Version.h"</Command>
     </PreBuildEvent>
-    <PreBuildEvent Condition="'$(UpdateVersion)' == '' or !$(UpdateVersion)">
+    <PreBuildEvent Condition="'$(CoreVersion)' != ''">
       <Command>cp "$(SolutionDir)Source\Project64-core\Version.h.in" "$(SolutionDir)Source\Project64-core\Version.h"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -248,4 +249,14 @@
     <None Include="ClassDiagram.cd" />
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>
+  <!-- <Target Name="PrepareForBuild" Condition="'$(CoreVersion)' != ''">
+    <SetVersion Version="$(CoreVersion)">
+      <Output TaskParameter="Result" PropertyName="PreprocessorDefinitions" />
+    </SetVersion>
+    <ItemGroup>
+      <ClCompile>
+        <PreprocessorDefinitions>$(PreprocessorDefinitions);%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      </ClCompile>
+    </ItemGroup>
+  </Target> -->
 </Project>

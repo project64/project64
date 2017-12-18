@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3rd Party", "3rd Party", "{AA8F7F8E-5377-4911-859D-8A8817B0DB26}"
 EndProject
@@ -43,6 +43,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PropertySheets", "PropertyS
 		PropertySheets\Platform.props = PropertySheets\Platform.props
 		PropertySheets\Platform.Release.props = PropertySheets\Platform.Release.props
 		PropertySheets\Release.props = PropertySheets\Release.props
+		PropertySheets\UpdateVersion.targets = PropertySheets\UpdateVersion.targets
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-core", "Source\Project64-core\Project64-core.vcxproj", "{00C7B43A-DED7-4DF0-B072-9A5783EF866D}"
@@ -231,5 +232,8 @@ Global
 		{B685BB34-D700-4FCC-8503-9B6AA1A0C95D} = {0E0FCAC2-E128-4886-8EE6-1BCA84551F58}
 		{593B00E6-1987-415D-A62C-26533FC3E95C} = {0E0FCAC2-E128-4886-8EE6-1BCA84551F58}
 		{E8D9A652-A354-4374-B6C5-A51EE62749FD} = {AA8F7F8E-5377-4911-859D-8A8817B0DB26}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8CF9D4E2-C7C8-4E5B-84C4-7FF5706B5E67}
 	EndGlobalSection
 EndGlobal

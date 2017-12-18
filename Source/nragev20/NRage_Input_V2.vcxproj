@@ -32,6 +32,7 @@
   </ImportGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project="$(SolutionDir)PropertySheets\UpdateVersion.targets" />
   <PropertyGroup>
     <TargetName>PJ64_NRage</TargetName>
     <TargetName Condition="'$(Configuration)'=='Debug'">PJ64_NRage_d</TargetName>
@@ -50,10 +51,10 @@
       <AdditionalLibraryDirectories Condition="'$(Platform)'=='x64'">$(Root)Source\3rdParty\directx\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
-    <PreBuildEvent Condition="'$(UpdateVersion)' != '' and $(UpdateVersion)">
+    <PreBuildEvent Condition="'$(InputVersion)' == ''">
       <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(SolutionDir)Source\nragev20\Version.h.in" "$(SolutionDir)Source\nragev20\Version.h"</Command>
     </PreBuildEvent>
-    <PreBuildEvent Condition="'$(UpdateVersion)' == '' or !$(UpdateVersion)">
+    <PreBuildEvent Condition="'$(InputVersion)' != ''">
       <Command>cp "$(SolutionDir)Source\nragev20\Version.h.in" "$(SolutionDir)Source\nragev20\Version.h"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -93,4 +94,14 @@
   <ItemGroup>
     <ResourceCompile Include="NRagePluginV2.rc" />
   </ItemGroup>
+  <Target Name="PrepareForBuild" Condition="'$(InputVersion)' != ''">
+    <SetVersion Version="$(InputVersion)">
+      <Output TaskParameter="Result" PropertyName="PreprocessorDefinitions" />
+    </SetVersion>
+    <ItemGroup>
+      <ClCompile>
+        <PreprocessorDefinitions>$(PreprocessorDefinitions);%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      </ClCompile>
+    </ItemGroup>
+  </Target>
 </Project>
