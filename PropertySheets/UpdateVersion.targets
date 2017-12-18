@@ -1,6 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+	<PropertyGroup>
+		<BuildDependsOn>
+			BeforeBuild;
+			$(BuildDependsOn);
+			AfterBuild;
+		</BuildDependsOn>
+	</PropertyGroup>
+
 	<UsingTask TaskName="SetVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
 			<Version ParameterType="System.String" Required="true" />

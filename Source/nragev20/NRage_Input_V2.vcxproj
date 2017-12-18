@@ -94,7 +94,7 @@
   <ItemGroup>
     <ResourceCompile Include="NRagePluginV2.rc" />
   </ItemGroup>
-  <Target Name="PrepareForBuild" Condition="'$(InputVersion)' != ''">
+  <Target Name="BeforeBuild" Condition="'$(InputVersion)' != ''">
     <SetVersion Version="$(InputVersion)">
       <Output TaskParameter="Result" PropertyName="PreprocessorDefinitions" />
     </SetVersion>

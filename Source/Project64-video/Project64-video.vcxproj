@@ -216,7 +216,7 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
-  <Target Name="PrepareForBuild" Condition="'$(VideoVersion)' != ''">
+  <Target Name="BeforeBuild" Condition="'$(VideoVersion)' != ''">
     <SetVersion Version="$(VideoVersion)">
       <Output TaskParameter="Result" PropertyName="PreprocessorDefinitions" />
     </SetVersion>

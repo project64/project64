@@ -79,7 +79,7 @@
   <ItemGroup>
     <ResourceCompile Include="Project64-audio.rc" />
   </ItemGroup>
-  <Target Name="PrepareForBuild" Condition="'$(AudioVersion)' != ''">
+  <Target Name="BeforeBuild" Condition="'$(AudioVersion)' != ''">
     <SetVersion Version="$(AudioVersion)">
       <Output TaskParameter="Result" PropertyName="PreprocessorDefinitions" />
     </SetVersion>

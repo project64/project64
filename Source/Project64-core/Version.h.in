@@ -25,6 +25,7 @@
 #ifndef VERSION_REVISION
 #define VERSION_REVISION            0
 #endif
+#endif // ANDROID
 #ifndef VERSION_BUILD
 #define VERSION_BUILD               9999
 #endif

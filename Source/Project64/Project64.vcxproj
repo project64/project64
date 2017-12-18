@@ -239,7 +239,7 @@
       <UserProperties RESOURCE_FILE="UserInterface\UIResources.rc" />
     </VisualStudio>
   </ProjectExtensions>
-  <Target Name="PrepareForBuild" Condition="'$(CoreVersion)' != ''">
+  <Target Name="BeforeBuild" Condition="'$(CoreVersion)' != ''">
     <SetVersion Version="$(CoreVersion)">
       <Output TaskParameter="Result" PropertyName="PreprocessorDefinitions" />
     </SetVersion>
