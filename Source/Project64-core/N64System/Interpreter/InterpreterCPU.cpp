@@ -313,6 +313,7 @@ void CInterpreterCPU::ExecuteCPU()
             } */
 
             m_R4300i_Opcode[Opcode.op]();
+            _GPR[0].DW = 0; /* MIPS $zero hard-wired to 0 */
             NextTimer -= CountPerOp;
 
             if (CDebugSettings::bHaveDebugger()) { g_Debugger->CPUStep(); }
