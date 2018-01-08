@@ -21,7 +21,7 @@
 #include "UserInterface/RomBrowser.h"
 #include "UserInterface/GuiClass.h"
 #include "UserInterface/MenuClass.h"
-#include "UserInterface/MainMenuClass.h"
+#include "UserInterface/MainMenu.h"
 #include "UserInterface/NotificationClass.h"
 #include <Project64-core/N64System/FramePerSecondClass.h>
 #include "UserInterface/resource.h"

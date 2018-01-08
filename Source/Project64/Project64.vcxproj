@@ -102,7 +102,7 @@
     <ClCompile Include="UserInterface\Debugger\Symbols.cpp" />
     <ClCompile Include="UserInterface\GuiClass.cpp" />
     <ClCompile Include="UserInterface\LoggingUI.cpp" />
-    <ClCompile Include="UserInterface\MainMenuClass.cpp" />
+    <ClCompile Include="UserInterface\MainMenu.cpp" />
     <ClCompile Include="UserInterface\MenuClass.cpp" />
     <ClCompile Include="UserInterface\MenuShortCuts.cpp" />
     <ClCompile Include="UserInterface\NotificationClass.cpp" />
@@ -164,7 +164,7 @@
     <ClInclude Include="UserInterface\Debugger\Symbols.h" />
     <ClInclude Include="UserInterface\GuiClass.h" />
     <ClInclude Include="UserInterface\LoggingUI.h" />
-    <ClInclude Include="UserInterface\MainMenuClass.h" />
+    <ClInclude Include="UserInterface\MainMenu.h" />
     <ClInclude Include="UserInterface\MenuClass.h" />
     <ClInclude Include="UserInterface\MenuShortCuts.h" />
     <ClInclude Include="UserInterface\NotificationClass.h" />

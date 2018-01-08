@@ -111,7 +111,7 @@
     <ClCompile Include="UserInterface\LoggingUI.cpp">
       <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
-    <ClCompile Include="UserInterface\MainMenuClass.cpp">
+    <ClCompile Include="UserInterface\MainMenu.cpp">
       <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
     <ClCompile Include="UserInterface\MenuClass.cpp">
@@ -233,7 +233,7 @@
     <ClInclude Include="UserInterface\LoggingUI.h">
       <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
-    <ClInclude Include="UserInterface\MainMenuClass.h">
+    <ClInclude Include="UserInterface\MainMenu.h">
       <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
     <ClInclude Include="UserInterface\MenuClass.h">
