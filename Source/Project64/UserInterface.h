@@ -22,7 +22,7 @@
 #include "UserInterface/MainWindow.h"
 #include "UserInterface/MenuClass.h"
 #include "UserInterface/MainMenu.h"
-#include "UserInterface/NotificationClass.h"
+#include "UserInterface/Notification.h"
 #include <Project64-core/N64System/FramePerSecondClass.h>
 #include "UserInterface/resource.h"
 #include "UserInterface/SettingsConfig.h"
