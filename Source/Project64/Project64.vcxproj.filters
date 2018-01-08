@@ -105,7 +105,7 @@
     <ClCompile Include="UserInterface\CheatClassUI.cpp">
       <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
-    <ClCompile Include="UserInterface\GuiClass.cpp">
+    <ClCompile Include="UserInterface\MainWindow.cpp">
       <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
     <ClCompile Include="UserInterface\LoggingUI.cpp">
@@ -227,7 +227,7 @@
     <ClInclude Include="UserInterface\CheatClassUI.h">
       <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
-    <ClInclude Include="UserInterface\GuiClass.h">
+    <ClInclude Include="UserInterface\MainWindow.h">
       <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
     <ClInclude Include="UserInterface\LoggingUI.h">

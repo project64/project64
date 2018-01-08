@@ -19,7 +19,7 @@
 #include "WTLApp.h"
 #include "UserInterface/MenuShortCuts.h"
 #include "UserInterface/RomBrowser.h"
-#include "UserInterface/GuiClass.h"
+#include "UserInterface/MainWindow.h"
 #include "UserInterface/MenuClass.h"
 #include "UserInterface/MainMenu.h"
 #include "UserInterface/NotificationClass.h"
