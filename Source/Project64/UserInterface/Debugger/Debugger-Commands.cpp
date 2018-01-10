@@ -1141,7 +1141,7 @@ LRESULT CDebugCommandsView::OnViewPCButton(WORD /*wNotifyCode*/, WORD /*wID*/, H
 
 LRESULT CDebugCommandsView::OnSymbolsButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
 {
-    m_Debugger->Debug_ShowSymbolsWindow();
+    m_Debugger->OpenSymbolsWindow();
     return FALSE;
 }
 

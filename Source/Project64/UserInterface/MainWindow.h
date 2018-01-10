@@ -33,7 +33,6 @@ enum
 class CMainGui :
     public RenderWindow,
     public CRomBrowser,
-    public CDebuggerUI,
     private CGuiSettings
 {
     enum { StatusBarID = 400 };

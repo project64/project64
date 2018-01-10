@@ -12,8 +12,18 @@
 
 __interface CDebugger
 {
-	virtual void TLBChanged(void) = 0;
-	virtual bool CPUStepStarted(void) = 0;
-	virtual void CPUStep(void) = 0;
+    virtual void OpenCommandWindow(void) = 0;
+    virtual void OpenMemoryWindow(void) = 0;
+    virtual void OpenMemoryDump(void) = 0;
+    virtual void OpenMemorySearch(void) = 0;
+    virtual void OpenTLBWindow(void) = 0;
+    virtual void OpenScriptsWindow(void) = 0;
+    virtual void OpenSymbolsWindow(void) = 0;
+    virtual void OpenDMALogWindow(void) = 0;
+    virtual void OpenStackTraceWindow(void) = 0;
+    virtual void OpenStackViewWindow(void) = 0;
+    virtual void TLBChanged(void) = 0;
+    virtual bool CPUStepStarted(void) = 0;
+    virtual void CPUStep(void) = 0;
 	virtual void FrameDrawn(void) = 0;
 };

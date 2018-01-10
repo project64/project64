@@ -157,7 +157,7 @@ void CDebuggerUI::Debug_Reset(void)
     }
 }
 
-void CDebuggerUI::Debug_ShowMemoryDump()
+void CDebuggerUI::OpenMemoryDump()
 {
     if (g_MMU == NULL)
     {
@@ -173,7 +173,7 @@ void CDebuggerUI::Debug_ShowMemoryDump()
     }
 }
 
-void CDebuggerUI::Debug_ShowMemoryWindow(void)
+void CDebuggerUI::OpenMemoryWindow(void)
 {
     if (g_MMU == NULL)
     {
@@ -191,14 +191,14 @@ void CDebuggerUI::Debug_ShowMemoryWindow(void)
 
 void CDebuggerUI::Debug_ShowMemoryLocation(uint32_t Address, bool VAddr)
 {
-    Debug_ShowMemoryWindow();
+    OpenMemoryWindow();
     if (m_MemoryView)
     {
         m_MemoryView->ShowAddress(Address, VAddr);
     }
 }
 
-void CDebuggerUI::Debug_ShowTLBWindow(void)
+void CDebuggerUI::OpenTLBWindow(void)
 {
     if (g_MMU == NULL)
     {
@@ -222,7 +222,7 @@ void CDebuggerUI::Debug_RefreshTLBWindow(void)
     }
 }
 
-void CDebuggerUI::Debug_ShowMemorySearch()
+void CDebuggerUI::OpenMemorySearch()
 {
     if (m_MemorySearch == NULL)
     {
@@ -234,7 +234,7 @@ void CDebuggerUI::Debug_ShowMemorySearch()
     }
 }
 
-void CDebuggerUI::Debug_ShowCommandsWindow()
+void CDebuggerUI::OpenCommandWindow()
 {
     if (m_CommandsView == NULL)
     {
@@ -245,14 +245,14 @@ void CDebuggerUI::Debug_ShowCommandsWindow()
 
 void CDebuggerUI::Debug_ShowCommandsLocation(uint32_t address, bool top)
 {
-    Debug_ShowCommandsWindow();
+    OpenCommandWindow();
     if (m_CommandsView)
     {
         m_CommandsView->ShowAddress(address, top);
     }
 }
 
-void CDebuggerUI::Debug_ShowScriptsWindow()
+void CDebuggerUI::OpenScriptsWindow()
 {
     if (m_Scripts == NULL)
     {
@@ -285,7 +285,7 @@ void CDebuggerUI::Debug_ClearScriptsWindow()
     }
 }
 
-void CDebuggerUI::Debug_ShowSymbolsWindow()
+void CDebuggerUI::OpenSymbolsWindow()
 {
     if (m_Symbols == NULL)
     {
@@ -302,7 +302,7 @@ void CDebuggerUI::Debug_RefreshSymbolsWindow()
     }
 }
 
-void CDebuggerUI::Debug_ShowDMALogWindow(void)
+void CDebuggerUI::OpenDMALogWindow(void)
 {
     if (m_DMALogView == NULL)
     {
@@ -311,7 +311,7 @@ void CDebuggerUI::Debug_ShowDMALogWindow(void)
     m_DMALogView->ShowWindow();
 }
 
-void CDebuggerUI::Debug_ShowStackTrace(void)
+void CDebuggerUI::OpenStackTraceWindow(void)
 {
     if (m_StackTrace == NULL)
     {
@@ -320,7 +320,7 @@ void CDebuggerUI::Debug_ShowStackTrace(void)
     m_StackTrace->ShowWindow();
 }
 
-void CDebuggerUI::Debug_ShowStackWindow(void)
+void CDebuggerUI::OpenStackViewWindow(void)
 {
     if (m_StackView == NULL)
     {

@@ -496,22 +496,22 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUGGER_GENERATELOG:
         g_Settings->SaveBool(Logging_GenerateLog, !g_Settings->LoadBool(Logging_GenerateLog));
         break;
-    case ID_DEBUGGER_DUMPMEMORY: m_Gui->Debug_ShowMemoryDump(); break;
-    case ID_DEBUGGER_SEARCHMEMORY: m_Gui->Debug_ShowMemorySearch(); break;
-    case ID_DEBUGGER_MEMORY: m_Gui->Debug_ShowMemoryWindow(); break;
-    case ID_DEBUGGER_TLBENTRIES: m_Gui->Debug_ShowTLBWindow(); break;
+    case ID_DEBUGGER_DUMPMEMORY: g_Debugger->OpenMemoryDump(); break;
+    case ID_DEBUGGER_SEARCHMEMORY: g_Debugger->OpenMemorySearch(); break;
+    case ID_DEBUGGER_MEMORY: g_Debugger->OpenMemoryWindow(); break;
+    case ID_DEBUGGER_TLBENTRIES: g_Debugger->OpenTLBWindow(); break;
     case ID_DEBUGGER_INTERRUPT_SP: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_SP); break;
     case ID_DEBUGGER_INTERRUPT_SI: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_SI); break;
     case ID_DEBUGGER_INTERRUPT_AI: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_AI); break;
     case ID_DEBUGGER_INTERRUPT_VI: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_VI); break;
     case ID_DEBUGGER_INTERRUPT_PI: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_PI); break;
     case ID_DEBUGGER_INTERRUPT_DP: g_BaseSystem->ExternalEvent(SysEvent_Interrupt_DP); break;
-    case ID_DEBUGGER_BREAKPOINTS: m_Gui->Debug_ShowCommandsWindow(); break;
-    case ID_DEBUGGER_SCRIPTS: m_Gui->Debug_ShowScriptsWindow(); break;
-    case ID_DEBUGGER_SYMBOLS: m_Gui->Debug_ShowSymbolsWindow(); break;
-    case ID_DEBUGGER_DMALOG: m_Gui->Debug_ShowDMALogWindow(); break;
-    case ID_DEBUGGER_STACKTRACE: m_Gui->Debug_ShowStackTrace(); break;
-    case ID_DEBUGGER_STACKVIEW: m_Gui->Debug_ShowStackWindow(); break;
+    case ID_DEBUGGER_BREAKPOINTS: g_Debugger->OpenCommandWindow(); break;
+    case ID_DEBUGGER_SCRIPTS: g_Debugger->OpenScriptsWindow(); break;
+    case ID_DEBUGGER_SYMBOLS: g_Debugger->OpenSymbolsWindow(); break;
+    case ID_DEBUGGER_DMALOG: g_Debugger->OpenDMALogWindow(); break;
+    case ID_DEBUGGER_STACKTRACE: g_Debugger->OpenStackTraceWindow(); break;
+    case ID_DEBUGGER_STACKVIEW: g_Debugger->OpenStackViewWindow(); break;
     case ID_CURRENT_SAVE_DEFAULT:
         g_Notify->DisplayMessage(3, stdstr_f(GS(MENU_SLOT_SAVE), GetSaveSlotString(MenuID - ID_CURRENT_SAVE_DEFAULT).c_str()).c_str());
         g_Settings->SaveDword(Game_CurrentSaveState, (DWORD)(MenuID - ID_CURRENT_SAVE_DEFAULT));

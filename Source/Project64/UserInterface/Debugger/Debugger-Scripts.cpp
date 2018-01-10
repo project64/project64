@@ -85,7 +85,7 @@ void CDebugScripts::ConsolePrint(const char* text)
 
 void CDebugScripts::RefreshConsole()
 {
-    m_Debugger->Debug_ShowScriptsWindow();
+    m_Debugger->OpenScriptsWindow();
     CScriptSystem* scriptSystem = m_Debugger->ScriptSystem();
     vector<char*>* logData = scriptSystem->LogData();
 

@@ -193,13 +193,13 @@ LRESULT CDebugMemoryView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& 
         RefreshMemory(false);
         break;
     case IDC_DUMP_MEM:
-        m_Debugger->Debug_ShowMemoryDump();
+        m_Debugger->OpenMemoryDump();
         break;
     case IDC_SEARCH_MEM:
-        m_Debugger->Debug_ShowMemorySearch();
+        m_Debugger->OpenMemorySearch();
         break;
     case IDC_SYMBOLS_BTN:
-        m_Debugger->Debug_ShowSymbolsWindow();
+        m_Debugger->OpenSymbolsWindow();
         break;
     case IDCANCEL:
         EndDialog(0);
