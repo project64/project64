@@ -181,10 +181,12 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_EditPlugin_Audio, new CSettingTypeGame("Plugin-Audio", Default_None));
     AddHandler(Game_EditPlugin_Contr, new CSettingTypeGame("Plugin-Controller", Default_None));
     AddHandler(Game_EditPlugin_RSP, new CSettingTypeGame("Plugin-RSP", Default_None));
+    AddHandler(Game_EditPlugin_NET, new CSettingTypeGame("Plugin-NET", Default_None));
     AddHandler(Game_Plugin_Gfx, new CSettingTypeGame("Plugin-Gfx", Plugin_GFX_Current));
     AddHandler(Game_Plugin_Audio, new CSettingTypeGame("Plugin-Audio", Plugin_AUDIO_Current));
     AddHandler(Game_Plugin_Controller, new CSettingTypeGame("Plugin-Controller", Plugin_CONT_Current));
     AddHandler(Game_Plugin_RSP, new CSettingTypeGame("Plugin-RSP", Plugin_RSP_Current));
+    AddHandler(Game_Plugin_Netplay, new CSettingTypeGame("Plugin-NET", Plugin_NET_Current));
     AddHandler(Game_SaveChip, new CSettingTypeGame("SaveChip", Rdb_SaveChip));
     AddHandler(Game_CpuType, new CSettingTypeGame("CpuType", Rdb_CpuType));
     AddHandler(Game_LastSaveSlot, new CSettingTypeGame("Last Used Save Slot", (uint32_t)0));
@@ -227,6 +229,40 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_LoadSaveAtStart, new CSettingTypeTempBool(false));
     AddHandler(Game_OverClockModifier, new CSettingTypeGame("OverClockModifier", Rdb_OverClockModifier));
     AddHandler(Game_FullSpeed, new CSettingTypeTempBool(true, "Full Speed"));
+
+    AddHandler(Netplay_SystemType, new CSettingTypeTempNumber(SYSTEM_NTSC));
+    AddHandler(Netplay_SaveChip, new CSettingTypeApplication("Netplay", "SaveChip", Game_SaveChip));
+    AddHandler(Netplay_CpuType, new CSettingTypeApplication("Netplay", "CpuType", Game_CpuType));
+    AddHandler(Netplay_FixedAudio, new CSettingTypeApplication("Netplay", "Fixed Audio", Game_FixedAudio));
+    AddHandler(Netplay_RDRamSize, new CSettingTypeApplication("Netplay", "RDRamSize", Game_RDRamSize));
+    AddHandler(Netplay_CounterFactor, new CSettingTypeApplication("Netplay", "Counter Factor", Game_CounterFactor));
+    AddHandler(Netplay_UseTlb, new CSettingTypeApplication("Netplay", "Use TLB", Game_UseTlb));
+    AddHandler(Netplay_DelayDP, new CSettingTypeApplication("Netplay", "Delay DP", Game_DelayDP));
+    AddHandler(Netplay_DelaySI, new CSettingTypeApplication("Netplay", "Delay SI", Game_DelaySI));
+    AddHandler(Netplay_RspAudioSignal, new CSettingTypeApplication("Netplay", "Audio Signal", Game_RspAudioSignal));
+    AddHandler(Netplay_32Bit, new CSettingTypeApplication("Netplay", "32bit", Game_32Bit));
+    AddHandler(Netplay_FastSP, new CSettingTypeApplication("Netplay", "Fast SP", Game_FastSP));
+    AddHandler(Netplay_SyncViaAudio, new CSettingTypeApplication("Netplay", "Sync Audio", Game_SyncViaAudio));
+    AddHandler(Netplay_UseHleGfx, new CSettingTypeApplication("Netplay", "HLE GFX", Game_UseHleGfx));
+    AddHandler(Netplay_UseHleAudio, new CSettingTypeApplication("Netplay", "HLE Audio", Game_UseHleAudio));
+    AddHandler(Netplay_LoadRomToMemory, new CSettingTypeApplication("Netplay", "Rom In Memory", Game_LoadRomToMemory));
+    AddHandler(Netplay_ScreenHertz, new CSettingTypeApplication("Netplay", "ScreenHertz", Game_ScreenHertz));
+    AddHandler(Netplay_FuncLookupMode, new CSettingTypeApplication("Netplay", "FuncFind", Game_FuncLookupMode));
+    AddHandler(Netplay_RegCache, new CSettingTypeApplication("Netplay", "Reg Cache", Game_RegCache));
+    AddHandler(Netplay_BlockLinking, new CSettingTypeApplication("Netplay", "Linking", Game_BlockLinking));
+    AddHandler(Netplay_SMM_StoreInstruc, new CSettingTypeApplication("Netplay", "SMM-StoreInst", Game_SMM_StoreInstruc));
+    AddHandler(Netplay_SMM_Cache, new CSettingTypeApplication("Netplay", "SMM-Cache", Game_SMM_Cache));
+    AddHandler(Netplay_SMM_PIDMA, new CSettingTypeApplication("Netplay", "SMM-PI DMA", Game_SMM_PIDMA));
+    AddHandler(Netplay_SMM_TLB, new CSettingTypeApplication("Netplay", "SMM-TLB", Game_SMM_TLB));
+    AddHandler(Netplay_SMM_Protect, new CSettingTypeApplication("Netplay", "SMM-Protect", Game_SMM_Protect));
+    AddHandler(Netplay_SMM_ValidFunc, new CSettingTypeApplication("Netplay", "SMM-FUNC", Game_SMM_ValidFunc));
+    AddHandler(Netplay_ViRefreshRate, new CSettingTypeApplication("Netplay", "ViRefresh", Game_ViRefreshRate));
+    AddHandler(Netplay_AiCountPerBytes, new CSettingTypeApplication("Netplay", "AiCountPerBytes", Game_AiCountPerBytes));
+    AddHandler(Netplay_AudioResetOnLoad, new CSettingTypeApplication("Netplay", "AudioResetOnLoad", Game_AudioResetOnLoad));
+    AddHandler(Netplay_AllowROMWrites, new CSettingTypeApplication("Netplay", "AllowROMWrites", Game_AllowROMWrites));
+    AddHandler(Netplay_CRC_Recalc, new CSettingTypeApplication("Netplay", "CRC-Recalc", Game_CRC_Recalc));
+    AddHandler(Netplay_OverClockModifier, new CSettingTypeApplication("Netplay", "OverClockModifier", Game_OverClockModifier));
+    AddHandler(Netplay_FullSpeed, new CSettingTypeTempBool(true, "Netplay Full Speed"));
 
     //User Interface
     AddHandler(UserInterface_ShowCPUPer, new CSettingTypeApplication("", "Display CPU Usage", (uint32_t)false));
@@ -303,6 +339,15 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(GameRunning_ScreenHertz, new CSettingTypeTempNumber(60));
     AddHandler(GameRunning_InReset, new CSettingTypeTempBool(false));
 
+    AddHandler(Plugin_NET_Loaded, new CSettingTypeTempBool(false));
+    AddHandler(Plugin_NET_Running, new CSettingTypeTempBool(false));
+    AddHandler(Plugin_NET_CanPause, new CSettingTypeTempBool(false));
+    AddHandler(Plugin_NET_CanReset, new CSettingTypeTempBool(false));
+    AddHandler(Plugin_NET_CanSave, new CSettingTypeTempBool(false));
+    AddHandler(Plugin_NET_CanSaveState, new CSettingTypeTempBool(false));
+    AddHandler(Plugin_NET_CanCheat, new CSettingTypeTempBool(false));
+    AddHandler(Plugin_NET_CanDebug, new CSettingTypeTempBool(false));
+
     AddHandler(UserInterface_BasicMode, new CSettingTypeApplication("", "Basic Mode", (uint32_t)true));
     AddHandler(File_DiskIPLPath, new CSettingTypeApplicationPath("", "Disk IPL ROM Path", Default_None));
 
@@ -339,6 +384,8 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Debugger_TraceAudioPlugin, new CSettingTypeApplication("Logging", "Audio Plugin", (uint32_t)g_ModuleLogLevel[TraceAudioPlugin]));
     AddHandler(Debugger_TraceControllerPlugin, new CSettingTypeApplication("Logging", "Controller Plugin", (uint32_t)g_ModuleLogLevel[TraceControllerPlugin]));
     AddHandler(Debugger_TraceRSPPlugin, new CSettingTypeApplication("Logging", "RSP Plugin", (uint32_t)g_ModuleLogLevel[TraceRSPPlugin]));
+    AddHandler(Debugger_TraceNetplayPlugin, new CSettingTypeApplication("Logging", "Netplay Plugin", (uint32_t)g_ModuleLogLevel[TraceNetplayPlugin]));
+    AddHandler(Debugger_TraceNetplay, new CSettingTypeApplication("Logging", "Netplay", (uint32_t)g_ModuleLogLevel[TraceNetplay]));
     AddHandler(Debugger_TraceRSP, new CSettingTypeApplication("Logging", "RSP", (uint32_t)g_ModuleLogLevel[TraceRSP]));
     AddHandler(Debugger_TraceAudio, new CSettingTypeApplication("Logging", "Audio", (uint32_t)g_ModuleLogLevel[TraceAudio]));
     AddHandler(Debugger_TraceRegisterCache, new CSettingTypeApplication("Logging", "Register Cache", (uint32_t)g_ModuleLogLevel[TraceRegisterCache]));
@@ -359,16 +406,19 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Plugin_AUDIO_Current, new CSettingTypeApplication("Plugin", "Audio Dll", "Audio\\Project64-Audio.dll"));
 #endif
     AddHandler(Plugin_CONT_Current, new CSettingTypeApplication("Plugin", "Controller Dll", "Input\\PJ64_NRage.dll"));
+    AddHandler(Plugin_NET_Current, new CSettingTypeApplication("Plugin", "Netplay Dll", ""));
 #else
     AddHandler(Plugin_RSP_Current, new CSettingTypeApplication("Plugin", "RSP Dll", "libProject64-rsp-hle.so"));
     AddHandler(Plugin_GFX_Current, new CSettingTypeApplication("Plugin", "Graphics Dll", "libProject64-gfx.so"));
     AddHandler(Plugin_AUDIO_Current, new CSettingTypeApplication("Plugin", "Audio Dll", "libProject64-audio-android.so"));
     AddHandler(Plugin_CONT_Current, new CSettingTypeApplication("Plugin", "Controller Dll", "libProject64-input-android.so"));
+    AddHandler(Plugin_NET_Current, new CSettingTypeApplication("Plugin", "Netplay Dll", ""));
 #endif
     AddHandler(Plugin_RSP_CurVer, new CSettingTypeApplication("Plugin", "RSP Dll Ver", ""));
     AddHandler(Plugin_GFX_CurVer, new CSettingTypeApplication("Plugin", "Graphics Dll Ver", ""));
     AddHandler(Plugin_AUDIO_CurVer, new CSettingTypeApplication("Plugin", "Audio Dll Ver", ""));
     AddHandler(Plugin_CONT_CurVer, new CSettingTypeApplication("Plugin", "Controller Dll Ver", ""));
+    AddHandler(Plugin_NET_CurVer, new CSettingTypeApplication("Plugin", "Netplay Dll Ver", ""));
 
     AddHandler(Plugin_UseHleGfx, new CSettingTypeApplication("RSP", "HLE GFX", true));
     AddHandler(Plugin_UseHleAudio, new CSettingTypeApplication("RSP", "HLE Audio", false));

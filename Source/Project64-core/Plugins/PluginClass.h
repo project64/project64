@@ -96,10 +96,11 @@ enum PLUGIN_TYPE
     PLUGIN_TYPE_GFX = 2,
     PLUGIN_TYPE_AUDIO = 3,
     PLUGIN_TYPE_CONTROLLER = 4,
+    PLUGIN_TYPE_NETPLAY = 5,
 };
 
 class CSettings;
-class CGfxPlugin; class CAudioPlugin; class CRSP_Plugin; class CControl_Plugin;
+class CGfxPlugin; class CAudioPlugin; class CRSP_Plugin; class CControl_Plugin; class CNetplay_Plugin;
 class CN64System;
 class CPlugins;
 
@@ -146,6 +147,7 @@ public:
     inline CAudioPlugin    * Audio(void) const { return m_Audio; }
     inline CRSP_Plugin     * RSP(void) const { return m_RSP; }
     inline CControl_Plugin * Control(void) const { return m_Control; }
+    inline CNetplay_Plugin * Netplay(void) const { return m_Netplay; }
 
     inline RenderWindow * MainWindow(void) const { return m_MainWindow; }
     inline RenderWindow * SyncWindow(void) const { return m_SyncWindow; }
@@ -161,6 +163,7 @@ private:
     void DestroyAudioPlugin(void);
     void DestroyRspPlugin(void);
     void DestroyControlPlugin(void);
+    void DestroyNetplayPlugin(void);
 
     static void PluginChanged(CPlugins * _this);
 
@@ -175,11 +178,13 @@ private:
     CAudioPlugin    * m_Audio;
     CRSP_Plugin     * m_RSP;
     CControl_Plugin * m_Control;
+    CNetplay_Plugin * m_Netplay;
 
     stdstr m_GfxFile;
     stdstr m_AudioFile;
     stdstr m_RSPFile;
     stdstr m_ControlFile;
+    stdstr m_NetplayFile;
     bool m_initilized;
     bool m_SyncPlugins;
 };

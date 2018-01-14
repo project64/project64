@@ -21,10 +21,12 @@ class COptionPluginPage :
         COMMAND_HANDLER_EX(AUDIO_LIST, LBN_SELCHANGE, AudioPluginChanged)
         COMMAND_HANDLER_EX(CONT_LIST, LBN_SELCHANGE, ControllerPluginChanged)
         COMMAND_HANDLER_EX(RSP_LIST, LBN_SELCHANGE, RspPluginChanged)
+        COMMAND_HANDLER_EX(NET_LIST, LBN_SELCHANGE, NetPluginChanged)
         COMMAND_ID_HANDLER_EX(GFX_ABOUT, GfxPluginAbout)
         COMMAND_ID_HANDLER_EX(AUDIO_ABOUT, AudioPluginAbout)
         COMMAND_ID_HANDLER_EX(CONT_ABOUT, ControllerPluginAbout)
         COMMAND_ID_HANDLER_EX(RSP_ABOUT, RspPluginAbout)
+        COMMAND_ID_HANDLER_EX(NET_ABOUT, NetPluginAbout)
         COMMAND_ID_HANDLER_EX(IDC_HLE_GFX, HleGfxChanged)
         COMMAND_ID_HANDLER_EX(IDC_HLE_AUDIO, HleAudioChanged)
     END_MSG_MAP()
@@ -46,11 +48,13 @@ private:
     void AudioPluginAbout(UINT /*Code*/, int /*id*/, HWND /*ctl*/) { ShowAboutButton(AUDIO_LIST); }
     void ControllerPluginAbout(UINT /*Code*/, int /*id*/, HWND /*ctl*/) { ShowAboutButton(CONT_LIST); }
     void RspPluginAbout(UINT /*Code*/, int /*id*/, HWND /*ctl*/) { ShowAboutButton(RSP_LIST); }
+    void NetPluginAbout(UINT /*Code*/, int /*id*/, HWND /*ctl*/) { ShowAboutButton(NET_LIST); }
 
     void GfxPluginChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/) { PluginItemChanged(GFX_LIST, GFX_ABOUT); }
     void AudioPluginChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/) { PluginItemChanged(AUDIO_LIST, AUDIO_ABOUT); }
     void ControllerPluginChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/) { PluginItemChanged(CONT_LIST, CONT_ABOUT); }
     void RspPluginChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/) { PluginItemChanged(RSP_LIST, RSP_ABOUT); }
+    void NetPluginChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/) { PluginItemChanged(NET_LIST, NET_ABOUT); }
 
     void HleGfxChanged(UINT Code, int id, HWND ctl);
     void HleAudioChanged(UINT Code, int id, HWND ctl);
@@ -63,6 +67,6 @@ private:
     void ApplyComboBoxes(void);
     bool ResetComboBox(CModifiedComboBox & ComboBox, SettingID Type);
 
-    CPartialGroupBox m_GfxGroup, m_AudioGroup, m_ControlGroup, m_RspGroup;
+    CPartialGroupBox m_GfxGroup, m_AudioGroup, m_ControlGroup, m_RspGroup, m_NetGroup;
     CPluginList      m_PluginList;
 };

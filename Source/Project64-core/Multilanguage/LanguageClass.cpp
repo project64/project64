@@ -70,6 +70,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MENU_REFRESH, "Refresh ROM List");
     DEF_STR(MENU_RECENT_ROM, "Recent ROM");
     DEF_STR(MENU_RECENT_DIR, "Recent ROM Directories");
+    DEF_STR(MENU_NETPLAY, "Start &Netplay...");
     DEF_STR(MENU_EXIT, "E&xit");
 
     //System Menu
@@ -98,6 +99,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MENU_CONFG_AUDIO, "Configure Audio Plugin...");
     DEF_STR(MENU_CONFG_CTRL, "Configure Controller Plugin...");
     DEF_STR(MENU_CONFG_RSP, "Configure RSP Plugin...");
+    DEF_STR(MENU_CONFG_NET, "Configure Netplay Plugin...");
     DEF_STR(MENU_SHOW_CPU, "Show CPU Usage");
     DEF_STR(MENU_SETTINGS, "&Settings...");
 
@@ -205,6 +207,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(PLUG_GFX, " Video (graphics) plugin: ");
     DEF_STR(PLUG_AUDIO, " Audio (sound) plugin: ");
     DEF_STR(PLUG_CTRL, " Input (controller) plugin: ");
+    DEF_STR(PLUG_NET, " Netplay (online) plugin: ");
     DEF_STR(PLUG_HLE_GFX, "Graphics HLE");
     DEF_STR(PLUG_HLE_AUDIO, "Audio HLE");
     DEF_STR(PLUG_DEFAULT, "** Use System Plugin **");
@@ -517,6 +520,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_SET_LLE_GFX_MSG, "Graphics LLE is not for general use!!!\nIt is advisable that you only use this for testing and not for playing games.\n\nChange to graphics LLE?");
     DEF_STR(MSG_SET_HLE_AUD_TITLE, "Audio High-Level Emulation");
     DEF_STR(MSG_SET_HLE_AUD_MSG, "Audio HLE requires a third-party plugin!!!\nIf you do not use a third-party audio plugin that supports HLE, you will hear no sound.\n\nChange to audio HLE?");
+    DEF_STR(MSG_CLOSE_NETPLAY, "Please close the Netplay window first");
 
     /*********************************************************************************
     * Android                                                                        *

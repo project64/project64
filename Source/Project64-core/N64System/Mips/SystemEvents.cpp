@@ -104,6 +104,9 @@ void CSystemEvents::ExecuteEvents()
         m_Events.clear();
     }
 
+    bool NetplayRunning = g_Settings->LoadBool(Plugin_NET_Running);
+    bool NetplayCanPause = g_Settings->LoadBool(Plugin_NET_CanPause);
+
     bool bPause = false, bLoadedSave = false;
     for (EventList::const_iterator iter = Events.begin(); !bLoadedSave && iter != Events.end(); iter++)
     {
@@ -197,15 +200,21 @@ void CSystemEvents::ExecuteEvents()
         case SysEvent_PauseCPU_AppLostFocus:
             if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
             {
-                g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_AppLostFocus);
-                bPause = true;
+                if (!NetplayRunning || (NetplayRunning && NetplayCanPause))
+                {
+                    g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_AppLostFocus);
+                    bPause = true;
+                }
             }
             break;
         case SysEvent_PauseCPU_AppLostActive:
             if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
             {
-                g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_AppLostActive);
-                bPause = true;
+                if (!NetplayRunning || (NetplayRunning && NetplayCanPause))
+                {
+                    g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_AppLostActive);
+                    bPause = true;
+                }
             }
             break;
         case SysEvent_PauseCPU_SaveGame:
@@ -239,15 +248,21 @@ void CSystemEvents::ExecuteEvents()
         case SysEvent_PauseCPU_Settings:
             if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
             {
-                g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_Settings);
-                bPause = true;
+                if (!NetplayRunning || (NetplayRunning && NetplayCanPause))
+                {
+                    g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_Settings);
+                    bPause = true;
+                }
             }
             break;
         case SysEvent_PauseCPU_Cheats:
             if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
             {
-                g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_Cheats);
-                bPause = true;
+                if (!NetplayRunning || (NetplayRunning && NetplayCanPause))
+                {
+                    g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_Cheats);
+                    bPause = true;
+                }
             }
             break;
         case SysEvent_PauseCPU_ChangingBPs:

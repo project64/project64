@@ -24,11 +24,13 @@ COptionPluginPage::COptionPluginPage(HWND hParent, const RECT & rcDispay)
     SetDlgItemTextW(m_hWnd, GFX_ABOUT, wGS(PLUG_ABOUT).c_str());
     SetDlgItemTextW(m_hWnd, AUDIO_ABOUT, wGS(PLUG_ABOUT).c_str());
     SetDlgItemTextW(m_hWnd, CONT_ABOUT, wGS(PLUG_ABOUT).c_str());
+    SetDlgItemTextW(m_hWnd, NET_ABOUT, wGS(PLUG_ABOUT).c_str());
 
     SetDlgItemTextW(m_hWnd, IDC_RSP_NAME, wGS(PLUG_RSP).c_str());
     SetDlgItemTextW(m_hWnd, IDC_GFX_NAME, wGS(PLUG_GFX).c_str());
     SetDlgItemTextW(m_hWnd, IDC_AUDIO_NAME, wGS(PLUG_AUDIO).c_str());
     SetDlgItemTextW(m_hWnd, IDC_CONT_NAME, wGS(PLUG_CTRL).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_NET_NAME, wGS(PLUG_NET).c_str());
 
     SetDlgItemTextW(m_hWnd, IDC_HLE_GFX, wGS(PLUG_HLE_GFX).c_str());
     SetDlgItemTextW(m_hWnd, IDC_HLE_AUDIO, wGS(PLUG_HLE_AUDIO).c_str());
@@ -37,11 +39,13 @@ COptionPluginPage::COptionPluginPage(HWND hParent, const RECT & rcDispay)
     m_AudioGroup.Attach(GetDlgItem(IDC_AUDIO_NAME));
     m_ControlGroup.Attach(GetDlgItem(IDC_CONT_NAME));
     m_RspGroup.Attach(GetDlgItem(IDC_RSP_NAME));
+    m_NetGroup.Attach(GetDlgItem(IDC_NET_NAME));
 
     AddPlugins(GFX_LIST, Plugin_GFX_Current, PLUGIN_TYPE_GFX);
     AddPlugins(AUDIO_LIST, Plugin_AUDIO_Current, PLUGIN_TYPE_AUDIO);
     AddPlugins(CONT_LIST, Plugin_CONT_Current, PLUGIN_TYPE_CONTROLLER);
     AddPlugins(RSP_LIST, Plugin_RSP_Current, PLUGIN_TYPE_RSP);
+    AddPlugins(NET_LIST, Plugin_NET_Current, PLUGIN_TYPE_NETPLAY);
 
     AddModCheckBox(GetDlgItem(IDC_HLE_GFX), Plugin_UseHleGfx);
     AddModCheckBox(GetDlgItem(IDC_HLE_AUDIO), Plugin_UseHleAudio);
@@ -198,6 +202,7 @@ void COptionPluginPage::UpdatePageSettings(void)
     PluginItemChanged(AUDIO_LIST, AUDIO_ABOUT, false);
     PluginItemChanged(CONT_LIST, CONT_ABOUT, false);
     PluginItemChanged(RSP_LIST, RSP_ABOUT, false);
+    PluginItemChanged(NET_LIST, NET_ABOUT, false);
 }
 
 void COptionPluginPage::HidePage()

@@ -119,6 +119,8 @@ private:
     static void GameLoaded(CMainGui * Gui);
     static void GamePaused(CMainGui * Gui);
     static void GameCpuRunning(CMainGui * Gui);
+    static void NetplayLoaded(CMainGui * Gui);
+    static void NetplayRunning(CMainGui * Gui);
 
     CBaseMenu     * m_Menu;
 

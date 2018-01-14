@@ -54,6 +54,8 @@ CMainGui::CMainGui(bool bMainWindow, const char * WindowTitle) :
         g_Settings->RegisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunning);
         g_Settings->RegisterChangeCB(GameRunning_CPU_Paused, this, (CSettings::SettingChangedFunc)GamePaused);
         g_Settings->RegisterChangeCB(Game_File, this, (CSettings::SettingChangedFunc)GameLoaded);
+        g_Settings->RegisterChangeCB(Plugin_NET_Loaded, this, (CSettings::SettingChangedFunc)NetplayLoaded);
+        g_Settings->RegisterChangeCB(Plugin_NET_Running, this, (CSettings::SettingChangedFunc)NetplayRunning);
     }
 
     //if this fails then it has already been created
@@ -73,6 +75,8 @@ CMainGui::~CMainGui(void)
         g_Settings->UnregisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunning);
         g_Settings->UnregisterChangeCB(GameRunning_CPU_Paused, this, (CSettings::SettingChangedFunc)GamePaused);
         g_Settings->UnregisterChangeCB(Game_File, this, (CSettings::SettingChangedFunc)GameLoaded);
+        g_Settings->UnregisterChangeCB(Plugin_NET_Loaded, this, (CSettings::SettingChangedFunc)NetplayLoaded);
+        g_Settings->UnregisterChangeCB(Plugin_NET_Running, this, (CSettings::SettingChangedFunc)NetplayRunning);
     }
     if (m_hMainWindow)
     {
@@ -236,6 +240,16 @@ void CMainGui::GameCpuRunning(CMainGui * Gui)
     {
         PostMessage(Gui->m_hMainWindow, WM_GAME_CLOSED, 0, 0);
     }
+}
+
+void CMainGui::NetplayLoaded(CMainGui * Gui)
+{
+    Gui->RefreshMenu();
+}
+
+void CMainGui::NetplayRunning(CMainGui * Gui)
+{
+    Gui->RefreshMenu();
 }
 
 void RomBowserColoumnsChanged(CMainGui * Gui)
@@ -881,6 +895,11 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
     case WM_KILLFOCUS:
         {
             CMainGui * _this = (CMainGui *)GetProp(hWnd, "Class");
+            if (_this == NULL)
+            {
+                break;
+            }
+
             if (_this->RomBrowserVisible())
             {
                 break;
@@ -1142,6 +1161,31 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                 }
             }
         }
+        break;
+    case WM_CLOSE:
+        if (g_Settings->LoadBool(Plugin_NET_Running))
+        {
+            if (g_BaseSystem)
+            {
+                g_BaseSystem->CloseCpu();
+                g_Settings->SaveBool(Plugin_NET_Running, false);
+                return true;
+            }
+        }
+
+        if (g_Settings->LoadBool(Plugin_NET_Loaded))
+        {
+            bool NetplayClosed = g_Plugins->Netplay()->CloseNetplay();
+
+            if (!NetplayClosed)
+            {
+                WriteTrace(TraceUserInterface, TraceDebug, "WM_CLOSE - Netplay must be closed first");
+                g_Notify->DisplayError(GS(MSG_CLOSE_NETPLAY));
+                return true;
+            }
+        }
+
+        DestroyWindow((HWND)hWnd);
         break;
     case WM_DESTROY:
         WriteTrace(TraceUserInterface, TraceDebug, "WM_DESTROY - start");

@@ -78,6 +78,7 @@
 #define IDC_CURRENT_KEYS                1003
 #define RSP_LIST                        1004
 #define IDC_CURRENT_KEYS2               1004
+#define NET_LIST                        1005
 #define RSP_ABOUT                       1006
 #define IDC_ASSIGN                      1006
 #define IDC_BTN_CHOOSE_FILE             1006
@@ -85,6 +86,7 @@
 #define IDC_INFO_FILENAME               1007
 #define IDC_BTN_RDRAM                   1007
 #define IDC_REFRSH_MEM                  1007
+#define NET_ABOUT                       1007
 #define IDC_INFO_ROMNAME                1008
 #define IDC_RESET_PAGE                  1008
 #define IDC_INFO_CARTID                 1009
@@ -262,6 +264,7 @@
 #define IDC_REMEMBERDIR                 1097
 #define IDC_VIREFESH_TEXT               1097
 #define IDC_VIREFRESH                   1098
+#define IDC_NET_NAME                    1098
 #define IDC_AUDIO_NAME                  1099
 #define IDC_ROM_REGCACHE                1099
 #define IDC_COUNTPERBYTE_TEXT           1099

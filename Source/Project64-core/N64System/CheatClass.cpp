@@ -16,6 +16,7 @@
 #include <Project64-core/Plugins/AudioPlugin.h>
 #include <Project64-core/Plugins/RSPPlugin.h>
 #include <Project64-core/Plugins/ControllerPlugin.h>
+#include <Project64-core/Plugins/NetplayPlugin.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/Recompiler/RecompilerClass.h>
 #include <stdlib.h>
@@ -101,6 +102,10 @@ bool CCheats::LoadCode(const stdstr & CheatEntry, SettingID ExtensionSetting, in
     }
 
     m_Codes.push_back(Code);
+
+    if (g_Settings->LoadBool(Plugin_NET_Running))
+        g_Plugins->Netplay()->LoadCode(Code);
+
     return true;
 }
 
@@ -144,6 +149,11 @@ void CCheats::LoadPermCheats(CPlugins * Plugins)
                     break;
                 }
                 if (Plugins->Control() != NULL && strstr(Plugins->Control()->PluginName(), PluginName.c_str()) != NULL)
+                {
+                    LoadEntry = true;
+                    break;
+                }
+                if (Plugins->Netplay() != NULL && strstr(Plugins->Netplay()->PluginName(), PluginName.c_str()) != NULL)
                 {
                     LoadEntry = true;
                     break;
@@ -221,9 +231,17 @@ uint16_t ConvertXP64Value(uint16_t Value)
 
 void CCheats::ApplyCheats()
 {
-    for (size_t CurrentCheat = 0; CurrentCheat < m_Codes.size(); CurrentCheat++)
+    if (g_Settings->LoadBool(Plugin_NET_Running))
+        ApplyCheatsArray(g_Plugins->Netplay()->GetCodes());
+    else
+        ApplyCheatsArray(m_Codes);
+}
+
+void CCheats::ApplyCheatsArray(CODES_ARRAY Codes)
+{
+    for (size_t CurrentCheat = 0; CurrentCheat < Codes.size(); CurrentCheat++)
     {
-        CODES & CodeEntry = m_Codes[CurrentCheat];
+        CODES & CodeEntry = Codes[CurrentCheat];
         for (size_t CurrentEntry = 0; CurrentEntry < CodeEntry.size();)
         {
             ApplyCheatEntry(CodeEntry, CurrentEntry);

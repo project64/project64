@@ -43,8 +43,10 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     m_ChangeSettingList.push_back(Debugger_TraceAudioPlugin);
     m_ChangeSettingList.push_back(Debugger_TraceControllerPlugin);
     m_ChangeSettingList.push_back(Debugger_TraceRSPPlugin);
+    m_ChangeSettingList.push_back(Debugger_TraceNetplayPlugin);
     m_ChangeSettingList.push_back(Debugger_TraceRSP);
     m_ChangeSettingList.push_back(Debugger_TraceAudio);
+    m_ChangeSettingList.push_back(Debugger_TraceNetplay);
     m_ChangeSettingList.push_back(Debugger_TraceRegisterCache);
     m_ChangeSettingList.push_back(Debugger_TraceRecompiler);
     m_ChangeSettingList.push_back(Debugger_TraceTLB);
@@ -273,7 +275,25 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ROMDIRECTORY 3");
         break;
     case ID_FILE_REFRESHROMLIST: m_Gui->RefreshRomList(); break;
-    case ID_FILE_EXIT:           DestroyWindow((HWND)hWnd); break;
+    case ID_FILE_STARTNETPLAY:
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_STARTNETPLAY");
+        g_Plugins->Netplay()->OpenNetplay(hWnd);
+        break;
+    case ID_FILE_EXIT:
+        if (g_Settings->LoadBool(Plugin_NET_Loaded))
+        {
+            bool NetplayClosed = g_Plugins->Netplay()->CloseNetplay();
+
+            if (! NetplayClosed)
+            {
+                WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_EXIT - Netplay must be closed first");
+                g_Notify->DisplayError(GS(MSG_CLOSE_NETPLAY));
+                break;
+            }
+        }
+
+        DestroyWindow((HWND)hWnd);
+        break;
     case ID_SYSTEM_RESET_SOFT:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_RESET_SOFT");
         g_BaseSystem->ExternalEvent(SysEvent_ResetCPU_Soft);
@@ -339,10 +359,12 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         }
         break;
     case ID_OPTIONS_INCREASE_SPEED:
-        g_BaseSystem->AlterSpeed(CSpeedLimiter::INCREASE_SPEED);
+        if (!g_Settings->LoadBool(Plugin_NET_Running))
+            g_BaseSystem->AlterSpeed(CSpeedLimiter::INCREASE_SPEED);
         break;
     case ID_OPTIONS_DECREASE_SPEED:
-        g_BaseSystem->AlterSpeed(CSpeedLimiter::DECREASE_SPEED);
+        if (!g_Settings->LoadBool(Plugin_NET_Running))
+            g_BaseSystem->AlterSpeed(CSpeedLimiter::DECREASE_SPEED);
         break;
     case ID_OPTIONS_FULLSCREEN:
         g_BaseSystem->ExternalEvent(SysEvent_ChangingFullScreen);
@@ -419,6 +441,10 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_CONFIG_CONT");
         g_Plugins->ConfigPlugin(hWnd, PLUGIN_TYPE_CONTROLLER);
         break;
+    case ID_OPTIONS_CONFIG_NET:
+        WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_CONFIG_NET");
+        g_Plugins->ConfigPlugin(hWnd, PLUGIN_TYPE_NETPLAY);
+        break;
     case ID_OPTIONS_CPU_USAGE:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_CPU_USAGE");
         if (g_Settings->LoadBool(UserInterface_ShowCPUPer))
@@ -481,6 +507,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUGGER_TRACE_AUDIOPLUGIN: SetTraceModuleSetttings(Debugger_TraceAudioPlugin); break;
     case ID_DEBUGGER_TRACE_CONTROLLERPLUGIN: SetTraceModuleSetttings(Debugger_TraceControllerPlugin); break;
     case ID_DEBUGGER_TRACE_RSPPLUGIN: SetTraceModuleSetttings(Debugger_TraceRSPPlugin); break;
+    case ID_DEBUGGER_TRACE_NETPLAYPLUGIN: SetTraceModuleSetttings(Debugger_TraceNetplayPlugin); break;
     case ID_DEBUGGER_TRACE_RSP: SetTraceModuleSetttings(Debugger_TraceRSP); break;
     case ID_DEBUGGER_TRACE_AUDIO: SetTraceModuleSetttings(Debugger_TraceAudio); break;
     case ID_DEBUGGER_TRACE_REGISTERCACHE: SetTraceModuleSetttings(Debugger_TraceRegisterCache); break;
@@ -689,6 +716,15 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     bool RomLoading = g_Settings->LoadBool(GameRunning_LoadingInProgress);
     bool RomLoaded = g_Settings->LoadStringVal(Game_GameName).length() > 0;
     bool RomList = UISettingsLoadBool(RomBrowser_Enabled) && !CPURunning;
+    bool NetplayExists = g_Plugins->Netplay() != NULL;
+    bool NetplayLoaded = g_Settings->LoadBool(Plugin_NET_Loaded);
+    bool NetplayRunning = g_Settings->LoadBool(Plugin_NET_Running);
+
+    bool haveDebugger = HaveDebugger();
+    if (NetplayRunning)
+    {
+        haveDebugger = HaveDebugger() && g_Settings->LoadBool(Plugin_NET_CanDebug);
+    }
 
     CMenuShortCutKey::RUNNING_STATE RunningState = CMenuShortCutKey::RUNNING_STATE_NOT_RUNNING;
     if (g_Settings->LoadBool(GameRunning_CPU_Running))
@@ -749,6 +785,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     ****************/
     MenuItemList FileMenu;
     Item.Reset(ID_FILE_OPEN_ROM, MENU_OPEN, m_ShortCuts.ShortCutString(ID_FILE_OPEN_ROM, RunningState));
+    if (NetplayRunning) { Item.SetItemEnabled(false); }
     FileMenu.push_back(Item);
     if (!inBasicMode)
     {
@@ -770,8 +807,10 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     {
         FileMenu.push_back(MENU_ITEM(SPLITER));
         Item.Reset(ID_FILE_ROMDIRECTORY, MENU_CHOOSE_ROM, m_ShortCuts.ShortCutString(ID_FILE_ROMDIRECTORY, RunningState));
+        if (NetplayRunning) { Item.SetItemEnabled(false); }
         FileMenu.push_back(Item);
         Item.Reset(ID_FILE_REFRESHROMLIST, MENU_REFRESH, m_ShortCuts.ShortCutString(ID_FILE_REFRESHROMLIST, RunningState));
+        if (NetplayRunning) { Item.SetItemEnabled(false); }
         FileMenu.push_back(Item);
     }
 
@@ -784,6 +823,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
             RecentRomMenu.push_back(MENU_ITEM(SPLITER));
             Item.SetItemEnabled(false);
         }
+        if (NetplayRunning) { Item.SetItemEnabled(false); }
         FileMenu.push_back(Item);
         Item.Reset(SUB_MENU, MENU_RECENT_DIR, EMPTY_STDSTR, &RecentDirMenu);
         if (RecentDirMenu.size() == 0)
@@ -791,6 +831,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
             RecentDirMenu.push_back(MENU_ITEM(SPLITER));
             Item.SetItemEnabled(false);
         }
+        if (NetplayRunning) { Item.SetItemEnabled(false); }
         FileMenu.push_back(Item);
     }
     else
@@ -800,10 +841,15 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
             FileMenu.push_back(MENU_ITEM(SPLITER));
             for (MenuItemList::iterator MenuItem = RecentRomMenu.begin(); MenuItem != RecentRomMenu.end(); MenuItem++)
             {
+                if (NetplayRunning) { MenuItem->SetItemEnabled(false); }
                 FileMenu.push_back(*MenuItem);
             }
         }
     }
+    FileMenu.push_back(MENU_ITEM(SPLITER));
+    Item.Reset(ID_FILE_STARTNETPLAY, MENU_NETPLAY, m_ShortCuts.ShortCutString(ID_FILE_STARTNETPLAY, RunningState));
+    Item.SetItemEnabled(!CPURunning && NetplayExists && !NetplayLoaded && !NetplayRunning);
+    FileMenu.push_back(Item);
     FileMenu.push_back(MENU_ITEM(SPLITER));
     FileMenu.push_back(MENU_ITEM(ID_FILE_EXIT, MENU_EXIT, m_ShortCuts.ShortCutString(ID_FILE_EXIT, RunningState)));
 
@@ -813,37 +859,48 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     DWORD _CurrentSaveState = g_Settings->LoadDword(Game_CurrentSaveState);
     Item.Reset(ID_CURRENT_SAVE_DEFAULT, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_DEFAULT, RunningState), NULL, GetSaveSlotString(0));
     if (_CurrentSaveState == 0) { Item.SetItemTicked(true); }
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanSaveState)); }
     CurrentSaveMenu.push_back(Item);
     CurrentSaveMenu.push_back(MENU_ITEM(SPLITER));
     Item.Reset(ID_CURRENT_SAVE_1, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_1, RunningState), NULL, GetSaveSlotString(1));
     if (_CurrentSaveState == 1) { Item.SetItemTicked(true); }
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanSaveState)); }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_2, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_2, RunningState), NULL, GetSaveSlotString(2));
     if (_CurrentSaveState == 2) { Item.SetItemTicked(true); }
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanSaveState)); }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_3, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_3, RunningState), NULL, GetSaveSlotString(3));
     if (_CurrentSaveState == 3) { Item.SetItemTicked(true); }
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanSaveState)); }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_4, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_4, RunningState), NULL, GetSaveSlotString(4));
     if (_CurrentSaveState == 4) { Item.SetItemTicked(true); }
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanSaveState)); }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_5, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_5, RunningState), NULL, GetSaveSlotString(5));
     if (_CurrentSaveState == 5) { Item.SetItemTicked(true); }
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanSaveState)); }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_6, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_6, RunningState), NULL, GetSaveSlotString(6));
     if (_CurrentSaveState == 6) { Item.SetItemTicked(true); }
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanSaveState)); }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_7, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_7, RunningState), NULL, GetSaveSlotString(7));
     if (_CurrentSaveState == 7) { Item.SetItemTicked(true); }
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanSaveState)); }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_8, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_8, RunningState), NULL, GetSaveSlotString(8));
     if (_CurrentSaveState == 8) { Item.SetItemTicked(true); }
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanSaveState)); }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_9, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_9, RunningState), NULL, GetSaveSlotString(9));
     if (_CurrentSaveState == 9) { Item.SetItemTicked(true); }
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanSaveState)); }
     CurrentSaveMenu.push_back(Item);
     Item.Reset(ID_CURRENT_SAVE_10, EMPTY_STRING, m_ShortCuts.ShortCutString(ID_CURRENT_SAVE_10, RunningState), NULL, GetSaveSlotString(10));
     if (_CurrentSaveState == 10) { Item.SetItemTicked(true); }
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanSaveState)); }
     CurrentSaveMenu.push_back(Item);
 
     /* System Menu
@@ -852,50 +909,79 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MenuItemList ResetMenu;
     if (inBasicMode)
     {
-        SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_RESET_SOFT, MENU_RESET, m_ShortCuts.ShortCutString(ID_SYSTEM_RESET_SOFT, RunningState)));
+        Item.Reset(ID_SYSTEM_RESET_SOFT, MENU_RESET, m_ShortCuts.ShortCutString(ID_SYSTEM_RESET_SOFT, RunningState));
+        if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanReset)); }
+        SystemMenu.push_back(Item);
     }
     else
     {
-        ResetMenu.push_back(MENU_ITEM(ID_SYSTEM_RESET_SOFT, MENU_RESET_SOFT, m_ShortCuts.ShortCutString(ID_SYSTEM_RESET_SOFT, RunningState)));
-        ResetMenu.push_back(MENU_ITEM(ID_SYSTEM_RESET_HARD, MENU_RESET_HARD, m_ShortCuts.ShortCutString(ID_SYSTEM_RESET_HARD, RunningState)));
-        SystemMenu.push_back(MENU_ITEM(SUB_MENU, MENU_RESET, EMPTY_STDSTR, &ResetMenu));
+        Item.Reset(ID_SYSTEM_RESET_SOFT, MENU_RESET_SOFT, m_ShortCuts.ShortCutString(ID_SYSTEM_RESET_SOFT, RunningState));
+        if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanReset)); }
+        ResetMenu.push_back(Item);
+
+        Item.Reset(ID_SYSTEM_RESET_HARD, MENU_RESET_HARD, m_ShortCuts.ShortCutString(ID_SYSTEM_RESET_HARD, RunningState));
+        if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanReset)); }
+        ResetMenu.push_back(Item);
+
+        Item.Reset(SUB_MENU, MENU_RESET, EMPTY_STDSTR, &ResetMenu);
+        if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanReset)); }
+        SystemMenu.push_back(Item);
     }
     if (g_Settings->LoadBool(GameRunning_CPU_Paused))
     {
-        SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_PAUSE, MENU_RESUME, m_ShortCuts.ShortCutString(ID_SYSTEM_PAUSE, RunningState)));
+        Item.Reset(ID_SYSTEM_PAUSE, MENU_RESUME, m_ShortCuts.ShortCutString(ID_SYSTEM_PAUSE, RunningState));
     }
     else
     {
-        SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_PAUSE, MENU_PAUSE, m_ShortCuts.ShortCutString(ID_SYSTEM_PAUSE, RunningState)));
+        Item.Reset(ID_SYSTEM_PAUSE, MENU_PAUSE, m_ShortCuts.ShortCutString(ID_SYSTEM_PAUSE, RunningState));
     }
-    SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_BITMAP, MENU_BITMAP, m_ShortCuts.ShortCutString(ID_SYSTEM_BITMAP, RunningState)));
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanPause)); }
+    SystemMenu.push_back(Item);
+    Item.Reset(ID_SYSTEM_BITMAP, MENU_BITMAP, m_ShortCuts.ShortCutString(ID_SYSTEM_BITMAP, RunningState));
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanPause)); }
+    SystemMenu.push_back(Item);
     SystemMenu.push_back(MENU_ITEM(SPLITER));
     if (!inBasicMode)
     {
         Item.Reset(ID_SYSTEM_LIMITFPS, MENU_LIMIT_FPS, m_ShortCuts.ShortCutString(ID_SYSTEM_LIMITFPS, RunningState));
         if (g_Settings->LoadBool(GameRunning_LimitFPS)) { Item.SetItemTicked(true); }
+        if (NetplayRunning) { Item.SetItemEnabled(false); }
         SystemMenu.push_back(Item);
         SystemMenu.push_back(MENU_ITEM(SPLITER));
     }
     Item.Reset(ID_SYSTEM_SWAPDISK, MENU_SWAPDISK, m_ShortCuts.ShortCutString(ID_SYSTEM_SWAPDISK, RunningState));
-    if (g_Disk == NULL) { Item.SetItemEnabled(false); }
+    if (g_Disk == NULL || NetplayRunning) { Item.SetItemEnabled(false); }
     SystemMenu.push_back(Item);
     SystemMenu.push_back(MENU_ITEM(SPLITER));
-    SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_SAVE, MENU_SAVE, m_ShortCuts.ShortCutString(ID_SYSTEM_SAVE, RunningState)));
+    Item.Reset(ID_SYSTEM_SAVE, MENU_SAVE, m_ShortCuts.ShortCutString(ID_SYSTEM_SAVE, RunningState));
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanSaveState)); }
+    SystemMenu.push_back(Item);
     if (!inBasicMode)
     {
-        SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_SAVEAS, MENU_SAVE_AS, m_ShortCuts.ShortCutString(ID_SYSTEM_SAVEAS, RunningState)));
+        Item.Reset(ID_SYSTEM_SAVEAS, MENU_SAVE_AS, m_ShortCuts.ShortCutString(ID_SYSTEM_SAVEAS, RunningState));
+        if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanSaveState)); }
+        SystemMenu.push_back(Item);
     }
-    SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_RESTORE, MENU_RESTORE, m_ShortCuts.ShortCutString(ID_SYSTEM_RESTORE, RunningState)));
+    Item.Reset(ID_SYSTEM_RESTORE, MENU_RESTORE, m_ShortCuts.ShortCutString(ID_SYSTEM_RESTORE, RunningState));
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanSaveState)); }
+    SystemMenu.push_back(Item);
     if (!inBasicMode)
     {
-        SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_LOAD, MENU_LOAD, m_ShortCuts.ShortCutString(ID_SYSTEM_LOAD, RunningState)));
+        Item.Reset(ID_SYSTEM_LOAD, MENU_LOAD, m_ShortCuts.ShortCutString(ID_SYSTEM_LOAD, RunningState));
+        if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanSaveState)); }
+        SystemMenu.push_back(Item);
     }
     SystemMenu.push_back(MENU_ITEM(SPLITER));
-    SystemMenu.push_back(MENU_ITEM(SUB_MENU, MENU_CURRENT_SAVE, EMPTY_STDSTR, &CurrentSaveMenu));
+    Item.Reset(SUB_MENU, MENU_CURRENT_SAVE, EMPTY_STDSTR, &CurrentSaveMenu);
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanSaveState)); }
+    SystemMenu.push_back(Item);
     SystemMenu.push_back(MENU_ITEM(SPLITER));
-    SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_CHEAT, MENU_CHEAT, m_ShortCuts.ShortCutString(ID_SYSTEM_CHEAT, RunningState)));
-    SystemMenu.push_back(MENU_ITEM(ID_SYSTEM_GSBUTTON, MENU_GS_BUTTON, m_ShortCuts.ShortCutString(ID_SYSTEM_GSBUTTON, RunningState)));
+    Item.Reset(ID_SYSTEM_CHEAT, MENU_CHEAT, m_ShortCuts.ShortCutString(ID_SYSTEM_CHEAT, RunningState));
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanCheat)); }
+    SystemMenu.push_back(Item);
+    Item.Reset(ID_SYSTEM_GSBUTTON, MENU_GS_BUTTON, m_ShortCuts.ShortCutString(ID_SYSTEM_GSBUTTON, RunningState));
+    if (NetplayRunning) { Item.SetItemEnabled(g_Settings->LoadBool(Plugin_NET_CanCheat)); }
+    SystemMenu.push_back(Item);
 
     /* Option Menu
     ****************/
@@ -943,6 +1029,16 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         Item.SetItemEnabled(false);
     }
     OptionMenu.push_back(Item);
+    Item.Reset(ID_OPTIONS_CONFIG_NET, MENU_CONFG_NET, m_ShortCuts.ShortCutString(ID_OPTIONS_CONFIG_NET, RunningState));
+    if (g_Plugins && g_Plugins->Netplay() == NULL || g_Plugins->Netplay()->DllConfig == NULL)
+    {
+        Item.SetItemEnabled(false);
+    }
+    else
+    {
+        Item.SetItemEnabled(!NetplayLoaded && !NetplayRunning);
+    }
+    OptionMenu.push_back(Item);
 
     OptionMenu.push_back(MENU_ITEM(SPLITER));
     if (!inBasicMode)
@@ -951,12 +1047,15 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         if (g_Settings->LoadDword(UserInterface_ShowCPUPer)) { Item.SetItemTicked(true); }
         OptionMenu.push_back(Item);
     }
-    OptionMenu.push_back(MENU_ITEM(ID_OPTIONS_SETTINGS, MENU_SETTINGS, m_ShortCuts.ShortCutString(ID_OPTIONS_SETTINGS, RunningState)));
+    Item.Reset(ID_OPTIONS_SETTINGS, MENU_SETTINGS, m_ShortCuts.ShortCutString(ID_OPTIONS_SETTINGS, RunningState));
+    if (NetplayRunning) { Item.SetItemEnabled(false); }
+    OptionMenu.push_back(Item);
 
     /* Profile Menu
     ****************/
     MenuItemList DebugProfileMenu;
-    if (HaveDebugger())
+
+    if (haveDebugger)
     {
         Item.Reset(ID_PROFILE_PROFILE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Record Execution Times");
         if (g_Settings->LoadBool(Debugger_RecordExecutionTimes)) { Item.SetItemTicked(true); }
@@ -978,7 +1077,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MenuItemList DebugMemoryMenu;
     MenuItemList DebugInterrupt;
     MenuItemList DebugNotificationMenu;
-    if (HaveDebugger())
+    if (haveDebugger)
     {
         /* Debug - Interrupt
         *******************/
@@ -1076,6 +1175,10 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 
         Item.Reset(ID_DEBUGGER_TRACE_RSPPLUGIN, EMPTY_STRING, EMPTY_STDSTR, NULL, L"RSP Plugin");
         Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceRSPPlugin) == TraceVerbose);;
+        DebugAppLoggingMenu.push_back(Item);
+
+        Item.Reset(ID_DEBUGGER_TRACE_NETPLAYPLUGIN, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Netplay Plugin");
+        Item.SetItemTicked(g_Settings->LoadDword(Debugger_TraceNetplayPlugin) == TraceVerbose);;
         DebugAppLoggingMenu.push_back(Item);
 
         Item.Reset(ID_DEBUGGER_TRACE_RSP, EMPTY_STRING, EMPTY_STDSTR, NULL, L"RSP");
@@ -1275,7 +1378,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         if (HaveDebugger())
         {
             Item.Reset(SUB_MENU, MENU_DEBUGGER, EMPTY_STDSTR, &DebugMenu);
-            if (RomLoading) { Item.SetItemEnabled(false); }
+            if (RomLoading || !haveDebugger) { Item.SetItemEnabled(false); }
             MainTitleMenu.push_back(Item);
         }
     }
@@ -1290,8 +1393,8 @@ void CMainMenu::RebuildAccelerators(void)
 {
     CGuard Guard(m_CS);
 
-    //Delete the old accel list
-    WriteTrace(TraceUserInterface, TraceDebug, "Start");
+    //Delete the old accel list    WriteTrace(TraceUserInterface, TraceDebug, "Start");
+
 
     HACCEL m_OldAccelTable = (HACCEL)m_AccelTable;
     m_AccelTable = m_ShortCuts.GetAcceleratorTable();

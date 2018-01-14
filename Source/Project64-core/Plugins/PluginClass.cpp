@@ -23,6 +23,7 @@ m_Gfx(NULL),
 m_Audio(NULL),
 m_RSP(NULL),
 m_Control(NULL),
+m_Netplay(NULL),
 m_initilized(false),
 m_SyncPlugins(SyncPlugins)
 {
@@ -31,12 +32,14 @@ m_SyncPlugins(SyncPlugins)
     g_Settings->RegisterChangeCB(Plugin_GFX_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->RegisterChangeCB(Plugin_AUDIO_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->RegisterChangeCB(Plugin_CONT_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
+    g_Settings->RegisterChangeCB(Plugin_NET_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->RegisterChangeCB(Plugin_UseHleGfx, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->RegisterChangeCB(Plugin_UseHleAudio, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->RegisterChangeCB(Game_EditPlugin_Gfx, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->RegisterChangeCB(Game_EditPlugin_Audio, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->RegisterChangeCB(Game_EditPlugin_Contr, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->RegisterChangeCB(Game_EditPlugin_RSP, this, (CSettings::SettingChangedFunc)PluginChanged);
+    g_Settings->RegisterChangeCB(Game_EditPlugin_NET, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->RegisterChangeCB(m_PluginDirSetting, this, (CSettings::SettingChangedFunc)PluginChanged);
 }
 
@@ -46,18 +49,21 @@ CPlugins::~CPlugins(void)
     g_Settings->UnregisterChangeCB(Plugin_GFX_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->UnregisterChangeCB(Plugin_AUDIO_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->UnregisterChangeCB(Plugin_CONT_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
+    g_Settings->UnregisterChangeCB(Plugin_NET_Current, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->UnregisterChangeCB(Plugin_UseHleGfx, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->UnregisterChangeCB(Plugin_UseHleAudio, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->UnregisterChangeCB(Game_EditPlugin_Gfx, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->UnregisterChangeCB(Game_EditPlugin_Audio, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->UnregisterChangeCB(Game_EditPlugin_Contr, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->UnregisterChangeCB(Game_EditPlugin_RSP, this, (CSettings::SettingChangedFunc)PluginChanged);
+    g_Settings->UnregisterChangeCB(Game_EditPlugin_NET, this, (CSettings::SettingChangedFunc)PluginChanged);
     g_Settings->UnregisterChangeCB(m_PluginDirSetting, this, (CSettings::SettingChangedFunc)PluginChanged);
 
     DestroyGfxPlugin();
     DestroyAudioPlugin();
     DestroyRspPlugin();
     DestroyControlPlugin();
+    DestroyNetplayPlugin();
 }
 
 void CPlugins::PluginChanged(CPlugins * _this)
@@ -73,11 +79,13 @@ void CPlugins::PluginChanged(CPlugins * _this)
     bool bAudioChange = _stricmp(_this->m_AudioFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Audio).c_str()) != 0;
     bool bRspChange = _stricmp(_this->m_RSPFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_RSP).c_str()) != 0;
     bool bContChange = _stricmp(_this->m_ControlFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Controller).c_str()) != 0;
+    bool bNetChange = _stricmp(_this->m_NetplayFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Netplay).c_str()) != 0;
     bool bDirChange = _stricmp(_this->m_PluginDir.c_str(), g_Settings->LoadStringVal(_this->m_PluginDirSetting).c_str()) != 0;
     WriteTrace(TracePlugins, TraceVerbose, "m_GfxFile: \"%s\" Game_Plugin_Gfx: \"%s\" changed: %s", _this->m_GfxFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Gfx).c_str(), bGfxChange ? "true" : "false");
-    WriteTrace(TracePlugins, TraceVerbose, "m_AudioFile: \"%s\" Game_Plugin_Audio: \"%s\" changed: %s", _this->m_GfxFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Gfx).c_str(), bAudioChange ? "true" : "false");
-    WriteTrace(TracePlugins, TraceVerbose, "m_RSPFile: \"%s\" Game_Plugin_RSP: \"%s\" changed: %s", _this->m_GfxFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Gfx).c_str(), bRspChange ? "true" : "false");
-    WriteTrace(TracePlugins, TraceVerbose, "m_ControlFile: \"%s\" Game_Plugin_Controller: \"%s\" changed: %s", _this->m_GfxFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Gfx).c_str(), bContChange ? "true" : "false");
+    WriteTrace(TracePlugins, TraceVerbose, "m_AudioFile: \"%s\" Game_Plugin_Audio: \"%s\" changed: %s", _this->m_AudioFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Audio).c_str(), bAudioChange ? "true" : "false");
+    WriteTrace(TracePlugins, TraceVerbose, "m_RSPFile: \"%s\" Game_Plugin_RSP: \"%s\" changed: %s", _this->m_RSPFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_RSP).c_str(), bRspChange ? "true" : "false");
+    WriteTrace(TracePlugins, TraceVerbose, "m_ControlFile: \"%s\" Game_Plugin_Controller: \"%s\" changed: %s", _this->m_ControlFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Controller).c_str(), bContChange ? "true" : "false");
+    WriteTrace(TracePlugins, TraceVerbose, "m_NetplayFile: \"%s\" Game_Plugin_Netplay: \"%s\" changed: %s", _this->m_NetplayFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Netplay).c_str(), bNetChange ? "true" : "false");
     WriteTrace(TracePlugins, TraceVerbose, "m_PluginDir: \"%s\" m_PluginDirSetting: \"%s\" changed: %s", _this->m_PluginDir.c_str(), g_Settings->LoadStringVal(_this->m_PluginDirSetting).c_str(), bDirChange ? "true" : "false");
     if (bDirChange)
     {
@@ -86,15 +94,19 @@ void CPlugins::PluginChanged(CPlugins * _this)
         bAudioChange = true;
         bRspChange = true;
         bContChange = true;
+        bNetChange = true;
         _this->m_PluginDir = g_Settings->LoadStringVal(_this->m_PluginDirSetting);
     }
 
-    if (bGfxChange || bAudioChange || bRspChange || bContChange)
+    if (bGfxChange || bAudioChange || bRspChange || bContChange || bNetChange)
     {
-        if (bGfxChange) { WriteTrace(TracePlugins, TraceDebug, "Gfx plugin changed"); }
+        if (bGfxChange) {
+            WriteTrace(TracePlugins, TraceDebug, "Gfx plugin changed");
+        }
         if (bAudioChange) { WriteTrace(TracePlugins, TraceDebug, "Audio plugin changed"); }
         if (bRspChange) { WriteTrace(TracePlugins, TraceDebug, "RSP plugin changed"); }
         if (bContChange) { WriteTrace(TracePlugins, TraceDebug, "Controller plugin changed"); }
+        if (bNetChange) { WriteTrace(TracePlugins, TraceDebug, "Netplay plugin changed"); }
         if (g_Settings->LoadBool(GameRunning_CPU_Running))
         {
             //Ensure that base system actually exists before we go triggering the event
@@ -156,6 +168,11 @@ void CPlugins::CreatePlugins(void)
     LoadPlugin(Game_Plugin_RSP, Plugin_RSP_CurVer, m_RSP, m_PluginDir.c_str(), m_RSPFile, TraceRSPPlugin, "RSP", m_SyncPlugins);
     LoadPlugin(Game_Plugin_Controller, Plugin_CONT_CurVer, m_Control, m_PluginDir.c_str(), m_ControlFile, TraceControllerPlugin, "Control", m_SyncPlugins);
 
+    if (g_Settings->LoadStringVal(Game_Plugin_Netplay) != "")
+    {
+        LoadPlugin(Game_Plugin_Netplay, Plugin_NET_CurVer, m_Netplay, m_PluginDir.c_str(), m_NetplayFile, TraceNetplayPlugin, "Netplay", m_SyncPlugins);
+    }
+
     //Enable debugger
     if (m_RSP != NULL && m_RSP->EnableDebugging)
     {
@@ -183,6 +200,10 @@ void CPlugins::GameReset(void)
     if (m_Control)
     {
         m_Control->GameReset(m_MainWindow);
+    }
+    if (m_Netplay)
+    {
+        m_Netplay->GameReset(m_MainWindow);
     }
 }
 
@@ -251,6 +272,21 @@ void CPlugins::DestroyControlPlugin(void)
     //		g_Settings->UnknownSetting_CTRL = NULL;
 }
 
+void CPlugins::DestroyNetplayPlugin(void)
+{
+    if (m_Netplay == NULL)
+    {
+        return;
+    }
+    WriteTrace(TraceNetplayPlugin, TraceDebug, "before close");
+    m_Netplay->Close(m_MainWindow);
+    WriteTrace(TraceNetplayPlugin, TraceDebug, "before delete");
+    delete m_Netplay;
+    m_Netplay = NULL;
+    WriteTrace(TraceNetplayPlugin, TraceDebug, "after delete");
+    //		g_Settings->UnknownSetting_CTRL = NULL;
+}
+
 void CPlugins::SetRenderWindows(RenderWindow * MainWindow, RenderWindow * SyncWindow)
 {
     WriteTrace(TracePlugins, TraceDebug, "MainWindow = %p SyncWindow = %p", MainWindow, SyncWindow);
@@ -266,6 +302,7 @@ void CPlugins::RomOpened(void)
     m_RSP->RomOpened(m_MainWindow);
     m_Audio->RomOpened(m_MainWindow);
     m_Control->RomOpened(m_MainWindow);
+    if (m_Netplay != NULL) { m_Netplay->RomOpened(m_MainWindow); }
 
     WriteTrace(TracePlugins, TraceDebug, "Done");
 }
@@ -278,6 +315,7 @@ void CPlugins::RomClosed(void)
     m_RSP->RomClose(m_MainWindow);
     m_Audio->RomClose(m_MainWindow);
     m_Control->RomClose(m_MainWindow);
+    if (m_Netplay != NULL) { m_Netplay->RomClose(m_MainWindow); }
 
     WriteTrace(TracePlugins, TraceDebug, "Done");
 }
@@ -290,6 +328,7 @@ bool CPlugins::Initiate(CN64System * System)
     if (m_Audio == NULL) { return false; }
     if (m_RSP == NULL) { return false; }
     if (m_Control == NULL) { return false; }
+    //if (m_Netplay == NULL) { return false; }
 
     WriteTrace(TraceGFXPlugin, TraceDebug, "Gfx Initiate Starting");
     if (!m_Gfx->Initiate(System, m_MainWindow))   { return false; }
@@ -303,6 +342,13 @@ bool CPlugins::Initiate(CN64System * System)
     WriteTrace(TraceRSPPlugin, TraceDebug, "RSP Initiate Starting");
     if (!m_RSP->Initiate(this, System))   { return false; }
     WriteTrace(TraceRSPPlugin, TraceDebug, "RSP Initiate Done");
+    if (m_Netplay != NULL)
+    {
+        WriteTrace(TraceNetplayPlugin, TraceDebug, "Netplay Initiate Starting");
+        if (!m_Netplay->Initiate(System, m_MainWindow)) { return false; }
+        WriteTrace(TraceNetplayPlugin, TraceDebug, "Netplay Initiate Done");
+    }
+
     WriteTrace(TracePlugins, TraceDebug, "Done");
     m_initilized = true;
     return true;
@@ -325,6 +371,7 @@ bool CPlugins::Reset(CN64System * System)
     bool bAudioChange = _stricmp(m_AudioFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Audio).c_str()) != 0;
     bool bRspChange = _stricmp(m_RSPFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_RSP).c_str()) != 0;
     bool bContChange = _stricmp(m_ControlFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Controller).c_str()) != 0;
+    bool bNetChange = _stricmp(m_NetplayFile.c_str(), g_Settings->LoadStringVal(Game_Plugin_Netplay).c_str()) != 0;
 
     //if GFX and Audio has changed we also need to force reset of RSP
     if (bGfxChange || bAudioChange)
@@ -336,6 +383,7 @@ bool CPlugins::Reset(CN64System * System)
     if (bAudioChange) { DestroyAudioPlugin(); }
     if (bRspChange) { DestroyRspPlugin(); }
     if (bContChange) { DestroyControlPlugin(); }
+    if (bNetChange) { DestroyNetplayPlugin(); }
 
     CreatePlugins();
 
@@ -363,6 +411,14 @@ bool CPlugins::Reset(CN64System * System)
         if (!m_RSP->Initiate(this, System)) { return false; }
         WriteTrace(TraceRSPPlugin, TraceDebug, "RSP Initiate Done");
     }
+
+    if (m_Netplay && bNetChange)
+    {
+        WriteTrace(TraceNetplayPlugin, TraceDebug, "Netplay Initiate Starting");
+        if (!m_Netplay->Initiate(System, m_MainWindow)) { return false; }
+        WriteTrace(TraceNetplayPlugin, TraceDebug, "Netplay Initiate Done");
+    }
+
     WriteTrace(TracePlugins, TraceDebug, "Done");
     return true;
 }
@@ -419,6 +475,17 @@ void CPlugins::ConfigPlugin(void* hParent, PLUGIN_TYPE Type)
             }
         }
         m_Control->DllConfig(hParent);
+        break;
+    case PLUGIN_TYPE_NETPLAY:
+        if (m_Netplay == NULL || m_Netplay->DllConfig == NULL) { break; }
+        if (!m_Netplay->Initialized())
+        {
+            if (!m_Netplay->Initiate(NULL, m_MainWindow))
+            {
+                break;
+            }
+        }
+        m_Netplay->DllConfig(hParent);
         break;
     case PLUGIN_TYPE_NONE:
     default:
@@ -493,5 +560,22 @@ bool CPlugins::CopyPlugins(const stdstr & DstDir) const
     {
         return false;
     }
+
+    //Copy Netplay Plugin
+    if (g_Settings->LoadStringVal(Game_Plugin_Netplay) != "")
+    {
+        CPath srcNetPlugin(m_PluginDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_Netplay).c_str());
+        CPath dstNetPlugin(DstDir.c_str(), g_Settings->LoadStringVal(Game_Plugin_Netplay).c_str());
+        dstNetPlugin.SetName(stdstr_f("%s-copy", dstNetPlugin.GetName().c_str()).c_str());
+        if (!dstNetPlugin.DirectoryExists())
+        {
+            dstNetPlugin.DirectoryCreate();
+        }
+        if (!srcNetPlugin.CopyTo(dstNetPlugin))
+        {
+            return false;
+        }
+    }
+
     return true;
 }

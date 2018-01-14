@@ -32,6 +32,8 @@ public:
     static bool IsValid16BitCode(const char * CheatString);
 
 private:
+    friend class CNetplay_Plugin;
+
     struct GAMESHARK_CODE
     {
         uint32_t Command;
@@ -55,6 +57,7 @@ private:
     typedef std::map<uint32_t, MEM_VALUE16> ORIGINAL_VALUES16;
     typedef std::map<uint32_t, MEM_VALUE8> ORIGINAL_VALUES8;
 
+    void ApplyCheatsArray(CODES_ARRAY Codes);
     void LoadPermCheats(CPlugins * Plugins);
     int32_t EntrySize(const CODES & CodeEntry, int32_t CurrentEntry);
 

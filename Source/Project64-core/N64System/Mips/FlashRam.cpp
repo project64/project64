@@ -120,6 +120,12 @@ uint32_t CFlashram::ReadFromFlashStatus(uint32_t PAddr)
 
 bool CFlashram::LoadFlashram()
 {
+    if (g_Settings->LoadBool(Plugin_NET_Running) && ! g_Settings->LoadBool(Plugin_NET_CanSave))
+    {
+        WriteTrace(TraceNetplayPlugin, TraceInfo, "Loading Flashram is disabled during Netplay");
+        return false;
+    }
+
     CPath FileName(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.fla", g_Settings->LoadStringVal(Game_GameName).c_str()).c_str());
     if (g_Settings->LoadBool(Setting_UniqueSaveDir))
     {

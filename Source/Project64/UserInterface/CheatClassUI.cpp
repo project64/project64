@@ -123,9 +123,15 @@ stdstr CCheatsUI::GetDlgItemStr(HWND hDlg, int nIDDlgItem)
 
 void CCheatsUI::SelectCheats(HWND hParent, bool BlockExecution)
 {
+    bool NetplayRunning = g_Settings->LoadBool(Plugin_NET_Running);
+    bool NetplayCanPause = g_Settings->LoadBool(Plugin_NET_CanPause);
+
     if (g_BaseSystem)
     {
-        g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_Cheats);
+        if (!NetplayRunning || (NetplayRunning && NetplayCanPause))
+        {
+            g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_Cheats);
+        }
     }
     if (m_Window != NULL)
     {

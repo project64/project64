@@ -77,7 +77,15 @@ void CPifRam::PifRamRead()
         return;
     }
 
-    CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
+    CONTROL * Controllers;
+    if (g_Settings->LoadBool(Plugin_NET_Running))
+    {
+        Controllers = g_Plugins->Netplay()->PluginControllers();
+    }
+    else
+    {
+        Controllers = g_Plugins->Control()->PluginControllers();
+    }
 
     int32_t Channel = 0;
     for (int32_t CurPos = 0; CurPos < 0x40; CurPos++)
@@ -102,9 +110,16 @@ void CPifRam::PifRamRead()
                 {
                     if (Controllers[Channel].Present && Controllers[Channel].RawData)
                     {
-                        if (g_Plugins->Control()->ReadController)
+                        if (g_Settings->LoadBool(Plugin_NET_Running))
                         {
-                            g_Plugins->Control()->ReadController(Channel, &m_PifRam[CurPos]);
+                            g_Plugins->Netplay()->ReadController(Channel, &m_PifRam[CurPos]);
+                        }
+                        else
+                        {
+                            if (g_Plugins->Control()->ReadController)
+                            {
+                                g_Plugins->Control()->ReadController(Channel, &m_PifRam[CurPos]);
+                            }
                         }
                     }
                     else
@@ -134,7 +149,15 @@ void CPifRam::PifRamRead()
 
 void CPifRam::PifRamWrite()
 {
-    CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
+    CONTROL * Controllers;
+    if (g_Settings->LoadBool(Plugin_NET_Running))
+    {
+        Controllers = g_Plugins->Netplay()->PluginControllers();
+    }
+    else
+    {
+        Controllers = g_Plugins->Control()->PluginControllers();
+    }
     int32_t Channel = 0, CurPos;
 
     if (m_PifRam[0x3F] > 0x1)
@@ -433,7 +456,15 @@ void CPifRam::SI_DMA_WRITE()
 
 void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
 {
-    CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
+    CONTROL * Controllers;
+    if (g_Settings->LoadBool(Plugin_NET_Running))
+    {
+        Controllers = g_Plugins->Netplay()->PluginControllers();
+    }
+    else
+    {
+        Controllers = g_Plugins->Control()->PluginControllers();
+    }
 
     switch (Command[2])
     {
@@ -572,7 +603,15 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
 
 void CPifRam::ReadControllerCommand(int32_t Control, uint8_t * Command)
 {
-    CONTROL * Controllers = g_Plugins->Control()->PluginControllers();
+    CONTROL * Controllers;
+    if (g_Settings->LoadBool(Plugin_NET_Running))
+    {
+        Controllers = g_Plugins->Netplay()->PluginControllers();
+    }
+    else
+    {
+        Controllers = g_Plugins->Control()->PluginControllers();
+    }
 
     switch (Command[2])
     {

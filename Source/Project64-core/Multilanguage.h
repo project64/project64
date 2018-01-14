@@ -64,6 +64,7 @@ enum LanguageStringID
     MENU_RECENT_ROM = 107,
     MENU_RECENT_DIR = 108,
     MENU_EXIT = 109,
+    MENU_NETPLAY = 110,
 
     //System Menu
     MENU_SYSTEM = 120,
@@ -93,6 +94,7 @@ enum LanguageStringID
     MENU_CONFG_RSP = 146,
     MENU_SHOW_CPU = 147,
     MENU_SETTINGS = 148,
+    MENU_CONFG_NET = 149,
 
     //Debugger Menu
     MENU_DEBUGGER = 160,
@@ -180,6 +182,7 @@ enum LanguageStringID
     MENUDES_GAME_INFO = 284,
     MENUDES_GAME_SETTINGS = 285,
     MENUDES_GAME_CHEATS = 286,
+    MENUDES_CONFG_NET = 287,
 
     /*********************************************************************************
     * Rom Browser                                                                    *
@@ -240,6 +243,7 @@ enum LanguageStringID
     PLUG_HLE_GFX = 425,
     PLUG_HLE_AUDIO = 426,
     PLUG_DEFAULT = 427,
+    PLUG_NET = 428,
 
     //Directory Dialog
     DIR_PLUGIN = 440,
@@ -549,6 +553,7 @@ enum LanguageStringID
     MSG_SET_LLE_GFX_MSG = 2055,
     MSG_SET_HLE_AUD_TITLE = 2056,
     MSG_SET_HLE_AUD_MSG = 2057,
+    MSG_CLOSE_NETPLAY = 2058,
 
     /*********************************************************************************
     * Android                                                                        *

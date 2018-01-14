@@ -34,7 +34,16 @@ int main()
     uint32_t FileLen = InFile.GetLength();
     std::auto_ptr<uint8_t> InputData(new uint8_t[FileLen]);
     InFile.Read(InputData.get(), FileLen);
-    strvector VersionData = stdstr(std::string((char *)InputData.get(), FileLen)).Tokenize("\r\n");
+ 
+    strvector VersionData;
+    try
+    {
+        VersionData = stdstr(std::string((char *)InputData.get(), FileLen)).Tokenize("\r\n");
+    }
+    catch(std::out_of_range e)
+    {
+        VersionData = stdstr(std::string((char *)InputData.get(), FileLen)).Tokenize("\n");
+    }
 
     strvector verinfo = stdstr(__argv[3]).Tokenize('-');
     if (verinfo.size() < 3 || verinfo.size() > 4)

@@ -20,34 +20,38 @@ CGamePluginPage::CGamePluginPage(HWND hParent, const RECT & rcDispay)
         return;
     }
 
-    //Set the text for all gui Items
-    SetDlgItemTextW(m_hWnd, RSP_ABOUT, wGS(PLUG_ABOUT).c_str());
-    SetDlgItemTextW(m_hWnd, GFX_ABOUT, wGS(PLUG_ABOUT).c_str());
-    SetDlgItemTextW(m_hWnd, AUDIO_ABOUT, wGS(PLUG_ABOUT).c_str());
-    SetDlgItemTextW(m_hWnd, CONT_ABOUT, wGS(PLUG_ABOUT).c_str());
+	//Set the text for all gui Items
+	SetDlgItemTextW(m_hWnd, RSP_ABOUT, wGS(PLUG_ABOUT).c_str());
+	SetDlgItemTextW(m_hWnd, GFX_ABOUT, wGS(PLUG_ABOUT).c_str());
+	SetDlgItemTextW(m_hWnd, AUDIO_ABOUT, wGS(PLUG_ABOUT).c_str());
+	SetDlgItemTextW(m_hWnd, CONT_ABOUT, wGS(PLUG_ABOUT).c_str());
+	SetDlgItemTextW(m_hWnd, NET_ABOUT, wGS(PLUG_ABOUT).c_str());
 
-    SetDlgItemTextW(m_hWnd, IDC_RSP_NAME, wGS(PLUG_RSP).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_GFX_NAME, wGS(PLUG_GFX).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_AUDIO_NAME, wGS(PLUG_AUDIO).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_CONT_NAME, wGS(PLUG_CTRL).c_str());
+	SetDlgItemTextW(m_hWnd, IDC_RSP_NAME, wGS(PLUG_RSP).c_str());
+	SetDlgItemTextW(m_hWnd, IDC_GFX_NAME, wGS(PLUG_GFX).c_str());
+	SetDlgItemTextW(m_hWnd, IDC_AUDIO_NAME, wGS(PLUG_AUDIO).c_str());
+	SetDlgItemTextW(m_hWnd, IDC_CONT_NAME, wGS(PLUG_CTRL).c_str());
+	SetDlgItemTextW(m_hWnd, IDC_NET_NAME, wGS(PLUG_NET).c_str());
 
-    SetDlgItemTextW(m_hWnd, IDC_HLE_GFX, wGS(PLUG_HLE_GFX).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_HLE_AUDIO, wGS(PLUG_HLE_AUDIO).c_str());
+	SetDlgItemTextW(m_hWnd, IDC_HLE_GFX, wGS(PLUG_HLE_GFX).c_str());
+	SetDlgItemTextW(m_hWnd, IDC_HLE_AUDIO, wGS(PLUG_HLE_AUDIO).c_str());
 
-    m_GfxGroup.Attach(GetDlgItem(IDC_GFX_NAME));
-    m_AudioGroup.Attach(GetDlgItem(IDC_AUDIO_NAME));
-    m_ControlGroup.Attach(GetDlgItem(IDC_CONT_NAME));
-    m_RspGroup.Attach(GetDlgItem(IDC_RSP_NAME));
+	m_GfxGroup.Attach(GetDlgItem(IDC_GFX_NAME));
+	m_AudioGroup.Attach(GetDlgItem(IDC_AUDIO_NAME));
+	m_ControlGroup.Attach(GetDlgItem(IDC_CONT_NAME));
+	m_RspGroup.Attach(GetDlgItem(IDC_RSP_NAME));
+	m_NetGroup.Attach(GetDlgItem(IDC_NET_NAME));
 
-    AddPlugins(GFX_LIST, Game_EditPlugin_Gfx, PLUGIN_TYPE_GFX);
-    AddPlugins(AUDIO_LIST, Game_EditPlugin_Audio, PLUGIN_TYPE_AUDIO);
-    AddPlugins(CONT_LIST, Game_EditPlugin_Contr, PLUGIN_TYPE_CONTROLLER);
-    AddPlugins(RSP_LIST, Game_EditPlugin_RSP, PLUGIN_TYPE_RSP);
+	AddPlugins(GFX_LIST, Game_EditPlugin_Gfx, PLUGIN_TYPE_GFX);
+	AddPlugins(AUDIO_LIST, Game_EditPlugin_Audio, PLUGIN_TYPE_AUDIO);
+	AddPlugins(CONT_LIST, Game_EditPlugin_Contr, PLUGIN_TYPE_CONTROLLER);
+	AddPlugins(RSP_LIST, Game_EditPlugin_RSP, PLUGIN_TYPE_RSP);
+	AddPlugins(NET_LIST, Game_EditPlugin_NET, PLUGIN_TYPE_NETPLAY);
 
-    AddModCheckBox(GetDlgItem(IDC_HLE_GFX), Game_UseHleGfx);
-    AddModCheckBox(GetDlgItem(IDC_HLE_AUDIO), Game_UseHleAudio);
+	AddModCheckBox(GetDlgItem(IDC_HLE_GFX), Game_UseHleGfx);
+	AddModCheckBox(GetDlgItem(IDC_HLE_AUDIO), Game_UseHleAudio);
 
-    UpdatePageSettings();
+	UpdatePageSettings();
 }
 
 void CGamePluginPage::AddPlugins(int ListId, SettingID Type, PLUGIN_TYPE PluginType)
@@ -208,6 +212,7 @@ void CGamePluginPage::UpdatePageSettings(void)
     PluginItemChanged(AUDIO_LIST, AUDIO_ABOUT, false);
     PluginItemChanged(CONT_LIST, CONT_ABOUT, false);
     PluginItemChanged(RSP_LIST, RSP_ABOUT, false);
+    PluginItemChanged(NET_LIST, NET_ABOUT, false);
 }
 
 void CGamePluginPage::HidePage()

@@ -59,9 +59,11 @@ public:
     //Methods
     static bool LoadFileImage(const char * FileLoc);
     static bool RunFileImage(const char * FileLoc);
+    static bool RunFileImage(const char * FileLoc, uint32_t randomizer_seed, bool SavesReadOnly);
     static bool RunFileImageIPL(const char * FileLoc);
     static bool RunDiskImage(const char * FileLoc);
     static void RunLoadedImage(void);
+    static void RunLoadedImage(uint32_t randomizer_seed, bool SavesReadOnly);
     static void CloseSystem(void);
 
     void   CloseCpu();
@@ -105,6 +107,7 @@ private:
     friend class CAudioPlugin;
     friend class CRSP_Plugin;
     friend class CControl_Plugin;
+    friend class CNetplay_Plugin;
 
     //Recompiler has access to manipulate and call functions
     friend class CSystemTimer;

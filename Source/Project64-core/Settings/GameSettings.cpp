@@ -43,42 +43,81 @@ uint32_t CGameSettings::m_OverClockModifier = 1;
 void CGameSettings::RefreshGameSettings()
 {
     WriteTrace(TraceN64System, TraceDebug, "start");
-    m_UseHleGfx = g_Settings->LoadBool(Game_UseHleGfx);
-    m_bSMM_StoreInstruc = false /*g_Settings->LoadBool(Game_SMM_StoreInstruc)*/;
-    m_bSMM_Protect = g_Settings->LoadBool(Game_SMM_Protect);
-    m_bSMM_ValidFunc = g_Settings->LoadBool(Game_SMM_ValidFunc);
-    m_bSMM_PIDMA = g_Settings->LoadBool(Game_SMM_PIDMA);
-    m_bSMM_TLB = g_Settings->LoadBool(Game_SMM_TLB);
-    m_bUseTlb = g_Settings->LoadBool(Game_UseTlb);
-    m_ViRefreshRate = g_Settings->LoadDword(Game_ViRefreshRate);
-    m_AiCountPerBytes = g_Settings->LoadDword(Game_AiCountPerBytes);
-    m_CountPerOp = g_Settings->LoadDword(Game_CounterFactor);
-    m_RdramSize = g_Settings->LoadDword(Game_RDRamSize);
-    m_DelaySI = g_Settings->LoadBool(Game_DelaySI);
-    m_DelayDP = g_Settings->LoadBool(Game_DelayDP);
-    m_bFixedAudio = g_Settings->LoadBool(Game_FixedAudio);
-    m_bSyncToAudio = g_Settings->LoadBool(Game_SyncViaAudio);
-    m_FullSpeed = g_Settings->LoadBool(Game_FullSpeed);
-    m_b32Bit = g_Settings->LoadBool(Game_32Bit);
+
+    if (g_Settings->LoadBool(Plugin_NET_Running))
+    {
+        m_UseHleGfx = g_Settings->LoadBool(Netplay_UseHleGfx);
+        m_bSMM_StoreInstruc = false /*g_Settings->LoadBool(Netplay_SMM_StoreInstruc)*/;
+        m_bSMM_Protect = g_Settings->LoadBool(Netplay_SMM_Protect);
+        m_bSMM_ValidFunc = g_Settings->LoadBool(Netplay_SMM_ValidFunc);
+        m_bSMM_PIDMA = g_Settings->LoadBool(Netplay_SMM_PIDMA);
+        m_bSMM_TLB = g_Settings->LoadBool(Netplay_SMM_TLB);
+        m_bUseTlb = g_Settings->LoadBool(Netplay_UseTlb);
+        m_ViRefreshRate = g_Settings->LoadDword(Netplay_ViRefreshRate);
+        m_AiCountPerBytes = g_Settings->LoadDword(Netplay_AiCountPerBytes);
+        m_CountPerOp = g_Settings->LoadDword(Netplay_CounterFactor);
+        m_RdramSize = g_Settings->LoadDword(Netplay_RDRamSize);
+        m_DelaySI = g_Settings->LoadBool(Netplay_DelaySI);
+        m_DelayDP = g_Settings->LoadBool(Netplay_DelayDP);
+        m_bFixedAudio = true /*g_Settings->LoadBool(Netplay_FixedAudio)*/;
+        m_bSyncToAudio = g_Settings->LoadBool(Netplay_SyncViaAudio);
+        m_FullSpeed = g_Settings->LoadBool(Netplay_FullSpeed);
+        m_b32Bit = g_Settings->LoadBool(Netplay_32Bit);
 #ifdef ANDROID
-    m_bFastSP = false;
+        m_bFastSP = false;
 #else
-    m_bFastSP = g_Settings->LoadBool(Game_FastSP);
+        m_bFastSP = g_Settings->LoadBool(Netplay_FastSP);
 #endif
-    m_RspAudioSignal = g_Settings->LoadBool(Game_RspAudioSignal);
-    m_bRomInMemory = g_Settings->LoadBool(Game_LoadRomToMemory);
-    m_RegCaching = g_Settings->LoadBool(Game_RegCache);
-    m_bLinkBlocks = g_Settings->LoadBool(Game_BlockLinking);
-    m_LookUpMode = g_Settings->LoadDword(Game_FuncLookupMode);
-    m_SystemType = (SYSTEM_TYPE)g_Settings->LoadDword(Game_SystemType);
-    m_CpuType = (CPU_TYPE)g_Settings->LoadDword(Game_CpuType);
-    m_OverClockModifier = g_Settings->LoadDword(Game_OverClockModifier);
+        m_RspAudioSignal = g_Settings->LoadBool(Netplay_RspAudioSignal);
+        m_bRomInMemory = g_Settings->LoadBool(Netplay_LoadRomToMemory);
+        m_RegCaching = g_Settings->LoadBool(Netplay_RegCache);
+        m_bLinkBlocks = g_Settings->LoadBool(Netplay_BlockLinking);
+        m_LookUpMode = g_Settings->LoadDword(Netplay_FuncLookupMode);
+        m_SystemType = (SYSTEM_TYPE)g_Settings->LoadDword(Netplay_SystemType);
+        m_CpuType = (CPU_TYPE)g_Settings->LoadDword(Netplay_CpuType);
+        m_OverClockModifier = g_Settings->LoadDword(Netplay_OverClockModifier);
+    }
+    else
+    {
+        m_UseHleGfx = g_Settings->LoadBool(Game_UseHleGfx);
+        m_bSMM_StoreInstruc = false /*g_Settings->LoadBool(Game_SMM_StoreInstruc)*/;
+        m_bSMM_Protect = g_Settings->LoadBool(Game_SMM_Protect);
+        m_bSMM_ValidFunc = g_Settings->LoadBool(Game_SMM_ValidFunc);
+        m_bSMM_PIDMA = g_Settings->LoadBool(Game_SMM_PIDMA);
+        m_bSMM_TLB = g_Settings->LoadBool(Game_SMM_TLB);
+        m_bUseTlb = g_Settings->LoadBool(Game_UseTlb);
+        m_ViRefreshRate = g_Settings->LoadDword(Game_ViRefreshRate);
+        m_AiCountPerBytes = g_Settings->LoadDword(Game_AiCountPerBytes);
+        m_CountPerOp = g_Settings->LoadDword(Game_CounterFactor);
+        m_RdramSize = g_Settings->LoadDword(Game_RDRamSize);
+        m_DelaySI = g_Settings->LoadBool(Game_DelaySI);
+        m_DelayDP = g_Settings->LoadBool(Game_DelayDP);
+        m_bFixedAudio = g_Settings->LoadBool(Game_FixedAudio);
+        m_bSyncToAudio = g_Settings->LoadBool(Game_SyncViaAudio);
+        m_FullSpeed = g_Settings->LoadBool(Game_FullSpeed);
+        m_b32Bit = g_Settings->LoadBool(Game_32Bit);
+#ifdef ANDROID
+        m_bFastSP = false;
+#else
+        m_bFastSP = g_Settings->LoadBool(Game_FastSP);
+#endif
+        m_RspAudioSignal = g_Settings->LoadBool(Game_RspAudioSignal);
+        m_bRomInMemory = g_Settings->LoadBool(Game_LoadRomToMemory);
+        m_RegCaching = g_Settings->LoadBool(Game_RegCache);
+        m_bLinkBlocks = g_Settings->LoadBool(Game_BlockLinking);
+        m_LookUpMode = g_Settings->LoadDword(Game_FuncLookupMode);
+        m_SystemType = (SYSTEM_TYPE)g_Settings->LoadDword(Game_SystemType);
+        m_CpuType = (CPU_TYPE)g_Settings->LoadDword(Game_CpuType);
+        m_OverClockModifier = g_Settings->LoadDword(Game_OverClockModifier);
+    }
+
     if (m_CountPerOp == 0)
     {
         m_CountPerOp = 2;
     }
     if (m_OverClockModifier < 1) { m_OverClockModifier = 1; }
     if (m_OverClockModifier > 20) { m_OverClockModifier = 20; }
+
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 

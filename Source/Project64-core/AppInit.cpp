@@ -62,6 +62,8 @@ void SetTraceModuleNames(void)
     TraceSetModuleName(TraceAudioPlugin, "Audio Plugin");
     TraceSetModuleName(TraceControllerPlugin, "Controller Plugin");
     TraceSetModuleName(TraceRSPPlugin, "RSP Plugin");
+    TraceSetModuleName(TraceNetplayPlugin, "Netplay Plugin");
+    TraceSetModuleName(TraceNetplay, "Netplay");
     TraceSetModuleName(TraceRSP, "RSP");
     TraceSetModuleName(TraceAudio, "Audio");
     TraceSetModuleName(TraceRegisterCache, "Register Cache");
@@ -88,6 +90,8 @@ void UpdateTraceLevel(void * /*NotUsed*/)
     g_ModuleLogLevel[TraceAudioPlugin] = (uint8_t)g_Settings->LoadDword(Debugger_TraceAudioPlugin);
     g_ModuleLogLevel[TraceControllerPlugin] = (uint8_t)g_Settings->LoadDword(Debugger_TraceControllerPlugin);
     g_ModuleLogLevel[TraceRSPPlugin] = (uint8_t)g_Settings->LoadDword(Debugger_TraceRSPPlugin);
+    g_ModuleLogLevel[TraceNetplayPlugin] = (uint8_t)g_Settings->LoadDword(Debugger_TraceNetplayPlugin);
+    g_ModuleLogLevel[TraceNetplay] = (uint8_t)g_Settings->LoadDword(Debugger_TraceNetplay);
     g_ModuleLogLevel[TraceRSP] = (uint8_t)g_Settings->LoadDword(Debugger_TraceRSP);
     g_ModuleLogLevel[TraceAudio] = (uint8_t)g_Settings->LoadDword(Debugger_TraceAudio);
     g_ModuleLogLevel[TraceRegisterCache] = (uint8_t)g_Settings->LoadDword(Debugger_TraceRegisterCache);
@@ -116,6 +120,8 @@ void SetupTrace(void)
     g_Settings->RegisterChangeCB(Debugger_TraceAudioPlugin, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_TraceControllerPlugin, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_TraceRSPPlugin, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceNetplayPlugin, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->RegisterChangeCB(Debugger_TraceNetplay, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_TraceRSP, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_TraceAudio, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->RegisterChangeCB(Debugger_TraceRegisterCache, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
@@ -148,6 +154,8 @@ void CleanupTrace(void)
     g_Settings->UnregisterChangeCB(Debugger_TraceAudioPlugin, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TraceControllerPlugin, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TraceRSPPlugin, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceNetplayPlugin, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
+    g_Settings->UnregisterChangeCB(Debugger_TraceNetplay, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TraceRSP, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TraceAudio, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);
     g_Settings->UnregisterChangeCB(Debugger_TraceRegisterCache, NULL, (CSettings::SettingChangedFunc)UpdateTraceLevel);

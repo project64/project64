@@ -272,6 +272,7 @@ const char * CPlugin::PluginType() const
     case PLUGIN_TYPE_GFX: return "GFX";
     case PLUGIN_TYPE_AUDIO: return "Audio";
     case PLUGIN_TYPE_CONTROLLER: return "Control";
+    case PLUGIN_TYPE_NETPLAY: return "Netplay";
     }
     return "Unknown";
 }
@@ -284,6 +285,7 @@ TraceModuleProject64 CPlugin::PluginTraceType() const
     case PLUGIN_TYPE_GFX: return TraceGFXPlugin;
     case PLUGIN_TYPE_AUDIO: return TraceAudioPlugin;
     case PLUGIN_TYPE_CONTROLLER: return TraceControllerPlugin;
+    case PLUGIN_TYPE_NETPLAY: return TraceNetplayPlugin;
     }
     return TracePlugins;
 }
@@ -315,6 +317,10 @@ bool CPlugin::ValidPluginVersion(PLUGIN_INFO & PluginInfo)
         if (PluginInfo.Version == 0x0100) { return true; }
         if (PluginInfo.Version == 0x0101) { return true; }
         if (PluginInfo.Version == 0x0102) { return true; }
+        break;
+    case PLUGIN_TYPE_NETPLAY:
+        if (PluginInfo.Version == 0x0100) { return true; }
+        if (PluginInfo.Version == 0x0101) { return true; }
         break;
     }
     return false;

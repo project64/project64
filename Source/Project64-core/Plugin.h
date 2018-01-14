@@ -20,3 +20,4 @@
 #include <Project64-core/Plugins/AudioPlugin.h>
 #include "Plugins/ControllerPlugin.h"
 #include "Plugins/RSPPlugin.h"
+#include "Plugins/NetplayPlugin.h"

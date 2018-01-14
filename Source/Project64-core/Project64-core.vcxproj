@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -92,6 +92,7 @@
     <ClCompile Include="Plugins\AudioPlugin.cpp" />
     <ClCompile Include="Plugins\ControllerPlugin.cpp" />
     <ClCompile Include="Plugins\GFXPlugin.cpp" />
+    <ClCompile Include="Plugins\NetplayPlugin.cpp" />
     <ClCompile Include="Plugins\PluginBase.cpp" />
     <ClCompile Include="Plugins\PluginClass.cpp" />
     <ClCompile Include="Plugins\RSPPlugin.cpp" />
@@ -196,6 +197,8 @@
     <ClInclude Include="Plugins\AudioPlugin.h" />
     <ClInclude Include="Plugins\ControllerPlugin.h" />
     <ClInclude Include="Plugins\GFXPlugin.h" />
+    <ClInclude Include="Plugins\NetplayPlugin.h" />
+    <ClInclude Include="Plugins\NetplayTypes.h" />
     <ClInclude Include="Plugins\PluginBase.h" />
     <ClInclude Include="Plugins\PluginClass.h" />
     <ClInclude Include="Plugins\RSPPlugin.h" />

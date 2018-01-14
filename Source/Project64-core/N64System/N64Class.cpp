@@ -70,7 +70,17 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     }
     m_Limiter.SetHertz(gameHertz);
     g_Settings->SaveDword(GameRunning_ScreenHertz, gameHertz);
+
+    if (g_Settings->LoadBool(Plugin_NET_Running))
+        g_Plugins->Netplay()->ResetCodes();
     m_Cheats.LoadCheats(!g_Settings->LoadDword(Setting_RememberCheats), Plugins);
+
+    if (g_Settings->LoadDword(Setting_RememberCheats))
+    {
+        if (g_Settings->LoadBool(Plugin_NET_Running))
+            g_Plugins->Netplay()->ForwardCheats();
+    }
+
     WriteTrace(TraceN64System, TraceDebug, "Setting up system");
     CInterpreterCPU::BuildCPU();
 
@@ -367,6 +377,11 @@ bool CN64System::LoadFileImage(const char * FileLoc)
 
 bool CN64System::RunFileImage(const char * FileLoc)
 {
+    return RunFileImage(FileLoc, NULL, NULL);
+}
+
+bool CN64System::RunFileImage(const char * FileLoc, uint32_t randomizer_seed, bool SavesReadOnly)
+{
     if (!LoadFileImage(FileLoc))
     {
         return false;
@@ -374,15 +389,20 @@ bool CN64System::RunFileImage(const char * FileLoc)
     if (g_Settings->LoadBool(Setting_AutoStart) != 0)
     {
         WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
-        RunLoadedImage();
+        RunLoadedImage(randomizer_seed, SavesReadOnly);
     }
     return true;
 }
 
 void CN64System::RunLoadedImage(void)
 {
+    RunLoadedImage(NULL, NULL);
+}
+
+void CN64System::RunLoadedImage(uint32_t randomizer_seed = time(NULL), bool SavesReadOnly = false)
+{
     WriteTrace(TraceN64System, TraceDebug, "Start");
-    g_BaseSystem = new CN64System(g_Plugins, (uint32_t)time(NULL), false, false);
+    g_BaseSystem = new CN64System(g_Plugins, (uint32_t)randomizer_seed, SavesReadOnly, false);
     if (g_BaseSystem)
     {
         g_BaseSystem->StartEmulation(true);
@@ -2125,15 +2145,32 @@ void CN64System::RefreshScreen()
     {
         g_Audio->SetViIntr(VI_INTR_TIME);
     }
-    if (g_Plugins->Control()->GetKeys)
+    if (g_Settings->LoadBool(Plugin_NET_Running))
     {
+        g_Plugins->Netplay()->ForwardInputs();
+
         BUTTONS Keys;
         memset(&Keys, 0, sizeof(Keys));
 
         for (int Control = 0; Control < 4; Control++)
         {
-            g_Plugins->Control()->GetKeys(Control, &Keys);
+            if (g_Plugins->Control()->GetKeys) { g_Plugins->Control()->GetKeys(Control, &Keys); }
+            g_Plugins->Netplay()->GetKeys(Control, &Keys);
             m_Buttons[Control] = Keys.Value;
+        }
+    }
+    else
+    {
+        if (g_Plugins->Control()->GetKeys)
+        {
+            BUTTONS Keys;
+            memset(&Keys, 0, sizeof(Keys));
+
+            for (int Control = 0; Control < 4; Control++)
+            {
+                g_Plugins->Control()->GetKeys(Control, &Keys);
+                m_Buttons[Control] = Keys.Value;
+            }
         }
     }
 
@@ -2190,8 +2227,16 @@ void CN64System::RefreshScreen()
                 g_SyncSystem->SetCheatsSlectionChanged(true);
             }
             SetCheatsSlectionChanged(false);
+
+            if (g_Settings->LoadBool(Plugin_NET_Running))
+                g_Plugins->Netplay()->ResetCodes();
+
             m_Cheats.LoadCheats(false, g_BaseSystem->m_Plugins);
+
+            if (g_Settings->LoadBool(Plugin_NET_Running))
+                g_Plugins->Netplay()->ForwardCheats();
         }
+
         m_Cheats.ApplyCheats();
     }
     //    if (bProfiling)    { m_Profile.StartTimer(ProfilingAddr != Timer_None ? ProfilingAddr : Timer_R4300); }
