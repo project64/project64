@@ -13,11 +13,13 @@
 
 int CDebugSettings::m_RefCount = 0;
 
+bool CDebugSettings::m_Registered = false;
+
 bool CDebugSettings::m_bHaveDebugger = false;
+bool CDebugSettings::m_Stepping = true;
 bool CDebugSettings::m_bRecordRecompilerAsm = false;
 bool CDebugSettings::m_bShowTLBMisses = false;
 bool CDebugSettings::m_bShowDivByZero = false;
-bool CDebugSettings::m_Registered = false;
 bool CDebugSettings::m_RecordExecutionTimes = false;
 bool CDebugSettings::m_HaveExecutionBP = false;
 
@@ -32,6 +34,7 @@ CDebugSettings::CDebugSettings()
         g_Settings->RegisterChangeCB(Debugger_ShowTLBMisses, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_ShowDivByZero, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_RecordExecutionTimes, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->RegisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_HaveExecutionBP, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
 
         RefreshSettings();
@@ -48,6 +51,7 @@ CDebugSettings::~CDebugSettings()
         g_Settings->UnregisterChangeCB(Debugger_ShowTLBMisses, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_ShowDivByZero, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_RecordExecutionTimes, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->UnregisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_HaveExecutionBP, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
     }
 }
@@ -59,5 +63,6 @@ void CDebugSettings::RefreshSettings()
     m_bShowTLBMisses = m_bHaveDebugger && g_Settings->LoadBool(Debugger_ShowTLBMisses);
     m_bShowDivByZero = m_bHaveDebugger && g_Settings->LoadBool(Debugger_ShowDivByZero);
     m_RecordExecutionTimes = g_Settings->LoadBool(Debugger_RecordExecutionTimes);
+    m_Stepping = g_Settings->LoadBool(Debugger_SteppingOps);
     m_HaveExecutionBP = g_Settings->LoadBool(Debugger_HaveExecutionBP);
 }

@@ -21,7 +21,8 @@ typedef struct {
 
 class CDebugStackTrace :
     public CDebugDialog<CDebugStackTrace>,
-    public CDialogResize<CDebugStackTrace>
+    public CDialogResize<CDebugStackTrace>,
+    private CDebugSettings
 {
 public:
     enum { IDD = IDD_Debugger_StackTrace };

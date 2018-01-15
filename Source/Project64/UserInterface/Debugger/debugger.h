@@ -10,6 +10,7 @@
 ****************************************************************************/
 #pragma once
 #include <Project64-core/Debugger.h>
+#include <Project64-core/Settings/DebugSettings.h>
 
 class CDumpMemory;
 class CDebugMemoryView;
@@ -27,7 +28,8 @@ class CBreakpoints;
 class CScriptSystem;
 
 class CDebuggerUI :
-    public CDebugger
+    public CDebugger,
+    public CDebugSettings
 {
 public:
     CDebuggerUI();

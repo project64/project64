@@ -103,7 +103,7 @@ LRESULT CDebugStackTrace::OnListDblClicked(NMHDR* pNMHDR)
 
 void CDebugStackTrace::Refresh()
 {
-	if (!m_Debugger->Breakpoints()->isDebugging())
+	if (!isStepping())
 	{
 		return;
 	}

@@ -120,7 +120,7 @@ LRESULT	CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     m_AddressEdit.SetValue(0x80000000, false, true);
     ShowAddress(0x80000000, TRUE);
 
-    if (m_Breakpoints->isDebugging())
+    if (isStepping())
     {
         m_ViewPCButton.EnableWindow(TRUE);
         m_StepButton.EnableWindow(TRUE);
@@ -491,7 +491,7 @@ void CDebugCommandsView::ShowAddress(DWORD address, BOOL top)
     {
         m_StartAddress = address;
 
-        if (!m_Breakpoints->isDebugging())
+        if (!isStepping())
         {
             // Disable buttons
             m_ViewPCButton.EnableWindow(FALSE);
@@ -756,7 +756,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
                 RGB(0xFF, 0xFF, 0x00) : // breakpoint & current pc
                 RGB(0xFF, 0xEE, 0xCC);
         }
-        else if (address == pc && m_Breakpoints->isDebugging())
+        else if (address == pc && isStepping())
         {
             // pc
             pLVCD->clrTextBk = RGB(0x88, 0x88, 0x88);
@@ -793,7 +793,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
     {
         colors = { 0xFFFFFF, 0xFF0000 };
     }
-    else if (address == pc && m_Breakpoints->isDebugging())
+    else if (address == pc && isStepping())
     {
         colors = { 0xFFFFAA, 0x222200 };
     }
@@ -838,7 +838,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
     pLVCD->clrTextBk = _byteswap_ulong(colors.bg) >> 8;
     pLVCD->clrText = _byteswap_ulong(colors.fg) >> 8;
 
-    if (!m_Breakpoints->isDebugging())
+    if (!isStepping())
     {
         return CDRF_DODEFAULT;
     }
@@ -1084,7 +1084,7 @@ void CDebugCommandsView::RemoveSelectedBreakpoints()
 
 void CDebugCommandsView::CPUSkip()
 {
-    m_Breakpoints->KeepDebugging();
+    g_Settings->SaveBool(Debugger_SteppingOps, true);
     m_Breakpoints->Skip();
     m_Breakpoints->Resume();
 }
@@ -1093,7 +1093,7 @@ void CDebugCommandsView::CPUStepInto()
 {
     m_Debugger->Debug_RefreshStackWindow();
     m_Debugger->Debug_RefreshStackTraceWindow();
-    m_Breakpoints->KeepDebugging();
+    g_Settings->SaveBool(Debugger_SteppingOps, true);
     m_Breakpoints->Resume();
 }
 
@@ -1101,7 +1101,7 @@ void CDebugCommandsView::CPUResume()
 {
     m_Debugger->Debug_RefreshStackWindow();
     m_Debugger->Debug_RefreshStackTraceWindow();
-    m_Breakpoints->StopDebugging();
+    g_Settings->SaveBool(Debugger_SteppingOps, false);
     m_Breakpoints->Resume();
     m_RegisterTabs.SetColorsEnabled(false);
     m_RegisterTabs.RefreshEdits();
@@ -1132,7 +1132,7 @@ LRESULT CDebugCommandsView::OnForwardButton(WORD /*wNotifyCode*/, WORD /*wID*/, 
 
 LRESULT CDebugCommandsView::OnViewPCButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
 {
-    if (g_Reg != NULL && m_Breakpoints->isDebugging())
+    if (g_Reg != NULL && isStepping())
     {
         ShowAddress(g_Reg->m_PROGRAM_COUNTER, TRUE);
     }
@@ -1330,7 +1330,7 @@ LRESULT CDebugCommandsView::OnPCChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND
         m_bIgnorePCChange = false;
         return 0;
     }
-    if (g_Reg != NULL && m_Breakpoints->isDebugging())
+    if (g_Reg != NULL && isStepping())
     {
         g_Reg->m_PROGRAM_COUNTER = m_PCEdit.GetValue();
     }

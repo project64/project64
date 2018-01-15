@@ -19,34 +19,12 @@
 
 CBreakpoints::CBreakpoints()
 {
-    m_Debugging = FALSE;
     m_Skipping = FALSE;
-}
-
-void CBreakpoints::Pause()
-{
-    KeepDebugging();
-    g_System->Pause();
 }
 
 void CBreakpoints::Resume()
 {
     g_System->ExternalEvent(SysEvent_ResumeCPU_FromMenu);
-}
-
-bool CBreakpoints::isDebugging()
-{
-    return m_Debugging;
-}
-
-void CBreakpoints::KeepDebugging()
-{
-    m_Debugging = true;
-}
-
-void CBreakpoints::StopDebugging()
-{
-    m_Debugging = false;
 }
 
 bool CBreakpoints::isSkipping()

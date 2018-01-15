@@ -229,6 +229,7 @@ enum SettingID
     Debugger_ShowRecompMemSize,
     Debugger_DebugLanguage,
     Debugger_RecordExecutionTimes,
+    Debugger_SteppingOps,
     Debugger_HaveExecutionBP,
 
     //Trace

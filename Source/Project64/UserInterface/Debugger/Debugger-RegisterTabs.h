@@ -11,7 +11,9 @@
 #pragma once
 #include "Breakpoints.h"
 
-class CEditReg64 : public CWindowImpl<CEditReg64, CEdit>
+class CEditReg64 : 
+    public CWindowImpl<CEditReg64, CEdit>,
+    private CDebugSettings
 {
 public:
     static uint64_t ParseValue(char* wordPair);
@@ -28,7 +30,9 @@ public:
     END_MSG_MAP()
 };
 
-class CRegisterTabs : public CTabCtrl
+class CRegisterTabs : 
+    public CTabCtrl,
+    public CDebugSettings
 {
 private:
     typedef union

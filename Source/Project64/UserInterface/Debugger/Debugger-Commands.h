@@ -70,7 +70,8 @@ public:
 class CDebugCommandsView :
     public CDebugDialog<CDebugCommandsView>,
     public CDialogResize<CDebugCommandsView>,
-    public CToolTipDialog<CDebugCommandsView>
+    public CToolTipDialog<CDebugCommandsView>,
+    public CDebugSettings
 {
     friend class CEditOp;
 

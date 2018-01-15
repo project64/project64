@@ -40,9 +40,6 @@ public:
     void Resume();
     void Skip();
 
-    bool isDebugging();
-    void KeepDebugging();
-    void StopDebugging();
     bool isSkipping();
 
     bool RBPAdd(uint32_t address, bool bTemporary = false);
@@ -67,6 +64,5 @@ private:
     breakpoints_t m_WriteMem;
     breakpoints_t m_Execution;
 
-    bool m_Debugging;
     bool m_Skipping;
 };
