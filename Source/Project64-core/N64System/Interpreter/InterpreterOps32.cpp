@@ -1184,7 +1184,7 @@ void R4300iOp32::SPECIAL_SLTU()
 
 void R4300iOp32::SPECIAL_TEQ()
 {
-    if (_GPR[m_Opcode.rs].W[0] == _GPR[m_Opcode.rt].W[0] && CDebugSettings::bHaveDebugger())
+    if (_GPR[m_Opcode.rs].W[0] == _GPR[m_Opcode.rt].W[0] && CDebugSettings::HaveDebugger())
     {
         g_Notify->DisplayError("Should trap this ???");
     }
@@ -1302,7 +1302,7 @@ void R4300iOp32::REGIMM_BGEZAL()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-            if (CDebugSettings::bHaveDebugger())
+            if (CDebugSettings::HaveDebugger())
             {
                 if (g_Reg->m_PROGRAM_COUNTER < 0x80000400)
                 {
@@ -1397,7 +1397,7 @@ void R4300iOp32::COP0_MT()
         {
             _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
         }
-        if ((_CP0[m_Opcode.rd] & 0x18) != 0 && CDebugSettings::bHaveDebugger())
+        if ((_CP0[m_Opcode.rd] & 0x18) != 0 && CDebugSettings::HaveDebugger())
         {
             g_Notify->DisplayError("Left kernel mode ??");
         }
@@ -1405,7 +1405,7 @@ void R4300iOp32::COP0_MT()
         break;
     case 13: //cause
         _CP0[m_Opcode.rd] &= 0xFFFFCFF;
-        if ((_GPR[m_Opcode.rt].UW[0] & 0x300) != 0 && CDebugSettings::bHaveDebugger())
+        if ((_GPR[m_Opcode.rt].UW[0] & 0x300) != 0 && CDebugSettings::HaveDebugger())
         {
             g_Notify->DisplayError("Set IP0 or IP1");
         }
@@ -1427,7 +1427,7 @@ void R4300iOp32::COP1_CF()
     TEST_COP1_USABLE_EXCEPTION
         if (m_Opcode.fs != 31 && m_Opcode.fs != 0)
         {
-            if (CDebugSettings::bHaveDebugger()) { g_Notify->DisplayError("CFC1 what register are you writing to ?"); }
+            if (CDebugSettings::HaveDebugger()) { g_Notify->DisplayError("CFC1 what register are you writing to ?"); }
             return;
         }
     _GPR[m_Opcode.rt].W[0] = (int32_t)_FPCR[m_Opcode.fs];

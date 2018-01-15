@@ -72,22 +72,22 @@ void CEeprom::EepromCommand(uint8_t * Command)
         }
         break;
     case 4: // Read from Eeprom
-        if (Command[0] != 2 && bHaveDebugger())
+        if (Command[0] != 2 && HaveDebugger())
         {
             g_Notify->DisplayError("What am I meant to do with this Eeprom Command");
         }
-        if (Command[1] != 8 && bHaveDebugger())
+        if (Command[1] != 8 && HaveDebugger())
         {
             g_Notify->DisplayError("What am I meant to do with this Eeprom Command");
         }
         ReadFrom(&Command[4], Command[3]);
         break;
     case 5: //Write to Eeprom
-        if (Command[0] != 10 && bHaveDebugger())
+        if (Command[0] != 10 && HaveDebugger())
         {
             g_Notify->DisplayError("What am I meant to do with this Eeprom Command");
         }
-        if (Command[1] != 1 && bHaveDebugger())
+        if (Command[1] != 1 && HaveDebugger())
         {
             g_Notify->DisplayError("What am I meant to do with this Eeprom Command");
         }

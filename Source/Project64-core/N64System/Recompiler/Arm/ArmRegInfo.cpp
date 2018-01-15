@@ -264,7 +264,7 @@ void CArmRegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
         Reg = FreeArmReg(false);
         if (Reg < 0)
         {
-            if (bHaveDebugger()) { g_Notify->DisplayError("Map_GPR_32bit\n\nOut of registers"); }
+            if (HaveDebugger()) { g_Notify->DisplayError("Map_GPR_32bit\n\nOut of registers"); }
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return;
         }
@@ -337,7 +337,7 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
 
     if (MipsReg == 0)
     {
-        if (bHaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nWhy are you trying to map reg 0"); }
+        if (HaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nWhy are you trying to map reg 0"); }
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -348,7 +348,7 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
         regHi = FreeArmReg(false);
         if (regHi < 0)
         {
-            if (bHaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); }
+            if (HaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); }
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return;
         }
@@ -357,7 +357,7 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
         reglo = FreeArmReg(false);
         if (reglo < 0)
         {
-            if (bHaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); }
+            if (HaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); }
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return;
         }
@@ -375,7 +375,7 @@ void CArmRegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
             regHi = FreeArmReg(false);
             if (regHi < 0)
             {
-                if (bHaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); }
+                if (HaveDebugger()) { g_Notify->DisplayError("Map_GPR_64bit\n\nOut of registers"); }
                 g_Notify->BreakPoint(__FILE__, __LINE__);
                 return;
             }
@@ -474,7 +474,7 @@ void CArmRegInfo::UnMap_GPR(uint32_t MipsReg, bool WriteBackValue)
 
     if (MipsReg == 0)
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError(stdstr_f("%s\n\nWhy are you trying to unmap reg 0", __FUNCTION__).c_str());
         }
@@ -510,7 +510,7 @@ void CArmRegInfo::WriteBack_GPR(uint32_t MipsReg, bool Unmapping)
     }
     if (MipsReg == 0)
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError(stdstr_f("%s\n\nWhy are you trying to unmap reg 0", __FUNCTION__).c_str());
         }

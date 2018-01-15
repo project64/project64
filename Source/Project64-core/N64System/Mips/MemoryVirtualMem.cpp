@@ -1060,7 +1060,7 @@ void CMipsMemoryVM::ChangeSpStatus()
         g_Reg->m_RspIntrReg &= ~MI_INTR_SP;
         g_Reg->CheckInterrupts();
     }
-    if ((RegModValue & SP_SET_INTR) != 0 && bHaveDebugger())
+    if ((RegModValue & SP_SET_INTR) != 0 && HaveDebugger())
     {
         g_Notify->DisplayError("SP_SET_INTR");
     }
@@ -1235,7 +1235,7 @@ void CMipsMemoryVM::Load32RDRAMRegisters(void)
     case 0x03F00024: m_MemLookupValue.UW[0] = g_Reg->RDRAM_DEVICE_MANUF_REG; break;
     default:
         m_MemLookupValue.UW[0] = 0;
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1257,7 +1257,7 @@ void CMipsMemoryVM::Load32SPRegisters(void)
     case 0x04080000: m_MemLookupValue.UW[0] = g_Reg->SP_PC_REG; break;
     default:
         m_MemLookupValue.UW[0] = 0;
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1275,7 +1275,7 @@ void CMipsMemoryVM::Load32DPCommand(void)
     case 0x0410001C: m_MemLookupValue.UW[0] = g_Reg->DPC_TMEM_REG; break;
     default:
         m_MemLookupValue.UW[0] = 0;
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1292,7 +1292,7 @@ void CMipsMemoryVM::Load32MIPSInterface(void)
     case 0x0430000C: m_MemLookupValue.UW[0] = g_Reg->MI_INTR_MASK_REG; break;
     default:
         m_MemLookupValue.UW[0] = 0;
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1322,7 +1322,7 @@ void CMipsMemoryVM::Load32VideoInterface(void)
     case 0x04400034: m_MemLookupValue.UW[0] = g_Reg->VI_Y_SCALE_REG; break;
     default:
         m_MemLookupValue.UW[0] = 0;
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1362,7 +1362,7 @@ void CMipsMemoryVM::Load32AudioInterface(void)
         break;
     default:
         m_MemLookupValue.UW[0] = 0;
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1388,7 +1388,7 @@ void CMipsMemoryVM::Load32PeripheralInterface(void)
     case 0x04600030: m_MemLookupValue.UW[0] = g_Reg->PI_BSD_DOM2_RLS_REG; break;
     default:
         m_MemLookupValue.UW[0] = 0;
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1409,7 +1409,7 @@ void CMipsMemoryVM::Load32RDRAMInterface(void)
     case 0x0470001C: m_MemLookupValue.UW[0] = g_Reg->RI_WERROR_REG; break;
     default:
         m_MemLookupValue.UW[0] = 0;
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1423,7 +1423,7 @@ void CMipsMemoryVM::Load32SerialInterface(void)
     case 0x04800018: m_MemLookupValue.UW[0] = g_Reg->SI_STATUS_REG; break;
     default:
         m_MemLookupValue.UW[0] = 0;
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1482,7 +1482,7 @@ void CMipsMemoryVM::Load32CartridgeDomain2Address1(void)
         default:
             m_MemLookupValue.UW[0] = m_MemLookupAddress & 0xFFFF;
             m_MemLookupValue.UW[0] = (m_MemLookupValue.UW[0] << 16) | m_MemLookupValue.UW[0];
-            if (bHaveDebugger())
+            if (HaveDebugger())
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -1510,7 +1510,7 @@ void CMipsMemoryVM::Load32CartridgeDomain2Address2(void)
     }
     else if (g_System->m_SaveUsing != SaveChip_FlashRam)
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1529,7 +1529,7 @@ void CMipsMemoryVM::Load32PifRam(void)
     {
         //m_MemLookupValue.UW[0] = swap32by8(*(uint32_t *)(&PifRom[PAddr - 0x1FC00000]));
         m_MemLookupValue.UW[0] = 0;
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1543,7 +1543,7 @@ void CMipsMemoryVM::Load32PifRam(void)
     else
     {
         m_MemLookupValue.UW[0] = 0;
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1596,7 +1596,7 @@ void CMipsMemoryVM::Write32RDRAMRegisters(void)
     case 0x03F8000C: break;
     case 0x03F80014: break;
     default:
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1744,7 +1744,7 @@ void CMipsMemoryVM::Write32SPRegisters(void)
     case 0x0404001C: g_Reg->SP_SEMAPHORE_REG = 0; break;
     case 0x04080000: g_Reg->SP_PC_REG = m_MemLookupValue.UW[0] & 0xFFC; break;
     default:
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1832,7 +1832,7 @@ void CMipsMemoryVM::Write32DPCommandRegisters(void)
 #endif
         break;
     default:
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1928,7 +1928,7 @@ void CMipsMemoryVM::Write32MIPSInterface(void)
         }
         break;
     default:
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1987,7 +1987,7 @@ void CMipsMemoryVM::Write32VideoInterface(void)
     case 0x04400030: g_Reg->VI_X_SCALE_REG = m_MemLookupValue.UW[0]; break;
     case 0x04400034: g_Reg->VI_Y_SCALE_REG = m_MemLookupValue.UW[0]; break;
     default:
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -2030,7 +2030,7 @@ void CMipsMemoryVM::Write32AudioInterface(void)
         break;
     case 0x04500014:  g_Reg->AI_BITRATE_REG = m_MemLookupValue.UW[0]; break;
     default:
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -2077,7 +2077,7 @@ void CMipsMemoryVM::Write32PeripheralInterface(void)
     case 0x0460002C: g_Reg->PI_BSD_DOM2_PGS_REG = (m_MemLookupValue.UW[0] & 0xFF); break;
     case 0x04600030: g_Reg->PI_BSD_DOM2_RLS_REG = (m_MemLookupValue.UW[0] & 0xFF); break;
     default:
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -2097,7 +2097,7 @@ void CMipsMemoryVM::Write32RDRAMInterface(void)
     case 0x04700018: g_Reg->RI_RERROR_REG = m_MemLookupValue.UW[0]; break;
     case 0x0470001C: g_Reg->RI_WERROR_REG = m_MemLookupValue.UW[0]; break;
     default:
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -2123,7 +2123,7 @@ void CMipsMemoryVM::Write32SerialInterface(void)
         g_Reg->CheckInterrupts();
         break;
     default:
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -2158,7 +2158,7 @@ void CMipsMemoryVM::Write32CartridgeDomain2Address1(void)
         case 0x05000530: g_Reg->ASIC_SEC_BYTE = m_MemLookupValue.UW[0]; break;
         case 0x05000548: g_Reg->ASIC_TEST_PIN_SEL = m_MemLookupValue.UW[0]; break;
         default:
-            if (bHaveDebugger())
+            if (HaveDebugger())
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -2181,7 +2181,7 @@ void CMipsMemoryVM::Write32CartridgeDomain2Address2(void)
     }
     /*if ((m_MemLookupAddress & 0x1FFFFFFF) != 0x08010000)
     {
-    if (bHaveDebugger())
+    if (HaveDebugger())
     {
     g_Notify->BreakPoint(__FILE__, __LINE__);
     }
@@ -2200,7 +2200,7 @@ void CMipsMemoryVM::Write32PifRam(void)
 {
     if ((m_MemLookupAddress & 0x1FFFFFFF) < 0x1FC007C0)
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }

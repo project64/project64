@@ -15,7 +15,8 @@ int CDebugSettings::m_RefCount = 0;
 
 bool CDebugSettings::m_Registered = false;
 
-bool CDebugSettings::m_bHaveDebugger = false;
+bool CDebugSettings::m_HaveDebugger = true;
+bool CDebugSettings::m_Debugging = true;
 bool CDebugSettings::m_Stepping = true;
 bool CDebugSettings::m_bRecordRecompilerAsm = false;
 bool CDebugSettings::m_bShowTLBMisses = false;
@@ -58,11 +59,13 @@ CDebugSettings::~CDebugSettings()
 
 void CDebugSettings::RefreshSettings()
 {
-    m_bHaveDebugger = g_Settings->LoadBool(Debugger_Enabled);
-    m_bRecordRecompilerAsm = m_bHaveDebugger && g_Settings->LoadBool(Debugger_RecordRecompilerAsm);
-    m_bShowTLBMisses = m_bHaveDebugger && g_Settings->LoadBool(Debugger_ShowTLBMisses);
-    m_bShowDivByZero = m_bHaveDebugger && g_Settings->LoadBool(Debugger_ShowDivByZero);
+    m_HaveDebugger = g_Settings->LoadBool(Debugger_Enabled);
+    m_bRecordRecompilerAsm = m_HaveDebugger && g_Settings->LoadBool(Debugger_RecordRecompilerAsm);
+    m_bShowTLBMisses = m_HaveDebugger && g_Settings->LoadBool(Debugger_ShowTLBMisses);
+    m_bShowDivByZero = m_HaveDebugger && g_Settings->LoadBool(Debugger_ShowDivByZero);
     m_RecordExecutionTimes = g_Settings->LoadBool(Debugger_RecordExecutionTimes);
     m_Stepping = g_Settings->LoadBool(Debugger_SteppingOps);
     m_HaveExecutionBP = g_Settings->LoadBool(Debugger_HaveExecutionBP);
+
+    m_Debugging = m_HaveDebugger && m_HaveExecutionBP;
 }

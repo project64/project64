@@ -530,7 +530,7 @@ void CN64System::StartEmulation2(bool NewThread)
     WriteTrace(TraceN64System, TraceDebug, "Start (NewThread: %s)", NewThread ? "true" : "false");
     if (NewThread)
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             StartLog();
         }

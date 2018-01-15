@@ -1382,8 +1382,7 @@ duk_ret_t CScriptInstance::js_ConsoleClear(duk_context* ctx)
 duk_ret_t CScriptInstance::js_Pause(duk_context* ctx)
 {
     CScriptInstance* _this = FetchInstance(ctx);
-    CBreakpoints* breakpoints = _this->m_Debugger->Breakpoints();
-    breakpoints->Pause();
+    g_System->Pause();
     return 1;
 }
 

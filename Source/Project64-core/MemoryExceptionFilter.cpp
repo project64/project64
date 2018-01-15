@@ -38,7 +38,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
     if ((int32_t)(MemAddress) < 0 || MemAddress > 0x1FFFFFFF)
     {
         WriteTrace(TraceExceptionHandler, TraceError, "Invalid memory adderess: %X", MemAddress);
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -55,7 +55,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
         uint32_t End = Start + *context.Ecx;
         if ((int32_t)Start < 0)
         {
-            if (bHaveDebugger())
+            if (HaveDebugger())
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -89,7 +89,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
             g_Recompiler->ClearRecompCode_Phys(Start & ~0xFFF, 0x1000, CRecompiler::Remove_ProtectedMem);
             return true;
         }
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -172,7 +172,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
     case 0x86: ReadPos += 5; break;
     case 0x87: ReadPos += 5; break;
     default:
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -181,7 +181,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
 
     if (Reg == NULL)
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -234,7 +234,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
             *context.Eip = (uint32_t)ReadPos;
             return true;
         default:
-            if (bHaveDebugger())
+            if (HaveDebugger())
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -268,7 +268,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
         case 0xC7:
             if (Reg != context.Eax)
             {
-                if (bHaveDebugger())
+                if (HaveDebugger())
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -284,7 +284,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
             *context.Eip = (uint32_t)(ReadPos + 2);
             return true;
         default:
-            if (bHaveDebugger())
+            if (HaveDebugger())
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -334,7 +334,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
     case 0xC6:
         if (Reg != context.Eax)
         {
-            if (bHaveDebugger())
+            if (HaveDebugger())
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -352,7 +352,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
     case 0xC7:
         if (Reg != context.Eax)
         {
-            if (bHaveDebugger())
+            if (HaveDebugger())
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -368,7 +368,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
         *context.Eip = (uint32_t)(ReadPos + 4);
         return true;
     }
-    if (bHaveDebugger())
+    if (HaveDebugger())
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
@@ -837,7 +837,7 @@ int32_t CMipsMemoryVM::MemoryFilter(uint32_t dwExptCode, void * lpExceptionPoint
 #if defined(_M_IX86) && defined(_WIN32)
     if (dwExptCode != EXCEPTION_ACCESS_VIOLATION || g_MMU == NULL)
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }

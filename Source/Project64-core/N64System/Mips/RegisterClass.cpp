@@ -355,7 +355,7 @@ void CRegisters::CheckInterrupts()
 
 void CRegisters::DoAddressError(bool DelaySlot, uint32_t BadVaddr, bool FromRead)
 {
-    if (bHaveDebugger())
+    if (HaveDebugger())
     {
         g_Notify->DisplayError("AddressError");
         if ((STATUS_REGISTER & STATUS_EXL) != 0)
@@ -412,7 +412,7 @@ void CRegisters::FixFpuLocations()
 
 void CRegisters::DoBreakException(bool DelaySlot)
 {
-    if (bHaveDebugger())
+    if (HaveDebugger())
     {
         if ((STATUS_REGISTER & STATUS_EXL) != 0)
         {
@@ -440,7 +440,7 @@ void CRegisters::DoBreakException(bool DelaySlot)
 
 void CRegisters::DoCopUnusableException(bool DelaySlot, int Coprocessor)
 {
-    if (bHaveDebugger())
+    if (HaveDebugger())
     {
         if ((STATUS_REGISTER & STATUS_EXL) != 0)
         {
@@ -540,7 +540,7 @@ void CRegisters::DoTLBReadMiss(bool DelaySlot, uint32_t BadVaddr)
     }
     else
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError(stdstr_f("TLBMiss - EXL Set\nBadVaddr = %X\nAddress Defined: %s", BadVaddr, g_TLB->AddressDefined(BadVaddr) ? "true" : "false").c_str());
         }
@@ -550,7 +550,7 @@ void CRegisters::DoTLBReadMiss(bool DelaySlot, uint32_t BadVaddr)
 
 void CRegisters::DoSysCallException(bool DelaySlot)
 {
-    if (bHaveDebugger())
+    if (HaveDebugger())
     {
         if ((STATUS_REGISTER & STATUS_EXL) != 0)
         {

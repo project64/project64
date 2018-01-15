@@ -956,7 +956,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     /* Profile Menu
     ****************/
     MenuItemList DebugProfileMenu;
-    if (bHaveDebugger())
+    if (HaveDebugger())
     {
         Item.Reset(ID_PROFILE_PROFILE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Record Execution Times");
         if (g_Settings->LoadBool(Debugger_RecordExecutionTimes)) { Item.SetItemTicked(true); }
@@ -978,7 +978,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MenuItemList DebugMemoryMenu;
     MenuItemList DebugInterrupt;
     MenuItemList DebugNotificationMenu;
-    if (bHaveDebugger())
+    if (HaveDebugger())
     {
         /* Debug - Interrupt
         *******************/
@@ -1272,7 +1272,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MainTitleMenu.push_back(Item);
     if (!inBasicMode)
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             Item.Reset(SUB_MENU, MENU_DEBUGGER, EMPTY_STDSTR, &DebugMenu);
             if (RomLoading) { Item.SetItemEnabled(false); }

@@ -164,7 +164,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
                 }
                 break;
             default:
-                if (bHaveDebugger()) { g_Notify->DisplayError("Unknown branch type"); }
+                if (HaveDebugger()) { g_Notify->DisplayError("Unknown branch type"); }
             }
         }
         else
@@ -402,7 +402,7 @@ void CArmRecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
     }
     else
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_NextInstruction).c_str());
         }
@@ -538,7 +538,7 @@ void CArmRecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
         m_Section->GenerateSectionLinkage();
         m_NextInstruction = END_BLOCK;
     }
-    else if (bHaveDebugger())
+    else if (HaveDebugger())
     {
         g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_NextInstruction).c_str());
     }
@@ -1801,7 +1801,7 @@ void CArmRecompilerOps::J()
         m_Section->GenerateSectionLinkage();
         m_NextInstruction = END_BLOCK;
     }
-    else if (bHaveDebugger())
+    else if (HaveDebugger())
     {
         g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_NextInstruction).c_str());
     }
@@ -2462,7 +2462,7 @@ void CArmRecompilerOps::SW(bool bCheckLLbit)
     }
     else
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -2556,7 +2556,7 @@ void CArmRecompilerOps::CACHE()
     case 25:
         break;
     default:
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError(stdstr_f("cache: %d", m_Opcode.rt).c_str());
         }
@@ -2898,7 +2898,7 @@ void CArmRecompilerOps::SPECIAL_JR()
         }
         m_NextInstruction = END_BLOCK;
     }
-    else if (bHaveDebugger())
+    else if (HaveDebugger())
     {
         g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_NextInstruction).c_str());
     }
@@ -2977,7 +2977,7 @@ void CArmRecompilerOps::SPECIAL_JALR()
         }
         m_NextInstruction = END_BLOCK;
     }
-    else if (bHaveDebugger())
+    else if (HaveDebugger())
     {
         g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_NextInstruction).c_str());
     }
@@ -3490,7 +3490,7 @@ void CArmRecompilerOps::SPECIAL_SLT()
         {
             if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs))
             {
-                if (bHaveDebugger())
+                if (HaveDebugger())
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -6103,7 +6103,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             {
                 g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
             }
-            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
         }
         break;
     case 0x04100000:
@@ -6122,7 +6122,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             {
                 g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
             }
-            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
         }
         break;
     case 0x04300000:
@@ -6237,7 +6237,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             {
                 g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
             }
-            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
         }
         break;
     case 0x04400000:
@@ -6313,7 +6313,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             {
                 g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
             }
-            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
         }
         break;
     case 0x04500000: /* AI registers */
@@ -6360,7 +6360,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             {
                 g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
             }
-            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
         }
         break;
     case 0x04600000:
@@ -6406,7 +6406,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             {
                 g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
             }
-            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
         }
         break;
     case 0x04700000:
@@ -6422,7 +6422,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             {
                 g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
             }
-            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
         }
         break;
     case 0x04800000:
@@ -6463,7 +6463,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             {
                 g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
             }
-            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
         }
         break;
     case 0x05000000:
@@ -6483,7 +6483,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
                 {
                     g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
                 }
-                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+                if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
             }
             break;
         }
@@ -6505,7 +6505,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         {
             g_Notify->DisplayError(stdstr_f("%s\ntrying to store %08X in %08X?", __FUNCTION__, Value, VAddr).c_str());
         }
-        if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
     }
 }
 
@@ -6572,7 +6572,7 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
             {
                 g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
             }
-            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
         }
         break;
     case 0x04000000:
@@ -6620,7 +6620,7 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
                 {
                     g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
                 }
-                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+                if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
             }
         }
         break;
@@ -6663,7 +6663,7 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
             {
                 g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
             }
-            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
         }
         break;
     case 0x04400000:
@@ -6865,7 +6865,7 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
             {
                 g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
             }
-            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
         }
         break;
     case 0x04700000:
@@ -6881,7 +6881,7 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
             {
                 g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
             }
-            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
         }
         break;
     case 0x04800000:
@@ -6916,7 +6916,7 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
             {
                 g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
             }
-            if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+            if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
         }
         break;
     case 0x05000000:
@@ -6968,7 +6968,7 @@ void CArmRecompilerOps::SW_Register(ArmReg Reg, uint32_t VAddr)
         {
             g_Notify->DisplayError(stdstr_f("%s\ntrying to store in %08X?", __FUNCTION__, VAddr).c_str());
         }
-        if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
     }
 }
 
@@ -6978,7 +6978,7 @@ void CArmRecompilerOps::LB_KnownAddress(ArmReg Reg, uint32_t VAddr, bool SignExt
 
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
-        if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
         return;
     }
 
@@ -7008,7 +7008,7 @@ void CArmRecompilerOps::LB_KnownAddress(ArmReg Reg, uint32_t VAddr, bool SignExt
         break;
     default:
         CPU_Message("    Should be loading from %08X ?!?", VAddr);
-        if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+        if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
     }
 }
 
@@ -7081,7 +7081,7 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
                     g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str());
                 }
                 CPU_Message("    Should be loading from %08X ?!?", VAddr);
-                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+                if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
             }
             break;
         case 0x04100000:
@@ -7104,7 +7104,7 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
                 MoveConstToArmReg(Reg, (uint32_t)0);
                 if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str()); }
                 CPU_Message("    Should be loading from %08X ?!?", VAddr);
-                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+                if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
             }
             break;
         case 0x04400000:
@@ -7124,7 +7124,7 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
                 MoveConstToArmReg(Reg, (uint32_t)0);
                 if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str()); }
                 CPU_Message("    Should be loading from %08X ?!?", VAddr);
-                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+                if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
             }
             break;
         case 0x04500000: /* AI registers */
@@ -7181,7 +7181,7 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
                 MoveConstToArmReg(Reg, (uint32_t)0);
                 if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str()); }
                 CPU_Message("    Should be loading from %08X ?!?", VAddr);
-                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+                if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
             }
             break;
         case 0x04600000:
@@ -7207,7 +7207,7 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
                     g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str());
                 }
                 CPU_Message("    Should be loading from %08X ?!?", VAddr);
-                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+                if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
             }
             break;
         case 0x04700000:
@@ -7222,7 +7222,7 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
                     g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str());
                 }
                 CPU_Message("    Should be loading from %08X ?!?", VAddr);
-                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+                if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
             }
             break;
         case 0x04800000:
@@ -7237,7 +7237,7 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
                     g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str());
                 }
                 CPU_Message("    Should be loading from %08X ?!?", VAddr);
-                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+                if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
             }
             break;
         case 0x05000000:
@@ -7277,7 +7277,7 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
                         g_Notify->DisplayError(stdstr_f("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr).c_str());
                     }
                     CPU_Message("    Should be loading from %08X ?!?", VAddr);
-                    if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+                    if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
                 }
             }
             else
@@ -7303,7 +7303,7 @@ void CArmRecompilerOps::LW_KnownAddress(ArmReg Reg, uint32_t VAddr)
             else
             {
                 CPU_Message("    Should be loading from %08X ?!?", VAddr);
-                if (bHaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
+                if (HaveDebugger()) { g_Notify->BreakPoint(__FILE__, __LINE__); }
             }
         }
     }

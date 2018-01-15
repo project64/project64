@@ -62,7 +62,7 @@ void CDMA::PI_DMA_READ()
 
     if (g_Reg->PI_DRAM_ADDR_REG + PI_RD_LEN_REG > g_MMU->RdramSize())
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError(stdstr_f("PI_DMA_READ not in Memory: %08X", g_Reg->PI_DRAM_ADDR_REG + PI_RD_LEN_REG).c_str());
         }
@@ -187,7 +187,7 @@ void CDMA::PI_DMA_READ()
         g_Reg->CheckInterrupts();
         return;
     }
-    if (bHaveDebugger())
+    if (HaveDebugger())
     {
         g_Notify->DisplayError(stdstr_f("PI_DMA_READ where are you dmaing to ? : %08X", g_Reg->PI_CART_ADDR_REG).c_str());
     }
@@ -483,7 +483,7 @@ void CDMA::SP_DMA_READ()
 
     if (g_Reg->SP_DRAM_ADDR_REG > g_MMU->RdramSize())
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError(stdstr_f("%s\nSP_DRAM_ADDR_REG not in RDRam space : % 08X", __FUNCTION__, g_Reg->SP_DRAM_ADDR_REG).c_str());
         }
@@ -494,7 +494,7 @@ void CDMA::SP_DMA_READ()
 
     if (g_Reg->SP_RD_LEN_REG + 1 + (g_Reg->SP_MEM_ADDR_REG & 0xFFF) > 0x1000)
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError(stdstr_f("%s\nCould not fit copy in memory segment",__FUNCTION__).c_str());
         }
@@ -525,7 +525,7 @@ void CDMA::SP_DMA_WRITE()
 {
     if (g_Reg->SP_DRAM_ADDR_REG > g_MMU->RdramSize())
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError(stdstr_f("%s\nSP_DRAM_ADDR_REG not in RDRam space : %08X", __FUNCTION__, g_Reg->SP_DRAM_ADDR_REG).c_str());
         }
@@ -534,7 +534,7 @@ void CDMA::SP_DMA_WRITE()
 
     if (g_Reg->SP_WR_LEN_REG + 1 + (g_Reg->SP_MEM_ADDR_REG & 0xFFF) > 0x1000)
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError("SP DMA WRITE\ncould not fit copy in memory segement");
         }

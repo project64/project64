@@ -278,7 +278,7 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
                 }
                 break;
             default:
-                if (bHaveDebugger()) { g_Notify->DisplayError("Unknown branch type"); }
+                if (HaveDebugger()) { g_Notify->DisplayError("Unknown branch type"); }
             }
         }
         else
@@ -512,7 +512,7 @@ void CX86RecompilerOps::Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE B
     }
     else
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction).c_str());
         }
@@ -645,7 +645,7 @@ void CX86RecompilerOps::Compile_BranchLikely(BRANCH_COMPARE CompareType, bool Li
         m_Section->GenerateSectionLinkage();
         m_NextInstruction = END_BLOCK;
     }
-    else if (bHaveDebugger())
+    else if (HaveDebugger())
     {
         g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_NextInstruction).c_str());
     }
@@ -1947,7 +1947,7 @@ void CX86RecompilerOps::J()
         m_Section->GenerateSectionLinkage();
         m_NextInstruction = END_BLOCK;
     }
-    else if (bHaveDebugger())
+    else if (HaveDebugger())
     {
         g_Notify->DisplayError(stdstr_f("WTF\n\nJ\nNextInstruction = %X", m_NextInstruction).c_str());
     }
@@ -2478,7 +2478,7 @@ void CX86RecompilerOps::CACHE()
     case 25:
         break;
     default:
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError(stdstr_f("cache: %d", m_Opcode.rt).c_str());
         }
@@ -4874,7 +4874,7 @@ void CX86RecompilerOps::SPECIAL_JR()
         }
         m_NextInstruction = END_BLOCK;
     }
-    else if (bHaveDebugger())
+    else if (HaveDebugger())
     {
         g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction).c_str());
     }
@@ -4956,7 +4956,7 @@ void CX86RecompilerOps::SPECIAL_JALR()
         }
         m_NextInstruction = END_BLOCK;
     }
-    else if (bHaveDebugger())
+    else if (HaveDebugger())
     {
         g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_NextInstruction).c_str());
     }
@@ -6088,7 +6088,7 @@ void CX86RecompilerOps::SPECIAL_XOR()
 
             if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs))
             {
-                if (bHaveDebugger()) { g_Notify->DisplayError("XOR 1"); }
+                if (HaveDebugger()) { g_Notify->DisplayError("XOR 1"); }
                 CX86RecompilerOps::UnknownOpcode();
             }
             else
@@ -7702,12 +7702,12 @@ void CX86RecompilerOps::COP0_MT()
         AndConstToVariable(0xFFFFCFF, &_CP0[m_Opcode.rd], CRegName::Cop0[m_Opcode.rd]);
         if (IsConst(m_Opcode.rt))
         {
-            if ((GetMipsRegLo(m_Opcode.rt) & 0x300) != 0 && bHaveDebugger())
+            if ((GetMipsRegLo(m_Opcode.rt) & 0x300) != 0 && HaveDebugger())
             {
                 g_Notify->DisplayError("Set IP0 or IP1");
             }
         }
-        /*else if (bHaveDebugger())
+        /*else if (HaveDebugger())
         {
             UnknownOpcode();
             return;

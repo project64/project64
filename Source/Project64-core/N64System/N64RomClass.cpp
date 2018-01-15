@@ -308,7 +308,7 @@ void CN64Rom::CalculateCicChip()
     m_CicChip = GetCicChipID(m_ROMImage, &CRC);
     if (m_CicChip == CIC_UNKNOWN)
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError(stdstr_f("Unknown CIC checksum:\n%I64X.", CRC).c_str());
         }

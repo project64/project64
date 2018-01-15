@@ -160,7 +160,7 @@ void CPlugins::CreatePlugins(void)
     if (m_RSP != NULL && m_RSP->EnableDebugging)
     {
         WriteTrace(TraceRSPPlugin, TraceInfo, "EnableDebugging starting");
-        m_RSP->EnableDebugging(bHaveDebugger());
+        m_RSP->EnableDebugging(HaveDebugger());
         WriteTrace(TraceRSPPlugin, TraceInfo, "EnableDebugging done");
     }
     WriteTrace(TracePlugins, TraceInfo, "Done");

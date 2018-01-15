@@ -48,7 +48,7 @@ bool CPlugin::Load(const char * FileName)
 
     // Try to load the plugin DLL
     //Try to load the DLL library
-    m_LibHandle = pjutil::DynLibOpen(FileName, bHaveDebugger());
+    m_LibHandle = pjutil::DynLibOpen(FileName, HaveDebugger());
     WriteTrace(PluginTraceType(), TraceDebug, "Loaded: %s LibHandle: %X", FileName, m_LibHandle);
 
     if (m_LibHandle == NULL)

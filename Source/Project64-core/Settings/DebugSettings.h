@@ -18,7 +18,8 @@ public:
     CDebugSettings();
     virtual ~CDebugSettings();
 
-    static inline bool bHaveDebugger(void) { return m_bHaveDebugger; }
+    static inline bool HaveDebugger(void) { return m_HaveDebugger; }
+    static inline bool isDebugging(void) { return m_Debugging; }
     static inline bool isStepping(void) { return m_Stepping; }
     static inline bool bRecordRecompilerAsm(void) { return m_bRecordRecompilerAsm; }
     static inline bool bShowTLBMisses(void) { return m_bShowTLBMisses; }
@@ -34,7 +35,8 @@ private:
 
     void RefreshSettings(void);
 
-    static bool m_bHaveDebugger;
+    static bool m_HaveDebugger;
+    static bool m_Debugging;
     static bool m_Stepping;
     static bool m_bRecordRecompilerAsm;
     static bool m_bShowTLBMisses;

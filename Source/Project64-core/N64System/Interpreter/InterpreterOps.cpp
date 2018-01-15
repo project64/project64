@@ -1239,7 +1239,7 @@ void R4300iOp::SB()
     uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
     if (!g_MMU->SB_VAddr(Address, _GPR[m_Opcode.rt].UB[0]))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1259,7 +1259,7 @@ void R4300iOp::SH()
     }
     if (!g_MMU->SH_VAddr(Address, _GPR[m_Opcode.rt].UHW[0]))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1279,7 +1279,7 @@ void R4300iOp::SWL()
 
     if (!g_MMU->LW_VAddr((Address & ~3), Value))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1295,7 +1295,7 @@ void R4300iOp::SWL()
 
     if (!g_MMU->SW_VAddr((Address & ~0x03), Value))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1319,7 +1319,7 @@ void R4300iOp::SW()
     }
     if (!g_MMU->SW_VAddr(Address, _GPR[m_Opcode.rt].UW[0]))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1350,7 +1350,7 @@ void R4300iOp::SDL()
 
     if (!g_MMU->LD_VAddr((Address & ~7), Value))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1366,7 +1366,7 @@ void R4300iOp::SDL()
 
     if (!g_MMU->SD_VAddr((Address & ~7), Value))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1398,7 +1398,7 @@ void R4300iOp::SDR()
 
     if (!g_MMU->LD_VAddr((Address & ~7), Value))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1414,7 +1414,7 @@ void R4300iOp::SDR()
 
     if (!g_MMU->SD_VAddr((Address & ~7), Value))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1434,7 +1434,7 @@ void R4300iOp::SWR()
 
     if (!g_MMU->LW_VAddr((Address & ~3), Value))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1450,7 +1450,7 @@ void R4300iOp::SWR()
 
     if (!g_MMU->SW_VAddr((Address & ~0x03), Value))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1542,7 +1542,7 @@ void R4300iOp::LD()
     }
     if (!g_MMU->LD_VAddr(Address, _GPR[m_Opcode.rt].UDW))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1571,7 +1571,7 @@ void R4300iOp::LDC1()
     }
     if (!g_MMU->LD_VAddr(Address, *(uint64_t *)_FPR_D[m_Opcode.ft]))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1593,7 +1593,7 @@ void R4300iOp::SWC1()
 
     if (!g_MMU->SW_VAddr(Address, *(uint32_t *)_FPR_S[m_Opcode.ft]))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1615,7 +1615,7 @@ void R4300iOp::SDC1()
     }
     if (!g_MMU->SD_VAddr(Address, *(int64_t *)_FPR_D[m_Opcode.ft]))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1635,7 +1635,7 @@ void R4300iOp::SD()
     }
     if (!g_MMU->SD_VAddr(Address, _GPR[m_Opcode.rt].UDW))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -1831,7 +1831,7 @@ void R4300iOp::SPECIAL_DDIV()
     }
     else
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError("DDIV by 0 ???");
         }
@@ -1847,7 +1847,7 @@ void R4300iOp::SPECIAL_DDIVU()
     }
     else
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError("DDIVU by 0 ???");
         }
@@ -1946,7 +1946,7 @@ void R4300iOp::SPECIAL_DSUBU()
 
 void R4300iOp::SPECIAL_TEQ()
 {
-    if (_GPR[m_Opcode.rs].DW == _GPR[m_Opcode.rt].DW && bHaveDebugger())
+    if (_GPR[m_Opcode.rs].DW == _GPR[m_Opcode.rt].DW && HaveDebugger())
     {
         g_Notify->DisplayError("Should trap this ???");
     }
@@ -2094,7 +2094,7 @@ void R4300iOp::REGIMM_BGEZAL()
         m_JumpToLocation = (*_PROGRAM_COUNTER) + ((int16_t)m_Opcode.offset << 2) + 4;
         if ((*_PROGRAM_COUNTER) == m_JumpToLocation)
         {
-            if (CDebugSettings::bHaveDebugger())
+            if (CDebugSettings::HaveDebugger())
             {
                 if (g_Reg->m_PROGRAM_COUNTER < 0x80000400)
                 {
@@ -2188,7 +2188,7 @@ void R4300iOp::COP0_MT()
         {
             _CP0[m_Opcode.rd] = _GPR[m_Opcode.rt].UW[0];
         }
-        if ((_CP0[m_Opcode.rd] & 0x18) != 0 && bHaveDebugger())
+        if ((_CP0[m_Opcode.rd] & 0x18) != 0 && HaveDebugger())
         {
             g_Notify->DisplayError("Left kernel mode ??");
         }
@@ -2196,7 +2196,7 @@ void R4300iOp::COP0_MT()
         break;
     case 13: //cause
         _CP0[m_Opcode.rd] &= 0xFFFFCFF;
-        if ((_GPR[m_Opcode.rt].UW[0] & 0x300) != 0 && bHaveDebugger())
+        if ((_GPR[m_Opcode.rt].UW[0] & 0x300) != 0 && HaveDebugger())
         {
             g_Notify->DisplayError("Set IP0 or IP1");
         }
@@ -2279,7 +2279,7 @@ void R4300iOp::COP1_CF()
     TEST_COP1_USABLE_EXCEPTION();
     if (m_Opcode.fs != 31 && m_Opcode.fs != 0)
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError("CFC1 what register are you writing to ?");
         }
@@ -2315,7 +2315,7 @@ void R4300iOp::COP1_CT()
         }
         return;
     }
-    if (bHaveDebugger())
+    if (HaveDebugger())
     {
         g_Notify->DisplayError("CTC1 what register are you writing to ?");
     }
@@ -2580,7 +2580,7 @@ void R4300iOp::COP1_S_CMP()
 
     if (_isnan(Temp0) || _isnan(Temp1))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError(stdstr_f("%s: Nan ?", __FUNCTION__).c_str());
         }
@@ -2589,7 +2589,7 @@ void R4300iOp::COP1_S_CMP()
         unorded = true;
         if ((m_Opcode.funct & 8) != 0)
         {
-            if (bHaveDebugger())
+            if (HaveDebugger())
             {
                 g_Notify->DisplayError(stdstr_f("Signal InvalidOperationException\nin r4300i_COP1_S_CMP\n%X  %ff\n%X  %ff", Temp0, Temp0, Temp1, Temp1).c_str());
             }
@@ -2824,7 +2824,7 @@ void R4300iOp::COP1_D_CMP()
 
     if (_isnan(Temp0.D) || _isnan(Temp1.D))
     {
-        if (bHaveDebugger())
+        if (HaveDebugger())
         {
             g_Notify->DisplayError(stdstr_f("%s: Nan ?", __FUNCTION__).c_str());
         }
@@ -2833,7 +2833,7 @@ void R4300iOp::COP1_D_CMP()
         unorded = true;
         if ((m_Opcode.funct & 8) != 0)
         {
-            if (bHaveDebugger())
+            if (HaveDebugger())
             {
                 g_Notify->DisplayError(stdstr_f("Signal InvalidOperationException\nin %s", __FUNCTION__).c_str());
             }
