@@ -298,6 +298,18 @@ void CInterpreterCPU::ExecuteCPU()
                 continue;
             }
 
+            if (isDebugging())
+            {
+                if (HaveExecutionBP() && g_Debugger->ExecutionBP(PROGRAM_COUNTER))
+                {
+                    g_Settings->SaveBool(Debugger_SteppingOps, true);
+                }
+                if (isStepping())
+                {
+                    g_Debugger->WaitForStep();
+                }
+            }
+
             if (CDebugSettings::HaveDebugger() && !g_Debugger->CPUStepStarted())
             {
                 // Skip command if instructed by the debugger

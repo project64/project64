@@ -22,11 +22,6 @@ CBreakpoints::CBreakpoints()
     m_Skipping = FALSE;
 }
 
-void CBreakpoints::Resume()
-{
-    g_System->ExternalEvent(SysEvent_ResumeCPU_FromMenu);
-}
-
 bool CBreakpoints::isSkipping()
 {
     bool ret = m_Skipping;

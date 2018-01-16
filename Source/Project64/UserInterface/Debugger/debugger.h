@@ -10,6 +10,7 @@
 ****************************************************************************/
 #pragma once
 #include <Project64-core/Debugger.h>
+#include <Common/SyncEvent.h>
 #include <Project64-core/Settings/DebugSettings.h>
 
 class CDumpMemory;
@@ -51,7 +52,7 @@ private:
     CScriptSystem       * m_ScriptSystem;
     CDMALog             * m_DMALog;
 
-    void BreakpointHit(void);
+    SyncEvent m_StepEvent;
 
 protected:
     void TLBChanged(void);
@@ -80,6 +81,9 @@ public:
     void Debug_RefreshStackWindow(void);
     void Debug_RefreshStackTraceWindow(void);
     void OpenDMALogWindow(void);
+
+    bool ExecutionBP(uint32_t address);
+    void WaitForStep(void);
 
     CBreakpoints* Breakpoints();
     CDebugSymbols* Symbols();

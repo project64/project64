@@ -30,7 +30,8 @@ CDebuggerUI::CDebuggerUI() :
     m_StackTrace(NULL),
     m_StackView(NULL),
     m_DMALogView(NULL),
-    m_DMALog(NULL)
+    m_DMALog(NULL),
+    m_StepEvent(false)
 {
     g_Debugger = this;
 
@@ -238,7 +239,7 @@ void CDebuggerUI::OpenCommandWindow()
 {
     if (m_CommandsView == NULL)
     {
-        m_CommandsView = new CDebugCommandsView(this);
+        m_CommandsView = new CDebugCommandsView(this, m_StepEvent);
     }
     m_CommandsView->ShowWindow();
 }
@@ -365,15 +366,6 @@ CDMALog* CDebuggerUI::DMALog()
     return m_DMALog;
 }
 
-void CDebuggerUI::BreakpointHit()
-{
-    g_Settings->SaveBool(Debugger_SteppingOps, true);
-    Debug_ShowCommandsLocation(g_Reg->m_PROGRAM_COUNTER, false);
-    Debug_RefreshStackWindow();
-    Debug_RefreshStackTraceWindow();
-    g_System->Pause();
-}
-
 // CDebugger implementation
 
 void CDebuggerUI::TLBChanged()
@@ -389,13 +381,6 @@ bool CDebuggerUI::CPUStepStarted()
     uint32_t JumpToLocation = R4300iOp::m_JumpToLocation;
 
     m_ScriptSystem->HookCPUExec()->InvokeByParamInRange(PROGRAM_COUNTER);
-
-    // PC breakpoints
-
-    if (isDebugging() && m_Breakpoints->ExecutionBPExists(PROGRAM_COUNTER, true))
-    {
-        goto breakpoint_hit;
-    }
 
     // Memory breakpoints
 
@@ -466,7 +451,7 @@ bool CDebuggerUI::CPUStepStarted()
     return !m_Breakpoints->isSkipping();
 
 breakpoint_hit:
-    BreakpointHit();
+    g_Settings->SaveBool(Debugger_SteppingOps, true);
     return !m_Breakpoints->isSkipping();
 }
 
@@ -532,4 +517,16 @@ void CDebuggerUI::FrameDrawn()
     m_ScriptSystem->HookFrameDrawn()->InvokeAll();
 
     ReleaseDC(hMainWnd, hdc);
+}
+
+void CDebuggerUI::WaitForStep(void)
+{
+    g_Settings->SaveBool(Debugger_WaitingForStep, true);
+    m_StepEvent.IsTriggered(SyncEvent::INFINITE_TIMEOUT);
+    g_Settings->SaveBool(Debugger_WaitingForStep, false);
+}
+
+bool CDebuggerUI::ExecutionBP(uint32_t address)
+{
+    return m_Breakpoints != NULL && m_Breakpoints->ExecutionBPExists(address, true) != CBreakpoints::BP_NOT_SET;
 }

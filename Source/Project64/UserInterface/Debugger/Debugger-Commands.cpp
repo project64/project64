@@ -45,9 +45,10 @@ void CCommandList::Attach(HWND hWndNew)
 CDebugCommandsView* CDebugCommandsView::_this = NULL;
 HHOOK CDebugCommandsView::hWinMessageHook = NULL;
 
-CDebugCommandsView::CDebugCommandsView(CDebuggerUI * debugger) :
+CDebugCommandsView::CDebugCommandsView(CDebuggerUI * debugger, SyncEvent &StepEvent) :
     CDebugDialog<CDebugCommandsView>(debugger),
-    CToolTipDialog<CDebugCommandsView>()
+    CToolTipDialog<CDebugCommandsView>(),
+    m_StepEvent(StepEvent)
 {
     m_HistoryIndex = -1;
     m_bIgnoreAddrChange = false;
@@ -64,6 +65,9 @@ CDebugCommandsView::~CDebugCommandsView()
 
 LRESULT	CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
+    g_Settings->RegisterChangeCB(Debugger_WaitingForStep, this, (CSettings::SettingChangedFunc)StaticWaitingForStepChanged);
+    g_Settings->RegisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)StaticSteppingOpsChanged);
+
     m_CommandList.Attach(GetDlgItem(IDC_CMD_LIST));
     m_BreakpointList.Attach(GetDlgItem(IDC_BP_LIST));
     m_AddressEdit.Attach(GetDlgItem(IDC_ADDR_EDIT));
@@ -139,6 +143,9 @@ LRESULT	CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
 
 LRESULT CDebugCommandsView::OnDestroy(void)
 {
+    g_Settings->UnregisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)StaticSteppingOpsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_WaitingForStep, this, (CSettings::SettingChangedFunc)StaticWaitingForStepChanged);
+
     UnhookWindowsHookEx(hWinMessageHook);
     m_OpEdit.Detach();
     m_ForwardButton.Detach();
@@ -161,7 +168,12 @@ void CDebugCommandsView::InterceptKeyDown(WPARAM wParam, LPARAM /*lParam*/)
     switch (wParam)
     {
     case VK_F1: CPUSkip(); break;
-    case VK_F2: CPUStepInto(); break;
+    case VK_F2: 
+        if (WaitingForStep())
+        {
+            m_StepEvent.Trigger();
+        }
+        break;
     case VK_F3:
         // reserved step over
         break;
@@ -1084,28 +1096,16 @@ void CDebugCommandsView::RemoveSelectedBreakpoints()
 
 void CDebugCommandsView::CPUSkip()
 {
-    g_Settings->SaveBool(Debugger_SteppingOps, true);
     m_Breakpoints->Skip();
-    m_Breakpoints->Resume();
-}
-
-void CDebugCommandsView::CPUStepInto()
-{
-    m_Debugger->Debug_RefreshStackWindow();
-    m_Debugger->Debug_RefreshStackTraceWindow();
-    g_Settings->SaveBool(Debugger_SteppingOps, true);
-    m_Breakpoints->Resume();
 }
 
 void CDebugCommandsView::CPUResume()
 {
-    m_Debugger->Debug_RefreshStackWindow();
-    m_Debugger->Debug_RefreshStackTraceWindow();
     g_Settings->SaveBool(Debugger_SteppingOps, false);
-    m_Breakpoints->Resume();
-    m_RegisterTabs.SetColorsEnabled(false);
-    m_RegisterTabs.RefreshEdits();
-    ShowAddress(m_StartAddress, TRUE);
+    if (WaitingForStep())
+    {
+        m_StepEvent.Trigger();
+    }
 }
 
 LRESULT CDebugCommandsView::OnBackButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
@@ -1161,8 +1161,10 @@ LRESULT CDebugCommandsView::OnGoButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND 
 
 LRESULT CDebugCommandsView::OnStepButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
 {
-    CPUStepInto();
-    m_AddressEdit.SetFocus();
+    if (WaitingForStep())
+    {
+        m_StepEvent.Trigger();
+    }
     return FALSE;
 }
 
@@ -1473,9 +1475,6 @@ LRESULT CDebugCommandsView::OnActivate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lP
     {
         CheckCPUType();
     }
-
-    ShowAddress(m_StartAddress, TRUE);
-
     return FALSE;
 }
 
@@ -1513,10 +1512,10 @@ LRESULT CDebugCommandsView::OnScroll(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPar
     switch (type)
     {
     case SB_LINEUP:
-        ShowAddress(m_StartAddress - 8, TRUE);
+        ShowAddress(m_StartAddress - 4, TRUE);
         break;
     case SB_LINEDOWN:
-        ShowAddress(m_StartAddress + 8, TRUE);
+        ShowAddress(m_StartAddress + 4, TRUE);
         break;
     case SB_THUMBTRACK:
     {
@@ -1528,6 +1527,37 @@ LRESULT CDebugCommandsView::OnScroll(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPar
 
     return FALSE;
 }
+
+void CDebugCommandsView::WaitingForStepChanged(void)
+{
+    if (WaitingForStep())
+    {
+        ShowAddress(g_Reg->m_PROGRAM_COUNTER, false);
+        m_Debugger->Debug_RefreshStackWindow();
+        m_Debugger->Debug_RefreshStackTraceWindow();
+        m_StepButton.EnableWindow(true);
+        m_GoButton.EnableWindow(true);
+        m_AddressEdit.SetFocus();
+    }
+    else
+    {
+        m_StepButton.EnableWindow(false);
+        m_GoButton.EnableWindow(false);
+    }
+}
+
+void CDebugCommandsView::SteppingOpsChanged(void)
+{
+    if (!g_Settings->LoadBool(Debugger_SteppingOps))
+    {
+        m_Debugger->Debug_RefreshStackWindow();
+        m_Debugger->Debug_RefreshStackTraceWindow();
+        m_RegisterTabs.SetColorsEnabled(false);
+        m_RegisterTabs.RefreshEdits();
+        ShowAddress(m_StartAddress, TRUE);
+    }
+}
+
 
 void CDebugCommandsView::Reset()
 {

@@ -23,7 +23,10 @@ __interface CDebugger
     virtual void OpenStackTraceWindow(void) = 0;
     virtual void OpenStackViewWindow(void) = 0;
     virtual void TLBChanged(void) = 0;
+	virtual void FrameDrawn(void) = 0;
+    virtual void WaitForStep(void) = 0;
+    virtual bool ExecutionBP(uint32_t address) = 0;
+
     virtual bool CPUStepStarted(void) = 0;
     virtual void CPUStep(void) = 0;
-	virtual void FrameDrawn(void) = 0;
 };

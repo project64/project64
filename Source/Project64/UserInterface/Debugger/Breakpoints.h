@@ -36,8 +36,6 @@ public:
     BPSTATE WriteBPExists(uint32_t address, bool bRemoveTemp = false);
     BPSTATE ExecutionBPExists(uint32_t address, bool bRemoveTemp = false);
 
-    void Pause();
-    void Resume();
     void Skip();
 
     bool isSkipping();

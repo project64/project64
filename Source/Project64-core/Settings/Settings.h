@@ -231,6 +231,7 @@ enum SettingID
     Debugger_RecordExecutionTimes,
     Debugger_SteppingOps,
     Debugger_HaveExecutionBP,
+    Debugger_WaitingForStep,
 
     //Trace
     Debugger_TraceMD5,

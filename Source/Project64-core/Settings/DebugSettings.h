@@ -21,6 +21,7 @@ public:
     static inline bool HaveDebugger(void) { return m_HaveDebugger; }
     static inline bool isDebugging(void) { return m_Debugging; }
     static inline bool isStepping(void) { return m_Stepping; }
+    static inline bool WaitingForStep(void) { return m_WaitingForStep; }
     static inline bool bRecordRecompilerAsm(void) { return m_bRecordRecompilerAsm; }
     static inline bool bShowTLBMisses(void) { return m_bShowTLBMisses; }
     static inline bool bShowDivByZero(void) { return m_bShowDivByZero; }
@@ -38,6 +39,7 @@ private:
     static bool m_HaveDebugger;
     static bool m_Debugging;
     static bool m_Stepping;
+    static bool m_WaitingForStep;
     static bool m_bRecordRecompilerAsm;
     static bool m_bShowTLBMisses;
     static bool m_bShowDivByZero;

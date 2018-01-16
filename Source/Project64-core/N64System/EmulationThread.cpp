@@ -16,6 +16,7 @@
 void  CN64System::StartEmulationThead()
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
+    
     CThread * thread = new CThread((CThread::CTHREAD_START_ROUTINE)StartEmulationThread);
     thread->Start(thread);
     WriteTrace(TraceN64System, TraceDebug, "Done");

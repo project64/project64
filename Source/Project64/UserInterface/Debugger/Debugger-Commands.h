@@ -78,7 +78,7 @@ class CDebugCommandsView :
 public:
     enum { IDD = IDD_Debugger_Commands };
 
-    CDebugCommandsView(CDebuggerUI * debugger);
+    CDebugCommandsView(CDebuggerUI * debugger, SyncEvent &StepEvent);
     virtual ~CDebugCommandsView(void);
 
     void ShowAddress(DWORD address, BOOL top);
@@ -160,6 +160,9 @@ private:
         TOOLTIP(IDC_SYMBOLS_BTN, "Symbols...")
     END_TOOLTIP_MAP()
 
+    static void StaticSteppingOpsChanged(CDebugCommandsView * __this) { __this->SteppingOpsChanged(); }
+    static void StaticWaitingForStepChanged(CDebugCommandsView * __this) { __this->WaitingForStepChanged(); }
+
     LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnSizing(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -228,8 +231,9 @@ private:
     static const char* GetDataAddressNotes(uint32_t vAddr);
 
     void CPUSkip();
-    void CPUStepInto();
     void CPUResume();
+    void WaitingForStepChanged(void);
+    void SteppingOpsChanged(void);
 
     void AddBranchArrow(int startPos, int endPos);
     void ClearBranchArrows();
@@ -257,6 +261,7 @@ private:
     CScrollBar m_Scrollbar;
 
     CRegisterTabs m_RegisterTabs;
+    SyncEvent & m_StepEvent;
 
     CButton m_BackButton;
     CButton m_ForwardButton;
