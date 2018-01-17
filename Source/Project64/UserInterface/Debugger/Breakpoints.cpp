@@ -19,18 +19,6 @@
 
 CBreakpoints::CBreakpoints()
 {
-    m_Skipping = FALSE;
-}
-
-bool CBreakpoints::isSkipping()
-{
-    bool ret = m_Skipping;
-    m_Skipping = FALSE;
-    return ret;
-}
-void CBreakpoints::Skip()
-{
-    m_Skipping = true;
 }
 
 bool CBreakpoints::RBPAdd(uint32_t address, bool bTemporary)

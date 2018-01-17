@@ -56,7 +56,7 @@ private:
 
 protected:
     void TLBChanged(void);
-    bool CPUStepStarted(void);
+    void CPUStepStarted(void);
     void CPUStep(void);
     void FrameDrawn(void);
 

@@ -375,7 +375,7 @@ void CDebuggerUI::TLBChanged()
 
 // Called from the interpreter core at the beginning of every CPU step
 // Returns false when the instruction should be skipped
-bool CDebuggerUI::CPUStepStarted()
+void CDebuggerUI::CPUStepStarted()
 {
     uint32_t PROGRAM_COUNTER = g_Reg->m_PROGRAM_COUNTER;
     uint32_t JumpToLocation = R4300iOp::m_JumpToLocation;
@@ -434,7 +434,7 @@ bool CDebuggerUI::CPUStepStarted()
 
     if (!isStepping())
     {
-        return !m_Breakpoints->isSkipping();
+        return;
     }
 
     if (R4300iOp::m_NextInstruction != JUMP)
@@ -448,11 +448,10 @@ bool CDebuggerUI::CPUStepStarted()
         goto breakpoint_hit;
     }
 
-    return !m_Breakpoints->isSkipping();
+    return;
 
 breakpoint_hit:
     g_Settings->SaveBool(Debugger_SteppingOps, true);
-    return !m_Breakpoints->isSkipping();
 }
 
 void CDebuggerUI::CPUStep()

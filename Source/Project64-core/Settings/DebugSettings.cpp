@@ -15,9 +15,10 @@ int CDebugSettings::m_RefCount = 0;
 
 bool CDebugSettings::m_Registered = false;
 
-bool CDebugSettings::m_HaveDebugger = true;
-bool CDebugSettings::m_Debugging = true;
-bool CDebugSettings::m_Stepping = true;
+bool CDebugSettings::m_HaveDebugger = false;
+bool CDebugSettings::m_Debugging = false;
+bool CDebugSettings::m_Stepping = false;
+bool CDebugSettings::m_SkipOp = false;
 bool CDebugSettings::m_WaitingForStep = false;
 bool CDebugSettings::m_bRecordRecompilerAsm = false;
 bool CDebugSettings::m_bShowTLBMisses = false;
@@ -37,6 +38,7 @@ CDebugSettings::CDebugSettings()
         g_Settings->RegisterChangeCB(Debugger_ShowDivByZero, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_RecordExecutionTimes, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->RegisterChangeCB(Debugger_SkipOp, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_HaveExecutionBP, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_WaitingForStep, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
 
@@ -55,6 +57,7 @@ CDebugSettings::~CDebugSettings()
         g_Settings->UnregisterChangeCB(Debugger_ShowDivByZero, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_RecordExecutionTimes, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->UnregisterChangeCB(Debugger_SkipOp, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_HaveExecutionBP, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_WaitingForStep, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
     }
@@ -68,6 +71,7 @@ void CDebugSettings::RefreshSettings()
     m_bShowDivByZero = m_HaveDebugger && g_Settings->LoadBool(Debugger_ShowDivByZero);
     m_RecordExecutionTimes = g_Settings->LoadBool(Debugger_RecordExecutionTimes);
     m_Stepping = g_Settings->LoadBool(Debugger_SteppingOps);
+    m_SkipOp = g_Settings->LoadBool(Debugger_SkipOp);
     m_WaitingForStep = g_Settings->LoadBool(Debugger_WaitingForStep);
     m_HaveExecutionBP = g_Settings->LoadBool(Debugger_HaveExecutionBP);
 

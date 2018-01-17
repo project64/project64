@@ -230,6 +230,7 @@ enum SettingID
     Debugger_DebugLanguage,
     Debugger_RecordExecutionTimes,
     Debugger_SteppingOps,
+    Debugger_SkipOp,
     Debugger_HaveExecutionBP,
     Debugger_WaitingForStep,
 

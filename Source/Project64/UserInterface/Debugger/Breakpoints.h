@@ -36,10 +36,6 @@ public:
     BPSTATE WriteBPExists(uint32_t address, bool bRemoveTemp = false);
     BPSTATE ExecutionBPExists(uint32_t address, bool bRemoveTemp = false);
 
-    void Skip();
-
-    bool isSkipping();
-
     bool RBPAdd(uint32_t address, bool bTemporary = false);
     void RBPRemove(uint32_t address);
     void RBPToggle(uint32_t address, bool bTemporary = false);
@@ -61,6 +57,4 @@ private:
     breakpoints_t m_ReadMem;
     breakpoints_t m_WriteMem;
     breakpoints_t m_Execution;
-
-    bool m_Skipping;
 };

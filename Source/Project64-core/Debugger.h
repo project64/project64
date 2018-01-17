@@ -27,6 +27,6 @@ __interface CDebugger
     virtual void WaitForStep(void) = 0;
     virtual bool ExecutionBP(uint32_t address) = 0;
 
-    virtual bool CPUStepStarted(void) = 0;
+    virtual void CPUStepStarted(void) = 0;
     virtual void CPUStep(void) = 0;
 };

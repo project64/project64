@@ -307,14 +307,20 @@ void CInterpreterCPU::ExecuteCPU()
                 if (isStepping())
                 {
                     g_Debugger->WaitForStep();
+
+                    if (SkipOp())
+                    {
+                        // Skip command if instructed by the debugger
+                        g_Settings->SaveBool(Debugger_SkipOp, false);
+                        PROGRAM_COUNTER += 4;
+                        continue;
+                    }
                 }
             }
 
-            if (CDebugSettings::HaveDebugger() && !g_Debugger->CPUStepStarted())
+            if (CDebugSettings::HaveDebugger())
             {
-                // Skip command if instructed by the debugger
-                PROGRAM_COUNTER += 4;
-                continue;
+                g_Debugger->CPUStepStarted();
             }
 
             /* if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER < 0x80380000)

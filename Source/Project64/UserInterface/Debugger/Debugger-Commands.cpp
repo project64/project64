@@ -1096,7 +1096,11 @@ void CDebugCommandsView::RemoveSelectedBreakpoints()
 
 void CDebugCommandsView::CPUSkip()
 {
-    m_Breakpoints->Skip();
+    g_Settings->SaveBool(Debugger_SkipOp, true);
+    if (WaitingForStep())
+    {
+        m_StepEvent.Trigger();
+    }
 }
 
 void CDebugCommandsView::CPUResume()
