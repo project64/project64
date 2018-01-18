@@ -81,7 +81,7 @@ public:
     CDebugCommandsView(CDebuggerUI * debugger, SyncEvent &StepEvent);
     virtual ~CDebugCommandsView(void);
 
-    void ShowAddress(DWORD address, BOOL top);
+    void ShowAddress(uint32_t address, bool top);
     void ShowPIRegTab();
 
     void Reset();
@@ -125,7 +125,7 @@ private:
         NOTIFY_HANDLER_EX(IDC_CMD_LIST, NM_CUSTOMDRAW, OnCustomDrawList)
         MSG_WM_DESTROY(OnDestroy)
         CHAIN_MSG_MAP(CDialogResize<CDebugCommandsView>)
-        END_MSG_MAP()
+    END_MSG_MAP()
 
     BEGIN_DLGRESIZE_MAP(CDebugCommandsView)
         DLGRESIZE_CONTROL(IDC_GO_BTN, DLSZ_MOVE_X)
@@ -246,7 +246,7 @@ private:
     CAddBreakpointDlg m_AddBreakpointDlg;
     CAddSymbolDlg m_AddSymbolDlg;
 
-    DWORD m_StartAddress;
+    uint32_t m_StartAddress;
     CRect m_DefaultWindowRect;
 
     CEditNumber32 m_PCEdit;

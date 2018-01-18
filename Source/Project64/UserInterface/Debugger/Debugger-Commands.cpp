@@ -497,7 +497,7 @@ const char* CDebugCommandsView::GetCodeAddressNotes(uint32_t vAddr)
     return NULL;
 }
 
-void CDebugCommandsView::ShowAddress(DWORD address, BOOL top)
+void CDebugCommandsView::ShowAddress(uint32_t address, bool top)
 {
     if (top == TRUE)
     {
@@ -710,25 +710,20 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
     NMLVCUSTOMDRAW* pLVCD = reinterpret_cast<NMLVCUSTOMDRAW*>(pNMHDR);
     DWORD drawStage = pLVCD->nmcd.dwDrawStage;
 
-    HDC hDC = pLVCD->nmcd.hdc;
-
     switch (drawStage)
     {
-    case CDDS_PREPAINT:
-        return (CDRF_NOTIFYITEMDRAW | CDRF_NOTIFYPOSTPAINT);
+    case CDDS_PREPAINT: return (CDRF_NOTIFYITEMDRAW | CDRF_NOTIFYPOSTPAINT);
+    case CDDS_ITEMPREPAINT: return CDRF_NOTIFYSUBITEMDRAW;
+    case (CDDS_ITEMPREPAINT | CDDS_SUBITEM): break;
     case CDDS_POSTPAINT:
-        DrawBranchArrows(hDC);
+        DrawBranchArrows(pLVCD->nmcd.hdc);
         return CDRF_DODEFAULT;
-    case CDDS_ITEMPREPAINT:
-        return CDRF_NOTIFYSUBITEMDRAW;
-    case (CDDS_ITEMPREPAINT | CDDS_SUBITEM):
-        break;
     default:
         return CDRF_DODEFAULT;
     }
 
-    DWORD nItem = pLVCD->nmcd.dwItemSpec;
-    DWORD nSubItem = pLVCD->iSubItem;
+    uint32_t nItem = (uint32_t)pLVCD->nmcd.dwItemSpec;
+    uint32_t nSubItem = pLVCD->iSubItem;
 
     uint32_t address = m_StartAddress + (nItem * 4);
     uint32_t pc = (g_Reg != NULL) ? g_Reg->m_PROGRAM_COUNTER : 0;
@@ -756,7 +751,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
         {
             // breakpoint
             pLVCD->clrTextBk = RGB(0x44, 0x00, 0x00);
-            pLVCD->clrText = (address == pc) ?
+            pLVCD->clrText = (address == pc && isDebugging()) ?
                 RGB(0xFF, 0xFF, 0x00) : // breakpoint & current pc
                 RGB(0xFF, 0xCC, 0xCC);
         }
@@ -764,7 +759,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
         {
             // breakpoint
             pLVCD->clrTextBk = RGB(0x66, 0x44, 0x00);
-            pLVCD->clrText = (address == pc) ?
+            pLVCD->clrText = (address == pc && isDebugging()) ?
                 RGB(0xFF, 0xFF, 0x00) : // breakpoint & current pc
                 RGB(0xFF, 0xEE, 0xCC);
         }
@@ -780,7 +775,6 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
             pLVCD->clrTextBk = RGB(0xEE, 0xEE, 0xEE);
             pLVCD->clrText = RGB(0x44, 0x44, 0x44);
         }
-
         return CDRF_DODEFAULT;
     }
 
@@ -1561,7 +1555,6 @@ void CDebugCommandsView::SteppingOpsChanged(void)
         ShowAddress(m_StartAddress, TRUE);
     }
 }
-
 
 void CDebugCommandsView::Reset()
 {

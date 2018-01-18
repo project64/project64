@@ -36,30 +36,6 @@ public:
     CDebuggerUI();
     ~CDebuggerUI();
 
-private:
-    CDumpMemory         * m_MemoryDump;
-    CDebugMemoryView    * m_MemoryView;
-    CDebugMemorySearch  * m_MemorySearch;
-    CDebugTlb           * m_DebugTLB;
-    CDebugCommandsView  * m_CommandsView;
-    CDebugScripts       * m_Scripts;
-    CDebugSymbols       * m_Symbols;
-    CDebugDMALogView    * m_DMALogView;
-    CDebugStackTrace    * m_StackTrace;
-    CDebugStackView     * m_StackView;
-
-    CBreakpoints        * m_Breakpoints;
-    CScriptSystem       * m_ScriptSystem;
-    CDMALog             * m_DMALog;
-
-    SyncEvent m_StepEvent;
-
-protected:
-    void TLBChanged(void);
-    void CPUStepStarted(void);
-    void CPUStep(void);
-    void FrameDrawn(void);
-
 public:
     void Debug_Reset(void);
     void OpenMemoryDump(void);
@@ -92,4 +68,32 @@ public:
     CDMALog* DMALog();
 
     static void GameReset(CDebuggerUI * _this);
+
+protected:
+    void TLBChanged(void);
+    void CPUStepStarted(void);
+    void CPUStep(void);
+    void FrameDrawn(void);
+
+private:
+    CDebuggerUI(const CDebuggerUI&);				// Disable copy constructor
+    CDebuggerUI& operator=(const CDebuggerUI&);		// Disable assignment
+
+    CDumpMemory         * m_MemoryDump;
+    CDebugMemoryView    * m_MemoryView;
+    CDebugMemorySearch  * m_MemorySearch;
+    CDebugTlb           * m_DebugTLB;
+    CDebugCommandsView  * m_CommandsView;
+    CDebugScripts       * m_Scripts;
+    CDebugSymbols       * m_Symbols;
+    CDebugDMALogView    * m_DMALogView;
+    CDebugStackTrace    * m_StackTrace;
+    CDebugStackView     * m_StackView;
+
+    CBreakpoints        * m_Breakpoints;
+    CScriptSystem       * m_ScriptSystem;
+    CDMALog             * m_DMALog;
+
+    SyncEvent m_StepEvent;
+
 };

@@ -145,7 +145,7 @@ void CSymbols::Load()
 		}
 
 		char* endptr;
-		address = strtoull(m_ParserToken, &endptr, 16);
+		address = (uint32_t)strtoull(m_ParserToken, &endptr, 16);
 		
 		if (endptr == m_ParserToken)
 		{
@@ -304,7 +304,7 @@ void CSymbols::GetValueString(char* dest, CSymbolEntry* lpSymbol)
 		break;
 	case TYPE_U64:
 		g_MMU->LD_VAddr(address, v64);
-		sprintf(dest, "%ull", v64);
+		sprintf(dest, "%I64u", v64);
 		break;
 	case TYPE_S8:
 		g_MMU->LB_VAddr(address, v8);
@@ -320,7 +320,7 @@ void CSymbols::GetValueString(char* dest, CSymbolEntry* lpSymbol)
 		break;
 	case TYPE_S64:
 		g_MMU->LD_VAddr(address, v64);
-		sprintf(dest, "%ill", v64);
+		sprintf(dest, "%I64i", v64);
 		break;
 	case TYPE_FLOAT:
 		g_MMU->LW_VAddr(address, *(uint32_t*)&vf);
@@ -353,7 +353,7 @@ void CSymbols::Reset()
 
 const char* CSymbols::GetNameByAddress(uint32_t address)
 {
-	int len = GetCount();
+    uint32_t len = GetCount();
 	for (uint32_t i = 0; i < len; i++)
 	{
 		if (m_Symbols[i]->m_Address == address)

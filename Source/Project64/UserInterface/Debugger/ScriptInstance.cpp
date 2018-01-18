@@ -36,6 +36,7 @@ CScriptInstance* CScriptInstance::FetchInstance(duk_context* ctx)
             return Cache[i];
         }
     }
+    return NULL;
 }
 
 CScriptInstance::CScriptInstance(CDebuggerUI* debugger)
@@ -1374,14 +1375,12 @@ duk_ret_t CScriptInstance::js_ConsolePrint(duk_context* ctx)
 
 duk_ret_t CScriptInstance::js_ConsoleClear(duk_context* ctx)
 {
-    CScriptInstance* _this = FetchInstance(ctx);
-    _this->m_Debugger->Debug_ClearScriptsWindow();
+    FetchInstance(ctx)->m_Debugger->Debug_ClearScriptsWindow();
     return 1;
 }
 
-duk_ret_t CScriptInstance::js_Pause(duk_context* ctx)
+duk_ret_t CScriptInstance::js_Pause(duk_context* /*ctx*/)
 {
-    CScriptInstance* _this = FetchInstance(ctx);
     g_System->Pause();
     return 1;
 }

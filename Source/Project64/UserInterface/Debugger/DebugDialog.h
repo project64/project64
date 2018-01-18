@@ -60,11 +60,7 @@ public:
 
     void ShowWindow(void)
     {
-        if (m_hWnd)
-        {
-            SetForegroundWindow((HWND)m_hWnd);
-        }
-        else
+        if (m_hWnd == NULL)
         {
             DWORD ThreadID;
             ResetEvent(m_CreatedEvent);
@@ -73,6 +69,10 @@ public:
             {
                 WriteTrace(TraceUserInterface, TraceError, "Failed to get window create notification");
             }
+        }
+        if (m_hWnd)
+        {
+            SetForegroundWindow((HWND)m_hWnd);
         }
     }
 };

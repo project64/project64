@@ -27,7 +27,7 @@ CDebugScripts::~CDebugScripts(void)
     free(m_SelectedScriptName);
 }
 
-LRESULT CDebugScripts::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
     DlgResize_Init(false, true);
 
@@ -63,7 +63,6 @@ LRESULT CDebugScripts::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 void CDebugScripts::ConsolePrint(const char* text)
 {
     ::ShowWindow(*this, SW_SHOWNOACTIVATE);
-    int textPos = m_ConsoleEdit.GetWindowTextLengthA();
 
     // Get scrollbar state
     SCROLLINFO scroll;
@@ -77,7 +76,7 @@ void CDebugScripts::ConsolePrint(const char* text)
 
     m_ConsoleEdit.SetRedraw(TRUE);
 
-    if ((scroll.nPage + scroll.nPos) - 1 == scroll.nMax)
+    if ((scroll.nPage + scroll.nPos) - 1 == (uint32_t)scroll.nMax)
     {
         m_ConsoleEdit.ScrollCaret();
     }
@@ -119,7 +118,7 @@ void CDebugScripts::ConsoleCopy()
     m_ConsoleEdit.GetWindowTextA(memBuf, nChars);
 
     GlobalUnlock(hMem);
-    HANDLE hRes = SetClipboardData(CF_TEXT, hMem);
+    SetClipboardData(CF_TEXT, hMem);
 
     GlobalFree(hMem);
     CloseClipboard();
@@ -304,7 +303,7 @@ void CDebugScripts::EvaluateInSelectedInstance(char* code)
 }
 
 // Console input
-LRESULT CEditEval::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CEditEval::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
 {
     if (wParam == VK_UP)
     {

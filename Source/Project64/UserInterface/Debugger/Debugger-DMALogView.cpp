@@ -62,7 +62,7 @@ void CDebugDMALogView::RefreshList()
 
 	bool bScrolledDown = false;
 
-	if ((scroll.nPage + scroll.nPos) - 1 == scroll.nMax)
+	if ((scroll.nPage + scroll.nPos) - 1 == (uint32_t)scroll.nMax)
 	{
 		bScrolledDown = true;
 	}
@@ -136,13 +136,13 @@ DWORD WINAPI CDebugDMALogView::AutoRefreshProc(void* _this)
 	}
 }
 
-LRESULT CDebugDMALogView::OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CDebugDMALogView::OnActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	//RefreshList();
 	return FALSE;
 }
 
-LRESULT CDebugDMALogView::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	DlgResize_Init(false, true);
 
@@ -213,7 +213,7 @@ LRESULT CDebugDMALogView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& 
 	return FALSE;
 }
 
-LRESULT CDebugDMALogView::OnRamAddrChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+LRESULT CDebugDMALogView::OnRamAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	if (m_bConvertingAddress)
 	{
@@ -247,7 +247,7 @@ LRESULT CDebugDMALogView::OnRamAddrChanged(WORD wNotifyCode, WORD wID, HWND hWnd
 	return FALSE;
 }
 
-LRESULT CDebugDMALogView::OnRomAddrChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+LRESULT CDebugDMALogView::OnRomAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	if (m_bConvertingAddress)
 	{
