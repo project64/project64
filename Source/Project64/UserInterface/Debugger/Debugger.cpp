@@ -42,10 +42,12 @@ CDebuggerUI::CDebuggerUI() :
 
     CSymbols::InitializeCriticalSection();
     g_Settings->RegisterChangeCB(GameRunning_InReset, this, (CSettings::SettingChangedFunc)GameReset);
+    g_Settings->RegisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)SteppingOpsChanged);
 }
 
 CDebuggerUI::~CDebuggerUI(void)
 {
+    g_Settings->UnregisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)SteppingOpsChanged);
     g_Settings->UnregisterChangeCB(GameRunning_InReset, this, (CSettings::SettingChangedFunc)GameReset);
     Debug_Reset();
     delete m_MemoryView;
@@ -60,6 +62,14 @@ CDebuggerUI::~CDebuggerUI(void)
     delete m_DMALog;
 
     CSymbols::DeleteCriticalSection();
+}
+
+void CDebuggerUI::SteppingOpsChanged(CDebuggerUI * _this)
+{
+    if (g_Settings->LoadBool(Debugger_SteppingOps))
+    {
+        _this->OpenCommandWindow();
+    }
 }
 
 void CDebuggerUI::GameReset(CDebuggerUI * _this)

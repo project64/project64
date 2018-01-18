@@ -68,6 +68,7 @@ public:
     CDMALog* DMALog();
 
     static void GameReset(CDebuggerUI * _this);
+    static void SteppingOpsChanged(CDebuggerUI * _this);
 
 protected:
     void TLBChanged(void);
