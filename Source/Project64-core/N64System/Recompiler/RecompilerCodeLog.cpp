@@ -23,12 +23,19 @@ void Recompiler_Log_Message(const char * strFormat, ...)
 {
     va_list args;
     va_start(args, strFormat);
-    size_t nlen = _vscprintf(strFormat, args) + 3;
-    char * buffer = (char *)alloca(nlen * sizeof(char));
+    size_t nlen = _vscprintf(strFormat, args);
+    char * buffer = (char *)alloca((nlen + 3) * sizeof(char));
     if (buffer != NULL)
     {
-        buffer[nlen - 1] = 0;
-        vsprintf(buffer, strFormat, args);
+        if (nlen > 0)
+        {
+            vsnprintf(buffer, nlen, strFormat, args);
+            buffer[nlen - 1] = '\0';
+        }
+        else
+        {
+            buffer[0] = '\0';
+        }
         strcat(buffer, "\r\n");
         g_CPULogFile->Log(buffer);
     }
