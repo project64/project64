@@ -26,6 +26,7 @@
 #include <Project64-core/N64System/Recompiler/x86/x86RecompilerOps.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/ExceptionHandler.h>
+#include <Project64-core/Debugger.h>
 #include <stdio.h>
 
 CCodeSection * CX86RecompilerOps::m_Section = NULL;
@@ -45,6 +46,46 @@ if (TestValue >= 4)
 g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 }*/
+
+void x86_compiler_Break_Point()
+{
+    g_Settings->SaveBool(Debugger_SteppingOps, true);
+    do
+    {
+        g_Debugger->WaitForStep();
+        if (CDebugSettings::SkipOp())
+        {
+            // Skip command if instructed by the debugger
+            g_Settings->SaveBool(Debugger_SkipOp, false);
+            g_Reg->m_PROGRAM_COUNTER += 4;
+
+            uint32_t OpcodeValue;
+            if (!g_MMU->LW_VAddr(g_Reg->m_PROGRAM_COUNTER, OpcodeValue))
+            {
+                g_Reg->DoTLBReadMiss(false, g_Reg->m_PROGRAM_COUNTER);
+                continue;
+            }
+            continue;
+        }
+        CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
+        if (g_SyncSystem)
+        {
+            g_System->UpdateSyncCPU(g_SyncSystem, g_System->CountPerOp());
+            g_System->SyncCPU(g_SyncSystem);
+        }
+
+    } while (CDebugSettings::isStepping());
+
+    if (R4300iOp::m_NextInstruction != NORMAL)
+    {
+        CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
+        if (g_SyncSystem)
+        {
+            g_System->UpdateSyncCPU(g_SyncSystem, g_System->CountPerOp());
+            g_System->SyncCPU(g_SyncSystem);
+        }
+    }
+}
 
 void CX86RecompilerOps::PreCompileOpcode(void)
 {
@@ -9703,6 +9744,32 @@ void CX86RecompilerOps::CompileSystemCheck(uint32_t TargetPC, const CRegInfo & R
     CPU_Message("");
     CPU_Message("      $Continue_From_Interrupt_Test:");
     SetJump32(Jump, (uint32_t *)*g_RecompPos);
+}
+
+void CX86RecompilerOps::CompileExecuteBP(void)
+{
+    bool bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
+    if (bDelay)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    m_RegWorkingSet.WriteBackRegisters();
+
+    UpdateCounters(m_RegWorkingSet, true, true);
+    if (g_SyncSystem)
+    {
+#ifdef _WIN32
+        MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
+        Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+#else
+        PushImm32((uint32_t)g_BaseSystem);
+        Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+        AddConstToX86Reg(x86_ESP, 4);
+#endif
+    }
+    Call_Direct((void *)x86_compiler_Break_Point, "x86_compiler_Break_Point");
+    ExitCodeBlock();
+    m_NextInstruction = END_BLOCK;
 }
 
 void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)

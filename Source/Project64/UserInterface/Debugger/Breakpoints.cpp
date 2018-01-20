@@ -52,6 +52,7 @@ bool CBreakpoints::AddExecution(uint32_t address, bool bTemporary)
     {
         g_Settings->SaveBool(Debugger_HaveExecutionBP, true);
     }
+    g_BaseSystem->ExternalEvent(SysEvent_ResetRecompilerCode);
     return !res.second;
 }
 

@@ -234,6 +234,7 @@ public:
     static void UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles);
     void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false);
     void CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet);
+    void CompileExecuteBP(void);
     static void ChangeDefaultRoundingModel();
     void OverflowDelaySlot(bool TestTimer);
 

@@ -14,7 +14,8 @@
 
 class CCodeBlock;
 
-class CCodeSection
+class CCodeSection :
+    private CDebugSettings
 {
 public:
     typedef std::list<CCodeSection *> SECTION_LIST;

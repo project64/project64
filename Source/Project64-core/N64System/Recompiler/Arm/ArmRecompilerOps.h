@@ -224,6 +224,7 @@ private:
     void CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet);
     void CompileReadTLBMiss(ArmReg AddressReg, ArmReg LookUpReg);
     void CompileWriteTLBMiss(ArmReg AddressReg, ArmReg LookUpReg);
+    void CompileExecuteBP(void);
 
     /********* Helper Functions *********/
     typedef CRegInfo::REG_STATE REG_STATE;

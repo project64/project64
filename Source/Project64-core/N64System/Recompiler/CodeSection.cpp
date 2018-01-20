@@ -20,6 +20,7 @@
 #include <Project64-core/N64System/Recompiler/LoopAnalysis.h>
 #include <Project64-core/N64System/Recompiler/SectionInfo.h>
 #include <Project64-core/ExceptionHandler.h>
+#include <Project64-core/Debugger.h>
 
 void InPermLoop();
 
@@ -474,6 +475,13 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
         {
             m_BlockInfo->SetVAddrLast(m_RecompilerOps->GetCurrentPC());
         }
+
+        if (isDebugging() && HaveExecutionBP() && g_Debugger->ExecutionBP(m_RecompilerOps->GetCurrentPC()))
+        {
+            m_RecompilerOps->CompileExecuteBP();
+            break;
+        }
+
         m_RecompilerOps->PreCompileOpcode();
 
         switch (Opcode.op)

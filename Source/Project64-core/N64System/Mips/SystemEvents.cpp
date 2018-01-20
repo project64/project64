@@ -54,6 +54,7 @@ const char * SystemEventName(SystemEvent event)
     case SysEvent_Interrupt_DP: return "SysEvent_Interrupt_DP";
     case SysEvent_ResetFunctionTimes: return "SysEvent_ResetFunctionTimes";
     case SysEvent_DumpFunctionTimes: return "SysEvent_DumpFunctionTimes";
+    case SysEvent_ResetRecompilerCode: return "SysEvent_ResetRecompilerCode";
     }
     static char unknown[100];
     sprintf(unknown, "unknown(%d)", event);
@@ -255,6 +256,9 @@ void CSystemEvents::ExecuteEvents()
                 g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_Cheats);
                 bPause = true;
             }
+            break;
+        case SysEvent_ResetRecompilerCode:
+            g_Recompiler->ResetRecompCode(true);
             break;
         default:
             g_Notify->BreakPoint(__FILE__, __LINE__);

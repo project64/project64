@@ -202,6 +202,7 @@ void CN64System::ExternalEvent(SystemEvent action)
     case SysEvent_PauseCPU_FromMenu:
     case SysEvent_ResetFunctionTimes:
     case SysEvent_DumpFunctionTimes:
+    case SysEvent_ResetRecompilerCode:
         QueueEvent(action);
         break;
     case SysEvent_PauseCPU_AppLostFocus:
@@ -1164,6 +1165,10 @@ void CN64System::SyncCPU(CN64System * const SecondCPU)
         }
     }
 
+    if (m_Random.get_state() != SecondCPU->m_Random.get_state()) 
+    {
+        ErrorFound = true; 
+    }
     if (m_TLB != SecondCPU->m_TLB) { ErrorFound = true; }
     if (m_Reg.m_FPCR[0] != SecondCPU->m_Reg.m_FPCR[0]) { ErrorFound = true; }
     if (m_Reg.m_FPCR[31] != SecondCPU->m_Reg.m_FPCR[31]) { ErrorFound = true; }

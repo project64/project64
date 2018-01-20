@@ -85,8 +85,6 @@ LRESULT	CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     DlgResize_Init(false, true);
     DlgToolTip_Init();
 
-    CheckCPUType();
-
     GetWindowRect(&m_DefaultWindowRect);
 
     // Setup address input
@@ -246,25 +244,6 @@ LRESULT	CDebugCommandsView::OnOpKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*l
         bHandled = TRUE;
     }
     return 1;
-}
-
-void CDebugCommandsView::CheckCPUType()
-{
-    CPU_TYPE cpuType;
-
-    if (g_Settings->LoadBool(Setting_ForceInterpreterCPU))
-    {
-        cpuType = CPU_Interpreter;
-    }
-    else
-    {
-        cpuType = g_System->CpuType();
-    }
-
-    if (cpuType != CPU_Interpreter)
-    {
-        MessageBox("Interpreter mode required", "Invalid CPU Type", MB_OK);
-    }
 }
 
 // Check if KSEG0 addr is out of bounds
@@ -1456,22 +1435,6 @@ LRESULT CDebugCommandsView::OnListBoxClicked(WORD /*wNotifyCode*/, WORD wID, HWN
             m_Debugger->Debug_ShowMemoryLocation(address, true);
         }
         free(rowText);
-    }
-    return FALSE;
-}
-
-LRESULT CDebugCommandsView::OnActivate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
-{
-    WORD type = LOWORD(wParam);
-
-    if (type == WA_INACTIVE)
-    {
-        return FALSE;
-    }
-
-    if (type == WA_CLICKACTIVE)
-    {
-        CheckCPUType();
     }
     return FALSE;
 }

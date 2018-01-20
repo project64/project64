@@ -51,6 +51,7 @@ enum SystemEvent
     SysEvent_Interrupt_DP,
     SysEvent_ResetFunctionTimes,
     SysEvent_DumpFunctionTimes,
+    SysEvent_ResetRecompilerCode,
 };
 
 const char * SystemEventName(SystemEvent event);
