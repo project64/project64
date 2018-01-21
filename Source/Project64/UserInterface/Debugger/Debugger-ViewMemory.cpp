@@ -9,6 +9,8 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+#include <Project64-core/ExceptionHandler.h>
+#include <Common/MemoryManagement.h>
 
 #include "DebuggerUI.h"
 #include "Symbols.h"
@@ -342,19 +344,37 @@ LRESULT CDebugMemoryView::OnMemoryModified(LPNMHDR lpNMHDR)
     m_CurrentData[Pos] = (BYTE)Value;
 
     //sb
-    if (m_DataVAddrr)
+    __except_try()
     {
-        if (!g_MMU->SB_VAddr(m_DataStartLoc + Pos, (BYTE)Value))
+        if (m_DataVAddrr)
         {
-            WriteTrace(TraceUserInterface, TraceError, "failed to store at %X", m_DataStartLoc + Pos);
+            if (!g_MMU->SB_VAddr(m_DataStartLoc + Pos, (BYTE)Value))
+            {
+                WriteTrace(TraceUserInterface, TraceError, "failed to store at %X", m_DataStartLoc + Pos);
+            }
+        }
+        else
+        {
+            if (!g_MMU->SB_PAddr(m_DataStartLoc + Pos, (BYTE)Value))
+            {
+                WriteTrace(TraceUserInterface, TraceError, "failed to store at %X", m_DataStartLoc + Pos);
+            }
+        }
+        uint32_t PhysicalAddress = m_DataStartLoc + Pos;
+        if (!m_DataVAddrr || g_MMU->TranslateVaddr(PhysicalAddress, PhysicalAddress))
+        {
+            if (PhysicalAddress > 0x10000000 && (PhysicalAddress - 0x10000000) < g_Rom->GetRomSize())
+            {
+                uint8_t * ROM = g_Settings->LoadBool(Game_LoadRomToMemory) ? g_MMU->Rdram() + 0x10000000: g_Rom->GetRomAddress();
+                ProtectMemory(ROM, g_Rom->GetRomSize(), MEM_READWRITE);
+                ROM[(PhysicalAddress - 0x10000000) ^ 3] = (uint8_t)Value;
+                ProtectMemory(ROM, g_Rom->GetRomSize(), MEM_READONLY);
+            }
         }
     }
-    else
+    __except_catch()
     {
-        if (!g_MMU->SB_PAddr(m_DataStartLoc + Pos, (BYTE)Value))
-        {
-            WriteTrace(TraceUserInterface, TraceError, "failed to store at %X", m_DataStartLoc + Pos);
-        }
+        g_Notify->FatalError(GS(MSG_UNKNOWN_MEM_ACTION));
     }
     Insert_MemoryLineDump(LineNumber);
 
