@@ -414,7 +414,7 @@ void CDebuggerUI::CPUStepStarted()
         {
             m_ScriptSystem->HookCPUWrite()->InvokeByParamInRange(memoryAddress);
 
-            if (m_Breakpoints->WriteBPExists(memoryAddress))
+            if (m_Breakpoints->WriteBPExists8(memoryAddress))
             {
                 goto breakpoint_hit;
             }

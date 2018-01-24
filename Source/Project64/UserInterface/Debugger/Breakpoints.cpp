@@ -21,21 +21,21 @@ CBreakpoints::CBreakpoints()
 {
 }
 
-bool CBreakpoints::RBPAdd(uint32_t address, bool bTemporary)
+bool CBreakpoints::RBPAdd(uint32_t address)
 {
     if (!ReadBPExists(address))
     {
-        m_ReadMem.insert(breakpoints_t::value_type(address, bTemporary));
+        m_ReadMem.insert(breakpoints_t::value_type(address, false));
         return true;
     }
     return false;
 }
 
-bool CBreakpoints::WBPAdd(uint32_t address, bool bTemporary)
+bool CBreakpoints::WBPAdd(uint32_t address)
 {
-    if (!WriteBPExists(address))
+    if (!WriteBPExists8(address))
     {
-        m_WriteMem.insert(breakpoints_t::value_type(address, bTemporary));
+        m_WriteMem.insert(breakpoints_t::value_type(address, false));
         return true;
     }
     return false;
@@ -87,17 +87,17 @@ void CBreakpoints::RemoveExecution(uint32_t address)
     }
 }
 
-void CBreakpoints::RBPToggle(uint32_t address, bool bTemporary)
+void CBreakpoints::RBPToggle(uint32_t address)
 {
-    if (RBPAdd(address, bTemporary) == false)
+    if (RBPAdd(address) == false)
     {
         RBPRemove(address);
     }
 }
 
-void CBreakpoints::WBPToggle(uint32_t address, bool bTemporary)
+void CBreakpoints::WBPToggle(uint32_t address)
 {
-    if (WBPAdd(address, bTemporary) == false)
+    if (WBPAdd(address) == false)
     {
         WBPRemove(address);
     }
@@ -133,37 +133,21 @@ void CBreakpoints::BPClear()
     EBPClear();
 }
 
-CBreakpoints::BPSTATE CBreakpoints::ReadBPExists(uint32_t address, bool bRemoveTemp)
+CBreakpoints::BPSTATE CBreakpoints::ReadBPExists(uint32_t address)
 {
     breakpoints_t::const_iterator itr = m_ReadMem.find(address);
     if (itr != m_ReadMem.end())
     {
-        if (itr->second)
-        {
-            if (bRemoveTemp)
-            {
-                m_ReadMem.erase(itr);
-            }
-            return BP_SET_TEMP;
-        }
         return BP_SET;
     }
     return BP_NOT_SET;
 }
 
-CBreakpoints::BPSTATE CBreakpoints::WriteBPExists(uint32_t address, bool bRemoveTemp)
+CBreakpoints::BPSTATE CBreakpoints::WriteBPExists8(uint32_t address)
 {
     breakpoints_t::const_iterator itr = m_WriteMem.find(address);
     if (itr != m_WriteMem.end())
     {
-        if (itr->second)
-        {
-            if (bRemoveTemp)
-            {
-                m_ReadMem.erase(itr);
-            }
-            return BP_SET_TEMP;
-        }
         return BP_SET;
     }
     return BP_NOT_SET;

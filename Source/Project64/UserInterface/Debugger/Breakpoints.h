@@ -32,18 +32,18 @@ public:
     const breakpoints_t & WriteMem(void) const { return m_WriteMem; }
     const breakpoints_t & Execution(void) const { return m_Execution; }
 
-    BPSTATE ReadBPExists(uint32_t address, bool bRemoveTemp = false);
-    BPSTATE WriteBPExists(uint32_t address, bool bRemoveTemp = false);
+    BPSTATE ReadBPExists(uint32_t address);
+    BPSTATE WriteBPExists8(uint32_t address);
     BPSTATE ExecutionBPExists(uint32_t address, bool bRemoveTemp = false);
 
-    bool RBPAdd(uint32_t address, bool bTemporary = false);
+    bool RBPAdd(uint32_t address);
     void RBPRemove(uint32_t address);
-    void RBPToggle(uint32_t address, bool bTemporary = false);
+    void RBPToggle(uint32_t address);
     void RBPClear();
 
-    bool WBPAdd(uint32_t address, bool bTemporary = false);
+    bool WBPAdd(uint32_t address);
     void WBPRemove(uint32_t address);
-    void WBPToggle(uint32_t address, bool bTemporary = false);
+    void WBPToggle(uint32_t address);
     void WBPClear();
 
     bool AddExecution(uint32_t address, bool bTemporary = false);
