@@ -292,6 +292,7 @@
 #define IDC_STEP_BTN                    1119
 #define IDC_ADDSYMBOL_BTN               1119
 #define IDC_NOTES                       1120
+#define IDC_STEPOVER_BTN                1120
 #define IDC_CHEAT_LIST                  1121
 #define IDC_CHEAT_NAME                  1122
 #define IDC_DELAY_SI                    1123

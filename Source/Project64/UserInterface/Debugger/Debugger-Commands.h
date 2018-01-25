@@ -103,6 +103,7 @@ private:
         COMMAND_HANDLER(ID_POPUPMENU_RUNTO, BN_CLICKED, OnPopupmenuRunTo)
         COMMAND_HANDLER(IDC_GO_BTN, BN_CLICKED, OnGoButton)
         COMMAND_HANDLER(IDC_STEP_BTN, BN_CLICKED, OnStepButton)
+        COMMAND_HANDLER(IDC_STEPOVER_BTN, BN_CLICKED, OnStepOverButton)
         COMMAND_HANDLER(IDC_SKIP_BTN, BN_CLICKED, OnSkipButton)
         COMMAND_HANDLER(IDC_CLEARBP_BTN, BN_CLICKED, OnClearBPButton)
         COMMAND_HANDLER(IDC_ADDBP_BTN, BN_CLICKED, OnAddBPButton)
@@ -150,6 +151,7 @@ private:
     BEGIN_TOOLTIP_MAP()
         TOOLTIP(IDC_SKIP_BTN, "Skip (F1)")
         TOOLTIP(IDC_STEP_BTN, "Step (F2)")
+        TOOLTIP(IDC_STEP_BTN, "Step Over (F3)")
         TOOLTIP(IDC_GO_BTN, "Go (F4)")
         TOOLTIP(IDC_ADDBP_BTN, "Add breakpoint...")
         TOOLTIP(IDC_RMBP_BTN, "Remove selected breakpoint")
@@ -176,6 +178,7 @@ private:
     LRESULT OnPopupmenuRunTo(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
     LRESULT OnGoButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
     LRESULT OnStepButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnStepOverButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
     LRESULT OnSkipButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
     LRESULT OnClearBPButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
     LRESULT OnAddBPButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
@@ -229,6 +232,7 @@ private:
 
     void CPUSkip();
     void CPUResume();
+    void CPUStepOver();
     void WaitingForStepChanged(void);
     void SteppingOpsChanged(void);
 
@@ -265,6 +269,7 @@ private:
 
     CButton m_ViewPCButton;
     CButton m_StepButton;
+    CButton m_StepOverButton;
     CButton m_SkipButton;
     CButton m_GoButton;
 
