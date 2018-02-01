@@ -36,6 +36,11 @@ bool CBreakpoints::WBPAdd(uint32_t address)
     if (!WriteBPExists8(address))
     {
         m_WriteMem.insert(breakpoints_t::value_type(address, false));
+        UpdateAlignedWriteBP();
+        if (!HaveWriteBP())
+        {
+            g_Settings->SaveBool(Debugger_WriteBPExists, true);
+        }
         return true;
     }
     return false;
@@ -71,6 +76,11 @@ void CBreakpoints::WBPRemove(uint32_t address)
     if (itr != m_WriteMem.end())
     {
         m_WriteMem.erase(itr);
+        UpdateAlignedWriteBP();
+        if (m_Execution.size() == 0)
+        {
+            g_Settings->SaveBool(Debugger_WriteBPExists, false);
+        }
     }
 }
 
@@ -119,6 +129,8 @@ void CBreakpoints::RBPClear()
 void CBreakpoints::WBPClear()
 {
     m_WriteMem.clear();
+    UpdateAlignedWriteBP();
+    g_Settings->SaveBool(Debugger_WriteBPExists, false);
 }
 
 void CBreakpoints::EBPClear()
@@ -153,6 +165,36 @@ CBreakpoints::BPSTATE CBreakpoints::WriteBPExists8(uint32_t address)
     return BP_NOT_SET;
 }
 
+CBreakpoints::BPSTATE CBreakpoints::WriteBPExists16(uint32_t address)
+{
+    breakpoints_t::const_iterator itr = m_WriteMem16.find(address);
+    if (itr != m_WriteMem16.end())
+    {
+        return BP_SET;
+    }
+    return BP_NOT_SET;
+}
+
+CBreakpoints::BPSTATE CBreakpoints::WriteBPExists32(uint32_t address)
+{
+    breakpoints_t::const_iterator itr = m_WriteMem16.find(address);
+    if (itr != m_WriteMem16.end())
+    {
+        return BP_SET;
+    }
+    return BP_NOT_SET;
+}
+
+CBreakpoints::BPSTATE CBreakpoints::WriteBPExists64(uint32_t address)
+{
+    breakpoints_t::const_iterator itr = m_WriteMem16.find(address);
+    if (itr != m_WriteMem16.end())
+    {
+        return BP_SET;
+    }
+    return BP_NOT_SET;
+}
+
 CBreakpoints::BPSTATE CBreakpoints::ExecutionBPExists(uint32_t address, bool bRemoveTemp)
 {
     breakpoints_t::const_iterator itr = m_Execution.find(address);
@@ -169,4 +211,18 @@ CBreakpoints::BPSTATE CBreakpoints::ExecutionBPExists(uint32_t address, bool bRe
         return BP_SET;
     }
     return BP_NOT_SET;
+}
+
+void CBreakpoints::UpdateAlignedWriteBP()
+{
+    m_WriteMem16.clear();
+    m_WriteMem32.clear();
+    m_WriteMem64.clear();
+
+    for (breakpoints_t::const_iterator itr = m_WriteMem.begin(); itr != m_WriteMem.end(); itr++)
+    {
+        m_WriteMem16.insert(breakpoints_t::value_type((itr->first & ~0x1), false));
+        m_WriteMem32.insert(breakpoints_t::value_type((itr->first & ~0x3), false));
+        m_WriteMem64.insert(breakpoints_t::value_type((itr->first & ~0x7), false));
+    }
 }

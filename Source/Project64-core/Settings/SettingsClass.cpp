@@ -317,6 +317,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Debugger_SteppingOps, new CSettingTypeTempBool(false));
     AddHandler(Debugger_SkipOp, new CSettingTypeTempBool(false));
     AddHandler(Debugger_HaveExecutionBP, new CSettingTypeTempBool(false));
+    AddHandler(Debugger_WriteBPExists, new CSettingTypeTempBool(false));
     AddHandler(Debugger_WaitingForStep, new CSettingTypeTempBool(false));
     AddHandler(Debugger_DebugLanguage, new CSettingTypeApplication("Debugger", "Debug Language", false));
     AddHandler(Debugger_ShowDivByZero, new CSettingTypeApplication("Debugger", "Show Div by zero", false));

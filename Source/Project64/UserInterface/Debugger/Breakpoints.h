@@ -34,6 +34,9 @@ public:
 
     BPSTATE ReadBPExists(uint32_t address);
     BPSTATE WriteBPExists8(uint32_t address);
+    BPSTATE WriteBPExists16(uint32_t address);
+    BPSTATE WriteBPExists32(uint32_t address);
+    BPSTATE WriteBPExists64(uint32_t address);
     BPSTATE ExecutionBPExists(uint32_t address, bool bRemoveTemp = false);
 
     bool RBPAdd(uint32_t address);
@@ -54,7 +57,9 @@ public:
     void BPClear();
 
 private:
+    void UpdateAlignedWriteBP(void);
+
     breakpoints_t m_ReadMem;
-    breakpoints_t m_WriteMem;
+    breakpoints_t m_WriteMem, m_WriteMem16, m_WriteMem32, m_WriteMem64;
     breakpoints_t m_Execution;
 };

@@ -414,11 +414,6 @@ void CDebuggerUI::CPUStepStarted()
         {
             m_ScriptSystem->HookCPUWrite()->InvokeByParamInRange(memoryAddress);
 
-            if (m_Breakpoints->WriteBPExists8(memoryAddress))
-            {
-                goto breakpoint_hit;
-            }
-
             // Catch cart -> rdram dma
             if (memoryAddress == 0xA460000C) // PI_WR_LEN_REG
             {
@@ -539,3 +534,24 @@ bool CDebuggerUI::ExecutionBP(uint32_t address)
 {
     return m_Breakpoints != NULL && m_Breakpoints->ExecutionBPExists(address, true) != CBreakpoints::BP_NOT_SET;
 }
+
+bool CDebuggerUI::WriteBP8(uint32_t address)
+{
+    return m_Breakpoints != NULL && m_Breakpoints->WriteBPExists8(address) != CBreakpoints::BP_NOT_SET;
+}
+
+bool CDebuggerUI::WriteBP16(uint32_t address)
+{
+    return m_Breakpoints != NULL && m_Breakpoints->WriteBPExists16(address) != CBreakpoints::BP_NOT_SET;
+}
+
+bool CDebuggerUI::WriteBP32(uint32_t address)
+{
+    return m_Breakpoints != NULL && m_Breakpoints->WriteBPExists32(address) != CBreakpoints::BP_NOT_SET;
+}
+
+bool CDebuggerUI::WriteBP64(uint32_t address)
+{
+    return m_Breakpoints != NULL && m_Breakpoints->WriteBPExists64(address) != CBreakpoints::BP_NOT_SET;
+}
+

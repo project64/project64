@@ -225,6 +225,8 @@ protected:
     static void  COP1_W();
     static void  COP1_L();
 
+    static bool  MemoryBreakpoint();
+
     static Func Jump_Opcode[64];
     static Func Jump_Special[64];
     static Func Jump_Regimm[32];

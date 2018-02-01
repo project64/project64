@@ -18,6 +18,7 @@
 #include <Project64-core/N64System/Mips/OpcodeName.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/Logging.h>
+#include <Project64-core/Debugger.h>
 #include <float.h>
 #include <math.h>
 
@@ -1237,6 +1238,10 @@ void R4300iOp::LWU()
 void R4300iOp::SB()
 {
     uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    if (HaveWriteBP() && g_Debugger->WriteBP8(Address) && MemoryBreakpoint())
+    { 
+        return;
+    }
     if (!g_MMU->SB_VAddr(Address, _GPR[m_Opcode.rt].UB[0]))
     {
         if (HaveDebugger())
@@ -1257,6 +1262,10 @@ void R4300iOp::SH()
     {
         ADDRESS_ERROR_EXCEPTION(Address, false);
     }
+    if (HaveWriteBP() && g_Debugger->WriteBP16(Address) && MemoryBreakpoint())
+    {
+        return;
+    }
     if (!g_MMU->SH_VAddr(Address, _GPR[m_Opcode.rt].UHW[0]))
     {
         if (HaveDebugger())
@@ -1275,6 +1284,10 @@ void R4300iOp::SWL()
     uint32_t Offset, Address, Value;
 
     Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    if (HaveWriteBP() && g_Debugger->WriteBP32(Address) && MemoryBreakpoint())
+    {
+        return;
+    }
     Offset = Address & 3;
 
     if (!g_MMU->LW_VAddr((Address & ~3), Value))
@@ -1313,6 +1326,10 @@ void R4300iOp::SW()
     {
         ADDRESS_ERROR_EXCEPTION(Address, false);
     }
+    if (HaveWriteBP() && g_Debugger->WriteBP32(Address) && MemoryBreakpoint())
+    {
+        return;
+    }
     if (GenerateLog())
     {
         Log_SW((*_PROGRAM_COUNTER), Address, _GPR[m_Opcode.rt].UW[0]);
@@ -1346,6 +1363,10 @@ void R4300iOp::SDL()
     uint64_t Value;
 
     Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    if (HaveWriteBP() && g_Debugger->WriteBP64(Address) && MemoryBreakpoint())
+    {
+        return;
+    }
     Offset = Address & 7;
 
     if (!g_MMU->LD_VAddr((Address & ~7), Value))
@@ -1394,6 +1415,10 @@ void R4300iOp::SDR()
     uint64_t Value;
 
     Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    if (HaveWriteBP() && g_Debugger->WriteBP64(Address) && MemoryBreakpoint())
+    {
+        return;
+    }
     Offset = Address & 7;
 
     if (!g_MMU->LD_VAddr((Address & ~7), Value))
@@ -1430,6 +1455,10 @@ void R4300iOp::SWR()
     uint32_t Offset, Address, Value;
 
     Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    if (HaveWriteBP() && g_Debugger->WriteBP32(Address) && MemoryBreakpoint())
+    {
+        return;
+    }
     Offset = Address & 3;
 
     if (!g_MMU->LW_VAddr((Address & ~3), Value))
@@ -1518,6 +1547,10 @@ void R4300iOp::SC()
     {
         ADDRESS_ERROR_EXCEPTION(Address, false);
     }
+    if (HaveWriteBP() && g_Debugger->WriteBP32(Address) && MemoryBreakpoint())
+    {
+        return;
+    }
     Log_SW((*_PROGRAM_COUNTER), Address, _GPR[m_Opcode.rt].UW[0]);
     if ((*_LLBit) == 1)
     {
@@ -1590,6 +1623,10 @@ void R4300iOp::SWC1()
     {
         ADDRESS_ERROR_EXCEPTION(Address, false);
     }
+    if (HaveWriteBP() && g_Debugger->WriteBP32(Address) && MemoryBreakpoint())
+    {
+        return;
+    }
 
     if (!g_MMU->SW_VAddr(Address, *(uint32_t *)_FPR_S[m_Opcode.ft]))
     {
@@ -1609,6 +1646,11 @@ void R4300iOp::SDC1()
     uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
 
     TEST_COP1_USABLE_EXCEPTION();
+    if (HaveWriteBP() && g_Debugger->WriteBP64(Address) && MemoryBreakpoint())
+    {
+        return;
+    }
+
     if ((Address & 7) != 0)
     {
         ADDRESS_ERROR_EXCEPTION(Address, false);
@@ -1632,6 +1674,10 @@ void R4300iOp::SD()
     if ((Address & 7) != 0)
     {
         ADDRESS_ERROR_EXCEPTION(Address, false);
+    }
+    if (HaveWriteBP() && g_Debugger->WriteBP64(Address) && MemoryBreakpoint())
+    {
+        return;
     }
     if (!g_MMU->SD_VAddr(Address, _GPR[m_Opcode.rt].UDW))
     {
@@ -2912,4 +2958,17 @@ void R4300iOp::UnknownOpcode()
         ExitThread(0);
     }
 #endif
+}
+
+bool R4300iOp::MemoryBreakpoint()
+{
+    g_Settings->SaveBool(Debugger_SteppingOps, true);
+    g_Debugger->WaitForStep();
+    if (SkipOp())
+    {
+        // Skip command if instructed by the debugger
+        g_Settings->SaveBool(Debugger_SkipOp, false);
+        return true;
+    }
+    return false;
 }

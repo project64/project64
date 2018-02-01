@@ -25,6 +25,7 @@ bool CDebugSettings::m_bShowTLBMisses = false;
 bool CDebugSettings::m_bShowDivByZero = false;
 bool CDebugSettings::m_RecordExecutionTimes = false;
 bool CDebugSettings::m_HaveExecutionBP = false;
+bool CDebugSettings::m_HaveWriteBP = false;
 
 CDebugSettings::CDebugSettings()
 {
@@ -40,6 +41,7 @@ CDebugSettings::CDebugSettings()
         g_Settings->RegisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_SkipOp, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_HaveExecutionBP, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->RegisterChangeCB(Debugger_WriteBPExists, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_WaitingForStep, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
 
         RefreshSettings();
@@ -59,6 +61,7 @@ CDebugSettings::~CDebugSettings()
         g_Settings->UnregisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_SkipOp, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_HaveExecutionBP, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->UnregisterChangeCB(Debugger_WriteBPExists, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_WaitingForStep, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
     }
 }
@@ -69,11 +72,12 @@ void CDebugSettings::RefreshSettings()
     m_bRecordRecompilerAsm = m_HaveDebugger && g_Settings->LoadBool(Debugger_RecordRecompilerAsm);
     m_bShowTLBMisses = m_HaveDebugger && g_Settings->LoadBool(Debugger_ShowTLBMisses);
     m_bShowDivByZero = m_HaveDebugger && g_Settings->LoadBool(Debugger_ShowDivByZero);
-    m_RecordExecutionTimes = g_Settings->LoadBool(Debugger_RecordExecutionTimes);
-    m_Stepping = g_Settings->LoadBool(Debugger_SteppingOps);
-    m_SkipOp = g_Settings->LoadBool(Debugger_SkipOp);
+    m_RecordExecutionTimes = m_HaveDebugger && g_Settings->LoadBool(Debugger_RecordExecutionTimes);
+    m_Stepping = m_HaveDebugger && g_Settings->LoadBool(Debugger_SteppingOps);
+    m_SkipOp = m_HaveDebugger && g_Settings->LoadBool(Debugger_SkipOp);
     m_WaitingForStep = g_Settings->LoadBool(Debugger_WaitingForStep);
-    m_HaveExecutionBP = g_Settings->LoadBool(Debugger_HaveExecutionBP);
+    m_HaveExecutionBP = m_HaveDebugger && g_Settings->LoadBool(Debugger_HaveExecutionBP);
+    m_HaveWriteBP = m_HaveDebugger && g_Settings->LoadBool(Debugger_WriteBPExists);
 
-    m_Debugging = m_HaveDebugger && (m_HaveExecutionBP || m_WaitingForStep);
+    m_Debugging = m_HaveDebugger && (m_HaveExecutionBP || m_WaitingForStep || m_HaveWriteBP);
 }

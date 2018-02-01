@@ -26,6 +26,10 @@ __interface CDebugger
 	virtual void FrameDrawn(void) = 0;
     virtual void WaitForStep(void) = 0;
     virtual bool ExecutionBP(uint32_t address) = 0;
+    virtual bool WriteBP8(uint32_t address) = 0;
+    virtual bool WriteBP16(uint32_t address) = 0;
+    virtual bool WriteBP32(uint32_t address) = 0;
+    virtual bool WriteBP64(uint32_t address) = 0;
 
     virtual void CPUStepStarted(void) = 0;
     virtual void CPUStep(void) = 0;

@@ -28,6 +28,7 @@ public:
     static inline bool bShowDivByZero(void) { return m_bShowDivByZero; }
     static inline bool bRecordExecutionTimes(void) { return m_RecordExecutionTimes; }
     static inline bool HaveExecutionBP(void) { return m_HaveExecutionBP; }
+    static inline bool HaveWriteBP(void) { return m_HaveWriteBP; }
 
 private:
     static void StaticRefreshSettings(CDebugSettings * _this)
@@ -47,6 +48,7 @@ private:
     static bool m_bShowDivByZero;
     static bool m_RecordExecutionTimes;
     static bool m_HaveExecutionBP;
+    static bool m_HaveWriteBP;
 
     static int32_t m_RefCount;
     static bool m_Registered;

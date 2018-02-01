@@ -232,6 +232,7 @@ enum SettingID
     Debugger_SteppingOps,
     Debugger_SkipOp,
     Debugger_HaveExecutionBP,
+    Debugger_WriteBPExists,
     Debugger_WaitingForStep,
 
     //Trace
