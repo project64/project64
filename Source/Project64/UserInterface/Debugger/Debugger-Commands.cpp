@@ -1439,6 +1439,16 @@ LRESULT CDebugCommandsView::OnListBoxClicked(WORD /*wNotifyCode*/, WORD wID, HWN
     return FALSE;
 }
 
+LRESULT CDebugCommandsView::OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+    if (LOWORD(wParam) == WA_ACTIVE)
+    {
+        ShowAddress(m_StartAddress, TRUE);
+        RefreshBreakpointList();
+    }
+    return FALSE;
+}
+
 LRESULT	CDebugCommandsView::OnSizing(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
     CRect listRect;
