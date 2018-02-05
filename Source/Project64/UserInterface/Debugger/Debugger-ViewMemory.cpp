@@ -717,7 +717,7 @@ void CDebugMemoryView::SelectColors(uint32_t vaddr, bool changed, COLORREF& bgCo
 
     CSymbols::LeaveCriticalSection();
 
-    bool bHaveReadBP = m_Breakpoints->ReadBPExists(vaddr) == CBreakpoints::BP_SET;
+    bool bHaveReadBP = m_Breakpoints->ReadBPExists8(vaddr) == CBreakpoints::BP_SET;
     bool bHaveWriteBP = m_Breakpoints->WriteBPExists8(vaddr) == CBreakpoints::BP_SET;
 
     fgHiColor = RGB(0x00, 0x00, 0x00);

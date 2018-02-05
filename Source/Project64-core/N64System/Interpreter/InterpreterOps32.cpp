@@ -15,6 +15,7 @@
 #include <Project64-core/N64System/Mips/SystemTiming.h>
 #include <Project64-core/N64System/Interpreter/InterpreterCPU.h>
 #include <Project64-core/Logging.h>
+#include <Project64-core/Debugger.h>
 
 bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
 
@@ -891,6 +892,10 @@ void R4300iOp32::BGTZL()
 void R4300iOp32::LB()
 {
     uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    if (HaveReadBP() && g_Debugger->ReadBP8(Address) && MemoryBreakpoint())
+    {
+        return;
+    }
     if (!g_MMU->LB_VAddr(Address, _GPR[m_Opcode.rt].UB[0]))
     {
         if (bShowTLBMisses())
@@ -911,6 +916,10 @@ void R4300iOp32::LH()
     if ((Address & 1) != 0)
     {
         ADDRESS_ERROR_EXCEPTION(Address, true);
+    }
+    if (HaveReadBP() && g_Debugger->ReadBP16(Address) && MemoryBreakpoint())
+    {
+        return;
     }
     if (!g_MMU->LH_VAddr(Address, _GPR[m_Opcode.rt].UHW[0]))
     {
@@ -933,6 +942,10 @@ void R4300iOp32::LWL()
     Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
     Offset = Address & 3;
 
+    if (HaveReadBP() && g_Debugger->ReadBP32(Address) && MemoryBreakpoint())
+    {
+        return;
+    }
     if (!g_MMU->LW_VAddr((Address & ~3), Value))
     {
         if (bShowTLBMisses())
@@ -953,6 +966,10 @@ void R4300iOp32::LW()
     if ((Address & 3) != 0)
     {
         ADDRESS_ERROR_EXCEPTION(Address, true);
+    }
+    if (HaveReadBP() && g_Debugger->ReadBP32(Address) && MemoryBreakpoint())
+    {
+        return;
     }
 
     if (GenerateLog())
@@ -977,6 +994,10 @@ void R4300iOp32::LW()
 void R4300iOp32::LBU()
 {
     uint32_t Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
+    if (HaveReadBP() && g_Debugger->ReadBP8(Address) && MemoryBreakpoint())
+    {
+        return;
+    }
     if (!g_MMU->LB_VAddr(Address, _GPR[m_Opcode.rt].UB[0]))
     {
         if (bShowTLBMisses())
@@ -998,6 +1019,10 @@ void R4300iOp32::LHU()
     {
         ADDRESS_ERROR_EXCEPTION(Address, true);
     }
+    if (HaveReadBP() && g_Debugger->ReadBP16(Address) && MemoryBreakpoint())
+    {
+        return;
+    }
     if (!g_MMU->LH_VAddr(Address, _GPR[m_Opcode.rt].UHW[0]))
     {
         if (bShowTLBMisses())
@@ -1018,7 +1043,10 @@ void R4300iOp32::LWR()
 
     Address = _GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset;
     Offset = Address & 3;
-
+    if (HaveReadBP() && g_Debugger->ReadBP32(Address) && MemoryBreakpoint())
+    {
+        return;
+    }
     if (!g_MMU->LW_VAddr((Address & ~3), Value))
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -1041,6 +1069,10 @@ void R4300iOp32::LWU()
         ADDRESS_ERROR_EXCEPTION(Address, true);
     }
 
+    if (HaveReadBP() && g_Debugger->ReadBP32(Address) && MemoryBreakpoint())
+    {
+        return;
+    }
     if (!g_MMU->LW_VAddr(Address, _GPR[m_Opcode.rt].UW[0]))
     {
         if (bShowTLBMisses())
@@ -1062,7 +1094,10 @@ void R4300iOp32::LL()
     {
         ADDRESS_ERROR_EXCEPTION(Address, true);
     }
-
+    if (HaveReadBP() && g_Debugger->ReadBP32(Address) && MemoryBreakpoint())
+    {
+        return;
+    }
     if (!g_MMU->LW_VAddr(Address, _GPR[m_Opcode.rt].UW[0]))
     {
         if (bShowTLBMisses())

@@ -26,6 +26,7 @@ bool CDebugSettings::m_bShowDivByZero = false;
 bool CDebugSettings::m_RecordExecutionTimes = false;
 bool CDebugSettings::m_HaveExecutionBP = false;
 bool CDebugSettings::m_HaveWriteBP = false;
+bool CDebugSettings::m_HaveReadBP = false;
 
 CDebugSettings::CDebugSettings()
 {
@@ -42,6 +43,7 @@ CDebugSettings::CDebugSettings()
         g_Settings->RegisterChangeCB(Debugger_SkipOp, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_HaveExecutionBP, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_WriteBPExists, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->RegisterChangeCB(Debugger_ReadBPExists, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_WaitingForStep, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
 
         RefreshSettings();
@@ -78,6 +80,7 @@ void CDebugSettings::RefreshSettings()
     m_WaitingForStep = g_Settings->LoadBool(Debugger_WaitingForStep);
     m_HaveExecutionBP = m_HaveDebugger && g_Settings->LoadBool(Debugger_HaveExecutionBP);
     m_HaveWriteBP = m_HaveDebugger && g_Settings->LoadBool(Debugger_WriteBPExists);
+    m_HaveReadBP = m_HaveDebugger && g_Settings->LoadBool(Debugger_ReadBPExists);
 
-    m_Debugging = m_HaveDebugger && (m_HaveExecutionBP || m_WaitingForStep || m_HaveWriteBP);
+    m_Debugging = m_HaveDebugger && (m_HaveExecutionBP || m_WaitingForStep || m_HaveWriteBP || m_HaveReadBP);
 }

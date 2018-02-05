@@ -405,7 +405,7 @@ void CDebuggerUI::CPUStepStarted()
         {
             m_ScriptSystem->HookCPURead()->InvokeByParamInRange(memoryAddress);
 
-            if (m_Breakpoints->ReadBPExists(memoryAddress))
+            if (m_Breakpoints->ReadBPExists8(memoryAddress))
             {
                 goto breakpoint_hit;
             }
@@ -533,6 +533,26 @@ void CDebuggerUI::WaitForStep(void)
 bool CDebuggerUI::ExecutionBP(uint32_t address)
 {
     return m_Breakpoints != NULL && m_Breakpoints->ExecutionBPExists(address, true) != CBreakpoints::BP_NOT_SET;
+}
+
+bool CDebuggerUI::ReadBP8(uint32_t address)
+{
+    return m_Breakpoints != NULL && m_Breakpoints->ReadBPExists8(address) != CBreakpoints::BP_NOT_SET;
+}
+
+bool CDebuggerUI::ReadBP16(uint32_t address)
+{
+    return m_Breakpoints != NULL && m_Breakpoints->ReadBPExists16(address) != CBreakpoints::BP_NOT_SET;
+}
+
+bool CDebuggerUI::ReadBP32(uint32_t address)
+{
+    return m_Breakpoints != NULL && m_Breakpoints->ReadBPExists32(address) != CBreakpoints::BP_NOT_SET;
+}
+
+bool CDebuggerUI::ReadBP64(uint32_t address)
+{
+    return m_Breakpoints != NULL && m_Breakpoints->ReadBPExists64(address) != CBreakpoints::BP_NOT_SET;
 }
 
 bool CDebuggerUI::WriteBP8(uint32_t address)

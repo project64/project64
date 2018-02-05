@@ -23,9 +23,14 @@ CBreakpoints::CBreakpoints()
 
 bool CBreakpoints::RBPAdd(uint32_t address)
 {
-    if (!ReadBPExists(address))
+    if (!ReadBPExists8(address))
     {
         m_ReadMem.insert(breakpoints_t::value_type(address, false));
+        UpdateAlignedReadBP();
+        if (!HaveReadBP())
+        {
+            g_Settings->SaveBool(Debugger_ReadBPExists, true);
+        }
         return true;
     }
     return false;
@@ -67,6 +72,11 @@ void CBreakpoints::RBPRemove(uint32_t address)
     if (itr != m_ReadMem.end())
     {
         m_ReadMem.erase(itr);
+        UpdateAlignedWriteBP();
+        if (m_ReadMem.size() == 0)
+        {
+            g_Settings->SaveBool(Debugger_ReadBPExists, false);
+        }
     }
 }
 
@@ -77,7 +87,7 @@ void CBreakpoints::WBPRemove(uint32_t address)
     {
         m_WriteMem.erase(itr);
         UpdateAlignedWriteBP();
-        if (m_Execution.size() == 0)
+        if (m_WriteMem.size() == 0)
         {
             g_Settings->SaveBool(Debugger_WriteBPExists, false);
         }
@@ -124,6 +134,8 @@ void CBreakpoints::EBPToggle(uint32_t address, bool bTemporary)
 void CBreakpoints::RBPClear()
 {
     m_ReadMem.clear();
+    UpdateAlignedReadBP();
+    g_Settings->SaveBool(Debugger_ReadBPExists, false);
 }
 
 void CBreakpoints::WBPClear()
@@ -136,6 +148,7 @@ void CBreakpoints::WBPClear()
 void CBreakpoints::EBPClear()
 {
     m_Execution.clear();
+    g_Settings->SaveBool(Debugger_HaveExecutionBP, false);
 }
 
 void CBreakpoints::BPClear()
@@ -145,9 +158,39 @@ void CBreakpoints::BPClear()
     EBPClear();
 }
 
-CBreakpoints::BPSTATE CBreakpoints::ReadBPExists(uint32_t address)
+CBreakpoints::BPSTATE CBreakpoints::ReadBPExists8(uint32_t address)
 {
     breakpoints_t::const_iterator itr = m_ReadMem.find(address);
+    if (itr != m_ReadMem.end())
+    {
+        return BP_SET;
+    }
+    return BP_NOT_SET;
+}
+
+CBreakpoints::BPSTATE CBreakpoints::ReadBPExists16(uint32_t address)
+{
+    breakpoints_t::const_iterator itr = m_ReadMem16.find(address);
+    if (itr != m_ReadMem.end())
+    {
+        return BP_SET;
+    }
+    return BP_NOT_SET;
+}
+
+CBreakpoints::BPSTATE CBreakpoints::ReadBPExists32(uint32_t address)
+{
+    breakpoints_t::const_iterator itr = m_ReadMem32.find(address);
+    if (itr != m_ReadMem.end())
+    {
+        return BP_SET;
+    }
+    return BP_NOT_SET;
+}
+
+CBreakpoints::BPSTATE CBreakpoints::ReadBPExists64(uint32_t address)
+{
+    breakpoints_t::const_iterator itr = m_ReadMem64.find(address);
     if (itr != m_ReadMem.end())
     {
         return BP_SET;
@@ -211,6 +254,20 @@ CBreakpoints::BPSTATE CBreakpoints::ExecutionBPExists(uint32_t address, bool bRe
         return BP_SET;
     }
     return BP_NOT_SET;
+}
+
+void CBreakpoints::UpdateAlignedReadBP()
+{
+    m_ReadMem16.clear();
+    m_ReadMem32.clear();
+    m_ReadMem64.clear();
+
+    for (breakpoints_t::const_iterator itr = m_ReadMem.begin(); itr != m_ReadMem.end(); itr++)
+    {
+        m_ReadMem16.insert(breakpoints_t::value_type((itr->first & ~0x1), false));
+        m_ReadMem32.insert(breakpoints_t::value_type((itr->first & ~0x3), false));
+        m_ReadMem64.insert(breakpoints_t::value_type((itr->first & ~0x7), false));
+    }
 }
 
 void CBreakpoints::UpdateAlignedWriteBP()
