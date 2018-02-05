@@ -59,6 +59,10 @@ public:
     void OpenDMALogWindow(void);
 
     bool ExecutionBP(uint32_t address);
+    bool ReadBP8(uint32_t address);
+    bool ReadBP16(uint32_t address);
+    bool ReadBP32(uint32_t address);
+    bool ReadBP64(uint32_t address);
     bool WriteBP8(uint32_t address);
     bool WriteBP16(uint32_t address);
     bool WriteBP32(uint32_t address);

@@ -32,7 +32,10 @@ public:
     const breakpoints_t & WriteMem(void) const { return m_WriteMem; }
     const breakpoints_t & Execution(void) const { return m_Execution; }
 
-    BPSTATE ReadBPExists(uint32_t address);
+    BPSTATE ReadBPExists8(uint32_t address);
+    BPSTATE ReadBPExists16(uint32_t address);
+    BPSTATE ReadBPExists32(uint32_t address);
+    BPSTATE ReadBPExists64(uint32_t address);
     BPSTATE WriteBPExists8(uint32_t address);
     BPSTATE WriteBPExists16(uint32_t address);
     BPSTATE WriteBPExists32(uint32_t address);
@@ -58,8 +61,9 @@ public:
 
 private:
     void UpdateAlignedWriteBP(void);
+    void UpdateAlignedReadBP(void);
 
-    breakpoints_t m_ReadMem;
+    breakpoints_t m_ReadMem, m_ReadMem16, m_ReadMem32, m_ReadMem64;
     breakpoints_t m_WriteMem, m_WriteMem16, m_WriteMem32, m_WriteMem64;
     breakpoints_t m_Execution;
 };
