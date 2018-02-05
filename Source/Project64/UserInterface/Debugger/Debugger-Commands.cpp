@@ -74,6 +74,7 @@ LRESULT	CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     m_PCEdit.Attach(GetDlgItem(IDC_PC_EDIT));
     m_ViewPCButton.Attach(GetDlgItem(IDC_VIEWPC_BTN));
     m_StepButton.Attach(GetDlgItem(IDC_STEP_BTN));
+    m_StepOverButton.Attach(GetDlgItem(IDC_STEPOVER_BTN));
     m_SkipButton.Attach(GetDlgItem(IDC_SKIP_BTN));
     m_GoButton.Attach(GetDlgItem(IDC_GO_BTN));
     m_RegisterTabs.Attach(GetDlgItem(IDC_REG_TABS));
@@ -101,6 +102,7 @@ LRESULT	CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     // Setup View PC button
     m_ViewPCButton.EnableWindow(FALSE);
     m_StepButton.EnableWindow(FALSE);
+    m_StepOverButton.EnableWindow(FALSE);
     m_SkipButton.EnableWindow(FALSE);
     m_GoButton.EnableWindow(FALSE);
 
@@ -126,6 +128,7 @@ LRESULT	CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     {
         m_ViewPCButton.EnableWindow(TRUE);
         m_StepButton.EnableWindow(TRUE);
+        m_StepOverButton.EnableWindow(TRUE);
         m_SkipButton.EnableWindow(TRUE);
         m_GoButton.EnableWindow(TRUE);
     }
@@ -153,6 +156,7 @@ LRESULT CDebugCommandsView::OnDestroy(void)
     m_GoButton.Detach();
     m_SkipButton.Detach();
     m_StepButton.Detach();
+    m_StepOverButton.Detach();
     m_ViewPCButton.Detach();
     m_PCEdit.Detach();
     m_AddressEdit.Detach();
@@ -172,9 +176,7 @@ void CDebugCommandsView::InterceptKeyDown(WPARAM wParam, LPARAM /*lParam*/)
             m_StepEvent.Trigger();
         }
         break;
-    case VK_F3:
-        // reserved step over
-        break;
+    case VK_F3: CPUStepOver(); break;
     case VK_F4: CPUResume(); break;
     }
 }
@@ -487,6 +489,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top)
             // Disable buttons
             m_ViewPCButton.EnableWindow(FALSE);
             m_StepButton.EnableWindow(FALSE);
+            m_StepOverButton.EnableWindow(FALSE);
             m_SkipButton.EnableWindow(FALSE);
             m_GoButton.EnableWindow(FALSE);
 
@@ -516,6 +519,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top)
         // Enable buttons
         m_ViewPCButton.EnableWindow(TRUE);
         m_StepButton.EnableWindow(TRUE);
+        m_StepOverButton.EnableWindow(TRUE);
         m_SkipButton.EnableWindow(TRUE);
         m_GoButton.EnableWindow(TRUE);
 
@@ -1085,6 +1089,32 @@ void CDebugCommandsView::CPUResume()
     }
 }
 
+void CDebugCommandsView::CPUStepOver()
+{
+    if (g_MMU == NULL)
+    {
+        return;
+    }
+
+    COpInfo opInfo;
+    g_MMU->LW_VAddr(g_Reg->m_PROGRAM_COUNTER, opInfo.m_OpCode.Hex);
+
+    if (opInfo.IsJAL())
+    {
+        // put temp BP on return address and resume
+        m_Breakpoints->AddExecution(g_Reg->m_PROGRAM_COUNTER + 8, true);
+        CPUResume();
+    }
+    else
+    {
+        // normal step
+        if (WaitingForStep())
+        {
+            m_StepEvent.Trigger();
+        }
+    }
+}
+
 LRESULT CDebugCommandsView::OnBackButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
 {
     if (m_HistoryIndex > 0)
@@ -1142,6 +1172,12 @@ LRESULT CDebugCommandsView::OnStepButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWN
     {
         m_StepEvent.Trigger();
     }
+    return FALSE;
+}
+
+LRESULT CDebugCommandsView::OnStepOverButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+{
+    CPUStepOver();
     return FALSE;
 }
 
@@ -1507,12 +1543,14 @@ void CDebugCommandsView::WaitingForStepChanged(void)
         m_Debugger->Debug_RefreshStackWindow();
         m_Debugger->Debug_RefreshStackTraceWindow();
         m_StepButton.EnableWindow(true);
+        m_StepOverButton.EnableWindow(true);
         m_GoButton.EnableWindow(true);
         m_AddressEdit.SetFocus();
     }
     else
     {
         m_StepButton.EnableWindow(false);
+        m_StepOverButton.EnableWindow(false);
         m_GoButton.EnableWindow(false);
     }
 }
