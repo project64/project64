@@ -23,7 +23,7 @@ void Recompiler_Log_Message(const char * strFormat, ...)
 {
     va_list args;
     va_start(args, strFormat);
-    size_t nlen = _vscprintf(strFormat, args);
+    size_t nlen = _vscprintf(strFormat, args) + 1;
     char * buffer = (char *)alloca((nlen + 3) * sizeof(char));
     if (buffer != NULL)
     {
