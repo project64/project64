@@ -213,6 +213,8 @@ public:
     static OPCODE      m_Opcode;
     static uint32_t    m_JumpToLocation;
 
+    static bool  MemoryBreakpoint();
+
 protected:
     static void  SPECIAL();
     static void  REGIMM();
@@ -224,8 +226,6 @@ protected:
     static void  COP1_D();
     static void  COP1_W();
     static void  COP1_L();
-
-    static bool  MemoryBreakpoint();
 
     static Func Jump_Opcode[64];
     static Func Jump_Special[64];
