@@ -220,7 +220,7 @@ CBreakpoints::BPSTATE CBreakpoints::WriteBPExists16(uint32_t address)
 
 CBreakpoints::BPSTATE CBreakpoints::WriteBPExists32(uint32_t address)
 {
-    breakpoints_t::const_iterator itr = m_WriteMem16.find(address);
+    breakpoints_t::const_iterator itr = m_WriteMem32.find(address);
     if (itr != m_WriteMem32.end())
     {
         return BP_SET;
@@ -230,7 +230,7 @@ CBreakpoints::BPSTATE CBreakpoints::WriteBPExists32(uint32_t address)
 
 CBreakpoints::BPSTATE CBreakpoints::WriteBPExists64(uint32_t address)
 {
-    breakpoints_t::const_iterator itr = m_WriteMem16.find(address);
+    breakpoints_t::const_iterator itr = m_WriteMem64.find(address);
     if (itr != m_WriteMem64.end())
     {
         return BP_SET;
