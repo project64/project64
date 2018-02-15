@@ -87,7 +87,7 @@ static void x86_compiler_Break_Point()
     }
 }
 
-static uint32_t memory_write_address;
+static uint32_t memory_access_address;
 static uint32_t memory_write_in_delayslot;
 static uint32_t memory_breakpoint_found = 0;
 
@@ -103,7 +103,7 @@ static void x86WriteBreakpoint()
 
 static void x86TestWriteBreakpoint8()
 {
-    if (!g_Debugger->WriteBP8(memory_write_address))
+    if (!g_Debugger->WriteBP8(memory_access_address))
     {
         return;
     }
@@ -112,7 +112,7 @@ static void x86TestWriteBreakpoint8()
 
 static void x86TestWriteBreakpoint16()
 {
-    if (!g_Debugger->WriteBP16(memory_write_address))
+    if (!g_Debugger->WriteBP16(memory_access_address))
     {
         return;
     }
@@ -121,7 +121,7 @@ static void x86TestWriteBreakpoint16()
 
 static void x86TestWriteBreakpoint32()
 {
-    if (!g_Debugger->WriteBP32(memory_write_address))
+    if (!g_Debugger->WriteBP32(memory_access_address))
     {
         return;
     }
@@ -130,7 +130,7 @@ static void x86TestWriteBreakpoint32()
 
 static void x86TestWriteBreakpoint64()
 {
-    if (!g_Debugger->WriteBP64(memory_write_address))
+    if (!g_Debugger->WriteBP64(memory_access_address))
     {
         return;
     }
@@ -8971,7 +8971,7 @@ void CX86RecompilerOps::TestWriteBreakpoint(x86Reg AddressReg, void * FunctAddre
         return;
     }
     m_RegWorkingSet.BeforeCallDirect();
-    MoveX86regToVariable(AddressReg, &memory_write_address, "memory_write_address");
+    MoveX86regToVariable(AddressReg, &memory_access_address, "memory_access_address");
     MoveConstToVariable((m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT) ? 1 : 0, &memory_write_in_delayslot, "memory_write_in_delayslot");
     Call_Direct(FunctAddress, FunctName);
     m_RegWorkingSet.AfterCallDirect();
