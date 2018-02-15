@@ -205,8 +205,12 @@ public:
     /************************** Other functions **************************/
     void UnknownOpcode();
 
+    void ClearCachedInstructionInfo();
+    void PreReadInstruction();
     void PreWriteInstruction();
     void TestWriteBreakpoint(x86Reg AddressReg, void * FunctAddress, const char * FunctName);
+    void TestReadBreakpoint(x86Reg AddressReg, void * FunctAddress, const char * FunctName);
+    void TestBreakpoint(x86Reg AddressReg, void * FunctAddress, const char * FunctName);
     void EnterCodeBlock();
     void ExitCodeBlock();
     void CompileExitCode();
