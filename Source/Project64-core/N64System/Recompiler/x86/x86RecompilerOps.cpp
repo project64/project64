@@ -91,7 +91,7 @@ static uint32_t memory_access_address;
 static uint32_t memory_write_in_delayslot;
 static uint32_t memory_breakpoint_found = 0;
 
-static void x86WriteBreakpoint()
+static void x86MemoryBreakpoint()
 {
     memory_breakpoint_found = 1;
     if (memory_write_in_delayslot)
@@ -103,38 +103,34 @@ static void x86WriteBreakpoint()
 
 static void x86TestWriteBreakpoint8()
 {
-    if (!g_Debugger->WriteBP8(memory_access_address))
+    if (g_Debugger->WriteBP8(memory_access_address))
     {
-        return;
+        x86MemoryBreakpoint();
     }
-    x86WriteBreakpoint();
 }
 
 static void x86TestWriteBreakpoint16()
 {
-    if (!g_Debugger->WriteBP16(memory_access_address))
+    if (g_Debugger->WriteBP16(memory_access_address))
     {
-        return;
+        x86MemoryBreakpoint();
     }
-    x86WriteBreakpoint();
 }
 
 static void x86TestWriteBreakpoint32()
 {
-    if (!g_Debugger->WriteBP32(memory_access_address))
+    if (g_Debugger->WriteBP32(memory_access_address))
     {
-        return;
+        x86MemoryBreakpoint();
     }
-    x86WriteBreakpoint();
 }
 
 static void x86TestWriteBreakpoint64()
 {
-    if (!g_Debugger->WriteBP64(memory_access_address))
+    if (g_Debugger->WriteBP64(memory_access_address))
     {
-        return;
+        x86MemoryBreakpoint();
     }
-    x86WriteBreakpoint();
 }
 
 void CX86RecompilerOps::PreCompileOpcode(void)
