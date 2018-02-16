@@ -22,35 +22,8 @@
 #include <Project64-core/N64System/Mips/Mempak.h>
 #include <Project64-core/Logging.h>
 
-int32_t CPifRamSettings::m_RefCount = 0;
-bool CPifRamSettings::m_bShowPifRamErrors = false;
-
-CPifRamSettings::CPifRamSettings()
-{
-    m_RefCount += 1;
-    if (m_RefCount == 1)
-    {
-        g_Settings->RegisterChangeCB(Debugger_ShowPifErrors, NULL, RefreshSettings);
-        RefreshSettings(NULL);
-    }
-}
-
-CPifRamSettings::~CPifRamSettings()
-{
-    m_RefCount -= 1;
-    if (m_RefCount == 0)
-    {
-        g_Settings->UnregisterChangeCB(Debugger_ShowPifErrors, NULL, RefreshSettings);
-    }
-}
-
-void CPifRamSettings::RefreshSettings(void *)
-{
-    m_bShowPifRamErrors = g_Settings->LoadBool(Debugger_ShowPifErrors);
-}
-
 CPifRam::CPifRam(bool SavesReadOnly) :
-CEeprom(SavesReadOnly)
+    CEeprom(SavesReadOnly)
 {
     Reset();
 }

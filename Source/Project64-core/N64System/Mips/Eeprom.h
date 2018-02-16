@@ -12,7 +12,7 @@
 #include <Project64-core/Settings/DebugSettings.h>
 
 class CEeprom :
-    private CDebugSettings
+    protected CDebugSettings
 {
 public:
     CEeprom(bool ReadOnly);
@@ -25,6 +25,7 @@ private:
     CEeprom(const CEeprom&);              // Disable copy constructor
     CEeprom& operator=(const CEeprom&);   // Disable assignment
 
+    void ProcessingError(uint8_t * Command);
     void LoadEeprom();
     void ReadFrom(uint8_t * Buffer, int32_t line);
     void WriteTo(uint8_t * Buffer, int32_t line);

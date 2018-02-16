@@ -13,28 +13,8 @@
 #include <Project64-core/Logging.h>
 #include <Project64-core/N64System/Mips/Eeprom.h>
 
-class CPifRamSettings
-{
-protected:
-    CPifRamSettings();
-    virtual ~CPifRamSettings();
-
-    bool  bShowPifRamErrors() const
-    {
-        return m_bShowPifRamErrors;
-    }
-
-private:
-    static void RefreshSettings(void*);
-
-    static bool m_bShowPifRamErrors;
-
-    static int32_t m_RefCount;
-};
-
 class CPifRam :
     public CLogging,
-    private CPifRamSettings,
     private CEeprom
 {
 public:

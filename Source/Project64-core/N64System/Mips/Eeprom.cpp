@@ -74,22 +74,22 @@ void CEeprom::EepromCommand(uint8_t * Command)
     case 4: // Read from Eeprom
         if (Command[0] != 2 && HaveDebugger())
         {
-            g_Notify->DisplayError("What am I meant to do with this Eeprom Command");
+            ProcessingError(Command);
         }
         if (Command[1] != 8 && HaveDebugger())
         {
-            g_Notify->DisplayError("What am I meant to do with this Eeprom Command");
+            ProcessingError(Command);
         }
         ReadFrom(&Command[4], Command[3]);
         break;
     case 5: //Write to Eeprom
         if (Command[0] != 10 && HaveDebugger())
         {
-            g_Notify->DisplayError("What am I meant to do with this Eeprom Command");
+            ProcessingError(Command);
         }
         if (Command[1] != 1 && HaveDebugger())
         {
-            g_Notify->DisplayError("What am I meant to do with this Eeprom Command");
+            ProcessingError(Command);
         }
         WriteTo(&Command[4], Command[3]);
         break;
@@ -126,13 +126,13 @@ void CEeprom::EepromCommand(uint8_t * Command)
         break;
     case 8:
         //Write RTC, unimplemented
-        if (g_Settings->LoadDword(Debugger_ShowPifErrors))
+        if (bShowPifRamErrors())
         {
             g_Notify->DisplayError("Write RTC, unimplemented");
         }
         break;
     default:
-        if (g_Settings->LoadDword(Debugger_ShowPifErrors))
+        if (bShowPifRamErrors())
         {
             g_Notify->DisplayError(stdstr_f("Unknown EepromCommand %d", Command[2]).c_str());
         }
@@ -199,5 +199,13 @@ void CEeprom::WriteTo(uint8_t * Buffer, int32_t line)
     {
         m_File.Seek(line * 8, CFile::begin);
         m_File.Write(Buffer, 8);
+    }
+}
+
+void CEeprom::ProcessingError(uint8_t * /*Command*/)
+{
+    if (bShowPifRamErrors())
+    {
+        g_Notify->DisplayError("What am I meant to do with this Eeprom Command");
     }
 }
