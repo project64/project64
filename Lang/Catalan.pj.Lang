@@ -5,7 +5,7 @@
 #1  #  "Català"		// LANGUAGE ID
 #2  #  "Hiro5"			// Author
 #3  #  "2.2"			// Version
-#4  #  "11 d'octubre de 2015"		// Date
+#4  #  "18 de febrer de 2018"		// Date
 
 //About DLL Dialog
 #5  #  "Idioma actual"
@@ -15,7 +15,7 @@
 #9  #  "Visiteu el lloc web"
 #10 #  "Base de dades de ROMs (.RDB)"
 #11 #  "Fitxer de Trucs (.CHT)"
-#12 #  "Informació estesa de ROM (.RDX)"
+#12 #  "Informació estesa de la ROM (.RDX)"
 
 //About INI title
 #20 #  "Quant als fitxers de configuració"
@@ -26,7 +26,7 @@
 //File Menu
 #100#  "&Fitxer"
 #101#  "&Obre una ROM"
-#102#  "&Informació de ROM...."
+#102#  "&Informació de la ROM...."
 #103#  "Comença l'emulació"
 #104#  "&Finalitza l'emulació"
 #105#  "Tria directori de ROMs..."
@@ -51,15 +51,16 @@
 #132#  "Continua"
 #133#  "Reinicia el &Programari"
 #134#  "Reinicia el &Maquinari"
+#135#  "Intercanvia el &Disc"
 
 //Options Menu
 #140#  "&Opcions"
 #141#  "&Pantalla completa"
 #142#  "&Sempre a sobre"
-#143#  "Configura el connector de vídeo..."
-#144#  "Configura el connector d'àudio..."
-#145#  "Configura el connector del controlador..."
-#146#  "Configura el connector RSP..."
+#143#  "Configura el complement de vídeo..."
+#144#  "Configura el complement d'àudio..."
+#145#  "Configura el complement del controlador..."
+#146#  "Configura el complement RSP..."
 #147#  "Mostra % d'ús de CPU"
 #148#  "&Paràmetres..."
 
@@ -88,13 +89,15 @@
 #198#  "Ranura 8"
 #199#  "Ranura 9"
 #200#  "Ranura 10"
+#201#  "Ranura de desat (%ws) seleccionada"
 
 //Pop up Menu
 #210#  "Juga el joc"
 #211#  "Informació de ROM"
 #212#  "Edita els paràmetres del joc"
 #213#  "Edita els trucs"
-#214#  "Connector de vídeo"
+#214#  "Complement de vídeo"
+#215#  "Juga el joc amb disc"
 
 //Alternate Name to save Slot
 #220#  "Desa a la ranura per defecte"
@@ -129,10 +132,10 @@
 #266#  "El botó de GameShark s'utilitza amb trucs específics"
 #267#  "Canvia l'emulació de mode en finestra a pantalla completa"
 #268#  "Fa que la finestra estigui per sobre de totes les altres"
-#269#  "Canvia els paràmetres dins del connector de vídeo"
-#270#  "Canvia els paràmetres dins del connector d'àudio"
-#271#  "Canvia els paràmetres dins del connector de controladors (i.e. assigna les tecles)"
-#272#  "Canvia els paràmetres dins del connector RSP"
+#269#  "Canvia els paràmetres dins del complement de vídeo"
+#270#  "Canvia els paràmetres dins del complement d'àudio"
+#271#  "Canvia els paràmetres dins del complement de controladors (i.e. assigna les tecles)"
+#272#  "Canvia els paràmetres dins del complement RSP"
 #273#  "Mostra l'ús de CPU de l'emulador dividit en diferents recursos"
 #274#  "Mostra/Canvia paràmetres per aquesta aplicació"
 #275#  "Mostra el Manual per l'aplicació"
@@ -177,7 +180,7 @@
 #320#  "Selecciona directori de ROMs actual"
 
 //Messages
-#340#  "ROM dolenta? Utilitza GoodN64 i cerca una RDB actualitzada"
+#340#  "ROM malmesa? Utilitza GoodN64 i comprova que la RDB estigui actualitzada"
 
 /*********************************************************************************
 * Options                                                                        *
@@ -186,7 +189,7 @@
 #400#  "Paràmetres"
 
 //Tabs
-#401#  "Connectors"
+#401#  "Complements"
 #402#  "Directoris"
 #403#  "Opcions"
 #404#  "Selecció de ROM"
@@ -232,6 +235,8 @@
 #465#  "Mostra la velocitat"
 #466#  "Mostra la velocitat:"
 #467#  "Comprova si Project64 ja s'està executant"
+#468#  "Directori únic de desats de joc"
+#469#  "Camí de la ROM 64DD IPL:"
 
 //ROM Browser Tab
 #480#  "Límit de ROMs recordades (Màx 10):"
@@ -436,6 +441,22 @@
 #1105#  "Ranures de desat"
 
 /*********************************************************************************
+* Support Window                                                                 *
+*********************************************************************************/
+#1200#  "Suport del Project64"
+#1201#  "Project64 és un paquet de programari dissenyat per emular el sistema de videojocs Nintendo64 en un PC basat en Microsoft Windows. Això permet reproduir programari N64 real de la mateixa manera que seria sota el sistema de maquinari original.\n\nSi us agrada Project64 i n'heu tret algun valor doneu suport a project64 com una manera de donar les gràcies, o per desitjar que continuï millorant.\n\nSi heu donat suport al project64:"
+#1202#  "Introdueix el codi de notificació"
+#1203#  "Suport del Project64"
+#1204#  "Continua"
+#1205#  "Introduïu el codi de suport"
+#1206#  "Codi de suport incorrecte"
+#1207#  "Gràcies"
+#1208#  "Introdueix el codi"
+#1209#  "Introduïu el codi en l'email"
+#1210#  "D'acord"
+#1211#  "Cancel·la"
+
+/*********************************************************************************
 * Messages                                                                       *
 *********************************************************************************/
 #2000#  "*** CPU EN PAUSA ***"
@@ -496,3 +517,45 @@
 #2055#  "L'LLE de vídeo no és per un ús genèric!!!\nÉs aconsellable que només utilitzis això per fer proves i no per jugar.\n\nVoleu canviar a l'LLE de vídeo?"
 #2056#  "Emulació d'alt nivell (HLE) d'àudio"
 #2057#  "L'HLE d'àudio requereix un complement de tercers!!!\nSi s'utilitza cap complement de tercers que suporti HLE, no hi haurà cap so.\n\nVoleu canviar a l'HLE d'àudio?"
+
+
+/*********************************************************************************
+* Android                                                                        *
+*********************************************************************************/
+#3000#  "Opcions"
+#3001#  "Ajuda/Fòrum"
+#3002#  "Informa problema"
+#3003#  "Quant a"
+#3004#  "Jugat recentment"
+#3005#  "Jocs"
+#3006#  "Dir. Joc"
+#3007#  "Seleccioneu carpeta per cercar"
+#3008#  "Inclou subdirectoris"
+#3009#  "Carpeta parent"
+#3010#  "Directoris"
+#3011#  "Memòria interna"
+#3012#  "Cercant..."
+#3013#  "D'acord"
+#3014#  "Cancel·la"
+#3015#  "Informació"
+#3016#  "Project64 per l'Android"
+#3017#  "Llicència"
+#3018#  "Revisió"
+#3019#  "Project64 per l'Android\u2122 és un port de la versió per windows del project64. La versió d'Android\u2122 pot reproduir la majoria de jocs N64."
+#3020#  "Autors del Project64."
+
+//In game menu
+#3100#  "Opcions"
+#3101#  "Desa l'estat"
+#3102#  "Carrega l'estat"
+#3103#  "Finalitza l'emulació"
+#3104#  "Pausa"
+#3105#  "Continua"
+#3106#  "Velocitat de joc"
+#3107#  "Estat desat actual..."
+#3108#  "Auto"
+#3109#  "Ranura"
+#3110#  "Reinicia"
+#3111#  "Opcions de depuració"
+#3112#  "Reinicia els cops de funció"
+#3113#  "Bolca els cops de funció"
