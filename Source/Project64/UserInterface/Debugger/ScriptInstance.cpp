@@ -1,4 +1,5 @@
 #include <stdafx.h>
+#include <sys/stat.h>
 
 #include "ScriptInstance.h"
 #include "ScriptSystem.h"
@@ -69,8 +70,7 @@ void CScriptInstance::ForceStop()
 {
     // Close all files and delete all hooked callbacks
     EnterCriticalSection(&m_CriticalSection);
-    m_ScriptSystem->ClearCallbacksForInstance(this);
-    CloseAllFiles();
+    CleanUp();
     LeaveCriticalSection(&m_CriticalSection);
     SetState(STATE_STOPPED);
 }
@@ -164,8 +164,16 @@ void CScriptInstance::StartScriptProc()
     }
     else
     {
+        CleanUp();
         SetState(STATE_STOPPED);
     }
+}
+
+void CScriptInstance::CleanUp()
+{
+    m_ScriptSystem->ClearCallbacksForInstance(this);
+    CloseAllAsyncFiles();
+    CloseAllFiles();
 }
 
 void CScriptInstance::StartEventLoop()
@@ -192,6 +200,7 @@ void CScriptInstance::StartEventLoop()
         RemoveListener(lpListener);
     }
 
+    CleanUp();
     SetState(STATE_STOPPED);
 }
 
@@ -235,23 +244,23 @@ bool CScriptInstance::HaveEvents()
         m_ScriptSystem->HasCallbacksForInstance(this);
 }
 
-void CScriptInstance::AddFile(HANDLE fd, bool bSocket)
+void CScriptInstance::AddAsyncFile(HANDLE fd, bool bSocket)
 {
     IOFD iofd;
     iofd.fd = fd;
     iofd.iocp = CreateIoCompletionPort(fd, m_hIOCompletionPort, (ULONG_PTR)fd, 0);
     iofd.bSocket = bSocket;
-    m_Files.push_back(iofd);
+    m_AsyncFiles.push_back(iofd);
 }
 
-void CScriptInstance::CloseFile(HANDLE fd)
+void CScriptInstance::CloseAsyncFile(HANDLE fd)
 {
     // Causes EVT_READ with length 0
     // Not safe to remove listeners until then
 
-    for (uint32_t i = 0; i < m_Files.size(); i++)
+    for (uint32_t i = 0; i < m_AsyncFiles.size(); i++)
     {
-        IOFD iofd = m_Files[i];
+        IOFD iofd = m_AsyncFiles[i];
         if (iofd.fd != fd)
         {
             continue;
@@ -270,14 +279,14 @@ void CScriptInstance::CloseFile(HANDLE fd)
     }
 }
 
-void CScriptInstance::CloseAllFiles()
+void CScriptInstance::CloseAllAsyncFiles()
 {
     // Causes EVT_READ with length 0
     // Not safe to remove listeners until then
 
-    for (uint32_t i = 0; i < m_Files.size(); i++)
+    for (uint32_t i = 0; i < m_AsyncFiles.size(); i++)
     {
-        IOFD iofd = m_Files[i];
+        IOFD iofd = m_AsyncFiles[i];
 
         // Close file handle
         if (iofd.bSocket)
@@ -291,18 +300,18 @@ void CScriptInstance::CloseAllFiles()
     }
 }
 
-void CScriptInstance::RemoveFile(HANDLE fd)
+void CScriptInstance::RemoveAsyncFile(HANDLE fd)
 {
     // Stop tracking an fd and remove all of its listeners
-    for (uint32_t i = 0; i < m_Files.size(); i++)
+    for (uint32_t i = 0; i < m_AsyncFiles.size(); i++)
     {
-        IOFD iofd = m_Files[i];
+        IOFD iofd = m_AsyncFiles[i];
         if (iofd.fd != fd)
         {
             continue;
         }
 
-        m_Files.erase(m_Files.begin() + i);
+        m_AsyncFiles.erase(m_AsyncFiles.begin() + i);
         RemoveListenersByFd(fd);
         break;
     }
@@ -311,7 +320,7 @@ void CScriptInstance::RemoveFile(HANDLE fd)
 HANDLE CScriptInstance::CreateSocket()
 {
     HANDLE fd = (HANDLE)WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
-    AddFile(fd, true);
+    AddAsyncFile(fd, true);
     return fd;
 }
 
@@ -398,7 +407,7 @@ void CScriptInstance::InvokeListenerCallback(IOLISTENER* lpListener)
         else
         {
             // handle must have closed, safe to untrack fd and remove all associated listeners
-            RemoveFile(lpListener->fd);
+            RemoveAsyncFile(lpListener->fd);
 
             // pass null to callback
             duk_push_null(m_Ctx);
@@ -474,6 +483,67 @@ void CALLBACK CScriptInstance::EvalAsyncCallback(ULONG_PTR _pendingEval)
     PendingEval* evalWait = (PendingEval*)_pendingEval;
     evalWait->Run();
     delete evalWait;
+}
+
+bool CScriptInstance::AddFile(const char* path, const char* mode, int* fd)
+{
+    FILE* fp = fopen(path, mode);
+
+    if (fp == NULL)
+    {
+        return false;
+    }
+
+    FILE_FD filefd;
+    filefd.fp = fp;
+    filefd.fd = _fileno(fp);
+    m_Files.push_back(filefd);
+    *fd = filefd.fd;
+    return true;
+}
+
+void CScriptInstance::CloseFile(int fd)
+{
+    size_t nFiles = m_Files.size();
+
+    for (size_t i = 0; i < nFiles; i++)
+    {
+        FILE_FD* filefd = &m_Files[i];
+
+        if (filefd->fd == fd)
+        {
+            fclose(filefd->fp);
+            m_Files.erase(m_Files.begin() + i);
+            return;
+        }
+    }
+}
+
+void CScriptInstance::CloseAllFiles()
+{
+    size_t nFiles = m_Files.size();
+
+    for (size_t i = 0; i < nFiles; i++)
+    {
+        fclose(m_Files[i].fp);
+        m_Files.erase(m_Files.begin() + i);
+    }
+}
+
+FILE* CScriptInstance::GetFilePointer(int fd)
+{
+    size_t nFiles = m_Files.size();
+
+    for (size_t i = 0; i < nFiles; i++)
+    {
+        FILE_FD* filefd = &m_Files[i];
+
+        if (filefd->fd == fd)
+        {
+            return filefd->fp;
+        }
+    }
+    return NULL;
 }
 
 const char* CScriptInstance::EvalFile(const char* jsPath)
@@ -554,7 +624,7 @@ duk_ret_t CScriptInstance::js_ioClose(duk_context* ctx)
     CScriptInstance* _this = FetchInstance(ctx);
     HANDLE fd = (HANDLE)duk_get_uint(ctx, 0);
     duk_pop(ctx);
-    _this->CloseFile(fd);
+    _this->CloseAsyncFile(fd);
     return 1;
 }
 
@@ -1222,6 +1292,12 @@ duk_ret_t CScriptInstance::js_GetRDRAMBlock(duk_context* ctx)
 
     duk_pop_n(ctx, 2);
 
+    if (g_MMU == NULL)
+    {
+        duk_push_boolean(ctx, false);
+        return 1;
+    }
+
     uint8_t* block = (uint8_t*)duk_push_buffer(ctx, size, false);
 
     for (uint32_t i = 0; i < size; i++)
@@ -1428,6 +1504,397 @@ duk_ret_t CScriptInstance::js_ScreenPrint(duk_context* ctx)
     TextOut(hdc, x, y, text, nChars);
 
     duk_pop_n(ctx, nargs);
+    return 1;
+}
+
+duk_ret_t CScriptInstance::js_FSOpen(duk_context* ctx)
+{
+    CScriptInstance* _this = FetchInstance(ctx);
+
+    int nargs = duk_get_top(ctx);
+
+    if (nargs < 2)
+    {
+        duk_pop_n(ctx, nargs);
+        duk_push_false(ctx);
+        return 1;
+    }
+
+    const char* path = duk_to_string(ctx, 0);
+    const char* mode = duk_to_string(ctx, 1);
+
+    int fd;
+    bool res = _this->AddFile(path, mode, &fd);
+
+    duk_pop_n(ctx, nargs);
+
+    if (res == false)
+    {
+        duk_push_false(ctx);
+        return 1;
+    }
+
+    duk_push_number(ctx, fd);
+    
+    return 1;
+}
+
+duk_ret_t CScriptInstance::js_FSClose(duk_context* ctx)
+{
+    CScriptInstance* _this = FetchInstance(ctx);
+
+    int nargs = duk_get_top(ctx);
+
+    if (nargs < 1)
+    {
+        duk_pop_n(ctx, nargs);
+        return 1;
+    }
+
+    int fd = duk_get_int(ctx, 0);
+    duk_pop_n(ctx, nargs);
+    
+    _this->CloseFile(fd);
+
+    return 1;
+}
+
+duk_ret_t CScriptInstance::js_FSWrite(duk_context* ctx)
+{
+    CScriptInstance* _this = FetchInstance(ctx);
+    int nargs = duk_get_top(ctx);
+    
+    size_t nBytesWritten = 0;
+
+    if (nargs < 2)
+    {
+        goto end;
+    }
+
+    int fd = duk_get_int(ctx, 0);
+
+    FILE* fp = _this->GetFilePointer(fd);
+
+    if (fp == NULL)
+    {
+        goto end;
+    }
+    
+    const char* buffer;
+    int offset = 0;
+    duk_size_t length = 0;
+    int position = 0; // fseek
+    
+    if (duk_is_string(ctx, 1))
+    {
+        // string
+        const char* str = duk_get_string(ctx, 1);
+        length = strlen(str);
+
+        buffer = str;
+    }
+    else
+    {
+        // buffer
+        buffer = (const char*)duk_get_buffer_data(ctx, 1, &length);
+        
+        if (buffer == NULL)
+        {
+            goto end;
+        }
+    }
+
+    if (nargs > 2 && duk_get_type(ctx, 2) == DUK_TYPE_NUMBER)
+    {
+        offset = duk_get_int(ctx, 2);
+        length -= offset;
+    }
+
+    if (nargs > 3 && duk_get_type(ctx, 3) == DUK_TYPE_NUMBER)
+    {
+        size_t lengthArg = duk_get_uint(ctx, 3);
+
+        if (lengthArg <= length)
+        {
+            length = lengthArg;
+        }
+    }
+
+    if (nargs > 4 && duk_get_type(ctx, 4) == DUK_TYPE_NUMBER)
+    {
+        position = duk_get_int(ctx, 4);
+        fseek(fp, position, SEEK_SET);
+    }
+
+    nBytesWritten = fwrite(buffer, 1, length, fp);
+
+    end:
+    duk_pop_n(ctx, nargs);
+    duk_push_number(ctx, nBytesWritten);
+    return 1;
+}
+
+duk_ret_t CScriptInstance::js_FSRead(duk_context* ctx)
+{
+    CScriptInstance* _this = FetchInstance(ctx);
+    int nargs = duk_get_top(ctx);
+
+    size_t nBytesRead = 0;
+
+    // (fd, buffer, offset, length, position)
+
+    if (nargs < 5)
+    {
+        goto end;
+    }
+
+    duk_size_t bufferSize;
+
+    int fd = duk_get_int(ctx, 0);
+    char* buffer = (char*)duk_get_buffer_data(ctx, 1, &bufferSize);
+    duk_size_t offset = duk_get_uint(ctx, 2);
+    duk_size_t length = duk_get_uint(ctx, 3);
+    duk_size_t position = duk_get_uint(ctx, 4);
+
+    if (bufferSize == 0)
+    {
+        goto end;
+    }
+
+    FILE* fp = _this->GetFilePointer(fd);
+
+    if (fp == NULL)
+    {
+        goto end;
+    }
+
+    if (offset + length > bufferSize)
+    {
+        length = bufferSize - offset;
+    }
+
+    fseek(fp, position, SEEK_SET);
+    nBytesRead = fread(&buffer[offset], 1, length, fp);
+
+    end:
+    duk_pop_n(ctx, nargs);
+    duk_push_number(ctx, nBytesRead);
+    return 1;
+}
+
+duk_ret_t CScriptInstance::js_FSFStat(duk_context* ctx)
+{
+    int nargs = duk_get_top(ctx);
+
+    if (nargs < 1)
+    {
+        duk_pop_n(ctx, nargs);
+        duk_push_false(ctx);
+        return 1;
+    }
+
+    int fd = duk_get_int(ctx, 0);
+
+    struct stat statbuf;
+    int res = fstat(fd, &statbuf);
+
+    if (res != 0)
+    {
+        duk_pop_n(ctx, nargs);
+        duk_push_false(ctx);
+        return 1;
+    }
+
+    duk_pop_n(ctx, nargs);
+
+    duk_idx_t obj_idx = duk_push_object(ctx);
+
+    const duk_number_list_entry props[] = {
+        { "dev",      (duk_double_t)statbuf.st_dev },
+        { "ino",      (duk_double_t)statbuf.st_ino },
+        { "mode",     (duk_double_t)statbuf.st_mode },
+        { "nlink",    (duk_double_t)statbuf.st_nlink },
+        { "uid",      (duk_double_t)statbuf.st_uid },
+        { "gid",      (duk_double_t)statbuf.st_gid },
+        { "rdev",     (duk_double_t)statbuf.st_rdev },
+        { "size",     (duk_double_t)statbuf.st_size },
+        { "atimeMs",  (duk_double_t)statbuf.st_atime * 1000 },
+        { "mtimeMs",  (duk_double_t)statbuf.st_mtime * 1000 },
+        { "ctimeMs",  (duk_double_t)statbuf.st_ctime * 1000 },
+        { NULL, 0 }
+    };
+    
+    duk_put_number_list(ctx, obj_idx, props);
+    return 1;
+}
+
+duk_ret_t CScriptInstance::js_FSStat(duk_context* ctx)
+{
+    int nargs = duk_get_top(ctx);
+
+    if (nargs < 1)
+    {
+        duk_pop_n(ctx, nargs);
+        duk_push_false(ctx);
+        return 1;
+    }
+
+    const char* path = duk_get_string(ctx, 0);
+    
+    struct stat statbuf;
+    int res = stat(path, &statbuf);
+
+    if (res != 0)
+    {
+        duk_pop_n(ctx, nargs);
+        duk_push_false(ctx);
+        return 1;
+    }
+
+    duk_pop_n(ctx, nargs);
+
+    duk_idx_t obj_idx = duk_push_object(ctx);
+    
+    const duk_number_list_entry props[] = {
+        { "dev",      (duk_double_t)statbuf.st_dev },
+        { "ino",      (duk_double_t)statbuf.st_ino },
+        { "mode",     (duk_double_t)statbuf.st_mode },
+        { "nlink",    (duk_double_t)statbuf.st_nlink },
+        { "uid",      (duk_double_t)statbuf.st_uid },
+        { "gid",      (duk_double_t)statbuf.st_gid },
+        { "rdev",     (duk_double_t)statbuf.st_rdev },
+        { "size",     (duk_double_t)statbuf.st_size },
+        { "atimeMs",  (duk_double_t)statbuf.st_atime * 1000 },
+        { "mtimeMs",  (duk_double_t)statbuf.st_mtime * 1000 },
+        { "ctimeMs",  (duk_double_t)statbuf.st_ctime * 1000 },
+        { NULL, 0 }
+    };
+
+    duk_put_number_list(ctx, obj_idx, props);
+    return 1;
+}
+
+duk_ret_t CScriptInstance::js_FSMkDir(duk_context* ctx)
+{
+    int nargs = duk_get_top(ctx);
+    
+    if (nargs < 1)
+    {
+        duk_push_false(ctx);
+        return 1;
+    }
+
+    const char* path = duk_get_string(ctx, 0);
+
+    duk_pop_n(ctx, nargs);
+
+    if (CreateDirectory(path, NULL))
+    {
+        duk_push_true(ctx);
+    }
+    else
+    {
+        duk_push_false(ctx);
+    }
+
+    return 1;
+}
+
+duk_ret_t CScriptInstance::js_FSRmDir(duk_context* ctx)
+{
+    int nargs = duk_get_top(ctx);
+
+    if (nargs < 1)
+    {
+        duk_push_false(ctx);
+        return 1;
+    }
+
+    const char* path = duk_get_string(ctx, 0);
+
+    duk_pop_n(ctx, nargs);
+    
+    if (RemoveDirectory(path))
+    {
+        duk_push_true(ctx);
+    }
+    else
+    {
+        duk_push_false(ctx);
+    }
+
+    return 1;
+}
+
+duk_ret_t CScriptInstance::js_FSUnlink(duk_context* ctx)
+{
+    int nargs = duk_get_top(ctx);
+
+    if (nargs < 1)
+    {
+        duk_push_false(ctx);
+        return 1;
+    }
+
+    const char* path = duk_get_string(ctx, 0);
+
+    duk_pop_n(ctx, nargs);
+
+    if (!_unlink(path))
+    {
+        duk_push_true(ctx);
+    }
+    else
+    {
+        duk_push_false(ctx);
+    }
+
+    return 1;
+}
+
+duk_ret_t CScriptInstance::js_FSReadDir(duk_context* ctx)
+{
+    int nargs = duk_get_top(ctx);
+
+    if (nargs < 1)
+    {
+        duk_push_false(ctx);
+        return 1;
+    }
+
+    const char* path = duk_get_string(ctx, 0);
+
+    duk_pop_n(ctx, nargs);
+    
+    WIN32_FIND_DATA ffd;
+    HANDLE hFind = FindFirstFile(stdstr_f("%s%s", path, "\\*").c_str(), &ffd);
+
+    if (hFind == INVALID_HANDLE_VALUE)
+    {
+        duk_push_false(ctx);
+        return 1;
+    }
+
+    duk_idx_t arr_idx = duk_push_array(ctx);
+    int nfile = 0;
+
+    do
+    {
+        char filename[MAX_PATH];
+        strcpy(filename, ffd.cFileName);
+
+        if (strcmp(filename, ".") == 0 || strcmp(filename, "..") == 0)
+        {
+            continue;
+        }
+
+        duk_push_string(ctx, filename);
+        duk_put_prop_index(ctx, arr_idx, nfile);
+        nfile++;
+
+    } while (FindNextFile(hFind, &ffd) != 0);
+
+    FindClose(hFind);
     return 1;
 }
 

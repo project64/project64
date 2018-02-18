@@ -2,7 +2,8 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Project64d JS API</title>
+<title>Project64 JS API</title>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAAAlwSFlzAAAOwwAADsMBx2+oZAAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xOdTWsmQAAAOgSURBVDhPZZJ9UNMFGMd/f9Vf3PB4uS3EyxDmTZTXWFIdZEsxmOImTS4Zc3O8jMHaCxsOAhFhgwYTOF7magwGswXuUJcOhgiCuBgQYJyBpFB3HL3cmZ11peA35FZd9bl7/vne9/Pc88dD/MUT/Bpz68ux+UuOKy0Gg5bkjf/Fvfvzwv5h102tVrvVGxHE1YX6F5e/Wy5vGaj/QzmdhKyeA2i0tiw5Hc4kb+VvxtxuQd5AEpov63/qtnanb4Yz38xMyRw8NDxKx0WINufM3UNQtkkwMDRkKqoq8tssbjA8MiIoX2Ch/mEqVBez0GRs0ROWcQM6NyQ7ZPjwi6MwfM9HNyQw/y7cuIaJVptxxel0sp8vGBkbE5y+y4H5mQCa5cOQnVZ4iK4JIzrWc9C1LobIlopLN3tROZkBy1oeOp6IUDLLQlGbHH0ul+3G8I2Sstnj+ORxFjSLaSgolnoIs7sZ1T8no+5RKjItb8Pe02s0tpusZdey8dEPLNT9eBSalVQcaXoL10cGn8lvs6Ff5UA98y5EqnwPcX60Afn3wyF7EIFUQzSufd6nWfp2qVZ/uxJZd6LwwXw0sid3Q1ibsd7aer6PP3gA0jk6eEMRyFbkeojGwVqwxsk45qEgUReGr+7MrZ4b1ILhCkHarWAkOyngVh5bV8gUuaOjozmH7PFgD4WA0bMVQlmOh6jrq0a8g4SEq76IObMdVy47ZnlVJx5HmkiI6fQBX5P5VCKR8KenJ5mW6x8/pLfvBN0WCFqrL07kn/QQOocWsdYgxF14CRHFYbB9ajsr4Ar2KKoK50TVeU8L5YUZU9MTp+qd1Wu79DuwrZGEl5tIoKi2oEApdRO6Xg0SO+hItMQhWhkFV79rUafTxVOpVB8Oh7P/3oMFc6ldgVd1UaDqQxFWF4IwKRWnyksWExISwgntZ2fxWkMc9jbREVkQDavdipJm9Zrtgq1h6uvxidw2LhKr38QbdfHYW0PHPvk7UKmL+slkcsDmd1V0liJEuR2h6lcQyqOivceMCDkNaRVH8F4tE3sU4YhQ7wZNthMpksMQi8V6Go32wqb8HNU5JUjpPvDjbUEQKximLhMC2H4IzPBH4Pv+IHMD4Z/mj+OyzN/4mXyhV/sHvlAoOShM+YWUTEIQMxg12pohcbFklZJCgW/KxuKDAcgpFK2wmKzXvcr/Ye5n7hDknxyOZMdCo9FoGQzGttKKMncCdx8kKqkndldssLf6HwjiT/PF9/HEYv4PAAAAAElFTkSuQmCC"/>
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
 <style>
 body {
@@ -90,7 +91,7 @@ span.tag2 {
 </style>
 </head>
 <body>
-<div style="margin: 10px; font-size: 24px;">Project64d Javascript API</div>
+<div style="margin: 10px; font-size: 24px;">Project64 Javascript API</div>
 <div  class="inline-content" style="width: 150px; min-width: 150px; margin-left: 10px;">
 	<div class="panel" id="sidebar" style="width: 120px; position: absolute;">
 		<a href="#mem">mem</a><br>
@@ -98,6 +99,8 @@ span.tag2 {
 		<a href="#events">events</a><br>
 		<a href="#debug">debug</a><br>
 		<a href="#console">console</a><br>
+		<a href="#fs">fs</a><br>
+		<a href="#fs.Stats">fs.Stats</a><br>
 		<a href="#alert">alert</a><br>
 		<a href="#screen">screen</a><br>
 		<a href="#gpr">gpr</a><br>
@@ -388,6 +391,141 @@ events.onexec(0x802CB1C0, function()
 	</div>
 </div>
 
+<div class="panel" id="fs">
+	<div class="classname">fs</div>
+	<div class="property">
+		<div class="propertyname">fs.open(path, mode)</div>
+		<div class="propertydesc">
+			Opens the file pointed to by <span class="snip">path</span> in the mode specified by <span class="snip">mode</span>.
+			Returns a file descriptor on success or <span class="snip">false</span> if the operation failed.
+			<pre class="example">var fd = fs.open('log.txt', 'w')</pre>
+			
+			Valid modes:
+
+			<pre>
+r or rb           Open file for reading.
+w or wb           Truncate to zero length or create file for writing.
+a or ab           Append; open or create file for writing at end-of-file.
+r+ or rb+ or r+b  Open file for update (reading and writing).
+w+ or wb+ or w+b  Truncate to zero length or create file for update.
+a+ or ab+ or a+b  Append; open or create file for update, writing at end-of-file.
+
+<a href="http://pubs.opengroup.org/onlinepubs/009695399/functions/fopen.html">http://pubs.opengroup.org/onlinepubs/009695399/functions/fopen.html</a>
+</pre>
+		</div>
+	</div>
+	<div class="property">
+		<div class="propertyname">fs.close(fd)</div>
+		<div class="propertydesc">
+			Closes the file referenced by <span class="snip">fd</span>.
+		</div>
+	</div>
+	<div class="property">
+		<div class="propertyname">fs.write(fd, buffer[, offset[, length[, position]]])</div>
+		<div class="propertydesc">
+			Writes <span class="snip">buffer</span> to the file referenced by <span class="snip">fd</span>. Returns the number of bytes written.
+			<pre class="example">var fd = fs.open('log.txt', 'w')
+fs.write(fd, 'Hello world!\n')
+fs.close(fd)</pre>
+			<pre class="example">var buf = mem.getblock(0x8033B400, 4 * 32)
+var fd = fs.open('data.bin', 'wb')
+fs.write(fd, buf)
+fs.close(fd)</pre>
+		</div>
+	</div>
+	<div class="property">
+		<div class="propertyname">fs.writeFile(path, buffer)</div>
+		<div class="propertydesc">
+			Writes <span class="snip">buffer</span> to the file pointed to by <span class="snip">path</span>.
+			Returns <span class="snip">true</span> if the operation was successful or <span class="snip">false</span> if the operation failed.
+		</div>
+	</div>
+	<div class="property">
+		<div class="propertyname">fs.read(fd, buffer, offset, length, position)</div>
+		<div class="propertydesc">
+			Reads the file referenced by <span class="snip">fd</span> into <span class="snip">buffer</span>. Returns the number of bytes read.
+			<pre class="example">var buf = new Buffer(128)
+var fd = fs.open('data.bin', 'rb')
+var nBytesRead = fs.read(fd, buf, 0, buf.length, 0)
+fs.close(fd)</pre>
+		</div>
+	</div>
+	<div class="property">
+		<div class="propertyname">fs.readFile(path)</div>
+		<div class="propertydesc">
+			Reads the file pointed to by <span class="snip">path</span>. Returns a Buffer object representing the file, or <span class="snip">false</span> if the operation failed.
+		</div>
+	</div>
+	<div class="property">
+		<div class="propertyname">fs.fstat(fd)</div>
+		<div class="propertydesc">
+			Returns an <a href="#fs.Stats">fs.Stats</a> object describing the file referenced by <span class="snip">fd</span>.
+			<pre class="example">var stats = fs.fstat(fd)
+console.log('size: ' + stats.size)
+</pre>
+		</div>
+	</div>
+	<div class="property">
+			<div class="propertyname">fs.stat(path)</div>
+			<div class="propertydesc">
+				Returns an <a href="#fs.Stats">fs.Stats</a> object describing the file or directory pointed to by <span class="snip">path</span>. Returns <span class="snip">false</span> if the operation failed..
+			</div>
+	</div>
+	<div class="property">
+		<div class="propertyname">fs.unlink(path)</div>
+		<div class="propertydesc">Deletes a file. Returns <span class="snip">true</span> if the operation was successful.</div>
+	</div>
+	<div class="property">
+		<div class="propertyname">fs.mkdir(path)</div>
+		<div class="propertydesc">Creates a directory. Returns <span class="snip">true</span> if the operation was successful.</div>
+	</div>
+	<div class="property">
+		<div class="propertyname">fs.rmdir(path)</div>
+		<div class="propertydesc">Removes a directory. The directory must be empty. Returns <span class="snip">true</span> if the operation was successful.</div>
+	</div>
+	<div class="property">
+		<div class="propertyname">fs.readdir(path)</div>
+		<div class="propertydesc">
+			Returns an array of file names in the directory pointed to by <span class="snip">path</span>.
+			Returns <span class="snip">false</span> if the operation failed.
+		</div>
+	</div>
+</div>
+
+<div class="panel" id="fs.Stats">
+	<div class="classname">fs.Stats</div>
+	<div class="propertydesc">
+<table>
+	<tr><td><b>stats.dev</b>     </td><td> ID of the device the file resides on</td></tr>       
+	<tr><td><b>stats.ino</b>     </td><td> inode number</td></tr>
+	<tr><td><b>stats.mode</b>    </td><td> File permissions</td></tr>
+	<tr><td><b>stats.nlink</b>   </td><td> Number of links to the file</td></tr>
+	<tr><td><b>stats.uid</b>     </td><td> User ID</td></tr>
+	<tr><td><b>stats.gid</b>     </td><td> Group ID</td></tr>
+	<tr><td><b>stats.rdev</b>    </td><td> Device ID (if file is character or block special)</td></tr>
+	<tr><td><b>stats.size</b>    </td><td> Size of the file in bytes</td></tr>
+	<tr><td><b>stats.atimeMs</b> </td><td> Last access timestamp in milliseconds</td></tr>
+	<tr><td><b>stats.mtimeMs</b> </td><td> Last modification timestamp in milliseconds</td></tr>
+	<tr><td><b>stats.ctimeMs</b> </td><td> Creation timestamp in milliseconds</td></tr>
+	<tr><td><b>stats.atime</b>   </td><td> JS Date object representing the last access time</td></tr>
+	<tr><td><b>stats.mtime</b>   </td><td> JS Date object representing the last modification time</td></tr>
+	<tr><td><b>stats.ctime</b>   </td><td> JS Date object representing the creation time</td></tr>
+</table>
+	</div>
+	<div class="property">
+		<div class="propertyname">stats.isDirectory()</div>
+		<div class="propertydesc">
+			Returns <span class="snip">true</span> if the <a href="#fs.Stats">fs.Stats</a> object describes a directory. 
+		</div>
+	</div>
+	<div class="property">
+		<div class="propertyname">stats.isFile()</div>
+		<div class="propertydesc">
+			Returns <span class="snip">true</span> if the <a href="#fs.Stats">fs.Stats</a> object describes a regular file. 
+		</div>
+	</div>
+</div>
+
 <div class="panel" id="console">
 	<div class="classname">console</div>
 	<div class="property">
@@ -441,7 +579,7 @@ events.onexec(0x80000180, function()
 			<pre class="example">
 events.ondraw(function()
 {
-    screen.print(20, 20, "power: ' + mem.u8[0x8033B21E])
+    screen.print(20, 20, 'power: ' + mem.u8[0x8033B21E])
 })</pre>
 		</div>
 	</div>
@@ -646,7 +784,7 @@ server.on('connection', function(socket)
 			Returns a hexadecimal string representation of the number object. The resulting string is prepended with zeroes until its character length meets <span class="snip">nChars</span> or 8 by default.
 			<pre class="example">
 var sm64EntryPC = rom.u32[0x00000008]
-console.log("Entry: " + sm64EntryPC.hex()) // "Entry: 80246000"</pre>
+console.log('Entry: ' + sm64EntryPC.hex()) // "Entry: 80246000"</pre>
 		</div>
 	</div>
 </div>
