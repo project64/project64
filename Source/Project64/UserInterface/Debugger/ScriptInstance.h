@@ -53,6 +53,13 @@ class CScriptInstance
         EVENT_STATUS_ERROR
     } EVENT_STATUS;
 
+    // For synchronous file operations
+    typedef struct
+    {
+        FILE* fp;
+        int fd;
+    } FILE_FD;
+
 public:
 
     CScriptInstance(CDebuggerUI* debugger);
@@ -76,9 +83,11 @@ private:
     HANDLE              m_hIOCompletionPort;
     CRITICAL_SECTION    m_CriticalSection;
 
-    vector<IOFD>        m_Files;
+    vector<IOFD>        m_AsyncFiles;
     vector<IOLISTENER*> m_Listeners;
     UINT                m_NextListenerId;
+
+    vector<FILE_FD>     m_Files;
 
     CDebuggerUI*        m_Debugger;
 
@@ -94,13 +103,14 @@ private:
 
     void SetState(INSTANCE_STATE state);
     void StateChanged();
+    void CleanUp();
 
     void QueueAPC(PAPCFUNC userProc, ULONG_PTR param = 0);
 
-    void AddFile(HANDLE fd, bool bSocket = false);
-    void CloseFile(HANDLE fd);
-    void CloseAllFiles();
-    void RemoveFile(HANDLE fd);
+    void AddAsyncFile(HANDLE fd, bool bSocket = false);
+    void CloseAsyncFile(HANDLE fd);
+    void CloseAllAsyncFiles();
+    void RemoveAsyncFile(HANDLE fd);
     HANDLE CreateSocket();
 
     IOLISTENER* AddListener(HANDLE fd, IOEVENTTYPE evt, void* jsCallback, void* data = NULL, int dataLen = 0);
@@ -110,6 +120,11 @@ private:
     void InvokeListenerCallback(IOLISTENER* lpListener);
 
     static void CALLBACK EvalAsyncCallback(ULONG_PTR evalWait);
+
+    bool AddFile(const char* path, const char* mode, int* fd); // return fd
+    void CloseFile(int fd);
+    FILE* GetFilePointer(int fd);
+    void CloseAllFiles();
 
     const char* EvalFile(const char* jsPath);
 
@@ -159,6 +174,17 @@ private:
 
     static duk_ret_t js_ScreenPrint(duk_context*); // (x, y, text)
 
+    static duk_ret_t js_FSOpen(duk_context*); // (path, flags) ; returns fd
+    static duk_ret_t js_FSClose(duk_context*); // (fd)
+    static duk_ret_t js_FSWrite(duk_context*); // (fd, buffer[, offset[, length[, position]]])
+    static duk_ret_t js_FSRead(duk_context*); // (fd, buffer, offset, length, position)
+    static duk_ret_t js_FSFStat(duk_context*); // (fd)
+    static duk_ret_t js_FSStat(duk_context*); // (path)
+    static duk_ret_t js_FSMkDir(duk_context*); // (path)
+    static duk_ret_t js_FSRmDir(duk_context*); // (path)
+    static duk_ret_t js_FSUnlink(duk_context*); // (path)
+    static duk_ret_t js_FSReadDir(duk_context*); // (path)
+
     static constexpr duk_function_list_entry NativeFunctions[] =
     {
         { "addCallback",    js_AddCallback,    DUK_VARARGS },
@@ -201,6 +227,17 @@ private:
         { "showCommands",   js_ShowCommands,   DUK_VARARGS },
 
         { "screenPrint",    js_ScreenPrint,    DUK_VARARGS },
+
+        { "fsOpen",         js_FSOpen,         DUK_VARARGS },
+        { "fsClose",        js_FSClose,        DUK_VARARGS },
+        { "fsWrite",        js_FSWrite,        DUK_VARARGS },
+        { "fsRead",         js_FSRead,         DUK_VARARGS },
+        { "fsFStat",        js_FSFStat,        DUK_VARARGS },
+        { "fsStat",         js_FSStat,         DUK_VARARGS },
+        { "fsUnlink",       js_FSUnlink,       DUK_VARARGS },
+        { "fsMkDir",        js_FSMkDir,        DUK_VARARGS },
+        { "fsRmDir",        js_FSRmDir,        DUK_VARARGS },
+        { "fsReadDir",      js_FSReadDir,      DUK_VARARGS },
         { NULL, NULL, 0 }
     };
 };

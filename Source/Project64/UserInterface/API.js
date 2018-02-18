@@ -56,6 +56,133 @@ const ADDR_ANY_RDRAM_UNC = new AddressRange(0xA0000000, 0xA0800000)
 const ADDR_ANY_CART_ROM = new AddressRange(0x90000000, 0x96000000)
 const ADDR_ANY_CART_ROM_UNC = new AddressRange(0xB0000000, 0xB6000000)
 
+const fs = {
+    open: function(path, mode)
+    {
+        if (["r", "rb", "w", "wb", "a", "ab", "r+", "rb+", "r+b", "w+", "wb+", "w+b", "a+", "ab+", "a+b"].indexOf(mode) == -1)
+        {
+            return false
+        }
+        return _native.fsOpen(path, mode)
+    },
+    close: function(fd)
+    {
+        return _native.fsClose(fd)
+    },
+    write: function(fd, buffer, offset, length, position)
+    {
+        return _native.fsWrite(fd, buffer, offset, length, position)
+    },
+    writeFile: function(path, buffer)
+    {
+        var fd = fs.open(path, 'wb')
+
+        if (fd == false)
+        {
+            return false
+        }
+
+        fs.write(fd, buffer)
+        fs.close(fd)
+        return true
+    },
+    read: function (fd, buffer, offset, length, position)
+    {
+        return _native.fsRead(fd, buffer, offset, length, position)
+    },
+    readFile: function(path)
+    {
+        var fd = fs.open(path, 'rb')
+
+        if(fd == false)
+        {
+            return false
+        }
+
+        var stats = fs.fstat(fd);
+
+        var buf = new Buffer(stats.size)
+
+        fs.read(fd, buf, 0, stats.size, 0)
+
+        return buf
+    },
+    fstat: function(fd)
+    {
+        var rawStats = _native.fsFStat(fd)
+        if (rawStats == false)
+        {
+            return false
+        }
+        return new fs.Stats(rawStats)
+    },
+    stat: function(path)
+    {
+        var rawStats = _native.fsStat(path)
+        if (rawStats == false)
+        {
+            return false
+        }
+        return new fs.Stats(rawStats)
+    },
+    mkdir: function(path)
+    {
+        return _native.fsMkDir(path)
+    },
+    rmdir: function(path)
+    {
+        return _native.fsRmDir(path)
+    },
+    readdir: function(path)
+    {
+        return _native.fsReadDir(path)
+    },
+    unlink: function(path)
+    {
+        return _native.fsUnlink(path)
+    },
+    Stats: function(rawstats)
+    {
+        this.dev = rawstats.dev
+        this.ino = rawstats.ino
+        this.mode = rawstats.mode
+        this.nlink = rawstats.nlink
+        this.uid = rawstats.uid
+        this.gid = rawstats.gid
+        this.rdev = rawstats.rdev
+        this.size = rawstats.size
+        this.atimeMs = rawstats.atimeMs
+        this.mtimeMs = rawstats.mtimeMs
+        this.ctimeMs = rawstats.ctimeMs
+        this.atime = new Date(this.atimeMs)
+        this.mtime = new Date(this.mtimeMs)
+        this.ctime = new Date(this.ctimeMs)
+        Object.freeze(this)
+    }
+}
+
+fs.Stats.S_IFMT   = 0xF000
+fs.Stats.S_IFDIR  = 0x4000
+fs.Stats.S_IFCHR  = 0x2000
+fs.Stats.S_IFIFO  = 0x1000
+fs.Stats.S_IFREG  = 0x8000
+fs.Stats.S_IREAD  = 0x0100
+fs.Stats.S_IWRITE = 0x0080
+fs.Stats.S_IEXEC  = 0x0040
+
+fs.Stats.prototype.isDirectory = function()
+{
+    return ((this.mode & fs.Stats.S_IFMT) == fs.Stats.S_IFDIR)
+}
+
+fs.Stats.prototype.isFile = function()
+{
+    return ((this.mode & fs.Stats.S_IFMT) == fs.Stats.S_IFREG)
+}
+
+Object.freeze(fs.Stats)
+Object.freeze(fs.Stats.prototype)
+
 const system = {
 	pause: function()
 	{
