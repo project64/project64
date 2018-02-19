@@ -2,10 +2,10 @@
 * Meta Information                                                               *
 *********************************************************************************/
 //About DLL
-#1  #  "简体中文"		 	// LANGUAGE ID
-#2  #  "山姆"			// Author
-#3  #  "2.2"		        // Version
-#4  #  "2018 年 2 月"		// Date
+#1  #  "简体中文"		 	      // LANGUAGE ID
+#2  #  "山姆、EmpyreusX"		// Author
+#3  #  "2.2"		          // Version
+#4  #  "2018 年 2 月"		  // Date
 
 //About DLL Dialog
 #5  #  "当前使用的语言"
