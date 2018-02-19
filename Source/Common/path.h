@@ -2,15 +2,6 @@
 #include <string>
 #include "stdtypes.h"
 
-class CPathException
-{
-public:
-    uint32_t m_dwErrorCode;
-
-public:
-    CPathException(uint32_t code = 0) : m_dwErrorCode(code) {}
-};
-
 class CPath
 {
     //Enums
@@ -50,7 +41,7 @@ public:
     CPath(const CPath& rPath);
     CPath(const char * lpszPath);
     CPath(const char * lpszPath, const char * NameExten);
-    CPath(const char * lpszPath, const std::string & NameExten);
+    //CPath(const char * lpszPath, const std::string & NameExten);
     CPath(const std::string& strPath);
     CPath(const std::string& strPath, const char * NameExten);
     CPath(const std::string& strPath, const std::string& NameExten);
@@ -61,10 +52,6 @@ public:
     CPath(DIR_MODULE_FILE sdt);
 #endif
     virtual ~CPath();
-
-    //Setup & Cleanup
-    inline void Init();
-    inline void Exit();
 
     //Operators
     CPath& operator  = (const CPath& rPath);
@@ -159,6 +146,10 @@ public:
 #endif
 
 private:
+    //Setup & Cleanup
+    inline void Init();
+    inline void Exit();
+
     bool AttributesMatch(uint32_t dwTargetAttributes, uint32_t dwFileAttributes);
 
     void cleanPathString(std::string& rDirectory) const;

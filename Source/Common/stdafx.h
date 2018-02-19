@@ -5,6 +5,7 @@
 #include <stdarg.h>
 
 #include "MemTest.h"
+#include "Platform.h"
 #include "StdString.h"
 #include "CriticalSection.h"
 #include "FileClass.h"
