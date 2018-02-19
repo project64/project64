@@ -37,6 +37,7 @@ public:
         Remove_DMA,
         Remove_StoreInstruc,
         Remove_Cheats,
+        Remove_MemViewer,
     };
 
     typedef void(*DelayFunc)();

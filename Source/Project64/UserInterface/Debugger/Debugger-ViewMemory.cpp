@@ -371,6 +371,14 @@ LRESULT CDebugMemoryView::OnMemoryModified(LPNMHDR lpNMHDR)
                 ProtectMemory(ROM, g_Rom->GetRomSize(), MEM_READONLY);
             }
         }
+        if (g_Recompiler != NULL && m_DataVAddrr)
+        {
+            g_Recompiler->ClearRecompCode_Virt((m_DataStartLoc + Pos) & ~0xFFF, 0x1000, CRecompiler::Remove_MemViewer);
+        }
+        else if (g_Recompiler != NULL)
+        {
+            g_Recompiler->ClearRecompCode_Phys((m_DataStartLoc + Pos) & ~0xFFF, 0x1000, CRecompiler::Remove_MemViewer);
+        }
     }
     __except_catch()
     {
