@@ -1477,7 +1477,7 @@ LRESULT CDebugCommandsView::OnListBoxClicked(WORD /*wNotifyCode*/, WORD wID, HWN
 
 LRESULT CDebugCommandsView::OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-    if (LOWORD(wParam) == WA_ACTIVE)
+    if (LOWORD(wParam) != WA_INACTIVE)
     {
         ShowAddress(m_StartAddress, TRUE);
         RefreshBreakpointList();
