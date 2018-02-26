@@ -499,7 +499,10 @@ EXPORT void CALL RomClosed(void)
 	EnterCriticalSection( &g_critical );
 
 	if (g_sysMouse.didHandle)
+	{
+		g_sysMouse.didHandle->Unacquire();
 		g_sysMouse.didHandle->SetCooperativeLevel(g_strEmuInfo.hMainWindow, DIB_KEYBOARD); // unlock the mouse, just in case
+	}
 
 	for( i = 0; i < ARRAYSIZE(g_pcControllers); ++i )
 	{
