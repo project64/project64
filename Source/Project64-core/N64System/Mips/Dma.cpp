@@ -199,8 +199,9 @@ void CDMA::PI_DMA_READ()
 
 void CDMA::PI_DMA_WRITE()
 {
-    uint32_t PI_WR_LEN_REG = ((g_Reg->PI_WR_LEN_REG) & 0x00FFFFFEul) + 2;
     /* rounding PI_WR_LEN_REG up to the nearest even number fixes AI Shougi 3, Doraemon 3, etc. */
+    uint32_t PI_WR_LEN_REG = ((g_Reg->PI_WR_LEN_REG) & 0x00FFFFFEul) + 2;
+    uint32_t PI_CART_ADDR_REG = g_Reg->PI_CART_ADDR_REG & ~1;
 
     g_Reg->PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
     if (g_Reg->PI_DRAM_ADDR_REG + PI_WR_LEN_REG > g_MMU->RdramSize())
@@ -213,7 +214,7 @@ void CDMA::PI_DMA_WRITE()
     }
 
     //64DD Buffers Read
-    if (g_Reg->PI_CART_ADDR_REG >= 0x05000000 && g_Reg->PI_CART_ADDR_REG <= 0x050003FF)
+    if (PI_CART_ADDR_REG >= 0x05000000 && PI_CART_ADDR_REG <= 0x050003FF)
     {
         //64DD C2 Sectors (just read 0)
         uint32_t i;
@@ -228,7 +229,7 @@ void CDMA::PI_DMA_WRITE()
         return;
     }
 
-    if (g_Reg->PI_CART_ADDR_REG >= 0x05000400 && g_Reg->PI_CART_ADDR_REG <= 0x050004FF)
+    if (PI_CART_ADDR_REG >= 0x05000400 && PI_CART_ADDR_REG <= 0x050004FF)
     {
         //64DD User Sector
         uint32_t i;
@@ -244,7 +245,7 @@ void CDMA::PI_DMA_WRITE()
         return;
     }
 
-    if (g_Reg->PI_CART_ADDR_REG >= 0x05000580 && g_Reg->PI_CART_ADDR_REG <= 0x050005BF)
+    if (PI_CART_ADDR_REG >= 0x05000580 && PI_CART_ADDR_REG <= 0x050005BF)
     {
         //64DD MSEQ (don't care)
         g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
@@ -254,23 +255,23 @@ void CDMA::PI_DMA_WRITE()
     }
 
     //64DD IPL ROM
-    if (g_Reg->PI_CART_ADDR_REG >= 0x06000000 && g_Reg->PI_CART_ADDR_REG <= 0x063FFFFF)
+    if (PI_CART_ADDR_REG >= 0x06000000 && PI_CART_ADDR_REG <= 0x063FFFFF)
     {
         uint32_t i;
 
         uint8_t * ROM = g_DDRom->GetRomAddress();
         uint8_t * RDRAM = g_MMU->Rdram();
-        g_Reg->PI_CART_ADDR_REG -= 0x06000000;
-        if (g_Reg->PI_CART_ADDR_REG + PI_WR_LEN_REG < g_DDRom->GetRomSize())
+        PI_CART_ADDR_REG -= 0x06000000;
+        if (PI_CART_ADDR_REG + PI_WR_LEN_REG < g_DDRom->GetRomSize())
         {
             for (i = 0; i < PI_WR_LEN_REG; i++)
             {
-                *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = *(ROM + ((g_Reg->PI_CART_ADDR_REG + i) ^ 3));
+                *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = *(ROM + ((PI_CART_ADDR_REG + i) ^ 3));
             }
         }
-        else if (g_Reg->PI_CART_ADDR_REG >= g_DDRom->GetRomSize())
+        else if (PI_CART_ADDR_REG >= g_DDRom->GetRomSize())
         {
-            uint32_t cart = g_Reg->PI_CART_ADDR_REG - g_DDRom->GetRomSize();
+            uint32_t cart = PI_CART_ADDR_REG - g_DDRom->GetRomSize();
             while (cart >= g_DDRom->GetRomSize())
             {
                 cart -= g_DDRom->GetRomSize();
@@ -283,17 +284,17 @@ void CDMA::PI_DMA_WRITE()
         else
         {
             uint32_t Len;
-            Len = g_DDRom->GetRomSize() - g_Reg->PI_CART_ADDR_REG;
+            Len = g_DDRom->GetRomSize() - PI_CART_ADDR_REG;
             for (i = 0; i < Len; i++)
             {
-                *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = *(ROM + ((g_Reg->PI_CART_ADDR_REG + i) ^ 3));
+                *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = *(ROM + ((PI_CART_ADDR_REG + i) ^ 3));
             }
             for (i = Len; i < PI_WR_LEN_REG - Len; i++)
             {
                 *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = 0;
             }
         }
-        g_Reg->PI_CART_ADDR_REG += 0x06000000;
+        PI_CART_ADDR_REG += 0x06000000;
 
         if (!g_System->DmaUsed())
         {
@@ -312,7 +313,7 @@ void CDMA::PI_DMA_WRITE()
         return;
     }
 
-    if (g_Reg->PI_CART_ADDR_REG >= 0x08000000 && g_Reg->PI_CART_ADDR_REG <= 0x08088000)
+    if (PI_CART_ADDR_REG >= 0x08000000 && PI_CART_ADDR_REG <= 0x08088000)
     {
         if (g_System->m_SaveUsing == SaveChip_Auto)
         {
@@ -322,7 +323,7 @@ void CDMA::PI_DMA_WRITE()
         {
             m_Sram.DmaFromSram(
                 g_MMU->Rdram() + g_Reg->PI_DRAM_ADDR_REG,
-                g_Reg->PI_CART_ADDR_REG - 0x08000000,
+                PI_CART_ADDR_REG - 0x08000000,
                 PI_WR_LEN_REG
                 );
             g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
@@ -334,7 +335,7 @@ void CDMA::PI_DMA_WRITE()
         {
             m_FlashRam.DmaFromFlashram(
                 g_MMU->Rdram() + g_Reg->PI_DRAM_ADDR_REG,
-                g_Reg->PI_CART_ADDR_REG - 0x08000000,
+                PI_CART_ADDR_REG - 0x08000000,
                 PI_WR_LEN_REG
                 );
             g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
@@ -344,7 +345,7 @@ void CDMA::PI_DMA_WRITE()
         return;
     }
 
-    if (g_Reg->PI_CART_ADDR_REG >= 0x10000000 && g_Reg->PI_CART_ADDR_REG <= 0x1FFFFFFF)
+    if (PI_CART_ADDR_REG >= 0x10000000 && PI_CART_ADDR_REG <= 0x1FFFFFFF)
     {
         uint32_t i;
 
@@ -360,12 +361,12 @@ void CDMA::PI_DMA_WRITE()
 
         uint8_t * ROM = g_Rom->GetRomAddress();
         uint8_t * RDRAM = g_MMU->Rdram();
-        g_Reg->PI_CART_ADDR_REG -= 0x10000000;
-        if (g_Reg->PI_CART_ADDR_REG + PI_WR_LEN_REG < g_Rom->GetRomSize())
+        PI_CART_ADDR_REG -= 0x10000000;
+        if (PI_CART_ADDR_REG + PI_WR_LEN_REG < g_Rom->GetRomSize())
         {
             size_t alignment;
             RDRAM += g_Reg->PI_DRAM_ADDR_REG;
-            ROM += g_Reg->PI_CART_ADDR_REG;
+            ROM += PI_CART_ADDR_REG;
             alignment = PI_WR_LEN_REG | (size_t)RDRAM | (size_t)ROM;
             if ((alignment & 0x3) == 0)
             {
@@ -422,9 +423,9 @@ void CDMA::PI_DMA_WRITE()
                 }
             }
         }
-        else if (g_Reg->PI_CART_ADDR_REG >= g_Rom->GetRomSize())
+        else if (PI_CART_ADDR_REG >= g_Rom->GetRomSize())
         {
-            uint32_t cart = g_Reg->PI_CART_ADDR_REG - g_Rom->GetRomSize();
+            uint32_t cart = PI_CART_ADDR_REG - g_Rom->GetRomSize();
             while (cart >= g_Rom->GetRomSize())
             {
                 cart -= g_Rom->GetRomSize();
@@ -437,17 +438,17 @@ void CDMA::PI_DMA_WRITE()
         else
         {
             uint32_t Len;
-            Len = g_Rom->GetRomSize() - g_Reg->PI_CART_ADDR_REG;
+            Len = g_Rom->GetRomSize() - PI_CART_ADDR_REG;
             for (i = 0; i < Len; i++)
             {
-                *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = *(ROM + ((g_Reg->PI_CART_ADDR_REG + i) ^ 3));
+                *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = *(ROM + ((PI_CART_ADDR_REG + i) ^ 3));
             }
             for (i = Len; i < PI_WR_LEN_REG - Len; i++)
             {
                 *(RDRAM + ((g_Reg->PI_DRAM_ADDR_REG + i) ^ 3)) = 0;
             }
         }
-        g_Reg->PI_CART_ADDR_REG += 0x10000000;
+        PI_CART_ADDR_REG += 0x10000000;
 
         if (!g_System->DmaUsed())
         {
@@ -470,7 +471,7 @@ void CDMA::PI_DMA_WRITE()
 
     if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
     {
-        g_Notify->DisplayError(stdstr_f("PI_DMA_WRITE not in ROM: %08X", g_Reg->PI_CART_ADDR_REG).c_str());
+        g_Notify->DisplayError(stdstr_f("PI_DMA_WRITE not in ROM: %08X", PI_CART_ADDR_REG).c_str());
     }
     g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
     g_Reg->MI_INTR_REG |= MI_INTR_PI;
