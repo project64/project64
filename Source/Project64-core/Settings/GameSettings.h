@@ -11,6 +11,7 @@
 #pragma once
 
 #include <Project64-core/N64System/N64Types.h>
+#include <Project64-core/Settings/DebugSettings.h>
 
 class CGameSettings
 {
@@ -20,7 +21,7 @@ public:
     inline static bool UseHleGfx(void) { return m_UseHleGfx; }
     inline static bool bRomInMemory(void) { return m_bRomInMemory; }
     inline static bool bRegCaching(void) { return m_RegCaching; }
-    inline static bool bLinkBlocks(void) { return m_bLinkBlocks; }
+    inline static bool bLinkBlocks(void) { return m_bLinkBlocks && !CDebugSettings::HaveWriteBP() && !CDebugSettings::HaveReadBP(); }
     inline static FUNC_LOOKUP_METHOD LookUpMode(void) { return (FUNC_LOOKUP_METHOD)m_LookUpMode; }
     inline static bool bUseTlb(void) { return m_bUseTlb; }
     inline static uint32_t CountPerOp(void) { return m_CountPerOp; }
