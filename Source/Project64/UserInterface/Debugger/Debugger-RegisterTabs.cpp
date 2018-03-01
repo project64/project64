@@ -16,6 +16,14 @@
 
 bool CRegisterTabs::m_bColorsEnabled = false;
 
+CRegisterTabs::CRegisterTabs()
+{
+}
+
+CRegisterTabs::~CRegisterTabs()
+{
+}
+
 void CRegisterTabs::Attach(HWND hWndNew)
 {
     CTabCtrl::Attach(hWndNew);

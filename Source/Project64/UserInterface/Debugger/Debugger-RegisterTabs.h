@@ -34,7 +34,46 @@ class CRegisterTabs :
     public CTabCtrl,
     public CDebugSettings
 {
+    enum TAB_ID
+    {
+        TabDefault,
+        TabGPR,
+        TabFPR
+    };
+
+public:
+    CRegisterTabs(void);
+    ~CRegisterTabs();
+
+    void Attach(HWND hWndNew);
+    HWND Detach();
+
+    CWindow AddTab(char* caption, int dialogId, DLGPROC dlgProc);
+    void ShowTab(int nPage);
+    CRect GetPageRect();
+    void RedrawCurrentTab();
+    void RefreshEdits();
+    void SetColorsEnabled(bool bColorsEnabled);
+
 private:
+    CRegisterTabs(const CRegisterTabs&);              // Disable copy constructor
+    CRegisterTabs& operator=(const CRegisterTabs&);   // Disable assignment
+
+    static void RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam);
+
+    static INT_PTR CALLBACK TabProcDefault(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
+    static INT_PTR CALLBACK TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
+    static INT_PTR CALLBACK TabProcFPR(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
+
+    static void InitRegisterEdit(CWindow& tab, CEditNumber32& edit, WORD ctrlId);
+    static void InitRegisterEdits(CWindow& tab, CEditNumber32* edits, const WORD* ctrlIds, uint32_t ctrlIdsCount);
+    static void InitRegisterEdit64(CWindow& tab, CEditReg64& edit, WORD ctrlId);
+    static void InitRegisterEdits64(CWindow& tab, CEditReg64* edits, const WORD* ctrlIds, uint32_t ctrlIdsCount);
+    static void ZeroRegisterEdit(CEditNumber32& edit);
+    static void ZeroRegisterEdits(CEditNumber32* edits, uint32_t ctrlIdsCount);
+    static void ZeroRegisterEdit64(CEditReg64& edit);
+    static void ZeroRegisterEdits64(CEditReg64* edits, uint32_t ctrlIdsCount);
+
     typedef union
     {
         uint32_t intval;
@@ -51,13 +90,6 @@ private:
             unsigned fromDelaySlot : 1;
         };
     } CAUSE;
-
-    enum TAB_ID
-    {
-        TabDefault,
-        TabGPR,
-        TabFPR
-    };
 
     static constexpr WORD GPREditIds[] =
     {
@@ -255,28 +287,4 @@ private:
     CWindow m_DDTab;
     CEditNumber32 m_DDEdits[sizeof(DDEditIds) / sizeof(DDEditIds[0])];
 
-    static void RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam);
-
-    static INT_PTR CALLBACK TabProcDefault(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
-    static INT_PTR CALLBACK TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
-    static INT_PTR CALLBACK TabProcFPR(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
-
-    static void InitRegisterEdit(CWindow& tab, CEditNumber32& edit, WORD ctrlId);
-    static void InitRegisterEdits(CWindow& tab, CEditNumber32* edits, const WORD* ctrlIds, uint32_t ctrlIdsCount);
-    static void InitRegisterEdit64(CWindow& tab, CEditReg64& edit, WORD ctrlId);
-    static void InitRegisterEdits64(CWindow& tab, CEditReg64* edits, const WORD* ctrlIds, uint32_t ctrlIdsCount);
-    static void ZeroRegisterEdit(CEditNumber32& edit);
-    static void ZeroRegisterEdits(CEditNumber32* edits, uint32_t ctrlIdsCount);
-    static void ZeroRegisterEdit64(CEditReg64& edit);
-    static void ZeroRegisterEdits64(CEditReg64* edits, uint32_t ctrlIdsCount);
-
-public:
-    void Attach(HWND hWndNew);
-    HWND Detach();
-    CWindow AddTab(char* caption, int dialogId, DLGPROC dlgProc);
-    void ShowTab(int nPage);
-    CRect GetPageRect();
-    void RedrawCurrentTab();
-    void RefreshEdits();
-    void SetColorsEnabled(bool bColorsEnabled);
 };
