@@ -96,7 +96,9 @@ static void x86MemoryBreakpoint()
     memory_breakpoint_found = 1;
     if (memory_write_in_delayslot)
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        g_Reg->m_PROGRAM_COUNTER -= 4;
+        *g_NextTimer += g_System->CountPerOp();
+        CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
     }
     x86_compiler_Break_Point();
 }
