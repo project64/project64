@@ -3018,6 +3018,10 @@ void R4300iOp::UnknownOpcode()
 
 bool R4300iOp::MemoryBreakpoint()
 {
+    if (g_Settings->LoadBool(Debugger_SteppingOps))
+    {
+        return false;
+    }
     g_Settings->SaveBool(Debugger_SteppingOps, true);
     g_Debugger->WaitForStep();
     if (SkipOp())
