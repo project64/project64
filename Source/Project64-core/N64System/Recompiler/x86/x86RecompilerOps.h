@@ -206,6 +206,7 @@ public:
     void UnknownOpcode();
 
     void ClearCachedInstructionInfo();
+    void FoundMemoryBreakpoint();
     void PreReadInstruction();
     void PreWriteInstruction();
     void TestWriteBreakpoint(x86Reg AddressReg, void * FunctAddress, const char * FunctName);

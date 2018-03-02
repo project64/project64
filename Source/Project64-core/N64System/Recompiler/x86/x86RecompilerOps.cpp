@@ -2794,7 +2794,7 @@ void CX86RecompilerOps::LB()
         uint32_t Address = (GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset) ^ 3;
         if (HaveReadBP() && g_Debugger->ReadBP8(Address))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            FoundMemoryBreakpoint();
             return;
         }
         Map_GPR_32bit(m_Opcode.rt, true, -1);
@@ -2855,7 +2855,7 @@ void CX86RecompilerOps::LH()
         uint32_t Address = (GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset) ^ 2;
         if (HaveReadBP() && g_Debugger->ReadBP16(Address))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            FoundMemoryBreakpoint();
             return;
         }
         Map_GPR_32bit(m_Opcode.rt, true, -1);
@@ -2922,7 +2922,7 @@ void CX86RecompilerOps::LWL()
         uint32_t Offset = Address & 3;
         if (HaveReadBP() && g_Debugger->ReadBP32(Address))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            FoundMemoryBreakpoint();
             return;
         }
 
@@ -3017,7 +3017,7 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
         uint32_t Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
         if (HaveReadBP() && g_Debugger->ReadBP32(Address))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            FoundMemoryBreakpoint();
             return;
         }
         Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
@@ -3434,7 +3434,7 @@ void CX86RecompilerOps::LBU()
         uint32_t Address = (GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset) ^ 3;
         if (HaveReadBP() && g_Debugger->ReadBP8(Address))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            FoundMemoryBreakpoint();
             return;
         }
         Map_GPR_32bit(m_Opcode.rt, false, -1);
@@ -3497,7 +3497,7 @@ void CX86RecompilerOps::LHU()
         uint32_t Address = (GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset) ^ 2;
         if (HaveReadBP() && g_Debugger->ReadBP16(Address))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            FoundMemoryBreakpoint();
             return;
         }
         Map_GPR_32bit(m_Opcode.rt, false, -1);
@@ -3565,7 +3565,7 @@ void CX86RecompilerOps::LWR()
         uint32_t Offset = Address & 3;
         if (HaveReadBP() && g_Debugger->ReadBP32(Address))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            FoundMemoryBreakpoint();
             return;
         }
         Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rt);
@@ -3648,7 +3648,7 @@ void CX86RecompilerOps::SB()
         uint32_t Address = (GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset) ^ 3;
         if (HaveWriteBP() && g_Debugger->WriteBP8(Address))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            FoundMemoryBreakpoint();
             return;
         }
 
@@ -3747,7 +3747,7 @@ void CX86RecompilerOps::SH()
         uint32_t Address = (GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset) ^ 2;
         if (HaveWriteBP() && g_Debugger->WriteBP16(Address))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            FoundMemoryBreakpoint();
             return;
         }
 
@@ -3842,7 +3842,7 @@ void CX86RecompilerOps::SWL()
         Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
         if (HaveWriteBP() && g_Debugger->WriteBP32(Address))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            FoundMemoryBreakpoint();
             return;
         }
         uint32_t Offset = Address & 3;
@@ -3980,7 +3980,7 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
             uint32_t Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
             if (HaveWriteBP() && g_Debugger->WriteBP32(Address))
             {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
+                FoundMemoryBreakpoint();
                 return;
             }
 
@@ -4104,7 +4104,7 @@ void CX86RecompilerOps::SWR()
         uint32_t Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
         if (HaveWriteBP() && g_Debugger->WriteBP32(Address))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            FoundMemoryBreakpoint();
             return;
         }
         uint32_t Offset = Address & 3;
@@ -4265,7 +4265,7 @@ void CX86RecompilerOps::LWC1()
         uint32_t Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
         if (HaveReadBP() && g_Debugger->ReadBP32(Address))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            FoundMemoryBreakpoint();
             return;
         }
         x86Reg TempReg1 = Map_TempReg(x86_Any, -1, false);
@@ -4349,7 +4349,7 @@ void CX86RecompilerOps::LDC1()
         uint32_t Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
         if (HaveReadBP() && g_Debugger->ReadBP64(Address))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            FoundMemoryBreakpoint();
             return;
         }
         TempReg1 = Map_TempReg(x86_Any, -1, false);
@@ -4468,7 +4468,7 @@ void CX86RecompilerOps::LD()
         uint32_t Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
         if (HaveReadBP() && g_Debugger->ReadBP64(Address))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            FoundMemoryBreakpoint();
             return;
         }
         Map_GPR_64bit(m_Opcode.rt, -1);
@@ -4560,7 +4560,7 @@ void CX86RecompilerOps::SWC1()
         uint32_t Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
         if (HaveWriteBP() && g_Debugger->WriteBP32(Address))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            FoundMemoryBreakpoint();
             return;
         }
 
@@ -4633,7 +4633,7 @@ void CX86RecompilerOps::SDC1()
         uint32_t Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
         if (HaveWriteBP() && g_Debugger->WriteBP32(Address))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            FoundMemoryBreakpoint();
             return;
         }
 
@@ -4717,7 +4717,7 @@ void CX86RecompilerOps::SD()
         uint32_t Address = GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
         if (HaveWriteBP() && g_Debugger->WriteBP32(Address))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            FoundMemoryBreakpoint();
             return;
         }
 
@@ -9044,7 +9044,9 @@ void CX86RecompilerOps::UnknownOpcode()
 void CX86RecompilerOps::ClearCachedInstructionInfo()
 {
     m_RegWorkingSet.WriteBackRegisters();
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
     UpdateCounters(m_RegWorkingSet, false, true);
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
     MoveConstToVariable(m_CompilePC, &g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
     if (g_SyncSystem) {
 #ifdef _WIN32
@@ -9056,6 +9058,15 @@ void CX86RecompilerOps::ClearCachedInstructionInfo()
         AddConstToX86Reg(x86_ESP, 4);
 #endif
     }
+}
+
+void CX86RecompilerOps::FoundMemoryBreakpoint()
+{
+    ClearCachedInstructionInfo();
+    MoveConstToVariable((m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT) ? 1 : 0, &memory_write_in_delayslot, "memory_write_in_delayslot");
+    Call_Direct(x86MemoryBreakpoint, "x86MemoryBreakpoint");
+    ExitCodeBlock();
+    m_NextInstruction = END_BLOCK;
 }
 
 void CX86RecompilerOps::PreReadInstruction()
