@@ -16,7 +16,8 @@
 
 bool CRegisterTabs::m_bColorsEnabled = false;
 
-CRegisterTabs::CRegisterTabs()
+CRegisterTabs::CRegisterTabs() :
+    m_attached(false)
 {
 }
 
@@ -76,10 +77,12 @@ void CRegisterTabs::Attach(HWND hWndNew)
     SetColorsEnabled(false);
     RefreshEdits();
     RedrawCurrentTab();
+    m_attached = true;
 }
 
 HWND CRegisterTabs::Detach(void)
 {
+    m_attached = false;
     m_GPRTab = NULL;
     m_FPRTab = NULL;
     m_COP0Tab = NULL;
@@ -447,22 +450,20 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
     }
 }
 
-INT_PTR CALLBACK CRegisterTabs::TabProcDefault(HWND hDlg, UINT msg, WPARAM wParam, LPARAM /*lParam*/)
+INT_PTR CALLBACK CRegisterTabs::TabProcDefault(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     if (msg == WM_INITDIALOG)
     {
+        SetProp(hDlg, "attached", (HANDLE)lParam);
         return TRUE;
     }
-    if (msg != WM_COMMAND)
+    if (msg == WM_COMMAND && HIWORD(wParam) == EN_KILLFOCUS)
     {
-        return FALSE;
-    }
-
-    WORD notification = HIWORD(wParam);
-
-    if (notification == EN_KILLFOCUS)
-    {
-        RegisterChanged(hDlg, TabDefault, wParam);
+        bool * attached = (bool *)GetProp(hDlg, "attached");
+        if (attached != NULL && *attached)
+        {
+            RegisterChanged(hDlg, TabDefault, wParam);
+        }
     }
 
     return FALSE;
@@ -472,6 +473,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
 {
     if (msg == WM_INITDIALOG)
     {
+        SetProp(hDlg, "attached", (HANDLE)lParam);
         return TRUE;
     }
 
@@ -533,39 +535,32 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         return (LRESULT)GetStockObject(DC_BRUSH);
     }
 
-    if (msg != WM_COMMAND)
+    if (msg == WM_COMMAND && HIWORD(wParam) == EN_KILLFOCUS)
     {
-        return FALSE;
+        bool * attached = (bool *)GetProp(hDlg, "attached");
+        if (attached != NULL && *attached)
+        {
+            RegisterChanged(hDlg, TabGPR, wParam);
+        }
     }
-
-    WORD notification = HIWORD(wParam);
-
-    if (notification == EN_KILLFOCUS)
-    {
-        RegisterChanged(hDlg, TabGPR, wParam);
-    }
-
     return FALSE;
 }
 
-INT_PTR CALLBACK CRegisterTabs::TabProcFPR(HWND hDlg, UINT msg, WPARAM wParam, LPARAM /*lParam*/)
+INT_PTR CALLBACK CRegisterTabs::TabProcFPR(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     if (msg == WM_INITDIALOG)
     {
+        SetProp(hDlg, "attached", (HANDLE)lParam);
         return TRUE;
     }
-    if (msg != WM_COMMAND)
+    if (msg == WM_COMMAND && HIWORD(wParam) == EN_KILLFOCUS)
     {
-        return FALSE;
+        bool * attached = (bool *)GetProp(hDlg, "attached");
+        if (attached != NULL && *attached)
+        {
+            RegisterChanged(hDlg, TabFPR, wParam);
+        }
     }
-
-    WORD notification = HIWORD(wParam);
-
-    if (notification == EN_KILLFOCUS)
-    {
-        RegisterChanged(hDlg, TabFPR, wParam);
-    }
-
     return FALSE;
 }
 
@@ -584,7 +579,7 @@ CWindow CRegisterTabs::AddTab(char* caption, int dialogId, DLGPROC dlgProc)
     AddItem(caption);
 
     CWindow parentWin = GetParent();
-    CWindow tabWin = ::CreateDialog(NULL, MAKEINTRESOURCE(dialogId), parentWin, dlgProc);
+    CWindow tabWin = ::CreateDialogParam(NULL, MAKEINTRESOURCE(dialogId), parentWin, dlgProc, (LPARAM)&m_attached);
 
     CRect pageRect = GetPageRect();
 

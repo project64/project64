@@ -242,6 +242,7 @@ private:
     static bool m_bColorsEnabled;
 
     vector<CWindow> m_TabWindows;
+    bool m_attached;
 
     CWindow m_GPRTab;
     CEditReg64 m_GPREdits[sizeof(GPREditIds) / sizeof(GPREditIds[0])];
