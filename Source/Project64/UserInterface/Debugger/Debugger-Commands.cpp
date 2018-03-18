@@ -583,7 +583,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top)
         const char* annotation = NULL;
         bool bLoadStoreAnnotation = false;
 
-        if (OpInfo.IsLoadStore())
+        if (OpInfo.IsLoadStoreCommand())
         {
             for (int offset = -4; offset > -24; offset -= 4)
             {
@@ -1413,7 +1413,7 @@ LRESULT	CDebugCommandsView::OnCommandListRightClicked(NMHDR* pNMHDR)
         EnableMenuItem(hPopupMenu, ID_POPUPMENU_FOLLOWJUMP, MF_DISABLED | MF_GRAYED);
     }
 
-    if (m_SelectedOpInfo.IsLoadStore())
+    if (m_SelectedOpInfo.IsLoadStoreCommand())
     {
         m_FollowAddress = g_Reg->m_GPR[m_SelectedOpCode.base].UW[0] + (int16_t)m_SelectedOpCode.offset;
     }

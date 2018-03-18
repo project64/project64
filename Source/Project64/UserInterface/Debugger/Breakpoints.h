@@ -19,6 +19,8 @@ public:
     typedef std::map<uint32_t /*address*/, bool /*bTemporary*/> breakpoints_t;
     typedef breakpoints_t::const_iterator breakpoint_t;
 
+    typedef std::set<uint32_t> memlocks_t;
+
     enum BPSTATE
     {
         BP_NOT_SET,
@@ -40,6 +42,7 @@ public:
     BPSTATE WriteBPExists16(uint32_t address);
     BPSTATE WriteBPExists32(uint32_t address);
     BPSTATE WriteBPExists64(uint32_t address);
+    BPSTATE WriteBPExistsInChunk(uint32_t address, uint32_t nBytes);
     BPSTATE ExecutionBPExists(uint32_t address, bool bRemoveTemp = false);
 
     bool RBPAdd(uint32_t address);
@@ -59,6 +62,11 @@ public:
 
     void BPClear();
 
+    void ToggleMemLock(uint32_t address);
+    bool MemLockExists(uint32_t address, int nBytes);
+    void ClearMemLocks(void);
+    size_t NumMemLocks(void);
+
 private:
     void UpdateAlignedWriteBP(void);
     void UpdateAlignedReadBP(void);
@@ -66,4 +74,6 @@ private:
     breakpoints_t m_ReadMem, m_ReadMem16, m_ReadMem32, m_ReadMem64;
     breakpoints_t m_WriteMem, m_WriteMem16, m_WriteMem32, m_WriteMem64;
     breakpoints_t m_Execution;
+
+    memlocks_t m_MemLocks;
 };

@@ -238,6 +238,21 @@ CBreakpoints::BPSTATE CBreakpoints::WriteBPExists64(uint32_t address)
     return BP_NOT_SET;
 }
 
+CBreakpoints::BPSTATE CBreakpoints::WriteBPExistsInChunk(uint32_t address, uint32_t nBytes)
+{
+    uint32_t endAddr = address + nBytes;
+    
+    for (breakpoints_t::iterator breakpoint = m_WriteMem.begin(); breakpoint != m_WriteMem.end(); breakpoint++)
+    {
+        uint32_t wbpAddr = breakpoint->first;
+        if (wbpAddr >= address && wbpAddr < endAddr)
+        {
+            return BP_SET;
+        }
+    }
+    return BP_NOT_SET;
+}
+
 CBreakpoints::BPSTATE CBreakpoints::ExecutionBPExists(uint32_t address, bool bRemoveTemp)
 {
     breakpoints_t::const_iterator itr = m_Execution.find(address);
@@ -282,4 +297,36 @@ void CBreakpoints::UpdateAlignedWriteBP()
         m_WriteMem32.insert(breakpoints_t::value_type((itr->first & ~0x3), false));
         m_WriteMem64.insert(breakpoints_t::value_type((itr->first & ~0x7), false));
     }
+}
+
+void CBreakpoints::ToggleMemLock(uint32_t address)
+{
+    if (m_MemLocks.count(address) == 0)
+    {
+        m_MemLocks.insert(address);
+        return;
+    }
+    m_MemLocks.erase(address);
+}
+
+bool CBreakpoints::MemLockExists(uint32_t address, int nBytes)
+{
+    for (memlocks_t::const_iterator itr = m_MemLocks.begin(); itr != m_MemLocks.end(); itr++)
+    {
+        if (*itr >= address && *itr < (address + nBytes))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void CBreakpoints::ClearMemLocks()
+{
+    m_MemLocks.clear();
+}
+
+size_t CBreakpoints::NumMemLocks()
+{
+    return m_MemLocks.size();
 }
