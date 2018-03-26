@@ -314,7 +314,7 @@ DWORD CALLBACK AboutIniBoxProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPar
             }
             //RDB
             CIniFile RdbIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
-            wcsncpy(String, RdbIniFile.GetString("Meta", "Author", "").ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
+            wcsncpy(String, stdstr(RdbIniFile.GetString("Meta", "Author", "")).ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
             if (wcslen(String) == 0)
             {
                 EnableWindow(GetDlgItem(hDlg, IDC_RDB), FALSE);
@@ -326,11 +326,11 @@ DWORD CALLBACK AboutIniBoxProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPar
 
             set_about_field(hDlg, IDC_RDB_AUTHOR, wGS(INI_AUTHOR).c_str(), String);
 
-            wcsncpy(String, RdbIniFile.GetString("Meta", "Version", "").ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
+            wcsncpy(String, stdstr(RdbIniFile.GetString("Meta", "Version", "")).ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
             set_about_field(hDlg, IDC_RDB_VERSION, wGS(INI_VERSION).c_str(), String);
-            wcsncpy(String, RdbIniFile.GetString("Meta", "Date", "").ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
+            wcsncpy(String, stdstr(RdbIniFile.GetString("Meta", "Date", "")).ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
             set_about_field(hDlg, IDC_RDB_DATE, wGS(INI_DATE).c_str(), String);
-            wcsncpy(RDBHomePage, RdbIniFile.GetString("Meta", "Homepage", "").ToUTF16().c_str(), sizeof(RDBHomePage) / sizeof(RDBHomePage[0]));
+            wcsncpy(RDBHomePage, stdstr(RdbIniFile.GetString("Meta", "Homepage", "")).ToUTF16().c_str(), sizeof(RDBHomePage) / sizeof(RDBHomePage[0]));
             SetDlgItemTextW(hDlg, IDC_RDB_HOME, wGS(INI_HOMEPAGE).c_str());
             if (wcslen(RDBHomePage) == 0)
             {
@@ -340,7 +340,7 @@ DWORD CALLBACK AboutIniBoxProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPar
             //Cheat
             SetDlgItemTextW(hDlg, IDC_CHT, wGS(INI_CURRENT_CHT).c_str());
             CIniFile CheatIniFile(g_Settings->LoadStringVal(SupportFile_Cheats).c_str());
-            wcsncpy(String, CheatIniFile.GetString("Meta", "Author", "").ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
+            wcsncpy(String, stdstr(CheatIniFile.GetString("Meta", "Author", "")).ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
             if (wcslen(String) == 0)
             {
                 EnableWindow(GetDlgItem(hDlg, IDC_CHT), FALSE);
@@ -350,11 +350,11 @@ DWORD CALLBACK AboutIniBoxProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPar
                 EnableWindow(GetDlgItem(hDlg, IDC_CHT_HOME), FALSE);
             }
             set_about_field(hDlg, IDC_CHT_AUTHOR, wGS(INI_AUTHOR).c_str(), String);
-            wcsncpy(String, CheatIniFile.GetString("Meta", "Version", "").ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
+            wcsncpy(String, stdstr(CheatIniFile.GetString("Meta", "Version", "")).ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
             set_about_field(hDlg, IDC_CHT_VERSION, wGS(INI_VERSION).c_str(), String);
-            wcsncpy(String, CheatIniFile.GetString("Meta", "Date", "").ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
+            wcsncpy(String, stdstr(CheatIniFile.GetString("Meta", "Date", "")).ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
             set_about_field(hDlg, IDC_CHT_DATE, wGS(INI_DATE).c_str(), String);
-            wcsncpy(CHTHomePage, CheatIniFile.GetString("Meta", "Homepage", "").ToUTF16().c_str(), sizeof(CHTHomePage) / sizeof(CHTHomePage[0]));
+            wcsncpy(CHTHomePage, stdstr(CheatIniFile.GetString("Meta", "Homepage", "")).ToUTF16().c_str(), sizeof(CHTHomePage) / sizeof(CHTHomePage[0]));
             SetDlgItemTextW(hDlg, IDC_CHT_HOME, wGS(INI_HOMEPAGE).c_str());
             if (wcslen(CHTHomePage) == 0)
             {
@@ -364,7 +364,7 @@ DWORD CALLBACK AboutIniBoxProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPar
             //Extended Info
             SetDlgItemTextW(hDlg, IDC_RDX, wGS(INI_CURRENT_RDX).c_str());
             CIniFile RdxIniFile(g_Settings->LoadStringVal(SupportFile_ExtInfo).c_str());
-            wcsncpy(String, RdxIniFile.GetString("Meta", "Author", "").ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
+            wcsncpy(String, stdstr(RdxIniFile.GetString("Meta", "Author", "")).ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
             if (wcslen(String) == 0)
             {
                 EnableWindow(GetDlgItem(hDlg, IDC_RDX), FALSE);
@@ -374,11 +374,11 @@ DWORD CALLBACK AboutIniBoxProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD /*lPar
                 EnableWindow(GetDlgItem(hDlg, IDC_RDX_HOME), FALSE);
             }
             set_about_field(hDlg, IDC_RDX_AUTHOR, wGS(INI_AUTHOR).c_str(), String);
-            wcsncpy(String, RdxIniFile.GetString("Meta", "Version", "").ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
+            wcsncpy(String, stdstr(RdxIniFile.GetString("Meta", "Version", "")).ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
             set_about_field(hDlg, IDC_RDX_VERSION, wGS(INI_VERSION).c_str(), String);
-            wcsncpy(String, RdxIniFile.GetString("Meta", "Date", "").ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
+            wcsncpy(String, stdstr(RdxIniFile.GetString("Meta", "Date", "")).ToUTF16().c_str(), sizeof(String) / sizeof(String[0]));
             set_about_field(hDlg, IDC_RDX_DATE, wGS(INI_DATE).c_str(), String);
-            wcsncpy(RDXHomePage, RdxIniFile.GetString("Meta", "Homepage", "").ToUTF16().c_str(), sizeof(RDXHomePage) / sizeof(RDXHomePage[0]));
+            wcsncpy(RDXHomePage, stdstr(RdxIniFile.GetString("Meta", "Homepage", "")).ToUTF16().c_str(), sizeof(RDXHomePage) / sizeof(RDXHomePage[0]));
             SetDlgItemTextW(hDlg, IDC_RDX_HOME, wGS(INI_HOMEPAGE).c_str());
             if (wcslen(RDXHomePage) == 0)
             {

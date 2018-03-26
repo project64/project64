@@ -540,7 +540,7 @@ bool CIniFileBase::DeleteSection(const char * lpSectionName)
     return true;
 }
 
-bool CIniFileBase::GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault, stdstr & Value)
+bool CIniFileBase::GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault, std::string & Value)
 {
     CGuard Guard(m_CS);
 
@@ -562,9 +562,9 @@ bool CIniFileBase::GetString(const char * lpSectionName, const char * lpKeyName,
     return false;
 }
 
-stdstr CIniFileBase::GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault)
+std::string CIniFileBase::GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault)
 {
-    stdstr Value;
+    std::string Value;
     GetString(lpSectionName, lpKeyName, lpDefault, Value);
     return Value;
 }

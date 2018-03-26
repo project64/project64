@@ -22,36 +22,35 @@ class CIniFileBase
         }
     };
 
-    typedef std::string ansi_string;
-    typedef std::map<ansi_string, long> FILELOC;
+    typedef std::map<std::string, long> FILELOC;
     typedef FILELOC::iterator FILELOC_ITR;
-    typedef std::map<ansi_string, ansi_string, insensitive_compare> KeyValueList;
+    typedef std::map<std::string, std::string, insensitive_compare> KeyValueList;
 
 public:
-    typedef std::map<stdstr, stdstr>           KeyValueData;
-    typedef std::vector<stdstr>               SectionList;
+    typedef std::map<std::string, std::string>           KeyValueData;
+    typedef std::vector<std::string>               SectionList;
 
 protected:
-    CFileBase   & m_File;
-    stdstr m_FileName;
+    CFileBase & m_File;
+    std::string m_FileName;
 
 private:
-    ansi_string m_CurrentSection;
-    bool   m_CurrentSectionDirty;
-    int    m_CurrentSectionFilePos; // Where in the file is the current Section
+    std::string m_CurrentSection;
+    bool m_CurrentSectionDirty;
+    int m_CurrentSectionFilePos; // Where in the file is the current Section
     KeyValueList m_CurrentSectionData;
 
-    long   m_lastSectionSearch; // When Scanning for a section, what was the last scanned pos
+    long m_lastSectionSearch; // When Scanning for a section, what was the last scanned pos
 
-    bool   m_ReadOnly;
-    bool   m_InstantFlush;
+    bool m_ReadOnly;
+    bool m_InstantFlush;
     const char * m_LineFeed;
 
     CriticalSection m_CS;
     FILELOC m_SectionsPos;
 
     void fInsertSpaces(int Pos, int NoOfSpaces);
-    int  GetStringFromFile(char * & String, AUTO_PTR<char> &Data, int & MaxDataSize, int & DataSize, int & ReadPos);
+    int GetStringFromFile(char * & String, AUTO_PTR<char> &Data, int & MaxDataSize, int & DataSize, int & ReadPos);
     bool MoveToSectionNameData(const char * lpSectionName, bool ChangeCurrentSection);
     const char * CleanLine(char * Line);
     void ClearSectionPosList(long FilePos);
@@ -68,8 +67,8 @@ public:
     bool IsEmpty();
     bool IsFileOpen(void);
     bool DeleteSection(const char * lpSectionName);
-    bool GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault, stdstr & Value);
-    stdstr GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault);
+    bool GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault, std::string & Value);
+    std::string GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault);
     uint32_t GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault, char * lpReturnedString, uint32_t nSize);
     uint32_t GetNumber(const char * lpSectionName, const char * lpKeyName, uint32_t nDefault);
     bool  GetNumber(const char * lpSectionName, const char * lpKeyName, uint32_t nDefault, uint32_t & Value);
@@ -83,7 +82,7 @@ public:
     void GetKeyValueData(const char * lpSectionName, KeyValueData & List);
 
     void GetVectorOfSections(SectionList & sections);
-    const stdstr &GetFileName() { return m_FileName; }
+    const std::string &GetFileName() { return m_FileName; }
 };
 
 template <class CFileStorage>
