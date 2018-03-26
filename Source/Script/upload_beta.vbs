@@ -99,7 +99,7 @@ sub CreateUploadTarget()
     data = data & "&password="&WScript.Arguments(1)
     data = data & "&jform[product_name]="&WScript.Arguments(3)
     data = data & "&jform[product_desc]="&ProductDescription
-    data = data & "&jform[product_date]="&Year(build_date) & "-" & Month(build_date) & "-" & Day(build_date)
+    data = data & "&jform[product_date]="&Year(build_date) & "-" & Month(build_date) & "-" & Day(build_date) & Hour(build_date) & ":" & Minute(build_date) & ":" & Second(build_date)
     
     Set objHTTP = CreateObject("Microsoft.XMLHTTP")
     objHTTP.open "POST", url, False
