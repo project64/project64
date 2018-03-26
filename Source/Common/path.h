@@ -41,7 +41,6 @@ public:
     CPath(const CPath& rPath);
     CPath(const char * lpszPath);
     CPath(const char * lpszPath, const char * NameExten);
-    //CPath(const char * lpszPath, const std::string & NameExten);
     CPath(const std::string& strPath);
     CPath(const std::string& strPath, const char * NameExten);
     CPath(const std::string& strPath, const std::string& NameExten);
