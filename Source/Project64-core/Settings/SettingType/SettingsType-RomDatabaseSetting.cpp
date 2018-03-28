@@ -11,7 +11,7 @@
 #include "stdafx.h"
 #include "SettingsType-RomDatabaseSetting.h"
 
-CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(const char * SectionIdent, const char * Name, int DefaultValue, bool DeleteOnDefault) :
+CSettingTypeRomDatabaseSetting::CSettingTypeRomDatabaseSetting(const char * SectionIdent, const char * Name, uint32_t DefaultValue, bool DeleteOnDefault) :
     CSettingTypeRomDatabase(Name, DefaultValue, DeleteOnDefault),
     m_SectionIdent(SectionIdent)
 {

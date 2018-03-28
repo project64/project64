@@ -17,7 +17,7 @@ CSettingTypeRomDatabase(Name, DefaultSetting)
 {
 }
 
-CSettingTypeRDBYesNo::CSettingTypeRDBYesNo(const char * Name, int DefaultValue) :
+CSettingTypeRDBYesNo::CSettingTypeRDBYesNo(const char * Name, uint32_t DefaultValue) :
 CSettingTypeRomDatabase(Name, DefaultValue)
 {
 }
@@ -26,7 +26,7 @@ CSettingTypeRDBYesNo::~CSettingTypeRDBYesNo()
 {
 }
 
-bool CSettingTypeRDBYesNo::Load(int Index, bool & Value) const
+bool CSettingTypeRDBYesNo::Load(uint32_t Index, bool & Value) const
 {
     stdstr strValue;
     bool bRes = m_SettingsIniFile->GetString(m_SectionIdent->c_str(), m_KeyName.c_str(), m_DefaultStr, strValue);
@@ -60,20 +60,20 @@ bool CSettingTypeRDBYesNo::Load(int Index, bool & Value) const
     return true;
 }
 
-bool CSettingTypeRDBYesNo::Load(int /*Index*/, uint32_t & /*Value*/) const
+bool CSettingTypeRDBYesNo::Load(uint32_t /*Index*/, uint32_t & /*Value*/) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
-bool CSettingTypeRDBYesNo::Load(int /*Index*/, stdstr & /*Value*/) const
+bool CSettingTypeRDBYesNo::Load(uint32_t /*Index*/, std::string & /*Value*/) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
 //return the default values
-void CSettingTypeRDBYesNo::LoadDefault(int /*Index*/, bool & Value) const
+void CSettingTypeRDBYesNo::LoadDefault(uint32_t /*Index*/, bool & Value) const
 {
     if (m_DefaultSetting != Default_None)
     {
@@ -87,38 +87,38 @@ void CSettingTypeRDBYesNo::LoadDefault(int /*Index*/, bool & Value) const
     }
 }
 
-void CSettingTypeRDBYesNo::LoadDefault(int /*Index*/, uint32_t & /*Value*/) const
+void CSettingTypeRDBYesNo::LoadDefault(uint32_t /*Index*/, uint32_t & /*Value*/) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeRDBYesNo::LoadDefault(int /*Index*/, stdstr & /*Value*/) const
+void CSettingTypeRDBYesNo::LoadDefault(uint32_t /*Index*/, std::string & /*Value*/) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 //Update the settings
-void CSettingTypeRDBYesNo::Save(int /*Index*/, bool Value)
+void CSettingTypeRDBYesNo::Save(uint32_t /*Index*/, bool Value)
 {
     m_SettingsIniFile->SaveString(m_SectionIdent->c_str(), m_KeyName.c_str(), Value ? "Yes" : "No");
 }
 
-void CSettingTypeRDBYesNo::Save(int /*Index*/, uint32_t Value)
+void CSettingTypeRDBYesNo::Save(uint32_t /*Index*/, uint32_t Value)
 {
     m_SettingsIniFile->SaveString(m_SectionIdent->c_str(), m_KeyName.c_str(), Value ? "Yes" : "No");
 }
 
-void CSettingTypeRDBYesNo::Save(int /*Index*/, const stdstr & /*Value*/)
+void CSettingTypeRDBYesNo::Save(uint32_t /*Index*/, const std::string & /*Value*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeRDBYesNo::Save(int /*Index*/, const char * /*Value*/)
+void CSettingTypeRDBYesNo::Save(uint32_t /*Index*/, const char * /*Value*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeRDBYesNo::Delete(int /*Index*/)
+void CSettingTypeRDBYesNo::Delete(uint32_t /*Index*/)
 {
     m_SettingsIniFile->SaveString(m_SectionIdent->c_str(), m_KeyName.c_str(), NULL);
 }

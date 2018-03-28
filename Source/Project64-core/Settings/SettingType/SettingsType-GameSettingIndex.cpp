@@ -40,7 +40,7 @@ CSettingTypeGameIndex::~CSettingTypeGameIndex()
 
 bool CSettingTypeGameIndex::Load ( int Index, bool & Value ) const
 {
-    m_KeyNameIdex.Format("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
+    m_KeyNameIdex = stdstr_f("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
     return CSettingTypeGame::Load(Index,Value);
 }
 
@@ -52,14 +52,14 @@ bool CSettingTypeGameIndex::Load ( int /*Index*/, uint32_t & /*Value*/ ) const
 
 bool CSettingTypeGameIndex::Load ( int Index,  stdstr & Value ) const
 {
-    m_KeyNameIdex.Format("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
+    m_KeyNameIdex = stdstr_f("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
     return CSettingTypeGame::Load(0,Value);
 }
 
 //return the default values
 void CSettingTypeGameIndex::LoadDefault ( int Index, bool & Value   ) const
 {
-    m_KeyNameIdex.Format("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
+    m_KeyNameIdex = stdstr_f("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
     CSettingTypeGame::LoadDefault(0,Value);
 }
 
@@ -76,13 +76,13 @@ void CSettingTypeGameIndex::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) co
 //Update the settings
 void CSettingTypeGameIndex::Save ( int Index, bool Value )
 {
-    m_KeyNameIdex.Format("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
+    m_KeyNameIdex = stdstr_f("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
     CSettingTypeGame::Save(Index,Value);
 }
 
 void CSettingTypeGameIndex::Save(int Index, uint32_t Value)
 {
-    m_KeyNameIdex.Format("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
+    m_KeyNameIdex = stdstr_f("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
     CSettingTypeGame::Save(0,Value);
 }
 
@@ -93,12 +93,12 @@ void CSettingTypeGameIndex::Save ( int /*Index*/, const stdstr & /*Value*/ )
 
 void CSettingTypeGameIndex::Save ( int Index, const char * Value )
 {
-    m_KeyNameIdex.Format("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
+    m_KeyNameIdex = stdstr_f("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
     CSettingTypeGame::Save(0,Value);
 }
 
 void CSettingTypeGameIndex::Delete ( int Index )
 {
-    m_KeyNameIdex.Format("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
+    m_KeyNameIdex = stdstr_f("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
     CSettingTypeGame::Delete(0);
 }

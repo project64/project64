@@ -140,7 +140,7 @@ void CSettingTypeApplication::CleanUp()
     }
 }
 
-bool CSettingTypeApplication::Load(int /*Index*/, bool & Value) const
+bool CSettingTypeApplication::Load(uint32_t /*Index*/, bool & Value) const
 {
     bool bRes = false;
 
@@ -165,7 +165,7 @@ bool CSettingTypeApplication::Load(int /*Index*/, bool & Value) const
     return bRes;
 }
 
-bool CSettingTypeApplication::Load(int /*Index*/, uint32_t & Value) const
+bool CSettingTypeApplication::Load(uint32_t /*Index*/, uint32_t & Value) const
 {
     bool bRes = m_SettingsIniFile->GetNumber(SectionName(), m_KeyNameIdex.c_str(), Value, Value);
     if (!bRes && m_DefaultSetting != Default_None)
@@ -187,7 +187,7 @@ const char * CSettingTypeApplication::SectionName(void) const
     return m_Section.c_str();
 }
 
-bool CSettingTypeApplication::Load(int Index, stdstr & Value) const
+bool CSettingTypeApplication::Load(uint32_t Index, std::string & Value) const
 {
     bool bRes = m_SettingsIniFile ? m_SettingsIniFile->GetString(SectionName(), m_KeyNameIdex.c_str(), m_DefaultStr, Value) : false;
     if (!bRes)
@@ -198,7 +198,7 @@ bool CSettingTypeApplication::Load(int Index, stdstr & Value) const
 }
 
 //return the default values
-void CSettingTypeApplication::LoadDefault(int /*Index*/, bool & Value) const
+void CSettingTypeApplication::LoadDefault(uint32_t /*Index*/, bool & Value) const
 {
     if (m_DefaultSetting != Default_None)
     {
@@ -213,7 +213,7 @@ void CSettingTypeApplication::LoadDefault(int /*Index*/, bool & Value) const
     }
 }
 
-void CSettingTypeApplication::LoadDefault(int /*Index*/, uint32_t & Value) const
+void CSettingTypeApplication::LoadDefault(uint32_t /*Index*/, uint32_t & Value) const
 {
     if (m_DefaultSetting != Default_None)
     {
@@ -228,7 +228,7 @@ void CSettingTypeApplication::LoadDefault(int /*Index*/, uint32_t & Value) const
     }
 }
 
-void CSettingTypeApplication::LoadDefault(int /*Index*/, stdstr & Value) const
+void CSettingTypeApplication::LoadDefault(uint32_t /*Index*/, std::string & Value) const
 {
     if (m_DefaultSetting != Default_None)
     {
@@ -244,7 +244,7 @@ void CSettingTypeApplication::LoadDefault(int /*Index*/, stdstr & Value) const
 }
 
 //Update the settings
-void CSettingTypeApplication::Save(int /*Index*/, bool Value)
+void CSettingTypeApplication::Save(uint32_t /*Index*/, bool Value)
 {
     if (m_DefaultSetting != Default_None &&
         ((m_DefaultSetting == Default_Constant && (bool)m_DefaultValue == Value) ||
@@ -258,7 +258,7 @@ void CSettingTypeApplication::Save(int /*Index*/, bool Value)
     }
 }
 
-void CSettingTypeApplication::Save(int /*Index*/, uint32_t Value)
+void CSettingTypeApplication::Save(uint32_t /*Index*/, uint32_t Value)
 {
     if (m_DefaultSetting != Default_None &&
         ((m_DefaultSetting == Default_Constant && m_DefaultValue == Value) ||
@@ -272,12 +272,12 @@ void CSettingTypeApplication::Save(int /*Index*/, uint32_t Value)
     }
 }
 
-void CSettingTypeApplication::Save(int Index, const stdstr & Value)
+void CSettingTypeApplication::Save(uint32_t Index, const std::string & Value)
 {
     Save(Index, Value.c_str());
 }
 
-void CSettingTypeApplication::Save(int /*Index*/, const char * Value)
+void CSettingTypeApplication::Save(uint32_t /*Index*/, const char * Value)
 {
     if (m_DefaultSetting != Default_None &&
         ((m_DefaultSetting == Default_Constant && strcmp(m_DefaultStr,Value) == 0) ||
@@ -291,7 +291,7 @@ void CSettingTypeApplication::Save(int /*Index*/, const char * Value)
     }
 }
 
-stdstr CSettingTypeApplication::FixSectionName(const char * Section)
+std::string CSettingTypeApplication::FixSectionName(const char * Section)
 {
     stdstr SectionName(Section);
 
@@ -303,7 +303,7 @@ stdstr CSettingTypeApplication::FixSectionName(const char * Section)
     return SectionName;
 }
 
-void CSettingTypeApplication::Delete(int /*Index*/)
+void CSettingTypeApplication::Delete(uint32_t /*Index*/)
 {
     m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), NULL);
 }

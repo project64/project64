@@ -39,25 +39,25 @@ public:
     virtual ~CSettingType() {};
 
     virtual SettingType GetSettingType(void) const = 0;
-    virtual bool        IndexBasedSetting(void) const = 0;
-    virtual bool        IsSettingSet(void) const = 0;
+    virtual bool IndexBasedSetting(void) const = 0;
+    virtual bool IsSettingSet(void) const = 0;
 
     //return the values
-    virtual bool Load(int32_t Index, bool & Value) const = 0;
-    virtual bool Load(int32_t Index, uint32_t & Value) const = 0;
-    virtual bool Load(int32_t Index, stdstr & Value) const = 0;
+    virtual bool Load(uint32_t Index, bool & Value) const = 0;
+    virtual bool Load(uint32_t Index, uint32_t & Value) const = 0;
+    virtual bool Load(uint32_t Index, std::string & Value) const = 0;
 
     //return the default values
-    virtual void LoadDefault(int32_t Index, bool & Value) const = 0;
-    virtual void LoadDefault(int32_t Index, uint32_t & Value) const = 0;
-    virtual void LoadDefault(int32_t Index, stdstr & Value) const = 0;
+    virtual void LoadDefault(uint32_t Index, bool & Value) const = 0;
+    virtual void LoadDefault(uint32_t Index, uint32_t & Value) const = 0;
+    virtual void LoadDefault(uint32_t Index, std::string & Value) const = 0;
 
     //Update the settings
-    virtual void Save(int32_t Index, bool Value) = 0;
-    virtual void Save(int32_t Index, uint32_t Value) = 0;
-    virtual void Save(int32_t Index, const stdstr & Value) = 0;
-    virtual void Save(int32_t Index, const char * Value) = 0;
+    virtual void Save(uint32_t Index, bool Value) = 0;
+    virtual void Save(uint32_t Index, uint32_t Value) = 0;
+    virtual void Save(uint32_t Index, const std::string & Value) = 0;
+    virtual void Save(uint32_t Index, const char * Value) = 0;
 
     // Delete the setting
-    virtual void Delete(int32_t Index) = 0;
+    virtual void Delete(uint32_t Index) = 0;
 };

@@ -14,9 +14,9 @@
 CIniFile * CSettingTypeRomDatabase::m_SettingsIniFile = NULL;
 CIniFile * CSettingTypeRomDatabase::m_VideoIniFile = NULL;
 CIniFile * CSettingTypeRomDatabase::m_AudioIniFile = NULL;
-stdstr   * CSettingTypeRomDatabase::m_SectionIdent = NULL;
+std::string * CSettingTypeRomDatabase::m_SectionIdent = NULL;
 
-CSettingTypeRomDatabase::CSettingTypeRomDatabase(const char * Name, int DefaultValue, bool DeleteOnDefault) :
+CSettingTypeRomDatabase::CSettingTypeRomDatabase(const char * Name, uint32_t DefaultValue, bool DeleteOnDefault) :
     m_KeyName(StripNameSection(Name)),
     m_DefaultStr(""),
     m_DefaultValue(DefaultValue),
@@ -135,7 +135,7 @@ void CSettingTypeRomDatabase::GameChanged(void * /*Data */)
     }
 }
 
-bool CSettingTypeRomDatabase::Load(int Index, bool & Value) const
+bool CSettingTypeRomDatabase::Load(uint32_t Index, bool & Value) const
 {
     uint32_t temp_value = Value;
     bool bRes = Load(Index, temp_value);
@@ -143,7 +143,7 @@ bool CSettingTypeRomDatabase::Load(int Index, bool & Value) const
     return bRes;
 }
 
-bool CSettingTypeRomDatabase::Load(int Index, uint32_t & Value) const
+bool CSettingTypeRomDatabase::Load(uint32_t Index, uint32_t & Value) const
 {
     bool bRes = false;
     if (m_VideoSetting)
@@ -165,7 +165,7 @@ bool CSettingTypeRomDatabase::Load(int Index, uint32_t & Value) const
     return bRes;
 }
 
-bool CSettingTypeRomDatabase::Load(int Index, stdstr & Value) const
+bool CSettingTypeRomDatabase::Load(uint32_t Index, std::string & Value) const
 {
     stdstr temp_value;
     bool bRes = false;
@@ -193,7 +193,7 @@ bool CSettingTypeRomDatabase::Load(int Index, stdstr & Value) const
 }
 
 //return the default values
-void CSettingTypeRomDatabase::LoadDefault(int /*Index*/, bool & Value) const
+void CSettingTypeRomDatabase::LoadDefault(uint32_t /*Index*/, bool & Value) const
 {
     if (m_DefaultSetting != Default_None)
     {
@@ -207,7 +207,7 @@ void CSettingTypeRomDatabase::LoadDefault(int /*Index*/, bool & Value) const
     }
 }
 
-void CSettingTypeRomDatabase::LoadDefault(int /*Index*/, uint32_t & Value) const
+void CSettingTypeRomDatabase::LoadDefault(uint32_t /*Index*/, uint32_t & Value) const
 {
     if (m_DefaultSetting != Default_None)
     {
@@ -221,7 +221,7 @@ void CSettingTypeRomDatabase::LoadDefault(int /*Index*/, uint32_t & Value) const
     }
 }
 
-void CSettingTypeRomDatabase::LoadDefault(int /*Index*/, stdstr & Value) const
+void CSettingTypeRomDatabase::LoadDefault(uint32_t /*Index*/, std::string & Value) const
 {
     if (m_DefaultSetting != Default_None)
     {
@@ -236,7 +236,7 @@ void CSettingTypeRomDatabase::LoadDefault(int /*Index*/, stdstr & Value) const
 }
 
 //Update the settings
-void CSettingTypeRomDatabase::Save(int /*Index*/, bool Value)
+void CSettingTypeRomDatabase::Save(uint32_t /*Index*/, bool Value)
 {
     if (!g_Settings->LoadBool(Setting_RdbEditor))
     {
@@ -260,7 +260,7 @@ void CSettingTypeRomDatabase::Save(int /*Index*/, bool Value)
     }
 }
 
-void CSettingTypeRomDatabase::Save(int Index, uint32_t Value)
+void CSettingTypeRomDatabase::Save(uint32_t Index, uint32_t Value)
 {
     if (!g_Settings->LoadBool(Setting_RdbEditor))
     {
@@ -290,7 +290,7 @@ void CSettingTypeRomDatabase::Save(int Index, uint32_t Value)
     }
 }
 
-void CSettingTypeRomDatabase::Save(int /*Index*/, const stdstr & Value)
+void CSettingTypeRomDatabase::Save(uint32_t /*Index*/, const std::string & Value)
 {
     if (!g_Settings->LoadBool(Setting_RdbEditor))
     {
@@ -310,7 +310,7 @@ void CSettingTypeRomDatabase::Save(int /*Index*/, const stdstr & Value)
     }
 }
 
-void CSettingTypeRomDatabase::Save(int /*Index*/, const char * Value)
+void CSettingTypeRomDatabase::Save(uint32_t /*Index*/, const char * Value)
 {
     if (!g_Settings->LoadBool(Setting_RdbEditor))
     {
@@ -330,7 +330,7 @@ void CSettingTypeRomDatabase::Save(int /*Index*/, const char * Value)
     }
 }
 
-void CSettingTypeRomDatabase::Delete(int /*Index*/)
+void CSettingTypeRomDatabase::Delete(uint32_t /*Index*/)
 {
     if (!g_Settings->LoadBool(Setting_RdbEditor))
     {

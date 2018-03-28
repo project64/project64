@@ -18,7 +18,7 @@ class CSettingTypeRomDatabaseSetting :
 public:
     CSettingTypeRomDatabaseSetting(const char * SectionIdent, const char * Name, const char * DefaultValue, bool DeleteOnDefault = false );
     CSettingTypeRomDatabaseSetting(const char * SectionIdent, const char * Name, bool DefaultValue, bool DeleteOnDefault = false );
-    CSettingTypeRomDatabaseSetting(const char * SectionIdent, const char * Name, int DefaultValue, bool DeleteOnDefault = false );
+    CSettingTypeRomDatabaseSetting(const char * SectionIdent, const char * Name, uint32_t DefaultValue, bool DeleteOnDefault = false );
     CSettingTypeRomDatabaseSetting(const char * SectionIdent, const char * Name, SettingID DefaultSetting, bool DeleteOnDefault = false );
 
     virtual ~CSettingTypeRomDatabaseSetting();

@@ -18,7 +18,7 @@ CSettingTypeRDBSaveChip::CSettingTypeRDBSaveChip(const char * Name, SettingID De
 {
 }
 
-CSettingTypeRDBSaveChip::CSettingTypeRDBSaveChip(const char * Name, int DefaultValue ) :
+CSettingTypeRDBSaveChip::CSettingTypeRDBSaveChip(const char * Name, uint32_t DefaultValue ) :
     CSettingTypeRomDatabase(Name,DefaultValue)
 {
 }
@@ -27,13 +27,13 @@ CSettingTypeRDBSaveChip::~CSettingTypeRDBSaveChip()
 {
 }
 
-bool CSettingTypeRDBSaveChip::Load ( int /*Index*/, bool & /*Value*/ ) const
+bool CSettingTypeRDBSaveChip::Load (uint32_t /*Index*/, bool & /*Value*/ ) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
-bool CSettingTypeRDBSaveChip::Load ( int Index, uint32_t & Value ) const
+bool CSettingTypeRDBSaveChip::Load (uint32_t Index, uint32_t & Value ) const
 {
     stdstr strValue;
     bool bRes = m_SettingsIniFile->GetString(m_SectionIdent->c_str(),m_KeyName.c_str(),m_DefaultStr,strValue);
@@ -60,19 +60,19 @@ bool CSettingTypeRDBSaveChip::Load ( int Index, uint32_t & Value ) const
     return true;
 }
 
-bool CSettingTypeRDBSaveChip::Load ( int /*Index*/, stdstr & /*Value*/ ) const
+bool CSettingTypeRDBSaveChip::Load (uint32_t /*Index*/, std::string & /*Value*/ ) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
 //return the default values
-void CSettingTypeRDBSaveChip::LoadDefault ( int /*Index*/, bool & /*Value*/ ) const
+void CSettingTypeRDBSaveChip::LoadDefault (uint32_t /*Index*/, bool & /*Value*/ ) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeRDBSaveChip::LoadDefault ( int /*Index*/, uint32_t & Value  ) const
+void CSettingTypeRDBSaveChip::LoadDefault (uint32_t /*Index*/, uint32_t & Value  ) const
 {
     if (m_DefaultSetting != Default_None)
     {
@@ -85,18 +85,18 @@ void CSettingTypeRDBSaveChip::LoadDefault ( int /*Index*/, uint32_t & Value  ) c
     }
 }
 
-void CSettingTypeRDBSaveChip::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
+void CSettingTypeRDBSaveChip::LoadDefault (uint32_t /*Index*/, std::string & /*Value*/ ) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 //Update the settings
-void CSettingTypeRDBSaveChip::Save ( int /*Index*/, bool /*Value*/ )
+void CSettingTypeRDBSaveChip::Save (uint32_t /*Index*/, bool /*Value*/ )
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeRDBSaveChip::Save ( int /*Index*/, uint32_t Value )
+void CSettingTypeRDBSaveChip::Save (uint32_t /*Index*/, uint32_t Value )
 {
     switch (Value)
     {
@@ -110,17 +110,17 @@ void CSettingTypeRDBSaveChip::Save ( int /*Index*/, uint32_t Value )
     }
 }
 
-void CSettingTypeRDBSaveChip::Save ( int /*Index*/, const stdstr & /*Value*/ )
+void CSettingTypeRDBSaveChip::Save (uint32_t /*Index*/, const std::string & /*Value*/ )
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeRDBSaveChip::Save ( int /*Index*/, const char * /*Value*/ )
+void CSettingTypeRDBSaveChip::Save (uint32_t /*Index*/, const char * /*Value*/ )
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeRDBSaveChip::Delete( int /*Index*/ )
+void CSettingTypeRDBSaveChip::Delete(uint32_t /*Index*/ )
 {
     m_SettingsIniFile->SaveString(m_SectionIdent->c_str(),m_KeyName.c_str(),NULL);
 }

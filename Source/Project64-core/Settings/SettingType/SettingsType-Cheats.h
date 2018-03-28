@@ -20,37 +20,37 @@ public:
     CSettingTypeCheats(const char * PostFix );
     ~CSettingTypeCheats();
 
-    virtual bool        IndexBasedSetting ( void ) const { return true; }
-    virtual SettingType GetSettingType    ( void ) const { return SettingType_CheatSetting; }
-    virtual bool        IsSettingSet      ( void ) const;
+    virtual bool IndexBasedSetting ( void ) const { return true; }
+    virtual SettingType GetSettingType ( void ) const { return SettingType_CheatSetting; }
+    virtual bool IsSettingSet ( void ) const;
 
     //return the values
-    virtual bool Load   ( int32_t Index, bool & Value   ) const;
-    virtual bool Load   ( int32_t Index, uint32_t & Value  ) const;
-    virtual bool Load   ( int32_t Index, stdstr & Value ) const;
+    virtual bool Load (uint32_t Index, bool & Value ) const;
+    virtual bool Load (uint32_t Index, uint32_t & Value ) const;
+    virtual bool Load (uint32_t Index, std::string & Value ) const;
 
     //return the default values
-    virtual void LoadDefault ( int32_t Index, bool & Value   ) const;
-    virtual void LoadDefault ( int32_t Index, uint32_t & Value  ) const;
-    virtual void LoadDefault ( int32_t Index, stdstr & Value ) const;
+    virtual void LoadDefault (uint32_t Index, bool & Value ) const;
+    virtual void LoadDefault (uint32_t Index, uint32_t & Value ) const;
+    virtual void LoadDefault (uint32_t Index, std::string & Value ) const;
 
     //Update the settings
-    virtual void Save   ( int32_t Index, bool Value );
-    virtual void Save   ( int32_t Index, uint32_t Value );
-    virtual void Save   ( int32_t Index, const stdstr & Value );
-    virtual void Save   ( int32_t Index, const char * Value );
+    virtual void Save (uint32_t Index, bool Value );
+    virtual void Save (uint32_t Index, uint32_t Value );
+    virtual void Save (uint32_t Index, const std::string & Value );
+    virtual void Save (uint32_t Index, const char * Value );
 
     // Delete the setting
-    virtual void Delete ( int32_t Index );
+    virtual void Delete (uint32_t Index );
 
     // Initialize this class to use ini or registry
-    static void Initialize   ( void );
-    static void CleanUp      ( void );
+    static void Initialize ( void );
+    static void CleanUp ( void );
     static void FlushChanges ( void );
 
 protected:
     static CIniFile * m_CheatIniFile;
-    static stdstr   * m_SectionIdent;
+    static std::string * m_SectionIdent;
     const char * const m_PostFix;
     static void GameChanged ( void * /*Data */ );
 

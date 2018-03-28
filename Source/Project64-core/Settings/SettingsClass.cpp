@@ -129,14 +129,14 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Setting_LanguageDir, new CSettingTypeApplicationPath("Lang Directory", "Directory", Setting_LanguageDirDefault));
 
     AddHandler(Rdb_GoodName, new CSettingTypeRomDatabase("Good Name", Game_GameName));
-    AddHandler(Rdb_SaveChip, new CSettingTypeRDBSaveChip("Save Type", SaveChip_Auto));
+    AddHandler(Rdb_SaveChip, new CSettingTypeRDBSaveChip("Save Type", (uint32_t)SaveChip_Auto));
 #ifdef _DEBUG
     AddHandler(Rdb_CpuType, new CSettingTypeRDBCpuType("CPU Type", CPU_SyncCores));
 #else
     AddHandler(Rdb_CpuType, new CSettingTypeRDBCpuType("CPU Type", CPU_Recompiler));
 #endif
     AddHandler(Rdb_RDRamSize, new CSettingTypeRDBRDRamSize("RDRAM Size", 0x400000));
-    AddHandler(Rdb_CounterFactor, new CSettingTypeRomDatabase("Counter Factor", 2));
+    AddHandler(Rdb_CounterFactor, new CSettingTypeRomDatabase("Counter Factor", (uint32_t)2));
     AddHandler(Rdb_UseTlb, new CSettingTypeRDBYesNo("Use TLB", true));
     AddHandler(Rdb_DelayDP, new CSettingTypeRDBYesNo("Delay DP", true));
     AddHandler(Rdb_DelaySi, new CSettingTypeRDBYesNo("Delay SI", false));
@@ -145,14 +145,14 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_FixedAudio, new CSettingTypeRomDatabase("Fixed Audio", true));
     AddHandler(Rdb_SyncViaAudio, new CSettingTypeRomDatabase("Audio-Sync Audio", true));
     AddHandler(Rdb_RspAudioSignal, new CSettingTypeRDBYesNo("Audio Signal", false));
-    AddHandler(Rdb_TLB_VAddrStart, new CSettingTypeRomDatabase("TLB: Vaddr Start", 0));
-    AddHandler(Rdb_TLB_VAddrLen, new CSettingTypeRomDatabase("TLB: Vaddr Len", 0));
-    AddHandler(Rdb_TLB_PAddrStart, new CSettingTypeRomDatabase("TLB: PAddr Start", 0));
+    AddHandler(Rdb_TLB_VAddrStart, new CSettingTypeRomDatabase("TLB: Vaddr Start", (uint32_t)0));
+    AddHandler(Rdb_TLB_VAddrLen, new CSettingTypeRomDatabase("TLB: Vaddr Len", (uint32_t)0));
+    AddHandler(Rdb_TLB_PAddrStart, new CSettingTypeRomDatabase("TLB: PAddr Start", (uint32_t)0));
     AddHandler(Rdb_UseHleGfx, new CSettingTypeRomDatabase("HLE GFX", Plugin_UseHleGfx));
     AddHandler(Rdb_UseHleAudio, new CSettingTypeRomDatabase("HLE Audio", Plugin_UseHleAudio));
     AddHandler(Rdb_LoadRomToMemory, new CSettingTypeRomDatabase("Rom In Memory", false));
-    AddHandler(Rdb_ScreenHertz, new CSettingTypeRomDatabase("ScreenHertz", 0));
-    AddHandler(Rdb_FuncLookupMode, new CSettingTypeRomDatabase("FuncFind", FuncFind_PhysicalLookup));
+    AddHandler(Rdb_ScreenHertz, new CSettingTypeRomDatabase("ScreenHertz", (uint32_t)0));
+    AddHandler(Rdb_FuncLookupMode, new CSettingTypeRomDatabase("FuncFind", (uint32_t)FuncFind_PhysicalLookup));
     AddHandler(Rdb_RegCache, new CSettingTypeRDBYesNo("Reg Cache", true));
     AddHandler(Rdb_BlockLinking, new CSettingTypeRDBOnOff("Linking", true));
     AddHandler(Rdb_SMM_Cache, new CSettingTypeRomDatabase("SMM-Cache", true));
@@ -163,12 +163,12 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_SMM_ValidFunc, new CSettingTypeRomDatabase("SMM-FUNC", true));
     AddHandler(Rdb_GameCheatFix, new CSettingTypeRomDatabaseIndex("Cheat", "", ""));
     AddHandler(Rdb_GameCheatFixPlugin, new CSettingTypeRomDatabaseIndex("CheatPlugin", "", ""));
-    AddHandler(Rdb_ViRefreshRate, new CSettingTypeRomDatabase("ViRefresh", 1500));
-    AddHandler(Rdb_AiCountPerBytes, new CSettingTypeRomDatabase("AiCountPerBytes", 0));
+    AddHandler(Rdb_ViRefreshRate, new CSettingTypeRomDatabase("ViRefresh", (uint32_t)1500));
+    AddHandler(Rdb_AiCountPerBytes, new CSettingTypeRomDatabase("AiCountPerBytes", (uint32_t)0));
     AddHandler(Rdb_AudioResetOnLoad, new CSettingTypeRDBYesNo("AudioResetOnLoad", false));
     AddHandler(Rdb_AllowROMWrites, new CSettingTypeRDBYesNo("AllowROMWrites", false));
     AddHandler(Rdb_CRC_Recalc, new CSettingTypeRDBYesNo("CRC-Recalc", false));
-    AddHandler(Rdb_OverClockModifier, new CSettingTypeRomDatabase("OverClockModifier", 1));
+    AddHandler(Rdb_OverClockModifier, new CSettingTypeRomDatabase("OverClockModifier", (uint32_t)1));
 
     AddHandler(Game_IniKey, new CSettingTypeTempString(""));
     AddHandler(Game_File, new CSettingTypeTempString(""));
@@ -479,7 +479,7 @@ uint32_t CSettings::GetSetting(CSettings * _this, SettingID Type)
     return _this->LoadDword(Type);
 }
 
-const char * CSettings::GetSettingSz(CSettings * _this, SettingID Type, char * Buffer, int BufferSize)
+const char * CSettings::GetSettingSz(CSettings * _this, SettingID Type, char * Buffer, uint32_t BufferSize)
 {
     if (Buffer && BufferSize > 0)
     {
@@ -561,7 +561,7 @@ void CSettings::RegisterSetting(CSettings * _this, SettingID ID, SettingID Defau
             _this->m_NextAutoSettingId += 1;
             if (DefaultID == Default_None)
             {
-                _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), (int)Value));
+                _this->AddHandler(RdbSetting, new CSettingTypeRomDatabase(Name.c_str(), Value));
                 _this->AddHandler(ID, new CSettingTypeGame(Name.c_str(), RdbSetting));
             }
             else
@@ -594,7 +594,7 @@ void CSettings::RegisterSetting(CSettings * _this, SettingID ID, SettingID Defau
         case Data_DWORD:
             if (DefaultID == Default_None)
             {
-                _this->AddHandler(ID, new CSettingTypeRomDatabase(DefaultStr, (int)Value, true));
+                _this->AddHandler(ID, new CSettingTypeRomDatabase(DefaultStr, Value, true));
             }
             else
             {
@@ -621,7 +621,7 @@ void CSettings::RegisterSetting(CSettings * _this, SettingID ID, SettingID Defau
         case Data_DWORD:
             if (DefaultID == Default_None)
             {
-                _this->AddHandler(ID, new CSettingTypeRomDatabaseSetting(Category, DefaultStr, (int)Value, true));
+                _this->AddHandler(ID, new CSettingTypeRomDatabaseSetting(Category, DefaultStr, Value, true));
             }
             else
             {
@@ -681,14 +681,14 @@ bool CSettings::LoadBool(SettingID Type, bool & Value)
     return false;
 }
 
-bool CSettings::LoadBoolIndex(SettingID Type, int index)
+bool CSettings::LoadBoolIndex(SettingID Type, uint32_t index)
 {
     bool Value = false;
     LoadBoolIndex(Type, index, Value);
     return Value;
 }
 
-bool CSettings::LoadBoolIndex(SettingID Type, int index, bool & Value)
+bool CSettings::LoadBoolIndex(SettingID Type, uint32_t index, bool & Value)
 {
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
@@ -735,14 +735,14 @@ bool CSettings::LoadDword(SettingID Type, uint32_t & Value)
     return false;
 }
 
-uint32_t CSettings::LoadDwordIndex(SettingID Type, int index)
+uint32_t CSettings::LoadDwordIndex(SettingID Type, uint32_t index)
 {
     uint32_t Value;
     LoadDwordIndex(Type, index, Value);
     return Value;
 }
 
-bool CSettings::LoadDwordIndex(SettingID Type, int index, uint32_t & Value)
+bool CSettings::LoadDwordIndex(SettingID Type, uint32_t index, uint32_t & Value)
 {
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
@@ -762,14 +762,14 @@ bool CSettings::LoadDwordIndex(SettingID Type, int index, uint32_t & Value)
     return false;
 }
 
-stdstr CSettings::LoadStringVal(SettingID Type)
+std::string CSettings::LoadStringVal(SettingID Type)
 {
-    stdstr Value;
+    std::string Value;
     LoadStringVal(Type, Value);
     return Value;
 }
 
-bool CSettings::LoadStringVal(SettingID Type, stdstr & Value)
+bool CSettings::LoadStringVal(SettingID Type, std::string & Value)
 {
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
@@ -789,7 +789,7 @@ bool CSettings::LoadStringVal(SettingID Type, stdstr & Value)
     return false;
 }
 
-bool CSettings::LoadStringVal(SettingID Type, char * Buffer, int BufferSize)
+bool CSettings::LoadStringVal(SettingID Type, char * Buffer, uint32_t BufferSize)
 {
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
@@ -817,14 +817,14 @@ bool CSettings::LoadStringVal(SettingID Type, char * Buffer, int BufferSize)
     return bRes;
 }
 
-stdstr CSettings::LoadStringIndex(SettingID Type, int index)
+std::string CSettings::LoadStringIndex(SettingID Type, uint32_t index)
 {
-    stdstr Value;
+    std::string Value;
     LoadStringIndex(Type, index, Value);
     return Value;
 }
 
-bool CSettings::LoadStringIndex(SettingID Type, int index, stdstr & Value)
+bool CSettings::LoadStringIndex(SettingID Type, uint32_t index, std::string & Value)
 {
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
@@ -844,7 +844,7 @@ bool CSettings::LoadStringIndex(SettingID Type, int index, stdstr & Value)
     return false;
 }
 
-bool CSettings::LoadStringIndex(SettingID /*Type*/, int /*index*/, char * /*Buffer*/, int /*BufferSize*/)
+bool CSettings::LoadStringIndex(SettingID /*Type*/, uint32_t /*index*/, char * /*Buffer*/, uint32_t /*BufferSize*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
@@ -879,13 +879,13 @@ void CSettings::LoadDefaultBool(SettingID Type, bool & Value)
     }
 }
 
-bool CSettings::LoadDefaultBoolIndex(SettingID /*Type*/, int /*index*/)
+bool CSettings::LoadDefaultBoolIndex(SettingID /*Type*/, uint32_t /*index*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
-void CSettings::LoadDefaultBoolIndex(SettingID /*Type*/, int /*index*/, bool & /*Value*/)
+void CSettings::LoadDefaultBoolIndex(SettingID /*Type*/, uint32_t /*index*/, bool & /*Value*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
@@ -918,25 +918,25 @@ void CSettings::LoadDefaultDword(SettingID Type, uint32_t & Value)
     }
 }
 
-uint32_t  CSettings::LoadDefaultDwordIndex(SettingID /*Type*/, int /*index*/)
+uint32_t CSettings::LoadDefaultDwordIndex(SettingID /*Type*/, uint32_t /*index*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
-void CSettings::LoadDefaultDwordIndex(SettingID /*Type*/, int /*index*/, uint32_t & /*Value*/)
+void CSettings::LoadDefaultDwordIndex(SettingID /*Type*/, uint32_t /*index*/, uint32_t & /*Value*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-stdstr CSettings::LoadDefaultString(SettingID Type)
+std::string CSettings::LoadDefaultString(SettingID Type)
 {
     stdstr Value;
     LoadDefaultString(Type, Value);
     return Value;
 }
 
-void CSettings::LoadDefaultString(SettingID Type, stdstr & Value)
+void CSettings::LoadDefaultString(SettingID Type, std::string & Value)
 {
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
@@ -957,23 +957,23 @@ void CSettings::LoadDefaultString(SettingID Type, stdstr & Value)
     }
 }
 
-void CSettings::LoadDefaultString(SettingID /*Type*/, char * /*Buffer*/, int /*BufferSize*/)
+void CSettings::LoadDefaultString(SettingID /*Type*/, char * /*Buffer*/, uint32_t /*BufferSize*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-stdstr CSettings::LoadDefaultStringIndex(SettingID /*Type*/, int /*index*/)
+std::string CSettings::LoadDefaultStringIndex(SettingID /*Type*/, uint32_t /*index*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return "";
 }
 
-void CSettings::LoadDefaultStringIndex(SettingID /*Type*/, int /*index*/, stdstr & /*Value*/)
+void CSettings::LoadDefaultStringIndex(SettingID /*Type*/, uint32_t /*index*/, std::string & /*Value*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettings::LoadDefaultStringIndex(SettingID /*Type*/, int /*index*/, char * /*Buffer*/, int /*BufferSize*/)
+void CSettings::LoadDefaultStringIndex(SettingID /*Type*/, uint32_t /*index*/, char * /*Buffer*/, uint32_t /*BufferSize*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
@@ -998,7 +998,7 @@ void CSettings::SaveBool(SettingID Type, bool Value)
     NotifyCallBacks(Type);
 }
 
-void CSettings::SaveBoolIndex(SettingID Type, int index, bool Value)
+void CSettings::SaveBoolIndex(SettingID Type, uint32_t index, bool Value)
 {
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
@@ -1038,7 +1038,7 @@ void CSettings::SaveDword(SettingID Type, uint32_t Value)
     NotifyCallBacks(Type);
 }
 
-void CSettings::SaveDwordIndex(SettingID Type, int index, uint32_t Value)
+void CSettings::SaveDwordIndex(SettingID Type, uint32_t index, uint32_t Value)
 {
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
@@ -1058,7 +1058,7 @@ void CSettings::SaveDwordIndex(SettingID Type, int index, uint32_t Value)
     NotifyCallBacks(Type);
 }
 
-void CSettings::SaveString(SettingID Type, const stdstr & Value)
+void CSettings::SaveString(SettingID Type, const std::string & Value)
 {
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
@@ -1097,7 +1097,7 @@ void CSettings::SaveString(SettingID Type, const char * Buffer)
     NotifyCallBacks(Type);
 }
 
-void CSettings::SaveStringIndex(SettingID Type, int index, const char * Buffer)
+void CSettings::SaveStringIndex(SettingID Type, uint32_t index, const char * Buffer)
 {
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())
@@ -1116,7 +1116,7 @@ void CSettings::SaveStringIndex(SettingID Type, int index, const char * Buffer)
     NotifyCallBacks(Type);
 }
 
-void CSettings::SaveStringIndex(SettingID Type, int index, const stdstr & Value)
+void CSettings::SaveStringIndex(SettingID Type, uint32_t index, const std::string & Value)
 {
     SaveStringIndex(Type, index, Value.c_str());
 }
@@ -1140,7 +1140,7 @@ void CSettings::DeleteSetting(SettingID Type)
     NotifyCallBacks(Type);
 }
 
-void CSettings::DeleteSettingIndex(SettingID Type, int index)
+void CSettings::DeleteSettingIndex(SettingID Type, uint32_t index)
 {
     SETTING_HANDLER FindInfo = m_SettingInfo.find(Type);
     if (FindInfo == m_SettingInfo.end())

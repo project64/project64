@@ -222,7 +222,7 @@ void CMainMenu::OnLodState(HWND hWnd)
     const char * Filter = "PJ64 Saves (*.zip, *.pj)\0*.pj?;*.pj;*.zip;";
     if (SaveFile.SelectFile(hWnd, Directory, Filter, false))
     {
-        g_Settings->SaveString(GameRunning_InstantSaveFile, SaveFile);
+        g_Settings->SaveString(GameRunning_InstantSaveFile, (const char *)SaveFile);
         if (!SaveFile.DirectoryExists())
         {
             SaveFile.DirectoryCreate();

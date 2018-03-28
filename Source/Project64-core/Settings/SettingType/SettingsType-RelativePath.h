@@ -19,28 +19,28 @@ public:
     CSettingTypeRelativePath(const char * Directory, const char * FileName);
     ~CSettingTypeRelativePath();
 
-    bool        IndexBasedSetting ( void ) const { return false; }
-    SettingType GetSettingType    ( void ) const { return SettingType_RelativePath; }
-    bool        IsSettingSet(void) const { return false; }
+    bool IndexBasedSetting ( void ) const { return false; }
+    SettingType GetSettingType ( void ) const { return SettingType_RelativePath; }
+    bool IsSettingSet(void) const { return false; }
 
     //return the values
-    bool Load   ( int32_t /*Index*/, bool & /*Value*/ ) const { return false; };
-    bool Load   ( int32_t /*Index*/, uint32_t & /*Value*/  ) const { return false; };
-    bool Load   ( int32_t Index, stdstr & Value ) const;
+    bool Load (uint32_t /*Index*/, bool & /*Value*/ ) const { return false; };
+    bool Load (uint32_t /*Index*/, uint32_t & /*Value*/ ) const { return false; };
+    bool Load (uint32_t Index, std::string & Value ) const;
 
     //return the default values
-    void LoadDefault ( int32_t Index, bool & Value   ) const;
-    void LoadDefault ( int32_t Index, uint32_t & Value  ) const;
-    void LoadDefault ( int32_t Index, stdstr & Value ) const;
+    void LoadDefault (uint32_t Index, bool & Value ) const;
+    void LoadDefault (uint32_t Index, uint32_t & Value ) const;
+    void LoadDefault (uint32_t Index, std::string & Value ) const;
 
     //Update the settings
-    void Save   ( int32_t Index, bool Value );
-    void Save   ( int32_t Index, uint32_t Value );
-    void Save   ( int32_t Index, const stdstr & Value );
-    void Save   ( int32_t Index, const char * Value );
+    void Save (uint32_t Index, bool Value );
+    void Save (uint32_t Index, uint32_t Value );
+    void Save (uint32_t Index, const std::string & Value );
+    void Save (uint32_t Index, const char * Value );
 
     // Delete the setting
-    void Delete ( int32_t Index );
+    void Delete (uint32_t Index );
 
 private:
     CSettingTypeRelativePath(void);                                         // Disable default constructor

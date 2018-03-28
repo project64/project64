@@ -24,53 +24,53 @@ CSettingTypeRelativePath::~CSettingTypeRelativePath(void)
     g_Settings->UnregisterChangeCB(Cmd_BaseDirectory, this, RefreshSettings);
 }
 
-bool CSettingTypeRelativePath::Load(int /*Index*/, stdstr & value) const
+bool CSettingTypeRelativePath::Load(uint32_t /*Index*/, std::string & value) const
 {
     value = m_FullPath;
     return true;
 }
 
 //return the default values
-void CSettingTypeRelativePath::LoadDefault(int /*Index*/, bool & /*Value*/) const
+void CSettingTypeRelativePath::LoadDefault(uint32_t /*Index*/, bool & /*Value*/) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeRelativePath::LoadDefault(int /*Index*/, uint32_t & /*Value*/) const
+void CSettingTypeRelativePath::LoadDefault(uint32_t /*Index*/, uint32_t & /*Value*/) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeRelativePath::LoadDefault(int /*Index*/, stdstr & /*Value*/) const
+void CSettingTypeRelativePath::LoadDefault(uint32_t /*Index*/, std::string & /*Value*/) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeRelativePath::Save(int /*Index*/, bool /*Value*/)
+void CSettingTypeRelativePath::Save(uint32_t /*Index*/, bool /*Value*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeRelativePath::Save(int /*Index*/, uint32_t /*Value*/)
+void CSettingTypeRelativePath::Save(uint32_t /*Index*/, uint32_t /*Value*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeRelativePath::Save(int /*Index*/, const stdstr & Value)
+void CSettingTypeRelativePath::Save(uint32_t /*Index*/, const std::string & Value)
 {
     m_Directory = "";
     m_FileName = Value;
     BuildPath();
 }
 
-void CSettingTypeRelativePath::Save(int /*Index*/, const char * Value)
+void CSettingTypeRelativePath::Save(uint32_t /*Index*/, const char * Value)
 {
     m_Directory = "";
     m_FileName = Value;
     BuildPath();
 }
 
-void CSettingTypeRelativePath::Delete(int /*Index*/)
+void CSettingTypeRelativePath::Delete(uint32_t /*Index*/)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }

@@ -38,68 +38,68 @@ CSettingTypeApplicationIndex::~CSettingTypeApplicationIndex ( void )
 
 bool CSettingTypeApplicationIndex::Load ( int Index, bool & Value ) const
 {
-    m_KeyNameIdex.Format("%s %d",m_KeyName.c_str(),Index);
+    m_KeyNameIdex = stdstr_f("%s %d",m_KeyName.c_str(),Index);
     return CSettingTypeApplication::Load(0,Value);
 }
 
 bool CSettingTypeApplicationIndex::Load ( int Index, uint32_t & Value ) const
 {
-    m_KeyNameIdex.Format("%s %d",m_KeyName.c_str(),Index);
+    m_KeyNameIdex = stdstr_f("%s %d",m_KeyName.c_str(),Index);
     return CSettingTypeApplication::Load(0,Value);
 }
 
 bool CSettingTypeApplicationIndex::Load ( int Index, stdstr & Value ) const
 {
-    m_KeyNameIdex.Format("%s %d",m_KeyName.c_str(),Index);
+    m_KeyNameIdex = stdstr_f("%s %d",m_KeyName.c_str(),Index);
     return CSettingTypeApplication::Load(0,Value);
 }
 
 //return the default values
 void CSettingTypeApplicationIndex::LoadDefault ( int Index, bool & Value   ) const
 {
-    m_KeyNameIdex.Format("%s %d",m_KeyName.c_str(),Index);
+    m_KeyNameIdex = stdstr_f("%s %d",m_KeyName.c_str(),Index);
     CSettingTypeApplication::LoadDefault(0,Value);
 }
 
 void CSettingTypeApplicationIndex::LoadDefault ( int Index, uint32_t & Value  ) const
 {
-    m_KeyNameIdex.Format("%s %d",m_KeyName.c_str(),Index);
+    m_KeyNameIdex = stdstr_f("%s %d",m_KeyName.c_str(),Index);
     CSettingTypeApplication::LoadDefault(0,Value);
 }
 
 void CSettingTypeApplicationIndex::LoadDefault ( int Index, stdstr & Value ) const
 {
-    m_KeyNameIdex.Format("%s %d",m_KeyName.c_str(),Index);
+    m_KeyNameIdex = stdstr_f("%s %d",m_KeyName.c_str(),Index);
     CSettingTypeApplication::LoadDefault(0,Value);
 }
 
 //Update the settings
 void CSettingTypeApplicationIndex::Save ( int Index, bool Value )
 {
-    m_KeyNameIdex.Format("%s %d",m_KeyName.c_str(),Index);
+    m_KeyNameIdex = stdstr_f("%s %d",m_KeyName.c_str(),Index);
     CSettingTypeApplication::Save(0,Value);
 }
 
 void CSettingTypeApplicationIndex::Save ( int Index, uint32_t Value )
 {
-    m_KeyNameIdex.Format("%s %d",m_KeyName.c_str(),Index);
+    m_KeyNameIdex = stdstr_f("%s %d",m_KeyName.c_str(),Index);
     CSettingTypeApplication::Save(0,Value);
 }
 
 void CSettingTypeApplicationIndex::Save ( int Index, const stdstr & Value )
 {
-    m_KeyNameIdex.Format("%s %d",m_KeyName.c_str(),Index);
+    m_KeyNameIdex = stdstr_f("%s %d",m_KeyName.c_str(),Index);
     CSettingTypeApplication::Save(0,Value);
 }
 
 void CSettingTypeApplicationIndex::Save ( int Index, const char * Value )
 {
-    m_KeyNameIdex.Format("%s %d",m_KeyName.c_str(),Index);
+    m_KeyNameIdex = stdstr_f("%s %d",m_KeyName.c_str(),Index);
     CSettingTypeApplication::Save(0,Value);
 }
 
 void CSettingTypeApplicationIndex::Delete ( int Index )
 {
-    m_KeyNameIdex.Format("%s %d",m_KeyName.c_str(),Index);
+    m_KeyNameIdex = stdstr_f("%s %d",m_KeyName.c_str(),Index);
     CSettingTypeApplication::Save(0,(const char *)NULL);
 }

@@ -36,69 +36,68 @@ public:
     bool Initialize(const char * BaseDirectory, const char * AppName);
 
     //return the values
-    bool   LoadBool(SettingID Type);
-    bool   LoadBool(SettingID Type, bool & Value);
-    bool   LoadBoolIndex(SettingID Type, int32_t index);
-    bool   LoadBoolIndex(SettingID Type, int32_t index, bool & Value);
+    bool LoadBool(SettingID Type);
+    bool LoadBool(SettingID Type, bool & Value);
+    bool LoadBoolIndex(SettingID Type, uint32_t index);
+    bool LoadBoolIndex(SettingID Type, uint32_t index, bool & Value);
     uint32_t LoadDword(SettingID Type);
-    bool   LoadDword(SettingID Type, uint32_t & Value);
-    uint32_t LoadDwordIndex(SettingID Type, int32_t index);
-    bool   LoadDwordIndex(SettingID Type, int32_t index, uint32_t & Value);
-    stdstr LoadStringVal(SettingID Type);
-    bool   LoadStringVal(SettingID Type, stdstr & Value);
-    bool   LoadStringVal(SettingID Type, char * Buffer, int32_t BufferSize);
-    stdstr LoadStringIndex(SettingID Type, int32_t index);
-    bool   LoadStringIndex(SettingID Type, int32_t index, stdstr & Value);
-    bool   LoadStringIndex(SettingID Type, int32_t index, char * Buffer, int32_t BufferSize);
+    bool LoadDword(SettingID Type, uint32_t & Value);
+    uint32_t LoadDwordIndex(SettingID Type, uint32_t index);
+    bool LoadDwordIndex(SettingID Type, uint32_t index, uint32_t & Value);
+    std::string LoadStringVal(SettingID Type);
+    bool LoadStringVal(SettingID Type, std::string & Value);
+    bool LoadStringVal(SettingID Type, char * Buffer, uint32_t BufferSize);
+    std::string LoadStringIndex(SettingID Type, uint32_t index);
+    bool LoadStringIndex(SettingID Type, uint32_t index, std::string & Value);
+    bool LoadStringIndex(SettingID Type, uint32_t index, char * Buffer, uint32_t BufferSize);
 
     //Load the default value for the setting
-    bool   LoadDefaultBool(SettingID Type);
-    void   LoadDefaultBool(SettingID Type, bool & Value);
-    bool   LoadDefaultBoolIndex(SettingID Type, int32_t index);
-    void   LoadDefaultBoolIndex(SettingID Type, int32_t index, bool & Value);
+    bool LoadDefaultBool(SettingID Type);
+    void LoadDefaultBool(SettingID Type, bool & Value);
+    bool LoadDefaultBoolIndex(SettingID Type, uint32_t index);
+    void LoadDefaultBoolIndex(SettingID Type, uint32_t index, bool & Value);
     uint32_t LoadDefaultDword(SettingID Type);
-    void   LoadDefaultDword(SettingID Type, uint32_t & Value);
-    uint32_t LoadDefaultDwordIndex(SettingID Type, int32_t index);
-    void   LoadDefaultDwordIndex(SettingID Type, int32_t index, uint32_t & Value);
-    stdstr LoadDefaultString(SettingID Type);
-    void   LoadDefaultString(SettingID Type, stdstr & Value);
-    void   LoadDefaultString(SettingID Type, char * Buffer, int32_t BufferSize);
-    stdstr LoadDefaultStringIndex(SettingID Type, int32_t index);
-    void   LoadDefaultStringIndex(SettingID Type, int32_t index, stdstr & Value);
-    void   LoadDefaultStringIndex(SettingID Type, int32_t index, char * Buffer, int32_t BufferSize);
+    void LoadDefaultDword(SettingID Type, uint32_t & Value);
+    uint32_t LoadDefaultDwordIndex(SettingID Type, uint32_t index);
+    void LoadDefaultDwordIndex(SettingID Type, uint32_t index, uint32_t & Value);
+    std::string LoadDefaultString(SettingID Type);
+    void LoadDefaultString(SettingID Type, std::string & Value);
+    void LoadDefaultString(SettingID Type, char * Buffer, uint32_t BufferSize);
+    std::string LoadDefaultStringIndex(SettingID Type, uint32_t index);
+    void LoadDefaultStringIndex(SettingID Type, uint32_t index, std::string & Value);
+    void LoadDefaultStringIndex(SettingID Type, uint32_t index, char * Buffer, uint32_t BufferSize);
 
     //Update the settings
-    void   SaveBool(SettingID Type, bool Value);
-    void   SaveBoolIndex(SettingID Type, int32_t index, bool Value);
-    void   SaveDword(SettingID Type, uint32_t Value);
-    void   SaveDwordIndex(SettingID Type, int32_t index, uint32_t Value);
-    void   SaveString(SettingID Type, const stdstr & Value);
-    void   SaveStringIndex(SettingID Type, int32_t index, const stdstr & Value);
-    void   SaveString(SettingID Type, const char * Buffer);
-    void   SaveStringIndex(SettingID Type, int32_t index, const char * Buffer);
+    void SaveBool(SettingID Type, bool Value);
+    void SaveBoolIndex(SettingID Type, uint32_t index, bool Value);
+    void SaveDword(SettingID Type, uint32_t Value);
+    void SaveDwordIndex(SettingID Type, uint32_t index, uint32_t Value);
+    void SaveString(SettingID Type, const std::string & Value);
+    void SaveStringIndex(SettingID Type, uint32_t index, const std::string & Value);
+    void SaveString(SettingID Type, const char * Buffer);
+    void SaveStringIndex(SettingID Type, uint32_t index, const char * Buffer);
 
     // Delete a setting
     void   DeleteSetting(SettingID Type);
-    void   DeleteSettingIndex(SettingID Type, int32_t index);
+    void   DeleteSettingIndex(SettingID Type, uint32_t index);
 
     //Register Notification of change
     void RegisterChangeCB(SettingID Type, void * Data, SettingChangedFunc Func);
     void UnregisterChangeCB(SettingID Type, void * Data, SettingChangedFunc Func);
 
     // information about setting
-    SettingType   GetSettingType(SettingID Type);
-    bool          IndexBasedSetting(SettingID Type);
-    void          SettingTypeChanged(SettingType Type);
-    bool          IsSettingSet(SettingID Type);
+    SettingType GetSettingType(SettingID Type);
+    bool IndexBasedSetting(SettingID Type);
+    void SettingTypeChanged(SettingType Type);
+    bool IsSettingSet(SettingID Type);
 
     // static functions for plugins
     static uint32_t  GetSetting(CSettings * _this, SettingID Type);
-    static const char * GetSettingSz(CSettings * _this, SettingID Type, char * Buffer, int32_t BufferSize);
+    static const char * GetSettingSz(CSettings * _this, SettingID Type, char * Buffer, uint32_t BufferSize);
     static void SetSetting(CSettings * _this, SettingID ID, uint32_t Value);
     static void SetSettingSz(CSettings * _this, SettingID ID, const char * Value);
     static void RegisterSetting(CSettings * _this, SettingID ID, SettingID DefaultID, SettingDataType DataType,
-        SettingType Type, const char * Category, const char * DefaultStr,
-        uint32_t Value);
+        SettingType Type, const char * Category, const char * DefaultStr, uint32_t Value);
     static uint32_t FindSetting(CSettings * _this, const char * Name);
     static void FlushSettings(CSettings * _this);
     static void sRegisterChangeCB(CSettings * _this, SettingID Type, void * Data, SettingChangedFunc Func);
@@ -114,8 +113,8 @@ private:
 
     struct SETTING_CHANGED_CB
     {
-        void               * Data;
-        SettingChangedFunc   Func;
+        void * Data;
+        SettingChangedFunc Func;
         SETTING_CHANGED_CB * Next;
     };
 
@@ -123,9 +122,9 @@ private:
     typedef std::map<SettingID, CSettingType *> SETTING_MAP;
     typedef SETTING_MAP::iterator SETTING_HANDLER;
 
-    SETTING_MAP      m_SettingInfo;
+    SETTING_MAP m_SettingInfo;
     SETTING_CALLBACK m_Callback;
-    int32_t          m_NextAutoSettingId;
+    uint32_t m_NextAutoSettingId;
 };
 
 extern CSettings * g_Settings;
