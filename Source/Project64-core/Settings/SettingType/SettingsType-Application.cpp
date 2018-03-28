@@ -170,14 +170,7 @@ bool CSettingTypeApplication::Load(uint32_t /*Index*/, uint32_t & Value) const
     bool bRes = m_SettingsIniFile->GetNumber(SectionName(), m_KeyNameIdex.c_str(), Value, Value);
     if (!bRes && m_DefaultSetting != Default_None)
     {
-        if (m_DefaultSetting == Default_Constant)
-        {
-            Value = m_DefaultValue;
-        }
-        else
-        {
-            g_Settings->LoadDword(m_DefaultSetting, Value);
-        }
+        Value = m_DefaultSetting == Default_Constant ? m_DefaultValue: g_Settings->LoadDword(m_DefaultSetting);
     }
     return bRes;
 }
@@ -217,14 +210,7 @@ void CSettingTypeApplication::LoadDefault(uint32_t /*Index*/, uint32_t & Value) 
 {
     if (m_DefaultSetting != Default_None)
     {
-        if (m_DefaultSetting == Default_Constant)
-        {
-            Value = m_DefaultValue;
-        }
-        else
-        {
-            g_Settings->LoadDword(m_DefaultSetting, Value);
-        }
+        Value = m_DefaultSetting == Default_Constant ? m_DefaultValue : g_Settings->LoadDword(m_DefaultSetting);
     }
 }
 
@@ -232,14 +218,7 @@ void CSettingTypeApplication::LoadDefault(uint32_t /*Index*/, std::string & Valu
 {
     if (m_DefaultSetting != Default_None)
     {
-        if (m_DefaultSetting == Default_Constant)
-        {
-            Value = m_DefaultStr;
-        }
-        else
-        {
-            g_Settings->LoadStringVal(m_DefaultSetting, Value);
-        }
+        Value = m_DefaultSetting == Default_Constant ? m_DefaultStr : g_Settings->LoadStringVal(m_DefaultSetting);
     }
 }
 
