@@ -21,7 +21,7 @@ public:
 
     bool IndexBasedSetting(void) const { return false; }
     SettingType GetSettingType(void) const { return SettingType_BoolVariable; }
-    bool IsSettingSet(void) const { return false; }
+    bool IsSettingSet(void) const { return m_changed; }
 
     const char * GetName(void) const { return m_Name.c_str(); }
 
@@ -50,5 +50,6 @@ private:
     CSettingTypeTempBool& operator=(const CSettingTypeTempBool&); // Disable assignment
 
     bool m_value;
+    bool m_changed;
     std::string m_Name;
 };

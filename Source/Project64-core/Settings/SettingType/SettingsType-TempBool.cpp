@@ -13,6 +13,7 @@
 
 CSettingTypeTempBool::CSettingTypeTempBool(bool initialValue, const char * Name) :
     m_value(initialValue),
+    m_changed(false),
     m_Name(Name ? Name : "")
 {
 }
@@ -58,6 +59,7 @@ void CSettingTypeTempBool::LoadDefault(uint32_t /*Index*/, std::string & /*Value
 void CSettingTypeTempBool::Save(uint32_t /*Index*/, bool Value)
 {
     m_value = Value;
+    m_changed = true;
 }
 
 void CSettingTypeTempBool::Save(uint32_t /*Index*/, uint32_t /*Value*/)
