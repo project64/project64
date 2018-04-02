@@ -17,10 +17,10 @@ LOCAL_C_INCLUDES := ../     \
 LOCAL_SRC_FILES :=                                                     \
     $(SRCDIR)/AppInit.cpp                                              \
     $(SRCDIR)/logging.cpp                                              \
+    $(SRCDIR)/Settings.cpp                                             \
     $(SRCDIR)/MemoryExceptionFilter.cpp                                \
     $(SRCDIR)/Multilanguage/LanguageClass.cpp                          \
     $(SRCDIR)/Settings/LoggingSettings.cpp                             \
-    $(SRCDIR)/Settings/SettingsClass.cpp                               \
     $(SRCDIR)/Settings/RecompilerSettings.cpp                          \
     $(SRCDIR)/N64System/Interpreter/InterpreterCPU.cpp                 \
     $(SRCDIR)/N64System/Interpreter/InterpreterOps.cpp                 \

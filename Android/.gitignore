@@ -7,6 +7,8 @@ obj/
 *.d
 *.o
 *.so
+Version.h.in
+
 # Eclipse project files
 .settings/
 .classpath
