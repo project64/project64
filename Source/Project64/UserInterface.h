@@ -14,7 +14,7 @@
 #include "Support.h"
 
 #include <Project64-core/Multilanguage.h>
-#include <Project64-core/Settings/SettingsClass.h>
+#include <Project64-core/Settings.h>
 
 #include "WTLApp.h"
 #include "UserInterface/MenuShortCuts.h"

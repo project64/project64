@@ -174,9 +174,6 @@
     <ClCompile Include="Settings\RecompilerSettings.cpp">
       <Filter>Source Files\Settings</Filter>
     </ClCompile>
-    <ClCompile Include="Settings\SettingsClass.cpp">
-      <Filter>Source Files\Settings</Filter>
-    </ClCompile>
     <ClCompile Include="Plugins\AudioPlugin.cpp">
       <Filter>Source Files\Plugins</Filter>
     </ClCompile>
@@ -339,6 +336,9 @@
     <ClCompile Include="N64System\Recompiler\Arm\ArmRegInfo.cpp">
       <Filter>Source Files\N64 System\Recompiler\Arm</Filter>
     </ClCompile>
+    <ClCompile Include="Settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -412,9 +412,6 @@
     </ClInclude>
     <ClInclude Include="Settings\SettingType\SettingsType-TempString.h">
       <Filter>Header Files\Settings\SettingType</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings\Settings.h">
-      <Filter>Header Files\Settings</Filter>
     </ClInclude>
     <ClInclude Include="Notification.h">
       <Filter>Header Files</Filter>
@@ -596,9 +593,6 @@
     <ClInclude Include="N64System\Interpreter\InterpreterOps.h">
       <Filter>Header Files\N64 System\Interpreter</Filter>
     </ClInclude>
-    <ClInclude Include="Settings\SettingsClass.h">
-      <Filter>Header Files\Settings</Filter>
-    </ClInclude>
     <ClInclude Include="N64System\SpeedLimiterClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -655,6 +649,12 @@
     </ClInclude>
     <ClInclude Include="Debugger.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\SettingsID.h">
+      <Filter>Header Files\Settings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

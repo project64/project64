@@ -18,7 +18,7 @@
 #include <Project64-core/AppInit.h>
 #include <Project64-core/Version.h>
 #include <Project64-core/TraceModulesProject64.h>
-#include <Project64-core/Settings/SettingsClass.h>
+#include <Project64-core/Settings.h>
 #include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/SystemGlobals.h>

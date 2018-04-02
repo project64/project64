@@ -34,7 +34,7 @@ private:
         MESSAGE_HANDLER(WM_ACTIVATE, OnActivate)
         MSG_WM_DESTROY(OnDestroy)
         MSG_WM_VSCROLL(OnVScroll)
-        END_MSG_MAP()
+    END_MSG_MAP()
 
     LRESULT  OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
     LRESULT  OnClicked(WORD wNotifyCode, WORD wID, HWND /*hWndCtl*/, BOOL& bHandled);

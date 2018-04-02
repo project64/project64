@@ -9,7 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "jniBridgeSettings.h"
-#include <Project64-core/Settings/SettingsClass.h>
+#include <Project64-core/Settings.h>
 
 int  CJniBridegSettings::m_RefCount = 0; 
 bool CJniBridegSettings::m_bCPURunning; 

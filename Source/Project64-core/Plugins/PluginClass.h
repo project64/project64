@@ -10,7 +10,7 @@
 ****************************************************************************/
 #pragma once
 #include <list>
-#include <Project64-core/Settings/SettingsClass.h>
+#include <Project64-core/Settings.h>
 #include <Project64-core/Settings/DebugSettings.h>
 
 #ifndef PLUGIN_INFO_STRUCT

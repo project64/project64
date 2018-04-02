@@ -11,7 +11,7 @@
 #include <common/StdString.h>
 #include <Common/Trace.h>
 #include <Project64-core/N64System/SystemGlobals.h>
-#include <Project64-core/Settings/SettingsClass.h>
+#include <Project64-core/Settings.h>
 #include <Project64-core/N64System/N64Class.h>
 #include <Project64-core/N64System/Recompiler/RecompilerCodeLog.h>
 #include "NotificationClass.h"

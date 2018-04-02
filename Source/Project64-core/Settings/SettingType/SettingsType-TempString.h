@@ -47,5 +47,5 @@ private:
     CSettingTypeTempString(const CSettingTypeTempString&);            // Disable copy constructor
     CSettingTypeTempString& operator=(const CSettingTypeTempString&); // Disable assignment
 
-    stdstr m_value;
+    std::string m_value;
 };

@@ -11,6 +11,7 @@
 #pragma once
 
 #include <Project64-core/Settings/SettingType/SettingsType-Base.h>
+#include <Project64-core/Settings/SettingsID.h>
 #include <map>
 
 enum SettingDataType
@@ -29,7 +30,6 @@ class CSettings
 public:
     typedef void(*SettingChangedFunc)(void *);
 
-public:
     CSettings(void);
     ~CSettings(void);
 

@@ -8,7 +8,7 @@
 * GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
 *                                                                           *
 ****************************************************************************/
-#include <Project64-core/Settings/SettingsClass.h>
+#include <Project64-core/Settings.h>
 #include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 #include <Project64-core/Settings/SettingType/SettingsType-ApplicationIndex.h>
 #include <Project64-core/Settings/SettingType/SettingsType-RelativePath.h>
