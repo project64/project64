@@ -321,6 +321,13 @@ void CInterpreterCPU::ExecuteCPU()
             if (CDebugSettings::HaveDebugger())
             {
                 g_Debugger->CPUStepStarted();
+
+                if (SkipOp())
+                {
+                    g_Settings->SaveBool(Debugger_SkipOp, false);
+                    PROGRAM_COUNTER += 4;
+                    continue;
+                }
             }
 
             /* if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER < 0x80380000)

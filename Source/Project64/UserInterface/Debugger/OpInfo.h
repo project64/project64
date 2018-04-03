@@ -20,6 +20,15 @@ public:
 
     OPCODE m_OpCode;
 
+    COpInfo()
+    {
+    }
+
+    inline COpInfo(OPCODE opcode):
+        m_OpCode(opcode)
+    {
+    }
+
     bool IsStaticJump()
     {
         // j, jal
@@ -131,9 +140,14 @@ public:
         return false;
     }
 
-    bool IsLoadStore()
+    inline bool IsLoadStoreCommand()
     {
         return (m_OpCode.op >= R4300i_LDL && m_OpCode.op <= R4300i_SD && m_OpCode.op != R4300i_CACHE);
+    }
+
+    inline bool IsLoadCommand()
+    {
+        return (m_OpCode.op <= R4300i_LWU || (m_OpCode.op >= R4300i_LL && m_OpCode.op <= R4300i_LD));
     }
 
     bool IsStackShift()
@@ -322,5 +336,54 @@ public:
             return true;
         }
         return false;
+    }
+
+    inline uint32_t GetLoadStoreAddress()
+    {
+        return g_Reg->m_GPR[m_OpCode.base].UW[0] + (int16_t)m_OpCode.offset;
+    }
+
+    inline uint32_t GetStoreValueUnsigned()
+    {
+        return g_Reg->m_GPR[m_OpCode.rt].UW[0];
+    }
+
+    inline int NumBytesToLoad()
+    {
+        switch (m_OpCode.op)
+        {
+        case R4300i_LB:
+        case R4300i_LBU:
+            return 1;
+        case R4300i_LH:
+        case R4300i_LHU:
+            return 2;
+        case R4300i_LD:
+        case R4300i_LDL:
+        case R4300i_LDR:
+        case R4300i_LDC1:
+            return 8;
+        default:
+            return 4;
+        }
+    }
+
+    inline int NumBytesToStore()
+    {
+        switch (m_OpCode.op)
+        {
+        case R4300i_SB:
+            return 1;
+        case R4300i_SH:
+            return 2;
+        case R4300i_SD:
+        case R4300i_SDL:
+        case R4300i_SDR:
+        case R4300i_SDC1:
+        case R4300i_SDC2:
+            return 8;
+        default:
+            return 4;
+        }
     }
 };

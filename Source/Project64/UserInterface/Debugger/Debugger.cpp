@@ -394,14 +394,13 @@ void CDebuggerUI::CPUStepStarted()
 
     // Memory breakpoints
 
-    OPCODE Opcode = R4300iOp::m_Opcode;
-    uint32_t op = Opcode.op;
+    COpInfo opInfo(R4300iOp::m_Opcode);
 
-    if (op >= R4300i_LDL && op <= R4300i_SD && op != R4300i_CACHE) // Read and write instructions
+    if (opInfo.IsLoadStoreCommand()) // Read and write instructions
     {
-        uint32_t memoryAddress = g_Reg->m_GPR[Opcode.base].UW[0] + (int16_t)Opcode.offset;
+        uint32_t memoryAddress = opInfo.GetLoadStoreAddress();
 
-        if ((op <= R4300i_LWU || (op >= R4300i_LL && op <= R4300i_LD))) // Read instructions
+        if (opInfo.IsLoadCommand()) // Read instructions
         {
             m_ScriptSystem->HookCPURead()->InvokeByParamInRange(memoryAddress);
 
@@ -419,20 +418,19 @@ void CDebuggerUI::CPUStepStarted()
             {
                 uint32_t dmaRomAddr = g_Reg->PI_CART_ADDR_REG & 0x0FFFFFFF;
                 uint32_t dmaRamAddr = g_Reg->PI_DRAM_ADDR_REG | 0x80000000;
-                uint32_t dmaLen = g_Reg->m_GPR[Opcode.rt].UW[0] + 1;
-                uint32_t endAddr = dmaRamAddr + dmaLen;
-
+                uint32_t dmaLen = opInfo.GetStoreValueUnsigned() + 1;
+                
                 m_DMALog->AddEntry(dmaRomAddr, dmaRamAddr, dmaLen);
 
-                CBreakpoints::breakpoints_t breakpoints = m_Breakpoints->WriteMem();
-                for (CBreakpoints::breakpoints_t::iterator breakpoint = breakpoints.begin(); breakpoint != breakpoints.end(); breakpoint++)
+                if (m_Breakpoints->WriteBPExistsInChunk(dmaRamAddr, dmaLen))
                 {
-                    uint32_t wbpAddr = breakpoint->first;
-                    if (wbpAddr >= dmaRamAddr && wbpAddr < endAddr)
-                    {
-                        goto breakpoint_hit;
-                    }
+                    goto breakpoint_hit;
                 }
+            }
+
+            if (m_Breakpoints->MemLockExists(memoryAddress, opInfo.NumBytesToStore()))
+            {
+                g_Settings->SaveBool(Debugger_SkipOp, true);
             }
         }
     }
