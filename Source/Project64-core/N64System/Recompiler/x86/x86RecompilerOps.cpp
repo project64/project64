@@ -9067,6 +9067,7 @@ void CX86RecompilerOps::FoundMemoryBreakpoint()
     ClearCachedInstructionInfo();
     MoveConstToVariable((m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT) ? 1 : 0, &memory_write_in_delayslot, "memory_write_in_delayslot");
     Call_Direct((void *)x86MemoryBreakpoint, "x86MemoryBreakpoint");
+    MoveConstToVariable(0, &memory_breakpoint_found, "memory_breakpoint_found");
     ExitCodeBlock();
     m_NextInstruction = END_BLOCK;
 }
