@@ -33,6 +33,7 @@ const char * SystemEventName(SystemEvent event)
     case SysEvent_PauseCPU_SearchMemory: return "SysEvent_PauseCPU_SearchMemory";
     case SysEvent_PauseCPU_Settings: return "SysEvent_PauseCPU_Settings";
     case SysEvent_PauseCPU_Cheats: return "SysEvent_PauseCPU_Cheats";
+    case SysEvent_PauseCPU_ChangingBPs: return "SysEvent_PauseCPU_ChangingBPs";
     case SysEvent_ResumeCPU_FromMenu: return "SysEvent_ResumeCPU_FromMenu";
     case SysEvent_ResumeCPU_AppGainedActive: return "SysEvent_ResumeCPU_AppGainedActive";
     case SysEvent_ResumeCPU_AppGainedFocus: return "SysEvent_ResumeCPU_AppGainedFocus";
@@ -42,6 +43,7 @@ const char * SystemEventName(SystemEvent event)
     case SysEvent_ResumeCPU_SearchMemory: return "SysEvent_ResumeCPU_SearchMemory";
     case SysEvent_ResumeCPU_Settings: return "SysEvent_ResumeCPU_Settings";
     case SysEvent_ResumeCPU_Cheats: return "SysEvent_ResumeCPU_Cheats";
+    case SysEvent_ResumeCPU_ChangingBPs: return "SysEvent_ResumeCPU_ChangingBPs";
     case SysEvent_ChangingFullScreen: return "SysEvent_ChangingFullScreen";
     case SysEvent_ChangePlugins: return "SysEvent_ChangePlugins";
     case SysEvent_SaveMachineState: return "SysEvent_SaveMachineState";
@@ -254,6 +256,14 @@ void CSystemEvents::ExecuteEvents()
             {
                 g_Settings->SaveBool(GameRunning_CPU_Paused, true);
                 g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_Cheats);
+                bPause = true;
+            }
+            break;
+        case SysEvent_PauseCPU_ChangingBPs:
+            if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
+            {
+                g_Settings->SaveBool(GameRunning_CPU_Paused, true);
+                g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_ChangingBPs);
                 bPause = true;
             }
             break;

@@ -25,12 +25,14 @@ bool CBreakpoints::RBPAdd(uint32_t address)
 {
     if (!ReadBPExists8(address))
     {
+        PreUpdateBP();
         m_ReadMem.insert(breakpoints_t::value_type(address, false));
         UpdateAlignedReadBP();
         if (!HaveReadBP())
         {
             g_Settings->SaveBool(Debugger_ReadBPExists, true);
         }
+        PostUpdateBP();
         return true;
     }
     return false;
@@ -40,12 +42,14 @@ bool CBreakpoints::WBPAdd(uint32_t address)
 {
     if (!WriteBPExists8(address))
     {
+        PreUpdateBP();
         m_WriteMem.insert(breakpoints_t::value_type(address, false));
         UpdateAlignedWriteBP();
         if (!HaveWriteBP())
         {
             g_Settings->SaveBool(Debugger_WriteBPExists, true);
         }
+        PostUpdateBP();
         return true;
     }
     return false;
@@ -53,6 +57,7 @@ bool CBreakpoints::WBPAdd(uint32_t address)
 
 bool CBreakpoints::AddExecution(uint32_t address, bool bTemporary)
 {
+    PreUpdateBP();
     breakpoints_t::_Pairib res = m_Execution.insert(breakpoint_t::value_type(address, bTemporary));
     if (!res.second && !bTemporary)
     {
@@ -62,12 +67,13 @@ bool CBreakpoints::AddExecution(uint32_t address, bool bTemporary)
     {
         g_Settings->SaveBool(Debugger_HaveExecutionBP, true);
     }
-    g_BaseSystem->ExternalEvent(SysEvent_ResetRecompilerCode);
+    PostUpdateBP();
     return !res.second;
 }
 
 void CBreakpoints::RBPRemove(uint32_t address)
 {
+    PreUpdateBP();
     breakpoints_t::iterator itr = m_ReadMem.find(address);
     if (itr != m_ReadMem.end())
     {
@@ -78,10 +84,12 @@ void CBreakpoints::RBPRemove(uint32_t address)
             g_Settings->SaveBool(Debugger_ReadBPExists, false);
         }
     }
+    PostUpdateBP();
 }
 
 void CBreakpoints::WBPRemove(uint32_t address)
 {
+    PreUpdateBP();
     breakpoints_t::iterator itr = m_WriteMem.find(address);
     if (itr != m_WriteMem.end())
     {
@@ -92,10 +100,12 @@ void CBreakpoints::WBPRemove(uint32_t address)
             g_Settings->SaveBool(Debugger_WriteBPExists, false);
         }
     }
+    PostUpdateBP();
 }
 
 void CBreakpoints::RemoveExecution(uint32_t address)
 {
+    PreUpdateBP();
     breakpoints_t::iterator itr = m_Execution.find(address);
     if (itr != m_Execution.end())
     {
@@ -105,6 +115,7 @@ void CBreakpoints::RemoveExecution(uint32_t address)
             g_Settings->SaveBool(Debugger_HaveExecutionBP, false);
         }
     }
+    PostUpdateBP();
 }
 
 void CBreakpoints::RBPToggle(uint32_t address)
@@ -133,22 +144,28 @@ void CBreakpoints::EBPToggle(uint32_t address, bool bTemporary)
 
 void CBreakpoints::RBPClear()
 {
+    PreUpdateBP();
     m_ReadMem.clear();
     UpdateAlignedReadBP();
     g_Settings->SaveBool(Debugger_ReadBPExists, false);
+    PostUpdateBP();
 }
 
 void CBreakpoints::WBPClear()
 {
+    PreUpdateBP();
     m_WriteMem.clear();
     UpdateAlignedWriteBP();
     g_Settings->SaveBool(Debugger_WriteBPExists, false);
+    PostUpdateBP();
 }
 
 void CBreakpoints::EBPClear()
 {
+    PreUpdateBP();
     m_Execution.clear();
     g_Settings->SaveBool(Debugger_HaveExecutionBP, false);
+    PostUpdateBP();
 }
 
 void CBreakpoints::BPClear()
@@ -329,4 +346,21 @@ void CBreakpoints::ClearMemLocks()
 size_t CBreakpoints::NumMemLocks()
 {
     return m_MemLocks.size();
+}
+
+void CBreakpoints::PreUpdateBP()
+{
+    if (g_BaseSystem)
+    {
+        g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_ChangingBPs);
+    }
+}
+
+void CBreakpoints::PostUpdateBP()
+{
+    if (g_BaseSystem)
+    {
+        g_BaseSystem->ExternalEvent(SysEvent_ResetRecompilerCode);
+        g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_ChangingBPs);
+    }
 }

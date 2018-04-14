@@ -68,6 +68,8 @@ public:
     size_t NumMemLocks(void);
 
 private:
+    void PreUpdateBP();
+    void PostUpdateBP();
     void UpdateAlignedWriteBP(void);
     void UpdateAlignedReadBP(void);
 
