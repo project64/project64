@@ -25,6 +25,7 @@
 
 enum PauseType
 {
+    PauseType_None,
     PauseType_FromMenu,
     PauseType_AppLostActive,
     PauseType_AppLostFocus,

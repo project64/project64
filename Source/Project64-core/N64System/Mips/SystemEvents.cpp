@@ -190,15 +190,13 @@ void CSystemEvents::ExecuteEvents()
         case SysEvent_PauseCPU_FromMenu:
             if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
             {
-                g_Settings->SaveBool(GameRunning_CPU_Paused, true);
+                g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_FromMenu);
                 bPause = true;
             }
-            g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_FromMenu);
             break;
         case SysEvent_PauseCPU_AppLostFocus:
             if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
             {
-                g_Settings->SaveBool(GameRunning_CPU_Paused, true);
                 g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_AppLostFocus);
                 bPause = true;
             }
@@ -206,7 +204,6 @@ void CSystemEvents::ExecuteEvents()
         case SysEvent_PauseCPU_AppLostActive:
             if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
             {
-                g_Settings->SaveBool(GameRunning_CPU_Paused, true);
                 g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_AppLostActive);
                 bPause = true;
             }
@@ -214,7 +211,6 @@ void CSystemEvents::ExecuteEvents()
         case SysEvent_PauseCPU_SaveGame:
             if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
             {
-                g_Settings->SaveBool(GameRunning_CPU_Paused, true);
                 g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_SaveGame);
                 bPause = true;
             }
@@ -222,7 +218,6 @@ void CSystemEvents::ExecuteEvents()
         case SysEvent_PauseCPU_LoadGame:
             if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
             {
-                g_Settings->SaveBool(GameRunning_CPU_Paused, true);
                 g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_LoadGame);
                 bPause = true;
             }
@@ -230,7 +225,6 @@ void CSystemEvents::ExecuteEvents()
         case SysEvent_PauseCPU_DumpMemory:
             if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
             {
-                g_Settings->SaveBool(GameRunning_CPU_Paused, true);
                 g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_DumpMemory);
                 bPause = true;
             }
@@ -238,7 +232,6 @@ void CSystemEvents::ExecuteEvents()
         case SysEvent_PauseCPU_SearchMemory:
             if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
             {
-                g_Settings->SaveBool(GameRunning_CPU_Paused, true);
                 g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_SearchMemory);
                 bPause = true;
             }
@@ -246,7 +239,6 @@ void CSystemEvents::ExecuteEvents()
         case SysEvent_PauseCPU_Settings:
             if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
             {
-                g_Settings->SaveBool(GameRunning_CPU_Paused, true);
                 g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_Settings);
                 bPause = true;
             }
@@ -254,7 +246,6 @@ void CSystemEvents::ExecuteEvents()
         case SysEvent_PauseCPU_Cheats:
             if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
             {
-                g_Settings->SaveBool(GameRunning_CPU_Paused, true);
                 g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_Cheats);
                 bPause = true;
             }
@@ -262,7 +253,6 @@ void CSystemEvents::ExecuteEvents()
         case SysEvent_PauseCPU_ChangingBPs:
             if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
             {
-                g_Settings->SaveBool(GameRunning_CPU_Paused, true);
                 g_Settings->SaveDword(GameRunning_CPU_PausedType, PauseType_ChangingBPs);
                 bPause = true;
             }

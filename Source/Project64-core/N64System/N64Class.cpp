@@ -213,10 +213,24 @@ void CN64System::ExternalEvent(SystemEvent action)
     case SysEvent_PauseCPU_SearchMemory:
     case SysEvent_PauseCPU_Settings:
     case SysEvent_PauseCPU_Cheats:
+        if (!g_Settings->LoadBool(GameRunning_CPU_Paused))
+        {
+            QueueEvent(action);
+        }
+        break;
     case SysEvent_PauseCPU_ChangingBPs:
         if (!WaitingForStep() && !g_Settings->LoadBool(GameRunning_CPU_Paused))
         {
             QueueEvent(action);
+            for (int i = 0; i < 100; i++)
+            {
+                bool paused = g_Settings->LoadBool(GameRunning_CPU_Paused);
+                pjutil::Sleep(1);
+                if (paused)
+                {
+                    break;
+                }
+            }
         }
         break;
     case SysEvent_ResumeCPU_FromMenu:
@@ -610,17 +624,17 @@ void CN64System::Pause()
     {
         return;
     }
-    uint32_t PauseType = g_Settings->LoadDword(GameRunning_CPU_PausedType);
+    PauseType pause_type = (PauseType)g_Settings->LoadDword(GameRunning_CPU_PausedType);
     m_hPauseEvent.Reset();
     g_Settings->SaveBool(GameRunning_CPU_Paused, true);
-    if (PauseType == PauseType_FromMenu)
+    if (pause_type == PauseType_FromMenu)
     {
         g_Notify->DisplayMessage(5, MSG_CPU_PAUSED);
     }
     m_hPauseEvent.IsTriggered(SyncEvent::INFINITE_TIMEOUT);
     m_hPauseEvent.Reset();
     g_Settings->SaveBool(GameRunning_CPU_Paused, (uint32_t)false);
-    if (PauseType == PauseType_FromMenu)
+    if (pause_type == PauseType_FromMenu)
     {
         g_Notify->DisplayMessage(5, MSG_CPU_RESUMED);
     }
