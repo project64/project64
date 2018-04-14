@@ -403,11 +403,6 @@ void CDebuggerUI::CPUStepStarted()
         if (opInfo.IsLoadCommand()) // Read instructions
         {
             m_ScriptSystem->HookCPURead()->InvokeByParamInRange(memoryAddress);
-
-            if (m_Breakpoints->ReadBPExists8(memoryAddress))
-            {
-                goto breakpoint_hit;
-            }
         }
         else // Write instructions
         {
