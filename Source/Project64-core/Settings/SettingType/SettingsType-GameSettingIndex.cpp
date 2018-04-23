@@ -38,66 +38,66 @@ CSettingTypeGameIndex::~CSettingTypeGameIndex()
 {
 }
 
-bool CSettingTypeGameIndex::Load ( int Index, bool & Value ) const
+bool CSettingTypeGameIndex::Load (uint32_t Index, bool & Value ) const
 {
     m_KeyNameIdex = stdstr_f("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
     return CSettingTypeGame::Load(Index,Value);
 }
 
-bool CSettingTypeGameIndex::Load ( int /*Index*/, uint32_t & /*Value*/ ) const
+bool CSettingTypeGameIndex::Load (uint32_t /*Index*/, uint32_t & /*Value*/ ) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
-bool CSettingTypeGameIndex::Load ( int Index,  stdstr & Value ) const
+bool CSettingTypeGameIndex::Load (uint32_t Index, std::string & Value ) const
 {
     m_KeyNameIdex = stdstr_f("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
     return CSettingTypeGame::Load(0,Value);
 }
 
 //return the default values
-void CSettingTypeGameIndex::LoadDefault ( int Index, bool & Value   ) const
+void CSettingTypeGameIndex::LoadDefault (uint32_t Index, bool & Value ) const
 {
     m_KeyNameIdex = stdstr_f("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
     CSettingTypeGame::LoadDefault(0,Value);
 }
 
-void CSettingTypeGameIndex::LoadDefault ( int /*Index*/, uint32_t & /*Value*/  ) const
+void CSettingTypeGameIndex::LoadDefault (uint32_t /*Index*/, uint32_t & /*Value*/  ) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeGameIndex::LoadDefault ( int /*Index*/, stdstr & /*Value*/ ) const
+void CSettingTypeGameIndex::LoadDefault (uint32_t /*Index*/, std::string & /*Value*/ ) const
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 //Update the settings
-void CSettingTypeGameIndex::Save ( int Index, bool Value )
+void CSettingTypeGameIndex::Save (uint32_t Index, bool Value )
 {
     m_KeyNameIdex = stdstr_f("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
     CSettingTypeGame::Save(Index,Value);
 }
 
-void CSettingTypeGameIndex::Save(int Index, uint32_t Value)
+void CSettingTypeGameIndex::Save(uint32_t Index, uint32_t Value)
 {
     m_KeyNameIdex = stdstr_f("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
     CSettingTypeGame::Save(0,Value);
 }
 
-void CSettingTypeGameIndex::Save ( int /*Index*/, const stdstr & /*Value*/ )
+void CSettingTypeGameIndex::Save (uint32_t /*Index*/, const std::string & /*Value*/ )
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CSettingTypeGameIndex::Save ( int Index, const char * Value )
+void CSettingTypeGameIndex::Save (uint32_t Index, const char * Value )
 {
     m_KeyNameIdex = stdstr_f("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
     CSettingTypeGame::Save(0,Value);
 }
 
-void CSettingTypeGameIndex::Delete ( int Index )
+void CSettingTypeGameIndex::Delete (uint32_t Index )
 {
     m_KeyNameIdex = stdstr_f("%s%d%s",m_PreIndex.c_str(),Index,m_PostIndex.c_str());
     CSettingTypeGame::Delete(0);

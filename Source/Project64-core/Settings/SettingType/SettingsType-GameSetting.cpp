@@ -12,8 +12,8 @@
 #include "SettingsType-Application.h"
 #include "SettingsType-GameSetting.h"
 
-bool     CSettingTypeGame::m_RdbEditor = false;
-bool     CSettingTypeGame::m_EraseDefaults = true;
+bool CSettingTypeGame::m_RdbEditor = false;
+bool CSettingTypeGame::m_EraseDefaults = true;
 stdstr * CSettingTypeGame::m_SectionIdent = NULL;
 
 CSettingTypeGame::CSettingTypeGame(const char * Name, const char * DefaultValue) :
@@ -76,7 +76,7 @@ void CSettingTypeGame::UpdateSettings(void * /*Data */)
     }
 }
 
-bool CSettingTypeGame::Load(int Index, bool & Value) const
+bool CSettingTypeGame::Load(uint32_t Index, bool & Value) const
 {
     if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
     {
@@ -92,7 +92,7 @@ bool CSettingTypeGame::Load(int Index, bool & Value) const
     return CSettingTypeApplication::Load(Index, Value);
 }
 
-bool CSettingTypeGame::Load(int Index, uint32_t & Value) const
+bool CSettingTypeGame::Load(uint32_t Index, uint32_t & Value) const
 {
     if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
     {
@@ -108,7 +108,7 @@ bool CSettingTypeGame::Load(int Index, uint32_t & Value) const
     return CSettingTypeApplication::Load(Index, Value);
 }
 
-bool CSettingTypeGame::Load(int Index, stdstr & Value) const
+bool CSettingTypeGame::Load(uint32_t Index, std::string & Value) const
 {
     if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
     {
@@ -125,7 +125,7 @@ bool CSettingTypeGame::Load(int Index, stdstr & Value) const
 }
 
 //return the default values
-void CSettingTypeGame::LoadDefault(int Index, bool & Value) const
+void CSettingTypeGame::LoadDefault(uint32_t Index, bool & Value) const
 {
     if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
     {
@@ -144,7 +144,7 @@ void CSettingTypeGame::LoadDefault(int Index, bool & Value) const
     }
 }
 
-void CSettingTypeGame::LoadDefault(int Index, uint32_t & Value) const
+void CSettingTypeGame::LoadDefault(uint32_t Index, uint32_t & Value) const
 {
     if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
     {
@@ -163,7 +163,7 @@ void CSettingTypeGame::LoadDefault(int Index, uint32_t & Value) const
     }
 }
 
-void CSettingTypeGame::LoadDefault(int Index, stdstr & Value) const
+void CSettingTypeGame::LoadDefault(uint32_t Index, std::string & Value) const
 {
     if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
     {
@@ -183,7 +183,7 @@ void CSettingTypeGame::LoadDefault(int Index, stdstr & Value) const
 }
 
 //Update the settings
-void CSettingTypeGame::Save(int Index, bool Value)
+void CSettingTypeGame::Save(uint32_t Index, bool Value)
 {
     if (m_EraseDefaults)
     {
@@ -212,7 +212,7 @@ void CSettingTypeGame::Save(int Index, bool Value)
     }
 }
 
-void CSettingTypeGame::Save(int Index, uint32_t Value)
+void CSettingTypeGame::Save(uint32_t Index, uint32_t Value)
 {
     if (m_EraseDefaults)
     {
@@ -241,12 +241,12 @@ void CSettingTypeGame::Save(int Index, uint32_t Value)
     }
 }
 
-void CSettingTypeGame::Save(int Index, const stdstr & Value)
+void CSettingTypeGame::Save(uint32_t Index, const std::string & Value)
 {
     Save(Index, Value.c_str());
 }
 
-void CSettingTypeGame::Save(int Index, const char * Value)
+void CSettingTypeGame::Save(uint32_t Index, const char * Value)
 {
     if (m_EraseDefaults && m_DefaultSetting != Rdb_GoodName)
     {
@@ -275,7 +275,7 @@ void CSettingTypeGame::Save(int Index, const char * Value)
     }
 }
 
-void CSettingTypeGame::Delete(int Index)
+void CSettingTypeGame::Delete(uint32_t Index)
 {
     if (m_RdbEditor && g_Settings->GetSettingType(m_DefaultSetting) == SettingType_RomDatabase)
     {
