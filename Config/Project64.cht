@@ -1611,7 +1611,6 @@ Cheat50="Beta\Play Beta Quest Worlds",D01C84B5 0000,E8651035 59??
 Cheat50_O=$5A World 01,$59 World 02,$5C World 03,$5B World 04,$56 World 05,$57 World 06,$62 World 07,$68 World 08
 Cheat50_N=Put on the code on load up,After the Nintendo logo you will be in Beta Mode,There are no icons, energy bar etc. on the screen.When you press a C-Buttton you can use an object.Here the objects for the C-Buttons:C-left: arrows, C-down: bombs, C-right: Ocarina of Time. There is also no Navi and start menu.When you go to some places the game will freeze or you can't move.
 Cheat51="Warp Song Location\Minuet of Forest & Serenade of Water",E86510BB 59??
-Cheat51="Warp Song Location\Minuet of Forest & Serenade of Water",E86510BB 59??
 Cheat51_O=$5A Sacred Forest Meadow,$56 Lake Hylia,$65 Inside Jabu Jabu's Belly,$72 Dodongo's Cavern,$C2 Inside The Deku Tree
 Cheat51_N=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
 Cheat52="Warp Song Location\Prelude of Light & Nocturne of Shadow",E86510BB 59??
@@ -1662,7 +1661,6 @@ Cheat4_N=This cheat causes the Goron Temple door not to open, but if you go to t
 Cheat10_N=This changes what you are wearing,once you have enabled the code press Start & then start again.
 Cheat45_N=This modifies the equipment you are carrying.If you Use Black Gauntlets,They are as strong as the Golden Gauntlets. This code also gives you the Silver Scale and the Golden Scale and unlimited rupees.
 Cheat46_N=This modifies the equipment you are carrying.
-Cheat47_N=Use this cheat to levitate. You have to deactivate it to come back down. Useful for passing obstacles that usually can be passed only at a later point!
 
 //----
 
@@ -1728,7 +1726,6 @@ Cheat50="Beta\Play Beta Quest Worlds",D01C8675 0000,E8650EF5 59??
 Cheat50_O=$5A World 01,$59 World 02,$5C World 03,$5B World 04,$56 World 05,$57 World 06,$62 World 07,$68 World 08
 Cheat50_N=Put on the code on load up,After the Nintendo logo you will be in Beta Mode,There are no icons, energy bar etc. on the screen.When you press a C-Buttton you can use an object.Here the objects for the C-Buttons:C-left: arrows, C-down: bombs, C-right: Ocarina of Time. There is also no Navi and start menu.When you go to some places the game will freeze or you can't move.
 Cheat51="Warp Song Location\Minuet of Forest & Serenade of Water",E8650E7B 59??
-Cheat51="Warp Song Location\Minuet of Forest & Serenade of Water",E8650E7B 59??
 Cheat51_O=$5A Sacred Forest Meadow,$56 Lake Hylia,$65 Inside Jabu Jabu's Belly,$72 Dodongo's Cavern,$C2 Inside The Deku Tree
 Cheat51_N=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
 Cheat52="Warp Song Location\Prelude of Light & Nocturne of Shadow",E8650E7B 59??
@@ -1779,7 +1776,6 @@ Cheat4_N=This cheat causes the Goron Temple door not to open, but if you go to t
 Cheat10_N=This changes what you are wearing,once you have enabled the code press Start & then start again.
 Cheat45_N=This modifies the equipment you are carrying.If you Use Black Gauntlets,They are as strong as the Golden Gauntlets. This code also gives you the Silver Scale and the Golden Scale and unlimited rupees.
 Cheat46_N=This modifies the equipment you are carrying.
-Cheat47_N=Use this cheat to levitate. You have to deactivate it to come back down. Useful for passing obstacles that usually can be passed only at a later point!
 
 //----
 
@@ -1845,7 +1841,6 @@ Cheat50="Beta\Play Beta Quest Worlds",D01C8D75 0000,E86517E5 59??
 Cheat50_O=$5A World 01,$59 World 02,$5C World 03,$5B World 04,$56 World 05,$57 World 06,$62 World 07,$68 World 08
 Cheat50_N=Put on the code on load up,After the Nintendo logo you will be in Beta Mode,There are no icons, energy bar etc. on the screen.When you press a C-Buttton you can use an object.Here the objects for the C-Buttons:C-left: arrows, C-down: bombs, C-right: Ocarina of Time. There is also no Navi and start menu.When you go to some places the game will freeze or you can't move.
 Cheat51="Warp Song Location\Minuet of Forest & Serenade of Water",E865176B 59??
-Cheat51="Warp Song Location\Minuet of Forest & Serenade of Water",E865176B 59??
 Cheat51_O=$5A Sacred Forest Meadow,$56 Lake Hylia,$65 Inside Jabu Jabu's Belly,$72 Dodongo's Cavern,$C2 Inside The Deku Tree
 Cheat51_N=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
 Cheat52="Warp Song Location\Prelude of Light & Nocturne of Shadow",E865176B 59??
@@ -1896,7 +1891,6 @@ Cheat4_N=This cheat causes the Goron Temple door not to open, but if you go to t
 Cheat10_N=This changes what you are wearing,once you have enabled the code press Start & then start again.
 Cheat45_N=This modifies the equipment you are carrying.If you Use Black Gauntlets,They are as strong as the Golden Gauntlets. This code also gives you the Silver Scale and the Golden Scale and unlimited rupees.
 Cheat46_N=This modifies the equipment you are carrying.
-Cheat47_N=Use this cheat to levitate. You have to deactivate it to come back down. Useful for passing obstacles that usually can be passed only at a later point!
 
 //--------------- (JU) Region Cheat Codes ---------------
 
@@ -4704,11 +4698,6 @@ Cheat16="Extra Bikes Unlocked",E86CD365 5959,E86CD369 595B
 Cheat17="Extra Levels Unlocked",E86CD35D 5959,E86CD361 5959
 Cheat18="All Tracks Unlocked",E86D96C2 5962,50000264 0000,10167747 0001,50000264 0000,10167873 0001,50000564 0000,1016799F 0001
 Cheat19="Mode Select",E85DB2C1 59??
-Cheat3_O=$5A Raze,$59 Rana,$5C Khan,$5B Grimace,$56 Mooga,$55 Jolt,$58 Main,$57 Apollyon,$62 Roach,$61 Neon
-Cheat7_O=$5A Raze,$59 Rana,$5C Khan,$5B Grimace,$56 Mooga,$55 Jolt,$58 Main,$57 Apollyon,$62 Roach,$61 Neon
-Cheat11_O=$5A Raze,$59 Rana,$5C Khan,$5B Grimace,$56 Mooga,$55 Jolt,$58 Main,$57 Apollyon,$62 Roach,$61 Neon
-Cheat15_O=$5A Raze,$59 Rana,$5C Khan,$5B Grimace,$56 Mooga,$55 Jolt,$58 Main,$57 Apollyon,$62 Roach,$61 Neon
-Cheat19_O=$59 Boulder,$5C Fish Eye Lens,$5B Boulder & Fish Eye Lens,$56 Magnify,$62 Anti-Gravity,$64 Anti-Gravity & Fish Eye Lens,$6A Wireframe,$69 Boulder & Wireframe,$7A Stealth Mode,$9A Ghost Mode,$DA Ugly Mode
 Cheat3_O=$5A Raze,$59 Rana,$5C Khan,$5B Grimace,$56 Mooga,$55 Jolt,$58 Main,$57 Apollyon,$62 Roach,$61 Neon
 Cheat7_O=$5A Raze,$59 Rana,$5C Khan,$5B Grimace,$56 Mooga,$55 Jolt,$58 Main,$57 Apollyon,$62 Roach,$61 Neon
 Cheat11_O=$5A Raze,$59 Rana,$5C Khan,$5B Grimace,$56 Mooga,$55 Jolt,$58 Main,$57 Apollyon,$62 Roach,$61 Neon
@@ -7883,10 +7872,10 @@ Cheat5="Max Score\Stunt Mode",E96977A2 D04F
 Cheat6="Infinate Ammo\All Players In Battle",E8697EF3 59AA,E86982AB 59AA,E8698663 59AA,E869891B 59AA
 Cheat8="Have All\Gold & Silver Coins\Track 1",E967F868 504F
 Cheat9="Have All\Gold & Silver Coins\Track 2",E967F8C8 504F
-Cheat9="Have All\Gold & Silver Coins\Track 3",E967F828 504F
-Cheat10="Have All\Gold & Silver Coins\Track 4",E967F588 504F
-Cheat11="Have All\Gold & Silver Coins\Track 5",E967F5E8 504F
-Cheat12="Have All\Gold & Silver Coins\Track 6",E967F548 504F
+Cheat10="Have All\Gold & Silver Coins\Track 3",E967F828 504F
+Cheat11="Have All\Gold & Silver Coins\Track 4",E967F588 504F
+Cheat12="Have All\Gold & Silver Coins\Track 5",E967F5E8 504F
+Cheat13="Have All\Gold & Silver Coins\Track 6",E967F548 504F
 Cheat1_O=$9C8B 146 mph,$9CAA 170 mph,$9CDA 210 mph,$9CEB 270 mph
 Cheat4_O=$5A Track 1,$59 Track 2,$5C Track 3,$5B Track 4
 
@@ -8243,7 +8232,6 @@ Cheat8_O=$7A Cap In Hand,$7C Invisible Mario Cap In Hand,$76 Metal Mario Cap In 
 Cheat9="Funny Mario Options\Mario's Cap\On & An Extra in His Hand",E88708C9 59??
 Cheat9_N=Here you can Choose Options with Mario with His Cap on & An Extra in His Hand,Do not use with any other Mario with/without Options,Use only one at a time
 Cheat9_O=$8A Cap In Hand,$8C Invisible Mario Cap In Hand,$86 Metal Mario Cap In Hand,$88 Invisible Metal Mario Cap In Hand,$92 Flying Mario Cap In Hand
-Cheat10="Don't Hurt Mario\Falling",E8870584 5942,E98708D0 504F
 Cheat10_N=Press L to levitate & Let go to land
 Cheat10="Press L To Levitate",D033AFA1 0020,E9870814 9B7A,D033B1BD 0020,E98708D4 5C5A,D033B1BD 0020,E98708D2 61DA
 Cheat11="[Slot A Codes]\Have All 120 Stars",E876CA75 5959,E876CA5D 5917,50001101 0000,1020770C 00FF
@@ -8266,6 +8254,7 @@ Cheat23="Level Select",D033AFA1 0020,A032DDF9 00??
 Cheat23_O=$59 Intro,$56 Big Boo's Haunt,$55 Cool Cool Mountain,$58 Mushroom Castle,$57 Hazy Maze Cave,$62 Shifting Sand Land,$61 Bob omb Battlefield,$64 Snowman's Land,$63 Wet Dry World,$5E Jolly Roger Bay,$5D Tiny Huge World,$60 Tick tock Clock,$5F Rainbow Ride,$6A Mushroom Castle Field,$69 Bowser In The Dark World,$6C Vanish Cap Under The Moat,$6B Bowser In The Fire Sea,$66 The Secret Aquarium,$65 Bowser In The Sky,$68 Lethal Lava Land,$67 Dire Dire Docks,$72 Whomp's Fortress,$71 The End,$74 Castle Courtyard,$73 The Princess's Secret Slide,$6E Cavern Of The Metal Cap,$6D Tower Of The Wing Cap,$70 Bowser In The Dark World Boss,$6F Wing Mario Over The Rainbow,$79 Bowser In The Fire Sea Boss,$7C Bowser In The Sky Boss,$76 Tall Tall Mountain
 Cheat24="Have\Turbo Running Speed",E8870815 594F
 Cheat23_N=Select a Level. Jump Into a Painting. Press A at the Stars Collected Screen. As Stats are fading hold L, and you'll jump to the level you've selected.
+Cheat25="Don't Hurt Mario\Falling",E8870584 5942,E98708D0 504F
 
 //----
 
@@ -8973,14 +8962,14 @@ Cheat47="Player 1\Max Points\The School",E991A24E 504F
 Cheat48="Player 1\Max Points\The Mall",E991B4B6 504F
 Cheat49="Player 1\Max Points\The Skate Park",E991DB36 504F
 Cheat50="Player 1\Max Points\Downtown Chicago",E991A21E 504F
-Cheat5="Player 1\Max Points\Downhill Jam",E991B27E 504F
-Cheat5="Player 1\Max Points\Burnside",E991E3A6 504F
-Cheat5="Player 1\Max Points\Street",E991A956 504F
-Cheat5="Player 1\Max Points\Roswell New Mexico",E991C48E 504F
-Cheat5="Player 1\Super Max\Ollie",E861A974 504F
-Cheat5="Player 1\Super Max\Speed",E861A973 504F
-Cheat5="Player 1\Super Max\Air",E861A972 504F
-Cheat5="Player 1\Super Max\Balance",E861A971 504F
+Cheat51="Player 1\Max Points\Downhill Jam",E991B27E 504F
+Cheat52="Player 1\Max Points\Burnside",E991E3A6 504F
+Cheat53="Player 1\Max Points\Street",E991A956 504F
+Cheat54="Player 1\Max Points\Roswell New Mexico",E991C48E 504F
+Cheat55="Player 1\Super Max\Ollie",E861A974 504F
+Cheat56="Player 1\Super Max\Speed",E861A973 504F
+Cheat57="Player 1\Super Max\Air",E861A972 504F
+Cheat58="Player 1\Super Max\Balance",E861A971 504F
 Cheat59="Player 1\Super Max\Turning",E861A978 504F
 Cheat60="Player 2\Super Max\Ollie",E861A977 504F
 Cheat61="Player 2\Super Max\Speed",E861A976 504F
@@ -8991,7 +8980,6 @@ Cheat65="Player 1\Play As",E861562C 59??
 Cheat66_O=$ 00 Tony Hawk,$ 01 Bob Burnquist,$ 02 Geoff Rowley,$ 03 Bucky Lasek,$ 04 Chad Muska,$ 05 Kareem Campbell,$ 06 Andrew Reynolds,$ 07 Rune Glifberg,$ 08 Jamie Thomas,$ 09 Elissa Steamer,$ 0A Officer Dick
 Cheat67="Player 2\Play As",E861562B 59??
 Cheat67_O=$5A Tony Hawk,$59 Bob Burnquist,$5C Geoff Rowley,$5B Bucky Lasek,$56 Chad Muska,$55 Kareem Campbell,$58 Andrew Reynolds,$57 Rune Glifberg,$62 Jamie Thomas,$61 Elissa Steamer,$64 Officer Dick
-Cheat68="Player 1\Have Perfect Balance",E8612ED5 5959
 Cheat68="Player 1\Max Trick Score\The Warehouse",E991C196 504F
 Cheat69="Player 1\Max Trick Score\The School",E991A24E 504F
 Cheat70="Player 1\Max Trick Score\The Mall",E991B4B6 504F
@@ -9001,6 +8989,7 @@ Cheat73="Player 1\Max Trick Score\Downhill Jam",E991B27E 504F
 Cheat74="Player 1\Max Trick Score\Burnside",E991E3A6 504F
 Cheat75="Player 1\Max Trick Score\The Streets",E991A956 504F
 Cheat76="Player 1\Max Trick Score\Roswell",E991C48E 504F
+Cheat77="Player 1\Have Perfect Balance",E8612ED5 5959
 
 //----
 
@@ -9057,14 +9046,14 @@ Cheat47="Player 1\Max Points\The School",E991A24E 504F
 Cheat48="Player 1\Max Points\The Mall",E991B4B6 504F
 Cheat49="Player 1\Max Points\The Skate Park",E991DB36 504F
 Cheat50="Player 1\Max Points\Downtown Chicago",E991A21E 504F
-Cheat5="Player 1\Max Points\Downhill Jam",E991B27E 504F
-Cheat5="Player 1\Max Points\Burnside",E991E3A6 504F
-Cheat5="Player 1\Max Points\Street",E991A956 504F
-Cheat5="Player 1\Max Points\Roswell New Mexico",E991C48E 504F
-Cheat5="Player 1\Super Max\Ollie",E861A974 504F
-Cheat5="Player 1\Super Max\Speed",E861A973 504F
-Cheat5="Player 1\Super Max\Air",E861A972 504F
-Cheat5="Player 1\Super Max\Balance",E861A971 504F
+Cheat51="Player 1\Max Points\Downhill Jam",E991B27E 504F
+Cheat52="Player 1\Max Points\Burnside",E991E3A6 504F
+Cheat53="Player 1\Max Points\Street",E991A956 504F
+Cheat54="Player 1\Max Points\Roswell New Mexico",E991C48E 504F
+Cheat55="Player 1\Super Max\Ollie",E861A974 504F
+Cheat56="Player 1\Super Max\Speed",E861A973 504F
+Cheat57="Player 1\Super Max\Air",E861A972 504F
+Cheat58="Player 1\Super Max\Balance",E861A971 504F
 Cheat59="Player 1\Super Max\Turning",E861A978 504F
 Cheat60="Player 2\Super Max\Ollie",E861A977 504F
 Cheat61="Player 2\Super Max\Speed",E861A976 504F
@@ -9075,7 +9064,6 @@ Cheat65="Player 1\Play As",E861562C 59??
 Cheat66_O=$ 00 Tony Hawk,$ 01 Bob Burnquist,$ 02 Geoff Rowley,$ 03 Bucky Lasek,$ 04 Chad Muska,$ 05 Kareem Campbell,$ 06 Andrew Reynolds,$ 07 Rune Glifberg,$ 08 Jamie Thomas,$ 09 Elissa Steamer,$ 0A Officer Dick
 Cheat67="Player 2\Play As",E861562B 59??
 Cheat67_O=$5A Tony Hawk,$59 Bob Burnquist,$5C Geoff Rowley,$5B Bucky Lasek,$56 Chad Muska,$55 Kareem Campbell,$58 Andrew Reynolds,$57 Rune Glifberg,$62 Jamie Thomas,$61 Elissa Steamer,$64 Officer Dick
-Cheat68="Player 1\Have Perfect Balance",E8612ED5 5959
 Cheat68="Player 1\Max Trick Score\The Warehouse",E991C196 504F
 Cheat69="Player 1\Max Trick Score\The School",E991A24E 504F
 Cheat70="Player 1\Max Trick Score\The Mall",E991B4B6 504F
@@ -9085,6 +9073,7 @@ Cheat73="Player 1\Max Trick Score\Downhill Jam",E991B27E 504F
 Cheat74="Player 1\Max Trick Score\Burnside",E991E3A6 504F
 Cheat75="Player 1\Max Trick Score\The Streets",E991A956 504F
 Cheat76="Player 1\Max Trick Score\Roswell",E991C48E 504F
+Cheat77="Player 1\Have Perfect Balance",E8612ED5 5959
 
 //----
 
@@ -12675,8 +12664,8 @@ Cheat4_O=$4F On,$5A Off
 Cheat4_N=This cheat causes the Goron Temple door not to open, but if you go to the very top of the mountain where the fairy is, next to her entrance is another one in to the fire temple.once inside put on the hover boots & infinite hover cheat to hover over to the ledge on the left hand side.From here you can carry on the game as normal
 Cheat65="Have\Status Heart Containers",E865E034 59??
 Cheat65_O=$8A On,$5A Off
-Cheat64="Language Select",E865F497 59??
-Cheat64_O=$5A English,$59 German,$5C French
+Cheat66="Language Select",E865F497 59??
+Cheat66_O=$5A English,$59 German,$5C French
 //----
 
 [60460680-305F0E72-C:50]
@@ -14101,7 +14090,6 @@ Cheat8_O=$7A Cap In Hand,$7C Invisible Mario Cap In Hand,$76 Metal Mario Cap In 
 Cheat9="Funny Mario Options\Mario's Cap\On & An Extra in His Hand",E886EB89 59??
 Cheat9_N=Here you can Choose Options with Mario with His Cap on & An Extra in His Hand,Do not use with any other Mario with/without Options,Use only one at a time
 Cheat9_O=$8A Cap In Hand,$8C Invisible Mario Cap In Hand,$86 Metal Mario Cap In Hand,$88 Invisible Metal Mario Cap In Hand,$92 Flying Mario Cap In Hand
-Cheat10="Don't Hurt Mario\Falling",E88C22C4 5942,E98C2110 504F
 Cheat10_N=Press L to levitate & Let go to land
 Cheat10="Press L To Levitate",D0309261 0020,E986EBD4 9B7A,D030947D 0020,E986EB94 5C5A,D030947D 0020,E986EB92 61DA
 Cheat11="[Slot A Codes]\Have All 120 Stars",E8768275 5959,E876825D 5917,50001101 0000,10202F0C 00FF
@@ -14120,6 +14108,7 @@ Cheat20="[Slot D Codes]\Have All 120 Stars",E87687C5 5959,E87687AD 5917,50001101
 Cheat20_N=Have 120 Stars,once the Code is activated, you will see it as a new option in Save Slot A.This will have the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now have it all saved to mempak
 Cheat21="[Slot D Codes]\Have all key doors unlocked (and mote empty)",E87687AE 59D0
 Cheat22="[Slot D Codes]\Have All Max 100 Coin Records For All Levels",50000F01 0000,10203075 0064
+Cheat23="Don't Hurt Mario\Falling",E88C22C4 5942,E98C2110 504F
 
 //----
 
@@ -15343,7 +15332,6 @@ Cheat9="Infinite\Purple Weapon",E96D784E 59BB
 Cheat10="Press F9 For\Sabor Attacks\Sabor 1 Hit Kill",8924A23E 0001
 Cheat11="Infinite\Bonus Timer",E86B8932 5975
 Cheat3_N=On the main menu Scroll down to make CHEATS visible to go into Level Select.For in-Game Cheats,Pause gameplay.
-Cheat4_O=$5B 3 Lives,$BB 99 Lives
 Cheat11_N=This is For All Timers on Bonus Levels
 
 //----
@@ -15501,7 +15489,6 @@ Cheat9="Infinite\Purple Weapon",E96D784E 59BB
 Cheat10="Press F9 For\Sabor Attacks\Sabor 1 Hit Kill",8924A23E 0001
 Cheat11="Infinite\Bonus Timer",E86B8932 5975
 Cheat3_N=On the main menu Scroll down to make CHEATS visible to go into Level Select.For in-Game Cheats,Pause gameplay.
-Cheat4_O=$5B 3 Lives,$BB 99 Lives
 Cheat11_N=This is For All Timers on Bonus Levels
 
 //----
