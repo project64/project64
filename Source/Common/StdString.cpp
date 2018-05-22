@@ -30,11 +30,10 @@ strvector stdstr::Tokenize(const char * delimiter) const
 
     stdstr::size_type lastPos = find_first_not_of(delimiter, 0);
     stdstr::size_type pos = find_first_of(delimiter, lastPos);
-    size_t delimiter_len = strlen(delimiter);
     while (stdstr::npos != pos)
     {
         tokens.push_back(substr(lastPos, pos - lastPos));
-        lastPos = pos + delimiter_len;
+        lastPos = pos + 1;
         pos = find_first_of(delimiter, lastPos);
     }
     if (stdstr::npos != lastPos)

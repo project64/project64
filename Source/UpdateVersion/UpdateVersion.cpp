@@ -34,7 +34,7 @@ int main()
     uint32_t FileLen = InFile.GetLength();
     std::auto_ptr<uint8_t> InputData(new uint8_t[FileLen]);
     InFile.Read(InputData.get(), FileLen);
-    strvector VersionData = stdstr(std::string((char *)InputData.get(), FileLen)).Tokenize("\r\n");
+    strvector VersionData = stdstr(std::string((char *)InputData.get(), FileLen)).Tokenize("\n");
 
     strvector verinfo = stdstr(__argv[3]).Tokenize('-');
     if (verinfo.size() < 3 || verinfo.size() > 4)
@@ -55,16 +55,16 @@ int main()
     for (size_t i = 0, n = VersionData.size() - 1; i < n; i++)
     {
         stdstr &line = VersionData[i];
-        line += "\r\n";
+        line += "\n";
         if (_strnicmp(line.c_str(), "#define VERSION_BUILD", 21) == 0)
         {
-            line = "#define VERSION_BUILD               " + verinfo[1] + "\r\n";
+            line = "#define VERSION_BUILD               " + verinfo[1] + "\n";
         }
         if (_strnicmp(line.c_str(), "#define GIT_VERSION", 18) == 0)
         {
-            line = "#define GIT_VERSION                 \"" + verinfo[2] + "\"\r\n";
+            line = "#define GIT_VERSION                 \"" + verinfo[2] + "\"\n";
         }
-        if (!OutFile.Write(line.c_str(), line.length()))
+        if (!OutFile.Write(line.c_str(), (uint32_t)line.length()))
         {
             return 0;
         }
