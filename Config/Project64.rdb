@@ -2509,12 +2509,11 @@ Counter Factor=1
 [3A6F8C6B-2897BAEB-C:50]
 Good Name=Indiana Jones and the Infernal Machine (E) (Unreleased)
 Internal Name=Indiana Jones
-Status=Issues (plugin)
-Plugin Note=[video] HLE not supported
+Status=Compatible
+Plugin Note=[video] HLE requires GLideN64
 32bit=No
 AudioResetOnLoad=Yes
 Fast SP=No
-HLE GFX=No
 Linking=Off
 RDRAM Size=8
 RSP-JumpTableSize=3584
@@ -2527,12 +2526,11 @@ ViRefresh=1800
 [AF9DCC15-1A723D88-C:45]
 Good Name=Indiana Jones and the Infernal Machine (U)
 Internal Name=Indiana Jones
-Status=Issues (plugin)
-Plugin Note=[video] HLE not supported
+Status=Compatible
+Plugin Note=[video] HLE requires GLideN64
 32bit=No
 AudioResetOnLoad=Yes
 Fast SP=No
-HLE GFX=No
 Linking=Off
 RDRAM Size=8
 RSP-JumpTableSize=3584
@@ -5393,7 +5391,7 @@ RSP-JumpTableSize=3584
 Good Name=Star Wars - Rogue Squadron (U) (V1.1)
 Internal Name=Rogue Squadron
 Status=Compatible
-Plugin Note=HLE requires GLideN64
+Plugin Note=[video] HLE requires GLideN64
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
@@ -5436,7 +5434,7 @@ RDRAM Size=8
 [827E4890-958468DC-C:4A]
 Good Name=Star Wars - Shutsugeki! Rogue Chuutai (J)
 Internal Name=rogue squadron
-Status=Issues (plugin)
+Status=Compatible
 Plugin Note=[video] HLE requires GLideN64
 32bit=No
 RDRAM Size=8
@@ -5454,24 +5452,22 @@ RDRAM Size=8
 [EAE6ACE2-020B4384-C:50]
 Good Name=Star Wars Episode I - Battle for Naboo (E)
 Internal Name=Battle for Naboo
-Status=Issues (plugin)
-Plugin Note=[video] HLE not supported
+Status=Compatible
+Plugin Note=[video] HLE requires GLideN64
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
-HLE GFX=No
 RDRAM Size=8
 SMM-FUNC=0
 
 [3D02989B-D4A381E2-C:45]
 Good Name=Star Wars Episode I - Battle for Naboo (U)
 Internal Name=Battle for Naboo
-Status=Issues (plugin)
-Plugin Note=[video] HLE not supported
+Status=Compatible
+Plugin Note=[video] HLE requires GLideN64
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
-HLE GFX=No
 RDRAM Size=8
 SMM-FUNC=0
 
