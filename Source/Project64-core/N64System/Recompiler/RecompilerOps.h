@@ -223,4 +223,5 @@ public:
     virtual void PostCompileOpcode(void) = 0;
     virtual void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false) = 0;
     virtual void CompileExecuteBP(void) = 0;
+    virtual void CompileExecuteDelaySlotBP(void) = 0;
 };

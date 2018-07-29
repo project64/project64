@@ -225,6 +225,7 @@ private:
     void CompileReadTLBMiss(ArmReg AddressReg, ArmReg LookUpReg);
     void CompileWriteTLBMiss(ArmReg AddressReg, ArmReg LookUpReg);
     void CompileExecuteBP(void);
+    void CompileExecuteDelaySlotBP(void);
 
     /********* Helper Functions *********/
     typedef CRegInfo::REG_STATE REG_STATE;

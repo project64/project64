@@ -5393,6 +5393,11 @@ void CArmRecompilerOps::CompileExecuteBP(void)
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
+void CArmRecompilerOps::CompileExecuteDelaySlotBP(void)
+{
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+}
+
 CRegInfo & CArmRecompilerOps::GetRegWorkingSet(void)
 {
     return m_RegWorkingSet;

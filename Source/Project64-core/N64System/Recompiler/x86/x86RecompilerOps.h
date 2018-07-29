@@ -242,6 +242,7 @@ public:
     void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false);
     void CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet);
     void CompileExecuteBP(void);
+    void CompileExecuteDelaySlotBP(void);
     static void ChangeDefaultRoundingModel();
     void OverflowDelaySlot(bool TestTimer);
 

@@ -87,6 +87,29 @@ static void x86_compiler_Break_Point()
     }
 }
 
+static void x86_Break_Point_DelaySlot()
+{
+    CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
+    if (g_SyncSystem)
+    {
+        g_System->UpdateSyncCPU(g_SyncSystem, g_System->CountPerOp());
+        g_System->SyncCPU(g_SyncSystem);
+    }
+    if (g_Debugger->ExecutionBP(g_Reg->m_PROGRAM_COUNTER))
+    {
+        x86_compiler_Break_Point();
+    }
+    if (R4300iOp::m_NextInstruction != NORMAL)
+    {
+        CInterpreterCPU::ExecuteOps(g_System->CountPerOp());
+        if (g_SyncSystem)
+        {
+            g_System->UpdateSyncCPU(g_SyncSystem, g_System->CountPerOp());
+            g_System->SyncCPU(g_SyncSystem);
+        }
+    }
+}
+
 static uint32_t memory_access_address;
 static uint32_t memory_write_in_delayslot;
 static uint32_t memory_breakpoint_found = 0;
@@ -10056,6 +10079,32 @@ void CX86RecompilerOps::CompileExecuteBP(void)
 #endif
     }
     Call_Direct((void *)x86_compiler_Break_Point, "x86_compiler_Break_Point");
+    ExitCodeBlock();
+    m_NextInstruction = END_BLOCK;
+}
+
+void CX86RecompilerOps::CompileExecuteDelaySlotBP(void)
+{
+    bool bDelay = m_NextInstruction == JUMP || m_NextInstruction == DELAY_SLOT;
+    if (bDelay)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    m_RegWorkingSet.WriteBackRegisters();
+
+    UpdateCounters(m_RegWorkingSet, true, true);
+    if (g_SyncSystem)
+    {
+#ifdef _WIN32
+        MoveConstToX86reg((uint32_t)g_BaseSystem, x86_ECX);
+        Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+#else
+        PushImm32((uint32_t)g_BaseSystem);
+        Call_Direct(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
+        AddConstToX86Reg(x86_ESP, 4);
+#endif
+    }
+    Call_Direct((void *)x86_Break_Point_DelaySlot, "x86_Break_Point_DelaySlot");
     ExitCodeBlock();
     m_NextInstruction = END_BLOCK;
 }
