@@ -304,4 +304,5 @@ private:
 
     std::vector<BRANCHARROW> m_BranchArrows;
     vector<bool> m_bvAnnotatedLines;
+    bool m_Attached;
 };

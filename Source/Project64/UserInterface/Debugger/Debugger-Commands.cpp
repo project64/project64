@@ -48,7 +48,8 @@ HHOOK CDebugCommandsView::hWinMessageHook = NULL;
 CDebugCommandsView::CDebugCommandsView(CDebuggerUI * debugger, SyncEvent &StepEvent) :
     CDebugDialog<CDebugCommandsView>(debugger),
     CToolTipDialog<CDebugCommandsView>(),
-    m_StepEvent(StepEvent)
+    m_StepEvent(StepEvent),
+    m_Attached(false)
 {
     m_HistoryIndex = -1;
     m_bIgnoreAddrChange = false;
@@ -139,11 +140,13 @@ LRESULT	CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     hWinMessageHook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)HookProc, NULL, dwThreadID);
 
     WindowCreated();
+    m_Attached = true;
     return TRUE;
 }
 
 LRESULT CDebugCommandsView::OnDestroy(void)
 {
+    m_Attached = false;
     g_Settings->UnregisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)StaticSteppingOpsChanged);
     g_Settings->UnregisterChangeCB(Debugger_WaitingForStep, this, (CSettings::SettingChangedFunc)StaticWaitingForStepChanged);
 
@@ -1329,6 +1332,10 @@ void CDebugCommandsView::EndOpEdit()
 
 LRESULT CDebugCommandsView::OnAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
+    if (!m_Attached)
+    {
+        return 0;
+    }
     if (m_bIgnoreAddrChange)
     {
         m_bIgnoreAddrChange = false;
@@ -1340,6 +1347,10 @@ LRESULT CDebugCommandsView::OnAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HW
 
 LRESULT CDebugCommandsView::OnPCChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
+    if (!m_Attached)
+    {
+        return 0;
+    }
     if (m_bIgnorePCChange)
     {
         m_bIgnorePCChange = false;
@@ -1477,6 +1488,10 @@ LRESULT CDebugCommandsView::OnListBoxClicked(WORD /*wNotifyCode*/, WORD wID, HWN
 
 LRESULT CDebugCommandsView::OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
+    if (!m_Attached)
+    {
+        return false;
+    }
     if (LOWORD(wParam) != WA_INACTIVE)
     {
         ShowAddress(m_StartAddress, TRUE);
