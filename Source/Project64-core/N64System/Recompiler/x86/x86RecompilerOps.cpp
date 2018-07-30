@@ -10067,6 +10067,7 @@ void CX86RecompilerOps::CompileExecuteBP(void)
     m_RegWorkingSet.WriteBackRegisters();
 
     UpdateCounters(m_RegWorkingSet, true, true);
+    MoveConstToVariable(CompilePC(), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
     if (g_SyncSystem)
     {
 #ifdef _WIN32
@@ -10093,6 +10094,7 @@ void CX86RecompilerOps::CompileExecuteDelaySlotBP(void)
     m_RegWorkingSet.WriteBackRegisters();
 
     UpdateCounters(m_RegWorkingSet, true, true);
+    MoveConstToVariable(CompilePC(), _PROGRAM_COUNTER, "PROGRAM_COUNTER");
     if (g_SyncSystem)
     {
 #ifdef _WIN32
