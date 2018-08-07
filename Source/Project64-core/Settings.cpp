@@ -135,7 +135,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 #else
     AddHandler(Rdb_CpuType, new CSettingTypeRDBCpuType("CPU Type", CPU_Recompiler));
 #endif
-    AddHandler(Rdb_RDRamSize, new CSettingTypeRDBRDRamSize("RDRAM Size", 0x400000));
+    AddHandler(Rdb_RDRamSize, new CSettingTypeRDBRDRamSize("RDRAM Size", 0x800000));
     AddHandler(Rdb_CounterFactor, new CSettingTypeRomDatabase("Counter Factor", (uint32_t)2));
     AddHandler(Rdb_UseTlb, new CSettingTypeRDBYesNo("Use TLB", true));
     AddHandler(Rdb_DelayDP, new CSettingTypeRDBYesNo("Delay DP", true));

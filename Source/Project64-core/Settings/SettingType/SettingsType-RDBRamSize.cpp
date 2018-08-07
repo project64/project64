@@ -12,7 +12,7 @@
 #include "SettingsType-RomDatabase.h"
 #include "SettingsType-RDBRamSize.h"
 
-// == 8 ? 0x800000 : 0x400000
+// == 4 ? 0x400000 : 0x800000
 
 CSettingTypeRDBRDRamSize::CSettingTypeRDBRDRamSize(const char * Name, SettingID DefaultSetting ) :
     CSettingTypeRomDatabase(Name,DefaultSetting)
@@ -42,11 +42,18 @@ bool CSettingTypeRDBRDRamSize::Load (uint32_t Index, uint32_t & Value ) const
     {
         LoadDefault(Index,ulValue);
     }
-    Value = 0x400000;
-    if (ulValue == 8)
-    {
-        Value = 0x800000;
-    }
+
+	switch (ulValue)
+	{
+	case 4:
+		Value = 0x400000;
+		break;
+	case 8:
+	default:
+		Value = 0x800000;
+		break;
+	}
+
     return bRes;
 }
 
