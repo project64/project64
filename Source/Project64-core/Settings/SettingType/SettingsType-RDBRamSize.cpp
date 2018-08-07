@@ -43,16 +43,16 @@ bool CSettingTypeRDBRDRamSize::Load (uint32_t Index, uint32_t & Value ) const
         LoadDefault(Index,ulValue);
     }
 
-	switch (ulValue)
-	{
-	case 4:
-		Value = 0x400000;
-		break;
-	case 8:
-	default:
-		Value = 0x800000;
-		break;
-	}
+    switch (ulValue)
+    {
+    case 4:
+        Value = 0x400000;
+        break;
+    case 8:
+    default:
+        Value = 0x800000;
+        break;
+    }
 
     return bRes;
 }
