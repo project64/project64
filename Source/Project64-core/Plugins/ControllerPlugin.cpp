@@ -125,16 +125,9 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
             m_Initialized = true;
         }
     }
-	//force all 4 controllers to be plugged in and not use raw data
+	//force all 4 controller overrides
 	if (ck->isPlayingKailleraGame)
 	{
-#if 0
-		for (int i = 0; i < 4; i++)
-		{
-			m_PluginControllers[i].Present = TRUE;
-			m_PluginControllers[i].RawData = FALSE;
-		}
-#else
 		for (int i = 0; i < ck->numberOfPlayers; i++)
 		{
 			m_PluginControllers[i].Present = TRUE;
@@ -146,7 +139,6 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
 			m_PluginControllers[i].Present = FALSE;
 			m_PluginControllers[i].RawData = FALSE;
 		}
-#endif
 	}
     return m_Initialized;
 }

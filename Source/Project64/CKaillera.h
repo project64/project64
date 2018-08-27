@@ -99,6 +99,8 @@ public:
 	void UploadSaveFiles();
 	void UploadRandomizerSeed();
 	void UploadCheatCodes();
+	template<class T> void UploadSetting(const char* format, T value);
+	void UploadGameSettings();
 	void clearCodes();
 	void sendCodes();
 	int numCodes();

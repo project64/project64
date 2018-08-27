@@ -72,6 +72,7 @@ BOOL CALLBACK MainDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	static HWND hTabControl;
 	HWND hDlgItem;
 	long i,j;
+	SetWindowPos(hDlg, HWND_TOP, 0, 0, 0, 0, WS_CLIPSIBLINGS | WS_EX_TOPMOST | SWP_NOSIZE | SWP_NOMOVE);
 
 	switch(uMsg)
 	{
@@ -3623,6 +3624,8 @@ DWORD ScanMouse( LPDEVICE lpDevice, LPDWORD lpdwCounter, LPBUTTON pButton )
 	}
 	CopyMemory( rgbInitButtons, dm_Current.rgbButtons, sizeof(rgbInitButtons));
 
+	g_sysMouse.didHandle->Unacquire();
+
 	return iGotKey;
 }
 
@@ -4024,7 +4027,7 @@ HWND MakeOverlay()
 	// Create the main window.
 
 	hwnd = CreateWindowEx(
-		WS_EX_TOPMOST | WS_EX_TRANSPARENT,
+		WS_EX_TOPMOST | WS_EX_TRANSPARENT | WS_CLIPSIBLINGS,
 		_T("BlockerClass"),
 		_T("Blocker"),
 		WS_POPUP,

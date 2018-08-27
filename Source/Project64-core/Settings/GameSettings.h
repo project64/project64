@@ -44,6 +44,7 @@ public:
     inline static SYSTEM_TYPE SystemType(void) { return m_SystemType; }
     inline static CPU_TYPE CpuType(void) { return m_CpuType; }
     inline static uint32_t OverClockModifier(void) { return m_OverClockModifier; }
+	inline static uint32_t SaveChip(void) { return m_SaveChip; }
 
 protected:
     static void SpeedChanged(int32_t SpeedLimit);
@@ -76,4 +77,5 @@ private:
     static SYSTEM_TYPE m_SystemType;
     static CPU_TYPE m_CpuType;
     static uint32_t m_OverClockModifier;
+	static uint32_t m_SaveChip;
 };

@@ -293,6 +293,58 @@ void CKaillera::OnChatReceived(char *nick, char *text)
 
 				ExtensionList.push_back(ext);
 			}
+			else if (strncmp(line, "SetRdram=", 9) == 0)
+			{
+				g_Settings->SaveDword(Game_RDRamSize, strtoul(line + 9, NULL, 10));
+			}
+			else if (strncmp(line, "SetSaveChip=", 12) == 0)
+			{
+				g_Settings->SaveDword(Game_SaveChip, strtoul(line + 12, NULL, 10));
+			}
+			else if (strncmp(line, "SetCountPerOp=", 14) == 0)
+			{
+				g_Settings->SaveDword(Game_CounterFactor, strtoul(line + 14, NULL, 10));
+			}
+			else if (strncmp(line, "SetVIRefresh=", 13) == 0)
+			{
+				g_Settings->SaveDword(Game_ViRefreshRate, strtoul(line + 13, NULL, 10));
+			}
+			else if (strncmp(line, "SetAICount=", 11) == 0)
+			{
+				g_Settings->SaveDword(Game_AiCountPerBytes, strtoul(line + 11, NULL, 10));
+			}
+			else if (strncmp(line, "SetOverclock=", 13) == 0)
+			{
+				g_Settings->SaveDword(Game_OverClockModifier, strtoul(line + 13, NULL, 10));
+			}
+			else if (strncmp(line, "SetTLB=", 7) == 0)
+			{
+				g_Settings->SaveBool(Game_UseTlb, strtoul(line + 7, NULL, 10) ? true : false);
+			}
+			else if (strncmp(line, "SetDelaySI=", 11) == 0)
+			{
+				g_Settings->SaveBool(Game_DelaySI, strtoul(line + 11, NULL, 10) ? true : false);
+			}
+			else if (strncmp(line, "SetDelayDP=", 11) == 0)
+			{
+				g_Settings->SaveBool(Game_DelayDP, strtoul(line + 11, NULL, 10) ? true : false);
+			}
+			else if (strncmp(line, "SetAudioSignal=", 15) == 0)
+			{
+				g_Settings->SaveBool(Game_RspAudioSignal, strtoul(line + 15, NULL, 10) ? true : false);
+			}
+			else if (strncmp(line, "SetFixedAudio=", 14) == 0)
+			{
+				g_Settings->SaveBool(Game_FixedAudio, strtoul(line + 14, NULL, 10) ? true : false);
+			}
+			else if (strncmp(line, "SetSyncAudio=", 13) == 0)
+			{
+				g_Settings->SaveBool(Game_SyncViaAudio, strtoul(line + 13, NULL, 10) ? true : false);
+			}
+			else if (strncmp(line, "Set32bit=", 9) == 0)
+			{
+				g_Settings->SaveBool(Game_32Bit, strtoul(line + 9, NULL, 10) ? true : false);
+			}
 			else if (strncmp(line, "Cheat=", 6) == 0)
 			{
 				CheatList.push_back(line);
@@ -838,6 +890,34 @@ void CKaillera::UploadRandomizerSeed()
 	kailleraChatSend(seedstr);
 }
 
+template<class T> void CKaillera::UploadSetting(const char* format, T value)
+{
+	char str[128];
+	sprintf(str, format, value);
+	kailleraChatSend(str);
+}
+
+void CKaillera::UploadGameSettings()
+{
+	CGameSettings settings;
+	g_Settings->SaveString(Game_IniKey, GetGameIniKey());
+	settings.RefreshGameSettings();
+
+	UploadSetting("!SetRdram=%u", settings.RdramSize());
+	UploadSetting("!SetSaveChip=%u", settings.SaveChip());
+	UploadSetting("!SetCountPerOp=%u", settings.CountPerOp());
+	UploadSetting("!SetVIRefresh=%u", settings.ViRefreshRate());
+	UploadSetting("!SetAICount=%u", settings.AiCountPerBytes());
+	UploadSetting("!SetOverclock=%u", settings.OverClockModifier());
+	UploadSetting("!SetTLB=%u", (uint32_t)settings.bUseTlb());
+	UploadSetting("!SetDelaySI=%u", (uint32_t)settings.bDelaySI());
+	UploadSetting("!SetDelayDP=%u", (uint32_t)settings.bDelayDP());
+	UploadSetting("!SetAudioSignal=%u", (uint32_t)settings.RspAudioSignal());
+	UploadSetting("!SetFixedAudio=%u", (uint32_t)settings.bFixedAudio());
+	UploadSetting("!SetSyncAudio=%u", (uint32_t)settings.bSyncToAudio());
+	UploadSetting("!Set32bit=%u", (uint32_t)settings.b32BitCore());
+}
+
 void CKaillera::UploadCheatCodes()
 {
 	CCheats    cheats(CMipsMemoryVM(0));
@@ -1177,6 +1257,7 @@ void CKaillera::OnRomOpen()
 		UploadRandomizerSeed();
 		UploadCheatCodes();
 		UploadSaveFiles();
+		UploadGameSettings();
 	
 		//Sleep(200);
 	}
