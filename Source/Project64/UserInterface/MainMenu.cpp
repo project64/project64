@@ -14,7 +14,7 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     m_ResetAccelerators(true),
     m_Gui(hMainWindow)
 {
-	ck = new CKaillera();
+	ck = new CKaillera(this);
     ResetMenu();
 
     hMainWindow->SetWindowMenu(this);
@@ -571,8 +571,20 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         }
 		if (MenuID >= ID_KAILLERA_LAG_1 && MenuID <= ID_KAILLERA_LAG_7)
 		{
-			ck->SetLagness(MenuID - (ID_KAILLERA_LAG_1 - 1));
-			m_Gui->RefreshMenu();
+			if (!ck->isPlayingKailleraGame)
+			{
+				uint32_t lag = (uint32_t)(MenuID - (ID_KAILLERA_LAG_1 - 1));
+				ck->SetLagness(lag);
+				m_Gui->RefreshMenu();
+			}
+			else
+			{
+				if (ck->playerNumber == 0)
+				{
+					uint32_t lag = (uint32_t)(MenuID - (ID_KAILLERA_LAG_1 - 1));
+					ck->QueueLagness(lag);
+				}
+			}
 		}
         if (MenuID >= ID_LANG_START && MenuID < ID_LANG_END)
         {

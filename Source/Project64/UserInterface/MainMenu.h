@@ -106,4 +106,7 @@ private:
     SettingList   m_ChangeSettingList;
     UISettingList m_ChangeUISettingList;
     CriticalSection m_CS;
+
+public:
+	CMainGui* GetGui() { return m_Gui; }
 };

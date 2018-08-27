@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <time.h>
 #include "Common\MemoryManagement.h"
+#include "UserInterface\MainMenu.h"
 
 const char* RESET = "00000000 0001";
 const char* LOAD = "00000000 0002";
@@ -170,7 +171,6 @@ int WINAPI kailleraGameCallback(char *game, int player, int numplayers)
 	//g_Notify->BringToTop();
 
 	ck->isPlayingKailleraGame = true;
-	ck->clearCodes();
 	if (!ck->SetRomName(temp))
 	{
 		MessageBoxA(NULL, "Kaillera failed to set rom name", "Project64", MB_OK);
@@ -197,6 +197,16 @@ void CKaillera::SetLagness(int lag)
 {
 	kailleraLagness = lag;
 	kVIdelay = lag * 3;
+}
+
+void CKaillera::UploadLagness(int lag)
+{
+	UploadSetting("!SetKailleraLag=%u", (uint32_t)lag);
+}
+
+void CKaillera::QueueLagness(int lag)
+{
+	lagqueue = lag;
 }
 
 /************************************************************************/
@@ -292,6 +302,11 @@ void CKaillera::OnChatReceived(char *nick, char *text)
 					ext = stdstr(extension);
 
 				ExtensionList.push_back(ext);
+			}
+			else if (strncmp(line, "SetKailleraLag=", 15) == 0)
+			{
+				SetLagness((int)strtoul(line + 15, NULL, 10));
+				mainmenu->GetGui()->RefreshMenu();
 			}
 			else if (strncmp(line, "SetRdram=", 9) == 0)
 			{
@@ -390,7 +405,11 @@ void CKaillera::OnChatReceived(char *nick, char *text)
 		{
 			kailleraClientDroppedCallback("Player 1", 1);
 		}
-
+		else if (strncmp(text, "!SetKailleraLag=", 16) == 0)
+		{
+			SetLagness((int)strtoul(text + 16, NULL, 10));
+			mainmenu->GetGui()->RefreshMenu();
+		}
 	}
 }
 
@@ -400,8 +419,9 @@ void WINAPI kailleraMoreInfosCallback(char *gamename)
 	//ShowInfo("Kaillera : MoreInfosCallback %s ", gamename);
 }
 
-CKaillera::CKaillera()
+CKaillera::CKaillera(CMainMenu* menu)
 {
+	mainmenu = menu;
 	sAppName = "Project 64k Core 2.3";
 	kInfos.appName = sAppName;
 	kInfos.gameList = szKailleraNamedRoms;
@@ -430,7 +450,7 @@ CKaillera::CKaillera()
 	kKeyUpdateStep = 3;
 	KailleraState = DLL_NOT_LOADED;
 	kailleraLastUpdateKeysAtVI = 0;
-	kailleraAutoApplyCheat = FALSE;
+	lagqueue = -1;
 
 	Kaillera_Thread_Keep_Running = FALSE;
 	Kaillera_Thread_Is_Running = FALSE;
@@ -481,6 +501,8 @@ void CKaillera::terminateGameList()
 
 void CKaillera::setInfos()
 {
+	KailleraState = GAME_IDLE;
+	lagqueue = -1;
 	kailleraSetInfos(&kInfos);
 }
 
@@ -597,6 +619,12 @@ void CKaillera::UpdatePlayerKeyValues()
 
 	memcpy(&kBuffers[0].b, &Keys, sizeof(BUTTONS));
 
+	if (lagqueue != -1)
+	{
+		UploadLagness(lagqueue);
+		lagqueue = -1;
+	}
+
 label_Jump:
 	signal = WaitForSingleObject(kailleraThreadStopEvent, 0);
 	if (signal == WAIT_OBJECT_0)
@@ -655,6 +683,7 @@ check_again:
 
 		// Check optimal delay values
 		kVIdelayToUse = kVIdelay;
+
 		for (i = 0; i < numberOfPlayers; i++)
 		{
 			if (kailleraClientStatus[i])
@@ -669,7 +698,7 @@ check_again:
 		VItouse = (g_System->GetVITotalCount() - kVIdelayToUse) / kKeyUpdateStep*kKeyUpdateStep;	// emulator thread will try to sync at this VIcount
 
 
-																					// Store the keys in the queue
+		// Store the keys in the queue
 		for (i = 0; i < numberOfPlayers; i++)
 		{
 			if (kailleraClientStatus[i] && (kBuffers[i].viCount&NETPLAY_ARQ_BOTH) == 0)
@@ -1254,6 +1283,7 @@ void CKaillera::OnRomOpen()
 	// Broadcast current rom settings to all other players
 	if (playerNumber == 0)
 	{
+		UploadLagness(GetLagness());
 		UploadRandomizerSeed();
 		UploadCheatCodes();
 		UploadSaveFiles();
@@ -1375,39 +1405,6 @@ void CKaillera::DownloadFiles_SaveStrings(char *line)
 		else
 			strcpy(*buf + seq * 100, startp);
 	}
-}
-
-void CKaillera::clearCodes()
-{
-	while(codes.size() > 0)
-	{
-		char * temp = codes.front();
-		delete(temp);
-		codes.erase(codes.begin());
-	}
-}
-
-LPCSTR CKaillera::getCode(int i)
-{
-	return codes.at(i);
-}
-
-void CKaillera::sendDmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len)
-{
-	CKailleraPacket ckp[4];
-
-	memset(ckp, 0, sizeof(ckp));
-}
-
-
-int CKaillera::numCodes()
-{
-	return codes.size();
-}
-
-DWORD CKaillera::getValues(int player)
-{
-	return values[player];
 }
 
 static LARGE_INTEGER Freq;

@@ -3,6 +3,7 @@
 #include "Project64-core\Plugins\ControllerPlugin.h"
 #include "Common\path.h"
 
+class CMainMenu;
 
 #define KAILLERA_CLIENT_API_VERSION "0.8"
 
@@ -21,26 +22,11 @@ struct kailleraInfos
 	void (WINAPI *moreInfosCallback)(char *gamename);
 };
 
-#define PACKET_TYPE_INPUT 1
-#define PACKET_TYPE_CHEAT 2
-
 // Automatic retransmit request
 #define NETPLAY_ARQ_REQ		0x80000000
 #define NETPLAY_ARQ_REPLY	0x40000000
 #define NETPLAY_ARQ_MASK	0x3FFFFFFF
 #define NETPLAY_ARQ_BOTH	0xC0000000
-
-#define CODE_LENGTH 14 //8 for code, 1 for a space, 4 for value, 1 for trailing null
-
-struct CKailleraPacket
-{
-	BYTE Type;
-	union
-	{
-		char code[CODE_LENGTH];
-		DWORD input;
-	};
-};
 
 typedef struct
 {
@@ -60,7 +46,7 @@ typedef enum
 class CKaillera
 {
 public:
-	CKaillera();
+	CKaillera(CMainMenu* menu);
 	~CKaillera();
 
 	bool SetRomName(char* path);
@@ -68,11 +54,9 @@ public:
 	void addGame(char *gameName, char *szFullFileName);
 	void terminateGameList();
 	void selectServerDialog(HWND hWnd);
-	void modifyPlayValues(DWORD values);
 	void GetPlayerKeyValuesFor1Player(BUTTONS &FKeys, int player);
 	void UpdatePlayerKeyValues();
 	void GetPlayerKeyValues(kPlayerEntry keyvalues[4], int player);
-	//void modifyPlayValues(CODES c);
 	void setInfos();
 
 	int numberOfGames;
@@ -83,14 +67,8 @@ public:
 	int playerNumber;
 	int numberOfPlayers;
 
-	DWORD getValues(int player);
 	void StopKailleraThread();
 	void endGame();
-
-	void addCode(LPCSTR str);
-	void delCode(LPCSTR str);
-	LPCSTR getCode(int i);
-	void sendDmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len);
 	void ResetSaveFiles();
 	void OnRomOpen();
 	void GetFileName(CPath &filename, char* ext);
@@ -101,11 +79,10 @@ public:
 	void UploadCheatCodes();
 	template<class T> void UploadSetting(const char* format, T value);
 	void UploadGameSettings();
-	void clearCodes();
-	void sendCodes();
-	int numCodes();
 	void OnChatReceived(char *nick, char *text);
 	void SetLagness(int lag);
+	void UploadLagness(int lag);
+	void QueueLagness(int lag);
 	int GetLagness() const { return kailleraLagness; }
 	uint32_t GetRandomizerSeed() const { return randomizer_seed; }
 	void SetRandomizerSeed(uint32_t seed) { randomizer_seed = seed; }
@@ -135,7 +112,6 @@ public:
 
 	DWORD			kailleraLastUpdateKeysAtVI;
 	BUTTONS			kailleraKeyValuesToUpdate;
-	BOOL			kailleraAutoApplyCheat;
 
 	BUTTONS Keys;
 
@@ -149,21 +125,17 @@ public:
 	void SetGameIniKey(stdstr name) { GameIniKey = name; }
 
 private:
-
-	void sendResetCode();
-	void sendLoadCode();
-	void sendConfirmCode();
+	CMainMenu* mainmenu;
 
 	kailleraInfos   kInfos;
 	HMODULE KailleraHandle;
 	int LoadKailleraFuncs();
-	void processResult(CKailleraPacket ckp[]);
 	char *pszKailleraNamedRoms;
 	char *sAppName;
-	//char *sAppName = "Project 64k 0.13 (01 Aug 2003)"; // CHANGE THIS
 	DWORD values[4]; // for a maximum of 4 players
 	std::vector<char*> codes;
 	int playValuesLength;
+	int lagqueue;
 
 	char *eepromBuf;
 	char *sramBuf;
