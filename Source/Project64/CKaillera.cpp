@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <time.h>
 #include "Common\MemoryManagement.h"
 
 const char* RESET = "00000000 0001";
@@ -299,6 +300,15 @@ void CKaillera::OnChatReceived(char *nick, char *text)
 			else if (strncmp(line, "!!StartGame!!!", 14) == 0)
 			{
 				KailleraState = INPLAY;
+			}
+			else if (strncmp(line, "RandomizerSeed=", 15) == 0)
+			{
+				char* seed = line + 15;
+				uint32_t received_seed = strtoul(seed, NULL, 10);
+				char received[20];
+				sprintf(received, "Received seed: %u", received_seed);
+				SetRandomizerSeed(received_seed);
+				kailleraChatSend(received);
 			}
 			else if (strncmp(text, "!EEPROM", 7) == 0)
 			{
@@ -818,6 +828,16 @@ check_again:
 	}
 }
 
+void CKaillera::UploadRandomizerSeed()
+{
+	char seedstr[64];
+	uint32_t seed = (uint32_t)time(NULL);
+	sprintf(seedstr, "!RandomizerSeed=%u", seed);
+
+	SetRandomizerSeed(seed);
+	kailleraChatSend(seedstr);
+}
+
 void CKaillera::UploadCheatCodes()
 {
 	CCheats    cheats(CMipsMemoryVM(0));
@@ -1154,6 +1174,7 @@ void CKaillera::OnRomOpen()
 	// Broadcast current rom settings to all other players
 	if (playerNumber == 0)
 	{
+		UploadRandomizerSeed();
 		UploadCheatCodes();
 		UploadSaveFiles();
 	

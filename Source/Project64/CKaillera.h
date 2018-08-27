@@ -62,7 +62,7 @@ class CKaillera
 public:
 	CKaillera();
 	~CKaillera();
-	void UploadCheatCodes();
+
 	bool SetRomName(char* path);
 	void clearGameList();
 	void addGame(char *gameName, char *szFullFileName);
@@ -97,12 +97,16 @@ public:
 	void KailleraUploadFile(const char* filename, char* type);
 	void DownloadFiles_SaveStrings(char *line);
 	void UploadSaveFiles();
+	void UploadRandomizerSeed();
+	void UploadCheatCodes();
 	void clearCodes();
 	void sendCodes();
 	int numCodes();
 	void OnChatReceived(char *nick, char *text);
 	void SetLagness(int lag);
 	int GetLagness() const { return kailleraLagness; }
+	uint32_t GetRandomizerSeed() const { return randomizer_seed; }
+	void SetRandomizerSeed(uint32_t seed) { randomizer_seed = seed; }
 
 	volatile int	Kaillera_Thread_Keep_Running;
 	volatile BOOL	Kaillera_Thread_Is_Running;
@@ -166,6 +170,7 @@ private:
 
 	char GameName[MAX_PATH];
 	stdstr GameIniKey;
+	uint32_t randomizer_seed;
 
 	KailleraStateType KailleraState;
 };

@@ -384,7 +384,14 @@ bool CN64System::RunFileImage(const char * FileLoc)
 void CN64System::RunLoadedImage(void)
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
-    g_BaseSystem = new CN64System(g_Plugins, (uint32_t)time(NULL), false, false);
+
+	uint32_t randomizer_seed;
+	if (ck->isPlayingKailleraGame)
+		randomizer_seed = ck->GetRandomizerSeed();
+	else
+		randomizer_seed = (uint32_t)time(NULL);
+
+    g_BaseSystem = new CN64System(g_Plugins, randomizer_seed, false, false);
     if (g_BaseSystem)
     {
         g_BaseSystem->StartEmulation(true);
