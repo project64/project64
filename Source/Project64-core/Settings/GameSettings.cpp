@@ -40,6 +40,8 @@ SYSTEM_TYPE CGameSettings::m_SystemType = SYSTEM_NTSC;
 CPU_TYPE CGameSettings::m_CpuType = CPU_Recompiler;
 uint32_t CGameSettings::m_OverClockModifier = 1;
 
+extern CKaillera *ck;
+
 void CGameSettings::RefreshGameSettings()
 {
     WriteTrace(TraceN64System, TraceDebug, "start");
@@ -56,7 +58,7 @@ void CGameSettings::RefreshGameSettings()
     m_RdramSize = g_Settings->LoadDword(Game_RDRamSize);
     m_DelaySI = g_Settings->LoadBool(Game_DelaySI);
     m_DelayDP = g_Settings->LoadBool(Game_DelayDP);
-    m_bFixedAudio = g_Settings->LoadBool(Game_FixedAudio);
+	m_bFixedAudio = ck->isPlayingKailleraGame ? true : g_Settings->LoadBool(Game_FixedAudio);; // force this on kaillera for netplay stability
     m_bSyncToAudio = g_Settings->LoadBool(Game_SyncViaAudio);
     m_FullSpeed = g_Settings->LoadBool(Game_FullSpeed);
     m_b32Bit = g_Settings->LoadBool(Game_32Bit);

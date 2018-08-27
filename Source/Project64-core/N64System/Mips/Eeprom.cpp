@@ -14,6 +14,8 @@
 #include <Project64-core/N64System/N64Class.h>
 #include <time.h>
 
+extern CKaillera *ck;
+
 CEeprom::CEeprom(bool ReadOnly) :
 m_ReadOnly(ReadOnly)
 {
@@ -143,11 +145,19 @@ void CEeprom::LoadEeprom()
 {
     memset(m_EEPROM, 0xFF, sizeof(m_EEPROM));
 
-    CPath FileName(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.eep", g_Settings->LoadStringVal(Game_GameName).c_str()).c_str());
-    if (g_Settings->LoadBool(Setting_UniqueSaveDir))
-    {
-        FileName.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
-    }
+	CPath FileName;
+	if (ck->isPlayingKailleraGame)
+	{
+		ck->GetFileName(FileName, "eep");
+	}
+	else
+	{
+		FileName = CPath(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.eep", g_Settings->LoadStringVal(Game_GameName).c_str()).c_str());
+		if (g_Settings->LoadBool(Setting_UniqueSaveDir))
+		{
+			FileName.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
+		}
+	}
 
     if (!FileName.DirectoryExists())
     {
@@ -170,6 +180,9 @@ void CEeprom::LoadEeprom()
 
 void CEeprom::ReadFrom(uint8_t * Buffer, int32_t line)
 {
+	//if (ck->isPlayingKailleraGame) // do not load or save data on kaillera
+	//	return;
+
     int32_t i;
 
     if (!m_File.IsOpen())
@@ -185,6 +198,9 @@ void CEeprom::ReadFrom(uint8_t * Buffer, int32_t line)
 
 void CEeprom::WriteTo(uint8_t * Buffer, int32_t line)
 {
+	//if (ck->isPlayingKailleraGame) // do not load or save data on kaillera
+	//	return;
+
     int32_t i;
 
     if (!m_File.IsOpen())

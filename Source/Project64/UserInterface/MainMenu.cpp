@@ -7,11 +7,14 @@
 #include <windows.h>
 #include <commdlg.h>
 
+CKaillera *ck;
+
 CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     CBaseMenu(),
     m_ResetAccelerators(true),
     m_Gui(hMainWindow)
 {
+	ck = new CKaillera();
     ResetMenu();
 
     hMainWindow->SetWindowMenu(this);
@@ -74,6 +77,8 @@ CMainMenu::~CMainMenu()
     {
         g_Settings->UnregisterChangeCB(*iter, this, (CSettings::SettingChangedFunc)SettingsChanged);
     }
+
+	delete ck;
 }
 
 void CMainMenu::SettingsChanged(CMainMenu * _this)
@@ -154,6 +159,8 @@ void CMainMenu::OnEndEmulation(void)
 {
     CGuard Guard(m_CS);
     WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ENDEMULATION");
+	ck->endGame();
+	ck->isPlayingKailleraGame = false;
     if (g_BaseSystem)
     {
         g_BaseSystem->CloseCpu();
@@ -273,7 +280,11 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ROMDIRECTORY 3");
         break;
     case ID_FILE_REFRESHROMLIST: m_Gui->RefreshRomList(); break;
-    case ID_FILE_EXIT:           DestroyWindow((HWND)hWnd); break;
+	case ID_FILE_KAILLERA:
+		ck->setInfos();
+		ck->selectServerDialog(hWnd);
+		break;
+	case ID_FILE_EXIT:           /*DestroyWindow((HWND)hWnd);*/ PostQuitMessage(0); break;
     case ID_SYSTEM_RESET_SOFT:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_RESET_SOFT");
         g_BaseSystem->ExternalEvent(SysEvent_ResetCPU_Soft);
@@ -558,6 +569,11 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
                 }
             }
         }
+		if (MenuID >= ID_KAILLERA_LAG_1 && MenuID <= ID_KAILLERA_LAG_7)
+		{
+			ck->SetLagness(MenuID - (ID_KAILLERA_LAG_1 - 1));
+			m_Gui->RefreshMenu();
+		}
         if (MenuID >= ID_LANG_START && MenuID < ID_LANG_END)
         {
             MENUITEMINFOW menuinfo;
@@ -805,6 +821,24 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         }
     }
     FileMenu.push_back(MENU_ITEM(SPLITER));
+	FileMenu.push_back(MENU_ITEM(ID_FILE_KAILLERA, MENU_KAILLERA, m_ShortCuts.ShortCutString(ID_FILE_KAILLERA, RunningState)));
+
+	MenuItemList LagMenu;
+	int LOffset = 0;
+	for (char num[2] = { '1', 0 }; num[0] <= '7'; num[0]++)
+	{
+		Item.Reset(ID_KAILLERA_LAG_1 + LOffset++, EMPTY_STRING, EMPTY_STDSTR, NULL, stdstr(num).ToUTF16().c_str());
+		if (num[0] == ('0' + ck->GetLagness()))
+		{
+			Item.SetItemTicked(true);
+		}
+		LagMenu.push_back(Item);
+	}
+
+	Item.Reset(SUB_MENU, MENU_KAILLERA_LAG, EMPTY_STDSTR, &LagMenu);
+	FileMenu.push_back(Item);
+
+	FileMenu.push_back(MENU_ITEM(SPLITER));
     FileMenu.push_back(MENU_ITEM(ID_FILE_EXIT, MENU_EXIT, m_ShortCuts.ShortCutString(ID_FILE_EXIT, RunningState)));
 
     /* Current Save

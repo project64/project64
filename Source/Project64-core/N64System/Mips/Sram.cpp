@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+extern CKaillera *ck;
 #include <Project64-core/N64System/Mips/Sram.h>
 #include <Common/path.h>
 
@@ -23,11 +24,19 @@ CSram::~CSram()
 
 bool CSram::LoadSram()
 {
-    CPath FileName(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.sra", g_Settings->LoadStringVal(Game_GameName).c_str()).c_str());
-    if (g_Settings->LoadBool(Setting_UniqueSaveDir))
-    {
-        FileName.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
-    }
+	CPath FileName;
+	if (ck->isPlayingKailleraGame)
+	{
+		ck->GetFileName(FileName, "sra");
+	}
+	else
+	{
+		FileName = CPath(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.sra", g_Settings->LoadStringVal(Game_GameName).c_str()).c_str());
+		if (g_Settings->LoadBool(Setting_UniqueSaveDir))
+		{
+			FileName.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
+		}
+	}
 
     if (!FileName.DirectoryExists())
     {
@@ -49,6 +58,9 @@ bool CSram::LoadSram()
 
 void CSram::DmaFromSram(uint8_t * dest, int32_t StartOffset, int32_t len)
 {
+	//if (ck->isPlayingKailleraGame) // do not load or save data on kaillera
+	//	return;
+
     uint32_t i;
 
     if (!m_File.IsOpen())
@@ -79,6 +91,9 @@ void CSram::DmaFromSram(uint8_t * dest, int32_t StartOffset, int32_t len)
 
 void CSram::DmaToSram(uint8_t * Source, int32_t StartOffset, int32_t len)
 {
+	//if (ck->isPlayingKailleraGame) // do not load or save data on kaillera
+	//	return;
+
     uint32_t i;
 
     if (m_ReadOnly)

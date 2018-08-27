@@ -14,6 +14,8 @@
 
 extern CCheatsUI * g_cheatUI = NULL;
 
+extern CKaillera *ck;
+
 enum
 {
     WM_EDITCHEAT = WM_USER + 0x120,

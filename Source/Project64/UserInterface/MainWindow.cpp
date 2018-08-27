@@ -16,6 +16,8 @@
 
 void EnterLogOptions(HWND hwndOwner);
 
+extern CKaillera *ck;
+
 #pragma comment(lib, "Comctl32.lib")
 
 DWORD CALLBACK AboutBoxProc(HWND WndHandle, DWORD uMsg, DWORD wParam, DWORD lParam);
@@ -652,6 +654,7 @@ void CMainGui::SaveWindowLoc(void)
     }
 }
 
+// JUSTINS this is the main window proc.  we want to override X'ing out of the window if a kaillera game is running
 LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWORD lParam)
 {
     switch (uMsg)
@@ -678,6 +681,18 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             _this->ChangeWinSize(640, 480);
         }
         break;
+	case WM_CLOSE:
+		if (ck->isPlayingKailleraGame)
+		{
+			ck->endGame();
+			g_BaseSystem->CloseSystem();
+			ck->isPlayingKailleraGame = false;
+		}
+		else
+		{
+			PostQuitMessage(0);
+		}
+		break;
     case WM_SYSCOMMAND:
         switch (wParam) {
         case SC_SCREENSAVE:

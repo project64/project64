@@ -11,6 +11,8 @@
 #include "stdafx.h"
 #include "CheatClass.h"
 
+extern CKaillera *ck;
+
 #include <Project64-core/Settings/SettingType/SettingsType-Cheats.h>
 #include <Project64-core/Plugins/GFXPlugin.h>
 #include <Project64-core/Plugins/AudioPlugin.h>
@@ -49,10 +51,17 @@ bool CCheats::LoadCode(const stdstr & CheatEntry, SettingID ExtensionSetting, in
     }
 
     stdstr Extension;
-    if (!g_Settings->LoadStringIndex(ExtensionSetting, ExtensionIndex, Extension))
-    {
-        Extension.clear();
-    }
+	if (ck->isPlayingKailleraGame && ck->playerNumber != 0)
+	{
+		Extension = ck->ExtensionList.at(ExtensionIndex);
+	}
+	else
+	{
+		if (!g_Settings->LoadStringIndex(ExtensionSetting, ExtensionIndex, Extension))
+		{
+			Extension.clear();
+		}
+	}
 
     const char * ReadPos = CheatString;
     CODES Code;
@@ -106,10 +115,14 @@ bool CCheats::LoadCode(const stdstr & CheatEntry, SettingID ExtensionSetting, in
 
 void CCheats::LoadPermCheats(CPlugins * Plugins)
 {
-    if (g_Settings->LoadBool(Debugger_DisableGameFixes))
-    {
-        return;
-    }
+	if (ck->isPlayingKailleraGame && ck->playerNumber != 0)
+	{
+		if (ck->DisableGameFixes)
+			return;
+	}
+	else if (g_Settings->LoadBool(Debugger_DisableGameFixes))
+		return;
+
     for (int CheatNo = 0; CheatNo < MaxCheats; CheatNo++)
     {
         stdstr LineEntry;
@@ -163,22 +176,34 @@ void CCheats::LoadCheats(bool DisableSelected, CPlugins * Plugins)
     ResetCodes();
     LoadPermCheats(Plugins);
 
-    for (int CheatNo = 0; CheatNo < MaxCheats; CheatNo++)
-    {
-        stdstr LineEntry = g_Settings->LoadStringIndex(Cheat_Entry, CheatNo);
-        if (LineEntry.empty()) { break; }
-        if (!g_Settings->LoadBoolIndex(Cheat_Active, CheatNo))
-        {
-            continue;
-        }
-        if (DisableSelected)
-        {
-            g_Settings->SaveBoolIndex(Cheat_Active, CheatNo, false);
-            continue;
-        }
+	if (ck->isPlayingKailleraGame && ck->playerNumber != 0)
+	{
+		int CheatNo = 0;
+		for (auto&& cheat : ck->CheatList)
+		{
+			LoadCode(cheat, Cheat_Extension, CheatNo);
+			CheatNo++;
+		}
+	}
+	else
+	{
+		for (int CheatNo = 0; CheatNo < MaxCheats; CheatNo++)
+		{
+			stdstr LineEntry = g_Settings->LoadStringIndex(Cheat_Entry, CheatNo);
+			if (LineEntry.empty()) { break; }
+			if (!g_Settings->LoadBoolIndex(Cheat_Active, CheatNo))
+			{
+				continue;
+			}
+			if (DisableSelected)
+			{
+				g_Settings->SaveBoolIndex(Cheat_Active, CheatNo, false);
+				continue;
+			}
 
-        LoadCode(LineEntry, Cheat_Extension, CheatNo);
-    }
+			LoadCode(LineEntry, Cheat_Extension, CheatNo);
+		}
+	}
 }
 
 /********************************************************************************************

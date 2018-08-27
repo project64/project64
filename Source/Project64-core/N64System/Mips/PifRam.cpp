@@ -100,17 +100,17 @@ void CPifRam::PifRamRead()
             {
                 if (Channel < 4)
                 {
-                    if (Controllers[Channel].Present && Controllers[Channel].RawData)
-                    {
-                        if (g_Plugins->Control()->ReadController)
-                        {
-                            g_Plugins->Control()->ReadController(Channel, &m_PifRam[CurPos]);
-                        }
-                    }
-                    else
-                    {
-                        ReadControllerCommand(Channel, &m_PifRam[CurPos]);
-                    }
+					if (Controllers[Channel].Present && Controllers[Channel].RawData)
+					{
+						if (g_Plugins->Control()->ReadController)
+						{
+							g_Plugins->Control()->ReadController(Channel, &m_PifRam[CurPos]);
+						}
+					}
+					else
+					{
+						ReadControllerCommand(Channel, &m_PifRam[CurPos]);
+					}
                 }
                 CurPos += m_PifRam[CurPos] + (m_PifRam[CurPos + 1] & 0x3F) + 1;
                 Channel += 1;
@@ -210,17 +210,17 @@ void CPifRam::PifRamWrite()
             {
                 if (Channel < 4)
                 {
-                    if (Controllers[Channel].Present && Controllers[Channel].RawData)
-                    {
-                        if (g_Plugins->Control()->ControllerCommand)
-                        {
-                            g_Plugins->Control()->ControllerCommand(Channel, &m_PifRam[CurPos]);
-                        }
-                    }
-                    else
-                    {
-                        ProcessControllerCommand(Channel, &m_PifRam[CurPos]);
-                    }
+					if (Controllers[Channel].Present && Controllers[Channel].RawData)
+					{
+						if (g_Plugins->Control()->ControllerCommand)
+						{
+							g_Plugins->Control()->ControllerCommand(Channel, &m_PifRam[CurPos]);
+						}
+					}
+					else
+					{
+						ProcessControllerCommand(Channel, &m_PifRam[CurPos]);
+					}
                 }
                 else if (Channel == 4)
                 {

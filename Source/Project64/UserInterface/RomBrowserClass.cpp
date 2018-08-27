@@ -16,6 +16,8 @@
 
 std::string CRomBrowser::m_UnknownGoodName;
 
+extern CKaillera *ck;
+
 CRomBrowser::CRomBrowser(HWND & MainWindow, HWND & StatusWindow) :
     m_MainWindow(MainWindow),
     m_StatusWindow(StatusWindow),

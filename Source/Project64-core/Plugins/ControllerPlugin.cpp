@@ -9,6 +9,7 @@
 *                                                                           *
 ****************************************************************************/
 #include "stdafx.h"
+extern CKaillera *ck;
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/N64System/N64RomClass.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
@@ -55,6 +56,8 @@ bool CControl_Plugin::LoadFunctions(void)
 
     // Allocate our own controller
     m_AllocatedControllers = true;
+
+	// normal controller allocation
     for (int32_t i = 0; i < 4; i++)
     {
         m_Controllers[i] = new CCONTROL(m_PluginControllers[i].Present, m_PluginControllers[i].RawData, m_PluginControllers[i].Plugin);
@@ -87,7 +90,7 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
 #endif
         m_Initialized = true;
     }
-    else if (m_PluginInfo.Version >= 0x0101)
+	else if (m_PluginInfo.Version >= 0x0101) // this path is taken with the default plugin
     {
         CONTROL_INFO ControlInfo;
         ControlInfo.Controls = m_PluginControllers;
@@ -122,6 +125,29 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
             m_Initialized = true;
         }
     }
+	//force all 4 controllers to be plugged in and not use raw data
+	if (ck->isPlayingKailleraGame)
+	{
+#if 0
+		for (int i = 0; i < 4; i++)
+		{
+			m_PluginControllers[i].Present = TRUE;
+			m_PluginControllers[i].RawData = FALSE;
+		}
+#else
+		for (int i = 0; i < ck->numberOfPlayers; i++)
+		{
+			m_PluginControllers[i].Present = TRUE;
+			m_PluginControllers[i].RawData = FALSE;
+		}
+
+		for (int i = ck->numberOfPlayers; i < 4; i++)
+		{
+			m_PluginControllers[i].Present = FALSE;
+			m_PluginControllers[i].RawData = FALSE;
+		}
+#endif
+	}
     return m_Initialized;
 }
 
@@ -146,6 +172,7 @@ void CControl_Plugin::UnloadPluginDetails(void)
 
 void CControl_Plugin::UpdateKeys(void)
 {
+	//MessageBox(NULL, "called update keys", "call", NULL);
     if (!m_AllocatedControllers) { return; }
     for (int32_t cont = 0; cont < sizeof(m_Controllers) / sizeof(m_Controllers[0]); cont++)
     {
@@ -164,6 +191,7 @@ void CControl_Plugin::UpdateKeys(void)
 
 void CControl_Plugin::SetControl(CControl_Plugin const * const Plugin)
 {
+	//MessageBox(NULL, "called SetControl", "call", NULL);
     if (m_AllocatedControllers)
     {
         for (int32_t count = 0; count < sizeof(m_Controllers) / sizeof(m_Controllers[0]); count++)

@@ -38,5 +38,5 @@ CGuiSettings::~CGuiSettings()
 void CGuiSettings::RefreshSettings(void *)
 {
     m_bCPURunning  = g_Settings->LoadBool(GameRunning_CPU_Running);
-    m_bAutoSleep   = UISettingsLoadBool(Setting_AutoSleep);
+	m_bAutoSleep = false; // we want this false for our kaillera build //UISettingsLoadBool(Setting_AutoSleep);
 }

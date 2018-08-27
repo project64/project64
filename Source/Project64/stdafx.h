@@ -29,3 +29,4 @@
 
 #include <Project64-core/3rdParty/Zip.h>
 #include <Project64-core/3rdParty/7zip.h>
+#include "CKaillera.h"

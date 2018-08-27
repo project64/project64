@@ -17,6 +17,8 @@
 #include <Project64-core/3rdParty/7zip.h>
 #endif
 
+extern CKaillera *ck;
+
 static const char* ROM_extensions[] =
 {
 #ifdef _WIN32
@@ -114,6 +116,7 @@ void CRomList::RefreshRomListThread(void)
 
     //clear all current items
     RomListReset();
+	ck->clearGameList();
     m_RomInfo.clear();
 
     strlist FileNames;
@@ -132,6 +135,7 @@ void CRomList::AddRomToList(const char * RomLocation)
     if (FillRomInfo(&RomInfo))
     {
         int32_t ListPos = m_RomInfo.size();
+		ck->addGame(RomInfo.GoodName, RomInfo.szFullFileName);
         m_RomInfo.push_back(RomInfo);
         RomAddedToList(ListPos);
     }
@@ -584,15 +588,18 @@ void CRomList::LoadRomList(void)
 
     //Read Every Entry
     m_RomInfo.clear();
+	ck->clearGameList();
     RomListReset();
     for (int32_t count = 0; count < Entries; count++)
     {
         ROM_INFO RomInfo;
         file.Read(&RomInfo, RomInfoSize);
         int32_t ListPos = m_RomInfo.size();
+		ck->addGame(RomInfo.GoodName, RomInfo.szFullFileName);
         m_RomInfo.push_back(RomInfo);
         RomAddedToList(ListPos);
     }
+	ck->terminateGameList();
     RomListLoaded();
     WriteTrace(TraceRomList, TraceVerbose, "Done");
 }

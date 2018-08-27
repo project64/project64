@@ -40,8 +40,14 @@ public:
     static CICChip GetCicChipID(uint8_t * RomData, uint64_t * CRC = NULL);
     static void CleanRomName(char * RomName, bool byteswap = true);
 
+	bool   AllocateRomImagePublic(uint32_t RomFileSize) { return AllocateRomImage(RomFileSize); }
+	bool   AllocateAndLoadN64ImagePublic(const char * FileLoc, bool LoadBootCodeOnly) { return AllocateAndLoadN64Image(FileLoc, LoadBootCodeOnly); }
+	bool   AllocateAndLoadZipImagePublic(const char * FileLoc, bool LoadBootCodeOnly) { return AllocateAndLoadZipImage(FileLoc, LoadBootCodeOnly); }
+	void   ByteSwapRomPublic() { ByteSwapRom(); }
+	void   SetErrorPublic(LanguageStringID ErrorMsg) { SetError(ErrorMsg); }
+
 private:
-    bool   AllocateRomImage(uint32_t RomFileSize);
+	bool   AllocateRomImage(uint32_t RomFileSize);
     bool   AllocateAndLoadN64Image(const char * FileLoc, bool LoadBootCodeOnly);
     bool   AllocateAndLoadZipImage(const char * FileLoc, bool LoadBootCodeOnly);
     void   ByteSwapRom();

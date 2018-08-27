@@ -29,6 +29,7 @@
 #endif
 
 #pragma warning(disable:4355) // Disable 'this' : used in base member initializer list
+extern CKaillera *ck;
 
 CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesReadOnly, bool SyncSystem) :
     CSystemEvents(this, Plugins),
@@ -58,7 +59,8 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     m_hPauseEvent(true),
     m_CheatsSlectionChanged(false),
     m_SyncCpu(SyncSystem),
-    m_Random(randomizer_seed)
+    m_Random(randomizer_seed),
+	viTotalCount(0)
 {
     WriteTrace(TraceN64System, TraceDebug, "Start");
     memset(m_LastSuccessSyncPC, 0, sizeof(m_LastSuccessSyncPC));
@@ -344,7 +346,7 @@ bool CN64System::LoadFileImage(const char * FileLoc)
             g_Settings->SaveBool(Setting_EnableDisk, true);
         }
 
-        g_System->RefreshGameSettings();
+        g_System->RefreshGameSettings(); //DYLAN NOTE: Ownasaurus commented this, why?
 
         g_Settings->SaveString(Game_File, FileLoc);
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
@@ -371,7 +373,7 @@ bool CN64System::RunFileImage(const char * FileLoc)
     {
         return false;
     }
-    if (g_Settings->LoadBool(Setting_AutoStart) != 0)
+    if (ck->isPlayingKailleraGame || g_Settings->LoadBool(Setting_AutoStart) != 0)
     {
         WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
         RunLoadedImage();
@@ -724,6 +726,7 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
     }
 
     m_SystemTimer.Reset();
+	ResetVITotalCount();
     m_SystemTimer.SetTimer(CSystemTimer::CompareTimer, m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER, false);
 
     if (m_Recomp)
@@ -1018,6 +1021,7 @@ void CN64System::ExecuteCPU()
     WriteTrace(TraceN64System, TraceDebug, "Start");
 
     //reset code
+	ResetVITotalCount();
     g_Settings->SaveBool(GameRunning_CPU_Paused, false);
     g_Settings->SaveBool(GameRunning_CPU_Running, true);
     g_Notify->DisplayMessage(5, MSG_EMULATION_STARTED);
@@ -1581,6 +1585,7 @@ bool CN64System::SaveState()
     uint32_t RdramSize = g_Settings->LoadDword(Game_RDRamSize);
     uint32_t MiInterReg = g_Reg->MI_INTR_REG;
     uint32_t NextViTimer = m_SystemTimer.GetTimer(CSystemTimer::ViTimer);
+	uint32_t TotalVICount = GetVITotalCount();
     if (g_Settings->LoadDword(Setting_AutoZipInstantSave))
     {
         ZipFile.Delete();
@@ -1611,6 +1616,7 @@ bool CN64System::SaveState()
         zipWriteInFileInZip(file, m_MMU_VM.Rdram(), RdramSize);
         zipWriteInFileInZip(file, m_MMU_VM.Dmem(), 0x1000);
         zipWriteInFileInZip(file, m_MMU_VM.Imem(), 0x1000);
+		zipWriteInFileInZip(file, &TotalVICount, sizeof(uint32_t));
         zipCloseFileInZip(file);
 
         zipOpenNewFileInZip(file, ExtraInfo.GetNameExtension().c_str(), NULL, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
@@ -1664,6 +1670,7 @@ bool CN64System::SaveState()
         hSaveFile.Write(g_MMU->Rdram(), RdramSize);
         hSaveFile.Write(g_MMU->Dmem(), 0x1000);
         hSaveFile.Write(g_MMU->Imem(), 0x1000);
+		hSaveFile.Write(&TotalVICount, sizeof(uint32_t));
         hSaveFile.Close();
 
         CFile hExtraInfo(ExtraInfo, CFileBase::modeWrite | CFileBase::modeCreate);
@@ -1756,7 +1763,7 @@ bool CN64System::LoadState(const char * FileName)
 {
     WriteTrace(TraceN64System, TraceDebug, "(%s): Start", FileName);
 
-    uint32_t Value, SaveRDRAMSize, NextVITimer = 0, old_status, old_width, old_dacrate;
+    uint32_t Value, SaveRDRAMSize, NextVITimer = 0, TotalVICount = 0, old_status, old_width, old_dacrate;
     bool LoadedZipFile = false, AudioResetOnLoad;
     old_status = m_Reg.VI_STATUS_REG;
     old_width = m_Reg.VI_WIDTH_REG;
@@ -1841,6 +1848,7 @@ bool CN64System::LoadState(const char * FileName)
                 unzReadCurrentFile(file, m_MMU_VM.Rdram(), SaveRDRAMSize);
                 unzReadCurrentFile(file, m_MMU_VM.Dmem(), 0x1000);
                 unzReadCurrentFile(file, m_MMU_VM.Imem(), 0x1000);
+				unzReadCurrentFile(file, &TotalVICount, sizeof(TotalVICount));
                 unzCloseCurrentFile(file);
                 port = unzGoToFirstFile(file);
                 LoadedZipFile = true;
@@ -1908,6 +1916,7 @@ bool CN64System::LoadState(const char * FileName)
         hSaveFile.Read(m_MMU_VM.Rdram(), SaveRDRAMSize);
         hSaveFile.Read(m_MMU_VM.Dmem(), 0x1000);
         hSaveFile.Read(m_MMU_VM.Imem(), 0x1000);
+		hSaveFile.Read(&TotalVICount, sizeof(TotalVICount));
         hSaveFile.Close();
 
         CPath ExtraInfo(SaveFile);
@@ -1953,6 +1962,7 @@ bool CN64System::LoadState(const char * FileName)
     //Fix up timer
     m_SystemTimer.SetTimer(CSystemTimer::CompareTimer, m_Reg.COMPARE_REGISTER - m_Reg.COUNT_REGISTER, false);
     m_SystemTimer.SetTimer(CSystemTimer::ViTimer, NextVITimer, false);
+	SetVITotalCount(TotalVICount);
     m_Reg.FixFpuLocations();
     m_TLB.Reset(false);
     if (m_Recomp)
@@ -2130,11 +2140,24 @@ void CN64System::RefreshScreen()
         BUTTONS Keys;
         memset(&Keys, 0, sizeof(Keys));
 
-        for (int Control = 0; Control < 4; Control++)
-        {
-            g_Plugins->Control()->GetKeys(Control, &Keys);
-            m_Buttons[Control] = Keys.Value;
-        }
+		if (ck->isPlayingKailleraGame)
+		{
+			//g_Plugins->Control()->GetKeys(0, &Keys); // get local input
+
+			for (int Control = 0; Control < 4; Control++)
+			{
+				ck->GetPlayerKeyValuesFor1Player(Keys, Control);
+				m_Buttons[Control] = Keys.Value; // get every player's input back
+			}
+		}
+		else
+		{
+			for (int Control = 0; Control < 4; Control++)
+			{
+				g_Plugins->Control()->GetKeys(Control, &Keys);
+				m_Buttons[Control] = Keys.Value;
+			}
+		}
     }
 
     if (bShowCPUPer()) { m_CPU_Usage.StartTimer(Timer_UpdateScreen); }
@@ -2195,6 +2218,8 @@ void CN64System::RefreshScreen()
         m_Cheats.ApplyCheats();
     }
     //    if (bProfiling)    { m_Profile.StartTimer(ProfilingAddr != Timer_None ? ProfilingAddr : Timer_R4300); }
+
+	++viTotalCount;
 }
 
 void CN64System::TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly)

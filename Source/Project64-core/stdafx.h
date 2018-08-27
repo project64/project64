@@ -10,3 +10,5 @@
 #include "Version.h"
 #include <Project64-core/Settings.h>
 #include <Project64-core/TraceModulesProject64.h>
+
+#include "Project64\CKaillera.h"

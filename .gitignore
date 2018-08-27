@@ -87,3 +87,22 @@ Thumbs.db
 /Source/Project64-video/Version.h
 /Source/RSP/Version.h
 /Save
+Bin/Release/Config/NRage.ini
+Source/Project64/n02.ini
+Bin/Release/n02.ini
+Source/3rd Party/wx/lib/vc_lib/mswu/wx/setup.h
+Bin/Release/Config/Glide64.rdb
+Bin/Release/Config/Project64.zcache
+Bin/Release/Config/Project64.rdx
+Bin/Release/Config/Project64.cache3
+Bin/Release/Config/Project64.rdn
+Bin/Release/Config/Project64.sc3
+Bin/Release/Config/Project64.sc3
+Plugin/Audio/AziAudio.dll
+Plugin/Audio/mupen64_rsp_hle.dll
+Plugin/Audio/mupen64_rsp_hle.cfg
+Plugin/Input/NRage_DInput8_V2_1.83.dll
+Plugin/RSP/RSP 1.7.dll.OLD
+Plugin/GFX/RiceVideo.dll
+Plugin/GFX/RiceVideo5.5.0.ini
+Plugin/GFX/RiceVideo5.5.1.dll 

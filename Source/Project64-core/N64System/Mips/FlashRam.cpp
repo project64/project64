@@ -14,6 +14,8 @@
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Common/path.h>
 
+extern CKaillera *ck;
+
 CFlashram::CFlashram(bool ReadOnly) :
 m_FlashRamPointer(NULL),
 m_FlashFlag(FLASHRAM_MODE_NOPES),
@@ -120,11 +122,19 @@ uint32_t CFlashram::ReadFromFlashStatus(uint32_t PAddr)
 
 bool CFlashram::LoadFlashram()
 {
-    CPath FileName(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.fla", g_Settings->LoadStringVal(Game_GameName).c_str()).c_str());
-    if (g_Settings->LoadBool(Setting_UniqueSaveDir))
-    {
-        FileName.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
-    }
+    CPath FileName;
+	if (ck->isPlayingKailleraGame)
+	{
+		ck->GetFileName(FileName, "fla");
+	}
+	else
+	{
+		FileName = CPath(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.fla", g_Settings->LoadStringVal(Game_GameName).c_str()).c_str());
+		if (g_Settings->LoadBool(Setting_UniqueSaveDir))
+		{
+			FileName.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
+		}
+	}
 
     if (!FileName.DirectoryExists())
     {

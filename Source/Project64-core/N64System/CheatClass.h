@@ -13,6 +13,15 @@
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/Plugins/PluginClass.h>
 
+typedef	struct
+{
+	uint32_t Command;
+	uint16_t Value;
+} GAMESHARK_CODE;
+
+typedef std::vector<GAMESHARK_CODE> CODES;
+typedef std::vector<CODES> CODES_ARRAY;
+
 class CCheats
 {
 public:
@@ -32,11 +41,6 @@ public:
     static bool IsValid16BitCode(const char * CheatString);
 
 private:
-    struct GAMESHARK_CODE
-    {
-        uint32_t Command;
-        uint16_t Value;
-    };
 
     struct MEM_VALUE16
     {
@@ -50,8 +54,6 @@ private:
         uint8_t Changed;
     };
 
-    typedef std::vector<GAMESHARK_CODE> CODES;
-    typedef std::vector<CODES> CODES_ARRAY;
     typedef std::map<uint32_t, MEM_VALUE16> ORIGINAL_VALUES16;
     typedef std::map<uint32_t, MEM_VALUE8> ORIGINAL_VALUES8;
 

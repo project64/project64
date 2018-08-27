@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <Common/path.h>
 
+extern CKaillera *ck;
+
 CMempak::CMempak()
 {
     for (uint32_t i = 0; i < sizeof(m_Formatted) / sizeof(m_Formatted[0]); i++)
@@ -27,7 +29,22 @@ CMempak::CMempak()
 void CMempak::LoadMempak(int32_t Control, bool Create)
 {
     stdstr MempakName;
-    MempakName.Format("%s_Cont_%d", g_Settings->LoadStringVal(Game_GameName).c_str(), Control + 1);
+
+	if (ck->isPlayingKailleraGame)
+	{
+		if (ck->playerNumber == 0)
+		{
+			MempakName.Format("%s_Cont_1", g_Settings->LoadStringVal(Game_GameName).c_str());
+		}
+		else
+		{
+			MempakName = "kaillera";
+		}
+	}
+	else
+	{
+		MempakName.Format("%s_Cont_%d", g_Settings->LoadStringVal(Game_GameName).c_str(), Control + 1);
+	}
 
     CPath MempakPath(g_Settings->LoadStringVal(Directory_NativeSave).c_str(), stdstr_f("%s.mpk", MempakName.c_str()).c_str());
     if (g_Settings->LoadBool(Setting_UniqueSaveDir))

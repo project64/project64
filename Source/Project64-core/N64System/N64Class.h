@@ -75,6 +75,10 @@ public:
     void   Reset(bool bInitReg, bool ClearMenory);
     void   GameReset();
     void   PluginReset();
+	void   IncrementVITotalCount() { ++viTotalCount; }
+	void   ResetVITotalCount() { viTotalCount = 0; }
+	uint32_t GetVITotalCount() const { return viTotalCount; }
+	void   SetVITotalCount(uint32_t count) { viTotalCount = count; }
 
     void   Pause();
     void   RunRSP();
@@ -165,6 +169,7 @@ private:
     bool            m_SyncCpu;
     bool            m_CheatsSlectionChanged;
     CRandom         m_Random;
+	uint32_t		viTotalCount;
 
     //When Syncing cores this is the PC where it last Sync'ed correctly
     uint32_t m_LastSuccessSyncPC[10];
