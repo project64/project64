@@ -131,7 +131,8 @@ bool CN64Rom::AllocateAndLoadN64Image(const char * FileLoc, bool LoadBootCodeOnl
     ByteSwapRom();
 
     //Protect the memory so that it can not be written to.
-    ProtectMemory(m_ROMImage, m_RomFileSize, MEM_READONLY);
+	if (g_Plugins->Control() && !g_Plugins->Control()->HookROM)
+		ProtectMemory(m_ROMImage, m_RomFileSize, MEM_READONLY);
     return true;
 }
 
@@ -219,6 +220,7 @@ bool CN64Rom::AllocateAndLoadZipImage(const char * FileLoc, bool LoadBootCodeOnl
             ByteSwapRom();
 
             //Protect the memory so that it can not be written to.
+			if (g_Plugins->Control() && !g_Plugins->Control()->HookROM)
             ProtectMemory(m_ROMImage, m_RomFileSize, MEM_READONLY);
         }
         unzCloseCurrentFile(file);
@@ -399,6 +401,7 @@ void CN64Rom::CalculateRomCrc()
     *(uint32_t *)(m_ROMImage + 0x10) = a3;
     *(uint32_t *)(m_ROMImage + 0x14) = s0;
 
+	if (g_Plugins->Control() && !g_Plugins->Control()->HookROM)
     ProtectMemory(m_ROMImage, m_RomFileSize, MEM_READONLY);
 }
 
@@ -544,6 +547,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
             ByteSwapRom();
 
             //Protect the memory so that it can not be written to.
+			if (g_Plugins->Control() && !g_Plugins->Control()->HookROM)
             ProtectMemory(m_ROMImage, m_RomFileSize, MEM_READONLY);
             Loaded7zFile = true;
             break;
@@ -693,6 +697,7 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
             ByteSwapRom();
 
             //Protect the memory so that it can not be written to.
+			if (g_Plugins->Control() && !g_Plugins->Control()->HookROM)
             ProtectMemory(m_ROMImage, m_RomFileSize, MEM_READONLY);
             Loaded7zFile = true;
             break;

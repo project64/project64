@@ -11,6 +11,8 @@
 #include "stdafx.h"
 #include "FramePerSecondClass.h"
 #include <Project64-core/N64System/N64Types.h>
+#include <Project64-core/N64System/SystemGlobals.h>
+#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 
 CFramePerSecond::CFramePerSecond() :
 m_CurrentViFrame(0),
@@ -61,6 +63,10 @@ void CFramePerSecond::Reset(bool ClearDisplay)
 
 void CFramePerSecond::UpdateViCounter(void)
 {
+	//Notify mouse injector
+	CControl_Plugin *control = g_Plugins->Control();
+	if (control && control->HookRDRAM != NULL && g_MMU != NULL)
+		control->HookRDRAM((uint32_t*)g_MMU->GetWriteMap(), CGameSettings::OverClockModifier());
     if (m_iFrameRateType != FR_VIs &&
         m_iFrameRateType != FR_VIs_DLs &&
         m_iFrameRateType != FR_PERCENT)

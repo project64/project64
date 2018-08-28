@@ -380,6 +380,7 @@ LRESULT CDebugMemoryView::OnMemoryModified(LPNMHDR lpNMHDR)
                 uint8_t * ROM = g_Settings->LoadBool(Game_LoadRomToMemory) ? g_MMU->Rdram() + 0x10000000: g_Rom->GetRomAddress();
                 ProtectMemory(ROM, g_Rom->GetRomSize(), MEM_READWRITE);
                 ROM[(PhysicalAddress - 0x10000000) ^ 3] = (uint8_t)Value;
+				if (g_Plugins->Control() && !g_Plugins->Control()->HookROM)
                 ProtectMemory(ROM, g_Rom->GetRomSize(), MEM_READONLY);
             }
         }

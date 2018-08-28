@@ -14,6 +14,7 @@ extern CKaillera *ck;
 #include <Project64-core/N64System/N64RomClass.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include "ControllerPlugin.h"
+#include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 
 CControl_Plugin::CControl_Plugin(void) :
     WM_KeyDown(NULL),
@@ -22,6 +23,8 @@ CControl_Plugin::CControl_Plugin(void) :
     GetKeys(NULL),
     ReadController(NULL),
     ControllerCommand(NULL),
+	HookRDRAM(NULL),
+	HookROM(NULL),
     m_AllocatedControllers(false)
 {
     memset(&m_PluginControllers, 0, sizeof(m_PluginControllers));
@@ -45,14 +48,19 @@ bool CControl_Plugin::LoadFunctions(void)
     LoadFunction(WM_KeyDown);
     LoadFunction(WM_KeyUp);
     LoadFunction(RumbleCommand);
+	LoadFunction(HookRDRAM);
+	LoadFunction(HookROM);
 
     //Make sure dll had all needed functions
     if (InitiateControllers == NULL) { UnloadPlugin(); return false; }
 
-    if (m_PluginInfo.Version >= 0x0102)
+    if (m_PluginInfo.Version >= 0x0102 && m_PluginInfo.Version != 0xFBAD)
     {
         if (PluginOpened == NULL) { UnloadPlugin(); return false; }
     }
+
+	if (HookRDRAM && g_MMU)
+		HookRDRAM((uint32_t*)g_MMU->GetWriteMap(), CGameSettings::OverClockModifier());
 
     // Allocate our own controller
     m_AllocatedControllers = true;
@@ -77,7 +85,7 @@ bool CControl_Plugin::Initiate(CN64System * System, RenderWindow * Window)
     }
 
     // Test Plugin version
-    if (m_PluginInfo.Version == 0x0100)
+    if (m_PluginInfo.Version == 0x0100 || m_PluginInfo.Version == 0xFBAD)
     {
         //Get Function from DLL
         void(CALL *InitiateControllers_1_0)(void * hMainWindow, CONTROL Controls[4]);
@@ -160,6 +168,8 @@ void CControl_Plugin::UnloadPluginDetails(void)
     ReadController = NULL;
     WM_KeyDown = NULL;
     WM_KeyUp = NULL;
+	HookRDRAM = NULL;
+	HookROM = NULL;
 }
 
 void CControl_Plugin::UpdateKeys(void)

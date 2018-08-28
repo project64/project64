@@ -102,6 +102,7 @@ bool CKaillera::SetRomName(char* path)
 			rom->ByteSwapRomPublic();
 
 			//Protect the memory so that it can not be written to.
+			if (g_Plugins->Control() && !g_Plugins->Control()->HookROM)
 			ProtectMemory(rom->GetRomAddress(), rom->GetRomSize(), MEM_READONLY);
 			Loaded7zFile = true;
 			break;
@@ -938,6 +939,7 @@ void CKaillera::UploadGameSettings()
 	UploadSetting("!SetVIRefresh=%u", settings.ViRefreshRate());
 	UploadSetting("!SetAICount=%u", settings.AiCountPerBytes());
 	UploadSetting("!SetOverclock=%u", settings.OverClockModifier());
+	kailleraModifyPlayValues((void *)kBuffers, sizeof(kPlayerEntry));
 	UploadSetting("!SetTLB=%u", (uint32_t)settings.bUseTlb());
 	UploadSetting("!SetDelaySI=%u", (uint32_t)settings.bDelaySI());
 	UploadSetting("!SetDelayDP=%u", (uint32_t)settings.bDelayDP());
@@ -945,6 +947,7 @@ void CKaillera::UploadGameSettings()
 	UploadSetting("!SetFixedAudio=%u", (uint32_t)settings.bFixedAudio());
 	UploadSetting("!SetSyncAudio=%u", (uint32_t)settings.bSyncToAudio());
 	UploadSetting("!Set32bit=%u", (uint32_t)settings.b32BitCore());
+	kailleraModifyPlayValues((void *)kBuffers, sizeof(kPlayerEntry));
 }
 
 void CKaillera::UploadCheatCodes()

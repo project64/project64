@@ -108,6 +108,8 @@ public:
     void(CALL *GetKeys)             (int32_t Control, BUTTONS * Keys);
     void(CALL *ReadController)      (int32_t Control, uint8_t * Command);
     void(CALL *ControllerCommand)   (int32_t Control, uint8_t * Command);
+	void(CALL *HookRDRAM)			(uint32_t *Mem, int OCFactor);
+	void(CALL *HookROM)				(uint32_t *Rom);
 
     inline CCONTROL const * Controller(int32_t control) { return m_Controllers[control]; }
     inline CONTROL * PluginControllers(void) { return m_PluginControllers; }

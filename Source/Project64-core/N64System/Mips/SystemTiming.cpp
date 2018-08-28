@@ -44,6 +44,10 @@ void CSystemTimer::Reset()
 
 void CSystemTimer::SetTimer(TimerType Type, uint32_t Cycles, bool bRelative)
 {
+	//Notify mouse injector plugin
+	CControl_Plugin *control = g_Plugins->Control();
+	if (control && control->HookRDRAM != NULL && g_MMU != NULL)
+		control->HookRDRAM((uint32_t*)g_MMU->GetWriteMap(), CGameSettings::OverClockModifier());
     Cycles *= CGameSettings::OverClockModifier();
     if (Type >= MaxTimer || Type == UnknownTimer)
     {

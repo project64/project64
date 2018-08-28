@@ -187,6 +187,7 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
         }
         memcpy(m_Rom, g_Rom->GetRomAddress(), g_Rom->GetRomSize());
 
+		if (g_Plugins->Control() && !g_Plugins->Control()->HookROM)
         ::ProtectMemory(m_Rom, g_Rom->GetRomSize(), MEM_READONLY);
     }
     else

@@ -67,6 +67,11 @@ public:
     uint8_t * Dmem();
     uint8_t * Imem();
     uint8_t * PifRam();
+	size_t *GetReadMap() { return m_TLB_ReadMap; }
+	size_t *GetWriteMap() { return m_TLB_WriteMap; }
+	size_t **GetReadMapPtr() { return &m_TLB_ReadMap; }
+	size_t **GetWriteMapPtr() { return &m_TLB_WriteMap; }
+	uint8_t **GetRdRamPtr() { return &m_RDRAM; }
 
     bool  LB_VAddr(uint32_t VAddr, uint8_t & Value);
     bool  LH_VAddr(uint32_t VAddr, uint16_t & Value);

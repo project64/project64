@@ -1035,6 +1035,16 @@ void CN64System::ExecuteCPU()
 
     m_EndEmulation = false;
 
+	//Notify mouse injector plugin
+	CControl_Plugin *control = g_Plugins->Control();
+	if (control)
+	{
+		if (control->HookROM != NULL)
+			control->HookROM((uint32_t*)g_Rom->GetRomAddress());
+		if (g_MMU && control->HookRDRAM)
+			control->HookRDRAM((uint32_t*)g_MMU->GetWriteMap(), CGameSettings::OverClockModifier());
+	}
+
     m_Plugins->RomOpened();
     if (m_SyncCPU)
     {

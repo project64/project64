@@ -315,6 +315,7 @@ bool CPlugin::ValidPluginVersion(PLUGIN_INFO & PluginInfo)
         if (PluginInfo.Version == 0x0100) { return true; }
         if (PluginInfo.Version == 0x0101) { return true; }
         if (PluginInfo.Version == 0x0102) { return true; }
+		if (PluginInfo.Version == 0xFBAD) { return true; }
         break;
     }
     return false;
