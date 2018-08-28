@@ -16,6 +16,100 @@ int(__stdcall* kailleraModifyPlayValues)  (void *values, int size);
 void(__stdcall* kailleraChatSend)  (char *text);
 void(__stdcall* kailleraEndGame) ();
 
+
+char base64[64] =
+{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/' };
+
+int Decode64(char *input, char *output)
+{
+	int x;
+	int y;
+	int group = 0;
+	int g = 18;
+	char *savepos = output;
+
+	for (x = 0; x < strlen(input); x++)
+	{
+		for (y = 0; y < 64; y++)
+		{
+			if (base64[y] == input[x])
+				break;
+		}
+
+		if (y != 64)
+			group = (group | (y << g));
+
+		g -= 6;
+		if (g  < 0)
+		{
+			*output++ = (char)((group & 0xff0000) >> 16);
+			*output++ = (char)((group & 0xff00) >> 8);
+			*output++ = (char)((group & 0xff));
+			group = 0;
+			g = 18;
+		}
+	}
+
+	*output = 0;
+
+	return output - savepos;
+}
+
+
+void Encode64(char *input, char *output, int len)
+{
+	int   state = 0;
+	int   i, x, old, new1, new2;
+
+	for (i = 0; i < len; i++)
+	{
+		state++;
+		new2 = 32;
+		switch (state)
+		{
+		case 1: x = input[i];
+			new1 = base64[((x >> 2) & 0x3F)];
+			*output++ = (char)new1;
+			break;
+		case 2: x = input[i];
+			new1 = base64[(((old << 4) & 0x30) | (((x >> 4) & 0xF)))];
+			*output++ = (char)new1;
+			break;
+		case 3: x = input[i];
+			new1 = base64[(((old << 2) & 0x3C) | (((x >> 6) & 0x3)))];
+			new2 = base64[(x & 0x3F)];
+			*output++ = (char)new1;
+			*output++ = (char)new2;
+			state = 0;
+			break;
+		} /* end of switch statement */
+		old = x;
+	}
+
+	switch (state)
+	{
+	case 0:
+		break;
+	case 1:
+		new1 = base64[((old << 4) & 0x30)];
+		*output++ = (char)new1;
+		*output++ = '=';
+		*output++ = '=';
+		break;
+	case 2: x = input[i];
+		new1 = base64[((old << 2) & 0x3C)];
+		*output++ = (char)new1;
+		*output++ = '=';
+		break;
+	}
+
+	*output = 0;
+}
+
 extern CKaillera *ck;
 
 void(__stdcall StartKailleraThread)(CKaillera *pKaillera);
@@ -255,20 +349,7 @@ void CKaillera::OnChatReceived(char *nick, char *text)
 			FILE *stream = NULL;
 			char *line = text + 1;
 
-			if (strncmp(line, "cf=", 3) == 0)
-			{
-				/*
-				INI_ENTRY *c = &currentromoptions;
-				sscanf(line, "cf=%d,32bit=%d,reg=%d,fpu=%d,rdram=%d,save=%d,tlb=%d,eeprom=%d,2pass=%d,rsp=%d,link=%d",
-					&(c->Counter_Factor), &(c->Assume_32bit), &(c->Use_Register_Caching), &(c->FPU_Hack), &(c->RDRAM_Size), &(c->Save_Type),
-					&(c->Use_TLB), &(c->Eeprom_size), &(c->Advanced_Block_Analysis), &(c->RSP_RDP_Timing), &(c->Link_4KB_Blocks));
-				CounterFactor = currentromoptions.Counter_Factor;
-#ifdef _DEBUG
-				currentromoptions.Assume_32bit = ASSUME_32BIT_NO;
-#endif
-				*/
-			}
-			else if (strncmp(line, "EnableGameFixes", 15) == 0)
+			if (strncmp(line, "EnableGameFixes", 15) == 0)
 			{
 				DisableGameFixes = false;
 			}
@@ -276,23 +357,55 @@ void CKaillera::OnChatReceived(char *nick, char *text)
 			{
 				DisableGameFixes = true;
 			}
+			else if (strncmp(line, "cf=", 3) == 0)
+			{
+				uint32_t savechip;
+				uint32_t rdramsize;
+				uint32_t countperop;
+				uint32_t vir;
+				uint32_t aic;
+				uint32_t oc;
+				uint32_t tlb;
+				uint32_t si;
+				uint32_t dp;
+				uint32_t auds;
+				uint32_t fixa;
+				uint32_t synca;
+				uint32_t bit32;
+
+				//Received game settings from the host
+				sscanf(line, "!sc=%u,rdram=%u,cpo=%u,vir=%u,aic=%u,oc=%u,tlb=%u,si=%u,dp=%u,auds=%u,fixa=%u,synca=%u,32b=%u",
+					&savechip, &rdramsize, &countperop, &vir, &aic, &oc,
+					&tlb, &si, &dp, &auds, &fixa, &synca, &bit32);
+
+				g_Settings->SaveDword(Game_SaveChip, savechip);
+				g_Settings->SaveDword(Game_RDRamSize, rdramsize);
+				g_Settings->SaveDword(Game_CounterFactor, countperop);
+				g_Settings->SaveDword(Game_ViRefreshRate, vir);
+				g_Settings->SaveDword(Game_AiCountPerBytes, aic);
+				g_Settings->SaveDword(Game_OverClockModifier, oc);
+				g_Settings->SaveBool(Game_UseTlb, tlb);
+				g_Settings->SaveBool(Game_DelaySI, si ? true : false);
+				g_Settings->SaveBool(Game_DelayDP, dp ? true : false);
+				g_Settings->SaveBool(Game_RspAudioSignal, auds ? true : false);
+				g_Settings->SaveBool(Game_FixedAudio, fixa ? true : false);
+				g_Settings->SaveBool(Game_SyncViaAudio, synca ? true : false);
+				g_Settings->SaveBool(Game_32Bit, bit32 ? true : false);
+			}
 			else if (strncmp(line, "CheatStart", 10) == 0)
 			{
 				CheatList.clear();
 			}
-			else if (strncmp(line, "CheatEnd", 8) == 0)
-			{
-				//if (playerNumber != 0)
-				//	kailleraAutoApplyCheat = TRUE;
-			}
+			//else if (strncmp(line, "CheatEnd", 8) == 0)
+			//{
+			//}
 			else if (strncmp(line, "ExtensionStart", 14) == 0)
 			{
 				ExtensionList.clear();
 			}
-			else if (strncmp(line, "ExtensionEnd", 12) == 0)
-			{
-
-			}
+			//else if (strncmp(line, "ExtensionEnd", 12) == 0)
+			//{
+			//}
 			else if (strncmp(line, "Ext", 3) == 0)
 			{
 				char* extension = line + 3;
@@ -309,58 +422,6 @@ void CKaillera::OnChatReceived(char *nick, char *text)
 				SetLagness((int)strtoul(line + 15, NULL, 10));
 				mainmenu->GetGui()->RefreshMenu();
 			}
-			else if (strncmp(line, "SetRdram=", 9) == 0)
-			{
-				g_Settings->SaveDword(Game_RDRamSize, strtoul(line + 9, NULL, 10));
-			}
-			else if (strncmp(line, "SetSaveChip=", 12) == 0)
-			{
-				g_Settings->SaveDword(Game_SaveChip, strtoul(line + 12, NULL, 10));
-			}
-			else if (strncmp(line, "SetCountPerOp=", 14) == 0)
-			{
-				g_Settings->SaveDword(Game_CounterFactor, strtoul(line + 14, NULL, 10));
-			}
-			else if (strncmp(line, "SetVIRefresh=", 13) == 0)
-			{
-				g_Settings->SaveDword(Game_ViRefreshRate, strtoul(line + 13, NULL, 10));
-			}
-			else if (strncmp(line, "SetAICount=", 11) == 0)
-			{
-				g_Settings->SaveDword(Game_AiCountPerBytes, strtoul(line + 11, NULL, 10));
-			}
-			else if (strncmp(line, "SetOverclock=", 13) == 0)
-			{
-				g_Settings->SaveDword(Game_OverClockModifier, strtoul(line + 13, NULL, 10));
-			}
-			else if (strncmp(line, "SetTLB=", 7) == 0)
-			{
-				g_Settings->SaveBool(Game_UseTlb, strtoul(line + 7, NULL, 10) ? true : false);
-			}
-			else if (strncmp(line, "SetDelaySI=", 11) == 0)
-			{
-				g_Settings->SaveBool(Game_DelaySI, strtoul(line + 11, NULL, 10) ? true : false);
-			}
-			else if (strncmp(line, "SetDelayDP=", 11) == 0)
-			{
-				g_Settings->SaveBool(Game_DelayDP, strtoul(line + 11, NULL, 10) ? true : false);
-			}
-			else if (strncmp(line, "SetAudioSignal=", 15) == 0)
-			{
-				g_Settings->SaveBool(Game_RspAudioSignal, strtoul(line + 15, NULL, 10) ? true : false);
-			}
-			else if (strncmp(line, "SetFixedAudio=", 14) == 0)
-			{
-				g_Settings->SaveBool(Game_FixedAudio, strtoul(line + 14, NULL, 10) ? true : false);
-			}
-			else if (strncmp(line, "SetSyncAudio=", 13) == 0)
-			{
-				g_Settings->SaveBool(Game_SyncViaAudio, strtoul(line + 13, NULL, 10) ? true : false);
-			}
-			else if (strncmp(line, "Set32bit=", 9) == 0)
-			{
-				g_Settings->SaveBool(Game_32Bit, strtoul(line + 9, NULL, 10) ? true : false);
-			}
 			else if (strncmp(line, "Cheat=", 6) == 0)
 			{
 				CheatList.push_back(line);
@@ -373,10 +434,11 @@ void CKaillera::OnChatReceived(char *nick, char *text)
 			{
 				char* seed = line + 15;
 				uint32_t received_seed = strtoul(seed, NULL, 10);
-				char received[20];
+				char *received = new char[128];
 				sprintf(received, "Received seed: %u", received_seed);
 				SetRandomizerSeed(received_seed);
 				kailleraChatSend(received);
+				delete received;
 			}
 			else if (strncmp(text, "!EEPROM", 7) == 0)
 			{
@@ -933,21 +995,16 @@ void CKaillera::UploadGameSettings()
 	g_Settings->SaveString(Game_IniKey, GetGameIniKey());
 	settings.RefreshGameSettings();
 
-	UploadSetting("!SetRdram=%u", settings.RdramSize());
-	UploadSetting("!SetSaveChip=%u", settings.SaveChip());
-	UploadSetting("!SetCountPerOp=%u", settings.CountPerOp());
-	UploadSetting("!SetVIRefresh=%u", settings.ViRefreshRate());
-	UploadSetting("!SetAICount=%u", settings.AiCountPerBytes());
-	UploadSetting("!SetOverclock=%u", settings.OverClockModifier());
-	kailleraModifyPlayValues((void *)kBuffers, sizeof(kPlayerEntry));
-	UploadSetting("!SetTLB=%u", (uint32_t)settings.bUseTlb());
-	UploadSetting("!SetDelaySI=%u", (uint32_t)settings.bDelaySI());
-	UploadSetting("!SetDelayDP=%u", (uint32_t)settings.bDelayDP());
-	UploadSetting("!SetAudioSignal=%u", (uint32_t)settings.RspAudioSignal());
-	UploadSetting("!SetFixedAudio=%u", (uint32_t)settings.bFixedAudio());
-	UploadSetting("!SetSyncAudio=%u", (uint32_t)settings.bSyncToAudio());
-	UploadSetting("!Set32bit=%u", (uint32_t)settings.b32BitCore());
-	kailleraModifyPlayValues((void *)kBuffers, sizeof(kPlayerEntry));
+	char *str = new char[5000];
+
+	sprintf(str, "!sc=%u,rdram=%u,cpo=%u,vir=%u,aic=%u,oc=%u,tlb=%u,si=%u,dp=%u,auds=%u,fixa=%u,synca=%u,32b=%u",
+		settings.SaveChip(), settings.RdramSize(), settings.CountPerOp(), settings.ViRefreshRate(), settings.AiCountPerBytes(), settings.OverClockModifier(),
+		(uint32_t)settings.bUseTlb(), (uint32_t)settings.bDelaySI(), (uint32_t)settings.bDelayDP(), (uint32_t)settings.RspAudioSignal(), (uint32_t)settings.bFixedAudio(),
+		(uint32_t)settings.bSyncToAudio(), (uint32_t)settings.b32BitCore());
+
+	kailleraChatSend(str);
+
+	delete str;
 }
 
 void CKaillera::UploadCheatCodes()
@@ -1004,8 +1061,6 @@ void CKaillera::UploadCheatCodes()
 		kailleraChatSend((char*)(stdstr("!") + cheat).c_str());
 	}
 
-	kailleraChatSend("!CheatEnd");
-
 	kailleraChatSend("!ExtensionStart");
 
 	for (auto&& extension : extensionlist)
@@ -1014,7 +1069,7 @@ void CKaillera::UploadCheatCodes()
 		kailleraChatSend((char*)(stdstr("!Ext") + extensionstr).c_str());
 	}
 
-	kailleraChatSend("!ExtensionEnd");
+	//kailleraChatSend("!ExtensionEnd");
 }
 
 /************************************************************************/
@@ -1076,99 +1131,6 @@ void CKaillera::GetFileName(CPath &filename, char* ext)
 	//char test[1024];
 	//sprintf(test, "num %i %s", playerNumber, std::string(filename).c_str());
 	//MessageBoxA(NULL, test, "", MB_OK);
-}
-
-char base64[64] =
-{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/' };
-
-int Decode64(char *input, char *output)
-{
-	int x;
-	int y;
-	int group = 0;
-	int g = 18;
-	char *savepos = output;
-
-	for (x = 0; x < strlen(input); x++)
-	{
-		for (y = 0; y < 64; y++)
-		{
-			if (base64[y] == input[x])
-				break;
-		}
-
-		if (y != 64)
-			group = (group | (y << g));
-
-		g -= 6;
-		if (g  < 0)
-		{
-			*output++ = (char)((group & 0xff0000) >> 16);
-			*output++ = (char)((group & 0xff00) >> 8);
-			*output++ = (char)((group & 0xff));
-			group = 0;
-			g = 18;
-		}
-	}
-
-	*output = 0;
-
-	return output - savepos;
-}
-
-
-void Encode64(char *input, char *output, int len)
-{
-	int   state = 0;
-	int   i, x, old, new1, new2;
-
-	for (i = 0; i < len; i++)
-	{
-		state++;
-		new2 = 32;
-		switch (state)
-		{
-		case 1: x = input[i];
-			new1 = base64[((x >> 2) & 0x3F)];
-			*output++ = (char)new1;
-			break;
-		case 2: x = input[i];
-			new1 = base64[(((old << 4) & 0x30) | (((x >> 4) & 0xF)))];
-			*output++ = (char)new1;
-			break;
-		case 3: x = input[i];
-			new1 = base64[(((old << 2) & 0x3C) | (((x >> 6) & 0x3)))];
-			new2 = base64[(x & 0x3F)];
-			*output++ = (char)new1;
-			*output++ = (char)new2;
-			state = 0;
-			break;
-		} /* end of switch statement */
-		old = x;
-	}
-
-	switch (state)
-	{
-	case 0:
-		break;
-	case 1:
-		new1 = base64[((old << 4) & 0x30)];
-		*output++ = (char)new1;
-		*output++ = '=';
-		*output++ = '=';
-		break;
-	case 2: x = input[i];
-		new1 = base64[((old << 2) & 0x3C)];
-		*output++ = (char)new1;
-		*output++ = '=';
-		break;
-	}
-
-	*output = 0;
 }
 
 void CKaillera::KailleraUploadFile(const char* filename, char* type)

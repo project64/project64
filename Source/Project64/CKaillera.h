@@ -148,3 +148,5 @@ private:
 
 	KailleraStateType KailleraState;
 };
+
+extern void(__stdcall* kailleraChatSend)  (char *text);
