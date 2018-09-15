@@ -2160,12 +2160,13 @@ void CN64System::RefreshScreen()
 		if (ck->isPlayingKailleraGame)
 		{
 			//g_Plugins->Control()->GetKeys(0, &Keys); // get local input
-
+#if 0
 			for (int Control = 0; Control < 4; Control++)
 			{
 				ck->GetPlayerKeyValuesFor1Player(Keys, Control);
 				m_Buttons[Control] = Keys.Value; // get every player's input back
 			}
+#endif
 		}
 		else
 		{

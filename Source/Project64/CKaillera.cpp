@@ -384,7 +384,7 @@ void CKaillera::OnChatReceived(char *nick, char *text)
 				g_Settings->SaveDword(Game_ViRefreshRate, vir);
 				g_Settings->SaveDword(Game_AiCountPerBytes, aic);
 				g_Settings->SaveDword(Game_OverClockModifier, oc);
-				g_Settings->SaveBool(Game_UseTlb, tlb);
+				g_Settings->SaveBool(Game_UseTlb, tlb ? true : false);
 				g_Settings->SaveBool(Game_DelaySI, si ? true : false);
 				g_Settings->SaveBool(Game_DelayDP, dp ? true : false);
 				g_Settings->SaveBool(Game_RspAudioSignal, auds ? true : false);
@@ -422,7 +422,7 @@ void CKaillera::OnChatReceived(char *nick, char *text)
 				SetLagness((int)strtoul(line + 15, NULL, 10));
 				mainmenu->GetGui()->RefreshMenu();
 			}
-			else if (strncmp(line, "Cheat=", 6) == 0)
+			else if (strncmp(line, "C=", 2) == 0)
 			{
 				CheatList.push_back(line);
 			}
@@ -434,11 +434,11 @@ void CKaillera::OnChatReceived(char *nick, char *text)
 			{
 				char* seed = line + 15;
 				uint32_t received_seed = strtoul(seed, NULL, 10);
-				char *received = new char[128];
-				sprintf(received, "Received seed: %u", received_seed);
+				//char *received = new char[128];
+				//sprintf(received, "Received seed: %u", received_seed);
 				SetRandomizerSeed(received_seed);
-				kailleraChatSend(received);
-				delete received;
+				//kailleraChatSend(received);
+				//delete received;
 			}
 			else if (strncmp(text, "!EEPROM", 7) == 0)
 			{
@@ -589,6 +589,7 @@ void CKaillera::GetPlayerKeyValues(kPlayerEntry keyvalues[4], int player)
 	//kPlayerEntry	kailleraKeyQueues[4][KAILLERA_KEY_VALUE_QUETE_LEN];
 	//int			kailleraKeyQueueIndex[4];
 	//kPlayerEntry	kBuffers[8];
+	static char *str = new char[500];
 
 	unsigned int VItouse;
 	int idx;
@@ -626,6 +627,8 @@ CheckKeyValuesAgain:
 
 	if ((kailleraKeyValid[player][idx] == FALSE || kailleraKeyQueues[player][idx].viCount != VItouse) && kailleraClientStatus[player])
 	{
+		sprintf(str, "Wait for player %d to sync to key VI=%d", player, VItouse);
+		g_Notify->DisplayMessage(5, str);
 		//DEBUG_NETPLAY_MACRO(TRACE2("Wait for player %d to sync to key VI=%d", player, VItouse));
 		Sleep(4);
 		goto CheckKeyValuesAgain;
@@ -633,12 +636,13 @@ CheckKeyValuesAgain:
 
 	//DEBUG_NETPLAY_MACRO(TRACE4("Player %d get key=%X, VI (%d), syncVI (%d)", player, kailleraKeyQueues[player][idx].b.Value, viTotalCount, kailleraKeyQueues[player][idx].viCount));
 	//KAILLERA_LOG(fprintf(ktracefile, "P%d get key %08X at VI %d by syncVI(%d), key VI count=%d\n", player, kailleraKeyQueues[player][idx].b.Value, viTotalCount, VItouse, kailleraKeyQueues[player][idx].viCount));
+	sprintf(str, "P%d get key %08X at VI %d by syncVI(%d), key VI count=%d", player, kailleraKeyQueues[player][idx].b.Value, g_System->GetVITotalCount(), VItouse, kailleraKeyQueues[player][idx].viCount);
+	g_Notify->DisplayMessage(5, str);
 	memcpy(keyvalues + player, kailleraKeyQueues[player] + idx, sizeof(kPlayerEntry));
 }
 
 void CKaillera::GetPlayerKeyValuesFor1Player(BUTTONS& FKeys, int player)
 {
-	BUTTONS DummyKeys;
 
 	if (Kaillera_Thread_Is_Running)
 	{
@@ -664,6 +668,7 @@ void CKaillera::GetPlayerKeyValuesFor1Player(BUTTONS& FKeys, int player)
 kPlayerEntry LastEntries[4];
 void CKaillera::UpdatePlayerKeyValues()
 {
+	static char *str = new char[1000];
 	// Called in the Kaillera thread
 	int		reclen;
 	int		i;
@@ -675,7 +680,7 @@ void CKaillera::UpdatePlayerKeyValues()
 
 	kLastKeyUpdateVI += kKeyUpdateStep;
 	g_Plugins->Control()->GetKeys(0, &Keys);		// Read key status of the local player
-	for (int i = 1; i < 4; i++)
+	for (i = 1; i < 4; i++)
 	{
 		g_Plugins->Control()->GetKeys(i, &DummyKeys);		// Read key status of other controllers
 	}
@@ -801,6 +806,8 @@ check_again:
 						kBuffers[0].viCount |= NETPLAY_ARQ_REPLY;
 
 						//DEBUG_NETPLAY_TRACE1("To reply ARQ for syncVI=%d", arq_vicount);
+						sprintf(str, "P%d to reply ARQ for VI=%d, key=%08X", playerNumber, arq_vicount, kBuffers[0].b.Value);
+						g_Notify->DisplayMessage(5, str);
 						//KAILLERA_LOG(fprintf(ktracefile, "P%d to reply ARQ for VI=%d, key=%08X\n", kailleraLocalPlayerNumber, arq_vicount, kBuffers[0].b.Value));
 						kailleraModifyPlayValues((void *)kBuffers, sizeof(kPlayerEntry));
 						Sleep(6);
@@ -811,6 +818,8 @@ check_again:
 					}
 					else
 					{
+						sprintf(str, "Error: ARQ for VI=%d, but haven't get there yet", arq_vicount);
+						g_Notify->DisplayMessage(5, str);
 						//DEBUG_NETPLAY_TRACE1("Error: ARQ for VI=%d, but haven't get there yet", arq_vicount);
 					}
 				}
@@ -835,6 +844,8 @@ check_again:
 						entry->optimalDelay = kBuffers[i].optimalDelay;
 						entry->viCount = tempcount;
 						kailleraKeyValid[i][idx] = TRUE;
+						sprintf(str, "P%d replied ARQ for VI=%d, key=%08X", i, tempcount, kBuffers[i].b.Value);
+						g_Notify->DisplayMessage(5, str);
 						//KAILLERA_LOG(fprintf(ktracefile, "P%d replied ARQ for VI=%d, key=%08X\n", i, tempcount, kBuffers[i].b.Value));
 					}
 
@@ -877,6 +888,8 @@ check_again:
 									memcpy(&kBuffers[0], &kailleraLocalSendKeys[idx3], sizeof(kPlayerEntry));
 									kBuffers[0].viCount |= NETPLAY_ARQ_REPLY;
 									//DEBUG_NETPLAY_TRACE1("To resend Keys for syncVI=%d", viToCheck);
+									sprintf(str, "To resend Keys for syncVI=%d", viToCheck);
+									g_Notify->DisplayMessage(5, str);
 									kailleraModifyPlayValues((void *)kBuffers, sizeof(kPlayerEntry));
 									Sleep(3);
 									goto check_again;
@@ -890,6 +903,8 @@ check_again:
 
 									//DEBUG_NETPLAY_MACRO(TRACE3("ARQ P%d for syncVI = %d, Got (%08X)", i, viToCheck, kBuffers[i].viCount));
 									//KAILLERA_LOG(fprintf(ktracefile, "P%d ARQ to P%d for syncVI=%d\n", kailleraLocalPlayerNumber, i, viToCheck));
+									sprintf(str, "P%d ARQ to P%d for syncVI=%d", playerNumber, i, viToCheck);
+									g_Notify->DisplayMessage(5, str);
 
 									kailleraModifyPlayValues((void *)kBuffers, sizeof(kPlayerEntry));
 									ARQRequest = TRUE;
@@ -962,6 +977,8 @@ check_again:
 			goto label_Jump;
 		}
 
+		sprintf(str, "Kailler synced at syncVI = %d", minVI);
+		g_Notify->DisplayMessage(5, str);
 		// Update the latest key values from the server to my key value queues
 		//DEBUG_NETPLAY_TRACE1("Kailler synced at syncVI = %d", minVI);
 	}
@@ -974,7 +991,7 @@ check_again:
 
 void CKaillera::UploadRandomizerSeed()
 {
-	char seedstr[64];
+	char seedstr[70];
 	uint32_t seed = (uint32_t)time(NULL);
 	sprintf(seedstr, "!RandomizerSeed=%u", seed);
 
@@ -1009,7 +1026,8 @@ void CKaillera::UploadGameSettings()
 
 void CKaillera::UploadCheatCodes()
 {
-	CCheats    cheats(CMipsMemoryVM(0));
+	CMipsMemoryVM mem(0);
+	CCheats    cheats(mem);
 	g_Settings->SaveString(Game_IniKey, GetGameIniKey());
 
 	//Todo: set gamefix flag
@@ -1058,7 +1076,7 @@ void CKaillera::UploadCheatCodes()
 
 	for (auto&& cheat : cheatlist)
 	{
-		kailleraChatSend((char*)(stdstr("!") + cheat).c_str());
+		kailleraChatSend((char*)(stdstr("!C=") + cheat).c_str());
 	}
 
 	kailleraChatSend("!ExtensionStart");
@@ -1242,7 +1260,7 @@ void CKaillera::OnRomOpen()
 		// To clear the buffer stored in the Kaillera
 		memset(&kBuffers[0], 0, sizeof(kPlayerEntry));
 		kailleraModifyPlayValues((void *)kBuffers, sizeof(kPlayerEntry));
-		//Sleep(40);
+		Sleep(40);
 	}
 
 	// Broadcast current rom settings to all other players
@@ -1254,7 +1272,7 @@ void CKaillera::OnRomOpen()
 		UploadSaveFiles();
 		UploadGameSettings();
 	
-		//Sleep(200);
+		Sleep(200);
 	}
 
 	if (playerNumber == 0)
@@ -1270,7 +1288,7 @@ void CKaillera::OnRomOpen()
 		//SetStatusBarText(0, TranslateStringByString("Kaillera starts the game"));
 		kailleraChatSend("!!!StartGame!!!");	// Tell other players to start
 		kailleraModifyPlayValues((void *)kBuffers, sizeof(kPlayerEntry));
-		//Sleep(100);
+		Sleep(100);
 
 		//KailleraState = INPLAY;
 	}

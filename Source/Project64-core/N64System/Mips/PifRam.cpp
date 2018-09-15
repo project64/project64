@@ -22,6 +22,8 @@
 #include <Project64-core/N64System/Mips/Mempak.h>
 #include <Project64-core/Logging.h>
 
+extern CKaillera *ck;
+
 CPifRam::CPifRam(bool SavesReadOnly) :
     CEeprom(SavesReadOnly)
 {
@@ -100,16 +102,23 @@ void CPifRam::PifRamRead()
             {
                 if (Channel < 4)
                 {
-					if (Controllers[Channel].Present && Controllers[Channel].RawData)
+					if (ck->isPlayingKailleraGame)
 					{
-						if (g_Plugins->Control()->ReadController)
-						{
-							g_Plugins->Control()->ReadController(Channel, &m_PifRam[CurPos]);
-						}
+						ReadControllerCommand(Channel, &m_PifRam[CurPos]);
 					}
 					else
 					{
-						ReadControllerCommand(Channel, &m_PifRam[CurPos]);
+						if (Controllers[Channel].Present && Controllers[Channel].RawData)
+						{
+							if (g_Plugins->Control()->ReadController)
+							{
+								g_Plugins->Control()->ReadController(Channel, &m_PifRam[CurPos]);
+							}
+						}
+						else
+						{
+							ReadControllerCommand(Channel, &m_PifRam[CurPos]);
+						}
 					}
                 }
                 CurPos += m_PifRam[CurPos] + (m_PifRam[CurPos + 1] & 0x3F) + 1;
@@ -210,16 +219,23 @@ void CPifRam::PifRamWrite()
             {
                 if (Channel < 4)
                 {
-					if (Controllers[Channel].Present && Controllers[Channel].RawData)
+					if (ck->isPlayingKailleraGame)
 					{
-						if (g_Plugins->Control()->ControllerCommand)
-						{
-							g_Plugins->Control()->ControllerCommand(Channel, &m_PifRam[CurPos]);
-						}
+						ProcessControllerCommand(Channel, &m_PifRam[CurPos]);
 					}
 					else
 					{
-						ProcessControllerCommand(Channel, &m_PifRam[CurPos]);
+						if (Controllers[Channel].Present && Controllers[Channel].RawData)
+						{
+							if (g_Plugins->Control()->ControllerCommand)
+							{
+								g_Plugins->Control()->ControllerCommand(Channel, &m_PifRam[CurPos]);
+							}
+						}
+						else
+						{
+							ProcessControllerCommand(Channel, &m_PifRam[CurPos]);
+						}
 					}
                 }
                 else if (Channel == 4)
@@ -450,7 +466,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
                 g_Notify->DisplayError("What am I meant to do with this Controller Command");
             }
         }
-        if (Controllers[Control].Present != 0)
+        if (!ck->isPlayingKailleraGame ? Controllers[Control].Present != 0 : ck->kailleraClientStatus[Control] != 0)
         {
             Command[3] = 0x05;
             Command[4] = 0x00;
@@ -477,10 +493,30 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
                 g_Notify->DisplayError("What am I meant to do with this Controller Command");
             }
         }
-        if (Controllers[Control].Present == false)
-        {
-            Command[1] |= 0x80;
-        }
+		if (ck->isPlayingKailleraGame)
+		{
+			if (ck->kailleraClientStatus[Control] == false)
+			{
+				Command[1] |= 0x80;
+				Command[3] = 0xFF;
+				Command[4] = 0xFF;
+				Command[5] = 0xFF;
+			}
+			/*else
+			{
+				BUTTONS Keys;
+				memset(&Keys, 0, sizeof(Keys));
+				ck->GetPlayerKeyValuesFor1Player(Keys, Control);
+				*(DWORD *)&Command[3] = *(DWORD *)&Keys;
+			}*/
+		}
+		else
+		{
+			if (Controllers[Control].Present == false)
+			{
+				Command[1] |= 0x80;
+			}
+		}
         break;
     case 0x02: //read from controller pack
         if (LogControllerPak())
@@ -494,7 +530,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
                 g_Notify->DisplayError("What am I meant to do with this Controller Command");
             }
         }
-        if (Controllers[Control].Present != 0)
+        if (!ck->isPlayingKailleraGame ? Controllers[Control].Present != 0 : ck->kailleraClientStatus[Control] != 0)
         {
             uint32_t address = (Command[3] << 8) | (Command[4] & 0xE0);
             uint8_t* data = &Command[5];
@@ -535,7 +571,7 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
                 g_Notify->DisplayError("What am I meant to do with this Controller Command");
             }
         }
-        if (Controllers[Control].Present == true)
+        if (!ck->isPlayingKailleraGame ? Controllers[Control].Present != 0 : ck->kailleraClientStatus[Control] != 0)
         {
             uint32_t address = (Command[3] << 8) | (Command[4] & 0xE0);
             uint8_t* data = &Command[5];
@@ -577,19 +613,29 @@ void CPifRam::ReadControllerCommand(int32_t Control, uint8_t * Command)
     switch (Command[2])
     {
     case 0x01: // read controller
-        if (Controllers[Control].Present != 0)
+        if (!ck->isPlayingKailleraGame ? Controllers[Control].Present != 0 : ck->kailleraClientStatus[Control] != 0)
         {
             if (bShowPifRamErrors())
             {
                 if (Command[0] != 1 || Command[1] != 4) { g_Notify->DisplayError("What am I meant to do with this Controller Command"); }
             }
 
-            const uint32_t buttons = g_BaseSystem->GetButtons(Control);
-            memcpy(&Command[3], &buttons, sizeof(uint32_t));
+			if (ck->isPlayingKailleraGame)
+			{
+				BUTTONS Keys;
+				memset(&Keys, 0, sizeof(Keys));
+				ck->GetPlayerKeyValuesFor1Player(Keys, Control);
+				*(DWORD *)&Command[3] = *(DWORD *)&Keys;
+			}
+			else
+			{
+				const uint32_t buttons = g_BaseSystem->GetButtons(Control);
+				memcpy(&Command[3], &buttons, sizeof(uint32_t));
+			}
         }
         break;
     case 0x02: //read from controller pack
-        if (Controllers[Control].Present != 0)
+        if (!ck->isPlayingKailleraGame ? Controllers[Control].Present != 0 : ck->kailleraClientStatus[Control] != 0)
         {
             switch (Controllers[Control].Plugin)
             {
@@ -598,7 +644,7 @@ void CPifRam::ReadControllerCommand(int32_t Control, uint8_t * Command)
         }
         break;
     case 0x03: //write controller pak
-        if (Controllers[Control].Present != 0)
+        if (!ck->isPlayingKailleraGame ? Controllers[Control].Present != 0 : ck->kailleraClientStatus[Control] != 0)
         {
             switch (Controllers[Control].Plugin)
             {
