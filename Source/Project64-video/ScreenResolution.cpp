@@ -11,7 +11,9 @@
 #include "ScreenResolution.h"
 #include "settings.h"
 #include "trace.h"
-
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 #ifdef ANDROID
 #include <Common/StdString.h>
 #include <vector>

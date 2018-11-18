@@ -249,6 +249,10 @@ EXPORT void CALL ProcessAList(void)
     WriteTrace(TraceAudioInterface, TraceDebug, "Called");
 }
 
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+
 extern "C" void UseUnregisteredSetting(int /*SettingID*/)
 {
     WriteTrace(TraceAudioInterface, TraceDebug, "Called");

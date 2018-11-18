@@ -37,6 +37,7 @@
 #include "ScreenResolution.h"
 
 #ifdef _WIN32
+#include <Windows.h>
 #include <commctrl.h>
 #endif
 

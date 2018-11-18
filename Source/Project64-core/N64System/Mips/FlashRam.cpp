@@ -133,11 +133,7 @@ bool CFlashram::LoadFlashram()
 
     if (!m_File.Open(FileName, (m_ReadOnly ? CFileBase::modeRead : CFileBase::modeReadWrite) | CFileBase::modeNoTruncate | CFileBase::modeCreate))
     {
-#ifdef _WIN32
-        WriteTrace(TraceN64System, TraceError, "Failed to open (%s), ReadOnly = %d, LastError = %X", (const char *)FileName, m_ReadOnly, GetLastError());
-#else
         WriteTrace(TraceN64System, TraceError, "Failed to open (%s), ReadOnly = %d", (const char *)FileName, m_ReadOnly);
-#endif
         g_Notify->DisplayError(GS(MSG_FAIL_OPEN_FLASH));
         return false;
     }
