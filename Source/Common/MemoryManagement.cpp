@@ -66,6 +66,7 @@ void* AllocateAddressSpace(size_t size, void * base_address)
 bool FreeAddressSpace(void* addr, size_t size)
 {
 #ifdef _WIN32
+    size = 0; //unused
     return VirtualFree(addr, 0, MEM_RELEASE) != 0;
 #else
     msync(addr, size, MS_SYNC);

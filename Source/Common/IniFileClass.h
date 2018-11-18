@@ -27,8 +27,9 @@ class CIniFileBase
     typedef std::map<std::string, std::string, insensitive_compare> KeyValueList;
 
 public:
-    typedef std::map<std::string, std::string>           KeyValueData;
-    typedef std::vector<std::string>               SectionList;
+    typedef std::map<std::string, std::string> KeyValueData;
+    typedef std::vector<std::string> SectionList;
+	typedef std::list<std::string> strlist;
 
 protected:
     CFileBase & m_File;

@@ -82,7 +82,7 @@ void CLog::LogArgs(const char * Message, va_list & args )
 void CLog::Log( const char * Message )
 {
 	if (!m_hLogFile.IsOpen()) { return; }
-    uint32_t message_len = strlen(Message);
+    uint32_t message_len = (uint32_t)strlen(Message);
 	m_hLogFile.Write(Message, message_len);
 	if (m_FlushOnWrite)
 	{
@@ -113,8 +113,6 @@ void CLog::Log( const char * Message )
 			do 
 			{
 				uint8_t Data[300];
-				uint32_t dwRead;
-
 				dwRead = m_hLogFile.Read(Data,sizeof(Data));
 				if (dwRead == 0)
 				{ 
@@ -146,7 +144,6 @@ void CLog::Log( const char * Message )
 
 				m_hLogFile.Seek(ReadPos,CFile::begin);
 
-				uint32_t dwRead;
 				dwRead = m_hLogFile.Read(Data,SizeToRead);
 
 				m_hLogFile.Seek(WritePos,CFile::begin);

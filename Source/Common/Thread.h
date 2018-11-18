@@ -1,4 +1,5 @@
 #pragma once
+#include <Common\stdtypes.h>
 
 class CThread 
 {
