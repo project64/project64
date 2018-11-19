@@ -28,6 +28,7 @@ bool CSram::LoadSram()
     {
         FileName.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
     }
+	FileName.NormalizePath(CPath(CPath::MODULE_DIRECTORY));
 
     if (!FileName.DirectoryExists())
     {
