@@ -92,7 +92,9 @@ void CSettingTypeApplication::Initialize(const char * /*AppName*/)
             delete m_SettingsIniFile;
         }
         CPath SettingPath(SettingsFile.c_str());
+#ifdef _WIN32
         SettingPath.NormalizePath(CPath(CPath::MODULE_DIRECTORY));
+#endif
         if (!SettingPath.DirectoryExists())
         {
             SettingPath.DirectoryCreate();
