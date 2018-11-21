@@ -4,7 +4,8 @@
 #include "ScriptInstance.h"
 #include "ScriptSystem.h"
 
-int CScriptHook::Add(CScriptInstance* scriptInstance, void* heapptr, uint32_t param, uint32_t param2, bool bOnce)
+int CScriptHook::Add(CScriptInstance* scriptInstance, void* heapptr, uint32_t param, uint32_t param2,
+    uint32_t param3, uint32_t param4, bool bOnce)
 {
     JSCALLBACK jsCallback;
     jsCallback.scriptInstance = scriptInstance;
@@ -12,6 +13,8 @@ int CScriptHook::Add(CScriptInstance* scriptInstance, void* heapptr, uint32_t pa
     jsCallback.callbackId = m_ScriptSystem->GetNextCallbackId();
     jsCallback.param = param;
     jsCallback.param2 = param2;
+    jsCallback.param3 = param3;
+    jsCallback.param4 = param4;
     jsCallback.bOnce = bOnce;
     m_Callbacks.push_back(jsCallback);
     return jsCallback.callbackId;
@@ -52,6 +55,22 @@ void CScriptHook::InvokeByParamInRange(uint32_t param)
         {
             m_Callbacks[i].scriptInstance->Invoke(m_Callbacks[i].heapptr, param);
             return;
+        }
+    }
+}
+
+void CScriptHook::InvokeByParamInRangeWithMaskedValue(uint32_t param, uint32_t value)
+{
+    int nCallbacks = m_Callbacks.size();
+    for (int i = 0; i < nCallbacks; i++)
+    {
+        if (param == m_Callbacks[i].param || (param >= m_Callbacks[i].param && param < m_Callbacks[i].param2))
+        {
+            if ((m_Callbacks[i].param3 & m_Callbacks[i].param4) == (value & m_Callbacks[i].param4))
+            {
+                m_Callbacks[i].scriptInstance->Invoke(m_Callbacks[i].heapptr, param);
+                return;
+            }
         }
     }
 }
