@@ -230,11 +230,8 @@ void CPlugin::Close(RenderWindow * Render)
 {
     WriteTrace(PluginTraceType(), TraceDebug, "(%s): Start", PluginType());
     RomClose(Render);
-    if (m_Initialized)
-    {
-        CloseDLL();
-        m_Initialized = false;
-    }
+    m_Initialized = false;
+    CloseDLL();
     WriteTrace(PluginTraceType(), TraceDebug, "(%s): Done", PluginType());
 }
 
