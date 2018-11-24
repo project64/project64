@@ -97,3 +97,13 @@ void StartTrace(void)
     g_LogFile = new CTraceFileLog(LogFilePath, g_settings->FlushLogs(), CLog::Log_New, 500);
     TraceAddModule(g_LogFile);
 }
+
+void StopTrace(void)
+{
+    if (g_LogFile)
+    {
+        TraceRemoveModule(g_LogFile);
+        delete g_LogFile;
+        g_LogFile = NULL;
+    }
+}
