@@ -92,12 +92,6 @@ void CMemList::RecordAddItem(void * ptr, size_t size, const char * filename, int
     info.line = line;
     info.size = (int)size;
     info.order = m_NextOrder++;
-    if (info.order == 628)
-    {
-        int a = 5;
-        a = 6;
-    }
-
     m_MemList->insert(MEMLIST::value_type(ptr, info));
     LeaveCriticalSection(&m_cs);
 }

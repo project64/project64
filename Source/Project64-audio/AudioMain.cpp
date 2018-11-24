@@ -166,6 +166,7 @@ EXPORT void CALL CloseDLL(void)
 {
     WriteTrace(TraceAudioInterface, TraceDebug, "Called");
     CleanupAudioSettings();
+    StopTrace();
 }
 
 EXPORT void CALL DllAbout(void * /*hParent*/)
