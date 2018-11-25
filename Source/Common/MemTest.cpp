@@ -1,8 +1,11 @@
 #include "stdafx.h"
-#include <Windows.h>
+#include "MemTest.h"
+
+#if defined(MEM_LEAK_TEST) && defined(_WIN32)
+
 #undef new
 
-#ifdef _WIN32
+#include <Windows.h>
 #include <shellapi.h>
 
 static bool InInit = false;
