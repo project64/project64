@@ -27,7 +27,6 @@ class CAdvancedOptionsPage :
 		COMMAND_ID_HANDLER_EX(IDC_SELECT_IPL_DIR, SelectIplDir)
 		COMMAND_HANDLER_EX(IDC_IPL_DIR, EN_UPDATE, IplDirChanged)
 		COMMAND_HANDLER_EX(IDC_FRAME_DISPLAY_TYPE,LBN_SELCHANGE,ComboBoxChanged)
-
 	END_MSG_MAP()
 
 	enum { IDD = IDD_Settings_Advanced };
@@ -35,12 +34,12 @@ class CAdvancedOptionsPage :
 public:
 	CAdvancedOptionsPage(HWND hParent, const RECT & rcDispay );
 
-	LanguageStringID PageTitle     ( void ) { return TAB_ADVANCED; }
-	void             HidePage      ( void );
-	void             ShowPage      ( void );
-	void             ApplySettings ( bool UpdateScreen );
-	bool             EnableReset   ( void );
-	void             ResetPage     ( void );
+	LanguageStringID PageTitle ( void ) { return TAB_ADVANCED; }
+	void HidePage ( void );
+	void ShowPage ( void );
+	void ApplySettings ( bool UpdateScreen );
+	bool EnableReset ( void );
+	void ResetPage ( void );
 
 private:
 	void SelectIplDir(UINT Code, int id, HWND ctl);

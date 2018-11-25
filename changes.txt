@@ -10,3 +10,4 @@ Windows 2.4
 - Add Shygoo's debugger code
 - New audio plugin
 - large address aware
+- Ability to change defaults

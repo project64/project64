@@ -61,6 +61,17 @@ enum SettingID
     Setting_CurrentLanguage,
     Setting_EnableDisk,
 
+    //Default Settings
+    Default_RDRamSize,
+	Default_UseHleGfx,
+	Default_UseTlb,
+	Default_ViRefreshRate,
+	Default_AiCountPerBytes,
+	Default_CounterFactor,
+	Default_32Bit,
+	Default_SyncViaAudio,
+	Default_FixedAudio,
+
     //RDB Settings
     Rdb_GoodName,
     Rdb_SaveChip,

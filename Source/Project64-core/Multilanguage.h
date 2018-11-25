@@ -229,7 +229,8 @@ enum LanguageStringID
     TAB_ROMNOTES = 408,
     TAB_SHORTCUTS = 409,
     TAB_ROMSTATUS = 410,
-    TAB_RECOMPILER = 411, //Added in 1.7.0.50
+    TAB_RECOMPILER = 411,
+    TAB_DEFAULTS = 412,
 
     //Plugin Dialog
     PLUG_ABOUT = 420,

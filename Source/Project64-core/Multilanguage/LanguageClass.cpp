@@ -198,6 +198,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(TAB_SHORTCUTS, "Keyboard Shortcuts");
     DEF_STR(TAB_ROMSTATUS, "Status");
     DEF_STR(TAB_RECOMPILER, "Recompiler");
+    DEF_STR(TAB_DEFAULTS, "Defaults");
 
     //Plugin Dialog
     DEF_STR(PLUG_ABOUT, "About");

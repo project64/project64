@@ -216,6 +216,9 @@
     <ClCompile Include="UserInterface\Notification.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Defaults.cpp">
+      <Filter>Source Files\User Interface Source\Settings Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserInterface\resource.h">
@@ -412,6 +415,9 @@
     </ClInclude>
     <ClInclude Include="UserInterface\Notification.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Settings\SettingsPage-Defaults.h">
+      <Filter>Header Files\User Interface Headers\Settings Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

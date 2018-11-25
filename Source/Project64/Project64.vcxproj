@@ -111,6 +111,7 @@
     <ClCompile Include="UserInterface\RomInformationClass.cpp" />
     <ClCompile Include="UserInterface\SettingsConfig.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-AdvancedOptions.cpp" />
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Defaults.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-Directories.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-Game-General.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-Game-Plugin.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="UserInterface\RomInformationClass.h" />
     <ClInclude Include="UserInterface\SettingsConfig.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage-AdvancedOptions.h" />
+    <ClInclude Include="UserInterface\Settings\SettingsPage-Defaults.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage-Directories.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage-Game-General.h" />
     <ClInclude Include="UserInterface\Settings\SettingsPage-Game-Plugin.h" />

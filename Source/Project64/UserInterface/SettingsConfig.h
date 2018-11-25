@@ -40,6 +40,6 @@ private:
 
     CTreeViewCtrl    m_PagesTreeList;
     SETTING_SECTIONS m_Sections;
-    CSettingsPage *  m_CurrentPage, *m_GeneralOptionsPage, *m_AdvancedPage;
+    CSettingsPage *  m_CurrentPage, *m_GeneralOptionsPage, *m_AdvancedPage, *m_DefaultsPage;
     bool             m_GameConfig;
 };
