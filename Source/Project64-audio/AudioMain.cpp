@@ -165,6 +165,12 @@ EXPORT void CALL AiUpdate(int32_t Wait)
 EXPORT void CALL CloseDLL(void)
 {
     WriteTrace(TraceAudioInterface, TraceDebug, "Called");
+	if (g_SoundDriver != NULL)
+	{
+		g_SoundDriver->AI_Shutdown();
+		delete g_SoundDriver;
+		g_SoundDriver = NULL;
+	}
     CleanupAudioSettings();
     StopTrace();
 }
