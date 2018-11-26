@@ -231,7 +231,10 @@ void CPlugin::Close(RenderWindow * Render)
     WriteTrace(PluginTraceType(), TraceDebug, "(%s): Start", PluginType());
     RomClose(Render);
     m_Initialized = false;
-    CloseDLL();
+	if (CloseDLL != NULL)
+	{
+		CloseDLL();
+	}
     WriteTrace(PluginTraceType(), TraceDebug, "(%s): Done", PluginType());
 }
 
