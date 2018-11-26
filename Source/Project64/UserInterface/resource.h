@@ -99,7 +99,6 @@
 #define IDC_INFO_CIC                    1011
 #define IDC_CTL                         1011
 #define IDC_CACHE                       1011
-#define IDC_ROM_FIXEDAUDIO              1011
 #define IDC_DEBUGGER                    1011
 #define IDC_USE_ALT_PC                  1011
 #define IDC_HLE_GFX                     1011
@@ -603,6 +602,7 @@
 #define IDC_DD40_EDIT                   1442
 #define IDC_DD44_EDIT                   1443
 #define IDC_DD48_EDIT                   1444
+#define IDC_ROM_FIXEDAUDIO              1445
 #define ID_POPUP_SHOWINMEMORYVIEWER     40005
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ADDSYMBOL          40013
@@ -640,7 +640,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        195
 #define _APS_NEXT_COMMAND_VALUE         40043
-#define _APS_NEXT_CONTROL_VALUE         1445
+#define _APS_NEXT_CONTROL_VALUE         1446
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif
