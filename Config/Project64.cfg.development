@@ -1,4 +1,4 @@
-﻿[default]
+﻿[Settings]
 7zipCache=..\..\Config\Project64.zcache
 AudioRDB=..\..\Config\Audio.rdb
 Auto Sleep=0

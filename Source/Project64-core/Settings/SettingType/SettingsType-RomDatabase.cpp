@@ -159,7 +159,7 @@ bool CSettingTypeRomDatabase::Load(uint32_t Index, bool & Value) const
 	if (Load(temp_value))
 	{
 		Value = temp_value != 0;
-		true;
+		return true;
 	}
 	LoadDefault(Index, Value);
 	return false;

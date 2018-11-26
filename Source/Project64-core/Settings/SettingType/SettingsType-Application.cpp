@@ -25,32 +25,32 @@ CSettingTypeApplication::CSettingTypeApplication(const char * Section, const cha
 }
 
 CSettingTypeApplication::CSettingTypeApplication(const char * Section, const char * Name, bool DefaultValue) :
-m_DefaultStr(""),
-m_DefaultValue(DefaultValue),
-m_DefaultSetting(Default_Constant),
-m_Section(FixSectionName(Section)),
-m_KeyName(Name),
-m_KeyNameIdex(m_KeyName)
+	m_DefaultStr(""),
+	m_DefaultValue(DefaultValue),
+	m_DefaultSetting(Default_Constant),
+	m_Section(FixSectionName(Section)),
+	m_KeyName(Name),
+	m_KeyNameIdex(m_KeyName)
 {
 }
 
 CSettingTypeApplication::CSettingTypeApplication(const char * Section, const char * Name, const char * DefaultValue) :
-m_DefaultStr(DefaultValue),
-m_DefaultValue(0),
-m_DefaultSetting(Default_Constant),
-m_Section(FixSectionName(Section)),
-m_KeyName(Name),
-m_KeyNameIdex(m_KeyName)
+	m_DefaultStr(DefaultValue),
+	m_DefaultValue(0),
+	m_DefaultSetting(Default_Constant),
+	m_Section(FixSectionName(Section)),
+	m_KeyName(Name),
+	m_KeyNameIdex(m_KeyName)
 {
 }
 
 CSettingTypeApplication::CSettingTypeApplication(const char * Section, const char * Name, SettingID DefaultSetting) :
-m_DefaultStr(""),
-m_DefaultValue(0),
-m_DefaultSetting(DefaultSetting),
-m_Section(FixSectionName(Section)),
-m_KeyName(Name),
-m_KeyNameIdex(m_KeyName)
+	m_DefaultStr(""),
+	m_DefaultValue(0),
+	m_DefaultSetting(DefaultSetting),
+	m_Section(FixSectionName(Section)),
+	m_KeyName(Name),
+	m_KeyNameIdex(m_KeyName)
 {
 }
 
