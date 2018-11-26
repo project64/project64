@@ -46,6 +46,7 @@ private:
     void LogLevelChanged(void);
 
     short m_Set_EnableAudio;
+    short m_Set_FixedAudio;
     short m_Set_SyncAudio;
     short m_Set_FullSpeed;
     short m_Set_LimitFPS;
@@ -61,6 +62,7 @@ private:
     uint32_t m_Volume;
     bool m_TinyBuffer;
     bool m_FPSBuffer;
+    bool m_FixedAudio;
     bool m_SyncAudio;
     bool m_FullSpeed;
 };
