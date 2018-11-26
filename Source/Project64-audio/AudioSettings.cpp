@@ -17,6 +17,7 @@ CSettings * g_settings = NULL;
 
 CSettings::CSettings() :
     m_Set_EnableAudio(0),
+    m_Set_FixedAudio(0),
     m_Set_SyncAudio(0),
     m_Set_FullSpeed(0),
     m_Set_LimitFPS(0),
@@ -31,6 +32,7 @@ CSettings::CSettings() :
     m_Volume(100),
     m_TinyBuffer(true),
     m_FPSBuffer(true),
+    m_FixedAudio(false),
     m_SyncAudio(false),
     m_FullSpeed(true)
 {
@@ -42,6 +44,7 @@ CSettings::CSettings() :
     if (m_Set_basic_mode != 0) { SettingsRegisterChange(true, m_Set_basic_mode, this, stSettingsChanged); }
     if (m_Set_debugger != 0) { SettingsRegisterChange(true, m_Set_debugger, this, stSettingsChanged); }
     if (m_Set_log_flush != 0) { SettingsRegisterChange(true, m_Set_log_flush, this, stSettingsChanged); }
+    if (m_Set_FixedAudio != 0) { SettingsRegisterChange(true, m_Set_FixedAudio, this, stSettingsChanged); }
     if (m_Set_SyncAudio != 0) { SettingsRegisterChange(true, m_Set_SyncAudio, this, stSettingsChanged); }
     if (m_Set_FullSpeed != 0) { SettingsRegisterChange(true, m_Set_FullSpeed, this, stSettingsChanged); }
     if (m_Set_LimitFPS != 0) { SettingsRegisterChange(true, m_Set_LimitFPS, this, stSettingsChanged); }
@@ -61,6 +64,7 @@ CSettings::~CSettings()
     if (m_Set_basic_mode != 0) { SettingsUnregisterChange(true, m_Set_basic_mode, this, stSettingsChanged); }
     if (m_Set_debugger != 0) { SettingsUnregisterChange(true, m_Set_debugger, this, stSettingsChanged); }
     if (m_Set_log_flush != 0) { SettingsUnregisterChange(true, m_Set_log_flush, this, stSettingsChanged); }
+    if (m_Set_FixedAudio != 0) { SettingsUnregisterChange(true, m_Set_FixedAudio, this, stSettingsChanged); }
     if (m_Set_SyncAudio != 0) { SettingsUnregisterChange(true, m_Set_SyncAudio, this, stSettingsChanged); }
     if (m_Set_FullSpeed != 0) { SettingsUnregisterChange(true, m_Set_FullSpeed, this, stSettingsChanged); }
     if (m_Set_LimitFPS != 0) { SettingsUnregisterChange(true, m_Set_LimitFPS, this, stSettingsChanged); }
@@ -78,6 +82,7 @@ void CSettings::RegisterSettings(void)
 {
     SetModuleName("default");
     m_Set_EnableAudio = FindSystemSettingId("Enable Audio");
+    m_Set_FixedAudio = FindSystemSettingId("Fixed Audio");
     m_Set_SyncAudio = FindSystemSettingId("Sync Audio");
     m_Set_FullSpeed = FindSystemSettingId("Full Speed");
     m_Set_LimitFPS = FindSystemSettingId("Limit FPS");
