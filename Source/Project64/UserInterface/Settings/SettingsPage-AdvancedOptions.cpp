@@ -45,8 +45,9 @@ CAdvancedOptionsPage::CAdvancedOptionsPage(HWND hParent, const RECT & rcDispay)
         ComboBox->AddItemW(wGS(STR_FR_VIS).c_str(), FR_VIs);
         ComboBox->AddItemW(wGS(STR_FR_DLS).c_str(), FR_DLs);
         ComboBox->AddItemW(wGS(STR_FR_PERCENT).c_str(), FR_PERCENT);
-        ComboBox->AddItemW(wGS(STR_FR_DLS_VIS).c_str(), FR_VIs_DLs);
-    }
+		ComboBox->AddItemW(wGS(STR_FR_DLS_VIS).c_str(), FR_VIs_DLs);
+		ComboBox->AddItemW(wGS(STR_FR_NONE).c_str(), FR_None);
+	}
 
     m_IplDir.Attach(GetDlgItem(IDC_IPL_DIR));
 
