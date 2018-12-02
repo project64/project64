@@ -110,8 +110,8 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
             }
             else
             {
-                framerate = 64;
-                if (SystemType == SYSTEM_PAL) { framerate = 53.33333; }
+                framerate = 60.95;                // Needed for Body Harvest (U)
+                if (SystemType == SYSTEM_PAL) { framerate = 50.79166; }
             }
             if (g_settings->TinyBuffer() == true)
             {
