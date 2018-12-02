@@ -654,7 +654,7 @@ bool CSettings::Initialize(const char * BaseDirectory, const char * AppName)
 {
     WriteTrace(TraceAppInit, TraceDebug, "Start");
     AddHowToHandleSetting(BaseDirectory);
-    CSettingTypeApplication::Initialize(AppName);
+    CSettingTypeApplication::Initialize();
     CSettingTypeRomDatabase::Initialize();
     CSettingTypeGame::Initialize();
     CSettingTypeCheats::Initialize();
