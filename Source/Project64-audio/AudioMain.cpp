@@ -29,6 +29,10 @@
 #include "ConfigUI.h"
 #include "SettingsID.h"
 
+#ifdef _WIN32
+void SetTimerResolution ( void );
+#endif
+
 /* Read header for type definition */
 AUDIO_INFO g_AudioInfo;
 
@@ -51,6 +55,9 @@ void PluginInit(void)
     SetupTrace();
     SetupAudioSettings();
     StartTrace();
+#ifdef _WIN32
+	SetTimerResolution();
+#endif
     g_PluginInit = true;
 }
 
@@ -267,3 +274,17 @@ extern "C" void UseUnregisteredSetting(int /*SettingID*/)
     DebugBreak();
 #endif
 }
+
+#ifdef _WIN32
+void SetTimerResolution(void)
+{
+	HMODULE hMod = GetModuleHandle("ntdll.dll");
+	if (hMod != NULL)
+	{
+		typedef LONG(NTAPI* tNtSetTimerResolution)(IN ULONG DesiredResolution, IN BOOLEAN SetResolution, OUT PULONG CurrentResolution);
+		tNtSetTimerResolution NtSetTimerResolution = (tNtSetTimerResolution)GetProcAddress(hMod, "NtSetTimerResolution");
+		ULONG CurrentResolution = 0;
+		NtSetTimerResolution(5000, TRUE, &CurrentResolution);
+	}
+}
+#endif
