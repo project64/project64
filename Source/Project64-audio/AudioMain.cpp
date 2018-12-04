@@ -112,7 +112,7 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
                 framerate = (framerate / 2);
             }
             audio_clock = (video_clock / framerate);
-            BufferSize = (int32_t)(audio_clock / (g_Dacrate + 1)) & ~0x1;
+            BufferSize = (int32_t)(audio_clock / (g_Dacrate + 1)) + 1 & ~0x1;
             g_SoundDriver->AI_SetFrequency(Frequency, BufferSize);
         }
     }
