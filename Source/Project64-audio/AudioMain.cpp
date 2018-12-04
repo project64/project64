@@ -85,7 +85,8 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
             WriteTrace(TraceAudioInterface, TraceNotice, "Unknown/reserved bits in AI_DACRATE_REG set. 0x%08X", *g_AudioInfo.AI_DACRATE_REG);
         }
 
-        uint32_t video_clock = 0; int32_t BufferSize = 0; double audio_clock = 0; double framerate = 29.97;
+        uint32_t video_clock = 0; int32_t BufferSize = 0;
+        double audio_clock = 0; double framerate = (30 / 1.001);
 
         switch (SystemType)
         {
