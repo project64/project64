@@ -25,7 +25,7 @@ CScriptSystem::CScriptSystem(CDebuggerUI* debugger)
     m_Debugger = debugger;
 
     m_HookCPUExec = new CScriptHook(this);
-    m_HookCPUExecValue = new CScriptHook(this);
+    m_HookCPUExecOpcode = new CScriptHook(this);
     m_HookCPURead = new CScriptHook(this);
     m_HookCPUWrite = new CScriptHook(this);
     m_HookFrameDrawn = new CScriptHook(this);
@@ -34,7 +34,7 @@ CScriptSystem::CScriptSystem(CDebuggerUI* debugger)
     RegisterHook("read", m_HookCPURead);
     RegisterHook("write", m_HookCPUWrite);
     RegisterHook("draw", m_HookFrameDrawn);
-    RegisterHook("execvalue", m_HookCPUExecValue);
+    RegisterHook("execopcode", m_HookCPUExecOpcode);
 
     HMODULE hInst = GetModuleHandle(NULL);
     HRSRC hRes = FindResource(hInst, MAKEINTRESOURCE(IDR_JSAPI_TEXT), "TEXT");

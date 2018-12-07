@@ -391,7 +391,7 @@ void CDebuggerUI::CPUStepStarted()
     uint32_t JumpToLocation = R4300iOp::m_JumpToLocation;
 
     m_ScriptSystem->HookCPUExec()->InvokeByParamInRange(PROGRAM_COUNTER);
-    m_ScriptSystem->HookCPUExecValue()->InvokeByParamInRangeWithMaskedValue(PROGRAM_COUNTER, R4300iOp::m_Opcode.Hex);
+    m_ScriptSystem->HookCPUExecOpcode()->InvokeByParamInRangeWithMaskedValue(PROGRAM_COUNTER, R4300iOp::m_Opcode.Hex);
 
     // Memory breakpoints
 
