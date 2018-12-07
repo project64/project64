@@ -33,7 +33,7 @@ CScriptSystem::CScriptSystem(CDebuggerUI* debugger)
     RegisterHook("exec", m_HookCPUExec);
     RegisterHook("read", m_HookCPURead);
     RegisterHook("write", m_HookCPUWrite);
-	RegisterHook("onopcode", m_HookCPUExecOpcode);
+    RegisterHook("onopcode", m_HookCPUExecOpcode);
     RegisterHook("draw", m_HookFrameDrawn);
 
     HMODULE hInst = GetModuleHandle(NULL);
