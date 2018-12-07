@@ -75,7 +75,7 @@ span.tag {
 	color: #885;
 	font-weight: bold;
 	padding: 0px 2px;
-	font-size: 12px;
+	font-size: 11px;
 }
 span.tag2 {
 	float: right;
@@ -86,7 +86,7 @@ span.tag2 {
 	color: #588;
 	font-weight: bold;
 	padding: 0px 2px;
-	font-size: 12px;
+	font-size: 11px;
 }
 </style>
 </head>
@@ -213,7 +213,7 @@ Player.prototype.move = function(x, y, z)
 
 Player.prototype.heal = function()
 {
-    this.health = 100;
+    this.health = 100
 }
 
 var player = new Player(0x8033B1AC)
@@ -266,10 +266,10 @@ console.log('Internal ROM name: ' + romName)</div>
 	</div>-->
 	<div class="property">
 		<span class="tag2">emulation thread</span>
-		<span class="tag">interpreter mode</span>
+		<span class="tag">interpreter mode only</span>
 		<div class="propertyname">events.onexec(address, callback)</div>
 		<div class="propertydesc">
-			Adds a CPU execution callback for a virtual address or <a href="AddressRange">AddressRange</a> and returns a callback ID.
+			Adds a CPU execution callback for a virtual address or <a href="#AddressRange">AddressRange</a> and returns a callback ID.
 			<span class="snip">callback</span> will be invoked at the beginning of a CPU step if the program counter is at <span class="snip">address</span>.
 			<span class="snip">callback</span> receives the program counter address at which the event is fired.
 			<pre class="example">
@@ -279,60 +279,106 @@ events.onexec(0x802CB1C0, function()
 })
 </pre>
 			<pre class="example">
-events.onexec(ADDR_ANY, function(addr))
+events.onexec(ADDR_ANY, function(pc))
 {
     // Log every step!
-    console.log('CPU is executing ' + addr.hex())
+    console.log('CPU is executing 0x' + pc.hex())
 })
 </pre>
 		</div>
 	</div>
 	<div class="property">
 		<span class="tag2">emulation thread</span>
-		<span class="tag">interpreter mode</span>
+		<span class="tag">interpreter mode only</span>
 		<div class="propertyname">events.onread(address, callback)</div>
 		<div class="propertydesc">
-			Adds a CPU read callback for a virtual address or <a href="AddressRange">AddressRange</a> and returns a callback ID.
+			Adds a CPU read callback for a virtual address or <a href="#AddressRange">AddressRange</a> and returns a callback ID.
 			<span class="snip">callback</span> will be invoked at the beginning of a CPU step if the current instruction is going to read from <span class="snip">address</span>.
 			<span class="snip">callback</span> receives the virtual address that the CPU is going to read.
 			<pre class="example">
 events.onread(0x8033B1B0, function()
 {
-    console.log('CPU is reading 8033B1B0')
+    console.log('CPU is reading 0x8033B1B0')
 })
 </pre>
 			<pre class="example">
-const addr_range_rom = {start: 0xB0000000, end: 0xB6000000}
-
-events.onread(addr_range_rom, function(addr)
+events.onread(ADDR_ANY_CART_ROM_UNC, function(addr)
 {
-    console.log('CPU is reading ROM ' + addr)
+    console.log('CPU is reading ROM 0x' + addr.hex())
 })
 </pre>
 		</div>
 	</div>
 	<div class="property">
 		<span class="tag2">emulation thread</span>
-		<span class="tag">interpreter mode</span>
+		<span class="tag">interpreter mode only</span>
 		<div class="propertyname">events.onwrite(address, callback)</div>
 		<div class="propertydesc">
-			Adds a CPU write callback for a virtual address or <a href="AddressRange">AddressRange</a> and returns a callback ID.
+			Adds a CPU write callback for a virtual address or <a href="#AddressRange">AddressRange</a> and returns a callback ID.
 			<span class="snip">callback</span> will be invoked at the beginning of a CPU step if the current instruction is going to write to <span class="snip">address</span>.
 			<span class="snip">callback</span> receives the virtual address that the CPU is going to write to.
 			<pre class="example">
 events.onwrite(0x8033B1B0, function()
 {
-    console.log('CPU is modifying 8033B1B0')
+    console.log('CPU is modifying 0x8033B1B0')
 })
 </pre>
 			<pre class="example">
-events.onwrite({0xB0000000, 0x90000000}, function(addr)
+events.onwrite(ADDR_ANY_CART_ROM_UNC, function(addr)
 {
-    console.log(gpr.pc.hex() + ': wrote to cartridge ' + addr.hex());
+    console.log(gpr.pc.hex() + ': wrote to cartridge ' + addr.hex())
 })
 </pre>
 		</div>
 	</div>
+	<div class="property">
+		<span class="tag2">emulation thread</span>
+		<span class="tag">interpreter mode only</span>
+		<div class="propertyname">events.onopcode(address, opcode, callback)</div>
+		<div class="propertydesc">
+			Adds a CPU executions callback for a virtual address or <a href="#AddressRange">AddressRange</a> and returns a callback ID.
+			<span class="snip">callback</span> will be invoked at the beginning of a CPU step if the program counter is at <span class="snip">address</span> and <span class="snip">opcode</span> is equal to the opcode to be executed.
+			<span class="snip">callback</span> receives the program counter address at which the event is fired.
+			<pre class="example">
+const JR_RA = 0x03E00008 // 'jr ra' command
+
+events.onopcode(ADDR_ANY, JR_RA, function(pc)
+{
+    console.log(pc.hex()) // log pc at every 'jr ra'
+})
+</pre>
+		</div>
+	</div>
+	<div class="property">
+		<span class="tag2">emulation thread</span>
+		<span class="tag">interpreter mode only</span>
+		<div class="propertyname">events.onopcode(address, opcode, mask, callback)</div>
+		<div class="propertydesc">
+			Adds a CPU executions callback for a virtual address or <a href="#AddressRange">AddressRange</a> and returns a callback ID.
+			<span class="snip">callback</span> will be invoked at the beginning of a CPU step if the program counter is at <span class="snip">address</span> and <span class="snip">opcode</span> is equal to the opcode to be executed ANDed with <span class="snip">mask</span>.
+			<span class="snip">callback</span> receives the program counter address at which the event is fired.
+			<pre class="example">
+const ADDIU_SP_SP = 0x27BD0000 // 'addiu sp, sp, 0x0000'
+const NO_IMM16 = 0xFFFF0000 // mask off immediate field
+
+events.onopcode(ADDR_ANY, ADDIU_SP_SP, NO_IMM16, function(pc)
+{
+    // log pc at every 'addiu sp, sp, x' regardless of the immediate value
+    console.log(pc.hex())
+})
+</pre>
+				<pre class="example">
+const JAL = 0x0C000000 // 'jal 0x00000000'
+const NO_TARGET = 0xFC000000 // mask off target field
+
+events.onopcode(ADDR_ANY, JAL, NO_TARGET, function(pc)
+{
+    // log pc at every 'jal' regardless of the target address
+    console.log(pc.hex())
+})
+</pre>
+			</div>
+		</div>
 	<div class="property">
 		<span class="tag2">emulation thread</span>
 		<div class="propertyname">events.ondraw(callback)</div>
@@ -468,7 +514,7 @@ console.log('size: ' + stats.size)
 	<div class="property">
 			<div class="propertyname">fs.stat(path)</div>
 			<div class="propertydesc">
-				Returns an <a href="#fs.Stats">fs.Stats</a> object describing the file or directory pointed to by <span class="snip">path</span>. Returns <span class="snip">false</span> if the operation failed..
+				Returns an <a href="#fs.Stats">fs.Stats</a> object describing the file or directory pointed to by <span class="snip">path</span>. Returns <span class="snip">false</span> if the operation failed.
 			</div>
 	</div>
 	<div class="property">

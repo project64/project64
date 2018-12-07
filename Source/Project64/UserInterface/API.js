@@ -299,10 +299,10 @@ const events = (function()
 
             return events.on('exec', callback, param, param2)
         },
-        onexecopcode: function(addr, value, arg3, arg4)
+        onopcode: function (addr, value, arg3, arg4)
         {
-            // onexecopcode(addr, value, callback)
-            // onexecopcode(addr, value, mask, callback)
+            // onopcode(addr, value, callback)
+            // onopcode(addr, value, mask, callback)
 
             var start = 0;
             var end = 0;
@@ -331,7 +331,7 @@ const events = (function()
             }
 
             this._stashCallback(callback);
-            return _native.addCallback('execopcode', callback, start, end, value, mask)
+            return _native.addCallback('onopcode', callback, start, end, value, mask)
         },
         onread: function(addr, callback)
         {
