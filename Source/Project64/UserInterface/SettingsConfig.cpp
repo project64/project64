@@ -8,6 +8,7 @@ CSettingConfig::CSettingConfig(bool bJustGameSetting /* = false */) :
     m_CurrentPage(NULL),
     m_GeneralOptionsPage(NULL),
     m_AdvancedPage(NULL),
+    m_DefaultsPage(NULL),
     m_GameConfig(bJustGameSetting)
 {
 }
@@ -55,7 +56,7 @@ bool CSettingConfig::UpdateAdvanced(bool AdvancedMode, HTREEITEM hItem)
     while (hItem)
     {
         CSettingsPage * Page = (CSettingsPage *)m_PagesTreeList.GetItemData(hItem);
-        if (!AdvancedMode && Page == m_AdvancedPage)
+        if (!AdvancedMode && (Page == m_AdvancedPage || Page == m_DefaultsPage))
         {
             m_PagesTreeList.DeleteItem(hItem);
             return true;
@@ -63,6 +64,7 @@ bool CSettingConfig::UpdateAdvanced(bool AdvancedMode, HTREEITEM hItem)
         if (AdvancedMode && Page == m_GeneralOptionsPage)
         {
             m_PagesTreeList.InsertItemW(TVIF_TEXT | TVIF_PARAM, wGS(m_AdvancedPage->PageTitle()).c_str(), 0, 0, 0, 0, (ULONG)m_AdvancedPage, hItem, TVI_FIRST);
+            m_PagesTreeList.InsertItemW(TVIF_TEXT | TVIF_PARAM, wGS(m_DefaultsPage->PageTitle()).c_str(), 0, 0, 0, 0, (ULONG)m_DefaultsPage, hItem, TVI_FIRST);
             return true;
         }
         if (UpdateAdvanced(AdvancedMode, m_PagesTreeList.GetChildItem(hItem)))
@@ -127,10 +129,12 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 
         m_GeneralOptionsPage = new CGeneralOptionsPage(this, this->m_hWnd, rcSettingInfo);
         m_AdvancedPage = new CAdvancedOptionsPage(this->m_hWnd, rcSettingInfo);
+        m_DefaultsPage = new CDefaultsOptionsPage(this->m_hWnd, rcSettingInfo);
 
         SettingsSection = new CConfigSettingSection(wGS(TAB_OPTIONS).c_str());
         SettingsSection->AddPage(m_GeneralOptionsPage);
         SettingsSection->AddPage(m_AdvancedPage);
+        SettingsSection->AddPage(m_DefaultsPage);
         SettingsSection->AddPage(new COptionsDirectoriesPage(this->m_hWnd, rcSettingInfo));
         m_Sections.push_back(SettingsSection);
 
@@ -177,7 +181,7 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         for (size_t i = 0; i < Section->GetPageCount(); i++)
         {
             CSettingsPage * Page = Section->GetPage(i);
-            if (HideAdvanced && Page == m_AdvancedPage)
+            if (HideAdvanced && (Page == m_AdvancedPage || Page == m_DefaultsPage))
             {
                 continue;
             }

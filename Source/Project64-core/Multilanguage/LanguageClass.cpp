@@ -198,6 +198,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(TAB_SHORTCUTS, "Keyboard Shortcuts");
     DEF_STR(TAB_ROMSTATUS, "Status");
     DEF_STR(TAB_RECOMPILER, "Recompiler");
+    DEF_STR(TAB_DEFAULTS, "Defaults");
 
     //Plugin Dialog
     DEF_STR(PLUG_ABOUT, "About");
@@ -352,7 +353,8 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(STR_FR_VIS, "Vertical interrupts per second");
     DEF_STR(STR_FR_DLS, "Display lists per second");
     DEF_STR(STR_FR_PERCENT, "Percentage of full speed");
-    DEF_STR(STR_FR_DLS_VIS, "VI/s & DL/s");
+	DEF_STR(STR_FR_DLS_VIS, "VI/s & DL/s");
+	DEF_STR(STR_FR_NONE, "None");
 
     // Increase speed
     DEF_STR(STR_INSREASE_SPEED, "Increase Game Speed");

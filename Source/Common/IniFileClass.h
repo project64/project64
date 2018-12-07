@@ -4,13 +4,15 @@
 /* for POSIX method away from Win32 _stricmp--see "Platform.h" */
 #include <strings.h>
 #endif
-#include "Platform.h"
 
 #include "FileClass.h"
 #include "CriticalSection.h"
-#include "StdString.h"
 #include "SmartPointer.h"
+#include "Platform.h"
+#include <string>
 #include <map>
+#include <vector>
+#include <list>
 
 class CIniFileBase
 {
@@ -27,8 +29,9 @@ class CIniFileBase
     typedef std::map<std::string, std::string, insensitive_compare> KeyValueList;
 
 public:
-    typedef std::map<std::string, std::string>           KeyValueData;
-    typedef std::vector<std::string>               SectionList;
+    typedef std::map<std::string, std::string> KeyValueData;
+    typedef std::vector<std::string> SectionList;
+	typedef std::list<std::string> strlist;
 
 protected:
     CFileBase & m_File;

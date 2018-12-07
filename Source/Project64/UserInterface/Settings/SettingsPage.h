@@ -582,6 +582,7 @@ public:
 };
 
 #include "SettingsPage-AdvancedOptions.h"
+#include "SettingsPage-Defaults.h"
 #include "SettingsPage-Directories.h"
 #include "SettingsPage-Game-General.h"
 #include "SettingsPage-Game-Plugin.h"

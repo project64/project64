@@ -229,7 +229,8 @@ enum LanguageStringID
     TAB_ROMNOTES = 408,
     TAB_SHORTCUTS = 409,
     TAB_ROMSTATUS = 410,
-    TAB_RECOMPILER = 411, //Added in 1.7.0.50
+    TAB_RECOMPILER = 411,
+    TAB_DEFAULTS = 412,
 
     //Plugin Dialog
     PLUG_ABOUT = 420,
@@ -385,6 +386,7 @@ enum LanguageStringID
     STR_FR_DLS = 701,
     STR_FR_PERCENT = 702,
     STR_FR_DLS_VIS = 703,
+	STR_FR_NONE = 704,
 
     // Increase speed
     STR_INSREASE_SPEED = 710,

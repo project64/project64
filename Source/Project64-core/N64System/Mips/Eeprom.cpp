@@ -148,6 +148,9 @@ void CEeprom::LoadEeprom()
     {
         FileName.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
     }
+#ifdef _WIN32
+    FileName.NormalizePath(CPath(CPath::MODULE_DIRECTORY));
+#endif
 
     if (!FileName.DirectoryExists())
     {

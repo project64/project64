@@ -21,7 +21,7 @@ CGameStatusPage::CGameStatusPage(HWND hParent, const RECT & rcDispay)
     }
 
     CIniFile RomIniFile(g_Settings->LoadStringVal(SupportFile_RomDatabase).c_str());
-    strlist Keys;
+	CIniFile::strlist Keys;
     RomIniFile.GetKeyList("Rom Status", Keys);
     stdstr Status = UISettingsLoadStringVal(Rdb_Status);
 
@@ -29,7 +29,7 @@ CGameStatusPage::CGameStatusPage(HWND hParent, const RECT & rcDispay)
     ComboBox = AddModComboBoxTxt(GetDlgItem(IDC_STATUS_TYPE), Rdb_Status);
     if (ComboBox)
     {
-        for (strlist::iterator item = Keys.begin(); item != Keys.end(); item++)
+        for (CIniFile::strlist::iterator item = Keys.begin(); item != Keys.end(); item++)
         {
             if (strstr(item->c_str(), ".Sel") != NULL) { continue; }
             if (strstr(item->c_str(), ".Auto") != NULL) { continue; }

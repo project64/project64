@@ -306,17 +306,47 @@ CPath::CPath(DIR_MODULE_FILE /*sdt*/)
 #ifdef _WIN32
 void CPath::GetComponents(std::string* pDrive, std::string* pDirectory, std::string* pName, std::string* pExtension) const
 {
-    char buff_drive[_MAX_DRIVE + 1];
-    char buff_dir[_MAX_DIR + 1];
-    char buff_name[_MAX_FNAME + 1];
-    char buff_ext[_MAX_EXT + 1];
+    WriteTrace(TracePath, TraceDebug, "Start (m_strPath: \"%s\")", m_strPath.c_str());
 
-    ZeroMemory(buff_drive, sizeof(buff_drive));
-    ZeroMemory(buff_dir, sizeof(buff_dir));
-    ZeroMemory(buff_name, sizeof(buff_name));
-    ZeroMemory(buff_ext, sizeof(buff_ext));
+    char buff_drive[_MAX_DRIVE + 1] = { 0 };
+    char buff_dir[_MAX_DIR + 1] = { 0 };
+    char buff_name[_MAX_FNAME + 1] = { 0 };
+    char buff_ext[_MAX_EXT + 1] = { 0 };
 
-    _splitpath(m_strPath.c_str(), pDrive ? buff_drive : NULL, pDirectory ? buff_dir : NULL, pName ? buff_name : NULL, pExtension ? buff_ext : NULL);
+    const char * BasePath = m_strPath.c_str();
+    const char * DriveDir = strrchr(BasePath, DRIVE_DELIMITER);
+    if (DriveDir != NULL)
+    {
+        int len = sizeof(buff_dir) < (DriveDir - BasePath) ? sizeof(buff_drive) : DriveDir - BasePath;
+        strncpy(buff_drive, BasePath, len);
+        BasePath += len + 1;
+    }
+
+    const char * last = strrchr(BasePath, DIRECTORY_DELIMITER);
+    if (last != NULL)
+    {
+        int len = sizeof(buff_dir) < (last - BasePath) ? sizeof(buff_dir) : last - BasePath;
+        if (len > 0)
+        {
+            strncpy(buff_dir, BasePath, len);
+        }
+        else
+        {
+            buff_dir[0] = DIRECTORY_DELIMITER;
+            buff_dir[1] = '\0';
+        }
+        strncpy(buff_name, last + 1, sizeof(buff_name));
+    }
+    else
+    {
+        strncpy(buff_dir, BasePath, sizeof(buff_dir));
+    }
+    char * ext = strrchr(buff_name, '.');
+    if (ext != NULL)
+    {
+        strncpy(buff_ext, ext + 1, sizeof(buff_ext));
+        *ext = '\0';
+    }
 
     if (pDrive)
     {
@@ -334,24 +364,7 @@ void CPath::GetComponents(std::string* pDrive, std::string* pDirectory, std::str
     {
         *pExtension = buff_ext;
     }
-
-    // DOS's _splitpath returns "d:", we return "d"
-    if (pDrive)
-    {
-        StripTrailingChar(*pDrive, DRIVE_DELIMITER);
-    }
-
-    // DOS's _splitpath returns "\dir\subdir\", we return "\dir\subdir"
-    if (pDirectory)
-    {
-        StripTrailingBackslash(*pDirectory);
-    }
-
-    // DOS's _splitpath returns ".ext", we return "ext"
-    if (pExtension)
-    {
-        StripLeadingChar(*pExtension, EXTENSION_DELIMITER);
-    }
+    WriteTrace(TracePath, TraceDebug, "Done (dir: \"%s\" name: \"%s\" ext: \"%s\")", buff_dir, buff_name, buff_ext);
 }
 #else
 void CPath::GetComponents(std::string* pDirectory, std::string* pName, std::string* pExtension) const
@@ -423,8 +436,8 @@ void CPath::GetDriveDirectory(std::string& rDriveDirectory) const
     if (!Drive.empty())
     {
         rDriveDirectory += DRIVE_DELIMITER;
-        rDriveDirectory += Directory;
     }
+    rDriveDirectory += Directory;
 }
 
 std::string CPath::GetDriveDirectory(void) const
@@ -1436,6 +1449,53 @@ bool CPath::ChangeDirectory()
 
     return chdir(Dir.c_str()) == 0;
 #endif
+}
+
+void CPath::NormalizePath(CPath BaseDir)
+{
+#ifdef _WIN32
+	stdstr Directory = BaseDir.GetDriveDirectory();
+#else
+	stdstr Directory = BaseDir.GetDirectory();
+#endif
+	bool Changed = false;
+	if (IsRelative())
+	{
+		EnsureTrailingBackslash(Directory);
+		Directory += GetDirectory();
+		Changed = true;
+	}
+	strvector Parts = Directory.Tokenize(DIRECTORY_DELIMITER);
+	strvector NormalizesParts;
+	for (strvector::const_iterator itr = Parts.begin(); itr != Parts.end(); itr++)
+	{
+		if (*itr == ".")
+		{
+			Changed = true;
+		}
+		else if (*itr == "..")
+		{
+			NormalizesParts.pop_back();
+			Changed = true;
+		}
+		else
+		{
+			NormalizesParts.push_back(*itr);
+		}
+	}
+	if (Changed)
+	{
+		Directory.clear();
+		for (strvector::const_iterator itr = NormalizesParts.begin(); itr != NormalizesParts.end(); itr++)
+		{
+			Directory += *itr + DIRECTORY_DELIMITER;
+		}
+#ifdef _WIN32
+		SetDriveDirectory(Directory.c_str());
+#else
+		SetDirectory(Directory.c_str());
+#endif
+	}
 }
 
 //-------------------------------------------------------------

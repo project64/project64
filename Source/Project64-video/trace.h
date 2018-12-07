@@ -30,3 +30,4 @@ enum TraceModuleGlide64
 
 void SetupTrace(void);
 void StartTrace(void);
+void StopTrace(void);

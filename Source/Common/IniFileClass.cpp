@@ -55,7 +55,7 @@ void CIniFileBase::fInsertSpaces(int Pos, int NoOfSpaces)
     if (NoOfSpaces < 0)
     {
         int ReadPos = Pos + (NoOfSpaces * -1);
-        int WritePos = Pos;
+        WritePos = Pos;
 
         do
         {
@@ -338,6 +338,18 @@ bool CIniFileBase::MoveToSectionNameData(const char * lpSectionName, bool Change
         } while (result >= 0);
     }
 
+    if (!bFoundSection && strcmp(lpSectionName, "default") == 0)
+    {
+        m_SectionsPos.insert(FILELOC::value_type(lpSectionName, 0));
+        if (ChangeCurrentSection)
+        {
+            m_CurrentSection = lpSectionName;
+            m_CurrentSectionFilePos = 0;
+        }
+        m_File.Seek(m_lastSectionSearch, CFileBase::begin);
+        bFoundSection = true;
+    }
+
     if (bFoundSection && ChangeCurrentSection)
     {
         m_CurrentSectionData.clear();
@@ -482,7 +494,7 @@ bool CIniFileBase::DeleteSection(const char * lpSectionName)
     {
         return false;
     }
-    uint32_t dwRet = m_File.Read(pData.get(), dwSize);
+    uint32_t dwRet = m_File.Read(pData.get(), (uint32_t)dwSize);
     if (dwRet == 0 || dwRet < dwSize)
     {
         return false;
@@ -502,11 +514,11 @@ bool CIniFileBase::DeleteSection(const char * lpSectionName)
 
     char *pEndSection = pSection + strlen(strSection.c_str()), *Data = pData.get();
     char *pNextSection = NULL;
-    int result, ReadPos = pEndSection - pData.get();
+    int result, ReadPos = (int)(pEndSection - pData.get());
     do
     {
         char * Input = NULL;
-        int MaxDataSize = dwSize + 1;
+        int MaxDataSize = (int)(dwSize + 1);
         result = -1;
         for (int count = ReadPos; count < MaxDataSize; count++)
         {

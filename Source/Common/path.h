@@ -7,7 +7,7 @@ class CPath
     //Enums
 public:
 
-    enum DIR_CURRENT_DIRECTORY   { CURRENT_DIRECTORY = 1 };
+    enum DIR_CURRENT_DIRECTORY { CURRENT_DIRECTORY = 1 };
 #ifdef _WIN32
     enum DIR_MODULE_DIRECTORY { MODULE_DIRECTORY = 2 };
     enum DIR_MODULE_FILE { MODULE_FILE = 3 };
@@ -22,7 +22,6 @@ public:
 
     //Attributes
 private:
-
     std::string	m_strPath;
 #ifdef _WIN32
     void *	m_hFindFile;
@@ -119,15 +118,16 @@ public:
     bool DirectoryExists() const;
 
     //File Information
-    bool     IsFile() const { return !IsDirectory(); }
-    bool     Exists() const;
+    bool IsFile() const { return !IsDirectory(); }
+    bool Exists() const;
 #ifdef _WIN32
-    bool     SelectFile(void * hwndOwner, const char * InitialDir, const char * FileFilter, bool FileMustExist);
+    bool SelectFile(void * hwndOwner, const char * InitialDir, const char * FileFilter, bool FileMustExist);
 #endif
 
     //Directory operations
     bool DirectoryCreate(bool bCreateIntermediates = true);
     bool ChangeDirectory();
+	void NormalizePath(CPath BaseDir);
 
     //File operations
     bool Delete(bool bEvenIfReadOnly = true) const;

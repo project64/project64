@@ -1,15 +1,15 @@
-﻿[default]
+﻿[Settings]
 7zipCache=..\..\Config\Project64.zcache
+AudioRDB=..\..\Config\Audio.rdb
 Auto Sleep=0
 Basic Mode=0
 Cheats=..\..\Config\Project64.cht
 ExtInfo=..\..\Config\Project64.rdx
-VideoRDB=..\..\Config\Video.rdb
-AudioRDB=..\..\Config\Audio.rdb
 Notes=..\..\Config\Project64.rdn
 RomDatabase=..\..\Config\Project64.rdb
 RomListCache=..\..\Config\Project64.cache3
 ShortCuts=..\..\Config\Project64.sc3
+VideoRDB=..\..\Config\Video.rdb
 
 [Debugger]
 Debugger=1

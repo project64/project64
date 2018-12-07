@@ -60,5 +60,5 @@ public:
 };
 #endif
 
-typedef std::list<stdstr>   strlist;
-typedef strlist::iterator   strlist_iter;
+typedef std::list<stdstr> strlist;
+typedef strlist::iterator strlist_iter;

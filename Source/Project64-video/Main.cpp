@@ -37,6 +37,7 @@
 #include "ScreenResolution.h"
 
 #ifdef _WIN32
+#include <Windows.h>
 #include <commctrl.h>
 #endif
 
@@ -674,6 +675,7 @@ void CALL CloseDLL(void)
     voodoo.gamma_table_g = 0;
     delete[] voodoo.gamma_table_b;
     voodoo.gamma_table_b = 0;
+    StopTrace();
 }
 
 /******************************************************************

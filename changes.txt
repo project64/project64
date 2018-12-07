@@ -9,3 +9,5 @@ Windows 2.4
 - Fix bug in key assignment (#1309)
 - Add Shygoo's debugger code
 - New audio plugin
+- large address aware
+- Ability to change defaults

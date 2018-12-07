@@ -11,7 +11,9 @@
 #include "ScreenResolution.h"
 #include "settings.h"
 #include "trace.h"
-
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 #ifdef ANDROID
 #include <Common/StdString.h>
 #include <vector>
@@ -268,7 +270,7 @@ void FullScreenResolutions::init()
     int current = 0;
     char smode[256];
     memset(&enumMode, 0, sizeof(DEVMODE));
-    memset(&prevInfo, 0, sizeof(ResolutionInfo));
+    prevInfo = ResolutionInfo();
     while (EnumDisplaySettings(NULL, iModeNum++, &enumMode) != 0)
     {
         ResolutionInfo curInfo(NULL, enumMode.dmPelsWidth, enumMode.dmPelsHeight, enumMode.dmDisplayFrequency);

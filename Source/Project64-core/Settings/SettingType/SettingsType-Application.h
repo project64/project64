@@ -47,7 +47,7 @@ public:
     virtual void Delete(uint32_t Index);
 
     // Initialize this class to use ini or registry
-    static void Initialize(const char * AppName);
+    static void Initialize(void);
     static void CleanUp(void);
     static void Flush(void);
     static void ResetAll(void);

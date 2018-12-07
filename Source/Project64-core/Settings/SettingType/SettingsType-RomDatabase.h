@@ -76,4 +76,6 @@ private:
     CSettingTypeRomDatabase();                                          // Disable default constructor
     CSettingTypeRomDatabase(const CSettingTypeRomDatabase&);            // Disable copy constructor
     CSettingTypeRomDatabase& operator=(const CSettingTypeRomDatabase&); // Disable assignment
+
+	bool Load(uint32_t & Value) const;
 };

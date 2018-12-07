@@ -18,6 +18,9 @@ extern "C" {
 #endif
 }
 
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 #include <math.h>
 #include "3dmath.h"
 #include "trace.h"

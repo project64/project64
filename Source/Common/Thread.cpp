@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Thread.h"
-#ifndef _WIN32
+#ifdef _WIN32
+#include <Windows.h>
+#else
 #include <unistd.h>
 #include <pthread.h>
 #include <sys/syscall.h>
@@ -64,7 +66,11 @@ void * CThread::ThreadWrapper (CThread * _this)
     void * res = NULL;
     try
     {
+#if defined(__i386__) || defined(_M_IX86) || defined(__arm__) || defined(_M_ARM)
         res = (void *)_this->m_StartAddress(_this->m_lpThreadParameter);
+#else
+        res = (void *)((uint64_t)_this->m_StartAddress(_this->m_lpThreadParameter));
+#endif
     }
     catch (...)
     {

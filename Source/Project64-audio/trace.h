@@ -22,3 +22,4 @@ enum TraceModuleAndroidAudio
 
 void SetupTrace(void);
 void StartTrace(void);
+void StopTrace(void);

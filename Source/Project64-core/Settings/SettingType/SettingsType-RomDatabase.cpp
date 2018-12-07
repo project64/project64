@@ -135,34 +135,44 @@ void CSettingTypeRomDatabase::GameChanged(void * /*Data */)
     }
 }
 
+bool CSettingTypeRomDatabase::Load(uint32_t & Value) const
+{
+	bool bRes = false;
+	if (m_VideoSetting)
+	{
+		bRes = m_VideoIniFile->GetNumber(Section(), m_KeyName.c_str(), Value, Value);
+	}
+	else if (m_AudioSetting)
+	{
+		bRes = m_AudioIniFile->GetNumber(Section(), m_KeyName.c_str(), Value, Value);
+	}
+	else
+	{
+		bRes = m_SettingsIniFile->GetNumber(Section(), m_KeyName.c_str(), Value, Value);
+	}
+	return bRes;
+}
+
 bool CSettingTypeRomDatabase::Load(uint32_t Index, bool & Value) const
 {
     uint32_t temp_value = Value;
-    bool bRes = Load(Index, temp_value);
-    Value = temp_value != 0;
-    return bRes;
+	if (Load(temp_value))
+	{
+		Value = temp_value != 0;
+		return true;
+	}
+	LoadDefault(Index, Value);
+	return false;
 }
 
 bool CSettingTypeRomDatabase::Load(uint32_t Index, uint32_t & Value) const
 {
-    bool bRes = false;
-    if (m_VideoSetting)
-    {
-        bRes = m_VideoIniFile->GetNumber(Section(), m_KeyName.c_str(), Value, Value);
-    }
-    else if (m_AudioSetting)
-    {
-        bRes = m_AudioIniFile->GetNumber(Section(), m_KeyName.c_str(), Value, Value);
-    }
-    else
-    {
-        bRes = m_SettingsIniFile->GetNumber(Section(), m_KeyName.c_str(), Value, Value);
-    }
-    if (!bRes)
+    if (!Load(Value))
     {
         LoadDefault(Index, Value);
-    }
-    return bRes;
+		return false;
+	}
+    return true;
 }
 
 bool CSettingTypeRomDatabase::Load(uint32_t Index, std::string & Value) const
@@ -211,13 +221,7 @@ void CSettingTypeRomDatabase::LoadDefault(uint32_t /*Index*/, uint32_t & Value) 
 {
     if (m_DefaultSetting != Default_None)
     {
-        if (m_DefaultSetting == Default_Constant)
-        {
-            Value = m_DefaultValue;
-        }
-        else {
-            g_Settings->LoadDword(m_DefaultSetting, Value);
-        }
+        Value = m_DefaultSetting == Default_Constant ? m_DefaultValue : g_Settings->LoadDword(m_DefaultSetting);
     }
 }
 

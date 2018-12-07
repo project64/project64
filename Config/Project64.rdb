@@ -1850,7 +1850,6 @@ Status=Compatible
 Plugin Note=[Glide64] missing menu effects
 32bit=No
 Culling=1
-Fixed Audio=0
 
 [B30ED978-3003C9F9-C:45]
 Good Name=F-ZERO X (U)
@@ -5562,7 +5561,6 @@ Plugin Note=[video] HLE not supported [audio] needs audio plugin
 32bit=No
 AudioResetOnLoad=Yes
 HLE GFX=No
-Fixed Audio=0
 RDRAM Size=8
 RSP-Mfc0Count=10
 
@@ -6871,7 +6869,6 @@ Status=Issues (plugin)
 Plugin Note=[video] HLE not supported [audio] needs audio plugin
 32bit=No
 AudioResetOnLoad=Yes
-Fixed Audio=0
 HLE GFX=No
 RSP-Mfc0Count=10
 
@@ -6882,7 +6879,6 @@ Status=Issues (plugin)
 Plugin Note=[video] HLE not supported [audio] needs audio plugin
 32bit=No
 AudioResetOnLoad=Yes
-Fixed Audio=0
 HLE GFX=No
 RSP-Mfc0Count=10
 
@@ -8207,14 +8203,12 @@ Status=Unsupported
 
 [00000000-00000000-C:4A]
 32bit=No
-Fixed Audio=0
 Good Name=64DD IPL (JPN)
 RDRAM Size=8
 Status=Compatible
 
 [00000000-00000000-C:45]
 32bit=No
-Fixed Audio=0
 Good Name=64DD IPL (USA)
 RDRAM Size=8
 Status=Compatible

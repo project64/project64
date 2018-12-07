@@ -120,9 +120,6 @@
     <ClCompile Include="UserInterface\MenuShortCuts.cpp">
       <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
-    <ClCompile Include="UserInterface\NotificationClass.cpp">
-      <Filter>Source Files\User Interface Source</Filter>
-    </ClCompile>
     <ClCompile Include="UserInterface\RomBrowserClass.cpp">
       <Filter>Source Files\User Interface Source</Filter>
     </ClCompile>
@@ -216,6 +213,12 @@
     <ClCompile Include="UserInterface\WTLControls\EditNumber32.cpp">
       <Filter>Source Files\User Interface Source\WTL Controls Source</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface\Notification.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface\Settings\SettingsPage-Defaults.cpp">
+      <Filter>Source Files\User Interface Source\Settings Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserInterface\resource.h">
@@ -240,9 +243,6 @@
       <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
     <ClInclude Include="UserInterface\MenuShortCuts.h">
-      <Filter>Header Files\User Interface Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="UserInterface\NotificationClass.h">
       <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
     <ClInclude Include="UserInterface\RomBrowser.h">
@@ -412,6 +412,12 @@
     </ClInclude>
     <ClInclude Include="UserInterface\WTLControls\EditNumber32.h">
       <Filter>Header Files\User Interface Headers\WTL Controls Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Notification.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Settings\SettingsPage-Defaults.h">
+      <Filter>Header Files\User Interface Headers\Settings Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

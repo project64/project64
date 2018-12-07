@@ -52,6 +52,7 @@ CPath CSymbols::GetSymFilePath()
 	{
 		symFilePath.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
 	}
+	symFilePath.NormalizePath(CPath(CPath::MODULE_DIRECTORY));
 	if (!symFilePath.DirectoryExists())
 	{
 		symFilePath.DirectoryCreate();
