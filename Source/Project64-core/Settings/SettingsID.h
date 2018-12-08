@@ -60,6 +60,7 @@ enum SettingID
     Setting_LanguageDirDefault,
     Setting_CurrentLanguage,
     Setting_EnableDisk,
+	Setting_SyncViaAudioEnabled,
 
     //Default Settings
     Default_RDRamSize,

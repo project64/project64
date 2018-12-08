@@ -274,7 +274,7 @@ void SetTimerResolution(void)
 		typedef LONG(NTAPI* tNtSetTimerResolution)(IN ULONG DesiredResolution, IN BOOLEAN SetResolution, OUT PULONG CurrentResolution);
 		tNtSetTimerResolution NtSetTimerResolution = (tNtSetTimerResolution)GetProcAddress(hMod, "NtSetTimerResolution");
 		ULONG CurrentResolution = 0;
-		NtSetTimerResolution(5000, TRUE, &CurrentResolution);
+		NtSetTimerResolution(10000, TRUE, &CurrentResolution);
 	}
 }
 #endif
