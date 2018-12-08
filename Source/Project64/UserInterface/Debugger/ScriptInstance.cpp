@@ -741,6 +741,8 @@ duk_ret_t CScriptInstance::js_AddCallback(duk_context* ctx)
     void* heapptr;
     uint32_t param = 0;
     uint32_t param2 = 0;
+    uint32_t param3 = 0;
+    uint32_t param4 = 0;
     bool bOnce = false;
 
     int argc = duk_get_top(ctx);
@@ -748,25 +750,18 @@ duk_ret_t CScriptInstance::js_AddCallback(duk_context* ctx)
     hookId = duk_get_string(ctx, 0);
     heapptr = duk_get_heapptr(ctx, 1);
 
-    if (argc >= 3)
-    {
-        param = duk_get_uint(ctx, 2);
-        if (argc > 3)
-        {
-            param2 = duk_get_uint(ctx, 3);
-            if (argc > 4)
-            {
-                bOnce = duk_get_boolean(ctx, 4) != 0;
-            }
-        }
-    }
+    if (argc >= 3) param = duk_get_uint(ctx, 2);
+    if (argc >= 4) param2 = duk_get_uint(ctx, 3);
+    if (argc >= 5) param3 = duk_get_uint(ctx, 4);
+    if (argc >= 6) param4 = duk_get_uint(ctx, 5);
+    if (argc >= 7) bOnce = (duk_get_boolean(ctx, 6) != 0);
 
     int callbackId = -1;
 
     CScriptHook* hook = _this->m_ScriptSystem->GetHook(hookId);
     if (hook != NULL)
     {
-        callbackId = hook->Add(_this, heapptr, param, param2, bOnce);
+        callbackId = hook->Add(_this, heapptr, param, param2, param3, param4, bOnce);
     }
 
     duk_pop_n(ctx, argc);

@@ -54,6 +54,7 @@ private:
     CScriptHook* m_HookCPUExec;
     CScriptHook* m_HookCPURead;
     CScriptHook* m_HookCPUWrite;
+    CScriptHook* m_HookCPUExecOpcode;
 
     CScriptHook* m_HookFrameDrawn;
 
@@ -118,6 +119,11 @@ public:
     CScriptHook* HookCPUWrite()
     {
         return m_HookCPUWrite;
+    }
+
+    CScriptHook* HookCPUExecOpcode()
+    {
+        return m_HookCPUExecOpcode;
     }
 
     CScriptHook* HookFrameDrawn()
