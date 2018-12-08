@@ -72,6 +72,8 @@ private:
     CStatic       m_SymInfo;
     CStatic       m_DMAInfo;
 
+    bool m_bAutoRefreshEnabled;
+
     CBreakpoints* m_Breakpoints;
 
     int           m_SymbolColorStride;

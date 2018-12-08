@@ -247,6 +247,7 @@ enum SettingID
     Debugger_WriteBPExists,
     Debugger_ReadBPExists,
     Debugger_WaitingForStep,
+    Debugger_AutoRefreshMemoryView,
 
     //Trace
     Debugger_TraceMD5,

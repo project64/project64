@@ -25,7 +25,6 @@
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
 
-
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -529,6 +528,7 @@ BEGIN
     LTEXT           "",IDC_SYM_INFO,8,198,418,8
     LTEXT           "",IDC_DMA_INFO,8,208,415,8
     GROUPBOX        "",IDC_STATIC,4,190,428,30
+    CONTROL         "Auto",IDC_CHK_AUTOREFRESH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,7,31,8
 END
 
 IDD_Debugger_Search DIALOGEX 0, 0, 229, 233
@@ -1877,6 +1877,11 @@ BEGIN
 END
 
 IDD_Settings_Defaults AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_Debugger_Memory AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

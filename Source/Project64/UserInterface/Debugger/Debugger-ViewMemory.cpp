@@ -119,6 +119,9 @@ LRESULT	CDebugMemoryView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
     m_SymInfo.Attach(GetDlgItem(IDC_SYM_INFO));
     m_DMAInfo.Attach(GetDlgItem(IDC_DMA_INFO));
 
+    m_bAutoRefreshEnabled = g_Settings->LoadBool(Debugger_AutoRefreshMemoryView);
+    SendDlgItemMessage(IDC_CHK_AUTOREFRESH, BM_SETCHECK, m_bAutoRefreshEnabled ? BST_CHECKED : BST_UNCHECKED, 0);
+
     _this = this;
 
     DWORD dwThreadID = ::GetCurrentThreadId();
@@ -136,7 +139,10 @@ DWORD WINAPI CDebugMemoryView::AutoRefreshProc(void* _self)
     CDebugMemoryView* self = (CDebugMemoryView*)_self;
     while (true)
     {
-        self->RefreshMemory(true);
+        if (self->m_bAutoRefreshEnabled)
+        {
+            self->RefreshMemory(true);
+        }
         Sleep(100);
     }
 }
@@ -202,6 +208,10 @@ LRESULT CDebugMemoryView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& 
         break;
     case IDC_SYMBOLS_BTN:
         m_Debugger->OpenSymbolsWindow();
+        break;
+    case IDC_CHK_AUTOREFRESH:
+        m_bAutoRefreshEnabled = (SendMessage(GetDlgItem(IDC_CHK_AUTOREFRESH), BM_GETSTATE, 0, 0) & BST_CHECKED) != 0;
+        g_Settings->SaveBool(Debugger_AutoRefreshMemoryView, m_bAutoRefreshEnabled);
         break;
     case IDCANCEL:
         EndDialog(0);
