@@ -81,7 +81,12 @@ CSettings::~CSettings()
 void CSettings::RegisterSettings(void)
 {
     SetModuleName("default");
-    m_Set_EnableAudio = FindSystemSettingId("Enable Audio");
+	short Set_SyncViaAudioEnabled = FindSystemSettingId("SyncViaAudioEnabled");
+	if (Set_SyncViaAudioEnabled != 0)
+	{
+		SetSystemSetting(Set_SyncViaAudioEnabled, 1);
+	}
+	m_Set_EnableAudio = FindSystemSettingId("Enable Audio");
     m_Set_FixedAudio = FindSystemSettingId("Fixed Audio");
     m_Set_SyncAudio = FindSystemSettingId("Sync Audio");
     m_Set_FullSpeed = FindSystemSettingId("Full Speed");

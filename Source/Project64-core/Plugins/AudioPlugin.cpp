@@ -62,6 +62,7 @@ bool CAudioPlugin::LoadFunctions(void)
 
 bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
 {
+	g_Settings->SaveBool(Setting_SyncViaAudioEnabled, false);
     struct AUDIO_INFO
     {
         void * hwnd;

@@ -57,7 +57,7 @@ void CGameSettings::RefreshGameSettings()
     m_DelaySI = g_Settings->LoadBool(Game_DelaySI);
     m_DelayDP = g_Settings->LoadBool(Game_DelayDP);
     m_bFixedAudio = g_Settings->LoadBool(Game_FixedAudio);
-    m_bSyncToAudio = g_Settings->LoadBool(Game_SyncViaAudio);
+    m_bSyncToAudio = g_Settings->LoadBool(Game_SyncViaAudio) && g_Settings->LoadBool(Setting_SyncViaAudioEnabled);
     m_FullSpeed = g_Settings->LoadBool(Game_FullSpeed);
     m_b32Bit = g_Settings->LoadBool(Game_32Bit);
 #ifdef ANDROID

@@ -61,6 +61,10 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
 	AddModCheckBox(GetDlgItem(IDC_SYNC_AUDIO), Default_SyncViaAudio);
 	AddModCheckBox(GetDlgItem(IDC_ROM_FIXEDAUDIO), Default_FixedAudio);
 
+	if (!g_Settings->LoadBool(Setting_SyncViaAudioEnabled))
+	{
+		GetDlgItem(IDC_SYNC_AUDIO).EnableWindow(false);
+	}
 	UpdatePageSettings();
 }
 
