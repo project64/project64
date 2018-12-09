@@ -68,6 +68,9 @@ public:
     uint8_t * Imem();
     uint8_t * PifRam();
 
+    CSram * GetSram();
+    CFlashram * GetFlashram();
+
     bool  LB_VAddr(uint32_t VAddr, uint8_t & Value);
     bool  LH_VAddr(uint32_t VAddr, uint16_t & Value);
     bool  LW_VAddr(uint32_t VAddr, uint32_t & Value);

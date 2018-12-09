@@ -218,8 +218,6 @@ private:
     void RefreshBreakpointList();
     void RemoveSelectedBreakpoints();
 
-    bool AddressSafe(uint32_t vaddr);
-
     void HistoryPushState();
     void ToggleHistoryButtons();
 

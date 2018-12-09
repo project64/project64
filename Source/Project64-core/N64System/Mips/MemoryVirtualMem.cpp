@@ -308,6 +308,16 @@ uint8_t * CMipsMemoryVM::PifRam()
     return m_PifRam;
 }
 
+CSram* CMipsMemoryVM::GetSram(void)
+{
+	return dynamic_cast<CSram*>(this);
+}
+
+CFlashram* CMipsMemoryVM::GetFlashram()
+{
+	return dynamic_cast<CFlashram*>(this);
+}
+
 bool CMipsMemoryVM::LB_VAddr(uint32_t VAddr, uint8_t& Value)
 {
     if (m_TLB_ReadMap[VAddr >> 12] == 0)

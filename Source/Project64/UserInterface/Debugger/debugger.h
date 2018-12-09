@@ -78,6 +78,9 @@ public:
     static void GameReset(CDebuggerUI * _this);
     static void SteppingOpsChanged(CDebuggerUI * _this);
 
+    bool DebugLW_PAddr(uint32_t vaddr, uint32_t& value);
+    bool DebugLW_VAddr(uint32_t vaddr, uint32_t& value);
+
 protected:
     void TLBChanged(void);
     void CPUStepStarted(void);

@@ -64,7 +64,7 @@ CDebugCommandsView::~CDebugCommandsView()
 {
 }
 
-LRESULT	CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
     g_Settings->RegisterChangeCB(Debugger_WaitingForStep, this, (CSettings::SettingChangedFunc)StaticWaitingForStepChanged);
     g_Settings->RegisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)StaticSteppingOpsChanged);
@@ -214,7 +214,7 @@ LRESULT CALLBACK CDebugCommandsView::HookProc(int nCode, WPARAM wParam, LPARAM l
     return 0;
 }
 
-LRESULT	CDebugCommandsView::OnOpKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+LRESULT CDebugCommandsView::OnOpKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
 {
     if (wParam == VK_UP)
     {
@@ -249,25 +249,6 @@ LRESULT	CDebugCommandsView::OnOpKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*l
         bHandled = TRUE;
     }
     return 1;
-}
-
-// Check if KSEG0 addr is out of bounds
-bool CDebugCommandsView::AddressSafe(uint32_t vaddr)
-{
-    if (g_MMU == NULL)
-    {
-        return false;
-    }
-
-    if (vaddr >= 0x80000000 && vaddr <= 0x9FFFFFFF)
-    {
-        if ((vaddr & 0x1FFFFFFF) >= g_MMU->RdramSize())
-        {
-            return false;
-        }
-    }
-
-    return true;
 }
 
 void CDebugCommandsView::ClearBranchArrows()
@@ -551,14 +532,8 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top)
 
         COpInfo OpInfo;
         OPCODE& OpCode = OpInfo.m_OpCode;
-        bool bAddrOkay = false;
 
-        if (AddressSafe(opAddr))
-        {
-            bAddrOkay = g_MMU->LW_VAddr(opAddr, OpCode.Hex);
-        }
-
-        if (!bAddrOkay)
+        if (!m_Debugger->DebugLW_VAddr(opAddr, OpCode.Hex))
         {
             m_CommandList.AddItem(i, CCommandList::COL_COMMAND, "***");
             m_bvAnnotatedLines.push_back(false);
@@ -590,15 +565,9 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top)
         {
             for (int offset = -4; offset > -24; offset -= 4)
             {
-                if (!AddressSafe(opAddr + offset))
-                {
-                    break;
-                }
-
                 OPCODE OpCodeTest;
-                bAddrOkay = g_MMU->LW_VAddr(opAddr + offset, OpCodeTest.Hex);
 
-                if (!bAddrOkay)
+                if (!m_Debugger->DebugLW_VAddr(opAddr + offset, OpCodeTest.Hex))
                 {
                     break;
                 }
@@ -715,11 +684,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
     uint32_t pc = (g_Reg != NULL) ? g_Reg->m_PROGRAM_COUNTER : 0;
 
     OPCODE pcOpcode;
-    if (g_MMU != NULL)
-    {
-        g_MMU->LW_VAddr(pc, pcOpcode.Hex);
-    }
-    else
+    if (!m_Debugger->DebugLW_VAddr(pc, pcOpcode.Hex))
     {
         pcOpcode.Hex = 0;
     }
@@ -769,12 +734,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
     // cmd & args
     COpInfo OpInfo;
     OPCODE& OpCode = OpInfo.m_OpCode;
-    bool bAddrOkay = false;
-
-    if (AddressSafe(address))
-    {
-        bAddrOkay = g_MMU->LW_VAddr(address, OpCode.Hex);
-    }
+    bool bAddrOkay = m_Debugger->DebugLW_VAddr(address, OpCode.Hex);
 
     struct {
         COLORREF bg;
@@ -884,7 +844,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR* pNMHDR)
     return CDRF_DODEFAULT;
 }
 
-LRESULT	CDebugCommandsView::OnMeasureItem(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnMeasureItem(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
 {
     if (wParam == IDC_CMD_LIST)
     {
@@ -1094,13 +1054,11 @@ void CDebugCommandsView::CPUResume()
 
 void CDebugCommandsView::CPUStepOver()
 {
-    if (g_MMU == NULL)
+    COpInfo opInfo;
+    if (!m_Debugger->DebugLW_VAddr(g_Reg->m_PROGRAM_COUNTER, opInfo.m_OpCode.Hex))
     {
         return;
     }
-
-    COpInfo opInfo;
-    g_MMU->LW_VAddr(g_Reg->m_PROGRAM_COUNTER, opInfo.m_OpCode.Hex);
 
     if (opInfo.IsJAL())
     {
@@ -1294,6 +1252,12 @@ void CDebugCommandsView::GotoEnteredAddress()
 
 void CDebugCommandsView::BeginOpEdit(uint32_t address)
 {
+    uint32_t opcode;
+    if (m_Debugger->DebugLW_VAddr(address, opcode))
+    {
+        return;
+    }
+
     CRect listRect;
     m_CommandList.GetWindowRect(&listRect);
     ScreenToClient(&listRect);
@@ -1307,9 +1271,7 @@ void CDebugCommandsView::BeginOpEdit(uint32_t address)
     //itemRect.bottom += 0;
     itemRect.left += listRect.left + 3;
     itemRect.right += 100;
-
-    uint32_t opcode;
-    g_MMU->LW_VAddr(address, opcode);
+    
     char* command = (char*)R4300iOpcodeName(opcode, address);
 
     m_OpEdit.ShowWindow(SW_SHOW);
@@ -1363,13 +1325,13 @@ LRESULT CDebugCommandsView::OnPCChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND
     return 0;
 }
 
-LRESULT	CDebugCommandsView::OnCommandListClicked(NMHDR* /*pNMHDR*/)
+LRESULT CDebugCommandsView::OnCommandListClicked(NMHDR* /*pNMHDR*/)
 {
     EndOpEdit();
     return 0;
 }
 
-LRESULT	CDebugCommandsView::OnCommandListDblClicked(NMHDR* pNMHDR)
+LRESULT CDebugCommandsView::OnCommandListDblClicked(NMHDR* pNMHDR)
 {
     // Set PC breakpoint
     NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
@@ -1391,14 +1353,9 @@ LRESULT	CDebugCommandsView::OnCommandListDblClicked(NMHDR* pNMHDR)
     return 0;
 }
 
-LRESULT	CDebugCommandsView::OnCommandListRightClicked(NMHDR* pNMHDR)
+LRESULT CDebugCommandsView::OnCommandListRightClicked(NMHDR* pNMHDR)
 {
     EndOpEdit();
-
-    if (g_MMU == NULL)
-    {
-        return 0;
-    }
 
     NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
     int nItem = pIA->iItem;
@@ -1406,11 +1363,14 @@ LRESULT	CDebugCommandsView::OnCommandListRightClicked(NMHDR* pNMHDR)
     uint32_t address = m_StartAddress + nItem * 4;
     m_SelectedAddress = address;
 
+    if (!m_Debugger->DebugLW_VAddr(m_SelectedAddress, m_SelectedOpCode.Hex))
+    {
+        return 0;
+    }
+
     HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_OP_POPUP));
     HMENU hPopupMenu = GetSubMenu(hMenu, 0);
-
-    g_MMU->LW_VAddr(m_SelectedAddress, m_SelectedOpCode.Hex);
-
+    
     if (m_SelectedOpInfo.IsStaticJump())
     {
         m_FollowAddress = (m_SelectedAddress & 0xF0000000) | (m_SelectedOpCode.target * 4);
@@ -1500,7 +1460,7 @@ LRESULT CDebugCommandsView::OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, 
     return FALSE;
 }
 
-LRESULT	CDebugCommandsView::OnSizing(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDebugCommandsView::OnSizing(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
     CRect listRect;
     m_CommandList.GetWindowRect(listRect);
@@ -1609,7 +1569,10 @@ BOOL CDebugCommandsView::IsOpEdited(uint32_t address)
 void CDebugCommandsView::EditOp(uint32_t address, uint32_t op)
 {
     uint32_t currentOp;
-    g_MMU->LW_VAddr(address, currentOp);
+    if (!m_Debugger->DebugLW_VAddr(address, currentOp))
+    {
+        return;
+    }
 
     if (currentOp == op)
     {
