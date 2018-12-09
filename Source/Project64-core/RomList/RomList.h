@@ -34,6 +34,7 @@ public:
         char        FileName[200];
         char        InternalName[22];
         char        GoodName[200];
+        char        Name[200];
         char        CartID[3];
         char        PluginNotes[250];
         char        CoreNotes[250];

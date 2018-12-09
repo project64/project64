@@ -535,6 +535,10 @@ bool CRomBrowser::RomListDrawItem(int32_t idCtrl, uint32_t lParam)
     {
         text = wGS(RB_NOT_GOOD_FILE);
     }
+    if (wcscmp(L"#321#", text.c_str()) == 0)
+    {
+        text = stdstr(pRomInfo->InternalName).ToUTF16();
+    }
 
     DrawTextW(ditem->hDC, text.c_str(), text.length(), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_WORD_ELLIPSIS);
 
@@ -556,6 +560,11 @@ bool CRomBrowser::RomListDrawItem(int32_t idCtrl, uint32_t lParam)
         {
             text = wGS(RB_NOT_GOOD_FILE);
         }
+        if (wcscmp(L"#321#", text.c_str()) == 0)
+        {
+            text = stdstr(pRomInfo->InternalName).ToUTF16();
+        }
+
         DrawTextW(ditem->hDC, text.c_str(), text.length(), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_WORD_ELLIPSIS);
     }
     return true;
@@ -640,11 +649,19 @@ int32_t CALLBACK CRomBrowser::RomList_CompareItems(uint32_t lParam1, uint32_t lP
         GoodName2 = strcmp("#340#", pRomInfo2->GoodName) != 0 ? pRomInfo2->GoodName : m_UnknownGoodName.c_str();
     }
 
+    const char * Name1 = NULL, *Name2 = NULL;
+    if (SortFieldInfo->Key == RB_Name)
+    {
+        Name1 = strcmp("#321#", pRomInfo1->Name) != 0 ? pRomInfo1->GoodName : pRomInfo1->InternalName;
+        Name2 = strcmp("#321#", pRomInfo2->Name) != 0 ? pRomInfo2->GoodName : pRomInfo2->InternalName;
+    }
+
     switch (SortFieldInfo->Key)
     {
     case RB_FileName: result = (int32_t)lstrcmpi(pRomInfo1->FileName, pRomInfo2->FileName); break;
     case RB_InternalName: result = (int32_t)lstrcmpi(pRomInfo1->InternalName, pRomInfo2->InternalName); break;
     case RB_GoodName: result = (int32_t)lstrcmpi(GoodName1, GoodName2); break;
+    case RB_Name: result = (int32_t)lstrcmpi(Name1, Name2); break;
     case RB_Status: result = (int32_t)lstrcmpi(pRomInfo1->Status, pRomInfo2->Status); break;
     case RB_RomSize: result = (int32_t)pRomInfo1->RomSize - (int32_t)pRomInfo2->RomSize; break;
     case RB_CoreNotes: result = (int32_t)lstrcmpi(pRomInfo1->CoreNotes, pRomInfo2->CoreNotes); break;
@@ -688,6 +705,7 @@ void CRomBrowser::RomList_GetDispInfo(uint32_t pnmh)
     case RB_FileName: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->FileName).ToUTF16(CP_ACP).c_str(), lpdi->item.cchTextMax); break;
     case RB_InternalName: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->InternalName).ToUTF16(stdstr::CODEPAGE_932).c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
     case RB_GoodName: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->GoodName).ToUTF16().c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
+    case RB_Name: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->Name).ToUTF16().c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
     case RB_CoreNotes: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->CoreNotes).ToUTF16().c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
     case RB_PluginNotes: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->PluginNotes).ToUTF16().c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
     case RB_Status: wcsncpy(lpdi->item.pszText, stdstr(pRomInfo->Status).ToUTF16().c_str(), lpdi->item.cchTextMax / sizeof(wchar_t)); break;
