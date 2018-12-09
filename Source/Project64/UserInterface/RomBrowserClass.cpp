@@ -49,7 +49,8 @@ void CRomBrowser::GetFieldInfo(ROMBROWSER_FIELDS_LIST & Fields, bool UseDefault 
 
     AddField(Fields, "File Name", -1, RB_FileName, 218, RB_FILENAME, UseDefault);
     AddField(Fields, "Internal Name", -1, RB_InternalName, 200, RB_INTERNALNAME, UseDefault);
-    AddField(Fields, "Good Name", 0, RB_GoodName, 218, RB_GOODNAME, UseDefault);
+    AddField(Fields, "Good Name", -1, RB_GoodName, 218, RB_GOODNAME, UseDefault);
+    AddField(Fields, "Name", 0, RB_Name, 218, RB_NAME, UseDefault);
     AddField(Fields, "Status", 1, RB_Status, 92, RB_STATUS, UseDefault);
     AddField(Fields, "Rom Size", -1, RB_RomSize, 100, RB_ROMSIZE, UseDefault);
     AddField(Fields, "Notes (Core)", 2, RB_CoreNotes, 120, RB_NOTES_CORE, UseDefault);
