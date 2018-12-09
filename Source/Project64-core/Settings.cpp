@@ -331,7 +331,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Debugger_WriteBPExists, new CSettingTypeTempBool(false));
     AddHandler(Debugger_ReadBPExists, new CSettingTypeTempBool(false));
     AddHandler(Debugger_WaitingForStep, new CSettingTypeTempBool(false));
-    AddHandler(Debugger_AutoRefreshMemoryView, new CSettingTypeApplication("Debugger", "Auto Referesh Memory View", true));
+    AddHandler(Debugger_AutoRefreshMemoryView, new CSettingTypeApplication("Debugger", "Auto Refresh Memory View", true));
     AddHandler(Debugger_DebugLanguage, new CSettingTypeApplication("Debugger", "Debug Language", false));
     AddHandler(Debugger_ShowDivByZero, new CSettingTypeApplication("Debugger", "Show Div by zero", false));
     AddHandler(Debugger_AppLogFlush, new CSettingTypeApplication("Logging", "Log Auto Flush", (uint32_t)false));

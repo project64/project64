@@ -36,7 +36,7 @@ CDebugMemoryView::~CDebugMemoryView()
 {
 }
 
-LRESULT	CDebugMemoryView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDebugMemoryView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
     m_SymbolColorStride = 0;
     m_SymbolColorPhase = 0;
@@ -613,22 +613,14 @@ void CDebugMemoryView::RefreshMemory(bool ResetCompare)
 
         if (m_DataVAddrr)
         {
-            if (!AddressSafe(m_DataStartLoc & ~3))
-            {
-                ValidData = false;
-            }
-            else if (!g_MMU->LW_VAddr(m_DataStartLoc & ~3, word.UW))
+            if (!m_Debugger->DebugLW_VAddr(m_DataStartLoc & ~3, word.UW))
             {
                 ValidData = false;
             }
         }
         else
         {
-            if ((m_DataStartLoc & ~3) >= g_MMU->RdramSize())
-            {
-                ValidData = false;
-            }
-            else if (!g_MMU->LW_PAddr(m_DataStartLoc & ~3, word.UW))
+            if (!m_Debugger->DebugLW_PAddr(m_DataStartLoc & ~3, word.UW))
             {
                 ValidData = false;
             }
@@ -657,22 +649,14 @@ void CDebugMemoryView::RefreshMemory(bool ResetCompare)
 
         if (m_DataVAddrr)
         {
-            if (!AddressSafe(Pos))
-            {
-                ValidData = false;
-            }
-            else if (!g_MMU->LW_VAddr(Pos, word.UW))
+            if (!m_Debugger->DebugLW_VAddr(Pos, word.UW))
             {
                 ValidData = false;
             }
         }
         else
         {
-            if (Pos >= g_MMU->RdramSize())
-            {
-                ValidData = false;
-            }
-            else if (!g_MMU->LW_PAddr(Pos, word.UW))
+            if (!m_Debugger->DebugLW_PAddr(Pos, word.UW))
             {
                 ValidData = false;
             }
@@ -780,23 +764,4 @@ void CDebugMemoryView::SelectColors(uint32_t vaddr, bool changed, COLORREF& bgCo
     {
         m_SymbolColorStride--;
     }
-}
-
-// Check if KSEG0 addr is out of bounds
-bool CDebugMemoryView::AddressSafe(uint32_t vaddr)
-{
-    if (g_MMU == NULL)
-    {
-        return false;
-    }
-
-    if (vaddr >= 0x80000000 && vaddr <= 0x9FFFFFFF)
-    {
-        if ((vaddr & 0x1FFFFFFF) >= g_MMU->RdramSize())
-        {
-            return false;
-        }
-    }
-
-    return true;
 }
