@@ -156,6 +156,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(RB_FILENAME, "File Name");
     DEF_STR(RB_INTERNALNAME, "Internal Name");
     DEF_STR(RB_GOODNAME, "Good Name");
+    DEF_STR(RB_NAME, "Name");
     DEF_STR(RB_STATUS, "Status");
     DEF_STR(RB_ROMSIZE, "ROM Size");
     DEF_STR(RB_NOTES_CORE, "Notes (core)");

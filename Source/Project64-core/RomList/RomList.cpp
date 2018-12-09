@@ -468,6 +468,7 @@ void CRomList::FillRomExtensionInfo(ROM_INFO * pRomInfo)
     pRomInfo->CoreNotes[0] = '\0';
     pRomInfo->PluginNotes[0] = '\0';
     strcpy(pRomInfo->GoodName, "#340#");
+    strcpy(pRomInfo->Name, "#321#");
     strcpy(pRomInfo->Status, "Unknown");
 
     //Get File Identifier
@@ -486,6 +487,7 @@ void CRomList::FillRomExtensionInfo(ROM_INFO * pRomInfo)
 
     //Rom Settings
     strncpy(pRomInfo->GoodName, m_RomIniFile->GetString(Identifier, "Good Name", pRomInfo->GoodName).c_str(), sizeof(pRomInfo->GoodName) / sizeof(char));
+    strncpy(pRomInfo->Name, m_RomIniFile->GetString(Identifier, "Good Name", pRomInfo->Name).c_str(), sizeof(pRomInfo->Name) / sizeof(char));
     strncpy(pRomInfo->Status, m_RomIniFile->GetString(Identifier, "Status", pRomInfo->Status).c_str(), sizeof(pRomInfo->Status) / sizeof(char));
     strncpy(pRomInfo->CoreNotes, m_RomIniFile->GetString(Identifier, "Core Note", "").c_str(), sizeof(pRomInfo->CoreNotes) / sizeof(char));
     strncpy(pRomInfo->PluginNotes, m_RomIniFile->GetString(Identifier, "Plugin Note", "").c_str(), sizeof(pRomInfo->PluginNotes) / sizeof(char));
