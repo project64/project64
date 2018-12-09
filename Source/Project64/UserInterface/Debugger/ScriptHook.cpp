@@ -46,33 +46,63 @@ void CScriptHook::InvokeByParam(uint32_t param)
     }
 }
 
-void CScriptHook::InvokeByParamInRange(uint32_t param)
+void CScriptHook::InvokeByAddressInRange(uint32_t address)
 {
     int nCallbacks = m_Callbacks.size();
     for (int i = 0; i < nCallbacks; i++)
     {
-        if (param == m_Callbacks[i].param || (param >= m_Callbacks[i].param && param < m_Callbacks[i].param2))
+        if (address == m_Callbacks[i].param || (address >= m_Callbacks[i].param && address < m_Callbacks[i].param2))
         {
-            m_Callbacks[i].scriptInstance->Invoke(m_Callbacks[i].heapptr, param);
+            m_Callbacks[i].scriptInstance->Invoke(m_Callbacks[i].heapptr, address);
             return;
         }
     }
 }
 
-void CScriptHook::InvokeByParamInRangeWithMaskedValue(uint32_t param, uint32_t value)
+void CScriptHook::InvokeByAddressInRange_MaskedOpcode(uint32_t pc, uint32_t opcode)
 {
     int nCallbacks = m_Callbacks.size();
     for (int i = 0; i < nCallbacks; i++)
     {
-        if (param == m_Callbacks[i].param || (param >= m_Callbacks[i].param && param < m_Callbacks[i].param2))
+        if (pc == m_Callbacks[i].param || (pc >= m_Callbacks[i].param && pc < m_Callbacks[i].param2))
         {
-            if ((m_Callbacks[i].param3 & m_Callbacks[i].param4) == (value & m_Callbacks[i].param4))
+            if ((m_Callbacks[i].param3 & m_Callbacks[i].param4) == (opcode & m_Callbacks[i].param4))
             {
-                m_Callbacks[i].scriptInstance->Invoke(m_Callbacks[i].heapptr, param);
+                m_Callbacks[i].scriptInstance->Invoke(m_Callbacks[i].heapptr, pc);
                 return;
             }
         }
     }
+}
+
+void CScriptHook::InvokeByAddressInRange_GPRValue(uint32_t pc)
+{
+	int nCallbacks = m_Callbacks.size();
+
+	for (int i = 0; i < nCallbacks; i++)
+	{
+		uint32_t startAddress = m_Callbacks[i].param;
+		uint32_t endAddress = m_Callbacks[i].param2;
+		uint32_t registers = m_Callbacks[i].param3;
+		uint32_t value = m_Callbacks[i].param4;
+
+		if (!(pc == startAddress || (pc >= startAddress && pc < endAddress)))
+		{
+			continue;
+		}
+
+		for (int nReg = 0; nReg < 32; nReg++)
+		{
+			if (registers & (1 << nReg))
+			{
+				if (value == g_Reg->m_GPR[nReg].UW[0])
+				{
+					m_Callbacks[i].scriptInstance->Invoke2(m_Callbacks[i].heapptr, pc, nReg);
+                    break;
+				}
+			}
+		}
+	}
 }
 
 void CScriptHook::InvokeAll()

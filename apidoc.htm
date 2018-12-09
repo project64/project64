@@ -98,6 +98,7 @@ span.tag2 {
 		<a href="#rom">rom</a><br>
 		<a href="#events">events</a><br>
 		<a href="#debug">debug</a><br>
+		<a href="#asm">asm</a><br>
 		<a href="#console">console</a><br>
 		<a href="#fs">fs</a><br>
 		<a href="#fs.Stats">fs.Stats</a><br>
@@ -336,7 +337,7 @@ events.onwrite(ADDR_ANY_CART_ROM_UNC, function(addr)
 		<span class="tag">interpreter mode only</span>
 		<div class="propertyname">events.onopcode(address, opcode, callback)</div>
 		<div class="propertydesc">
-			Adds a CPU executions callback for a virtual address or <a href="#AddressRange">AddressRange</a> and returns a callback ID.
+			Adds a CPU execution callback for a virtual address or <a href="#AddressRange">AddressRange</a> and returns a callback ID.
 			<span class="snip">callback</span> will be invoked at the beginning of a CPU step if the program counter is at <span class="snip">address</span> and <span class="snip">opcode</span> is equal to the opcode to be executed.
 			<span class="snip">callback</span> receives the program counter address at which the event is fired.
 			<pre class="example">
@@ -354,7 +355,7 @@ events.onopcode(ADDR_ANY, JR_RA, function(pc)
 		<span class="tag">interpreter mode only</span>
 		<div class="propertyname">events.onopcode(address, opcode, mask, callback)</div>
 		<div class="propertydesc">
-			Adds a CPU executions callback for a virtual address or <a href="#AddressRange">AddressRange</a> and returns a callback ID.
+			Adds a CPU execution callback for a virtual address or <a href="#AddressRange">AddressRange</a> and returns a callback ID.
 			<span class="snip">callback</span> will be invoked at the beginning of a CPU step if the program counter is at <span class="snip">address</span> and <span class="snip">opcode</span> is equal to the opcode to be executed ANDed with <span class="snip">mask</span>.
 			<span class="snip">callback</span> receives the program counter address at which the event is fired.
 			<pre class="example">
@@ -379,6 +380,42 @@ events.onopcode(ADDR_ANY, JAL, NO_TARGET, function(pc)
 </pre>
 			</div>
 		</div>
+	<div class="property">
+		<span class="tag2">emulation thread</span>
+		<span class="tag">interpreter mode only</span>
+		<div class="propertyname">events.ongprvalue(address, registers, value, callback)</div>
+		<div class="propertydesc">
+			Adds a CPU execution callback for a virtual address or <a href="#AddressRange">AddressRange</a> and returns a callback ID.
+			<span class="snip">callback</span> will be invoked at the beginning of a CPU step if the program counter is at <span class="snip">address</span> and the lower 32 bits of the general purpose registers specified by <span class="snip">registers</span> are equal to <span class="snip">value</span>.
+			<span class="snip">callback</span> receives the program counter address at which the event is fired, and the index of the first register that contains the value.
+			<pre class="example">
+events.ongprvalue(ADDR_ANY, GPR_ANY, 0x49533634, function(pc, reg)
+{
+    // log pc whenever any general purpose register contains 0x49533634
+    console.log(pc.hex(), asm.gprname(reg))
+})
+</pre>
+	<pre class="example">
+events.ongprvalue(ADDR_ANY, GPR_A0 | GPR_A1, 0x00001234, function(pc, reg)
+{
+    // log pc whenever A0 or A1 contains 0x00001234
+    console.log(pc.hex(), asm.gprname(reg))
+})
+</pre>
+		Valid registers:
+		<pre style="font-size: 13px;">
+GPR_R0 GPR_AT GPR_V0 GPR_V1 GPR_A0 GPR_A1 GPR_A2 GPR_A3
+GPR_T0 GPR_T1 GPR_T2 GPR_T3 GPR_T4 GPR_T5 GPR_T6 GPR_T7
+GPR_S0 GPR_S1 GPR_S2 GPR_S3 GPR_S4 GPR_S5 GPR_S6 GPR_S7
+GPR_T8 GPR_T9 GPR_K0 GPR_K1 GPR_GP GPR_SP GPR_FP GPR_RA
+
+GPR_ANY_ARG  -- Any of the 'A' registers
+GPR_ANY_TEMP -- Any of the 'T' registers
+GPR_ANY_SAVE -- Any of the 'S' registers
+GPR_ANY      -- Any register
+</pre>
+		</div>
+	</div>
 	<div class="property">
 		<span class="tag2">emulation thread</span>
 		<div class="propertyname">events.ondraw(callback)</div>
@@ -436,6 +473,19 @@ events.onexec(0x802CB1C0, function()
 		</div>
 	</div>
 </div>
+
+<div class="panel" id="asm">
+		<div class="classname">asm</div>
+		<div class="property">
+			<div class="propertyname">asm.gprname(regIndex)</div>
+			<div class="propertydesc">
+				Returns the name of the general purpose register specified by <span class="snip">regIndex</span>.
+				<pre class="example">
+asm.gprname(4) // 'a0'
+</pre>
+			</div>
+		</div>
+	</div>
 
 <div class="panel" id="fs">
 	<div class="classname">fs</div>

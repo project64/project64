@@ -577,6 +577,26 @@ void CScriptInstance::Invoke(void* heapptr, uint32_t param)
     LeaveCriticalSection(&m_CriticalSection);
 }
 
+void CScriptInstance::Invoke2(void* heapptr, uint32_t param, uint32_t param2)
+{
+    EnterCriticalSection(&m_CriticalSection);
+    duk_push_heapptr(m_Ctx, heapptr);
+    duk_push_uint(m_Ctx, param);
+    duk_push_uint(m_Ctx, param2);
+
+    duk_int_t status = duk_pcall(m_Ctx, 2);
+
+    if (status != DUK_EXEC_SUCCESS)
+    {
+        const char* errorText = duk_safe_to_string(m_Ctx, -1);
+        m_Debugger->Debug_LogScriptsWindow(errorText);
+        m_Debugger->Debug_LogScriptsWindow("\r\n");
+    }
+
+    duk_pop(m_Ctx);
+    LeaveCriticalSection(&m_CriticalSection);
+}
+
 void CScriptInstance::QueueAPC(PAPCFUNC userProc, ULONG_PTR param)
 {
     if (m_hThread != NULL)

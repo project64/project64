@@ -33,9 +33,10 @@ public:
     void InvokeById(int callbackId);
     void InvokeByParam(uint32_t param);
     /* invoke if param >= cb.param && param < cb.param2*/
-    void InvokeByParamInRange(uint32_t param);
+    void InvokeByAddressInRange(uint32_t address);
     /* invoke if param >= cb.param && param < cb.param2 && (value & cb.param4) == cb.param3 */
-    void InvokeByParamInRangeWithMaskedValue(uint32_t param, uint32_t value);
+    void InvokeByAddressInRange_MaskedOpcode(uint32_t pc, uint32_t value);
+	void InvokeByAddressInRange_GPRValue(uint32_t pc);
     void RemoveById(int callbackId);
     void RemoveByParam(uint32_t tag);
     void RemoveByInstance(CScriptInstance* scriptInstance);

@@ -28,12 +28,14 @@ CScriptSystem::CScriptSystem(CDebuggerUI* debugger)
     m_HookCPUExecOpcode = new CScriptHook(this);
     m_HookCPURead = new CScriptHook(this);
     m_HookCPUWrite = new CScriptHook(this);
+    m_HookCPUGPRValue = new CScriptHook(this);
     m_HookFrameDrawn = new CScriptHook(this);
 
     RegisterHook("exec", m_HookCPUExec);
     RegisterHook("read", m_HookCPURead);
     RegisterHook("write", m_HookCPUWrite);
-    RegisterHook("onopcode", m_HookCPUExecOpcode);
+    RegisterHook("opcode", m_HookCPUExecOpcode);
+	RegisterHook("gprvalue", m_HookCPUGPRValue);
     RegisterHook("draw", m_HookFrameDrawn);
 
     HMODULE hInst = GetModuleHandle(NULL);

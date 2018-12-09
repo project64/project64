@@ -39,6 +39,51 @@ const _regNums = {
     f28: 28, f29: 29, f30: 30, f31: 31
 }
 
+const _gprNames = [
+    'r0', 'at', 'v0', 'v1', 'a0', 'a1', 'a2', 'a3',
+    't0', 't1', 't2', 't3', 't4', 't5', 't6', 't7',
+    's0', 's1', 's2', 's3', 's4', 's5', 's6', 's7',
+    't8', 't9', 'k0', 'k1', 'gp', 'sp', 'fp', 'ra'
+]
+
+const GPR_R0 = (1 << 0)
+const GPR_AT = (1 << 1)
+const GPR_V0 = (1 << 2)
+const GPR_V1 = (1 << 3)
+const GPR_A0 = (1 << 4)
+const GPR_A1 = (1 << 5)
+const GPR_A2 = (1 << 6)
+const GPR_A3 = (1 << 7)
+const GPR_T0 = (1 << 8)
+const GPR_T1 = (1 << 9)
+const GPR_T2 = (1 << 10)
+const GPR_T3 = (1 << 11)
+const GPR_T4 = (1 << 12)
+const GPR_T5 = (1 << 13)
+const GPR_T6 = (1 << 14)
+const GPR_T7 = (1 << 15)
+const GPR_S0 = (1 << 16)
+const GPR_S1 = (1 << 17)
+const GPR_S2 = (1 << 18)
+const GPR_S3 = (1 << 19)
+const GPR_S4 = (1 << 20)
+const GPR_S5 = (1 << 21)
+const GPR_S6 = (1 << 22)
+const GPR_S7 = (1 << 23)
+const GPR_T8 = (1 << 24)
+const GPR_T9 = (1 << 25)
+const GPR_K0 = (1 << 26)
+const GPR_K1 = (1 << 27)
+const GPR_GP = (1 << 28)
+const GPR_SP = (1 << 29)
+const GPR_FP = (1 << 30)
+const GPR_RA = (1 << 31) >>> 0
+
+const GPR_ANY_ARG = (GPR_A0 | GPR_A1 | GPR_A2 | GPR_A3)
+const GPR_ANY_TEMP = (GPR_T0 | GPR_T1 | GPR_T2 | GPR_T3 | GPR_T4 | GPR_T5 | GPR_T6 | GPR_T7 | GPR_T8 | GPR_T9)
+const GPR_ANY_SAVE = (GPR_S0 | GPR_S1 | GPR_S2 | GPR_S3 | GPR_S4 | GPR_S5 | GPR_S6 | GPR_S7)
+const GPR_ANY = (GPR_R0 | GPR_AT | GPR_V0 | GPR_V1 | GPR_ANY_ARG | GPR_ANY_TEMP | GPR_ANY_SAVE | GPR_K0 | GPR_K1 | GPR_GP | GPR_SP | GPR_FP | GPR_RA) >>> 0
+
 function AddressRange(start, end)
 {
     this.start = start >>> 0
@@ -55,6 +100,17 @@ const ADDR_ANY_RDRAM = new AddressRange(0x80000000, 0x80800000)
 const ADDR_ANY_RDRAM_UNC = new AddressRange(0xA0000000, 0xA0800000)
 const ADDR_ANY_CART_ROM = new AddressRange(0x90000000, 0x96000000)
 const ADDR_ANY_CART_ROM_UNC = new AddressRange(0xB0000000, 0xB6000000)
+
+const asm = {
+    gprname: function(num)
+    {
+        if(num in _gprNames)
+        {
+            return _gprNames[num]
+        }
+        return ""
+    }
+}
 
 const fs = {
     open: function(path, mode)
@@ -331,7 +387,25 @@ const events = (function()
             }
 
             this._stashCallback(callback);
-            return _native.addCallback('onopcode', callback, start, end, value, mask)
+            return _native.addCallback('opcode', callback, start, end, value, mask)
+        },
+        ongprvalue: function(addr, registers, value, callback)
+        {
+            var start = 0;
+            var end = 0;
+
+            if(typeof(addr) == "object")
+            {
+                start = addr.start;
+                end = addr.end;
+            }
+            else if(typeof(addr) == "number")
+            {
+                start = addr;
+            }
+
+            this._stashCallback(callback);
+            return _native.addCallback('gprvalue', callback, start, end, registers, value)
         },
         onread: function(addr, callback)
         {
@@ -753,7 +827,6 @@ function alert(text, caption){
     caption = caption || ""
     _native.msgBox(text, caption)
 }
-
 
 function Socket(fd)
 {
