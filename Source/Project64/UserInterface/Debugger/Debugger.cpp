@@ -576,8 +576,9 @@ void CDebuggerUI::CPUStepStarted()
     uint32_t PROGRAM_COUNTER = g_Reg->m_PROGRAM_COUNTER;
     uint32_t JumpToLocation = R4300iOp::m_JumpToLocation;
 
-    m_ScriptSystem->HookCPUExec()->InvokeByParamInRange(PROGRAM_COUNTER);
-    m_ScriptSystem->HookCPUExecOpcode()->InvokeByParamInRangeWithMaskedValue(PROGRAM_COUNTER, R4300iOp::m_Opcode.Hex);
+    m_ScriptSystem->HookCPUExec()->InvokeByAddressInRange(PROGRAM_COUNTER);
+    m_ScriptSystem->HookCPUExecOpcode()->InvokeByAddressInRange_MaskedOpcode(PROGRAM_COUNTER, R4300iOp::m_Opcode.Hex);
+	m_ScriptSystem->HookCPUGPRValue()->InvokeByAddressInRange_GPRValue(PROGRAM_COUNTER);
 
     // Memory breakpoints
 
@@ -589,11 +590,11 @@ void CDebuggerUI::CPUStepStarted()
 
         if (opInfo.IsLoadCommand()) // Read instructions
         {
-            m_ScriptSystem->HookCPURead()->InvokeByParamInRange(memoryAddress);
+            m_ScriptSystem->HookCPURead()->InvokeByAddressInRange(memoryAddress);
         }
         else // Write instructions
         {
-            m_ScriptSystem->HookCPUWrite()->InvokeByParamInRange(memoryAddress);
+            m_ScriptSystem->HookCPUWrite()->InvokeByAddressInRange(memoryAddress);
 
             // Catch cart -> rdram dma
             if (memoryAddress == 0xA460000C) // PI_WR_LEN_REG

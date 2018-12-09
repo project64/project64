@@ -55,7 +55,7 @@ private:
     CScriptHook* m_HookCPURead;
     CScriptHook* m_HookCPUWrite;
     CScriptHook* m_HookCPUExecOpcode;
-
+	CScriptHook* m_HookCPUGPRValue;
     CScriptHook* m_HookFrameDrawn;
 
     void RegisterHook(const char* hookId, CScriptHook* cbList); // associate string id with callback list
@@ -125,6 +125,11 @@ public:
     {
         return m_HookCPUExecOpcode;
     }
+
+	CScriptHook* HookCPUGPRValue()
+	{
+		return m_HookCPUGPRValue;
+	}
 
     CScriptHook* HookFrameDrawn()
     {
