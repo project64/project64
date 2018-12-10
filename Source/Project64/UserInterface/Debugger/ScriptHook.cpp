@@ -51,7 +51,7 @@ void CScriptHook::InvokeByAddressInRange(uint32_t address)
     int nCallbacks = m_Callbacks.size();
     for (int i = 0; i < nCallbacks; i++)
     {
-        if (address == m_Callbacks[i].param || (address >= m_Callbacks[i].param && address < m_Callbacks[i].param2))
+        if (address == m_Callbacks[i].param || (address >= m_Callbacks[i].param && address <= m_Callbacks[i].param2))
         {
             m_Callbacks[i].scriptInstance->Invoke(m_Callbacks[i].heapptr, address);
             return;
@@ -64,7 +64,7 @@ void CScriptHook::InvokeByAddressInRange_MaskedOpcode(uint32_t pc, uint32_t opco
     int nCallbacks = m_Callbacks.size();
     for (int i = 0; i < nCallbacks; i++)
     {
-        if (pc == m_Callbacks[i].param || (pc >= m_Callbacks[i].param && pc < m_Callbacks[i].param2))
+        if (pc == m_Callbacks[i].param || (pc >= m_Callbacks[i].param && pc <= m_Callbacks[i].param2))
         {
             if ((m_Callbacks[i].param3 & m_Callbacks[i].param4) == (opcode & m_Callbacks[i].param4))
             {
@@ -86,7 +86,7 @@ void CScriptHook::InvokeByAddressInRange_GPRValue(uint32_t pc)
 		uint32_t registers = m_Callbacks[i].param3;
 		uint32_t value = m_Callbacks[i].param4;
 
-		if (!(pc == startAddress || (pc >= startAddress && pc < endAddress)))
+		if (!(pc == startAddress || (pc >= startAddress && pc <= endAddress)))
 		{
 			continue;
 		}

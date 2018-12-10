@@ -855,18 +855,18 @@ server.on('connection', function(socket)
 			Creates an immutable object with <span class="snip">start</span> and <span class="snip">end</span> address properties.<br>
 			The following <b>AddressRange</b> objects are defined globally:
 			<pre>
-<b>ADDR_ANY</b>              0x00000000 : 0x100000000 Any 32-bit address
+<b>ADDR_ANY</b>              0x00000000 : 0xFFFFFFFF Any 32-bit address
 
-<b>ADDR_ANY_KUSEG</b>        0x00000000 : 0x80000000  MIPS user mode TLB mapped segment
-<b>ADDR_ANY_KSEG0</b>        0x80000000 : 0xA0000000  MIPS cached unmapped segment
-<b>ADDR_ANY_KSEG1</b>        0xA0000000 : 0xC0000000  MIPS uncached unmapped segment
-<b>ADDR_ANY_KSEG2</b>        0xC0000000 : 0x100000000 MIPS kernel mode TLB mapped segment
+<b>ADDR_ANY_KUSEG</b>        0x00000000 : 0x7FFFFFFF  MIPS user mode TLB mapped segment
+<b>ADDR_ANY_KSEG0</b>        0x80000000 : 0x9FFFFFFF  MIPS cached unmapped segment
+<b>ADDR_ANY_KSEG1</b>        0xA0000000 : 0xBFFFFFFF  MIPS uncached unmapped segment
+<b>ADDR_ANY_KSEG2</b>        0xC0000000 : 0xFFFFFFFF MIPS kernel mode TLB mapped segment
 
-<b>ADDR_ANY_RDRAM</b>        0x80000000 : 0x80800000 Cached RDRAM
-<b>ADDR_ANY_RDRAM_UNC</b>    0xA0000000 : 0xA0800000 Uncached RDRAM
+<b>ADDR_ANY_RDRAM</b>        0x80000000 : 0x807FFFFF Cached RDRAM
+<b>ADDR_ANY_RDRAM_UNC</b>    0xA0000000 : 0xA07FFFFF Uncached RDRAM
 
-<b>ADDR_ANY_CART_ROM</b>     0x90000000 : 0x96000000 Cached cartridge ROM
-<b>ADDR_ANY_CART_ROM_UNC</b> 0xB0000000 : 0xB6000000 Uncached cartridge ROM
+<b>ADDR_ANY_CART_ROM</b>     0x90000000 : 0x95FFFFFF Cached cartridge ROM
+<b>ADDR_ANY_CART_ROM_UNC</b> 0xB0000000 : 0xB5FFFFFF Uncached cartridge ROM
 </pre>
 		</div>
 	</div>
