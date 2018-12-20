@@ -65,6 +65,10 @@ EXPORT void CALL PluginLoaded(void)
 {
     PluginInit();
     WriteTrace(TraceAudioInterface, TraceDebug, "Called");
+	if (g_settings != NULL)
+	{
+		g_settings->SetSyncViaAudioEnabled(true);
+	}
 }
 
 EXPORT void CALL AiDacrateChanged(int SystemType)

@@ -57,7 +57,6 @@ void CGameSettings::RefreshGameSettings()
     m_DelaySI = g_Settings->LoadBool(Game_DelaySI);
     m_DelayDP = g_Settings->LoadBool(Game_DelayDP);
     m_bFixedAudio = g_Settings->LoadBool(Game_FixedAudio);
-    m_bSyncToAudio = g_Settings->LoadBool(Game_SyncViaAudio) && g_Settings->LoadBool(Setting_SyncViaAudioEnabled);
     m_FullSpeed = g_Settings->LoadBool(Game_FullSpeed);
     m_b32Bit = g_Settings->LoadBool(Game_32Bit);
 #ifdef ANDROID
@@ -79,6 +78,7 @@ void CGameSettings::RefreshGameSettings()
     }
     if (m_OverClockModifier < 1) { m_OverClockModifier = 1; }
     if (m_OverClockModifier > 20) { m_OverClockModifier = 20; }
+	RefreshSyncToAudio();
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
@@ -86,4 +86,9 @@ void CGameSettings::SpeedChanged(int SpeedLimit)
 {
     m_FullSpeed = (g_System->m_SystemType == SYSTEM_PAL ? 50 : 60) == SpeedLimit;
     g_Settings->SaveBool(Game_FullSpeed, m_FullSpeed);
+}
+
+void CGameSettings::RefreshSyncToAudio(void)
+{
+	m_bSyncToAudio = g_Settings->LoadBool(Game_SyncViaAudio) && g_Settings->LoadBool(Setting_SyncViaAudioEnabled);
 }

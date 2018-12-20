@@ -26,8 +26,9 @@ public:
     inline bool FlushLogs(void) const { return m_FlushLogs; }
     inline const char * log_dir(void) const { return m_log_dir; }
 
-    void SetAudioEnabled(bool Enabled);
-    void SetVolume(uint32_t Volume);
+	void SetSyncViaAudioEnabled(bool Enabled);
+	void SetAudioEnabled(bool Enabled);
+	void SetVolume(uint32_t Volume);
     void SetTinyBuffer(bool TinyBuffer);
     void SetFPSBuffer(bool FPSBuffer);
     void ReadSettings();
@@ -45,8 +46,9 @@ private:
     void RegisterSettings(void);
     void LogLevelChanged(void);
 
-    short m_Set_EnableAudio;
-    short m_Set_FixedAudio;
+	short m_Set_SyncViaAudioEnabled;
+	short m_Set_EnableAudio;
+	short m_Set_FixedAudio;
     short m_Set_SyncAudio;
     short m_Set_FullSpeed;
     short m_Set_LimitFPS;

@@ -16,6 +16,7 @@
 CSettings * g_settings = NULL;
 
 CSettings::CSettings() :
+	m_Set_SyncViaAudioEnabled(0),
     m_Set_EnableAudio(0),
     m_Set_FixedAudio(0),
     m_Set_SyncAudio(0),
@@ -81,11 +82,7 @@ CSettings::~CSettings()
 void CSettings::RegisterSettings(void)
 {
     SetModuleName("default");
-	short Set_SyncViaAudioEnabled = FindSystemSettingId("SyncViaAudioEnabled");
-	if (Set_SyncViaAudioEnabled != 0)
-	{
-		SetSystemSetting(Set_SyncViaAudioEnabled, 1);
-	}
+	m_Set_SyncViaAudioEnabled = FindSystemSettingId("SyncViaAudioEnabled");
 	m_Set_EnableAudio = FindSystemSettingId("Enable Audio");
     m_Set_FixedAudio = FindSystemSettingId("Fixed Audio");
     m_Set_SyncAudio = FindSystemSettingId("Sync Audio");
@@ -107,6 +104,14 @@ void CSettings::RegisterSettings(void)
     RegisterSetting(Set_TinyBuffer, Data_DWORD_Game, "TinyBuffer", "", (bool)true, NULL);
     RegisterSetting(Set_FPSBuffer, Data_DWORD_Game, "FPSBuffer", "", (bool)true, NULL);
     LogLevelChanged();
+}
+
+void CSettings::SetSyncViaAudioEnabled(bool Enabled)
+{
+	if (m_Set_SyncViaAudioEnabled != 0)
+	{
+		SetSystemSetting(m_Set_SyncViaAudioEnabled, Enabled ? 1 : 0);
+	}
 }
 
 void CSettings::SetAudioEnabled(bool Enabled)
