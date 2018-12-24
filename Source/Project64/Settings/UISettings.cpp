@@ -62,8 +62,6 @@ void RegisterUISettings (void)
     g_Settings->AddHandler((SettingID)(FirstUISettings + Directory_LastSave), new CSettingTypeApplication("Directory", "Last Save Directory", Directory_InstantSave));
     g_Settings->AddHandler((SettingID)(FirstUISettings + File_RecentGameFileCount), new CSettingTypeApplication("", "Remembered Rom Files", (uint32_t)10));
     g_Settings->AddHandler((SettingID)(FirstUISettings + File_RecentGameFileIndex), new CSettingTypeApplicationIndex("Recent File", "Recent Rom", Default_None));
-
-    g_Settings->AddHandler((SettingID)(FirstUISettings + SupportWindows_RunCount), new CSettingTypeApplication("Support Project64", "Run Count", (uint32_t)0));
 }
 
 void UISettingsSaveBool(UISettingID Type, bool Value)
