@@ -124,6 +124,7 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     m_bIgnoreAddrChange = true;
     m_AddressEdit.SetValue(0x80000000, false, true);
     ShowAddress(0x80000000, TRUE);
+    m_bIgnoreAddrChange = false;
 
     if (isStepping())
     {
