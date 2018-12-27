@@ -1253,7 +1253,7 @@ void CDebugCommandsView::GotoEnteredAddress()
 void CDebugCommandsView::BeginOpEdit(uint32_t address)
 {
     uint32_t opcode;
-    if (m_Debugger->DebugLW_VAddr(address, opcode))
+    if (!m_Debugger->DebugLW_VAddr(address, opcode))
     {
         return;
     }
