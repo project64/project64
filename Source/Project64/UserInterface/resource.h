@@ -351,6 +351,7 @@
 #define IDC_USE_TLB                     1157
 #define IDC_LAN_DATE                    1157
 #define IDC_RDB                         1158
+#define IDC_UNALIGNED_DMA               1158
 #define IDC_RDB_AUTHOR                  1159
 #define IDC_RDB_VERSION                 1160
 #define IDC_RDB_DATE                    1161
@@ -640,9 +641,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        198
+#define _APS_NEXT_RESOURCE_VALUE        199
 #define _APS_NEXT_COMMAND_VALUE         40043
-#define _APS_NEXT_CONTROL_VALUE         1448
+#define _APS_NEXT_CONTROL_VALUE         1449
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

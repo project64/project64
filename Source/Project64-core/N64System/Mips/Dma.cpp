@@ -201,7 +201,7 @@ void CDMA::PI_DMA_WRITE()
 {
     /* rounding PI_WR_LEN_REG up to the nearest even number fixes AI Shougi 3, Doraemon 3, etc. */
     uint32_t PI_WR_LEN_REG = ((g_Reg->PI_WR_LEN_REG) & 0x00FFFFFEul) + 2;
-    uint32_t PI_CART_ADDR_REG = g_Reg->PI_CART_ADDR_REG & ~1;
+    uint32_t PI_CART_ADDR_REG = !g_Settings->LoadBool(Game_UnalignedDMA) ? g_Reg->PI_CART_ADDR_REG & ~1 : g_Reg->PI_CART_ADDR_REG;
 
     g_Reg->PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
     if (g_Reg->PI_DRAM_ADDR_REG + PI_WR_LEN_REG > g_MMU->RdramSize())
