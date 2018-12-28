@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by UI Resources.rc
+// Used by UIResources.rc
 //
 #define IDAPPLY                         3
 #define IDI_PJ64_Icon                   101
@@ -604,6 +604,7 @@
 #define IDC_DD48_EDIT                   1444
 #define IDC_ROM_FIXEDAUDIO              1445
 #define IDC_CHK_AUTOREFRESH             1446
+#define IDC_SHOW_FILE_EXTENSIONS        1447
 #define ID_POPUP_SHOWINMEMORYVIEWER     40005
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ADDSYMBOL          40013
@@ -639,9 +640,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        197
+#define _APS_NEXT_RESOURCE_VALUE        198
 #define _APS_NEXT_COMMAND_VALUE         40043
-#define _APS_NEXT_CONTROL_VALUE         1447
+#define _APS_NEXT_CONTROL_VALUE         1448
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

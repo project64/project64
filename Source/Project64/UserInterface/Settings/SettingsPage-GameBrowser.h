@@ -21,6 +21,7 @@ class COptionsGameBrowserPage :
         COMMAND_HANDLER_EX(IDC_DOWN, BN_CLICKED, MoveFieldDownClicked)
         COMMAND_ID_HANDLER_EX(IDC_USE_ROMBROWSER, UseRomBrowserChanged)
         COMMAND_ID_HANDLER_EX(IDC_RECURSION, CheckBoxChanged)
+        COMMAND_ID_HANDLER_EX(IDC_SHOW_FILE_EXTENSIONS, CheckBoxChanged)
     END_MSG_MAP()
 
     enum { IDD = IDD_Settings_RomBrowser };

@@ -221,6 +221,7 @@ enum SettingID
     RomList_GameDirSelected,
     RomList_GameDirUseSelected,
     RomList_GameDirRecursive,
+    RomList_ShowFileExtensions,
     RomList_7zipCache,
     RomList_7zipCacheDefault,
 
