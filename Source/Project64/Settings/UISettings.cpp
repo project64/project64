@@ -28,10 +28,10 @@ void RegisterUISettings (void)
     g_Settings->AddHandler((SettingID)(FirstUISettings + SupportFile_ShortCutsDefault), new CSettingTypeRelativePath("Config", "Project64.sc3"));
 
     //Settings location
-    g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_PluginPageFirst), new CSettingTypeApplication("", "Plugin Page First", false));
-    g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_DisableScrSaver), new CSettingTypeApplication("", "Disable Screen Saver", (uint32_t)true));
-    g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_AutoSleep), new CSettingTypeApplication("", "Auto Sleep", (uint32_t)true));
-    g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_AutoFullscreen), new CSettingTypeApplication("", "Auto Full Screen", (uint32_t)false));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_PluginPageFirst), new CSettingTypeApplication("Settings", "Plugin Page First", false));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_DisableScrSaver), new CSettingTypeApplication("Settings", "Disable Screen Saver", (uint32_t)true));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_AutoSleep), new CSettingTypeApplication("Settings", "Auto Sleep", (uint32_t)true));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_AutoFullscreen), new CSettingTypeApplication("Settings", "Auto Full Screen", (uint32_t)false));
 
     //RDB Settings
     g_Settings->AddHandler((SettingID)(FirstUISettings + Rdb_Status), new CSettingTypeRomDatabase("Status", "Unknown"));

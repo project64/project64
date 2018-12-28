@@ -45,6 +45,8 @@ public:
     inline static CPU_TYPE CpuType(void) { return m_CpuType; }
     inline static uint32_t OverClockModifier(void) { return m_OverClockModifier; }
 
+	void RefreshSyncToAudio(void);
+
 protected:
     static void SpeedChanged(int32_t SpeedLimit);
 

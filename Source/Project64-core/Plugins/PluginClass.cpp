@@ -363,6 +363,11 @@ bool CPlugins::Reset(CN64System * System)
         if (!m_RSP->Initiate(this, System)) { return false; }
         WriteTrace(TraceRSPPlugin, TraceDebug, "RSP Initiate Done");
     }
+
+	if (System)
+	{
+		System->RefreshSyncToAudio();
+	}
     WriteTrace(TracePlugins, TraceDebug, "Done");
     return true;
 }

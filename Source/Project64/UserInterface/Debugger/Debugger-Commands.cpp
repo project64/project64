@@ -124,6 +124,7 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     m_bIgnoreAddrChange = true;
     m_AddressEdit.SetValue(0x80000000, false, true);
     ShowAddress(0x80000000, TRUE);
+    m_bIgnoreAddrChange = false;
 
     if (isStepping())
     {
@@ -1253,7 +1254,7 @@ void CDebugCommandsView::GotoEnteredAddress()
 void CDebugCommandsView::BeginOpEdit(uint32_t address)
 {
     uint32_t opcode;
-    if (m_Debugger->DebugLW_VAddr(address, opcode))
+    if (!m_Debugger->DebugLW_VAddr(address, opcode))
     {
         return;
     }
