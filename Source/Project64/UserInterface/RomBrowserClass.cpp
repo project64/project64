@@ -538,7 +538,7 @@ bool CRomBrowser::RomListDrawItem(int32_t idCtrl, uint32_t lParam)
     }
     if (wcscmp(L"#321#", text.c_str()) == 0)
     {
-        text = stdstr(pRomInfo->InternalName).ToUTF16();
+        text = stdstr(pRomInfo->FileName).ToUTF16();
     }
 
     DrawTextW(ditem->hDC, text.c_str(), text.length(), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_WORD_ELLIPSIS);
@@ -563,7 +563,7 @@ bool CRomBrowser::RomListDrawItem(int32_t idCtrl, uint32_t lParam)
         }
         if (wcscmp(L"#321#", text.c_str()) == 0)
         {
-            text = stdstr(pRomInfo->InternalName).ToUTF16();
+            text = stdstr(pRomInfo->FileName).ToUTF16();
         }
 
         DrawTextW(ditem->hDC, text.c_str(), text.length(), &rcDraw, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_WORD_ELLIPSIS);
@@ -653,8 +653,8 @@ int32_t CALLBACK CRomBrowser::RomList_CompareItems(uint32_t lParam1, uint32_t lP
     const char * Name1 = NULL, *Name2 = NULL;
     if (SortFieldInfo->Key == RB_Name)
     {
-        Name1 = strcmp("#321#", pRomInfo1->Name) != 0 ? pRomInfo1->GoodName : pRomInfo1->InternalName;
-        Name2 = strcmp("#321#", pRomInfo2->Name) != 0 ? pRomInfo2->GoodName : pRomInfo2->InternalName;
+        Name1 = strcmp("#321#", pRomInfo1->Name) != 0 ? pRomInfo1->GoodName : pRomInfo1->FileName;
+        Name2 = strcmp("#321#", pRomInfo2->Name) != 0 ? pRomInfo2->GoodName : pRomInfo2->FileName;
     }
 
     switch (SortFieldInfo->Key)
