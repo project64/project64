@@ -9,7 +9,8 @@ CSettingConfig::CSettingConfig(bool bJustGameSetting /* = false */) :
     m_GeneralOptionsPage(NULL),
     m_AdvancedPage(NULL),
     m_DefaultsPage(NULL),
-    m_GameConfig(bJustGameSetting)
+    m_GameConfig(bJustGameSetting),
+    m_bTVNSelChangedSupported(false)
 {
 }
 
@@ -291,6 +292,8 @@ void CSettingConfig::ApplySettings(bool UpdateScreen)
 
 LRESULT CSettingConfig::OnPageListItemChanged(NMHDR* /*phdr*/)
 {
+    m_bTVNSelChangedSupported = true;
+
     HTREEITEM hItem = m_PagesTreeList.GetSelectedItem();
     CSettingsPage * Page = (CSettingsPage *)m_PagesTreeList.GetItemData(hItem);
 
@@ -304,7 +307,46 @@ LRESULT CSettingConfig::OnPageListItemChanged(NMHDR* /*phdr*/)
         m_CurrentPage->ShowPage();
         ::EnableWindow(GetDlgItem(IDC_RESET_PAGE), m_CurrentPage->EnableReset());
     }
+
     return 0;   // retval ignored
+}
+
+// fallback to using HitTest if TVN_SELCHANGED isn't working
+LRESULT CSettingConfig::OnPageListClicked(NMHDR*)
+{
+	if (m_bTVNSelChangedSupported)
+	{
+		return 0;
+	}
+
+	DWORD dwClickPos = GetMessagePos();
+	CPoint clickPt = CPoint(dwClickPos);
+	ScreenToClient(&clickPt);
+
+	CRect treeRect;
+	m_PagesTreeList.GetWindowRect(treeRect);
+	ScreenToClient(&treeRect);
+
+	clickPt.x -= treeRect.left;
+	clickPt.y -= treeRect.top;
+	clickPt.y -= 2;
+
+	UINT uFlags;
+	HTREEITEM hItem = m_PagesTreeList.HitTest(clickPt, &uFlags);
+
+	CSettingsPage * Page = (CSettingsPage *)m_PagesTreeList.GetItemData(hItem);
+
+	if (Page)
+	{
+		if (m_CurrentPage)
+		{
+			m_CurrentPage->HidePage();
+		}
+		m_CurrentPage = Page;
+		m_CurrentPage->ShowPage();
+		::EnableWindow(GetDlgItem(IDC_RESET_PAGE), m_CurrentPage->EnableReset());
+	}
+	return 0;   // retval ignored
 }
 
 LRESULT	CSettingConfig::OnSettingPageChanged(UINT /*uMsg*/, WPARAM /*wPage*/, LPARAM /*lParam*/)
