@@ -285,6 +285,7 @@ enum LanguageStringID
     RB_UP = 490,
     RB_DOWN = 491,
     RB_REFRESH = 492,
+    RB_FILEEXT = 493,
 
     //Advanced Options
     ADVANCE_INFO = 500,

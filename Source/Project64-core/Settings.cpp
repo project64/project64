@@ -298,6 +298,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(RomList_GameDirSelected, new CSettingTypeApplication("Game Directory", "Directory", RomList_GameDirInitial));
     AddHandler(RomList_GameDirUseSelected, new CSettingTypeApplication("Game Directory", "Use Selected", false));
     AddHandler(RomList_GameDirRecursive, new CSettingTypeApplication("Game Directory", "Recursive", false));
+    AddHandler(RomList_ShowFileExtensions, new CSettingTypeApplication("Game Directory", "File Extensions", false));
     AddHandler(RomList_7zipCache, new CSettingTypeApplicationPath("Settings", "7zipCache", RomList_7zipCacheDefault));
     AddHandler(RomList_7zipCacheDefault, new CSettingTypeRelativePath("Config", "Project64.zcache"));
 

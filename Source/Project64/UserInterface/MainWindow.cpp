@@ -49,7 +49,8 @@ CMainGui::CMainGui(bool bMainWindow, const char * WindowTitle) :
     {
         g_Settings->RegisterChangeCB((SettingID)(FirstUISettings + RomBrowser_Enabled), this, (CSettings::SettingChangedFunc)RomBowserEnabledChanged);
         g_Settings->RegisterChangeCB((SettingID)(FirstUISettings + RomBrowser_ColoumnsChanged), this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
-        g_Settings->RegisterChangeCB(RomList_GameDirRecursive, this, (CSettings::SettingChangedFunc)RomBrowserRecursiveChanged);
+        g_Settings->RegisterChangeCB(RomList_GameDirRecursive, this, (CSettings::SettingChangedFunc)RomBrowserListChanged);
+        g_Settings->RegisterChangeCB(RomList_ShowFileExtensions, this, (CSettings::SettingChangedFunc)RomBrowserListChanged);
         g_Settings->RegisterChangeCB(GameRunning_LoadingInProgress, this, (CSettings::SettingChangedFunc)LoadingInProgressChanged);
         g_Settings->RegisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunning);
         g_Settings->RegisterChangeCB(GameRunning_CPU_Paused, this, (CSettings::SettingChangedFunc)GamePaused);
@@ -68,7 +69,8 @@ CMainGui::~CMainGui(void)
     {
         g_Settings->UnregisterChangeCB((SettingID)(FirstUISettings + RomBrowser_Enabled), this, (CSettings::SettingChangedFunc)RomBowserEnabledChanged);
         g_Settings->UnregisterChangeCB((SettingID)(FirstUISettings + RomBrowser_ColoumnsChanged), this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
-        g_Settings->UnregisterChangeCB(RomList_GameDirRecursive, this, (CSettings::SettingChangedFunc)RomBrowserRecursiveChanged);
+        g_Settings->UnregisterChangeCB(RomList_GameDirRecursive, this, (CSettings::SettingChangedFunc)RomBrowserListChanged);
+        g_Settings->UnregisterChangeCB(RomList_ShowFileExtensions, this, (CSettings::SettingChangedFunc)RomBrowserListChanged);
         g_Settings->UnregisterChangeCB(GameRunning_LoadingInProgress, this, (CSettings::SettingChangedFunc)LoadingInProgressChanged);
         g_Settings->UnregisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunning);
         g_Settings->UnregisterChangeCB(GameRunning_CPU_Paused, this, (CSettings::SettingChangedFunc)GamePaused);
@@ -243,7 +245,7 @@ void RomBowserColoumnsChanged(CMainGui * Gui)
     Gui->ResetRomBrowserColomuns();
 }
 
-void RomBrowserRecursiveChanged(CMainGui * Gui)
+void RomBrowserListChanged(CMainGui * Gui)
 {
     Gui->RefreshRomList();
     Gui->HighLightLastRom();
