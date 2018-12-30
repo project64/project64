@@ -326,6 +326,7 @@ enum LanguageStringID
     ROM_32BIT = 538,
     ROM_DELAY_DP = 539,
     ROM_OVER_CLOCK_MODIFIER = 5400,
+    ROM_UNALIGNED_DMA = 5410,
 
     //Core Styles
     CORE_INTERPTER = 540,

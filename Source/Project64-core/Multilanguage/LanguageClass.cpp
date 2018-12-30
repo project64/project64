@@ -293,6 +293,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ROM_32BIT, "32-bit engine:");
     DEF_STR(ROM_DELAY_DP, "Delay DP interrupt:");
     DEF_STR(ROM_OVER_CLOCK_MODIFIER, "Over Clock Modifier:");
+    DEF_STR(ROM_UNALIGNED_DMA, "Unaligned DMA");
 
     //Core Styles
     DEF_STR(CORE_INTERPTER, "Interpreter");
