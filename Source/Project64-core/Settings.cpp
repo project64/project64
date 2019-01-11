@@ -135,7 +135,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 	AddHandler(Setting_SyncViaAudioEnabled, new CSettingTypeTempBool(false, "SyncViaAudioEnabled"));
 
 	AddHandler(Default_RDRamSize, new CSettingTypeApplication("Defaults", "RDRAM Size", 0x400000u));
-	AddHandler(Default_UseHleGfx, new CSettingTypeApplication("Defaults", "HLE GFX", true));
+	AddHandler(Default_UseHleGfx, new CSettingTypeApplication("Defaults", "HLE GFX Default", true));
 	AddHandler(Default_UseTlb, new CSettingTypeApplication("Defaults", "Use TLB", true));
 	AddHandler(Default_ViRefreshRate, new CSettingTypeApplication("Defaults", "ViRefresh", 1500u));
 	AddHandler(Default_AiCountPerBytes, new CSettingTypeApplication("Defaults", "AiCountPerBytes", 0u));
@@ -165,8 +165,8 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_TLB_VAddrStart, new CSettingTypeRomDatabase("TLB: Vaddr Start", (uint32_t)0));
     AddHandler(Rdb_TLB_VAddrLen, new CSettingTypeRomDatabase("TLB: Vaddr Len", (uint32_t)0));
     AddHandler(Rdb_TLB_PAddrStart, new CSettingTypeRomDatabase("TLB: PAddr Start", (uint32_t)0));
-    AddHandler(Rdb_UseHleGfx, new CSettingTypeRomDatabase("HLE GFX", Plugin_UseHleGfx));
-    AddHandler(Rdb_UseHleAudio, new CSettingTypeRomDatabase("HLE Audio", Plugin_UseHleAudio));
+    AddHandler(Rdb_UseHleGfx, new CSettingTypeRomDatabase("HLE GFX RDB", Plugin_UseHleGfx));
+    AddHandler(Rdb_UseHleAudio, new CSettingTypeRomDatabase("HLE Audio RDB", Plugin_UseHleAudio));
     AddHandler(Rdb_LoadRomToMemory, new CSettingTypeRomDatabase("Rom In Memory", false));
     AddHandler(Rdb_ScreenHertz, new CSettingTypeRomDatabase("ScreenHertz", (uint32_t)0));
     AddHandler(Rdb_FuncLookupMode, new CSettingTypeRomDatabase("FuncFind", (uint32_t)FuncFind_PhysicalLookup));
@@ -386,8 +386,8 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Plugin_AUDIO_CurVer, new CSettingTypeApplication("Plugin", "Audio Dll Ver", ""));
     AddHandler(Plugin_CONT_CurVer, new CSettingTypeApplication("Plugin", "Controller Dll Ver", ""));
 
-    AddHandler(Plugin_UseHleGfx, new CSettingTypeApplication("RSP", "HLE GFX", Default_UseHleGfx));
-    AddHandler(Plugin_UseHleAudio, new CSettingTypeApplication("RSP", "HLE Audio", false));
+	AddHandler(Plugin_UseHleGfx, new CSettingTypeApplication("RSP", "HLE GFX Plugin", Default_UseHleGfx));
+    AddHandler(Plugin_UseHleAudio, new CSettingTypeApplication("RSP", "HLE Audio Plugin", false));
     AddHandler(Plugin_EnableAudio, new CSettingTypeApplication("Audio", "Enable Audio", true));
 
     //Logging
@@ -438,6 +438,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 
 uint32_t CSettings::FindSetting(CSettings * _this, const char * Name)
 {
+	uint32_t setting_id = 0;
     for (SETTING_MAP::iterator iter = _this->m_SettingInfo.begin(); iter != _this->m_SettingInfo.end(); iter++)
     {
         CSettingType * Setting = iter->second;
@@ -448,7 +449,11 @@ uint32_t CSettings::FindSetting(CSettings * _this, const char * Name)
             {
                 continue;
             }
-            return iter->first;
+			if (setting_id != 0)
+			{
+				g_Notify->BreakPoint(__FILE__, __LINE__);
+			}
+			setting_id = iter->first;
         }
         else if (Setting->GetSettingType() == SettingType_CfgFile)
         {
@@ -457,7 +462,11 @@ uint32_t CSettings::FindSetting(CSettings * _this, const char * Name)
             {
                 continue;
             }
-            return iter->first;
+			if (setting_id != 0)
+			{
+				g_Notify->BreakPoint(__FILE__, __LINE__);
+			}
+			setting_id = iter->first;
         }
         else if (Setting->GetSettingType() == SettingType_SelectedDirectory)
         {
@@ -466,7 +475,11 @@ uint32_t CSettings::FindSetting(CSettings * _this, const char * Name)
             {
                 continue;
             }
-            return iter->first;
+			if (setting_id != 0)
+			{
+				g_Notify->BreakPoint(__FILE__, __LINE__);
+			}
+			setting_id = iter->first;
         }
         else if (Setting->GetSettingType() == SettingType_BoolVariable)
         {
@@ -475,10 +488,14 @@ uint32_t CSettings::FindSetting(CSettings * _this, const char * Name)
             {
                 continue;
             }
-            return iter->first;
+			if (setting_id != 0)
+			{
+				g_Notify->BreakPoint(__FILE__, __LINE__);
+			}
+			setting_id = iter->first;
         }
     }
-    return 0;
+    return setting_id;
 }
 
 void CSettings::FlushSettings(CSettings * /*_this*/)
