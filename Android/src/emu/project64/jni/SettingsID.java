@@ -26,11 +26,15 @@ public enum SettingsID
     SupportFile_SettingsDefault,
     SupportFile_RomDatabase,
     SupportFile_RomDatabaseDefault,
-    SupportFile_Glide64RDB,
-    SupportFile_Glide64RDBDefault,
-    SupportFile_Cheats,
-    SupportFile_CheatsDefault,
-    SupportFile_Notes,
+    SupportFile_VideoRDB,
+    SupportFile_VideoRDBDefault,
+    SupportFile_AudioRDB,
+    SupportFile_AudioRDBDefault,
+	SupportFile_Cheats,
+	SupportFile_CheatsDefault,
+	SupportFile_Enhancements,
+	SupportFile_EnhancementsDefault,
+	SupportFile_Notes,
     SupportFile_NotesDefault,
     SupportFile_ExtInfo,
     SupportFile_ExtInfoDefault,
@@ -43,6 +47,8 @@ public enum SettingsID
     Setting_AutoStart,
     Setting_CheckEmuRunning,
     Setting_EraseGameDefaults,
+    Setting_ForceInterpreterCPU,
+    Setting_FixedRdramAddress,
 
     Setting_AutoZipInstantSave,
     Setting_RememberCheats,
@@ -51,6 +57,20 @@ public enum SettingsID
     Setting_LanguageDirDefault,
     Setting_CurrentLanguage,
     Setting_EnableDisk,
+	Setting_SyncViaAudioEnabled,
+	Setting_Enhancement,
+
+    //Default Settings
+    Default_RDRamSize,
+	Default_UseHleGfx,
+	Default_UseTlb,
+	Default_ViRefreshRate,
+	Default_AiCountPerBytes,
+	Default_CounterFactor,
+	Default_32Bit,
+	Default_SyncViaAudio,
+	Default_FixedAudio,
+    Default_UnalignedDMA,
 
     //RDB Settings
     Rdb_GoodName,
@@ -89,6 +109,7 @@ public enum SettingsID
     Rdb_AudioResetOnLoad,
     Rdb_AllowROMWrites,
     Rdb_CRC_Recalc,
+    Rdb_UnalignedDMA,
 
     //Individual Game Settings
     Game_IniKey,
@@ -142,6 +163,8 @@ public enum SettingsID
     Game_Transferpak_ROM,
     Game_Transferpak_Sav,
     Game_LoadSaveAtStart,
+    Game_FullSpeed,
+    Game_UnalignedDMA,
 
     // General Game running info
     GameRunning_LoadingInProgress,
@@ -197,6 +220,7 @@ public enum SettingsID
     RomList_GameDirSelected,
     RomList_GameDirUseSelected,
     RomList_GameDirRecursive,
+    RomList_ShowFileExtensions,
     RomList_7zipCache,
     RomList_7zipCacheDefault,
 
@@ -217,6 +241,13 @@ public enum SettingsID
     Debugger_ShowRecompMemSize,
     Debugger_DebugLanguage,
     Debugger_RecordExecutionTimes,
+    Debugger_SteppingOps,
+    Debugger_SkipOp,
+    Debugger_HaveExecutionBP,
+    Debugger_WriteBPExists,
+    Debugger_ReadBPExists,
+    Debugger_WaitingForStep,
+    Debugger_AutoRefreshMemoryView,
 
     //Trace
     Debugger_TraceMD5,
@@ -289,6 +320,14 @@ public enum SettingsID
     Cheat_Options,
     Cheat_Range,
     Cheat_RangeNotes,
+
+	//Enhancement
+	Enhancement_Name,
+	Enhancement_Active,
+	Enhancement_OnByDefault,
+	Enhancement_Overclock,
+	Enhancement_OverclockValue,
+	Enhancement_Notes,
 
     FirstUISettings, LastUISettings(FirstUISettings.getValue() + 65535),
     FirstRSPDefaultSet, LastRSPDefaultSet(FirstRSPDefaultSet.getValue() + 65535),

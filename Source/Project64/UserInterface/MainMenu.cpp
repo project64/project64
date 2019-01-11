@@ -52,8 +52,9 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     m_ChangeSettingList.push_back(Debugger_TraceUserInterface);
     m_ChangeSettingList.push_back(Debugger_AppLogFlush);
     m_ChangeSettingList.push_back(Game_CurrentSaveState);
-    m_ChangeSettingList.push_back(Setting_CurrentLanguage);
-
+	m_ChangeSettingList.push_back(Setting_CurrentLanguage);
+	m_ChangeSettingList.push_back(Setting_Enhancement);
+	
     for (UISettingList::const_iterator iter = m_ChangeUISettingList.begin(); iter != m_ChangeUISettingList.end(); iter++)
     {
         g_Settings->RegisterChangeCB((SettingID)(FirstUISettings + *iter), this, (CSettings::SettingChangedFunc)SettingsChanged);
@@ -469,7 +470,9 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUG_DISABLE_GAMEFIX:
         g_Settings->SaveBool(Debugger_DisableGameFixes, !g_Settings->LoadBool(Debugger_DisableGameFixes));
         break;
-
+	case ID_DEBUG_ENANCEMENT:
+		g_Settings->SaveBool(Setting_Enhancement, !g_Settings->LoadBool(Setting_Enhancement));
+		break;
     case ID_DEBUGGER_TRACE_MD5: SetTraceModuleSetttings(Debugger_TraceMD5); break;
     case ID_DEBUGGER_TRACE_SETTINGS: SetTraceModuleSetttings(Debugger_TraceSettings); break;
     case ID_DEBUGGER_TRACE_UNKNOWN: SetTraceModuleSetttings(Debugger_TraceUnknown); break;
@@ -1209,7 +1212,13 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         DebugMenu.push_back(Item);
         Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugNotificationMenu, L"Notification");
         DebugMenu.push_back(Item);
-        DebugMenu.push_back(MENU_ITEM(SPLITER));
+		Item.Reset(ID_DEBUG_ENANCEMENT, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Enable Enhancement");
+		if (g_Settings->LoadBool(Setting_Enhancement))
+		{
+			Item.SetItemTicked(true);
+		}
+		DebugMenu.push_back(Item);
+		DebugMenu.push_back(MENU_ITEM(SPLITER));
         Item.Reset(ID_DEBUG_SHOW_TLB_MISSES, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Show TLB Misses");
         if (g_Settings->LoadBool(Debugger_ShowTLBMisses))
         {

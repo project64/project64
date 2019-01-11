@@ -28,7 +28,6 @@ CGameGeneralPage::CGameGeneralPage(HWND hParent, const RECT & rcDispay)
     SetDlgItemTextW(m_hWnd, IDC_COUNTFACT_TEXT, wGS(ROM_COUNTER_FACTOR).c_str());
     SetDlgItemTextW(m_hWnd, IDC_VIREFESH_TEXT, wGS(ROM_VIREFRESH).c_str());
     SetDlgItemTextW(m_hWnd, IDC_COUNTPERBYTE_TEXT, wGS(ROM_COUNTPERBYTE).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_OVER_CLOCK_MODIFIER_TEXT, wGS(ROM_OVER_CLOCK_MODIFIER).c_str());
 
     SetDlgItemTextW(m_hWnd, IDC_ROM_32BIT, wGS(ROM_32BIT).c_str());
     SetDlgItemTextW(m_hWnd, IDC_ROM_FIXEDAUDIO, wGS(ROM_FIXED_AUDIO).c_str());
@@ -87,9 +86,6 @@ CGameGeneralPage::CGameGeneralPage(HWND hParent, const RECT & rcDispay)
 
     TxtBox = AddModTextBox(GetDlgItem(IDC_COUNTPERBYTE), Game_AiCountPerBytes, false);
     TxtBox->SetTextField(GetDlgItem(IDC_COUNTPERBYTE_TEXT));
-
-    TxtBox = AddModTextBox(GetDlgItem(IDC_OVER_CLOCK_MODIFIER), Game_OverClockModifier, false);
-    TxtBox->SetTextField(GetDlgItem(IDC_OVER_CLOCK_MODIFIER_TEXT));
 
 	if (!g_Settings->LoadBool(Setting_SyncViaAudioEnabled))
 	{

@@ -4,6 +4,7 @@ AudioRDB=..\..\Config\Audio.rdb
 Auto Sleep=0
 Basic Mode=0
 Cheats=..\..\Config\Project64.cht
+Enhancement=..\..\Config\Project64.enh
 ExtInfo=..\..\Config\Project64.rdx
 Notes=..\..\Config\Project64.rdn
 RomDatabase=..\..\Config\Project64.rdb

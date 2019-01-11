@@ -137,7 +137,7 @@ void CSettingTypeApplication::CleanUp()
     }
 }
 
-bool CSettingTypeApplication::Load(uint32_t /*Index*/, bool & Value) const
+bool CSettingTypeApplication::Load(uint32_t Index, bool & Value) const
 {
     bool bRes = false;
 
@@ -156,7 +156,14 @@ bool CSettingTypeApplication::Load(uint32_t /*Index*/, bool & Value) const
         }
         else
         {
-            g_Settings->LoadBool(m_DefaultSetting, Value);
+			if (g_Settings->IndexBasedSetting(m_DefaultSetting))
+			{
+				g_Settings->LoadBoolIndex(m_DefaultSetting, Index, Value);
+			}
+			else
+			{
+				g_Settings->LoadBool(m_DefaultSetting, Value);
+			}
         }
     }
     return bRes;

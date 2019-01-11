@@ -15,6 +15,7 @@
 #include "Settings/SettingType/SettingsType-ApplicationPath.h"
 #include "Settings/SettingType/SettingsType-ApplicationIndex.h"
 #include "Settings/SettingType/SettingsType-Cheats.h"
+#include "Settings/SettingType/SettingsType-Enhancements.h"
 #include "Settings/SettingType/SettingsType-GameSetting.h"
 #include "Settings/SettingType/SettingsType-GameSettingIndex.h"
 #include "Settings/SettingType/SettingsType-RelativePath.h"
@@ -46,7 +47,8 @@ CSettings::~CSettings()
     CSettingTypeApplication::CleanUp();
     CSettingTypeRomDatabase::CleanUp();
     CSettingTypeGame::CleanUp();
-    CSettingTypeCheats::CleanUp();
+	CSettingTypeCheats::CleanUp();
+	CSettingTypeEnhancements::CleanUp();
 
     for (SETTING_MAP::iterator iter = m_SettingInfo.begin(); iter != m_SettingInfo.end(); iter++)
     {
@@ -98,9 +100,11 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(SupportFile_VideoRDBDefault, new CSettingTypeRelativePath("Config", "Video.rdb"));
     AddHandler(SupportFile_AudioRDB, new CSettingTypeApplicationPath("Settings", "AudioRDB", SupportFile_AudioRDBDefault));
     AddHandler(SupportFile_AudioRDBDefault, new CSettingTypeRelativePath("Config", "Audio.rdb"));
-    AddHandler(SupportFile_Cheats, new CSettingTypeApplicationPath("Settings", "Cheats", SupportFile_CheatsDefault));
-    AddHandler(SupportFile_CheatsDefault, new CSettingTypeRelativePath("Config", "Project64.cht"));
-    AddHandler(SupportFile_Notes, new CSettingTypeApplicationPath("Settings", "Notes", SupportFile_NotesDefault));
+	AddHandler(SupportFile_Cheats, new CSettingTypeApplicationPath("Settings", "Cheats", SupportFile_CheatsDefault));
+	AddHandler(SupportFile_CheatsDefault, new CSettingTypeRelativePath("Config", "Project64.cht"));
+	AddHandler(SupportFile_Enhancements, new CSettingTypeApplicationPath("Settings", "Enhancement", SupportFile_EnhancementsDefault));
+	AddHandler(SupportFile_EnhancementsDefault, new CSettingTypeRelativePath("Config", "Project64.enh"));
+	AddHandler(SupportFile_Notes, new CSettingTypeApplicationPath("Settings", "Notes", SupportFile_NotesDefault));
     AddHandler(SupportFile_NotesDefault, new CSettingTypeRelativePath("Config", "Project64.rdn"));
     AddHandler(SupportFile_ExtInfo, new CSettingTypeApplicationPath("Settings", "ExtInfo", SupportFile_ExtInfoDefault));
     AddHandler(SupportFile_ExtInfoDefault, new CSettingTypeRelativePath("Config", "Project64.rdx"));
@@ -116,8 +120,9 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Setting_CheckEmuRunning, new CSettingTypeApplication("Settings", "Check Running", (uint32_t)true));
     AddHandler(Setting_ForceInterpreterCPU, new CSettingTypeApplication("Settings", "Force Interpreter CPU", false));
     AddHandler(Setting_FixedRdramAddress, new CSettingTypeApplication("Settings", "Fixed Rdram Address", (uint32_t)0));
-
-    AddHandler(Setting_RememberCheats, new CSettingTypeApplication("Settings", "Remember Cheats", (uint32_t)false));
+	AddHandler(Setting_Enhancement, new CSettingTypeApplication("Settings", "Enable Enhancement", (uint32_t)false));
+	
+	AddHandler(Setting_RememberCheats, new CSettingTypeApplication("Settings", "Remember Cheats", (uint32_t)false));
 #ifdef ANDROID
     AddHandler(Setting_UniqueSaveDir, new CSettingTypeTempBool(true));
 #else
@@ -180,7 +185,6 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_AudioResetOnLoad, new CSettingTypeRDBYesNo("AudioResetOnLoad", false));
     AddHandler(Rdb_AllowROMWrites, new CSettingTypeRDBYesNo("AllowROMWrites", false));
     AddHandler(Rdb_CRC_Recalc, new CSettingTypeRDBYesNo("CRC-Recalc", false));
-    AddHandler(Rdb_OverClockModifier, new CSettingTypeRomDatabase("OverClockModifier", (uint32_t)1));
     AddHandler(Rdb_UnalignedDMA, new CSettingTypeRomDatabase("Unaligned DMA", Default_UnalignedDMA));
 
     AddHandler(Game_IniKey, new CSettingTypeTempString(""));
@@ -238,7 +242,6 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_Transferpak_ROM, new CSettingTypeGame("Tpak-ROM-dir", Default_None));
     AddHandler(Game_Transferpak_Sav, new CSettingTypeGame("Tpak-Sav-dir", Default_None));
     AddHandler(Game_LoadSaveAtStart, new CSettingTypeTempBool(false));
-    AddHandler(Game_OverClockModifier, new CSettingTypeGame("OverClockModifier", Rdb_OverClockModifier));
     AddHandler(Game_FullSpeed, new CSettingTypeTempBool(true, "Full Speed"));
     AddHandler(Game_UnalignedDMA, new CSettingTypeGame("Unaligned DMA", Rdb_UnalignedDMA));
 
@@ -423,7 +426,14 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Cheat_Range, new CSettingTypeCheats("_R"));
     AddHandler(Cheat_RangeNotes, new CSettingTypeCheats("_RN"));
 
-    WriteTrace(TraceAppInit, TraceDebug, "Done");
+	// Enhancement
+	AddHandler(Enhancement_Name, new CSettingTypeEnhancements(""));
+	AddHandler(Enhancement_Active, new CSettingTypeGameIndex("Enhancement", "", Enhancement_OnByDefault));
+	AddHandler(Enhancement_OnByDefault, new CSettingTypeEnhancements("_AO"));
+	AddHandler(Enhancement_Overclock, new CSettingTypeEnhancements("_OVER"));
+	AddHandler(Enhancement_OverclockValue, new CSettingTypeEnhancements("_OVERV"));
+	AddHandler(Enhancement_Notes, new CSettingTypeEnhancements("_N"));
+	WriteTrace(TraceAppInit, TraceDebug, "Done");
 }
 
 uint32_t CSettings::FindSetting(CSettings * _this, const char * Name)
@@ -660,7 +670,8 @@ bool CSettings::Initialize(const char * BaseDirectory, const char * AppName)
     CSettingTypeApplication::Initialize();
     CSettingTypeRomDatabase::Initialize();
     CSettingTypeGame::Initialize();
-    CSettingTypeCheats::Initialize();
+	CSettingTypeCheats::Initialize();
+	CSettingTypeEnhancements::Initialize();
 
     g_Settings->SaveString(Setting_ApplicationName, AppName);
     WriteTrace(TraceAppInit, TraceDebug, "Done");

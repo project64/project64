@@ -1027,6 +1027,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                 break;
             case ID_POPUPMENU_EDITSETTINGS:
             case ID_POPUPMENU_EDITCHEATS:
+			case ID_POPUPMENU_CHOOSEENHANCEMENT:
                 {
                     CN64Rom Rom;
                     Rom.LoadN64Image(_this->CurrentedSelectedRom(), true);
@@ -1037,8 +1038,11 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                         CSettingConfig SettingConfig(true);
                         SettingConfig.Display(hWnd);
                     }
-
-                    if (LOWORD(wParam) == ID_POPUPMENU_EDITCHEATS)
+					else if (LOWORD(wParam) == ID_POPUPMENU_CHOOSEENHANCEMENT)
+					{
+						CEnhancementConfig().Display(hWnd);
+					}
+					else if (LOWORD(wParam) == ID_POPUPMENU_EDITCHEATS)
                     {
                         CCheatsUI * cheatUI = new CCheatsUI;
                         g_cheatUI = cheatUI;

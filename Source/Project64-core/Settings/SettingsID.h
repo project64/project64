@@ -35,9 +35,11 @@ enum SettingID
     SupportFile_VideoRDBDefault,
     SupportFile_AudioRDB,
     SupportFile_AudioRDBDefault,
-    SupportFile_Cheats,
-    SupportFile_CheatsDefault,
-    SupportFile_Notes,
+	SupportFile_Cheats,
+	SupportFile_CheatsDefault,
+	SupportFile_Enhancements,
+	SupportFile_EnhancementsDefault,
+	SupportFile_Notes,
     SupportFile_NotesDefault,
     SupportFile_ExtInfo,
     SupportFile_ExtInfoDefault,
@@ -61,6 +63,7 @@ enum SettingID
     Setting_CurrentLanguage,
     Setting_EnableDisk,
 	Setting_SyncViaAudioEnabled,
+	Setting_Enhancement,
 
     //Default Settings
     Default_RDRamSize,
@@ -111,7 +114,6 @@ enum SettingID
     Rdb_AudioResetOnLoad,
     Rdb_AllowROMWrites,
     Rdb_CRC_Recalc,
-    Rdb_OverClockModifier,
     Rdb_UnalignedDMA,
 
     //Individual Game Settings
@@ -166,7 +168,6 @@ enum SettingID
     Game_Transferpak_ROM,
     Game_Transferpak_Sav,
     Game_LoadSaveAtStart,
-    Game_OverClockModifier,
     Game_FullSpeed,
     Game_UnalignedDMA,
 
@@ -325,7 +326,15 @@ enum SettingID
     Cheat_Range,
     Cheat_RangeNotes,
 
-    FirstUISettings, LastUISettings = FirstUISettings + MaxPluginSetting,
+	//Enhancement
+	Enhancement_Name,
+	Enhancement_Active,
+	Enhancement_OnByDefault,
+	Enhancement_Overclock,
+	Enhancement_OverclockValue,
+	Enhancement_Notes,
+
+	FirstUISettings, LastUISettings = FirstUISettings + MaxPluginSetting,
     FirstRSPDefaultSet, LastRSPDefaultSet = FirstRSPDefaultSet + MaxPluginSetting,
     FirstRSPSettings, LastRSPSettings = FirstRSPSettings + MaxPluginSetting,
     FirstGfxDefaultSet, LastGfxDefaultSet = FirstGfxDefaultSet + MaxPluginSetting,

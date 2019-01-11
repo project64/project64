@@ -219,6 +219,9 @@
     <ClCompile Include="UserInterface\Settings\SettingsPage-Defaults.cpp">
       <Filter>Source Files\User Interface Source\Settings Source</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface\EnhancementConfig.cpp">
+      <Filter>Source Files\User Interface Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserInterface\resource.h">
@@ -418,6 +421,9 @@
     </ClInclude>
     <ClInclude Include="UserInterface\Settings\SettingsPage-Defaults.h">
       <Filter>Header Files\User Interface Headers\Settings Header</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\EnhancementConfig.h">
+      <Filter>Header Files\User Interface Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

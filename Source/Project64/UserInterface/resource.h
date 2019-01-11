@@ -2,7 +2,11 @@
 // Microsoft Visual C++ generated include file.
 // Used by UIResources.rc
 //
+#define VERSION_REVISION                0
+#define VER_VER_DEBUG                   0
+#define VERSION_MAJOR                   2
 #define IDAPPLY                         3
+#define VERSION_MINOR                   4
 #define IDI_PJ64_Icon                   101
 #define IDD_Rom_Information             104
 #define IDD_Key_Prompt                  108
@@ -62,6 +66,7 @@
 #define IDR_MENU1                       186
 #define IDR_SCRIPT_POPUP                186
 #define IDR_OP_POPUP                    187
+#define IDR_ENHANCEMENT_MENU            188
 #define IDD_Debugger_Stack              191
 #define IDD_Debugger_RegSP              192
 #define IDD_Debugger_RegMI              193
@@ -73,6 +78,9 @@
 #define IDD_Debugger_RegVI              199
 #define IDD_Debugger_RegDD              200
 #define IDD_Settings_Defaults           201
+#define IDD_Enhancement_Config          202
+#define IDD_Enhancement_Edit            203
+#define VERSION_BUILD                   771
 #define IDC_MENU_ITEM_TEXT              1000
 #define IDC_CLOSE_BUTTON                1001
 #define IDC_LIST2                       1003
@@ -271,7 +279,6 @@
 #define IDC_DIR_FRAME1                  1101
 #define IDC_ROM_FASTSP                  1101
 #define IDC_INFO                        1101
-#define IDC_OVER_CLOCK_MODIFIER_TEXT    1101
 #define IDC_AUDIO_SIGNAL                1102
 #define IDC_DIR_TEXTURE_FRAME           1102
 #define IDC_ENTER_CODE                  1102
@@ -606,6 +613,10 @@
 #define IDC_ROM_FIXEDAUDIO              1445
 #define IDC_CHK_AUTOREFRESH             1446
 #define IDC_SHOW_FILE_EXTENSIONS        1447
+#define IDC_ENHANCEMENTLIST             1450
+#define IDC_OVERCLOCK                   1451
+#define IDC_AUTOON                      1452
+#define IDC_ENHANCEMENTNOTES            1453
 #define ID_POPUP_SHOWINMEMORYVIEWER     40005
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ADDSYMBOL          40013
@@ -633,17 +644,19 @@
 #define ID_POPUPMENU_EDITSETTINGS       40153
 #define ID_POPUPMENU_EDITCHEATS         40154
 #define ID_POPUPMENU_ROMINFORMATION     40155
+#define ID_POPUPMENU_CHOOSEENHANCEMENT  40156
 #define ID_POPUP_ADDNEWCHEAT            40161
 #define ID_POPUP_EDIT                   40162
 #define ID_POPUP_DELETE                 40163
+#define ID_POPUP_ADDENHANCEMENT         40164
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        199
+#define _APS_NEXT_RESOURCE_VALUE        200
 #define _APS_NEXT_COMMAND_VALUE         40043
-#define _APS_NEXT_CONTROL_VALUE         1449
+#define _APS_NEXT_CONTROL_VALUE         1454
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

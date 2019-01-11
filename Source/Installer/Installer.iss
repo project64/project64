@@ -27,6 +27,7 @@ Source: "{#BaseDir}\Bin\{#Configuration}\Project64.exe"; DestDir: "{app}"; Flags
 Source: "{#BaseDir}\Config\Video.rdb"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Config\Audio.rdb"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Config\Project64.cht"; DestDir: "{app}\Config"
+Source: "{#BaseDir}\Config\Project64.enh"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Config\Project64.rdb"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Config\Project64.rdx"; DestDir: "{app}\Config"
 Source: "{#BaseDir}\Lang\*.pj.Lang"; DestDir: "{app}\Lang"

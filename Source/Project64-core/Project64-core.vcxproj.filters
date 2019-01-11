@@ -339,6 +339,9 @@
     <ClCompile Include="Settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Settings\SettingType\SettingsType-Enhancements.cpp">
+      <Filter>Source Files\Settings\SettingType</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -655,6 +658,9 @@
     </ClInclude>
     <ClInclude Include="Settings\SettingsID.h">
       <Filter>Header Files\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\SettingType\SettingsType-Enhancements.h">
+      <Filter>Header Files\Settings\SettingType</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
