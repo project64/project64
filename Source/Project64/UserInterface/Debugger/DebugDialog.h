@@ -72,6 +72,9 @@ public:
         }
         if (m_hWnd)
         {
+            if (::IsIconic((HWND)m_hWnd)) {
+                SendMessage(m_hWnd, WM_SYSCOMMAND, SC_RESTORE, NULL);
+            }
             SetForegroundWindow((HWND)m_hWnd);
         }
     }
