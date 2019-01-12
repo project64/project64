@@ -195,7 +195,7 @@ bool CSettingTypeApplication::Load(uint32_t Index, std::string & Value) const
 }
 
 //return the default values
-void CSettingTypeApplication::LoadDefault(uint32_t /*Index*/, bool & Value) const
+void CSettingTypeApplication::LoadDefault(uint32_t Index, bool & Value) const
 {
     if (m_DefaultSetting != Default_None)
     {
@@ -203,9 +203,13 @@ void CSettingTypeApplication::LoadDefault(uint32_t /*Index*/, bool & Value) cons
         {
             Value = m_DefaultValue != 0;
         }
-        else
-        {
-            g_Settings->LoadBool(m_DefaultSetting, Value);
+		else if (g_Settings->IndexBasedSetting(m_DefaultSetting))
+		{
+			g_Settings->LoadBoolIndex(m_DefaultSetting, Index, Value);
+		}
+		else
+		{
+			g_Settings->LoadBool(m_DefaultSetting, Value);
         }
     }
 }
@@ -227,11 +231,13 @@ void CSettingTypeApplication::LoadDefault(uint32_t /*Index*/, std::string & Valu
 }
 
 //Update the settings
-void CSettingTypeApplication::Save(uint32_t /*Index*/, bool Value)
+void CSettingTypeApplication::Save(uint32_t Index, bool Value)
 {
+	bool indexed = g_Settings->IndexBasedSetting(m_DefaultSetting);
+
     if (m_DefaultSetting != Default_None &&
         ((m_DefaultSetting == Default_Constant && (bool)m_DefaultValue == Value) ||
-        (m_DefaultSetting != Default_Constant && g_Settings->LoadBool(m_DefaultSetting) == Value)))
+        (m_DefaultSetting != Default_Constant && (indexed ? g_Settings->LoadBoolIndex(m_DefaultSetting, Index) : g_Settings->LoadBool(m_DefaultSetting)) == Value)))
     {
         m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), NULL);
     }
