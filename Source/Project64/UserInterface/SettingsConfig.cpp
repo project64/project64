@@ -52,29 +52,29 @@ void CSettingConfig::UpdateAdvanced(bool AdvancedMode)
     BoldChangedPages(m_PagesTreeList.GetRootItem());
 }
 
-bool CSettingConfig::UpdateAdvanced(bool AdvancedMode, HTREEITEM hItem)
+void CSettingConfig::UpdateAdvanced(bool AdvancedMode, HTREEITEM hItem)
 {
     while (hItem)
     {
         CSettingsPage * Page = (CSettingsPage *)m_PagesTreeList.GetItemData(hItem);
         if (!AdvancedMode && (Page == m_AdvancedPage || Page == m_DefaultsPage))
         {
-            m_PagesTreeList.DeleteItem(hItem);
-            return true;
+			HTREEITEM hPage = hItem;
+			hItem = m_PagesTreeList.GetNextSiblingItem(hItem);
+			m_PagesTreeList.DeleteItem(hPage);
         }
-        if (AdvancedMode && Page == m_GeneralOptionsPage)
+        else if (AdvancedMode && Page == m_GeneralOptionsPage)
         {
             m_PagesTreeList.InsertItemW(TVIF_TEXT | TVIF_PARAM, wGS(m_AdvancedPage->PageTitle()).c_str(), 0, 0, 0, 0, (ULONG)m_AdvancedPage, hItem, TVI_FIRST);
             m_PagesTreeList.InsertItemW(TVIF_TEXT | TVIF_PARAM, wGS(m_DefaultsPage->PageTitle()).c_str(), 0, 0, 0, 0, (ULONG)m_DefaultsPage, hItem, TVI_FIRST);
-            return true;
+            break;
         }
-        if (UpdateAdvanced(AdvancedMode, m_PagesTreeList.GetChildItem(hItem)))
-        {
-            return true;
-        }
-        hItem = m_PagesTreeList.GetNextSiblingItem(hItem);
+		else
+		{
+			UpdateAdvanced(AdvancedMode, m_PagesTreeList.GetChildItem(hItem));
+			hItem = m_PagesTreeList.GetNextSiblingItem(hItem);
+		}
     }
-    return false;
 }
 
 LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
