@@ -78,6 +78,7 @@ LOCAL_SRC_FILES :=                                                     \
     $(SRCDIR)/Settings/SettingType/SettingsType-ApplicationIndex.cpp   \
     $(SRCDIR)/Settings/SettingType/SettingsType-ApplicationPath.cpp    \
     $(SRCDIR)/Settings/SettingType/SettingsType-Cheats.cpp             \
+    $(SRCDIR)/Settings/SettingType/SettingsType-Enhancements.cpp       \
     $(SRCDIR)/Settings/SettingType/SettingsType-GameSetting.cpp        \
     $(SRCDIR)/Settings/SettingType/SettingsType-GameSettingIndex.cpp   \
     $(SRCDIR)/Settings/SettingType/SettingsType-RelativePath.cpp       \
