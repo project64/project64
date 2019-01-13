@@ -89,6 +89,46 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
 
     GetWindowRect(&m_DefaultWindowRect);
 
+    //We find the middle position of the screen, we use this if theres no setting
+    int32_t X = GetX(m_DefaultWindowRect);
+    int32_t	Y = GetY(m_DefaultWindowRect);
+
+    //Load the value from settings, if none is available, default to above
+    UISettingsLoadDword(Commands_Top, (uint32_t &)Y);
+    UISettingsLoadDword(Commands_Left, (uint32_t &)X);
+
+    SetPos(X, Y);
+
+    int32_t Width = UISettingsLoadDword(Commands_Width);
+    int32_t Height = UISettingsLoadDword(Commands_Height);
+
+    SetSize(Width, Height);
+
+
+    //Fix sizing (duplicate code of CDebugCommandsView:OnSizing) -- FIXME
+    CRect listRect;
+    m_CommandList.GetWindowRect(listRect);
+
+    CRect headRect;
+    CHeaderCtrl listHead = m_CommandList.GetHeader();
+    listHead.GetWindowRect(&headRect);
+
+    int rowsHeight = listRect.Height() - headRect.Height();
+
+    int nRows = (rowsHeight / m_RowHeight);
+
+    if (m_CommandListRows != nRows)
+    {
+        m_CommandListRows = nRows;
+        ShowAddress(m_StartAddress, TRUE);
+    }
+
+    m_RegisterTabs.RedrawCurrentTab();
+
+    // Fix cmd list header
+    listHead.ResizeClient(listRect.Width(), headRect.Height());
+
+
     // Setup address input
     m_AddressEdit.SetDisplayType(CEditNumber32::DisplayHex);
     m_AddressEdit.SetLimitText(8);

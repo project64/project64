@@ -38,6 +38,19 @@ CDebugMemoryView::~CDebugMemoryView()
 
 LRESULT CDebugMemoryView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
+    CRect m_DefaultWindowRect;
+    GetWindowRect(&m_DefaultWindowRect);
+
+    //We find the middle position of the screen, we use this if theres no setting
+    int32_t X = GetX(m_DefaultWindowRect);
+    int32_t	Y = GetY(m_DefaultWindowRect);
+
+    //Load the value from settings, if none is available, default to above
+    UISettingsLoadDword(ViewMemory_Top, (uint32_t &)Y);
+    UISettingsLoadDword(ViewMemory_Left, (uint32_t &)X);
+
+    SetPos(X, Y);
+
     m_SymbolColorStride = 0;
     m_SymbolColorPhase = 0;
     m_DataStartLoc = (DWORD)-1;

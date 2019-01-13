@@ -64,6 +64,38 @@ void RegisterUISettings (void)
     g_Settings->AddHandler((SettingID)(FirstUISettings + File_RecentGameFileIndex), new CSettingTypeApplicationIndex("Recent File", "Recent Rom", Default_None));
 
     g_Settings->AddHandler((SettingID)(FirstUISettings + SupportWindows_RunCount), new CSettingTypeApplication("Support Project64", "Run Count", (uint32_t)0));
+
+    //Debugger UI
+    g_Settings->AddHandler((SettingID)(FirstUISettings + MemorySearch_Top), new CSettingTypeApplication("Debugger", "Memory Search Top", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + MemorySearch_Left), new CSettingTypeApplication("Debugger", "Memory Search Left", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + ViewMemory_Top), new CSettingTypeApplication("Debugger", "View Memory Top", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + ViewMemory_Left), new CSettingTypeApplication("Debugger", "View Memory Left", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + TLB_Top), new CSettingTypeApplication("Debugger", "TLB Top", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + TLB_Left), new CSettingTypeApplication("Debugger", "TLB Left", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Commands_Top), new CSettingTypeApplication("Debugger", "Commands Top", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Commands_Left), new CSettingTypeApplication("Debugger", "Commands Left", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Commands_Width), new CSettingTypeApplication("Debugger", "Commands Width", (uint32_t)489));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Commands_Height), new CSettingTypeApplication("Debugger", "Commands Height", (uint32_t)327));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Scripts_Top), new CSettingTypeApplication("Debugger", "Scripts Top", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Scripts_Left), new CSettingTypeApplication("Debugger", "Scripts Left", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Scripts_Width), new CSettingTypeApplication("Debugger", "Scripts Width", (uint32_t)337));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Scripts_Height), new CSettingTypeApplication("Debugger", "Scripts Height", (uint32_t)170));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Symbols_Top), new CSettingTypeApplication("Debugger", "Symbols Top", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Symbols_Left), new CSettingTypeApplication("Debugger", "Symbols Left", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Symbols_Width), new CSettingTypeApplication("Debugger", "Symbols Width", (uint32_t)313));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Symbols_Height), new CSettingTypeApplication("Debugger", "Symbols Height", (uint32_t)141));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + DMALogView_Top), new CSettingTypeApplication("Debugger", "DMA Log View Top", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + DMALogView_Left), new CSettingTypeApplication("Debugger", "DMA Log View Left", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + DMALogView_Width), new CSettingTypeApplication("Debugger", "DMA Log View Width", (uint32_t)309));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + DMALogView_Height), new CSettingTypeApplication("Debugger", "DMA Log View Height", (uint32_t)215));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + StackView_Top), new CSettingTypeApplication("Debugger", "Stack View Top", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + StackView_Left), new CSettingTypeApplication("Debugger", "Stack View Left", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + StackView_Width), new CSettingTypeApplication("Debugger", "Stack View Width", (uint32_t)197));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + StackView_Height), new CSettingTypeApplication("Debugger", "Stack View Height", (uint32_t)212));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + StackTrace_Top), new CSettingTypeApplication("Debugger", "Stack Trace Top", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + StackTrace_Left), new CSettingTypeApplication("Debugger", "Stack Trace Left", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + StackTrace_Width), new CSettingTypeApplication("Debugger", "Stack Trace Width", (uint32_t)223));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + StackTrace_Height), new CSettingTypeApplication("Debugger", "Stack Trace Height", (uint32_t)221));
 }
 
 void UISettingsSaveBool(UISettingID Type, bool Value)

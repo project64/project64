@@ -31,6 +31,24 @@ LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 {
     DlgResize_Init(false, true);
 
+    CRect m_DefaultWindowRect;
+    GetWindowRect(&m_DefaultWindowRect);
+
+    //We find the middle position of the screen, we use this if theres no setting
+    int32_t X = GetX(m_DefaultWindowRect);
+    int32_t	Y = GetY(m_DefaultWindowRect);
+
+    //Load the value from settings, if none is available, default to above
+    UISettingsLoadDword(Scripts_Top, (uint32_t &)Y);
+    UISettingsLoadDword(Scripts_Left, (uint32_t &)X);
+
+    SetPos(X, Y);
+
+    int32_t Width = UISettingsLoadDword(Scripts_Width);
+    int32_t Height = UISettingsLoadDword(Scripts_Height);
+
+    SetSize(Width, Height);
+
     HFONT monoFont = CreateFont(-11, 0, 0, 0,
         FW_DONTCARE, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
         OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
