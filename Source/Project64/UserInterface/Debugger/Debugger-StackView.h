@@ -30,12 +30,14 @@ private:
     LRESULT	OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnDestroy(void);
     LRESULT	OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+    void OnExitSizeMove(void);
 
     BEGIN_MSG_MAP_EX(CDebugStackView)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
         MSG_WM_DESTROY(OnDestroy)
         COMMAND_CODE_HANDLER(BN_CLICKED, OnClicked)
         CHAIN_MSG_MAP(CDialogResize<CDebugStackView>)
+        MSG_WM_EXITSIZEMOVE(OnExitSizeMove);
         END_MSG_MAP()
 
     BEGIN_DLGRESIZE_MAP(CDebugStackView)
