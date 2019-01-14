@@ -40,6 +40,8 @@ void CDebugMemorySearch::AddAlignmentOptions(CComboBox  & ctrl)
 
 LRESULT	CDebugMemorySearch::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
+    DlgSavePos_Init(DebuggerUI_MemorySearchPos);
+
     m_PAddrStart.Attach(GetDlgItem(IDC_PADDR_START));
     m_PAddrStart.SetDisplayType(CEditNumber32::DisplayHex);
     m_SearchLen.Attach(GetDlgItem(IDC_ADDR_END));
@@ -71,14 +73,14 @@ LRESULT	CDebugMemorySearch::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     BOOL bHandled;
     OnClicked(0, IDC_BTN_RDRAM, NULL, bHandled);
     OnClicked(0, IDC_RADIO_VALUE, NULL, bHandled);
-	LoadWindowPos(MemorySearch_Top, MemorySearch_Left);
+	LoadWindowPos();
 	WindowCreated();
     return TRUE;
 }
 
 void CDebugMemorySearch::OnExitSizeMove(void)
 {
-	SaveWindowPos(MemorySearch_Top, MemorySearch_Left);
+	SaveWindowPos();
 }
 
 LRESULT	CDebugMemorySearch::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND hWndCtl, BOOL& /*bHandled*/)

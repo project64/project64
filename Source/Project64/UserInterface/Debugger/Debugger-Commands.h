@@ -243,6 +243,8 @@ private:
     void ClearBranchArrows();
     void DrawBranchArrows(HDC listDC);
 
+    void RedrawCommandsAndRegisters();
+
     CBreakpoints* m_Breakpoints;
     vector<uint32_t> m_History;
     int m_HistoryIndex;

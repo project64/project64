@@ -49,11 +49,7 @@ void CDebugStackTrace::ClearEntries()
 LRESULT CDebugStackTrace::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	DlgResize_Init();
-
-    int32_t Width = UISettingsLoadDword(StackTrace_Width);
-    int32_t Height = UISettingsLoadDword(StackTrace_Height);
-
-    SetSize(Width, Height);
+    DlgSavePos_Init(DebuggerUI_StackTracePos);
 	
 	m_List.Attach(GetDlgItem(IDC_STACKTRACE_LIST));
 	m_List.AddColumn("Caller", 0);
@@ -67,14 +63,14 @@ LRESULT CDebugStackTrace::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 
 	m_List.SetExtendedListViewStyle(LVS_EX_FULLROWSELECT);
 
-	LoadWindowPos(StackTrace_Top, StackTrace_Left);
+	LoadWindowPos();
 	WindowCreated();
 	return TRUE;
 }
 
 void CDebugStackTrace::OnExitSizeMove(void)
 {
-    SaveWindowPos(StackTrace_Top, StackTrace_Left);
+    SaveWindowPos();
 }
 
 LRESULT CDebugStackTrace::OnActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)

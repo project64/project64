@@ -30,11 +30,7 @@ CDebugScripts::~CDebugScripts(void)
 LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
     DlgResize_Init(false, true);
-
-    int32_t Width = UISettingsLoadDword(Scripts_Width);
-    int32_t Height = UISettingsLoadDword(Scripts_Height);
-
-    SetSize(Width, Height);
+    DlgSavePos_Init(DebuggerUI_ScriptsPos);
 
     HFONT monoFont = CreateFont(-11, 0, 0, 0,
         FW_DONTCARE, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
@@ -61,14 +57,14 @@ LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 
     RefreshList();
 
-	LoadWindowPos(Scripts_Top, Scripts_Left);
+	LoadWindowPos();
 	WindowCreated();
     return 0;
 }
 
 void CDebugScripts::OnExitSizeMove(void)
 {
-    SaveWindowPos(Scripts_Top, Scripts_Left);
+    SaveWindowPos();
 }
 
 void CDebugScripts::ConsolePrint(const char* text)
