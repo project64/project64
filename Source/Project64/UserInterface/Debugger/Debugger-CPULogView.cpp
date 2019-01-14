@@ -10,7 +10,9 @@ HHOOK CDebugCPULogView::hWinMessageHook = NULL;
 
 CDebugCPULogView::CDebugCPULogView(CDebuggerUI* debugger) :
     CDebugDialog<CDebugCPULogView>(debugger),
-    m_CPULogCopy(NULL)
+    m_CPULogCopy(NULL),
+    m_LogStartIndex(0),
+    m_RowHeight(13)
 {
 }
 
@@ -137,7 +139,9 @@ LRESULT CDebugCPULogView::OnListItemChanged(NMHDR* pNMHDR)
 {
     NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
     int nItem = pIA->iItem;
-    ShowRegStates(nItem);
+
+    ShowRegStates(m_LogStartIndex + nItem);
+
     return FALSE;
 }
 
@@ -146,7 +150,7 @@ LRESULT CDebugCPULogView::OnListDblClicked(NMHDR* pNMHDR)
     NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
     int nItem = pIA->iItem;
 
-    CPUState* state = m_CPULogCopy->GetEntry(nItem);
+    CPUState* state = m_CPULogCopy->GetEntry(m_LogStartIndex + nItem);
 
     if (state == NULL)
     {
@@ -197,7 +201,8 @@ LRESULT CDebugCPULogView::OnScroll(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, 
     default: return 0;
     }
 
-    ::SetScrollPos(hScrollbar, SB_CTL, newPos, TRUE);
+    m_LogStartIndex = newPos;
+    ::SetScrollPos(hScrollbar, SB_CTL, m_LogStartIndex, TRUE);
 
     if (scrlId == IDC_SCRL_BAR)
     {
@@ -215,7 +220,8 @@ void CDebugCPULogView::InterceptMouseWheel(WPARAM wParam, LPARAM lParam)
     {
         // scroll results list
         int scrollPos = m_Scrollbar.GetScrollPos();
-        m_Scrollbar.SetScrollPos(scrollPos + nScroll);
+        int m_ListStartIndex = scrollPos + nScroll;
+        m_Scrollbar.SetScrollPos(m_ListStartIndex);
         RefreshList(false);
     }
 }
@@ -276,7 +282,8 @@ void CDebugCPULogView::RefreshList(bool bUpdateBuffer)
 
     if (bUpdateBuffer)
     {
-        m_Scrollbar.SetScrollPos(scrollRangeMax, true);
+        m_LogStartIndex = scrollRangeMax;
+        m_Scrollbar.SetScrollPos(m_LogStartIndex, true);
     }
 
     size_t start = m_Scrollbar.GetScrollPos();

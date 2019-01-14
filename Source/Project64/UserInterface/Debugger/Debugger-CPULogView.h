@@ -20,6 +20,7 @@ private:
     CCPULog*      m_CPULogCopy;
 
     int           m_RowHeight;
+    int           m_LogStartIndex;
 
     CListViewCtrl m_CPUListView;
     CEdit         m_StateInfoEdit;
@@ -37,7 +38,7 @@ private:
     LRESULT OnScroll(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/);
     void    OnExitSizeMove(void);
     LRESULT OnDestroy(void);
-	
+    
 
     void InterceptMouseWheel(WPARAM wParam, LPARAM lParam);
 
