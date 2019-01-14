@@ -150,7 +150,11 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 #ifdef _DEBUG
     AddHandler(Rdb_CpuType, new CSettingTypeRDBCpuType("CPU Type", CPU_SyncCores));
 #else
+#ifndef _M_X64
     AddHandler(Rdb_CpuType, new CSettingTypeRDBCpuType("CPU Type", CPU_Recompiler));
+#else
+	AddHandler(Rdb_CpuType, new CSettingTypeRDBCpuType("CPU Type", CPU_Interpreter));
+#endif
 #endif
     AddHandler(Rdb_RDRamSize, new CSettingTypeRDBRDRamSize("RDRAM Size", Default_RDRamSize));
     AddHandler(Rdb_CounterFactor, new CSettingTypeRomDatabase("Counter Factor", Default_CounterFactor));
