@@ -55,6 +55,11 @@ LRESULT CDebugSymbols::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     return 0;
 }
 
+void CDebugSymbols::OnExitSizeMove(void)
+{
+    SaveWindowPos(Symbols_Top, Symbols_Left);
+}
+
 LRESULT CDebugSymbols::OnDestroy(void)
 {
     m_SymbolsListView.Detach();

@@ -118,6 +118,7 @@ public:
     LRESULT OnScriptListClicked(NMHDR* pNMHDR);
     LRESULT OnScriptListRClicked(NMHDR* pNMHDR);
     LRESULT OnScriptListCustomDraw(NMHDR* pNMHDR);
+    void OnExitSizeMove(void);
 
     BEGIN_MSG_MAP_EX(CDebugScripts)
         COMMAND_CODE_HANDLER(BN_CLICKED, OnClicked)
@@ -129,6 +130,7 @@ public:
         CHAIN_MSG_MAP_MEMBER(m_ScriptList)
         MSG_WM_DESTROY(OnDestroy)
         CHAIN_MSG_MAP(CDialogResize<CDebugScripts>)
+        MSG_WM_EXITSIZEMOVE(OnExitSizeMove);
         END_MSG_MAP()
 
     BEGIN_DLGRESIZE_MAP(CDebugScripts)

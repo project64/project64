@@ -53,6 +53,11 @@ LRESULT CDebugStackView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /
     return 0;
 }
 
+void CDebugStackView::OnExitSizeMove(void)
+{
+    SaveWindowPos(StackView_Top, StackView_Left);
+}
+
 LRESULT CDebugStackView::OnDestroy(void)
 {
     m_StackList.Detach();

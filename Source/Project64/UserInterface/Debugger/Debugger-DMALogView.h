@@ -54,6 +54,7 @@ private:
     LRESULT OnRomAddrChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
     LRESULT OnCustomDrawList(NMHDR* pNMHDR);
     LRESULT OnDestroy(void);
+    void OnExitSizeMove(void);
 
     BEGIN_MSG_MAP_EX(CDebugDMALogView)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
@@ -63,6 +64,7 @@ private:
         COMMAND_HANDLER(IDC_DMA_ROM_EDIT, EN_CHANGE, OnRomAddrChanged)
         NOTIFY_HANDLER_EX(IDC_DMA_LIST, NM_CUSTOMDRAW, OnCustomDrawList)
         CHAIN_MSG_MAP(CDialogResize<CDebugDMALogView>)
+        MSG_WM_EXITSIZEMOVE(OnExitSizeMove)
         END_MSG_MAP()
 
     BEGIN_DLGRESIZE_MAP(CDebugDMALogView)

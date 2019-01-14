@@ -39,6 +39,7 @@ public:
     LRESULT OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT	OnListDblClicked(NMHDR* pNMHDR);
     LRESULT OnDestroy(void);
+    void OnExitSizeMove(void);
 
     BEGIN_MSG_MAP_EX(CDebugSymbols)
         COMMAND_CODE_HANDLER(BN_CLICKED, OnClicked)
@@ -47,6 +48,7 @@ public:
         NOTIFY_HANDLER_EX(IDC_SYMBOLS_LIST, NM_DBLCLK, OnListDblClicked)
         //NOTIFY_HANDLER_EX(IDC_CMD_LIST, NM_RCLICK, OnListClicked)
         CHAIN_MSG_MAP(CDialogResize<CDebugSymbols>)
+        MSG_WM_EXITSIZEMOVE(OnExitSizeMove);
         END_MSG_MAP()
 
     BEGIN_DLGRESIZE_MAP(CDebugSymbols)
