@@ -72,6 +72,11 @@ LRESULT CDebugStackTrace::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	return TRUE;
 }
 
+void CDebugStackTrace::OnExitSizeMove(void)
+{
+    SaveWindowPos(StackTrace_Top, StackTrace_Left);
+}
+
 LRESULT CDebugStackTrace::OnActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	Refresh();

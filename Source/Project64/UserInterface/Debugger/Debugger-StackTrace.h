@@ -51,6 +51,7 @@ private:
     LRESULT OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT OnListDblClicked(NMHDR* pNMHDR);
     LRESULT OnDestroy(void);
+    void OnExitSizeMove(void);
 
     BEGIN_MSG_MAP_EX(CDebugStackTrace)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
@@ -59,6 +60,7 @@ private:
         COMMAND_CODE_HANDLER(BN_CLICKED, OnClicked)
         NOTIFY_HANDLER_EX(IDC_STACKTRACE_LIST, NM_DBLCLK, OnListDblClicked)
         CHAIN_MSG_MAP(CDialogResize<CDebugStackTrace>)
+        MSG_WM_EXITSIZEMOVE(OnExitSizeMove)
         END_MSG_MAP()
 
     BEGIN_DLGRESIZE_MAP(CDebugStackTrace)
