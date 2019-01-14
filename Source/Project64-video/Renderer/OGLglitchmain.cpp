@@ -1754,7 +1754,8 @@ static void CorrectGamma(LPVOID apGammaRamp)
     HDC hdc = GetDC(NULL);
     if (hdc != NULL)
     {
-        SetDeviceGammaRamp(hdc, apGammaRamp);
+		if (to_fullscreen)
+			SetDeviceGammaRamp(hdc, apGammaRamp);
         ReleaseDC(NULL, hdc);
     }
 }
