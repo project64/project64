@@ -183,7 +183,7 @@ LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 
 	RefreshList();
 
-	LoadWindowPos(DMALogView_Width, DMALogView_Height);
+	LoadWindowPos(DMALogView_Top, DMALogView_Left);
 	WindowCreated();
 
 	m_AutoRefreshThread = CreateThread(NULL, 0, AutoRefreshProc, (void*)this, 0, NULL);
