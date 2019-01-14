@@ -22,6 +22,32 @@ protected:
         SetEvent(m_CreatedEvent);
     }
 
+	void LoadWindowPos(UISettingID TopSetting, UISettingID LeftSetting)
+	{
+		CRect m_DefaultWindowRect;
+		GetWindowRect(&m_DefaultWindowRect);
+
+		//We find the middle position of the screen, we use this if theres no setting
+		uint32_t X = GetX(m_DefaultWindowRect);
+		uint32_t Y = GetY(m_DefaultWindowRect);
+
+		//Load the value from settings, if none is available, default to above
+		UISettingsLoadDword(TopSetting, Y);
+		UISettingsLoadDword(LeftSetting, X);
+
+		SetPos(X, Y);
+	}
+
+	void SaveWindowPos(UISettingID TopSetting, UISettingID LeftSetting)
+	{
+		RECT WinRect;
+		GetWindowRect(&WinRect);
+
+		//Load the value from settings, if none is available, default to above
+		UISettingsSaveDword(TopSetting, WinRect.top);
+		UISettingsSaveDword(LeftSetting, WinRect.left);
+	}
+
 public:
     CDebugDialog(CDebuggerUI * debugger) :
         m_Debugger(debugger),

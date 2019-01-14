@@ -249,8 +249,6 @@ private:
     CAddSymbolDlg m_AddSymbolDlg;
 
     uint32_t m_StartAddress;
-    CRect m_DefaultWindowRect;
-
     CEditNumber32 m_PCEdit;
     bool m_bIgnorePCChange;
 

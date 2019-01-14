@@ -146,19 +146,6 @@ LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 {
 	DlgResize_Init(false, true);
 
-    CRect m_DefaultWindowRect;
-    GetWindowRect(&m_DefaultWindowRect);
-
-    //We find the middle position of the screen, we use this if theres no setting
-    int32_t X = GetX(m_DefaultWindowRect);
-    int32_t	Y = GetY(m_DefaultWindowRect);
-
-    //Load the value from settings, if none is available, default to above
-    UISettingsLoadDword(DMALogView_Top, (uint32_t &)Y);
-    UISettingsLoadDword(DMALogView_Left, (uint32_t &)X);
-
-    SetPos(X, Y);
-
     int32_t Width = UISettingsLoadDword(DMALogView_Width);
     int32_t Height = UISettingsLoadDword(DMALogView_Height);
 
@@ -196,6 +183,7 @@ LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 
 	RefreshList();
 
+	LoadWindowPos(DMALogView_Width, DMALogView_Height);
 	WindowCreated();
 
 	m_AutoRefreshThread = CreateThread(NULL, 0, AutoRefreshProc, (void*)this, 0, NULL);

@@ -38,19 +38,6 @@ CDebugMemoryView::~CDebugMemoryView()
 
 LRESULT CDebugMemoryView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-    CRect m_DefaultWindowRect;
-    GetWindowRect(&m_DefaultWindowRect);
-
-    //We find the middle position of the screen, we use this if theres no setting
-    int32_t X = GetX(m_DefaultWindowRect);
-    int32_t	Y = GetY(m_DefaultWindowRect);
-
-    //Load the value from settings, if none is available, default to above
-    UISettingsLoadDword(ViewMemory_Top, (uint32_t &)Y);
-    UISettingsLoadDword(ViewMemory_Left, (uint32_t &)X);
-
-    SetPos(X, Y);
-
     m_SymbolColorStride = 0;
     m_SymbolColorPhase = 0;
     m_DataStartLoc = (DWORD)-1;
@@ -140,7 +127,8 @@ LRESULT CDebugMemoryView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
     DWORD dwThreadID = ::GetCurrentThreadId();
     hWinMessageHook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)HookProc, NULL, dwThreadID);
 
-    WindowCreated();
+	LoadWindowPos(ViewMemory_Top, ViewMemory_Left);
+	WindowCreated();
 
     m_AutoRefreshThread = CreateThread(NULL, 0, AutoRefreshProc, (void*)this, 0, NULL);
 
@@ -158,6 +146,11 @@ DWORD WINAPI CDebugMemoryView::AutoRefreshProc(void* _self)
         }
         Sleep(100);
     }
+}
+
+void CDebugMemoryView::OnExitSizeMove()
+{
+	SaveWindowPos(ViewMemory_Top, ViewMemory_Left);
 }
 
 void CDebugMemoryView::InterceptMouseWheel(WPARAM wParam, LPARAM /*lParam*/)
@@ -199,7 +192,10 @@ LRESULT CDebugMemoryView::OnDestroy(void)
         delete m_MemoryList;
         m_MemoryList = NULL;
     }
-    UnhookWindowsHookEx(hWinMessageHook);
+	m_MemAddr.Detach();
+	m_SymInfo.Detach();
+	m_DMAInfo.Detach();
+	UnhookWindowsHookEx(hWinMessageHook);
     return 0;
 }
 

@@ -87,18 +87,6 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     DlgResize_Init(false, true);
     DlgToolTip_Init();
 
-    GetWindowRect(&m_DefaultWindowRect);
-
-    //We find the middle position of the screen, we use this if theres no setting
-    int32_t X = GetX(m_DefaultWindowRect);
-    int32_t	Y = GetY(m_DefaultWindowRect);
-
-    //Load the value from settings, if none is available, default to above
-    UISettingsLoadDword(Commands_Top, (uint32_t &)Y);
-    UISettingsLoadDword(Commands_Left, (uint32_t &)X);
-
-    SetPos(X, Y);
-
     int32_t Width = UISettingsLoadDword(Commands_Width);
     int32_t Height = UISettingsLoadDword(Commands_Height);
 
@@ -180,9 +168,15 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     DWORD dwThreadID = ::GetCurrentThreadId();
     hWinMessageHook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)HookProc, NULL, dwThreadID);
 
-    WindowCreated();
+	LoadWindowPos(Commands_Top, Commands_Left);
+	WindowCreated();
     m_Attached = true;
     return TRUE;
+}
+
+void CDebugCommandsView::OnExitSizeMove(void)
+{
+	SaveWindowPos(Commands_Top, Commands_Left);
 }
 
 LRESULT CDebugCommandsView::OnDestroy(void)

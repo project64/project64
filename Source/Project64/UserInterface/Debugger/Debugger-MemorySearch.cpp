@@ -40,19 +40,6 @@ void CDebugMemorySearch::AddAlignmentOptions(CComboBox  & ctrl)
 
 LRESULT	CDebugMemorySearch::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-    CRect m_DefaultWindowRect;
-    GetWindowRect(&m_DefaultWindowRect);
-
-    //We find the middle position of the screen, we use this if theres no setting
-    int32_t X = GetX(m_DefaultWindowRect);
-    int32_t	Y = GetY(m_DefaultWindowRect);
-
-    //Load the value from settings, if none is available, default to above
-    UISettingsLoadDword(MemorySearch_Top, (uint32_t &)Y);
-    UISettingsLoadDword(MemorySearch_Left, (uint32_t &)X);
-
-    SetPos(X, Y);
-
     m_PAddrStart.Attach(GetDlgItem(IDC_PADDR_START));
     m_PAddrStart.SetDisplayType(CEditNumber32::DisplayHex);
     m_SearchLen.Attach(GetDlgItem(IDC_ADDR_END));
@@ -84,8 +71,14 @@ LRESULT	CDebugMemorySearch::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     BOOL bHandled;
     OnClicked(0, IDC_BTN_RDRAM, NULL, bHandled);
     OnClicked(0, IDC_RADIO_VALUE, NULL, bHandled);
-    WindowCreated();
+	LoadWindowPos(MemorySearch_Top, MemorySearch_Left);
+	WindowCreated();
     return TRUE;
+}
+
+void CDebugMemorySearch::OnExitSizeMove(void)
+{
+	SaveWindowPos(MemorySearch_Top, MemorySearch_Left);
 }
 
 LRESULT	CDebugMemorySearch::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND hWndCtl, BOOL& /*bHandled*/)

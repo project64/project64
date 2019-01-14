@@ -50,19 +50,6 @@ LRESULT CDebugStackTrace::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 {
 	DlgResize_Init();
 
-    CRect m_DefaultWindowRect;
-    GetWindowRect(&m_DefaultWindowRect);
-
-    //We find the middle position of the screen, we use this if theres no setting
-    int32_t X = GetX(m_DefaultWindowRect);
-    int32_t	Y = GetY(m_DefaultWindowRect);
-
-    //Load the value from settings, if none is available, default to above
-    UISettingsLoadDword(StackTrace_Top, (uint32_t &)Y);
-    UISettingsLoadDword(StackTrace_Left, (uint32_t &)X);
-
-    SetPos(X, Y);
-
     int32_t Width = UISettingsLoadDword(StackTrace_Width);
     int32_t Height = UISettingsLoadDword(StackTrace_Height);
 
@@ -80,6 +67,7 @@ LRESULT CDebugStackTrace::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 
 	m_List.SetExtendedListViewStyle(LVS_EX_FULLROWSELECT);
 
+	LoadWindowPos(StackTrace_Top, StackTrace_Left);
 	WindowCreated();
 	return TRUE;
 }

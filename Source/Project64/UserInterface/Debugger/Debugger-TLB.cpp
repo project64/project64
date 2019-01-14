@@ -23,19 +23,6 @@ CDebugTlb::~CDebugTlb()
 
 LRESULT	CDebugTlb::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-    CRect m_DefaultWindowRect;
-    GetWindowRect(&m_DefaultWindowRect);
-
-    //We find the middle position of the screen, we use this if theres no setting
-    int32_t X = GetX(m_DefaultWindowRect);
-    int32_t	Y = GetY(m_DefaultWindowRect);
-
-    //Load the value from settings, if none is available, default to above
-    UISettingsLoadDword(TLB_Top, (uint32_t &)Y);
-    UISettingsLoadDword(TLB_Left, (uint32_t &)X);
-
-    SetPos(X, Y);
-
     LV_COLUMN  col;
 
     col.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
@@ -89,12 +76,14 @@ LRESULT	CDebugTlb::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
     RefreshTLBWindow();
     SendMessage(GetDlgItem(IDC_TLB_ENTRIES), BM_SETCHECK, BST_CHECKED, 0);
 
-    //	if (Settings().Load(TLBWindowLeft) <= 0)
-    //	{
-    //		SetWindowPos(NULL,Settings().Load(TLBWindowLeft),Settings().Load(TLBWindowTop),0,0, SWP_NOZORDER | SWP_NOSIZE | SWP_SHOWWINDOW);
-    //	}
-    WindowCreated();
+ 	LoadWindowPos(TLB_Top, TLB_Left);
+	WindowCreated();
     return TRUE;
+}
+
+void CDebugTlb::OnExitSizeMove(void)
+{
+	SaveWindowPos(TLB_Top, TLB_Left);
 }
 
 LRESULT CDebugTlb::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& /*bHandled*/)

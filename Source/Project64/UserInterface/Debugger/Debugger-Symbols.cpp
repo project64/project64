@@ -26,19 +26,6 @@ LRESULT CDebugSymbols::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 {
     DlgResize_Init(false, true);
 
-    CRect m_DefaultWindowRect;
-    GetWindowRect(&m_DefaultWindowRect);
-
-    //We find the middle position of the screen, we use this if theres no setting
-    int32_t X = GetX(m_DefaultWindowRect);
-    int32_t	Y = GetY(m_DefaultWindowRect);
-
-    //Load the value from settings, if none is available, default to above
-    UISettingsLoadDword(Symbols_Top, (uint32_t &)Y);
-    UISettingsLoadDword(Symbols_Left, (uint32_t &)X);
-
-    SetPos(X, Y);
-
     int32_t Width = UISettingsLoadDword(Symbols_Width);
     int32_t Height = UISettingsLoadDword(Symbols_Height);
 
@@ -63,7 +50,8 @@ LRESULT CDebugSymbols::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 
     m_AutoRefreshThread = CreateThread(NULL, 0, AutoRefreshProc, (void*)this, 0, NULL);
 
-    WindowCreated();
+	LoadWindowPos(Symbols_Top, Symbols_Left);
+	WindowCreated();
     return 0;
 }
 
