@@ -70,6 +70,8 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="UserInterface\Debugger\CPULog.cpp" />
+    <ClCompile Include="UserInterface\Debugger\Debugger-CPULogView.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Multilanguage\LanguageSelector.cpp" />
     <ClCompile Include="Plugins\PluginList.cpp" />
@@ -130,6 +132,8 @@
     <ClCompile Include="UserInterface\WTLControls\PartialGroupBox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="UserInterface\Debugger\CPULog.h" />
+    <ClInclude Include="UserInterface\Debugger\Debugger-CPULogView.h" />
     <ClInclude Include="N64System\Debugger\OpInfo.h" />
     <ClInclude Include="Multilanguage\LanguageSelector.h" />
     <ClInclude Include="N64System.h" />

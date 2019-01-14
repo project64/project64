@@ -13,5 +13,6 @@
 #include "Debugger-AddBreakpoint.h"
 #include "Debugger-AddSymbol.h"
 #include "Debugger-DMALogView.h"
+#include "Debugger-CPULogView.h"
 #include "Debugger-StackView.h"
 #include "Debugger-StackTrace.h"

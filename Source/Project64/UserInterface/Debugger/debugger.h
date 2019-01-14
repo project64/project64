@@ -21,9 +21,11 @@ class CDebugCommandsView;
 class CDebugScripts;
 class CDebugSymbols;
 class CDebugDMALogView;
+class CDebugCPULogView;
 class CDebugStackView;
 class CDebugStackTrace;
 
+class CCPULog;
 class CDMALog;
 class CBreakpoints;
 class CScriptSystem;
@@ -57,6 +59,8 @@ public:
     void Debug_RefreshStackWindow(void);
     void Debug_RefreshStackTraceWindow(void);
     void OpenDMALogWindow(void);
+    void OpenCPULogWindow(void);
+    void Debug_RefreshCPULogWindow(void);
 
     bool ExecutionBP(uint32_t address);
     bool ReadBP8(uint32_t address);
@@ -74,6 +78,7 @@ public:
     CScriptSystem* ScriptSystem();
     CDebugScripts* ScriptConsole();
     CDMALog* DMALog();
+    CCPULog* CPULog();
 
     static void GameReset(CDebuggerUI * _this);
     static void SteppingOpsChanged(CDebuggerUI * _this);
@@ -88,8 +93,8 @@ protected:
     void FrameDrawn(void);
 
 private:
-    CDebuggerUI(const CDebuggerUI&);				// Disable copy constructor
-    CDebuggerUI& operator=(const CDebuggerUI&);		// Disable assignment
+    CDebuggerUI(const CDebuggerUI&);                // Disable copy constructor
+    CDebuggerUI& operator=(const CDebuggerUI&);        // Disable assignment
 
     CDumpMemory         * m_MemoryDump;
     CDebugMemoryView    * m_MemoryView;
@@ -99,13 +104,17 @@ private:
     CDebugScripts       * m_Scripts;
     CDebugSymbols       * m_Symbols;
     CDebugDMALogView    * m_DMALogView;
+    CDebugCPULogView    * m_CPULogView;
     CDebugStackTrace    * m_StackTrace;
     CDebugStackView     * m_StackView;
 
     CBreakpoints        * m_Breakpoints;
     CScriptSystem       * m_ScriptSystem;
     CDMALog             * m_DMALog;
+    CCPULog             * m_CPULog;
 
     SyncEvent m_StepEvent;
 
+    void HandleCPUException(void);
+    void HandleCartToRamDMA(void);
 };

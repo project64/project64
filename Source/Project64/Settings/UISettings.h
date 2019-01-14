@@ -68,6 +68,7 @@ enum UISettingID
     DebuggerUI_MemoryDumpPos,
     DebuggerUI_MemorySearchPos,
     DebuggerUI_DMALogPos,
+    DebuggerUI_CPULogPos,
     DebuggerUI_ScriptsPos,
     DebuggerUI_StackPos,
     DebuggerUI_StackTracePos,

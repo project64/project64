@@ -150,6 +150,12 @@ public:
         return (m_OpCode.op <= R4300i_LWU || (m_OpCode.op >= R4300i_LL && m_OpCode.op <= R4300i_LD));
     }
 
+    inline bool IsStoreCommand()
+    {
+        return (m_OpCode.op >= R4300i_SB && m_OpCode.op <= R4300i_SWR ||
+                m_OpCode.op >= R4300i_SC && m_OpCode.op <= R4300i_SD);
+    }
+
     bool IsStackShift()
     {
         return (m_OpCode.op == R4300i_ADDIU || m_OpCode.op == R4300i_ADDI) && m_OpCode.rt == 29;

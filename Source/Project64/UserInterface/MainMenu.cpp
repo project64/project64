@@ -52,9 +52,9 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     m_ChangeSettingList.push_back(Debugger_TraceUserInterface);
     m_ChangeSettingList.push_back(Debugger_AppLogFlush);
     m_ChangeSettingList.push_back(Game_CurrentSaveState);
-	m_ChangeSettingList.push_back(Setting_CurrentLanguage);
-	m_ChangeSettingList.push_back(Setting_Enhancement);
-	
+    m_ChangeSettingList.push_back(Setting_CurrentLanguage);
+    m_ChangeSettingList.push_back(Setting_Enhancement);
+
     for (UISettingList::const_iterator iter = m_ChangeUISettingList.begin(); iter != m_ChangeUISettingList.end(); iter++)
     {
         g_Settings->RegisterChangeCB((SettingID)(FirstUISettings + *iter), this, (CSettings::SettingChangedFunc)SettingsChanged);
@@ -513,6 +513,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUGGER_SCRIPTS: g_Debugger->OpenScriptsWindow(); break;
     case ID_DEBUGGER_SYMBOLS: g_Debugger->OpenSymbolsWindow(); break;
     case ID_DEBUGGER_DMALOG: g_Debugger->OpenDMALogWindow(); break;
+    case ID_DEBUGGER_CPULOG: g_Debugger->OpenCPULogWindow(); break;
     case ID_DEBUGGER_STACKTRACE: g_Debugger->OpenStackTraceWindow(); break;
     case ID_DEBUGGER_STACKVIEW: g_Debugger->OpenStackViewWindow(); break;
     case ID_CURRENT_SAVE_DEFAULT:
@@ -1146,6 +1147,12 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         /* Debug - DMA Log
         *******************/
         Item.Reset(ID_DEBUGGER_DMALOG, EMPTY_STRING, EMPTY_STDSTR, NULL, L"DMA Log...");
+        //Item.SetItemEnabled(CPURunning);
+        DebugMenu.push_back(Item);
+
+        /* Debug - CPU Log
+        *******************/
+        Item.Reset(ID_DEBUGGER_CPULOG, EMPTY_STRING, EMPTY_STDSTR, NULL, L"CPU Log...");
         //Item.SetItemEnabled(CPURunning);
         DebugMenu.push_back(Item);
 

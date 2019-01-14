@@ -71,6 +71,7 @@ void RegisterUISettings (void)
     g_Settings->AddHandler((SettingID)(FirstUISettings + DebuggerUI_MemoryDumpPos), new CSettingTypeApplication("Debugger UI", "Memory Dump Pos", Default_None));
     g_Settings->AddHandler((SettingID)(FirstUISettings + DebuggerUI_MemorySearchPos), new CSettingTypeApplication("Debugger UI", "Memory Search Pos", Default_None));
     g_Settings->AddHandler((SettingID)(FirstUISettings + DebuggerUI_DMALogPos), new CSettingTypeApplication("Debugger UI", "DMA Log Pos", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + DebuggerUI_CPULogPos), new CSettingTypeApplication("Debugger UI", "CPU Log Pos", Default_None));
     g_Settings->AddHandler((SettingID)(FirstUISettings + DebuggerUI_ScriptsPos), new CSettingTypeApplication("Debugger UI", "Scripts Pos", Default_None));
     g_Settings->AddHandler((SettingID)(FirstUISettings + DebuggerUI_StackPos), new CSettingTypeApplication("Debugger UI", "Stack Pos", Default_None));
     g_Settings->AddHandler((SettingID)(FirstUISettings + DebuggerUI_StackTracePos), new CSettingTypeApplication("Debugger UI", "Stack Trace Pos", Default_None));

@@ -253,6 +253,8 @@ enum SettingID
     Debugger_ReadBPExists,
     Debugger_WaitingForStep,
     Debugger_AutoRefreshMemoryView,
+    Debugger_CPULoggingEnabled,
+    Debugger_CPULogBufferSize,
 
     //Trace
     Debugger_TraceMD5,

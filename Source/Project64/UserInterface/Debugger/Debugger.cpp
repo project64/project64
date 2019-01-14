@@ -13,6 +13,7 @@
 #include "DebuggerUI.h"
 #include "ScriptHook.h"
 
+#include "CPULog.h"
 #include "DMALog.h"
 #include "Symbols.h"
 
@@ -31,7 +32,9 @@ CDebuggerUI::CDebuggerUI() :
     m_StackTrace(NULL),
     m_StackView(NULL),
     m_DMALogView(NULL),
+    m_CPULogView(NULL),
     m_DMALog(NULL),
+    m_CPULog(NULL),
     m_StepEvent(false)
 {
     g_Debugger = this;
@@ -40,6 +43,7 @@ CDebuggerUI::CDebuggerUI() :
     m_ScriptSystem = new CScriptSystem(this);
 
     m_DMALog = new CDMALog();
+    m_CPULog = new CCPULog();
 
     CSymbols::InitializeCriticalSection();
     g_Settings->RegisterChangeCB(GameRunning_InReset, this, (CSettings::SettingChangedFunc)GameReset);
@@ -60,7 +64,9 @@ CDebuggerUI::~CDebuggerUI(void)
     delete m_MemorySearch;
     delete m_StackTrace;
     delete m_DMALogView;
+    delete m_CPULogView;
     delete m_DMALog;
+    delete m_CPULog;
 
     CSymbols::DeleteCriticalSection();
 }
@@ -154,6 +160,12 @@ void CDebuggerUI::Debug_Reset(void)
         m_DMALogView->HideWindow();
         delete m_DMALogView;
         m_DMALogView = NULL;
+    }
+    if (m_CPULogView)
+    {
+        m_CPULogView->HideWindow();
+        delete m_CPULogView;
+        m_CPULogView = NULL;
     }
     if (m_StackTrace)
     {
@@ -323,6 +335,15 @@ void CDebuggerUI::OpenDMALogWindow(void)
     m_DMALogView->ShowWindow();
 }
 
+void CDebuggerUI::OpenCPULogWindow(void)
+{
+    if (m_CPULogView == NULL)
+    {
+        m_CPULogView = new CDebugCPULogView(this);
+    }
+    m_CPULogView->ShowWindow();
+}
+
 void CDebuggerUI::OpenStackTraceWindow(void)
 {
     if (m_StackTrace == NULL)
@@ -357,6 +378,14 @@ void CDebuggerUI::Debug_RefreshStackTraceWindow(void)
     }
 }
 
+void CDebuggerUI::Debug_RefreshCPULogWindow(void)
+{
+    if (m_CPULogView != NULL)
+    {
+        m_CPULogView->RefreshList();
+    }
+}
+
 CBreakpoints* CDebuggerUI::Breakpoints()
 {
     return m_Breakpoints;
@@ -375,6 +404,11 @@ CDebugScripts* CDebuggerUI::ScriptConsole()
 CDMALog* CDebuggerUI::DMALog()
 {
     return m_DMALog;
+}
+
+CCPULog* CDebuggerUI::CPULog()
+{
+    return m_CPULog;
 }
 
 // thread safe LW_PAddr
@@ -570,20 +604,69 @@ void CDebuggerUI::TLBChanged()
     Debug_RefreshTLBWindow();
 }
 
+// Exception handling - break on exception vector and show cpu log on certain errors
+void CDebuggerUI::HandleCPUException(void)
+{
+    uint32_t pc = g_Reg->m_PROGRAM_COUNTER;
+    int exc = g_Reg->CAUSE_REGISTER & 0x7C;
+
+    // ignore interrupt, syscall, coprocessor unusable, watch
+    if (exc != EXC_INT && exc != EXC_SYSCALL && exc != EXC_CPU && exc != EXC_WATCH)
+    {
+        if (CDebugSettings::bCPULoggingEnabled())
+        {
+            g_Debugger->OpenCPULogWindow();
+        }
+
+        g_Settings->SaveBool(Debugger_SteppingOps, true);
+    }
+}
+
+void CDebuggerUI::HandleCartToRamDMA(void)
+{
+    COpInfo opInfo(R4300iOp::m_Opcode);
+
+    uint32_t dmaRomAddr = g_Reg->PI_CART_ADDR_REG & 0x0FFFFFFF;
+    uint32_t dmaRamAddr = g_Reg->PI_DRAM_ADDR_REG | 0x80000000;
+    uint32_t dmaLen = opInfo.GetStoreValueUnsigned() + 1;
+
+    m_DMALog->AddEntry(dmaRomAddr, dmaRamAddr, dmaLen);
+
+    // break if write breakpoint exists anywhere in target buffer
+    if (m_Breakpoints->WriteBPExistsInChunk(dmaRamAddr, dmaLen))
+    {
+        g_Settings->SaveBool(Debugger_SteppingOps, true);
+    }
+}
+
 // Called from the interpreter core at the beginning of every CPU step
 void CDebuggerUI::CPUStepStarted()
 {
-    uint32_t PROGRAM_COUNTER = g_Reg->m_PROGRAM_COUNTER;
-    uint32_t JumpToLocation = R4300iOp::m_JumpToLocation;
-
-    m_ScriptSystem->HookCPUExec()->InvokeByAddressInRange(PROGRAM_COUNTER);
-    m_ScriptSystem->HookCPUExecOpcode()->InvokeByAddressInRange_MaskedOpcode(PROGRAM_COUNTER, R4300iOp::m_Opcode.Hex);
-	m_ScriptSystem->HookCPUGPRValue()->InvokeByAddressInRange_GPRValue(PROGRAM_COUNTER);
-
-    // Memory breakpoints
-
+    uint32_t pc = g_Reg->m_PROGRAM_COUNTER;
     COpInfo opInfo(R4300iOp::m_Opcode);
 
+    if (opInfo.IsStoreCommand())
+    {
+        uint32_t memoryAddress = opInfo.GetLoadStoreAddress();
+
+        if (m_Breakpoints->MemLockExists(memoryAddress, opInfo.NumBytesToStore()))
+        {
+            // Memory is locked, skip op
+            g_Settings->SaveBool(Debugger_SkipOp, true);
+            return;
+        }
+    }
+
+    m_ScriptSystem->HookCPUExec()->InvokeByAddressInRange(pc);
+    if (SkipOp()) { return; }
+
+    m_ScriptSystem->HookCPUExecOpcode()->InvokeByAddressInRange_MaskedOpcode(pc, R4300iOp::m_Opcode.Hex);
+    if (SkipOp()) { return; }
+
+    m_ScriptSystem->HookCPUGPRValue()->InvokeByAddressInRange_GPRValue(pc);
+    if (SkipOp()) { return; }
+    
+    // Memory events, pi cart -> ram dma
     if (opInfo.IsLoadStoreCommand()) // Read and write instructions
     {
         uint32_t memoryAddress = opInfo.GetLoadStoreAddress();
@@ -591,53 +674,35 @@ void CDebuggerUI::CPUStepStarted()
         if (opInfo.IsLoadCommand()) // Read instructions
         {
             m_ScriptSystem->HookCPURead()->InvokeByAddressInRange(memoryAddress);
+            if (SkipOp()) { return; }
         }
         else // Write instructions
         {
             m_ScriptSystem->HookCPUWrite()->InvokeByAddressInRange(memoryAddress);
+            if (SkipOp()) { return; }
 
-            // Catch cart -> rdram dma
             if (memoryAddress == 0xA460000C) // PI_WR_LEN_REG
             {
-                uint32_t dmaRomAddr = g_Reg->PI_CART_ADDR_REG & 0x0FFFFFFF;
-                uint32_t dmaRamAddr = g_Reg->PI_DRAM_ADDR_REG | 0x80000000;
-                uint32_t dmaLen = opInfo.GetStoreValueUnsigned() + 1;
-                
-                m_DMALog->AddEntry(dmaRomAddr, dmaRamAddr, dmaLen);
-
-                if (m_Breakpoints->WriteBPExistsInChunk(dmaRamAddr, dmaLen))
-                {
-                    goto breakpoint_hit;
-                }
-            }
-
-            if (m_Breakpoints->MemLockExists(memoryAddress, opInfo.NumBytesToStore()))
-            {
-                g_Settings->SaveBool(Debugger_SkipOp, true);
+                HandleCartToRamDMA();
             }
         }
     }
 
-    if (!isStepping())
+    if (pc == 0x80000000 || pc == 0x80000080 ||
+        pc == 0xA0000100 || pc == 0x80000180)
     {
-        return;
+        HandleCPUException();
     }
 
-    if (R4300iOp::m_NextInstruction != JUMP)
+    if (bCPULoggingEnabled())
     {
-        goto breakpoint_hit;
+        m_CPULog->PushState();
+
+        if (isStepping())
+        {
+            Debug_RefreshCPULogWindow();
+        }
     }
-
-    if (JumpToLocation == PROGRAM_COUNTER + 4)
-    {
-        // Only pause on delay slots when branch isn't taken
-        goto breakpoint_hit;
-    }
-
-    return;
-
-breakpoint_hit:
-    g_Settings->SaveBool(Debugger_SteppingOps, true);
 }
 
 void CDebuggerUI::CPUStep()
