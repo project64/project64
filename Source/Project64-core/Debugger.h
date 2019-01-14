@@ -20,10 +20,11 @@ __interface CDebugger
     virtual void OpenScriptsWindow(void) = 0;
     virtual void OpenSymbolsWindow(void) = 0;
     virtual void OpenDMALogWindow(void) = 0;
+    virtual void OpenCPULogWindow(void) = 0;
     virtual void OpenStackTraceWindow(void) = 0;
     virtual void OpenStackViewWindow(void) = 0;
     virtual void TLBChanged(void) = 0;
-	virtual void FrameDrawn(void) = 0;
+    virtual void FrameDrawn(void) = 0;
     virtual void WaitForStep(void) = 0;
     virtual bool ExecutionBP(uint32_t address) = 0;
     virtual bool ReadBP8(uint32_t address) = 0;

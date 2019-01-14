@@ -31,6 +31,7 @@ public:
     static inline bool HaveWriteBP(void) { return m_HaveWriteBP; }
     static inline bool HaveReadBP(void) { return m_HaveReadBP; }
     static inline bool bShowPifRamErrors(void) { return m_bShowPifRamErrors; }
+    static inline bool bCPULoggingEnabled(void) { return m_bCPULoggingEnabled;  }
     
 private:
     static void StaticRefreshSettings(CDebugSettings * _this)
@@ -53,6 +54,7 @@ private:
     static bool m_HaveWriteBP;
     static bool m_HaveReadBP;
     static bool m_bShowPifRamErrors;
+    static bool m_bCPULoggingEnabled;
     
     static int32_t m_RefCount;
     static bool m_Registered;

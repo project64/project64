@@ -80,7 +80,8 @@
 #define IDD_Settings_Defaults           201
 #define IDD_Enhancement_Config          202
 #define IDD_Enhancement_Edit            203
-#define VERSION_BUILD                   771
+#define IDD_Debugger_CPULog             204
+#define VERSION_BUILD                   781
 #define IDC_MENU_ITEM_TEXT              1000
 #define IDC_CLOSE_BUTTON                1001
 #define IDC_LIST2                       1003
@@ -526,8 +527,8 @@
 #define IDC_SP_STATIC                   1358
 #define IDC_MEM_BTN                     1359
 #define IDC_CAUSE_TIP                   1361
-#define IDC_EDIT1                       1362
 #define IDC_FCSR_EDIT                   1362
+#define IDC_STATEINFO_EDIT              1362
 #define IDC_SP00_EDIT                   1363
 #define IDC_SP04_EDIT                   1364
 #define IDC_SP08_EDIT                   1365
@@ -617,6 +618,11 @@
 #define IDC_OVERCLOCK                   1451
 #define IDC_AUTOON                      1452
 #define IDC_ENHANCEMENTNOTES            1453
+#define IDC_CPU_LIST                    1454
+#define IDC_CHK_ENABLE                  1455
+#define IDC_BUFFSIZE_EDIT               1457
+#define IDC_REGSTATES_GRP               1458
+#define IDC_BTN_EXPORT                  1461
 #define ID_POPUP_SHOWINMEMORYVIEWER     40005
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ADDSYMBOL          40013
@@ -654,9 +660,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        200
+#define _APS_NEXT_RESOURCE_VALUE        206
 #define _APS_NEXT_COMMAND_VALUE         40043
-#define _APS_NEXT_CONTROL_VALUE         1454
+#define _APS_NEXT_CONTROL_VALUE         1462
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

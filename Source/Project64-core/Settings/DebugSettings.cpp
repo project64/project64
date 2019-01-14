@@ -28,6 +28,7 @@ bool CDebugSettings::m_HaveExecutionBP = false;
 bool CDebugSettings::m_HaveWriteBP = false;
 bool CDebugSettings::m_HaveReadBP = false;
 bool CDebugSettings::m_bShowPifRamErrors = false;
+bool CDebugSettings::m_bCPULoggingEnabled = false;
 
 CDebugSettings::CDebugSettings()
 {
@@ -47,6 +48,7 @@ CDebugSettings::CDebugSettings()
         g_Settings->RegisterChangeCB(Debugger_ReadBPExists, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_WaitingForStep, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_ShowPifErrors, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->RegisterChangeCB(Debugger_CPULoggingEnabled, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
 
         RefreshSettings();
     }
@@ -68,6 +70,7 @@ CDebugSettings::~CDebugSettings()
         g_Settings->UnregisterChangeCB(Debugger_WriteBPExists, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_WaitingForStep, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_ShowPifErrors, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->UnregisterChangeCB(Debugger_CPULoggingEnabled, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
     }
 }
 
@@ -85,6 +88,7 @@ void CDebugSettings::RefreshSettings()
     m_HaveWriteBP = m_HaveDebugger && g_Settings->LoadBool(Debugger_WriteBPExists);
     m_HaveReadBP = m_HaveDebugger && g_Settings->LoadBool(Debugger_ReadBPExists);
     m_bShowPifRamErrors = m_HaveDebugger && g_Settings->LoadBool(Debugger_ShowPifErrors);
+    m_bCPULoggingEnabled = m_HaveDebugger && g_Settings->LoadBool(Debugger_CPULoggingEnabled);
 
     m_Debugging = m_HaveDebugger && (m_HaveExecutionBP || m_WaitingForStep || m_HaveWriteBP || m_HaveReadBP);
 }
