@@ -66,6 +66,11 @@ LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     return 0;
 }
 
+void CDebugScripts::OnExitSizeMove(void)
+{
+    SaveWindowPos(Scripts_Top, Scripts_Left);
+}
+
 void CDebugScripts::ConsolePrint(const char* text)
 {
     ::ShowWindow(*this, SW_SHOWNOACTIVATE);
