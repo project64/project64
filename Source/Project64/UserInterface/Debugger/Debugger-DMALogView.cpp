@@ -145,11 +145,7 @@ LRESULT CDebugDMALogView::OnActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	DlgResize_Init(false, true);
-
-    int32_t Width = UISettingsLoadDword(DMALogView_Width);
-    int32_t Height = UISettingsLoadDword(DMALogView_Height);
-
-    SetSize(Width, Height);
+    DlgSavePos_Init(DebuggerUI_DMALogPos);
 
 	m_bConvertingAddress = false;
 	m_nLastStartIndex = 0;
@@ -183,7 +179,7 @@ LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 
 	RefreshList();
 
-	LoadWindowPos(DMALogView_Top, DMALogView_Left);
+	LoadWindowPos();
 	WindowCreated();
 
 	m_AutoRefreshThread = CreateThread(NULL, 0, AutoRefreshProc, (void*)this, 0, NULL);
@@ -193,7 +189,7 @@ LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 
 void CDebugDMALogView::OnExitSizeMove(void)
 {
-    SaveWindowPos(DMALogView_Top, DMALogView_Left);
+    SaveWindowPos();
 }
 
 LRESULT CDebugDMALogView::OnDestroy(void)

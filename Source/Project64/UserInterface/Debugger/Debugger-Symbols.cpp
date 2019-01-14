@@ -25,11 +25,7 @@ CDebugSymbols::CDebugSymbols(CDebuggerUI * debugger) :
 LRESULT CDebugSymbols::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
     DlgResize_Init(false, true);
-
-    int32_t Width = UISettingsLoadDword(Symbols_Width);
-    int32_t Height = UISettingsLoadDword(Symbols_Height);
-
-    SetSize(Width, Height);
+    DlgSavePos_Init(DebuggerUI_SymbolsPos);
 
     m_SymbolsListView.Attach(GetDlgItem(IDC_SYMBOLS_LIST));
     m_SymbolsListView.SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
@@ -50,14 +46,14 @@ LRESULT CDebugSymbols::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 
     m_AutoRefreshThread = CreateThread(NULL, 0, AutoRefreshProc, (void*)this, 0, NULL);
 
-	LoadWindowPos(Symbols_Top, Symbols_Left);
+	LoadWindowPos();
 	WindowCreated();
     return 0;
 }
 
 void CDebugSymbols::OnExitSizeMove(void)
 {
-    SaveWindowPos(Symbols_Top, Symbols_Left);
+    SaveWindowPos();
 }
 
 LRESULT CDebugSymbols::OnDestroy(void)

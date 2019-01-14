@@ -23,6 +23,8 @@ CDebugTlb::~CDebugTlb()
 
 LRESULT	CDebugTlb::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
+    DlgSavePos_Init(DebuggerUI_TLBPos);
+
     LV_COLUMN  col;
 
     col.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
@@ -76,14 +78,14 @@ LRESULT	CDebugTlb::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
     RefreshTLBWindow();
     SendMessage(GetDlgItem(IDC_TLB_ENTRIES), BM_SETCHECK, BST_CHECKED, 0);
 
- 	LoadWindowPos(TLB_Top, TLB_Left);
+ 	LoadWindowPos();
 	WindowCreated();
     return TRUE;
 }
 
 void CDebugTlb::OnExitSizeMove(void)
 {
-	SaveWindowPos(TLB_Top, TLB_Left);
+	SaveWindowPos();
 }
 
 LRESULT CDebugTlb::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& /*bHandled*/)

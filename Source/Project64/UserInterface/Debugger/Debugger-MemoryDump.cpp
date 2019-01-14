@@ -25,6 +25,8 @@ CDumpMemory::~CDumpMemory()
 
 LRESULT	CDumpMemory::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
+    DlgSavePos_Init(DebuggerUI_MemoryDumpPos);
+
     m_StartAddress.Attach(GetDlgItem(IDC_E_START_ADDR));
     m_EndAddress.Attach(GetDlgItem(IDC_E_END_ADDR));
     m_PC.Attach(GetDlgItem(IDC_E_ALT_PC));
@@ -50,8 +52,14 @@ LRESULT	CDumpMemory::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPa
 
 	m_FormatList.SetCurSel(0);
 
+    LoadWindowPos();
     WindowCreated();
     return TRUE;
+}
+
+void CDumpMemory::OnExitSizeMove(void)
+{
+    SaveWindowPos();
 }
 
 LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)

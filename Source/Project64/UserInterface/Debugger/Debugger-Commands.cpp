@@ -85,37 +85,8 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     m_OpEdit.Attach(GetDlgItem(IDC_OP_EDIT));
 
     DlgResize_Init(false, true);
+    DlgSavePos_Init(DebuggerUI_CommandsPos);
     DlgToolTip_Init();
-
-    int32_t Width = UISettingsLoadDword(Commands_Width);
-    int32_t Height = UISettingsLoadDword(Commands_Height);
-
-    SetSize(Width, Height);
-
-
-    //Fix sizing (duplicate code of CDebugCommandsView:OnSizing) -- FIXME
-    CRect listRect;
-    m_CommandList.GetWindowRect(listRect);
-
-    CRect headRect;
-    CHeaderCtrl listHead = m_CommandList.GetHeader();
-    listHead.GetWindowRect(&headRect);
-
-    int rowsHeight = listRect.Height() - headRect.Height();
-
-    int nRows = (rowsHeight / m_RowHeight);
-
-    if (m_CommandListRows != nRows)
-    {
-        m_CommandListRows = nRows;
-        ShowAddress(m_StartAddress, TRUE);
-    }
-
-    m_RegisterTabs.RedrawCurrentTab();
-
-    // Fix cmd list header
-    listHead.ResizeClient(listRect.Width(), headRect.Height());
-
 
     // Setup address input
     m_AddressEdit.SetDisplayType(CEditNumber32::DisplayHex);
@@ -168,7 +139,8 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     DWORD dwThreadID = ::GetCurrentThreadId();
     hWinMessageHook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)HookProc, NULL, dwThreadID);
 
-	LoadWindowPos(Commands_Top, Commands_Left);
+    LoadWindowPos();
+    RedrawCommandsAndRegisters();
 	WindowCreated();
     m_Attached = true;
     return TRUE;
@@ -176,7 +148,7 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
 
 void CDebugCommandsView::OnExitSizeMove(void)
 {
-	SaveWindowPos(Commands_Top, Commands_Left);
+	SaveWindowPos();
 }
 
 LRESULT CDebugCommandsView::OnDestroy(void)
@@ -1495,7 +1467,7 @@ LRESULT CDebugCommandsView::OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, 
     return FALSE;
 }
 
-LRESULT CDebugCommandsView::OnSizing(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+void CDebugCommandsView::RedrawCommandsAndRegisters()
 {
     CRect listRect;
     m_CommandList.GetWindowRect(listRect);
@@ -1518,7 +1490,11 @@ LRESULT CDebugCommandsView::OnSizing(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 
     // Fix cmd list header
     listHead.ResizeClient(listRect.Width(), headRect.Height());
+}
 
+LRESULT CDebugCommandsView::OnSizing(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+    RedrawCommandsAndRegisters();
     return FALSE;
 }
 

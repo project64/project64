@@ -25,11 +25,7 @@ CDebugStackView::~CDebugStackView(void)
 LRESULT CDebugStackView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
     DlgResize_Init(false, true);
-
-    int32_t Width = UISettingsLoadDword(StackView_Width);
-    int32_t Height = UISettingsLoadDword(StackView_Height);
-
-    SetSize(Width, Height);
+    DlgSavePos_Init(DebuggerUI_StackPos);
 
     m_StackList.Attach(GetDlgItem(IDC_STACK_LIST));
     m_StackList.SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
@@ -47,7 +43,7 @@ LRESULT CDebugStackView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /
 
     m_SPStatic.Attach(GetDlgItem(IDC_SP_STATIC));
 
-	LoadWindowPos(StackView_Top, StackView_Left);
+	LoadWindowPos();
 	WindowCreated();
 
     return 0;
@@ -55,7 +51,7 @@ LRESULT CDebugStackView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /
 
 void CDebugStackView::OnExitSizeMove(void)
 {
-    SaveWindowPos(StackView_Top, StackView_Left);
+    SaveWindowPos();
 }
 
 LRESULT CDebugStackView::OnDestroy(void)

@@ -9,6 +9,8 @@ protected:
     CDebuggerUI * m_Debugger;
     HANDLE        m_CreatedEvent;
     HANDLE        m_DialogThread;
+    UISettingID   m_UISettingID;
+    bool          m_bInitialized;
 
     static DWORD CreateDebuggerWindow(CDebugDialog<T> * pThis)
     {
@@ -22,30 +24,41 @@ protected:
         SetEvent(m_CreatedEvent);
     }
 
-	void LoadWindowPos(UISettingID TopSetting, UISettingID LeftSetting)
+    void DlgSavePos_Init(UISettingID uiSettingID)
+    {
+        m_UISettingID = uiSettingID;
+        m_bInitialized = true;
+    }
+
+	void LoadWindowPos()
 	{
-		CRect m_DefaultWindowRect;
-		GetWindowRect(&m_DefaultWindowRect);
 
-		//We find the middle position of the screen, we use this if theres no setting
-		uint32_t X = GetX(m_DefaultWindowRect);
-		uint32_t Y = GetY(m_DefaultWindowRect);
+        if (!m_bInitialized)
+        {
+            return;
+        }
 
-		//Load the value from settings, if none is available, default to above
-		UISettingsLoadDword(TopSetting, Y);
-		UISettingsLoadDword(LeftSetting, X);
-
-		SetPos(X, Y);
+        T* pT = static_cast<T*>(this);
+        std::string str = UISettingsLoadStringVal(m_UISettingID);
+        int left, top, width, height;
+        int nParams = sscanf(str.c_str(), "%d,%d,%d,%d", &left, &top, &width, &height);
+        if (nParams == 4)
+        {
+            pT->SetWindowPos(NULL, left, top, width, height, 0);
+            pT->RedrawWindow();
+        }
 	}
 
-	void SaveWindowPos(UISettingID TopSetting, UISettingID LeftSetting)
+	void SaveWindowPos()
 	{
-		RECT WinRect;
-		GetWindowRect(&WinRect);
-
-		//Load the value from settings, if none is available, default to above
-		UISettingsSaveDword(TopSetting, WinRect.top);
-		UISettingsSaveDword(LeftSetting, WinRect.left);
+        if (!m_bInitialized)
+        {
+            return;
+        }
+        T* pT = static_cast<T*>(this);
+        CRect rect;
+        pT->GetWindowRect(&rect);
+        UISettingsSaveString(m_UISettingID, stdstr_f("%d,%d,%d,%d", rect.left, rect.top, rect.Width(), rect.Height()).c_str());
 	}
 
 public:
@@ -63,100 +76,6 @@ public:
         {
             CloseHandle(m_DialogThread);
             m_DialogThread = NULL;
-        }
-    }
-
-    enum { Timer_SetWindowPos = 1 };
-
-    //Get Information about the window
-    int GetHeight(void) {
-        if (!m_hWnd) { return 0; }
-
-        RECT rect;
-        GetWindowRect(m_hWnd, &rect);
-        return rect.bottom - rect.top;
-    }
-
-    int GetWidth(void) {
-        if (!m_hWnd) { return 0; }
-
-        RECT rect;
-        GetWindowRect(m_hWnd, &rect);
-        return rect.right - rect.left;
-    }
-
-    int GetX(CRect WinRect) {
-        return (GetSystemMetrics(SM_CXSCREEN) - (WinRect.right - WinRect.left)) / 2;
-    }
-
-    int GetY(CRect WinRect) {
-        return (GetSystemMetrics(SM_CYSCREEN) - (WinRect.bottom - WinRect.top)) / 2;
-    }
-
-    //Manipulate the state of the window
-    void SetPos(int X, int Y) { //Move the window to this screen location
-        ::SetWindowPos(m_hWnd, NULL, X, Y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-    }
-
-    void SaveWindowLoc(UISettingID SettingID_Top, UISettingID SettingID_Left) {
-        RECT WinRect;
-        ::GetWindowRect(m_hWnd, &WinRect);
-
-        //save the location of the window
-        if (m_hWnd)
-        {
-            m_SaveWnd = true;
-            m_SaveWndTop = WinRect.top;
-            m_SaveWndLeft = WinRect.left;
-        }
-
-        ::KillTimer(m_hWnd, Timer_SetWindowPos);
-        ::SetTimer(m_hWnd, Timer_SetWindowPos, 1000, NULL);
-
-        bool flush = false;
-        if (m_SaveWnd)
-        {
-            m_SaveWnd = false;
-            UISettingsSaveDword(SettingID_Top, m_SaveWndTop);
-            UISettingsSaveDword(SettingID_Left, m_SaveWndLeft);
-            flush = true;
-        }
-
-        if (flush)
-        {
-            CSettingTypeApplication::Flush();
-        }
-    }
-
-    void SetSize(int Width, int Height) { //Set window Height and Width
-        RECT rcClient;
-        rcClient.top = 0;
-        rcClient.bottom = Height;
-        rcClient.left = 0;
-        rcClient.right = Width;
-        ::AdjustWindowRect(&rcClient, ::GetWindowLong(m_hWnd, GWL_STYLE), true);
-
-        int32_t WindowHeight = rcClient.bottom - rcClient.top;
-        int32_t WindowWidth = rcClient.right - rcClient.left;
-
-        ::SetWindowPos(m_hWnd, NULL, 0, 0, WindowWidth, WindowHeight, SWP_NOMOVE | SWP_NOZORDER);
-    }
-
-    void SaveSize(UISettingID SettingID_X, UISettingID SettingID_Y) {
-        //Get the current window size
-        RECT rect;
-        GetWindowRect(m_hWnd, &rect);
-
-        int32_t WindowHeight = rect.bottom - rect.top;
-        int32_t WindowWidth = rect.right - rect.left;
-
-        if (UISettingsLoadDword(SettingID_X) != WindowWidth)
-        {
-            UISettingsSaveDword(SettingID_X, WindowWidth);
-        }
-        if (UISettingsLoadDword(SettingID_Y) != WindowHeight)
-        {
-            UISettingsSaveDword(SettingID_Y, WindowHeight);
         }
     }
 

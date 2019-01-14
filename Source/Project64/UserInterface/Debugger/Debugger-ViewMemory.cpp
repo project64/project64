@@ -38,6 +38,8 @@ CDebugMemoryView::~CDebugMemoryView()
 
 LRESULT CDebugMemoryView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
+    DlgSavePos_Init(DebuggerUI_MemoryPos);
+
     m_SymbolColorStride = 0;
     m_SymbolColorPhase = 0;
     m_DataStartLoc = (DWORD)-1;
@@ -127,7 +129,7 @@ LRESULT CDebugMemoryView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
     DWORD dwThreadID = ::GetCurrentThreadId();
     hWinMessageHook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)HookProc, NULL, dwThreadID);
 
-	LoadWindowPos(ViewMemory_Top, ViewMemory_Left);
+	LoadWindowPos();
 	WindowCreated();
 
     m_AutoRefreshThread = CreateThread(NULL, 0, AutoRefreshProc, (void*)this, 0, NULL);
@@ -150,7 +152,7 @@ DWORD WINAPI CDebugMemoryView::AutoRefreshProc(void* _self)
 
 void CDebugMemoryView::OnExitSizeMove()
 {
-	SaveWindowPos(ViewMemory_Top, ViewMemory_Left);
+	SaveWindowPos();
 }
 
 void CDebugMemoryView::InterceptMouseWheel(WPARAM wParam, LPARAM /*lParam*/)
