@@ -766,7 +766,11 @@ EXPORT void EnableDebugging(Boolean Enabled)
 EXPORT void PluginLoaded(void)
 {
 	BreakOnStart   = false;
+#ifndef _M_X64
 	CPUCore        = RecompilerCPU;
+#else
+	CPUCore        = InterpreterCPU;
+#endif
 	LogRDP         = FALSE;
 	LogX86Code     = FALSE;
 	Profiling      = FALSE;
