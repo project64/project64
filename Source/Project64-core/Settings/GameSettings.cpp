@@ -80,6 +80,9 @@ void CGameSettings::RefreshGameSettings()
 	{
 		for (int i = 0; i < CCheats::MaxCheats; i++)
 		{
+			std::string Name = g_Settings->LoadStringIndex(Enhancement_Name, i);
+			if (Name.length() == 0) { break; }
+
 			if (g_Settings->LoadBoolIndex(Enhancement_Active, i) && g_Settings->LoadBoolIndex(Enhancement_Overclock, i))
 			{
 				m_OverClockModifier = g_Settings->LoadDwordIndex(Enhancement_OverclockValue, i);
