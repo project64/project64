@@ -206,6 +206,7 @@ private:
     LRESULT OnRegisterTabChange(NMHDR* pNMHDR);
     LRESULT OnCustomDrawList(NMHDR* pNMHDR);
     LRESULT OnDestroy(void);
+    void OnExitSizeMove(void);
 
     void ClearEditedOps();
     void EditOp(uint32_t address, uint32_t op);
