@@ -191,6 +191,11 @@ LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	return TRUE;
 }
 
+void CDebugDMALogView::OnExitSizeMove(void)
+{
+    SaveWindowPos(DMALogView_Top, DMALogView_Left);
+}
+
 LRESULT CDebugDMALogView::OnDestroy(void)
 {
 	if (m_AutoRefreshThread != NULL)
