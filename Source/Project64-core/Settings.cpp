@@ -118,10 +118,14 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Setting_AutoZipInstantSave, new CSettingTypeApplication("Settings", "Auto Zip Saves", (uint32_t)true));
     AddHandler(Setting_EraseGameDefaults, new CSettingTypeApplication("Settings", "Erase on default", (uint32_t)true));
     AddHandler(Setting_CheckEmuRunning, new CSettingTypeApplication("Settings", "Check Running", (uint32_t)true));
+#ifndef _M_X64
     AddHandler(Setting_ForceInterpreterCPU, new CSettingTypeApplication("Settings", "Force Interpreter CPU", false));
+#else
+    AddHandler(Setting_ForceInterpreterCPU, new CSettingTypeApplication("Settings", "Force Interpreter CPU", true));
+#endif
     AddHandler(Setting_FixedRdramAddress, new CSettingTypeApplication("Settings", "Fixed Rdram Address", (uint32_t)0));
-	AddHandler(Setting_Enhancement, new CSettingTypeApplication("Settings", "Enable Enhancement", (uint32_t)false));
-	
+    AddHandler(Setting_Enhancement, new CSettingTypeApplication("Settings", "Enable Enhancement", (uint32_t)false));
+    
 	AddHandler(Setting_RememberCheats, new CSettingTypeApplication("Settings", "Remember Cheats", (uint32_t)false));
 #ifdef ANDROID
     AddHandler(Setting_UniqueSaveDir, new CSettingTypeTempBool(true));
@@ -150,11 +154,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 #ifdef _DEBUG
     AddHandler(Rdb_CpuType, new CSettingTypeRDBCpuType("CPU Type", CPU_SyncCores));
 #else
-#ifndef _M_X64
     AddHandler(Rdb_CpuType, new CSettingTypeRDBCpuType("CPU Type", CPU_Recompiler));
-#else
-	AddHandler(Rdb_CpuType, new CSettingTypeRDBCpuType("CPU Type", CPU_Interpreter));
-#endif
 #endif
     AddHandler(Rdb_RDRamSize, new CSettingTypeRDBRDRamSize("RDRAM Size", Default_RDRamSize));
     AddHandler(Rdb_CounterFactor, new CSettingTypeRomDatabase("Counter Factor", Default_CounterFactor));
