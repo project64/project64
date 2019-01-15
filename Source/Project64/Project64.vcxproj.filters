@@ -487,7 +487,4 @@
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
-  <ItemGroup>
-    <Manifest Include="Project64.exe.manifest" />
-  </ItemGroup>
 </Project>

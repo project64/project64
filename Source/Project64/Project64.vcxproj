@@ -32,7 +32,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <PropertyGroup>
-    <GenerateManifest>false</GenerateManifest>
+    <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
@@ -242,9 +242,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UserInterface\UIResources.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Manifest Include="Project64.exe.manifest" />
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
