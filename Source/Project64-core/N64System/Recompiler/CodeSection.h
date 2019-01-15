@@ -11,6 +11,7 @@
 #pragma once
 #include "JumpInfo.h"
 #include <Project64-core/N64System/Recompiler/RecompilerOps.h>
+#include <Project64-core/Settings/DebugSettings.h>
 
 class CCodeBlock;
 
