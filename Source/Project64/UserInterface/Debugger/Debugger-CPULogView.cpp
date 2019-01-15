@@ -218,10 +218,9 @@ void CDebugCPULogView::InterceptMouseWheel(WPARAM wParam, LPARAM lParam)
 
     if (MouseHovering(IDC_CPU_LIST) || MouseHovering(IDC_SCRL_BAR))
     {
-        // scroll results list
         int scrollPos = m_Scrollbar.GetScrollPos();
-        int m_ListStartIndex = scrollPos + nScroll;
-        m_Scrollbar.SetScrollPos(m_ListStartIndex);
+        m_LogStartIndex = scrollPos + nScroll;
+        m_Scrollbar.SetScrollPos(m_LogStartIndex);
         RefreshList(false);
     }
 }
