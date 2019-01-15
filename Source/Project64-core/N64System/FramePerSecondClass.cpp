@@ -61,9 +61,11 @@ void CFramePerSecond::Reset(bool ClearDisplay)
 
 void CFramePerSecond::UpdateViCounter(void)
 {
-    if (m_iFrameRateType != FR_VIs &&
-        m_iFrameRateType != FR_VIs_DLs &&
-        m_iFrameRateType != FR_PERCENT)
+    if (!bDisplayFrameRate())
+    {
+        return;
+    }
+    if (m_iFrameRateType != FR_VIs && m_iFrameRateType != FR_VIs_DLs && m_iFrameRateType != FR_PERCENT)
     {
         return;
     }
@@ -149,6 +151,10 @@ void CFramePerSecond::ScreenHertzChanged(CFramePerSecond * _this)
 
 void CFramePerSecond::UpdateDlCounter(void)
 {
+    if (!bDisplayFrameRate())
+    {
+        return;
+    }
     if (m_iFrameRateType != FR_DLs && m_iFrameRateType != FR_VIs_DLs)
     {
         return;

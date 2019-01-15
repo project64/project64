@@ -10,8 +10,9 @@
 ****************************************************************************/
 #pragma once
 #include <Common/HighResTimeStamp.h>
+#include "../Settings/N64SystemSettings.h"
 
-class CFramePerSecond
+class CFramePerSecond : public CN64SystemSettings
 {
 public:
     CFramePerSecond(void);
