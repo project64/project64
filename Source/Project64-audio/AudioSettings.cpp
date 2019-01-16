@@ -163,7 +163,7 @@ void CSettings::ReadSettings(void)
     m_FPSBuffer = GetSetting(Set_FPSBuffer) != 0;
     m_FullSpeed = m_Set_FullSpeed ? GetSystemSetting(m_Set_FullSpeed) != 0 : false;
 
-    m_SyncAudio = ((!m_advanced_options || bLimitFPS) && SyncAudio && m_FullSpeed);
+    m_SyncAudio = ((!m_advanced_options || bLimitFPS);
 
     if (m_Set_log_dir != 0)
     {
