@@ -81,7 +81,7 @@ public:
     CDebugCommandsView(CDebuggerUI * debugger, SyncEvent &StepEvent);
     virtual ~CDebugCommandsView(void);
 
-    void ShowAddress(uint32_t address, bool top);
+    void ShowAddress(uint32_t address, bool top, bool bUserInput = false);
     void ShowPIRegTab();
 
     void Reset();
@@ -217,7 +217,6 @@ private:
     void BeginOpEdit(uint32_t address);
     void EndOpEdit();
 
-    void GotoEnteredAddress();
     void RefreshBreakpointList();
     void RemoveSelectedBreakpoints();
 
