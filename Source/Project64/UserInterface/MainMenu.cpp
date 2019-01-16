@@ -449,8 +449,8 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         g_Settings->SaveBool(Debugger_ShowPifErrors, !g_Settings->LoadBool(Debugger_ShowPifErrors));
         break;
     case ID_DEBUG_SHOW_DLIST_COUNT:
-        g_Notify->DisplayMessage(0, "");
         g_Settings->SaveBool(Debugger_ShowDListAListCount, !g_Settings->LoadBool(Debugger_ShowDListAListCount));
+        g_Notify->DisplayMessage(0, "");
         break;
     case ID_DEBUG_LANGUAGE:
         g_Settings->SaveBool(Debugger_DebugLanguage, !g_Settings->LoadBool(Debugger_DebugLanguage));
@@ -458,8 +458,8 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         m_Gui->ResetRomBrowserColomuns();
         break;
     case ID_DEBUG_SHOW_RECOMP_MEM_SIZE:
-        g_Notify->DisplayMessage(0, "");
         g_Settings->SaveBool(Debugger_ShowRecompMemSize, !g_Settings->LoadBool(Debugger_ShowRecompMemSize));
+        g_Notify->DisplayMessage(0, "");
         break;
     case ID_DEBUG_SHOW_DIV_BY_ZERO:
         g_Settings->SaveBool(Debugger_ShowDivByZero, !g_Settings->LoadBool(Debugger_ShowDivByZero));

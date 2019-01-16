@@ -98,6 +98,9 @@ void Create_RSP_Commands_Window ( int Child )
 		}
 		else
 		{
+            if (IsIconic((HWND)RSPCommandshWnd)) {
+                SendMessage(RSPCommandshWnd, WM_SYSCOMMAND, SC_RESTORE, NULL);
+            }
 			SetForegroundWindow(RSPCommandshWnd);
 		}	
 	}
