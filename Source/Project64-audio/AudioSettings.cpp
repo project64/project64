@@ -82,8 +82,8 @@ CSettings::~CSettings()
 void CSettings::RegisterSettings(void)
 {
     SetModuleName("default");
-	m_Set_SyncViaAudioEnabled = FindSystemSettingId("SyncViaAudioEnabled");
-	m_Set_EnableAudio = FindSystemSettingId("Enable Audio");
+    m_Set_SyncViaAudioEnabled = FindSystemSettingId("SyncViaAudioEnabled");
+    m_Set_EnableAudio = FindSystemSettingId("Enable Audio");
     m_Set_FixedAudio = FindSystemSettingId("Fixed Audio");
     m_Set_SyncAudio = FindSystemSettingId("Sync Audio");
     m_Set_FullSpeed = FindSystemSettingId("Full Speed");
@@ -108,10 +108,10 @@ void CSettings::RegisterSettings(void)
 
 void CSettings::SetSyncViaAudioEnabled(bool Enabled)
 {
-	if (m_Set_SyncViaAudioEnabled != 0)
-	{
-		SetSystemSetting(m_Set_SyncViaAudioEnabled, Enabled ? 1 : 0);
-	}
+    if (m_Set_SyncViaAudioEnabled != 0)
+    {
+        SetSystemSetting(m_Set_SyncViaAudioEnabled, Enabled ? 1 : 0);
+    }
 }
 
 void CSettings::SetAudioEnabled(bool Enabled)
@@ -152,7 +152,6 @@ void CSettings::LogLevelChanged(void)
 
 void CSettings::ReadSettings(void)
 {
-    bool SyncAudio = m_Set_SyncAudio ? GetSystemSetting(m_Set_SyncAudio) != 0 : false;
     bool bLimitFPS = m_Set_LimitFPS ? GetSystemSetting(m_Set_LimitFPS) != 0 : true;
 
     m_Volume = GetSetting(Set_Volume);
@@ -163,7 +162,7 @@ void CSettings::ReadSettings(void)
     m_FPSBuffer = GetSetting(Set_FPSBuffer) != 0;
     m_FullSpeed = m_Set_FullSpeed ? GetSystemSetting(m_Set_FullSpeed) != 0 : false;
 
-    m_SyncAudio = ((!m_advanced_options || bLimitFPS);
+    m_SyncAudio = (!m_advanced_options || bLimitFPS);
 
     if (m_Set_log_dir != 0)
     {
