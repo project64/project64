@@ -32,6 +32,7 @@ public:
     static inline bool HaveReadBP(void) { return m_HaveReadBP; }
     static inline bool bShowPifRamErrors(void) { return m_bShowPifRamErrors; }
     static inline bool bCPULoggingEnabled(void) { return m_bCPULoggingEnabled;  }
+    static inline uint32_t ExceptionBreakpoints(void) { return m_ExceptionBreakpoints; }
     
 private:
     static void StaticRefreshSettings(CDebugSettings * _this)
@@ -55,6 +56,7 @@ private:
     static bool m_HaveReadBP;
     static bool m_bShowPifRamErrors;
     static bool m_bCPULoggingEnabled;
+    static uint32_t m_ExceptionBreakpoints;
     
     static int32_t m_RefCount;
     static bool m_Registered;

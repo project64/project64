@@ -77,6 +77,7 @@ void RegisterUISettings (void)
     g_Settings->AddHandler((SettingID)(FirstUISettings + DebuggerUI_StackTracePos), new CSettingTypeApplication("Debugger UI", "Stack Trace Pos", Default_None));
     g_Settings->AddHandler((SettingID)(FirstUISettings + DebuggerUI_SymbolsPos), new CSettingTypeApplication("Debugger UI", "Symbols Pos", Default_None));
     g_Settings->AddHandler((SettingID)(FirstUISettings + DebuggerUI_TLBPos), new CSettingTypeApplication("Debugger UI", "TLB Pos", Default_None));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + DebuggerUI_ExceptionBPPos), new CSettingTypeApplication("Debugger UI", "Exception BP Pos", Default_None));
 }
 
 void UISettingsSaveBool(UISettingID Type, bool Value)

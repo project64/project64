@@ -33,6 +33,7 @@ CDebuggerUI::CDebuggerUI() :
     m_StackView(NULL),
     m_DMALogView(NULL),
     m_CPULogView(NULL),
+    m_ExcBreakpoints(NULL),
     m_DMALog(NULL),
     m_CPULog(NULL),
     m_StepEvent(false)
@@ -65,6 +66,7 @@ CDebuggerUI::~CDebuggerUI(void)
     delete m_StackTrace;
     delete m_DMALogView;
     delete m_CPULogView;
+    delete m_ExcBreakpoints;
     delete m_DMALog;
     delete m_CPULog;
 
@@ -178,6 +180,12 @@ void CDebuggerUI::Debug_Reset(void)
         m_StackView->HideWindow();
         delete m_StackView;
         m_StackView = NULL;
+    }
+    if (m_ExcBreakpoints)
+    {
+        m_ExcBreakpoints->HideWindow();
+        delete m_ExcBreakpoints;
+        m_ExcBreakpoints = NULL;
     }
 }
 
@@ -342,6 +350,15 @@ void CDebuggerUI::OpenCPULogWindow(void)
         m_CPULogView = new CDebugCPULogView(this);
     }
     m_CPULogView->ShowWindow();
+}
+
+void CDebuggerUI::OpenExcBreakpointsWindow(void)
+{
+    if (m_ExcBreakpoints == NULL)
+    {
+        m_ExcBreakpoints = new CDebugExcBreakpoints(this);
+    }
+    m_ExcBreakpoints->ShowWindow();
 }
 
 void CDebuggerUI::OpenStackTraceWindow(void)
@@ -604,14 +621,13 @@ void CDebuggerUI::TLBChanged()
     Debug_RefreshTLBWindow();
 }
 
-// Exception handling - break on exception vector and show cpu log on certain errors
+
+// Exception handling - break on exception vector if exception bp is set
 void CDebuggerUI::HandleCPUException(void)
 {
-    uint32_t pc = g_Reg->m_PROGRAM_COUNTER;
-    int exc = g_Reg->CAUSE_REGISTER & 0x7C;
+    int exc = (g_Reg->CAUSE_REGISTER >> 2) & 0x1F;
 
-    // ignore interrupt, syscall, coprocessor unusable, watch
-    if (exc != EXC_INT && exc != EXC_SYSCALL && exc != EXC_CPU && exc != EXC_WATCH)
+    if ((CDebugSettings::ExceptionBreakpoints() & (1 << exc)))
     {
         if (CDebugSettings::bCPULoggingEnabled())
         {
@@ -688,12 +704,19 @@ void CDebuggerUI::CPUStepStarted()
         }
     }
 
-    if (pc == 0x80000000 || pc == 0x80000080 ||
-        pc == 0xA0000100 || pc == 0x80000180)
+    if (CDebugSettings::ExceptionBreakpoints() != 0)
     {
-        HandleCPUException();
+        if (pc == 0x80000000 || pc == 0x80000080 ||
+            pc == 0xA0000100 || pc == 0x80000180)
+        {
+            HandleCPUException();
+        }
     }
+}
 
+// Called before opcode is executed (not called if SkipOp is set)
+void CDebuggerUI::CPUStep()
+{
     if (bCPULoggingEnabled())
     {
         m_CPULog->PushState();
@@ -705,7 +728,8 @@ void CDebuggerUI::CPUStepStarted()
     }
 }
 
-void CDebuggerUI::CPUStep()
+// Called after opcode has been executed
+void CDebuggerUI::CPUStepEnded()
 {
     OPCODE Opcode = R4300iOp::m_Opcode;
     uint32_t op = Opcode.op;

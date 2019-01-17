@@ -305,26 +305,22 @@ void CInterpreterCPU::ExecuteCPU()
                     g_Settings->SaveBool(Debugger_SteppingOps, true);
                 }
 
+                g_Debugger->CPUStepStarted(); // may set stepping ops/skip op
+
                 if (isStepping())
                 {
                     g_Debugger->WaitForStep();
                 }
 
-                bool bSkip = SkipOp();
-
-                if (!bSkip)
-                {
-                    g_Debugger->CPUStepStarted();
-                    bSkip = SkipOp();
-                }
-
-                if (bSkip)
+                if (SkipOp())
                 {
                     // Skip command if instructed by the debugger
                     g_Settings->SaveBool(Debugger_SkipOp, false);
                     PROGRAM_COUNTER += 4;
                     continue;
                 }
+
+                g_Debugger->CPUStep();
             }
 
             /* if (PROGRAM_COUNTER > 0x80000300 && PROGRAM_COUNTER < 0x80380000)
@@ -338,7 +334,7 @@ void CInterpreterCPU::ExecuteCPU()
             _GPR[0].DW = 0; /* MIPS $zero hard-wired to 0 */
             NextTimer -= CountPerOp;
 
-            if (CDebugSettings::HaveDebugger()) { g_Debugger->CPUStep(); }
+            if (CDebugSettings::HaveDebugger()) { g_Debugger->CPUStepEnded(); }
 
             PROGRAM_COUNTER += 4;
             switch (R4300iOp::m_NextInstruction)
