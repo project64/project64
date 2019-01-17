@@ -1319,6 +1319,30 @@ BEGIN
     PUSHBUTTON      "Export",IDC_BTN_EXPORT,360,7,56,13
 END
 
+IDD_Debugger_ExceptionBP DIALOGEX 0, 0, 213, 107
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "CPU Exception Breakpoints"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "Interrupt",IDC_CHK_INT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,8,78,11
+    CONTROL         "TLB Mod",IDC_CHK_MOD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,18,78,11
+    CONTROL         "Read TLB Miss",IDC_CHK_RMISS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,28,80,11
+    CONTROL         "Write TLB Miss",IDC_CHK_WMISS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,38,80,11
+    CONTROL         "Read Address Error",IDC_CHK_RADE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,48,76,11
+    CONTROL         "Write Address Error",IDC_CHK_WADE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,78,11
+    CONTROL         "Instruction Bus Error",IDC_CHK_IBE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,68,79,11
+    CONTROL         "Data Bus Error",IDC_CHK_DBE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,78,59,11
+    CONTROL         "SYSCALL",IDC_CHK_SYSCALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,88,59,11
+    CONTROL         "BREAK",IDC_CHK_BREAK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,96,8,59,11
+    CONTROL         "Illegal Instruction",IDC_CHK_II,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,96,18,71,11
+    CONTROL         "Coprocessor Unusable",IDC_CHK_CPU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,96,28,86,11
+    CONTROL         "Overflow",IDC_CHK_OV,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,96,38,59,11
+    CONTROL         "Trap exception",IDC_CHK_TRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,96,48,59,11
+    CONTROL         "Virt. Coherency on Inst. fetch",IDC_CHK_VCEI,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,96,58,107,11
+    CONTROL         "Floating Point Exception",IDC_CHK_FPE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,96,68,91,11
+    CONTROL         "Watchpoint reference",IDC_CHK_WATCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,96,78,87,11
+    CONTROL         "Virt. Coherency on data read",IDC_CHK_VCED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,96,88,106,11
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1765,6 +1789,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 260
     END
+
+    IDD_Debugger_ExceptionBP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 206
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 100
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -1991,6 +2023,15 @@ BEGIN
     0
 END
 
+IDD_Debugger_RegCOP0 AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_Debugger_ExceptionBP AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //

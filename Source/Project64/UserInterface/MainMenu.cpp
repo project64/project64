@@ -514,6 +514,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUGGER_SYMBOLS: g_Debugger->OpenSymbolsWindow(); break;
     case ID_DEBUGGER_DMALOG: g_Debugger->OpenDMALogWindow(); break;
     case ID_DEBUGGER_CPULOG: g_Debugger->OpenCPULogWindow(); break;
+    case ID_DEBUGGER_EXCBREAKPOINTS: g_Debugger->OpenExcBreakpointsWindow(); break;
     case ID_DEBUGGER_STACKTRACE: g_Debugger->OpenStackTraceWindow(); break;
     case ID_DEBUGGER_STACKVIEW: g_Debugger->OpenStackViewWindow(); break;
     case ID_CURRENT_SAVE_DEFAULT:
@@ -1129,6 +1130,12 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         /* Debugger Main Menu
         ****************/
         Item.Reset(ID_DEBUGGER_BREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Breakpoint...");
+        //Item.SetItemEnabled(CPURunning);
+        DebugMenu.push_back(Item);
+
+        /* Debug - Exception breakpoints
+        *******************/
+        Item.Reset(ID_DEBUGGER_EXCBREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"CPU Exception breakpoints...");
         //Item.SetItemEnabled(CPURunning);
         DebugMenu.push_back(Item);
 

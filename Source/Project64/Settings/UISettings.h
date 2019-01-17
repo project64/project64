@@ -74,6 +74,7 @@ enum UISettingID
     DebuggerUI_StackTracePos,
     DebuggerUI_SymbolsPos,
     DebuggerUI_TLBPos,
+    DebuggerUI_ExceptionBPPos
 };
 
 void RegisterUISettings (void);
