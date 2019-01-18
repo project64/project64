@@ -220,6 +220,22 @@ LRESULT CEnhancementConfig::OnEnhancementListSelChanged(NMHDR * /*pNMHDR*/)
 	return TRUE;
 }
 
+LRESULT CEnhancementConfig::OnEditItem(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+	if (m_hSelectedItem != NULL)
+	{
+		TVITEM item;
+
+		item.mask = TVIF_PARAM;
+		item.hItem = m_hSelectedItem;
+		m_TreeList.GetItem(&item);
+
+		CEditEnhancement(item.lParam).Display(m_hWnd);
+		RefreshList();
+	}
+	return TRUE;
+}
+
 LRESULT CEnhancementConfig::OnDeleteItem(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	if (m_hSelectedItem == NULL)

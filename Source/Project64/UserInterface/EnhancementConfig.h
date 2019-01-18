@@ -17,6 +17,7 @@ public:
     BEGIN_MSG_MAP_EX(CEnhancementConfig)
 		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
 		COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
+		COMMAND_ID_HANDLER(ID_POPUP_EDIT, OnEditItem)
 		COMMAND_ID_HANDLER(ID_POPUP_DELETE, OnDeleteItem)
 		COMMAND_ID_HANDLER(ID_POPUP_ADDENHANCEMENT, OnAddEnhancement)
 		NOTIFY_HANDLER_EX(IDC_ENHANCEMENTLIST, NM_CLICK, OnEnhancementListClicked)
@@ -40,6 +41,7 @@ public:
 	LRESULT OnEnhancementListDblClicked(NMHDR* pNMHDR);
 	LRESULT OnEnhancementListSelChanged(NMHDR* pNMHDR);
 	LRESULT OnDeleteItem(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT OnEditItem(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 
 private:
 	CEnhancementConfig(const CEnhancementConfig&);             // Disable copy constructor
