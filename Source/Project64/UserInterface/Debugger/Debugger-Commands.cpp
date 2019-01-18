@@ -469,11 +469,17 @@ const char* CDebugCommandsView::GetCodeAddressNotes(uint32_t vAddr)
     return NULL;
 }
 
-void CDebugCommandsView::ShowAddress(uint32_t address, bool top)
+void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput)
 {
     if (top == TRUE)
     {
-        m_StartAddress = address;
+        m_StartAddress = address - address % 4;
+
+        if (!bUserInput)
+        {
+            m_bIgnoreAddrChange = true;
+            m_AddressEdit.SetValue(address, false, true);
+        }
 
         if (!isStepping())
         {
@@ -494,7 +500,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top)
 
         if (bOutOfView)
         {
-            m_StartAddress = address;
+            m_StartAddress = address - address % 4;
             m_bIgnoreAddrChange = true;
             m_AddressEdit.SetValue(address, false, true);
         }
@@ -1246,17 +1252,6 @@ LRESULT CDebugCommandsView::OnPopupmenuClearBP(WORD /*wNotifyCode*/, WORD /*wID*
     return FALSE;
 }
 
-void CDebugCommandsView::GotoEnteredAddress()
-{
-    char text[9];
-
-    m_AddressEdit.GetWindowTextA(text, 9);
-
-    DWORD address = strtoul(text, NULL, 16);
-    address = address - address % 4;
-    ShowAddress(address, TRUE);
-}
-
 void CDebugCommandsView::BeginOpEdit(uint32_t address)
 {
     uint32_t opcode;
@@ -1310,7 +1305,10 @@ LRESULT CDebugCommandsView::OnAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HW
         m_bIgnoreAddrChange = false;
         return 0;
     }
-    GotoEnteredAddress();
+
+    uint32_t address = m_AddressEdit.GetValue();
+    ShowAddress(address, TRUE, TRUE);
+
     return 0;
 }
 
