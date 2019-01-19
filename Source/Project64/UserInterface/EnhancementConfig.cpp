@@ -7,6 +7,7 @@ class CEditEnhancement :
 public:
 	BEGIN_MSG_MAP_EX(CEditEnhancement)
 		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+		COMMAND_ID_HANDLER(IDC_BTN_GAMESHARK, OnEditGameshark)
 		COMMAND_ID_HANDLER(IDOK, OnOkCmd)
 		COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
 	END_MSG_MAP()
@@ -19,6 +20,7 @@ public:
 	LRESULT	OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT OnEditGameshark(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 
 private:
 	CEditEnhancement(void);                               // Disable default constructor
@@ -26,6 +28,38 @@ private:
 	CEditEnhancement& operator=(const CEditEnhancement&); // Disable assignment
 
 	std::string GetDlgItemStr(int nIDDlgItem);
+
+	int m_EditItem;
+};
+
+class CEditGS :
+	public CDialogImpl < CEditGS >
+{
+public:
+	BEGIN_MSG_MAP_EX(CEditEnhancement)
+		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+		COMMAND_HANDLER(IDC_CHEAT_CODES, EN_CHANGE, OnCheatChanged)
+		COMMAND_ID_HANDLER(IDOK, OnOkCmd)
+		COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
+	END_MSG_MAP()
+
+	enum { IDD = IDD_Enhancement_GS };
+
+	CEditGS(int EditItem);
+
+	void Display(HWND ParentWindow);
+
+	LRESULT	OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT OnCheatChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+
+private:
+	CEditGS(void);                               // Disable default constructor
+	CEditGS(const CEditGS&);            // Disable copy constructor
+	CEditGS& operator=(const CEditGS&); // Disable assignment
+
+	bool CheatCode(std::string & Code);
 
 	int m_EditItem;
 };
@@ -220,7 +254,7 @@ LRESULT CEnhancementConfig::OnEnhancementListSelChanged(NMHDR * /*pNMHDR*/)
 	return TRUE;
 }
 
-LRESULT CEnhancementConfig::OnEditItem(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CEnhancementConfig::OnEditItem(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	if (m_hSelectedItem != NULL)
 	{
@@ -236,7 +270,7 @@ LRESULT CEnhancementConfig::OnEditItem(WORD /*wNotifyCode*/, WORD wID, HWND /*hW
 	return TRUE;
 }
 
-LRESULT CEnhancementConfig::OnDeleteItem(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT CEnhancementConfig::OnDeleteItem(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	if (m_hSelectedItem == NULL)
 	{
@@ -261,9 +295,20 @@ LRESULT CEnhancementConfig::OnDeleteItem(WORD /*wNotifyCode*/, WORD wID, HWND /*
 			g_Settings->DeleteSettingIndex(Enhancement_Notes, i);
 			g_Settings->DeleteSettingIndex(Enhancement_Overclock, i);
 			g_Settings->DeleteSettingIndex(Enhancement_OverclockValue, i);
+			g_Settings->DeleteSettingIndex(Enhancement_Gameshark, i);
+			g_Settings->DeleteSettingIndex(Enhancement_GamesharkCode, i);
 			break;
 		}
 		stdstr Value;
+		if (g_Settings->LoadStringIndex(Enhancement_Gameshark, i + 1, Value))
+		{
+			g_Settings->SaveStringIndex(Enhancement_Gameshark, i, Value);
+		}
+		else
+		{
+			g_Settings->DeleteSettingIndex(Enhancement_Gameshark, i);
+		}
+
 		if (g_Settings->LoadStringIndex(Enhancement_Notes, i + 1, Value))
 		{
 			g_Settings->SaveStringIndex(Enhancement_Notes, i, Value);
@@ -299,6 +344,15 @@ LRESULT CEnhancementConfig::OnDeleteItem(WORD /*wNotifyCode*/, WORD wID, HWND /*
 		else
 		{
 			g_Settings->DeleteSettingIndex(Enhancement_Overclock, i);
+		}
+
+		if (g_Settings->LoadBoolIndex(Enhancement_Gameshark, i + 1, bValue))
+		{
+			g_Settings->SaveBoolIndex(Enhancement_Gameshark, i, bValue);
+		}
+		else
+		{
+			g_Settings->DeleteSettingIndex(Enhancement_Gameshark, i);
 		}
 
 		uint32_t dwValue;
@@ -485,7 +539,14 @@ LRESULT	CEditEnhancement::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	GetDlgItem(IDC_NOTES).SetWindowTextA(m_EditItem >= 0 ? g_Settings->LoadStringIndex(Enhancement_Notes, m_EditItem).c_str() : "");
 	CButton(GetDlgItem(IDC_AUTOON)).SetCheck(g_Settings->LoadBoolIndex(Enhancement_OnByDefault, m_EditItem) ? BST_CHECKED : BST_UNCHECKED);
 	CButton(GetDlgItem(IDC_OVERCLOCK)).SetCheck(g_Settings->LoadBoolIndex(Enhancement_Overclock, m_EditItem) ? BST_CHECKED : BST_UNCHECKED);
+	CButton(GetDlgItem(IDC_GAMESHARK)).SetCheck(g_Settings->LoadBoolIndex(Enhancement_Gameshark, m_EditItem) ? BST_CHECKED : BST_UNCHECKED);
 	GetDlgItem(IDC_OVER_CLOCK_MODIFIER).SetWindowTextA(m_EditItem >= 0 ? stdstr_f("%d", g_Settings->LoadDwordIndex(Enhancement_OverclockValue, m_EditItem)).c_str() : "");
+	return TRUE;
+}
+
+LRESULT CEditEnhancement::OnEditGameshark(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+	CEditGS(m_EditItem).Display(m_hWnd);
 	return TRUE;
 }
 
@@ -531,6 +592,7 @@ LRESULT CEditEnhancement::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl
 	g_Settings->SaveBoolIndex(Enhancement_OnByDefault, m_EditItem, CButton(GetDlgItem(IDC_AUTOON)).GetCheck() == 1);
 	g_Settings->SaveBoolIndex(Enhancement_Overclock, m_EditItem, CButton(GetDlgItem(IDC_OVERCLOCK)).GetCheck() == 1);
 	g_Settings->SaveDwordIndex(Enhancement_OverclockValue, m_EditItem, atoi(GetDlgItemStr(IDC_OVER_CLOCK_MODIFIER).c_str()));
+	g_Settings->SaveBoolIndex(Enhancement_Gameshark, m_EditItem, CButton(GetDlgItem(IDC_GAMESHARK)).GetCheck() == 1);
 	CSettingTypeEnhancements::FlushChanges();
 	EndDialog(wID);
 	return TRUE;
@@ -551,3 +613,133 @@ std::string CEditEnhancement::GetDlgItemStr(int nIDDlgItem)
 	DlgItem.GetWindowText((char *)Result.c_str(), Result.length());
 	return Result;
 }
+
+CEditGS::CEditGS(int EditItem) :
+	m_EditItem(EditItem)
+{
+}
+
+void CEditGS::Display(HWND ParentWindow)
+{
+	BOOL result = m_thunk.Init(NULL, NULL);
+	if (result)
+	{
+		_AtlWinModule.AddCreateWndData(&m_thunk.cd, this);
+#ifdef _DEBUG
+		m_bModal = true;
+#endif //_DEBUG
+		::DialogBoxParamW(_AtlBaseModule.GetResourceInstance(), MAKEINTRESOURCEW(IDD), (HWND)ParentWindow, StartDialogProc, NULL);
+	}
+}
+
+LRESULT CEditGS::OnCheatChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+	std::string code;
+	GetDlgItem(IDOK).EnableWindow(CheatCode(code));
+	return true;
+}
+
+LRESULT CEditGS::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+	std::string code;
+	if (CheatCode(code))
+	{
+		if (code.empty())
+		{
+			g_Settings->DeleteSettingIndex(Enhancement_GamesharkCode, m_EditItem);
+		}
+		else
+		{
+			g_Settings->SaveStringIndex(Enhancement_GamesharkCode, m_EditItem, code.c_str());
+		}
+	}
+	EndDialog(wID);
+	return TRUE;
+}
+
+LRESULT	CEditGS::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+	std::string entry = g_Settings->LoadStringIndex(Enhancement_GamesharkCode, m_EditItem);
+	std::string Buffer;
+	const char * ReadPos = entry.c_str();
+	do
+	{
+		const char * End = strchr(ReadPos, ',');
+		if (End)
+		{
+			Buffer.append(ReadPos, End - ReadPos);
+		}
+		else
+		{
+			Buffer.append(ReadPos);
+		}
+
+		ReadPos = strchr(ReadPos, ',');
+		if (ReadPos != NULL)
+		{
+			Buffer.append("\r\n");
+			ReadPos += 1;
+		}
+	} while (ReadPos);
+	CWindow Code = GetDlgItem(IDC_CHEAT_CODES);
+	Code.SetWindowText(Buffer.c_str());
+	Code.SetFocus();
+	Code.PostMessage(EM_SETSEL, (WPARAM)-1, 0);
+	return TRUE;
+}
+
+
+LRESULT CEditGS::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+	EndDialog(wID);
+	return TRUE;
+}
+
+bool CEditGS::CheatCode(std::string & Code)
+{
+	Code.clear();
+
+ 	bool ValidCode = true;
+	uint32_t numlines = SendDlgItemMessage(IDC_CHEAT_CODES, EM_GETLINECOUNT, 0, 0);
+
+	for (uint32_t line = 0; line < numlines; line++) //read line after line (bypassing limitation GetDlgItemText)
+	{
+		char tempformat[128] = { 0 }, str[128] = { 0 };
+		const char * formatnormal = "XXXXXXXX XXXX";
+
+		*(LPWORD)str = sizeof(str);
+		uint32_t len = SendDlgItemMessage(IDC_CHEAT_CODES, EM_GETLINE, (WPARAM)line, (LPARAM)(const char *)str);
+		str[len] = 0;
+
+		if (len <= 0) { continue; }
+
+		for (uint32_t i = 0; i < sizeof(tempformat); i++)
+		{
+			if (isxdigit(str[i]))
+			{
+				tempformat[i] = 'X';
+			}
+			if (str[i] == ' ')
+			{
+				tempformat[i] = str[i];
+			}
+			if (str[i] == 0) { break; }
+		}
+
+		if (strcmp(tempformat, formatnormal) == 0)
+		{
+			if (!Code.empty())
+			{
+				Code += ",";
+			}
+			Code += str;
+		}
+		else
+		{
+			ValidCode = false;
+			break;
+		}
+ 	}
+	return ValidCode;
+}
+

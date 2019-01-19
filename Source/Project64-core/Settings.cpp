@@ -438,6 +438,8 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 	AddHandler(Enhancement_OnByDefault, new CSettingTypeEnhancements("_AO"));
 	AddHandler(Enhancement_Overclock, new CSettingTypeEnhancements("_OVER"));
 	AddHandler(Enhancement_OverclockValue, new CSettingTypeEnhancements("_OVERV"));
+	AddHandler(Enhancement_Gameshark, new CSettingTypeEnhancements("_GS"));
+	AddHandler(Enhancement_GamesharkCode, new CSettingTypeEnhancements("_GSC"));
 	AddHandler(Enhancement_Notes, new CSettingTypeEnhancements("_N"));
 	WriteTrace(TraceAppInit, TraceDebug, "Done");
 }

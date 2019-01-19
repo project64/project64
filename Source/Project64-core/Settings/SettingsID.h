@@ -334,6 +334,8 @@ enum SettingID
 	Enhancement_OnByDefault,
 	Enhancement_Overclock,
 	Enhancement_OverclockValue,
+	Enhancement_Gameshark,
+	Enhancement_GamesharkCode,
 	Enhancement_Notes,
 
 	FirstUISettings, LastUISettings = FirstUISettings + MaxPluginSetting,

@@ -48,12 +48,6 @@ bool CCheats::LoadCode(const stdstr & CheatEntry, SettingID ExtensionSetting, in
         return false;
     }
 
-    stdstr Extension;
-    if (!g_Settings->LoadStringIndex(ExtensionSetting, ExtensionIndex, Extension))
-    {
-        Extension.clear();
-    }
-
     const char * ReadPos = CheatString;
     CODES Code;
     while (ReadPos)
@@ -67,19 +61,31 @@ bool CCheats::LoadCode(const stdstr & CheatEntry, SettingID ExtensionSetting, in
 
         if (strncmp(ReadPos, "????", 4) == 0)
         {
-            if (Extension.length() == 0) { return false; }
+			stdstr Extension;
+			if (!g_Settings->LoadStringIndex(ExtensionSetting, ExtensionIndex, Extension) || Extension.length() == 0)
+			{
+				return false;
+			}
             CodeEntry.Value = Extension[0] == '$' ? (uint16_t)strtoul(&Extension[1], 0, 16) : (uint16_t)atol(Extension.c_str());
         }
         else if (strncmp(ReadPos, "??", 2) == 0)
         {
-            if (Extension.length() == 0) { return false; }
-            CodeEntry.Value = (uint8_t)(strtoul(ReadPos, 0, 16));
+			stdstr Extension;
+			if (!g_Settings->LoadStringIndex(ExtensionSetting, ExtensionIndex, Extension) || Extension.length() == 0)
+			{
+				return false;
+			}
+			CodeEntry.Value = (uint8_t)(strtoul(ReadPos, 0, 16));
             CodeEntry.Value |= (Extension[0] == '$' ? (uint8_t)strtoul(&Extension[1], 0, 16) : (uint8_t)atol(Extension.c_str())) << 16;
         }
         else if (strncmp(&ReadPos[2], "??", 2) == 0)
         {
-            if (Extension.length() == 0) { return false; }
-            CodeEntry.Value = (uint16_t)(strtoul(ReadPos, 0, 16) << 16);
+			stdstr Extension;
+			if (!g_Settings->LoadStringIndex(ExtensionSetting, ExtensionIndex, Extension) || Extension.length() == 0)
+			{
+				return false;
+			}
+			CodeEntry.Value = (uint16_t)(strtoul(ReadPos, 0, 16) << 16);
             CodeEntry.Value |= Extension[0] == '$' ? (uint8_t)strtoul(&Extension[1], 0, 16) : (uint8_t)atol(Extension.c_str());
         }
         else
@@ -104,30 +110,48 @@ bool CCheats::LoadCode(const stdstr & CheatEntry, SettingID ExtensionSetting, in
     return true;
 }
 
+void CCheats::LoadEnhancements(void)
+{
+	for (int i = 0; i < CCheats::MaxCheats; i++)
+	{
+		std::string Name = g_Settings->LoadStringIndex(Enhancement_Name, i);
+		if (Name.length() == 0) { break; }
+
+		if (!g_Settings->LoadBoolIndex(Enhancement_Gameshark, i))
+		{
+			continue;
+		}
+		std::string entry = g_Settings->LoadStringIndex(Enhancement_GamesharkCode, i);
+		stdstr_f CheatEntry("\"Enhancement%d\",%s", i, entry.c_str());
+		LoadCode(CheatEntry.c_str(), Default_None, 0);
+	}
+
+}
+
 void CCheats::LoadPermCheats(CPlugins * Plugins)
 {
     if (g_Settings->LoadBool(Debugger_DisableGameFixes))
     {
         return;
     }
-    for (int CheatNo = 0; CheatNo < MaxCheats; CheatNo++)
+    for (int i = 0; i < MaxCheats; i++)
     {
         stdstr LineEntry;
-        if (!g_Settings->LoadStringIndex(Rdb_GameCheatFix, CheatNo, LineEntry) || LineEntry.empty())
+        if (!g_Settings->LoadStringIndex(Rdb_GameCheatFix, i, LineEntry) || LineEntry.empty())
         {
             break;
         }
 
         stdstr CheatPlugins;
         bool LoadEntry = true;
-        if (g_Settings->LoadStringIndex(Rdb_GameCheatFixPlugin, CheatNo, CheatPlugins) && !CheatPlugins.empty())
+        if (g_Settings->LoadStringIndex(Rdb_GameCheatFixPlugin, i, CheatPlugins) && !CheatPlugins.empty())
         {
             LoadEntry = false;
 
             strvector PluginList = CheatPlugins.Tokenize(',');
-            for (size_t i = 0, n = PluginList.size(); i < n; i++)
+            for (size_t p = 0, n = PluginList.size(); p < n; p++)
             {
-                stdstr PluginName = PluginList[i].Trim();
+                stdstr PluginName = PluginList[p].Trim();
                 if (Plugins->Gfx() != NULL && strstr(Plugins->Gfx()->PluginName(), PluginName.c_str()) != NULL)
                 {
                     LoadEntry = true;
@@ -153,7 +177,8 @@ void CCheats::LoadPermCheats(CPlugins * Plugins)
 
         if (LoadEntry)
         {
-            LoadCode(LineEntry.c_str(), Default_None, CheatNo);
+			stdstr_f CheatEntry("\"PermCheat%d\",%s", i, LineEntry.c_str());
+			LoadCode(CheatEntry.c_str(), Default_None, 0);
         }
     }
 }
@@ -162,6 +187,7 @@ void CCheats::LoadCheats(bool DisableSelected, CPlugins * Plugins)
 {
     ResetCodes();
     LoadPermCheats(Plugins);
+	LoadEnhancements();
 
     for (int CheatNo = 0; CheatNo < MaxCheats; CheatNo++)
     {

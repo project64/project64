@@ -55,8 +55,9 @@ private:
     typedef std::map<uint32_t, MEM_VALUE16> ORIGINAL_VALUES16;
     typedef std::map<uint32_t, MEM_VALUE8> ORIGINAL_VALUES8;
 
-    void LoadPermCheats(CPlugins * Plugins);
-    int32_t EntrySize(const CODES & CodeEntry, int32_t CurrentEntry);
+	void LoadPermCheats(CPlugins * Plugins);
+	void LoadEnhancements(void);
+	int32_t EntrySize(const CODES & CodeEntry, int32_t CurrentEntry);
 
     CMipsMemoryVM & m_MMU;
     CODES_ARRAY m_Codes;
