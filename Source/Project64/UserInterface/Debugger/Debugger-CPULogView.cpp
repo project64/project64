@@ -195,14 +195,14 @@ LRESULT CDebugCPULogView::OnScroll(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, 
 
     switch (type)
     {
-    case SB_LINEUP: newPos = scrollInfo.nPos - 1; break;
-    case SB_LINEDOWN: newPos = scrollInfo.nPos + 1; break;
+    case SB_LINEUP: newPos = max(scrollInfo.nMin, scrollInfo.nPos - 1); break;
+    case SB_LINEDOWN: newPos = min(scrollInfo.nMax, scrollInfo.nPos + 1); break;
     case SB_THUMBTRACK: newPos = scrollInfo.nTrackPos; break;
     default: return 0;
     }
 
     m_LogStartIndex = newPos;
-    ::SetScrollPos(hScrollbar, SB_CTL, m_LogStartIndex, TRUE);
+    ::SetScrollPos(hScrollbar, SB_CTL, newPos, TRUE);
 
     if (scrlId == IDC_SCRL_BAR)
     {
@@ -218,9 +218,24 @@ void CDebugCPULogView::InterceptMouseWheel(WPARAM wParam, LPARAM lParam)
 
     if (MouseHovering(IDC_CPU_LIST) || MouseHovering(IDC_SCRL_BAR))
     {
+        int scrlMin, scrlMax;
+        m_Scrollbar.GetScrollRange(&scrlMin, &scrlMax);
+
         int scrollPos = m_Scrollbar.GetScrollPos();
-        m_LogStartIndex = scrollPos + nScroll;
-        m_Scrollbar.SetScrollPos(m_LogStartIndex);
+        int newPos = scrollPos + nScroll;
+
+        if (newPos < scrlMin)
+        {
+            newPos = scrlMin;
+        }
+        else if (newPos > scrlMax)
+        {
+            newPos = scrlMax;
+        }
+
+        m_LogStartIndex = newPos;
+        m_Scrollbar.SetScrollPos(newPos, true);
+
         RefreshList(false);
     }
 }
@@ -283,6 +298,7 @@ void CDebugCPULogView::RefreshList(bool bUpdateBuffer)
     {
         m_LogStartIndex = scrollRangeMax;
         m_Scrollbar.SetScrollPos(m_LogStartIndex, true);
+        ShowRegStates(count - 1);
     }
 
     size_t start = m_Scrollbar.GetScrollPos();
@@ -324,8 +340,6 @@ void CDebugCPULogView::RefreshList(bool bUpdateBuffer)
     }
 
     m_CPUListView.SetRedraw(TRUE);
-
-    ShowRegStates(count - 1);
 }
 
 void CDebugCPULogView::ShowRegStates(size_t stateIndex)

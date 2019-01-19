@@ -658,6 +658,11 @@ void CDebuggerUI::HandleCartToRamDMA(void)
 // Called from the interpreter core at the beginning of every CPU step
 void CDebuggerUI::CPUStepStarted()
 {
+    if (isStepping() && bCPULoggingEnabled())
+    {
+        Debug_RefreshCPULogWindow();
+    }
+
     uint32_t pc = g_Reg->m_PROGRAM_COUNTER;
     COpInfo opInfo(R4300iOp::m_Opcode);
 
@@ -720,11 +725,6 @@ void CDebuggerUI::CPUStep()
     if (bCPULoggingEnabled())
     {
         m_CPULog->PushState();
-
-        if (isStepping())
-        {
-            Debug_RefreshCPULogWindow();
-        }
     }
 }
 
