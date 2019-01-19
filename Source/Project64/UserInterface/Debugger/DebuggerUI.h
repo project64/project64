@@ -16,3 +16,4 @@
 #include "Debugger-CPULogView.h"
 #include "Debugger-StackView.h"
 #include "Debugger-StackTrace.h"
+#include "Debugger-ExceptionBreakpoints.h"

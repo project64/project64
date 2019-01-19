@@ -24,6 +24,7 @@ class CDebugDMALogView;
 class CDebugCPULogView;
 class CDebugStackView;
 class CDebugStackTrace;
+class CDebugExcBreakpoints;
 
 class CCPULog;
 class CDMALog;
@@ -61,6 +62,7 @@ public:
     void OpenDMALogWindow(void);
     void OpenCPULogWindow(void);
     void Debug_RefreshCPULogWindow(void);
+    void OpenExcBreakpointsWindow(void);
 
     bool ExecutionBP(uint32_t address);
     bool ReadBP8(uint32_t address);
@@ -90,23 +92,25 @@ protected:
     void TLBChanged(void);
     void CPUStepStarted(void);
     void CPUStep(void);
+    void CPUStepEnded(void);
     void FrameDrawn(void);
 
 private:
     CDebuggerUI(const CDebuggerUI&);                // Disable copy constructor
     CDebuggerUI& operator=(const CDebuggerUI&);        // Disable assignment
 
-    CDumpMemory         * m_MemoryDump;
-    CDebugMemoryView    * m_MemoryView;
-    CDebugMemorySearch  * m_MemorySearch;
-    CDebugTlb           * m_DebugTLB;
-    CDebugCommandsView  * m_CommandsView;
-    CDebugScripts       * m_Scripts;
-    CDebugSymbols       * m_Symbols;
-    CDebugDMALogView    * m_DMALogView;
-    CDebugCPULogView    * m_CPULogView;
-    CDebugStackTrace    * m_StackTrace;
-    CDebugStackView     * m_StackView;
+    CDumpMemory          * m_MemoryDump;
+    CDebugMemoryView     * m_MemoryView;
+    CDebugMemorySearch   * m_MemorySearch;
+    CDebugTlb            * m_DebugTLB;
+    CDebugCommandsView   * m_CommandsView;
+    CDebugScripts        * m_Scripts;
+    CDebugSymbols        * m_Symbols;
+    CDebugDMALogView     * m_DMALogView;
+    CDebugCPULogView     * m_CPULogView;
+    CDebugStackTrace     * m_StackTrace;
+    CDebugStackView      * m_StackView;
+    CDebugExcBreakpoints * m_ExcBreakpoints;
 
     CBreakpoints        * m_Breakpoints;
     CScriptSystem       * m_ScriptSystem;

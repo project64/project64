@@ -21,6 +21,7 @@ __interface CDebugger
     virtual void OpenSymbolsWindow(void) = 0;
     virtual void OpenDMALogWindow(void) = 0;
     virtual void OpenCPULogWindow(void) = 0;
+    virtual void OpenExcBreakpointsWindow(void) = 0;
     virtual void OpenStackTraceWindow(void) = 0;
     virtual void OpenStackViewWindow(void) = 0;
     virtual void TLBChanged(void) = 0;
@@ -38,4 +39,5 @@ __interface CDebugger
 
     virtual void CPUStepStarted(void) = 0;
     virtual void CPUStep(void) = 0;
+    virtual void CPUStepEnded(void) = 0;
 };

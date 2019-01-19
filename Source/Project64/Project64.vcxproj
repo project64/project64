@@ -88,6 +88,7 @@
     <ClCompile Include="UserInterface\Debugger\Debugger-AddSymbol.cpp" />
     <ClCompile Include="UserInterface\Debugger\Debugger-Commands.cpp" />
     <ClCompile Include="UserInterface\Debugger\Debugger-DMALogView.cpp" />
+    <ClCompile Include="UserInterface\Debugger\Debugger-ExceptionBreakpoints.cpp" />
     <ClCompile Include="UserInterface\Debugger\Debugger-MemoryDump.cpp" />
     <ClCompile Include="UserInterface\Debugger\Debugger-MemorySearch.cpp" />
     <ClCompile Include="UserInterface\Debugger\Debugger-RegisterTabs.cpp" />
@@ -151,6 +152,7 @@
     <ClInclude Include="UserInterface\Debugger\Debugger-AddSymbol.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-Commands.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-DMALogView.h" />
+    <ClInclude Include="UserInterface\Debugger\Debugger-ExceptionBreakpoints.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-MemoryDump.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-MemorySearch.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-RegisterTabs.h" />

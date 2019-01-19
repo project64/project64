@@ -228,6 +228,9 @@
     <ClCompile Include="UserInterface\Debugger\Debugger-CPULogView.cpp">
       <Filter>Source Files\User Interface Source\Debugger Source</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface\Debugger\Debugger-ExceptionBreakpoints.cpp">
+      <Filter>Source Files\User Interface Source\Debugger Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserInterface\resource.h">
@@ -435,6 +438,9 @@
       <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
     </ClInclude>
     <ClInclude Include="UserInterface\Debugger\Debugger-CPULogView.h">
+      <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Debugger\Debugger-ExceptionBreakpoints.h">
       <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
     </ClInclude>
   </ItemGroup>

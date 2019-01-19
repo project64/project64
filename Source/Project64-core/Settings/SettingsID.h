@@ -255,6 +255,7 @@ enum SettingID
     Debugger_AutoRefreshMemoryView,
     Debugger_CPULoggingEnabled,
     Debugger_CPULogBufferSize,
+    Debugger_ExceptionBreakpoints,
 
     //Trace
     Debugger_TraceMD5,

@@ -51,7 +51,7 @@ void SoundDriverBase::AI_LenChanged(uint8_t *start, uint32_t length)
     WriteTrace(TraceAudioDriver, TraceDebug, "Start");
 
     // Bleed off some of this buffer to smooth out audio
-    if (length < m_MaxBufferSize && g_settings->SyncAudio())
+    if (g_settings->SyncAudio() || !g_settings->FullSpeed())
     {
         while ((m_BufferRemaining) == m_MaxBufferSize)
         {
