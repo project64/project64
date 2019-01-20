@@ -15,6 +15,7 @@
 #include "OpInfo.h"
 
 bool CRegisterTabs::m_bColorsEnabled = false;
+CDebuggerUI* CRegisterTabs::m_Debugger = NULL;
 
 CRegisterTabs::CRegisterTabs() :
     m_attached(false)
@@ -279,7 +280,7 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
         return;
     }
 
-    int ctrlId = LOWORD(wParam);
+    WORD ctrlId = LOWORD(wParam);
 
     CWindow editCtrl = ::GetDlgItem(hDlg, ctrlId);
     char text[20];
@@ -298,7 +299,7 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
         }
         else
         {
-            int nReg = MapEditRegNum(ctrlId, GPREditIds, sizeof(GPREditIds) / sizeof(GPREditIds[0]));
+            int nReg = GetCtrlRegNum(ctrlId, GPREditIds);
             g_Reg->m_GPR[nReg].UDW = value;
         }
         return;
@@ -316,7 +317,7 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
             return;
         }
 
-        int nReg = MapEditRegNum(ctrlId, FPREditIds, sizeof(FPREditIds) / sizeof(FPREditIds[0]));
+        int nReg = GetCtrlRegNum(ctrlId, FPREditIds);
         *(uint32_t*)g_Reg->m_FPR_S[nReg] = value;
         return;
     }
@@ -477,6 +478,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         return TRUE;
     }
 
+    // color textboxes
     if (msg == WM_CTLCOLOREDIT)
     {
         HDC hdc = (HDC)wParam;
@@ -484,7 +486,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
 
         COLORREF colorRead = RGB(200, 200, 255);
         COLORREF colorWrite = RGB(255, 200, 200);
-        COLORREF colorBoth = RGB(255, 200, 255);
+        COLORREF colorBoth = RGB(220, 170, 255);
 
         if (!m_bColorsEnabled || g_Reg == NULL || g_MMU == NULL)
         {
@@ -492,7 +494,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         }
 
         HWND hWnd = (HWND)lParam;
-        int ctrlId = ::GetWindowLong(hWnd, GWL_ID);
+        WORD ctrlId = (WORD) ::GetWindowLong(hWnd, GWL_ID);
 
         COpInfo opInfo;
         g_MMU->LW_VAddr(g_Reg->m_PROGRAM_COUNTER, opInfo.m_OpCode.Hex);
@@ -512,9 +514,20 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         }
         else
         {
-            int nReg = MapEditRegNum(ctrlId, GPREditIds, sizeof(GPREditIds) / sizeof(GPREditIds[0]));
-            bOpReads = opInfo.ReadsGPR(nReg);
-            bOpWrites = opInfo.WritesGPR(nReg);
+            int nReg = GetCtrlRegNum(ctrlId, GPREditIds);
+
+            if (nReg == -1)
+            {
+                return (LRESULT)GetStockObject(DC_BRUSH);
+            }
+
+            int nRegRead1, nRegRead2, nRegWrite;
+
+            opInfo.ReadsGPR(&nRegRead1, &nRegRead2);
+            opInfo.WritesGPR(&nRegWrite);
+
+            bOpReads = (nReg == nRegRead1) || (nReg == nRegRead2);
+            bOpWrites = (nReg == nRegWrite);
         }
 
         if (bOpReads && bOpWrites)
@@ -542,7 +555,134 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
         {
             RegisterChanged(hDlg, TabGPR, wParam);
         }
+
+        return FALSE;
     }
+
+    // right click labels
+    if (msg == WM_CONTEXTMENU)
+    {
+        HWND hWnd = (HWND)wParam;
+        WORD ctrlId = (WORD) ::GetWindowLong(hWnd, GWL_ID);
+
+        CBreakpoints* breakpoints = m_Debugger->Breakpoints();
+
+        if (ctrlId == IDC_HI_LBL)
+        {
+            breakpoints->ToggleHIWriteBP();
+        }
+        else if (ctrlId == IDC_LO_LBL)
+        {
+            breakpoints->ToggleLOWriteBP();
+        }
+        else
+        {
+            int nReg = GetCtrlRegNum(ctrlId, GPRLabelIds);
+
+            if (nReg <= 0) // ignore R0
+            {
+                return FALSE;
+            }
+
+            breakpoints->ToggleGPRWriteBP(nReg);
+        }
+
+        ::InvalidateRect(hWnd, NULL, true);
+        return FALSE;
+    }
+
+    // click labels
+    if (msg == WM_COMMAND && HIWORD(wParam) == STN_CLICKED || HIWORD(wParam) == STN_DBLCLK)
+    {
+        HWND hWnd = (HWND)lParam;
+        WORD ctrlId = LOWORD(wParam);
+
+        CBreakpoints* breakpoints = m_Debugger->Breakpoints();
+
+        if (ctrlId == IDC_HI_LBL)
+        {
+            breakpoints->ToggleHIReadBP();
+        }
+        else if (ctrlId == IDC_LO_LBL)
+        {
+            breakpoints->ToggleLOReadBP();
+        }
+        else
+        {
+            int nReg = GetCtrlRegNum(ctrlId, GPRLabelIds);
+
+            if (nReg <= 0) // ignore R0
+            {
+                return FALSE;
+            }
+
+            breakpoints->ToggleGPRReadBP(nReg);
+        }
+
+        ::InvalidateRect(hWnd, NULL, true);
+        return FALSE;
+    }
+
+    // color labels
+    if (msg == WM_CTLCOLORSTATIC)
+    {
+        HWND hWnd = (HWND)lParam;
+        WORD ctrlId = (WORD) ::GetWindowLong(hWnd, GWL_ID);
+        
+
+        HDC hdc = (HDC)wParam;
+
+        COLORREF colorRead = RGB(200, 200, 255);
+        COLORREF colorWrite = RGB(255, 200, 200);
+        COLORREF colorBoth = RGB(220, 170, 255);
+
+        CBreakpoints* breakpoints = m_Debugger->Breakpoints();
+        
+        bool haveRead, haveWrite;
+
+        if (ctrlId == IDC_HI_LBL)
+        {
+            haveRead = breakpoints->HaveHIReadBP();
+            haveWrite = breakpoints->HaveHIWriteBP();
+        }
+        else if (ctrlId == IDC_LO_LBL)
+        {
+            haveRead = breakpoints->HaveLOReadBP();
+            haveWrite = breakpoints->HaveLOWriteBP();
+        }
+        else
+        {
+            int nReg = GetCtrlRegNum(ctrlId, GPRLabelIds);
+
+            if (nReg == -1)
+            {
+                return FALSE;
+            }
+
+            haveRead = breakpoints->HaveGPRReadBP(nReg);
+            haveWrite = breakpoints->HaveGPRWriteBP(nReg);
+        }
+
+        if (haveRead && haveWrite)
+        {
+            SetBkColor(hdc, colorBoth);
+        }
+        else if(haveRead)
+        {
+            SetBkColor(hdc, colorRead);
+        }
+        else if(haveWrite)
+        {
+            SetBkColor(hdc, colorWrite);
+        }
+        else
+        {
+            return FALSE;
+        }
+
+        return (LRESULT)GetStockObject(DC_BRUSH);
+    }
+    
     return FALSE;
 }
 
@@ -630,6 +770,11 @@ void CRegisterTabs::RedrawCurrentTab()
 void CRegisterTabs::SetColorsEnabled(bool bColorsEnabled)
 {
     m_bColorsEnabled = bColorsEnabled;
+}
+
+void CRegisterTabs::SetDebugger(CDebuggerUI* debugger)
+{
+    m_Debugger = debugger;
 }
 
 void CRegisterTabs::InitRegisterEdit(CWindow& tab, CEditNumber32& edit, WORD ctrlId)

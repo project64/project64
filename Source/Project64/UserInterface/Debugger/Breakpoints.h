@@ -67,6 +67,22 @@ public:
     void ClearMemLocks(void);
     size_t NumMemLocks(void);
 
+    bool HaveAnyGPRReadBP(void);
+    bool HaveAnyGPRWriteBP(void);
+    bool HaveGPRWriteBP(int nReg);
+    bool HaveGPRReadBP(int nReg);
+    void ToggleGPRWriteBP(int nReg);
+    void ToggleGPRReadBP(int nReg);
+
+    bool HaveHIWriteBP(void);
+    bool HaveHIReadBP(void);
+    bool HaveLOWriteBP(void);
+    bool HaveLOReadBP(void);
+    void ToggleHIWriteBP(void);
+    void ToggleHIReadBP(void);
+    void ToggleLOWriteBP(void);
+    void ToggleLOReadBP(void);
+   
 private:
     void PreUpdateBP();
     void PostUpdateBP();
@@ -78,4 +94,7 @@ private:
     breakpoints_t m_Execution;
 
     memlocks_t m_MemLocks;
+
+    uint32_t m_GPRWriteBP, m_GPRReadBP;
+    bool m_HIWriteBP, m_HIReadBP, m_LOWriteBP, m_LOReadBP;
 };

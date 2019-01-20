@@ -717,6 +717,37 @@ void CDebuggerUI::CPUStepStarted()
             HandleCPUException();
         }
     }
+
+    if (m_Breakpoints->HaveAnyGPRWriteBP())
+    {
+        int nReg = 0;
+        opInfo.WritesGPR(&nReg);
+
+        if (nReg != 0 && m_Breakpoints->HaveGPRWriteBP(nReg))
+        {
+            g_Settings->SaveBool(Debugger_SteppingOps, true);
+        }
+    }
+
+    if (m_Breakpoints->HaveAnyGPRReadBP())
+    {
+        int nReg1 = 0, nReg2 = 0;
+        opInfo.ReadsGPR(&nReg1, &nReg2);
+
+        if ((nReg1 != 0 && m_Breakpoints->HaveGPRReadBP(nReg1)) ||
+            (nReg2 != 0 && m_Breakpoints->HaveGPRReadBP(nReg2)))
+        {
+            g_Settings->SaveBool(Debugger_SteppingOps, true);
+        }
+    }
+
+    if (m_Breakpoints->HaveHIWriteBP() && opInfo.WritesHI() ||
+        m_Breakpoints->HaveLOWriteBP() && opInfo.WritesLO() ||
+        m_Breakpoints->HaveHIReadBP()  && opInfo.ReadsHI()  ||
+        m_Breakpoints->HaveLOReadBP()  && opInfo.ReadsLO())
+    {
+        g_Settings->SaveBool(Debugger_SteppingOps, true);
+    }
 }
 
 // Called before opcode is executed (not called if SkipOp is set)

@@ -54,6 +54,7 @@ public:
     void RedrawCurrentTab();
     void RefreshEdits();
     void SetColorsEnabled(bool bColorsEnabled);
+    void SetDebugger(CDebuggerUI* debugger);
 
 private:
     CRegisterTabs(const CRegisterTabs&);              // Disable copy constructor
@@ -91,6 +92,19 @@ private:
         };
     } CAUSE;
 
+    static constexpr WORD GPRLabelIds[] =
+    {
+        IDC_R0_LBL,  IDC_R1_LBL,  IDC_R2_LBL,  IDC_R3_LBL,
+        IDC_R4_LBL,  IDC_R5_LBL,  IDC_R6_LBL,  IDC_R7_LBL,
+        IDC_R8_LBL,  IDC_R9_LBL,  IDC_R10_LBL, IDC_R11_LBL,
+        IDC_R12_LBL, IDC_R13_LBL, IDC_R14_LBL, IDC_R15_LBL,
+        IDC_R16_LBL, IDC_R17_LBL, IDC_R18_LBL, IDC_R19_LBL,
+        IDC_R20_LBL, IDC_R21_LBL, IDC_R22_LBL, IDC_R23_LBL,
+        IDC_R24_LBL, IDC_R25_LBL, IDC_R26_LBL, IDC_R27_LBL,
+        IDC_R28_LBL, IDC_R29_LBL, IDC_R30_LBL, IDC_R31_LBL,
+        NULL
+    };
+
     static constexpr WORD GPREditIds[] =
     {
         IDC_R0_EDIT,  IDC_R1_EDIT,  IDC_R2_EDIT,  IDC_R3_EDIT,
@@ -101,6 +115,7 @@ private:
         IDC_R20_EDIT, IDC_R21_EDIT, IDC_R22_EDIT, IDC_R23_EDIT,
         IDC_R24_EDIT, IDC_R25_EDIT, IDC_R26_EDIT, IDC_R27_EDIT,
         IDC_R28_EDIT, IDC_R29_EDIT, IDC_R30_EDIT, IDC_R31_EDIT,
+        NULL
     };
 
     static constexpr WORD FPREditIds[] =
@@ -113,6 +128,7 @@ private:
         IDC_F20_EDIT, IDC_F21_EDIT, IDC_F22_EDIT, IDC_F23_EDIT,
         IDC_F24_EDIT, IDC_F25_EDIT, IDC_F26_EDIT, IDC_F27_EDIT,
         IDC_F28_EDIT, IDC_F29_EDIT, IDC_F30_EDIT, IDC_F31_EDIT,
+        NULL
     };
 
     static constexpr WORD COP0EditIds[] =
@@ -122,6 +138,7 @@ private:
         IDC_COP0_8_EDIT,  IDC_COP0_9_EDIT,  IDC_COP0_10_EDIT, IDC_COP0_11_EDIT,
         IDC_COP0_12_EDIT, IDC_COP0_13_EDIT, IDC_COP0_14_EDIT, IDC_COP0_15_EDIT,
         IDC_COP0_16_EDIT, IDC_COP0_17_EDIT, IDC_COP0_18_EDIT,
+        NULL
     };
 
     static constexpr WORD RDRAMEditIds[] =
@@ -129,23 +146,27 @@ private:
         IDC_RDRAM00_EDIT, IDC_RDRAM04_EDIT, IDC_RDRAM08_EDIT, IDC_RDRAM0C_EDIT,
         IDC_RDRAM10_EDIT, IDC_RDRAM14_EDIT, IDC_RDRAM18_EDIT, IDC_RDRAM1C_EDIT,
         IDC_RDRAM20_EDIT, IDC_RDRAM24_EDIT,
+        NULL
     };
 
     static constexpr WORD SPEditIds[] =
     {
         IDC_SP00_EDIT, IDC_SP04_EDIT, IDC_SP08_EDIT, IDC_SP0C_EDIT,
         IDC_SP10_EDIT, IDC_SP14_EDIT, IDC_SP18_EDIT, IDC_SP1C_EDIT,
+        NULL
     };
 
     static constexpr WORD DPCEditIds[] =
     {
         IDC_DPC00_EDIT, IDC_DPC04_EDIT, IDC_DPC08_EDIT, IDC_DPC0C_EDIT,
         IDC_DPC10_EDIT, IDC_DPC14_EDIT, IDC_DPC18_EDIT, IDC_DPC1C_EDIT,
+        NULL
     };
 
     static constexpr WORD MIEditIds[] =
     {
         IDC_MI00_EDIT, IDC_MI04_EDIT, IDC_MI08_EDIT, IDC_MI0C_EDIT,
+        NULL
     };
 
     static constexpr WORD VIEditIds[] =
@@ -154,12 +175,14 @@ private:
         IDC_VI10_EDIT, IDC_VI14_EDIT, IDC_VI18_EDIT, IDC_VI1C_EDIT,
         IDC_VI20_EDIT, IDC_VI24_EDIT, IDC_VI28_EDIT, IDC_VI2C_EDIT,
         IDC_VI30_EDIT, IDC_VI34_EDIT,
+        NULL
     };
 
     static constexpr WORD AIEditIds[] =
     {
         IDC_AI00_EDIT, IDC_AI04_EDIT, IDC_AI08_EDIT, IDC_AI0C_EDIT,
         IDC_AI10_EDIT, IDC_AI14_EDIT,
+        NULL
     };
 
     static constexpr WORD PIEditIds[] =
@@ -168,17 +191,20 @@ private:
         IDC_PI10_EDIT, IDC_PI14_EDIT, IDC_PI18_EDIT, IDC_PI1C_EDIT,
         IDC_PI20_EDIT, IDC_PI24_EDIT, IDC_PI28_EDIT, IDC_PI2C_EDIT,
         IDC_PI30_EDIT,
+        NULL
     };
 
     static constexpr WORD RIEditIds[] =
     {
         IDC_RI00_EDIT, IDC_RI04_EDIT, IDC_RI08_EDIT, IDC_RI0C_EDIT,
         IDC_RI10_EDIT, IDC_RI14_EDIT, IDC_RI18_EDIT, IDC_RI1C_EDIT,
+        NULL
     };
 
     static constexpr WORD SIEditIds[] =
     {
         IDC_SI00_EDIT, IDC_SI04_EDIT, IDC_SI08_EDIT, IDC_SI0C_EDIT,
+        NULL
     };
 
     static constexpr WORD DDEditIds[] =
@@ -188,13 +214,15 @@ private:
         IDC_DD20_EDIT, IDC_DD24_EDIT, IDC_DD28_EDIT, IDC_DD2C_EDIT,
         IDC_DD30_EDIT, IDC_DD34_EDIT, IDC_DD38_EDIT, IDC_DD3C_EDIT,
         IDC_DD40_EDIT, IDC_DD44_EDIT, IDC_DD48_EDIT,
+        NULL
     };
 
-    static int MapEditRegNum(DWORD controlId, const WORD* edits, uint32_t ctrlIdsCount)
+    // return reg num associated with the control or -1 if ctrl isn't in map
+    static int GetCtrlRegNum(WORD ctrlId, const WORD* map)
     {
-        for (uint32_t i = 0, n = ctrlIdsCount; i < n; i++)
+        for (uint32_t i = 0; map[i] != NULL; i++)
         {
-            if (edits[i] == controlId)
+            if (map[i] == ctrlId)
             {
                 return i;
             }
@@ -240,6 +268,7 @@ private:
 
     // for static dlgprocs, assumes single instance
     static bool m_bColorsEnabled;
+    static CDebuggerUI* m_Debugger;
 
     vector<CWindow> m_TabWindows;
     bool m_attached;
