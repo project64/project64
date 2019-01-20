@@ -170,6 +170,7 @@ private:
     static duk_ret_t js_ConsolePrint(duk_context*);
     static duk_ret_t js_ConsoleClear(duk_context*);
 
+    static duk_ret_t js_BreakHere(duk_context*);
     static duk_ret_t js_Pause(duk_context*); // () ; pauses emulation
     static duk_ret_t js_ShowCommands(duk_context*); // ([address]) ; shows commands window
 
@@ -226,6 +227,8 @@ private:
         { "consoleClear",   js_ConsoleClear,   DUK_VARARGS },
         { "pause",          js_Pause,          DUK_VARARGS },
         { "showCommands",   js_ShowCommands,   DUK_VARARGS },
+
+        { "breakHere",      js_BreakHere,      DUK_VARARGS },
 
         { "screenPrint",    js_ScreenPrint,    DUK_VARARGS },
 
