@@ -17,7 +17,13 @@
 #include <Project64-core/N64System/Mips/OpcodeName.h>
 #include <Project64-core/N64System/N64Class.h>
 
-CBreakpoints::CBreakpoints()
+CBreakpoints::CBreakpoints() :
+    m_GPRWriteBP(0),
+    m_GPRReadBP(0),
+    m_HIWriteBP(false),
+    m_HIReadBP(false),
+    m_LOWriteBP(false),
+    m_LOReadBP(false)
 {
 }
 
@@ -347,6 +353,23 @@ size_t CBreakpoints::NumMemLocks()
 {
     return m_MemLocks.size();
 }
+
+bool CBreakpoints::HaveAnyGPRWriteBP(void)    { return m_GPRWriteBP != 0; }
+bool CBreakpoints::HaveAnyGPRReadBP(void)     { return m_GPRReadBP != 0; }
+bool CBreakpoints::HaveGPRWriteBP(int nReg)   { return (m_GPRWriteBP & (1 << nReg)) != 0; }
+bool CBreakpoints::HaveGPRReadBP(int nReg)    { return (m_GPRReadBP  & (1 << nReg)) != 0; }
+void CBreakpoints::ToggleGPRWriteBP(int nReg) { m_GPRWriteBP ^= (1 << nReg); }
+void CBreakpoints::ToggleGPRReadBP(int nReg)  { m_GPRReadBP  ^= (1 << nReg); }
+
+bool CBreakpoints::HaveHIWriteBP(void) { return m_HIWriteBP; }
+bool CBreakpoints::HaveHIReadBP(void)  { return m_HIReadBP; }
+bool CBreakpoints::HaveLOWriteBP(void) { return m_LOWriteBP; }
+bool CBreakpoints::HaveLOReadBP(void)  { return m_LOReadBP; }
+
+void CBreakpoints::ToggleHIWriteBP(void) { m_HIWriteBP = !m_HIWriteBP; }
+void CBreakpoints::ToggleHIReadBP(void)  { m_HIReadBP  = !m_HIReadBP; }
+void CBreakpoints::ToggleLOWriteBP(void) { m_LOWriteBP = !m_LOWriteBP; }
+void CBreakpoints::ToggleLOReadBP(void)  { m_LOReadBP  = !m_LOReadBP; }
 
 void CBreakpoints::PreUpdateBP()
 {

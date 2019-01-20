@@ -641,6 +641,40 @@
 #define IDC_CHK_FPE                     1477
 #define IDC_CHK_WATCH                   1478
 #define IDC_CHK_VCED                    1479
+#define IDC_R0_LBL                      1481
+#define IDC_R1_LBL                      1482
+#define IDC_R2_LBL                      1483
+#define IDC_R3_LBL                      1484
+#define IDC_R4_LBL                      1485
+#define IDC_R5_LBL                      1486
+#define IDC_R6_LBL                      1487
+#define IDC_R7_LBL                      1488
+#define IDC_R8_LBL                      1489
+#define IDC_R9_LBL                      1490
+#define IDC_R10_LBL                     1491
+#define IDC_R11_LBL                     1492
+#define IDC_R12_LBL                     1493
+#define IDC_R13_LBL                     1494
+#define IDC_R15_LBL                     1495
+#define IDC_R16_LBL                     1496
+#define IDC_R17_LBL                     1497
+#define IDC_R18_LBL                     1498
+#define IDC_R19_LBL                     1499
+#define IDC_R20_LBL                     1500
+#define IDC_R21_LBL                     1501
+#define IDC_R22_LBL                     1502
+#define IDC_R23_LBL                     1503
+#define IDC_R24_LBL                     1504
+#define IDC_R25_LBL                     1505
+#define IDC_R26_LBL                     1506
+#define IDC_R27_LBL                     1507
+#define IDC_R28_LBL                     1508
+#define IDC_R29_LBL                     1509
+#define IDC_R30_LBL                     1510
+#define IDC_R31_LBL                     1511
+#define IDC_R14_LBL                     1512
+#define IDC_HI_LBL                      1513
+#define IDC_LO_LBL                      1514
 #define ID_POPUP_SHOWINMEMORYVIEWER     40005
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ADDSYMBOL          40013
@@ -678,9 +712,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        209
+#define _APS_NEXT_RESOURCE_VALUE        210
 #define _APS_NEXT_COMMAND_VALUE         40043
-#define _APS_NEXT_CONTROL_VALUE         1480
+#define _APS_NEXT_CONTROL_VALUE         1515
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

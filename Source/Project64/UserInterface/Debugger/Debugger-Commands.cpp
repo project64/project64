@@ -88,6 +88,8 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     DlgSavePos_Init(DebuggerUI_CommandsPos);
     DlgToolTip_Init();
 
+    m_RegisterTabs.SetDebugger(m_Debugger);
+
     // Setup address input
     m_AddressEdit.SetDisplayType(CEditNumber32::DisplayHex);
     m_AddressEdit.SetLimitText(8);
