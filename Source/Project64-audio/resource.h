@@ -9,7 +9,6 @@
 #define IDD_CONFIG                      9
 #define IDD_LOG_SETTINGS                103
 #define IDD_GAME_SETTING                104
-#define VERSION_BUILD                   835
 #define IDC_VOLUME                      1001
 #define IDC_MUTE                        1002
 #define IDC_BUFFER                      1003
