@@ -124,10 +124,6 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
 
         if (hack == 'BH' && SystemType != SYSTEM_PAL) BufferSize -= 16;
 
-        if (g_settings->RoundFreq())
-        {
-            Frequency = ((Frequency / 25) + 1) * 25;
-        }
         WriteTrace(TraceAudioDriver, TraceInfo, "Frequency = %d", Frequency);
         WriteTrace(TraceAudioDriver, TraceInfo, "Divider = %.3f", (double)divider);
         WriteTrace(TraceAudioDriver, TraceInfo, "Buffer = %d", g_settings->GetBuffer());

@@ -20,7 +20,6 @@ public:
     inline bool debugger_enabled(void) const { return m_debugger_enabled; }
     inline uint32_t GetVolume(void) const { return m_Volume; }
     inline uint32_t GetBuffer(void) const { return m_Buffer; }
-    inline bool RoundFreq(void) const { return m_RoundFreq; }
     inline bool FixedAudio(void) const { return m_FixedAudio; }
     inline bool SyncAudio(void) const { return m_SyncAudio; }
     inline bool FullSpeed(void) const { return m_FullSpeed; }
@@ -31,7 +30,6 @@ public:
     void SetAudioEnabled(bool Enabled);
     void SetVolume(uint32_t Volume);
     void SetBuffer(uint32_t Buffer);
-    void SetRoundFreq(bool RoundFreq);
     void ReadSettings();
 
 private:
@@ -64,7 +62,6 @@ private:
     bool m_debugger_enabled;
     uint32_t m_Volume;
     uint32_t m_Buffer;
-    bool m_RoundFreq;
     bool m_FixedAudio;
     bool m_SyncAudio;
     bool m_FullSpeed;

@@ -54,7 +54,6 @@ public:
     BEGIN_MSG_MAP(CDebugSettings)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
         COMMAND_ID_HANDLER_EX(IDC_MUTE, ItemChanged)
-        COMMAND_ID_HANDLER_EX(IDC_ROUND, ItemChanged)
         NOTIFY_HANDLER_EX(IDC_VOLUME, NM_RELEASEDCAPTURE, ItemChangedNotify);
     CHAIN_MSG_MAP(CPropertyPageImpl<CGeneralSettings>)
     END_MSG_MAP()
@@ -69,8 +68,6 @@ public:
         m_Volume.SetTicFreq(20);
         m_Volume.SetRangeMin(0);
         m_Volume.SetRangeMax(100);
-        m_btnRound.Attach(GetDlgItem(IDC_ROUND));
-        m_btnRound.SetCheck(g_settings->RoundFreq() ? BST_CHECKED : BST_UNCHECKED);
         return TRUE;
     }
 
@@ -78,7 +75,6 @@ public:
     {
         g_settings->SetAudioEnabled(m_btnMute.GetCheck() != BST_CHECKED);
         g_settings->SetVolume(100 - m_Volume.GetPos());
-        g_settings->SetRoundFreq(m_btnRound.GetCheck() == BST_CHECKED);
         FlushSettings();
         return true;
     }
@@ -93,12 +89,10 @@ private:
     void ItemChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
     {
         SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
-        g_settings->SetRoundFreq(m_btnRound.GetCheck() == BST_CHECKED);
     }
 
     CTrackBarCtrl m_Volume;
     CButton m_btnMute;
-    CButton m_btnRound;
 };
 
 class CGameSettings :

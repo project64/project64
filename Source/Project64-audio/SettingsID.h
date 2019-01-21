@@ -21,5 +21,4 @@ enum
     Set_Logging_Interface,
     Set_Logging_Driver,
     Set_Buffer,
-    Set_RoundFreq,
 };
