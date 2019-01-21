@@ -123,7 +123,7 @@ void DirectSoundDriver::SetFrequency(uint32_t Frequency, uint32_t BufferSize)
 {
     WriteTrace(TraceAudioDriver, TraceDebug, "Start (Frequency: 0x%08X)", Frequency);
     StopAudio();
-    m_LOCK_SIZE = (BufferSize * 2);
+    m_LOCK_SIZE = (BufferSize * 4);
     SetSegmentSize(m_LOCK_SIZE, Frequency);
 
     StartAudio();

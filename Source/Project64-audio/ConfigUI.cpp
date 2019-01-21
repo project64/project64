@@ -54,6 +54,7 @@ public:
     BEGIN_MSG_MAP(CDebugSettings)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
         COMMAND_ID_HANDLER_EX(IDC_MUTE, ItemChanged)
+        COMMAND_ID_HANDLER_EX(IDC_ROUND, ItemChanged)
         NOTIFY_HANDLER_EX(IDC_VOLUME, NM_RELEASEDCAPTURE, ItemChangedNotify);
     CHAIN_MSG_MAP(CPropertyPageImpl<CGeneralSettings>)
     END_MSG_MAP()
@@ -68,6 +69,8 @@ public:
         m_Volume.SetTicFreq(20);
         m_Volume.SetRangeMin(0);
         m_Volume.SetRangeMax(100);
+        m_btnRound.Attach(GetDlgItem(IDC_ROUND));
+        m_btnRound.SetCheck(g_settings->RoundFreq() ? BST_CHECKED : BST_UNCHECKED);
         return TRUE;
     }
 
@@ -75,6 +78,7 @@ public:
     {
         g_settings->SetAudioEnabled(m_btnMute.GetCheck() != BST_CHECKED);
         g_settings->SetVolume(100 - m_Volume.GetPos());
+        g_settings->SetRoundFreq(m_btnRound.GetCheck() == BST_CHECKED);
         FlushSettings();
         return true;
     }
@@ -89,10 +93,12 @@ private:
     void ItemChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
     {
         SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
+        g_settings->SetRoundFreq(m_btnRound.GetCheck() == BST_CHECKED);
     }
 
     CTrackBarCtrl m_Volume;
     CButton m_btnMute;
+    CButton m_btnRound;
 };
 
 class CGameSettings :
@@ -103,37 +109,40 @@ public:
 
     BEGIN_MSG_MAP(CDebugSettings)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-        COMMAND_ID_HANDLER_EX(IDC_TINYBUFFER, ItemChanged)
-        COMMAND_ID_HANDLER_EX(IDC_FPSBUFFER, ItemChanged)
-        CHAIN_MSG_MAP(CPropertyPageImpl<CGameSettings>)
+        NOTIFY_HANDLER_EX(IDC_BUFFER, NM_RELEASEDCAPTURE, ItemChangedNotify);
+    CHAIN_MSG_MAP(CPropertyPageImpl<CGameSettings>)
     END_MSG_MAP()
 
     LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
-        m_btnTinyBuffer.Attach(GetDlgItem(IDC_TINYBUFFER));
-        m_btnTinyBuffer.SetCheck(g_settings->TinyBuffer() ? BST_CHECKED : BST_UNCHECKED);
-        m_btnFPSBuffer.Attach(GetDlgItem(IDC_FPSBUFFER));
-        m_btnFPSBuffer.SetCheck(g_settings->FPSBuffer() ? BST_CHECKED : BST_UNCHECKED);
+        m_Buffer.Attach(GetDlgItem(IDC_BUFFER));
+        m_Buffer.SetTicFreq(1);
+        m_Buffer.SetRangeMin(1);
+        m_Buffer.SetRangeMax(7);
+        m_Buffer.SetPos(g_settings->GetBuffer());
         return TRUE;
     }
 
     bool OnApply()
     {
-        g_settings->SetTinyBuffer(m_btnTinyBuffer.GetCheck() == BST_CHECKED);
-        g_settings->SetFPSBuffer(m_btnFPSBuffer.GetCheck() == BST_CHECKED);
+        g_settings->SetBuffer(m_Buffer.GetPos());
         FlushSettings();
         return true;
     }
 
 private:
-    CButton m_btnTinyBuffer;
-    CButton m_btnFPSBuffer;
+    CTrackBarCtrl m_Buffer;
 
     void ItemChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
     {
         SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
-        g_settings->SetTinyBuffer(m_btnTinyBuffer.GetCheck() == BST_CHECKED);
-        g_settings->SetFPSBuffer(m_btnFPSBuffer.GetCheck() == BST_CHECKED);
+    }
+
+    LRESULT ItemChangedNotify(NMHDR* /*pNMHDR*/)
+    {
+        SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
+        g_settings->SetBuffer(m_Buffer.GetPos());
+        return 0;
     }
 };
 

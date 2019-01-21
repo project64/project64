@@ -33,12 +33,15 @@
 void SetTimerResolution ( void );
 #endif
 
+#define ENDIAN_SWAP_BYTE    (~0 & 0x7 & 3)
+#define BES(address)    ((address) ^ ENDIAN_SWAP_BYTE)
+
 /* Read header for type definition */
 AUDIO_INFO g_AudioInfo;
 
 bool g_PluginInit = false;
 bool g_romopen = false;
-uint32_t g_Dacrate = 0;
+uint32_t g_Dacrate = 0, hack = 0;
 
 #ifdef _WIN32
 DirectSoundDriver * g_SoundDriver = NULL;
@@ -56,7 +59,7 @@ void PluginInit(void)
     SetupAudioSettings();
     StartTrace();
 #ifdef _WIN32
-	SetTimerResolution();
+    SetTimerResolution();
 #endif
     g_PluginInit = true;
 }
@@ -65,10 +68,10 @@ EXPORT void CALL PluginLoaded(void)
 {
     PluginInit();
     WriteTrace(TraceAudioInterface, TraceDebug, "Called");
-	if (g_settings != NULL)
-	{
-		g_settings->SetSyncViaAudioEnabled(true);
-	}
+    if (g_settings != NULL)
+    {
+        g_settings->SetSyncViaAudioEnabled(true);
+    }
 }
 
 EXPORT void CALL AiDacrateChanged(int SystemType)
@@ -89,36 +92,48 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
             WriteTrace(TraceAudioInterface, TraceNotice, "Unknown/reserved bits in AI_DACRATE_REG set. 0x%08X", *g_AudioInfo.AI_DACRATE_REG);
         }
 
-        uint32_t video_clock = 0; int32_t BufferSize = 0;
-        double audio_clock = 0; double framerate = (30 / 1.001);
+        uint32_t video_clock = 0, BufferSize = 0, Frequency = 0, divider = 0;
 
         switch (SystemType)
         {
         case SYSTEM_NTSC: video_clock = 48681812; break;
-        case SYSTEM_PAL: video_clock = 49656530; framerate = 25; break;
+        case SYSTEM_PAL: video_clock = 49656530; break;
         case SYSTEM_MPAL: video_clock = 48628316; break;
         }
-        uint32_t Frequency = (video_clock / (g_Dacrate + 1));
 
-        if (Frequency < 4000)
+        Frequency = (video_clock / (g_Dacrate + 1));
+
+        if (Frequency < 8000)
         {
             WriteTrace(TraceAudioDriver, TraceDebug, "Not Audio Data!");
             return;
         }
-        else
+
+        switch (g_settings->GetBuffer())
         {
-            if (g_settings->FPSBuffer() == false && SystemType != SYSTEM_PAL)
-            {
-                framerate = 30.475;		// Needed for Body Harvest (U)
-            }
-            if (g_settings->TinyBuffer() == false)
-            {
-                framerate = (framerate / 2);
-            }
-            audio_clock = (video_clock / framerate);
-            BufferSize = (int32_t)(audio_clock / (g_Dacrate + 1)) + 1 & ~0x1;
-            g_SoundDriver->AI_SetFrequency(Frequency, BufferSize);
+        case 1: divider = 50; break;
+        case 2: divider = 45; break;
+        case 3: divider = 40; break;
+        case 4: divider = 30; break;
+        case 5: divider = 25; break;
+        case 6: divider = 20; break;
+        case 7: divider = 15; break;
         }
+
+        BufferSize = ((Frequency / divider) + (int32_t)2.49 & ~0x3);
+
+        if (hack == 'BH' && SystemType != SYSTEM_PAL) BufferSize -= 16;
+
+        if (g_settings->RoundFreq())
+        {
+            Frequency = ((Frequency / 25) + 1) * 25;
+        }
+        WriteTrace(TraceAudioDriver, TraceInfo, "Frequency = %d", Frequency);
+        WriteTrace(TraceAudioDriver, TraceInfo, "Divider = %.3f", (double)divider);
+        WriteTrace(TraceAudioDriver, TraceInfo, "Buffer = %d", g_settings->GetBuffer());
+        WriteTrace(TraceAudioDriver, TraceInfo, "Buffer Size = %d", BufferSize);
+
+        g_SoundDriver->AI_SetFrequency(Frequency, BufferSize);
     }
     WriteTrace(TraceAudioInterface, TraceDebug, "Done");
 }
@@ -166,12 +181,12 @@ EXPORT void CALL AiUpdate(int32_t Wait)
 EXPORT void CALL CloseDLL(void)
 {
     WriteTrace(TraceAudioInterface, TraceDebug, "Called");
-	if (g_SoundDriver != NULL)
-	{
-		g_SoundDriver->AI_Shutdown();
-		delete g_SoundDriver;
-		g_SoundDriver = NULL;
-	}
+    if (g_SoundDriver != NULL)
+    {
+        g_SoundDriver->AI_Shutdown();
+        delete g_SoundDriver;
+        g_SoundDriver = NULL;
+    }
     CleanupAudioSettings();
     StopTrace();
 }
@@ -224,6 +239,11 @@ EXPORT int32_t CALL InitiateAudio(AUDIO_INFO Audio_Info)
 #else
     g_SoundDriver = new OpenSLESDriver;
 #endif
+    const uint16_t cart_ID = 0x0000
+        | (g_AudioInfo.HEADER[BES(0x3C)] << 8)
+        | (g_AudioInfo.HEADER[BES(0x3D)] << 0)
+        ;
+    hack = cart_ID;
     WriteTrace(TraceAudioInterface, TraceDebug, "Done (res: true)");
     return true;
 }
@@ -272,13 +292,13 @@ extern "C" void UseUnregisteredSetting(int /*SettingID*/)
 #ifdef _WIN32
 void SetTimerResolution(void)
 {
-	HMODULE hMod = GetModuleHandle("ntdll.dll");
-	if (hMod != NULL)
-	{
-		typedef LONG(NTAPI* tNtSetTimerResolution)(IN ULONG DesiredResolution, IN BOOLEAN SetResolution, OUT PULONG CurrentResolution);
-		tNtSetTimerResolution NtSetTimerResolution = (tNtSetTimerResolution)GetProcAddress(hMod, "NtSetTimerResolution");
-		ULONG CurrentResolution = 0;
-		NtSetTimerResolution(10000, TRUE, &CurrentResolution);
-	}
+    HMODULE hMod = GetModuleHandle("ntdll.dll");
+    if (hMod != NULL)
+    {
+        typedef LONG(NTAPI* tNtSetTimerResolution)(IN ULONG DesiredResolution, IN BOOLEAN SetResolution, OUT PULONG CurrentResolution);
+        tNtSetTimerResolution NtSetTimerResolution = (tNtSetTimerResolution)GetProcAddress(hMod, "NtSetTimerResolution");
+        ULONG CurrentResolution = 0;
+        NtSetTimerResolution(10000, TRUE, &CurrentResolution);
+    }
 }
 #endif

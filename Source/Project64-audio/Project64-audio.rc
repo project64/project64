@@ -18,6 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -58,6 +59,7 @@ BEGIN
     CONTROL         "",IDC_VOLUME,"msctls_trackbar32",TBS_AUTOTICKS | TBS_VERT | TBS_BOTH | WS_BORDER | WS_TABSTOP,8,14,32,67,WS_EX_STATICEDGE
     GROUPBOX        "Volume",IDC_STATIC,3,3,45,94
     CONTROL         "Mute",IDC_MUTE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,83,32,10
+    CONTROL         "Rounded Frequencies",IDC_ROUND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,103,85,10
 END
 
 IDD_LOG_SETTINGS DIALOGEX 0, 0, 311, 177
@@ -83,8 +85,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Game Settings"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "FPS Buffer",IDC_FPSBUFFER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,18,50,10
-    CONTROL         "Tiny Buffer",IDC_TINYBUFFER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,36,51,10
+    CONTROL         "",IDC_BUFFER,"msctls_trackbar32",TBS_AUTOTICKS | TBS_TOP | WS_TABSTOP,35,79,240,19
+    GROUPBOX        "Buffer Size",IDC_BUFFERTEXT,31,67,249,44,BS_CENTER
 END
 
 
@@ -139,13 +141,13 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "FileDescription",  VER_FILE_DESCRIPTION_STR "\0"
-            VALUE "FileVersion",      VER_FILE_VERSION_STR "\0"
-            VALUE "InternalName",     VER_INTERNAL_NAME_STR "\0"
-            VALUE "LegalCopyright",   VER_COPYRIGHT_STR "\0"
+            VALUE "FileDescription", VER_FILE_DESCRIPTION_STR "\0"
+            VALUE "FileVersion", VER_FILE_VERSION_STR "\0"
+            VALUE "InternalName", VER_INTERNAL_NAME_STR "\0"
+            VALUE "LegalCopyright", VER_COPYRIGHT_STR "\0"
             VALUE "OriginalFilename", VER_ORIGINAL_FILENAME_STR "\0"
-            VALUE "ProductName",      VER_PRODUCTNAME_STR
-            VALUE "ProductVersion",   VER_PRODUCT_VERSION_STR "\0"
+            VALUE "ProductName", VER_PRODUCTNAME_STR
+            VALUE "ProductVersion", VER_PRODUCT_VERSION_STR "\0"
         END
     END
     BLOCK "VarFileInfo"

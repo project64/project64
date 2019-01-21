@@ -31,8 +31,8 @@ CSettings::CSettings() :
     m_advanced_options(false),
     m_debugger_enabled(false),
     m_Volume(100),
-    m_TinyBuffer(true),
-    m_FPSBuffer(true),
+    m_Buffer(4),
+    m_RoundFreq(false),
     m_FixedAudio(false),
     m_SyncAudio(false),
     m_FullSpeed(true)
@@ -50,6 +50,8 @@ CSettings::CSettings() :
     if (m_Set_FullSpeed != 0) { SettingsRegisterChange(true, m_Set_FullSpeed, this, stSettingsChanged); }
     if (m_Set_LimitFPS != 0) { SettingsRegisterChange(true, m_Set_LimitFPS, this, stSettingsChanged); }
     SettingsRegisterChange(false, Set_Volume, this, stSettingsChanged);
+    SettingsRegisterChange(false, Set_Buffer, this, stSettingsChanged);
+    SettingsRegisterChange(false, Set_RoundFreq, this, stSettingsChanged);
 
     SettingsRegisterChange(false, Set_Logging_MD5, this, stLogLevelChanged);
     SettingsRegisterChange(false, Set_Logging_Thread, this, stLogLevelChanged);
@@ -70,6 +72,8 @@ CSettings::~CSettings()
     if (m_Set_FullSpeed != 0) { SettingsUnregisterChange(true, m_Set_FullSpeed, this, stSettingsChanged); }
     if (m_Set_LimitFPS != 0) { SettingsUnregisterChange(true, m_Set_LimitFPS, this, stSettingsChanged); }
     SettingsUnregisterChange(false, Set_Volume, this, stSettingsChanged);
+    SettingsUnregisterChange(false, Set_Buffer, this, stSettingsChanged);
+    SettingsUnregisterChange(false, Set_RoundFreq, this, stSettingsChanged);
 
     SettingsUnregisterChange(false, Set_Logging_MD5, this, stLogLevelChanged);
     SettingsUnregisterChange(false, Set_Logging_Thread, this, stLogLevelChanged);
@@ -101,8 +105,8 @@ void CSettings::RegisterSettings(void)
     RegisterSetting(Set_Logging_InitShutdown, Data_DWORD_General, "InitShutdown", "Logging", g_ModuleLogLevel[TraceAudioInitShutdown], NULL);
     RegisterSetting(Set_Logging_Interface, Data_DWORD_General, "Interface", "Logging", g_ModuleLogLevel[TraceAudioInterface], NULL);
     RegisterSetting(Set_Logging_Driver, Data_DWORD_General, "Driver", "Logging", g_ModuleLogLevel[TraceAudioDriver], NULL);
-    RegisterSetting(Set_TinyBuffer, Data_DWORD_Game, "TinyBuffer", "", (bool)true, NULL);
-    RegisterSetting(Set_FPSBuffer, Data_DWORD_Game, "FPSBuffer", "", (bool)true, NULL);
+    RegisterSetting(Set_RoundFreq, Data_DWORD_General, "RoundFrequency", "Settings", (bool)false, NULL);
+    RegisterSetting(Set_Buffer, Data_DWORD_Game, "Buffer", "", 4, NULL);
     LogLevelChanged();
 }
 
@@ -130,14 +134,14 @@ void CSettings::SetVolume(uint32_t Volume)
     }
 }
 
-void CSettings::SetTinyBuffer(bool TinyBuffer)
+void CSettings::SetBuffer(uint32_t Buffer)
 {
-    SetSetting(Set_TinyBuffer, TinyBuffer ? 1 : 0);
+    SetSetting(Set_Buffer, Buffer);
 }
 
-void CSettings::SetFPSBuffer(bool FPSBuffer)
+void CSettings::SetRoundFreq(bool RoundFreq)
 {
-    SetSetting(Set_FPSBuffer, FPSBuffer ? 1 : 0);
+    SetSetting(Set_RoundFreq, RoundFreq ? 1 : 0);
 }
 
 void CSettings::LogLevelChanged(void)
@@ -153,15 +157,14 @@ void CSettings::LogLevelChanged(void)
 void CSettings::ReadSettings(void)
 {
     bool bLimitFPS = m_Set_LimitFPS ? GetSystemSetting(m_Set_LimitFPS) != 0 : true;
-
     m_Volume = GetSetting(Set_Volume);
     m_AudioEnabled = m_Set_EnableAudio ? GetSystemSetting(m_Set_EnableAudio) != 0 : true;
     m_advanced_options = m_Set_basic_mode ? GetSystemSetting(m_Set_basic_mode) == 0 : false;
     m_debugger_enabled = m_advanced_options && m_Set_debugger ? GetSystemSetting(m_Set_debugger) == 1 : false;
-    m_TinyBuffer = GetSetting(Set_TinyBuffer) != 0;
-    m_FPSBuffer = GetSetting(Set_FPSBuffer) != 0;
+    m_RoundFreq = GetSetting(Set_RoundFreq) != 0;
+    m_Buffer = GetSetting(Set_Buffer);
     m_FullSpeed = m_Set_FullSpeed ? GetSystemSetting(m_Set_FullSpeed) != 0 : false;
-
+    m_FixedAudio = m_Set_FixedAudio ? GetSystemSetting(m_Set_FixedAudio) != 0 : false;
     m_SyncAudio = (!m_advanced_options || bLimitFPS);
 
     if (m_Set_log_dir != 0)
