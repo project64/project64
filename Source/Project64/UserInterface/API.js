@@ -289,8 +289,7 @@ const debug = {
     },
     breakhere: function()
     {
-        debug.showcommands(gpr.pc)
-        system.pause()
+        _native.breakHere()
     },
     disasm: function()
     {

@@ -1470,6 +1470,12 @@ duk_ret_t CScriptInstance::js_ConsoleClear(duk_context* ctx)
     return 1;
 }
 
+duk_ret_t CScriptInstance::js_BreakHere(duk_context* /*ctx*/)
+{
+    g_Settings->SaveBool(Debugger_SteppingOps, true);
+    return 1;
+}
+
 duk_ret_t CScriptInstance::js_Pause(duk_context* /*ctx*/)
 {
     g_System->Pause();
