@@ -120,14 +120,9 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
         case 7: divider = 15; break;
         }
 
-        BufferSize = ((Frequency / divider) + (int32_t)2.49 & ~0x3);
+        BufferSize = (Frequency / divider) + 3 & ~0x3;
 
         if (hack == 'BH' && SystemType != SYSTEM_PAL) BufferSize -= 16;
-
-        WriteTrace(TraceAudioDriver, TraceInfo, "Frequency = %d", Frequency);
-        WriteTrace(TraceAudioDriver, TraceInfo, "Divider = %.3f", (double)divider);
-        WriteTrace(TraceAudioDriver, TraceInfo, "Buffer = %d", g_settings->GetBuffer());
-        WriteTrace(TraceAudioDriver, TraceInfo, "Buffer Size = %d", BufferSize);
 
         g_SoundDriver->AI_SetFrequency(Frequency, BufferSize);
     }
