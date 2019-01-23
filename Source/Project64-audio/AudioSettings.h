@@ -19,18 +19,17 @@ public:
     inline bool AudioEnabled(void) const { return m_AudioEnabled; }
     inline bool debugger_enabled(void) const { return m_debugger_enabled; }
     inline uint32_t GetVolume(void) const { return m_Volume; }
-    inline bool TinyBuffer(void) const { return m_TinyBuffer; }
-    inline bool FPSBuffer(void) const { return m_FPSBuffer; }
+    inline uint32_t GetBuffer(void) const { return m_Buffer; }
+    inline bool FixedAudio(void) const { return m_FixedAudio; }
     inline bool SyncAudio(void) const { return m_SyncAudio; }
     inline bool FullSpeed(void) const { return m_FullSpeed; }
     inline bool FlushLogs(void) const { return m_FlushLogs; }
     inline const char * log_dir(void) const { return m_log_dir; }
 
-	void SetSyncViaAudioEnabled(bool Enabled);
-	void SetAudioEnabled(bool Enabled);
-	void SetVolume(uint32_t Volume);
-    void SetTinyBuffer(bool TinyBuffer);
-    void SetFPSBuffer(bool FPSBuffer);
+    void SetSyncViaAudioEnabled(bool Enabled);
+    void SetAudioEnabled(bool Enabled);
+    void SetVolume(uint32_t Volume);
+    void SetBuffer(uint32_t Buffer);
     void ReadSettings();
 
 private:
@@ -62,8 +61,7 @@ private:
     bool m_advanced_options;
     bool m_debugger_enabled;
     uint32_t m_Volume;
-    bool m_TinyBuffer;
-    bool m_FPSBuffer;
+    uint32_t m_Buffer;
     bool m_FixedAudio;
     bool m_SyncAudio;
     bool m_FullSpeed;
