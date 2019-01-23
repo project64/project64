@@ -459,7 +459,7 @@ void CDMA::PI_DMA_WRITE()
         {
             g_Recompiler->ClearRecompCode_Phys(g_Reg->PI_DRAM_ADDR_REG, g_Reg->PI_WR_LEN_REG, CRecompiler::Remove_DMA);
         }
-        g_SystemTimer->SetTimer(g_SystemTimer->PiTimer, PI_WR_LEN_REG/8 + (g_Random->next() % 0x40), false);
+        g_SystemTimer->SetTimer(g_SystemTimer->PiTimer, PI_WR_LEN_REG/24 + (g_Random->next() % 0x40), false);
 
         //g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         //g_Reg->MI_INTR_REG |= MI_INTR_PI;
