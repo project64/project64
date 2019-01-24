@@ -974,6 +974,23 @@ duk_ret_t CScriptInstance::js_SetFPRVal(duk_context* ctx)
     return 1;
 }
 
+duk_ret_t CScriptInstance::js_GetCauseVal(duk_context* ctx)
+{
+	duk_push_uint(ctx, g_Reg->FAKE_CAUSE_REGISTER);
+	return 1;
+}
+
+duk_ret_t CScriptInstance::js_SetCauseVal(duk_context* ctx)
+{
+	uint32_t val = duk_to_uint32(ctx, 0);
+
+	g_Reg->FAKE_CAUSE_REGISTER = val;
+	g_Reg->CheckInterrupts();
+
+	duk_pop_n(ctx, 1);
+	return 1;
+}
+
 duk_ret_t CScriptInstance::js_GetROMInt(duk_context* ctx)
 {
     uint32_t address = duk_to_uint32(ctx, 0) & 0x0FFFFFFF;
