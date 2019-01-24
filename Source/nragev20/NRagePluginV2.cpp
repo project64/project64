@@ -536,7 +536,7 @@ EXPORT void CALL GetKeys(int Control, BUTTONS * Keys )
 #ifdef ENABLE_RAWPAK_DEBUG
 	DebugWriteA("CALLED: GetKeys\n");
 #endif
-	if( g_bConfiguring )
+	if( g_bConfiguring || GetForegroundWindow() != g_strEmuInfo.hMainWindow)
 		Keys->Value = 0;
 	else
 	{
