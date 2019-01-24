@@ -156,6 +156,8 @@ private:
     static duk_ret_t js_SetGPRVal(duk_context*); // (regNum, bUpper, value)
     static duk_ret_t js_GetFPRVal(duk_context*); // (regNum, bDouble)
     static duk_ret_t js_SetFPRVal(duk_context*); // (regNum, bDouble, value)
+	static duk_ret_t js_GetCauseVal(duk_context*); // ()
+	static duk_ret_t js_SetCauseVal(duk_context*); // (value)
     static duk_ret_t js_GetROMInt(duk_context*); // (address, bitwidth, signed)
     static duk_ret_t js_GetROMFloat(duk_context*); // (address, bDouble)
     static duk_ret_t js_GetROMBlock(duk_context*); // (address, nBytes) ; returns Buffer
@@ -202,6 +204,8 @@ private:
         { "getGPRVal",      js_GetGPRVal,      DUK_VARARGS },
         { "setFPRVal",      js_SetFPRVal,      DUK_VARARGS },
         { "getFPRVal",      js_GetFPRVal,      DUK_VARARGS },
+		{ "setCauseVal",    js_SetCauseVal,    DUK_VARARGS },
+		{ "getCauseVal",    js_GetCauseVal,    DUK_VARARGS },
 
         { "getROMInt",      js_GetROMInt,      DUK_VARARGS },
         { "getROMFloat",    js_GetROMFloat,    DUK_VARARGS },

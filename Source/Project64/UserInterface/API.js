@@ -593,6 +593,20 @@ const dfpr = new Proxy({},
     }
 })
 
+const cop0 = new Proxy({},
+{
+    get: function (obj, prop) {
+        if (prop == "cause") {
+            return _native.getCauseVal();
+        }
+    },
+    set: function (obj, prop, val) {
+        if (prop == "cause") {
+            _native.setCauseVal(val);
+        }
+    }
+})
+
 const rom = {
     u8: new Proxy({},
     {
