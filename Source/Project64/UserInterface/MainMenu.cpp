@@ -126,20 +126,16 @@ void CMainMenu::OnOpenRom(HWND hWnd)
         return;
     }
     // Open Disk
-    if (!g_BaseSystem->RunDiskImage(File.c_str(), false))
-    {
-        return;
-    }
-    stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
-    if ((IPLROM.length() <= 0) || (!g_BaseSystem->RunFileImage(IPLROM.c_str())))
-    {
-        const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-        CPath FileName;
-        if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-        {
-            g_BaseSystem->RunFileImage(FileName);
-        }
-    }
+	if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(File.c_str()))
+	{
+		CPath FileNameIPL;
+		const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+		if (FileNameIPL.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
+		{
+			g_Settings->SaveString(File_DiskIPLPath, (const char *)FileNameIPL);
+			g_BaseSystem->RunDiskImage(File.c_str());
+		}
+	}
 }
 
 void CMainMenu::OnRomInfo(HWND hWnd)
@@ -554,17 +550,14 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
 					g_BaseSystem->RunFileImage(FileName.c_str());
 				else
 				{
-					if (g_BaseSystem->RunDiskImage(FileName.c_str(), false))
+					if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(FileName.c_str()))
 					{
-						stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
-						if ((IPLROM.length() <= 0) || (!g_BaseSystem->RunFileImage(IPLROM.c_str())))
+						CPath FileNameIPL;
+						const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+						if (FileNameIPL.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
 						{
-							const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-							CPath FileNameIPL;
-							if (FileNameIPL.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-							{
-								g_BaseSystem->RunFileImage(FileNameIPL);
-							}
+							g_Settings->SaveString(File_DiskIPLPath, (const char *)FileNameIPL);
+							g_BaseSystem->RunDiskImage(FileName.c_str());
 						}
 					}
 				}

@@ -374,11 +374,6 @@ bool CN64System::RunFileImage(const char * FileLoc)
     {
         return false;
     }
-	if (g_Rom == g_DDRom && g_Rom != NULL && g_DDRom != NULL && g_Disk != NULL)
-	{
-		g_Settings->SaveString(Game_IniKey, g_Disk->GetDiskIdent().c_str());
-		g_System->RefreshGameSettings();
-	}
     if (g_Settings->LoadBool(Setting_AutoStart) != 0)
     {
         WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
@@ -386,6 +381,49 @@ bool CN64System::RunFileImage(const char * FileLoc)
     }
     return true;
 }
+
+bool CN64System::RunDiskImage(const char * FileLoc)
+{
+	if (!LoadFileImage(g_Settings->LoadStringVal(File_DiskIPLPath).c_str()))
+	{
+		g_Settings->SaveString(File_DiskIPLPath, "");
+		return false;
+	}
+	if (!LoadDiskImage(FileLoc, false))
+	{
+		return false;
+	}
+	if (g_Settings->LoadBool(Setting_AutoStart) != 0)
+	{
+		WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
+		RunLoadedImage();
+	}
+	return true;
+}
+
+bool CN64System::RunDiskComboImage(const char * FileLoc, const char * FileLocDisk)
+{
+	if (!LoadFileImageIPL(g_Settings->LoadStringVal(File_DiskIPLPath).c_str()))
+	{
+		g_Settings->SaveString(File_DiskIPLPath, "");
+		return false;
+	}
+	if (!LoadDiskImage(FileLocDisk, true))
+	{
+		return false;
+	}
+	if (!LoadFileImage(FileLoc))
+	{
+		return false;
+	}
+	if (g_Settings->LoadBool(Setting_AutoStart) != 0)
+	{
+		WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
+		RunLoadedImage();
+	}
+	return true;
+}
+
 
 void CN64System::RunLoadedImage(void)
 {
@@ -402,7 +440,7 @@ void CN64System::RunLoadedImage(void)
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
-bool CN64System::RunFileImageIPL(const char * FileLoc)
+bool CN64System::LoadFileImageIPL(const char * FileLoc)
 {
     CloseSystem();
     if (g_Settings->LoadBool(GameRunning_LoadingInProgress))
@@ -459,7 +497,7 @@ bool CN64System::RunFileImageIPL(const char * FileLoc)
     return true;
 }
 
-bool CN64System::RunDiskImage(const char * FileLoc, const bool Expansion)
+bool CN64System::LoadDiskImage(const char * FileLoc, const bool Expansion)
 {
     CloseSystem();
     if (g_Settings->LoadBool(GameRunning_LoadingInProgress))

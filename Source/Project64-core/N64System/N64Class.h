@@ -59,8 +59,10 @@ public:
     //Methods
     static bool LoadFileImage(const char * FileLoc);
     static bool RunFileImage(const char * FileLoc);
-    static bool RunFileImageIPL(const char * FileLoc);
-    static bool RunDiskImage(const char * FileLoc, const bool Expansion);
+	static bool RunDiskImage(const char * FileLoc);
+	static bool RunDiskComboImage(const char * FileLoc, const char * FileLocDisk);
+    static bool LoadFileImageIPL(const char * FileLoc);
+    static bool LoadDiskImage(const char * FileLoc, const bool Expansion);
     static void RunLoadedImage(void);
     static void CloseSystem(void);
 

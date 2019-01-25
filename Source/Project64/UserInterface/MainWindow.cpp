@@ -989,17 +989,14 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
 					}
 					else
 					{
-						if (g_BaseSystem->RunDiskImage(_this->CurrentedSelectedRom(), false))
+						if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(_this->CurrentedSelectedRom()))
 						{
-							stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
-							if ((IPLROM.length() <= 0) || (!g_BaseSystem->RunFileImage(IPLROM.c_str())))
+							CPath FileName;
+							const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+							if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
 							{
-								CPath FileName;
-								const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-								if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-								{
-									g_BaseSystem->RunFileImage(FileName);
-								}
+								g_Settings->SaveString(File_DiskIPLPath, (const char *)FileName);
+								g_BaseSystem->RunDiskImage(_this->CurrentedSelectedRom());
 							}
 						}
 					}
@@ -1007,38 +1004,21 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
 				}
             case ID_POPUPMENU_PLAYGAMEWITHDISK:
                 {
-                    stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
-                    if ((IPLROM.length() <= 0) || (!g_BaseSystem->RunFileImageIPL(IPLROM.c_str())))
-                    {
-                        const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-                        CPath FileName;
-                        if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-                        {
-                            g_BaseSystem->RunFileImageIPL(FileName);
-                            // Open Disk
-                            const char * N64DDFilter = "N64DD Disk Image (*.ndd)\0*.ndd\0All files (*.*)\0*.*\0";
-                            if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), N64DDFilter, true))
-                            {
-                                if (g_BaseSystem->RunDiskImage(FileName, true))
-                                {
-                                    g_BaseSystem->RunFileImage(_this->CurrentedSelectedRom());
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // Open Disk
-                        CPath FileName;
-                        const char * Filter = "N64DD Disk Image (*.ndd)\0*.ndd\0All files (*.*)\0*.*\0";
-                        if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-                        {
-                            if (g_BaseSystem->RunDiskImage(FileName, true))
-                            {
-                                g_BaseSystem->RunFileImage(_this->CurrentedSelectedRom());
-                            }
-                        }
-                    }
+					CPath FileName;
+					const char * Filter = "N64DD Disk Image (*.ndd)\0*.ndd\0All files (*.*)\0*.*\0";
+					if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
+					{
+						if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskComboImage(_this->CurrentedSelectedRom(), FileName))
+						{
+							CPath FileNameIPL;
+							const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+							if (FileNameIPL.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
+							{
+								g_Settings->SaveString(File_DiskIPLPath, (const char *)FileNameIPL);
+								g_BaseSystem->RunDiskComboImage(_this->CurrentedSelectedRom(), FileName);
+							}
+						}
+					}
                 }
                 break;
             case ID_POPUPMENU_ROMDIRECTORY:   _this->SelectRomDir(); break;
@@ -1195,19 +1175,16 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             else
             {
                 // Open Disk
-                if (CN64System::RunDiskImage(filename, false))
-                {
-                    stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
-                    if ((IPLROM.length() <= 0) || (!CN64System::RunFileImage(IPLROM.c_str())))
-                    {
-                        CPath FileName;
-                        const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-                        if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-                        {                            
-                            CN64System::RunFileImage(FileName);
-                        }
-                    }
-                }
+				if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(filename))
+				{
+					CPath FileName;
+					const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+					if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
+					{
+						g_Settings->SaveString(File_DiskIPLPath, (const char *)FileName);
+						g_BaseSystem->RunDiskImage(filename);
+					}
+				}
             }
         }
         break;

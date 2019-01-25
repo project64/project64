@@ -811,17 +811,14 @@ void CRomBrowser::RomList_OpenRom(uint32_t /*pnmh*/)
 		CN64System::RunFileImage(pRomInfo->szFullFileName);
 	else
 	{
-		if (CN64System::RunDiskImage(pRomInfo->szFullFileName, false))
+		if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(pRomInfo->szFullFileName))
 		{
-			stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
-			if ((IPLROM.length() <= 0) || (!CN64System::RunFileImage(IPLROM.c_str())))
+			CPath FileName;
+			const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+			if (FileName.SelectFile(m_MainWindow, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
 			{
-				CPath FileName;
-				const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-				if (FileName.SelectFile(m_MainWindow, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-				{
-					CN64System::RunFileImage(FileName);
-				}
+				g_Settings->SaveString(File_DiskIPLPath, (const char *)FileName);
+				g_BaseSystem->RunDiskImage(pRomInfo->szFullFileName);
 			}
 		}
 	}
@@ -887,6 +884,7 @@ void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
 		if (inBasicMode) { DeleteMenu(hPopupMenu, 9, MF_BYPOSITION); }
         if (inBasicMode && !CheatsRemembered) { DeleteMenu(hPopupMenu, 8, MF_BYPOSITION); }
         DeleteMenu(hPopupMenu, 7, MF_BYPOSITION);
+		if (CPath(m_SelectedRom).GetExtension() == "ndd") { DeleteMenu(hPopupMenu, 1, MF_BYPOSITION); }
         if (!inBasicMode && g_Plugins && g_Plugins->Gfx() && g_Plugins->Gfx()->GetRomBrowserMenu != NULL)
         {
             HMENU GfxMenu = (HMENU)g_Plugins->Gfx()->GetRomBrowserMenu();
