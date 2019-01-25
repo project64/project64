@@ -64,6 +64,7 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
     if (g_Disk == this)
     {
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
+        g_Settings->SaveBool(Setting_EnableDisk, true);
         SaveDiskSettingID(false);
     }
     return true;
