@@ -370,6 +370,17 @@ bool CN64System::LoadFileImage(const char * FileLoc)
 
 bool CN64System::RunFileImage(const char * FileLoc)
 {
+    //Uninitialize g_Disk and g_DDRom to prevent exception when ending emulation of a regular ROM after playing 64DD content previously.
+    if (g_Disk != NULL)
+    {
+        delete g_Disk;
+        g_Disk = NULL;
+    }
+    if (g_DDRom != NULL)
+    {
+        delete g_DDRom;
+        g_DDRom = NULL;
+    }
     if (!LoadFileImage(FileLoc))
     {
         return false;
