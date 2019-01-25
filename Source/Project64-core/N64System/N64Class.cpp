@@ -344,9 +344,12 @@ bool CN64System::LoadFileImage(const char * FileLoc)
             g_Settings->SaveBool(Setting_EnableDisk, true);
         }
 
-        g_System->RefreshGameSettings();
+		g_System->RefreshGameSettings();
 
-        g_Settings->SaveString(Game_File, FileLoc);
+		if (g_Rom->CicChipID() != CIC_NUS_8303 && g_Rom->CicChipID() != CIC_NUS_DDUS)
+		{
+			g_Settings->SaveString(Game_File, FileLoc);
+		}
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
 
         WriteTrace(TraceN64System, TraceDebug, "Finished Loading (GoodName: %s)", g_Settings->LoadStringVal(Rdb_GoodName).c_str());
@@ -371,6 +374,11 @@ bool CN64System::RunFileImage(const char * FileLoc)
     {
         return false;
     }
+	if (g_Rom == g_DDRom && g_Rom != NULL && g_DDRom != NULL && g_Disk != NULL)
+	{
+		g_Settings->SaveString(Game_IniKey, g_Disk->GetDiskIdent().c_str());
+		g_System->RefreshGameSettings();
+	}
     if (g_Settings->LoadBool(Setting_AutoStart) != 0)
     {
         WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
@@ -451,7 +459,7 @@ bool CN64System::RunFileImageIPL(const char * FileLoc)
     return true;
 }
 
-bool CN64System::RunDiskImage(const char * FileLoc)
+bool CN64System::RunDiskImage(const char * FileLoc, const bool Expansion)
 {
     CloseSystem();
     if (g_Settings->LoadBool(GameRunning_LoadingInProgress))
@@ -480,7 +488,10 @@ bool CN64System::RunDiskImage(const char * FileLoc)
     {
         g_System->RefreshGameSettings();
 
-        //g_Settings->SaveString(Game_File, FileLoc);
+		if (!Expansion)
+		{
+			g_Settings->SaveString(Game_File, FileLoc);
+		}
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
     }
     else

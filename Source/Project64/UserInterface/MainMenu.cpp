@@ -126,7 +126,7 @@ void CMainMenu::OnOpenRom(HWND hWnd)
         return;
     }
     // Open Disk
-    if (!g_BaseSystem->RunDiskImage(File.c_str()))
+    if (!g_BaseSystem->RunDiskImage(File.c_str(), false))
     {
         return;
     }
@@ -144,7 +144,12 @@ void CMainMenu::OnOpenRom(HWND hWnd)
 
 void CMainMenu::OnRomInfo(HWND hWnd)
 {
-    if (g_Rom)
+	if (g_Disk)
+	{
+		RomInformation Info(g_Disk);
+		Info.DisplayInformation(hWnd);
+	}
+    else if (g_Rom)
     {
         RomInformation Info(g_Rom);
         Info.DisplayInformation(hWnd);
@@ -545,7 +550,24 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             if (UISettingsLoadStringIndex(File_RecentGameFileIndex, MenuID - ID_RECENT_ROM_START, FileName) &&
                 FileName.length() > 0)
             {
-                g_BaseSystem->RunFileImage(FileName.c_str());
+				if (CPath(FileName).GetExtension() != "ndd")
+					g_BaseSystem->RunFileImage(FileName.c_str());
+				else
+				{
+					if (g_BaseSystem->RunDiskImage(FileName.c_str(), false))
+					{
+						stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
+						if ((IPLROM.length() <= 0) || (!g_BaseSystem->RunFileImage(IPLROM.c_str())))
+						{
+							const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+							CPath FileNameIPL;
+							if (FileNameIPL.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
+							{
+								g_BaseSystem->RunFileImage(FileNameIPL);
+							}
+						}
+					}
+				}
             }
         }
         if (MenuID >= ID_RECENT_DIR_START && MenuID < ID_RECENT_DIR_END)

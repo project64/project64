@@ -13,6 +13,7 @@
 
 #include <commctrl.h>
 #include <Project64-core/Settings/SettingType/SettingsType-Application.h>
+#include <Project64-core/N64System/N64DiskClass.h>
 
 void EnterLogOptions(HWND hwndOwner);
 
@@ -980,7 +981,30 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             if (_this == NULL) { break; }
 
             switch (LOWORD(wParam)) {
-            case ID_POPUPMENU_PLAYGAME: g_BaseSystem->RunFileImage(_this->CurrentedSelectedRom()); break;
+            case ID_POPUPMENU_PLAYGAME: 
+				{
+					if (CPath(_this->CurrentedSelectedRom()).GetExtension() != "ndd")
+					{
+						g_BaseSystem->RunFileImage(_this->CurrentedSelectedRom());
+					}
+					else
+					{
+						if (g_BaseSystem->RunDiskImage(_this->CurrentedSelectedRom(), false))
+						{
+							stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
+							if ((IPLROM.length() <= 0) || (!g_BaseSystem->RunFileImage(IPLROM.c_str())))
+							{
+								CPath FileName;
+								const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+								if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
+								{
+									g_BaseSystem->RunFileImage(FileName);
+								}
+							}
+						}
+					}
+					break;
+				}
             case ID_POPUPMENU_PLAYGAMEWITHDISK:
                 {
                     stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
@@ -995,7 +1019,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                             const char * N64DDFilter = "N64DD Disk Image (*.ndd)\0*.ndd\0All files (*.*)\0*.*\0";
                             if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), N64DDFilter, true))
                             {
-                                if (g_BaseSystem->RunDiskImage(FileName))
+                                if (g_BaseSystem->RunDiskImage(FileName, true))
                                 {
                                     g_BaseSystem->RunFileImage(_this->CurrentedSelectedRom());
                                 }
@@ -1009,7 +1033,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                         const char * Filter = "N64DD Disk Image (*.ndd)\0*.ndd\0All files (*.*)\0*.*\0";
                         if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
                         {
-                            if (g_BaseSystem->RunDiskImage(FileName))
+                            if (g_BaseSystem->RunDiskImage(FileName, true))
                             {
                                 g_BaseSystem->RunFileImage(_this->CurrentedSelectedRom());
                             }
@@ -1029,38 +1053,76 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             case ID_POPUPMENU_EDITCHEATS:
 			case ID_POPUPMENU_CHOOSEENHANCEMENT:
                 {
-                    CN64Rom Rom;
-                    Rom.LoadN64Image(_this->CurrentedSelectedRom(), true);
-                    Rom.SaveRomSettingID(true);
-
-                    if (LOWORD(wParam) == ID_POPUPMENU_EDITSETTINGS)
-                    {
-                        CSettingConfig SettingConfig(true);
-                        SettingConfig.Display(hWnd);
-                    }
-					else if (LOWORD(wParam) == ID_POPUPMENU_CHOOSEENHANCEMENT)
+					if (CPath(_this->CurrentedSelectedRom()).GetExtension() != "ndd")
 					{
-						CEnhancementConfig().Display(hWnd);
-					}
-					else if (LOWORD(wParam) == ID_POPUPMENU_EDITCHEATS)
-                    {
-                        CCheatsUI * cheatUI = new CCheatsUI;
-                        g_cheatUI = cheatUI;
-                        cheatUI->SelectCheats(hWnd, true);
-                        if (g_cheatUI == cheatUI)
-                        {
-                            g_cheatUI = NULL;
-                        }
-                    }
+						CN64Rom Rom;
+						Rom.LoadN64Image(_this->CurrentedSelectedRom(), true);
+						Rom.SaveRomSettingID(true);
 
-                    if (g_Rom)
-                    {
-                        g_Rom->SaveRomSettingID(false);
-                    }
-                    else
-                    {
-                        Rom.ClearRomSettingID();
-                    }
+						if (LOWORD(wParam) == ID_POPUPMENU_EDITSETTINGS)
+						{
+							CSettingConfig SettingConfig(true);
+							SettingConfig.Display(hWnd);
+						}
+						else if (LOWORD(wParam) == ID_POPUPMENU_CHOOSEENHANCEMENT)
+						{
+							CEnhancementConfig().Display(hWnd);
+						}
+						else if (LOWORD(wParam) == ID_POPUPMENU_EDITCHEATS)
+						{
+							CCheatsUI * cheatUI = new CCheatsUI;
+							g_cheatUI = cheatUI;
+							cheatUI->SelectCheats(hWnd, true);
+							if (g_cheatUI == cheatUI)
+							{
+								g_cheatUI = NULL;
+							}
+						}
+
+						if (g_Rom)
+						{
+							g_Rom->SaveRomSettingID(false);
+						}
+						else
+						{
+							Rom.ClearRomSettingID();
+						}
+					}
+					else
+					{
+						CN64Disk Disk;
+						Disk.LoadDiskImage(_this->CurrentedSelectedRom());
+						Disk.SaveDiskSettingID(true);
+
+						if (LOWORD(wParam) == ID_POPUPMENU_EDITSETTINGS)
+						{
+							CSettingConfig SettingConfig(true);
+							SettingConfig.Display(hWnd);
+						}
+						else if (LOWORD(wParam) == ID_POPUPMENU_CHOOSEENHANCEMENT)
+						{
+							CEnhancementConfig().Display(hWnd);
+						}
+						else if (LOWORD(wParam) == ID_POPUPMENU_EDITCHEATS)
+						{
+							CCheatsUI * cheatUI = new CCheatsUI;
+							g_cheatUI = cheatUI;
+							cheatUI->SelectCheats(hWnd, true);
+							if (g_cheatUI == cheatUI)
+							{
+								g_cheatUI = NULL;
+							}
+						}
+
+						if (g_Disk)
+						{
+							g_Disk->SaveDiskSettingID(false);
+						}
+						else
+						{
+							Disk.ClearDiskSettingID();
+						}
+					}
                 }
                 break;
             default:
@@ -1133,7 +1195,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             else
             {
                 // Open Disk
-                if (CN64System::RunDiskImage(filename))
+                if (CN64System::RunDiskImage(filename, false))
                 {
                     stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
                     if ((IPLROM.length() <= 0) || (!CN64System::RunFileImage(IPLROM.c_str())))

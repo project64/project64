@@ -807,7 +807,24 @@ void CRomBrowser::RomList_OpenRom(uint32_t /*pnmh*/)
     delete g_DDRom;
     g_DDRom = NULL;
 
-    CN64System::RunFileImage(pRomInfo->szFullFileName);
+	if (CPath(pRomInfo->szFullFileName).GetExtension() != "ndd")
+		CN64System::RunFileImage(pRomInfo->szFullFileName);
+	else
+	{
+		if (CN64System::RunDiskImage(pRomInfo->szFullFileName, false))
+		{
+			stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
+			if ((IPLROM.length() <= 0) || (!CN64System::RunFileImage(IPLROM.c_str())))
+			{
+				CPath FileName;
+				const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+				if (FileName.SelectFile(m_MainWindow, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
+				{
+					CN64System::RunFileImage(FileName);
+				}
+			}
+		}
+	}
 }
 
 void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)

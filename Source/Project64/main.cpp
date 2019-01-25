@@ -37,7 +37,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
             else
             {
                 //Ext is *.ndd, so it should be a disk file.
-                if (CN64System::RunDiskImage(g_Settings->LoadStringVal(Cmd_RomFile).c_str()))
+                if (CN64System::RunDiskImage(g_Settings->LoadStringVal(Cmd_RomFile).c_str(), false))
                 {
                     stdstr IPLROM = g_Settings->LoadStringVal(File_DiskIPLPath);
                     if ((IPLROM.length() <= 0) || (!CN64System::RunFileImage(IPLROM.c_str())))
