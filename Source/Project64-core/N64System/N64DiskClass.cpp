@@ -50,24 +50,24 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
         }
     }
 
-	char RomName[5];
-	//Get the disk ID from the disk image
-	RomName[0] = (char)*(m_DiskImage + 0x43673);
-	RomName[1] = (char)*(m_DiskImage + 0x43672);
-	RomName[2] = (char)*(m_DiskImage + 0x43671);
-	RomName[3] = (char)*(m_DiskImage + 0x43670);
-	RomName[4] = '\0';
+    char RomName[5];
+    //Get the disk ID from the disk image
+    RomName[0] = (char)*(m_DiskImage + 0x43673);
+    RomName[1] = (char)*(m_DiskImage + 0x43672);
+    RomName[2] = (char)*(m_DiskImage + 0x43671);
+    RomName[3] = (char)*(m_DiskImage + 0x43670);
+    RomName[4] = '\0';
 
-	m_RomName = RomName;
+    m_RomName = RomName;
     m_FileName = FileLoc;
-	m_DiskIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(&m_DiskImage[0]), *(uint32_t *)(&m_DiskImage[0x43670]), m_DiskImage[0x43670]);
-	m_Country = (Country)m_DiskImage[0x43670];
+    m_DiskIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(&m_DiskImage[0]), *(uint32_t *)(&m_DiskImage[0x43670]), m_DiskImage[0x43670]);
+    m_Country = (Country)m_DiskImage[0x43670];
 
-	if (g_Disk == this)
-	{
-		g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
-		SaveDiskSettingID(false);
-	}
+    if (g_Disk == this)
+    {
+        g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
+        SaveDiskSettingID(false);
+    }
     return true;
 }
 
@@ -136,28 +136,28 @@ bool CN64Disk::IsValidDiskImage(uint8_t Test[4])
 //this rom
 void CN64Disk::SaveDiskSettingID(bool temp)
 {
-	g_Settings->SaveBool(Game_TempLoaded, temp);
-	g_Settings->SaveString(Game_GameName, m_RomName.c_str());
-	g_Settings->SaveString(Game_IniKey, m_DiskIdent.c_str());
-	//g_Settings->SaveString(Game_UniqueSaveDir, stdstr_f("%s-%s", m_RomName.c_str(), m_MD5.c_str()).c_str());
+    g_Settings->SaveBool(Game_TempLoaded, temp);
+    g_Settings->SaveString(Game_GameName, m_RomName.c_str());
+    g_Settings->SaveString(Game_IniKey, m_DiskIdent.c_str());
+    //g_Settings->SaveString(Game_UniqueSaveDir, stdstr_f("%s-%s", m_RomName.c_str(), m_MD5.c_str()).c_str());
 
-	switch (GetCountry())
-	{
-	case Germany: case french:  case Italian:
-	case Europe:  case Spanish: case Australia:
-	case X_PAL:   case Y_PAL:
-		g_Settings->SaveDword(Game_SystemType, SYSTEM_PAL);
-		break;
-	default:
-		g_Settings->SaveDword(Game_SystemType, SYSTEM_NTSC);
-		break;
-	}
+    switch (GetCountry())
+    {
+    case Germany: case french:  case Italian:
+    case Europe:  case Spanish: case Australia:
+    case X_PAL:   case Y_PAL:
+        g_Settings->SaveDword(Game_SystemType, SYSTEM_PAL);
+        break;
+    default:
+        g_Settings->SaveDword(Game_SystemType, SYSTEM_NTSC);
+        break;
+    }
 }
 
 void CN64Disk::ClearDiskSettingID()
 {
-	g_Settings->SaveString(Game_GameName, "");
-	g_Settings->SaveString(Game_IniKey, "");
+    g_Settings->SaveString(Game_GameName, "");
+    g_Settings->SaveString(Game_IniKey, "");
 }
 
 bool CN64Disk::AllocateDiskImage(uint32_t DiskFileSize)

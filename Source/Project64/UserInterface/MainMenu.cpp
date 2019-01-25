@@ -126,25 +126,25 @@ void CMainMenu::OnOpenRom(HWND hWnd)
         return;
     }
     // Open Disk
-	if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(File.c_str()))
-	{
-		CPath FileNameIPL;
-		const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-		if (FileNameIPL.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-		{
-			g_Settings->SaveString(File_DiskIPLPath, (const char *)FileNameIPL);
-			g_BaseSystem->RunDiskImage(File.c_str());
-		}
-	}
+    if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(File.c_str()))
+    {
+        CPath FileNameIPL;
+        const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+        if (FileNameIPL.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
+        {
+            g_Settings->SaveString(File_DiskIPLPath, (const char *)FileNameIPL);
+            g_BaseSystem->RunDiskImage(File.c_str());
+        }
+    }
 }
 
 void CMainMenu::OnRomInfo(HWND hWnd)
 {
-	if (g_Disk)
-	{
-		RomInformation Info(g_Disk);
-		Info.DisplayInformation(hWnd);
-	}
+    if (g_Disk)
+    {
+        RomInformation Info(g_Disk);
+        Info.DisplayInformation(hWnd);
+    }
     else if (g_Rom)
     {
         RomInformation Info(g_Rom);
@@ -471,9 +471,9 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     case ID_DEBUG_DISABLE_GAMEFIX:
         g_Settings->SaveBool(Debugger_DisableGameFixes, !g_Settings->LoadBool(Debugger_DisableGameFixes));
         break;
-	case ID_DEBUG_ENANCEMENT:
-		g_Settings->SaveBool(Setting_Enhancement, !g_Settings->LoadBool(Setting_Enhancement));
-		break;
+    case ID_DEBUG_ENANCEMENT:
+        g_Settings->SaveBool(Setting_Enhancement, !g_Settings->LoadBool(Setting_Enhancement));
+        break;
     case ID_DEBUGGER_TRACE_MD5: SetTraceModuleSetttings(Debugger_TraceMD5); break;
     case ID_DEBUGGER_TRACE_SETTINGS: SetTraceModuleSetttings(Debugger_TraceSettings); break;
     case ID_DEBUGGER_TRACE_UNKNOWN: SetTraceModuleSetttings(Debugger_TraceUnknown); break;
@@ -546,21 +546,21 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             if (UISettingsLoadStringIndex(File_RecentGameFileIndex, MenuID - ID_RECENT_ROM_START, FileName) &&
                 FileName.length() > 0)
             {
-				if (CPath(FileName).GetExtension() != "ndd")
-					g_BaseSystem->RunFileImage(FileName.c_str());
-				else
-				{
-					if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(FileName.c_str()))
-					{
-						CPath FileNameIPL;
-						const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-						if (FileNameIPL.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-						{
-							g_Settings->SaveString(File_DiskIPLPath, (const char *)FileNameIPL);
-							g_BaseSystem->RunDiskImage(FileName.c_str());
-						}
-					}
-				}
+                if (CPath(FileName).GetExtension() != "ndd")
+                    g_BaseSystem->RunFileImage(FileName.c_str());
+                else
+                {
+                    if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(FileName.c_str()))
+                    {
+                        CPath FileNameIPL;
+                        const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+                        if (FileNameIPL.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
+                        {
+                            g_Settings->SaveString(File_DiskIPLPath, (const char *)FileNameIPL);
+                            g_BaseSystem->RunDiskImage(FileName.c_str());
+                        }
+                    }
+                }
             }
         }
         if (MenuID >= ID_RECENT_DIR_START && MenuID < ID_RECENT_DIR_END)
@@ -652,8 +652,8 @@ std::wstring CMainMenu::GetSaveSlotString(int Slot)
     {
         FileName.AppendDirectory(g_Settings->LoadStringVal(Game_UniqueSaveDir).c_str());
     }
-	FileName.NormalizePath(CPath(CPath::MODULE_DIRECTORY));
-	if (Slot != 0)
+    FileName.NormalizePath(CPath(CPath::MODULE_DIRECTORY));
+    if (Slot != 0)
     {
         FileName.SetNameExtension(stdstr_f("%s.pj%d", g_Settings->LoadStringVal(Rdb_GoodName).c_str(), Slot).c_str());
     }
@@ -1241,13 +1241,13 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         DebugMenu.push_back(Item);
         Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugNotificationMenu, L"Notification");
         DebugMenu.push_back(Item);
-		Item.Reset(ID_DEBUG_ENANCEMENT, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Enable Enhancement");
-		if (g_Settings->LoadBool(Setting_Enhancement))
-		{
-			Item.SetItemTicked(true);
-		}
-		DebugMenu.push_back(Item);
-		DebugMenu.push_back(MENU_ITEM(SPLITER));
+        Item.Reset(ID_DEBUG_ENANCEMENT, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Enable Enhancement");
+        if (g_Settings->LoadBool(Setting_Enhancement))
+        {
+            Item.SetItemTicked(true);
+        }
+        DebugMenu.push_back(Item);
+        DebugMenu.push_back(MENU_ITEM(SPLITER));
         Item.Reset(ID_DEBUG_SHOW_TLB_MISSES, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Show TLB Misses");
         if (g_Settings->LoadBool(Debugger_ShowTLBMisses))
         {

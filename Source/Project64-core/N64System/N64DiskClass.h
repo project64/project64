@@ -23,15 +23,15 @@ public:
     bool    SaveDiskImage();
     void    SwapDiskImage(const char * FileLoc);
     static bool IsValidDiskImage(uint8_t Test[4]);
-	void    SaveDiskSettingID(bool temp);
-	void    ClearDiskSettingID();
+    void    SaveDiskSettingID(bool temp);
+    void    ClearDiskSettingID();
     uint8_t *  GetDiskAddress() { return m_DiskImage; }
     uint8_t *  GetDiskAddressBuffer() { return m_DiskImage + m_DiskBufAddress; }
     void    SetDiskAddressBuffer(uint32_t address) { m_DiskBufAddress = address; }
-	stdstr  GetRomName() const { return m_RomName; }
-	stdstr  GetFileName() const { return m_FileName; }
-	stdstr  GetDiskIdent() const { return m_DiskIdent; }
-	Country GetCountry() const { return m_Country; }
+    stdstr  GetRomName() const { return m_RomName; }
+    stdstr  GetFileName() const { return m_FileName; }
+    stdstr  GetDiskIdent() const { return m_DiskIdent; }
+    Country GetCountry() const { return m_Country; }
     void    UnallocateDiskImage();
 
     LanguageStringID GetError() const { return m_ErrorMsg; }
@@ -56,7 +56,7 @@ private:
     uint32_t m_DiskFileSize;
     uint32_t m_DiskBufAddress;
     LanguageStringID m_ErrorMsg;
-	Country m_Country;
+    Country m_Country;
     stdstr m_RomName, m_FileName, m_DiskIdent;
     uint8_t m_DiskFormat; //0 = MAME, 1 = SDK
 

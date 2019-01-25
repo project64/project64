@@ -344,12 +344,12 @@ bool CN64System::LoadFileImage(const char * FileLoc)
             g_Settings->SaveBool(Setting_EnableDisk, true);
         }
 
-		g_System->RefreshGameSettings();
+        g_System->RefreshGameSettings();
 
-		if (g_Rom->CicChipID() != CIC_NUS_8303 && g_Rom->CicChipID() != CIC_NUS_DDUS)
-		{
-			g_Settings->SaveString(Game_File, FileLoc);
-		}
+        if (g_Rom->CicChipID() != CIC_NUS_8303 && g_Rom->CicChipID() != CIC_NUS_DDUS)
+        {
+            g_Settings->SaveString(Game_File, FileLoc);
+        }
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
 
         WriteTrace(TraceN64System, TraceDebug, "Finished Loading (GoodName: %s)", g_Settings->LoadStringVal(Rdb_GoodName).c_str());
@@ -384,44 +384,44 @@ bool CN64System::RunFileImage(const char * FileLoc)
 
 bool CN64System::RunDiskImage(const char * FileLoc)
 {
-	if (!LoadFileImage(g_Settings->LoadStringVal(File_DiskIPLPath).c_str()))
-	{
-		g_Settings->SaveString(File_DiskIPLPath, "");
-		return false;
-	}
-	if (!LoadDiskImage(FileLoc, false))
-	{
-		return false;
-	}
-	if (g_Settings->LoadBool(Setting_AutoStart) != 0)
-	{
-		WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
-		RunLoadedImage();
-	}
-	return true;
+    if (!LoadFileImage(g_Settings->LoadStringVal(File_DiskIPLPath).c_str()))
+    {
+        g_Settings->SaveString(File_DiskIPLPath, "");
+        return false;
+    }
+    if (!LoadDiskImage(FileLoc, false))
+    {
+        return false;
+    }
+    if (g_Settings->LoadBool(Setting_AutoStart) != 0)
+    {
+        WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
+        RunLoadedImage();
+    }
+    return true;
 }
 
 bool CN64System::RunDiskComboImage(const char * FileLoc, const char * FileLocDisk)
 {
-	if (!LoadFileImageIPL(g_Settings->LoadStringVal(File_DiskIPLPath).c_str()))
-	{
-		g_Settings->SaveString(File_DiskIPLPath, "");
-		return false;
-	}
-	if (!LoadDiskImage(FileLocDisk, true))
-	{
-		return false;
-	}
-	if (!LoadFileImage(FileLoc))
-	{
-		return false;
-	}
-	if (g_Settings->LoadBool(Setting_AutoStart) != 0)
-	{
-		WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
-		RunLoadedImage();
-	}
-	return true;
+    if (!LoadFileImageIPL(g_Settings->LoadStringVal(File_DiskIPLPath).c_str()))
+    {
+        g_Settings->SaveString(File_DiskIPLPath, "");
+        return false;
+    }
+    if (!LoadDiskImage(FileLocDisk, true))
+    {
+        return false;
+    }
+    if (!LoadFileImage(FileLoc))
+    {
+        return false;
+    }
+    if (g_Settings->LoadBool(Setting_AutoStart) != 0)
+    {
+        WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
+        RunLoadedImage();
+    }
+    return true;
 }
 
 
@@ -526,10 +526,10 @@ bool CN64System::LoadDiskImage(const char * FileLoc, const bool Expansion)
     {
         g_System->RefreshGameSettings();
 
-		if (!Expansion)
-		{
-			g_Settings->SaveString(Game_File, FileLoc);
-		}
+        if (!Expansion)
+        {
+            g_Settings->SaveString(Game_File, FileLoc);
+        }
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
     }
     else
