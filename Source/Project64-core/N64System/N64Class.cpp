@@ -339,11 +339,6 @@ bool CN64System::LoadFileImage(const char * FileLoc)
             g_Settings->SaveString(File_DiskIPLPath, FileLoc);
         }
 
-        if (g_DDRom != NULL)
-        {
-            g_Settings->SaveBool(Setting_EnableDisk, true);
-        }
-
         g_System->RefreshGameSettings();
 
         if (g_Rom->CicChipID() != CIC_NUS_8303 && g_Rom->CicChipID() != CIC_NUS_DDUS)
@@ -373,11 +368,13 @@ bool CN64System::RunFileImage(const char * FileLoc)
     //Uninitialize g_Disk and g_DDRom to prevent exception when ending emulation of a regular ROM after playing 64DD content previously.
     if (g_Disk != NULL)
     {
+        g_Disk->UnallocateDiskImage();
         delete g_Disk;
         g_Disk = NULL;
     }
     if (g_DDRom != NULL)
     {
+        g_DDRom->UnallocateRomImage();
         delete g_DDRom;
         g_DDRom = NULL;
     }
