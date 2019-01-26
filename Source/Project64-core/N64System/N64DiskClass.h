@@ -27,7 +27,7 @@ public:
     void    ClearDiskSettingID();
     uint8_t *  GetDiskAddress() { return m_DiskImage; }
     uint8_t *  GetDiskAddressBuffer() { return m_DiskImage + m_DiskBufAddress; }
-    uint8_t *  GetDiskHeader() { return m_DiskImage + 0x43650; }
+    uint8_t *  GetDiskHeader() { return m_DiskHeader; }
     void    SetDiskAddressBuffer(uint32_t address) { m_DiskBufAddress = address; }
     stdstr  GetRomName() const { return m_RomName; }
     stdstr  GetFileName() const { return m_FileName; }
@@ -39,6 +39,7 @@ public:
 
 private:
     bool   AllocateDiskImage(uint32_t DiskFileSize);
+    bool   AllocateDiskHeader();
     bool   AllocateAndLoadDiskImage(const char * FileLoc);
     void   ByteSwapDisk();
     void   ForceByteSwapDisk();
@@ -54,6 +55,8 @@ private:
     CFile m_DiskFile;
     uint8_t * m_DiskImage;
     uint8_t * m_DiskImageBase;
+    uint8_t * m_DiskHeader;
+    uint8_t * m_DiskHeaderBase;
     uint32_t m_DiskFileSize;
     uint32_t m_DiskBufAddress;
     LanguageStringID m_ErrorMsg;

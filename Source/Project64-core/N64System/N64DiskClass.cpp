@@ -178,6 +178,25 @@ bool CN64Disk::AllocateDiskImage(uint32_t DiskFileSize)
     return true;
 }
 
+bool CN64Disk::AllocateDiskHeader()
+{
+    WriteTrace(TraceN64System, TraceDebug, "Allocating memory for disk header forge");
+    AUTO_PTR<uint8_t> HeaderBase(new uint8_t[0x40 + 0x1000]);
+    if (HeaderBase.get() == NULL)
+    {
+        SetError(MSG_MEM_ALLOC_ERROR);
+        WriteTrace(TraceN64System, TraceError, "Failed to allocate memory for disk header forge (size: 0x40)");
+        return false;
+    }
+    uint8_t * Header = (uint8_t *)(((uint64_t)HeaderBase.get() + 0xFFF) & ~0xFFF); // start at begining of memory page
+    WriteTrace(TraceN64System, TraceDebug, "Allocated disk memory (%p)", Header);
+
+    //save information about the disk loaded
+    m_DiskHeaderBase = HeaderBase.release();
+    m_DiskHeader = Header;
+    return true;
+}
+
 bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
 {
     WriteTrace(TraceN64System, TraceDebug, "Trying to open %s", FileLoc);
@@ -278,6 +297,11 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
     ByteSwapDisk();
 
     ProtectMemory(m_DiskImage, m_DiskFileSize, MEM_READWRITE);
+
+    AllocateDiskHeader();
+    memcpy_s(m_DiskHeader, 0x20, m_DiskImage, 0x20);
+    memcpy_s(m_DiskHeader + 0x20, 0x20, m_DiskImage + 0x43670, 0x20);
+    memcpy_s(m_DiskHeader + 0x3B, 5, m_DiskImage + 0x43670, 5);
     return true;
 }
 
@@ -329,6 +353,13 @@ void CN64Disk::SetError(LanguageStringID ErrorMsg)
 void CN64Disk::UnallocateDiskImage()
 {
     m_DiskFile.Close();
+
+    if (m_DiskHeaderBase)
+    {
+        delete[] m_DiskHeaderBase;
+        m_DiskHeaderBase = NULL;
+    }
+    m_DiskHeader = NULL;
 
     if (m_DiskImageBase)
     {
