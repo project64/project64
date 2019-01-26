@@ -301,7 +301,7 @@ bool CN64System::LoadFileImage(const char * FileLoc)
 {
     WriteTrace(TraceN64System, TraceDebug, "Start (FileLoc: %s)", FileLoc);
     CloseSystem();
-    g_Settings->SaveBool(Setting_EnableDisk, false);
+
     g_Settings->SaveDword(Game_CurrentSaveState, g_Settings->LoadDefaultDword(Game_CurrentSaveState));
     if (g_Settings->LoadBool(GameRunning_LoadingInProgress))
     {
@@ -382,6 +382,7 @@ bool CN64System::RunFileImage(const char * FileLoc)
     {
         return false;
     }
+    g_Settings->SaveBool(Setting_EnableDisk, false);
     if (g_Settings->LoadBool(Setting_AutoStart) != 0)
     {
         WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
@@ -401,6 +402,7 @@ bool CN64System::RunDiskImage(const char * FileLoc)
     {
         return false;
     }
+    g_Settings->SaveBool(Setting_EnableDisk, true);
     if (g_Settings->LoadBool(Setting_AutoStart) != 0)
     {
         WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
@@ -424,6 +426,7 @@ bool CN64System::RunDiskComboImage(const char * FileLoc, const char * FileLocDis
     {
         return false;
     }
+    g_Settings->SaveBool(Setting_EnableDisk, true);
     if (g_Settings->LoadBool(Setting_AutoStart) != 0)
     {
         WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");

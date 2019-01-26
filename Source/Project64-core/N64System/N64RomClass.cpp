@@ -751,7 +751,6 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
     if (!LoadBootCodeOnly && g_DDRom == this)
     {
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
-        g_Settings->SaveBool(Setting_EnableDisk, true);
         SaveRomSettingID(false);
     }
 
