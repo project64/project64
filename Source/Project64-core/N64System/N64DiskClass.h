@@ -27,6 +27,7 @@ public:
     void    ClearDiskSettingID();
     uint8_t *  GetDiskAddress() { return m_DiskImage; }
     uint8_t *  GetDiskAddressBuffer() { return m_DiskImage + m_DiskBufAddress; }
+    uint8_t *  GetDiskHeader() { return m_DiskImage + 0x43650; }
     void    SetDiskAddressBuffer(uint32_t address) { m_DiskBufAddress = address; }
     stdstr  GetRomName() const { return m_RomName; }
     stdstr  GetFileName() const { return m_FileName; }

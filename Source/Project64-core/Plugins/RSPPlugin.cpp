@@ -13,6 +13,7 @@
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/Mips/RegisterClass.h>
 #include <Project64-core/N64System/N64Class.h>
+#include <Project64-core/N64System/N64DiskClass.h>
 #include "RSPPlugin.h"
 #include "GFXPlugin.h"
 #include <Project64-core/Plugins/AudioPlugin.h>
@@ -185,7 +186,10 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
             CMipsMemoryVM & MMU = System->m_MMU_VM;
             CRegisters & Reg = System->m_Reg;
 
-            Info.HEADER = g_Rom->GetRomAddress();
+            if ((g_Rom->CicChipID() == CIC_NUS_8303 || g_Rom->CicChipID() == CIC_NUS_DDUS) && g_Disk != NULL)
+                Info.HEADER = g_Disk->GetDiskHeader();
+            else
+                Info.HEADER = g_Rom->GetRomAddress();
             Info.RDRAM = MMU.Rdram();
             Info.DMEM = MMU.Dmem();
             Info.IMEM = MMU.Imem();
