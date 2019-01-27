@@ -7186,14 +7186,14 @@ Status=Compatible
 [E848D316-444B444A-C:4A]
 32bit=No
 Fixed Audio=0
-Good Name=Doshin no Kyojin 1 (J)
+Good Name=Kyojin no Doshin 1 (J)
 RDRAM Size=8
 Status=Compatible
 
 [E848D316-444B494A-C:4A]
 32bit=No
 Fixed Audio=0
-Good Name=Doshin no Kyojin 1 (J) (Store Demo)
+Good Name=Kyojin no Doshin 1 (J) (Store Demo)
 RDRAM Size=8
 Status=Compatible
 
@@ -7206,9 +7206,9 @@ Status=Only intro/part OK
 
 [E848D316-444B4B4A-C:4A]
 32bit=No
-Core Note=Expansion Disk for Doshin no Kyojin 1. Use the Swap feature.
+Core Note=Expansion Disk for Kyojin no Doshin 1. Use the Disk Swap feature to play.
 Fixed Audio=0
-Good Name=Doshin no Kyojin Kaihou Sensen Chibikkochikko Dai Shuugou (J)
+Good Name=Kyojin no Doshin - Kaihou Sensen Chibikkochikko Dai Shuugou (J)
 Status=Compatible
 
 [E848D316-45465A4A-C:4A]
