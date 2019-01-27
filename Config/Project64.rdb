@@ -7123,6 +7123,101 @@ Good Name=Zool - Majuu Tsukai Densetsu (J)
 Internal Name=½Þ°Ù Ï¼Þ­³Â¶²ÃÞÝ¾Â
 Status=Compatible
 
+//================ 64DD ================
+//
+// ROMs below are 64DD content
+
+[00000000-00000000-C:4A]
+32bit=No
+Fixed Audio=0
+Good Name=64DD IPL (JPN)
+RDRAM Size=8
+Status=Compatible
+
+[00000000-00000000-C:45]
+32bit=No
+Fixed Audio=0
+Good Name=64DD IPL (USA)
+RDRAM Size=8
+Status=Compatible
+
+[E848D316-444D504A-C:4A]
+32bit=No
+Fixed Audio=0
+Good Name=Mario Artist Paint Studio (J)
+RDRAM Size=8
+Status=Compatible
+
+[E848D316-444D544A-C:4A]
+32bit=No
+Fixed Audio=0
+Good Name=Mario Artist Talent Studio (J)
+RDRAM Size=8
+Status=Compatible
+
+[E848D316-444D424A-C:4A]
+32bit=No
+Core Note=Cannot use Randnet functionality.
+Fixed Audio=0
+Good Name=Mario Artist Communication Kit (J)
+Status=Compatible
+
+[E848D316-444D474A-C:4A]
+32bit=No
+Fixed Audio=0
+Good Name=Mario Artist Polygon Studio (J)
+Plugin Note=Cannot model on HLE plugins.
+Status=Issues (plugin)
+
+[E848D316-4453434A-C:4A]
+32bit=No
+Fixed Audio=0
+Good Name=Sim City 64 (J)
+Plugin Note=Very slow, city is not rendering properly in HLE
+Status=Issues (plugin)
+
+[E848D316-4450474A-C:4A]
+32bit=No
+Fixed Audio=0
+Good Name=Nihon Pro Golf Tour 64 (J)
+RDRAM Size=8
+Status=Compatible
+
+[E848D316-444B444A-C:4A]
+32bit=No
+Fixed Audio=0
+Good Name=Kyojin no Doshin 1 (J)
+RDRAM Size=8
+Status=Compatible
+
+[E848D316-444B494A-C:4A]
+32bit=No
+Fixed Audio=0
+Good Name=Kyojin no Doshin 1 (J) (Store Demo)
+RDRAM Size=8
+Status=Compatible
+
+[E848D316-4452444A-C:4A]
+32bit=No
+Core Note=Modem Pak is required
+Fixed Audio=0
+Good Name=Randnet Disk (J)
+Status=Only intro/part OK
+
+[E848D316-444B4B4A-C:4A]
+32bit=No
+Core Note=Expansion Disk for Kyojin no Doshin 1. Use the Disk Swap feature to play.
+Fixed Audio=0
+Good Name=Kyojin no Doshin - Kaihou Sensen Chibikkochikko Dai Shuugou (J)
+Status=Compatible
+
+[E848D316-45465A4A-C:4A]
+32bit=No
+Core Note=Expansion Disk for F-Zero X. Play F-Zero X (J) with this disk loaded.
+Fixed Audio=0
+Good Name=F-Zero X Expansion Kit (J)
+Status=Compatible
+
 //================  PD  ================
 //
 // ROMs below are PD/Intros/Emus and other Non Commercial
@@ -8200,15 +8295,3 @@ Internal Name=shut up and code
 CPU Type=Interpreter
 RDRAM Size=8
 Status=Unsupported
-
-[00000000-00000000-C:4A]
-32bit=No
-Good Name=64DD IPL (JPN)
-RDRAM Size=8
-Status=Compatible
-
-[00000000-00000000-C:45]
-32bit=No
-Good Name=64DD IPL (USA)
-RDRAM Size=8
-Status=Compatible

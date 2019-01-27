@@ -556,6 +556,8 @@ enum LanguageStringID
     MSG_SET_LLE_GFX_MSG = 2055,
     MSG_SET_HLE_AUD_TITLE = 2056,
     MSG_SET_HLE_AUD_MSG = 2057,
+    MSG_FAIL_IMAGE_IPL = 2058,
+    MSG_IPL_REQUIRED = 2059,
 
     /*********************************************************************************
     * Android                                                                        *

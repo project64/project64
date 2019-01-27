@@ -807,7 +807,22 @@ void CRomBrowser::RomList_OpenRom(uint32_t /*pnmh*/)
     delete g_DDRom;
     g_DDRom = NULL;
 
-    CN64System::RunFileImage(pRomInfo->szFullFileName);
+    if (CPath(pRomInfo->szFullFileName).GetExtension() != "ndd")
+        CN64System::RunFileImage(pRomInfo->szFullFileName);
+    else
+    {
+        if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(pRomInfo->szFullFileName))
+        {
+            if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists()) { g_Notify->DisplayError(MSG_IPL_REQUIRED); }
+            CPath FileName;
+            const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+            if (FileName.SelectFile(m_MainWindow, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
+            {
+                g_Settings->SaveString(File_DiskIPLPath, (const char *)FileName);
+                g_BaseSystem->RunDiskImage(pRomInfo->szFullFileName);
+            }
+        }
+    }
 }
 
 void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
@@ -843,14 +858,14 @@ void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
     MenuSetText(hPopupMenu, 6, wGS(POPUP_INFO).c_str(), NULL);
     MenuSetText(hPopupMenu, 7, wGS(POPUP_GFX_PLUGIN).c_str(), NULL);
     MenuSetText(hPopupMenu, 9, wGS(POPUP_SETTINGS).c_str(), NULL);
-	MenuSetText(hPopupMenu, 10, wGS(POPUP_CHEATS).c_str(), NULL);
-	MenuSetText(hPopupMenu, 11, wGS(POPUP_ENHANCEMENTS).c_str(), NULL);
+    MenuSetText(hPopupMenu, 10, wGS(POPUP_CHEATS).c_str(), NULL);
+    MenuSetText(hPopupMenu, 11, wGS(POPUP_ENHANCEMENTS).c_str(), NULL);
 
     if (m_SelectedRom.size() == 0)
     {
-		DeleteMenu(hPopupMenu, 11, MF_BYPOSITION);
-		DeleteMenu(hPopupMenu, 10, MF_BYPOSITION);
-		DeleteMenu(hPopupMenu, 9, MF_BYPOSITION);
+        DeleteMenu(hPopupMenu, 11, MF_BYPOSITION);
+        DeleteMenu(hPopupMenu, 10, MF_BYPOSITION);
+        DeleteMenu(hPopupMenu, 9, MF_BYPOSITION);
         DeleteMenu(hPopupMenu, 8, MF_BYPOSITION);
         DeleteMenu(hPopupMenu, 7, MF_BYPOSITION);
         DeleteMenu(hPopupMenu, 6, MF_BYPOSITION);
@@ -862,14 +877,15 @@ void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
     else
     {
         bool inBasicMode = g_Settings->LoadBool(UserInterface_BasicMode);
-		bool CheatsRemembered = g_Settings->LoadBool(Setting_RememberCheats);
-		bool Enhancement = !inBasicMode && g_Settings->LoadBool(Setting_Enhancement);
+        bool CheatsRemembered = g_Settings->LoadBool(Setting_RememberCheats);
+        bool Enhancement = !inBasicMode && g_Settings->LoadBool(Setting_Enhancement);
 
-		if (!Enhancement) { DeleteMenu(hPopupMenu, 11, MF_BYPOSITION); }
-		if (!CheatsRemembered) { DeleteMenu(hPopupMenu, 10, MF_BYPOSITION); }
-		if (inBasicMode) { DeleteMenu(hPopupMenu, 9, MF_BYPOSITION); }
+        if (!Enhancement) { DeleteMenu(hPopupMenu, 11, MF_BYPOSITION); }
+        if (!CheatsRemembered) { DeleteMenu(hPopupMenu, 10, MF_BYPOSITION); }
+        if (inBasicMode) { DeleteMenu(hPopupMenu, 9, MF_BYPOSITION); }
         if (inBasicMode && !CheatsRemembered) { DeleteMenu(hPopupMenu, 8, MF_BYPOSITION); }
         DeleteMenu(hPopupMenu, 7, MF_BYPOSITION);
+        if (CPath(m_SelectedRom).GetExtension() == "ndd") { DeleteMenu(hPopupMenu, 1, MF_BYPOSITION); }
         if (!inBasicMode && g_Plugins && g_Plugins->Gfx() && g_Plugins->Gfx()->GetRomBrowserMenu != NULL)
         {
             HMENU GfxMenu = (HMENU)g_Plugins->Gfx()->GetRomBrowserMenu();
