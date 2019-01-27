@@ -429,12 +429,12 @@ bool CRomList::LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_
         {
             //Is a Disk Image
             File.SeekToBegin();
-            if (!File.Read(Data, 0x20))
+            if (!File.Read(Data, 0x100))
             {
                 return false;
             }
             File.Seek(0x43670, CFileBase::begin);
-            if (!File.Read(Data + 0x20, 0x20))
+            if (!File.Read(Data + 0x100, 0x20))
             {
                 return false;
             }
@@ -480,15 +480,22 @@ bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
         else
         {
             char InternalName[22];
-            memcpy(InternalName, (void *)(RomData + 0x20), 4);
+            memcpy(InternalName, (void *)(RomData + 0x100), 4);
             strcpy(pRomInfo->InternalName, InternalName);
-            pRomInfo->CartID[0] = *(RomData + 0x20);
-            pRomInfo->CartID[1] = *(RomData + 0x21);
-            pRomInfo->CartID[2] = *(RomData + 0x22);
+            pRomInfo->CartID[0] = *(RomData + 0x100);
+            pRomInfo->CartID[1] = *(RomData + 0x101);
+            pRomInfo->CartID[2] = *(RomData + 0x102);
             pRomInfo->Manufacturer = '\0';
-            pRomInfo->Country = *(RomData + 0x20);
+            pRomInfo->Country = *(RomData + 0x100);
             pRomInfo->CRC1 = *(uint32_t *)(RomData + 0x00);
-            pRomInfo->CRC2 = *(uint32_t *)(RomData + 0x20);
+            pRomInfo->CRC2 = *(uint32_t *)(RomData + 0x100);
+            if (pRomInfo->CRC2 == 0)
+            {
+                for (uint8_t i = 0; i < 0xE8; i += 4)
+                {
+                    pRomInfo->CRC2 += *(uint32_t *)(RomData + i);
+                }
+            }
             pRomInfo->CicChip = CIC_NUS_8303;
             FillRomExtensionInfo(pRomInfo);
         }
