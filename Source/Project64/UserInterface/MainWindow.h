@@ -115,6 +115,7 @@ private:
     friend void RomBowserEnabledChanged(CMainGui * Gui);
     friend void RomBowserColoumnsChanged(CMainGui * Gui);
     friend void RomBrowserListChanged(CMainGui * Gui);
+    friend void DiscordRPCChanged(CMainGui * Gui);
     static void LoadingInProgressChanged(CMainGui * Gui);
     static void GameLoaded(CMainGui * Gui);
     static void GamePaused(CMainGui * Gui);

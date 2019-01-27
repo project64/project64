@@ -14,6 +14,8 @@
 #include <commctrl.h>
 #include <Project64-core/Settings/SettingType/SettingsType-Application.h>
 
+#include "Discord.h"
+
 void EnterLogOptions(HWND hwndOwner);
 
 #pragma comment(lib, "Comctl32.lib")
@@ -49,12 +51,19 @@ CMainGui::CMainGui(bool bMainWindow, const char * WindowTitle) :
     {
         g_Settings->RegisterChangeCB((SettingID)(FirstUISettings + RomBrowser_Enabled), this, (CSettings::SettingChangedFunc)RomBowserEnabledChanged);
         g_Settings->RegisterChangeCB((SettingID)(FirstUISettings + RomBrowser_ColoumnsChanged), this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
+        g_Settings->RegisterChangeCB((SettingID)(FirstUISettings + Setting_EnableDiscordRPC), this, (CSettings::SettingChangedFunc)DiscordRPCChanged);
         g_Settings->RegisterChangeCB(RomList_GameDirRecursive, this, (CSettings::SettingChangedFunc)RomBrowserListChanged);
         g_Settings->RegisterChangeCB(RomList_ShowFileExtensions, this, (CSettings::SettingChangedFunc)RomBrowserListChanged);
         g_Settings->RegisterChangeCB(GameRunning_LoadingInProgress, this, (CSettings::SettingChangedFunc)LoadingInProgressChanged);
         g_Settings->RegisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunning);
         g_Settings->RegisterChangeCB(GameRunning_CPU_Paused, this, (CSettings::SettingChangedFunc)GamePaused);
         g_Settings->RegisterChangeCB(Game_File, this, (CSettings::SettingChangedFunc)GameLoaded);
+
+        if (UISettingsLoadBool(Setting_EnableDiscordRPC))
+        {
+            CDiscord::Init();
+            CDiscord::Update(false);
+        }
     }
 
     //if this fails then it has already been created
@@ -69,12 +78,18 @@ CMainGui::~CMainGui(void)
     {
         g_Settings->UnregisterChangeCB((SettingID)(FirstUISettings + RomBrowser_Enabled), this, (CSettings::SettingChangedFunc)RomBowserEnabledChanged);
         g_Settings->UnregisterChangeCB((SettingID)(FirstUISettings + RomBrowser_ColoumnsChanged), this, (CSettings::SettingChangedFunc)RomBowserColoumnsChanged);
+        g_Settings->UnregisterChangeCB((SettingID)(FirstUISettings + Setting_EnableDiscordRPC), this, (CSettings::SettingChangedFunc)DiscordRPCChanged);
         g_Settings->UnregisterChangeCB(RomList_GameDirRecursive, this, (CSettings::SettingChangedFunc)RomBrowserListChanged);
         g_Settings->UnregisterChangeCB(RomList_ShowFileExtensions, this, (CSettings::SettingChangedFunc)RomBrowserListChanged);
         g_Settings->UnregisterChangeCB(GameRunning_LoadingInProgress, this, (CSettings::SettingChangedFunc)LoadingInProgressChanged);
         g_Settings->UnregisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunning);
         g_Settings->UnregisterChangeCB(GameRunning_CPU_Paused, this, (CSettings::SettingChangedFunc)GamePaused);
         g_Settings->UnregisterChangeCB(Game_File, this, (CSettings::SettingChangedFunc)GameLoaded);
+
+        if (UISettingsLoadBool(Setting_EnableDiscordRPC))
+        {
+            CDiscord::Shutdown();
+        }
     }
     if (m_hMainWindow)
     {
@@ -204,6 +219,11 @@ void CMainGui::GameLoaded(CMainGui * Gui)
         WriteTrace(TraceUserInterface, TraceDebug, "Add Recent Rom");
         Gui->AddRecentRom(FileLoc.c_str());
         Gui->SetWindowCaption(stdstr(g_Settings->LoadStringVal(Rdb_GoodName)).ToUTF16().c_str());
+
+        if (UISettingsLoadBool(Setting_EnableDiscordRPC))
+        {
+            CDiscord::Update();
+        }
     }
 }
 
@@ -249,6 +269,19 @@ void RomBrowserListChanged(CMainGui * Gui)
 {
     Gui->RefreshRomList();
     Gui->HighLightLastRom();
+}
+
+void DiscordRPCChanged(CMainGui*)
+{
+    if (UISettingsLoadBool(Setting_EnableDiscordRPC))
+    {
+        CDiscord::Init();
+        CDiscord::Update();
+    }
+    else
+    {
+        CDiscord::Shutdown();
+    }
 }
 
 void CMainGui::ChangeWinSize(long width, long height)

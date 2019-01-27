@@ -2,6 +2,7 @@
 #include "RomInformationClass.h"
 #include "Debugger/Breakpoints.h"
 #include "Debugger/ScriptSystem.h"
+#include "Discord.h"
 #include <Project64-core/N64System/N64DiskClass.h>
 
 #include <windows.h>
@@ -160,6 +161,11 @@ void CMainMenu::OnEndEmulation(void)
         g_BaseSystem->CloseCpu();
     }
     m_Gui->SaveWindowLoc();
+
+    if (UISettingsLoadBool(Setting_EnableDiscordRPC))
+    {
+        CDiscord::Update(false);
+    }
 }
 
 void CMainMenu::OnScreenShot(void)

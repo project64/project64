@@ -231,6 +231,9 @@
     <ClCompile Include="UserInterface\Debugger\Debugger-ExceptionBreakpoints.cpp">
       <Filter>Source Files\User Interface Source\Debugger Source</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface\Discord.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserInterface\resource.h">
@@ -442,6 +445,9 @@
     </ClInclude>
     <ClInclude Include="UserInterface\Debugger\Debugger-ExceptionBreakpoints.h">
       <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Discord.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

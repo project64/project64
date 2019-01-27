@@ -34,6 +34,7 @@ m_SettingsConfig(SettingsConfig)
     AddModCheckBox(GetDlgItem(IDC_AUTOSLEEP), Setting_AutoSleep);
     AddModCheckBox(GetDlgItem(IDC_LOAD_FULLSCREEN), Setting_AutoFullscreen);
     AddModCheckBox(GetDlgItem(IDC_SCREEN_SAVER), Setting_DisableScrSaver);
+    AddModCheckBox(GetDlgItem(IDC_DISCORD_RPC), Setting_EnableDiscordRPC);
     AddModCheckBox(GetDlgItem(IDC_BASIC_MODE), UserInterface_BasicMode);
 
     CModifiedEditBox * TxtBox = AddModTextBox(GetDlgItem(IDC_REMEMBER), File_RecentGameFileCount, false);
