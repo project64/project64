@@ -18,7 +18,6 @@ CSettings * g_settings = NULL;
 CSettings::CSettings() :
 	m_Set_SyncViaAudioEnabled(0),
     m_Set_EnableAudio(0),
-    m_Set_FixedAudio(0),
     m_Set_SyncAudio(0),
     m_Set_FullSpeed(0),
     m_Set_LimitFPS(0),
@@ -32,7 +31,6 @@ CSettings::CSettings() :
     m_debugger_enabled(false),
     m_Volume(100),
     m_Buffer(4),
-    m_FixedAudio(false),
     m_SyncAudio(false),
     m_FullSpeed(true)
 {
@@ -44,7 +42,6 @@ CSettings::CSettings() :
     if (m_Set_basic_mode != 0) { SettingsRegisterChange(true, m_Set_basic_mode, this, stSettingsChanged); }
     if (m_Set_debugger != 0) { SettingsRegisterChange(true, m_Set_debugger, this, stSettingsChanged); }
     if (m_Set_log_flush != 0) { SettingsRegisterChange(true, m_Set_log_flush, this, stSettingsChanged); }
-    if (m_Set_FixedAudio != 0) { SettingsRegisterChange(true, m_Set_FixedAudio, this, stSettingsChanged); }
     if (m_Set_SyncAudio != 0) { SettingsRegisterChange(true, m_Set_SyncAudio, this, stSettingsChanged); }
     if (m_Set_FullSpeed != 0) { SettingsRegisterChange(true, m_Set_FullSpeed, this, stSettingsChanged); }
     if (m_Set_LimitFPS != 0) { SettingsRegisterChange(true, m_Set_LimitFPS, this, stSettingsChanged); }
@@ -65,7 +62,6 @@ CSettings::~CSettings()
     if (m_Set_basic_mode != 0) { SettingsUnregisterChange(true, m_Set_basic_mode, this, stSettingsChanged); }
     if (m_Set_debugger != 0) { SettingsUnregisterChange(true, m_Set_debugger, this, stSettingsChanged); }
     if (m_Set_log_flush != 0) { SettingsUnregisterChange(true, m_Set_log_flush, this, stSettingsChanged); }
-    if (m_Set_FixedAudio != 0) { SettingsUnregisterChange(true, m_Set_FixedAudio, this, stSettingsChanged); }
     if (m_Set_SyncAudio != 0) { SettingsUnregisterChange(true, m_Set_SyncAudio, this, stSettingsChanged); }
     if (m_Set_FullSpeed != 0) { SettingsUnregisterChange(true, m_Set_FullSpeed, this, stSettingsChanged); }
     if (m_Set_LimitFPS != 0) { SettingsUnregisterChange(true, m_Set_LimitFPS, this, stSettingsChanged); }
@@ -85,7 +81,6 @@ void CSettings::RegisterSettings(void)
     SetModuleName("default");
     m_Set_SyncViaAudioEnabled = FindSystemSettingId("SyncViaAudioEnabled");
     m_Set_EnableAudio = FindSystemSettingId("Enable Audio");
-    m_Set_FixedAudio = FindSystemSettingId("Fixed Audio");
     m_Set_SyncAudio = FindSystemSettingId("Sync Audio");
     m_Set_FullSpeed = FindSystemSettingId("Full Speed");
     m_Set_LimitFPS = FindSystemSettingId("Limit FPS");
@@ -154,7 +149,6 @@ void CSettings::ReadSettings(void)
     m_debugger_enabled = m_advanced_options && m_Set_debugger ? GetSystemSetting(m_Set_debugger) == 1 : false;
     m_Buffer = GetSetting(Set_Buffer);
     m_FullSpeed = m_Set_FullSpeed ? GetSystemSetting(m_Set_FullSpeed) != 0 : false;
-    m_FixedAudio = m_Set_FixedAudio ? GetSystemSetting(m_Set_FixedAudio) != 0 : false;
     m_SyncAudio = (!m_advanced_options || bLimitFPS);
 
     if (m_Set_log_dir != 0)
