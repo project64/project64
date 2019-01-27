@@ -523,6 +523,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_SET_HLE_AUD_TITLE, "Audio High-Level Emulation");
     DEF_STR(MSG_SET_HLE_AUD_MSG, "Audio HLE requires a third-party plugin!!!\nIf you do not use a third-party audio plugin that supports HLE, you will hear no sound.\n\nChange to audio HLE?");
     DEF_STR(MSG_FAIL_IMAGE_IPL, "File loaded does not appear to be a valid 64DD IPL ROM.\n\nVerify your ROMs with GoodN64.");
+    DEF_STR(MSG_IPL_REQUIRED, "Nintendo 64DD IPL ROM not found.\nIt is required to play 64DD disks.\n\nPlease select the required ROM.");
 
     /*********************************************************************************
     * Android                                                                        *
