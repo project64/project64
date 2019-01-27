@@ -7160,6 +7160,7 @@ Status=Compatible
 Core Note=Cannot use Randnet functionality.
 Fixed Audio=0
 Good Name=Mario Artist Communication Kit (J)
+RDRAM Size=8
 Status=Compatible
 
 [E848D316-444D474A-C:4A]
@@ -7167,6 +7168,7 @@ Status=Compatible
 Fixed Audio=0
 Good Name=Mario Artist Polygon Studio (J)
 Plugin Note=Cannot model on HLE plugins.
+RDRAM Size=8
 Status=Issues (plugin)
 
 [E848D316-4453434A-C:4A]
@@ -7174,6 +7176,7 @@ Status=Issues (plugin)
 Fixed Audio=0
 Good Name=Sim City 64 (J)
 Plugin Note=Very slow, city is not rendering properly in HLE
+RDRAM Size=8
 Status=Issues (plugin)
 
 [E848D316-4450474A-C:4A]
@@ -7202,6 +7205,7 @@ Status=Compatible
 Core Note=Modem Pak is required
 Fixed Audio=0
 Good Name=Randnet Disk (J)
+RDRAM Size=8
 Status=Only intro/part OK
 
 [E848D316-444B4B4A-C:4A]
@@ -7209,6 +7213,7 @@ Status=Only intro/part OK
 Core Note=Expansion Disk for Kyojin no Doshin 1. Use the Disk Swap feature to play.
 Fixed Audio=0
 Good Name=Kyojin no Doshin - Kaihou Sensen Chibikkochikko Dai Shuugou (J)
+RDRAM Size=8
 Status=Compatible
 
 [E848D316-45465A4A-C:4A]
@@ -7216,12 +7221,14 @@ Status=Compatible
 Core Note=Expansion Disk for F-Zero X. Play F-Zero X (J) with this disk loaded.
 Fixed Audio=0
 Good Name=F-Zero X Expansion Kit (J)
+RDRAM Size=8
 Status=Compatible
 
 [E848D316-7AB0252F-C:0]
 32bit=No
 Fixed Audio=0
 Good Name=Super Mario 64 Disk Version (J) (Spaceworld 1996 Demo)
+RDRAM Size=8
 Status=Compatible
 
 
