@@ -522,6 +522,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_SET_LLE_GFX_MSG, "Graphics LLE is not for general use!!!\nIt is advisable that you only use this for testing and not for playing games.\n\nChange to graphics LLE?");
     DEF_STR(MSG_SET_HLE_AUD_TITLE, "Audio High-Level Emulation");
     DEF_STR(MSG_SET_HLE_AUD_MSG, "Audio HLE requires a third-party plugin!!!\nIf you do not use a third-party audio plugin that supports HLE, you will hear no sound.\n\nChange to audio HLE?");
+    DEF_STR(MSG_FAIL_IMAGE_IPL, "File loaded does not appear to be a valid 64DD IPL ROM.\n\nVerify your ROMs with GoodN64.");
 
     /*********************************************************************************
     * Android                                                                        *

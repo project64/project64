@@ -363,94 +363,6 @@ bool CN64System::LoadFileImage(const char * FileLoc)
     return true;
 }
 
-bool CN64System::RunFileImage(const char * FileLoc)
-{
-    //Uninitialize g_Disk and g_DDRom to prevent exception when ending emulation of a regular ROM after playing 64DD content previously.
-    if (g_Disk != NULL)
-    {
-        g_Disk->UnallocateDiskImage();
-        delete g_Disk;
-        g_Disk = NULL;
-    }
-    if (g_DDRom != NULL)
-    {
-        g_DDRom->UnallocateRomImage();
-        delete g_DDRom;
-        g_DDRom = NULL;
-    }
-    if (!LoadFileImage(FileLoc))
-    {
-        return false;
-    }
-    g_Settings->SaveBool(Setting_EnableDisk, false);
-    if (g_Settings->LoadBool(Setting_AutoStart) != 0)
-    {
-        WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
-        RunLoadedImage();
-    }
-    return true;
-}
-
-bool CN64System::RunDiskImage(const char * FileLoc)
-{
-    if (!LoadFileImage(g_Settings->LoadStringVal(File_DiskIPLPath).c_str()))
-    {
-        g_Settings->SaveString(File_DiskIPLPath, "");
-        return false;
-    }
-    if (!LoadDiskImage(FileLoc, false))
-    {
-        return false;
-    }
-    g_Settings->SaveBool(Setting_EnableDisk, true);
-    if (g_Settings->LoadBool(Setting_AutoStart) != 0)
-    {
-        WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
-        RunLoadedImage();
-    }
-    return true;
-}
-
-bool CN64System::RunDiskComboImage(const char * FileLoc, const char * FileLocDisk)
-{
-    if (!LoadFileImageIPL(g_Settings->LoadStringVal(File_DiskIPLPath).c_str()))
-    {
-        g_Settings->SaveString(File_DiskIPLPath, "");
-        return false;
-    }
-    if (!LoadDiskImage(FileLocDisk, true))
-    {
-        return false;
-    }
-    if (!LoadFileImage(FileLoc))
-    {
-        return false;
-    }
-    g_Settings->SaveBool(Setting_EnableDisk, true);
-    if (g_Settings->LoadBool(Setting_AutoStart) != 0)
-    {
-        WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
-        RunLoadedImage();
-    }
-    return true;
-}
-
-
-void CN64System::RunLoadedImage(void)
-{
-    WriteTrace(TraceN64System, TraceDebug, "Start");
-    g_BaseSystem = new CN64System(g_Plugins, (uint32_t)time(NULL), false, false);
-    if (g_BaseSystem)
-    {
-        g_BaseSystem->StartEmulation(true);
-    }
-    else
-    {
-        WriteTrace(TraceN64System, TraceError, "Failed to create CN64System");
-    }
-    WriteTrace(TraceN64System, TraceDebug, "Done");
-}
-
 bool CN64System::LoadFileImageIPL(const char * FileLoc)
 {
     CloseSystem();
@@ -553,6 +465,102 @@ bool CN64System::LoadDiskImage(const char * FileLoc, const bool Expansion)
         return false;
     }
     return true;
+}
+
+bool CN64System::RunFileImage(const char * FileLoc)
+{
+    //Uninitialize g_Disk and g_DDRom to prevent exception when ending emulation of a regular ROM after playing 64DD content previously.
+    if (g_Disk != NULL)
+    {
+        g_Disk->UnallocateDiskImage();
+        delete g_Disk;
+        g_Disk = NULL;
+    }
+    if (g_DDRom != NULL)
+    {
+        g_DDRom->UnallocateRomImage();
+        delete g_DDRom;
+        g_DDRom = NULL;
+    }
+    if (!LoadFileImage(FileLoc))
+    {
+        return false;
+    }
+    g_Settings->SaveBool(Setting_EnableDisk, false);
+    if (g_Settings->LoadBool(Setting_AutoStart) != 0)
+    {
+        WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
+        RunLoadedImage();
+    }
+    return true;
+}
+
+bool CN64System::RunDiskImage(const char * FileLoc)
+{
+    if (!LoadFileImage(g_Settings->LoadStringVal(File_DiskIPLPath).c_str()))
+    {
+        g_Settings->SaveString(File_DiskIPLPath, "");
+        return false;
+    }
+    else
+    {
+        if (g_Rom->CicChipID() != CIC_NUS_8303 && g_Rom->CicChipID() != CIC_NUS_DDUS)
+        {
+            g_Notify->DisplayError(MSG_FAIL_IMAGE_IPL);
+            g_Settings->SaveString(File_DiskIPLPath, "");
+            return false;
+        }
+    }
+    if (!LoadDiskImage(FileLoc, false))
+    {
+        return false;
+    }
+    g_Settings->SaveBool(Setting_EnableDisk, true);
+    if (g_Settings->LoadBool(Setting_AutoStart) != 0)
+    {
+        WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
+        RunLoadedImage();
+    }
+    return true;
+}
+
+bool CN64System::RunDiskComboImage(const char * FileLoc, const char * FileLocDisk)
+{
+    if (!LoadFileImageIPL(g_Settings->LoadStringVal(File_DiskIPLPath).c_str()))
+    {
+        g_Settings->SaveString(File_DiskIPLPath, "");
+        return false;
+    }
+    if (!LoadDiskImage(FileLocDisk, true))
+    {
+        return false;
+    }
+    if (!LoadFileImage(FileLoc))
+    {
+        return false;
+    }
+    g_Settings->SaveBool(Setting_EnableDisk, true);
+    if (g_Settings->LoadBool(Setting_AutoStart) != 0)
+    {
+        WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
+        RunLoadedImage();
+    }
+    return true;
+}
+
+void CN64System::RunLoadedImage(void)
+{
+    WriteTrace(TraceN64System, TraceDebug, "Start");
+    g_BaseSystem = new CN64System(g_Plugins, (uint32_t)time(NULL), false, false);
+    if (g_BaseSystem)
+    {
+        g_BaseSystem->StartEmulation(true);
+    }
+    else
+    {
+        WriteTrace(TraceN64System, TraceError, "Failed to create CN64System");
+    }
+    WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
 void CN64System::CloseSystem()

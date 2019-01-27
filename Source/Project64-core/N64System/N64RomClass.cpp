@@ -680,13 +680,13 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
             g_Notify->DisplayMessage(5, MSG_LOADING);
             if (!ZipFile.GetFile(i, m_ROMImage, RomFileSize))
             {
-                SetError(MSG_FAIL_IMAGE);
+                SetError(MSG_FAIL_IMAGE_IPL);
                 return false;
             }
 
             if (!IsValidRomImage(m_ROMImage))
             {
-                SetError(MSG_FAIL_IMAGE);
+                SetError(MSG_FAIL_IMAGE_IPL);
                 return false;
             }
             g_Notify->DisplayMessage(5, MSG_BYTESWAP);
@@ -747,6 +747,12 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
     m_RomIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(&m_ROMImage[0x10]), *(uint32_t *)(&m_ROMImage[0x14]), m_ROMImage[0x3D]);
     WriteTrace(TraceN64System, TraceDebug, "Ident: %s", m_RomIdent.c_str());
     CalculateCicChip();
+
+    if (CicChipID() != CIC_NUS_8303 && CicChipID() != CIC_NUS_DDUS)
+    {
+        SetError(MSG_FAIL_IMAGE_IPL);
+        return false;
+    }
 
     if (!LoadBootCodeOnly && g_DDRom == this)
     {
