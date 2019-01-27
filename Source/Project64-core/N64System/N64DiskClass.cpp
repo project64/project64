@@ -49,18 +49,16 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
     }
 
     char RomName[5];
-    //Get the disk ID from the disk image
-    RomName[0] = (char)*(m_DiskImage + 0x43673);
-    RomName[1] = (char)*(m_DiskImage + 0x43672);
-    RomName[2] = (char)*(m_DiskImage + 0x43671);
-    RomName[3] = (char)*(m_DiskImage + 0x43670);
-    RomName[4] = '\0';
-
-    m_RomName = RomName;
     m_FileName = FileLoc;
     if (*(uint32_t *)(&m_DiskImage[0x43670]) != 0)
     {
         m_DiskIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(&m_DiskImage[0]), *(uint32_t *)(&m_DiskImage[0x43670]), m_DiskImage[0x43670]);
+        //Get the disk ID from the disk image
+        RomName[0] = (char)*(m_DiskImage + 0x43673);
+        RomName[1] = (char)*(m_DiskImage + 0x43672);
+        RomName[2] = (char)*(m_DiskImage + 0x43671);
+        RomName[3] = (char)*(m_DiskImage + 0x43670);
+        RomName[4] = '\0';
     }
     else
     {
@@ -70,7 +68,20 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
             crc += *(uint32_t *)(m_DiskImage + i);
         }
         m_DiskIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(&m_DiskImage[0]), crc, m_DiskImage[0x43670]);
+
+        //Get the disk ID from the disk image
+        RomName[0] = m_DiskIdent[12];
+        RomName[1] = m_DiskIdent[11];
+        RomName[2] = m_DiskIdent[10];
+        RomName[3] = m_DiskIdent[9];
+        RomName[4] = '\0';
+
+        for (uint8_t i = 0; i < 8; i++)
+        {
+            m_DiskHeader[0x20 + (i ^ 3)] = (uint8_t)m_DiskIdent[9 + i];
+        }
     }
+    m_RomName = RomName;
     m_Country = (Country)m_DiskImage[0x43670];
 
     if (g_Disk == this)
