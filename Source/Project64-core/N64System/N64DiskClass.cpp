@@ -58,7 +58,19 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
 
     m_RomName = RomName;
     m_FileName = FileLoc;
-    m_DiskIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(&m_DiskImage[0]), *(uint32_t *)(&m_DiskImage[0x43670]), m_DiskImage[0x43670]);
+    if (*(uint32_t *)(&m_DiskImage[0x43670]) != 0)
+    {
+        m_DiskIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(&m_DiskImage[0]), *(uint32_t *)(&m_DiskImage[0x43670]), m_DiskImage[0x43670]);
+    }
+    else
+    {
+        uint32_t crc = 0;
+        for (uint8_t i = 0; i < 0xE8; i += 4)
+        {
+            crc += *(uint32_t *)(m_DiskImage + i);
+        }
+        m_DiskIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(&m_DiskImage[0]), crc, m_DiskImage[0x43670]);
+    }
     m_Country = (Country)m_DiskImage[0x43670];
 
     if (g_Disk == this)
