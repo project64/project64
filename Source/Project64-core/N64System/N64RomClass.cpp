@@ -416,6 +416,18 @@ bool CN64Rom::IsValidRomImage(uint8_t Test[4])
     return false;
 }
 
+bool CN64Rom::IsLoadedRomDDIPL()
+{
+    switch (CicChipID())
+    {
+        case CIC_NUS_8303:
+        case CIC_NUS_DDUS:
+            return true;
+        default:
+            return false;
+    }
+}
+
 void CN64Rom::CleanRomName(char * RomName, bool byteswap)
 {
     if (byteswap)
@@ -748,7 +760,7 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
     WriteTrace(TraceN64System, TraceDebug, "Ident: %s", m_RomIdent.c_str());
     CalculateCicChip();
 
-    if (CicChipID() != CIC_NUS_8303 && CicChipID() != CIC_NUS_DDUS)
+    if (!IsLoadedRomDDIPL())
     {
         SetError(MSG_FAIL_IMAGE_IPL);
         return false;

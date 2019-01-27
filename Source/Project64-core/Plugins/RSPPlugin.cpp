@@ -186,7 +186,7 @@ bool CRSP_Plugin::Initiate(CPlugins * Plugins, CN64System * System)
             CMipsMemoryVM & MMU = System->m_MMU_VM;
             CRegisters & Reg = System->m_Reg;
 
-            if ((g_Rom->CicChipID() == CIC_NUS_8303 || g_Rom->CicChipID() == CIC_NUS_DDUS) && g_Disk != NULL)
+            if (g_Rom->IsLoadedRomDDIPL() && g_Disk != NULL)
                 Info.HEADER = g_Disk->GetDiskHeader();
             else
                 Info.HEADER = g_Rom->GetRomAddress();

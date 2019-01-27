@@ -328,7 +328,7 @@ bool CN64System::LoadFileImage(const char * FileLoc)
     WriteTrace(TraceN64System, TraceDebug, "Loading \"%s\"", FileLoc);
     if (g_Rom->LoadN64Image(FileLoc))
     {
-        if (g_Rom->CicChipID() == CIC_NUS_8303 || g_Rom->CicChipID() == CIC_NUS_DDUS)
+        if (g_Rom->IsLoadedRomDDIPL())
         {
             //64DD IPL
             if (g_DDRom == NULL)
@@ -341,7 +341,7 @@ bool CN64System::LoadFileImage(const char * FileLoc)
 
         g_System->RefreshGameSettings();
 
-        if (g_Rom->CicChipID() != CIC_NUS_8303 && g_Rom->CicChipID() != CIC_NUS_DDUS)
+        if (!g_Rom->IsLoadedRomDDIPL())
         {
             g_Settings->SaveString(Game_File, FileLoc);
         }
@@ -390,7 +390,7 @@ bool CN64System::LoadFileImageIPL(const char * FileLoc)
     WriteTrace(TraceN64System, TraceDebug, "Loading \"%s\"", FileLoc);
     if (g_DDRom->LoadN64ImageIPL(FileLoc))
     {
-        if (g_DDRom->CicChipID() != CIC_NUS_8303 && g_DDRom->CicChipID() != CIC_NUS_DDUS)
+        if (!g_DDRom->IsLoadedRomDDIPL())
         {
             //If not 64DD IPL then it's wrong
             WriteTrace(TraceN64System, TraceError, "LoadN64ImageIPL failed (\"%s\")", FileLoc);
@@ -504,7 +504,7 @@ bool CN64System::RunDiskImage(const char * FileLoc)
     }
     else
     {
-        if (g_Rom->CicChipID() != CIC_NUS_8303 && g_Rom->CicChipID() != CIC_NUS_DDUS)
+        if (!g_Rom->IsLoadedRomDDIPL())
         {
             g_Notify->DisplayError(MSG_FAIL_IMAGE_IPL);
             g_Settings->SaveString(File_DiskIPLPath, "");
