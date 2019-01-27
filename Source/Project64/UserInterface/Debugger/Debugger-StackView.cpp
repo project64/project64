@@ -80,16 +80,16 @@ LRESULT CDebugStackView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCt
 
 void CDebugStackView::Refresh()
 {
+    if (g_Reg == NULL)
+    {
+        return;
+    }
+
     m_StackList.SetRedraw(FALSE);
     m_StackList.DeleteAllItems();
 
-    uint32_t spBase;
-
-    if (g_Reg != NULL)
-    {
-        spBase = g_Reg->m_GPR[29].UW[0];
-        m_SPStatic.SetWindowTextA(stdstr_f("SP: %08X", spBase).c_str());
-    }
+    uint32_t spBase = g_Reg->m_GPR[29].UW[0];
+    m_SPStatic.SetWindowTextA(stdstr_f("SP: %08X", spBase).c_str());
 
     CSymbols::EnterCriticalSection();
 

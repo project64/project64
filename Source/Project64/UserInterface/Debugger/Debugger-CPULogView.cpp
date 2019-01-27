@@ -183,7 +183,7 @@ LRESULT CDebugCPULogView::OnScroll(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, 
 {
     WORD type = LOWORD(wParam);
     HWND hScrollbar = (HWND)lParam;
-    WORD scrlId = ::GetDlgCtrlID(hScrollbar);
+    WORD scrlId = (WORD)::GetDlgCtrlID(hScrollbar);
 
     SCROLLINFO scrollInfo;
     scrollInfo.cbSize = sizeof(SCROLLINFO);
@@ -212,7 +212,7 @@ LRESULT CDebugCPULogView::OnScroll(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, 
     return 0;
 }
 
-void CDebugCPULogView::InterceptMouseWheel(WPARAM wParam, LPARAM lParam)
+void CDebugCPULogView::InterceptMouseWheel(WPARAM wParam, LPARAM /*lParam*/)
 {
     int nScroll = -((short)HIWORD(wParam) / WHEEL_DELTA);
 
@@ -248,7 +248,7 @@ void CDebugCPULogView::OnExitSizeMove(void)
 
 void CDebugCPULogView::ToggleLoggingEnabled(void)
 {
-    bool bEnableLogging = m_EnabledChk.GetCheck();
+    bool bEnableLogging = (m_EnabledChk.GetCheck() == BST_CHECKED);
 
     m_BuffSizeEdit.EnableWindow(!bEnableLogging);
 
@@ -390,7 +390,6 @@ void CDebugCPULogView::Export(void)
 
     OPENFILENAME openfilename;
     char filePath[255];
-    char drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
     
     memset(&filePath, 0, sizeof(filePath));
     memset(&openfilename, 0, sizeof(openfilename));
