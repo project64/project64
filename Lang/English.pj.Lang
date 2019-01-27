@@ -519,6 +519,8 @@
 #2055#  "Graphics LLE is not for general use!!!\nIt is advisable that you only use this for testing and not for playing games.\n\nChange to graphics LLE?"
 #2056#  "Audio High-Level Emulation"
 #2057#  "Audio HLE requires a third-party plugin!!!\nIf you do not use a third-party audio plugin that supports HLE, you will hear no sound.\n\nChange to audio HLE?"
+#2058#  "File loaded does not appear to be a valid 64DD IPL ROM.\n\nVerify your ROMs with GoodN64."
+#2059#  "Nintendo 64DD IPL ROM not found.\nIt is required to play 64DD disks.\n\nPlease select the required ROM."
 
 
 /*********************************************************************************

@@ -518,6 +518,8 @@
 #2055#  "Les graphismes LLE ne sont pas à utiliser par tout le monde !!!\nIl est recommandé d’utiliser seulement ceci à des fins de test et non pour jouer.\n\nChanger pour les graphismes en mode LLE ?"
 #2056#  "Émulation audio haut niveau (HLE)"
 #2057#  "L’audio HLE nécessite un plugin tiers !!!\nSi vous n’utilisez pas un plugin audio tiers qui supporte le HLE, vous n’entendrez aucun son.\n\nChanger pour l’audio en mode HLE ?"
+#2058#  "Le fichier chargé ne semble pas être une ROM IPL 64DD valide.\n\nVérifiez vos ROM avec GoodN64."
+#2059#  "La ROM IPL 64DD n’a pas pu être trouvée.\nIl est nécéssaire pour jouer avec des disques 64DD.\n\nVeuillez sélectionner la ROM demandée."
 
 
 /*********************************************************************************
