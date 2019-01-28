@@ -180,7 +180,7 @@ void CCPULog::DumpToFile(const char* path)
             szCmdArgs = "";
         }
 
-        fprintf(fp, "%08X: %08X %s %s\n", state->pc, state->opcode, szCmdName, szCmdArgs);
+        fprintf(fp, "%08X: %08X %s %s\n", state->pc, state->opcode.Hex, szCmdName, szCmdArgs);
     }
 
     fclose(fp);
