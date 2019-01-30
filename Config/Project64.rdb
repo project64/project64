@@ -7179,6 +7179,7 @@ Core Note=Random SP DMA errors
 Fixed Audio=0
 Good Name=Sim City 64 (J)
 Plugin Note=[Video] Very slow, city is not rendering properly in HLE
+RDRAM Size=8
 Status=Issues (mixed)
 
 [E848D316-4450474A-C:4A]
@@ -7186,6 +7187,7 @@ Status=Issues (mixed)
 Core Note=Major issues during gameplay
 Fixed Audio=0
 Good Name=Nihon Pro Golf Tour 64 (J)
+RDRAM Size=8
 Status=Broken (core)
 
 [E848D316-444B444A-C:4A]
