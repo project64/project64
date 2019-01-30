@@ -7143,6 +7143,7 @@ Status=Compatible
 
 [E848D316-444D504A-C:4A]
 32bit=No
+Core Note=Cannot use Capture Pak functionality.
 Fixed Audio=0
 Good Name=Mario Artist Paint Studio (J)
 RDRAM Size=8
@@ -7150,6 +7151,7 @@ Status=Compatible
 
 [E848D316-444D544A-C:4A]
 32bit=No
+Core Note=Cannot use Capture Pak functionality.
 Fixed Audio=0
 Good Name=Mario Artist Talent Studio (J)
 RDRAM Size=8
@@ -7157,7 +7159,7 @@ Status=Compatible
 
 [E848D316-444D424A-C:4A]
 32bit=No
-Core Note=Cannot use Randnet functionality.
+Core Note=Cannot use Randnet & Capture Pak functionality.
 Fixed Audio=0
 Good Name=Mario Artist Communication Kit (J)
 RDRAM Size=8
@@ -7167,24 +7169,24 @@ Status=Compatible
 32bit=No
 Fixed Audio=0
 Good Name=Mario Artist Polygon Studio (J)
-Plugin Note=Cannot model on HLE plugins.
+Plugin Note=[Video] Cannot model on HLE plugins.
 RDRAM Size=8
 Status=Issues (plugin)
 
 [E848D316-4453434A-C:4A]
 32bit=No
+Core Note=Random SP DMA errors
 Fixed Audio=0
 Good Name=Sim City 64 (J)
-Plugin Note=Very slow, city is not rendering properly in HLE
-RDRAM Size=8
-Status=Issues (plugin)
+Plugin Note=[Video] Very slow, city is not rendering properly in HLE
+Status=Issues (mixed)
 
 [E848D316-4450474A-C:4A]
 32bit=No
+Core Note=Major issues during gameplay
 Fixed Audio=0
 Good Name=Nihon Pro Golf Tour 64 (J)
-RDRAM Size=8
-Status=Compatible
+Status=Broken (core)
 
 [E848D316-444B444A-C:4A]
 32bit=No
