@@ -7175,12 +7175,11 @@ Status=Issues (plugin)
 
 [E848D316-4453434A-C:4A]
 32bit=No
-Core Note=Random SP DMA errors
-Fixed Audio=0
+Fixed Audio=1
 Good Name=Sim City 64 (J)
+Linking=Off
 Plugin Note=[Video] Very slow, city is not rendering properly in HLE
-RDRAM Size=8
-Status=Issues (mixed)
+Status=Issues (plugin)
 
 [E848D316-4450474A-C:4A]
 32bit=No
