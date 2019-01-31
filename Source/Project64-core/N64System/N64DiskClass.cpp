@@ -322,9 +322,9 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
     ProtectMemory(m_DiskImage, m_DiskFileSize, MEM_READWRITE);
 
     AllocateDiskHeader();
-    memcpy_s(m_DiskHeader, 0x20, m_DiskImage, 0x20);
-    memcpy_s(m_DiskHeader + 0x20, 0x20, m_DiskImage + 0x43670, 0x20);
-    memcpy_s(m_DiskHeader + 0x3B, 5, m_DiskImage + 0x43670, 5);
+    memcpy(m_DiskHeader, m_DiskImage, 0x20);
+    memcpy(m_DiskHeader + 0x20, m_DiskImage + 0x43670, 0x20);
+    memcpy(m_DiskHeader + 0x3B, m_DiskImage + 0x43670, 5);
     return true;
 }
 
