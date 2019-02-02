@@ -20,7 +20,6 @@ public:
     inline bool debugger_enabled(void) const { return m_debugger_enabled; }
     inline uint32_t GetVolume(void) const { return m_Volume; }
     inline uint32_t GetBuffer(void) const { return m_Buffer; }
-    inline bool FixedAudio(void) const { return m_FixedAudio; }
     inline bool SyncAudio(void) const { return m_SyncAudio; }
     inline bool FullSpeed(void) const { return m_FullSpeed; }
     inline bool FlushLogs(void) const { return m_FlushLogs; }
@@ -47,7 +46,6 @@ private:
 
 	short m_Set_SyncViaAudioEnabled;
 	short m_Set_EnableAudio;
-	short m_Set_FixedAudio;
     short m_Set_SyncAudio;
     short m_Set_FullSpeed;
     short m_Set_LimitFPS;
@@ -62,7 +60,6 @@ private:
     bool m_debugger_enabled;
     uint32_t m_Volume;
     uint32_t m_Buffer;
-    bool m_FixedAudio;
     bool m_SyncAudio;
     bool m_FullSpeed;
 };
