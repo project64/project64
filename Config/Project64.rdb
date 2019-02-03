@@ -1846,6 +1846,7 @@ Clear Frame=2
 Good Name=F-ZERO X (J)
 Internal Name=F-ZERO X
 RDRAM Size=8
+Fixed Audio=0
 Status=Compatible
 Plugin Note=[Glide64] missing menu effects
 32bit=No
@@ -7223,7 +7224,7 @@ Status=Compatible
 32bit=No
 Core Note=Expansion Disk for F-Zero X. Play F-Zero X (J) with this disk loaded.
 Fixed Audio=0
-Good Name=F-Zero X Expansion Kit (J)
+Good Name=F-ZERO X Expansion Kit (J)
 RDRAM Size=8
 Status=Compatible
 
