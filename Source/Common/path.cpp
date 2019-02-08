@@ -587,11 +587,16 @@ bool CPath::IsRelative() const
     {
         return false;
     }
+	if (m_strPath.length() > 2 && m_strPath[0] == DIRECTORY_DELIMITER && m_strPath[1] == DIRECTORY_DELIMITER)
+	{
+		return false;
+	}
+#else
+	if (m_strPath.length() > 1 && m_strPath[0] == DIRECTORY_DELIMITER)
+	{
+		return false;
+	}
 #endif
-    if (m_strPath.length() > 1 && m_strPath[0] == DIRECTORY_DELIMITER && m_strPath[1] == DIRECTORY_DELIMITER)
-    {
-        return false;
-    }
     return true;
 }
 
