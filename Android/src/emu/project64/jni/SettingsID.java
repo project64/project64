@@ -248,6 +248,9 @@ public enum SettingsID
     Debugger_ReadBPExists,
     Debugger_WaitingForStep,
     Debugger_AutoRefreshMemoryView,
+    Debugger_CPULoggingEnabled,
+    Debugger_CPULogBufferSize,
+    Debugger_ExceptionBreakpoints,
 
     //Trace
     Debugger_TraceMD5,
@@ -327,6 +330,8 @@ public enum SettingsID
 	Enhancement_OnByDefault,
 	Enhancement_Overclock,
 	Enhancement_OverclockValue,
+	Enhancement_Gameshark,
+	Enhancement_GamesharkCode,
 	Enhancement_Notes,
 
     FirstUISettings, LastUISettings(FirstUISettings.getValue() + 65535),
