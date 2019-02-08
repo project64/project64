@@ -17,9 +17,9 @@
 
 void RegisterUISettings(void)
 {
-    g_Settings->AddHandler((SettingID)(FirstUISettings + Asserts_Version), new CSettingTypeApplication("", "Asserts Version", (uint32_t)0));
-    g_Settings->AddHandler((SettingID)(FirstUISettings + Screen_Orientation), new CSettingTypeApplication("", "Screen Orientation", (uint32_t)0));
-    g_Settings->AddHandler((SettingID)(FirstUISettings + File_RecentGameFileCount), new CSettingTypeApplication("", "Remembered Rom Files", (uint32_t)10));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Asserts_Version), new CSettingTypeApplication("Settings", "Asserts Version", (uint32_t)0));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + Screen_Orientation), new CSettingTypeApplication("Settings", "Screen Orientation", (uint32_t)0));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + File_RecentGameFileCount), new CSettingTypeApplication("Settings", "Remembered Rom Files", (uint32_t)10));
     g_Settings->AddHandler((SettingID)(FirstUISettings + File_RecentGameFileIndex), new CSettingTypeApplicationIndex("Recent File", "Recent Rom", Default_None));
     g_Settings->AddHandler((SettingID)(FirstUISettings + TouchScreen_ButtonScale), new CSettingTypeApplication("Touch Screen", "Button Scale", (uint32_t)100));
     g_Settings->AddHandler((SettingID)(FirstUISettings + TouchScreen_Layout), new CSettingTypeApplication("Touch Screen", "Layout", "Analog"));
