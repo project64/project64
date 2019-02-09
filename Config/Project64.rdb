@@ -1923,11 +1923,15 @@ Status=Compatible
 Good Name=FIFA 99 (E) (M8)
 Internal Name=FIFA 99
 Status=Compatible
+Counter Factor=1
+32bit=No
 
 [7613A630-3ED696F3-C:45]
 Good Name=FIFA 99 (U)
 Internal Name=FIFA 99
 Status=Compatible
+Counter Factor=1
+32bit=No
 
 [C3F19159-65D2BC5A-C:50]
 Good Name=FIFA Soccer 64 (E) (M3)
