@@ -229,7 +229,8 @@ public enum LanguageStringID
     TAB_ROMNOTES(408),
     TAB_SHORTCUTS(409),
     TAB_ROMSTATUS(410),
-    TAB_RECOMPILER(411), //Added in 1.7.0.50
+    TAB_RECOMPILER(411),
+    TAB_DEFAULTS(412),
 
     //Plugin Dialog
     PLUG_ABOUT(420),
@@ -282,6 +283,7 @@ public enum LanguageStringID
     RB_UP(490),
     RB_DOWN(491),
     RB_REFRESH(492),
+    RB_FILEEXT(493),
 
     //Advanced Options
     ADVANCE_INFO(500),
@@ -321,6 +323,8 @@ public enum LanguageStringID
     ROM_COUNTPERBYTE(537),
     ROM_32BIT(538),
     ROM_DELAY_DP(539),
+    ROM_OVER_CLOCK_MODIFIER(5400),
+    ROM_UNALIGNED_DMA(5410),
 
     //Core Styles
     CORE_INTERPTER(540),
@@ -384,6 +388,7 @@ public enum LanguageStringID
     STR_FR_DLS(701),
     STR_FR_PERCENT(702),
     STR_FR_DLS_VIS(703),
+	STR_FR_NONE(704),
 
     // Increase speed
     STR_INSREASE_SPEED(710),
@@ -573,6 +578,7 @@ public enum LanguageStringID
     ANDROID_ABOUT_REVISION(3018),
     ANDROID_ABOUT_TEXT(3019),
     ANDROID_ABOUT_PJ64_AUTHORS(3020),
+	ANDROID_DISCORD(3021),
     
     //In game menu
     ANDROID_MENU_SETTINGS(3100),

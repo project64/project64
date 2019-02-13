@@ -549,6 +549,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ANDROID_ABOUT_REVISION, "Revision");
     DEF_STR(ANDROID_ABOUT_TEXT, "Project64 for Android\u2122 is a port of the windows version of project64.The Android\u2122 version can play most N64 games.");
     DEF_STR(ANDROID_ABOUT_PJ64_AUTHORS, "Project64 Authors.");
+	DEF_STR(ANDROID_DISCORD, "Discord");
 
     //In game menu
     DEF_STR(ANDROID_MENU_SETTINGS, "Settings");

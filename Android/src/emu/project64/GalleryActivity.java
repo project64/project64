@@ -252,7 +252,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
     void UpdateLanguage()
     {
         Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_settings, LanguageStringID.ANDROID_SETTINGS);
-        Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_forum, LanguageStringID.ANDROID_FORUM);
+        Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_discord, LanguageStringID.ANDROID_DISCORD);
         Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_reportBug, LanguageStringID.ANDROID_REPORT_BUG);
         Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_about, LanguageStringID.ANDROID_ABOUT);
     }
@@ -401,8 +401,8 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                 Intent SettingsIntent = new Intent(this, SettingsActivity.class);
                 startActivity( SettingsIntent );
                 return true;
-            case R.id.menuItem_forum:
-                Intent ForumIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://forum.pj64-emu.com/forumdisplay.php?f=13"));
+            case R.id.menuItem_discord:
+                Intent ForumIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://discord.gg/sbYbnda"));
                 startActivity(ForumIntent);
                 return true;
             case R.id.menuItem_reportBug:
