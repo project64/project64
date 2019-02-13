@@ -44,13 +44,6 @@
     <string name="advanced_screen_title">Advanced</string>
     <string name="reset_summary">Restore default settings</string>
     <string name="reset_title">Reset</string>
-    <string name="patreon_title">Patreon</string>
-    <string name="patreon_summary">Support Project64 on Patreon</string>
-    <string name="patreon_link_title">Project64 on Patreon</string>
-    <string name="patreon_link_summary">Click here to support Project64 on Patreon</string>
-    <string name="patreon_email_title">Email address on Patreon</string>
-    <string name="patreon_email_summary">What email address using on patreon</string>
-    <string name="patreon_email_dialogTitle">Enter your email address on Patreon</string>
     <string name="settings_title">Settings</string>
     <string name="preferences">preferences</string>
     <string name="displayFps_title">Framerate</string>
@@ -194,10 +187,7 @@
     <!-- Confirmation Dialogs -->
     <string name="confirmResetGame_title">Reset game?</string>
     <string name="confirmResetGame_message">The game will go back to a clear state, all progress made will be lost.</string>
-    <string name="SupportProject64_title">Project64 needs your help</string>
-    <string name="SupportProject64_message">Developing a fully functional emulator is a massive time-consuming project. With donations you can show your appreciation for this effort and at the same time support the development.\n\nClick Support Project64 button below to view our patreon page, if you are interested in supporting us!\n\nIf you are a patreon already then &lt;a href=\"#patreon\"&gt;click here to enter your email address&lt;/a&gt; to validate it and Project64 will stop prompting you for support.</string>
-    <string name="SupportProject64_OkButton">Support Project64</string>
-    
+   
     <!-- Asset Extractor -->
     <string name="assetExtractor_startingUp">Starting Up …</string>
     <string name="assetExtractor_version">version</string>

@@ -123,10 +123,6 @@ public abstract class BaseSettingsFragment extends PreferenceFragmentCompat
             {
                 loadFragment(new AudioFragment());
             }
-            else if (preference.getKey().equals("settings_patreon"))
-            {
-                loadFragment(new PatreonFragment());
-            }
             else if (preference.getKey().equals("settings_advanced"))
             {
                 loadFragment(new AdvancedFragment());

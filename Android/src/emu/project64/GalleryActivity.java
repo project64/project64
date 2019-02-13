@@ -556,25 +556,11 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
             {
                 if (item == 0)
                 {
-                    if (ShouldShowSupportWindow())
-                    {
-                        ShowSupportWindow(false);
-                    }
-                    else
-                    {
-                        launchGameActivity(false);
-                    }
+                    launchGameActivity(false);
                 }
                 else if (item == 1)
                 {
-                    if (ShouldShowSupportWindow())
-                    {
-                        ShowSupportWindow(true);
-                    }
-                    else
-                    {
-                        launchGameActivity(true);
-                    }
+                    launchGameActivity(true);
                 }
                 else if (item == 2)
                 {
@@ -616,14 +602,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         File InstantSaveDir = new File(NativeExports.SettingsLoadString(SettingsID.Directory_InstantSave.getValue()));
         File GameSaveDir = new File(InstantSaveDir,NativeExports.SettingsLoadString(SettingsID.Game_UniqueSaveDir.getValue()));
         Boolean ResumeGame = HasAutoSave(GameSaveDir);
-        if (ShouldShowSupportWindow())
-        {
-            ShowSupportWindow(ResumeGame);
-        }
-        else
-        {
-            launchGameActivity(ResumeGame);
-        }
+        launchGameActivity(ResumeGame);
     }
 
     public boolean onGalleryItemLongClick( GalleryItem item )
@@ -750,185 +729,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         {
             moveTaskToBack(true);
         }
-    }
-
-    private boolean ShouldShowSupportWindow()
-    {
-        Log.d("GalleryActivity", "ShowSupportWindow mPj64Supporter = " + mPj64Supporter);
-        if (mPj64Supporter)
-        {
-            return false;
-        }
-
-        boolean PatreonAccount = ValidPatreonAccount();
-        Log.d("GalleryActivity", "PatreonAccount = " + PatreonAccount);
-        if (PatreonAccount)
-        {
-            return false;
-        }
-
-        int RunCount = NativeExports.UISettingsLoadDword(UISettingID.SupportWindow_RunCount.getValue());
-        Log.d("GalleryActivity", "ShowSupportWindow RunCount = " + RunCount);
-        if (RunCount == -1)
-        {
-            return false;
-        }
-
-        RunCount = NativeExports.UISettingsLoadDword(UISettingID.Game_RunCount.getValue());
-        Log.d("GalleryActivity", "ShowSupportWindow Game_RunCount = " + RunCount);
-        if (RunCount < 5)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    private void EnterPatreonEmail(final AlertDialog SupportDialog, final Boolean ResumeGame)
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View layout = View.inflate( this, R.layout.input_text, null );
-        builder.setTitle("Patreon Email");
-        builder.setPositiveButton("OK", null);
-        builder.setNegativeButton("Cancel", null);
-        builder.setCancelable(false);
-        builder.setView(layout);
-
-        final AlertDialog dialog = builder.create();
-        dialog.show();
-        EditText et = (EditText)dialog.findViewById(R.id.EditText);
-        et.setText(NativeExports.UISettingsLoadString(UISettingID.SupportWindow_PatreonEmail.getValue()));
-
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener( new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                EditText et = (EditText)dialog.findViewById(R.id.EditText);
-                String email = et.getText().toString();
-                NativeExports.UISettingsSaveString(UISettingID.SupportWindow_PatreonEmail.getValue(), email);
-                dialog.dismiss();
-                if (ValidPatreonAccount())
-                {
-                    SupportDialog.dismiss();
-                    launchGameActivity(ResumeGame);
-                }
-            }
-        });
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener( new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                dialog.dismiss();
-            }
-        });
-
-    }
-
-    private boolean ValidPatreonAccount()
-    {
-        String PatreonEmail = NativeExports.UISettingsLoadString(UISettingID.SupportWindow_PatreonEmail.getValue());
-        String regex = "^(.+)@(.+)$";
-
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(PatreonEmail);
-        return matcher.matches();
-    }
-
-    public void ShowSupportWindow(final Boolean ResumeGame)
-    {
-        ((Project64Application) getApplication()).getDefaultTracker().send(new HitBuilders.EventBuilder()
-            .setCategory("Patreon Window")
-            .setLabel(NativeExports.appVersion())
-            .build());
-
-        Boolean TimeDelayed = NativeExports.UISettingsLoadDword(UISettingID.Game_RunCount.getValue()) > 15;
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getText(R.string.SupportProject64_title));
-        builder.setMessage(getText(R.string.SupportProject64_message));
-        builder.setNeutralButton("Not now", null);
-        builder.setNegativeButton(R.string.SupportProject64_OkButton, null);
-        builder.setCancelable(false);
-
-        final AlertDialog dialog = builder.create();
-        dialog.show();
-
-        CharSequence text = getString(R.string.SupportProject64_message);
-        SpannableStringBuilder spanTxt = new SpannableStringBuilder();
-        int start = 0;
-        for (int i = 0, n = text.length(); i < n; i++)
-        {
-            if (text.charAt(i) == '<' && text.charAt(i+1) == 'a')
-            {
-                int anchor_stat_end = 0;
-                for (int a_i = i, a_n = text.length() - 4; a_i < a_n; a_i++)
-                {
-                    if (text.charAt(a_i) == '>')
-                    {
-                        anchor_stat_end = a_i;
-                    }
-                    if (text.charAt(a_i) == '<' && text.charAt(a_i + 1) == '/' && text.charAt(a_i + 2) == 'a' && text.charAt(a_i + 3) == '>')
-                    {
-                        spanTxt.append(text.subSequence(start, i));
-                        CharSequence anchor_text = text.subSequence(anchor_stat_end + 1, a_i);
-                        spanTxt.append(anchor_text);
-                        spanTxt.setSpan(new ClickableSpan()
-                        {
-                            @Override
-                            public void onClick(View widget)
-                            {
-                                EnterPatreonEmail(dialog, ResumeGame);
-                            }
-                        }, spanTxt.length() - anchor_text.length(), spanTxt.length(), 0);
-                        start = a_i + 4;
-                        i = start;
-                        break;
-                    }
-                }
-            }
-        }
-        spanTxt.append(text.subSequence(start, text.length()));
-
-        TextView view = ((TextView)dialog.findViewById(android.R.id.message));
-        view.setMovementMethod(LinkMovementMethod.getInstance());
-        view.setText(spanTxt, BufferType.SPANNABLE);
-        if (TimeDelayed)
-        {
-            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setEnabled(false);
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setEnabled(true);
-                }
-            }, 20000);
-        }
-        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener( new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                dialog.dismiss();
-                launchGameActivity(ResumeGame);
-            }
-        });
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener( new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                ((Project64Application) getApplication()).getDefaultTracker().send(new HitBuilders.EventBuilder()
-                    .setCategory("Patreon page")
-                    .setLabel(NativeExports.appVersion())
-                    .build());
-                Intent browse = new Intent( Intent.ACTION_VIEW , Uri.parse( "https://www.patreon.com/bePatron?u=841905" ) );
-                startActivity( browse );
-            }
-        });
-        dialog.setCanceledOnTouchOutside(false);
     }
 
     // Enables or disables the "please wait" screen.
