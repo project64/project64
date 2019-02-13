@@ -12,6 +12,9 @@
         android:id="@+id/menuItem_reportBug"
         android:icon="@drawable/ic_bug" />
     <item
+        android:id="@+id/menuItem_support"
+        android:icon="@drawable/ic_support" />
+    <item
         android:id="@+id/menuItem_about"
         android:icon="@drawable/ic_about" />
 </menu>

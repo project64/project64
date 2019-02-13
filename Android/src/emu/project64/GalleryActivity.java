@@ -254,6 +254,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_settings, LanguageStringID.ANDROID_SETTINGS);
         Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_discord, LanguageStringID.ANDROID_DISCORD);
         Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_reportBug, LanguageStringID.ANDROID_REPORT_BUG);
+        Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_support, LanguageStringID.ANDROID_SUPPORT_PJ64);
         Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_about, LanguageStringID.ANDROID_ABOUT);
     }
 
@@ -408,6 +409,9 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
             case R.id.menuItem_reportBug:
                 Intent IssueIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/project64/project64/issues"));
                 startActivity(IssueIntent);
+                return true;
+            case R.id.menuItem_support:
+            	ShowPaymentOptions();
                 return true;
             case R.id.menuItem_about:
                 Intent AboutIntent = new Intent(this, AboutActivity.class);
@@ -926,6 +930,146 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         });
         dialog.setCanceledOnTouchOutside(false);
     }
+
+    // Enables or disables the "please wait" screen.
+    void setWaitScreen(boolean set)
+    {
+        if (set)
+        {
+            WebView webView = (WebView)findViewById(R.id.screen_wait);
+            webView.loadData(Utility.readAsset("loading.htm", ""), "text/html", "UTF8");
+        }
+        findViewById(R.id.screen_main).setVisibility(set ? View.GONE : View.VISIBLE);
+        findViewById(R.id.screen_wait).setVisibility(set ? View.VISIBLE : View.GONE);
+    }
+
+    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener()
+    {
+        public void onIabPurchaseFinished(IabResult result, Purchase purchase)
+        {
+            Log.d("GalleryActivity", "Purchase finished: " + result + ", purchase: " + purchase);
+            // if we were disposed of in the meantime, quit.
+            if (mIabHelper == null) return;
+
+            if (result.isFailure())
+            {
+                Log.e("GalleryActivity", "**** Purcahse Error: " + result);
+                alert("Save Support Upgrade failed\n\n" + result.getMessage());
+                setWaitScreen(false);
+                return;
+            }
+
+            Log.d("GalleryActivity", "Purchase successful.");
+
+            if (purchase.getSku().equals(SKU_SAVESUPPORT))
+            {
+                // bought the premium upgrade!
+                Log.d("GalleryActivity", "Purchase is save support. Congratulating user.");
+                alert("Thank you for upgrading to have save support!");
+                setWaitScreen(false);
+            }
+
+            if (purchase.getSku().equals(SKU_PJ64SUPPORTOR_2) ||
+                purchase.getSku().equals(SKU_PJ64SUPPORTOR_5) ||
+                purchase.getSku().equals(SKU_PJ64SUPPORTOR_8) ||
+                purchase.getSku().equals(SKU_PJ64SUPPORTOR_10))
+            {
+                // bought the premium upgrade!
+                Log.d("GalleryActivity", "Purchase is project64 support. Congratulating user.");
+                alert("Thank you for supporting Project64!");
+                mPj64Supporter = true;
+                setWaitScreen(false);
+            }
+        }
+    };
+
+    public void PurcahseProject64Support(Activity activity, String sku)
+    {
+        setWaitScreen(true);
+        //Purchase save support
+        try
+        {
+            String payload = NativeExports.appVersion();
+            mIabHelper.launchPurchaseFlow(activity, sku, RC_REQUEST, mPurchaseFinishedListener, payload);
+        }
+        catch (IabAsyncInProgressException e)
+        {
+            setWaitScreen(false);
+        }
+    }
+
+    public void ShowPaymentOptions()
+    {
+        ArrayList<String> skuList = new ArrayList<String>();
+        skuList.add(SKU_PJ64SUPPORTOR_2);
+        skuList.add(SKU_PJ64SUPPORTOR_5);
+        skuList.add(SKU_PJ64SUPPORTOR_8);
+        skuList.add(SKU_PJ64SUPPORTOR_10);
+        Bundle querySkus = new Bundle();
+        querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
+
+        final Context context = this;
+        final Activity activity = this;
+        IabHelper.QueryInventoryFinishedListener GotPaymentOptionListener = new IabHelper.QueryInventoryFinishedListener()
+        {
+            public void onQueryInventoryFinished(IabResult result, Inventory inventory)
+            {
+                Log.d("GalleryActivity", "Query inventory finished.");
+
+                // Have we been disposed of in the meantime? If so, quit.
+                if (mIabHelper == null) return;
+
+                // Is it a failure?
+                if (result.isFailure())
+                {
+                    //complain("Failed to query inventory: " + result);
+                    return;
+                }
+
+                Log.d("GalleryActivity", "SKU_PJ64SUPPORTOR_2 price: " + inventory.getSkuDetails(SKU_PJ64SUPPORTOR_2).getPrice());
+                Log.d("GalleryActivity", "SKU_PJ64SUPPORTOR_5 price: " + inventory.getSkuDetails(SKU_PJ64SUPPORTOR_5).getPrice());
+                Log.d("GalleryActivity", "SKU_PJ64SUPPORTOR_8 price: " + inventory.getSkuDetails(SKU_PJ64SUPPORTOR_8).getPrice());
+                Log.d("GalleryActivity", "SKU_PJ64SUPPORTOR_10 price: " + inventory.getSkuDetails(SKU_PJ64SUPPORTOR_10).getPrice());
+
+                CharSequence options[] = new CharSequence[]
+                {
+                    inventory.getSkuDetails(SKU_PJ64SUPPORTOR_10).getPrice(),
+                    inventory.getSkuDetails(SKU_PJ64SUPPORTOR_8).getPrice(),
+                    inventory.getSkuDetails(SKU_PJ64SUPPORTOR_5).getPrice(),
+                    inventory.getSkuDetails(SKU_PJ64SUPPORTOR_2).getPrice()
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Select an amount");
+                builder.setItems(options, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        switch (which)
+                        {
+                        case 0: PurcahseProject64Support(activity,SKU_PJ64SUPPORTOR_10); break;
+                        case 1: PurcahseProject64Support(activity,SKU_PJ64SUPPORTOR_8); break;
+                        case 2: PurcahseProject64Support(activity,SKU_PJ64SUPPORTOR_5); break;
+                        case 3: PurcahseProject64Support(activity,SKU_PJ64SUPPORTOR_2); break;
+                        }
+                    }
+                });
+                final AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        };
+
+        try
+        {
+            mIabHelper.queryInventoryAsync(true, skuList, null, GotPaymentOptionListener);
+        }
+        catch (IabAsyncInProgressException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
 
     public void launchGameActivity(boolean ResumeGame)
     {
