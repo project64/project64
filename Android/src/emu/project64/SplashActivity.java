@@ -22,11 +22,20 @@ import emu.project64.jni.UISettingID;
 import emu.project64.task.ExtractAssetsTask;
 import emu.project64.task.ExtractAssetsTask.ExtractAssetsListener;
 import emu.project64.task.ExtractAssetsTask.Failure;
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Intent;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.util.Log;
 import android.view.Window;
@@ -37,13 +46,16 @@ import android.widget.TextView;
  * The main activity that presents the splash screen, extracts the assets if necessary, and launches
  * the main menu activity.
  */
-public class SplashActivity extends Activity implements ExtractAssetsListener
+public class SplashActivity extends Activity implements ExtractAssetsListener, OnRequestPermissionsResultCallback
 {
+    static final int PERMISSION_REQUEST = 177;
+    static final int NUM_PERMISSIONS = 2;
+
     /**
      * Asset version number, used to determine stale assets. Increment this number every time the
      * assets are updated on disk.
      */
-    private static final int ASSET_VERSION = 2;
+    private static final int ASSET_VERSION = 3;
 
     /** The total number of assets to be extracted (for computing progress %). */
     private static final int TOTAL_ASSETS = 89;
@@ -80,35 +92,130 @@ public class SplashActivity extends Activity implements ExtractAssetsListener
         ((TextView) findViewById( R.id.versionText )).setText(NativeExports.appVersion());
         mTextView = (TextView) findViewById( R.id.mainText );
 
-        if (!mInit)
-        {
-            mInit = true;
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-            String ConfigFile = AndroidDevice.PACKAGE_DIRECTORY + "/Config/Project64.cfg";
-            if(( new File( ConfigFile ) ).exists())
+        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) ||
+             !AndroidDevice.IS_LOLLIPOP)
+        {
+            StartExtraction();
+        }
+        else if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE) ||
+            ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        {
+            new AlertDialog.Builder(this)
+            .setTitle(getString(R.string.assetExtractor_permissions_title))
+            .setMessage(getString(R.string.assetExtractor_permissions_rationale))
+            .setPositiveButton(getString(android.R.string.ok), new OnClickListener()
             {
-                InitProject64();
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    actuallyRequestPermissions();
+                }
+
+            }).setNegativeButton(getString(android.R.string.cancel), new OnClickListener()
+            {
+                //Show dialog stating that the app can't continue without proper permissions
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    new AlertDialog.Builder(SplashActivity.this).setTitle(getString(R.string.assetExtractor_error))
+                        .setMessage(getString(R.string.assetExtractor_failed_permissions))
+                        .setPositiveButton(getString( android.R.string.ok ), new OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                SplashActivity.this.finish();
+                            }
+                        }).setCancelable(false).show();
+                }
+            }).setCancelable(false).show();
+        }
+    }
+
+    public void StartExtraction()
+    {
+        if (mInit)
+        {
+            return;
+        }
+        mInit = true;
+        String ConfigFile = AndroidDevice.PACKAGE_DIRECTORY + "/Config/Project64.cfg";
+        if(( new File( ConfigFile ) ).exists())
+        {
+            InitProject64();
+        }
+
+        ((Project64Application) getApplication()).getDefaultTracker().send(new HitBuilders.EventBuilder()
+            .setCategory("start")
+            .setLabel(NativeExports.appVersion())
+            .build());
+
+        // Extract the assets in a separate thread and launch the menu activity
+        // Handler.postDelayed ensures this runs only after activity has resumed
+        Log.e( "Splash", "extractAssetsTaskLauncher - startup");
+        final Handler handler = new Handler();
+        if (!mAppInit || NativeExports.UISettingsLoadDword(UISettingID.Asserts_Version.getValue()) != ASSET_VERSION)
+        {
+            handler.post( extractAssetsTaskLauncher );
+        }
+        else
+        {
+            handler.postDelayed( startGalleryLauncher, SPLASH_DELAY );
+        }
+    }
+
+    public void actuallyRequestPermissions()
+    {
+        ActivityCompat.requestPermissions(this, new String[] {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE }, PERMISSION_REQUEST);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
+    {
+        switch (requestCode)
+        {
+        case PERMISSION_REQUEST:
+        {
+            // If request is cancelled, the result arrays are empty.
+            boolean good = true;
+            if (permissions.length != NUM_PERMISSIONS || grantResults.length != NUM_PERMISSIONS)
+            {
+                good = false;
             }
 
-            ((Project64Application) getApplication()).getDefaultTracker().send(new HitBuilders.EventBuilder()
-                .setCategory("start")
-                .setLabel(NativeExports.appVersion())
-                .build());
-
-            // Extract the assets in a separate thread and launch the menu activity
-            // Handler.postDelayed ensures this runs only after activity has resumed
-            Log.e( "Splash", "extractAssetsTaskLauncher - startup");
-            final Handler handler = new Handler();
-            if (!mAppInit || NativeExports.UISettingsLoadDword(UISettingID.Asserts_Version.getValue()) != ASSET_VERSION)
+            for (int i = 0; i < grantResults.length && good; i++)
             {
-                handler.post( extractAssetsTaskLauncher );
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED)
+                {
+                    good = false;
+                }
+            }
+
+            if (!good)
+            {
+                new AlertDialog.Builder(SplashActivity.this).setTitle(getString(R.string.assetExtractor_error))
+                    .setMessage(getString(R.string.assetExtractor_failed_permissions))
+                    .setPositiveButton(getString( android.R.string.ok ), new OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            SplashActivity.this.finish();
+                        }
+
+                    }).setCancelable(false).show();
             }
             else
             {
-                handler.postDelayed( startGalleryLauncher, SPLASH_DELAY );
+                StartExtraction();
             }
-        }
+            return;
+        }}
     }
 
     @Override
@@ -185,6 +292,7 @@ public class SplashActivity extends Activity implements ExtractAssetsListener
         @Override
         public void run()
         {
+            Log.e( "Splash", "extractAssetsTaskLauncher - start");
             // Extract and merge the assets if they are out of date
             mAssetsExtracted = 0;
             new ExtractAssetsTask( getAssets(), SOURCE_DIR, AndroidDevice.PACKAGE_DIRECTORY, SplashActivity.this ).execute();
