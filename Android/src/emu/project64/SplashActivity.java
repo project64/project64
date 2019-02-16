@@ -133,6 +133,10 @@ public class SplashActivity extends Activity implements ExtractAssetsListener, O
                 }
             }).setCancelable(false).show();
         }
+        else
+        {
+            actuallyRequestPermissions();
+        }
     }
 
     public void StartExtraction()
