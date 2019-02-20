@@ -199,6 +199,12 @@
     <string name="assetExtractor_permissions_title">Permissions</string>
     <string name="assetExtractor_permissions_rationale">Project64 needs to be able to: \nRead your storage to read game files, save states, and configuration.\nWrite to your storage to write configuration and save data.</string>
 
+    <!-- Review -->
+    <string name="review_title">Please rate Project64 5 stars</string>
+    <string name="review_decription">Please rate Project64 5 stars if you have enjoyed it. Your support and feedback helps makes Project64 better.</string>
+    <string name="review_cancel">Don\'t Rate</string>
+    <string name="review_ok">Rate 5 Starts</string>
+
     <!-- Game Directory Dialog -->
     <string name="scanning_title">Scanning…</string>
 </resources>

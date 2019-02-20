@@ -551,6 +551,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ANDROID_ABOUT_PJ64_AUTHORS, "Project64 Authors.");
 	DEF_STR(ANDROID_DISCORD, "Discord");
 	DEF_STR(ANDROID_SUPPORT_PJ64, "Support Project64");
+	DEF_STR(ANDROID_REVIEW_PJ64, "Review Project64");
 
     //In game menu
     DEF_STR(ANDROID_MENU_SETTINGS, "Settings");

@@ -15,6 +15,9 @@
         android:id="@+id/menuItem_support"
         android:icon="@drawable/ic_support" />
     <item
+        android:id="@+id/menuItem_review"
+        android:icon="@drawable/ic_review" />
+    <item
         android:id="@+id/menuItem_about"
         android:icon="@drawable/ic_about" />
 </menu>

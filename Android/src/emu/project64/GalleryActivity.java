@@ -51,6 +51,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
@@ -147,13 +148,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         super.onCreate( savedInstanceState );
         mActiveGalleryActivity = this;
 
-        String FirstRun = NativeExports.UISettingsLoadString(UISettingID.SupportWindow_FirstRun.getValue());
-        if (FirstRun.length() == 0)
-        {
-            SimpleDateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
-            NativeExports.UISettingsSaveString(UISettingID.SupportWindow_FirstRun.getValue(), format.format(new Date()));
-        }
-
         mIabHelper = new IabHelper(this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnfHFIq+X0oIvV+bwcvdqQv5GmpWLL6Bw8xE6MLFzXzUGUIUZBwQS6Cz5IC0UM76ujPDPqQPeGy/8oq/bswB5pHCz2iS4ySGalzFfYfeIDklOe+R1pLEqmHuwsR5o4b8rLePLGmUI7hA0kozOTb0i+epANV3Pj63i5XFZLA7RMi5I+YysoE9Fob6kCx0kb02AATacF0OXI9paE1izvsHhZcOIrT4TRMbGlZjBVE/pcJtoBDh33QKz/JBOXWvwnh+efqhVsq/UfA6jYI+U4Z4tsnWhem8DB6Kqj5EhClC6qCPmkBFiOabyKaqhI/urBtYOwxkW9erwtA6OcDoHm5J/JwIDAQAB");
 
         // enable debug logging (for a production application, you should set this to false).
@@ -247,6 +241,15 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
             }
         });
         UpdateLanguage();
+        
+        int RunCount = NativeExports.UISettingsLoadDword(UISettingID.AppInfo_RunCount.getValue()) + 1;
+		if (RunCount < 1) { RunCount = 1; }
+        NativeExports.UISettingsSaveDword(UISettingID.AppInfo_RunCount.getValue(), RunCount);
+        Log.d("GalleryActivity", "ShowSupportWindow RunCount = " + RunCount);
+        if (RunCount == 5 || RunCount == 10)
+        {
+        	ShowReviewOptions();        	
+        }
     }
 
     void UpdateLanguage()
@@ -254,6 +257,7 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_settings, LanguageStringID.ANDROID_SETTINGS);
         Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_discord, LanguageStringID.ANDROID_DISCORD);
         Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_reportBug, LanguageStringID.ANDROID_REPORT_BUG);
+        Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_review, LanguageStringID.ANDROID_REVIEW_PJ64);
         Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_support, LanguageStringID.ANDROID_SUPPORT_PJ64);
         Strings.SetMenuTitle(mDrawerList.getMenu(), R.id.menuItem_about, LanguageStringID.ANDROID_ABOUT);
     }
@@ -409,6 +413,9 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
             case R.id.menuItem_reportBug:
                 Intent IssueIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/project64/project64/issues"));
                 startActivity(IssueIntent);
+                return true;
+            case R.id.menuItem_review:
+            	ShowReviewOptions();
                 return true;
             case R.id.menuItem_support:
             	ShowPaymentOptions();
@@ -579,7 +586,6 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
                                 currentFile.delete();
                             }
                             SaveDir.delete();
-                            NativeExports.UISettingsSaveDword(UISettingID.Game_RunCount.getValue(), 0);
                             launchGameActivity(false);
                         }
                     })
@@ -798,6 +804,30 @@ public class GalleryActivity extends AppCompatActivity implements IabBroadcastLi
         }
     }
 
+    public void ShowReviewOptions()
+    {
+        new AlertDialog.Builder(GalleryActivity.this).setTitle(getString(R.string.review_title))
+        .setMessage(getString(R.string.review_decription))
+        .setPositiveButton(getString( R.string.review_ok ), new OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                Intent IssueIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=emu.project64&hl=en"));
+                startActivity(IssueIntent);
+            }
+
+        })
+        .setNegativeButton( getString( R.string.review_cancel), new OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+            }
+        })
+        .setCancelable(false).show();
+    }
+    
     public void ShowPaymentOptions()
     {
         ArrayList<String> skuList = new ArrayList<String>();

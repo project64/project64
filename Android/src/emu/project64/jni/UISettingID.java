@@ -29,14 +29,8 @@ public enum UISettingID
     Controller_Deadzone,
     Controller_Sensitivity,
 
-    //Support Window
-    SupportWindow_FirstRun,
-    SupportWindow_AlwaysShow,
-    SupportWindow_ShowingSupportWindow,
-    SupportWindow_RunCount,
-
-    //Game Settings
-    Game_RunCount,
+    //App Info
+    AppInfo_RunCount,
     ;
     
     private int value;

@@ -723,6 +723,7 @@ bool CMipsMemoryVM::FilterArmException(uint32_t MemAddress, mcontext_t & context
     if (OpCode32->reg_cond.opcode == 0 && OpCode32->reg_cond.opcode1 == 0 && OpCode32->reg_cond.opcode2 == 1 && OpCode32->reg_cond.opcode3 == 0xB)
     {
         //119330b1 	ldrhne	r3, [r3, r1]
+		//11d000b0  ldrhne  r0, [r0]
         if (!g_MMU->LH_NonMemory(MemAddress, ArmRegisters[OpCode32->reg_cond.rt], false))
         {
             if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
