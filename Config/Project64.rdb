@@ -7180,6 +7180,7 @@ Fixed Audio=1
 Good Name=Sim City 64 (J)
 Linking=Off
 Plugin Note=[Video] Very slow, city is not rendering properly in HLE
+RDRAM Size=8
 Status=Issues (plugin)
 
 [E848D316-4450474A-C:4A]
