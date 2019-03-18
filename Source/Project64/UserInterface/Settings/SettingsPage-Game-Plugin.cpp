@@ -312,8 +312,7 @@ void CGamePluginPage::HleGfxChanged(UINT /*Code*/, int id, HWND /*ctl*/)
         }
         if ((Button->GetCheck() & BST_CHECKED) == 0)
         {
-            int res = MessageBoxW(m_hWnd, wGS(MSG_SET_LLE_GFX_MSG).c_str(), wGS(MSG_SET_LLE_GFX_TITLE).c_str(), MB_YESNO | MB_ICONWARNING);
-            if (res != IDYES)
+            if (!g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SET_LLE_GFX_MSG).c_str()))
             {
                 Button->SetCheck(BST_CHECKED);
                 return;
@@ -335,9 +334,8 @@ void CGamePluginPage::HleAudioChanged(UINT /*Code*/, int id, HWND /*ctl*/)
             continue;
         }
         if ((Button->GetCheck() & BST_CHECKED) != 0)
-        {
-            int res = MessageBoxW(m_hWnd, wGS(MSG_SET_HLE_AUD_MSG).c_str(), wGS(MSG_SET_HLE_AUD_TITLE).c_str(), MB_ICONWARNING | MB_YESNO);
-            if (res != IDYES)
+        {          
+            if (!g_Notify->AskYesNoQuestion(g_Lang->GetString(MSG_SET_HLE_AUD_MSG).c_str()))
             {
                 Button->SetCheck(BST_UNCHECKED);
                 return;

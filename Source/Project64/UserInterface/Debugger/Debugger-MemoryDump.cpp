@@ -112,7 +112,7 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
         GetDlgItemText(IDC_FILENAME, FileName, sizeof(FileName));
         if (strlen(FileName) == 0)
         {
-            g_Notify->DisplayError("Please Choose target file");
+            g_Notify->DisplayWarning("Please Choose target file");
             ::SetFocus(GetDlgItem(IDC_FILENAME));
             return false;
         }

@@ -301,7 +301,7 @@ int CALLBACK CCheatsUI::CheatAddProc(HWND hDlg, uint32_t uMsg, uint32_t wParam, 
                 }
                 if (_stricmp(CheatName.c_str(), NewCheatName.c_str()) == 0)
                 {
-                    g_Notify->DisplayError(GS(MSG_CHEAT_NAME_IN_USE));
+                    g_Notify->DisplayWarning(GS(MSG_CHEAT_NAME_IN_USE));
                     SetFocus(GetDlgItem(hDlg, IDC_CODE_NAME));
                     return true;
                 }

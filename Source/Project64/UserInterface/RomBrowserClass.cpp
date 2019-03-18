@@ -813,7 +813,7 @@ void CRomBrowser::RomList_OpenRom(uint32_t /*pnmh*/)
     {
         if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(pRomInfo->szFullFileName))
         {
-            if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists()) { g_Notify->DisplayError(MSG_IPL_REQUIRED); }
+            if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists()) { g_Notify->DisplayWarning(MSG_IPL_REQUIRED); }
             CPath FileName;
             const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
             if (FileName.SelectFile(m_MainWindow, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))

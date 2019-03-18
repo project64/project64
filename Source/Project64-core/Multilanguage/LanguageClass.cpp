@@ -489,7 +489,8 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_UNHANDLED_OP, "Unhandled R4300i opcode at");
     DEF_STR(MSG_NONMAPPED_SPACE, "Executing from non-mapped space.\n\nVerify ROM and its settings.");
     DEF_STR(MSG_SAVE_STATE_HEADER, "This saved state does not appear to match the running ROM.\n\nStates must be saved & loaded between 100% identical ROMs.\nIn particular, the REGION and VERSION need to be the same.\nLoading this state is likely to cause the game and/or emulator to crash.\n\nAre you sure you want to continue loading?");
-    DEF_STR(MSG_MSGBOX_TITLE, "Error");
+    DEF_STR(MSG_MSGBOX_WARNING_TITLE, "Warning");
+    DEF_STR(MSG_MSGBOX_ERROR_TITLE, "Error");
     DEF_STR(MSG_PIF2_ERROR, "Copyright sequence not found in LUT. Game will no longer function.");
     DEF_STR(MSG_PIF2_TITLE, "Copy Protection Failure");
     DEF_STR(MSG_PLUGIN_CHANGE, "Changing a plugin requires Project64 to reset a running ROM.\nIf you don't want to lose your place, answer No and save the current state first.\n\nChange plugins and reset ROM now?");
