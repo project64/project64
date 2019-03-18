@@ -1152,7 +1152,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 
         /* Debug - Exception breakpoints
         *******************/
-        Item.Reset(ID_DEBUGGER_EXCBREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"CPU Exception breakpoints...");
+        Item.Reset(ID_DEBUGGER_EXCBREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"CPU Exception Breakpoints...");
         //Item.SetItemEnabled(CPURunning);
         DebugMenu.push_back(Item);
 
