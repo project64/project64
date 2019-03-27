@@ -182,17 +182,23 @@ void RDP_LogDlist ( void )
 		}
 
 		for (count = 0; count < 0x10; count ++, Pos++ ) {
+			char tmp[3];
 			if ((count % 4) != 0 || count == 0) {
-				sprintf(Hex,"%s %02X",Hex,Mem[Pos]);
+				sprintf(tmp,"%02X",Mem[Pos]);
+				strcat(Hex," ");
+				strcat(Hex,tmp);
 			} else {
-				sprintf(Hex,"%s - %02X",Hex,Mem[Pos]);
+				sprintf(tmp,"%02X",Mem[Pos]);
+				strcat(Hex," - ");
+				strcat(Hex,tmp);
 			}
 
 			
 			if (Mem[Pos] < 30 || Mem[Pos] > 127) {
 				strcat(Ascii,".");
 			} else {
-				sprintf(Ascii,"%s%c",Ascii,Mem[Pos]);
+				sprintf(tmp,"%c",Mem[Pos]);
+				strcat(Ascii,tmp);
 			}
 		}
 		RDP_Message("   %s %s",Hex, Ascii);
