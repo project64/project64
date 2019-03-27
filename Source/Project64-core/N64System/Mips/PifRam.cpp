@@ -643,7 +643,9 @@ void CPifRam::LogControllerPakData(const char * Description)
             }
             else
             {
-                sprintf(Addon, "%s%c", Addon, PIF_Ram[(count << 2) + count2]);
+                char tmp[2];
+                sprintf(tmp, "%c", PIF_Ram[(count << 2) + count2]);
+                strcat(Addon, tmp);
             }
         }
         strcat(AsciiData, Addon);
