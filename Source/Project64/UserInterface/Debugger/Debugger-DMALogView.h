@@ -23,7 +23,7 @@ public:
     CDebugDMALogView(CDebuggerUI * debugger);
     virtual ~CDebugDMALogView(void);
 
-    void RefreshDMALogWindow(void);
+    void RefreshDMALogWindow(bool bReset = false);
 
 private:
     enum
@@ -52,7 +52,7 @@ private:
     bool m_bCustomDrawClrNext;
 
     LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-    LRESULT OnRefresh(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+    LRESULT OnRefresh(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
     LRESULT OnClicked(WORD wNotifyCode, WORD wID, HWND /*hWndCtl*/, BOOL& bHandled);
     LRESULT OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnRamAddrChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);

@@ -93,9 +93,9 @@ void CDebuggerUI::GameReset(CDebuggerUI * _this)
         _this->m_CommandsView->Reset();
     }
 
-    if (_this->m_DMALog)
+    if (_this->m_DMALogView)
     {
-        _this->m_DMALog->ClearEntries();
+        _this->m_DMALogView->RefreshDMALogWindow(true);
     }
 
     if (_this->m_StackTrace)

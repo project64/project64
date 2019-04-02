@@ -100,12 +100,16 @@ void CDebugDMALogView::RefreshList()
 		m_DMAList.AddItem(itemIndex, 1, stdstr_f("%08X", lpEntry->ramAddr).c_str());
 		m_DMAList.AddItem(itemIndex, 2, stdstr_f("%08X (%d)", lpEntry->length, lpEntry->length).c_str());
 		
-		uint32_t sig = *(uint32_t*)&rom[lpEntry->romAddr];
-		sig = _byteswap_ulong(sig);
+        char sigc[5];
+        memset(sigc, 0, sizeof(sigc));
 
-		char sigc[5];
-		memcpy(sigc, &sig, 4);
-		sigc[4] = '\0';
+        if (lpEntry->romAddr < g_Rom->GetRomSize())
+        {
+            uint32_t sig = *(uint32_t*)&rom[lpEntry->romAddr];
+            sig = _byteswap_ulong(sig);
+            memcpy(sigc, &sig, 4);
+            sigc[4] = '\0';
+        }
 
 		// Todo checkbox to display all in hex
 		if (isalnum(sigc[0]) && isalnum(sigc[1]) && isalnum(sigc[2]) && isalnum(sigc[3]))
@@ -141,6 +145,9 @@ LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	m_nLastStartIndex = 0;
 
 	m_DMAList.Attach(GetDlgItem(IDC_DMA_LIST));
+    m_DMARamEdit.Attach(GetDlgItem(IDC_DMA_RAM_EDIT));
+    m_DMARomEdit.Attach(GetDlgItem(IDC_DMA_ROM_EDIT));
+    m_BlockInfo.Attach(GetDlgItem(IDC_BLOCK_INFO));
 
 	m_DMAList.ModifyStyle(LVS_OWNERDRAWFIXED, 0, 0);
 
@@ -158,14 +165,9 @@ LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	//m_DMAList.SetColumnWidth(3, 50);
 	//m_DMAList.SetColumnWidth(4, 50);
 	//m_DMAList.SetColumnWidth(5, 50);
-
-	m_DMARamEdit.Attach(GetDlgItem(IDC_DMA_RAM_EDIT));
+	
 	m_DMARamEdit.SetLimitText(8);
-
-	m_DMARomEdit.Attach(GetDlgItem(IDC_DMA_ROM_EDIT));
 	m_DMARomEdit.SetLimitText(8);
-
-	m_BlockInfo.Attach(GetDlgItem(IDC_BLOCK_INFO));
 
 	RefreshList();
 
@@ -175,18 +177,29 @@ LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	return TRUE;
 }
 
-void CDebugDMALogView::RefreshDMALogWindow(void)
+void CDebugDMALogView::RefreshDMALogWindow(bool bReset)
 {
-    if (m_hWnd == NULL)
+    if (m_hWnd == NULL || m_DMAList.m_hWnd == NULL)
     {
+        if (bReset)
+        {
+            m_DMALog->ClearEntries();
+        }
         return;
     }
 
-    PostMessage(WM_REFRESH);
+    PostMessage(WM_REFRESH, bReset);
 }
 
-LRESULT CDebugDMALogView::OnRefresh(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDebugDMALogView::OnRefresh(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
+    bool bReset = (bool)wParam;
+
+    if (bReset)
+    {
+        m_DMALog->ClearEntries();
+    }
+
     RefreshList();
     return TRUE;
 }
@@ -198,6 +211,11 @@ void CDebugDMALogView::OnExitSizeMove(void)
 
 LRESULT CDebugDMALogView::OnDestroy(void)
 {
+    m_DMAList.Detach();
+    m_DMARamEdit.Detach();
+    m_DMARomEdit.Detach();
+    m_BlockInfo.Detach();
+
 	return 0;
 }
 
