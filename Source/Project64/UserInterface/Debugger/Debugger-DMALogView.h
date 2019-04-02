@@ -23,9 +23,16 @@ public:
     CDebugDMALogView(CDebuggerUI * debugger);
     virtual ~CDebugDMALogView(void);
 
-    void RefreshList();
+    void RefreshDMALogWindow(bool bReset = false);
 
 private:
+    enum
+    {
+        WM_REFRESH = WM_USER + 1
+    };
+
+    void RefreshList(void);
+
     CDMALog* m_DMALog;
 
     int m_nLastStartIndex;
@@ -33,9 +40,6 @@ private:
 
     bool m_bUniqueRomAddresses;
     bool m_bFilterChanged;
-
-    HANDLE m_AutoRefreshThread;
-    static DWORD WINAPI AutoRefreshProc(void* _this);
 
     // Return true if entry meets requirements
     bool FilterEntry(int dmaLogIndex);
@@ -48,6 +52,7 @@ private:
     bool m_bCustomDrawClrNext;
 
     LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+    LRESULT OnRefresh(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
     LRESULT OnClicked(WORD wNotifyCode, WORD wID, HWND /*hWndCtl*/, BOOL& bHandled);
     LRESULT OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnRamAddrChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
@@ -57,6 +62,7 @@ private:
     void OnExitSizeMove(void);
 
     BEGIN_MSG_MAP_EX(CDebugDMALogView)
+        MESSAGE_HANDLER(WM_REFRESH, OnRefresh)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
         COMMAND_CODE_HANDLER(BN_CLICKED, OnClicked)
         MESSAGE_HANDLER(WM_ACTIVATE, OnActivate)
@@ -65,7 +71,7 @@ private:
         NOTIFY_HANDLER_EX(IDC_DMA_LIST, NM_CUSTOMDRAW, OnCustomDrawList)
         CHAIN_MSG_MAP(CDialogResize<CDebugDMALogView>)
         MSG_WM_EXITSIZEMOVE(OnExitSizeMove)
-        END_MSG_MAP()
+    END_MSG_MAP()
 
     BEGIN_DLGRESIZE_MAP(CDebugDMALogView)
         DLGRESIZE_CONTROL(IDC_DMA_LIST, DLSZ_SIZE_X | DLSZ_SIZE_Y)

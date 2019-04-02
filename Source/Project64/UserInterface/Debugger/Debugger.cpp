@@ -93,9 +93,9 @@ void CDebuggerUI::GameReset(CDebuggerUI * _this)
         _this->m_CommandsView->Reset();
     }
 
-    if (_this->m_DMALog)
+    if (_this->m_DMALogView)
     {
-        _this->m_DMALog->ClearEntries();
+        _this->m_DMALogView->RefreshDMALogWindow(true);
     }
 
     if (_this->m_StackTrace)
@@ -251,6 +251,14 @@ void CDebuggerUI::Debug_RefreshTLBWindow(void)
     if (m_DebugTLB)
     {
         m_DebugTLB->RefreshTLBWindow();
+    }
+}
+
+void CDebuggerUI::Debug_RefreshDMALogWindow(void)
+{
+    if (m_DMALogView)
+    {
+        m_DMALogView->RefreshDMALogWindow();
     }
 }
 
@@ -647,7 +655,8 @@ void CDebuggerUI::HandleCartToRamDMA(void)
     uint32_t dmaLen = opInfo.GetStoreValueUnsigned() + 1;
 
     m_DMALog->AddEntry(dmaRomAddr, dmaRamAddr, dmaLen);
-
+    Debug_RefreshDMALogWindow();
+    
     // break if write breakpoint exists anywhere in target buffer
     if (m_Breakpoints->WriteBPExistsInChunk(dmaRamAddr, dmaLen))
     {
