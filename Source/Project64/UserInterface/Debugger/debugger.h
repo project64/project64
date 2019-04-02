@@ -60,6 +60,7 @@ public:
     void Debug_RefreshStackWindow(void);
     void Debug_RefreshStackTraceWindow(void);
     void OpenDMALogWindow(void);
+    void Debug_RefreshDMALogWindow(void);
     void OpenCPULogWindow(void);
     void Debug_RefreshCPULogWindow(void);
     void OpenExcBreakpointsWindow(void);

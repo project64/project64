@@ -254,6 +254,14 @@ void CDebuggerUI::Debug_RefreshTLBWindow(void)
     }
 }
 
+void CDebuggerUI::Debug_RefreshDMALogWindow(void)
+{
+    if (m_DMALogView)
+    {
+        m_DMALogView->RefreshDMALogWindow();
+    }
+}
+
 void CDebuggerUI::OpenMemorySearch()
 {
     if (m_MemorySearch == NULL)
@@ -647,7 +655,8 @@ void CDebuggerUI::HandleCartToRamDMA(void)
     uint32_t dmaLen = opInfo.GetStoreValueUnsigned() + 1;
 
     m_DMALog->AddEntry(dmaRomAddr, dmaRamAddr, dmaLen);
-
+    Debug_RefreshDMALogWindow();
+    
     // break if write breakpoint exists anywhere in target buffer
     if (m_Breakpoints->WriteBPExistsInChunk(dmaRamAddr, dmaLen))
     {

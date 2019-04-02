@@ -126,16 +126,6 @@ void CDebugDMALogView::RefreshList()
 	m_nLastStartIndex = dmaLogSize;
 }
 
-DWORD WINAPI CDebugDMALogView::AutoRefreshProc(void* _this)
-{
-	CDebugDMALogView* self = (CDebugDMALogView*)_this;
-	while (true)
-	{
-		self->RefreshList();
-		Sleep(100);
-	}
-}
-
 LRESULT CDebugDMALogView::OnActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	//RefreshList();
@@ -182,9 +172,23 @@ LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	LoadWindowPos();
 	WindowCreated();
 
-	m_AutoRefreshThread = CreateThread(NULL, 0, AutoRefreshProc, (void*)this, 0, NULL);
-
 	return TRUE;
+}
+
+void CDebugDMALogView::RefreshDMALogWindow(void)
+{
+    if (m_hWnd == NULL)
+    {
+        return;
+    }
+
+    PostMessage(WM_REFRESH);
+}
+
+LRESULT CDebugDMALogView::OnRefresh(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+    RefreshList();
+    return TRUE;
 }
 
 void CDebugDMALogView::OnExitSizeMove(void)
@@ -194,11 +198,6 @@ void CDebugDMALogView::OnExitSizeMove(void)
 
 LRESULT CDebugDMALogView::OnDestroy(void)
 {
-	if (m_AutoRefreshThread != NULL)
-	{
-		TerminateThread(m_AutoRefreshThread, 0);
-		CloseHandle(m_AutoRefreshThread);
-	}
 	return 0;
 }
 
