@@ -84,6 +84,8 @@ public:
     CCPULog* CPULog();
 
     static void GameReset(CDebuggerUI * _this);
+    static void GameCpuRunningChanged(CDebuggerUI * _this);
+    static void GameNameChanged(CDebuggerUI * _this);
     static void SteppingOpsChanged(CDebuggerUI * _this);
 
     bool DebugLW_PAddr(uint32_t vaddr, uint32_t& value);

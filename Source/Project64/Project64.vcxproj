@@ -100,6 +100,7 @@
     <ClCompile Include="UserInterface\Debugger\Debugger-ViewMemory.cpp" />
     <ClCompile Include="UserInterface\Debugger\Debugger.cpp" />
     <ClCompile Include="UserInterface\Debugger\DMALog.cpp" />
+    <ClCompile Include="UserInterface\Debugger\MemoryScanner.cpp" />
     <ClCompile Include="UserInterface\Debugger\ScriptHook.cpp" />
     <ClCompile Include="UserInterface\Debugger\ScriptInstance.cpp" />
     <ClCompile Include="UserInterface\Debugger\ScriptSystem.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="UserInterface\Debugger\debugger.h" />
     <ClInclude Include="UserInterface\Debugger\DebuggerUI.h" />
     <ClInclude Include="UserInterface\Debugger\DMALog.h" />
+    <ClInclude Include="UserInterface\Debugger\MemoryScanner.h" />
     <ClInclude Include="UserInterface\Debugger\OpInfo.h" />
     <ClInclude Include="UserInterface\Debugger\ScriptHook.h" />
     <ClInclude Include="UserInterface\Debugger\ScriptInstance.h" />
