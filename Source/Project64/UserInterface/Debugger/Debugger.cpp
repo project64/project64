@@ -49,12 +49,16 @@ CDebuggerUI::CDebuggerUI() :
     CSymbols::InitializeCriticalSection();
     g_Settings->RegisterChangeCB(GameRunning_InReset, this, (CSettings::SettingChangedFunc)GameReset);
     g_Settings->RegisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)SteppingOpsChanged);
+    g_Settings->RegisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunningChanged);
+    g_Settings->RegisterChangeCB(Game_GameName, this, (CSettings::SettingChangedFunc)GameNameChanged);
 }
 
 CDebuggerUI::~CDebuggerUI(void)
 {
     g_Settings->UnregisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)SteppingOpsChanged);
     g_Settings->UnregisterChangeCB(GameRunning_InReset, this, (CSettings::SettingChangedFunc)GameReset);
+    g_Settings->RegisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunningChanged);
+    g_Settings->UnregisterChangeCB(Game_GameName, this, (CSettings::SettingChangedFunc)GameNameChanged);
     Debug_Reset();
     delete m_MemoryView;
     delete m_CommandsView;
@@ -78,6 +82,25 @@ void CDebuggerUI::SteppingOpsChanged(CDebuggerUI * _this)
     if (g_Settings->LoadBool(Debugger_SteppingOps))
     {
         _this->OpenCommandWindow();
+    }
+}
+
+void CDebuggerUI::GameCpuRunningChanged(CDebuggerUI * _this)
+{
+    if (!g_Settings->LoadBool(GameRunning_CPU_Running))
+    {
+        if (_this->m_MemorySearch)
+        {
+            _this->m_MemorySearch->GameReset();
+        }
+    }
+}
+
+void CDebuggerUI::GameNameChanged(CDebuggerUI * _this)
+{
+    if (_this->m_MemorySearch)
+    {
+        _this->m_MemorySearch->GameReset();
     }
 }
 

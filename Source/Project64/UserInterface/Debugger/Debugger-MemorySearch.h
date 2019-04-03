@@ -1,6 +1,6 @@
 /****************************************************************************
 *                                                                           *
-* Project64 - A Nintendo 64 emulator.                                      *
+* Project64 - A Nintendo 64 emulator.                                       *
 * http://www.pj64-emu.com/                                                  *
 * Copyright (C) 2012 Project64. All rights reserved.                        *
 *                                                                           *
@@ -10,8 +10,113 @@
 ****************************************************************************/
 #pragma once
 
+#include "MemoryScanner.h"
+#include "Debugger-AddSymbol.h"
+
+class CEditMixed :
+    public CWindowImpl<CEditMixed, CEdit>,
+    public CMixed
+{
+private:
+    ValueType m_Type;
+    DisplayFormat m_DisplayFormat;
+    char *m_String;
+    int   m_StringLength;
+    void  ReloadString(void);
+
+    //void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+
+public:
+    CEditMixed(void);
+    ~CEditMixed(void);
+
+    BOOL Attach(HWND hWndNew);
+
+    DisplayFormat GetDisplayFormat(void);
+    void SetDisplayFormat(DisplayFormat fmt);
+
+    bool GetValue(uint8_t& value);
+    bool GetValue(int8_t& value);
+    bool GetValue(uint16_t& value);
+    bool GetValue(int16_t& value);
+    bool GetValue(uint32_t& value);
+    bool GetValue(int32_t& value);
+    bool GetValue(uint64_t& value);
+    bool GetValue(int64_t& value);
+    bool GetValue(float& value);
+    bool GetValue(double& value);
+    bool GetValueString(const char*& value, int& length);
+    bool GetValueHexString(const char*& value, int& length);
+
+    BEGIN_MSG_MAP_EX(CEditMixed)
+        //MSG_WM_CHAR(OnChar)
+    END_MSG_MAP()
+};
+
+//////////////
+
+class CSetValueDlg : public CDialogImpl<CSetValueDlg>
+{
+public:
+    enum { IDD = IDD_Debugger_Search_SetValue };
+
+    typedef struct
+    {
+        const char* str;
+        DWORD_PTR data;
+    } ComboItem;
+
+    INT_PTR DoModal(const char* caption, const char* label, const char* initialText);
+    INT_PTR DoModal(const char* caption, const char* label, DWORD_PTR initialData, const ComboItem items[]);
+    char* GetEnteredString(void);
+    DWORD_PTR GetEnteredData(void);
+
+    CSetValueDlg(void);
+    virtual ~CSetValueDlg(void);
+
+private:
+    enum Mode
+    {
+        Mode_TextBox,
+        Mode_ComboBox
+    };
+
+    Mode m_Mode;
+    
+    const char* m_Caption;
+    const char* m_Label;
+    const ComboItem* m_ComboItems;
+
+    const char* m_InitialText;
+    char *m_EnteredString;
+
+    DWORD_PTR m_InitialData;
+    DWORD_PTR m_EnteredData;
+
+    CStatic m_Prompt;
+    CEdit m_Value;
+    CComboBox m_CmbValue;
+    
+    LRESULT	OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+    LRESULT OnDestroy(void);
+    LRESULT OnOK(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnCancel(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+
+    BEGIN_MSG_MAP_EX(CSetValueDlg)
+        MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+        COMMAND_HANDLER(IDOK, BN_CLICKED, OnOK)
+        COMMAND_HANDLER(IDCANCEL, BN_CLICKED, OnCancel)
+        MSG_WM_DESTROY(OnDestroy)
+    END_MSG_MAP()
+};
+
+//////////////
+
+
+
 class CDebugMemorySearch :
-    public CDebugDialog < CDebugMemorySearch >
+    public CDebugDialog<CDebugMemorySearch>,
+    public CDialogResize<CDebugMemorySearch>
 {
 public:
     enum { IDD = IDD_Debugger_Search };
@@ -19,72 +124,236 @@ public:
     CDebugMemorySearch(CDebuggerUI * debugger);
     virtual ~CDebugMemorySearch(void);
 
+    void GameReset(void);
+
 private:
-    CDebugMemorySearch(void);									// Disable default constructor
-    CDebugMemorySearch(const CDebugMemorySearch&);				// Disable copy constructor
-    CDebugMemorySearch& operator=(const CDebugMemorySearch&);	// Disable assignment
-
-    enum MemorySize
+    enum
     {
-        _8Bit,
-        _16Bit,
-        _32Bit,
+        WM_GAMERESET = WM_USER + 1
     };
 
-    //Searching for value
-    enum SearchMemChangeState
-    {
-        SearchChangeState_Reset,
-        SearchChangeState_Changed,
-        SearchChangeState_Unchanged,
-        SearchChangeState_Greater,
-        SearchChangeState_Lessthan,
+    enum {
+        TIMER_ID_AUTO_REFRESH
     };
 
-    struct SearchResultItem
+    enum
     {
-        DWORD PAddr;
-        DWORD Value;
+        GS_LINE_LEN = (sizeof("00000000 0000\n") - 1),
+        GS_TWOBYTE = 0x01000000
     };
 
-    typedef std::vector<SearchResultItem> SearchResult;
+    enum {
+        WatchListCtrl_Col_Lock,
+        WatchListCtrl_Col_BP,
+        WatchListCtrl_Col_Address,
+        WatchListCtrl_Col_Description,
+        WatchListCtrl_Col_Type,
+        WatchListCtrl_Col_Value,
+        WatchListCtrl_Num_Columns
+    };
+
+    enum {
+        ResultsListCtrl_Col_Address,
+        ResultsListCtrl_Col_Value,
+        ResultsListCtrl_Col_Previous
+    };
+    
+    CDebugMemorySearch(void);                                    // Disable default constructor
+    CDebugMemorySearch(const CDebugMemorySearch&);               // Disable copy constructor
+    CDebugMemorySearch& operator=(const CDebugMemorySearch&);    // Disable assignment
+
+    static LRESULT CALLBACK HookProc(int nCode, WPARAM wParam, LPARAM lParam);
+    static CDebugMemorySearch* _this;
+    static HHOOK hWinMessageHook;
+
+    static const CSetValueDlg::ComboItem ModalChangeTypeItems[];
+
+    LRESULT OnSetFont(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnDestroy(void);
+    LRESULT OnGameReset(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    void    OnExitSizeMove(void);
+    void    OnSizing(UINT fwSide, LPRECT pRect);
+    void    OnTimer(UINT_PTR nIDEvent);
+    LRESULT OnScroll(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnMouseDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnMouseUp(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    void    OnInterceptMouseWheel(WPARAM wParam, LPARAM lParam);
+    void    OnInterceptMouseMove(WPARAM wParam, LPARAM lParam);
+    LRESULT OnMeasureItem(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnCancel(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnHexCheckbox(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnSearchButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnResetButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnRdramButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnRomButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnSpmemButton(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnScanTypeChanged(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnValueTypeChanged(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnResultsCustomDraw(LPNMHDR lpnmh);
+    LRESULT OnResultsDblClick(LPNMHDR lpnmh);
+    LRESULT OnResultsRClick(LPNMHDR lpnmh);
+    LRESULT OnResultsPopupViewMemory(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnResultsPopupAddToWatchList(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnResultsPopupAddAllToWatchList(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnResultsPopupSetValue(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnResultsPopupRemove(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnWatchListItemChanged(LPNMHDR lpnmh);
+    LRESULT OnWatchListCustomDraw(LPNMHDR lpnmh);
+    LRESULT OnWatchListRClick(LPNMHDR lpnmh);
+    LRESULT OnWatchListDblClick(LPNMHDR lpnmh);
+    LRESULT OnWatchListPopupLock(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnWatchListPopupReadBP(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnWatchListPopupWriteBP(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnWatchListPopupViewMemory(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnWatchListPopupAddSymbol(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnWatchListPopupHexadecimal(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnWatchListPopupChangeValue(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnWatchListPopupChangeDescription(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnWatchListPopupChangeType(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnWatchListPopupChangeAddress(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnWatchListPopupChangeAddressBy(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnWatchListPopupRemove(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnWatchListPopupRemoveAll(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnWatchListPopupCopyGamesharkCode(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+    LRESULT OnWatchListPopupCopyAddressAndDescription(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
+
+    CScanResult* GetFirstSelectedScanResult(void);
+    CScanResult* GetFirstSelectedWatchListResult(void);
+    
+    void ResetResults(void);
+    void Search(void);
+    void UpdateOptions(void);
+    void UpdateResultsList(bool bUpdateScrollbar = false, bool bResetScrollPos = true);
+    void UpdateWatchList(bool bUpdateScrollbar = false);
+    void RefreshResultsListValues(void);
+    void RefreshWatchListValues(void);
+    void RemoveWatchListItem(int index);
+    void ClearWatchList(void);
+    void ReloadWatchList(void);
+    void FlushWatchList(void);
+    void LoadWatchList(void);
+    void RemoveSelectedWatchListItems(void);
+    void AddResultToWatchList(int resultIndex);
+
+    void SeparatorMoveCtrl(WORD ctrlId, int yChange, bool bResize);
+
+    CPath GetWatchListPath(void);
+
+    /* generic ui util */
+    void FixListHeader(CListViewCtrl& listCtrl);
+    void SetComboBoxSelByData(CComboBox& cb, DWORD_PTR data);
+    bool MouseHovering(WORD ctrlId, int hMargin = 0, int vMargin = 0);
+    int  GetNumVisibleRows(CListViewCtrl& list);
+    /*******************/
+
+    bool m_bJalSelected;
+    bool m_bJalHexWasChecked;
+    bool m_bJalUnsignedWasChecked;
+
+    stdstr m_StrGame;
+    DWORD m_ThreadId;
+    CFile m_WatchListFile;
+
+    CSetValueDlg  m_SetValueDlg;
+    CAddSymbolDlg m_AddSymbolDlg;
+    
+    CEditMixed    m_SearchValue;
+    CEditNumber32 m_AddrStart, m_AddrEnd;
+    CComboBox     m_SearchTypeOptions, m_ValueTypeOptions;
+    CListViewCtrl m_ResultsListCtrl, m_WatchListCtrl;
+    CScrollBar    m_ResultsScrollbar, m_WatchListScrollbar;
+    CButton       m_PhysicalCheckbox, m_HexCheckbox;
+    CButton       m_UnsignedCheckbox, m_IgnoreCaseCheckbox, m_UnkEncodingCheckbox;
+
+    CMemoryScanner m_MemoryScanner;
+    std::vector<CScanResult> m_WatchList;
+
+    bool  m_bDraggingSeparator;
+    CRect m_InitialSeparatorRect, m_LastSeparatorRect;
+
+    int   m_ListCtrlRowHeight;
+
+    HCURSOR m_hCursorSizeNS;
 
     BEGIN_MSG_MAP_EX(CDebugMemorySearch)
+        MESSAGE_HANDLER(WM_GAMERESET, OnGameReset)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-        COMMAND_CODE_HANDLER(BN_CLICKED, OnClicked)
-        NOTIFY_HANDLER_EX(IDC_LST_RESULTS, NM_RCLICK, OnResultRClick)
-        NOTIFY_HANDLER_EX(IDC_LST_RESULTS, NM_DBLCLK, OnResultDblClick)
-		MSG_WM_EXITSIZEMOVE(OnExitSizeMove)
-	END_MSG_MAP()
+        MSG_WM_DESTROY(OnDestroy)
+        MSG_WM_EXITSIZEMOVE(OnExitSizeMove)
+        MSG_WM_SIZING(OnSizing)
+        MSG_WM_TIMER(OnTimer)
+        COMMAND_HANDLER(IDCANCEL, BN_CLICKED, OnCancel)
+        MESSAGE_HANDLER(WM_VSCROLL, OnScroll)
+        MESSAGE_HANDLER(WM_LBUTTONDOWN, OnMouseDown)
+        MESSAGE_HANDLER(WM_LBUTTONUP, OnMouseUp)
+        MESSAGE_HANDLER(WM_MEASUREITEM, OnMeasureItem)
+        MESSAGE_HANDLER(WM_SETFONT, OnSetFont)
+        COMMAND_HANDLER(IDC_CHK_HEX, BN_CLICKED, OnHexCheckbox)
+        COMMAND_HANDLER(IDC_BTN_SEARCH, BN_CLICKED, OnSearchButton)
+        COMMAND_HANDLER(IDC_BTN_RESET, BN_CLICKED, OnResetButton)
+        COMMAND_HANDLER(IDC_CMB_SCANTYPE, CBN_SELCHANGE, OnScanTypeChanged)
+        COMMAND_HANDLER(IDC_CMB_VALUETYPE, CBN_SELCHANGE, OnValueTypeChanged)
+        COMMAND_HANDLER(IDC_BTN_RDRAM, BN_CLICKED, OnRdramButton)
+        COMMAND_HANDLER(IDC_BTN_ROM, BN_CLICKED, OnRomButton)
+        COMMAND_HANDLER(IDC_BTN_SPMEM, BN_CLICKED, OnSpmemButton)
+        NOTIFY_HANDLER_EX(IDC_LST_RESULTS, NM_CUSTOMDRAW, OnResultsCustomDraw)
+        NOTIFY_HANDLER_EX(IDC_LST_RESULTS, NM_DBLCLK, OnResultsDblClick)
+        NOTIFY_HANDLER_EX(IDC_LST_RESULTS, NM_RCLICK, OnResultsRClick)
+        COMMAND_HANDLER(ID_RESULTS_VIEWMEMORY, BN_CLICKED, OnResultsPopupViewMemory)
+        COMMAND_HANDLER(ID_RESULTS_ADDTOWATCHLIST, BN_CLICKED, OnResultsPopupAddToWatchList)
+        COMMAND_HANDLER(ID_RESULTS_ADDALLTOWATCHLIST, BN_CLICKED, OnResultsPopupAddAllToWatchList)
+        COMMAND_HANDLER(ID_RESULTS_CHANGEVALUE, BN_CLICKED, OnResultsPopupSetValue)
+        COMMAND_HANDLER(ID_RESULTS_REMOVE, BN_CLICKED, OnResultsPopupRemove)
+        NOTIFY_HANDLER_EX(IDC_LST_WATCHLIST, LVN_ITEMCHANGED, OnWatchListItemChanged)
+        NOTIFY_HANDLER_EX(IDC_LST_WATCHLIST, NM_CUSTOMDRAW, OnWatchListCustomDraw)
+        NOTIFY_HANDLER_EX(IDC_LST_WATCHLIST, NM_DBLCLK, OnWatchListDblClick)
+        NOTIFY_HANDLER_EX(IDC_LST_WATCHLIST, NM_RCLICK, OnWatchListRClick)
+        COMMAND_HANDLER(ID_WATCHLIST_VIEWMEMORY, BN_CLICKED, OnWatchListPopupViewMemory)
+        COMMAND_HANDLER(ID_WATCHLIST_LOCKVALUE, BN_CLICKED, OnWatchListPopupLock)
+        COMMAND_HANDLER(ID_WATCHLIST_READBP, BN_CLICKED, OnWatchListPopupReadBP)
+        COMMAND_HANDLER(ID_WATCHLIST_WRITEBP, BN_CLICKED, OnWatchListPopupWriteBP)
+        COMMAND_HANDLER(ID_WATCHLIST_ADDSYMBOL, BN_CLICKED, OnWatchListPopupAddSymbol)
+        COMMAND_HANDLER(ID_WATCHLIST_HEXADECIMAL, BN_CLICKED, OnWatchListPopupHexadecimal)
+        COMMAND_HANDLER(ID_WATCHLIST_CHANGE_VALUE, BN_CLICKED, OnWatchListPopupChangeValue)
+        COMMAND_HANDLER(ID_WATCHLIST_CHANGE_DESCRIPTION, BN_CLICKED, OnWatchListPopupChangeDescription)
+        COMMAND_HANDLER(ID_WATCHLIST_CHANGE_TYPE, BN_CLICKED, OnWatchListPopupChangeType)
+        COMMAND_HANDLER(ID_WATCHLIST_CHANGE_ADDRESS, BN_CLICKED, OnWatchListPopupChangeAddress)
+        COMMAND_HANDLER(ID_WATCHLIST_CHANGE_ADDRESSBY, BN_CLICKED, OnWatchListPopupChangeAddressBy)
+        COMMAND_HANDLER(ID_WATCHLIST_REMOVE, BN_CLICKED, OnWatchListPopupRemove)
+        COMMAND_HANDLER(ID_WATCHLIST_REMOVEALL, BN_CLICKED, OnWatchListPopupRemoveAll)
+        COMMAND_HANDLER(ID_WATCHLIST_COPY_GSCODE, BN_CLICKED, OnWatchListPopupCopyGamesharkCode)
+        COMMAND_HANDLER(ID_WATCHLIST_COPY_ADDRDESC, BN_CLICKED, OnWatchListPopupCopyAddressAndDescription)
+        CHAIN_MSG_MAP(CDialogResize<CDebugMemorySearch>)
+    END_MSG_MAP()
 
-    LRESULT	OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-    LRESULT	OnClicked(WORD wNotifyCode, WORD wID, HWND /*hWndCtl*/, BOOL& bHandled);
-    LRESULT OnResultRClick(LPNMHDR lpnmh);
-    LRESULT OnResultDblClick(LPNMHDR lpnmh);
-	void OnExitSizeMove(void);
-
-    void EnableUnknownOptions(bool Enable);
-    void EnableValueOptions(bool Enable);
-    void EnableTextOptions(bool Enable);
-    void EnableJalOptions(bool Enable);
-    void AddAlignmentOptions(CComboBox  & ctrl);
-
-    CEditNumber32 m_PAddrStart, m_SearchLen, m_SearchValue, m_MaxSearch;
-    CComboBox     m_UnknownOptions, m_ValueSize, m_UnknownSize;
-    CListViewCtrl m_SearchResults;
-    SearchResult  m_SearchResult;
-    bool          m_HaveResults;
-
-    //Searching memory
-    BYTE  *       m_MemoryState;
-    DWORD         m_MemoryStateSize;
-
-    void FixUnknownOptions(bool Reset);
-    void SearchForUnknown(void);
-    void SearchForValue(void);
-    void SearchForText(void);
-    void Reset(void);
-    bool SearchSetBaseForChanges(void);
-    bool SearchForChanges(SearchMemChangeState SearchType, MemorySize Size, DWORD &StartAddress, DWORD &Len, DWORD &OldValue, DWORD &NewValue);
-    bool SearchForValue(DWORD Value, MemorySize Size, DWORD &StartAddress, DWORD &Len);
+    BEGIN_DLGRESIZE_MAP(CDebugMemorySearch)
+        DLGRESIZE_CONTROL(IDC_LST_WATCHLIST, DLSZ_SIZE_X | DLSZ_SIZE_Y)
+        DLGRESIZE_CONTROL(IDC_SCRL_WATCHLIST, DLSZ_MOVE_X | DLSZ_SIZE_Y)
+        DLGRESIZE_CONTROL(IDC_NUM_RESULTS, DLSZ_SIZE_X)
+        DLGRESIZE_CONTROL(IDC_LST_RESULTS, DLSZ_SIZE_X)
+        DLGRESIZE_CONTROL(IDC_SCRL_RESULTS, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_SEPARATOR, DLSZ_SIZE_X)
+        DLGRESIZE_CONTROL(IDC_BTN_SEARCH, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_BTN_RESET, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_GRP_SEARCH, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_CHK_HEX, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_CHK_UNSIGNED, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_CHK_IGNORECASE, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_CHK_UNKENCODING, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_SEARCH_VALUE, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_LBL_SCANTYPE, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_LBL_VALUETYPE, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_CMB_SCANTYPE, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_CMB_VALUETYPE, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_LBL_ADDRSTART, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_LBL_ADDREND, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_ADDR_START, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_ADDR_END, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_CHK_PHYSICAL, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_BTN_RDRAM, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_BTN_ROM, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_BTN_SPMEM, DLSZ_MOVE_X)
+        DLGRESIZE_CONTROL(IDC_GRP_ADDR, DLSZ_MOVE_X)
+    END_DLGRESIZE_MAP()
 };
