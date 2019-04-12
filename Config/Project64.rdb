@@ -484,11 +484,15 @@ RDRAM Size=8
 Good Name=Automobili Lamborghini (E)
 Internal Name=LAMBORGHINI
 Status=Compatible
+Use TLB=No
+Cheat0=8000141F 0003 //Framerate speed fix
 
 [41B25DC4-1B726786-C:45]
 Good Name=Automobili Lamborghini (U)
 Internal Name=LAMBORGHINI
 Status=Compatible
+Use TLB=No
+Cheat0=800013F7 0003 //Framerate speed fix
 
 //================  B  ================
 [E340A49C-74318D41-C:4A]
@@ -5658,6 +5662,8 @@ ViRefresh=2200
 Good Name=Super Speed Race 64 (J)
 Internal Name=SUPER SPEED RACE 64
 Status=Compatible
+Use TLB=No
+Cheat0=8000148F 0003 //Framerate speed fix
 
 [2CBB127F-09C2BFD8-C:50]
 Good Name=Supercross 2000 (E) (M3)
