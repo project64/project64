@@ -12,8 +12,8 @@ cd /d %~dp0..\..\
 set base_dir=%cd%
 cd /d %origdir%
 
-if exist "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe" ( set MSVC-BUILDER="C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe")
-if exist "C:\Program Files\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe" ( set MSVC-BUILDER="C:\Program Files\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe")
+if exist "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.com" ( set MSVC-BUILDER="C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.com")
+if exist "C:\Program Files\Microsoft Visual Studio 14.0\Common7\IDE\devenv.com" ( set MSVC-BUILDER="C:\Program Files\Microsoft Visual Studio 14.0\Common7\IDE\devenv.com")
 
 if %MSVC-BUILDER% == "" ( 
 	echo can not find visual studio 2015
@@ -21,10 +21,8 @@ if %MSVC-BUILDER% == "" (
 )
 
 :: Build Win32 version of the software
-IF EXIST "%base_dir%\output.txt" del "%base_dir%\output.txt"
-%MSVC-BUILDER% "%base_dir%\Project64.sln" /rebuild "%BuildMode%|Win32" /out "%base_dir%\output.txt"
+%MSVC-BUILDER% "%base_dir%\Project64.sln" /rebuild "%BuildMode%|Win32"
 set Result=%ERRORLEVEL%
-type "%base_dir%\output.txt"
 echo Done - ERRORLEVEL: %Result%
 IF %Result% NEQ 0 goto :EndErr
 
