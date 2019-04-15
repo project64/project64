@@ -1,0 +1,16 @@
+[73036F3B-CE0D69E9-C:50]
+Name=Mortal Kombat 4 (E)
+Cheat0="Unlimited Energy\Player 1",E9633560 5959,E963355E 595A
+Cheat1="Unlimited Energy\Player 2",E968C7DC 5959,E968C7DA 595A
+Cheat2="Infinite Run\Player 1",E966A754 5959,E966A752 595A
+Cheat3="Infinite Run\Player 2",E966A808 5959,E966A806 595A
+Cheat4="Play As\Player 1",E8633615 59??
+Cheat4_O=$5A Scorpion,$59 Raiden,$5C Sonya,$5B Liu Kang,$56 Sub-Zero,$55 Fujin,$58 Shinnok,$57 Reiko,$62 Quan Chi,$61 Tanya,$64 Reptile,$63 Kai,$5E Jarek,$5D Jax,$60 Johnny Cage,$5F Goro,$69 Noob Saibot
+Cheat5="Play As\Player 2",E868C211 59??
+Cheat5_O=$5A Scorpion,$59 Raiden,$5C Sonya,$5B Liu Kang,$56 Sub-Zero,$55 Fujin,$58 Shinnok,$57 Reiko,$62 Quan Chi,$61 Tanya,$64 Reptile,$63 Kai,$5E Jarek,$5D Jax,$60 Johnny Cage,$5F Goro,$69 Noob Saibot
+Cheat6="Choose A Costume\Player 1",E95AF966 59??
+Cheat6_O=$5A Normal,$59 First,$5C Second,$5B Third
+Cheat7="Choose A Costume\Player 2",E95AF96A 59??
+Cheat7_O=$5A Normal,$59 First,$5C Second,$5B Third
+Cheat8="Infinite Time",E966A59E 59BB
+Cheat9="Enable Restart Match option",E85AEB0D 595C

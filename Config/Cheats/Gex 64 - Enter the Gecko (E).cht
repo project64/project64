@@ -1,0 +1,14 @@
+[E68A000E-639166DD-C:50]
+Name=Gex 64 - Enter the Gecko (E)
+Cheat0="Infinite Health",E862A71D 59BB
+Cheat1="Infinite Lives",E962A71A 59BB
+Cheat3="INFINITE AIR CODES\Umpire Strikes Out",D00BED05 0004,E98CB7E2 5A83
+Cheat4="INFINITE AIR CODES\Pain In The Asteroids",D00BED05 0004,E9871E42 5A83
+Cheat5="ACCESS ALL REMOTE CONTROLS\Red Remotes",50000E01 0000,100C513E 0007
+Cheat5_N=Opens Gate 4 And The Lions Mouth
+Cheat6="All Silver & Gold Gold Remotes",E962A8BC 604F,E962A8BA 504F,E962A8C0 5A3A,E962A8BE 59CF
+Cheat6_N=Opens Gate 3,2,1
+Cheat7="Hover & Fly Mode",D10BED04 0020,E96A43F6 596A,D10BED04 0010
+Cheat7_N=Press And Hold L Button + A Button
+Cheat8="Fully Charged Gex",D00AAAB9 0020,E96C9332 8B4F
+Cheat8_N=Press L Button Once When On One Of The Specific Levels, For Circuit Central Levels Only

@@ -1,0 +1,14 @@
+[3DF17480-193DED5A-C:50]
+Name=Donald Duck Quack At
+Cheat0="Infinite\99 Lives",E871C282 59BB
+Cheat1="Infinite\99 Stars",E871C281 59BB
+Cheat2="Instant\Rage Attack (Press C-Left)",D00CAFD1 0002,E8723593 5959
+Cheat3="Instant\Hyperactive State [Invincible] (Press C-Right)",D00CAFD1 0001,E87235EA 5959
+Cheat4="Instant\Carrier Box [Moon Walk] (Press L)",D00CAFD1 0020,E872E771 5959
+Cheat4_N=Press and hold the L Button and you will run floating of any ledge slowing drifting down. If you keep pressing the A Button while Holding L it will act as a Moon Jump.
+Cheat5="Infinite\Time\Gladstones Time Attack",E871C279 594F
+Cheat6="Infinite\Time\Nephews Toy Hunting",E871C275 59BB
+Cheat7="Have All\Levels and Bonus Stages Unlocked",E871C2A4 594F,E871C2A3 594F,E871C2A2 594F,E871C2A1 594F,E871C2A5 594F
+Cheat7_N=Press start in Gyro's Lab and then resume game to see all open
+Cheat8="Have All\Time Attack & Toy Hunting Comnpleated (All Levels)",E871C2B0 594F,E871C2AF 594F,E871C2AE 594F,E871C2AD 594F,E871C2B4 594F,E871C2B3 594F,E871C2B2 594F,E871C2B1 594F
+Cheat8_N=Press start in Gyro's Lab and then resume game to see all open

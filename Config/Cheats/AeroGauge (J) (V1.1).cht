@@ -1,0 +1,20 @@
+[80F41131-384645F6-C:4A]
+Name=AeroGauge (J) (V1.1)
+Cheat0="No Damage\Player 1",50000402 0000,1113CF08 0000
+Cheat1="No Damage\Player 2",50000402 0000,1113EF98 0000
+Cheat2="Unlock All Tracks and Vehicles",E85E2704 5959
+Cheat3="Freeze All Lap Timers",E8671E27 5959,E8671E2B 5959,E8671E2F 5959
+Cheat4="Freeze Overall Timer",E8671E1B 5959
+Cheat4_N=All of the Freeze All Lap Timers must be on. These codes will Stop the others from racing against you in Grand Prix mode. To win a race in Grand Prix you must finish at least one lap in the qualify round, then complete all laps in race for first.
+Cheat5="Laps Of Race",E8671E12 59??
+Cheat5_O=$59 1 Lap,$5C 2 Laps,$5B 3 Laps,$56 4 Laps,$55 5 Laps,$58 Never Ending Laps
+Cheat6="Play As\Player 1",E867211B 59??
+Cheat6_O=$5A N64 Control Pad,$59 Interceptor,$5C Hornet,$5B Avenger,$56 Shredder,$55 Black Lightning,$58 Vengeance,$57 Prowler,$62 Reaper,$61 Dominator
+Cheat7="Level Select",E867211D 59??
+Cheat7_N=For this cheat to work,as soon as you put the cheat on you must turn it back off,if not you wont beable to quit a Race or even finish one.
+Cheat7_O=$5A Canyon Rush,$59 Bikini Island,$5C China Town,$5B Neo Arena,$56 China Town Jam,$55 Neo Speed Way
+Cheat8="Play As\Player 2",E867211A 59??
+Cheat8_O=$5A N64 Control Pad,$59 Interceptor,$5C Hornet,$5B Avenger,$56 Shredder,$55 Black Lightning,$58 Vengeance,$57 Prowler,$62 Reaper,$61 Dominator
+Cheat9="Always 1st",E8672368 5959
+Cheat10="Music Modifier",E866BED4 59??
+Cheat10_O=$4F Music On,$5A Music Off

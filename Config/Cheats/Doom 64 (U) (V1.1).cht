@@ -1,0 +1,25 @@
+[423E96F4-CE88F05B-C:45]
+Name=Doom 64 (U) (V1.1)
+Cheat0="Always Have\Gun",E85C86C5 5959
+Cheat1="Always Have\Shotgun",E85C86C9 5959
+Cheat2="Always Have\Double Shotgun",E85C86CD 5959
+Cheat3="Always Have\Chain Gun",E85C86D1 5959
+Cheat4="Always Have\Missile Launcher",E85C86D5 5959
+Cheat5="Always Have\Chainsaw",E85C86BD 5959
+Cheat6="Always Have\Plasma Rifle",E85C86D9 5959
+Cheat7="Always Have\BFG 9000",E85C86DD 5959
+Cheat8="Always Have\Have Rocket Launcher",E85C86D7 5959
+Cheat9="Always Have\Laser Weapon",E85C86E1 504F
+Cheat10="Always Have\Bio Suite",E85C8685 59??
+Cheat10_O=$4F On,$5A Off
+Cheat11="Infinite\Armor",E85C8671 594F
+Cheat12="Rapid Fire",E95C863E 64E6
+Cheat13="Invincible",E85C860D 595C
+Cheat14="Turn Map Markers On",E85C860D 5956
+Cheat15="Invincible And Map Markers",E85C860D 5958
+Cheat16="Berserk Mode",E85C867D 594F
+Cheat17="[Max Brightness]",E859FFD0 59B6
+Cheat17_N=Enable this cheat on rom load to have Max Brightness (internal) and then put Jabo d3d8 on 160% Max for a extra brightness Boost.
+Cheat18="Infinite\Ammo All Weapons",E85C86E5 594F,E85C86E9 594F,E85C86ED 594F,E85C86F1 594F
+Cheat19="Have All Keys",E85C8691 5959,E85C8695 5959,E85C869C 5959,E85C86A5 5959,E85C86A1 5959,E85C86A0 5959
+Cheat20="Enable Cheat Menu",E859FFD5 5959

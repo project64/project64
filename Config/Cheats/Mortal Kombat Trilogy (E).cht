@@ -1,0 +1,20 @@
+[8C3D1192-BEF172E1-C:50]
+Name=Mortal Kombat Trilogy (E)
+Cheat0="Unlimited Energy\Player 1",E86CEF03 59F8
+Cheat1="Unlimited Energy\Player 2",E86CEED7 59F8
+Cheat2="Aggressor Energy Bar\Player 1",E86CF097 598A
+Cheat3="Aggressor Energy Bar\Player 2",E86CF095 598A
+Cheat4="Infinite Time",E96A1554 5964
+Cheat5="Unlock Secret",E86CF297 5956
+Cheat6="Infinite Run\Player 1",E96CEF0C 598A
+Cheat7="Play As\Player 1",E86CEFF3 59??
+Cheat7_O=$5A Kano,$59 Sonya,$5C Jax,$5B Nightwolf,$56 Cage,$55 Stryker,$58 Sindel,$57 Sektor,$62 Cyrax,$61 Kung Lao,$64 Kabal,$63 Sheeva,$5E Shang Tsung,$5D Liu Kang,$60 Smoke,$5F Kitana,$6A Jade,$69 Mileena,$6C Scorpion,$6B Reptile,$66 Ermac,$65 Sub-Zero,$68 Human Smoke,$67 Noob Saibot,$72 Rayden,$71 Baraka,$74 Rain,$73 Khameleon
+Cheat8="Infinite Run\Player 2",E96CEEE0 598A
+Cheat9="Play As\Player 2",E86CEE97 59??
+Cheat9_O=$5A Kano,$59 Sonya,$5C Jax,$5B Nightwolf,$56 Cage,$55 Stryker,$58 Sindel,$57 Sektor,$62 Cyrax,$61 Kung Lao,$64 Kabal,$63 Sheeva,$5E Shang Tsung,$5D Liu Kang,$60 Smoke,$5F Kitana,$6A Jade,$69 Mileena,$6C Scorpion,$6B Reptile,$66 Ermac,$65 Sub-Zero,$68 Human Smoke,$67 Noob Saibot,$72 Rayden,$71 Baraka,$74 Rain,$73 Khameleon
+Cheat10="Pick Your Kombat Zone",E979CCFC 59??
+Cheat10_O=$5A Subway,$59 Street,$5C Courtyard,$5B Pit,$56 Kahn's Tower,$55 Bridge,$58 Soul Chamber,$57 Bell Tower,$62 Kombat Temple,$61 Graveyard,$64 Pit 3,$63 River Kombat,$5E Scorpion's Lair,$5D Kahn's Kave,$60 Jade's Desert,$5F Lost Bridge,$6A Hidden Portal,$69 Dead Pool,$6C Wasteland,$6B Rooftop,$66 Armory,$65 Living Forest,$68 Tower,$67 Portal,$72 Lair,$71 Tomb,$74 Pit 2,$73 Star Bridge,$6E Pit Bottom
+Cheat11="Max Aggressor\Player 1",D02B5285 0020,E96CEF2C AA5A,D02B5285 0020,E96CEF34 AA5A
+Cheat11_N=Press L Button To Activate
+Cheat12="Max Aggressor\Player 2",D02B528D 0020,E96CEF2A AA5A,D02B528D 0020,E96CEF32 AA5A
+Cheat12_N=Press L Button To Activate

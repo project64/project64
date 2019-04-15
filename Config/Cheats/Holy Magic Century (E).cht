@@ -1,0 +1,9 @@
+[277B129D-DD3879FF-C:50]
+Name=Holy Magic Century (E)
+Cheat0="Set Agility to 999-999",E95B158C 5C37
+Cheat1="Set Defence to 999-999",E95B158A 5C37
+Cheat2="Makes your MP 999-999",E95B1588 5C37,E95B1586 5C37
+Cheat3="Makes your HP 999-999",E95B1584 5C37,E95B1582 5C37
+Cheat4="Have All Elements",E95B15A4 8B8C,E95B15A2 8B8C
+Cheat5="Earn Spirits Faster",E85B15B3 595A
+Cheat6="No Random Battles",E95E2474 595A,E95E2472 595A

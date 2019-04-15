@@ -1,0 +1,22 @@
+[0894909C-DAD4D82D-C:45]
+Name=Knockout Kings 2000 (U)
+Cheat0="Player 1\Infinite\Health",E95C10CC 9B22,E95C10CA 595A
+Cheat1="Player 2\Infinite\Health",E95C0DD4 9B22,E95C0DD2 595A
+Cheat2="Player 1\No Health",E95C10CC 595A,E95C10CA 595A
+Cheat3="Player 2\No Health",E95C0DD4 595A,E95C0DD2 595A
+Cheat4="Player 1\Max\Power",E95C10D8 595A,E95C10D6 640C
+Cheat5="Player 1\No Power",E95C10D8 595A,E95C10D6 595A
+Cheat6="Player 2\Max\Power",E95C0DE0 595A,E95C0DDE 640C
+Cheat7="Player 2\No Power",E95C0DE0 595A,E95C0DDE 595A
+Cheat8="Infinite\Creation Points",E95C8A96 59B6
+Cheat9="Big\Head Mode",E8639774 5959
+Cheat10="Big\Glove Mode",E8639773 5959
+Cheat11="Player 1\Power Punch After 1st Punch",E85C10D5 59B6
+Cheat12="Player 2\Power Punch After 1st Punch",E85C0DDD 59B6
+Cheat13="Stop Timer",E95CCC9A 596E
+Cheat14="Player 1\Character Modifier",E8641945 59??
+Cheat14_O=$5A Ali,$59 Frazier,$5C Holmes,$5B Holyfield,$56 Lewis,$55 Tua,$58 Spinks,$57 Butterbean,$62 De La Hoya,$61 Leonard,$64 Hagler,$63 Duran,$5E Whitaker,$5D Quartey,$60 Carr,$5F Vargas,$6A Reid,$69 Moskey,$6C Pryor,$6B Argnello,$66 O'Grady,$65 Mayweather,$68 Manfredy,$67 Kelley,$72 Romero,$71 Random,$74 Created Boxer,$73 Creater Boxer,$6E Dempsey,$6D K. Orr,$70 IUppa,$6F S. Sandoval,$7A S. Broadhurst,$79 Pole,$7C Hasson,$7B Alameda,$76 Wahlberg,$75 Scott,$78 Hopra,$77 Eckhardt,$82 Parker,$81 Ruiz,$84 F. Sandoval,$83 Ang,$7E Bristov,$7D Botti,$80 S. Orr,$7F Zarifes,$8A Giolito,$89 Garrett,$8C Barclay,$8B Wynne,$86 Lupidi,$85 W. Aguitar,$88 Di Ricco,$87 Philippine,$92 M. Broadhurst,$91 Weaver,$94 Lajoie,$93 Greenberg,$8E Quinn,$8D Perone,$90 Tool,$8F Bunch,$9A St. Aubyn,$99 Wells,$9C Dexter,$9B Hsu,$96 Bazzel,$95 Thompson,$98 Eklund,$97 Tallarico,$A2 de Leon,$A1 Coallier
+Cheat15="Player 2\Character Modifier",E8641949 59??
+Cheat15_O=$5A Ali,$59 Frazier,$5C Holmes,$5B Holyfield,$56 Lewis,$55 Tua,$58 Spinks,$57 Butterbean,$62 De La Hoya,$61 Leonard,$64 Hagler,$63 Duran,$5E Whitaker,$5D Quartey,$60 Carr,$5F Vargas,$6A Reid,$69 Moskey,$6C Pryor,$6B Argnello,$66 O'Grady,$65 Mayweather,$68 Manfredy,$67 Kelley,$72 Romero,$71 Random,$74 Created Boxer,$73 Creater Boxer,$6E Dempsey,$6D K. Orr,$70 IUppa,$6F S. Sandoval,$7A S. Broadhurst,$79 Pole,$7C Hasson,$7B Alameda,$76 Wahlberg,$75 Scott,$78 Hopra,$77 Eckhardt,$82 Parker,$81 Ruiz,$84 F. Sandoval,$83 Ang,$7E Bristov,$7D Botti,$80 S. Orr,$7F Zarifes,$8A Giolito,$89 Garrett,$8C Barclay,$8B Wynne,$86 Lupidi,$85 W. Aguitar,$88 Di Ricco,$87 Philippine,$92 M. Broadhurst,$91 Weaver,$94 Lajoie,$93 Greenberg,$8E Quinn,$8D Perone,$90 Tool,$8F Bunch,$9A St. Aubyn,$99 Wells,$9C Dexter,$9B Hsu,$96 Bazzel,$95 Thompson,$98 Eklund,$97 Tallarico,$A2 de Leon,$A1 Coallier
+Cheat16="Ring Modifier",E8641A55 59??
+Cheat16_O=$5A Great Western Forum,$59 Caesars Palace,$5C Ecko Sports Arena,$5B International Arena,$56 Local 440,$55 The Colosseum,$58 Roppongi Palace,$57 Wembley Arena,$62 Knockout Kings Arena

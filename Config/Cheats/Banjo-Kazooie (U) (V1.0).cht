@@ -1,0 +1,26 @@
+[A4BF9306-BF0CDFD1-C:45]
+Name=Banjo-Kazooie (U) (V1.0)
+Cheat0="Infinite\Eggs",E88EB2B9 594F
+Cheat1="Infinite\Lives",E88EB2DD 594F
+Cheat2="Infinite\Jiggies",E88EB21D 594F
+Cheat3="Press L To Levitate",D0281251 0020,E98B1B14 9C3A
+Cheat3_N=Press L To Levitate & Let go to land
+Cheat4="Infinite\Notes",E88EB246 594F,E88EB2B6 5959
+Cheat4_N=Just collect one Note to Have 255 Notes in all Worlds.
+Cheat5="Infinite\Health",E88EB2D5 5962,E88EB2D9 5962
+Cheat6="Infinite\Air",E98EB2E2 5F6A
+Cheat7="Infinite\Gold Feathers",E88EB2C5 594F
+Cheat8="Infinite\Red Feathers",E88EB2C1 594F
+Cheat9="Infinite\Always Have All Jinjos",E88EB2CD 594F
+Cheat10="Have Zero Time all Levels",50000B04 0000,11386004 3000
+Cheat11="Character Select",D0281251 0008,E88B1525 595C,D0281251 0001,E88B1525 595B,D0281251 0004,E88B1525 5956,D0281251 0002,E88B1525 5955,D0281251 0010,E88B1525 5958,D0281251 0020,E88B1525 5957
+Cheat11_N=When Mumbo transforms you hold:C-Up for the Termite,C-Right for the Pumpkin,C-Down for the Walrus,C-Left for the Crocc,R for the Bumble Bee,L for the Washing Machine,Press nothing to turn into Banjo
+Cheat12="Infinite\Mumbo Tokens",E88EB21A 594F,E88EB2F6 594F
+Cheat13="Take Off And Fly From Anywhere",E88B1827 595C
+Cheat13_N=Press A Button. Do not use with Do Shock Spring Jump From Anywhere
+Cheat14="Access All Moves",E88B16F8 5959,E88B16F7 59CF,E88B16F6 594F,E88B16F5 594F
+Cheat15="Game 100% Complete",E98B16F8 596F,50000302 0000,1137C3A2 FFFF,50000602 0000,113832C0 FFFF,E98E921E 59B6,E98E9234 59B6,50000802 0000,113832F0 FFFF,E98EB2F8 59BB,E98EB21C 59BB,E98EB248 59B6,50000602 0000,11385FF2 6464,50001002 0000,113831A8 FFFF,E98E8808 50CF,E98E8806 500A,E98E880C 8EF8,E98E880A 4BB6,E98E881A 50CF
+Cheat16="Secret Items ",E97E8B58 ????
+Cheat16_O=$504F Have All Collected,$595A Have None
+Cheat17="Do Shock Spring Jump From Anywhere",E88B1826 595C
+Cheat17_N=Press A Button. Do not use with Take Off And Fly From Anywhere

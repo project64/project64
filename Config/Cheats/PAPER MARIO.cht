@@ -1,0 +1,19 @@
+[19AB29AF-C71BCD28-C:50]
+Name=PAPER MARIO
+Cheat0="Infinite & Max HP + FP",50000601 0000,1010DD91 0063
+Cheat0_N=Do not enable this code before you have made a save, when a new game is started up.
+Cheat1="Access\All Star Spirits",E9663772 5957
+Cheat1_N=Disable this code as soon as you have reached level 8, or everything will be removed again
+Cheat2="Access\Max Star Energy",E8663772 5957
+Cheat3="Access\Infinite Star Spirits",E8663778 5957
+Cheat4="Access\Infinite Coins",E96634F4 5C37
+Cheat5="Access\Max Star Points",E86634F8 59BB
+Cheat5_N=You will level up, everytime you get a Star point
+Cheat6="Access\Max Star Pieces",E86634F1 59BB
+Cheat7="Access\Max Badge Points",E86634F0 59??
+Cheat7_O=$8E 60 Badge Points,$CF 127 Badge Points
+Cheat8="Access\Level 99",E86634EF 59BB
+Cheat9="Access\all members in your party",50000C08 0000,1010DDAC 0001
+Cheat10="Access\Ultra Rank",50000C08 0000,1010DDAD 0002,50000C08 0000,1010DDED 0002
+Cheat10_N=This will give you Goombario,Kooper,Bombette,Parakarry,Bow Watt, Sushie & Lakilester
+Cheat11="Press L Button  For Moon Jump",D0071337 0020,E8662D4C 599B

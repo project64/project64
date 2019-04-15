@@ -1,0 +1,27 @@
+[D715CC70-271CF5D6-C:50]
+Name=WAR GODS
+Cheat0="Infinite Time",E887494D 59B6
+Cheat1="Enable Cheat Menu",E887C0C5 5959
+Cheat2="Skill Select\Player 2",E887B378 59??
+Cheat2_N=Max Skill makes the player more Skillful while easier to hurt where as Weak Skill is Non Skillful yet harder to harm.
+Cheat2_O=$DA Max Skill,$5A Weak Skill
+Cheat3="Skill Select\Player 1",E887B373 59??
+Cheat3_N=Max Skill makes the player more Skillful while easier to hurt where as Weak Skill is Non Skillful yet harder to harm.
+Cheat3_O=$DA Max Skill,$5A Weak Skill
+Cheat4="Difficulty Select",E887C0A5 59??
+Cheat4_O=$5A Very Easy,$59 Easy,$5C Medium,$5B Hard,$56 Very hard
+Cheat5="Infinite Max Continues",E887C0B5 5955
+Cheat7="Easy Fatality Select",E887AFA1 59??
+Cheat7_O=$5A Always Off,$59 Always On
+Cheat8="Press D-Pad\Right to Play As Exor",D033C263 0008,E86402D9 5963
+Cheat8_N=Press D-Pad Right at the character Select screen to Replace Maximus with Exor. Do not use with the Play As Cheat
+Cheat9="Press D-Pad\Left to Play As Grox",D033C263 0004,E86402D9 5964
+Cheat9_N=Press D-Pad Left at the character Select screen to Replace Maximus with Grox. Do not use with the Play As Cheat
+Cheat10="Music Select",E887C0AC 59??
+Cheat10_O=$5A Off,$59 On
+Cheat11="Level Select",E887B379 59??
+Cheat11_O=$5A Off,$59 Pagan,$5C Anubis,$5B Warhead,$56 Ahau Kin,$55 Voodoo,$58 Kabuki
+Cheat12="Fatalities Select",E887C0B4 59??
+Cheat12_O=$5A Off,$59 On
+Cheat13="Play As",E86402D9 59??
+Cheat13_O=$5A Warhead,$59 Tak,$5C Voodoo,$5B Pagan,$56 Kabuki Jo,$55 Vallah,$58 Ahau Kin,$57 Anubis,$62 CY-5,$61 Maximus,$64 Grox,$63 Exor

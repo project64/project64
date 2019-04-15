@@ -1,0 +1,20 @@
+[AA7B0658-9C96937B-C:50]
+Name=WCW MAYHEM
+Cheat0="Character Creation\Max\Strength",E886E48B 5961
+Cheat1="Character Creation\Max\Impact",E88856CB 5961
+Cheat2="Character Creation\Max\Speed",E888830B 5961
+Cheat3="Character Creation\Max\Quickness",E888A3CB 5961
+Cheat4="Character Creation\Max\Aerial",E888C38B 5961
+Cheat5="Character Creation\Max\Mat Ability",E888DE4B 5961
+Cheat6="Character Creation\Max\Submission",E888FE0B 5961
+Cheat7="Character Creation\Max\Brawling",E8881ECB 5961
+Cheat8="Character Creation\Max\Dirtiness",E8883E8B 5961
+Cheat9="Infinite Stamina\Player 1",E964EAF0 55D2
+Cheat10="Infinite Stamina\Player 2",E964F08C 5C3D
+Cheat11="Meter Select\Player 1",E864EAF3 59??
+Cheat11_O=$BA Full Meter Bar,$5A Empty Meter Bar
+Cheat12="Meter Select\Player 2",E864F093 59??
+Cheat12_O=$BA Full Meter Bar,$5A Empty Meter Bar
+Cheat13="Enable Cheat",E85FC2AD 59??
+Cheat13_O=$5C Super Created Wrestlers,$56 Stamina Meter,$62 Momentum Meter,$7A Play As Same Wrestler,$DA All Wrestlers
+Cheat14="Freeze Timer",E85FD156 2C5A

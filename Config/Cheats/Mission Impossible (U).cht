@@ -1,0 +1,12 @@
+[26035CF8-802B9135-C:45]
+Name=Mission Impossible (U)
+Cheat0="Invincibility",E95EB50C 5A59
+Cheat1="Infinite\Ammo All Guns",50000610 0000,100A8EA7 00FF
+Cheat2="Infinite\Health",E95EB506 504F
+Cheat3="Access All Levels",E85EFC1A 5959,E85EFC2E 5959,E85EF956 5959,E85EF9A6 5959,E85EF9BA 5959,E85EF9CE 5959,E85EF9E2 5959,E85EF9F6 5959,E85EF90A 5969,E85EF91E 5979,E85EF932 5959,E85EFA5A 5969,E85EFA6E 5999,E85EFA82 5979,E85EFA96 59D9,E85EFAAA 5959,E85EFABE 59D9,E85EFAD2 5959,E85EFAFA 5959,E85EFA22 5959,E85EFA36 5969,E85EFA4A 5979,E85EFF9A 5959,E85EFE7E 5959,E85EFE92 5959,E85EFEA6 5959,E85EFEBA 5959
+Cheat4="Freeze All Timers",E95D9498 59BB,E95D9496 59BB,E95D949C 59BB
+Cheat5="Weapon Select",E860E1FB 59??,E860E10B 59??,E860E11B 59??
+Cheat5_O=$5A 9MM Hi Power,$59 Silenced Pistol,$5C Uzi,$5B Fists,$8C Gas Spray,$88 Blow Torch,$6F Fire Extinguisher,$76 Spray Paint,$77 Electrostunner,$63 Blow Dart Gun,$5E Dart Hand Gun,$7D Mini Rocket Launcher
+Cheat6="Walk Through Walls & Objects",E85D914B 59??
+Cheat6_N=This will allow you to pass through anything & even walk on water.if you amerge somewhere in the ground just press the A button.
+Cheat6_O=$DA On,$5A Off

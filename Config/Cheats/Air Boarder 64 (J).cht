@@ -1,0 +1,24 @@
+[F255D6F1-B65D6728-C:4A]
+Name=Air Boarder 64 (J)
+Cheat0="Infinite Turbo\Player 1",E86CB76F 5961
+Cheat1="Infinite Turbo\Player2",E86CD0E7 5961
+Cheat2="Infinite Time\Street Work & Coin",E8658A3F 5982
+Cheat3="Infinite Time\Attack Time Time 000000",E9658A3E 595A
+Cheat4="Infinite Time\Time Attack",E8658A3D 595A
+Cheat5="Access All Boards & Characters",E8595717 595E
+Cheat6="Maxed Out Turbo Bar",E96CA940 9BEF,E86CB769 59A9
+Cheat7="Class Score Select",E86CB7F2 59??
+Cheat7_O=$7A Class C,$9A Class B,$B6 Class A,$4F Class S
+Cheat8="Coin Perfect Select",E86CB705 59??
+Cheat8_N=this is for Coin Mode to get Perfect Coin Collection Score straight away when you enter the level
+Cheat8_O=$66 Green Park Level 1,$74 Green park Level 2,$83 Green park Level 3,$A4 Lost Forest Level 1,$B1 Lost Forest Level 2,$DA Lost Forest Level 3,$CD Snow Festival 64 Levels 1 2 & 3,$BF Sunset Island  Level 1,$C6 Sunset Island  Level 2,$D9 Sunset Island  Level 3,$C0 Giant House Level 1,$C7 Giant House Level 2,$CC Giant House Level 3
+Cheat9="Options\Music Modifier",E85957FF 59??
+Cheat9_O=$4F BGM On,$5A BGM Off
+Cheat10="Options\Sound Effects Modifier",E95957FE 59??
+Cheat10_O=$4F SE On,$5A SE Off
+Cheat11="Options\Camera Type Modifier",E95957FA 59??
+Cheat11_O=$5A Roll On Near,$59 Roll On Mid,$5C Roll On Far,$5B Roll Off Near,$56 Roll Off Mid,$55 Roll Off Far
+Cheat12="Options\DJ Function Modifier",E9595704 59??
+Cheat12_O=$59 DJ Function On,$5A DJ Function Off
+Cheat13="All Street Work Levels Unlocked",50007801 0000,10050170 00??
+Cheat13_O=$59 Courses unlocked,$5B Courses unlocked with C rank,$56 Courses unlocked with B rank,$55 Courses unlocked with A rank,$58 Courses unlocked with S rank

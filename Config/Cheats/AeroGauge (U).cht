@@ -1,0 +1,19 @@
+[AEBE463E-CC71464B-C:45]
+Name=AeroGauge (U)
+Cheat0="No Damage\Player 1",50000402 0000,1113FFD8 0000
+Cheat1="No Damage\Player 2",50000402 0000,11142078 0000
+Cheat2="Unlock Hidden Tracks & Cars",E85E45F4 5959
+Cheat3="Freeze All Lap Timers",E86753F7 5959,E86753FB 5959,E86753FF 5959
+Cheat4="Freeze Overall Timer",E86753EB 5959
+Cheat4_N=All of the Freeze All Lap Timers must be on. These codes will Stop the others from racing against you in Grand Prix mode. To win a race in Grand Prix you must finish at least one lap in the qualify round, then complete all laps in race for first.
+Cheat5="Laps Of Race",E86753E2 59??
+Cheat5_O=$59 1 Lap,$5C 2 Laps,$5B 3 Laps,$56 4 Laps,$55 5 Laps,$58 Never Ending Laps
+Cheat6="Play As\Player 1",E86752EB 59??
+Cheat6_O=$5A N64 Control Pad,$59 Interceptor,$5C Hornet,$5B Avenger,$56 Shredder,$55 Black Lightning,$58 Vengeance,$57 Prowler,$62 Reaper,$61 Dominator
+Cheat7="Play As\Player 2",E86752EA 59??
+Cheat7_O=$5A N64 Control Pad,$59 Interceptor,$5C Hornet,$5B Avenger,$56 Shredder,$55 Black Lightning,$58 Vengeance,$57 Prowler,$62 Reaper,$61 Dominator
+Cheat8="Level Select",E86752ED 59??
+Cheat8_O=$5A Canyon Rush,$59 Bikini Island,$5C China Town,$5B Neo Arena,$56 China Town Jam,$55 Neo Speed Way
+Cheat9="Always 1st",E8675338 5959
+Cheat10="Music Modifier",E866EE34 59??
+Cheat10_O=$4F Music On,$5A Music Off

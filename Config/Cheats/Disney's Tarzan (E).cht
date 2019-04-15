@@ -1,0 +1,17 @@
+[D614E5BF-A76DBCC1-C:50]
+Name=Disney's Tarzan (E)
+Cheat0="Infinite\Health",E96D7658 5A7A
+Cheat1="Have\Coins Collected 100%",E8612B09 59B6
+Cheat2="Have\Level & Tokens Completed 100%",E8612BE1 595A,E8612BE8 5959,E8612BE7 595A
+Cheat3="Access Level Select",E9612BD4 D959
+Cheat3_N=On the main menu Scroll down to make CHEATS visible to go into Level Select.For in-Game Cheats,Pause gameplay.
+Cheat4="Infinite\Lives",E8612B06 59??
+Cheat4_O=$5B 3 Lives,$BB 99 Lives
+Cheat5="Have\All TARZAN Letters",E8612BDB 594F
+Cheat6="Have\Full Portrait",E8612BDC 594F
+Cheat7="Infinite\Red Weapon",E96D7830 59BB
+Cheat8="Infinite\Green Weapon",E96D782A 59BB
+Cheat9="Infinite\Purple Weapon",E96D782E 59BB
+Cheat10="Press F9 For\Sabor Attacks\Sabor 1 Hit Kill",8924A49E 0001
+Cheat11="Infinite\Bonus Timer",E86B8A92 5975
+Cheat11_N=This is For All Timers on Bonus Levels

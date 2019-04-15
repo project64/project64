@@ -1,0 +1,16 @@
+[769147F3-2033C10E-C:45]
+Name=S.C.A.R.S. (U)
+Cheat0="Have All\Cars",50000402 0000,103DF94B 0001
+Cheat1="Have All\Cups,Tracks & Challenges",50000302 0000,102CB4A9 0001,50000402 0000,103DD109 0001
+Cheat2="Infinite Credits",E88EE373 5961
+Cheat3="Max Score Points",E98D020A 5B46
+Cheat4="Game Speed",E882E68F 59??
+Cheat4_O=$5A Novice,$59 Default,$5C Advanced,$5B Master
+Cheat5="Always Have Equipped\Player 1",E88D089C 59??,E88D0899 59??,E88D089F 5961
+Cheat5_O=$5A Turbo,$59 Magnet,$5B Stinger,$56 Boomerang,$55 Seeker,$58 Stopper,$57 Bullets,$62 Shield
+Cheat6="Always Have Equipped\Player 2",E88D063C 59??,E88D0639 59??,E88D063F 5961
+Cheat6_O=$5A Turbo,$59 Magnet,$5B Stinger,$56 Boomerang,$55 Seeker,$58 Stopper,$57 Bullets,$62 Shield
+Cheat7="Always Have Equipped\Player 3",E88D09DC 59??,E88D09D9 59??,E88D09DF 5961
+Cheat7_O=$5A Turbo,$59 Magnet,$5B Stinger,$56 Boomerang,$55 Seeker,$58 Stopper,$57 Bullets,$62 Shield
+Cheat8="Always Have Equipped\Player 4",E88D107C 59??,E88D1079 59??,E88D107F 5961
+Cheat8_O=$5A Turbo,$59 Magnet,$5B Stinger,$56 Boomerang,$55 Seeker,$58 Stopper,$57 Bullets,$62 Shield

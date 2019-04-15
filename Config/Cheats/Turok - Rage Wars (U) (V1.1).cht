@@ -1,0 +1,21 @@
+[2388984C-DA7B3CC5-C:45]
+Name=Turok - Rage Wars (U) (V1.1)
+Cheat0="Player 1\Have All\Mini Game Icons",E8631E69 5976
+Cheat1="Player 1\Infinite\Proximity Mines",E887BC93 594F
+Cheat2="Player 1\Infinite\Metal Claws",E887BC97 594F
+Cheat3="Player 1\Infinite\Sentry Guns",E887BC91 594F
+Cheat4="Player 1\Infinite\Cerebral Bores",E887BC8D 594F
+Cheat5="Player 1\Infinite\Health",E987BC7A B55A,E8BD7EDA 59B6
+Cheat6="Player 1\Infinite Ammo",E887BC8B 59BB,E887BC89 59BB,E887BC8F 59BB,E8BD7EEB 59BB,E8BD7EE9 59BB,E8BD7EEF 59BB,E8BD7EED 59BB,E8BD7EF3 59BB,E8BD7EF1 59BB,E8BD7EF7 59BB
+Cheat7="Player 1\Play As",E86A56B0 59??
+Cheat7_O=$5A Turok,$59 Mantid,$5C Drone,$5B Fireborn,$56 Soldier,$55 Adon,$58 Lord Of The Dead,$57 Elite Guard,$62 Blind One,$61 Juggernaut,$64 Death Guard,$63 Bastile,$5E Syra,$5D Symbiont,$60 Tail Set,$5F Pur-Lin,$6A Symbiont,$69 Raptor,$6C Mites,$6B Monkey
+Cheat8="Level Select\Proving Ground-Tightrope",E86A14F1 59??
+Cheat8_N=Do Not use this with Level Select The Pit-Starlight. Only use One Level Select Option At A Time
+Cheat8_O=$5A Proving Grounds,$59 Basic Training,$5C Crossroads,$5B Grim Retreat,$56 Cathedral,$55 Fall Out,$58 Boxed Set,$57 Dire Straight,$62 Prey,$61 Warehouse,$64 Water Temple,$63 Bomb Shelter,$5E Tempered,$5D Earth Temple,$60 Fire Temple,$5F Mystic,$6A Bottleneck,$69 Tightrope,
+Cheat9="Level Select\The Pit-Starlight",E86A14F1 59??
+Cheat9_N=Do Not use this with Level Select Proving Ground-Tightrope. Only use One Level Select Option At A Time
+Cheat9_O=$6C The Pit,$6B Leap Of Faith,$66 Wicked Dance,$65 Bunker,$68 Ampatheater,$67 Fire Walker,$72 Crypts,$71 Breakdown,$74 Retaliation,$73 Hopeless,$6E Matrix,$6D Fathom,$70 The Pedestal,$6F Defcon 5,$7A Spirit Temple,$79 Stronghold,$7C Courtyard,$7B Starlight
+Cheat10="Player 1\Infinite\Time",E96A5A4C 98FF,E96A5A4A 1509
+Cheat11="Player 1\Have All\Medals",E9631E9E 504F,E9631EA4 504F,E9631EA2 504F,E8631EA8 595B
+Cheat12="Player 1\Start With Weapon",E887B908 59??
+Cheat12_O=$5A Warhammer,$59 Boomerang,$5C Tek Crossbow,$5B Mag 60,$56 Shotgun,$55 Assault Rifle,$58 Mini Gun,$57 Plasma Rifle,$62 Freeze Gun,$61 Flaregun,$64 Grenade Launcher,$63 Scorpion Launcher,$5E Napalm Gel,$5D Emaciator,$60 Inflator,$5F Chest Burster,$6A Raptor Claw,$69 Mite Bite,$6C Cerebral Bore,$6B PFM Mine,$66 Iron Claw,$65 Sentry Turret

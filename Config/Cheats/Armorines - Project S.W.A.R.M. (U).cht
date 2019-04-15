@@ -1,0 +1,17 @@
+[1FB5D932-3BA9481B-C:45]
+Name=Armorines - Project S.W.A.R.M. (U)
+Cheat0="Enable In-Game Cheat Menu & Level Select",E965B08A 5A9F
+Cheat1="Infinite Lewis Laser Rifle",E88474C1 5ACA
+Cheat1_N=The infinite ammo will not work with these codes if you have the expansion pak inserted into your console.
+Cheat2="Infinite Lewis Explosive Projectile Weapon",E88474BF 598A
+Cheat2_N=The infinite ammo will not work with these codes if you have the expansion pak inserted into your console.
+Cheat3="Infinite Jungle Chemical Gun",E88474CD 5ABA
+Cheat3_N=The infinite ammo will not work with these codes if you have the expansion pak inserted into your console.
+Cheat4="Level Select",E965B086 5962
+Cheat5="Infinite Ammo (All Guns)",E95AE928 755A
+Cheat6="Don't Take Any Damage",E95AF5B8 755A
+Cheat7="Invincible",E95AE3F8 755A
+Cheat8="Sound Modifier\Music Volume",E865B09C 59??
+Cheat8_O=$5A Off,$8E Low (5),$D2 Medium (1.0),$0E Defualt (1.5),$4A Max (2.0)
+Cheat9="Sound Modifier\SFX Volume",E865B09B 59??
+Cheat9_O=$5A Off,$8E Low (5),$D2 Medium (1.0),$0E Defualt (1.5),$4A Max (2.0)

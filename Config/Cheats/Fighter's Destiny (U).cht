@@ -1,0 +1,26 @@
+[52F78805-8B8FCAB7-C:45]
+Name=Fighter's Destiny (U)
+Cheat0="Start with Stars Modifier\Player 1",D0209757 0000,E876EAA9 59??
+Cheat0_O=$5A No Stars,$58 Max Stars
+Cheat1="Start with Stars Modifier\Player 2",D020B61F 0000,E8760971 59??
+Cheat1_O=$5A No Stars,$58 Max Stars
+Cheat2="Have 1 Star\Ryuji",E886C6A2 5959
+Cheat3="Have 1 Star\Bob",E886C6A1 5959
+Cheat4="Have 1 Star\Pierre",E886C6A8 5959
+Cheat5="Have 1 Star\Meiling",E886C6A7 5959
+Cheat6="Have 1 Star\Leon",E886C6A6 5959
+Cheat7="Have 1 Star\Abdul",E886C6A5 5959
+Cheat8="Have 1 Star\Ninja",E886C6AC 5959
+Cheat9="Have 1 Star\Tomahawk",E886C6AB 5959
+Cheat10="Have 1 Star\Valerie",E886C6AA 5959
+Cheat11="Infinite Health\Player 1",E876EFF7 595A,E8769A15 595A
+Cheat12="Infinite Health\Player 2",E8769A19 595A,E8760ABF 595A
+Cheat13="Start on stage 100 on Survival to get Joker",E88449CD 59BB
+Cheat14="Stop timer for Fastest to get Robot",E9602E34 90DA
+Cheat15="Always Win Judge's Decision\Player 1",E8760AC9 504F,E876EF01 595A
+Cheat16="Always Win Judge's Decision\Player 2",E876EF01 504F,E8760AC9 595A
+Cheat17="Enable Boro",E886C69F 5959
+Cheat18="Level Select",E878FFA4 59??
+Cheat18_O=$5A Fire Mountain,$59 Desert,$5C Highlands,$5B Hong Kong,$56 Coliseum,$55 Jungle,$58 Ninja Room,$57 Suspension Bridge,$62 Palace,$61 Observation,$64 Pasture,$63 Joker's Room,$5E Blue Hell Mountain,$5D Palace
+Cheat19="Play As\Player 1",E8844976 59??
+Cheat19_O=$5A Ryuji,$59 Bob,$5C Pierre,$5B Meiling,$56 Leon,$55 Abdul,$58 Ninja,$57 Tomahawk,$62 Boro,$61 Valerie,$64 Ushi,$63 Joker,$5E The Master,$5D No Clue

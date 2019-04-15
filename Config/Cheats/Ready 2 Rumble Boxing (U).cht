@@ -1,0 +1,19 @@
+[EAB7B429-BAC92C57-C:45]
+Name=Ready 2 Rumble Boxing (U)
+Cheat0="Infinite\Money",E9642086 504F
+Cheat1="Sudden Death Mode\Player 1",D00E7596 03D7,E96102D0 595A,E961F2CE 5959
+Cheat2="Sudden Death Mode\Player 2",D00E7596 03D7,E961FAE8 595A,E961FAE6 5959
+Cheat3="Player 1\Health",E961F2D0 595A,E961F2CE 59??
+Cheat3_O=$B6 Infinite,$5A No Health
+Cheat4="Player 1\Stamina",E961F2D4 595A,E961F2D2 59??
+Cheat4_O=$B6 Infinite,$5A No Stamina
+Cheat5="Player 1\RUMBLE",E961F2DC 595A,E961F2DA 59??
+Cheat5_O=$8A Max,$5A Never Rumble
+Cheat6="Player 2\Health",E961FAE8 595A,E961FAE6 59??
+Cheat6_O=$B6 Infinite,$5A No Health
+Cheat7="Player 2\Stamina",E961FAEC 595A,E961FAEA 59??
+Cheat7_O=$B6 Infinite,$5A No Stamina
+Cheat8="Player 2\RUMBLE",E961FAF8 595A,E961FAF6 59??
+Cheat8_O=$8A Max,$5A Never Rumble
+Cheat9="Infinite\Time",E964CCEA 5F6A
+Cheat10="Have All Characters",5000125C 0000,110EC938 0000,5000125C 0000,110EC93A 0003

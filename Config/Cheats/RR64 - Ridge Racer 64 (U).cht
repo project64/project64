@@ -1,0 +1,20 @@
+[2500267E-2A7EC3CE-C:45]
+Name=RR64 - Ridge Racer 64 (U)
+Cheat0="All Modes\Always Have 1st Place",E959BB9C 5959
+Cheat1="All Modes\Infinite Time",E968C01E 585A
+Cheat2="All Modes\Press R Button For Turbo",D103E1EA 0010,E959BB6E 615A
+Cheat3="Grand Prix Mode\Car Modifier",E96722AE 59??
+Cheat3_O=$5A F/A Racing,$59 RT Ryukyu,$5C PAC Racing,$5B RT Solvalou,$56 RT Pink Mappy,$55 RT Blue Mappy,$58 Galaga RT Prid's,$57 Galaga RT Carrot,$62 RT Bosconian,$61 RT Nebulasray,$64 RT Xevious Red,$63 RT Xevious Green,$5E Dig Racing Team,$5D Micro Mouse Mappy,$60 13th Racing Kid,$5F White Angel,$6A Digipen Racing,$69 Assoluto Infinito,$6C Age Solo Supernova,$6B Atomic Purple,$66 Extreme Green,$65 Terrazi Terrific,$68 Lizard Nightmare,$67 Screamin' Eagle,$72 Ultra 64 (Full Stats),$71 00-Agent,$74 Galaga' 88,$73 Blinky,$6E Red Shirt Rage,$6D Crazy Canuck,$70 Caddy Car,$6F Pooka
+Cheat4="Grand Prix Mode\Track Modifier",E96722BE 59??
+Cheat4_O=$5A Ridge Racer Novice,$59 Revolution Novice,$5C Renegade Novice,$5B Ridge Racer Intermediate,$56 Revolution Intermediate,$55 Renegade Intermediate,$58 Ridge Racer Expert,$57 Revolution Expert,$62 Renegade Expert,$61 Ridge Racer Extreme
+Cheat5="Grand Prix Mode\Enlarge Cars",E965EAB0 901A,E965EA04 901A,E965EF58 901A
+Cheat6="Grand Prix Mode\Shrink Cars",E865EAB0 5990,E865EA04 5990,E865EF58 5990
+Cheat7="Grand Prix Mode\Microscopic Cars",E865EAB0 598D,E865EA04 598D,E865EF58 598D
+Cheat8="Grand Prix Mode\2 Tier Cars",E865EE08 5991
+Cheat9="Grand Prix Mode\Press F9 For Overhead View",8811AB0F 0002
+Cheat10="Grand Prix Mode\Unlock\All Engine Classes All Levels",50001E08 0000,1102FAB0 0004,50001E08 0000,1102FAB2 0403
+Cheat11="Grand Prix Mode\Unlock\All Cars",E95848F4 504F,E95848F2 504F
+Cheat12="Grand Prix Mode\Unlock\All Tracks & Trophies",E95A8C88 504F,E95A8C86 504F
+Cheat13="Grand Prix Mode\Laps to Race",E9650682 ????
+Cheat13_O=$5A59 lap,$5B5C laps,$5C5B laps,$5556 laps,$5655 laps,$5758 laps,$5857 laps,$6162 laps,$6261 laps
+Cheat14="Grand Prix Mode\All Cars Have Perfect Stats",50008002 0000,1102F314 05DC

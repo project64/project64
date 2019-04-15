@@ -1,0 +1,26 @@
+[03571182-892FD06D-C:45]
+Name=Pokemon Stadium 2 (U)
+Cheat0="One Hit KO",E86AAAC1 595A,E86AAA19 595A,E86AAF71 595A
+Cheat0_N=To Win you must get at least one hit or just return your pokemon.
+Cheat1="Press R To Reset Time",E87237BA 596A,E96E8D24 59BB
+Cheat1_N=Press R To Reset Time
+Cheat2="Max Score",D117F812 03E7,E96B4F66 5C37
+Cheat3="Press R+L to KO Opponents",D10CE066 0030,E86AAAB9 595A,D10CE066 0030,E86AAA19 595A,D10CE066 0030,E86AAAC1 595A,D10CE066 0030,E86AAF71 595A
+Cheat3_N=Press R+L Activate
+Cheat4="Infinite\Continues",E96AC6E4 5961
+Cheat5="Instant\Win\Topsy Turvy\Player 1",E86BBFD9 5955
+Cheat6="Instant\Win\Barrier Ball\Player 1",E86C3DE9 5955
+Cheat7="Instant\Win\Pichu's Power Plant\Player 1",E86C29A1 59AA
+Cheat8="Infinite\Dirt Rollout Rampage\Player 1",E86B323D 595C
+Cheat9="Press Z\for Max HP\1st Pokemon",D112B554 2000,E96AA5E2 594F,D112B554 2000,E96AA5E8 594F
+Cheat9_N=This will give them Max HP when they are not in use. Just call a Pokemon out and he will then have Max HP. When your Pokemon faints, just press Z again and it will revive itIn Battle Only,Do not use with anyother Press Z Cheat Code.
+Cheat10="Press Z\for Max L.\1st Pokemon\Player 1",D112B554 2000,E96AA5DC 59BB
+Cheat10_N=Do not use with anyother Press Z Cheat Code.
+Cheat11="Press Z\for Max HP\2nd Pokemon\Player 1",D112B554 2000,E96AA53A 594F,D112B554 2000,E96AA540 594F
+Cheat11_N=This will give them Max HP when they are not in use. Just call a Pokemon out and he will then have Max HP. When your Pokemon faints, just press Z again and it will revive itIn Battle Only,Do not use with anyother Press Z Cheat Code.
+Cheat12="Press Z\for Max L.\2nd Pokemon\Player 1",D112B554 2000,E96AA534 59BB
+Cheat12_N=Do not use with anyother Press Z Cheat Code.
+Cheat13="Press Z\for Max HP\3rd Pokemon\Player 1",D112B554 2000,E96AA692 594F,D112B554 2000,E96AA698 594F
+Cheat13_N=This will give them Max HP when they are not in use. Just call a Pokemon out and he will then have Max HP. When your Pokemon faints, just press Z again and it will revive itIn Battle Only,Do not use with anyother Press Z Cheat Code.
+Cheat14="Press Z\for Max L.\3rd Pokemon\Player 1",D112B554 2000,E96AA68C 59BB
+Cheat14_N=Do not use with anyother Press Z Cheat Code.

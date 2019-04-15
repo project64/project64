@@ -1,0 +1,16 @@
+[E3D6A795-2A1C5D3C-C:50]
+Name=Knockout Kings 2000 (E)
+Cheat0="Infinite Health\Player 1",E95C10CC 9B22,E95C1032 595A
+Cheat1="Infinite Health\Player 2",E95C0D3C 9B22,E95C0D3A 595A
+Cheat2="No Health\Player 1",E95C1034 595A,E95C1032 595A
+Cheat3="No Health\Player 2",E95C0D3C 595A,E95C0D3A 595A
+Cheat4="Full Punch Meter\Player 1",E95C1040 595A,E95C103E 640C
+Cheat5="Full Punch Meter\Player 2",E95C1040 595A,E95C103E 640C
+Cheat6="Empty Punch Meter\Player 1",E95C1040 595A,E95C103E 595A
+Cheat7="Empty Punch Meter\Player 2",E86C0D48 595A,E86C0D46 595A
+Cheat8="Infinite Boxer Creation Points",E95C8AFE 59B6
+Cheat9="Have Full\Power Bar",E95C8A02 59B6
+Cheat10="Have Full\Speed Bar",E95C8A06 59B6
+Cheat11="Have Full\Stamina Bar",E95C8A0A 59B6
+Cheat12="Big Options\Big Head Mode",E86397D4 5959
+Cheat13="Big Options\Big Gloves Mode",E86397D3 5959

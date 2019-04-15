@@ -1,0 +1,19 @@
+[A292524F-3D6C2A49-C:45]
+Name=NBA In The Zone '99 (U)
+Cheat0="No Shot Clock",E976671C 9C4F
+Cheat1="Home Team\Score",E97D56D0 ????
+Cheat1_O=$595A o Points,$6359 0 Points,$655C 0 Points,$8156 0 Points,$8D58 0 Points,$A962 0 Points,$B559 00 Points,$215C 00 Points,$535C 50 Points
+Cheat2="Away Team\Score",E97D70B4 ????
+Cheat2_O=$595A o Points,$6359 0 Points,$655C 0 Points,$8156 0 Points,$8D58 0 Points,$A962 0 Points,$B559 00 Points,$215C 00 Points,$535C 50 Points
+Cheat3="Home Team\Time Outs Home",E87D56CC 59??
+Cheat3_O=$5A None,$57 Infinite
+Cheat4="Away Team\Time Outs",E87D70B0 59??
+Cheat4_O=$5A None,$57 Infinite
+Cheat5="Create A Player Codes\Max Shooting",E882B14D 59BB
+Cheat6="Create A Player Codes\Max 3 Point",E882B154 59BB
+Cheat7="Create A Player Codes\Max Free Throw",E882B153 59BB
+Cheat8="Create A Player Codes\Max Offensive",E882B152 59BB
+Cheat9="Create A Player Codes\Max Defensive",E882B151 59BB
+Cheat10="Create A Player Codes\Max Rebound",E882B258 59BB
+Cheat11="Create A Player Codes\Max Techinque",E882B257 59BB
+Cheat12="Create A Player Codes\Max Capaility",E882B256 59BB

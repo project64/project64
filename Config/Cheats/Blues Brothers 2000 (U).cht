@@ -1,0 +1,12 @@
+[7CD08B12-1153FF89-C:45]
+Name=Blues Brothers 2000 (U)
+Cheat0="Have All\Keys",E85F2710 594F,E85F2712 594F,E85F2713 594F
+Cheat0_N=This will give you the Grey & Red,Green & Gold Keys
+Cheat1="Have All\Music Notes",50000A01 0000,100BD1F0 0001
+Cheat1_N=This will give you all 10 Music Notes
+Cheat2="Infinite\Lives",E85F2735 5961
+Cheat3="Infinite\Health",E85F2749 595C
+Cheat4="Press L to Levitate",D017DBC5 0020,E9610230 9523
+Cheat4_N=Press L to levitate & let go to come back down
+Cheat5="Max Money",E95F273A 5C37
+Cheat6="Can Walk When The Game Is Paused",E960100A 5959

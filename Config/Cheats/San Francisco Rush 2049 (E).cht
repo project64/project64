@@ -1,0 +1,23 @@
+[51D29418-D5B46AE3-C:50]
+Name=San Francisco Rush 2049 (E)
+Cheat0="Always 1st",E86BD4A2 595A
+Cheat1="Max Race Points",E96B2176 5B46
+Cheat2="Laps To Race",E96BCD70 59??
+Cheat2_O=$59 1 Lap,$5C 2 laps,$5B 3 Laps,$56 4 Laps,$55 5 Laps,$58 6 Laps,$57 7 Laps,$62 8 Laps,$61 9 Laps
+Cheat3="Number Of Drones In Race",E96C8598 59??
+Cheat3_O=$59 1 Drone,$5C 2 Drones,$5B 3 Drones,$56 4 Drones,$55 5 Drones,$58 6 Drones,$57 7 Drones,$62 8 Drones,$61 9 Drones
+Cheat4="Access All In-Game Cheats",E965E1EE 5959
+Cheat5="Activate All In-Game Cheats",50000D02 0000,11118E82 0101
+Cheat6="All Silver & Gold Coins",50000660 0000,1116375C FFFF
+Cheat6_N=Single, Practice & Circuit Mode
+Cheat7="All Silver & Gold Coins",50000660 0000,111C542C FFFF
+Cheat7_N=Circuit Mode - Using Controller Pack
+Cheat8="All Silver & Gold Coins",50000440 0000,11163BBC FFFF
+Cheat8_N=Stunt Mode
+Cheat9="Extended Time In Battle & Stunt Mode To 2.05 Hours",E96C860E 96CE,E96C8942 9666
+Cheat10="Stunt Wings All Modes",D017055A 0004,50000C02 0000,111139D0 0202
+Cheat10_N=Where Wings Are Available Press D-Pad Up On Wing Select
+Cheat11="Stunt Wings Circuit Mode",D017055A 0004,50000C02 0000,101756A1 0202
+Cheat11_N=Press D-Pad Up On Wing Select
+Cheat12="Easy Difficulty level",E86BCD94 595A
+Cheat13="Max Points Stunt Mode",E96BCDAB 934F,E96BCDA9 4C54

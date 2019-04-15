@@ -1,0 +1,19 @@
+[49E46C2D-7B1A110C-C:4A]
+Name=Fighting Cup (J)
+Cheat0="Start with Stars Modifier\Player 1",D0208E17 0000,E876E169 59??
+Cheat0_O=$5A No Stars,$58 Max Stars
+Cheat1="Start with Stars Modifier\Player 2",D020ACDF 0000,E8760331 59??
+Cheat1_O=$5A No Stars,$58 Max Stars
+Cheat2="Have 1 Star\Ryuji",E886BD62 5959
+Cheat3="Have 1 Star\Bob",E886BD61 5959
+Cheat4="Have 1 Star\Pierre",E886BD68 5959
+Cheat5="Have 1 Star\Meiling",E886BD67 5959
+Cheat6="Have 1 Star\Leon",E886BD66 5959
+Cheat7="Have 1 Star\Abdul",E886BD65 5959
+Cheat8="Have 1 Star\Ninja",E886BD6C 5959
+Cheat9="Have 1 Star\Tomahawk",E886BD6B 5959
+Cheat10="Have 1 Star\Valerie",E886BD6A 5959
+Cheat11="Infinite Health\Player 1",E876E2B7 595A,E87691D5 595A
+Cheat12="Infinite Health\Player 2",E87691D9 595A,E876017F 595A
+Cheat13="Start on stage 100 on Survival to get Joker",E884448D 59BB
+Cheat14="Stop timer for Fastest to get Robot",E96025F4 90DA

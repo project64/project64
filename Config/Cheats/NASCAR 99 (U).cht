@@ -1,0 +1,6 @@
+[23749578-80DC58FD-C:45]
+Name=NASCAR 99 (U)
+Cheat0="1 Lap to Race",E85A8F05 5961,D021FBAB 0000,E8754EFD 5962,D022359B 0000,E8788CED 5962
+Cheat1="Total Laps to Race Modifier",E85A8F05 59??
+Cheat1_O=$59 1 lap,$5C 2 lap,$5B 3 lap,$56 4 lap,$55 5 lap,$58 6 lap,$57 7 lap,$62 8 lap,$61 9 lap
+Cheat2="Max Gear Ratios",E962F1E8 D070,E962F1D6 C9CF

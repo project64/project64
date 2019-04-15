@@ -1,0 +1,27 @@
+[FDA245D2-A74A3D47-C:45]
+Name=Extreme-G (U)
+Cheat0="Infinite Shields\Player 1",E86C8C4B 5922
+Cheat1="Infinite Primary Weapon\Player 1",E86C8C53 5922
+Cheat2="Infinite Turbos\Player 1",E86C8C1D 595B,E86C8C21 595B
+Cheat3="Bike Modifier\Player 1",E86CD391 59??
+Cheat3_O=$5A Raze,$59 Rana,$5C Khan,$5B Grimace,$56 Mooga,$55 Jolt,$58 Main,$57 Apollyon,$62 Roach,$61 Neon
+Cheat4="Infinite Shields\Player 2",E86C94BB 5922
+Cheat5="Infinite Primary Weapon\Player 2",E86C94C3 5922
+Cheat6="Infinite Turbos\Player 2",E86C948D 595B,E86C9491 595B
+Cheat7="Bike Modifier\Player 2",E86CD3DD 59??
+Cheat7_O=$5A Raze,$59 Rana,$5C Khan,$5B Grimace,$56 Mooga,$55 Jolt,$58 Main,$57 Apollyon,$62 Roach,$61 Neon
+Cheat8="Infinite Shields\Player 3",E86C9B2B 5922
+Cheat9="Infinite Primary Weapon\Player 3",E86C9B33 5922
+Cheat10="Infinite Turbos\Player 3",E86C9BFD 595B,E86C9B01 595B
+Cheat11="Bike Modifier\Player 3",E86CD329 59??
+Cheat11_O=$5A Raze,$59 Rana,$5C Khan,$5B Grimace,$56 Mooga,$55 Jolt,$58 Main,$57 Apollyon,$62 Roach,$61 Neon
+Cheat12="Infinite Shields\Player 4",E86CA39B 5922
+Cheat13="Infinite Primary Weapon\Player 4",E86CA3A3 5922
+Cheat14="Infinite Turbos\Player 4",E86CA36D 595B,E86CA371 595B
+Cheat15="Bike Modifier\Player 4",E86CD475 59??
+Cheat15_O=$5A Raze,$59 Rana,$5C Khan,$5B Grimace,$56 Mooga,$55 Jolt,$58 Main,$57 Apollyon,$62 Roach,$61 Neon
+Cheat16="Extra Bikes Unlocked",E86CD365 5959,E86CD369 595B
+Cheat17="Extra Levels Unlocked",E86CD35D 5959,E86CD361 5959
+Cheat18="All Tracks Unlocked",E86D96C2 5962,50000264 0000,10167747 0001,50000264 0000,10167873 0001,50000564 0000,1016799F 0001
+Cheat19="Mode Select",E85DB2C1 59??
+Cheat19_O=$59 Boulder,$5C Fish Eye Lens,$5B Boulder & Fish Eye Lens,$56 Magnify,$62 Anti-Gravity,$64 Anti-Gravity & Fish Eye Lens,$6A Wireframe,$69 Boulder & Wireframe,$7A Stealth Mode,$9A Ghost Mode,$DA Ugly Mode

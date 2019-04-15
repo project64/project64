@@ -1,0 +1,26 @@
+[4EAA3D0E-74757C24-C:4A]
+Name=Super Mario 64 (J)
+Cheat0="Mario's Cap\Off Options",E887F159 59??
+Cheat0_N=Here you can Choose Options with Mario without His Cap on,Do not use with any other Mario with/without Options,Use only one at a time
+Cheat0_O=$59 Mario No Cap,$5C Invisible Mario,$56 Metal Mario,$62 Flying Mario,$64 Invisible Flying Mario,$5D Metal Flying Mario,$5F Invisible Metal Flying Mario
+Cheat1="Mario's Cap\On Options",E887F159 59??
+Cheat1_N=Here you can Choose Options with Mario with His Cap on,Do not use with any other Mario with/without Options,Use only one at a time
+Cheat1_O=$6C Invisible Mario,$65 Metal Mario,$68 Invisible Metal Mario,$71 Flying Mario
+Cheat2="Funny Mario Options\Mario's Cap\Off & in His Hand",E887F159 59??
+Cheat2_N=Here you can Choose Options with Mario with His Cap off & in His Hand,Do not use with any other Mario with/without Options,Use only one at a time
+Cheat2_O=$7A Cap In Hand,$7C Invisible Mario Cap In Hand,$76 Metal Mario Cap In Hand,$78 Invisible Metal Mario Cap In Hand,$82 Flying Mario Cap In Hand
+Cheat3="Funny Mario Options\Mario's Cap\On & An Extra in His Hand",E887F159 59??
+Cheat3_N=Here you can Choose Options with Mario with His Cap on & An Extra in His Hand,Do not use with any other Mario with/without Options,Use only one at a time
+Cheat3_O=$8A Cap In Hand,$8C Invisible Mario Cap In Hand,$86 Metal Mario Cap In Hand,$88 Invisible Metal Mario Cap In Hand,$92 Flying Mario Cap In Hand
+Cheat4="Infinite\Energy & Breath",E887F102 5962
+Cheat5="Infinite\Lives",E887F103 59B6
+Cheat6="Have\Level Select",E88819A4 5959
+Cheat7="Don't Hurt Mario\Monsters",A0339E27 0001
+Cheat8="Have\Debug Mode",E88819B0 59??
+Cheat8_O=$59 On,$5A Off
+Cheat9="Press F9 for 255 Coins",89339EA8 00FF
+Cheat10="Press L To Levitate",D0339C31 0020,E987F1A4 9B7A,D0339E4D 0020,E987F164 5C5A,D0339E4D 0020,E987F162 61DA
+Cheat10_N=Press L to levitate & Let go to land
+Cheat11="Have All\175 Stars",E876CE5D 594F,50000D02 0000,11207B0C FFFF
+Cheat11_N=I have Managed to put a Have 175 Stars Option in for you,once the Code is activated, you will see it as a new option in Save Slot A.
+Cheat12="Have All\Maxed Out Coin Records For All Levels",E876CE7B 594F,E976CE7A 504F,E976CE80 504F,E976CE7E 504F,E976CE84 504F,E976CE82 504F,E976CE88 504F,E976CE86 504F

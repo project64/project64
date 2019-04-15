@@ -1,0 +1,25 @@
+[132D2732-C70E9118-C:45]
+Name=Wipeout 64 (U)
+Cheat0="Infinite\Check Point Time",E96231E6 62BA
+Cheat1="Always Place First",E95D13C0 5959,E95D715A 595B
+Cheat1_N=For This code doesn't record the win on the Time Trial Gold Challenge or the Weapons Gold Challenge.
+Cheat2="Open\Velocitar",E85D859F 5959
+Cheat3="Open\Piranha II",E85D861F 5959
+Cheat4="Open\Super Combo Challenge",E85D8C73 595A
+Cheat5="Activate\Infinite Random Weapons Pickup",E85D737C 5959
+Cheat6="Activate\Power-Up Weapons",E85D7380 5959
+Cheat7="Activate\Velocitar",E85D737E 5959
+Cheat8="Activate\Piranha",E85D737F 5959
+Cheat9="Have Weapon\For Feisar",E96F1B4A ????
+Cheat9_O=$5A59 Rockets,$5B5C Missiles,$5C5B Mines,$5655 Electro Bolt,$5758 E-Pak,$5857 AutoPilot,$6162 Shield,$6261 Turbo Boost,$5D5E Quake Disruptor,$5E5D Secret,$5F60 Thunder Bomb
+Cheat10="Have Weapon\For AG System",E96F2192 ????
+Cheat10_O=$5A59 Rockets,$5B5C Missiles,$5C5B Mines,$5655 Electro Bolt,$5758 E-Pak,$5857 AutoPilot,$6162 Shield,$6261 Turbo Boost,$5D5E Quake Disruptor,$5E5D Secret,$5F60 Thunder Bomb
+Cheat11="Have Weapon\For Auricom",E96F1832 ????
+Cheat11_O=$5A59 Rockets,$5B5C Missiles,$5C5B Mines,$5655 Electro Bolt,$5758 E-Pak,$5857 AutoPilot,$6162 Shield,$6261 Turbo Boost,$5D5E Quake Disruptor,$5E5D Secret,$5F60 Thunder Bomb
+Cheat12="Have Weapon\For Qirex",E96F1F62 ????
+Cheat12_O=$5A59 Rockets,$5B5C Missiles,$5C5B Mines,$5655 Electro Bolt,$5758 E-Pak,$5857 AutoPilot,$6162 Shield,$6261 Turbo Boost,$5D5E Quake Disruptor,$5E5D Secret,$5F60 Thunder Bomb
+Cheat13="Have Weapon\For Piranha II",E96F1E82 ????
+Cheat13_O=$5A59 Rockets,$5B5C Missiles,$5C5B Mines,$5655 Electro Bolt,$5758 E-Pak,$5857 AutoPilot,$6162 Shield,$6261 Turbo Boost,$5D5E Quake Disruptor,$5E5D Secret,$5F60 Thunder Bomb
+Cheat14="Infinite Eliminations",E86F1C7D 594F
+Cheat15="[Infinite Sheild]",5000030C 0000,1109BCE2 0000,E95D1466 595A
+Cheat15_N=This cheat enabled fixes Av's popping up and spoiling you racing,it also gives you Infinite Sheild on all Cars,Tracks and Modes

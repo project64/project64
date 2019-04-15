@@ -1,0 +1,14 @@
+[0D93BA11-683868A6-C:50]
+Name=Kirby64
+Cheat0="Infinite Max Health",E861C8E1 5958,E861C8A7 591A
+Cheat1="Kirkby can fly unlimited",E8683D31 594A
+Cheat2="Access all enemy info",50005101 0000,100D6F10 0002
+Cheat3="Access all crystals",50000701 0000,100D6EC0 0001,50001701 0000,100D6EC8 0007
+Cheat4="Access all difficulty levels",50000301 0000,100D6E69 0003
+Cheat4_N=100 yard hop, bumper crop bump & checkerboard chase
+Cheat5="All Levels completed",50002B01 0000,100D6EE0 0002
+Cheat5_N=You must still beat boss's to continue onto next level
+Cheat6="All Save Slots 100% Completed\Save slot 1",E8642470 59B6
+Cheat7="All Save Slots 100% Completed\Save slot 2",E86424C8 59B6
+Cheat8="All Save Slots 100% Completed\Save slot 3",E8642420 59B6
+Cheat9="Infinite Max Lives",E861C8A1 59B6

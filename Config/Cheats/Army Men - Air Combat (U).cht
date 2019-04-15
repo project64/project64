@@ -1,0 +1,11 @@
+[4C52BBB2-CEAB0F6B-C:45]
+Name=Army Men - Air Combat (U)
+Cheat0="Co-Pilot Modifier",E85F7BB4 59??
+Cheat0_O=$5A Lt. James Marshall "Woodstock",$59 Lt. John Lawless "Hardcore",$5C Lt. Dave Parker "Rawhide",$5B Lt. Felicity Wannamaker "Bombshell",$56 Sergeant Hawk "Sarge" (Hidden Character)
+Cheat1="Helicopter Modifier",E85F7C8C 59??
+Cheat1_O=$59 Huey,$5C Chinook (Hidden),$5B Super Stallion (Hidden),$56 Apache (Hidden)
+Cheat2="Always Play Level Modifier",E85F7CA4 59??
+Cheat2_O=$5A Mission 1-Plastic Pandemonium,$59 Mission 2-Going Car-razy,$5C Mission 3-The Train That Could,$5B Mission 4-Tan Terror-Tory,$56 Mission 5-Bug Bath,$55 Mission 6-Uninvited Guests,$58 Mission 7-Ants In The Pants,$57 Mission 8-Saucer Attack,$62 Mission 9-The Heat is On,$61 Mission 10-The Melting Pot,$64 Mission 11-River Rapids Riot,$63 Mission 12-Nighttime Teddy,$5E Mission 13-Demolition Time,$5D Mission 14-Pick Up The Pieces,$60 Mission 15-Have An Ice Day,$5F Mission 16-Plastro's Revenge,$6A Mission 17-Bug Hunt: Chew Chew Bug-B-Q,$69 Mission 18-Bug Hunt: Crispy Critters,$6C Mission 19-Flag-Nab-It: Fort Frenzy,$6B Mission 20-Flag-Nab-it: Freezer Burn,$66 Mission 21-Food Fight: Picnic Panic,$65 Mission 22-Food Fight: Cherry Surprise,$68 Mission 23-Rescue: Don't Feed The Crabs,$67 Mission 24-Rescue: Tide Pool Terror
+Cheat3="Start On Play Level Modifier",D00B254C 0000,E85F7CA4 59??
+Cheat3_O=$5A Mission 1-Plastic Pandemonium,$59 Mission 2-Going Car-razy,$5C Mission 3-The Train That Could,$5B Mission 4-Tan Terror-Tory,$56 Mission 5-Bug Bath,$55 Mission 6-Uninvited Guests,$58 Mission 7-Ants In The Pants,$57 Mission 8-Saucer Attack,$62 Mission 9-The Heat is On,$61 Mission 10-The Melting Pot,$64 Mission 11-River Rapids Riot,$63 Mission 12-Nighttime Teddy,$5E Mission 13-Demolition Time,$5D Mission 14-Pick Up The Pieces,$60 Mission 15-Have An Ice Day,$5F Mission 16-Plastro's Revenge,$6A Mission 17-Bug Hunt: Chew Chew Bug-B-Q,$69 Mission 18-Bug Hunt: Crispy Critters,$6C Mission 19-Flag-Nab-It: Fort Frenzy,$6B Mission 20-Flag-Nab-it: Freezer Burn,$66 Mission 21-Food Fight: Picnic Panic,$65 Mission 22-Food Fight: Cherry Surprise,$68 Mission 23-Rescue: Don't Feed The Crabs,$67 Mission 24-Rescue: Tide Pool Terror
+Cheat4="Unlock All Planes",E95F7C7E 5A55

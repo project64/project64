@@ -1,0 +1,16 @@
+[4E4A7643-A37439D7-C:45]
+Name=Virtual Pool 64 (U)
+Cheat0="Always Your Turn\Player 1",E8844AF0 595A
+Cheat1="Always Your Turn\Player 2",E8844AF0 5959
+Cheat2="Ball\Always In Hand",E8844AF4 595C
+Cheat3="Max Ratings\Player 1",E95C83BE 504F
+Cheat4="Max Ratings\Player 2",E95C8342 504F
+Cheat5="Wins Options\Player 1",E9844AD8 ????
+Cheat5_O=$595A Zero Points,$504F Max Points
+Cheat6="Wins Options\Player 2",E9844AD6 ????
+Cheat6_O=$595A Zero Points,$504F Max Points
+Cheat7="Foul Score Options\Player 1",E9844ADC ????
+Cheat7_O=$595A Zero Fouls,$504F Max Fouls
+Cheat8="Foul Score Options\Player 2",E9844ADA ????
+Cheat8_O=$595A Zero Fouls,$504F Max Fouls
+Cheat9="Aiming Sites Always Available",E9836076 5956

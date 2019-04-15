@@ -1,0 +1,13 @@
+[DDD93C85-DAE381E8-C:45]
+Name=Star Soldier - Vanishing Earth (U)
+Cheat0="Infinite\Lives",E86089A0 595B
+Cheat1="Infinite\Specials",E860899F 595B
+Cheat2="Extra Armor",E8608981 5959
+Cheat3="Play As",E86089A4 59??
+Cheat3_O=$5A Character 1,$59 Character 2,$5C Character 3
+Cheat4="Max\Score",E960897C 5C37
+Cheat5="Max\Upper Level",E86089AF 59BB
+Cheat6="Max\Lower Level",E86089B0 595B
+Cheat7="Max\Combo",E960899C D04F
+Cheat8="Status Modifier",E860899E 59??
+Cheat8_O=$59 High,$5C Mid,$5B Low

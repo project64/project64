@@ -1,0 +1,23 @@
+[2655BB70-667D9925-C:45]
+Name=O.D.T (Or Die Trying) (U) (M3) (Unreleased Final)
+Cheat0="Play As Select",E863249B 59??
+Cheat0_O=$5A Ike Hawkings (Corporal),$59 Sophia Hawkings (Stowaway),$5C Julia Chase (Cartographer),$5B Karma (The Ex-Deviant),$56 Max Havok (Chief Enginer),$55 Solaar (Archbishop),$58 Mr Bodybolt (7th Passenger)
+Cheat1="Infinite Max\999 Lives",E962DED0 5C42
+Cheat2="Infinite Max\Health",E862E0AF 59B8
+Cheat3="Infinite Max\Light Ammo",E862DE7D 59B8
+Cheat4="Infinite Max\Fire Ammo",E862DE85 59B8
+Cheat5="Infinite Max\Ionic Ammo",E862DE8D 59B8
+Cheat6="Infinite Max\Fusion Ammo",E862DE95 59B8
+Cheat7="Infinite Max\Mana",E862DED1 59B8
+Cheat8="Have\All Magic",E8624020 596A,E8624023 595A,E8624029 5959,E8624037 595C,E862403D 595B,E862404B 5955,E8624051 5958,E8623D5F 5962,E8623D65 5961,E8623D73 5963,E8623D79 5960,E8623D87 595F,E8623D8D 596A,E8623D9B 5969,E8623DA1 5964,E8623DAF 595E,E8623DB5 595D
+Cheat9="Have\Magic On Level 4",E962DEB3 504F,E962DEB2 504F,E962DEB1 504F,E962DEB8 504F,E962DEB7 504F,E962DEB6 504F
+Cheat10="Have\Weapons On Max Upgrade",50000408 0000,100C8B2C 0009
+Cheat11="Have\Max Armour Level",E862DED8 59B6
+Cheat12="Have\Max Spirit Level",E862DEDC 59B6
+Cheat13="Have\Max Weapon Level",E862DED6 59B6
+Cheat14="Have\Max Experience Level",E862DED4 594F
+Cheat15="Infinite Air Under Water",E862DDBC 59C1
+Cheat16="Press A For Bionic Jump",D00C8A4A 0080,E962E0C0 ????
+Cheat16_N=This will make you jump to a great height
+Cheat16_O=$5BAA Medium Jump,$615A Max Jump
+Cheat17="Matts",D00C8A4A 0080,E962E0B5 5A5A

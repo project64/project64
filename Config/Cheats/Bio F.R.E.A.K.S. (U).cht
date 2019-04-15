@@ -1,0 +1,16 @@
+[08123595-0510F1DE-C:45]
+Name=Bio F.R.E.A.K.S. (U)
+Cheat0="Never Wins\Player 1",E86955ED 595A
+Cheat1="Needs 1 Match to Win\Player 1",D015029B 0000,E86955ED 5959
+Cheat2="Infinite Health\Player 1",E96955FE B55A
+Cheat3="1-Hit Death\Player 1",D01502AA 0064,E96955FE 5A5A
+Cheat4="Infinite Shield\Player 1",E9695502 B55A
+Cheat5="Infinite Jetpack\Player 1",E9695506 8B5A
+Cheat6="Play As\Player 1",E8700E7D 59??
+Cheat6_O=$64 She-Freak,$63 PainMaster,$5E Mutilator,$5D ChainSaw
+Cheat7="Never Wins\Player 2",E8698069 595A
+Cheat8="Needs 1 Match to Win\Player 2",D0152917 0000,E8698069 5959
+Cheat9="Infinite Health\Player 2",E96955FE B55A
+Cheat10="1-Hit Death\Player 2",D0152926 0064,E969807A 5A5A
+Cheat11="Infinite Shield\Player 2",E969807E B55A
+Cheat12="Infinite Jetpack\Player 2",E9698082 8B5A

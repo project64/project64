@@ -1,0 +1,15 @@
+[DD318CE2-B73798BA-C:45]
+Name=Waialae Country Club - True Golf Classics (U) (V1.1)
+Cheat0="Max Power",E868FB87 504F
+Cheat1="Max Technique",E868FB85 504F
+Cheat2="Max Putt",E868FB8B 504F
+Cheat3="Max Recover",E868FB89 504F
+Cheat4="Select Club",E871FBEA 59??
+Cheat4_O=$5A 1W,$59 2W,$5C 3W,$5B 4W,$56 5W,$55 1I,$58 2I,$57 3I,$62 4I,$61 5I,$64 6I,$63 7I,$5E 8I,$5D 9I,$60 PW,$5F AW,$6A SW,$69 Putter
+Cheat5="Always On First Shot",E971FBCE 5959
+Cheat6="Club Type\Woods Mods",E868FBC6 59??
+Cheat6_O=$5A Titan,$59 Metal Wood,$5C Persimmon
+Cheat7="Club Type\Irons Mods",E868FBC5 59??
+Cheat7_O=$5A Cavity,$59 Conventional
+Cheat8="Club Type\Sand Wedge Mods",E868FBCC 59??
+Cheat8_O=$5A 58 Degrees,$59 60 Degrees,$5C 62 Degrees

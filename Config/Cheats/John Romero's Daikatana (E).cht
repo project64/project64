@@ -1,0 +1,10 @@
+[0F743195-D8A6DB95-C:50]
+Name=John Romero's Daikatana (E)
+Cheat0="Infinite\Health",E976CE7C 5C37
+Cheat1="Max\Experience",E976CE7A 5C37
+Cheat2="Infinite\Armour",E976CE9C 5959,E976CE9A 5C37
+Cheat3="Max\Attributes",50000502 0000,11207B28 0007
+Cheat4="Level Select",E972BEA2 5959
+Cheat5="Access\All Items",D0209D85 0020,E976CEE4 59CF
+Cheat5_N=Press L Button Where Items Are available
+Cheat6="Access\All Guns & Infinite Ammo",E976CD0C 59CF,E976CD0A 504F,E976CEDC 5C37,50000A02 0000,11207B70 03E7

@@ -1,0 +1,23 @@
+[D83045C8-F29D3A36-C:50]
+Name=AEROGAUGE
+Cheat0="No Damage\Player 1",50000402 0000,1113F338 0000
+Cheat1="No Damage\Player 2",50000402 0000,111413D8 0000
+Cheat2="Unlock Hidden Tracks & Cars",E85D65D4 5959
+Cheat2_N=All of the Freeze All Lap Timers must be on. These codes will Stop the others from racing against you in Grand Prix mode. To win a race in Grand Prix you must finish at least one lap in the qualify round, then complete all laps in race for first.
+Cheat3="Freeze All Timers",E8674757 595A,E867475B 595A,E867475E 595A
+Cheat4="Freeze Overall Timer",E867424B 5959
+Cheat4_N=All of the Freeze All Lap Timers must be on. These codes will Stop the others from racing against you in Grand Prix mode. To win a race in Grand Prix you must finish at least one lap in the qualify round, then complete all laps in race for first.
+Cheat5="Laps Of Race",E8674241 59??
+Cheat5_O=$59 1 Lap,$5C 2 Laps,$5B 3 Laps,$56 4 Laps,$55 5 Laps,$58 Never Ending Laps
+Cheat6="Play As\Player 1",E867454B 59??
+Cheat6_O=$5A N64 Control Pad,$59 Interceptor,$5C Hornet,$5B Avenger,$56 Shredder,$55 Black Lightning,$58 Vengeance,$57 Prowler,$62 Reaper,$61 Dominator
+Cheat7="Play As\Player 2",E867454A 59??
+Cheat7_O=$5A N64 Control Pad,$59 Interceptor,$5C Hornet,$5B Avenger,$56 Shredder,$55 Black Lightning,$58 Vengeance,$57 Prowler,$62 Reaper,$61 Dominator
+Cheat8="Level Select",E867454D 59??
+Cheat8_N=For this cheat to work,as soon as you put the cheat on you must turn it back off,if not you wont beable to quit a Race or even finish one.
+Cheat8_O=$5A Canyon Rush,$59 Bikini Island,$5C China Town,$5B Neo Arena,$56 China Town Jam,$55 Neo Speed Way
+Cheat9="Always 1st",E8674798 5959
+Cheat10="Music Modifier",E863C8B1 59??
+Cheat10_O=$4F Music On,$5A Music Off
+Cheat11="Language Select",E85E22E5 59??
+Cheat11_O=$5A English,$59 French,$5C German

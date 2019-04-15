@@ -1,0 +1,15 @@
+[DF331A18-5FD4E044-C:45]
+Name=NASCAR 2000 (U)
+Cheat0="Total Number Of Laps",E85ABCA5 59??
+Cheat0_O=$59 1 lap,$5C 2 lap,$5B 3 lap,$56 4 lap,$55 5 lap,$58 6 lap,$57 7 lap,$62 8 lap,$61 9 lap
+Cheat1="1 Lap Race",E95AEC02 5959
+Cheat1_N=Do not put this on with Total Number of Laps Code
+Cheat2="Infinite Fuel\Player 1",E9785C56 8FDA
+Cheat3="Infinite Fuel\Player 2",E9775BC6 8FDA
+Cheat4="Maximum\Pit Distance",E862C868 595A
+Cheat5="Maximum\Top Speed",E862C867 595A
+Cheat6="Maximum\Acceleration",E862C865 595A
+Cheat7="Beat Championship Mode Easily",E878918D 5BA5
+Cheat8="Race Forever",E95ABC02 4E42
+Cheat9="Both Players Can Be Dale E",E85ABC90 595B
+Cheat10="Have CPU Control Car Player 1",D0092985 0020,E86923B4 5959,D0092985 0010,E86923B4 595A

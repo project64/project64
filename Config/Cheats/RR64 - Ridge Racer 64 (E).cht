@@ -1,0 +1,18 @@
+[FEE97010-4E94A9A0-C:50]
+Name=RR64 - Ridge Racer 64 (E)
+Cheat0="Always 1st",E959C00C 5959
+Cheat1="Infinite Time",E968D706 5D5A
+Cheat2="Freeze Lap Timer",E959C032 5A9D
+Cheat2_N=Select Car Attack, And You'll Have All The Cars At Your Disposal For A Quick Spin !!
+Cheat3="Access All\Cars,Tracks & Golg Trophies",50000402 0000,11043AA0 FFFF
+Cheat4="Access All\Platinum Trophies",E9584A64 504F,E9584A62 504F
+Cheat5="Ultra 64",E967340E 5972
+Cheat5_N=Pick any car, beat stage 8: RR Extreme Extra and the UFO car is yours to drive!
+Cheat6="Access\Galage '88 UFO Car",E9648378 5982
+Cheat7="Easy Win",E959C00E 5957
+Cheat8="Easy Mode",E959CE68 5959
+Cheat9="Freeze Lap Timer",E959C032 5A9D,E959C01E 5917,E959C022 5917,E959C03E 5A9D,E959C042 5A9D,E959C046 5A9D
+Cheat10="Always Engine Class S",E95A8D08 595A
+Cheat11="Laps to Race",E9651D6A 59??
+Cheat11_N=Here you can choose how many laps are in the race, 1-9. Do not use with Option 7-9.
+Cheat11_O=$59 1 Lap to Race,$5C 2 Laps to Race,$5B 3 Laps to Race,$56 4 Laps to Race,$55 5 Laps to Race,$58 6 Laps to Race,$57 7 Laps to Race,$62 8 Laps to Race,$61 9 Laps to Race

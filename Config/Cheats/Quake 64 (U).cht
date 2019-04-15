@@ -1,0 +1,23 @@
+[9F5BF79C-D2FE08A0-C:45]
+Name=Quake 64 (U)
+Cheat0="Infinite\Ammo",50000402 0000,10163A2D 0064,50000402 0000,11163A2C 03E7
+Cheat1="Have\All Weapons",E86C903D 59CF
+Cheat2="Debug Mode",E85C1B16 5959
+Cheat3="Have\All Keys",E86C903F 595F
+Cheat4="Infinite\Armor",E96C909C 9B22
+Cheat5="Infinite\Health",E96C9088 9B22
+Cheat6="Infinite\Bio Suit",E96C90D8 9B22
+Cheat7="Have\Quad Damage",E96C90D4 9B22
+Cheat8="Have\Ring of Shadows",E96C9040 ????
+Cheat8_O=$9B22 On,$595A Off
+Cheat9="Rapid Fire",D00CA9E0 0020,E86C90C3 5959
+Cheat10="Multi\Infinite Health\Player 1",E96CB5E8 9B22
+Cheat11="Multi\Infinite Armor\Player 1",E96CB5FC 9B22
+Cheat12="Multi\Infinite Bio Suit\Player 1",E96CB538 9B22
+Cheat13="Multi\Have All Weapons\Player 1",E86CB69D 59CF
+Cheat14="Multi\Infinite Ammo\Player 1",50000402 0000,1116638C 03E7
+Cheat15="Multi\Infinite Health\Player 2",E96CBCB8 9B22
+Cheat16="Multi\Infinite Armor\Player 2",E96CBCCC 9B22
+Cheat17="Multi\Infinite Bio Suit\Player 2",E96CBC08 9B22
+Cheat18="Multi\Have All Weapons\Player 2",E86CB96D 59CF
+Cheat19="Multi\Infinite Ammo\Player 2",50000402 0000,1116665C 03E7

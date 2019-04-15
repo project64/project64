@@ -1,0 +1,18 @@
+[1EA26214-E790900F-C:50]
+Name=Turok - Rage Wars (E)
+Cheat0="Have All Medals",E8663EA8 595B,50000601 0000,1010EB4A 00FF
+Cheat0_N=Unlocks the In-Game Cheat Menu.Only works with a Controller-Pak
+Cheat1="Have All Mini Game Icons",E8663E69 5976
+Cheat1_N=Only works with a Controller-Pak
+Cheat2="Infinite Lives\Player 1",E887B6D2 59B6
+Cheat3="Infinite Health\Player 1",E887BC79 59B6,E8BD7EDA 59B6
+Cheat4="Infinite Ammo All Guns\Player 1",50000302 0000,10336535 0063,50000702 0000,10692B95 0063
+Cheat5="All Levels Completed",50000601 0000,1010EB7D 00FF
+Cheat5_N=Unlocks Frag Fest & Time Trial
+Cheat6="All Characters",50000301 0000,1010EB51 00FF
+Cheat7="Deaths Modifier",E9663ECA ????
+Cheat7_O=$5964 10,$5966 20,$5970 30,$5982 40,$598C 50,$59B6 100,$5922 200,$5AEA 400,$5C7A 800,$579A 1600,$5C37 Infinite
+Cheat8="Wins Modifier",E9663EC6 ????
+Cheat8_O=$5964 10,$5966 20,$5970 30,$5982 40,$598C 50,$59B6 100,$5922 200,$5AEA 400,$5C7A 800,$579A 1600,$5C37 Infinite
+Cheat9="Total Kills Modifier",E9663EC2 ????
+Cheat9_O=$5964 10,$5966 20,$5970 30,$5982 40,$598C 50,$59B6 100,$5922 200,$5AEA 400,$5C7A 800,$579A 1600,$5C37 Infinite

@@ -1,0 +1,16 @@
+[1E12883D-D3B92718-C:46]
+Name=Duke Nukem 64 (F)
+Cheat0="Access all In-Game cheats",50000504 0000,10100D98 0001
+Cheat1="Infinite\Ammo & All Guns",50000C02 0000,112A5F84 02F4
+Cheat1_N=Ena\ble and then simply pause in game play & then unpause and then press left and right.
+Cheat2="Access\All Items",E86664D4 5959
+Cheat2_N=To access simply pause in game play & then unpause.
+Cheat3="Invincibility",E8800240 5959
+Cheat4="Access\All Keys",E880B219 595F
+Cheat5="Infinite\Holoduke",E980B204 579A
+Cheat6="Infinite\Night Vision",E980B234 57B6
+Cheat7="Infinite\Scuba Gear",E980B764 579A
+Cheat8="Crosshair",E880B7CC 59??
+Cheat8_O=$59 On,$5A Off
+Cheat9="Max auto-aim On",E880B7CB 595C
+Cheat10="Upgraded Plasma Gun",E880B205 59BB

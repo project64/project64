@@ -1,0 +1,16 @@
+[1145443D-11610EDB-C:50]
+Name=Mace - The Dark Age (E)
+Cheat0="Infinite Health Player 1",E85E05D9 59B6
+Cheat1="Infinite Health Player 2",E85E0151 59B6
+Cheat2="Extra Characters",E85B4DF0 5959
+Cheat3="Ned The Janitor",E86715D7 5959
+Cheat4="Infinite\Time",E9671C0E 64F0
+Cheat5="Infinite\Time To Choose Character",D0137ABE 0001,E967CD12 5BFC
+Cheat6="Infinite\Continues",E8696F8D 5958
+Cheat7="One Hit Death\Player 1",D008B287 0064,E85E05D9 5959
+Cheat8="One Hit Death\Player 2",D008AEFF 0064,E85E0151 5959
+Cheat9="Play As Options\Player 1",E9671936 ????
+Cheat9_O=$8C86 Executioner,$8CAE Lord Deimos,$8C16 Ragnar,$8CFE Koyasha,$8C26 Taria,$8C4E AL-Rashid,$8576 Takeshi,$859E Mordoskull,$85C6 Xiao Lang,$95EE Namira,$86DE Dregan,$868E Hellnight,$8516 Big Guy with spikes and a skull staff,$8666 Monk dude with sword,$86B6 Pojo The Chicken,$8606 War Mech,
+Cheat10="Play As Options\Player 2",E9671932 ????
+Cheat10_O=$8C86 Executioner,$8CAE Lord Deimos,$8C16 Ragnar,$8CFE Koyasha,$8C26 Taria,$8C4E AL-Rashid,$8576 Takeshi,$859E Mordoskull,$85C6 Xiao Lang,$95EE Namira,$86DE Dregan,$868E Hellnight,$8516 Big Guy with spikes and a skull staff,$8666 Monk dude with sword,$86B6 Pojo The Chicken,$8606 War Mech,
+Cheat11="Fight With Bunny Slippers On",E967E06C 5A5A

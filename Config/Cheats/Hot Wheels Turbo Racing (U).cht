@@ -1,0 +1,17 @@
+[C7C98F8E-42145DDE-C:45]
+Name=Hot Wheels Turbo Racing (U)
+Cheat0="Infinite Turbos\Player 1",E865E354 5964
+Cheat1="Infinite Turbos\Player 2",E865EBD0 5964
+Cheat2="Start On Lap Modifier\Player 1",D0118AA8 0000,E865DD00 59??
+Cheat2_O=$5A 1st,$59 2nd,$5C 3rd,$5B 4th
+Cheat3="Start On Lap Modifier\Player 2",D0119224 0000,E865E57C 59??
+Cheat3_O=$5A 1st,$59 2nd,$5C 3rd,$5B 4th
+Cheat4="Max Tournament Points",E9689D6A 594F
+Cheat5="Have\All Tracks",E9689D62 504F
+Cheat6="Have\All Cars & Cups\Player 1",E9689D5E 504F
+Cheat7="Have\All Cars & Cups\Player 2",E9689E9E 504F
+Cheat8="Press L For Time Is Always 0:00:00\Player 1",D0137FE5 0020,E9639058 595A,D0137FE5 0020,E9639056 595A
+Cheat9="Press L For Time Is Always 0:00:00\Player 2",D0137FED 0020,E9639058 595A,D0137FED 0020,E9639056 595A
+Cheat10="Have\All Special Cars\Player 1",E9689D5C 504F,E9689D5A 504F,E9689D5E 504F
+Cheat11="Have\All Special Cars\Player 2",E9689E9C 504F,E9689E9A 504F,E9689E9E 504F
+Cheat12="Allways 1st",E9652A3E 595A

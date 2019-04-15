@@ -1,0 +1,23 @@
+[5306CF45-CBC49250-C:45]
+Name=Cruis'n USA (U) (V1.1)
+Cheat0="Car Upgrades\'63 Muscle Car",E8695C91 5955
+Cheat1="Car Upgrades\La Bomba",E8695C95 5955
+Cheat2="Car Upgrades\Devastator",E8695C99 5955
+Cheat3="Car Upgrades\Italia P69",E8695C9D 5955
+Cheat4="Car Upgrades\All-Terrain Vehicle",E8695CA1 5956
+Cheat5="Car Upgrades\School Bus",E8695CA5 5956
+Cheat6="Car Upgrades\Police Car",E8695CA9 5956
+Cheat7="Infinite Time",E86960A3 59E5
+Cheat8="Stop Elapsed Time And No Traffic",E869609F 595A
+Cheat9="Play Level Modifier",E86960B5 59??
+Cheat9_O=$5A Golden Gate Park,$59 San Francisco,$5C US 101,$5B Redwood Forest,$56 Beverly Hills,$55 LA Freeway,$58 Death Valley,$57 Arizona,$62 Grand Canyon,$61 Iowa,$64 Chicago,$63 Indiana,$5E Appalachia,$5D Washington DC,$60 Cruise The USA
+Cheat10="Player 1\Gearbox Type Modifier",E8695565 59??
+Cheat10_O=$5A Automatic,$59 Manual
+Cheat11="Player 1\Always First Place",E869557D 5959
+Cheat12="Player 1\Always Have Fastest Car",E869556E 5959
+Cheat13="Player 2\Gearbox Type Modifier",E8695C01 59??
+Cheat13_O=$5A Automatic,$59 Manual
+Cheat14="Player 2\Always First Place",E8695C19 5959
+Cheat15="Player 2\Always Have Fastest Car",E8695C0A 5959
+Cheat16="Player 1\Lights & Sirens For Police Car & School Bus P1",E9695C8E 5959,E96A36DE 5959
+Cheat17="Player 2\Lights & Sirens For Police Car & School Bus P2",E9695F2A 5959,E96A36F6 5959

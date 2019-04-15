@@ -1,0 +1,19 @@
+[FE94E570-E4873A9C-C:44]
+Name=Fighter's Destiny (G)
+Cheat0="Start with Stars Modifier\Player 1",D0209737 0000,E876EA89 59??
+Cheat0_O=$5A No Stars,$58 Max Stars
+Cheat1="Start with Stars Modifier\Player 2",D020B5FF 0000,E8760C51 59??
+Cheat1_O=$5A No Stars,$58 Max Stars
+Cheat2="Have 1 Star\Ryuji",E886C682 5959
+Cheat3="Have 1 Star\Bob",E886C681 5959
+Cheat4="Have 1 Star\Pierre",E886C688 5959
+Cheat5="Have 1 Star\Meiling",E886C687 5959
+Cheat6="Have 1 Star\Leon",E886C686 5959
+Cheat7="Have 1 Star\Abdul",E886C685 5959
+Cheat8="Have 1 Star\Ninja",E886C68C 5959
+Cheat9="Have 1 Star\Tomahawk",E886C68B 5959
+Cheat10="Have 1 Star\Valerie",E886C68A 5959
+Cheat11="Infinite Health\Player 1",E876EFD7 595A,E8769AF5 595A
+Cheat12="Infinite Health\Player 2",E8769AF9 595A,E8760A9F 595A
+Cheat13="Start on stage 100 on Survival to get Joker",E8844CCD 59BB
+Cheat14="Stop timer for Fastest to get Robot",E9602D34 90DA

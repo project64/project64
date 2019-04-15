@@ -1,0 +1,15 @@
+[BD8E206D-98C35E1C-C:4A]
+Name=Doubutsu no Mori (J)
+Cheat0="Hours",E867C212 59??
+Cheat0_O=$5A 00 AM,$59 01 AM,$5C 02 AM,$5B 03 AM,$56 04 AM,$55 05 AM,$58 06 AM,$57 07 AM,$62 08 AM,$61 09 AM,$64 10 AM,$63 11 AM,$5E 00 PM,$5D 01 PM,$60 02 PM,$5F 03 PM,$6A 04 PM,$69 05 PM,$6C 06 PM,$6B 07 PM,$66 08 PM,$65 09 PM,$68 10 PM,$67 11 PM
+Cheat1="Minutes",E867C213 59??
+Cheat1_O=$5A 00,$55 05,$64 10,$5F 15,$66 20,$71 25,$70 30,$7B 35,$82 40,$7D 45,$8C 50,$87 55,$93 59
+Cheat2="Day",E867C211 59??
+Cheat2_O=$59 Monday 1st,$5C Tuesday 2nd,$5B Wednesday 3rd,$56 Thursday 4th,$55 Friday 5th,$58 Saturday 6th,$57 Sunday 7th,$62 Monday 8th,$61 Tuesday 9th,$64 Wednesday 10th,$63 Thursday 11th,$5E Friday 12th,$5D Saturday 13th,$60 Sunday 14th,$5F Monday 15th,$6A Tuesday 16th,$69 Wednesday 17th,$6C Thursday 18th,$6B Friday 19th,$66 Saturday 30th,$65 Sunday 21st,$68 Monday 22nd,$67 Tuesday 23rd,$72 Wednesday 24th,$71 Thursday 25th,$74 Friday 26th,$73 Saturday 27th,$6E Sunday 28th,$6D Monday 29th,$70 Tuesday 30th,$6F Wednesday 31st
+Cheat3="Month",E867C217 59??
+Cheat3_O=$59 Jan,$5C Feb,$5B March,$56 April,$55 May,$58 June,$57 July,$62 Aug,$61 Sept,$64 Oct,$63 Nov,$5E Dec
+Cheat4="Time Passes",E867C226 59??
+Cheat4_O=$5A Time Normal,$59 Mins Like Seconds,$55 Hours & Mins Medium,$6A Hours & Mins Fast,$4F Time Zooms By
+Cheat5="Max Cash",E98F16A4 504F
+Cheat6="Item Select",E968C140 ????
+Cheat6_O=$6969 Tall Red Cupboard,$6D5A Pet Cage,$6DF8 Fish Tank (Fish Included!),$6E83 Orange NES Game,$6E7F Grey NES Game,$6E8B Red NES Game,$6E87 Light Blue NES Game,$6E94 Yellow NES Game,$6E90 Purple NES Game,$6E9C Blue NES Game,$6E97 Stereo NES Colour,$6E9E Record Player,$6EAA JukeBox,$6EFA Grandfather Clock,$6EF8 Stereo Kinda Thing,$6E01 Stereo,$6EFE CD Player,$6E0B Alarm Clock,$6FF9 Lamp,$6FF5 Snowman Fridge,$6F03 Round Snowman Table,$6FFF Snowman Bed,$6F0A Snowman Seat,$7A5A 1000 Bag,$7A5A 1000 Bag,$7A59 10000 Bag,$7A59 10000 Bag,$7A5C 30000 Bag,$7A5C 30000 Bag,$7A5B 100 Bag,$7A5B 100 Bag,$756A Nook's Shirt,$756A Nook's Shirt,$7666 Flat Shell,$7666 Flat Shell,$7665 Pointy Shell,$7665 Pointy Shell,$8156 Orange,2804 Orange
