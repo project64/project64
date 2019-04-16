@@ -1,3 +1,18 @@
+[8F12C096-45DC17E1-C:50]
+Name=A Bug's Life
+Cheat0="Infinite\Lives",E8747BB8 5961
+Cheat1="Infinite\Health",E8747BAB 5956
+Cheat2="Always Have\Super Jump",E9747BA8 597A
+Cheat3="Always Have\50 pieces of corn",E8747BB7 598C
+Cheat4="Have F-L-I-K",E8747BB6 595F
+Cheat5="Levitate",D008FCE1 0010,E874761A 5959,D008FCE1 0010,E874762A 5959
+Cheat5_N="Press R To Levitate & Let go to land (:"
+Cheat6="Unlock All Levels",E95DEEC8 595F
+Cheat7="Have All Goldberry Tokens",D01E244E 0000,E8747BA2 595A
+Cheat8="Start with Berry Weapon",E8747BA9 59??
+Cheat8_O=$59 Blueberry,$5C Homing Berry,$5B Goldberry,$56 Super Berry ?
+Cheat9="All enemies killed",E8747BA2 595A,E8747BA1 595A
+
 [DFF227D9-0D4D8169-C:44]
 Name=A Bug's Life
 Cheat0="Infinite\Lives",E8747AB8 5961

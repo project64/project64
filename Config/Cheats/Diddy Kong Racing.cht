@@ -1,3 +1,19 @@
+[596E145B-F7D9879F-C:50]
+Name=Diddy Kong Racing
+Cheat0="Enable All Cheats",E8645604 596F,50000301 0000,100E03AD 00FF
+Cheat0_N=Go into Options & then Magic Codes. Then Code list to turn off & on what you want.
+Cheat1="Have All\Trophies",E876D9B2 5957,E876D9B1 594F
+Cheat1_N=Only put this code on once you are inside the lobby to choose a gate,or it will crash the game.
+Cheat2="Have All\Keys",E876D9AF 596F
+Cheat2_N=Only put this code on once you are inside the lobby to choose a gate,or it will crash the game.
+Cheat3="Have All\T.T. Amulets",E876D9B9 5956
+Cheat3_N=Only put this code on once you are inside the lobby to choose a gate,or it will crash the game.
+Cheat4="Have All\50 Balloons",E876D7D3 598C
+Cheat5="Have All\None-Adventure tracks completed",50001204 0000,10208777 0007,50000904 0000,102087CF 0007,E876D9B0 5957,E876D9AE 5957,E876D9AD 5957,E876D9B4 595F,E876D9B3 594F
+Cheat6="Have All\T.T. time trial races beaten",E876D9BA 5956
+Cheat7="Have All\Control Drumstick & Adventure Two mode unlocked",E868C324 595B,E868C321 595B,E868C336 595B,E868C335 5962
+Cheat8="Have All\Trophy Adventure races unlocked",50000502 0000,1020886E 0007
+
 [FD73F775-9724755A-C:50]
 Name=Diddy Kong Racing
 Cheat0="Enable All Cheats",E8615184 596F,50000301 0000,100DFE2D 00FF
