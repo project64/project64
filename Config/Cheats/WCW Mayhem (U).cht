@@ -1,4 +1,5 @@
 [33BE8CD6-EC186912-C:45]
+Name=WCW Mayhem (U)
 Cheat0="Character Creation\Max\Strength",E883694B 5961
 Cheat1="Character Creation\Max\Impact",E885780B 5961
 Cheat2="Character Creation\Max\Speed",E885A94B 5961
@@ -17,4 +18,3 @@ Cheat12_O=$BA Full Meter Bar,$5A Empty Meter Bar
 Cheat13="Enable Cheat",E85F68AD 59??
 Cheat13_O=$5C Super Created Wrestlers,$56 Stamina Meter,$62 Momentum Meter,$7A Play As Same Wrestler,$DA All Wrestlers
 Cheat14="Freeze Timer",E95F8596 2C5A
-Good Name=WCW Mayhem (U)

@@ -1,7 +1,7 @@
 [E9219533-13FBAFBD-C:45]
 Name=Ready 2 Rumble Boxing Round 2 (U)
-Cheat0_N=Do not use this with No Health
 Cheat0="Infinite\Health\Player 1",E963490A 59B6
+Cheat0_N=Do not use this with No Health
 Cheat1="No Health\Player 1",E963490A 595A
 Cheat1_N=Do not use this with Infinite Health
 Cheat2="Infinite\Stamina\Player 1",E963490E 59B6
