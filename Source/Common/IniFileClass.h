@@ -16,6 +16,47 @@
 
 class CIniFileBase
 {
+public:
+    typedef std::map<std::string, std::string> KeyValueData;
+    typedef std::vector<std::string> SectionList;
+	typedef std::list<std::string> strlist;
+    typedef std::pair<const std::string *, const std::string *> KeyValueItem;
+    typedef std::vector<KeyValueItem> KeyValueVector;
+    typedef void(*SortData)(KeyValueVector &);
+
+    CIniFileBase(CFileBase & FileObject, const char * FileName);
+    virtual ~CIniFileBase(void);
+
+    bool IsEmpty();
+    bool IsFileOpen(void);
+    bool DeleteSection(const char * lpSectionName);
+    bool GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault, std::string & Value);
+    std::string GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault);
+    uint32_t GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault, char * lpReturnedString, uint32_t nSize);
+    uint32_t GetNumber(const char * lpSectionName, const char * lpKeyName, uint32_t nDefault);
+    bool GetNumber(const char * lpSectionName, const char * lpKeyName, uint32_t nDefault, uint32_t & Value);
+
+    virtual void SaveString(const char * lpSectionName, const char * lpKeyName, const char * lpString);
+    virtual void SaveNumber(const char * lpSectionName, const char * lpKeyName, uint32_t Value);
+    void SetAutoFlush(bool AutoFlush);
+    void FlushChanges(void);
+    bool EntryExists(const char * lpSectionName, const char * lpKeyName);
+    void GetKeyList(const char * lpSectionName, strlist &List);
+    void GetKeyValueData(const char * lpSectionName, KeyValueData & List);
+    void SetCustomSort(SortData SortFunction);
+
+    void GetVectorOfSections(SectionList & sections);
+    const std::string &GetFileName() { return m_FileName; }
+
+protected:
+    void OpenIniFileReadOnly();
+    void OpenIniFile(bool bCreate = true);
+    void SaveCurrentSection(void);
+
+    CFileBase & m_File;
+    std::string m_FileName;
+
+private:
     struct insensitive_compare
     {
         bool operator() (const std::string & a, const std::string & b) const
@@ -27,17 +68,7 @@ class CIniFileBase
     typedef std::map<std::string, long> FILELOC;
     typedef FILELOC::iterator FILELOC_ITR;
     typedef std::map<std::string, std::string, insensitive_compare> KeyValueList;
-
-public:
-    typedef std::map<std::string, std::string> KeyValueData;
-    typedef std::vector<std::string> SectionList;
-	typedef std::list<std::string> strlist;
-
-protected:
-    CFileBase & m_File;
-    std::string m_FileName;
-
-private:
+    
     std::string m_CurrentSection;
     bool m_CurrentSectionDirty;
     int m_CurrentSectionFilePos; // Where in the file is the current Section
@@ -51,6 +82,7 @@ private:
 
     CriticalSection m_CS;
     FILELOC m_SectionsPos;
+    SortData m_SortFunction;
 
     void fInsertSpaces(int Pos, int NoOfSpaces);
     int GetStringFromFile(char * & String, AUTO_PTR<char> &Data, int & MaxDataSize, int & DataSize, int & ReadPos);
@@ -58,34 +90,6 @@ private:
     const char * CleanLine(char * Line);
     void ClearSectionPosList(long FilePos);
 
-protected:
-    void OpenIniFileReadOnly();
-    void OpenIniFile(bool bCreate = true);
-    void SaveCurrentSection(void);
-
-public:
-    CIniFileBase(CFileBase & FileObject, const char * FileName);
-    virtual ~CIniFileBase(void);
-
-    bool IsEmpty();
-    bool IsFileOpen(void);
-    bool DeleteSection(const char * lpSectionName);
-    bool GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault, std::string & Value);
-    std::string GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault);
-    uint32_t GetString(const char * lpSectionName, const char * lpKeyName, const char * lpDefault, char * lpReturnedString, uint32_t nSize);
-    uint32_t GetNumber(const char * lpSectionName, const char * lpKeyName, uint32_t nDefault);
-    bool  GetNumber(const char * lpSectionName, const char * lpKeyName, uint32_t nDefault, uint32_t & Value);
-
-    virtual void SaveString(const char * lpSectionName, const char * lpKeyName, const char * lpString);
-    virtual void SaveNumber(const char * lpSectionName, const char * lpKeyName, uint32_t Value);
-    void SetAutoFlush(bool AutoFlush);
-    void FlushChanges(void);
-    bool EntryExists(const char * lpSectionName, const char * lpKeyName);
-    void GetKeyList(const char * lpSectionName, strlist &List);
-    void GetKeyValueData(const char * lpSectionName, KeyValueData & List);
-
-    void GetVectorOfSections(SectionList & sections);
-    const std::string &GetFileName() { return m_FileName; }
 };
 
 template <class CFileStorage>

@@ -64,6 +64,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project64-audio", "Source\P
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UpdateVersion", "Source\UpdateVersion\UpdateVersion.vcxproj", "{1968162C-0793-491D-91A1-81645A24D399}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JoinSettings", "Source\JoinSettings\JoinSettings.vcxproj", "{B2E592F2-F416-4049-BD22-9CA9090242BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -207,6 +209,14 @@ Global
 		{1968162C-0793-491D-91A1-81645A24D399}.Release|Win32.Build.0 = Release|Win32
 		{1968162C-0793-491D-91A1-81645A24D399}.Release|x64.ActiveCfg = Release|x64
 		{1968162C-0793-491D-91A1-81645A24D399}.Release|x64.Build.0 = Release|x64
+		{B2E592F2-F416-4049-BD22-9CA9090242BB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B2E592F2-F416-4049-BD22-9CA9090242BB}.Debug|Win32.Build.0 = Debug|Win32
+		{B2E592F2-F416-4049-BD22-9CA9090242BB}.Debug|x64.ActiveCfg = Debug|x64
+		{B2E592F2-F416-4049-BD22-9CA9090242BB}.Debug|x64.Build.0 = Debug|x64
+		{B2E592F2-F416-4049-BD22-9CA9090242BB}.Release|Win32.ActiveCfg = Release|Win32
+		{B2E592F2-F416-4049-BD22-9CA9090242BB}.Release|Win32.Build.0 = Release|Win32
+		{B2E592F2-F416-4049-BD22-9CA9090242BB}.Release|x64.ActiveCfg = Release|x64
+		{B2E592F2-F416-4049-BD22-9CA9090242BB}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

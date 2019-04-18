@@ -9,7 +9,8 @@ CIniFileBase::CIniFileBase(CFileBase & FileObject, const char * FileName) :
     m_InstantFlush(true),
     m_File(FileObject),
     m_FileName(FileName),
-    m_CurrentSectionDirty(false)
+    m_CurrentSectionDirty(false),
+    m_SortFunction(NULL)
 {
 }
 
@@ -243,16 +244,40 @@ void CIniFileBase::SaveCurrentSection(void)
         AUTO_PTR<char> LineData(NULL);
         int len = 0;
 
-        for (KeyValueList::iterator iter = m_CurrentSectionData.begin(); iter != m_CurrentSectionData.end(); iter++)
+        if (m_SortFunction != NULL)
         {
-            int newLen = (int)iter->first.length() + (int)iter->second.length() + lineFeedLen + 5;
-            if (newLen > len)
+            KeyValueVector data;
+            for (KeyValueList::iterator iter = m_CurrentSectionData.begin(); iter != m_CurrentSectionData.end(); iter++)
             {
-                LineData.reset(new char[newLen]);
-                len = newLen;
+                data.push_back(KeyValueItem(&iter->first, &iter->second));
             }
-            sprintf(LineData.get(), "%s=%s%s", iter->first.c_str(), iter->second.c_str(), m_LineFeed);
-            m_File.Write(LineData.get(), (int)strlen(LineData.get()));
+            m_SortFunction(data);
+            for (size_t i = 0, n = data.size(); i < n; i++)
+            {
+                KeyValueItem & item = data[i];
+                int newLen = (int)(item.first->length()) + (int)item.second->length() + lineFeedLen + 5;
+                if (newLen > len)
+                {
+                    LineData.reset(new char[newLen]);
+                    len = newLen;
+                }
+                sprintf(LineData.get(), "%s=%s%s", item.first->c_str(), item.second->c_str(), m_LineFeed);
+                m_File.Write(LineData.get(), (int)strlen(LineData.get()));
+            }
+        }
+        else
+        {
+            for (KeyValueList::iterator iter = m_CurrentSectionData.begin(); iter != m_CurrentSectionData.end(); iter++)
+            {
+                int newLen = (int)iter->first.length() + (int)iter->second.length() + lineFeedLen + 5;
+                if (newLen > len)
+                {
+                    LineData.reset(new char[newLen]);
+                    len = newLen;
+                }
+                sprintf(LineData.get(), "%s=%s%s", iter->first.c_str(), iter->second.c_str(), m_LineFeed);
+                m_File.Write(LineData.get(), (int)strlen(LineData.get()));
+            }
         }
     }
     m_File.Flush();
@@ -806,6 +831,12 @@ void CIniFileBase::GetKeyValueData(const char * lpSectionName, KeyValueData & Li
 
         List.insert(KeyValueData::value_type(Input, &Pos[1]));
     } while (result >= 0);
+}
+
+void CIniFileBase::SetCustomSort(SortData SortFunction)
+{
+    CGuard Guard(m_CS);
+    m_SortFunction = SortFunction;
 }
 
 void CIniFileBase::ClearSectionPosList(long FilePos)
