@@ -140,6 +140,6 @@ public:
 
     BOOL SetColumnWidth(int nColumn, int nWidth)
     {
-        return CListViewCtrl::SetColumnWidth(nColumn, nWidth * m_ScaleX);
+        return CListViewCtrl::SetColumnWidth(nColumn, int (nWidth * m_ScaleX));
     }
 };
