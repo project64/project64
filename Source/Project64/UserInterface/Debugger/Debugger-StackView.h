@@ -24,7 +24,7 @@ public:
     void Refresh();
 
 private:
-    CListViewCtrl m_StackList;
+    CListViewCtrlVarDPI m_StackList;
     CStatic m_SPStatic;
 
     LRESULT	OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);

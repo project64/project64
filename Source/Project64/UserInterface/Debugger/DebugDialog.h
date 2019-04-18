@@ -123,3 +123,23 @@ private:
     LONG        m_SaveWndTop;
     LONG        m_SaveWndLeft;
 };
+
+class CListViewCtrlVarDPI : public CListViewCtrl
+{
+private:
+    float m_ScaleX;
+
+public:
+    CListViewCtrlVarDPI() :
+        CListViewCtrl()
+    {
+        HDC screen = ::GetDC(0);
+        m_ScaleX = GetDeviceCaps(screen, LOGPIXELSX) / 96.0f;
+        ::ReleaseDC(0, screen);
+    }
+
+    BOOL SetColumnWidth(int nColumn, int nWidth)
+    {
+        return CListViewCtrl::SetColumnWidth(nColumn, nWidth * m_ScaleX);
+    }
+};

@@ -22,7 +22,7 @@ private:
     int           m_RowHeight;
     int           m_LogStartIndex;
 
-    CListViewCtrl m_CPUListView;
+    CListViewCtrlVarDPI m_CPUListView;
     CEdit         m_StateInfoEdit;
     CEditNumber32 m_BuffSizeEdit;
     CButton       m_EnabledChk;
@@ -50,7 +50,7 @@ private:
     void ShowRegStates(size_t stateIndex);
     void Export(void);
 
-    int GetNumVisibleRows(CListViewCtrl& list);
+    int GetNumVisibleRows(CListViewCtrlVarDPI& list);
     bool MouseHovering(WORD ctrlId, int xMargin = 0, int yMargin = 0);
 
     BEGIN_MSG_MAP_EX(CDebugCPULogView)

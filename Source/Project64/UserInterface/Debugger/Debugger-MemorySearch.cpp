@@ -1487,7 +1487,7 @@ void CDebugMemorySearch::SeparatorMoveCtrl(WORD ctrlId, int yChange, bool bResiz
     ::InvalidateRect(hControl, NULL, true);
 }
 
-int CDebugMemorySearch::GetNumVisibleRows(CListViewCtrl& list)
+int CDebugMemorySearch::GetNumVisibleRows(CListViewCtrlVarDPI& list)
 {
     CHeaderCtrl header = list.GetHeader();
     CRect listRect, headRect;
@@ -2139,7 +2139,7 @@ void CDebugMemorySearch::LoadWatchList(void)
     
 }
 
-void CDebugMemorySearch::FixListHeader(CListViewCtrl& listCtrl)
+void CDebugMemorySearch::FixListHeader(CListViewCtrlVarDPI& listCtrl)
 {
     CRect listRect, headRect;
     CHeaderCtrl listHead = listCtrl.GetHeader();

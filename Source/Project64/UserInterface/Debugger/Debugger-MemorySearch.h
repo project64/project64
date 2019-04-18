@@ -241,10 +241,10 @@ private:
     CPath GetWatchListPath(void);
 
     /* generic ui util */
-    void FixListHeader(CListViewCtrl& listCtrl);
+    void FixListHeader(CListViewCtrlVarDPI& listCtrl);
     void SetComboBoxSelByData(CComboBox& cb, DWORD_PTR data);
     bool MouseHovering(WORD ctrlId, int hMargin = 0, int vMargin = 0);
-    int  GetNumVisibleRows(CListViewCtrl& list);
+    int  GetNumVisibleRows(CListViewCtrlVarDPI& list);
     /*******************/
 
     bool m_bJalSelected;
@@ -261,7 +261,7 @@ private:
     CEditMixed    m_SearchValue;
     CEditNumber32 m_AddrStart, m_AddrEnd;
     CComboBox     m_SearchTypeOptions, m_ValueTypeOptions;
-    CListViewCtrl m_ResultsListCtrl, m_WatchListCtrl;
+    CListViewCtrlVarDPI m_ResultsListCtrl, m_WatchListCtrl;
     CScrollBar    m_ResultsScrollbar, m_WatchListScrollbar;
     CButton       m_PhysicalCheckbox, m_HexCheckbox;
     CButton       m_UnsignedCheckbox, m_IgnoreCaseCheckbox, m_UnkEncodingCheckbox;

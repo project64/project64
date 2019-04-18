@@ -21,7 +21,7 @@
 
 void CCommandList::Attach(HWND hWndNew)
 {
-    CListViewCtrl::Attach(hWndNew);
+    CListViewCtrlVarDPI::Attach(hWndNew);
 
     ModifyStyle(LVS_OWNERDRAWFIXED, 0, 0);
     SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER | LVS_EX_LABELTIP);

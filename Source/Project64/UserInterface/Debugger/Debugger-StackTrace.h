@@ -44,7 +44,7 @@ private:
     HANDLE m_AutoRefreshThread;
     static DWORD WINAPI AutoRefreshProc(void* _this);
 
-    CListViewCtrl m_List;
+    CListViewCtrlVarDPI m_List;
 
     LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
     LRESULT OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);

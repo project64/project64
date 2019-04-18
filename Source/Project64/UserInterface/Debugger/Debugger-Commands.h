@@ -18,7 +18,7 @@
 #include <Project64/UserInterface/WTLControls/TooltipDialog.h>
 
 class CCommandList :
-    public CWindowImpl<CCommandList, CListViewCtrl>
+    public CWindowImpl<CCommandList, CListViewCtrlVarDPI>
 {
 public:
     enum
