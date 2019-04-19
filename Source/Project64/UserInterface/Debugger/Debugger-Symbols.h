@@ -20,7 +20,7 @@ class CDebugSymbols :
     public CDialogResize<CDebugSymbols>
 {
 private:
-    CListViewCtrlVarDPI m_SymbolsListView;
+    CListViewCtrl m_SymbolsListView;
     CAddSymbolDlg m_AddSymbolDlg;
 
     HANDLE m_AutoRefreshThread;

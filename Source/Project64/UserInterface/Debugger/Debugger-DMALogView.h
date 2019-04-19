@@ -44,7 +44,7 @@ private:
     // Return true if entry meets requirements
     bool FilterEntry(int dmaLogIndex);
 
-    CListViewCtrlVarDPI m_DMAList;
+    CListViewCtrl m_DMAList;
     CEdit         m_DMARamEdit;
     CEdit         m_DMARomEdit;
     CStatic       m_BlockInfo;

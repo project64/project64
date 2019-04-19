@@ -13,7 +13,7 @@
 #include "DebuggerUI.h"
 #include "ScriptSystem.h"
 
-class CScriptList : public CListViewCtrlVarDPI
+class CScriptList : public CListViewCtrl
 {
 public:
     BEGIN_MSG_MAP_EX(CScriptList)

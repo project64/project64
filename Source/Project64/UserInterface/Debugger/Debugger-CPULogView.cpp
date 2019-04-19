@@ -412,7 +412,7 @@ void CDebugCPULogView::Export(void)
 
 // util
 
-int CDebugCPULogView::GetNumVisibleRows(CListViewCtrlVarDPI& list)
+int CDebugCPULogView::GetNumVisibleRows(CListViewCtrl& list)
 {
     CHeaderCtrl header = list.GetHeader();
     CRect listRect, headRect;
