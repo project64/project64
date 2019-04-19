@@ -216,7 +216,7 @@ LRESULT CALLBACK CDebugMemorySearch::HookProc(int nCode, WPARAM wParam, LPARAM l
 void CDebugMemorySearch::OnExitSizeMove(void)
 {
     UpdateWatchList(true);
-    SaveWindowPos();
+    SaveWindowPos(true);
 }
 
 void CDebugMemorySearch::OnSizing(UINT /*fwSide*/, LPRECT /*pRect*/)

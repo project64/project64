@@ -59,7 +59,7 @@ LRESULT	CDumpMemory::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPa
 
 void CDumpMemory::OnExitSizeMove(void)
 {
-    SaveWindowPos();
+    SaveWindowPos(0);
 }
 
 LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)

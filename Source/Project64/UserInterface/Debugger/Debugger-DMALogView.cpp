@@ -206,7 +206,7 @@ LRESULT CDebugDMALogView::OnRefresh(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPara
 
 void CDebugDMALogView::OnExitSizeMove(void)
 {
-    SaveWindowPos();
+    SaveWindowPos(true);
 }
 
 LRESULT CDebugDMALogView::OnDestroy(void)

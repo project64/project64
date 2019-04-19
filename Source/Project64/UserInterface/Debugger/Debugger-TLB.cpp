@@ -85,7 +85,7 @@ LRESULT	CDebugTlb::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
 
 void CDebugTlb::OnExitSizeMove(void)
 {
-	SaveWindowPos();
+	SaveWindowPos(0);
 }
 
 LRESULT CDebugTlb::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& /*bHandled*/)

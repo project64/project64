@@ -243,7 +243,7 @@ void CDebugCPULogView::InterceptMouseWheel(WPARAM wParam, LPARAM /*lParam*/)
 void CDebugCPULogView::OnExitSizeMove(void)
 {
     RefreshList(false);
-    SaveWindowPos();
+    SaveWindowPos(true);
 }
 
 void CDebugCPULogView::ToggleLoggingEnabled(void)

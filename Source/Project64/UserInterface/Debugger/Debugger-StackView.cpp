@@ -51,7 +51,7 @@ LRESULT CDebugStackView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /
 
 void CDebugStackView::OnExitSizeMove(void)
 {
-    SaveWindowPos();
+    SaveWindowPos(true);
 }
 
 LRESULT CDebugStackView::OnDestroy(void)

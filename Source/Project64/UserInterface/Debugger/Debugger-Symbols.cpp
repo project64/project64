@@ -53,7 +53,7 @@ LRESULT CDebugSymbols::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 
 void CDebugSymbols::OnExitSizeMove(void)
 {
-    SaveWindowPos();
+    SaveWindowPos(true);
 }
 
 LRESULT CDebugSymbols::OnDestroy(void)

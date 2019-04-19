@@ -150,7 +150,7 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
 
 void CDebugCommandsView::OnExitSizeMove(void)
 {
-	SaveWindowPos();
+	SaveWindowPos(true);
 }
 
 LRESULT CDebugCommandsView::OnDestroy(void)
