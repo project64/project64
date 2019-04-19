@@ -40,7 +40,7 @@ CRomBrowser::~CRomBrowser(void)
 
 void CRomBrowser::AddField(ROMBROWSER_FIELDS_LIST & Fields, LPCSTR Name, int32_t Pos, int32_t ID, int32_t Width, LanguageStringID LangID, bool UseDefault)
 {
-    Fields.push_back(ROMBROWSER_FIELDS(Name, Pos, ID, Width, LangID, UseDefault));
+    Fields.push_back(ROMBROWSER_FIELDS(Name, Pos, ID, Width * DPIScale(), LangID, UseDefault));
 }
 
 void CRomBrowser::GetFieldInfo(ROMBROWSER_FIELDS_LIST & Fields, bool UseDefault /* = false  */)

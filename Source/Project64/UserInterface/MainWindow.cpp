@@ -682,7 +682,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
 
             _this->SetPos(X, Y);
 
-            _this->ChangeWinSize(640, 480);
+            _this->ChangeWinSize(int (640 * _this->DPIScale(hWnd)), int (480 * _this->DPIScale(hWnd)));
         }
         break;
     case WM_SYSCOMMAND:
