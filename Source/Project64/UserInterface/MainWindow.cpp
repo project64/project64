@@ -526,7 +526,7 @@ void CMainGui::Resize(DWORD /*fwSizeType*/, WORD nWidth, WORD nHeight)
     GetClientRect((HWND)m_hStatusWnd, &swrect);
 
     int Parts[2];
-    Parts[0] = (nWidth - (int)(clrect.right * 0.25));
+    Parts[0] = (int) (nWidth - 140 * DPIScale(m_hStatusWnd));
     Parts[1] = nWidth;
 
     SendMessage((HWND)m_hStatusWnd, SB_SETPARTS, 2, (LPARAM)&Parts[0]);
@@ -571,6 +571,10 @@ int CMainGui::Width(void)
     RECT rect;
     GetWindowRect(m_hMainWindow, &rect);
     return rect.right - rect.left;
+}
+
+float CMainGui::DPIScale(HWND hWnd) {
+    return CClientDC(hWnd).GetDeviceCaps(LOGPIXELSX) / 96.0f;
 }
 
 void CMainGui::SetPos(int X, int Y)
@@ -1222,6 +1226,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
 
 DWORD CALLBACK AboutBoxProc(HWND hWnd, DWORD uMsg, DWORD wParam, DWORD /*lParam*/)
 {
+    CMainGui * Gui = NULL;
     static HBITMAP hbmpBackgroundTop = NULL;
     static HFONT   hPageHeadingFont = NULL;
     static HFONT   hTextFont = NULL;
@@ -1233,16 +1238,18 @@ DWORD CALLBACK AboutBoxProc(HWND hWnd, DWORD uMsg, DWORD wParam, DWORD /*lParam*
             //Title
             SetWindowTextW(hWnd, wGS(PLUG_ABOUT).c_str());
 
-            // Use the size of the image
-            hbmpBackgroundTop = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_ABOUT_LOGO));
+            // Get Windows DPI Scale
+            float DPIScale = Gui->DPIScale(hWnd);
 
+            // Use the size of the image
+            hbmpBackgroundTop = LoadBitmap(GetModuleHandle(NULL), DPIScale <= 1.0f ? MAKEINTRESOURCE(IDB_ABOUT_LOGO) : MAKEINTRESOURCE(IDB_ABOUT_LOGO_HDPI));
             BITMAP bmTL;
             GetObject(hbmpBackgroundTop, sizeof(BITMAP), &bmTL);
 
-            hTextFont = ::CreateFont(18, 0, 0, 0, FW_NORMAL, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial");
-            hAuthorFont = ::CreateFont(18, 0, 0, 0, FW_BOLD, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial");
+            hTextFont = ::CreateFont((int)(18 * DPIScale), 0, 0, 0, FW_NORMAL, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial");
+            hAuthorFont = ::CreateFont((int)(18 * DPIScale), 0, 0, 0, FW_BOLD, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial");
 
-            hPageHeadingFont = ::CreateFont(24, 0, 0, 0, FW_BOLD, 0, FALSE, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial Bold");
+            hPageHeadingFont = ::CreateFont((int)(24 * DPIScale), 0, 0, 0, FW_BOLD, 0, FALSE, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial Bold");
 
             SendDlgItemMessage(hWnd, IDC_VERSION, WM_SETFONT, (WPARAM)hTextFont, TRUE);
             SendDlgItemMessage(hWnd, IDC_TEAM, WM_SETFONT, (WPARAM)hPageHeadingFont, TRUE);
@@ -1302,7 +1309,8 @@ DWORD CALLBACK AboutBoxProc(HWND hWnd, DWORD uMsg, DWORD wParam, DWORD /*lParam*
 
                 HDC     memdc = CreateCompatibleDC(ps.hdc);
                 HGDIOBJ save = SelectObject(memdc, hbmpBackgroundTop);
-                BitBlt(ps.hdc, 0, 0, bmTL_top.bmWidth, bmTL_top.bmHeight, memdc, 0, 0, SRCCOPY);
+                SetStretchBltMode(ps.hdc, HALFTONE);
+                StretchBlt(ps.hdc, 0, 0, rcClient.right, (int)(bmTL_top.bmHeight * rcClient.right/bmTL_top.bmWidth), memdc, 0, 0, bmTL_top.bmWidth, bmTL_top.bmHeight, SRCCOPY);
                 SelectObject(memdc, save);
                 DeleteDC(memdc);
 

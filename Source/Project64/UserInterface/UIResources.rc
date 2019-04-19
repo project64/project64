@@ -1847,6 +1847,8 @@ IDB_LISTITEMS           BITMAP                  "Bitmaps\\ListItems.bmp"
 
 IDB_ABOUT_LOGO          BITMAP                  "Bitmaps\\AboutScreenLogo.bmp"
 
+IDB_ABOUT_LOGO_HDPI     BITMAP                  "Bitmaps\\AboutScreenLogoHDPI.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -60,6 +60,7 @@ public:
     //Get Information about the window
     int Height(void); //Get the Height of the window
     int Width(void); //Get the Width of the window
+    float DPIScale(HWND hWnd);
 
     //Manipulate the state of the window
     void SetPos(int X, int Y);    //Move the window to this screen location

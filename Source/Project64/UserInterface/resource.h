@@ -35,6 +35,7 @@
 #define IDD_About_UserInfo              141
 #define IDD_About_Ini                   143
 #define IDB_ABOUT_LOGO                  143
+#define IDB_ABOUT_LOGO_HDPI             144
 #define IDD_Settings_General            144
 #define IDD_Settings_Accelerator        145
 #define IDD_Settings_Config             149
