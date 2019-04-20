@@ -80,7 +80,7 @@ void CProfiling::ShowCPU_Usage()
     uint32_t Idel = (uint32_t)(m_Timers[Timer_Idel] * 10000 / TotalTime);
 
     m_CurrentDisplayCount = MAX_FRAMES;
-    g_Notify->DisplayMessage(0, stdstr_f("r4300i: %d.%02d%%    GFX: %d.%02d%%    Alist: %d.%02d%%    Idle: %d.%02d%%",
+    g_Notify->DisplayMessage(0, stdstr_f("r4300i: %d.%02d%%   GFX: %d.%02d%%   Alist: %d.%02d%%   Idle: %d.%02d%%",
         R4300 / 100, R4300 % 100, RSP_Dlist / 100, RSP_Dlist % 100, RSP_Alist / 100, RSP_Alist % 100, Idel / 100, Idel % 100).c_str());
 
     ResetTimers();
