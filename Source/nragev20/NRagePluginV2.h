@@ -152,6 +152,8 @@ typedef struct _CONTROLLER		// AN N64 CONTROLLER
 	unsigned PakType;			// what type of controller pak? mempak? rumble? transfer? etc
 	unsigned fVisualRumble;		// is visual rumble enabled for this controller?
 
+	unsigned bBackgroundInput;  // allow input while main window isn't focused?
+
 	BYTE bRumbleTyp;				// what type of rumble effect? none, constant, ramp, or direct?
 
 	GUID guidFFDevice;				// GUID of the device that rumble gets sent to

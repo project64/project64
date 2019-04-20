@@ -539,7 +539,14 @@ EXPORT void CALL GetKeys(int Control, BUTTONS * Keys )
 #ifdef ENABLE_RAWPAK_DEBUG
 	DebugWriteA("CALLED: GetKeys\n");
 #endif
-	if( g_bConfiguring || GetForegroundWindow() != g_strEmuInfo.hMainWindow)
+
+	if( !g_pcControllers[Control].bBackgroundInput && GetForegroundWindow() != g_strEmuInfo.hMainWindow )
+	{
+		// cancel if main window isn't focused and background input is disabled
+		return;
+	}
+
+	if( g_bConfiguring )
 		Keys->Value = 0;
 	else
 	{
