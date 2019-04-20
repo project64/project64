@@ -526,7 +526,7 @@ void CMainGui::Resize(DWORD /*fwSizeType*/, WORD nWidth, WORD nHeight)
     GetClientRect((HWND)m_hStatusWnd, &swrect);
 
     int Parts[2];
-    Parts[0] = (int) (nWidth - 140 * DPIScale(m_hStatusWnd));
+    Parts[0] = (int) (nWidth - 135 * DPIScale(m_hStatusWnd));
     Parts[1] = nWidth;
 
     SendMessage((HWND)m_hStatusWnd, SB_SETPARTS, 2, (LPARAM)&Parts[0]);
