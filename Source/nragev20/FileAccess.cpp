@@ -257,6 +257,10 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
 		if (pController)
 			pController->fN64Mouse = atoi(pszLine);
 		break;
+	case CHK_BACKGROUNDINPUT:
+		if (pController)
+			pController->bBackgroundInput = atoi(pszLine);
+		break;
 	case CHK_PAKTYPE:
 		if (pController)
 			pController->PakType = atoi(pszLine);
@@ -1490,6 +1494,7 @@ void DumpControllerSettings(FILE * fFile, int i, bool bIsINI)
 	fprintf(fFile, STRING_INI_PLUGGED "=%u\n", g_ivConfig->Controllers[i].fPlugged);
 	fprintf(fFile, STRING_INI_XINPUT "=%u\n", g_ivConfig->Controllers[i].fXInput);
 	fprintf(fFile, STRING_INI_N64MOUSE "=%u\n", g_ivConfig->Controllers[i].fN64Mouse);
+	fprintf(fFile, STRING_INI_BACKGROUNDINPUT "=%u\n", g_ivConfig->Controllers[i].bBackgroundInput);
 	fprintf(fFile, STRING_INI_RAWDATA "=%u\n", g_ivConfig->Controllers[i].fRawData);
 	fprintf(fFile, STRING_INI_PAKTYPE "=%u\n", g_ivConfig->Controllers[i].PakType);
 	fprintf(fFile, STRING_INI_REALN64RANGE "=%u\n", g_ivConfig->Controllers[i].fRealN64Range);
