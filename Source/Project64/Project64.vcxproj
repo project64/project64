@@ -238,6 +238,7 @@
   <ItemGroup>
     <Image Include="res\ListItems.bmp" />
     <Image Include="UserInterface\Bitmaps\AboutScreenLogo.bmp" />
+    <Image Include="UserInterface\Bitmaps\AboutScreenLogoHDPI.bmp" />
     <Image Include="UserInterface\Bitmaps\ListItems.bmp" />
     <Image Include="UserInterface\Bitmaps\tri-state.bmp" />
     <Image Include="UserInterface\Icons\left.ico" />
