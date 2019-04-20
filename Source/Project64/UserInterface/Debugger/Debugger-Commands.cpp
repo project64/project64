@@ -30,16 +30,16 @@ void CCommandList::Attach(HWND hWndNew)
     SetColumnWidth(COL_ARROWS, 30);
 
     AddColumn("Address", COL_ADDRESS);
-    SetColumnWidth(COL_ADDRESS, 65);
+    SetColumnWidth(COL_ADDRESS, 70);
 
     AddColumn("Command", COL_COMMAND);
-    SetColumnWidth(COL_COMMAND, 60);
+    SetColumnWidth(COL_COMMAND, 65);
 
     AddColumn("Parameters", COL_PARAMETERS);
-    SetColumnWidth(COL_PARAMETERS, 120);
+    SetColumnWidth(COL_PARAMETERS, 130);
 
     AddColumn("Symbol", COL_SYMBOL);
-    SetColumnWidth(COL_SYMBOL, 140);
+    SetColumnWidth(COL_SYMBOL, 180);
 }
 
 CDebugCommandsView* CDebugCommandsView::_this = NULL;
@@ -150,7 +150,7 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
 
 void CDebugCommandsView::OnExitSizeMove(void)
 {
-	SaveWindowPos();
+	SaveWindowPos(true);
 }
 
 LRESULT CDebugCommandsView::OnDestroy(void)

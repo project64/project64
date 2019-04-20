@@ -77,6 +77,7 @@ enum UISettingID
     DebuggerUI_ExceptionBPPos
 };
 
+float DPIScale(void);
 void RegisterUISettings (void);
 void UISettingsSaveBool(UISettingID Type, bool Value);
 void UISettingsSaveBoolIndex(UISettingID Type, int32_t index, bool Value);

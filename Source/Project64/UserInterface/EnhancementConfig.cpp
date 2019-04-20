@@ -577,7 +577,7 @@ LRESULT CEditEnhancement::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl
 		}
 		if (_stricmp(Name.c_str(), NewName.c_str()) == 0)
 		{
-			g_Notify->DisplayError(GS(MSG_CHEAT_NAME_IN_USE));
+			g_Notify->DisplayWarning(GS(MSG_CHEAT_NAME_IN_USE));
 			GetDlgItem(IDC_CODE_NAME).SetFocus();
 			return true;
 		}

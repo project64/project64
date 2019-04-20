@@ -656,8 +656,9 @@ public:
 	// Settable only attributes
 	void SetColumnWidth(int cxWidth)
 	{
+        float DPIScale = CClientDC(m_hWnd).GetDeviceCaps(LOGPIXELSX) / 96.0f;
 		ATLASSERT(::IsWindow(m_hWnd));
-		::SendMessage(m_hWnd, LB_SETCOLUMNWIDTH, cxWidth, 0L);
+		::SendMessage(m_hWnd, LB_SETCOLUMNWIDTH, int (cxWidth * DPIScale), 0L);
 	}
 
 	BOOL SetTabStops(int nTabStops, LPINT rgTabStops)
@@ -3068,8 +3069,9 @@ public:
 
 	BOOL SetColumnWidth(int nCol, int cx)
 	{
+        float DPIScale = CClientDC(m_hWnd).GetDeviceCaps(LOGPIXELSX) / 96.0f;
 		ATLASSERT(::IsWindow(m_hWnd));
-		return (BOOL)::SendMessage(m_hWnd, LVM_SETCOLUMNWIDTH, nCol, MAKELPARAM(cx, 0));
+		return (BOOL)::SendMessage(m_hWnd, LVM_SETCOLUMNWIDTH, nCol, MAKELPARAM(int(cx * DPIScale), 0));
 	}
 
 	BOOL GetViewRect(LPRECT lpRect) const

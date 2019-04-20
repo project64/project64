@@ -96,5 +96,5 @@ LRESULT CDebugExcBreakpoints::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BO
 
 void CDebugExcBreakpoints::OnExitSizeMove(void)
 {
-    SaveWindowPos();
+    SaveWindowPos(0);
 }

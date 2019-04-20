@@ -35,6 +35,9 @@ public:
     virtual void FatalError(LanguageStringID StringID) const;
 
     //User Feedback
+    virtual void DisplayWarning(const char * Message) const;
+    virtual void DisplayWarning(LanguageStringID StringID) const;
+
     virtual void DisplayMessage(int DisplayTime, const char * Message) const;
     virtual void DisplayMessage(int DisplayTime, LanguageStringID StringID) const;
 

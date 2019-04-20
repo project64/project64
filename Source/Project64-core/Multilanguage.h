@@ -523,7 +523,7 @@ enum LanguageStringID
     MSG_UNHANDLED_OP = 2022,
     MSG_NONMAPPED_SPACE = 2023,
     MSG_SAVE_STATE_HEADER = 2024,
-    MSG_MSGBOX_TITLE = 2025,
+    MSG_MSGBOX_ERROR_TITLE = 2025,
     MSG_PIF2_ERROR = 2026,
     MSG_PIF2_TITLE = 2027,
     MSG_PLUGIN_CHANGE = 2028,
@@ -558,6 +558,7 @@ enum LanguageStringID
     MSG_SET_HLE_AUD_MSG = 2057,
     MSG_FAIL_IMAGE_IPL = 2058,
     MSG_IPL_REQUIRED = 2059,
+    MSG_MSGBOX_WARNING_TITLE = 2060,
 
     /*********************************************************************************
     * Android                                                                        *

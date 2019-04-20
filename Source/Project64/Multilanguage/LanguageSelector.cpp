@@ -52,8 +52,11 @@ LRESULT CALLBACK CLanguageSelector::LangSelectProc(HWND hDlg, UINT uMsg, WPARAM 
             SendMessage(GetDlgItem(hDlg, IDC_LANG_SEL), CB_SETCURSEL, 0, 0);
         }
 
+        //Get Windows DPI Scale
+        float DPIScale = CClientDC(hDlg).GetDeviceCaps(LOGPIXELSX) / 96.0f;
+
         // Use the size of the image
-        hbmpBackgroundTop = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_ABOUT_LOGO));
+        hbmpBackgroundTop = LoadBitmap(GetModuleHandle(NULL), DPIScale <= 1.0f ? MAKEINTRESOURCE(IDB_ABOUT_LOGO) : MAKEINTRESOURCE(IDB_ABOUT_LOGO_HDPI));
         BITMAP bmTL;
         GetObject(hbmpBackgroundTop, sizeof(BITMAP), &bmTL);
 
@@ -99,7 +102,8 @@ LRESULT CALLBACK CLanguageSelector::LangSelectProc(HWND hDlg, UINT uMsg, WPARAM 
 
             HDC     memdc = CreateCompatibleDC(ps.hdc);
             HGDIOBJ save = SelectObject(memdc, hbmpBackgroundTop);
-            BitBlt(ps.hdc, 0, 0, bmTL_top.bmWidth, bmTL_top.bmHeight, memdc, 0, 0, SRCCOPY);
+            SetStretchBltMode(ps.hdc, HALFTONE);
+            StretchBlt(ps.hdc, 0, 0, rcClient.right, (int)(bmTL_top.bmHeight * rcClient.right / bmTL_top.bmWidth), memdc, 0, 0, bmTL_top.bmWidth, bmTL_top.bmHeight, SRCCOPY);
             SelectObject(memdc, save);
             DeleteDC(memdc);
 

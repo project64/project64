@@ -47,18 +47,28 @@ protected:
             pT->SetWindowPos(NULL, left, top, width, height, 0);
             pT->RedrawWindow();
         }
+        if (nParams == 2) {
+            pT->SetWindowPos(NULL, left, top, width, height, 1);
+            pT->RedrawWindow();
+        }
 	}
 
-	void SaveWindowPos()
+	void SaveWindowPos(bool bSaveSize)
 	{
         if (!m_bInitialized)
         {
             return;
         }
+
         T* pT = static_cast<T*>(this);
         CRect rect;
         pT->GetWindowRect(&rect);
-        UISettingsSaveString(m_UISettingID, stdstr_f("%d,%d,%d,%d", rect.left, rect.top, rect.Width(), rect.Height()).c_str());
+        if (!bSaveSize) {
+            UISettingsSaveString(m_UISettingID, stdstr_f("%d,%d", rect.left, rect.top).c_str());
+        }
+        else {
+            UISettingsSaveString(m_UISettingID, stdstr_f("%d,%d,%d,%d", rect.left, rect.top, rect.Width(), rect.Height()).c_str());
+        }
 	}
 
 public:

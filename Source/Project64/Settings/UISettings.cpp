@@ -48,8 +48,8 @@ void RegisterUISettings (void)
     g_Settings->AddHandler((SettingID)(FirstUISettings + RomBrowser_ColoumnsChanged), new CSettingTypeTempBool(false));
     g_Settings->AddHandler((SettingID)(FirstUISettings + RomBrowser_Top), new CSettingTypeApplication("Rom Browser", "Top", Default_None));
     g_Settings->AddHandler((SettingID)(FirstUISettings + RomBrowser_Left), new CSettingTypeApplication("Rom Browser", "Left", Default_None));
-    g_Settings->AddHandler((SettingID)(FirstUISettings + RomBrowser_Width), new CSettingTypeApplication("Rom Browser", "Width", (uint32_t)640));
-    g_Settings->AddHandler((SettingID)(FirstUISettings + RomBrowser_Height), new CSettingTypeApplication("Rom Browser", "Height", (uint32_t)480));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + RomBrowser_Width), new CSettingTypeApplication("Rom Browser", "Width", (uint32_t)(640 * DPIScale())));
+    g_Settings->AddHandler((SettingID)(FirstUISettings + RomBrowser_Height), new CSettingTypeApplication("Rom Browser", "Height", (uint32_t)(480 * DPIScale())));
     g_Settings->AddHandler((SettingID)(FirstUISettings + RomBrowser_PosIndex), new CSettingTypeApplicationIndex("Rom Browser\\Field Pos", "Field", Default_None));
     g_Settings->AddHandler((SettingID)(FirstUISettings + RomBrowser_WidthIndex), new CSettingTypeApplicationIndex("Rom Browser\\Field Width", "Field", Default_None));
     g_Settings->AddHandler((SettingID)(FirstUISettings + RomBrowser_SortFieldIndex), new CSettingTypeApplicationIndex("Rom Browser", "Sort Field", Default_None));
@@ -78,6 +78,10 @@ void RegisterUISettings (void)
     g_Settings->AddHandler((SettingID)(FirstUISettings + DebuggerUI_SymbolsPos), new CSettingTypeApplication("Debugger UI", "Symbols Pos", Default_None));
     g_Settings->AddHandler((SettingID)(FirstUISettings + DebuggerUI_TLBPos), new CSettingTypeApplication("Debugger UI", "TLB Pos", Default_None));
     g_Settings->AddHandler((SettingID)(FirstUISettings + DebuggerUI_ExceptionBPPos), new CSettingTypeApplication("Debugger UI", "Exception BP Pos", Default_None));
+}
+
+float DPIScale(void) {
+    return CClientDC(0).GetDeviceCaps(LOGPIXELSX) / 96.0f;
 }
 
 void UISettingsSaveBool(UISettingID Type, bool Value)

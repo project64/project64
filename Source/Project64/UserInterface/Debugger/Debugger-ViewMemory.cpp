@@ -152,7 +152,7 @@ DWORD WINAPI CDebugMemoryView::AutoRefreshProc(void* _self)
 
 void CDebugMemoryView::OnExitSizeMove()
 {
-	SaveWindowPos();
+	SaveWindowPos(0);
 }
 
 void CDebugMemoryView::InterceptMouseWheel(WPARAM wParam, LPARAM /*lParam*/)

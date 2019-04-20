@@ -59,7 +59,7 @@ LRESULT	CDumpMemory::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPa
 
 void CDumpMemory::OnExitSizeMove(void)
 {
-    SaveWindowPos();
+    SaveWindowPos(0);
 }
 
 LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
@@ -112,7 +112,7 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
         GetDlgItemText(IDC_FILENAME, FileName, sizeof(FileName));
         if (strlen(FileName) == 0)
         {
-            g_Notify->DisplayError("Please Choose target file");
+            g_Notify->DisplayWarning("Please Choose target file");
             ::SetFocus(GetDlgItem(IDC_FILENAME));
             return false;
         }

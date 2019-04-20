@@ -128,7 +128,7 @@ void CMainMenu::OnOpenRom(HWND hWnd)
     // Open Disk
     if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(File.c_str()))
     {
-        if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists()) { g_Notify->DisplayError(MSG_IPL_REQUIRED); }
+        if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists()) { g_Notify->DisplayWarning(MSG_IPL_REQUIRED); }
         CPath FileNameIPL;
         const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
         if (FileNameIPL.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
@@ -553,7 +553,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
                 {
                     if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(FileName.c_str()))
                     {
-                        if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists()) { g_Notify->DisplayError(MSG_IPL_REQUIRED); }
+                        if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists()) { g_Notify->DisplayWarning(MSG_IPL_REQUIRED); }
                         CPath FileNameIPL;
                         const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
                         if (FileNameIPL.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
@@ -1152,7 +1152,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 
         /* Debug - Exception breakpoints
         *******************/
-        Item.Reset(ID_DEBUGGER_EXCBREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"CPU Exception breakpoints...");
+        Item.Reset(ID_DEBUGGER_EXCBREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"CPU Exception Breakpoints...");
         //Item.SetItemEnabled(CPURunning);
         DebugMenu.push_back(Item);
 

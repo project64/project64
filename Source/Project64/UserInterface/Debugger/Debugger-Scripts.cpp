@@ -64,7 +64,7 @@ LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 
 void CDebugScripts::OnExitSizeMove(void)
 {
-    SaveWindowPos();
+    SaveWindowPos(true);
 }
 
 void CDebugScripts::ConsolePrint(const char* text)
