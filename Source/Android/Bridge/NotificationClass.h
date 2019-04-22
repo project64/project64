@@ -27,6 +27,9 @@ public:
     void FatalError(LanguageStringID StringID) const;
 
     //User Feedback
+    void DisplayWarning(const char * Message) const;
+    void DisplayWarning(LanguageStringID StringID) const;
+
     void DisplayMessage(int DisplayTime, const char * Message) const;
     void DisplayMessage(int DisplayTime, LanguageStringID StringID) const;
 

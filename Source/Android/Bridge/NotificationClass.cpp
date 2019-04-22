@@ -72,6 +72,23 @@ void CNotificationImp::FatalError(const char * Message) const
     }
 }
 
+void CNotificationImp::DisplayWarning(const char * Message) const
+{
+#ifdef ANDROID
+    g_JavaBridge->DisplayError(Message);
+#else
+    Message = NULL; // not used
+#endif
+}
+
+void CNotificationImp::DisplayWarning(LanguageStringID StringID) const
+{
+    if (g_Lang)
+    {
+        DisplayError(g_Lang->GetString(StringID).c_str());
+    }
+}
+
 void CNotificationImp::DisplayMessage(int DisplayTime, LanguageStringID StringID) const
 {
     DisplayMessage(DisplayTime, g_Lang->GetString(StringID).c_str());
