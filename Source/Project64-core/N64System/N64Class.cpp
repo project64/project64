@@ -658,7 +658,7 @@ void CN64System::StartEmulation2(bool NewThread)
     else
     {
         //mark the emulation as starting and fix up menus
-        g_Notify->DisplayMessage(5, MSG_EMULATION_STARTED);
+        g_Notify->DisplayMessage(2, MSG_EMULATION_STARTED);
         WriteTrace(TraceN64System, TraceDebug, "Start Executing CPU");
         ExecuteCPU();
     }
@@ -704,7 +704,7 @@ void CN64System::Pause()
     g_Settings->SaveBool(GameRunning_CPU_Paused, (uint32_t)false);
     if (pause_type == PauseType_FromMenu)
     {
-        g_Notify->DisplayMessage(5, MSG_CPU_RESUMED);
+        g_Notify->DisplayMessage(2, MSG_CPU_RESUMED);
     }
 }
 
@@ -1088,7 +1088,7 @@ void CN64System::ExecuteCPU()
     //reset code
     g_Settings->SaveBool(GameRunning_CPU_Paused, false);
     g_Settings->SaveBool(GameRunning_CPU_Running, true);
-    g_Notify->DisplayMessage(5, MSG_EMULATION_STARTED);
+    g_Notify->DisplayMessage(2, MSG_EMULATION_STARTED);
 
     m_EndEmulation = false;
 
@@ -1751,7 +1751,7 @@ bool CN64System::SaveState()
     {
         SaveFile = ZipFile;
     }
-    g_Notify->DisplayMessage(5, stdstr_f("%s %s", g_Lang->GetString(MSG_SAVED_STATE).c_str(), stdstr(SaveFile.GetNameExtension()).c_str()).c_str());
+    g_Notify->DisplayMessage(3, stdstr_f("%s %s", g_Lang->GetString(MSG_SAVED_STATE).c_str(), stdstr(SaveFile.GetNameExtension()).c_str()).c_str());
     WriteTrace(TraceN64System, TraceDebug, "Done");
     return true;
 }
@@ -1934,7 +1934,7 @@ bool CN64System::LoadState(const char * FileName)
         CFile hSaveFile(SaveFile, CFileBase::modeRead);
         if (!hSaveFile.IsOpen())
         {
-            g_Notify->DisplayMessage(5, stdstr_f("%s %s", GS(MSG_UNABLED_LOAD_STATE), FileName).c_str());
+            g_Notify->DisplayMessage(3, stdstr_f("%s %s", GS(MSG_UNABLED_LOAD_STATE), FileName).c_str());
             return false;
         }
         hSaveFile.SeekToBegin();
@@ -2061,7 +2061,7 @@ bool CN64System::LoadState(const char * FileName)
         }
     }
     std::string LoadMsg = g_Lang->GetString(MSG_LOADED_STATE);
-    g_Notify->DisplayMessage(5, stdstr_f("%s %s", LoadMsg.c_str(), stdstr(SaveFile.GetNameExtension()).c_str()).c_str());
+    g_Notify->DisplayMessage(3, stdstr_f("%s %s", LoadMsg.c_str(), stdstr(SaveFile.GetNameExtension()).c_str()).c_str());
     WriteTrace(TraceN64System, TraceDebug, "Done");
     return true;
 }
