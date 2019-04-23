@@ -168,6 +168,7 @@ enum SettingID
     Game_Transferpak_ROM,
     Game_Transferpak_Sav,
     Game_LoadSaveAtStart,
+    Game_OverClockModifier,
     Game_FullSpeed,
     Game_UnalignedDMA,
 

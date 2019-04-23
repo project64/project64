@@ -31,6 +31,7 @@ class CGameGeneralPage :
         COMMAND_ID_HANDLER_EX(IDC_UNALIGNED_DMA, CheckBoxChanged)
         COMMAND_HANDLER_EX(IDC_VIREFRESH, EN_UPDATE, EditBoxChanged)
         COMMAND_HANDLER_EX(IDC_COUNTPERBYTE, EN_UPDATE, EditBoxChanged)
+        COMMAND_HANDLER_EX(IDC_OVER_CLOCK_MODIFIER, EN_UPDATE, EditBoxChanged)
     END_MSG_MAP()
 
     enum { IDD = IDD_Settings_GameGeneral };

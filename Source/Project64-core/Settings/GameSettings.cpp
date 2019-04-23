@@ -71,11 +71,11 @@ void CGameSettings::RefreshGameSettings()
     m_LookUpMode = g_Settings->LoadDword(Game_FuncLookupMode);
     m_SystemType = (SYSTEM_TYPE)g_Settings->LoadDword(Game_SystemType);
     m_CpuType = (CPU_TYPE)g_Settings->LoadDword(Game_CpuType);
+    m_OverClockModifier = g_Settings->LoadDword(Game_OverClockModifier);
     if (m_CountPerOp == 0)
     {
         m_CountPerOp = 2;
     }
-	m_OverClockModifier = 1;
 	if (g_Settings->LoadBool(Setting_Enhancement))
 	{
 		for (int i = 0; i < CCheats::MaxCheats; i++)
