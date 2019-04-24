@@ -13,17 +13,9 @@
 class CSettingTypeGame :
     public CSettingTypeApplication
 {
-protected:
-    static bool     m_RdbEditor;
-    static bool     m_EraseDefaults;
-    static stdstr * m_SectionIdent;
-
-    static void   UpdateSettings ( void * /*Data */ );
-
-    virtual const char * SectionName ( void ) const;
-
 public:
-    CSettingTypeGame(const char * Name, const char * DefaultValue );
+    CSettingTypeGame(const char * Name, bool DefaultValue);
+    CSettingTypeGame(const char * Name, const char * DefaultValue);
     CSettingTypeGame(const char * Name, uint32_t DefaultValue );
     CSettingTypeGame(const char * Name, SettingID DefaultSetting );
     virtual ~CSettingTypeGame();
@@ -52,6 +44,15 @@ public:
 
     // Delete the setting
     virtual void Delete (uint32_t Index );
+
+protected:
+    static bool m_RdbEditor;
+    static bool m_EraseDefaults;
+    static std::string * m_SectionIdent;
+
+    static void UpdateSettings(void * /*Data */);
+
+    virtual const char * SectionName(void) const;
 
 private:
     CSettingTypeGame(void);                                 // Disable default constructor

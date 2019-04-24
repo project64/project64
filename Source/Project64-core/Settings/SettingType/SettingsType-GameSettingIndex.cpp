@@ -27,6 +27,13 @@ CSettingTypeGameIndex::CSettingTypeGameIndex(const char * PreIndex, const char *
 {
 }
 
+CSettingTypeGameIndex::CSettingTypeGameIndex(const char * PreIndex, const char * PostIndex, bool DefaultValue) :
+    CSettingTypeGame("", DefaultValue),
+    m_PreIndex(PreIndex),
+    m_PostIndex(PostIndex)
+{
+}
+
 CSettingTypeGameIndex::CSettingTypeGameIndex(const char * PreIndex, const char * PostIndex, const char * DefaultValue ) :
     CSettingTypeGame("", DefaultValue),
     m_PreIndex(PreIndex),

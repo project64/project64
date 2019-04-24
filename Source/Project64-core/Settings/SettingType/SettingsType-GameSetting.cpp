@@ -14,7 +14,12 @@
 
 bool CSettingTypeGame::m_RdbEditor = false;
 bool CSettingTypeGame::m_EraseDefaults = true;
-stdstr * CSettingTypeGame::m_SectionIdent = NULL;
+std::string * CSettingTypeGame::m_SectionIdent = NULL;
+
+CSettingTypeGame::CSettingTypeGame(const char * Name, bool DefaultValue) :
+    CSettingTypeApplication("", Name, DefaultValue)
+{
+}
 
 CSettingTypeGame::CSettingTypeGame(const char * Name, const char * DefaultValue) :
     CSettingTypeApplication("", Name, DefaultValue)

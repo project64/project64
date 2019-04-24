@@ -236,7 +236,7 @@ void CSettingTypeApplication::Save(uint32_t Index, bool Value)
 	bool indexed = g_Settings->IndexBasedSetting(m_DefaultSetting);
 
     if (m_DefaultSetting != Default_None &&
-        ((m_DefaultSetting == Default_Constant && (bool)m_DefaultValue == Value) ||
+        ((m_DefaultSetting == Default_Constant && m_DefaultValue == (uint32_t)Value) ||
         (m_DefaultSetting != Default_Constant && (indexed ? g_Settings->LoadBoolIndex(m_DefaultSetting, Index) : g_Settings->LoadBool(m_DefaultSetting)) == Value)))
     {
         m_SettingsIniFile->SaveString(SectionName(), m_KeyNameIdex.c_str(), NULL);

@@ -13,12 +13,11 @@
 class CSettingTypeGameIndex :
     public CSettingTypeGame
 {
-    stdstr m_PreIndex, m_PostIndex;
-
 public:
     CSettingTypeGameIndex(const char * PreIndex, const char * PostIndex, const char * DefaultValue );
     CSettingTypeGameIndex(const char * PreIndex, const char * PostIndex, uint32_t DefaultValue );
-    CSettingTypeGameIndex(const char * PreIndex, const char * PostIndex, SettingID DefaultSetting );
+    CSettingTypeGameIndex(const char * PreIndex, const char * PostIndex, bool DefaultSetting);
+    CSettingTypeGameIndex(const char * PreIndex, const char * PostIndex, SettingID DefaultSetting);
     ~CSettingTypeGameIndex();
 
     virtual bool IndexBasedSetting ( void ) const { return true; }
@@ -47,4 +46,6 @@ private:
     CSettingTypeGameIndex(void);                                      // Disable default constructor
     CSettingTypeGameIndex(const CSettingTypeGameIndex&);              // Disable copy constructor
     CSettingTypeGameIndex& operator=(const CSettingTypeGameIndex&);   // Disable assignment
+
+    std::string m_PreIndex, m_PostIndex;
 };

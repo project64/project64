@@ -17,7 +17,7 @@ class CSettingTypeCheats :
     public CSettingType
 {
 public:
-    CSettingTypeCheats(const char * PostFix );
+    CSettingTypeCheats(const char * PostFix, SettingID UserSetting);
     ~CSettingTypeCheats();
 
     virtual bool IndexBasedSetting ( void ) const { return true; }
@@ -49,13 +49,18 @@ public:
     static void FlushChanges ( void );
 
 protected:
+    static void GameChanged(void * /*Data */);
+
     static CIniFile * m_CheatIniFile;
     static std::string * m_SectionIdent;
+    static bool m_CheatsModified;
     const char * const m_PostFix;
-    static void GameChanged ( void * /*Data */ );
+    SettingID m_UserSetting;
 
 private:
     CSettingTypeCheats(void);                                   // Disable default constructor
     CSettingTypeCheats(const CSettingTypeCheats&);              // Disable copy constructor
     CSettingTypeCheats& operator=(const CSettingTypeCheats&);   // Disable assignment
+
+    void CopyCheats(void);
 };

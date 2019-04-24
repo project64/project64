@@ -322,13 +322,19 @@ enum SettingID
     Logging_LogUnknown,
 
     //Cheats
+    Cheat_Modified,
     Cheat_Entry,
-    Cheat_Active,
-    Cheat_Extension,
     Cheat_Notes,
     Cheat_Options,
     Cheat_Range,
     Cheat_RangeNotes,
+    Cheat_UserEntry,
+    Cheat_UserNotes,
+    Cheat_UserOptions,
+    Cheat_UserRange,
+    Cheat_UserRangeNotes,
+    Cheat_Active,
+    Cheat_Extension,
 
 	//Enhancement
 	Enhancement_Name,
