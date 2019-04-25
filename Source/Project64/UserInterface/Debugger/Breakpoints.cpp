@@ -383,7 +383,11 @@ void CBreakpoints::PostUpdateBP()
 {
     if (g_BaseSystem)
     {
-        g_BaseSystem->ExternalEvent(SysEvent_ResetRecompilerCode);
+        if (g_Settings->LoadBool(Setting_ForceInterpreterCPU) == false &&
+            g_Settings->LoadDword(Game_CpuType) != CPU_Interpreter)
+        {
+            g_BaseSystem->ExternalEvent(SysEvent_ResetRecompilerCode);
+        }
         g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_ChangingBPs);
     }
 }
