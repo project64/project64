@@ -70,7 +70,7 @@ const char* CScriptSystem::APIScript()
 void CScriptSystem::RunScript(char* path)
 {
     CScriptInstance* scriptInstance = new CScriptInstance(m_Debugger);
-    char* pathSaved = (char*)malloc(strlen(path)); // freed via DeleteStoppedInstances
+    char* pathSaved = (char*)malloc(strlen(path)+1); // freed via DeleteStoppedInstances
     strcpy(pathSaved, path);
     m_RunningInstances.push_back({ pathSaved, scriptInstance });
     scriptInstance->Start(pathSaved);
