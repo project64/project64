@@ -258,7 +258,10 @@ void CSystemEvents::ExecuteEvents()
             }
             break;
         case SysEvent_ResetRecompilerCode:
-            g_Recompiler->ResetRecompCode(true);
+            if (g_Recompiler)
+            {
+                g_Recompiler->ResetRecompCode(true);
+            }
             break;
         default:
             g_Notify->BreakPoint(__FILE__, __LINE__);
