@@ -58,6 +58,8 @@ private:
 	CScriptHook* m_HookCPUGPRValue;
     CScriptHook* m_HookFrameDrawn;
 
+	CRITICAL_SECTION m_CriticalSection;
+
     void RegisterHook(const char* hookId, CScriptHook* cbList); // associate string id with callback list
     void UnregisterHooks();
 

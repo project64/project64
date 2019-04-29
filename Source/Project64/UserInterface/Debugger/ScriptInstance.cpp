@@ -54,10 +54,11 @@ CScriptInstance::CScriptInstance(CDebuggerUI* debugger)
 CScriptInstance::~CScriptInstance()
 {
     UncacheInstance(this);
-    //TerminateThread(m_hThread, 0);
-    //CloseHandle(m_hThread);
     DeleteCriticalSection(&m_CriticalSection);
     duk_destroy_heap(m_Ctx);
+
+	TerminateThread(m_hThread, 0);
+	CloseHandle(m_hThread);
 }
 
 void CScriptInstance::Start(char* path)
@@ -94,8 +95,9 @@ void CScriptInstance::SetState(INSTANCE_STATE state)
 void CScriptInstance::StateChanged()
 {
     // todo mutex might be needed here
-    m_Debugger->Debug_RefreshScriptsWindow();
-    m_ScriptSystem->DeleteStoppedInstances();
+
+    //m_Debugger->Debug_RefreshScriptsWindow();
+    //m_ScriptSystem->DeleteStoppedInstances();
 }
 
 DWORD CALLBACK CScriptInstance::StartThread(CScriptInstance* _this)
@@ -106,7 +108,7 @@ DWORD CALLBACK CScriptInstance::StartThread(CScriptInstance* _this)
 
 void CScriptInstance::StartScriptProc()
 {
-    m_hThread = GetCurrentThread();
+    DuplicateHandle(GetCurrentProcess(), GetCurrentThread(), GetCurrentProcess(), &m_hThread, 0, FALSE, DUPLICATE_SAME_ACCESS);
     SetState(STATE_STARTED);
 
     bool bWasUnpaused = false;
@@ -694,8 +696,9 @@ duk_ret_t CScriptInstance::js_ioSockAccept(duk_context* ctx)
     IOLISTENER* lpListener = _this->AddListener(fd, EVENT_ACCEPT, jsCallback, data, 0);
 
     lpListener->childFd = _this->CreateSocket();
+	static DWORD unused;
 
-    AcceptEx(
+    int ok = AcceptEx(
         (SOCKET)fd,
         (SOCKET)lpListener->childFd,
         lpListener->data, // local and remote SOCKADDR
@@ -706,7 +709,14 @@ duk_ret_t CScriptInstance::js_ioSockAccept(duk_context* ctx)
         (LPOVERLAPPED)lpListener
     );
 
-    duk_pop_n(ctx, 2);
+	duk_pop_n(ctx, 2);
+
+	if (!ok) {
+		duk_push_boolean(ctx, false);
+	} else {
+		duk_push_boolean(ctx, true);
+	}
+
     return 1;
 }
 

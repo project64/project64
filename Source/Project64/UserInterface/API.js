@@ -918,12 +918,26 @@ function Server(settings)
 {
     var _this = this;
     var _fd = _native.sockCreate()
-    
+    var _listening = false;
+    var _queued_accept = false;
+
     var _onconnection = function(socket){}
+
+    this.listen = function (port) {
+        if (_native.sockListen(_fd, port || 80)) {
+            _listening = true;
+        } else {
+            throw new Error("failed to listen");
+        }
+
+        if (_queued_accept) {
+            _native.sockAccept(_fd, _acceptClient);
+        }
+    }
     
     if(settings.port)
     {
-        _native.sockListen(_fd, settings.port || 80)
+        this.listen(settings.port || 80);
     }
     
     // Intermediate callback
@@ -934,18 +948,17 @@ function Server(settings)
         _native.sockAccept(_fd, _acceptClient)
     }
     
-    this.listen = function(port)
-    {
-        _native.sockListen(_fd, port)
-    }
-    
     this.on = function(eventType, callback)
     {
         switch(eventType)
         {
         case 'connection':
-            _onconnection = callback
-            _native.sockAccept(_fd, _acceptClient)
+            _onconnection = callback;
+            if (_listening) {
+                _native.sockAccept(_fd, _acceptClient);
+            } else {
+                _queued_accept = true;
+            }
             break;
         }
     }
