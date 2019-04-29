@@ -89,6 +89,7 @@ private:
     char* m_SelectedScriptName;
 
     void RefreshStatus();
+	CRITICAL_SECTION m_CriticalSection;
 
 public:
     enum { IDD = IDD_Debugger_Scripts };

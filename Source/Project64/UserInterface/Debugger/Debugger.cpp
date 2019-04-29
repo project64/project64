@@ -46,7 +46,9 @@ CDebuggerUI::CDebuggerUI() :
     m_DMALog = new CDMALog();
     m_CPULog = new CCPULog();
 
-    CSymbols::InitializeCriticalSection();
+	InitializeCriticalSection(&m_CriticalSection);
+
+	CSymbols::InitializeCriticalSection();
     g_Settings->RegisterChangeCB(GameRunning_InReset, this, (CSettings::SettingChangedFunc)GameReset);
     g_Settings->RegisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)SteppingOpsChanged);
     g_Settings->RegisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunningChanged);
@@ -75,6 +77,7 @@ CDebuggerUI::~CDebuggerUI(void)
     delete m_CPULog;
 
     CSymbols::DeleteCriticalSection();
+	DeleteCriticalSection(&m_CriticalSection);
 }
 
 void CDebuggerUI::SteppingOpsChanged(CDebuggerUI * _this)

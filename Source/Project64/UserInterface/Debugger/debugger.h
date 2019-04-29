@@ -102,6 +102,7 @@ private:
     CDebuggerUI(const CDebuggerUI&);                // Disable copy constructor
     CDebuggerUI& operator=(const CDebuggerUI&);        // Disable assignment
 
+	CRITICAL_SECTION       m_CriticalSection;
     CDumpMemory          * m_MemoryDump;
     CDebugMemoryView     * m_MemoryView;
     CDebugMemorySearch   * m_MemorySearch;

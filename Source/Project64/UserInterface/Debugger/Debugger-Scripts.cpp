@@ -19,12 +19,14 @@ CDebugScripts::CDebugScripts(CDebuggerUI* debugger) :
     CDebugDialog<CDebugScripts>(debugger)
 {
     m_SelectedScriptName = (char*)malloc(MAX_PATH);
-    //CScriptSystem::SetScriptsWindow(this);
+	InitializeCriticalSection(&m_CriticalSection);
+	//CScriptSystem::SetScriptsWindow(this);
 }
 
 CDebugScripts::~CDebugScripts(void)
 {
-    free(m_SelectedScriptName);
+	DeleteCriticalSection(&m_CriticalSection);
+	free(m_SelectedScriptName);
 }
 
 LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
@@ -91,6 +93,8 @@ void CDebugScripts::ConsolePrint(const char* text)
 
 void CDebugScripts::RefreshConsole()
 {
+	EnterCriticalSection(&m_CriticalSection);
+
     m_Debugger->OpenScriptsWindow();
     CScriptSystem* scriptSystem = m_Debugger->ScriptSystem();
     vector<char*>* logData = scriptSystem->LogData();
@@ -101,6 +105,8 @@ void CDebugScripts::RefreshConsole()
         free((*logData)[0]);
         logData->erase(logData->begin() + 0);
     }
+
+	LeaveCriticalSection(&m_CriticalSection);
 }
 
 void CDebugScripts::ConsoleClear()
@@ -133,13 +139,16 @@ void CDebugScripts::ConsoleCopy()
 
 void CDebugScripts::RefreshList()
 {
-    int nIndex = m_ScriptList.GetSelectedIndex();
+	EnterCriticalSection(&m_CriticalSection);
+
+	int nIndex = m_ScriptList.GetSelectedIndex();
 
     CPath SearchPath("Scripts", "*");
 
     if (!SearchPath.FindFirst(CPath::FIND_ATTRIBUTE_ALLFILES))
     {
-        return;
+		LeaveCriticalSection(&m_CriticalSection);
+		return;
     }
 
     m_ScriptList.SetRedraw(false);
@@ -159,6 +168,8 @@ void CDebugScripts::RefreshList()
         m_ScriptList.SelectItem(nIndex);
         RefreshStatus();
     }
+
+	LeaveCriticalSection(&m_CriticalSection);
 }
 
 LRESULT CDebugScripts::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
@@ -199,7 +210,8 @@ LRESULT	CDebugScripts::OnScriptListDblClicked(NMHDR* pNMHDR)
 
 void CDebugScripts::RefreshStatus()
 {
-    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
+	EnterCriticalSection(&m_CriticalSection);
+	INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
 
     char* szState = "";
     switch (state)
@@ -222,6 +234,8 @@ void CDebugScripts::RefreshStatus()
     {
         m_EvalEdit.EnableWindow(FALSE);
     }
+
+	LeaveCriticalSection(&m_CriticalSection);
 }
 
 LRESULT	CDebugScripts::OnScriptListClicked(NMHDR* pNMHDR)
@@ -397,5 +411,7 @@ void CDebugScripts::RunSelected()
 
 void CDebugScripts::StopSelected()
 {
-    m_Debugger->ScriptSystem()->StopScript(m_SelectedScriptName);
+	m_Debugger->ScriptSystem()->StopScript(m_SelectedScriptName);
+
+	//m_Debugger->Debug_RefreshScriptsWindow();
 }
