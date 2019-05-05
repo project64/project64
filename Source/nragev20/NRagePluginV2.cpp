@@ -539,14 +539,7 @@ EXPORT void CALL GetKeys(int Control, BUTTONS * Keys )
 #ifdef ENABLE_RAWPAK_DEBUG
 	DebugWriteA("CALLED: GetKeys\n");
 #endif
-
-	if( !g_pcControllers[Control].bBackgroundInput && GetForegroundWindow() != g_strEmuInfo.hMainWindow )
-	{
-		// cancel if main window isn't focused and background input is disabled
-		return;
-	}
-
-	if( g_bConfiguring )
+	if( g_bConfiguring || (!g_pcControllers[Control].bBackgroundInput && GetForegroundWindow() != g_strEmuInfo.hMainWindow) )
 		Keys->Value = 0;
 	else
 	{
@@ -691,7 +684,8 @@ EXPORT void CALL ReadController( int Control, BYTE * Command )
 		// expected: controller gets 1 byte (command), controller sends back 4 bytes
 		// should be:	Command[0] == 0x01
 		//				Command[1] == 0x04
-		if( g_bConfiguring )
+
+		if( g_bConfiguring || (!g_pcControllers[Control].bBackgroundInput && GetForegroundWindow() != g_strEmuInfo.hMainWindow) )
 			Command[3] = Command[4] = Command[5] = Command[6] = 0;
 		else
 		{
