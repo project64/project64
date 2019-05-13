@@ -84,7 +84,7 @@ bool CEditNumber32::IsHexConvertableText(LPTSTR _text)
     for (; i < strlen(_text); i++)
     {
         char c = _text[i];
-        if (!(c >= 48 && c <= 57 || c >= 'A'&&c <= 'F' || c >= 'a'&&c <= 'f'))
+        if (!(c >= 48 && c <= 57 || c >= 'A'&&c <= 'F' || c >= 'a'&&c <= 'f' || c == ' '))
         {
             bPaste = false;
             break;
@@ -114,6 +114,10 @@ void CEditNumber32::FormatClipboard()
             if (lptstr[i] == 'X')
             {
                 lptstr[i] = 'x';
+            }
+            if (lptstr[i] == ' ' && (i < strlen(lptstr)))
+            {
+                strcpy(&lptstr[i], &lptstr[i + 1]);
             }
         }
         hglb = GlobalAlloc(GMEM_MOVEABLE, (strlen(lptstr) + 1) * sizeof(TCHAR));
