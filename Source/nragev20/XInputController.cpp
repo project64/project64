@@ -386,14 +386,14 @@ TCHAR * GetN64ButtonNameFromButtonCode( int Button )
 	case L:			_tcscpy_s( btnName, 10, _T( "L" ));			break;
 	case R:			_tcscpy_s( btnName, 10, _T( "R" ));			break;
 	case Start:		_tcscpy_s( btnName, 10, _T( "Start" ));		break;
-	case CUp:		_tcscpy_s( btnName, 10, _T( "CUp" ));		break;
-	case CDown:		_tcscpy_s( btnName, 10, _T( "CDown" ));		break;
-	case CRight:	_tcscpy_s( btnName, 10, _T( "CRight" ));	break;
-	case CLeft:		_tcscpy_s( btnName, 10, _T( "CLeft" ));		break;
-	case DUp:		_tcscpy_s( btnName, 10, _T( "DUp" ));		break;
-	case DDown:		_tcscpy_s( btnName, 10, _T( "DDown" ));		break;
-	case DRight:	_tcscpy_s( btnName, 10, _T( "DRight" ));	break;
-	case DLeft:		_tcscpy_s( btnName, 10, _T( "DLeft" ));		break;
+	case CUp:		_tcscpy_s( btnName, 10, _T( "C-Up" ));		break;
+	case CDown:		_tcscpy_s( btnName, 10, _T( "C-Down" ));		break;
+	case CRight:	_tcscpy_s( btnName, 10, _T( "C-Right" ));	break;
+	case CLeft:		_tcscpy_s( btnName, 10, _T( "C-Left" ));		break;
+	case DUp:		_tcscpy_s( btnName, 10, _T( "D-Up" ));		break;
+	case DDown:		_tcscpy_s( btnName, 10, _T( "D-Down" ));		break;
+	case DRight:	_tcscpy_s( btnName, 10, _T( "D-Right" ));	break;
+	case DLeft:		_tcscpy_s( btnName, 10, _T( "D-Left" ));		break;
 	default:		_tcscpy_s( btnName, 10, _T( "None" ));
 	}
 	return btnName;
@@ -542,21 +542,21 @@ int GetN64ButtonCode( TCHAR *btnName )	//esta wea esta muy fea, hay que buscar u
 		value = Z;
 	else if( !_tcscmp( btnName, _T( "Start" )))
 		value = Start;
-	else if( !_tcscmp( btnName, _T( "CUp" )))
+	else if( !_tcscmp( btnName, _T( "C-Up" )))
 		value = CUp;
-	else if( !_tcscmp( btnName, _T( "CDown" )))
+	else if( !_tcscmp( btnName, _T( "C-Down" )))
 		value = CDown;
-	else if( !_tcscmp( btnName, _T( "CLeft" )))
+	else if( !_tcscmp( btnName, _T( "C-Left" )))
 		value = CLeft;
-	else if( !_tcscmp( btnName, _T( "CRight" )))
+	else if( !_tcscmp( btnName, _T( "C-Right" )))
 		value = CRight;
-	else if( !_tcscmp( btnName, _T( "DUp" )))
+	else if( !_tcscmp( btnName, _T( "D-Up" )))
 		value = DUp;
-	else if( !_tcscmp( btnName, _T( "DDown" )))
+	else if( !_tcscmp( btnName, _T( "D-Down" )))
 		value = DDown;
-	else if( !_tcscmp( btnName, _T( "DLeft" )))
+	else if( !_tcscmp( btnName, _T( "D-Left" )))
 		value = DLeft;
-	else if( !_tcscmp( btnName, _T( "DRight" )))
+	else if( !_tcscmp( btnName, _T( "D-Right" )))
 		value = DRight;
 
 	return value;
