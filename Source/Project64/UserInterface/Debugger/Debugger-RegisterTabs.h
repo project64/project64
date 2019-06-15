@@ -45,7 +45,7 @@ public:
     CRegisterTabs(void);
     ~CRegisterTabs();
 
-    void Attach(HWND hWndNew);
+    void Attach(HWND hWndNew, CDebuggerUI* debugger);
     HWND Detach();
 
     CWindow AddTab(char* caption, int dialogId, DLGPROC dlgProc);
@@ -54,7 +54,6 @@ public:
     void RedrawCurrentTab();
     void RefreshEdits();
     void SetColorsEnabled(bool bColorsEnabled);
-    void SetDebugger(CDebuggerUI* debugger);
 
 private:
     CRegisterTabs(const CRegisterTabs&);              // Disable copy constructor
