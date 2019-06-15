@@ -26,8 +26,9 @@ CRegisterTabs::~CRegisterTabs()
 {
 }
 
-void CRegisterTabs::Attach(HWND hWndNew)
+void CRegisterTabs::Attach(HWND hWndNew, CDebuggerUI* debugger)
 {
+    m_Debugger = debugger;
     CTabCtrl::Attach(hWndNew);
 
     m_GPRTab = AddTab("GPR", IDD_Debugger_RegGPR, TabProcGPR);
@@ -562,6 +563,11 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
     // right click labels
     if (msg == WM_CONTEXTMENU)
     {
+        if (m_Debugger == NULL)
+        {
+            return FALSE;
+        }
+
         HWND hWnd = (HWND)wParam;
         WORD ctrlId = (WORD) ::GetWindowLong(hWnd, GWL_ID);
 
@@ -594,6 +600,11 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
     // click labels
     if (msg == WM_COMMAND && HIWORD(wParam) == STN_CLICKED || HIWORD(wParam) == STN_DBLCLK)
     {
+        if (m_Debugger == NULL)
+        {
+            return FALSE;
+        }
+
         HWND hWnd = (HWND)lParam;
         WORD ctrlId = LOWORD(wParam);
 
@@ -626,6 +637,11 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
     // color labels
     if (msg == WM_CTLCOLORSTATIC)
     {
+        if (m_Debugger == NULL)
+        {
+            return FALSE;
+        }
+
         HWND hWnd = (HWND)lParam;
         WORD ctrlId = (WORD) ::GetWindowLong(hWnd, GWL_ID);
         
@@ -770,11 +786,6 @@ void CRegisterTabs::RedrawCurrentTab()
 void CRegisterTabs::SetColorsEnabled(bool bColorsEnabled)
 {
     m_bColorsEnabled = bColorsEnabled;
-}
-
-void CRegisterTabs::SetDebugger(CDebuggerUI* debugger)
-{
-    m_Debugger = debugger;
 }
 
 void CRegisterTabs::InitRegisterEdit(CWindow& tab, CEditNumber32& edit, WORD ctrlId)

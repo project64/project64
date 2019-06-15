@@ -78,7 +78,7 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     m_StepOverButton.Attach(GetDlgItem(IDC_STEPOVER_BTN));
     m_SkipButton.Attach(GetDlgItem(IDC_SKIP_BTN));
     m_GoButton.Attach(GetDlgItem(IDC_GO_BTN));
-    m_RegisterTabs.Attach(GetDlgItem(IDC_REG_TABS));
+    m_RegisterTabs.Attach(GetDlgItem(IDC_REG_TABS), m_Debugger);
     m_Scrollbar.Attach(GetDlgItem(IDC_SCRL_BAR));
     m_BackButton.Attach(GetDlgItem(IDC_BACK_BTN));
     m_ForwardButton.Attach(GetDlgItem(IDC_FORWARD_BTN));
@@ -87,8 +87,6 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     DlgResize_Init(false, true);
     DlgSavePos_Init(DebuggerUI_CommandsPos);
     DlgToolTip_Init();
-
-    m_RegisterTabs.SetDebugger(m_Debugger);
 
     // Setup address input
     m_AddressEdit.SetDisplayType(CEditNumber32::DisplayHex);
