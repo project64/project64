@@ -112,7 +112,11 @@ bool CCheats::LoadCode(const stdstr & CheatEntry, SettingID ExtensionSetting, in
 
 void CCheats::LoadEnhancements(void)
 {
-	for (int i = 0; i < CCheats::MaxCheats; i++)
+    if (!g_Settings->LoadBool(Setting_Enhancement))
+    {
+        return;
+    }
+    for (int i = 0; i < CCheats::MaxCheats; i++)
 	{
 		std::string Name = g_Settings->LoadStringIndex(Enhancement_Name, i);
 		if (Name.length() == 0) { break; }
