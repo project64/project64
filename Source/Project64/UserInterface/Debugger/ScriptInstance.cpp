@@ -346,6 +346,8 @@ CScriptInstance::AddListener(HANDLE fd, IOEVENTTYPE evt, void* callback, void* d
 
 void CScriptInstance::RemoveListenerByIndex(UINT index)
 {
+	typedef BOOL (__stdcall *Dynamic_CancelIoEx)(HANDLE, LPOVERLAPPED);
+	Dynamic_CancelIoEx _CancelIoEx;
     IOLISTENER* lpListener = m_Listeners[index];
 
     if (lpListener->data != NULL)
@@ -353,7 +355,16 @@ void CScriptInstance::RemoveListenerByIndex(UINT index)
         free(lpListener->data);
     }
 
-    CancelIoEx(lpListener->fd, (LPOVERLAPPED)lpListener);
+	HMODULE hKernel = LoadLibrary("Kernel32.dll");
+	_CancelIoEx = (Dynamic_CancelIoEx)GetProcAddress(hKernel, "CancelIoEx");
+
+    //CancelIoEx(lpListener->fd, (LPOVERLAPPED)lpListener);
+	if (_CancelIoEx != NULL)
+		_CancelIoEx(lpListener->fd, (LPOVERLAPPED)lpListener);
+	else
+		// This isn't a good replacement and the script aspects of the debugger shouldn't
+		// be used in WindowsXP
+		CancelIo(lpListener->fd);
 
     free(lpListener);
 
