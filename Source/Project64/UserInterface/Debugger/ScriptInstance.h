@@ -60,6 +60,7 @@ class CScriptInstance
         int fd;
     } FILE_FD;
 
+	typedef BOOL(__stdcall *Dynamic_CancelIoEx)(HANDLE, LPOVERLAPPED);
 public:
 
     CScriptInstance(CDebuggerUI* debugger);
@@ -128,6 +129,10 @@ private:
     void CloseAllFiles();
 
     const char* EvalFile(const char* jsPath);
+
+	// Handle to to dynamically load CancelIoEx for Windows XP compatibility
+	HMODULE m_hKernel;
+	Dynamic_CancelIoEx m_CancelIoEx;
 
     // Lookup list of CScriptInstance instances for static js_* functions
     static vector<CScriptInstance*> Cache;

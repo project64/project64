@@ -49,6 +49,12 @@ CScriptInstance::CScriptInstance(CDebuggerUI* debugger)
     m_hIOCompletionPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
     InitializeCriticalSection(&m_CriticalSection);
     CacheInstance(this);
+	m_hKernel = LoadLibrary("Kernel32.dll");
+	m_CancelIoEx = NULL;
+	if (m_hKernel != NULL)
+	{
+		m_CancelIoEx = (Dynamic_CancelIoEx)GetProcAddress(m_hKernel, "CancelIoEx");
+	}
 }
 
 CScriptInstance::~CScriptInstance()
@@ -59,6 +65,11 @@ CScriptInstance::~CScriptInstance()
 
 	TerminateThread(m_hThread, 0);
 	CloseHandle(m_hThread);
+	m_CancelIoEx = NULL;
+	if (m_hKernel != NULL)
+	{
+		FreeLibrary(m_hKernel);
+	}
 }
 
 void CScriptInstance::Start(char* path)
@@ -346,8 +357,6 @@ CScriptInstance::AddListener(HANDLE fd, IOEVENTTYPE evt, void* callback, void* d
 
 void CScriptInstance::RemoveListenerByIndex(UINT index)
 {
-	typedef BOOL (__stdcall *Dynamic_CancelIoEx)(HANDLE, LPOVERLAPPED);
-	Dynamic_CancelIoEx _CancelIoEx;
     IOLISTENER* lpListener = m_Listeners[index];
 
     if (lpListener->data != NULL)
@@ -355,16 +364,18 @@ void CScriptInstance::RemoveListenerByIndex(UINT index)
         free(lpListener->data);
     }
 
-	HMODULE hKernel = LoadLibrary("Kernel32.dll");
-	_CancelIoEx = (Dynamic_CancelIoEx)GetProcAddress(hKernel, "CancelIoEx");
-
+	// Original call to CancelIoEx:
     //CancelIoEx(lpListener->fd, (LPOVERLAPPED)lpListener);
-	if (_CancelIoEx != NULL)
-		_CancelIoEx(lpListener->fd, (LPOVERLAPPED)lpListener);
+	if (m_CancelIoEx != NULL)
+	{
+		m_CancelIoEx(lpListener->fd, (LPOVERLAPPED)lpListener);
+	}
 	else
+	{
 		// This isn't a good replacement and the script aspects of the debugger shouldn't
 		// be used in WindowsXP
 		CancelIo(lpListener->fd);
+	}
 
     free(lpListener);
 
