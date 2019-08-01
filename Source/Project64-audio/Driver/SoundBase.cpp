@@ -112,7 +112,7 @@ uint32_t SoundDriverBase::AI_ReadLength()
 
 void SoundDriverBase::LoadAiBuffer(uint8_t *start, uint32_t length)
 {
-    uint8_t nullBuff[MAX_SIZE];
+    static uint8_t nullBuff[MAX_SIZE];
     uint8_t *ptrStart = start != NULL ? start : nullBuff;
     uint32_t writePtr = 0, bytesToMove = length;
 
