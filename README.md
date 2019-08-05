@@ -6,7 +6,8 @@ Project64 is an N64 emulator for Windows and Android.
 <sub>(note: ROMs will need to be downloaded separately)</sub>
 ### Windows
 
-An executable file for the most recent version of Project64 can be downloaded [here](https://www.pj64-emu.com/download/project64-latest) or via the [Project64 website](https://www.pj64-emu.com/download/project64-latest)
+An executable file for the most recent version of Project64 can be downloaded [here](https://www.pj64-emu.com/download/project64-latest).
+
 Follow the instructions in the setup window to complete the installation.
 
 ##### System Requirements
