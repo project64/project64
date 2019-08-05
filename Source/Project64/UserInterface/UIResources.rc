@@ -1914,6 +1914,13 @@ BEGIN
         MENUITEM "View disassembly...",         ID_POPUPMENU_VIEWDISASM
         MENUITEM SEPARATOR
         MENUITEM "Add symbol...",               ID_POPUPMENU_ADDSYMBOL
+        MENUITEM SEPARATOR
+        POPUP "Copy"
+        BEGIN
+            MENUITEM "Word",                        ID_POPUPMENU_COPY_WORD
+            MENUITEM "Halfword",                    ID_POPUPMENU_COPY_HALFWORD
+            MENUITEM "Byte",                        ID_POPUPMENU_COPY_BYTE
+        END
     END
 END
 

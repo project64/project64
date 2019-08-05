@@ -129,8 +129,8 @@ LRESULT CDebugMemoryView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
     DWORD dwThreadID = ::GetCurrentThreadId();
     hWinMessageHook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)HookProc, NULL, dwThreadID);
 
-	LoadWindowPos();
-	WindowCreated();
+    LoadWindowPos();
+    WindowCreated();
 
     m_AutoRefreshThread = CreateThread(NULL, 0, AutoRefreshProc, (void*)this, 0, NULL);
 
@@ -152,7 +152,7 @@ DWORD WINAPI CDebugMemoryView::AutoRefreshProc(void* _self)
 
 void CDebugMemoryView::OnExitSizeMove()
 {
-	SaveWindowPos(0);
+    SaveWindowPos(0);
 }
 
 void CDebugMemoryView::InterceptMouseWheel(WPARAM wParam, LPARAM /*lParam*/)
@@ -194,10 +194,10 @@ LRESULT CDebugMemoryView::OnDestroy(void)
         delete m_MemoryList;
         m_MemoryList = NULL;
     }
-	m_MemAddr.Detach();
-	m_SymInfo.Detach();
-	m_DMAInfo.Detach();
-	UnhookWindowsHookEx(hWinMessageHook);
+    m_MemAddr.Detach();
+    m_SymInfo.Detach();
+    m_DMAInfo.Detach();
+    UnhookWindowsHookEx(hWinMessageHook);
     return 0;
 }
 
@@ -253,6 +253,15 @@ LRESULT CDebugMemoryView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& 
         break;
     case ID_POPUPMENU_ADDSYMBOL:
         m_AddSymbolDlg.DoModal(m_Debugger, m_CtxMenuAddr);
+        break;
+    case ID_POPUPMENU_COPY_WORD:
+        CopyNumber(m_CtxMenuAddr, sizeof(uint32_t));
+        break;
+    case ID_POPUPMENU_COPY_HALFWORD:
+        CopyNumber(m_CtxMenuAddr, sizeof(uint16_t));
+        break;
+    case ID_POPUPMENU_COPY_BYTE:
+        CopyNumber(m_CtxMenuAddr, sizeof(uint8_t));
         break;
     }
     return FALSE;
@@ -775,4 +784,46 @@ void CDebugMemoryView::SelectColors(uint32_t vaddr, bool changed, COLORREF& bgCo
     {
         m_SymbolColorStride--;
     }
+}
+
+void CDebugMemoryView::CopyNumber(uint32_t address, int numBytes)
+{
+    stdstr str;
+
+    uint32_t u32;
+    uint16_t u16;
+    uint8_t u8;
+
+    switch (numBytes)
+    {
+    case 4:
+        address &= ~3;
+        g_MMU->LW_VAddr(address, u32);
+        str = stdstr_f("%08X", u32);
+        break;
+    case 2:
+        address &= ~1;
+        g_MMU->LH_VAddr(address, u16);
+        str = stdstr_f("%04X", u16);
+        break;
+    case 1:
+        g_MMU->LB_VAddr(address, u8);
+        str = stdstr_f("%02X", u8);
+        break;
+    default:
+        return;
+    }
+
+    if (str.length() == 0)
+    {
+        return;
+    }
+
+    HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, str.length() + 1);
+    str.copy((char*)GlobalLock(hMem), str.length() + 1);
+    GlobalUnlock(hMem);
+    OpenClipboard();
+    EmptyClipboard();
+    SetClipboardData(CF_TEXT, hMem);
+    CloseClipboard();
 }

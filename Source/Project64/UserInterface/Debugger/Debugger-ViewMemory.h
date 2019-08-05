@@ -32,7 +32,7 @@ private:
         NOTIFY_HANDLER_EX(IDC_MEM_DETAILS, LCN_RIGHTCLICK, OnMemoryRightClicked)
         NOTIFY_HANDLER_EX(IDC_MEM_DETAILS, LCN_HOTITEMCHANGED, OnHotItemChanged)
         MESSAGE_HANDLER(WM_ACTIVATE, OnActivate)
-		MSG_WM_EXITSIZEMOVE(OnExitSizeMove)
+        MSG_WM_EXITSIZEMOVE(OnExitSizeMove)
         MSG_WM_DESTROY(OnDestroy)
         MSG_WM_VSCROLL(OnVScroll)
     END_MSG_MAP()
@@ -41,7 +41,7 @@ private:
     LRESULT  OnClicked(WORD wNotifyCode, WORD wID, HWND /*hWndCtl*/, BOOL& bHandled);
     void     OnAddrChanged(UINT Code, int id, HWND ctl);
     void     OnVScroll(int request, short Pos, HWND ctrl);
-	void     OnExitSizeMove(void);
+    void     OnExitSizeMove(void);
     LRESULT  OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT  OnMemoryModified(LPNMHDR lpNMHDR);
     LRESULT  OnMemoryRightClicked(LPNMHDR lpNMHDR);
@@ -57,6 +57,8 @@ private:
     void SelectColors(uint32_t address, bool changed, COLORREF& bgColor, COLORREF& fgColor, COLORREF& fgHiColor);
     bool GetItemOffset(LPNMHDR lpNMHDR, uint32_t &offset);
     bool GetItemAddress(LPNMHDR lpNMHDR, uint32_t &address);
+    
+    void CopyNumber(uint32_t address, int numBytes);
 
     enum { MemoryToDisplay = 0x100 };
 
