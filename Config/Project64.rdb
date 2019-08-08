@@ -7060,6 +7060,7 @@ CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Culling=1
 Emulate Clear=1
 SMM-PI DMA=0
+SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
 RDRAM Size=8
@@ -7073,6 +7074,7 @@ CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Culling=1
 Emulate Clear=1
 SMM-PI DMA=0
+SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
 RDRAM Size=8
@@ -7086,6 +7088,7 @@ CheatPlugin0=Jabo's Direct3D8,Glide64 For PJ64
 Culling=1
 Emulate Clear=1
 SMM-PI DMA=0
+SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
 RDRAM Size=8
@@ -7195,11 +7198,11 @@ Status=Issues (plugin)
 
 [E848D316-4450474A-C:4A]
 32bit=No
-Core Note=Major issues during gameplay
 Fixed Audio=0
 Good Name=Nihon Pro Golf Tour 64 (J)
+Counter Factor=1
 RDRAM Size=8
-Status=Broken (core)
+Status=Compatible
 
 [E848D316-444B444A-C:4A]
 32bit=No
