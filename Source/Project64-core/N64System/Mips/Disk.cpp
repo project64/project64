@@ -33,7 +33,7 @@ void DiskCommand()
 {
     //ASIC_CMD_STATUS - Commands
     uint32_t cmd = g_Reg->ASIC_CMD;
-    WriteTrace(TraceN64System, TraceDebug, "DD CMD %08X", cmd);
+    WriteTrace(TraceN64System, TraceDebug, "DD CMD %08X - DATA %08X", cmd, g_Reg->ASIC_DATA);
 
 #ifdef _WIN32
     SYSTEMTIME sysTime;
@@ -67,13 +67,11 @@ void DiskCommand()
     case 0x00010000:
         //Seek Read
         g_Reg->ASIC_CUR_TK = g_Reg->ASIC_DATA | 0x60000000;
-        DiskSetOffset();
         dd_write = false;
         break;
     case 0x00020000:
         //Seek Write
         g_Reg->ASIC_CUR_TK = g_Reg->ASIC_DATA | 0x60000000;
-        DiskSetOffset();
         dd_write = true;
         break;
     case 0x00080000:
@@ -262,74 +260,26 @@ void DiskBMUpdate()
 
 void DiskBMRead()
 {
-    uint32_t sector = 0;
-    sector += dd_track_offset;
-    sector += dd_start_block * SECTORS_PER_BLOCK * ddZoneSecSize[dd_zone];
-    sector += (dd_current) * (((g_Reg->ASIC_HOST_SECBYTE & 0x00FF0000) >> 16) + 1);
-    //WriteTrace(TraceN64System, TraceDebug, "READ  Block %d Sector %02X - %08X", ((g_Reg->ASIC_CUR_TK & 0x0FFF0000) >> 15) | dd_start_block, dd_current, sector);
-    g_Disk->SetDiskAddressBuffer(sector);
+    DiskBMReadWrite(false);
     return;
 }
 
 void DiskBMWrite()
 {
-    uint32_t sector = 0;
-    sector += dd_track_offset;
-    sector += dd_start_block * SECTORS_PER_BLOCK * ddZoneSecSize[dd_zone];
-    sector += (dd_current) * (((g_Reg->ASIC_HOST_SECBYTE & 0x00FF0000) >> 16) + 1);
-    //WriteTrace(TraceN64System, TraceDebug, "WRITE Block %d Sector %02X - %08X", ((g_Reg->ASIC_CUR_TK & 0x0FFF0000) >> 15) | dd_start_block, dd_current, sector);
-    g_Disk->SetDiskAddressBuffer(sector);
+    DiskBMReadWrite(true);
     return;
 }
 
-void DiskSetOffset()
+void DiskBMReadWrite(bool write)
 {
-    uint16_t head = ((g_Reg->ASIC_CUR_TK >> 16) & 0x1000) >> 9; // Head * 8
+    uint16_t head = ((g_Reg->ASIC_CUR_TK >> 16) / 0x1000) & 1;
     uint16_t track = (g_Reg->ASIC_CUR_TK >> 16) & 0xFFF;
-    uint16_t tr_off = 0;
-
-    if (track >= 0x425)
-    {
-        dd_zone = 7 + head;
-        tr_off = track - 0x425;
-    }
-    else if (track >= 0x390)
-    {
-        dd_zone = 6 + head;
-        tr_off = track - 0x390;
-    }
-    else if (track >= 0x2FB)
-    {
-        dd_zone = 5 + head;
-        tr_off = track - 0x2FB;
-    }
-    else if (track >= 0x266)
-    {
-        dd_zone = 4 + head;
-        tr_off = track - 0x266;
-    }
-    else if (track >= 0x1D1)
-    {
-        dd_zone = 3 + head;
-        tr_off = track - 0x1D1;
-    }
-    else if (track >= 0x13C)
-    {
-        dd_zone = 2 + head;
-        tr_off = track - 0x13C;
-    }
-    else if (track >= 0x9E)
-    {
-        dd_zone = 1 + head;
-        tr_off = track - 0x9E;
-    }
-    else
-    {
-        dd_zone = 0 + head;
-        tr_off = track;
-    }
-
-    dd_track_offset = ddStartOffset[dd_zone] + tr_off * ddZoneSecSize[dd_zone] * SECTORS_PER_BLOCK * BLOCKS_PER_TRACK;
+    uint16_t block = dd_start_block;
+    uint16_t sector = dd_current;
+    uint16_t sectorsize = (((g_Reg->ASIC_HOST_SECBYTE & 0x00FF0000) >> 16) + 1);
+    
+    uint32_t addr = g_Disk->GetDiskAddressBlock(head, track, block) + (sector * sectorsize);
+    g_Disk->SetDiskAddressBuffer(addr);
 }
 
 void DiskDMACheck(void)

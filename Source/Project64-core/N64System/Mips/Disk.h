@@ -20,7 +20,7 @@ void DiskGapSectorCheck(void);
 void DiskBMUpdate(void);
 void DiskBMRead(void);
 void DiskBMWrite(void);
-void DiskSetOffset(void);
+void DiskBMReadWrite(bool write);
 void DiskDMACheck(void);
 
 extern bool dd_write;

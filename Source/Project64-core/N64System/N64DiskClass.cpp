@@ -83,6 +83,8 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
     }
     m_RomName = RomName;
     m_Country = (Country)m_DiskImage[0x43670];
+    m_DiskType = m_DiskImage[5 ^ 3] & 0x0F;
+    GenerateLBAToPhysTable();
 
     if (g_Disk == this)
     {
@@ -95,11 +97,10 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
 bool CN64Disk::SaveDiskImage()
 {
     //NO NEED TO SAVE IF DISK TYPE IS 6
-    uint8_t disktype = m_DiskImage[5] & 0xF;
-    if (disktype == 0x6)
+    if (m_DiskType == 6)
     {
         m_DiskFile.Close();
-        WriteTrace(TraceN64System, TraceDebug, "Loaded Disk Type is 0x7. No RAM area. Shadow file is not needed.");
+        WriteTrace(TraceN64System, TraceDebug, "Loaded Disk Type is 6. No RAM area. Shadow file is not needed.");
         return true;
     }
 
@@ -122,18 +123,18 @@ bool CN64Disk::SaveDiskImage()
     {
         //If original file was MAME format, just copy
         WriteTrace(TraceN64System, TraceDebug, "64DD disk is MAME format");
-        if (!m_DiskFile.Write(m_DiskImage, MameFormatSize))
-        {
-            m_DiskFile.Close();
-            WriteTrace(TraceN64System, TraceError, "Failed to write file");
-            return false;
-        }
     }
     else if (m_DiskFormat == DiskFormatSDK)
     {
         //If original file was SDK format, we need to convert it back
         WriteTrace(TraceN64System, TraceDebug, "64DD disk is SDK format");
-        ConvertDiskFormatBack();
+    }
+
+    if (!m_DiskFile.Write(m_DiskImage, m_DiskFileSize))
+    {
+        m_DiskFile.Close();
+        WriteTrace(TraceN64System, TraceError, "Failed to write file");
+        return false;
     }
 
     m_DiskFile.Close();
@@ -248,11 +249,20 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
     WriteTrace(TraceN64System, TraceDebug, "Successfully Opened, size: 0x%X", DiskFileSize);
 
     //Check Disk File Format
-    if (DiskFileSize == MameFormatSize)
+    if ((DiskFileSize == MameFormatSize) || (DiskFileSize == SDKFormatSize))
     {
-        //If Disk is MAME Format (size is constant, it should be the same for every file), then continue
-        m_DiskFormat = DiskFormatMAME;
-        WriteTrace(TraceN64System, TraceDebug, "Disk File is MAME Format");
+        if (DiskFileSize == MameFormatSize)
+        {
+            //If Disk is MAME Format (size is constant, it should be the same for every file), then continue
+            m_DiskFormat = DiskFormatMAME;
+            WriteTrace(TraceN64System, TraceDebug, "Disk File is MAME Format");
+        }
+        else
+        {
+            //If Disk is SDK format (made with SDK based dumpers like LuigiBlood's, or Nintendo's, size is also constant)
+            m_DiskFormat = DiskFormatSDK;
+            WriteTrace(TraceN64System, TraceDebug, "Disk File is SDK Format");
+        }
 
         if (!AllocateDiskImage(DiskFileSize))
         {
@@ -290,23 +300,6 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
             WriteTrace(TraceN64System, TraceError, "Expected to read: 0x%X, read: 0x%X", TotalRead, DiskFileSize);
             return false;
         }
-    }
-    else if (DiskFileSize == SDKFormatSize)
-    {
-        //If Disk is SDK format (made with SDK based dumpers like LuigiBlood's, or Nintendo's, size is also constant)
-        //We need to convert it.
-        m_DiskFormat = DiskFormatSDK;
-
-        g_Notify->DisplayMessage(5, MSG_LOADING);
-
-        //Allocate supported size
-        if (!AllocateDiskImage(MameFormatSize))
-        {
-            m_DiskFile.Close();
-            return false;
-        }
-
-        ConvertDiskFormat();
     }
     else
     {
@@ -393,321 +386,184 @@ void CN64Disk::UnallocateDiskImage()
     m_DiskImage = NULL;
 }
 
-void CN64Disk::ConvertDiskFormat()
+uint32_t CN64Disk::GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t block)
 {
-    //Original code by Happy_
-    m_DiskFile.SeekToBegin();
-
-    const uint32_t ZoneSecSize[16] = { 232, 216, 208, 192, 176, 160, 144, 128,
-        216, 208, 192, 176, 160, 144, 128, 112 };
-    const uint32_t ZoneTracks[16] = { 158, 158, 149, 149, 149, 149, 149, 114,
-        158, 158, 149, 149, 149, 149, 149, 114 };
-    const uint32_t DiskTypeZones[7][16] = {
-        { 0, 1, 2, 9, 8, 3, 4, 5, 6, 7, 15, 14, 13, 12, 11, 10 },
-        { 0, 1, 2, 3, 10, 9, 8, 4, 5, 6, 7, 15, 14, 13, 12, 11 },
-        { 0, 1, 2, 3, 4, 11, 10, 9, 8, 5, 6, 7, 15, 14, 13, 12 },
-        { 0, 1, 2, 3, 4, 5, 12, 11, 10, 9, 8, 6, 7, 15, 14, 13 },
-        { 0, 1, 2, 3, 4, 5, 6, 13, 12, 11, 10, 9, 8, 7, 15, 14 },
-        { 0, 1, 2, 3, 4, 5, 6, 7, 14, 13, 12, 11, 10, 9, 8, 15 },
-        { 0, 1, 2, 3, 4, 5, 6, 7, 15, 14, 13, 12, 11, 10, 9, 8 }
-    };
-    const uint32_t RevDiskTypeZones[7][16] = {
-        { 0, 1, 2, 5, 6, 7, 8, 9, 4, 3, 15, 14, 13, 12, 11, 10 },
-        { 0, 1, 2, 3, 7, 8, 9, 10, 6, 5, 4, 15, 14, 13, 12, 11 },
-        { 0, 1, 2, 3, 4, 9, 10, 11, 8, 7, 6, 5, 15, 14, 13, 12 },
-        { 0, 1, 2, 3, 4, 5, 11, 12, 10, 9, 8, 7, 6, 15, 14, 13 },
-        { 0, 1, 2, 3, 4, 5, 6, 13, 12, 11, 10, 9, 8, 7, 15, 14 },
-        { 0, 1, 2, 3, 4, 5, 6, 7, 14, 13, 12, 11, 10, 9, 8, 15 },
-        { 0, 1, 2, 3, 4, 5, 6, 7, 15, 14, 13, 12, 11, 10, 9, 8 }
-    };
-    const uint32_t StartBlock[7][16] = {
-        { 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1 },
-        { 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0 },
-        { 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1 },
-        { 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0 },
-        { 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1 },
-        { 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0 },
-        { 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1 }
-    };
-
-    uint32_t disktype = 0;
-    uint32_t zone, track = 0;
-    int32_t atrack = 0;
-    int32_t block = 0;
-    uint8_t SystemData[0xE8];
-    uint8_t BlockData0[0x100 * SECTORS_PER_BLOCK];
-    uint8_t BlockData1[0x100 * SECTORS_PER_BLOCK];
-    uint32_t InOffset, OutOffset = 0;
-    uint32_t InStart[16];
-    uint32_t OutStart[16];
-
-    InStart[0] = 0;
-    OutStart[0] = 0;
-
-    //Read System Area
-    m_DiskFile.Read(&SystemData, 0xE8);
-
-    disktype = SystemData[5] & 0xF;
-
-    //Prepare Input Offsets
-    for (zone = 1; zone < 16; zone++)
+    uint32_t offset = 0;
+    if (m_DiskFormat == DiskFormatMAME)
     {
-        InStart[zone] = InStart[zone - 1] +
-            VZONESIZE(DiskTypeZones[disktype][zone - 1]);
-    }
+        uint32_t tr_off = 0;
+        uint16_t dd_zone = 0;
 
-    //Prepare Output Offsets
-    for (zone = 1; zone < 16; zone++)
-    {
-        OutStart[zone] = OutStart[zone - 1] + ZONESIZE(zone - 1);
-    }
-
-    //Copy Head 0
-    for (zone = 0; zone < 8; zone++)
-    {
-        OutOffset = OutStart[zone];
-        InOffset = InStart[RevDiskTypeZones[disktype][zone]];
-        m_DiskFile.Seek(InOffset, CFileBase::begin);
-        block = StartBlock[disktype][zone];
-        atrack = 0;
-        for (track = 0; track < ZoneTracks[zone]; track++)
+        if (track >= 0x425)
         {
-            if (atrack < 0xC && track == SystemData[0x20 + zone * 0xC + atrack])
-            {
-                memset((void *)(&BlockData0), 0, BLOCKSIZE(zone));
-                memset((void *)(&BlockData1), 0, BLOCKSIZE(zone));
-                atrack += 1;
-            }
-            else
-            {
-                if ((block % 2) == 1)
-                {
-                    m_DiskFile.Read(&BlockData1, BLOCKSIZE(zone));
-                    m_DiskFile.Read(&BlockData0, BLOCKSIZE(zone));
-                }
-                else
-                {
-                    m_DiskFile.Read(&BlockData0, BLOCKSIZE(zone));
-                    m_DiskFile.Read(&BlockData1, BLOCKSIZE(zone));
-                }
-                block = 1 - block;
-            }
-            memcpy(m_DiskImage + OutOffset, &BlockData0, BLOCKSIZE(zone));
-            OutOffset += BLOCKSIZE(zone);
-            memcpy(m_DiskImage + OutOffset, &BlockData1, BLOCKSIZE(zone));
-            OutOffset += BLOCKSIZE(zone);
+            dd_zone = 7 + head;
+            tr_off = track - 0x425;
         }
-    }
-
-    //Copy Head 1
-    for (zone = 8; zone < 16; zone++)
-    {
-        //OutOffset = OutStart[zone];
-        InOffset = InStart[RevDiskTypeZones[disktype][zone]];
-        m_DiskFile.Seek(InOffset, CFileBase::begin);
-        block = StartBlock[disktype][zone];
-        atrack = 0xB;
-        for (track = 1; track < ZoneTracks[zone] + 1; track++)
+        else if (track >= 0x390)
         {
-            if (atrack > -1 && (ZoneTracks[zone] - track) == SystemData[0x20 + (zone)* 0xC + atrack])
-            {
-                memset((void *)(&BlockData0), 0, BLOCKSIZE(zone));
-                memset((void *)(&BlockData1), 0, BLOCKSIZE(zone));
-                atrack -= 1;
-            }
-            else
-            {
-                if ((block % 2) == 1)
-                {
-                    m_DiskFile.Read(&BlockData1, BLOCKSIZE(zone));
-                    m_DiskFile.Read(&BlockData0, BLOCKSIZE(zone));
-                }
-                else
-                {
-                    m_DiskFile.Read(&BlockData0, BLOCKSIZE(zone));
-                    m_DiskFile.Read(&BlockData1, BLOCKSIZE(zone));
-                }
-                block = 1 - block;
-            }
-            OutOffset = OutStart[zone] + (ZoneTracks[zone] - track) * TRACKSIZE(zone);
-            memcpy(m_DiskImage + OutOffset, &BlockData0, BLOCKSIZE(zone));
-            OutOffset += BLOCKSIZE(zone);
-            memcpy(m_DiskImage + OutOffset, &BlockData1, BLOCKSIZE(zone));
-            OutOffset += BLOCKSIZE(zone);
+            dd_zone = 6 + head;
+            tr_off = track - 0x390;
         }
+        else if (track >= 0x2FB)
+        {
+            dd_zone = 5 + head;
+            tr_off = track - 0x2FB;
+        }
+        else if (track >= 0x266)
+        {
+            dd_zone = 4 + head;
+            tr_off = track - 0x266;
+        }
+        else if (track >= 0x1D1)
+        {
+            dd_zone = 3 + head;
+            tr_off = track - 0x1D1;
+        }
+        else if (track >= 0x13C)
+        {
+            dd_zone = 2 + head;
+            tr_off = track - 0x13C;
+        }
+        else if (track >= 0x9E)
+        {
+            dd_zone = 1 + head;
+            tr_off = track - 0x9E;
+        }
+        else
+        {
+            dd_zone = 0 + head;
+            tr_off = track;
+        }
+
+        offset = MAMEStartOffset[dd_zone] + tr_off * TRACKSIZE(dd_zone) + block * BLOCKSIZE(dd_zone);
+    }
+    else if (m_DiskFormat == DiskFormatSDK)
+    {
+        offset = LBAToByte(0, PhysToLBA(head, track, block));
+    }
+    //WriteTrace(TraceN64System, TraceDebug, "Head %d Track %d Block %d - LBA %d - Address %08X", head, track, block, PhysToLBA(head, track, block), offset);
+    return offset;
+}
+
+void CN64Disk::GenerateLBAToPhysTable()
+{
+    for (uint32_t lba = 0; lba < SIZE_LBA; lba++)
+    {
+        LBAToPhysTable[lba] = LBAToPhys(lba);
     }
 }
 
-void CN64Disk::ConvertDiskFormatBack()
+uint32_t CN64Disk::LBAToVZone(uint32_t lba)
 {
-    //Original code by Happy_
-    const uint32_t ZoneSecSize[16] = { 232, 216, 208, 192, 176, 160, 144, 128,
-        216, 208, 192, 176, 160, 144, 128, 112 };
-    const uint32_t ZoneTracks[16] = { 158, 158, 149, 149, 149, 149, 149, 114,
-        158, 158, 149, 149, 149, 149, 149, 114 };
-    const uint32_t DiskTypeZones[7][16] = {
-        { 0, 1, 2, 9, 8, 3, 4, 5, 6, 7, 15, 14, 13, 12, 11, 10 },
-        { 0, 1, 2, 3, 10, 9, 8, 4, 5, 6, 7, 15, 14, 13, 12, 11 },
-        { 0, 1, 2, 3, 4, 11, 10, 9, 8, 5, 6, 7, 15, 14, 13, 12 },
-        { 0, 1, 2, 3, 4, 5, 12, 11, 10, 9, 8, 6, 7, 15, 14, 13 },
-        { 0, 1, 2, 3, 4, 5, 6, 13, 12, 11, 10, 9, 8, 7, 15, 14 },
-        { 0, 1, 2, 3, 4, 5, 6, 7, 14, 13, 12, 11, 10, 9, 8, 15 },
-        { 0, 1, 2, 3, 4, 5, 6, 7, 15, 14, 13, 12, 11, 10, 9, 8 }
-    };
-    const uint32_t RevDiskTypeZones[7][16] = {
-        { 0, 1, 2, 5, 6, 7, 8, 9, 4, 3, 15, 14, 13, 12, 11, 10 },
-        { 0, 1, 2, 3, 7, 8, 9, 10, 6, 5, 4, 15, 14, 13, 12, 11 },
-        { 0, 1, 2, 3, 4, 9, 10, 11, 8, 7, 6, 5, 15, 14, 13, 12 },
-        { 0, 1, 2, 3, 4, 5, 11, 12, 10, 9, 8, 7, 6, 15, 14, 13 },
-        { 0, 1, 2, 3, 4, 5, 6, 13, 12, 11, 10, 9, 8, 7, 15, 14 },
-        { 0, 1, 2, 3, 4, 5, 6, 7, 14, 13, 12, 11, 10, 9, 8, 15 },
-        { 0, 1, 2, 3, 4, 5, 6, 7, 15, 14, 13, 12, 11, 10, 9, 8 }
-    };
-    const uint32_t StartBlock[7][16] = {
-        { 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1 },
-        { 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0 },
-        { 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1 },
-        { 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0 },
-        { 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1 },
-        { 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0 },
-        { 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1 }
-    };
-
-    uint32_t disktype = 0;
-    uint32_t zone, track = 0;
-    int32_t atrack = 0;
-    int32_t block = 0;
-    uint8_t SystemData[0xE8];
-    uint8_t BlockData0[0x100 * SECTORS_PER_BLOCK];
-    uint8_t BlockData1[0x100 * SECTORS_PER_BLOCK];
-    uint32_t InOffset, OutOffset = 0;
-    uint32_t InStart[16];
-    uint32_t OutStart[16];
-
-    //SDK DISK RAM
-    WriteTrace(TraceN64System, TraceDebug, "Allocating memory for disk SDK format");
-    AUTO_PTR<uint8_t> ImageBase(new uint8_t[SDKFormatSize + 0x1000]);
-    if (ImageBase.get() == NULL)
-    {
-        SetError(MSG_MEM_ALLOC_ERROR);
-        WriteTrace(TraceN64System, TraceError, "Failed to allocate memory for disk SDK format (size: 0x%X)", SDKFormatSize);
-        return;
+    for (uint32_t vzone = 0; vzone < 16; vzone++) {
+        if (lba < VZONE_LBA_TBL[m_DiskType][vzone]) {
+            return vzone;
+        }
     }
-    uint8_t * Image = (uint8_t *)(((uint64_t)ImageBase.get() + 0xFFF) & ~0xFFF); // start at begining of memory page
-    WriteTrace(TraceN64System, TraceDebug, "Allocated disk SDK format memory (%p)", Image);
+};
 
-    //save information about the disk loaded
-    uint8_t * s_DiskImageBase = ImageBase.release();
-    uint8_t * s_DiskImage = Image;
-    //END
-
-    InStart[0] = 0;
-    OutStart[0] = 0;
-
-    //Read System Area
-    memcpy(&SystemData, m_DiskImage, 0xE8);
-
-    disktype = SystemData[5] & 0xF;
-
-    //Prepare Input Offsets
-    for (zone = 1; zone < 16; zone++)
+uint32_t CN64Disk::LBAToByte(uint32_t lba, uint32_t nlbas)
+{
+    bool init_flag = true;
+    uint32_t totalbytes = 0;
+    uint32_t blocksize = 0;
+    uint32_t vzone, pzone = 0;
+    if (nlbas != 0)
     {
-        InStart[zone] = InStart[zone - 1] +
-            VZONESIZE(DiskTypeZones[disktype][zone - 1]);
-    }
-
-    //Prepare Output Offsets
-    for (zone = 1; zone < 16; zone++)
-    {
-        OutStart[zone] = OutStart[zone - 1] + ZONESIZE(zone - 1);
-    }
-
-    //Copy Head 0
-    for (zone = 0; zone < 8; zone++)
-    {
-        block = StartBlock[disktype][zone];
-        atrack = 0;
-        for (track = 0; track < ZoneTracks[zone]; track++)
+        for (; nlbas != 0; nlbas--)
         {
-            InOffset = OutStart[zone] + (track)* TRACKSIZE(zone);
-            OutOffset = InStart[RevDiskTypeZones[disktype][zone]] + (track - atrack) * TRACKSIZE(zone);
-
-            if (atrack < 0xC && track == SystemData[0x20 + zone * 0xC + atrack])
+            if ((init_flag == true) || (VZONE_LBA_TBL[m_DiskType][vzone] == lba))
             {
-                atrack += 1;
+                vzone = LBAToVZone(lba);
+                pzone = VZoneToPZone(vzone, m_DiskType);
+                if (7 < pzone)
+                {
+                    pzone -= 7;
+                }
+                blocksize = SECTORSIZE_P[pzone] * SECTORS_PER_BLOCK;
             }
-            else
+
+            totalbytes += blocksize;
+            lba++;
+            init_flag = false;
+            if ((nlbas != 0) && (lba > MAX_LBA))
             {
-                if ((block % 2) == 1)
-                {
-                    memcpy(&BlockData1, m_DiskImage + InOffset, BLOCKSIZE(zone));
-                    InOffset += BLOCKSIZE(zone);
-                    memcpy(&BlockData0, m_DiskImage + InOffset, BLOCKSIZE(zone));
-                    InOffset += BLOCKSIZE(zone);
-                }
-                else
-                {
-                    memcpy(&BlockData0, m_DiskImage + InOffset, BLOCKSIZE(zone));
-                    InOffset += BLOCKSIZE(zone);
-                    memcpy(&BlockData1, m_DiskImage + InOffset, BLOCKSIZE(zone));
-                    InOffset += BLOCKSIZE(zone);
-                }
-                block = 1 - block;
-                memcpy(s_DiskImage + OutOffset, &BlockData0, BLOCKSIZE(zone));
-                OutOffset += BLOCKSIZE(zone);
-                memcpy(s_DiskImage + OutOffset, &BlockData1, BLOCKSIZE(zone));
-                OutOffset += BLOCKSIZE(zone);
+                return 0xFFFFFFFF;
             }
         }
     }
 
-    //Copy Head 1
-    for (zone = 8; zone < 16; zone++)
-    {
-        block = StartBlock[disktype][zone];
-        atrack = 0xB;
-        for (track = 1; track < ZoneTracks[zone] + 1; track++)
-        {
-            InOffset = OutStart[zone] + (ZoneTracks[zone] - track) * TRACKSIZE(zone);
-            OutOffset = InStart[RevDiskTypeZones[disktype][zone]] + (track - (0xB - atrack) - 1) * TRACKSIZE(zone);
+    return totalbytes;
+}
 
-            if (atrack > -1 && (ZoneTracks[zone] - track) == SystemData[0x20 + (zone)* 0xC + atrack])
-            {
-                atrack -= 1;
-            }
-            else
-            {
-                if ((block % 2) == 1)
-                {
-                    memcpy(&BlockData1, m_DiskImage + InOffset, BLOCKSIZE(zone));
-                    InOffset += BLOCKSIZE(zone);
-                    memcpy(&BlockData0, m_DiskImage + InOffset, BLOCKSIZE(zone));
-                    InOffset += BLOCKSIZE(zone);
-                }
-                else
-                {
-                    memcpy(&BlockData0, m_DiskImage + InOffset, BLOCKSIZE(zone));
-                    InOffset += BLOCKSIZE(zone);
-                    memcpy(&BlockData1, m_DiskImage + InOffset, BLOCKSIZE(zone));
-                    InOffset += BLOCKSIZE(zone);
-                }
-                block = 1 - block;
-                memcpy(s_DiskImage + OutOffset, &BlockData0, BLOCKSIZE(zone));
-                OutOffset += BLOCKSIZE(zone);
-                memcpy(s_DiskImage + OutOffset, &BlockData1, BLOCKSIZE(zone));
-                OutOffset += BLOCKSIZE(zone);
-            }
+uint16_t CN64Disk::LBAToPhys(uint32_t lba)
+{
+    uint8_t * sys_data = GetDiskAddressSys();
+
+    //Get Block 0/1 on Disk Track
+    uint8_t block = 1;
+    if (((lba & 3) == 0) || ((lba & 3) == 3))
+        block = 0;
+
+    //Get Virtual & Physical Disk Zones
+    uint16_t vzone = LBAToVZone(lba);
+    uint16_t pzone = VZoneToPZone(vzone, m_DiskType);
+
+    //Get Disk Head
+    uint16_t head = (7 < pzone);
+
+    //Get Disk Zone
+    uint16_t disk_zone = pzone;
+    if (disk_zone != 0)
+        disk_zone = pzone - 7;
+
+    //Get Virtual Zone LBA start, if Zone 0, it's LBA 0
+    uint16_t vzone_lba = 0;
+    if (vzone != 0)
+        vzone_lba = VZONE_LBA_TBL[m_DiskType][vzone - 1];
+    
+    //Calculate Physical Track
+    uint16_t track = (lba - vzone_lba) >> 1;
+
+    //Get the start track from current zone
+    uint16_t track_zone_start = SCYL_ZONE_TBL[0][pzone];
+    if (head != 0)
+    {
+        //If Head 1, count from the other way around
+        track = -track;
+        track_zone_start = OUTERCYL_TBL[disk_zone - 1];
+    }
+    track += SCYL_ZONE_TBL[0][pzone];
+
+    //Get the relative offset to defect tracks for the current zone (if Zone 0, then it's 0)
+    uint16_t defect_offset = 0;
+    if (pzone != 0)
+        defect_offset = sys_data[(8 + pzone - 1) ^ 3];
+
+    //Get amount of defect tracks for the current zone
+    uint16_t defect_amount = sys_data[(8 + pzone) ^ 3] - defect_offset;
+
+    //Skip defect tracks
+    while ((defect_amount != 0) && ((sys_data[(0x20 + defect_offset) ^ 3] + track_zone_start) <= track))
+    {
+        track++;
+        defect_offset++;
+        defect_amount--;
+    }
+
+    return track | (head * 0x1000) | (block * 0x2000);
+}
+
+uint16_t CN64Disk::PhysToLBA(uint16_t head, uint16_t track, uint16_t block)
+{
+    uint16_t expectedvalue = track | (head * 0x1000) | (block * 0x2000);
+
+    for (uint16_t lba = 0; lba < SIZE_LBA; lba++)
+    {
+        if (LBAToPhysTable[lba] == expectedvalue)
+        {
+            return lba;
         }
     }
-
-    if (!m_DiskFile.Write(s_DiskImage, SDKFormatSize))
-    {
-        m_DiskFile.Close();
-        WriteTrace(TraceN64System, TraceError, "Failed to write file");
-    }
-
-    WriteTrace(TraceN64System, TraceDebug, "Unallocating disk SDK format memory");
-    delete[] s_DiskImageBase;
-    s_DiskImageBase = NULL;
-    s_DiskImage = NULL;
+    return 0xFFFF;
 }
