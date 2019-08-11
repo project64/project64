@@ -640,7 +640,7 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
     CalculateCicChip();
     uint32_t CRC1, CRC2;
 
-    if (m_CicChip == CIC_NUS_8303 || m_CicChip == CIC_NUS_DDUS || m_CicChip == CIC_NUS_DDTL)
+    if (IsLoadedRomDDIPL())
     {
         //Handle CRC differently if 64DD IPL
         CRC1 = (*(uint16_t *)(&m_ROMImage[0x608]) << 16) | *(uint16_t *)(&m_ROMImage[0x60C]);
@@ -798,7 +798,7 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
     CalculateCicChip();
     uint32_t CRC1, CRC2;
 
-    if (m_CicChip == CIC_NUS_8303 || m_CicChip == CIC_NUS_DDUS || m_CicChip == CIC_NUS_DDTL)
+    if (IsLoadedRomDDIPL())
     {
         //Handle CRC differently if 64DD IPL
         CRC1 = (*(uint16_t *)(&m_ROMImage[0x608]) << 16) | *(uint16_t *)(&m_ROMImage[0x60C]);
