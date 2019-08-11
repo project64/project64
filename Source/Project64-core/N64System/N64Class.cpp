@@ -486,7 +486,7 @@ bool CN64System::RunFileImage(const char * FileLoc)
     {
         return false;
     }
-    g_Settings->SaveBool(Setting_EnableDisk, false);
+    g_Settings->SaveBool(Setting_EnableDisk, g_Rom->IsLoadedRomDDIPL());
     if (g_Settings->LoadBool(Setting_AutoStart) != 0)
     {
         WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
