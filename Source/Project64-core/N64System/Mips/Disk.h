@@ -18,9 +18,7 @@ void DiskReset(void);
 void DiskBMControl(void);
 void DiskGapSectorCheck(void);
 void DiskBMUpdate(void);
-void DiskBMRead(void);
-void DiskBMWrite(void);
-void DiskBMReadWrite(bool write);
+bool DiskBMReadWrite(bool write);
 void DiskDMACheck(void);
 
 extern bool dd_write;

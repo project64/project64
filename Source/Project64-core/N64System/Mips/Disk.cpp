@@ -190,9 +190,9 @@ void DiskBMUpdate()
         //Write Data
         if (dd_current < SECTORS_PER_BLOCK)
         {
-            DiskBMWrite();
+            if (!DiskBMReadWrite(true))
+                g_Reg->ASIC_STATUS |= DD_STATUS_DATA_RQ;
             dd_current += 1;
-            g_Reg->ASIC_STATUS |= DD_STATUS_DATA_RQ;
         }
         else if (dd_current < SECTORS_PER_BLOCK + 1)
         {
@@ -200,10 +200,10 @@ void DiskBMUpdate()
             {
                 dd_start_block = 1 - dd_start_block;
                 dd_current = 0;
-                DiskBMWrite();
+                if (!DiskBMReadWrite(true))
+                    g_Reg->ASIC_STATUS |= DD_STATUS_DATA_RQ;
                 dd_current += 1;
                 g_Reg->ASIC_BM_STATUS &= ~DD_BM_STATUS_BLOCK;
-                g_Reg->ASIC_STATUS |= DD_STATUS_DATA_RQ;
             }
             else
             {
@@ -222,14 +222,15 @@ void DiskBMUpdate()
         //Read Data
         if (((g_Reg->ASIC_CUR_TK >> 16) & 0x1FFF) == 6 && g_Reg->ASIC_CUR_SECTOR == 0 && g_Reg->ASIC_ID_REG != 0x00040000)
         {
+            //Copy Protection
             g_Reg->ASIC_STATUS &= ~DD_STATUS_DATA_RQ;
             g_Reg->ASIC_BM_STATUS |= DD_BM_STATUS_MICRO;
         }
         else if (dd_current < SECTORS_PER_BLOCK)
         {
-            DiskBMRead();
+            if (!DiskBMReadWrite(false))
+                g_Reg->ASIC_STATUS |= DD_STATUS_DATA_RQ;
             dd_current += 1;
-            g_Reg->ASIC_STATUS |= DD_STATUS_DATA_RQ;
         }
         else if (dd_current < SECTORS_PER_BLOCK + 4)
         {
@@ -258,18 +259,9 @@ void DiskBMUpdate()
     }
 }
 
-void DiskBMRead()
+bool DiskBMReadWrite(bool write)
 {
-    DiskBMReadWrite(false);
-}
-
-void DiskBMWrite()
-{
-    DiskBMReadWrite(true);
-}
-
-void DiskBMReadWrite(bool write)
-{
+    //Returns true if error
     uint16_t head = ((g_Reg->ASIC_CUR_TK >> 16) / 0x1000) & 1;
     uint16_t track = (g_Reg->ASIC_CUR_TK >> 16) & 0xFFF;
     uint16_t block = dd_start_block;
@@ -277,7 +269,17 @@ void DiskBMReadWrite(bool write)
     uint16_t sectorsize = (((g_Reg->ASIC_HOST_SECBYTE & 0x00FF0000) >> 16) + 1);
     
     uint32_t addr = g_Disk->GetDiskAddressBlock(head, track, block, sector, sectorsize);
-    g_Disk->SetDiskAddressBuffer(addr);
+
+    if (addr == 0xFFFFFFFF)
+    {
+        //Error
+        return true;
+    }
+    else
+    {
+        g_Disk->SetDiskAddressBuffer(addr);
+        return false;
+    }
 }
 
 void DiskDMACheck(void)

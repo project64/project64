@@ -118,7 +118,7 @@ void CMainMenu::OnOpenRom(HWND hWnd)
         return;
     }
     stdstr ext = CPath(File).GetExtension();
-    if (_stricmp(ext.c_str(), "ndd") != 0)
+    if ((_stricmp(ext.c_str(), "ndd") != 0) && (_stricmp(ext.c_str(), "d64") != 0))
     {
         delete g_DDRom;
         g_DDRom = NULL;
@@ -303,7 +303,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         {
             // Open Disk
             CPath FileName;
-            const char * Filter = "N64DD Disk Image (*.ndd)\0*.ndd\0All files (*.*)\0*.*\0";
+            const char * Filter = "N64DD Disk Image (*.ndd, *.d64)\0*.ndd;*.d64\0All files (*.*)\0*.*\0";
             if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
             {
                 g_Disk->SaveDiskImage();
@@ -547,7 +547,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
             if (UISettingsLoadStringIndex(File_RecentGameFileIndex, MenuID - ID_RECENT_ROM_START, FileName) &&
                 FileName.length() > 0)
             {
-                if (CPath(FileName).GetExtension() != "ndd")
+                if ((CPath(FileName).GetExtension() != "ndd") && (CPath(FileName).GetExtension() != "d64"))
                     g_BaseSystem->RunFileImage(FileName.c_str());
                 else
                 {

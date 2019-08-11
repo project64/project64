@@ -34,6 +34,7 @@ static const char* ROM_extensions[] =
     "eur",
     "bin",
     "ndd",
+    "d64",
 };
 
 CRomList::CRomList() :
@@ -461,7 +462,7 @@ bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
             strncpy(pRomInfo->FileName, g_Settings->LoadBool(RomList_ShowFileExtensions) ? CPath(pRomInfo->szFullFileName).GetNameExtension().c_str() : CPath(pRomInfo->szFullFileName).GetName().c_str(), sizeof(pRomInfo->FileName) / sizeof(pRomInfo->FileName[0]));
         }
 
-        if (CPath(pRomInfo->szFullFileName).GetExtension() != "ndd")
+        if ((CPath(pRomInfo->szFullFileName).GetExtension() != "ndd") && (CPath(pRomInfo->szFullFileName).GetExtension() != "d64"))
         {
             char InternalName[22];
             memcpy(InternalName, (void *)(RomData + 0x20), 20);

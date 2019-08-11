@@ -27,7 +27,8 @@ public:
     void    ClearDiskSettingID();
     uint8_t *  GetDiskAddress() { return m_DiskImage; }
     uint8_t *  GetDiskAddressBuffer() { return m_DiskImage + m_DiskBufAddress; }
-    uint8_t *  GetDiskAddressSys() { return m_DiskImage; }
+    uint8_t *  GetDiskAddressSys() { return m_DiskImage + m_DiskSysAddress; }
+    uint8_t *  GetDiskAddressID() { return m_DiskImage + m_DiskIDAddress; }
     uint8_t *  GetDiskHeader() { return m_DiskHeader; }
     void    SetDiskAddressBuffer(uint32_t address) { m_DiskBufAddress = address; }
     uint32_t   GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t block, uint16_t sector, uint16_t sectorsize);
@@ -46,6 +47,8 @@ private:
     void   ByteSwapDisk();
     void   ForceByteSwapDisk();
     void   SetError(LanguageStringID ErrorMsg);
+    void   InitSysDataD64();
+    void   DeinitSysDataD64();
     void   GenerateLBAToPhysTable();
     uint32_t LBAToVZone(uint32_t lba);
     uint32_t LBAToByte(uint32_t lba, uint32_t nlbas);
@@ -64,6 +67,8 @@ private:
     uint8_t * m_DiskHeaderBase;
     uint32_t m_DiskFileSize;
     uint32_t m_DiskBufAddress;
+    uint32_t m_DiskSysAddress;
+    uint32_t m_DiskIDAddress;
     LanguageStringID m_ErrorMsg;
     Country m_Country;
     stdstr m_RomName, m_FileName, m_DiskIdent;
@@ -74,6 +79,7 @@ private:
     #define MAX_LBA             0x10DB
     #define SIZE_LBA            MAX_LBA+1
     #define SYSTEM_LBAS         24
+    #define DISKID_LBA          14
     #define SECTORS_PER_BLOCK	85
     #define BLOCKS_PER_TRACK	2
 

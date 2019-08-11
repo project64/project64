@@ -24,7 +24,9 @@ m_DiskImageBase(NULL),
 m_DiskHeader(NULL),
 m_DiskHeaderBase(NULL),
 m_ErrorMsg(EMPTY_STRING),
-m_DiskBufAddress(0)
+m_DiskBufAddress(0),
+m_DiskSysAddress(0),
+m_DiskIDAddress(0)
 {
 }
 
@@ -37,7 +39,7 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
     UnallocateDiskImage();
     m_ErrorMsg = EMPTY_STRING;
 
-    //Assume the file extension is *.ndd (it is the only case where it is loaded)
+    //Assume the file extension is *.ndd or *.d64
     stdstr ext = CPath(FileLoc).GetExtension();
     stdstr ShadowFile = FileLoc;
     ShadowFile[ShadowFile.length() - 1] = 'r';
@@ -55,14 +57,14 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
 
     char RomName[5];
     m_FileName = FileLoc;
-    if (*(uint32_t *)(&m_DiskImage[0x43670]) != 0)
+    if (*(uint32_t *)(&GetDiskAddressID()[0]) != 0)
     {
-        m_DiskIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(&m_DiskImage[0]), *(uint32_t *)(&m_DiskImage[0x43670]), m_DiskImage[0x43670]);
+        m_DiskIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(&GetDiskAddressSys()[0]), *(uint32_t *)(&GetDiskAddressID()[0]), GetDiskAddressID()[0]);
         //Get the disk ID from the disk image
-        RomName[0] = (char)*(m_DiskImage + 0x43673);
-        RomName[1] = (char)*(m_DiskImage + 0x43672);
-        RomName[2] = (char)*(m_DiskImage + 0x43671);
-        RomName[3] = (char)*(m_DiskImage + 0x43670);
+        RomName[0] = (char)*(GetDiskAddressID() + 3);
+        RomName[1] = (char)*(GetDiskAddressID() + 2);
+        RomName[2] = (char)*(GetDiskAddressID() + 1);
+        RomName[3] = (char)*(GetDiskAddressID() + 0);
         RomName[4] = '\0';
     }
     else
@@ -72,7 +74,7 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
         {
             crc += *(uint32_t *)(m_DiskImage + i);
         }
-        m_DiskIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(&m_DiskImage[0]), crc, m_DiskImage[0x43670]);
+        m_DiskIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(GetDiskAddressSys()[0]), crc, GetDiskAddressID()[0]);
 
         //Get the disk ID from the disk image
         RomName[0] = m_DiskIdent[12];
@@ -87,9 +89,10 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
         }
     }
     m_RomName = RomName;
-    m_Country = (Country)m_DiskImage[0x43670];
-    m_DiskType = m_DiskImage[5 ^ 3] & 0x0F;
+    m_Country = (Country)GetDiskAddressID()[0];
+    m_DiskType = GetDiskAddressSys()[5 ^ 3] & 0x0F;
     GenerateLBAToPhysTable();
+    InitSysDataD64();
 
     if (g_Disk == this)
     {
@@ -101,6 +104,8 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
 
 bool CN64Disk::SaveDiskImage()
 {
+    DeinitSysDataD64();
+
     //NO NEED TO SAVE IF DISK TYPE IS 6
     if (m_DiskType == 6)
     {
@@ -156,6 +161,7 @@ bool CN64Disk::IsValidDiskImage(uint8_t Test[4])
 {
     if (*((uint32_t *)&Test[0]) == 0x16D348E8) { return true; }
     else if (*((uint32_t *)&Test[0]) == 0x56EE6322) { return true; }
+    else if (*((uint32_t *)&Test[0]) == 0x00000000) { return true; }
     return false;
 }
 
@@ -251,10 +257,11 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
         return false;
     }
     uint32_t DiskFileSize = m_DiskFile.GetLength();
+    stdstr ext = CPath(FileLoc).GetExtension();
     WriteTrace(TraceN64System, TraceDebug, "Successfully Opened, size: 0x%X", DiskFileSize);
 
     //Check Disk File Format
-    if ((DiskFileSize == MameFormatSize) || (DiskFileSize == SDKFormatSize))
+    if (((DiskFileSize == MameFormatSize) || (DiskFileSize == SDKFormatSize)) && (ext.compare("ndr") || ext.compare("ndd")))
     {
         if (DiskFileSize == MameFormatSize)
         {
@@ -305,6 +312,60 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
             WriteTrace(TraceN64System, TraceError, "Expected to read: 0x%X, read: 0x%X", TotalRead, DiskFileSize);
             return false;
         }
+
+        m_DiskSysAddress = 0;
+        m_DiskIDAddress = 0x43670;
+
+        g_Notify->DisplayMessage(5, MSG_BYTESWAP);
+        ByteSwapDisk();
+    }
+    else if ((DiskFileSize > 0x4F08) && (ext.compare("d6r") || ext.compare("d64")))
+    {
+        m_DiskFormat = DiskFormatD64;
+        WriteTrace(TraceN64System, TraceDebug, "Disk File is D64 Format");
+
+        if (!AllocateDiskImage(DiskFileSize))
+        {
+            m_DiskFile.Close();
+            return false;
+        }
+
+        //Load the n64 disk to the allocated memory
+        g_Notify->DisplayMessage(5, MSG_LOADING);
+        m_DiskFile.SeekToBegin();
+
+        uint32_t count, TotalRead = 0;
+        for (count = 0; count < (int)DiskFileSize; count += ReadFromRomSection)
+        {
+            uint32_t dwToRead = DiskFileSize - count;
+            if (dwToRead > ReadFromRomSection) { dwToRead = ReadFromRomSection; }
+
+            if (m_DiskFile.Read(&m_DiskImage[count], dwToRead) != dwToRead)
+            {
+                m_DiskFile.Close();
+                SetError(MSG_FAIL_IMAGE);
+                WriteTrace(TraceN64System, TraceError, "Failed to read file (TotalRead: 0x%X)", TotalRead);
+                return false;
+            }
+            TotalRead += dwToRead;
+
+            //Show Message of how much % wise of the rom has been loaded
+            g_Notify->DisplayMessage(0, stdstr_f("%s: %.2f%c", GS(MSG_LOADED), ((float)TotalRead / (float)DiskFileSize) * 100.0f, '%').c_str());
+        }
+
+        if (DiskFileSize != TotalRead)
+        {
+            m_DiskFile.Close();
+            SetError(MSG_FAIL_IMAGE);
+            WriteTrace(TraceN64System, TraceError, "Expected to read: 0x%X, read: 0x%X", TotalRead, DiskFileSize);
+            return false;
+        }
+
+        m_DiskSysAddress = 0;
+        m_DiskIDAddress = 0x100;
+
+        g_Notify->DisplayMessage(5, MSG_BYTESWAP);
+        ForceByteSwapDisk();
     }
     else
     {
@@ -314,15 +375,12 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
         return false;
     }
 
-    g_Notify->DisplayMessage(5, MSG_BYTESWAP);
-    ByteSwapDisk();
-
     ProtectMemory(m_DiskImage, m_DiskFileSize, MEM_READWRITE);
 
     AllocateDiskHeader();
-    memcpy(m_DiskHeader, m_DiskImage, 0x20);
-    memcpy(m_DiskHeader + 0x20, m_DiskImage + 0x43670, 0x20);
-    memcpy(m_DiskHeader + 0x3B, m_DiskImage + 0x43670, 5);
+    memcpy(m_DiskHeader, GetDiskAddressSys(), 0x20);
+    memcpy(m_DiskHeader + 0x20, GetDiskAddressID(), 0x20);
+    memcpy(m_DiskHeader + 0x3B, GetDiskAddressID(), 5);
     return true;
 }
 
@@ -397,6 +455,7 @@ uint32_t CN64Disk::GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t b
     uint32_t offset = 0;
     if (m_DiskFormat == DiskFormatMAME)
     {
+        //MAME
         uint32_t tr_off = 0;
         uint16_t dd_zone = 0;
 
@@ -445,10 +504,63 @@ uint32_t CN64Disk::GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t b
     }
     else if (m_DiskFormat == DiskFormatSDK)
     {
+        //SDK
         offset = LBAToByte(0, PhysToLBA(head, track, block)) + sector * sectorsize;
     }
-    //WriteTrace(TraceN64System, TraceDebug, "Head %d Track %d Block %d - LBA %d - Address %08X", head, track, block, PhysToLBA(head, track, block), offset);
+    else
+    {
+        //D64
+        uint16_t ROM_LBA_END = *(uint16_t*)(&GetDiskAddressSys()[0xE2]);
+        uint16_t RAM_LBA_START = *(uint16_t*)(&GetDiskAddressSys()[0xE0]);
+        uint16_t RAM_LBA_END = *(uint16_t*)(&GetDiskAddressSys()[0xE6]);
+        uint16_t LBA = PhysToLBA(head, track, block);
+        if (LBA < DISKID_LBA)
+        {
+            offset = m_DiskSysAddress;
+        }
+        else if ((LBA >= DISKID_LBA) && (LBA < SYSTEM_LBAS))
+        {
+            offset = m_DiskIDAddress;
+        }
+        else if (LBA <= (ROM_LBA_END + SYSTEM_LBAS))
+        {
+            offset = 0x200 + LBAToByte(SYSTEM_LBAS, LBA - SYSTEM_LBAS) + (sector * sectorsize);
+        }
+        else if (((LBA - SYSTEM_LBAS) <= RAM_LBA_END) && ((LBA - SYSTEM_LBAS) >= RAM_LBA_START))
+        {
+            offset = 0x200 + LBAToByte(SYSTEM_LBAS, ROM_LBA_END + 1);
+            offset += LBAToByte(RAM_LBA_START + SYSTEM_LBAS, LBA - RAM_LBA_START - SYSTEM_LBAS) + (sector * sectorsize);
+        }
+        else
+        {
+            offset = 0xFFFFFFFF;
+        }
+    }
+    if (sector == 0)
+    {
+        WriteTrace(TraceN64System, TraceDebug, "Head %d Track %d Block %d - LBA %d - Address %08X", head, track, block, PhysToLBA(head, track, block), offset);
+    }
     return offset;
+}
+
+void CN64Disk::InitSysDataD64()
+{
+    //Else the disk will not work properly.
+    if (m_DiskFormat != DiskFormatD64)
+        return;
+
+    GetDiskAddressSys()[4^3] = 0x10;
+    GetDiskAddressSys()[5^3] |= 0x10;
+}
+
+void CN64Disk::DeinitSysDataD64()
+{
+    //Restore the data
+    if (m_DiskFormat != DiskFormatD64)
+        return;
+
+    GetDiskAddressSys()[4^3] = 0x00;
+    GetDiskAddressSys()[5^3] &= 0x0F;
 }
 
 void CN64Disk::GenerateLBAToPhysTable()

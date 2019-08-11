@@ -987,7 +987,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             switch (LOWORD(wParam)) {
             case ID_POPUPMENU_PLAYGAME: 
                 {
-                    if (CPath(_this->CurrentedSelectedRom()).GetExtension() != "ndd")
+                    if ((CPath(_this->CurrentedSelectedRom()).GetExtension() != "ndd") && (CPath(_this->CurrentedSelectedRom()).GetExtension() != "d64"))
                     {
                         g_BaseSystem->RunFileImage(_this->CurrentedSelectedRom());
                     }
@@ -1010,7 +1010,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             case ID_POPUPMENU_PLAYGAMEWITHDISK:
                 {
                     CPath FileName;
-                    const char * Filter = "N64DD Disk Image (*.ndd)\0*.ndd\0All files (*.*)\0*.*\0";
+                    const char * Filter = "N64DD Disk Image (*.ndd, *.d64)\0*.ndd;*.d64\0All files (*.*)\0*.*\0";
                     if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
                     {
                         if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskComboImage(_this->CurrentedSelectedRom(), FileName))
@@ -1039,7 +1039,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             case ID_POPUPMENU_EDITCHEATS:
             case ID_POPUPMENU_CHOOSEENHANCEMENT:
                 {
-                    if (CPath(_this->CurrentedSelectedRom()).GetExtension() != "ndd")
+                    if ((CPath(_this->CurrentedSelectedRom()).GetExtension() != "ndd") && (CPath(_this->CurrentedSelectedRom()).GetExtension() != "d64"))
                     {
                         CN64Rom Rom;
                         Rom.LoadN64Image(_this->CurrentedSelectedRom(), true);
@@ -1172,7 +1172,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             DragFinish(hDrop);
 
             stdstr ext = CPath(filename).GetExtension();
-            if (!(_stricmp(ext.c_str(), "ndd") == 0))
+            if ((!(_stricmp(ext.c_str(), "ndd") == 0)) && (!(_stricmp(ext.c_str(), "d64") == 0)))
             {
                 delete g_DDRom;
                 g_DDRom = NULL;

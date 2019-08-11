@@ -20,7 +20,7 @@ m_pRomInfo(NULL),
 m_pDiskInfo(NULL)
 {
     if (m_FileName.length() == 0)  { return; }
-    if (CPath(m_FileName).GetExtension() != "ndd")
+    if ((CPath(m_FileName).GetExtension() != "ndd") && (CPath(m_FileName).GetExtension() != "d64"))
     {
         m_pRomInfo = new CN64Rom;
         if (!m_pRomInfo->LoadN64Image(m_FileName.c_str()))
