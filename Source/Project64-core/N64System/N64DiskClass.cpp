@@ -11,6 +11,7 @@
 #include "stdafx.h"
 #include "N64DiskClass.h"
 #include "SystemGlobals.h"
+#include <Common/md5.h>
 #include <Common/Platform.h>
 #include <Common/SmartPointer.h>
 #include <Common/MemoryManagement.h>
@@ -20,6 +21,8 @@
 CN64Disk::CN64Disk() :
 m_DiskImage(NULL),
 m_DiskImageBase(NULL),
+m_DiskHeader(NULL),
+m_DiskHeaderBase(NULL),
 m_ErrorMsg(EMPTY_STRING),
 m_DiskBufAddress(0)
 {
@@ -32,8 +35,10 @@ CN64Disk::~CN64Disk()
 bool CN64Disk::LoadDiskImage(const char * FileLoc)
 {
     UnallocateDiskImage();
+    m_ErrorMsg = EMPTY_STRING;
 
     //Assume the file extension is *.ndd (it is the only case where it is loaded)
+    stdstr ext = CPath(FileLoc).GetExtension();
     stdstr ShadowFile = FileLoc;
     ShadowFile[ShadowFile.length() - 1] = 'r';
 
@@ -372,6 +377,7 @@ void CN64Disk::UnallocateDiskImage()
 
     if (m_DiskHeaderBase)
     {
+        ProtectMemory(m_DiskHeader, 0x40, MEM_READWRITE);
         delete[] m_DiskHeaderBase;
         m_DiskHeaderBase = NULL;
     }
