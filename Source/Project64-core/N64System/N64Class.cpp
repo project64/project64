@@ -903,6 +903,8 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
     //64DD Registers
     m_Reg.ASIC_STATUS = DD_STATUS_RST_STATE;
     m_Reg.ASIC_ID_REG = 0x00030000;
+    if (g_DDRom && g_DDRom->CicChipID() == CIC_NUS_DDTL)
+        m_Reg.ASIC_ID_REG = 0x00040000;
 
     //m_Reg.REVISION_REGISTER   = 0x00000511;
     m_Reg.FixFpuLocations();
@@ -989,6 +991,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
             case CIC_NUS_5167:
             case CIC_NUS_8303:
             case CIC_NUS_DDUS:
+            case CIC_NUS_DDTL:
             default:
                 //no specific values
                 break;
@@ -1005,6 +1008,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
             m_Reg.m_GPR[22].DW = 0x000000000000003F;
             break;
         case CIC_NUS_8303:        //64DD IPL CIC
+        case CIC_NUS_DDTL:        //64DD IPL TOOL CIC
         case CIC_NUS_5167:        //64DD CONVERSION CIC
             m_Reg.m_GPR[22].DW = 0x00000000000000DD;
             break;
