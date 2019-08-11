@@ -261,13 +261,11 @@ void DiskBMUpdate()
 void DiskBMRead()
 {
     DiskBMReadWrite(false);
-    return;
 }
 
 void DiskBMWrite()
 {
     DiskBMReadWrite(true);
-    return;
 }
 
 void DiskBMReadWrite(bool write)
@@ -278,7 +276,7 @@ void DiskBMReadWrite(bool write)
     uint16_t sector = dd_current;
     uint16_t sectorsize = (((g_Reg->ASIC_HOST_SECBYTE & 0x00FF0000) >> 16) + 1);
     
-    uint32_t addr = g_Disk->GetDiskAddressBlock(head, track, block) + (sector * sectorsize);
+    uint32_t addr = g_Disk->GetDiskAddressBlock(head, track, block, sector, sectorsize);
     g_Disk->SetDiskAddressBuffer(addr);
 }
 

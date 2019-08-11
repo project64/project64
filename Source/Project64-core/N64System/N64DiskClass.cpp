@@ -392,7 +392,7 @@ void CN64Disk::UnallocateDiskImage()
     m_DiskImage = NULL;
 }
 
-uint32_t CN64Disk::GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t block)
+uint32_t CN64Disk::GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t block, uint16_t sector, uint16_t sectorsize)
 {
     uint32_t offset = 0;
     if (m_DiskFormat == DiskFormatMAME)
@@ -441,11 +441,11 @@ uint32_t CN64Disk::GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t b
             tr_off = track;
         }
 
-        offset = MAMEStartOffset[dd_zone] + tr_off * TRACKSIZE(dd_zone) + block * BLOCKSIZE(dd_zone);
+        offset = MAMEStartOffset[dd_zone] + tr_off * TRACKSIZE(dd_zone) + block * BLOCKSIZE(dd_zone) + sector * sectorsize;
     }
     else if (m_DiskFormat == DiskFormatSDK)
     {
-        offset = LBAToByte(0, PhysToLBA(head, track, block));
+        offset = LBAToByte(0, PhysToLBA(head, track, block)) + sector * sectorsize;
     }
     //WriteTrace(TraceN64System, TraceDebug, "Head %d Track %d Block %d - LBA %d - Address %08X", head, track, block, PhysToLBA(head, track, block), offset);
     return offset;

@@ -30,7 +30,7 @@ public:
     uint8_t *  GetDiskAddressSys() { return m_DiskImage; }
     uint8_t *  GetDiskHeader() { return m_DiskHeader; }
     void    SetDiskAddressBuffer(uint32_t address) { m_DiskBufAddress = address; }
-    uint32_t   GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t block);
+    uint32_t   GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t block, uint16_t sector, uint16_t sectorsize);
     stdstr  GetRomName() const { return m_RomName; }
     stdstr  GetFileName() const { return m_FileName; }
     stdstr  GetDiskIdent() const { return m_DiskIdent; }
