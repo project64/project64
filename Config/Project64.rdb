@@ -7141,17 +7141,24 @@ Status=Compatible
 //
 // ROMs below are 64DD content
 
-[00000000-00000000-C:4A]
+[E1F9D977-33E17503-C:4A]
 32bit=No
 Fixed Audio=0
 Good Name=64DD IPL (JPN)
 RDRAM Size=8
 Status=Compatible
 
-[00000000-00000000-C:45]
+[A91EAC78-1A22D1D7-C:45]
 32bit=No
 Fixed Audio=0
 Good Name=64DD IPL (USA)
+RDRAM Size=8
+Status=Compatible
+
+[968BFE04-014A96F5-C:4A]
+32bit=No
+Fixed Audio=0
+Good Name=64DD TOOL IPL (JPN)
 RDRAM Size=8
 Status=Compatible
 
