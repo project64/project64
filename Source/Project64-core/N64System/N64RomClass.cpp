@@ -321,6 +321,7 @@ void CN64Rom::CalculateRomCrc()
     uint32_t a0, a1, a2, a3;
     uint32_t s0;
     uint32_t v0, v1;
+    uint32_t length = 0x00100000;
 
     // CIC_NUS_6101	at=0x5D588B65 , s6=0x3F
     // CIC_NUS_6102	at=0x5D588B65 , s6=0x3F
@@ -328,9 +329,11 @@ void CN64Rom::CalculateRomCrc()
     // CIC_NUS_6105	at=0x5d588b65 , s6=0x91
     // CIC_NUS_6106	at=0x6C078965 , s6=0x85
 
-    // 64DD IPL		at=0x02E90EDD , s6=0xdd
+    // 64DD IPL (JPN) at=0x02E90EDD , s6=0xdd
+    // 64DD IPL (USA) at=0x02E90EDD , s6=0xde
+    // 64DD TOOL IPL  at=0x0260BCD5 , s6=0xdd
 
-    //v0 = 0xFFFFFFFF & (0x3F * at) + 1;
+    //v0 = 0xFFFFFFFF & (s6 * at) + 1;
     switch (m_CicChip)
     {
     case CIC_NUS_6101:
@@ -338,6 +341,9 @@ void CN64Rom::CalculateRomCrc()
     case CIC_NUS_6103: v0 = 0xA3886759; break;
     case CIC_NUS_6105: v0 = 0xDF26F436; break;
     case CIC_NUS_6106: v0 = 0x1FEA617A; break;
+    case CIC_NUS_DDUS: length = 0x000A0000; v0 = 0x861AE3A7; break;
+    case CIC_NUS_8303: length = 0x000A0000; v0 = 0x8331D4CA; break;
+    case CIC_NUS_DDTL: length = 0x000A0000; v0 = 0x0D8303E2; break;
     default:
         return;
     }
@@ -355,14 +361,23 @@ void CN64Rom::CalculateRomCrc()
     a2 = v0;
     t4 = v0;
 
-    for (t0 = 0; t0 < 0x00100000; t0 += 4)
+    for (t0 = 0; t0 < length; t0 += 4)
     {
         v0 = *(uint32_t *)(m_ROMImage + t0 + 0x1000);
 
         v1 = a3 + v0;
         a1 = v1;
 
-        if (v1 < a3) t2 += 0x1;
+        if (v1 < a3) {
+            if (m_CicChip == CIC_NUS_DDUS || m_CicChip == CIC_NUS_8303)
+            {
+                t2 = t2 ^ t3;
+            }
+            else
+            {
+                t2 += 0x1;
+            }
+        }
         v1 = v0 & 0x001F;
 
         a0 = (v0 << v1) | (v0 >> (t5 - v1));
@@ -371,8 +386,17 @@ void CN64Rom::CalculateRomCrc()
         t3 = t3 ^ v0;
 
         s0 = s0 + a0;
-        if (a2 < v0) a2 = a3 ^ v0 ^ a2;
-        else a2 = a2 ^ a0;
+        if (a2 < v0)
+        {
+            a2 = a3 ^ v0 ^ a2;
+        }
+        else
+        {
+            if (m_CicChip == CIC_NUS_8303)
+                a2 = a2 + a0;
+            else
+                a2 = a2 ^ a0;
+        }
 
         if (m_CicChip == CIC_NUS_6105)
         {
@@ -613,9 +637,23 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
     }
 
     m_Country = (Country)m_ROMImage[0x3D];
-    m_RomIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(&m_ROMImage[0x10]), *(uint32_t *)(&m_ROMImage[0x14]), m_ROMImage[0x3D]);
-    WriteTrace(TraceN64System, TraceDebug, "Ident: %s", m_RomIdent.c_str());
     CalculateCicChip();
+    uint32_t CRC1, CRC2;
+
+    if (m_CicChip == CIC_NUS_8303 || m_CicChip == CIC_NUS_DDUS || m_CicChip == CIC_NUS_DDTL)
+    {
+        //Handle CRC differently if 64DD IPL
+        CRC1 = (*(uint16_t *)(&m_ROMImage[0x608]) << 16) | *(uint16_t *)(&m_ROMImage[0x60C]);
+        CRC2 = (*(uint16_t *)(&m_ROMImage[0x638]) << 16) | *(uint16_t *)(&m_ROMImage[0x63C]);
+    }
+    else
+    {
+        CRC1 = *(uint32_t *)(&m_ROMImage[0x10]);
+        CRC2 = *(uint32_t *)(&m_ROMImage[0x14]);
+    }
+
+    m_RomIdent.Format("%08X-%08X-C:%X", CRC1, CRC2, m_ROMImage[0x3D]);
+    WriteTrace(TraceN64System, TraceDebug, "Ident: %s", m_RomIdent.c_str());
 
     if (!LoadBootCodeOnly && g_Rom == this)
     {
@@ -757,9 +795,23 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
     }
 
     m_Country = (Country)m_ROMImage[0x3D];
-    m_RomIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(&m_ROMImage[0x10]), *(uint32_t *)(&m_ROMImage[0x14]), m_ROMImage[0x3D]);
-    WriteTrace(TraceN64System, TraceDebug, "Ident: %s", m_RomIdent.c_str());
     CalculateCicChip();
+    uint32_t CRC1, CRC2;
+
+    if (m_CicChip == CIC_NUS_8303 || m_CicChip == CIC_NUS_DDUS || m_CicChip == CIC_NUS_DDTL)
+    {
+        //Handle CRC differently if 64DD IPL
+        CRC1 = (*(uint16_t *)(&m_ROMImage[0x608]) << 16) | *(uint16_t *)(&m_ROMImage[0x60C]);
+        CRC2 = (*(uint16_t *)(&m_ROMImage[0x638]) << 16) | *(uint16_t *)(&m_ROMImage[0x63C]);
+    }
+    else
+    {
+        CRC1 = *(uint32_t *)(&m_ROMImage[0x10]);
+        CRC2 = *(uint32_t *)(&m_ROMImage[0x14]);
+    }
+
+    m_RomIdent.Format("%08X-%08X-C:%X", CRC1, CRC2, m_ROMImage[0x3D]);
+    WriteTrace(TraceN64System, TraceDebug, "Ident: %s", m_RomIdent.c_str());
 
     if (!IsLoadedRomDDIPL())
     {
