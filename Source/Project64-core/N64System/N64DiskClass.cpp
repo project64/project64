@@ -26,7 +26,8 @@ m_DiskHeaderBase(NULL),
 m_ErrorMsg(EMPTY_STRING),
 m_DiskBufAddress(0),
 m_DiskSysAddress(0),
-m_DiskIDAddress(0)
+m_DiskIDAddress(0),
+m_DiskRomAddress(0)
 {
 }
 
@@ -57,10 +58,13 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
 
     char RomName[5];
     m_FileName = FileLoc;
+    uint32_t crc1 = CalculateCrc();
+    uint32_t crc2 = ~crc1;
+    m_DiskIdent.Format("%08X-%08X-C:%X", crc1, crc2, GetDiskAddressID()[0]);
+    //Get the disk ID from the disk image
     if (*(uint32_t *)(&GetDiskAddressID()[0]) != 0)
     {
-        m_DiskIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(&GetDiskAddressSys()[0]), *(uint32_t *)(&GetDiskAddressID()[0]), GetDiskAddressID()[0]);
-        //Get the disk ID from the disk image
+        //if not 0x00000000
         RomName[0] = (char)*(GetDiskAddressID() + 3);
         RomName[1] = (char)*(GetDiskAddressID() + 2);
         RomName[2] = (char)*(GetDiskAddressID() + 1);
@@ -69,14 +73,7 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
     }
     else
     {
-        uint32_t crc = 0;
-        for (uint8_t i = 0; i < 0xE8; i += 4)
-        {
-            crc += *(uint32_t *)(m_DiskImage + i);
-        }
-        m_DiskIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(&GetDiskAddressSys()[0]), crc, GetDiskAddressID()[0]);
-
-        //Get the disk ID from the disk image
+        //if 0x00000000 then use a made up one
         RomName[0] = m_DiskIdent[12];
         RomName[1] = m_DiskIdent[11];
         RomName[2] = m_DiskIdent[10];
@@ -158,8 +155,21 @@ void CN64Disk::SwapDiskImage(const char * FileLoc)
     LoadDiskImage(FileLoc);
 }
 
-bool CN64Disk::IsValidDiskImage(uint8_t Test[4])
+bool CN64Disk::IsValidDiskImage(uint8_t Test[0x20])
 {
+    //Basic System Data Check (first 0x20 bytes is enough)
+    //Disk Type
+    if ((Test[0x05] & 0xEF) > 6) return false;
+
+    //IPL Load Block
+    uint16_t ipl_load_blk = ((Test[0x06] << 16) | Test[0x07]);
+    if (ipl_load_blk > 0x10C3 || ipl_load_blk == 0x0000) return false;
+
+    //IPL Load Address
+    uint32_t ipl_load_addr = (Test[0x1C] << 32) | (Test[0x1D] << 24) | (Test[0x1E] << 16) | Test[0x1F];
+    if (ipl_load_addr < 0x80000000 && ipl_load_addr >= 0x80800000) return false;
+
+    //Country Code
     if (*((uint32_t *)&Test[0]) == 0x16D348E8) { return true; }
     else if (*((uint32_t *)&Test[0]) == 0x56EE6322) { return true; }
     else if (*((uint32_t *)&Test[0]) == 0x00000000) { return true; }
@@ -242,19 +252,29 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
         return false;
     }
 
-    //Read the first 4 bytes and make sure it is a valid disk image
-    uint8_t Test[4];
-    m_DiskFile.SeekToBegin();
-    if (m_DiskFile.Read(Test, sizeof(Test)) != sizeof(Test))
+    //Make sure it is a valid disk image
+    uint8_t Test[0x20];
+    bool isValidDisk = false;
+
+    const uint8_t blocks[8] = { 0, 1, 2, 3, 8, 9, 10, 11 };
+    for (int i = 0; i < 8; i++)
     {
-        m_DiskFile.Close();
-        WriteTrace(TraceN64System, TraceError, "Failed to read ident bytes");
-        return false;
+        m_DiskFile.Seek(0x4D08 * blocks[i], CFileBase::SeekPosition::begin);
+        if (m_DiskFile.Read(Test, sizeof(Test)) != sizeof(Test))
+        {
+            m_DiskFile.Close();
+            WriteTrace(TraceN64System, TraceError, "Failed to read ident bytes");
+            return false;
+        }
+
+        isValidDisk = IsValidDiskImage(Test);
+        if (isValidDisk)
+            break;
     }
-    if (!IsValidDiskImage(Test))
+    if (!isValidDisk)
     {
         m_DiskFile.Close();
-        WriteTrace(TraceN64System, TraceError, "invalid image file %X %X %X %X", Test[0], Test[1], Test[2], Test[3]);
+        WriteTrace(TraceN64System, TraceError, "invalid disk image file");
         return false;
     }
     uint32_t DiskFileSize = m_DiskFile.GetLength();
@@ -387,10 +407,10 @@ void CN64Disk::ByteSwapDisk()
 {
     uint32_t count;
 
-    switch (*((uint32_t *)&m_DiskImage[0]))
+    switch (*((uint32_t *)&GetDiskAddressSys()[8]))
     {
-    case 0x16D348E8:
-    case 0x56EE6322:
+    case 0x281E140A:
+    case 0x3024180C:
         for (count = 0; count < m_DiskFileSize; count += 4)
         {
             m_DiskImage[count] ^= m_DiskImage[count + 3];
@@ -401,10 +421,10 @@ void CN64Disk::ByteSwapDisk()
             m_DiskImage[count + 1] ^= m_DiskImage[count + 2];
         }
         break;
-    case 0xE848D316: break;
-    case 0x2263EE56: break;
+    case 0x0A141E28: break;
+    case 0x0C182430: break;
     default:
-        g_Notify->DisplayError(stdstr_f("ByteSwapDisk: %X", m_DiskImage[0]).c_str());
+        g_Notify->DisplayError(stdstr_f("ByteSwapDisk: %08X - %08X", *((uint32_t *)&GetDiskAddressSys()[8]), m_DiskSysAddress).c_str());
     }
 }
 
@@ -447,6 +467,17 @@ void CN64Disk::UnallocateDiskImage()
         m_DiskImageBase = NULL;
     }
     m_DiskImage = NULL;
+}
+
+uint32_t CN64Disk::CalculateCrc()
+{
+    //Custom CRC
+    int crc = 0;
+    for (int i = 0; i < 0x200; i += 4)
+    {
+        crc += *(uint32_t*)(&GetDiskAddressRom()[i]);
+    }
+    return crc;
 }
 
 uint32_t CN64Disk::GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t block, uint16_t sector, uint16_t sectorsize)
@@ -549,6 +580,7 @@ void CN64Disk::DetectSystemArea()
         //MAME / SDK (System Area can be handled identically)
         m_DiskSysAddress = 0;
         m_DiskIDAddress = DISKID_LBA * 0x4D08;
+        m_DiskRomAddress = SYSTEM_LBAS * 0x4D08;
 
         //Handle System Data
         const uint16_t sysblocks[4] = { 9, 8, 1, 0 };
@@ -590,6 +622,7 @@ void CN64Disk::DetectSystemArea()
         //D64 (uses fixed addresses)
         m_DiskSysAddress = 0x000;
         m_DiskIDAddress = 0x100;
+        m_DiskRomAddress = 0x200;
     }
 }
 

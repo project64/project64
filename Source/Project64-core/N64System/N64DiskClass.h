@@ -22,16 +22,18 @@ public:
     bool    LoadDiskImage(const char * FileLoc);
     bool    SaveDiskImage();
     void    SwapDiskImage(const char * FileLoc);
-    static bool IsValidDiskImage(uint8_t Test[4]);
+    static bool IsValidDiskImage(uint8_t Test[0x20]);
     void    SaveDiskSettingID(bool temp);
     void    ClearDiskSettingID();
     uint8_t *  GetDiskAddress() { return m_DiskImage; }
     uint8_t *  GetDiskAddressBuffer() { return m_DiskImage + m_DiskBufAddress; }
     uint8_t *  GetDiskAddressSys() { return m_DiskImage + m_DiskSysAddress; }
     uint8_t *  GetDiskAddressID() { return m_DiskImage + m_DiskIDAddress; }
+    uint8_t *  GetDiskAddressRom() { return m_DiskImage + m_DiskRomAddress; }
     uint8_t *  GetDiskHeader() { return m_DiskHeader; }
     void    SetDiskAddressBuffer(uint32_t address) { m_DiskBufAddress = address; }
     uint32_t   GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t block, uint16_t sector, uint16_t sectorsize);
+    uint32_t   CalculateCrc();
     stdstr  GetRomName() const { return m_RomName; }
     stdstr  GetFileName() const { return m_FileName; }
     stdstr  GetDiskIdent() const { return m_DiskIdent; }
@@ -73,6 +75,7 @@ private:
     uint32_t m_DiskBufAddress;
     uint32_t m_DiskSysAddress;
     uint32_t m_DiskIDAddress;
+    uint32_t m_DiskRomAddress;
     LanguageStringID m_ErrorMsg;
     Country m_Country;
     stdstr m_RomName, m_FileName, m_DiskIdent;

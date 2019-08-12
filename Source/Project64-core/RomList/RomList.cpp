@@ -341,7 +341,7 @@ void CRomList::RefreshRomListStatic(CRomList * _this)
 
 bool CRomList::LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_t DataLen, int32_t * RomSize, FILE_FORMAT & FileFormat)
 {
-    uint8_t Test[4];
+    uint8_t Test[0x20];
 
     if (_strnicmp(&FileName[strlen(FileName) - 4], ".ZIP", 4) == 0)
     {
@@ -412,10 +412,6 @@ bool CRomList::LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_
         {
             return false;
         }
-        if (!CN64Rom::IsValidRomImage(Test) && !CN64Disk::IsValidDiskImage(Test))
-        {
-            return false;
-        }
 
         if (CN64Rom::IsValidRomImage(Test))
         {
@@ -425,21 +421,85 @@ bool CRomList::LoadDataFromRomFile(const char * FileName, uint8_t * Data, int32_
                 return false;
             }
         }
-
-        if (CN64Disk::IsValidDiskImage(Test))
+        else if (!CN64Disk::IsValidDiskImage(Test) && (File.GetLength() == DISKSIZE_MAME || File.GetLength() == DISKSIZE_SDK))
         {
-            //Is a Disk Image
-            File.SeekToBegin();
+            uint32_t sysdataoffset = 0;
+            uint32_t diskidoffset = 0x43670;
+            uint32_t romdataoffset = 0x738C0;
+            bool isValidDisk = false;
+            //Could still be a Disk Image
+
+            //System Data
+            const uint8_t blocks[7] = { 2, 3, 10, 11, 1, 8, 9 };
+            for (int i = 0; i < 7; i++)
+            {
+                sysdataoffset = 0x4D08 * blocks[i];
+                File.Seek(sysdataoffset, CFileBase::begin);
+                if (File.Read(Test, sizeof(Test)) != sizeof(Test))
+                {
+                    return false;
+                }
+
+                isValidDisk = CN64Disk::IsValidDiskImage(Test);
+                if (isValidDisk)
+                    break;
+            }
+
+            if (!isValidDisk)
+            {
+                return false;
+            }
+
+            File.Seek(sysdataoffset, CFileBase::begin);
             if (!File.Read(Data, 0x100))
             {
                 return false;
             }
-            File.Seek(0x43670, CFileBase::begin);
+            File.Seek(diskidoffset, CFileBase::begin);
             if (!File.Read(Data + 0x100, 0x20))
             {
                 return false;
             }
+            File.Seek(romdataoffset, CFileBase::begin);
+            if (!File.Read(Data + 0x200, 0x200))
+            {
+                return false;
+            }
         }
+        else if (CN64Disk::IsValidDiskImage(Test))
+        {
+            //Is a Disk Image
+            uint32_t sysdataoffset = 0;
+            uint32_t diskidoffset = 0x100;
+            uint32_t romdataoffset = 0x200;
+
+            if ((File.GetLength() == DISKSIZE_MAME) || (File.GetLength() == DISKSIZE_SDK))
+            {
+                diskidoffset = 0x43670;
+                romdataoffset = 0x738C0;
+            }
+
+            File.Seek(sysdataoffset, CFileBase::begin);
+            if (!File.Read(Data, 0x100))
+            {
+                return false;
+            }
+            File.Seek(diskidoffset, CFileBase::begin);
+            if (!File.Read(Data + 0x100, 0x20))
+            {
+                return false;
+            }
+            File.Seek(romdataoffset, CFileBase::begin);
+            if (!File.Read(Data + 0x200, 0x200))
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+
         *RomSize = File.GetLength();
         FileFormat = Format_Uncompressed;
     }
@@ -494,15 +554,12 @@ bool CRomList::FillRomInfo(ROM_INFO * pRomInfo)
             pRomInfo->CartID[2] = *(RomData + 0x102);
             pRomInfo->Manufacturer = '\0';
             pRomInfo->Country = *(RomData + 0x100);
-            pRomInfo->CRC1 = *(uint32_t *)(RomData + 0x00);
-            pRomInfo->CRC2 = *(uint32_t *)(RomData + 0x100);
-            if (pRomInfo->CRC2 == 0)
+            pRomInfo->CRC1 = 0;
+            for (uint32_t i = 0; i < 0x200; i += 4)
             {
-                for (uint8_t i = 0; i < 0xE8; i += 4)
-                {
-                    pRomInfo->CRC2 += *(uint32_t *)(RomData + i);
-                }
+                pRomInfo->CRC1 += *(uint32_t *)(&RomData[0x200 + i]);
             }
+            pRomInfo->CRC2 = ~pRomInfo->CRC1;
             pRomInfo->CicChip = CIC_NUS_8303;
             FillRomExtensionInfo(pRomInfo);
         }
@@ -582,6 +639,7 @@ void CRomList::ByteSwapRomData(uint8_t * Data, int32_t DataLen)
     case 0x07408027: //64DD IPL
     case 0xD316E848: //64DD JP Disk
     case 0xEE562263: //64DD US Disk
+    case 0x00000000: //64DD DEV Disk
         for (count = 0; count < DataLen; count += 4)
         {
             Data[count] ^= Data[count + 2];

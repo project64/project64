@@ -189,7 +189,7 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             //SetDlgItemTextW(hDlg, IDC_INFO_MD5, _this->m_pRomInfo->GetRomMD5().ToUTF16().c_str());
             //SetDlgItemTextW(hDlg, IDC_INFO_ROMSIZE, stdstr_f("%.1f MBit", (float)_this->m_pDiskInfo->GetRomSize() / 0x20000).ToUTF16().c_str());
 
-            BYTE * DiskHeader = _this->m_pDiskInfo->GetDiskAddress() + 0x43670;
+            BYTE * DiskHeader = _this->m_pDiskInfo->GetDiskAddressID();
             SetDlgItemTextW(hDlg, IDC_INFO_CARTID, stdstr_f("%c%c", DiskHeader[0x02], DiskHeader[0x01]).ToUTF16().c_str());
 
             /*switch (DiskHeader[0x00])
@@ -217,8 +217,8 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             default:
                 SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, stdstr_f(" Unknown %c (%02X)", DiskHeader[0x03], DiskHeader[0x03]).ToUTF16().c_str());
             }
-            SetDlgItemTextW(hDlg, IDC_INFO_CRC1, stdstr_f("0x%08X", *(uint32_t *)(_this->m_pDiskInfo->GetDiskAddress())).ToUTF16().c_str());
-            SetDlgItemTextW(hDlg, IDC_INFO_CRC2, stdstr_f("0x%08X", *(DWORD *)(DiskHeader)).ToUTF16().c_str());
+            SetDlgItemTextW(hDlg, IDC_INFO_CRC1, stdstr_f("0x%08X", (_this->m_pDiskInfo->CalculateCrc())).ToUTF16().c_str());
+            SetDlgItemTextW(hDlg, IDC_INFO_CRC2, stdstr_f("0x%08X", (~_this->m_pDiskInfo->CalculateCrc())).ToUTF16().c_str());
             /*
             std::wstring CicChip;
             switch (_this->m_pRomInfo->CicChipID())
