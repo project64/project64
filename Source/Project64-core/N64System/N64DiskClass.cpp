@@ -74,7 +74,7 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
         {
             crc += *(uint32_t *)(m_DiskImage + i);
         }
-        m_DiskIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(GetDiskAddressSys()[0]), crc, GetDiskAddressID()[0]);
+        m_DiskIdent.Format("%08X-%08X-C:%X", *(uint32_t *)(&GetDiskAddressSys()[0]), crc, GetDiskAddressID()[0]);
 
         //Get the disk ID from the disk image
         RomName[0] = m_DiskIdent[12];
