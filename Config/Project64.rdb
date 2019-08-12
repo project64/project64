@@ -7162,7 +7162,7 @@ Good Name=64DD TOOL IPL (JPN)
 RDRAM Size=8
 Status=Compatible
 
-[E848D316-444D504A-C:4A]
+[D06F15D7-2F90EA28-C:4A]
 32bit=No
 Core Note=Cannot use Capture Pak functionality.
 Fixed Audio=0
@@ -7170,7 +7170,7 @@ Good Name=Mario Artist Paint Studio (J)
 RDRAM Size=8
 Status=Compatible
 
-[E848D316-444D544A-C:4A]
+[56A227D6-A95DD829-C:4A]
 32bit=No
 Core Note=Cannot use Capture Pak functionality.
 Fixed Audio=0
@@ -7178,7 +7178,7 @@ Good Name=Mario Artist Talent Studio (J)
 RDRAM Size=8
 Status=Compatible
 
-[E848D316-444D424A-C:4A]
+[30B9A412-CF465BED-C:4A]
 32bit=No
 Core Note=Cannot use Randnet & Capture Pak functionality.
 Fixed Audio=0
@@ -7186,7 +7186,7 @@ Good Name=Mario Artist Communication Kit (J)
 RDRAM Size=8
 Status=Compatible
 
-[E848D316-444D474A-C:4A]
+[2E91FFC8-D16E0037-C:4A]
 32bit=No
 Fixed Audio=0
 Good Name=Mario Artist Polygon Studio (J)
@@ -7194,7 +7194,7 @@ Plugin Note=[Video] Cannot model on HLE plugins.
 RDRAM Size=8
 Status=Issues (plugin)
 
-[E848D316-4453434A-C:4A]
+[7BD92DC6-8426D239-C:4A]
 32bit=No
 Fixed Audio=1
 Good Name=Sim City 64 (J)
@@ -7203,7 +7203,7 @@ Plugin Note=[Video] Very slow, city is not rendering properly in HLE
 RDRAM Size=8
 Status=Issues (plugin)
 
-[E848D316-4450474A-C:4A]
+[905063EB-6FAF9C14-C:4A]
 32bit=No
 Fixed Audio=0
 Good Name=Nihon Pro Golf Tour 64 (J)
@@ -7211,21 +7211,21 @@ Counter Factor=1
 RDRAM Size=8
 Status=Compatible
 
-[E848D316-444B444A-C:4A]
+[A11940D1-5EE6BF2E-C:4A]
 32bit=No
 Fixed Audio=0
 Good Name=Kyojin no Doshin 1 (J)
 RDRAM Size=8
 Status=Compatible
 
-[E848D316-444B494A-C:4A]
+[A1193471-5EE6CB8E-C:4A]
 32bit=No
 Fixed Audio=0
 Good Name=Kyojin no Doshin 1 (J) (Store Demo)
 RDRAM Size=8
 Status=Compatible
 
-[E848D316-4452444A-C:4A]
+[8EFB4B2D-7104B4D2-C:4A]
 32bit=No
 Core Note=Modem Pak is required
 Fixed Audio=0
@@ -7233,7 +7233,7 @@ Good Name=Randnet Disk (J)
 RDRAM Size=8
 Status=Only intro/part OK
 
-[E848D316-444B4B4A-C:4A]
+[B75CBC4E-48A343B1-C:4A]
 32bit=No
 Core Note=Expansion Disk for Kyojin no Doshin 1. Use the Disk Swap feature to play.
 Fixed Audio=0
@@ -7241,7 +7241,7 @@ Good Name=Kyojin no Doshin - Kaihou Sensen Chibikkochikko Dai Shuugou (J)
 RDRAM Size=8
 Status=Compatible
 
-[E848D316-45465A4A-C:4A]
+[CD999CC9-32666336-C:4A]
 32bit=No
 Core Note=Expansion Disk for F-Zero X. Play F-Zero X (J) with this disk loaded.
 Fixed Audio=0
@@ -7249,7 +7249,7 @@ Good Name=F-ZERO X Expansion Kit (J)
 RDRAM Size=8
 Status=Compatible
 
-[E848D316-7AB0252F-C:0]
+[41252DA2-BEDAD25D-C:0]
 32bit=No
 Fixed Audio=0
 Good Name=Super Mario 64 Disk Version (J) (Spaceworld 1996 Demo)
