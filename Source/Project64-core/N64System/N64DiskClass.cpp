@@ -147,6 +147,12 @@ bool CN64Disk::SaveDiskImage()
     }
     else
     {
+        if (m_DiskFileSize <= m_DiskRamAddress || m_DiskRamAddress == 0)
+        {
+            m_DiskFile.Close();
+            return true;
+        }
+
         stdstr ShadowFile = m_FileName;
         ShadowFile[ShadowFile.length() - 1] = 'm';
         ShadowFile[ShadowFile.length() - 2] = 'a';
@@ -431,7 +437,7 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
 
 bool CN64Disk::LoadDiskRAMImage()
 {
-    if (m_DiskFormat == DiskFormatMAME || m_isShadowDisk)
+    if (m_DiskFormat == DiskFormatMAME || m_isShadowDisk || m_DiskFileSize <= m_DiskRamAddress || m_DiskRamAddress == 0)
         return true;
 
     CFile ramfile;
@@ -791,7 +797,7 @@ void CN64Disk::DetectRamAddress()
     }
     else //if (m_DiskFormat == DiskFormatD64)
     {
-        m_DiskRamAddress = m_DiskRomAddress + LBAToByte(SYSTEM_LBAS, *(uint16_t*)(&GetDiskAddressSys()[0xE2]));
+        m_DiskRamAddress = m_DiskRomAddress + LBAToByte(SYSTEM_LBAS, *(uint16_t*)(&GetDiskAddressSys()[0xE2]) + 1);
     }
 }
 
