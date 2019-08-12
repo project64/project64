@@ -241,6 +241,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(OPTION_IPL_ROM_PATH, "Japanese Retail 64DD IPL ROM Path:");
     DEF_STR(OPTION_IPL_ROM_USA_PATH, "American Retail 64DD IPL ROM Path:");
     DEF_STR(OPTION_IPL_ROM_TOOL_PATH, "Development 64DD IPL ROM Path:");
+    DEF_STR(OPTION_DISKSAVETYPE, "Disk Save Type:");
 
     //ROM Browser Tab
     DEF_STR(RB_MAX_ROMS, "Max # of ROMs remembered (0-10):");
@@ -371,6 +372,10 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(BOTTOM_RESET_ALL, "Reset All");
     DEF_STR(BOTTOM_APPLY, "Apply");
     DEF_STR(BOTTOM_CLOSE, "Close");
+
+    //Disk Save Type
+    DEF_STR(DISKSAVE_SHADOW, "Full Disk Copy");
+    DEF_STR(DISKSAVE_RAM, "Save Area Only");
 
     /*********************************************************************************
     * ROM Information                                                                *

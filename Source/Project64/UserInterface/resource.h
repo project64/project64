@@ -695,6 +695,8 @@
 #define IDC_IPL_TL_DIR                  1544
 #define IDC_SELECT_IPL_TL_DIR           1545
 #define IDC_IPLDIR_TL_TXT               1546
+#define IDC_DISKSAVETYPE_TXT            1547
+#define IDC_DISKSAVETYPE                1548
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ADDSYMBOL          40013
 #define ID_POPUPMENU_VIEWDISASM         40017
@@ -753,9 +755,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        217
+#define _APS_NEXT_RESOURCE_VALUE        219
 #define _APS_NEXT_COMMAND_VALUE         40092
-#define _APS_NEXT_CONTROL_VALUE         1541
+#define _APS_NEXT_CONTROL_VALUE         1549
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

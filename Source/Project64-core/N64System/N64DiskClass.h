@@ -30,6 +30,7 @@ public:
     uint8_t *  GetDiskAddressSys() { return m_DiskImage + m_DiskSysAddress; }
     uint8_t *  GetDiskAddressID() { return m_DiskImage + m_DiskIDAddress; }
     uint8_t *  GetDiskAddressRom() { return m_DiskImage + m_DiskRomAddress; }
+    uint8_t *  GetDiskAddressRam() { return m_DiskImage + m_DiskRamAddress; }
     uint8_t *  GetDiskHeader() { return m_DiskHeader; }
     void    SetDiskAddressBuffer(uint32_t address) { m_DiskBufAddress = address; }
     uint32_t   GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t block, uint16_t sector, uint16_t sectorsize);
@@ -46,6 +47,7 @@ private:
     bool   AllocateDiskImage(uint32_t DiskFileSize);
     bool   AllocateDiskHeader();
     bool   AllocateAndLoadDiskImage(const char * FileLoc);
+    bool   LoadDiskRAMImage();
     void   ByteSwapDisk();
     void   ForceByteSwapDisk();
     void   SetError(LanguageStringID ErrorMsg);
@@ -56,6 +58,7 @@ private:
     void   InitSysDataD64();
     void   DeinitSysDataD64();
     void   GenerateLBAToPhysTable();
+    void   DetectRamAddress();
     uint32_t LBAToVZone(uint32_t lba);
     uint32_t LBAToByte(uint32_t lba, uint32_t nlbas);
     uint16_t LBAToPhys(uint32_t lba);
@@ -76,11 +79,13 @@ private:
     uint32_t m_DiskSysAddress;
     uint32_t m_DiskIDAddress;
     uint32_t m_DiskRomAddress;
+    uint32_t m_DiskRamAddress;
     LanguageStringID m_ErrorMsg;
     Country m_Country;
     stdstr m_RomName, m_FileName, m_DiskIdent;
     uint8_t m_DiskFormat; //0 = MAME, 1 = SDK, 2 = D64
     uint8_t m_DiskType;
+    bool m_isShadowDisk;
 
     //Disk Defines
     #define MAX_LBA             0x10DB

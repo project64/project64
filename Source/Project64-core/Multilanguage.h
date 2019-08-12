@@ -271,9 +271,11 @@ enum LanguageStringID
     OPTION_CHANGE_FR = 466,
     OPTION_CHECK_RUNNING = 467,
     OPTION_UNIQUE_SAVE_DIR = 468,
+
     OPTION_IPL_ROM_PATH = 469,
     OPTION_IPL_ROM_USA_PATH = 470,
     OPTION_IPL_ROM_TOOL_PATH = 471,
+    OPTION_DISKSAVETYPE = 472,
 
     //Rom Browser Tab
     RB_MAX_ROMS = 480,
@@ -405,6 +407,10 @@ enum LanguageStringID
     BOTTOM_RESET_ALL = 721,
     BOTTOM_APPLY = 722,
     BOTTOM_CLOSE = 723,
+    
+    //Disk Save Type
+    DISKSAVE_SHADOW = 730,
+    DISKSAVE_RAM = 731,
 
     /*********************************************************************************
     * ROM Information                                                                *

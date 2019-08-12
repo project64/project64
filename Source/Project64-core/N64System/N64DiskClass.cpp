@@ -27,7 +27,9 @@ m_ErrorMsg(EMPTY_STRING),
 m_DiskBufAddress(0),
 m_DiskSysAddress(0),
 m_DiskIDAddress(0),
-m_DiskRomAddress(0)
+m_DiskRomAddress(0),
+m_DiskRamAddress(0),
+m_isShadowDisk(false)
 {
 }
 
@@ -48,12 +50,17 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
     WriteTrace(TraceN64System, TraceDebug, "Attempt to load shadow file.");
     if (!AllocateAndLoadDiskImage(ShadowFile.c_str()))
     {
+        m_isShadowDisk = false;
         WriteTrace(TraceN64System, TraceDebug, "Loading Shadow file failed");
         UnallocateDiskImage();
         if (!AllocateAndLoadDiskImage(FileLoc))
         {
             return false;
         }
+    }
+    else
+    {
+        m_isShadowDisk = true;
     }
 
     char RomName[5];
@@ -91,6 +98,8 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
 
     GenerateLBAToPhysTable();
     InitSysDataD64();
+    DetectRamAddress();
+    LoadDiskRAMImage();
 
     if (g_Disk == this)
     {
@@ -112,37 +121,54 @@ bool CN64Disk::SaveDiskImage()
         return true;
     }
 
-    //Assume the file extension is *.ndd (it is the only case where it is loaded)
-    stdstr ShadowFile = m_FileName;
-    ShadowFile[ShadowFile.length() - 1] = 'r';
-
-    WriteTrace(TraceN64System, TraceDebug, "Trying to open %s (Shadow File)", ShadowFile.c_str());
-    m_DiskFile.Close();
-    if (!m_DiskFile.Open(ShadowFile.c_str(), CFileBase::modeWrite | CFileBase::modeCreate | CFileBase::modeNoTruncate))
+    //Assume the file extension is *.ndd / *.d64
+    if (m_DiskFormat == DiskFormatMAME || m_isShadowDisk || g_Settings->LoadDword(Setting_DiskSaveType) == 0)
     {
-        WriteTrace(TraceN64System, TraceError, "Failed to open %s (Shadow File)", ShadowFile.c_str());
-        return false;
-    }
+        stdstr ShadowFile = m_FileName;
+        ShadowFile[ShadowFile.length() - 1] = 'r';
 
-    m_DiskFile.SeekToBegin();
-    ForceByteSwapDisk();
-
-    if (m_DiskFormat == DiskFormatMAME)
-    {
-        //If original file was MAME format, just copy
-        WriteTrace(TraceN64System, TraceDebug, "64DD disk is MAME format");
-    }
-    else if (m_DiskFormat == DiskFormatSDK)
-    {
-        //If original file was SDK format, we need to convert it back
-        WriteTrace(TraceN64System, TraceDebug, "64DD disk is SDK format");
-    }
-
-    if (!m_DiskFile.Write(m_DiskImage, m_DiskFileSize))
-    {
+        WriteTrace(TraceN64System, TraceDebug, "Trying to open %s (Shadow File)", ShadowFile.c_str());
         m_DiskFile.Close();
-        WriteTrace(TraceN64System, TraceError, "Failed to write file");
-        return false;
+        if (!m_DiskFile.Open(ShadowFile.c_str(), CFileBase::modeWrite | CFileBase::modeCreate | CFileBase::modeNoTruncate))
+        {
+            WriteTrace(TraceN64System, TraceError, "Failed to open %s (Shadow File)", ShadowFile.c_str());
+            return false;
+        }
+
+        m_DiskFile.SeekToBegin();
+        ForceByteSwapDisk();
+
+        if (!m_DiskFile.Write(m_DiskImage, m_DiskFileSize))
+        {
+            m_DiskFile.Close();
+            WriteTrace(TraceN64System, TraceError, "Failed to write file");
+            return false;
+        }
+    }
+    else
+    {
+        stdstr ShadowFile = m_FileName;
+        ShadowFile[ShadowFile.length() - 1] = 'm';
+        ShadowFile[ShadowFile.length() - 2] = 'a';
+        ShadowFile[ShadowFile.length() - 3] = 'r';
+
+        WriteTrace(TraceN64System, TraceDebug, "Trying to open %s (RAM File)", ShadowFile.c_str());
+        m_DiskFile.Close();
+        if (!m_DiskFile.Open(ShadowFile.c_str(), CFileBase::modeWrite | CFileBase::modeCreate | CFileBase::modeNoTruncate))
+        {
+            WriteTrace(TraceN64System, TraceError, "Failed to open %s (RAM File)", ShadowFile.c_str());
+            return false;
+        }
+
+        m_DiskFile.SeekToBegin();
+        ForceByteSwapDisk();
+
+        if (!m_DiskFile.Write(GetDiskAddressRam(), m_DiskFileSize - m_DiskRamAddress))
+        {
+            m_DiskFile.Close();
+            WriteTrace(TraceN64System, TraceError, "Failed to write file");
+            return false;
+        }
     }
 
     m_DiskFile.Close();
@@ -400,6 +426,45 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
     memcpy(m_DiskHeader, GetDiskAddressSys(), 0x20);
     memcpy(m_DiskHeader + 0x20, GetDiskAddressID(), 0x20);
     memcpy(m_DiskHeader + 0x3B, GetDiskAddressID(), 5);
+    return true;
+}
+
+bool CN64Disk::LoadDiskRAMImage()
+{
+    if (m_DiskFormat == DiskFormatMAME || m_isShadowDisk)
+        return true;
+
+    CFile ramfile;
+    stdstr filename = m_FileName;
+
+    filename[filename.length() - 1] = 'm';
+    filename[filename.length() - 2] = 'a';
+    filename[filename.length() - 3] = 'r';
+
+    WriteTrace(TraceN64System, TraceDebug, "Trying to open %s", filename);
+    if (!ramfile.Open(filename.c_str(), CFileBase::modeRead))
+    {
+        WriteTrace(TraceN64System, TraceError, "Failed to open %s", filename);
+        return false;
+    }
+
+    if (ramfile.GetLength() != m_DiskFileSize - m_DiskRamAddress)
+    {
+        ramfile.Close();
+        WriteTrace(TraceN64System, TraceError, "RAM save file is the wrong size");
+        return false;
+    }
+
+    ForceByteSwapDisk();
+    ramfile.SeekToBegin();
+    if (ramfile.Read(GetDiskAddressRam(), m_DiskFileSize - m_DiskRamAddress) != (m_DiskFileSize - m_DiskRamAddress))
+    {
+        ramfile.Close();
+        WriteTrace(TraceN64System, TraceError, "Failed to read RAM save data");
+        return false;
+    }
+
+    ForceByteSwapDisk();
     return true;
 }
 
@@ -710,6 +775,23 @@ void CN64Disk::GenerateLBAToPhysTable()
     for (uint32_t lba = 0; lba < SIZE_LBA; lba++)
     {
         LBAToPhysTable[lba] = LBAToPhys(lba);
+    }
+}
+
+void CN64Disk::DetectRamAddress()
+{
+    if (m_DiskFormat == DiskFormatMAME)
+    {
+        //Not supported
+        m_DiskRamAddress = 0;
+    }
+    else if (m_DiskFormat == DiskFormatSDK)
+    {
+        m_DiskRamAddress = LBAToByte(0, RAM_START_LBA[m_DiskType]);
+    }
+    else //if (m_DiskFormat == DiskFormatD64)
+    {
+        m_DiskRamAddress = m_DiskRomAddress + LBAToByte(SYSTEM_LBAS, *(uint16_t*)(&GetDiskAddressSys()[0xE2]));
     }
 }
 

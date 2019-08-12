@@ -53,6 +53,11 @@ enum SAVE_CHIP_TYPE
     SaveChip_Auto = -1, SaveChip_Eeprom_4K, SaveChip_Eeprom_16K, SaveChip_Sram, SaveChip_FlashRam
 };
 
+enum SAVE_DISK_TYPE
+{
+    SaveDisk_ShadowFile = 0, SaveDisk_RAMFile = 1,
+};
+
 enum FUNC_LOOKUP_METHOD
 {
     FuncFind_Default = -1, FuncFind_PhysicalLookup = 1, FuncFind_VirtualLookup = 2, FuncFind_ChangeMemory = 3,
