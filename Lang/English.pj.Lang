@@ -242,6 +242,7 @@
 #469#  "Japanese Retail 64DD IPL ROM Path:"
 #470#  "American Retail 64DD IPL ROM Path:"
 #471#  "Development 64DD IPL ROM Path:"
+#472#  "Disk Save Type:"
 
 //ROM Browser Tab
 #480#  "Max # of ROMs remembered (0-10):"
@@ -368,6 +369,10 @@
 #721#  "Reset All"
 #722#  "Apply"
 #723#  "Close"
+
+//Disk Save Type
+#730#  "Full Disk Copy"
+#731#  "Save Area Only"
 
 /*********************************************************************************
 * ROM Information                                                                *

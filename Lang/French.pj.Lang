@@ -242,6 +242,7 @@
 #469#  "Chemin vers 64DD IPL ROM Japonais:"
 #470#  "Chemin vers 64DD IPL ROM Américain:"
 #471#  "Chemin vers 64DD IPL ROM Développement:"
+#472#  "Type de sauvegarde:"
 
 //ROM Browser Tab
 #480#  "Max de ROM à retenir (0-10) :"
@@ -368,6 +369,10 @@
 #721#  "Tout réinitialiser"
 #722#  "Appliquer"
 #723#  "Fermer"
+
+//Disk Save Type
+#730#  "Copie Complète du Disque"
+#731#  "Zone Sauvegarde Uniquement"
 
 /*********************************************************************************
 * ROM Information                                                                *
