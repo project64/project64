@@ -47,6 +47,10 @@ private:
     void   ByteSwapDisk();
     void   ForceByteSwapDisk();
     void   SetError(LanguageStringID ErrorMsg);
+
+    void   DetectSystemArea();
+    bool   IsSysSectorGood(uint32_t block, uint32_t sectorsize);
+    Country GetDiskCountryCode();
     void   InitSysDataD64();
     void   DeinitSysDataD64();
     void   GenerateLBAToPhysTable();
@@ -75,11 +79,16 @@ private:
     uint8_t m_DiskFormat; //0 = MAME, 1 = SDK, 2 = D64
     uint8_t m_DiskType;
 
-    //Disk Calculations
+    //Disk Defines
     #define MAX_LBA             0x10DB
     #define SIZE_LBA            MAX_LBA+1
     #define SYSTEM_LBAS         24
     #define DISKID_LBA          14
+
+    #define DISK_COUNTRY_JPN    0xE848D316
+    #define DISK_COUNTRY_USA    0x2263EE56
+    #define DISK_COUNTRY_DEV    0x00000000
+
     #define SECTORS_PER_BLOCK	85
     #define BLOCKS_PER_TRACK	2
 

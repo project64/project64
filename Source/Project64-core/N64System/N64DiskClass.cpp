@@ -89,8 +89,9 @@ bool CN64Disk::LoadDiskImage(const char * FileLoc)
         }
     }
     m_RomName = RomName;
-    m_Country = (Country)GetDiskAddressID()[0];
+    m_Country = GetDiskCountryCode();
     m_DiskType = GetDiskAddressSys()[5 ^ 3] & 0x0F;
+
     GenerateLBAToPhysTable();
     InitSysDataD64();
 
@@ -313,8 +314,7 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
             return false;
         }
 
-        m_DiskSysAddress = 0;
-        m_DiskIDAddress = 0x43670;
+        DetectSystemArea();
 
         g_Notify->DisplayMessage(5, MSG_BYTESWAP);
         ByteSwapDisk();
@@ -361,8 +361,7 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
             return false;
         }
 
-        m_DiskSysAddress = 0;
-        m_DiskIDAddress = 0x100;
+        DetectSystemArea();
 
         g_Notify->DisplayMessage(5, MSG_BYTESWAP);
         ForceByteSwapDisk();
@@ -541,6 +540,116 @@ uint32_t CN64Disk::GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t b
         WriteTrace(TraceN64System, TraceDebug, "Head %d Track %d Block %d - LBA %d - Address %08X", head, track, block, PhysToLBA(head, track, block), offset);
     }
     return offset;
+}
+
+void CN64Disk::DetectSystemArea()
+{
+    if ((m_DiskFormat == DiskFormatMAME) || (m_DiskFormat == DiskFormatSDK))
+    {
+        //MAME / SDK (System Area can be handled identically)
+        m_DiskSysAddress = 0;
+        m_DiskIDAddress = DISKID_LBA * 0x4D08;
+
+        //Handle System Data
+        const uint16_t sysblocks[4] = { 9, 8, 1, 0 };
+        //Check if Disk is development disk
+        bool isDevDisk = false;
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (IsSysSectorGood(sysblocks[i] + 2, 0xC0))
+            {
+                m_DiskSysAddress = ((sysblocks[i] + 2) * 0x4D08);
+                isDevDisk = true;
+            }
+        }
+
+        if (!isDevDisk)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                if (IsSysSectorGood(sysblocks[i], 0xE8))
+                {
+                    m_DiskSysAddress = (sysblocks[i] * 0x4D08);
+                }
+            }
+        }
+
+        //Handle Disk ID
+        for (int i = 2; i > 0; i--)
+        {
+            //There are two Disk ID Blocks
+            if (IsSysSectorGood(DISKID_LBA + i, 0xE8))
+            {
+                m_DiskIDAddress = ((DISKID_LBA + i) * 0x4D08);
+            }
+        }
+    }
+    else //if (m_DiskFormat == DiskFormatD64)
+    {
+        //D64 (uses fixed addresses)
+        m_DiskSysAddress = 0x000;
+        m_DiskIDAddress = 0x100;
+    }
+}
+
+bool CN64Disk::IsSysSectorGood(uint32_t block, uint32_t sectorsize)
+{
+    //Checks if all sectors are identical (meant only to be used for System Area for MAME and SDK formats)
+    for (int j = 1; j < SECTORS_PER_BLOCK; j++)
+    {
+        for (int k = 0; k < sectorsize; k++)
+        {
+            if (m_DiskImage[(block * 0x4D08) + (j * sectorsize) + k] != m_DiskImage[(block * 0x4D08) + k])
+            {
+                return false;
+            }
+        }
+    }
+
+    if (block < DISKID_LBA)
+    {
+        //Check System Data
+
+        //System Format
+        if (m_DiskImage[(block * 0x4D08) + 4] != 0x10)
+            return false;
+
+        //Disk Format
+        if ((m_DiskImage[(block * 0x4D08) + 5] & 0xF0) != 0x10)
+            return false;
+
+        //Always 0xFFFFFFFF
+        if (*(uint32_t*)&m_DiskImage[(block * 0x4D08) + 0x18] != 0xFFFFFFFF)
+            return false;
+        
+        uint8_t alt = 0xC;  //Retail
+        if ((block & 2) != 0)
+            alt = 0xA;      //Development
+
+        //Alternate Tracks Offsets (always the same)
+        for (int i = 0; i < 16; i++)
+        {
+            if (m_DiskImage[(block * 0x4D08) + 8 + i] != ((i + 1) * alt))
+                return false;
+        }
+    }
+
+    return true;
+}
+
+Country CN64Disk::GetDiskCountryCode()
+{
+    switch (*(uint32_t*)&GetDiskAddressSys()[0])
+    {
+        case DISK_COUNTRY_JPN:
+            return Country::Japan;
+        case DISK_COUNTRY_USA:
+            return Country::USA;
+        case DISK_COUNTRY_DEV:
+        default:
+            return Country::UnknownCountry;
+    }
 }
 
 void CN64Disk::InitSysDataD64()
