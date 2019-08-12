@@ -60,6 +60,7 @@ public:
     static bool LoadFileImage(const char * FileLoc);
     static bool LoadFileImageIPL(const char * FileLoc);
     static bool LoadDiskImage(const char * FileLoc, const bool Expansion);
+    static bool SelectAndLoadFileImageIPL(Country country, bool combo);
     static bool RunFileImage(const char * FileLoc);
     static bool RunDiskImage(const char * FileLoc);
     static bool RunDiskComboImage(const char * FileLoc, const char * FileLocDisk);

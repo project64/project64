@@ -804,25 +804,11 @@ void CRomBrowser::RomList_OpenRom(uint32_t /*pnmh*/)
 
     if (!pRomInfo) { return; }
     m_StopRefresh = true;
-    delete g_DDRom;
-    g_DDRom = NULL;
 
     if ((CPath(pRomInfo->szFullFileName).GetExtension() != "ndd") && (CPath(pRomInfo->szFullFileName).GetExtension() != "d64"))
         CN64System::RunFileImage(pRomInfo->szFullFileName);
     else
-    {
-        if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(pRomInfo->szFullFileName))
-        {
-            if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists()) { g_Notify->DisplayWarning(MSG_IPL_REQUIRED); }
-            CPath FileName;
-            const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-            if (FileName.SelectFile(m_MainWindow, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-            {
-                g_Settings->SaveString(File_DiskIPLPath, (const char *)FileName);
-                g_BaseSystem->RunDiskImage(pRomInfo->szFullFileName);
-            }
-        }
-    }
+        CN64System::RunDiskImage(pRomInfo->szFullFileName);
 }
 
 void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)

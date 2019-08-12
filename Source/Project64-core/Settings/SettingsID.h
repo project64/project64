@@ -232,6 +232,8 @@ enum SettingID
 
     //File Info
     File_DiskIPLPath,
+    File_DiskIPLUSAPath,
+    File_DiskIPLTOOLPath,
 
     //Debugger
     Debugger_Enabled,

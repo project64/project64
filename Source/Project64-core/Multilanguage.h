@@ -559,6 +559,8 @@ enum LanguageStringID
     MSG_FAIL_IMAGE_IPL = 2058,
     MSG_IPL_REQUIRED = 2059,
     MSG_MSGBOX_WARNING_TITLE = 2060,
+    MSG_USA_IPL_REQUIRED = 2061,
+    MSG_TOOL_IPL_REQUIRED = 2062,
 
     /*********************************************************************************
     * Android                                                                        *

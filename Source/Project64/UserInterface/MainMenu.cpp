@@ -117,25 +117,16 @@ void CMainMenu::OnOpenRom(HWND hWnd)
     {
         return;
     }
+    
     stdstr ext = CPath(File).GetExtension();
     if ((_stricmp(ext.c_str(), "ndd") != 0) && (_stricmp(ext.c_str(), "d64") != 0))
     {
-        delete g_DDRom;
-        g_DDRom = NULL;
         g_BaseSystem->RunFileImage(File.c_str());
         return;
     }
-    // Open Disk
-    if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(File.c_str()))
+    else
     {
-        if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists()) { g_Notify->DisplayWarning(MSG_IPL_REQUIRED); }
-        CPath FileNameIPL;
-        const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-        if (FileNameIPL.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-        {
-            g_Settings->SaveString(File_DiskIPLPath, (const char *)FileNameIPL);
-            g_BaseSystem->RunDiskImage(File.c_str());
-        }
+        g_BaseSystem->RunDiskImage(File.c_str());
     }
 }
 
@@ -550,19 +541,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
                 if ((CPath(FileName).GetExtension() != "ndd") && (CPath(FileName).GetExtension() != "d64"))
                     g_BaseSystem->RunFileImage(FileName.c_str());
                 else
-                {
-                    if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(FileName.c_str()))
-                    {
-                        if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists()) { g_Notify->DisplayWarning(MSG_IPL_REQUIRED); }
-                        CPath FileNameIPL;
-                        const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-                        if (FileNameIPL.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-                        {
-                            g_Settings->SaveString(File_DiskIPLPath, (const char *)FileNameIPL);
-                            g_BaseSystem->RunDiskImage(FileName.c_str());
-                        }
-                    }
-                }
+                    g_BaseSystem->RunDiskImage(FileName.c_str());
             }
         }
         if (MenuID >= ID_RECENT_DIR_START && MenuID < ID_RECENT_DIR_END)
