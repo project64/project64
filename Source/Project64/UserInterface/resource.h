@@ -81,6 +81,7 @@
 #define IDD_Enhancement_GS              205
 #define IDD_Debugger_ExceptionBP        207
 #define IDD_Debugger_Search_SetValue    210
+#define IDD_Settings_DiskDrive          215
 #define IDC_MENU_ITEM_TEXT              1000
 #define IDC_CLOSE_BUTTON                1001
 #define IDC_LIST2                       1003
@@ -685,6 +686,15 @@
 #define IDC_CHK_UNSIGNED                1535
 #define IDC_CHK_IGNORECASE              1536
 #define IDC_CHK_UNKENCODING             1537
+#define IDC_IPLDIR_JP_TXT               1538
+#define IDC_IPL_JP_DIR                  1539
+#define IDC_SELECT_IPL_JP_DIR           1540
+#define IDC_IPL_US_DIR                  1541
+#define IDC_SELECT_IPL_US_DIR           1542
+#define IDC_IPLDIR_US_TXT               1543
+#define IDC_IPL_TL_DIR                  1544
+#define IDC_SELECT_IPL_TL_DIR           1545
+#define IDC_IPLDIR_TL_TXT               1546
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ADDSYMBOL          40013
 #define ID_POPUPMENU_VIEWDISASM         40017
@@ -743,9 +753,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        213
+#define _APS_NEXT_RESOURCE_VALUE        217
 #define _APS_NEXT_COMMAND_VALUE         40092
-#define _APS_NEXT_CONTROL_VALUE         1538
+#define _APS_NEXT_CONTROL_VALUE         1541
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

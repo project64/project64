@@ -131,12 +131,14 @@ LRESULT	CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         m_GeneralOptionsPage = new CGeneralOptionsPage(this, this->m_hWnd, rcSettingInfo);
         m_AdvancedPage = new CAdvancedOptionsPage(this->m_hWnd, rcSettingInfo);
         m_DefaultsPage = new CDefaultsOptionsPage(this->m_hWnd, rcSettingInfo);
+        m_DiskDrivePage = new CDiskDrivePage(this->m_hWnd, rcSettingInfo);
 
         SettingsSection = new CConfigSettingSection(wGS(TAB_OPTIONS).c_str());
         SettingsSection->AddPage(m_GeneralOptionsPage);
         SettingsSection->AddPage(m_AdvancedPage);
         SettingsSection->AddPage(m_DefaultsPage);
         SettingsSection->AddPage(new COptionsDirectoriesPage(this->m_hWnd, rcSettingInfo));
+        SettingsSection->AddPage(m_DiskDrivePage);
         m_Sections.push_back(SettingsSection);
 
         SettingsSection = new CConfigSettingSection(wGS(TAB_ROMSELECTION).c_str());

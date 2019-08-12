@@ -24,8 +24,6 @@ class CAdvancedOptionsPage :
 		COMMAND_ID_HANDLER_EX(IDC_CHECK_RUNNING, CheckBoxChanged)
 		COMMAND_ID_HANDLER_EX(IDC_UNIQUE_SAVE_DIR, CheckBoxChanged)
 		COMMAND_ID_HANDLER_EX(IDC_DISPLAY_FRAMERATE, CheckBoxChanged)
-		COMMAND_ID_HANDLER_EX(IDC_SELECT_IPL_DIR, SelectIplDir)
-		COMMAND_HANDLER_EX(IDC_IPL_DIR, EN_UPDATE, IplDirChanged)
 		COMMAND_HANDLER_EX(IDC_FRAME_DISPLAY_TYPE,LBN_SELCHANGE,ComboBoxChanged)
 	END_MSG_MAP()
 
@@ -42,11 +40,7 @@ public:
 	void ResetPage ( void );
 
 private:
-	void SelectIplDir(UINT Code, int id, HWND ctl);
-	void IplDirChanged(UINT Code, int id, HWND ctl);
 	void UpdatePageSettings(void);
-	void SelectFile(LanguageStringID Title, CModifiedEditBox & EditBox);
-	CModifiedEditBox m_IplDir;
 
 	bool m_InUpdateSettings;
 };

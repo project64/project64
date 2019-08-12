@@ -234,6 +234,7 @@ enum LanguageStringID
     TAB_ROMSTATUS = 410,
     TAB_RECOMPILER = 411,
     TAB_DEFAULTS = 412,
+    TAB_DISKDRIVE = 413,
 
     //Plugin Dialog
     PLUG_ABOUT = 420,
@@ -271,6 +272,8 @@ enum LanguageStringID
     OPTION_CHECK_RUNNING = 467,
     OPTION_UNIQUE_SAVE_DIR = 468,
     OPTION_IPL_ROM_PATH = 469,
+    OPTION_IPL_ROM_USA_PATH = 470,
+    OPTION_IPL_ROM_TOOL_PATH = 471,
 
     //Rom Browser Tab
     RB_MAX_ROMS = 480,

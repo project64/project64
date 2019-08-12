@@ -201,6 +201,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(TAB_ROMSTATUS, "Status");
     DEF_STR(TAB_RECOMPILER, "Recompiler");
     DEF_STR(TAB_DEFAULTS, "Defaults");
+    DEF_STR(TAB_DISKDRIVE, "64DD");
 
     //Plugin Dialog
     DEF_STR(PLUG_ABOUT, "About");
@@ -237,7 +238,9 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(OPTION_CHECK_RUNNING, "Check if Project64 is already running");
     DEF_STR(OPTION_UNIQUE_SAVE_DIR, "Unique Game Save Directory");
     DEF_STR(OPTION_CHANGE_FR, "Speed display:");
-    DEF_STR(OPTION_IPL_ROM_PATH, "64DD IPL ROM Path:");
+    DEF_STR(OPTION_IPL_ROM_PATH, "Japanese Retail 64DD IPL ROM Path:");
+    DEF_STR(OPTION_IPL_ROM_USA_PATH, "American Retail 64DD IPL ROM Path:");
+    DEF_STR(OPTION_IPL_ROM_TOOL_PATH, "Development 64DD IPL ROM Path:");
 
     //ROM Browser Tab
     DEF_STR(RB_MAX_ROMS, "Max # of ROMs remembered (0-10):");
