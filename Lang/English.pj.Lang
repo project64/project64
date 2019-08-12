@@ -202,6 +202,7 @@
 #410#  "Status"
 #411#  "Recompiler"
 #412#  "Defaults"
+#413#  "64DD"
 
 //Plugin Dialog
 #420#  "About"
@@ -238,7 +239,9 @@
 #466#  "Speed display:"
 #467#  "Check if Project64 is already running"
 #468#  "Unique Game Save Directory"
-#469#  "64DD IPL ROM Path:"
+#469#  "Japanese Retail 64DD IPL ROM Path:"
+#470#  "American Retail 64DD IPL ROM Path:"
+#471#  "Development 64DD IPL ROM Path:"
 
 //ROM Browser Tab
 #480#  "Max # of ROMs remembered (0-10):"
@@ -520,7 +523,9 @@
 #2056#  "Audio High-Level Emulation"
 #2057#  "Audio HLE requires a third-party plugin!!!\nIf you do not use a third-party audio plugin that supports HLE, you will hear no sound.\n\nChange to audio HLE?"
 #2058#  "File loaded does not appear to be a valid 64DD IPL ROM.\n\nVerify your ROMs with GoodN64."
-#2059#  "Nintendo 64DD IPL ROM not found.\nIt is required to play 64DD disks.\n\nPlease select the required ROM."
+#2059#  "Nintendo 64DD Japanese Retail IPL ROM not found.\nIt is required to play japanese region 64DD disk images.\n\nPlease select the required ROM in the Settings."
+#2061#  "Nintendo 64DD American Retail IPL ROM not found.\nIt is required to play american region 64DD disk images.\n\nPlease select the required ROM in the Settings."
+#2062#  "Nintendo 64DD Development IPL ROM not found.\nIt is required to play development 64DD disk images.\n\nPlease select the required ROM in the Settings."
 
 
 /*********************************************************************************

@@ -201,6 +201,8 @@
 #409#  "Raccourcis clavier"
 #410#  "Statut"
 #411#  "Recompilateur"
+#412#  "Par Défaut"
+#413#  "64DD"
 
 //Plugin Dialog
 #420#  "À propos"
@@ -237,7 +239,9 @@
 #466#  "Vitesse affichée :"
 #467#  "Vérifier si Project64 est déjà lancé"
 #468#  "Répertoire de sauvegarde unique"
-#469#  "Chemin vers 64DD IPL ROM:"
+#469#  "Chemin vers 64DD IPL ROM Japonais:"
+#470#  "Chemin vers 64DD IPL ROM Américain:"
+#471#  "Chemin vers 64DD IPL ROM Développement:"
 
 //ROM Browser Tab
 #480#  "Max de ROM à retenir (0-10) :"
@@ -519,7 +523,9 @@
 #2056#  "Émulation audio haut niveau (HLE)"
 #2057#  "L’audio HLE nécessite un plugin tiers !!!\nSi vous n’utilisez pas un plugin audio tiers qui supporte le HLE, vous n’entendrez aucun son.\n\nChanger pour l’audio en mode HLE ?"
 #2058#  "Le fichier chargé ne semble pas être une ROM IPL 64DD valide.\n\nVérifiez vos ROM avec GoodN64."
-#2059#  "La ROM IPL 64DD n’a pas pu être trouvée.\nIl est nécéssaire pour jouer avec des disques 64DD.\n\nVeuillez sélectionner la ROM demandée."
+#2059#  "La ROM IPL 64DD Japonaise n’a pas pu être trouvée.\nIl est nécéssaire pour jouer avec des disques 64DD japonais.\n\nVeuillez sélectionner la ROM requise dans les paramètres."
+#2061#  "La ROM IPL 64DD Américaine n’a pas pu être trouvée.\nIl est nécéssaire pour jouer avec des disques 64DD américain.\n\nVeuillez sélectionner la ROM requise dans les paramètres."
+#2062#  "La ROM IPL 64DD Développement n’a pas pu être trouvée.\nIl est nécéssaire pour jouer avec des disques 64DD de développement.\n\nVeuillez sélectionner la ROM requise dans les paramètres."
 
 
 /*********************************************************************************
