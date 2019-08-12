@@ -871,7 +871,7 @@ void CRomBrowser::RomList_PopupMenu(uint32_t /*pnmh*/)
         if (inBasicMode) { DeleteMenu(hPopupMenu, 9, MF_BYPOSITION); }
         if (inBasicMode && !CheatsRemembered) { DeleteMenu(hPopupMenu, 8, MF_BYPOSITION); }
         DeleteMenu(hPopupMenu, 7, MF_BYPOSITION);
-        if ((CPath(m_SelectedRom).GetExtension() == "ndd") && (CPath(m_SelectedRom).GetExtension() == "d64")) { DeleteMenu(hPopupMenu, 1, MF_BYPOSITION); }
+        if ((CPath(m_SelectedRom).GetExtension() == "ndd") || (CPath(m_SelectedRom).GetExtension() == "d64")) { DeleteMenu(hPopupMenu, 1, MF_BYPOSITION); }
         if (!inBasicMode && g_Plugins && g_Plugins->Gfx() && g_Plugins->Gfx()->GetRomBrowserMenu != NULL)
         {
             HMENU GfxMenu = (HMENU)g_Plugins->Gfx()->GetRomBrowserMenu();
