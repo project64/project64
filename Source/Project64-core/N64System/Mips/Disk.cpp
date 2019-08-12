@@ -220,7 +220,7 @@ void DiskBMUpdate()
     else
     {
         //Read Data
-        if (((g_Reg->ASIC_CUR_TK >> 16) & 0x1FFF) == 6 && g_Reg->ASIC_CUR_SECTOR == 0 && g_Reg->ASIC_ID_REG != 0x00040000)
+        if (((g_Reg->ASIC_CUR_TK >> 16) & 0x1FFF) == 6 && g_Reg->ASIC_CUR_SECTOR == 0 && g_Disk->GetCountry() != Country::UnknownCountry)
         {
             //Copy Protection
             g_Reg->ASIC_STATUS &= ~DD_STATUS_DATA_RQ;

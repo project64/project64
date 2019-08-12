@@ -612,6 +612,14 @@ bool CN64System::SelectAndLoadFileImageIPL(Country country, bool combo)
         default:
             IPLROMPathSetting = File_DiskIPLTOOLPath;
             IPLROMError = MSG_TOOL_IPL_REQUIRED;
+            if (combo && !CPath(g_Settings->LoadStringVal(File_DiskIPLTOOLPath).c_str()).Exists())
+            {
+                //Development IPL is not needed for combo ROM + Disk loading
+                if (CPath(g_Settings->LoadStringVal(File_DiskIPLPath).c_str()).Exists())
+                    IPLROMPathSetting = File_DiskIPLPath;
+                else if (CPath(g_Settings->LoadStringVal(File_DiskIPLUSAPath).c_str()).Exists())
+                    IPLROMPathSetting = File_DiskIPLUSAPath;
+            }
             break;
     }
 
@@ -979,7 +987,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
     //64DD Registers
     m_Reg.ASIC_STATUS = DD_STATUS_RST_STATE;
     m_Reg.ASIC_ID_REG = 0x00030000;
-    if (g_DDRom && g_DDRom->CicChipID() == CIC_NUS_DDTL)
+    if (g_DDRom && (g_DDRom->CicChipID() == CIC_NUS_DDTL || (g_Disk && g_Disk->GetCountry() == Country::UnknownCountry)))
         m_Reg.ASIC_ID_REG = 0x00040000;
 
     //m_Reg.REVISION_REGISTER   = 0x00000511;
