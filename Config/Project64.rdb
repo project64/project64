@@ -7229,7 +7229,15 @@ Status=Compatible
 32bit=No
 Core Note=Modem Pak is required
 Fixed Audio=0
-Good Name=Randnet Disk (J)
+Good Name=Randnet Disk (J) [Rev. 00]
+RDRAM Size=8
+Status=Only intro/part OK
+
+[8EFC7632-710389CD-C:4A]
+32bit=No
+Core Note=Modem Pak is required
+Fixed Audio=0
+Good Name=Randnet Disk (J) [Rev. 01]
 RDRAM Size=8
 Status=Only intro/part OK
 
