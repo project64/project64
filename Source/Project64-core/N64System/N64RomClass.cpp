@@ -658,7 +658,8 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
     if (!LoadBootCodeOnly && g_Rom == this)
     {
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
-        SaveRomSettingID(false);
+        if (!g_Disk)
+            SaveRomSettingID(false);
     }
 
     if (g_Settings->LoadBool(Game_CRC_Recalc))
@@ -822,7 +823,6 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
     if (!LoadBootCodeOnly && g_DDRom == this)
     {
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
-        SaveRomSettingID(false);
     }
 
     if (g_Settings->LoadBool(Game_CRC_Recalc))
