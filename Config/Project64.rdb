@@ -7258,6 +7258,12 @@ Good Name=Super Mario 64 Disk Version (J) (Spaceworld 1996 Demo)
 RDRAM Size=8
 Status=Compatible
 
+[87FAF438-78050BC7-C:41]
+Good Name=Dezaemon 3D Expansion Disk (J) (Proto)
+RDRAM Size=8
+Status=Compatible
+Save Type=Sram
+
 
 //================  PD  ================
 //
