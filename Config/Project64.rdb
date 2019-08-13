@@ -1386,7 +1386,6 @@ Good Name=Dezaemon 3D (J)
 Internal Name=DEZAEMON3D
 Status=Compatible
 Save Type=Sram
-RDRAM Size=8
 
 [FD73F775-9724755A-C:50]
 Good Name=Diddy Kong Racing (E) (M3) (V1.0)
@@ -1850,7 +1849,6 @@ Clear Frame=2
 [4D3E622E-9B828B4E-C:4A]
 Good Name=F-ZERO X (J)
 Internal Name=F-ZERO X
-RDRAM Size=8
 Fixed Audio=0
 Status=Compatible
 Plugin Note=[Glide64] missing menu effects
@@ -5893,7 +5891,6 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
-RDRAM Size=8
 
 [D43DA81F-021E1E19-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time (U) (V1.1)
@@ -5910,7 +5907,6 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
-RDRAM Size=8
 
 [693BA2AE-B7F14E9F-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time (U) (V1.2)
@@ -5927,7 +5923,6 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
-RDRAM Size=8
 
 [1D4136F3-AF63EEA9-C:50]
 Good Name=The Legend of Zelda - Ocarina of Time - Master Quest (E) (GC)
@@ -7064,7 +7059,6 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
-RDRAM Size=8
 
 [D43DA81F-021E1E19-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina (J) (V1.1)
@@ -7078,7 +7072,6 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
-RDRAM Size=8
 
 [693BA2AE-B7F14E9F-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina (J) (V1.2)
@@ -7092,7 +7085,6 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
-RDRAM Size=8
 
 [F7F52DB8-2195E636-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina - Zelda Collection Version (J) (GC)
