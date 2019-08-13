@@ -7257,6 +7257,7 @@ Fixed Audio=0
 Good Name=F-ZERO X Expansion Kit (J)
 RDRAM Size=8
 Status=Compatible
+Culling=1
 
 [41252DA2-BEDAD25D-C:0]
 32bit=No
