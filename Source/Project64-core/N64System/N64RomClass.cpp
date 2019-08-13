@@ -660,6 +660,8 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
         if (!g_Disk)
             SaveRomSettingID(false);
+        else if (!IsLoadedRomDDIPL())
+            g_Settings->SaveString(Game_GameName, m_RomName.c_str());   //Use Base Game's Save File if loaded in combo
     }
 
     if (g_Settings->LoadBool(Game_CRC_Recalc))
