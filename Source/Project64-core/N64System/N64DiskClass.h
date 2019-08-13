@@ -135,6 +135,8 @@ private:
 
     const uint16_t RAM_START_LBA[7] = { 0x5A2, 0x7C6, 0x9EA, 0xC0E, 0xE32, 0x1010, 0x10DC };
 
+    const uint32_t RAM_SIZES[7] = { 0x24A9DC0, 0x1C226C0, 0x1450F00, 0xD35680, 0x6CFD40, 0x1DA240, 0x0 };
+
     #define BLOCKSIZE(_zone) SECTORSIZE[_zone] * SECTORS_PER_BLOCK
     #define TRACKSIZE(_zone) BLOCKSIZE(_zone) * BLOCKS_PER_TRACK
     #define ZONESIZE(_zone) TRACKSIZE(_zone) * ZoneTracks[_zone]

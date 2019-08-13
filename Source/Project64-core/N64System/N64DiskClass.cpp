@@ -122,8 +122,9 @@ bool CN64Disk::SaveDiskImage()
     }
 
     //Assume the file extension is *.ndd / *.d64
-    if (m_DiskFormat == DiskFormatMAME || m_isShadowDisk || g_Settings->LoadDword(Setting_DiskSaveType) == 0)
+    if (m_DiskFormat == DiskFormatMAME || m_isShadowDisk || g_Settings->LoadDword(Setting_DiskSaveType) == SaveDisk_ShadowFile)
     {
+        //Shadow File
         stdstr ShadowFile = m_FileName;
         ShadowFile[ShadowFile.length() - 1] = 'r';
 
@@ -147,6 +148,7 @@ bool CN64Disk::SaveDiskImage()
     }
     else
     {
+        //RAM File
         if (m_DiskFileSize <= m_DiskRamAddress || m_DiskRamAddress == 0)
         {
             m_DiskFile.Close();
@@ -194,11 +196,11 @@ bool CN64Disk::IsValidDiskImage(uint8_t Test[0x20])
     if ((Test[0x05] & 0xEF) > 6) return false;
 
     //IPL Load Block
-    uint16_t ipl_load_blk = ((Test[0x06] << 16) | Test[0x07]);
+    uint16_t ipl_load_blk = ((Test[0x06] << 8) | Test[0x07]);
     if (ipl_load_blk > 0x10C3 || ipl_load_blk == 0x0000) return false;
 
     //IPL Load Address
-    uint32_t ipl_load_addr = (Test[0x1C] << 32) | (Test[0x1D] << 24) | (Test[0x1E] << 16) | Test[0x1F];
+    uint32_t ipl_load_addr = (Test[0x1C] << 24) | (Test[0x1D] << 16) | (Test[0x1E] << 8) | Test[0x1F];
     if (ipl_load_addr < 0x80000000 && ipl_load_addr >= 0x80800000) return false;
 
     //Country Code
@@ -285,7 +287,7 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
     }
 
     //Make sure it is a valid disk image
-    uint8_t Test[0x20];
+    uint8_t Test[0x100];
     bool isValidDisk = false;
 
     const uint8_t blocks[8] = { 0, 1, 2, 3, 8, 9, 10, 11 };
@@ -376,7 +378,24 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
         m_DiskFormat = DiskFormatD64;
         WriteTrace(TraceN64System, TraceDebug, "Disk File is D64 Format");
 
-        if (!AllocateDiskImage(DiskFileSize))
+        m_DiskType = Test[5];
+        uint16_t ROM_LBA_END = (Test[0xE0] << 8) | Test[0xE1];
+        uint16_t RAM_LBA_START = (Test[0xE2] << 8) | Test[0xE3];
+
+        if ((ROM_LBA_END + SYSTEM_LBAS) >= RAM_START_LBA[m_DiskType] || ROM_LBA_END == 0 || ((RAM_LBA_START + SYSTEM_LBAS) != RAM_START_LBA[m_DiskType] && RAM_LBA_START != 0xFFFF))
+        {
+            m_DiskFile.Close();
+            SetError(MSG_FAIL_IMAGE);
+            WriteTrace(TraceN64System, TraceError, "Malformed D64 disk image");
+            return false;
+        }
+
+        uint32_t ROM_SIZE = LBAToByte(SYSTEM_LBAS, ROM_LBA_END + 1);
+        uint32_t RAM_SIZE = RAM_SIZES[m_DiskType];
+
+        //Allocate File with Max RAM Area size
+        WriteTrace(TraceN64System, TraceError, "Allocate D64 ROM %08X + RAM %08X", ROM_SIZE, RAM_SIZE);
+        if (!AllocateDiskImage(0x200 + ROM_SIZE + RAM_SIZE))
         {
             m_DiskFile.Close();
             return false;
@@ -437,8 +456,11 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
 
 bool CN64Disk::LoadDiskRAMImage()
 {
-    if (m_DiskFormat == DiskFormatMAME || m_isShadowDisk || m_DiskFileSize <= m_DiskRamAddress || m_DiskRamAddress == 0)
+    if (g_Settings->LoadDword(Setting_DiskSaveType) == DISKSAVE_SHADOW || m_DiskFormat == DiskFormatMAME ||
+        m_isShadowDisk || m_DiskFileSize <= m_DiskRamAddress || m_DiskRamAddress == 0)
+    {
         return true;
+    }
 
     CFile ramfile;
     stdstr filename = m_FileName;
@@ -762,8 +784,12 @@ void CN64Disk::InitSysDataD64()
     if (m_DiskFormat != DiskFormatD64)
         return;
 
-    GetDiskAddressSys()[4^3] = 0x10;
-    GetDiskAddressSys()[5^3] |= 0x10;
+    GetDiskAddressSys()[4 ^ 3] = 0x10;
+    GetDiskAddressSys()[5 ^ 3] |= 0x10;
+
+    //Expand RAM Area for file format consistency
+    *(uint16_t*)&GetDiskAddressSys()[0xE2 ^ 2] = RAM_START_LBA[m_DiskType] - SYSTEM_LBAS;
+    *(uint16_t*)&GetDiskAddressSys()[0xE4 ^ 2] = MAX_LBA - SYSTEM_LBAS;
 }
 
 void CN64Disk::DeinitSysDataD64()
@@ -797,7 +823,7 @@ void CN64Disk::DetectRamAddress()
     }
     else //if (m_DiskFormat == DiskFormatD64)
     {
-        m_DiskRamAddress = m_DiskRomAddress + LBAToByte(SYSTEM_LBAS, *(uint16_t*)(&GetDiskAddressSys()[0xE2]) + 1);
+        m_DiskRamAddress = m_DiskRomAddress + LBAToByte(SYSTEM_LBAS, *(uint16_t*)(&GetDiskAddressSys()[0xE0 ^ 2]) + 1);
     }
 }
 
