@@ -1386,6 +1386,7 @@ Good Name=Dezaemon 3D (J)
 Internal Name=DEZAEMON3D
 Status=Compatible
 Save Type=Sram
+RDRAM Size=8
 
 [FD73F775-9724755A-C:50]
 Good Name=Diddy Kong Racing (E) (M3) (V1.0)
