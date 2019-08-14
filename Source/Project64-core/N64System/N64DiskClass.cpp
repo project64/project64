@@ -668,6 +668,11 @@ uint32_t CN64Disk::GetDiskAddressBlock(uint16_t head, uint16_t track, uint16_t b
             offset = 0xFFFFFFFF;
         }
     }
+
+    if (offset >= m_DiskFileSize)
+    {
+        offset = 0xFFFFFFFF;
+    }
     if (sector == 0)
     {
         WriteTrace(TraceN64System, TraceDebug, "Head %d Track %d Block %d - LBA %d - Address %08X", head, track, block, PhysToLBA(head, track, block), offset);
@@ -797,8 +802,16 @@ void CN64Disk::InitSysDataD64()
     GetDiskAddressSys()[5 ^ 3] |= 0x10;
 
     //Expand RAM Area for file format consistency
-    *(uint16_t*)&GetDiskAddressSys()[0xE2 ^ 2] = RAM_START_LBA[m_DiskType] - SYSTEM_LBAS;
-    *(uint16_t*)&GetDiskAddressSys()[0xE4 ^ 2] = MAX_LBA - SYSTEM_LBAS;
+    if (m_DiskType < 6)
+    {
+        *(uint16_t*)&GetDiskAddressSys()[0xE2 ^ 2] = RAM_START_LBA[m_DiskType] - SYSTEM_LBAS;
+        *(uint16_t*)&GetDiskAddressSys()[0xE4 ^ 2] = MAX_LBA - SYSTEM_LBAS;
+    }
+    else
+    {
+        *(uint16_t*)&GetDiskAddressSys()[0xE2 ^ 2] = 0xFFFF;
+        *(uint16_t*)&GetDiskAddressSys()[0xE4 ^ 2] = 0xFFFF;
+    }
 }
 
 void CN64Disk::DeinitSysDataD64()
