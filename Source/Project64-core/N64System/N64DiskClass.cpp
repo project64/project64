@@ -382,7 +382,8 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
         uint16_t ROM_LBA_END = (Test[0xE0] << 8) | Test[0xE1];
         uint16_t RAM_LBA_START = (Test[0xE2] << 8) | Test[0xE3];
 
-        if ((ROM_LBA_END + SYSTEM_LBAS) >= RAM_START_LBA[m_DiskType] || ROM_LBA_END == 0 || ((RAM_LBA_START + SYSTEM_LBAS) != RAM_START_LBA[m_DiskType] && RAM_LBA_START != 0xFFFF))
+        if ((ROM_LBA_END + SYSTEM_LBAS) >= RAM_START_LBA[m_DiskType] ||
+            ((RAM_LBA_START + SYSTEM_LBAS) != RAM_START_LBA[m_DiskType] && RAM_LBA_START != 0xFFFF))
         {
             m_DiskFile.Close();
             SetError(MSG_FAIL_IMAGE);
@@ -392,6 +393,14 @@ bool CN64Disk::AllocateAndLoadDiskImage(const char * FileLoc)
 
         uint32_t ROM_SIZE = LBAToByte(SYSTEM_LBAS, ROM_LBA_END + 1);
         uint32_t RAM_SIZE = RAM_SIZES[m_DiskType];
+
+        if ((0x200 + ROM_SIZE) > DiskFileSize)
+        {
+            m_DiskFile.Close();
+            SetError(MSG_FAIL_IMAGE);
+            WriteTrace(TraceN64System, TraceError, "Malformed D64 disk image, expected minimum filesize of %08X, filesize: %08X", (0x200 + ROM_SIZE), DiskFileSize);
+            return false;
+        }
 
         //Allocate File with Max RAM Area size
         WriteTrace(TraceN64System, TraceError, "Allocate D64 ROM %08X + RAM %08X", ROM_SIZE, RAM_SIZE);
