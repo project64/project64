@@ -64,7 +64,7 @@ bool CBreakpoints::WBPAdd(uint32_t address)
 bool CBreakpoints::AddExecution(uint32_t address, bool bTemporary)
 {
     PreUpdateBP();
-    breakpoints_t::_Pairib res = m_Execution.insert(breakpoint_t::value_type(address, bTemporary));
+    auto res = m_Execution.insert(breakpoint_t::value_type(address, bTemporary));
     if (!res.second && !bTemporary)
     {
         res.first->second = true;
