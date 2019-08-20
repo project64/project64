@@ -260,6 +260,9 @@ enum SettingID
     Debugger_CPULoggingEnabled,
     Debugger_CPULogBufferSize,
     Debugger_ExceptionBreakpoints,
+    Debugger_FpExceptionBreakpoints,
+    Debugger_IntrBreakpoints,
+    Debugger_RcpIntrBreakpoints,
 
     //Trace
     Debugger_TraceMD5,

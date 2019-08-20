@@ -30,6 +30,9 @@ bool CDebugSettings::m_HaveReadBP = false;
 bool CDebugSettings::m_bShowPifRamErrors = false;
 bool CDebugSettings::m_bCPULoggingEnabled = false;
 uint32_t CDebugSettings::m_ExceptionBreakpoints = 0;
+uint32_t CDebugSettings::m_FpExceptionBreakpoints = 0;
+uint32_t CDebugSettings::m_IntrBreakpoints = 0;
+uint32_t CDebugSettings::m_RcpIntrBreakpoints = 0;
 
 CDebugSettings::CDebugSettings()
 {
@@ -51,6 +54,9 @@ CDebugSettings::CDebugSettings()
         g_Settings->RegisterChangeCB(Debugger_ShowPifErrors, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_CPULoggingEnabled, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_ExceptionBreakpoints, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->RegisterChangeCB(Debugger_FpExceptionBreakpoints, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->RegisterChangeCB(Debugger_IntrBreakpoints, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->RegisterChangeCB(Debugger_RcpIntrBreakpoints, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
 
         RefreshSettings();
     }
@@ -74,6 +80,9 @@ CDebugSettings::~CDebugSettings()
         g_Settings->UnregisterChangeCB(Debugger_ShowPifErrors, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_CPULoggingEnabled, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_ExceptionBreakpoints, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->UnregisterChangeCB(Debugger_FpExceptionBreakpoints, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->UnregisterChangeCB(Debugger_IntrBreakpoints, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->UnregisterChangeCB(Debugger_RcpIntrBreakpoints, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
     }
 }
 
@@ -93,6 +102,9 @@ void CDebugSettings::RefreshSettings()
     m_bShowPifRamErrors = m_HaveDebugger && g_Settings->LoadBool(Debugger_ShowPifErrors);
     m_bCPULoggingEnabled = m_HaveDebugger && g_Settings->LoadBool(Debugger_CPULoggingEnabled);
     m_ExceptionBreakpoints = m_HaveDebugger ? g_Settings->LoadDword(Debugger_ExceptionBreakpoints) : 0;
+    m_FpExceptionBreakpoints = m_HaveDebugger ? g_Settings->LoadDword(Debugger_FpExceptionBreakpoints) : 0;
+    m_IntrBreakpoints = m_HaveDebugger ? g_Settings->LoadDword(Debugger_IntrBreakpoints) : 0;
+    m_RcpIntrBreakpoints = m_HaveDebugger ? g_Settings->LoadDword(Debugger_RcpIntrBreakpoints) : 0;
 
     m_Debugging = m_HaveDebugger && (m_HaveExecutionBP || m_WaitingForStep || m_HaveWriteBP || m_HaveReadBP);
 }
