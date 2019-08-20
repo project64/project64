@@ -85,7 +85,7 @@ private:
     static void RefreshSettings(CRomList *);
     static void NotificationCB(const char * Status, CRomList * _this);
     static void RefreshRomListStatic(CRomList * _this);
-    static void ByteSwapRomData(uint8_t * Data, int DataLen);
+    static void ByteSwapRomData(uint8_t * Data, int32_t DataLen);
 
     CPath  m_GameDir;
     CIniFile * m_NotesIniFile;
@@ -95,4 +95,7 @@ private:
     CIniFile * m_ZipIniFile;
 #endif
     CThread m_RefreshThread;
+
+    #define DISKSIZE_MAME 0x0435B0C0
+    #define DISKSIZE_SDK 0x03DEC800
 };

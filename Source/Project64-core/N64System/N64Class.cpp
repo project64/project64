@@ -336,12 +336,17 @@ bool CN64System::LoadFileImage(const char * FileLoc)
                 g_DDRom = new CN64Rom();
             }
             g_DDRom->LoadN64ImageIPL(FileLoc);
-            g_Settings->SaveString(File_DiskIPLPath, FileLoc);
+            if (g_DDRom->CicChipID() == CIC_NUS_8303)
+                g_Settings->SaveString(File_DiskIPLPath, FileLoc);
+            else if (g_DDRom->CicChipID() == CIC_NUS_DDUS)
+                g_Settings->SaveString(File_DiskIPLUSAPath, FileLoc);
+            else if (g_DDRom->CicChipID() == CIC_NUS_DDTL)
+                g_Settings->SaveString(File_DiskIPLTOOLPath, FileLoc);
         }
 
         g_System->RefreshGameSettings();
 
-        if (!g_Rom->IsLoadedRomDDIPL())
+        if (g_Disk == NULL || !g_Rom->IsLoadedRomDDIPL())
         {
             g_Settings->SaveString(Game_File, FileLoc);
         }
@@ -403,7 +408,12 @@ bool CN64System::LoadFileImageIPL(const char * FileLoc)
 
         g_System->RefreshGameSettings();
 
-        g_Settings->SaveString(File_DiskIPLPath, FileLoc);
+        if (g_DDRom->CicChipID() == CIC_NUS_8303)
+            g_Settings->SaveString(File_DiskIPLPath, FileLoc);
+        else if (g_DDRom->CicChipID() == CIC_NUS_DDUS)
+            g_Settings->SaveString(File_DiskIPLUSAPath, FileLoc);
+        else if (g_DDRom->CicChipID() == CIC_NUS_DDTL)
+            g_Settings->SaveString(File_DiskIPLTOOLPath, FileLoc);
 
         //g_Settings->SaveString(Game_File, FileLoc);
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
@@ -486,7 +496,17 @@ bool CN64System::RunFileImage(const char * FileLoc)
     {
         return false;
     }
-    g_Settings->SaveBool(Setting_EnableDisk, false);
+    g_Settings->SaveBool(Setting_EnableDisk, g_Rom->IsLoadedRomDDIPL());
+    if (g_Rom->IsLoadedRomDDIPL())
+    {
+        if (g_Rom->CicChipID() == CIC_NUS_8303)
+            g_Settings->SaveString(File_DiskIPLPath, FileLoc);
+        else if (g_Rom->CicChipID() == CIC_NUS_DDUS)
+            g_Settings->SaveString(File_DiskIPLUSAPath, FileLoc);
+        else if (g_Rom->CicChipID() == CIC_NUS_DDTL)
+            g_Settings->SaveString(File_DiskIPLTOOLPath, FileLoc);
+    }
+
     if (g_Settings->LoadBool(Setting_AutoStart) != 0)
     {
         WriteTrace(TraceN64System, TraceDebug, "Automattically starting rom");
@@ -497,24 +517,17 @@ bool CN64System::RunFileImage(const char * FileLoc)
 
 bool CN64System::RunDiskImage(const char * FileLoc)
 {
-    if (!LoadFileImage(g_Settings->LoadStringVal(File_DiskIPLPath).c_str()))
-    {
-        g_Settings->SaveString(File_DiskIPLPath, "");
-        return false;
-    }
-    else
-    {
-        if (!g_Rom->IsLoadedRomDDIPL())
-        {
-            g_Notify->DisplayError(MSG_FAIL_IMAGE_IPL);
-            g_Settings->SaveString(File_DiskIPLPath, "");
-            return false;
-        }
-    }
     if (!LoadDiskImage(FileLoc, false))
     {
         return false;
     }
+
+    //Select IPL ROM depending on Disk Country Code
+    if (!SelectAndLoadFileImageIPL(g_Disk->GetCountry(), false))
+    {
+        return false;
+    }
+
     g_Settings->SaveBool(Setting_EnableDisk, true);
     if (g_Settings->LoadBool(Setting_AutoStart) != 0)
     {
@@ -526,11 +539,6 @@ bool CN64System::RunDiskImage(const char * FileLoc)
 
 bool CN64System::RunDiskComboImage(const char * FileLoc, const char * FileLocDisk)
 {
-    if (!LoadFileImageIPL(g_Settings->LoadStringVal(File_DiskIPLPath).c_str()))
-    {
-        g_Settings->SaveString(File_DiskIPLPath, "");
-        return false;
-    }
     if (!LoadDiskImage(FileLocDisk, true))
     {
         return false;
@@ -539,6 +547,13 @@ bool CN64System::RunDiskComboImage(const char * FileLoc, const char * FileLocDis
     {
         return false;
     }
+
+    //Select IPL ROM depending on Disk Country Code
+    if (!SelectAndLoadFileImageIPL(g_Disk->GetCountry(), true))
+    {
+        return false;
+    }
+
     g_Settings->SaveBool(Setting_EnableDisk, true);
     if (g_Settings->LoadBool(Setting_AutoStart) != 0)
     {
@@ -574,6 +589,75 @@ void CN64System::CloseSystem()
         g_BaseSystem = NULL;
     }
     WriteTrace(TraceN64System, TraceDebug, "Done");
+}
+
+bool CN64System::SelectAndLoadFileImageIPL(Country country, bool combo)
+{
+    delete g_DDRom;
+    g_DDRom = NULL;
+
+    SettingID IPLROMPathSetting;
+    LanguageStringID IPLROMError;
+    switch (country)
+    {
+        case Country::Japan:
+            IPLROMPathSetting = File_DiskIPLPath;
+            IPLROMError = MSG_IPL_REQUIRED;
+            break;
+        case Country::USA:
+            IPLROMPathSetting = File_DiskIPLUSAPath;
+            IPLROMError = MSG_USA_IPL_REQUIRED;
+            break;
+        case Country::UnknownCountry:
+        default:
+            IPLROMPathSetting = File_DiskIPLTOOLPath;
+            IPLROMError = MSG_TOOL_IPL_REQUIRED;
+            if (combo && !CPath(g_Settings->LoadStringVal(File_DiskIPLTOOLPath).c_str()).Exists())
+            {
+                //Development IPL is not needed for combo ROM + Disk loading
+                if (CPath(g_Settings->LoadStringVal(File_DiskIPLPath).c_str()).Exists())
+                    IPLROMPathSetting = File_DiskIPLPath;
+                else if (CPath(g_Settings->LoadStringVal(File_DiskIPLUSAPath).c_str()).Exists())
+                    IPLROMPathSetting = File_DiskIPLUSAPath;
+            }
+            break;
+    }
+
+    if (!CPath(g_Settings->LoadStringVal(IPLROMPathSetting).c_str()).Exists())
+    {
+        g_Notify->DisplayWarning(IPLROMError);
+        return false;
+    }
+
+    if (combo)
+    {
+        if (!LoadFileImageIPL(g_Settings->LoadStringVal(IPLROMPathSetting).c_str()))
+        {
+            g_Settings->SaveString(IPLROMPathSetting, "");
+            g_Notify->DisplayWarning(IPLROMError);
+            return false;
+        }
+    }
+    else
+    {
+        if (!LoadFileImage(g_Settings->LoadStringVal(IPLROMPathSetting).c_str()))
+        {
+            g_Settings->SaveString(IPLROMPathSetting, "");
+            g_Notify->DisplayWarning(IPLROMError);
+            return false;
+        }
+        else
+        {
+            if (!g_Rom->IsLoadedRomDDIPL())
+            {
+                //g_Notify->DisplayError(MSG_FAIL_IMAGE_IPL);
+                g_Notify->DisplayWarning(IPLROMError);
+                g_Settings->SaveString(IPLROMPathSetting, "");
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 bool CN64System::EmulationStarting(CThread * thread)
@@ -903,6 +987,8 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
     //64DD Registers
     m_Reg.ASIC_STATUS = DD_STATUS_RST_STATE;
     m_Reg.ASIC_ID_REG = 0x00030000;
+    if (g_DDRom && (g_DDRom->CicChipID() == CIC_NUS_DDTL || (g_Disk && g_Disk->GetCountry() == Country::UnknownCountry)))
+        m_Reg.ASIC_ID_REG = 0x00040000;
 
     //m_Reg.REVISION_REGISTER   = 0x00000511;
     m_Reg.FixFpuLocations();
@@ -989,6 +1075,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
             case CIC_NUS_5167:
             case CIC_NUS_8303:
             case CIC_NUS_DDUS:
+            case CIC_NUS_DDTL:
             default:
                 //no specific values
                 break;
@@ -1005,6 +1092,7 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
             m_Reg.m_GPR[22].DW = 0x000000000000003F;
             break;
         case CIC_NUS_8303:        //64DD IPL CIC
+        case CIC_NUS_DDTL:        //64DD IPL TOOL CIC
         case CIC_NUS_5167:        //64DD CONVERSION CIC
             m_Reg.m_GPR[22].DW = 0x00000000000000DD;
             break;

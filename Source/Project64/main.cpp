@@ -29,25 +29,15 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
             MainWindow.Show(true);	//Show the main window
             //N64 ROM or 64DD Disk
             stdstr ext = CPath(g_Settings->LoadStringVal(Cmd_RomFile)).GetExtension();
-            if (!(_stricmp(ext.c_str(), "ndd") == 0))
+            if ((!(_stricmp(ext.c_str(), "ndd") == 0)) && (!(_stricmp(ext.c_str(), "d64") == 0)))
             {
                 //File Extension is not *.ndd so it should be a N64 ROM
                 CN64System::RunFileImage(g_Settings->LoadStringVal(Cmd_RomFile).c_str());
             }
             else
             {
-                //Ext is *.ndd, so it should be a disk file.
-                if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(g_Settings->LoadStringVal(Cmd_RomFile).c_str()))
-                {
-                    if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists()) { g_Notify->DisplayWarning(MSG_IPL_REQUIRED); }
-                    CPath FileNameIPL;
-                    const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-                    if (FileNameIPL.SelectFile(NULL, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-                    {
-                        g_Settings->SaveString(File_DiskIPLPath, (const char *)FileNameIPL);
-                        g_BaseSystem->RunDiskImage(g_Settings->LoadStringVal(Cmd_RomFile).c_str());
-                    }
-                }
+                //Ext is *.ndd/*.d64, so it should be a disk file.
+                CN64System::RunDiskImage(g_Settings->LoadStringVal(Cmd_RomFile).c_str());
             }
         }
         else

@@ -20,7 +20,7 @@ m_pRomInfo(NULL),
 m_pDiskInfo(NULL)
 {
     if (m_FileName.length() == 0)  { return; }
-    if (CPath(m_FileName).GetExtension() != "ndd")
+    if ((CPath(m_FileName).GetExtension() != "ndd") && (CPath(m_FileName).GetExtension() != "d64"))
     {
         m_pRomInfo = new CN64Rom;
         if (!m_pRomInfo->LoadN64Image(m_FileName.c_str()))
@@ -137,8 +137,20 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             default:
                 SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, stdstr_f(" Unknown %c (%02X)", RomHeader[0x3D], RomHeader[0x3D]).ToUTF16().c_str());
             }
-            SetDlgItemTextW(hDlg, IDC_INFO_CRC1, stdstr_f("0x%08X", *(uint32_t *)(RomHeader + 0x10)).ToUTF16().c_str());
-            SetDlgItemTextW(hDlg, IDC_INFO_CRC2, stdstr_f("0x%08X", *(DWORD *)(RomHeader + 0x14)).ToUTF16().c_str());
+
+            switch (_this->m_pRomInfo->CicChipID())
+            {
+            case CIC_NUS_8303:
+            case CIC_NUS_DDUS:
+            case CIC_NUS_DDTL:
+                SetDlgItemTextW(hDlg, IDC_INFO_CRC1, stdstr_f("0x%08X", (*(uint16_t *)(RomHeader + 0x608) << 16) | *(uint16_t *)(RomHeader + 0x60C)).ToUTF16().c_str());
+                SetDlgItemTextW(hDlg, IDC_INFO_CRC2, stdstr_f("0x%08X", (*(uint16_t *)(RomHeader + 0x638) << 16) | *(uint16_t *)(RomHeader + 0x63C)).ToUTF16().c_str());
+                break;
+            default:
+                SetDlgItemTextW(hDlg, IDC_INFO_CRC1, stdstr_f("0x%08X", *(uint32_t *)(RomHeader + 0x10)).ToUTF16().c_str());
+                SetDlgItemTextW(hDlg, IDC_INFO_CRC2, stdstr_f("0x%08X", *(DWORD *)(RomHeader + 0x14)).ToUTF16().c_str());
+                break;
+            }
 
             std::wstring CicChip;
             switch (_this->m_pRomInfo->CicChipID())
@@ -147,6 +159,7 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             case CIC_NUS_8303: CicChip = L"CIC-NUS-8303"; break;
             case CIC_NUS_5167: CicChip = L"CIC-NUS-5167"; break;
             case CIC_NUS_DDUS: CicChip = L"CIC-NUS-????"; break;
+            case CIC_NUS_DDTL: CicChip = L"CIC-NUS-????"; break;
             default: CicChip = stdstr_f("CIC-NUS-610%d", _this->m_pRomInfo->CicChipID()).ToUTF16(); break;
             }
             SetDlgItemTextW(hDlg, IDC_INFO_CIC, CicChip.c_str());
@@ -176,7 +189,7 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             //SetDlgItemTextW(hDlg, IDC_INFO_MD5, _this->m_pRomInfo->GetRomMD5().ToUTF16().c_str());
             //SetDlgItemTextW(hDlg, IDC_INFO_ROMSIZE, stdstr_f("%.1f MBit", (float)_this->m_pDiskInfo->GetRomSize() / 0x20000).ToUTF16().c_str());
 
-            BYTE * DiskHeader = _this->m_pDiskInfo->GetDiskAddress() + 0x43670;
+            BYTE * DiskHeader = _this->m_pDiskInfo->GetDiskAddressID();
             SetDlgItemTextW(hDlg, IDC_INFO_CARTID, stdstr_f("%c%c", DiskHeader[0x02], DiskHeader[0x01]).ToUTF16().c_str());
 
             /*switch (DiskHeader[0x00])
@@ -204,8 +217,8 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
             default:
                 SetDlgItemTextW(hDlg, IDC_INFO_COUNTRY, stdstr_f(" Unknown %c (%02X)", DiskHeader[0x03], DiskHeader[0x03]).ToUTF16().c_str());
             }
-            SetDlgItemTextW(hDlg, IDC_INFO_CRC1, stdstr_f("0x%08X", *(uint32_t *)(_this->m_pDiskInfo->GetDiskAddress())).ToUTF16().c_str());
-            SetDlgItemTextW(hDlg, IDC_INFO_CRC2, stdstr_f("0x%08X", *(DWORD *)(DiskHeader)).ToUTF16().c_str());
+            SetDlgItemTextW(hDlg, IDC_INFO_CRC1, stdstr_f("0x%08X", (_this->m_pDiskInfo->CalculateCrc())).ToUTF16().c_str());
+            SetDlgItemTextW(hDlg, IDC_INFO_CRC2, stdstr_f("0x%08X", (~_this->m_pDiskInfo->CalculateCrc())).ToUTF16().c_str());
             /*
             std::wstring CicChip;
             switch (_this->m_pRomInfo->CicChipID())

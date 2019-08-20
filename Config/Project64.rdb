@@ -1849,7 +1849,6 @@ Clear Frame=2
 [4D3E622E-9B828B4E-C:4A]
 Good Name=F-ZERO X (J)
 Internal Name=F-ZERO X
-RDRAM Size=8
 Fixed Audio=0
 Status=Compatible
 Plugin Note=[Glide64] missing menu effects
@@ -5892,7 +5891,6 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
-RDRAM Size=8
 
 [D43DA81F-021E1E19-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time (U) (V1.1)
@@ -5909,7 +5907,6 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
-RDRAM Size=8
 
 [693BA2AE-B7F14E9F-C:45]
 Good Name=The Legend of Zelda - Ocarina of Time (U) (V1.2)
@@ -5926,7 +5923,6 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
-RDRAM Size=8
 
 [1D4136F3-AF63EEA9-C:50]
 Good Name=The Legend of Zelda - Ocarina of Time - Master Quest (E) (GC)
@@ -7063,7 +7059,6 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
-RDRAM Size=8
 
 [D43DA81F-021E1E19-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina (J) (V1.1)
@@ -7077,7 +7072,6 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
-RDRAM Size=8
 
 [693BA2AE-B7F14E9F-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina (J) (V1.2)
@@ -7091,7 +7085,6 @@ SMM-PI DMA=0
 SMM-Protect=1
 SMM-TLB=0
 Self Texture=1
-RDRAM Size=8
 
 [F7F52DB8-2195E636-C:4A]
 Good Name=Zelda no Densetsu - Toki no Ocarina - Zelda Collection Version (J) (GC)
@@ -7141,21 +7134,28 @@ Status=Compatible
 //
 // ROMs below are 64DD content
 
-[00000000-00000000-C:4A]
+[E1F9D977-33E17503-C:4A]
 32bit=No
 Fixed Audio=0
 Good Name=64DD IPL (JPN)
 RDRAM Size=8
 Status=Compatible
 
-[00000000-00000000-C:45]
+[A91EAC78-1A22D1D7-C:45]
 32bit=No
 Fixed Audio=0
 Good Name=64DD IPL (USA)
 RDRAM Size=8
 Status=Compatible
 
-[E848D316-444D504A-C:4A]
+[968BFE04-014A96F5-C:4A]
+32bit=No
+Fixed Audio=0
+Good Name=64DD TOOL IPL (JPN)
+RDRAM Size=8
+Status=Compatible
+
+[D06F15D7-2F90EA28-C:4A]
 32bit=No
 Core Note=Cannot use Capture Pak functionality.
 Fixed Audio=0
@@ -7163,7 +7163,7 @@ Good Name=Mario Artist Paint Studio (J)
 RDRAM Size=8
 Status=Compatible
 
-[E848D316-444D544A-C:4A]
+[56A227D6-A95DD829-C:4A]
 32bit=No
 Core Note=Cannot use Capture Pak functionality.
 Fixed Audio=0
@@ -7171,7 +7171,7 @@ Good Name=Mario Artist Talent Studio (J)
 RDRAM Size=8
 Status=Compatible
 
-[E848D316-444D424A-C:4A]
+[30B9A412-CF465BED-C:4A]
 32bit=No
 Core Note=Cannot use Randnet & Capture Pak functionality.
 Fixed Audio=0
@@ -7179,7 +7179,7 @@ Good Name=Mario Artist Communication Kit (J)
 RDRAM Size=8
 Status=Compatible
 
-[E848D316-444D474A-C:4A]
+[2E91FFC8-D16E0037-C:4A]
 32bit=No
 Fixed Audio=0
 Good Name=Mario Artist Polygon Studio (J)
@@ -7187,7 +7187,7 @@ Plugin Note=[Video] Cannot model on HLE plugins.
 RDRAM Size=8
 Status=Issues (plugin)
 
-[E848D316-4453434A-C:4A]
+[7BD92DC6-8426D239-C:4A]
 32bit=No
 Fixed Audio=1
 Good Name=Sim City 64 (J)
@@ -7196,7 +7196,7 @@ Plugin Note=[Video] Very slow, city is not rendering properly in HLE
 RDRAM Size=8
 Status=Issues (plugin)
 
-[E848D316-4450474A-C:4A]
+[905063EB-6FAF9C14-C:4A]
 32bit=No
 Fixed Audio=0
 Good Name=Nihon Pro Golf Tour 64 (J)
@@ -7204,29 +7204,37 @@ Counter Factor=1
 RDRAM Size=8
 Status=Compatible
 
-[E848D316-444B444A-C:4A]
+[A11940D1-5EE6BF2E-C:4A]
 32bit=No
 Fixed Audio=0
 Good Name=Kyojin no Doshin 1 (J)
 RDRAM Size=8
 Status=Compatible
 
-[E848D316-444B494A-C:4A]
+[A1193471-5EE6CB8E-C:4A]
 32bit=No
 Fixed Audio=0
 Good Name=Kyojin no Doshin 1 (J) (Store Demo)
 RDRAM Size=8
 Status=Compatible
 
-[E848D316-4452444A-C:4A]
+[8EFB4B2D-7104B4D2-C:4A]
 32bit=No
 Core Note=Modem Pak is required
 Fixed Audio=0
-Good Name=Randnet Disk (J)
+Good Name=Randnet Disk (J) [Rev. 00]
 RDRAM Size=8
 Status=Only intro/part OK
 
-[E848D316-444B4B4A-C:4A]
+[8EFC7632-710389CD-C:4A]
+32bit=No
+Core Note=Modem Pak is required
+Fixed Audio=0
+Good Name=Randnet Disk (J) [Rev. 01]
+RDRAM Size=8
+Status=Only intro/part OK
+
+[B75CBC4E-48A343B1-C:4A]
 32bit=No
 Core Note=Expansion Disk for Kyojin no Doshin 1. Use the Disk Swap feature to play.
 Fixed Audio=0
@@ -7234,20 +7242,27 @@ Good Name=Kyojin no Doshin - Kaihou Sensen Chibikkochikko Dai Shuugou (J)
 RDRAM Size=8
 Status=Compatible
 
-[E848D316-45465A4A-C:4A]
+[CD999CC9-32666336-C:4A]
 32bit=No
 Core Note=Expansion Disk for F-Zero X. Play F-Zero X (J) with this disk loaded.
 Fixed Audio=0
 Good Name=F-ZERO X Expansion Kit (J)
 RDRAM Size=8
 Status=Compatible
+Culling=1
 
-[E848D316-7AB0252F-C:0]
+[41252DA2-BEDAD25D-C:0]
 32bit=No
 Fixed Audio=0
 Good Name=Super Mario 64 Disk Version (J) (Spaceworld 1996 Demo)
 RDRAM Size=8
 Status=Compatible
+
+[87FAF438-78050BC7-C:41]
+Good Name=Dezaemon 3D Expansion Disk (J) (Proto)
+RDRAM Size=8
+Status=Compatible
+Save Type=Sram
 
 
 //================  PD  ================

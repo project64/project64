@@ -592,3 +592,4 @@ public:
 #include "SettingsPage-KeyboardShortcuts.h"
 #include "SettingsPage-Options.h"
 #include "SettingsPage-Plugin.h"
+#include "SettingsPage-DiskDrive.h"

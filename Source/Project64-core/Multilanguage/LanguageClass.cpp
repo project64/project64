@@ -201,6 +201,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(TAB_ROMSTATUS, "Status");
     DEF_STR(TAB_RECOMPILER, "Recompiler");
     DEF_STR(TAB_DEFAULTS, "Defaults");
+    DEF_STR(TAB_DISKDRIVE, "64DD");
 
     //Plugin Dialog
     DEF_STR(PLUG_ABOUT, "About");
@@ -237,7 +238,10 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(OPTION_CHECK_RUNNING, "Check if Project64 is already running");
     DEF_STR(OPTION_UNIQUE_SAVE_DIR, "Unique Game Save Directory");
     DEF_STR(OPTION_CHANGE_FR, "Speed display:");
-    DEF_STR(OPTION_IPL_ROM_PATH, "64DD IPL ROM Path:");
+    DEF_STR(OPTION_IPL_ROM_PATH, "Japanese Retail 64DD IPL ROM Path:");
+    DEF_STR(OPTION_IPL_ROM_USA_PATH, "American Retail 64DD IPL ROM Path:");
+    DEF_STR(OPTION_IPL_ROM_TOOL_PATH, "Development 64DD IPL ROM Path:");
+    DEF_STR(OPTION_DISKSAVETYPE, "Disk Save Type:");
 
     //ROM Browser Tab
     DEF_STR(RB_MAX_ROMS, "Max # of ROMs remembered (0-10):");
@@ -368,6 +372,10 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(BOTTOM_RESET_ALL, "Reset All");
     DEF_STR(BOTTOM_APPLY, "Apply");
     DEF_STR(BOTTOM_CLOSE, "Close");
+
+    //Disk Save Type
+    DEF_STR(DISKSAVE_SHADOW, "Full Disk Copy");
+    DEF_STR(DISKSAVE_RAM, "Save Area Only");
 
     /*********************************************************************************
     * ROM Information                                                                *
@@ -524,7 +532,9 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_SET_HLE_AUD_TITLE, "Audio High-Level Emulation");
     DEF_STR(MSG_SET_HLE_AUD_MSG, "Audio HLE requires a third-party plugin!!!\nIf you do not use a third-party audio plugin that supports HLE, you will hear no sound.\n\nChange to audio HLE?");
     DEF_STR(MSG_FAIL_IMAGE_IPL, "File loaded does not appear to be a valid 64DD IPL ROM.\n\nVerify your ROMs with GoodN64.");
-    DEF_STR(MSG_IPL_REQUIRED, "Nintendo 64DD IPL ROM not found.\nIt is required to play 64DD disks.\n\nPlease select the required ROM.");
+    DEF_STR(MSG_IPL_REQUIRED, "Nintendo 64DD Japanese Retail IPL ROM not found.\nIt is required to play japanese region 64DD disk images.\n\nPlease select the required ROM in the Settings.");
+    DEF_STR(MSG_USA_IPL_REQUIRED, "Nintendo 64DD American Retail IPL ROM not found.\nIt is required to play american region 64DD disk images.\n\nPlease select the required ROM in the Settings.");
+    DEF_STR(MSG_TOOL_IPL_REQUIRED, "Nintendo 64DD Development IPL ROM not found.\nIt is required to play development 64DD disk images.\n\nPlease select the required ROM in the Settings.");
 
     /*********************************************************************************
     * Android                                                                        *

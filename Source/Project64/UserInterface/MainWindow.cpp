@@ -987,43 +987,23 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             switch (LOWORD(wParam)) {
             case ID_POPUPMENU_PLAYGAME: 
                 {
-                    if (CPath(_this->CurrentedSelectedRom()).GetExtension() != "ndd")
+                    if ((CPath(_this->CurrentedSelectedRom()).GetExtension() != "ndd") && (CPath(_this->CurrentedSelectedRom()).GetExtension() != "d64"))
                     {
                         g_BaseSystem->RunFileImage(_this->CurrentedSelectedRom());
                     }
                     else
                     {
-                        if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(_this->CurrentedSelectedRom()))
-                        {
-                            if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists()) { g_Notify->DisplayWarning(MSG_IPL_REQUIRED); }
-                            CPath FileName;
-                            const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-                            if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-                            {
-                                g_Settings->SaveString(File_DiskIPLPath, (const char *)FileName);
-                                g_BaseSystem->RunDiskImage(_this->CurrentedSelectedRom());
-                            }
-                        }
+                        g_BaseSystem->RunDiskImage(_this->CurrentedSelectedRom());
                     }
                     break;
                 }
             case ID_POPUPMENU_PLAYGAMEWITHDISK:
                 {
                     CPath FileName;
-                    const char * Filter = "N64DD Disk Image (*.ndd)\0*.ndd\0All files (*.*)\0*.*\0";
+                    const char * Filter = "N64DD Disk Image (*.ndd, *.d64)\0*.ndd;*.d64\0All files (*.*)\0*.*\0";
                     if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
                     {
-                        if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskComboImage(_this->CurrentedSelectedRom(), FileName))
-                        {
-                            if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists()) { g_Notify->DisplayWarning(MSG_IPL_REQUIRED); }
-                            CPath FileNameIPL;
-                            const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-                            if (FileNameIPL.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-                            {
-                                g_Settings->SaveString(File_DiskIPLPath, (const char *)FileNameIPL);
-                                g_BaseSystem->RunDiskComboImage(_this->CurrentedSelectedRom(), FileName);
-                            }
-                        }
+                        g_BaseSystem->RunDiskComboImage(_this->CurrentedSelectedRom(), FileName);
                     }
                 }
                 break;
@@ -1039,7 +1019,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             case ID_POPUPMENU_EDITCHEATS:
             case ID_POPUPMENU_CHOOSEENHANCEMENT:
                 {
-                    if (CPath(_this->CurrentedSelectedRom()).GetExtension() != "ndd")
+                    if ((CPath(_this->CurrentedSelectedRom()).GetExtension() != "ndd") && (CPath(_this->CurrentedSelectedRom()).GetExtension() != "d64"))
                     {
                         CN64Rom Rom;
                         Rom.LoadN64Image(_this->CurrentedSelectedRom(), true);
@@ -1172,26 +1152,13 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
             DragFinish(hDrop);
 
             stdstr ext = CPath(filename).GetExtension();
-            if (!(_stricmp(ext.c_str(), "ndd") == 0))
+            if ((!(_stricmp(ext.c_str(), "ndd") == 0)) && (!(_stricmp(ext.c_str(), "d64") == 0)))
             {
-                delete g_DDRom;
-                g_DDRom = NULL;
                 CN64System::RunFileImage(filename);
             }
             else
             {
-                // Open Disk
-                if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists() || !g_BaseSystem->RunDiskImage(filename))
-                {
-                    if (!CPath(g_Settings->LoadStringVal(File_DiskIPLPath)).Exists()) { g_Notify->DisplayWarning(MSG_IPL_REQUIRED); }
-                    CPath FileName;
-                    const char * Filter = "64DD IPL ROM Image (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-                    if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
-                    {
-                        g_Settings->SaveString(File_DiskIPLPath, (const char *)FileName);
-                        g_BaseSystem->RunDiskImage(filename);
-                    }
-                }
+                CN64System::RunDiskImage(filename);
             }
         }
         break;

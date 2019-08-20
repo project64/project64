@@ -137,6 +137,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Setting_LanguageDirDefault, new CSettingTypeRelativePath("Lang", ""));
     AddHandler(Setting_LanguageDir, new CSettingTypeApplicationPath("Lang Directory", "Directory", Setting_LanguageDirDefault));
 	AddHandler(Setting_SyncViaAudioEnabled, new CSettingTypeTempBool(false, "SyncViaAudioEnabled"));
+    AddHandler(Setting_DiskSaveType, new CSettingTypeApplication("Settings", "Disk Save Type", (uint32_t)1));
 
 	AddHandler(Default_RDRamSize, new CSettingTypeApplication("Defaults", "RDRAM Size", 0x400000u));
 	AddHandler(Default_UseHleGfx, new CSettingTypeApplication("Defaults", "HLE GFX Default", true));
@@ -328,6 +329,8 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 
     AddHandler(UserInterface_BasicMode, new CSettingTypeApplication("Settings", "Basic Mode", (uint32_t)true));
     AddHandler(File_DiskIPLPath, new CSettingTypeApplicationPath("Settings", "Disk IPL ROM Path", Default_None));
+    AddHandler(File_DiskIPLUSAPath, new CSettingTypeApplicationPath("Settings", "Disk IPL USA ROM Path", Default_None));
+    AddHandler(File_DiskIPLTOOLPath, new CSettingTypeApplicationPath("Settings", "Disk IPL TOOL ROM Path", Default_None));
 
     AddHandler(Debugger_Enabled, new CSettingTypeApplication("Debugger", "Debugger", false));
     AddHandler(Debugger_ShowTLBMisses, new CSettingTypeApplication("Debugger", "Show TLB Misses", false));

@@ -234,6 +234,9 @@
     <ClCompile Include="UserInterface\Debugger\Debugger-ExceptionBreakpoints.cpp">
       <Filter>Source Files\User Interface Source\Debugger Source</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface\Settings\SettingsPage-DiskDrive.cpp">
+      <Filter>Source Files\User Interface Source\Settings Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserInterface\resource.h">
@@ -448,6 +451,9 @@
     </ClInclude>
     <ClInclude Include="UserInterface\Debugger\Debugger-ExceptionBreakpoints.h">
       <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Settings\SettingsPage-DiskDrive.h">
+      <Filter>Header Files\User Interface Headers\Settings Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
