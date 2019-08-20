@@ -118,7 +118,6 @@
     <ClCompile Include="UserInterface\Settings\SettingsPage-AdvancedOptions.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-Defaults.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-Directories.cpp" />
-    <ClCompile Include="UserInterface\Settings\SettingsPage-DiskDrive.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-Game-General.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-Game-Plugin.cpp" />
     <ClCompile Include="UserInterface\Settings\SettingsPage-Game-Recompiler.cpp" />
