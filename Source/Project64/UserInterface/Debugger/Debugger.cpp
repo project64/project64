@@ -655,21 +655,58 @@ void CDebuggerUI::TLBChanged()
     Debug_RefreshTLBWindow();
 }
 
-
 // Exception handling - break on exception vector if exception bp is set
 void CDebuggerUI::HandleCPUException(void)
 {
     int exc = (g_Reg->CAUSE_REGISTER >> 2) & 0x1F;
-
-    if ((CDebugSettings::ExceptionBreakpoints() & (1 << exc)))
+    int intr = (g_Reg->CAUSE_REGISTER >> 8) & 0xFF;
+    int fpExc = (g_Reg->m_FPCR[31] >> 12) & 0x3F;
+    int rcpIntr = g_Reg->MI_INTR_REG & 0x2F;
+    
+    if ((ExceptionBreakpoints() & (1 << exc)))
     {
-        if (CDebugSettings::bCPULoggingEnabled())
+        if (exc == 15) // floating-point exception
         {
-            g_Debugger->OpenCPULogWindow();
+            if (fpExc & FpExceptionBreakpoints())
+            {
+                goto have_bp;
+            }
+            return;
         }
-
-        g_Settings->SaveBool(Debugger_SteppingOps, true);
+        else if (exc == 0) // interrupt exception
+        {
+            if (intr & IntrBreakpoints())
+            {
+                if (intr & 0x04) // RCP interrupt (IP2)
+                {
+                    if (rcpIntr & RcpIntrBreakpoints())
+                    {
+                        goto have_bp;
+                    }
+                    return;
+                }
+                else // other interrupts
+                {
+                    goto have_bp;
+                }
+            }
+            return;
+        }
+        else // other exceptions
+        {
+            goto have_bp;
+        }
     }
+
+    return;
+
+have_bp:
+    if (bCPULoggingEnabled())
+    {
+        g_Debugger->OpenCPULogWindow();
+    }
+
+    g_Settings->SaveBool(Debugger_SteppingOps, true);
 }
 
 void CDebuggerUI::HandleCartToRamDMA(void)
@@ -749,7 +786,10 @@ void CDebuggerUI::CPUStepStarted()
         if (pc == 0x80000000 || pc == 0x80000080 ||
             pc == 0xA0000100 || pc == 0x80000180)
         {
-            HandleCPUException();
+            if ((g_Reg->STATUS_REGISTER >> 1) & 3) // if exl/erl bits are set
+            {
+                HandleCPUException();
+            }
         }
     }
 

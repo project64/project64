@@ -697,6 +697,26 @@
 #define IDC_IPLDIR_TL_TXT               1546
 #define IDC_DISKSAVETYPE_TXT            1547
 #define IDC_DISKSAVETYPE                1548
+#define IDC_CHK_INTR_SP                 1549
+#define IDC_CHK_INTR_SI                 1550
+#define IDC_CHK_INTR_AI                 1551
+#define IDC_CHK_INTR_VI                 1552
+#define IDC_CHK_INTR_PI                 1553
+#define IDC_CHK_INTR_DP                 1554
+#define IDC_CHK_INTR_IP0                1555
+#define IDC_CHK_INTR_IP1                1556
+#define IDC_CHK_INTR_IP2                1557
+#define IDC_CHK_INTR_IP3                1558
+#define IDC_CHK_INTR_IP4                1559
+#define IDC_CHK_INTR_IP5                1560
+#define IDC_CHK_INTR_IP6                1561
+#define IDC_CHK_INTR_IP7                1562
+#define IDC_CHK_FP_CE                   1563
+#define IDC_CHK_FP_CV                   1564
+#define IDC_CHK_FP_CZ                   1565
+#define IDC_CHK_FP_CO                   1566
+#define IDC_CHK_FP_CU                   1567
+#define IDC_CHK_FP_CI                   1568
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ADDSYMBOL          40013
 #define ID_POPUPMENU_VIEWDISASM         40017
@@ -757,7 +777,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        219
 #define _APS_NEXT_COMMAND_VALUE         40092
-#define _APS_NEXT_CONTROL_VALUE         1549
+#define _APS_NEXT_CONTROL_VALUE         1569
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

@@ -350,6 +350,9 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Debugger_CPULoggingEnabled, new CSettingTypeApplication("Debugger", "Enable CPU Logging", false));
     AddHandler(Debugger_CPULogBufferSize, new CSettingTypeApplication("Debugger", "CPU Log Buffer Size", (uint32_t)1024));
     AddHandler(Debugger_ExceptionBreakpoints, new CSettingTypeApplication("Debugger", "Exception Breakpoints", (uint32_t)0));
+    AddHandler(Debugger_FpExceptionBreakpoints, new CSettingTypeApplication("Debugger", "FP Exception Breakpoints", (uint32_t)0));
+    AddHandler(Debugger_IntrBreakpoints, new CSettingTypeApplication("Debugger", "Interrupt Breakpoints", (uint32_t)0));
+    AddHandler(Debugger_RcpIntrBreakpoints, new CSettingTypeApplication("Debugger", "RCP Interrupt Breakpoints", (uint32_t)0));
     AddHandler(Debugger_DebugLanguage, new CSettingTypeApplication("Debugger", "Debug Language", false));
     AddHandler(Debugger_ShowDivByZero, new CSettingTypeApplication("Debugger", "Show Div by zero", false));
     AddHandler(Debugger_AppLogFlush, new CSettingTypeApplication("Logging", "Log Auto Flush", (uint32_t)false));
