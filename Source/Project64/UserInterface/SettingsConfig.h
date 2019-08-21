@@ -42,7 +42,7 @@ private:
 
     CTreeViewCtrl    m_PagesTreeList;
     SETTING_SECTIONS m_Sections;
-    CSettingsPage *  m_CurrentPage, *m_GeneralOptionsPage, *m_AdvancedPage, *m_DefaultsPage/*, *m_DiskDrivePage*/;
+    CSettingsPage *  m_CurrentPage, *m_GeneralOptionsPage, *m_AdvancedPage, *m_DefaultsPage, *m_DiskDrivePage;
     bool             m_GameConfig;
     bool             m_bTVNSelChangedSupported;
 };
