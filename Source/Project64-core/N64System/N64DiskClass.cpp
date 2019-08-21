@@ -478,10 +478,10 @@ bool CN64Disk::LoadDiskRAMImage()
     filename[filename.length() - 2] = 'a';
     filename[filename.length() - 3] = 'r';
 
-    WriteTrace(TraceN64System, TraceDebug, "Trying to open %s", filename);
+    WriteTrace(TraceN64System, TraceDebug, "Trying to open %s", filename.c_str());
     if (!ramfile.Open(filename.c_str(), CFileBase::modeRead))
     {
-        WriteTrace(TraceN64System, TraceError, "Failed to open %s", filename);
+        WriteTrace(TraceN64System, TraceError, "Failed to open %s", filename.c_str());
         return false;
     }
 
@@ -783,12 +783,12 @@ Country CN64Disk::GetDiskCountryCode()
     switch (*(uint32_t*)&GetDiskAddressSys()[0])
     {
         case DISK_COUNTRY_JPN:
-            return Country::Japan;
+            return Japan;
         case DISK_COUNTRY_USA:
-            return Country::USA;
+            return USA;
         case DISK_COUNTRY_DEV:
         default:
-            return Country::UnknownCountry;
+            return UnknownCountry;
     }
 }
 

@@ -377,7 +377,7 @@ bool CMipsMemoryVM::FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & contex
 #endif
 
 #ifdef __arm__
-bool CMipsMemoryVM::DumpArmExceptionInfo(uint32_t MemAddress, mcontext_t & context)
+void CMipsMemoryVM::DumpArmExceptionInfo(uint32_t MemAddress, mcontext_t & context)
 {
     ArmThumbOpcode * OpCode = (ArmThumbOpcode *)context.arm_pc;
     Arm32Opcode * OpCode32 = (Arm32Opcode *)context.arm_pc;

@@ -185,7 +185,7 @@ private:
     static bool FilterX86Exception(uint32_t MemAddress, X86_CONTEXT & context);
 #endif
 #ifdef __arm__
-    static bool DumpArmExceptionInfo(uint32_t MemAddress, mcontext_t & context);
+    static void DumpArmExceptionInfo(uint32_t MemAddress, mcontext_t & context);
     static bool FilterArmException(uint32_t MemAddress, mcontext_t & context);
 #endif
 
