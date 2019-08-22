@@ -4,7 +4,7 @@
 enum MainMenuID
 {
     //File Menu
-    ID_FILE_OPEN_ROM = 4000, ID_FILE_ROM_INFO, ID_FILE_STARTEMULATION, ID_FILE_ENDEMULATION,
+    ID_FILE_OPEN_ROM = 4000, ID_FILE_OPEN_COMBO, ID_FILE_ROM_INFO, ID_FILE_STARTEMULATION, ID_FILE_ENDEMULATION,
     ID_FILE_ROMDIRECTORY, ID_FILE_REFRESHROMLIST, ID_FILE_EXIT,
 
     //language
@@ -75,6 +75,7 @@ private:
     CMainMenu& operator=(const CMainMenu&);		// Disable assignment
 
     void OnOpenRom(HWND hWnd);
+    void OnOpenCombo(HWND hWnd);
     void OnRomInfo(HWND hWnd);
     void OnEndEmulation(void);
     void OnScreenShot(void);
@@ -88,6 +89,8 @@ private:
     stdstr GetFileLastMod(const CPath & FileName);
     void RebuildAccelerators(void);
     std::string ChooseFileToOpen(HWND hParent);
+    std::string ChooseROMFileToOpen(HWND hParent);
+    std::string ChooseDiskFileToOpen(HWND hParent);
     void SetTraceModuleSetttings(SettingID Type);
 
     static void SettingsChanged(CMainMenu * _this);
