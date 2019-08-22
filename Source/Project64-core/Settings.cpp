@@ -90,6 +90,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Cmd_BaseDirectory, new CSettingTypeTempString(BaseDirectory));
     AddHandler(Cmd_ShowHelp, new CSettingTypeTempBool(false));
     AddHandler(Cmd_RomFile, new CSettingTypeTempString(""));
+    AddHandler(Cmd_ComboDiskFile, new CSettingTypeTempString(""));
 
     //Support Files
     AddHandler(SupportFile_Settings, new CSettingTypeApplicationPath("Settings", "ConfigFile", SupportFile_SettingsDefault));

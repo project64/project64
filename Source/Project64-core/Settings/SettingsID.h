@@ -24,6 +24,7 @@ enum SettingID
     //Command Settings
     Cmd_BaseDirectory,
     Cmd_RomFile,
+    Cmd_ComboDiskFile,
     Cmd_ShowHelp,
 
     //Support Files
