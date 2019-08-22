@@ -379,6 +379,7 @@ void CShortCuts::Load(bool InitialValues)
     m_ShortCuts.clear();
 
     AddShortCut(ID_FILE_OPEN_ROM, STR_SHORTCUT_FILEMENU, MENU_OPEN, CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN);
+    AddShortCut(ID_FILE_OPEN_COMBO, STR_SHORTCUT_FILEMENU, MENU_OPEN_COMBO, CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN);
     AddShortCut(ID_FILE_ROM_INFO, STR_SHORTCUT_FILEMENU, MENU_ROM_INFO, CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN);
     AddShortCut(ID_FILE_STARTEMULATION, STR_SHORTCUT_FILEMENU, MENU_START, CMenuShortCutKey::ACCESS_NOT_IN_FULLSCREEN);
     AddShortCut(ID_FILE_ENDEMULATION, STR_SHORTCUT_FILEMENU, MENU_END, CMenuShortCutKey::ACCESS_GAME_RUNNING);
@@ -431,6 +432,8 @@ void CShortCuts::Load(bool InitialValues)
     {
         m_ShortCuts.find(ID_FILE_OPEN_ROM)->second.AddShortCut('O', TRUE, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
         m_ShortCuts.find(ID_FILE_OPEN_ROM)->second.AddShortCut('O', TRUE, false, false, CMenuShortCutKey::ACCESS_GAME_NOT_RUNNING);
+        m_ShortCuts.find(ID_FILE_OPEN_COMBO)->second.AddShortCut('O', TRUE, false, TRUE, CMenuShortCutKey::ACCESS_GAME_RUNNING);
+        m_ShortCuts.find(ID_FILE_OPEN_COMBO)->second.AddShortCut('O', TRUE, false, TRUE, CMenuShortCutKey::ACCESS_GAME_NOT_RUNNING);
         m_ShortCuts.find(ID_FILE_STARTEMULATION)->second.AddShortCut(VK_F11, false, false, false, CMenuShortCutKey::ACCESS_GAME_NOT_RUNNING);
         m_ShortCuts.find(ID_FILE_ENDEMULATION)->second.AddShortCut(VK_F12, false, false, false, CMenuShortCutKey::ACCESS_GAME_RUNNING);
         m_ShortCuts.find(ID_FILE_REFRESHROMLIST)->second.AddShortCut(VK_F5, false, false, false, CMenuShortCutKey::ACCESS_GAME_NOT_RUNNING);

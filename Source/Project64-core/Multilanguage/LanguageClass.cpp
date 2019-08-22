@@ -71,6 +71,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MENU_RECENT_ROM, "Recent ROM");
     DEF_STR(MENU_RECENT_DIR, "Recent ROM Directories");
     DEF_STR(MENU_EXIT, "E&xit");
+    DEF_STR(MENU_OPEN_COMBO, "Open &Combo");
 
     //System Menu
     DEF_STR(MENU_SYSTEM, "&System");

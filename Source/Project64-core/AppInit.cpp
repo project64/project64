@@ -186,6 +186,19 @@ static bool ParseCommand(int32_t argc, char **argv)
             g_Settings->SaveBool(Cmd_ShowHelp, true);
             return false;
         }
+        else if (strcmp(argv[i], "--combo") == 0)
+        {
+            if (ArgsLeft >= 2)
+            {
+                g_Settings->SaveString(Cmd_ComboDiskFile, &(argv[i + 1][0]));
+                i++;
+            }
+            else
+            {
+                WriteTrace(TraceAppInit, TraceError, "not enough parameters for '%d: %s'", i, argv[i]);
+                return false;
+            }
+        }
         else if (ArgsLeft == 0 && argv[i][0] != '-')
         {
             g_Settings->SaveString(Cmd_RomFile, &(argv[i][0]));

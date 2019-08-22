@@ -96,7 +96,29 @@ int CMainMenu::ProcessAccelerator(HWND hWnd, void * lpMsg)
 std::string CMainMenu::ChooseFileToOpen(HWND hParent)
 {
     CPath FileName;
-    const char * Filter = "N64 ROMs (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin, *.ndd)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal;*.ndd\0All files (*.*)\0*.*\0";
+    const char * Filter = "N64 ROMs & Disks (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin, *.ndd, *.d64)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal;*.ndd;*.d64\0All files (*.*)\0*.*\0";
+    if (FileName.SelectFile(hParent, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
+    {
+        return FileName;
+    }
+    return "";
+}
+
+std::string CMainMenu::ChooseROMFileToOpen(HWND hParent)
+{
+    CPath FileName;
+    const char * Filter = "N64 ROMs (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+    if (FileName.SelectFile(hParent, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
+    {
+        return FileName;
+    }
+    return "";
+}
+
+std::string CMainMenu::ChooseDiskFileToOpen(HWND hParent)
+{
+    CPath FileName;
+    const char * Filter = "N64DD Disk Image (*.ndd, *.d64)\0*.ndd;*.d64\0All files (*.*)\0*.*\0";
     if (FileName.SelectFile(hParent, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
     {
         return FileName;
@@ -128,6 +150,23 @@ void CMainMenu::OnOpenRom(HWND hWnd)
     {
         g_BaseSystem->RunDiskImage(File.c_str());
     }
+}
+
+void CMainMenu::OnOpenCombo(HWND hWnd)
+{
+    std::string FileROM = ChooseROMFileToOpen(hWnd);
+    if (FileROM.length() == 0)
+    {
+        return;
+    }
+
+    std::string FileDisk = ChooseDiskFileToOpen(hWnd);
+    if (FileDisk.length() == 0)
+    {
+        return;
+    }
+
+    g_BaseSystem->RunDiskComboImage(FileROM.c_str(), FileDisk.c_str());
 }
 
 void CMainMenu::OnRomInfo(HWND hWnd)
@@ -245,6 +284,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
     switch (MenuID)
     {
     case ID_FILE_OPEN_ROM: OnOpenRom(hWnd); break;
+    case ID_FILE_OPEN_COMBO: OnOpenCombo(hWnd); break;
     case ID_FILE_ROM_INFO: OnRomInfo(hWnd); break;
     case ID_FILE_STARTEMULATION:
         m_Gui->SaveWindowLoc();
@@ -293,12 +333,11 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         WriteTrace(TraceUserInterface, TraceDebug, "ID_SYSTEM_SWAPDISK");
         {
             // Open Disk
-            CPath FileName;
-            const char * Filter = "N64DD Disk Image (*.ndd, *.d64)\0*.ndd;*.d64\0All files (*.*)\0*.*\0";
-            if (FileName.SelectFile(hWnd, g_Settings->LoadStringVal(RomList_GameDir).c_str(), Filter, true))
+            stdstr FileName = ChooseDiskFileToOpen(hWnd);
+            if (FileName.length() != 0)
             {
                 g_Disk->SaveDiskImage();
-                g_Disk->SwapDiskImage(FileName);
+                g_Disk->SwapDiskImage(FileName.c_str());
             }
         }
         break;
@@ -751,6 +790,8 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     ****************/
     MenuItemList FileMenu;
     Item.Reset(ID_FILE_OPEN_ROM, MENU_OPEN, m_ShortCuts.ShortCutString(ID_FILE_OPEN_ROM, RunningState));
+    FileMenu.push_back(Item);
+    Item.Reset(ID_FILE_OPEN_COMBO, MENU_OPEN_COMBO, m_ShortCuts.ShortCutString(ID_FILE_OPEN_COMBO, RunningState));
     FileMenu.push_back(Item);
     if (!inBasicMode)
     {
