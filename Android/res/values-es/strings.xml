@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>    
+    <!-- Something happening (typically use '-ing' and '…') -->
+    <string name="toast_canceling">Cancelar…</string>
+    <string name="toast_pleaseWait">Espere un momento…</string>
+    
+    <!-- Input Mapping -->
+    <string name="inputMapActivity_popupMessage">Pulsar boton, tecla, o mapear para joystick…\n\nBoton Actual:\n%1$s</string>
+    <string name="inputMapActivity_popupUnmap">Desmapear</string>
+    <string name="inputMapActivity_btnA">A</string>
+    <string name="inputMapActivity_btnB">B</string>
+    <string name="inputMapActivity_btnC">C</string>
+    <string name="inputMapActivity_btnL">L</string>
+    <string name="inputMapActivity_btnR">R</string>
+    <string name="inputMapActivity_btnZ">Z</string>
+    <string name="inputMapActivity_btnS">S</string>
+    <string name="inputMapActivity_btnCR">C-amarillo →</string>
+    <string name="inputMapActivity_btnCL">C-amarillo ←</string>
+    <string name="inputMapActivity_btnCD">C-amarillo ↓</string>
+    <string name="inputMapActivity_btnCU">C-amarillo ↑</string>
+    <string name="inputMapActivity_btnDR">D-cruz →</string>
+    <string name="inputMapActivity_btnDL">D-cruz ←</string>
+    <string name="inputMapActivity_btnDD">D-cruz ↓</string>
+    <string name="inputMapActivity_btnDU">D-cruz ↑</string>
+    <string name="inputMapActivity_btnAR">Analogo →</string>
+    <string name="inputMapActivity_btnAL">Analogo ←</string>
+    <string name="inputMapActivity_btnAD">Analogo ↓</string>
+    <string name="inputMapActivity_btnAU">Analogo ↑</string>
+    
+    <!-- Settings -->
+    <string name="Hardware">Hardware</string>
+    <string name="Other">Otros</string>
+    <string name="touch_screen_summary">Ajustes de control en pantalla</string>
+    <string name="touch_screen_title">Pantalla táctil</string>
+    <string name="input_screen_summary">Ajustes de controles</string>
+    <string name="input_screen_title">Entrada</string>
+    <string name="video_screen_summary">Configurar graficos</string>
+    <string name="video_screen_title">Video</string>
+    <string name="audio_screen_summary">Cofigurar audio</string>
+    <string name="audio_screen_title">Audio</string>
+    <string name="game_list_summary"> Lista de juegos configurados</string>
+    <string name="game_list_title">Lista de juegos</string>
+    <string name="advanced_screen_summary">avanzado/opciones depuracion</string>
+    <string name="advanced_screen_title">Avanzado</string>
+    <string name="reset_summary"> Restablecer ajustes predeterminado</string>
+    <string name="reset_title">Reiniciar</string>
+    <string name="settings_title">Ajustes</string>
+    <string name="preferences">preferencias</string>
+    <string name="displayFps_title">Frames</string>
+    <string name="displayFps_summary">Mostrar FPS en la pantalla</string>
+    <string name="audioEnabled_title">Habilitar Audio</string>
+    <string name="audioEnabled_summary">Habilitar/deshabilitar salida de audio</string>
+    <string name="advancedSettings_title">Oculta ajuste avanzado</string>
+    <string name="advancedSettings_summary">Removiendo ajustes más complejos que la mayoría de los usuarios no querrán usar</string>
+    <string name="debuggerEnabled_title">Habilitar depurador</string>
+    <string name="debuggerEnabled_summary">habilitar/deshabilitar opciones adicionales para probar y depurar por qué los juegos no funcionan</string>
+    <string name="BlockLinking_title">Enlance de bloques avanzado</string>
+    <string name="BlockLinking_summary">Precompilar bloques juntos</string>
+    <string name="RecordRecompilerAsm_title">Grabar Asm Recompilado</string>
+    <string name="RecordRecompilerAsm_summary">crear archivo de registro en Asm generado</string>
+    <string name="logging">Registros</string>
+    <string name="project64core">Project64 Core</string>
+    <string name="AudioPlugin">Audio Plugin</string>
+    <string name="VideoPlugin">Video Plugin</string>
+    <string name="logging_project64core">Detallado - Project64 Core</string>
+    <string name="logging_Audio">Registros - Audio</string>
+    <string name="logging_Video">Registros - Video</string>
+    <string name="TraceError">Error</string>
+    <string name="TraceWarning">Advertencia</string>
+    <string name="TraceNotice">Aviso</string>
+    <string name="TraceInfo">Info</string>
+    <string name="TraceDebug">Depurar</string>
+    <string name="TraceVerbose">Detallado</string>
+    <string name="TraceMD5">MD5</string>
+    <string name="TraceThread">Hilo</string>
+    <string name="TracePath">Path</string>
+    <string name="TraceSettings">Ajustes</string>
+    <string name="TraceUnknown">Desconocido</string>
+    <string name="TraceAppInit">App Init</string>
+    <string name="TraceAppCleanup">App Limpiado</string>
+    <string name="TraceN64System">N64 System</string>
+    <string name="TracePlugins">Plugins</string>
+    <string name="TraceGFXPlugin">GFX Plugin</string>
+    <string name="TraceAudioPlugin">Audio Plugin</string>
+    <string name="TraceControllerPlugin">Controler Plugin</string>
+    <string name="TraceRSPPlugin">RSP Plugin</string>
+    <string name="TraceRSP">RSP</string>
+    <string name="TraceAudio">Audio</string>
+    <string name="TraceRegisterCache">Registros de Cache</string>
+    <string name="TraceRecompiler">Recompilado</string>
+    <string name="TraceTLB">TLB</string>
+    <string name="TraceProtectedMem">Protected Mem</string>
+    <string name="TraceUserInterface">Interfaz de usuario</string>
+    <string name="TraceRomList">Lista de rom</string>
+    <string name="TraceExceptionHandler">Excepcion de Handler</string>
+    <string name="TraceVideoMD5">MD5</string>
+    <string name="TraceVideoPath">Path</string>
+    <string name="TraceVideoSettings">Ajustes</string>
+    <string name="TraceVideoUnknown">Desconocido</string>
+    <string name="TraceVideoGlide64">Glide64</string>
+    <string name="TraceVideoInterface">Interfaz</string>
+    <string name="TraceVideoResolution">Resolucion</string>
+    <string name="TraceVideoGlitch">Glitch</string>
+    <string name="TraceVideoTLUT">TLUT</string>
+    <string name="TraceVideoPNG">PNG</string>
+    <string name="TraceVideoOGLWrapper">OGL Wrapper</string>
+    <string name="TraceVideoRDP">RDP</string>
+    <string name="TraceAudioInitShutdown">Init/Apagado</string>
+    <string name="TraceAudioAudioInterface">Interfaz</string>
+    <string name="CpuType">Estilo CPU core</string>
+    <string name="Interpreter">Interpreter</string>
+    <string name="Recompiler">Recompiler</string>
+    <string name="SyncCores">Synchronize Cores</string>
+    <string name="Advanced">Avanzado</string>
+    <string name="CpuUsage_title">CPU Usado</string>
+    <string name="CpuUsage_summary">Muestra la CPU utilizada por diferentes componentes</string>
+    <string name="LimitFPS_summary">Limite de la velocidad maximas ejcutadas</string>
+    <string name="LimitFPS_title">Limite FPS</string>
+    <string name="screenResolution_title">Resolucion Renderizada</string>
+    <string name="screenResolution_summary">deberia mostrar algun valor???</string>
+    <string name="AspectRatio_title">Relacion de aspecto</string>
+    <string name="AspectRatio_summary">Seleciona aspecto para mostrar</string>
+    <string name="AspectRatio_4x3">4:3 (por defecto)</string>
+    <string name="AspectRatio_16x9">Forzado 16:9</string>
+    <string name="AspectRatio_Stretch">Estrecho</string>
+    <string name="AspectRatio_Original">Original</string>
+    <string name="DisplaySpeed_title">Mostrar velocidad</string>
+    <string name="DisplaySpeed_summary">Mostrar velocidad de la emulacion</string>
+    <string name="DisplaySpeedDisplay">Mostrar Velocidad En Pantalla</string>
+    <string name="DListPerSecond">Mostrar listas por segundo</string>
+    <string name="PercentageOfSpeed">Porcentaje de la velocidad máxima</string>
+    <string name="VerticalInterruptsPerSecond">Interrupciones verticales por segundo</string>
+    <string name="RecordExecutionTimes_title">Tiempos grabado de ejecucion</string>
+    <string name="RecordExecutionTimes_summary">Grabar cuánto tiempo se ejecuta cada bloque durante</string>
+    <string name="DebugLanguage_title">depurar lenguaje</string>
+    <string name="DebugLanguage_summary">Mostrar la (id) dentificación del número para strings de idioma</string>
+    <string name="touchscreenScale_title">Escala de boton</string>
+    <string name="touchscreenLayout_title">Diseño de pantalla tactil</string>
+    <string name="gamepad_summary">Configuracion mando para juego</string>
+    <string name="gamepad_title">Ajustes de mando</string>
+    <string name="settings_reset_title">Reinicia Ajustes</string>
+    <string name="settings_reset_message">Restablece todas las configuraciones a sus valores predeterminados?</string>
+    <string name="MaxRomsRemembered_title">Maximos # de juegos recordados</string>
+
+    <string-array name="DisplaySpeed_list">
+        <item>@string/Visualizar lista por segundo</item>
+        <item>@string/Porcentaje de la velocidad</item>
+        <item>@string/Interrupciones verticales por segundo</item>
+    </string-array>
+    <string-array name="DisplaySpeed_values" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>0</item>
+    </string-array>
+    <string-array name="AspectRatio_list">
+        <item>@string/AspectRatio_4x3</item>
+        <item>@string/AspectRatio_16x9</item>
+        <item>@string/AspectRatio_Estrecho</item>
+        <item>@string/AspectRatio_Original</item>
+    </string-array>
+    <string-array name="AspectRatio_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <string-array name="cpu_core_list">
+        <item>@string/Interpreter</item>
+        <item>@string/Recompiler</item>
+        <item>@string/SyncCores</item>
+    </string-array>
+    <string-array name="cpu_core_values" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    
+    <string-array name="trace_severity_list">
+        <item>@string/TraceError</item>
+        <item>@string/TraceWarning</item>
+        <item>@string/TraceNotice</item>
+        <item>@string/TraceInfo</item>
+        <item>@string/TraceDebug</item>
+        <item>@string/TraceVerbose</item>
+    </string-array>
+
+    <!-- Confirmation Dialogs -->
+    <string name="confirmResetGame_title">Reinicia juego?</string>
+    <string name="confirmResetGame_message">El juego volverá a su estado normal, todo el progreso realizado se perderá.</string>
+   
+    <!-- Asset Extractor -->
+    <string name="assetExtractor_startingUp">Iniciando …</string>
+    <string name="assetExtractor_version">version</string>
+    <string name="assetExtractor_progress">%1$.0f%% done: extracting - %2$s</string>
+    <string name="assetExtractor_finished">Finalizado</string>
+    <string name="assetExtractor_error">Error</string>
+    <string name="assetExtractor_failed">Error extrayendo datos de la app.\nPor favor desconecta el cable USB, reiniciar dispositivo y reiniciar aplicación.\nPara obtener ayuda, visite %1$s.</string>
+    <string name="assetExtractor_failed_permissions">Esta aplicación no puede continuar sin estos permisos</string>
+    <string name="assetExtractor_permissions_title">Permisos</string>
+    <string name="assetExtractor_permissions_rationale">Project64 necesita poder: \nLee tu almacenamiento para leer los archivos del juego, guardar estados y ajuste.\nEscribir en el almacenamiento para escribir los ajustes y guardar los datos.</string>
+
+    <!-- Review -->
+    <string name="review_title">Por favor calificar Project64 con 5 estrella</string>
+    <string name="review_decription">Por favor, califica Project64 con 5 estrellas si lo has disfrutado. Su apoyo y comentarios ayudan a mejorar Project64.</string>
+    <string name="review_cancel">No\Calificar</string>
+    <string name="review_ok">Calificar 5 Estrellas</string>
+
+    <!-- Game Directory Dialog -->
+    <string name="scanning_title">Escaneado…</string>
+</resources>
