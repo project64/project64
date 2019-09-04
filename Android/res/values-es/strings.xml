@@ -143,9 +143,9 @@
     <string name="MaxRomsRemembered_title">Maximos # de juegos recordados</string>
 
     <string-array name="DisplaySpeed_list">
-        <item>@string/Visualizar lista por segundo</item>
-        <item>@string/Porcentaje de la velocidad</item>
-        <item>@string/Interrupciones verticales por segundo</item>
+        <item>@string/DListPerSecond</item>
+        <item>@string/PercentageOfSpeed</item>
+        <item>@string/VerticalInterruptsPerSecond</item>
     </string-array>
     <string-array name="DisplaySpeed_values" translatable="false">
         <item>1</item>
@@ -155,7 +155,7 @@
     <string-array name="AspectRatio_list">
         <item>@string/AspectRatio_4x3</item>
         <item>@string/AspectRatio_16x9</item>
-        <item>@string/AspectRatio_Estrecho</item>
+        <item>@string/AspectRatio_Stretch</item>
         <item>@string/AspectRatio_Original</item>
     </string-array>
     <string-array name="AspectRatio_values" translatable="false">
