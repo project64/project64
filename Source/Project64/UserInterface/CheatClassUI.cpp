@@ -544,7 +544,9 @@ int CALLBACK CCheatsUI::CheatListProc(HWND hDlg, uint32_t uMsg, uint32_t wParam,
 
             GetCursorPos(&Mouse);
 
-            MenuSetText(hPopupMenu, 0, wGS(CHEAT_DELETE).c_str(), NULL);
+            MenuSetText(hPopupMenu, 0, wGS(CHEAT_ADDNEW).c_str(), NULL);
+            MenuSetText(hPopupMenu, 1, wGS(CHEAT_EDIT).c_str(), NULL);
+            MenuSetText(hPopupMenu, 3, wGS(CHEAT_DELETE).c_str(), NULL);
 
             if (_this->m_hSelectedItem != NULL &&
                 TreeView_GetChild(_this->m_hCheatTree, _this->m_hSelectedItem) == NULL)
