@@ -1,12 +1,15 @@
 @ECHO OFF
 SETLOCAL
 
-if exist "C:\Program Files\7-Zip\7z.exe" ( set zip="C:\Program Files\7-Zip\7z.exe")
+for /f "delims=" %%a in ('WHERE 7z 2^>nul') do set "zip=%%a"
 
-
-if %zip% == "" ( 
-	echo can not find 7z.exe
-	goto :EndErr
+if "%zip%" == "" (
+	if exist "C:\Program Files\7-Zip\7z.exe" (
+		set "zip=C:\Program Files\7-Zip\7z.exe"
+	) else (
+		echo can not find 7z.exe
+		goto :EndErr
+	)
 )
 
 set ZipFileName=project64
@@ -49,7 +52,7 @@ copy "%base_dir%\Plugin\Input\PJ64_NRage.dll" "%base_dir%\Bin\Package\Plugin\Inp
 copy "%base_dir%\Plugin\RSP\RSP 1.7.dll" "%base_dir%\Bin\Package\Plugin\RSP"
 
 cd %base_dir%\Bin\Package
-%zip% a -tzip -r "%base_dir%\Package\%ZipFileName%" *
+"%zip%" a -tzip -r "%base_dir%\Package\%ZipFileName%" *
 cd /d %current_dir%
 
 echo Package %ZipFileName% created
