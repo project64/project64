@@ -46,7 +46,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Bscmake>
     <PreBuildEvent>
-      <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(SolutionDir)Source\RSP\Version.h.in" "$(SolutionDir)Source\RSP\Version.h"</Command>
+      <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\RSP\Version.h.in" "$(SolutionDir)Source\RSP\Version.h"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
