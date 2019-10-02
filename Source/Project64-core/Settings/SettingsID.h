@@ -77,7 +77,8 @@ enum SettingID
 	Default_32Bit,
 	Default_SyncViaAudio,
 	Default_FixedAudio,
-    Default_UnalignedDMA,
+	Default_UnalignedDMA,
+	Default_RandomizeSIPIInterrupts,
 
     //RDB Settings
     Rdb_GoodName,
@@ -117,6 +118,7 @@ enum SettingID
     Rdb_AllowROMWrites,
     Rdb_CRC_Recalc,
     Rdb_UnalignedDMA,
+    Rdb_RandomizeSIPIInterrupts,
 
     //Individual Game Settings
     Game_IniKey,
@@ -173,6 +175,7 @@ enum SettingID
     Game_OverClockModifier,
     Game_FullSpeed,
     Game_UnalignedDMA,
+    Game_RandomizeSIPIInterrupts,
 
     // General Game running info
     GameRunning_LoadingInProgress,

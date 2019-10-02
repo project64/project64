@@ -25,6 +25,7 @@ uint32_t CGameSettings::m_ViRefreshRate = 1500;
 uint32_t CGameSettings::m_AiCountPerBytes = 500;
 bool CGameSettings::m_DelayDP = false;
 bool CGameSettings::m_DelaySI = false;
+bool CGameSettings::m_bRandomizeSIPIInterrupts = true;
 uint32_t CGameSettings::m_RdramSize = 0;
 bool CGameSettings::m_bFixedAudio = true;
 bool CGameSettings::m_bSyncToAudio = true;
@@ -55,6 +56,7 @@ void CGameSettings::RefreshGameSettings()
     m_CountPerOp = g_Settings->LoadDword(Game_CounterFactor);
     m_RdramSize = g_Settings->LoadDword(Game_RDRamSize);
     m_DelaySI = g_Settings->LoadBool(Game_DelaySI);
+    m_bRandomizeSIPIInterrupts = g_Settings->LoadBool(Game_RandomizeSIPIInterrupts);
     m_DelayDP = g_Settings->LoadBool(Game_DelayDP);
     m_bFixedAudio = g_Settings->LoadBool(Game_FixedAudio);
     m_FullSpeed = g_Settings->LoadBool(Game_FullSpeed);

@@ -28,7 +28,8 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
 	SetDlgItemTextW(m_hWnd, IDC_ROM_32BIT, wGS(ROM_32BIT).c_str());
 	SetDlgItemTextW(m_hWnd, IDC_ROM_FIXEDAUDIO, wGS(ROM_FIXED_AUDIO).c_str());
 	SetDlgItemTextW(m_hWnd, IDC_SYNC_AUDIO, wGS(ROM_SYNC_AUDIO).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_UNALIGNED_DMA, wGS(ROM_UNALIGNED_DMA).c_str());
+	SetDlgItemTextW(m_hWnd, IDC_UNALIGNED_DMA, wGS(ROM_UNALIGNED_DMA).c_str());
+	SetDlgItemTextW(m_hWnd, IDC_RANDOMIZE_SIPI_INTERRUPTS, wGS(ROM_RANDOMIZE_SIPI_INTERRUPTS).c_str());
 
     CModifiedComboBox * ComboBox;
     ComboBox = AddModComboBox(GetDlgItem(IDC_RDRAM_SIZE), Default_RDRamSize);
@@ -61,7 +62,8 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
 	AddModCheckBox(GetDlgItem(IDC_ROM_32BIT), Default_32Bit);
 	AddModCheckBox(GetDlgItem(IDC_SYNC_AUDIO), Default_SyncViaAudio);
 	AddModCheckBox(GetDlgItem(IDC_ROM_FIXEDAUDIO), Default_FixedAudio);
-    AddModCheckBox(GetDlgItem(IDC_UNALIGNED_DMA), Default_UnalignedDMA);
+	AddModCheckBox(GetDlgItem(IDC_UNALIGNED_DMA), Default_UnalignedDMA);
+	AddModCheckBox(GetDlgItem(IDC_RANDOMIZE_SIPI_INTERRUPTS), Default_RandomizeSIPIInterrupts);
 
 	if (!g_Settings->LoadBool(Setting_SyncViaAudioEnabled))
 	{

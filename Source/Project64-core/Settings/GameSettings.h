@@ -29,6 +29,7 @@ public:
     inline static uint32_t AiCountPerBytes(void) { return m_AiCountPerBytes; }
     inline static bool bDelayDP(void) { return m_DelayDP; }
     inline static bool bDelaySI(void) { return m_DelaySI; }
+    inline static bool bRandomizeSIPIInterrupts(void) { return m_bRandomizeSIPIInterrupts; }
     inline static uint32_t RdramSize(void) { return m_RdramSize; }
     inline static bool bFixedAudio(void) { return m_bFixedAudio; }
     inline static bool bSyncToAudio(void) { return m_bSyncToAudio; }
@@ -63,6 +64,7 @@ private:
     static uint32_t m_AiCountPerBytes;
     static bool m_DelayDP;
     static bool m_DelaySI;
+    static bool m_bRandomizeSIPIInterrupts;
     static uint32_t m_RdramSize;
     static bool m_bFixedAudio;
     static bool m_bSyncToAudio;

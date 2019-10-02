@@ -300,6 +300,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ROM_DELAY_DP, "Delay DP interrupt:");
     DEF_STR(ROM_OVER_CLOCK_MODIFIER, "Overclock modifier:");
     DEF_STR(ROM_UNALIGNED_DMA, "Unaligned DMA");
+    DEF_STR(ROM_RANDOMIZE_SIPI_INTERRUPTS, "Randomize SI/PI interrupts");
 
     //Core Styles
     DEF_STR(CORE_INTERPTER, "Interpreter");
