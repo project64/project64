@@ -1,8 +1,5 @@
+version: 1.0.{build}
 image: Visual Studio 2015
-build:
-  project: Project64.sln
-  parallel: true
-  verbosity: minimal
 platform:
 - Win32
 - x64
@@ -10,9 +7,17 @@ configuration:
 - Release
 
 before_build:
-- for /f "tokens=1 delims=" %%a in ('git describe --tags --long --dirty') do set current_tag=%%a
-- appveyor UpdateBuild -Version %current_tag%
-
+- ps: >-
+    If ($env:APPVEYOR_BUILD_VERSION -Like "1.0*") {
+      echo  $env:APPVEYOR_BUILD_VERSION
+      $current_tag = git describe --tags --long --dirty
+      echo  $current_tag
+      appveyor UpdateBuild -Version $current_tag
+    }
+build:
+  project: Project64.sln
+  parallel: true
+  verbosity: minimal
 after_build:
 - Source/Script/package_zip.cmd %current_tag%-%platform%.zip %platform%
 
