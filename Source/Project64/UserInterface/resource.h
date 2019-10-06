@@ -352,6 +352,7 @@
 #define IDC_RDB                         1158
 #define IDC_UNALIGNED_DMA               1158
 #define IDC_RDB_AUTHOR                  1159
+#define IDC_RANDOMIZE_SIPI_INTERRUPTS   1159
 #define IDC_RDB_VERSION                 1160
 #define IDC_RDB_DATE                    1161
 #define IDC_CHT                         1162

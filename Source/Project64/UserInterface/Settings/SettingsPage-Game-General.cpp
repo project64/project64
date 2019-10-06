@@ -38,6 +38,7 @@ CGameGeneralPage::CGameGeneralPage(HWND hParent, const RECT & rcDispay)
     SetDlgItemTextW(m_hWnd, IDC_DELAY_SI, wGS(ROM_DELAY_SI).c_str());
     SetDlgItemTextW(m_hWnd, IDC_AUDIO_SIGNAL, wGS(ROM_AUDIO_SIGNAL).c_str());
     SetDlgItemTextW(m_hWnd, IDC_UNALIGNED_DMA, wGS(ROM_UNALIGNED_DMA).c_str());
+    SetDlgItemTextW(m_hWnd, IDC_RANDOMIZE_SIPI_INTERRUPTS, wGS(ROM_RANDOMIZE_SIPI_INTERRUPTS).c_str());
 
     AddModCheckBox(GetDlgItem(IDC_ROM_32BIT), Game_32Bit);
     AddModCheckBox(GetDlgItem(IDC_SYNC_AUDIO), Game_SyncViaAudio);
@@ -47,6 +48,7 @@ CGameGeneralPage::CGameGeneralPage(HWND hParent, const RECT & rcDispay)
     AddModCheckBox(GetDlgItem(IDC_DELAY_SI), Game_DelaySI);
     AddModCheckBox(GetDlgItem(IDC_AUDIO_SIGNAL), Game_RspAudioSignal);
     AddModCheckBox(GetDlgItem(IDC_UNALIGNED_DMA), Game_UnalignedDMA);
+    AddModCheckBox(GetDlgItem(IDC_RANDOMIZE_SIPI_INTERRUPTS), Game_RandomizeSIPIInterrupts);
 
     CModifiedComboBox * ComboBox;
     ComboBox = AddModComboBox(GetDlgItem(IDC_RDRAM_SIZE), Game_RDRamSize);
