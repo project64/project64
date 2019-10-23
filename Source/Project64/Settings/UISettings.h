@@ -24,6 +24,7 @@ enum UISettingID
     //Settings location
     Setting_PluginPageFirst,
     Setting_DisableScrSaver,
+	Setting_EnableDiscordRPC,
     Setting_AutoSleep,
     Setting_AutoFullscreen,
 
