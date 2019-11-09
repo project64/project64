@@ -13,11 +13,11 @@
 #include <Project64-core/N64System/N64DiskClass.h>
 
 RomInformation::RomInformation(const char * RomFile) :
-m_DeleteRomInfo(true),
-m_DeleteDiskInfo(true),
-m_FileName(RomFile ? RomFile : ""),
-m_pRomInfo(NULL),
-m_pDiskInfo(NULL)
+    m_DeleteRomInfo(true),
+    m_DeleteDiskInfo(true),
+    m_FileName(RomFile ? RomFile : ""),
+    m_pRomInfo(NULL),
+    m_pDiskInfo(NULL)
 {
     if (m_FileName.length() == 0)  { return; }
     if ((CPath(m_FileName).GetExtension() != "ndd") && (CPath(m_FileName).GetExtension() != "d64"))
@@ -43,18 +43,20 @@ m_pDiskInfo(NULL)
 }
 
 RomInformation::RomInformation(CN64Rom * RomInfo) :
-m_DeleteRomInfo(false),
-m_DeleteDiskInfo(false),
-m_FileName(RomInfo ? RomInfo->GetFileName().c_str() : ""),
-m_pRomInfo(RomInfo)
+    m_DeleteRomInfo(false),
+    m_DeleteDiskInfo(false),
+    m_FileName(RomInfo ? RomInfo->GetFileName().c_str() : ""),
+    m_pRomInfo(RomInfo),
+    m_pDiskInfo(NULL)
 {
 }
 
 RomInformation::RomInformation(CN64Disk * DiskInfo) :
-m_DeleteRomInfo(false),
-m_DeleteDiskInfo(false),
-m_FileName(DiskInfo ? DiskInfo->GetFileName().c_str() : ""),
-m_pDiskInfo(DiskInfo)
+    m_DeleteRomInfo(false),
+    m_DeleteDiskInfo(false),
+    m_FileName(DiskInfo ? DiskInfo->GetFileName().c_str() : ""),
+    m_pRomInfo(NULL),
+    m_pDiskInfo(DiskInfo)
 {
 }
 
