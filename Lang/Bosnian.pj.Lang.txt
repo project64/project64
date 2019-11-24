@@ -2,10 +2,10 @@
 * Meta informacije *
 **************************************************** ******************************* /
 // O DLL-u
-# 1 # "Engleski" // ID JEZIKA
-# 2 # "Tooie" // Autor
-# 3 # "2.2" // Verzija
-# 4 # "mart, 2015." // Datum
+# 1 # "Bosanski" // ID JEZIKA
+# 2 # "AceAlen" // Autor
+# 3 # "2.3" // Verzija
+# 4 # "November, 2019" // Datum
 
 // O DLL dijalogu
 # 5 # "Trenutni jezik"
