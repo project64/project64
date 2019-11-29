@@ -58,9 +58,7 @@ void PluginInit(void)
     SetupTrace();
     SetupAudioSettings();
     StartTrace();
-#ifdef _WIN32
-    SetTimerResolution();
-#endif
+    //SetTimerResolution();
     g_PluginInit = true;
 }
 
@@ -224,6 +222,9 @@ EXPORT int32_t CALL InitiateAudio(AUDIO_INFO Audio_Info)
         g_SoundDriver->AI_Shutdown();
         delete g_SoundDriver;
     }
+#ifdef _WIN32
+    SetTimerResolution();
+#endif
     g_AudioInfo = Audio_Info;
 #ifdef _WIN32
     g_SoundDriver = new DirectSoundDriver;
