@@ -91,10 +91,8 @@
 #define RSP_ABOUT                       1006
 #define IDC_ASSIGN                      1006
 #define IDC_BTN_CHOOSE_FILE             1006
-#define IDC_DUMP_MEM                    1006
 #define IDC_INFO_FILENAME               1007
 #define IDC_BTN_RDRAM                   1007
-#define IDC_REFRSH_MEM                  1007
 #define IDC_INFO_ROMNAME                1008
 #define IDC_RESET_PAGE                  1008
 #define IDC_INFO_CARTID                 1009
@@ -194,7 +192,6 @@
 #define IDC_DIRECT_READ                 1057
 #define IDC_DMA_READ                    1058
 #define IDC_CONT_PAK                    1059
-#define IDC_SEARCH_MEM                  1059
 #define IDC_BTN_ROM                     1061
 #define IDC_TEXTURE_OTHER               1062
 #define IDC_TEXTURE_DIR                 1063
@@ -202,7 +199,6 @@
 #define IDC_TEXTURE_DEFAULT             1064
 #define IDC_LST_RESULTS                 1064
 #define IDC_SELECT_TEXTURE_DIR          1065
-#define IDC_MEM_DETAILS                 1065
 #define IDC_PLUGIN_OTHER                1066
 #define IDC_PLUGIN_DIR                  1067
 #define IDC_PLUGIN_DEFAULT              1068
@@ -508,9 +504,7 @@
 #define IDC_COP0_17_EDIT                1332
 #define IDC_COP0_18_EDIT                1333
 #define IDC_FILTER_STATIC               1339
-#define IDC_SYM_INFO                    1348
 #define IDC_BLOCK_INFO                  1350
-#define IDC_DMA_INFO                    1351
 #define IDC_BACK_BTN                    1352
 #define IDC_FORWARD_BTN                 1353
 #define IDC_PC_EDIT                     1354
@@ -604,7 +598,6 @@
 #define IDC_DD44_EDIT                   1443
 #define IDC_DD48_EDIT                   1444
 #define IDC_ROM_FIXEDAUDIO              1445
-#define IDC_CHK_AUTOREFRESH             1446
 #define IDC_SHOW_FILE_EXTENSIONS        1447
 #define IDC_ENHANCEMENTLIST             1450
 #define IDC_OVERCLOCK                   1451
@@ -718,6 +711,10 @@
 #define IDC_CHK_FP_CO                   1566
 #define IDC_CHK_FP_CU                   1567
 #define IDC_CHK_FP_CI                   1568
+#define IDC_HEXEDIT                     1569
+#define IDC_MEMTABS                     1571
+#define IDC_STATUSBAR                   1572
+#define IDC_CMB_JUMP                    1573
 #define ID_POPUPMENU_PLAYGAMEWITHDISK   40008
 #define ID_POPUPMENU_ADDSYMBOL          40013
 #define ID_POPUPMENU_VIEWDISASM         40017
@@ -757,9 +754,21 @@
 #define ID_RESULTS_ADDALLTOWATCHLIST    40080
 #define ID_WATCHLIST_CHANGE_ADDRESS     40082
 #define ID_WATCHLIST_CHANGE_ADDRESSBY   40084
-#define ID_POPUPMENU_COPY_WORD          40089
-#define ID_POPUPMENU_COPY_HALFWORD      40090
-#define ID_POPUPMENU_COPY_BYTE          40091
+#define ID_POPUPMENU_PASTE              40092
+#define ID_POPUPMENU_COPY               40093
+#define ID_POPUPMENU_FOLLOWPOINTER      40095
+#define ID_POPUPMENU_ZEROFILL           40097
+#define ID_POPUPMENU_BYTEGROUPSIZE_1    40103
+#define ID_POPUPMENU_BYTEGROUPSIZE_2    40104
+#define ID_POPUPMENU_BYTEGROUPSIZE_4    40105
+#define ID_POPUPMENU_BYTEGROUPSIZE_8    40106
+#define ID_POPUPMENU_SAFEMODE           40107
+#define ID_POPUPMENU_DUMP               40108
+#define ID_POPUPMENU_SEARCH             40109
+#define ID_POPUPMENU_JUMPHERE           40113
+#define ID_POPUPMENU_COPYGAMESHARKCODE  40118
+#define ID_POPUPMENU_COPYDATAWITHROWADDRESSES 40119
+#define ID_POPUPMENU_COPYDATAWITHGROUPADDRESSES 40120
 #define ID_POPUPMENU_ROMDIRECTORY       40137
 #define ID_POPUPMENU_REFRESHROMLIST     40138
 #define ID_POPUPMENU_PLAYGAME           40152
@@ -777,8 +786,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        219
-#define _APS_NEXT_COMMAND_VALUE         40092
-#define _APS_NEXT_CONTROL_VALUE         1569
+#define _APS_NEXT_COMMAND_VALUE         40121
+#define _APS_NEXT_CONTROL_VALUE         1574
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif

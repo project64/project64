@@ -509,24 +509,19 @@ BEGIN
     COMBOBOX        IDC_LANG_SEL,105,77,112,120,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
-IDD_Debugger_Memory DIALOGEX 0, 0, 435, 204
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+IDD_Debugger_Memory DIALOGEX 0, 0, 321, 199
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "Memory"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    EDITTEXT        IDC_ADDR_EDIT,35,5,49,12,ES_AUTOHSCROLL
-    LTEXT           "Address:",IDC_STATIC,4,6,29,11
-    CONTROL         "Is VAddr?",IDC_CHK_VADDR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,111,7,46,8
-    PUSHBUTTON      "Dump",IDC_DUMP_MEM,319,4,54,13
-    PUSHBUTTON      "Search",IDC_SEARCH_MEM,377,4,54,13
-    SCROLLBAR       IDC_SCRL_BAR,421,23,11,154,SBS_VERT
-    PUSHBUTTON      "Refresh",IDC_REFRSH_MEM,161,4,54,13
-    CONTROL         "Mem Details",IDC_MEM_DETAILS,"ListCtrl",WS_TABSTOP,4,23,416,154
-    PUSHBUTTON      "...",IDC_SYMBOLS_BTN,86,4,21,13
-    LTEXT           "",IDC_SYM_INFO,8,198,418,8
-    LTEXT           "",IDC_DMA_INFO,8,208,415,8
-    GROUPBOX        "",IDC_STATIC,4,190,428,30
-    CONTROL         "Auto",IDC_CHK_AUTOREFRESH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,220,7,31,8
+    EDITTEXT        IDC_ADDR_EDIT,5,20,49,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_SYMBOLS_BTN,58,20,21,13
+    CONTROL         "Virtual",IDC_CHK_VADDR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,83,20,40,13
+    CONTROL         "HexEdit",IDC_HEXEDIT,"HexEditCtrl",WS_TABSTOP,0,36,310,147
+    SCROLLBAR       IDC_SCRL_BAR,310,36,11,147,SBS_VERT
+    CONTROL         "",IDC_MEMTABS,"SysTabControl32",TCS_FOCUSNEVER,0,3,319,13
+    COMBOBOX        IDC_CMB_JUMP,194,20,123,12,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "",IDC_STATUSBAR,"msctls_statusbar32",WS_TABSTOP,0,188,321,11
 END
 
 IDD_Debugger_Search DIALOGEX 0, 0, 357, 257
@@ -1597,8 +1592,7 @@ BEGIN
 
     IDD_Debugger_Memory, DIALOG
     BEGIN
-        RIGHTMARGIN, 431
-        BOTTOMMARGIN, 203
+        BOTTOMMARGIN, 196
     END
 
     IDD_Debugger_Search, DIALOG
@@ -1954,23 +1948,39 @@ IDR_MEM_BP_POPUP MENU
 BEGIN
     POPUP "PopupMenu"
     BEGIN
-        MENUITEM "Toggle read breakpoint",      ID_POPUPMENU_TOGGLERBP
-        MENUITEM "Toggle write breakpoint",     ID_POPUPMENU_TOGGLEWBP
-        MENUITEM "Clear all breakpoints",       ID_POPUPMENU_CLEARALLBPS
+        MENUITEM "Read breakpoint\tCtrl+R",     ID_POPUPMENU_TOGGLERBP
+        MENUITEM "Write breakpoint\tCtrl+W",    ID_POPUPMENU_TOGGLEWBP
+        MENUITEM "Lock value\tCtrl+E",          ID_POPUPMENU_TOGGLELOCK
         MENUITEM SEPARATOR
-        MENUITEM "Toggle lock",                 ID_POPUPMENU_TOGGLELOCK
-        MENUITEM "Clear locks",                 ID_POPUPMENU_CLEARLOCKS
+        MENUITEM "Clear breakpoints\tCtrl+Q",   ID_POPUPMENU_CLEARALLBPS
+        MENUITEM "Clear locks\tCtrl+Q",         ID_POPUPMENU_CLEARLOCKS
         MENUITEM SEPARATOR
-        MENUITEM "View disassembly...",         ID_POPUPMENU_VIEWDISASM
+        MENUITEM "Jump here\tCtrl+G",           ID_POPUPMENU_JUMPHERE
+        MENUITEM "Follow pointer\tCtrl+Space",  ID_POPUPMENU_FOLLOWPOINTER
+        MENUITEM SEPARATOR
+        POPUP "Byte group size"
+        BEGIN
+            MENUITEM "1\tCtrl+1",                   ID_POPUPMENU_BYTEGROUPSIZE_1
+            MENUITEM "2\tCtrl+2",                   ID_POPUPMENU_BYTEGROUPSIZE_2
+            MENUITEM "4\tCtrl+4",                   ID_POPUPMENU_BYTEGROUPSIZE_4
+            MENUITEM "8\tCtrl+8",                   ID_POPUPMENU_BYTEGROUPSIZE_8
+        END
+        MENUITEM "Safe mode\tINS",              ID_POPUPMENU_SAFEMODE
         MENUITEM SEPARATOR
         MENUITEM "Add symbol...",               ID_POPUPMENU_ADDSYMBOL
+        MENUITEM "View disassembly...",         ID_POPUPMENU_VIEWDISASM
+        MENUITEM "Dump...\tCtrl+S",             ID_POPUPMENU_DUMP
+        MENUITEM "Search...\tCtrl+F",           ID_POPUPMENU_SEARCH
         MENUITEM SEPARATOR
-        POPUP "Copy"
+        POPUP "Copy special"
         BEGIN
-            MENUITEM "Word",                        ID_POPUPMENU_COPY_WORD
-            MENUITEM "Halfword",                    ID_POPUPMENU_COPY_HALFWORD
-            MENUITEM "Byte",                        ID_POPUPMENU_COPY_BYTE
+            MENUITEM "Data with group addresses",   ID_POPUPMENU_COPYDATAWITHGROUPADDRESSES
+            MENUITEM "Data with row addresses",     ID_POPUPMENU_COPYDATAWITHROWADDRESSES
+            MENUITEM "GameShark code",              ID_POPUPMENU_COPYGAMESHARKCODE
         END
+        MENUITEM "Copy\tCtrl+C",                ID_POPUPMENU_COPY
+        MENUITEM "Paste\tCtrl+V",               ID_POPUPMENU_PASTE
+        MENUITEM "Zero-fill\tDEL",              ID_POPUPMENU_ZEROFILL
     END
 END
 

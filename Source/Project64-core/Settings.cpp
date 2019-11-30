@@ -350,7 +350,6 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Debugger_WriteBPExists, new CSettingTypeTempBool(false));
     AddHandler(Debugger_ReadBPExists, new CSettingTypeTempBool(false));
     AddHandler(Debugger_WaitingForStep, new CSettingTypeTempBool(false));
-    AddHandler(Debugger_AutoRefreshMemoryView, new CSettingTypeApplication("Debugger", "Auto Refresh Memory View", true));
     AddHandler(Debugger_CPULoggingEnabled, new CSettingTypeApplication("Debugger", "Enable CPU Logging", false));
     AddHandler(Debugger_CPULogBufferSize, new CSettingTypeApplication("Debugger", "CPU Log Buffer Size", (uint32_t)1024));
     AddHandler(Debugger_ExceptionBreakpoints, new CSettingTypeApplication("Debugger", "Exception Breakpoints", (uint32_t)0));
