@@ -21,6 +21,7 @@ CScriptSystem::CScriptSystem(CDebuggerUI* debugger)
     WSAStartup(MAKEWORD(2, 2), &wsaData);
 
     m_NextCallbackId = 0;
+    m_NumCallbacks = 0;
 
     m_Debugger = debugger;
 
@@ -207,4 +208,17 @@ CScriptHook* CScriptSystem::GetHook(const char* hookId)
 int CScriptSystem::GetNextCallbackId()
 {
     return m_NextCallbackId++;
+}
+
+void CScriptSystem::CallbackAdded()
+{
+    m_NumCallbacks++;
+}
+
+void CScriptSystem::CallbackRemoved()
+{
+    if (m_NumCallbacks > 0)
+    {
+        m_NumCallbacks--;
+    }
 }

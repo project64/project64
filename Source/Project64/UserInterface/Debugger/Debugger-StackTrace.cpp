@@ -24,28 +24,6 @@ CDebugStackTrace::~CDebugStackTrace()
 {
 }
 
-void CDebugStackTrace::PushEntry(uint32_t routineAddress, uint32_t callingAddress)
-{
-	if (m_EntriesIndex < STACKTRACE_MAX_ENTRIES)
-	{
-		m_Entries[m_EntriesIndex] = { routineAddress, callingAddress };
-		m_EntriesIndex++;
-	}
-}
-
-void CDebugStackTrace::PopEntry()
-{
-	if (m_EntriesIndex > 0)
-	{
-		m_EntriesIndex--;
-	}
-}
-
-void CDebugStackTrace::ClearEntries()
-{
-	m_EntriesIndex = 0;
-}
-
 LRESULT CDebugStackTrace::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	DlgResize_Init();

@@ -67,17 +67,19 @@ public:
     void ClearMemLocks(void);
     size_t NumMemLocks(void);
 
-    bool HaveAnyGPRReadBP(void);
-    bool HaveAnyGPRWriteBP(void);
-    bool HaveGPRWriteBP(int nReg);
-    bool HaveGPRReadBP(int nReg);
+    inline bool HaveRegBP(void) { return m_bHaveRegBP; }
+    inline bool HaveAnyGPRWriteBP(void) { return m_GPRWriteBP != 0; }
+    inline bool HaveAnyGPRReadBP(void) { return m_GPRReadBP != 0; }
+    inline bool HaveGPRWriteBP(int nReg) { return (m_GPRWriteBP & (1 << nReg)) != 0; }
+    inline bool HaveGPRReadBP(int nReg) { return (m_GPRReadBP  & (1 << nReg)) != 0; }
+    inline bool HaveHIWriteBP(void) { return m_HIWriteBP; }
+    inline bool HaveHIReadBP(void) { return m_HIReadBP; }
+    inline bool HaveLOWriteBP(void) { return m_LOWriteBP; }
+    inline bool HaveLOReadBP(void) { return m_LOReadBP; }
+
+    void UpdateHaveRegBP(void);
     void ToggleGPRWriteBP(int nReg);
     void ToggleGPRReadBP(int nReg);
-
-    bool HaveHIWriteBP(void);
-    bool HaveHIReadBP(void);
-    bool HaveLOWriteBP(void);
-    bool HaveLOReadBP(void);
     void ToggleHIWriteBP(void);
     void ToggleHIReadBP(void);
     void ToggleLOWriteBP(void);
@@ -95,6 +97,7 @@ private:
 
     memlocks_t m_MemLocks;
 
+    bool m_bHaveRegBP;
     uint32_t m_GPRWriteBP, m_GPRReadBP;
     bool m_HIWriteBP, m_HIReadBP, m_LOWriteBP, m_LOReadBP;
 };
