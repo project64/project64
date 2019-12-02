@@ -540,19 +540,19 @@ void CDebuggerUI::HandleCartToRamDMA(void)
 // Called from the interpreter core at the beginning of every CPU step
 void CDebuggerUI::CPUStepStarted()
 {
+    uint32_t pc = g_Reg->m_PROGRAM_COUNTER;
+    COpInfo opInfo(R4300iOp::m_Opcode);
+    bool bStoreOp = opInfo.IsStoreCommand();
+    uint32_t storeAddress = bStoreOp ? opInfo.GetLoadStoreAddress() : 0;
+
     if (isStepping() && bCPULoggingEnabled())
     {
         Debug_RefreshCPULogWindow();
     }
 
-    uint32_t pc = g_Reg->m_PROGRAM_COUNTER;
-    COpInfo opInfo(R4300iOp::m_Opcode);
-
-    if (opInfo.IsStoreCommand())
+    if(bStoreOp && m_Breakpoints->NumMemLocks() > 0)
     {
-        uint32_t memoryAddress = opInfo.GetLoadStoreAddress();
-
-        if (m_Breakpoints->MemLockExists(memoryAddress, opInfo.NumBytesToStore()))
+        if (m_Breakpoints->MemLockExists(storeAddress, opInfo.NumBytesToStore()))
         {
             // Memory is locked, skip op
             g_Settings->SaveBool(Debugger_SkipOp, true);
@@ -560,35 +560,33 @@ void CDebuggerUI::CPUStepStarted()
         }
     }
 
-    m_ScriptSystem->HookCPUExec()->InvokeByAddressInRange(pc);
-    if (SkipOp()) { return; }
-
-    m_ScriptSystem->HookCPUExecOpcode()->InvokeByAddressInRange_MaskedOpcode(pc, R4300iOp::m_Opcode.Hex);
-    if (SkipOp()) { return; }
-
-    m_ScriptSystem->HookCPUGPRValue()->InvokeByAddressInRange_GPRValue(pc);
-    if (SkipOp()) { return; }
-    
-    // Memory events, pi cart -> ram dma
-    if (opInfo.IsLoadStoreCommand()) // Read and write instructions
+    if (m_ScriptSystem->HaveCallbacks())
     {
-        uint32_t memoryAddress = opInfo.GetLoadStoreAddress();
+        m_ScriptSystem->HookCPUExec()->InvokeByAddressInRange(pc);
+        if (SkipOp()) { return; }
 
-        if (opInfo.IsLoadCommand()) // Read instructions
+        m_ScriptSystem->HookCPUExecOpcode()->InvokeByAddressInRange_MaskedOpcode(pc, R4300iOp::m_Opcode.Hex);
+        if (SkipOp()) { return; }
+
+        m_ScriptSystem->HookCPUGPRValue()->InvokeByAddressInRange_GPRValue(pc);
+        if (SkipOp()) { return; }
+
+        if (bStoreOp)
         {
-            m_ScriptSystem->HookCPURead()->InvokeByAddressInRange(memoryAddress);
+            m_ScriptSystem->HookCPUWrite()->InvokeByAddressInRange(storeAddress);
             if (SkipOp()) { return; }
         }
-        else // Write instructions
-        {
-            m_ScriptSystem->HookCPUWrite()->InvokeByAddressInRange(memoryAddress);
-            if (SkipOp()) { return; }
 
-            if (memoryAddress == 0xA460000C) // PI_WR_LEN_REG
-            {
-                HandleCartToRamDMA();
-            }
+        if (opInfo.IsLoadCommand())
+        {
+            m_ScriptSystem->HookCPURead()->InvokeByAddressInRange(opInfo.GetLoadStoreAddress());
+            if (SkipOp()) { return; }
         }
+    }
+
+    if (bStoreOp && storeAddress == 0xA460000C) // PI_WR_LEN_REG
+    {
+        HandleCartToRamDMA();
     }
 
     if (CDebugSettings::ExceptionBreakpoints() != 0)
@@ -603,35 +601,38 @@ void CDebuggerUI::CPUStepStarted()
         }
     }
 
-    if (m_Breakpoints->HaveAnyGPRWriteBP())
+    if (m_Breakpoints->HaveRegBP())
     {
-        int nReg = 0;
-        opInfo.WritesGPR(&nReg);
+        if (m_Breakpoints->HaveAnyGPRWriteBP())
+        {
+            int nReg = 0;
+            opInfo.WritesGPR(&nReg);
 
-        if (nReg != 0 && m_Breakpoints->HaveGPRWriteBP(nReg))
+            if (nReg != 0 && m_Breakpoints->HaveGPRWriteBP(nReg))
+            {
+                g_Settings->SaveBool(Debugger_SteppingOps, true);
+            }
+        }
+
+        if (m_Breakpoints->HaveAnyGPRReadBP())
+        {
+            int nReg1 = 0, nReg2 = 0;
+            opInfo.ReadsGPR(&nReg1, &nReg2);
+
+            if ((nReg1 != 0 && m_Breakpoints->HaveGPRReadBP(nReg1)) ||
+                (nReg2 != 0 && m_Breakpoints->HaveGPRReadBP(nReg2)))
+            {
+                g_Settings->SaveBool(Debugger_SteppingOps, true);
+            }
+        }
+
+        if (m_Breakpoints->HaveHIWriteBP() && opInfo.WritesHI() ||
+            m_Breakpoints->HaveLOWriteBP() && opInfo.WritesLO() ||
+            m_Breakpoints->HaveHIReadBP() && opInfo.ReadsHI() ||
+            m_Breakpoints->HaveLOReadBP() && opInfo.ReadsLO())
         {
             g_Settings->SaveBool(Debugger_SteppingOps, true);
         }
-    }
-
-    if (m_Breakpoints->HaveAnyGPRReadBP())
-    {
-        int nReg1 = 0, nReg2 = 0;
-        opInfo.ReadsGPR(&nReg1, &nReg2);
-
-        if ((nReg1 != 0 && m_Breakpoints->HaveGPRReadBP(nReg1)) ||
-            (nReg2 != 0 && m_Breakpoints->HaveGPRReadBP(nReg2)))
-        {
-            g_Settings->SaveBool(Debugger_SteppingOps, true);
-        }
-    }
-
-    if (m_Breakpoints->HaveHIWriteBP() && opInfo.WritesHI() ||
-        m_Breakpoints->HaveLOWriteBP() && opInfo.WritesLO() ||
-        m_Breakpoints->HaveHIReadBP()  && opInfo.ReadsHI()  ||
-        m_Breakpoints->HaveLOReadBP()  && opInfo.ReadsLO())
-    {
-        g_Settings->SaveBool(Debugger_SteppingOps, true);
     }
 }
 
@@ -647,14 +648,14 @@ void CDebuggerUI::CPUStep()
 // Called after opcode has been executed
 void CDebuggerUI::CPUStepEnded()
 {
+    if (m_StackTrace == NULL)
+    {
+        return;
+    }
+    
     OPCODE Opcode = R4300iOp::m_Opcode;
     uint32_t op = Opcode.op;
     uint32_t funct = Opcode.funct;
-
-    if (m_StackTrace == NULL)
-    {
-        m_StackTrace = new CDebugStackTrace(this);
-    }
 
     if (op == R4300i_JAL || ((op == R4300i_SPECIAL) && (funct == R4300i_SPECIAL_JALR) && (Opcode.rd == 31))) // JAL or JALR RA, x
     {

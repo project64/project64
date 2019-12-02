@@ -17,6 +17,7 @@ int CScriptHook::Add(CScriptInstance* scriptInstance, void* heapptr, uint32_t pa
     jsCallback.param4 = param4;
     jsCallback.bOnce = bOnce;
     m_Callbacks.push_back(jsCallback);
+    m_ScriptSystem->CallbackAdded();
     return jsCallback.callbackId;
 }
 
@@ -122,6 +123,7 @@ void CScriptHook::RemoveById(int callbackId)
         if (m_Callbacks[i].callbackId == callbackId)
         {
             m_Callbacks.erase(m_Callbacks.begin() + i);
+            m_ScriptSystem->CallbackRemoved();
             return;
         }
     }
@@ -135,6 +137,7 @@ void CScriptHook::RemoveByParam(uint32_t param)
         if (m_Callbacks[i].param == param)
         {
             m_Callbacks.erase(m_Callbacks.begin() + i);
+            m_ScriptSystem->CallbackRemoved();
             return;
         }
     }
@@ -148,6 +151,7 @@ void CScriptHook::RemoveByInstance(CScriptInstance* scriptInstance)
         if (m_Callbacks[i].scriptInstance == scriptInstance)
         {
             m_Callbacks.erase(m_Callbacks.begin() + i);
+            m_ScriptSystem->CallbackRemoved();
         }
     }
 }
