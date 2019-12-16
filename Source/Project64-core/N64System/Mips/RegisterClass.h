@@ -631,6 +631,7 @@ public:
     void CheckInterrupts        ();
     void DoAddressError         ( bool DelaySlot, uint32_t BadVaddr, bool FromRead );
     void DoBreakException       ( bool DelaySlot );
+    void DoTrapException        ( bool DelaySlot );
     void DoCopUnusableException ( bool DelaySlot, int32_t Coprocessor );
     bool DoIntrException        ( bool DelaySlot );
     void DoTLBReadMiss          ( bool DelaySlot, uint32_t BadVaddr );

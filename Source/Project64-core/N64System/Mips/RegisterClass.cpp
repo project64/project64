@@ -438,6 +438,22 @@ void CRegisters::DoBreakException(bool DelaySlot)
     m_PROGRAM_COUNTER = 0x80000180;
 }
 
+void CRegisters::DoTrapException(bool DelaySlot)
+{
+    CAUSE_REGISTER = EXC_TRAP;
+    if (DelaySlot)
+    {
+        EPC_REGISTER = m_PROGRAM_COUNTER - 4;
+        CAUSE_REGISTER |= CAUSE_BD;
+    }
+    else
+    {
+        EPC_REGISTER = m_PROGRAM_COUNTER;
+    }
+    m_PROGRAM_COUNTER = 0x80000180;
+
+}
+
 void CRegisters::DoCopUnusableException(bool DelaySlot, int Coprocessor)
 {
     if (HaveDebugger())
