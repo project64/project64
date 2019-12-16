@@ -1507,6 +1507,12 @@ void CMipsMemoryVM::Load32CartridgeDomain2Address1(void)
 
 void CMipsMemoryVM::Load32CartridgeDomain2Address2(void)
 {
+    uint32_t PAddr = m_MemLookupAddress & 0x1FFFFFFF;
+    if (PAddr >= 0x10000)
+    {
+        m_MemLookupValue.UW[0] = 0;
+        return;
+    }
     if (g_System->m_SaveUsing == SaveChip_Auto)
     {
         g_System->m_SaveUsing = SaveChip_FlashRam;
@@ -2178,7 +2184,8 @@ void CMipsMemoryVM::Write32CartridgeDomain2Address1(void)
 
 void CMipsMemoryVM::Write32CartridgeDomain2Address2(void)
 {
-    if (g_System->m_SaveUsing == SaveChip_Sram)
+    uint32_t PAddr = m_MemLookupAddress & 0x1FFFFFFF;
+    if (g_System->m_SaveUsing == SaveChip_Sram && PAddr < 0x8000)
     {
         //Store Sram
         uint8_t tmp[4] = "";
@@ -2196,6 +2203,10 @@ void CMipsMemoryVM::Write32CartridgeDomain2Address2(void)
     g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     }*/
+    if (PAddr != 0x10000)
+    {
+        return;
+    }
     if (g_System->m_SaveUsing == SaveChip_Auto)
     {
         g_System->m_SaveUsing = SaveChip_FlashRam;
