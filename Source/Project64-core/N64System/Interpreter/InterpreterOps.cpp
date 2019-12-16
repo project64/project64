@@ -2048,61 +2048,49 @@ void R4300iOp::SPECIAL_DSUBU()
 
 void R4300iOp::SPECIAL_TEQ()
 {
-    if (_GPR[m_Opcode.rs].DW == _GPR[m_Opcode.rt].DW && HaveDebugger())
+    if (_GPR[m_Opcode.rs].DW == _GPR[m_Opcode.rt].DW)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
-        m_NextInstruction = JUMP;
-        m_JumpToLocation = (*_PROGRAM_COUNTER);
     }
 }
 
 void R4300iOp::SPECIAL_TGE()
 {
-    if (_GPR[m_Opcode.rs].DW >= _GPR[m_Opcode.rt].DW && HaveDebugger())
+    if (_GPR[m_Opcode.rs].DW >= _GPR[m_Opcode.rt].DW)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
-        m_NextInstruction = JUMP;
-        m_JumpToLocation = (*_PROGRAM_COUNTER);
     }
 }
 
 void R4300iOp::SPECIAL_TGEU()
 {
-    if (_GPR[m_Opcode.rs].DW >= _GPR[m_Opcode.rt].DW && HaveDebugger())
+    if (_GPR[m_Opcode.rs].DW >= _GPR[m_Opcode.rt].D)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
-        m_NextInstruction = JUMP;
-        m_JumpToLocation = (*_PROGRAM_COUNTER);
     }
 }
 
 void R4300iOp::SPECIAL_TLT()
 {
-    if (_GPR[m_Opcode.rs].DW < _GPR[m_Opcode.rt].DW && HaveDebugger())
+    if (_GPR[m_Opcode.rs].DW < _GPR[m_Opcode.rt].DW)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
-        m_NextInstruction = JUMP;
-        m_JumpToLocation = (*_PROGRAM_COUNTER);
     }
 }
 
 void R4300iOp::SPECIAL_TLTU()
 {
-    if (_GPR[m_Opcode.rs].DW < _GPR[m_Opcode.rt].DW && HaveDebugger())
+    if (_GPR[m_Opcode.rs].DW < _GPR[m_Opcode.rt].DW)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
-        m_NextInstruction = JUMP;
-        m_JumpToLocation = (*_PROGRAM_COUNTER);
     }
 }
 
 void R4300iOp::SPECIAL_TNE()
 {
-    if (_GPR[m_Opcode.rs].DW != _GPR[m_Opcode.rt].DW && HaveDebugger())
+    if (_GPR[m_Opcode.rs].DW != _GPR[m_Opcode.rt].DW)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
-        m_NextInstruction = JUMP;
-        m_JumpToLocation = (*_PROGRAM_COUNTER);
     }
 }
 
@@ -2275,61 +2263,49 @@ void R4300iOp::REGIMM_BGEZAL()
 
 void R4300iOp::REGIMM_TEQI()
 {
-    if (_GPR[m_Opcode.rs].DW == m_Opcode.immediate && HaveDebugger())
+    if (_GPR[m_Opcode.rs].DW == m_Opcode.immediate)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
-        m_NextInstruction = JUMP;
-        m_JumpToLocation = (*_PROGRAM_COUNTER);
     }
 }
 
 void R4300iOp::REGIMM_TGEI()
 {
-    if (_GPR[m_Opcode.rs].DW >= m_Opcode.immediate && HaveDebugger())
+    if (_GPR[m_Opcode.rs].DW >= m_Opcode.immediate)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
-        m_NextInstruction = JUMP;
-        m_JumpToLocation = (*_PROGRAM_COUNTER);
     }
 }
 
 void R4300iOp::REGIMM_TGEIU()
 {
-    if (_GPR[m_Opcode.rs].DW >= m_Opcode.immediate && HaveDebugger())
+    if (_GPR[m_Opcode.rs].DW >= m_Opcode.immediate)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
-        m_NextInstruction = JUMP;
-        m_JumpToLocation = (*_PROGRAM_COUNTER);
     }
 }
 
 void R4300iOp::REGIMM_TLTI()
 {
-    if (_GPR[m_Opcode.rs].DW < m_Opcode.immediate && HaveDebugger())
+    if (_GPR[m_Opcode.rs].DW < m_Opcode.immediate)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
-        m_NextInstruction = JUMP;
-        m_JumpToLocation = (*_PROGRAM_COUNTER);
     }
 }
 
 void R4300iOp::REGIMM_TLTIU()
 {
-    if (_GPR[m_Opcode.rs].DW < m_Opcode.immediate && HaveDebugger())
+    if (_GPR[m_Opcode.rs].DW < m_Opcode.immediate)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
-        m_NextInstruction = JUMP;
-        m_JumpToLocation = (*_PROGRAM_COUNTER);
     }
 }
 
 void R4300iOp::REGIMM_TNEI()
 {
-    if (_GPR[m_Opcode.rs].DW != m_Opcode.immediate && HaveDebugger())
+    if (_GPR[m_Opcode.rs].DW != m_Opcode.immediate)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
-        m_NextInstruction = JUMP;
-        m_JumpToLocation = (*_PROGRAM_COUNTER);
     }
 }
 
