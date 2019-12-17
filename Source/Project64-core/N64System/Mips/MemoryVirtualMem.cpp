@@ -1510,7 +1510,7 @@ void CMipsMemoryVM::Load32CartridgeDomain2Address2(void)
     uint32_t PAddr = m_MemLookupAddress & 0x1FFFFFFF;
     if (PAddr >= 0x10000)
     {
-        m_MemLookupValue.UW[0] = 0;
+        m_MemLookupValue.UW[0] = rand();
         return;
     }
     if (g_System->m_SaveUsing == SaveChip_Auto)
@@ -2203,7 +2203,7 @@ void CMipsMemoryVM::Write32CartridgeDomain2Address2(void)
     g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     }*/
-    if (PAddr != 0x10000)
+    if (PAddr > 0x10000)
     {
         return;
     }
