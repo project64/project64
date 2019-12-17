@@ -105,6 +105,77 @@ CArmRecompilerOps::CArmRecompilerOps() :
 
 bool DelaySlotEffectsCompare(uint32_t PC, uint32_t Reg1, uint32_t Reg2);
 
+void CArmRecompilerOps::Compile_TrapCompare(TRAP_COMPARE CompareType)
+{
+    void *FunctAddress = NULL;
+    const char *FunctName = NULL;
+    switch (CompareType)
+    {
+    case CompareTypeTEQ:
+        FunctAddress = (void*)R4300iOp::SPECIAL_TEQ;
+        FunctName = "R4300iOp::SPECIAL_TEQ";
+        break;
+    case CompareTypeTNE:
+        FunctAddress = (void*)R4300iOp::SPECIAL_TNE;
+        FunctName = "R4300iOp::SPECIAL_TNE";
+        break;
+    case CompareTypeTGE:
+        FunctAddress = (void*)R4300iOp::SPECIAL_TGE;
+        FunctName = "R4300iOp::SPECIAL_TGE";
+        break;
+    case CompareTypeTGEU:
+        FunctAddress = (void*)R4300iOp::SPECIAL_TGEU;
+        FunctName = "R4300iOp::SPECIAL_TGEU";
+        break;
+    case CompareTypeTLT:
+        FunctAddress = (void*)R4300iOp::SPECIAL_TLT;
+        FunctName = "R4300iOp::SPECIAL_TLT";
+        break;
+    case CompareTypeTLTU:
+        FunctAddress = (void*)R4300iOp::SPECIAL_TLTU;
+        FunctName = "R4300iOp::SPECIAL_TLTU";
+        break;
+    case CompareTypeTEQI:
+        FunctAddress = (void*)R4300iOp::REGIMM_TEQI;
+        FunctName = "R4300iOp::REGIMM_TEQI";
+        break;
+    case CompareTypeTNEI:
+        FunctAddress = (void*)R4300iOp::REGIMM_TNEI;
+        FunctName = "R4300iOp::REGIMM_TNEI";
+        break;
+    case CompareTypeTGEI:
+        FunctAddress = (void*)R4300iOp::REGIMM_TGEI;
+        FunctName = "R4300iOp::REGIMM_TGEI";
+        break;
+    case CompareTypeTGEIU:
+        FunctAddress = (void*)R4300iOp::REGIMM_TGEIU;
+        FunctName = "R4300iOp::REGIMM_TGEIU";
+        break;
+    case CompareTypeTLTI:
+        FunctAddress = (void*)R4300iOp::REGIMM_TLTI;
+        FunctName = "R4300iOp::REGIMM_TLTI";
+        break;
+    case CompareTypeTLTIU:
+        FunctAddress = (void*)R4300iOp::REGIMM_TLTIU;
+        FunctName = "R4300iOp::REGIMM_TLTIU";
+        break;
+    default:
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    if (FunctName != NULL && FunctAddress != NULL)
+    {
+        if (m_Opcode.rs != 0) { WriteBack_GPR(m_Opcode.rs, false); }
+        if (m_Opcode.rt != 0) { WriteBack_GPR(m_Opcode.rt, false); }
+
+        CompileInterpterCall(FunctAddress, FunctName);
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+}
+
 /************************** Branch functions  ************************/
 void CArmRecompilerOps::Compile_BranchCompare(BRANCH_COMPARE CompareType)
 {

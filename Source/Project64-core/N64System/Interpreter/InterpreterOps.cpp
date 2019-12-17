@@ -2064,7 +2064,7 @@ void R4300iOp::SPECIAL_TGE()
 
 void R4300iOp::SPECIAL_TGEU()
 {
-    if (_GPR[m_Opcode.rs].DW >= _GPR[m_Opcode.rt].D)
+    if (_GPR[m_Opcode.rs].UDW >= _GPR[m_Opcode.rt].UDW)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
     }
@@ -2080,7 +2080,7 @@ void R4300iOp::SPECIAL_TLT()
 
 void R4300iOp::SPECIAL_TLTU()
 {
-    if (_GPR[m_Opcode.rs].DW < _GPR[m_Opcode.rt].DW)
+    if (_GPR[m_Opcode.rs].UDW < _GPR[m_Opcode.rt].UDW)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
     }
@@ -2263,7 +2263,7 @@ void R4300iOp::REGIMM_BGEZAL()
 
 void R4300iOp::REGIMM_TEQI()
 {
-    if (_GPR[m_Opcode.rs].DW == m_Opcode.immediate)
+    if (_GPR[m_Opcode.rs].DW == (int64_t)((int16_t)m_Opcode.immediate))
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
     }
@@ -2271,7 +2271,7 @@ void R4300iOp::REGIMM_TEQI()
 
 void R4300iOp::REGIMM_TGEI()
 {
-    if (_GPR[m_Opcode.rs].DW >= m_Opcode.immediate)
+    if (_GPR[m_Opcode.rs].DW >= (int64_t)((int16_t)m_Opcode.immediate))
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
     }
@@ -2279,7 +2279,11 @@ void R4300iOp::REGIMM_TGEI()
 
 void R4300iOp::REGIMM_TGEIU()
 {
-    if (_GPR[m_Opcode.rs].DW >= m_Opcode.immediate)
+    int32_t imm32 = (int16_t)m_Opcode.immediate;
+    int64_t imm64;
+
+    imm64 = imm32;
+    if (_GPR[m_Opcode.rs].DW >= (uint64_t)imm64)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
     }
@@ -2287,7 +2291,7 @@ void R4300iOp::REGIMM_TGEIU()
 
 void R4300iOp::REGIMM_TLTI()
 {
-    if (_GPR[m_Opcode.rs].DW < m_Opcode.immediate)
+    if (_GPR[m_Opcode.rs].DW < (int64_t)((int16_t)m_Opcode.immediate))
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
     }
@@ -2295,7 +2299,11 @@ void R4300iOp::REGIMM_TLTI()
 
 void R4300iOp::REGIMM_TLTIU()
 {
-    if (_GPR[m_Opcode.rs].DW < m_Opcode.immediate)
+    int32_t imm32 = (int16_t)m_Opcode.immediate;
+    int64_t imm64;
+
+    imm64 = imm32;
+    if (_GPR[m_Opcode.rs].DW < (uint64_t)imm64)
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
     }
@@ -2303,7 +2311,7 @@ void R4300iOp::REGIMM_TLTIU()
 
 void R4300iOp::REGIMM_TNEI()
 {
-    if (_GPR[m_Opcode.rs].DW != m_Opcode.immediate)
+    if (_GPR[m_Opcode.rs].DW != (int64_t)((int16_t)m_Opcode.immediate))
     {
         g_Reg->DoTrapException(m_NextInstruction == JUMP);
     }
