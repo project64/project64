@@ -250,13 +250,13 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_Special[45] = SPECIAL_DADDU;
     Jump_Special[46] = SPECIAL_DSUB;
     Jump_Special[47] = SPECIAL_DSUBU;
-    Jump_Special[48] = UnknownOpcode;
-    Jump_Special[49] = UnknownOpcode;
-    Jump_Special[50] = UnknownOpcode;
-    Jump_Special[51] = UnknownOpcode;
+    Jump_Special[48] = SPECIAL_TGE;
+    Jump_Special[49] = SPECIAL_TGEU;
+    Jump_Special[50] = SPECIAL_TLT;
+    Jump_Special[51] = SPECIAL_TLTU;
     Jump_Special[52] = SPECIAL_TEQ;
     Jump_Special[53] = UnknownOpcode;
-    Jump_Special[54] = UnknownOpcode;
+    Jump_Special[54] = SPECIAL_TNE;
     Jump_Special[55] = UnknownOpcode;
     Jump_Special[56] = SPECIAL_DSLL;
     Jump_Special[57] = UnknownOpcode;
@@ -275,13 +275,13 @@ R4300iOp::Func * R4300iOp::BuildInterpreter()
     Jump_Regimm[5] = UnknownOpcode;
     Jump_Regimm[6] = UnknownOpcode;
     Jump_Regimm[7] = UnknownOpcode;
-    Jump_Regimm[8] = UnknownOpcode;
-    Jump_Regimm[9] = UnknownOpcode;
-    Jump_Regimm[10] = UnknownOpcode;
-    Jump_Regimm[11] = UnknownOpcode;
-    Jump_Regimm[12] = UnknownOpcode;
+    Jump_Regimm[8] = REGIMM_TGEI;
+    Jump_Regimm[9] = REGIMM_TGEIU;
+    Jump_Regimm[10] = REGIMM_TLTI;
+    Jump_Regimm[11] = REGIMM_TLTIU;
+    Jump_Regimm[12] = REGIMM_TEQI;
     Jump_Regimm[13] = UnknownOpcode;
-    Jump_Regimm[14] = UnknownOpcode;
+    Jump_Regimm[14] = REGIMM_TNEI;
     Jump_Regimm[15] = UnknownOpcode;
     Jump_Regimm[16] = REGIMM_BLTZAL;
     Jump_Regimm[17] = REGIMM_BGEZAL;
@@ -2048,9 +2048,49 @@ void R4300iOp::SPECIAL_DSUBU()
 
 void R4300iOp::SPECIAL_TEQ()
 {
-    if (_GPR[m_Opcode.rs].DW == _GPR[m_Opcode.rt].DW && HaveDebugger())
+    if (_GPR[m_Opcode.rs].DW == _GPR[m_Opcode.rt].DW)
     {
-        g_Notify->DisplayError("Should trap this ???");
+        g_Reg->DoTrapException(m_NextInstruction == JUMP);
+    }
+}
+
+void R4300iOp::SPECIAL_TGE()
+{
+    if (_GPR[m_Opcode.rs].DW >= _GPR[m_Opcode.rt].DW)
+    {
+        g_Reg->DoTrapException(m_NextInstruction == JUMP);
+    }
+}
+
+void R4300iOp::SPECIAL_TGEU()
+{
+    if (_GPR[m_Opcode.rs].UDW >= _GPR[m_Opcode.rt].UDW)
+    {
+        g_Reg->DoTrapException(m_NextInstruction == JUMP);
+    }
+}
+
+void R4300iOp::SPECIAL_TLT()
+{
+    if (_GPR[m_Opcode.rs].DW < _GPR[m_Opcode.rt].DW)
+    {
+        g_Reg->DoTrapException(m_NextInstruction == JUMP);
+    }
+}
+
+void R4300iOp::SPECIAL_TLTU()
+{
+    if (_GPR[m_Opcode.rs].UDW < _GPR[m_Opcode.rt].UDW)
+    {
+        g_Reg->DoTrapException(m_NextInstruction == JUMP);
+    }
+}
+
+void R4300iOp::SPECIAL_TNE()
+{
+    if (_GPR[m_Opcode.rs].DW != _GPR[m_Opcode.rt].DW)
+    {
+        g_Reg->DoTrapException(m_NextInstruction == JUMP);
     }
 }
 
@@ -2220,6 +2260,63 @@ void R4300iOp::REGIMM_BGEZAL()
     }
     _GPR[31].DW = (int32_t)((*_PROGRAM_COUNTER) + 8);
 }
+
+void R4300iOp::REGIMM_TEQI()
+{
+    if (_GPR[m_Opcode.rs].DW == (int64_t)((int16_t)m_Opcode.immediate))
+    {
+        g_Reg->DoTrapException(m_NextInstruction == JUMP);
+    }
+}
+
+void R4300iOp::REGIMM_TGEI()
+{
+    if (_GPR[m_Opcode.rs].DW >= (int64_t)((int16_t)m_Opcode.immediate))
+    {
+        g_Reg->DoTrapException(m_NextInstruction == JUMP);
+    }
+}
+
+void R4300iOp::REGIMM_TGEIU()
+{
+    int32_t imm32 = (int16_t)m_Opcode.immediate;
+    int64_t imm64;
+
+    imm64 = imm32;
+    if (_GPR[m_Opcode.rs].DW >= (uint64_t)imm64)
+    {
+        g_Reg->DoTrapException(m_NextInstruction == JUMP);
+    }
+}
+
+void R4300iOp::REGIMM_TLTI()
+{
+    if (_GPR[m_Opcode.rs].DW < (int64_t)((int16_t)m_Opcode.immediate))
+    {
+        g_Reg->DoTrapException(m_NextInstruction == JUMP);
+    }
+}
+
+void R4300iOp::REGIMM_TLTIU()
+{
+    int32_t imm32 = (int16_t)m_Opcode.immediate;
+    int64_t imm64;
+
+    imm64 = imm32;
+    if (_GPR[m_Opcode.rs].DW < (uint64_t)imm64)
+    {
+        g_Reg->DoTrapException(m_NextInstruction == JUMP);
+    }
+}
+
+void R4300iOp::REGIMM_TNEI()
+{
+    if (_GPR[m_Opcode.rs].DW != (int64_t)((int16_t)m_Opcode.immediate))
+    {
+        g_Reg->DoTrapException(m_NextInstruction == JUMP);
+    }
+}
+
 /************************** COP0 functions **************************/
 void R4300iOp::COP0_MF()
 {
