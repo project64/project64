@@ -1507,10 +1507,10 @@ void CMipsMemoryVM::Load32CartridgeDomain2Address1(void)
 
 void CMipsMemoryVM::Load32CartridgeDomain2Address2(void)
 {
-    uint32_t PAddr = m_MemLookupAddress & 0x1FFFFFFF;
-    if (PAddr >= 0x10000)
+    uint32_t offset = (m_MemLookupAddress & 0x1FFFFFFF) - 0x08000000;
+    if (offset >= 0x10000)
     {
-        m_MemLookupValue.UW[0] = rand();
+        m_MemLookupValue.UW[0] = ((offset & 0xFFFF) << 16) | (offset & 0xFFFF);
         return;
     }
     if (g_System->m_SaveUsing == SaveChip_Auto)
@@ -1521,7 +1521,7 @@ void CMipsMemoryVM::Load32CartridgeDomain2Address2(void)
     {
         //Load Sram
         uint8_t tmp[4] = "";
-        g_MMU->DmaFromSram(tmp, (m_MemLookupAddress & 0x1FFFFFFF) - 0x08000000, 4);
+        g_MMU->DmaFromSram(tmp, offset, 4);
         m_MemLookupValue.UW[0] = tmp[3] << 24 | tmp[2] << 16 | tmp[1] << 8 | tmp[0];
     }
     else if (g_System->m_SaveUsing != SaveChip_FlashRam)
