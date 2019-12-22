@@ -262,7 +262,6 @@ enum SettingID
     Debugger_WriteBPExists,
     Debugger_ReadBPExists,
     Debugger_WaitingForStep,
-    Debugger_AutoRefreshMemoryView,
     Debugger_CPULoggingEnabled,
     Debugger_CPULogBufferSize,
     Debugger_ExceptionBreakpoints,

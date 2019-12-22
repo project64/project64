@@ -43,7 +43,7 @@ private:
     } INSTANCE_ENTRY;
 
     CDebuggerUI* m_Debugger;
-
+    int m_NumCallbacks;
     char* m_APIScript;
 
     vector<HOOKENTRY> m_Hooks;
@@ -103,6 +103,13 @@ public:
     CScriptHook* GetHook(const char* hookId);
 
     int GetNextCallbackId();
+    void CallbackAdded();
+    void CallbackRemoved();
+
+    inline int HaveCallbacks()
+    {
+        return m_NumCallbacks != 0;
+    }
 
     void DeleteStoppedInstances();
     INSTANCE_STATE GetInstanceState(char* scriptName);

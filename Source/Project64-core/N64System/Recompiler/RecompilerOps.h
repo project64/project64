@@ -35,6 +35,24 @@ public:
         CompareTypeCOP1BCF,
         CompareTypeCOP1BCT,
     };
+    enum TRAP_COMPARE
+    {
+        CompareTypeTEQ,
+        CompareTypeTNE,
+        CompareTypeTGE,
+        CompareTypeTGEU,
+        CompareTypeTLT,
+        CompareTypeTLTU,
+        CompareTypeTEQI,
+        CompareTypeTNEI,
+        CompareTypeTGEI,
+        CompareTypeTGEIU,
+        CompareTypeTLTI,
+        CompareTypeTLTIU,
+    };
+
+    /*************************** Trap functions  *************************/
+    virtual void Compile_TrapCompare(TRAP_COMPARE CompareType) = 0;
 
     /************************** Branch functions  ************************/
     virtual void Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE BranchType, bool Link) = 0;
