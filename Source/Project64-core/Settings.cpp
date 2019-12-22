@@ -153,6 +153,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 	AddHandler(Default_RandomizeSIPIInterrupts, new CSettingTypeApplication("Defaults", "Randomize SI/PI Interrupts", true));
 
     AddHandler(Rdb_GoodName, new CSettingTypeRomDatabase("Good Name", Game_GameName));
+	AddHandler(Rdb_RPCKey, new CSettingTypeRomDatabase("RPC Key", Game_RPCKey));
     AddHandler(Rdb_SaveChip, new CSettingTypeRDBSaveChip("Save Type", (uint32_t)SaveChip_Auto));
 #ifdef _DEBUG
     AddHandler(Rdb_CpuType, new CSettingTypeRDBCpuType("CPU Type", CPU_SyncCores));

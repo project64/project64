@@ -38,8 +38,8 @@ void CDiscord::Update(bool bHaveGame)
 	//keyState uses the Header of the rom to easily add game pictures through the discord developer panel using the ID above
 	char szState[256];
 	char keyState[256];
-	sprintf(szState, "Playing %s", g_Settings->LoadStringVal(Rdb_GoodName).c_str()); //rdb_GoodName in a variable for use later
-	sprintf(keyState, "%s", g_Settings->LoadStringVal(Game_GameName).c_str()); //Rom Header in a variable for use later
+	sprintf(szState, "%s", g_Settings->LoadStringVal(Rdb_GoodName).c_str()); //rdb_GoodName in a variable for use later
+	sprintf(keyState, "%s", g_Settings->LoadStringVal(Rdb_RPCKey).c_str()); //Game Image Key in a variable for use later
 
 	//Load Game Into DiscordRPC
 	DiscordRichPresence discordPresence = {}; //activates DiscordRPC
@@ -56,7 +56,7 @@ void CDiscord::Update(bool bHaveGame)
 		discordPresence.largeImageText = szState; //sets the RDB_GoodName Variable as the large image text
 
 		//Large Image File Name over DiscordRPC
-		discordPresence.largeImageText = keyState; //sets the Rom Header Variable as the large image key (the file you upload to discord)
+		discordPresence.largeImageKey = keyState; //sets the Rom Header Variable as the large image key (the file you upload to discord)
 
 		//Small Image over DiscordRPC
 		discordPresence.smallImageKey = "icon"; //Project 64 Logo in bottom right corner
@@ -69,7 +69,7 @@ void CDiscord::Update(bool bHaveGame)
 		//Show when you are not playing a game over DiscordRPC.
 		// This is not perfect due to Project64's method of loading 
 		// ROM's into the filesystem before emulation starts.
-		sprintf(szState, "Not in-game"); //shows "Not in-game" on the active DiscordRPC text
+		discordPresence.details = "Not in-game"; //shows "Not in-game" on the active DiscordRPC text
 		discordPresence.largeImageKey = "icon"; //Shows the Project64 logo on the large image box
 		discordPresence.largeImageText = "Project64"; //Name of the Project64 Logo
 		discordPresence.smallImageKey = NULL; //Safety Measure to force unload the smallImageKey

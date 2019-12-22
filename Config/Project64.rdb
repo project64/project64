@@ -3355,6 +3355,7 @@ Good Name=Mario Party (U)
 Internal Name=MarioParty
 Status=Compatible
 Counter Factor=1
+RPC Key=mp1-u
 
 [82380387-DFC744D9-C:50]
 Good Name=Mario Party 2 (E) (M5)
@@ -3373,6 +3374,7 @@ Good Name=Mario Party 2 (U)
 Internal Name=MarioParty2
 Status=Compatible
 Counter Factor=1
+RPC Key=mp2-u
 
 [C5674160-0F5F453C-C:50]
 Good Name=Mario Party 3 (E) (M4)
@@ -3394,6 +3396,7 @@ Internal Name=MarioParty3
 Status=Compatible
 Counter Factor=1
 Save Type=16kbit Eeprom
+RPC Key=mp3-u
 
 [3BA7CDDC-464E52A0-C:4A]
 Good Name=Mario Story (J)
