@@ -110,7 +110,12 @@ public:
     static void  SPECIAL_DADDU();
     static void  SPECIAL_DSUB();
     static void  SPECIAL_DSUBU();
+	static void  SPECIAL_TGE();
+	static void  SPECIAL_TGEU();
+	static void  SPECIAL_TLT();
+	static void  SPECIAL_TLTU();
     static void  SPECIAL_TEQ();
+	static void  SPECIAL_TNE();
     static void  SPECIAL_DSLL();
     static void  SPECIAL_DSRL();
     static void  SPECIAL_DSRA();
@@ -125,6 +130,12 @@ public:
     static void  REGIMM_BGEZL();
     static void  REGIMM_BLTZAL();
     static void  REGIMM_BGEZAL();
+    static void  REGIMM_TEQI();
+    static void  REGIMM_TGEI();
+    static void  REGIMM_TGEIU();
+    static void  REGIMM_TLTI();
+    static void  REGIMM_TLTIU();
+    static void  REGIMM_TNEI();
 
     /************************** COP0 functions **************************/
     static void  COP0_MF();

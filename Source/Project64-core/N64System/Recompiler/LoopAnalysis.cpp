@@ -238,6 +238,9 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
             case R4300i_SPECIAL_DSLL32: SPECIAL_DSLL32(); break;
             case R4300i_SPECIAL_DSRL32: SPECIAL_DSRL32(); break;
             case R4300i_SPECIAL_DSRA32: SPECIAL_DSRA32(); break;
+            case R4300i_SPECIAL_TEQ:    case R4300i_SPECIAL_TNE:    case R4300i_SPECIAL_TGE:
+            case R4300i_SPECIAL_TGEU:   case R4300i_SPECIAL_TLT:    case R4300i_SPECIAL_TLTU:
+                break;
             default:
                 g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef legacycode
@@ -252,6 +255,9 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
         case R4300i_REGIMM:
             switch (m_Command.rt)
             {
+            case R4300i_REGIMM_TEQI:    case R4300i_REGIMM_TNEI:    case R4300i_REGIMM_TGEI:
+            case R4300i_REGIMM_TGEIU:   case R4300i_REGIMM_TLTI:    case R4300i_REGIMM_TLTIU:
+                break;
             case R4300i_REGIMM_BLTZ:
             case R4300i_REGIMM_BGEZ:
                 m_NextInstruction = DELAY_SLOT;

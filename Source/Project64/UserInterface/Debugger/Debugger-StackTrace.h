@@ -32,9 +32,27 @@ public:
 
     void Refresh();
 
-    void PushEntry(uint32_t routineAddress, uint32_t callingAddress);
-    void PopEntry();
-    void ClearEntries();
+    inline void PushEntry(uint32_t routineAddress, uint32_t callingAddress)
+    {
+        if (m_EntriesIndex < STACKTRACE_MAX_ENTRIES)
+        {
+            m_Entries[m_EntriesIndex] = { routineAddress, callingAddress };
+            m_EntriesIndex++;
+        }
+    }
+
+    inline void PopEntry()
+    {
+        if (m_EntriesIndex > 0)
+        {
+            m_EntriesIndex--;
+        }
+    }
+
+    inline void ClearEntries()
+    {
+        m_EntriesIndex = 0;
+    }
 
 private:
 
