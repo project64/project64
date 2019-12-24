@@ -200,18 +200,28 @@ void CDebugMemoryView::FollowPointer(bool bContextMenuAddress)
 
     if (bContextMenuAddress)
     {
-        address = m_ContextMenuAddress - (m_ContextMenuAddress % 4);
+        address = m_ContextMenuAddress & (~3);
     }
     else
     {
-        address = m_HexEditCtrl.GetCaretAddress();
-        address -= (address % 4);
+        uint32_t selStartAddress, selEndAddress;
+        m_HexEditCtrl.GetSelectionRange(&selStartAddress, &selEndAddress);
+        address = selStartAddress & (~3);
     }
     
-    address += (m_bVirtualMemory ? 0 : 0x80000000);
-    
     uint32_t pointer;
-    if (m_Debugger->DebugLW_VAddr(address, pointer))
+    bool bValid;
+
+    if (m_bVirtualMemory)
+    {
+        bValid = m_Debugger->DebugLW_VAddr(address, pointer);
+    }
+    else
+    {
+        bValid = m_Debugger->DebugLW_PAddr(address, pointer);
+    }
+
+    if (bValid)
     {
         OpenNewTab(pointer, m_bVirtualMemory, 4, true, true);
     }
@@ -391,7 +401,7 @@ LRESULT CDebugMemoryView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& 
     case IDC_CHK_VADDR:
         m_bVirtualMemory = (m_VirtualCheckbox.GetCheck() == BST_CHECKED);
         SetupJumpMenu(m_bVirtualMemory);
-        UpdateCurrentTab(m_MemAddr.GetValue());
+        m_CmbJump.SetCurSel(GetJumpItemIndex(m_MemAddr.GetValue(), m_bVirtualMemory));
         break;
     case IDC_SYMBOLS_BTN:
         m_Debugger->OpenSymbolsWindow();
@@ -493,6 +503,7 @@ void CDebugMemoryView::OnAddrChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
     uint32_t address = m_MemAddr.GetValue();
     m_HexEditCtrl.SetBaseAddress(address);
     UpdateCurrentTab(address);
+    m_CmbJump.SetCurSel(GetJumpItemIndex(address, m_bVirtualMemory));
 }
 
 void CDebugMemoryView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar pScrollBar)
@@ -545,9 +556,7 @@ LRESULT CDebugMemoryView::OnHxCtrlKeyPressed(LPNMHDR lpNMHDR)
     switch (nmck->nChar)
     {
     case 'G':
-        {
         JumpToSelection();
-        }
         break;
     case 'W':
         m_Breakpoints->WBPToggle(address);
