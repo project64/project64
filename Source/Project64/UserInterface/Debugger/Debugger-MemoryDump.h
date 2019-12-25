@@ -20,9 +20,9 @@ public:
     virtual ~CDumpMemory(void);
 
 private:
-    CDumpMemory(void);							// Disable default constructor
-    CDumpMemory(const CDumpMemory&);			// Disable copy constructor
-    CDumpMemory& operator=(const CDumpMemory&);	// Disable assignment
+    CDumpMemory(void);                          // Disable default constructor
+    CDumpMemory(const CDumpMemory&);            // Disable copy constructor
+    CDumpMemory& operator=(const CDumpMemory&); // Disable assignment
 
     enum DumpFormat
     {
@@ -36,8 +36,8 @@ private:
         MSG_WM_EXITSIZEMOVE(OnExitSizeMove);
         END_MSG_MAP()
 
-    LRESULT				OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-    LRESULT				OnClicked(WORD wNotifyCode, WORD wID, HWND /*hWndCtl*/, BOOL& bHandled);
+    LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+    LRESULT OnClicked(WORD wNotifyCode, WORD wID, HWND /*hWndCtl*/, BOOL& bHandled);
     void OnExitSizeMove(void);
 
     bool DumpMemory(LPCSTR FileName, DumpFormat Format, DWORD StartPC, DWORD EndPC, DWORD DumpPC);

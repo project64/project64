@@ -55,10 +55,10 @@ private:
     CScriptHook* m_HookCPURead;
     CScriptHook* m_HookCPUWrite;
     CScriptHook* m_HookCPUExecOpcode;
-	CScriptHook* m_HookCPUGPRValue;
+    CScriptHook* m_HookCPUGPRValue;
     CScriptHook* m_HookFrameDrawn;
 
-	CRITICAL_SECTION m_CriticalSection;
+    CriticalSection m_CS;
 
     void RegisterHook(const char* hookId, CScriptHook* cbList); // associate string id with callback list
     void UnregisterHooks();
@@ -135,10 +135,10 @@ public:
         return m_HookCPUExecOpcode;
     }
 
-	CScriptHook* HookCPUGPRValue()
-	{
-		return m_HookCPUGPRValue;
-	}
+    CScriptHook* HookCPUGPRValue()
+    {
+        return m_HookCPUGPRValue;
+    }
 
     CScriptHook* HookFrameDrawn()
     {

@@ -97,7 +97,7 @@ private:
     CEdit m_Value;
     CComboBox m_CmbValue;
     
-    LRESULT	OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+    LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
     LRESULT OnDestroy(void);
     LRESULT OnOK(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
     LRESULT OnCancel(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);

@@ -1,3 +1,14 @@
+/****************************************************************************
+*                                                                           *
+* Project64 - A Nintendo 64 emulator.                                       *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2012 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
+
 #include "stdafx.h"
 #include "DebuggerUI.h"
 #include "CPULog.h"
@@ -75,6 +86,8 @@ LRESULT CDebugCPULogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 
 LRESULT CDebugCPULogView::OnDestroy(void)
 {
+    UnhookWindowsHookEx(hWinMessageHook);
+
     m_CPUListView.Detach();
     m_StateInfoEdit.Detach();
     m_EnabledChk.Detach();

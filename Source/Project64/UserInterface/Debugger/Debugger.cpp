@@ -36,6 +36,7 @@ CDebuggerUI::CDebuggerUI() :
     m_ExcBreakpoints(NULL),
     m_DMALog(NULL),
     m_CPULog(NULL),
+    m_SymbolTable(NULL),
     m_StepEvent(false)
 {
     g_Debugger = this;
@@ -45,10 +46,8 @@ CDebuggerUI::CDebuggerUI() :
 
     m_DMALog = new CDMALog();
     m_CPULog = new CCPULog();
+    m_SymbolTable = new CSymbolTable(this);
 
-	InitializeCriticalSection(&m_CriticalSection);
-
-	CSymbols::InitializeCriticalSection();
     g_Settings->RegisterChangeCB(GameRunning_InReset, this, (CSettings::SettingChangedFunc)GameReset);
     g_Settings->RegisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)SteppingOpsChanged);
     g_Settings->RegisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunningChanged);
@@ -75,9 +74,7 @@ CDebuggerUI::~CDebuggerUI(void)
     delete m_ExcBreakpoints;
     delete m_DMALog;
     delete m_CPULog;
-
-    CSymbols::DeleteCriticalSection();
-	DeleteCriticalSection(&m_CriticalSection);
+    delete m_SymbolTable;
 }
 
 void CDebuggerUI::SteppingOpsChanged(CDebuggerUI * _this)
@@ -129,9 +126,10 @@ void CDebuggerUI::GameReset(CDebuggerUI * _this)
         _this->m_StackTrace->ClearEntries();
     }
 
-    CSymbols::EnterCriticalSection();
-    CSymbols::Load();
-    CSymbols::LeaveCriticalSection();
+    if (_this->m_SymbolTable)
+    {
+        _this->m_SymbolTable->Load();
+    }
 
     if (_this->m_Symbols)
     {
@@ -456,6 +454,11 @@ CDMALog* CDebuggerUI::DMALog()
 CCPULog* CDebuggerUI::CPULog()
 {
     return m_CPULog;
+}
+
+CSymbolTable* CDebuggerUI::SymbolTable()
+{
+    return m_SymbolTable;
 }
 
 // CDebugger implementation

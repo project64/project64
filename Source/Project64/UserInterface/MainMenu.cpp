@@ -1048,13 +1048,17 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         *******************/
 
         //ID_DEBUGGER_LOGOPTIONS
-        Item.Reset(ID_DEBUGGER_BREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"R4300i &Commands...");
-        Item.SetItemEnabled(CPURunning);
-
+        Item.Reset(ID_DEBUGGER_BREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"&Commands...");
         DebugR4300Menu.push_back(Item);
-        //Item.Reset(ID_DEBUGGER_R4300REGISTERS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"R4300i &Registers...");
-        //Item.SetItemEnabled(true);
-       // DebugR4300Menu.push_back(Item);
+        Item.Reset(ID_DEBUGGER_CPULOG, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Command Log...");
+        DebugR4300Menu.push_back(Item);
+        Item.Reset(ID_DEBUGGER_EXCBREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Exceptions...");
+        DebugR4300Menu.push_back(Item);
+        Item.Reset(ID_DEBUGGER_STACKVIEW, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Stack...");
+        DebugR4300Menu.push_back(Item);
+        Item.Reset(ID_DEBUGGER_STACKTRACE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Stack Trace...");
+        DebugR4300Menu.push_back(Item);
+
         Item.Reset(ID_DEBUG_DISABLE_GAMEFIX, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Disable Game Fixes");
         if (g_Settings->LoadBool(Debugger_DisableGameFixes))
         {
@@ -1070,9 +1074,13 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         DebugMemoryMenu.push_back(Item);
         Item.Reset(ID_DEBUGGER_SEARCHMEMORY, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Search...");
         DebugMemoryMenu.push_back(Item);
+        Item.Reset(ID_DEBUGGER_SYMBOLS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Symbols...");
+        DebugMemoryMenu.push_back(Item);
         Item.Reset(ID_DEBUGGER_DUMPMEMORY, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Dump...");
         DebugMemoryMenu.push_back(Item);
         Item.Reset(ID_DEBUGGER_TLBENTRIES, EMPTY_STRING, EMPTY_STDSTR, NULL, L"TLB Entries...");
+        DebugMemoryMenu.push_back(Item);
+        Item.Reset(ID_DEBUGGER_DMALOG, EMPTY_STRING, EMPTY_STDSTR, NULL, L"DMA Log...");
         DebugMemoryMenu.push_back(Item);
 
         /* Debug - App logging
@@ -1166,51 +1174,24 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 
         /* Debugger Main Menu
         ****************/
-        Item.Reset(ID_DEBUGGER_BREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Breakpoint...");
-        //Item.SetItemEnabled(CPURunning);
+        Item.Reset(ID_DEBUGGER_BREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Commands...");
         DebugMenu.push_back(Item);
-
-        /* Debug - Exception breakpoints
-        *******************/
-        Item.Reset(ID_DEBUGGER_EXCBREAKPOINTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"CPU Exception Breakpoints...");
-        //Item.SetItemEnabled(CPURunning);
+        Item.Reset(ID_DEBUGGER_MEMORY, EMPTY_STRING, EMPTY_STDSTR, NULL, L"View Memory...");
         DebugMenu.push_back(Item);
-
-        /* Debugger - Symbols
-        ****************/
-        Item.Reset(ID_DEBUGGER_SYMBOLS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Symbols...");
-        //Item.SetItemEnabled(CPURunning);
-        DebugMenu.push_back(Item);
-
-        /* Debug - Scripts
-        *******************/
         Item.Reset(ID_DEBUGGER_SCRIPTS, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Scripts...");
-        //Item.SetItemEnabled(CPURunning);
-        DebugMenu.push_back(Item);
-
-        /* Debug - DMA Log
-        *******************/
-        Item.Reset(ID_DEBUGGER_DMALOG, EMPTY_STRING, EMPTY_STDSTR, NULL, L"DMA Log...");
-        //Item.SetItemEnabled(CPURunning);
-        DebugMenu.push_back(Item);
-
-        /* Debug - CPU Log
-        *******************/
-        Item.Reset(ID_DEBUGGER_CPULOG, EMPTY_STRING, EMPTY_STDSTR, NULL, L"CPU Log...");
-        //Item.SetItemEnabled(CPURunning);
-        DebugMenu.push_back(Item);
-
-        /* Debug - Stack
-        *******************/
-        Item.Reset(ID_DEBUGGER_STACKVIEW, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Stack...");
-        DebugMenu.push_back(Item);
-
-        /* Debug - Stack Trace
-        *******************/
-        Item.Reset(ID_DEBUGGER_STACKTRACE, EMPTY_STRING, EMPTY_STDSTR, NULL, L"Stack Trace...");
         DebugMenu.push_back(Item);
 
         DebugMenu.push_back(MENU_ITEM(SPLITER));
+
+        /* Debug - Memory
+        *******************/
+        Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugMemoryMenu, L"Memory");
+        DebugMenu.push_back(Item);
+
+        /* Debug - R4300i
+        *******************/
+        Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugR4300Menu, L"&R4300i");
+        DebugMenu.push_back(Item);
 
         /* Debug - RSP
         *******************/
@@ -1249,10 +1230,6 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         }
         DebugNotificationMenu.push_back(Item);
 
-        Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugR4300Menu, L"&R4300i");
-        DebugMenu.push_back(Item);
-        Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugMemoryMenu, L"Memory");
-        DebugMenu.push_back(Item);
         DebugMenu.push_back(MENU_ITEM(SPLITER));
         Item.Reset(SUB_MENU, EMPTY_STRING, EMPTY_STDSTR, &DebugProfileMenu, L"Profile");
         DebugMenu.push_back(Item);

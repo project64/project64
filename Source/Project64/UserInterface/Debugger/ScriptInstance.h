@@ -1,3 +1,13 @@
+/****************************************************************************
+*                                                                           *
+* Project64 - A Nintendo 64 emulator.                                       *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2012 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
 #pragma once
 
 #include "stdafx.h"
@@ -60,7 +70,7 @@ class CScriptInstance
         int fd;
     } FILE_FD;
 
-	typedef BOOL(__stdcall *Dynamic_CancelIoEx)(HANDLE, LPOVERLAPPED);
+    typedef BOOL(__stdcall *Dynamic_CancelIoEx)(HANDLE, LPOVERLAPPED);
 public:
 
     CScriptInstance(CDebuggerUI* debugger);
@@ -73,7 +83,6 @@ public:
     INSTANCE_STATE GetState();
 
     friend class PendingEval;
-    void EvalAsync(const char* jsCode);
     const char* Eval(const char* jsCode);
 
 private:
@@ -83,7 +92,7 @@ private:
 
     HANDLE              m_hThread;
     HANDLE              m_hIOCompletionPort;
-    CRITICAL_SECTION    m_CriticalSection;
+    CriticalSection     m_CS;
 
     vector<IOFD>        m_AsyncFiles;
     vector<IOLISTENER*> m_Listeners;
@@ -121,7 +130,7 @@ private:
     void RemoveListenersByFd(HANDLE fd);
     void InvokeListenerCallback(IOLISTENER* lpListener);
 
-    static void CALLBACK EvalAsyncCallback(ULONG_PTR evalWait);
+    //static void CALLBACK EvalAsyncCallback(ULONG_PTR evalWait);
 
     bool AddFile(const char* path, const char* mode, int* fd); // return fd
     void CloseFile(int fd);
@@ -130,9 +139,9 @@ private:
 
     const char* EvalFile(const char* jsPath);
 
-	// Handle to to dynamically load CancelIoEx for Windows XP compatibility
-	HMODULE m_hKernel;
-	Dynamic_CancelIoEx m_CancelIoEx;
+    // Handle to to dynamically load CancelIoEx for Windows XP compatibility
+    HMODULE m_hKernel;
+    Dynamic_CancelIoEx m_CancelIoEx;
 
     // Lookup list of CScriptInstance instances for static js_* functions
     static vector<CScriptInstance*> Cache;
@@ -161,8 +170,8 @@ private:
     static duk_ret_t js_SetGPRVal(duk_context*); // (regNum, bUpper, value)
     static duk_ret_t js_GetFPRVal(duk_context*); // (regNum, bDouble)
     static duk_ret_t js_SetFPRVal(duk_context*); // (regNum, bDouble, value)
-	static duk_ret_t js_GetCauseVal(duk_context*); // ()
-	static duk_ret_t js_SetCauseVal(duk_context*); // (value)
+    static duk_ret_t js_GetCauseVal(duk_context*); // ()
+    static duk_ret_t js_SetCauseVal(duk_context*); // (value)
     static duk_ret_t js_GetROMInt(duk_context*); // (address, bitwidth, signed)
     static duk_ret_t js_GetROMFloat(duk_context*); // (address, bDouble)
     static duk_ret_t js_GetROMBlock(duk_context*); // (address, nBytes) ; returns Buffer
@@ -209,8 +218,8 @@ private:
         { "getGPRVal",      js_GetGPRVal,      DUK_VARARGS },
         { "setFPRVal",      js_SetFPRVal,      DUK_VARARGS },
         { "getFPRVal",      js_GetFPRVal,      DUK_VARARGS },
-		{ "setCauseVal",    js_SetCauseVal,    DUK_VARARGS },
-		{ "getCauseVal",    js_GetCauseVal,    DUK_VARARGS },
+        { "setCauseVal",    js_SetCauseVal,    DUK_VARARGS },
+        { "getCauseVal",    js_GetCauseVal,    DUK_VARARGS },
 
         { "getROMInt",      js_GetROMInt,      DUK_VARARGS },
         { "getROMFloat",    js_GetROMFloat,    DUK_VARARGS },

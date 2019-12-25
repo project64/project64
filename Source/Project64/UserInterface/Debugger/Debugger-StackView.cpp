@@ -91,8 +91,6 @@ void CDebugStackView::Refresh()
     uint32_t spBase = g_Reg->m_GPR[29].UW[0];
     m_SPStatic.SetWindowTextA(stdstr_f("SP: %08X", spBase).c_str());
 
-    CSymbols::EnterCriticalSection();
-
     for (int i = 0; i < 0x10; i++)
     {
         char t[4];
@@ -104,7 +102,7 @@ void CDebugStackView::Refresh()
             uint32_t vaddr = spBase + (i * 0x10) + (j * 4);
             uint32_t val;
 
-            if (!m_Debugger->DebugLW_VAddr(vaddr, val))
+            if (!m_Debugger->DebugLoad_VAddr(vaddr, val))
             {
                 m_StackList.AddItem(i, j + 1, "????????");
                 continue;
@@ -115,8 +113,6 @@ void CDebugStackView::Refresh()
             m_StackList.AddItem(i, j + 1, valStr);
         }
     }
-
-    CSymbols::LeaveCriticalSection();
 
     m_StackList.SetRedraw(TRUE);
 }

@@ -23,34 +23,34 @@ CDumpMemory::~CDumpMemory()
 {
 }
 
-LRESULT	CDumpMemory::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CDumpMemory::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
     DlgSavePos_Init(DebuggerUI_MemoryDumpPos);
 
     m_StartAddress.Attach(GetDlgItem(IDC_E_START_ADDR));
     m_EndAddress.Attach(GetDlgItem(IDC_E_END_ADDR));
     m_PC.Attach(GetDlgItem(IDC_E_ALT_PC));
-	m_FormatList.Attach(GetDlgItem(IDC_FORMAT));
-	m_FileName.Attach(GetDlgItem(IDC_FILENAME));
+    m_FormatList.Attach(GetDlgItem(IDC_FORMAT));
+    m_FileName.Attach(GetDlgItem(IDC_FILENAME));
 
     m_StartAddress.SetDisplayType(CEditNumber32::DisplayHex);
     m_EndAddress.SetDisplayType(CEditNumber32::DisplayHex);
     m_PC.SetDisplayType(CEditNumber32::DisplayHex);
 
-	uint32_t startAddress = 0x80000000;
-	uint32_t endAddress = startAddress + (g_MMU ? g_MMU->RdramSize() : 0x400000);
+    uint32_t startAddress = 0x80000000;
+    uint32_t endAddress = startAddress + (g_MMU ? g_MMU->RdramSize() : 0x400000);
 
     m_StartAddress.SetValue(startAddress, true, true);
     m_EndAddress.SetValue(endAddress, true, true);
     m_PC.SetValue(startAddress);
-	
-	int nIndex = m_FormatList.AddString("TEXT - Disassembly + PC");
-	m_FormatList.SetItemData(nIndex, (DWORD_PTR)DisassemblyWithPC);
+    
+    int nIndex = m_FormatList.AddString("TEXT - Disassembly + PC");
+    m_FormatList.SetItemData(nIndex, (DWORD_PTR)DisassemblyWithPC);
 
-	nIndex = m_FormatList.AddString("RAW - Big Endian (N64)");
-	m_FormatList.SetItemData(nIndex, (LPARAM)RawBigEndian);
+    nIndex = m_FormatList.AddString("RAW - Big Endian (N64)");
+    m_FormatList.SetItemData(nIndex, (LPARAM)RawBigEndian);
 
-	m_FormatList.SetCurSel(0);
+    m_FormatList.SetCurSel(0);
 
     LoadWindowPos();
     WindowCreated();
@@ -62,7 +62,7 @@ void CDumpMemory::OnExitSizeMove(void)
     SaveWindowPos(0);
 }
 
-LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+LRESULT    CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
     switch (wID)
     {
@@ -73,28 +73,28 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
     {
         g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_DumpMemory);
 
-		int CurrentFormatSel = m_FormatList.GetCurSel();
-		DumpFormat Format = (DumpFormat)m_FormatList.GetItemData(CurrentFormatSel);
+        int CurrentFormatSel = m_FormatList.GetCurSel();
+        DumpFormat Format = (DumpFormat)m_FormatList.GetItemData(CurrentFormatSel);
 
-		const char* FileFilter = "All files (*.*)\0*.*\0";
+        const char* FileFilter = "All files (*.*)\0*.*\0";
 
-		if (Format == RawBigEndian)
-		{
-			FileFilter = "Binary file (*.bin)\0*.bin;\0All files (*.*)\0*.*\0";
-		}
-		else if (Format == DisassemblyWithPC)
-		{
-			FileFilter = "Text file (*.txt)\0*.txt;\0All files (*.*)\0*.*\0";
-		}
+        if (Format == RawBigEndian)
+        {
+            FileFilter = "Binary file (*.bin)\0*.bin;\0All files (*.*)\0*.*\0";
+        }
+        else if (Format == DisassemblyWithPC)
+        {
+            FileFilter = "Text file (*.txt)\0*.txt;\0All files (*.*)\0*.*\0";
+        }
 
         CPath FileName;
-		
+        
         if (FileName.SelectFile(m_hWnd, CPath(CPath::MODULE_DIRECTORY), FileFilter, false))
         {
             if (FileName.GetExtension().length() == 0)
             {
                 FileName.SetExtension(Format == RawBigEndian ? "bin" : "txt");
-				m_FileName.SetWindowTextA(FileName);
+                m_FileName.SetWindowTextA(FileName);
             }
         }
         g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_DumpMemory);
@@ -105,7 +105,7 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
         TCHAR FileName[MAX_PATH];
         int CurrentFormatSel = m_FormatList.GetCurSel();
         DumpFormat Format = (DumpFormat) m_FormatList.GetItemData(CurrentFormatSel);
-		
+        
         DWORD StartPC = m_StartAddress.GetValue();
         DWORD EndPC = m_EndAddress.GetValue();
         DWORD DumpPC = m_PC.GetValue();
@@ -147,69 +147,69 @@ LRESULT	CDumpMemory::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/,
 
 bool CDumpMemory::DumpMemory(LPCSTR FileName, DumpFormat Format, DWORD StartPC, DWORD EndPC, DWORD DumpPC)
 {
-	if (Format == DisassemblyWithPC)
-	{
-		CLog LogFile;
-		if (!LogFile.Open(FileName))
-		{
-			g_Notify->DisplayError(stdstr_f("Failed to open\n%s", FileName).c_str());
-			return false;
-		}
-		LogFile.SetFlush(false);
-		LogFile.SetTruncateFile(false);
+    if (Format == DisassemblyWithPC)
+    {
+        CLog LogFile;
+        if (!LogFile.Open(FileName))
+        {
+            g_Notify->DisplayError(stdstr_f("Failed to open\n%s", FileName).c_str());
+            return false;
+        }
+        LogFile.SetFlush(false);
+        LogFile.SetTruncateFile(false);
 
-		for (uint32_t pc = StartPC; pc < EndPC; pc += 4, DumpPC += 4)
-		{
-			OPCODE opcode;
-			g_MMU->LW_VAddr(pc, opcode.Hex);
+        for (uint32_t pc = StartPC; pc < EndPC; pc += 4, DumpPC += 4)
+        {
+            OPCODE opcode;
+            m_Debugger->DebugLoad_VAddr(pc, opcode.Hex);
 
-			const char* command = R4300iOpcodeName(opcode.Hex, DumpPC);
+            const char* command = R4300iOpcodeName(opcode.Hex, DumpPC);
 
-			char* cmdName = strtok((char*)command, "\t");
-			char* cmdArgs = strtok(NULL, "\t");
-			cmdArgs = cmdArgs ? cmdArgs : "";
+            char* cmdName = strtok((char*)command, "\t");
+            char* cmdArgs = strtok(NULL, "\t");
+            cmdArgs = cmdArgs ? cmdArgs : "";
 
-			LogFile.LogF("%X: %-15s%s\r\n", DumpPC, cmdName, cmdArgs);
-		}
+            LogFile.LogF("%X: %-15s%s\r\n", DumpPC, cmdName, cmdArgs);
+        }
 
-		m_StartAddress.SetValue(StartPC, true, true);
-		m_EndAddress.SetValue(EndPC, true, true);
-		return true;
-	}
+        m_StartAddress.SetValue(StartPC, true, true);
+        m_EndAddress.SetValue(EndPC, true, true);
+        return true;
+    }
 
-	if (Format == RawBigEndian)
-	{
-		CFile dumpFile;
+    if (Format == RawBigEndian)
+    {
+        CFile dumpFile;
 
-		if (!dumpFile.Open(FileName, CFile::modeCreate | CFile::modeWrite))
-		{
-			g_Notify->DisplayError(stdstr_f("Failed to open\n%s", FileName).c_str());
-			return false;
-		}
+        if (!dumpFile.Open(FileName, CFile::modeCreate | CFile::modeWrite))
+        {
+            g_Notify->DisplayError(stdstr_f("Failed to open\n%s", FileName).c_str());
+            return false;
+        }
 
-		uint32_t dumpLen = EndPC - StartPC;
-		uint8_t* dumpBuf = (uint8_t*)malloc(dumpLen);
-		uint32_t dumpIdx = 0;
+        uint32_t dumpLen = EndPC - StartPC;
+        uint8_t* dumpBuf = (uint8_t*)malloc(dumpLen);
+        uint32_t dumpIdx = 0;
 
-		for (uint32_t pc = StartPC; pc < EndPC; pc++, dumpIdx++)
-		{
-			bool bReadable = g_MMU->LB_VAddr(pc, dumpBuf[dumpIdx]);
+        for (uint32_t pc = StartPC; pc < EndPC; pc++, dumpIdx++)
+        {
+            bool bReadable = m_Debugger->DebugLoad_VAddr(pc, dumpBuf[dumpIdx]);
 
-			if (!bReadable)
-			{
-				g_Notify->DisplayError(stdstr_f("Address error\n%s", FileName).c_str());
-				dumpFile.Close();
-				free(dumpBuf);
-				return false;
-			}
-		}
+            if (!bReadable)
+            {
+                g_Notify->DisplayError(stdstr_f("Address error\n%s", FileName).c_str());
+                dumpFile.Close();
+                free(dumpBuf);
+                return false;
+            }
+        }
 
-		dumpFile.SeekToBegin();
-		dumpFile.Write(dumpBuf, dumpLen);
-		dumpFile.Close();
-		free(dumpBuf);
-		return true;
-	}
+        dumpFile.SeekToBegin();
+        dumpFile.Write(dumpBuf, dumpLen);
+        dumpFile.Close();
+        free(dumpBuf);
+        return true;
+    }
 
     return false;
 }
