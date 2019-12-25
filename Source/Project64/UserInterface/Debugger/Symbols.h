@@ -1,145 +1,175 @@
+/****************************************************************************
+*                                                                           *
+* Project64 - A Nintendo 64 emulator.                                       *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2012 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
 #pragma once
 #include "stdafx.h"
 
-class CSymbolEntry;
+class CSymbol;
 
-class CSymbols
+typedef enum {
+    SYM_INVALID = -1,
+    SYM_CODE,
+    SYM_DATA,
+    SYM_U8,
+    SYM_U16,
+    SYM_U32,
+    SYM_U64,
+    SYM_S8,
+    SYM_S16,
+    SYM_S32,
+    SYM_S64,
+    SYM_FLOAT,
+    SYM_DOUBLE,
+    NUM_SYM_TYPES
+} symbol_type_id_t;
+
+typedef struct
+{
+    symbol_type_id_t    id;
+    const char*       name;
+    int               size;
+} symbol_type_info_t;
+
+typedef enum {
+    ERR_SUCCESS,
+    ERR_INVALID_TYPE,
+    ERR_INVALID_ADDR,
+    ERR_INVALID_NAME,
+    ERR_MISSING_FIELDS,
+} symbol_parse_error_t;
+
+class CSymbolTable
 {
 public:
-    typedef enum {
-        ERR_SUCCESS,
-        ERR_INVALID_TYPE,
-        ERR_INVALID_ADDR,
-        ERR_INVALID_NAME,
-        ERR_MISSING_FIELDS,
-    } ParseError;
-
-    typedef enum {
-        TYPE_CODE,
-        TYPE_DATA,
-        TYPE_U8,
-        TYPE_U16,
-        TYPE_U32,
-        TYPE_U64,
-        TYPE_S8,
-        TYPE_S16,
-        TYPE_S32,
-        TYPE_S64,
-        TYPE_FLOAT,
-        TYPE_DOUBLE
-    } DataType;
-
-    static constexpr char* SymbolTypes[] = {
-        "code", // 0
-        "data", // 1
-        "u8",
-        "u16",
-        "u32",
-        "u64",
-        "s8",
-        "s16",
-        "s32",
-        "s64",
-        "float",
-        "double",
-        NULL
-    };
-
-    static constexpr int TypeSizes[] = {
-        1, 1, // code data
-        1, 2, 4, 8, // u8 u16 u32 u64
-        1, 2, 4, 8, // s8 s16 s32 s64
-        4, 8 // float double
-    };
+    CSymbolTable(CDebuggerUI* debugger);
+    ~CSymbolTable();
 
 private:
-    static bool m_bInitialized;
-    static vector<CSymbolEntry*> m_Symbols;
-    static int m_NextSymbolId;
+    CSymbolTable();
+    CDebuggerUI* m_Debugger;
+    CriticalSection m_CS;
+    std::vector<CSymbol> m_Symbols;
+    
+    int    m_NextSymbolId;
 
-    static CFile m_SymFileHandle;
-    static char* m_SymFileBuffer;
-    static size_t m_SymFileSize;
+    CFile  m_SymFileHandle;
+    char*  m_SymFileBuffer;
+    size_t m_SymFileSize;
+    char*  m_ParserToken;
+    size_t m_ParserTokenLength;
+    char*  m_TokPos;
+    char   m_ParserDelimeter;
+    char*  m_SymFileParseBuffer;
+    bool   m_bHaveFirstToken;
 
-    static CRITICAL_SECTION m_CriticalSection;
-
-    static char* m_ParserToken;
-    static size_t m_ParserTokenLength;
-    static char m_ParserDelimeter;
-    static char* m_SymFileParseBuffer;
-    static bool m_bHaveFirstToken;
-
-    static void ParserInit();
-    static void ParserDone();
-    static void ParserFetchToken(const char* delim);
-
-    static bool SortFunction(CSymbolEntry* a, CSymbolEntry* b);
+    void ParserInit();
+    void ParserDone();
+    void ParserFetchToken(const char* delim);
 
 public:
-    static CPath GetSymFilePath();
-    static void Load();
-    static void Save();
-    static void ParseErrorAlert(char* message, int lineNumber);
+    static symbol_type_info_t m_SymbolTypes[];
+    static const char* GetTypeName(int typeId);
+    static int GetTypeSize(int typeId);
+    static symbol_type_id_t GetTypeId(char* typeName);
+    static bool CmpSymbolAddresses(CSymbol& a, CSymbol& b);
 
-    static void Add(int type, uint32_t address, char* name, char* description = NULL);
-    static void RemoveEntryById(int id);
+    void GetValueString(char* dst, CSymbol* symbol);
 
-    static void Reset();
+    CPath GetSymFilePath();
+    void Load();
+    void Save();
+    void ParseErrorAlert(char* message, int lineNumber);
 
-    static const char* GetTypeName(int typeNumber);
-    static int GetTypeNumber(char* typeName);
-    static void GetValueString(char* str, CSymbolEntry* lpSymbol);
-
-    static int GetCount();
-
-    static CSymbolEntry* GetEntryById(int id);
-    static CSymbolEntry* GetEntryByIndex(int id);
-    static CSymbolEntry* GetEntryByAddress(uint32_t address);
-
-    static const char* GetNameByAddress(uint32_t address);
-
-    static void InitializeCriticalSection();
-    static void DeleteCriticalSection();
-    static void EnterCriticalSection();
-    static void LeaveCriticalSection();
+    void AddSymbol(int type, uint32_t address, char* name, char* description = NULL);
+    void Reset();
+    int  GetCount();
+    bool GetSymbolById(int id, CSymbol* symbol);
+    bool GetSymbolByIndex(size_t index, CSymbol* symbol);
+    bool GetSymbolByAddress(uint32_t address, CSymbol* symbol);
+    bool GetSymbolByOverlappedAddress(uint32_t address, CSymbol* symbol);
+    bool RemoveSymbolById(int id);
 };
 
-class CSymbolEntry {
+class CSymbol {
 public:
-    int m_Id;
-    int m_Type;
+    int      m_Id;
+    int      m_Type;
     uint32_t m_Address;
-    char* m_Name;
-    char* m_Description;
+    char*    m_Name;
+    char*    m_Description;
 
-    CSymbolEntry(int id, int type, uint32_t address, char* name, char* description) :
+    CSymbol() :
+        m_Id(0),
+        m_Type(SYM_INVALID),
+        m_Address(0),
         m_Name(NULL),
-        m_Description(NULL),
+        m_Description(NULL)
+    {
+    }
+
+    CSymbol(int id, int type, uint32_t address, char* name, char* description) :
         m_Id(id),
         m_Type(type),
-        m_Address(address)
+        m_Address(address),
+        m_Name(NULL),
+        m_Description(NULL)
     {
         if (name != NULL)
         {
-            size_t nameLen = strlen(name);
-            m_Name = (char*)malloc(nameLen + 1);
-            strcpy(m_Name, name);
+            m_Name = _strdup(name);
         }
 
         if (description != NULL)
         {
-            size_t descLen = strlen(description);
-            m_Description = (char*)malloc(descLen + 1);
-            strcpy(m_Description, description);
+            m_Description = _strdup(description);
         }
     }
 
-    ~CSymbolEntry()
+    CSymbol(const CSymbol& symbol):
+        m_Id(symbol.m_Id),
+        m_Type(symbol.m_Type),
+        m_Address(symbol.m_Address),
+        m_Name(NULL),
+        m_Description(NULL)
+    {
+        m_Name = symbol.m_Name ? _strdup(symbol.m_Name) : NULL;
+        m_Description = symbol.m_Description ? _strdup(symbol.m_Description) : NULL;
+    }
+
+    CSymbol& operator= (const CSymbol& symbol)
     {
         if (m_Name != NULL)
         {
             free(m_Name);
         }
+
+        if (m_Description != NULL)
+        {
+            free(m_Description);
+        }
+
+        m_Id = symbol.m_Id;
+        m_Type = symbol.m_Type;
+        m_Address = symbol.m_Address;
+        m_Name = symbol.m_Name ? _strdup(symbol.m_Name) : NULL;
+        m_Description = symbol.m_Description ? _strdup(symbol.m_Description) : NULL;
+        return *this;
+    }
+
+    ~CSymbol()
+    {
+        if (m_Name != NULL)
+        {
+            free(m_Name);
+        }
+
         if (m_Description != NULL)
         {
             free(m_Description);
@@ -148,11 +178,11 @@ public:
 
     const char* TypeName()
     {
-        return CSymbols::SymbolTypes[m_Type];
+        return CSymbolTable::GetTypeName(m_Type);
     }
 
     int TypeSize()
     {
-        return CSymbols::TypeSizes[m_Type];
+        return CSymbolTable::GetTypeSize(m_Type);
     }
 };

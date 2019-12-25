@@ -1,3 +1,13 @@
+/****************************************************************************
+*                                                                           *
+* Project64 - A Nintendo 64 emulator.                                       *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2012 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
 #pragma once
 
 #include <stdafx.h>
@@ -36,7 +46,7 @@ public:
     void InvokeByAddressInRange(uint32_t address);
     /* invoke if param >= cb.param && param < cb.param2 && (value & cb.param4) == cb.param3 */
     void InvokeByAddressInRange_MaskedOpcode(uint32_t pc, uint32_t value);
-	void InvokeByAddressInRange_GPRValue(uint32_t pc);
+    void InvokeByAddressInRange_GPRValue(uint32_t pc);
     void RemoveById(int callbackId);
     void RemoveByParam(uint32_t tag);
     void RemoveByInstance(CScriptInstance* scriptInstance);

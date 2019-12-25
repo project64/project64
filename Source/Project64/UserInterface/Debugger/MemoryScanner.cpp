@@ -409,6 +409,11 @@ bool CScanResult::SetMemoryValueFromString(char* str)
 
 bool CScanResult::SetAddressSafe(uint32_t address)
 {
+    if (!g_MMU || !g_Rom)
+    {
+        return false;
+    }
+
     uint32_t ramSize = g_MMU->RdramSize();
     uint32_t romSize = g_Rom->GetRomSize();
 
@@ -442,6 +447,11 @@ bool CScanResult::SetAddressSafe(uint32_t address)
 
 bool CScanResult::SetStrLengthSafe(int length)
 {
+    if (!g_MMU || !g_Rom)
+    {
+        return false;
+    }
+
     uint32_t ramSize = g_MMU->RdramSize();
     uint32_t romSize = g_Rom->GetRomSize();
 
@@ -536,6 +546,11 @@ void CMemoryScanner::Reset(void)
 
 bool CMemoryScanner::SetAddressRange(uint32_t startAddress, uint32_t endAddress)
 {
+    if (!g_MMU || !g_Rom)
+    {
+        return false;
+    }
+
     if(m_DidFirstScan)
     {
         return false;
@@ -596,6 +611,11 @@ bool CMemoryScanner::SetAddressRange(uint32_t startAddress, uint32_t endAddress)
 
 uint8_t* CMemoryScanner::GetMemoryPool(uint32_t physAddr)
 {
+    if (!g_MMU || !g_Rom)
+    {
+        return NULL;
+    }
+
     if ((physAddr >= 0x00000000 && physAddr < g_MMU->RdramSize()) ||
         (physAddr >= 0x04000000 && physAddr <= 0x04001FFF))
     {

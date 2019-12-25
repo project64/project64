@@ -59,9 +59,6 @@ private:
     STACKTRACE_ENTRY m_Entries[STACKTRACE_MAX_ENTRIES];
     int m_EntriesIndex;
 
-    HANDLE m_AutoRefreshThread;
-    static DWORD WINAPI AutoRefreshProc(void* _this);
-
     CListViewCtrl m_List;
 
     LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);

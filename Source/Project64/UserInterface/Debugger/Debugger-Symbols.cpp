@@ -44,10 +44,10 @@ LRESULT CDebugSymbols::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 
     Refresh();
 
-    m_AutoRefreshThread = CreateThread(NULL, 0, AutoRefreshProc, (void*)this, 0, NULL);
+    SetTimer(TIMER_ID_AUTO_REFRESH, 100, NULL);
 
-	LoadWindowPos();
-	WindowCreated();
+    LoadWindowPos();
+    WindowCreated();
     return 0;
 }
 
@@ -58,22 +58,16 @@ void CDebugSymbols::OnExitSizeMove(void)
 
 LRESULT CDebugSymbols::OnDestroy(void)
 {
+    KillTimer(TIMER_ID_AUTO_REFRESH);
     m_SymbolsListView.Detach();
-    if (m_AutoRefreshThread != NULL)
-    {
-        TerminateThread(m_AutoRefreshThread, 0);
-        CloseHandle(m_AutoRefreshThread);
-    }
     return 0;
 }
 
-DWORD WINAPI CDebugSymbols::AutoRefreshProc(void* _this)
+void CDebugSymbols::OnTimer(UINT_PTR nIDEvent)
 {
-    CDebugSymbols* self = (CDebugSymbols*)_this;
-    while (true)
+    if (nIDEvent == TIMER_ID_AUTO_REFRESH)
     {
-        self->RefreshValues();
-        Sleep(100);
+        RefreshValues();
     }
 }
 
@@ -89,34 +83,41 @@ LRESULT CDebugSymbols::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
         break;
     case IDC_REMOVESYMBOL_BTN:
     {
-        int id = m_SymbolsListView.GetItemData(m_SymbolsListView.GetSelectedIndex());
-        CSymbols::EnterCriticalSection();
-        CSymbols::RemoveEntryById(id);
-        CSymbols::Save();
-        CSymbols::LeaveCriticalSection();
-        Refresh();
+        int nItem = m_SymbolsListView.GetSelectedIndex();
+        if (nItem != -1)
+        {
+            int id = m_SymbolsListView.GetItemData(nItem);
+            m_Debugger->SymbolTable()->RemoveSymbolById(id);
+            m_Debugger->SymbolTable()->Save();
+            Refresh();
+        }
         break;
     }
     }
     return FALSE;
 }
 
-LRESULT	CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
+LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
 {
     // Open it in memory viewer/commands viewer
     NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
     int nItem = pIA->iItem;
 
     int id = m_SymbolsListView.GetItemData(nItem);
-    CSymbolEntry* symbol = CSymbols::GetEntryById(id);
 
-    if (symbol->m_Type == 0) // code
+    CSymbol symbol;
+    if (!m_Debugger->SymbolTable()->GetSymbolById(id, &symbol))
     {
-        m_Debugger->Debug_ShowCommandsLocation(symbol->m_Address, true);
+        return 0;
+    }
+
+    if (symbol.m_Type == SYM_CODE) // code
+    {
+        m_Debugger->Debug_ShowCommandsLocation(symbol.m_Address, true);
     }
     else // data/number
     {
-        m_Debugger->Debug_ShowMemoryLocation(symbol->m_Address, true);
+        m_Debugger->Debug_ShowMemoryLocation(symbol.m_Address, true);
     }
 
     return 0;
@@ -131,32 +132,25 @@ void CDebugSymbols::Refresh()
     m_SymbolsListView.SetRedraw(FALSE);
     m_SymbolsListView.DeleteAllItems();
 
-    CSymbols::EnterCriticalSection();
+    CSymbol symbol;
+    int nItem = 0;
 
-    int count = CSymbols::GetCount();
-
-    for (int i = 0; i < count; i++)
+    while (m_Debugger->SymbolTable()->GetSymbolByIndex(nItem, &symbol))
     {
-        CSymbolEntry* lpSymbol = CSymbols::GetEntryByIndex(i);
+        char szValue[64];
+        m_Debugger->SymbolTable()->GetValueString(szValue, &symbol);
 
-        stdstr addrStr = stdstr_f("%08X", lpSymbol->m_Address);
+        stdstr strAddr = stdstr_f("%08X", symbol.m_Address);
 
-        m_SymbolsListView.AddItem(i, 0, addrStr.c_str());
-        m_SymbolsListView.AddItem(i, 1, lpSymbol->TypeName());
-        m_SymbolsListView.AddItem(i, 2, lpSymbol->m_Name);
-        m_SymbolsListView.AddItem(i, 4, lpSymbol->m_Description);
+        m_SymbolsListView.AddItem(nItem, 0, strAddr.c_str());
+        m_SymbolsListView.AddItem(nItem, 1, symbol.TypeName());
+        m_SymbolsListView.AddItem(nItem, 2, symbol.m_Name);
+        m_SymbolsListView.AddItem(nItem, 4, symbol.m_Description);
+        m_SymbolsListView.AddItem(nItem, 5, szValue);
 
-        m_SymbolsListView.SetItemData(i, lpSymbol->m_Id);
-
-        if (g_MMU)
-        {
-            char szValue[64];
-            CSymbols::GetValueString(szValue, lpSymbol);
-            m_SymbolsListView.AddItem(i, 3, szValue);
-        }
+        m_SymbolsListView.SetItemData(nItem, symbol.m_Id);
+        nItem++;
     }
-
-    CSymbols::LeaveCriticalSection();
 
     m_SymbolsListView.SetRedraw(TRUE);
 }
@@ -169,20 +163,21 @@ void CDebugSymbols::RefreshValues()
     }
 
     int count = m_SymbolsListView.GetItemCount();
-
-    CSymbols::EnterCriticalSection();
+    
+    CSymbol symbol;
 
     for (int i = 0; i < count; i++)
     {
         int symbolId = m_SymbolsListView.GetItemData(i);
 
-        CSymbolEntry* lpSymbol = CSymbols::GetEntryById(symbolId);
+        if (!m_Debugger->SymbolTable()->GetSymbolById(symbolId, &symbol))
+        {
+            break;
+        }
 
         char szValue[64];
-        CSymbols::GetValueString(szValue, lpSymbol);
+        m_Debugger->SymbolTable()->GetValueString(szValue, &symbol);
 
         m_SymbolsListView.SetItemText(i, 3, szValue);
     }
-
-    CSymbols::LeaveCriticalSection();
 }

@@ -1,3 +1,13 @@
+/****************************************************************************
+*                                                                           *
+* Project64 - A Nintendo 64 emulator.                                       *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2012 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
 #pragma once
 
 #include <stdint.h>
@@ -175,20 +185,20 @@ private:
         { "dmultu",  R4300i_SPECIAL_DMULTU,  base_spec, syn_arith2 },
         { "ddiv",    R4300i_SPECIAL_DDIV,    base_spec, syn_arith2 },
         { "ddivu",   R4300i_SPECIAL_DDIVU,   base_spec, syn_arith2 },
-        { "add",   	 R4300i_SPECIAL_ADD,     base_spec, syn_arith },
-        { "addu",  	 R4300i_SPECIAL_ADDU,    base_spec, syn_arith },
-        { "sub",   	 R4300i_SPECIAL_SUB,     base_spec, syn_arith },
-        { "subu",  	 R4300i_SPECIAL_SUBU,    base_spec, syn_arith },
-        { "and",   	 R4300i_SPECIAL_AND,     base_spec, syn_arith },
-        { "or",    	 R4300i_SPECIAL_OR,      base_spec, syn_arith },
-        { "xor",   	 R4300i_SPECIAL_XOR,     base_spec, syn_arith },
-        { "nor",   	 R4300i_SPECIAL_NOR,     base_spec, syn_arith },
-        { "slt",   	 R4300i_SPECIAL_SLT,     base_spec, syn_arith },
-        { "sltu",  	 R4300i_SPECIAL_SLTU,    base_spec, syn_arith },
-        { "dadd",  	 R4300i_SPECIAL_DADD,    base_spec, syn_arith },
-        { "daddu", 	 R4300i_SPECIAL_DADDU,   base_spec, syn_arith },
-        { "dsub",  	 R4300i_SPECIAL_DSUB,    base_spec, syn_arith },
-        { "dsubu", 	 R4300i_SPECIAL_DSUBU,   base_spec, syn_arith },
+        { "add",     R4300i_SPECIAL_ADD,     base_spec, syn_arith },
+        { "addu",    R4300i_SPECIAL_ADDU,    base_spec, syn_arith },
+        { "sub",     R4300i_SPECIAL_SUB,     base_spec, syn_arith },
+        { "subu",    R4300i_SPECIAL_SUBU,    base_spec, syn_arith },
+        { "and",     R4300i_SPECIAL_AND,     base_spec, syn_arith },
+        { "or",      R4300i_SPECIAL_OR,      base_spec, syn_arith },
+        { "xor",     R4300i_SPECIAL_XOR,     base_spec, syn_arith },
+        { "nor",     R4300i_SPECIAL_NOR,     base_spec, syn_arith },
+        { "slt",     R4300i_SPECIAL_SLT,     base_spec, syn_arith },
+        { "sltu",    R4300i_SPECIAL_SLTU,    base_spec, syn_arith },
+        { "dadd",    R4300i_SPECIAL_DADD,    base_spec, syn_arith },
+        { "daddu",   R4300i_SPECIAL_DADDU,   base_spec, syn_arith },
+        { "dsub",    R4300i_SPECIAL_DSUB,    base_spec, syn_arith },
+        { "dsubu",   R4300i_SPECIAL_DSUBU,   base_spec, syn_arith },
         { "tge",     R4300i_SPECIAL_TGE,     base_spec, syn_arith2 }, // note: no code field
         { "tgeu",    R4300i_SPECIAL_TGEU,    base_spec, syn_arith2 }, //
         { "tlt",     R4300i_SPECIAL_TLT,     base_spec, syn_arith2 }, //

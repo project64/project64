@@ -168,7 +168,7 @@ private:
     static void StaticWaitingForStepChanged(CDebugCommandsView * __this) { __this->WaitingForStepChanged(); }
 
     LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT	OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnSizing(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnScroll(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnMeasureItem(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -199,11 +199,11 @@ private:
     LRESULT OnPopupmenuClearBP(WORD wNotifyCode, WORD wID, HWND hwnd, BOOL& bHandled);
     LRESULT OnClicked(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 
-    LRESULT	OnOpKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnOpKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
-    LRESULT	OnCommandListClicked(NMHDR* pNMHDR);
-    LRESULT	OnCommandListDblClicked(NMHDR* pNMHDR);
-    LRESULT	OnCommandListRightClicked(NMHDR* pNMHDR);
+    LRESULT OnCommandListClicked(NMHDR* pNMHDR);
+    LRESULT OnCommandListDblClicked(NMHDR* pNMHDR);
+    LRESULT OnCommandListRightClicked(NMHDR* pNMHDR);
     LRESULT OnRegisterTabChange(NMHDR* pNMHDR);
     LRESULT OnCustomDrawList(NMHDR* pNMHDR);
     LRESULT OnDestroy(void);

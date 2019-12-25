@@ -107,8 +107,10 @@ LRESULT CDebugMemorySearch::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     ::GetWindowRect(GetDlgItem(IDC_SEPARATOR), &m_InitialSeparatorRect);
     ScreenToClient(&m_InitialSeparatorRect);
     
+    uint32_t ramSize = (g_MMU != NULL) ? g_MMU->RdramSize() : 0x00400000;
+
     m_AddrStart.SetValue(0x80000000, true, true);
-    m_AddrEnd.SetValue(0x80000000 + g_MMU->RdramSize() - 1, true, true);
+    m_AddrEnd.SetValue(0x80000000 + ramSize - 1, true, true);
 
     FixListHeader(m_WatchListCtrl);
     FixListHeader(m_ResultsListCtrl);
@@ -134,6 +136,7 @@ LRESULT CDebugMemorySearch::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
 
 LRESULT CDebugMemorySearch::OnDestroy(void)
 {
+    UnhookWindowsHookEx(hWinMessageHook);
     KillTimer(TIMER_ID_AUTO_REFRESH);
 
     m_UnsignedCheckbox.Detach();
@@ -343,8 +346,9 @@ LRESULT CDebugMemorySearch::OnRdramButton(WORD /*wNotifyCode*/, WORD /*wID*/, HW
 {
     bool bPhysicalChecked = (m_PhysicalCheckbox.GetCheck() == BST_CHECKED);
     uint32_t addrStart = bPhysicalChecked ? 0 : 0x80000000;
+    uint32_t ramSize = (g_MMU != NULL) ? g_MMU->RdramSize() : 0x00400000;
     m_AddrStart.SetValue(addrStart, true, true);
-    m_AddrEnd.SetValue(addrStart + g_MMU->RdramSize() - 1, true, true);
+    m_AddrEnd.SetValue(addrStart + ramSize - 1, true, true);
     return FALSE;
 }
 

@@ -13,7 +13,7 @@
 
 #include "DebuggerUI.h"
 
-LRESULT	CAddBreakpointDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CAddBreakpointDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
     CenterWindow();
     m_AddressEdit.Attach(GetDlgItem(IDC_ADDR_EDIT));

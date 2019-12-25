@@ -1,4 +1,13 @@
-
+/****************************************************************************
+*                                                                           *
+* Project64 - A Nintendo 64 emulator.                                       *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2012 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -122,70 +131,70 @@ void CAssembler::StrToLower(char* str)
 
 uint32_t CAssembler::pop_reg()
 {
-	char* r = strtok_s(NULL, " \t,()", &m_TokContext);
+    char* r = strtok_s(NULL, " \t,()", &m_TokContext);
 
-	if (r == NULL)
-	{
-		m_ParseError = ERR_EXPECTED_REG;
-		return 0;
-	}
+    if (r == NULL)
+    {
+        m_ParseError = ERR_EXPECTED_REG;
+        return 0;
+    }
 
-	const ASM_REGISTER* reg = LookupRegister(r);
+    const ASM_REGISTER* reg = LookupRegister(r);
 
-	if (reg == NULL)
-	{
-		m_ParseError = ERR_INVALID_REG;
-		return 0;
-	}
+    if (reg == NULL)
+    {
+        m_ParseError = ERR_INVALID_REG;
+        return 0;
+    }
 
-	return reg->val;
+    return reg->val;
 }
 
 uint32_t CAssembler::pop_val()
 {
-	char* v = strtok_s(NULL, " \t,()", &m_TokContext);
+    char* v = strtok_s(NULL, " \t,()", &m_TokContext);
 
-	if (v == NULL)
-	{
+    if (v == NULL)
+    {
         m_ParseError = ERR_EXPECTED_VAL;
-		return 0;
-	}
+        return 0;
+    }
 
-	//if (isalpha(*v))
-	//{
-	//	// todo lookup label value
-	//	return 0;
-	//}
+    //if (isalpha(*v))
+    //{
+    //    // todo lookup label value
+    //    return 0;
+    //}
 
-	int base = 0; // hex or dec
+    int base = 0; // hex or dec
 
-	if (*v == '$')
-	{
-		base = 16; // hex
-		v++;
-	}
+    if (*v == '$')
+    {
+        base = 16; // hex
+        v++;
+    }
 
-	char* endptr;
+    char* endptr;
 
-	uint32_t val = strtoul(v, &endptr, base);
+    uint32_t val = strtoul(v, &endptr, base);
 
-	if (*endptr != '\0')
-	{
+    if (*endptr != '\0')
+    {
         m_ParseError = ERR_EXPECTED_VAL;
-		return 0;
-	}
+        return 0;
+    }
 
-	return val;
+    return val;
 }
 
 uint32_t CAssembler::base_op(uint32_t val)
 {
-	return val << 26;
+    return val << 26;
 }
 
 uint32_t CAssembler::base_spec(uint32_t val)
 {
-	return val;
+    return val;
 }
 
 uint32_t CAssembler::base_spec_jalr_ra(uint32_t val)
@@ -195,7 +204,7 @@ uint32_t CAssembler::base_spec_jalr_ra(uint32_t val)
 
 uint32_t CAssembler::base_regimm(uint32_t val)
 {
-	return (R4300i_REGIMM << 26) | (val << 16);
+    return (R4300i_REGIMM << 26) | (val << 16);
 }
 
 uint32_t CAssembler::base_cop0_co(uint32_t val)
@@ -235,12 +244,12 @@ void CAssembler::arg_reg_t(uint32_t* opcode)
 
 void CAssembler::arg_reg_s(uint32_t* opcode)
 {
-	*opcode |= pop_reg() << 21;
+    *opcode |= pop_reg() << 21;
 }
 
 void CAssembler::arg_reg_d(uint32_t* opcode)
 {
-	*opcode |= pop_reg() << 11;
+    *opcode |= pop_reg() << 11;
 }
 
 void CAssembler::arg_reg_ft(uint32_t* opcode)
@@ -260,23 +269,23 @@ void CAssembler::arg_reg_fd(uint32_t* opcode)
 
 void CAssembler::arg_jump(uint32_t* opcode)
 {
-	*opcode |= (pop_val() / 4) & 0x3FFFFFF;
+    *opcode |= (pop_val() / 4) & 0x3FFFFFF;
 }
 
 void CAssembler::arg_imm16(uint32_t* opcode)
 {
-	*opcode |= (pop_val() & 0xFFFF);
+    *opcode |= (pop_val() & 0xFFFF);
 }
 
 void CAssembler::arg_bra_target(uint32_t* opcode)
 {
-	uint16_t relTarget = (((pop_val() - m_Address) / 4) & 0xFFFF) - 1;
-	*opcode |= relTarget;
+    uint16_t relTarget = (((pop_val() - m_Address) / 4) & 0xFFFF) - 1;
+    *opcode |= relTarget;
 }
 
 void CAssembler::arg_shamt(uint32_t* opcode)
 {
-	*opcode |= (pop_val() & 0x1F) << 6;
+    *opcode |= (pop_val() & 0x1F) << 6;
 }
 
 void CAssembler::arg_cache_op(uint32_t* opcode)
