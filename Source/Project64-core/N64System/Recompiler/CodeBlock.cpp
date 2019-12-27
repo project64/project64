@@ -475,7 +475,9 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
         case R4300i_SPECIAL_DSLL32: case R4300i_SPECIAL_DSRL32: case R4300i_SPECIAL_DSRA32:
         case R4300i_SPECIAL_MULT:   case R4300i_SPECIAL_MULTU:  case R4300i_SPECIAL_DIV:
         case R4300i_SPECIAL_DIVU:   case R4300i_SPECIAL_DMULT:  case R4300i_SPECIAL_DMULTU:
-        case R4300i_SPECIAL_DDIV:   case R4300i_SPECIAL_DDIVU:
+        case R4300i_SPECIAL_DDIV:   case R4300i_SPECIAL_DDIVU:  case R4300i_SPECIAL_TEQ:
+        case R4300i_SPECIAL_TNE:    case R4300i_SPECIAL_TGE:    case R4300i_SPECIAL_TGEU:
+        case R4300i_SPECIAL_TLT:    case R4300i_SPECIAL_TLTU:
             break;
         case R4300i_SPECIAL_JALR:
         case R4300i_SPECIAL_JR:
@@ -555,6 +557,9 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
             ContinuePC = PC + 8;
             LikelyBranch = true;
             IncludeDelaySlot = true;
+            break;
+        case R4300i_REGIMM_TEQI:    case R4300i_REGIMM_TNEI:    case R4300i_REGIMM_TGEI:
+        case R4300i_REGIMM_TGEIU:   case R4300i_REGIMM_TLTI:    case R4300i_REGIMM_TLTIU:
             break;
         default:
             if (Command.Hex == 0x0407000D)

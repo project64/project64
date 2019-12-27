@@ -25,8 +25,6 @@ CScriptSystem::CScriptSystem(CDebuggerUI* debugger)
 
     m_Debugger = debugger;
 
-	InitializeCriticalSection(&m_CriticalSection);
-
     m_HookCPUExec = new CScriptHook(this);
     m_HookCPUExecOpcode = new CScriptHook(this);
     m_HookCPURead = new CScriptHook(this);
@@ -38,7 +36,7 @@ CScriptSystem::CScriptSystem(CDebuggerUI* debugger)
     RegisterHook("read", m_HookCPURead);
     RegisterHook("write", m_HookCPUWrite);
     RegisterHook("opcode", m_HookCPUExecOpcode);
-	RegisterHook("gprvalue", m_HookCPUGPRValue);
+    RegisterHook("gprvalue", m_HookCPUGPRValue);
     RegisterHook("draw", m_HookFrameDrawn);
 
     HMODULE hInst = GetModuleHandle(NULL);
@@ -63,8 +61,6 @@ CScriptSystem::~CScriptSystem()
 
     UnregisterHooks();
     free(m_APIScript);
-
-	DeleteCriticalSection(&m_CriticalSection);
 }
 
 const char* CScriptSystem::APIScript()
@@ -74,14 +70,13 @@ const char* CScriptSystem::APIScript()
 
 void CScriptSystem::RunScript(char* path)
 {
+    CGuard guard(m_CS);
     CScriptInstance* scriptInstance = new CScriptInstance(m_Debugger);
     char* pathSaved = (char*)malloc(strlen(path)+1); // freed via DeleteStoppedInstances
     strcpy(pathSaved, path);
 
-	EnterCriticalSection(&m_CriticalSection);
-	m_RunningInstances.push_back({ pathSaved, scriptInstance });
-	LeaveCriticalSection(&m_CriticalSection);
-	scriptInstance->Start(pathSaved);
+    m_RunningInstances.push_back({ pathSaved, scriptInstance });
+    scriptInstance->Start(pathSaved);
 }
 
 void CScriptSystem::StopScript(char* path)
@@ -94,12 +89,12 @@ void CScriptSystem::StopScript(char* path)
     }
 
     scriptInstance->ForceStop();
-	DeleteStoppedInstances();
+    DeleteStoppedInstances();
 }
 
 void CScriptSystem::DeleteStoppedInstances()
 {
-	EnterCriticalSection(&m_CriticalSection);
+    CGuard guard(m_CS);
 
     int lastIndex = m_RunningInstances.size() - 1;
     for (int i = lastIndex; i >= 0; i--)
@@ -112,44 +107,37 @@ void CScriptSystem::DeleteStoppedInstances()
             m_RunningInstances.erase(m_RunningInstances.begin() + i);
         }
     }
-
-	LeaveCriticalSection(&m_CriticalSection);
 }
 
 INSTANCE_STATE CScriptSystem::GetInstanceState(char* path)
 {
-	EnterCriticalSection(&m_CriticalSection);
-	for (size_t i = 0; i < m_RunningInstances.size(); i++)
-    {
-        if (strcmp(m_RunningInstances[i].path, path) == 0)
-        {
-			INSTANCE_STATE ret = m_RunningInstances[i].scriptInstance->GetState();
-
-			LeaveCriticalSection(&m_CriticalSection);
-			return ret;
-        }
-    }
-
-	LeaveCriticalSection(&m_CriticalSection);
-	return STATE_INVALID;
-}
-
-CScriptInstance* CScriptSystem::GetInstance(char* path)
-{
-	EnterCriticalSection(&m_CriticalSection);
+    CGuard guard(m_CS);
 
     for (size_t i = 0; i < m_RunningInstances.size(); i++)
     {
         if (strcmp(m_RunningInstances[i].path, path) == 0)
         {
-			CScriptInstance *ret = m_RunningInstances[i].scriptInstance;
-
-			LeaveCriticalSection(&m_CriticalSection);
+            INSTANCE_STATE ret = m_RunningInstances[i].scriptInstance->GetState();
             return ret;
         }
     }
 
-	LeaveCriticalSection(&m_CriticalSection);
+    return STATE_INVALID;
+}
+
+CScriptInstance* CScriptSystem::GetInstance(char* path)
+{
+    CGuard guard(m_CS);
+
+    for (size_t i = 0; i < m_RunningInstances.size(); i++)
+    {
+        if (strcmp(m_RunningInstances[i].path, path) == 0)
+        {
+            CScriptInstance *ret = m_RunningInstances[i].scriptInstance;
+            return ret;
+        }
+    }
+
     return NULL;
 }
 

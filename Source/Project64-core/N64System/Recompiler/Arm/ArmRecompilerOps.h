@@ -22,6 +22,9 @@ class CArmRecompilerOps :
 public:
     CArmRecompilerOps();
 
+    /*************************** Trap functions  *************************/
+    void Compile_TrapCompare(TRAP_COMPARE CompareType);
+
     /************************** Branch functions  ************************/
     void Compile_BranchCompare(BRANCH_COMPARE CompareType);
     void Compile_Branch(BRANCH_COMPARE CompareType, BRANCH_TYPE BranchType, bool Link);

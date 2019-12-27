@@ -1,3 +1,13 @@
+/****************************************************************************
+*                                                                           *
+* Project64 - A Nintendo 64 emulator.                                       *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2012 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
 #pragma once
 
 #include <Project64-core/Settings/SettingType/SettingsType-Application.h>
@@ -30,8 +40,8 @@ protected:
         m_bInitialized = true;
     }
 
-	void LoadWindowPos()
-	{
+    void LoadWindowPos()
+    {
 
         if (!m_bInitialized)
         {
@@ -51,10 +61,10 @@ protected:
             pT->SetWindowPos(NULL, left, top, width, height, 1);
             pT->RedrawWindow();
         }
-	}
+    }
 
-	void SaveWindowPos(bool bSaveSize)
-	{
+    void SaveWindowPos(bool bSaveSize)
+    {
         if (!m_bInitialized)
         {
             return;
@@ -69,7 +79,7 @@ protected:
         else {
             UISettingsSaveString(m_UISettingID, stdstr_f("%d,%d,%d,%d", rect.left, rect.top, rect.Width(), rect.Height()).c_str());
         }
-	}
+    }
 
 public:
     CDebugDialog(CDebuggerUI * debugger) :

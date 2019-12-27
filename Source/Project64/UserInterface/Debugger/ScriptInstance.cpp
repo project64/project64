@@ -1,3 +1,13 @@
+/****************************************************************************
+*                                                                           *
+* Project64 - A Nintendo 64 emulator.                                       *
+* http://www.pj64-emu.com/                                                  *
+* Copyright (C) 2012 Project64. All rights reserved.                        *
+*                                                                           *
+* License:                                                                  *
+* GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html                        *
+*                                                                           *
+****************************************************************************/
 #include <stdafx.h>
 #include <sys/stat.h>
 
@@ -47,29 +57,27 @@ CScriptInstance::CScriptInstance(CDebuggerUI* debugger)
     m_ScriptSystem = m_Debugger->ScriptSystem();
     m_NextListenerId = 0;
     m_hIOCompletionPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
-    InitializeCriticalSection(&m_CriticalSection);
     CacheInstance(this);
-	m_hKernel = LoadLibrary("Kernel32.dll");
-	m_CancelIoEx = NULL;
-	if (m_hKernel != NULL)
-	{
-		m_CancelIoEx = (Dynamic_CancelIoEx)GetProcAddress(m_hKernel, "CancelIoEx");
-	}
+    m_hKernel = LoadLibrary("Kernel32.dll");
+    m_CancelIoEx = NULL;
+    if (m_hKernel != NULL)
+    {
+        m_CancelIoEx = (Dynamic_CancelIoEx)GetProcAddress(m_hKernel, "CancelIoEx");
+    }
 }
 
 CScriptInstance::~CScriptInstance()
 {
     UncacheInstance(this);
-    DeleteCriticalSection(&m_CriticalSection);
     duk_destroy_heap(m_Ctx);
 
-	TerminateThread(m_hThread, 0);
-	CloseHandle(m_hThread);
-	m_CancelIoEx = NULL;
-	if (m_hKernel != NULL)
-	{
-		FreeLibrary(m_hKernel);
-	}
+    TerminateThread(m_hThread, 0);
+    CloseHandle(m_hThread);
+    m_CancelIoEx = NULL;
+    if (m_hKernel != NULL)
+    {
+        FreeLibrary(m_hKernel);
+    }
 }
 
 void CScriptInstance::Start(char* path)
@@ -81,9 +89,8 @@ void CScriptInstance::Start(char* path)
 void CScriptInstance::ForceStop()
 {
     // Close all files and delete all hooked callbacks
-    EnterCriticalSection(&m_CriticalSection);
+    CGuard guard(m_CS);
     CleanUp();
-    LeaveCriticalSection(&m_CriticalSection);
     SetState(STATE_STOPPED);
 }
 
@@ -364,18 +371,18 @@ void CScriptInstance::RemoveListenerByIndex(UINT index)
         free(lpListener->data);
     }
 
-	// Original call to CancelIoEx:
+    // Original call to CancelIoEx:
     //CancelIoEx(lpListener->fd, (LPOVERLAPPED)lpListener);
-	if (m_CancelIoEx != NULL)
-	{
-		m_CancelIoEx(lpListener->fd, (LPOVERLAPPED)lpListener);
-	}
-	else
-	{
-		// This isn't a good replacement and the script aspects of the debugger shouldn't
-		// be used in WindowsXP
-		CancelIo(lpListener->fd);
-	}
+    if (m_CancelIoEx != NULL)
+    {
+        m_CancelIoEx(lpListener->fd, (LPOVERLAPPED)lpListener);
+    }
+    else
+    {
+        // This isn't a good replacement and the script aspects of the debugger shouldn't
+        // be used in WindowsXP
+        CancelIo(lpListener->fd);
+    }
 
     free(lpListener);
 
@@ -408,12 +415,12 @@ void CScriptInstance::RemoveListenersByFd(HANDLE fd)
 
 void CScriptInstance::InvokeListenerCallback(IOLISTENER* lpListener)
 {
+    CGuard guard(m_CS);
+
     if (lpListener->callback == NULL)
     {
         return;
     }
-
-    EnterCriticalSection(&m_CriticalSection);
 
     duk_push_heapptr(m_Ctx, lpListener->callback);
 
@@ -458,55 +465,25 @@ void CScriptInstance::InvokeListenerCallback(IOLISTENER* lpListener)
         const char* msg = duk_safe_to_string(m_Ctx, -1);
         MessageBox(NULL, msg, "Script error", MB_OK | MB_ICONWARNING);
     }
-
-    LeaveCriticalSection(&m_CriticalSection);
 }
 
 const char* CScriptInstance::Eval(const char* jsCode)
 {
+    CGuard guard(m_CS);
     int result = duk_peval_string(m_Ctx, jsCode);
-    const char* msg = duk_safe_to_string(m_Ctx, -1);
+    const char* msg = NULL;
+
     if (result != 0)
     {
         MessageBox(NULL, msg, "Script error", MB_OK | MB_ICONWARNING);
     }
+    else
+    {
+        msg = duk_safe_to_string(m_Ctx, -1);
+    }
+
     duk_pop(m_Ctx);
     return msg;
-}
-
-class PendingEval {
-    char* m_CodeCopy;
-    CScriptInstance* m_ScriptInstance;
-public:
-    PendingEval(CScriptInstance* instance, const char* jsCode)
-    {
-        m_CodeCopy = (char*)malloc(strlen(jsCode));
-        m_ScriptInstance = instance;
-        MessageBox(NULL, "pending eval created", "", MB_OK);
-    }
-    ~PendingEval()
-    {
-        MessageBox(NULL, "pending eval deleted", "", MB_OK);
-        free(m_CodeCopy);
-    }
-    void Run()
-    {
-        MessageBox(NULL, "pending eval invoked", "", MB_OK);
-        m_ScriptInstance->Eval(m_CodeCopy);
-    }
-};
-
-void CScriptInstance::EvalAsync(const char* jsCode)
-{
-    PendingEval* pendingEval = new PendingEval(this, jsCode);
-    QueueAPC(EvalAsyncCallback, (ULONG_PTR)pendingEval);
-}
-
-void CALLBACK CScriptInstance::EvalAsyncCallback(ULONG_PTR _pendingEval)
-{
-    PendingEval* evalWait = (PendingEval*)_pendingEval;
-    evalWait->Run();
-    delete evalWait;
 }
 
 bool CScriptInstance::AddFile(const char* path, const char* mode, int* fd)
@@ -584,7 +561,7 @@ const char* CScriptInstance::EvalFile(const char* jsPath)
 
 void CScriptInstance::Invoke(void* heapptr, uint32_t param)
 {
-    EnterCriticalSection(&m_CriticalSection);
+    CGuard guard(m_CS);
     duk_push_heapptr(m_Ctx, heapptr);
     duk_push_uint(m_Ctx, param);
 
@@ -598,12 +575,11 @@ void CScriptInstance::Invoke(void* heapptr, uint32_t param)
     }
 
     duk_pop(m_Ctx);
-    LeaveCriticalSection(&m_CriticalSection);
 }
 
 void CScriptInstance::Invoke2(void* heapptr, uint32_t param, uint32_t param2)
 {
-    EnterCriticalSection(&m_CriticalSection);
+    CGuard guard(m_CS);
     duk_push_heapptr(m_Ctx, heapptr);
     duk_push_uint(m_Ctx, param);
     duk_push_uint(m_Ctx, param2);
@@ -618,7 +594,6 @@ void CScriptInstance::Invoke2(void* heapptr, uint32_t param, uint32_t param2)
     }
 
     duk_pop(m_Ctx);
-    LeaveCriticalSection(&m_CriticalSection);
 }
 
 void CScriptInstance::QueueAPC(PAPCFUNC userProc, ULONG_PTR param)
@@ -718,7 +693,7 @@ duk_ret_t CScriptInstance::js_ioSockAccept(duk_context* ctx)
     IOLISTENER* lpListener = _this->AddListener(fd, EVENT_ACCEPT, jsCallback, data, 0);
 
     lpListener->childFd = _this->CreateSocket();
-	static DWORD unused;
+    static DWORD unused;
 
     int ok = AcceptEx(
         (SOCKET)fd,
@@ -731,13 +706,13 @@ duk_ret_t CScriptInstance::js_ioSockAccept(duk_context* ctx)
         (LPOVERLAPPED)lpListener
     );
 
-	duk_pop_n(ctx, 2);
+    duk_pop_n(ctx, 2);
 
-	if (!ok) {
-		duk_push_boolean(ctx, false);
-	} else {
-		duk_push_boolean(ctx, true);
-	}
+    if (!ok) {
+        duk_push_boolean(ctx, false);
+    } else {
+        duk_push_boolean(ctx, true);
+    }
 
     return 1;
 }
@@ -1008,19 +983,19 @@ duk_ret_t CScriptInstance::js_SetFPRVal(duk_context* ctx)
 
 duk_ret_t CScriptInstance::js_GetCauseVal(duk_context* ctx)
 {
-	duk_push_uint(ctx, g_Reg->FAKE_CAUSE_REGISTER);
-	return 1;
+    duk_push_uint(ctx, g_Reg->FAKE_CAUSE_REGISTER);
+    return 1;
 }
 
 duk_ret_t CScriptInstance::js_SetCauseVal(duk_context* ctx)
 {
-	uint32_t val = duk_to_uint32(ctx, 0);
+    uint32_t val = duk_to_uint32(ctx, 0);
 
-	g_Reg->FAKE_CAUSE_REGISTER = val;
-	g_Reg->CheckInterrupts();
+    g_Reg->FAKE_CAUSE_REGISTER = val;
+    g_Reg->CheckInterrupts();
 
-	duk_pop_n(ctx, 1);
-	return 1;
+    duk_pop_n(ctx, 1);
+    return 1;
 }
 
 duk_ret_t CScriptInstance::js_GetROMInt(duk_context* ctx)
@@ -1138,6 +1113,7 @@ return_err:
 
 duk_ret_t CScriptInstance::js_GetRDRAMInt(duk_context* ctx)
 {
+    CScriptInstance* _this = FetchInstance(ctx);
     uint32_t address = duk_to_uint32(ctx, 0);
     int bitwidth = duk_to_int(ctx, 1);
     duk_bool_t bSigned = duk_to_boolean(ctx, 2);
@@ -1156,7 +1132,7 @@ duk_ret_t CScriptInstance::js_GetRDRAMInt(duk_context* ctx)
     case 8:
     {
         uint8_t val;
-        if (!g_MMU->LB_VAddr(address, val))
+        if (!_this->m_Debugger->DebugLoad_VAddr(address, val))
         {
             goto return_err;
         }
@@ -1166,7 +1142,7 @@ duk_ret_t CScriptInstance::js_GetRDRAMInt(duk_context* ctx)
     case 16:
     {
         uint16_t val;
-        if (!g_MMU->LH_VAddr(address, val))
+        if (!_this->m_Debugger->DebugLoad_VAddr(address, val))
         {
             goto return_err;
         }
@@ -1176,7 +1152,7 @@ duk_ret_t CScriptInstance::js_GetRDRAMInt(duk_context* ctx)
     case 32:
     {
         uint32_t val;
-        if (!g_MMU->LW_VAddr(address, val))
+        if (!_this->m_Debugger->DebugLoad_VAddr(address, val))
         {
             goto return_err;
         }
@@ -1205,6 +1181,7 @@ return_err:
 
 duk_ret_t CScriptInstance::js_SetRDRAMInt(duk_context* ctx)
 {
+    CScriptInstance* _this = FetchInstance(ctx);
     uint32_t address = duk_to_uint32(ctx, 0);
     int bitwidth = duk_to_int(ctx, 1);
     DWORD newValue = duk_to_uint32(ctx, 2);
@@ -1219,19 +1196,19 @@ duk_ret_t CScriptInstance::js_SetRDRAMInt(duk_context* ctx)
     switch (bitwidth)
     {
     case 8:
-        if (!g_MMU->SB_VAddr(address, (uint8_t)newValue))
+        if (!_this->m_Debugger->DebugStore_VAddr(address, (uint8_t)newValue))
         {
             goto return_err;
         }
         goto return_ok;
     case 16:
-        if (!g_MMU->SH_VAddr(address, (uint16_t)newValue))
+        if (!_this->m_Debugger->DebugStore_VAddr(address, (uint16_t)newValue))
         {
             goto return_err;
         }
         goto return_ok;
     case 32:
-        if (!g_MMU->SW_VAddr(address, (uint32_t)newValue))
+        if (!_this->m_Debugger->DebugStore_VAddr(address, (uint32_t)newValue))
         {
             goto return_err;
         }
@@ -1251,6 +1228,7 @@ return_err:
 
 duk_ret_t CScriptInstance::js_GetRDRAMFloat(duk_context* ctx)
 {
+    CScriptInstance* _this = FetchInstance(ctx);
     int argc = duk_get_top(ctx);
 
     uint32_t address = duk_to_uint32(ctx, 0);
@@ -1271,7 +1249,7 @@ duk_ret_t CScriptInstance::js_GetRDRAMFloat(duk_context* ctx)
     if (!bDouble)
     {
         uint32_t rawValue;
-        if (!g_MMU->LW_VAddr(address, rawValue))
+        if (!_this->m_Debugger->DebugLoad_VAddr(address, rawValue))
         {
             goto return_err;
         }
@@ -1284,7 +1262,7 @@ duk_ret_t CScriptInstance::js_GetRDRAMFloat(duk_context* ctx)
     }
 
     uint64_t rawValue;
-    if (!g_MMU->LD_VAddr(address, rawValue))
+    if (!_this->m_Debugger->DebugLoad_VAddr(address, rawValue))
     {
         goto return_err;
     }
@@ -1302,6 +1280,7 @@ return_err:
 
 duk_ret_t CScriptInstance::js_SetRDRAMFloat(duk_context* ctx)
 {
+    CScriptInstance* _this = FetchInstance(ctx);
     int argc = duk_get_top(ctx);
 
     uint32_t address = duk_to_uint32(ctx, 0);
@@ -1325,7 +1304,7 @@ duk_ret_t CScriptInstance::js_SetRDRAMFloat(duk_context* ctx)
         float floatValue = (float)value;
         uint32_t rawValue;
         memcpy(&rawValue, &floatValue, sizeof(float));
-        if (!g_MMU->SW_VAddr(address, rawValue))
+        if (!_this->m_Debugger->DebugStore_VAddr(address, rawValue))
         {
             goto return_err;
         }
@@ -1335,7 +1314,7 @@ duk_ret_t CScriptInstance::js_SetRDRAMFloat(duk_context* ctx)
         double floatValue = (double)value;
         uint64_t rawValue;
         memcpy(&rawValue, &floatValue, sizeof(double));
-        if (!g_MMU->SD_VAddr(address, rawValue))
+        if (!_this->m_Debugger->DebugStore_VAddr(address, rawValue))
         {
             goto return_err;
         }
@@ -1351,6 +1330,7 @@ return_err:
 
 duk_ret_t CScriptInstance::js_GetRDRAMBlock(duk_context* ctx)
 {
+    CScriptInstance* _this = FetchInstance(ctx);
     uint32_t address = duk_get_uint(ctx, 0);
     uint32_t size = duk_get_uint(ctx, 1);
 
@@ -1366,7 +1346,7 @@ duk_ret_t CScriptInstance::js_GetRDRAMBlock(duk_context* ctx)
 
     for (uint32_t i = 0; i < size; i++)
     {
-        g_MMU->LB_VAddr(address + i, block[i]);
+        _this->m_Debugger->DebugLoad_VAddr(address + i, block[i]);
     }
 
     return 1;
@@ -1394,6 +1374,8 @@ duk_ret_t CScriptInstance::js_MsgBox(duk_context* ctx)
 // Return zero-terminated string from ram
 duk_ret_t CScriptInstance::js_GetRDRAMString(duk_context* ctx)
 {
+    CScriptInstance* _this = FetchInstance(ctx);
+
     // (address[, maxLen])
     int nargs = duk_get_top(ctx);
     uint32_t address = duk_get_uint(ctx, 0);
@@ -1412,7 +1394,7 @@ duk_ret_t CScriptInstance::js_GetRDRAMString(duk_context* ctx)
     int len = 0;
 
     // determine length of string
-    while (len < maxLen && g_MMU->LB_VAddr(address + len, test) && test != 0) // todo protect from ram overrun
+    while (len < maxLen && _this->m_Debugger->DebugLoad_VAddr(address + len, test) && test != 0) // todo protect from ram overrun
     {
         if ((address & 0xFFFFFF) + len >= g_MMU->RdramSize())
         {
@@ -1425,7 +1407,7 @@ duk_ret_t CScriptInstance::js_GetRDRAMString(duk_context* ctx)
 
     for (int i = 0; i < len; i++)
     {
-        g_MMU->LB_VAddr(address + i, str[i]);
+        _this->m_Debugger->DebugLoad_VAddr(address + i, str[i]);
     }
 
     str[len] = '\0';

@@ -14,118 +14,116 @@
 #include "DebuggerUI.h"
 #include "Symbols.h"
 
-LRESULT	CAddSymbolDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CAddSymbolDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-	CenterWindow();
+    CenterWindow();
 
-	m_AddressEdit.Attach(GetDlgItem(IDC_ADDR_EDIT));
-	m_AddressEdit.SetDisplayType(CEditNumber32::DisplayHex);
-	m_TypeComboBox.Attach(GetDlgItem(IDC_TYPE_COMBOBOX));
-	m_NameEdit.Attach(GetDlgItem(IDC_NAME_EDIT));
-	m_DescriptionEdit.Attach(GetDlgItem(IDC_DESC_EDIT));
+    m_AddressEdit.Attach(GetDlgItem(IDC_ADDR_EDIT));
+    m_AddressEdit.SetDisplayType(CEditNumber32::DisplayHex);
+    m_TypeComboBox.Attach(GetDlgItem(IDC_TYPE_COMBOBOX));
+    m_NameEdit.Attach(GetDlgItem(IDC_NAME_EDIT));
+    m_DescriptionEdit.Attach(GetDlgItem(IDC_DESC_EDIT));
 
-	for (int i = 0;; i++)
-	{
-		char* type = CSymbols::SymbolTypes[i];
-		if (type == NULL)
-		{
-			break;
-		}
-		m_TypeComboBox.AddString(type);
-	}
-	
-	m_AddressEdit.SetWindowTextA("");
-	m_AddressEdit.SetFocus();
+    for (int i = 0;; i++)
+    {
+        const char* typeName = CSymbolTable::m_SymbolTypes[i].name;
+        if (typeName == NULL)
+        {
+            break;
+        }
+        m_TypeComboBox.AddString(typeName);
+    }
+    
+    m_AddressEdit.SetWindowTextA("");
+    m_AddressEdit.SetFocus();
 
-	if (m_bHaveAddress)
-	{
-		m_AddressEdit.SetValue(m_InitAddress, false, true);
-		m_TypeComboBox.SetFocus();
-	}
+    if (m_bHaveAddress)
+    {
+        m_AddressEdit.SetValue(m_InitAddress, false, true);
+        m_TypeComboBox.SetFocus();
+    }
 
-	if(m_bHaveType)
-	{
-		m_TypeComboBox.SetCurSel(m_InitType);
-		m_NameEdit.SetFocus();
-	}
-	else
-	{
-		m_TypeComboBox.SetCurSel(CSymbols::TYPE_DATA);
-	}
-	
-	return FALSE;
+    if(m_bHaveType)
+    {
+        m_TypeComboBox.SetCurSel(m_InitType);
+        m_NameEdit.SetFocus();
+    }
+    else
+    {
+        m_TypeComboBox.SetCurSel(SYM_DATA);
+    }
+    
+    return FALSE;
 }
 
 LRESULT CAddSymbolDlg::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	switch (wID)
-	{
-	case IDCANCEL:
-		EndDialog(0);
-		break;
-	case IDOK:
-		int addrLen = m_AddressEdit.GetWindowTextLengthA();
+    switch (wID)
+    {
+    case IDCANCEL:
+        EndDialog(0);
+        break;
+    case IDOK:
+        int addrLen = m_AddressEdit.GetWindowTextLengthA();
 
-		if (!addrLen)
-		{
-			MessageBox("Address required", "Error", MB_OK);
-			return 0;
-		}
+        if (!addrLen)
+        {
+            MessageBox("Address required", "Error", MB_OK);
+            return 0;
+        }
 
-		uint32_t address = m_AddressEdit.GetValue();
-		int type = m_TypeComboBox.GetCurSel();
+        uint32_t address = m_AddressEdit.GetValue();
+        int type = m_TypeComboBox.GetCurSel();
 
-		int nameLen = m_NameEdit.GetWindowTextLengthA();
-		int descLen = m_DescriptionEdit.GetWindowTextLengthA();
-		
-		if (!nameLen && !descLen)
-		{
-			MessageBox("Name and/or description required", "Error", MB_OK);
-			return 0;
-		}
+        int nameLen = m_NameEdit.GetWindowTextLengthA();
+        int descLen = m_DescriptionEdit.GetWindowTextLengthA();
+        
+        if (!nameLen && !descLen)
+        {
+            MessageBox("Name and/or description required", "Error", MB_OK);
+            return 0;
+        }
 
-		char name[128];
-		char description[256];
+        char name[128];
+        char description[256];
 
-		m_NameEdit.GetWindowTextA(name, nameLen + 1);
-		m_DescriptionEdit.GetWindowTextA(description, descLen + 1);
-		
-		CSymbols::EnterCriticalSection();
-		CSymbols::Add(type, address, name, description);
-		CSymbols::Save();
-		CSymbols::LeaveCriticalSection();
+        m_NameEdit.GetWindowTextA(name, nameLen + 1);
+        m_DescriptionEdit.GetWindowTextA(description, descLen + 1);
+        
+        m_Debugger->SymbolTable()->AddSymbol(type, address, name, description);
+        m_Debugger->SymbolTable()->Save();
 
-		m_Debugger->Debug_RefreshSymbolsWindow();
+        m_Debugger->Debug_RefreshSymbolsWindow();
 
-		EndDialog(0);
-		break;
-	}
-	return 0;
+        EndDialog(0);
+        break;
+    }
+    return 0;
 }
 
 INT_PTR CAddSymbolDlg::DoModal(CDebuggerUI* debugger)
 {
-	m_Debugger = debugger;
-	m_bHaveAddress = false;
-	m_bHaveType = false;
-	return CDialogImpl<CAddSymbolDlg>::DoModal();
+    m_Debugger = debugger;
+    m_bHaveAddress = false;
+    m_bHaveType = false;
+    return CDialogImpl<CAddSymbolDlg>::DoModal();
 }
 
 INT_PTR CAddSymbolDlg::DoModal(CDebuggerUI* debugger, uint32_t initAddress)
 {
-	m_Debugger = debugger;
-	m_bHaveAddress = true;
-	m_bHaveType = false;
-	m_InitAddress = initAddress;
-	return CDialogImpl<CAddSymbolDlg>::DoModal();
+    m_Debugger = debugger;
+    m_bHaveAddress = true;
+    m_bHaveType = false;
+    m_InitAddress = initAddress;
+    return CDialogImpl<CAddSymbolDlg>::DoModal();
 }
 
 INT_PTR CAddSymbolDlg::DoModal(CDebuggerUI* debugger, uint32_t initAddress, int initType)
 {
-	m_Debugger = debugger;
-	m_bHaveAddress = true;
-	m_bHaveType = true;
-	m_InitAddress = initAddress;
-	m_InitType = initType;
-	return CDialogImpl<CAddSymbolDlg>::DoModal();
+    m_Debugger = debugger;
+    m_bHaveAddress = true;
+    m_bHaveType = true;
+    m_InitAddress = initAddress;
+    m_InitType = initType;
+    return CDialogImpl<CAddSymbolDlg>::DoModal();
 }

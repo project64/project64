@@ -19,14 +19,12 @@ CDebugScripts::CDebugScripts(CDebuggerUI* debugger) :
     CDebugDialog<CDebugScripts>(debugger)
 {
     m_SelectedScriptName = (char*)malloc(MAX_PATH);
-	InitializeCriticalSection(&m_CriticalSection);
-	//CScriptSystem::SetScriptsWindow(this);
+    //CScriptSystem::SetScriptsWindow(this);
 }
 
 CDebugScripts::~CDebugScripts(void)
 {
-	DeleteCriticalSection(&m_CriticalSection);
-	free(m_SelectedScriptName);
+    free(m_SelectedScriptName);
 }
 
 LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
@@ -59,8 +57,8 @@ LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 
     RefreshList();
 
-	LoadWindowPos();
-	WindowCreated();
+    LoadWindowPos();
+    WindowCreated();
     return 0;
 }
 
@@ -93,7 +91,7 @@ void CDebugScripts::ConsolePrint(const char* text)
 
 void CDebugScripts::RefreshConsole()
 {
-	EnterCriticalSection(&m_CriticalSection);
+    CGuard guard(m_CS);
 
     m_Debugger->OpenScriptsWindow();
     CScriptSystem* scriptSystem = m_Debugger->ScriptSystem();
@@ -105,8 +103,6 @@ void CDebugScripts::RefreshConsole()
         free((*logData)[0]);
         logData->erase(logData->begin() + 0);
     }
-
-	LeaveCriticalSection(&m_CriticalSection);
 }
 
 void CDebugScripts::ConsoleClear()
@@ -139,16 +135,15 @@ void CDebugScripts::ConsoleCopy()
 
 void CDebugScripts::RefreshList()
 {
-	EnterCriticalSection(&m_CriticalSection);
+    CGuard guard(m_CS);
 
-	int nIndex = m_ScriptList.GetSelectedIndex();
+    int nIndex = m_ScriptList.GetSelectedIndex();
 
     CPath SearchPath("Scripts", "*");
 
     if (!SearchPath.FindFirst(CPath::FIND_ATTRIBUTE_ALLFILES))
     {
-		LeaveCriticalSection(&m_CriticalSection);
-		return;
+        return;
     }
 
     m_ScriptList.SetRedraw(false);
@@ -168,8 +163,6 @@ void CDebugScripts::RefreshList()
         m_ScriptList.SelectItem(nIndex);
         RefreshStatus();
     }
-
-	LeaveCriticalSection(&m_CriticalSection);
 }
 
 LRESULT CDebugScripts::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
@@ -195,7 +188,7 @@ LRESULT CDebugScripts::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
     return FALSE;
 }
 
-LRESULT	CDebugScripts::OnScriptListDblClicked(NMHDR* pNMHDR)
+LRESULT CDebugScripts::OnScriptListDblClicked(NMHDR* pNMHDR)
 {
     // Run script on double click
     NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
@@ -210,13 +203,13 @@ LRESULT	CDebugScripts::OnScriptListDblClicked(NMHDR* pNMHDR)
 
 void CDebugScripts::RefreshStatus()
 {
-	EnterCriticalSection(&m_CriticalSection);
-	INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
+    CGuard guard(m_CS);
+    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
 
     char* szState = "";
     switch (state)
     {
-    case STATE_RUNNING:	szState = "Running"; break;
+    case STATE_RUNNING: szState = "Running"; break;
     case STATE_STARTED: szState = "Started"; break;
     case STATE_STOPPED: szState = "Stopped"; break;
     case STATE_INVALID: szState = "Not running"; break;
@@ -234,11 +227,9 @@ void CDebugScripts::RefreshStatus()
     {
         m_EvalEdit.EnableWindow(FALSE);
     }
-
-	LeaveCriticalSection(&m_CriticalSection);
 }
 
-LRESULT	CDebugScripts::OnScriptListClicked(NMHDR* pNMHDR)
+LRESULT CDebugScripts::OnScriptListClicked(NMHDR* pNMHDR)
 {
     // Select instance for console input
     NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
@@ -251,7 +242,7 @@ LRESULT	CDebugScripts::OnScriptListClicked(NMHDR* pNMHDR)
     return 0;
 }
 
-LRESULT	CDebugScripts::OnScriptListRClicked(NMHDR* pNMHDR)
+LRESULT CDebugScripts::OnScriptListRClicked(NMHDR* pNMHDR)
 {
     OnScriptListClicked(pNMHDR);
 
@@ -411,7 +402,7 @@ void CDebugScripts::RunSelected()
 
 void CDebugScripts::StopSelected()
 {
-	m_Debugger->ScriptSystem()->StopScript(m_SelectedScriptName);
+    m_Debugger->ScriptSystem()->StopScript(m_SelectedScriptName);
 
-	//m_Debugger->Debug_RefreshScriptsWindow();
+    //m_Debugger->Debug_RefreshScriptsWindow();
 }

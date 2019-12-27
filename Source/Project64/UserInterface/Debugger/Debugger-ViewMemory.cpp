@@ -33,7 +33,7 @@ CDebugMemoryView::jump_item_t CDebugMemoryView::JumpItems[] = {
     { 0xA4700000, 0x04700000, 0x0000020, "RI Registers" },
     { 0xA4800000, 0x04800000, 0x0000010, "SI Registers" },
     { 0xA5000500, 0x05000500, 0x000004C, "DD Registers" },
-    { 0xA8000000, 0xA8000000, 0x0000000, "Cartridge Save Data" },
+    { 0xA8000000, 0x08000000, 0x1000000, "Cartridge Save Data" },
     { 0xB0000000, 0x10000000, 0xFC00000, "Cartridge ROM" },
     { 0xBFC00000, 0x1FC00000, 0x00007C0, "PIF ROM" },
     { 0xBFC007C0, 0x1FC007C0, 0x0000040, "PIF RAM" },
@@ -76,11 +76,11 @@ bool CDebugMemoryView::GetByte(uint32_t address, uint8_t* value)
 {
     if (m_bVirtualMemory)
     {
-        return m_Debugger->DebugLB_VAddr(address, *value);
+        return m_Debugger->DebugLoad_VAddr(address, *value);
     }
     else
     {
-        return m_Debugger->DebugLB_PAddr(address, *value);
+        return m_Debugger->DebugLoad_PAddr(address, *value);
     }
 }
 
@@ -88,11 +88,11 @@ bool CDebugMemoryView::SetByte(uint32_t address, uint8_t value)
 {
     if (m_bVirtualMemory)
     {
-        return m_Debugger->DebugSB_VAddr(address, value);
+        return m_Debugger->DebugStore_VAddr(address, value);
     }
     else
     {
-        return m_Debugger->DebugSB_PAddr(address, value);
+        return m_Debugger->DebugStore_PAddr(address, value);
     }
 }
 
@@ -200,18 +200,28 @@ void CDebugMemoryView::FollowPointer(bool bContextMenuAddress)
 
     if (bContextMenuAddress)
     {
-        address = m_ContextMenuAddress - (m_ContextMenuAddress % 4);
+        address = m_ContextMenuAddress & (~3);
     }
     else
     {
-        address = m_HexEditCtrl.GetCaretAddress();
-        address -= (address % 4);
+        uint32_t selStartAddress, selEndAddress;
+        m_HexEditCtrl.GetSelectionRange(&selStartAddress, &selEndAddress);
+        address = selStartAddress & (~3);
     }
-    
-    address += (m_bVirtualMemory ? 0 : 0x80000000);
-    
+
     uint32_t pointer;
-    if (m_Debugger->DebugLW_VAddr(address, pointer))
+    bool bValid;
+
+    if (m_bVirtualMemory)
+    {
+        bValid = m_Debugger->DebugLoad_VAddr(address, pointer);
+    }
+    else
+    {
+        bValid = m_Debugger->DebugLoad_VAddr(address, pointer);
+    }
+
+    if (bValid)
     {
         OpenNewTab(pointer, m_bVirtualMemory, 4, true, true);
     }
@@ -349,6 +359,7 @@ LRESULT CDebugMemoryView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
     SetupJumpMenu(true);
     m_CmbJump.SetCurSel(0);
     
+    m_TabData.clear();
     AddTab(0x80000000, true, 4);
 
     m_HexEditCtrl.Draw();
@@ -391,7 +402,7 @@ LRESULT CDebugMemoryView::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND, BOOL& 
     case IDC_CHK_VADDR:
         m_bVirtualMemory = (m_VirtualCheckbox.GetCheck() == BST_CHECKED);
         SetupJumpMenu(m_bVirtualMemory);
-        UpdateCurrentTab(m_MemAddr.GetValue());
+        m_CmbJump.SetCurSel(GetJumpItemIndex(m_MemAddr.GetValue(), m_bVirtualMemory));
         break;
     case IDC_SYMBOLS_BTN:
         m_Debugger->OpenSymbolsWindow();
@@ -493,6 +504,7 @@ void CDebugMemoryView::OnAddrChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
     uint32_t address = m_MemAddr.GetValue();
     m_HexEditCtrl.SetBaseAddress(address);
     UpdateCurrentTab(address);
+    m_CmbJump.SetCurSel(GetJumpItemIndex(address, m_bVirtualMemory));
 }
 
 void CDebugMemoryView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar pScrollBar)
@@ -545,9 +557,7 @@ LRESULT CDebugMemoryView::OnHxCtrlKeyPressed(LPNMHDR lpNMHDR)
     switch (nmck->nChar)
     {
     case 'G':
-        {
         JumpToSelection();
-        }
         break;
     case 'W':
         m_Breakpoints->WBPToggle(address);
@@ -787,16 +797,12 @@ LRESULT CDebugMemoryView::OnHxGetByteInfo(LPNMHDR lpNMHDR)
         // todo should be the other way around
         uint32_t vaddress = m_bVirtualMemory ? address : address + 0x80000000;
 
-        CSymbols::EnterCriticalSection();
-        CSymbolEntry* symbol = CSymbols::GetEntryByAddress(vaddress);
-        
-        if (symbol != NULL)
+        CSymbol symbol;
+        if (m_Debugger->SymbolTable()->GetSymbolByAddress(vaddress, &symbol))
         {
-            m_SymbolColorStride = symbol->TypeSize();
+            m_SymbolColorStride = symbol.TypeSize();
             m_SymbolColorPhase = m_SymbolColorPhase ? 0 : 1;
         }
-
-        CSymbols::LeaveCriticalSection();
 
         if (bHaveWriteTarget && address == cpuReadWriteAddress)
         {
@@ -923,24 +929,10 @@ LRESULT CDebugMemoryView::OnHxHotAddrChanged(LPNMHDR /*lpNMHDR*/)
     m_HotAddress = m_HexEditCtrl.GetHotAddress();
     stdstr strAddrInfo = "";
 
-    CSymbols::EnterCriticalSection();
-    
-    CSymbolEntry* foundSymbol = NULL;
-    int numSymbols = CSymbols::GetCount();
-
-    for (int i = 0; i < numSymbols; i++)
+    CSymbol symbol;
+    if (m_Debugger->SymbolTable()->GetSymbolByOverlappedAddress(m_HotAddress, &symbol))
     {
-        CSymbolEntry* symbol = CSymbols::GetEntryByIndex(i);
-        if (m_HotAddress >= symbol->m_Address && m_HotAddress < symbol->m_Address + symbol->TypeSize())
-        {
-            foundSymbol = symbol;
-            break;
-        }
-    }
-
-    if (foundSymbol != NULL)
-    {
-        strAddrInfo += stdstr_f("%08X %s %s", foundSymbol->m_Address, foundSymbol->TypeName(), foundSymbol->m_Name);
+        strAddrInfo += stdstr_f("%08X %s %s", symbol.m_Address, symbol.TypeName(), symbol.m_Name);
     }
     else
     {
@@ -948,8 +940,6 @@ LRESULT CDebugMemoryView::OnHxHotAddrChanged(LPNMHDR /*lpNMHDR*/)
     }
 
     m_StatusBar.SetText(MEMSB_HOTADDR, strAddrInfo.c_str());
-
-    CSymbols::LeaveCriticalSection();
     return FALSE;
 }
 
