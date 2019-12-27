@@ -69,8 +69,6 @@ private:
     char*  m_SymFileParseBuffer;
     bool   m_bHaveFirstToken;
 
-    void ParserInit();
-    void ParserDone();
     void ParserFetchToken(const char* delim);
 
 public:

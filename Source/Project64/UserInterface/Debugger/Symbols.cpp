@@ -27,15 +27,8 @@ CSymbolTable::CSymbolTable(CDebuggerUI* debugger) :
 
 CSymbolTable::~CSymbolTable()
 {
-    if (m_SymFileBuffer != NULL)
-    {
-        free(m_SymFileBuffer);
-    }
-
-    if (m_SymFileParseBuffer != NULL)
-    {
-        free(m_SymFileParseBuffer);
-    }
+    delete[] m_SymFileBuffer;
+    delete[] m_SymFileParseBuffer;
 }
 
 symbol_type_info_t CSymbolTable::m_SymbolTypes[] = {
@@ -108,23 +101,6 @@ CPath CSymbolTable::GetSymFilePath()
     return symFilePath;
 }
 
-void CSymbolTable::ParserInit()
-{
-    if (m_SymFileParseBuffer != NULL)
-    {
-        free(m_SymFileParseBuffer);
-    }
-
-    m_SymFileParseBuffer = (char*)malloc(m_SymFileSize + 1);
-    strcpy(m_SymFileParseBuffer, m_SymFileBuffer);
-    m_bHaveFirstToken = false;
-}
-
-void CSymbolTable::ParserDone()
-{
-    free(m_SymFileParseBuffer);
-}
-
 void CSymbolTable::ParserFetchToken(const char* delim)
 {
     if (!m_bHaveFirstToken)
@@ -172,16 +148,28 @@ void CSymbolTable::Load()
         return;
     }
     
+    if (m_SymFileBuffer != NULL)
+    {
+        delete[] m_SymFileBuffer;
+    }
+
+    if (m_SymFileParseBuffer != NULL)
+    {
+        delete[] m_SymFileParseBuffer;
+    }
+
     m_SymFileSize = m_SymFileHandle.GetLength();
-    m_SymFileBuffer = (char*)malloc(m_SymFileSize + 1);
+    m_SymFileBuffer = new char[m_SymFileSize + 1];
+    m_SymFileParseBuffer = new char[m_SymFileSize + 1];
     m_SymFileHandle.Read(m_SymFileBuffer, m_SymFileSize);
     m_SymFileHandle.Close();
     m_SymFileBuffer[m_SymFileSize] = '\0';
     
+    strcpy(m_SymFileParseBuffer, m_SymFileBuffer);
+    m_bHaveFirstToken = false;
+
     symbol_parse_error_t errorCode = ERR_SUCCESS;
     int lineNumber = 1;
-
-    ParserInit();
 
     while (true)
     {
@@ -254,8 +242,11 @@ void CSymbolTable::Load()
         lineNumber++;
     }
     
-    ParserDone();
-    free(m_SymFileBuffer);
+    delete[] m_SymFileParseBuffer;
+    m_SymFileParseBuffer = NULL;
+
+    delete[] m_SymFileBuffer;
+    m_SymFileBuffer = NULL;
 
     switch (errorCode)
     {
