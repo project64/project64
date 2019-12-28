@@ -1507,6 +1507,12 @@ void CMipsMemoryVM::Load32CartridgeDomain2Address1(void)
 
 void CMipsMemoryVM::Load32CartridgeDomain2Address2(void)
 {
+    uint32_t offset = (m_MemLookupAddress & 0x1FFFFFFF) - 0x08000000;
+    if (offset > 0x10000)
+    {
+        m_MemLookupValue.UW[0] = ((offset & 0xFFFF) << 16) | (offset & 0xFFFF);
+        return;
+    }
     if (g_System->m_SaveUsing == SaveChip_Auto)
     {
         g_System->m_SaveUsing = SaveChip_FlashRam;
@@ -1515,7 +1521,7 @@ void CMipsMemoryVM::Load32CartridgeDomain2Address2(void)
     {
         //Load Sram
         uint8_t tmp[4] = "";
-        g_MMU->DmaFromSram(tmp, (m_MemLookupAddress & 0x1FFFFFFF) - 0x08000000, 4);
+        g_MMU->DmaFromSram(tmp, offset, 4);
         m_MemLookupValue.UW[0] = tmp[3] << 24 | tmp[2] << 16 | tmp[1] << 8 | tmp[0];
     }
     else if (g_System->m_SaveUsing != SaveChip_FlashRam)
@@ -2178,7 +2184,8 @@ void CMipsMemoryVM::Write32CartridgeDomain2Address1(void)
 
 void CMipsMemoryVM::Write32CartridgeDomain2Address2(void)
 {
-    if (g_System->m_SaveUsing == SaveChip_Sram)
+    uint32_t offset = (m_MemLookupAddress & 0x1FFFFFFF) - 0x08000000;
+    if (g_System->m_SaveUsing == SaveChip_Sram && offset < 0x8000)
     {
         //Store Sram
         uint8_t tmp[4] = "";
@@ -2196,6 +2203,10 @@ void CMipsMemoryVM::Write32CartridgeDomain2Address2(void)
     g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     }*/
+    if (offset > 0x10000)
+    {
+        return;
+    }
     if (g_System->m_SaveUsing == SaveChip_Auto)
     {
         g_System->m_SaveUsing = SaveChip_FlashRam;
