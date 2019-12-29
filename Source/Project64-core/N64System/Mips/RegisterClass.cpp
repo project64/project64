@@ -357,7 +357,7 @@ void CRegisters::DoAddressError(bool DelaySlot, uint32_t BadVaddr, bool FromRead
 {
     if (HaveDebugger())
     {
-        g_Notify->DisplayError("AddressError");
+        g_Notify->DisplayError(stdstr_f("AddressError %s Vaddr: %X", FromRead ? "reading" : "writing", BadVaddr).c_str());
         if ((STATUS_REGISTER & STATUS_EXL) != 0)
         {
             g_Notify->DisplayError("EXL set in AddressError Exception");
