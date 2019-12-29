@@ -34,6 +34,7 @@
 #107#  "ROMs Recentes"
 #108#  "Diretórios das ROMs Recentes"
 #109#  "S&air"
+#110#  "Abrir &Combo"
 
 //System Menu
 #120#  "&Sistema"
@@ -113,14 +114,14 @@
 #230#  "Save Slot - 10"
 
 // Menu Descriptions
-#250#  "Abrir uma imagem da ROM de N64"
-#251#  "Exibir Informação sobre a imagem carregada"
-#252#  "Iniciar a Emulação da imagem da ROM carregada"
-#253#  "Parar a Emulação da imagem da ROM carregada"
+#250#  "Abrir uma ROM de N64"
+#251#  "Exibir Informação sobre a ROM carregada"
+#252#  "Iniciar a Emulação da ROM carregada"
+#253#  "Parar a Emulação da ROM carregada"
 #254#  "Selecionar o Diretório das ROMs"
 #255#  "Atualizar a lista de ROMs atuais no Explorador de ROMs"
 #256#  "Sair deste aplicativo"
-#257#  "Reiniciar a imagem da ROM em execução (recarregar quaisquer mudanças nas configurações)"
+#257#  "Reiniciar a ROM em execução (recarregar quaisquer mudanças nas configurações)"
 #258#  "Pausar/Resumir a emulação da ROM atualmente em execução"
 #259#  "Gerar uma imagem Bitmap da Tela atual"
 #260#  "Limitar o FPS para a velocidade correta do n64"
@@ -201,6 +202,8 @@
 #409#  "Atalhos do Teclado"
 #410#  "Status"
 #411#  "Recompilador"
+#412#  "Padrões"
+#413#  "64DD"
 
 //Plugin Dialog
 #420#  "Sobre"
@@ -237,7 +240,10 @@
 #466#  "Display de velocidade:"
 #467#  "Verificar se o Project64 já está em execução"
 #468#  "&Diretório de Saves Unificado"
-#469#  "Caminho Para a ROM 64DD IPL:"
+#469#  "Caminho para Japanese Retail 64DD IPL ROM:"
+#470#  "Caminho para American Retail 64DD IPL ROM:"
+#471#  "Caminho para Development 64DD IPL ROM:"
+#472#  "Modo de Salvamento:"
 
 //ROM Browser Tab
 #480#  "Máx # de ROMs Lembradas (0-10):"
@@ -364,6 +370,10 @@
 #721#  "Resetar Tudo"
 #722#  "Aplicar"
 #723#  "Fechar"
+
+//Disk Save Type
+#730#  "Cópia de Disco Completa"
+#731#  "Área de Save Apenas"
 
 /*********************************************************************************
 * ROM Information                                                                *
@@ -518,6 +528,11 @@
 #2055#  "Gráficos LLE não são para uso geral!!!\nÉ aconselhável que você só utilize para testes, não para jogar qualquer jogo com ele\n\nMudar para Gráficos LLE?"
 #2056#  "Aúdio HLE"
 #2057#  "O Áudio HLE requer um plugin de terceiros!!!\nSe você não tem um plugin de áudio de terceiros que suporta HLE você não ouvirá o som.\n\nMudar pra áudio HLE?"
+#2058#  "O arquivo carregado não parece ser uma 64DD IPL ROM válida.\n\nVerifique suas ROMs com o GoodN64."
+#2059#  "Nintendo 64DD Japanese Retail IPL ROM não encontrada.\nEla é necessária para jogar discos 64DD de região japonesa.\n\nPor favor selecione a ROM necessária nas Configurações."
+#2061#  "Nintendo 64DD American Retail IPL ROM não encontrada.\nEla é necessária para jogar discos 64DD de região americana.\n\nPor favor selecione a ROM necessária nas Configurações."
+#2062#  "Nintendo 64DD Development IPL ROM não encontrada.\nEla é necessparia para jogar discos 64DD de desenvolvimento.\n\nPor favor selecione a ROM necessária nas Configurações."
+
 
 /*********************************************************************************
 * Android                                                                        *
@@ -543,6 +558,7 @@
 #3018#  "Revisão"
 #3019#  "Project64 para Android\u2122 é um port da versão para windows do project64.A versão Android\u2122 pode emular a maioria dos jogos do N64."
 #3020#  "Project64 Autores."
+#3021#  "Discord"
 
 //In game menu
 #3100#  "Configurações"
