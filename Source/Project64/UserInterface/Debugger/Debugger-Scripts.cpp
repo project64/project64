@@ -178,6 +178,9 @@ LRESULT CDebugScripts::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
     case ID_POPUP_STOP:
         StopSelected();
         break;
+    case ID_POPUP_SCRIPT_EDIT:
+        EditSelected();
+        break;
     case IDC_CLEAR_BTN:
         ConsoleClear();
         break;
@@ -419,4 +422,9 @@ void CDebugScripts::ToggleSelected()
     {
         StopSelected();
     }
+}
+
+void CDebugScripts::EditSelected()
+{
+    ShellExecute(NULL, "edit", m_SelectedScriptName, NULL, "Scripts", SW_SHOWNORMAL);
 }
