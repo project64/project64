@@ -107,6 +107,7 @@ public:
     void EvaluateInSelectedInstance(char* code);
     void RunSelected();
     void StopSelected();
+    void ToggleSelected();
 
     LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnDestroy(void)

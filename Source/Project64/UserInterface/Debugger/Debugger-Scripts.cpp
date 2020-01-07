@@ -196,7 +196,7 @@ LRESULT CDebugScripts::OnScriptListDblClicked(NMHDR* pNMHDR)
 
     m_ScriptList.SelectItem(nItem);
 
-    RunSelected();
+    ToggleSelected();
 
     return 0;
 }
@@ -405,4 +405,18 @@ void CDebugScripts::StopSelected()
     m_Debugger->ScriptSystem()->StopScript(m_SelectedScriptName);
 
     //m_Debugger->Debug_RefreshScriptsWindow();
+}
+
+void CDebugScripts::ToggleSelected()
+{
+    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
+
+    if (state == STATE_INVALID || state == STATE_STOPPED)
+    {
+        RunSelected();
+    }
+    else
+    {
+        StopSelected();
+    }
 }
