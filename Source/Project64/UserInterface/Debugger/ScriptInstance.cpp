@@ -114,7 +114,7 @@ void CScriptInstance::StateChanged()
 {
     // todo mutex might be needed here
 
-    //m_Debugger->Debug_RefreshScriptsWindow();
+    m_Debugger->Debug_RefreshScriptsWindow();
     //m_ScriptSystem->DeleteStoppedInstances();
 }
 
