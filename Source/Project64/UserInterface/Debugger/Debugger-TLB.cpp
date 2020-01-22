@@ -32,47 +32,47 @@ LRESULT CDebugTlb::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
     col.fmt = LVCFMT_LEFT;
 
     col.pszText = "Index";
-    col.cx = 40 * DPIScale;
+    col.cx = (int)(40 * DPIScale);
     col.iSubItem = 0;
     ListView_InsertColumn(GetDlgItem(IDC_LIST), 0, &col);
 
     col.pszText = "Page Mask";
-    col.cx = 90 * DPIScale;
+    col.cx = (int)(90 * DPIScale);
     col.iSubItem = 1;
     ListView_InsertColumn(GetDlgItem(IDC_LIST), 1, &col);
 
     col.pszText = "Entry Hi";
-    col.cx = 90 * DPIScale;
+    col.cx = (int)(90 * DPIScale);
     col.iSubItem = 2;
     ListView_InsertColumn(GetDlgItem(IDC_LIST), 2, &col);
 
     col.pszText = "Entry Lo0";
-    col.cx = 90 * DPIScale;
+    col.cx = (int)(90 * DPIScale);
     col.iSubItem = 3;
     ListView_InsertColumn(GetDlgItem(IDC_LIST), 3, &col);
 
     col.pszText = "Entry Lo1";
-    col.cx = 90 * DPIScale;
+    col.cx = (int)(90 * DPIScale);
     col.iSubItem = 4;
     ListView_InsertColumn(GetDlgItem(IDC_LIST), 4, &col);
 
     col.pszText = "Index";
-    col.cx = 40 * DPIScale;
+    col.cx = (int)(40 * DPIScale);
     col.iSubItem = 0;
     ListView_InsertColumn(GetDlgItem(IDC_LIST2), 0, &col);
 
     col.pszText = "Valid";
-    col.cx = 40 * DPIScale;
+    col.cx = (int)(40 * DPIScale);
     col.iSubItem = 1;
     ListView_InsertColumn(GetDlgItem(IDC_LIST2), 1, &col);
 
     col.pszText = "Dirty";
-    col.cx = 40 * DPIScale;
+    col.cx = (int)(40 * DPIScale);
     col.iSubItem = 2;
     ListView_InsertColumn(GetDlgItem(IDC_LIST2), 2, &col);
 
     col.pszText = "Rule";
-    col.cx = 270 * DPIScale;
+    col.cx = (int)(270 * DPIScale);
     col.iSubItem = 3;
     ListView_InsertColumn(GetDlgItem(IDC_LIST2), 3, &col);
 
