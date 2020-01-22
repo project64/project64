@@ -238,7 +238,7 @@ bool CScanResult::GetMemoryValue(CMixed* v)
     return true;
 }
 
-int CScanResult::GetMemoryValueString(char* buffer, size_t size)
+int CScanResult::GetMemoryValueString(char* buffer, size_t size, bool bIgnoreHex)
 {
     if (g_MMU == NULL)
     {
@@ -246,7 +246,7 @@ int CScanResult::GetMemoryValueString(char* buffer, size_t size)
         return 1;
     }
     
-    bool bHex = (m_DisplayFormat == DisplayHex);
+    bool bHex = (m_DisplayFormat == DisplayHex) && !bIgnoreHex;
 
     uint32_t paddr = m_Address & 0x1FFFFFFF;
 
@@ -737,7 +737,7 @@ void CMemoryScanner::FirstScanLoopString(DisplayFormat resultDisplayFormat)
         for (int i = 0; i < length; i++)
         {
             uint32_t leAddr = (addr + i) ^ 3;
-            if (m_Value._string[i] != m_Memory[leAddr])
+            if ((uint8_t)m_Value._string[i] != m_Memory[leAddr])
             {
                 goto next_addr;
             }
@@ -766,7 +766,7 @@ void CMemoryScanner::FirstScanLoopIString(DisplayFormat resultDisplayFormat)
         for (int i = 0; i < length; i++)
         {
             uint32_t leAddr = (addr + i) ^ 3;
-            if (toupper(m_Value._string[i]) != toupper(m_Memory[leAddr]))
+            if (toupper((uint8_t)m_Value._string[i]) != toupper(m_Memory[leAddr]))
             {
                 goto next_addr;
             }
@@ -782,7 +782,7 @@ void CMemoryScanner::FirstScanLoopIString(DisplayFormat resultDisplayFormat)
 // scan for text of unknown single-byte encoding
 void CMemoryScanner::FirstScanLoopUnkString(void)
 {
-    const char *str = m_Value._string;
+    const uint8_t* str = (const uint8_t*)m_Value._string;
     int length = m_StringValueLength;
     
     uint32_t startAddr = m_RangeStartAddress;

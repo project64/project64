@@ -151,7 +151,7 @@ public:
 
 public:
     int GetValueString(char* buffer, size_t size);
-    int GetMemoryValueString(char* buffer, size_t size);
+    int GetMemoryValueString(char* buffer, size_t size, bool bIgnoreHex = false);
     int GetAddressString(char *buffer);
     uint32_t GetVirtualAddress(void);
     bool SetMemoryValueFromString(char* str);
