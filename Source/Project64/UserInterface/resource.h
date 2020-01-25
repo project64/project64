@@ -721,6 +721,7 @@
 #define ID_POPUPMENU_CLEARALLBPS        40019
 #define ID_POPUPMENU_TOGGLERBP          40020
 #define ID_POPUPMENU_TOGGLEWBP          40021
+#define ID_POPUP_SCRIPT_EDIT            40023
 #define ID_POPUP_RUN                    40024
 #define ID_POPUP_STOP                   40025
 #define ID_POPUPMENU_INSERTNOP          40026

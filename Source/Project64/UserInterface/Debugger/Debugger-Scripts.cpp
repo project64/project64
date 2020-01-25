@@ -178,6 +178,9 @@ LRESULT CDebugScripts::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
     case ID_POPUP_STOP:
         StopSelected();
         break;
+    case ID_POPUP_SCRIPT_EDIT:
+        EditSelected();
+        break;
     case IDC_CLEAR_BTN:
         ConsoleClear();
         break;
@@ -196,7 +199,7 @@ LRESULT CDebugScripts::OnScriptListDblClicked(NMHDR* pNMHDR)
 
     m_ScriptList.SelectItem(nItem);
 
-    RunSelected();
+    ToggleSelected();
 
     return 0;
 }
@@ -405,4 +408,23 @@ void CDebugScripts::StopSelected()
     m_Debugger->ScriptSystem()->StopScript(m_SelectedScriptName);
 
     //m_Debugger->Debug_RefreshScriptsWindow();
+}
+
+void CDebugScripts::ToggleSelected()
+{
+    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
+
+    if (state == STATE_INVALID || state == STATE_STOPPED)
+    {
+        RunSelected();
+    }
+    else
+    {
+        StopSelected();
+    }
+}
+
+void CDebugScripts::EditSelected()
+{
+    ShellExecute(NULL, "edit", m_SelectedScriptName, NULL, "Scripts", SW_SHOWNORMAL);
 }

@@ -1990,6 +1990,7 @@ BEGIN
     BEGIN
         MENUITEM "Run",                         ID_POPUP_RUN
         MENUITEM "Stop",                        ID_POPUP_STOP
+        MENUITEM "Edit",                        ID_POPUP_SCRIPT_EDIT
     END
 END
 
