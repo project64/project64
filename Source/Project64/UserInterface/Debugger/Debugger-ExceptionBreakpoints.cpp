@@ -84,9 +84,12 @@ LRESULT CDebugExcBreakpoints::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPA
     InitCheckboxes(IntrCheckboxMap, Debugger_IntrBreakpoints);
     InitCheckboxes(RcpIntrCheckboxMap, Debugger_RcpIntrBreakpoints);
 
-    bool intrEnabled = g_Settings->LoadDword(Debugger_ExceptionBreakpoints) & 0x01;
-    bool rcpIntrEnabled = g_Settings->LoadDword(Debugger_IntrBreakpoints) & 0x04;
-    bool fpExcEnabled = g_Settings->LoadDword(Debugger_ExceptionBreakpoints) & (1 << 15);
+    uint32_t excBreakpoints = g_Settings->LoadDword(Debugger_ExceptionBreakpoints);
+    uint32_t intrBreakpoints = g_Settings->LoadDword(Debugger_IntrBreakpoints);
+
+    bool intrEnabled = (excBreakpoints & 0x01) != 0;
+    bool rcpIntrEnabled = (intrBreakpoints & 0x04) != 0;
+    bool fpExcEnabled = (excBreakpoints & (1 << 15)) != 0;
 
     EnableCheckboxes(IntrCheckboxMap, intrEnabled);
     EnableCheckboxes(RcpIntrCheckboxMap, intrEnabled && rcpIntrEnabled);

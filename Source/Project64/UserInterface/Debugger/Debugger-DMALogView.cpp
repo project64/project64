@@ -193,7 +193,7 @@ void CDebugDMALogView::RefreshDMALogWindow(bool bReset)
 
 LRESULT CDebugDMALogView::OnRefresh(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-    bool bReset = (bool)wParam;
+    bool bReset = (wParam != 0);
 
     if (bReset)
     {

@@ -1108,7 +1108,7 @@ LRESULT CDebugMemorySearch::OnWatchListPopupCopyGamesharkCode(WORD /*wNotifyCode
             int length = presult->GetStrLength();
 
             char str[1024];
-            presult->GetMemoryValueString(str, 1024);
+            presult->GetMemoryValueString(str, 1024, true);
 
             bool haveOddLength = (length & 1) != 0;
             int evenLength = length & ~1;
@@ -1168,8 +1168,7 @@ LRESULT CDebugMemorySearch::OnWatchListPopupCopyGamesharkCode(WORD /*wNotifyCode
     }
 
     HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, strGSCode.length());
-
-    strGSCode.copy((char*)GlobalLock(hMem), strGSCode.length() - 1);
+    strncpy((char*)GlobalLock(hMem), strGSCode.c_str(), strGSCode.length() - 1);
     GlobalUnlock(hMem);
     OpenClipboard();
     EmptyClipboard();
@@ -1205,7 +1204,7 @@ LRESULT CDebugMemorySearch::OnWatchListPopupCopyAddressAndDescription(WORD /*wNo
 
     HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, str.length());
 
-    str.copy((char*)GlobalLock(hMem), str.length() - 1);
+    strncpy((char*)GlobalLock(hMem), str.c_str(), str.length() - 1);
     GlobalUnlock(hMem);
     OpenClipboard();
     EmptyClipboard();

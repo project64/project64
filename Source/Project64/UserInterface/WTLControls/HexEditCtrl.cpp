@@ -54,7 +54,7 @@ CHexEditCtrl::~CHexEditCtrl(void)
 {
 }
 
-int CALLBACK CHexEditCtrl::HaveFontCb(CONST LOGFONTA *lplf, CONST TEXTMETRICA *lptm, DWORD FontType, LPARAM lParam)
+int CALLBACK CHexEditCtrl::HaveFontCb(CONST LOGFONTA* lplf, CONST TEXTMETRICA* /*lptm*/, DWORD /*FontType*/, LPARAM lParam)
 {
     const char* name = (const char*)lParam;
     if (strcmp(lplf->lfFaceName, name) == 0)
