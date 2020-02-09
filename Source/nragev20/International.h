@@ -1,9 +1,9 @@
-/*	
-	N-Rage`s Dinput8 Plugin
+/*
+    N-Rage`s Dinput8 Plugin
     (C) 2002, 2006  Norbert Wladyka
 
-	Author`s Email: norbert.wladyka@chello.at
-	Website: http://go.to/nrage
+    Author`s Email: norbert.wladyka@chello.at
+    Website: http://go.to/nrage
 
 
     This program is free software; you can redistribute it and/or modify
@@ -30,15 +30,15 @@
 
 typedef struct LANGINFO_DEF
 {
-	int		Count;
-	LANGID	LangID;
+    int     Count;
+    LANGID  LangID;
 } LANGINFO;
 typedef LANGINFO *PLANGINFO;
 
 // only export these functions if UNICODE support is enabled
 #ifdef _UNICODE
 LANGID DetectLanguage();
-HMODULE	LoadLanguageDLL(LANGID DesiredLanguage);
+HMODULE LoadLanguageDLL(LANGID DesiredLanguage);
 #endif // #ifdef _UNICODE
 
 #endif // #ifndef _NRINTERNATIONAL_

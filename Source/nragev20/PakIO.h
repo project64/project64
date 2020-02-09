@@ -1,9 +1,9 @@
-/*	
-	N-Rage`s Dinput8 Plugin
+/*
+    N-Rage`s Dinput8 Plugin
     (C) 2002, 2006  Norbert Wladyka
 
-	Author`s Email: norbert.wladyka@chello.at
-	Website: http://go.to/nrage
+    Author`s Email: norbert.wladyka@chello.at
+    Website: http://go.to/nrage
 
 
     This program is free software; you can redistribute it and/or modify
@@ -54,65 +54,65 @@ void HextoTextA( const unsigned char * Data, LPSTR szText, const int nBytes );
    //byte 2 = number of bytes to recieve
    //byte 3 = Command Type
 
-	// get status
-#define RD_GETSTATUS		0x00
-	// read button values
-#define RD_READKEYS			0x01
-	// read from controllerpak
-#define RD_READPAK			0x02
-	// write to controllerpack
-#define RD_WRITEPAK			0x03
-	// reset controller
-#define RD_RESETCONTROLLER	0xff
-	// read eeprom
-#define RD_READEEPROM		0x04
-	// write eeprom
-#define RD_WRITEEPROM		0x05
+    // get status
+#define RD_GETSTATUS        0x00
+    // read button values
+#define RD_READKEYS         0x01
+    // read from controllerpak
+#define RD_READPAK          0x02
+    // write to controllerpack
+#define RD_WRITEPAK         0x03
+    // reset controller
+#define RD_RESETCONTROLLER  0xff
+    // read eeprom
+#define RD_READEEPROM       0x04
+    // write eeprom
+#define RD_WRITEEPROM       0x05
 
-	// Codes for retrieving status
+    // Codes for retrieving status
     // 0x010300 - A1B2C3FF
 
-	//A1
-	// Default GamePad
-#define RD_ABSOLUTE			0x01
-#define RD_RELATIVE			0x02
-	// Default GamePad
-#define RD_GAMEPAD			0x04
+    //A1
+    // Default GamePad
+#define RD_ABSOLUTE         0x01
+#define RD_RELATIVE         0x02
+    // Default GamePad
+#define RD_GAMEPAD          0x04
 
-	//B2
-#define RD_EEPROM			0x80 
-#define RD_NOEEPROM			0x00
+    //B2
+#define RD_EEPROM           0x80
+#define RD_NOEEPROM         0x00
 
-	//C3
-	// No Plugin in Controller
-#define RD_NOPLUGIN			0x00
-	// Plugin in Controller (Mempack, RumblePack etc)
-#define RD_PLUGIN			0x01
-	// Pak interface was uninitialized before the call
-#define RD_NOTINITIALIZED	0x02
-	// Address of last Pak I/O was invalid
-#define RD_ADDRCRCERR		0x04
-	// eeprom busy
-#define RD_EEPROMBUSY		0x80
+    //C3
+    // No Plugin in Controller
+#define RD_NOPLUGIN         0x00
+    // Plugin in Controller (Mempack, RumblePack etc)
+#define RD_PLUGIN           0x01
+    // Pak interface was uninitialized before the call
+#define RD_NOTINITIALIZED   0x02
+    // Address of last Pak I/O was invalid
+#define RD_ADDRCRCERR       0x04
+    // eeprom busy
+#define RD_EEPROMBUSY       0x80
 
 // The Error values are as follows:
 // 0x01ER00 - ........
 
-	//ER
-	// no error, operation successful.
-#define RD_OK				0x00
-	// error, device not present for specified command.
-#define RD_ERROR			0x80
-	// error, unable to send/recieve the number bytes for command type.
-#define RD_WRONGSIZE		0x40
+    //ER
+    // no error, operation successful.
+#define RD_OK               0x00
+    // error, device not present for specified command.
+#define RD_ERROR            0x80
+    // error, unable to send/recieve the number bytes for command type.
+#define RD_WRONGSIZE        0x40
 
-	// the address where rumble-commands are sent to
-	// this is really 0xC01B but our addressing code truncates the last several bits.
-#define PAK_IO_RUMBLE		0xC000
+    // the address where rumble-commands are sent to
+    // this is really 0xC01B but our addressing code truncates the last several bits.
+#define PAK_IO_RUMBLE       0xC000
 
-	// 32 KB mempak
-#define PAK_MEM_SIZE		32*1024
-#define PAK_MEM_DEXOFFSET	0x1040
+    // 32 KB mempak
+#define PAK_MEM_SIZE        32*1024
+#define PAK_MEM_DEXOFFSET   0x1040
 
 // Pak Specific Data //
 // First BYTE always determines current Paktype
@@ -125,49 +125,49 @@ void HextoTextA( const unsigned char * Data, LPSTR szText, const int nBytes );
 //PAK_MEM
 typedef struct _MEMPAK
 {
-	BYTE bPakType;				// set to PAK_MEM
-	HANDLE hMemPakHandle;		// a file mapping handle
-	bool fDexSave;				// true if .n64 file, false if .mpk file
-	bool fReadonly;				// set if we can't open mempak file in "write" mode
-	LPBYTE aMemPakData;			//[PAK_MEM_SIZE];
-	BYTE aMemPakTemp[0x100];	// some extra on the top for "test" (temporary) data
+    BYTE bPakType;              // set to PAK_MEM
+    HANDLE hMemPakHandle;       // a file mapping handle
+    bool fDexSave;              // true if .n64 file, false if .mpk file
+    bool fReadonly;             // set if we can't open mempak file in "write" mode
+    LPBYTE aMemPakData;         //[PAK_MEM_SIZE];
+    BYTE aMemPakTemp[0x100];    // some extra on the top for "test" (temporary) data
 } MEMPAK, *LPMEMPAK;
 
 //PAK_RUMBLE
 typedef struct _RUMBLEPAK
 {
-	BYTE bPakType;
-//	BYTE bRumbleTyp;			// obsolete: use g_pcControllers[i].xyz instead --rabid
-//	BYTE bRumbleStrength;
-//	bool fVisualRumble;
-	bool fLastData;				// true if the last data sent to block 0x8000 was nonzero
+    BYTE bPakType;
+//  BYTE bRumbleTyp;            // obsolete: use g_pcControllers[i].xyz instead --rabid
+//  BYTE bRumbleStrength;
+//  bool fVisualRumble;
+    bool fLastData;             // true if the last data sent to block 0x8000 was nonzero
 } RUMBLEPAK, *LPRUMBLEPAK;
 
 #include "GBCart.h"
 //PAK_TRANSFER
 typedef struct _TRANSFERPAK
 {
-	BYTE bPakType;
-	int iCurrentBankNo;
-	int iCurrentAccessMode;
-	int iAccessModeChanged;
-	bool iEnableState;
-	bool bPakInserted;
-	GBCART gbCart;
+    BYTE bPakType;
+    int iCurrentBankNo;
+    int iCurrentAccessMode;
+    int iAccessModeChanged;
+    bool iEnableState;
+    bool bPakInserted;
+    GBCART gbCart;
 } TRANSFERPAK, *LPTRANSFERPAK;
 
 //PAK_VOICE
 typedef struct _VOICEPAK //not supported
 {
-	BYTE bPakType;
+    BYTE bPakType;
 } VOICEPAK, *LPVOICEPAK;
- 
+
 //PAK_ADAPTOID
 typedef struct _ADAPTOIDPAK
 {
-	BYTE bPakType;
-	BYTE bIdentifier;
-	bool fRumblePak;
+    BYTE bPakType;
+    BYTE bIdentifier;
+    bool fRumblePak;
 } ADAPTOIDPAK, *LPADAPTOIDPAK;
 
 #endif // #ifndef _PAKIO_H_

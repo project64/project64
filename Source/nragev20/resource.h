@@ -2,7 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by NRagePluginV2.rc
 //
-#define IDC_STATIC						-1
+#define IDC_STATIC                      -1
 #define IDC_STOREINDB                   3
 #define IDC_ERASEFROMDB                 4
 #define IDC_SAVEPROFILE                 5
@@ -365,7 +365,7 @@
 #define IDC_BACKGROUNDINPUT             1197
 
 // Next default values for new objects
-// 
+//
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        149

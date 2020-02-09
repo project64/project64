@@ -21,27 +21,27 @@ typedef struct _gbCartRTC {
 
 typedef struct _GBCART
 {
-	unsigned int iCurrentRomBankNo;
-	unsigned int iCurrentRamBankNo;
-	int iCartType;
-	bool bHasRam;
-	bool bHasBattery;
-	bool bHasTimer;
-	bool bHasRumble;
-	bool bRamEnableState;
-	bool bMBC1RAMbanking;	// if false, use 2 magic bits for Most Significant Bits of ROM banking (default); if true, use the 2 magic bits for RAM banking
-	unsigned int iNumRomBanks;
-	unsigned int iNumRamBanks;
-	BYTE TimerData[5];
-	BYTE LatchedTimerData[5];
-	time_t timerLastUpdate;
-	bool TimerDataLatched;
-	HANDLE hRomFile;		// a file mapping handle
-	HANDLE hRamFile;		// a file mapping handle, must be NULL if malloc'd ram is being used instead of a valid memory mapped file
-	const unsigned char * RomData;		// max [0x200 * 0x4000];
-	LPBYTE RamData;			// max [0x10 * 0x2000];
-	bool (*ptrfnReadCart)(_GBCART * Cart, WORD dwAddress, BYTE *Data);	// ReadCart handler
-	bool (*ptrfnWriteCart)(_GBCART * Cart, WORD dwAddress, BYTE *Data);	// WriteCart handler
+    unsigned int iCurrentRomBankNo;
+    unsigned int iCurrentRamBankNo;
+    int iCartType;
+    bool bHasRam;
+    bool bHasBattery;
+    bool bHasTimer;
+    bool bHasRumble;
+    bool bRamEnableState;
+    bool bMBC1RAMbanking;   // if false, use 2 magic bits for Most Significant Bits of ROM banking (default); if true, use the 2 magic bits for RAM banking
+    unsigned int iNumRomBanks;
+    unsigned int iNumRamBanks;
+    BYTE TimerData[5];
+    BYTE LatchedTimerData[5];
+    time_t timerLastUpdate;
+    bool TimerDataLatched;
+    HANDLE hRomFile;        // a file mapping handle
+    HANDLE hRamFile;        // a file mapping handle, must be NULL if malloc'd ram is being used instead of a valid memory mapped file
+    const unsigned char * RomData;      // max [0x200 * 0x4000];
+    LPBYTE RamData;         // max [0x10 * 0x2000];
+    bool (*ptrfnReadCart)(_GBCART * Cart, WORD dwAddress, BYTE *Data);  // ReadCart handler
+    bool (*ptrfnWriteCart)(_GBCART * Cart, WORD dwAddress, BYTE *Data); // WriteCart handler
 } GBCART, *LPGBCART;
 
 bool LoadCart(LPGBCART Cart, LPCTSTR RomFile, LPCTSTR RamFile, LPCTSTR TdfFile);
@@ -65,15 +65,15 @@ iCartType values:
 Note, that 7 and up are not implemented yet.
 */
 
-#define GB_NORM		0x00
-#define GB_MBC1		0x01
-#define GB_MBC2		0x02
-#define GB_MMMO1	0x03
-#define GB_MBC3		0x04
-#define GB_MBC5		0x05
-#define GB_CAMERA	0x06
-#define GB_TAMA5	0x07
-#define GB_HUC3		0x08
-#define GB_HUC1		0x09
+#define GB_NORM     0x00
+#define GB_MBC1     0x01
+#define GB_MBC2     0x02
+#define GB_MMMO1    0x03
+#define GB_MBC3     0x04
+#define GB_MBC5     0x05
+#define GB_CAMERA   0x06
+#define GB_TAMA5    0x07
+#define GB_HUC3     0x08
+#define GB_HUC1     0x09
 
 #endif // #ifndef _GBCART_H_

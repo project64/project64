@@ -1,9 +1,9 @@
 /*
-	N-Rage`s Dinput8 Plugin
+    N-Rage`s Dinput8 Plugin
     (C) 2002, 2006  Norbert Wladyka
 
-	Author`s Email: norbert.wladyka@chello.at
-	Website: http://go.to/nrage
+    Author`s Email: norbert.wladyka@chello.at
+    Website: http://go.to/nrage
 
 
     This program is free software; you can redistribute it and/or modify
@@ -41,29 +41,29 @@ BOOL CALLBACK EnumLangProc(HANDLE hModule, LPCTSTR lpszType, LPCTSTR lpszName, W
 // "If it ain't broke, don't fix it."
 
 // Loads the satellite DLL specified for the language DesiredLanguage
-HMODULE		LoadLanguageDLL(LANGID DesiredLanguage)
+HMODULE     LoadLanguageDLL(LANGID DesiredLanguage)
 {
-	TCHAR		SatellitePath[MAX_PATH];
-	HMODULE		hDLL;
+    TCHAR       SatellitePath[MAX_PATH];
+    HMODULE     hDLL;
 
-	// First try to load the library with the fully specified language
-	_stprintf(SatellitePath, _T("NRage-Language-%u.dll"), DesiredLanguage);
-	hDLL = LoadLibraryEx(SatellitePath, 0, 0);
-	if( hDLL )
-		return hDLL;
-	else
-	{   // try the primary language ID
-		DesiredLanguage = PRIMARYLANGID(DesiredLanguage);
-		_stprintf(SatellitePath, _T("NRage-Language-%u.dll"), DesiredLanguage);
-		hDLL = LoadLibraryEx(SatellitePath, 0, 0);
-		if( hDLL )
-			return hDLL;
-		else
-		{
-			DebugWrite(_T("Couldn't load library: %s\n"), SatellitePath);
-			return NULL;
-		}
-	}
+    // First try to load the library with the fully specified language
+    _stprintf(SatellitePath, _T("NRage-Language-%u.dll"), DesiredLanguage);
+    hDLL = LoadLibraryEx(SatellitePath, 0, 0);
+    if( hDLL )
+        return hDLL;
+    else
+    {   // try the primary language ID
+        DesiredLanguage = PRIMARYLANGID(DesiredLanguage);
+        _stprintf(SatellitePath, _T("NRage-Language-%u.dll"), DesiredLanguage);
+        hDLL = LoadLibraryEx(SatellitePath, 0, 0);
+        if( hDLL )
+            return hDLL;
+        else
+        {
+            DebugWrite(_T("Couldn't load library: %s\n"), SatellitePath);
+            return NULL;
+        }
+    }
 }
 
 // The following functions contain code to
@@ -71,7 +71,7 @@ HMODULE		LoadLanguageDLL(LANGID DesiredLanguage)
 // user interface should be displayed
 
 BOOL CALLBACK EnumLangProc(HANDLE hModule, LPCTSTR lpszType, LPCTSTR lpszName,
-						   WORD wIDLanguage, LONG_PTR lParam)
+                           WORD wIDLanguage, LONG_PTR lParam)
 {
     PLANGINFO LangInfo;
 
@@ -82,7 +82,7 @@ BOOL CALLBACK EnumLangProc(HANDLE hModule, LPCTSTR lpszType, LPCTSTR lpszName,
     return (TRUE);        // continue enumeration
 }
 
-// Detects the language of ntdll.dll with some specific processing for 
+// Detects the language of ntdll.dll with some specific processing for
 // the Hongkong SAR version
 LANGID GetNTDLLNativeLangID()
 {
@@ -113,7 +113,7 @@ BOOL IsHongKongVersion()
 {
     HMODULE hMod;
     BOOL bRet=FALSE;
-	typedef BOOL (WINAPI *IMMRELEASECONTEXT)(HWND,HIMC);
+    typedef BOOL (WINAPI *IMMRELEASECONTEXT)(HWND,HIMC);
     IMMRELEASECONTEXT pImmReleaseContext;
 
     hMod = LoadLibrary(_T("imm32.dll"));
@@ -133,65 +133,65 @@ BOOL IsHongKongVersion()
 LANGID DetectLanguage()
 {
 
-#define MAX_KEY_BUFFER	80
+#define MAX_KEY_BUFFER  80
 
-	OSVERSIONINFO		VersionInfo;
-	LANGID				uiLangID = 0;
-	HKEY				hKey;
-	DWORD				Type, BuffLen = MAX_KEY_BUFFER;
-	TCHAR				LangKeyValue[MAX_KEY_BUFFER];
+    OSVERSIONINFO       VersionInfo;
+    LANGID              uiLangID = 0;
+    HKEY                hKey;
+    DWORD               Type, BuffLen = MAX_KEY_BUFFER;
+    TCHAR               LangKeyValue[MAX_KEY_BUFFER];
 
-	VersionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-	if( !GetVersionEx(&VersionInfo) )
-		return(0);
+    VersionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+    if( !GetVersionEx(&VersionInfo) )
+        return(0);
 
-	switch( VersionInfo.dwPlatformId )
-	{
-		// On Windows NT, Windows 2000 or higher
-		case VER_PLATFORM_WIN32_NT:
-			if( VersionInfo.dwMajorVersion >= 5)   // Windows 2000 or higher
-			{
-				// we need to dynamically link the GetUserDefaultUILanguage func
-				HMODULE hmKernDLL =	LoadLibrary(_T("kernel32.dll"));
-				if (hmKernDLL)
-				{
-					LANGID (*fpGetLang)() = NULL;
-					fpGetLang = (LANGID(*)(void))GetProcAddress(hmKernDLL, "GetUserDefaultUILanguage");
-					uiLangID = fpGetLang();
-				} // and if we couldn't load kernel32.dll, just fall back to default language
-			}
-			else
-			{   // for NT4 check the language of ntdll.dll
-				uiLangID = GetNTDLLNativeLangID();   
-				if (uiLangID == 1033)
-				{		// special processing for Honkong SAR version of NT4
-					if (IsHongKongVersion())
-					{
-						uiLangID = 3076;
-					}
-				}
-			}
-			break;
-		// On Windows 95, Windows 98 or Windows ME
-		case VER_PLATFORM_WIN32_WINDOWS:
-			// Open the registry key for the UI language
-			if( RegOpenKeyEx(HKEY_CURRENT_USER,_T("Default\\Control Panel\\Desktop\\ResourceLocale"), 0,
-				KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS )
-			{
-				// Get the type of the default key
-				if( RegQueryValueEx(hKey, NULL, NULL, &Type, NULL, NULL) == ERROR_SUCCESS 
-					&& Type == REG_SZ )
-				{ // Read the key value
-					if( RegQueryValueEx(hKey, NULL, NULL, &Type, (LPBYTE)LangKeyValue, &BuffLen) 
-						== ERROR_SUCCESS )
-					{
-						uiLangID = _ttoi(LangKeyValue);
-					}
-				}
-				RegCloseKey(hKey);
-			}				
-			break;
-	}
+    switch( VersionInfo.dwPlatformId )
+    {
+        // On Windows NT, Windows 2000 or higher
+        case VER_PLATFORM_WIN32_NT:
+            if( VersionInfo.dwMajorVersion >= 5)   // Windows 2000 or higher
+            {
+                // we need to dynamically link the GetUserDefaultUILanguage func
+                HMODULE hmKernDLL = LoadLibrary(_T("kernel32.dll"));
+                if (hmKernDLL)
+                {
+                    LANGID (*fpGetLang)() = NULL;
+                    fpGetLang = (LANGID(*)(void))GetProcAddress(hmKernDLL, "GetUserDefaultUILanguage");
+                    uiLangID = fpGetLang();
+                } // and if we couldn't load kernel32.dll, just fall back to default language
+            }
+            else
+            {   // for NT4 check the language of ntdll.dll
+                uiLangID = GetNTDLLNativeLangID();
+                if (uiLangID == 1033)
+                {       // special processing for Honkong SAR version of NT4
+                    if (IsHongKongVersion())
+                    {
+                        uiLangID = 3076;
+                    }
+                }
+            }
+            break;
+        // On Windows 95, Windows 98 or Windows ME
+        case VER_PLATFORM_WIN32_WINDOWS:
+            // Open the registry key for the UI language
+            if( RegOpenKeyEx(HKEY_CURRENT_USER,_T("Default\\Control Panel\\Desktop\\ResourceLocale"), 0,
+                KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS )
+            {
+                // Get the type of the default key
+                if( RegQueryValueEx(hKey, NULL, NULL, &Type, NULL, NULL) == ERROR_SUCCESS
+                    && Type == REG_SZ )
+                { // Read the key value
+                    if( RegQueryValueEx(hKey, NULL, NULL, &Type, (LPBYTE)LangKeyValue, &BuffLen)
+                        == ERROR_SUCCESS )
+                    {
+                        uiLangID = _ttoi(LangKeyValue);
+                    }
+                }
+                RegCloseKey(hKey);
+            }
+            break;
+    }
 
     if (uiLangID == 0)
     {

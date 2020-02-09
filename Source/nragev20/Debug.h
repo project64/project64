@@ -1,9 +1,9 @@
-/*	
-	N-Rage`s Dinput8 Plugin
+/*
+    N-Rage`s Dinput8 Plugin
     (C) 2002, 2006  Norbert Wladyka
 
-	Author`s Email: norbert.wladyka@chello.at
-	Website: http://go.to/nrage
+    Author`s Email: norbert.wladyka@chello.at
+    Website: http://go.to/nrage
 
 
     This program is free software; you can redistribute it and/or modify
@@ -37,9 +37,9 @@ void _cdecl _DebugWriteW( LPCWSTR szFormat, ... );
 void _CloseDebugFile();
 void _DebugFlush();
 
-#define DebugWriteA	_DebugWriteA
-#define DebugWriteW	_DebugWriteW
-#define	WriteDatasA( header, control, data, hr ) _WriteDatasA( header, control, data, hr )
+#define DebugWriteA _DebugWriteA
+#define DebugWriteW _DebugWriteW
+#define WriteDatasA( header, control, data, hr ) _WriteDatasA( header, control, data, hr )
 #define CloseDebugFile() _CloseDebugFile()
 #define DebugWriteByteA(str) DebugWriteA("%02X", str)
 #define DebugWriteWordA(str) DebugWriteA("%04X", str)
@@ -48,9 +48,9 @@ void _DebugFlush();
 #else // #ifndef _DEBUG
 #define DebugWriteByteA(str)
 #define DebugWriteWordA(str)
-#define DebugWriteA	;//
-#define DebugWriteW	;//
-#define	WriteDatasA(header,control,data,hr)
+#define DebugWriteA ;//
+#define DebugWriteW ;//
+#define WriteDatasA(header,control,data,hr)
 #define CloseDebugFile()
 #define DebugFlush()
 
