@@ -26,6 +26,8 @@
 
 #include <dinput.h>
 
+#include "NRagePluginV2.h"
+
 extern LPDIRECTINPUT8 g_pDIHandle;
 
 

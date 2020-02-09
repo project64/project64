@@ -21,18 +21,20 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include "commonIncludes.h"
+#include <stdio.h>
+
 #include <windows.h>
 #include <Commctrl.h>
-#include <stdio.h>
-#include "NRagePluginV2.h"
+
+#include "commonIncludes.h"
 #include "DirectInput.h"
-#include "XInputController.h"
 #include "FileAccess.h"
-#include "PakIO.h"
 #include "Interface.h"
 #include "International.h"
+#include "NRagePluginV2.h"
+#include "PakIO.h"
 #include "Version.h"
+#include "XInputController.h"
 
 // Prototypes //
 BOOL CALLBACK ControllerTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam );

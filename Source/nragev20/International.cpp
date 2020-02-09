@@ -23,12 +23,14 @@
 
 // Internationalization routines go in this file.
 
-#include "International.h"
-#include <windows.h>
-#include <tchar.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "debug.h"
+
+#include <windows.h>
+#include <tchar.h>
+
+#include "International.h"
+#include "Debug.h"
 
 LANGID GetNTDLLNativeLangID();
 BOOL IsHongKongVersion();

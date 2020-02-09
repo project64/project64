@@ -21,17 +21,23 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include "commonIncludes.h"
+#include <algorithm>
+#include <stdio.h>
+
 #include <windows.h>
 #include <Commctrl.h>
 #include <tchar.h>
-#include <stdio.h>
-#include "NRagePluginV2.h"
+
+#include "commonIncludes.h"
 #include "DirectInput.h"
-#include "Interface.h"
 #include "FileAccess.h"
-#include "PakIO.h"
 #include "GBCart.h"
+#include "Interface.h"
+#include "NRagePluginV2.h"
+#include "PakIO.h"
+
+using std::min;
+using std::max;
 
 // ProtoTypes
 BYTE AddressCRC( const unsigned char * Address );

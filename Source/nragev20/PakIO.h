@@ -170,16 +170,4 @@ typedef struct _ADAPTOIDPAK
 	bool fRumblePak;
 } ADAPTOIDPAK, *LPADAPTOIDPAK;
 
-/*
- * <windef.h> from under <windows.h> with MSVC defines these macros.
- * For some reason, they are unavailable with MinGW's copy of <windows.h>.
- */
-#ifndef max
-#define max(a, b)       (((a) > (b)) ? (a) : (b))
-#endif
-
-#ifndef min
-#define min(a, b)       (((a) < (b)) ? (a) : (b))
-#endif
-
 #endif // #ifndef _PAKIO_H_

@@ -1,8 +1,9 @@
 #ifndef _GBCART_H_
 #define _GBCART_H_
 
-#include <windows.h>
 #include <time.h>
+
+#include <windows.h>
 
 typedef struct _gbCartRTC {
   UINT mapperSeconds;

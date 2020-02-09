@@ -24,9 +24,11 @@
 #ifndef _FILEACCESS_H_
 #define _FILEACCESS_H_
 
+#include <string>
+
 #include "NRagePluginV2.h"
 #include "Version.h"
-#include <string>
+
 using std::string;
 
 bool GetDirectory( LPTSTR pszDirectory, WORD wDirID );

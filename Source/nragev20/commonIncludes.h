@@ -24,11 +24,14 @@
 #ifndef _COMMONINCLUDES_H_
 #define _COMMONINCLUDES_H_
 
+/*
 #undef WIN32_LEAN_AND_MEAN
 #pragma warning(disable:4201)
+*/
+
+#include <tchar.h>
 
 #include "settings.h"
-#include <tchar.h>
 #include "resource.h"
 #include "Debug.h"
 

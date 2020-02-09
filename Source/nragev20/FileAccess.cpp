@@ -21,18 +21,21 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include "commonIncludes.h"
+#include <string>
+#include <stdio.h>
+
 #include <windows.h>
 #include <CommDlg.h>
-#include <tchar.h>
-#include <stdio.h>
 #include <shlobj.h>
+#include <tchar.h>
+
+#include "commonIncludes.h"
+#include "DirectInput.h"
+#include "FileAccess.h"
+#include "Interface.h"
 #include "NRagePluginV2.h"
 #include "PakIO.h"
-#include "Interface.h"
-#include "FileAccess.h"
-#include "DirectInput.h"
-#include <string>
+
 using std::string;
 
 #ifndef IDR_PROFILE_DEFAULT1

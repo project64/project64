@@ -10,11 +10,12 @@
 **
 */
 
-#include "commonIncludes.h"
 #include <windows.h>
+
+#include "commonIncludes.h"
+#include "GBCart.h"
 #include "NRagePluginV2.h"
 #include "PakIO.h"
-#include "GBCart.h"
 
 void ClearData(BYTE *Data, int Length);
 
