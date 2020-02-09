@@ -1,9 +1,9 @@
-/*	
-	N-Rage`s Dinput8 Plugin
+/*
+    N-Rage`s Dinput8 Plugin
     (C) 2002, 2006  Norbert Wladyka
 
-	Author`s Email: norbert.wladyka@chello.at
-	Website: http://go.to/nrage
+    Author`s Email: norbert.wladyka@chello.at
+    Website: http://go.to/nrage
 
 
     This program is free software; you can redistribute it and/or modify
@@ -44,31 +44,31 @@
 
 #endif // #ifdef __GNUC__
 
-	// Our default buffer size for TCHAR arrays (resources get loaded through here)
-	// MAKE SURE localized resources do not exceed this limit, or they will be cut off.
-#define DEFAULT_BUFFER		256
+    // Our default buffer size for TCHAR arrays (resources get loaded through here)
+    // MAKE SURE localized resources do not exceed this limit, or they will be cut off.
+#define DEFAULT_BUFFER      256
 
-	// use default settings for Release and Debugbuild
+    // use default settings for Release and Debugbuild
 #define STDCONFIG
 
 #ifndef STDCONFIG
 // ----------------------------------------------------------------------------
 // custom (nonstandard) settings here
-	// workaround for a Adaptoiddriver bug;
-	// basically if the Adaptoid USB driver doesn't respond that there's a pak, say there is one anyway
+    // workaround for a Adaptoiddriver bug;
+    // basically if the Adaptoid USB driver doesn't respond that there's a pak, say there is one anyway
 #define ADAPTOIDPAK_RUMBLEFIX
 
-	// remove unimplemented Elements of the GUI
+    // remove unimplemented Elements of the GUI
 // #define HIDEUNIMPLEMENTED
 
-  	// check controllercommands for valid CRC
+    // check controllercommands for valid CRC
 // #define MAKEADRESSCRCCHECK
- 	// display Button for writing Shortcuts binary
+    // display Button for writing Shortcuts binary
 // #define RAWPROFILEWRITE
 
-   	// enable selection of Transferpak
+    // enable selection of Transferpak
 // #define V_TRANSFERPAK
-  	// enable selection of VoicePak
+    // enable selection of VoicePak
 // #define V_VOICEPAK
 // ----------------------------------------------------------------------------
 
@@ -78,20 +78,20 @@
 #ifdef _DEBUG
 // ----------------------------------------------------------------------------
 // Standard Debug Settings
-   	// workaround for a Adaptoiddriver bug
+    // workaround for a Adaptoiddriver bug
 #define ADAPTOIDPAK_RUMBLEFIX
 
-   	// remove unimplemented Elements of the GUI
+    // remove unimplemented Elements of the GUI
 // #define HIDEUNIMPLEMENTED
 
-	// check controllercommands for valid CRC
+    // check controllercommands for valid CRC
 #define MAKEADRESSCRCCHECK
-	// display Button for writing Shortcuts binary
+    // display Button for writing Shortcuts binary
 #define RAWPROFILEWRITE
 
-   	// enable selection of Transferpak
+    // enable selection of Transferpak
 #define V_TRANSFERPAK
-  	// enable selection of VoicePak
+    // enable selection of VoicePak
 #define V_VOICEPAK
 
 // spits out loads of extra info for ControllerCommand and ReadController
@@ -102,20 +102,20 @@
 #else
 // ----------------------------------------------------------------------------
 // Standard Release Settings
-   	// workaround for a Adaptoiddriver bug
+    // workaround for a Adaptoiddriver bug
 #define ADAPTOIDPAK_RUMBLEFIX
 
-   	// remove unimplemented Elements of the GUI
+    // remove unimplemented Elements of the GUI
 #define HIDEUNIMPLEMENTED
 
-  	// check controllercommands for valid CRC
+    // check controllercommands for valid CRC
 // #define MAKEADRESSCRCCHECK
- 	// display Button for writing Shortcuts binary
+    // display Button for writing Shortcuts binary
 // #define RAWPROFILEWRITE
 
-   	// enable selection of Transferpak
+    // enable selection of Transferpak
 #define V_TRANSFERPAK
-  	// enable selection of VoicePak
+    // enable selection of VoicePak
 // #define V_VOICEPAK
 
 // ----------------------------------------------------------------------------

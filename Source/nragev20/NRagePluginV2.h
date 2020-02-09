@@ -1,66 +1,67 @@
 /*
-	N-Rage`s Dinput8 Plugin
-	(C) 2002, 2006  Norbert Wladyka
+    N-Rage`s Dinput8 Plugin
+    (C) 2002, 2006  Norbert Wladyka
 
-	Author`s Email: norbert.wladyka@chello.at
-	Website: http://go.to/nrage
+    Author`s Email: norbert.wladyka@chello.at
+    Website: http://go.to/nrage
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-	*/
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    */
 
 #ifndef _NRAGEPLUGIN_
 #define _NRAGEPLUGIN_
 
 #include <dinput.h>
+
 #include "XInputController.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 //General Plugin
 
-#define TIMER_MESSAGEWINDOW	123
+#define TIMER_MESSAGEWINDOW 123
 
 // maximum number of devices other than SysMouse
-#define MAX_DEVICES		32
+#define MAX_DEVICES     32
 // maximum number of modifiers
-#define MAX_MODIFIERS	256
+#define MAX_MODIFIERS   256
 
-#define DEFAULT_STICKRANGE		66
-#define DEFAULT_DEADZONE		5
-#define DEFAULT_RUMBLETYP		RUMBLE_EFF1
-#define DEFAULT_RUMBLESTRENGTH	80
-#define DEFAULT_MOUSESENSIVITY	100
-#define DEFAULT_PAKTYPE			PAK_MEM
-#define DEFAULT_MOUSEMOVE		MM_BUFF
+#define DEFAULT_STICKRANGE      66
+#define DEFAULT_DEADZONE        5
+#define DEFAULT_RUMBLETYP       RUMBLE_EFF1
+#define DEFAULT_RUMBLESTRENGTH  80
+#define DEFAULT_MOUSESENSIVITY  100
+#define DEFAULT_PAKTYPE         PAK_MEM
+#define DEFAULT_MOUSEMOVE       MM_BUFF
 
-#define PAK_NONE		0
-#define PAK_MEM			1
-#define PAK_RUMBLE		2
-#define PAK_TRANSFER	3
-#define PAK_VOICE		4
-#define PAK_ADAPTOID	7
+#define PAK_NONE        0
+#define PAK_MEM         1
+#define PAK_RUMBLE      2
+#define PAK_TRANSFER    3
+#define PAK_VOICE       4
+#define PAK_ADAPTOID    7
 
 // just used to display text in GUI
-#define PAK_NONRAW		16
+#define PAK_NONRAW      16
 
 typedef struct _EMULATOR_INFO
 {
-	bool fInitialisedPlugin;
-	HWND hMainWindow;
-	HINSTANCE hinst;
-	LANGID Language;
-	bool fDisplayShortPop;	// do we display shortcut message popups?
+    bool fInitialisedPlugin;
+    HWND hMainWindow;
+    HINSTANCE hinst;
+    LANGID Language;
+    bool fDisplayShortPop;  // do we display shortcut message popups?
 
 /*
  * 2015.11.09 cxd4
@@ -70,152 +71,152 @@ typedef struct _EMULATOR_INFO
  */
     CONTROL * controllers;
 
-	//	BOOL MemoryBswaped;		// If this is set to TRUE, then the memory has been pre
-	//   bswap on a dword (32 bits) boundry, only effects header.
-	//	eg. the first 8 bytes are stored like this:
-	//        4 3 2 1   8 7 6 5
-	//	BYTE * HEADER;			// This is the rom header (first 40h bytes of the rom)
+    //  BOOL MemoryBswaped;     // If this is set to TRUE, then the memory has been pre
+    //   bswap on a dword (32 bits) boundry, only effects header.
+    //  eg. the first 8 bytes are stored like this:
+    //        4 3 2 1   8 7 6 5
+    //  BYTE * HEADER;          // This is the rom header (first 40h bytes of the rom)
 } EMULATOR_INFO, *LPEMULATOR_INFO;
 
 typedef struct _DEVICE
 {
-	LPDIRECTINPUTDEVICE8 didHandle;
-	TCHAR szProductName[MAX_PATH];
-	BYTE bProductCounter;
-	GUID guidInstance;
-	DWORD dwDevType;				// can be DI8DEVTYPE_KEYBOARD, DI8DEVTYPE_MOUSE, etc
-	BYTE bEffType;					// What rumble effects does this device support?
-	union INPUTSTATE                // the last polled data from this device
-	{
-		DIJOYSTATE joyState;
-		DIMOUSESTATE2 mouseState;
-		BYTE rgbButtons[256];		// keyboard state
-	} stateAs;
+    LPDIRECTINPUTDEVICE8 didHandle;
+    TCHAR szProductName[MAX_PATH];
+    BYTE bProductCounter;
+    GUID guidInstance;
+    DWORD dwDevType;                // can be DI8DEVTYPE_KEYBOARD, DI8DEVTYPE_MOUSE, etc
+    BYTE bEffType;                  // What rumble effects does this device support?
+    union INPUTSTATE                // the last polled data from this device
+    {
+        DIJOYSTATE joyState;
+        DIMOUSESTATE2 mouseState;
+        BYTE rgbButtons[256];       // keyboard state
+    } stateAs;
 } DEVICE, *LPDEVICE;
 
 typedef struct _BUTTON
 {
-	bool fPrevPressed;		// Was this button pressed last time we checked? (not to be saved in config)
-	BYTE bOffset;			// Offset in the DirectInput data structure
-	BYTE bAxisID;			// Tells which range of the Axe/POV is important (see AI_AXE_P, AI_POV_UP, etc)
-	BYTE bBtnType;				// Type of device/button: Keyboard key, Joystick axis, Joystick button, Mouse axis, etc
-	LPDEVICE parentDevice;	// pointer to the DEVICE this assignment came from
+    bool fPrevPressed;      // Was this button pressed last time we checked? (not to be saved in config)
+    BYTE bOffset;           // Offset in the DirectInput data structure
+    BYTE bAxisID;           // Tells which range of the Axe/POV is important (see AI_AXE_P, AI_POV_UP, etc)
+    BYTE bBtnType;              // Type of device/button: Keyboard key, Joystick axis, Joystick button, Mouse axis, etc
+    LPDEVICE parentDevice;  // pointer to the DEVICE this assignment came from
 } BUTTON, *LPBUTTON;
 
 // Modifiers are a feature built into NRage.  Emulator turbo buttons, macros, stuff like that.
 typedef struct _MODIFIER
 {
-	BUTTON btnButton;	// button to associate with
-	BYTE bModType;			// Type of modifier (None, Movement, Macro, Config)
-	BOOL fToggle;		// false if you have to hold the button down to activate, true if the modifier toggles on button press
-	BOOL fStatus;		// if true, control defaults to ACTIVE, and deactivates on button press
-	DWORD32 dwSpecific;	// will be cast to MODSPEC_MOVE, MODSPEC_MACRO, or MODSPEC_CONFIG
+    BUTTON btnButton;   // button to associate with
+    BYTE bModType;          // Type of modifier (None, Movement, Macro, Config)
+    BOOL fToggle;       // false if you have to hold the button down to activate, true if the modifier toggles on button press
+    BOOL fStatus;       // if true, control defaults to ACTIVE, and deactivates on button press
+    DWORD32 dwSpecific; // will be cast to MODSPEC_MOVE, MODSPEC_MACRO, or MODSPEC_CONFIG
 } MODIFIER, *LPMODIFIER;
 
 // bModType (modifiers)
-#define MDT_NONE		0
-#define MDT_MOVE		1
-#define MDT_MACRO		2
-#define MDT_CONFIG		3
+#define MDT_NONE        0
+#define MDT_MOVE        1
+#define MDT_MACRO       2
+#define MDT_CONFIG      3
 
 // buffered
-#define MM_BUFF		0
+#define MM_BUFF     0
 // absolute
-#define MM_ABS		1
+#define MM_ABS      1
 // deadpan
-#define MM_DEAD		2
+#define MM_DEAD     2
 
 // Number of analog axes.  Standard N64 controller has just 2: X and Y joystick.
-#define PF_AXESETS				2
+#define PF_AXESETS              2
 
-typedef struct _CONTROLLER		// AN N64 CONTROLLER
+typedef struct _CONTROLLER      // AN N64 CONTROLLER
 {
-	unsigned fPlugged;			// is the controller "plugged" (i.e. does the emulator see a controller on this port?)
-	unsigned fXInput;			// is the controller an xInput device?
-	unsigned fN64Mouse;			// is the controller a N64 Mouse (Relative)?
-	unsigned fRawData;			// are we using RAW mode for this controller?
-	unsigned fIsAdaptoid;		// is it an adaptoid?
+    unsigned fPlugged;          // is the controller "plugged" (i.e. does the emulator see a controller on this port?)
+    unsigned fXInput;           // is the controller an xInput device?
+    unsigned fN64Mouse;         // is the controller a N64 Mouse (Relative)?
+    unsigned fRawData;          // are we using RAW mode for this controller?
+    unsigned fIsAdaptoid;       // is it an adaptoid?
 
-	unsigned fKeyboard;			// does it use a keyboard?
-	unsigned fMouse;			// does it use a mouse?
-	unsigned fGamePad;			// does it use a gamepad/joystick?
+    unsigned fKeyboard;         // does it use a keyboard?
+    unsigned fMouse;            // does it use a mouse?
+    unsigned fGamePad;          // does it use a gamepad/joystick?
 
-	unsigned fRealN64Range;		// does it have the "Real N64 Range" flag set?
-	unsigned bAxisSet;			// which set of axes are we using? (Control 1, Control 2)
-	unsigned bMouseMoveX;		// does it use buffered/absolute mouse for X?  MM_BUFF, MM_ABS, MM_DEAD
-	unsigned bMouseMoveY;		// does it use buffered/absolute mouse for Y?
-	unsigned fKeyAbsoluteX;		// does it use absolute key for X?
-	unsigned fKeyAbsoluteY;		// does it use absolute key for Y?
+    unsigned fRealN64Range;     // does it have the "Real N64 Range" flag set?
+    unsigned bAxisSet;          // which set of axes are we using? (Control 1, Control 2)
+    unsigned bMouseMoveX;       // does it use buffered/absolute mouse for X?  MM_BUFF, MM_ABS, MM_DEAD
+    unsigned bMouseMoveY;       // does it use buffered/absolute mouse for Y?
+    unsigned fKeyAbsoluteX;     // does it use absolute key for X?
+    unsigned fKeyAbsoluteY;     // does it use absolute key for Y?
 
-	unsigned fPakInitialized;	// Has our pak been initialized?  Used to make sure we don't try to write to a mempak that doesn't point to anything.
-	unsigned fPakCRCError;		// The ROM sends CRC data when it tries to write to a mempak.  Is the CRC incorrect?  Usually indicates a bad ROM.
-	unsigned PakType;			// what type of controller pak? mempak? rumble? transfer? etc
-	unsigned fVisualRumble;		// is visual rumble enabled for this controller?
+    unsigned fPakInitialized;   // Has our pak been initialized?  Used to make sure we don't try to write to a mempak that doesn't point to anything.
+    unsigned fPakCRCError;      // The ROM sends CRC data when it tries to write to a mempak.  Is the CRC incorrect?  Usually indicates a bad ROM.
+    unsigned PakType;           // what type of controller pak? mempak? rumble? transfer? etc
+    unsigned fVisualRumble;     // is visual rumble enabled for this controller?
 
-	unsigned bBackgroundInput;  // allow input while main window isn't focused?
+    unsigned bBackgroundInput;  // allow input while main window isn't focused?
 
-	BYTE bRumbleTyp;				// what type of rumble effect? none, constant, ramp, or direct?
+    BYTE bRumbleTyp;                // what type of rumble effect? none, constant, ramp, or direct?
 
-	GUID guidFFDevice;				// GUID of the device that rumble gets sent to
+    GUID guidFFDevice;              // GUID of the device that rumble gets sent to
 
-	BYTE bStickRange;				// our "range modifier".
+    BYTE bStickRange;               // our "range modifier".
 
-	long wAxeBuffer[4];				// makes pseudo-relative Movement possible through keyboard or buttons
-	// also acts as a mouse buffer
+    long wAxeBuffer[4];             // makes pseudo-relative Movement possible through keyboard or buttons
+    // also acts as a mouse buffer
 
-	WORD wMouseSensitivityX;		// set per N64 controller, that's OK
-	WORD wMouseSensitivityY;
-	BYTE bPadDeadZone;				// our manual dead zone, set per N64 controller
-	BYTE bRumbleStrength;			// set per N64 controller
-	unsigned short nModifiers;		// number of modifiers
+    WORD wMouseSensitivityX;        // set per N64 controller, that's OK
+    WORD wMouseSensitivityY;
+    BYTE bPadDeadZone;              // our manual dead zone, set per N64 controller
+    BYTE bRumbleStrength;           // set per N64 controller
+    unsigned short nModifiers;      // number of modifiers
 
-	bool bRapidFireEnabled;
-	BYTE bRapidFireRate;
-	BYTE bRapidFireCounter;
+    bool bRapidFireEnabled;
+    BYTE bRapidFireRate;
+    BYTE bRapidFireCounter;
 
-	TCHAR szMempakFile[MAX_PATH + 1];		// MemPak-FileName
-	TCHAR szTransferRom[MAX_PATH + 1];	// GameBoyRom-Filename
-	TCHAR szTransferSave[MAX_PATH + 1];	// GameBoyEEPRom-Filename
+    TCHAR szMempakFile[MAX_PATH + 1];       // MemPak-FileName
+    TCHAR szTransferRom[MAX_PATH + 1];  // GameBoyRom-Filename
+    TCHAR szTransferSave[MAX_PATH + 1]; // GameBoyEEPRom-Filename
 
-	BUTTON aButton[14 + PF_AXESETS * 4];	// Ten buttons, 4 d-pad directions times two (for Config 1 and Config 2)
+    BUTTON aButton[14 + PF_AXESETS * 4];    // Ten buttons, 4 d-pad directions times two (for Config 1 and Config 2)
 
-	MODIFIER *pModifiers;				// Array of Modifiers
+    MODIFIER *pModifiers;               // Array of Modifiers
 
-	void *pPakData;						// Pointer to Pak Data (specific): see PakIO.h
-	// pPakData->bPakType will always be a BYTE indicating what the current pak type is
+    void *pPakData;                     // Pointer to Pak Data (specific): see PakIO.h
+    // pPakData->bPakType will always be a BYTE indicating what the current pak type is
 
-	XCONTROLLER xiController;			// To handle an XInput enabled controller	--tecnicors
+    XCONTROLLER xiController;           // To handle an XInput enabled controller   --tecnicors
 } CONTROLLER, *LPCONTROLLER;
 
 // This is the Index of WORD PROFILE.Button[X]
 // Buttons:
-#define PF_DPADR	0
-#define PF_DPADL	1
-#define PF_DPADD	2
-#define PF_DPADU	3
-#define PF_START	4
-#define PF_TRIGGERZ	5
-#define PF_BBUTTON	6
-#define PF_ABUTTON	7
+#define PF_DPADR    0
+#define PF_DPADL    1
+#define PF_DPADD    2
+#define PF_DPADU    3
+#define PF_START    4
+#define PF_TRIGGERZ 5
+#define PF_BBUTTON  6
+#define PF_ABUTTON  7
 #define PF_CBUTTONR 8
-#define PF_CBUTTONL	9
+#define PF_CBUTTONL 9
 #define PF_CBUTTOND 10
 #define PF_CBUTTONU 11
-#define PF_TRIGGERR	12
-#define PF_TRIGGERL	13
+#define PF_TRIGGERR 12
+#define PF_TRIGGERL 13
 
 // Analog Stick
 // cause you can assign Buttons to it, I need 4 of 'em
-#define PF_APADR	14
-#define PF_APADL	15
-#define PF_APADD	16
-#define PF_APADU	17
+#define PF_APADR    14
+#define PF_APADL    15
+#define PF_APADD    16
+#define PF_APADU    17
 
 // second Set
-// #define PF_APADR	18
-// #define PF_APADL	19
-// #define PF_APADD	20
-// #define PF_APADU	21
+// #define PF_APADR 18
+// #define PF_APADL 19
+// #define PF_APADD 20
+// #define PF_APADU 21
 
 // Data Format of DWORD Controller.Button:
 //
@@ -225,140 +226,140 @@ typedef struct _CONTROLLER		// AN N64 CONTROLLER
 // BYTE bOffset : Offset in the DirectInput data structure
 
 // BYTE bBtnType : Determines the Device and general Type of Control
-#define DT_UNASSIGNED		0
+#define DT_UNASSIGNED       0
 // Joystick
-#define DT_JOYBUTTON		1
-#define DT_JOYAXE			2
-#define DT_JOYPOV			3
-#define DT_JOYSLIDER		4
+#define DT_JOYBUTTON        1
+#define DT_JOYAXE           2
+#define DT_JOYPOV           3
+#define DT_JOYSLIDER        4
 
 // Keyboard
-#define DT_KEYBUTTON		5
+#define DT_KEYBUTTON        5
 
 // Mouse
-#define DT_MOUSEBUTTON		6
-#define DT_MOUSEAXE			7
+#define DT_MOUSEBUTTON      6
+#define DT_MOUSEAXE         7
 
 // BYTE bAxisID : AxeIndentifier, Tells which range of the Axe/POV is important
 
 // Positive Range of an Axe
-#define AI_AXE_P		0
+#define AI_AXE_P        0
 // Negative Range
-#define AI_AXE_N		1
+#define AI_AXE_N        1
 
 // Applies to POVs obviously
-#define AI_POV_UP		0
-#define AI_POV_RIGHT	1
-#define AI_POV_DOWN		2
-#define AI_POV_LEFT		3
+#define AI_POV_UP       0
+#define AI_POV_RIGHT    1
+#define AI_POV_DOWN     2
+#define AI_POV_LEFT     3
 
 // BYTE bOffset : Offset in the DirectInput data structure
 
 typedef union _MODSPEC_MOVE
 {
-	DWORD dwValue;
-	struct
-	{
-		short XModification;
-		short YModification;
-	};
+    DWORD dwValue;
+    struct
+    {
+        short XModification;
+        short YModification;
+    };
 } MODSPEC_MOVE, *LPMODSPEC_MOVE;
 
 typedef union _MODSPEC_MACRO
 {
-	DWORD dwValue;
-	struct
-	{
-		unsigned short aButtons;
-		unsigned short aFlags;
-	};
-	struct
-	{
-		unsigned fDigitalRight : 1;
-		unsigned fDigitalLeft : 1;
-		unsigned fDigitalDown : 1;
-		unsigned fDigitalUp : 1;
-		unsigned fStart : 1;
-		unsigned fTriggerZ : 1;
-		unsigned fBButton : 1;
-		unsigned fAButton : 1;
-		unsigned fCRight : 1;
-		unsigned fCLeft : 1;
-		unsigned fCDown : 1;
-		unsigned fCUp : 1;
-		unsigned fTriggerR : 1;
-		unsigned fTriggerL : 1;
-		unsigned : 2;
+    DWORD dwValue;
+    struct
+    {
+        unsigned short aButtons;
+        unsigned short aFlags;
+    };
+    struct
+    {
+        unsigned fDigitalRight : 1;
+        unsigned fDigitalLeft : 1;
+        unsigned fDigitalDown : 1;
+        unsigned fDigitalUp : 1;
+        unsigned fStart : 1;
+        unsigned fTriggerZ : 1;
+        unsigned fBButton : 1;
+        unsigned fAButton : 1;
+        unsigned fCRight : 1;
+        unsigned fCLeft : 1;
+        unsigned fCDown : 1;
+        unsigned fCUp : 1;
+        unsigned fTriggerR : 1;
+        unsigned fTriggerL : 1;
+        unsigned : 2;
 
-		unsigned fAnalogRight : 1;
-		unsigned fAnalogLeft : 1;
-		unsigned fAnalogDown : 1;
-		unsigned fAnalogUp : 1;
-		unsigned fRapidFire : 1;
-		unsigned fRapidFireRate : 1;
-		unsigned fPrevFireState : 1;
-		unsigned fPrevFireState2 : 1;
-	};
+        unsigned fAnalogRight : 1;
+        unsigned fAnalogLeft : 1;
+        unsigned fAnalogDown : 1;
+        unsigned fAnalogUp : 1;
+        unsigned fRapidFire : 1;
+        unsigned fRapidFireRate : 1;
+        unsigned fPrevFireState : 1;
+        unsigned fPrevFireState2 : 1;
+    };
 } MODSPEC_MACRO, *LPMODSPEC_MACRO;
 
 typedef union _MODSPEC_CONFIG
 {
-	DWORD dwValue;
-	struct
-	{
-		BYTE bAnalogStick;
-		BYTE bMouse;
-		BYTE bKeyboard;
-	};
-	struct
-	{
-		unsigned fChangeAnalogConfig : 1;
-		unsigned fAnalogStickMode : 7;
-		unsigned fChangeMouseXAxis : 1;
-		unsigned fChangeMouseYAxis : 1;
-		unsigned : 6;
-		unsigned fChangeKeyboardXAxis : 1;
-		unsigned fChangeKeyboardYAxis : 1;
-		unsigned : 6;
-	};
+    DWORD dwValue;
+    struct
+    {
+        BYTE bAnalogStick;
+        BYTE bMouse;
+        BYTE bKeyboard;
+    };
+    struct
+    {
+        unsigned fChangeAnalogConfig : 1;
+        unsigned fAnalogStickMode : 7;
+        unsigned fChangeMouseXAxis : 1;
+        unsigned fChangeMouseYAxis : 1;
+        unsigned : 6;
+        unsigned fChangeKeyboardXAxis : 1;
+        unsigned fChangeKeyboardYAxis : 1;
+        unsigned : 6;
+    };
 } MODSPEC_CONFIG, *LPMODSPEC_CONFIG;
 
-#define SC_NOPAK		0
-#define SC_MEMPAK		1
-#define SC_RUMBPAK		2
-#define SC_TRANSPAK		3
-#define SC_VOICEPAK		4
-#define SC_ADAPTPAK		5
-#define SC_SWMEMRUMB	6
-#define SC_SWMEMADAPT	7
+#define SC_NOPAK        0
+#define SC_MEMPAK       1
+#define SC_RUMBPAK      2
+#define SC_TRANSPAK     3
+#define SC_VOICEPAK     4
+#define SC_ADAPTPAK     5
+#define SC_SWMEMRUMB    6
+#define SC_SWMEMADAPT   7
 
 // total arraysize of aButtons in SHORTCUTSPL;
 // make sure you update this if you change the list above
-#define SC_TOTAL		8
+#define SC_TOTAL        8
 
 typedef struct _SHORTCUTSPL
 {
-	BUTTON aButtons[SC_TOTAL];
-	//BUTTON NoPakButton;
-	//BUTTON MemPakButton;
-	//BUTTON RumblePakButton;
-	//BUTTON TransferPakButton;
-	//BUTTON VoicePakButton;
-	//BUTTON AdaptoidPakButton;
-	//BUTTON SwMemRumbleButton;
-	//BUTTON SwMemAdaptoidButton;
+    BUTTON aButtons[SC_TOTAL];
+    //BUTTON NoPakButton;
+    //BUTTON MemPakButton;
+    //BUTTON RumblePakButton;
+    //BUTTON TransferPakButton;
+    //BUTTON VoicePakButton;
+    //BUTTON AdaptoidPakButton;
+    //BUTTON SwMemRumbleButton;
+    //BUTTON SwMemAdaptoidButton;
 } SHORTCUTSPL, *LPSHORTCUTSPL;
 
 typedef struct _SHORTCUTS
 {
-	SHORTCUTSPL Player[4];
-	BUTTON bMouseLock;
+    SHORTCUTSPL Player[4];
+    BUTTON bMouseLock;
 } SHORTCUTS, *LPSHORTCUTS;
 
 typedef struct _MSHORTCUT {
-	int iControl;
-	int iShortcut;
-} MSHORTCUT, *LPMSHORTCUT;	// shortcut message
+    int iControl;
+    int iShortcut;
+} MSHORTCUT, *LPMSHORTCUT;  // shortcut message
 
 #define CHECK_WHITESPACES( str ) ( str == '\r' || str == '\n' || str == '\t' )
 
