@@ -20,15 +20,16 @@
 */
 
 //code from http://msdn.microsoft.com/en-us/library/ee417014(VS.85).aspx
+#include <stdio.h>
+#include <wchar.h>
+
 #include <windows.h>
 #include <wbemidl.h>
+#include <tchar.h>
 
 #include "XInputController.h"
 #include "FileAccess.h"
-#include <wchar.h>
-#include <tchar.h>
 #include "resource.h"
-#include <stdio.h>
 
 //We need to keep track of XInput control id's
 int iXinputControlId = 0;

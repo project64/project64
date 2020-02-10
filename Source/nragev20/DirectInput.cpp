@@ -24,8 +24,8 @@
 #include <algorithm>
 #include <math.h>
 
-#include <InitGuid.h>
-#include <CGuid.h>
+#include <initguid.h>
+#include <cguid.h>
 #include <dinput.h>
 
 #include "commonIncludes.h"

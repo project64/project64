@@ -25,7 +25,7 @@
 #include <stdio.h>
 
 #include <windows.h>
-#include <CommDlg.h>
+#include <commdlg.h>
 #include <shlobj.h>
 #include <tchar.h>
 

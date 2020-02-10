@@ -25,7 +25,7 @@
 #include <stdio.h>
 
 #include <windows.h>
-#include <Commctrl.h>
+#include <commctrl.h>
 #include <tchar.h>
 
 #include "commonIncludes.h"

@@ -22,9 +22,9 @@
 */
 
 #include <windows.h>
-#include <Commctrl.h>
+#include <commctrl.h>
 #include <dinput.h>
-#include <Xinput.h>
+#include <xinput.h>
 
 #include "commonIncludes.h"
 

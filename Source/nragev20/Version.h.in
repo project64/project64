@@ -26,8 +26,12 @@
 #define VERSION_MAJOR               2
 #define VERSION_MINOR               5
 #define VERSION_REVISION            3
+#ifndef VERSION_BUILD
 #define VERSION_BUILD               9999
+#endif
+#ifndef GIT_VERSION
 #define GIT_VERSION                 ""
+#endif
 
 #define VER_FILE_DESCRIPTION_STR    "N-Rage for Project64"
 #define VER_FILE_VERSION            VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_BUILD
