@@ -24,7 +24,7 @@
 #include <stdio.h>
 
 #include <windows.h>
-#include <Commctrl.h>
+#include <commctrl.h>
 
 #include "commonIncludes.h"
 #include "DirectInput.h"
