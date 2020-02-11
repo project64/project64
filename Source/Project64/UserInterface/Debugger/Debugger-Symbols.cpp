@@ -17,6 +17,43 @@
 
 #include "Symbols.h"
 
+const CSetValueDlg::ComboItem CDebugSymbols::ModalChangeTypeItems[] = {
+	{ "code",   SYM_CODE},
+	{ "uint8",  SYM_U8 },
+	{ "int8",   SYM_S8 },
+	{ "uint16", SYM_U16 },
+	{ "int16",  SYM_S16 },
+	{ "uint32", SYM_U32 },
+	{ "int32",  SYM_S32 },
+	{ "uint64", SYM_U64 },
+	{ "int64",  SYM_S64 },
+	{ "float",  SYM_FLOAT },
+	{ "double", SYM_DOUBLE },
+	{ NULL, 0 }
+};
+
+const char* CDebugSymbols::GetTypeName(int m_Type)
+{
+	switch (m_Type)
+	{
+	case SYM_CODE:  return "code";
+	case SYM_DATA:   return "data";
+	case SYM_U8: return "uint8";
+	case SYM_U16:  return "uint16";
+	case SYM_U32: return "uint32";
+	case SYM_U64:  return "uint64";
+	case SYM_S8: return "int8";
+	case SYM_S16:  return "int16";
+	case SYM_S32:  return "int32";
+	case SYM_S64: return "int64";
+	case SYM_FLOAT: return "float";
+	case SYM_DOUBLE: return "double";
+	case SYM_INVALID: return "invalid";
+	}
+
+	return NULL;
+}
+
 CDebugSymbols::CDebugSymbols(CDebuggerUI * debugger) :
     CDebugDialog<CDebugSymbols>(debugger)
 {
@@ -99,26 +136,132 @@ LRESULT CDebugSymbols::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
 
 LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
 {
-    // Open it in memory viewer/commands viewer
-    NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
-    int nItem = pIA->iItem;
+	if (g_MMU == NULL)
+	{
+		return true;
+	}
 
-    int id = m_SymbolsListView.GetItemData(nItem);
+	LONG iItem = m_SymbolsListView.GetNextItem(-1, LVNI_SELECTED);
+	if (iItem == -1)
+	{
+		return true;
+	}
 
-    CSymbol symbol;
-    if (!m_Debugger->SymbolTable()->GetSymbolById(id, &symbol))
-    {
-        return 0;
-    }
+	int nSelectedCol = -1;
 
-    if (symbol.m_Type == SYM_CODE) // code
-    {
-        m_Debugger->Debug_ShowCommandsLocation(symbol.m_Address, true);
-    }
-    else // data/number
-    {
-        m_Debugger->Debug_ShowMemoryLocation(symbol.m_Address, true);
-    }
+	// hit test for column
+
+	POINT mousePt;
+	RECT listRect;
+	GetCursorPos(&mousePt);
+	m_SymbolsListView.GetWindowRect(&listRect);
+
+	int mouseX = mousePt.x - listRect.left;
+
+	for (int nCol = 0, colX = 0; nCol < m_SymbolsListView_Num_Columns; nCol++)
+	{
+		int colWidth = m_SymbolsListView.GetColumnWidth(nCol);
+		if (mouseX >= colX && mouseX <= colX + colWidth)
+		{
+			nSelectedCol = nCol;
+			break;
+		}
+		colX += colWidth;
+	}
+
+	NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
+	int nItem = pIA->iItem;
+	int id = m_SymbolsListView.GetItemData(nItem);
+
+	CSymbol symbol;
+	if (!m_Debugger->SymbolTable()->GetSymbolById(id, &symbol))
+	{
+		return 0;
+	}
+
+	switch (nSelectedCol)
+	{
+	case m_SymbolsListView_Col_Address:
+		// Open it in memory viewer/commands viewer
+		if (symbol.m_Type == SYM_CODE) // code
+		{
+			m_Debugger->Debug_ShowCommandsLocation(symbol.m_Address, true);
+		}
+		else // data/number
+		{
+			m_Debugger->Debug_ShowMemoryLocation(symbol.m_Address, true);
+		}
+		break;
+	case m_SymbolsListView_Col_Type:
+		if (m_SetValueDlg.DoModal("Change type", "New type:", symbol.m_Type, ModalChangeTypeItems))
+		{
+			ValueType t = (ValueType)m_SetValueDlg.GetEnteredData();
+
+			//Is there a better way?
+			m_Debugger->SymbolTable()->RemoveSymbolById(id);
+			m_Debugger->SymbolTable()->AddSymbol(t, symbol.m_Address, symbol.m_Name, symbol.m_Description);
+		}
+		break;
+	case m_SymbolsListView_Col_Name:
+		if (m_SetValueDlg.DoModal("Set name", "New name:", symbol.m_Name))
+		{
+			char* szEnteredString = m_SetValueDlg.GetEnteredString();
+			m_Debugger->SymbolTable()->RemoveSymbolById(id);
+			m_Debugger->SymbolTable()->AddSymbol(symbol.m_Type, symbol.m_Address, szEnteredString, symbol.m_Description);
+		}
+		break;
+	case m_SymbolsListView_Col_Value:
+		char szValue[64];
+		m_Debugger->SymbolTable()->GetValueString(szValue, &symbol);
+        if (m_SetValueDlg.DoModal("Change value", "New value:", szValue))
+        {
+			switch (symbol.m_Type)
+			{
+			case SYM_U8:
+				m_Debugger->DebugStore_VAddr<uint8_t>(symbol.m_Address, atoi(m_SetValueDlg.GetEnteredString()));
+				break;
+			case SYM_U16:
+				m_Debugger->DebugStore_VAddr<uint16_t>(symbol.m_Address, atoi(m_SetValueDlg.GetEnteredString()));
+				break;
+			case SYM_U32:
+				m_Debugger->DebugStore_VAddr<uint32_t>(symbol.m_Address, atoi(m_SetValueDlg.GetEnteredString()));
+				break;
+			case SYM_U64:
+				m_Debugger->DebugStore_VAddr<uint64_t>(symbol.m_Address, atoll(m_SetValueDlg.GetEnteredString()));
+				break;
+			case SYM_S8:
+				m_Debugger->DebugStore_VAddr<int8_t>(symbol.m_Address, atoi(m_SetValueDlg.GetEnteredString()));
+				break;
+			case SYM_S16:
+				m_Debugger->DebugStore_VAddr<int16_t>(symbol.m_Address, atoi(m_SetValueDlg.GetEnteredString()));
+				break;
+			case SYM_S32:
+				m_Debugger->DebugStore_VAddr<int>(symbol.m_Address, atoi(m_SetValueDlg.GetEnteredString()));
+				break;
+			case SYM_S64:
+				m_Debugger->DebugStore_VAddr<int64_t>(symbol.m_Address, atoll(m_SetValueDlg.GetEnteredString()));
+				break;
+			case SYM_FLOAT:
+				m_Debugger->DebugStore_VAddr<float>(symbol.m_Address, atof(m_SetValueDlg.GetEnteredString()));
+				break;
+			case SYM_DOUBLE:
+				m_Debugger->DebugStore_VAddr<double>(symbol.m_Address, atof(m_SetValueDlg.GetEnteredString()));
+				break;
+			}
+        }
+		break;
+	case m_SymbolsListView_Col_Description:
+		if (m_SetValueDlg.DoModal("Set description", "New description:", symbol.m_Description))
+		{
+			char* szEnteredString = m_SetValueDlg.GetEnteredString();
+			m_Debugger->SymbolTable()->RemoveSymbolById(id);
+			m_Debugger->SymbolTable()->AddSymbol(symbol.m_Type, symbol.m_Address, symbol.m_Name, szEnteredString);
+		}
+		break;
+	} 
+
+	m_Debugger->SymbolTable()->Save();
+	Refresh();
 
     return 0;
 }
