@@ -5,7 +5,7 @@
 # 1 # "Bosanski" // ID JEZIKA
 # 2 # "AceAlen" // Autor
 # 3 # "2.3" // Verzija
-# 4 # "November, 2019" // Datum
+# 4 # "January, 2020" // Datum
 
 // O DLL dijalogu
 # 5 # "Trenutni jezik"
