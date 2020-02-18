@@ -166,6 +166,9 @@ private:
 
     static void StaticSteppingOpsChanged(CDebugCommandsView * __this) { __this->SteppingOpsChanged(); }
     static void StaticWaitingForStepChanged(CDebugCommandsView * __this) { __this->WaitingForStepChanged(); }
+    static void GameCpuRunningChanged(CDebugCommandsView* _this);
+
+    void RecompilerCheck(void);
 
     LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);

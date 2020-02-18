@@ -58,10 +58,13 @@ CDebugCommandsView::CDebugCommandsView(CDebuggerUI * debugger, SyncEvent &StepEv
     m_bEditing = false;
     m_CommandListRows = 39;
     m_RowHeight = 13;
+
+    g_Settings->RegisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunningChanged);
 }
 
 CDebugCommandsView::~CDebugCommandsView()
 {
+    g_Settings->UnregisterChangeCB(GameRunning_CPU_Running, this, (CSettings::SettingChangedFunc)GameCpuRunningChanged);
 }
 
 LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
@@ -143,7 +146,38 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     RedrawCommandsAndRegisters();
     WindowCreated();
     m_Attached = true;
+
+    RecompilerCheck();
+
     return TRUE;
+}
+
+void CDebugCommandsView::GameCpuRunningChanged(CDebugCommandsView* _this)
+{
+    _this->RecompilerCheck();
+}
+
+void CDebugCommandsView::RecompilerCheck(void)
+{
+    if (!g_Settings->LoadBool(GameRunning_CPU_Running))
+    {
+        return;
+    }
+
+    if (!_this->IsWindow())
+    {
+        return;
+    }
+
+    if (g_Settings->LoadBool(Debugger_Enabled) &&
+        !g_Settings->LoadBool(Setting_ForceInterpreterCPU) &&
+        (CPU_TYPE)g_Settings->LoadDword(Game_CpuType) != CPU_Interpreter)
+    {
+        MessageBox("Debugger support for the recompiler core is experimental.\n\n"
+            "For optimal experience, enable \"Always use interpreter core\" "
+            "in advanced settings and restart the emulator.",
+            "Warning", MB_ICONWARNING | MB_OK);
+    }
 }
 
 void CDebugCommandsView::OnExitSizeMove(void)
