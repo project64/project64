@@ -20,7 +20,19 @@ class CDebugSymbols :
     public CDialogResize<CDebugSymbols>
 {
 private:
+    enum {
+        SymbolsListView_Col_Address,
+        SymbolsListView_Col_Type,
+        SymbolsListView_Col_Name,
+        SymbolsListView_Col_Value,
+        SymbolsListView_Col_Description,
+        SymbolsListView_Num_Columns
+    };
+
+    static const CSetValueDlg::ComboItem ModalChangeTypeItems[];
+
     CListViewCtrl m_SymbolsListView;
+    CSetValueDlg  m_SetValueDlg;
     CAddSymbolDlg m_AddSymbolDlg;
 
 public:

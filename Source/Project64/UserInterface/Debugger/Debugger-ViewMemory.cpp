@@ -562,6 +562,9 @@ LRESULT CDebugMemoryView::OnHxCtrlKeyPressed(LPNMHDR lpNMHDR)
     case 'W':
         m_Breakpoints->WBPToggle(address);
         break;
+    case 'N':
+        AddTab(0x80000000, true, 4);
+        break;
     case 'R':
         m_Breakpoints->RBPToggle(address);
         break;
