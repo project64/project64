@@ -555,21 +555,24 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
         char* cmdName = strtok((char*)command, "\t");
         char* cmdArgs = strtok(NULL, "\t");
 
+        CSymbol jalSymbol;
+
         // Show subroutine symbol name for JAL target
         if (OpCode.op == R4300i_JAL)
         {
-            uint32_t targetAddr = (0x80000000 | (OpCode.target << 2));
+            uint32_t targetAddr = (m_StartAddress & 0xF0000000) | (OpCode.target << 2);
 
-            CSymbol symbol;
-            if (m_Debugger->SymbolTable()->GetSymbolByAddress(targetAddr, &symbol))
+            if (m_Debugger->SymbolTable()->GetSymbolByAddress(targetAddr, &jalSymbol))
             {
-                cmdArgs = (char*)symbol.m_Name;
+                cmdArgs = (char*)jalSymbol.m_Name;
             }
         }
 
         // Detect reads and writes to mapped registers, cart header data, etc
         const char* annotation = NULL;
         bool bLoadStoreAnnotation = false;
+
+        CSymbol memSymbol;
 
         if (OpInfo.IsLoadStoreCommand())
         {
@@ -594,10 +597,9 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
 
                 uint32_t memAddr = (OpCodeTest.immediate << 16) + (short)OpCode.offset;
 
-                CSymbol symbol;
-                if (m_Debugger->SymbolTable()->GetSymbolByAddress(memAddr, &symbol))
+                if (m_Debugger->SymbolTable()->GetSymbolByAddress(memAddr, &memSymbol))
                 {
-                    annotation = symbol.m_Name;
+                    annotation = memSymbol.m_Name;
                 }
                 else
                 {
@@ -620,10 +622,10 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
         m_CommandList.AddItem(i, CCommandList::COL_PARAMETERS, cmdArgs);
 
         // Show routine symbol name for this address
-        CSymbol symbol;
-        if (m_Debugger->SymbolTable()->GetSymbolByAddress(opAddr, &symbol))
+        CSymbol pcSymbol;
+        if (m_Debugger->SymbolTable()->GetSymbolByAddress(opAddr, &pcSymbol))
         {
-            m_CommandList.AddItem(i, CCommandList::COL_SYMBOL, symbol.m_Name);
+            m_CommandList.AddItem(i, CCommandList::COL_SYMBOL, pcSymbol.m_Name);
             m_bvAnnotatedLines.push_back(false);
         }
         else if (annotation != NULL)
