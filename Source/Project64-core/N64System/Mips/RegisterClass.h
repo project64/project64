@@ -628,17 +628,18 @@ public:
     uint32_t           m_GfxIntrReg;
     uint32_t           m_RspIntrReg;
 
-    void CheckInterrupts        ();
-    void DoAddressError         ( bool DelaySlot, uint32_t BadVaddr, bool FromRead );
-    void DoBreakException       ( bool DelaySlot );
-    void DoTrapException        ( bool DelaySlot );
-    void DoCopUnusableException ( bool DelaySlot, int32_t Coprocessor );
-    bool DoIntrException        ( bool DelaySlot );
-    void DoTLBReadMiss          ( bool DelaySlot, uint32_t BadVaddr );
-    void DoSysCallException     ( bool DelaySlot);
-    void FixFpuLocations        ();
-    void Reset                  ();
-    void SetAsCurrentSystem     ();
+    void CheckInterrupts();
+    void DoAddressError( bool DelaySlot, uint32_t BadVaddr, bool FromRead );
+    void DoBreakException( bool DelaySlot );
+    void DoTrapException( bool DelaySlot );
+    void DoCopUnusableException( bool DelaySlot, int32_t Coprocessor );
+    bool DoIntrException( bool DelaySlot );
+    void DoTLBReadMiss(bool DelaySlot, uint32_t BadVaddr);
+    void DoTLBWriteMiss(bool DelaySlot, uint32_t BadVaddr);
+    void DoSysCallException ( bool DelaySlot);
+    void FixFpuLocations();
+    void Reset();
+    void SetAsCurrentSystem();
 
 private:
     CRegisters();                             // Disable default constructor
