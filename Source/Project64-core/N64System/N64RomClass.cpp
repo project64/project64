@@ -23,11 +23,12 @@
 #endif
 
 CN64Rom::CN64Rom() :
-m_ROMImage(NULL),
-m_ROMImageBase(NULL),
-m_ErrorMsg(EMPTY_STRING),
-m_Country(UnknownCountry),
-m_CicChip(CIC_UNKNOWN)
+    m_ROMImage(NULL),
+    m_ROMImageBase(NULL),
+    m_RomFileSize(0),
+    m_ErrorMsg(EMPTY_STRING),
+    m_Country(UnknownCountry),
+    m_CicChip(CIC_UNKNOWN)
 {
 }
 
@@ -39,7 +40,7 @@ CN64Rom::~CN64Rom()
 bool CN64Rom::AllocateRomImage(uint32_t RomFileSize)
 {
     WriteTrace(TraceN64System, TraceDebug, "Allocating memory for rom");
-    AUTO_PTR<uint8_t> ImageBase(new uint8_t[RomFileSize + 0x1000]);
+    AUTO_PTR<uint8_t> ImageBase(new uint8_t[RomFileSize + 0x2000]);
     if (ImageBase.get() == NULL)
     {
         SetError(MSG_MEM_ALLOC_ERROR);
@@ -652,16 +653,20 @@ bool CN64Rom::LoadN64Image(const char * FileLoc, bool LoadBootCodeOnly)
         CRC2 = *(uint32_t *)(&m_ROMImage[0x14]);
     }
 
-    m_RomIdent.Format("%08X-%08X-C:%X", CRC1, CRC2, m_ROMImage[0x3D]);
+    m_RomIdent = stdstr_f("%08X-%08X-C:%X", CRC1, CRC2, m_ROMImage[0x3D]);
     WriteTrace(TraceN64System, TraceDebug, "Ident: %s", m_RomIdent.c_str());
 
     if (!LoadBootCodeOnly && g_Rom == this)
     {
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
         if (!g_Disk)
+        {
             SaveRomSettingID(false);
+        }
         else if (!IsLoadedRomDDIPL())
+        {
             g_Settings->SaveString(Game_GameName, m_RomName.c_str());   //Use Base Game's Save File if loaded in combo
+        }
     }
 
     if (g_Settings->LoadBool(Game_CRC_Recalc))
@@ -813,7 +818,7 @@ bool CN64Rom::LoadN64ImageIPL(const char * FileLoc, bool LoadBootCodeOnly)
         CRC2 = *(uint32_t *)(&m_ROMImage[0x14]);
     }
 
-    m_RomIdent.Format("%08X-%08X-C:%X", CRC1, CRC2, m_ROMImage[0x3D]);
+    m_RomIdent = stdstr_f("%08X-%08X-C:%X", CRC1, CRC2, m_ROMImage[0x3D]);
     WriteTrace(TraceN64System, TraceDebug, "Ident: %s", m_RomIdent.c_str());
 
     if (!IsLoadedRomDDIPL())

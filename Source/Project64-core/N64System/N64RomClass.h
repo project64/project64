@@ -56,12 +56,11 @@ private:
 
     //class variables
     CFile m_RomFile;
-    void *m_hRomFileMapping;
     uint8_t * m_ROMImage;
     uint8_t * m_ROMImageBase;
     uint32_t m_RomFileSize;
     Country m_Country;
     CICChip m_CicChip;
     LanguageStringID m_ErrorMsg;
-    stdstr m_RomName, m_FileName, m_MD5, m_RomIdent;
+    std::string m_RomName, m_FileName, m_MD5, m_RomIdent;
 };
