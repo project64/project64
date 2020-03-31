@@ -207,7 +207,7 @@ void CDMA::PI_DMA_WRITE()
     g_Reg->PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
     if (g_Reg->PI_DRAM_ADDR_REG + PI_WR_LEN_REG > g_MMU->RdramSize())
     {
-        if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory)) { g_Notify->DisplayError(stdstr_f("PI_DMA_WRITE not in Memory: %08X", g_Reg->PI_DRAM_ADDR_REG + PI_WR_LEN_REG).c_str()); }
+        if (ShowUnhandledMemory()) { g_Notify->DisplayError(stdstr_f("PI_DMA_WRITE not in Memory: %08X", g_Reg->PI_DRAM_ADDR_REG + PI_WR_LEN_REG).c_str()); }
         g_Reg->PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
         g_Reg->MI_INTR_REG |= MI_INTR_PI;
         g_Reg->CheckInterrupts();
@@ -476,7 +476,7 @@ void CDMA::PI_DMA_WRITE()
         return;
     }
 
-    if (g_Settings->LoadBool(Debugger_ShowUnhandledMemory))
+    if (ShowUnhandledMemory())
     {
         g_Notify->DisplayError(stdstr_f("PI_DMA_WRITE not in ROM: %08X", PI_CART_ADDR_REG).c_str());
     }

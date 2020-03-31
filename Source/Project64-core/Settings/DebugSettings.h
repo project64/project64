@@ -36,7 +36,8 @@ public:
     static inline uint32_t FpExceptionBreakpoints(void) { return m_FpExceptionBreakpoints; }
     static inline uint32_t IntrBreakpoints(void) { return m_IntrBreakpoints; }
     static inline uint32_t RcpIntrBreakpoints(void) { return m_RcpIntrBreakpoints; }
-    
+    static inline bool ShowUnhandledMemory(void) { return m_ShowUnhandledMemory; }
+
 private:
     static void StaticRefreshSettings(CDebugSettings * _this)
     {
@@ -63,7 +64,8 @@ private:
     static uint32_t m_FpExceptionBreakpoints;
     static uint32_t m_IntrBreakpoints;
     static uint32_t m_RcpIntrBreakpoints;
-    
+    static bool m_ShowUnhandledMemory;
+
     static int32_t m_RefCount;
     static bool m_Registered;
 };
