@@ -39,7 +39,7 @@ LRESULT CAddSymbolDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 
     if (m_bHaveAddress)
     {
-        m_AddressEdit.SetValue(m_InitAddress, false, true);
+        m_AddressEdit.SetValue(m_InitAddress, DisplayMode::ZeroExtend);
         m_TypeComboBox.SetFocus();
     }
 

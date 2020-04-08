@@ -135,32 +135,32 @@ void CRegisterTabs::RefreshEdits()
     for (int i = 0; i < 32; i++)
     {
         m_GPREdits[i].SetValue(g_Reg->m_GPR[i].UDW);
-        m_FPREdits[i].SetValue(*(uint32_t *)g_Reg->m_FPR_S[i], false, true);
+        m_FPREdits[i].SetValue(*(uint32_t *)g_Reg->m_FPR_S[i], DisplayMode::ZeroExtend);
     }
     m_HIEdit.SetValue(g_Reg->m_HI.UDW);
     m_LOEdit.SetValue(g_Reg->m_LO.UDW);
 
-    m_FCSREdit.SetValue(g_Reg->m_FPCR[31], false, true);
+    m_FCSREdit.SetValue(g_Reg->m_FPCR[31], DisplayMode::ZeroExtend);
 
-    m_COP0Edits[0].SetValue(g_Reg->INDEX_REGISTER, false, true);
-    m_COP0Edits[1].SetValue(g_Reg->RANDOM_REGISTER, false, true);
-    m_COP0Edits[2].SetValue(g_Reg->ENTRYLO0_REGISTER, false, true);
-    m_COP0Edits[3].SetValue(g_Reg->ENTRYLO1_REGISTER, false, true);
-    m_COP0Edits[4].SetValue(g_Reg->CONTEXT_REGISTER, false, true);
-    m_COP0Edits[5].SetValue(g_Reg->PAGE_MASK_REGISTER, false, true);
-    m_COP0Edits[6].SetValue(g_Reg->WIRED_REGISTER, false, true);
-    m_COP0Edits[7].SetValue(g_Reg->BAD_VADDR_REGISTER, false, true);
-    m_COP0Edits[8].SetValue(g_Reg->COUNT_REGISTER, false, true);
-    m_COP0Edits[9].SetValue(g_Reg->ENTRYHI_REGISTER, false, true);
-    m_COP0Edits[10].SetValue(g_Reg->COMPARE_REGISTER, false, true);
-    m_COP0Edits[11].SetValue(g_Reg->STATUS_REGISTER, false, true);
-    m_COP0Edits[12].SetValue(g_Reg->CAUSE_REGISTER, false, true);
-    m_COP0Edits[13].SetValue(g_Reg->EPC_REGISTER, false, true);
-    m_COP0Edits[14].SetValue(g_Reg->CONFIG_REGISTER, false, true);
-    m_COP0Edits[15].SetValue(g_Reg->TAGLO_REGISTER, false, true);
-    m_COP0Edits[16].SetValue(g_Reg->TAGHI_REGISTER, false, true);
-    m_COP0Edits[17].SetValue(g_Reg->ERROREPC_REGISTER, false, true);
-    m_COP0Edits[18].SetValue(g_Reg->FAKE_CAUSE_REGISTER, false, true);
+    m_COP0Edits[0].SetValue(g_Reg->INDEX_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[1].SetValue(g_Reg->RANDOM_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[2].SetValue(g_Reg->ENTRYLO0_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[3].SetValue(g_Reg->ENTRYLO1_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[4].SetValue(g_Reg->CONTEXT_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[5].SetValue(g_Reg->PAGE_MASK_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[6].SetValue(g_Reg->WIRED_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[7].SetValue(g_Reg->BAD_VADDR_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[8].SetValue(g_Reg->COUNT_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[9].SetValue(g_Reg->ENTRYHI_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[10].SetValue(g_Reg->COMPARE_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[11].SetValue(g_Reg->STATUS_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[12].SetValue(g_Reg->CAUSE_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[13].SetValue(g_Reg->EPC_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[14].SetValue(g_Reg->CONFIG_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[15].SetValue(g_Reg->TAGLO_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[16].SetValue(g_Reg->TAGHI_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[17].SetValue(g_Reg->ERROREPC_REGISTER, DisplayMode::ZeroExtend);
+    m_COP0Edits[18].SetValue(g_Reg->FAKE_CAUSE_REGISTER, DisplayMode::ZeroExtend);
 
     CAUSE cause;
     cause.intval = g_Reg->CAUSE_REGISTER;
@@ -168,110 +168,110 @@ void CRegisterTabs::RefreshEdits()
     const char* szExceptionCode = ExceptionCodes[cause.exceptionCode];
     m_CauseTip.SetWindowTextA(szExceptionCode);
 
-    m_RDRAMEdits[0].SetValue(g_Reg->RDRAM_CONFIG_REG, false, true); // or device type
-    m_RDRAMEdits[1].SetValue(g_Reg->RDRAM_DEVICE_ID_REG, false, true);
-    m_RDRAMEdits[2].SetValue(g_Reg->RDRAM_DELAY_REG, false, true);
-    m_RDRAMEdits[3].SetValue(g_Reg->RDRAM_MODE_REG, false, true);
-    m_RDRAMEdits[4].SetValue(g_Reg->RDRAM_REF_INTERVAL_REG, false, true);
-    m_RDRAMEdits[5].SetValue(g_Reg->RDRAM_REF_ROW_REG, false, true);
-    m_RDRAMEdits[6].SetValue(g_Reg->RDRAM_RAS_INTERVAL_REG, false, true);
-    m_RDRAMEdits[7].SetValue(g_Reg->RDRAM_MIN_INTERVAL_REG, false, true);
-    m_RDRAMEdits[8].SetValue(g_Reg->RDRAM_ADDR_SELECT_REG, false, true);
-    m_RDRAMEdits[9].SetValue(g_Reg->RDRAM_DEVICE_MANUF_REG, false, true);
+    m_RDRAMEdits[0].SetValue(g_Reg->RDRAM_CONFIG_REG, DisplayMode::ZeroExtend); // or device type
+    m_RDRAMEdits[1].SetValue(g_Reg->RDRAM_DEVICE_ID_REG, DisplayMode::ZeroExtend);
+    m_RDRAMEdits[2].SetValue(g_Reg->RDRAM_DELAY_REG, DisplayMode::ZeroExtend);
+    m_RDRAMEdits[3].SetValue(g_Reg->RDRAM_MODE_REG, DisplayMode::ZeroExtend);
+    m_RDRAMEdits[4].SetValue(g_Reg->RDRAM_REF_INTERVAL_REG, DisplayMode::ZeroExtend);
+    m_RDRAMEdits[5].SetValue(g_Reg->RDRAM_REF_ROW_REG, DisplayMode::ZeroExtend);
+    m_RDRAMEdits[6].SetValue(g_Reg->RDRAM_RAS_INTERVAL_REG, DisplayMode::ZeroExtend);
+    m_RDRAMEdits[7].SetValue(g_Reg->RDRAM_MIN_INTERVAL_REG, DisplayMode::ZeroExtend);
+    m_RDRAMEdits[8].SetValue(g_Reg->RDRAM_ADDR_SELECT_REG, DisplayMode::ZeroExtend);
+    m_RDRAMEdits[9].SetValue(g_Reg->RDRAM_DEVICE_MANUF_REG, DisplayMode::ZeroExtend);
 
-    m_SPEdits[0].SetValue(g_Reg->SP_MEM_ADDR_REG, false, true);
-    m_SPEdits[1].SetValue(g_Reg->SP_DRAM_ADDR_REG, false, true);
-    m_SPEdits[2].SetValue(g_Reg->SP_RD_LEN_REG, false, true);
-    m_SPEdits[3].SetValue(g_Reg->SP_WR_LEN_REG, false, true);
-    m_SPEdits[4].SetValue(g_Reg->SP_STATUS_REG, false, true);
-    m_SPEdits[5].SetValue(g_Reg->SP_DMA_FULL_REG, false, true);
-    m_SPEdits[6].SetValue(g_Reg->SP_DMA_BUSY_REG, false, true);
-    m_SPEdits[7].SetValue(g_Reg->SP_SEMAPHORE_REG, false, true);
-    m_SPPCEdit.SetValue(g_Reg->SP_PC_REG, false, true);
+    m_SPEdits[0].SetValue(g_Reg->SP_MEM_ADDR_REG, DisplayMode::ZeroExtend);
+    m_SPEdits[1].SetValue(g_Reg->SP_DRAM_ADDR_REG, DisplayMode::ZeroExtend);
+    m_SPEdits[2].SetValue(g_Reg->SP_RD_LEN_REG, DisplayMode::ZeroExtend);
+    m_SPEdits[3].SetValue(g_Reg->SP_WR_LEN_REG, DisplayMode::ZeroExtend);
+    m_SPEdits[4].SetValue(g_Reg->SP_STATUS_REG, DisplayMode::ZeroExtend);
+    m_SPEdits[5].SetValue(g_Reg->SP_DMA_FULL_REG, DisplayMode::ZeroExtend);
+    m_SPEdits[6].SetValue(g_Reg->SP_DMA_BUSY_REG, DisplayMode::ZeroExtend);
+    m_SPEdits[7].SetValue(g_Reg->SP_SEMAPHORE_REG, DisplayMode::ZeroExtend);
+    m_SPPCEdit.SetValue(g_Reg->SP_PC_REG, DisplayMode::ZeroExtend);
 
-    m_DPCEdits[0].SetValue(g_Reg->DPC_START_REG, false, true);
-    m_DPCEdits[1].SetValue(g_Reg->DPC_END_REG, false, true);
-    m_DPCEdits[2].SetValue(g_Reg->DPC_CURRENT_REG, false, true);
-    m_DPCEdits[3].SetValue(g_Reg->DPC_STATUS_REG, false, true);
-    m_DPCEdits[4].SetValue(g_Reg->DPC_CLOCK_REG, false, true);
-    m_DPCEdits[5].SetValue(g_Reg->DPC_BUFBUSY_REG, false, true);
-    m_DPCEdits[6].SetValue(g_Reg->DPC_PIPEBUSY_REG, false, true);
-    m_DPCEdits[7].SetValue(g_Reg->DPC_TMEM_REG, false, true);
+    m_DPCEdits[0].SetValue(g_Reg->DPC_START_REG, DisplayMode::ZeroExtend);
+    m_DPCEdits[1].SetValue(g_Reg->DPC_END_REG, DisplayMode::ZeroExtend);
+    m_DPCEdits[2].SetValue(g_Reg->DPC_CURRENT_REG, DisplayMode::ZeroExtend);
+    m_DPCEdits[3].SetValue(g_Reg->DPC_STATUS_REG, DisplayMode::ZeroExtend);
+    m_DPCEdits[4].SetValue(g_Reg->DPC_CLOCK_REG, DisplayMode::ZeroExtend);
+    m_DPCEdits[5].SetValue(g_Reg->DPC_BUFBUSY_REG, DisplayMode::ZeroExtend);
+    m_DPCEdits[6].SetValue(g_Reg->DPC_PIPEBUSY_REG, DisplayMode::ZeroExtend);
+    m_DPCEdits[7].SetValue(g_Reg->DPC_TMEM_REG, DisplayMode::ZeroExtend);
 
-    m_MIEdits[0].SetValue(g_Reg->MI_INIT_MODE_REG, false, true);
-    m_MIEdits[1].SetValue(g_Reg->MI_VERSION_REG, false, true);
-    m_MIEdits[2].SetValue(g_Reg->MI_INTR_REG, false, true);
-    m_MIEdits[3].SetValue(g_Reg->MI_INTR_MASK_REG, false, true);
+    m_MIEdits[0].SetValue(g_Reg->MI_INIT_MODE_REG, DisplayMode::ZeroExtend);
+    m_MIEdits[1].SetValue(g_Reg->MI_VERSION_REG, DisplayMode::ZeroExtend);
+    m_MIEdits[2].SetValue(g_Reg->MI_INTR_REG, DisplayMode::ZeroExtend);
+    m_MIEdits[3].SetValue(g_Reg->MI_INTR_MASK_REG, DisplayMode::ZeroExtend);
 
-    m_VIEdits[0].SetValue(g_Reg->VI_STATUS_REG, false, true);
-    m_VIEdits[1].SetValue(g_Reg->VI_ORIGIN_REG, false, true);
-    m_VIEdits[2].SetValue(g_Reg->VI_WIDTH_REG, false, true);
-    m_VIEdits[3].SetValue(g_Reg->VI_INTR_REG, false, true);
-    m_VIEdits[4].SetValue(g_Reg->VI_CURRENT_REG, false, true);
-    m_VIEdits[5].SetValue(g_Reg->VI_BURST_REG, false, true);
-    m_VIEdits[6].SetValue(g_Reg->VI_V_SYNC_REG, false, true);
-    m_VIEdits[7].SetValue(g_Reg->VI_H_SYNC_REG, false, true);
-    m_VIEdits[8].SetValue(g_Reg->VI_LEAP_REG, false, true);
-    m_VIEdits[9].SetValue(g_Reg->VI_H_START_REG, false, true);
-    m_VIEdits[10].SetValue(g_Reg->VI_V_START_REG, false, true);
-    m_VIEdits[11].SetValue(g_Reg->VI_V_BURST_REG, false, true);
-    m_VIEdits[12].SetValue(g_Reg->VI_X_SCALE_REG, false, true);
-    m_VIEdits[13].SetValue(g_Reg->VI_Y_SCALE_REG, false, true);
+    m_VIEdits[0].SetValue(g_Reg->VI_STATUS_REG, DisplayMode::ZeroExtend);
+    m_VIEdits[1].SetValue(g_Reg->VI_ORIGIN_REG, DisplayMode::ZeroExtend);
+    m_VIEdits[2].SetValue(g_Reg->VI_WIDTH_REG, DisplayMode::ZeroExtend);
+    m_VIEdits[3].SetValue(g_Reg->VI_INTR_REG, DisplayMode::ZeroExtend);
+    m_VIEdits[4].SetValue(g_Reg->VI_CURRENT_REG, DisplayMode::ZeroExtend);
+    m_VIEdits[5].SetValue(g_Reg->VI_BURST_REG, DisplayMode::ZeroExtend);
+    m_VIEdits[6].SetValue(g_Reg->VI_V_SYNC_REG, DisplayMode::ZeroExtend);
+    m_VIEdits[7].SetValue(g_Reg->VI_H_SYNC_REG, DisplayMode::ZeroExtend);
+    m_VIEdits[8].SetValue(g_Reg->VI_LEAP_REG, DisplayMode::ZeroExtend);
+    m_VIEdits[9].SetValue(g_Reg->VI_H_START_REG, DisplayMode::ZeroExtend);
+    m_VIEdits[10].SetValue(g_Reg->VI_V_START_REG, DisplayMode::ZeroExtend);
+    m_VIEdits[11].SetValue(g_Reg->VI_V_BURST_REG, DisplayMode::ZeroExtend);
+    m_VIEdits[12].SetValue(g_Reg->VI_X_SCALE_REG, DisplayMode::ZeroExtend);
+    m_VIEdits[13].SetValue(g_Reg->VI_Y_SCALE_REG, DisplayMode::ZeroExtend);
 
-    m_AIEdits[0].SetValue(g_Reg->AI_DRAM_ADDR_REG, false, true);
-    m_AIEdits[1].SetValue(g_Reg->AI_LEN_REG, false, true);
-    m_AIEdits[2].SetValue(g_Reg->AI_CONTROL_REG, false, true);
-    m_AIEdits[3].SetValue(g_Reg->AI_STATUS_REG, false, true);
-    m_AIEdits[4].SetValue(g_Reg->AI_DACRATE_REG, false, true);
-    m_AIEdits[5].SetValue(g_Reg->AI_BITRATE_REG, false, true);
+    m_AIEdits[0].SetValue(g_Reg->AI_DRAM_ADDR_REG, DisplayMode::ZeroExtend);
+    m_AIEdits[1].SetValue(g_Reg->AI_LEN_REG, DisplayMode::ZeroExtend);
+    m_AIEdits[2].SetValue(g_Reg->AI_CONTROL_REG, DisplayMode::ZeroExtend);
+    m_AIEdits[3].SetValue(g_Reg->AI_STATUS_REG, DisplayMode::ZeroExtend);
+    m_AIEdits[4].SetValue(g_Reg->AI_DACRATE_REG, DisplayMode::ZeroExtend);
+    m_AIEdits[5].SetValue(g_Reg->AI_BITRATE_REG, DisplayMode::ZeroExtend);
 
-    m_PIEdits[0].SetValue(g_Reg->PI_DRAM_ADDR_REG, false, true);
-    m_PIEdits[1].SetValue(g_Reg->PI_CART_ADDR_REG, false, true);
-    m_PIEdits[2].SetValue(g_Reg->PI_RD_LEN_REG, false, true);
-    m_PIEdits[3].SetValue(g_Reg->PI_WR_LEN_REG, false, true);
-    m_PIEdits[4].SetValue(g_Reg->PI_STATUS_REG, false, true);
-    m_PIEdits[5].SetValue(g_Reg->PI_BSD_DOM1_LAT_REG, false, true);
-    m_PIEdits[6].SetValue(g_Reg->PI_BSD_DOM1_PWD_REG, false, true);
-    m_PIEdits[7].SetValue(g_Reg->PI_BSD_DOM1_PGS_REG, false, true);
-    m_PIEdits[8].SetValue(g_Reg->PI_BSD_DOM1_RLS_REG, false, true);
-    m_PIEdits[9].SetValue(g_Reg->PI_BSD_DOM2_LAT_REG, false, true);
-    m_PIEdits[10].SetValue(g_Reg->PI_BSD_DOM2_PWD_REG, false, true);
-    m_PIEdits[11].SetValue(g_Reg->PI_BSD_DOM2_PGS_REG, false, true);
-    m_PIEdits[12].SetValue(g_Reg->PI_BSD_DOM2_RLS_REG, false, true);
+    m_PIEdits[0].SetValue(g_Reg->PI_DRAM_ADDR_REG, DisplayMode::ZeroExtend);
+    m_PIEdits[1].SetValue(g_Reg->PI_CART_ADDR_REG, DisplayMode::ZeroExtend);
+    m_PIEdits[2].SetValue(g_Reg->PI_RD_LEN_REG, DisplayMode::ZeroExtend);
+    m_PIEdits[3].SetValue(g_Reg->PI_WR_LEN_REG, DisplayMode::ZeroExtend);
+    m_PIEdits[4].SetValue(g_Reg->PI_STATUS_REG, DisplayMode::ZeroExtend);
+    m_PIEdits[5].SetValue(g_Reg->PI_BSD_DOM1_LAT_REG, DisplayMode::ZeroExtend);
+    m_PIEdits[6].SetValue(g_Reg->PI_BSD_DOM1_PWD_REG, DisplayMode::ZeroExtend);
+    m_PIEdits[7].SetValue(g_Reg->PI_BSD_DOM1_PGS_REG, DisplayMode::ZeroExtend);
+    m_PIEdits[8].SetValue(g_Reg->PI_BSD_DOM1_RLS_REG, DisplayMode::ZeroExtend);
+    m_PIEdits[9].SetValue(g_Reg->PI_BSD_DOM2_LAT_REG, DisplayMode::ZeroExtend);
+    m_PIEdits[10].SetValue(g_Reg->PI_BSD_DOM2_PWD_REG, DisplayMode::ZeroExtend);
+    m_PIEdits[11].SetValue(g_Reg->PI_BSD_DOM2_PGS_REG, DisplayMode::ZeroExtend);
+    m_PIEdits[12].SetValue(g_Reg->PI_BSD_DOM2_RLS_REG, DisplayMode::ZeroExtend);
 
-    m_RIEdits[0].SetValue(g_Reg->RI_MODE_REG, false, true);
-    m_RIEdits[1].SetValue(g_Reg->RI_CONFIG_REG, false, true);
-    m_RIEdits[2].SetValue(g_Reg->RI_CURRENT_LOAD_REG, false, true);
-    m_RIEdits[3].SetValue(g_Reg->RI_SELECT_REG, false, true);
-    m_RIEdits[4].SetValue(g_Reg->RI_REFRESH_REG, false, true); // or ri count
-    m_RIEdits[5].SetValue(g_Reg->RI_LATENCY_REG, false, true);
-    m_RIEdits[6].SetValue(g_Reg->RI_RERROR_REG, false, true);
-    m_RIEdits[7].SetValue(g_Reg->RI_WERROR_REG, false, true);
+    m_RIEdits[0].SetValue(g_Reg->RI_MODE_REG, DisplayMode::ZeroExtend);
+    m_RIEdits[1].SetValue(g_Reg->RI_CONFIG_REG, DisplayMode::ZeroExtend);
+    m_RIEdits[2].SetValue(g_Reg->RI_CURRENT_LOAD_REG, DisplayMode::ZeroExtend);
+    m_RIEdits[3].SetValue(g_Reg->RI_SELECT_REG, DisplayMode::ZeroExtend);
+    m_RIEdits[4].SetValue(g_Reg->RI_REFRESH_REG, DisplayMode::ZeroExtend); // or ri count
+    m_RIEdits[5].SetValue(g_Reg->RI_LATENCY_REG, DisplayMode::ZeroExtend);
+    m_RIEdits[6].SetValue(g_Reg->RI_RERROR_REG, DisplayMode::ZeroExtend);
+    m_RIEdits[7].SetValue(g_Reg->RI_WERROR_REG, DisplayMode::ZeroExtend);
 
-    m_SIEdits[0].SetValue(g_Reg->SI_DRAM_ADDR_REG, false, true);
-    m_SIEdits[1].SetValue(g_Reg->SI_PIF_ADDR_RD64B_REG, false, true);
-    m_SIEdits[2].SetValue(g_Reg->SI_PIF_ADDR_WR64B_REG, false, true);
-    m_SIEdits[3].SetValue(g_Reg->SI_STATUS_REG, false, true);
+    m_SIEdits[0].SetValue(g_Reg->SI_DRAM_ADDR_REG, DisplayMode::ZeroExtend);
+    m_SIEdits[1].SetValue(g_Reg->SI_PIF_ADDR_RD64B_REG, DisplayMode::ZeroExtend);
+    m_SIEdits[2].SetValue(g_Reg->SI_PIF_ADDR_WR64B_REG, DisplayMode::ZeroExtend);
+    m_SIEdits[3].SetValue(g_Reg->SI_STATUS_REG, DisplayMode::ZeroExtend);
 
-    m_DDEdits[0].SetValue(g_Reg->ASIC_DATA, false, true);
-    m_DDEdits[1].SetValue(g_Reg->ASIC_MISC_REG, false, true);
-    m_DDEdits[2].SetValue(g_Reg->ASIC_STATUS, false, true);
-    m_DDEdits[3].SetValue(g_Reg->ASIC_CUR_TK, false, true);
-    m_DDEdits[4].SetValue(g_Reg->ASIC_BM_STATUS, false, true);
-    m_DDEdits[5].SetValue(g_Reg->ASIC_ERR_SECTOR, false, true);
-    m_DDEdits[6].SetValue(g_Reg->ASIC_SEQ_STATUS, false, true);
-    m_DDEdits[7].SetValue(g_Reg->ASIC_CUR_SECTOR, false, true);
-    m_DDEdits[8].SetValue(g_Reg->ASIC_HARD_RESET, false, true);
-    m_DDEdits[9].SetValue(g_Reg->ASIC_C1_S0, false, true);
-    m_DDEdits[10].SetValue(g_Reg->ASIC_HOST_SECBYTE, false, true);
-    m_DDEdits[11].SetValue(g_Reg->ASIC_C1_S2, false, true);
-    m_DDEdits[12].SetValue(g_Reg->ASIC_SEC_BYTE, false, true);
-    m_DDEdits[13].SetValue(g_Reg->ASIC_C1_S4, false, true);
-    m_DDEdits[14].SetValue(g_Reg->ASIC_C1_S6, false, true);
-    m_DDEdits[15].SetValue(g_Reg->ASIC_CUR_ADDR, false, true);
-    m_DDEdits[16].SetValue(g_Reg->ASIC_ID_REG, false, true);
-    m_DDEdits[17].SetValue(g_Reg->ASIC_TEST_REG, false, true);
-    m_DDEdits[18].SetValue(g_Reg->ASIC_TEST_PIN_SEL, false, true);
+    m_DDEdits[0].SetValue(g_Reg->ASIC_DATA, DisplayMode::ZeroExtend);
+    m_DDEdits[1].SetValue(g_Reg->ASIC_MISC_REG, DisplayMode::ZeroExtend);
+    m_DDEdits[2].SetValue(g_Reg->ASIC_STATUS, DisplayMode::ZeroExtend);
+    m_DDEdits[3].SetValue(g_Reg->ASIC_CUR_TK, DisplayMode::ZeroExtend);
+    m_DDEdits[4].SetValue(g_Reg->ASIC_BM_STATUS, DisplayMode::ZeroExtend);
+    m_DDEdits[5].SetValue(g_Reg->ASIC_ERR_SECTOR, DisplayMode::ZeroExtend);
+    m_DDEdits[6].SetValue(g_Reg->ASIC_SEQ_STATUS, DisplayMode::ZeroExtend);
+    m_DDEdits[7].SetValue(g_Reg->ASIC_CUR_SECTOR, DisplayMode::ZeroExtend);
+    m_DDEdits[8].SetValue(g_Reg->ASIC_HARD_RESET, DisplayMode::ZeroExtend);
+    m_DDEdits[9].SetValue(g_Reg->ASIC_C1_S0, DisplayMode::ZeroExtend);
+    m_DDEdits[10].SetValue(g_Reg->ASIC_HOST_SECBYTE, DisplayMode::ZeroExtend);
+    m_DDEdits[11].SetValue(g_Reg->ASIC_C1_S2, DisplayMode::ZeroExtend);
+    m_DDEdits[12].SetValue(g_Reg->ASIC_SEC_BYTE, DisplayMode::ZeroExtend);
+    m_DDEdits[13].SetValue(g_Reg->ASIC_C1_S4, DisplayMode::ZeroExtend);
+    m_DDEdits[14].SetValue(g_Reg->ASIC_C1_S6, DisplayMode::ZeroExtend);
+    m_DDEdits[15].SetValue(g_Reg->ASIC_CUR_ADDR, DisplayMode::ZeroExtend);
+    m_DDEdits[16].SetValue(g_Reg->ASIC_ID_REG, DisplayMode::ZeroExtend);
+    m_DDEdits[17].SetValue(g_Reg->ASIC_TEST_REG, DisplayMode::ZeroExtend);
+    m_DDEdits[18].SetValue(g_Reg->ASIC_TEST_PIN_SEL, DisplayMode::ZeroExtend);
 }
 
 void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
@@ -817,7 +817,7 @@ void CRegisterTabs::InitRegisterEdits64(CWindow& tab, CEditReg64* edits, const W
 
 void CRegisterTabs::ZeroRegisterEdit(CEditNumber32& edit)
 {
-    edit.SetValue(0, false, true);
+    edit.SetValue(0, DisplayMode::ZeroExtend);
 }
 
 void CRegisterTabs::ZeroRegisterEdits(CEditNumber32* edits, uint32_t ctrlIdsCount)

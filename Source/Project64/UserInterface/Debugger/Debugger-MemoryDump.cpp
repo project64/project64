@@ -40,8 +40,8 @@ LRESULT CDumpMemory::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPa
     uint32_t startAddress = 0x80000000;
     uint32_t endAddress = startAddress + (g_MMU ? g_MMU->RdramSize() : 0x400000);
 
-    m_StartAddress.SetValue(startAddress, true, true);
-    m_EndAddress.SetValue(endAddress, true, true);
+    m_StartAddress.SetValue(startAddress, DisplayMode::AllHex);
+    m_EndAddress.SetValue(endAddress, DisplayMode::AllHex);
     m_PC.SetValue(startAddress);
     
     int nIndex = m_FormatList.AddString("TEXT - Disassembly + PC");
@@ -172,8 +172,8 @@ bool CDumpMemory::DumpMemory(LPCSTR FileName, DumpFormat Format, DWORD StartPC, 
             LogFile.LogF("%X: %-15s%s\r\n", DumpPC, cmdName, cmdArgs);
         }
 
-        m_StartAddress.SetValue(StartPC, true, true);
-        m_EndAddress.SetValue(EndPC, true, true);
+        m_StartAddress.SetValue(StartPC, DisplayMode::AllHex);
+        m_EndAddress.SetValue(EndPC, DisplayMode::AllHex);
         return true;
     }
 

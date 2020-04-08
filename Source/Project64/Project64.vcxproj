@@ -203,6 +203,7 @@
     <ClInclude Include="UserInterface\Settings\SettingsPage.h" />
     <ClInclude Include="UserInterface\SupportEnterCode.h" />
     <ClInclude Include="UserInterface\SupportWindow.h" />
+    <ClInclude Include="UserInterface\WTLControls\DisplayMode.h" />
     <ClInclude Include="UserInterface\WTLControls\EditNumber32.h" />
     <ClInclude Include="UserInterface\WTLControls\HexEditCtrl.h" />
     <ClInclude Include="UserInterface\WTLControls\ModifiedCheckBox.h" />

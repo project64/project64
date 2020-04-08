@@ -332,7 +332,7 @@ uint32_t CEditNumber32::GetValue(void)
     return Value;
 }
 
-void CEditNumber32::SetValue(uint32_t Value, bool ShowHexIdent, bool ZeroExtend)
+void CEditNumber32::SetValue(uint32_t Value, DisplayMode Display)
 {
     char text[200];
     if (m_DisplayType == DisplayDec)
@@ -341,7 +341,12 @@ void CEditNumber32::SetValue(uint32_t Value, bool ShowHexIdent, bool ZeroExtend)
     }
     else
     {
-        sprintf(text, "%s%0*X", ShowHexIdent ? "0x" : "", ZeroExtend ? 8 : 0, Value);
+        sprintf(
+            text,
+            "%s%0*X",
+            (Display & DisplayMode::ShowHexIdent) == DisplayMode::ShowHexIdent ? "0x" : "",
+            (Display & DisplayMode::ZeroExtend) == DisplayMode::ZeroExtend ? 8 : 0,
+            Value);
     }
     SetWindowText(text);
 }

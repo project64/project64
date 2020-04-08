@@ -109,8 +109,8 @@ LRESULT CDebugMemorySearch::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     
     uint32_t ramSize = (g_MMU != NULL) ? g_MMU->RdramSize() : 0x00400000;
 
-    m_AddrStart.SetValue(0x80000000, true, true);
-    m_AddrEnd.SetValue(0x80000000 + ramSize - 1, true, true);
+    m_AddrStart.SetValue(0x80000000, DisplayMode::AllHex);
+    m_AddrEnd.SetValue(0x80000000 + ramSize - 1, DisplayMode::AllHex);
 
     FixListHeader(m_WatchListCtrl);
     FixListHeader(m_ResultsListCtrl);
@@ -347,8 +347,8 @@ LRESULT CDebugMemorySearch::OnRdramButton(WORD /*wNotifyCode*/, WORD /*wID*/, HW
     bool bPhysicalChecked = (m_PhysicalCheckbox.GetCheck() == BST_CHECKED);
     uint32_t addrStart = bPhysicalChecked ? 0 : 0x80000000;
     uint32_t ramSize = (g_MMU != NULL) ? g_MMU->RdramSize() : 0x00400000;
-    m_AddrStart.SetValue(addrStart, true, true);
-    m_AddrEnd.SetValue(addrStart + ramSize - 1, true, true);
+    m_AddrStart.SetValue(addrStart, DisplayMode::AllHex);
+    m_AddrEnd.SetValue(addrStart + ramSize - 1, DisplayMode::AllHex);
     return FALSE;
 }
 
@@ -356,8 +356,8 @@ LRESULT CDebugMemorySearch::OnRomButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND
 {
     bool bPhysicalChecked = (m_PhysicalCheckbox.GetCheck() == BST_CHECKED);
     uint32_t addrStart = bPhysicalChecked ? 0x10000000 : 0xB0000000;
-    m_AddrStart.SetValue(addrStart, true, true);
-    m_AddrEnd.SetValue(addrStart + g_Rom->GetRomSize() - 1, true, true);
+    m_AddrStart.SetValue(addrStart, DisplayMode::AllHex);
+    m_AddrEnd.SetValue(addrStart + g_Rom->GetRomSize() - 1, DisplayMode::AllHex);
     return FALSE;
 }
 
@@ -365,8 +365,8 @@ LRESULT CDebugMemorySearch::OnSpmemButton(WORD /*wNotifyCode*/, WORD /*wID*/, HW
 {
     bool bPhysicalChecked = (m_PhysicalCheckbox.GetCheck() == BST_CHECKED);
     uint32_t addrStart = bPhysicalChecked ? 0x04000000 : 0xA4000000;
-    m_AddrStart.SetValue(addrStart, true, true);
-    m_AddrEnd.SetValue(addrStart + 0x1FFF, true, true);
+    m_AddrStart.SetValue(addrStart, DisplayMode::AllHex);
+    m_AddrEnd.SetValue(addrStart + 0x1FFF, DisplayMode::AllHex);
     return FALSE;
 }
 

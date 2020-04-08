@@ -100,7 +100,7 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     m_PCEdit.SetLimitText(8);
 
     m_bIgnorePCChange = true;
-    m_PCEdit.SetValue(0x80000180, false, true);
+    m_PCEdit.SetValue(0x80000180, DisplayMode::ZeroExtend);
 
     // Setup View PC button
     m_ViewPCButton.EnableWindow(FALSE);
@@ -124,7 +124,7 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     m_OpEdit.SetCommandsWindow(this);
 
     m_bIgnoreAddrChange = true;
-    m_AddressEdit.SetValue(0x80000000, false, true);
+    m_AddressEdit.SetValue(0x80000000, DisplayMode::ZeroExtend);
     ShowAddress(0x80000000, TRUE);
     m_bIgnoreAddrChange = false;
 
@@ -231,7 +231,7 @@ void CDebugCommandsView::InterceptMouseWheel(WPARAM wParam, LPARAM /*lParam*/)
 
     m_StartAddress = newAddress;
 
-    m_AddressEdit.SetValue(m_StartAddress, false, true);
+    m_AddressEdit.SetValue(m_StartAddress, DisplayMode::ZeroExtend);
 }
 
 LRESULT CALLBACK CDebugCommandsView::HookProc(int nCode, WPARAM wParam, LPARAM lParam)
@@ -512,7 +512,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
         if (!bUserInput)
         {
             m_bIgnoreAddrChange = true;
-            m_AddressEdit.SetValue(address, false, true);
+            m_AddressEdit.SetValue(address, DisplayMode::ZeroExtend);
         }
 
         if (!isStepping())
@@ -536,7 +536,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
         {
             m_StartAddress = address - address % 4;
             m_bIgnoreAddrChange = true;
-            m_AddressEdit.SetValue(address, false, true);
+            m_AddressEdit.SetValue(address, DisplayMode::ZeroExtend);
         }
 
         if (m_History.size() == 0 || m_History[m_HistoryIndex] != m_StartAddress)
@@ -545,7 +545,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
         }
 
         m_bIgnorePCChange = true;
-        m_PCEdit.SetValue(g_Reg->m_PROGRAM_COUNTER, false, true);
+        m_PCEdit.SetValue(g_Reg->m_PROGRAM_COUNTER, DisplayMode::ZeroExtend);
 
         // Enable buttons
         m_ViewPCButton.EnableWindow(TRUE);
@@ -1128,7 +1128,7 @@ LRESULT CDebugCommandsView::OnBackButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWN
     if (m_HistoryIndex > 0)
     {
         m_HistoryIndex--;
-        m_AddressEdit.SetValue(m_History[m_HistoryIndex], false, true);
+        m_AddressEdit.SetValue(m_History[m_HistoryIndex], DisplayMode::ZeroExtend);
         ToggleHistoryButtons();
     }
     return FALSE;
@@ -1139,7 +1139,7 @@ LRESULT CDebugCommandsView::OnForwardButton(WORD /*wNotifyCode*/, WORD /*wID*/, 
     if (m_History.size() > 0 && m_HistoryIndex < (int)m_History.size() - 1)
     {
         m_HistoryIndex++;
-        m_AddressEdit.SetValue(m_History[m_HistoryIndex], false, true);
+        m_AddressEdit.SetValue(m_History[m_HistoryIndex], DisplayMode::ZeroExtend);
         ToggleHistoryButtons();
     }
     return FALSE;
