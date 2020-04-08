@@ -233,7 +233,7 @@ void CDebugMemoryView::JumpToSelection(void)
     uint32_t startAddress, endAddress;
     bool bHaveSelection = m_HexEditCtrl.GetSelectionRange(&startAddress, &endAddress);
     uint32_t targetAddress = bHaveSelection ? startAddress : m_HexEditCtrl.GetCaretAddress();
-    m_MemAddr.SetValue(targetAddress, false, true);
+    m_MemAddr.SetValue(targetAddress, DisplayMode::ZeroExtend);
 }
 
 bool CDebugMemoryView::GetSafeEditValue(uint32_t address, uint8_t* value)
@@ -340,7 +340,7 @@ LRESULT CDebugMemoryView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
     }
 
     m_MemAddr.SetDisplayType(CEditNumber32::DisplayHex);
-    m_MemAddr.SetValue(0x80000000, false, true);
+    m_MemAddr.SetValue(0x80000000, DisplayMode::ZeroExtend);
 
     m_VirtualCheckbox.SetCheck(BST_CHECKED);
 
@@ -521,19 +521,19 @@ void CDebugMemoryView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar pScrollBar)
     switch (nSBCode)
     {
     case SB_LINEDOWN:
-        m_MemAddr.SetValue(address < 0xFFFFFFEF ? address + numBytesPerRow : 0xFFFFFFFF, false, true);
+        m_MemAddr.SetValue(address < 0xFFFFFFEF ? address + numBytesPerRow : 0xFFFFFFFF, DisplayMode::ZeroExtend);
         break;
     case SB_LINEUP:
-        m_MemAddr.SetValue(address > (uint32_t)numBytesPerRow ? address - numBytesPerRow : 0, false, true);
+        m_MemAddr.SetValue(address > (uint32_t)numBytesPerRow ? address - numBytesPerRow : 0, DisplayMode::ZeroExtend);
         break;
     case SB_PAGEDOWN:
-        m_MemAddr.SetValue(address < 0xFFFFFEFF ? address + numVisibleBytes : 0xFFFFFFFF, false, true);
+        m_MemAddr.SetValue(address < 0xFFFFFEFF ? address + numVisibleBytes : 0xFFFFFFFF, DisplayMode::ZeroExtend);
         break;
     case SB_PAGEUP:
-        m_MemAddr.SetValue(address >(uint32_t)numVisibleBytes ? address - numVisibleBytes : 0, false, true);
+        m_MemAddr.SetValue(address >(uint32_t)numVisibleBytes ? address - numVisibleBytes : 0, DisplayMode::ZeroExtend);
         break;
     case SB_THUMBPOSITION:
-        m_MemAddr.SetValue((DWORD)nPos << 0x10, false, true);
+        m_MemAddr.SetValue((DWORD)nPos << 0x10, DisplayMode::ZeroExtend);
         break;
     default:
         break;
@@ -951,7 +951,7 @@ LRESULT CDebugMemoryView::OnHxBaseAddrChanged(LPNMHDR /*lpNMHDR*/)
     // address was updated from the control
     uint32_t address = m_HexEditCtrl.GetBaseAddress();
     m_bIgnoreAddressInput = true;
-    m_MemAddr.SetValue(address, false, true);
+    m_MemAddr.SetValue(address, DisplayMode::ZeroExtend);
     m_CmbJump.SetCurSel(GetJumpItemIndex(address, m_bVirtualMemory));
     UpdateCurrentTab(address);
     return FALSE;
@@ -1037,7 +1037,7 @@ void CDebugMemoryView::TabSelChanged(void)
         tab_info_t tabInfo = m_TabData[nItem];
         uint32_t address = tabInfo.address;
         
-        m_MemAddr.SetValue(address, false, true);
+        m_MemAddr.SetValue(address, DisplayMode::ZeroExtend);
 
         if (m_bVirtualMemory != tabInfo.bVirtual)
         {
@@ -1242,6 +1242,6 @@ void CDebugMemoryView::OnJumpComboSelChange(UINT /*uNotifyCode*/, int /*nID*/, C
         address = JumpItems[nItem].paddr;
     }
     
-    m_MemAddr.SetValue(address, false, true);
+    m_MemAddr.SetValue(address, DisplayMode::ZeroExtend);
     m_HexEditCtrl.SetFocus();
 }
