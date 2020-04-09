@@ -332,6 +332,11 @@ uint32_t CEditNumber32::GetValue(void)
     return Value;
 }
 
+stdstr CEditNumber32::GetValueText(void)
+{
+    return ::GetCWindowText(this);
+}
+
 void CEditNumber32::SetValue(uint32_t Value, DisplayMode Display)
 {
     char text[200];

@@ -10,6 +10,9 @@
 ****************************************************************************/
 #pragma once
 
+//Uncomment this to prevent lots of spurious assertions in debug mode
+//#define _ASSERTE(expr) ((void)0)
+
 #pragma warning(push)
 #pragma warning(disable : 4091) // warning C4091: 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared
 #pragma warning(disable : 4201) // warning C4201: nonstandard extension used: nameless struct/union
@@ -53,6 +56,7 @@ extern CPj64Module _Module;
 #include <Common/StdString.h>
 
 #include "UserInterface/resource.h"
+#include "UserInterface/WTLControls/GetCWindowText.h"
 #include "UserInterface/WTLControls/EditNumber32.h"
 #include "UserInterface/WTLControls/ClistCtrl/ListCtrl.h"
 #include "UserInterface/WTLControls/ModifiedComboBox.h"

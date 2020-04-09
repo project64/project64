@@ -1219,6 +1219,18 @@ LRESULT CDebugCommandsView::OnRemoveBPButton(WORD /*wNotifyCode*/, WORD /*wID*/,
     return FALSE;
 }
 
+LRESULT CDebugCommandsView::OnCopyTabRegistersButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+{
+    m_RegisterTabs.CopyTabRegisters();
+    return FALSE;
+}
+
+LRESULT CDebugCommandsView::OnCopyAllRegistersButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
+{
+    m_RegisterTabs.CopyAllRegisters();
+    return FALSE;
+}
+
 LRESULT CDebugCommandsView::OnCancel(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL& /*bHandled*/)
 {
     EndDialog(0);

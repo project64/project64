@@ -164,6 +164,7 @@
     <ClInclude Include="UserInterface\Debugger\Debugger-StackTrace.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-StackView.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-Symbols.h" />
+    <ClInclude Include="UserInterface\Debugger\Debugger-RegisterTabData.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-TLB.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-ViewMemory.h" />
     <ClInclude Include="UserInterface\Debugger\debugger.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="UserInterface\SupportWindow.h" />
     <ClInclude Include="UserInterface\WTLControls\DisplayMode.h" />
     <ClInclude Include="UserInterface\WTLControls\EditNumber32.h" />
+    <ClInclude Include="UserInterface\WTLControls\GetCWindowText.h" />
     <ClInclude Include="UserInterface\WTLControls\HexEditCtrl.h" />
     <ClInclude Include="UserInterface\WTLControls\ModifiedCheckBox.h" />
     <ClInclude Include="UserInterface\WTLControls\ModifiedComboBox.h" />
