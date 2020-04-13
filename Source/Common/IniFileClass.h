@@ -1,18 +1,16 @@
 #pragma once
 
 #ifndef _WIN32
-/* for POSIX method away from Win32 _stricmp--see "Platform.h" */
 #include <strings.h>
 #endif
 
 #include "FileClass.h"
 #include "CriticalSection.h"
-#include "SmartPointer.h"
-#include "Platform.h"
 #include <string>
 #include <map>
 #include <vector>
 #include <list>
+#include <memory>
 
 class CIniFileBase
 {
@@ -37,7 +35,7 @@ public:
     bool GetNumber(const char * lpSectionName, const char * lpKeyName, uint32_t nDefault, uint32_t & Value);
 
     virtual void SaveString(const char * lpSectionName, const char * lpKeyName, const char * lpString);
-    virtual void SaveNumber(const char * lpSectionName, const char * lpKeyName, uint32_t Value);
+    virtual void SaveNumber(const char * lpSectionName, const char * lpKeyName, int32_t Value);
     void SetAutoFlush(bool AutoFlush);
     void FlushChanges(void);
     bool EntryExists(const char * lpSectionName, const char * lpKeyName);
@@ -52,6 +50,8 @@ protected:
     void OpenIniFileReadOnly();
     void OpenIniFile(bool bCreate = true);
     void SaveCurrentSection(void);
+
+    std::string FormatStr(const char * strFormat, ...);
 
     CFileBase & m_File;
     std::string m_FileName;
@@ -85,7 +85,7 @@ private:
     SortData m_SortFunction;
 
     void fInsertSpaces(int Pos, int NoOfSpaces);
-    int GetStringFromFile(char * & String, AUTO_PTR<char> &Data, int & MaxDataSize, int & DataSize, int & ReadPos);
+    int GetStringFromFile(char * & String, std::unique_ptr<char> &Data, int & MaxDataSize, int & DataSize, int & ReadPos);
     bool MoveToSectionNameData(const char * lpSectionName, bool ChangeCurrentSection);
     const char * CleanLine(char * Line);
     void ClearSectionPosList(long FilePos);
