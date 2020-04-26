@@ -27,7 +27,6 @@ IF %ERRORLEVEL% NEQ 0 GOTO EndErr
 IF NOT EXIST "%base_dir%\Package" mkdir "%base_dir%\Package"
 IF %ERRORLEVEL% NEQ 0 GOTO EndErr
 
-
 rd "%base_dir%\Bin\Package" /Q /S > NUL 2>&1
 md "%base_dir%\Bin\Package"
 md "%base_dir%\Bin\Package\Config"
@@ -37,6 +36,13 @@ md "%base_dir%\Bin\Package\Plugin%VSPlatform%\Audio"
 md "%base_dir%\Bin\Package\Plugin%VSPlatform%\GFX"
 md "%base_dir%\Bin\Package\Plugin%VSPlatform%\Input"
 md "%base_dir%\Bin\Package\Plugin%VSPlatform%\RSP"
+
+IF EXIST "%base_dir%\Plugin%VSPlatform%\GFX\GLideN64" (
+md "%base_dir%\Bin\Package\Plugin%VSPlatform%\GFX\GLideN64"
+copy "%base_dir%\Plugin%VSPlatform%\GFX\GLideN64\GLideN64.dll" "%base_dir%\Bin\Package\Plugin%VSPlatform%\GFX\GLideN64\GLideN64.dll"
+md "%base_dir%\Bin\Package\Plugin%VSPlatform%\GFX\GLideN64\translations"
+copy "%base_dir%\Plugin%VSPlatform%\GFX\GLideN64\translations\*.Lang" "%base_dir%\Bin\Package\Plugin%VSPlatform%\GFX\GLideN64\translations"
+)
 
 copy "%base_dir%\Bin\Release%VSPlatform%\Project64.exe" "%base_dir%\Bin\Package"
 copy "%base_dir%\Config\Video.rdb" "%base_dir%\Bin\Package\Config"
