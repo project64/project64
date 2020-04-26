@@ -40,6 +40,7 @@ md "%base_dir%\Bin\Package\Plugin%VSPlatform%\RSP"
 IF EXIST "%base_dir%\Plugin%VSPlatform%\GFX\GLideN64" (
 md "%base_dir%\Bin\Package\Plugin%VSPlatform%\GFX\GLideN64"
 copy "%base_dir%\Plugin%VSPlatform%\GFX\GLideN64\GLideN64.dll" "%base_dir%\Bin\Package\Plugin%VSPlatform%\GFX\GLideN64\GLideN64.dll"
+copy "%base_dir%\Plugin%VSPlatform%\GFX\GLideN64\*.ini" "%base_dir%\Bin\Package\Plugin%VSPlatform%\GFX\GLideN64"
 md "%base_dir%\Bin\Package\Plugin%VSPlatform%\GFX\GLideN64\translations"
 copy "%base_dir%\Plugin%VSPlatform%\GFX\GLideN64\translations\*.Lang" "%base_dir%\Bin\Package\Plugin%VSPlatform%\GFX\GLideN64\translations"
 )

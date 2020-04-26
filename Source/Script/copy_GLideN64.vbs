@@ -74,6 +74,12 @@ sub CopyArtificat()
 			end if
 		end if
 
+		if Right(lcase(filename),4)=".ini" then
+			if fso.FileExists(fullpath) then
+				fso.CopyFile fullpath, plugindir&"\GFX\GLideN64\"&filename
+			end if
+		end if
+
 		if lcase(filename)="gliden64.dll" then
 			if fso.FileExists(fullpath) then
 				fso.CopyFile fullpath, plugindir&"\GFX\GLideN64\"&filename
