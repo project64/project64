@@ -30,6 +30,7 @@ public:
     BOOL AttachToDlgItem(HWND parent, UINT dlgID);
     void SetDisplayType(DisplayType Type);
     uint32_t GetValue(void);
+    stdstr GetValueText(void);
     void SetValue(uint32_t Value, DisplayMode Display = DisplayMode::ShowHexIdent);
 
 protected:

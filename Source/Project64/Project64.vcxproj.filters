@@ -470,6 +470,12 @@
     <ClInclude Include="UserInterface\WTLControls\DisplayMode.h">
       <Filter>Header Files\User Interface Headers\WTL Controls Headers</Filter>
     </ClInclude>
+    <ClInclude Include="UserInterface\WTLControls\GetCWindowText.h">
+      <Filter>Header Files\User Interface Headers\WTL Controls Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface\Debugger\Debugger-RegisterTabData.h">
+      <Filter>Header Files\User Interface Headers\Debugger Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\divider.cur">
