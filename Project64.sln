@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.902
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3rd Party", "3rd Party", "{AA8F7F8E-5377-4911-859D-8A8817B0DB26}"
 EndProject
@@ -66,6 +66,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UpdateVersion", "Source\UpdateVersion\UpdateVersion.vcxproj", "{1968162C-0793-491D-91A1-81645A24D399}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JoinSettings", "Source\JoinSettings\JoinSettings.vcxproj", "{B2E592F2-F416-4049-BD22-9CA9090242BB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "discord-rpc", "Source\3rdParty\discord-rpc\discord-rpc.vcxproj", "{DCC841B2-298A-40F0-84D1-ACBABD3B86E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -218,6 +220,14 @@ Global
 		{B2E592F2-F416-4049-BD22-9CA9090242BB}.Release|Win32.Build.0 = Release|Win32
 		{B2E592F2-F416-4049-BD22-9CA9090242BB}.Release|x64.ActiveCfg = Release|x64
 		{B2E592F2-F416-4049-BD22-9CA9090242BB}.Release|x64.Build.0 = Release|x64
+		{DCC841B2-298A-40F0-84D1-ACBABD3B86E8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DCC841B2-298A-40F0-84D1-ACBABD3B86E8}.Debug|Win32.Build.0 = Debug|Win32
+		{DCC841B2-298A-40F0-84D1-ACBABD3B86E8}.Debug|x64.ActiveCfg = Debug|x64
+		{DCC841B2-298A-40F0-84D1-ACBABD3B86E8}.Debug|x64.Build.0 = Debug|x64
+		{DCC841B2-298A-40F0-84D1-ACBABD3B86E8}.Release|Win32.ActiveCfg = Release|Win32
+		{DCC841B2-298A-40F0-84D1-ACBABD3B86E8}.Release|Win32.Build.0 = Release|Win32
+		{DCC841B2-298A-40F0-84D1-ACBABD3B86E8}.Release|x64.ActiveCfg = Release|x64
+		{DCC841B2-298A-40F0-84D1-ACBABD3B86E8}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -231,5 +241,8 @@ Global
 		{B685BB34-D700-4FCC-8503-9B6AA1A0C95D} = {0E0FCAC2-E128-4886-8EE6-1BCA84551F58}
 		{593B00E6-1987-415D-A62C-26533FC3E95C} = {0E0FCAC2-E128-4886-8EE6-1BCA84551F58}
 		{E8D9A652-A354-4374-B6C5-A51EE62749FD} = {AA8F7F8E-5377-4911-859D-8A8817B0DB26}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F0EC030A-58B3-4FC1-B6B6-E5CF5CD885E3}
 	EndGlobalSection
 EndGlobal

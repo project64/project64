@@ -30,6 +30,7 @@ void RegisterUISettings (void)
     //Settings location
     g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_PluginPageFirst), new CSettingTypeApplication("Settings", "Plugin Page First", false));
     g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_DisableScrSaver), new CSettingTypeApplication("Settings", "Disable Screen Saver", (uint32_t)true));
+	g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_EnableDiscordRPC), new CSettingTypeApplication("Settings", "Enable Discord RPC", true));
     g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_AutoSleep), new CSettingTypeApplication("Settings", "Auto Sleep", (uint32_t)true));
     g_Settings->AddHandler((SettingID)(FirstUISettings + Setting_AutoFullscreen), new CSettingTypeApplication("Settings", "Auto Full Screen", (uint32_t)false));
 

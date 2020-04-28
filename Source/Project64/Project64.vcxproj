@@ -106,6 +106,7 @@
     <ClCompile Include="UserInterface\Debugger\ScriptInstance.cpp" />
     <ClCompile Include="UserInterface\Debugger\ScriptSystem.cpp" />
     <ClCompile Include="UserInterface\Debugger\Symbols.cpp" />
+    <ClCompile Include="UserInterface\DiscordRPC.cpp" />
     <ClCompile Include="UserInterface\EnhancementConfig.cpp" />
     <ClCompile Include="UserInterface\MainWindow.cpp" />
     <ClCompile Include="UserInterface\LoggingUI.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="UserInterface\WTLControls\PartialGroupBox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DiscordRPC.h" />
     <ClInclude Include="UserInterface\Debugger\CPULog.h" />
     <ClInclude Include="UserInterface\Debugger\Debugger-CPULogView.h" />
     <ClInclude Include="N64System\Debugger\OpInfo.h" />
@@ -233,6 +235,9 @@
     </ProjectReference>
     <ProjectReference Include="..\Project64-core\Project64-core.vcxproj">
       <Project>{00c7b43a-ded7-4df0-b072-9a5783ef866d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rdParty\discord-rpc\discord-rpc.vcxproj">
+      <Project>{dcc841b2-298a-40f0-84d1-acbabd3b86e8}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

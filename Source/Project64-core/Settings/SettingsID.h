@@ -119,6 +119,7 @@ enum SettingID
     Rdb_CRC_Recalc,
     Rdb_UnalignedDMA,
     Rdb_RandomizeSIPIInterrupts,
+	Rdb_RPCKey,
 
     //Individual Game Settings
     Game_IniKey,
@@ -176,6 +177,7 @@ enum SettingID
     Game_FullSpeed,
     Game_UnalignedDMA,
     Game_RandomizeSIPIInterrupts,
+	Game_RPCKey,
 
     // General Game running info
     GameRunning_LoadingInProgress,

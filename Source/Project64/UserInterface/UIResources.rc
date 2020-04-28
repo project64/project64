@@ -158,14 +158,15 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,25,206,10
     CONTROL         "Disable Screen Saver when running rom",IDC_SCREEN_SAVER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,41,206,10
-    CONTROL         "Hide Advanced Settings",IDC_BASIC_MODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,57,206,10
-    LTEXT           "Max # of Roms Remembered (Max 10):",IDC_MAXROMS_TXT,6,81,145,10
-    EDITTEXT        IDC_REMEMBER,148,79,26,12,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "roms",IDC_ROMSEL_TEXT2,178,82,31,10
-    LTEXT           "Max # of Rom Dirs Remembered (Max 10):",IDC_MAXROMDIR_TXT,6,96,145,10
-    EDITTEXT        IDC_REMEMBERDIR,148,94,26,12,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "dirs",IDC_ROMSEL_TEXT4,178,98,34,10
-    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,4,73,208,1
+    CONTROL         "Hide Advanced Settings",IDC_BASIC_MODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,72,206,10
+    LTEXT           "Max # of Roms Remembered (Max 10):",IDC_MAXROMS_TXT,6,96,145,10
+    EDITTEXT        IDC_REMEMBER,148,94,26,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "roms",IDC_ROMSEL_TEXT2,178,97,31,10
+    LTEXT           "Max # of Rom Dirs Remembered (Max 10):",IDC_MAXROMDIR_TXT,6,111,145,10
+    EDITTEXT        IDC_REMEMBERDIR,148,109,26,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "dirs",IDC_ROMSEL_TEXT4,178,113,34,10
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,4,88,208,1
+    CONTROL         "Enable Discord Rich Presence",IDC_DISCORD_RPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,57,145,8
 END
 
 IDD_Rom_Information DIALOGEX 0, 0, 239, 207

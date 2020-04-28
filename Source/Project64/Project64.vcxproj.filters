@@ -237,6 +237,8 @@
     <ClCompile Include="UserInterface\Settings\SettingsPage-DiskDrive.cpp">
       <Filter>Source Files\User Interface Source\Settings Source</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface\DiscordRPC.cpp">
+      <Filter>Source Files</Filter>
     <ClCompile Include="UserInterface\WTLControls\HexEditCtrl.cpp">
       <Filter>Source Files\User Interface Source\WTL Controls Source</Filter>
     </ClCompile>
@@ -461,6 +463,8 @@
     <ClInclude Include="UserInterface\Settings\SettingsPage-DiskDrive.h">
       <Filter>Header Files\User Interface Headers\Settings Header</Filter>
     </ClInclude>
+    <ClInclude Include="UserInterface\DiscordRPC.h">
+      <Filter>Header Files</Filter>
     <ClInclude Include="UserInterface\WTLControls\HexEditCtrl.h">
       <Filter>Header Files\User Interface Headers\WTL Controls Headers</Filter>
     </ClInclude>

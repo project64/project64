@@ -663,6 +663,7 @@
 #define IDC_HI_LBL                      1513
 #define IDC_LO_LBL                      1514
 #define IDC_NUM_RESULTS                 1515
+#define IDC_DISCORD_RPC                 1516
 #define IDC_SCRL_RESULTS                1518
 #define IDC_LST_WATCHLIST               1520
 #define IDC_CHK_PHYSICAL                1522
@@ -935,6 +936,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
+#define _APS_NEXT_RESOURCE_VALUE        211
+#define _APS_NEXT_COMMAND_VALUE         40092
+#define _APS_NEXT_CONTROL_VALUE         1516
 #define _APS_NEXT_RESOURCE_VALUE        219
 #define _APS_NEXT_COMMAND_VALUE         40121
 #define _APS_NEXT_CONTROL_VALUE         1574
