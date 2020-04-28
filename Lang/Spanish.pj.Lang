@@ -4,8 +4,8 @@
 //About DLL
 #1  #  "Español"		// LANGUAGE ID
 #2  #  "MELERIX"		// Author
-#3  #  "2.3.1"			// Version
-#4  #  "30/09/2016"		// Date
+#3  #  "2.3.2"			// Version
+#4  #  "16/05/2018"		// Date
 
 //About DLL Dialog
 #5  #  "Lenguaje Actual"
@@ -518,3 +518,45 @@
 #2055#  "¡¡¡Los Gráficos LLE no son para uso general!!!\nEs aconsejable que sólo uses esto para pruebas, y no para jugar juegos.\n\n¿Cambiar a Gráficos LLE?"
 #2056#  "Audio de Emulación de Alto Nivel"
 #2057#  "¡¡¡El Audio HLE requiere un complemento de terceros!!!\nSi no usas un complemento de audio terceros que soporte HLE, no oirás ningún sonido.\n\n¿Cambiar a Audio HLE?"
+
+
+/*********************************************************************************
+* Android                                                                        *
+*********************************************************************************/
+#3000#  "Ajustes"
+#3001#  "Ayuda/Foro"
+#3002#  "Reportar Problema"
+#3003#  "Acerca de"
+#3004#  "Recientemente jugado"
+#3005#  "juegos"
+#3006#  "Directorio del Juego"
+#3007#  "Selecciona una carpeta para escanear"
+#3008#  "Incluir subdirectorios"
+#3009#  "Carpeta principal"
+#3010#  "Directorios"
+#3011#  "Memoria interna"
+#3012#  "Escaneando..."
+#3013#  "Aceptar"
+#3014#  "Cancelar"
+#3015#  "Información"
+#3016#  "Project64 para Android"
+#3017#  "Licencia"
+#3018#  "Revisión"
+#3019#  "Project64 para Android\u2122 está portado de la versión de windows de project64.La versión de Android\u2122 puede jugar la mayoría de los juegos de N64."
+#3020#  "Autores de Project64."
+
+//In game menu
+#3100#  "Ajustes"
+#3101#  "Guardar Estado"
+#3102#  "Cargar Estado"
+#3103#  "Finalizar Emulación"
+#3104#  "Pausar"
+#3105#  "Continuar"
+#3106#  "Velocidad del Juego"
+#3107#  "Estado Guardado Actual..."
+#3108#  "Auto"
+#3109#  "Ranura"
+#3110#  "Reiniciar"
+#3111#  "Opciones de Depuración"
+#3112#  "Reiniciar Tiempos de Función"
+#3113#  "Volcar Tiempos de Función"
