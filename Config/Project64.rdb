@@ -2516,12 +2516,11 @@ Counter Factor=1
 [3A6F8C6B-2897BAEB-C:50]
 Good Name=Indiana Jones and the Infernal Machine (E) (Unreleased)
 Internal Name=Indiana Jones
-Status=Issues (plugin)
-Plugin Note=[video] HLE not supported
+Status=Compatible
+Plugin Note=[video] HLE requires GlideN64
 32bit=No
 AudioResetOnLoad=Yes
 Fast SP=No
-HLE GFX=No
 Linking=Off
 RDRAM Size=8
 RSP-JumpTableSize=3584
@@ -2534,12 +2533,11 @@ ViRefresh=1800
 [AF9DCC15-1A723D88-C:45]
 Good Name=Indiana Jones and the Infernal Machine (U)
 Internal Name=Indiana Jones
-Status=Issues (plugin)
-Plugin Note=[video] HLE not supported
+Status=Compatible
+Plugin Note=[video] HLE requires GlideN64
 32bit=No
 AudioResetOnLoad=Yes
 Fast SP=No
-HLE GFX=No
 Linking=Off
 RDRAM Size=8
 RSP-JumpTableSize=3584
@@ -5014,8 +5012,7 @@ Status=Compatible
 Good Name=Saikyou Habu Shougi (J)
 Internal Name=»²·®³ÊÌÞ¼®³·Þ
 Status=Compatible
-Plugin Note=[video] HLE not supported
-HLE GFX=No
+Plugin Note=[video] HLE requires GlideN64
 RDRAM Size=8
 
 [61D116B0-FA24D60C-C:50]
@@ -5461,24 +5458,22 @@ RDRAM Size=8
 [EAE6ACE2-020B4384-C:50]
 Good Name=Star Wars Episode I - Battle for Naboo (E)
 Internal Name=Battle for Naboo
-Status=Issues (plugin)
-Plugin Note=[video] HLE not supported
+Status=Compatible
+Plugin Note=[video] HLE requires GlideN64
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
-HLE GFX=No
 RDRAM Size=8
 SMM-FUNC=0
 
 [3D02989B-D4A381E2-C:45]
 Good Name=Star Wars Episode I - Battle for Naboo (U)
 Internal Name=Battle for Naboo
-Status=Issues (plugin)
-Plugin Note=[video] HLE not supported
+Status=Compatible
+Plugin Note=[video] HLE requires GlideN64
 32bit=No
 AudioResetOnLoad=Yes
 Counter Factor=1
-HLE GFX=No
 RDRAM Size=8
 SMM-FUNC=0
 
@@ -5716,8 +5711,7 @@ RDRAM Size=8
 [37955E65-C6F2B7B3-C:0]
 Good Name=Tamiya Racing 64 (Unreleased)
 Status=Compatible
-Plugin Note=[Glide64] bad numbers
-//HLE GFX=No //make sure Glide64 has microcode hack turned on
+Plugin Note=[video] HLE requires GlideN64
 
 [AEBCDD54-15FF834A-C:50]
 Good Name=Taz Express (E) (M6)
