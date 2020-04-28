@@ -2269,6 +2269,12 @@ depthmode=0
 fb_smart=0
 force_microcheck=1
 
+[67D20729-F696774C-C:4A]
+Good Name=Nintendo All-Star! Dairantou Smash Brothers (J)
+Internal Name=SMASH BROTHERS
+fb_read_always=1
+fb_smart=0
+
 [8A97A197-272DF6C1-C:50]
 Good Name=Nuclear Strike 64 (E) (M2)
 Internal Name=NUCLEARSTRIKE64
@@ -3251,6 +3257,24 @@ Good Name=Super Robot Taisen 64 (J)
 Internal Name=½°Êß°ÛÎÞ¯ÄÀ²¾Ý64
 fast_crc=0
 use_sts1_only=1
+
+[DD26FDA1-CB4A6BE3-C:55]
+Good Name=Super Smash Bros. (A)
+Internal Name=SMASH BROTHERS
+fb_read_always=1
+fb_smart=0
+
+[93945F48-5C0F2E30-C:50]
+Good Name=Super Smash Bros. (E) (M3)
+Internal Name=SMASH BROTHERS
+fb_read_always=1
+fb_smart=0
+
+[916B8B5B-780B85A4-C:45]
+Good Name=Super Smash Bros. (U)
+Internal Name=SMASH BROTHERS
+fb_read_always=1
+fb_smart=0
 
 [2CBB127F-09C2BFD8-C:50]
 Good Name=Supercross 2000 (E) (M3)
