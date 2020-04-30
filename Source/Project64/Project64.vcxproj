@@ -46,28 +46,6 @@
     <Manifest Condition="'$(PlatformToolset)'!='v90'">
       <EnableDPIAwareness>true</EnableDPIAwareness>
     </Manifest>
-    <ClCompile>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MaxSpeed</Optimization>
-    </ClCompile>
-    <ClCompile>
-      <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Speed</FavorSizeOrSpeed>
-    </ClCompile>
-    <ClCompile>
-      <OmitFramePointers Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</OmitFramePointers>
-    </ClCompile>
-    <ClCompile>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MinSpace</Optimization>
-    </ClCompile>
-    <ClCompile>
-      <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Size</FavorSizeOrSpeed>
-    </ClCompile>
-    <ClCompile>
-      <OmitFramePointers Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</OmitFramePointers>
-    </ClCompile>
-    <PreBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="UserInterface\Debugger\CPULog.cpp" />
@@ -236,9 +214,6 @@
     <ProjectReference Include="..\Project64-core\Project64-core.vcxproj">
       <Project>{00c7b43a-ded7-4df0-b072-9a5783ef866d}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\3rdParty\discord-rpc\discord-rpc.vcxproj">
-      <Project>{dcc841b2-298a-40f0-84d1-acbabd3b86e8}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\divider.cur" />
@@ -265,9 +240,4 @@
   <ItemGroup>
     <Manifest Include="Project64.exe.manifest" />
   </ItemGroup>
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties RESOURCE_FILE="UserInterface\UIResources.rc" />
-    </VisualStudio>
-  </ProjectExtensions>
 </Project>
