@@ -29,6 +29,9 @@ const CSetValueDlg::ComboItem CDebugSymbols::ModalChangeTypeItems[] = {
     { "int64",  SYM_S64 },
     { "float",  SYM_FLOAT },
     { "double", SYM_DOUBLE },
+    { "v2", SYM_VECTOR2 },
+    { "v3", SYM_VECTOR3 },
+    { "v4", SYM_VECTOR4 },
     { NULL, 0 }
 };
 
@@ -189,7 +192,9 @@ LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
         }
         break;
     case SymbolsListView_Col_Value:
-        char szValue[64];
+        char szValue[256];
+        char* x;
+        char* y;
         m_Debugger->SymbolTable()->GetValueString(szValue, &symbol);
         if (m_SetValueDlg.DoModal("Change value", "New value:", szValue))
         {
@@ -225,6 +230,51 @@ LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
             case SYM_DOUBLE:
                 m_Debugger->DebugStore_VAddr<double>(symbol.m_Address, atof(m_SetValueDlg.GetEnteredString()));
                 break;
+            case SYM_VECTOR2:
+                x = m_SetValueDlg.GetEnteredString();
+                y = strchr(x, ',');
+                memcpy(szValue, x, y - x);
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address, atof(szValue));
+
+                x = x + (y - x) + 1;
+                memcpy(szValue, x, strlen(x));
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + sizeof(float), atof(szValue));
+                break;
+            case SYM_VECTOR3:
+                x = m_SetValueDlg.GetEnteredString();
+                y = strchr(x, ',');
+                memcpy(szValue, x, y - x);
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address, atof(szValue));
+
+                x = x + (y - x) + 1;
+                y = strchr(x, ',');
+                memcpy(szValue, x, y - x);
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + sizeof(float), atof(szValue));
+
+                x = x + (y - x) + 1;
+                memcpy(szValue, x, strlen(x));
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + (sizeof(float) * 2), atof(szValue));
+                break;
+            case SYM_VECTOR4:
+                x = m_SetValueDlg.GetEnteredString();
+                y = strchr(x, ',');
+                memcpy(szValue, x, y - x);
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address, atof(szValue));
+
+                x = x + (y - x) + 1;
+                y = strchr(x, ',');
+                memcpy(szValue, x, y - x);
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + sizeof(float), atof(szValue));
+
+                x = x + (y - x) + 1;
+                y = strchr(x, ',');
+                memcpy(szValue, x, y - x);
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + (sizeof(float) * 2), atof(szValue));
+
+                x = x + (y - x) + 1;
+                memcpy(szValue, x, strlen(x));
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + (sizeof(float) * 3), atof(szValue));
+                break;
             }
         }
         break;
@@ -258,7 +308,7 @@ void CDebugSymbols::Refresh()
 
     while (m_Debugger->SymbolTable()->GetSymbolByIndex(nItem, &symbol))
     {
-        char szValue[64];
+        char szValue[256];
         m_Debugger->SymbolTable()->GetValueString(szValue, &symbol);
 
         stdstr strAddr = stdstr_f("%08X", symbol.m_Address);
@@ -296,7 +346,7 @@ void CDebugSymbols::RefreshValues()
             break;
         }
 
-        char szValue[64];
+        char szValue[256];
         m_Debugger->SymbolTable()->GetValueString(szValue, &symbol);
 
         m_SymbolsListView.SetItemText(i, 3, szValue);
