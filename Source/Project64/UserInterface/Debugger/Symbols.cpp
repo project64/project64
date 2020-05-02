@@ -44,6 +44,9 @@ symbol_type_info_t CSymbolTable::m_SymbolTypes[] = {
     { SYM_S64,    "s64",    8 },
     { SYM_FLOAT,  "float",  4 },
     { SYM_DOUBLE, "double", 8 },
+    { SYM_VECTOR2, "v2", 8 },
+    { SYM_VECTOR3, "v3", 12 },
+    { SYM_VECTOR4, "v4", 16 },
     { SYM_INVALID, NULL,    0 }
 };
 
@@ -310,6 +313,7 @@ void CSymbolTable::GetValueString(char* dst, CSymbol* symbol)
 
     uint32_t address = symbol->m_Address;
 
+    float xyzw[4];
     switch (symbol->m_Type)
     {
     case SYM_CODE:
@@ -355,6 +359,27 @@ void CSymbolTable::GetValueString(char* dst, CSymbol* symbol)
     case SYM_DOUBLE:
         m_Debugger->DebugLoad_VAddr(address, value.f64);
         sprintf(dst, "%f", value.f64);
+        break;
+    case SYM_VECTOR2:
+        for (int i = 0; i < 2; i++) {
+            m_Debugger->DebugLoad_VAddr(address, value.f32);
+            xyzw[i] = value.f32;
+        }
+        sprintf(dst, "%f, %f", xyzw[0], xyzw[2]);
+        break;
+    case SYM_VECTOR3:
+        for (int i = 0; i < 3; i++) {
+            m_Debugger->DebugLoad_VAddr(address, value.f32);
+            xyzw[i] = value.f32;
+        }
+        sprintf(dst, "%f, %f, %f", xyzw[0], xyzw[2], xyzw[3]);
+        break;
+    case SYM_VECTOR4:
+        for (int i = 0; i < 4; i++) {
+            m_Debugger->DebugLoad_VAddr(address, value.f32);
+            xyzw[i] = value.f32;
+        }
+        sprintf(dst, "%f, %f, %f, %f", xyzw[0], xyzw[2], xyzw[3], xyzw[4]);
         break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);

@@ -27,6 +27,9 @@ typedef enum {
     SYM_S64,
     SYM_FLOAT,
     SYM_DOUBLE,
+    SYM_VECTOR2,
+    SYM_VECTOR3,
+    SYM_VECTOR4,
     NUM_SYM_TYPES
 } symbol_type_id_t;
 
