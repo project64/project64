@@ -37,6 +37,9 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\JoinSettings\JoinSettings.vcxproj">
+      <Project>{b2e592f2-f416-4049-bd22-9ca9090242bb}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Project64\Project64.vcxproj">
       <Project>{7e534c8e-1ace-4a88-8807-39a11ed4da18}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
