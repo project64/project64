@@ -79,6 +79,7 @@ enum SettingID
 	Default_FixedAudio,
 	Default_UnalignedDMA,
 	Default_RandomizeSIPIInterrupts,
+	Default_SMM_Protect_Memory,
 
     //RDB Settings
     Rdb_GoodName,

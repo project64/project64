@@ -151,6 +151,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 	AddHandler(Default_FixedAudio, new CSettingTypeApplication("Defaults", "Fixed Audio", true));
 	AddHandler(Default_UnalignedDMA, new CSettingTypeApplication("Defaults", "Unaligned DMA", false));
 	AddHandler(Default_RandomizeSIPIInterrupts, new CSettingTypeApplication("Defaults", "Randomize SI/PI Interrupts", true));
+	AddHandler(Default_SMM_Protect_Memory, new CSettingTypeApplication("Defaults", "SMM-Protect", false));
 
     AddHandler(Rdb_GoodName, new CSettingTypeRomDatabase("Good Name", Game_GameName));
 	AddHandler(Rdb_RPCKey, new CSettingTypeRomDatabase("RPC Key", Game_RPCKey));
@@ -188,7 +189,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_SMM_StoreInstruc, new CSettingTypeRomDatabase("SMM-StoreInstr", false));
     AddHandler(Rdb_SMM_PIDMA, new CSettingTypeRomDatabase("SMM-PI DMA", true));
     AddHandler(Rdb_SMM_TLB, new CSettingTypeRomDatabase("SMM-TLB", true));
-    AddHandler(Rdb_SMM_Protect, new CSettingTypeRomDatabase("SMM-Protect", false));
+    AddHandler(Rdb_SMM_Protect, new CSettingTypeRomDatabase("SMM-Protect", Default_SMM_Protect_Memory));
     AddHandler(Rdb_SMM_ValidFunc, new CSettingTypeRomDatabase("SMM-FUNC", true));
     AddHandler(Rdb_GameCheatFix, new CSettingTypeRomDatabaseIndex("Cheat", "", ""));
     AddHandler(Rdb_GameCheatFixPlugin, new CSettingTypeRomDatabaseIndex("CheatPlugin", "", ""));
