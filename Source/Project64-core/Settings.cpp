@@ -260,6 +260,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_FullSpeed, new CSettingTypeTempBool(true, "Full Speed"));
     AddHandler(Game_UnalignedDMA, new CSettingTypeGame("Unaligned DMA", Rdb_UnalignedDMA));
     AddHandler(Game_RandomizeSIPIInterrupts, new CSettingTypeGame("Randomize SI/PI Interrupts", Rdb_RandomizeSIPIInterrupts));
+	AddHandler(Game_RPCKey, new CSettingTypeTempString(""));
 
     //User Interface
     AddHandler(UserInterface_ShowCPUPer, new CSettingTypeApplication("Settings", "Display CPU Usage", (uint32_t)false));

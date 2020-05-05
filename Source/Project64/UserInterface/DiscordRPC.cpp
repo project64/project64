@@ -28,55 +28,49 @@ void CDiscord::Init()
 
 void CDiscord::Shutdown()
 {
+	Discord_ClearPresence();
 	Discord_Shutdown();
+}
+
+static stdstr GetTitle() 
+{
+	stdstr Default = "";
+	bool existsInRdb = g_Settings->LoadStringVal(Rdb_GoodName, Default);
+	if (existsInRdb)
+		return g_Settings->LoadStringVal(Rdb_GoodName);
+	else {
+		Default = CPath(g_Settings->LoadStringVal(Game_File)).GetName().c_str();
+		if (strstr(const_cast<char*>(Default.c_str()), "?") != NULL) {
+			return Default.substr(Default.find("?") + 1);
+		}
+		return Default;
+	}
 }
 
 void CDiscord::Update(bool bHaveGame)
 {
 	//Variables we use later
-	//szState uses the Rdb_GoodName to display a proper game name over DiscordRPC
-	//keyState uses the Header of the rom to easily add game pictures through the discord developer panel using the ID above
-	char szState[256];
-	char keyState[256];
-	sprintf(szState, "%s", g_Settings->LoadStringVal(Rdb_GoodName).c_str()); //rdb_GoodName in a variable for use later
-	sprintf(keyState, "%s", g_Settings->LoadStringVal(Rdb_RPCKey).c_str()); //Game Image Key in a variable for use later
+	//title uses the Rdb_GoodName to display a proper game name over DiscordRPC
+	//artwork uses the Header of the rom to easily add game pictures through the discord developer panel using the ID above
+	stdstr title = bHaveGame ? GetTitle() : "";
+	stdstr artwork = bHaveGame ? g_Settings->LoadStringVal(Rdb_RPCKey) : "";
 
 	//Load Game Into DiscordRPC
 	DiscordRichPresence discordPresence = {}; //activates DiscordRPC
-	if (bHaveGame && g_Settings->LoadStringVal(Game_File).length() != 0)
+	if (artwork.empty())
 	{
-
-		//DiscordRPC Game Name - Playing <game>
-		discordPresence.state = szState; //sets the state of the DiscordRPC to the Rdb_GoodName file
-
-		//Play Time over DiscordRPC
-		discordPresence.startTimestamp = Timestamp(); //sets the time on the DiscordRPC
-
-		//Large Image Text over DiscordRPC
-		discordPresence.largeImageText = szState; //sets the RDB_GoodName Variable as the large image text
-
-		//Large Image File Name over DiscordRPC
-		discordPresence.largeImageKey = keyState; //sets the Rom Header Variable as the large image key (the file you upload to discord)
-
-		//Small Image over DiscordRPC
-		discordPresence.smallImageKey = "icon"; //Project 64 Logo in bottom right corner
-		discordPresence.smallImageText = "Project64"; //Name of the Project64 Logo
-		discordPresence.instance = 1; //Instance of Active DiscordRPC
+		discordPresence.largeImageKey = "pj64_icon";
+		discordPresence.largeImageText = "Project64";
 	}
 	else
 	{
-
-		//Show when you are not playing a game over DiscordRPC.
-		// This is not perfect due to Project64's method of loading 
-		// ROM's into the filesystem before emulation starts.
-		discordPresence.details = "Not in-game"; //shows "Not in-game" on the active DiscordRPC text
-		discordPresence.largeImageKey = "icon"; //Shows the Project64 logo on the large image box
-		discordPresence.largeImageText = "Project64"; //Name of the Project64 Logo
-		discordPresence.smallImageKey = NULL; //Safety Measure to force unload the smallImageKey
-		discordPresence.smallImageText = NULL; //Safety Measure to force unload the smallImageText
-		discordPresence.endTimestamp = NULL; //Safety Measure to force unload the TimeStamp
-
+		discordPresence.largeImageKey = artwork.c_str();
+		discordPresence.largeImageText = title.c_str();
+		discordPresence.smallImageKey = "pj64_icon";
+		discordPresence.smallImageText = "Project64";
 	}
+	discordPresence.details = title.empty() ? "Not in-game" : title.c_str();
+	discordPresence.startTimestamp = Timestamp();
 
 	Discord_UpdatePresence(&discordPresence); //end DiscordRPC
 }
