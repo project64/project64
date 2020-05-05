@@ -362,24 +362,24 @@ void CSymbolTable::GetValueString(char* dst, CSymbol* symbol)
         break;
     case SYM_VECTOR2:
         for (int i = 0; i < 2; i++) {
-            m_Debugger->DebugLoad_VAddr(address, value.f32);
+            m_Debugger->DebugLoad_VAddr(address + (i * sizeof(float)), value.f32);
             xyzw[i] = value.f32;
         }
-        sprintf(dst, "%f, %f", xyzw[0], xyzw[2]);
+        sprintf(dst, "%f, %f", xyzw[0], xyzw[1]);
         break;
     case SYM_VECTOR3:
         for (int i = 0; i < 3; i++) {
-            m_Debugger->DebugLoad_VAddr(address, value.f32);
+            m_Debugger->DebugLoad_VAddr(address + (i * sizeof(float)), value.f32);
             xyzw[i] = value.f32;
         }
-        sprintf(dst, "%f, %f, %f", xyzw[0], xyzw[2], xyzw[3]);
+        sprintf(dst, "%f, %f, %f", xyzw[0], xyzw[1], xyzw[2]);
         break;
     case SYM_VECTOR4:
         for (int i = 0; i < 4; i++) {
-            m_Debugger->DebugLoad_VAddr(address, value.f32);
+            m_Debugger->DebugLoad_VAddr(address + (i * sizeof(float)), value.f32);
             xyzw[i] = value.f32;
         }
-        sprintf(dst, "%f, %f, %f, %f", xyzw[0], xyzw[2], xyzw[3], xyzw[4]);
+        sprintf(dst, "%f, %f, %f, %f", xyzw[0], xyzw[1], xyzw[2], xyzw[3]);
         break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
