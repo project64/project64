@@ -40,4 +40,5 @@ private:
     static HWND m_hParent;
     static CSupportWindow * m_this;
     static uint32_t m_RunCount;
+    static uint32_t m_TimeOutTime;
 };
