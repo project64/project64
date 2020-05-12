@@ -20,7 +20,7 @@ class CEditMixed :
 private:
     ValueType m_Type;
     DisplayFormat m_DisplayFormat;
-    char *m_String;
+    wchar_t *m_String;
     int   m_StringLength;
     void  ReloadString(void);
 
@@ -68,7 +68,7 @@ public:
 
     INT_PTR DoModal(const char* caption, const char* label, const char* initialText);
     INT_PTR DoModal(const char* caption, const char* label, DWORD_PTR initialData, const ComboItem items[]);
-    char* GetEnteredString(void);
+    wchar_t* GetEnteredString(void);
     DWORD_PTR GetEnteredData(void);
 
     CSetValueDlg(void);
@@ -88,7 +88,7 @@ private:
     const ComboItem* m_ComboItems;
 
     const char* m_InitialText;
-    char *m_EnteredString;
+    wchar_t *m_EnteredString;
 
     DWORD_PTR m_InitialData;
     DWORD_PTR m_EnteredData;

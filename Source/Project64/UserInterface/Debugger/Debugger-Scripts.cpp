@@ -35,13 +35,13 @@ LRESULT CDebugScripts::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     HFONT monoFont = CreateFont(-11, 0, 0, 0,
         FW_DONTCARE, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
         OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-        CLEARTYPE_QUALITY, FF_DONTCARE, "Consolas"
+        CLEARTYPE_QUALITY, FF_DONTCARE, L"Consolas"
     );
 
     m_InstanceInfoEdit.Attach(GetDlgItem(IDC_CTX_INFO_EDIT));
 
     m_ScriptList.Attach(GetDlgItem(IDC_SCRIPT_LIST));
-    m_ScriptList.AddColumn("Script", 0, 0);
+    m_ScriptList.AddColumn(L"Script", 0, 0);
     m_ScriptList.SetColumnWidth(0, 100);
     m_ScriptList.SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
     m_ScriptList.ModifyStyle(LVS_OWNERDRAWFIXED, 0, 0);
@@ -79,7 +79,7 @@ void CDebugScripts::ConsolePrint(const char* text)
 
     m_ConsoleEdit.SetRedraw(FALSE);
 
-    m_ConsoleEdit.AppendText(text);
+    m_ConsoleEdit.AppendText(stdstr(text).ToUTF16().c_str());
 
     m_ConsoleEdit.SetRedraw(TRUE);
 
@@ -107,7 +107,7 @@ void CDebugScripts::RefreshConsole()
 
 void CDebugScripts::ConsoleClear()
 {
-    m_ConsoleEdit.SetWindowTextA("");
+    m_ConsoleEdit.SetWindowText(L"");
 }
 
 void CDebugScripts::ConsoleCopy()
@@ -119,12 +119,12 @@ void CDebugScripts::ConsoleCopy()
 
     EmptyClipboard();
 
-    size_t nChars = m_ConsoleEdit.GetWindowTextLengthA() + 1;
+    size_t nChars = m_ConsoleEdit.GetWindowTextLength() + 1;
 
-    HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, nChars);
+    HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, nChars * sizeof(wchar_t));
 
-    char* memBuf = (char*)GlobalLock(hMem);
-    m_ConsoleEdit.GetWindowTextA(memBuf, nChars);
+    wchar_t* memBuf = (wchar_t*)GlobalLock(hMem);
+    m_ConsoleEdit.GetWindowText(memBuf, nChars);
 
     GlobalUnlock(hMem);
     SetClipboardData(CF_TEXT, hMem);
@@ -152,7 +152,7 @@ void CDebugScripts::RefreshList()
     do
     {
         stdstr scriptFileName = SearchPath.GetNameExtension();
-        m_ScriptList.AddItem(0, 0, scriptFileName.c_str());
+        m_ScriptList.AddItem(0, 0, scriptFileName.ToUTF16().c_str());
     } while (SearchPath.FindNext());
 
     m_ScriptList.SetRedraw(true);
@@ -220,7 +220,7 @@ void CDebugScripts::RefreshStatus()
 
     stdstr instanceInfo = stdstr_f("%s (%s)", m_SelectedScriptName, szState);
 
-    m_InstanceInfoEdit.SetWindowTextA(instanceInfo.c_str());
+    m_InstanceInfoEdit.SetWindowText(instanceInfo.ToUTF16().c_str());
 
     if (state == STATE_RUNNING)
     {
@@ -238,7 +238,9 @@ LRESULT CDebugScripts::OnScriptListClicked(NMHDR* pNMHDR)
     NMITEMACTIVATE* pIA = reinterpret_cast<NMITEMACTIVATE*>(pNMHDR);
     int nItem = pIA->iItem;
 
-    m_ScriptList.GetItemText(nItem, 0, m_SelectedScriptName, MAX_PATH);
+    wchar_t ScriptName[MAX_PATH];
+    m_ScriptList.GetItemText(nItem, 0, ScriptName, MAX_PATH);
+    strcpy(m_SelectedScriptName, stdstr().FromUTF16(ScriptName).c_str());
 
     RefreshStatus();
 
@@ -288,10 +290,10 @@ LRESULT CDebugScripts::OnScriptListCustomDraw(NMHDR* pNMHDR)
 
     DWORD nItem = pLVCD->nmcd.dwItemSpec;
 
-    char scriptName[MAX_PATH];
+    wchar_t scriptName[MAX_PATH];
     m_ScriptList.GetItemText(nItem, 0, scriptName, MAX_PATH);
 
-    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(scriptName);
+    INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(stdstr("").FromUTF16(scriptName).c_str());
 
     if (state == STATE_STARTED)
     {
@@ -305,7 +307,7 @@ LRESULT CDebugScripts::OnScriptListCustomDraw(NMHDR* pNMHDR)
     return CDRF_DODEFAULT;
 }
 
-void CDebugScripts::EvaluateInSelectedInstance(char* code)
+void CDebugScripts::EvaluateInSelectedInstance(const char* code)
 {
     INSTANCE_STATE state = m_Debugger->ScriptSystem()->GetInstanceState(m_SelectedScriptName);
 
@@ -324,9 +326,9 @@ LRESULT CEditEval::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BO
     {
         if (m_HistoryIdx > 0)
         {
-            char* code = m_History[--m_HistoryIdx];
-            SetWindowTextA(code);
-            int selEnd = strlen(code);
+            wchar_t* code = m_History[--m_HistoryIdx];
+            SetWindowText(code);
+            int selEnd = wcslen(code);
             SetSel(selEnd, selEnd);
         }
     }
@@ -335,14 +337,14 @@ LRESULT CEditEval::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BO
         int size = m_History.size();
         if (m_HistoryIdx < size - 1)
         {
-            char* code = m_History[++m_HistoryIdx];
-            SetWindowTextA(code);
-            int selEnd = strlen(code);
+            wchar_t* code = m_History[++m_HistoryIdx];
+            SetWindowText(code);
+            int selEnd = wcslen(code);
             SetSel(selEnd, selEnd);
         }
         else if (m_HistoryIdx < size)
         {
-            SetWindowTextA("");
+            SetWindowText(L"");
             m_HistoryIdx++;
         }
     }
@@ -355,18 +357,18 @@ LRESULT CEditEval::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BO
         }
 
         size_t codeLength = GetWindowTextLength() + 1;
-        char* code = (char*)malloc(codeLength);
-        GetWindowTextA(code, codeLength);
+        wchar_t* code = (wchar_t*)malloc(codeLength * sizeof(wchar_t));
+        GetWindowText(code, codeLength);
 
-        m_ScriptWindow->EvaluateInSelectedInstance(code);
+        m_ScriptWindow->EvaluateInSelectedInstance(stdstr().FromUTF16(code).c_str());
 
-        SetWindowTextA("");
+        SetWindowText(L"");
         int historySize = m_History.size();
 
         // remove duplicate
         for (int i = 0; i < historySize; i++)
         {
-            if (strcmp(code, m_History[i]) == 0)
+            if (wcscmp(code, m_History[i]) == 0)
             {
                 free(m_History[i]);
                 m_History.erase(m_History.begin() + i);
@@ -426,5 +428,5 @@ void CDebugScripts::ToggleSelected()
 
 void CDebugScripts::EditSelected()
 {
-    ShellExecute(NULL, "edit", m_SelectedScriptName, NULL, "Scripts", SW_SHOWNORMAL);
+    ShellExecute(NULL, L"edit", stdstr(m_SelectedScriptName).ToUTF16().c_str(), NULL, L"Scripts", SW_SHOWNORMAL);
 }

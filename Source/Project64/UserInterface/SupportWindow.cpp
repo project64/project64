@@ -50,10 +50,10 @@ void CSupportWindow::EnableContinue()
 
 LRESULT CSupportWindow::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-    SetWindowTextW(m_hWnd, wGS(MSG_SUPPORT_TITLE).c_str());
-    SetWindowTextW(GetDlgItem(IDC_ENTER_CODE), wGS(MSG_SUPPORT_ENTER_CODE).c_str());
-    SetWindowTextW(GetDlgItem(ID_SUPPORT_PJ64), wGS(MSG_SUPPORT_PROJECT64).c_str());
-    SetWindowTextW(GetDlgItem(IDCANCEL), wGS(MSG_SUPPORT_CONTINUE).c_str());
+    ::SetWindowTextW(m_hWnd, wGS(MSG_SUPPORT_TITLE).c_str());
+    ::SetWindowTextW(GetDlgItem(IDC_ENTER_CODE), wGS(MSG_SUPPORT_ENTER_CODE).c_str());
+    ::SetWindowTextW(GetDlgItem(ID_SUPPORT_PJ64), wGS(MSG_SUPPORT_PROJECT64).c_str());
+    ::SetWindowTextW(GetDlgItem(IDCANCEL), wGS(MSG_SUPPORT_CONTINUE).c_str());
 
     {
         HWND hInfo = GetDlgItem(IDC_INFO);
@@ -73,7 +73,7 @@ LRESULT CSupportWindow::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         {
             ::SetWindowPos(hInfo,NULL,0,0,rcWin.right, rcWin.bottom,SWP_NOACTIVATE|SWP_NOMOVE|SWP_NOOWNERZORDER);
         }
-        SetWindowTextW(hInfo, InfoText.c_str());
+        ::SetWindowTextW(hInfo, InfoText.c_str());
 
         ::GetWindowRect(hInfo,&rcWin);
         ::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&rcWin, 2);
@@ -128,7 +128,7 @@ LRESULT CSupportWindow::OnTimer(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
         EnableContinue();
     }
     stdstr_f continue_txt(m_TimeOutTime > 0 ? "%s (%d)" : "%s", GS(MSG_SUPPORT_CONTINUE), m_TimeOutTime);
-    SetWindowTextW(GetDlgItem(IDCANCEL), continue_txt.ToUTF16().c_str());
+    ::SetWindowTextW(GetDlgItem(IDCANCEL), continue_txt.ToUTF16().c_str());
     return true;
 }
 
@@ -140,8 +140,8 @@ LRESULT CSupportWindow::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCt
 
 LRESULT CSupportWindow::OnSupportProject64(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-    std::string SupportURL = stdstr_f("http://www.pj64-emu.com/support-project64.html?ver=%s", VER_FILE_VERSION_STR);
-    ShellExecute(NULL, "open", SupportURL.c_str(), NULL, NULL, SW_SHOWMAXIMIZED);
+    stdstr SupportURL = stdstr_f("http://www.pj64-emu.com/support-project64.html?ver=%s", VER_FILE_VERSION_STR);
+    ShellExecute(NULL, L"open", SupportURL.ToUTF16().c_str(), NULL, NULL, SW_SHOWMAXIMIZED);
     return TRUE;
 }
 

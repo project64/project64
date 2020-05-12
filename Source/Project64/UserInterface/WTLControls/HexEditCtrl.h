@@ -131,7 +131,7 @@ public:
 
     static char ByteAscii(uint8_t value);
     static uint8_t HexCharValue(char c);
-    static int CALLBACK HaveFontCb(CONST LOGFONTA *lplf, CONST TEXTMETRICA *lptm, DWORD FontType, LPARAM lParam);
+    static int CALLBACK HaveFontCb(CONST LOGFONTW *lplf, CONST TEXTMETRICW *lptm, DWORD FontType, LPARAM lParam);
     static bool HaveFont(HDC hdc, const char* name);
 
     void     Draw(void);

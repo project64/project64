@@ -5,10 +5,10 @@
 
 LRESULT CSupportEnterCode::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-    SetWindowTextW(m_hWnd, wGS(MSG_SUPPORT_ENTER_CODE_TITLE).c_str());
-    SetWindowTextW(GetDlgItem(IDOK), wGS(MSG_SUPPORT_OK).c_str());
-    SetWindowTextW(GetDlgItem(IDCANCEL), wGS(MSG_SUPPORT_CANCEL).c_str());
-    SetWindowTextW(GetDlgItem(IDC_DESCRIPTION), wGS(MSG_SUPPORT_ENTER_CODE_DESC).c_str());
+    ::SetWindowTextW(m_hWnd, wGS(MSG_SUPPORT_ENTER_CODE_TITLE).c_str());
+    ::SetWindowTextW(GetDlgItem(IDOK), wGS(MSG_SUPPORT_OK).c_str());
+    ::SetWindowTextW(GetDlgItem(IDCANCEL), wGS(MSG_SUPPORT_CANCEL).c_str());
+    ::SetWindowTextW(GetDlgItem(IDC_DESCRIPTION), wGS(MSG_SUPPORT_ENTER_CODE_DESC).c_str());
     return TRUE;
 }
 
@@ -42,20 +42,20 @@ LRESULT CSupportEnterCode::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWn
 
 LRESULT CSupportEnterCode::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-    char code[50];
-    if (!GetDlgItemText(IDC_CODE,code,sizeof(code)))
+    wchar_t code[50];
+    if (!GetDlgItemText(IDC_CODE,code,sizeof(code) /sizeof(code[0])))
     {
-        MessageBoxW(m_hWnd, wGS(MSG_SUPPORT_ENTER_SUPPORT_CODE).c_str(), wGS(MSG_SUPPORT_PROJECT64).c_str(), MB_OK);
+        MessageBox(wGS(MSG_SUPPORT_ENTER_SUPPORT_CODE).c_str(), wGS(MSG_SUPPORT_PROJECT64).c_str(), MB_OK);
         return false;
     }
-    if (_stricmp(code,"thank you from project64") != 0)
+    if (_wcsicmp(code,L"thank you from project64") != 0)
     {
-        MessageBoxW(m_hWnd, wGS(MSG_SUPPORT_INCORRECT_CODE).c_str(), wGS(MSG_SUPPORT_PROJECT64).c_str(), MB_OK);
+        MessageBox(wGS(MSG_SUPPORT_INCORRECT_CODE).c_str(), wGS(MSG_SUPPORT_PROJECT64).c_str(), MB_OK);
         return false;
     }
     UISettingsSaveDword(SupportWindows_RunCount, (uint32_t) -1);
     CSettingTypeApplication::Flush();
-    MessageBoxW(m_hWnd, wGS(MSG_SUPPORT_COMPLETE).c_str(), wGS(MSG_SUPPORT_PROJECT64).c_str(), MB_OK);
+    MessageBox(wGS(MSG_SUPPORT_COMPLETE).c_str(), wGS(MSG_SUPPORT_PROJECT64).c_str(), MB_OK);
     EndDialog(wID);
     return TRUE;
 }

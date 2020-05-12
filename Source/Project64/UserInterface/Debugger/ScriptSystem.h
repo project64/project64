@@ -112,8 +112,8 @@ public:
     }
 
     void DeleteStoppedInstances();
-    INSTANCE_STATE GetInstanceState(char* scriptName);
-    CScriptInstance* GetInstance(char* scriptName);
+    INSTANCE_STATE GetInstanceState(const char* scriptName);
+    CScriptInstance* GetInstance(const char* scriptName);
 
     CScriptHook* HookCPUExec()
     {

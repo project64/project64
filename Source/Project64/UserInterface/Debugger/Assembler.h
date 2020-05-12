@@ -42,7 +42,7 @@ private:
     static ASM_PARSE_ERROR m_ParseError;
 
 public:
-    static bool AssembleLine(char* line, uint32_t* opcode, uint32_t address = 0x00000000);
+    static bool AssembleLine(const char* line, uint32_t* opcode, uint32_t address = 0x00000000);
 
 private:
     

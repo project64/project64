@@ -33,7 +33,7 @@ CGameStatusPage::CGameStatusPage(HWND hParent, const RECT & rcDispay)
         {
             if (strstr(item->c_str(), ".Sel") != NULL) { continue; }
             if (strstr(item->c_str(), ".Auto") != NULL) { continue; }
-            ComboBox->AddItem(item->c_str(), item->c_str());
+            ComboBox->AddItem(stdstr(*item).ToUTF16().c_str(), item->c_str());
         }
         ComboBox->SetTextField(GetDlgItem(IDC_STATUS_TEXT));
     }

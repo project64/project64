@@ -60,13 +60,14 @@ public:
 	
 	BOOL Show( CRect& rcRect, LPCTSTR lpszItemText, LPCTSTR lpszToolTip )
 	{
-		stdstr strItemText = lpszItemText;
+        stdstr strItemText;
+        strItemText.FromUTF16(lpszItemText);
 		
 		if ( !IsWindow() || strItemText.empty() )
 			return FALSE;
 		
-		m_strToolTip = lpszToolTip;
-		SetWindowText( strItemText.c_str() );
+		m_strToolTip.FromUTF16(lpszToolTip);
+		SetWindowText(strItemText.ToUTF16().c_str() );
 		
 		CClientDC dcClient( m_hWnd );
 		
@@ -75,7 +76,7 @@ public:
 		CRect rcTextExtent( rcRect );
 				
 		// calculate item text extent...
-		dcClient.DrawText( strItemText.c_str(), (int)strItemText.length(), rcTextExtent, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_CALCRECT );
+		dcClient.DrawTextW( strItemText.ToUTF16().c_str(), (int)strItemText.length(), rcTextExtent, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER | DT_CALCRECT );
 		
 		dcClient.SelectFont( hOldFont );
 		
@@ -216,7 +217,7 @@ public:
 		CRect rcItemText( rcClient );
 		rcItemText.OffsetRect( 4, 0 );
 		
-		dcPaint.DrawText( strItemText.c_str(), (int)strItemText.length(), rcItemText, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER );
+		dcPaint.DrawTextW( strItemText.ToUTF16().c_str(), (int)strItemText.length(), rcItemText, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER );
 	
 		dcPaint.RestoreDC( nContextState );
 	}

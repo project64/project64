@@ -40,7 +40,7 @@ private:
     LRESULT OnClicked(WORD wNotifyCode, WORD wID, HWND /*hWndCtl*/, BOOL& bHandled);
     void OnExitSizeMove(void);
 
-    bool DumpMemory(LPCSTR FileName, DumpFormat Format, DWORD StartPC, DWORD EndPC, DWORD DumpPC);
+    bool DumpMemory(LPCTSTR FileName, DumpFormat Format, DWORD StartPC, DWORD EndPC, DWORD DumpPC);
 
     CComboBox   m_FormatList;
     CEdit       m_FileName;

@@ -17,7 +17,7 @@ class CEditReg64 :
     private CDebugSettings
 {
 public:
-    static uint64_t ParseValue(char* wordPair);
+    static uint64_t ParseValue(const char* wordPair);
     BOOL Attach(HWND hWndNew);
     LRESULT OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnLostFocus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);

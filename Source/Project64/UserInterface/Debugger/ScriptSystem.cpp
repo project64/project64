@@ -40,7 +40,7 @@ CScriptSystem::CScriptSystem(CDebuggerUI* debugger)
     RegisterHook("draw", m_HookFrameDrawn);
 
     HMODULE hInst = GetModuleHandle(NULL);
-    HRSRC hRes = FindResource(hInst, MAKEINTRESOURCE(IDR_JSAPI_TEXT), "TEXT");
+    HRSRC hRes = FindResource(hInst, MAKEINTRESOURCE(IDR_JSAPI_TEXT), L"TEXT");
 
     HGLOBAL hGlob = LoadResource(hInst, hRes);
     DWORD resSize = SizeofResource(hInst, hRes);
@@ -109,7 +109,7 @@ void CScriptSystem::DeleteStoppedInstances()
     }
 }
 
-INSTANCE_STATE CScriptSystem::GetInstanceState(char* path)
+INSTANCE_STATE CScriptSystem::GetInstanceState(const char* path)
 {
     CGuard guard(m_CS);
 
@@ -125,7 +125,7 @@ INSTANCE_STATE CScriptSystem::GetInstanceState(char* path)
     return STATE_INVALID;
 }
 
-CScriptInstance* CScriptSystem::GetInstance(char* path)
+CScriptInstance* CScriptSystem::GetInstance(const char* path)
 {
     CGuard guard(m_CS);
 

@@ -40,7 +40,7 @@ public:
 
 #ifdef _WIN32
 	stdstr   & FromUTF16(const wchar_t * UTF16Source, bool * bSuccess = NULL);
-    std::wstring ToUTF16(unsigned int CodePage = CODEPAGE_UTF8, bool * bSuccess = NULL);
+    std::wstring ToUTF16(unsigned int CodePage = CODEPAGE_UTF8, bool * bSuccess = NULL) const;
 #endif
 
     void ArgFormat(const char * strFormat, va_list & args);

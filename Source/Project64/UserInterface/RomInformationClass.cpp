@@ -83,7 +83,7 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
     case WM_INITDIALOG:
     {
         //record class for future usage
-        SetProp(hDlg, "this", (RomInformation *)lParam);
+        SetProp(hDlg, L"this", (RomInformation *)lParam);
         RomInformation * _this = (RomInformation *)lParam;
 
         if (_this->m_pDiskInfo == NULL)
@@ -240,11 +240,11 @@ DWORD CALLBACK RomInfoProc(HWND hDlg, DWORD uMsg, DWORD wParam, DWORD lParam)
         switch (LOWORD(wParam))
         {
         case IDCANCEL:
-            RemoveProp(hDlg, "this");
+            RemoveProp(hDlg, L"this");
             EndDialog(hDlg, 0);
             break;
         case IDC_CLOSE_BUTTON:
-            RemoveProp(hDlg, "this");
+            RemoveProp(hDlg, L"this");
             EndDialog(hDlg, 0);
             break;
         }

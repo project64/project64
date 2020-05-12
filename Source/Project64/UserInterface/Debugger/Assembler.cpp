@@ -23,7 +23,7 @@ uint32_t CAssembler::m_Address = 0;
 
 char* CAssembler::m_TokContext = NULL;
 
-bool CAssembler::AssembleLine(char* line, uint32_t* opcode, uint32_t address)
+bool CAssembler::AssembleLine(const char* line, uint32_t* opcode, uint32_t address)
 {
     m_ParseError = ERR_NONE;
     m_Address = address;

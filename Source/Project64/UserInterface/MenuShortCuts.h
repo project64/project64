@@ -12,9 +12,9 @@
 
 struct VIRTUAL_KEY
 {
-    LPCSTR    Name;
-    int       Key;
-    LPCSTR    KeyName;
+    LPCTSTR Name;
+    int Key;
+    LPCTSTR KeyName;
 };
 
 class CMenuShortCutKey
@@ -38,18 +38,6 @@ public:
         ACCESS_ANYTIME = 7,
     };
 
-private:
-    static VIRTUAL_KEY m_VirtualKeyList[];
-
-    stdstr        m_ShortCutName;
-    WORD          m_key;
-    bool          m_bCtrl;
-    bool          m_bAlt;
-    bool          m_bShift;
-    ACCESS_MODE   m_AccessMode;
-    bool          m_bUserAdded;
-    bool          m_bInactive;
-
 public:
     CMenuShortCutKey(void);
     CMenuShortCutKey(WORD key, bool bCtrl, bool bAlt, bool bShift, ACCESS_MODE AccessMode, bool bUserAdded, bool bInactive);
@@ -59,16 +47,28 @@ public:
     static VIRTUAL_KEY * VirtualKeyList(int &Size);
     static RUNNING_STATE RunningState(void);
 
-    inline stdstr      Name(void) const { return m_ShortCutName; }
-    inline WORD        Key(void) const { return m_key; }
-    inline bool        Ctrl(void) const { return m_bCtrl; }
-    inline bool        Alt(void) const { return m_bAlt; }
-    inline bool        Shift(void) const { return m_bShift; }
-    inline bool        UserAdded(void) const { return m_bUserAdded; }
-    inline bool        Inactive(void) const { return m_bInactive; }
+    inline const std::wstring & Name(void) const { return m_ShortCutName; }
+    inline WORD Key(void) const { return m_key; }
+    inline bool Ctrl(void) const { return m_bCtrl; }
+    inline bool Alt(void) const { return m_bAlt; }
+    inline bool Shift(void) const { return m_bShift; }
+    inline bool UserAdded(void) const { return m_bUserAdded; }
+    inline bool Inactive(void) const { return m_bInactive; }
     inline ACCESS_MODE AccessMode(void) const { return m_AccessMode; }
 
-    inline void        SetInactive(bool Inactive) { m_bInactive = Inactive; }
+    inline void SetInactive(bool Inactive) { m_bInactive = Inactive; }
+
+private:
+    static VIRTUAL_KEY m_VirtualKeyList[];
+
+    std::wstring m_ShortCutName;
+    WORD m_key;
+    bool m_bCtrl;
+    bool m_bAlt;
+    bool m_bShift;
+    ACCESS_MODE m_AccessMode;
+    bool m_bUserAdded;
+    bool m_bInactive;
 };
 
 class CShortCutItem

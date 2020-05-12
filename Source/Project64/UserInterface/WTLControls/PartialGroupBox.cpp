@@ -65,7 +65,7 @@ void CPartialGroupBox::OnPaint(HDC /*hDC*/)
 	dc.SelectBrush(GetSysColorBrush(COLOR_BTNFACE));
 
 	wchar_t grptext[500];
-	GetWindowTextW(m_hWnd, grptext, sizeof(grptext) / sizeof(grptext[0]));
+	::GetWindowTextW(m_hWnd, grptext, sizeof(grptext) / sizeof(grptext[0]));
 
 	CRect fontsizerect(0, 0, 0, 0);
 	dc.DrawTextW(grptext, -1, fontsizerect, DT_SINGLELINE | DT_LEFT | DT_CALCRECT);

@@ -40,7 +40,7 @@ CRomBrowser::~CRomBrowser(void)
 
 void CRomBrowser::AddField(ROMBROWSER_FIELDS_LIST & Fields, LPCSTR Name, int32_t Pos, int32_t ID, int32_t Width, LanguageStringID LangID, bool UseDefault)
 {
-    Fields.push_back(ROMBROWSER_FIELDS(Name, Pos, ID, Width * DPIScale(), LangID, UseDefault));
+    Fields.push_back(ROMBROWSER_FIELDS(Name, Pos, ID, (int)(Width * DPIScale()), LangID, UseDefault));
 }
 
 void CRomBrowser::GetFieldInfo(ROMBROWSER_FIELDS_LIST & Fields, bool UseDefault /* = false  */)
@@ -659,26 +659,26 @@ int32_t CALLBACK CRomBrowser::RomList_CompareItems(uint32_t lParam1, uint32_t lP
 
     switch (SortFieldInfo->Key)
     {
-    case RB_FileName: result = (int32_t)lstrcmpi(pRomInfo1->FileName, pRomInfo2->FileName); break;
-    case RB_InternalName: result = (int32_t)lstrcmpi(pRomInfo1->InternalName, pRomInfo2->InternalName); break;
-    case RB_GoodName: result = (int32_t)lstrcmpi(GoodName1, GoodName2); break;
-    case RB_Name: result = (int32_t)lstrcmpi(Name1, Name2); break;
-    case RB_Status: result = (int32_t)lstrcmpi(pRomInfo1->Status, pRomInfo2->Status); break;
+    case RB_FileName: result = (int32_t)lstrcmpiA(pRomInfo1->FileName, pRomInfo2->FileName); break;
+    case RB_InternalName: result = (int32_t)lstrcmpiA(pRomInfo1->InternalName, pRomInfo2->InternalName); break;
+    case RB_GoodName: result = (int32_t)lstrcmpiA(GoodName1, GoodName2); break;
+    case RB_Name: result = (int32_t)lstrcmpiA(Name1, Name2); break;
+    case RB_Status: result = (int32_t)lstrcmpiA(pRomInfo1->Status, pRomInfo2->Status); break;
     case RB_RomSize: result = (int32_t)pRomInfo1->RomSize - (int32_t)pRomInfo2->RomSize; break;
-    case RB_CoreNotes: result = (int32_t)lstrcmpi(pRomInfo1->CoreNotes, pRomInfo2->CoreNotes); break;
-    case RB_PluginNotes: result = (int32_t)lstrcmpi(pRomInfo1->PluginNotes, pRomInfo2->PluginNotes); break;
-    case RB_UserNotes: result = (int32_t)lstrcmpi(pRomInfo1->UserNotes, pRomInfo2->UserNotes); break;
-    case RB_CartridgeID: result = (int32_t)lstrcmpi(pRomInfo1->CartID, pRomInfo2->CartID); break;
+    case RB_CoreNotes: result = (int32_t)lstrcmpiA(pRomInfo1->CoreNotes, pRomInfo2->CoreNotes); break;
+    case RB_PluginNotes: result = (int32_t)lstrcmpiA(pRomInfo1->PluginNotes, pRomInfo2->PluginNotes); break;
+    case RB_UserNotes: result = (int32_t)lstrcmpiA(pRomInfo1->UserNotes, pRomInfo2->UserNotes); break;
+    case RB_CartridgeID: result = (int32_t)lstrcmpiA(pRomInfo1->CartID, pRomInfo2->CartID); break;
     case RB_Manufacturer: result = (int32_t)pRomInfo1->Manufacturer - (int32_t)pRomInfo2->Manufacturer; break;
     case RB_Country: result = (int32_t)pRomInfo1->Country - (int32_t)pRomInfo2->Country; break;
-    case RB_Developer: result = (int32_t)lstrcmpi(pRomInfo1->Developer, pRomInfo2->Developer); break;
+    case RB_Developer: result = (int32_t)lstrcmpiA(pRomInfo1->Developer, pRomInfo2->Developer); break;
     case RB_Crc1: result = (int32_t)pRomInfo1->CRC1 - (int32_t)pRomInfo2->CRC1; break;
     case RB_Crc2: result = (int32_t)pRomInfo1->CRC2 - (int32_t)pRomInfo2->CRC2; break;
     case RB_CICChip: result = (int32_t)pRomInfo1->CicChip - (int32_t)pRomInfo2->CicChip; break;
-    case RB_ReleaseDate: result = (int32_t)lstrcmpi(pRomInfo1->ReleaseDate, pRomInfo2->ReleaseDate); break;
+    case RB_ReleaseDate: result = (int32_t)lstrcmpiA(pRomInfo1->ReleaseDate, pRomInfo2->ReleaseDate); break;
     case RB_Players: result = (int32_t)pRomInfo1->Players - (int32_t)pRomInfo2->Players; break;
-    case RB_ForceFeedback: result = (int32_t)lstrcmpi(pRomInfo1->ForceFeedback, pRomInfo2->ForceFeedback); break;
-    case RB_Genre: result = (int32_t)lstrcmpi(pRomInfo1->Genre, pRomInfo2->Genre); break;
+    case RB_ForceFeedback: result = (int32_t)lstrcmpiA(pRomInfo1->ForceFeedback, pRomInfo2->ForceFeedback); break;
+    case RB_Genre: result = (int32_t)lstrcmpiA(pRomInfo1->Genre, pRomInfo2->Genre); break;
     case RB_FileFormat: result = (int32_t)pRomInfo1->FileFormat - (int32_t)pRomInfo2->FileFormat; break;
     default: result = 0; break;
     }
@@ -991,7 +991,7 @@ void CRomBrowser::SelectRomDir(void)
     {
         WriteTrace(TraceUserInterface, TraceDebug, "3");
         char Directory[_MAX_PATH];
-        if (SHGetPathFromIDList(pidl, Directory))
+        if (SHGetPathFromIDListA(pidl, Directory))
         {
             int32_t len = strlen(Directory);
 
@@ -1177,7 +1177,7 @@ void CRomBrowser::WatchRomDirChanged(CRomBrowser * _this)
         HANDLE hChange[] =
         {
             _this->m_WatchStopEvent,
-            FindFirstChangeNotification(_this->m_WatchRomDir.c_str(), g_Settings->LoadBool(RomList_GameDirRecursive), FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_SIZE),
+            FindFirstChangeNotificationA(_this->m_WatchRomDir.c_str(), g_Settings->LoadBool(RomList_GameDirRecursive), FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_SIZE),
         };
         WriteTrace(TraceUserInterface, TraceDebug, "4");
         for (;;)

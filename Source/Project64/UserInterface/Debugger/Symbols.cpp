@@ -138,7 +138,7 @@ void CSymbolTable::Load()
 
     if (g_Settings->LoadStringVal(Game_GameName).length() == 0)
     {
-        MessageBox(NULL, "Game must be loaded", "Symbols", MB_ICONWARNING | MB_OK);
+        MessageBox(NULL, L"Game must be loaded", L"Symbols", MB_ICONWARNING | MB_OK);
         return;
     }
     
@@ -390,7 +390,7 @@ void CSymbolTable::GetValueString(char* dst, CSymbol* symbol)
 void CSymbolTable::ParseErrorAlert(char* message, int lineNumber)
 {
     stdstr messageFormatted = stdstr_f("%s\nLine %d", message, lineNumber);
-    MessageBox(NULL, messageFormatted.c_str(), "Parse error", MB_OK | MB_ICONWARNING);
+    MessageBox(NULL, messageFormatted.ToUTF16().c_str(), L"Parse error", MB_OK | MB_ICONWARNING);
 }
 
 void CSymbolTable::Reset()
@@ -404,7 +404,7 @@ bool CSymbolTable::CmpSymbolAddresses(CSymbol& a, CSymbol& b)
     return (a.m_Address < b.m_Address);
 }
 
-void CSymbolTable::AddSymbol(int type, uint32_t address, char* name, char* description)
+void CSymbolTable::AddSymbol(int type, uint32_t address, const char* name, const char* description)
 {
     CGuard guard(m_CS);
 

@@ -58,7 +58,7 @@ CScriptInstance::CScriptInstance(CDebuggerUI* debugger)
     m_NextListenerId = 0;
     m_hIOCompletionPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
     CacheInstance(this);
-    m_hKernel = LoadLibrary("Kernel32.dll");
+    m_hKernel = LoadLibraryA("Kernel32.dll");
     m_CancelIoEx = NULL;
     if (m_hKernel != NULL)
     {
@@ -152,7 +152,7 @@ void CScriptInstance::StartScriptProc()
 
     if (apiresult != 0)
     {
-        MessageBox(NULL, duk_safe_to_string(ctx, -1), "API Script Error", MB_OK | MB_ICONERROR);
+        MessageBox(NULL, stdstr(duk_safe_to_string(ctx, -1)).ToUTF16().c_str(), L"API Script Error", MB_OK | MB_ICONERROR);
         return;
     }
 
@@ -463,7 +463,7 @@ void CScriptInstance::InvokeListenerCallback(IOLISTENER* lpListener)
     if (status != DUK_EXEC_SUCCESS)
     {
         const char* msg = duk_safe_to_string(m_Ctx, -1);
-        MessageBox(NULL, msg, "Script error", MB_OK | MB_ICONWARNING);
+        MessageBox(NULL, stdstr(msg).ToUTF16().c_str(), L"Script error", MB_OK | MB_ICONWARNING);
     }
 }
 
@@ -475,7 +475,7 @@ const char* CScriptInstance::Eval(const char* jsCode)
 
     if (result != 0)
     {
-        MessageBox(NULL, msg, "Script error", MB_OK | MB_ICONWARNING);
+        MessageBox(NULL, stdstr(msg).ToUTF16().c_str(), L"Script error", MB_OK | MB_ICONWARNING);
     }
     else
     {
@@ -553,7 +553,7 @@ const char* CScriptInstance::EvalFile(const char* jsPath)
     const char* msg = duk_safe_to_string(m_Ctx, -1);
     if (result != 0)
     {
-        MessageBox(NULL, msg, jsPath, MB_OK | MB_ICONWARNING);
+        MessageBox(NULL, stdstr(msg).ToUTF16().c_str(), stdstr(jsPath).ToUTF16().c_str(), MB_OK | MB_ICONWARNING);
     }
     duk_pop(m_Ctx);
     return msg;
@@ -600,7 +600,7 @@ void CScriptInstance::QueueAPC(PAPCFUNC userProc, ULONG_PTR param)
 {
     if (m_hThread != NULL)
     {
-        MessageBox(NULL, "apc queued", "", MB_OK);
+        MessageBox(NULL, L"apc queued", L"", MB_OK);
         QueueUserAPC(userProc, m_hThread, param);
     }
 }
@@ -733,7 +733,7 @@ duk_ret_t CScriptInstance::js_ioRead(duk_context* ctx)
 
     if (status == false && GetLastError() != ERROR_IO_PENDING)
     {
-        MessageBox(NULL, "readex error", "", MB_OK);
+        MessageBox(NULL, L"readex error", L"", MB_OK);
     }
 
     duk_pop_n(ctx, 3);
@@ -1364,7 +1364,7 @@ duk_ret_t CScriptInstance::js_MsgBox(duk_context* ctx)
         caption = duk_to_string(ctx, 1);
     }
 
-    MessageBox(NULL, msg, caption, MB_OK);
+    MessageBox(NULL, stdstr(msg).ToUTF16().c_str(), stdstr(caption).ToUTF16().c_str(), MB_OK);
 
     duk_pop_n(ctx, argc);
     duk_push_boolean(ctx, 1);
@@ -1553,7 +1553,7 @@ duk_ret_t CScriptInstance::js_ScreenPrint(duk_context* ctx)
 
     int nChars = strlen(text);
 
-    TextOut(hdc, x, y, text, nChars);
+    TextOut(hdc, x, y, stdstr(text).ToUTF16().c_str(), nChars);
 
     duk_pop_n(ctx, nargs);
     return 1;
@@ -1840,7 +1840,7 @@ duk_ret_t CScriptInstance::js_FSMkDir(duk_context* ctx)
 
     duk_pop_n(ctx, nargs);
 
-    if (CreateDirectory(path, NULL))
+    if (CreateDirectoryA(path, NULL))
     {
         duk_push_true(ctx);
     }
@@ -1866,7 +1866,7 @@ duk_ret_t CScriptInstance::js_FSRmDir(duk_context* ctx)
 
     duk_pop_n(ctx, nargs);
     
-    if (RemoveDirectory(path))
+    if (RemoveDirectoryA(path))
     {
         duk_push_true(ctx);
     }
@@ -1918,8 +1918,8 @@ duk_ret_t CScriptInstance::js_FSReadDir(duk_context* ctx)
 
     duk_pop_n(ctx, nargs);
     
-    WIN32_FIND_DATA ffd;
-    HANDLE hFind = FindFirstFile(stdstr_f("%s%s", path, "\\*").c_str(), &ffd);
+    WIN32_FIND_DATAA ffd;
+    HANDLE hFind = FindFirstFileA(stdstr_f("%s%s", path, "\\*").c_str(), &ffd);
 
     if (hFind == INVALID_HANDLE_VALUE)
     {
@@ -1944,7 +1944,7 @@ duk_ret_t CScriptInstance::js_FSReadDir(duk_context* ctx)
         duk_put_prop_index(ctx, arr_idx, nfile);
         nfile++;
 
-    } while (FindNextFile(hFind, &ffd) != 0);
+    } while (FindNextFileA(hFind, &ffd) != 0);
 
     FindClose(hFind);
     return 1;

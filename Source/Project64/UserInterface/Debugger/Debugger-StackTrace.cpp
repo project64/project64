@@ -30,10 +30,9 @@ LRESULT CDebugStackTrace::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
     DlgSavePos_Init(DebuggerUI_StackTracePos);
     
     m_List.Attach(GetDlgItem(IDC_STACKTRACE_LIST));
-    m_List.AddColumn("Caller", 0);
-    m_List.AddColumn("Routine", 1);
-    m_List.AddColumn("Name", 2);
-    
+    m_List.AddColumn(L"Caller", 0);
+    m_List.AddColumn(L"Routine", 1);
+    m_List.AddColumn(L"Name", 2);  
 
     m_List.SetColumnWidth(0, 70);
     m_List.SetColumnWidth(1, 70);
@@ -93,7 +92,7 @@ void CDebugStackTrace::Refresh()
         return;
     }
 
-    SetWindowText(stdstr_f("Stack Trace (%d)", m_EntriesIndex).c_str());
+    SetWindowText(stdstr_f("Stack Trace (%d)", m_EntriesIndex).ToUTF16().c_str());
 
     m_List.SetRedraw(FALSE);
     m_List.DeleteAllItems();
@@ -103,22 +102,17 @@ void CDebugStackTrace::Refresh()
         uint32_t routineAddress = m_Entries[i].routineAddress;
         uint32_t callingAddress = m_Entries[i].callingAddress;
         
-        char szAddress[9];
-        sprintf(szAddress, "%08X", callingAddress);
-        m_List.AddItem(i, 0, szAddress);
-
-        sprintf(szAddress, "%08X", routineAddress);
-        m_List.AddItem(i, 1, szAddress);
+        m_List.AddItem(i, 0, stdstr_f("%08X", callingAddress).ToUTF16().c_str());
+        m_List.AddItem(i, 1, stdstr_f("%08X", routineAddress).ToUTF16().c_str());
 
         CSymbol symbol;
-
         if (m_Debugger->SymbolTable()->GetSymbolByAddress(routineAddress, &symbol))
         {
-            m_List.AddItem(i, 2, symbol.m_Name);
+            m_List.AddItem(i, 2, stdstr(symbol.m_Name).ToUTF16().c_str());
         }
         else
         {
-            m_List.AddItem(i, 2, "");
+            m_List.AddItem(i, 2, L"");
         }
         
         m_List.SetItemData(i, routineAddress);

@@ -19,38 +19,38 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
     }
     UpdatePageSettings();
 
-    SetDlgItemTextW(m_hWnd, IDC_MEMORY_SIZE_TEXT, wGS(ROM_MEM_SIZE).c_str());
-	SetDlgItemTextW(m_hWnd, IDC_HLE_GFX, wGS(PLUG_HLE_GFX).c_str());
-	SetDlgItemTextW(m_hWnd, IDC_USE_TLB, wGS(ROM_USE_TLB).c_str());
-	SetDlgItemTextW(m_hWnd, IDC_VIREFESH_TEXT, wGS(ROM_VIREFRESH).c_str());
-	SetDlgItemTextW(m_hWnd, IDC_COUNTPERBYTE_TEXT, wGS(ROM_COUNTPERBYTE).c_str());
-	SetDlgItemTextW(m_hWnd, IDC_COUNTFACT_TEXT, wGS(ROM_COUNTER_FACTOR).c_str());
-	SetDlgItemTextW(m_hWnd, IDC_ROM_32BIT, wGS(ROM_32BIT).c_str());
-	SetDlgItemTextW(m_hWnd, IDC_ROM_FIXEDAUDIO, wGS(ROM_FIXED_AUDIO).c_str());
-	SetDlgItemTextW(m_hWnd, IDC_SYNC_AUDIO, wGS(ROM_SYNC_AUDIO).c_str());
-	SetDlgItemTextW(m_hWnd, IDC_UNALIGNED_DMA, wGS(ROM_UNALIGNED_DMA).c_str());
-	SetDlgItemTextW(m_hWnd, IDC_RANDOMIZE_SIPI_INTERRUPTS, wGS(ROM_RANDOMIZE_SIPI_INTERRUPTS).c_str());
-	SetDlgItemTextW(m_hWnd, IDC_PROTECT_MEMORY, wGS(ADVANCE_SMM_PROTECT).c_str());
+    SetDlgItemText(IDC_MEMORY_SIZE_TEXT, wGS(ROM_MEM_SIZE).c_str());
+	SetDlgItemText(IDC_HLE_GFX, wGS(PLUG_HLE_GFX).c_str());
+	SetDlgItemText(IDC_USE_TLB, wGS(ROM_USE_TLB).c_str());
+	SetDlgItemText(IDC_VIREFESH_TEXT, wGS(ROM_VIREFRESH).c_str());
+	SetDlgItemText(IDC_COUNTPERBYTE_TEXT, wGS(ROM_COUNTPERBYTE).c_str());
+	SetDlgItemText(IDC_COUNTFACT_TEXT, wGS(ROM_COUNTER_FACTOR).c_str());
+	SetDlgItemText(IDC_ROM_32BIT, wGS(ROM_32BIT).c_str());
+	SetDlgItemText(IDC_ROM_FIXEDAUDIO, wGS(ROM_FIXED_AUDIO).c_str());
+	SetDlgItemText(IDC_SYNC_AUDIO, wGS(ROM_SYNC_AUDIO).c_str());
+	SetDlgItemText(IDC_UNALIGNED_DMA, wGS(ROM_UNALIGNED_DMA).c_str());
+	SetDlgItemText(IDC_RANDOMIZE_SIPI_INTERRUPTS, wGS(ROM_RANDOMIZE_SIPI_INTERRUPTS).c_str());
+	SetDlgItemText(IDC_PROTECT_MEMORY, wGS(ADVANCE_SMM_PROTECT).c_str());
 
     CModifiedComboBox * ComboBox;
     ComboBox = AddModComboBox(GetDlgItem(IDC_RDRAM_SIZE), Default_RDRamSize);
     if (ComboBox)
     {
         ComboBox->SetTextField(GetDlgItem(IDC_MEMORY_SIZE_TEXT));
-        ComboBox->AddItemW(wGS(RDRAM_4MB).c_str(), 0x400000);
-        ComboBox->AddItemW(wGS(RDRAM_8MB).c_str(), 0x800000);
+        ComboBox->AddItem(wGS(RDRAM_4MB).c_str(), 0x400000);
+        ComboBox->AddItem(wGS(RDRAM_8MB).c_str(), 0x800000);
     }
 
 	ComboBox = AddModComboBox(GetDlgItem(IDC_COUNTFACT), Default_CounterFactor);
 	if (ComboBox)
 	{
 		ComboBox->SetTextField(GetDlgItem(IDC_COUNTFACT_TEXT));
-		ComboBox->AddItemW(wGS(NUMBER_1).c_str(), 1);
-		ComboBox->AddItemW(wGS(NUMBER_2).c_str(), 2);
-		ComboBox->AddItemW(wGS(NUMBER_3).c_str(), 3);
-		ComboBox->AddItemW(wGS(NUMBER_4).c_str(), 4);
-		ComboBox->AddItemW(wGS(NUMBER_5).c_str(), 5);
-		ComboBox->AddItemW(wGS(NUMBER_6).c_str(), 6);
+		ComboBox->AddItem(wGS(NUMBER_1).c_str(), 1);
+		ComboBox->AddItem(wGS(NUMBER_2).c_str(), 2);
+		ComboBox->AddItem(wGS(NUMBER_3).c_str(), 3);
+		ComboBox->AddItem(wGS(NUMBER_4).c_str(), 4);
+		ComboBox->AddItem(wGS(NUMBER_5).c_str(), 5);
+		ComboBox->AddItem(wGS(NUMBER_6).c_str(), 6);
 	}
 
 	CModifiedEditBox * TxtBox = AddModTextBox(GetDlgItem(IDC_VIREFRESH), Default_ViRefreshRate, false);

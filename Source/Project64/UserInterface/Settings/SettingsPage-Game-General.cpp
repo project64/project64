@@ -21,24 +21,24 @@ CGameGeneralPage::CGameGeneralPage(HWND hParent, const RECT & rcDispay)
     }
 
     //Set the text for all gui Items
-    SetDlgItemTextW(m_hWnd, IDC_GOOD_NAME_TEXT, wGS(RB_GOODNAME).c_str());
+    SetDlgItemText(IDC_GOOD_NAME_TEXT, wGS(RB_GOODNAME).c_str());
 
-    SetDlgItemTextW(m_hWnd, IDC_MEMORY_SIZE_TEXT, wGS(ROM_MEM_SIZE).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_SAVE_TYPE_TEXT, wGS(ROM_SAVE_TYPE).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_COUNTFACT_TEXT, wGS(ROM_COUNTER_FACTOR).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_VIREFESH_TEXT, wGS(ROM_VIREFRESH).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_COUNTPERBYTE_TEXT, wGS(ROM_COUNTPERBYTE).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_OVER_CLOCK_MODIFIER_TEXT, wGS(ROM_OVER_CLOCK_MODIFIER).c_str());
+    SetDlgItemText(IDC_MEMORY_SIZE_TEXT, wGS(ROM_MEM_SIZE).c_str());
+    SetDlgItemText(IDC_SAVE_TYPE_TEXT, wGS(ROM_SAVE_TYPE).c_str());
+    SetDlgItemText(IDC_COUNTFACT_TEXT, wGS(ROM_COUNTER_FACTOR).c_str());
+    SetDlgItemText(IDC_VIREFESH_TEXT, wGS(ROM_VIREFRESH).c_str());
+    SetDlgItemText(IDC_COUNTPERBYTE_TEXT, wGS(ROM_COUNTPERBYTE).c_str());
+    SetDlgItemText(IDC_OVER_CLOCK_MODIFIER_TEXT, wGS(ROM_OVER_CLOCK_MODIFIER).c_str());
 
-    SetDlgItemTextW(m_hWnd, IDC_ROM_32BIT, wGS(ROM_32BIT).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_ROM_FIXEDAUDIO, wGS(ROM_FIXED_AUDIO).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_DELAY_DP, wGS(ROM_DELAY_DP).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_SYNC_AUDIO, wGS(ROM_SYNC_AUDIO).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_USE_TLB, wGS(ROM_USE_TLB).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_DELAY_SI, wGS(ROM_DELAY_SI).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_AUDIO_SIGNAL, wGS(ROM_AUDIO_SIGNAL).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_UNALIGNED_DMA, wGS(ROM_UNALIGNED_DMA).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_RANDOMIZE_SIPI_INTERRUPTS, wGS(ROM_RANDOMIZE_SIPI_INTERRUPTS).c_str());
+    SetDlgItemText(IDC_ROM_32BIT, wGS(ROM_32BIT).c_str());
+    SetDlgItemText(IDC_ROM_FIXEDAUDIO, wGS(ROM_FIXED_AUDIO).c_str());
+    SetDlgItemText(IDC_DELAY_DP, wGS(ROM_DELAY_DP).c_str());
+    SetDlgItemText(IDC_SYNC_AUDIO, wGS(ROM_SYNC_AUDIO).c_str());
+    SetDlgItemText(IDC_USE_TLB, wGS(ROM_USE_TLB).c_str());
+    SetDlgItemText(IDC_DELAY_SI, wGS(ROM_DELAY_SI).c_str());
+    SetDlgItemText(IDC_AUDIO_SIGNAL, wGS(ROM_AUDIO_SIGNAL).c_str());
+    SetDlgItemText(IDC_UNALIGNED_DMA, wGS(ROM_UNALIGNED_DMA).c_str());
+    SetDlgItemText(IDC_RANDOMIZE_SIPI_INTERRUPTS, wGS(ROM_RANDOMIZE_SIPI_INTERRUPTS).c_str());
 
     AddModCheckBox(GetDlgItem(IDC_ROM_32BIT), Game_32Bit);
     AddModCheckBox(GetDlgItem(IDC_SYNC_AUDIO), Game_SyncViaAudio);
@@ -55,34 +55,34 @@ CGameGeneralPage::CGameGeneralPage(HWND hParent, const RECT & rcDispay)
     if (ComboBox)
     {
         ComboBox->SetTextField(GetDlgItem(IDC_MEMORY_SIZE_TEXT));
-        ComboBox->AddItemW(wGS(RDRAM_4MB).c_str(), 0x400000);
-        ComboBox->AddItemW(wGS(RDRAM_8MB).c_str(), 0x800000);
+        ComboBox->AddItem(wGS(RDRAM_4MB).c_str(), 0x400000);
+        ComboBox->AddItem(wGS(RDRAM_8MB).c_str(), 0x800000);
     }
 
     ComboBox = AddModComboBox(GetDlgItem(IDC_SAVE_TYPE), Game_SaveChip);
     if (ComboBox)
     {
         ComboBox->SetTextField(GetDlgItem(IDC_SAVE_TYPE_TEXT));
-        ComboBox->AddItemW(wGS(SAVE_FIRST_USED).c_str(), (uint32_t)(int64_t)SaveChip_Auto);
-        ComboBox->AddItemW(wGS(SAVE_4K_EEPROM).c_str(), SaveChip_Eeprom_4K);
-        ComboBox->AddItemW(wGS(SAVE_16K_EEPROM).c_str(), SaveChip_Eeprom_16K);
-        ComboBox->AddItemW(wGS(SAVE_SRAM).c_str(), SaveChip_Sram);
-        ComboBox->AddItemW(wGS(SAVE_FLASHRAM).c_str(), SaveChip_FlashRam);
+        ComboBox->AddItem(wGS(SAVE_FIRST_USED).c_str(), (uint32_t)(int64_t)SaveChip_Auto);
+        ComboBox->AddItem(wGS(SAVE_4K_EEPROM).c_str(), SaveChip_Eeprom_4K);
+        ComboBox->AddItem(wGS(SAVE_16K_EEPROM).c_str(), SaveChip_Eeprom_16K);
+        ComboBox->AddItem(wGS(SAVE_SRAM).c_str(), SaveChip_Sram);
+        ComboBox->AddItem(wGS(SAVE_FLASHRAM).c_str(), SaveChip_FlashRam);
     }
 
     ComboBox = AddModComboBox(GetDlgItem(IDC_COUNTFACT), Game_CounterFactor);
     if (ComboBox)
     {
         ComboBox->SetTextField(GetDlgItem(IDC_COUNTFACT_TEXT));
-        ComboBox->AddItemW(wGS(NUMBER_1).c_str(), 1);
-        ComboBox->AddItemW(wGS(NUMBER_2).c_str(), 2);
-        ComboBox->AddItemW(wGS(NUMBER_3).c_str(), 3);
-        ComboBox->AddItemW(wGS(NUMBER_4).c_str(), 4);
-        ComboBox->AddItemW(wGS(NUMBER_5).c_str(), 5);
-        ComboBox->AddItemW(wGS(NUMBER_6).c_str(), 6);
+        ComboBox->AddItem(wGS(NUMBER_1).c_str(), 1);
+        ComboBox->AddItem(wGS(NUMBER_2).c_str(), 2);
+        ComboBox->AddItem(wGS(NUMBER_3).c_str(), 3);
+        ComboBox->AddItem(wGS(NUMBER_4).c_str(), 4);
+        ComboBox->AddItem(wGS(NUMBER_5).c_str(), 5);
+        ComboBox->AddItem(wGS(NUMBER_6).c_str(), 6);
     }
 
-    SetDlgItemText(IDC_GOOD_NAME, g_Settings->LoadStringVal(Rdb_GoodName).c_str());
+    SetDlgItemText(IDC_GOOD_NAME, stdstr(g_Settings->LoadStringVal(Rdb_GoodName)).ToUTF16().c_str());
 
     CModifiedEditBox * TxtBox = AddModTextBox(GetDlgItem(IDC_VIREFRESH), Game_ViRefreshRate, false);
     TxtBox->SetTextField(GetDlgItem(IDC_VIREFESH_TEXT));

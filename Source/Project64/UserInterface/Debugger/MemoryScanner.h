@@ -154,10 +154,10 @@ public:
     int GetMemoryValueString(char* buffer, size_t size, bool bIgnoreHex = false);
     int GetAddressString(char *buffer);
     uint32_t GetVirtualAddress(void);
-    bool SetMemoryValueFromString(char* str);
+    bool SetMemoryValueFromString(const char* str);
     //bool IsSelected(void);
     //void SetSelected(bool bSelected);
-    void SetDescription(char* str);
+    void SetDescription(const char* str);
     const char* GetDescription(void);
     void DeleteDescription(void);
     bool GetMemoryValue(CMixed* v);
@@ -176,7 +176,7 @@ public:
     bool SetSearchType(SearchType searchType);
     void SetAddressType(AddressType addressType);
 
-    static int ParseHexString(char* dst, char* src);
+    static int ParseHexString(char* dst, const char* src);
 
     static bool AddrCheck(uint32_t addr, uint32_t rangeStart, uint32_t rangeEnd);
     static bool RangeCheck(uint32_t addrStart, uint32_t addrEnd, uint32_t rangeStart, uint32_t rangeEnd);

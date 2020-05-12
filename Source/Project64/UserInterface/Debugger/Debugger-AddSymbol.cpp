@@ -31,10 +31,10 @@ LRESULT CAddSymbolDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
         {
             break;
         }
-        m_TypeComboBox.AddString(typeName);
+        m_TypeComboBox.AddString(stdstr(typeName).ToUTF16().c_str());
     }
     
-    m_AddressEdit.SetWindowTextA("");
+    m_AddressEdit.SetWindowText(L"");
     m_AddressEdit.SetFocus();
 
     if (m_bHaveAddress)
@@ -64,33 +64,33 @@ LRESULT CAddSymbolDlg::OnClicked(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
         EndDialog(0);
         break;
     case IDOK:
-        int addrLen = m_AddressEdit.GetWindowTextLengthA();
+        int addrLen = m_AddressEdit.GetWindowTextLength();
 
         if (!addrLen)
         {
-            MessageBox("Address required", "Error", MB_OK);
+            MessageBox(L"Address required", L"Error", MB_OK);
             return 0;
         }
 
         uint32_t address = m_AddressEdit.GetValue();
         int type = m_TypeComboBox.GetCurSel();
 
-        int nameLen = m_NameEdit.GetWindowTextLengthA();
-        int descLen = m_DescriptionEdit.GetWindowTextLengthA();
+        int nameLen = m_NameEdit.GetWindowTextLength();
+        int descLen = m_DescriptionEdit.GetWindowTextLength();
         
         if (!nameLen && !descLen)
         {
-            MessageBox("Name and/or description required", "Error", MB_OK);
+            MessageBox(L"Name and/or description required", L"Error", MB_OK);
             return 0;
         }
 
-        char name[128];
-        char description[256];
+        wchar_t name[128];
+        wchar_t description[256];
 
-        m_NameEdit.GetWindowTextA(name, nameLen + 1);
-        m_DescriptionEdit.GetWindowTextA(description, descLen + 1);
+        m_NameEdit.GetWindowText(name, nameLen + 1);
+        m_DescriptionEdit.GetWindowText(description, descLen + 1);
         
-        m_Debugger->SymbolTable()->AddSymbol(type, address, name, description);
+        m_Debugger->SymbolTable()->AddSymbol(type, address, stdstr().FromUTF16(name).c_str(), stdstr().FromUTF16(description).c_str());
         m_Debugger->SymbolTable()->Save();
 
         m_Debugger->Debug_RefreshSymbolsWindow();

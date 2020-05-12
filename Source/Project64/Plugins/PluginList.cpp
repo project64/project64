@@ -75,7 +75,7 @@ void CPluginList::AddPluginFromDir(CPath Dir)
 
             //UINT LastErrorMode = SetErrorMode( SEM_FAILCRITICALERRORS );
             WriteTrace(TraceUserInterface, TraceDebug, "loading %s", (LPCSTR)Dir);
-            hLib = LoadLibrary(Dir);
+            hLib = LoadLibrary(stdstr((LPCSTR)Dir).ToUTF16().c_str());
             //SetErrorMode(LastErrorMode);
 
             if (hLib == NULL)

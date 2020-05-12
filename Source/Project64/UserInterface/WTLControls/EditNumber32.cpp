@@ -25,13 +25,13 @@ bool CEditNumber32::IsHexConvertableText(LPTSTR _text)
     int start, end;
     GetSel(start, end);
 
-    char WindowText[200];
-    GetWindowText(WindowText, sizeof(WindowText));
+    wchar_t WindowText[200];
+    GetWindowText(WindowText, sizeof(WindowText) / sizeof(WindowText[0]));
 
     bool bPaste = true;
-    size_t Len = strlen(WindowText);
-    char head = Len > 0 ? WindowText[0] : 0;
-    char second = Len > 1 ? WindowText[1] : 0;
+    size_t Len = wcslen(WindowText);
+    wchar_t head = Len > 0 ? WindowText[0] : 0;
+    wchar_t second = Len > 1 ? WindowText[1] : 0;
 
     if (second == 'X' || second == 'x')
     {
@@ -43,11 +43,11 @@ bool CEditNumber32::IsHexConvertableText(LPTSTR _text)
     if (!bPaste) { return bPaste; }
     //Check
     unsigned int i = 0;
-    if (strlen(_text) >= 2)
+    if (wcslen(_text) >= 2)
     {
-        if (_text[0] == '0' && (_text[1] == 'x' || _text[1] == 'X'))
+        if (_text[0] == L'0' && (_text[1] == L'x' || _text[1] == L'X'))
         {
-            if ((second == 'x' || second == 'X') && (!(start == 0 && end >= 2)))
+            if ((second == L'x' || second == L'X') && (!(start == 0 && end >= 2)))
             {
                 bPaste = false;
             }
@@ -62,29 +62,29 @@ bool CEditNumber32::IsHexConvertableText(LPTSTR _text)
         }
     }
     if (!bPaste) return bPaste;
-    if (strlen(_text) >= 1)
+    if (wcslen(_text) >= 1)
     {
-        if (head == '0' && (_text[0] == 'x' || _text[0] == 'X'))
+        if (head == L'0' && (_text[0] == L'x' || _text[0] == L'X'))
         {
             i++;
         }
-        if ((_text[0] == 'x' || _text[0] == 'X'))
+        if ((_text[0] == L'x' || _text[0] == L'X'))
         {
-            if (head != '0'&&start == 0)
+            if (head != L'0' && start == 0)
             {
                 bPaste = false;
             }
-            else if (!(start == 1 && end >= 1 && head == '0'))
+            else if (!(start == 1 && end >= 1 && head == L'0'))
             {
                 bPaste = false;
             }
         }
     }
     if (!bPaste) return bPaste;
-    for (; i < strlen(_text); i++)
+    for (; i < wcslen(_text); i++)
     {
-        char c = _text[i];
-        if (!(c >= 48 && c <= 57 || c >= 'A'&&c <= 'F' || c >= 'a'&&c <= 'f' || c == ' '))
+        wchar_t c = _text[i];
+        if (!(c >= 48 && c <= 57 || c >= L'A'&&c <= L'F' || c >= L'a'&&c <= L'f' || c == L' '))
         {
             bPaste = false;
             break;
@@ -105,29 +105,29 @@ void CEditNumber32::FormatClipboard()
     if (hglb != NULL)
     {
         lptstr = (LPTSTR)GlobalLock(hglb);
-        for (unsigned int i = 0; i < strlen(lptstr); i++)
+        for (unsigned int i = 0; i < wcslen(lptstr); i++)
         {
-            if (lptstr[i] != 'X'&&lptstr[i] != 'x')
+            if (lptstr[i] != L'X'&&lptstr[i] != L'x')
             {
                 lptstr[i] = (char)toupper(lptstr[i]);
             }
-            if (lptstr[i] == 'X')
+            if (lptstr[i] == L'X')
             {
-                lptstr[i] = 'x';
+                lptstr[i] = L'x';
             }
-            if (lptstr[i] == ' ' && (i < strlen(lptstr)))
+            if (lptstr[i] == ' ' && (i < wcslen(lptstr)))
             {
-                strcpy(&lptstr[i], &lptstr[i + 1]);
+                wcscpy(&lptstr[i], &lptstr[i + 1]);
             }
         }
-        hglb = GlobalAlloc(GMEM_MOVEABLE, (strlen(lptstr) + 1) * sizeof(TCHAR));
+        hglb = GlobalAlloc(GMEM_MOVEABLE, (wcslen(lptstr) + 1) * sizeof(TCHAR));
         if (hglb == NULL)
         {
             CloseClipboard();
             return;
         }
         lptstrCopy = (LPTSTR)GlobalLock(hglb);
-        memcpy(lptstrCopy, lptstr, strlen(lptstr) + 1);
+        memcpy(lptstrCopy, lptstr, wcslen(lptstr) + 1);
         GlobalUnlock(lptstr);
         GlobalUnlock(hglb);
         SetClipboardData(CF_TEXT, hglb);
@@ -180,13 +180,12 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 {
     int start, end;
     GetSel(start, end);
-    //CString text;
-    char WindowText[200];
+    wchar_t WindowText[200];
     GetWindowText(WindowText, sizeof(WindowText));
-    size_t Len = strlen(WindowText);
+    size_t Len = wcslen(WindowText);
 
-    char head = Len > 0 ? WindowText[0] : 0;
-    char second = Len > 1 ? WindowText[1] : 0;
+    wchar_t head = Len > 0 ? WindowText[0] : 0;
+    wchar_t second = Len > 1 ? WindowText[1] : 0;
 
     if (uMsg == WM_CHAR)
     {
@@ -195,15 +194,15 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
         if (m_DisplayType == DisplayHex)
         {
             MaxLen = 8;
-            if (second == 'x' || second == 'X')
+            if (second == L'x' || second == L'X')
             {
                 MaxLen += 2;
             }
         }
-        int c = (int)wParam;
+        wchar_t c = (wchar_t)wParam;
         if (wParam < 32)
         {
-            if (wParam == 8 && (second == 'x' || second == 'X') && head == '0' && end == 1)
+            if (wParam == 8 && (second == L'x' || second == L'X') && head == L'0' && end == 1)
             {
                 //does not allow to delete '0' before x
                 bHandled = true;
@@ -214,7 +213,7 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
             return TRUE;
         }
 
-        if (second == 'x' || second == 'X')
+        if (second == L'x' || second == L'X')
         {
             //does not allow to change head except select includes first and second
             if (start <= 1 && end <= 1)
@@ -223,11 +222,11 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
                 return TRUE;
             }
         }
-        if (start == 1 && (c == 'X' || c == 'x') && head == '0')
+        if (start == 1 && (c == L'X' || c == L'x') && head == L'0')
         {
-            if (c == 'X')
+            if (c == L'X')
             {
-                SendMessage(uMsg, 'x', lParam);
+                SendMessage(uMsg, L'x', lParam);
                 bHandled = true;
             }
             else {
@@ -235,7 +234,7 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
             }
             return true;
         }
-        else if (c >= '0' && c <= '9' || c >= 'A' && c <= 'F')
+        else if (c >= L'0' && c <= L'9' || c >= L'A' && c <= L'F')
         {
             if (Len >= MaxLen && start == end)
             {
@@ -245,7 +244,7 @@ LRESULT CEditNumber32::OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
             bHandled = false;
             return true;
         }
-        else if (c >= 'a' && c <= 'f')
+        else if (c >= L'a' && c <= L'f')
         {
             if (Len >= MaxLen && start == end)
             {
@@ -283,16 +282,16 @@ void CEditNumber32::SetDisplayType(DisplayType Type)
 
 uint32_t CEditNumber32::GetValue(void)
 {
-    char text[200];
+    wchar_t text[200];
     GetWindowText(text, sizeof(text));
     if (m_DisplayType == DisplayDec)
     {
-        return atoi(text);
+        return _wtoi(text);
     }
 
-    size_t Finish = strlen(text);
-    char second = Finish > 1 ? text[1] : 0;
-    size_t Start = (second == 'x' || second == 'X') ? 2 : 0;
+    size_t Finish = wcslen(text);
+    wchar_t second = Finish > 1 ? text[1] : 0;
+    size_t Start = (second == L'x' || second == L'X') ? 2 : 0;
 
     if (Finish > 8 + Start) { Finish = 8 + Start; }
 
@@ -302,28 +301,28 @@ uint32_t CEditNumber32::GetValue(void)
         Value = (Value << 4);
         switch (text[i])
         {
-        case '0': break;
-        case '1': Value += 1; break;
-        case '2': Value += 2; break;
-        case '3': Value += 3; break;
-        case '4': Value += 4; break;
-        case '5': Value += 5; break;
-        case '6': Value += 6; break;
-        case '7': Value += 7; break;
-        case '8': Value += 8; break;
-        case '9': Value += 9; break;
-        case 'A': Value += 10; break;
-        case 'a': Value += 10; break;
-        case 'B': Value += 11; break;
-        case 'b': Value += 11; break;
-        case 'C': Value += 12; break;
-        case 'c': Value += 12; break;
-        case 'D': Value += 13; break;
-        case 'd': Value += 13; break;
-        case 'E': Value += 14; break;
-        case 'e': Value += 14; break;
-        case 'F': Value += 15; break;
-        case 'f': Value += 15; break;
+        case L'0': break;
+        case L'1': Value += 1; break;
+        case L'2': Value += 2; break;
+        case L'3': Value += 3; break;
+        case L'4': Value += 4; break;
+        case L'5': Value += 5; break;
+        case L'6': Value += 6; break;
+        case L'7': Value += 7; break;
+        case L'8': Value += 8; break;
+        case L'9': Value += 9; break;
+        case L'A': Value += 10; break;
+        case L'a': Value += 10; break;
+        case L'B': Value += 11; break;
+        case L'b': Value += 11; break;
+        case L'C': Value += 12; break;
+        case L'c': Value += 12; break;
+        case L'D': Value += 13; break;
+        case L'd': Value += 13; break;
+        case L'E': Value += 14; break;
+        case L'e': Value += 14; break;
+        case L'F': Value += 15; break;
+        case L'f': Value += 15; break;
         default:
             Value = (Value >> 4);
             i = Finish;
@@ -339,19 +338,14 @@ stdstr CEditNumber32::GetValueText(void)
 
 void CEditNumber32::SetValue(uint32_t Value, DisplayMode Display)
 {
-    char text[200];
+    stdstr text;
     if (m_DisplayType == DisplayDec)
     {
-        sprintf(text, "%d", Value);
+        text.Format("%d", Value);
     }
     else
     {
-        sprintf(
-            text,
-            "%s%0*X",
-            (Display & DisplayMode::ShowHexIdent) == DisplayMode::ShowHexIdent ? "0x" : "",
-            (Display & DisplayMode::ZeroExtend) == DisplayMode::ZeroExtend ? 8 : 0,
-            Value);
+        text.Format("%s%0*X",(Display & DisplayMode::ShowHexIdent) == DisplayMode::ShowHexIdent ? "0x" : "", (Display & DisplayMode::ZeroExtend) == DisplayMode::ZeroExtend ? 8 : 0, Value);
     }
-    SetWindowText(text);
+    SetWindowText(text.ToUTF16().c_str());
 }

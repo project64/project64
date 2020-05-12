@@ -46,22 +46,9 @@ public:
 		}
 	}
 
-	int AddItem (LPCSTR strItem, const TParam & lParam) 
+	int AddItem (LPCTSTR strItem, const TParam & lParam) 
 	{
 		int indx = AddString(strItem);
-		TParam * Value = new TParam(lParam);
-		SetItemData(indx,(DWORD_PTR)(Value));
-		m_ParamList.push_back(Value);
-		if ((m_AllwaysSelected && GetCount() == 1) || m_defaultValue == lParam) 
-		{ 
-			SetCurSel(indx);
-		}
-		return indx;
-	}
-
-	int AddItemW (LPCWSTR strItem, const TParam & lParam) 
-	{
-		int indx = AddStringW(strItem);
 		TParam * Value = new TParam(lParam);
 		SetItemData(indx,(DWORD_PTR)(Value));
 		m_ParamList.push_back(Value);

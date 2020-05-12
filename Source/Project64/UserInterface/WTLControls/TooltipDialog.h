@@ -23,12 +23,13 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 
+        std::wstring wcText = stdstr(lpszText).ToUTF16();
 		TOOLINFO toolInfo = { 0 };
 		toolInfo.cbSize = sizeof(toolInfo);
 		toolInfo.hwnd = pT->m_hWnd;
 		toolInfo.uFlags = TTF_IDISHWND | TTF_SUBCLASS;
 		toolInfo.uId = (UINT_PTR) ::GetDlgItem(pT->m_hWnd, ctrlId);
-		toolInfo.lpszText = lpszText;
+		toolInfo.lpszText = (LPWSTR)wcText.c_str();
 		SendMessage(m_hWndTooltip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
 	}
 

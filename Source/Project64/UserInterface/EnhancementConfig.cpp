@@ -27,7 +27,7 @@ private:
 	CEditEnhancement(const CEditEnhancement&);            // Disable copy constructor
 	CEditEnhancement& operator=(const CEditEnhancement&); // Disable assignment
 
-	std::string GetDlgItemStr(int nIDDlgItem);
+	std::wstring GetDlgItemStr(int nIDDlgItem);
 
 	int m_EditItem;
 };
@@ -244,12 +244,12 @@ LRESULT CEnhancementConfig::OnEnhancementListSelChanged(NMHDR * /*pNMHDR*/)
 		item.hItem = hItem;
 		m_TreeList.GetItem(&item);
 
-		std::string Notes(g_Settings->LoadStringIndex(Enhancement_Notes, item.lParam));
-		SetDlgItemText(IDC_NOTES, Notes.c_str());
+		stdstr Notes(g_Settings->LoadStringIndex(Enhancement_Notes, item.lParam));
+		SetDlgItemText(IDC_NOTES, Notes.ToUTF16().c_str());
 	}
 	else
 	{
-		SetDlgItemText(IDC_NOTES, "");
+		SetDlgItemText(IDC_NOTES, L"");
 	}
 	return TRUE;
 }
@@ -276,7 +276,7 @@ LRESULT CEnhancementConfig::OnDeleteItem(WORD /*wNotifyCode*/, WORD /*wID*/, HWN
 	{
 		return TRUE;
 	}
-	int Response = MessageBoxW(m_hWnd, wGS(MSG_DEL_SURE).c_str(), wGS(MSG_DEL_TITLE).c_str(), MB_YESNO | MB_ICONQUESTION);
+	int Response = MessageBox(wGS(MSG_DEL_SURE).c_str(), wGS(MSG_DEL_TITLE).c_str(), MB_YESNO | MB_ICONQUESTION);
 	if (Response != IDYES) { return TRUE; }
 
 	TVITEM item;
@@ -389,10 +389,10 @@ void CEnhancementConfig::AddCodeLayers(int index, const std::string & Name, HTRE
 	TV_INSERTSTRUCT tv;
 
 	//Work out text to add
-	char Text[500], Item[500];
+	wchar_t Text[500], Item[500];
 	if (Name.length() > (sizeof(Text) - 5)) { g_Notify->BreakPoint(__FILE__, __LINE__); }
-	strcpy(Text, Name.c_str());
-	if (strchr(Text, '\\') > 0) { *strchr(Text, '\\') = 0; }
+	wcscpy(Text, stdstr(Name).ToUTF16().c_str());
+	if (wcschr(Text, L'\\') > 0) { *wcschr(Text, '\\') = 0; }
 
 	//See if text is already added
 	tv.item.mask = TVIF_TEXT;
@@ -402,7 +402,7 @@ void CEnhancementConfig::AddCodeLayers(int index, const std::string & Name, HTRE
 	while (tv.item.hItem)
 	{
 		m_TreeList.GetItem(&tv.item);
-		if (strcmp(Text, Item) == 0)
+		if (wcscmp(Text, Item) == 0)
 		{
 			//If already exists then just use existing one
 			int State = TV_GetCheckState(tv.item.hItem);
@@ -410,7 +410,7 @@ void CEnhancementConfig::AddCodeLayers(int index, const std::string & Name, HTRE
 			{
 				TV_SetCheckState(tv.item.hItem, TV_STATE_INDETERMINATE);
 			}
-			size_t StartPos = strlen(Text) + 1;
+			size_t StartPos = wcslen(Text) + 1;
 			stdstr TempCheatName;
 			if (StartPos < Name.length())
 			{
@@ -431,8 +431,8 @@ void CEnhancementConfig::AddCodeLayers(int index, const std::string & Name, HTRE
 	hParent = m_TreeList.InsertItem(&tv);
 	TV_SetCheckState(hParent, Active ? TV_STATE_CHECKED : TV_STATE_CLEAR);
 
-	if (strcmp(Text, Name.c_str()) == 0) { return; }
-	AddCodeLayers(index, (stdstr)(Name.substr(strlen(Text) + 1)), hParent, Active);
+	if (wcscmp(Text, stdstr(Name).ToUTF16().c_str()) == 0) { return; }
+	AddCodeLayers(index, Name.substr(wcslen(Text) + 1), hParent, Active);
 }
 
 bool CEnhancementConfig::TV_SetCheckState( HTREEITEM hItem, TV_CHECK_STATE state)
@@ -535,12 +535,12 @@ void CEditEnhancement::Display(HWND ParentWindow)
 
 LRESULT	CEditEnhancement::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-	GetDlgItem(IDC_CODE_NAME).SetWindowTextA(m_EditItem >= 0 ? g_Settings->LoadStringIndex(Enhancement_Name, m_EditItem).c_str() : "");
-	GetDlgItem(IDC_NOTES).SetWindowTextA(m_EditItem >= 0 ? g_Settings->LoadStringIndex(Enhancement_Notes, m_EditItem).c_str() : "");
+	GetDlgItem(IDC_CODE_NAME).SetWindowText(stdstr(m_EditItem >= 0 ? g_Settings->LoadStringIndex(Enhancement_Name, m_EditItem) : "").ToUTF16().c_str());
+	GetDlgItem(IDC_NOTES).SetWindowText(stdstr(m_EditItem >= 0 ? g_Settings->LoadStringIndex(Enhancement_Notes, m_EditItem).c_str() : "").ToUTF16().c_str());
 	CButton(GetDlgItem(IDC_AUTOON)).SetCheck(g_Settings->LoadBoolIndex(Enhancement_OnByDefault, m_EditItem) ? BST_CHECKED : BST_UNCHECKED);
 	CButton(GetDlgItem(IDC_OVERCLOCK)).SetCheck(g_Settings->LoadBoolIndex(Enhancement_Overclock, m_EditItem) ? BST_CHECKED : BST_UNCHECKED);
 	CButton(GetDlgItem(IDC_GAMESHARK)).SetCheck(g_Settings->LoadBoolIndex(Enhancement_Gameshark, m_EditItem) ? BST_CHECKED : BST_UNCHECKED);
-	GetDlgItem(IDC_OVER_CLOCK_MODIFIER).SetWindowTextA(m_EditItem >= 0 ? stdstr_f("%d", g_Settings->LoadDwordIndex(Enhancement_OverclockValue, m_EditItem)).c_str() : "");
+	GetDlgItem(IDC_OVER_CLOCK_MODIFIER).SetWindowText(stdstr(m_EditItem >= 0 ? stdstr_f("%d", g_Settings->LoadDwordIndex(Enhancement_OverclockValue, m_EditItem)).c_str() : "").ToUTF16().c_str());
 	return TRUE;
 }
 
@@ -558,7 +558,7 @@ LRESULT CEditEnhancement::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWnd
 
 LRESULT CEditEnhancement::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	std::string NewName = GetDlgItemStr(IDC_CODE_NAME);
+	std::string NewName = stdstr().FromUTF16(GetDlgItemStr(IDC_CODE_NAME).c_str());
 
 	for (int i = 0; i < CCheats::MaxCheats; i++)
 	{
@@ -588,29 +588,29 @@ LRESULT CEditEnhancement::OnOkCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl
 		return true;
 	}
 	g_Settings->SaveStringIndex(Enhancement_Name, m_EditItem, NewName);
-	g_Settings->SaveStringIndex(Enhancement_Notes, m_EditItem, GetDlgItemStr(IDC_NOTES));
+	g_Settings->SaveStringIndex(Enhancement_Notes, m_EditItem, stdstr().FromUTF16(GetDlgItemStr(IDC_NOTES).c_str()).c_str());
 	g_Settings->SaveBoolIndex(Enhancement_OnByDefault, m_EditItem, CButton(GetDlgItem(IDC_AUTOON)).GetCheck() == 1);
 	g_Settings->SaveBoolIndex(Enhancement_Overclock, m_EditItem, CButton(GetDlgItem(IDC_OVERCLOCK)).GetCheck() == 1);
-	g_Settings->SaveDwordIndex(Enhancement_OverclockValue, m_EditItem, atoi(GetDlgItemStr(IDC_OVER_CLOCK_MODIFIER).c_str()));
+	g_Settings->SaveDwordIndex(Enhancement_OverclockValue, m_EditItem, _wtoi(GetDlgItemStr(IDC_OVER_CLOCK_MODIFIER).c_str()));
 	g_Settings->SaveBoolIndex(Enhancement_Gameshark, m_EditItem, CButton(GetDlgItem(IDC_GAMESHARK)).GetCheck() == 1);
 	CSettingTypeEnhancements::FlushChanges();
 	EndDialog(wID);
 	return TRUE;
 }
 
-std::string CEditEnhancement::GetDlgItemStr(int nIDDlgItem)
+std::wstring CEditEnhancement::GetDlgItemStr(int nIDDlgItem)
 {
 	CWindow DlgItem = GetDlgItem(nIDDlgItem);
 	int length = DlgItem.SendMessage(WM_GETTEXTLENGTH, 0, 0);
 	if (length == 0)
 	{
-		return "";
+		return L"";
 	}
 
-	stdstr Result;
+	std::wstring Result;
 	Result.resize(length + 1);
 
-	DlgItem.GetWindowText((char *)Result.c_str(), Result.length());
+	DlgItem.GetWindowText((wchar_t *)Result.c_str(), Result.length());
 	return Result;
 }
 
@@ -682,7 +682,7 @@ LRESULT	CEditGS::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*
 		}
 	} while (ReadPos);
 	CWindow Code = GetDlgItem(IDC_CHEAT_CODES);
-	Code.SetWindowText(Buffer.c_str());
+	Code.SetWindowText(stdstr(Buffer.c_str()).ToUTF16().c_str());
 	Code.SetFocus();
 	Code.PostMessage(EM_SETSEL, (WPARAM)-1, 0);
 	return TRUE;

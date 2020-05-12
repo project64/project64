@@ -292,7 +292,7 @@ void CRomList::FillRomList(strlist & FileList, const char * Directory)
                             char InternalName[22];
                             memcpy(InternalName, (void *)(RomData + 0x20), 20);
                             CN64Rom::CleanRomName(InternalName);
-                            strcpy(RomInfo.InternalName, InternalName);
+                            strcpy(RomInfo.InternalName, stdstr(InternalName).c_str());
                         }
                         RomInfo.RomSize = (int32_t)f->Size;
 

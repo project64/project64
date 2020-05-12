@@ -160,7 +160,7 @@ CScanResult::~CScanResult(void)
 {
 }
 
-void CScanResult::SetDescription(char* str)
+void CScanResult::SetDescription(const char* str)
 {
     if (m_Description != NULL)
     {
@@ -313,7 +313,7 @@ uint32_t CScanResult::GetVirtualAddress(void)
     }
 }
 
-bool CScanResult::SetMemoryValueFromString(char* str)
+bool CScanResult::SetMemoryValueFromString(const char* str)
 {
     if (g_MMU == NULL)
     {
@@ -1015,7 +1015,7 @@ int CMemoryScanner::HexDigitVal(char c)
     return 0;
 }
 
-int CMemoryScanner::ParseHexString(char *dst, char* src)
+int CMemoryScanner::ParseHexString(char *dst, const char* src)
 {
     bool bHiNibble = true;
     uint8_t curByte = 0;

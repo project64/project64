@@ -230,7 +230,7 @@ stdstr & stdstr::FromUTF16(const wchar_t * UTF16Source, bool * bSuccess)
     return *this;
 }
 
-std::wstring stdstr::ToUTF16(unsigned int CodePage, bool * bSuccess)
+std::wstring stdstr::ToUTF16(unsigned int CodePage, bool * bSuccess) const
 {
     bool bConverted = false;
     std::wstring res;

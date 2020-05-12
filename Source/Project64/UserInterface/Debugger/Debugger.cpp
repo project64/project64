@@ -681,7 +681,7 @@ void CDebuggerUI::FrameDrawn()
     static HFONT monoFont = CreateFont(-11, 0, 0, 0,
         FW_DONTCARE, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
         OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS,
-        PROOF_QUALITY, FF_DONTCARE, "Consolas"
+        PROOF_QUALITY, FF_DONTCARE, L"Consolas"
     );
 
     if (hMainWnd == NULL)

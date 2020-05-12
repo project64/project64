@@ -29,11 +29,11 @@ LRESULT CDebugStackView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /
 
     m_StackList.Attach(GetDlgItem(IDC_STACK_LIST));
     m_StackList.SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
-    m_StackList.AddColumn("#", 0);
-    m_StackList.AddColumn("00", 1);
-    m_StackList.AddColumn("04", 2);
-    m_StackList.AddColumn("08", 3);
-    m_StackList.AddColumn("0C", 4);
+    m_StackList.AddColumn(L"#", 0);
+    m_StackList.AddColumn(L"00", 1);
+    m_StackList.AddColumn(L"04", 2);
+    m_StackList.AddColumn(L"08", 3);
+    m_StackList.AddColumn(L"0C", 4);
 
     m_StackList.SetColumnWidth(0, 22);
     m_StackList.SetColumnWidth(1, 64);
@@ -89,12 +89,12 @@ void CDebugStackView::Refresh()
     m_StackList.DeleteAllItems();
 
     uint32_t spBase = g_Reg->m_GPR[29].UW[0];
-    m_SPStatic.SetWindowTextA(stdstr_f("SP: %08X", spBase).c_str());
+    m_SPStatic.SetWindowText(stdstr_f("SP: %08X", spBase).ToUTF16().c_str());
 
     for (int i = 0; i < 0x10; i++)
     {
-        char t[4];
-        sprintf(t, "%02X", i * 0x10);
+        wchar_t t[4];
+        swprintf(t, L"%02X", i * 0x10);
         m_StackList.AddItem(i, 0, t);
 
         for (int j = 0; j < 4; j++)
@@ -104,12 +104,12 @@ void CDebugStackView::Refresh()
 
             if (!m_Debugger->DebugLoad_VAddr(vaddr, val))
             {
-                m_StackList.AddItem(i, j + 1, "????????");
+                m_StackList.AddItem(i, j + 1, L"????????");
                 continue;
             }
 
-            char valStr[9];
-            sprintf(valStr, "%08X", val);
+            wchar_t valStr[9];
+            wsprintf(valStr, L"%08X", val);
             m_StackList.AddItem(i, j + 1, valStr);
         }
     }

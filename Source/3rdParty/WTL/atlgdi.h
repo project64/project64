@@ -2521,15 +2521,6 @@ public:
 		return ::DrawText(m_hDC, lpstrText, cchText, lpRect, uFormat);
 	}
 
-	int DrawTextW(LPCWSTR lpstrText, int cchText, LPRECT lpRect, UINT uFormat)
-	{
-		ATLASSERT(m_hDC != NULL);
-#ifndef _WIN32_WCE
-		ATLASSERT((uFormat & DT_MODIFYSTRING) == 0);
-#endif // !_WIN32_WCE
-		return ::DrawTextW(m_hDC, lpstrText, cchText, lpRect, uFormat);
-	}
-
 	int DrawText(LPTSTR lpstrText, int cchText, LPRECT lpRect, UINT uFormat)
 	{
 		ATLASSERT(m_hDC != NULL);

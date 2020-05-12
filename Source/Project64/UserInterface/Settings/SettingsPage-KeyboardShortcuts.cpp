@@ -20,14 +20,14 @@ COptionsShortCutsPage::COptionsShortCutsPage(HWND hParent, const RECT & rcDispay
         return;
     }
 
-    SetDlgItemTextW(m_hWnd, IDC_S_CPU_STATE, wGS(ACCEL_CPUSTATE_TITLE).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_MENU_ITEM_TEXT, wGS(ACCEL_MENUITEM_TITLE).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_S_CURRENT_KEYS, wGS(ACCEL_CURRENTKEYS_TITLE).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_S_SELECT_SHORT, wGS(ACCEL_SELKEY_TITLE).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_S_CURRENT_ASSIGN, wGS(ACCEL_ASSIGNEDTO_TITLE).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_ASSIGN, wGS(ACCEL_ASSIGN_BTN).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_REMOVE, wGS(ACCEL_REMOVE_BTN).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_KEY_PROMPT, wGS(ACCEL_DETECTKEY).c_str());
+    SetDlgItemText(IDC_S_CPU_STATE, wGS(ACCEL_CPUSTATE_TITLE).c_str());
+    SetDlgItemText(IDC_MENU_ITEM_TEXT, wGS(ACCEL_MENUITEM_TITLE).c_str());
+    SetDlgItemText(IDC_S_CURRENT_KEYS, wGS(ACCEL_CURRENTKEYS_TITLE).c_str());
+    SetDlgItemText(IDC_S_SELECT_SHORT, wGS(ACCEL_SELKEY_TITLE).c_str());
+    SetDlgItemText(IDC_S_CURRENT_ASSIGN, wGS(ACCEL_ASSIGNEDTO_TITLE).c_str());
+    SetDlgItemText(IDC_ASSIGN, wGS(ACCEL_ASSIGN_BTN).c_str());
+    SetDlgItemText(IDC_REMOVE, wGS(ACCEL_REMOVE_BTN).c_str());
+    SetDlgItemText(IDC_KEY_PROMPT, wGS(ACCEL_DETECTKEY).c_str());
 
     m_CreateNewShortCut.AttachToDlgItem(m_hWnd, IDC_S_SELECT_SHORT);
     m_CpuState.Attach(GetDlgItem(IDC_C_CPU_STATE));
@@ -245,7 +245,7 @@ void COptionsShortCutsPage::OnShortCutChanged(UINT /*Code*/, int /*id*/, HWND /*
     {
         str = "None";
     }
-    SetDlgItemText(IDC_ASSIGNED_MENU_ITEM, str.c_str());
+    SetDlgItemText(IDC_ASSIGNED_MENU_ITEM, str.ToUTF16().c_str());
 }
 
 LRESULT COptionsShortCutsPage::OnMenuItemChanged(LPNMHDR lpnmh)
@@ -275,7 +275,7 @@ void COptionsShortCutsPage::RefreshShortCutOptions(HTREEITEM hItem)
             continue;
         }
 
-        stdstr Name = ShortCut_item->Name();
+        const std::wstring & Name = ShortCut_item->Name();
         m_CurrentKeys.SetItemData(m_CurrentKeys.AddString(Name.c_str()), (DWORD_PTR)&*ShortCut_item);
     }
 }

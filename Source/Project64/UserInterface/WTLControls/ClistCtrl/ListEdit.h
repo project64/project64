@@ -22,7 +22,7 @@ protected:
 	int m_nItem;
 	int m_nSubItem;
 	UINT m_nFlags;
-	UINT m_nMaxLen;
+	int m_nMaxLen;
 	TCHAR m_nExitChar;
 	CFont m_fntEditFont;
 	
@@ -80,12 +80,14 @@ public:
 		if ( !( m_nFlags & ( ITEM_FLAGS_EDIT_HEX | ITEM_FLAGS_EDIT_NUMBER | ITEM_FLAGS_EDIT_FLOAT ) ) || nChar == VK_BACK )
 			return TRUE;
 		
-		stdstr strValue;
-		UINT nValueLength = GetWindowTextLength();
-		strValue.reserve(nValueLength + 1);
-		strValue.resize(nValueLength);
-		GetWindowText( (LPTSTR)strValue.c_str(), nValueLength  + 1);
-		
+        std::wstring WindowText;
+        int nValueLength = GetWindowTextLengthW();
+        if (nValueLength > 0)
+        {
+            WindowText.reserve(nValueLength + 1);
+            WindowText.resize(nValueLength);
+            GetWindowTextW((wchar_t *)WindowText.c_str(), nValueLength + 1);
+        }
 		// get selected positions
 		int nStartChar;
 		int nEndChar;
@@ -104,18 +106,18 @@ public:
 			BOOL bNegative = FALSE;
 			if ( m_nFlags & ITEM_FLAGS_EDIT_FLOAT )
 			{
-				double dblValue = atof( strValue.c_str() );
+				double dblValue = _wtof(WindowText.c_str());
 				bNegative = ( dblValue < 0 );
-				strValue.Format( _T( "%lf" ), -dblValue );
+                WindowText = stdstr_f("%lf", -dblValue).ToUTF16();
 			}
 			else
 			{
-				long lValue = _ttol( strValue.c_str() );
+				long lValue = _wtol(WindowText.c_str() );
 				bNegative = ( lValue < 0 );
-				strValue.Format( _T( "%ld" ), -lValue );
+                WindowText = stdstr_f("%ld", -lValue).ToUTF16();
 			}
 			
-			SetWindowText( strValue.c_str() );
+			SetWindowText(WindowText.c_str());
 			
 			// restore select position
 			SetSel( bNegative ? nStartChar - 1 : nStartChar + 1, bNegative ? nEndChar - 1 : nEndChar + 1 );
@@ -123,7 +125,7 @@ public:
 		}
 		
 		// construct new value string using entered character
-		stdstr strNewValue = strValue.substr(0, nStartChar ) + nChar + strValue.substr( strValue.length() - nEndChar );
+		std::wstring strNewValue = WindowText.substr(0, nStartChar ) + nChar + WindowText.substr(WindowText.length() - nEndChar );
 		
 		int nGreaterThan = 0;
 		int nLessThan = 0;
@@ -216,7 +218,7 @@ public:
 		CWindow wndParent( GetParent() );
 		if ( wndParent.IsWindow() )
 		{
-			stdstr strValue;
+			std::wstring strValue;
 			int nValueLength = GetWindowTextLength();
 			strValue.reserve(nValueLength + 1);
 			strValue.resize(nValueLength);

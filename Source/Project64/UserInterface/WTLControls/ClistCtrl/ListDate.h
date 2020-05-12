@@ -76,7 +76,7 @@ public:
 		else if ( nFlags & ITEM_FLAGS_TIME_ONLY )
 			SetFormat( szTimeFormat );
 		else
-			SetFormat( stdstr_f("%s %s",szDateFormat,szTimeFormat ).c_str() );
+			SetFormat(stdstr_f("%s %s",szDateFormat,szTimeFormat ).ToUTF16().c_str());
 		
 		// get current date if setting time-only
 		if ( nFlags & ITEM_FLAGS_TIME_ONLY )

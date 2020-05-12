@@ -60,7 +60,7 @@ LRESULT CALLBACK CLanguageSelector::LangSelectProc(HWND hDlg, UINT uMsg, WPARAM 
         BITMAP bmTL;
         GetObject(hbmpBackgroundTop, sizeof(BITMAP), &bmTL);
 
-        hTextFont = ::CreateFont(18, 0, 0, 0, FW_NORMAL, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial");
+        hTextFont = ::CreateFont(18, 0, 0, 0, FW_NORMAL, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
         SendDlgItemMessage(hDlg, IDC_SELECT_LANG, WM_SETFONT, (WPARAM)hTextFont, TRUE);
     }
     break;

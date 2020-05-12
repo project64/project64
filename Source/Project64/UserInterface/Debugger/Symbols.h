@@ -88,7 +88,7 @@ public:
     void Save();
     void ParseErrorAlert(char* message, int lineNumber);
 
-    void AddSymbol(int type, uint32_t address, char* name, char* description = NULL);
+    void AddSymbol(int type, uint32_t address, const char* name, const char* description = NULL);
     void Reset();
     int  GetCount();
     bool GetSymbolById(int id, CSymbol* symbol);
@@ -115,7 +115,7 @@ public:
     {
     }
 
-    CSymbol(int id, int type, uint32_t address, char* name, char* description) :
+    CSymbol(int id, int type, uint32_t address, const char* name, const char* description) :
         m_Id(id),
         m_Type(type),
         m_Address(address),

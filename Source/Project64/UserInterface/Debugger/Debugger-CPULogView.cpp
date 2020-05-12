@@ -50,9 +50,9 @@ LRESULT CDebugCPULogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 
     m_CPUListView.SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
     m_CPUListView.ModifyStyle(LVS_OWNERDRAWFIXED, 0, 0);
-    m_CPUListView.AddColumn("PC", 0);
-    m_CPUListView.AddColumn("Command", 1);
-    m_CPUListView.AddColumn("Parameters", 2);
+    m_CPUListView.AddColumn(L"PC", 0);
+    m_CPUListView.AddColumn(L"Command", 1);
+    m_CPUListView.AddColumn(L"Parameters", 2);
     m_CPUListView.SetColumnWidth(0, 65);
     m_CPUListView.SetColumnWidth(1, 60);
     m_CPUListView.SetColumnWidth(2, 120);
@@ -345,9 +345,9 @@ void CDebugCPULogView::RefreshList(bool bUpdateBuffer)
         char* szCmdName = strtok_s((char*)szCommand, "\t", &tokctx);
         char* szCmdArgs = strtok_s(NULL, "\t", &tokctx);
 
-        m_CPUListView.AddItem(nItem, 0, szPC);
-        m_CPUListView.AddItem(nItem, 1, szCmdName);
-        m_CPUListView.AddItem(nItem, 2, szCmdArgs);
+        m_CPUListView.AddItem(nItem, 0, stdstr(szPC).ToUTF16().c_str());
+        m_CPUListView.AddItem(nItem, 1, stdstr(szCmdName).ToUTF16().c_str());
+        m_CPUListView.AddItem(nItem, 2, stdstr(szCmdArgs).ToUTF16().c_str());
 
         nItem++;
     }
@@ -391,7 +391,7 @@ void CDebugCPULogView::ShowRegStates(size_t stateIndex)
 
     out += sprintf(out, "FPCR: %08X\r\n", state->fpcr);
 
-    m_StateInfoEdit.SetWindowTextA(szRegStates);
+    m_StateInfoEdit.SetWindowText(stdstr(szRegStates).ToUTF16().c_str());
 }
 
 void CDebugCPULogView::Export(void)
@@ -401,7 +401,7 @@ void CDebugCPULogView::Export(void)
         return;
     }
 
-    OPENFILENAME openfilename;
+    OPENFILENAMEA openfilename;
     char filePath[255];
     
     memset(&filePath, 0, sizeof(filePath));
@@ -417,7 +417,7 @@ void CDebugCPULogView::Export(void)
     openfilename.nMaxFile = MAX_PATH;
     openfilename.Flags = OFN_HIDEREADONLY;
 
-    if (GetSaveFileName(&openfilename))
+    if (GetSaveFileNameA(&openfilename))
     {
         m_CPULogCopy->DumpToFile(filePath);
     }

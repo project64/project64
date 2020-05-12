@@ -21,17 +21,17 @@ COptionsGameBrowserPage::COptionsGameBrowserPage(HWND hParent, const RECT & rcDi
         return;
     }
 
-    SetDlgItemTextW(m_hWnd, IDC_ROMSEL_TEXT2, wGS(RB_ROMS).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_ROMSEL_TEXT4, wGS(RB_DIRS).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_USE_ROMBROWSER, wGS(RB_USE).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_RECURSION, wGS(RB_DIR_RECURSION).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_SHOW_FILE_EXTENSIONS, wGS(RB_FILEEXT).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_ROMSEL_TEXT5, wGS(RB_AVALIABLE_FIELDS).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_ROMSEL_TEXT6, wGS(RB_SHOW_FIELDS).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_ADD, wGS(RB_ADD).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_REMOVE, wGS(RB_REMOVE).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_UP, wGS(RB_UP).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_DOWN, wGS(RB_DOWN).c_str());
+    SetDlgItemText(IDC_ROMSEL_TEXT2, wGS(RB_ROMS).c_str());
+    SetDlgItemText(IDC_ROMSEL_TEXT4, wGS(RB_DIRS).c_str());
+    SetDlgItemText(IDC_USE_ROMBROWSER, wGS(RB_USE).c_str());
+    SetDlgItemText(IDC_RECURSION, wGS(RB_DIR_RECURSION).c_str());
+    SetDlgItemText(IDC_SHOW_FILE_EXTENSIONS, wGS(RB_FILEEXT).c_str());
+    SetDlgItemText(IDC_ROMSEL_TEXT5, wGS(RB_AVALIABLE_FIELDS).c_str());
+    SetDlgItemText(IDC_ROMSEL_TEXT6, wGS(RB_SHOW_FIELDS).c_str());
+    SetDlgItemText(IDC_ADD, wGS(RB_ADD).c_str());
+    SetDlgItemText(IDC_REMOVE, wGS(RB_REMOVE).c_str());
+    SetDlgItemText(IDC_UP, wGS(RB_UP).c_str());
+    SetDlgItemText(IDC_DOWN, wGS(RB_DOWN).c_str());
 
     AddModCheckBox(GetDlgItem(IDC_USE_ROMBROWSER), RomBrowser_Enabled);
     AddModCheckBox(GetDlgItem(IDC_RECURSION), RomList_GameDirRecursive);

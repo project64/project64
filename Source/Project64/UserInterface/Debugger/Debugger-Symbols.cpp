@@ -48,11 +48,11 @@ LRESULT CDebugSymbols::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
     m_SymbolsListView.Attach(GetDlgItem(IDC_SYMBOLS_LIST));
     m_SymbolsListView.SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
 
-    m_SymbolsListView.AddColumn("Address", 0);
-    m_SymbolsListView.AddColumn("Type", 1);
-    m_SymbolsListView.AddColumn("Name", 2);
-    m_SymbolsListView.AddColumn("Value", 3);
-    m_SymbolsListView.AddColumn("Description", 4);
+    m_SymbolsListView.AddColumn(L"Address", 0);
+    m_SymbolsListView.AddColumn(L"Type", 1);
+    m_SymbolsListView.AddColumn(L"Name", 2);
+    m_SymbolsListView.AddColumn(L"Value", 3);
+    m_SymbolsListView.AddColumn(L"Description", 4);
 
     m_SymbolsListView.SetColumnWidth(0, 70);
     m_SymbolsListView.SetColumnWidth(1, 40);
@@ -186,52 +186,54 @@ LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
     case SymbolsListView_Col_Name:
         if (m_SetValueDlg.DoModal("Set name", "New name:", symbol.m_Name))
         {
-            char* szEnteredString = m_SetValueDlg.GetEnteredString();
+            wchar_t* szEnteredString = m_SetValueDlg.GetEnteredString();
             m_Debugger->SymbolTable()->RemoveSymbolById(id);
-            m_Debugger->SymbolTable()->AddSymbol(symbol.m_Type, symbol.m_Address, szEnteredString, symbol.m_Description);
+            m_Debugger->SymbolTable()->AddSymbol(symbol.m_Type, symbol.m_Address, stdstr().FromUTF16(szEnteredString).c_str(), symbol.m_Description);
         }
         break;
     case SymbolsListView_Col_Value:
         char szValue[256];
-        char* x;
-        char* y;
+        const char* x;
+        const char* y;
         m_Debugger->SymbolTable()->GetValueString(szValue, &symbol);
         if (m_SetValueDlg.DoModal("Change value", "New value:", szValue))
         {
+            stdstr EnteredString = stdstr().FromUTF16(m_SetValueDlg.GetEnteredString());
+
             switch (symbol.m_Type)
             {
             case SYM_U8:
-                m_Debugger->DebugStore_VAddr<uint8_t>(symbol.m_Address, atoi(m_SetValueDlg.GetEnteredString()));
+                m_Debugger->DebugStore_VAddr<uint8_t>(symbol.m_Address, atoi(EnteredString.c_str()));
                 break;
             case SYM_U16:
-                m_Debugger->DebugStore_VAddr<uint16_t>(symbol.m_Address, atoi(m_SetValueDlg.GetEnteredString()));
+                m_Debugger->DebugStore_VAddr<uint16_t>(symbol.m_Address, atoi(EnteredString.c_str()));
                 break;
             case SYM_U32:
-                m_Debugger->DebugStore_VAddr<uint32_t>(symbol.m_Address, atoi(m_SetValueDlg.GetEnteredString()));
+                m_Debugger->DebugStore_VAddr<uint32_t>(symbol.m_Address, atoi(EnteredString.c_str()));
                 break;
             case SYM_U64:
-                m_Debugger->DebugStore_VAddr<uint64_t>(symbol.m_Address, atoll(m_SetValueDlg.GetEnteredString()));
+                m_Debugger->DebugStore_VAddr<uint64_t>(symbol.m_Address, atoll(EnteredString.c_str()));
                 break;
             case SYM_S8:
-                m_Debugger->DebugStore_VAddr<int8_t>(symbol.m_Address, atoi(m_SetValueDlg.GetEnteredString()));
+                m_Debugger->DebugStore_VAddr<int8_t>(symbol.m_Address, atoi(EnteredString.c_str()));
                 break;
             case SYM_S16:
-                m_Debugger->DebugStore_VAddr<int16_t>(symbol.m_Address, atoi(m_SetValueDlg.GetEnteredString()));
+                m_Debugger->DebugStore_VAddr<int16_t>(symbol.m_Address, atoi(EnteredString.c_str()));
                 break;
             case SYM_S32:
-                m_Debugger->DebugStore_VAddr<int>(symbol.m_Address, atoi(m_SetValueDlg.GetEnteredString()));
+                m_Debugger->DebugStore_VAddr<int>(symbol.m_Address, atoi(EnteredString.c_str()));
                 break;
             case SYM_S64:
-                m_Debugger->DebugStore_VAddr<int64_t>(symbol.m_Address, atoll(m_SetValueDlg.GetEnteredString()));
+                m_Debugger->DebugStore_VAddr<int64_t>(symbol.m_Address, atoll(EnteredString.c_str()));
                 break;
             case SYM_FLOAT:
-                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address, atof(m_SetValueDlg.GetEnteredString()));
+                m_Debugger->DebugStore_VAddr<float>(symbol.m_Address, atof(EnteredString.c_str()));
                 break;
             case SYM_DOUBLE:
-                m_Debugger->DebugStore_VAddr<double>(symbol.m_Address, atof(m_SetValueDlg.GetEnteredString()));
+                m_Debugger->DebugStore_VAddr<double>(symbol.m_Address, atof(EnteredString.c_str()));
                 break;
             case SYM_VECTOR2:
-                x = m_SetValueDlg.GetEnteredString();
+                x = EnteredString.c_str();
                 y = strchr(x, ',');
                 memcpy(szValue, x, y - x);
                 m_Debugger->DebugStore_VAddr<float>(symbol.m_Address, atof(szValue));
@@ -241,7 +243,7 @@ LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
                 m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + sizeof(float), atof(szValue));
                 break;
             case SYM_VECTOR3:
-                x = m_SetValueDlg.GetEnteredString();
+                x = EnteredString.c_str();
                 y = strchr(x, ',');
                 memcpy(szValue, x, y - x);
                 m_Debugger->DebugStore_VAddr<float>(symbol.m_Address, atof(szValue));
@@ -256,7 +258,7 @@ LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
                 m_Debugger->DebugStore_VAddr<float>(symbol.m_Address + (sizeof(float) * 2), atof(szValue));
                 break;
             case SYM_VECTOR4:
-                x = m_SetValueDlg.GetEnteredString();
+                x = EnteredString.c_str();
                 y = strchr(x, ',');
                 memcpy(szValue, x, y - x);
                 m_Debugger->DebugStore_VAddr<float>(symbol.m_Address, atof(szValue));
@@ -281,9 +283,9 @@ LRESULT    CDebugSymbols::OnListDblClicked(NMHDR* pNMHDR)
     case SymbolsListView_Col_Description:
         if (m_SetValueDlg.DoModal("Set description", "New description:", symbol.m_Description))
         {
-            char* szEnteredString = m_SetValueDlg.GetEnteredString();
+            stdstr szEnteredString = stdstr().FromUTF16(m_SetValueDlg.GetEnteredString());
             m_Debugger->SymbolTable()->RemoveSymbolById(id);
-            m_Debugger->SymbolTable()->AddSymbol(symbol.m_Type, symbol.m_Address, symbol.m_Name, szEnteredString);
+            m_Debugger->SymbolTable()->AddSymbol(symbol.m_Type, symbol.m_Address, symbol.m_Name, szEnteredString.c_str());
         }
         break;
     } 
@@ -313,11 +315,11 @@ void CDebugSymbols::Refresh()
 
         stdstr strAddr = stdstr_f("%08X", symbol.m_Address);
 
-        m_SymbolsListView.AddItem(nItem, 0, strAddr.c_str());
-        m_SymbolsListView.AddItem(nItem, 1, symbol.TypeName());
-        m_SymbolsListView.AddItem(nItem, 2, symbol.m_Name);
-        m_SymbolsListView.AddItem(nItem, 4, symbol.m_Description);
-        m_SymbolsListView.AddItem(nItem, 5, szValue);
+        m_SymbolsListView.AddItem(nItem, 0, strAddr.ToUTF16().c_str());
+        m_SymbolsListView.AddItem(nItem, 1, stdstr(symbol.TypeName()).ToUTF16().c_str());
+        m_SymbolsListView.AddItem(nItem, 2, stdstr(symbol.m_Name).ToUTF16().c_str());
+        m_SymbolsListView.AddItem(nItem, 4, stdstr(symbol.m_Description).ToUTF16().c_str());
+        m_SymbolsListView.AddItem(nItem, 5, stdstr(szValue).ToUTF16().c_str());
 
         m_SymbolsListView.SetItemData(nItem, symbol.m_Id);
         nItem++;
@@ -349,6 +351,6 @@ void CDebugSymbols::RefreshValues()
         char szValue[256];
         m_Debugger->SymbolTable()->GetValueString(szValue, &symbol);
 
-        m_SymbolsListView.SetItemText(i, 3, szValue);
+        m_SymbolsListView.SetItemText(i, 3, stdstr(szValue).ToUTF16().c_str());
     }
 }

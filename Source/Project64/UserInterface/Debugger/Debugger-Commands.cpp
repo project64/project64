@@ -26,19 +26,19 @@ void CCommandList::Attach(HWND hWndNew)
     ModifyStyle(LVS_OWNERDRAWFIXED, 0, 0);
     SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER | LVS_EX_LABELTIP);
 
-    AddColumn("", COL_ARROWS);
+    AddColumn(L"", COL_ARROWS);
     SetColumnWidth(COL_ARROWS, 30);
 
-    AddColumn("Address", COL_ADDRESS);
+    AddColumn(L"Address", COL_ADDRESS);
     SetColumnWidth(COL_ADDRESS, 70);
 
-    AddColumn("Command", COL_COMMAND);
+    AddColumn(L"Command", COL_COMMAND);
     SetColumnWidth(COL_COMMAND, 65);
 
-    AddColumn("Parameters", COL_PARAMETERS);
+    AddColumn(L"Parameters", COL_PARAMETERS);
     SetColumnWidth(COL_PARAMETERS, 130);
 
-    AddColumn("Symbol", COL_SYMBOL);
+    AddColumn(L"Symbol", COL_SYMBOL);
     SetColumnWidth(COL_SYMBOL, 180);
 }
 
@@ -173,10 +173,10 @@ void CDebugCommandsView::RecompilerCheck(void)
         !g_Settings->LoadBool(Setting_ForceInterpreterCPU) &&
         (CPU_TYPE)g_Settings->LoadDword(Game_CpuType) != CPU_Interpreter)
     {
-        MessageBox("Debugger support for the recompiler core is experimental.\n\n"
-            "For optimal experience, enable \"Always use interpreter core\" "
-            "in advanced settings and restart the emulator.",
-            "Warning", MB_ICONWARNING | MB_OK);
+        MessageBox(L"Debugger support for the recompiler core is experimental.\n\n"
+            L"For optimal experience, enable \"Always use interpreter core\" "
+            L"in advanced settings and restart the emulator.",
+            L"Warning", MB_ICONWARNING | MB_OK);
     }
 }
 
@@ -271,13 +271,13 @@ LRESULT CDebugCommandsView::OnOpKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*l
     }
     else if (wParam == VK_RETURN)
     {
-        char text[256] = { 0 };
-        m_OpEdit.GetWindowTextA(text, sizeof(text) - 1);
+        wchar_t text[256] = { 0 };
+        m_OpEdit.GetWindowText(text, (sizeof(text) / sizeof(text[0])) - 1);
         uint32_t op;
-        bool bValid = CAssembler::AssembleLine(text, &op, m_SelectedAddress);
+        bool bValid = CAssembler::AssembleLine(stdstr().FromUTF16(text).c_str(), &op, m_SelectedAddress);
         if (bValid)
         {
-            m_OpEdit.SetWindowTextA("");
+            m_OpEdit.SetWindowText(L"");
             EditOp(m_SelectedAddress, op);
             m_SelectedAddress += 4;
             BeginOpEdit(m_SelectedAddress);
@@ -568,19 +568,19 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
     {
         uint32_t opAddr = m_StartAddress + i * 4;
 
-        m_CommandList.AddItem(i, CCommandList::COL_ARROWS, " ");
+        m_CommandList.AddItem(i, CCommandList::COL_ARROWS, L" ");
 
         char addrStr[9];
         sprintf(addrStr, "%08X", opAddr);
 
-        m_CommandList.AddItem(i, CCommandList::COL_ADDRESS, addrStr);
+        m_CommandList.AddItem(i, CCommandList::COL_ADDRESS, stdstr(addrStr).ToUTF16().c_str());
 
         COpInfo OpInfo;
         OPCODE& OpCode = OpInfo.m_OpCode;
 
         if (!m_Debugger->DebugLoad_VAddr(opAddr, OpCode.Hex))
         {
-            m_CommandList.AddItem(i, CCommandList::COL_COMMAND, "***");
+            m_CommandList.AddItem(i, CCommandList::COL_COMMAND, L"***");
             m_bvAnnotatedLines.push_back(false);
             continue;
         }
@@ -652,20 +652,20 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
             bLoadStoreAnnotation = true;
         }
 
-        m_CommandList.AddItem(i, CCommandList::COL_COMMAND, cmdName);
-        m_CommandList.AddItem(i, CCommandList::COL_PARAMETERS, cmdArgs);
+        m_CommandList.AddItem(i, CCommandList::COL_COMMAND, stdstr(cmdName).ToUTF16().c_str());
+        m_CommandList.AddItem(i, CCommandList::COL_PARAMETERS, stdstr(cmdArgs).ToUTF16().c_str());
 
         // Show routine symbol name for this address
         CSymbol pcSymbol;
         if (m_Debugger->SymbolTable()->GetSymbolByAddress(opAddr, &pcSymbol))
         {
-            m_CommandList.AddItem(i, CCommandList::COL_SYMBOL, pcSymbol.m_Name);
+            m_CommandList.AddItem(i, CCommandList::COL_SYMBOL, stdstr(pcSymbol.m_Name).ToUTF16().c_str());
             m_bvAnnotatedLines.push_back(false);
         }
         else if (annotation != NULL)
         {
             const char* annotationFormat = bLoadStoreAnnotation ? "// (%s)" : "// %s";
-            m_CommandList.AddItem(i, CCommandList::COL_SYMBOL, stdstr_f(annotationFormat, annotation).c_str());
+            m_CommandList.AddItem(i, CCommandList::COL_SYMBOL, stdstr_f(annotationFormat, annotation).ToUTF16().c_str());
             m_bvAnnotatedLines.push_back(true);
         }
         else
@@ -1030,7 +1030,7 @@ void CDebugCommandsView::RefreshBreakpointList()
     for (CBreakpoints::breakpoints_t::iterator itr = ReadBreakPoints.begin(); itr != ReadBreakPoints.end(); itr++)
     {
         sprintf(rowStr, "R %s%08X", itr->second ? "T " : "", itr->first);
-        int index = m_BreakpointList.AddString(rowStr);
+        int index = m_BreakpointList.AddString(stdstr(rowStr).ToUTF16().c_str());
         m_BreakpointList.SetItemData(index, itr->first);
     }
 
@@ -1038,7 +1038,7 @@ void CDebugCommandsView::RefreshBreakpointList()
     for (CBreakpoints::breakpoints_t::iterator itr = WriteBreakPoints.begin(); itr != WriteBreakPoints.end(); itr++)
     {
         sprintf(rowStr, "W %s%08X", itr->second ? "T " : "", itr->first);
-        int index = m_BreakpointList.AddString(rowStr);
+        int index = m_BreakpointList.AddString(stdstr(rowStr).ToUTF16().c_str());
         m_BreakpointList.SetItemData(index, itr->first);
     }
 
@@ -1046,7 +1046,7 @@ void CDebugCommandsView::RefreshBreakpointList()
     for (CBreakpoints::breakpoints_t::iterator itr = ExecutionBreakPoints.begin(); itr != ExecutionBreakPoints.end(); itr++)
     {
         sprintf(rowStr, "E %s%08X", itr->second ? "T " : "", itr->first);
-        int index = m_BreakpointList.AddString(rowStr);
+        int index = m_BreakpointList.AddString(stdstr(rowStr).ToUTF16().c_str());
         m_BreakpointList.SetItemData(index, itr->first);
     }
 }
@@ -1060,20 +1060,20 @@ void CDebugCommandsView::RemoveSelectedBreakpoints()
         return;
     }
 
-    char itemText[32];
+    wchar_t itemText[32];
     m_BreakpointList.GetText(nItem, itemText);
 
     uint32_t address = m_BreakpointList.GetItemData(nItem);
 
     switch (itemText[0])
     {
-    case 'E':
+    case L'E':
         m_Breakpoints->RemoveExecution(address);
         break;
-    case 'W':
+    case L'W':
         m_Breakpoints->WBPRemove(address);
         break;
-    case 'R':
+    case L'R':
         m_Breakpoints->RBPRemove(address);
         break;
     }
@@ -1325,7 +1325,7 @@ void CDebugCommandsView::BeginOpEdit(uint32_t address)
     m_OpEdit.ShowWindow(SW_SHOW);
     m_OpEdit.MoveWindow(&itemRect);
     m_OpEdit.BringWindowToTop();
-    m_OpEdit.SetWindowTextA(command);
+    m_OpEdit.SetWindowText(stdstr(command).ToUTF16().c_str());
     m_OpEdit.SetFocus();
     m_OpEdit.SetSelAll();
 
@@ -1336,7 +1336,7 @@ void CDebugCommandsView::BeginOpEdit(uint32_t address)
 void CDebugCommandsView::EndOpEdit()
 {
     m_bEditing = false;
-    m_OpEdit.SetWindowTextA("");
+    m_OpEdit.SetWindowText(L"");
     m_OpEdit.ShowWindow(SW_HIDE);
 }
 
@@ -1481,10 +1481,10 @@ LRESULT CDebugCommandsView::OnListBoxClicked(WORD /*wNotifyCode*/, WORD wID, HWN
         int index = m_BreakpointList.GetCaretIndex();
         uint32_t address = m_BreakpointList.GetItemData(index);
         int len = m_BreakpointList.GetTextLen(index);
-        char* rowText = (char*)malloc(len + 1);
+        wchar_t* rowText = (wchar_t*)malloc((len + 1) * sizeof(wchar_t));
         rowText[len] = '\0';
         m_BreakpointList.GetText(index, rowText);
-        if (*rowText == 'E')
+        if (*rowText == L'E')
         {
             ShowAddress(address, true);
         }

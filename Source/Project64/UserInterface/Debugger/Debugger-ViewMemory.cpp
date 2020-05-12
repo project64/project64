@@ -283,7 +283,7 @@ void CDebugMemoryView::SetupJumpMenu(bool bVirtual)
             break;
         }
 
-        m_CmbJump.AddString(stdstr_f("%08X %s", bVirtual ? item->vaddr : item->paddr, item->caption).c_str());
+        m_CmbJump.AddString(stdstr_f("%08X %s", bVirtual ? item->vaddr : item->paddr, item->caption).ToUTF16().c_str());
     }
 
     m_CmbJump.SetRedraw(TRUE);
@@ -689,7 +689,7 @@ LRESULT CDebugMemoryView::OnHxInsertModeChanged(LPNMHDR /*lpNMHDR*/)
 {
     m_SafeEditQueue.clear();
     m_bSafeEditMode = m_HexEditCtrl.GetInsertMode();
-    m_StatusBar.SetText(MEMSB_SAFEMODE, m_bSafeEditMode ? "Safe mode" : "");
+    m_StatusBar.SetText(MEMSB_SAFEMODE, m_bSafeEditMode ? L"Safe mode" : L"");
     return FALSE;
 }
 
@@ -704,19 +704,19 @@ LRESULT CDebugMemoryView::OnHxSelectionChanged(LPNMHDR /*lpNMHDR*/)
     {
         strBlock = stdstr_f("%08X:%08X", startAddress, endAddress);
         strLength = stdstr_f("%X", endAddress - startAddress + 1);
-        m_StatusBar.SetText(MEMSB_BLOCK, strBlock.c_str());
-        m_StatusBar.SetText(MEMSB_BLOCKLEN, strLength.c_str());
+        m_StatusBar.SetText(MEMSB_BLOCK, strBlock.ToUTF16().c_str());
+        m_StatusBar.SetText(MEMSB_BLOCKLEN, strLength.ToUTF16().c_str());
     }
     else
     {
         strBlock = stdstr_f("%08X", startAddress);
-        m_StatusBar.SetText(MEMSB_BLOCK, strBlock.c_str());
-        m_StatusBar.SetText(MEMSB_BLOCKLEN, "");
+        m_StatusBar.SetText(MEMSB_BLOCK, strBlock.ToUTF16().c_str());
+        m_StatusBar.SetText(MEMSB_BLOCKLEN, L"");
     }
 
     uint32_t romAddr, offset;
     DMALOGENTRY* entry = m_Debugger->DMALog()->GetEntryByRamAddress(startAddress, &romAddr, &offset);
-    m_StatusBar.SetText(MEMSB_DMAINFO, entry != NULL ? "Have DMA" : "");
+    m_StatusBar.SetText(MEMSB_DMAINFO, entry != NULL ? L"Have DMA" : L"");
 
     return FALSE;
 }
@@ -942,7 +942,7 @@ LRESULT CDebugMemoryView::OnHxHotAddrChanged(LPNMHDR /*lpNMHDR*/)
         strAddrInfo += stdstr_f("%08X\n", m_HotAddress);
     }
 
-    m_StatusBar.SetText(MEMSB_HOTADDR, strAddrInfo.c_str());
+    m_StatusBar.SetText(MEMSB_HOTADDR, strAddrInfo.ToUTF16().c_str());
     return FALSE;
 }
 
@@ -1053,10 +1053,10 @@ void CDebugMemoryView::TabSelChanged(void)
 
 int CDebugMemoryView::AddTab(uint32_t address, bool bVirtual, int numBytesPerGroup)
 {
-    char szAddress[12];
-    sprintf(szAddress, "%08X", address);
+    stdstr szAddress;
+    szAddress.Format("%08X", address);
     m_TabData.push_back({ address, bVirtual, numBytesPerGroup });
-    return m_TabCtrl.AddItem(TCIF_TEXT | TCIF_PARAM, szAddress, 0, (LPARAM)address);
+    return m_TabCtrl.AddItem(TCIF_TEXT | TCIF_PARAM, szAddress.ToUTF16().c_str(), 0, (LPARAM)address);
 }
 
 int CDebugMemoryView::InsertTab(int nItem, uint32_t address, bool bVirtual, int numBytesPerGroup)
@@ -1066,7 +1066,7 @@ int CDebugMemoryView::InsertTab(int nItem, uint32_t address, bool bVirtual, int 
     m_TabCtrl.DeleteAllItems();
     for (size_t i = 0; i < m_TabData.size(); i++)
     {
-        m_TabCtrl.AddItem(TCIF_TEXT, stdstr_f("%08X", m_TabData[i].address).c_str(), 0, 0);
+        m_TabCtrl.AddItem(TCIF_TEXT, stdstr_f("%08X", m_TabData[i].address).ToUTF16().c_str(), 0, 0);
     }
     m_TabCtrl.SetRedraw(TRUE);
     return nItem + 1;
@@ -1080,9 +1080,7 @@ void CDebugMemoryView::DeleteTab(int nItem)
 
 void CDebugMemoryView::UpdateCurrentTab(uint32_t address)
 {
-    char szAddress[12];
-    sprintf(szAddress, "%08X", address);
-    
+    std::wstring szAddress = stdstr_f("%08X", address).ToUTF16();
     int nItem = m_TabCtrl.GetCurSel();
     
     if (nItem == -1)
@@ -1092,7 +1090,7 @@ void CDebugMemoryView::UpdateCurrentTab(uint32_t address)
 
     TCITEM item = { 0 };
     item.mask = TCIF_TEXT;
-    item.pszText = szAddress;
+    item.pszText = (LPWSTR)szAddress.c_str();
 
     m_TabCtrl.SetRedraw(FALSE);
     m_TabCtrl.SetItem(nItem, &item);
@@ -1207,7 +1205,7 @@ LRESULT CDebugMemoryView::OnStatusBarClick(LPNMHDR lpNMHDR)
         stdstr strDmaTitle = stdstr_f("DMA Information for 0x%08X", startAddress);
         stdstr strDmaInfo = stdstr_f("Block:\nROM 0x%08X -> RAM 0x%08X ( 0x%X bytes )\n\nROM address of byte:\n0x%08X ( 0x%08X + 0x%08X )",
             entry->romAddr, entry->ramAddr, entry->length, romAddress, entry->romAddr, blockOffset);
-        MessageBox(strDmaInfo.c_str(), strDmaTitle.c_str(), MB_OK);
+        MessageBox(strDmaInfo.ToUTF16().c_str(), strDmaTitle.ToUTF16().c_str(), MB_OK);
     }
     else if (nmm->dwItemSpec == MEMSB_BLOCK)
     {

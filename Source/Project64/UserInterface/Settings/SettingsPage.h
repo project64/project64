@@ -154,13 +154,13 @@ protected:
         if (EditBox.IsbString())
         {
             stdstr Value = g_Settings->LoadDefaultString(Type);
-            EditBox.SetWindowText(Value.c_str());
+            EditBox.SetWindowText(Value.ToUTF16().c_str());
             EditBox.SetReset(true);
         }
         else
         {
             DWORD Value = g_Settings->LoadDefaultDword(Type);
-            EditBox.SetWindowText(stdstr_f("%d", Value).c_str());
+            EditBox.SetWindowText(stdstr_f("%d", Value).ToUTF16().c_str());
             EditBox.SetReset(true);
         }
         return true;
@@ -295,13 +295,13 @@ protected:
             {
                 stdstr SelectedValue;
                 TextBox->SetChanged(g_Settings->LoadStringVal(iter->first, SelectedValue));
-                TextBox->SetWindowText(SelectedValue.c_str());
+                TextBox->SetWindowText(SelectedValue.ToUTF16().c_str());
             }
             else
             {
                 uint32_t SelectedValue;
                 TextBox->SetChanged(g_Settings->LoadDword(iter->first, SelectedValue));
-                TextBox->SetWindowText(stdstr_f("%d", SelectedValue).c_str());
+                TextBox->SetWindowText(stdstr_f("%d", SelectedValue).ToUTF16().c_str());
             }
             m_UpdatingTxt = false;
         }

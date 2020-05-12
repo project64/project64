@@ -28,7 +28,7 @@ void EnterLogOptions(HWND hwndOwner)
     psp[0].hInstance = GetModuleHandle(NULL);
     psp[0].pszTemplate = MAKEINTRESOURCE(IDD_Logging_Registers);
     psp[0].pfnDlgProc = (DLGPROC)LogRegProc;
-    psp[0].pszTitle = "Registers";
+    psp[0].pszTitle = L"Registers";
     psp[0].lParam = (LPARAM)&logSettings;
     psp[0].pfnCallback = NULL;
 
@@ -37,7 +37,7 @@ void EnterLogOptions(HWND hwndOwner)
     psp[1].hInstance = GetModuleHandle(NULL);
     psp[1].pszTemplate = MAKEINTRESOURCE(IDD_Logging_PifRam);
     psp[1].pfnDlgProc = (DLGPROC)LogPifProc;
-    psp[1].pszTitle = "Pif Ram";
+    psp[1].pszTitle = L"Pif Ram";
     psp[1].lParam = (LPARAM)&logSettings;
     psp[1].pfnCallback = NULL;
 
@@ -46,7 +46,7 @@ void EnterLogOptions(HWND hwndOwner)
     psp[2].hInstance = GetModuleHandle(NULL);
     psp[2].pszTemplate = MAKEINTRESOURCE(IDD_Logging_General);
     psp[2].pfnDlgProc = (DLGPROC)LogGeneralProc;
-    psp[2].pszTitle = "General";
+    psp[2].pszTitle = L"General";
     psp[2].lParam = (LPARAM)&logSettings;
     psp[2].pfnCallback = NULL;
 
@@ -54,7 +54,7 @@ void EnterLogOptions(HWND hwndOwner)
     psh.dwFlags = PSH_PROPSHEETPAGE | PSH_NOAPPLYNOW;
     psh.hwndParent = hwndOwner;
     psh.hInstance = GetModuleHandle(NULL);
-    psh.pszCaption = (LPSTR) "Log Options";
+    psh.pszCaption = (LPTSTR)L"Log Options";
     psh.nPages = sizeof(psp) / sizeof(PROPSHEETPAGE);
     psh.nStartPage = 0;
     psh.ppsp = (LPCPROPSHEETPAGE)&psp;

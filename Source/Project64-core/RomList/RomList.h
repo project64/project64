@@ -28,31 +28,31 @@ public:
 
     struct ROM_INFO
     {
-        char        szFullFileName[300];
+        char szFullFileName[300];
         FILE_FORMAT FileFormat;
-        char        Status[60];
-        char        FileName[200];
-        char        InternalName[22];
-        char        GoodName[200];
-        char        Name[200];
-        char        CartID[3];
-        char        PluginNotes[250];
-        char        CoreNotes[250];
-        char        UserNotes[250];
-        char        Developer[30];
-        char        ReleaseDate[30];
-        char        Genre[15];
-        int32_t	    Players;
-        uint32_t    TextColor;
-        int32_t     SelColor;
-        uint32_t    SelTextColor;
-        int32_t     RomSize;
-        uint8_t     Manufacturer;
-        uint8_t     Country;
-        uint32_t    CRC1;
-        uint32_t    CRC2;
-        CICChip     CicChip;
-        char        ForceFeedback[15];
+        char Status[60];
+        char FileName[200];
+        char InternalName[22];
+        char GoodName[200];
+        char Name[200];
+        char CartID[3];
+        char PluginNotes[250];
+        char CoreNotes[250];
+        char UserNotes[250];
+        char Developer[30];
+        char ReleaseDate[30];
+        char Genre[15];
+        int32_t Players;
+        uint32_t TextColor;
+        int32_t SelColor;
+        uint32_t SelTextColor;
+        int32_t RomSize;
+        uint8_t Manufacturer;
+        uint8_t Country;
+        uint32_t CRC1;
+        uint32_t CRC2;
+        CICChip CicChip;
+        char ForceFeedback[15];
     };
 
     CRomList();

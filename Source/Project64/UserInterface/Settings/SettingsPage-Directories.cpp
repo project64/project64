@@ -93,7 +93,7 @@ void COptionsDirectoriesPage::SelectDirectory(LanguageStringID Title, CModifiedE
             stdstr path;
             CPath SelectedDir(path.FromUTF16(Directory), "");
             EditBox.SetChanged(true);
-            EditBox.SetWindowText(SelectedDir);
+            EditBox.SetWindowText(stdstr((const char *)SelectedDir).ToUTF16().c_str());
             Default.SetChanged(true);
             Default.SetCheck(BST_UNCHECKED);
             selected.SetCheck(BM_SETCHECK);
@@ -168,15 +168,15 @@ void COptionsDirectoriesPage::UpdatePageSettings()
 
     m_InUpdateSettings = true;
     m_PluginDir.SetChanged(g_Settings->LoadStringVal(Directory_PluginSelected, Directory));
-    m_PluginDir.SetWindowText(Directory.c_str());
+    m_PluginDir.SetWindowText(Directory.ToUTF16().c_str());
     m_AutoSaveDir.SetChanged(g_Settings->LoadStringVal(Directory_NativeSaveSelected, Directory));
-    m_AutoSaveDir.SetWindowText(Directory.c_str());
+    m_AutoSaveDir.SetWindowText(Directory.ToUTF16().c_str());
     m_InstantSaveDir.SetChanged(g_Settings->LoadStringVal(Directory_InstantSaveSelected, Directory));
-    m_InstantSaveDir.SetWindowText(Directory.c_str());
+    m_InstantSaveDir.SetWindowText(Directory.ToUTF16().c_str());
     m_ScreenShotDir.SetChanged(g_Settings->LoadStringVal(Directory_SnapShotSelected, Directory));
-    m_ScreenShotDir.SetWindowText(Directory.c_str());
+    m_ScreenShotDir.SetWindowText(Directory.ToUTF16().c_str());
     m_TextureDir.SetChanged(g_Settings->LoadStringVal(Directory_TextureSelected, Directory));
-    m_TextureDir.SetWindowText(Directory.c_str());
+    m_TextureDir.SetWindowText(Directory.ToUTF16().c_str());
 
     bool UseSelected;
     m_PluginDefault.SetChanged(g_Settings->LoadBool(Directory_PluginUseSelected, UseSelected));
@@ -253,7 +253,7 @@ void COptionsDirectoriesPage::ResetDirectory(CModifiedEditBox & EditBox, Setting
     }
     stdstr dir;
     g_Settings->LoadDefaultString(Type, dir);
-    EditBox.SetWindowText(dir.c_str());
+    EditBox.SetWindowText(dir.ToUTF16().c_str());
     EditBox.SetReset(true);
 }
 

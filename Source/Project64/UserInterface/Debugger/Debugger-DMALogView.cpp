@@ -96,9 +96,9 @@ void CDebugDMALogView::RefreshList()
         //    continue;
         //}
         
-        m_DMAList.AddItem(itemIndex, 0, stdstr_f("%08X", lpEntry->romAddr).c_str());
-        m_DMAList.AddItem(itemIndex, 1, stdstr_f("%08X", lpEntry->ramAddr).c_str());
-        m_DMAList.AddItem(itemIndex, 2, stdstr_f("%08X (%d)", lpEntry->length, lpEntry->length).c_str());
+        m_DMAList.AddItem(itemIndex, 0, stdstr_f("%08X", lpEntry->romAddr).ToUTF16().c_str());
+        m_DMAList.AddItem(itemIndex, 1, stdstr_f("%08X", lpEntry->ramAddr).ToUTF16().c_str());
+        m_DMAList.AddItem(itemIndex, 2, stdstr_f("%08X (%d)", lpEntry->length, lpEntry->length).ToUTF16().c_str());
         
         union
         {
@@ -114,7 +114,7 @@ void CDebugDMALogView::RefreshList()
         // Todo checkbox to display all in hex
         if (isalnum(sig.sz[0]) && isalnum(sig.sz[1]) && isalnum(sig.sz[2]) && isalnum(sig.sz[3]))
         {
-            m_DMAList.AddItem(itemIndex, 4, (char*)sig.sz);
+            m_DMAList.AddItem(itemIndex, 4, stdstr((char*)sig.sz).ToUTF16().c_str());
         }
 
         itemIndex++;
@@ -151,11 +151,11 @@ LRESULT CDebugDMALogView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 
     m_DMAList.ModifyStyle(LVS_OWNERDRAWFIXED, 0, 0);
 
-    m_DMAList.AddColumn("ROM", 0);
-    m_DMAList.AddColumn("RAM", 1);
-    m_DMAList.AddColumn("Length", 2);
-    m_DMAList.AddColumn("Symbol (RAM)", 3);
-    m_DMAList.AddColumn("Signature", 4);
+    m_DMAList.AddColumn(L"ROM", 0);
+    m_DMAList.AddColumn(L"RAM", 1);
+    m_DMAList.AddColumn(L"Length", 2);
+    m_DMAList.AddColumn(L"Symbol (RAM)", 3);
+    m_DMAList.AddColumn(L"Signature", 4);
 
     m_DMAList.SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
 
@@ -244,11 +244,11 @@ LRESULT CDebugDMALogView::OnRamAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, H
         return FALSE;
     }
 
-    char szRamAddr[9];
+    wchar_t szRamAddr[9];
     char szRomAddr[9];
 
-    m_DMARamEdit.GetWindowTextA(szRamAddr, 9);
-    uint32_t ramAddr = strtoul(szRamAddr, NULL, 16);
+    m_DMARamEdit.GetWindowText(szRamAddr, 9);
+    uint32_t ramAddr = wcstoul(szRamAddr, NULL, 16);
     uint32_t romAddr, offset;
 
     DMALOGENTRY* lpEntry = m_DMALog->GetEntryByRamAddress(ramAddr, &romAddr, &offset);
@@ -256,17 +256,17 @@ LRESULT CDebugDMALogView::OnRamAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, H
     if (lpEntry != NULL)
     {
         sprintf(szRomAddr, "%08X", romAddr);
-        stdstr blockInfo = stdstr_f("Block: %08X -> %08X [%X] +%X", romAddr, ramAddr, lpEntry->length, offset);
-        m_BlockInfo.SetWindowTextA(blockInfo.c_str());
+        stdstr_f blockInfo("Block: %08X -> %08X [%X] +%X", romAddr, ramAddr, lpEntry->length, offset);
+        m_BlockInfo.SetWindowText(blockInfo.ToUTF16().c_str());
     }
     else
     {
         sprintf(szRomAddr, "????????");
-        m_BlockInfo.SetWindowTextA("Block: ?");
+        m_BlockInfo.SetWindowText(L"Block: ?");
     }
     
     m_bConvertingAddress = true;
-    m_DMARomEdit.SetWindowTextA(szRomAddr);
+    m_DMARomEdit.SetWindowText(stdstr(szRomAddr).ToUTF16().c_str());
     m_bConvertingAddress = false;
     return FALSE;
 }
@@ -278,29 +278,29 @@ LRESULT CDebugDMALogView::OnRomAddrChanged(WORD /*wNotifyCode*/, WORD /*wID*/, H
         return FALSE;
     }
 
-    char szRamAddr[9];
-    char szRomAddr[9];
+    wchar_t szRamAddr[9];
+    wchar_t szRomAddr[9];
 
-    m_DMARomEdit.GetWindowTextA(szRomAddr, 9);
-    uint32_t romAddr = strtoul(szRomAddr, NULL, 16);
+    m_DMARomEdit.GetWindowText(szRomAddr, 9);
+    uint32_t romAddr = wcstoul(szRomAddr, NULL, 16);
     uint32_t ramAddr, offset;
 
     DMALOGENTRY* lpEntry = m_DMALog->GetEntryByRomAddress(romAddr, &ramAddr, &offset);
 
     if (lpEntry != NULL)
     {
-        sprintf(szRamAddr, "%08X", ramAddr);
+        wsprintf(szRamAddr, L"%08X", ramAddr);
         stdstr blockInfo = stdstr_f("Block: %08X -> %08X [%X] +%X", romAddr, ramAddr, lpEntry->length, offset);
-        m_BlockInfo.SetWindowTextA(blockInfo.c_str());
+        m_BlockInfo.SetWindowText(blockInfo.ToUTF16().c_str());
     }
     else
     {
-        sprintf(szRamAddr, "????????");
-        m_BlockInfo.SetWindowTextA("Block: ?");
+        wsprintf(szRamAddr, L"????????");
+        m_BlockInfo.SetWindowText(L"Block: ?");
     }
 
     m_bConvertingAddress = true;
-    m_DMARamEdit.SetWindowTextA(szRamAddr);
+    m_DMARamEdit.SetWindowText(szRamAddr);
     m_bConvertingAddress = false;
     return FALSE;
 }

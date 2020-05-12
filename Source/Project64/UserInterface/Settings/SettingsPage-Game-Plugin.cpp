@@ -21,18 +21,18 @@ CGamePluginPage::CGamePluginPage(HWND hParent, const RECT & rcDispay)
     }
 
     //Set the text for all gui Items
-    SetDlgItemTextW(m_hWnd, RSP_ABOUT, wGS(PLUG_ABOUT).c_str());
-    SetDlgItemTextW(m_hWnd, GFX_ABOUT, wGS(PLUG_ABOUT).c_str());
-    SetDlgItemTextW(m_hWnd, AUDIO_ABOUT, wGS(PLUG_ABOUT).c_str());
-    SetDlgItemTextW(m_hWnd, CONT_ABOUT, wGS(PLUG_ABOUT).c_str());
+    SetDlgItemText(RSP_ABOUT, wGS(PLUG_ABOUT).c_str());
+    SetDlgItemText(GFX_ABOUT, wGS(PLUG_ABOUT).c_str());
+    SetDlgItemText(AUDIO_ABOUT, wGS(PLUG_ABOUT).c_str());
+    SetDlgItemText(CONT_ABOUT, wGS(PLUG_ABOUT).c_str());
 
-    SetDlgItemTextW(m_hWnd, IDC_RSP_NAME, wGS(PLUG_RSP).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_GFX_NAME, wGS(PLUG_GFX).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_AUDIO_NAME, wGS(PLUG_AUDIO).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_CONT_NAME, wGS(PLUG_CTRL).c_str());
+    SetDlgItemText(IDC_RSP_NAME, wGS(PLUG_RSP).c_str());
+    SetDlgItemText(IDC_GFX_NAME, wGS(PLUG_GFX).c_str());
+    SetDlgItemText(IDC_AUDIO_NAME, wGS(PLUG_AUDIO).c_str());
+    SetDlgItemText(IDC_CONT_NAME, wGS(PLUG_CTRL).c_str());
 
-    SetDlgItemTextW(m_hWnd, IDC_HLE_GFX, wGS(PLUG_HLE_GFX).c_str());
-    SetDlgItemTextW(m_hWnd, IDC_HLE_AUDIO, wGS(PLUG_HLE_AUDIO).c_str());
+    SetDlgItemText(IDC_HLE_GFX, wGS(PLUG_HLE_GFX).c_str());
+    SetDlgItemText(IDC_HLE_AUDIO, wGS(PLUG_HLE_AUDIO).c_str());
 
     m_GfxGroup.Attach(GetDlgItem(IDC_GFX_NAME));
     m_AudioGroup.Attach(GetDlgItem(IDC_AUDIO_NAME));
@@ -61,7 +61,7 @@ void CGamePluginPage::AddPlugins(int ListId, SettingID Type, PLUGIN_TYPE PluginT
     {
         ComboBox->SetDefault(NULL);
     }
-    ComboBox->AddItemW(wGS(PLUG_DEFAULT).c_str(), NULL);
+    ComboBox->AddItem(wGS(PLUG_DEFAULT).c_str(), NULL);
 
     for (int i = 0, n = m_PluginList.GetPluginCount(); i < n; i++)
     {
@@ -78,7 +78,7 @@ void CGamePluginPage::AddPlugins(int ListId, SettingID Type, PLUGIN_TYPE PluginT
         {
             ComboBox->SetDefault((WPARAM)Plugin);
         }
-        ComboBox->AddItem(Plugin->Info.Name, (WPARAM)Plugin);
+        ComboBox->AddItem(stdstr(Plugin->Info.Name).ToUTF16().c_str(), (WPARAM)Plugin);
     }
 }
 
@@ -118,7 +118,7 @@ void CGamePluginPage::ShowAboutButton(int id)
 
     //Load the plugin
     UINT LastErrorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
-    HMODULE hLib = LoadLibrary(Plugin->FullPath);
+    HMODULE hLib = LoadLibrary(stdstr((const char *)Plugin->FullPath).ToUTF16().c_str());
     SetErrorMode(LastErrorMode);
     if (hLib == NULL)
     {

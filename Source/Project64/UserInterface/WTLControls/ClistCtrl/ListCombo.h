@@ -37,7 +37,7 @@ protected:
 	CContainedWindowT< CEdit > m_wndEditCtrl;
 	
 public:
-	BOOL Create( HWND hWndParent, int nItem, int nSubItem, CRect& rcRect, UINT nFlags, LPCTSTR lpszItemText, CListArray < stdstr >& aComboList )
+	BOOL Create( HWND hWndParent, int nItem, int nSubItem, CRect& rcRect, UINT nFlags, LPCTSTR lpszItemText, CListArray < std::wstring >& aComboList )
 	{
 		m_nItem = nItem;
 		m_nSubItem = nSubItem;
@@ -127,10 +127,10 @@ public:
 		if ( !( m_nFlags & ( ITEM_FLAGS_EDIT_NUMBER | ITEM_FLAGS_EDIT_FLOAT ) ) || nChar == VK_BACK )
 			return TRUE;
 		
-		stdstr strValue;
+		std::wstring strValue;
 		int nValueLength = GetWindowTextLength() + 1;
 		strValue.reserve(nValueLength);
-		GetWindowText( (char *)strValue.c_str(), nValueLength );
+		GetWindowText( (wchar_t *)strValue.c_str(), nValueLength );
 		
 		// get selected positions
 		DWORD dwSelection = GetEditSel();		
@@ -143,15 +143,15 @@ public:
 			BOOL bNegative = FALSE;
 			if ( m_nFlags & ITEM_FLAGS_EDIT_FLOAT )
 			{
-				double dblValue = atof( strValue.c_str() );
+				double dblValue = _wtof( strValue.c_str() );
 				bNegative = ( dblValue < 0 );
-				strValue.Format( _T( "%lf" ), -dblValue );
+				strValue = stdstr_f("%lf", -dblValue).ToUTF16();
 			}
 			else
 			{
-				long lValue = _ttol( strValue.c_str() );
+				long lValue = _wtol( strValue.c_str() );
 				bNegative = ( lValue < 0 );
-				strValue.Format( _T( "%ld" ), -lValue );
+				strValue = stdstr_f("%ld", -lValue).ToUTF16();
 			}
 			
 			SetWindowText( strValue.c_str() );
@@ -162,7 +162,7 @@ public:
 		}
 		
 		// construct new value string using entered character
-		stdstr strNewValue = strValue.substr(0, nStartChar ) + nChar + strValue.substr(nEndChar, strValue.length() - nEndChar );
+		std::wstring strNewValue = strValue.substr(0, nStartChar ) + nChar + strValue.substr(nEndChar, strValue.length() - nEndChar );
 		
 		int nGreaterThan = 0;
 		int nLessThan = 0;
@@ -333,7 +333,7 @@ public:
 			int nIndex = GetCurSel();
 			if ( nIndex != CB_ERR )
 			{
-				stdstr strText;
+				std::wstring strText;
 				int cchLen = GetLBTextLen(nIndex);
 				if(cchLen != CB_ERR)
 				{
@@ -366,7 +366,7 @@ public:
 		CWindow wndParent( GetParent() );
 		if ( wndParent.IsWindow() )
 		{
-			stdstr strValue;
+            std::wstring strValue;
 			
 			if ( ( GetStyle() & CBS_DROPDOWNLIST ) == CBS_DROPDOWNLIST )
 			{
@@ -381,7 +381,7 @@ public:
 					}
 					else 
 					{
-						strValue = "";
+						strValue = L"";
 					}
 				}
 			}

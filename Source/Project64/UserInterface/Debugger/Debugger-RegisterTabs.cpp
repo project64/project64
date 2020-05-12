@@ -166,7 +166,7 @@ void CRegisterTabs::RefreshEdits()
     cause.intval = g_Reg->CAUSE_REGISTER;
 
     const char* szExceptionCode = ExceptionCodes[cause.exceptionCode];
-    m_CauseTip.SetWindowTextA(szExceptionCode);
+    m_CauseTip.SetWindowText(stdstr(szExceptionCode).ToUTF16().c_str());
 
     m_RDRAMEdits[0].SetValue(g_Reg->RDRAM_CONFIG_REG, DisplayMode::ZeroExtend); // or device type
     m_RDRAMEdits[1].SetValue(g_Reg->RDRAM_DEVICE_ID_REG, DisplayMode::ZeroExtend);
@@ -284,12 +284,12 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
     WORD ctrlId = LOWORD(wParam);
 
     CWindow editCtrl = ::GetDlgItem(hDlg, ctrlId);
-    char text[20];
+    wchar_t text[20];
     editCtrl.GetWindowText(text, 20);
 
     if (srcTabId == TabGPR)
     {
-        uint64_t value = CEditReg64::ParseValue(text);
+        uint64_t value = CEditReg64::ParseValue(stdstr().FromUTF16(text).c_str());
         if (ctrlId == IDC_HI_EDIT)
         {
             g_Reg->m_HI.UDW = value;
@@ -306,8 +306,8 @@ void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
         return;
     }
 
-    uint32_t value = strtoul(text, NULL, 16);
-    sprintf(text, "%08X", value);
+    uint32_t value = wcstoul(text, NULL, 16);
+    wsprintf(text, L"%08X", value);
     editCtrl.SetWindowText(text); // reformat text
 
     if (srcTabId == TabFPR)
@@ -456,12 +456,12 @@ INT_PTR CALLBACK CRegisterTabs::TabProcDefault(HWND hDlg, UINT msg, WPARAM wPara
 {
     if (msg == WM_INITDIALOG)
     {
-        SetProp(hDlg, "attached", (HANDLE)lParam);
+        SetProp(hDlg, L"attached", (HANDLE)lParam);
         return TRUE;
     }
     if (msg == WM_COMMAND && HIWORD(wParam) == EN_KILLFOCUS)
     {
-        bool * attached = (bool *)GetProp(hDlg, "attached");
+        bool * attached = (bool *)GetProp(hDlg, L"attached");
         if (attached != NULL && *attached)
         {
             RegisterChanged(hDlg, TabDefault, wParam);
@@ -475,7 +475,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
 {
     if (msg == WM_INITDIALOG)
     {
-        SetProp(hDlg, "attached", (HANDLE)lParam);
+        SetProp(hDlg, L"attached", (HANDLE)lParam);
         return TRUE;
     }
 
@@ -551,7 +551,7 @@ INT_PTR CALLBACK CRegisterTabs::TabProcGPR(HWND hDlg, UINT msg, WPARAM wParam, L
 
     if (msg == WM_COMMAND && HIWORD(wParam) == EN_KILLFOCUS)
     {
-        bool * attached = (bool *)GetProp(hDlg, "attached");
+        bool * attached = (bool *)GetProp(hDlg, L"attached");
         if (attached != NULL && *attached)
         {
             RegisterChanged(hDlg, TabGPR, wParam);
@@ -706,12 +706,12 @@ INT_PTR CALLBACK CRegisterTabs::TabProcFPR(HWND hDlg, UINT msg, WPARAM wParam, L
 {
     if (msg == WM_INITDIALOG)
     {
-        SetProp(hDlg, "attached", (HANDLE)lParam);
+        SetProp(hDlg, L"attached", (HANDLE)lParam);
         return TRUE;
     }
     if (msg == WM_COMMAND && HIWORD(wParam) == EN_KILLFOCUS)
     {
-        bool * attached = (bool *)GetProp(hDlg, "attached");
+        bool * attached = (bool *)GetProp(hDlg, L"attached");
         if (attached != NULL && *attached)
         {
             RegisterChanged(hDlg, TabFPR, wParam);
@@ -732,7 +732,7 @@ CRect CRegisterTabs::GetPageRect()
 
 CWindow CRegisterTabs::AddTab(char* caption, int dialogId, DLGPROC dlgProc)
 {
-    AddItem(caption);
+    AddItem(stdstr(caption).ToUTF16().c_str());
 
     CWindow parentWin = GetParent();
     CWindow tabWin = ::CreateDialogParam(NULL, MAKEINTRESOURCE(dialogId), parentWin, dlgProc, (LPARAM)&m_attached);
@@ -882,7 +882,7 @@ stdstr CRegisterTabs::CopyTabRegisters(int id)
     item.pszText = buffer;
     GetItem(id, &item);
 
-    str += item.pszText;
+    str += stdstr().FromUTF16(item.pszText);
 
     const TabRecord *record = nullptr;
     switch (id)
@@ -959,15 +959,16 @@ stdstr CRegisterTabs::CopyTabRegisters(int id)
 }
 
 // CEditReg64 for GPR
-uint64_t CEditReg64::ParseValue(char* wordPair)
+uint64_t CEditReg64::ParseValue(const char* wordPair)
 {
     uint32_t a, b;
     uint64_t ret;
-    a = strtoul(wordPair, &wordPair, 16);
-    if (*wordPair == ' ')
+    char * end = NULL;
+    a = strtoul(wordPair, &end, 16);
+    if (*end == ' ')
     {
-        wordPair++;
-        b = strtoul(wordPair, NULL, 16);
+        end++;
+        b = strtoul(end, NULL, 16);
         ret = (uint64_t)a << 32;
         ret |= b;
         return ret;
@@ -1004,9 +1005,9 @@ LRESULT CEditReg64::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandl
         goto canceled;
     }
 
-    char text[20];
+    wchar_t text[20];
     GetWindowText(text, 20);
-    int textLen = strlen(text);
+    int textLen = wcslen(text);
 
     if (textLen >= 17)
     {
@@ -1018,7 +1019,7 @@ LRESULT CEditReg64::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandl
         }
     }
 
-    if (charCode == ' ' && strchr(text, ' ') != NULL)
+    if (charCode == ' ' && wcschr(text, ' ') != NULL)
     {
         goto canceled;
     }
@@ -1034,9 +1035,9 @@ canceled:
 
 uint64_t CEditReg64::GetValue()
 {
-    char text[20];
+    wchar_t text[20];
     GetWindowText(text, 20);
-    return ParseValue(text);
+    return ParseValue(stdstr().FromUTF16(text).c_str());
 }
 
 stdstr CEditReg64::GetValueText()
@@ -1053,9 +1054,9 @@ LRESULT CEditReg64::OnLostFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
 
 void CEditReg64::SetValue(uint32_t h, uint32_t l)
 {
-    char text[20];
-    sprintf(text, "%08X %08X", h, l);
-    SetWindowText(text);
+    stdstr text;
+    text.Format("%08X %08X", h, l);
+    SetWindowText(text.ToUTF16().c_str());
 }
 
 void CEditReg64::SetValue(uint64_t value)
