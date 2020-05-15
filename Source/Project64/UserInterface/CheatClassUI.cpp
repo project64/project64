@@ -1341,7 +1341,7 @@ void CCheatsUI::CheckParentStatus(HWND hParent)
 stdstr CCheatsUI::ReadCodeString(HWND hDlg, bool &validcodes, bool &validoptions, bool &nooptions, int &codeformat)
 {
     int numlines, linecount, len;
-    char str[128];
+    wchar_t wc_str[128];
     int i;
     char* formatnormal = "XXXXXXXX XXXX";
     char* formatoptionlb = "XXXXXXXX XX??";
@@ -1364,12 +1364,13 @@ stdstr CCheatsUI::ReadCodeString(HWND hDlg, bool &validcodes, bool &validoptions
         memset(tempformat, 0, sizeof(tempformat));
 
         //str[0] = sizeof(str) > 255?255:sizeof(str);
-        *(LPWORD)str = sizeof(str);
-        len = SendDlgItemMessage(hDlg, IDC_CHEAT_CODES, EM_GETLINE, (WPARAM)linecount, (LPARAM)(const char *)str);
-        str[len] = 0;
+        *(LPWORD)wc_str = sizeof(wc_str) / sizeof(wc_str[0]);
+        len = SendDlgItemMessage(hDlg, IDC_CHEAT_CODES, EM_GETLINE, (WPARAM)linecount, (LPARAM)(const char *)wc_str);
+        wc_str[len] = 0;
 
         if (len <= 0) { continue; }
 
+        std::string str = stdstr().FromUTF16(wc_str);
         for (i = 0; i < 128; i++)
         {
             if (isxdigit(str[i]))
@@ -1385,7 +1386,7 @@ stdstr CCheatsUI::ReadCodeString(HWND hDlg, bool &validcodes, bool &validoptions
         if (strcmp(tempformat, formatnormal) == 0)
         {
             strcat(codestring, ",");
-            strcat(codestring, str);
+            strcat(codestring, str.c_str());
             numcodes++;
             if (codeformat < 0) codeformat = 0;
         }
@@ -1394,7 +1395,7 @@ stdstr CCheatsUI::ReadCodeString(HWND hDlg, bool &validcodes, bool &validoptions
             if (codeformat != 2)
             {
                 strcat(codestring, ",");
-                strcat(codestring, str);
+                strcat(codestring, str.c_str());
                 numcodes++;
                 codeformat = 1;
                 nooptions = false;
@@ -1410,7 +1411,7 @@ stdstr CCheatsUI::ReadCodeString(HWND hDlg, bool &validcodes, bool &validoptions
             if (codeformat != 1)
             {
                 strcat(codestring, ",");
-                strcat(codestring, str);
+                strcat(codestring, str.c_str());
                 numcodes++;
                 codeformat = 2;
                 nooptions = false;
@@ -1436,7 +1437,7 @@ stdstr CCheatsUI::ReadCodeString(HWND hDlg, bool &validcodes, bool &validoptions
 stdstr CCheatsUI::ReadOptionsString(HWND hDlg, bool &/*validcodes*/, bool &validoptions, bool &/*nooptions*/, int &codeformat)
 {
     int numlines, linecount, len;
-    char str[128];
+    wchar_t wc_str[128];
     int i, j;
 
     validoptions = true;
@@ -1449,14 +1450,15 @@ stdstr CCheatsUI::ReadOptionsString(HWND hDlg, bool &/*validcodes*/, bool &valid
 
     for (linecount = 0; linecount < numlines; linecount++) //read line after line (bypassing limitation GetDlgItemText)
     {
-        memset(str, 0, sizeof(str));
+        memset(wc_str, 0, sizeof(wc_str));
         //str[0] = sizeof(str) > 255?255:sizeof(str);
-        *(LPWORD)str = sizeof(str);
-        len = SendDlgItemMessage(hDlg, IDC_CHEAT_OPTIONS, EM_GETLINE, (WPARAM)linecount, (LPARAM)(const char *)str);
-        str[len] = 0;
+        *(LPWORD)wc_str = sizeof(wc_str) / sizeof(wc_str[0]);
+        len = SendDlgItemMessage(hDlg, IDC_CHEAT_OPTIONS, EM_GETLINE, (WPARAM)linecount, (LPARAM)(const char *)wc_str);
+        wc_str[len] = 0;
 
         if (len > 0)
         {
+            std::string str = stdstr().FromUTF16(wc_str);
             switch (codeformat)
             {
             case 1: //option = lower byte
@@ -1489,7 +1491,7 @@ stdstr CCheatsUI::ReadOptionsString(HWND hDlg, bool &/*validcodes*/, bool &valid
                     {
                         strcat(optionsstring, ",$");
                     }
-                    strcat(optionsstring, str);
+                    strcat(optionsstring, str.c_str());
                     numoptions++;
                 }
                 else
@@ -1523,7 +1525,7 @@ stdstr CCheatsUI::ReadOptionsString(HWND hDlg, bool &/*validcodes*/, bool &valid
                     }
 
                     strcat(optionsstring, ",$");
-                    strcat(optionsstring, str);
+                    strcat(optionsstring, str.c_str());
                     numoptions++;
                 }
                 else
