@@ -718,6 +718,7 @@
 #define IDC_STATUSBAR                   1572
 #define IDC_CMB_JUMP                    1573
 #define IDC_COPYTABREGISTERS_BTN        1574
+#define IDC_MEMORY_SIZE_NOTE            1574
 #define IDC_F0_LBL                      1575
 #define IDC_F1_LBL                      1576
 #define IDC_F2_LBL                      1577
@@ -939,7 +940,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        219
 #define _APS_NEXT_COMMAND_VALUE         40121
-#define _APS_NEXT_CONTROL_VALUE         1574
+#define _APS_NEXT_CONTROL_VALUE         1575
 #define _APS_NEXT_SYMED_VALUE           102
 #endif
 #endif
