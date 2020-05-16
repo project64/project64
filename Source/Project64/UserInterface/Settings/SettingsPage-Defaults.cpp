@@ -20,6 +20,7 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
     UpdatePageSettings();
 
     SetDlgItemText(IDC_MEMORY_SIZE_TEXT, wGS(ROM_MEM_SIZE).c_str());
+	SetDlgItemText(IDC_MEMORY_SIZE_NOTE, wGS(ROM_MEM_SIZE_NOTE).c_str());
 	SetDlgItemText(IDC_HLE_GFX, wGS(PLUG_HLE_GFX).c_str());
 	SetDlgItemText(IDC_USE_TLB, wGS(ROM_USE_TLB).c_str());
 	SetDlgItemText(IDC_VIREFESH_TEXT, wGS(ROM_VIREFRESH).c_str());
