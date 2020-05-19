@@ -509,11 +509,6 @@ WPARAM CMainGui::ProcessAllMessages(void)
 
     while (GetMessage(&msg, NULL, 0, 0))
     {
-        if (g_cheatUI != NULL && g_cheatUI->IsCheatMessage(&msg))
-        {
-            continue;
-        }
-
         if (m_ResetPlugins)
         {
             m_ResetPlugins = false;
@@ -521,7 +516,6 @@ WPARAM CMainGui::ProcessAllMessages(void)
             SetEvent(m_ResetInfo->hEvent);
             m_ResetInfo = NULL;
         }
-        if (g_cheatUI && g_cheatUI->IsCheatMessage(&msg)) { continue; }
         if (m_Menu->ProcessAccelerator(m_hMainWindow, &msg)) { continue; }
         TranslateMessage(&msg);
         DispatchMessage(&msg);
@@ -1068,13 +1062,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                         }
                         else if (LOWORD(wParam) == ID_POPUPMENU_EDITCHEATS)
                         {
-                            CCheatsUI * cheatUI = new CCheatsUI;
-                            g_cheatUI = cheatUI;
-                            cheatUI->SelectCheats(hWnd, true);
-                            if (g_cheatUI == cheatUI)
-                            {
-                                g_cheatUI = NULL;
-                            }
+                            CCheatsUI().Display(hWnd);
                         }
 
                         if (g_Rom)
@@ -1103,13 +1091,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                         }
                         else if (LOWORD(wParam) == ID_POPUPMENU_EDITCHEATS)
                         {
-                            CCheatsUI * cheatUI = new CCheatsUI;
-                            g_cheatUI = cheatUI;
-                            cheatUI->SelectCheats(hWnd, true);
-                            if (g_cheatUI == cheatUI)
-                            {
-                                g_cheatUI = NULL;
-                            }
+                            CCheatsUI().Display(hWnd);
                         }
 
                         if (g_Disk)

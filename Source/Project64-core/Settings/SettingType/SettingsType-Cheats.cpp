@@ -176,13 +176,5 @@ void CSettingTypeCheats::CopyCheats(void)
         {
             g_Settings->SaveStringIndex(Cheat_UserOptions, i, Value);
         }
-        if (g_Settings->LoadStringIndex(Cheat_Range, i, Value))
-        {
-            g_Settings->SaveStringIndex(Cheat_UserRange, i, Value);
-        }
-        if (g_Settings->LoadStringIndex(Cheat_RangeNotes, i, Value))
-        {
-            g_Settings->SaveStringIndex(Cheat_UserRangeNotes, i, Value);
-        }
     }
 }

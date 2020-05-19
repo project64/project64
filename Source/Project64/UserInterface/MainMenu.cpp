@@ -274,15 +274,12 @@ void CMainMenu::OnLodState(HWND hWnd)
 
 void CMainMenu::OnCheats(HWND hWnd)
 {
-    CCheatsUI * cheatUI = new CCheatsUI;
-    g_cheatUI = cheatUI;
-    cheatUI->SelectCheats(hWnd, false);
+    CCheatsUI().Display(hWnd);
 }
 
 void CMainMenu::OnSettings(HWND hWnd)
 {
-    CSettingConfig SettingConfig;
-    SettingConfig.Display(hWnd);
+    CSettingConfig().Display(hWnd);
 }
 
 bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuID)

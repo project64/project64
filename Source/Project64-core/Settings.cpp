@@ -446,13 +446,9 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Cheat_Entry, new CSettingTypeCheats("", Cheat_UserEntry));
     AddHandler(Cheat_Notes, new CSettingTypeCheats("_N", Cheat_UserNotes));
     AddHandler(Cheat_Options, new CSettingTypeCheats("_O", Cheat_UserOptions));
-    AddHandler(Cheat_Range, new CSettingTypeCheats("_R", Cheat_UserRange));
-    AddHandler(Cheat_RangeNotes, new CSettingTypeCheats("_RN", Cheat_UserRangeNotes));
     AddHandler(Cheat_UserEntry, new CSettingTypeGameIndex("Cheat", "", ""));
     AddHandler(Cheat_UserNotes, new CSettingTypeGameIndex("Cheat", "_N", ""));
     AddHandler(Cheat_UserOptions, new CSettingTypeGameIndex("Cheat", "_O", ""));
-    AddHandler(Cheat_UserRange, new CSettingTypeGameIndex("Cheat", "_R", ""));
-    AddHandler(Cheat_UserRangeNotes, new CSettingTypeGameIndex("Cheat", "_RN", ""));
     AddHandler(Cheat_Active, new CSettingTypeGameIndex("Cheat", "Active", false));
     AddHandler(Cheat_Extension, new CSettingTypeGameIndex("Cheat", ".exten", "??? - Not Set"));
 
