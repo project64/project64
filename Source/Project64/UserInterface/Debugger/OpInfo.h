@@ -147,7 +147,8 @@ public:
 
     inline bool IsLoadCommand()
     {
-        return (m_OpCode.op <= R4300i_LWU || (m_OpCode.op >= R4300i_LL && m_OpCode.op <= R4300i_LD));
+        return (m_OpCode.op >= R4300i_LDL && m_OpCode.op <= R4300i_LWU ||
+                m_OpCode.op >= R4300i_LL && m_OpCode.op <= R4300i_LD);
     }
 
     inline bool IsStoreCommand()
