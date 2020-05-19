@@ -108,7 +108,7 @@ void CDebugDMALogView::RefreshList()
 
         if (lpEntry->romAddr < g_Rom->GetRomSize())
         {
-            sig.u32 = *(uint32_t*)&rom[lpEntry->romAddr];
+            sig.u32 = _byteswap_ulong(*(uint32_t*)&rom[lpEntry->romAddr]);
         }
 
         // Todo checkbox to display all in hex
