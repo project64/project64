@@ -90,8 +90,11 @@ void CScriptInstance::ForceStop()
 {
     // Close all files and delete all hooked callbacks
     CGuard guard(m_CS);
-    CleanUp();
-    SetState(STATE_STOPPED);
+    if (m_State != STATE_STOPPED)
+    {
+        CleanUp();
+        SetState(STATE_STOPPED);
+    }
 }
 
 duk_context* CScriptInstance::DukContext()
@@ -220,8 +223,7 @@ void CScriptInstance::StartEventLoop()
         RemoveListener(lpListener);
     }
 
-    CleanUp();
-    SetState(STATE_STOPPED);
+    ForceStop();
 }
 
 CScriptInstance::EVENT_STATUS
@@ -529,8 +531,8 @@ void CScriptInstance::CloseAllFiles()
     for (size_t i = 0; i < nFiles; i++)
     {
         fclose(m_Files[i].fp);
-        m_Files.erase(m_Files.begin() + i);
     }
+    m_Files.clear();
 }
 
 FILE* CScriptInstance::GetFilePointer(int fd)
