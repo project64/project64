@@ -46,6 +46,40 @@ const _gprNames = [
     't8', 't9', 'k0', 'k1', 'gp', 'sp', 'fp', 'ra'
 ]
 
+
+// When we give callbacks or objects to native code, we need to make sure we keep a strong backing reference
+//  to them in Javascript so they don't get garbage collected before native code uses them.
+const _strongBackingReferences = (function() {
+    const _references = [];
+
+    return {
+        "add": function _strongBackingReferences_add(obj)
+        {
+            _references.push(obj);
+        },
+        "remove": function _strongBackingReferences_remove(obj)
+        {
+            const index = _references.indexOf(obj);
+            if (index !== -1)
+            {
+                _references.splice(index, 1);
+            }
+        },
+        "singleUseCallback": function _strongBackingReferences_singleUseCallback(callback)
+        {
+            const singleUseCallback = function ()
+            {
+                callback.apply(undefined, arguments);
+                _strongBackingReferences.remove(callback);
+            };
+
+            _strongBackingReferences.add(singleUseCallback);
+            return singleUseCallback;
+        }
+    };
+}) ();
+
+
 const GPR_R0 = (1 << 0)
 const GPR_AT = (1 << 1)
 const GPR_V0 = (1 << 2)
@@ -869,7 +903,7 @@ function Socket(fd)
     
     this.write = function(data, callback)
     {
-        _native.write(_fd, data, callback)
+        _native.write(_fd, data, _strongBackingReferences.singleUseCallback(callback))
     }
     
     this.close = function()
@@ -882,7 +916,7 @@ function Socket(fd)
         if(!connected)
         {
             _onconnect = callback;
-            _native.sockConnect(_fd, settings.host || '127.0.0.1', settings.port || 80, _onconnect_base);
+            _native.sockConnect(_fd, settings.host || '127.0.0.1', settings.port || 80, _strongBackingReferences.singleUseCallback(_onconnect_base));
         }
     }
     
@@ -894,8 +928,8 @@ function Socket(fd)
             _onclose();
             return;
         }
-        _native.read(_fd, _bufferSize, _read)
-        _ondata(data)
+        _native.read(_fd, _bufferSize, _strongBackingReferences.singleUseCallback(_read));
+        _ondata(data);
     }
     
     this.on = function(eventType, callback)
@@ -904,7 +938,7 @@ function Socket(fd)
         {
         case 'data':
             _ondata = callback
-            _native.read(_fd, _bufferSize, _read)
+            _native.read(_fd, _bufferSize, _strongBackingReferences.singleUseCallback(_read));
             break;
         case 'close':
             // note: does nothing if ondata not set
@@ -931,7 +965,7 @@ function Server(settings)
         }
 
         if (_queued_accept) {
-            _native.sockAccept(_fd, _acceptClient);
+            _native.sockAccept(_fd, _strongBackingReferences.singleUseCallback(_acceptClient));
         }
     }
     
@@ -945,7 +979,7 @@ function Server(settings)
     var _acceptClient = function(clientFd)
     {
         _onconnection(new Socket(clientFd))
-        _native.sockAccept(_fd, _acceptClient)
+        _native.sockAccept(_fd, _strongBackingReferences.singleUseCallback(_acceptClient))
     }
     
     this.on = function(eventType, callback)
@@ -955,7 +989,7 @@ function Server(settings)
         case 'connection':
             _onconnection = callback;
             if (_listening) {
-                _native.sockAccept(_fd, _acceptClient);
+                _native.sockAccept(_fd, _strongBackingReferences.singleUseCallback(_acceptClient));
             } else {
                 _queued_accept = true;
             }
