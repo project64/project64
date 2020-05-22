@@ -91,8 +91,8 @@ public:
     BEGIN_MSG_MAP_EX(CEditCheat)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
         MESSAGE_HANDLER(WM_EDITCHEAT, OnEditCheat)
-        MESSAGE_HANDLER(IDC_ADD, OnAddCheat)
-        MESSAGE_HANDLER(IDC_NEWCHEAT, OnNewCheat)
+        COMMAND_ID_HANDLER(IDC_ADD, OnAddCheat)
+        COMMAND_ID_HANDLER(IDC_NEWCHEAT, OnNewCheat)
         COMMAND_HANDLER(IDC_CODE_NAME, EN_CHANGE, OnCodeNameChanged)
         COMMAND_HANDLER(IDC_CHEAT_CODES, EN_CHANGE, OnCheatCodeChanged)
         COMMAND_HANDLER(IDC_CHEAT_OPTIONS, EN_CHANGE, OnCheatOptionsChanged)
@@ -110,8 +110,8 @@ private:
 
     LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnEditCheat(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnAddCheat(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-    LRESULT OnNewCheat(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnAddCheat(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+    LRESULT OnNewCheat(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
     LRESULT OnCodeNameChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
     LRESULT OnCheatCodeChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
     LRESULT OnCheatOptionsChanged(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);

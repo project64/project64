@@ -780,7 +780,7 @@ LRESULT CEditCheat::OnEditCheat(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
     return 0;
 }
 
-LRESULT CEditCheat::OnAddCheat(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CEditCheat::OnAddCheat(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
     std::string NewCheatName = GetItemText(IDC_CODE_NAME);
     int i = 0;
@@ -826,7 +826,7 @@ LRESULT CEditCheat::OnAddCheat(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
     return 0;
 }
 
-LRESULT CEditCheat::OnNewCheat(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CEditCheat::OnNewCheat(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
     if (CheatChanged())
     {
