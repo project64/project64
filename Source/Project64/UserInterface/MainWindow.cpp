@@ -256,6 +256,10 @@ void CMainGui::GameCpuRunning(CMainGui * Gui)
     }
     else
     {
+        if (Gui->m_CheatsUI.m_hWnd != NULL)
+        {
+            Gui->m_CheatsUI.SendMessage(WM_COMMAND, MAKELONG(IDCANCEL, 0));
+        }
         PostMessage(Gui->m_hMainWindow, WM_GAME_CLOSED, 0, 0);
     }
 }
@@ -466,6 +470,11 @@ bool CMainGui::ResetPluginsInUiThread(CPlugins * plugins, CN64System * System)
     return bRes;
 }
 
+void CMainGui::DisplayCheatsUI(bool BlockExecution)
+{
+    m_CheatsUI.Display(m_hMainWindow, BlockExecution);
+}
+
 void CMainGui::BringToTop(void)
 {
     CGuard Guard(m_CS);
@@ -515,6 +524,10 @@ WPARAM CMainGui::ProcessAllMessages(void)
             m_ResetInfo->res = m_ResetInfo->plugins->Reset(m_ResetInfo->system);
             SetEvent(m_ResetInfo->hEvent);
             m_ResetInfo = NULL;
+        }
+        if (m_CheatsUI.m_hWnd != NULL && IsDialogMessage(m_CheatsUI.m_hWnd, &msg))
+        {
+            continue;
         }
         if (m_Menu->ProcessAccelerator(m_hMainWindow, &msg)) { continue; }
         TranslateMessage(&msg);
@@ -1062,7 +1075,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                         }
                         else if (LOWORD(wParam) == ID_POPUPMENU_EDITCHEATS)
                         {
-                            CCheatsUI().Display(hWnd);
+                            CCheatsUI().Display(hWnd, true);
                         }
 
                         if (g_Rom)
@@ -1091,7 +1104,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                         }
                         else if (LOWORD(wParam) == ID_POPUPMENU_EDITCHEATS)
                         {
-                            CCheatsUI().Display(hWnd);
+                            CCheatsUI().Display(hWnd,true);
                         }
 
                         if (g_Disk)

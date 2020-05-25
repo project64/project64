@@ -274,7 +274,7 @@ void CMainMenu::OnLodState(HWND hWnd)
 
 void CMainMenu::OnCheats(HWND hWnd)
 {
-    CCheatsUI().Display(hWnd);
+    m_Gui->DisplayCheatsUI(false);
 }
 
 void CMainMenu::OnSettings(HWND hWnd)

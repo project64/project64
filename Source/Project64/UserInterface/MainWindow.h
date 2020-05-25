@@ -13,6 +13,7 @@
 #include "../Settings/GuiSettings.h"
 #include <Project64/UserInterface/Debugger/debugger.h>
 #include <Project64-core/Plugins/PluginClass.h>
+#include <Project64\UserInterface\CheatClassUI.h>
 
 class CGfxPlugin;      //Plugin that controls the rendering
 class CAudioPlugin;    //Plugin for audio, need the hwnd
@@ -86,6 +87,9 @@ public:
     //Plugins
     bool ResetPluginsInUiThread(CPlugins * plugins, CN64System * System);
 
+    //Cheats
+    void DisplayCheatsUI(bool BlockExecution);
+
     //Get Window Handle
     void * GetWindowHandle(void) const { return m_hMainWindow; }
     void * GetStatusBar(void) const { return m_hStatusWnd; }
@@ -126,6 +130,7 @@ private:
 
     HWND           m_hMainWindow, m_hStatusWnd;
     DWORD          m_ThreadId;
+    CCheatsUI      m_CheatsUI;
 
     const bool     m_bMainWindow;
     bool           m_Created;

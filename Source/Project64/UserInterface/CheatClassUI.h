@@ -24,6 +24,7 @@ class CCheatList :
 public:
     BEGIN_MSG_MAP_EX(CCheatList)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+        MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
         MESSAGE_HANDLER(UM_CHANGECODEEXTENSION, OnChangeCodeExtension)
         COMMAND_ID_HANDLER(IDC_UNMARK, OnUnmark)
         COMMAND_ID_HANDLER(ID_POPUP_DELETE, OnPopupDelete)
@@ -48,6 +49,7 @@ private:
     enum TV_CHECK_STATE { TV_STATE_UNKNOWN, TV_STATE_CLEAR, TV_STATE_CHECKED, TV_STATE_INDETERMINATE };
 
     LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnChangeCodeExtension(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnUnmark(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
     LRESULT OnPopupDelete(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
@@ -169,6 +171,7 @@ class CCheatsUI :
 public:
     BEGIN_MSG_MAP_EX(CCheatsUI)
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+        MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
         COMMAND_ID_HANDLER(IDC_STATE, OnStateChange)
         COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
     END_MSG_MAP()
@@ -178,10 +181,11 @@ public:
     CCheatsUI(void);
     ~CCheatsUI(void);
 
-    void Display(HWND hParent);
+    void Display(HWND hParent, bool BlockExecution);
 
 private:
     LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnCloseCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
     LRESULT OnStateChange(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 

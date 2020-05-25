@@ -22,13 +22,24 @@ CCheatsUI::~CCheatsUI()
 {
 }
 
-void CCheatsUI::Display(HWND hParent)
+void CCheatsUI::Display(HWND hParent, bool BlockExecution)
 {
     if (g_BaseSystem)
     {
         g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_Cheats);
     }
-    DoModal(hParent);
+    if (BlockExecution)
+    {
+        DoModal(hParent);
+    }
+    else if (m_hWnd != NULL)
+    {
+        SetFocus();
+    }
+    else
+    {
+        Create(hParent);
+    }
 }
 
 LRESULT CCheatsUI::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
@@ -90,13 +101,26 @@ LRESULT CCheatsUI::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
     return 0;
 }
 
+LRESULT CCheatsUI::OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+    m_StateBtn.Detach();
+    return 0;
+}
+
 LRESULT CCheatsUI::OnCloseCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
     if (g_BaseSystem)
     {
         g_BaseSystem->ExternalEvent(SysEvent_ResumeCPU_Cheats);
     }
-    EndDialog(0);
+    if (m_bModal)
+    {
+        EndDialog(0);
+    }
+    else
+    {
+        DestroyWindow();
+    }
     return 0;
 }
 
@@ -218,6 +242,12 @@ LRESULT CCheatList::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPar
     hImageList.Add(bmp, RGB(255, 0, 255));
     m_hCheatTree.SetImageList(hImageList, TVSIL_STATE);
     return true;
+}
+
+LRESULT CCheatList::OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+    m_hCheatTree.Detach();
+    return 0;
 }
 
 LRESULT CCheatList::OnChangeCodeExtension(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
