@@ -14,7 +14,8 @@
 
 CCheatsUI::CCheatsUI(void) :
     m_EditCheat(m_SelectCheat),
-    m_SelectCheat(m_EditCheat)
+    m_SelectCheat(m_EditCheat),
+    m_bModal(false)
 {
 }
 
@@ -30,6 +31,7 @@ void CCheatsUI::Display(HWND hParent, bool BlockExecution)
     }
     if (BlockExecution)
     {
+        m_bModal = true;
         DoModal(hParent);
     }
     else if (m_hWnd != NULL)
@@ -38,6 +40,7 @@ void CCheatsUI::Display(HWND hParent, bool BlockExecution)
     }
     else
     {
+        m_bModal = false;
         Create(hParent);
     }
 }

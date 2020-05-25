@@ -196,6 +196,7 @@ private:
     CCheatList m_SelectCheat;
     CButton m_StateBtn;
     int  m_MinSizeDlg, m_MaxSizeDlg;
+    bool m_bModal;
 
     enum Dialog_State { CONTRACTED, EXPANDED } m_DialogState;
 };
