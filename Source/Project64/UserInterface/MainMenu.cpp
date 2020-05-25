@@ -186,7 +186,6 @@ void CMainMenu::OnRomInfo(HWND hWnd)
 
 void CMainMenu::OnEndEmulation(void)
 {
-    CGuard Guard(m_CS);
     WriteTrace(TraceUserInterface, TraceDebug, "ID_FILE_ENDEMULATION");
     if (g_BaseSystem)
     {
