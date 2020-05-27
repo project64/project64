@@ -185,9 +185,10 @@ CMenuShortCutKey::CMenuShortCutKey(WORD key, bool bCtrl, bool bAlt, bool bShift,
             break;
         }
     }
-    if (m_bShift) { m_ShortCutName = stdstr_f("Shift+%ls", m_ShortCutName.c_str()).ToUTF16(); }
-    if (m_bCtrl) { m_ShortCutName = stdstr_f("Ctrl+%ls", m_ShortCutName.c_str()).ToUTF16(); }
-    if (m_bAlt) { m_ShortCutName = stdstr_f("Alt+%s", m_ShortCutName.c_str()).ToUTF16(); }
+    std::string ShortCutName = stdstr().FromUTF16(m_ShortCutName.c_str());
+    if (m_bShift) { m_ShortCutName = stdstr_f("Shift+%s", ShortCutName.c_str()).ToUTF16(); }
+    if (m_bCtrl) { m_ShortCutName = stdstr_f("Ctrl+%s", ShortCutName.c_str()).ToUTF16(); }
+    if (m_bAlt) { m_ShortCutName = stdstr_f("Alt+%s", ShortCutName.c_str()).ToUTF16(); }
 }
 
 VIRTUAL_KEY * CMenuShortCutKey::VirtualKeyList(int &Size)
