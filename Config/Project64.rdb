@@ -8339,3 +8339,30 @@ Internal Name=shut up and code
 CPU Type=Interpreter
 RDRAM Size=8
 Status=Unsupported
+
+[002FE030-FFD01FCF-C:45]
+Good Name=Zelda 64 Custom Expansion Disk (U)
+Core Note=Custom expansion Disk for The Legend of Zelda Ocarina of Time.
+RDRAM Size=8
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
+Status=Compatible
+
+[002FE030-FFD01FCF-C:4A]
+Good Name=Zelda 64 Custom Expansion Disk (J)
+Core Note=Custom expansion Disk for The Legend of Zelda Ocarina of Time.
+RDRAM Size=8
+SMM-PI DMA=0
+SMM-Protect=1
+SMM-TLB=0
+Status=Compatible
+
+[CD999CC9-32666336-C:45]
+32bit=No
+Core Note=Expansion Disk for F-Zero X. Play F-Zero X (U) with this disk loaded.
+Fixed Audio=0
+Good Name=F-ZERO X Expansion Kit (U)
+RDRAM Size=8
+Status=Compatible
+Culling=1
