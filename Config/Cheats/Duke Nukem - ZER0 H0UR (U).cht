@@ -1,5 +1,5 @@
 [04DAF07F-0D18E688-C:45]
-Name=DUKE NUKEM ZERO HOUR
+Name=Duke Nukem - ZER0 H0UR (U)
 Cheat0="Cheat Menu\Cheat Menu Enabled",E8723B40 5959
 Cheat1="Cheat Menu\Have All Weapons",E9723BC8 504F
 Cheat2="Cheat Menu\Have All Game Type & Other",E9646912 504F
@@ -10,7 +10,7 @@ Cheat6="Time Always 00:00",E870701A 595A
 Cheat7="Enable Debug Menu",E86150E8 5959
 
 [DC36626A-3F3770CB-C:50]
-Name=DUKE NUKEM ZERO HOUR
+Name=Duke Nukem - ZER0 H0UR (E)
 Cheat0="Cheat Menu\Cheat Menu Enabled",E8624A30 5959
 Cheat1="Cheat Menu\Have All Weapons",E9723F68 504F
 Cheat2="Cheat Menu\Have All Game Type & Other",E9646D92 604F

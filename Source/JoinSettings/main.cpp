@@ -266,6 +266,38 @@ void JoinFile(const char * Directory, const char * Target)
     RegionSection(TargetIniFile, files, "Demo", "0");
 }
 
+void UpdateNames(const char* Directory, const char* RdbFile)
+{
+    CIniFile RdbIni(RdbFile);
+
+    Files files;
+    CPath SearchDir(Directory, "*.cht");
+    if (SearchDir.FindFirst())
+    {
+        do
+        {
+            CIniFile CheatFile(SearchDir);
+            CIniFile::SectionList Sections;
+            CheatFile.GetVectorOfSections(Sections);
+            CheatFile.SetCustomSort(CustomSortData);
+            for (size_t i = 0, n = Sections.size(); i < n; i++)
+            {
+                const char * Section = Sections[i].c_str();
+                std::string Name = RdbIni.GetString(Section, "Good Name", "");
+                if (Name.empty())
+                {
+                    Name = RdbIni.GetString(Section, "Internal Name", "");
+                }
+                if (Name.empty())
+                {
+                    continue;
+                }
+                CheatFile.SaveString(Section, "Name", Name.c_str());
+            }
+        } while (SearchDir.FindNext());
+    }
+}
+
 int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /*lpszArgs*/, int /*nWinMode*/)
 {
     if (__argc == 4 && strcmp(__argv[1], "-split") == 0 && CPath(__argv[2]).Exists())
@@ -276,5 +308,9 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
     {
         JoinFile(__argv[2], __argv[3]);
     }
-	return 0;
+    if (__argc == 4 && strcmp(__argv[1], "-updateNames") == 0 && CPath(__argv[2], "").DirectoryExists() && CPath(__argv[3]).Exists())
+    {
+        UpdateNames(__argv[2], __argv[3]);
+    }
+    return 0;
 }

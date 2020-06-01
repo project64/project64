@@ -1,5 +1,5 @@
 [09465AC3-F8CB501B-C:50]
-Name=Legend of Zelda, The - Ocarina of Time (E) (GC Version)
+Name=The Legend of Zelda - Ocarina of Time (E) (GC)
 Cheat0="Infinite\Rupees",E965F47C 5959
 Cheat0_N=This cheat allows you to have the max Rupees to the Wallet you currently Hold
 Cheat1="Press R\For Old Or Young Link",D01C6A7D 0010,E865E0B1 59??
@@ -106,8 +106,8 @@ Cheat60_N=This code will cause all items on a specific plane to lean. This is he
 Cheat61="Beta\Appear in Strange Places (Hold R)",D01C6A7D 0010,E965F312 5959
 Cheat61_N=If you go to an area where Link is immobile or invisible, using the "appear in strange places" code will almost always fix it, but you'll start somewhere outside of the Arena and in air. I recommend using the infinite step Hover boots code already supplied with PJ64 so you can float back into the arena in the event that this happens.
 Cheat62="Beta\Interface always off/on",E865EF97 594F,E865F309 59??
-Cheat62_O=$5A Off,$59 Off
 Cheat62_N=If you go to an area where the interface is accessible, this signigfies that you're not in 'beta' mode anymore. Using the "interface always off/on" code, you can stay in 'beta' mode regardless of what happens. This may cause more crashes in SOME areas, but it's rare and is not too severe. If you need to explore a beta area with the interface, "use the interface always on" portion of the code. Don't use the codes as you start the game. If you need the interface on/off at a specific time, start the game, go to the area, activate the code, keep it on until next reset.
+Cheat62_O=$5A Off,$59 Off
 Cheat63="Always Have Wallet Size",E865E04E 59??
 Cheat63_O=$97 Kid Wallet (Holds 99),$A7 Adult Wallet (Holds 200),$B7 Giant Wallet (Holds 500)
 Cheat64="Language Select",E865F4B7 59??

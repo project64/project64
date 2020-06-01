@@ -1,5 +1,5 @@
 [B044B569-373C1985-C:50]
-Name=Legend of Zelda, The - Ocarina of Time (E) (V1.0)
+Name=The Legend of Zelda - Ocarina of Time (E) (M3) (V1.0)
 Cheat0="Infinite\Rupees",E965EAF4 5959
 Cheat0_N=This cheat allows you to have the max Rupees to the Wallet you currently Hold
 Cheat1="Press R\For Old Or Young Link",D01C64F5 0010,E865D629 59??
@@ -93,8 +93,8 @@ Cheat54_O=$55 Lake Hylia,08 Zora's Domain,$72 Gerudo Valley,$70 Lost Woods,$82 G
 Cheat55="Max\Double Defense Power",E865DBF1 5966
 Cheat55_N=This gives you White Border Hearts
 Cheat56="Nayru's Love is Always",E871DC6D ????
-Cheat56_O=$595A OFF,$504F ON
 Cheat56_N=For this to work On Or off, you have to walk through a Doorway to activate the Change.
+Cheat56_O=$595A OFF,$504F ON
 Cheat57="Infinite\Timers\All Other Timers",E865EAF7 598C
 Cheat57_N=This cheat works on all Race Timers not the final Boss and Under Water with iron Boots etc.
 Cheat58="Epona\Max Carrots\Lon Lon Raunch",E8736520 5955,E8743460 5955

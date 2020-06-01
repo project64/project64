@@ -1,5 +1,5 @@
 [8F12C096-45DC17E1-C:50]
-Name=A Bug's Life
+Name=A Bug's Life (E)
 Cheat0="Infinite\Lives",E8747BB8 5961
 Cheat1="Infinite\Health",E8747BAB 5956
 Cheat2="Always Have\Super Jump",E9747BA8 597A
@@ -14,7 +14,7 @@ Cheat8_O=$59 Blueberry,$5C Homing Berry,$5B Goldberry,$56 Super Berry ?
 Cheat9="All enemies killed",E8747BA2 595A,E8747BA1 595A
 
 [DFF227D9-0D4D8169-C:44]
-Name=A Bug's Life
+Name=A Bug's Life (G)
 Cheat0="Infinite\Lives",E8747AB8 5961
 Cheat1="Infinite\Health",E8747AAB 5956
 Cheat2="Always Have\Super Jump",E9747AA8 597A

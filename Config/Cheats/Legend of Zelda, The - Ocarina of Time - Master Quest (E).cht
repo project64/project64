@@ -1,5 +1,5 @@
 [1D4136F3-AF63EEA9-C:50]
-Name=Legend of Zelda, The - Ocarina of Time - Master Quest (E)
+Name=The Legend of Zelda - Ocarina of Time - Master Quest (E) (GC)
 Cheat0="Infinite\Rupees",E965F45C 5959
 Cheat0_N=This cheat allows you to have the max Rupees to the Wallet you currently Hold
 Cheat1="Max\Double Defense Power",E865DD59 5966
@@ -66,8 +66,8 @@ Cheat45="Equipment Modifier 1",E865E02E 59??
 Cheat45_N=This modifies the equipment you are carrying.
 Cheat45_O=$5C Silver Scale,$56 Golden Scale,$58 Giant's Knife (Broken),$85 Black Gauntlets,$9A Bullet Bag (Holds 30),$DA Bullet Bag (Holds 40),$1A Bullet Bag (Holds 50)
 Cheat46="Equipment Modifier 2",E865E02D 59??
-Cheat46_O=$62 Bomb Bag (Holds 20),$6A Bomb Bag (Holds 30),$72 Bomb Bag (Holds 40),$7A Goron's Bracelet,$82 Silver Gauntlets,$8A Golden Gauntlets
 Cheat46_N=This modifies the equipment you are carrying.
+Cheat46_O=$62 Bomb Bag (Holds 20),$6A Bomb Bag (Holds 30),$72 Bomb Bag (Holds 40),$7A Goron's Bracelet,$82 Silver Gauntlets,$8A Golden Gauntlets
 Cheat47="Warp Song Location\Minuet of Forest & Serenade of Water",E865F323 59??
 Cheat47_N=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
 Cheat47_O=$5A Sacred Forest Meadow,$56 Lake Hylia,$65 Inside Jabu Jabu's Belly,$72 Dodongo's Cavern,$C2 Inside The Deku Tree
@@ -108,8 +108,8 @@ Cheat61_N=This code will cause all items on a specific plane to lean. This is he
 Cheat62="Beta\Appear in Strange Places (Hold R)",D01C681D 0010,E965F3F2 5959
 Cheat62_N=If you go to an area where Link is immobile or invisible, using the "appear in strange places" code will almost always fix it, but you'll start somewhere outside of the Arena and in air. I recommend using the infinite step Hover boots code already supplied with PJ64 so you can float back into the arena in the event that this happens.
 Cheat63="Beta\Interface always off/on",E865EF77 594F,E865F3E9 59??
-Cheat63_O=$5A Off,$59 On
 Cheat63_N=If you go to an area where the interface is accessible, this signigfies that you're not in 'beta' mode anymore. Using the "interface always off/on" code, you can stay in 'beta' mode regardless of what happens. This may cause more crashes in SOME areas, but it's rare and is not too severe. If you need to explore a beta area with the interface, "use the interface always on" portion of the code. Don't use the codes as you start the game. If you need the interface on/off at a specific time, start the game, go to the area, activate the code, keep it on until next reset.
+Cheat63_O=$5A Off,$59 On
 Cheat64="Always Have Wallet Size",E865E02E 59??
 Cheat64_O=$97 Kid Wallet (Holds 99),$A7 Adult Wallet (Holds 200),$B7 Giant Wallet (Holds 500)
 Cheat65="Have\Status Heart Containers",E865E034 59??
