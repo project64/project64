@@ -11,3 +11,6 @@ Cheat7="Multi Player\Access All Evil Skins",50005C0C 0000,800C0167 0081
 Cheat8="Multi Player\Access Good Q",800C06EF 0001
 Cheat9="Multi Player\Access Evil Q",800C06EF 0081
 Cheat10="Multi Player\Invincible",811147D8 0101
+Cheat11="Access\All Guns and Weapons",801147DC 0001
+Cheat11_N=This also comes with Ammo
+Cheat12="Access\All Gadgets and Items",801147DD 0001
