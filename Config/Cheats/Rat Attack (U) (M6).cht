@@ -1,11 +1,11 @@
 [0304C48E-AC4001B8-C:45]
 Name=Rat Attack (U) (M6)
-Cheat0="Play As/Player 1",E8696B45 59??
-Cheat0_O=$5A Hai Jinx,$59 Sparky,$5C Manx,$5B Muffy Dupont,$56 Bob Cat,$55 Smokey,$58 Atomicat,$57 Pearl
-Cheat1="Play As/Player 2",E8696C55 59??
-Cheat1_O=$5A Hai Jinx,$59 Sparky,$5C Manx,$5B Muffy Dupont,$56 Bob Cat,$55 Smokey,$58 Atomicat,$57 Pearl
-Cheat2="Play As/Player 3",E8696C65 59??
-Cheat2_O=$5A Hai Jinx,$59 Sparky,$5C Manx,$5B Muffy Dupont,$56 Bob Cat,$55 Smokey,$58 Atomicat,$57 Pearl
-Cheat3="Play As/Player 4",E8696C75 59??
-Cheat3_O=$5A Hai Jinx,$59 Sparky,$5C Manx,$5B Muffy Dupont,$56 Bob Cat,$55 Smokey,$58 Atomicat,$57 Pearl
-Cheat4="Max Score",E969DB98 5645,E969DB96 394F
+Cheat0="Play As/Player 1",801514F3 00??
+Cheat0_O=$00 Hai Jinx,$01 Sparky,$02 Manx,$03 Muffy Dupont,$04 Bob Cat,$05 Smokey,$06 Atomicat,$07 Pearl
+Cheat1="Play As/Player 2",80151503 00??
+Cheat1_O=$00 Hai Jinx,$01 Sparky,$02 Manx,$03 Muffy Dupont,$04 Bob Cat,$05 Smokey,$06 Atomicat,$07 Pearl
+Cheat2="Play As/Player 3",80151513 00??
+Cheat2_O=$00 Hai Jinx,$01 Sparky,$02 Manx,$03 Muffy Dupont,$04 Bob Cat,$05 Smokey,$06 Atomicat,$07 Pearl
+Cheat3="Play As/Player 4",80151523 00??
+Cheat3_O=$00 Hai Jinx,$01 Sparky,$02 Manx,$03 Muffy Dupont,$04 Bob Cat,$05 Smokey,$06 Atomicat,$07 Pearl
+Cheat4="Max Score",81158440 05F5,81158442 E0FF

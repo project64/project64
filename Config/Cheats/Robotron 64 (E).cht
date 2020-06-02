@@ -1,9 +1,9 @@
 [9FF69D4F-195F0059-C:50]
 Name=Robotron 64 (E)
-Cheat0="Infinite Lives",E95D0742 5C37,E96025A2 5C37
-Cheat1="Level select",E95BC20A C0C6
+Cheat0="Infinite Lives",8109B0EE 03E7,810AD24E 03E7
+Cheat1="Level select",81076FB6 6F74
 Cheat1_N=Set Up In Menu
-Cheat2="Fast Run",E85D08A1 595B
-Cheat3="Rapid fire",E85D08B1 595B
-Cheat4="Easy Difficulty level",E8602595 595A
-Cheat5="Speed level 1 Slow",E8602599 595A
+Cheat2="Fast Run",8009B14F 0003
+Cheat3="Rapid fire",8009B15F 0003
+Cheat4="Easy Difficulty level",800AD243 0000
+Cheat5="Speed level 1 Slow",800AD247 0000

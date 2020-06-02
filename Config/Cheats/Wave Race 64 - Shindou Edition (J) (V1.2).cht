@@ -1,10 +1,10 @@
 [535DF3E2-609789F1-C:4A]
 Name=Wave Race 64 - Shindou Edition (J) (V1.2)
-Cheat0="Misses Don't Count",E87290F1 595A
-Cheat1="Infinite Time Stunt Mode",E8728E82 594F
-Cheat2="Super Speed",E87290E9 5955,D0155221 0010,E87290E9 597A
-Cheat3="99 Points",E87215C5 59BB
-Cheat4="Infinite Course Out Time",E8728EA5 594F
-Cheat5="Maximum Power\Player 1",E87290E9 5955
-Cheat6="Maximum Power\Player 2",E872920E 5955,E87295AE 5955
-Cheat7="Always First Place",E8728FC1 595A
+Cheat0="Misses Don't Count",801C399F 0000
+Cheat1="Infinite Time Stunt Mode",801C3B2E 00FF
+Cheat2="Super Speed",801C3997 0005,D0155221 0010,801C3997 0020
+Cheat3="99 Points",801CC273 0063
+Cheat4="Infinite Course Out Time",801C3B53 00FF
+Cheat5="Maximum Power\Player 1",801C3997 0005
+Cheat6="Maximum Power\Player 2",801C3FBA 0005,801C425A 0005
+Cheat7="Always First Place",801C386F 0000

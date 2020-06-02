@@ -1,7 +1,7 @@
 [661B45F3-9ED6266D-C:50]
 Name=Wayne Gretzky's 3D Hockey '98 (E) (M4)
-Cheat0="Max Score\Team 1",E9685578 504F
-Cheat1="Max Score\Team 2",E9688A88 504F
+Cheat0="Max Score\Team 1",81120220 FFFF
+Cheat1="Max Score\Team 2",81123730 FFFF
 Cheat2="Difficulty Mod",E8689A4F 59??
 Cheat2_O=$5A ,$59 ,$5C ,$5B ,$56
-Cheat3="Anger metre always full",E861EE90 594F,E861EF7A 594F
+Cheat3="Anger metre always full",800D9B38 00FF,800D9826 00FF

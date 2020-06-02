@@ -1,8 +1,8 @@
 [3A6C42B5-1ACADA1B-C:4A]
 Name=Mario Tennis 64 (J)
-Cheat0="Have All\Characters Available",E9593110 504F
-Cheat1="Have All\Courts Available",E9593114 504F
-Cheat2="Score\Player 1",E86A082E 59??
-Cheat2_O=$5A 0,$59 15,$5C 30,$5B 40
-Cheat3="Score\Player 2",E86A082D 59??
-Cheat3_O=$5A 0,$59 15,$5C 30,$5B 40
+Cheat0="Have All\Characters Available",8105DEB8 FFFF
+Cheat1="Have All\Courts Available",8105DEBC FFFF
+Cheat2="Score\Player 1",8014B1DA 00??
+Cheat2_O=$00 0,$01 15,$02 30,$03 40
+Cheat3="Score\Player 2",8014B1DB 00??
+Cheat3_O=$00 0,$01 15,$02 30,$03 40

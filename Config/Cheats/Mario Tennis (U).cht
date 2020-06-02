@@ -1,12 +1,12 @@
 [5001CF4F-F30CB3BD-C:45]
 Name=Mario Tennis (U)
-Cheat0="Have All\Characters Available",E95CA620 504F
-Cheat1="Have All\Courts Available",E95CA624 504F
-Cheat2="Score\Player 1",E8698B9E 59??
-Cheat2_O=$5A 0,$59 15,$5C 30,$5B 40
-Cheat3="Score\Player 2",E8698B9D 59??
-Cheat3_O=$5A 0,$59 15,$5C 30,$5B 40
-Cheat4="Press C-Down For Easy Win Ring Shot - Game",D0066985 0004,E8698C5D 59DC
+Cheat0="Have All\Characters Available",810653C8 FFFF
+Cheat1="Have All\Courts Available",810653CC FFFF
+Cheat2="Score\Player 1",8015344A 00??
+Cheat2_O=$00 0,$01 15,$02 30,$03 40
+Cheat3="Score\Player 2",8015344B 00??
+Cheat3_O=$00 0,$01 15,$02 30,$03 40
+Cheat4="Press C-Down For Easy Win Ring Shot - Game",D0066985 0004,8015350B 0082
 Cheat4_N=Do Not use with Time,Balls,Points Option
-Cheat5="Press C-Down Easy Win Ring Shot - Time,Balls,Points",D0066985 0004,E8698C79 59DC,D0066985 0004,E8698C75 59DC
+Cheat5="Press C-Down Easy Win Ring Shot - Time,Balls,Points",D0066985 0004,80153527 0082,D0066985 0004,80153523 0082
 Cheat5_N=Do Not use with Game Option

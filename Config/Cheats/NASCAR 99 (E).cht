@@ -1,6 +1,6 @@
 [AE4992C9-9253B253-C:50]
 Name=NASCAR 99 (E) (M3)
-Cheat0="Laps To Race",E95A9ED2 59??
-Cheat0_O=$59 1 Lap,$5C 2 Laps,$5B 3 Laps,$56 4 Laps,$55 5 Laps,$58 6 Laps,$57 7Laps,$62 8 Laps,$61 9 Laps
-Cheat1="Access All Secret NASCAR Legends",50000602 0000,110DF400 0101
+Cheat0="Laps To Race",81044B7E 00??
+Cheat0_O=$01 1 Lap,$02 2 Laps,$03 3 Laps,$04 4 Laps,$05 5 Laps,$06 6 Laps,$07 7Laps,$08 8 Laps,$09 9 Laps
+Cheat1="Access All Secret NASCAR Legends",50000602 0000,810DF400 0101
 Cheat1_N=This will give you access to,Alan Kulwicki,Cale Yarborough,Bobby Allison,Davey Allison,Richard Petty,Benny Parsons

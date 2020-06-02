@@ -1,13 +1,13 @@
 [8E6E01FF-CCB4F948-C:45]
 Name=Glover (U)
-Cheat0="Infinite\Double Jumps",E87E5359 595A
-Cheat1="Press L To Levitate",D02AE905 0020,E97D568C 9C3A
-Cheat2="Infinite\Health",E87D58E1 5982
-Cheat3="Infinite\Lives",E87D58E5 5964
+Cheat0="Infinite\Double Jumps",8028FC07 0000
+Cheat1="Press L To Levitate",D02AE905 0020,81290334 43E0
+Cheat2="Infinite\Health",8029018F 0028
+Cheat3="Infinite\Lives",80290193 000A
 Cheat4="GS Button For 40 Gems",8829018F 0028
-Cheat5="Infinite\Activate Cheat\Modifier 1",E97DCE44 ????
-Cheat5_O=$59DA Level Select,$5A5A Open Portals,$5B5A Open Levels,$5CDA All Of The Above
-Cheat6="Infinite\Activate Cheat\Modifier 2",E97DCE42 ????
-Cheat6_O=$595C Call Ball (Press L),$5962 Infinite Lives,$599A Infinite Energy,$5B5A Big Ball,$5BA4 All Of The Above
-Cheat7="Infinite\Action Modifier",E87D5835 59??
-Cheat7_O=$5A Freeze Enemy Spell,$59 Death Spell,$5C Frog Spell,$5B Walk On Walls Spell,$56 Big Glover Spell,$55 Tree Spell,$58 Helicopter Spell,$57 Enemy Ball Spell,$62 Purple Bouncy Ball Spell,$61 Tiny Black/Grey Ball Spell,$64 Beach Ball Spell,$63 Hovering Ball Spell,$5E Green Ball Spell,$5D Super Call Ball Spell,$60 Call Ball Spell
+Cheat5="Infinite\Activate Cheat\Modifier 1",81297BEC ????
+Cheat5_O=$0080 Level Select,$0100 Open Portals,$0200 Open Levels,$0380 All Of The Above
+Cheat6="Infinite\Activate Cheat\Modifier 2",81297BEE ????
+Cheat6_O=$0002 Call Ball (Press L),$0008 Infinite Lives,$0040 Infinite Energy,$0200 Big Ball,$024A All Of The Above
+Cheat7="Infinite\Action Modifier",802901E3 00??
+Cheat7_O=$00 Freeze Enemy Spell,$01 Death Spell,$02 Frog Spell,$03 Walk On Walls Spell,$04 Big Glover Spell,$05 Tree Spell,$06 Helicopter Spell,$07 Enemy Ball Spell,$08 Purple Bouncy Ball Spell,$09 Tiny Black/Grey Ball Spell,$0A Beach Ball Spell,$0B Hovering Ball Spell,$0C Green Ball Spell,$0D Super Call Ball Spell,$0E Call Ball Spell

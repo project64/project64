@@ -1,7 +1,7 @@
 [C34304AC-2D79C021-C:45]
 Name=Mortal Kombat Mythologies - Sub-Zero (U)
-Cheat0="Infinite Lives",E8661351 5961
-Cheat1="Invincible",E85D4A96 5959
-Cheat2="Level Select",D009A913 0000,E85D0065 59??
-Cheat2_O=$5A Level 1 - Shaolin Temple - China,$59 Level 2 - Wind Realm,$5C Level 3 - Earth Realm,$5B Level 4 - Water Realm,$56 Level 5 - Fire Ream,$55 Level 6 - Prison,$58 Level 7 - Bridge,$57 Level 8 - Fortress
-Cheat3="Max Experience",E9657762 4DF4
+Cheat0="Infinite Lives",8010BCFF 0009
+Cheat1="Invincible",8009F742 0001
+Cheat2="Level Select",D009A913 0000,8009A913 00??
+Cheat2_O=$00 Level 1 - Shaolin Temple - China,$01 Level 2 - Wind Realm,$02 Level 3 - Earth Realm,$03 Level 4 - Water Realm,$04 Level 5 - Fire Ream,$05 Level 6 - Prison,$06 Level 7 - Bridge,$07 Level 8 - Fortress
+Cheat3="Max Experience",8111200E FC9A

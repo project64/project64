@@ -1,16 +1,16 @@
 [1AA05AD5-46F52D80-C:50]
 Name=Pilotwings 64 (E) (M3)
-Cheat0="Infinite Fuel\Gyrocopter",E88CC0DF 59D9
-Cheat1="Infinite Fuel\Rocket Belt",E88CC0FF 59D9
-Cheat2="Time Always 00'00'10",E88CBF10 5959
+Cheat0="Infinite Fuel\Gyrocopter",80366989 0081
+Cheat1="Infinite Fuel\Rocket Belt",803669A9 0081
+Cheat2="Time Always 00'00'10",803668B8 0001
 Cheat2_N=This Cheat code is for All Events
 Cheat3="Choose Vehicle",88366807 00??
 Cheat3_N=Make your Choice & then Press F9 To Activate,But do not use with any other Press F9 Cheat Codes.
 Cheat3_O=$5A Hang Glider,$59 Rocket Belt,$5C Gyrocopter,$5B Cannonball,$56 Skydiving,$55 Jumble Hopper,$58 Birdman
-Cheat4="[Perfect Score] (All Class & Level's)",50000330 0000,103683ED 0064,50000330 0000,10368A81 0064,50000330 0000,10368BD1 0064,50000330 0000,10369115 0064,50000330 0000,10369265 0064,50000330 0000,103693B5 0064,50000330 0000,103697A9 0064,50000330 0000,103698F9 0064,50000330 0000,10369A49 0064
+Cheat4="[Perfect Score] (All Class & Level's)",50000330 0000,803683ED 0064,50000330 0000,80368A81 0064,50000330 0000,80368BD1 0064,50000330 0000,80369115 0064,50000330 0000,80369265 0064,50000330 0000,803693B5 0064,50000330 0000,803697A9 0064,50000330 0000,803698F9 0064,50000330 0000,80369A49 0064
 Cheat4_N=To make these codes save to Game-Pak; just pick a level and lose, choose Next then Quit. Enable Disable Perfect Score then save and disable before using the Extra Games Perfect Score Cheat.
-Cheat5="Infinite Photos",E9899C42 595A
-Cheat6="[Perfect Score] Extra Games (All Class & Level's)",E88CDBD3 5971,E88CDC23 5971,E88CDA73 5971,E88CDFC3 5971,E88CDB03 59B6,E88CDB33 59B6,E88CDE67 5971,E88CE3B7 5971,E88CE407 5971,E88CE257 5971,E88CDE97 59B6,E88CDEC7 59B6,E88CE8FB 5971,E88CE54B 5971,E88CEB9B 5971,E88CECEB 5971,E88CE82B 59B6,E88CE55B 59B6
+Cheat5="Infinite Photos",813545EE 0000
+Cheat6="[Perfect Score] Extra Games (All Class & Level's)",8036847D 0019,803685CD 0019,8036871D 0019,8036886D 0019,803684AD 0064,803684DD 0064,80368B11 0019,80368C61 0019,80368DB1 0019,80368F01 0019,80368B41 0064,80368B71 0064,803691A5 0019,803692F5 0019,80369445 0019,80369595 0019,803691D5 0064,80369205 0064
 Cheat6_N=To make these codes save to Game-Pak; just pick a level and lose, choose Next then Quit. Enable Disable Perfect Score then save and disable before using the Extra Games Perfect Score Cheat.
-Cheat7="Music Volume Select",E87962FC 59??
-Cheat7_O=$5A No Music,$8F Default Volume,$DA Max Volume
+Cheat7="Music Volume Select",80250FA4 00??
+Cheat7_O=$00 No Music,$3F Default Volume,$80 Max Volume

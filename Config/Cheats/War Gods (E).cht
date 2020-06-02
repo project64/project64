@@ -1,16 +1,16 @@
 [D715CC70-271CF5D6-C:50]
 Name=War Gods (E)
-Cheat0="Infinite Time",E887494D 59B6
-Cheat1="Enable Cheat Menu",E887C0C5 5959
-Cheat2="Skill Select\Player 2",E887B378 59??
+Cheat0="Infinite Time",8033F6FB 0064
+Cheat1="Enable Cheat Menu",80336973 0001
+Cheat2="Skill Select\Player 2",80335C20 00??
 Cheat2_N=Max Skill makes the player more Skillful while easier to hurt where as Weak Skill is Non Skillful yet harder to harm.
-Cheat2_O=$DA Max Skill,$5A Weak Skill
-Cheat3="Skill Select\Player 1",E887B373 59??
+Cheat2_O=$80 Max Skill,$00 Weak Skill
+Cheat3="Skill Select\Player 1",80335C1D 00??
 Cheat3_N=Max Skill makes the player more Skillful while easier to hurt where as Weak Skill is Non Skillful yet harder to harm.
-Cheat3_O=$DA Max Skill,$5A Weak Skill
-Cheat4="Difficulty Select",E887C0A5 59??
-Cheat4_O=$5A Very Easy,$59 Easy,$5C Medium,$5B Hard,$56 Very hard
-Cheat5="Infinite Max Continues",E887C0B5 5955
+Cheat3_O=$80 Max Skill,$00 Weak Skill
+Cheat4="Difficulty Select",80336953 00??
+Cheat4_O=$00 Very Easy,$01 Easy,$02 Medium,$03 Hard,$04 Very hard
+Cheat5="Infinite Max Continues",80336963 0005
 Cheat7="Easy Fatality Select",E887AFA1 59??
 Cheat7_O=$5A Always Off,$59 Always On
 Cheat8="Press D-Pad\Right to Play As Exor",D033C263 0008,E86402D9 5963

@@ -1,9 +1,9 @@
 [7F3CEB77-8981030A-C:45]
 Name=Hercules - The Legendary Journeys (U)
-Cheat0="Infinite Health",E9625092 5C37,E9625096 5C37
-Cheat1="Infinite Dinars",E85FB795 5942,E85FB796 5942
-Cheat2="Infinite Magic",E95FBC1E 59BB,E95FBC06 59BB,E95FBC36 59BB,E95FBC4E 59BB
-Cheat3="Press L to Levitate",D017D2D5 0020,E96250EC 9523
+Cheat0="Infinite Health",810CF93E 03E7,810CF942 03E7
+Cheat1="Infinite Dinars",800B6043 00E8,800B6042 00E8
+Cheat2="Infinite Magic",810B65CA 0063,810B65B2 0063,810B65E2 0063,810B65FA 0063
+Cheat3="Press L to Levitate",D017D2D5 0020,810CF994 44CB
 Cheat3_N=Press L Button to Levitate & Let go to come back down
-Cheat4="Press L for 1 Hit Kill Punch",D0103383 0020,E861EE22 595A
+Cheat4="Press L for 1 Hit Kill Punch",D0103383 0020,800D9BCE 0000
 Cheat4_N=Press The L Button & Hold B & Then Let Go to Kill Enimies,Rocks,Tents etc with One Punch.

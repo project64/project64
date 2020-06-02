@@ -1,11 +1,11 @@
 [A3A044B5-6DB1BF5E-C:0]
 Name=Spacer by Memir (POM '99) (PD)
-Cheat0="Infinite Health\Player 1",E884A19E 5977
-Cheat1="Collect One Item For Portal",E884A199 59??
-Cheat1_O=$5B Level 1,$60 Level 2,$5E Level 3,$5D Level 4
-Cheat2="Paly As",E884A1A4 59??
-Cheat2_O=$5A Red Helic,$59 Green Helic,$5C Blue Helic,$5B Yellow Helic,$6A Red Rocket,$69 Green Rocket,$6C Blue Rocket,$6B Yellow Rocket,$7A Red Back Bee,$79 Green Back Bee,$7C Blue Back Bee,$7B Yellow Back Bee,$8A Red Stealth,$89 Green Stealth,$8C Blue Stealth,$8B Yellow Stealth
-Cheat3="Freeze Timer",E884A4B1 595A
-Cheat4="Infinite Health\Player 2",E884A1F6 5977
-Cheat5="Infinite Health\Player 3",E884A14E 5977
-Cheat6="Infinite Health\Player 4",E884A2A6 5977
+Cheat0="Infinite Health\Player 1",802E4E4A 0027
+Cheat1="Collect One Item For Portal",802E4E47 00??
+Cheat1_O=$03 Level 1,$0E Level 2,$0C Level 3,$0D Level 4
+Cheat2="Paly As",802E4E4C 00??
+Cheat2_O=$00 Red Helic,$01 Green Helic,$02 Blue Helic,$03 Yellow Helic,$10 Red Rocket,$11 Green Rocket,$12 Blue Rocket,$13 Yellow Rocket,$20 Red Back Bee,$21 Green Back Bee,$22 Blue Back Bee,$23 Yellow Back Bee,$30 Red Stealth,$31 Green Stealth,$32 Blue Stealth,$33 Yellow Stealth
+Cheat3="Freeze Timer",802E4D5F 0000
+Cheat4="Infinite Health\Player 2",802E4EA2 0027
+Cheat5="Infinite Health\Player 3",802E4EFA 0027
+Cheat6="Infinite Health\Player 4",802E4F52 0027

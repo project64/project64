@@ -1,11 +1,11 @@
 [02D8366A-6CABEF9C-C:50]
 Name=Road Rash 64 (E)
-Cheat0="Always 1st",E961D4EA 595A
-Cheat1="Max Cash",E961C20E 504F
-Cheat2="Access All Bikes & Tracks",E960D46A 59BB
-Cheat3="Access All Weapons For All Modes",50000E02 0000,111B9EFA 0505
-Cheat4="Infinite Damage",E87265A9 595C
-Cheat5="Infinite Health\To Bike",E96FEE10 9BCA
-Cheat6="Infinite Health\To Character",E97262E8 95E1
-Cheat7="No Music In Game",E961B802 595A
-Cheat8="No Music Elsewhere",E961B8FE 595A
+Cheat0="Always 1st",810D7D96 0000
+Cheat1="Max Cash",810D6FBA FFFF
+Cheat2="Access All Bikes & Tracks",810A7D16 0063
+Cheat3="Access All Weapons For All Modes",50000E02 0000,811B9EFA 0505
+Cheat4="Infinite Damage",801C1257 0002
+Cheat5="Infinite Health\To Bike",811B9BB8 4270
+Cheat6="Infinite Health\To Character",811C0F90 4489
+Cheat7="No Music In Game",810D61AE 0000
+Cheat8="No Music Elsewhere",810D61AA 0000

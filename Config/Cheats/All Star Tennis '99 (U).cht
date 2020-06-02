@@ -1,14 +1,14 @@
 [E185E291-4E50766D-C:45]
 Name=All Star Tennis '99 (U)
-Cheat0="Game Win Select\Player 1",E86F12F7 59??
-Cheat0_O=$5A 0 Games Won,$59 1 Game Won,$5C 2 Games Won,$5B 3 Games Won,$56 4 Games Won,$55 5 Games Won,$58 For Game Set & Match
-Cheat1="Game Win Select\Player 2",E86F12F6 59??
-Cheat1_O=$5A 0 Games Won,$59 1 Game Won,$5C 2 Games Won,$5B 3 Games Won,$56 4 Games Won,$55 5 Games Won,$58 For Game Set & Match
-Cheat2="Points Select\Player 1",E872C5B8 59??
-Cheat2_O=$5A 0 Points,$65 15 Points,$8A 30 Points,$9A 40 Points
-Cheat3="Points Select\Player 2",E872C5B7 59??
-Cheat3_O=$5A 0 Points,$65 15 Points,$8A 30 Points,$9A 40 Points
-Cheat4="Play As\Player 1",E85F52FB 59??
-Cheat4_O=$5A Zoe Taylor,$59 Vanessa Child,$5C Amanda Coetzer,$5B Jana Novotna,$56 Conchita Martinez,$55 Leon Rodez,$58 Michael Chang,$57 Gustavo Kuerten,$62 Jonas Bjorkman,$61 Mark Philippoussis,$64 Randy Powell,$63 Richard Krajicek
-Cheat5="Play As\Player 2",E85F52FA 59??
-Cheat5_O=$5A Zoe Taylor,$59 Vanessa Child,$5C Amanda Coetzer,$5B Jana Novotna,$56 Conchita Martinez,$55 Leon Rodez,$58 Michael Chang,$57 Gustavo Kuerten,$62 Jonas Bjorkman,$61 Mark Philippoussis,$64 Randy Powell,$63 Richard Krajicek
+Cheat0="Game Win Select\Player 1",801BBFA1 00??
+Cheat0_O=$00 0 Games Won,$01 1 Game Won,$02 2 Games Won,$03 3 Games Won,$04 4 Games Won,$05 5 Games Won,$06 For Game Set & Match
+Cheat1="Game Win Select\Player 2",801BBFA2 00??
+Cheat1_O=$00 0 Games Won,$01 1 Game Won,$02 2 Games Won,$03 3 Games Won,$04 4 Games Won,$05 5 Games Won,$06 For Game Set & Match
+Cheat2="Points Select\Player 1",801C7260 00??
+Cheat2_O=$00 0 Points,$15 15 Points,$30 30 Points,$40 40 Points
+Cheat3="Points Select\Player 2",801C7261 00??
+Cheat3_O=$00 0 Points,$15 15 Points,$30 30 Points,$40 40 Points
+Cheat4="Play As\Player 1",800BFFA5 00??
+Cheat4_O=$00 Zoe Taylor,$01 Vanessa Child,$02 Amanda Coetzer,$03 Jana Novotna,$04 Conchita Martinez,$05 Leon Rodez,$06 Michael Chang,$07 Gustavo Kuerten,$08 Jonas Bjorkman,$09 Mark Philippoussis,$0A Randy Powell,$0B Richard Krajicek
+Cheat5="Play As\Player 2",800BFFA6 00??
+Cheat5_O=$00 Zoe Taylor,$01 Vanessa Child,$02 Amanda Coetzer,$03 Jana Novotna,$04 Conchita Martinez,$05 Leon Rodez,$06 Michael Chang,$07 Gustavo Kuerten,$08 Jonas Bjorkman,$09 Mark Philippoussis,$0A Randy Powell,$0B Richard Krajicek

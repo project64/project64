@@ -1,12 +1,12 @@
 [EBEEA8DB-F2ECB23C-C:45]
 Name=NBA Jam 2000 (U)
-Cheat0="Infinite Shot Clock",E867CF31 5968
-Cheat1="Infinite Violation Clock",E867CF8D 59AD
-Cheat2="Infinite Turbo\Team 1\Player 1",E9690C66 505A
-Cheat3="Infinite Turbo\Team 1\Player 2",E9690C6A 505A
-Cheat4="Team 1 Score Select",E867C869 59??
-Cheat4_O=$5A 00,$E8 150
-Cheat5="Infinite Turbo\Team 2\Player 1",E9690C5E 505A
-Cheat6="Infinite Turbo\Team 2\Player 2",E9690C62 505A
-Cheat7="Team 2 Score Select",E867C865 59??
-Cheat7_O=$5A 00,$E8 150
+Cheat0="Infinite Shot Clock",801378DF 0016
+Cheat1="Infinite Violation Clock",8013783B 005D
+Cheat2="Infinite Turbo\Team 1\Player 1",8115B512 FF00
+Cheat3="Infinite Turbo\Team 1\Player 2",8115B516 FF00
+Cheat4="Team 1 Score Select",80137117 00??
+Cheat4_O=$00 00,$96 150
+Cheat5="Infinite Turbo\Team 2\Player 1",8115B50A FF00
+Cheat6="Infinite Turbo\Team 2\Player 2",8115B50E FF00
+Cheat7="Team 2 Score Select",80137113 00??
+Cheat7_O=$00 00,$96 150

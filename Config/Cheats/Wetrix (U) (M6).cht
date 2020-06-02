@@ -1,13 +1,13 @@
 [CEA8B54F-7F21D503-C:45]
 Name=Wetrix (U) (M6)
-Cheat0="Infinite Lakes",E96F5092 5961
-Cheat1="Mega Score",E86F50B0 594F,E874445C 594F
-Cheat2="Always Empty Drain",E86F50E7 595A,E96F50E6 595A,E96F50EC 595A
-Cheat3="Always Berserk Mode",E86F5001 594F
-Cheat4="Stop Level Timer",E86F5006 594F
-Cheat5="Practice Lessons Open",E95F5EFE 5962
-Cheat6="Always Drop\Player 1",E86F500D 59??
-Cheat6_O=$5A Bar,$59 T,$5C Corner,$5B Square,$56 Down Square,$55 Down Bar,$58 Big Water,$57 Medium Water,$62 Small Water,$61 Smallest Water,$64 Bomb,$63 Fireball
-Cheat7="Always Drop\Player 2",E873588D 59??
-Cheat7_O=$5A Bar,$59 T,$5C Corner,$5B Square,$56 Down Square,$55 Down Bar,$58 Big Water,$57 Medium Water,$62 Small Water,$61 Smallest Water,$64 Bomb,$63 Fireball
-Cheat8="Infinite Ducks",E86F509D 5961
+Cheat0="Infinite Lakes",811BF93E 0009
+Cheat1="Mega Score",801BF958 00FF,801EED04 00FF
+Cheat2="Always Empty Drain",801BF991 0000,811BF992 0000,811BF994 0000
+Cheat3="Always Berserk Mode",801BF9AF 00FF
+Cheat4="Stop Level Timer",801BF9B2 00FF
+Cheat5="Practice Lessons Open",810B0BAA 0008
+Cheat6="Always Drop\Player 1",801BF9BB 00??
+Cheat6_O=$00 Bar,$01 T,$02 Corner,$03 Square,$04 Down Square,$05 Down Bar,$06 Big Water,$07 Medium Water,$08 Small Water,$09 Smallest Water,$0A Bomb,$0B Fireball
+Cheat7="Always Drop\Player 2",801F013B 00??
+Cheat7_O=$00 Bar,$01 T,$02 Corner,$03 Square,$04 Down Square,$05 Down Bar,$06 Big Water,$07 Medium Water,$08 Small Water,$09 Smallest Water,$0A Bomb,$0B Fireball
+Cheat8="Infinite Ducks",801BF94B 0009

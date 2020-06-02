@@ -1,9 +1,9 @@
 [519EA4E1-EB7584E8-C:4A]
 Name=King Hill 64 - Extreme Snowboarding (J)
-Cheat0="Max\50000 Stunt Points",E95E20D0 1CAA
-Cheat1="Low Timer",E85E1FFC 595A,E85E1FFA 595A
-Cheat2="Have\All Characters",E95E2010 584F
-Cheat3="Have\All Difficulties",E95E2008 585A
-Cheat4="Have\All Tracks",E95E2014 1050
-Cheat5="Have\All Boards",E95E201C 595B,E95E201A 504F
+Cheat0="Max\50000 Stunt Points",8108C978 C350
+Cheat1="Low Timer",8008C8A4 0000,8008C8A6 0000
+Cheat2="Have\All Characters",8108C9B8 07FF
+Cheat3="Have\All Difficulties",8108C9B0 0700
+Cheat4="Have\All Tracks",8108C9BC BFFE
+Cheat5="Have\All Boards",8108C9C4 0003,8108C9C6 FFFF
 Cheat6="exhalatio audio hack",81052760 AD99

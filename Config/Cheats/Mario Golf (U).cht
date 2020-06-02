@@ -1,11 +1,11 @@
 [664BA3D4-678A80B7-C:45]
 Name=Mario Golf (U)
-Cheat0="Enable All Courses",E9676342 504F
-Cheat1="No Wind",E95F0047 595A,E85F0045 595A
-Cheat2="Unlimited\Power Hits\Player 1",E86FC850 5956
-Cheat3="Unlimited\Power Hits\Player 2",E86FC508 5956
-Cheat4="Unlimited\Power Hits\Player 3",E86FC6C0 5956
-Cheat5="Unlimited\Power Hits\Player 4",E86FCB78 5956
-Cheat6="Have All Characters",50000E02 0001,110C28E4 0000
-Cheat7="Max Gold Mario Badges Player 1",E862ABAD 59BB
-Cheat8="Zero Strokes Taken",E86FC845 595A
+Cheat0="Enable All Courses",81130CEE FFFF
+Cheat1="No Wind",810BA9F1 0000,800BA9F3 0000
+Cheat2="Unlimited\Power Hits\Player 1",801B71F8 0004
+Cheat3="Unlimited\Power Hits\Player 2",801B72B0 0004
+Cheat4="Unlimited\Power Hits\Player 3",801B7368 0004
+Cheat5="Unlimited\Power Hits\Player 4",801B7420 0004
+Cheat6="Have All Characters",50000E02 0001,810C28E4 0000
+Cheat7="Max Gold Mario Badges Player 1",800C545B 0063
+Cheat8="Zero Strokes Taken",801B71F3 0000

@@ -1,9 +1,9 @@
 [8A86F073-CD45E54B-C:45]
 Name=Bust-A-Move 2 - Arcade Edition (U)
-Cheat0="Infinite Credits",E86858C7 5955
-Cheat1="Player 1\Always Gets Bubbles",E86B6887 5958
-Cheat2="Player 1\Never Gets Bubbles",E86B6887 595A
-Cheat3="Computer\Always Gets Bubbles",E86B8957 5958
-Cheat4="Computer\Never Gets Bubbles",E86B8957 595A
-Cheat5="Player 1\Infinite Time To Set Pieces",E96BFD54 595A
-Cheat6="Player 1\Screen Never Fills Over Time",E86B687B 5964
+Cheat0="Infinite Credits",80120171 0005
+Cheat1="Player 1\Always Gets Bubbles",80171131 0006
+Cheat2="Player 1\Never Gets Bubbles",80171131 0000
+Cheat3="Computer\Always Gets Bubbles",80173601 0006
+Cheat4="Computer\Never Gets Bubbles",80173601 0000
+Cheat5="Player 1\Infinite Time To Set Pieces",8117AAFC 0000
+Cheat6="Player 1\Screen Never Fills Over Time",80171125 000A

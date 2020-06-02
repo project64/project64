@@ -1,9 +1,9 @@
 [8A97A197-272DF6C1-C:50]
 Name=Nuclear Strike 64 (E) (M2)
-Cheat0="Level & Scenario Select",E86021B4 5963
-Cheat1="Invincibility",E8602EBC 5959
+Cheat0="Level & Scenario Select",800ACE5C 000B
+Cheat1="Invincibility",800ADB64 0001
 Cheat1_N=Makes you also fly without any fuel
-Cheat2="Double MPG",E8602EBF 5959
-Cheat3="No Quad Damage",E8602EBD 5959
-Cheat4="infinite Ammo For All Guns",E8602EBB 5959
-Cheat5="Infinite Attempts",E8602EBA 5959
+Cheat2="Double MPG",800ADB69 0001
+Cheat3="No Quad Damage",800ADB6B 0001
+Cheat4="infinite Ammo For All Guns",800ADB65 0001
+Cheat5="Infinite Attempts",800ADB66 0001

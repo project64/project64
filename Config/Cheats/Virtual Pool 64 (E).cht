@@ -1,6 +1,6 @@
 [98F9F2D0-03D9F09C-C:50]
 Name=Virtual Pool 64 (E)
-Cheat0="Foul score will stay at 0",E8844A7B 595A
-Cheat1="Score 0 points in shark skins",E8844A75 595A
-Cheat2="Have 5 games won",E8844A77 5955
-Cheat3="Pot 1 to win Set points to 25 in straight pool",E8844A73 5971
+Cheat0="Foul score will stay at 0",802EF725 0000
+Cheat1="Score 0 points in shark skins",802EF723 0000
+Cheat2="Have 5 games won",802EF721 0005
+Cheat3="Pot 1 to win Set points to 25 in straight pool",802EF71D 0019

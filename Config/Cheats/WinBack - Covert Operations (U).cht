@@ -1,13 +1,13 @@
 [ED98957E-8242DCAC-C:45]
 Name=WinBack - Covert Operations (U)
-Cheat0="Infinite Health",E86BFD0D 59B6
-Cheat1="Enable\Max Power Mode",E8692B69 5959
-Cheat2="Have All Characters",E9692B66 504F,E9692B68 595B,E8692B67 595B
-Cheat3="Flashlight Mod",E86BEBA0 59??
-Cheat3_O=$59 On,$5A Off
-Cheat4="All Bosses 1 Hit Deaths",E96F3BD6 595A
-Cheat5="Have All\Weapons,Items & Infinite Ammo\Player 1",E86BFDF1 5970,E86BFD05 5962,E86BFD09 5961,E869DA1C 5961,E8692B69 5959,E869DA18 595E,E869DA17 59BA,E869DA15 5959,50000601 0000,101587C5 0001,E869DA1D 5956,E869DA23 595E
-Cheat6="Start with Weapon\Player 1",E86BFD00 59??
-Cheat6_O=$5A HandGun,$59 Machinegun,$5C Shotgun,$5B Rocket Launcher,$56 M16 With Infinite Ammo,$55 New Cooler Handgun,$58 Invisible Gun 1 With Infinite Ammo,$57 Invisible Gun 2 With Infinite Ammo,$62 Odd Inviso ShotGun With Infinite Ammo,$61 Cool Rocket Launcher With Infinite Ammo,$66 Silenced Handgun
-Cheat7="Time is Always 00:00:00",E96634B6 595A
-Cheat8="Have Trial Mode Unlocked",E9663342 5956
+Cheat0="Infinite Health",8017AABB 0064
+Cheat1="Enable\Max Power Mode",8015D417 0001
+Cheat2="Have All Characters",8115D412 FFFF,8115D410 0003,8015D411 0003
+Cheat3="Flashlight Mod",80179448 00??
+Cheat3_O=$01 On,$00 Off
+Cheat4="All Bosses 1 Hit Deaths",811BE482 0000
+Cheat5="Have All\Weapons,Items & Infinite Ammo\Player 1",8017AA9F 001E,8017AAB3 0008,8017AAB7 0009,801587C4 0009,8015D417 0001,801587C0 000C,801587C1 0060,801587C3 0001,50000601 0000,801587C5 0001,801587CB 0004,801587CD 000C
+Cheat6="Start with Weapon\Player 1",8017AAA8 00??
+Cheat6_O=$00 HandGun,$01 Machinegun,$02 Shotgun,$03 Rocket Launcher,$04 M16 With Infinite Ammo,$05 New Cooler Handgun,$06 Invisible Gun 1 With Infinite Ammo,$07 Invisible Gun 2 With Infinite Ammo,$08 Odd Inviso ShotGun With Infinite Ammo,$09 Cool Rocket Launcher With Infinite Ammo,$14 Silenced Handgun
+Cheat7="Time is Always 00:00:00",8110DD62 0000
+Cheat8="Have Trial Mode Unlocked",8110DCEE 0004

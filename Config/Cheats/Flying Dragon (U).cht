@@ -1,9 +1,9 @@
 [A92D52E5-1D26B655-C:45]
 Name=Flying Dragon (U)
-Cheat0="Infinite\Health\Player 1",E8760A07 5922
-Cheat1="Infinite\Special\Player 1",E976010C 5AEA
-Cheat2="1 Win to Win\Player 1",D020C27F 0000,E87615D1 5959
-Cheat3="Infinite\Health\Player 2",E8761363 5922
-Cheat4="Infinite\Special\Player 2",E9760808 5AEA
-Cheat5="1 Win to Win\Player 2",D020C27F 0000,E87615D1 596A
-Cheat6="Infinite\Money",E97567C4 7856
+Cheat0="Infinite\Health\Player 1",8020B7B1 00C8
+Cheat1="Infinite\Special\Player 1",8120AEB4 0190
+Cheat2="1 Win to Win\Player 1",D020C27F 0000,8020C27F 0001
+Cheat3="Infinite\Health\Player 2",8020BC0D 00C8
+Cheat4="Infinite\Special\Player 2",8120B1B0 0190
+Cheat5="1 Win to Win\Player 2",D020C27F 0000,8020C27F 0010
+Cheat6="Infinite\Money",8121106C 2704

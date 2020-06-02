@@ -1,6 +1,6 @@
 [503EA760-E1300E96-C:50]
 Name=Cruis'n USA (E)
-Cheat0="Always Place 1st",E869551D 5959
-Cheat1="Unlimited Time",E8696043 5995
-Cheat2="Access Options\All Tracks",E8695956 596F,E8695955 594F
-Cheat3="Access Options\All Car Upgrades",50000704 0000,101505DF 0003
+Cheat0="Always Place 1st",801502CB 0001
+Cheat1="Unlimited Time",801509ED 0045
+Cheat2="Access Options\All Tracks",80150602 001F,80150603 00FF
+Cheat3="Access Options\All Car Upgrades",50000704 0000,801505DF 0003

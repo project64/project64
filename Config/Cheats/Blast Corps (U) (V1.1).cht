@@ -1,10 +1,10 @@
 [7C647E65-1948D305-C:45]
 Name=Blast Corps (U) (V1.1)
-Cheat0="Infinite\Hydraulics Sidesweeper",E8943358 59BB
-Cheat1="Infinite\Missiles Motor Bike",E893DEC6 59BB
-Cheat2="Infinite\Boosts Buggy Vehicle",E8943608 59B6
-Cheat3="Ballista Can Drive Through Anything",E893DE69 5959
-Cheat4="Found All\RDUS",E88C3DD4 1CAA
-Cheat5="Found All\Survivors",E88C3DC8 594F
-Cheat6="Found All\Scientists",E88C9ED8 598F
-Cheat7="Infinite Time",D03156C0 0000,E985A918 595A,D03156C2 0001,E985A916 595A
+Cheat0="Infinite\Hydraulics Sidesweeper",803EDC00 0063
+Cheat1="Infinite\Missiles Motor Bike",803F8B72 0063
+Cheat2="Infinite\Boosts Buggy Vehicle",803EE3B0 0064
+Cheat3="Ballista Can Drive Through Anything",803F8B17 0001
+Cheat4="Found All\RDUS",8036EA7C C350
+Cheat5="Found All\Survivors",8036EA70 00FF
+Cheat6="Found All\Scientists",80364B80 003F
+Cheat7="Infinite Time",D03156C0 0000,813156C0 0000,D03156C2 0001,813156C2 0000

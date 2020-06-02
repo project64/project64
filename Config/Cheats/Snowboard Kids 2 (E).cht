@@ -1,12 +1,12 @@
 [C2751D1A-F8C19BFF-C:50]
 Name=Snowboard Kids 2 (E)
-Cheat0="Max Coins",E976B6F2 785F
-Cheat1="Access Everything\Start New Game",50000502 0002,10204F3B 0013,50000502 0002,10204F42 0009,50000402 0002,10204F43 000A,E876A29D 595D,E976A2A4 5F5F,E976A2A2 5A59,E976A2AE 5A5A
-Cheat2="Trick Game 300 Points",E976BC26 5A7E
-Cheat3="Infinite Tools Options",E876BB5C 59??
-Cheat3_O=$59 Frying Pan,$5C Ghost,$5B Super Ghost,$56 Fan,$55 Rocket,$58 Invisible,$57 Rock,$62 Rat Face,$61 Super Rat Face,$64 Wings
-Cheat4="Infinite Weapons Options",E876BB56 59??,E876BB55 5961
-Cheat4_O=$59 Slap Stick,$5C Parachute,$5B Freeze Shot,$56 Snowman,$55 Bomb,$58 Whirlwind
-Cheat5="Max Money(Story Mode)",E976A108 59F2,E976A106 E7CF
-Cheat6="Open Extra Characters",E976A2A2 5A59,E876A2A8 5959
-Cheat7="Have All Snowboards",E876A294 5959,E976A292 5A59,E976A298 5A59
+Cheat0="Max Coins",8120639E 270F
+Cheat1="Access Everything\Start New Game",50000502 0002,80204F3B 0013,50000502 0002,80204F42 0009,50000402 0002,80204F43 000A,80204F4B 000D,81204F4C 0E0F,81204F4E 0101,81204F5A 0100
+Cheat2="Trick Game 300 Points",812065D2 012C
+Cheat3="Infinite Tools Options",80206404 00??
+Cheat3_O=$01 Frying Pan,$02 Ghost,$03 Super Ghost,$04 Fan,$05 Rocket,$06 Invisible,$07 Rock,$08 Rat Face,$09 Super Rat Face,$0A Wings
+Cheat4="Infinite Weapons Options",80206402 00??,80206403 0009
+Cheat4_O=$01 Slap Stick,$02 Parachute,$03 Freeze Shot,$04 Snowman,$05 Bomb,$06 Whirlwind
+Cheat5="Max Money(Story Mode)",81204EB0 0098,81204EB2 967F
+Cheat6="Open Extra Characters",81204F4E 0101,80204F50 0001
+Cheat7="Have All Snowboards",80204F3C 0001,81204F3E 0101,81204F40 0101

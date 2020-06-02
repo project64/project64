@@ -1,14 +1,14 @@
 [63E7391C-E6CCEA33-C:45]
 Name=Tom and Jerry in Fists of Furry (U)
-Cheat0="Unlock All Characters",E9649B46 594F
+Cheat0="Unlock All Characters",810E44F2 00FF
 Cheat0_N=This Gives you all Characters to choose from plus fixes A freeze on the Charecter Select Menu by having it on
-Cheat1="Open All Versus Arenas",E9649B4C 5C4F
-Cheat2="Infinite Health\Player 1",E9647AF4 9B22
-Cheat3="One Hit To Kill\Player 1",E9647DCC 90DA
-Cheat4="One Hit To Kill\Player 2",E96484A4 90DA
-Cheat5="Always Have Weapon Options\Player 1",E96480EC 59??
-Cheat5_O=$D1 Anvil,$5B Club,$56 Bird bath,$62 Broom,$61 NCube knife,$64 NCube missiles,$63 Chair,$5E Champagne,$60 Chicken,$5F Crate,$66 Deck chair,$68 Egg,$74 Fish,$6D Gardeners Fork,$70 Frying Pan,$6F Wooden Chair,$81 Bouy,$84 Mallet,$83 Watermelon,$7D Milk Bottle,$91 Plank,$99 Rolling Pin,$98 Spade,$97 Stool,$A2 Tennis Racket,$A0 Spanner,$A5 Stick,$BB Blue Swordfish,$B6 Saucepan,$B5 Wooden Spoon,$C3 Stool,$BD Bee hive,$D2 Mooses head,
-Cheat6="Always Have Weapon Options\Player 2",E96483C4 59??
-Cheat6_O=$D1 Anvil,$5B Club,$56 Bird bath,$62 Broom,$61 NCube knife,$64 NCube missiles,$63 Chair,$5E Champagne,$60 Chicken,$5F Crate,$66 Deck chair,$68 Egg,$74 Fish,$6D Gardeners Fork,$70 Frying Pan,$6F Wooden Chair,$81 Bouy,$84 Mallet,$83 Watermelon,$7D Milk Bottle,$91 Plank,$99 Rolling Pin,$98 Spade,$97 Stool,$A2 Tennis Racket,$A0 Spanner,$A5 Stick,$BB Blue Swordfish,$B6 Saucepan,$B5 Wooden Spoon,$C3 Stool,$BD Bee hive,$D2 Mooses head,
-Cheat7="Infinite Health\Player 2",E9647DCC 9B22
-Cheat8="Infinite Time",E96344A4 9B4A
+Cheat1="Open All Versus Arenas",810E44F4 03FF
+Cheat2="Infinite Health\Player 1",810E279C 42C8
+Cheat3="One Hit To Kill\Player 1",810E2A74 3F80
+Cheat4="One Hit To Kill\Player 2",810E2D4C 3F80
+Cheat5="Always Have Weapon Options\Player 1",810E2994 00??
+Cheat5_O=$79 Anvil,$03 Club,$04 Bird bath,$08 Broom,$09 NCube knife,$0A NCube missiles,$0B Chair,$0C Champagne,$0E Chicken,$0F Crate,$14 Deck chair,$16 Egg,$1A Fish,$1D Gardeners Fork,$1E Frying Pan,$1F Wooden Chair,$29 Bouy,$2A Mallet,$2B Watermelon,$2D Milk Bottle,$39 Plank,$41 Rolling Pin,$46 Spade,$47 Stool,$48 Tennis Racket,$4E Spanner,$55 Stick,$63 Blue Swordfish,$64 Saucepan,$65 Wooden Spoon,$6B Stool,$6D Bee hive,$78 Mooses head
+Cheat6="Always Have Weapon Options\Player 2",810E2C6C 00??
+Cheat6_O=$79 Anvil,$03 Club,$04 Bird bath,$08 Broom,$09 NCube knife,$0A NCube missiles,$0B Chair,$0C Champagne,$0E Chicken,$0F Crate,$14 Deck chair,$16 Egg,$1A Fish,$1D Gardeners Fork,$1E Frying Pan,$1F Wooden Chair,$29 Bouy,$2A Mallet,$2B Watermelon,$2D Milk Bottle,$39 Plank,$41 Rolling Pin,$46 Spade,$47 Stool,$48 Tennis Racket,$4E Spanner,$55 Stick,$63 Blue Swordfish,$64 Saucepan,$65 Wooden Spoon,$6B Stool,$6D Bee hive,$78 Mooses head
+Cheat7="Infinite Health\Player 2",810E2A74 42C8
+Cheat8="Infinite Time",810FED4C 42F0

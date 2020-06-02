@@ -1,10 +1,10 @@
 [5FD7CDA0-D9BB51AD-C:50]
 Name=Snowboard Kids (E)
-Cheat0="Infinite Cash",E9687A7E 5B46
-Cheat1="Access Everything",E95F88B8 5A5A,E95F88BC 605A
+Cheat0="Infinite Cash",8112272A 02F4
+Cheat1="Access Everything",810B3160 0100,810B3164 0F00
 Cheat1_N="Have All Characters,Cups,Courses,&Boards"
-Cheat2="1 Lap To Race",D01226C8 0000,E8687920 5961
-Cheat3="Infinite Tools Options",E868792B 59??
-Cheat3_O=$59 Fan,$5C Ghost,$5B Pan,$56 Rock,$55 Mouse,$58 Board
-Cheat4="Infinite Weapons\Lucky Dip",E868792C 595B
+Cheat2="1 Lap To Race",D01226C8 0000,801226C8 0009
+Cheat3="Infinite Tools Options",801226D5 00??
+Cheat3_O=$01 Fan,$02 Ghost,$03 Pan,$04 Rock,$05 Mouse,$06 Board
+Cheat4="Infinite Weapons\Lucky Dip",801226D4 0003
 Cheat4_N="Lucky Dip is Infinite Usage Of What Ever You Get From Each Red Box"

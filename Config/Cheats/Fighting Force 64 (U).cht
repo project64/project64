@@ -1,7 +1,7 @@
 [32EFC7CB-C3EA3F20-C:45]
 Name=Fighting Force 64 (U)
-Cheat0="Infinite Lives P1",E8623745 595B
-Cheat1="Infinite Lives P2",E8623749 595B
-Cheat2="Infinite Pistol Ammo",E95C57C4 755A
-Cheat3="Infinite Rocket Launcher Ammo",E95C5888 755A
-Cheat4="Infinite Shotgun Ammo",E95C5830 755A
+Cheat0="Infinite Lives P1",800CE0F3 0003
+Cheat1="Infinite Lives P2",800CE0F7 0003
+Cheat2="Infinite Pistol Ammo",8106006C 2400
+Cheat3="Infinite Rocket Launcher Ammo",81060130 2400
+Cheat4="Infinite Shotgun Ammo",810601D8 2400

@@ -1,12 +1,12 @@
 [4446FDD6-E3788208-C:45]
 Name=Bomberman Hero (U)
-Cheat0="Full\Bomb Power",E86CA591 595B
-Cheat1="Full\Fire Power",E86CA598 595B
-Cheat2="Infinite\Health",E86CA59C 5956
-Cheat3="Infinite\Lives",E86CA595 5961
-Cheat4="Extra Gems",D0165241 0000,E86CA597 59A3
-Cheat5="Max\Bombs",E86CA591 5962
-Cheat6="Press L to Levitate",D005A455 0020,E96998D0 9A23,D005A455 0020,D0154154 0000,E86998AC 599A
+Cheat0="Full\Bomb Power",8016523F 0003
+Cheat1="Full\Fire Power",80165240 0003
+Cheat2="Infinite\Health",80165244 0004
+Cheat3="Infinite\Lives",80165243 0009
+Cheat4="Extra Gems",D0165241 0000,80165241 004B
+Cheat5="Max\Bombs",8016523F 0008
+Cheat6="Press L to Levitate",D005A455 0020,81154178 41CB,D005A455 0020,D0154154 0000,80154154 0040
 Cheat6_N=Press L to levitate & let go to come back down
-Cheat7="Max\Score",E86BC960 504F
-Cheat8="Max\Explosion",E86CA598 5962
+Cheat7="Max\Score",80177608 FFFF
+Cheat8="Max\Explosion",80165240 0008

@@ -1,11 +1,11 @@
 [A7941528-61F1199D-C:4A]
 Name=Chou Snobow Kids (J)
-Cheat0="All Gold Medals",50000502 0000,11259130 0101
-Cheat1="Max Coins",E979FC12 785F,E879FC11 5922
-Cheat2="Infinite\Trick Game 300 Points",E979FA46 5A7E
-Cheat3="Infinite\Tools Options",E879F97C 59??
-Cheat3_O=$59 Frying Pan,$5C Ghost,$5B Super Ghost,$56 Fan,$55 Rocket,$58 Invisible,$57 Rock,$62 Rat Face,$61 Super Rat Face,$64 Wings
-Cheat4="Infinite\Weapons Options",E879F976 59??,E879F975 5961
-Cheat4_O=$59 Slap Stick,$5C Parachute,$5B Freeze Shot,$56 Snowman,$55 Bomb,$58 Whirlwind
-Cheat5="Open Extra Characters & Snowboards",E979E8C2 5A59,E879E8C8 5959,E879E8B4 5959,E979E8B2 5A59,E979E8B8 5A59
+Cheat0="All Gold Medals",50000502 0000,81259130 0101
+Cheat1="Max Coins",8125A5BE 270F,8025A5BF 00C8
+Cheat2="Infinite\Trick Game 300 Points",8125A7F2 012C
+Cheat3="Infinite\Tools Options",8025A624 00??
+Cheat3_O=$01 Frying Pan,$02 Ghost,$03 Super Ghost,$04 Fan,$05 Rocket,$06 Invisible,$07 Rock,$08 Rat Face,$09 Super Rat Face,$0A Wings
+Cheat4="Infinite\Weapons Options",8025A622 00??,8025A623 0009
+Cheat4_O=$01 Slap Stick,$02 Parachute,$03 Freeze Shot,$04 Snowman,$05 Bomb,$06 Whirlwind
+Cheat5="Open Extra Characters & Snowboards",8125916E 0101,80259170 0001,8025915C 0001,8125915E 0101,81259160 0101
 Cheat5_N=Battle Mode Only

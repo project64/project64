@@ -1,16 +1,16 @@
 [D543BCD6-2BA5E256-C:50]
 Name=Gauntlet Legends (E)
-Cheat0="Get All Stuff",50001410 0000,110C5DA6 FFFF
+Cheat0="Get All Stuff",50001410 0000,810C5DA6 FFFF
 Cheat0_N=Opens Up New Levels Etc,
-Cheat1="Infinite Use Of Items",50001310 0000,100C5EC6 FFFF
+Cheat1="Infinite Use Of Items",50001310 0000,800C5EC6 FFFF
 Cheat1_N=On Pick-Ups Only
-Cheat2="Access Skill Level 99",E86326DE 504F
+Cheat2="Access Skill Level 99",800FD38A FFFF
 Cheat2_N=And Get A Familiar
-Cheat3="Access All Window Shards",50000302 0000,110AE6C6 07FF
-Cheat4="Access All Rune Stones",50000302 0000,110AE6D6 07FF
-Cheat5="Always Max Turbo Attack",E9632B02 50B6
-Cheat6="New Player Name",E96326C4 9BA1,E96326C2 A59B,E96326C8 A17A,E96326C6 8791
-Cheat7="Start With Small Familiar",E9632C66 5A5C
+Cheat3="Access All Window Shards",50000302 0000,810AE6C6 07FF
+Cheat4="Access All Rune Stones",50000302 0000,810AE6D6 07FF
+Cheat5="Always Max Turbo Attack",810FD4AE FF64
+Cheat6="New Player Name",810FD36C 4249,810FD36E 5443,810FD370 4820,810FD372 3639
+Cheat7="Start With Small Familiar",810FD512 0102
 Cheat7_N=Do not use this with Big Familiar Code
-Cheat8="Start With Big Familiar",E9632C66 5B5C
+Cheat8="Start With Big Familiar",810FD512 0202
 Cheat8_N=Do not use this with Small Familiar Code

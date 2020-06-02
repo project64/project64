@@ -1,9 +1,9 @@
 [B44CAB74-07029A29-C:50]
 Name=Superman (E) (M6)
-Cheat0="Infinite Options\Freezing Breath",E9782440 9B22
-Cheat1="Infinite Options\Health",E978242C 9B22
-Cheat2="Infinite Options\Laser Eye",E978243C 9B22
-Cheat3="Infinite Options\Running Boosts",E9782434 9B22
-Cheat4="Infinite Options\X-Ray Vision",E9782438 9B22
-Cheat5="For More Time Press D-pad up ",D00EA380 0008,E9694726 6876,D00EA380 0008,E969472E 598E
-Cheat6="Level Select",D00EA380 0020,E96BF6D0 596B,D00EA380 0020,E96BF6E0 595F,E96A9A79 59BB
+Cheat0="Infinite Options\Freezing Breath",8122CDE8 42C8
+Cheat1="Infinite Options\Health",8122CDD4 42C8
+Cheat2="Infinite Options\Laser Eye",8122CDE4 42C8
+Cheat3="Infinite Options\Running Boosts",8122CDDC 42C8
+Cheat4="Infinite Options\X-Ray Vision",8122CDE0 42C8
+Cheat5="For More Time Press D-pad up",D00EA380 0008,8115F0D2 1724,D00EA380 0008,8115F0DA 003C
+Cheat6="Level Select",D00EA380 0020,8117A378 0013,D00EA380 0020,8117A388 000F,81144727 0063

@@ -1,9 +1,9 @@
 [A4A52B58-23759841-C:45]
 Name=Dark Rift (U)
-Cheat0="Access Sonork Character",E85AF448 5959
-Cheat1="Access Demitron Character",E85AF44C 5959
-Cheat2="Infinite Health\All Levels\Player 1",E958E0E0 615A,E958E0DE 5972,E95657B8 8D73,E95657B6 D962,E95657BC E0D3,E95657BA 5B82,E95657C4 5C3A,E95657C2 5962,E95657C8 F8B9,E95657C6 59CA
+Cheat0="Access Sonork Character",80049DF0 0001
+Cheat1="Access Demitron Character",80049DF4 0001
+Cheat2="Infinite Health\All Levels\Player 1",81028988 0800,8102898A 0018,81000060 3C1B,81000062 8008,81000064 8F7B,81000066 0228,8100006C 03E0,8100006E 0008,81000070 A761,81000072 0070
 Cheat3="Press F9 For 2 Rounds Won\Player 1",890B6330 0002
 Cheat4="Press F9 For 2 Rounds Won\Player 2",890B6342 0002
-Cheat5="Music Modifier",E85E6906 59??
-Cheat5_O=$5A Music Off,$84 Volume Low,$A5 Volume Medium,$CF Volume Max
+Cheat5="Music Modifier",800816B2 00??
+Cheat5_O=$00 Music Off,$2A Volume Low,$55 Volume Medium,$7F Volume Max
