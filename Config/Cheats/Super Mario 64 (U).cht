@@ -1,12 +1,12 @@
 [635A2BFF-8B022326-C:45]
 Name=Super Mario 64 (U)
-Cheat0="Press F9 For 255 Coins",8933B218 00FF
+Cheat0="Press GS For 255 Coins",8933B218 00FF
 Cheat1="Have\Level Select",A032D58C 0001
 Cheat2="Don't Hurt Mario\Monsters",A033B197 0001
 Cheat3="Infinite\Lives",8033B21D 0064
 Cheat4="Infinite\Energy & Breath",8033B21E 0008
 Cheat5="Have\Debug Mode",A032D598 00??
-Cheat5_O=$59 On,$5A Off
+Cheat5_O=$01 On,$00 Off
 Cheat6="Mario's Cap\Off Options",8033B177 00??
 Cheat6_N=Here you can Choose Options with Mario without His Cap on,Do not use with any other Mario with/without Options,Use only one at a time
 Cheat6_O=$01 Mario No Cap,$02 Invisible Mario,$04 Metal Mario,$08 Flying Mario,$0A Invisible Flying Mario,$0D Metal Flying Mario,$0F Invisible Metal Flying Mario
@@ -39,6 +39,6 @@ Cheat21="[Slot D Codes]\Have all key doors unlocked (and mote empty)",8020785A 0
 Cheat22="[Slot D Codes]\Have All Max 100 Coin Records For All Levels",50000F01 0000,80207875 0064
 Cheat23="Level Select",D033AFA1 0020,A032DDF9 00??
 Cheat23_N=Select a Level. Jump Into a Painting. Press A at the Stars Collected Screen. As Stats are fading hold L, and you'll jump to the level you've selected.
-Cheat23_O=$59 Intro,$56 Big Boo's Haunt,$55 Cool Cool Mountain,$58 Mushroom Castle,$57 Hazy Maze Cave,$62 Shifting Sand Land,$61 Bob omb Battlefield,$64 Snowman's Land,$63 Wet Dry World,$5E Jolly Roger Bay,$5D Tiny Huge World,$60 Tick tock Clock,$5F Rainbow Ride,$6A Mushroom Castle Field,$69 Bowser In The Dark World,$6C Vanish Cap Under The Moat,$6B Bowser In The Fire Sea,$66 The Secret Aquarium,$65 Bowser In The Sky,$68 Lethal Lava Land,$67 Dire Dire Docks,$72 Whomp's Fortress,$71 The End,$74 Castle Courtyard,$73 The Princess's Secret Slide,$6E Cavern Of The Metal Cap,$6D Tower Of The Wing Cap,$70 Bowser In The Dark World Boss,$6F Wing Mario Over The Rainbow,$79 Bowser In The Fire Sea Boss,$7C Bowser In The Sky Boss,$76 Tall Tall Mountain
+Cheat23_O=$01 Intro,$04 Big Boo's Haunt,$05 Cool Cool Mountain,$06 Mushroom Castle,$07 Hazy Maze Cave,$08 Shifting Sand Land,$09 Bob omb Battlefield,$0A Snowman's Land,$0B Wet Dry World,$0C Jolly Roger Bay,$0D Tiny Huge World,$0E Tick tock Clock,$0F Rainbow Ride,$10 Mushroom Castle Field,$11 Bowser In The Dark World,$12 Vanish Cap Under The Moat,$13 Bowser In The Fire Sea,$14 The Secret Aquarium,$15 Bowser In The Sky,$16 Lethal Lava Land,$17 Dire Dire Docks,$18 Whomp's Fortress,$19 The End,$1A Castle Courtyard,$1B The Princess's Secret Slide,$1C Cavern Of The Metal Cap,$1D Tower Of The Wing Cap,$1E Bowser In The Dark World Boss,$1F Wing Mario Over The Rainbow,$21 Bowser In The Fire Sea Boss,$22 Bowser In The Sky Boss,$24 Tall Tall Mountain
 Cheat24="Have\Turbo Running Speed",8033B1C3 00FF
 Cheat25="Don't Hurt Mario\Falling",8033B22C 00E8,8133B178 FFFF
