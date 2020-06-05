@@ -109,13 +109,15 @@ void DiskCommand()
     {
         //Emulate Seek Times, send interrupt later
         uint32_t seektime = 0x179200;
+
+        //Start Motor, can take half a second, delay the response
         if (g_Reg->ASIC_STATUS & DD_STATUS_MTR_N_SPIN)
         {
-            seektime += 0x800000;
+            seektime += (0x5A00000 / 2);
             g_Reg->ASIC_STATUS &= ~DD_STATUS_MTR_N_SPIN;
         }
 
-        //Get Zone
+        //Get Zone to calculate seek times
         uint32_t track = g_Reg->ASIC_CUR_TK >> 16 & 0x0FFF;
         uint32_t zone = 0;
         uint32_t zonebound = 0;
@@ -130,6 +132,8 @@ void DiskCommand()
                 break;
             }
         }
+
+        //Add delay depending on the zone
         switch (zone)
         {
         case 0:
@@ -161,8 +165,11 @@ void DiskCommand()
             break;
         }
 
+        //Set timer for seek response
         g_SystemTimer->SetTimer(g_SystemTimer->DDSeekTimer, seektime, false);
-        g_SystemTimer->SetTimer(g_SystemTimer->DDMotorTimer, 0x6000000, false);
+
+        //Set timer for motor to shutdown in 5 seconds, reset the timer if other seek commands were sent
+        g_SystemTimer->SetTimer(g_SystemTimer->DDMotorTimer, 0x5A00000 * 5, false);
     }
     else
     {
