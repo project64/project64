@@ -2157,9 +2157,6 @@ void CMipsMemoryVM::Write32CartridgeDomain2Address1(void)
         case 0x05000508:
             g_Reg->ASIC_CMD = m_MemLookupValue.UW[0];
             DiskCommand();
-            g_Reg->ASIC_STATUS |= DD_STATUS_MECHA_INT;
-            g_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP3;
-            g_Reg->CheckInterrupts();
             break;
         case 0x05000510:
             //ASIC_BM_STATUS_CTL

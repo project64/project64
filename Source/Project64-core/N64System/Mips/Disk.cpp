@@ -62,23 +62,28 @@ void DiskCommand()
     uint8_t second = (uint8_t)(((result.tm_sec / 10) << 4) | (result.tm_sec % 10));
 #endif
 
+    //Used for seek times
+    bool isSeek = false;
+
     switch (cmd & 0xFFFF0000)
     {
     case 0x00010000:
         //Seek Read
         g_Reg->ASIC_CUR_TK = g_Reg->ASIC_DATA | 0x60000000;
         dd_write = false;
+        isSeek = true;
         break;
     case 0x00020000:
         //Seek Write
         g_Reg->ASIC_CUR_TK = g_Reg->ASIC_DATA | 0x60000000;
         dd_write = true;
+        isSeek = true;
         break;
     case 0x00080000:
         //Unset Disk Changed Bit
         g_Reg->ASIC_STATUS &= ~DD_STATUS_DISK_CHNG; break;
     case 0x00090000:
-        //Unset Reset Bit
+        //Unset Reset & Disk Changed bit Bit
         g_Reg->ASIC_STATUS &= ~DD_STATUS_RST_STATE;
         g_Reg->ASIC_STATUS &= ~DD_STATUS_DISK_CHNG;
         //F-Zero X + Expansion Kit fix so it doesn't enable "swapping" at boot
@@ -98,6 +103,71 @@ void DiskCommand()
     case 0x001B0000:
         //Disk Inquiry
         g_Reg->ASIC_DATA = 0x00000000; break;
+    }
+
+    if (isSeek)
+    {
+        //Emulate Seek Times, send interrupt later
+        uint32_t seektime = 0;
+
+        //Start Motor, can take half a second, delay the response
+        if (g_Reg->ASIC_STATUS & DD_STATUS_MTR_N_SPIN)
+        {
+            seektime += (0x5A00000 / 2);
+            g_Reg->ASIC_STATUS &= ~DD_STATUS_MTR_N_SPIN;
+        }
+
+        //Get Zone to calculate seek times
+        uint32_t track = g_Reg->ASIC_CUR_TK >> 16 & 0x0FFF;
+        uint32_t zone = 0;
+        uint32_t zonebound = 0;
+        for (uint8_t i = 0; i < 8; i++)
+        {
+            zonebound += ddZoneTrackSize[i];
+            if (track < zonebound)
+            {
+                zone = i;
+                if (g_Reg->ASIC_CUR_TK & 0x10000000)
+                    zone++;
+                break;
+            }
+        }
+
+        //Add seek delay depending on the zone (this is inaccurate timing, but close enough)
+        seektime += 0x179200;
+
+        switch (zone)
+        {
+        case 0:
+        case 1:
+        default:
+            seektime += track * 38;
+            break;
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+            seektime += 0x13C * 38 + (track - 0x13C) * 46;
+            break;
+        case 8:
+            seektime += 0x13C * 38 + 0x2E9 * 46 + (track - 0x425) * 58;
+            break;
+        }
+
+        //Set timer for seek response
+        g_SystemTimer->SetTimer(g_SystemTimer->DDSeekTimer, seektime, false);
+
+        //Set timer for motor to shutdown in 5 seconds, reset the timer if other seek commands were sent
+        g_SystemTimer->SetTimer(g_SystemTimer->DDMotorTimer, 0x5A00000 * 5, false);
+    }
+    else
+    {
+        //Other commands are basically instant
+        g_Reg->ASIC_STATUS |= DD_STATUS_MECHA_INT;
+        g_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP3;
+        g_Reg->CheckInterrupts();
     }
 }
 
@@ -157,6 +227,9 @@ void DiskBMControl(void)
 
 void DiskGapSectorCheck()
 {
+    //On 64DD Status Register Read
+
+    //Buffer Manager Interrupt, Gap Sector Check
     if (g_Reg->ASIC_STATUS & DD_STATUS_BM_INT)
     {
         if (SECTORS_PER_BLOCK < dd_current)
@@ -168,6 +241,7 @@ void DiskGapSectorCheck()
         }
     }
 
+    //Delay Disk Swapping by removing the disk for a certain amount of time, then insert the newly loaded disk (after 50 Status Register reads, here).
     if (!(g_Reg->ASIC_STATUS & DD_STATUS_DISK_PRES) && g_Disk != NULL && g_Settings->LoadBool(GameRunning_LoadingInProgress) == false)
     {
         dd_swapdelay++;
@@ -190,12 +264,14 @@ void DiskBMUpdate()
         //Write Data
         if (dd_current < SECTORS_PER_BLOCK)
         {
+            //User Sector
             if (!DiskBMReadWrite(true))
                 g_Reg->ASIC_STATUS |= DD_STATUS_DATA_RQ;
             dd_current += 1;
         }
         else if (dd_current < SECTORS_PER_BLOCK + 1)
         {
+            //C2 Sector
             if (g_Reg->ASIC_BM_STATUS & DD_BM_STATUS_BLOCK)
             {
                 dd_start_block = 1 - dd_start_block;
@@ -222,25 +298,27 @@ void DiskBMUpdate()
         //Read Data
         if (((g_Reg->ASIC_CUR_TK >> 16) & 0x1FFF) == 6 && g_Reg->ASIC_CUR_SECTOR == 0 && g_Disk->GetCountry() != Country::UnknownCountry)
         {
-            //Copy Protection
+            //Copy Protection if Retail Disk
             g_Reg->ASIC_STATUS &= ~DD_STATUS_DATA_RQ;
             g_Reg->ASIC_BM_STATUS |= DD_BM_STATUS_MICRO;
         }
         else if (dd_current < SECTORS_PER_BLOCK)
         {
+            //User Sector
             if (!DiskBMReadWrite(false))
                 g_Reg->ASIC_STATUS |= DD_STATUS_DATA_RQ;
             dd_current += 1;
         }
         else if (dd_current < SECTORS_PER_BLOCK + 4)
         {
-            //READ C2 (00!)
+            //C2 sectors (All 00s)
             dd_current += 1;
             if (dd_current == SECTORS_PER_BLOCK + 4)
                 g_Reg->ASIC_STATUS |= DD_STATUS_C2_XFER;
         }
         else if (dd_current == SECTORS_PER_BLOCK + 4)
         {
+            //Gap Sector
             if (g_Reg->ASIC_BM_STATUS & DD_BM_STATUS_BLOCK)
             {
                 dd_start_block = 1 - dd_start_block;
