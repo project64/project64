@@ -108,7 +108,7 @@ void DiskCommand()
     if (isSeek)
     {
         //Emulate Seek Times, send interrupt later
-        uint32_t seektime = 0x179200;
+        uint32_t seektime = 0;
 
         //Start Motor, can take half a second, delay the response
         if (g_Reg->ASIC_STATUS & DD_STATUS_MTR_N_SPIN)
@@ -133,35 +133,26 @@ void DiskCommand()
             }
         }
 
-        //Add delay depending on the zone
+        //Add seek delay depending on the zone (this is inaccurate timing, but close enough)
+        seektime += 0x179200;
+
         switch (zone)
         {
         case 0:
-        default:
-            break;
         case 1:
-            seektime += 0x1900;
+        default:
+            seektime += track * 38;
             break;
         case 2:
-            seektime += 0x2A00;
-            break;
         case 3:
-            seektime += 0x4500;
-            break;
         case 4:
-            seektime += 0x5E00;
-            break;
         case 5:
-            seektime += 0x7A00;
-            break;
         case 6:
-            seektime += 0x9700;
-            break;
         case 7:
-            seektime += 0xAF00;
+            seektime += 0x13C * 38 + (track - 0x13C) * 46;
             break;
         case 8:
-            seektime += 0xCC00;
+            seektime += 0x13C * 38 + 0x2E9 * 46 + (track - 0x425) * 58;
             break;
         }
 
