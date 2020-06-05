@@ -221,6 +221,16 @@ void CSystemTimer::TimerDone()
         m_Reg.MI_INTR_REG |= MI_INTR_PI;
         m_Reg.CheckInterrupts();
         break;
+    case CSystemTimer::DDSeekTimer:
+        g_SystemTimer->StopTimer(CSystemTimer::DDSeekTimer);
+        g_Reg->ASIC_STATUS |= DD_STATUS_MECHA_INT;
+        g_Reg->FAKE_CAUSE_REGISTER |= CAUSE_IP3;
+        g_Reg->CheckInterrupts();
+        break;
+    case CSystemTimer::DDMotorTimer:
+        g_SystemTimer->StopTimer(CSystemTimer::DDMotorTimer);
+        g_Reg->ASIC_STATUS &= ~DD_STATUS_MTR_N_SPIN;
+        break;
     case CSystemTimer::ViTimer:
         try
         {

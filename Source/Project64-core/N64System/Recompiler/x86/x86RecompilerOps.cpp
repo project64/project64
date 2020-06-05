@@ -11784,18 +11784,6 @@ void CX86RecompilerOps::SW_Register(x86Reg Reg, uint32_t VAddr)
                 m_RegWorkingSet.BeforeCallDirect();
                 Call_Direct(AddressOf(&DiskCommand), "DiskCommand");
                 m_RegWorkingSet.AfterCallDirect();
-                OrConstToVariable((uint32_t)DD_STATUS_MECHA_INT, &g_Reg->ASIC_STATUS, "ASIC_STATUS");
-                OrConstToVariable((uint32_t)CAUSE_IP3, &g_Reg->FAKE_CAUSE_REGISTER, "FAKE_CAUSE_REGISTER");
-                m_RegWorkingSet.BeforeCallDirect();
-#ifdef _MSC_VER
-                MoveConstToX86reg((uint32_t)g_Reg, x86_ECX);
-                Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-#else
-                PushImm32((uint32_t)g_Reg);
-                Call_Direct(AddressOf(&CRegisters::CheckInterrupts), "CRegisters::CheckInterrupts");
-                AddConstToX86Reg(x86_ESP, 4);
-#endif
-                m_RegWorkingSet.AfterCallDirect();
                 break;
             }
             case 0x05000510:

@@ -32,6 +32,8 @@ public:
         RspTimer,
         RSPTimerDlist,
         DDPiTimer,
+        DDSeekTimer,
+        DDMotorTimer,
         MaxTimer
     };
 
