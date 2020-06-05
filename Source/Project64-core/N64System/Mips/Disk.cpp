@@ -108,7 +108,61 @@ void DiskCommand()
     if (isSeek)
     {
         //Emulate Seek Times, send interrupt later
-        g_SystemTimer->SetTimer(g_SystemTimer->DDSeekTimer, 0x400000, false);
+        uint32_t seektime = 0x179200;
+        if (g_Reg->ASIC_STATUS & DD_STATUS_MTR_N_SPIN)
+        {
+            seektime += 0x800000;
+            g_Reg->ASIC_STATUS &= ~DD_STATUS_MTR_N_SPIN;
+        }
+
+        //Get Zone
+        uint32_t track = g_Reg->ASIC_CUR_TK >> 16 & 0x0FFF;
+        uint32_t zone = 0;
+        uint32_t zonebound = 0;
+        for (uint8_t i = 0; i < 8; i++)
+        {
+            zonebound += ddZoneTrackSize[i];
+            if (track < zonebound)
+            {
+                zone = i;
+                if (g_Reg->ASIC_CUR_TK & 0x10000000)
+                    zone++;
+                break;
+            }
+        }
+        switch (zone)
+        {
+        case 0:
+        default:
+            break;
+        case 1:
+            seektime += 0x1900;
+            break;
+        case 2:
+            seektime += 0x2A00;
+            break;
+        case 3:
+            seektime += 0x4500;
+            break;
+        case 4:
+            seektime += 0x5E00;
+            break;
+        case 5:
+            seektime += 0x7A00;
+            break;
+        case 6:
+            seektime += 0x9700;
+            break;
+        case 7:
+            seektime += 0xAF00;
+            break;
+        case 8:
+            seektime += 0xCC00;
+            break;
+        }
+
+        g_SystemTimer->SetTimer(g_SystemTimer->DDSeekTimer, seektime, false);
+        g_SystemTimer->SetTimer(g_SystemTimer->DDMotorTimer, 0x6000000, false);
     }
     else
     {

@@ -229,7 +229,7 @@ void CSystemTimer::TimerDone()
         break;
     case CSystemTimer::DDMotorTimer:
         g_SystemTimer->StopTimer(CSystemTimer::DDMotorTimer);
-        g_Reg->ASIC_STATUS &= ~DD_STATUS_MTR_N_SPIN;
+        g_Reg->ASIC_STATUS |= DD_STATUS_MTR_N_SPIN;
         break;
     case CSystemTimer::ViTimer:
         try

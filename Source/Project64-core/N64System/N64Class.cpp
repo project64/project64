@@ -985,7 +985,9 @@ void CN64System::InitRegisters(bool bPostPif, CMipsMemoryVM & MMU)
     m_Reg.STATUS_REGISTER = 0x34000000;
 
     //64DD Registers
-    m_Reg.ASIC_STATUS = DD_STATUS_RST_STATE;
+
+    //Start 64DD in Reset State and Motor Not Spinning
+    m_Reg.ASIC_STATUS = DD_STATUS_RST_STATE | DD_STATUS_MTR_N_SPIN;
     m_Reg.ASIC_ID_REG = 0x00030000;
     if (g_DDRom && (g_DDRom->CicChipID() == CIC_NUS_DDTL || (g_Disk && g_Disk->GetCountry() == Country::UnknownCountry)))
         m_Reg.ASIC_ID_REG = 0x00040000;
